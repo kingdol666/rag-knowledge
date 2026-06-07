@@ -48,16 +48,16 @@ echo ""
 [ -d "$ROOT/web/node_modules" ] || (echo "Installing web deps..." && cd "$ROOT/web" && npm install)
 
 # Launch each in a new terminal
-SCRIPT_DIR="$ROOT"
+SCRIPT_DIR="$ROOT/scripts"
 
 if command -v gnome-terminal >/dev/null 2>&1; then
     gnome-terminal --title="RAG-Backend" -- bash -c "$SCRIPT_DIR/start-backend.sh; exec bash"
     gnome-terminal --title="RAG-Frontend" -- bash -c "$SCRIPT_DIR/start-frontend.sh; exec bash"
     gnome-terminal --title="RAG-Web" -- bash -c "$SCRIPT_DIR/start-web.sh; exec bash"
 elif command -v osascript >/dev/null 2>&1; then
-    osascript -e "tell application \"Terminal\" to do script \"cd $ROOT && bash start-backend.sh\""
-    osascript -e "tell application \"Terminal\" to do script \"cd $ROOT && bash start-frontend.sh\""
-    osascript -e "tell application \"Terminal\" to do script \"cd $ROOT && bash start-web.sh\""
+    osascript -e "tell application \"Terminal\" to do script \"cd $ROOT && bash scripts/start-backend.sh\""
+    osascript -e "tell application \"Terminal\" to do script \"cd $ROOT && bash scripts/start-frontend.sh\""
+    osascript -e "tell application \"Terminal\" to do script \"cd $ROOT && bash scripts/start-web.sh\""
 else
     echo "[WARN] No terminal launcher found. Running in background..."
     bash "$SCRIPT_DIR/start-backend.sh" &

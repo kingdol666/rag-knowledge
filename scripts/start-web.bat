@@ -6,8 +6,9 @@ REM ============================================
 REM  RAG Knowledge - Web (Nuxt 3) Launcher
 REM ============================================
 
-set "WEB_DIR=%~dp0web"
-set "ENV_FILE=%~dp0.env"
+set "ROOT=%~dp0.."
+set "WEB_DIR=%ROOT%\web"
+set "ENV_FILE=%ROOT%\.env"
 
 REM Load .env
 for /f "usebackq tokens=1,* delims==" %%a in ("%ENV_FILE%") do (

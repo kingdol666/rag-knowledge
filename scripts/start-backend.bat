@@ -6,8 +6,9 @@ REM ============================================
 REM  RAG Knowledge - Backend Launcher
 REM ============================================
 
-set "BACKEND_DIR=%~dp0backend"
-set "ENV_FILE=%~dp0.env"
+set "ROOT=%~dp0.."
+set "BACKEND_DIR=%ROOT%\backend"
+set "ENV_FILE=%ROOT%\.env"
 
 REM Load .env
 for /f "usebackq tokens=1,* delims==" %%a in ("%ENV_FILE%") do (

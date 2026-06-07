@@ -6,8 +6,9 @@ REM ============================================
 REM  RAG Knowledge - Frontend (Vue+Vite) Launcher
 REM ============================================
 
-set "FRONTEND_DIR=%~dp0frontend"
-set "ENV_FILE=%~dp0.env"
+set "ROOT=%~dp0.."
+set "FRONTEND_DIR=%ROOT%\frontend"
+set "ENV_FILE=%ROOT%\.env"
 
 REM Load .env
 for /f "usebackq tokens=1,* delims==" %%a in ("%ENV_FILE%") do (

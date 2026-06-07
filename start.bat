@@ -72,13 +72,13 @@ REM  Launch each service in its own terminal window
 REM ============================================================
 
 echo  [1/3] Starting Backend...
-start "RAG-Backend (port %BACKEND_PORT%)" "%ROOT%start-backend.bat"
+start "RAG-Backend (port %BACKEND_PORT%)" "%ROOT%scripts\start-backend.bat"
 
 echo  [2/3] Starting Frontend...
-start "RAG-Frontend (port %FRONTEND_PORT%)" "%ROOT%start-frontend.bat"
+start "RAG-Frontend (port %FRONTEND_PORT%)" "%ROOT%scripts\start-frontend.bat"
 
 echo  [3/3] Starting Web...
-start "RAG-Web (port %WEB_PORT%)" "%ROOT%start-web.bat"
+start "RAG-Web (port %WEB_PORT%)" "%ROOT%scripts\start-web.bat"
 
 echo.
 echo  ============================================
