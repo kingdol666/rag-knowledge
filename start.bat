@@ -5,8 +5,8 @@ setlocal enabledelayedexpansion
 REM ============================================
 REM  RAG Knowledge Platform - Unified Launcher
 REM  Usage: start.bat [dev|prod]
-REM    dev  = Backend (uvicorn --reload) + Frontend (vite dev)   [default]
-REM    prod = Backend (uvicorn) + Frontend (build if needed + vite preview)
+REM    dev  = Backend + Frontend (Vite) + Web (Nuxt)   [default]
+REM    prod = Backend + Frontend (build+preview) + Web (build+preview)
 REM ============================================
 
 set "MODE=%~1"
@@ -37,19 +37,26 @@ for /f "usebackq tokens=1,* delims==" %%a in ("%ENV_FILE%") do (
 
 REM Set defaults if not in .env
 if not defined BACKEND_PORT set "BACKEND_PORT=8001"
-if not defined FRONTEND_PORT set "FRONTEND_PORT=3000"
+if not defined FRONTEND_PORT set "FRONTEND_PORT=3008"
 if not defined FRONTEND_PREVIEW_PORT set "FRONTEND_PREVIEW_PORT=4173"
+if not defined WEB_PORT set "WEB_PORT=3009"
 if not defined VITE_API_BASE set "VITE_API_BASE=http://localhost:%BACKEND_PORT%"
+if not defined NUXT_PUBLIC_API_BASE set "NUXT_PUBLIC_API_BASE=http://localhost:%BACKEND_PORT%/api"
+if not defined PDF_PARSER_API_URL set "PDF_PARSER_API_URL=http://localhost:%BACKEND_PORT%"
+if not defined DEEPAGENT_API_URL set "DEEPAGENT_API_URL=http://localhost:%BACKEND_PORT%"
 
 echo  [CONFIG] BACKEND_PORT=%BACKEND_PORT%
 echo  [CONFIG] FRONTEND_PORT=%FRONTEND_PORT%
+echo  [CONFIG] WEB_PORT=%WEB_PORT%
 echo  [CONFIG] VITE_API_BASE=%VITE_API_BASE%
+echo  [CONFIG] NUXT_PUBLIC_API_BASE=%NUXT_PUBLIC_API_BASE%
 echo.
 
-REM ---- Resolve script directory (project root) ----
+REM ---- Resolve directories ----
 set "ROOT=%~dp0"
 set "BACKEND_DIR=%ROOT%backend"
 set "FRONTEND_DIR=%ROOT%frontend"
+set "WEB_DIR=%ROOT%web"
 
 REM ---- Check prerequisites ----
 where uv >nul 2>&1
@@ -65,26 +72,35 @@ if errorlevel 1 (
 )
 
 if not exist "%BACKEND_DIR%\app" (
-    echo  [ERROR] Backend directory not found: %BACKEND_DIR%
+    echo  [ERROR] Backend not found: %BACKEND_DIR%
     echo  [HINT]  Run: git submodule update --init --recursive
     exit /b 1
 )
-
 if not exist "%FRONTEND_DIR%\package.json" (
-    echo  [ERROR] Frontend directory not found: %FRONTEND_DIR%
+    echo  [ERROR] Frontend not found: %FRONTEND_DIR%
+    echo  [HINT]  Run: git submodule update --init --recursive
+    exit /b 1
+)
+if not exist "%WEB_DIR%\package.json" (
+    echo  [ERROR] Web not found: %WEB_DIR%
     echo  [HINT]  Run: git submodule update --init --recursive
     exit /b 1
 )
 
-REM ---- Install frontend deps if needed ----
+REM ---- Install deps if needed ----
 if not exist "%FRONTEND_DIR%\node_modules" (
     echo  [INFO] Installing frontend dependencies...
     cd /d "%FRONTEND_DIR%" && npm install && cd /d "%ROOT%"
     echo.
 )
+if not exist "%WEB_DIR%\node_modules" (
+    echo  [INFO] Installing web dependencies...
+    cd /d "%WEB_DIR%" && npm install && cd /d "%ROOT%"
+    echo.
+)
 
 REM ---- Kill old processes on our ports ----
-echo  [INFO] Cleaning old processes on ports %BACKEND_PORT%, %FRONTEND_PORT%, %FRONTEND_PREVIEW_PORT%...
+echo  [INFO] Cleaning old processes on ports %BACKEND_PORT%, %FRONTEND_PORT%, %WEB_PORT%...
 for /f "tokens=5" %%p in ('netstat -ano 2^>nul ^| findstr ":%BACKEND_PORT% .*LISTENING"') do (
     taskkill /f /pid %%p >nul 2>&1
 )
@@ -94,17 +110,21 @@ for /f "tokens=5" %%p in ('netstat -ano 2^>nul ^| findstr ":%FRONTEND_PORT% .*LI
 for /f "tokens=5" %%p in ('netstat -ano 2^>nul ^| findstr ":%FRONTEND_PREVIEW_PORT% .*LISTENING"') do (
     taskkill /f /pid %%p >nul 2>&1
 )
+for /f "tokens=5" %%p in ('netstat -ano 2^>nul ^| findstr ":%WEB_PORT% .*LISTENING"') do (
+    taskkill /f /pid %%p >nul 2>&1
+)
 echo.
 
 REM ---- Start Backend ----
 echo  [BACKEND] Starting on http://localhost:%BACKEND_PORT%
 echo  [BACKEND] API docs: http://localhost:%BACKEND_PORT%/docs
 cd /d "%BACKEND_DIR%"
+set "BACKEND_PORT=%BACKEND_PORT%"
 start /b "Backend" uv run python -m uvicorn app.main:app --host 0.0.0.0 --port %BACKEND_PORT% --reload
 cd /d "%ROOT%"
 echo.
 
-REM Wait for backend to be ready (max 20s)
+REM Wait for backend (max 20s)
 echo  [INFO] Waiting for backend to start...
 set BACKEND_READY=0
 for /l %%i in (1,1,20) do (
@@ -123,10 +143,9 @@ if !BACKEND_READY! equ 0 (
 )
 echo.
 
-REM ---- Start Frontend ----
+REM ---- Start Frontend (Vue + Vite) ----
 cd /d "%FRONTEND_DIR%"
 if /i "%MODE%"=="prod" (
-    REM Prod mode: build if needed, then preview
     if not exist "dist\index.html" (
         echo  [FRONTEND] Building production bundle...
         set "VITE_API_BASE=%VITE_API_BASE%" && npm run build
@@ -143,9 +162,33 @@ if /i "%MODE%"=="prod" (
     echo  [FRONTEND] Starting preview on http://localhost:%FRONTEND_PREVIEW_PORT%
     start /b "Frontend" npm run preview -- --port %FRONTEND_PREVIEW_PORT%
 ) else (
-    REM Dev mode: vite dev server with HMR
-    echo  [FRONTEND] Starting dev server on http://localhost:%FRONTEND_PORT%
+    echo  [FRONTEND] Starting dev on http://localhost:%FRONTEND_PORT%
     set "VITE_API_BASE=%VITE_API_BASE%" && start /b "Frontend" npm run dev -- --port %FRONTEND_PORT%
+)
+cd /d "%ROOT%"
+echo.
+
+REM ---- Start Web (Nuxt 3) ----
+cd /d "%WEB_DIR%"
+if /i "%MODE%"=="prod" (
+    if not exist ".output\server\index.mjs" (
+        echo  [WEB] Building production bundle...
+        set "NUXT_PUBLIC_API_BASE=%NUXT_PUBLIC_API_BASE%" && set "PDF_PARSER_API_URL=%PDF_PARSER_API_URL%" && set "DEEPAGENT_API_URL=%DEEPAGENT_API_URL%" && npm run build
+        if errorlevel 1 (
+            echo  [ERROR] Web build failed!
+            cd /d "%ROOT%"
+            exit /b 1
+        )
+        echo  [WEB] Build complete!
+        echo.
+    ) else (
+        echo  [WEB] .output/ already exists, skipping build.
+    )
+    echo  [WEB] Starting preview on http://localhost:%WEB_PORT%
+    start /b "Web" node .output/server/index.mjs --port %WEB_PORT%
+) else (
+    echo  [WEB] Starting dev on http://localhost:%WEB_PORT%
+    set "NUXT_PUBLIC_API_BASE=%NUXT_PUBLIC_API_BASE%" && set "PDF_PARSER_API_URL=%PDF_PARSER_API_URL%" && set "DEEPAGENT_API_URL=%DEEPAGENT_API_URL%" && start /b "Web" npx nuxt dev --host 0.0.0.0 --port %WEB_PORT%
 )
 cd /d "%ROOT%"
 
@@ -153,16 +196,16 @@ echo.
 echo  ============================================
 echo  [READY] Services running!
 if /i "%MODE%"=="prod" (
-    echo    Frontend: http://localhost:%FRONTEND_PREVIEW_PORT%
+    echo    Frontend (Vue):  http://localhost:%FRONTEND_PREVIEW_PORT%
 ) else (
-    echo    Frontend: http://localhost:%FRONTEND_PORT%
+    echo    Frontend (Vue):  http://localhost:%FRONTEND_PORT%
 )
-echo    Backend:  http://localhost:%BACKEND_PORT%
-echo    API Docs: http://localhost:%BACKEND_PORT%/docs
+echo    Web (Nuxt):      http://localhost:%WEB_PORT%
+echo    Backend (API):   http://localhost:%BACKEND_PORT%
+echo    API Docs:        http://localhost:%BACKEND_PORT%/docs
 echo  ============================================
 echo.
 echo  Press Ctrl+C to stop all services...
 echo.
 
-REM Keep the script running
 pause >nul

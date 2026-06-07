@@ -11,7 +11,8 @@ rag-knowledge/
   start.bat            # Windows launcher
   start.sh             # Linux/macOS launcher
   backend/             # Git submodule → rag-knowledge-backend
-  frontend/            # Git submodule → rag-knowledge-frontend
+  frontend/            # Git submodule → rag-knowledge-frontend (Vue + Vite)
+  web/                 # Git submodule → rag-knowledge-frondend (Nuxt 3)
 ```
 
 ## Quick Start
@@ -42,8 +43,11 @@ cp .env.example .env
 # Backend (requires uv: https://docs.astral.sh/uv/)
 cd backend && uv sync && cd ..
 
-# Frontend (requires Node.js 18+)
+# Frontend (Vue + Vite)
 cd frontend && npm install && cd ..
+
+# Web (Nuxt 3)
+cd web && npm install && cd ..
 ```
 
 ### 4. Start services
@@ -66,21 +70,25 @@ chmod +x start.sh
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `BACKEND_PORT` | `8001` | Backend API server port |
-| `FRONTEND_PORT` | `3000` | Frontend dev server port |
-| `FRONTEND_PREVIEW_PORT` | `4173` | Frontend preview (prod) port |
-| `VITE_API_BASE` | `http://localhost:8001` | Backend URL for frontend proxy |
+| `FRONTEND_PORT` | `3008` | Frontend (Vue) dev server port |
+| `FRONTEND_PREVIEW_PORT` | `4173` | Frontend (Vue) preview (prod) port |
+| `WEB_PORT` | `3009` | Web (Nuxt) dev server port |
+| `VITE_API_BASE` | `http://localhost:8001` | Backend URL for Vite proxy |
+| `NUXT_PUBLIC_API_BASE` | `http://localhost:8001/api` | Backend URL for Nuxt |
 | `PDF_PARSER_API_URL` | `http://localhost:8001` | PDF parser service URL |
 | `DEEPAGENT_API_URL` | `http://localhost:8001` | DeepAgent service URL |
 
 ## Architecture
 
 - **Backend**: FastAPI + Uvicorn, MinerU 3.x for PDF parsing
-- **Frontend**: Vue 3 + Vite + Ant Design Vue
+- **Frontend (Vue)**: Vue 3 + Vite + Ant Design Vue
+- **Web (Nuxt)**: Nuxt 3 + Ant Design Vue + Pinia
 - **PDF Parsing**: OCR (pipeline) and VLM backends via MinerU SDK
 
 ## Submodules
 
-| Submodule | Repository |
-|-----------|------------|
-| `backend/` | [rag-knowledge-backend](https://github.com/kingdol666/rag-knowledge-backend) |
-| `frontend/` | [rag-knowledge-frontend](https://github.com/kingdol666/rag-knowledge-frontend) |
+| Submodule | Repository | Description |
+|-----------|------------|-------------|
+| `backend/` | [rag-knowledge-backend](https://github.com/kingdol666/rag-knowledge-backend) | FastAPI + MinerU PDF parser |
+| `frontend/` | [rag-knowledge-frontend](https://github.com/kingdol666/rag-knowledge-frontend) | Vue 3 + Vite frontend |
+| `web/` | [rag-knowledge-frondend](https://github.com/kingdol666/rag-knowledge-frondend) | Nuxt 3 web app |
