@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(cd d:\\\\codes\\\\ClaudeGPT\\\\rag_project\\\\rag-knowledge\\\\backend; $env:APP_MODE = 'dev'; $env:BACKEND_PORT = '8765'; uv run python main.py)",
+      "PowerShell(cd d:\\\\codes\\\\ClaudeGPT\\\\rag_project\\\\rag-knowledge\\\\web; $env:APP_MODE = 'dev'; npm run dev)",
+      "PowerShell(cd d:\\\\codes\\\\ClaudeGPT\\\\rag_project\\\\rag-knowledge\\\\backend; $env:APP_MODE = 'dev'; $env:BACKEND_PORT = '8765'; uv run --no-sync python main.py)",
+      "Bash(curl -s http://localhost:8765/api/v1/health)"
+    ]
+  }
+}
