@@ -38,10 +38,10 @@ Browser ──► Nuxt server route ──► Python FastAPI backend
 
 ```
 rag-knowledge/
-├── config.yml          # ☝ Shared ports, backend URL, CORS origins
+├── config.yml          # ☝ 唯一端口 / CORS / URL 配置来源（dev + prod 双模式）
 ├── .env                # Environment variables (overrides)
 ├── .env.example        # Template .env file
-├── start.bat           # Windows launcher (opens 3 terminals)
+├── start.bat           # Windows launcher
 ├── start.sh            # Linux / macOS launcher
 ├── README.md
 ├── backend/            # Git submodule → rag-knowledge-backend
@@ -74,89 +74,171 @@ cd rag-knowledge
 > git submodule update --init --recursive
 > ```
 
-### 2. Configure ports
-
-Edit `config.yml` at the repo root — it drives both services:
-
-```yaml
-server:
-  host: "0.0.0.0"
-  backend_port: 8765          # Backend listens here
-  frontend_port: 6789         # Nuxt frontend listens here
-  backend_url: "http://localhost:8765"
-  cors_origins:
-    - "http://localhost:6789"
-```
-
-### 3. Install dependencies
+### 2. Install dependencies
 
 ```bash
-# Backend (Python)
+# Backend (Python) — requires uv: https://docs.astral.sh/uv/
 cd backend
 uv sync
 cd ..
 
-# Web frontend (Nuxt)
+# Web frontend (Nuxt 3)
 cd web
 npm install
 cd ..
 ```
 
-### 4. Start
+### 3. Start — choose your mode
 
-**Windows:**
-
-```cmd
-start.bat
-```
-
-**Linux / macOS:**
-
-```bash
-chmod +x start.sh
-./start.sh
-```
-
-Each service opens in its own terminal window. The launcher auto-detects port settings from `.env` and `config.yml`.
-
-### 5. Open
-
-| Service | URL |
-|---------|-----|
-| Web (Nuxt) | [http://localhost:6789](http://localhost:6789) |
-| Backend API | [http://localhost:8765](http://localhost:8765) |
-| API Docs | [http://localhost:8765/docs](http://localhost:8765/docs) |
+The entire platform is **configuration-driven**: all ports, URLs, and CORS origins come
+from `config.yml`. Simply set `APP_MODE` to switch between development and production.
+No code changes needed.
 
 ---
 
-## Manual Start (without launcher)
-
-If you prefer to start services individually:
+#### 🧑‍💻 Development Mode （`APP_MODE=dev` — default）
 
 ```bash
 # Terminal 1 — Backend
 cd backend
-uv run python main.py
+APP_MODE=dev uv run python main.py
+# → http://localhost:8765  (API)
+# → http://localhost:8765/docs  (Swagger)
 
-# Terminal 2 — Web (Nuxt)
+# Terminal 2 — Web frontend
 cd web
-node start.mjs
+APP_MODE=dev npm run start
+# → http://localhost:6789  (UI)
+```
+
+```yaml
+# config.yml (dev section — no changes needed, this is the default)
+server:
+  dev:
+    host: "0.0.0.0"
+    backend_port: 8765              # Backend port
+    frontend_port: 6789             # Frontend port
+    backend_url: "http://localhost:8765"
+    cors_origins:
+      - "http://localhost:6789"
+      - "http://127.0.0.1:6789"
+```
+
+> When `APP_MODE` is unset or set to `dev`, the backend listens on **8765** and the
+> frontend on **6789**. The frontend's server routes proxy API calls to `localhost:8765`.
+> CORS is configured for `localhost:6789`.
+
+---
+
+#### 🚀 Production Mode （`APP_MODE=prod`）
+
+```bash
+# Terminal 1 — Backend (no reload)
+cd backend
+APP_MODE=prod uv run python main.py
+# → http://localhost:8001  (API)
+
+# Terminal 2 — Web frontend
+cd web
+APP_MODE=prod npm run start
+# → http://localhost:3000  (UI)
+```
+
+```yaml
+# config.yml (prod section)
+server:
+  prod:
+    host: "0.0.0.0"
+    backend_port: 8001              # Backend port
+    frontend_port: 3000             # Frontend port
+    backend_url: "http://localhost:8001"
+    cors_origins:
+      - "http://localhost:3000"
+      - "http://127.0.0.1:3000"
+```
+
+> In production mode both services use conventional ports (**8001** / **3000**).
+> CORS is configured for `localhost:3000`.
+
+---
+
+### 4. Open
+
+| Service | Dev (`APP_MODE=dev`) | Prod (`APP_MODE=prod`) |
+|---------|----------------------|------------------------|
+| Web UI  | [http://localhost:6789](http://localhost:6789) | [http://localhost:3000](http://localhost:3000) |
+| API     | [http://localhost:8765](http://localhost:8765) | [http://localhost:8001](http://localhost:8001) |
+| API Docs | [http://localhost:8765/docs](http://localhost:8765/docs) | [http://localhost:8001/docs](http://localhost:8001/docs) |
+
+---
+
+### 5. Verify
+
+```bash
+# Health check
+curl http://localhost:8765/api/v1/health    # dev
+curl http://localhost:8001/api/v1/health    # prod
+
+# PDF conversion (upload any PDF)
+curl -X POST -F "file=@your-document.pdf" http://localhost:8765/api/v1/parse/file/vt
 ```
 
 ---
 
-## `config.yml` — How It Works
+## Configuration Reference
+
+`config.yml` is the **single source of truth**:
+
+```yaml
+server:
+  dev:                               # Used when APP_MODE is unset or "dev"
+    host: "0.0.0.0"
+    backend_port: 8765
+    frontend_port: 6789
+    backend_url: "http://localhost:8765"
+    cors_origins:
+      - "http://localhost:6789"
+
+  prod:                              # Used when APP_MODE=prod
+    host: "0.0.0.0"
+    backend_port: 8001
+    frontend_port: 3000
+    backend_url: "http://localhost:8001"
+    cors_origins:
+      - "http://localhost:3000"
+```
+
+Port resolution priority（high to low）：
 
 ```
-config.yml  (this repo root)
-  │
-  ├── read by  backend/app/utils/paths.py  → overrides config.server
-  └── read by  web/utils/paths.mjs         → overrides port + backend_url
+APP_MODE env var → config.yml <mode> section → code default (fallback)
 ```
 
-- **Backend** merges the shared `server` section on top of its own `config.yml`
-- **Frontend** searches paths: `<parent>/rag-knowledge/config.yml` → `<parent>/config.yml`
-- No file edits needed when you only change ports — edit `config.yml` in one place and restart
+The project contains **zero hardcoded port numbers** in source files. Everything reads
+from `config.yml` at startup.
+
+---
+
+## Architecture Detail: Why No CORS?
+
+The frontend uses Nuxt 3 **server routes** to proxy requests to the Python backend.
+The browser talks only to the Nuxt server on the same origin.
+
+```
+ Browser (port 6789 / 3000)
+    │
+    │  /api/parse/file-vt
+    ▼
+ Nuxt server handler             (server-side, no browser CORS)
+    │
+    │  http://localhost:8765/api/v1/parse/file/vt
+    ▼
+ Python FastAPI backend
+```
+
+For normal usage the browser never makes a cross-origin request. CORS headers only
+matter when accessing the backend directly from a different origin (e.g., the Swagger
+UI or a custom script).
 
 ---
 
@@ -178,7 +260,8 @@ config.yml  (this repo root)
 | **Linux** | ✓ | ✓ | All features. `./start.sh`. GPU: CUDA ≥ 11.8. |
 | **macOS** | ✓ | ✓ | CPU always OK. Apple Silicon GPU: `vlm.backend: mlx-engine`. |
 
-The project uses only **relative paths** derived from module location — you can clone it anywhere and it will work without modifying any config file.
+The project uses only **relative paths** derived from module location — you can clone
+it anywhere and it will work without modifying any config file.
 
 ---
 
