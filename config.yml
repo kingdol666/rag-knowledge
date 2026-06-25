@@ -11,16 +11,16 @@ server:
   host: "0.0.0.0"
 
   # 后端 FastAPI 端口
-  backend_port: 8001
+  backend_port: 8765
 
   # 前端 Nuxt 端口
-  frontend_port: 3000
+  frontend_port: 6789
 
   # 前端访问后端 API 的地址（用于 Nuxt server routes 代理请求）
   # 注意：这是服务端到服务端调用，请使用内网地址
-  backend_url: "http://localhost:8001"
+  backend_url: "http://localhost:8765"
 
   # CORS 允许的前端来源（浏览器直连后端时）
   cors_origins:
-    - "http://localhost:3000"
-    - "http://127.0.0.1:3000"
+    - "http://localhost:6789"
+    - "http://127.0.0.1:6789"
