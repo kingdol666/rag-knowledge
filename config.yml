@@ -1,26 +1,27 @@
 # ============================================
-# RAG Project 前后端共通启动配置
+# RAG Knowledge Platform — 前后端共用启动配置
 # ============================================
-# 此配置文件位于两个子项目的同级目录，
-# 前端 (rag-knowledge-frondend) 和后端 (rag-knowledge-backend)
-# 在启动时自动读取此文件获取端口等启动参数。
+# 这是唯一的端口配置来源，前后端启动时自动读取。
+# 修改此文件后重启对应服务即可生效。
 # ============================================
 
 server:
-  # 监听地址（0.0.0.0 表示所有网络接口）
-  host: "0.0.0.0"
+  # ── Dev 模式（npm run dev / python main.py）─
+  dev:
+    host: "0.0.0.0"
+    backend_port: 8765
+    frontend_port: 6789
+    backend_url: "http://localhost:8765"
+    cors_origins:
+      - "http://localhost:6789"
+      - "http://127.0.0.1:6789"
 
-  # 后端 FastAPI 端口
-  backend_port: 8765
-
-  # 前端 Nuxt 端口
-  frontend_port: 6789
-
-  # 前端访问后端 API 的地址（用于 Nuxt server routes 代理请求）
-  # 注意：这是服务端到服务端调用，请使用内网地址
-  backend_url: "http://localhost:8765"
-
-  # CORS 允许的前端来源（浏览器直连后端时）
-  cors_origins:
-    - "http://localhost:6789"
-    - "http://127.0.0.1:6789"
+  # ── Prod 模式（npm run build && npm run preview / uvicorn without reload）─
+  prod:
+    host: "0.0.0.0"
+    backend_port: 8001
+    frontend_port: 3000
+    backend_url: "http://localhost:8001"
+    cors_origins:
+      - "http://localhost:3000"
+      - "http://127.0.0.1:3000"
