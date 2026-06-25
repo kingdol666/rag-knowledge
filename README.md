@@ -65,6 +65,26 @@ chmod +x start.sh
 ./start.sh prod    # Production mode
 ```
 
+## 统一配置
+
+在前端和后端项目的**同级目录**下创建 `config.yml` 可统一管理端口和服务地址：
+
+```yaml
+# config.yml — 放在 rag-knowledge/ 父级目录
+server:
+  host: "0.0.0.0"
+  backend_port: 8001          # 后端端口
+  frontend_port: 3008         # 前端 (Vue) 端口
+  web_port: 3009              # Web (Nuxt) 端口
+  backend_url: "http://localhost:8001"
+  cors_origins:
+    - "http://localhost:3008"
+    - "http://localhost:3009"
+```
+
+> **注意**：子项目（`backend/`、`web/`）会自动向上查找父目录的 `config.yml` 合并配置。
+> 如果通过父项目 `start.bat`/`start.sh` 启动，端口仍由 `.env` 控制。
+
 ## Environment Variables
 
 | Variable | Default | Description |
