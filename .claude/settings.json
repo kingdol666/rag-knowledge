@@ -23,7 +23,9 @@
       "Bash(git -C d:/codes/ClaudeGPT/rag_project/rag-knowledge diff .claude/settings.json CLAUDE.md)",
       "Bash(git -C d:/codes/ClaudeGPT/rag_project/rag-knowledge submodule status backend)",
       "Bash(git -C d:/codes/ClaudeGPT/rag_project/rag-knowledge/backend status)",
-      "Bash(git -C d:/codes/ClaudeGPT/rag_project/rag-knowledge/backend status --short --untracked-files=all)"
+      "Bash(git -C d:/codes/ClaudeGPT/rag_project/rag-knowledge/backend status --short --untracked-files=all)",
+      "Bash(uv run *)",
+      "Bash(uv run python -c ' *)"
     ],
     "additionalDirectories": [
       "\\tmp"
