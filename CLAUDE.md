@@ -81,6 +81,7 @@ curl http://localhost:8765/api/v1/health
 
 ### 模块分层
 - **routes/** — 仅定义路由和请求/响应处理。业务逻辑放在独立函数中。
+- **services/** — 业务逻辑层（如 `mineru_service.py`），被路由调用，依赖注入 manager/外部资源
 - **agent/** — 所有智能体逻辑。不与路由混在一起。
 - **models/** — 只放 Pydantic schema，不放业务逻辑。
 - **utils/** — 工具函数（路径解析等）。
@@ -126,3 +127,70 @@ curl http://localhost:8765/api/v1/health
 - 清晰的命名空间便于理解上下文
 - 统一的 schema 层减少重复
 - 配置驱动避免硬编码
+
+## 🧠 持久化记忆系统（MCP Memory）
+
+本项目使用 **MCP Memory 知识图谱** 作为持久化记忆系统，用于跨会话保持项目上下文。
+
+### 记忆存储规范
+
+1. **每次新对话启动时**，必须通过 `mcp__memory__search_nodes()` 或 `mcp__memory__read_graph()` 加载项目记忆，了解已有上下文后再开始工作
+
+2. **需要记住的内容**（写入知识图谱实体）：
+   - 项目架构决策和原因（例如：为什么选择某个方案）
+   - 模块间关系和依赖
+   - 用户偏好和开发约定
+   - 当前工作上下文和进度
+   - 已发现的问题和修复方案
+
+3. **不需要记住的内容**（代码库中已有的）：
+   - 代码级细节（函数签名、类定义、导入路径）— 这些已在 CLAUDE.md 和代码中
+   - 临时调试信息
+   - git 历史中已记录的变更
+
+4. **记忆操作指南**：
+   ```python
+   # 创建实体（项目/模块/关键概念）
+   mcp__memory__create_entities([
+     {"name": "...", "entityType": "module|concept|decision", "observations": [...]}
+   ])
+
+   # 创建关系
+   mcp__memory__create_relations([
+     {"from": "...", "relationType": "depends on|calls|configures|contains", "to": "..."}
+   ])
+
+   # 添加观察（追加到已有实体）
+   mcp__memory__add_observations([
+     {"entityName": "...", "contents": ["..."]}
+   ])
+
+   # 检索记忆
+   mcp__memory__search_nodes(query="MinerU parse")
+   mcp__memory__open_nodes(names=["Backend (FastAPI Python)"])
+   ```
+
+5. **每次修改重要架构/流程后**，更新对应的记忆实体观察
+
+6. **文件级记忆**：`C:\Users\87287\.claude\projects\d--codes-ClaudeGPT-rag-project-rag-knowledge\memory\` 目录下的 `.md` 文件作为补充持久化存储（大段文本内容），与 MCP Memory 同步维护。
+
+### 记忆实体命名约定
+
+| 实体类型 | 命名规范 | 示例 |
+|----------|---------|------|
+| `project` | 项目全称 | `RAG Knowledge Platform` |
+| `subproject` | 子项目名+技术栈 | `Backend (FastAPI Python)` |
+| `module` | 模块功能名 | `MinerU Integration` |
+| `concept` | 概念名 | `Data Flow` |
+| `decision` | 描述决策 | `Why add MineruParseService` |
+
+### 跨会话加载流程
+
+```
+启动新会话
+  └→ 读取 CLAUDE.md（本项目文件）
+  └→ mcp__memory__search_nodes(query="RAG Knowledge")
+  └→ 加载相关实体观察
+  └→ 如有已知的工作上下文，恢复进度
+  └→ 开始当前任务
+```

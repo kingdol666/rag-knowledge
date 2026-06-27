@@ -4,7 +4,29 @@
       "PowerShell(cd d:\\\\codes\\\\ClaudeGPT\\\\rag_project\\\\rag-knowledge\\\\backend; $env:APP_MODE = 'dev'; $env:BACKEND_PORT = '8765'; uv run python main.py)",
       "PowerShell(cd d:\\\\codes\\\\ClaudeGPT\\\\rag_project\\\\rag-knowledge\\\\web; $env:APP_MODE = 'dev'; npm run dev)",
       "PowerShell(cd d:\\\\codes\\\\ClaudeGPT\\\\rag_project\\\\rag-knowledge\\\\backend; $env:APP_MODE = 'dev'; $env:BACKEND_PORT = '8765'; uv run --no-sync python main.py)",
-      "Bash(curl -s http://localhost:8765/api/v1/health)"
+      "Bash(curl -s http://localhost:8765/api/v1/health)",
+      "Bash(ls -la /c/Users/87287/.claude/projects/d--codes-ClaudeGPT-rag-project-rag-knowledge/memory/)",
+      "Read(//c/Users/87287/.claude/projects/d--codes-ClaudeGPT-rag-project-rag-knowledge/memory//**)",
+      "Read(//c/Users/87287/.claude/**)",
+      "PowerShell(Get-Process -Id \\(Get-NetTCPConnection -LocalPort 8764 -ErrorAction Stop\\).OwningProcess -ErrorAction Stop | Stop-Process -Force -PassThru | Select-Object Id, ProcessName, SessionId)",
+      "PowerShell(curl.exe -s http://localhost:8765/api/v1/health 2>&1)",
+      "PowerShell(curl.exe -s http://localhost:8764/health 2>&1)",
+      "PowerShell(try { Invoke-WebRequest -Uri \"http://localhost:8764/health\" -UseBasicParsing -TimeoutSec 5 | Select-Object -ExpandProperty Content } catch { Write-Output \"FAILED: $_\" })",
+      "PowerShell(Get-NetTCPConnection -LocalPort 8764 -ErrorAction SilentlyContinue | Select-Object LocalPort, OwningProcess, State; Write-Output \"---\"; Get-Process -Id \\(Get-NetTCPConnection -LocalPort 8764 -ErrorAction SilentlyContinue\\).OwningProcess -ErrorAction SilentlyContinue | Select-Object Id, ProcessName, StartTime)",
+      "PowerShell(Get-Process -Id \\(Get-NetTCPConnection -LocalPort 8764 -ErrorAction Stop\\).OwningProcess -ErrorAction Stop | Stop-Process -Force -PassThru | Select-Object Id, ProcessName)",
+      "Bash(python -m py_compile app/services/mineru_service.py app/api/routes/parse.py sandbox/mineru_module/manager.py)",
+      "Bash(cat > *)",
+      "Bash(ls README*)",
+      "Bash(ls ../README*)",
+      "Bash(git -C d:/codes/ClaudeGPT/rag_project/rag-knowledge diff --stat)",
+      "Bash(git -C d:/codes/ClaudeGPT/rag_project/rag-knowledge diff --staged --stat)",
+      "Bash(git -C d:/codes/ClaudeGPT/rag_project/rag-knowledge diff .claude/settings.json CLAUDE.md)",
+      "Bash(git -C d:/codes/ClaudeGPT/rag_project/rag-knowledge submodule status backend)",
+      "Bash(git -C d:/codes/ClaudeGPT/rag_project/rag-knowledge/backend status)",
+      "Bash(git -C d:/codes/ClaudeGPT/rag_project/rag-knowledge/backend status --short --untracked-files=all)"
+    ],
+    "additionalDirectories": [
+      "\\tmp"
     ]
   }
 }

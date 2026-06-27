@@ -26,10 +26,10 @@ An end-to-end document intelligence system: ingest PDFs, extract knowledge via O
 │              config.yml  ←  shared port & CORS config  │
 └────────────────────────────────────────────────────────┘
 
-Browser ──► Nuxt server route ──► Python FastAPI backend
-                  │                       │
-             No browser CORS          MinerU SDK
-             (server-to-server)       OCR / VLM parsing
+ Browser ──► Nuxt server route ──► Python FastAPI backend
+                   │                       │
+              No browser CORS         MinerU API (subprocess)
+              (server-to-server)      pipeline backend (CPU/GPU)
 ```
 
 ---
@@ -88,159 +88,224 @@ npm install
 cd ..
 ```
 
-### 3. Start — choose your mode
+### 3. 启动流程（共 3 个服务）
 
-The entire platform is **configuration-driven**: all ports, URLs, and CORS origins come
-from `config.yml`. Simply set `APP_MODE` to switch between development and production.
-No code changes needed.
+项目由三个服务组成，需要按顺序启动：
 
 ---
 
-#### 🧑‍💻 Development Mode （`APP_MODE=dev` — default）
+#### 服务 A：MinerU PDF 解析引擎（端口 8764）
+
+MinerU 运行在隔离的虚拟环境中。首次需要安装依赖：
 
 ```bash
-# Terminal 1 — Backend
+cd backend
+
+# 创建并安装 MinerU 专用环境
+cd sandbox/mineru_module
+uv venv --python 3.12
+uv pip install mineru[all]
+cd ../..
+```
+
+启动 MinerU API（CPU 模式，无需 GPU）：
+
+```bash
+cd backend
+
+# Windows:
+set CUDA_VISIBLE_DEVICES=-1
+set MINERU_DEFAULT_BACKEND=pipeline
+set MINERU_MODEL_SOURCE=modelscope
+sandbox/mineru_module/.venv/Scripts/mineru-api.exe --host 127.0.0.1 --port 8764
+
+# Linux / macOS:
+CUDA_VISIBLE_DEVICES=-1 MINERU_DEFAULT_BACKEND=pipeline \
+  MINERU_MODEL_SOURCE=modelscope \
+  sandbox/mineru_module/.venv/bin/mineru-api --host 127.0.0.1 --port 8764
+```
+
+验证：`curl http://127.0.0.1:8764/health`
+
+---
+
+#### 服务 B：Backend（FastAPI，端口 8765 / 8001）
+
+```bash
+# Dev 模式（端口 8765，自动重载，自动启动 MinerU）
 cd backend
 APP_MODE=dev uv run python main.py
-# → http://localhost:8765  (API)
-# → http://localhost:8765/docs  (Swagger)
 
-# Terminal 2 — Web frontend
-cd web
-APP_MODE=dev npm run start
-# → http://localhost:6789  (UI)
-```
-
-```yaml
-# config.yml (dev section — no changes needed, this is the default)
-server:
-  dev:
-    host: "0.0.0.0"
-    backend_port: 8765              # Backend port
-    frontend_port: 6789             # Frontend port
-    backend_url: "http://localhost:8765"
-    cors_origins:
-      - "http://localhost:6789"
-      - "http://127.0.0.1:6789"
-```
-
-> When `APP_MODE` is unset or set to `dev`, the backend listens on **8765** and the
-> frontend on **6789**. The frontend's server routes proxy API calls to `localhost:8765`.
-> CORS is configured for `localhost:6789`.
-
----
-
-#### 🚀 Production Mode （`APP_MODE=prod`）
-
-```bash
-# Terminal 1 — Backend (no reload)
+# Prod 模式（端口 8001，无自动重载）
 cd backend
 APP_MODE=prod uv run python main.py
-# → http://localhost:8001  (API)
 
-# Terminal 2 — Web frontend
-cd web
-APP_MODE=prod npm run start
-# → http://localhost:3000  (UI)
+# 自定义端口（覆盖 config.yml）
+BACKEND_PORT=9000 APP_MODE=dev uv run python main.py
 ```
 
-```yaml
-# config.yml (prod section)
-server:
-  prod:
-    host: "0.0.0.0"
-    backend_port: 8001              # Backend port
-    frontend_port: 3000             # Frontend port
-    backend_url: "http://localhost:8001"
-    cors_origins:
-      - "http://localhost:3000"
-      - "http://127.0.0.1:3000"
-```
+**后端启动时自动执行：**
+1. 读取 `config.yml`，检测 `mineru.enabled: true`
+2. 自动拉起 `mineru-api` 子进程
+3. 等待 `/health` 返回 200（超时 60 秒）
+4. 预加载 DeepAgent 构件
+5. 注册 FastAPI 路由 → 服务就绪
 
-> In production mode both services use conventional ports (**8001** / **3000**).
-> CORS is configured for `localhost:3000`.
+后端关闭时自动终止 MinerU 子进程。
+
+验证：
+```bash
+curl http://localhost:8765/api/v1/health
+# → {"status":"healthy"}
+```
 
 ---
 
-### 4. Open
-
-| Service | Dev (`APP_MODE=dev`) | Prod (`APP_MODE=prod`) |
-|---------|----------------------|------------------------|
-| Web UI  | [http://localhost:6789](http://localhost:6789) | [http://localhost:3000](http://localhost:3000) |
-| API     | [http://localhost:8765](http://localhost:8765) | [http://localhost:8001](http://localhost:8001) |
-| API Docs | [http://localhost:8765/docs](http://localhost:8765/docs) | [http://localhost:8001/docs](http://localhost:8001/docs) |
-
----
-
-### 5. Verify
+#### 服务 C：Web 前端（Nuxt 3，端口 6789 / 3000）
 
 ```bash
-# Health check
+# Dev 模式
+cd web
+APP_MODE=dev npm run start
+# → http://localhost:6789
+
+# 或直接使用 Nuxt dev 命令
+cd web
+npm run dev
+```
+
+---
+
+### 4. 快速启动（一键启动）
+
+```bash
+# Windows
+start.bat
+
+# Linux / macOS
+./start.sh
+```
+
+---
+
+### 5. 验证
+
+```bash
+# 健康检查
 curl http://localhost:8765/api/v1/health    # dev
 curl http://localhost:8001/api/v1/health    # prod
 
-# PDF conversion (upload any PDF)
+# 测试 PDF 解析 — 后端代理到 MinerU
 curl -X POST -F "file=@your-document.pdf" http://localhost:8765/api/v1/parse/file/vt
+
+# 直接测试 MinerU API
+curl -X POST -F "files=@your-document.pdf" -F "return_md=true" \
+  http://127.0.0.1:8764/file_parse
 ```
 
 ---
 
-## Configuration Reference
+### 6. 服务端口一览
 
-`config.yml` is the **single source of truth**:
+| 服务 | Dev 模式 | Prod 模式 | 说明 |
+|------|----------|-----------|------|
+| Web UI | `http://localhost:6789` | `http://localhost:3000` | Nuxt 3 前端 |
+| API | `http://localhost:8765` | `http://localhost:8001` | FastAPI 后端 |
+| API Docs | `http://localhost:8765/docs` | `http://localhost:8001/docs` | Swagger 文档 |
+| MinerU | `http://127.0.0.1:8764` | `http://127.0.0.1:8764` | PDF 解析引擎 |
+
+---
+
+## 配置说明
+
+### config.yml
+
+`config.yml` 是**唯一的配置来源**：
 
 ```yaml
 server:
-  dev:                               # Used when APP_MODE is unset or "dev"
+  dev:                               # APP_MODE=dev 或未设置时使用
     host: "0.0.0.0"
     backend_port: 8765
-    frontend_port: 6789
     backend_url: "http://localhost:8765"
     cors_origins:
       - "http://localhost:6789"
 
-  prod:                              # Used when APP_MODE=prod
+  prod:                              # APP_MODE=prod 时使用
     host: "0.0.0.0"
     backend_port: 8001
-    frontend_port: 3000
     backend_url: "http://localhost:8001"
     cors_origins:
       - "http://localhost:3000"
+
+# MinerU OCR / PDF 解析引擎配置
+mineru:
+  enabled: true
+  host: "127.0.0.1"
+  api_port: 8764
+  start_on_boot: true
+  startup_timeout: 60
+
+# LLM 配置（用于 DeepAgent 智能体）
+llm:
+  type: custom
+  model: glm-5
+  base_url: https://open.bigmodel.cn/api/coding/paas/v4
+  api_token: ${API_TOKEN}
+  temperature: 0.7
+  max_tokens: 40960
+
+deepagent:
+  defaults:
+    input_text: "你好，你是谁"
+    context: {}
+    tools: []
+    skills:
+      - backend-maintainer
+      - open-research
+    model: glm-5
+    temperature: 0.7
+    max_tokens: 40960
+    include_messages: true
 ```
 
-Port resolution priority（high to low）：
-
+端口解析优先级：
 ```
-APP_MODE env var → config.yml <mode> section → code default (fallback)
+环境变量 APP_MODE → config.yml <mode> 段 → 代码默认值
 ```
-
-The project contains **zero hardcoded port numbers** in source files. Everything reads
-from `config.yml` at startup.
 
 ---
 
-## Architecture Detail: Why No CORS?
+## 开发指南
 
-The frontend uses Nuxt 3 **server routes** to proxy requests to the Python backend.
-The browser talks only to the Nuxt server on the same origin.
+详细开发规范见 [backend/CLAUDE.md](backend/CLAUDE.md)。
 
-```
- Browser (port 6789 / 3000)
-    │
-    │  /api/parse/file-vt
-    ▼
- Nuxt server handler             (server-side, no browser CORS)
-    │
-    │  http://localhost:8765/api/v1/parse/file/vt
-    ▼
- Python FastAPI backend
-```
-
-For normal usage the browser never makes a cross-origin request. CORS headers only
-matter when accessing the backend directly from a different origin (e.g., the Swagger
-UI or a custom script).
+核心原则：
+- **模块分层**：routes / agent / models / utils 各司其职
+- **配置驱动**：不硬编码端口、URL 等
+- **隔离依赖**：MinerU 运行在独立虚拟环境中，不与主项目依赖冲突
+- **自动生命周期**：后端启动时自动管理 MinerU 子进程
 
 ---
+
+## 架构详解：请求流程
+
+```
+                         浏览器 (port 6789 / 3000)
+                              │
+                    ┌─────────┴──────────┐
+                    │  Nuxt Server Route  │  (/api/parse/file-vt)
+                    └─────────┬──────────┘
+                              │  proxy: http://localhost:8765/api/v1/parse/file/vt
+                    ┌─────────▼──────────┐
+                    │  FastAPI Backend    │  (端口 8765)
+                    └─────────┬──────────┘
+                              │  proxy: http://127.0.0.1:8764/file_parse
+                    ┌─────────▼──────────┐
+                    │  MinerU API         │  (端口 8764, pipeline backend)
+                    │  PDF → Markdown     │
+                    └────────────────────┘
+```
 
 ## Submodules
 
@@ -258,10 +323,7 @@ UI or a custom script).
 |----------|---------|----------|-------|
 | **Windows 10/11** | ✓ | ✓ | Use Git Bash or PowerShell. `start.bat` included. |
 | **Linux** | ✓ | ✓ | All features. `./start.sh`. GPU: CUDA ≥ 11.8. |
-| **macOS** | ✓ | ✓ | CPU always OK. Apple Silicon GPU: `vlm.backend: mlx-engine`. |
-
-The project uses only **relative paths** derived from module location — you can clone
-it anywhere and it will work without modifying any config file.
+| **macOS** | ✓ | ✓ | CPU always OK. Apple Silicon GPU: vlm.backend: mlx-engine. |
 
 ---
 
