@@ -15,7 +15,7 @@ for /f "usebackq tokens=1,* delims==" %%a in ("%ENV_FILE%") do (
     set "LINE=%%a"
     if not "!LINE:~0,1!"=="#" if not "%%a"=="" set "%%a=%%b"
 )
-if not defined WEB_PORT set "WEB_PORT=3009"
+if not defined WEB_PORT set "WEB_PORT=3000"
 if not defined PDF_PARSER_API_URL set "PDF_PARSER_API_URL=http://localhost:%BACKEND_PORT%"
 if not defined DEEPAGENT_API_URL set "DEEPAGENT_API_URL=http://localhost:%BACKEND_PORT%"
 
