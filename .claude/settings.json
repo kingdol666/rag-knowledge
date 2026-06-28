@@ -1,4 +1,5 @@
 {
+  "enableAllProjectMcpServers": true,
   "permissions": {
     "allow": [
       "PowerShell(cd d:\\\\codes\\\\ClaudeGPT\\\\rag_project\\\\rag-knowledge\\\\backend; $env:APP_MODE = 'dev'; $env:BACKEND_PORT = '8765'; uv run python main.py)",
