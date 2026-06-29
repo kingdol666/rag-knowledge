@@ -93,31 +93,31 @@ async def kb_list() -> str:
 
 @mcp.tool()
 async def kb_create(name: str, description: str = "", parent_id: str = "") -> str:
-    """Create a new knowledge base."""
+    """Create a new knowledge base. parent_id is an optional tree folder UUID for nesting (omit for root). Returns knowledgeBase with id (UUID) and path — both work as kb_id in other tools."""
     return _j(await _client().kb_create(name, description, parent_id))
 
 
 @mcp.tool()
 async def kb_update(kb_id: str, name: str = "", description: str = "") -> str:
-    """Update a knowledge base's name and/or description."""
+    """Update a knowledge base's name and/or description. kb_id accepts path or UUID."""
     return _j(await _client().kb_update(kb_id, name, description))
 
 
 @mcp.tool()
 async def kb_delete(kb_id: str) -> str:
-    """Delete an entire knowledge base and all its contents (irreversible)."""
+    """Delete an entire knowledge base and all its contents (irreversible). kb_id accepts either the path string or the UUID returned by kb_create."""
     return _j(await _client().kb_delete(kb_id))
 
 
 @mcp.tool()
 async def kb_search(query: str, top_k: int = 10) -> str:
-    """Search across ALL knowledge bases by keyword. Returns ranked hits."""
+    """Search across ALL knowledge bases by keyword (full-text search). Returns ranked hits with scores and source fields."""
     return _j(await _client().kb_search(query, top_k))
 
 
 @mcp.tool()
 async def kb_get_documents(kb_id: str) -> str:
-    """List all documents inside a knowledge base."""
+    """List all documents inside a knowledge base. kb_id accepts path or UUID."""
     return _j(await _client().kb_get_documents(kb_id))
 
 
@@ -127,7 +127,7 @@ async def kb_get_documents(kb_id: str) -> str:
 
 @mcp.tool()
 async def kb_doc_read(path: str, max_chars: int = 20000, offset: int = 0, limit: int = 200) -> str:
-    """Read the content of a document (Markdown body, paginated)."""
+    """Read the content of a document (Markdown body, paginated). path is the document relative path (e.g. "test/readme.md"). max_chars limits response size."""
     return _j(await _client().kb_doc_read(path, max_chars, offset, limit))
 
 
@@ -221,7 +221,7 @@ async def fs_delete_node(node_id: str) -> str:
 
 @mcp.tool()
 async def fs_upload_file(file_path: str, parent_id: str = "", description: str = "") -> str:
-    """Upload a local file into the file system tree."""
+    """Upload a local file into the file system tree. file_path is an absolute local disk path. parent_id is a tree folder UUID (empty = root)."""
     return _j(await _client().fs_upload_file(file_path, parent_id, description))
 
 
@@ -231,7 +231,7 @@ async def fs_upload_file(file_path: str, parent_id: str = "", description: str =
 
 @mcp.tool()
 async def preview_file(node_id: str = "", path: str = "") -> str:
-    """Preview or download a file by node id or relative path."""
+    """Preview or download a file by node id (preferred) or relative path (e.g. "test/readme.md"). Either node_id or path must be provided."""
     return _j(await _client().preview_file(node_id, path))
 
 
@@ -323,6 +323,10 @@ async def parse_pdf(file_path: str, use_ocr: bool = True, parent_id: str = "", d
 
 
 @mcp.tool()
+
+
+
+@mcp.tool()
 async def parse_pdf_batch(file_paths: list, use_ocr: bool = True) -> str:
     """Batch-parse multiple PDF files.
 
@@ -383,6 +387,10 @@ async def parse_pdf_to_kb(file_path: str, kb_id: str, use_ocr: bool = True, desc
 
     task_id = task_registry.submit(_work(), "parse_pdf_to_kb", meta)
     return _running_payload(task_id, "parse_pdf_to_kb", {"file_path": file_path, "kb_id": kb_id, "description": description if description else None})
+
+
+@mcp.tool()
+
 
 
 @mcp.tool()
