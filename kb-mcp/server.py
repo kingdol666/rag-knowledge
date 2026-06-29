@@ -323,22 +323,6 @@ async def parse_pdf(file_path: str, use_ocr: bool = True, parent_id: str = "", d
 
 
 @mcp.tool()
-
-
-
-@mcp.tool()
-async def parse_pdf_batch(file_paths: list, use_ocr: bool = True) -> str:
-    """Batch-parse multiple PDF files.
-
-    NON-BLOCKING: returns immediately with a task_id; files parse
-    sequentially in the background. If you provide ``descriptions``, each
-    will be forwarded to the parse endpoint (one per file, in order).
-    Poll with parse_task_status(task_id).
-    When done the result is {total, successful, results:[...]}.
-    """
-    missing = [fp for fp in file_paths if not _exists(fp)]
-    if missing:
-        return _j({"success": False, "error": "file(s) not found", "missing": missing})
 async def parse_pdf_batch(file_paths: list, use_ocr: bool = True, descriptions: list = None) -> str:
     """Batch-parse multiple PDF files.
 
@@ -390,21 +374,6 @@ async def parse_pdf_to_kb(file_path: str, kb_id: str, use_ocr: bool = True, desc
 
 
 @mcp.tool()
-
-
-
-@mcp.tool()
-async def parse_pdf_to_kb_batch(file_paths: list, kb_id: str, use_ocr: bool = True) -> str:
-    """Batch: parse many PDFs and save each into the same knowledge base.
-
-    NON-BLOCKING: all files parse (sequentially) in ONE background task,
-    so you get back a single task_id instead of one per file. You may
-    provide ``descriptions`` (one per file, in order) to label each
-    parsed document in the KB. Poll with
-    parse_task_status(task_id). When done the result is
-    {total, successful, saved_to_kb, results:[...]} where each entry in
-    results carries the per-file outcome (incl. which file failed).
-    """
 async def parse_pdf_to_kb_batch(file_paths: list, kb_id: str, use_ocr: bool = True, descriptions: list = None) -> str:
     """Batch: parse many PDFs and save each into the same knowledge base.
 
