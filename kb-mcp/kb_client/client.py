@@ -345,6 +345,34 @@ class KbClient:
         data = {"use_ocr": str(use_ocr).lower(), "parent_id": kb_id}
         return await self._post_file("/api/parse/file-vt", file_path, data, timeout=PARSE_TIMEOUT)
 
+    async def parse_pdf_to_kb_batch(self, file_paths, kb_id, use_ocr=True):
+        """Parse multiple PDFs and save each into the same knowledge base.
+
+        Files are parsed sequentially; each successful one is saved into
+        *kb_id* via the parse pipeline (parent_id = kb_id). Returns an
+        aggregate {total, successful, results} so callers can see which
+        files failed without losing the ones that succeeded.
+        """
+        results = []
+        for fp in file_paths:
+            p = Path(fp)
+            if not p.exists():
+                results.append({"success": False, "file": fp, "error": "file not found"})
+                continue
+            try:
+                r = await self._post_file(
+                    "/api/parse/file-vt", fp,
+                    {"use_ocr": str(use_ocr).lower(), "parent_id": kb_id},
+                    timeout=PARSE_TIMEOUT,
+                )
+                if isinstance(r, dict):
+                    r = {**r, "file": fp}
+                results.append(r)
+            except Exception as e:
+                results.append({"success": False, "file": fp, "error": f"{type(e).__name__}: {e}"})
+        successful = sum(1 for r in results if isinstance(r, dict) and r.get("success"))
+        return {"total": len(results), "successful": successful, "saved_to_kb": kb_id, "results": results}
+
     # ================================================================
     # BACKEND STATUS
     # ================================================================

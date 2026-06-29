@@ -1,12 +1,17 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 kb-mcp MCP Server
 =================
 Thin MCP tool layer over kb_client.KbClient.
 
-This server defines 35 MCP tools. Each tool is a one-liner that
+This server defines MCP tools. Each tool is a one-liner that
 delegates to the matching KbClient method. All HTTP logic lives in
 kb_client/client.py — this file contains zero HTTP code.
+
+Long-running parse jobs (parse_pdf / parse_pdf_batch / parse_pdf_to_kb)
+are NON-BLOCKING: they hand the slow work to an in-process background
+task (task_registry) and return a task_id immediately. Poll results with
+parse_task_status(task_id) / parse_tasks_list().
 
 Run:
   python server.py            # stdio mode (for Agent harness)
@@ -21,6 +26,8 @@ import json
 from mcp.server.fastmcp import FastMCP
 
 from kb_client import KbClient
+
+import task_registry
 
 mcp = FastMCP("kb-mcp")
 
@@ -43,6 +50,25 @@ def _client() -> KbClient:
 def _j(data) -> str:
     """Serialize to compact JSON string."""
     return json.dumps(data, ensure_ascii=False)
+
+
+def _exists(file_path: str) -> bool:
+    from pathlib import Path
+    return bool(file_path) and Path(file_path).exists()
+
+
+def _running_payload(task_id: str, kind: str, detail: dict | None = None) -> str:
+    """Immediate 'parse is running' reply returned for non-blocking parse tools."""
+    payload = {
+        "success": True,
+        "status": "running",
+        "message": "parsing task is running; call parse_task_status to get the result",
+        "task_id": task_id,
+        "kind": kind,
+    }
+    if detail:
+        payload.update(detail)
+    return _j(payload)
 
 
 # ============================================================
@@ -256,46 +282,146 @@ async def prompts_list_tags() -> str:
 
 
 # ============================================================
-# PDF PARSING
+# PDF PARSING  (NON-BLOCKING)
+# The parse HTTP calls can take minutes (MinerU OCR). To avoid blocking
+# the MCP tool response — and freezing the agent — each parse tool hands
+# the work to an asyncio background task (task_registry) and returns a
+# task_id immediately. Results are retrieved via parse_task_status().
 # ============================================================
 
 @mcp.tool()
 async def parse_pdf(file_path: str, use_ocr: bool = True, parent_id: str = "") -> str:
-    """Parse a PDF into Markdown. If parent_id is given, auto-saves to KB."""
-    result = await _client().parse_pdf(file_path, use_ocr, parent_id)
-    if isinstance(result, dict) and result.get("success"):
-        return _j({
-            "success": True,
-            "source_filename": result.get("source_filename"),
-            "markdown_path": result.get("markdown_path"),
-            "page_count": result.get("page_count"),
-            "image_count": result.get("image_count"),
-            "markdown_chars": len(result.get("markdown", "") or ""),
-        })
-    return _j(result)
+    """Parse a PDF into Markdown. If parent_id is given, auto-saves to KB.
+
+    NON-BLOCKING: returns immediately with a task_id once parsing has
+    started. The actual parse (minutes for OCR) runs in the background.
+    Poll the result with parse_task_status(task_id).
+
+    Returns {success, status:'running', task_id, ...} right away.
+    """
+    if not _exists(file_path):
+        return _j({"success": False, "error": f"file not found: {file_path}"})
+    client = _client()
+    meta = {"file_path": file_path, "use_ocr": use_ocr, "parent_id": parent_id}
+
+    async def _work():
+        result = await client.parse_pdf(file_path, use_ocr, parent_id)
+        if isinstance(result, dict) and result.get("success"):
+            return {
+                "success": True,
+                "source_filename": result.get("source_filename"),
+                "markdown_path": result.get("markdown_path"),
+                "page_count": result.get("page_count"),
+                "image_count": result.get("image_count"),
+                "markdown_chars": len(result.get("markdown", "") or ""),
+            }
+        return result
+
+    task_id = task_registry.submit(_work(), "parse_pdf", meta)
+    return _running_payload(task_id, "parse_pdf", {"file_path": file_path})
 
 
 @mcp.tool()
 async def parse_pdf_batch(file_paths: list, use_ocr: bool = True) -> str:
-    """Batch-parse multiple PDF files."""
-    return _j(await _client().parse_pdf_batch(file_paths, use_ocr))
+    """Batch-parse multiple PDF files.
+
+    NON-BLOCKING: returns immediately with a task_id; files parse
+    sequentially in the background. Poll with parse_task_status(task_id).
+    When done the result is {total, successful, results:[...]}.
+    """
+    missing = [fp for fp in file_paths if not _exists(fp)]
+    if missing:
+        return _j({"success": False, "error": "file(s) not found", "missing": missing})
+    client = _client()
+    meta = {"file_paths": list(file_paths), "use_ocr": use_ocr}
+    task_id = task_registry.submit(
+        client.parse_pdf_batch(file_paths, use_ocr), "parse_pdf_batch", meta
+    )
+    return _running_payload(task_id, "parse_pdf_batch", {"file_count": len(file_paths)})
 
 
 @mcp.tool()
 async def parse_pdf_to_kb(file_path: str, kb_id: str, use_ocr: bool = True) -> str:
-    """Full pipeline: parse a PDF and save into a knowledge base."""
-    result = await _client().parse_pdf_to_kb(file_path, kb_id, use_ocr)
-    if isinstance(result, dict) and result.get("success"):
-        return _j({
-            "success": True,
-            "source_filename": result.get("source_filename"),
-            "markdown_path": result.get("markdown_path"),
-            "page_count": result.get("page_count"),
-            "image_count": result.get("image_count"),
-            "markdown_chars": len(result.get("markdown", "") or ""),
-            "saved_to_kb": kb_id,
-        })
-    return _j(result)
+    """Full pipeline: parse a PDF and save into a knowledge base.
+
+    NON-BLOCKING: parse the PDF, then save the Markdown into the given
+    knowledge base. Returns immediately with a task_id once the pipeline
+    has started; poll the result with parse_task_status(task_id).
+
+    Returns {success, status:'running', task_id, ...} right away.
+    """
+    if not _exists(file_path):
+        return _j({"success": False, "error": f"file not found: {file_path}"})
+    client = _client()
+    meta = {"file_path": file_path, "kb_id": kb_id, "use_ocr": use_ocr}
+
+    async def _work():
+        result = await client.parse_pdf_to_kb(file_path, kb_id, use_ocr)
+        if isinstance(result, dict) and result.get("success"):
+            return {
+                "success": True,
+                "source_filename": result.get("source_filename"),
+                "markdown_path": result.get("markdown_path"),
+                "page_count": result.get("page_count"),
+                "image_count": result.get("image_count"),
+                "markdown_chars": len(result.get("markdown", "") or ""),
+                "saved_to_kb": kb_id,
+            }
+        return result
+
+    task_id = task_registry.submit(_work(), "parse_pdf_to_kb", meta)
+    return _running_payload(task_id, "parse_pdf_to_kb", {"file_path": file_path, "kb_id": kb_id})
+
+
+@mcp.tool()
+async def parse_pdf_to_kb_batch(file_paths: list, kb_id: str, use_ocr: bool = True) -> str:
+    """Batch: parse many PDFs and save each into the same knowledge base.
+
+    NON-BLOCKING: all files parse (sequentially) in ONE background task,
+    so you get back a single task_id instead of one per file. Poll with
+    parse_task_status(task_id). When done the result is
+    {total, successful, saved_to_kb, results:[...]} where each entry in
+    results carries the per-file outcome (incl. which file failed).
+    """
+    missing = [fp for fp in file_paths if not _exists(fp)]
+    if missing:
+        return _j({"success": False, "error": "file(s) not found", "missing": missing})
+    client = _client()
+    meta = {"file_paths": list(file_paths), "kb_id": kb_id, "use_ocr": use_ocr}
+    task_id = task_registry.submit(
+        client.parse_pdf_to_kb_batch(file_paths, kb_id, use_ocr),
+        "parse_pdf_to_kb_batch",
+        meta,
+    )
+    return _running_payload(
+        task_id, "parse_pdf_to_kb_batch", {"file_count": len(file_paths), "kb_id": kb_id}
+    )
+
+
+@mcp.tool()
+async def parse_task_status(task_id: str) -> str:
+    """Check the status of a non-blocking parse task.
+
+    status is 'running', 'done', or 'error'. When done, result holds the
+    parse summary (markdown_path, page_count, ...). When error, error
+    holds the message. Use this to poll tasks from parse_pdf* tools.
+    """
+    rec = task_registry.get(task_id)
+    if rec is None:
+        return _j({"success": False, "error": f"unknown task_id: {task_id}"})
+    view = task_registry.public_view(rec)
+    view["success"] = True
+    return _j(view)
+
+
+@mcp.tool()
+async def parse_tasks_list(status: str = "") -> str:
+    """List background parse tasks, optionally filtered by status.
+
+    status filters by 'running', 'done', or 'error'; omit for all.
+    Handy to recall task ids submitted earlier this session.
+    """
+    return _j({"success": True, "tasks": task_registry.list_views(status)})
 
 
 # ============================================================
