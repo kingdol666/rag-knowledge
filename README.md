@@ -169,7 +169,7 @@ curl http://127.0.0.1:8764/health             # MinerU
 ### 解析 API
 
 前端通过 `/api/parse/*` 代理到后端 v1 接口，解析完成后自动：
-1. 回填 Markdown 正文（从后端返回的 `markdown_path` 读取）
+1. 回填 Markdown 正文（后端 API 直接返回内容，无需读取磁盘文件）
 2. 写入指定知识库的 `.tree-fs.json` + `.knowledge-base.yml`
 3. 磁盘保存 `{知识库}/{文件名}.md`
 
