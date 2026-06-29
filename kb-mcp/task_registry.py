@@ -28,6 +28,8 @@ from datetime import datetime, timezone
 
 # Cap on how many *finished* records we retain, to bound memory use.
 MAX_COMPLETED = 50
+MAX_RUNNING = 20    # cap for running tasks; oldest excess are auto-cancelled
+RUNNING_TTL = 7200  # seconds; tasks running longer are considered stale
 
 # task_id -> record dict (one entry per submitted job, running or done)
 _records: dict[str, dict] = {}
@@ -42,6 +44,29 @@ def _now_iso() -> str:
 def _new_id() -> str:
     return uuid.uuid4().hex[:12]
 
+
+
+def _reap_stale() -> None:
+    """Cancel running tasks that exceed the cap or have timed out."""
+    import time
+    now = time.monotonic()
+    for tid, r in list(_records.items()):
+        if r["status"] != "running": continue
+        if now - r["started_monotonic"] > RUNNING_TTL:
+            handle = _handles.pop(tid, None)
+            if handle and not handle.done(): handle.cancel()
+            r["status"] = "error"
+            r["error"] = f"task timed out after {RUNNING_TTL}s"
+            r["finished_at"] = _now_iso()
+    running = [(tid, r) for tid, r in _records.items() if r["status"] == "running"]
+    if len(running) > MAX_RUNNING:
+        running.sort(key=lambda x: x[1]["started_monotonic"])
+        for tid, r in running[:len(running) - MAX_RUNNING]:
+            handle = _handles.pop(tid, None)
+            if handle and not handle.done(): handle.cancel()
+            r["status"] = "error"
+            r["error"] = "cancelled: too many concurrent tasks"
+            r["finished_at"] = _now_iso()
 
 def submit(coro, kind: str, meta: dict | None = None) -> str:
     """Schedule *coro* on the running loop and return its task id instantly.
@@ -76,6 +101,7 @@ def submit(coro, kind: str, meta: dict | None = None) -> str:
             _reap_completed()
 
     _handles[task_id] = asyncio.create_task(_runner())
+    _reap_stale()
     return task_id
 
 
