@@ -317,11 +317,13 @@ class KbClient:
     # PDF PARSING
     # ================================================================
 
-    async def parse_pdf(self, file_path, use_ocr=True, parent_id=""):
+    async def parse_pdf(self, file_path, use_ocr=True, parent_id="", description=""):
         """Parse a PDF into Markdown. If parent_id is given, saves to KB."""
         data = {"use_ocr": str(use_ocr).lower()}
         if parent_id:
             data["parent_id"] = parent_id
+        if description:
+            data["description"] = description
         return await self._post_file("/api/parse/file-vt", file_path, data, timeout=PARSE_TIMEOUT)
 
     async def parse_pdf_batch(self, file_paths, use_ocr=True):
@@ -340,12 +342,14 @@ class KbClient:
         successful = sum(1 for r in results if isinstance(r, dict) and r.get("success"))
         return {"total": len(results), "successful": successful, "results": results}
 
-    async def parse_pdf_to_kb(self, file_path, kb_id, use_ocr=True):
+    async def parse_pdf_to_kb(self, file_path, kb_id, use_ocr=True, description=""):
         """Full pipeline: parse a PDF and save into a knowledge base."""
         data = {"use_ocr": str(use_ocr).lower(), "parent_id": kb_id}
+        if description:
+            data["description"] = description
         return await self._post_file("/api/parse/file-vt", file_path, data, timeout=PARSE_TIMEOUT)
 
-    async def parse_pdf_to_kb_batch(self, file_paths, kb_id, use_ocr=True):
+    async def parse_pdf_to_kb_batch(self, file_paths, kb_id, use_ocr=True, descriptions=None):
         """Parse multiple PDFs and save each into the same knowledge base.
 
         Files are parsed sequentially; each successful one is saved into
@@ -354,15 +358,16 @@ class KbClient:
         files failed without losing the ones that succeeded.
         """
         results = []
-        for fp in file_paths:
+        for i, fp in enumerate(file_paths):
             p = Path(fp)
             if not p.exists():
                 results.append({"success": False, "file": fp, "error": "file not found"})
                 continue
+            desc = descriptions[i] if descriptions and i < len(descriptions) else ""
             try:
                 r = await self._post_file(
                     "/api/parse/file-vt", fp,
-                    {"use_ocr": str(use_ocr).lower(), "parent_id": kb_id},
+                    {"use_ocr": str(use_ocr).lower(), "parent_id": kb_id, "description": desc},
                     timeout=PARSE_TIMEOUT,
                 )
                 if isinstance(r, dict):

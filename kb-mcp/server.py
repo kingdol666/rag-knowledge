@@ -290,22 +290,23 @@ async def prompts_list_tags() -> str:
 # ============================================================
 
 @mcp.tool()
-async def parse_pdf(file_path: str, use_ocr: bool = True, parent_id: str = "") -> str:
+async def parse_pdf(file_path: str, use_ocr: bool = True, parent_id: str = "", description: str = "") -> str:
     """Parse a PDF into Markdown. If parent_id is given, auto-saves to KB.
 
     NON-BLOCKING: returns immediately with a task_id once parsing has
-    started. The actual parse (minutes for OCR) runs in the background.
+    started. The actual parse (minutes for OCR) runs in the background. You
+    can also provide a ``description`` that will be saved into the KB along
+    with the parsed document (and will be searchable / visible in the UI).
     Poll the result with parse_task_status(task_id).
 
-    Returns {success, status:'running', task_id, ...} right away.
-    """
+    Returns {success, status:'running', task_id, ...} right away."""
     if not _exists(file_path):
         return _j({"success": False, "error": f"file not found: {file_path}"})
     client = _client()
-    meta = {"file_path": file_path, "use_ocr": use_ocr, "parent_id": parent_id}
+    meta = {"file_path": file_path, "use_ocr": use_ocr, "parent_id": parent_id, "description": description}
 
     async def _work():
-        result = await client.parse_pdf(file_path, use_ocr, parent_id)
+        result = await client.parse_pdf(file_path, use_ocr, parent_id, description)
         if isinstance(result, dict) and result.get("success"):
             return {
                 "success": True,
@@ -318,7 +319,7 @@ async def parse_pdf(file_path: str, use_ocr: bool = True, parent_id: str = "") -
         return result
 
     task_id = task_registry.submit(_work(), "parse_pdf", meta)
-    return _running_payload(task_id, "parse_pdf", {"file_path": file_path})
+    return _running_payload(task_id, "parse_pdf", {"file_path": file_path, "description": description if description else None})
 
 
 @mcp.tool()
@@ -341,22 +342,23 @@ async def parse_pdf_batch(file_paths: list, use_ocr: bool = True) -> str:
 
 
 @mcp.tool()
-async def parse_pdf_to_kb(file_path: str, kb_id: str, use_ocr: bool = True) -> str:
+async def parse_pdf_to_kb(file_path: str, kb_id: str, use_ocr: bool = True, description: str = "") -> str:
     """Full pipeline: parse a PDF and save into a knowledge base.
 
     NON-BLOCKING: parse the PDF, then save the Markdown into the given
-    knowledge base. Returns immediately with a task_id once the pipeline
-    has started; poll the result with parse_task_status(task_id).
+    knowledge base. You may provide a ``description`` to help identify the
+    parsed document in the KB (searchable / visible in the UI).
+    Returns immediately with a task_id once the pipeline has started;
+    poll the result with parse_task_status(task_id).
 
-    Returns {success, status:'running', task_id, ...} right away.
-    """
+    Returns {success, status:'running', task_id, ...} right away."""
     if not _exists(file_path):
         return _j({"success": False, "error": f"file not found: {file_path}"})
     client = _client()
-    meta = {"file_path": file_path, "kb_id": kb_id, "use_ocr": use_ocr}
+    meta = {"file_path": file_path, "kb_id": kb_id, "use_ocr": use_ocr, "description": description}
 
     async def _work():
-        result = await client.parse_pdf_to_kb(file_path, kb_id, use_ocr)
+        result = await client.parse_pdf_to_kb(file_path, kb_id, use_ocr, description)
         if isinstance(result, dict) and result.get("success"):
             return {
                 "success": True,
@@ -370,7 +372,7 @@ async def parse_pdf_to_kb(file_path: str, kb_id: str, use_ocr: bool = True) -> s
         return result
 
     task_id = task_registry.submit(_work(), "parse_pdf_to_kb", meta)
-    return _running_payload(task_id, "parse_pdf_to_kb", {"file_path": file_path, "kb_id": kb_id})
+    return _running_payload(task_id, "parse_pdf_to_kb", {"file_path": file_path, "kb_id": kb_id, "description": description if description else None})
 
 
 @mcp.tool()
