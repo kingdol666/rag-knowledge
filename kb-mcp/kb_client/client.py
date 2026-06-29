@@ -326,16 +326,24 @@ class KbClient:
             data["description"] = description
         return await self._post_file("/api/parse/file-vt", file_path, data, timeout=PARSE_TIMEOUT)
 
-    async def parse_pdf_batch(self, file_paths, use_ocr=True):
-        """Batch-parse multiple PDF files."""
+    async def parse_pdf_batch(self, file_paths, use_ocr=True, descriptions=None):
+        """Batch-parse multiple PDF files.
+
+        If ``descriptions`` is given (one per file, in order), the value is
+        forwarded to the parse endpoint for each file (for future KB save).
+        """
         results = []
-        for fp in file_paths:
+        for i, fp in enumerate(file_paths):
             p = Path(fp)
             if not p.exists():
                 results.append({"success": False, "error": f"file not found: {fp}"})
                 continue
+            desc = descriptions[i] if descriptions and i < len(descriptions) else ""
             try:
-                result = await self._post_file("/api/parse/batch-file-vt", fp, {"use_ocr": str(use_ocr).lower()}, timeout=PARSE_TIMEOUT)
+                data = {"use_ocr": str(use_ocr).lower()}
+                if desc:
+                    data["description"] = desc
+                result = await self._post_file("/api/parse/batch-file-vt", fp, data, timeout=PARSE_TIMEOUT)
                 results.append(result)
             except Exception as e:
                 results.append({"success": False, "error": f"{type(e).__name__}: {e}"})

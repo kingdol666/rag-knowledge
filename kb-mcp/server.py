@@ -327,16 +327,26 @@ async def parse_pdf_batch(file_paths: list, use_ocr: bool = True) -> str:
     """Batch-parse multiple PDF files.
 
     NON-BLOCKING: returns immediately with a task_id; files parse
-    sequentially in the background. Poll with parse_task_status(task_id).
+    sequentially in the background. If you provide ``descriptions``, each
+    will be forwarded to the parse endpoint (one per file, in order).
+    Poll with parse_task_status(task_id).
     When done the result is {total, successful, results:[...]}.
     """
     missing = [fp for fp in file_paths if not _exists(fp)]
     if missing:
         return _j({"success": False, "error": "file(s) not found", "missing": missing})
+async def parse_pdf_batch(file_paths: list, use_ocr: bool = True, descriptions: list = None) -> str:
+    """Batch-parse multiple PDF files.
+
+    NON-BLOCKING: returns immediately with a task_id; files parse
+    sequentially in the background. If you provide ``descriptions``, each
+    will be forwarded to the parse endpoint (one per file, in order).
+    Poll with parse_task_status(task_id).
+    When done the result is {total, successful, results:[...]}."""
     client = _client()
-    meta = {"file_paths": list(file_paths), "use_ocr": use_ocr}
+    meta = {"file_paths": list(file_paths), "use_ocr": use_ocr, "descriptions": descriptions}
     task_id = task_registry.submit(
-        client.parse_pdf_batch(file_paths, use_ocr), "parse_pdf_batch", meta
+        client.parse_pdf_batch(file_paths, use_ocr, descriptions), "parse_pdf_batch", meta
     )
     return _running_payload(task_id, "parse_pdf_batch", {"file_count": len(file_paths)})
 
@@ -380,23 +390,34 @@ async def parse_pdf_to_kb_batch(file_paths: list, kb_id: str, use_ocr: bool = Tr
     """Batch: parse many PDFs and save each into the same knowledge base.
 
     NON-BLOCKING: all files parse (sequentially) in ONE background task,
-    so you get back a single task_id instead of one per file. Poll with
+    so you get back a single task_id instead of one per file. You may
+    provide ``descriptions`` (one per file, in order) to label each
+    parsed document in the KB. Poll with
     parse_task_status(task_id). When done the result is
     {total, successful, saved_to_kb, results:[...]} where each entry in
     results carries the per-file outcome (incl. which file failed).
     """
+async def parse_pdf_to_kb_batch(file_paths: list, kb_id: str, use_ocr: bool = True, descriptions: list = None) -> str:
+    """Batch: parse many PDFs and save each into the same knowledge base.
+
+    NON-BLOCKING: all files parse (sequentially) in ONE background task,
+    so you get back a single task_id instead of one per file. You may
+    provide ``descriptions`` (one per file, in order) to label each
+    parsed document in the KB. Poll with parse_task_status(task_id).
+    When done the result is {total, successful, saved_to_kb, results:[...]}
+    where each entry in results carries the per-file outcome."""
     missing = [fp for fp in file_paths if not _exists(fp)]
     if missing:
         return _j({"success": False, "error": "file(s) not found", "missing": missing})
     client = _client()
-    meta = {"file_paths": list(file_paths), "kb_id": kb_id, "use_ocr": use_ocr}
+    meta = {"file_paths": list(file_paths), "kb_id": kb_id, "use_ocr": use_ocr, "descriptions": descriptions}
     task_id = task_registry.submit(
-        client.parse_pdf_to_kb_batch(file_paths, kb_id, use_ocr),
+        client.parse_pdf_to_kb_batch(file_paths, kb_id, use_ocr, descriptions),
         "parse_pdf_to_kb_batch",
         meta,
     )
     return _running_payload(
-        task_id, "parse_pdf_to_kb_batch", {"file_count": len(file_paths), "kb_id": kb_id}
+        task_id, "parse_pdf_to_kb_batch", {"file_count": len(file_paths), "kb_id": kb_id, "descriptions": descriptions}
     )
 
 
