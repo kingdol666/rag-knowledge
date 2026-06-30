@@ -187,15 +187,18 @@ async def fs_get_tree(include_files: bool = True, max_depth: int = 0) -> str:
     def _filter(nodes, depth=1):
         out = []
         for n in nodes:
-            # Filter root-level file nodes when include_files is False
-            if not include_files and n.get("type") == "file":
+            node_type = n.get("type", "")
+            # When include_files is False, skip ALL file nodes at every level
+            if not include_files and node_type == "file":
                 continue
             copy = {k: v for k, v in n.items() if k != "children"}
             children = n.get("children", [])
             if not include_files:
                 children = [c for c in children if c.get("type") == "folder"]
-            if len(children) > 0 and (max_depth <= 0 or depth < max_depth):
+            if len(children) > 0 and (0 == max_depth or depth < max_depth):
                 copy["children"] = _filter(children, depth + 1)
+            elif len(children) == 0:
+                copy["children"] = []
             out.append(copy)
         return out
 
@@ -291,7 +294,6 @@ async def parse_pdf(file_path: str, use_ocr: bool = True, parent_id: str = "", d
                 "success": True,
                 "source_filename": result.get("source_filename"),
                 "markdown_path": result.get("markdown_path"),
-                "page_count": result.get("page_count"),
                 "image_count": result.get("image_count"),
                 "markdown_chars": len(result.get("markdown", "") or ""),
             }
@@ -341,7 +343,6 @@ async def parse_pdf_to_kb(file_path: str, kb_id: str, use_ocr: bool = True, desc
                 "success": True,
                 "source_filename": result.get("source_filename"),
                 "markdown_path": result.get("markdown_path"),
-                "page_count": result.get("page_count"),
                 "image_count": result.get("image_count"),
                 "markdown_chars": len(result.get("markdown", "") or ""),
                 "saved_to_kb": kb_id,
@@ -382,7 +383,7 @@ async def parse_task_status(task_id: str) -> str:
     """Check the status of a non-blocking parse task.
 
     status is 'running', 'done', or 'error'. When done, result holds the
-    parse summary (markdown_path, page_count, ...). When error, error
+    parse summary (markdown_path, image_count, ...). When error, error
     holds the message. Use this to poll tasks from parse_pdf* tools.
     """
     rec = task_registry.get(task_id)

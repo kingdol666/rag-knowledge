@@ -147,7 +147,6 @@ documents:
     file_size: 12345
     metadata:
       sourcePdf: doc.pdf
-      pageCount: 10
       imageCount: 5
       parsedAt: ...
 `
@@ -165,7 +164,6 @@ documents:
     category: category-name (Phase 2)
     metadata:
       sourcePdf: doc.pdf
-      pageCount: 10
       imageCount: 5
       parsedAt: ...
       version_id: v1 (Phase 2)
