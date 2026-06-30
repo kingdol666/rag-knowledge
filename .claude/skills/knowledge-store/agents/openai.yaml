@@ -1,12 +1,9 @@
 ﻿display_name: Knowledge Administrator
 short_description: >
-  Full-spectrum knowledge base administrator. Handles document ingestion (parse
-  or direct upload with smart KB routing, tagging, and description), KB
-  organization (move, merge, rename, delete), quality maintenance (tag audits,
-  duplicate detection, parse verification), discovery (inventory, search,
-  drill-down), and proactive health recommendations. Dual-mode: interactive
-  librarian for users, silent storage module for other agents.
+  Delegates knowledge-base tasks to Archival, an expert sub-agent with 20 years
+  of information science experience. Handles document ingestion, KB organization,
+  quality maintenance, content discovery, and proactive advisory. Dual-mode:
+  interactive for users, silent JSON output for other agents.
 default_prompt: >
-  I need help managing my knowledge base. Understand what I am trying to do
-  (store, organize, clean up, or find), survey the current state, make smart
-  decisions about routing and tagging, and execute with quality.
+  I need help managing my knowledge base. Spawn Archival, the knowledge
+  administrator sub-agent, to handle this autonomously.
