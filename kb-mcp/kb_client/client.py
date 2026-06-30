@@ -161,9 +161,19 @@ class KbClient:
     # DOCUMENT MANAGEMENT (CRUD)
     # ================================================================
 
-    async def kb_doc_read(self, path, max_chars=20000, offset=0, limit=200):
-        """Read the content of a document (paginated)."""
-        return await self._get("/api/kb/document", path=path, max_chars=max_chars, offset=offset, limit=limit)
+    async def kb_doc_read(self, kb_id="", doc_path="", path="", max_chars=20000, offset=0, limit=200):
+        """Read the content of a document (paginated).
+
+        Accepts kb_id+doc_path or path alone. When kb_id and doc_path
+        are provided, doc_path is resolved relative to the KB."""
+        params = {"max_chars": max_chars, "offset": offset, "limit": limit}
+        if path:
+            params["path"] = path
+        else:
+            params["kb_id"] = kb_id
+            params["doc_path"] = doc_path
+        return await self._get("/api/kb/document", **params)
+
 
     async def kb_doc_create(self, kb_id, name, content, description=""):
         """Create a new Markdown document. Auto-dedup on name collision."""
@@ -383,8 +393,7 @@ class KbClient:
         """Get backend service health and MinerU OCR engine status."""
         results = {}
         for name, endpoint in [
-            ("backend_health", "/api/v1/health"),
-            ("mineru", "/api/v1/mineru/status"),
+            ("backend_health", "/api/v1/health")
         ]:
             try:
                 results[name] = await self._request("GET", endpoint, base=self.backend_url, timeout=5)

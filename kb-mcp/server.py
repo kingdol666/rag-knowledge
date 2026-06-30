@@ -125,9 +125,13 @@ async def kb_get_documents(kb_id: str) -> str:
 # ============================================================
 
 @mcp.tool()
-async def kb_doc_read(path: str, max_chars: int = 20000, offset: int = 0, limit: int = 200) -> str:
-    """Read the content of a document (Markdown body, paginated). path is the document relative path (e.g. "test/readme.md"). max_chars limits response size."""
-    return _j(await _client().kb_doc_read(path, max_chars, offset, limit))
+async def kb_doc_read(kb_id: str = "", doc_path: str = "", path: str = "", max_chars: int = 20000, offset: int = 0, limit: int = 200) -> str:
+    """Read the content of a document (Markdown body, paginated).
+
+    Accepts either kb_id+doc_path (bare filename or relative, e.g.
+    kb_id="uuid" doc_path="readme.md") or path (full relative path,
+    e.g. "test/readme.md"). max_chars limits response size."""
+    return _j(await _client().kb_doc_read(kb_id, doc_path, path, max_chars, offset, limit))
 
 
 @mcp.tool()
