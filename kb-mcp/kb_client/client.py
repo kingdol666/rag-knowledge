@@ -26,11 +26,10 @@ class KbClient:
     Call aclose() when done, or use as an async context manager.
     """
 
-    def __init__(self, web_url=DEFAULT_WEB_URL, backend_url=DEFAULT_BACKEND_URL, mineru_url="", timeout=HTTP_TIMEOUT):
+    def __init__(self, web_url=DEFAULT_WEB_URL, backend_url=DEFAULT_BACKEND_URL, timeout=HTTP_TIMEOUT):
         self.web_url = web_url.rstrip("/")
         self.backend_url = backend_url.rstrip("/")
         self.timeout = timeout
-        self.mineru_url = mineru_url or ""
         self._client = None
 
     # ---- lifecycle ----
@@ -112,7 +111,6 @@ class KbClient:
             status = {"backend": False, "mineru": False, "web": False, "errors": []}
             for name, url in [
                 ("backend", f"{self.backend_url}/api/v1/health"),
-                ("mineru", f"{self.mineru_url}/health"),
                 ("web", f"{self.web_url}/api/kb/catalog"),
             ]:
                 try:
@@ -120,7 +118,7 @@ class KbClient:
                     status[name] = r.status_code == 200
                 except Exception as e:
                     status["errors"].append(f"{name}: {e}")
-            status["all_ok"] = status["backend"] and status["mineru"] and status["web"]
+            status["all_ok"] = status["backend"] and status["web"]
             return status
 
     # ================================================================
@@ -395,7 +393,6 @@ class KbClient:
         results = {}
         for name, endpoint in [
             ("backend_health", "/api/v1/health"),
-            ("mineru", "/api/v1/mineru/status"),
             ("deepagent", "/api/deepagent/"),
         ]:
             try:

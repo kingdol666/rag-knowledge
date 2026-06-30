@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """
 kb-mcp MCP Server
 =================
@@ -6,7 +6,7 @@ Thin MCP tool layer over kb_client.KbClient.
 
 This server defines MCP tools. Each tool is a one-liner that
 delegates to the matching KbClient method. All HTTP logic lives in
-kb_client/client.py — this file contains zero HTTP code.
+kb_client/client.py �?this file contains zero HTTP code.
 
 Long-running parse jobs (parse_pdf / parse_pdf_batch / parse_pdf_to_kb)
 are NON-BLOCKING: they hand the slow work to an in-process background
@@ -41,8 +41,7 @@ def _client() -> KbClient:
         import config
         _kb = KbClient(
             web_url=config.WEB_URL,
-            backend_url=config.BACKEND_URL,
-            mineru_url=config.MINERU_URL,
+            backend_url=config.BACKEND_URL
         )
     return _kb
 
@@ -77,7 +76,7 @@ def _running_payload(task_id: str, kind: str, detail: dict | None = None) -> str
 
 @mcp.tool()
 async def health_check() -> str:
-    """Check health of backend, MinerU OCR engine, and web frontend."""
+    """Check health of backend and web frontend."""
     return _j(await _client().health_check())
 
 
@@ -93,7 +92,7 @@ async def kb_list() -> str:
 
 @mcp.tool()
 async def kb_create(name: str, description: str = "", parent_id: str = "") -> str:
-    """Create a new knowledge base. parent_id is an optional tree folder UUID for nesting (omit for root). Returns knowledgeBase with id (UUID) and path — both work as kb_id in other tools."""
+    """Create a new knowledge base. parent_id is an optional tree folder UUID for nesting (omit for root). Returns knowledgeBase with id (UUID) and path �?both work as kb_id in other tools."""
     return _j(await _client().kb_create(name, description, parent_id))
 
 
@@ -172,9 +171,28 @@ async def kb_doc_move(doc_path: str, target_kb_id: str) -> str:
 # ============================================================
 
 @mcp.tool()
-async def fs_get_tree() -> str:
-    """Get the full file system tree."""
-    return _j(await _client().fs_get_tree())
+async def fs_get_tree(include_files: bool = True, max_depth: int = 0) -> str:
+    """Get the full file system tree of knowledge bases and their contents.
+
+    Returns the complete tree-schema starting from root folders, with
+    recursive nesting. Set include_files=False to see only folder structure.
+    Set max_depth>0 to limit nesting depth (1=root KBs only, 2=KB+first
+    level children, etc.). 0 means unlimited."""
+    tree = await _client().fs_get_tree()
+
+    def _filter(nodes, depth=1):
+        out = []
+        for n in nodes:
+            copy = {k: v for k, v in n.items() if k != "children"}
+            children = n.get("children", [])
+            if not include_files:
+                children = [c for c in children if c.get("type") == "folder"]
+            if len(children) > 0 and (max_depth <= 0 or depth < max_depth):
+                copy["children"] = _filter(children, depth + 1)
+            out.append(copy)
+        return out
+
+    return _j(_filter(tree))
 
 
 @mcp.tool()
@@ -284,7 +302,7 @@ async def prompts_list_tags() -> str:
 # ============================================================
 # PDF PARSING  (NON-BLOCKING)
 # The parse HTTP calls can take minutes (MinerU OCR). To avoid blocking
-# the MCP tool response — and freezing the agent — each parse tool hands
+# the MCP tool response �?and freezing the agent �?each parse tool hands
 # the work to an asyncio background task (task_registry) and returns a
 # task_id immediately. Results are retrieved via parse_task_status().
 # ============================================================
