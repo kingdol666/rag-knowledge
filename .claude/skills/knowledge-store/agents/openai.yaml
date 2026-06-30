@@ -1,0 +1,9 @@
+﻿display_name: Knowledge Store
+short_description: >
+  Automatically classify, parse, tag, and store documents into the RAG
+  Knowledge Platform. Handles PDF, DOCX, XLSX via MinerU OCR, plus direct
+  upload of MD/TXT/CSV. Creates KBs, assigns tags, writes descriptions.
+default_prompt: >
+  Store these documents into the knowledge base. Survey existing KBs first,
+  match each document to the right KB (or create one), parse binary formats
+  through MinerU, tag with existing vocabulary, and write accurate descriptions.
