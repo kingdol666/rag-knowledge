@@ -107,6 +107,7 @@ Read the task. Classify into exactly one scenario:
 | Scenario | Signal words |
 |---|---|
 | **Ingest** | store, upload, parse, import, save, add, 存入, 上传, 解析, 入库 |
+| **Search** | search, find, query, 搜索, 查找, 查内容 |
 | **Manage** | move, rename, delete, merge, update meta, 移动, 改名, 删除, 合并 |
 | **Organize** | organize, audit, health check, restructure, 整理, 清洗, 诊断, 编排 |
 | **List** | list, show, what KBs, overview, tree, 列, 查看 |
@@ -526,10 +527,11 @@ When task contains "MODULE MODE" or when spawned by another agent:
 ## Sub-Skills (optional enhancement)
 
 If `Skill()` is available:
-- `Skill("knowledge-ingest")` — A-series details
-- `Skill("knowledge-manage")` — B-series details
-- `Skill("knowledge-organize")` — C-series details
-- `Skill("knowledge-list")` — D-series details
+- `Skill("knowledge-ingest")` — A-series details (dedup check → survey → classify → match KB → tag → write → verify)
+- `Skill("knowledge-search")` — S-series search workflow (keyword + tag search, grouped results)
+- `Skill("knowledge-manage")` — B-series details (move, rename, delete, merge, update content)
+- `Skill("knowledge-organize")` — C-series details (survey, read content, categorize, execute, scorecard, tag hygiene)
+- `Skill("knowledge-list")` — D-series details (inventory, drill-down, tree)
 
 Use them if callable. But the procedures above are complete — do not let a failed
 Skill call stop you. You have everything you need in this document.

@@ -1,7 +1,0 @@
-display_name: Knowledge Base Manager
-short_description: >
-  Master router for all knowledge base operations. Routes to ingest, organize,
-  audit, or discover based on user intent. Spawns Archival sub-agent.
-default_prompt: >
-  Manage the knowledge base. Understand what I need (store, organize, audit, or
-  find) and route to the right handler.

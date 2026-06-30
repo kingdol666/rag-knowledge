@@ -105,3 +105,30 @@ After every operation:
 Summarize concisely:
 "Moved 'filename.pdf' from [SourceKB] to [TargetKB]. [N] documents
 in source remaining. Tags preserved."
+
+## B6 — Update Document Content
+
+Invoked when the user says "update this document" or "change the content".
+
+### B6a — Read Current Content
+```
+kb_doc_read(kb_id, doc_path, max_chars=20000)
+```
+Present the current content to the user so they know what they're changing.
+
+### B6b — Execute Update
+```
+kb_doc_update_content(kb_id, doc_path, "<new content>")
+```
+**Bug**: `file_size` in `kb_get_documents` stays stale after update (Known Gotcha #3).
+Use `fs_get_children` for the real size if needed.
+
+### B6c — Verify
+```
+kb_doc_read(kb_id, doc_path, max_chars=2000)
+```
+Confirm the first ~2000 chars show the updated content.
+
+### B6d — Report
+"Updated '[name]' content. [N] characters written. Old description unchanged."
+

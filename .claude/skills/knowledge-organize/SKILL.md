@@ -105,33 +105,67 @@ After every move/delete:
 3. If KB deleted: confirm absent from `kb_list()`
 4. `fs_get_tree(include_files=True)` — confirm tree is clean
 
-## O6 — Report
+## O6 — Health Report with Scorecard
 
-Present a structured summary of everything done:
+Generate a structured summary with a **quantitative scorecard**:
 
 ```
-## Collection Restructure Complete
+## Collection Health Report
 
-### KBs Created: N
-- Name (domain, content types, language)
+### Scorecard
+  ├── Tag Coverage:    X/30  (tagged docs / total docs × 30)
+  ├── Description Quality: X/25  (good descriptions / total × 25)
+  ├── Uniqueness:      X/25  (unique docs / total × 25)
+  └── KB Structure:    X/20  (proper-named KBs / total × 20)
+  ───────────────────────
+  TOTAL: X/100
 
-### KBs Deleted: N
-- Name (reason)
+### Overview
+- Total KBs: N, Total Docs: N
+- Unique documents: N (duplicates: N)
+- Total Tags: N, Orphan tags: N
 
-### KBs Merged: N
-- Name → Name (N docs moved)
+### Actions Completed
+- KBs Deleted: N (list)
+- KBs Merged: N (list)
+- Documents Moved: N
+- Descriptions Updated: N
+- Tags Applied: N
+### Remaining Issues
+- Orphan tags (no tool to delete): list
+- Weak descriptions: list
+```
 
-### Documents Moved: N
-- (detail)
+## O7 — Tag Hygiene Audit
 
-### Descriptions Updated: N
-- (detail)
+Check the health of the tag vocabulary.
 
-### Tags Applied: N
-- (detail)
+### O7a — Survey
+```
+kb_tags_list()         → all tags
+```
 
-### Remaining Issues: N
-- (what couldn't be fixed)
+### O7b — Check Each Tag
+For each tag:
+```
+kb_doc_get_by_tag(tag)  → count of documents using this tag
+```
+
+Flag these issues:
+- **Orphan tags**: 0 documents use this tag (can't be deleted — MCP limitation)
+- **Near-duplicate tags**: pairs like "ML" / "machine-learning", "CNN" / "CNN-LSTM"
+- **Low-usage tags**: tags used on only 1 document — too specific?
+- **Generic tags**: "test", "doc", "misc", "important"
+
+### O7c — Report
+```
+Tag Health:
+  Total tags: N
+  Orphan tags: N (no documents) — cannot delete, no MCP tool
+  Low-usage tags (1 doc): N
+  Near-duplicate pairs: N
+  Suggestions:
+  - "tag-a" and "tag-b" should be merged (kb_doc_update_tags to replace)
 ```
 
 ---
@@ -141,3 +175,4 @@ Present a structured summary of everything done:
 2. Merges: move docs FIRST, delete SECOND. Deleting first loses data.
 3. Confirm destructive operations unless Module Mode.
 4. O5 (verify) catches mistakes. Do not skip.
+5. O7 (tag audit) cannot delete orphan tags — MCP limitation. Report and suggest manual cleanup.

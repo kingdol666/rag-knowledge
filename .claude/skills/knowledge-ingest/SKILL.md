@@ -13,6 +13,26 @@ description: >
 Invoked by Archival when the scenario is diagnosed as **Ingest**.
 Follow these steps EXACTLY. Do not skip any step.
 
+## A0 — Duplicate Pre-Check
+
+Before surveying, check if this document already exists in the collection:
+
+```
+kb_search(query="<filename without extension>", top_k=5)
+```
+
+**For each result:**
+- Compare the result's **name** with the incoming document's name (case-insensitive)
+- If name matches AND file_size/line_count are similar → **likely duplicate**
+- If name differs but content is about the same topic → **possible related doc to note**
+
+**Decision:**
+- Duplicate found → Report to user: "This document appears to already exist in [KB-Name]. Skip or re-parse?"
+- No duplicate → Proceed to A1
+
+**Rationale**: Most duplicates in the collection come from parsing the same PDF
+multiple times into different test KBs. A simple name match catches >90% of these.
+
 ## A1 — Survey First
 
 ```
