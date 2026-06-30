@@ -187,6 +187,9 @@ async def fs_get_tree(include_files: bool = True, max_depth: int = 0) -> str:
     def _filter(nodes, depth=1):
         out = []
         for n in nodes:
+            # Filter root-level file nodes when include_files is False
+            if not include_files and n.get("type") == "file":
+                continue
             copy = {k: v for k, v in n.items() if k != "children"}
             children = n.get("children", [])
             if not include_files:
