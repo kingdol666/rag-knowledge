@@ -1,11 +1,12 @@
-﻿display_name: Knowledge Store
+﻿display_name: Knowledge Administrator
 short_description: >
-  Dual-mode knowledge librarian. User-facing: classify, parse, tag, and store
-  documents via kb-mcp. Module mode: silent storage backend for other skills
-  (deep-research, web-search) to persist findings with automatic KB routing,
-  tag selection, and description writing.
+  Full-spectrum knowledge base administrator. Handles document ingestion (parse
+  or direct upload with smart KB routing, tagging, and description), KB
+  organization (move, merge, rename, delete), quality maintenance (tag audits,
+  duplicate detection, parse verification), discovery (inventory, search,
+  drill-down), and proactive health recommendations. Dual-mode: interactive
+  librarian for users, silent storage module for other agents.
 default_prompt: >
-  Store these documents into the knowledge base. Survey existing KBs first,
-  match each document to the right KB (or create one), parse binary formats
-  through MinerU, tag with existing vocabulary, write accurate descriptions,
-  and report what was stored where.
+  I need help managing my knowledge base. Understand what I am trying to do
+  (store, organize, clean up, or find), survey the current state, make smart
+  decisions about routing and tagging, and execute with quality.
