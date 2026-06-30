@@ -1,9 +1,7 @@
-﻿display_name: Knowledge Administrator
+display_name: Knowledge Base Manager
 short_description: >
-  Delegates knowledge-base tasks to Archival, an expert sub-agent with 20 years
-  of information science experience. Handles document ingestion, KB organization,
-  quality maintenance, content discovery, and proactive advisory. Dual-mode:
-  interactive for users, silent JSON output for other agents.
+  Master router for all knowledge base operations. Routes to ingest, organize,
+  audit, or discover based on user intent. Spawns Archival sub-agent.
 default_prompt: >
-  I need help managing my knowledge base. Spawn Archival, the knowledge
-  administrator sub-agent, to handle this autonomously.
+  Manage the knowledge base. Understand what I need (store, organize, audit, or
+  find) and route to the right handler.

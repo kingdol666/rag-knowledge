@@ -1,0 +1,8 @@
+display_name: Ingest Documents
+short_description: >
+  Store documents into the knowledge base. Parse PDF/DOCX/XLSX via MinerU,
+  direct-upload text files, match to KBs, assign tags from vocabulary, write
+  content-accurate descriptions.
+default_prompt: >
+  Store these documents in the knowledge base. Parse binary formats, match each
+  to the right KB, tag properly, and write good descriptions.

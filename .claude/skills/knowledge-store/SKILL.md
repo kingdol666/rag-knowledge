@@ -1,91 +1,53 @@
-﻿---
+---
 name: knowledge-store
 description: >
-  The knowledge base administrator. Use for ANY knowledge-base-related task:
-  storing documents, organizing KBs, maintaining quality, discovering content,
-  or advising on KB health. Triggered by "store this", "parse to KB", "upload",
-  "organize knowledge", "manage KB", "知识库", "文档入库", "what KBs do I have",
-  "move this doc", "merge KBs", "clean up tags", "audit", "check KB health".
-  Also serves as silent storage module for other skills/agents. When triggered,
-  delegate the work to the Knowledge Administrator sub-agent (Archival) by
-  spawning it with the full agent definition and the user's task.
+  Knowledge base management. Use for ANY knowledge-base-related task including
+  storing documents, uploading files, parsing PDFs, importing content, organizing
+  KBs, moving documents, merging knowledge bases, renaming, deleting, auditing
+  health, finding duplicates, cleaning tags, verifying parse quality, searching,
+  listing, discovering content, browsing KBs, finding documents. Triggered by
+  "knowledge base", "KB", "知识库", "文档管理", "knowledge management", or any
+  task involving kb-mcp tools. When triggered, route to the appropriate scenario
+  sub-skill (ingest/organize/audit/discover) or spawn Archival directly.
 ---
 
-# Knowledge Administrator — Dispatcher
+# Knowledge Base — Master Router
 
-This skill delegates knowledge-base work to a specialized sub-agent:
-**Archival**, a senior knowledge architect with deep domain expertise.
+You are the entry point for ALL knowledge-base operations. When this skill
+triggers, your job is to route the user's intent to the correct handler.
 
-**Do not execute knowledge-base tasks yourself.** Instead, spawn Archival
-as a sub-agent who will handle the work autonomously.
+## Routing Table
 
----
+| User intent | Route to |
+|---|---|
+| Store, upload, parse, import, save, add document | `knowledge-ingest` skill |
+| Move, merge, rename, delete, restructure, clean up | `knowledge-organize` skill |
+| Audit, check health, find duplicates, fix tags, verify quality | `knowledge-audit` skill |
+| List, search, find, show, browse, lookup, what KBs | `knowledge-discover` skill |
+| Unclear / mixed / general KB question | Spawn Archival directly |
 
-## When to Trigger
+## How to Route
 
-This skill triggers for any knowledge-base management task. The user's
-request will fall into one of these scenarios:
+For sub-skill routing, simply state which sub-skill should handle the request.
+The sub-skill's description will trigger and its SKILL.md will handle the rest.
 
-- **Ingest**: store, parse, upload, save, import, add document
-- **Organize**: move, merge, rename, delete, restructure
-- **Maintain**: audit, check health, find duplicates, fix tags, verify
-- **Discover**: list, show, search, find, what do we have
-- **Advise**: (proactive) the agent notices issues and recommends fixes
+For direct Archival spawn:
 
----
+1. Read `.claude/agents/knowledge-admin.md` — Archival's full identity.
+2. Spawn:
+```
+spawn_agent(
+  agent_type="default",
+  message="<FULL content of knowledge-admin.md>
 
-## How to Dispatch
+=== TASK ===
+<user's exact request with context>",
+  items=[{ type: "skill", name: "knowledge-store", path: ".claude/skills/knowledge-store/SKILL.md" }]
+)
+```
+3. `wait_agent` for results, present to user.
 
-When this skill triggers:
+## Module Mode
 
-1. **Read the agent definition** from `.claude/agents/knowledge-admin.md`.
-   This is Archival's complete identity, expertise, toolkit reference,
-   and operating framework.
-
-2. **Spawn the sub-agent** using `spawn_agent`:
-   ```
-   spawn_agent(
-     agent_type="default",
-     message="<Archival's full agent definition from knowledge-admin.md>
-
-   === TASK ===
-   <the user's exact request, with full context>",
-     items=[{
-       type: "skill",
-       name: "knowledge-store",
-       path: ".claude/skills/knowledge-store/SKILL.md"
-     }]
-   )
-   ```
-
-   The `message` field must contain:
-   - The COMPLETE content of `.claude/agents/knowledge-admin.md`
-   - A clear `=== TASK ===` separator
-   - The user's request with all relevant context (file paths, KB names, etc.)
-
-3. **Wait for the result.** Use `wait_agent` to get Archival's response.
-   Then present the results to the user (or, in module mode, pass the
-   JSON output to the calling skill).
-
----
-
-## Module Mode (called by other skills)
-
-When another skill or agent pipeline triggers knowledge-store:
-
-1. Read `.claude/agents/knowledge-admin.md`
-2. Spawn Archival with the calling skill's content as the task
-3. The task message should include: "MODULE MODE. Operate silently.
-   Store the following content: <content>. Return JSON summary only."
-4. Wait for and relay the JSON output
-
----
-
-## Important
-
-- Always pass the FULL agent definition to Archival. Do not truncate.
-- The agent definition contains Archival's complete toolkit reference,
-  so the sub-agent will know exactly which MCP tools to use and when.
-- Archival operates autonomously. Give clear tasks and let them work.
-- For complex multi-step tasks (e.g., "audit all KBs then store these
-  files"), pass the full scope in one message. Archival can handle it.
+When called by another skill/agent, spawn Archival silently with:
+"MODULE MODE. Operate silently. <content>. Return JSON only."
