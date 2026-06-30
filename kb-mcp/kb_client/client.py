@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """KbClient - async HTTP client for the RAG Knowledge Platform API.
 
 Every method maps 1:1 to a web API endpoint. Returns plain dicts.
@@ -263,73 +263,29 @@ class KbClient:
         return {"success": False, "error": "Either node_id or path is required"}
 
     # ================================================================
-    # PROMPTS MANAGEMENT (CRUD)
-    # ================================================================
-
-    async def prompts_list(self, keyword="", category="", tag="", sort_by="updatedAt", sort_order="desc"):
-        """List/search prompts with optional filters."""
-        params = {"sortBy": sort_by, "sortOrder": sort_order}
-        if keyword:
-            params["keyword"] = keyword
-        if category:
-            params["category"] = category
-        if tag:
-            params["tag"] = tag
-        return await self._get("/api/prompts", **params)
-
-    async def prompts_create(self, name, description, content, category="default", tags=None):
-        """Create a new prompt."""
-        body = {"name": name, "description": description, "content": content, "category": category, "tags": tags or []}
-        return await self._post_json("/api/prompts", body)
-
-    async def prompts_get(self, prompt_id):
-        """Get a single prompt by id."""
-        return await self._get(f"/api/prompts/{prompt_id}")
-
-    async def prompts_update(self, prompt_id, name="", description="", content="", category=""):
-        """Update an existing prompt."""
-        body = {}
-        if name:
-            body["name"] = name
-        if description:
-            body["description"] = description
-        if content:
-            body["content"] = content
-        if category:
-            body["category"] = category
-        return await self._put_json(f"/api/prompts/{prompt_id}", body)
-
-    async def prompts_delete(self, prompt_id):
-        """Delete a prompt by id."""
-        return await self._request("DELETE", f"/api/prompts/{prompt_id}")
-
-    async def prompts_list_categories(self):
-        """List all prompt categories."""
-        return await self._get("/api/prompts/categories")
-
-    async def prompts_list_tags(self):
-        """List all prompt tags."""
-        return await self._get("/api/prompts/tags")
-
-    # ================================================================
     # PDF PARSING
     # ================================================================
 
-    async def parse_pdf(self, file_path, use_ocr=True, parent_id="", description=""):
-        """Parse a PDF into Markdown. If parent_id is given, saves to KB."""
+    async def parse_pdf(self, file_path, use_ocr=True, parent_id="", description="", tags=None):
+        """Parse a PDF into Markdown. If parent_id is given, saves to KB.
+        tags: optional list[str] written to .knowledge-base.yml."""
         data = {"use_ocr": str(use_ocr).lower()}
         if parent_id:
             data["parent_id"] = parent_id
         if description:
             data["description"] = description
+        if tags:
+            data["tags"] = ",".join(tags)
         return await self._post_file("/api/parse/file-vt", file_path, data, timeout=PARSE_TIMEOUT)
 
-    async def parse_pdf_batch(self, file_paths, use_ocr=True, descriptions=None):
+    async def parse_pdf_batch(self, file_paths, use_ocr=True, descriptions=None, tags=None):
         """Batch-parse multiple PDF files.
 
         If ``descriptions`` is given (one per file, in order), the value is
         forwarded to the parse endpoint for each file (for future KB save).
+        tags: optional list[str] applied to every file (written to .knowledge-base.yml).
         """
+
         results = []
         for i, fp in enumerate(file_paths):
             p = Path(fp)
@@ -341,6 +297,8 @@ class KbClient:
                 data = {"use_ocr": str(use_ocr).lower()}
                 if desc:
                     data["description"] = desc
+                if tags:
+                    data["tags"] = ",".join(tags)
                 result = await self._post_file("/api/parse/batch-file-vt", fp, data, timeout=PARSE_TIMEOUT)
                 results.append(result)
             except Exception as e:
@@ -348,21 +306,26 @@ class KbClient:
         successful = sum(1 for r in results if isinstance(r, dict) and r.get("success"))
         return {"total": len(results), "successful": successful, "results": results}
 
-    async def parse_pdf_to_kb(self, file_path, kb_id, use_ocr=True, description=""):
-        """Full pipeline: parse a PDF and save into a knowledge base."""
+    async def parse_pdf_to_kb(self, file_path, kb_id, use_ocr=True, description="", tags=None):
+        """Full pipeline: parse a PDF and save into a knowledge base.
+        tags: optional list[str] written to .knowledge-base.yml."""
         data = {"use_ocr": str(use_ocr).lower(), "parent_id": kb_id}
         if description:
             data["description"] = description
+        if tags:
+            data["tags"] = ",".join(tags)
         return await self._post_file("/api/parse/file-vt", file_path, data, timeout=PARSE_TIMEOUT)
 
-    async def parse_pdf_to_kb_batch(self, file_paths, kb_id, use_ocr=True, descriptions=None):
+    async def parse_pdf_to_kb_batch(self, file_paths, kb_id, use_ocr=True, descriptions=None, tags=None):
         """Parse multiple PDFs and save each into the same knowledge base.
 
         Files are parsed sequentially; each successful one is saved into
         *kb_id* via the parse pipeline (parent_id = kb_id). Returns an
         aggregate {total, successful, results} so callers can see which
         files failed without losing the ones that succeeded.
+        tags: optional list[str] applied to every file (written to .knowledge-base.yml).
         """
+
         results = []
         for i, fp in enumerate(file_paths):
             p = Path(fp)
@@ -371,9 +334,12 @@ class KbClient:
                 continue
             desc = descriptions[i] if descriptions and i < len(descriptions) else ""
             try:
+                payload = {"use_ocr": str(use_ocr).lower(), "parent_id": kb_id, "description": desc}
+                if tags:
+                    payload["tags"] = ",".join(tags)
                 r = await self._post_file(
                     "/api/parse/file-vt", fp,
-                    {"use_ocr": str(use_ocr).lower(), "parent_id": kb_id, "description": desc},
+                    payload,
                     timeout=PARSE_TIMEOUT,
                 )
                 if isinstance(r, dict):
@@ -385,15 +351,40 @@ class KbClient:
         return {"total": len(results), "successful": successful, "saved_to_kb": kb_id, "results": results}
 
     # ================================================================
+    # TAGS MANAGEMENT
+    # ================================================================
+
+    async def kb_tags_list(self):
+        """List all registered tags."""
+        return await self._get("/api/kb/tags")
+
+    async def kb_tag_create(self, tag):
+        """Register a new tag (dedup)."""
+        return await self._post_json("/api/kb/tags", {"tag": tag})
+
+    async def kb_doc_update_tags(self, kb_id, doc_path, tags):
+        """Update a document's tags (string[])."""
+        return await self._patch_json("/api/kb/documents/tags", {
+            "kbId": kb_id, "docPath": doc_path, "tags": tags
+        })
+
+    async def kb_doc_get_by_tag(self, tag, kb_id=""):
+        """Find documents by tag across all KBs (or one KB if kb_id given)."""
+        params = {"tag": tag}
+        if kb_id:
+            params["kb_id"] = kb_id
+        return await self._get("/api/kb/documents/by-tag", **params)
+
+    # ================================================================
     # BACKEND STATUS
     # ================================================================
 
     async def backend_status(self):
-        """Get backend service info including DeepAgent and MinerU."""
+        """Get backend service health and MinerU OCR engine status."""
         results = {}
         for name, endpoint in [
             ("backend_health", "/api/v1/health"),
-            ("deepagent", "/api/deepagent/"),
+            ("mineru", "/api/v1/mineru/status"),
         ]:
             try:
                 results[name] = await self._request("GET", endpoint, base=self.backend_url, timeout=5)

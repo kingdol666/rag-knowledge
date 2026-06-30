@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 kb-mcp MCP Server
 =================
@@ -6,7 +6,7 @@ Thin MCP tool layer over kb_client.KbClient.
 
 This server defines MCP tools. Each tool is a one-liner that
 delegates to the matching KbClient method. All HTTP logic lives in
-kb_client/client.py �?this file contains zero HTTP code.
+kb_client/client.py ??this file contains zero HTTP code.
 
 Long-running parse jobs (parse_pdf / parse_pdf_batch / parse_pdf_to_kb)
 are NON-BLOCKING: they hand the slow work to an in-process background
@@ -92,7 +92,7 @@ async def kb_list() -> str:
 
 @mcp.tool()
 async def kb_create(name: str, description: str = "", parent_id: str = "") -> str:
-    """Create a new knowledge base. parent_id is an optional tree folder UUID for nesting (omit for root). Returns knowledgeBase with id (UUID) and path �?both work as kb_id in other tools."""
+    """Create a new knowledge base. parent_id is an optional tree folder UUID for nesting (omit for root). Returns knowledgeBase with id (UUID) and path ??both work as kb_id in other tools."""
     return _j(await _client().kb_create(name, description, parent_id))
 
 
@@ -254,61 +254,15 @@ async def preview_file(node_id: str = "", path: str = "") -> str:
 
 
 # ============================================================
-# PROMPTS MANAGEMENT (CRUD)
-# ============================================================
-
-@mcp.tool()
-async def prompts_list(keyword: str = "", category: str = "", tag: str = "", sort_by: str = "updatedAt", sort_order: str = "desc") -> str:
-    """List/search prompts with optional filters."""
-    return _j(await _client().prompts_list(keyword, category, tag, sort_by, sort_order))
-
-
-@mcp.tool()
-async def prompts_create(name: str, description: str, content: str, category: str = "default", tags: list = None) -> str:
-    """Create a new prompt."""
-    return _j(await _client().prompts_create(name, description, content, category, tags))
-
-
-@mcp.tool()
-async def prompts_get(prompt_id: str) -> str:
-    """Get a single prompt by id."""
-    return _j(await _client().prompts_get(prompt_id))
-
-
-@mcp.tool()
-async def prompts_update(prompt_id: str, name: str = "", description: str = "", content: str = "", category: str = "") -> str:
-    """Update an existing prompt."""
-    return _j(await _client().prompts_update(prompt_id, name, description, content, category))
-
-
-@mcp.tool()
-async def prompts_delete(prompt_id: str) -> str:
-    """Delete a prompt by id."""
-    return _j(await _client().prompts_delete(prompt_id))
-
-
-@mcp.tool()
-async def prompts_list_categories() -> str:
-    """List all prompt categories."""
-    return _j(await _client().prompts_list_categories())
-
-
-@mcp.tool()
-async def prompts_list_tags() -> str:
-    """List all prompt tags."""
-    return _j(await _client().prompts_list_tags())
-
-
-# ============================================================
 # PDF PARSING  (NON-BLOCKING)
 # The parse HTTP calls can take minutes (MinerU OCR). To avoid blocking
-# the MCP tool response �?and freezing the agent �?each parse tool hands
+# the MCP tool response ??and freezing the agent ??each parse tool hands
 # the work to an asyncio background task (task_registry) and returns a
 # task_id immediately. Results are retrieved via parse_task_status().
 # ============================================================
 
 @mcp.tool()
-async def parse_pdf(file_path: str, use_ocr: bool = True, parent_id: str = "", description: str = "") -> str:
+async def parse_pdf(file_path: str, use_ocr: bool = True, parent_id: str = "", description: str = "", tags: list = None) -> str:
     """Parse a PDF into Markdown. If parent_id is given, auto-saves to KB.
 
     NON-BLOCKING: returns immediately with a task_id once parsing has
@@ -341,7 +295,7 @@ async def parse_pdf(file_path: str, use_ocr: bool = True, parent_id: str = "", d
 
 
 @mcp.tool()
-async def parse_pdf_batch(file_paths: list, use_ocr: bool = True, descriptions: list = None) -> str:
+async def parse_pdf_batch(file_paths: list, use_ocr: bool = True, descriptions: list = None, tags: list = None) -> str:
     """Batch-parse multiple PDF files.
 
     NON-BLOCKING: returns immediately with a task_id; files parse
@@ -350,15 +304,15 @@ async def parse_pdf_batch(file_paths: list, use_ocr: bool = True, descriptions: 
     Poll with parse_task_status(task_id).
     When done the result is {total, successful, results:[...]}."""
     client = _client()
-    meta = {"file_paths": list(file_paths), "use_ocr": use_ocr, "descriptions": descriptions}
+    meta = {"file_paths": list(file_paths), "use_ocr": use_ocr, "descriptions": descriptions, "tags": tags}
     task_id = task_registry.submit(
-        client.parse_pdf_batch(file_paths, use_ocr, descriptions), "parse_pdf_batch", meta
+        client.parse_pdf_batch(file_paths, use_ocr, descriptions, tags), "parse_pdf_batch", meta
     )
     return _running_payload(task_id, "parse_pdf_batch", {"file_count": len(file_paths)})
 
 
 @mcp.tool()
-async def parse_pdf_to_kb(file_path: str, kb_id: str, use_ocr: bool = True, description: str = "") -> str:
+async def parse_pdf_to_kb(file_path: str, kb_id: str, use_ocr: bool = True, description: str = "", tags: list = None) -> str:
     """Full pipeline: parse a PDF and save into a knowledge base.
 
     NON-BLOCKING: parse the PDF, then save the Markdown into the given
@@ -371,10 +325,10 @@ async def parse_pdf_to_kb(file_path: str, kb_id: str, use_ocr: bool = True, desc
     if not _exists(file_path):
         return _j({"success": False, "error": f"file not found: {file_path}"})
     client = _client()
-    meta = {"file_path": file_path, "kb_id": kb_id, "use_ocr": use_ocr, "description": description}
+    meta = {"file_path": file_path, "kb_id": kb_id, "use_ocr": use_ocr, "description": description, "tags": tags}
 
     async def _work():
-        result = await client.parse_pdf_to_kb(file_path, kb_id, use_ocr, description)
+        result = await client.parse_pdf_to_kb(file_path, kb_id, use_ocr, description, tags)
         if isinstance(result, dict) and result.get("success"):
             return {
                 "success": True,
@@ -392,7 +346,7 @@ async def parse_pdf_to_kb(file_path: str, kb_id: str, use_ocr: bool = True, desc
 
 
 @mcp.tool()
-async def parse_pdf_to_kb_batch(file_paths: list, kb_id: str, use_ocr: bool = True, descriptions: list = None) -> str:
+async def parse_pdf_to_kb_batch(file_paths: list, kb_id: str, use_ocr: bool = True, descriptions: list = None, tags: list = None) -> str:
     """Batch: parse many PDFs and save each into the same knowledge base.
 
     NON-BLOCKING: all files parse (sequentially) in ONE background task,
@@ -405,9 +359,9 @@ async def parse_pdf_to_kb_batch(file_paths: list, kb_id: str, use_ocr: bool = Tr
     if missing:
         return _j({"success": False, "error": "file(s) not found", "missing": missing})
     client = _client()
-    meta = {"file_paths": list(file_paths), "kb_id": kb_id, "use_ocr": use_ocr, "descriptions": descriptions}
+    meta = {"file_paths": list(file_paths), "kb_id": kb_id, "use_ocr": use_ocr, "descriptions": descriptions, "tags": tags}
     task_id = task_registry.submit(
-        client.parse_pdf_to_kb_batch(file_paths, kb_id, use_ocr, descriptions),
+        client.parse_pdf_to_kb_batch(file_paths, kb_id, use_ocr, descriptions, tags),
         "parse_pdf_to_kb_batch",
         meta,
     )
@@ -443,12 +397,40 @@ async def parse_tasks_list(status: str = "") -> str:
 
 
 # ============================================================
+# TAGS MANAGEMENT
+# ============================================================
+
+@mcp.tool()
+async def kb_tags_list() -> str:
+    """List all registered tags in the system."""
+    return _j(await _client().kb_tags_list())
+
+
+@mcp.tool()
+async def kb_tag_create(tag: str) -> str:
+    """Register a new tag (deduped, max 50 chars)."""
+    return _j(await _client().kb_tag_create(tag))
+
+
+@mcp.tool()
+async def kb_doc_update_tags(kb_id: str, doc_path: str, tags: list) -> str:
+    """Update a document's tags. kb_id accepts UUID; doc_path accepts full path or bare filename."""
+    return _j(await _client().kb_doc_update_tags(kb_id, doc_path, tags))
+
+
+@mcp.tool()
+async def kb_doc_get_by_tag(tag: str, kb_id: str = "") -> str:
+    """Find documents by tag across all KBs (or one KB if kb_id given)."""
+    return _j(await _client().kb_doc_get_by_tag(tag, kb_id))
+
+
+# ============================================================
 # BACKEND STATUS
 # ============================================================
 
 @mcp.tool()
 async def backend_status() -> str:
-    """Get backend service info including DeepAgent and MinerU engine status."""
+    """Get backend service health and MinerU OCR engine status."""
     return _j(await _client().backend_status())
 
 
