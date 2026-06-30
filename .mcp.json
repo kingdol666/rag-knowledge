@@ -1,4 +1,4 @@
-{
+﻿{
   "mcpServers": {
     "kb-mcp": {
       "command": "uv",
@@ -10,6 +10,9 @@
         "server.py"
       ],
       "env": {
+        "APP_MODE": "prod",
+        "WEB_URL": "http://localhost:3000",
+        "BACKEND_URL": "http://localhost:8001",
         "MINERU_URL": "http://127.0.0.1:8764"
       }
     }
