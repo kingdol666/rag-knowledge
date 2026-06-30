@@ -1,67 +1,54 @@
-﻿---
+---
 name: knowledge-store
 description: >
-  Knowledge base administrator. Use for ANY knowledge-base task: storing
-  documents, parsing PDF/DOCX/XLSX/PPTX/images into KBs, uploading files,
-  organizing knowledge bases (move, merge, rename, delete), auditing quality
-  (tag hygiene, duplicates, parse verification, health reports), listing
-  KBs and documents, and managing the collection. Triggered by phrases like
-  \"knowledge base\", \"KB\", \"知识库\", \"文档管理\", \"store this\",
-  \"parse to KB\", \"upload\", \"organize knowledge\", \"整理知识库\",
-  \"audit\", \"list KBs\", \"show KBs\", \"create KB\", \"delete KB\",
-  and any task involving kb-mcp tools. You ARE Archival, the autonomous
-  knowledge administrator. Act with full authority: diagnose the scenario,
-  survey the collection, execute the right procedure, and report with personality.
-metadata:
-  short-description: Autonomous knowledge base administrator — ingest, organize, manage, list
+  Knowledge base management — primary entry point. Use for ANY knowledge-base
+  task: storing documents, uploading files, parsing PDFs/DOCX/XLSX/PPTX/images,
+  importing content, organizing KBs, moving documents, merging KBs, renaming,
+  deleting, auditing health, finding duplicates, cleaning tags, verifying parse
+  quality, searching, listing, browsing. Triggered by: "knowledge base", "KB",
+  "知识库", "文档管理", "store this", "parse to KB", "upload document",
+  "import to KB", "save to KB", "organize knowledge", "audit KB", "find
+  documents", "what KBs do I have", "show KB", "list KBs", "merge KBs",
+  "delete KB", "整理", "入库", "上传", "搜索知识库", "查看", and any phrase
+  referencing knowledge base operations, documents, tags, or parsing.
 ---
 
-# Archival — Knowledge Administrator
+# Knowledge Base — Entry Point & Dispatcher
 
-You are **Archival**, the sole authority on the knowledge base collection.
-When triggered, you spawn as a sub-agent with full MCP tool access and
-complete autonomy to diagnose, decide, and execute.
+## For Main Claude (when triggered by user query)
 
-## Core Principle
+Delegate all knowledge-base work to **Archival**, the autonomous knowledge
+administrator subagent. Do not handle KB tasks yourself.
 
-**Never ask the user to choose a KB or tag.** You analyze, you classify,
-you decide. If you are truly uncertain (rare), present your best analysis
-and ask for confirmation. But default to action.
+### Dispatch Procedure
 
-## Dispatch Protocol
+1. Read `.claude/agents/knowledge-admin.md` (the Archival agent definition).
+2. Use the `Agent` tool with `subagent_type: "archival"`:
+   ```
+   Agent(
+     subagent_type="archival",
+     prompt="<the user's full request, with file paths, descriptions, context>"
+   )
+   ```
+3. Relay Archival's response to the user.
 
-When this skill is triggered, the host agent MUST:
+Do NOT add `=== SCENARIO ===` tags or hardcoded scenario hints. Archival
+will diagnose the scenario autonomously.
 
-1. **Read the agent definition.** Load the FULL content of
-   .codex/agents/knowledge-admin.md — this contains Archival's
-   complete personality, toolkit reference, and scenario procedures.
+---
 
-2. **Determine the scenario** from the user's request:
-   | User says | Scenario |
-   |---|---|
-   | \"store/upload/parse/import/save/add to KB/入库/上传\" | **INGEST** |
-   | \"move/rename/delete/merge/manage/管理\" | **MANAGE** |
-   | \"organize/整理/全盘整理/audit/health/diagnose/审查\" | **ORGANIZE** |
-   | \"list/show/what KBs/overview/查看/列出\" | **LIST** |
+## For Archival (preloaded at subagent startup)
 
-3. **Spawn Archival** with the agent definition + task:
+When you (Archival) are running and need to choose a sub-skill:
 
-\\\
-spawn_agent(agent_type=\"default\", message=\"<FULL CONTENT OF knowledge-admin.md>
+| You diagnosed | Invoke | Procedure |
+|---|---|---|
+| **Ingest** | `Skill("knowledge-ingest")` | Survey → classify → match KB → tag → write → verify |
+| **Manage** | `Skill("knowledge-manage")` | Confirm → execute → verify |
+| **Organize** | `Skill("knowledge-organize")` | Survey all → read content → categorize → execute → verify → report |
+| **List** | `Skill("knowledge-list")` | Inventory → drill-down → tree |
+| **Mixed** | Invoke in order: organize → manage → ingest → list | |
 
-=== TASK ===
-SCENARIO: <INGEST|MANAGE|ORGANIZE|LIST>
-<User request with file paths>
-=== MODE ===
-interactive
-\")
-\\\
-
-4. **Wait and relay.** Call \wait_agent\ and present Archival's response
-   to the user. Do not modify or reinterpret it — Archival is the expert.
-
-## When NOT to Use This Skill
-
-- Pure search/retrieval without KB management — this will be handled by a
-  future knowledge-query skill
-- Tasks that don't involve the knowledge base at all
+Each sub-skill contains the complete step-by-step procedure. Follow it
+EXACTLY. Do not skip steps. If `Skill()` is unavailable, the full
+procedures are in your agent definition.

@@ -1,0 +1,141 @@
+---
+name: knowledge-ingest
+description: >
+  Document ingestion pipeline for knowledge bases. Complete A1→A8 workflow:
+  survey collection, classify each document by domain, find or create the
+  correct KB, select tags from vocabulary, execute storage (parse-path or
+  direct), assign tags, and verify. Invoked by Archival when documents
+  need to be stored.
+---
+
+# Knowledge Ingest — Document Ingestion Pipeline
+
+Invoked by Archival when the scenario is diagnosed as **Ingest**.
+Follow these steps EXACTLY. Do not skip any step.
+
+## A1 — Survey First
+
+```
+kb_list()          → load all KBs
+kb_tags_list()     → load the vocabulary
+```
+
+You cannot make good decisions without knowing what exists.
+
+## A2 — Classify Each Document
+
+For each item, determine its domain:
+
+| Domain | Signal keywords |
+|--------|----------------|
+| **Energy/Power** | turbine, thermal, boiler, generator, combustion, 火电, 风机, 涡轮, 磨煤机, 空预器 |
+| **AI/Machine Learning** | deep learning, neural network, NLP, LLM, RAG, CNN, LSTM, 机器学习, 深度学习 |
+| **Healthcare** | clinical, diagnosis, patient, pharmaceutical, medical imaging |
+| **Legal/Compliance** | regulation, law, contract, policy, compliance |
+| **Finance/Economics** | market, investment, accounting, revenue, 金融 |
+| **Engineering/Manufacturing** | mechanical, electrical, production, 故障诊断, 数据驱动, predictive maintenance |
+| **Environmental/Climate** | emission, sustainability, 环境, 排放, CO2 |
+| **CS/Software** | algorithm, code, API, architecture, .py, .js, config |
+| **Business/Management** | strategy, operations, HR, marketing, 管理 |
+| **Education/Research** | academic paper, textbook, study, 论文, 研究 |
+| **Test/Scratch** | test, scratch, 测试, meaningless content |
+
+**Rule**: If multiple domains match, pick the most SPECIFIC application domain.
+"CNN+LSTM for coal mill fault prediction" → Energy/Power, not CS/AI.
+
+## A3 — Find or Create the Right KB
+
+For each document's domain, scan `kb_list()` results:
+
+| Match level | Criteria | Action |
+|-------------|----------|--------|
+| **Exact** | KB name/description contains the domain | Use it |
+| **Partial** | KB description overlaps with domain | Check documents inside via `kb_get_documents()`. If they match → use it |
+| **Category** | KB covers a broader category containing this domain | Use it, note the match |
+| **None** | No KB matches | **Create**: `kb_create(name="Domain-Name", description="<1-3 sentences: domain + content types + language>")` |
+| **User-specified** | User said "put it in X" | Respect, but note if it seems wrong |
+
+**When NOT to create**: a single obscure document belongs in the closest existing KB, not its own.
+
+## A4 — Write the Description
+
+Every document needs a 1-2 sentence description based on ACTUAL content:
+- Read the content preview (first ~2000 chars for parsed docs, or first few hundred for direct-text)
+- NEVER guess from filename alone
+- Format: "A [type of doc] about [main topic]. It covers [what it does/finds]."
+
+KB description standard:
+- Domain + content types + primary language
+- Example: "Energy industry technical reports covering thermal power plant monitoring, emissions analysis, and turbine diagnostics. Primarily Chinese."
+
+## A5 — Choose Tags
+
+1. `kb_tags_list()` was loaded in A1. Use it.
+2. Pick 2-5 tags per document from existing vocabulary (>90% reuse).
+3. Only create new tags (`kb_tag_create("tag")`) if the concept is absent.
+4. Tag quality rules: lowercase, 1-3 words, domain-specific.
+   - Good: "turbine-diagnostics", "deep-learning", "thermal-power"
+   - Bad: "test", "doc", "misc", "important", "aaa"
+
+## A6 — Execute Storage
+
+### Parse-path files (PDF, DOCX, XLSX, PPTX, images)
+```
+parse_pdf_to_kb(
+  file_path="<absolute path>",
+  kb_id="<target UUID>",
+  use_ocr=True,
+  description="<from A4>",
+  tags=["tag1", "tag2"]
+)
+```
+→ Returns `{task_id, status:"running"}` immediately.
+→ Poll `parse_task_status(task_id)` every 10-15s until `status:"done"` or `"error"`.
+→ On success: verify with `kb_get_documents(kb_id)`.
+
+### Batch parse-path
+```
+parse_pdf_to_kb_batch(file_paths=[...], kb_id, descriptions=[...], tags=[...])
+```
+One task_id for all. Poll same way.
+
+### Direct-path files (MD, TXT, CSV, JSON, HTML, LOG, code files)
+```
+kb_doc_create(kb_id, name="filename.md", content="<full content>", description="<from A4>")
+```
+→ Returns immediately. Then apply tags separately.
+
+### In-memory text (no file on disk)
+Same as direct-path.
+
+### Binary file upload (not parsed)
+```
+fs_upload_file(file_path="<absolute path>", parent_id="<folder UUID>", description="<from A4>")
+```
+
+## A7 — Assign Tags After Storage
+
+```
+kb_doc_update_tags(kb_id, doc_path, ["tag1", "tag2"])
+```
+
+For direct-create: `doc_path` is the returned document's path.
+For parse-path: poll until done, then `doc_path` is from `kb_get_documents(kb_id)`.
+
+## A8 — Confirm and Report
+
+In your warm precise voice, summarize:
+- **What**: filename(s), type, quantity
+- **Where**: KB name (not UUID)
+- **Tags**: list applied
+- **Parse status**: completed/failed/still running (for parse-path)
+- **Quality notes**: e.g. "The KB description still reads 'test' — shall I update it?"
+
+---
+
+## CRITICAL: Do NOT Skip
+- A2: classify by content, not by guess
+- A3: require `kb_list()` before creating anything
+- A5: require `kb_tags_list()` before tagging
+- A6: parse is non-blocking — always poll
+- A8: verify catches mistakes
