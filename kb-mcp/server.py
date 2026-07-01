@@ -499,6 +499,40 @@ async def kb_reindex(kb_id: str = "", force: bool = False) -> str:
 
 
 @mcp.tool()
+async def kb_index_document(kb_id: str, doc_path: str, doc_name: str = "", description: str = "", content: str = "") -> str:
+    """单文档向量+图谱索引。将文档内容（或已有文档）存入向量数据库并记录 vector_index 到元信息。
+
+    用于手动触发文档的向量索引构建。如果提供 content 则直接使用，否则从存储自动读取。
+    索引完成后会在 .knowledge-base.yml 的对应文档记录 vector_index 信息（含 collection、chunks 等）。
+    同时会重建 BM25 关键词索引使后续两阶段检索能定位到该文档。
+
+    Args:
+        kb_id: 知识库 ID 或路径
+        doc_path: 文档在 KB 中的相对路径
+        doc_name: 文档名称
+        description: 文档描述
+        content: 文档正文内容；为空则从文件自动读取
+
+    Returns:
+        {success, vector_index: {collection, chunk_id_prefix, total_chunks, graph_doc_id}, graph_stats: {entities, relations}}
+    """
+    return _j(await _client().index_document(kb_id, doc_path, doc_name, description, content))
+
+
+@mcp.tool()
+async def kb_search_stats(kb_id: str = "") -> str:
+    """向量索引统计信息。查看各知识库在向量数据库中的索引情况。
+
+    Args:
+        kb_id: 可选，限定知识库；空则返回全部
+
+    Returns:
+        {success, stats: {collections: [{collection, chunk_count}]}}
+    """
+    return _j(await _client().search_stats(kb_id))
+
+
+@mcp.tool()
 async def kb_graph_search(keyword: str, limit: int = 20) -> str:
     """搜索知识图谱中的实体。"""
     return _j(await _client().graph_search(keyword, limit))

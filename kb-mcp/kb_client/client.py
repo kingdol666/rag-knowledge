@@ -444,6 +444,21 @@ class KbClient:
             body["kb_id"] = kb_id
         return await self._post_backend_json("/api/v1/search/reindex", body)
 
+    async def index_document(self, kb_id, doc_path, doc_name="", description="", content=""):
+        """单文档索引：向量 + 图谱。存入向量库并记录 vector_index 到元信息。"""
+        body = {
+            "kb_id": kb_id,
+            "doc_path": doc_path,
+            "doc_name": doc_name,
+            "description": description,
+            "content": content,
+        }
+        return await self._post_backend_json("/api/v1/search/index-document", body)
+
+    async def search_stats(self, kb_id=""):
+        """向量索引统计。"""
+        return await self._get_backend("/api/v1/search/stats", kb_id=kb_id)
+
     async def graph_search(self, keyword, limit=20):
         """图谱实体搜索。"""
         return await self._get_backend(
