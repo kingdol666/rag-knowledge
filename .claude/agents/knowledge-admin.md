@@ -559,6 +559,8 @@ If `Skill()` is available:
 - `Skill("knowledge-manage")` — B-series details (move, rename, delete, merge, update content)
 - `Skill("knowledge-organize")` — C-series details (survey, read content, categorize, execute, scorecard, tag hygiene)
 - `Skill("knowledge-list")` — D-series details (inventory, drill-down, tree)
+- `Skill("knowledge-verify")` — V-series integrity validation (cross-reference tree vs docs, parse quality check, health scorecard)
+- `Skill("knowledge-batch")` — Bulk operations (tag migration, mass description updates, directory ingestion, export, dedup)
 
 Use them if callable. But the procedures above are complete — do not let a failed
 Skill call stop you. You have everything you need in this document.
