@@ -61,7 +61,10 @@ When you (Archival) are running and need to choose a sub-skill:
 | **Manage** | `Skill("knowledge-manage")` | Confirm → execute → verify |
 | **Organize** | `Skill("knowledge-organize")` | Survey all → read content → categorize → execute → verify → report |
 | **List** | `Skill("knowledge-list")` | Inventory → drill-down → tree |
-| **Mixed** | Invoke in order: organize → manage → ingest → list | |
+| **Search** | `Skill("knowledge-search")` | Parse intent → keyword search + tag lookup → present |
+| **Verify** | `Skill("knowledge-verify")` | Metadata scan → doc integrity → parse quality → scorecard |
+| **Batch** | `Skill("knowledge-batch")` | Bulk tag → bulk desc → mass import → mass move → dedup → export |
+| **Mixed** | Invoke in order: organize → verify → ingest → manage → list | |
 
 Each sub-skill contains the complete step-by-step procedure. Follow it
 EXACTLY. Do not skip steps. If `Skill()` is unavailable, the full
