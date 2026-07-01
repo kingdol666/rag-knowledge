@@ -67,22 +67,30 @@ def _url_from_config(key: str, section: str | None = None) -> str | None:
 
 
 def _default_web_url() -> str:
-    """Web frontend URL from config.yml, or sensible fallback."""
-    for source in (
-        lambda: _url_from_config("frontend_url"),
-        lambda: os.environ.get("WEB_URL"),
-    ):
-        val = source()
-        if val:
-            return val
-    # Build from port if url key absent
+    """Web frontend URL — env, .env, or config.yml, in that order."""
+
+    # 1) env / .env override (WEB_URL / WEB_PORT / FRONTEND_PORT)
+    web_url = os.environ.get("WEB_URL")
+    if web_url:
+        return web_url
+
+    env_port = os.environ.get("WEB_PORT") or os.environ.get("FRONTEND_PORT")
+    if env_port:
+        return f"http://localhost:{env_port}"
+
+    # 2) config.yml frontend_url (if ever added)
+    val = _url_from_config("frontend_url")
+    if val:
+        return val
+
+    # 3) build from config.yml port
     port = _frontend_port()
-    host = os.environ.get("WEB_HOST", "localhost")
-    return f"http://{host}:{port}"
+    hostname = os.environ.get("WEB_HOST", "localhost")
+    return f"http://{hostname}:{port}"
 
 
 def _frontend_port() -> str:
-    """Frontend port from config.yml."""
+    """Frontend port from config.yml or env."""
     cfg = _read_config_yml()
     mode = os.environ.get("APP_MODE", "prod")
     port = cfg.get("server", {}).get(mode, {}).get("frontend_port")
@@ -92,15 +100,28 @@ def _frontend_port() -> str:
 
 
 def _default_backend_url() -> str:
-    """Backend URL from config.yml."""
+    """Backend URL — env, .env, or config.yml, in that order."""
+
+    # 1) env / .env override (BACKEND_URL / BACKEND_PORT)
+    backend_url = os.environ.get("BACKEND_URL")
+    if backend_url:
+        return backend_url
+
+    env_port = os.environ.get("BACKEND_PORT")
+    if env_port:
+        return f"http://localhost:{env_port}"
+
+    # 2) config.yml
     val = _url_from_config("backend_url")
     if val:
         return val
+
+    # 3) build from config.yml port
     cfg = _read_config_yml()
     mode = os.environ.get("APP_MODE", "prod")
     port = cfg.get("server", {}).get(mode, {}).get("backend_port")
-    host = os.environ.get("BACKEND_HOST", "localhost")
-    return f"http://{host}:{port or 8001}"
+    hostname = os.environ.get("BACKEND_HOST", "localhost")
+    return f"http://{hostname}:{port or 8001}"
 
 
 def _default_mineru_url() -> str:

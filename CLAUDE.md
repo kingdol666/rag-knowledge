@@ -1,196 +1,280 @@
-// == CLAUDE.md ==
-// RAG Knowledge Backend — 项目开发规范与指南
-// 此文件由 Claude Code 读取，用于理解项目架构和开发约定。
-// 每次启动开发会话时自动加载到上下文。
+# CLAUDE.md
 
-# RAG Knowledge Backend
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## 🏗 项目架构
+# RAG Knowledge Platform
+
+Monorepo for a document intelligence platform: PDF parsing (MinerU OCR), tree-based knowledge base management, keyword search, and an MCP tool layer for Agentic KB operations.
+
+**Tech stack:** Python 3.12 + FastAPI · TypeScript + Nuxt 3 + Ant Design Vue · MCP (Python FastMCP) · Git submodules
+
+## Architecture
+
+Three services + one MCP layer, all configured from a single `config.yml`:
+
+```
+Browser (6789 / 3000)
+    │  fetch()
+    ▼
+Nuxt 3 Server (proxy layer)   ← file tree, parse triggers, KB search UI
+    │  server-to-server
+    ▼
+FastAPI Backend (8765 / 8001)  ← parse scheduling, MinerU subprocess management
+    │  subprocess (Job Object)
+    ▼
+MinerU OCR Engine (ephemeral port)  ← PDF → Markdown conversion
+```
+
+```
+Claude Code / Agent
+    │  MCP stdio (kb-mcp)
+    ▼
+kb-mcp MCP Server              ← ~40 tools: KB CRUD, file ops, parse, search, tags
+    │  HTTP → web proxy / backend     +  direct file reads
+    ▼
+Nuxt / Backend                 ← writes: parse + save pipeline
+                                    reads: .tree-fs.json, .knowledge-base.yml
+```
+
+## Repository Structure
+
+```
+rag-knowledge/
+├── config.yml              # Single source of truth for ports (shared across all modules)
+├── start.bat / start.sh    # One-click launch scripts
+├── backend/                # [submodule] rag-knowledge-backend — FastAPI + MinerU
+├── web/                    # [submodule] rag-knowledge-frondend — Nuxt 3 UI (active frontend)
+├── frontend/               # [submodule] rag-knowledge-frontend — legacy Vue 3/Vite (inactive)
+├── kb-mcp/                 # [local] MCP server — provides ~40 MCP tools for KB operations
+├── .claude/skills/         # OMC skills (knowledge-store dispatcher, ingest, search, manage, etc.)
+├── .claude/agents/         # Archival agent definition (knowledge-admin.md)
+├── .codex/                 # Parallel agent/skill definitions for Codex
+├── docs/ARCHITECTURE.md    # Detailed architecture + MCP dev guide
+└── KB_MCP_DEVELOPMENT.md   # API test report + MCP feasibility analysis
+```
+
+### Backend (FastAPI Python)
 
 ```
 backend/
+├── main.py                    # Entry point: port probe (anti-zombie) → uvicorn
 ├── app/
-│   ├── main.py              # FastAPI 应用入口，注册路由和中间件
-│   ├── config.py            # 配置管理器（从 config.yml + 环境变量读取）
-│   ├── api/
-│   │   ├── __init__.py
-│   │   ├── compat.py        # 兼容性导出
-│   │   └── routes/
-│   │       ├── __init__.py  # 路由注册中心
-│   │       ├── health.py    # GET /api/v1/health
-│   │       ├── parse.py     # POST /api/v1/parse/file/vt 等
-│   │       └── deepagent.py # /api/deepagent/* 智能体端点
-│   ├── agent/               # DeepAgent 智能体系统
-│   │   ├── deepagent.py     # 兼容性外观
-│   │   ├── deepagent_runtime/ # 运行时（服务、模型工厂、构件管理）
-│   │   └── deepagent_support/ # 支持工具（沙箱、工具注册）
-│   ├── models/
-│   │   ├── __init__.py
-│   │   └── schemas.py       # 所有 Pydantic 响应模型
-│   └── utils/
-│       ├── __init__.py
-│       └── paths.py         # 项目路径常量
-├── config.yml               # 配置（端口、CORS、LLM、DeepAgent）
-├── main.py                  # uvicorn 启动入口
-├── pyproject.toml            # 依赖管理和构建配置
-├── CLAUDE.md                # ← 你在这里
-└── .env.example             # 环境变量模板
+│   ├── main.py                # FastAPI app factory + lifespan (starts MinerU)
+│   ├── config.py              # Singleton; reads backend/config.yml + shared config.yml
+│   ├── api/routes/
+│   │   ├── health.py          # GET /api/v1/health
+│   │   ├── parse.py           # POST /api/v1/parse/file/vt (async), batch (SSE + JSON)
+│   │   └── mineru.py          # GET /api/v1/mineru/status, POST /api/v1/mineru/restart
+│   ├── models/schemas.py      # Pydantic response models
+│   ├── services/mineru_service.py  # MineruParseService wrapper
+│   └── utils/paths.py         # PROJECT_ROOT, config path resolution
+├── sandbox/mineru_module/
+│   └── manager.py             # MineruApiManager: subprocess lifecycle + async task API
+├── tests/
+│   ├── conftest.py            # Skips integration tests unless --run-integration
+│   ├── test_unit.py           # Hermetic unit tests (no MinerU)
+│   └── test_parse_async.py    # Integration (needs running MinerU)
+└── pyproject.toml             # uv; Windows-only (required-environments: win32)
 ```
 
-## 🔗 注册的 API 路由
+Key properties:
+- **No DeepAgent** — old DeepAgent routes were removed.
+- **MinerU port is ephemeral** — `MineruApiManager(port=None)` auto-picks a free port avoiding common dev ports. The resolved port is at `manager.port` / `manager.api_url`. **Do NOT hardcode 8764.**
+- **Subprocess lifecycle** — MinerU runs as a hidden subprocess bound to a Windows Job Object (`KILL_ON_JOB_CLOSE`); stdout→log file (never a pipe, avoids [Errno 22]).
+- **Anti-zombie startup** — `main.py:_port_in_use()` does a bare `socket.bind` before uvicorn; refuses to start if port is occupied.
 
-前端通过 Nuxt 服务器代理调用的后端端点：
+### Web (Nuxt 3 TypeScript)
 
-| 端点 | 方法 | 用途 | 文件 |
-|------|------|------|------|
-| `/api/v1/health` | GET | 健康检查 | `routes/health.py` |
-| `/api/v1/parse/file/vt` | POST | PDF 上传解析（桩） | `routes/parse.py` |
-| `/api/v1/batch/parse/file/vt` | POST | 批量 PDF 解析（桩） | `routes/parse.py` |
-| `/api/v1/batch/parse/file/vt/stream` | POST | SSE 流式解析（桩） | `routes/parse.py` |
-| `/api/deepagent/` | GET | DeepAgent 信息 | `routes/deepagent.py` |
-| `/api/deepagent/artifacts` | GET/POST | 构件管理 | `routes/deepagent.py` |
-| `/api/deepagent/artifacts/by-name/{name}/execute` | POST | 按名称执行构件 | `routes/deepagent.py` |
-| `/api/deepagent/artifacts/{id}/execute` | POST | 按 ID 执行构件 | `routes/deepagent.py` |
-| `/api/deepagent/execute` | POST | 直接执行 DeepAgent | `routes/deepagent.py` |
+```
+web/
+├── start.mjs               # Reads config.yml → launches Nuxt CLI with resolved port
+├── utils/paths.mjs         # Config.yml reader (manual YAML parser, no npm dependency)
+├── nuxt.config.ts          # Nuxt config; runtimeConfig from config.yml
+├── server/
+│   ├── api/                # Nuxt server routes (proxy to backend)
+│   │   ├── filesystem/     # File tree CRUD
+│   │   ├── parse/          # PDF parse proxy + KB registration
+│   │   ├── kb/             # KB search, catalog, document CRUD, tags
+│   │   └── preview/        # File preview endpoints
+│   ├── services/           # Core business logic (runs on Nuxt server, not browser)
+│   │   ├── tree-file-system-service.ts   # .tree-fs.json + disk operations
+│   │   ├── knowledge-base-yaml-service.ts # .knowledge-base.yml management
+│   │   ├── kb-search-service.ts          # Cross-KB keyword search
+│   │   ├── pdf-parse-service.ts          # Backend proxy + markdown backfill
+│   │   └── tag-management-service.ts     # Tag registry
+│   └── utils/
+│       ├── runtime-paths.ts  # Tree-storage path resolution
+│       └── tree-service.ts   # Singleton helpers
+├── composables/            # Vue composables (useTreeFileSystem, usePDFParser, etc.)
+├── pages/                  # file-system.vue, knowledge-search.vue, prompts.vue, etc.
+├── types/                  # TypeScript interfaces
+└── storage/tree-file-system/  # On-disk KB storage (dev; configurable path)
+```
 
-## 🚀 启动命令
+Key properties:
+- **Server-to-server proxy** — Nuxt server routes forward to backend (no CORS issues). Browser never directly hits FastAPI.
+- **Parse data flow:** `browser POST /api/parse/file-vt` → Nuxt calls backend `/api/v1/parse/file/vt` → backend returns `markdown_path` → Nuxt reads the `markdown_path` file, backfills content, writes into KB via `TreeFileSystemService.uploadFile()` (updates `.tree-fs.json` + `.knowledge-base.yml` + disk).
+- **KB search is file-read only** — `kb-search-service.ts` reads `.tree-fs.json` + `.knowledge-base.yml` directly; zero backend load.
+
+### kb-mcp (MCP Server Python)
+
+```
+kb-mcp/
+├── server.py               # ~40 MCP tools via FastMCP; parse tools are NON-BLOCKING
+├── client.py               # Copy of KbClient for quick tests
+├── kb_client/
+│   └── client.py           # All HTTP logic (server.py has zero HTTP code)
+├── config.py               # Reads URLs from shared config.yml; zero hardcoded paths
+├── task_registry.py        # In-process async background task manager for parse jobs
+├── pyproject.toml          # MCP + httpx deps
+└── .mcp.json (at root)     # Connects kb-mcp to Claude Code via stdio
+```
+
+MCP Tools by category:
+- **Health:** `health_check`, `backend_status`
+- **KB CRUD:** `kb_list`, `kb_create`, `kb_update`, `kb_delete`
+- **Document CRUD:** `kb_doc_read`, `kb_doc_create`, `kb_doc_update_meta`, `kb_doc_update_content`, `kb_doc_delete`, `kb_doc_batch_delete`, `kb_doc_move`
+- **File System:** `fs_get_tree`, `fs_get_children`, `fs_get_node`, `fs_get_count`, `fs_create_folder`, `fs_create_file`, `fs_update_node`, `fs_delete_node`, `fs_upload_file`
+- **Parse (non-blocking):** `parse_pdf`, `parse_pdf_batch`, `parse_pdf_to_kb`, `parse_pdf_to_kb_batch` — return `task_id` immediately; poll via `parse_task_status`, `parse_tasks_list`
+- **Tags:** `kb_tags_list`, `kb_tag_create`, `kb_doc_update_tags`, `kb_doc_get_by_tag`
+- **Preview:** `preview_file`
+- **Search:** `kb_search`
+
+**Architecture principle:** writes go through HTTP API (backend/web proxy), reads go through direct file access (`.tree-fs.json` + `.knowledge-base.yml`).
+
+## Key Commands
+
+### Backend
 
 ```bash
-# Dev 模式（端口 8765，自动重载）
 cd backend
+
+# Install
+uv sync
+
+# Run (dev mode — reload on, port from config.yml)
 APP_MODE=dev uv run python main.py
 
-# Prod 模式（端口 8001，无自动重载）
+# Run (prod mode — reload off)
 APP_MODE=prod uv run python main.py
 
-# 指定端口（覆盖 config.yml）
+# Override port
 BACKEND_PORT=9000 APP_MODE=dev uv run python main.py
-```
 
-## 🧪 测试
+# Tests (fast — skips integration)
+uv run pytest
 
-```bash
-cd backend
-uv run pytest tests/
+# Tests (with MinerU)
+uv run pytest --run-integration
 
-# 健康检查
+# Run a single test
+uv run pytest tests/test_unit.py -x -k "test_name"
+
+# Install MinerU (isolated venv, first time only)
+cd sandbox/mineru_module
+uv venv --python 3.12
+uv pip install mineru[all]
+cd ../..
+
+# Health check
 curl http://localhost:8765/api/v1/health
 ```
 
-## 📐 开发约定
+### Web
 
-### 模块分层
-- **routes/** — 仅定义路由和请求/响应处理。业务逻辑放在独立函数中。
-- **services/** — 业务逻辑层（如 `mineru_service.py`），被路由调用，依赖注入 manager/外部资源
-- **agent/** — 所有智能体逻辑。不与路由混在一起。
-- **models/** — 只放 Pydantic schema，不放业务逻辑。
-- **utils/** — 工具函数（路径解析等）。
+```bash
+cd web
 
-### 添加新路由
-1. 在 `app/api/routes/` 下创建 `xxx.py`
-2. 在 `app/api/routes/__init__.py` 中注册
-3. 在 `app/main.py` 的 `include_router` 中添加
+# Install
+npm install
 
-### 配置管理
-- 所有配置从 `config.yml` 读取（通过 `Config` 类的 `@property` 暴露）
-- 不要硬编码端口、URL 等
-- 不要直接读取 `.env` 文件（Config 类可扩展为支持）
+# Dev mode (port 6789)
+APP_MODE=dev npm run dev
 
-### API 响应规范
-- 成功：返回标准 Pydantic model（`response_model`）
-- 错误：返回 `JSONResponse(status_code=4xx/5xx, content={...})`
-- 不要使用 `raise HTTPException` 除非是中间件层
+# Prod mode (port 3000)
+APP_MODE=prod npm run start
 
-### 依赖管理
-- 使用 `uv sync` 安装依赖，不要手动 `pip install`
-- 新增依赖时用 `uv add <package>` 自动更新 lock 文件
-- `pyproject.toml` 是唯一依赖声明源
+# Build + preview
+npm run build
+npm run preview
+```
 
-### 代码风格
-- 类型注解必须完整（所有函数参数和返回值）
-- 日志用 `logger = logging.getLogger(__name__)` 模块级实例
-- 异常不要静默吞掉, 至少 `logger.warning` 记录
-- 路径运算统一用 `pathlib.Path`
+### kb-mcp
 
-## 🔄 Git 工作流
+```bash
+cd kb-mcp
 
-- 主分支：`master`
-- 功能分支：`feat/xxx`
-- Bug 修复：`fix/xxx`
-- 提交信息使用 conventional commits 风格
+# Install (requires backend's .venv for its sync)
+uv sync
 
-## ⚡ Claude Code 能力
+# Run standalone (stdio mode — for Agent harness)
+uv run python server.py
 
-本项目配置已优化 Claude Code 自主开发能力：
-- 自动读取 `CLAUDE.md` 了解项目规范
-- 模块化结构避免大文件（每个路由文件 < 100 行）
-- 清晰的命名空间便于理解上下文
-- 统一的 schema 层减少重复
-- 配置驱动避免硬编码
+# Run SSE mode (for HTTP transport)
+uv run python server.py --http
+```
 
-## 🧠 持久化记忆系统（MCP Memory）
+The MCP server is normally launched by Claude Code via `.mcp.json` at the monorepo root — no manual start needed.
 
-本项目使用 **MCP Memory 知识图谱** 作为持久化记忆系统，用于跨会话保持项目上下文。
+### One-click Launch
 
-### 记忆存储规范
+```bash
+./start.sh       # Linux/macOS
+start.bat        # Windows
+```
+(Launches backend + web in separate terminals.)
 
-1. **每次新对话启动时**，必须通过 `mcp__memory__search_nodes()` 或 `mcp__memory__read_graph()` 加载项目记忆，了解已有上下文后再开始工作
-
-2. **需要记住的内容**（写入知识图谱实体）：
-   - 项目架构决策和原因（例如：为什么选择某个方案）
-   - 模块间关系和依赖
-   - 用户偏好和开发约定
-   - 当前工作上下文和进度
-   - 已发现的问题和修复方案
-
-3. **不需要记住的内容**（代码库中已有的）：
-   - 代码级细节（函数签名、类定义、导入路径）— 这些已在 CLAUDE.md 和代码中
-   - 临时调试信息
-   - git 历史中已记录的变更
-
-4. **记忆操作指南**：
-   ```python
-   # 创建实体（项目/模块/关键概念）
-   mcp__memory__create_entities([
-     {"name": "...", "entityType": "module|concept|decision", "observations": [...]}
-   ])
-
-   # 创建关系
-   mcp__memory__create_relations([
-     {"from": "...", "relationType": "depends on|calls|configures|contains", "to": "..."}
-   ])
-
-   # 添加观察（追加到已有实体）
-   mcp__memory__add_observations([
-     {"entityName": "...", "contents": ["..."]}
-   ])
-
-   # 检索记忆
-   mcp__memory__search_nodes(query="MinerU parse")
-   mcp__memory__open_nodes(names=["Backend (FastAPI Python)"])
-   ```
-
-5. **每次修改重要架构/流程后**，更新对应的记忆实体观察
-
-6. **文件级记忆**：`C:\Users\87287\.claude\projects\d--codes-ClaudeGPT-rag-project-rag-knowledge\memory\` 目录下的 `.md` 文件作为补充持久化存储（大段文本内容），与 MCP Memory 同步维护。
-
-### 记忆实体命名约定
-
-| 实体类型 | 命名规范 | 示例 |
-|----------|---------|------|
-| `project` | 项目全称 | `RAG Knowledge Platform` |
-| `subproject` | 子项目名+技术栈 | `Backend (FastAPI Python)` |
-| `module` | 模块功能名 | `MinerU Integration` |
-| `concept` | 概念名 | `Data Flow` |
-| `decision` | 描述决策 | `Why add MineruParseService` |
-
-### 跨会话加载流程
+## Storage Model
 
 ```
-启动新会话
-  └→ 读取 CLAUDE.md（本项目文件）
-  └→ mcp__memory__search_nodes(query="RAG Knowledge")
-  └→ 加载相关实体观察
-  └→ 如有已知的工作上下文，恢复进度
-  └→ 开始当前任务
+web/storage/tree-file-system/
+├── .tree-fs.json                    # Global index: all folders + files with metadata
+├── {knowledge-base-name}/
+│   ├── .knowledge-base.yml          # Per-KB document index (name, description, path, tags, metadata)
+│   ├── doc1.md                      # Parsed/uploaded markdown documents
+│   └── images/                      # Images extracted from parsed PDFs
 ```
+
+- `.tree-fs.json` — authoritative tree structure; folder/file CRUD always updates it first.
+- `.knowledge-base.yml` — search index for each KB; `kb_search` reads it directly.
+
+## Configuration
+
+`config.yml` (at root) is the single source of truth for ports:
+
+```yaml
+server:
+  dev:
+    backend_port: 8765
+    frontend_port: 6789
+    backend_url: "http://localhost:8765"
+  prod:
+    backend_port: 8001
+    frontend_port: 3000
+    backend_url: "http://localhost:8001"
+```
+
+**Priority:** `BACKEND_PORT` env var > config.yml > code default.
+**Mode selection:** `APP_MODE=dev|prod` env var selects the section.
+**MinerU** has its own section in `backend/config.yml` (enabled, host, model_source, etc.).
+
+## Known Pitfalls
+
+1. **MinerU port changed to auto-pick** — `Manager` now uses `port=None` to pick a free ephemeral port. Don't hardcode 8764 in new code. Check `manager.port` or `manager.api_url`.
+2. **Stdout pipe → file** — MinerU stdout goes to `backend/logs/mineru-api.log`, never a pipe. The old [Errno 22] pipe-closure crash is solved by this + Job Object lifecycle.
+3. **HTTPS_PROXY hijacks localhost** — httpx calls use `trust_env=False` to avoid localhost calls being proxied to 7890. If adding new httpx calls, use the same flag.
+4. **kb-mcp API inconsistencies** — `kb_client` has known quirks: batch_delete requires full paths while delete/read accept bare names; `file_size` in `.knowledge-base.yml` can be stale after index updates; `name` field doesn't always sync with `path`.
+5. **Windows-only** — `pyproject.toml` has `required-environments = ["sys.platform == 'win32']`; `uv sync` fails on other platforms. The sandbox manager has cross-platform fallbacks but Windows is primary.
+6. **Submodule management** — `backend`, `web`, `frontend` are git submodules. After cloning or switching branches, run `git submodule update --init --recursive`. The `kb-mcp` directory is NOT a submodule.
+
+## Development Conventions
+
+- All ports/URLs come from `config.yml` — never hardcoded.
+- Paths resolved from `pathlib.Path(__file__)` or `import.meta.url` — never hardcoded.
+- Python: type annotations required on all function parameters and returns.
+- Python: use `logging.getLogger(__name__)`, never `print()` (except in entry-point scripts).
+- Python: `httpx` calls use `trust_env=False` to avoid proxy hijacking localhost.
+- TypeScript: server code uses `defineEventHandler` (Nuxt 3 / h3 pattern).
+- The kb-mcp `server.py` contains zero HTTP code — all HTTP lives in `kb_client/client.py`.
+- Parse tools in kb-mcp are NON-BLOCKING via `task_registry` — never `await` a parse directly in an MCP tool handler.
+- Backend return values for parsed PDFs are **paths** (not content). The Nuxt proxy layer reads the path and backfills content.

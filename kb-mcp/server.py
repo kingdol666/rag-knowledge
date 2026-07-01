@@ -19,6 +19,7 @@ Run:
 """
 from __future__ import annotations
 
+import asyncio
 import os
 import sys
 import json
@@ -444,11 +445,208 @@ async def backend_status() -> str:
 
 # ---------- entry ----------
 def main():
+    _startup_health_check_and_launch()
     if "--http" in sys.argv:
         mcp.run(transport="sse")
     else:
         mcp.run()
 
+
+
+# ================================================================
+# STARTUP HEALTH CHECK & AUTO-LAUNCH
+# ================================================================
+
+def _startup_health_check_and_launch():
+    """Perform startup health check; auto-launch backend/frontend if needed.
+
+    This runs synchronously before the MCP server starts accepting
+    connections.  If the backend or frontend is unreachable, we spawn
+    them as detached child processes and wait up to 30 s for them to
+    become ready.
+    """
+    import subprocess
+    import httpx
+    from pathlib import Path
+
+    # ---- load .env from project root if present ----
+    # MUST happen *before* 'import config' so that BACKEND_PORT etc.
+    # from .env are visible to config.py's module-level URL builders.
+    _load_dotenv()
+
+    import config
+
+    # ---- resolve directories ----
+    # Within the monorepo, backend/ and web/ are git submodules.
+    # This script lives at kb-mcp/server.py, so:
+    #   kb-mcp/../..    = rag-knowledge/      (project root)
+    #   .../backend/    = FastAPI submodule
+    #   .../web/        = Nuxt 3 submodule (the active frontend)
+    kb_mcp_dir = Path(__file__).resolve().parent          # kb-mcp/
+    project_root = kb_mcp_dir.parent                      # rag-knowledge/
+    backend_dir = project_root / "backend"
+    frontend_dir = project_root / "web"
+
+    backend_url = config.BACKEND_URL
+    web_url = config.WEB_URL
+    app_mode = os.environ.get("APP_MODE", "prod")
+
+    print(f"[kb-mcp] === Startup health check (mode={app_mode}) ===", file=sys.stderr)
+    print(f"[kb-mcp]   Backend URL : {backend_url}", file=sys.stderr)
+    print(f"[kb-mcp]   Frontend URL: {web_url}", file=sys.stderr)
+
+    needs_backend = False
+    needs_frontend = False
+
+    async def _probe():
+        nonlocal needs_backend, needs_frontend
+        async with httpx.AsyncClient(timeout=5) as client:
+            try:
+                r = await client.get(f"{backend_url}/api/v1/health")
+                if r.status_code == 200:
+                    print("[kb-mcp]   Backend : OK", file=sys.stderr)
+                else:
+                    needs_backend = True
+                    print(f"[kb-mcp]   Backend : returned status {r.status_code}", file=sys.stderr)
+            except Exception as e:
+                needs_backend = True
+                print(f"[kb-mcp]   Backend : unreachable ({e})", file=sys.stderr)
+
+            try:
+                r = await client.get(f"{web_url}/api/kb/catalog")
+                if r.status_code == 200:
+                    print("[kb-mcp]   Frontend: OK", file=sys.stderr)
+                else:
+                    needs_frontend = True
+                    print(f"[kb-mcp]   Frontend: returned status {r.status_code}", file=sys.stderr)
+            except Exception as e:
+                needs_frontend = True
+                print(f"[kb-mcp]   Frontend: unreachable ({e})", file=sys.stderr)
+
+    asyncio.run(_probe())
+
+    if not needs_backend and not needs_frontend:
+        print("[kb-mcp] Both services healthy, no auto-launch needed.", file=sys.stderr)
+        return
+
+    if needs_backend:
+        if not backend_dir.exists():
+            print(f"[kb-mcp] ERROR: Backend directory not found: {backend_dir}", file=sys.stderr)
+        else:
+            backend_port = _port_from_url(backend_url, "8001")
+            print(f"[kb-mcp] Starting backend (uv run python main.py, port={backend_port})...", file=sys.stderr)
+            subprocess.Popen(
+                ["uv", "run", "python", "main.py"],
+                cwd=str(backend_dir),
+                env={**os.environ, "APP_MODE": app_mode},
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                **_subprocess_flags(),
+            )
+
+    if needs_frontend:
+        if not frontend_dir.exists():
+            print(f"[kb-mcp] ERROR: Frontend directory not found: {frontend_dir}", file=sys.stderr)
+        else:
+            npm_cmd = "npm.cmd" if sys.platform == "win32" else "npm"
+            print("[kb-mcp] Starting frontend (npm run start)...", file=sys.stderr)
+            subprocess.Popen(
+                [npm_cmd, "run", "start"],
+                cwd=str(frontend_dir),
+                env={**os.environ, "APP_MODE": app_mode},
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                **_subprocess_flags(),
+            )
+
+    print("[kb-mcp] Waiting for services to become ready (timeout: 30s)...", file=sys.stderr)
+    _wait_for_services(needs_backend, needs_frontend, backend_url, web_url)
+
+
+def _wait_for_services(needs_backend, needs_frontend, backend_url, web_url, max_wait=30):
+    """Poll backend/frontend health endpoints until ready or timeout."""
+    import time
+    import httpx
+
+    async def _poll():
+        elapsed = 0
+        backend_ok = not needs_backend
+        frontend_ok = not needs_frontend
+        async with httpx.AsyncClient(timeout=3) as client:
+            while elapsed < max_wait:
+                if needs_backend and not backend_ok:
+                    try:
+                        r = await client.get(f"{backend_url}/api/v1/health")
+                        if r.status_code == 200:
+                            backend_ok = True
+                    except Exception:
+                        pass
+
+                if needs_frontend and not frontend_ok:
+                    try:
+                        r = await client.get(f"{web_url}/api/kb/catalog")
+                        if r.status_code == 200:
+                            frontend_ok = True
+                    except Exception:
+                        pass
+
+                if backend_ok and frontend_ok:
+                    print(f"[kb-mcp] All services ready ({elapsed}s).", file=sys.stderr)
+                    return
+
+                await asyncio.sleep(2)
+                elapsed += 2
+
+        if needs_backend and not backend_ok:
+            print(f"[kb-mcp] WARNING: Backend not ready after {max_wait}s, continuing anyway.", file=sys.stderr)
+        if needs_frontend and not frontend_ok:
+            print(f"[kb-mcp] WARNING: Frontend not ready after {max_wait}s, continuing anyway.", file=sys.stderr)
+
+    asyncio.run(_poll())
+
+
+def _port_from_url(url: str, default: str = "8001") -> str:
+    """Extract the port number from a URL string."""
+    try:
+        from urllib.parse import urlparse
+        parsed = urlparse(url)
+        if parsed.port:
+            return str(parsed.port)
+    except Exception:
+        pass
+    return default
+
+
+def _subprocess_flags():
+    """Platform-appropriate subprocess flags for detached, no-window processes."""
+    if sys.platform == "win32":
+        # DETACHED_PROCESS (0x08) | CREATE_NO_WINDOW (0x08000000)
+        return {"creationflags": 0x00000008 | 0x08000000}
+    return {"start_new_session": True}
+
+
+def _load_dotenv() -> None:
+    """Load `.env` from the monorepo root into ``os.environ`` if present.
+
+    Only sets a key when it is NOT already set in the environment, so an
+    explicit ``BACKEND_PORT=...`` on the command line or ``.mcp.json``
+    ``env`` block always wins.  Skips comment/blank lines and lines
+    without an ``=`` sign.
+    """
+    from pathlib import Path
+    env_path = Path(__file__).resolve().parent.parent / ".env"
+    if not env_path.exists():
+        return
+    with open(env_path, encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, _, val = line.partition("=")
+            key = key.strip()
+            val = val.strip().strip("\"'")
+            if key and key not in os.environ:
+                os.environ[key] = val
 
 if __name__ == "__main__":
     main()

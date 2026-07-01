@@ -16,26 +16,120 @@
 - **PDF 解析为 Markdown** — 基于 MinerU 3.x 的 OCR/VLM 引擎，保留结构、提取图片，单文件或批量解析
 - **知识库管理** — 树形文件夹结构，支持创建知识库、上传文件、自动维护索引（`.tree-fs.json` + `.knowledge-base.yml`）
 - **知识检索** — 跨知识库关键词搜索，按相关度排序，支持分段预览文档正文
-- **智能摘要** — 集成 DeepAgent (GLM-5)，为解析后的文档自动生成内容摘要
+- **智能摘要** — 为解析后的文档自动生成内容摘要（通过 LLM 集成）
 
 ---
 
 ## 架构
 
 ```
-浏览器 (6789/3000)
+浏览器 (6789 / 3000)
     │
     ▼
-Nuxt 前端 (代理层)          ← 文件管理、解析触发、知识检索页面
+Nuxt 3 前端 (代理层)          ← 文件管理、解析触发、知识检索页面
     │  server-to-server
     ▼
-FastAPI 后端 (8765/8001)    ← 解析调度、MinerU 管理、DeepAgent
-    │  subprocess
+FastAPI 后端 (8765 / 8001)    ← 解析调度、MinerU 子进程管理
+    │  subprocess (Job Object)
     ▼
-MinerU OCR 引擎 (8764)      ← PDF → Markdown 转换
+MinerU OCR 引擎 (临时端口)     ← PDF → Markdown 转换
 ```
 
-三个服务通过 `config.yml` 统一配置端口和 CORS，互不硬编码。
+还有一个 **MCP 服务层**（由 Claude Code 通过 stdio 自动连接）：
+
+```
+Claude Code / Agent
+    │  MCP stdio (kb-mcp)
+    ▼
+kb-mcp MCP Server              ← ~40 个 MCP 工具：KB CRUD、解析、搜索、标签
+    │  HTTP → Nuxt / FastAPI    +   直接读取文件索引
+    ▼
+Nuxt / FastAPI / 磁盘文件       ← 写入走 HTTP 接口，读取直接读索引文件
+```
+
+三个服务 + MCP 层都通过 `config.yml` 统一配置端口和 CORS，互不硬编码。
+
+---
+
+## MCP 自动启动机制
+
+MCP 服务器（`kb-mcp`）启动时自动检查后端和前端是否可达，不可达时**静默在后台启动**（无控制台窗口）：
+
+1. **健康探测** — 同时 HTTP GET 后端 `/api/v1/health` 和前端 `/api/kb/catalog`
+2. **静默启动** — 未运行的服务以 `DETACHED_PROCESS | CREATE_NO_WINDOW` 模式拉起
+3. **等待就绪** — 最多等 30 秒，轮询直到就绪
+4. **优雅降级** — 超时后打印警告，不阻塞 MCP 启动
+
+### 优先级链（ENV > config.yml）
+
+| 环境变量 | 作用 | 示例 |
+|----------|------|------|
+| `APP_MODE` | 选择 `dev`/`prod` 配置段 | `dev` |
+| `BACKEND_URL` | **完整后端 URL**（最高优先级） | `http://localhost:9000` |
+| `BACKEND_PORT` | 后端端口（env 驱动时使用） | `9000` |
+| `WEB_URL` | **完整前端 URL**（最高优先级） | `http://localhost:4000` |
+| `WEB_PORT` / `FRONTEND_PORT` | 前端端口 | `4000` |
+| `NUXT_PDF_PARSER_API_URL` | 前端→后端 API 地址 | `http://localhost:9000` |
+
+```
+.mcp.json env   (最高 — 已存在于 process.env，不被 .env 覆盖)
+    │  未设置则 fallback
+    ▼
+.env 文件        (中等 — 被 _load_dotenv() 加载，不覆盖已存在的键)
+    │  未设置则 fallback
+    ▼
+config.yml      (最低 — 各模块约定的默认端口和 URL)
+```
+
+### 使用方式
+
+**方式一：Claude Code 自动启动（推荐）**
+
+将 `.mcp.json` 放到仓库根目录：
+```json
+{
+  "mcpServers": {
+    "kb-mcp": {
+      "command": "uv",
+      "args": ["run", "--directory", "kb-mcp", "python", "server.py"],
+      "env": { "APP_MODE": "dev" }
+    }
+  }
+}
+```
+Claude Code 连接时自动检查后端/前端，未运行则静默启动后台进程。
+
+**方式二：手动启动 MCP 服务**
+```bash
+# stdio 模式（供 Agent harness 使用）
+uv run --directory kb-mcp python server.py
+
+# SSE 模式（HTTP 传输）
+uv run --directory kb-mcp python server.py --http
+```
+
+**方式三：独立启动前后端**
+```bash
+# 终端 1：后端
+cd backend && APP_MODE=dev uv run python main.py
+
+# 终端 2：前端
+cd web && APP_MODE=dev npm run start
+```
+
+### 在 `.env` 中自定义端口
+
+```bash
+# .env 文件 — 设置后会覆盖 config.yml 的端口
+BACKEND_PORT=9000
+WEB_PORT=4000
+```
+
+此时 MCP 自动启动时：
+- 健康探测 → 探测 `127.0.0.1:9000`（后端）和 `127.0.0.1:4000`（前端）
+- 自动启动 → 后端在 9000 端口启动，前端在 4000 端口启动（均无窗口）
+- 前端 API 连接 → `NUXT_PDF_PARSER_API_URL` 自动设为 `http://localhost:9000`
+- MCP 工具路由 → `kb_client` 的 `BACKEND_URL` 和 `WEB_URL` 自动对应
 
 ---
 
@@ -95,17 +189,11 @@ start.bat
 <details>
 <summary>手动启动（三个终端）</summary>
 
-**终端 A — MinerU (端口 8764)**
+**终端 A — MinerU**
 
+MinerU 由后端**自动管理**，无需手动启动。后端启动时自动拉起 `mineru-api` 子进程（分配临时端口，无控制台窗口）。如果仍要手动启动：
 ```bash
 cd backend
-# Windows
-set CUDA_VISIBLE_DEVICES=-1
-set MINERU_DEFAULT_BACKEND=pipeline
-set MINERU_MODEL_SOURCE=modelscope
-sandbox/mineru_module/.venv/Scripts/mineru-api.exe --host 127.0.0.1 --port 8764
-
-# Linux / macOS
 CUDA_VISIBLE_DEVICES=-1 MINERU_DEFAULT_BACKEND=pipeline \
   MINERU_MODEL_SOURCE=modelscope \
   sandbox/mineru_module/.venv/bin/mineru-api --host 127.0.0.1 --port 8764
@@ -132,7 +220,6 @@ APP_MODE=dev npm run start
 ```bash
 # 健康检查
 curl http://localhost:8765/api/v1/health     # 后端
-curl http://127.0.0.1:8764/health             # MinerU
 
 # 打开前端
 # 浏览器访问 http://localhost:6789
@@ -147,7 +234,7 @@ curl http://127.0.0.1:8764/health             # MinerU
 | Web UI | 6789 | 3000 | Nuxt 3 前端 |
 | API | 8765 | 8001 | FastAPI 后端 |
 | API Docs | 8765/docs | 8001/docs | Swagger 文档 |
-| MinerU | 8764 | 8764 | PDF 解析引擎 |
+| MinerU | 自动分配 | 自动分配 | PDF 解析引擎（后端自动管理，不固定端口） |
 
 ---
 
