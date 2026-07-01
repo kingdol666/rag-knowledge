@@ -33,6 +33,19 @@ kb_search(query="<filename without extension>", top_k=5)
 **Rationale**: Most duplicates in the collection come from parsing the same PDF
 multiple times into different test KBs. A simple name match catches >90% of these.
 
+### A0b — Content-Hash Dedup (enhanced)
+
+For suspicious duplicates (same file size, similar topic but different name):
+
+1. Read the first 500 chars of the incoming document.
+2. Compare against the first 500 chars of the existing document in the matched KB:
+   `kb_doc_read(kb_id, doc_path, max_chars=500)`
+3. Compute a simple signature: word-count + first-sentence similarity.
+4. If content is clearly the same: "Content matches '[existing-doc]' in [KB-Name].
+   This is a duplicate. Skipping. Would you like to rename the copy or keep both?"
+
+This catches renamed PDFs and version copies that filename-only dedup misses.
+
 ## A1 — Survey First
 
 ```

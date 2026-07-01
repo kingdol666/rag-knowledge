@@ -168,8 +168,24 @@ Tag Health:
   - "tag-a" and "tag-b" should be merged (kb_doc_update_tags to replace)
 ```
 
----
+### O7d — Orphan Tag Resolution
 
+When you find orphan tags (tags with 0 documents), use this workaround:
+
+1. For orphan tag "dead-tag":
+   - Check if the tag was used on a now-deleted document's KB
+   - If the KB still has related documents: create a replacement tag with
+     `kb_tag_create("rescue-tag")` and assign it via `kb_doc_update_tags()`
+   - This "migrates" the usage away from the orphan
+
+2. If no documents remain in the orphan tag's original domain:
+   - Report: "Tag 'dead-tag' is orphaned with no related content. 
+     It remains in the registry (no MCP tool to delete orphan tags)
+     but does not affect search or operations."
+
+3. If the orphan is a misspelling and you find documents that should use it:
+   - Apply `kb_doc_update_tags(kb_id, doc_path, ["correct-tag"])` to the right docs
+   - The orphan stays in the registry but is now unused and harmless
 ## CRITICAL RULES
 1. O2 (read content) is NOT optional. Never classify a KB by name alone.
 2. Merges: move docs FIRST, delete SECOND. Deleting first loses data.

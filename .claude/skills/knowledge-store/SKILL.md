@@ -35,6 +35,20 @@ administrator subagent. Do not handle KB tasks yourself.
 Do NOT add `=== SCENARIO ===` tags or hardcoded scenario hints. Archival
 will diagnose the scenario autonomously.
 
+### Multi-Scenario Dispatch Order
+
+When the user's request covers multiple knowledge-base operations,
+invoke Archival with scenarios ordered for maximum efficiency:
+
+1. **Organize first** — Clean up the collection before new intake
+2. **Ingest second** — New documents enter a clean, well-structured KB
+3. **Manage third** — Post-ingest adjustments (move, rename, delete)
+4. **List/Search last** — Present final state of the collection
+
+This prevents Archival from moving documents twice (once during ingest,
+once during organize). Describe the full workflow in a single prompt
+so Archival can plan the entire session.
+
 ---
 
 ## For Archival (preloaded at subagent startup)
