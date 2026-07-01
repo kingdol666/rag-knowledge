@@ -3,6 +3,7 @@
 # ============================================
 # 这是唯一的端口配置来源，前后端启动时自动读取。
 # 修改此文件后重启对应服务即可生效。
+# .env 中的同名变量会覆盖此文件中的值。
 # ============================================
 
 server:
@@ -10,16 +11,75 @@ server:
   cors_origins:
     - "*"
 
-  # ── Dev 模式（npm run dev / python main.py）─
+  # ── Dev 模式（热重载）─
   dev:
     host: "0.0.0.0"
     backend_port: 8765
     frontend_port: 6789
     backend_url: "http://localhost:8765"
 
-  # ── Prod 模式（npm run build && npm run preview / uvicorn without reload）─
+  # ── Prod 模式（生产部署）─
   prod:
     host: "0.0.0.0"
     backend_port: 8001
     frontend_port: 3000
     backend_url: "http://localhost:8001"
+
+# ============================================
+# 存储路径配置（前后端共享）
+# ============================================
+# 后端需通过此路径读取 .tree-fs.json、文档正文等。
+# .env 的 TREE_STORAGE_PATH 优先级最高。
+# ============================================
+storage:
+  # web 端 tree-file-system 的相对或绝对路径
+  # 相对路径基于项目根目录（rag-knowledge/）
+  tree_fs_root: "./web/storage/tree-file-system"
+
+# ============================================
+# 向量检索配置
+# ============================================
+vector:
+  enabled: true
+  # ChromaDB 持久化目录（相对项目根）
+  persist_dir: "./chroma_db"
+  collection_prefix: "kb_"
+  chunk_size: 500
+  chunk_overlap: 50
+  top_k: 5
+  score_threshold: 0.3
+
+# ============================================
+# Embedding 模型配置
+# ============================================
+embedding:
+  model_name: "BAAI/bge-m3"
+  # 模型缓存目录（相对项目根）
+  cache_dir: "./models_cache"
+  device: "cpu"
+  batch_size: 32
+  normalize: true
+
+# ============================================
+# 知识图谱配置（Neo4j）
+# ============================================
+graph:
+  enabled: true
+  uri: "bolt://127.0.0.1:7687"
+  username: "neo4j"
+  # 支持 ${NEO4J_PASSWORD} 语法从环境变量读取，避免明文存储
+  password: "${NEO4J_PASSWORD}"
+  database: "neo4j"
+
+# ============================================
+# 两阶段检索配置
+# ============================================
+search:
+  two_stage:
+    enabled: true
+    stage1_top_k: 20
+    stage2_top_k: 5
+    stage1_keyword_weight: 0.5
+    stage1_graph_weight: 0.5
+    graph_neighbor_depth: 1
+    min_candidates: 3
