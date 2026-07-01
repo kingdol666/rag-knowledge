@@ -400,3 +400,62 @@ class KbClient:
             except Exception as e:
                 results[name] = {"error": str(e)}
         return results
+
+    # ================================================================
+    # BACKEND POST/GET (新增：让 MCP 工具能调用后端 search/graph API)
+    # ================================================================
+
+    async def _post_backend_json(self, endpoint, body):
+        """POST JSON 到后端（base=self.backend_url）。"""
+        return await self._request("POST", endpoint, base=self.backend_url, json=body)
+
+    async def _get_backend(self, endpoint, **params):
+        """GET 后端接口。"""
+        return await self._request("GET", endpoint, base=self.backend_url, params=params)
+
+    # ================================================================
+    # 向量检索与两阶段检索（新增）
+    # ================================================================
+
+    async def vector_search(self, query, kb_id="", top_k=5):
+        """向量语义搜索。"""
+        body = {"query": query, "top_k": top_k}
+        if kb_id:
+            body["kb_id"] = kb_id
+        return await self._post_backend_json("/api/v1/search/vector", body)
+
+    async def two_stage_search(self, query, kb_id="", stage1_top_k=20,
+                                stage2_top_k=5, enable_graph_expansion=True):
+        """两阶段精准检索。"""
+        body = {
+            "query": query,
+            "stage1_top_k": stage1_top_k,
+            "stage2_top_k": stage2_top_k,
+            "enable_graph_expansion": enable_graph_expansion,
+        }
+        if kb_id:
+            body["kb_id"] = kb_id
+        return await self._post_backend_json("/api/v1/search/two-stage", body)
+
+    async def reindex(self, kb_id="", force=False):
+        """重建索引。"""
+        body = {"force": force}
+        if kb_id:
+            body["kb_id"] = kb_id
+        return await self._post_backend_json("/api/v1/search/reindex", body)
+
+    async def graph_search(self, keyword, limit=20):
+        """图谱实体搜索。"""
+        return await self._get_backend(
+            "/api/v1/graph/search", keyword=keyword, limit=limit
+        )
+
+    async def graph_neighbors(self, entity_name, depth=1):
+        """图谱邻居子图。"""
+        return await self._get_backend(
+            "/api/v1/graph/neighbors", entity_name=entity_name, depth=depth
+        )
+
+    async def graph_stats(self):
+        """图谱统计。"""
+        return await self._get_backend("/api/v1/graph/stats")

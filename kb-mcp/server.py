@@ -443,6 +443,79 @@ async def backend_status() -> str:
     return _j(await _client().backend_status())
 
 
+# ============================================================
+# 向量检索与两阶段精准检索（新增）
+# ============================================================
+
+@mcp.tool()
+async def kb_search_vector(query: str, kb_id: str = "", top_k: int = 5) -> str:
+    """向量语义搜索文档片段。
+
+    Args:
+        query: 查询文本
+        kb_id: 限定知识库；空则跨库
+        top_k: 返回结果数
+
+    Returns:
+        {success, results: [{content, score, doc_path, chunk_index, kb_id}]}
+    """
+    return _j(await _client().vector_search(query, kb_id, top_k))
+
+
+@mcp.tool()
+async def kb_search_two_stage(
+    query: str,
+    kb_id: str = "",
+    stage1_top_k: int = 20,
+    stage2_top_k: int = 5,
+    enable_graph_expansion: bool = True,
+) -> str:
+    """两阶段精准检索：先广搜索定位候选文档，再向量精筛片段。
+
+    推荐 Agent 首选此工具，比纯向量检索更精准，避免幻觉。
+
+    Args:
+        query: 用户问题
+        kb_id: 限定知识库；空则跨库
+        stage1_top_k: Stage 1 候选文档数
+        stage2_top_k: Stage 2 每文档返回片段数
+        enable_graph_expansion: 是否启用图谱邻居扩展
+
+    Returns:
+        {success, stage1: {candidates}, stage2: {results}, total_results}
+    """
+    return _j(await _client().two_stage_search(
+        query, kb_id, stage1_top_k, stage2_top_k, enable_graph_expansion
+    ))
+
+
+@mcp.tool()
+async def kb_reindex(kb_id: str = "", force: bool = False) -> str:
+    """重建向量索引和知识图谱。kb_id 为空则重建全部。
+
+    force=True 时强制重建所有文档（包括已索引的）。
+    """
+    return _j(await _client().reindex(kb_id, force))
+
+
+@mcp.tool()
+async def kb_graph_search(keyword: str, limit: int = 20) -> str:
+    """搜索知识图谱中的实体。"""
+    return _j(await _client().graph_search(keyword, limit))
+
+
+@mcp.tool()
+async def kb_graph_neighbors(entity_name: str, depth: int = 1) -> str:
+    """获取实体的邻居子图，用于探索实体间关系。"""
+    return _j(await _client().graph_neighbors(entity_name, depth))
+
+
+@mcp.tool()
+async def kb_graph_stats() -> str:
+    """返回知识图谱统计信息。"""
+    return _j(await _client().graph_stats())
+
+
 # ---------- entry ----------
 def main():
     _startup_health_check_and_launch()
