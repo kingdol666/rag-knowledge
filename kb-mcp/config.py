@@ -69,14 +69,15 @@ def _url_from_config(key: str, section: str | None = None) -> str | None:
 def _default_web_url() -> str:
     """Web frontend URL — env, .env, or config.yml, in that order."""
 
-    # 1) env / .env override (WEB_URL / WEB_PORT / FRONTEND_PORT)
+    # 1) env / .env override (WEB_URL / WEB_PORT + WEB_HOST / FRONTEND_PORT)
     web_url = os.environ.get("WEB_URL")
     if web_url:
         return web_url
 
     env_port = os.environ.get("WEB_PORT") or os.environ.get("FRONTEND_PORT")
     if env_port:
-        return f"http://localhost:{env_port}"
+        hostname = os.environ.get("WEB_HOST", "localhost")
+        return f"http://{hostname}:{env_port}"
 
     # 2) config.yml frontend_url (if ever added)
     val = _url_from_config("frontend_url")

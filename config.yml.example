@@ -1,0 +1,69 @@
+# ============================================
+# RAG Knowledge Platform — 完整配置模板
+# ============================================
+# 这是所有模块（backend / web / kb-mcp）的共享配置。
+# .env 优先级高于此文件中的同名值。
+# 复制为 config.yml 后生效。
+#
+# 所有可配置字段均在此列出，包括可选 / 高级字段。
+# ============================================
+
+
+# ── 服务器 / 端口配置 ──────────────────────────────────────
+server:
+  # 跨域来源（CORS）
+  # "*" = 允许所有来源（推荐开发环境）
+  # 生产环境应限定具体域名：
+  #   - "https://example.com"
+  cors_origins:
+    - "*"
+
+  # ── Dev 模式（热重载）───────────────────────────────────
+  dev:
+    host: "0.0.0.0"              # 监听地址
+    backend_port: 8765            # 后端 FastAPI 端口
+    frontend_port: 6789           # 前端 Nuxt 端口
+    backend_url: "http://localhost:8765"   # 后端 API URL（k8s/反向代理时可改）
+
+  # ── Prod 模式（生产部署）─────────────────────────────────
+  prod:
+    host: "0.0.0.0"
+    backend_port: 8001
+    frontend_port: 3000
+    backend_url: "http://localhost:8001"
+
+
+# ── MinerU OCR 引擎配置 ──────────────────────────────────────
+# 本项目的 PDF → Markdown 解析引擎。基于深度学习模型，
+# 支持复杂版面分析、表格识别、公式提取。
+#
+# 在 backend/config.yml 中维护（backend 独享）。
+# 此处为完整参考，需要时请同步到 backend/config.yml。
+mineru:
+  # 是否启用 MinerU OCR（设为 false 则 PDF 解析功能不可用）
+  enabled: true
+
+  # MinerU API 监听地址
+  host: "127.0.0.1"
+
+  # MinerU 启动端口：设为 null/空 → 自动选取空闲端口
+  # 设为固定端口（如 8764）可绕过自动端口选取
+  # port:
+
+  # 是否在 backend 启动时自动拉起 MinerU
+  start_on_boot: true
+
+  # 启动超时（秒）。MinerU 第一次运行需下载模型，可能需 120s+
+  startup_timeout: 60
+
+  # 模型下载源
+  #   huggingface  — 默认源，国内可能较慢
+  #   modelscope   — 阿里源，国内推荐
+  model_source: modelscope
+
+
+# ── 日志 / 调试（可选）───────────────────────────────────────
+# logging:
+#   level: "INFO"          # DEBUG / INFO / WARNING / ERROR
+#   format: "plain"        # plain / json
+#   file: "logs/backend.log"

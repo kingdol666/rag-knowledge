@@ -6,15 +6,16 @@
 # ============================================
 
 server:
+  # ── 跨域：允许所有来源，完美解决前后端分离的 CORS 问题 ──
+  cors_origins:
+    - "*"
+
   # ── Dev 模式（npm run dev / python main.py）─
   dev:
     host: "0.0.0.0"
     backend_port: 8765
     frontend_port: 6789
     backend_url: "http://localhost:8765"
-    cors_origins:
-      - "http://localhost:6789"
-      - "http://127.0.0.1:6789"
 
   # ── Prod 模式（npm run build && npm run preview / uvicorn without reload）─
   prod:
@@ -22,6 +23,3 @@ server:
     backend_port: 8001
     frontend_port: 3000
     backend_url: "http://localhost:8001"
-    cors_origins:
-      - "http://localhost:3000"
-      - "http://127.0.0.1:3000"

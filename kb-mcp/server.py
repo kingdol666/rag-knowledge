@@ -534,14 +534,15 @@ def _startup_health_check_and_launch():
             print(f"[kb-mcp] ERROR: Backend directory not found: {backend_dir}", file=sys.stderr)
         else:
             backend_port = _port_from_url(backend_url, "8001")
-            print(f"[kb-mcp] Starting backend (uv run python main.py, port={backend_port})...", file=sys.stderr)
+            flags_info = " (visible console)" if app_mode == "dev" else " (background)"
+            print(f"[kb-mcp] Starting backend{flags_info} (uv run python main.py, port={backend_port})...", file=sys.stderr)
             subprocess.Popen(
                 ["uv", "run", "python", "main.py"],
                 cwd=str(backend_dir),
                 env={**os.environ, "APP_MODE": app_mode},
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
-                **_subprocess_flags(),
+                **_subprocess_flags(app_mode),
             )
 
     if needs_frontend:
@@ -549,14 +550,15 @@ def _startup_health_check_and_launch():
             print(f"[kb-mcp] ERROR: Frontend directory not found: {frontend_dir}", file=sys.stderr)
         else:
             npm_cmd = "npm.cmd" if sys.platform == "win32" else "npm"
-            print("[kb-mcp] Starting frontend (npm run start)...", file=sys.stderr)
+            flags_info = " (visible console)" if app_mode == "dev" else " (background)"
+            print(f"[kb-mcp] Starting frontend{flags_info} ({npm_cmd} run start)...", file=sys.stderr)
             subprocess.Popen(
                 [npm_cmd, "run", "start"],
                 cwd=str(frontend_dir),
                 env={**os.environ, "APP_MODE": app_mode},
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
-                **_subprocess_flags(),
+                **_subprocess_flags(app_mode),
             )
 
     print("[kb-mcp] Waiting for services to become ready (timeout: 30s)...", file=sys.stderr)
@@ -617,21 +619,31 @@ def _port_from_url(url: str, default: str = "8001") -> str:
     return default
 
 
-def _subprocess_flags():
-    """Platform-appropriate subprocess flags for detached, no-window processes."""
+def _subprocess_flags(app_mode: str = "prod"):
+    """Platform-appropriate subprocess flags for detached child processes.
+
+    In ``prod`` mode: hide console window (DETACHED_PROCESS | CREATE_NO_WINDOW).
+    In ``dev``  mode: show a visible console window so the developer can see
+    logs, Ctrl+C to stop, etc. (only CREATE_NEW_CONSOLE on Windows).
+    """
     if sys.platform == "win32":
-        # DETACHED_PROCESS (0x08) | CREATE_NO_WINDOW (0x08000000)
-        return {"creationflags": 0x00000008 | 0x08000000}
+        if app_mode == "dev":
+            # CREATE_NEW_CONSOLE (0x10) — child gets its own terminal window
+            return {"creationflags": 0x00000010}
+        else:
+            # DETACHED_PROCESS (0x08) | CREATE_NO_WINDOW (0x08000000)
+            return {"creationflags": 0x00000008 | 0x08000000}
+    if app_mode == "dev":
+        return {}
     return {"start_new_session": True}
 
 
 def _load_dotenv() -> None:
     """Load `.env` from the monorepo root into ``os.environ`` if present.
 
-    Only sets a key when it is NOT already set in the environment, so an
-    explicit ``BACKEND_PORT=...`` on the command line or ``.mcp.json``
-    ``env`` block always wins.  Skips comment/blank lines and lines
-    without an ``=`` sign.
+    Unconditionally overrides existing values — ``.env`` is the single
+    source of truth for project configuration.  Call this *before* any
+    code that reads env vars (``import config``, etc.).
     """
     from pathlib import Path
     env_path = Path(__file__).resolve().parent.parent / ".env"
@@ -645,7 +657,7 @@ def _load_dotenv() -> None:
             key, _, val = line.partition("=")
             key = key.strip()
             val = val.strip().strip("\"'")
-            if key and key not in os.environ:
+            if key:
                 os.environ[key] = val
 
 if __name__ == "__main__":
