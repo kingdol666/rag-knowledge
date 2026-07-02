@@ -1,368 +1,507 @@
 # RAG Knowledge Platform
 
-> 文档智能解析 + 知识库管理 + 关键词检索的一体化平台
-
-[![Python](https://img.shields.io/badge/Python-3.12-blue)](https://python.org)
+[![Python](https://img.shields.io/badge/Python-3.11%2B-blue)](https://python.org)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.139%2B-009688)](https://fastapi.tiangolo.com)
 [![Nuxt](https://img.shields.io/badge/Nuxt-3.x-00DC82)](https://nuxt.com)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688)](https://fastapi.tiangolo.com)
+[![Neo4j](https://img.shields.io/badge/Neo4j-5.20-008CC1)](https://neo4j.com)
+[![ChromaDB](https://img.shields.io/badge/ChromaDB-1.5%2B-1E1E1E)](https://www.trychroma.com)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-把 PDF 文档解析为标准 Markdown，自动归档到树形知识库，并通过关键词检索跨库查询文档。
+> A local-first, Agent-native knowledge base platform. Parse PDFs into structured Markdown, index them with keyword + vector + knowledge graph, and let both humans and AI agents query them through a unified MCP interface.
 
 ---
 
-## 它能做什么
+## TL;DR
 
-- **PDF 解析为 Markdown** — 基于 MinerU 3.x 的 OCR/VLM 引擎，保留结构、提取图片，单文件或批量解析
-- **知识库管理** — 树形文件夹结构，支持创建知识库、上传文件、自动维护索引（`.tree-fs.json` + `.knowledge-base.yml`）
-- **知识检索** — 跨知识库关键词搜索，按相关度排序，支持分段预览文档正文
+```bash
+git clone --recursive https://github.com/kingdol666/rag-knowledge.git
+cd rag-knowledge
+cp .env.example .env
+cp config.yml.example config.yml
 
----
+# Windows
+start.bat dev
 
-## 架构
-
+# macOS / Linux
+./start.sh dev
 ```
-浏览器 (6789 / 3000)
+
+Then open [http://localhost:6789](http://localhost:6789).
+
+---
+
+## Table of Contents
+
+- [What is this?](#what-is-this)
+- [Key Features](#key-features)
+- [Architecture](#architecture)
+- [Directory Structure](#directory-structure)
+- [Quick Start](#quick-start)
+- [Operation Workflow](#operation-workflow)
+- [Configuration](#configuration)
+- [Design Philosophy](#design-philosophy)
+- [Troubleshooting](#troubleshooting)
+- [Known Gaps &amp; Roadmap](#known-gaps--roadmap)
+- [License](#license)
+
+---
+
+## What is this?
+
+RAG Knowledge Platform turns your local documents into a searchable, traceable, and agent-accessible knowledge base.
+
+It is built around three ideas:
+
+1. **Local-first**: All files, indexes, and metadata stay on your machine.
+2. **Multi-signal retrieval**: Combine keyword search (BM25), semantic search (BGE-M3 + ChromaDB), and knowledge graph traversal (Neo4j) to reduce hallucination.
+3. **Agent-native**: Expose all capabilities as MCP tools so Claude Code, Cursor, or any MCP-compatible agent can manage and query the knowledge base directly.
+
+---
+
+## Key Features
+
+| Feature                             | Description                                                             |
+| ----------------------------------- | ----------------------------------------------------------------------- |
+| **PDF Parsing**               | MinerU OCR/VLM extracts text, tables, and images into Markdown.         |
+| **Knowledge Base Management** | UUID-based KBs, tree filesystem, tags, descriptions.                    |
+| **Keyword Search**            | jieba + BM25 full-text search across all KBs.                           |
+| **Vector Search**             | BGE-M3 embeddings + ChromaDB for semantic retrieval.                    |
+| **Knowledge Graph**           | Neo4j stores entities and relations extracted from documents.           |
+| **Two-Stage Search**          | BM25 + graph expansion for recall, vector search for precision.         |
+| **MCP Server**                | ~35 tools for agents: ingest, search, manage, graph query, reindex.     |
+| **Claude Code Skills**        | 8 skills for autonomous KB governance: ingest, organize, verify, batch. |
+| **Web Console**               | Nuxt 3 UI for browsing, uploading, parsing, and searching.              |
+
+---
+
+## Architecture
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│  Agent / Claude Code                                        │
+│  .claude/skills/*  →  Archival dispatcher  →  MCP tools     │
+└──────────────────────────┬──────────────────────────────────┘
+                           │ stdio / MCP
+┌──────────────────────────▼──────────────────────────────────┐
+│  kb-mcp/server.py                                           │
+│  ~35 MCP tools (search, parse, manage, graph, reindex)      │
+└──────────────────────────┬──────────────────────────────────┘
+                           │ HTTP
+┌──────────────────────────▼──────────────────────────────────┐
+│  Web Layer (Nuxt 3)                                         │
+│  web/pages/*  +  web/server/api/*  (proxy to backend)       │
+└──────────────────────────┬──────────────────────────────────┘
+                           │ HTTP
+┌──────────────────────────▼──────────────────────────────────┐
+│  Backend Layer (FastAPI + uv)                               │
+│  parse  ·  search  ·  vector  ·  graph  ·  health           │
+└──────────────────────────┬──────────────────────────────────┘
+                           │
+┌──────────────────────────▼──────────────────────────────────┐
+│  Storage                                                    │
+│  Filesystem  +  .tree-fs.json  +  .knowledge-base.yml       │
+│  ChromaDB (vectors)  +  Neo4j (graph)  +  models_cache      │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Retrieval Flow
+
+```text
+User Query
     │
-    ▼
-Nuxt 3 前端 (代理层)          ← 文件管理、解析触发、知识检索页面
-    │  server-to-server
-    ▼
-FastAPI 后端 (8765 / 8001)    ← 解析调度、MinerU 子进程管理
-    │  subprocess (Job Object)
-    ▼
-MinerU OCR 引擎 (临时端口)     ← PDF → Markdown 转换
-```
-
-**MCP 服务层**（由 Claude Code 通过 stdio 自动连接）：
-
-```
-Claude Code / Agent
-    │  MCP stdio (kb-mcp)
-    ▼
-kb-mcp MCP Server              ← ~40 个 MCP 工具：KB CRUD、解析、搜索、标签
-    │  HTTP → Nuxt / FastAPI    +   直接读取文件索引
-    ▼
-Nuxt / FastAPI / 磁盘文件       ← 写入走 HTTP 接口，读取直接读索引文件
+    ├──► Keyword Search (BM25)
+    │
+    ├──► Graph Neighbor Expansion (Neo4j)
+    │
+    └──► Candidate Document Set
+              │
+              ▼
+    Vector Re-ranking (BGE-M3 + ChromaDB)
+              │
+              ▼
+    Final Results with Source Documents
 ```
 
 ---
 
-## 配置体系
+## Directory Structure
 
-**三层优先级，`.env` 是唯一入口：**
-
+```text
+rag-knowledge/
+├── backend/               # FastAPI backend (git submodule)
+│   ├── app/
+│   │   ├── api/routes/    # health, parse, search, graph
+│   │   ├── services/      # mineru, vector, graph, keyword, embedding
+│   │   └── main.py        # FastAPI entry
+│   ├── config.yml         # MinerU configuration
+│   └── pyproject.toml     # Python dependencies (uv)
+├── web/                   # Nuxt 3 web frontend (git submodule)
+│   ├── pages/             # Vue pages
+│   ├── server/api/        # Nuxt server routes (backend proxy)
+│   └── start.mjs          # config.yml-aware launcher
+├── kb-mcp/                # MCP server (stdio)
+│   ├── server.py          # MCP tool definitions
+│   └── kb_client/         # HTTP client to backend
+├── .claude/skills/        # Claude Code skills
+│   ├── KNOWLEDGE-SYSTEM.md
+│   ├── knowledge-store/
+│   ├── knowledge-ingest/
+│   ├── knowledge-search/
+│   ├── knowledge-organize/
+│   ├── knowledge-verify/
+│   └── ...
+├── scripts/               # Startup helpers
+│   ├── start-backend.sh|bat
+│   ├── start-web.sh|bat
+│   └── test-*.py          # E2E / integration tests
+├── storage/               # Runtime file storage
+├── config.yml             # Shared platform config
+├── .env                   # Shared environment variables
+├── docker-compose.yml     # Neo4j container
+├── start.sh               # One-command launcher (Linux/macOS)
+└── start.bat              # One-command launcher (Windows)
 ```
-.env 文件（项目根目录）
-    ↓ 无条件覆盖
-os.environ（进程环境变量）
-    ↓ 各模块按 APP_MODE 选择段
-config.yml（dev / prod 段）
-    ↓ 最后 fallback
-代码内部默认值
+
+---
+
+## Quick Start
+
+### Prerequisites
+
+| Component                     | Version                    | Required For                  |
+| ----------------------------- | -------------------------- | ----------------------------- |
+| Python                        | 3.11 or 3.12               | Backend                       |
+| [uv](https://docs.astral.sh/uv/) | latest                     | Backend dependency management |
+| Node.js                       | >= 18 (LTS 22 recommended) | Web frontend                  |
+| npm                           | bundled with Node.js       | Web frontend                  |
+| Git                           | with submodule support     | Cloning                       |
+| Docker / Docker Compose       | optional                   | Neo4j knowledge graph         |
+
+### 1. Clone
+
+```bash
+git clone --recursive https://github.com/kingdol666/rag-knowledge.git
+cd rag-knowledge
 ```
 
-### `.env` 可配置变量
+If you already cloned without `--recursive`:
 
-| 变量 | 默认值(dev) | 默认值(prod) | 说明 |
-|------|:----------:|:----------:|------|
-| `APP_MODE` | `dev` | `prod` | 运行模式，决定使用 config.yml 的 dev/prod 段 |
-| `BACKEND_PORT` | `8765` | `8001` | 后端 FastAPI 端口 |
-| `BACKEND_HOST` | `0.0.0.0` | `0.0.0.0` | 后端监听地址 |
-| `BACKEND_URL` | 自动拼接 | 自动拼接 | 完整后端 URL（设置后忽略 BACKEND_PORT） |
-| `WEB_PORT` | `6789` | `3000` | 前端 Nuxt 端口 |
-| `WEB_HOST` | `localhost` | `localhost` | 前端监听地址 |
-| `WEB_URL` | 自动拼接 | 自动拼接 | 完整前端 URL（设置后忽略 WEB_PORT） |
-| `NO_RELOAD` | `0` | — | 设为 `1` 时强制 prod 模式（禁止热重载） |
-| `MINERU_HOST` | `127.0.0.1` | `127.0.0.1` | MinerU API 地址（仅 kb-mcp 健康检查用） |
-| `MINERU_PORT` | `8764` | `8764` | MinerU API 端口 |
-| `MINERU_URL` | 自动拼接 | 自动拼接 | 完整 MinerU URL |
-| `TREE_STORAGE_PATH` | `../storage/tree-file-system` | 同左 | 知识库存储路径 |
-| `MCP_HTTP_TIMEOUT` | `30` | `30` | MCP HTTP 请求超时（秒） |
-| `MCP_PARSE_TIMEOUT` | `300` | `300` | PDF 解析超时（秒） |
+```bash
+git submodule update --init --recursive
+```
 
-### `config.yml` 共享配置
+### 2. Configure
+
+```bash
+# Environment variables
+cp .env.example .env
+
+# Shared platform config
+cp config.yml.example config.yml
+```
+
+Edit `.env` if you need custom ports:
+
+```env
+APP_MODE=dev
+BACKEND_PORT=8765
+WEB_PORT=6789
+```
+
+Edit `config.yml` to enable/disable features:
 
 ```yaml
+vector:
+  enabled: true
+
+graph:
+  enabled: true
+  password: "${NEO4J_PASSWORD}"
+```
+
+If you enable the graph, set the Neo4j password in `.env`:
+
+```env
+NEO4J_PASSWORD=changeme
+```
+
+### 3. Start Neo4j (optional, for knowledge graph)
+
+```bash
+docker compose up -d neo4j
+```
+
+Neo4j Browser: [http://localhost:7474](http://localhost:7474)
+Bolt URI: `bolt://127.0.0.1:7687`
+
+### 4. Start the Platform
+
+**Windows:**
+
+```bat
+start.bat dev
+```
+
+**Linux / macOS:**
+
+```bash
+./start.sh dev
+```
+
+This launches two terminals:
+
+- Backend: [http://localhost:8765](http://localhost:8765)
+- Web: [http://localhost:6789](http://localhost:6789)
+
+### 5. Verify
+
+Open the web UI: [http://localhost:6789](http://localhost:6789)
+
+Backend health: [http://localhost:8765/api/v1/health](http://localhost:8765/api/v1/health)
+
+Backend docs: [http://localhost:8765/docs](http://localhost:8765/docs)
+
+---
+
+## Operation Workflow
+
+### 1. Create a Knowledge Base
+
+**Web UI:**
+
+1. Go to **File System**.
+2. Right-click in the tree and select **New Knowledge Base**.
+3. Enter a name and description.
+
+**MCP / Agent:**
+
+```python
+kb_create(name="Energy Reports", description="Thermal power plant technical reports.")
+```
+
+### 2. Upload and Parse a PDF
+
+**Web UI:**
+
+1. Select a KB folder.
+2. Click **Upload File** or drag a PDF.
+3. Right-click the uploaded file and select **Parse Document**.
+4. Wait for the parsing task to complete.
+
+**MCP / Agent:**
+
+```python
+parse_pdf_to_kb(
+    file_path="/absolute/path/to/document.pdf",
+    kb_id="<kb-uuid>",
+    use_ocr=True,
+    description="A report about turbine diagnostics.",
+    tags=["turbine", "diagnostics"]
+)
+```
+
+### 3. Build Vector & Graph Indexes
+
+> Currently, parsing does **not** automatically build vector/graph indexes. This step is required to enable semantic and graph search.
+
+**Via MCP:**
+
+```python
+kb_reindex(kb_id="<kb-uuid>", force=True)
+```
+
+**Via backend API:**
+
+```bash
+curl -X POST http://localhost:8765/api/v1/search/reindex \
+  -H "Content-Type: application/json" \
+  -d '{"kb_id": "<kb-uuid>", "force": true}'
+```
+
+### 4. Search
+
+**Keyword search:**
+
+```bash
+curl "http://localhost:8765/api/v1/search/?query=turbine%20failure&top_k=10"
+```
+
+**Vector search:**
+
+```bash
+curl -X POST http://localhost:8765/api/v1/search/vector \
+  -H "Content-Type: application/json" \
+  -d '{"query": "what causes turbine vibration", "top_k": 5}'
+```
+
+**Two-stage search (recommended):**
+
+```bash
+curl -X POST http://localhost:8765/api/v1/search/two-stage \
+  -H "Content-Type: application/json" \
+  -d '{"query": "turbine vibration analysis", "top_k": 5}'
+```
+
+**Graph search:**
+
+```bash
+curl "http://localhost:8765/api/v1/graph/search?keyword=turbine&limit=20"
+```
+
+### 5. Query from an Agent
+
+With the MCP server configured, an agent can ask natural-language questions:
+
+```text
+User: Search the knowledge base for documents about turbine vibration.
+Agent: kb_search_two_stage(query="turbine vibration", top_k=5)
+```
+
+---
+
+## Configuration
+
+Configuration follows this priority:
+
+```text
+Environment variables > config.yml > internal defaults
+```
+
+Key files:
+
+| File                   | Purpose                                             |
+| ---------------------- | --------------------------------------------------- |
+| `.env`               | Ports, storage path, Neo4j password, timeouts       |
+| `config.yml`         | Server ports, vector/graph settings, search weights |
+| `backend/config.yml` | MinerU-specific settings                            |
+| `.mcp.json`          | MCP server launch config for Claude Code            |
+
+### Important Settings
+
+```yaml
+# config.yml
 server:
-  cors_origins: ["*"]           # 跨域（允许所有来源）
   dev:
     backend_port: 8765
     frontend_port: 6789
     backend_url: "http://localhost:8765"
-  prod:
-    backend_port: 8001
-    frontend_port: 3000
-    backend_url: "http://localhost:8001"
 
-mineru:
-  enabled: true                 # 是否启用 MinerU OCR
-  host: "127.0.0.1"
-  model_source: modelscope      # huggingface | modelscope
-  startup_timeout: 60           # 首次启动模型下载超时（秒）
-```
+vector:
+  enabled: true
+  chunk_size: 500
+  chunk_overlap: 50
+  top_k: 5
 
-> **使用方式：** 复制 `.env.example` 为 `.env`，按需修改即可。所有模块自动读取。
+embedding:
+  model_name: "BAAI/bge-m3"
+  device: "cpu"
 
----
+graph:
+  enabled: true
+  uri: "bolt://127.0.0.1:7687"
+  username: "neo4j"
+  password: "${NEO4J_PASSWORD}"
 
-## MCP 自动启动机制
-
-MCP 服务器（`kb-mcp`）启动时自动检查后端和前端是否可达，不可达时**根据模式决定启动行为**：
-
-1. **健康探测** — HTTP GET 后端 `/api/v1/health` 和前端 `/api/kb/catalog`
-2. **模式感知启动**：
-   - `APP_MODE=dev`  → `CREATE_NEW_CONSOLE`（弹出控制台窗口，可看日志）
-   - `APP_MODE=prod` → `DETACHED_PROCESS | CREATE_NO_WINDOW`（后台静默运行）
-3. **等待就绪** — 最多等 30 秒，轮询直到就绪
-4. **优雅降级** — 超时后打印警告，不阻塞 MCP 启动
-
-### 使用方式
-
-**方式一：Claude Code 自动启动（推荐）**
-
-将 `.mcp.json` 放到仓库根目录（**无需设置 env**，所有变量从 `.env` 读取）：
-```json
-{
-  "mcpServers": {
-    "kb-mcp": {
-      "command": "uv",
-      "args": ["run", "--directory", "kb-mcp", "python", "server.py"]
-    }
-  }
-}
-```
-
-**方式二：手动启动 MCP 服务**
-```bash
-# stdio 模式
-uv run --directory kb-mcp python server.py
-
-# SSE 模式（HTTP 传输）
-uv run --directory kb-mcp python server.py --http
-```
-
-**方式三：独立启动前后端**
-```bash
-# 终端 1：后端
-cd backend && uv run python main.py
-
-# 终端 2：前端
-cd web && node start.mjs
+search:
+  two_stage:
+    enabled: true
+    stage1_keyword_weight: 0.5
+    stage1_graph_weight: 0.5
+    min_candidates: 3
 ```
 
 ---
 
-## 端口一览
+## Design Philosophy
 
-| 服务 | Dev | Prod | 说明 |
-|------|:---:|:----:|------|
-| Web UI | 6789 | 3000 | Nuxt 3 前端 |
-| API | 8765 | 8001 | FastAPI 后端 |
-| API Docs | 8765/docs | 8001/docs | Swagger 文档 |
-| MinerU | 自动分配 | 自动分配 | PDF 解析引擎（后端自动管理，不固定端口） |
+### 1. Local-First, File-Centric Storage
 
-> 所有端口均可通过 `.env` 自定义：修改 `BACKEND_PORT` / `WEB_PORT` 即可。
+Documents are stored as plain Markdown files. Metadata lives in YAML. Indexes are derived, not primary. This makes the corpus portable, version-controllable, and repairable by hand if needed.
+
+### 2. UUID Identity, Path as Location
+
+Every knowledge base has a UUID v4 identity. Renaming or moving a KB changes its path, not its ID. This keeps external references stable.
+
+### 3. Retrieval as a Pipeline, Not a Single Algorithm
+
+No single retrieval method is perfect. The platform combines:
+
+- **Keyword** for exact terminology.
+- **Vector** for semantic similarity.
+- **Graph** for relational context.
+- **Two-stage** for complex queries.
+
+Each signal is optional and degrades gracefully.
+
+### 4. Agent-Native by Default
+
+All operations are exposed as MCP tools. The web UI is one client; Claude Code (via skills) is another. The system is designed to be driven by agents as much as by humans.
+
+### 5. Explicit Verification
+
+Skills and batch operations emphasize "survey first, execute second, verify third." Health scorecards quantify collection quality over time.
 
 ---
 
-## 快速开始
+## Troubleshooting
 
-### 环境要求
-
-| 工具 | 版本 | 用途 |
-|------|------|------|
-| [uv](https://docs.astral.sh/uv/) | latest | Python 包管理 |
-| [Node.js](https://nodejs.org) | >= 18 | 前端运行 |
-| Python | 3.11 或 3.12 | 后端运行 |
-| Git | >= 2.25 | 版本控制 |
-
-### 1. 克隆（含子模块）
+### Submodule missing
 
 ```bash
-git clone --recurse-submodules https://github.com/kingdol666/rag-knowledge.git
-cd rag-knowledge
-
-# 如果克隆时没带子模块：
 git submodule update --init --recursive
 ```
 
-### 2. 安装依赖
+### Port already in use
 
-```bash
-# 后端
-cd backend && uv sync && cd ..
+The backend refuses to start if its port is occupied. Find and stop the process, or change `BACKEND_PORT`.
 
-# MinerU 隔离环境（首次需要）
-cd backend/sandbox/mineru_module
-uv venv --python 3.12
-uv pip install mineru[all]
-cd ../..
+**Windows:**
 
-# 前端
-cd web && npm install && cd ..
+```powershell
+Get-NetTCPConnection -LocalPort 8765 -State Listen |
+  ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }
 ```
 
-### 3. 配置环境
+**Linux / macOS:**
 
 ```bash
-cp .env.example .env    # 按需修改端口 / 模式
+lsof -ti:8765 | xargs kill -9
 ```
 
-### 4. 一键启动
+### Embedding model downloads slowly
+
+The first vector search triggers a download of `BAAI/bge-m3`. On first use this may take several minutes depending on network speed. A local cache is stored in `models_cache/`.
+
+### Neo4j connection fails
+
+If graph is enabled but Neo4j is not running, graph features return empty results without crashing the backend. Start Neo4j:
 
 ```bash
-# Windows
-start.bat
-
-# Linux / macOS
-./start.sh
+docker compose up -d neo4j
 ```
 
-<details>
-<summary>手动启动（三个终端）</summary>
+### Web shows "Backend unavailable"
 
-**终端 A — 后端 (端口 8765)**
+Check that:
 
-```bash
-cd backend
-uv run python main.py
-```
-
-**终端 B — 前端 (端口 6789)**
-
-```bash
-cd web
-node start.mjs
-```
-
-</details>
-
-### 5. 验证
-
-```bash
-# 后端健康检查
-curl http://localhost:8765/api/v1/health
-
-# 前端健康检查
-curl http://localhost:6789/api/kb/catalog
-```
+1. Backend is running on the port expected by `config.yml`.
+2. `BACKEND_URL` in `.env` matches the backend port.
+3. No firewall blocks localhost communication.
 
 ---
 
-## 功能导览
+## Known Gaps & Roadmap
 
-### 文件管理页面 (`/file-system`)
+The following improvements are planned or in progress:
 
-- 树形知识库浏览，支持创建文件夹/知识库
-- 上传文件（任意类型）到指定知识库
-- PDF 解析：单文件或批量上传，OCR 解析后自动归档
-- 内置预览：Markdown、PDF、图片、视频、音频、Office 文档
-
-### 知识检索页面 (`/knowledge-search`)
-
-- **浏览知识库**：以卡片网格展示所有知识库，点击查看库内文档清单
-- **关键词搜索**：跨所有知识库检索文档，按相关度排序
-- **文档预览**：点击任意文档，右侧抽屉分段加载 Markdown 正文
-
-### 解析 API
-
-前端通过 `/api/parse/*` 代理到后端 v1 接口，解析完成后自动：
-1. 回填 Markdown 正文（后端 API 直接返回内容）
-2. 写入指定知识库的 `.tree-fs.json` + `.knowledge-base.yml`
-3. 磁盘保存 `{知识库}/{文件名}.md`
-
----
-
-## 仓库结构
-
-```
-rag-knowledge/
-├── .env.example            # 环境变量模板（所有可配置变量一览）
-├── .mcp.json               # Claude Code MCP 连接配置
-├── config.yml              # 前后端共用端口/服务配置
-├── config.yml.example      # 完整配置模板（含 mineru 详细配置）
-├── start.bat               # Windows 一键启动
-├── start.sh                # Linux/macOS 一键启动
-├── backend/                # [子模块] FastAPI + MinerU 后端
-│   ├── main.py             # 入口，端口探测 + uvicorn 启动
-│   ├── app/
-│   │   ├── config.py       # 配置管理器（读取 config.yml + 环境变量）
-│   │   ├── api/routes/     # health / parse / mineru 路由
-│   │   ├── services/       # MinerU 解析服务
-│   │   └── utils/          # 路径解析工具
-│   └── sandbox/mineru_module/  # MinerU 隔离环境
-├── web/                    # [子模块] Nuxt 3 前端
-│   ├── start.mjs           # 启动入口（读取 config.yml + .env）
-│   ├── server/             # Nuxt 服务端路由（代理后端 API）
-│   └── storage/tree-file-system/  # 知识库存储目录
-├── kb-mcp/                 # [本地] MCP 服务器
-│   ├── server.py           # ~40 个 MCP 工具
-│   ├── config.py           # URL 读取（env > config.yml）
-│   ├── kb_client/          # HTTP 客户端（零硬编码）
-│   └── task_registry.py    # 异步解析任务管理
-├── scripts/                # 测试与验证脚本
-│   ├── verify-env.py               # 环境变量连通性测试
-│   ├── test-all-env-scenarios.py   # 多场景端口测试
-│   ├── test-mcp-startup-mode.py    # MCP 模式感知启动测试
-│   ├── test-config-and-mcp-e2e.py  # 配置 + MCP 端到端测试
-│   ├── test-everything-e2e.py      # 完整回归测试
-│   └── quick-config-check.py       # 无状态快速检查
-└── frontend/               # [子模块] Vue 3 旧版前端 (legacy)
-```
-
----
-
-## 知识库存储结构
-
-```
-web/storage/tree-file-system/
-├── .tree-fs.json                    # 全局索引（所有文件夹+文件）
-├── {知识库A}/
-│   ├── .knowledge-base.yml          # 库内文档索引（供检索用）
-│   ├── doc1.md                      # 实际文档
-│   └── images/                      # 文档提取的图片
-└── {知识库B}/
-    └── ...
-```
-
-- `.tree-fs.json` — 全局树结构，记录每个文件夹和文件的元数据
-- `.knowledge-base.yml` — 每个知识库根目录的文档清单，包含 name/description/path/metadata
-
----
-
-## 测试
-
-执行完整回归测试：
-
-```bash
-# 全部配置检测 + MCP dev/prod 模式端到端
-python scripts/test-everything-e2e.py
-
-# 仅配置接线检测（无需启动服务）
-python scripts/quick-config-check.py
-
-# 三场景端口测试（MCP 配置 + Backend 配置 + 启动验证）
-python scripts/test-all-env-scenarios.py
-```
-
----
-
-## 开发规范
-
-- **配置驱动**：不硬编码端口/URL，统一从 `config.yml` + `.env` 读取
-- **ENV > config.yml**：所有模块优先读取环境变量，再 fallback 配置文件
-- **类型完整**：Python 函数参数和返回值必须有类型注解
-- **Windows 优先**：`pyproject.toml` 有 `required-environments = ["win32"]`
-
----
-
-## 已知问题
-
-1. **MinerU 端口自动分配** — 避免硬编码 8764，`MineruApiManager(port=None)` 自动选取空闲端口
-2. **MinerU stdout → 文件** — 日志写入 `backend/logs/mineru-api.log`，不通过 pipe（避免 [Errno 22]）
-3. **HTTPS_PROXY 劫持 localhost** — httpx 调用使用 `trust_env=False`，避免 localhost 被代理到 7890
-4. **kb-mcp API 一致性** — `name`/`path` 不同步、`file_size` 缓存陈旧等问题
+| Gap                                  | Status          | Impact                                                               |
+| ------------------------------------ | --------------- | -------------------------------------------------------------------- |
+| Auto-index after parse               | Not implemented | Vector/graph indexes must be built manually after upload             |
+| Vector/graph UI in web frontend      | Not implemented | Web search only supports keyword search today                        |
+| Skill layer uses vector/graph search | Not implemented | Claude Code skills only call `kb_search` (BM25)                    |
+| Tests for vector/graph               | Missing         | No automated coverage for new retrieval features                     |
+| Dual frontend modules                | Legacy          | `frontend/` submodule is outdated; `web/` is the active frontend |
+| README / docs lag                    | In progress     | Backend features ahead of documentation                              |
 
 ---
 

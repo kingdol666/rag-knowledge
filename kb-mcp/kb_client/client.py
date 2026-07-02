@@ -16,7 +16,7 @@ import httpx
 DEFAULT_WEB_URL = ""  # set by caller via config.WEB_URL
 DEFAULT_BACKEND_URL = ""  # set by caller via config.BACKEND_URL
 HTTP_TIMEOUT = int(os.environ.get("MCP_HTTP_TIMEOUT", "30"))
-PARSE_TIMEOUT = int(os.environ.get("MCP_PARSE_TIMEOUT", "300"))
+PARSE_TIMEOUT = int(os.environ.get("MCP_PARSE_TIMEOUT", "5000"))
 
 
 class KbClient:
