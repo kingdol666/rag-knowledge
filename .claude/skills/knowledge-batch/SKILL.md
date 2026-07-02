@@ -98,20 +98,27 @@ Sort discovered files by type:
 
 | Extension | Method | Notes |
 |-----------|--------|-------|
-| `.pdf`, `.docx`, `.jpg` etc | `parse_pdf_to_kb()` | Non-blocking per file |
+| `.pdf`, `.docx`, `.jpg` etc | `parse_doc()` | Non-blocking per file, saves to KB |
 | `.md`, `.txt`, `.csv` etc | `kb_doc_create()` + `fs_upload_file()` | Direct content for text files |
 | Other binaries | `fs_upload_file()` | Store without parsing |
 
 ### B3c — Execute in Order
 
 1. **Parse-path files first** (MinerU is the bottleneck — start them early).
-   Submit each: `parse_pdf_to_kb(file_path, kb_id, description, tags=["batch-import"])`
+   Submit each: `parse_doc(file_path, kb_id, description, tags=["batch-import"])`
    Save all `task_id`s.
 
-2. **Direct-path files**: Read content and create immediately.
+2. **Direct-path files**: Read content and create immediately.  
+   **Check size before creating** — if content >2000 lines or >50KB,  
+   use the same chunk-splitting procedure described in Ingest A5b  
+   (split by `#`/`##` headings, create `_part-N.md` docs, copy tags).
    ```
    with open(file_path) as f:
-       kb_doc_create(kb_id, name, f.read(), description)
+       content = f.read()
+   if len(content.splitlines()) > 2000 or len(content) > 50000:
+       # Split into chunks following Ingest A5b logic
+   else:
+       kb_doc_create(kb_id, name, content, description)
    ```
 
 3. **Binary uploads**: `fs_upload_file(file_path, parent_id, description)`

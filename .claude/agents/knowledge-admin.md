@@ -32,10 +32,8 @@ tools:
   - mcp__kb-mcp__kb_doc_get_by_tag
   - mcp__kb-mcp__kb_tag_create
   - mcp__kb-mcp__kb_tags_list
-  - mcp__kb-mcp__parse_pdf
-  - mcp__kb-mcp__parse_pdf_batch
-  - mcp__kb-mcp__parse_pdf_to_kb
-  - mcp__kb-mcp__parse_pdf_to_kb_batch
+  - mcp__kb-mcp__parse_doc
+  - mcp__kb-mcp__parse_doc_batch
   - mcp__kb-mcp__parse_task_status
   - mcp__kb-mcp__parse_tasks_list
   - mcp__kb-mcp__preview_file
@@ -48,6 +46,16 @@ tools:
   - mcp__kb-mcp__fs_update_node
   - mcp__kb-mcp__fs_delete_node
   - mcp__kb-mcp__fs_upload_file
+  # Agentic RAG tools
+  - mcp__kb-mcp__kb_search_vector
+  - mcp__kb-mcp__kb_search_two_stage
+  - mcp__kb-mcp__kb_search_batch_vector
+  - mcp__kb-mcp__kb_index_document
+  - mcp__kb-mcp__kb_batch_index
+  - mcp__kb-mcp__kb_search_stats
+  - mcp__kb-mcp__kb_graph_search
+  - mcp__kb-mcp__kb_graph_neighbors
+  - mcp__kb-mcp__kb_graph_stats
 disallowedTools:
   - Edit
 model: opus
@@ -179,10 +187,16 @@ This creates a durable record the user can review later.
 | `kb_list()` | KB[] | **Every task.** All KBs with id/name/desc/docCount. |
 | `kb_get_documents(kb_id)` | Doc[] | Documents in a KB. Has name, path, tags, size, dates. |
 | `kb_tags_list()` | Tag[] | **Before every tag operation.** |
-| `kb_search(query, top_k=10)` | Hit[] | Full-text search across ALL KBs. |
+| `kb_search(query, top_k=10)` | Hit[] | **Metadata-only search** — scans document name+description, NOT full text. Use for doc-location lookup. For content search prefer `kb_search_vector` / `kb_search_two_stage`. |
 | `kb_doc_get_by_tag(tag, kb_id?)` | Doc[] | Tag-based lookup. |
 | `health_check()` | {backend,web,mineru} | **mineru unreliable** — use backend_status. |
 | `backend_status()` | {mineru...} | Authoritative MinerU health. |
+| `kb_search_vector(query, kb_id?, top_k=5)` | Chunk[] | Vector similarity search (semantic). Used by A4 vector refine. |
+| `kb_search_two_stage(query, kb_id?, stage1_top_k=20, stage2_top_k=5)` | {stage1, stage2} | **Recommended.** Two-stage: fulltext→vector. Agentic RAG primary tool. |
+| `kb_search_stats(kb_id?)` | Collections[] | Check vector index health before using vector search. |
+| `kb_graph_search(keyword, limit=20)` | Entity[] | Graph entity search — use when query has named entities. |
+| `kb_graph_neighbors(entity_name, depth=1)` | Subgraph | Entity neighbor exploration — discover connected knowledge. |
+| `kb_graph_stats()` | Graph stats | Entity/relation counts — check graph availability. |
 
 ### File System
 | Tool | Returns | Notes |
@@ -219,10 +233,7 @@ This creates a durable record the user can review later.
 ### Ingestion
 | Tool | Returns | Notes |
 |------|---------|-------|
-| `parse_pdf(file_path, use_ocr=True, parent_id="", description="", tags=None)` | Task | Non-blocking. No KB binding. |
-| `parse_pdf_to_kb(file_path, kb_id, use_ocr=True, description="", tags=None)` | Task | Non-blocking. Parse + save to KB. |
-| `parse_pdf_batch(file_paths, ...)` | Task | Non-blocking. Batch, no KB. |
-| `parse_pdf_to_kb_batch(file_paths, kb_id, ...)` | Task | Non-blocking. Batch to same KB. |
+| `parse_doc(file_path, kb_id, use_ocr=True, description="", tags=None)` | Task | Non-blocking. Supports PDF/Word/Image. Parse + save to KB. |
 | `parse_task_status(task_id)` | Status | Poll: "running"|"done"|"error" |
 | `parse_tasks_list(status="")` | Task[] | List session tasks |
 
@@ -235,7 +246,7 @@ This creates a durable record the user can review later.
 ### Format Routing Rule
 | Extension | Method |
 |-----------|--------|
-| `.pdf`, `.docx`, `.doc`, `.xlsx`, `.xls`, `.pptx`, `.ppt`, `.jpg`, `.jpeg`, `.png`, `.bmp`, `.tiff`, `.tif` | `parse_pdf_to_kb()` — non-blocking MinerU |
+| `.pdf`, `.docx`, `.doc`, `.xlsx`, `.xls`, `.pptx`, `.ppt`, `.jpg`, `.jpeg`, `.png`, `.bmp`, `.tiff`, `.tif` | `parse_doc()` — non-blocking MinerU |
 | `.md`, `.txt`, `.csv`, `.json`, `.yaml`, `.yml`, `.xml`, `.html`, `.log`, `.py`, `.js`, `.ts`, `.sh` | `kb_doc_create()` — synchronous |
 | In-memory text | `kb_doc_create()` |
 
@@ -251,7 +262,7 @@ This creates a durable record the user can review later.
 
 4. **health_check vs backend_status**: `health_check()` may report `mineru: false` when MinerU is running. `backend_status()` is authoritative.
 
-5. **Parse is non-blocking**: `parse_pdf_to_kb()` returns `{task_id, status:"running"}` immediately. Always poll `parse_task_status(task_id)` until `status:"done"`.
+5. **Parse is non-blocking**: `parse_doc()` returns `{task_id, status:"running"}` immediately. Always poll `parse_task_status(task_id)` until `status:"done"`.
 
 6. **All JSON strings**: Every tool returns a JSON-encoded string. `JSON.parse()` before use.
 
@@ -312,11 +323,27 @@ KB description: "Domain. Content types. Language." 1-3 sentences.
 3. Only `kb_tag_create("tag")` if concept is absent.
 4. BAD: "test", "doc", "misc", "important", "aaa".
 
+### A5b — Smart Size Check & Chunk Split ⚡
+
+Before executing storage, estimate size. If the content is too large,
+auto-split into multiple documents in the same KB.
+
+**Thresholds:**
+- Direct text: >2000 lines or >50KB → split
+- Parse result (PDF): after poll done, `kb_doc_read` and check line count
+- Single doc >60% of KB total → split **only if KB has ≥3 docs AND total KB content >50KB**
+
+**Procedure:** Same as Organize C7 — find `#`/`##` headings as split points,
+create `_part-N.md` docs, copy tags, report.
+
+⚠️ Parse-path: split only AFTER `parse_task_status` returns "done".
+⚠️ >200KB or >5000 lines: ask user first. Moderate sizes: auto-split.
+
 ### A6 — Execute
 
 **Parse-path (PDF/DOCX/etc):**
 ```
-parse_pdf_to_kb(file_path, kb_id, use_ocr=True, description="...", tags=[...])
+parse_doc(file_path="<absolute path>", kb_id="<target UUID>", use_ocr=True, description="<from A4>", tags=["tag1", "tag2"])
 → {task_id, status:"running"}
 parse_task_status(task_id) → poll until "done"
 kb_get_documents(kb_id) → verify
@@ -330,7 +357,7 @@ kb_doc_update_tags(kb_id, doc.doc_path, ["tag1"]) → tags
 
 **Batch parse:**
 ```
-parse_pdf_to_kb_batch(file_paths, kb_id, descriptions=[...], tags=[...])
+parse_doc_batch(file_paths=[...], kb_id, descriptions=[...], tags=[...])
 Poll same way.
 ```
 
@@ -450,10 +477,13 @@ For each KB, evaluate:
 | Document count | Any docs? | 0 = stale |
 | Domain match | Content matches name? | KB="AI" but content is energy |
 | Overlap | Same content elsewhere? | Duplicate domain coverage |
+| **Vector index health** | `kb_search_stats(kb_id)` | Chunk_count=0 → not searchable via vector; note for reindex |
+| **Oversized documents** | `kb_get_documents().file_size` + `fs_get_tree().fileSize` | Single doc >50KB or >2000 lines → candidate for smart chunk split |
 
 For every KB with documents:
 - Read 1-2 docs: `kb_doc_read(kb_id, <any doc>, max_chars=300)`
 - Classify TRUE domain based on CONTENT, not name.
+- Check vector index: `kb_search_stats(kb_id)` — note KBs missing vector indexing
 
 ### C3 — Categorize
 
@@ -522,6 +552,56 @@ Tags Applied: N
 Remaining: untagged docs N, poor descriptions N
 ```
 
+### C7 — Smart Document Chunk Splitting
+
+When you find an oversized document (>50KB file_size or >2000 estimated lines),
+offer to split it into smaller logical documents. This improves readability
+and makes vector search more precise. Flagged in C2 table above.
+
+**Thresholds (C2 flags any):**
+- `file_size` > 50 KB
+- Estimated > 2000 lines
+- Single doc >60% of its KB's total content (only if KB has ≥3 docs AND total KB content >50KB)
+
+**Splitting procedure:**
+
+1. **Read the full document** (may need pagination):
+   ```
+   kb_doc_read(kb_id, doc_path, max_chars=50000, offset=0, limit=5000)
+   ```
+
+2. **Analyze logical boundaries using headings:**
+   - Markdown `# Title` / `## Section` → natural chapter breaks
+   - `Abstract` → `Introduction` → `Method` → `Results` → `Conclusion` → paper structure
+   - No clear headings: split at topic shifts every ~300-500 lines
+   - Each chunk must be self-contained (can be read in isolation)
+   - Target: 300-800 lines (~10-30KB) per chunk
+
+3. **Create each chunk as a new document:**
+   ```
+   kb_doc_create(
+     kb_id,
+     name="doc-name_part-1.md",
+     content="<chunk content>",
+     description="Part 1/N: <section title> — <1-sentence summary>"
+   )
+   ```
+
+4. **Copy tags from parent:**
+   ```
+   kb_doc_update_tags(kb_id, "doc-name_part-1.md", ["tag1", "tag2"])
+   ```
+
+5. **Confirm then delete original:**
+   ⚠️ Ask: "[name] is [size] — split into [N] docs?"
+   ```
+   kb_doc_delete(kb_id, original_doc_path)
+   ```
+
+6. **Verify:**
+   - `kb_get_documents(kb_id)` — N new docs, original gone ✔
+   - `kb_batch_index(kb_id, [chunk_paths])` — rebuild vector index for new chunks
+
 ---
 
 ## SCENARIO D: List — Collection Overview
@@ -569,7 +649,7 @@ When task contains "MODULE MODE" or when spawned by another agent:
 
 If `Skill()` is available:
 - `Skill("knowledge-ingest")` — A-series details (dedup check → survey → classify → match KB → tag → write → verify)
-- `Skill("knowledge-search")` — S-series search workflow (keyword + tag search, grouped results)
+- `Skill("knowledge-search")` — G1→G2→G3→S→A4 渐进式Agentic RAG (librarian navigation: Globe→Region→City→Street)
 - `Skill("knowledge-manage")` — B-series details (move, rename, delete, merge, update content)
 - `Skill("knowledge-organize")` — C-series details (survey, read content, categorize, execute, scorecard, tag hygiene)
 - `Skill("knowledge-list")` — D-series details (inventory, drill-down, tree)
@@ -592,3 +672,6 @@ Skill call stop you. You have everything you need in this document.
 
 **After list:**
 "6 KBs, 42 documents, 27 tags. Thermal-Power-Monitoring is the largest with 14 documents."
+
+**After search (Agentic RAG):**
+"Let me walk you through what I found. I scanned all 7 KBs — the Thermal-Power-Monitoring KB's name and description directly match your question about coal mill fault prediction, so I drilled into its 6 documents. Three had strong surface signals (names containing 'coal mill' and 'fault prediction'). I read their abstracts and confirmed all three are directly relevant — one specifically mentions CNN-LSTM outperforming standard LSTM by 206 minutes. Then I used vector search within those three confirmed documents to pinpoint the exact paragraphs. The result is a synthesized answer drawing from all three papers, with the key finding being that CNN-LSTM provides 315-minute advance warning versus 109 minutes for LSTM alone."

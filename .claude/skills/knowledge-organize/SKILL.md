@@ -1,10 +1,11 @@
 ---
 name: knowledge-organize
 description: >
-  Full collection restructuring engine. O1→O6 workflow: survey every KB,
+  Full collection restructuring engine. O1→O8 workflow: survey every KB,
   read document content to classify true domains, categorize KBs (proper/
   test/empty/overlapping/misclassified), execute merges/moves/
-  renames/descriptions, verify each change, produce structured report.
+  renames/descriptions, verify each change, produce structured report,
+  and split oversized documents into smaller logical chunks.
   Invoked by Archival when the collection needs deep reorganization.
 ---
 
@@ -35,6 +36,7 @@ For each KB, evaluate these metrics:
 | Document count | How many docs inside? | 0 = stale |
 | Domain match | Do the docs match the KB name? | KB says "AI" but doc content is energy |
 | Overlap | Same content in another KB? | Duplicate domain coverage |
+| **Oversized docs** | `file_size` per doc | >50KB or >2000 lines → flag for O8 smart split |
 
 For each KB with documents:
 - Read 1-2 documents: `kb_doc_read(kb_id, <doc>, max_chars=300)`
@@ -192,3 +194,81 @@ When you find orphan tags (tags with 0 documents), use this workaround:
 3. Confirm destructive operations unless Module Mode.
 4. O5 (verify) catches mistakes. Do not skip.
 5. O7 (tag audit) cannot delete orphan tags — MCP limitation. Report and suggest manual cleanup.
+
+## O8 — Smart Document Chunk Splitting
+
+When an oversized document is flagged in O2 (>50KB file_size or >2000 lines),
+offer to split it into smaller logical documents for better readability and
+more precise vector search.
+
+**Ratio rule guard**: The "single doc >60% of KB total" check only activates
+when the KB has ≥3 documents AND total KB content >50KB. On small KBs (1-2
+docs or tiny content), this rule is skipped to avoid false positives.
+
+### O8a — Confirm
+
+```
+"The document [name] is [size KB / N lines]. I can split it into [N] smaller
+documents based on its section headings. Shall I proceed?"
+```
+
+### O8b — Read & Analyze
+
+```
+kb_doc_read(kb_id, doc_path, max_chars=50000, offset=0, limit=5000)
+```
+
+Agent analyzes the content to find logical split points:
+
+| Signal | Split Point |
+|--------|-------------|
+| `# Title` or `## Section` | Strong chapter break — split here |
+| `Abstract`, `Introduction`, `Method`, `Results`, `Conclusion` | Standard paper sections |
+| `---` horizontal rule | Possible thematic shift |
+| No structural markers | Every ~400 lines, try to find a natural sentence boundary |
+
+### O8c — Create Chunks
+
+For each chunk N of M:
+
+```
+kb_doc_create(
+  kb_id=same_kb_id,
+  name="original-name_part-N.md",
+  content="<chunk content>",
+  description="Part N/M: <section title> — <1-sentence summary>"
+)
+```
+
+Copy tags:
+```
+kb_doc_update_tags(kb_id, "original-name_part-N.md", ["tag1", "tag2", ...])
+```
+
+### O8d — Remove Original
+
+After ALL chunks created successfully:
+```
+kb_doc_delete(kb_id, original_doc_path)
+```
+
+### O8e — Verify
+
+```
+kb_get_documents(kb_id)             → N new docs visible, original gone
+kb_batch_index(kb_id, [chunk_paths], force=true)  → rebuild vector index for chunks
+kb_doc_read(kb_id, chunk_1_path, max_chars=300)   → spot-check content integrity
+```
+
+### O8f — Report
+
+```
+Smart Chunk Splitting Complete:
+  Original: [name] ([size])
+  Split into: [N] chunks
+  - Part 1: [section title] — [summary]
+  - Part 2: [section title] — [summary]
+  - ...
+  Vector index rebuilt: ✅
+  KB now has [new doc count] documents
+```

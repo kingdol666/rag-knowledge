@@ -273,52 +273,13 @@ class KbClient:
         return {"success": False, "error": "Either node_id or path is required"}
 
     # ================================================================
-    # PDF PARSING
+    # DOCUMENT PARSING  (PDF / Word / Image — all via MinerU)
     # ================================================================
 
-    async def parse_pdf(self, file_path, use_ocr=True, parent_id="", description="", tags=None):
-        """Parse a PDF into Markdown. If parent_id is given, saves to KB.
-        tags: optional list[str] written to .knowledge-base.yml."""
-        data = {"use_ocr": str(use_ocr).lower()}
-        if parent_id:
-            data["parent_id"] = parent_id
-        if description:
-            data["description"] = description
-        if tags:
-            data["tags"] = ",".join(tags)
-        return await self._post_file("/api/parse/file-vt", file_path, data, timeout=PARSE_TIMEOUT)
-
-    async def parse_pdf_batch(self, file_paths, use_ocr=True, descriptions=None, tags=None):
-        """Batch-parse multiple PDF files.
-
-        If ``descriptions`` is given (one per file, in order), the value is
-        forwarded to the parse endpoint for each file (for future KB save).
-        tags: optional list[str] applied to every file (written to .knowledge-base.yml).
-        """
-
-        results = []
-        for i, fp in enumerate(file_paths):
-            p = Path(fp)
-            if not p.exists():
-                results.append({"success": False, "error": f"file not found: {fp}"})
-                continue
-            desc = descriptions[i] if descriptions and i < len(descriptions) else ""
-            try:
-                data = {"use_ocr": str(use_ocr).lower()}
-                if desc:
-                    data["description"] = desc
-                if tags:
-                    data["tags"] = ",".join(tags)
-                result = await self._post_file("/api/parse/batch-file-vt", fp, data, timeout=PARSE_TIMEOUT)
-                results.append(result)
-            except Exception as e:
-                results.append({"success": False, "error": f"{type(e).__name__}: {e}"})
-        successful = sum(1 for r in results if isinstance(r, dict) and r.get("success"))
-        return {"total": len(results), "successful": successful, "results": results}
-
-    async def parse_pdf_to_kb(self, file_path, kb_id, use_ocr=True, description="", tags=None):
-        """Full pipeline: parse a PDF and save into a knowledge base.
-        tags: optional list[str] written to .knowledge-base.yml."""
+    async def parse_doc(self, file_path, kb_id, use_ocr=True, description="", tags=None):
+        """Parse a document (PDF/Image/Word/Excel) and save into a knowledge base.
+        tags: optional list[str] written to .knowledge-base.yml.
+        Supported: .pdf .png .jpg .jpeg .docx .xlsx."""
         data = {"use_ocr": str(use_ocr).lower(), "parent_id": kb_id}
         if description:
             data["description"] = description
@@ -326,15 +287,15 @@ class KbClient:
             data["tags"] = ",".join(tags)
         return await self._post_file("/api/parse/file-vt", file_path, data, timeout=PARSE_TIMEOUT)
 
-    async def parse_pdf_to_kb_batch(self, file_paths, kb_id, use_ocr=True, descriptions=None, tags=None):
-        """Parse multiple PDFs and save each into the same knowledge base.
+    async def parse_doc_batch(self, file_paths, kb_id, use_ocr=True, descriptions=None, tags=None):
+        """Batch: parse multiple documents (PDF/Image/Word/Excel) and save into the same KB.
 
         Files are parsed sequentially; each successful one is saved into
         *kb_id* via the parse pipeline (parent_id = kb_id). Returns an
         aggregate {total, successful, results} so callers can see which
         files failed without losing the ones that succeeded.
         tags: optional list[str] applied to every file (written to .knowledge-base.yml).
-        """
+        Supported: .pdf .png .jpg .jpeg .docx .xlsx."""
 
         results = []
         for i, fp in enumerate(file_paths):

@@ -7,21 +7,22 @@ knowledge-store (入口/调度器)
 ├── 触发词：knowledge base, KB, 知识库, 文档管理, store, parse, upload, import, 
 │           organize, audit, search, find, list, merge, delete, 整理, 入库等
 │
-├── knowledge-ingest (入库)       A1→A8 + A0 去重
+├── knowledge-ingest (入库)       A1→A8 + A0 去重 + A5b 智能分块
 │   ├── 触发：store, upload, parse, import, save, ingest, 存入, 解析
-│   └── 能力：内容哈希去重 → 领域分类 → KB匹配 → 标签选择 → 存储 → 验证
+│   └── 能力：内容哈希去重 → 领域分类 → KB匹配 → 标签选择 → 智能分块 → 存储 → 验证
 │
 ├── knowledge-manage (管理)       M1→M5 + B6 内容更新
 │   ├── 触发：move, rename, delete, merge, update, 移动, 改名, 删除
 │   └── 能力：移动/改名/删除/合并/内容更新 → 确认防误 → 验证
 │
-├── knowledge-organize (整理)     O1→O7 全盘重构
+├── knowledge-organize (整理)     O1→O7 + O8 智能分块
 │   ├── 触发：organize, audit, health check, restructure, 整理, 清洗
-│   └── 能力：全盘调研 → 内容分类 → 合并 → 重命名 → 标签迁移 → 评分卡
+│   └── 能力：全盘调研 → 内容分类 → 合并 → 重命名 → 标签迁移 → 评分卡 → 大文档拆分
 │
-├── knowledge-search (搜索)       S1→S5 全文检索
-│   ├── 触发：search, find, query, 搜索, 查找, 查内容
-│   └── 能力：关键词搜索 + 标签搜索 + 按KB分组 + 推荐阅读
+├── knowledge-search (智能检索)     G1→G2→G3→S→A4 渐进式Agentic RAG
+│   ├── 触发：search, find, query, ask, retrieve, what is, how to, explain, rag, 回答, 检索, 搜索, 问答, 查内容
+│   └── 能力：图书馆员式渐进导航 | 全局扫描→区域深入→内容确认→向量精排→综合回答
+│         自适应深度 L1-L4 | 多路降级 | 透明溯源 | 诚实标注盲区
 │
 ├── knowledge-list (浏览)         L1→L3 只读
 │   ├── 触发：list, show, what KBs, overview, tree, 列, 查, 查看
@@ -46,7 +47,7 @@ knowledge-store (入口/调度器)
   → 调度：Agent(subagent_type="archival", prompt="...")
   → Archival 诊断场景 → Organize
   → Skill("knowledge-organize")
-  → O1 Survey → O2 Evaluate → O3 Categorize → O4 Execute → O5 Verify → O6 Scorecard
+  → O1 Survey → O2 Evaluate → O3 Categorize → O4 Execute → O5 Verify → O6 Scorecard → O7 Tag Hygiene → O8 Smart Split
 ```
 
 ### Archival → Sub-skill 自动路由

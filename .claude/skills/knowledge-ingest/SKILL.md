@@ -110,11 +110,68 @@ KB description standard:
    - Good: "turbine-diagnostics", "deep-learning", "thermal-power"
    - Bad: "test", "doc", "misc", "important", "aaa"
 
+## A5b — Smart Size Check & Chunk Splitting ⚡
+
+**Before storing, check if the document is too large.** If so, split it
+into multiple smaller documents automatically. Each chunk gets its own
+description and tags but lives in the same KB.
+
+### Size thresholds (auto-split if ANY exceeded)
+
+| Metric | Threshold | How to check | Activation condition |
+|--------|-----------|-------------|---------------------|
+| **Direct-path text** | >2000 lines or >50KB | Count lines of `content` string | Always active |
+| **Parse-path result** | >2000 lines in parsed markdown | Poll parse done, then `kb_doc_read` → count lines | Always active |
+| **Ratio check** | This single doc >60% of its KB total | Compare vs existing docs from `kb_get_documents(kb_id)` | **Only if KB has ≥3 docs AND total KB content >50KB** |
+
+### Split procedure
+
+1. **Find logical split points** (Agent analyzes content structure):
+   | Signal | Split point |
+   |--------|-------------|
+   | `# Title` / `## Section` | Strong chapter break |
+   | `Abstract`/`引言` → `Method`/`方法` → `Results`/`实验` → `Conclusion`/`结论` | Standard paper structure |
+   | `---` horizontal rule | Possible thematic shift |
+   | No markers | Every ~400 lines at a natural sentence boundary |
+
+2. **Create each chunk** — same KB, same tags, sequential naming:
+   ```
+   kb_doc_create(
+     kb_id=same_kb_id,
+     name="filename_part-1.md",
+     content="<chunk 1 content>",
+     description="Part 1/N: <section title> — <1-sentence summary>"
+   )
+   ```
+
+3. **Apply parent's tags to each chunk:**
+   ```
+   kb_doc_update_tags(kb_id, "filename_part-1.md", ["tag1", "tag2"])
+   ```
+
+4. **Report** — inform user what happened:
+   ```
+   "The document [name] was too large ([size]) so I split it into [N] smaller
+   documents within the same KB:
+     ├── Part 1: [title] — [summary]
+     ├── Part 2: [title] — [summary]
+     └── Part 3: [title] — [summary]
+   All tagged with [tags]. The split improves vector search precision."
+   ```
+
+⚠️ **Parse-path caveat**: For PDFs processed by MinerU, the split happens
+AFTER the parse completes. Poll `parse_task_status` first, then read the
+parsed markdown content with `kb_doc_read`, then split as above.
+Do NOT split before the parse finishes.
+
+⚠️ **Confirmation**: For files >200KB or >5000 lines, ask user before
+splitting. For moderate sizes (50-200KB), auto-split and report.
+
 ## A6 — Execute Storage
 
-### Parse-path files (PDF, DOCX, XLSX, PPTX, images)
+### Parse-path files (PDF, Word, DOCX, XLSX, PPTX, images)
 ```
-parse_pdf_to_kb(
+parse_doc(
   file_path="<absolute path>",
   kb_id="<target UUID>",
   use_ocr=True,
@@ -128,7 +185,7 @@ parse_pdf_to_kb(
 
 ### Batch parse-path
 ```
-parse_pdf_to_kb_batch(file_paths=[...], kb_id, descriptions=[...], tags=[...])
+parse_doc_batch(file_paths=[...], kb_id, descriptions=[...], tags=[...])
 ```
 One task_id for all. Poll same way.
 
