@@ -463,6 +463,34 @@ async def kb_search_vector(query: str, kb_id: str = "", top_k: int = 5) -> str:
 
 
 @mcp.tool()
+async def kb_search_batch_vector(
+    query_doc_paths: list,
+    kb_id: str = "",
+    top_k: int = 5,
+    score_threshold: float = 0.3,
+) -> str:
+    """批量向量相似度查询：对多个源文档找出最相似的其他文档。
+
+    典型场景：
+    - 跨文档相似度分析："哪些文档与文档A和文档B内容相似？"
+    - 相关文档发现：批量查询一组文档的关联内容
+    - 去重检测：发现近重复文档
+
+    Args:
+        query_doc_paths: 源文档路径列表（相对路径，如 ["legal/contract.md", "tech/python.md"]）
+        kb_id: 可选限定知识库（路径或UUID）
+        top_k: 每个源文档返回的最相似文档数
+        score_threshold: 最低余弦相似度阈值 (0~1)，越高越严格
+
+    Returns:
+        {success, results: {doc_path: [{content, score, matched_doc_path, chunk_index, kb_id}]}, count}
+    """
+    return _j(await _client().batch_vector_search(
+        query_doc_paths, kb_id, top_k, score_threshold
+    ))
+
+
+@mcp.tool()
 async def kb_search_two_stage(
     query: str,
     kb_id: str = "",
@@ -517,6 +545,28 @@ async def kb_index_document(kb_id: str, doc_path: str, doc_name: str = "", descr
         {success, vector_index: {collection, chunk_id_prefix, total_chunks, graph_doc_id}, graph_stats: {entities, relations}}
     """
     return _j(await _client().index_document(kb_id, doc_path, doc_name, description, content))
+
+
+@mcp.tool()
+async def kb_batch_index(
+    kb_id: str,
+    doc_paths: list,
+    force: bool = False,
+) -> str:
+    """批量文档向量+图谱索引。
+
+    一次性对知识库中的多个文档建立向量索引和知识图谱索引。
+    索引后会更新 .knowledge-base.yml 中的 vector_index 元信息。
+
+    Args:
+        kb_id: 知识库 ID 或路径
+        doc_paths: 文档相对路径列表（如 ["doc1.md", "doc2.md"]）
+        force: 是否覆盖已有索引
+
+    Returns:
+        {success, indexed: [...], skipped: [...], errors: [...], total_indexed}
+    """
+    return _j(await _client().batch_index_documents(kb_id, doc_paths, force))
 
 
 @mcp.tool()

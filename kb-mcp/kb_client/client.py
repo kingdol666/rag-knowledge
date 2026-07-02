@@ -424,6 +424,17 @@ class KbClient:
             body["kb_id"] = kb_id
         return await self._post_backend_json("/api/v1/search/vector", body)
 
+    async def batch_vector_search(self, query_doc_paths, kb_id="", top_k=5, score_threshold=0.3):
+        """批量向量相似度查询：对多个源文档查询相似文档。"""
+        body = {
+            "query_doc_paths": query_doc_paths,
+            "top_k": top_k,
+            "score_threshold": score_threshold,
+        }
+        if kb_id:
+            body["kb_id"] = kb_id
+        return await self._post_backend_json("/api/v1/search/batch-vector", body)
+
     async def two_stage_search(self, query, kb_id="", stage1_top_k=20,
                                 stage2_top_k=5, enable_graph_expansion=True):
         """两阶段精准检索。"""
@@ -454,6 +465,15 @@ class KbClient:
             "content": content,
         }
         return await self._post_backend_json("/api/v1/search/index-document", body)
+
+    async def batch_index_documents(self, kb_id, doc_paths, force=False):
+        """批量文档向量索引。"""
+        body = {
+            "kb_id": kb_id,
+            "doc_paths": doc_paths,
+            "force": force,
+        }
+        return await self._post_backend_json("/api/v1/search/batch-index", body)
 
     async def search_stats(self, kb_id=""):
         """向量索引统计。"""
