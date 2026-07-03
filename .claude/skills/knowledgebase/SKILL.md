@@ -1,5 +1,5 @@
 ---
-name: knowledge-store
+name: knowledgebase
 description: >
   Knowledge base management — primary entry point. Use for ANY knowledge-base
   task: storing documents, uploading files, parsing PDFs/DOCX/XLSX/PPTX/images,
@@ -57,15 +57,16 @@ When you (Archival) are running and need to choose a sub-skill:
 
 | You diagnosed | Invoke | Procedure |
 |---|---|---|
-| **Ingest** | `Skill("knowledge-ingest")` | Survey → classify → match KB → tag → write → verify |
-| **Manage** | `Skill("knowledge-manage")` | Confirm → execute → verify |
-| **Organize** | `Skill("knowledge-organize")` | Survey all → read content → categorize → execute → verify → report |
-| **List** | `Skill("knowledge-list")` | Inventory → drill-down → tree |
-| **Search** | `Skill("knowledge-search")` | Agentic RAG: catalog → doc catalog → experience → vector confirm → content verify. Auto-upgrades to `knowledge-search-enterprise` for cross-KB blind spots. |
-| **Search (企业级)** | `Skill("knowledge-search-enterprise")` | Multi-strategy: Agentic + BM25 + vector 3-path parallel recall → cross-validation → content rerank. Triggered automatically or for high-precision enterprise searches. |
-| **Verify** | `Skill("knowledge-verify")` | Metadata scan → doc integrity → parse quality → scorecard |
-| **Batch** | `Skill("knowledge-batch")` | Bulk tag → bulk desc → mass import → mass move → dedup → export |
-| **Experience** | `Skill("knowledge-experience")` | Create → retrieve (strict P0/P1/P2) → apply → review → summary. Short-content filtering + credibility decay. |
+| **Ingest** | `Skill("knowledgebase-ingest")` | Survey → classify → match KB → tag → write → verify |
+| **Manage** | `Skill("knowledgebase-manage")` | Confirm → execute → verify |
+| **Organize** | `Skill("knowledgebase-organize")` | Survey all → read content → categorize → execute → verify → report |
+| **List** | `Skill("knowledgebase-list")` | Inventory → drill-down → tree |
+| **Search** | `Skill("knowledgebase-search")` | Agentic RAG: catalog → doc catalog → experience → vector confirm → content verify. Auto-upgrades to `knowledgebase-search-enterprise` for cross-KB blind spots. |
+| **Search (企业级)** | `Skill("knowledgebase-search-enterprise")` | Multi-strategy: Agentic + BM25 + vector 3-path parallel recall → cross-validation → content rerank. Triggered automatically or for high-precision enterprise searches. |
+| **Verify** | `Skill("knowledgebase-verify")` | Metadata scan → doc integrity → parse quality → scorecard |
+| **Batch** | `Skill("knowledgebase-batch")` | Bulk tag → bulk desc → mass import → mass move → dedup → export |
+| **Experience** | `Skill("knowledgebase-experience")` | Create → retrieve (strict P0/P1/P2) → apply → review → summary. Short-content filtering + credibility decay. |
+| **Experience summary** | `Skill("knowledgebase-experience-summarize")` | Scene diagnosis → LLM extraction → markdown draft → user confirm (hard gate) → experience_create → verify. For "记录这个经验/总结一下/保存教训/提炼成经验". |
 | **Mixed** | Invoke in order: organize → verify → ingest → manage → list | |
 
 Each sub-skill contains the complete step-by-step procedure. Follow it

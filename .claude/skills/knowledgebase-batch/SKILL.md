@@ -1,5 +1,5 @@
 ---
-name: knowledge-batch
+name: knowledgebase-batch
 description: >
   High-volume and batch operations for knowledge base management. B1→B6:
   bulk tag migration, bulk description updates, directory-to-KB ingestion,

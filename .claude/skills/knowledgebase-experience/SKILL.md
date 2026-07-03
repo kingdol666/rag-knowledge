@@ -1,5 +1,5 @@
 ---
-name: knowledge-experience
+name: knowledgebase-experience
 description: >
   经验管理系统 — 记录、检索、应用、评审经验。经验是实践总结的可复用知识，
   有评分、应用记录、场景绑定等结构化维度。用于故障排查、最佳实践、经验教训

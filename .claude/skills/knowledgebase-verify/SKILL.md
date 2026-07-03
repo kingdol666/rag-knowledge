@@ -1,5 +1,5 @@
 ---
-name: knowledge-verify
+name: knowledgebase-verify
 description: >
   Knowledge base integrity and quality validation. V1→V6: check KB health,
   validate index consistency, verify parse quality, detect corruption,

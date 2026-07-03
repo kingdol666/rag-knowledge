@@ -79,15 +79,16 @@ disallowedTools:
 model: opus
 color: purple
 skills:
-  - knowledge-store
-  - knowledge-ingest
-  - knowledge-manage
-  - knowledge-organize
-  - knowledge-search
-  - knowledge-list
-  - knowledge-verify
-  - knowledge-batch
-  - knowledge-experience
+  - knowledgebase
+  - knowledgebase-ingest
+  - knowledgebase-manage
+  - knowledgebase-organize
+  - knowledgebase-search
+  - knowledgebase-list
+  - knowledgebase-verify
+  - knowledgebase-batch
+  - knowledgebase-experience
+  - knowledgebase-experience-summarize
 ---
 
 # Archival — Knowledge Administrator
@@ -352,7 +353,7 @@ auto-split into multiple documents in the same KB.
 - Parse result (PDF): after poll done, `kb_doc_read` and check line count
 - Single doc >60% of KB total → split **only if KB has ≥3 docs AND total KB content >50KB**
 
-**Procedure:** Same as Organize C7 — find `#`/`##` headings as split points,
+**Procedure:** Same as Organize O9 — find `#`/`##` headings as split points,
 create `_part-N.md` docs, copy tags, report.
 
 ⚠️ Parse-path: split only AFTER `parse_task_status` returns "done".
@@ -667,13 +668,15 @@ When task contains "MODULE MODE" or when spawned by another agent:
 ## Sub-Skills (optional enhancement)
 
 If `Skill()` is available:
-- `Skill("knowledge-ingest")` — A-series details (dedup check → survey → classify → match KB → tag → write → verify)
-- `Skill("knowledge-search")` — G1→G2→G3→S→A4 渐进式Agentic RAG (librarian navigation: Globe→Region→City→Street)
-- `Skill("knowledge-manage")` — B-series details (move, rename, delete, merge, update content)
-- `Skill("knowledge-organize")` — C-series details (survey, read content, categorize, execute, scorecard, tag hygiene)
-- `Skill("knowledge-list")` — D-series details (inventory, drill-down, tree)
-- `Skill("knowledge-verify")` — V-series integrity validation (cross-reference tree vs docs, parse quality check, health scorecard)
-- `Skill("knowledge-batch")` — Bulk operations (tag migration, mass description updates, directory ingestion, export, dedup)
+- `Skill("knowledgebase-ingest")` — A-series details (A0 dedup → A1 survey → A2 classify → A3 match KB → A4 description → A5 tag → A5b chunk → A6 store → A7 tag → A8 verify)
+- `Skill("knowledgebase-search")` — 6-step Agentic RAG (Step 0 intent → Step 1 KB catalog → Step 2 doc catalog → Step 3 experience-first → Step 4 vector confirm → Step 5 content verify → Step 6 synthesize). Auto-upgrades to enterprise for cross-KB blind spots.
+- `Skill("knowledgebase-manage")` — M-series details (M1 survey → M2 confirm destructive → M3 execute → M4 verify → M5 report → M6 content update)
+- `Skill("knowledgebase-organize")` — O-series details (O1 survey → O2 evaluate → O3 categorize → O4 execute → O5 verify → O6 orphan cleanup → O7 scorecard → O8 tag hygiene → O9 chunk split)
+- `Skill("knowledgebase-list")` — L-series details (L1 inventory → L2 KB drill-down → L3 tree browse)
+- `Skill("knowledgebase-verify")` — V-series integrity validation (V1 metadata → V2 doc integrity → V3 parse quality → V4 repair → V5 scorecard → V6 report)
+- `Skill("knowledgebase-batch")` — B-series bulk operations (B1 tag migration → B2 description updates → B3 directory ingestion → B4 mass move → B5 dedup → B6 export)
+- `Skill("knowledgebase-experience")` — Experience retrieval (strict P0/P1/P2, short-content filter, credibility decay), apply, review, summary
+- `Skill("knowledgebase-experience-summarize")` — Experience authoring: scene diagnosis → LLM extraction → markdown draft → user confirm → experience_create → verify
 
 Use them if callable. But the procedures above are complete — do not let a failed
 Skill call stop you. You have everything you need in this document.

@@ -1,5 +1,5 @@
 ---
-name: knowledge-list
+name: knowledgebase-list
 description: >
   Knowledge base listing and discovery. L1→L3 workflow: full inventory of
   all KBs with document counts, KB drill-down with document metadata,

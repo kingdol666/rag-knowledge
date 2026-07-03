@@ -1,5 +1,5 @@
 ---
-name: knowledge-search
+name: knowledgebase-search
 description: >
   Agentic RAG — 真正的智能检索。核心原则：**Agent 读 description 智能判断为主，
   向量相似度为辅助确认**。先读轻量 catalog 的 description 判断 KB/文档相关性，
@@ -125,7 +125,7 @@ kb_search_two_stage(query, kb_id, stage2_top_k=3)
 
 **⚠️ 跨库盲区升级（关键）**：如果 `kb_search_two_stage` 跨库搜索（不指定 kb_id）返回的候选来自 **<2 个不同 KB**，表示 BM25 stage1 未能命中语义不同但内容相关的 KB。此时自动升级到企业级多路召回流程：
 
-→ `Skill("knowledge-search-enterprise")` — 并行 3 路召回（kb_catalog + kb_search_two_stage + kb_search_vector），交叉验证去重，消除 BM25 跨库盲区。
+→ `Skill("knowledgebase-search-enterprise")` — 并行 3 路召回（kb_catalog + kb_search_two_stage + kb_search_vector），交叉验证去重，消除 BM25 跨库盲区。
 
 **短文本过滤规则（⚠️ 新增）**：向量搜索可能返回极短 chunk（如仅 "## 问题"），此类 chunk score 虚高但无实质内容：
 ```

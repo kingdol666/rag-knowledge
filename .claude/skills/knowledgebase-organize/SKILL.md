@@ -1,7 +1,7 @@
 ---
-name: knowledge-organize
+name: knowledgebase-organize
 description: >
-  Full collection restructuring engine. O1→O8 workflow: survey every KB,
+  Full collection restructuring engine. O1→O9 workflow: survey every KB,
   read document content to classify true domains, categorize KBs (proper/
   test/empty/overlapping/misclassified), execute merges/moves/
   renames/descriptions, verify each change, produce structured report,
@@ -47,7 +47,7 @@ For each KB, evaluate these metrics:
 | Domain match | Do the docs match the KB name? | KB says "AI" but doc content is energy |
 | Overlap | Same content in another KB? | Duplicate domain coverage |
 | Vector coverage | What % docs have vector_index set? | <50% → prompt reindex |
-| **Oversized docs** | `file_size` per doc | >50KB or >2000 lines → flag for O8 smart split |
+| **Oversized docs** | `file_size` per doc | >50KB or >2000 lines → flag for O9 smart split |
 
 For each KB with documents:
 - Read 1-2 documents: `kb_doc_read(kb_id, <doc>, max_chars=300)`
@@ -227,16 +227,16 @@ Generate a structured summary with a **quantitative scorecard**:
 - Weak descriptions: list
 ```
 
-## O7 — Tag Hygiene Audit
+## O8 — Tag Hygiene Audit
 
 Check the health of the tag vocabulary.
 
-### O7a — Survey
+### O8a — Survey
 ```
 kb_tags_list()         → all tags
 ```
 
-### O7b — Check Each Tag
+### O8b — Check Each Tag
 For each tag:
 ```
 kb_doc_get_by_tag(tag)  → count of documents using this tag
@@ -248,7 +248,7 @@ Flag these issues:
 - **Low-usage tags**: tags used on only 1 document — too specific?
 - **Generic tags**: "test", "doc", "misc", "important"
 
-### O7c — Report
+### O8c — Report
 ```
 Tag Health:
   Total tags: N
@@ -259,7 +259,7 @@ Tag Health:
   - "tag-a" and "tag-b" should be merged (kb_doc_update_tags to replace)
 ```
 
-### O7d — Orphan Tag Resolution
+### O8d — Orphan Tag Resolution
 
 When you find orphan tags (tags with 0 documents), use this workaround:
 
@@ -277,14 +277,8 @@ When you find orphan tags (tags with 0 documents), use this workaround:
 3. If the orphan is a misspelling and you find documents that should use it:
    - Apply `kb_doc_update_tags(kb_id, doc_path, ["correct-tag"])` to the right docs
    - The orphan stays in the registry but is now unused and harmless
-## CRITICAL RULES
-1. O2 (read content) is NOT optional. Never classify a KB by name alone.
-2. Merges: move docs FIRST, delete SECOND. Deleting first loses data.
-3. Confirm destructive operations unless Module Mode.
-4. O5 (verify) catches mistakes. Do not skip.
-5. O7 (tag audit) cannot delete orphan tags — MCP limitation. Report and suggest manual cleanup.
 
-## O8 — Smart Document Chunk Splitting
+## O9 — Smart Document Chunk Splitting
 
 When an oversized document is flagged in O2 (>50KB file_size or >2000 lines),
 offer to split it into smaller logical documents for better readability and
@@ -294,14 +288,14 @@ more precise vector search.
 when the KB has ≥3 documents AND total KB content >50KB. On small KBs (1-2
 docs or tiny content), this rule is skipped to avoid false positives.
 
-### O8a — Confirm
+### O9a — Confirm
 
 ```
 "The document [name] is [size KB / N lines]. I can split it into [N] smaller
 documents based on its section headings. Shall I proceed?"
 ```
 
-### O8b — Read & Analyze
+### O9b — Read & Analyze
 
 ```
 kb_doc_read(kb_id, doc_path, max_chars=50000, offset=0, limit=5000)
@@ -316,7 +310,7 @@ Agent analyzes the content to find logical split points:
 | `---` horizontal rule | Possible thematic shift |
 | No structural markers | Every ~400 lines, try to find a natural sentence boundary |
 
-### O8c — Create Chunks
+### O9c — Create Chunks
 
 For each chunk N of M:
 
@@ -334,14 +328,14 @@ Copy tags:
 kb_doc_update_tags(kb_id, "original-name_part-N.md", ["tag1", "tag2", ...])
 ```
 
-### O8d — Remove Original
+### O9d — Remove Original
 
 After ALL chunks created successfully:
 ```
 kb_doc_delete(kb_id, original_doc_path)
 ```
 
-### O8e — Verify
+### O9e — Verify
 
 ```
 kb_get_documents(kb_id)             → N new docs visible, original gone
@@ -349,7 +343,7 @@ kb_batch_index(kb_id, [chunk_paths], force=true)  → rebuild vector index for c
 kb_doc_read(kb_id, chunk_1_path, max_chars=300)   → spot-check content integrity
 ```
 
-### O8f — Report
+### O9f — Report
 
 ```
 Smart Chunk Splitting Complete:
@@ -361,3 +355,13 @@ Smart Chunk Splitting Complete:
   Vector index rebuilt: ✅
   KB now has [new doc count] documents
 ```
+
+---
+
+## CRITICAL RULES
+
+1. O2 (read content) is NOT optional. Never classify a KB by name alone.
+2. Merges: move docs FIRST, delete SECOND. Deleting first loses data.
+3. Confirm destructive operations unless Module Mode.
+4. O5 (verify) catches mistakes. Do not skip.
+5. O8 (tag audit) cannot delete orphan tags — MCP limitation. Report and suggest manual cleanup.

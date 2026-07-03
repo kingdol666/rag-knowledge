@@ -46,7 +46,7 @@ rag-knowledge/
 ├── web/                    # [submodule] rag-knowledge-frondend — Nuxt 3 UI (active frontend)
 ├── frontend/               # [submodule] rag-knowledge-frontend — legacy Vue 3/Vite (inactive)
 ├── kb-mcp/                 # [local] MCP server — provides ~40 MCP tools for KB operations
-├── .claude/skills/         # OMC skills (knowledge-store dispatcher, ingest, search, manage, etc.)
+├── .claude/skills/         # OMC skills (knowledgebase dispatcher, ingest, search, manage, etc.)
 ├── .claude/agents/         # Archival agent definition (knowledge-admin.md)
 ├── .codex/                 # Parallel agent/skill definitions for Codex
 ├── docs/ARCHITECTURE.md    # Detailed architecture + MCP dev guide
@@ -106,7 +106,7 @@ web/
 │       ├── runtime-paths.ts  # Tree-storage path resolution
 │       └── tree-service.ts   # Singleton helpers
 ├── composables/            # Vue composables (useTreeFileSystem, usePDFParser, etc.)
-├── pages/                  # file-system.vue, knowledge-search.vue, prompts.vue, etc.
+├── pages/                  # file-system.vue, knowledgebase-search.vue, prompts.vue, etc.
 ├── types/                  # TypeScript interfaces
 └── storage/tree-file-system/  # On-disk KB storage (dev; configurable path)
 ```

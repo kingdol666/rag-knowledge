@@ -1,16 +1,16 @@
 ---
-name: knowledge-search-enterprise
+name: knowledgebase-search-enterprise
 description: >
   企业级智能检索 — 多策略自适应路由。当标准 kb_search_two_stage BM25 stage1
   跨库搜索无法覆盖语义不同的知识库时，自动将向量语义搜索作为 fallback。
   支持 Agentic 判断优先 + 多路召回 + 交叉验证 + 内容重排序。适用于复杂
-  跨域联表查询、多 KB 交叉检索、精度要求极高的企业级场景。由 knowledge-search
+  跨域联表查询、多 KB 交叉检索、精度要求极高的企业级场景。由 knowledgebase-search
   在检测到跨库搜索需求或 BM25 召回不足时自动路由。
 ---
 
 # Enterprise-Grade Multi-Strategy Retrieval
 
-当 `knowledge-search` 的标准 Agentic RAG 流程遇到下列场景时，自动升级到本 Skill：
+当 `knowledgebase-search` 的标准 Agentic RAG 流程遇到下列场景时，自动升级到本 Skill：
 
 ## 触发条件（任一即触发）
 1. 跨库搜索返回的候选来自 <2 个不同的 KB（BM25 盲区）
@@ -115,13 +115,13 @@ kb_doc_read(kb_id, doc_path, max_chars=1500)
 **确定性**: 高/中/低
 ```
 
-## 与 knowledge-search 的集成
+## 与 knowledgebase-search 的集成
 
-在 `knowledge-search/SKILL.md` 的 Step 4（向量确认）中增加判断：
+在 `knowledgebase-search/SKILL.md` 的 Step 4（向量确认）中增加判断：
 
 ```
 如果 kb_search_two_stage 跨库搜索返回 <2 个不同 KB 的候选：
-   → 触发 knowledge-search-enterprise 的多路召回流程
+   → 触发 knowledgebase-search-enterprise 的多路召回流程
 ```
 
 ## CRITICAL RULES

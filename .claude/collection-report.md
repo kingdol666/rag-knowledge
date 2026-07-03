@@ -1,6 +1,6 @@
 # RAG 知识库集合摘要报告
 
-> 生成时间：2026-07-03 | 由 knowledge-batch B6 + knowledge-verify V6 联合产出
+> 生成时间：2026-07-03 | 由 knowledgebase-batch B6 + knowledgebase-verify V6 联合产出
 
 ## 概览
 

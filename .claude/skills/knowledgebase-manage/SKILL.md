@@ -1,10 +1,11 @@
 ---
-name: knowledge-manage
+name: knowledgebase-manage
 description: >
-  Document and KB administration operations. M1→M5 workflow: move documents
-  between KBs, rename/rediscribe KBs or documents, delete documents or
-  empty KBs, merge KBs, update document content. Invoked by Archival when
-  the task involves moving, renaming, deleting, or updating existing items.
+  Document and KB administration operations. M1→M6 workflow (M6 = content
+  update): move documents between KBs, rename/rediscribe KBs or documents,
+  delete documents or empty KBs, merge KBs, update document content.
+  Invoked by Archival when the task involves moving, renaming, deleting,
+  or updating existing items.
 ---
 
 # Knowledge Manage — Document & KB Administration
@@ -106,29 +107,29 @@ Summarize concisely:
 "Moved 'filename.pdf' from [SourceKB] to [TargetKB]. [N] documents
 in source remaining. Tags preserved."
 
-## B6 — Update Document Content
+## M6 — Update Document Content
 
 Invoked when the user says "update this document" or "change the content".
 
-### B6a — Read Current Content
+### M6a — Read Current Content
 ```
 kb_doc_read(kb_id, doc_path, max_chars=20000)
 ```
 Present the current content to the user so they know what they're changing.
 
-### B6b — Execute Update
+### M6b — Execute Update
 ```
 kb_doc_update_content(kb_id, doc_path, "<new content>")
 ```
 **Bug**: `file_size` in `kb_get_documents` stays stale after update (Known Gotcha #3).
 Use `fs_get_children` for the real size if needed.
 
-### B6c — Verify
+### M6c — Verify
 ```
 kb_doc_read(kb_id, doc_path, max_chars=2000)
 ```
 Confirm the first ~2000 chars show the updated content.
 
-### B6d — Report
+### M6d — Report
 "Updated '[name]' content. [N] characters written. Old description unchanged."
 

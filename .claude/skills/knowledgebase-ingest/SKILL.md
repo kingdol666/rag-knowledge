@@ -1,5 +1,5 @@
 ---
-name: knowledge-ingest
+name: knowledgebase-ingest
 description: >
   Document ingestion pipeline for knowledge bases. Complete A1→A8 workflow:
   survey collection, classify each document by domain, find or create the
