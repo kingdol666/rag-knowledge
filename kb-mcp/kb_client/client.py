@@ -17,6 +17,7 @@ DEFAULT_WEB_URL = ""  # set by caller via config.WEB_URL
 DEFAULT_BACKEND_URL = ""  # set by caller via config.BACKEND_URL
 HTTP_TIMEOUT = int(os.environ.get("MCP_HTTP_TIMEOUT", "30"))
 PARSE_TIMEOUT = int(os.environ.get("MCP_PARSE_TIMEOUT", "5000"))
+INDEX_TIMEOUT = int(os.environ.get("MCP_INDEX_TIMEOUT", "600"))  # 大文档 CPU embedding 耗时长，索引类调用单独放宽到 600s
 
 
 class KbClient:
@@ -366,9 +367,12 @@ class KbClient:
     # BACKEND POST/GET (新增：让 MCP 工具能调用后端 search/graph API)
     # ================================================================
 
-    async def _post_backend_json(self, endpoint, body):
-        """POST JSON 到后端（base=self.backend_url）。"""
-        return await self._request("POST", endpoint, base=self.backend_url, json=body)
+    async def _post_backend_json(self, endpoint, body, timeout=None):
+        """POST JSON 到后端（base=self.backend_url）。timeout=None 用客户端默认；索引类调用传 INDEX_TIMEOUT。"""
+        kwargs = {"json": body}
+        if timeout:
+            kwargs["timeout"] = timeout
+        return await self._request("POST", endpoint, base=self.backend_url, **kwargs)
 
     async def _get_backend(self, endpoint, **params):
         """GET 后端接口。"""
@@ -378,11 +382,13 @@ class KbClient:
     # 向量检索与两阶段检索（新增）
     # ================================================================
 
-    async def vector_search(self, query, kb_id="", top_k=5):
-        """向量语义搜索。"""
+    async def vector_search(self, query, kb_id="", top_k=5, score_threshold=0.0):
+        """向量语义搜索。score_threshold<=0 表示用后端默认阈值。"""
         body = {"query": query, "top_k": top_k}
         if kb_id:
             body["kb_id"] = kb_id
+        if score_threshold and score_threshold > 0:
+            body["score_threshold"] = score_threshold
         return await self._post_backend_json("/api/v1/search/vector", body)
 
     async def batch_vector_search(self, query_doc_paths, kb_id="", top_k=5, score_threshold=0.3):
@@ -397,8 +403,9 @@ class KbClient:
         return await self._post_backend_json("/api/v1/search/batch-vector", body)
 
     async def two_stage_search(self, query, kb_id="", stage1_top_k=20,
-                                stage2_top_k=5, enable_graph_expansion=True):
-        """两阶段精准检索。"""
+                                stage2_top_k=5, enable_graph_expansion=True,
+                                score_threshold=0.0):
+        """两阶段精准检索。score_threshold<=0 表示用后端默认阈值。"""
         body = {
             "query": query,
             "stage1_top_k": stage1_top_k,
@@ -407,6 +414,8 @@ class KbClient:
         }
         if kb_id:
             body["kb_id"] = kb_id
+        if score_threshold and score_threshold > 0:
+            body["score_threshold"] = score_threshold
         return await self._post_backend_json("/api/v1/search/two-stage", body)
 
     async def reindex(self, kb_id="", force=False):
@@ -414,7 +423,7 @@ class KbClient:
         body = {"force": force}
         if kb_id:
             body["kb_id"] = kb_id
-        return await self._post_backend_json("/api/v1/search/reindex", body)
+        return await self._post_backend_json("/api/v1/search/reindex", body, timeout=INDEX_TIMEOUT)
 
     async def index_document(self, kb_id, doc_path, doc_name="", description="", content=""):
         """单文档索引：向量 + 图谱。存入向量库并记录 vector_index 到元信息。"""
@@ -425,7 +434,7 @@ class KbClient:
             "description": description,
             "content": content,
         }
-        return await self._post_backend_json("/api/v1/search/index-document", body)
+        return await self._post_backend_json("/api/v1/search/index-document", body, timeout=INDEX_TIMEOUT)
 
     async def batch_index_documents(self, kb_id, doc_paths, force=False):
         """批量文档向量索引。"""
@@ -434,7 +443,7 @@ class KbClient:
             "doc_paths": doc_paths,
             "force": force,
         }
-        return await self._post_backend_json("/api/v1/search/batch-index", body)
+        return await self._post_backend_json("/api/v1/search/batch-index", body, timeout=INDEX_TIMEOUT)
 
     async def search_stats(self, kb_id=""):
         """向量索引统计。"""
@@ -455,3 +464,84 @@ class KbClient:
     async def graph_stats(self):
         """图谱统计。"""
         return await self._get_backend("/api/v1/graph/stats")
+
+    # ================================================================
+    # EXPERIENCE MANAGEMENT (经验管理)
+    # ================================================================
+
+    async def experience_init(self, kb_id: str) -> dict:
+        """初始化经验文件夹。"""
+        return await self._get_backend(f"/api/v1/experience/{kb_id}/init")
+
+    async def experience_create(self, kb_id: str, title: str,
+        scenario: str = "", category: str = "tip", problem: str = "",
+        solution: str = "", result: str = "success",
+        key_lessons: list = None, tags: list = None,
+        severity: str = "normal", related_docs: list = None,
+        prerequisites: list = None, metrics: dict = None) -> dict:
+        """创建新经验记录。"""
+        body = {
+            "title": title, "scenario": scenario, "category": category,
+            "problem": problem, "solution": solution, "result": result,
+            "key_lessons": key_lessons or [], "tags": tags or [],
+            "severity": severity, "related_docs": related_docs or [],
+            "prerequisites": prerequisites or [], "metrics": metrics or {},
+        }
+        return await self._post_backend_json(f"/api/v1/experience/{kb_id}", body)
+
+    async def experience_read(self, kb_id: str, exp_id: str) -> dict:
+        """读取经验元数据和正文。"""
+        return await self._get_backend(f"/api/v1/experience/{kb_id}/{exp_id}")
+
+    async def experience_list(self, kb_id: str, scenario: str = "",
+        category: str = "", tag: str = "") -> dict:
+        """列出经验，支持按场景/类别/标签过滤。"""
+        params = {}
+        if scenario: params["scenario"] = scenario
+        if category: params["category"] = category
+        if tag: params["tag"] = tag
+        return await self._get_backend(f"/api/v1/experience/{kb_id}", **params)
+
+    async def experience_update(self, kb_id: str, exp_id: str, **kwargs) -> dict:
+        """更新经验。传需要更新的字段。"""
+        body = {k: v for k, v in kwargs.items() if v is not None and v != ""}
+        return await self._request("PUT", f"/api/v1/experience/{kb_id}/{exp_id}",
+                                   base=self.backend_url, json=body)
+
+    async def experience_delete(self, kb_id: str, exp_id: str) -> dict:
+        """永久删除经验。"""
+        return await self._request("DELETE", f"/api/v1/experience/{kb_id}/{exp_id}",
+                                   base=self.backend_url)
+
+    async def experience_apply(self, kb_id: str, exp_id: str,
+        user: str = "", context: str = "", result: str = "", notes: str = "") -> dict:
+        """标记经验被应用。"""
+        body = {"user": user, "context": context, "result": result, "notes": notes}
+        return await self._post_backend_json(
+            f"/api/v1/experience/{kb_id}/{exp_id}/apply", body)
+
+    async def experience_review(self, kb_id: str, exp_id: str,
+        reviewer: str = "", rating: float = 5.0, comment: str = "") -> dict:
+        """评审经验（评分）。"""
+        body = {"reviewer": reviewer, "rating": rating, "comment": comment}
+        return await self._post_backend_json(
+            f"/api/v1/experience/{kb_id}/{exp_id}/review", body)
+
+    async def experience_summary(self, kb_id: str) -> dict:
+        """获取经验统计摘要。"""
+        return await self._get_backend(f"/api/v1/experience/{kb_id}/summary")
+
+    async def experience_search(self, kb_id: str, query: str, top_k: int = 10) -> dict:
+        """元信息搜索经验。"""
+        body = {"query": query, "top_k": top_k}
+        return await self._post_backend_json(f"/api/v1/experience/{kb_id}/search", body)
+
+    async def experience_search_vector(self, kb_id: str, query: str, top_k: int = 5) -> dict:
+        """向量语义搜索经验。"""
+        body = {"query": query, "top_k": top_k}
+        return await self._post_backend_json(f"/api/v1/experience/{kb_id}/vector-search", body)
+
+    async def experience_search_global(self, query: str, top_k: int = 10) -> dict:
+        """跨 KB 全局搜索经验。"""
+        body = {"query": query, "top_k": top_k}
+        return await self._post_backend_json("/api/v1/experience/global-search", body)

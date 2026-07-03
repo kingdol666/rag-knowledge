@@ -69,6 +69,7 @@ skills:
   - knowledge-list
   - knowledge-verify
   - knowledge-batch
+  - knowledge-experience
 ---
 
 # Archival — Knowledge Administrator

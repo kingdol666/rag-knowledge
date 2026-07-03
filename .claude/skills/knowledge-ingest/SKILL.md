@@ -90,16 +90,43 @@ For each document's domain, scan `kb_list()` results:
 
 **When NOT to create**: a single obscure document belongs in the closest existing KB, not its own.
 
-## A4 — Write the Description
+## A4 — Write the Description（面向场景可定位，至关重要）
 
-Every document needs a 1-2 sentence description based on ACTUAL content:
-- Read the content preview (first ~2000 chars for parsed docs, or first few hundred for direct-text)
-- NEVER guess from filename alone
-- Format: "A [type of doc] about [main topic]. It covers [what it does/finds]."
+> **核心要求**：description 必须让未来检索时，Agent **只读 description** 就能判断这篇文档/KB 适用于什么场景。这是 agentic 优先检索的基石——检索流程靠读 description 定位，描述写不好就永远检索不到。
 
-KB description standard:
-- Domain + content types + primary language
-- Example: "Energy industry technical reports covering thermal power plant monitoring, emissions analysis, and turbine diagnostics. Primarily Chinese."
+### 必须基于真实内容写
+- 解析文档：读前 ~2000 字符预览（解析完成后）；直接文本：读前几百字符
+- **绝不**凭文件名猜
+
+### 文档 description 模板（场景导向）
+```
+[研究对象/设备] + [方法/技术] + [解决的问题/适用场景] + [关键结论/数据] + [语言]
+
+要素：
+1. 研究对象：是什么设备/系统/技术（磨煤机/一次风机/齿轮箱/RAG 平台）
+2. 方法：用什么方法（CNN-LSTM/MSET/三参量交叉诊断）
+3. 场景：解决什么问题/何时用（堵煤故障预警/早期振动排查/检索增强生成）
+4. 亮点：关键数据或结论（提前315min/准确率91%/660MW机组实测）
+5. 语言：中文/英文/中英
+```
+
+**好例子**（场景清晰，可被 description 定位）：
+- ✅ "基于 CNN-LSTM 的火电厂中速磨煤机堵煤故障预警方法（660MW机组实测，提前315min预警，无误报）。适用于磨煤机渐变故障早期预警、偏离度阈值核定场景。中文。"
+- ✅ "风电齿轮箱（增速箱）故障诊断技术文档。涵盖齿面点蚀/磨损、轴承内外圈故障、断齿 6 类故障的特征频率与振动/油液/温度三参量交叉诊断方法。适用于齿轮箱早期故障排查、状态监测系统建设场景。中文。"
+
+**坏例子**（场景模糊，检索不到）：
+- ❌ "一篇关于磨煤机的论文"（无方法、无场景、无亮点）
+- ❌ "AI-based warning system"（无设备、无具体场景）
+- ❌ "Test document" / "文档" / "资料"（完全无信息）
+
+### KB description 标准
+```
+[行业/领域] + [覆盖主题列表] + [内容类型] + [语言] + [典型适用场景]
+```
+- ✅ "火电行业技术文档，覆盖磨煤机堵煤预警、一次风机 MSET 故障预测、空预器压差预测、AI 设备监测预警。含中文学术论文与运行报告。适用于火电厂辅机设备故障诊断、预测性维护、预警模型选型场景。"
+
+### 自检（写完 description 必做）
+问自己：**"如果未来有人遇到 [我描述的场景]，他只读这句 description，能确定这篇文档就是他要找的吗？"** 答案必须是"能"。否则重写。
 
 ## A5 — Choose Tags
 

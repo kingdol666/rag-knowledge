@@ -93,8 +93,14 @@ async def kb_list() -> str:
 
 @mcp.tool()
 async def kb_create(name: str, description: str = "", parent_id: str = "") -> str:
-    """Create a new knowledge base. parent_id is an optional tree folder UUID for nesting (omit for root). Returns knowledgeBase with id (UUID) and path ??both work as kb_id in other tools."""
-    return _j(await _client().kb_create(name, description, parent_id))
+    """Create a new knowledge base. parent_id is an optional tree folder UUID for nesting (omit for root). Returns knowledgeBase with id (UUID) and path -- both work as kb_id in other tools. Automatically initializes the experience management folder."""
+    result = await _client().kb_create(name, description, parent_id)
+    if isinstance(result, dict) and result.get("success") and result.get("knowledgeBase", {}).get("id"):
+        try:
+            await _client().experience_init(result["knowledgeBase"]["id"])
+        except Exception:
+            pass  # non-fatal: experience init failure shouldn't break KB creation
+    return _j(result)
 
 
 @mcp.tool()
@@ -127,6 +133,86 @@ async def kb_search(query: str, top_k: int = 10) -> str:
 async def kb_get_documents(kb_id: str) -> str:
     """List all documents inside a knowledge base. kb_id accepts path or UUID."""
     return _j(await _client().kb_get_documents(kb_id))
+
+
+# ============================================================
+# LIGHTWEIGHT CATALOG (id + description only, agentic-first retrieval)
+# 仅返回 id/description 等最小投影，避免 file_size/tags/vector_index 等元信息污染 context。
+# Agent 应优先用这些方法读 description 判断相关性，确认后再 kb_doc_read/kb_search_vector 取详情。
+# ============================================================
+
+@mcp.tool()
+async def kb_catalog() -> str:
+    """轻量知识库目录 —— 仅返回 [{kb_id, name, description, doc_count}]。
+
+    用途（agentic 优先检索的第一步）：Agent 阅读每个 KB 的 description，
+    用模型判断力决定哪个 KB 与当前场景真正相关，再深入该 KB。
+    不加载 path/file_size 等多余字段，保持 context 干净。
+    """
+    data = await _client().kb_list()
+    if not isinstance(data, dict) or not data.get("success"):
+        return _j(data)
+    catalog = [{
+        "kb_id": kb.get("kbId") or kb.get("path"),
+        "name": kb.get("name") or kb.get("path"),
+        "description": kb.get("description", ""),
+        "doc_count": kb.get("documentCount", 0),
+    } for kb in data.get("knowledgeBases", [])]
+    return _j({"success": True, "count": len(catalog), "catalog": catalog})
+
+
+@mcp.tool()
+async def kb_doc_catalog(kb_id: str) -> str:
+    """轻量文档目录 —— 返回某 KB 内全部文档的 [{doc_path, name, description}]（仅这三字段）。
+
+    用途（agentic 优先检索的第二步）：进入候选 KB 后，Agent 阅读每篇文档的 description，
+    判断哪篇真正契合当前场景，确认后再 kb_doc_read 读全文或 kb_search_vector 向量精排。
+    不加载 file_size/tags/vector_index/metadata，避免污染 context。
+    """
+    data = await _client().kb_get_documents(kb_id)
+    if not isinstance(data, dict) or not data.get("success"):
+        return _j(data)
+    catalog = [{
+        "doc_path": d.get("path"),
+        "name": d.get("name"),
+        "description": d.get("description", ""),
+    } for d in data.get("documents", [])]
+    return _j({"success": True, "kb_id": kb_id, "count": len(catalog), "catalog": catalog})
+
+
+@mcp.tool()
+async def fs_catalog_all(include_files: bool = True) -> str:
+    """全库轻量目录（扁平）—— 返回所有文件夹+文件的 [{id, path, name, description, type, is_kb, doc_count, parent_id}]。
+
+    用途：一次性获取全库结构概览（仅 id+description），Agent 据此规划检索路径。
+    与 fs_get_tree 的区别：扁平结构 + 仅必要字段（无 fileSize/metadata/dates/children 嵌套），
+    大幅减少 context 占用。include_files=False 只列文件夹。
+    """
+    tree = await _client().fs_get_tree()
+    if not isinstance(tree, list):
+        return _j(tree)
+    flat = []
+
+    def _walk(nodes, parent_id=""):
+        for n in nodes:
+            ntype = n.get("type", "folder")
+            if ntype == "file" and not include_files:
+                continue
+            flat.append({
+                "id": n.get("id"),
+                "path": n.get("path"),
+                "name": n.get("name"),
+                "description": n.get("description", ""),
+                "type": ntype,
+                "is_kb": bool(n.get("isKnowledgeBase")),
+                "doc_count": n.get("documentCount", 0),
+                "parent_id": parent_id,
+            })
+            for child in n.get("children", []):
+                _walk([child], n.get("id"))
+
+    _walk(tree)
+    return _j({"success": True, "count": len(flat), "catalog": flat})
 
 
 # ============================================================
@@ -397,6 +483,252 @@ async def kb_doc_get_by_tag(tag: str, kb_id: str = "") -> str:
 
 
 # ============================================================
+# EXPERIENCE MANAGEMENT --- 经验管理（10个MCP工具）
+# ============================================================
+
+@mcp.tool()
+async def experience_create(kb_id: str, title: str, scenario: str = "",
+    category: str = "tip", problem: str = "", solution: str = "",
+    result: str = "success", key_lessons: list = None, tags: list = None,
+    severity: str = "normal", related_docs: list = None,
+    prerequisites: list = None, metrics: str = "") -> str:
+    """创建一条经验记录。
+
+    经验是实践总结的可复用知识，相比文档多了评分、应用记录、场景绑定等维度。
+    一条经验包含：问题描述、解决方案、关键教训（可执行条目列表）、结果（成功/失败）、
+    严重程度（紧急/重要/普通/提示）、场景标识、关联文档等。
+
+    Args:
+        kb_id: 知识库 ID 或路径
+        title: 经验标题
+        scenario: 场景标识（如 "coal-mill-fault-prediction"），用于按场景检索
+        category: 类别（best_practice=最佳实践, troubleshooting=故障排查,
+                  lesson_learned=经验教训, optimization=优化, tip=小技巧,
+                  workflow=工作流, decision=决策记录）
+        problem: 要解决的问题描述
+        solution: 解决方案或操作步骤
+        result: 结果（success=成功, partial=部分成功, failed=失败, inconclusive=不确定）
+        key_lessons: 关键教训列表，每条应该是可独立执行的操作条目
+        tags: 标签列表
+        severity: 严重程度（critical=紧急, important=重要, normal=普通, tip=提示）
+        related_docs: 关联的文档路径列表（如 ["Thermal-Power/doc1.md"]）
+        prerequisites: 前置条件列表
+        metrics: JSON 字符串，自定义量化指标（如 '{"effectiveness": 95, "difficulty": 60}'）
+
+    Returns:
+        {success, experience: {id, title, path, scenario, ...}}
+    """
+    parsed_metrics = json.loads(metrics) if metrics else {}
+    return _j(await _client().experience_create(
+        kb_id, title, scenario, category, problem, solution, result,
+        key_lessons or [], tags or [], severity, related_docs or [],
+        prerequisites or [], parsed_metrics
+    ))
+
+
+@mcp.tool()
+async def experience_read(kb_id: str, exp_id: str) -> str:
+    """读取一条经验的完整信息（元数据 + 正文内容）。
+
+    Args:
+        kb_id: 知识库 ID 或路径
+        exp_id: 经验 ID（如创建时返回的 "exp-xxxxxxxxxxxx"）
+
+    Returns:
+        {success, experience: {id, title, ...}, content: "markdown 正文"}
+    """
+    return _j(await _client().experience_read(kb_id, exp_id))
+
+
+@mcp.tool()
+async def experience_list(kb_id: str, scenario: str = "",
+    category: str = "", tag: str = "") -> str:
+    """列出知识库中的经验，支持按场景/类别/标签过滤。结果按评分从高到低排序。
+
+    Args:
+        kb_id: 知识库 ID 或路径
+        scenario: 可选，按场景标识过滤
+        category: 可选，按类别过滤（best_practice/troubleshooting/lesson_learned/...）
+        tag: 可选，按标签过滤
+
+    Returns:
+        {success, count, experiences: [{id, title, scenario, rating_avg, ...}]}
+    """
+    return _j(await _client().experience_list(kb_id, scenario, category, tag))
+
+
+@mcp.tool()
+async def experience_update(kb_id: str, exp_id: str, title: str = "",
+    scenario: str = "", category: str = "", problem: str = "",
+    solution: str = "", result: str = "", key_lessons: list = None,
+    tags: list = None, severity: str = "", status: str = "",
+    related_docs: list = None, prerequisites: list = None,
+    metrics: str = "") -> str:
+    """更新一条经验记录。只传需要更新的字段，不传的字段保持不变。
+
+    Args:
+        kb_id: 知识库 ID 或路径
+        exp_id: 经验 ID
+        title: 新标题
+        scenario: 新场景标识
+        category: 新类别
+        problem: 新问题描述
+        solution: 新解决方案
+        result: 新结果
+        key_lessons: 新关键教训列表
+        tags: 新标签列表
+        severity: 新严重程度
+        status: 新状态（draft=草稿, published=已发布, archived=已归档）
+        related_docs: 新关联文档列表
+        prerequisites: 新前置条件列表
+        metrics: JSON 字符串，新量化指标
+
+    Returns:
+        {success, experience: {id, title, ...}}
+    """
+    kwargs = {}
+    for k, v in [("title", title), ("scenario", scenario), ("category", category),
+                 ("problem", problem), ("solution", solution), ("result", result),
+                 ("severity", severity), ("status", status)]:
+        if v: kwargs[k] = v
+    if key_lessons: kwargs["key_lessons"] = key_lessons
+    if tags: kwargs["tags"] = tags
+    if related_docs: kwargs["related_docs"] = related_docs
+    if prerequisites: kwargs["prerequisites"] = prerequisites
+    if metrics: kwargs["metrics"] = json.loads(metrics)
+    return _j(await _client().experience_update(kb_id, exp_id, **kwargs))
+
+
+@mcp.tool()
+async def experience_delete(kb_id: str, exp_id: str) -> str:
+    """永久删除一条经验。不可恢复。
+
+    Args:
+        kb_id: 知识库 ID 或路径
+        exp_id: 经验 ID
+
+    Returns:
+        {success, deleted_id}
+    """
+    return _j(await _client().experience_delete(kb_id, exp_id))
+
+
+@mcp.tool()
+async def experience_apply(kb_id: str, exp_id: str, user: str = "",
+    context: str = "", result: str = "", notes: str = "") -> str:
+    """标记一条经验已被应用。记录使用者、场景和效果。每次调用增加 applied_count。
+
+    Args:
+        kb_id: 知识库 ID 或路径
+        exp_id: 经验 ID
+        user: 使用者标识（如工号、用户名）
+        context: 应用场景描述（如 "#3机组CNN-LSTM偏差度0.8"）
+        result: 应用效果（success=成功, partial=部分有效, failed=无效）
+        notes: 备注
+
+    Returns:
+        {success, experience: {..., applied_count, ...}, apply_record: {user, context, result, notes}}
+    """
+    return _j(await _client().experience_apply(kb_id, exp_id, user, context, result, notes))
+
+
+@mcp.tool()
+async def experience_review(kb_id: str, exp_id: str, reviewer: str = "",
+    rating: float = 5.0, comment: str = "") -> str:
+    """评审一条经验，给出评分（0-5分）和评论。自动更新该经验的平均评分和评审次数。
+
+    Args:
+        kb_id: 知识库 ID 或路径
+        exp_id: 经验 ID
+        reviewer: 评审人
+        rating: 评分 0-5（0=无用, 5=非常有用）
+        comment: 评审意见
+
+    Returns:
+        {success, experience: {..., rating_avg, review_count, ...}, review_record}
+    """
+    return _j(await _client().experience_review(kb_id, exp_id, reviewer, rating, comment))
+
+
+@mcp.tool()
+async def experience_find_by_scenario(kb_id: str, scenario: str) -> str:
+    """按场景标识查找经验。这是经验检索的核心入口——Agent 应优先使用场景来定位经验。
+
+    Args:
+        kb_id: 知识库 ID 或路径
+        scenario: 场景标识（如 "coal-mill-fault-prediction"）
+
+    Returns:
+        {success, count, experiences: [{id, title, scenario, rating_avg, applied_count}]}
+    """
+    return _j(await _client().experience_list(kb_id, scenario=scenario))
+
+
+@mcp.tool()
+async def experience_summary(kb_id: str) -> str:
+    """获取经验的统计摘要，包括总数、按类别分布、按严重程度分布、总应用次数、平均评分、Top5经验。
+
+    Args:
+        kb_id: 知识库 ID 或路径
+
+    Returns:
+        {success, summary: {total, by_category, by_severity, total_applied, avg_rating, top_experiences}}
+    """
+    return _j(await _client().experience_summary(kb_id))
+
+
+@mcp.tool()
+async def experience_search(kb_id: str, query: str, top_k: int = 10) -> str:
+    """元信息搜索经验：在经验的标题、问题、方案、关键教训、标签中匹配关键词。
+
+    适用于已知部分关键词的精确查找。结果按相关度+评分+应用次数综合排序。
+
+    Args:
+        kb_id: 知识库 ID 或路径
+        query: 搜索关键词
+        top_k: 返回数量（默认10）
+
+    Returns:
+        {success, count, query, experiences: [{id, title, scenario, rating_avg, ...}]}
+    """
+    return _j(await _client().experience_search(kb_id, query, top_k))
+
+
+@mcp.tool()
+async def experience_search_vector(kb_id: str, query: str, top_k: int = 5) -> str:
+    """向量语义搜索经验：用自然语言查询经验的语义内容。
+
+    适用于模糊查询，如"以前遇到类似振动问题怎么处理的"。需要经验已建立向量索引。
+    自动过滤只返回经验类型的结果（doc_type=experience）。
+
+    Args:
+        kb_id: 知识库 ID 或路径
+        query: 自然语言查询
+        top_k: 返回数量（默认5）
+
+    Returns:
+        {success, query, count, results: [{content, score, doc_path, chunk_index}]}
+    """
+    return _j(await _client().experience_search_vector(kb_id, query, top_k))
+
+
+@mcp.tool()
+async def experience_search_global(query: str, top_k: int = 10) -> str:
+    """跨 KB 全局搜索经验：遍历所有知识库的经验，返回最相关的结果。
+
+    适用于"全厂所有关于故障排查的经验有哪些？"这类全库查询。
+
+    Args:
+        query: 搜索关键词
+        top_k: 返回数量（默认10）
+
+    Returns:
+        {success, query, count, experiences: [{id, title, kb_path, rating_avg, ...}]}
+    """
+    return _j(await _client().experience_search_global(query, top_k))
+
+
+# ============================================================
 # BACKEND STATUS
 # ============================================================
 
@@ -411,18 +743,20 @@ async def backend_status() -> str:
 # ============================================================
 
 @mcp.tool()
-async def kb_search_vector(query: str, kb_id: str = "", top_k: int = 5) -> str:
+async def kb_search_vector(query: str, kb_id: str = "", top_k: int = 5,
+                            score_threshold: float = 0.0) -> str:
     """向量语义搜索文档片段。
 
     Args:
         query: 查询文本
         kb_id: 限定知识库；空则跨库
         top_k: 返回结果数
+        score_threshold: 最低余弦相似度阈值（0~1）；<=0 用后端默认(0.35)。降低可召回更多片段
 
     Returns:
         {success, results: [{content, score, doc_path, chunk_index, kb_id}]}
     """
-    return _j(await _client().vector_search(query, kb_id, top_k))
+    return _j(await _client().vector_search(query, kb_id, top_k, score_threshold))
 
 
 @mcp.tool()
@@ -460,6 +794,7 @@ async def kb_search_two_stage(
     stage1_top_k: int = 20,
     stage2_top_k: int = 5,
     enable_graph_expansion: bool = True,
+    score_threshold: float = 0.0,
 ) -> str:
     """两阶段精准检索：先广搜索定位候选文档，再向量精筛片段。
 
@@ -471,12 +806,14 @@ async def kb_search_two_stage(
         stage1_top_k: Stage 1 候选文档数
         stage2_top_k: Stage 2 每文档返回片段数
         enable_graph_expansion: 是否启用图谱邻居扩展
+        score_threshold: 向量相似度阈值（0~1）；<=0 用后端默认(0.35)
 
     Returns:
         {success, stage1: {candidates}, stage2: {results}, total_results}
     """
     return _j(await _client().two_stage_search(
-        query, kb_id, stage1_top_k, stage2_top_k, enable_graph_expansion
+        query, kb_id, stage1_top_k, stage2_top_k, enable_graph_expansion,
+        score_threshold
     ))
 
 

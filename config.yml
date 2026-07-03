@@ -47,7 +47,8 @@ vector:
   chunk_size: 500
   chunk_overlap: 50
   top_k: 5
-  score_threshold: 0.3
+  score_threshold: 0.35  # 0.55 对长文档片段过严（bge-m3 余弦多在 0.3-0.5 被滤掉致 count=0），降到 0.35；MCP 工具支持按查询覆盖
+  experience_score_threshold: 0.55  # 经验是聚焦短内容，相似度分布更高；0.35 会把无关 query（如"红烧肉"0.40-0.45）错判为相关。实测 0.55 完美分离无关(≤0.45)/相关(≥0.65)
 
 # ============================================
 # Embedding 模型配置

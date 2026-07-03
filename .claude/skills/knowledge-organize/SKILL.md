@@ -12,12 +12,12 @@ description: >
 # Knowledge Organize — Full Collection Restructuring
 
 Invoked by Archival when the scenario is diagnosed as **Organize**
-(全盘整理, 整理, 清洗, 审计, audit, restructure).
+(全盘整理, 整理, 清洗, 审计, audit, restructure, cleanup, reorganize).
 
 This is the deep reorganization engine. Survey every KB, read content,
 and restructure so the collection reflects the truth.
 
-## O1 — Full Survey
+## O1 — Full Survey (KB + Experience)
 
 ```
 kb_list()         → all KBs with names, descriptions, document counts
@@ -25,17 +25,28 @@ kb_tags_list()    → all registered tags
 fs_get_tree(include_files=True, max_depth=0)  → full structural view
 ```
 
+### O1-E — Experience Survey
+
+For each KB in `kb_list()`:
+```
+experience_list(kb_id)          → list all experiences
+experience_summary(kb_id)       → statistics (total, by_category, by_severity)
+```
+Check for orphaned `{KB_PATH}/experience/` dirs whose KB was deleted.
+
 ## O2 — Evaluate Every KB
 
 For each KB, evaluate these metrics:
 
 | Metric | How to evaluate | Red flag |
 |--------|----------------|----------|
-| Name quality | Meaningful? Describes the domain? | Gibberish: "213", "333333", "哒哒哒" |
+| Name quality | Meaningful? Describes the domain? | Gibberish: "213", "333333", "test" |
 | Description quality | Does it describe the domain? | Empty, "test", meaningless |
-| Document count | How many docs inside? | 0 = stale |
+| Document count | How many docs inside? | 0 = stale → ask user or delete |
+| **Experience health** | Are exps consistent with KB domain? | scenario=test, empty title, 0 rating |
 | Domain match | Do the docs match the KB name? | KB says "AI" but doc content is energy |
 | Overlap | Same content in another KB? | Duplicate domain coverage |
+| Vector coverage | What % docs have vector_index set? | <50% → prompt reindex |
 | **Oversized docs** | `file_size` per doc | >50KB or >2000 lines → flag for O8 smart split |
 
 For each KB with documents:
@@ -46,11 +57,21 @@ For each KB with documents:
 
 | Category | Characteristics | Action |
 |----------|----------------|--------|
-| **Proper domain KB** | Meaningful name + description + matching content | Keep. May offer rename/rediscribe. |
-| **Test/scratch** | Gibberish name, meaningless description | Merge content into "Test-Scratch" KB, delete shell |
+| **Proper domain KB** | Meaningful name + description + matching content | Keep. May offer rename/rediscribe. Auto-index missing docs. |
+| **Test/scratch** | Gibberish name, meaningless description | Merge content (if any) into an existing KB, delete shell |
 | **Empty stale** | 0 documents | Ask user → delete or keep as placeholder |
 | **Domain overlap** | Same domain as another KB | Merge into the better-named KB |
 | **Misclassified** | KB name says X, content is Y | Move docs to correct KB, rename or delete shell |
+
+### O3-E — Experience Alignment
+
+For each experience found:
+
+| Condition | Action |
+|-----------|--------|
+| scenario=test or title is test gibberish | Delete (test residue) |
+| rating=0, key_lessons empty, applied=0 | Flag as draft → ask user |
+| related_docs paths stale after KB rename | Update via experience_update() |
 
 ## O4 — Execute
 
@@ -59,12 +80,54 @@ For each KB with documents:
 docs = kb_get_documents(A.kb_id)
 for each doc:
     kb_doc_move(doc.doc_path, B.kb_id)
+# Also migrate experiences (if any)
+exps_resp = experience_list(kb_id=A.kb_id)
+for exp in exps_resp.experiences:
+    exp_full = experience_read(kb_id=A.kb_id, exp_id=exp.id)
+    exp_data = exp_full.experience
+    experience_create(
+        kb_id=B.kb_id, title=exp_data.title, scenario=exp_data.scenario,
+        category=exp_data.category, problem=exp_data.problem,
+        solution=exp_data.solution, result=exp_data.result,
+        key_lessons=exp_data.key_lessons, tags=exp_data.tags,
+        severity=exp_data.severity, related_docs=exp_data.related_docs,
+        prerequisites=exp_data.prerequisites, metrics=exp_data.metrics,
+    )
+    experience_delete(kb_id=A.kb_id, exp_id=exp.id)
 kb_delete(A.kb_id)    # only AFTER all docs moved
 ```
 
-### Move misclassified
+### Move misclassified doc
 ```
 kb_doc_move(doc_path="SourceKB/doc.md", target_kb_id="target-UUID")
+```
+**After moving**: check if any experience in the target KB has `related_docs`
+that reference the doc's old path. If so, update:
+```
+experience_update(target_kb_id, exp_id, related_docs=["NewKB/new-path.md"])
+```
+
+### Rename/rediscribe KB
+```
+kb_update(kb_id, name="New-Name", description="<1-3 sentences>")
+```
+**Bug**: path won't refresh. Use UUID for subsequent calls.
+**Experience impact**: related_docs in experiences still reference OLD path.
+After renaming, update all affected experiences:
+```
+exps = experience_list(kb_id)
+for exp in exps.experiences:
+    old_related = exp.related_docs
+    if any(doc.startswith("Old-Name/") for doc in old_related):
+        new_related = [doc.replace("Old-Name/", "New-Name/") for doc in old_related]
+        experience_update(kb_id, exp.id, related_docs=new_related)
+```
+
+### Index documents (if vector coverage < 100%)
+```
+# For each KB with unindexed docs:
+kb_get_documents(kb_id) → filter for doc_paths where vector_index is missing
+kb_batch_index(kb_id, unindexed_doc_paths)
 ```
 
 ### Rename/rediscribe
@@ -101,13 +164,26 @@ kb_doc_update_tags(kb_id, doc_path, ["tag1", "tag2"])
 
 ## O5 — Verify Each Change
 
-After every move/delete:
-1. `kb_get_documents(source_kb_id)` — count decreased
-2. `kb_get_documents(target_kb_id)` — count increased
-3. If KB deleted: confirm absent from `kb_list()`
-4. `fs_get_tree(include_files=True)` — confirm tree is clean
+After each mutation (move, delete, merge, rename, update), immediately verify:
+- **For moves**: `kb_get_documents(target_kb_id)` → confirm doc arrived
+- **For deletes**: `kb_get_documents(kb_id)` or `fs_get_tree()` → confirm removal
+- **For renames**: `kb_list()` → check new name reflects
+- **For merges**: verify source KB is gone + target KB has combined docs
+- **For reindex**: `kb_search_stats(kb_id)` → check chunk_count increased
+- **For experience updates**: `experience_read(kb_id, exp_id)` → verify content
+- **For .tree-fs.json integrity**: `fs_get_tree()` → confirm JSON parseable
 
-## O6 — Health Report with Scorecard
+## O6 — Orphan Cleanup
+
+Check for orphaned experience directories:
+
+1. List all directories under the storage root (fs_get_tree)
+2. Cross-reference against KB paths from kb_list()
+3. For any experience/ directory whose KB no longer exists:
+   - List its experiences: read .experience-index.yml
+   - Report to the user and delete if confirmed
+
+## O7 — Integrity Report
 
 Generate a structured summary with a **quantitative scorecard**:
 
