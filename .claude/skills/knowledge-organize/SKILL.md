@@ -80,7 +80,7 @@ For each experience found:
 docs = kb_get_documents(A.kb_id)
 for each doc:
     kb_doc_move(doc.doc_path, B.kb_id)
-# Also migrate experiences (if any)
+# Also migrate experiences (if any) — preserve credibility data
 exps_resp = experience_list(kb_id=A.kb_id)
 for exp in exps_resp.experiences:
     exp_full = experience_read(kb_id=A.kb_id, exp_id=exp.id)
@@ -93,8 +93,21 @@ for exp in exps_resp.experiences:
         severity=exp_data.severity, related_docs=exp_data.related_docs,
         prerequisites=exp_data.prerequisites, metrics=exp_data.metrics,
     )
+    # ⚠️ CRITICAL: experience_create resets applied_count/rating_avg to 0.
+    # After creating, manually replay apply & review records to restore credibility.
+    # Check if original has applied_count > 0:
+    if exp_data.applied_count > 0:
+        experience_apply(kb_id=B.kb_id, exp_id=<new_exp_id>,
+            user="merge-migration", context="merged from {A.kb_id}",
+            result=exp_data.result)
+    # Check if original has reviews (rating_avg > 0):
+    if exp_data.rating_avg > 0:
+        experience_review(kb_id=B.kb_id, exp_id=<new_exp_id>,
+            reviewer="merge-migration",
+            rating=exp_data.rating_avg,
+            comment=f"Migrated from {A.kb_id}. Original: applied={exp_data.applied_count}, rating={exp_data.rating_avg}")
     experience_delete(kb_id=A.kb_id, exp_id=exp.id)
-kb_delete(A.kb_id)    # only AFTER all docs moved
+kb_delete(A.kb_id)    # only AFTER all docs + experiences moved
 ```
 
 ### Move misclassified doc

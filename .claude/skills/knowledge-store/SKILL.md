@@ -61,9 +61,11 @@ When you (Archival) are running and need to choose a sub-skill:
 | **Manage** | `Skill("knowledge-manage")` | Confirm → execute → verify |
 | **Organize** | `Skill("knowledge-organize")` | Survey all → read content → categorize → execute → verify → report |
 | **List** | `Skill("knowledge-list")` | Inventory → drill-down → tree |
-| **Search** | `Skill("knowledge-search")` | Parse intent → keyword search + tag lookup → present |
+| **Search** | `Skill("knowledge-search")` | Agentic RAG: catalog → doc catalog → experience → vector confirm → content verify. Auto-upgrades to `knowledge-search-enterprise` for cross-KB blind spots. |
+| **Search (企业级)** | `Skill("knowledge-search-enterprise")` | Multi-strategy: Agentic + BM25 + vector 3-path parallel recall → cross-validation → content rerank. Triggered automatically or for high-precision enterprise searches. |
 | **Verify** | `Skill("knowledge-verify")` | Metadata scan → doc integrity → parse quality → scorecard |
 | **Batch** | `Skill("knowledge-batch")` | Bulk tag → bulk desc → mass import → mass move → dedup → export |
+| **Experience** | `Skill("knowledge-experience")` | Create → retrieve (strict P0/P1/P2) → apply → review → summary. Short-content filtering + credibility decay. |
 | **Mixed** | Invoke in order: organize → verify → ingest → manage → list | |
 
 Each sub-skill contains the complete step-by-step procedure. Follow it

@@ -46,16 +46,34 @@ tools:
   - mcp__kb-mcp__fs_update_node
   - mcp__kb-mcp__fs_delete_node
   - mcp__kb-mcp__fs_upload_file
+  # Lightweight catalog tools (agentic-first retrieval)
+  - mcp__kb-mcp__kb_catalog
+  - mcp__kb-mcp__kb_doc_catalog
+  - mcp__kb-mcp__fs_catalog_all
   # Agentic RAG tools
   - mcp__kb-mcp__kb_search_vector
   - mcp__kb-mcp__kb_search_two_stage
   - mcp__kb-mcp__kb_search_batch_vector
   - mcp__kb-mcp__kb_index_document
   - mcp__kb-mcp__kb_batch_index
+  - mcp__kb-mcp__kb_reindex
   - mcp__kb-mcp__kb_search_stats
   - mcp__kb-mcp__kb_graph_search
   - mcp__kb-mcp__kb_graph_neighbors
   - mcp__kb-mcp__kb_graph_stats
+  # Experience management (10 tools)
+  - mcp__kb-mcp__experience_create
+  - mcp__kb-mcp__experience_read
+  - mcp__kb-mcp__experience_list
+  - mcp__kb-mcp__experience_update
+  - mcp__kb-mcp__experience_delete
+  - mcp__kb-mcp__experience_apply
+  - mcp__kb-mcp__experience_review
+  - mcp__kb-mcp__experience_find_by_scenario
+  - mcp__kb-mcp__experience_summary
+  - mcp__kb-mcp__experience_search
+  - mcp__kb-mcp__experience_search_vector
+  - mcp__kb-mcp__experience_search_global
 disallowedTools:
   - Edit
 model: opus

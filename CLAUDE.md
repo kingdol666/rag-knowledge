@@ -133,14 +133,65 @@ kb-mcp/
 MCP Tools by category:
 - **Health:** `health_check`, `backend_status`
 - **KB CRUD:** `kb_list`, `kb_create`, `kb_update`, `kb_delete`
+- **KB Catalog (agentic-first, lightweight):** `kb_catalog`, `kb_doc_catalog`, `fs_catalog_all`
 - **Document CRUD:** `kb_doc_read`, `kb_doc_create`, `kb_doc_update_meta`, `kb_doc_update_content`, `kb_doc_delete`, `kb_doc_batch_delete`, `kb_doc_move`
 - **File System:** `fs_get_tree`, `fs_get_children`, `fs_get_node`, `fs_get_count`, `fs_create_folder`, `fs_create_file`, `fs_update_node`, `fs_delete_node`, `fs_upload_file`
-- **Parse (non-blocking):** `parse_pdf`, `parse_pdf_batch`, `parse_pdf_to_kb`, `parse_pdf_to_kb_batch` — return `task_id` immediately; poll via `parse_task_status`, `parse_tasks_list`
+- **Parse (non-blocking):** `parse_doc`, `parse_doc_batch`, `parse_task_status`, `parse_tasks_list`
 - **Tags:** `kb_tags_list`, `kb_tag_create`, `kb_doc_update_tags`, `kb_doc_get_by_tag`
 - **Preview:** `preview_file`
-- **Search:** `kb_search`
+- **Search (Agentic RAG):** `kb_search` (metadata only), `kb_search_vector` (semantic), `kb_search_two_stage` (BM25→vector, primary), `kb_search_batch_vector`, `kb_search_stats`
+- **Vector/Index:** `kb_index_document`, `kb_batch_index`, `kb_reindex`
+- **Knowledge Graph:** `kb_graph_search`, `kb_graph_neighbors`, `kb_graph_stats`
+- **Experience (10 tools):** `experience_create`, `experience_read`, `experience_list`, `experience_update`, `experience_delete`, `experience_apply`, `experience_review`, `experience_find_by_scenario`, `experience_summary`, `experience_search`, `experience_search_vector`, `experience_search_global`
 
 **Architecture principle:** writes go through HTTP API (backend/web proxy), reads go through direct file access (`.tree-fs.json` + `.knowledge-base.yml`).
+
+## Enterprise-Grade Retrieval Architecture
+
+### Agentic-First Retrieval Pipeline (6 stages)
+
+```
+User Query → [Step 0: Intent Recognition] → [Step 1: kb_catalog() Agentic KB scan]
+  → [Step 2: kb_doc_catalog() Agentic doc scan]
+  → [Step 3: Experience-first (if operational/fault query, strict P0/P1/P2)]
+  → [Step 4: Vector confirmation (auxiliary, within confirmed candidates)]
+  → [Step 5: Content verification (kb_doc_read mandatory)]
+  → [Step 6: Synthesized answer with sources + certainty + blind-spots]
+```
+
+### Multi-Strategy Enterprise Search (cross-KB blind spot mitigation)
+
+When standard `kb_search_two_stage` cross-KB search returns candidates from <2 distinct KBs (BM25 stage1 semantic blind spot), auto-upgrade to enterprise multi-strategy:
+
+```
+Phase 1: Parallel 3-path recall
+  ├── Path A: kb_catalog() → Agentic KB judgment
+  ├── Path B: kb_search_two_stage() → BM25 + vector
+  └── Path C: kb_search_vector(kb_id="") → pure vector cross-KB semantic
+
+Phase 2: Cross-validation + dedup (A+B+C → merged)
+Phase 3: Short-content filtering (<50 chars → downgrade P2)
+Phase 4: Content rerank (kb_doc_read each candidate, score 0-8)
+Phase 5: Fused presentation (P0→P1, P2 hidden, blind-spots declared)
+```
+
+### Experience Credibility Model
+
+| Tier | Condition | Action |
+|------|-----------|--------|
+| **P0 Strong** | scenario exact match ∧ vector ≥ 0.65 ∧ rating ≥ 4 | Strong recommend, pin to top |
+| **P1 Reference** | vector ≥ 0.55 ∧ rating ≥ 3 | Recommend, annotate credibility |
+| **P2 Gray** | 0.45 ≤ vector < 0.55 | Suppress by default (show only on explicit expand) |
+| **Discard** | vector < 0.45 OR different equipment/part | Never present |
+
+Credibility decay: stale unverified (>30d, 0 applied), disputed (rating <2.0 with ≥3 reviews), fully unvetted (0 reviews ∧ 0 applied → max P1).
+
+### Short-Content False Positive Guard
+
+Vector search may return extremely short chunks (e.g., just "## 问题") with inflated scores:
+- Chunks < 50 chars → downgrade to P2 (suppressed)
+- Document with >50% short-chunk results → downgrade entire document
+- Exception: if another P0/P1 chunk from the same document exists, short chunks pass through
 
 ## Key Commands
 

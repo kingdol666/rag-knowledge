@@ -43,8 +43,21 @@ description: >
 3. 自然语言 → `experience_search_vector(kb_id, query)` 语义（严格 0.55）
 4. 全库 → `experience_search_global(query)` 跨库向量
 5. 详细内容 → `experience_read(kb_id, exp_id)` 确认正文真匹配
-6. **置信度分层**（下方）→ 只呈现 P0/P1，灰区抑制
+6. **置信度分层 + 短文本过滤**（下方）→ 只呈现 P0/P1，灰区抑制
 7. 无 P0/P1 → **诚实说"暂无高相关经验"**，不凑数
+
+**⚠️ 短文本误匹配过滤（关键，新增）：** 向量检索返回的 chunk 可能仅为短标题（如 "## 问题"、"## 方案"），score 虚高但无实质内容：
+```
+if len(chunk_content.strip()) < 50 characters:
+    → 该 chunk 降为 P2 灰区（默认不呈现）
+    → 除非该 chunk 的 experience 已有 P0/P1 的其他 chunk 背书
+```
+同一 experience >50% 的 chunk 为短文本 → experience 整体降级，必须 `experience_read` 全文确认。
+
+**🆕 可信度衰减（新增）：**
+- applied_count=0 ∧ created_at > 30天前 → 标注"未经验证"（⭐）
+- rating_avg < 2.0 ∧ review_count ≥ 3 → 标注"争议经验"，降为 P1 即使 vector ≥ 0.65
+- review_count = 0 ∧ applied_count = 0 → 标注"完全未核验"，P1 上限（不进入 P0）
 
 **🆕 置信度分层（相关性 + 可信度融合，严格）：**
 

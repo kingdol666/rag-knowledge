@@ -60,8 +60,8 @@ It is built around three ideas:
 
 ## Key Features
 
-| Feature                             | Description                                                             |
-| ----------------------------------- | ----------------------------------------------------------------------- |
+| Feature                       | Description                                                             |
+| ----------------------------- | ----------------------------------------------------------------------- |
 | **PDF Parsing**               | MinerU OCR/VLM extracts text, tables, and images into Markdown.         |
 | **Knowledge Base Management** | UUID-based KBs, tree filesystem, tags, descriptions.                    |
 | **Keyword Search**            | jieba + BM25 full-text search across all KBs.                           |
@@ -168,14 +168,14 @@ rag-knowledge/
 
 ### Prerequisites
 
-| Component                     | Version                    | Required For                  |
-| ----------------------------- | -------------------------- | ----------------------------- |
-| Python                        | 3.11 or 3.12               | Backend                       |
+| Component                        | Version                    | Required For                  |
+| -------------------------------- | -------------------------- | ----------------------------- |
+| Python                           | 3.11 or 3.12               | Backend                       |
 | [uv](https://docs.astral.sh/uv/) | latest                     | Backend dependency management |
-| Node.js                       | >= 18 (LTS 22 recommended) | Web frontend                  |
-| npm                           | bundled with Node.js       | Web frontend                  |
-| Git                           | with submodule support     | Cloning                       |
-| Docker / Docker Compose       | optional                   | Neo4j knowledge graph         |
+| Node.js                          | >= 18 (LTS 22 recommended) | Web frontend                  |
+| npm                              | bundled with Node.js       | Web frontend                  |
+| Git                              | with submodule support     | Cloning                       |
+| Docker / Docker Compose          | optional                   | Neo4j knowledge graph         |
 
 ### 1. Clone
 
@@ -369,8 +369,8 @@ Environment variables > config.yml > internal defaults
 
 Key files:
 
-| File                   | Purpose                                             |
-| ---------------------- | --------------------------------------------------- |
+| File                 | Purpose                                             |
+| -------------------- | --------------------------------------------------- |
 | `.env`               | Ports, storage path, Neo4j password, timeouts       |
 | `config.yml`         | Server ports, vector/graph settings, search weights |
 | `backend/config.yml` | MinerU-specific settings                            |
@@ -492,16 +492,18 @@ Check that:
 
 ## Known Gaps & Roadmap
 
-The following improvements are planned or in progress:
+The following improvements are planned or in progress. See [DEVELOPMENT-PLAN.md](DEVELOPMENT-PLAN.md) for the full roadmap.
 
-| Gap                                  | Status          | Impact                                                               |
-| ------------------------------------ | --------------- | -------------------------------------------------------------------- |
-| Auto-index after parse               | Not implemented | Vector/graph indexes must be built manually after upload             |
-| Vector/graph UI in web frontend      | Not implemented | Web search only supports keyword search today                        |
-| Skill layer uses vector/graph search | Not implemented | Claude Code skills only call `kb_search` (BM25)                    |
-| Tests for vector/graph               | Missing         | No automated coverage for new retrieval features                     |
-| Dual frontend modules                | Legacy          | `frontend/` submodule is outdated; `web/` is the active frontend |
-| README / docs lag                    | In progress     | Backend features ahead of documentation                              |
+| Gap                                  | Status          | Impact                                                                                        |
+| ------------------------------------ | --------------- | --------------------------------------------------------------------------------------------- |
+| Auto-index after parse               | Not implemented | Vector/graph indexes must be built manually after upload via `kb_reindex`                     |
+| Vector/graph UI in web frontend      | Not implemented | Web search page only calls keyword search; server routes exist but page UI not wired          |
+| Skill layer uses vector/graph search | Implemented     | `knowledge-search` skill calls `kb_search_vector` / `kb_search_two_stage` with adaptive depth |
+| Graph visualization page             | Not implemented | No `/graph` page; graph endpoints exist but no UI                                             |
+| Source tracing UI                    | Partial         | Results show doc path but not chunk/score/fragment                                            |
+| Tests for vector/graph               | Missing         | No automated coverage for new retrieval features                                              |
+| Dual frontend modules                | Legacy          | `frontend/` submodule is outdated; `web/` is the active frontend                              |
+| Semantic chunking                    | Not implemented | Fixed 500-char chunks break semantic boundaries                                               |
 
 ---
 

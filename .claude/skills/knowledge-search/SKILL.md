@@ -123,6 +123,18 @@ kb_search_two_stage(query, kb_id, stage2_top_k=3)
 - Agent 高分 ∧ 向量高分 → P0 优先
 - 向量高分但 Agent 低分 → 怀疑向量误匹配，以 Agent 判断为准或读内容复核
 
+**⚠️ 跨库盲区升级（关键）**：如果 `kb_search_two_stage` 跨库搜索（不指定 kb_id）返回的候选来自 **<2 个不同 KB**，表示 BM25 stage1 未能命中语义不同但内容相关的 KB。此时自动升级到企业级多路召回流程：
+
+→ `Skill("knowledge-search-enterprise")` — 并行 3 路召回（kb_catalog + kb_search_two_stage + kb_search_vector），交叉验证去重，消除 BM25 跨库盲区。
+
+**短文本过滤规则（⚠️ 新增）**：向量搜索可能返回极短 chunk（如仅 "## 问题"），此类 chunk score 虚高但无实质内容：
+```
+if len(chunk_content.strip()) < 50 characters:
+    → 该 chunk 降为 P2 灰区（默认不呈现）
+    → 除非该 chunk 的 doc_path 已有 P0/P1 候选背书
+```
+同一篇文档 >50% 的 chunk 为短文本 → 该文档整体降级，需 kb_doc_read 全文验证。
+
 ### Step 5 — 内容验证（读真实内容，必做）✅
 
 对最终候选 doc，**读内容确认**真满足场景：
