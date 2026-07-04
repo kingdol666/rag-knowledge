@@ -97,15 +97,23 @@ Agents:
 - **Step 5 子KB回溯**：跨子KB横向比较（如振动分析跨多个子KB）
 - **分层描述呈现**：答案中标注检索路径（子KB→文档→片段）
 
-### 4. Organize 强化（v2）
-- O10a：识别子KB创建候选（≥8文档+≥2子域）
-- O10b：子KB健康检查（单文档子KB、父子description一致等）
-- **O2-E Description 真实性审计（NEW）**：遍历每个文档，验证 description 与内容一致性
-  - 检测 placeholder（"Parsed from..."、空、test）
-  - 检测关键断言 term-mismatch
-  - 检测文件名 vs 真实标题不一致（如 metagpt_paper.md 实际是 Generative Agents）
-  - 用子 Agent 批量修正，保持主上下文干净
-- O9 大文档拆分规范同步 Ingest A5b
+### 4. Organize 强化（v4 最新）
+- O1 全盘调研 → O2 评估 → **O2-E description 真实性审计**
+- **O3-Auto 空KB自动处理** — 区分父容器空KB（保留）vs 孤儿空KB（自动删除）
+- **O3b 内容驱动文档重归类（v3）** ⭐ — 读真实内容，移动到正确KB
+- O4 执行（合并/移动/删除/重命名，保留经验可信度）
+- O5 验证 → O6 孤儿清理 → O7 评分卡 → O8 标签规范 → O9 大文档拆分
+- **O10 子KB自动创建（强化 v3）** ⭐ — 阈值降低：≥5文档+≥3子域 / ≥500KB / ≥10文档
+- **O11 Description 批量修正执行（v3）** ⭐⭐ — O2-E 检测→子Agent重写→O11e 三重验证
+- **O12 向量索引覆盖率审计（v4 NEW）** ⭐ — 检测未索引文档 + kb_batch_index 补索引 +
+  清理孤儿 collection（向量有chunks但KB无文档）
+- **O13 YAML/JSON 冗余清理（v4 NEW）** ⭐⭐ — 四向一致性（磁盘↔YAML↔JSON↔向量库）：
+  - O13b 孤儿条目清理（YAML有/磁盘无，kb_doc_move残留）
+  - O13c 父KB污染清理（父YAML含子KB文档，实测 Academic-AI-Survey 12个污染）
+  - O13d 缺失条目补充（磁盘有/YAML无）
+  - O13e .tree-fs.json 一致性修复
+  - O13f 悬空向量索引修复
+  - 用 Python `yaml.safe_load + pathlib.exists()` 直接操作 YAML（MCP工具无法删孤儿）
 
 ### 5. 已验证的真实可执行性（v2 实测）
 - ✅ `grep -n` 在 7686 行博士论文上提取出 8 个 CHAPTER 边界

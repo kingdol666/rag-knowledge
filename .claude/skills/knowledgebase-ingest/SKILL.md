@@ -79,6 +79,31 @@ Before surveying, check if this document already exists:
 kb_search(query="<filename without extension>", top_k=5)
 ```
 
+### ⚠️ A0-key — 关键工具调用约定（避免 400 错误）
+
+**`kb_doc_read` 的 doc_path 参数规则（实测确认）：**
+- 当提供 `kb_id` 时，`doc_path` 必须是 **bare filename**（如 `01-paper.md`），
+  **不能带路径前缀**（如 `KB-Name/01-paper.md` 会报 400 "path is required"）
+- 当不提供 `kb_id` 时，用 `path` 参数传完整相对路径
+
+```python
+# ✅ 正确（kb_id + bare filename）
+kb_doc_read(kb_id="uuid", doc_path="01-paper.md", max_chars=800)
+
+# ❌ 错误（带路径前缀 + kb_id → 400）
+kb_doc_read(kb_id="uuid", doc_path="KB-Name/01-paper.md")
+```
+
+**`kb_doc_update_meta` / `kb_doc_update_tags` / `kb_doc_delete` / `kb_doc_move` 同理**：
+提供 `kb_id` 时，`doc_path` 用 bare filename（即 `doc.name`，不是 `doc.path`）。
+
+**其他工具签名：**
+- `parse_doc(file_path, kb_id, description="", tags=[], use_ocr=true)` — 非阻塞，返回 task_id
+- `kb_doc_create(kb_id, name, content, description="")` — content 是完整 markdown 文本
+- `kb_create(name, description="", parent_id="")` — parent_id 用于子KB
+- `kb_update(kb_id, name?, description?)` — kb_id 接受 UUID 或 path
+- `parse_task_status(task_id)` — 轮询解析状态，返回 markdown_chars/image_count
+
 **For each result:**
 - Compare name (case-insensitive) with incoming doc name
 - If name matches AND file_size/lines are similar → **likely duplicate**
