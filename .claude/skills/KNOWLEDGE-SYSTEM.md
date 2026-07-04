@@ -4,11 +4,12 @@
 
 ```
 knowledgebase (入口/调度器)
-├── 触发词：knowledge base, KB, 知识库, 文档管理, store, parse, upload, import, 
-│           organize, audit, search, find, list, merge, delete, 整理, 入库等
+├── 触发检测矩阵：20+ 中英文触发模式，覆盖所有知识库作业场景 ⭐ 增强
+├── 场景路由引擎：检测到 KB 触发词 → 自动判断具体场景 → 委托 Archival
+├── 模糊决策：无明确匹配时用"Search / Ingest / List / 等待澄清"降级
 │
 ├── knowledgebase-ingest (入库 + 子KB自动拆分)     A0→A10 ⭐最新优化
-│   ├── 触发：store, upload, parse, import, save, ingest, 存入, 解析
+│   ├── 触发：入库, 上传, 解析, 导入, store, upload, parse, import, ingest, add doc (20+ 中英关键词)
 │   └── 能力：A0去重 → A1调研 → A2领域分类(含子域) → A3分层KB匹配 → A4场景化描述(文档+KB+子KB) 
 │             → A5标签 → A5b智能分块 → A6存储 → A7贴标 → A8验证 → A9子KB创建检查(阈值8-12文档自动拆)
 │             → A10报告
@@ -16,18 +17,18 @@ knowledgebase (入口/调度器)
 │      父KB description 自动更新引用。确保 Agent 读 description 能精确定位。
 │
 ├── knowledgebase-manage (管理)            M1→M6
-│   ├── 触发：move, rename, delete, merge, update, 移动, 改名, 删除
+│   ├── 触发：移动, 改名, 删除, 合并, move, rename, delete, merge, update (15+ 中英关键词)
 │   └── 能力：移动/改名/删除/合并/内容更新 → 确认防误 → 验证
 │
-├── knowledgebase-organize (整理 + 子KB健康)      O1→O10 ⭐新增O10
-│   ├── 触发：organize, audit, health check, restructure, 整理, 清洗
+├── knowledgebase-organize (整理 + 子KB健康)      O1→O13 ⭐v4 新增 O12/O13
+│   ├── 触发：整理, 清洗, 重组, 审计, organize, restructure, cleanup, audit (20+ 中英关键词)
 │   └── 能力：O1全盘调研(含经验) → O2评估 → O3分类 → O4执行(保留经验可信度) → O5验证 
 │             → O6孤儿清理 → O7评分卡 → O8标签规范 → O9大文档拆分
 │   ⭐ O10 新增：分层KB健康检查——识别≥8文档且跨子域的父KB → 创建子KB；
 │      检查单人子KB → 合并回父KB；验证子KB description 聚焦度
 │
-├── knowledgebase-search (智能检索 + 分层KB感知)   7步Agentic RAG ⭐新增Step1/5
-│   ├── 触发：search, find, query, ask, retrieve, what is, how to, explain, rag, 回答, 检索, 搜索, 问答, 查内容
+├── knowledgebase-search (智能检索)   7步Agentic RAG
+│   ├── 触发：搜索, 查询, 问答, 检索, search, find, query, ask, RAG (20+ 中英关键词)
 │   ├── 能力：Step0意图+子域识别 → Step1分层Catalog(子KB优先匹配) → Step2子KB内DocCatalog 
 │             → Step3经验优先(严格P0/P1/P2) → Step4向量确认 → Step5子KB回溯(跨子KB横向)
 │             → Step6内容验证 → Step7综合回答+层级检索路径
@@ -35,31 +36,31 @@ knowledgebase (入口/调度器)
 │      Step5 跨子KB回溯用于横向比较（如振动分析横跨多个子KB）
 │
 ├── knowledgebase-search-enterprise (企业检索)
-│   ├── 触发：跨库搜索<2个KB / 用户要求全库 / stage1候选<3
+│   ├── 触发：全库搜索, 跨KB, cross-KB, all KBs, 全局搜索, 全面 (自动从 search 升级)
 │   ├── 能力：3路并行召回(Agentic+BM25+Vector) → 交叉验证去重 → 短文本过滤 → 内容重排序 → 融合展示
 │   └── ⚠️ 子KB感知升级：企业级检索也优先从子KB description 判断，而非父KB
 │
 ├── knowledgebase-list (浏览)              L1→L3 只读
-│   ├── 触发：list, show, what KBs, overview, tree, 列, 查, 查看
+│   ├── 触发：查看, 列出, 展示, 浏览, list, show, overview, tree (15+ 中英关键词)
 │   ├── 能力：完整清单 + KB 深入 + 树形浏览
 │   └── ⚠️ 分层KB展示：L1 展示时区分父/子，用缩进树结构
 │
 ├── knowledgebase-verify (校验)            V1→V6
-│   ├── 触发：verify, validate, integrity, health check, quality audit, 校验, 完整性
+│   ├── 触发：校验, 核对, 完整性, 健康检查, verify, validate, integrity (15+ 中英关键词)
 │   └── 能力：V1元数据 → V2文档完整性 → V3解析质量 → V4修复(可选) → V5评分卡 → V6报告
 │       ⭐ V3 新增：子KB健康检查（父KB≥8无子KB=警告；单人子KB=警告；父子description一致=警告）
 │
 ├── knowledgebase-batch (批量)             B1→B6
-│   ├── 触发：batch, bulk, mass, all documents, every KB, 批量, 大规模
+│   ├── 触发：批量, 所有文档, batch, bulk, mass, all documents (10+ 中英关键词)
 │   └── 能力：批量标签 → 批量描述 → 目录导入 → 批量移动 → 去重 → 导出报告
 │
 ├── knowledgebase-experience (经验读/应用/评审)
-│   ├── 触发：查经验, 评分, 应用经验, lesson learned, record experience, 经验教训
+│   ├── 触发：查经验, 评分, 评审, experience, lesson learned, best practice (15+ 中英关键词)
 │   ├── 能力：检索(严格P0/P1/P2, 短文本过滤, 可信度衰减) → 应用 → 评审 → 统计
 │   └── ⚠️ 与子KB交互：经验可关联子KB而非仅父KB
 │
 └── knowledgebase-experience-summarize (经验总结入库)   S1→S5
-    ├── 触发：记录这个经验, 总结一下, 保存教训, 记住流程, 提炼成经验, save as experience, summarize as lesson
+    ├── 触发：记录经验, 总结一下, 保存教训, save experience, summarize lesson (15+ 中英关键词)
     ├── 来源：对话复盘(A) / 文档提炼(B) / 手工输入(C) / 经验迁移(D)
     └── 能力：场景诊断 → 智能提炼(LLM) → markdown模板展示 → 用户确认(硬门槛)
                → experience_create持久化 → experience_read验证
@@ -126,3 +127,71 @@ Agents:
 ---
 
 ## 旧版优化要点（2026-07 初版，已被 v2 覆盖）
+
+---
+
+## ⚡ 增强版：知识库 Skill 触发策略（v2 版）
+
+### 核心原则
+
+**任意用户请求中一旦包含知识库相关的触发词，必须优先考虑路由到 knowledgebase 调度器。**
+"先判断是否 KB 作业，再判断具体场景"——而不是让通用技能抢占。
+
+### 三层触发检测
+
+```
+Layer 1 — 主调度器 (knowledgebase/SKILL.md)
+├── frontmatter description 含 50+ 中英触发词
+├── 触发检测矩阵：10 个场景 × 每场景 10-20 个关键词
+├── 模糊决策：Search / Ingest / List / 等待澄清 降级
+│
+Layer 2 — 各子 Skill frontmatter description
+├── 每个子 Skill 的 description 末尾标注 Trigger keywords
+├── 供宿主系统识别触发场景
+│
+Layer 3 — KNOWLEDGE-SYSTEM.md 全局触发文档
+├── 本文件：所有触发模式的完整索引
+├── Archival agent 内部场景诊断表单
+```
+
+### 场景路由优先级（多场景混合作业）
+
+```
+用户请求 → 命中 KB 触发词？
+  │
+  是 → 调用 knowledgebase skill
+  │    ↓
+  │  主调度器检测触发矩阵 → 获取场景标签
+  │    ↓
+  │  Agent(subagent_type="archival",
+  │       prompt="[Detected scenario: <场景标签>] ...")
+  │    ↓
+  │  Archival Step 0: 场景诊断协议（自主确认/重判）
+  │    ↓
+  │  路由到子 Skill 执行
+  │
+  否 → 正常任务处理
+```
+
+### 各子 Skill 触发词速查
+
+| Skill | 触发关键词（中文） | 触发关键词（英文） |
+|-------|-----------------|-----------------|
+| **ingest** | 入库, 上传, 导入, 解析, 存储, 保存到, 放文档, 添加 | store, upload, import, parse, ingest, save, add doc |
+| **manage** | 移动, 改名, 重命名, 删除文档, 删除KB, 合并, 修改 | move, rename, delete, merge, update content |
+| **organize** | 整理, 清洗, 重组, 审计, 盘点, 大扫除, 重建索引 | organize, restructure, audit, cleanup, reorganize |
+| **search** | 搜索, 查询, 问答, 检索, 搜, 帮我查, 问一下 | search, find, query, ask, retrieve, RAG |
+| **search-enterprise** | 全库搜索, 跨库, 全局搜索, 联表 | cross-KB, all KBs, enterprise search, comprehensive |
+| **list** | 查看, 列出, 展示, 浏览, 有什么 | list, show, overview, tree, browse |
+| **verify** | 校验, 核对, 完整性, 检查, 一致性 | verify, validate, integrity, health check |
+| **batch** | 批量, 所有文档, 全量, 统一 | batch, bulk, mass, all, repetitive |
+| **experience** | 查经验, 评分, 评审, 经验教训, 怎么处理 | experience, lesson, review, best practice |
+| **experience-summarize** | 记录经验, 总结, 复盘, 记住流程 | save experience, summarize lesson, record workflow |
+
+### 执行保障
+
+1. **触发不是可选的**——命中触发词必须路由，不能绕过
+2. **场景不是猜测的**——用检测矩阵判断，不是"感觉"
+3. **子 Skill 不是跳过可省略的**——路由后严格按子 Skill 的步骤执行
+4. **Archival 不是可选的**——所有 KB 操作必须经 Archival agent 执行
+5. **前 flaged 后验证**——操作完成后按各自 Skill 的 verify 步骤验证结果

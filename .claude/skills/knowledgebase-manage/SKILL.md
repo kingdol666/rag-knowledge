@@ -6,6 +6,9 @@ description: >
   delete documents or empty KBs, merge KBs, update document content.
   Invoked by Archival when the task involves moving, renaming, deleting,
   or updating existing items.
+  Trigger keywords: 移动, 改名, 重命名, 删除文档, 删除KB, 合并KB,
+  move, rename, delete, merge, update content, update description,
+  移动文档, 更新内容, 修改描述, change description.
 ---
 
 # Knowledge Manage — Document & KB Administration

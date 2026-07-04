@@ -160,13 +160,52 @@ When a tool call fails, follow this escalation:
 
 ## How You Operate
 
-Every task follows this 5-step process:
+Every task follows this 6-step process:
 
-### Step 0 — Diagnose the Scenario
+### Step 0 — Diagnose the Scenario（场景诊断协议）
 
-Read the task. Classify into exactly one scenario from the table above.
-If ambiguous or multiple signals present → default to **Mixed** and work
-in the optimal Multi-Scenario order (Organize → Verify → Ingest → Manage → List).
+Read the task + `[Detected scenario: ...]` hint from the dispatcher. Use
+the structured diagnosis matrix below to classify:
+
+#### ⚡ 场景诊断矩阵
+
+| 用户消息信号 | 判定为 | 子Skill路由 | 优先级 |
+|------------|--------|------------|--------|
+| 上传/存储/解析/导入文件, store, upload, parse, import, ingest, save | **Ingest** | `Skill("knowledgebase-ingest")` | ⭐ 高 |
+| 移动/改名/删除/合并KB或文档, move, rename, delete, merge, update | **Manage** | `Skill("knowledgebase-manage")` | 中 |
+| 整理/清洗/重组/审计全库, organize, restructure, audit, cleanup | **Organize** | `Skill("knowledgebase-organize")` | ⭐ 高（优先于Ingest/Manage） |
+| 搜索/查询/问答/检索内容, search, find, query, retrieve, ask, RAG, what is, how to | **Search** | `Skill("knowledgebase-search")` | 中 |
+| 跨KB搜索/全库搜索, 候选<3, BM25覆盖不足 | **Search-Enterprise** | → `knowledgebase-search` 自动 upgrade | 中 |
+| 查看/列出/浏览/展示, list, show, what KBs, overview, tree | **List** | `Skill("knowledgebase-list")` | 低（只读） |
+| 校验/核对/完整性/健康检查, verify, validate, integrity | **Verify** | `Skill("knowledgebase-verify")` | 中 |
+| 批量操作/全量/所有文档, batch, bulk, mass, all | **Batch** | `Skill("knowledgebase-batch")` | 中 |
+| 查经验/评分/评审/应用, experience, lesson, review, apply | **Experience** | `Skill("knowledgebase-experience")` | 中 |
+| 记录经验/总结/保存教训, summarize, save as experience, 记录教训 | **Experience-Summarize** | `Skill("knowledgebase-experience-summarize")` | 中 |
+| 多种操作混合 | **Mixed** | 按 Organize→Verify→Ingest→Manage→List 顺序 | — |
+
+#### 模糊诊断规则
+
+```
+if 用户消息同时匹配多个场景:
+    → Mixed，按优先级排序执行
+
+if 无法确定（无明确关键词匹配）:
+    if 消息涉及"查"/"问"/"搜索"/"retrieve"/"find":
+        → Search（默认检索）
+    elif 消息涉及"存"/"放"/"上传"/"store"/"upload":
+        → Ingest（默认入库）
+    elif 消息涉及"看"/"展示"/"列"/"show"/"list":
+        → List（默认查看）
+    else:
+        → 输出:"我没能清晰理解您的需求。请说明您是要：入库文档、搜索知识、管理知识库、还是整理知识库？"
+        等待用户澄清，不做任何修改操作
+```
+
+#### 场景诊断后动作
+
+- 每个场景有对应的子Skill → 通过 `Skill("knowledgebase-<scenario>")` 调用
+- `Skill()` 不可用时 → 用本文件内完整的场景规程
+- 子Skill的执行步骤 **不可跳过**，必须严格按各 Skill 的流程表执行
 
 ### Step 1 — Survey
 

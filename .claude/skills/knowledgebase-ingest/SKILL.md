@@ -7,6 +7,9 @@ description: >
   direct), assign tags, verify, and **auto-create sub-KBs when a parent KB
   grows too large** for effective retrieval. Invoked by Archival when
   documents need to be stored.
+  Trigger keywords: 入库, 上传, 导入, 存储, 解析, 解析PDF, 保存到,
+  store, upload, import, parse, save to KB, ingest,
+  入库文档, 上传文档, 存入知识库, 放文档, 添加文档, add doc, put document.
 ---
 
 # Knowledge Ingest — Document Ingestion Pipeline

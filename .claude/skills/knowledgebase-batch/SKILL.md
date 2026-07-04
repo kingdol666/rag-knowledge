@@ -6,6 +6,9 @@ description: >
   mass document move between KBs, cross-KB content sync, and export summary.
   Invoked by Archival when operations involve multiple documents, batch
   processing, or repetitive updates across the collection.
+  Trigger keywords: 批量, 所有文档, 全部, 大规模, 批量操作, 批量标签,
+  batch, bulk, mass, all documents, every KB, repetitive, 全量,
+  一次性处理, 统一修改.
 ---
 
 # Knowledge Batch — Bulk & Batch Operations

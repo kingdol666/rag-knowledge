@@ -10,6 +10,9 @@ description: >
   a process/lesson/experience as structured knowledge. Do NOT trigger for
   read-only experience queries ("查经验"/"有没有这方面的经验") — those route
   to knowledgebase-experience instead.
+  Trigger keywords: 记录经验, 总结一下, 保存教训, 记住流程, 提炼经验,
+  save experience, summarize lesson, record workflow, 做成经验,
+  复个盘, 复盘, 总结教训, 总结学习.
 ---
 
 # Experience Summarize — 经验总结入库

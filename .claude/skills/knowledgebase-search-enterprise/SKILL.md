@@ -6,6 +6,9 @@ description: >
   支持 Agentic 判断优先 + 多路召回 + 交叉验证 + 内容重排序。适用于复杂
   跨域联表查询、多 KB 交叉检索、精度要求极高的企业级场景。由 knowledgebase-search
   在检测到跨库搜索需求或 BM25 召回不足时自动路由。
+  Trigger keywords: 全库搜索, 所有KB, 跨知识库, 跨库, 联表, 宏观,
+  cross-KB, all KBs, enterprise search, 全局搜索, 全面的,
+  thorough search, comprehensive.
 ---
 
 # Enterprise-Grade Multi-Strategy Retrieval

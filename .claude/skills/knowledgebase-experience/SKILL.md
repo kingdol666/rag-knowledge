@@ -4,6 +4,9 @@ description: >
   经验管理系统 — 记录、检索、应用、评审经验。经验是实践总结的可复用知识，
   有评分、应用记录、场景绑定等结构化维度。用于故障排查、最佳实践、经验教训
   的动态管理和检索。Invoked by Archival 或用户直接请求。
+  Trigger keywords: 查经验, 评分, 评审, 应用经验, lesson learned,
+  best practice, 经验教训, 经验库, 看看经验, review experience,
+  apply experience, 怎么处理的, 之前怎么解决, 类似情况.
 ---
 
 # Knowledge Experience — 经验管理系统

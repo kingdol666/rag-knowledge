@@ -5,6 +5,9 @@ description: >
   all KBs with document counts, KB drill-down with document metadata,
   folder tree browsing. Read-only. Invoked by Archival when information
   needs to be found or displayed.
+  Trigger keywords: 查看, 列出, 展示, 浏览, 有什么, 列出来, 清单,
+  list, show, overview, tree, browse, display,
+  知识库内容, 知识库有什么, 查看知识库, 有哪些知识库.
 ---
 
 # Knowledge List — Collection Overview & Discovery

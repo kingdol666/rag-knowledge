@@ -6,6 +6,9 @@ description: >
   cross-reference tree vs documents, generate structured integrity report.
   Invoked by Archival when the collection needs a health check, validation,
   or after operations to confirm everything is consistent.
+  Trigger keywords: 校验, 核对, 完整性, 健康检查, 验证, 检查, 一致性,
+  verify, validate, integrity, health check, quality audit, check KB,
+  检测问题, 审计知识库, 校验知识库, 看看有什么问题, is everything ok.
 ---
 
 # Knowledge Verify — Collection Integrity & Quality Validation

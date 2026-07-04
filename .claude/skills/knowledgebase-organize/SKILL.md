@@ -12,6 +12,10 @@ description: >
   docs (O12), and clean YAML/JSON redundancy with disk↔YAML↔JSON↔vector
   four-way consistency (O13). Invoked by Archival when the collection
   needs deep reorganization.
+  Trigger keywords: 整理, 清洗, 重组, 审计, 重构, 盘点, 全面梳理,
+  organize, restructure, audit collection, cleanup KB, reorganize,
+  清洗知识库, 整理知识库, 重建索引, 重新分类, 大扫除,
+  看看哪里有问题, 有哪些问题, consolidation.
 ---
 
 # Knowledge Organize — Full Collection Restructuring (v4)
