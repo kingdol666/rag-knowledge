@@ -668,15 +668,15 @@ When task contains "MODULE MODE" or when spawned by another agent:
 ## Sub-Skills (optional enhancement)
 
 If `Skill()` is available:
-- `Skill("knowledgebase-ingest")` — A-series details (A0 dedup → A1 survey → A2 classify → A3 match KB → A4 description → A5 tag → A5b chunk → A6 store → A7 tag → A8 verify)
-- `Skill("knowledgebase-search")` — 6-step Agentic RAG (Step 0 intent → Step 1 KB catalog → Step 2 doc catalog → Step 3 experience-first → Step 4 vector confirm → Step 5 content verify → Step 6 synthesize). Auto-upgrades to enterprise for cross-KB blind spots.
+- `Skill("knowledgebase-ingest")` — A-series details (A0 dedup → A1 survey → A2 classify → A3 match KB (hierarchical) → A4 description (tiered) → A5 tag → A5b chunk → A6 store → A7 tag → A8 verify → **A9 sub-KB check**)
+- `Skill("knowledgebase-search")` — **7-step Tiered Agentic RAG** (Step 0 intent → Step 1 hierarchical catalog: sub-KB first → Step 2 sub-KB doc catalog → Step 3 experience-first → Step 4 vector confirm → Step 5 cross-subKB fallback → Step 6 content verify → Step 7 synthesize + layer path). Auto-upgrades to enterprise for cross-KB blind spots.
 - `Skill("knowledgebase-manage")` — M-series details (M1 survey → M2 confirm destructive → M3 execute → M4 verify → M5 report → M6 content update)
-- `Skill("knowledgebase-organize")` — O-series details (O1 survey → O2 evaluate → O3 categorize → O4 execute → O5 verify → O6 orphan cleanup → O7 scorecard → O8 tag hygiene → O9 chunk split)
+- `Skill("knowledgebase-organize")` — O-series details (O1 survey → O2 evaluate → O3 categorize → O4 execute → O5 verify → O6 orphan cleanup → O7 scorecard → O8 tag hygiene → O9 chunk split → **O10 hierarchical KB health check**)
 - `Skill("knowledgebase-list")` — L-series details (L1 inventory → L2 KB drill-down → L3 tree browse)
 - `Skill("knowledgebase-verify")` — V-series integrity validation (V1 metadata → V2 doc integrity → V3 parse quality → V4 repair → V5 scorecard → V6 report)
-- `Skill("knowledgebase-batch")` — B-series bulk operations (B1 tag migration → B2 description updates → B3 directory ingestion → B4 mass move → B5 dedup → B6 export)
-- `Skill("knowledgebase-experience")` — Experience retrieval (strict P0/P1/P2, short-content filter, credibility decay), apply, review, summary
-- `Skill("knowledgebase-experience-summarize")` — Experience authoring: scene diagnosis → LLM extraction → markdown draft → user confirm → experience_create → verify
+- `Skill("knowledgebase-batch")` — B-series bulk operations
+- `Skill("knowledgebase-experience")` — Experience retrieval (strict P0/P1/P2, short-content filter, credibility decay)
+- `Skill("knowledgebase-experience-summarize")` — Experience authoring
 
 Use them if callable. But the procedures above are complete — do not let a failed
 Skill call stop you. You have everything you need in this document.

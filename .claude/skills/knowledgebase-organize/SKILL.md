@@ -41,17 +41,63 @@ For each KB, evaluate these metrics:
 | Metric | How to evaluate | Red flag |
 |--------|----------------|----------|
 | Name quality | Meaningful? Describes the domain? | Gibberish: "213", "333333", "test" |
-| Description quality | Does it describe the domain? | Empty, "test", meaningless |
+| Description quality | Does it describe the domain? **基于真实内容**？ | Empty, "test", meaningless, "Parsed from..." |
 | Document count | How many docs inside? | 0 = stale → ask user or delete |
 | **Experience health** | Are exps consistent with KB domain? | scenario=test, empty title, 0 rating |
 | Domain match | Do the docs match the KB name? | KB says "AI" but doc content is energy |
 | Overlap | Same content in another KB? | Duplicate domain coverage |
 | Vector coverage | What % docs have vector_index set? | <50% → prompt reindex |
 | **Oversized docs** | `file_size` per doc | >50KB or >2000 lines → flag for O9 smart split |
+| **Doc description vs content** | description 中的关键断言是否在内容中？ | description 说 "MetaGPT" 但内容是 Generative Agents → 必须修正 |
 
 For each KB with documents:
 - Read 1-2 documents: `kb_doc_read(kb_id, <doc>, max_chars=300)`
 - Classify the KB's TRUE domain based on content evidence, not its name.
+
+### O2-E — Description 真实性审计（必做）⭐
+
+**遍历每个文档，验证 description 与真实内容是否一致：**
+
+```
+for each doc in kb_get_documents(kb_id):
+    desc = doc.description
+    content_preview = kb_doc_read(kb_id, doc.path, max_chars=500)
+    
+    # 检测规则
+    issues = []
+    
+    # 1. placeholder description
+    if desc in ["test", "文档", "资料", ""] or desc.startswith("Parsed from"):
+        issues.append("placeholder-description")
+    
+    # 2. 关键断言未在内容中出现
+    # 提取 description 中的方法名/数据/术语，逐一在 content_preview 中验证
+    key_terms = extract_key_terms(desc)  # 例如 ["CNN-LSTM", "94.5%", "磨煤机"]
+    for term in key_terms:
+        if term NOT in content_preview:
+            issues.append(f"term-mismatch: {term}")
+    
+    # 3. 文件名 vs 实际标题
+    actual_title = extract_title_from_content(content_preview)
+    if doc.name suggests "MetaGPT" but actual_title contains "Generative Agents":
+        issues.append("filename-content-mismatch ⚠️")
+    
+    if issues:
+        # 用子 Agent 重新生成 description
+        Agent(
+          subagent_type="general-purpose",
+          prompt="""读 {doc.path} 的前 2000 字符，生成真实的 description。
+          当前 description 有问题: {issues}。
+          输出 JSON: title/domain/methods/scenario/suggested_description"""
+        )
+        # 用真实 description 更新
+        kb_doc_update_meta(kb_id, doc.path, description="<子Agent生成的真实description>")
+```
+
+**子 Agent 批量审计**（节省主上下文）：
+- 一个子 Agent 可以处理一个 KB 内的所有文档
+- 主 Agent 只接收最终的 issues 列表和修正后的 descriptions
+- 对每个 KB 都执行一次 O2-E，确保所有 description 与内容一致
 
 ## O3 — Categorize Every KB
 
@@ -280,9 +326,119 @@ When you find orphan tags (tags with 0 documents), use this workaround:
 
 ## O9 — Smart Document Chunk Splitting
 
+When you find an oversized document (>50KB file_size or >2000 estimated lines),
+offer to split it into smaller logical documents. This improves readability
+and makes vector search more precise. Flagged in C2 table above.
+
+[Splitting details unchanged — see existing O9 section]
+
+---
+
+## O10 — Hierarchical KB Health Check & Sub-KB Optimization ⭐
+
+**This step assesses the KB hierarchy.** After organizing content domain
+cleanup, evaluate whether any KBs have grown large enough to benefit from
+sub-KB structure. This is the proactive version of Ingest's A9.
+
+### O10a — Identify Candidates for Sub-KB Creation
+
+For every "Proper domain KB" in O3:
+
+```
+kb_get_documents(kb_id) → count
+IF count >= 8:
+    # Read each doc's opening to classify sub-domain
+    for doc in kb_get_documents(kb_id):
+        preview = kb_doc_read(kb_id, doc.doc_path, max_chars=300)
+        classify sub-domain from content (equipment, method, or problem)
+    
+    distinct_subdomains = unique(sub-domains)
+    IF distinct_subdomains >= 2:
+        → Candidate for sub-KB creation
+    
+ELIF count >= 5 AND distinct_subdomains >= 3:
+    → Candidate for sub-KB creation (growth room considered)
+    → Flag for re-evaluation: "This KB has 5 docs across 3 sub-domains.
+      Already worth considering sub-KB split for retrieval precision."
+```
+
+### O10b — Evaluate Existing Sub-KB Health
+
+For KBs with `parent_id` (sub-KBs):
+
+| Health Signal | Good | Warning |
+|--------------|------|---------|
+| doc_count | ≥ 2 | 1 (too small to be its own KB → consider merge back) |
+| description specificity | Focused on sub-domain | Same as parent (defeats purpose) |
+| tags consistency | All docs share a common theme | Docs spread across topics |
+| cross-subKB gap | Peer sub-KBs cover distinct topics | Overlap between sub-KBs → merge |
+| parent description | Mentions sub-KBs | No mention (update it) |
+
+### O10c — Execute Sub-KB Operations
+
+**Create Sub-KBs** (following the same pattern as Ingest A9):
+```
+sub_kb = kb_create(
+    name="<ParentDomain>-<SubDomain>",
+    description="<focused on specific sub-domain, NOT parent-level>",
+    parent_id=parent_kb.kb_id
+)
+```
+
+**Merge Small Sub-KBs Back** (doc count = 1):
+```
+for doc in kb_get_documents(small_sub_kb.kb_id):
+    kb_doc_move(doc.doc_path, parent_kb.kb_id)
+kb_delete(small_sub_kb.kb_id)
+```
+
+**Update Parent Description** after any hierarchy change:
+```
+kb_update(kb_id=parent_kb.kb_id, description="... Sub-KBs: [list]")
+```
+
+### O10d — Verify Hierarchy
+
+```
+kb_list() → confirm parent+children structure
+fs_get_tree(include_files=False, max_depth=3) → visual hierarchy
+kb_search_stats(parent_kb.kb_id) → confirm vector index health
+```
+
+### O10e — Report Hierarchy Changes
+
+```
+**Sub-KB Optimization Complete:**
+
+├── [KB-Name]: split into [N] sub-KBs:
+│   ├── [Sub-KB-1]: [description] ([N] docs)
+│   ├── [Sub-KB-2]: [description] ([N] docs)
+│   └── [Sub-KB-3]: [description] ([N] docs)
+├── Merged back: [N] small sub-KBs ([names])
+├── Updated parent descriptions: [N] KBs
+└── Reindexed: [N] KBs for vector search
+```
+
 When an oversized document is flagged in O2 (>50KB file_size or >2000 lines),
 offer to split it into smaller logical documents for better readability and
 more precise vector search.
+
+**⚠️ 大文档拆分规范（同步自 Ingest A5b）：**
+
+大文档拆分必须遵循以下原则，而非简单的"按行切成N份"：
+
+1. **必须先读大纲再拆** — `head -c 3000` 或 `kb_doc_read(max_chars=3000)` 先读文档前部
+   提取 `#`/`##` 章节标题结构，确定自然拆分点
+2. **按章节逻辑拆分** — 每一块是一个完整的逻辑章节（引言/方法/结果/讨论），
+   不是按行数等分。保留章节标题和子标题层级。
+3. **每块独立 description** — 按 Ingest A4 规范为每块写独立的 description，
+   说明该节的核心内容、方法、适用场景
+4. **每块独立标签** — 继承原文档的通用标签 + 该节特有的领域标签
+5. **每块用 kb_doc_create 入库** — 分块文档命名 `原文件名_s{N}_{节英文slug}.md`
+6. **删除原始文档** — 所有分块成功创建并验证后，删除原大文档
+7. **向量索引** — `kb_batch_index(force=true)` 重新索引所有分块
+
+**完整拆分流程参考 Ingest A5b-0→A5b-9。**
 
 **Ratio rule guard**: The "single doc >60% of KB total" check only activates
 when the KB has ≥3 documents AND total KB content >50KB. On small KBs (1-2
@@ -360,8 +516,13 @@ Smart Chunk Splitting Complete:
 
 ## CRITICAL RULES
 
-1. O2 (read content) is NOT optional. Never classify a KB by name alone.
-2. Merges: move docs FIRST, delete SECOND. Deleting first loses data.
-3. Confirm destructive operations unless Module Mode.
-4. O5 (verify) catches mistakes. Do not skip.
-5. O8 (tag audit) cannot delete orphan tags — MCP limitation. Report and suggest manual cleanup.
+1. **O2 (read content) is NOT optional**. Never classify a KB or write description by name alone.
+2. **O2-E description 真实性审计必做** — 任何 "Parsed from..."、空、或与内容不一致的 description
+   都必须用子 Agent 读取真实内容后重新生成。文件名可能是错的（如 metagpt_paper.md 实际是
+   Generative Agents 论文），只信任内容。
+3. Merges: move docs FIRST, delete SECOND. Deleting first loses data.
+4. Confirm destructive operations unless Module Mode.
+5. O5 (verify) catches mistakes. Do not skip.
+6. O8 (tag audit) cannot delete orphan tags — MCP limitation. Report and suggest manual cleanup.
+7. **≥3 篇文档审计时用子 Agent**，主 Agent 只接收 issues 列表和修正后的 descriptions，
+   保持主上下文干净。

@@ -57,7 +57,7 @@ embedding:
   model_name: "BAAI/bge-m3"
   # 模型缓存目录（相对项目根）
   cache_dir: "./models_cache"
-  device: "cpu"
+  device: "auto"    # auto → CUDA if available, else CPU
   batch_size: 32
   normalize: true
 

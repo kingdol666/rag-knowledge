@@ -42,3 +42,12 @@ chroma_db/
 models_cache/
 neo4j_data/
 neo4j_logs/
+
+# Downloaded papers / test fixtures (not tracked)
+*_papers/
+test_e2e/
+test_e2e_*/
+backend/output/
+
+# OMC session data (local only)
+.claude/sessions/

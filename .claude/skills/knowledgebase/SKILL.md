@@ -41,9 +41,10 @@ When the user's request covers multiple knowledge-base operations,
 invoke Archival with scenarios ordered for maximum efficiency:
 
 1. **Organize first** — Clean up the collection before new intake
-2. **Ingest second** — New documents enter a clean, well-structured KB
-3. **Manage third** — Post-ingest adjustments (move, rename, delete)
-4. **List/Search last** — Present final state of the collection
+2. **Verify second** — Know what's healthy/what's broken before acting
+3. **Ingest third** — New documents enter a clean, well-structured KB
+4. **Manage fourth** — Post-ingest adjustments (move, rename, delete)
+5. **List/Search last** — Present final state of the collection
 
 This prevents Archival from moving documents twice (once during ingest,
 once during organize). Describe the full workflow in a single prompt
@@ -57,16 +58,16 @@ When you (Archival) are running and need to choose a sub-skill:
 
 | You diagnosed | Invoke | Procedure |
 |---|---|---|
-| **Ingest** | `Skill("knowledgebase-ingest")` | Survey → classify → match KB → tag → write → verify |
+| **Ingest** | `Skill("knowledgebase-ingest")` | Survey → classify → match KB → A4(description) → tag → A5b(chunk) → A6(store) → **A9(sub-KB check)** → verify |
 | **Manage** | `Skill("knowledgebase-manage")` | Confirm → execute → verify |
 | **Organize** | `Skill("knowledgebase-organize")` | Survey all → read content → categorize → execute → verify → report |
 | **List** | `Skill("knowledgebase-list")` | Inventory → drill-down → tree |
-| **Search** | `Skill("knowledgebase-search")` | Agentic RAG: catalog → doc catalog → experience → vector confirm → content verify. Auto-upgrades to `knowledgebase-search-enterprise` for cross-KB blind spots. |
-| **Search (企业级)** | `Skill("knowledgebase-search-enterprise")` | Multi-strategy: Agentic + BM25 + vector 3-path parallel recall → cross-validation → content rerank. Triggered automatically or for high-precision enterprise searches. |
-| **Verify** | `Skill("knowledgebase-verify")` | Metadata scan → doc integrity → parse quality → scorecard |
+| **Search** | `Skill("knowledgebase-search")` | **Tiered Agentic RAG**: assess KB hierarchy → catalog(domain) → sub-catalog(sub-domain) → experience → vector confirm → content verify. Auto-upgrades to `knowledgebase-search-enterprise` for cross-KB blind spots. |
+| **Search (企业级)** | `Skill("knowledgebase-search-enterprise")` | Multi-strategy: Agentic + BM25 + vector 3-path → cross-validation → content rerank |
+| **Verify** | `Skill("knowledgebase-verify")` | Metadata scan → doc integrity → parse quality → **KB hierarchy health check** |
 | **Batch** | `Skill("knowledgebase-batch")` | Bulk tag → bulk desc → mass import → mass move → dedup → export |
-| **Experience** | `Skill("knowledgebase-experience")` | Create → retrieve (strict P0/P1/P2) → apply → review → summary. Short-content filtering + credibility decay. |
-| **Experience summary** | `Skill("knowledgebase-experience-summarize")` | Scene diagnosis → LLM extraction → markdown draft → user confirm (hard gate) → experience_create → verify. For "记录这个经验/总结一下/保存教训/提炼成经验". |
+| **Experience** | `Skill("knowledgebase-experience")` | Create → retrieve (strict P0/P1/P2) → apply → review → summary |
+| **Experience summary** | `Skill("knowledgebase-experience-summarize")` | Scene diagnosis → LLM extraction → markdown draft → user confirm → experience_create → verify |
 | **Mixed** | Invoke in order: organize → verify → ingest → manage → list | |
 
 Each sub-skill contains the complete step-by-step procedure. Follow it
