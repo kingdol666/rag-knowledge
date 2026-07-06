@@ -465,6 +465,70 @@ class KbClient:
         """图谱统计。"""
         return await self._get_backend("/api/v1/graph/stats")
 
+    # ──────────────────────────────────────────────────────────────
+    # GRAPH ENHANCED（v2：文档中心 / KB 概览 / 批量构建 / 跨 KB 分析）
+    # ──────────────────────────────────────────────────────────────
+
+    async def graph_health(self) -> dict:
+        """图谱健康探测（Neo4j 是否可用）。"""
+        return await self._get_backend("/api/v1/graph/health")
+
+    async def graph_document(self, doc_path: str, limit: int = 50) -> dict:
+        """单文档图谱视图：实体 + 文档内共现 + 跨文档连接。"""
+        return await self._get_backend("/api/v1/graph/document",
+                                       doc_path=doc_path, limit=limit)
+
+    async def graph_kb_overview(self, kb_id: str) -> dict:
+        """KB 图谱概览：文档/实体统计 + Top 实体 + 跨 KB 桥梁实体。"""
+        return await self._get_backend("/api/v1/graph/kb-overview", kb_id=kb_id)
+
+    async def graph_build_kb(self, kb_id: str, force: bool = False) -> dict:
+        """为整个 KB 构建知识图谱（核心）。"""
+        return await self._post_backend_json(
+            "/api/v1/graph/build-kb",
+            {"kb_id": kb_id, "force": force}, timeout=INDEX_TIMEOUT,
+        )
+
+    async def graph_build_all(self, force: bool = False) -> dict:
+        """为所有 KB 构建知识图谱。"""
+        return await self._post_backend_json(
+            "/api/v1/graph/build-all",
+            {"force": force}, timeout=INDEX_TIMEOUT,
+        )
+
+    async def graph_cross_kb_entities(self, min_kbs: int = 2, limit: int = 50) -> dict:
+        """跨 KB 桥梁实体。"""
+        return await self._get_backend(
+            "/api/v1/graph/cross-kb-entities", min_kbs=min_kbs, limit=limit,
+        )
+
+    async def graph_entity_paths(self, entity_a: str, entity_b: str,
+                                  max_depth: int = 4) -> dict:
+        """两实体间最短路径。"""
+        return await self._get_backend(
+            "/api/v1/graph/entity-paths",
+            entity_a=entity_a, entity_b=entity_b, max_depth=max_depth,
+        )
+
+    async def graph_central_entities(self, kb_id: str, top_n: int = 20) -> dict:
+        """KB 内度中心性最高的实体。"""
+        return await self._get_backend(
+            "/api/v1/graph/central-entities", kb_id=kb_id, top_n=top_n,
+        )
+
+    async def graph_delete_document(self, doc_path: str) -> dict:
+        """删除单文档图谱数据。"""
+        return await self._request(
+            "DELETE", "/api/v1/graph/document",
+            base=self.backend_url, params={"doc_path": doc_path},
+        )
+
+    async def graph_delete_kb(self, kb_id: str) -> dict:
+        """删除整个 KB 的图谱数据。"""
+        return await self._request(
+            "DELETE", f"/api/v1/graph/kb/{kb_id}", base=self.backend_url,
+        )
+
     # ================================================================
     # EXPERIENCE MANAGEMENT (经验管理)
     # ================================================================

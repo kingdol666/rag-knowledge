@@ -1,6 +1,6 @@
 # Knowledge Skill System — 完全架构
 
-## 当前 12 个 Skills 全景 + 1 个 Agent
+## 当前 13 个 Skills 全景 + 1 个 Agent
 
 ```
 knowledgebase (入口/调度器)
@@ -65,6 +65,17 @@ knowledgebase (入口/调度器)
     └── 能力：场景诊断 → 智能提炼(LLM) → markdown模板展示 → 用户确认(硬门槛)
                → experience_create持久化 → experience_read验证
 
+├── knowledgebase-graph (知识图谱) ⭐ NEW
+│   ├── 触发：图谱, 知识图谱, 构建图谱, 重建图谱, 实体关系, 跨知识库实体, 实体路径,
+│   │         中心实体, graph, knowledge graph, neo4j, entity, relationship, build graph,
+│   │         cross-KB entities, entity path, central entities, graph overview (20+ 中英关键词)
+│   └── 能力：G1构建(per-KB/all, 增量/强制) → G2查询(文档视图/KB概览/实体搜索/邻居)
+│             → G3跨KB分析(桥梁实体/实体路径) → G4中心度 → G5清理(文档/KB级)
+│   ⭐ 核心能力：Neo4j 知识图谱——NER 抽实体 + 共现/关系抽边 + 跨KB实体自动合并
+│   ⭐ 中英文双 NER：自动检测语言，中文用 ckiplab/bert-base-chinese-ner，
+│      英文用 dslim/bert-base-NER，英文文档也能构建图谱
+│   ⭐ 与 Search 集成：knowledgebase-search Step 4.5 用图谱实体扩展候选文档
+
 Agents:
   └── archival (knowledge-admin.md)    — 全栈KB管理员, 拥有全部~60个MCP工具
                                         ← knowledgebase dispatcher 路由到本 agent
@@ -123,6 +134,21 @@ Agents:
 - ✅ `parse_doc` 非阻塞，返回 task_id 用于轮询
 - ✅ `kb_doc_read` 支持 offset/limit 分页读取
 - ✅ archival agent 拥有 Agent 工具，可调用 general-purpose 子Agent
+
+### 6. 知识图谱能力（v3 新增）⭐⭐
+- **Neo4j 图谱**：`graph_service` 抽实体（NER）+ 关系（共现/依存/模板）写入 Neo4j
+- **graph_doc_id 主键**：`doc::path/to/doc.md`（前斜杠标准化），Document 节点唯一约束
+- **跨 KB 实体合并**：`MERGE (e:Entity {name, type})` 自动合并同名实体，`source_kbs` 累积形成桥梁
+- **graph_index 写回**：与 vector_index 对称，写回 `.knowledge-base.yml`，含节点+边详情
+- **中英文双 NER** ⭐：自动检测语言（CJK 占比 > 30% → 中文）
+  - 中文：`ckiplab/bert-base-chinese-ner`（BIOES 标签）
+  - 英文：`dslim/bert-base-NER`（BIO 标签, PER/ORG/LOC/MISC）
+  - 英文文档也能构建图谱（之前英文文档 0 实体的限制已解决）
+- **生命周期联动**：upload/parse/move/delete 全部触发图谱索引/清理，元信息跟随移动
+- **Skill 集成**：`knowledgebase-graph` 独立技能 + `knowledgebase-search` Step 4.5 图谱扩展
+- **MCP 工具**：`kb_graph_build_kb` / `kb_graph_build_all` / `kb_graph_document` /
+  `kb_graph_kb_overview` / `kb_graph_cross_kb_entities` / `kb_graph_entity_paths` /
+  `kb_graph_central_entities` 等（需重启 MCP server 加载）
 
 ---
 
@@ -187,6 +213,7 @@ Layer 3 — KNOWLEDGE-SYSTEM.md 全局触发文档
 | **batch** | 批量, 所有文档, 全量, 统一 | batch, bulk, mass, all, repetitive |
 | **experience** | 查经验, 评分, 评审, 经验教训, 怎么处理 | experience, lesson, review, best practice |
 | **experience-summarize** | 记录经验, 总结, 复盘, 记住流程 | save experience, summarize lesson, record workflow |
+| **graph** ⭐NEW | 图谱, 知识图谱, 构建图谱, 重建图谱, 实体关系, 跨知识库实体, 实体路径, 中心实体 | graph, knowledge graph, neo4j, entity, relationship, build graph, cross-KB entities, entity path, central entities |
 
 ### 执行保障
 

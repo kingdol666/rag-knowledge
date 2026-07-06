@@ -71,6 +71,32 @@ graph:
   # 支持 ${NEO4J_PASSWORD} 语法从环境变量读取，避免明文存储
   password: "${NEO4J_PASSWORD}"
   database: "neo4j"
+  # 连接池配置（可选，详见 doc；gds 版本须注释 max_connection_pool_size）
+  pool:
+    max_connection_pool_size: 50
+    connection_acquisition_timeout: 30  # 秒
+    max_connection_lifetime: 3600       # 秒（1 小时）
+  # 瞬态失败重试策略（网络闪断等）
+  retry:
+    max_attempts: 3
+    base_delay: 0.5  # 秒（指数退避：0.5→1.0→2.0）
+  # NER 实体识别配置（transformers + PyTorch，中英文双模型自动切换）
+  ner:
+    model_zh: ckiplab/bert-base-chinese-ner   # 中文 NER（BIOES）
+    model_en: dslim/bert-base-NER             # 英文 NER（BIO）
+    max_text_length: 50000  # 超长文档截断字符数
+    types:                  # 原始标签 → 友好类型映射
+      PER: PER
+      PERSON: PER
+      LOC: LOC
+      ORG: ORG
+      GPE: GPE
+      MISC: MISC
+  # 关系抽取配置
+  relation:
+    use_cooccurrence: true   # 同句实体共现
+    use_dependency: true     # 依存句法（nsubj/dobj）
+    use_pattern: true        # 正则模板（子公司/收购/投资等）
 
 # ============================================
 # 两阶段检索配置

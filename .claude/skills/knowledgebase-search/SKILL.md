@@ -139,7 +139,7 @@ experience_search_global(query)
 # 单 KB 多文档：两阶段（BM25 定位 + 向量精排）
 kb_search_two_stage(query, kb_id, stage2_top_k=3)
 
-# 文档无向量索引 → 跳过向量，直接 Step 5 读内容
+# 文档无向量索引 → 跳过向量，直接 Step 6 读内容
 ```
 
 **交叉验证**向量结果与 Agent 评分：
@@ -147,6 +147,33 @@ kb_search_two_stage(query, kb_id, stage2_top_k=3)
 - 向量高分但 Step 2 低分 → 怀疑向量误匹配，以 Agent 判断为准或读内容复核
 
 **跨库盲区升级**：如果 `kb_search_two_stage` 跨库候选来自 **<2 个不同 KB** → 自动升级到企业级。
+
+### Step 4.5 — 图谱实体扩展（知识图谱加持）📍 新增
+
+当查询包含命名实体（人名/组织/地点/设备名）时，用知识图谱发现额外候选文档：
+
+```
+# 从查询中识别实体（Agent 直接判断，或用 NER）
+# 对每个识别出的实体：
+kb_graph_search(entity_text)              → 找到图谱中的实体节点
+GET /api/v1/graph/documents-by-entity?entity_name=...   → 含该实体的文档
+```
+
+**图谱扩展的价值：**
+- **跨 KB 桥梁**：实体同时出现在多个 KB → 发现跨库相关文档
+- **共享实体**：两文档共享实体 → 即使向量相似度低也强相关
+- **中心实体**：KB 中心实体出现 → 该文档是 KB 核心主题
+
+**Agent 判断：** 图谱扩展找到的文档作为 `source=graph_entity` 候选，
+与 Step 2/4 的候选合并去重，统一进入 Step 6 内容验证。
+仍需要 `kb_doc_read` 验证内容真满足场景。
+
+**KB 图谱概览（可选，了解 KB 主题结构）：**
+```
+kb_graph_kb_overview(kb_id)  → top_entities / cross_kb_bridges
+```
+若 KB 的 top 实体与查询主题匹配 → 高置信度；
+若 cross_kb_bridges 命中查询实体 → 跨 KB 扩展线索。
 
 **短文本过滤规则**：
 ```

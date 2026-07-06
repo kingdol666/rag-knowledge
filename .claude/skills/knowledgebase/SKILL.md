@@ -41,6 +41,7 @@ description: >
 | **批量操作** | 批量, 所有文档, 大规模, 全部, batch, bulk, mass, all documents, every KB | **Batch** | 中 |
 | **经验操作** | 记录经验, 保存经验, 查经验, 经验教训, 评分, 评审, experience, lesson learned, best practice, 经验库 | **Experience** | 中 |
 | **经验总结入库** | 总结一下, 提炼, 记住流程, 记录教训, summarize as lesson, save as experience, record this workflow | **Experience-Summarize** | 中 |
+| **知识图谱** | 图谱, 知识图谱, 构建图谱, 重建图谱, 实体关系, 跨知识库实体, 实体路径, 中心实体, graph, knowledge graph, neo4j, entity, relationship, build graph, cross-KB entities, entity path, central entities, graph overview | **Graph** | 中 |
 
 ### 多场景检测与优先级处理
 
@@ -123,6 +124,7 @@ When you (Archival) are running and need to choose a sub-skill:
 | **Batch** | `Skill("knowledgebase-batch")` | Bulk tag → bulk desc → mass import → mass move → dedup → export |
 | **Experience** | `Skill("knowledgebase-experience")` | Create → retrieve (strict P0/P1/P2) → apply → review → summary |
 | **Experience summary** | `Skill("knowledgebase-experience-summarize")` | Scene diagnosis → LLM extraction → markdown draft → user confirm → experience_create → verify |
+| **Graph** | `Skill("knowledgebase-graph")` | Build (per-KB/all) → query (doc/KB overview) → cross-KB analysis → entity paths → central entities → cleanup |
 | **Mixed** | Invoke in order: organize → verify → ingest → manage → list | |
 
 Each sub-skill contains the complete step-by-step procedure. Follow it

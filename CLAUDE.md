@@ -50,7 +50,7 @@ rag-knowledge/
 ├── .claude/agents/         # Archival agent definition (knowledge-admin.md)
 ├── .codex/                 # Parallel agent/skill definitions for Codex
 ├── docs/ARCHITECTURE.md    # Detailed architecture + MCP dev guide
-└── KB_MCP_DEVELOPMENT.md   # API test report + MCP feasibility analysis
+└── README.md               # Project overview + roadmap
 ```
 
 ### Backend (FastAPI Python)

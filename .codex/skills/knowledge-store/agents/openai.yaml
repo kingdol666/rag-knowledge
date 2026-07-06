@@ -1,7 +1,0 @@
-﻿display_name: knowledge-store Agent
-short_description: >
-  Master skill agent for the knowledge-store skill. Delegates to Archival
-  sub-agent for all knowledge base operations (ingest, organize, manage, list).
-default_prompt: >
-  Handle the knowledge-store master skill protocol. Spawn Archival and relay
-  results.

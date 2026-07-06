@@ -900,6 +900,89 @@ async def kb_graph_stats() -> str:
     return _j(await _client().graph_stats())
 
 
+@mcp.tool()
+async def kb_graph_health() -> str:
+    """检查 Neo4j 知识图谱是否可用（健康探测，永不抛错）。"""
+    return _j(await _client().graph_health())
+
+
+@mcp.tool()
+async def kb_graph_document(doc_path: str, limit: int = 50) -> str:
+    """查看单文档的知识图谱视图：文档内实体、实体间共现关系、跨文档连接。
+
+    用于根据文档 ID 找到该文档在 Neo4j 中存储的全部图谱信息。
+    返回：{entities, relations, cross_doc_links, entity_count, ...}"""
+    return _j(await _client().graph_document(doc_path, limit))
+
+
+@mcp.tool()
+async def kb_graph_kb_overview(kb_id: str) -> str:
+    """KB 级图谱概览：文档/实体统计、Top 实体、跨 KB 桥梁实体。
+
+    用于查看某个知识库的图谱整体情况，发现该 KB 的核心实体和跨 KB 关联。"""
+    return _j(await _client().graph_kb_overview(kb_id))
+
+
+@mcp.tool()
+async def kb_graph_build_kb(kb_id: str, force: bool = False) -> str:
+    """为整个知识库自动构建知识图谱（核心功能）。
+
+    遍历 KB 内所有文档，提取实体（NER）与关系（共现/依存/模板），写入 Neo4j。
+    跨文档同名实体自动合并，自然形成文档间关联。
+    force=True：先清空该 KB 图谱再重建（幂等）；force=False：增量（跳过已索引文档）。
+    返回：{docs_processed, total_entities, total_relations, errors, ...}"""
+    return _j(await _client().graph_build_kb(kb_id, force))
+
+
+@mcp.tool()
+async def kb_graph_build_all(force: bool = False) -> str:
+    """为所有知识库构建知识图谱。
+
+    遍历全部 KB 构建图谱，跨 KB 共享实体自动合并（形成跨知识库关联）。
+    耗时较长（~95 文档约 2-5 分钟），建议 force=False 增量构建。
+    返回：{total_kbs, kbs: [{kb_id, docs_processed, ...}], ...}"""
+    return _j(await _client().graph_build_all(force))
+
+
+@mcp.tool()
+async def kb_graph_cross_kb_entities(min_kbs: int = 2, limit: int = 50) -> str:
+    """发现跨知识库的桥梁实体——出现在 >= min_kbs 个 KB 中的实体。
+
+    这些实体是连接不同知识库的骨干，是知识图谱结构化能力的核心体现。
+    返回：{entities: [{name, type, source_kbs, doc_count, ...}], ...}"""
+    return _j(await _client().graph_cross_kb_entities(min_kbs, limit))
+
+
+@mcp.tool()
+async def kb_graph_entity_paths(entity_a: str, entity_b: str, max_depth: int = 4) -> str:
+    """查找两个实体之间的最短关系路径。
+
+    展示实体如何通过 CO_OCCURRED_WITH 关系链相连（最多 max_depth 跳）。
+    返回：{paths: [{entity_path, relations, hops}], path_count}"""
+    return _j(await _client().graph_entity_paths(entity_a, entity_b, max_depth))
+
+
+@mcp.tool()
+async def kb_graph_central_entities(kb_id: str, top_n: int = 20) -> str:
+    """找出 KB 内度中心性最高的实体（出现在最多文档中的实体）。
+
+    这些是 KB 的核心主题实体，用于理解知识库的主要话题结构。
+    返回：{entities: [{name, type, degree, sample_docs, ...}], ...}"""
+    return _j(await _client().graph_central_entities(kb_id, top_n))
+
+
+@mcp.tool()
+async def kb_graph_delete_document(doc_path: str) -> str:
+    """删除单文档的图谱数据（共享实体保留，仅移除该文档的贡献）。"""
+    return _j(await _client().graph_delete_document(doc_path))
+
+
+@mcp.tool()
+async def kb_graph_delete_kb(kb_id: str) -> str:
+    """删除整个 KB 的图谱数据（跨 KB 共享实体保留）。"""
+    return _j(await _client().graph_delete_kb(kb_id))
+
+
 # ---------- entry ----------
 def main():
     _startup_health_check_and_launch()

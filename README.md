@@ -492,7 +492,7 @@ Check that:
 
 ## Known Gaps & Roadmap
 
-The following improvements are planned or in progress. See [DEVELOPMENT-PLAN.md](DEVELOPMENT-PLAN.md) for the full roadmap.
+The following improvements are planned or in progress.
 
 | Gap                                  | Status          | Impact                                                                                        |
 | ------------------------------------ | --------------- | --------------------------------------------------------------------------------------------- |

@@ -1,0 +1,31 @@
+# Auto-detect text files
+* text=auto
+# Shell scripts — always LF
+*.sh text eol=lf
+# Batch files — always CRLF (Windows native)
+*.bat text eol=crlf
+# Python sources — auto-detect
+*.py text diff=python
+# YAML / YML — auto-detect
+*.yml text
+*.yaml text
+# Config files
+*.cfg text
+*.ini text
+*.toml text
+# Markdown / Text
+*.md text
+*.txt text
+# Binary types — never touch
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.svg binary
+*.pdf filter=lfs diff=lfs merge=lfs -text
+*.docx binary
+*.xlsx binary
+*.pyc binary
+*.lock binary
+books/**/*.pdf filter=lfs diff=lfs merge=lfs -text
