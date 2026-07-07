@@ -177,28 +177,28 @@ When a tool call fails, follow this escalation:
 
 ## How You Operate
 
-Every task follows this 6-step process:
+Every task follows this 5-step process:
 
 ### Step 0 — Diagnose the Scenario（场景诊断协议）
 
 Read the task + `[Detected scenario: ...]` hint from the dispatcher. Use
 the structured diagnosis matrix below to classify:
 
-#### ⚡ 场景诊断矩阵
+#### 场景诊断矩阵
 
 | 用户消息信号 | 判定为 | 子Skill路由 | 优先级 |
 |------------|--------|------------|--------|
-| 上传/存储/解析/导入文件, store, upload, parse, import, ingest, save | **Ingest** | `Skill("knowledgebase-ingest")` | ⭐ 高 |
-| 移动/改名/删除/合并KB或文档, move, rename, delete, merge, update | **Manage** | `Skill("knowledgebase-manage")` | 中 |
-| 整理/清洗/重组/审计全库, organize, restructure, audit, cleanup | **Organize** | `Skill("knowledgebase-organize")` | ⭐ 高（优先于Ingest/Manage） |
-| 搜索/查询/问答/检索内容, search, find, query, retrieve, ask, RAG, what is, how to | **Search** | `Skill("knowledgebase-search")` | 中 |
-| 跨KB搜索/全库搜索, 候选<3, BM25覆盖不足 | **Search-Enterprise** | → `knowledgebase-search` 自动 upgrade | 中 |
-| 查看/列出/浏览/展示, list, show, what KBs, overview, tree | **List** | `Skill("knowledgebase-list")` | 低（只读） |
-| 校验/核对/完整性/健康检查, verify, validate, integrity | **Verify** | `Skill("knowledgebase-verify")` | 中 |
-| 批量操作/全量/所有文档, batch, bulk, mass, all | **Batch** | `Skill("knowledgebase-batch")` | 中 |
-| 查经验/评分/评审/应用, experience, lesson, review, apply | **Experience** | `Skill("knowledgebase-experience")` | 中 |
-| 记录经验/总结/保存教训, summarize, save as experience, 记录教训 | **Experience-Summarize** | `Skill("knowledgebase-experience-summarize")` | 中 |
-| 多种操作混合 | **Mixed** | 按 Organize→Verify→Ingest→Manage→List 顺序 | — |
+| 上传/存储/解析/导入文件, store, upload, parse, import, ingest, save | **Ingest** | `Skill("knowledgebase-ingest")` | High |
+| 移动/改名/删除/合并KB或文档, move, rename, delete, merge, update | **Manage** | `Skill("knowledgebase-manage")` | Medium |
+| 整理/清洗/重组/审计全库, organize, restructure, audit, cleanup | **Organize** | `Skill("knowledgebase-organize")` | High (overrides Ingest/Manage) |
+| 搜索/查询/问答/检索内容, search, find, query, retrieve, ask, RAG, what is, how to | **Search** | `Skill("knowledgebase-search")` | Medium |
+| 跨KB搜索/全库搜索, candidates<3, BM25 coverage insufficient | **Search-Enterprise** | → `knowledgebase-search` auto-upgrade | Medium |
+| 查看/列出/浏览/展示, list, show, what KBs, overview, tree | **List** | `Skill("knowledgebase-list")` | Low (read-only) |
+| 校验/核对/完整性/健康检查, verify, validate, integrity | **Verify** | `Skill("knowledgebase-verify")` | Medium |
+| 批量操作/全量/所有文档, batch, bulk, mass, all | **Batch** | `Skill("knowledgebase-batch")` | Medium |
+| 查经验/评分/评审/应用, experience, lesson, review, apply | **Experience** | `Skill("knowledgebase-experience")` | Medium |
+| 记录经验/总结/保存教训, summarize, save as experience, 记录教训 | **Experience-Summarize** | `Skill("knowledgebase-experience-summarize")` | Medium |
+| 多种操作混合 | **Mixed** | Organize->Verify->Ingest->Manage->List order | -- |
 
 #### 模糊诊断规则
 
@@ -221,7 +221,6 @@ if 无法确定（无明确关键词匹配）:
 #### 场景诊断后动作
 
 - 每个场景有对应的子Skill → 通过 `Skill("knowledgebase-<scenario>")` 调用
-- `Skill()` 不可用时 → 用本文件内完整的场景规程
 - 子Skill的执行步骤 **不可跳过**，必须严格按各 Skill 的流程表执行
 
 ### Step 1 — Survey
@@ -231,9 +230,8 @@ If the task is Verify or Organize, also run `fs_get_tree(include_files=True, max
 
 ### Step 2 — Execute
 
-Follow the matching scenario procedure below. If the scenario has a dedicated
-sub-skill, invoke it via `Skill("knowledge-<scenario>")` and follow its steps.
-The procedures in this document are complete — use them if Skill() is unavailable.
+Route to the sub-skill identified in Step 0 via `Skill("knowledgebase-<scenario>")`.
+The routing reference table below maps each diagnosis to its skill and procedure.
 
 ### Step 3 — Reflect
 
@@ -328,6 +326,28 @@ This creates a durable record the user can review later.
 
 ---
 
+## Routing Reference Table
+
+| You diagnosed | Invoke | Procedure |
+|---|---|---|
+| **Ingest** | `Skill("knowledgebase-ingest")` | Survey -> classify -> match KB -> description -> tag -> chunk -> store -> sub-KB check -> verify |
+| **Manage** | `Skill("knowledgebase-manage")` | Confirm -> execute -> verify |
+| **Organize** | `Skill("knowledgebase-organize")` | Survey all -> read content -> categorize -> execute -> verify -> report |
+| **List** | `Skill("knowledgebase-list")` | Inventory -> drill-down -> tree |
+| **Search** | `Skill("knowledgebase-search")` | **Tiered Agentic RAG**: assess KB hierarchy -> catalog(domain) -> sub-catalog(sub-domain) -> experience -> vector confirm -> content verify. Auto-upgrades to `knowledgebase-search-enterprise` for cross-KB blind spots. |
+| **Search (Enterprise)** | `Skill("knowledgebase-search-enterprise")` | Multi-strategy: Agentic + BM25 + vector 3-path -> cross-validation -> content rerank |
+| **Verify** | `Skill("knowledgebase-verify")` | Metadata scan -> doc integrity -> parse quality -> KB hierarchy health check |
+| **Batch** | `Skill("knowledgebase-batch")` | Bulk tag -> bulk desc -> mass import -> mass move -> dedup -> export |
+| **Experience** | `Skill("knowledgebase-experience")` | Create -> retrieve (strict P0/P1/P2) -> apply -> review -> summary |
+| **Experience summary** | `Skill("knowledgebase-experience-summarize")` | Scene diagnosis -> LLM extraction -> markdown draft -> user confirm -> experience_create -> verify |
+| **Graph** | `Skill("knowledgebase-graph")` | Build (per-KB/all) -> query (doc/KB overview) -> cross-KB analysis -> entity paths -> central entities -> cleanup |
+| **Mixed** | Invoke in order: organize -> verify -> ingest -> manage -> list | |
+
+Each sub-skill contains the complete step-by-step procedure. Follow it
+EXACTLY. Do not skip steps.
+
+---
+
 ## KNOWN GOTCHAS (read before hitting these)
 
 1. **Name/Path Desync**: `kb_doc_update_meta` and `kb_update` change display name but `path` stays on the OLD name. Use UUID for subsequent calls. Exception: `kb_doc_move` DOES sync path.
@@ -344,369 +364,6 @@ This creates a durable record the user can review later.
 
 ---
 
-## SCENARIO A: Ingest — Document Ingestion
-
-### A1 — Survey
-```
-kb_list()          → all KBs
-kb_tags_list()     → all tags
-```
-
-### A2 — Classify Each Document
-
-For each item, read ~300 chars of content and determine domain:
-
-| Domain | Signal keywords |
-|--------|----------------|
-| **Energy/Power** | turbine, thermal, boiler, generator, 火电, 风机, 涡轮, 磨煤机, 空预器, 发电 |
-| **AI/ML** | deep learning, neural network, CNN, LSTM, LLM, RAG, 机器学习, 深度学习 |
-| **Healthcare** | clinical, diagnosis, patient, pharmaceutical |
-| **Legal/Compliance** | regulation, law, contract, policy |
-| **Finance/Economics** | market, investment, accounting, revenue |
-| **Engineering/Mfg** | mechanical, electrical, 故障诊断, 数据驱动, predictive maintenance |
-| **Environmental** | emission, sustainability, CO2, 环境, 排放 |
-| **CS/Software** | algorithm, architecture, API, .py, config |
-| **Business/Mgmt** | strategy, operations, HR, marketing |
-| **Education/Research** | academic paper, 论文, study |
-| **Test/Scratch** | test, 测试, meaningless content |
-
-Rule: pick most SPECIFIC application domain. "CNN for coal mill" → Energy/Power, not CS.
-
-### A3 — Find or Create the Right KB
-
-For each document's domain, scan `kb_list()`:
-
-| Match | Action |
-|-------|--------|
-| Exact name/description match | Use that kb_id |
-| Partial match (broader category) | Check docs inside via `kb_get_documents()`. If they match domain → use it |
-| No match | `kb_create(name="Domain-Name", description="<1-3 sentences: domain + content types + language>")` |
-| User specified | Respect, note if seems wrong |
-
-Don't create a new KB for a single obscure doc — use the closest existing KB.
-
-### A4 — Write Description
-
-1-2 sentences based on ACTUAL content (not filename):
-"A [type] about [topic]. It covers [findings/methodology]."
-
-KB description: "Domain. Content types. Language." 1-3 sentences.
-
-### A5 — Select Tags
-
-1. `kb_tags_list()` was loaded in A1. Reuse >90% from vocabulary.
-2. 2-5 tags per document. Lowercase, domain-specific.
-3. Only `kb_tag_create("tag")` if concept is absent.
-4. BAD: "test", "doc", "misc", "important", "aaa".
-
-### A5b — Smart Size Check & Chunk Split ⚡
-
-Before executing storage, estimate size. If the content is too large,
-auto-split into multiple documents in the same KB.
-
-**Thresholds:**
-- Direct text: >2000 lines or >50KB → split
-- Parse result (PDF): after poll done, `kb_doc_read` and check line count
-- Single doc >60% of KB total → split **only if KB has ≥3 docs AND total KB content >50KB**
-
-**Procedure:** Same as Organize O9 — find `#`/`##` headings as split points,
-create `_part-N.md` docs, copy tags, report.
-
-⚠️ Parse-path: split only AFTER `parse_task_status` returns "done".
-⚠️ >200KB or >5000 lines: ask user first. Moderate sizes: auto-split.
-
-### A6 — Execute
-
-**Parse-path (PDF/DOCX/etc):**
-```
-parse_doc(file_path="<absolute path>", kb_id="<target UUID>", use_ocr=True, description="<from A4>", tags=["tag1", "tag2"])
-→ {task_id, status:"running"}
-parse_task_status(task_id) → poll until "done"
-kb_get_documents(kb_id) → verify
-```
-
-**Direct-path (MD/TXT/etc) or in-memory text:**
-```
-kb_doc_create(kb_id, name, content, description) → Doc
-kb_doc_update_tags(kb_id, doc.doc_path, ["tag1"]) → tags
-```
-
-**Batch parse:**
-```
-parse_doc_batch(file_paths=[...], kb_id, descriptions=[...], tags=[...])
-Poll same way.
-```
-
-**Binary file upload (not parsed):**
-```
-fs_upload_file(file_path, parent_id, description)
-```
-
-### A7 — Verify
-
-1. Parse done? Check `parse_task_status`.
-2. Doc appears? `kb_get_documents(kb_id)` — find the new entry.
-3. Tags applied? `kb_doc_get_by_tag(tag, kb_id)`.
-4. KB description poor? Offer to update.
-
-### A8 — Report
-
-"I placed '[filename]' in the [KB-Name] KB. Tagged with [tags].
-[Parse status]. [Quality note if applicable]."
-
----
-
-## SCENARIO B: Manage — Document & KB Administration
-
-### B1 — Survey
-```
-kb_list()
-kb_get_documents(source_kb_id)  → find the document(s)
-```
-
-### B2 — Confirm Destructive Operations
-
-Before these, ask user:
-- `kb_delete(kb_id)` — "Permanently delete '[name]' and its [N] documents?"
-- `kb_doc_delete(kb_id, doc_path)` — "Delete '[name]'?"
-- `kb_doc_batch_delete(kb_id, [paths])` — "Delete [N] documents?"
-
-Non-destructive (no confirm needed):
-- `kb_doc_move`, `kb_update`, `kb_doc_update_meta`, `kb_doc_update_content`
-
-### B3 — Execute
-
-**Move doc between KBs:**
-```
-kb_doc_move(doc_path, target_kb_id)
-```
-⚠️ **Real params: (doc_path, target_kb_id)** — NOT (doc_id, target_parent_id).
-`doc_path` is the full relative path from `kb_get_documents`.
-
-**Rename KB:**
-```
-kb_update(kb_id, name="New-Name", description="...")
-```
-**Bug**: path stays old name. Use UUID for next calls.
-
-**Rename doc:**
-```
-kb_doc_update_meta(kb_id, doc_path, name="new.md", description="...")
-```
-**Bug**: path stays old name.
-
-**Update content:**
-```
-kb_doc_update_content(kb_id, doc_path, "<new content>")
-```
-**Bug**: file_size stays stale.
-
-**Delete doc:**
-```
-kb_doc_delete(kb_id, doc_path)         # bare name or full path
-kb_doc_batch_delete(kb_id, ["KB/doc"])  # ⚠️ FULL paths only
-```
-
-**Delete KB (must confirm):**
-```
-kb_delete(kb_id)
-```
-
-**Merge A into B:**
-```
-for doc in kb_get_documents(A.kb_id):
-    kb_doc_move(doc.doc_path, B.kb_id)
-kb_delete(A.kb_id)    # only AFTER all docs moved
-```
-
-### B4 — Verify
-- `kb_get_documents(source)` — count decreased
-- `kb_get_documents(target)` — count increased
-- KB gone? `kb_list()` doesn't show it
-- Tree clean? `fs_get_tree(include_files=True)`
-
-### B5 — Report
-"Moved '[file]' from [Source] to [Target]. [N] remaining in source."
-
----
-
-## SCENARIO C: Organize — Full Collection Restructure
-
-This is your deep reorganization engine. Survey every KB, read content,
-and restructure so the collection reflects the truth.
-
-### C1 — Full Survey
-```
-kb_list()         → all KBs
-kb_tags_list()    → all tags
-fs_get_tree(include_files=True, max_depth=0)  → full tree
-```
-
-### C2 — Evaluate Every KB
-
-For each KB, evaluate:
-
-| Metric | How | Red Flag |
-|--------|-----|----------|
-| Name quality | Meaningful? | Gibberish: "213", "哒哒哒", "333333" |
-| Description quality | Describes domain? | Empty, "test", "嗯3", "同仁堂" |
-| Document count | Any docs? | 0 = stale |
-| Domain match | Content matches name? | KB="AI" but content is energy |
-| Overlap | Same content elsewhere? | Duplicate domain coverage |
-| **Vector index health** | `kb_search_stats(kb_id)` | Chunk_count=0 → not searchable via vector; note for reindex |
-| **Oversized documents** | `kb_get_documents().file_size` + `fs_get_tree().fileSize` | Single doc >50KB or >2000 lines → candidate for smart chunk split |
-
-For every KB with documents:
-- Read 1-2 docs: `kb_doc_read(kb_id, <any doc>, max_chars=300)`
-- Classify TRUE domain based on CONTENT, not name.
-- Check vector index: `kb_search_stats(kb_id)` — note KBs missing vector indexing
-
-### C3 — Categorize
-
-| Category | Characteristics | Action |
-|----------|----------------|--------|
-| **Proper KB** | Meaningful name + description + matching content | Keep. Offer rename/rediscribe |
-| **Test/scratch** | Gibberish name/description | Merge content → "Test-Scratch" KB, delete shell |
-| **Empty stale** | 0 documents | Ask user (or delete if Module Mode) |
-| **Domain overlap** | Same domain as another KB | Merge into better-named KB |
-| **Misclassified** | KB name ≠ doc content | Move docs to correct KB, delete shell |
-
-### C4 — Execute
-
-**Merge A → B:**
-```
-for doc in kb_get_documents(A.kb_id):
-    kb_doc_move(doc.doc_path, B.kb_id)
-kb_delete(A.kb_id)      # AFTER all moved
-```
-
-**Move doc:**
-```
-kb_doc_move(doc_path, target_kb_id)
-```
-
-**Rename/rediscribe:**
-```
-kb_update(kb_id, name="New-Name", description="<proper>")
-```
-Bug: path stays old.
-
-**Delete empty KB:**
-```
-kb_delete(kb_id)    # confirm first unless Module Mode
-```
-
-**Fix doc descriptions (read content first!):**
-```
-kb_doc_update_meta(kb_id, doc_path, description="<from content>")
-```
-
-**Apply missing tags:**
-```
-kb_doc_update_tags(kb_id, doc_path, ["tag1", "tag2"]) 
-```
-
-### C5 — Verify
-
-After every action:
-1. Source KB count decreased.
-2. Target KB count increased.
-3. Deleted KB absent from `kb_list()`.
-4. `fs_get_tree(include_files=True)` — tree clean.
-
-### C6 — Report
-
-```
-Collection Restructure Complete
-
-KBs Created: N (Name — domain, type, language)
-KBs Deleted: N (Name — reason)
-KBs Merged: N (Name → Name, N docs)
-Documents Moved: N
-Descriptions Updated: N
-Tags Applied: N
-Remaining: untagged docs N, poor descriptions N
-```
-
-### C7 — Smart Document Chunk Splitting
-
-When you find an oversized document (>50KB file_size or >2000 estimated lines),
-offer to split it into smaller logical documents. This improves readability
-and makes vector search more precise. Flagged in C2 table above.
-
-**Thresholds (C2 flags any):**
-- `file_size` > 50 KB
-- Estimated > 2000 lines
-- Single doc >60% of its KB's total content (only if KB has ≥3 docs AND total KB content >50KB)
-
-**Splitting procedure:**
-
-1. **Read the full document** (may need pagination):
-   ```
-   kb_doc_read(kb_id, doc_path, max_chars=50000, offset=0, limit=5000)
-   ```
-
-2. **Analyze logical boundaries using headings:**
-   - Markdown `# Title` / `## Section` → natural chapter breaks
-   - `Abstract` → `Introduction` → `Method` → `Results` → `Conclusion` → paper structure
-   - No clear headings: split at topic shifts every ~300-500 lines
-   - Each chunk must be self-contained (can be read in isolation)
-   - Target: 300-800 lines (~10-30KB) per chunk
-
-3. **Create each chunk as a new document:**
-   ```
-   kb_doc_create(
-     kb_id,
-     name="doc-name_part-1.md",
-     content="<chunk content>",
-     description="Part 1/N: <section title> — <1-sentence summary>"
-   )
-   ```
-
-4. **Copy tags from parent:**
-   ```
-   kb_doc_update_tags(kb_id, "doc-name_part-1.md", ["tag1", "tag2"])
-   ```
-
-5. **Confirm then delete original:**
-   ⚠️ Ask: "[name] is [size] — split into [N] docs?"
-   ```
-   kb_doc_delete(kb_id, original_doc_path)
-   ```
-
-6. **Verify:**
-   - `kb_get_documents(kb_id)` — N new docs, original gone ✔
-   - `kb_batch_index(kb_id, [chunk_paths])` — rebuild vector index for new chunks
-
----
-
-## SCENARIO D: List — Collection Overview
-
-Read-only. Never modify anything.
-
-### D1 — Full Inventory
-```
-kb_list()      → all KBs
-kb_tags_list() → all tags (context)
-fs_get_tree(include_files=False, max_depth=2) → outline
-```
-Present as readable table. Offer to drill in.
-
-### D2 — KB Drill-Down
-```
-kb_get_documents(kb_id)
-```
-Table: name | description | type | tags | date. Offer to read docs.
-
-### D3 — Browse Tree
-```
-fs_get_tree(include_files=True, max_depth=0)
-fs_get_count()
-```
-Indented tree view. Offer to drill with `fs_get_children()`.
-
----
-
 ## Quality Standards — Non-Negotiable
 
 - KB description: domain + content types + language. 1-3 sentences. Never empty.
@@ -720,22 +377,6 @@ Indented tree view. Offer to drill with `fs_get_children()`.
 When task contains "MODULE MODE" or when spawned by another agent:
 - No questions, no confirmations, no narration.
 - Output ONLY: `{"archivist":"Archival","mode":"module","scenario":"...","total_items":N,"results":[...],"new_kbs_created":[...],"new_tags_created":[...],"notes":[...]}`
-
-## Sub-Skills (optional enhancement)
-
-If `Skill()` is available:
-- `Skill("knowledgebase-ingest")` — A-series details (A0 dedup → A1 survey → A2 classify → A3 match KB (hierarchical) → A4 description (tiered) → A5 tag → A5b chunk → A6 store → A7 tag → A8 verify → **A9 sub-KB check**)
-- `Skill("knowledgebase-search")` — **7-step Tiered Agentic RAG** (Step 0 intent → Step 1 hierarchical catalog: sub-KB first → Step 2 sub-KB doc catalog → Step 3 experience-first → Step 4 vector confirm → Step 5 cross-subKB fallback → Step 6 content verify → Step 7 synthesize + layer path). Auto-upgrades to enterprise for cross-KB blind spots.
-- `Skill("knowledgebase-manage")` — M-series details (M1 survey → M2 confirm destructive → M3 execute → M4 verify → M5 report → M6 content update)
-- `Skill("knowledgebase-organize")` — O-series details (O1 survey → O2 evaluate → O3 categorize → O4 execute → O5 verify → O6 orphan cleanup → O7 scorecard → O8 tag hygiene → O9 chunk split → **O10 hierarchical KB health check**)
-- `Skill("knowledgebase-list")` — L-series details (L1 inventory → L2 KB drill-down → L3 tree browse)
-- `Skill("knowledgebase-verify")` — V-series integrity validation (V1 metadata → V2 doc integrity → V3 parse quality → V4 repair → V5 scorecard → V6 report)
-- `Skill("knowledgebase-batch")` — B-series bulk operations
-- `Skill("knowledgebase-experience")` — Experience retrieval (strict P0/P1/P2, short-content filter, credibility decay)
-- `Skill("knowledgebase-experience-summarize")` — Experience authoring
-
-Use them if callable. But the procedures above are complete — do not let a failed
-Skill call stop you. You have everything you need in this document.
 
 ## Your Voice in Practice
 
