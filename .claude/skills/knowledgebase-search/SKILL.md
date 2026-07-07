@@ -148,32 +148,100 @@ kb_search_two_stage(query, kb_id, stage2_top_k=3)
 
 **跨库盲区升级**：如果 `kb_search_two_stage` 跨库候选来自 **<2 个不同 KB** → 自动升级到企业级。
 
-### Step 4.5 — 图谱实体扩展（知识图谱加持）📍 新增
+### Step 4.5 — 图谱文档关联扩展（知识图谱 v4）📍 GRAPH
 
-当查询包含命名实体（人名/组织/地点/设备名）时，用知识图谱发现额外候选文档：
+当需要对候选文档进行补充发现时，用知识图谱的**文档关联**扩展候选列表
+（基于文档间已建立的 shared_tag / vector_similar / agent_judged 关系）。
+
+```bash
+# 方式 A：查某文档在图谱中关联的其他文档（跨 KB + 同 KB）
+kb_graph_document_related(doc_path="KB/doc.md", limit=20)
+# → [{path, name, kb_id, reason, weight}]
+
+# 方式 B：查 KB 内关联度最高的核心文档（发现"枢纽"文档）
+kb_graph_central_documents(kb_id, top_n=20)
+# → [{name, path, degree, total_weight}] — degree 越高越可能是综述/核心论文
+
+# 方式 C：图谱邻居扩展（从已知文档向外探索N步）
+kb_graph_neighbors(node_id="doc::KB/doc.md", node_type="document", depth=1)
+# → 含文档、KB、标签节点的子图视图
+```
+
+**v4 图谱关联类型**：
+
+| 关联类型 | reason | 权重 | 发现 | 质量 |
+|---------|--------|------|------|------|
+| **共享标签** | `shared_tag` | 共享标签数 | 同 KB 或跨 KB 的标签重叠文档 | ⭐⭐⭐ 强 |
+| **向量相似** | `vector_similar` | 余弦相似度 | 入库时向量检索 top-3 | ⭐⭐⭐ 强 |
+| **Agent 判断** | `continuation` / `implementation` 等 | 1.0~1.5 | Agent 阅读后标注的关联 | ⭐⭐⭐⭐ 最强 |
+
+**图谱扩展的工作流**：
 
 ```
-# 从查询中识别实体（Agent 直接判断，或用 NER）
-# 对每个识别出的实体：
-kb_graph_search(entity_text)              → 找到图谱中的实体节点
-GET /api/v1/graph/documents-by-entity?entity_name=...   → 含该实体的文档
+1. kb_graph_central_documents(kb_id) → 获取核心枢纽文档
+   ↑ 核心文档（high degree）通常是综述/方法论 → 优先纳入候选
+2. kb_graph_document_related(doc_path=核心文档) → 获取关联文档
+   ↑ 有 → 加入候选列表（注意去重）
+3. 判断关联文档是否有跨 KB 连接
+   ↑ 有 → kb_graph_kb_overview(关联KB) → 发现新领域文档
+4. kb_graph_cross_kb_documents(min_kbs=2) → 发现跨库桥梁
+   ↓ 有 → 自动发现隐藏的跨库关联
 ```
 
-**图谱扩展的价值：**
-- **跨 KB 桥梁**：实体同时出现在多个 KB → 发现跨库相关文档
-- **共享实体**：两文档共享实体 → 即使向量相似度低也强相关
-- **中心实体**：KB 中心实体出现 → 该文档是 KB 核心主题
-
-**Agent 判断：** 图谱扩展找到的文档作为 `source=graph_entity` 候选，
-与 Step 2/4 的候选合并去重，统一进入 Step 6 内容验证。
-仍需要 `kb_doc_read` 验证内容真满足场景。
-
-**KB 图谱概览（可选，了解 KB 主题结构）：**
+**Agent 判断示例**：
 ```
-kb_graph_kb_overview(kb_id)  → top_entities / cross_kb_bridges
+# 用户问"磨煤机故障预警"
+# Step 2 找到 Thermal-Power-Coal-Mill 中的 3 篇文档
+# 用 kb_graph_central_documents → 发现 CNN-LSTM-coal-mill 是核心文档(degree=7)
+# 用 kb_graph_document_related → 关联到 Wind-Power 中的 1 篇（向量相似：深度学习方法）
+# → 加入候选，但标注"跨KB，疑似方法类比，非直接故障预警"
 ```
-若 KB 的 top 实体与查询主题匹配 → 高置信度；
-若 cross_kb_bridges 命中查询实体 → 跨 KB 扩展线索。
+
+**跨KB批量向量相似检测（去重/发现重复文档）**：
+```python
+# 批量对比候选文档与其他KB文档的相似度
+kb_search_batch_vector(
+    query_doc_paths=["KB/doc1.md", "KB/doc2.md"],
+    kb_id="",           # 不限定KB = 跨KB
+    top_k=5,
+    score_threshold=0.5
+)
+# → 发现哪些文档内容是高度相似的（可能重复/跨KB引用）
+```
+
+### Step 4.5-G — KB 图谱概览（了解 KB 全局关联结构）📍 GRAPH
+
+当需要了解一个 KB 的整体关联结构时，查 KB 图谱概览：
+
+```
+kb_graph_kb_overview(kb_id)
+→ {doc_count, tag_distribution, related_kbs, top_docs}
+```
+
+**Agent 利用图谱概览的判断策略**：
+
+| 图谱发现 | 含义 | 行动 |
+|---------|------|------|
+| `related_kbs` 有共享标签的关联KB | 这个 KB 与其他 KB **内容上关联** | 自动扩展搜索到关联 KB |
+| `top_docs` 中 degree 高的文档 | 这些是 KB 中的**核心文档** | 在检索中优先采纳 |
+| 某个 `tag` 在 tag_distribution 中高频出现 | 这个标签是该 KB 的**核心主题** | 检查用户查询是否与该标签匹配 |
+
+**示例**：用户问"风电机组状态监测"
+```
+1. kb_graph_kb_overview("Wind-Power-Fault-Diagnostics")
+   → related_kbs: ["Thermal-Power-Monitoring"(shared_tags=2)]
+   → top_docs: [gearbox-fault(degree=7), blade-erosion(degree=1)]
+2. Agent 推理：风电 KB 关联到火电 KB（共享"风电"标签）
+   → 自动扩展搜索到火电 KB 的相关文档
+3. 核心文档是 gearbox-fault（关联最多）→ 优先读取该文档
+```
+
+**跨 KB 桥梁文档查询**：
+```
+GET /api/v1/graph/cross-kb-documents?limit=10
+→ 发现哪些文档像"桥"一样连接了多个知识库
+→ 这些文档往往是跨领域的综述、方法通用文档
+```
 
 **短文本过滤规则**：
 ```

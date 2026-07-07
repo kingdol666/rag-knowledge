@@ -574,6 +574,23 @@ kb_search_stats(kb_id)  → 确认 chunk_count 覆盖了所有分块
 | **代码文件** | 按模块/函数/类拆分，每块前加 import 声明保证可独立阅读 |
 | **多语种混合文档** | 不拆分语言，但 description 标注"中英双语"
 
+### A5b-10 — 分块文档知识图谱索引 📍 GRAPH
+
+所有拆分的分块文档建立后，`kb_batch_index` 会自动为所有分块文档建立向量索引和图谱关联
+（shared_tag + vector_similar）。无需手动建立分块间关联——图谱的 `shared_tag` 机制会
+自动关联标签重叠的分块。
+
+**验证图谱构建成功**：
+```
+# 批量索引所有分块文档
+kb_batch_index(kb_id, [chunk_paths...], force=true)
+
+# 验证图谱状态
+kb_graph_kb_overview(kb_id)
+→ 确认 doc_count = 分块数量
+→ 检查 tag_distribution 是否覆盖分块标签
+```
+
 ## A6 — Execute Storage
 
 > **流程改进**：解析前不要写最终 description，只写临时 placeholder（如 "Parsing..."）。
@@ -675,12 +692,52 @@ For parse-path: wait for `parse_task_status("done")`, then `doc_path` from `kb_g
 4. 验证分块描述质量：随机抽查 20% 分块的 description 是否按 A4 标准
 ```
 
-## A8 — Verify
+## A8 — Verify（含知识图谱构建）📍 GRAPH
 
 1. Parse done? Check `parse_task_status`.
 2. Doc appears? `kb_get_documents(kb_id)` — find the new entry.
 3. Tags applied? `kb_doc_get_by_tag(tag, kb_id)`.
 4. KB description poor? Offer to update.
+
+### A8-G — 知识图谱索引（入库最后一步，自动执行）📍 GRAPH
+
+每个文档入库完成后，**必须**触发知识图谱构建。图谱建立两条真实关联：
+
+| 规则 | 来源 | 说明 |
+|------|------|------|
+| **shared_tag** | 标签重叠 | 与跨 KB 共享标签的文档自动关联 |
+| **vector_similar** | 向量 top-3 | 入库时自动计算，最相似的文档建立双向关联 |
+
+**自动触发方式**（向量索引 + 图谱构建联动）：
+```
+# 方式 A：单文档索引（向量+图谱同时触发）
+kb_index_document(kb_id, doc_path, doc_name="", description="", tags=[])
+# 返回结果包含 graph_doc_id 和 graph_index 字段
+
+# 方式 B：批量索引（适合 A5b 拆分后按 KB 批量处理）
+kb_batch_index(kb_id, [doc_paths...], force=false)
+# kb_batch_index 同时处理向量索引和图谱索引
+
+# 方式 C：全 KB 强制重建（适合图谱 schema 升级后）
+kb_graph_build_kb(kb_id, force=true)
+```
+
+**验证图谱构建成功**：
+```
+# 方式 A：查看文档图谱
+kb_graph_document(doc_path="<新文档路径>", limit=20)
+→ 确认有关联文档、标签
+
+# 方式 B：查看 KB 图谱概览
+kb_graph_kb_overview(kb_id)
+→ 确认 doc_count 正确、有 tag_distribution
+
+# 方式 C：全局图谱统计
+kb_graph_stats()
+→ 检查 relation_by_reason 中 shared_tag 数量增长
+```
+
+**A5b 拆分的分块文档**：`kb_batch_index` 会自动处理所有分块文档的向量+图谱索引。
 
 ## A9 — Sub-KB Creation Check ⭐
 

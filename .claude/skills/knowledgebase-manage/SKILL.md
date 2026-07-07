@@ -96,13 +96,45 @@ fs_update_node(node_id, name, description)
 fs_delete_node(node_id)             # recursive — irreversible
 ```
 
-## M4 — Verify
+## M4 — Verify（含知识图谱联动）📍 GRAPH
 
 After every operation:
 1. `kb_get_documents(source_kb_id)` — confirm source changed as expected.
 2. `kb_get_documents(target_kb_id)` — confirm target reflects the change.
 3. If KB deleted: confirm gone from `kb_list()`.
 4. `fs_get_tree(include_files=True)` — confirm tree is clean.
+
+### M4-G — 图谱联动清理 📍 GRAPH v4
+
+管理操作后必须同步更新知识图谱（MCP 工具为主，API 为备用）：
+
+| 管理操作 | 图谱联动 | 首选 MCP 工具 |
+|---------|---------|------|
+| **移动文档** | 删除旧路径图谱节点，重建新 KB 图谱 | `kb_graph_delete_document(old_doc_path)` |
+| | | `kb_graph_build_kb(target_kb_id, force=false)` |
+| **删除文档** | 删除图谱中的文档节点（级联清理边） | `kb_graph_delete_document(doc_path)` |
+| **删除 KB** | 删除整个 KB 的图谱（级联清理） | `kb_graph_delete_kb(kb_id)` |
+| **合并 KB-A 到 B** | 删除 KB-A 图谱，重建 KB-B 图谱 | `kb_graph_delete_kb(A_kb_id)` |
+| | | `kb_graph_build_kb(B_kb_id, force=true)` |
+| **重命名文档** | 图谱中 path 自动更新（无需手动操作） | — |
+| **更新内容** | 重建向量索引时自动触发图谱更新 | `kb_batch_index(kb_id, [doc_path], force=true)` |
+
+**图谱清理验证**：
+```
+# 验证删除是否成功
+kb_graph_document(doc_path="<旧路径>")
+→ 应返回空 document
+
+# 验证新建是否成功
+kb_graph_document(doc_path="<新路径>", limit=5)
+→ 应显示文档信息 + 关联文档
+
+# 验证 KB 概览是否更新
+kb_graph_stats()
+→ 检查 node_count / edge_count 是否合理
+```
+
+**MCP 工具不可用时**使用同功能的原始 API（`DELETE /api/v1/graph/document` 等）。
 
 ## M5 — Report
 

@@ -158,11 +158,20 @@ Generate a summary of the overall collection health:
   Tagged documents:             X/15  (tagged / total × 15)
   No orphan tags:               X/10
 
-### Description Quality        X/20
-  KB descriptions set:          X/10
-  Doc descriptions meaningful:  X/10
+### Description Quality        X/10
+  KB descriptions set:          X/5
+  Doc descriptions meaningful:  X/5
+
+### Graph Health              X/15
+  Schema v4+:                   X/5   (from kb_graph_health → schema_version >= 4)
+  Graph coverage ≥80% docs:     X/5   (from kb_graph_stats: graph_doc_count / total_doc_count)
+  Has meaningful relations:     X/5   (from kb_graph_stats: relation_by_reason has shared_tag)
+
+### Vector Index Coverage       X/15  ⭐ NEW
+  Docs with vector_index:       X/10  (from kb_search_stats per KB: chunked_docs / total_docs)
+  No orphan collections:        X/5   (from kb_search_stats: collections with chunks but 0 docs)
   ──────────────────────────────────────
-  TOTAL: X/100
+  TOTAL: X/115
 
 ### Issues Found
 - Critical (broken refs): N
@@ -174,7 +183,7 @@ Generate a summary of the overall collection health:
 
 "I've completed the integrity scan of the collection.
 
-**Score:** XX/100 — [EXCELLENT / GOOD / FAIR / NEEDS ATTENTION]
+**Score:** XX/115 — [EXCELLENT / GOOD / FAIR / NEEDS ATTENTION]
 
 **Key findings:**
 - N KBs, N documents scanned

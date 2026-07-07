@@ -247,6 +247,46 @@ Generated: <date>
 |----|------|------|---------|-------------|
 
 ### Tags
+
+### Graph Health (from kb_graph_stats)
+- Nodes: N, Edges: N
+- Shared tag relations: N
+- Vector similar relations: N
+- Cross-KB bridges: N (from kb_graph_cross_kb_documents)
+
+### Vector Index Coverage (from kb_search_stats)
+- Chunked KBs: N / Total KBs
+- Total chunks: N
+```
+
+### B7 — 批量操作后知识图谱重建 📍 GRAPH v4
+
+执行批量操作后，图谱关联可能过期。操作完成后必须用 MCP 工具重建图谱：
+
+```
+# 方案 A：批量标签迁移后
+# 标签变了 → shared_tag 关系需要重新计算
+kb_graph_build_all(force=false)
+
+# 方案 B：批量文档移动后
+# 文档换了 KB → BELONGS_TO 变，需要强制重建该 KB
+for each impacted KB:
+    kb_graph_build_kb(kb_id, force=true)
+
+# 方案 C：目录批量导入后
+# 所有新文档已通过 kb_batch_index 自动入库图谱
+# 只需增量更新 KB 间关联
+kb_graph_build_all(force=false)
+
+# 验证
+kb_graph_stats()
+→ 确认 edge_count 增加了，relation_by_reason 有 shared_tag
+```
+
+**批量操作报告加一行：**
+```
+知识图谱已更新: ✅ (shared_tag: N, B7增量重建)
+```
 | Tag | Documents | KBs |
 |-----|-----------|-----|
 

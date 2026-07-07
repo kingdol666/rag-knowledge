@@ -58,9 +58,24 @@ tools:
   - mcp__kb-mcp__kb_batch_index
   - mcp__kb-mcp__kb_reindex
   - mcp__kb-mcp__kb_search_stats
+  # v4 Knowledge Graph tools (document relationship network)
   - mcp__kb-mcp__kb_graph_search
+  - mcp__kb-mcp__kb_graph_search_kbs
+  - mcp__kb-mcp__kb_graph_search_tags
   - mcp__kb-mcp__kb_graph_neighbors
   - mcp__kb-mcp__kb_graph_stats
+  - mcp__kb-mcp__kb_graph_health
+  - mcp__kb-mcp__kb_graph_document
+  - mcp__kb-mcp__kb_graph_document_related
+  - mcp__kb-mcp__kb_graph_documents_by_tag
+  - mcp__kb-mcp__kb_graph_kb_overview
+  - mcp__kb-mcp__kb_graph_build_kb
+  - mcp__kb-mcp__kb_graph_build_all
+  - mcp__kb-mcp__kb_graph_cross_kb_documents
+  - mcp__kb-mcp__kb_graph_document_paths
+  - mcp__kb-mcp__kb_graph_central_documents
+  - mcp__kb-mcp__kb_graph_delete_document
+  - mcp__kb-mcp__kb_graph_delete_kb
   # Experience management (10 tools)
   - mcp__kb-mcp__experience_create
   - mcp__kb-mcp__experience_read
