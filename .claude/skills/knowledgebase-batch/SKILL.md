@@ -1,311 +1,34 @@
 ---
 name: knowledgebase-batch
-description: >
-  High-volume and batch operations for knowledge base management. B1→B6:
-  bulk tag migration, bulk description updates, directory-to-KB ingestion,
-  mass document move between KBs, cross-KB content sync, and export summary.
-  Invoked by Archival when operations involve multiple documents, batch
-  processing, or repetitive updates across the collection.
-  Trigger keywords: 批量, 所有文档, 全部, 大规模, 批量操作, 批量标签,
-  batch, bulk, mass, all documents, every KB, repetitive, 全量,
-  一次性处理, 统一修改.
+description: High-volume and batch operations for knowledge base management. B1-B6: bulk tag migration, bulk description updates, directory-to-KB ingestion, mass document move between KBs, cross-KB content sync, and export summary. Invoked by Archival when operations involve multiple documents, batch processing, or repetitive updates. Trigger keywords: 批量, 所有文档, 全部, 大规模, 批量操作, 批量标签, batch, bulk, mass, all documents, every KB, repetitive, 全量, 一次性处理, 统一修改.
 ---
 
-# Knowledge Batch — Bulk & Batch Operations
+# Knowledge Batch -- Bulk & Batch Operations
 
-Invoked by Archival when the scenario involves **batch, bulk, mass,
-multi-document, repetitive, 批量, 批量操作, 大规模**.
+## B1 -- Bulk Tag Management
 
-## B1 — Bulk Tag Management
+kb_tags_list() + kb_list() to survey. Add tag: for each untagged doc, kb_doc_update_tags(). Replace tag: kb_doc_get_by_tag("old") to find docs, then replace in each. Remove tag: same find-and-replace pattern, drop the old tag. Verify: kb_doc_get_by_tag("old") returns 0, kb_doc_get_by_tag("new") returns migrated docs.
 
-Apply, replace, or clear tags across multiple documents.
+## B2 -- Bulk Description Updates
 
-### B1a — Survey
-```
-kb_tags_list()         → all existing tags
-kb_list()              → all KBs for context
-```
+kb_list() to find KBs with empty or placeholder descriptions. Read 1-2 representative docs via kb_doc_read(kb_id, doc, max_chars=300). Update: kb_update(kb_id, description="1-3 sentences: domain + content types + language"). For doc-level descriptions: kb_get_documents, then kb_doc_read -> kb_doc_update_meta for empty/placeholder only. Sample if >20 docs -- don't rewrite everything.
 
-### B1b — Batch Tag Application
+## B3 -- Directory-to-KB Mass Ingestion
 
-**Add a tag to all untagged documents in a KB:**
-```
-docs = kb_get_documents(kb_id)
-for each doc without tags:
-    kb_doc_update_tags(kb_id, doc.doc_path, ["target-tag"])
-```
-Return a summary: "Applied tag 'x' to N documents in KB 'Name'."
+Glob() to discover files. Classify: parse-path (.pdf .docx .jpg .png .xlsx) -> parse_doc() then poll tasks; direct (.md .txt .csv .json) -> read content, check size (>50KB split per doc-splitting.md), kb_doc_create(); binary -> fs_upload_file(). Report discovered, parsed, direct-stored, binary-uploaded counts with parse failures.
 
-**Replace a tag across all documents:**
-```
-kb_doc_get_by_tag("old-tag")    → all docs using this tag
-for each doc:
-    # Read current tags (parse from kb_get_documents data)
-    # Replace "old-tag" with "new-tag"
-    kb_doc_update_tags(kb_id, doc.doc_path, ["new-tag", ...other-tags])
-```
+## B4 -- Mass Document Move
 
-**Remove a tag from all documents (migration):**
-Use the same find-and-replace pattern but drop the old tag without adding a replacement.
+kb_get_documents(source) -> kb_doc_move() each doc to target. Warn if >50 docs. Verify source count decreased, target count increased by N. If source empty, ask: "Delete empty source KB?"
 
-### B1c — Verify
-```
-kb_doc_get_by_tag("old-tag")    → should now return 0 or fewer docs
-kb_doc_get_by_tag("new-tag")    → should now return the migrated docs
-```
+## B5 -- Cross-KB Dedup
 
-## B2 — Bulk Description Updates
+kb_list() -> kb_get_documents per KB. Compare filenames across KBs. Same name + similar size -> read 500 chars to confirm. kb_doc_delete from wrong KB. Retain in domain-correct KB. Never delete without content comparison.
 
-Fix empty or poor-quality descriptions across the collection.
+## B6 -- Export Summary
 
-### B2a — Survey
-```
-kb_list()            → find KBs with poor descriptions (empty, "test", etc.)
-```
+kb_list() + kb_tags_list() + fs_get_tree() + fs_get_count(). Per KB: kb_get_documents for doc count, size, tags, dates. Write to .claude/collection-report.md via Write tool. Include: overview numbers, per-KB table, tag list, graph health (kb_graph_stats), vector coverage (kb_search_stats). Present overview to user.
 
-### B2b — Read Content
-For each KB with a poor description:
-- Read 1-2 representative docs: `kb_doc_read(kb_id, doc_path, max_chars=300)`
-- Determine the actual domain based on content
+## B7 -- Graph Rebuild
 
-### B2c — Update KB Descriptions
-```
-kb_update(kb_id, description="<1-3 sentences: domain + content types + language>")
-```
-
-### B2d — Batch Doc Descriptions
-For a single KB with many untagged/poorly-described docs:
-```
-kb_get_documents(kb_id)
-for each doc with weak or missing description:
-    kb_doc_read(kb_id, doc_path, max_chars=300)
-    kb_doc_update_meta(kb_id, doc_path, description="<1-2 sentences from content>")
-```
-
-**Sampling rule**: For KBs with >20 docs, only fix descriptions that are
-empty or clearly placeholder ("test", "tbd", filename-only). Don't rewrite
-every description — focus on the broken ones.
-
-## B3 — Directory-to-KB Mass Ingestion
-
-Import all files from a disk directory into a specified KB.
-
-### B3a — Discover Files
-Use `Glob` or `Bash` to list files in the target directory:
-```
-Glob(path="<directory>", pattern="**/*")
-```
-
-### B3b — Classify by Format
-Sort discovered files by type:
-
-| Extension | Method | Notes |
-|-----------|--------|-------|
-| `.pdf`, `.docx`, `.jpg` etc | `parse_doc()` | Non-blocking per file, saves to KB |
-| `.md`, `.txt`, `.csv` etc | `kb_doc_create()` + `fs_upload_file()` | Direct content for text files |
-| Other binaries | `fs_upload_file()` | Store without parsing |
-
-### B3c — Execute in Order
-
-1. **Parse-path files first** (MinerU is the bottleneck — start them early).
-   Submit each: `parse_doc(file_path, kb_id, description, tags=["batch-import"])`
-   Save all `task_id`s.
-
-2. **Direct-path files**: Read content and create immediately.  
-   **Check size before creating** — if content >2000 lines or >50KB,  
-   use the same chunk-splitting procedure described in Ingest A5b  
-   (split by `#`/`##` headings, create `_part-N.md` docs, copy tags).
-   ```
-   with open(file_path) as f:
-       content = f.read()
-   if len(content.splitlines()) > 2000 or len(content) > 50000:
-       # Split into chunks following Ingest A5b logic
-   else:
-       kb_doc_create(kb_id, name, content, description)
-   ```
-
-3. **Binary uploads**: `fs_upload_file(file_path, parent_id, description)`
-
-4. **Poll all parse tasks**: Check each `task_id` with `parse_task_status()` until done.
-
-### B3d — Report
-```
-Batch Import Complete
-  Discovered: N files
-  Parsed (MinerU): N  (N succeeded, N failed)
-  Direct-stored: N
-  Binary-uploaded: N
-  KB: [Name]
-  Parse failures: [list filenames + errors]
-```
-
-## B4 — Mass Document Move
-
-Move all documents from a source KB to a target KB.
-
-### B4a — Survey
-```
-kb_list()                               → find source + target KBs
-kb_get_documents(source_kb_id)          → all docs to move
-```
-
-### B4b — Confirm
-"Move all N documents from [SourceKB] to [TargetKB]? This is non-destructive."
-(No confirmation needed in Module Mode.)
-
-### B4c — Execute
-```
-docs = kb_get_documents(source_kb_id)
-for each doc in docs:
-    kb_doc_move(doc.doc_path, target_kb_id)
-```
-
-**Note**: If the source KB has a large number of documents (>50), warn
-the user: "Moving N documents — this may take a moment."
-
-### B4d — Verify
-```
-kb_get_documents(source_kb_id)  → should be 0 (or decreased)
-kb_get_documents(target_kb_id)  → should be increased by N
-```
-
-### B4e — Report
-"Moved all N documents from [Source] to [Target]. Source KB is now empty.
-Do you want to delete the empty source KB?"
-
-## B5 — Cross-KB Content Sync
-
-Identify documents that exist in multiple KBs (duplicates) and deduplicate.
-
-### B5a — Survey
-```
-kb_list()             → all KBs
-for each KB:
-    kb_get_documents(kb_id)    → get doc list
-```
-
-### B5b — Find Cross-KB Duplicates
-Compare document names across KBs:
-- Same filename + similar size → likely duplicate
-- Read first 500 chars of each: `kb_doc_read(kb_id, path, max_chars=500)`
-- If content matches → confirmed duplicate
-
-### B5c — Deduplicate
-For each confirmed duplicate:
-1. Keep the copy in the KB that best matches the content domain.
-2. `kb_doc_delete(from the wrong KB, doc_path)`
-3. If the "right" copy has no tags, copy tags from the deleted copy.
-
-### B5d — Report
-```
-Cross-KB sync complete:
-  Duplicates found: N across N KB pairs
-  Removed: N
-  Retained in: [correct KB names]
-```
-
-## B6 — Export Summary
-
-Generate a structured markdown summary of the collection.
-
-### B6a — Survey
-```
-kb_list()              → all KBs
-kb_tags_list()         → all tags
-fs_get_tree(include_files=True, max_depth=0)  → full tree
-fs_get_count()         → totals
-```
-
-### B6b — For Each KB
-```
-kb_get_documents(kb_id)    → all docs with metadata
-```
-Collect: doc count, total size, tag count, addition dates.
-
-### B6c — Write Report
-Use `Write` to save a markdown report:
-```
-Write(
-  file_path=".claude/collection-report.md",
-  content="## Collection Summary\n\n..."
-)
-```
-
-**Report structure:**
-```
-## Collection Summary
-Generated: <date>
-
-### Overview
-- Total KBs: N
-- Total Documents: N
-- Total Tags: N
-- Total Size: ~X MB
-
-### KBs
-| KB | Docs | Tags | Created | Description |
-|----|------|------|---------|-------------|
-
-### Tags
-
-### Graph Health (from kb_graph_stats)
-- Nodes: N, Edges: N
-- Shared tag relations: N
-- Vector similar relations: N
-- Cross-KB bridges: N (from kb_graph_cross_kb_documents)
-
-### Vector Index Coverage (from kb_search_stats)
-- Chunked KBs: N / Total KBs
-- Total chunks: N
-```
-
-### B7 — 批量操作后知识图谱重建 📍 GRAPH v4
-
-执行批量操作后，图谱关联可能过期。操作完成后必须用 MCP 工具重建图谱：
-
-```
-# 方案 A：批量标签迁移后
-# 标签变了 → shared_tag 关系需要重新计算
-kb_graph_build_all(force=false)
-
-# 方案 B：批量文档移动后
-# 文档换了 KB → BELONGS_TO 变，需要强制重建该 KB
-for each impacted KB:
-    kb_graph_build_kb(kb_id, force=true)
-
-# 方案 C：目录批量导入后
-# 所有新文档已通过 kb_batch_index 自动入库图谱
-# 只需增量更新 KB 间关联
-kb_graph_build_all(force=false)
-
-# 验证
-kb_graph_stats()
-→ 确认 edge_count 增加了，relation_by_reason 有 shared_tag
-```
-
-**批量操作报告加一行：**
-```
-知识图谱已更新: ✅ (shared_tag: N, B7增量重建)
-```
-| Tag | Documents | KBs |
-|-----|-----------|-----|
-
-### Recent Activity
-- Last added: doc name (date)
-- Largest KB: name (N docs)
-- Most tagged: name (N tags)
-```
-
-### B6d — Report to User
-"Collection summary generated at .claude/collection-report.md"
-Present the overview numbers.
-
----
-
-## CRITICAL RULES
-1. B3 (mass ingestion): Parse-path first, poll all after — parallelize MinerU.
-2. B4 (mass move): Warn on >50 docs. Large batches take time.
-3. B5 (dedup): Never delete without content comparison. Filename match is not enough.
-4. B6 (export): Always `Write` to file. The report is useful beyond this session.
-5. B1 (tag bulk): Tag replacement can be slow — 2-3 seconds per doc. Large collections may take a while.
-6. All batch operations should report progress: "3/10 done, 7 remaining."
+After batch ops, run kb_graph_build_all(force=false) or per-impacted KB: kb_graph_build_kb(kb_id, force=true). Verify kb_graph_stats() -> edge_count increased with shared_tag relations.
