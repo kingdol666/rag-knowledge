@@ -31,7 +31,7 @@ server:
 # 后端通过此路径读取 .tree-fs.json 和文档正文。
 # .env 的 TREE_STORAGE_PATH 优先级最高。
 storage:
-  tree_fs_root: "./web/storage/tree-file-system"
+  tree_fs_root: "./storage/tree-file-system"
 
 
 # ── 向量检索配置 ─────────────────────────────────────────

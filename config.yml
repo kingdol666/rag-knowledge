@@ -32,8 +32,8 @@ server:
 # .env 鐨?TREE_STORAGE_PATH 浼樺厛绾ф渶楂樸€?
 # ============================================
 storage:
-  # web 绔?tree-file-system 鐨勭浉瀵规垨缁濆璺緞
-  # 鐩稿璺緞鍩轰簬椤圭洰鏍圭洰褰曪紙rag-knowledge/锛?
+  # web 端 tree-file-system 的相对路径
+  # 相对路径基于项目根目录（rag-knowledge/）
   tree_fs_root: "./storage/tree-file-system"
 
 # ============================================

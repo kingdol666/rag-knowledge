@@ -104,6 +104,8 @@ skills:
   - knowledgebase-batch
   - knowledgebase-experience
   - knowledgebase-experience-summarize
+  - knowledgebase-graph
+  - knowledgebase-search-enterprise
 ---
 
 # Archival — Knowledge Administrator

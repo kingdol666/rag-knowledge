@@ -71,6 +71,38 @@ def _running_payload(task_id: str, kind: str, detail: dict | None = None) -> str
     return _j(payload)
 
 
+# ────────────────────────────────────────────────────────────────
+# Auto-index helper (fire-and-forget): vector index + graph +
+# vector_index YAML metadata for any document change.
+# All document/non-parse write tools call this via asyncio.create_task.
+# ────────────────────────────────────────────────────────────────
+
+async def _auto_index_kb(kb_id: str, force: bool = False) -> None:
+    """Best-effort background indexing: batch vector index + graph build.
+
+    Called fire-and-forget after any document mutation (create, update,
+    upload, move).  If indexing fails the main tool result is unaffected.
+    """
+    import logging
+    logger = logging.getLogger(__name__)
+    try:
+        await asyncio.sleep(1.5)  # brief wait for web layer persistence
+        client = _client()
+        docs_resp = await client.kb_get_documents(kb_id)
+        if not isinstance(docs_resp, dict) or not docs_resp.get("success"):
+            return
+        all_docs = docs_resp.get("documents", [])
+        doc_paths = [d["path"] for d in all_docs if "path" in d]
+        if not doc_paths:
+            return
+        # Phase 1: vector index + vector_index YAML metadata
+        await client.batch_index_documents(kb_id, doc_paths, force=force)
+        # Phase 2: knowledge graph
+        await client.graph_build_kb(kb_id, force=False)
+    except Exception:
+        logger.warning("Auto-index background task failed for KB %s", kb_id, exc_info=True)
+
+
 # ============================================================
 # HEALTH
 # ============================================================
@@ -231,8 +263,14 @@ async def kb_doc_read(kb_id: str = "", doc_path: str = "", path: str = "", max_c
 
 @mcp.tool()
 async def kb_doc_create(kb_id: str, name: str, content: str, description: str = "") -> str:
-    """Create a new Markdown document. Auto-dedup on name collision."""
-    return _j(await _client().kb_doc_create(kb_id, name, content, description))
+    """Create a new Markdown document. Auto-dedup on name collision.
+
+    **Auto-indexing**: after creation the document is automatically vector
+    indexed (ChromaDB) and graph indexed (Neo4j), and ``vector_index``
+    metadata is written to ``.knowledge-base.yml``."""
+    result = await _client().kb_doc_create(kb_id, name, content, description)
+    asyncio.create_task(_auto_index_kb(kb_id))
+    return _j(result)
 
 
 @mcp.tool()
@@ -243,8 +281,14 @@ async def kb_doc_update_meta(kb_id: str, doc_path: str, name: str = "", descript
 
 @mcp.tool()
 async def kb_doc_update_content(kb_id: str, doc_path: str, content: str) -> str:
-    """Overwrite a document's content."""
-    return _j(await _client().kb_doc_update_content(kb_id, doc_path, content))
+    """Overwrite a document's content.
+
+    **Auto-indexing**: after the content update, the document is automatically
+    re-vector-indexed and its graph index rebuilt, and ``vector_index``
+    metadata is refreshed in ``.knowledge-base.yml``."""
+    result = await _client().kb_doc_update_content(kb_id, doc_path, content)
+    asyncio.create_task(_auto_index_kb(kb_id, force=True))
+    return _j(result)
 
 
 @mcp.tool()
@@ -261,8 +305,19 @@ async def kb_doc_batch_delete(kb_id: str, doc_paths: list) -> str:
 
 @mcp.tool()
 async def kb_doc_move(doc_path: str, target_kb_id: str) -> str:
-    """Move a document to a different knowledge base."""
-    return _j(await _client().kb_doc_move(doc_path, target_kb_id))
+    """Move a document to a different knowledge base.
+
+    **Auto-indexing**: after the move, both the source and target KBs have
+    their vector index, graph index, and ``vector_index`` YAML metadata
+    automatically rebuilt."""
+    result = await _client().kb_doc_move(doc_path, target_kb_id)
+    # Index both KBs — derive source kb_id from the doc_path
+    # (doc_path looks like "SourceKB/doc.md")
+    source_path = doc_path.split("/")[0].split("\\")[0] if "/" in doc_path or "\\" in doc_path else ""
+    if source_path and source_path != target_kb_id:
+        asyncio.create_task(_auto_index_kb(source_path, force=True))
+    asyncio.create_task(_auto_index_kb(target_kb_id, force=True))
+    return _j(result)
 
 
 # ============================================================
@@ -344,8 +399,16 @@ async def fs_delete_node(node_id: str) -> str:
 
 @mcp.tool()
 async def fs_upload_file(file_path: str, parent_id: str = "", description: str = "") -> str:
-    """Upload a local file into the file system tree. file_path is an absolute local disk path. parent_id is a tree folder UUID (empty = root)."""
-    return _j(await _client().fs_upload_file(file_path, parent_id, description))
+    """Upload a local file into the file system tree. file_path is an absolute local disk path. parent_id is a tree folder UUID (empty = root).
+
+    **Auto-indexing**: if the parent folder is a knowledge base, the uploaded
+    file is automatically vector indexed and graph indexed, and
+    ``vector_index`` metadata written to ``.knowledge-base.yml``."""
+    result = await _client().fs_upload_file(file_path, parent_id, description)
+    # If parent_id looks like a KB path (not a UUID), use it directly
+    if parent_id:
+        asyncio.create_task(_auto_index_kb(parent_id, force=True))
+    return _j(result)
 
 
 # ============================================================
@@ -392,7 +455,7 @@ async def parse_doc(file_path: str, kb_id: str, use_ocr: bool = True, descriptio
     async def _work():
         result = await client.parse_doc(file_path, kb_id, use_ocr, description, tags)
         if isinstance(result, dict) and result.get("success"):
-            return {
+            payload = {
                 "success": True,
                 "source_filename": result.get("source_filename"),
                 "markdown_path": result.get("markdown_path"),
@@ -400,6 +463,38 @@ async def parse_doc(file_path: str, kb_id: str, use_ocr: bool = True, descriptio
                 "markdown_chars": len(result.get("markdown", "") or ""),
                 "saved_to_kb": kb_id,
             }
+
+            # ─────────────────────────────────────────────────────
+            # Phase 2: auto vector index + vector_index YAML metadata
+            # ─────────────────────────────────────────────────────
+            await asyncio.sleep(2)  # brief wait for web layer persistence
+            try:
+                docs_resp = await client.kb_get_documents(kb_id)
+                if isinstance(docs_resp, dict) and docs_resp.get("success"):
+                    all_docs = docs_resp.get("documents", [])
+                    doc_paths = [d["path"] for d in all_docs if "path" in d]
+                    if doc_paths:
+                        # Batch-vector-index all docs (writes vector_index to YAML)
+                        index_resp = await client.batch_index_documents(
+                            kb_id, doc_paths, force=False
+                        )
+                        payload["auto_indexed"] = (
+                            index_resp.get("total_indexed", 0)
+                            if isinstance(index_resp, dict) else 0
+                        )
+
+                        # Build knowledge graph for the KB
+                        graph_resp = await client.graph_build_kb(kb_id, force=False)
+                        if isinstance(graph_resp, dict) and graph_resp.get("result"):
+                            payload["auto_graph_docs"] = (
+                                graph_resp["result"].get("docs_processed", 0)
+                            )
+
+                    payload["auto_pipeline"] = "auto-vector-index+graph"
+            except Exception as e:
+                payload["auto_index_warning"] = str(e)
+
+            return payload
         return result
 
     task_id = task_registry.submit(_work(), "parse_doc", meta)
