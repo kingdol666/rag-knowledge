@@ -1,24 +1,24 @@
+﻿# ============================================
+# RAG Knowledge Platform 鈥?鍓嶅悗绔叡鐢ㄥ惎鍔ㄩ厤缃?
 # ============================================
-# RAG Knowledge Platform — 前后端共用启动配置
-# ============================================
-# 这是唯一的端口配置来源，前后端启动时自动读取。
-# 修改此文件后重启对应服务即可生效。
-# .env 中的同名变量会覆盖此文件中的值。
+# 杩欐槸鍞竴鐨勭鍙ｉ厤缃潵婧愶紝鍓嶅悗绔惎鍔ㄦ椂鑷姩璇诲彇銆?
+# 淇敼姝ゆ枃浠跺悗閲嶅惎瀵瑰簲鏈嶅姟鍗冲彲鐢熸晥銆?
+# .env 涓殑鍚屽悕鍙橀噺浼氳鐩栨鏂囦欢涓殑鍊笺€?
 # ============================================
 
 server:
-  # ── 跨域：允许所有来源，完美解决前后端分离的 CORS 问题 ──
+  # 鈹€鈹€ 璺ㄥ煙锛氬厑璁告墍鏈夋潵婧愶紝瀹岀編瑙ｅ喅鍓嶅悗绔垎绂荤殑 CORS 闂 鈹€鈹€
   cors_origins:
     - "*"
 
-  # ── Dev 模式（热重载）─
+  # 鈹€鈹€ Dev 妯″紡锛堢儹閲嶈浇锛夆攢
   dev:
     host: "0.0.0.0"
     backend_port: 8765
     frontend_port: 6789
     backend_url: "http://localhost:8765"  
 
-  # ── Prod 模式（生产部署）─
+  # 鈹€鈹€ Prod 妯″紡锛堢敓浜ч儴缃诧級鈹€
   prod:
     host: "0.0.0.0"
     backend_port: 8001
@@ -26,80 +26,65 @@ server:
     backend_url: "http://localhost:8001"
 
 # ============================================
-# 存储路径配置（前后端共享）
+# 瀛樺偍璺緞閰嶇疆锛堝墠鍚庣鍏变韩锛?
 # ============================================
-# 后端需通过此路径读取 .tree-fs.json、文档正文等。
-# .env 的 TREE_STORAGE_PATH 优先级最高。
+# 鍚庣闇€閫氳繃姝よ矾寰勮鍙?.tree-fs.json銆佹枃妗ｆ鏂囩瓑銆?
+# .env 鐨?TREE_STORAGE_PATH 浼樺厛绾ф渶楂樸€?
 # ============================================
 storage:
-  # web 端 tree-file-system 的相对或绝对路径
-  # 相对路径基于项目根目录（rag-knowledge/）
-  tree_fs_root: "./web/storage/tree-file-system"
+  # web 绔?tree-file-system 鐨勭浉瀵规垨缁濆璺緞
+  # 鐩稿璺緞鍩轰簬椤圭洰鏍圭洰褰曪紙rag-knowledge/锛?
+  tree_fs_root: "./storage/tree-file-system"
 
 # ============================================
-# 向量检索配置
+# 鍚戦噺妫€绱㈤厤缃?
 # ============================================
 vector:
   enabled: true
-  # ChromaDB 持久化目录（相对项目根）
+  # ChromaDB 鎸佷箙鍖栫洰褰曪紙鐩稿椤圭洰鏍癸級
   persist_dir: "./chroma_db"
   collection_prefix: "kb_"
   chunk_size: 500
   chunk_overlap: 50
   top_k: 5
-  score_threshold: 0.35  # 0.55 对长文档片段过严（bge-m3 余弦多在 0.3-0.5 被滤掉致 count=0），降到 0.35；MCP 工具支持按查询覆盖
-  experience_score_threshold: 0.55  # 经验是聚焦短内容，相似度分布更高；0.35 会把无关 query（如"红烧肉"0.40-0.45）错判为相关。实测 0.55 完美分离无关(≤0.45)/相关(≥0.65)
+  score_threshold: 0.35  # 0.55 瀵归暱鏂囨。鐗囨杩囦弗锛坆ge-m3 浣欏鸡澶氬湪 0.3-0.5 琚护鎺夎嚧 count=0锛夛紝闄嶅埌 0.35锛汳CP 宸ュ叿鏀寔鎸夋煡璇㈣鐩?
+  experience_score_threshold: 0.55  # 缁忛獙鏄仛鐒︾煭鍐呭锛岀浉浼煎害鍒嗗竷鏇撮珮锛?.35 浼氭妸鏃犲叧 query锛堝"绾㈢儳鑲?0.40-0.45锛夐敊鍒や负鐩稿叧銆傚疄娴?0.55 瀹岀編鍒嗙鏃犲叧(鈮?.45)/鐩稿叧(鈮?.65)
 
 # ============================================
-# Embedding 模型配置
+# Embedding 妯″瀷閰嶇疆
 # ============================================
 embedding:
   model_name: "BAAI/bge-m3"
-  # 模型缓存目录（相对项目根）
+  # 妯″瀷缂撳瓨鐩綍锛堢浉瀵归」鐩牴锛?
   cache_dir: "./models_cache"
-  device: "auto"    # auto → CUDA if available, else CPU
+  device: "auto"    # auto 鈫?CUDA if available, else CPU
   batch_size: 32
   normalize: true
 
 # ============================================
-# 知识图谱配置（Neo4j）
+# 鐭ヨ瘑鍥捐氨閰嶇疆锛圢eo4j锛?
 # ============================================
 graph:
   enabled: true
   uri: "bolt://127.0.0.1:7687"
   username: "neo4j"
-  # 支持 ${NEO4J_PASSWORD} 语法从环境变量读取，避免明文存储
-  password: "${NEO4J_PASSWORD}"
+  # 鏀寔 ${NEO4J_PASSWORD} 璇硶浠庣幆澧冨彉閲忚鍙栵紝閬垮厤鏄庢枃瀛樺偍
+  password: "123456"
   database: "neo4j"
-  # 连接池配置（可选，详见 doc；gds 版本须注释 max_connection_pool_size）
+  # 杩炴帴姹犻厤缃紙鍙€夛紝璇﹁ doc锛沢ds 鐗堟湰椤绘敞閲?max_connection_pool_size锛?
   pool:
     max_connection_pool_size: 50
-    connection_acquisition_timeout: 30  # 秒
-    max_connection_lifetime: 3600       # 秒（1 小时）
-  # 瞬态失败重试策略（网络闪断等）
+    connection_acquisition_timeout: 30  # 绉?
+    max_connection_lifetime: 3600       # 绉掞紙1 灏忔椂锛?
+  # 鐬€佸け璐ラ噸璇曠瓥鐣ワ紙缃戠粶闂柇绛夛級
   retry:
     max_attempts: 3
-    base_delay: 0.5  # 秒（指数退避：0.5→1.0→2.0）
-  # NER 实体识别配置（transformers + PyTorch，中英文双模型自动切换）
-  ner:
-    model_zh: ckiplab/bert-base-chinese-ner   # 中文 NER（BIOES）
-    model_en: dslim/bert-base-NER             # 英文 NER（BIO）
-    max_text_length: 50000  # 超长文档截断字符数
-    types:                  # 原始标签 → 友好类型映射
-      PER: PER
-      PERSON: PER
-      LOC: LOC
-      ORG: ORG
-      GPE: GPE
-      MISC: MISC
-  # 关系抽取配置
+    base_delay: 0.5  # 绉掞紙鎸囨暟閫€閬匡細0.5鈫?.0鈫?.0锛?
+  # 鍏崇郴鎶藉彇锛坴3锛氬熀浜?metadata 鐨勫叡浜爣绛惧拰鍚孠B鍏宠仈锛屾棤 NER锛?
   relation:
-    use_cooccurrence: true   # 同句实体共现
-    use_dependency: true     # 依存句法（nsubj/dobj）
-    use_pattern: true        # 正则模板（子公司/收购/投资等）
 
 # ============================================
-# 两阶段检索配置
+# 涓ら樁娈垫绱㈤厤缃?
 # ============================================
 search:
   two_stage:

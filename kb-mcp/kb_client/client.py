@@ -450,15 +450,27 @@ class KbClient:
         return await self._get_backend("/api/v1/search/stats", kb_id=kb_id)
 
     async def graph_search(self, keyword, limit=20):
-        """图谱实体搜索。"""
+        """图谱文档搜索（按名称/路径）。"""
         return await self._get_backend(
-            "/api/v1/graph/search", keyword=keyword, limit=limit
+            "/api/v1/graph/search/documents", keyword=keyword, limit=limit
         )
 
-    async def graph_neighbors(self, entity_name, depth=1):
-        """图谱邻居子图。"""
+    async def graph_search_kbs(self, keyword, limit=20):
+        """图谱 KB 搜索。"""
         return await self._get_backend(
-            "/api/v1/graph/neighbors", entity_name=entity_name, depth=depth
+            "/api/v1/graph/search/kbs", keyword=keyword, limit=limit
+        )
+
+    async def graph_search_tags(self, keyword, limit=20):
+        """图谱标签搜索。"""
+        return await self._get_backend(
+            "/api/v1/graph/search/tags", keyword=keyword, limit=limit
+        )
+
+    async def graph_neighbors(self, node_id, node_type="document", depth=1):
+        """图谱邻居子图（文档/KB/标签）。"""
+        return await self._get_backend(
+            "/api/v1/graph/neighbors", node_id=node_id, node_type=node_type, depth=depth
         )
 
     async def graph_stats(self):
@@ -466,7 +478,7 @@ class KbClient:
         return await self._get_backend("/api/v1/graph/stats")
 
     # ──────────────────────────────────────────────────────────────
-    # GRAPH ENHANCED（v2：文档中心 / KB 概览 / 批量构建 / 跨 KB 分析）
+    # GRAPH v3（文档/KB/标签为中心，无 NER）
     # ──────────────────────────────────────────────────────────────
 
     async def graph_health(self) -> dict:
@@ -474,46 +486,56 @@ class KbClient:
         return await self._get_backend("/api/v1/graph/health")
 
     async def graph_document(self, doc_path: str, limit: int = 50) -> dict:
-        """单文档图谱视图：实体 + 文档内共现 + 跨文档连接。"""
+        """单文档图谱视图：文档信息 + 标签 + 关联文档 + 跨 KB 连接。"""
         return await self._get_backend("/api/v1/graph/document",
                                        doc_path=doc_path, limit=limit)
 
+    async def graph_document_related(self, doc_path: str, limit: int = 20) -> dict:
+        """文档的关联文档列表。"""
+        return await self._get_backend("/api/v1/graph/document/related",
+                                       doc_path=doc_path, limit=limit)
+
+    async def graph_documents_by_tag(self, tag_name: str, limit: int = 50) -> dict:
+        """按标签查找文档。"""
+        return await self._get_backend("/api/v1/graph/documents-by-tag",
+                                       tag_name=tag_name, limit=limit)
+
     async def graph_kb_overview(self, kb_id: str) -> dict:
-        """KB 图谱概览：文档/实体统计 + Top 实体 + 跨 KB 桥梁实体。"""
+        """KB 图谱概览：文档统计 + 标签分布 + 关联 KB + Top 文档。"""
         return await self._get_backend("/api/v1/graph/kb-overview", kb_id=kb_id)
 
     async def graph_build_kb(self, kb_id: str, force: bool = False) -> dict:
-        """为整个 KB 构建知识图谱（核心）。"""
+        """为整个 KB 构建文档关系图谱（基于 metadata）。"""
         return await self._post_backend_json(
             "/api/v1/graph/build-kb",
             {"kb_id": kb_id, "force": force}, timeout=INDEX_TIMEOUT,
         )
 
     async def graph_build_all(self, force: bool = False) -> dict:
-        """为所有 KB 构建知识图谱。"""
+        """为所有 KB 构建文档关系图谱。"""
         return await self._post_backend_json(
             "/api/v1/graph/build-all",
             {"force": force}, timeout=INDEX_TIMEOUT,
         )
 
-    async def graph_cross_kb_entities(self, min_kbs: int = 2, limit: int = 50) -> dict:
-        """跨 KB 桥梁实体。"""
+    async def graph_cross_kb_documents(self, min_kbs: int = 2, limit: int = 50) -> dict:
+        """跨 KB 桥梁文档。"""
         return await self._get_backend(
-            "/api/v1/graph/cross-kb-entities", min_kbs=min_kbs, limit=limit,
+            "/api/v1/graph/cross-kb-documents", min_kbs=min_kbs, limit=limit,
         )
 
-    async def graph_entity_paths(self, entity_a: str, entity_b: str,
-                                  max_depth: int = 4) -> dict:
-        """两实体间最短路径。"""
+    async def graph_document_paths(self, doc_a: str, doc_b: str,
+                                    max_depth: int = 4) -> dict:
+        """两文档间最短路径。"""
         return await self._get_backend(
-            "/api/v1/graph/entity-paths",
-            entity_a=entity_a, entity_b=entity_b, max_depth=max_depth,
+            "/api/v1/graph/document-paths",
+            doc_a=doc_a, doc_b=doc_b, max_depth=max_depth,
         )
 
-    async def graph_central_entities(self, kb_id: str, top_n: int = 20) -> dict:
-        """KB 内度中心性最高的实体。"""
+    async def graph_central_documents(self, kb_id: str, top_n: int = 20) -> dict:
+        """KB 内关联度最高的文档。"""
         return await self._get_backend(
-            "/api/v1/graph/central-entities", kb_id=kb_id, top_n=top_n,
+            "/api/v1/graph/central-documents", kb_id=kb_id, top_n=top_n,
         )
 
     async def graph_delete_document(self, doc_path: str) -> dict:

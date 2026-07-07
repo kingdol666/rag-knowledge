@@ -376,6 +376,11 @@ async def parse_doc(file_path: str, kb_id: str, use_ocr: bool = True, descriptio
     Returns immediately with a task_id once parsing has started;
     poll the result with parse_task_status(task_id).
 
+    **Auto-indexing**: after successful parse + save, the task automatically
+    triggers vector index (ChromaDB) and knowledge graph (Neo4j) for the
+    document, so ``kb_search_vector`` and ``kb_graph_*`` work immediately
+    once the task completes.
+
     Supported formats: .pdf .png .jpg .jpeg .docx .xlsx
 
     Returns {success, status:'running', task_id, ...} right away."""
@@ -418,8 +423,198 @@ async def parse_doc_batch(file_paths: list, kb_id: str, use_ocr: bool = True, de
         return _j({"success": False, "error": "file(s) not found", "missing": missing})
     client = _client()
     meta = {"file_paths": list(file_paths), "kb_id": kb_id, "use_ocr": use_ocr, "descriptions": descriptions, "tags": tags}
+
+    async def _batch_work():
+        """Parse batch → auto-describe → auto-vector-index → auto-graph-build → quality-check pipeline."""
+        import time
+        from pathlib import Path
+        # Phase 1: parse all files
+        parse_result = await client.parse_doc_batch(file_paths, kb_id, use_ocr, descriptions, tags)
+        successful = parse_result.get("successful", 0)
+        if successful == 0:
+            return parse_result
+
+        # Wait a brief moment for web layer to persist files
+        await asyncio.sleep(2)
+
+        quality = {"description_issues": [], "vector_missing": [], "warnings": [],
+                   "descriptions_auto_generated": []}
+
+        # Phase 2: get all documents in the KB to discover their paths
+        try:
+            docs_resp = await client.kb_get_documents(kb_id)
+            if isinstance(docs_resp, dict) and docs_resp.get("success"):
+                all_docs = docs_resp.get("documents", [])
+                doc_paths = [d["path"] for d in all_docs if "path" in d]
+                if doc_paths:
+                    # ─────────────────────────────────────────────────────
+                    # Phase 2a: Auto-generate A4 descriptions from content
+                    # Read the first 2000 chars of each doc, extract the
+                    # real title and abstract, write an A4-format description
+                    # that an Agent can use to judge relevance at a glance.
+                    # ─────────────────────────────────────────────────────
+                    import re
+                    for doc in all_docs:
+                        try:
+                            doc_name = doc.get("name", "")
+                            current_desc = (doc.get("description") or "").strip()
+                            # Read doc content (bare filename as doc_path)
+                            content_resp = await client.kb_doc_read(
+                                kb_id=kb_id, doc_path=doc_name, max_chars=2000
+                            )
+                            content = ""
+                            if isinstance(content_resp, dict):
+                                content = content_resp.get("markdown") or content_resp.get("content") or ""
+
+                            if content and len(content) > 100:
+                                # Extract real title (first # line)
+                                title_match = re.search(r'^#\s+(.+)$', content, re.MULTILINE)
+                                real_title = title_match.group(1).strip() if title_match else ""
+
+                                # Extract abstract
+                                abstract = ""
+                                abs_match = re.search(
+                                    r'##\s*(?:ABSTRACT|Abstract|摘要)\s*\n(.*?)(?:\n##|\Z)',
+                                    content, re.DOTALL
+                                )
+                                if abs_match:
+                                    abstract = abs_match.group(1).strip()[:500]
+
+                                # Build A4-format description
+                                # Format: [Title] — [key methods/approach] — [problem/solution] — [key metrics] — [year/source]
+                                parts = []
+                                if real_title:
+                                    parts.append(real_title)
+                                else:
+                                    parts.append(doc_name.replace('.md','').replace('-',' '))
+
+                                # Extract key methods and metrics from abstract
+                                if abstract:
+                                    # Take first 2 sentences as method + result summary
+                                    sentences = re.split(r'(?<=[.!?])\s+', abstract)
+                                    method_part = sentences[0][:200] if sentences else ""
+                                    parts.append(method_part)
+                                    if len(sentences) > 1:
+                                        result_part = sentences[1][:200]
+                                        parts.append(result_part)
+
+                                # Find year (YYYY) in filename or content
+                                year_match = re.search(r'(19|20)\d{2}', doc_name + content[:500])
+                                year_str = year_match.group(0) if year_match else ""
+
+                                # Build final description (120-250 chars, A4 format)
+                                a4_desc = " — ".join(p.strip() for p in parts if p.strip())[:350]
+                                if a4_desc and len(a4_desc) > 60:
+                                    # Only apply if significantly better than current
+                                    if not current_desc or len(current_desc) < 30 or \
+                                       current_desc.startswith("Parsed from") or \
+                                       current_desc == doc_name.replace('.md',''):
+                                        desc_to_set = a4_desc
+                                    else:
+                                        # Keep current if it already has good content; flag for review
+                                        desc_to_set = None
+                                        quality["description_issues"].append({
+                                            "path": doc.get("path"),
+                                            "name": doc_name,
+                                            "current_desc": current_desc[:80],
+                                            "auto_suggestion": a4_desc[:200],
+                                        })
+
+                                    if desc_to_set:
+                                        try:
+                                            await client.kb_doc_update_meta(
+                                                kb_id=kb_id, doc_path=doc_name,
+                                                description=desc_to_set
+                                            )
+                                            quality["descriptions_auto_generated"].append({
+                                                "name": doc_name,
+                                                "old": current_desc[:60],
+                                                "new": desc_to_set[:120],
+                                            })
+                                        except Exception as e:
+                                            quality["warnings"].append(
+                                                f"description更新失败: {doc_name}: {e}"
+                                            )
+                        except Exception:
+                            pass  # non-fatal per-doc
+
+                    # Phase 2b: batch vector index all docs → ChromaDB
+                    index_resp = await client.batch_index_documents(kb_id, doc_paths, force=False)
+                    indexed_count = index_resp.get("total_indexed", 0) if isinstance(index_resp, dict) else 0
+                    parse_result["auto_indexed"] = indexed_count
+
+                    # Phase 2c: build knowledge graph → Neo4j
+                    graph_resp = await client.graph_build_kb(kb_id, force=False)
+                    graph_docs = 0
+                    if isinstance(graph_resp, dict) and graph_resp.get("result"):
+                        graph_docs = graph_resp["result"].get("docs_processed", 0)
+                    parse_result["auto_graph_docs"] = graph_docs
+
+                    # ─────────────────────────────────────────────────────
+                    # Phase 3: Quality Check (lightweight organize audit)
+                    # ─────────────────────────────────────────────────────
+
+                    # 3a — O11-lite: remaining description issues check
+                    for doc in all_docs:
+                        desc = (doc.get("description") or "").strip()
+                        if not desc or desc.startswith("Parsed from"):
+                            # Only flag if our auto-generate didn't catch it
+                            already_fixed = any(
+                                gen["name"] == doc.get("name")
+                                for gen in quality.get("descriptions_auto_generated", [])
+                            )
+                            if not already_fixed:
+                                quality["description_issues"].append({
+                                    "path": doc.get("path"),
+                                    "name": doc.get("name"),
+                                    "current_desc": desc[:80],
+                                    "suggestion": "自动生成description失败，需人工处理"
+                                })
+
+                    # 3b — O12-lite: vector index coverage
+                    try:
+                        for doc in all_docs:
+                            vi = doc.get("vector_index") or doc.get("vectorIndex") or {}
+                            if not vi or not vi.get("total_chunks", 0):
+                                quality["vector_missing"].append({
+                                    "path": doc.get("path"),
+                                    "name": doc.get("name"),
+                                })
+                    except Exception:
+                        pass
+
+                    # 3c — O13-lite: count consistency
+                    quality["total_docs_in_kb"] = len(all_docs)
+                    quality["total_successful_parsed"] = successful
+                    if len(all_docs) != successful:
+                        quality["warnings"].append(
+                            f"文档计数不一致: parse成功{successful}, KB目录显示{len(all_docs)}"
+                        )
+
+        except Exception as e:
+            parse_result["auto_index_warning"] = str(e)
+
+        parse_result["auto_pipeline"] = "auto-describe+vector+graph+quality-check"
+        parse_result["quality_check"] = quality
+
+        # Phase 4: flag recommendation
+        if quality.get("descriptions_auto_generated"):
+            parse_result["descriptions_auto_generated"] = len(quality["descriptions_auto_generated"])
+        if quality["description_issues"] or quality["vector_missing"]:
+            parse_result["organize_recommended"] = True
+            remaining_desc = len(quality["description_issues"])
+            parse_result["organize_tip"] = (
+                f"自动修复了{len(quality.get('descriptions_auto_generated',[]))}个description, "
+                f"还有{remaining_desc}个待处理, "
+                f"向量索引缺失({len(quality['vector_missing'])}个). "
+            )
+        else:
+            parse_result["organize_recommended"] = False
+
+        return parse_result
+
     task_id = task_registry.submit(
-        client.parse_doc_batch(file_paths, kb_id, use_ocr, descriptions, tags),
+        _batch_work(),
         "parse_doc_batch",
         meta,
     )
@@ -884,14 +1079,26 @@ async def kb_search_stats(kb_id: str = "") -> str:
 
 @mcp.tool()
 async def kb_graph_search(keyword: str, limit: int = 20) -> str:
-    """搜索知识图谱中的实体。"""
+    """搜索知识图谱中的文档节点（按名称/路径）。"""
     return _j(await _client().graph_search(keyword, limit))
 
 
 @mcp.tool()
-async def kb_graph_neighbors(entity_name: str, depth: int = 1) -> str:
-    """获取实体的邻居子图，用于探索实体间关系。"""
-    return _j(await _client().graph_neighbors(entity_name, depth))
+async def kb_graph_search_kbs(keyword: str, limit: int = 20) -> str:
+    """搜索知识图谱中的知识库节点。"""
+    return _j(await _client().graph_search_kbs(keyword, limit))
+
+
+@mcp.tool()
+async def kb_graph_search_tags(keyword: str, limit: int = 20) -> str:
+    """搜索知识图谱中的标签节点。"""
+    return _j(await _client().graph_search_tags(keyword, limit))
+
+
+@mcp.tool()
+async def kb_graph_neighbors(node_id: str, node_type: str = "document", depth: int = 1) -> str:
+    """获取节点（文档/KB/标签）的邻居子图。node_type: document|kb|tag"""
+    return _j(await _client().graph_neighbors(node_id, node_type, depth))
 
 
 @mcp.tool()
@@ -908,67 +1115,78 @@ async def kb_graph_health() -> str:
 
 @mcp.tool()
 async def kb_graph_document(doc_path: str, limit: int = 50) -> str:
-    """查看单文档的知识图谱视图：文档内实体、实体间共现关系、跨文档连接。
+    """查看单文档的知识图谱视图：文档信息、标签、关联文档、跨 KB 连接。
 
-    用于根据文档 ID 找到该文档在 Neo4j 中存储的全部图谱信息。
-    返回：{entities, relations, cross_doc_links, entity_count, ...}"""
+    根据文档路径找到该文档在 Neo4j 中的全部图谱信息。
+    返回：{document, tags, related_documents, cross_kb_links, ...}"""
     return _j(await _client().graph_document(doc_path, limit))
 
 
 @mcp.tool()
-async def kb_graph_kb_overview(kb_id: str) -> str:
-    """KB 级图谱概览：文档/实体统计、Top 实体、跨 KB 桥梁实体。
+async def kb_graph_document_related(doc_path: str, limit: int = 20) -> str:
+    """返回与某文档关联的其他文档（基于同KB/共享标签/描述相似度）。"""
+    return _j(await _client().graph_document_related(doc_path, limit))
 
-    用于查看某个知识库的图谱整体情况，发现该 KB 的核心实体和跨 KB 关联。"""
+
+@mcp.tool()
+async def kb_graph_documents_by_tag(tag_name: str, limit: int = 50) -> str:
+    """按标签查找文档。"""
+    return _j(await _client().graph_documents_by_tag(tag_name, limit))
+
+
+@mcp.tool()
+async def kb_graph_kb_overview(kb_id: str) -> str:
+    """KB 级图谱概览：文档统计、标签分布、关联 KB、Top 关联文档。
+
+    查看某个知识库的图谱整体情况，发现该 KB 的核心文档和关联。"""
     return _j(await _client().graph_kb_overview(kb_id))
 
 
 @mcp.tool()
 async def kb_graph_build_kb(kb_id: str, force: bool = False) -> str:
-    """为整个知识库自动构建知识图谱（核心功能）。
+    """为整个知识库构建文档关系图谱（基于 metadata，不读文档内容）。
 
-    遍历 KB 内所有文档，提取实体（NER）与关系（共现/依存/模板），写入 Neo4j。
-    跨文档同名实体自动合并，自然形成文档间关联。
-    force=True：先清空该 KB 图谱再重建（幂等）；force=False：增量（跳过已索引文档）。
-    返回：{docs_processed, total_entities, total_relations, errors, ...}"""
+    遍历 KB 内所有文档的 metadata（name, description, tags），
+    通过共享标签/同KB/描述相似度建立文档间 RELATED_TO 关系。
+    force=True：先清空再重建；force=False：增量（跳过已索引文档）。
+    返回：{docs_processed, docs_skipped, total_relations, errors, ...}"""
     return _j(await _client().graph_build_kb(kb_id, force))
 
 
 @mcp.tool()
 async def kb_graph_build_all(force: bool = False) -> str:
-    """为所有知识库构建知识图谱。
+    """为所有知识库构建文档关系图谱。
 
-    遍历全部 KB 构建图谱，跨 KB 共享实体自动合并（形成跨知识库关联）。
-    耗时较长（~95 文档约 2-5 分钟），建议 force=False 增量构建。
-    返回：{total_kbs, kbs: [{kb_id, docs_processed, ...}], ...}"""
+    遍历全部 KB 构建图谱，跨 KB 共享标签自动形成跨知识库关联。
+    返回：{total_top_kbs, kbs: [{kb_id, docs_processed, ...}], ...}"""
     return _j(await _client().graph_build_all(force))
 
 
 @mcp.tool()
-async def kb_graph_cross_kb_entities(min_kbs: int = 2, limit: int = 50) -> str:
-    """发现跨知识库的桥梁实体——出现在 >= min_kbs 个 KB 中的实体。
+async def kb_graph_cross_kb_documents(min_kbs: int = 2, limit: int = 50) -> str:
+    """发现跨知识库的桥梁文档——关联到 >= min_kbs 个不同 KB 的文档。
 
-    这些实体是连接不同知识库的骨干，是知识图谱结构化能力的核心体现。
-    返回：{entities: [{name, type, source_kbs, doc_count, ...}], ...}"""
-    return _j(await _client().graph_cross_kb_entities(min_kbs, limit))
-
-
-@mcp.tool()
-async def kb_graph_entity_paths(entity_a: str, entity_b: str, max_depth: int = 4) -> str:
-    """查找两个实体之间的最短关系路径。
-
-    展示实体如何通过 CO_OCCURRED_WITH 关系链相连（最多 max_depth 跳）。
-    返回：{paths: [{entity_path, relations, hops}], path_count}"""
-    return _j(await _client().graph_entity_paths(entity_a, entity_b, max_depth))
+    这些文档是连接不同知识库的骨干。
+    返回：{documents: [{name, path, kb_id, tags, related_kb_count}], ...}"""
+    return _j(await _client().graph_cross_kb_documents(min_kbs, limit))
 
 
 @mcp.tool()
-async def kb_graph_central_entities(kb_id: str, top_n: int = 20) -> str:
-    """找出 KB 内度中心性最高的实体（出现在最多文档中的实体）。
+async def kb_graph_document_paths(doc_a: str, doc_b: str, max_depth: int = 4) -> str:
+    """查找两个文档之间的最短关系路径（经 RELATED_TO 关系链）。
 
-    这些是 KB 的核心主题实体，用于理解知识库的主要话题结构。
-    返回：{entities: [{name, type, degree, sample_docs, ...}], ...}"""
-    return _j(await _client().graph_central_entities(kb_id, top_n))
+    展示文档如何通过共享标签/同KB等关联链相连。
+    返回：{paths: [{doc_path, reasons, hops}], path_count}"""
+    return _j(await _client().graph_document_paths(doc_a, doc_b, max_depth))
+
+
+@mcp.tool()
+async def kb_graph_central_documents(kb_id: str, top_n: int = 20) -> str:
+    """找出 KB 内关联度最高的文档（按 RELATED_TO 度中心性）。
+
+    这些是 KB 的核心文档，用于理解知识库的主要话题结构。
+    返回：{documents: [{name, path, degree, total_weight}], ...}"""
+    return _j(await _client().graph_central_documents(kb_id, top_n))
 
 
 @mcp.tool()
