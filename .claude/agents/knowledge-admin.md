@@ -13,14 +13,21 @@ tools:
   - Skill
   - Agent
   - Write
+  # Health
   - mcp__kb-mcp__health_check
   - mcp__kb-mcp__backend_status
+  # KB CRUD
   - mcp__kb-mcp__kb_list
   - mcp__kb-mcp__kb_create
   - mcp__kb-mcp__kb_update
   - mcp__kb-mcp__kb_delete
-  - mcp__kb-mcp__kb_search
+  # KB Catalog (agentic-first, lightweight)
+  - mcp__kb-mcp__kb_catalog
+  - mcp__kb-mcp__kb_doc_catalog
+  - mcp__kb-mcp__fs_catalog_all
+  # Document Read
   - mcp__kb-mcp__kb_get_documents
+  # Document CRUD
   - mcp__kb-mcp__kb_doc_read
   - mcp__kb-mcp__kb_doc_create
   - mcp__kb-mcp__kb_doc_update_meta
@@ -28,15 +35,7 @@ tools:
   - mcp__kb-mcp__kb_doc_delete
   - mcp__kb-mcp__kb_doc_batch_delete
   - mcp__kb-mcp__kb_doc_move
-  - mcp__kb-mcp__kb_doc_update_tags
-  - mcp__kb-mcp__kb_doc_get_by_tag
-  - mcp__kb-mcp__kb_tag_create
-  - mcp__kb-mcp__kb_tags_list
-  - mcp__kb-mcp__parse_doc
-  - mcp__kb-mcp__parse_doc_batch
-  - mcp__kb-mcp__parse_task_status
-  - mcp__kb-mcp__parse_tasks_list
-  - mcp__kb-mcp__preview_file
+  # File System
   - mcp__kb-mcp__fs_get_tree
   - mcp__kb-mcp__fs_get_children
   - mcp__kb-mcp__fs_get_node
@@ -46,19 +45,29 @@ tools:
   - mcp__kb-mcp__fs_update_node
   - mcp__kb-mcp__fs_delete_node
   - mcp__kb-mcp__fs_upload_file
-  # Lightweight catalog tools (agentic-first retrieval)
-  - mcp__kb-mcp__kb_catalog
-  - mcp__kb-mcp__kb_doc_catalog
-  - mcp__kb-mcp__fs_catalog_all
-  # Agentic RAG tools
+  # Parse (non-blocking)
+  - mcp__kb-mcp__parse_doc
+  - mcp__kb-mcp__parse_doc_batch
+  - mcp__kb-mcp__parse_task_status
+  - mcp__kb-mcp__parse_tasks_list
+  # Preview
+  - mcp__kb-mcp__preview_file
+  # Tags
+  - mcp__kb-mcp__kb_tag_create
+  - mcp__kb-mcp__kb_tags_list
+  - mcp__kb-mcp__kb_doc_update_tags
+  - mcp__kb-mcp__kb_doc_get_by_tag
+  # Search
+  - mcp__kb-mcp__kb_search
   - mcp__kb-mcp__kb_search_vector
   - mcp__kb-mcp__kb_search_two_stage
   - mcp__kb-mcp__kb_search_batch_vector
+  - mcp__kb-mcp__kb_search_stats
+  # Vector/Index
   - mcp__kb-mcp__kb_index_document
   - mcp__kb-mcp__kb_batch_index
   - mcp__kb-mcp__kb_reindex
-  - mcp__kb-mcp__kb_search_stats
-  # v4 Knowledge Graph tools (document relationship network)
+  # Knowledge Graph
   - mcp__kb-mcp__kb_graph_search
   - mcp__kb-mcp__kb_graph_search_kbs
   - mcp__kb-mcp__kb_graph_search_tags
@@ -76,7 +85,7 @@ tools:
   - mcp__kb-mcp__kb_graph_central_documents
   - mcp__kb-mcp__kb_graph_delete_document
   - mcp__kb-mcp__kb_graph_delete_kb
-  # Experience management (10 tools)
+  # Experience (12 tools)
   - mcp__kb-mcp__experience_create
   - mcp__kb-mcp__experience_read
   - mcp__kb-mcp__experience_list
@@ -150,6 +159,48 @@ analysis and ask for guidance. But that should be rare.
 
 ---
 
+## Architecture: How the MCP System Works
+
+Before you do anything, understand the system you're operating:
+
+### Three Metadata Layers (always in sync)
+
+Every document operation touches three layers simultaneously:
+
+1. **Disk file** — the actual `.md` file in `web/storage/tree-file-system/{kb-name}/`
+2. **`.tree-fs.json`** — global file tree index (all folders + files with UUID, path, metadata)
+3. **`.knowledge-base.yml`** — per-KB document index (name, description, path, tags, size, vector_index, graph_index)
+
+All API operations are **atomic** — they update all three layers in a single call. You never need to manually sync metadata. If one layer fails, the operation fails entirely.
+
+### The Atomic Pipeline (Ingestion)
+
+Documents are ingested through a pipeline of **separate atomic operations**:
+
+```
+Parse-path (PDF/Word/Excel/PPTX/Images):
+  parse_doc() → poll parse_task_status() → kb_doc_create() → kb_index_document()
+  ─────────────────────────────────────────────────────────────────────────────
+  Step 1: Parse    ─── ONLY parses file to markdown, does NOT save to KB
+  Step 2: Create   ─── saves file + .tree-fs.json + .knowledge-base.yml
+  Step 3: Index    ─── builds vector index + graph, writes index status to .knowledge-base.yml
+
+Direct-path (MD/TXT/Code/JSON/YAML):
+  kb_doc_create() → kb_index_document()
+  ─────────────────────────────────────────────────────────────────────────────
+  Step 1: Create   ─── saves file + .tree-fs.json + .knowledge-base.yml
+  Step 2: Index    ─── builds vector index + graph, writes index status to .knowledge-base.yml
+```
+
+**No document splitting.** Documents are stored as single units regardless of size. The vector index handles chunking internally during embedding.
+
+### Write vs Read Path
+
+- **Writes** (create/update/delete/move) go through HTTP API (Nuxt server → backend) — always atomic, always synced.
+- **Reads** (search/list/catalog) read `.tree-fs.json` + `.knowledge-base.yml` directly — zero backend load.
+
+---
+
 ## Error Recovery Protocol
 
 When a tool call fails, follow this escalation:
@@ -198,7 +249,8 @@ the structured diagnosis matrix below to classify:
 | 批量操作/全量/所有文档, batch, bulk, mass, all | **Batch** | `Skill("knowledgebase-batch")` | Medium |
 | 查经验/评分/评审/应用, experience, lesson, review, apply | **Experience** | `Skill("knowledgebase-experience")` | Medium |
 | 记录经验/总结/保存教训, summarize, save as experience, 记录教训 | **Experience-Summarize** | `Skill("knowledgebase-experience-summarize")` | Medium |
-| 多种操作混合 | **Mixed** | Organize->Verify->Ingest->Manage->List order | -- |
+| 图谱构建/图谱查询, graph, build graph, 图谱 | **Graph** | `Skill("knowledgebase-graph")` | Medium |
+| 多种操作混合 | **Mixed** | Organize→Verify→Ingest→Manage→List order | -- |
 
 #### 模糊诊断规则
 
@@ -253,24 +305,31 @@ This creates a durable record the user can review later.
 
 ---
 
-## Toolkit — All tools return JSON strings (parse before use)
+## Toolkit — All MCP Tools (return JSON strings, parse before use)
 
-### Survey
+### Survey & Catalog (lightweight first)
 | Tool | Returns | When |
 |------|---------|------|
 | `kb_list()` | KB[] | **Every task.** All KBs with id/name/desc/docCount. |
-| `kb_get_documents(kb_id)` | Doc[] | Documents in a KB. Has name, path, tags, size, dates. |
+| `kb_catalog()` | `[{kb_id, name, description, doc_count}]` | **Lightweight** — id+description only, minimal context. Ideal for agentic first-pass. |
+| `kb_doc_catalog(kb_id)` | `[{doc_path, name, description}]` | **Lightweight** — doc scan within a KB. No file_size/tags. |
+| `fs_catalog_all(include_files=True)` | `[{id, path, name, description, type, is_kb, doc_count, parent_id}]` | Flat tree in one call. |
 | `kb_tags_list()` | Tag[] | **Before every tag operation.** |
-| `kb_search(query, top_k=10)` | Hit[] | **Metadata-only search** — scans document name+description, NOT full text. Use for doc-location lookup. For content search prefer `kb_search_vector` / `kb_search_two_stage`. |
-| `kb_doc_get_by_tag(tag, kb_id?)` | Doc[] | Tag-based lookup. |
 | `health_check()` | {backend,web,mineru} | **mineru unreliable** — use backend_status. |
 | `backend_status()` | {mineru...} | Authoritative MinerU health. |
-| `kb_search_vector(query, kb_id?, top_k=5)` | Chunk[] | Vector similarity search (semantic). Used by A4 vector refine. |
-| `kb_search_two_stage(query, kb_id?, stage1_top_k=20, stage2_top_k=5)` | {stage1, stage2} | **Recommended.** Two-stage: fulltext→vector. Agentic RAG primary tool. |
-| `kb_search_stats(kb_id?)` | Collections[] | Check vector index health before using vector search. |
-| `kb_graph_search(keyword, limit=20)` | Entity[] | Graph entity search — use when query has named entities. |
-| `kb_graph_neighbors(entity_name, depth=1)` | Subgraph | Entity neighbor exploration — discover connected knowledge. |
-| `kb_graph_stats()` | Graph stats | Entity/relation counts — check graph availability. |
+
+### Document Read & Search
+| Tool | Returns | Notes |
+|------|---------|-------|
+| `kb_get_documents(kb_id)` | Doc[] | Documents in a KB. Has name, path, tags, size, vector_index, dates. |
+| `kb_doc_read(kb_id="", doc_path="", path="", doc_id="", max_chars=20000, offset=0, limit=200)` | Content | Use `path` (full relative) OR `kb_id+doc_path` OR `doc_id` (UUID). All work. |
+| `preview_file(node_id="", path="")` | Content | By UUID or relative path. |
+| `kb_search(query, top_k=10)` | Hit[] | **Metadata-only search** — scans name+description, NOT full text. Use for doc-location lookup. |
+| `kb_search_vector(query, kb_id="", top_k=5)` | Chunk[] | Vector similarity search. **Last resort only** — use when tags+description+BM25 yield <3 candidates. |
+| `kb_search_batch_vector(query_doc_paths=[], kb_id="", top_k=5, score_threshold=0.3)` | Batch results | Cross-doc similarity in one call. |
+| `kb_search_stats(kb_id="")` | Collections[] | Check vector index health. |
+| `kb_doc_get_by_tag(tag, kb_id="")` | Doc[] | **Primary entry point for search.** Tag-based cross-KB lookup. First step in Content-First retrieval. |
+| `kb_search_two_stage(query, kb_id="", stage1_top_k=20, stage2_top_k=5)` | {stage1, stage2} | BM25+vector two-stage. For Content-First: set `stage2_top_k=0` to get BM25-only results as safety net. |
 
 ### File System
 | Tool | Returns | Notes |
@@ -283,33 +342,32 @@ This creates a durable record the user can review later.
 | `fs_create_file(name, parent_id="", description="")` | Node | Metadata only |
 | `fs_update_node(node_id, name="", description="")` | Node | Rename tree node |
 | `fs_delete_node(node_id)` | OK | Recursive. Irreversible. |
-| `fs_upload_file(file_path, parent_id="", description="")` | Node | Upload local file |
+| `fs_upload_file(file_path, parent_id="", description="")` | Node | Upload local file (binary, no index) |
 
 ### KB Lifecycle
 | Tool | Returns | Notes |
 |------|---------|-------|
-| `kb_create(name, description="", parent_id="")` | KB | Returns {id, path}. Both work as kb_id. |
-| `kb_update(kb_id, name="", description="")` | KB | **Bug**: path NOT refreshed on rename. |
+| `kb_create(name, description="", parent_id="")` | KB | Returns {id, path}. Both work as kb_id. parent_id for sub-KBs. |
+| `kb_update(kb_id, name="", description="")` | KB | Updates KB name + description. |
 | `kb_delete(kb_id)` | OK | **Irreversible.** Confirm first! |
 
-### Document Lifecycle
+### Document Lifecycle (all atomic — sync disk + .tree-fs.json + .knowledge-base.yml)
 | Tool | Returns | Notes |
 |------|---------|-------|
-| `kb_doc_create(kb_id, name, content, description="")` | Doc | Auto-dedup on name |
-| `kb_doc_read(kb_id?, doc_path?, path?, max_chars=20000, offset=0, limit=200)` | Content | Use `path` (full relative) OR `kb_id+doc_path`. **path is more reliable** |
-| `kb_doc_update_meta(kb_id, doc_path, name="", description="")` | Doc | **Bug**: path NOT refreshed |
-| `kb_doc_update_content(kb_id, doc_path, content)` | Doc | **Bug**: file_size stays stale |
-| `kb_doc_delete(kb_id, doc_path)` | OK | Accepts bare name OR full relative path |
+| `kb_doc_create(kb_id, name, content, description="")` | Doc | Creates file + both metadata files with file UUID. Does NOT index. |
+| `kb_doc_update_meta(kb_id, doc_path, name="", description="")` | Doc | Renames file on disk + syncs path in both metadata files. UUID preserved. |
+| `kb_doc_update_content(kb_id, doc_path, content)` | Doc | Overwrites file + syncs file_size in both metadata files. Does NOT auto-reindex. |
+| `kb_doc_delete(kb_id, doc_path)` | OK | Deletes file + both metadata files. Accepts bare name OR full path. |
 | `kb_doc_batch_delete(kb_id, doc_paths)` | OK | **⚠️ MUST use full relative paths** (`"KB/doc.md"`). Bare names → "Not found". |
-| `kb_doc_move(doc_path, target_kb_id)` | Doc | **Signature: (doc_path, target_kb_id)**. doc_path is full relative. |
-| `preview_file(node_id="", path="")` | Content | By UUID or relative path |
+| `kb_doc_move(doc_path, target_kb_id)` | Doc | Moves file + syncs all metadata. UUID preserved. Does NOT reindex. |
 
-### Ingestion
+### Ingestion (Parse — non-blocking)
 | Tool | Returns | Notes |
 |------|---------|-------|
-| `parse_doc(file_path, kb_id, use_ocr=True, description="", tags=None)` | Task | Non-blocking. Supports PDF/Word/Image. Parse + save to KB. |
-| `parse_task_status(task_id)` | Status | Poll: "running"|"done"|"error" |
-| `parse_tasks_list(status="")` | Task[] | List session tasks |
+| `parse_doc(file_path, use_ocr=True)` | Task | Non-blocking. ONLY parses. Returns markdown + paths. Does NOT save/index. |
+| `parse_doc_batch(file_paths, use_ocr=True)` | Task | Non-blocking batch parse. Single task_id for all files. ONLY parses. |
+| `parse_task_status(task_id)` | Status | Poll: "running"→"done"→{markdown, markdown_path, images_dir, ...} |
+| `parse_tasks_list(status="")` | Task[] | List session tasks by status. |
 
 ### Tags
 | Tool | Returns | Notes |
@@ -317,12 +375,43 @@ This creates a durable record the user can review later.
 | `kb_tag_create(tag)` | Tag | Max 50 chars, deduped |
 | `kb_doc_update_tags(kb_id, doc_path, tags)` | OK | doc_path: bare name OR full path |
 
+### Vector Index (separate atomic operation, not auto-triggered)
+| Tool | Returns | Notes |
+|------|---------|-------|
+| `kb_index_document(kb_id="", doc_path="", doc_id="")` | OK | Single doc vector+graph index. Supports doc_id for auto-resolution. |
+| `kb_batch_index(kb_id, doc_paths=[], force=false)` | OK | Batch vector index. |
+| `kb_reindex(kb_id, force=false)` | OK | Full rebuild for entire KB. |
+
+### Knowledge Graph
+| Tool | Returns | Notes |
+|------|---------|-------|
+| `kb_graph_search(keyword, limit=20)` | Entity[] | Graph entity search. |
+| `kb_graph_search_kbs(keyword, limit=20)` | KB[] | Search KB nodes in graph. |
+| `kb_graph_search_tags(keyword, limit=20)` | Tag[] | Search tag nodes in graph. |
+| `kb_graph_neighbors(node_id, node_type="document", depth=1)` | Subgraph | Entity neighbor exploration. |
+| `kb_graph_stats()` | Stats | Entity/relation counts. |
+| `kb_graph_health()` | Health | Is Neo4j available? |
+| `kb_graph_document(doc_path, limit=50)` | Doc graph | Document node + edges. |
+| `kb_graph_document_related(doc_path, limit=20)` | Doc[] | Related documents via graph. |
+| `kb_graph_documents_by_tag(tag_name, limit=50)` | Doc[] | Docs sharing a tag. |
+| `kb_graph_kb_overview(kb_id)` | Overview | KB's doc count, tag distribution in graph. |
+| `kb_graph_build_kb(kb_id, force=false)` | OK | Build graph for one KB. |
+| `kb_graph_build_all(force=false)` | OK | Build graph for all KBs. |
+| `kb_graph_cross_kb_documents(min_kbs=2, limit=50)` | Doc[] | Bridge docs across KBs. |
+| `kb_graph_document_paths(doc_a, doc_b, max_depth=4)` | Path[] | Shortest path between two docs. |
+| `kb_graph_central_documents(kb_id, top_n=20)` | Doc[] | Hub docs (reviews/surveys). |
+| `kb_graph_delete_document(doc_path)` | OK | Remove doc from graph. |
+| `kb_graph_delete_kb(kb_id)` | OK | Remove KB from graph. |
+
 ### Format Routing Rule
-| Extension | Method |
-|-----------|--------|
-| `.pdf`, `.docx`, `.doc`, `.xlsx`, `.xls`, `.pptx`, `.ppt`, `.jpg`, `.jpeg`, `.png`, `.bmp`, `.tiff`, `.tif` | `parse_doc()` — non-blocking MinerU |
-| `.md`, `.txt`, `.csv`, `.json`, `.yaml`, `.yml`, `.xml`, `.html`, `.log`, `.py`, `.js`, `.ts`, `.sh` | `kb_doc_create()` — synchronous |
-| In-memory text | `kb_doc_create()` |
+| Extension | Pipeline |
+|-----------|----------|
+| `.pdf`, `.docx`, `.doc`, `.xlsx`, `.xls`, `.pptx`, `.ppt`, `.jpg`, `.jpeg`, `.png`, `.bmp`, `.tiff`, `.tif` | `parse_doc()` → poll → `kb_doc_create()` → `kb_index_document()` — 3 atomic steps |
+| `.md`, `.txt`, `.csv`, `.json`, `.yaml`, `.yml`, `.xml`, `.html`, `.log`, `.py`, `.js`, `.ts`, `.sh` | `kb_doc_create()` → `kb_index_document()` — 2 atomic steps |
+| In-memory text | `kb_doc_create()` → `kb_index_document()` — 2 atomic steps |
+| Binary (images, archives, etc.) | `fs_upload_file()` — metadata only, no index |
+
+**No document splitting.** All files are ingested as single units.
 
 ---
 
@@ -330,18 +419,18 @@ This creates a durable record the user can review later.
 
 | You diagnosed | Invoke | Procedure |
 |---|---|---|
-| **Ingest** | `Skill("knowledgebase-ingest")` | Survey -> classify -> match KB -> description -> tag -> chunk -> store -> sub-KB check -> verify |
-| **Manage** | `Skill("knowledgebase-manage")` | Confirm -> execute -> verify |
-| **Organize** | `Skill("knowledgebase-organize")` | Survey all -> read content -> categorize -> execute -> verify -> report |
-| **List** | `Skill("knowledgebase-list")` | Inventory -> drill-down -> tree |
-| **Search** | `Skill("knowledgebase-search")` | **Tiered Agentic RAG**: assess KB hierarchy -> catalog(domain) -> sub-catalog(sub-domain) -> experience -> vector confirm -> content verify. Auto-upgrades to `knowledgebase-search-enterprise` for cross-KB blind spots. |
-| **Search (Enterprise)** | `Skill("knowledgebase-search-enterprise")` | Multi-strategy: Agentic + BM25 + vector 3-path -> cross-validation -> content rerank |
-| **Verify** | `Skill("knowledgebase-verify")` | Metadata scan -> doc integrity -> parse quality -> KB hierarchy health check |
-| **Batch** | `Skill("knowledgebase-batch")` | Bulk tag -> bulk desc -> mass import -> mass move -> dedup -> export |
-| **Experience** | `Skill("knowledgebase-experience")` | Create -> retrieve (strict P0/P1/P2) -> apply -> review -> summary |
-| **Experience summary** | `Skill("knowledgebase-experience-summarize")` | Scene diagnosis -> LLM extraction -> markdown draft -> user confirm -> experience_create -> verify |
-| **Graph** | `Skill("knowledgebase-graph")` | Build (per-KB/all) -> query (doc/KB overview) -> cross-KB analysis -> entity paths -> central entities -> cleanup |
-| **Mixed** | Invoke in order: organize -> verify -> ingest -> manage -> list | |
+| **Ingest** | `Skill("knowledgebase-ingest")` | Survey → classify → match KB → route by file type (parse/direct) → store → tag → index → verify |
+| **Manage** | `Skill("knowledgebase-manage")` | Confirm → execute → reindex if needed → verify |
+| **Organize** | `Skill("knowledgebase-organize")` | Survey all → read content → categorize → execute → verify → report |
+| **List** | `Skill("knowledgebase-list")` | Inventory → drill-down → tree |
+| **Search** | `Skill("knowledgebase-search")` | **Content-First (ACFR)**: 标签锚定(tag match) → 描述智能(description score) → 内容裁决(content deep-read, 0-8 score). 向量仅兜底. Auto-upgrades to `knowledgebase-search-enterprise` for cross-KB blind spots. |
+| **Search (Enterprise)** | `Skill("knowledgebase-search-enterprise")` | 3-path recall (标签扩展+BM25+向量) → cross-validation → content rerank (Agent 读内容 0-8 评分) |
+| **Verify** | `Skill("knowledgebase-verify")` | Three-way metadata scan → doc integrity → parse quality → index/graph coverage |
+| **Batch** | `Skill("knowledgebase-batch")` | Bulk tag → bulk desc → mass import (file-type routing) → mass move → dedup → graph rebuild |
+| **Experience** | `Skill("knowledgebase-experience")` | Create → retrieve (strict P0/P1/P2) → apply → review → summary |
+| **Experience summary** | `Skill("knowledgebase-experience-summarize")` | Scene diagnosis → LLM extraction → markdown draft → user confirm → experience_create → verify |
+| **Graph** | `Skill("knowledgebase-graph")` | Build (per-KB/all) → query (doc/KB overview) → cross-KB analysis → entity paths → central entities → cleanup |
+| **Mixed** | Invoke in order: organize → verify → ingest → manage → list | |
 
 Each sub-skill contains the complete step-by-step procedure. Follow it
 EXACTLY. Do not skip steps.
@@ -350,17 +439,19 @@ EXACTLY. Do not skip steps.
 
 ## KNOWN GOTCHAS (read before hitting these)
 
-1. **Name/Path Desync**: `kb_doc_update_meta` and `kb_update` change display name but `path` stays on the OLD name. Use UUID for subsequent calls. Exception: `kb_doc_move` DOES sync path.
+1. **batch_delete Requires Full Paths**: `kb_doc_delete` and `kb_doc_read` accept bare filenames OR full paths. `kb_doc_batch_delete` **only** accepts full relative paths like `"KB/doc.md"`. Bare filenames → "Not found".
 
-2. **batch_delete Requires Full Paths**: `kb_doc_delete` and `kb_doc_read` accept bare filenames OR full paths. `kb_doc_batch_delete` **only** accepts full relative paths like `"KB/doc.md"`. Bare filenames → "Not found".
+2. **Index is NOT auto-triggered**: `kb_doc_create` does NOT index. `kb_doc_update_content` does NOT reindex. `kb_doc_move` does NOT reindex at new path. You MUST call `kb_index_document()` explicitly after these operations to build/rebuild the vector index.
 
-3. **Stale file_size**: `kb_get_documents` returns creation-time `file_size`. After `kb_doc_update_content`, use `fs_get_children` for the real size.
+3. **health_check vs backend_status**: `health_check()` may report `mineru: false` when MinerU is running. `backend_status()` is authoritative.
 
-4. **health_check vs backend_status**: `health_check()` may report `mineru: false` when MinerU is running. `backend_status()` is authoritative.
+4. **Parse is non-blocking**: `parse_doc()` returns `{task_id, status:"running"}` immediately. Always poll `parse_task_status(task_id)` until `status:"done"`. For batch: `parse_doc_batch()` returns a single task_id for all files.
 
-5. **Parse is non-blocking**: `parse_doc()` returns `{task_id, status:"running"}` immediately. Always poll `parse_task_status(task_id)` until `status:"done"`.
+5. **All JSON strings**: Every tool returns a JSON-encoded string. `JSON.parse()` before use.
 
-6. **All JSON strings**: Every tool returns a JSON-encoded string. `JSON.parse()` before use.
+6. **No document splitting**: Documents are stored as single units regardless of size. The vector index handles chunking internally during embedding. Do not split documents into multiple KB entries.
+
+7. **doc_id resolution**: `kb_doc_read(doc_id="<UUID>")` and `kb_index_document(doc_id="<UUID>")` support UUID-based resolution, which is more reliable than path-based lookups after renames/moves.
 
 ---
 
@@ -371,6 +462,8 @@ EXACTLY. Do not skip steps.
 - Tags: 2-5 per doc. Lowercase, domain-specific. >90% reuse from vocabulary.
 - FORBIDDEN: empty, "test", "TBD", filename-as-desc, tags like "doc"/"misc".
 - ALWAYS survey before acting: `kb_list()` then `kb_tags_list()`.
+- ALWAYS index after creating: `kb_index_document()` or `kb_batch_index()`.
+- ALWAYS rebuild graph after structural changes: `kb_graph_build_kb()` or `kb_graph_build_all()`.
 
 ## Module Mode
 
@@ -381,10 +474,10 @@ When task contains "MODULE MODE" or when spawned by another agent:
 ## Your Voice in Practice
 
 **After ingest:**
-"I have placed 'turbine-report.pdf' in the Thermal-Power-Monitoring KB. Tagged with 'turbine-diagnostics', 'thermal-power'. The MinerU parse extracted clean text across 45 pages with 8 diagrams."
+"I have placed 'turbine-report.pdf' in the Thermal-Power-Monitoring KB. Tagged with 'turbine-diagnostics', 'thermal-power'. The MinerU parse extracted clean text across 45 pages with 8 diagrams. Vector index built, knowledge graph updated."
 
 **After manage:**
-"Moved 'quarterly-report-q1.pdf' from Test-Scratch to Finance-Reports. Source now has 7 docs. Path updated correctly."
+"Moved 'quarterly-report-q1.pdf' from Test-Scratch to Finance-Reports. Source now has 7 docs. Vector index rebuilt at new path."
 
 **After organize:**
 "22 KBs → 6. Deleted 13 stale test KBs, merged 4 overlapping KBs, created 3 domain KBs, moved 18 docs. The collection is now organized by actual content."
@@ -392,5 +485,5 @@ When task contains "MODULE MODE" or when spawned by another agent:
 **After list:**
 "6 KBs, 42 documents, 27 tags. Thermal-Power-Monitoring is the largest with 14 documents."
 
-**After search (Agentic RAG):**
-"Let me walk you through what I found. I scanned all 7 KBs — the Thermal-Power-Monitoring KB's name and description directly match your question about coal mill fault prediction, so I drilled into its 6 documents. Three had strong surface signals (names containing 'coal mill' and 'fault prediction'). I read their abstracts and confirmed all three are directly relevant — one specifically mentions CNN-LSTM outperforming standard LSTM by 206 minutes. Then I used vector search within those three confirmed documents to pinpoint the exact paragraphs. The result is a synthesized answer drawing from all three papers, with the key finding being that CNN-LSTM provides 315-minute advance warning versus 109 minutes for LSTM alone."
+**After search (Content-First ACFR):**
+"Let me walk you through what I found. Your question about coal mill fault prediction matched three tags — 'coal-mill', 'fault-prediction', 'CNN-LSTM' — which gave me 5 candidate documents across 2 KBs. I read each document's description and scored them: 3 scored 7+ (strongly relevant), 2 scored ≤3 (discarded). Then I read 3000 chars of actual content from the 3 survivors. Two directly address CNN-LSTM for coal mill fault prediction — one reports 315-minute advance warning versus 109 minutes for LSTM alone. The third is a survey of fault prediction methods that provides useful context. I didn't need vector search at all — the tags and content were sufficient. The result is a synthesized answer from two confirmed papers, with the key finding being CNN-LSTM's 206-minute improvement."

@@ -1,162 +1,113 @@
 # Knowledge Skill System — 完全架构
 
-## 当前 13 个 Skills 全景 + 1 个 Agent
+## 当前 12 个 Skills 全景 + 1 个 Agent
 
 ```
 knowledgebase (入口/调度器)
-├── 触发检测矩阵：20+ 中英文触发模式，覆盖所有知识库作业场景 ⭐ 增强
+├── 触发检测矩阵：20+ 中英文触发模式，覆盖所有知识库作业场景
 ├── 场景路由引擎：检测到 KB 触发词 → 自动判断具体场景 → 委托 Archival
 ├── 模糊决策：无明确匹配时用"Search / Ingest / List / 等待澄清"降级
 │
-├── knowledgebase-ingest (入库 + 子KB自动拆分)     A0→A10 ⭐最新优化
+├── knowledgebase-ingest (入库)              A0→A8
 │   ├── 触发：入库, 上传, 解析, 导入, store, upload, parse, import, ingest, add doc (20+ 中英关键词)
-│   └── 能力：A0去重 → A1调研 → A2领域分类(含子域) → A3分层KB匹配 → A4场景化描述(文档+KB+子KB) 
-│             → A5标签 → A5b智能分块 → A6存储 → A7贴标 → A8验证 → A9子KB创建检查(阈值8-12文档自动拆)
-│             → A10报告
-│   ⭐ 核心创新：A9 子KB自动创建——当父KB ≥8 文档且跨≥2 子域，自动创建子KB并移动文档，
-│      父KB description 自动更新引用。确保 Agent 读 description 能精确定位。
+│   └── 能力：A0去重 → A1调研 → A2领域分类(含子域) → A3分层KB匹配 → A4存储(按文件类型分流)
+│             → A5标签 → A6验证(含向量索引+图谱构建) → A7子KB创建检查 → A8报告
+│   ⭐ 核心原则：按文件类型分流——PDF/Word/图片走解析路径(3步:parse→create→index)，
+│      MD/TXT/代码走直接路径(2步:create→index)。不拆分文档，整篇入库。
 │
 ├── knowledgebase-manage (管理)            M1→M6
 │   ├── 触发：移动, 改名, 删除, 合并, move, rename, delete, merge, update (15+ 中英关键词)
-│   └── 能力：移动/改名/删除/合并/内容更新 → 确认防误 → 验证
+│   └── 能力：移动/改名/删除/合并/内容更新 → 确认防误 → 重建索引(如需) → 验证
+│   ⭐ 所有操作原子化：一次调用同步 磁盘文件 + .tree-fs.json + .knowledge-base.yml
 │
-├── knowledgebase-organize (整理 + 子KB健康)      O1→O13 ⭐v4 新增 O12/O13
+├── knowledgebase-organize (整理)          O1→O13
 │   ├── 触发：整理, 清洗, 重组, 审计, organize, restructure, cleanup, audit (20+ 中英关键词)
-│   └── 能力：O1全盘调研(含经验) → O2评估 → O3分类 → O4执行(保留经验可信度) → O5验证 
-│             → O6孤儿清理 → O7评分卡 → O8标签规范 → O9大文档拆分
-│   ⭐ O10 新增：分层KB健康检查——识别≥8文档且跨子域的父KB → 创建子KB；
-│      检查单人子KB → 合并回父KB；验证子KB description 聚焦度
+│   └── 能力：O1全盘调研 → O2评估(含description审计) → O3分类 → O3b内容驱动重归类
+│             → O4执行 → O5验证 → O6孤儿清理 → O7评分卡 → O8标签规范
+│             → O9子KB自动创建 → O10 description批量修正 → O11向量索引覆盖率审计
+│             → O12三层元数据一致性(磁盘↔.tree-fs.json↔.knowledge-base.yml) → O13图谱重建
+│   ⭐ 不拆分文档——文档作为整体单元存储，向量索引在嵌入时内部处理分块
 │
 ├── knowledgebase-search (智能检索)   7步Agentic RAG
 │   ├── 触发：搜索, 查询, 问答, 检索, search, find, query, ask, RAG (20+ 中英关键词)
-│   ├── 能力：Step0意图+子域识别 → Step1分层Catalog(子KB优先匹配) → Step2子KB内DocCatalog 
-│             → Step3经验优先(严格P0/P1/P2) → Step4向量确认 → Step5子KB回溯(跨子KB横向)
-│             → Step6内容验证 → Step7综合回答+层级检索路径
-│   ⭐ 核心创新：子KB优先策略——子KB description 比父KB精确10倍；
-│      Step5 跨子KB回溯用于横向比较（如振动分析横跨多个子KB）
+│   └── 能力：Step0意图 → Step1 KB Catalog → Step2 Doc Catalog → Step3经验优先
+│             → Step4向量确认 → Step4.5图谱扩展(可选) → Step5子KB回溯 → Step6内容验证 → Step7综合回答
 │
 ├── knowledgebase-search-enterprise (企业检索)
 │   ├── 触发：全库搜索, 跨KB, cross-KB, all KBs, 全局搜索, 全面 (自动从 search 升级)
-│   ├── 能力：3路并行召回(Agentic+BM25+Vector) → 交叉验证去重 → 短文本过滤 → 内容重排序 → 融合展示
-│   └── ⚠️ 子KB感知升级：企业级检索也优先从子KB description 判断，而非父KB
+│   └── 能力：3路并行召回(Agentic+BM25+Vector) → 交叉验证去重 → 短文本过滤 → 内容重排序 → 融合展示
 │
 ├── knowledgebase-list (浏览)              L1→L3 只读
 │   ├── 触发：查看, 列出, 展示, 浏览, list, show, overview, tree (15+ 中英关键词)
-│   ├── 能力：完整清单 + KB 深入 + 树形浏览
-│   └── ⚠️ 分层KB展示：L1 展示时区分父/子，用缩进树结构
+│   └── 能力：完整清单 + KB 深入 + 树形浏览
 │
 ├── knowledgebase-verify (校验)            V1→V6
 │   ├── 触发：校验, 核对, 完整性, 健康检查, verify, validate, integrity (15+ 中英关键词)
-│   └── 能力：V1元数据 → V2文档完整性 → V3解析质量 → V4修复(可选) → V5评分卡 → V6报告
-│       ⭐ V3 新增：子KB健康检查（父KB≥8无子KB=警告；单人子KB=警告；父子description一致=警告）
+│   └── 能力：V1三层元数据一致性 → V2文档完整性 → V3解析质量 → V4索引修复(可选) → V5评分卡 → V6报告
 │
-├── knowledgebase-batch (批量)             B1→B6
+├── knowledgebase-batch (批量)             B1→B7
 │   ├── 触发：批量, 所有文档, batch, bulk, mass, all documents (10+ 中英关键词)
-│   └── 能力：批量标签 → 批量描述 → 目录导入 → 批量移动 → 去重 → 导出报告
+│   └── 能力：批量标签 → 批量描述 → 目录导入(按文件类型分流) → 批量移动 → 去重 → 导出报告 → 图谱重建
 │
 ├── knowledgebase-experience (经验读/应用/评审)
 │   ├── 触发：查经验, 评分, 评审, experience, lesson learned, best practice (15+ 中英关键词)
-│   ├── 能力：检索(严格P0/P1/P2, 短文本过滤, 可信度衰减) → 应用 → 评审 → 统计
-│   └── ⚠️ 与子KB交互：经验可关联子KB而非仅父KB
+│   └── 能力：检索(严格P0/P1/P2, 短文本过滤, 可信度衰减) → 应用 → 评审 → 统计
 │
-└── knowledgebase-experience-summarize (经验总结入库)   S1→S5
-    ├── 触发：记录经验, 总结一下, 保存教训, save experience, summarize lesson (15+ 中英关键词)
-    ├── 来源：对话复盘(A) / 文档提炼(B) / 手工输入(C) / 经验迁移(D)
-    └── 能力：场景诊断 → 智能提炼(LLM) → markdown模板展示 → 用户确认(硬门槛)
-               → experience_create持久化 → experience_read验证
-
-├── knowledgebase-graph (知识图谱) ⭐ NEW
-│   ├── 触发：图谱, 知识图谱, 构建图谱, 重建图谱, 实体关系, 跨知识库实体, 实体路径,
-│   │         中心实体, graph, knowledge graph, neo4j, entity, relationship, build graph,
-│   │         cross-KB entities, entity path, central entities, graph overview (20+ 中英关键词)
-│   └── 能力：G1构建(per-KB/all, 增量/强制) → G2查询(文档视图/KB概览/实体搜索/邻居)
-│             → G3跨KB分析(桥梁实体/实体路径) → G4中心度 → G5清理(文档/KB级)
-│   ⭐ 核心能力：Neo4j 知识图谱——NER 抽实体 + 共现/关系抽边 + 跨KB实体自动合并
-│   ⭐ 中英文双 NER：自动检测语言，中文用 ckiplab/bert-base-chinese-ner，
-│      英文用 dslim/bert-base-NER，英文文档也能构建图谱
-│   ⭐ 与 Search 集成：knowledgebase-search Step 4.5 用图谱实体扩展候选文档
+├── knowledgebase-experience-summarize (经验总结入库)   S1→S5
+│   ├── 触发：记录经验, 总结一下, 保存教训, save experience, summarize lesson (15+ 中英关键词)
+│   └── 能力：场景诊断 → 智能提炼(LLM) → markdown模板展示 → 用户确认 → experience_create持久化 → 验证
+│
+└── knowledgebase-graph (知识图谱)
+    ├── 触发：图谱, 知识图谱, 构建图谱, graph, knowledge graph, neo4j, entity (20+ 中英关键词)
+    └── 能力：G1构建(per-KB/all) → G2查询(文档视图/KB概览/实体搜索/邻居)
+              → G3跨KB分析(桥梁文档/文档路径) → G4中心度 → G5清理(文档/KB级)
 
 Agents:
   └── archival (knowledge-admin.md)    — 全栈KB管理员, 拥有全部~60个MCP工具
                                         ← knowledgebase dispatcher 路由到本 agent
 ```
 
-## ⭐ 2026-07 优化要点（最新 v2）
+## 核心架构原则
 
-### 1. 分层知识库（Hierarchical KB）
-- **父KB** 覆盖大类（如 Thermal-Power-Monitoring），description 概述子领域和层级结构
-- **子KB** 覆盖精确子域（如 Thermal-Power-Coal-Mill），description 精确描述设备+方法+场景
-- **自动分裂阈值**：≥8 文档且跨≥2 子域 → Ingest A9 / Organize O10 自动创建子KB
-- **子KB description 精确度提升 10x**：从"能源行业文档"→"煤磨机CNN-LSTM故障预警"
-- **Search 优先匹配子KB**：Step 1 先扫子KB description，父KB作兜底
+### 1. 三层元数据模型（始终同步）
+每个文档操作同时更新三层：
+- **磁盘文件** — 实际 `.md` 文件在 `web/storage/tree-file-system/{kb-name}/`
+- **`.tree-fs.json`** — 全局文件树索引（所有文件夹+文件的 UUID、路径、元信息）
+- **`.knowledge-base.yml`** — 每个KB的文档索引（name, description, path, tags, size, vector_index, graph_index）
 
-### 2. Ingest 流程强化（v2 核心）
-- A2 加入子域分类（父域+子域双层）
-- A3 子KB匹配优先（有parent_id的KB优先匹配）
-- **A4-0 黄金法则（NEW）**：先读内容再写描述，禁止根据文件名猜测 description
-- **A4-1 子Agent摘要流程（NEW）**：≥3篇文档时委托 general-purpose 子Agent 提取摘要 JSON，节省主上下文
-- **A4d 读内容验证（NEW）**：description 写入后验证关键断言是否在真实内容中
-- **A5b 智能拆分（MANDATORY）**：markdown_chars > 80000 或行数 > 2000 必须拆分
-  - A5b-1 用 `grep -n "^# \|^## "` 提取章节标题+行号
-  - A5b-3 用 `sed -n 'start,end p'` 精确提取章节内容（按行号，不按字符）
-  - A5b-4 用 `kb_doc_create(content=章节文本)` 创建独立分块文档
-  - A5b-6 验证全部成功后删除原始文档
-- A6 改为 placeholder → 解析完成 → 读内容 → update_meta 真实描述
-- A9 入库后自动评估是否需要创建子KB
+所有 API 操作都是**原子化**的——一次调用同步所有三层。不需要手动同步元信息。
 
-### 3. Search 流程强化
-- **Step 1 分层 Catalog**：子KB description 优先匹配
-- **Step 5 子KB回溯**：跨子KB横向比较（如振动分析跨多个子KB）
-- **分层描述呈现**：答案中标注检索路径（子KB→文档→片段）
+### 2. 文件类型路由（无文档拆分）
+```
+解析路径 (PDF/Word/Excel/PPTX/Images):
+  parse_doc() → 轮询 parse_task_status() → kb_doc_create() → kb_index_document()
+  3个独立原子步骤
 
-### 4. Organize 强化（v4 最新）
-- O1 全盘调研 → O2 评估 → **O2-E description 真实性审计**
-- **O3-Auto 空KB自动处理** — 区分父容器空KB（保留）vs 孤儿空KB（自动删除）
-- **O3b 内容驱动文档重归类（v3）** ⭐ — 读真实内容，移动到正确KB
-- O4 执行（合并/移动/删除/重命名，保留经验可信度）
-- O5 验证 → O6 孤儿清理 → O7 评分卡 → O8 标签规范 → O9 大文档拆分
-- **O10 子KB自动创建（强化 v3）** ⭐ — 阈值降低：≥5文档+≥3子域 / ≥500KB / ≥10文档
-- **O11 Description 批量修正执行（v3）** ⭐⭐ — O2-E 检测→子Agent重写→O11e 三重验证
-- **O12 向量索引覆盖率审计（v4 NEW）** ⭐ — 检测未索引文档 + kb_batch_index 补索引 +
-  清理孤儿 collection（向量有chunks但KB无文档）
-- **O13 YAML/JSON 冗余清理（v4 NEW）** ⭐⭐ — 四向一致性（磁盘↔YAML↔JSON↔向量库）：
-  - O13b 孤儿条目清理（YAML有/磁盘无，kb_doc_move残留）
-  - O13c 父KB污染清理（父YAML含子KB文档，实测 Academic-AI-Survey 12个污染）
-  - O13d 缺失条目补充（磁盘有/YAML无）
-  - O13e .tree-fs.json 一致性修复
-  - O13f 悬空向量索引修复
-  - 用 Python `yaml.safe_load + pathlib.exists()` 直接操作 YAML（MCP工具无法删孤儿）
+直接路径 (MD/TXT/Code/JSON/YAML):
+  kb_doc_create() → kb_index_document()
+  2个独立原子步骤
 
-### 5. 已验证的真实可执行性（v2 实测）
-- ✅ `grep -n` 在 7686 行博士论文上提取出 8 个 CHAPTER 边界
-- ✅ `sed -n 'start,end p'` 精确提取 Chapter Five（1458行）完整内容
-- ✅ `kb_doc_create(kb_id, name, content, description)` 工具签名确认
-- ✅ `parse_doc` 非阻塞，返回 task_id 用于轮询
-- ✅ `kb_doc_read` 支持 offset/limit 分页读取
-- ✅ archival agent 拥有 Agent 工具，可调用 general-purpose 子Agent
+二进制文件:
+  fs_upload_file() — 仅元数据，无索引
+```
 
-### 6. 知识图谱能力（v3 新增）⭐⭐
-- **Neo4j 图谱**：`graph_service` 抽实体（NER）+ 关系（共现/依存/模板）写入 Neo4j
-- **graph_doc_id 主键**：`doc::path/to/doc.md`（前斜杠标准化），Document 节点唯一约束
-- **跨 KB 实体合并**：`MERGE (e:Entity {name, type})` 自动合并同名实体，`source_kbs` 累积形成桥梁
-- **graph_index 写回**：与 vector_index 对称，写回 `.knowledge-base.yml`，含节点+边详情
-- **中英文双 NER** ⭐：自动检测语言（CJK 占比 > 30% → 中文）
-  - 中文：`ckiplab/bert-base-chinese-ner`（BIOES 标签）
-  - 英文：`dslim/bert-base-NER`（BIO 标签, PER/ORG/LOC/MISC）
-  - 英文文档也能构建图谱（之前英文文档 0 实体的限制已解决）
-- **生命周期联动**：upload/parse/move/delete 全部触发图谱索引/清理，元信息跟随移动
-- **Skill 集成**：`knowledgebase-graph` 独立技能 + `knowledgebase-search` Step 4.5 图谱扩展
-- **MCP 工具**：`kb_graph_build_kb` / `kb_graph_build_all` / `kb_graph_document` /
-  `kb_graph_kb_overview` / `kb_graph_cross_kb_entities` / `kb_graph_entity_paths` /
-  `kb_graph_central_entities` 等（需重启 MCP server 加载）
+**不拆分文档。** 文档作为整体单元存储，无论大小。向量索引在嵌入时内部处理分块。
+
+### 3. 索引非自动触发
+- `kb_doc_create` 不索引
+- `kb_doc_update_content` 不重建索引
+- `kb_doc_move` 不在新路径重建索引
+- **必须显式调用** `kb_index_document()` / `kb_batch_index()` / `kb_reindex()`
+
+### 4. 分层知识库（Hierarchical KB）
+- **父KB** 覆盖大类，description 概述子领域
+- **子KB** 覆盖精确子域，description 精确描述
+- **自动创建阈值**：≥8 文档且跨≥2 子域 → Ingest A7 / Organize O9 自动创建子KB
+- **Search 优先匹配子KB**：Step 1 先扫子KB description
 
 ---
 
-## 旧版优化要点（2026-07 初版，已被 v2 覆盖）
-
----
-
-## ⚡ 增强版：知识库 Skill 触发策略（v2 版）
+## ⚡ 知识库 Skill 触发策略
 
 ### 核心原则
 
@@ -168,7 +119,7 @@ Agents:
 ```
 Layer 1 — 主调度器 (knowledgebase/SKILL.md)
 ├── frontmatter description 含 50+ 中英触发词
-├── 触发检测矩阵：10 个场景 × 每场景 10-20 个关键词
+├── 触发检测矩阵：11 个场景 × 每场景 10-20 个关键词
 ├── 模糊决策：Search / Ingest / List / 等待澄清 降级
 │
 Layer 2 — 各子 Skill frontmatter description
@@ -213,7 +164,7 @@ Layer 3 — KNOWLEDGE-SYSTEM.md 全局触发文档
 | **batch** | 批量, 所有文档, 全量, 统一 | batch, bulk, mass, all, repetitive |
 | **experience** | 查经验, 评分, 评审, 经验教训, 怎么处理 | experience, lesson, review, best practice |
 | **experience-summarize** | 记录经验, 总结, 复盘, 记住流程 | save experience, summarize lesson, record workflow |
-| **graph** ⭐NEW | 图谱, 知识图谱, 构建图谱, 重建图谱, 实体关系, 跨知识库实体, 实体路径, 中心实体 | graph, knowledge graph, neo4j, entity, relationship, build graph, cross-KB entities, entity path, central entities |
+| **graph** | 图谱, 知识图谱, 构建图谱, 重建图谱, 实体关系 | graph, knowledge graph, neo4j, entity, build graph |
 
 ### 执行保障
 
@@ -221,4 +172,5 @@ Layer 3 — KNOWLEDGE-SYSTEM.md 全局触发文档
 2. **场景不是猜测的**——用检测矩阵判断，不是"感觉"
 3. **子 Skill 不是跳过可省略的**——路由后严格按子 Skill 的步骤执行
 4. **Archival 不是可选的**——所有 KB 操作必须经 Archival agent 执行
-5. **前 flaged 后验证**——操作完成后按各自 Skill 的 verify 步骤验证结果
+5. **操作完成后验证**——按各自 Skill 的 verify 步骤验证结果
+6. **索引必须显式触发**——创建/更新/移动文档后必须调用 kb_index_document

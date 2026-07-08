@@ -1,73 +1,297 @@
 ---
 name: knowledgebase-search
 description: >
-  Agentic RAG — 真正的智能检索。核心原则：Agent 读 description 智能判断为主，
-  向量相似度为辅助确认。先读轻量 catalog 的 description 判断 KB/文档相关性，
-  筛除无关项；再用向量在已确认候选内精排；最后读真实内容验证满足场景。
-  绝不只是"向量 top-k 返回"。经验优先（操作类问题先查经验，严格相关度，
-  宁可不给也不要错给）。Triggered by: "search", "find", "query", "ask",
-  "retrieve", "what is", "how to", "explain", "rag", "回答", "检索", "搜索",
-  "查找内容", "问答", "知识检索", "帮我查", "问一下知识库", "搜",
-  "查询知识库", "知识库问答", "知识库搜索", "问题", "哪里", "办法", "怎么解决".
+  Agentic Content-First Retrieval (ACFR) — 真正的内容优先检索。
+  核心原则：标签锚定 → Agent 读 description 智能判断 → 读真实内容做最终裁决。
+  向量相似度仅为最后兜底，绝不作为主要判据。
+  先用标签快速锁定候选，再用 Agent 智能判断 description 筛选，
+  最后读真实内容验证是否真正回答了问题。
+  经验优先（操作类问题先查经验，严格相关度，宁可不给也不要错给）。
+  Triggered by: "search", "find", "query", "ask", "retrieve", "what is",
+  "how to", "explain", "rag", "回答", "检索", "搜索", "查找内容", "问答",
+  "知识检索", "帮我查", "问一下知识库", "搜", "查询知识库", "知识库问答",
+  "知识库搜索", "问题", "哪里", "办法", "怎么解决".
 ---
 
-# Agentic RAG — Agent Judgment First + Vector Assist + Content Verify
+# Agentic Content-First Retrieval (ACFR)
 
-## Core Principles
-1. **Agent judgment first** — read descriptions (kb_catalog/kb_doc_catalog), don't jump to vector top-k
-2. **Hierarchical awareness** — scan sub-KB descriptions first (more precise than parent)
-3. **Lightweight first** — catalog tools (id+description only), no file_size/tags in initial scan
-4. **Content verify mandatory** — kb_doc_read to confirm relevance before answering
-5. **Experience strict** — P0/P1 only, suppress P2 gray zone. Never give wrong experience.
-6. **Honest blind spots** — if KB lacks content, say so. Don't fabricate.
+## 核心理念：内容是唯一的真相
 
-## Adaptive Depth
-| Depth | Scenario | Flow |
+**向量相似度 ≠ 答案相关度。** 两个文本语义接近不代表一个能回答另一个的问题。
+真正的检索必须让 Agent **读到真实内容**并做出判断，而不是把决策权交给余弦距离。
+
+### 三层信号可靠性排序
+
+| 信号 | 可靠性 | 原因 | 角色 |
+|------|:------:|------|------|
+| **标签 (Tags)** | ★★★★★ | 人工/Agent 精心策展，每个标签都有明确语义 | **锚点** — 快速锁定候选池 |
+| **描述 (Description)** | ★★★★ | 基于内容生成，概括了文档核心主题 | **过滤器** — Agent 智能筛选 |
+| **真实内容 (Content)** | ★★★★★ | 地面真相，文档实际说了什么 | **裁决者** — 最终判断 |
+| BM25 关键词 | ★★★ | 精确词项匹配，但无法理解同义/上下文 | **安全网 A** — 补漏 |
+| 向量相似度 | ★★ | 语义近似但有盲区，短文本/跨域/长文档场景不可靠 | **安全网 B** — 仅兜底 |
+
+## 检索漏斗：逐层收窄，只读必要的
+
+```
+用户查询
+  │
+  ▼
+┌─────────────────────────────────────────┐
+│ Gate 1: 标签锚定 (O(1), 秒级)           │  ← 最快、最准
+│ kb_tags_list() → 概念匹配 → 候选文档     │
+└────────────────┬────────────────────────┘
+                 │ 候选 ≤30 篇
+                 ▼
+┌─────────────────────────────────────────┐
+│ Gate 2: 描述智能 (O(N), N≤30)           │  ← Agent 判断
+│ Agent 读每篇 description → 打分 0-10     │
+│ 保留 ≥6 分                               │
+└────────────────┬────────────────────────┘
+                 │ 候选 ≤8 篇
+  ┌──────────────┼──────────────┐
+  │              │              │
+  ▼              ▼              ▼
+┌─────────┐ ┌──────────┐ ┌───────────────┐
+│安全网A  │ │Gate 3:   │ │安全网B(仅当    │
+│BM25补漏 │ │内容裁决  │ │Gate1+2候选<3) │
+│         │ │(核心!)   │ │向量兜底       │
+└────┬────┘ └────┬─────┘ └───────┬───────┘
+     │           │               │
+     └─────┬─────┘───────────────┘
+           ▼
+  ┌────────────────────────────┐
+  │ 合并去重 → 内容裁决         │
+  │ kb_doc_read → 打分 0-8      │
+  │ 保留 ≥5                     │
+  └────────────┬───────────────┘
+               ▼
+         综合答案 + 置信度 + 盲区
+```
+
+## 完整流程 (6 步)
+
+### Step 0 — 意图分析
+
+Agent 分析用户查询，提取：
+- **核心概念**: 查询涉及的关键技术/方法/对象（如 "PVA", "双向拉伸", "力学性能"）
+- **意图类型**: 事实查询 / 原理对比 / 操作排查 / 探索发现
+- **期望答案**: 数字 / 流程 / 解释 / 参考文献
+
+**路由**:
+- 操作/故障类（"怎么处理", "排查", "解决"）→ 先查经验 (Step 1-E)
+- 知识/对比类（"什么是", "原理", "对比"）→ 直接走文档检索 (Step 1)
+
+---
+
+### Step 1 — 标签锚定 (Gate 1: 最快最准)
+
+**为什么标签优先？** 标签是人工/Agent 在入库时基于真实内容精心策展的语义锚点。
+一篇被标记为 `pva` + `biaxial-stretching` + `mechanical-properties` 的文档，
+几乎可以确定与 "PVA 双向拉伸力学性能" 这个查询高度相关。
+
+```
+# 第 1 步：获取全部标签词表
+kb_tags_list()
+
+# 第 2 步：Agent 做概念-标签匹配
+# 将查询核心概念与标签词表做语义匹配（Agent 判断，不是字符串匹配）
+# 例: 查询 "聚乙烯醇薄膜拉伸强度" → 匹配标签: pva, biaxial-stretching, mechanical-properties
+
+# 第 3 步：用匹配到的标签跨库检索文档
+kb_doc_get_by_tag(tag="pva", kb_id="")           # 跨库
+kb_doc_get_by_tag(tag="biaxial-stretching", kb_id="")
+# 多个标签的结果取并集，按命中标签数排序
+```
+
+**标签匹配规则**（Agent 判断）:
+- 精确匹配: 查询含 "PVA" → 标签 `pva` → ★★★
+- 同义匹配: 查询含 "聚乙烯醇" → 标签 `pva` → ★★★
+- 上位匹配: 查询含 "聚合物" → 标签 `pva` / `pet` / `pa6` → ★★☆
+- 关联匹配: 查询含 "结晶度" → 标签 `crystallization` + `mechanical-properties` → ★☆☆
+
+**输出**: 候选文档列表（≤30 篇），每篇标注命中的标签和匹配星级。
+
+> **标签为空或无匹配时**: 跳到 Step 2 用 `kb_catalog()` 做 KB 级扫描。
+
+---
+
+### Step 1-E — 经验优先 (仅操作/故障类查询)
+
+| 信号 | 工具 | 强度 |
+|------|------|------|
+| 精确场景 | `experience_find_by_scenario(kb_id, scenario)` | ★★★ 最强 |
+| 语义 | `experience_search_vector(kb_id, query, top_k=5)` | ★★ (阈值 ≥0.55) |
+| 跨库 | `experience_search_global(query, top_k=10)` | ★ (兜底) |
+
+置信度: P0 (场景精确 + ≥0.65 + rating≥4), P1 (≥0.55 + rating≥3), P2 (0.45-0.55, 压制).
+短内容 (<50 字符) → 压制. 可信度衰减: 未验证 if applied=0 >30d.
+
+> 经验找到 P0/P1 后仍需继续文档检索 (Step 1) 作为补充，两者合并呈现。
+
+---
+
+### Step 2 — 描述智能 (Gate 2: Agent 判断)
+
+对 Step 1 的候选文档，Agent 逐篇阅读 description 并打分:
+
+```
+# 获取候选文档的轻量描述（如果 Step 1 的返回已含 description 则直接用）
+# 否则按 KB 获取：
+kb_doc_catalog(kb_id)  # 仅对候选集中的 KB
+```
+
+**Agent 打分标准 (0-10)**:
+
+| 分数 | 标准 | 动作 |
+|:---:|------|------|
+| 8-10 | description 直接表明文档回答了查询问题 | **保留** — P0 候选 |
+| 6-7 | description 显示文档涉及查询主题，可能相关 | **保留** — P1 候选 |
+| 4-5 | description 涉及查询的上级领域但不直接相关 | 降级 — P2 候选 |
+| 0-3 | description 与查询无关 | **丢弃** |
+
+**关键规则**: Agent 在这里用**人类判断力**读 description，不是做字符串匹配。
+例: 查询 "PVA 拉伸后强度变化" → description "PVA 薄膜在 120°C 双向拉伸条件下力学性能研究" → 9 分（直接回答）
+→ description "PVA 在极性薄膜中的应用综述" → 5 分（涉及但不直接）
+
+**输出**: 筛选后的候选文档（≤8 篇），每篇带 Agent 评分。
+
+---
+
+### Step 3 — BM25 安全网 (并行补漏)
+
+**目的**: 捕获标签未覆盖但关键词确实匹配的文档。
+
+```
+# 只取 Stage 1 BM25 结果（stage2_top_k=0 跳过向量阶段）
+kb_search_two_stage(query, kb_id="", stage1_top_k=15, stage2_top_k=0)
+```
+
+**处理**: 将 BM25 结果与 Step 2 候选合并去重（按 doc_path）。
+BM25 新发现且不在 Step 2 候选中的文档 → 标记来源 `bm25`，进入 Step 4 一起做内容裁决。
+
+> **BM25 候选 ≤3 且来自 <2 个 KB**: 触发安全网 B (Step 3-V 向量兜底)。
+
+### Step 3-V — 向量兜底 (仅当 Step 1+2+3 合计 <3 篇)
+
+```
+kb_search_vector(query, kb_id="", top_k=5)
+```
+
+向量结果仍需过 Step 4 内容裁决，不直接采纳。
+
+---
+
+### Step 4 — 内容裁决 (THE Core Step — 地面真相)
+
+**这是整个检索的核心。** 不是向量说了算，是 Agent **读到真实内容**后说了算。
+
+对合并后的全部候选（≤8 篇），逐篇读真实内容:
+
+```
+# 读每篇文档的前 3000 字符（覆盖摘要+引言+方法开头）
+kb_doc_read(kb_id, doc_path, max_chars=3000)
+```
+
+**Agent 内容评分 (0-8)**:
+
+| 维度 | 分值 | 判断标准 |
+|------|:---:|------|
+| **主题相关性** | 0-3 | 文档实际内容是否关于查询主题？3=完全一致, 2=高度相关, 1=边缘相关, 0=不相关 |
+| **场景匹配度** | 0-3 | 文档是否直接回答了查询的具体问题？3=直接回答, 2=部分回答, 1=间接相关, 0=不回答 |
+| **答案潜力** | 0-2 | 文档是否包含可用的具体信息（数据/方法/结论）？2=有具体数据/方法, 1=有方向性信息, 0=无实质内容 |
+
+| 总分 | 判定 | 动作 |
+|:---:|------|------|
+| 6-8 | **确认** | P0 — 直接用于综合答案 |
+| 5 | **可用** | P1 — 补充信息，标注置信度 |
+| ≤4 | **丢弃** | 不呈现给用户 |
+
+**内容裁决的关键原则**:
+1. **Agent 看的是内容，不是分数** — 向量 score 0.9 但内容不回答问题 → 丢弃
+2. **短内容警惕** — 读到的内容 <200 字符 → 降级一档
+3. **内容与描述矛盾** — description 说 "PVA 力学性能" 但内容是 "PVA 光学性质" → 以内容为准，标记描述不准确
+4. **跨语言验证** — 中文查询匹配英文文档时，读内容确认确实相关（不只看标题翻译）
+
+---
+
+### Step 5 — 置信度分层与融合
+
+**多源置信度矩阵**:
+
+| 标签命中 | 描述评分 | 内容评分 | 最终置信度 |
+|:---:|:---:|:---:|------|
+| ★★★ | 8-10 | 6-8 | **P0 Strong** — 三重确认，最高可信 |
+| ★★☆ | 6-7 | 5-6 | **P1 Confirmed** — 双重确认 |
+| ★☆☆ 或 BM25 | 4-5 | 5 | **P2 Supplement** — 辅助参考，需标注 |
+| 仅向量 | — | 5 | **P2 Vector-only** — 需重点验证 |
+| 任意 | — | ≤4 | **Discard** — 丢弃，不呈现 |
+
+**跨库盲区检查**:
+- 如果最终确认的 P0/P1 文档来自 <2 个 KB → 触发 `Skill("knowledgebase-search-enterprise")` 做全库扩展
+- 但仅扩展，不降级已有 P0 结果
+
+---
+
+### Step 6 — 综合答案
+
+```
+## 检索结果
+
+### 检索路径
+查询: "{user_query}"
+意图: {factual/comparative/operational/exploratory}
+标签锚定: 匹配标签 [{tag1}, {tag2}] → {N} 篇候选
+描述筛选: {M} 篇进入内容裁决
+内容裁决: {K} 篇确认相关 (P0: {k0}, P1: {k1})
+安全网: BM25 补充 {b} 篇 / 向量兜底 {v} 篇
+
+### 答案
+{Agent 基于确认文档内容综合的回答}
+
+### 来源文档
+1. **[{doc_name}]** (P0) — {一句话说明为何相关}
+   路径: {doc_path}
+   内容要点: {从文档中提取的关键信息}
+2. ...
+
+### 置信度
+{High/Medium/Low} — {原因}
+
+### 盲区
+{明确说明哪些方面知识库中没有覆盖}
+```
+
+---
+
+## 自适应深度
+
+| 深度 | 场景 | 流程 |
 |---|---|---|
-| L1 Shallow | Fact lookup (1-2 KBs) | Catalog → Read → Answer |
-| L2 Standard | Knowledge Q&A (2-3 KBs) | Catalog → Doc Catalog → Vector → Content Verify → Answer |
-| L3 Deep | Comparison/analysis (3-5 KBs) | Full + graph expansion |
-| L4 Explore | Cross-domain exploration | Full + enterprise upgrade |
+| **L1 快速** | 事实查询，1-2 个标签直接命中 | Step 1 → Step 4 (跳过 2,3) → Step 6 |
+| **L2 标准** | 知识问答，标签+描述筛选 | Step 0 → 1 → 2 → 4 → 6 |
+| **L3 深度** | 对比/分析，多维度交叉 | Step 0 → 1 → 2 → 3 → 4 → 5 → 6 |
+| **L4 全库** | 跨域探索 | L3 + 触发 enterprise 升级 |
 
-## Complete Workflow (7 Steps)
+---
 
-### Step 0 — Intent
-- Operation/fault query ("怎么处理", "排查") → experience-first
-- Knowledge/comparison ("什么是", "原理", "对比") → document-first
+## 与旧方案的核心差异
 
-### Step 1 — KB Catalog Scan
-kb_catalog() → read descriptions. Prioritize sub-KBs.
-Rate: ★★★ (direct match), ★★☆ (category match), ★☆☆ (tangential)
+| 维度 | 旧方案 (Vector-Confirm) | 新方案 (Content-First) |
+|------|------------------------|----------------------|
+| **主判据** | 向量相似度 (Step 4 是向量确认) | 真实内容 (Step 4 是内容裁决) |
+| **第一步** | KB catalog (读 KB description) | 标签锚定 (用 tags 精准定位) |
+| **向量角色** | 主要确认工具 (Step 4) | 最后兜底 (Step 3-V, 仅当候选<3) |
+| **内容阅读** | 验证步骤 (Step 6, max 1200 字) | 核心裁决 (Step 4, max 3000 字) |
+| **BM25** | Stage 1 主检索 | 安全网补漏 (Step 3, 可跳过向量阶段) |
+| **效率** | 6-7 步，向量是必经路径 | 4-5 步，标签→描述→内容，向量可完全跳过 |
 
-### Step 2 — Doc Catalog Scan
-kb_doc_catalog(kb_id) → read each doc's description. Score 0-10. Discard <5.
+## 关键规则
 
-### Step 3 — Experience Priority (operation queries only)
-| Signal | Tool | Strength |
-|---|---|---|
-| Exact scenario | experience_find_by_scenario(kb_id, scenario) | ★★★ Strongest |
-| Semantic | experience_search_vector(kb_id, query, top_k=5) | ★★ (threshold >=0.55) |
-| Cross-KB | experience_search_global(query, top_k=10) | ★ (fallback) |
-
-Confidence: P0 (scenario exact + >=0.65 + rating>=4), P1 (>=0.55 + rating>=3), P2 (0.45-0.55, suppressed). Short chunk (<50 chars) -> suppress. Credibility decay: unverified if applied=0 >30d.
-
-### Step 4 — Vector Confirm (within confirmed candidates)
-kb_search_two_stage(query, kb_id, stage2_top_k=3).
-Cross-validate: Agent score vs vector score. Agent wins on conflict.
-Cross-KB blind: if candidates from <2 KBs -> upgrade to enterprise.
-
-### Step 4.5 — Graph Expansion (optional, when candidates are sparse)
-See [graph-tools.md](../knowledgebase-graph/references/graph-tools.md) for:
-kb_graph_document_related(doc_path) — discover related docs
-kb_graph_central_documents(kb_id) — find hub docs (reviews/surveys)
-kb_graph_kb_overview(kb_id) — understand KB's structure
-kb_graph_cross_kb_documents(min_kbs=2) — find bridge docs
-
-### Step 5 — Sub-KB Backtrack (fallback, if candidates too few)
-fs_get_children(parent_id) to scan sibling sub-KBs for overlapping topics.
-
-### Step 6 — Content Verify (mandatory)
-kb_doc_read(kb_id, doc_path, max_chars=1200). Score 0-8 (topic 0-3 + scenario 0-3 + answer potential 0-2). <=4 discard.
-
-### Step 7 — Synthesize
-Answer with: retrieval trace (sub-KB->doc->vector->verify) + experience (if P0/P1) + source docs + certainty + blind spots.
+1. **标签是锚点** — 查询分析后先匹配标签，这是最快最准的入口
+2. **描述是过滤器** — Agent 用人类判断力读 description，不做字符串匹配
+3. **内容是裁决者** — 最终是否相关，由 Agent 读真实内容决定，不由向量分数决定
+4. **向量是兜底** — 仅当标签+描述+BM25 三道门都收窄到 <3 篇时才启用
+5. **经验优先** — 操作/故障类查询先查经验，但文档检索不因此跳过
+6. **诚实盲区** — 知识库没有的内容，明确说"未找到"，不编造
+7. **读够内容** — 内容裁决读 3000 字符（不是 1200），确保看到方法部分
+8. **短内容降级** — 内容 <200 字符的文档降一档置信度

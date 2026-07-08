@@ -19,6 +19,7 @@ description: >
 **Strategy:**
 | Intent | Tool |
 |---|---|
+| List all (filter by scenario/category/tag) | `experience_list(kb_id, scenario?, category?, tag?)` |
 | Exact scenario match | `experience_find_by_scenario(kb_id, scenario)` |
 | Natural language | `experience_search_vector(kb_id, query, top_k=5)` |
 | Cross-KB global | `experience_search_global(query, top_k=10)` |
@@ -47,3 +48,7 @@ description: >
 
 ## E5 — Statistics
 `experience_summary(kb_id)` — total count, by_category, by_severity, top N.
+
+## E6 — Maintain
+- Update fields: `experience_update(kb_id, exp_id, title?, scenario?, category?, ...)` — only pass fields to change. Use to fix scenario mismatch, refresh key_lessons, or re-tag.
+- Delete: `experience_delete(kb_id, exp_id)` — permanent, irreversible. Confirm first (unless Module Mode). Use for test residue or wrong-domain entries found during organize.

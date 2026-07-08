@@ -119,6 +119,16 @@ class KbClient:
                     status[name] = r.status_code == 200
                 except Exception as e:
                     status["errors"].append(f"{name}: {e}")
+            # MinerU status — call the backend's /api/v1/mineru/status endpoint
+            try:
+                r = await c.get(f"{self.backend_url}/api/v1/mineru/status")
+                if r.status_code == 200:
+                    data = r.json()
+                    status["mineru"] = bool(data.get("running", False))
+                else:
+                    status["errors"].append(f"mineru: HTTP {r.status_code}")
+            except Exception as e:
+                status["errors"].append(f"mineru: {e}")
             status["all_ok"] = status["backend"] and status["web"]
             return status
 
@@ -162,13 +172,16 @@ class KbClient:
     # DOCUMENT MANAGEMENT (CRUD)
     # ================================================================
 
-    async def kb_doc_read(self, kb_id="", doc_path="", path="", max_chars=20000, offset=0, limit=200):
+    async def kb_doc_read(self, kb_id="", doc_path="", path="", max_chars=20000, offset=0, limit=200, doc_id=""):
         """Read the content of a document (paginated).
 
-        Accepts kb_id+doc_path or path alone. When kb_id and doc_path
+        Accepts doc_id, kb_id+doc_path, or path alone. When doc_id is provided,
+        it is resolved to a path via the web API. When kb_id and doc_path
         are provided, doc_path is resolved relative to the KB."""
         params = {"max_chars": max_chars, "offset": offset, "limit": limit}
-        if path:
+        if doc_id:
+            params["doc_id"] = doc_id
+        elif path:
             params["path"] = path
         else:
             params["kb_id"] = kb_id
@@ -277,25 +290,20 @@ class KbClient:
     # DOCUMENT PARSING  (PDF / Word / Image — all via MinerU)
     # ================================================================
 
-    async def parse_doc(self, file_path, kb_id, use_ocr=True, description="", tags=None):
-        """Parse a document (PDF/Image/Word/Excel) and save into a knowledge base.
-        tags: optional list[str] written to .knowledge-base.yml.
+    async def parse_doc(self, file_path, use_ocr=True):
+        """Parse a document (PDF/Image/Word/Excel) and return the markdown result.
+
+        **Atomic**: ONLY parses. Does NOT save to KB, does NOT index.
         Supported: .pdf .png .jpg .jpeg .docx .xlsx."""
-        data = {"use_ocr": str(use_ocr).lower(), "parent_id": kb_id}
-        if description:
-            data["description"] = description
-        if tags:
-            data["tags"] = ",".join(tags)
+        data = {"use_ocr": str(use_ocr).lower()}
         return await self._post_file("/api/parse/file-vt", file_path, data, timeout=PARSE_TIMEOUT)
 
-    async def parse_doc_batch(self, file_paths, kb_id, use_ocr=True, descriptions=None, tags=None):
-        """Batch: parse multiple documents (PDF/Image/Word/Excel) and save into the same KB.
+    async def parse_doc_batch(self, file_paths, use_ocr=True):
+        """Batch: parse multiple documents (PDF/Image/Word/Excel).
 
-        Files are parsed sequentially; each successful one is saved into
-        *kb_id* via the parse pipeline (parent_id = kb_id). Returns an
-        aggregate {total, successful, results} so callers can see which
-        files failed without losing the ones that succeeded.
-        tags: optional list[str] applied to every file (written to .knowledge-base.yml).
+        **Atomic**: ONLY parses. Does NOT save to KB, does NOT index.
+        Files are parsed sequentially. Returns an aggregate
+        {total, successful, results} so callers can see which files failed.
         Supported: .pdf .png .jpg .jpeg .docx .xlsx."""
 
         results = []
@@ -304,11 +312,8 @@ class KbClient:
             if not p.exists():
                 results.append({"success": False, "file": fp, "error": "file not found"})
                 continue
-            desc = descriptions[i] if descriptions and i < len(descriptions) else ""
             try:
-                payload = {"use_ocr": str(use_ocr).lower(), "parent_id": kb_id, "description": desc}
-                if tags:
-                    payload["tags"] = ",".join(tags)
+                payload = {"use_ocr": str(use_ocr).lower()}
                 r = await self._post_file(
                     "/api/parse/file-vt", fp,
                     payload,
@@ -320,7 +325,7 @@ class KbClient:
             except Exception as e:
                 results.append({"success": False, "file": fp, "error": f"{type(e).__name__}: {e}"})
         successful = sum(1 for r in results if isinstance(r, dict) and r.get("success"))
-        return {"total": len(results), "successful": successful, "saved_to_kb": kb_id, "results": results}
+        return {"total": len(results), "successful": successful, "results": results}
 
     # ================================================================
     # TAGS MANAGEMENT
@@ -355,7 +360,8 @@ class KbClient:
         """Get backend service health and MinerU OCR engine status."""
         results = {}
         for name, endpoint in [
-            ("backend_health", "/api/v1/health")
+            ("backend_health", "/api/v1/health"),
+            ("mineru_status", "/api/v1/mineru/status"),
         ]:
             try:
                 results[name] = await self._request("GET", endpoint, base=self.backend_url, timeout=5)
@@ -425,8 +431,13 @@ class KbClient:
             body["kb_id"] = kb_id
         return await self._post_backend_json("/api/v1/search/reindex", body, timeout=INDEX_TIMEOUT)
 
-    async def index_document(self, kb_id, doc_path, doc_name="", description="", content=""):
-        """单文档索引：向量 + 图谱。存入向量库并记录 vector_index 到元信息。"""
+    async def index_document(self, kb_id, doc_path, doc_name="", description="", content="", doc_id=""):
+        """单文档索引：向量 + 图谱。存入向量库并记录 vector_index 到元信息。
+
+        支持两种模式：
+        1. doc_id 模式：提供 doc_id，自动解析 kb_id 和 doc_path
+        2. 传统模式：提供 kb_id + doc_path
+        """
         body = {
             "kb_id": kb_id,
             "doc_path": doc_path,
@@ -434,6 +445,8 @@ class KbClient:
             "description": description,
             "content": content,
         }
+        if doc_id:
+            body["doc_id"] = doc_id
         return await self._post_backend_json("/api/v1/search/index-document", body, timeout=INDEX_TIMEOUT)
 
     async def batch_index_documents(self, kb_id, doc_paths, force=False):

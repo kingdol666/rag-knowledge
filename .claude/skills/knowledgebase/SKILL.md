@@ -41,7 +41,7 @@ No clear match? Contains 查/问/search → Search. Contains 存/上传/store �
 | Ingest | `Skill("knowledgebase-ingest")` |
 | Manage | `Skill("knowledgebase-manage")` |
 | Organize | `Skill("knowledgebase-organize")` |
-| Search | `Skill("knowledgebase-search")` → auto-upgrades to enterprise if blind |
+| Search | `Skill("knowledgebase-search")` → Content-First: 标签锚定→描述智能→内容裁决, 向量仅兜底; auto-upgrades to enterprise if blind |
 | Search-Enterprise | `Skill("knowledgebase-search-enterprise")` |
 | Verify | `Skill("knowledgebase-verify")` |
 | List | `Skill("knowledgebase-list")` |

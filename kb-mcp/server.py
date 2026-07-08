@@ -72,35 +72,10 @@ def _running_payload(task_id: str, kind: str, detail: dict | None = None) -> str
 
 
 # ────────────────────────────────────────────────────────────────
-# Auto-index helper (fire-and-forget): vector index + graph +
-# vector_index YAML metadata for any document change.
-# All document/non-parse write tools call this via asyncio.create_task.
+# NOTE: All MCP tools are ATOMIC operations.
+# Each tool does ONE thing only. Complex workflows (parse → upload → index)
+# are orchestrated by skills, NOT by the API layer.
 # ────────────────────────────────────────────────────────────────
-
-async def _auto_index_kb(kb_id: str, force: bool = False) -> None:
-    """Best-effort background indexing: batch vector index + graph build.
-
-    Called fire-and-forget after any document mutation (create, update,
-    upload, move).  If indexing fails the main tool result is unaffected.
-    """
-    import logging
-    logger = logging.getLogger(__name__)
-    try:
-        await asyncio.sleep(1.5)  # brief wait for web layer persistence
-        client = _client()
-        docs_resp = await client.kb_get_documents(kb_id)
-        if not isinstance(docs_resp, dict) or not docs_resp.get("success"):
-            return
-        all_docs = docs_resp.get("documents", [])
-        doc_paths = [d["path"] for d in all_docs if "path" in d]
-        if not doc_paths:
-            return
-        # Phase 1: vector index + vector_index YAML metadata
-        await client.batch_index_documents(kb_id, doc_paths, force=force)
-        # Phase 2: knowledge graph
-        await client.graph_build_kb(kb_id, force=False)
-    except Exception:
-        logger.warning("Auto-index background task failed for KB %s", kb_id, exc_info=True)
 
 
 # ============================================================
@@ -125,14 +100,8 @@ async def kb_list() -> str:
 
 @mcp.tool()
 async def kb_create(name: str, description: str = "", parent_id: str = "") -> str:
-    """Create a new knowledge base. parent_id is an optional tree folder UUID for nesting (omit for root). Returns knowledgeBase with id (UUID) and path -- both work as kb_id in other tools. Automatically initializes the experience management folder."""
-    result = await _client().kb_create(name, description, parent_id)
-    if isinstance(result, dict) and result.get("success") and result.get("knowledgeBase", {}).get("id"):
-        try:
-            await _client().experience_init(result["knowledgeBase"]["id"])
-        except Exception:
-            pass  # non-fatal: experience init failure shouldn't break KB creation
-    return _j(result)
+    """Create a new knowledge base. parent_id is an optional tree folder UUID for nesting (omit for root). Returns knowledgeBase with id (UUID) and path -- both work as kb_id in other tools."""
+    return _j(await _client().kb_create(name, description, parent_id))
 
 
 @mcp.tool()
@@ -252,25 +221,25 @@ async def fs_catalog_all(include_files: bool = True) -> str:
 # ============================================================
 
 @mcp.tool()
-async def kb_doc_read(kb_id: str = "", doc_path: str = "", path: str = "", max_chars: int = 20000, offset: int = 0, limit: int = 200) -> str:
+async def kb_doc_read(kb_id: str = "", doc_path: str = "", path: str = "", doc_id: str = "", max_chars: int = 20000, offset: int = 0, limit: int = 200) -> str:
     """Read the content of a document (Markdown body, paginated).
 
-    Accepts either kb_id+doc_path (bare filename or relative, e.g.
-    kb_id="uuid" doc_path="readme.md") or path (full relative path,
-    e.g. "test/readme.md"). max_chars limits response size."""
-    return _j(await _client().kb_doc_read(kb_id, doc_path, path, max_chars, offset, limit))
+    Accepts one of:
+    - doc_id: document UUID (preferred, resolves automatically)
+    - kb_id+doc_path (bare filename or relative, e.g. kb_id="uuid" doc_path="readme.md")
+    - path (full relative path, e.g. "test/readme.md")
+
+    max_chars limits response size."""
+    return _j(await _client().kb_doc_read(kb_id, doc_path, path, max_chars, offset, limit, doc_id))
 
 
 @mcp.tool()
 async def kb_doc_create(kb_id: str, name: str, content: str, description: str = "") -> str:
-    """Create a new Markdown document. Auto-dedup on name collision.
+    """Create a new Markdown document in a KB. Auto-dedup on name collision.
 
-    **Auto-indexing**: after creation the document is automatically vector
-    indexed (ChromaDB) and graph indexed (Neo4j), and ``vector_index``
-    metadata is written to ``.knowledge-base.yml``."""
-    result = await _client().kb_doc_create(kb_id, name, content, description)
-    asyncio.create_task(_auto_index_kb(kb_id))
-    return _j(result)
+    **Atomic**: ONLY creates the document (file + .tree-fs.json + .knowledge-base.yml with file ID).
+    Does NOT index. Use kb_index_document or kb_batch_index separately."""
+    return _j(await _client().kb_doc_create(kb_id, name, content, description))
 
 
 @mcp.tool()
@@ -283,12 +252,9 @@ async def kb_doc_update_meta(kb_id: str, doc_path: str, name: str = "", descript
 async def kb_doc_update_content(kb_id: str, doc_path: str, content: str) -> str:
     """Overwrite a document's content.
 
-    **Auto-indexing**: after the content update, the document is automatically
-    re-vector-indexed and its graph index rebuilt, and ``vector_index``
-    metadata is refreshed in ``.knowledge-base.yml``."""
-    result = await _client().kb_doc_update_content(kb_id, doc_path, content)
-    asyncio.create_task(_auto_index_kb(kb_id, force=True))
-    return _j(result)
+    **Atomic**: ONLY updates the file content + syncs .tree-fs.json + .knowledge-base.yml.
+    Does NOT re-index. Use kb_index_document separately if needed."""
+    return _j(await _client().kb_doc_update_content(kb_id, doc_path, content))
 
 
 @mcp.tool()
@@ -307,17 +273,11 @@ async def kb_doc_batch_delete(kb_id: str, doc_paths: list) -> str:
 async def kb_doc_move(doc_path: str, target_kb_id: str) -> str:
     """Move a document to a different knowledge base.
 
-    **Auto-indexing**: after the move, both the source and target KBs have
-    their vector index, graph index, and ``vector_index`` YAML metadata
-    automatically rebuilt."""
-    result = await _client().kb_doc_move(doc_path, target_kb_id)
-    # Index both KBs — derive source kb_id from the doc_path
-    # (doc_path looks like "SourceKB/doc.md")
-    source_path = doc_path.split("/")[0].split("\\")[0] if "/" in doc_path or "\\" in doc_path else ""
-    if source_path and source_path != target_kb_id:
-        asyncio.create_task(_auto_index_kb(source_path, force=True))
-    asyncio.create_task(_auto_index_kb(target_kb_id, force=True))
-    return _j(result)
+    **Atomic**: ONLY moves the file + syncs .tree-fs.json + .knowledge-base.yml
+    (both source and target). Does NOT re-index or clean up old vectors/graph.
+    Use kb_index_document on the new path, and DELETE /api/v1/search/document
+    + DELETE /api/v1/graph/document on the old path separately if needed."""
+    return _j(await _client().kb_doc_move(doc_path, target_kb_id))
 
 
 # ============================================================
@@ -401,14 +361,9 @@ async def fs_delete_node(node_id: str) -> str:
 async def fs_upload_file(file_path: str, parent_id: str = "", description: str = "") -> str:
     """Upload a local file into the file system tree. file_path is an absolute local disk path. parent_id is a tree folder UUID (empty = root).
 
-    **Auto-indexing**: if the parent folder is a knowledge base, the uploaded
-    file is automatically vector indexed and graph indexed, and
-    ``vector_index`` metadata written to ``.knowledge-base.yml``."""
-    result = await _client().fs_upload_file(file_path, parent_id, description)
-    # If parent_id looks like a KB path (not a UUID), use it directly
-    if parent_id:
-        asyncio.create_task(_auto_index_kb(parent_id, force=True))
-    return _j(result)
+    **Atomic**: ONLY uploads the file + writes .tree-fs.json + .knowledge-base.yml (with file ID).
+    Does NOT index. Use kb_index_document separately if needed."""
+    return _j(await _client().fs_upload_file(file_path, parent_id, description))
 
 
 # ============================================================
@@ -430,282 +385,68 @@ async def preview_file(node_id: str = "", path: str = "") -> str:
 # ============================================================
 
 @mcp.tool()
-async def parse_doc(file_path: str, kb_id: str, use_ocr: bool = True, description: str = "", tags: list = None) -> str:
-    """Parse a document (PDF / Image / Word / Excel) into Markdown and save into a knowledge base.
+async def parse_doc(file_path: str, use_ocr: bool = True) -> str:
+    """Parse a document (PDF / Image / Word / Excel) into Markdown.
 
-    NON-BLOCKING: parse the file, then save the Markdown into the given
-    knowledge base. You may provide a ``description`` to help identify the
-    parsed document in the KB (searchable / visible in the UI).
-    Returns immediately with a task_id once parsing has started;
-    poll the result with parse_task_status(task_id).
+    **Atomic**: ONLY parses the file and returns the markdown content + paths.
+    Does NOT save to KB, does NOT index.
+    After parsing, use kb_doc_create or fs_upload_file to save the markdown,
+    then kb_index_document to index.
 
-    **Auto-indexing**: after successful parse + save, the task automatically
-    triggers vector index (ChromaDB) and knowledge graph (Neo4j) for the
-    document, so ``kb_search_vector`` and ``kb_graph_*`` work immediately
-    once the task completes.
+    NON-BLOCKING: returns a task_id immediately; poll with parse_task_status.
 
     Supported formats: .pdf .png .jpg .jpeg .docx .xlsx
 
-    Returns {success, status:'running', task_id, ...} right away."""
+    Returns {success, status:'running', task_id} right away.
+    When done, result holds {markdown, markdown_path, images_dir, ...}.
+    """
     if not _exists(file_path):
         return _j({"success": False, "error": f"file not found: {file_path}"})
     client = _client()
-    meta = {"file_path": file_path, "kb_id": kb_id, "use_ocr": use_ocr, "description": description, "tags": tags}
+    meta = {"file_path": file_path, "use_ocr": use_ocr}
 
     async def _work():
-        result = await client.parse_doc(file_path, kb_id, use_ocr, description, tags)
+        result = await client.parse_doc(file_path, use_ocr=use_ocr)
         if isinstance(result, dict) and result.get("success"):
-            payload = {
+            return {
                 "success": True,
                 "source_filename": result.get("source_filename"),
                 "markdown_path": result.get("markdown_path"),
+                "images_dir": result.get("images_dir") or result.get("image_dir"),
                 "image_count": result.get("image_count"),
+                "markdown": result.get("markdown", ""),
                 "markdown_chars": len(result.get("markdown", "") or ""),
-                "saved_to_kb": kb_id,
+                "parse_method": result.get("parse_method"),
             }
-
-            # ─────────────────────────────────────────────────────
-            # Phase 2: auto vector index + vector_index YAML metadata
-            # ─────────────────────────────────────────────────────
-            await asyncio.sleep(2)  # brief wait for web layer persistence
-            try:
-                docs_resp = await client.kb_get_documents(kb_id)
-                if isinstance(docs_resp, dict) and docs_resp.get("success"):
-                    all_docs = docs_resp.get("documents", [])
-                    doc_paths = [d["path"] for d in all_docs if "path" in d]
-                    if doc_paths:
-                        # Batch-vector-index all docs (writes vector_index to YAML)
-                        index_resp = await client.batch_index_documents(
-                            kb_id, doc_paths, force=False
-                        )
-                        payload["auto_indexed"] = (
-                            index_resp.get("total_indexed", 0)
-                            if isinstance(index_resp, dict) else 0
-                        )
-
-                        # Build knowledge graph for the KB
-                        graph_resp = await client.graph_build_kb(kb_id, force=False)
-                        if isinstance(graph_resp, dict) and graph_resp.get("result"):
-                            payload["auto_graph_docs"] = (
-                                graph_resp["result"].get("docs_processed", 0)
-                            )
-
-                    payload["auto_pipeline"] = "auto-vector-index+graph"
-            except Exception as e:
-                payload["auto_index_warning"] = str(e)
-
-            return payload
         return result
 
     task_id = task_registry.submit(_work(), "parse_doc", meta)
-    return _running_payload(task_id, "parse_doc", {"file_path": file_path, "kb_id": kb_id, "description": description if description else None})
+    return _running_payload(task_id, "parse_doc", {"file_path": file_path})
 
 
 @mcp.tool()
-async def parse_doc_batch(file_paths: list, kb_id: str, use_ocr: bool = True, descriptions: list = None, tags: list = None) -> str:
-    """Batch: parse multiple documents (PDF / Image / Word / Excel) and save each into the same knowledge base.
+async def parse_doc_batch(file_paths: list, use_ocr: bool = True) -> str:
+    """Batch: parse multiple documents (PDF / Image / Word / Excel) into Markdown.
 
-    NON-BLOCKING: all files parse (sequentially) in ONE background task,
-    so you get back a single task_id instead of one per file. You may
-    provide ``descriptions`` (one per file, in order) to label each
-    parsed document in the KB. Poll with parse_task_status(task_id).
-    When done the result is {total, successful, saved_to_kb, results:[...]}
-    where each entry in results carries the per-file outcome.
+    **Atomic**: ONLY parses files and returns markdown results.
+    Does NOT save to KB, does NOT index, does NOT auto-describe.
+    After parsing, use kb_doc_create or fs_upload_file for each file,
+    then kb_batch_index to index.
+
+    NON-BLOCKING: all files parse sequentially in ONE background task.
+    Poll with parse_task_status(task_id).
+    When done the result is {total, successful, results:[...]}.
 
     Supported formats: .pdf .png .jpg .jpeg .docx .xlsx"""
     missing = [fp for fp in file_paths if not _exists(fp)]
     if missing:
         return _j({"success": False, "error": "file(s) not found", "missing": missing})
     client = _client()
-    meta = {"file_paths": list(file_paths), "kb_id": kb_id, "use_ocr": use_ocr, "descriptions": descriptions, "tags": tags}
+    meta = {"file_paths": list(file_paths), "use_ocr": use_ocr}
 
     async def _batch_work():
-        """Parse batch → auto-describe → auto-vector-index → auto-graph-build → quality-check pipeline."""
-        import time
-        from pathlib import Path
-        # Phase 1: parse all files
-        parse_result = await client.parse_doc_batch(file_paths, kb_id, use_ocr, descriptions, tags)
-        successful = parse_result.get("successful", 0)
-        if successful == 0:
-            return parse_result
-
-        # Wait a brief moment for web layer to persist files
-        await asyncio.sleep(2)
-
-        quality = {"description_issues": [], "vector_missing": [], "warnings": [],
-                   "descriptions_auto_generated": []}
-
-        # Phase 2: get all documents in the KB to discover their paths
-        try:
-            docs_resp = await client.kb_get_documents(kb_id)
-            if isinstance(docs_resp, dict) and docs_resp.get("success"):
-                all_docs = docs_resp.get("documents", [])
-                doc_paths = [d["path"] for d in all_docs if "path" in d]
-                if doc_paths:
-                    # ─────────────────────────────────────────────────────
-                    # Phase 2a: Auto-generate A4 descriptions from content
-                    # Read the first 2000 chars of each doc, extract the
-                    # real title and abstract, write an A4-format description
-                    # that an Agent can use to judge relevance at a glance.
-                    # ─────────────────────────────────────────────────────
-                    import re
-                    for doc in all_docs:
-                        try:
-                            doc_name = doc.get("name", "")
-                            current_desc = (doc.get("description") or "").strip()
-                            # Read doc content (bare filename as doc_path)
-                            content_resp = await client.kb_doc_read(
-                                kb_id=kb_id, doc_path=doc_name, max_chars=2000
-                            )
-                            content = ""
-                            if isinstance(content_resp, dict):
-                                content = content_resp.get("markdown") or content_resp.get("content") or ""
-
-                            if content and len(content) > 100:
-                                # Extract real title (first # line)
-                                title_match = re.search(r'^#\s+(.+)$', content, re.MULTILINE)
-                                real_title = title_match.group(1).strip() if title_match else ""
-
-                                # Extract abstract
-                                abstract = ""
-                                abs_match = re.search(
-                                    r'##\s*(?:ABSTRACT|Abstract|摘要)\s*\n(.*?)(?:\n##|\Z)',
-                                    content, re.DOTALL
-                                )
-                                if abs_match:
-                                    abstract = abs_match.group(1).strip()[:500]
-
-                                # Build A4-format description
-                                # Format: [Title] — [key methods/approach] — [problem/solution] — [key metrics] — [year/source]
-                                parts = []
-                                if real_title:
-                                    parts.append(real_title)
-                                else:
-                                    parts.append(doc_name.replace('.md','').replace('-',' '))
-
-                                # Extract key methods and metrics from abstract
-                                if abstract:
-                                    # Take first 2 sentences as method + result summary
-                                    sentences = re.split(r'(?<=[.!?])\s+', abstract)
-                                    method_part = sentences[0][:200] if sentences else ""
-                                    parts.append(method_part)
-                                    if len(sentences) > 1:
-                                        result_part = sentences[1][:200]
-                                        parts.append(result_part)
-
-                                # Find year (YYYY) in filename or content
-                                year_match = re.search(r'(19|20)\d{2}', doc_name + content[:500])
-                                year_str = year_match.group(0) if year_match else ""
-
-                                # Build final description (120-250 chars, A4 format)
-                                a4_desc = " — ".join(p.strip() for p in parts if p.strip())[:350]
-                                if a4_desc and len(a4_desc) > 60:
-                                    # Only apply if significantly better than current
-                                    if not current_desc or len(current_desc) < 30 or \
-                                       current_desc.startswith("Parsed from") or \
-                                       current_desc == doc_name.replace('.md',''):
-                                        desc_to_set = a4_desc
-                                    else:
-                                        # Keep current if it already has good content; flag for review
-                                        desc_to_set = None
-                                        quality["description_issues"].append({
-                                            "path": doc.get("path"),
-                                            "name": doc_name,
-                                            "current_desc": current_desc[:80],
-                                            "auto_suggestion": a4_desc[:200],
-                                        })
-
-                                    if desc_to_set:
-                                        try:
-                                            await client.kb_doc_update_meta(
-                                                kb_id=kb_id, doc_path=doc_name,
-                                                description=desc_to_set
-                                            )
-                                            quality["descriptions_auto_generated"].append({
-                                                "name": doc_name,
-                                                "old": current_desc[:60],
-                                                "new": desc_to_set[:120],
-                                            })
-                                        except Exception as e:
-                                            quality["warnings"].append(
-                                                f"description更新失败: {doc_name}: {e}"
-                                            )
-                        except Exception:
-                            pass  # non-fatal per-doc
-
-                    # Phase 2b: batch vector index all docs → ChromaDB
-                    index_resp = await client.batch_index_documents(kb_id, doc_paths, force=False)
-                    indexed_count = index_resp.get("total_indexed", 0) if isinstance(index_resp, dict) else 0
-                    parse_result["auto_indexed"] = indexed_count
-
-                    # Phase 2c: build knowledge graph → Neo4j
-                    graph_resp = await client.graph_build_kb(kb_id, force=False)
-                    graph_docs = 0
-                    if isinstance(graph_resp, dict) and graph_resp.get("result"):
-                        graph_docs = graph_resp["result"].get("docs_processed", 0)
-                    parse_result["auto_graph_docs"] = graph_docs
-
-                    # ─────────────────────────────────────────────────────
-                    # Phase 3: Quality Check (lightweight organize audit)
-                    # ─────────────────────────────────────────────────────
-
-                    # 3a — O11-lite: remaining description issues check
-                    for doc in all_docs:
-                        desc = (doc.get("description") or "").strip()
-                        if not desc or desc.startswith("Parsed from"):
-                            # Only flag if our auto-generate didn't catch it
-                            already_fixed = any(
-                                gen["name"] == doc.get("name")
-                                for gen in quality.get("descriptions_auto_generated", [])
-                            )
-                            if not already_fixed:
-                                quality["description_issues"].append({
-                                    "path": doc.get("path"),
-                                    "name": doc.get("name"),
-                                    "current_desc": desc[:80],
-                                    "suggestion": "自动生成description失败，需人工处理"
-                                })
-
-                    # 3b — O12-lite: vector index coverage
-                    try:
-                        for doc in all_docs:
-                            vi = doc.get("vector_index") or doc.get("vectorIndex") or {}
-                            if not vi or not vi.get("total_chunks", 0):
-                                quality["vector_missing"].append({
-                                    "path": doc.get("path"),
-                                    "name": doc.get("name"),
-                                })
-                    except Exception:
-                        pass
-
-                    # 3c — O13-lite: count consistency
-                    quality["total_docs_in_kb"] = len(all_docs)
-                    quality["total_successful_parsed"] = successful
-                    if len(all_docs) != successful:
-                        quality["warnings"].append(
-                            f"文档计数不一致: parse成功{successful}, KB目录显示{len(all_docs)}"
-                        )
-
-        except Exception as e:
-            parse_result["auto_index_warning"] = str(e)
-
-        parse_result["auto_pipeline"] = "auto-describe+vector+graph+quality-check"
-        parse_result["quality_check"] = quality
-
-        # Phase 4: flag recommendation
-        if quality.get("descriptions_auto_generated"):
-            parse_result["descriptions_auto_generated"] = len(quality["descriptions_auto_generated"])
-        if quality["description_issues"] or quality["vector_missing"]:
-            parse_result["organize_recommended"] = True
-            remaining_desc = len(quality["description_issues"])
-            parse_result["organize_tip"] = (
-                f"自动修复了{len(quality.get('descriptions_auto_generated',[]))}个description, "
-                f"还有{remaining_desc}个待处理, "
-                f"向量索引缺失({len(quality['vector_missing'])}个). "
-            )
-        else:
-            parse_result["organize_recommended"] = False
-
+        """Parse batch only — no save, no index, no quality check."""
+        parse_result = await client.parse_doc_batch(file_paths, use_ocr=use_ocr)
         return parse_result
 
     task_id = task_registry.submit(
@@ -714,7 +455,7 @@ async def parse_doc_batch(file_paths: list, kb_id: str, use_ocr: bool = True, de
         meta,
     )
     return _running_payload(
-        task_id, "parse_doc_batch", {"file_count": len(file_paths), "kb_id": kb_id, "descriptions": descriptions}
+        task_id, "parse_doc_batch", {"file_count": len(file_paths)}
     )
 
 
@@ -1117,16 +858,24 @@ async def kb_reindex(kb_id: str = "", force: bool = False) -> str:
 
 
 @mcp.tool()
-async def kb_index_document(kb_id: str, doc_path: str, doc_name: str = "", description: str = "", content: str = "") -> str:
+async def kb_index_document(kb_id: str = "", doc_path: str = "", doc_id: str = "", doc_name: str = "", description: str = "", content: str = "") -> str:
     """单文档向量+图谱索引。将文档内容（或已有文档）存入向量数据库并记录 vector_index 到元信息。
+
+    支持两种调用方式：
+    1. 提供 doc_id（文档 UUID）→ 自动解析 kb_id 和 doc_path
+    2. 提供 kb_id + doc_path → 直接使用
 
     用于手动触发文档的向量索引构建。如果提供 content 则直接使用，否则从存储自动读取。
     索引完成后会在 .knowledge-base.yml 的对应文档记录 vector_index 信息（含 collection、chunks 等）。
     同时会重建 BM25 关键词索引使后续两阶段检索能定位到该文档。
 
+    **Atomic**: ONLY indexes (vector + graph + YAML metadata writeback).
+    Does NOT create or modify the document file itself.
+
     Args:
-        kb_id: 知识库 ID 或路径
-        doc_path: 文档在 KB 中的相对路径
+        kb_id: 知识库 ID 或路径（doc_id 模式下可省略）
+        doc_path: 文档在 KB 中的相对路径（doc_id 模式下可省略）
+        doc_id: 文档 UUID（来自 .knowledge-base.yml），提供时自动解析上述两项
         doc_name: 文档名称
         description: 文档描述
         content: 文档正文内容；为空则从文件自动读取
@@ -1134,7 +883,7 @@ async def kb_index_document(kb_id: str, doc_path: str, doc_name: str = "", descr
     Returns:
         {success, vector_index: {collection, chunk_id_prefix, total_chunks, graph_doc_id}, graph_stats: {entities, relations}}
     """
-    return _j(await _client().index_document(kb_id, doc_path, doc_name, description, content))
+    return _j(await _client().index_document(kb_id, doc_path, doc_name, description, content, doc_id))
 
 
 @mcp.tool()
