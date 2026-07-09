@@ -775,7 +775,8 @@ async def backend_status() -> str:
 
 @mcp.tool()
 async def kb_search_vector(query: str, kb_id: str = "", top_k: int = 5,
-                            score_threshold: float = 0.0) -> str:
+                            score_threshold: float = 0.0,
+                            balance_kbs: bool = False) -> str:
     """向量语义搜索文档片段。
 
     Args:
@@ -783,11 +784,12 @@ async def kb_search_vector(query: str, kb_id: str = "", top_k: int = 5,
         kb_id: 限定知识库；空则跨库
         top_k: 返回结果数
         score_threshold: 最低余弦相似度阈值（0~1）；<=0 用后端默认(0.35)。降低可召回更多片段
+        balance_kbs: 跨库搜索时是否均衡结果（默认 False）。设为 True 可防大KB主导结果
 
     Returns:
         {success, results: [{content, score, doc_path, chunk_index, kb_id}]}
     """
-    return _j(await _client().vector_search(query, kb_id, top_k, score_threshold))
+    return _j(await _client().vector_search(query, kb_id, top_k, score_threshold, balance_kbs))
 
 
 @mcp.tool()
@@ -826,6 +828,7 @@ async def kb_search_two_stage(
     stage2_top_k: int = 5,
     enable_graph_expansion: bool = True,
     score_threshold: float = 0.0,
+    balance_kbs: bool = False,
 ) -> str:
     """两阶段精准检索：先广搜索定位候选文档，再向量精筛片段。
 
@@ -838,13 +841,14 @@ async def kb_search_two_stage(
         stage2_top_k: Stage 2 每文档返回片段数
         enable_graph_expansion: 是否启用图谱邻居扩展
         score_threshold: 向量相似度阈值（0~1）；<=0 用后端默认(0.35)
+        balance_kbs: 跨库搜索时是否均衡结果（默认 False）。设为 True 可防大KB主导结果
 
     Returns:
         {success, stage1: {candidates}, stage2: {results}, total_results}
     """
     return _j(await _client().two_stage_search(
         query, kb_id, stage1_top_k, stage2_top_k, enable_graph_expansion,
-        score_threshold
+        score_threshold, balance_kbs
     ))
 
 

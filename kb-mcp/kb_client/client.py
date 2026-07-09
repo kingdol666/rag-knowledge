@@ -388,13 +388,16 @@ class KbClient:
     # 向量检索与两阶段检索（新增）
     # ================================================================
 
-    async def vector_search(self, query, kb_id="", top_k=5, score_threshold=0.0):
-        """向量语义搜索。score_threshold<=0 表示用后端默认阈值。"""
+    async def vector_search(self, query, kb_id="", top_k=5, score_threshold=0.0, balance_kbs=False):
+        """向量语义搜索。score_threshold<=0 表示用后端默认阈值。
+        balance_kbs=True 时跨库均衡，防大KB主导结果。"""
         body = {"query": query, "top_k": top_k}
         if kb_id:
             body["kb_id"] = kb_id
         if score_threshold and score_threshold > 0:
             body["score_threshold"] = score_threshold
+        if balance_kbs:
+            body["balance_kbs"] = True
         return await self._post_backend_json("/api/v1/search/vector", body)
 
     async def batch_vector_search(self, query_doc_paths, kb_id="", top_k=5, score_threshold=0.3):
@@ -410,8 +413,9 @@ class KbClient:
 
     async def two_stage_search(self, query, kb_id="", stage1_top_k=20,
                                 stage2_top_k=5, enable_graph_expansion=True,
-                                score_threshold=0.0):
-        """两阶段精准检索。score_threshold<=0 表示用后端默认阈值。"""
+                                score_threshold=0.0, balance_kbs=False):
+        """两阶段精准检索。score_threshold<=0 表示用后端默认阈值。
+        balance_kbs=True 时跨库均衡，防大KB主导结果。"""
         body = {
             "query": query,
             "stage1_top_k": stage1_top_k,
@@ -422,6 +426,8 @@ class KbClient:
             body["kb_id"] = kb_id
         if score_threshold and score_threshold > 0:
             body["score_threshold"] = score_threshold
+        if balance_kbs:
+            body["balance_kbs"] = True
         return await self._post_backend_json("/api/v1/search/two-stage", body)
 
     async def reindex(self, kb_id="", force=False):

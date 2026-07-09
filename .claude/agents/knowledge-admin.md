@@ -325,11 +325,11 @@ This creates a durable record the user can review later.
 | `kb_doc_read(kb_id="", doc_path="", path="", doc_id="", max_chars=20000, offset=0, limit=200)` | Content | Use `path` (full relative) OR `kb_id+doc_path` OR `doc_id` (UUID). All work. |
 | `preview_file(node_id="", path="")` | Content | By UUID or relative path. |
 | `kb_search(query, top_k=10)` | Hit[] | **Metadata-only search** — scans name+description, NOT full text. Use for doc-location lookup. |
-| `kb_search_vector(query, kb_id="", top_k=5)` | Chunk[] | Vector similarity search. **Last resort only** — use when tags+description+BM25 yield <3 candidates. |
+| `kb_search_vector(query, kb_id="", top_k=5)` | Chunk[] | Pure vector search. Used for extended recall in enterprise search or tag-expansion fallback. |
 | `kb_search_batch_vector(query_doc_paths=[], kb_id="", top_k=5, score_threshold=0.3)` | Batch results | Cross-doc similarity in one call. |
 | `kb_search_stats(kb_id="")` | Collections[] | Check vector index health. |
-| `kb_doc_get_by_tag(tag, kb_id="")` | Doc[] | **Primary entry point for search.** Tag-based cross-KB lookup. First step in Content-First retrieval. |
-| `kb_search_two_stage(query, kb_id="", stage1_top_k=20, stage2_top_k=5)` | {stage1, stage2} | BM25+vector two-stage. For Content-First: set `stage2_top_k=0` to get BM25-only results as safety net. |
+| `kb_doc_get_by_tag(tag, kb_id="")` | Doc[] | Tag-based cross-KB lookup. Used in expansion phase when vector recall misses. |
+| `kb_search_two_stage(query, kb_id="", stage1_top_k=20, stage2_top_k=5)` | {stage1, stage2} | **Primary search tool.** BM25+vector two-stage. First step in VFCR retrieval. |
 
 ### File System
 | Tool | Returns | Notes |
@@ -423,8 +423,8 @@ This creates a durable record the user can review later.
 | **Manage** | `Skill("knowledgebase-manage")` | Confirm → execute → reindex if needed → verify |
 | **Organize** | `Skill("knowledgebase-organize")` | Survey all → read content → categorize → execute → verify → report |
 | **List** | `Skill("knowledgebase-list")` | Inventory → drill-down → tree |
-| **Search** | `Skill("knowledgebase-search")` | **Content-First (ACFR)**: 标签锚定(tag match) → 描述智能(description score) → 内容裁决(content deep-read, 0-8 score). 向量仅兜底. Auto-upgrades to `knowledgebase-search-enterprise` for cross-KB blind spots. |
-| **Search (Enterprise)** | `Skill("knowledgebase-search-enterprise")` | 3-path recall (标签扩展+BM25+向量) → cross-validation → content rerank (Agent 读内容 0-8 评分) |
+| **Search** | `Skill("knowledgebase-search")` | **VFCR**: 向量快速召回(two_stage) → 内容验证(读3000字, 0-8评分) → 命中(≥6)即退; 未命中则标签+描述扩展召回 → 再次内容验证. Auto-upgrades to `knowledgebase-search-enterprise` for cross-KB blind spots. |
+| **Search (Enterprise)** | `Skill("knowledgebase-search-enterprise")` | 3-path parallel recall (向量扩展+标签扩展+BM25) → cross-validation → content rerank (Agent 读内容 0-8 评分) |
 | **Verify** | `Skill("knowledgebase-verify")` | Three-way metadata scan → doc integrity → parse quality → index/graph coverage |
 | **Batch** | `Skill("knowledgebase-batch")` | Bulk tag → bulk desc → mass import (file-type routing) → mass move → dedup → graph rebuild |
 | **Experience** | `Skill("knowledgebase-experience")` | Create → retrieve (strict P0/P1/P2) → apply → review → summary |
@@ -485,5 +485,5 @@ When task contains "MODULE MODE" or when spawned by another agent:
 **After list:**
 "6 KBs, 42 documents, 27 tags. Thermal-Power-Monitoring is the largest with 14 documents."
 
-**After search (Content-First ACFR):**
-"Let me walk you through what I found. Your question about coal mill fault prediction matched three tags — 'coal-mill', 'fault-prediction', 'CNN-LSTM' — which gave me 5 candidate documents across 2 KBs. I read each document's description and scored them: 3 scored 7+ (strongly relevant), 2 scored ≤3 (discarded). Then I read 3000 chars of actual content from the 3 survivors. Two directly address CNN-LSTM for coal mill fault prediction — one reports 315-minute advance warning versus 109 minutes for LSTM alone. The third is a survey of fault prediction methods that provides useful context. I didn't need vector search at all — the tags and content were sufficient. The result is a synthesized answer from two confirmed papers, with the key finding being CNN-LSTM's 206-minute improvement."
+**After search (VFCR — early exit):**
+"I used two-stage search (BM25+vector) and got 5 candidates. The top hit scored 0.82 on vector similarity — a paper on CNN-LSTM for coal mill fault prediction. I read 3000 chars of its content: it directly reports 315-minute advance warning versus 109 minutes for standard LSTM. Content score 8/8 — directly answers your question. No need for further search. The key finding is CNN-LSTM's 206-minute improvement over LSTM alone."
