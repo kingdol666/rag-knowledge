@@ -9,52 +9,64 @@ description: >
 
 # Experience — Lifecycle Management
 
+> All tools require `kb_id` (KB ID or path) as first parameter, except `experience_search_global`.
+
 ## Create
 ```
 experience_create(
-    scenario="<when/where this applies>",
+    kb_id="<target KB>",
+    title="<experience title>",
+    scenario="<scenario identifier, e.g. 'coal-mill-fault-prediction'>",
+    category="lesson_learned",         # best_practice|troubleshooting|lesson_learned|optimization|tip|workflow|decision
     problem="<what went wrong or what was needed>",
-    solution="<what was done to fix/achieve>",
-    lesson="<key takeaway / what to watch out for>",
+    solution="<steps/methods taken>",
+    result="success",                  # success|partial|failed|inconclusive
+    key_lessons=["lesson1", "lesson2"], # actionable takeaway items
     tags=["tag1", "tag2"],
-    rating=4,                        # 1-5, default 4
-    applied_count=0,                 # times applied
-    related_docs=["KB/doc.md"]       # optional
+    severity="normal",                 # critical|important|normal|tip
+    related_docs=["KB/doc.md"]         # optional
 )
 ```
 
 ## Read
-`experience_read(exp_id)` — full record including review history.
+`experience_read(kb_id, exp_id)` — full record including review history.
 
 ## List
-`experience_list(limit=20, offset=0)` — paginated summary list.
+`experience_list(kb_id, scenario="", category="", tag="")` — filtered by scenario/category/tag, sorted by rating.
 
 ## Update
-`experience_update(exp_id, fields...)` — update any field. Bumps `updated_at`.
+`experience_update(kb_id, exp_id, <fields to change>)` — pass only fields to update. Bumps `updated_at`.
 
 ## Delete
-`experience_delete(exp_id)` — irreversible.
+`experience_delete(kb_id, exp_id)` — irreversible.
 
 ## Apply (record usage)
-`experience_apply(exp_id, applied_by="<agent/user>", notes="<context>")` — increments `applied_count`.
+```
+experience_apply(kb_id, exp_id, user="<agent/user>", context="<scenario>", result="success", notes="<optional>")
+```
+Increments `applied_count`.
 
 ## Review
-`experience_review(exp_id, reviewer="<agent/user>", rating=4, comment="<feedback>")` — adds review record, recalculates average rating.
+```
+experience_review(kb_id, exp_id, reviewer="<agent/user>", rating=5.0, comment="<feedback>")
+```
+Adds review record, recalculates `rating_avg` and `review_count`.
 
 ## Search
 | Method | Tool |
 |---|---|
-| By scenario keyword | `experience_find_by_scenario(scenario="<keyword>")` |
-| Semantic vector search | `experience_search_vector(query="<question>", top_k=5)` |
-| Cross-KB global search | `experience_search_global(query="<question>", top_k=10)` |
-| Combined keyword+vector | `experience_search(query="<question>", top_k=10)` |
+| By scenario | `experience_find_by_scenario(kb_id, scenario="<keyword>")` |
+| Keyword (metadata) | `experience_search(kb_id, query="<question>", top_k=10)` |
+| Semantic vector | `experience_search_vector(kb_id, query="<question>", top_k=5)` |
+| Cross-KB global | `experience_search_global(query="<question>", top_k=10)` |
+| Summary | `experience_summary(kb_id)` — overview stats |
 
-## Credibility Tiers
+## Credibility Tiers (based on `rating_avg` from reviews + vector score)
 | Condition | Tier | Action |
 |---|---|---|
-| scenario match ∧ vector ≥0.65 ∧ rating ≥4 | P0 Strong | Pin to top |
-| vector ≥0.55 ∧ rating ≥3 | P1 Reference | Show with annotation |
+| scenario match ∧ vector ≥0.65 ∧ rating_avg ≥4 | P0 Strong | Pin to top |
+| vector ≥0.55 ∧ rating_avg ≥3 | P1 Reference | Show with annotation |
 | 0.45 ≤ vector <0.55 | P2 Gray | Suppress by default |
 | vector <0.45 OR different equipment | Discard | Never present |
 
-Decay: stale unverified (>30d, 0 applied) → max P1; disputed (rating <2.0, ≥3 reviews) → max P2; unvetted (0 reviews ∧ 0 applied) → max P1.
+Decay: stale unverified (>30d, 0 applied) → max P1; disputed (rating_avg <2.0, ≥3 reviews) → max P2; unvetted (0 reviews ∧ 0 applied) → max P1.

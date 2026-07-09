@@ -13,33 +13,38 @@ description: >
 
 # Experience Summarize — Persist as Structured Experience
 
-## Step 1 — Identify Scenario
-From conversation, extract: what happened, what was done, what was learned. Identify the operational context (equipment, system, domain).
+## Step 1 — Identify Scenario + Target KB
+From conversation, extract: what happened, what was done, what was learned. Identify the operational context (equipment, system, domain). Determine target `kb_id` from existing KBs via `kb_list()`.
 
 ## Step 2 — Draft Experience
 ```
-scenario:   "<when/where this applies — be specific>"
-problem:    "<what went wrong or what was needed>"
-solution:   "<what was done — steps, methods, tools>"
-lesson:     "<key takeaway / what to watch out for>"
-tags:       ["domain", "method", "equipment", ...]   # 3-6 tags
-rating:     4                                          # 1-5, default 4
-applied_count: 0
-related_docs: ["KB/doc.md"]                            # if KB docs were referenced
+kb_id:       "<target KB ID or path>"
+title:       "<concise experience title>"
+scenario:    "<scenario identifier, e.g. 'biaxial-stretching-quality-issue'>"
+category:    "lesson_learned"       # best_practice|troubleshooting|lesson_learned|optimization|tip|workflow|decision
+problem:     "<what went wrong or what was needed>"
+solution:    "<steps/methods taken>"
+result:      "success"              # success|partial|failed|inconclusive
+key_lessons: ["actionable lesson 1", "actionable lesson 2"]
+tags:        ["domain", "method", "equipment"]
+severity:    "normal"               # critical|important|normal|tip
+related_docs: ["KB/doc.md"]         # if KB docs were referenced
 ```
 
-Completeness check — all of `scenario`, `problem`, `solution`, `lesson` must be non-empty and specific (not generic). If any is vague, ask the user for more detail.
+Completeness check — all of `title`, `scenario`, `problem`, `solution`, `key_lessons` must be non-empty and specific. If any is vague, ask the user for more detail.
 
 ## Step 3 — User Confirmation
 Present the draft. Ask: "确认入库？" User confirms or edits.
 
 ## Step 4 — Persist
 ```
-exp_id = experience_create(
-    scenario, problem, solution, lesson,
-    tags, rating, applied_count, related_docs
+result = experience_create(
+    kb_id, title, scenario, category,
+    problem, solution, result,
+    key_lessons, tags, severity, related_docs
 )
+exp_id = result.experience.id
 ```
 
 ## Step 5 — Verify
-`experience_read(exp_id)` — confirm all fields stored correctly. Report `exp_id` to user.
+`experience_read(kb_id, exp_id)` — confirm all fields stored correctly. Report `exp_id` to user.
