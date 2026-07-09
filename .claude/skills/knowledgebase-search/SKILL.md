@@ -11,244 +11,65 @@ description: >
   "知识库搜索", "问题", "哪里", "办法", "怎么解决".
 ---
 
-# Vector-First Content-Verified Retrieval (VFCR)
+# VFCR — Vector-First Content-Verified Retrieval
 
-## 核心理念：向量负责快，内容负责准
+Vector finds candidates fast; content read decides if they're relevant.
 
-向量相似度是**最快的召回通道**，但不是最可靠的判据。
-真正的相关性判断必须由 Agent **读到真实内容**后决定。
-
-### 策略：先快后准，命中即退，未中则扩
-
+## Step 1 — Vector Recall
 ```
-         快速通道 (向量)              精确通道 (内容)
-         ─────────────              ──────────────
-Step 1:  向量检索 top-K  ──→  Step 2:  读内容验证
-                                    │
-                               命中? │
-                              ┌─────┴─────┐
-                              │           │
-                             YES          NO
-                              │           │
-                         Step 6:     Step 3: 标签+描述扩展
-                         直接回答          │
-                                    Step 4: 扩展内容验证
-                                          │
-                                     Step 5: 综合判断
-                                          │
-                                     Step 6: 回答
+kb_search_two_stage(query="<user query>", kb_id="", stage1_top_k=20, stage2_top_k=5)
 ```
+- `kb_id=""` for cross-KB search
+- Returns `stage2.results`: top docs with `{content, doc_path, score, kb_id}`
 
-## 完整流程 (5 步 + 早退)
-
-### Step 1 — 向量快速召回 (1 次 API 调用，秒级)
-
-**目的**: 用最快的速度把最可能相关的文档找出来。
-
-```
-# 两阶段检索：BM25 关键词 + 向量语义，一次调用完成
-kb_search_two_stage(
-    query="<用户查询>",
-    kb_id="",              # 空则跨库
-    stage1_top_k=20,       # BM25 广搜索
-    stage2_top_k=5,        # 向量精筛
-    balance_kbs=True,      # 跨库均衡：每个KB独立检索后轮询选取，防大KB主导结果
-)
-```
-
-**跨库均衡 (`balance_kbs=True`)**: 当跨库搜索（`kb_id` 为空）时，每个 KB 独立检索 top-N 结果，然后轮询选取（第1轮取各KB最高分，第2轮取次高分...），确保小KB也有公平代表性。**推荐跨库搜索时始终开启**。
-
-**返回结构**:
-- `stage1.candidates`: BM25 + 图谱扩展的候选文档列表
-- `stage2.results`: 在候选文档内做向量检索的精筛结果，每条含 `{content, doc_path, score, chunk_index, kb_id}`
-
-**处理**:
-1. 从 `stage2.results` 提取 top 3-5 文档（按 score 降序）
-2. 记录每篇文档的: `doc_path`, `kb_id`, `score`, `content` (chunk 片段)
-3. 识别涉及的 KB 列表
-
-> **向量不可用时**: 后端自动降级为 BM25-only，仍返回 stage1 结果。流程不变。
-
----
-
-### Step 2 — 内容验证 (核心裁决，读真实内容)
-
-**目的**: 确定向量召回的文档是否真正回答了用户问题。
-
-对 top 3 候选文档，逐篇读真实内容:
-
+## Step 2 — Content Verification (core decision)
+For top 3-5 candidates:
 ```
 kb_doc_read(kb_id, doc_path, max_chars=3000)
 ```
+Score each 0-8: topic relevance (0-3) + scenario match (0-3) + answer potential (0-2).
 
-**Agent 内容评分 (0-8)**:
+**Content score overrides vector score.** Vector 0.9 but content irrelevant → discard.
 
-| 维度 | 分值 | 判断标准 |
-|------|:---:|------|
-| **主题相关** | 0-3 | 文档实际内容是否关于查询主题？3=完全一致, 2=高度相关, 1=边缘, 0=不相关 |
-| **场景匹配** | 0-3 | 文档是否直接回答了查询的具体问题？3=直接回答, 2=部分回答, 1=间接, 0=不回答 |
-| **答案潜力** | 0-2 | 是否包含可用信息（数据/方法/结论）？2=有具体数据, 1=有方向, 0=无 |
+## Step 2-Early Exit
+If any doc scores **≥6**: skip to Step 6, answer directly.
 
-**关键规则**: Agent 看的是内容，不是向量分数。向量 score 0.9 但内容不回答问题 → 丢弃。
+| Top score | Action |
+|---|---|
+| ≥6 | ✅ Early exit — answer directly |
+| 5 | ⚠️ Usable but supplement — continue to Step 3 |
+| ≤4 | ❌ Miss — continue to Step 3 |
 
----
-
-### Step 2-EARLY EXIT — 命中即退 (最大效率提升)
-
-**如果 Step 2 中有任何文档评分 ≥6**: 直接进入 Step 6 回答，**跳过所有后续步骤**。
-
-这是本策略的效率核心：**向量找对了就不需要再找**。
-
-| 最高内容评分 | 动作 | 原因 |
-|:---:|------|------|
-| **≥6** | ✅ **早退** — 直接回答 | 向量命中 + 内容确认 = 高置信度 |
-| **5** | ⚠️ 可用但需补充 — 继续 Step 3 扩展 | 单一来源，可能有更好结果 |
-| **≤4** | ❌ 向量未命中 — 继续 Step 3 扩展 | 向量召回了但内容不回答问题 |
-
----
-
-### Step 3 — 标签+描述扩展 (仅当向量未命中或需补充)
-
-**目的**: 向量没找对时，用标签和描述做第二轮召回。
-
-#### 3a — 标签锚定
-
+## Step 3 — Tag + Description Expansion (when vector missed)
 ```
-# 获取全部标签
 kb_tags_list()
-
-# Agent 做概念-标签语义匹配（不是字符串匹配）
-# 例: 查询 "聚乙烯醇拉伸强度" → 匹配标签: pva, biaxial-stretching, mechanical-properties
-
-# 用匹配到的标签跨库检索
-kb_doc_get_by_tag(tag="pva", kb_id="")
-kb_doc_get_by_tag(tag="mechanical-properties", kb_id="")
+# Match query concepts to tags semantically (not string match)
+kb_doc_get_by_tag(tag="<matched_tag>", kb_id="")
+kb_doc_catalog(kb_id)  # for new KBs found via tags
 ```
+Optionally: `kb_search_vector(query, kb_id="", top_k=10)` for wider recall.
 
-**标签匹配规则**（Agent 判断）:
-- 精确匹配: 查询含 "PVA" → 标签 `pva` → ★★★
-- 同义匹配: 查询含 "聚乙烯醇" → 标签 `pva` → ★★★
-- 上位匹配: 查询含 "聚合物" → 标签 `pva` / `pet` / `pa6` → ★★☆
-- 关联匹配: 查询含 "结晶度" → 标签 `crystallization` + `mechanical-properties` → ★☆☆
+## Step 4 — Expanded Content Verification
+Read new candidates with `kb_doc_read(kb_id, doc_path, max_chars=3000)`. Score 0-8. Keep ≥5, discard ≤4.
 
-#### 3b — 描述智能筛选
+## Step 5 — Confidence Assessment
+| Source + Score | Tier |
+|---|---|
+| Vector/tag recall + content ≥6 | **P0 Strong** |
+| Vector/tag recall + content =5 | **P1 Confirmed** |
+| Description-only match + content =5 | **P2 Supplement** |
+| Any ≤4 | Discard |
 
-对标签召回的新候选（去除已在 Step 1 中出现过的），Agent 逐篇读 description:
+Cross-KB blind spot: if confirmed P0/P1 from <2 KBs → upgrade to `Skill("knowledgebase-search-enterprise")`.
 
-```
-# 如果需要文档描述（标签返回结果中可能已含）
-kb_doc_catalog(kb_id)  # 仅对标签命中的新 KB
-```
+## Step 6 — Answer
+Synthesize answer from confirmed docs. Include: sources (doc name, path, KB, tier), confidence level, blind spots.
 
-**Agent 打分 (0-10)**:
-
-| 分数 | 标准 | 动作 |
-|:---:|------|------|
-| 7-10 | description 直接表明文档回答了查询 | 保留 — 进入 Step 4 |
-| 5-6 | description 涉及查询主题，可能相关 | 保留 — 进入 Step 4 |
-| ≤4 | 无关 | 丢弃 |
-
-#### 3c — 向量补充 (可选，当标签+描述候选不足)
-
-如果标签+描述新增候选 <2 篇，可放宽向量阈值做补充:
-
-```
-kb_search_vector(query, kb_id="", top_k=10)  # 多取一些，让 Agent 从内容判断
-```
-
----
-
-### Step 4 — 扩展内容验证
-
-对 Step 3 新增的候选文档，执行与 Step 2 相同的内容验证:
-
-```
-kb_doc_read(kb_id, doc_path, max_chars=3000)
-```
-
-同样的 0-8 评分标准。≥5 保留，≤4 丢弃。
-
----
-
-### Step 5 — 综合置信度判断
-
-合并 Step 2 + Step 4 的全部已验证文档，按内容评分排序:
-
-| 来源 | 内容评分 | 置信度 |
-|------|:---:|------|
-| 向量召回 + 内容确认 | 6-8 | **P0 Strong** — 向量和内容双重确认 |
-| 标签召回 + 内容确认 | 6-8 | **P0 Strong** — 标签和内容双重确认 |
-| 向量召回 + 内容可用 | 5 | **P1 Confirmed** — 向量命中，内容部分相关 |
-| 标签召回 + 内容可用 | 5 | **P1 Confirmed** — 标签命中，内容部分相关 |
-| 仅描述匹配 + 内容可用 | 5 | **P2 Supplement** — 辅助参考 |
-| 任意 | ≤4 | **Discard** — 丢弃 |
-
-**跨库盲区检查**:
-- 如果确认的 P0/P1 文档来自 <2 个 KB → 触发 `Skill("knowledgebase-search-enterprise")` 做全库扩展
-- 但已有 P0 结果不降级
-
----
-
-### Step 6 — 综合答案
-
-```
-## 检索结果
-
-### 检索路径
-查询: "{user_query}"
-向量召回: {N} 篇候选 (score: {highest}-{lowest})
-内容验证: {M} 篇确认相关
-早退: {是/否} — {原因}
-标签扩展: {是否执行} — 新增 {K} 篇候选
-
-### 答案
-{Agent 基于确认文档内容综合的回答}
-
-### 来源文档
-1. **[{doc_name}]** (P0, 向量score={score}, 内容score={content_score})
-   路径: {doc_path} | KB: {kb_name}
-   内容要点: {从文档中提取的关键信息}
-2. ...
-
-### 置信度
-{High/Medium/Low} — {原因}
-
-### 盲区
-{知识库未覆盖的方面}
-```
-
----
-
-## 自适应深度
-
-| 深度 | 场景 | 流程 | 预计工具调用 |
-|---|---|---|---|
-| **L1 快速** | 向量直接命中 (Step 2 评分 ≥6) | Step 1 → Step 2 → Step 6 | **2 次** (two_stage + doc_read) |
-| **L2 标准** | 向量部分命中 (评分=5) 或需补充 | Step 1 → 2 → 3 → 4 → 6 | **4-6 次** |
-| **L3 深度** | 向量未命中 (评分 ≤4)，标签扩展 | Step 1 → 2 → 3 → 4 → 5 → 6 | **5-8 次** |
-| **L4 全库** | 跨库盲区 | L3 + 触发 enterprise 升级 | **8+ 次** |
-
----
-
-## 与旧方案对比
-
-| 维度 | 旧方案 (向量确认) | 新方案 (VFCR) |
-|------|:---:|:---:|
-| **第一步** | KB catalog 扫描 | **向量直接检索** (更快) |
-| **主召回** | 标签 → 描述 → BM25 | **向量 two_stage** (1 次调用) |
-| **内容验证** | Step 6, max 1200 字 | **Step 2, max 3000 字** (更早更深) |
-| **早退机制** | 无 | **有** (评分 ≥6 直接回答) |
-| **标签角色** | 第一道门 (主入口) | **扩展通道** (向量未命中时启用) |
-| **最小工具调用** | 6-8 次 | **2 次** (向量 + 内容验证) |
-| **最差情况** | 6-8 次 | 5-8 次 (持平) |
-
-## 关键规则
-
-1. **向量是起跑线** — 先用 `kb_search_two_stage` 一次调用拿到候选，最快
-2. **内容是裁决者** — 向量 score 再高，Agent 读内容说不相关就丢弃
-3. **命中即退** — 内容评分 ≥6 直接回答，不浪费额外调用
-4. **标签是扩展器** — 仅当向量未命中时才用标签+描述补充召回
-5. **读够内容** — 验证读 3000 字，确保看到方法/数据部分
-6. **短内容警惕** — 内容 <200 字符降一档置信度
-7. **经验优先** — 操作/故障类查询先查经验，文档检索不因此跳过
-8. **诚实盲区** — 知识库没有的内容明确说"未找到"
+## Rules
+1. Vector is the starting line — `kb_search_two_stage` first
+2. Content is the judge — read 3000 chars, score independently of vector score
+3. Hit and exit — score ≥6 means answer now
+4. Tags are the expander — only when vector misses
+5. Short content (<200 chars) → downgrade one tier
+6. Experience-first for operational/fault queries — check experience before docs
+7. Declare blind spots honestly

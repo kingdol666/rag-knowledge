@@ -485,6 +485,85 @@ async def parse_tasks_list(status: str = "") -> str:
     return _j({"success": True, "tasks": task_registry.list_views(status)})
 
 
+@mcp.tool()
+async def kb_doc_save_parsed(
+    parent_id: str,
+    task_id: str = "",
+    markdown: str = "",
+    markdown_path: str = "",
+    images_dir: str = "",
+    source_filename: str = "",
+    description: str = "",
+    parse_method: str = "",
+) -> str:
+    """Save parsed markdown (FULL content + images) into a knowledge base.
+
+    This is the PREFERRED way to store parsed documents — it writes the
+    complete markdown content (not truncated) AND copies all parsed images
+    to the KB's images/ folder. Use this instead of kb_doc_create for
+    parse-path documents.
+
+    Two modes:
+    1. **task_id mode** (recommended): pass task_id from parse_doc/parse_doc_batch.
+       The tool reads the full parse result (markdown + images_dir + source_filename)
+       from the task registry automatically.
+    2. **manual mode**: pass markdown/markdown_path/images_dir/source_filename directly.
+
+    Args:
+        parent_id: Target KB or folder UUID.
+        task_id: Parse task ID from parse_doc() (preferred — auto-extracts all fields).
+        markdown: Full parsed markdown content (manual mode; omit if using task_id).
+        markdown_path: Path to .md file on disk (manual mode fallback).
+        images_dir: Path to parsed images directory (manual mode).
+        source_filename: Original filename, e.g. "paper.pdf" (manual mode).
+        description: Document description (from content analysis).
+        parse_method: Parse method used (auto, ocr, etc.).
+
+    Returns:
+        {success, savedCount, files: [{id, name, path, fileSize, imageCount, ...}]}
+
+    After saving, call kb_index_document(kb_id, doc_path) to build vector+graph index,
+    then kb_doc_update_tags(kb_id, doc_path, tags) to assign tags.
+    """
+    # If task_id is provided, extract full parse result from task registry
+    if task_id:
+        rec = task_registry.get(task_id)
+        if rec is None:
+            return _j({"success": False, "error": f"unknown task_id: {task_id}"})
+        result = task_registry.public_view(rec)
+        if result.get("status") != "done":
+            return _j({"success": False, "error": f"task not done (status={result.get('status')})",
+                        "task_id": task_id})
+        inner = result.get("result", {})
+        if not markdown:
+            markdown = inner.get("markdown", "")
+        if not markdown_path:
+            markdown_path = inner.get("markdown_path", "")
+        if not images_dir:
+            images_dir = inner.get("images_dir", "")
+        if not source_filename:
+            source_filename = inner.get("source_filename", "")
+        if not parse_method:
+            parse_method = inner.get("parse_method", "")
+
+    if not markdown and not markdown_path:
+        return _j({"success": False, "error": "No markdown content: provide task_id or markdown/markdown_path"})
+
+    parse_result = {
+        "success": True,
+        "markdown": markdown,
+        "markdown_path": markdown_path,
+        "images_dir": images_dir,
+        "image_dir": images_dir,  # compat alias
+        "source_filename": source_filename,
+        "filename": source_filename,
+        "description": description,
+        "parse_method": parse_method,
+    }
+
+    return _j(await _client().save_parsed_files(parent_id, [parse_result]))
+
+
 # ============================================================
 # TAGS MANAGEMENT
 # ============================================================

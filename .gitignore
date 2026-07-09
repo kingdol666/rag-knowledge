@@ -50,5 +50,9 @@ test_e2e/
 test_e2e_*/
 backend/output/
 
+# Test artifacts: MinerU parse temp output & screenshots
+tests/_pet_ingest_tmp/
+tests/screenshots/
+
 # OMC session data (local only)
 .claude/sessions/

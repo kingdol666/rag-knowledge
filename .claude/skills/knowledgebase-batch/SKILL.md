@@ -3,67 +3,53 @@ name: knowledgebase-batch
 description: High-volume and batch operations for knowledge base management. B1-B7: bulk tag migration, bulk description updates, directory-to-KB mass ingestion (file-type routing, no splitting), mass document move between KBs, cross-KB dedup, export summary, and graph rebuild. Invoked by Archival when operations involve multiple documents, batch processing, or repetitive updates. Trigger keywords: 批量, 所有文档, 全部, 大规模, 批量操作, 批量标签, batch, bulk, mass, all documents, every KB, repetitive, 全量, 一次性处理, 统一修改.
 ---
 
-# Knowledge Batch — Bulk & Batch Operations
+# Knowledge Batch — High-Volume Operations
 
-## B1 — Bulk Tag Management
+Each batch op follows: **survey → plan → confirm → execute → verify**.
 
-`kb_tags_list()` + `kb_list()` to survey. Add tag: for each untagged doc, `kb_doc_update_tags()`. Replace tag: `kb_doc_get_by_tag("old")` to find docs, then replace in each. Remove tag: same find-and-replace pattern, drop the old tag. Verify: `kb_doc_get_by_tag("old")` returns 0, `kb_doc_get_by_tag("new")` returns migrated docs.
+## B1 — Bulk Tag Migration
+1. `kb_tags_list()` — current vocabulary
+2. Build tag mapping: old → new, merge duplicates, split generics
+3. For each KB: `kb_get_documents(kb_id)` → filter docs with target tags
+4. For each doc: `kb_doc_update_tags(kb_id, doc_path, new_tags)`
+5. Verify: `kb_doc_get_by_tag(new_tag)` — confirm doc count
 
-## B2 — Bulk Description Updates
+## B2 — Bulk Description Update
+1. `kb_get_documents(kb_id)` — identify docs with empty/weak descriptions
+2. Read 2000 chars per doc: `kb_doc_read(kb_id, doc_path, max_chars=2000)`
+3. Generate content-based description per [description-guide.md](../knowledgebase-ingest/references/description-guide.md)
+4. For each doc: `kb_doc_update_meta(kb_id, doc_path, description=new_desc)`
+5. Verify: re-read 500 chars of a random sample
 
-`kb_list()` to find KBs with empty or placeholder descriptions. Read 1-2 representative docs via `kb_doc_read(kb_id, doc_path, max_chars=300)`. Update: `kb_update(kb_id, description="1-3 sentences: domain + content types + language")`. For doc-level descriptions: `kb_get_documents`, then `kb_doc_read` → `kb_doc_update_meta` for empty/placeholder only. Sample if >20 docs — don't rewrite everything.
+## B3 — Directory → KB Mass Ingestion
+1. Survey directory: list all files, classify by type
+2. File-type routing:
+   - PDF/DOCX/PPTX/images → `parse_doc_batch(file_paths=[...], use_ocr=true)`
+   - MD/TXT/JSON/YAML/code → read directly
+   - Binary → `fs_upload_file(file_path, parent_id)`
+3. Wait for all parse tasks, then store each via `kb_doc_save_parsed(parent_id, task_id, description)`
+4. For each new doc: `kb_index_document` + `kb_doc_update_tags`
+5. Verify: `kb_search_stats(kb_id)` — confirm chunk count
 
-## B3 — Directory-to-KB Mass Ingestion (file-type routing, no splitting)
-
-`Glob()` to discover files. Classify by extension:
-
-### Parse-path files (`.pdf .docx .xlsx .pptx .jpg .png .bmp .tiff`)
-```
-# Single file: parse_doc(file_path, use_ocr=true) → poll parse_task_status
-# Batch (≥3 files): parse_doc_batch(file_paths=[...], use_ocr=true) → single task_id, poll parse_task_status
-
-# After parse done, for each file's markdown result:
-kb_doc_create(kb_id, name="doc.md", content="<parsed markdown>", description="<real description>")
-kb_index_document(kb_id, doc_path="<from create result>")
-# Or: kb_index_document(doc_id="<UUID from create result>")
-```
-
-### Direct-path files (`.md .txt .csv .json .yaml .html .py .js .ts .sh .log .xml`)
-```
-# Read file content, then:
-kb_doc_create(kb_id, name="doc.md", content="<text>", description="<real description>")
-kb_index_document(kb_id, doc_path="<from create result>")
-# Or: kb_index_document(doc_id="<UUID from create result>")
-```
-
-### Binary files (images, archives, etc.)
-```
-fs_upload_file(file_path, parent_id=kb_id, description="<desc>")
-# No vector index for binary files
-```
-
-**No document splitting.** Each file is ingested as a single document regardless of size.
-Report: discovered, parsed, direct-stored, binary-uploaded counts with parse failures.
-
-## B4 — Mass Document Move
-
-`kb_get_documents(source)` → `kb_doc_move(doc_path, target_kb_id)` each doc to target. Warn if >50 docs. Verify source count decreased, target count increased by N. If source empty, ask: "Delete empty source KB?"
-
-**After mass move**: rebuild index for moved docs at new path:
-```
-for each moved doc:
-  kb_index_document(kb_id=target, doc_path=new_path)
-```
-Optionally clean old graph: `kb_graph_delete_document(doc_path=old_path)` per doc.
+## B4 — Mass Document Move (KB→KB)
+1. `kb_get_documents(source_kb_id)` — full doc list
+2. Confirm with user
+3. For each doc: `kb_doc_move(doc_path, target_kb_id)` → `kb_index_document(target_kb_id, new_path)`
+4. `kb_search_stats(target_kb_id)` + `kb_get_documents(source_kb_id)` — verify
 
 ## B5 — Cross-KB Dedup
-
-`kb_list()` → `kb_get_documents` per KB. Compare filenames across KBs. Same name + similar size → read 500 chars to confirm. `kb_doc_delete` from wrong KB. Retain in domain-correct KB. Never delete without content comparison.
+1. `kb_list()` → all KBs
+2. For each KB pair: `kb_get_documents` → compare by name, then by content (500 chars)
+3. Flag duplicates: same title or >80% content overlap
+4. Confirm → keep one, delete others: `kb_doc_delete(kb_id, doc_path)`
+5. Verify: no duplicate titles remain
 
 ## B6 — Export Summary
-
-`kb_list()` + `kb_tags_list()` + `fs_get_tree()` + `fs_get_count()`. Per KB: `kb_get_documents` for doc count, size, tags, dates. Write to `.claude/collection-report.md` via Write tool. Include: overview numbers, per-KB table, tag list, graph health (`kb_graph_stats`), vector coverage (`kb_search_stats`).
+1. `kb_list()` + `kb_get_documents` per KB
+2. Generate: KB name, doc count, total size, tag coverage, vector/graph index coverage, top docs by size
+3. Output as table
 
 ## B7 — Graph Rebuild
-
-After batch ops, run `kb_graph_build_all(force=false)` or per-impacted KB: `kb_graph_build_kb(kb_id, force=true)`. Verify `kb_graph_stats()` → edge count increased with shared_tag relations.
+1. `kb_list()` → all KB IDs
+2. `kb_graph_build_all(force=true)` — batch rebuild
+3. Verify: `kb_graph_stats()` → check node/edge counts

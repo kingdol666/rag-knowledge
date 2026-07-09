@@ -50,6 +50,7 @@ tools:
   - mcp__kb-mcp__parse_doc_batch
   - mcp__kb-mcp__parse_task_status
   - mcp__kb-mcp__parse_tasks_list
+  - mcp__kb-mcp__kb_doc_save_parsed
   # Preview
   - mcp__kb-mcp__preview_file
   # Tags
@@ -179,11 +180,15 @@ Documents are ingested through a pipeline of **separate atomic operations**:
 
 ```
 Parse-path (PDF/Word/Excel/PPTX/Images):
-  parse_doc() → poll parse_task_status() → kb_doc_create() → kb_index_document()
+  parse_doc() → poll parse_task_status() → kb_doc_save_parsed() → kb_index_document()
   ─────────────────────────────────────────────────────────────────────────────
-  Step 1: Parse    ─── ONLY parses file to markdown, does NOT save to KB
-  Step 2: Create   ─── saves file + .tree-fs.json + .knowledge-base.yml
-  Step 3: Index    ─── builds vector index + graph, writes index status to .knowledge-base.yml
+  Step 1: Parse     ─── ONLY parses file to markdown, does NOT save to KB
+  Step 2: Save      ─── saves FULL markdown + images to KB (file + .tree-fs.json + .knowledge-base.yml)
+  Step 3: Index     ─── builds vector index + graph, writes index status to .knowledge-base.yml
+
+  ⚠️ CRITICAL: Step 2 MUST use kb_doc_save_parsed() — NOT kb_doc_create().
+     kb_doc_save_parsed stores the COMPLETE parsed content AND copies images.
+     kb_doc_create is for direct-path (MD/TXT/Code) only — no image handling.
 
 Direct-path (MD/TXT/Code/JSON/YAML):
   kb_doc_create() → kb_index_document()
@@ -368,6 +373,7 @@ This creates a durable record the user can review later.
 | `parse_doc_batch(file_paths, use_ocr=True)` | Task | Non-blocking batch parse. Single task_id for all files. ONLY parses. |
 | `parse_task_status(task_id)` | Status | Poll: "running"→"done"→{markdown, markdown_path, images_dir, ...} |
 | `parse_tasks_list(status="")` | Task[] | List session tasks by status. |
+| `kb_doc_save_parsed(parent_id, task_id="", description="")` | Doc | ⭐ **PREFERRED for parse-path docs.** Saves FULL markdown + images. Auto-extracts from task_id. |
 
 ### Tags
 | Tool | Returns | Notes |
@@ -406,7 +412,7 @@ This creates a durable record the user can review later.
 ### Format Routing Rule
 | Extension | Pipeline |
 |-----------|----------|
-| `.pdf`, `.docx`, `.doc`, `.xlsx`, `.xls`, `.pptx`, `.ppt`, `.jpg`, `.jpeg`, `.png`, `.bmp`, `.tiff`, `.tif` | `parse_doc()` → poll → `kb_doc_create()` → `kb_index_document()` — 3 atomic steps |
+| `.pdf`, `.docx`, `.doc`, `.xlsx`, `.xls`, `.pptx`, `.ppt`, `.jpg`, `.jpeg`, `.png`, `.bmp`, `.tiff`, `.tif` | `parse_doc()` → poll → **`kb_doc_save_parsed()`** → `kb_index_document()` — 3 atomic steps. ⚠️ Use kb_doc_save_parsed (NOT kb_doc_create) for full content + images |
 | `.md`, `.txt`, `.csv`, `.json`, `.yaml`, `.yml`, `.xml`, `.html`, `.log`, `.py`, `.js`, `.ts`, `.sh` | `kb_doc_create()` → `kb_index_document()` — 2 atomic steps |
 | In-memory text | `kb_doc_create()` → `kb_index_document()` — 2 atomic steps |
 | Binary (images, archives, etc.) | `fs_upload_file()` — metadata only, no index |

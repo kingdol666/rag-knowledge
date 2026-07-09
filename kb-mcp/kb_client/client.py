@@ -274,6 +274,36 @@ class KbClient:
             data["parentId"] = parent_id
         return await self._post_file("/api/filesystem/upload", file_path, data)
 
+    async def save_parsed_files(self, parent_id, results):
+        """Save parsed markdown files (with images) into the file system tree.
+
+        Calls the Nuxt /api/parse/save-parsed-files endpoint which:
+        - Writes the FULL markdown content to disk (not truncated)
+        - Copies all parsed images to the KB's images/ folder
+        - Writes .tree-fs.json + .knowledge-base.yml with file UUID + image metadata
+        - Does NOT index (call kb_index_document separately)
+
+        Args:
+            parent_id: Target KB/folder UUID
+            results: List of parse result dicts, each with:
+                - markdown: full parsed markdown content (string)
+                - markdown_path: path to .md file on disk (fallback if markdown is empty)
+                - images_dir: path to parsed images directory
+                - source_filename: original filename (e.g. "paper.pdf")
+                - filename: alternative filename
+                - description: document description (optional)
+                - success: must be True
+                - parse_method: parse method used (optional)
+
+        Returns:
+            {success, savedCount, files: [{id, name, path, ...}]}
+        """
+        body = {
+            "parentId": parent_id,
+            "results": results,
+        }
+        return await self._post_json("/api/parse/save-parsed-files", body)
+
     # ================================================================
     # PREVIEW
     # ================================================================
