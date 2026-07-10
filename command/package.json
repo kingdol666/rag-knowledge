@@ -1,0 +1,26 @@
+{
+  "name": "ragctl",
+  "version": "1.0.0",
+  "description": "RAG Knowledge Platform CLI - unified management tool",
+  "main": "ragctl.js",
+  "bin": {
+    "ragctl": "./ragctl.js"
+  },
+  "scripts": {
+    "start": "node ragctl.js"
+  },
+  "dependencies": {
+    "js-yaml": "^4.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "cli",
+    "rag",
+    "knowledge-base",
+    "management"
+  ],
+  "author": "RAG Knowledge Platform",
+  "license": "MIT"
+}

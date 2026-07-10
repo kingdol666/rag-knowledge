@@ -1,91 +1,65 @@
-﻿# ============================================
-# RAG Knowledge Platform 鈥?鍓嶅悗绔叡鐢ㄥ惎鍔ㄩ厤缃?
 # ============================================
-# 杩欐槸鍞竴鐨勭鍙ｉ厤缃潵婧愶紝鍓嶅悗绔惎鍔ㄦ椂鑷姩璇诲彇銆?
-# 淇敼姝ゆ枃浠跺悗閲嶅惎瀵瑰簲鏈嶅姟鍗冲彲鐢熸晥銆?
-# .env 涓殑鍚屽悕鍙橀噺浼氳鐩栨鏂囦欢涓殑鍊笺€?
+# RAG Knowledge Platform - Shared Configuration
+# ============================================
+# Single source of truth for ports and shared settings.
+# Env vars in .env override values here.
 # ============================================
 
+# -- Server (ports, CORS, host) --
 server:
-  # 鈹€鈹€ 璺ㄥ煙锛氬厑璁告墍鏈夋潵婧愶紝瀹岀編瑙ｅ喅鍓嶅悗绔垎绂荤殑 CORS 闂 鈹€鈹€
   cors_origins:
     - "*"
-
-  # 鈹€鈹€ Dev 妯″紡锛堢儹閲嶈浇锛夆攢
   dev:
     host: "0.0.0.0"
     backend_port: 8765
     frontend_port: 6789
-    backend_url: "http://localhost:8765"  
-
-  # 鈹€鈹€ Prod 妯″紡锛堢敓浜ч儴缃诧級鈹€
+    backend_url: "http://localhost:8765"
   prod:
     host: "0.0.0.0"
     backend_port: 8001
     frontend_port: 3000
     backend_url: "http://localhost:8001"
 
-# ============================================
-# 瀛樺偍璺緞閰嶇疆锛堝墠鍚庣鍏变韩锛?
-# ============================================
-# 鍚庣闇€閫氳繃姝よ矾寰勮鍙?.tree-fs.json銆佹枃妗ｆ鏂囩瓑銆?
-# .env 鐨?TREE_STORAGE_PATH 浼樺厛绾ф渶楂樸€?
-# ============================================
+# -- Storage (tree-file-system path) --
 storage:
-  # web 端 tree-file-system 的相对路径
-  # 相对路径基于项目根目录（rag-knowledge/）
   tree_fs_root: "./storage/tree-file-system"
 
-# ============================================
-# 鍚戦噺妫€绱㈤厤缃?
-# ============================================
+# -- Vector Search (ChromaDB) --
 vector:
   enabled: true
-  # ChromaDB 鎸佷箙鍖栫洰褰曪紙鐩稿椤圭洰鏍癸級
   persist_dir: "./chroma_db"
   collection_prefix: "kb_"
   chunk_size: 500
   chunk_overlap: 50
   top_k: 5
-  score_threshold: 0.35  # 0.55 瀵归暱鏂囨。鐗囨杩囦弗锛坆ge-m3 浣欏鸡澶氬湪 0.3-0.5 琚护鎺夎嚧 count=0锛夛紝闄嶅埌 0.35锛汳CP 宸ュ叿鏀寔鎸夋煡璇㈣鐩?
-  experience_score_threshold: 0.55  # 缁忛獙鏄仛鐒︾煭鍐呭锛岀浉浼煎害鍒嗗竷鏇撮珮锛?.35 浼氭妸鏃犲叧 query锛堝"绾㈢儳鑲?0.40-0.45锛夐敊鍒や负鐩稿叧銆傚疄娴?0.55 瀹岀編鍒嗙鏃犲叧(鈮?.45)/鐩稿叧(鈮?.65)
+  score_threshold: 0.35
+  experience_score_threshold: 0.55
 
-# ============================================
-# Embedding 妯″瀷閰嶇疆
-# ============================================
+# -- Embedding Model --
 embedding:
   model_name: "BAAI/bge-m3"
-  # 妯″瀷缂撳瓨鐩綍锛堢浉瀵归」鐩牴锛?
   cache_dir: "./models_cache"
-  device: "auto"    # auto 鈫?CUDA if available, else CPU
+  device: "auto"
   batch_size: 32
   normalize: true
 
-# ============================================
-# 鐭ヨ瘑鍥捐氨閰嶇疆锛圢eo4j锛?
-# ============================================
+# -- Knowledge Graph (Neo4j) --
 graph:
   enabled: true
   uri: "bolt://127.0.0.1:7687"
   username: "neo4j"
-  # 鏀寔 ${NEO4J_PASSWORD} 璇硶浠庣幆澧冨彉閲忚鍙栵紝閬垮厤鏄庢枃瀛樺偍
   password: "123456"
   database: "neo4j"
-  # 杩炴帴姹犻厤缃紙鍙€夛紝璇﹁ doc锛沢ds 鐗堟湰椤绘敞閲?max_connection_pool_size锛?
   pool:
     max_connection_pool_size: 50
-    connection_acquisition_timeout: 30  # 绉?
-    max_connection_lifetime: 3600       # 绉掞紙1 灏忔椂锛?
-  # 鐬€佸け璐ラ噸璇曠瓥鐣ワ紙缃戠粶闂柇绛夛級
+    connection_acquisition_timeout: 30
+    max_connection_lifetime: 3600
   retry:
     max_attempts: 3
-    base_delay: 0.5  # 绉掞紙鎸囨暟閫€閬匡細0.5鈫?.0鈫?.0锛?
-  # 鍏崇郴鎶藉彇锛坴3锛氬熀浜?metadata 鐨勫叡浜爣绛惧拰鍚孠B鍏宠仈锛屾棤 NER锛?
-  relation:
+    base_delay: 0.5
+  relation: "None"
 
-# ============================================
-# 涓ら樁娈垫绱㈤厤缃?
-# ============================================
+# -- Two-Stage Search --
 search:
   two_stage:
     enabled: true
