@@ -249,7 +249,8 @@ function findProcesses(keyword, processName) {
     let output;
     if (IS_WIN) {
       const wmicCmd = `wmic process where "name='${processName}'" get ProcessId,CommandLine /format:list`;
-      output = execSync(wmicCmd, { encoding: 'utf8', timeout: 10000 });
+      output = execSync(wmicCmd, { encoding: 'utf8', timeout: 10000, stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true });
+      if (output.includes('No Instance')) output = '';
       const entries = output.split('\n\n');
       for (const entry of entries) {
         const cmdMatch = entry.match(/CommandLine=(.+)/);
@@ -367,21 +368,15 @@ async function startBackend(mode, port) {
   info(`Starting backend on port ${port} (mode=${mode})...`);
   const env = { ...process.env, APP_MODE: mode };
 
-  if (IS_WIN) {
-    spawn('cmd', ['/k', `cd /d ${BACKEND_DIR} && set APP_MODE=${mode} && uv run python main.py`], {
-      detached: true,
-      stdio: 'ignore',
-      shell: true,
-      windowsHide: false,
-    }).unref();
-  } else {
-    spawn('uv', ['run', 'python', 'main.py'], {
-      cwd: BACKEND_DIR,
-      env,
-      detached: true,
-      stdio: 'ignore',
-    }).unref();
-  }
+  // 直接 spawn 目标进程 + detached + windowsHide（后台无窗口），避免 cmd /k 双 shell 致进程未存活
+  spawn('uv', ['run', 'python', 'main.py'], {
+    cwd: BACKEND_DIR,
+    env,
+    detached: true,
+    stdio: 'ignore',
+    windowsHide: true,
+    shell: IS_WIN,
+  }).unref();
 
   // Wait for port to come up
   for (let i = 0; i < 30; i++) {
@@ -405,21 +400,14 @@ async function startWeb(mode, port) {
   info(`Starting web frontend on port ${port} (mode=${mode})...`);
   const env = { ...process.env, APP_MODE: mode, WEB_PORT: String(port) };
 
-  if (IS_WIN) {
-    spawn('cmd', ['/k', `cd /d ${WEB_DIR} && set APP_MODE=${mode} && set WEB_PORT=${port} && node start.mjs`], {
-      detached: true,
-      stdio: 'ignore',
-      shell: true,
-      windowsHide: false,
-    }).unref();
-  } else {
-    spawn('node', ['start.mjs'], {
-      cwd: WEB_DIR,
-      env,
-      detached: true,
-      stdio: 'ignore',
-    }).unref();
-  }
+  spawn('node', ['start.mjs'], {
+    cwd: WEB_DIR,
+    env,
+    detached: true,
+    stdio: 'ignore',
+    windowsHide: true,
+    shell: IS_WIN,
+  }).unref();
 
   for (let i = 0; i < 20; i++) {
     await sleep(1000);
@@ -452,20 +440,13 @@ async function startNeo4j() {
 
 async function startMcp() {
   info('Starting MCP server (stdio mode)...');
-  if (IS_WIN) {
-    spawn('cmd', ['/k', `cd /d ${MCP_DIR} && uv run python server.py`], {
-      detached: true,
-      stdio: 'ignore',
-      shell: true,
-      windowsHide: false,
-    }).unref();
-  } else {
-    spawn('uv', ['run', 'python', 'server.py'], {
-      cwd: MCP_DIR,
-      detached: true,
-      stdio: 'ignore',
-    }).unref();
-  }
+  spawn('uv', ['run', 'python', 'server.py'], {
+    cwd: MCP_DIR,
+    detached: true,
+    stdio: 'ignore',
+    windowsHide: true,
+    shell: IS_WIN,
+  }).unref();
   ok('MCP server launched (check console window)');
 }
 
@@ -617,11 +598,11 @@ async function cmdStatus() {
     if (code === 200) {
       try {
         const data = JSON.parse(body);
-        const mineruRunning = data.is_running;
+        const mineruRunning = data.running ?? data.is_running;
         if (mineruRunning) {
-          console.log(`  MinerU   (ephemeral)  ${_c(C.GREEN, '* RUNNING')} (${data.status || 'unknown'})`);
+          console.log(`  MinerU   (ephemeral)  ${_c(C.GREEN, '* RUNNING')} (port ${data.port || '?'})`);
         } else {
-          console.log(`  MinerU   (ephemeral)  ${_c(C.YELLOW, 'o IDLE')} (${data.status || 'idle'})`);
+          console.log(`  MinerU   (ephemeral)  ${_c(C.YELLOW, 'o IDLE')}`);
         }
       } catch {
         console.log(`  MinerU   (ephemeral)  ${_c(C.GRAY, '? UNKNOWN')}`);
@@ -1000,10 +981,10 @@ async function cmdHealth() {
     if (code === 200) {
       try {
         const data = JSON.parse(body);
-        if (data.is_running) {
-          ok(`MinerU   : running (${data.status || 'unknown'})`);
+        if (data.running ?? data.is_running) {
+          ok(`MinerU   : running (port ${data.port || '?'})`);
         } else {
-          warn(`MinerU   : not running (${data.status || 'idle'})`);
+          warn(`MinerU   : not running (idle)`);
         }
       } catch {
         warn('MinerU   : status parse error');
@@ -1243,21 +1224,32 @@ async function cmdTest(target, integration) {
   if (target === 'backend' || target === 'all') {
     const cmd = integration ? 'uv run pytest --run-integration' : 'uv run pytest -x';
     info(`Running: ${cmd}`);
-    const result = await runExec(cmd, { cwd: BACKEND_DIR });
+    const result = await runExec(cmd, { cwd: BACKEND_DIR, timeout: 600000 });
+    if (result.stdout) process.stdout.write(result.stdout);
+    if (result.stderr) process.stderr.write(result.stderr);
     if (result.code !== 0 && target === 'all') {
       warn('Backend tests failed, continuing...');
+    } else if (result.code !== 0) {
+      err(`Backend tests failed (exit ${result.code})`);
+    } else {
+      ok('Backend tests passed');
     }
   }
 
   if (target === 'web' || target === 'all') {
     info('Running web type checks...');
-    await runExec('npx nuxi typecheck', { cwd: WEB_DIR });
+    const webResult = await runExec('npx nuxi typecheck', { cwd: WEB_DIR, timeout: 300000 });
+    if (webResult.stdout) process.stdout.write(webResult.stdout);
+    if (webResult.stderr) process.stderr.write(webResult.stderr);
   }
 
   if (target === 'mcp' || target === 'all') {
     const cmd = integration ? 'uv run pytest --run-integration' : 'uv run pytest -x';
     info(`Running: ${cmd}`);
-    await runExec(cmd, { cwd: MCP_DIR });
+    const mcpResult = await runExec(cmd, { cwd: MCP_DIR, timeout: 600000 });
+    if (mcpResult.stdout) process.stdout.write(mcpResult.stdout);
+    if (mcpResult.stderr) process.stderr.write(mcpResult.stderr);
+    if (mcpResult.code !== 0) err(`MCP tests failed (exit ${mcpResult.code})`); else ok('MCP tests passed');
   }
 
   return 0;
@@ -1358,20 +1350,21 @@ async function cmdKb(subcommand, query) {
       err('Usage: kb search <query>');
       return 1;
     }
-    let url = webUrl ? `${webUrl}/api/kb/search` : `${baseUrl}/api/v1/kb/search`;
-    let { code, body } = await httpRequest(url, 'PUT', { query, limit: 10 }, 15000);
-    if (code !== 200 && webUrl) {
-      ({ code, body } = await httpRequest(`${baseUrl}/api/v1/kb/search`, 'PUT', { query, limit: 10 }, 15000));
-    }
+    const encoded = encodeURIComponent(query);
+    // web proxy exposes GET /api/kb/search?query=&top_k= (search.get.ts); backend has no equivalent endpoint
+    const url = webUrl
+      ? `${webUrl}/api/kb/search?query=${encoded}&top_k=10`
+      : `${baseUrl}/api/v1/kb/search?query=${encoded}&top_k=10`;
+    const { code, body } = await httpGet(url, 15000);
     if (code === 200) {
       const data = JSON.parse(body);
-      const results = Array.isArray(data) ? data : (data.results || data.data || []);
+      const results = Array.isArray(data) ? data : (data.hits || data.results || data.data || []);
       header(`Search Results for '${query}' (${results.length})`);
       results.forEach((r, i) => {
-        const name = r.name || r.doc_name || '?';
-        const kb = r.kb_name || r.kb || '?';
-        const score = r.score || r.similarity || '?';
-        const snippet = (r.snippet || r.content || '').slice(0, 100);
+        const name = r.docName || r.doc_name || r.name || '?';
+        const kb = r.kbName || r.kb_name || r.kb || '?';
+        const score = r.score ?? r.similarity ?? '?';
+        const snippet = (r.description || r.snippet || r.content || '').slice(0, 100);
         console.log(`  ${i + 1}. ${_c(C.CYAN, name)} [${kb}] score=${score}`);
         if (snippet) console.log(`     ${_c(C.GRAY, snippet)}...`);
       });
@@ -1478,6 +1471,10 @@ ${_c(C.CYAN, 'Examples:')}
 }
 
 async function main() {
+  // Windows: 切换控制台到 UTF-8 (chcp 65001)，避免中文/进程路径输出乱码
+  if (IS_WIN) {
+    try { require('child_process').execSync('chcp 65001 >nul 2>&1', { stdio: 'ignore' }); } catch {}
+  }
   const args = process.argv.slice(2);
   const command = args[0];
 
