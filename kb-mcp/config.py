@@ -126,7 +126,13 @@ def _default_backend_url() -> str:
 
 
 def _default_mineru_url() -> str:
-    """MinerU health-check URL. Port 8764 is fixed by the platform's start script."""
+    """MinerU health-check URL (legacy fallback, rarely used directly).
+
+    The MinerU port is ephemeral (auto-picked by the backend's MineruApiManager).
+    This constant is only used when MINERU_URL is explicitly set via env.
+    The primary health-check path goes through the backend's
+    /api/v1/mineru/status endpoint, not this URL.
+    """
     host = os.environ.get("MINERU_HOST", "127.0.0.1")
     port = os.environ.get("MINERU_PORT", "8764")
     return f"http://{host}:{port}"

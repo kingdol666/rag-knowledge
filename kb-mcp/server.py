@@ -259,13 +259,19 @@ async def kb_doc_update_content(kb_id: str, doc_path: str, content: str) -> str:
 
 @mcp.tool()
 async def kb_doc_delete(kb_id: str, doc_path: str) -> str:
-    """Delete a single document."""
+    """Delete a single document.
+
+    Removes file from disk + .tree-fs.json + .knowledge-base.yml.
+    Automatically cleans up vector chunks and graph nodes (fire-and-forget)."""
     return _j(await _client().kb_doc_delete(kb_id, doc_path))
 
 
 @mcp.tool()
 async def kb_doc_batch_delete(kb_id: str, doc_paths: list) -> str:
-    """Delete multiple documents at once."""
+    """Delete multiple documents at once.
+
+    Removes files from disk + .tree-fs.json + .knowledge-base.yml.
+    Automatically cleans up vector chunks and graph nodes (fire-and-forget)."""
     return _j(await _client().kb_doc_batch_delete(kb_id, doc_paths))
 
 
@@ -273,10 +279,13 @@ async def kb_doc_batch_delete(kb_id: str, doc_paths: list) -> str:
 async def kb_doc_move(doc_path: str, target_kb_id: str) -> str:
     """Move a document to a different knowledge base.
 
-    **Atomic**: ONLY moves the file + syncs .tree-fs.json + .knowledge-base.yml
-    (both source and target). Does NOT re-index or clean up old vectors/graph.
-    Use kb_index_document on the new path, and DELETE /api/v1/search/document
-    + DELETE /api/v1/graph/document on the old path separately if needed."""
+    Moves the file on disk, syncs .tree-fs.json + .knowledge-base.yml (both
+    source and target KB), and automatically triggers reindexing:
+    - Deletes old vector chunks + graph node at the original path
+    - Indexes the document at the new path (vector + graph)
+
+    The reindex is fire-and-forget (non-blocking). For critical moves, verify
+    with kb_search_vector or kb_graph_document afterward."""
     return _j(await _client().kb_doc_move(doc_path, target_kb_id))
 
 
@@ -535,6 +544,30 @@ async def kb_doc_save_parsed(
             return _j({"success": False, "error": f"task not done (status={result.get('status')})",
                         "task_id": task_id})
         inner = result.get("result", {})
+
+        # Batch parse result: {total, successful, results: [...]}
+        # Iterate through each individual result and save all files in one call.
+        if isinstance(inner, dict) and "results" in inner and isinstance(inner["results"], list):
+            batch_results = []
+            for item in inner["results"]:
+                if not isinstance(item, dict) or not item.get("success"):
+                    continue
+                batch_results.append({
+                    "success": True,
+                    "markdown": item.get("markdown", ""),
+                    "markdown_path": item.get("markdown_path", ""),
+                    "images_dir": item.get("images_dir") or item.get("image_dir", ""),
+                    "image_dir": item.get("images_dir") or item.get("image_dir", ""),
+                    "source_filename": item.get("source_filename") or item.get("file", ""),
+                    "filename": item.get("source_filename") or item.get("file", ""),
+                    "description": description,
+                    "parse_method": item.get("parse_method", ""),
+                })
+            if not batch_results:
+                return _j({"success": False, "error": "No successful parse results in batch task"})
+            return _j(await _client().save_parsed_files(parent_id, batch_results))
+
+        # Single parse result
         if not markdown:
             markdown = inner.get("markdown", "")
         if not markdown_path:

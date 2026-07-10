@@ -37,7 +37,7 @@ class KbClient:
 
     async def _ensure_client(self):
         if self._client is None or self._client.is_closed:
-            self._client = httpx.AsyncClient(timeout=self.timeout)
+            self._client = httpx.AsyncClient(timeout=self.timeout, trust_env=False)
         return self._client
 
     async def aclose(self):
@@ -108,7 +108,7 @@ class KbClient:
 
     async def health_check(self):
         """Check health of backend, MinerU, and web services."""
-        async with httpx.AsyncClient(timeout=5) as c:
+        async with httpx.AsyncClient(timeout=5, trust_env=False) as c:
             status = {"backend": False, "mineru": False, "web": False, "errors": []}
             for name, url in [
                 ("backend", f"{self.backend_url}/api/v1/health"),
