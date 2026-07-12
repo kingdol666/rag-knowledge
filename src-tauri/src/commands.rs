@@ -177,15 +177,18 @@ fn spawn_backend(root: &str) -> Result<ServiceResult, String> {
         .map_err(|e| format!("无法写日志 {}: {}", stdout_path, e))?;
     let err = out.try_clone().map_err(|e| e.to_string())?;
 
-    let child = Command::new("uv")
+    let uv = find_uv()
+        .ok_or_else(|| "uv 未找到 — 请先点「一键引导」安装 uv，或重启 Tauri 让新 PATH 生效".to_string())?;
+    let child = Command::new(&uv)
         .args(["run", "python", "main.py"])
         .current_dir(&dir)
         .env("APP_MODE", "dev")
         .env("PYTHONUTF8", "1")
+        .env("PATH", enriched_path())
         .stdout(Stdio::from(out))
         .stderr(Stdio::from(err))
         .spawn()
-        .map_err(|e| format!("启动 uv 失败: {}（确认 uv 在 PATH）", e))?;
+        .map_err(|e| format!("启动 uv 失败: {}（uv={}）", e, uv))?;
 
     let pid = child.id();
     std::mem::forget(child); // detach：进程随桌面 app 独立运行，不被 Drop 影响
@@ -216,10 +219,11 @@ fn spawn_web(root: &str) -> Result<ServiceResult, String> {
         .current_dir(&dir)
         .env("APP_MODE", "dev")
         .env("WEB_PORT", ports.web.to_string())
+        .env("PATH", enriched_path())
         .stdout(Stdio::from(out))
         .stderr(Stdio::from(err))
         .spawn()
-        .map_err(|e| format!("启动 node 失败: {}（确认 node 在 PATH）", e))?;
+        .map_err(|e| format!("启动 node 失败: {}（确认 node 已装）", e))?;
 
     let pid = child.id();
     std::mem::forget(child);
@@ -561,6 +565,25 @@ fn home_dir() -> Option<std::path::PathBuf> {
     #[cfg(not(windows))]
     {
         std::env::var_os("HOME").map(std::path::PathBuf::from)
+    }
+}
+
+/// 富化 PATH：把 ~/.local/bin + ~/.cargo/bin 加到子进程 PATH（uv 引导装到 .local/bin，
+/// 但 Tauri 主进程的 PATH 在启动时固定，不会自动包含它）。
+fn enriched_path() -> String {
+    let mut paths: Vec<String> = vec![];
+    if let Ok(p) = std::env::var("PATH") {
+        paths.push(p);
+    }
+    if let Some(h) = home_dir() {
+        paths.push(h.join(".local").join("bin").to_string_lossy().to_string());
+        paths.push(h.join(".cargo").join("bin").to_string_lossy().to_string());
+    }
+    // Windows 的 %PATH% 用 ; 分隔，POSIX 用 :
+    if cfg!(windows) {
+        paths.join(";")
+    } else {
+        paths.join(":")
     }
 }
 
@@ -977,6 +1000,7 @@ async fn stream_command(
     let mut child = tokio::process::Command::new(prog)
         .args(args)
         .current_dir(cwd)
+        .env("PATH", enriched_path())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
         .spawn()
