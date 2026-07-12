@@ -60,3 +60,8 @@ tests/screenshots/
 
 # Tool metadata
 .catpaw/
+
+# Claude 对话历史 SQLite（运行时数据）
+storage/claude-chat.db
+storage/claude-chat.db-wal
+storage/claude-chat.db-shm
