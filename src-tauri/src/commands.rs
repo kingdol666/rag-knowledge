@@ -1304,3 +1304,156 @@ pub async fn save_config(
 
     Ok("配置已保存（config.yml + backend/config.yml + .env）".into())
 }
+
+// ═══════════════════════════════════════════════════════════════════════
+//  Claude Code 检测（CLI 安装 + 配置 + 认证 + MCP + 能否启动）
+// ═══════════════════════════════════════════════════════════════════════
+
+#[derive(Serialize, Clone)]
+pub struct ClaudeCodeStatus {
+    pub installed: bool,
+    pub version: Option<String>,
+    pub cli_path: Option<String>,
+    pub config_found: bool,
+    pub config_path: Option<String>,
+    pub auth_method: String, // proxy / api_key / oauth / none
+    pub base_url: Option<String>,
+    pub default_mode: Option<String>,
+    pub global_mcp_count: usize,
+    pub project_mcp_count: usize,
+    pub project_mcp_names: Vec<String>,
+    pub can_start: bool,
+    pub detail: String,
+}
+
+#[tauri::command]
+pub async fn check_claude_code() -> Result<ClaudeCodeStatus, String> {
+    // 1. claude CLI 检测（PATH + ~/.local/bin + ~/.cargo/bin）
+    let mut installed = false;
+    let mut version = None;
+    let mut cli_path = None;
+    let mut can_start = false;
+
+    if let Some(v) = try_version("claude") {
+        installed = true;
+        version = Some(v);
+        cli_path = Some("claude".into());
+        can_start = true;
+    } else if let Some(h) = home_dir() {
+        let candidates: Vec<std::path::PathBuf> = if cfg!(windows) {
+            vec![
+                h.join(".local").join("bin").join("claude.exe"),
+                h.join(".cargo").join("bin").join("claude.exe"),
+            ]
+        } else {
+            vec![
+                h.join(".local").join("bin").join("claude"),
+                h.join(".cargo").join("bin").join("claude"),
+            ]
+        };
+        for cand in candidates {
+            let s = cand.to_string_lossy().replace('\\', "/");
+            if let Some(v) = try_version(&s) {
+                installed = true;
+                version = Some(v);
+                cli_path = Some(s);
+                can_start = true;
+                break;
+            }
+        }
+    }
+
+    // 2. ~/.claude/settings.json
+    let mut config_found = false;
+    let mut config_path = None;
+    let mut settings: serde_json::Value = serde_json::Value::Null;
+    if let Some(h) = home_dir() {
+        let p = h.join(".claude").join("settings.json");
+        config_path = Some(p.to_string_lossy().replace('\\', "/"));
+        if let Ok(content) = std::fs::read_to_string(&p) {
+            if let Ok(v) = serde_json::from_str::<serde_json::Value>(&content) {
+                settings = v;
+                config_found = true;
+            }
+        }
+    }
+
+    // 3. 认证方式分析
+    let env_cfg = &settings["env"];
+    let has_proxy = env_cfg["ANTHROPIC_AUTH_TOKEN"]
+        .as_str()
+        .map(|s| !s.is_empty())
+        .unwrap_or(false);
+    let base_url = env_cfg["ANTHROPIC_BASE_URL"]
+        .as_str()
+        .map(|s| s.to_string());
+    let has_api_key_env = std::env::var("ANTHROPIC_API_KEY")
+        .map(|s| !s.is_empty())
+        .unwrap_or(false);
+    let has_api_key_cfg = env_cfg["ANTHROPIC_API_KEY"]
+        .as_str()
+        .map(|s| !s.is_empty())
+        .unwrap_or(false);
+
+    let auth_method = if has_proxy {
+        "proxy".to_string()
+    } else if has_api_key_env || has_api_key_cfg {
+        "api_key".to_string()
+    } else if installed {
+        "oauth".to_string()
+    } else {
+        "none".to_string()
+    };
+
+    // 4. MCP servers（全局 settings.json + 项目 .mcp.json）
+    let global_mcp_count = settings["mcpServers"]
+        .as_object()
+        .map(|o| o.len())
+        .unwrap_or(0);
+    let (project_mcp_count, project_mcp_names) = {
+        let root = project_root_str();
+        let p = format!("{}/.mcp.json", root);
+        let servers = std::fs::read_to_string(&p)
+            .ok()
+            .and_then(|c| serde_json::from_str::<serde_json::Value>(&c).ok())
+            .and_then(|v| v["mcpServers"].as_object().cloned());
+        match servers {
+            Some(o) => (
+                o.len(),
+                o.keys().cloned().collect::<Vec<_>>(),
+            ),
+            None => (0, vec![]),
+        }
+    };
+
+    let default_mode = settings["defaultMode"].as_str().map(|s| s.to_string());
+
+    let detail = format!(
+        "Claude Code {} | 认证: {}{} | MCP: 全局 {} + 项目 {} | 模式: {}",
+        version.as_deref().unwrap_or("未安装"),
+        auth_method,
+        base_url
+            .as_ref()
+            .map(|u| format!(" ({})", u))
+            .unwrap_or_default(),
+        global_mcp_count,
+        project_mcp_count,
+        default_mode.as_deref().unwrap_or("default"),
+    );
+
+    Ok(ClaudeCodeStatus {
+        installed,
+        version,
+        cli_path,
+        config_found,
+        config_path,
+        auth_method,
+        base_url,
+        default_mode,
+        global_mcp_count,
+        project_mcp_count,
+        project_mcp_names,
+        can_start,
+        detail,
+    })
+}

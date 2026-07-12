@@ -23,6 +23,7 @@ fn main() {
             commands::bootstrap_all,
             commands::read_config_full,
             commands::save_config,
+            commands::check_claude_code,
         ])
         .setup(|app| {
             #[cfg(debug_assertions)]

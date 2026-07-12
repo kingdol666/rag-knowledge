@@ -170,6 +170,7 @@
       <span style="font-size:11px;color:var(--text-dim);align-self:center">适合全新 clone 的机器：自动装 uv/Python/依赖/模型</span>
     </div>
     <div class="grid" id="depsGrid"><div class="card"><div class="card-name">检测中…</div></div></div>
+    <div id="claudeCodeCard" style="margin-top:8px"></div>
     <div class="console-wrap" style="margin-top:10px">
       <div class="tabs"><div class="tab active">引导日志（实时）</div></div>
       <div class="console" id="bootstrapLog" style="height:170px">点击「一键引导」开始 — 或单独点某个依赖的「安装」按钮</div>
@@ -458,6 +459,31 @@
       }
     }
 
+    async function checkClaudeCode() {
+      try {
+        const s = await invoke('check_claude_code');
+        const light = s.installed ? 'on' : 'off';
+        const authLabel = ({ proxy: 'Proxy 代理', api_key: 'API Key', oauth: 'OAuth 登录', none: '⚠ 未认证' })[s.auth_method] || s.auth_method;
+        const authColor = s.auth_method === 'none' ? 'var(--red)' : 'var(--green)';
+        const mcpNames = (s.project_mcp_names || []).join(', ') || '无';
+        document.getElementById('claudeCodeCard').innerHTML = `
+          <div class="card" style="border-left:3px solid var(--accent)">
+            <div class="card-head">
+              <span class="card-name">🤖 Claude Code（/claude-chat 对话依赖）</span>
+              <span class="light ${light}"></span>
+            </div>
+            <div class="card-meta">
+              ${s.installed ? `✓ 版本 <strong>${s.version}</strong> · <code>${s.cli_path}</code>` : '❌ 未安装 — /claude-chat 不可用（需装 Claude Code CLI 或设 ANTHROPIC_API_KEY）'}<br>
+              认证: <strong style="color:${authColor}">${authLabel}</strong>${s.base_url ? ' @ <code>' + s.base_url + '</code>' : ''}<br>
+              MCP: 全局 ${s.global_mcp_count} · 项目 ${s.project_mcp_count}（${mcpNames}）<br>
+              默认模式: ${s.default_mode || 'default'} · ${s.config_found ? '✓ ' + s.config_path : '⚠ 未找到 ~/.claude/settings.json'}
+            </div>
+          </div>`;
+      } catch (e) {
+        document.getElementById('claudeCodeCard').innerHTML = `<div class="card"><div class="card-name">Claude Code 检测失败: ${e}</div></div>`;
+      }
+    }
+
     function renderDeps(deps) {
       const needInstall = deps.filter(d => !d.installed && d.installable).length;
       const grid = document.getElementById('depsGrid');
@@ -647,6 +673,7 @@
       await refreshStatus(true);
       await loadLog('backend');
       checkDeps();
+      checkClaudeCode();
       loadConfigEditor();
       startTimers();
     })();
