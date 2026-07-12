@@ -5,7 +5,8 @@
 [![Nuxt](https://img.shields.io/badge/Nuxt-3.x-00DC82)](https://nuxt.com)
 [![Neo4j](https://img.shields.io/badge/Neo4j-5.20-008CC1)](https://neo4j.com)
 [![ChromaDB](https://img.shields.io/badge/ChromaDB-1.5%2B-1E1E1E)](https://www.trychroma.com)
-[![MCP](https://img.shields.io/badge/MCP-72%20tools-orange)](https://modelcontextprotocol.io)
+[![Tauri](https://img.shields.io/badge/Tauri-2.x-desktop-blueviolet)](https://tauri.app)
+[![MCP](https://img.shields.io/badge/MCP-73%20tools-orange)](https://modelcontextprotocol.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 > 本地优先、Agent 原生的知识库平台。将 PDF/DOCX/Excel/PPTX/图片解析为结构化 Markdown，通过关键词 + 向量 + 知识图谱三路检索，并以 MCP 工具层暴露全部能力——人类和 AI Agent 都能通过统一接口管理和查询知识库。
@@ -18,6 +19,8 @@
 - [核心特性](#核心特性)
 - [系统架构](#系统架构)
 - [目录结构](#目录结构)
+- [桌面控制台（Tauri）](#桌面控制台tauri)
+- [ragctl CLI](#ragctl-cli)
 - [快速开始](#快速开始)
   - [环境要求](#环境要求)
   - [1. 克隆仓库](#1-克隆仓库)
@@ -50,7 +53,7 @@ RAG Knowledge Platform 将本地文档转化为可搜索、可溯源、Agent 可
 
 1. **本地优先** — 所有文件、索引、元数据都保存在本机磁盘，不上传云端，可版本控制、可手动修复。
 2. **多信号检索** — 融合关键词搜索（BM25）、语义检索（BGE-M3 + ChromaDB）、知识图谱遍历（Neo4j），三路互补降低幻觉。
-3. **Agent 原生** — 全部能力以 72 个 MCP 工具暴露，Claude Code、Cursor 或任何 MCP 兼容 Agent 可直接管理和查询知识库。
+3. **Agent 原生** — 全部能力以 73 个 MCP 工具暴露，Claude Code、Cursor 或任何 MCP 兼容 Agent 可直接管理和查询知识库。
 
 ### 支持的文件格式
 
@@ -80,9 +83,11 @@ RAG Knowledge Platform 将本地文档转化为可搜索、可溯源、Agent 可
 | **两阶段检索** | BM25 + 图谱扩展召回 → 向量精排，主推荐检索策略 |
 | **企业级多策略检索** | 三路并行召回（Agentic KB 判断 + BM25+向量 + 纯向量跨库）→ 交叉验证 → 内容重排 |
 | **经验库** | 实践经验结构化存储（场景/方案/教训/指标），支持评审与应用追踪 |
-| **MCP Server** | 72 个工具覆盖 KB CRUD、文档管理、解析、搜索、图谱、经验库全场景 |
+| **MCP Server** | 73 个工具覆盖 KB CRUD、文档管理、解析、搜索、图谱、经验库全场景 |
 | **Claude Code Skills** | 11 个 Skill 定义 Agent 自治工作流：入库、整理、搜索、验证、批量操作等 |
 | **Web 控制台** | Nuxt 3 + Ant Design Vue 界面，文件浏览、上传解析、搜索一体化 |
+| **桌面控制台（Tauri）** | 跨平台桌面应用：零依赖一键引导 + 配置可视化编辑 + 服务管控 + ragctl 终端 |
+| **ragctl CLI** | 统一命令行：start/stop/status/health/doctor/config/logs/install/test/mcp/kb |
 
 ---
 
@@ -98,7 +103,7 @@ RAG Knowledge Platform 将本地文档转化为可搜索、可溯源、Agent 可
                              │ stdio / MCP
 ┌────────────────────────────▼────────────────────────────────────┐
 │  kb-mcp (MCP Server)                                           │
-│  72 MCP tools (search, parse, manage, graph, experience, ...)  │
+│  73 MCP tools (search, parse, manage, graph, experience, ...)  │
 │  启动时自动检测后端/前端状态，未运行则自动拉起                      │
 └────────────────────────────┬────────────────────────────────────┘
                              │ HTTP
@@ -244,12 +249,27 @@ rag-knowledge/
 │   └── storage/tree-file-system/ # 知识库磁盘存储
 │
 ├── kb-mcp/                       # MCP Server（本地模块，非 Submodule）
-│   ├── server.py                 # 72 个 MCP 工具定义
+│   ├── server.py                 # 73 个 MCP 工具定义
 │   ├── client.py                 # KbClient 快速测试脚本
 │   ├── kb_client/client.py       # HTTP 客户端（全部 HTTP 逻辑）
 │   ├── config.py                 # 配置读取（从 config.yml 解析 URL）
 │   ├── task_registry.py          # 异步后台任务管理（解析任务）
 │   └── pyproject.toml            # MCP + httpx 依赖
+│
+├── command/                      # ragctl CLI（Node.js 统一管理器）
+│   ├── ragctl.js                 # start/stop/status/health/doctor/config/logs/install/test/mcp/kb
+│   ├── ragctl                    # Linux/macOS 入口
+│   └── ragctl.bat                # Windows 入口
+│
+├── src-tauri/                    # Tauri v2 桌面控制台
+│   ├── Cargo.toml                # Rust 依赖（tauri 2 / reqwest / tokio / serde_yaml）
+│   ├── tauri.conf.json           # 窗口 / bundle / withGlobalTauri 配置
+│   ├── capabilities/default.json # 权限（core:default）
+│   ├── icons/                    # cargo tauri icon 全套
+│   ├── frontend/index.html       # 控制面板 SPA（vanilla JS + Tauri invoke）
+│   └── src/
+│       ├── main.rs               # Tauri Builder + 命令注册
+│       └── commands.rs           # 启动/检测/引导/配置/日志/ragctl 全部命令
 │
 ├── .claude/                      # Claude Code 配置
 │   ├── agents/
@@ -288,6 +308,8 @@ rag-knowledge/
 
 ## 快速开始
 
+> 🚀 **最推荐：桌面控制台一键启动** — 全新机器（零依赖）也能一键拉起。详见 [桌面控制台（Tauri）](#桌面控制台tauri)。下面是传统手动方式。
+
 ### 环境要求
 
 | 组件 | 版本要求 | 用途 |
@@ -313,6 +335,112 @@ cd rag-knowledge
 ```bash
 git submodule update --init --recursive
 ```
+
+## 桌面控制台（Tauri）
+
+本项目提供一个 **Tauri v2 桌面控制台**，把整个平台包装成一个桌面应用：一个窗口管所有服务，**全新机器（零依赖）也能一键拉起**。
+
+### 启动桌面控制台
+
+```bash
+cd src-tauri
+cargo tauri dev      # 开发模式（首次编译 ~1-2 分钟，之后秒级）
+```
+
+打包成 Windows 安装器：
+
+```bash
+cd src-tauri
+cargo tauri build    # 产出 src-tauri/target/release/bundle/nsis/RAG Knowledge_1.0.0_x64-setup.exe
+```
+
+### 桌面控制台功能
+
+| 功能 | 说明 |
+|------|------|
+| **🚀 一键引导** | 检测 + 自动安装全部依赖。零依赖机器也能跑 |
+| **🔍 依赖检查** | 8 项依赖卡片实时状态（uv/python/node/docker/submodules/backend_deps/web_deps/models_embedding），每项可单独安装 |
+| **▶ 一键启动** | backend → 等就绪 → web 串行拉起 |
+| **📡 服务管控** | 各组件单独启动/停止（backend/web/neo4j），状态卡片每 6s 自动刷新 |
+| **📝 配置可视化** | 递归渲染 config.yml + .env 表单，改完「💾 保存并热重载」（backend 运行中即生效，写盘前自动备份 .bak） |
+| **🖥️ 控制台** | backend/web/mineru 实时日志 + ragctl 指令终端（status/health/doctor/logs/kb list/mcp tools…） |
+| **🌐 打开 Web UI** | 系统浏览器打开 Nuxt 前端（完整 KB 业务功能） |
+
+### 零依赖一键引导流程
+
+桌面控制台的「🚀 一键引导」会按顺序执行（全程流式进度日志）：
+
+```
+1. 装 uv          → Win PowerShell irm / Unix curl 官方安装器（单二进制）
+2. 装 Python 3.12 → uv python install（用户无需预装 Python）
+3. 初始化子模块   → git submodule update --init --recursive
+4. 装后端依赖     → uv sync（torch/transformers/mineru，~3.8GB）
+5. 下载模型       → bge-m3（~2.2GB，断点续传 + hf-mirror 镜像）
+6. 装前端依赖     → npm install（检测到 Node 时）
+```
+
+每步幂等（已就绪则跳过），失败中断并报错。
+
+### 跨平台
+
+桌面控制台基于 Tauri v2，支持 Windows / Linux / macOS：
+- uv 安装：Windows `irm https://astral.sh/uv/install.ps1 | iex`；Linux/macOS `curl -LsSf https://astral.sh/uv/install.sh | sh`
+- Python：由 `uv python install` 统一下载管理（不依赖系统 Python）
+- 子进程 PATH 自动富化（`~/.local/bin` + `~/.cargo/bin`），引导装的 uv 能被后续 spawn 找到
+
+> **Node.js 是唯一需用户预装的**：uv 只管 Python；web/前端/Claude Code 依赖 node。桌面控制台会检测并提示（不会阻塞 backend 引导）。
+
+### 配置可视化
+
+桌面控制台的「配置可视化编辑」递归渲染 config.yml + backend/config.yml + .env 的全部字段：
+
+- **8 个分组**：Server / Storage / Vector / Embedding / Graph / Search / MinerU / 环境变量
+- **类型自动转换**：bool / int / float / array（逗号分隔）正确写回
+- **热重载**：保存后 best-effort 调 `/api/v1/config/reload`，运行中的 backend 即时生效（无需重启）
+- **备份**：写 config.yml / .env 前自动备份 `.bak`
+
+---
+
+## ragctl CLI
+
+命令行统一管理工具（Node.js，零外部依赖除 js-yaml）：
+
+```bash
+ragctl <command> [subcommand] [options]
+```
+
+| 命令 | 说明 |
+|------|------|
+| `ragctl start [backend\|web\|neo4j\|mcp\|all]` | 启动服务（dev 开终端窗口 / prod 后台静默） |
+| `ragctl stop [backend\|web\|neo4j\|mcp\|all]` | 停止服务（按端口 + PID 双定位） |
+| `ragctl status` | 显示所有服务状态 + 配置摘要（backend/web/neo4j/mineru/mcp） |
+| `ragctl restart [service]` | 重启服务 |
+| `ragctl health` | 全服务 HTTP 健康检查 |
+| `ragctl doctor` | 诊断环境（Python/uv/node/npm/docker/端口/配置一致性） |
+| `ragctl config show\|get\|set\|reload\|edit` | 配置管理（支持热重载） |
+| `ragctl logs [backend\|web\|mineru] --lines N` | 查看日志尾部 |
+| `ragctl install [backend\|web\|mcp\|all]` | 安装依赖（uv sync / npm install） |
+| `ragctl test [backend\|web\|mcp]` | 运行测试套件 |
+| `ragctl mcp start\|stop\|status\|tools` | MCP server 管理 |
+| `ragctl kb list\|search\|stats` | 知识库快速操作 |
+
+**dev/prod 终端可见性**：
+- **dev**（默认）：`start` 打开可见终端窗口实时显示日志，关闭窗口即停服务
+- **prod**：`start --mode prod` 后台静默启动（守护进程式，日志写文件）
+
+**示例**：
+
+```bash
+ragctl status                      # 查看全部服务状态
+ragctl start all                   # dev 模式一键启动（弹终端窗口）
+ragctl start all --mode prod       # prod 模式后台启动
+ragctl doctor                      # 环境诊断
+ragctl config set server.dev.backend_port 9000   # 改端口 + 热重载
+ragctl logs backend --lines 100    # 看 backend 日志
+ragctl kb search "PET 双向拉伸"     # CLI 检索
+```
+
+---
 
 ## 跨平台启动
 
@@ -582,7 +710,7 @@ curl -X POST http://localhost:8765/api/v1/search/reindex \
 
 ## MCP 工具参考
 
-kb-mcp 提供 **72 个 MCP 工具**，覆盖知识库全生命周期管理。所有工具返回 JSON 字符串。
+kb-mcp 提供 **73 个 MCP 工具**，覆盖知识库全生命周期管理。所有工具返回 JSON 字符串。
 
 ### 健康检查（2 个）
 
@@ -772,7 +900,7 @@ Agent 根据用户消息自动路由到对应 Skill：
 
 项目通过 `.claude/agents/knowledge-admin.md` 定义了 **Archival** — 知识库管理员 Agent。
 
-**身份**：23 年信息科学经验的知识管理专家，拥有全部 72 个 MCP 工具的调用权限。
+**身份**：23 年信息科学经验的知识管理专家，拥有全部 73 个 MCP 工具的调用权限。
 
 **工作流程**：
 

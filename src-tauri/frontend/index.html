@@ -598,14 +598,18 @@
       const inputs = document.querySelectorAll('#configEditor input[data-path]');
       inputs.forEach(inp => {
         const raw = inp.value;
+        const path = inp.dataset.path;
         let val = raw;
-        if (inp.dataset.array) {
+        if (path.startsWith('_env.')) {
+          // .env 全是字符串字面量，不转类型（避免 true/数字被转后 Rust 写回丢值）
+          val = raw;
+        } else if (inp.dataset.array) {
           val = raw.split(',').map(s => s.trim()).filter(Boolean);
         } else if (raw === 'true') val = true;
         else if (raw === 'false') val = false;
         else if (raw !== '' && /^-?\d+$/.test(raw)) val = parseInt(raw);
         else if (raw !== '' && /^-?\d+\.\d+$/.test(raw)) val = parseFloat(raw);
-        setNested(cfg, inp.dataset.path, val);
+        setNested(cfg, path, val);
       });
 
       toast('保存中…');

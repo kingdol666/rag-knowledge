@@ -270,7 +270,8 @@ pub async fn stop_service(
         "web" => find_pid_on_port(ports.web),
         _ => None,
     };
-    let target = recorded.or(port_pid);
+    // 端口占用者优先（当前真正在跑的进程）；fallback 到启动器记录的 PID
+    let target = port_pid.or(recorded);
 
     let pid = match target {
         Some(p) => p,
@@ -1185,6 +1186,17 @@ pub fn read_config_full() -> Result<serde_json::Value, String> {
     Ok(result)
 }
 
+/// 把 JSON 值转成 .env 字符串字面量（.env 全是字符串；前端可能把 "true"/数字转成了
+/// bool/number，这里统一转回字符串，避免 as_str() 返回 None 导致写空值）。
+fn env_val_to_string(v: &serde_json::Value) -> String {
+    match v {
+        serde_json::Value::Bool(b) => b.to_string(),
+        serde_json::Value::Number(n) => n.to_string(),
+        serde_json::Value::String(s) => s.clone(),
+        _ => String::new(),
+    }
+}
+
 #[tauri::command]
 pub async fn save_config(
     config: serde_json::Value,
@@ -1251,7 +1263,7 @@ pub async fn save_config(
             ];
             for k in known {
                 if let Some(v) = env_obj.get(k) {
-                    let vs = v.as_str().unwrap_or("");
+                    let vs = env_val_to_string(v);
                     if vs.is_empty() {
                         lines.push(format!("# {}=", k));
                     } else {
@@ -1263,13 +1275,14 @@ pub async fn save_config(
                 if known.contains(&k.as_str()) {
                     continue;
                 }
-                let vs = v.as_str().unwrap_or("");
+                let vs = env_val_to_string(v);
                 if vs.is_empty() {
                     lines.push(format!("# {}=", k));
                 } else {
                     lines.push(format!("{}={}", k, vs));
                 }
             }
+            let _ = std::fs::copy(&env_path, format!("{}.bak", env_path));
             std::fs::write(&env_path, lines.join("\n"))
                 .map_err(|e| format!("写 .env 失败: {}", e))?;
         }
