@@ -9,6 +9,8 @@
 server:
   cors_origins:
     - "*"
+  auth:
+    enabled: false
   dev:
     host: "0.0.0.0"
     backend_port: 8765

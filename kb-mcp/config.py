@@ -144,6 +144,10 @@ WEB_URL = os.environ.get("WEB_URL") or _default_web_url()
 BACKEND_URL = os.environ.get("BACKEND_URL") or _default_backend_url()
 MINERU_URL = os.environ.get("MINERU_URL") or _default_mineru_url()
 
+# Shared auth token — when set, all HTTP requests carry `Authorization: Bearer <token>`.
+# Set KB_AUTH_TOKEN in .env (or environment) to match server.auth.enabled=true on backend/web.
+AUTH_TOKEN = os.environ.get("KB_AUTH_TOKEN", "")
+
 # Timeouts (env-configurable, with sensible defaults)
 HTTP_TIMEOUT = int(os.environ.get("MCP_HTTP_TIMEOUT", "30"))
 PARSE_TIMEOUT = int(os.environ.get("MCP_PARSE_TIMEOUT", "300"))

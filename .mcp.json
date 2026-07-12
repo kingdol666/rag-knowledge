@@ -1,9 +1,17 @@
-﻿{
+{
   "mcpServers": {
     "kb-mcp": {
       "command": "uv",
-      "args": ["run", "python", "server.py"],
-      "cwd": "./kb-mcp"
+      "args": [
+        "run",
+        "--directory",
+        "kb-mcp",
+        "python",
+        "server.py"
+      ],
+      "env": {
+        "APP_MODE": "dev"
+      }
     }
   }
 }

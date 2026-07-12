@@ -1,0 +1,78 @@
+name: CI
+
+# 跨平台持续集成：验证 RAG-Knowledge 在 Windows / Linux / macOS 三平台
+# 都能 uv sync（marker 条件源解析）+ 单测 + web build（cross-env）。
+# GPU/MinerU 真实加速不在 CI 覆盖（runner 无 GPU），靠本机验证。
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  cross-platform:
+    name: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout (with submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install uv
+        run: pip install uv
+
+      # 验证三平台 lockfile 解析（marker 条件源：Win/Linux x86_64→cu130，macOS/aarch64→PyPI）
+      - name: Backend — uv sync
+        working-directory: backend
+        run: uv sync
+
+      # Hermetic 单测（conftest 自动 skip integration，无需 MinerU/GPU）
+      - name: Backend — pytest
+        working-directory: backend
+        run: uv run pytest -q
+
+      - name: Web — npm install
+        working-directory: web
+        run: npm install
+
+      # 验证 cross-env 跨平台（Windows cmd 的 `set VAR=` 在 POSIX 失败）
+      - name: Web — build
+        working-directory: web
+        run: npm run build
+
+  kb-mcp-smoke:
+    name: kb-mcp import smoke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install uv
+      - name: kb-mcp — uv sync
+        working-directory: kb-mcp
+        run: uv sync
+      - name: kb-mcp — import + tool count
+        working-directory: kb-mcp
+        run: |
+          uv run python -c "import server; print('import ok')"
+          echo "tool count: $(grep -c '@mcp.tool()' server.py)"

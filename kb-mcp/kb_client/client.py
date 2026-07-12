@@ -18,6 +18,8 @@ DEFAULT_BACKEND_URL = ""  # set by caller via config.BACKEND_URL
 HTTP_TIMEOUT = int(os.environ.get("MCP_HTTP_TIMEOUT", "30"))
 PARSE_TIMEOUT = int(os.environ.get("MCP_PARSE_TIMEOUT", "5000"))
 INDEX_TIMEOUT = int(os.environ.get("MCP_INDEX_TIMEOUT", "600"))  # 大文档 CPU embedding 耗时长，索引类调用单独放宽到 600s
+# Shared auth token — when set, attached as `Authorization: Bearer <token>` to all requests.
+AUTH_TOKEN = os.environ.get("KB_AUTH_TOKEN", "")
 
 
 class KbClient:
@@ -37,7 +39,12 @@ class KbClient:
 
     async def _ensure_client(self):
         if self._client is None or self._client.is_closed:
-            self._client = httpx.AsyncClient(timeout=self.timeout, trust_env=False)
+            headers = {}
+            if AUTH_TOKEN:
+                headers["Authorization"] = f"Bearer {AUTH_TOKEN}"
+            self._client = httpx.AsyncClient(
+                timeout=self.timeout, trust_env=False, headers=headers
+            )
         return self._client
 
     async def aclose(self):

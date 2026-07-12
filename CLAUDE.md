@@ -43,8 +43,7 @@ rag-knowledge/
 ├── config.yml              # Single source of truth for ports (shared across all modules)
 ├── start.bat / start.sh    # One-click launch scripts
 ├── backend/                # [submodule] rag-knowledge-backend — FastAPI + MinerU
-├── web/                    # [submodule] rag-knowledge-frondend — Nuxt 3 UI (active frontend)
-├── frontend/               # [submodule] rag-knowledge-frontend — legacy Vue 3/Vite (inactive)
+├── web/                    # [submodule] rag-knowledge-frondend — Nuxt 3 UI (only frontend)
 ├── kb-mcp/                 # [local] MCP server — provides ~40 MCP tools for KB operations
 ├── .claude/skills/         # OMC skills (knowledgebase dispatcher, ingest, search, manage, etc.)
 ├── .claude/agents/         # Archival agent definition (knowledge-admin.md)
@@ -67,20 +66,20 @@ backend/
 │   │   └── mineru.py          # GET /api/v1/mineru/status, POST /api/v1/mineru/restart
 │   ├── models/schemas.py      # Pydantic response models
 │   ├── services/mineru_service.py  # MineruParseService wrapper
-│   └── utils/paths.py         # PROJECT_ROOT, config path resolution
-├── sandbox/mineru_module/
-│   └── manager.py             # MineruApiManager: subprocess lifecycle + async task API
+│   └── utils/
+│       ├── paths.py          # PROJECT_ROOT, config path resolution
+│       └── mineru_manager.py # MineruApiManager: subprocess lifecycle + async task API
 ├── tests/
 │   ├── conftest.py            # Skips integration tests unless --run-integration
 │   ├── test_unit.py           # Hermetic unit tests (no MinerU)
 │   └── test_parse_async.py    # Integration (needs running MinerU)
-└── pyproject.toml             # uv; Windows-only (required-environments: win32)
+└── pyproject.toml             # uv; 三平台支持 (required-environments: win32/linux/darwin; marker 条件源)
 ```
 
 Key properties:
 - **No DeepAgent** — old DeepAgent routes were removed.
 - **MinerU port is ephemeral** — `MineruApiManager(port=None)` auto-picks a free port avoiding common dev ports. The resolved port is at `manager.port` / `manager.api_url`. **Do NOT hardcode 8764.**
-- **Subprocess lifecycle** — MinerU runs as a hidden subprocess bound to a Windows Job Object (`KILL_ON_JOB_CLOSE`); stdout→log file (never a pipe, avoids [Errno 22]).
+- **Subprocess lifecycle** — MinerU runs as a hidden subprocess: Windows binds to a Job Object (`KILL_ON_JOB_CLOSE`); Linux uses `prctl(PR_SET_PDEATHSIG)` as the equivalent parent-death cleanup; macOS falls back to process-group + atexit. stdout→log file on all platforms (never a pipe, avoids [Errno 22]).
 - **Anti-zombie startup** — `main.py:_port_in_use()` does a bare `socket.bind` before uvicorn; refuses to start if port is occupied.
 
 ### Web (Nuxt 3 TypeScript)
@@ -221,11 +220,8 @@ uv run pytest --run-integration
 # Run a single test
 uv run pytest tests/test_unit.py -x -k "test_name"
 
-# Install MinerU (isolated venv, first time only)
-cd sandbox/mineru_module
-uv venv --python 3.12
-uv pip install mineru[all]
-cd ../..
+# MinerU is included via `uv sync` (mineru[core]); first parse auto-downloads models.
+# (No manual install step — the old sandbox/mineru_module path was removed.)
 
 # Health check
 curl http://localhost:8765/api/v1/health
@@ -315,8 +311,8 @@ server:
 2. **Stdout pipe → file** — MinerU stdout goes to `backend/logs/mineru-api.log`, never a pipe. The old [Errno 22] pipe-closure crash is solved by this + Job Object lifecycle.
 3. **HTTPS_PROXY hijacks localhost** — httpx calls use `trust_env=False` to avoid localhost calls being proxied to 7890. If adding new httpx calls, use the same flag.
 4. **kb-mcp API inconsistencies** — `kb_client` has known quirks: batch_delete requires full paths while delete/read accept bare names; `file_size` in `.knowledge-base.yml` can be stale after index updates; `name` field doesn't always sync with `path`.
-5. **Windows-only** — `pyproject.toml` has `required-environments = ["sys.platform == 'win32']`; `uv sync` fails on other platforms. The sandbox manager has cross-platform fallbacks but Windows is primary.
-6. **Submodule management** — `backend`, `web`, `frontend` are git submodules. After cloning or switching branches, run `git submodule update --init --recursive`. The `kb-mcp` directory is NOT a submodule.
+5. **Cross-platform** — `pyproject.toml` uses marker-based conditional sources; Win/Linux x86_64 pull cu130 (CUDA) from the PyTorch index, macOS and aarch64 fall back to PyPI (CPU/MPS). `required-environments` allows `win32`/`linux`/`darwin`, so `uv sync` works on all three. Linux uses `prctl(PR_SET_PDEATHSIG)` as the Job Object equivalent for MinerU subprocess cleanup; macOS falls back to process-group + atexit.
+6. **Submodule management** — `backend` and `web` are git submodules (the legacy `frontend/` submodule was removed; `.gitmodules` lists only backend + web). After cloning or switching branches, run `git submodule update --init --recursive`. The `kb-mcp` directory is NOT a submodule.
 
 ## Development Conventions
 

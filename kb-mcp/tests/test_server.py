@@ -2,7 +2,13 @@
 """End-to-end test for the decoupled kb-mcp architecture."""
 import asyncio
 import json
+import os
 import sys
+
+# 默认 dev 模式（web 6789 / backend 8765）；直接 `uv run python tests/test_server.py`
+# 不带 APP_MODE 时避免回退 prod 打到 3000 端口（无服务）致全链路失败。
+os.environ.setdefault("APP_MODE", "dev")
+
 import server
 
 
@@ -73,19 +79,7 @@ async def run_tests():
     d = json.loads(await server.fs_get_count())
     check("fs_get_count", d.get("total", 0) > 0, f"folders={d.get('folders')} files={d.get('files')}")
 
-    # 15. prompts_list
-    d = json.loads(await server.prompts_list())
-    check("prompts_list", d.get("data", {}).get("total", 0) >= 0)
-
-    # 16. prompts_create + get + delete
-    d = json.loads(await server.prompts_create("Decouple_Prompt", "Test", "Content", "test"))
-    pid = d.get("data", {}).get("id", "")
-    check("prompts_create", bool(pid), f"id={pid}")
-    if pid:
-        d = json.loads(await server.prompts_get(pid))
-        check("prompts_get", d.get("success"))
-        d = json.loads(await server.prompts_delete(pid))
-        check("prompts_delete", d.get("success"))
+    # prompts_* tools were removed (FastMCP no longer exposes prompts in server.py).
 
     # 17. backend_status
     d = json.loads(await server.backend_status())

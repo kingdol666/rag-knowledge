@@ -289,6 +289,96 @@ function findNodeProcesses(keyword) {
   return findProcesses(keyword, name);
 }
 
+// ── Terminal / Spawn Helpers ───────────────────────────────────────────
+
+function commandExists(cmd) {
+  try {
+    execSync(IS_WIN ? `where ${cmd}` : `command -v ${cmd}`, {
+      stdio: 'ignore', timeout: 3000, shell: IS_WIN,
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * dev 模式专用：打开一个可见终端窗口运行 commandLine，实时显示 stdout/stderr 日志，
+ * 窗口标题 = title，关闭窗口即停止该服务。
+ *
+ * 跨平台策略：
+ *   Windows : `cmd /c start "title" cmd /k "<commandLine>"`（新 cmd 窗口，/k 保持开启）
+ *   macOS   : osascript → Terminal.app（custom title）
+ *   Linux   : 按优先级探测 gnome-terminal / xfce4-terminal / konsole / mate-terminal / xterm
+ *
+ * 返回 true 表示成功开窗；false 表示无可用终端（调用方应降级到后台日志）。
+ */
+function spawnInTerminal(title, commandLine, opts = {}) {
+  const env = { ...process.env, ...(opts.env || {}) };
+  const cwd = opts.cwd || PROJECT_ROOT;
+
+  if (IS_WIN) {
+    // `start` 是 cmd 内置命令，必须经 cmd /c；/k 让窗口在命令结束后保持开启（持续看日志）
+    spawn('cmd', ['/c', 'start', `"${title}"`, 'cmd', '/k', commandLine], {
+      cwd, env, shell: false, windowsHide: false,
+    }).unref();
+    return true;
+  }
+
+  if (process.platform === 'darwin') {
+    const esc = commandLine.replace(/"/g, '\\"');
+    const script = `tell application "Terminal"
+      activate
+      do script "cd \\"${cwd}\\" && ${esc}"
+      set custom title of front window to "${title}"
+    end tell`;
+    spawn('osascript', ['-e', script], { cwd, env, stdio: 'ignore', detached: true }).unref();
+    return true;
+  }
+
+  // Linux: 按优先级探测终端模拟器
+  const runners = [
+    ['gnome-terminal', (t, c) => ['--title', t, '--', 'bash', '-lc', `${c}; exec bash`]],
+    ['xfce4-terminal', (t, c) => ['--title', t, '-x', 'bash', '-lc', `${c}; exec bash`]],
+    ['konsole',        (t, c) => ['-p', `tabtitle=${t}`, '-e', 'bash', '-lc', `${c}; exec bash`]],
+    ['mate-terminal',  (t, c) => ['--title', t, '-x', 'bash', '-lc', `${c}; exec bash`]],
+    ['xterm',          (t, c) => ['-T', t, '-e', 'bash', '-lc', c]],
+  ];
+  for (const [bin, argFn] of runners) {
+    if (commandExists(bin)) {
+      spawn(bin, argFn(title, commandLine), { cwd, env, stdio: 'ignore', detached: true }).unref();
+      return true;
+    }
+  }
+
+  return false;
+}
+
+/**
+ * 启动单个服务进程的统一入口，按 mode 分流：
+ *   dev  → 可见终端窗口（实时日志，关闭窗口即停）
+ *   prod → 后台静默（detached + windowsHide + stdio:ignore，日志写文件由服务自身负责）
+ *
+ * 在无可用终端的 headless Linux 上 dev 自动降级到后台（与 prod 同行为，提示用 `ragctl logs`）。
+ */
+function spawnService({ mode, title, cwd, command, args, env }) {
+  const fullEnv = { ...process.env, ...(env || {}) };
+
+  if (mode === 'dev') {
+    const line = `${command} ${args.join(' ')}`;
+    if (spawnInTerminal(title, line, { env: fullEnv, cwd })) {
+      info(`${title.split(' (')[0]} launching in a new terminal window (close it to stop)`);
+      return;
+    }
+    warn('No terminal emulator available — starting in background (use `ragctl logs` to view)');
+  }
+
+  // prod（或 dev 降级）：后台静默
+  spawn(command, args, {
+    cwd, env: fullEnv, detached: true, stdio: 'ignore', windowsHide: true, shell: IS_WIN,
+  }).unref();
+}
+
 // ── HTTP Helpers ───────────────────────────────────────────────────────
 
 function httpGet(url, timeout = 5000) {
@@ -351,7 +441,7 @@ async function cmdStart(service, mode) {
     await startNeo4j();
   }
   if (service === 'mcp') {
-    await startMcp();
+    await startMcp(mode);
   }
 
   return 0;
@@ -366,17 +456,14 @@ async function startBackend(mode, port) {
   }
 
   info(`Starting backend on port ${port} (mode=${mode})...`);
-  const env = { ...process.env, APP_MODE: mode };
-
-  // 直接 spawn 目标进程 + detached + windowsHide（后台无窗口），避免 cmd /k 双 shell 致进程未存活
-  spawn('uv', ['run', 'python', 'main.py'], {
+  spawnService({
+    mode,
+    title: `RAG-Backend (${mode})`,
     cwd: BACKEND_DIR,
-    env,
-    detached: true,
-    stdio: 'ignore',
-    windowsHide: true,
-    shell: IS_WIN,
-  }).unref();
+    command: 'uv',
+    args: ['run', 'python', 'main.py'],
+    env: { APP_MODE: mode },
+  });
 
   // Wait for port to come up
   for (let i = 0; i < 30; i++) {
@@ -398,16 +485,14 @@ async function startWeb(mode, port) {
   }
 
   info(`Starting web frontend on port ${port} (mode=${mode})...`);
-  const env = { ...process.env, APP_MODE: mode, WEB_PORT: String(port) };
-
-  spawn('node', ['start.mjs'], {
+  spawnService({
+    mode,
+    title: `RAG-Web (${mode})`,
     cwd: WEB_DIR,
-    env,
-    detached: true,
-    stdio: 'ignore',
-    windowsHide: true,
-    shell: IS_WIN,
-  }).unref();
+    command: 'node',
+    args: ['start.mjs'],
+    env: { APP_MODE: mode, WEB_PORT: String(port) },
+  });
 
   for (let i = 0; i < 20; i++) {
     await sleep(1000);
@@ -438,16 +523,22 @@ async function startNeo4j() {
   }
 }
 
-async function startMcp() {
-  info('Starting MCP server (stdio mode)...');
-  spawn('uv', ['run', 'python', 'server.py'], {
+async function startMcp(mode) {
+  mode = mode || getAppMode();
+  info(`Starting MCP server (stdio mode, mode=${mode})...`);
+  spawnService({
+    mode,
+    title: `RAG-MCP (${mode})`,
     cwd: MCP_DIR,
-    detached: true,
-    stdio: 'ignore',
-    windowsHide: true,
-    shell: IS_WIN,
-  }).unref();
-  ok('MCP server launched (check console window)');
+    command: 'uv',
+    args: ['run', 'python', 'server.py'],
+    env: { APP_MODE: mode },
+  });
+  if (mode === 'dev') {
+    ok('MCP server launching in a new terminal window (stdio server — shows startup logs, then waits for client)');
+  } else {
+    ok('MCP server launched in background (prod mode)');
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════════════

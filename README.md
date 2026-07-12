@@ -26,6 +26,7 @@
   - [4. 安装 MinerU OCR 引擎（可选）](#4-安装-mineru-ocr-引擎可选)
   - [5. 启动平台](#5-启动平台)
   - [6. 验证服务](#6-验证服务)
+- [跨平台启动](#跨平台启动)
 - [使用指南](#使用指南)
   - [Web UI 操作](#web-ui-操作)
   - [MCP / Agent 操作](#mcp--agent-操作)
@@ -217,8 +218,7 @@ rag-knowledge/
 │   │   ├── config.py             # 配置单例（读取 config.yml + .env）
 │   │   ├── api/routes/           # 路由：health, parse, search, graph
 │   │   ├── services/             # 服务层：mineru, vector, graph, keyword
-│   │   └── utils/                # 工具：路径解析、模型下载
-│   ├── sandbox/mineru_module/    # MinerU 子进程管理
+│   │   └── utils/                # 工具：路径解析、模型下载、MinerU 子进程管理
 │   ├── tests/                    # 单元测试 + 集成测试
 │   └── pyproject.toml            # Python 依赖（uv 管理）
 │
@@ -242,8 +242,6 @@ rag-knowledge/
 │   ├── pages/                    # 页面组件
 │   ├── types/                    # TypeScript 类型定义
 │   └── storage/tree-file-system/ # 知识库磁盘存储
-│
-├── frontend/                     # [Git Submodule] 旧版 Vue 3/Vite 前端（不活跃）
 │
 ├── kb-mcp/                       # MCP Server（本地模块，非 Submodule）
 │   ├── server.py                 # 72 个 MCP 工具定义
@@ -301,7 +299,7 @@ rag-knowledge/
 | Git | 支持子模块 | 克隆仓库 |
 | Docker / Docker Compose | 可选 | Neo4j 知识图谱 |
 
-> **⚠️ Windows 优先**：`backend/pyproject.toml` 设置了 `required-environments = ["sys.platform == 'win32'"]`，`uv sync` 在非 Windows 平台会失败。沙箱管理器有跨平台回退，但 Windows 是主要支持平台。
+> **跨平台支持**：Windows / Linux / macOS 一等支持。`backend/pyproject.toml` 通过 marker 条件源适配三平台 — Windows 与 Linux x86_64 走 PyTorch cu130 索引（NVIDIA CUDA），macOS 与 Linux aarch64 自动回退 PyPI（CPU/MPS）。`uv sync` 在三平台均可直接通过，无需手动替换 wheel。
 
 ### 1. 克隆仓库
 
@@ -315,6 +313,27 @@ cd rag-knowledge
 ```bash
 git submodule update --init --recursive
 ```
+
+## 跨平台启动
+
+| 平台 | GPU | dev 启动 | prod 启动 |
+|------|-----|----------|-----------|
+| Windows | NVIDIA CUDA | `start.bat dev` | `start.bat prod` |
+| Windows | 无 | `start.bat dev`（CPU） | `start.bat prod` |
+| Linux x86_64 | NVIDIA | `./start.sh dev` | `./start.sh prod` |
+| Linux x86_64 | 无 | `./start.sh dev`（CPU） | `./start.sh prod` |
+| Linux aarch64 | — | `./start.sh dev`（CPU） | `./start.sh prod` |
+| macOS Apple Silicon | MPS | `./start.sh dev` | `./start.sh prod` |
+| macOS Intel | 无 | `./start.sh dev`（CPU） | `./start.sh prod` |
+
+**GPU 后端自动选择**（无需配置）：
+- `torch.cuda.is_available()` → `cuda`（Windows/Linux + NVIDIA）
+- `torch.backends.mps.is_available()` → `mps`（macOS Apple Silicon）
+- 否则 → `cpu`
+
+**通用依赖**（三平台）：Python 3.12 · uv · Node.js ≥18 · npm · Git · Docker（可选，Neo4j 图谱）
+
+**模型下载镜像**（可选）：默认中国镜像 hf-mirror.com；海外设 `HF_ENDPOINT=https://huggingface.co`
 
 ### 2. 配置
 
@@ -368,12 +387,7 @@ docker compose up -d neo4j
 
 PDF/DOCX/Excel/PPTX/图片解析需要 MinerU。如果只需处理纯文本/Markdown，可跳过。
 
-```bash
-cd backend/sandbox/mineru_module
-uv venv --python 3.12
-uv pip install mineru[all]
-cd ../..
-```
+> `uv sync` 已含 `mineru[core]` 依赖，**无需手动安装**。首次解析时自动下载模型（默认 ModelScope 镜像；海外可设 `HF_ENDPOINT=https://huggingface.co` 切换 HuggingFace 直连）。
 
 MinerU 的配置在 `backend/config.yml`：
 
@@ -1012,7 +1026,7 @@ docker compose logs -f neo4j
 ### MinerU 解析失败
 
 1. 检查后端日志 `backend/logs/mineru-api.log`
-2. 确认 MinerU 已安装：`cd backend/sandbox/mineru_module && uv pip list | grep mineru`
+2. 确认 MinerU 已安装：`cd backend && uv pip list | grep mineru`（`uv sync` 已含 `mineru[core]`）
 3. 使用 `backend_status()` 获取权威状态（`health_check()` 可能误报）
 4. MinerU 端口是临时分配的，不要硬编码
 
@@ -1035,8 +1049,8 @@ kb-mcp 在 `main()` 启动前执行健康检查：
 | 图谱可视化页面 | 未实现 | 图谱 API 完整，但无 `/graph` 页面 |
 | 来源溯源 UI | 部分 | 结果显示文档路径但无 chunk/score/片段 |
 | 语义分块 | 未实现 | 固定 500 字符分块可能破坏语义边界 |
-| 跨平台支持 | Windows 优先 | `pyproject.toml` 限制 `win32`，沙箱管理器有回退但非主要支持 |
-| 双前端模块 | 遗留 | `frontend/` 子模块已过时，`web/` 为活跃前端 |
+| 跨平台支持 | Windows / Linux / macOS 一等 | `pyproject.toml` 用 marker 条件源；Win/Linux x86_64 走 cu130，macOS/aarch64 走 PyPI |
+| ~~双前端模块~~ | 已移除 | `frontend/` 子模块已移除，`web/` 为唯一前端 |
 
 ---
 

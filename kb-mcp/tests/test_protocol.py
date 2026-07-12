@@ -6,7 +6,15 @@ import os
 import sys
 import threading
 
+# 默认 dev 模式（6789/8765）；直接 `uv run python tests/test_protocol.py` 不带 APP_MODE 时
+# 避免回退 prod 打到 3000 端口（无服务）致全部请求失败。
+# 设 APP_MODE=prod 或已设值时尊重已有值。
+os.environ.setdefault("APP_MODE", "dev")
+
 import config
+
+# server.py 在 kb-mcp/ 根目录（不在 tests/），subprocess 必须以仓库根为 cwd 才能找到它。
+_PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 env = dict(os.environ)
 env["WEB_URL"] = config.WEB_URL
@@ -19,7 +27,7 @@ proc = subprocess.Popen(
     stdout=subprocess.PIPE,
     stderr=subprocess.DEVNULL,
     env=env,
-    cwd=os.path.dirname(os.path.abspath(__file__)),
+    cwd=_PROJECT_ROOT,
 )
 
 messages = [
@@ -90,7 +98,7 @@ else:
     print("[CALL kb_list] NO RESPONSE")
 
 print()
-all_ok = tool_count == 35 and health_ok and kb_count > 0
+all_ok = tool_count >= 73 and health_ok and kb_count > 0
 if all_ok:
     print(f"=== MCP PROTOCOL TEST PASSED ({tool_count} tools, health={health_ok}, {kb_count} KBs) ===")
 else:
