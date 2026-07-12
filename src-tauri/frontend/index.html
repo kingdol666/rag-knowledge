@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RAG Knowledge Platform — 控制台</title>
+  <style>
+    :root {
+      --bg: #0f1419;
+      --panel: #1a2028;
+      --panel-2: #222b36;
+      --border: #2d3744;
+      --text: #e2e8f0;
+      --text-dim: #94a3b8;
+      --accent: #3176db;
+      --accent-hover: #4a8de8;
+      --green: #22c55e;
+      --red: #ef4444;
+      --yellow: #eab308;
+      --gray: #64748b;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, "Segoe UI", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 14px;
+      padding: 16px;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    h1 { font-size: 18px; font-weight: 600; }
+    h2 { font-size: 13px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding-bottom: 14px; border-bottom: 1px solid var(--border); margin-bottom: 16px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .logo {
+      width: 36px; height: 36px; border-radius: 8px;
+      background: var(--accent); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; font-weight: 700;
+    }
+    .path-info { font-size: 11px; color: var(--text-dim); margin-top: 2px; font-family: monospace; }
+
+    .top-actions { display: flex; gap: 8px; }
+
+    .grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px; margin-bottom: 20px;
+    }
+    .card {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+      padding: 14px; position: relative;
+    }
+    .card-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .card-name { font-weight: 600; font-size: 14px; }
+    .light {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--gray); box-shadow: 0 0 6px transparent;
+      transition: all 0.3s;
+    }
+    .light.on { background: var(--green); box-shadow: 0 0 8px var(--green); }
+    .light.off { background: var(--red); }
+    .light.idle { background: var(--yellow); }
+    .card-meta { font-size: 11px; color: var(--text-dim); font-family: monospace; margin-bottom: 10px; word-break: break-all; }
+    .card-actions { display: flex; gap: 6px; }
+
+    button {
+      background: var(--panel-2); color: var(--text);
+      border: 1px solid var(--border); border-radius: 6px;
+      padding: 6px 12px; font-size: 12px; cursor: pointer;
+      transition: all 0.15s;
+    }
+    button:hover:not(:disabled) { background: var(--accent); border-color: var(--accent); }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+    button.primary { background: var(--accent); border-color: var(--accent); color: white; }
+    button.primary:hover:not(:disabled) { background: var(--accent-hover); }
+    button.danger:hover:not(:disabled) { background: var(--red); border-color: var(--red); }
+    button.small { padding: 4px 8px; font-size: 11px; }
+
+    .section { margin-bottom: 20px; }
+    .console-wrap {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+      overflow: hidden;
+    }
+    .tabs { display: flex; border-bottom: 1px solid var(--border); background: var(--panel-2); }
+    .tab {
+      padding: 10px 16px; cursor: pointer; font-size: 12px;
+      border-right: 1px solid var(--border); color: var(--text-dim);
+    }
+    .tab.active { background: var(--panel); color: var(--text); border-bottom: 2px solid var(--accent); }
+
+    .console {
+      background: #0a0e13; color: #c8d3e0;
+      font-family: "Cascadia Code", "Consolas", monospace; font-size: 12px;
+      padding: 12px; height: 220px; overflow-y: auto;
+      white-space: pre-wrap; word-break: break-word;
+    }
+    .console-input-wrap {
+      display: flex; border-top: 1px solid var(--border);
+      background: var(--panel-2);
+    }
+    .console-prompt { padding: 10px 8px 10px 14px; color: var(--accent); font-family: monospace; font-size: 12px; }
+    .console-input {
+      flex: 1; background: transparent; border: none; color: var(--text);
+      font-family: monospace; font-size: 12px; outline: none; padding: 10px 14px 10px 0;
+    }
+
+    .features {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px;
+    }
+    .feat {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 6px;
+      padding: 10px 12px; font-size: 12px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .feat-label { color: var(--text-dim); }
+    .badge {
+      font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600;
+    }
+    .badge.on { background: rgba(34,197,94,0.15); color: var(--green); }
+    .badge.off { background: rgba(100,116,139,0.15); color: var(--gray); }
+
+    #toast {
+      position: fixed; bottom: 20px; right: 20px; z-index: 1000;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    .toast-msg {
+      background: var(--panel-2); border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 14px; font-size: 12px; max-width: 360px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      animation: slideIn 0.2s ease;
+    }
+    .toast-msg.ok { border-left: 3px solid var(--green); }
+    .toast-msg.err { border-left: 3px solid var(--red); }
+    @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+    .scan { display: inline-block; width: 12px; height: 12px; border: 2px solid var(--text-dim); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="logo">R</div>
+      <div>
+        <h1>RAG Knowledge Platform</h1>
+        <div class="path-info" id="pathInfo">加载中…</div>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="primary" id="btnStartAll">▶ 一键启动</button>
+      <button class="danger" id="btnStopAll">■ 全部停止</button>
+      <button id="btnRefresh">⟳ 刷新检测</button>
+      <button id="btnOpenWeb" disabled>🌐 打开 Web UI</button>
+    </div>
+  </header>
+
+  <div class="section">
+    <h2>服务状态</h2>
+    <div class="grid" id="statusGrid">
+      <div class="card"><div class="card-name">检测中…</div></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>功能配置（config.yml）</h2>
+    <div class="features" id="featuresGrid"></div>
+  </div>
+
+  <div class="section">
+    <h2>控制台</h2>
+    <div class="console-wrap">
+      <div class="tabs">
+        <div class="tab active" data-log="backend">Backend 日志</div>
+        <div class="tab" data-log="web">Web 日志</div>
+        <div class="tab" data-log="mineru">MinerU 日志</div>
+        <div class="tab" data-cmd="1">ragctl 指令</div>
+        <div style="flex:1"></div>
+        <div class="tab" id="autoRefresh" style="color:var(--green)">● 自动刷新</div>
+      </div>
+      <div class="console" id="consoleOut">等待输出…</div>
+      <div class="console-input-wrap" id="cmdWrap" style="display:none">
+        <span class="console-prompt">ragctl&gt;</span>
+        <input class="console-input" id="cmdInput" placeholder="输入 ragctl 子命令（status / health / doctor / start backend / logs backend …）回车执行" autocomplete="off" />
+      </div>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <script>
+    // Tauri v2 invoke（兼容 v1）
+    const _tauri = window.__TAURI__;
+    const invoke = _tauri?.core?.invoke || _tauri?.invoke;
+    if (!invoke) {
+      document.body.innerHTML = '<div style="padding:40px;color:#ef4444">错误：window.__TAURI__ 不可用。请确认 tauri.conf.json 的 app.withGlobalTauri=true 且通过 tauri 启动（非浏览器直开）。</div>';
+    }
+
+    // ── 状态 ──
+    let currentLogTab = 'backend';
+    let cmdMode = false;
+    let autoRefresh = true;
+    let statusTimer = null;
+    let logTimer = null;
+    let lastFeatures = null;
+
+    // ── 工具 ──
+    function toast(msg, kind = 'ok', ms = 4000) {
+      const el = document.createElement('div');
+      el.className = 'toast-msg ' + kind;
+      el.textContent = msg;
+      document.getElementById('toast').appendChild(el);
+      setTimeout(() => el.remove(), ms);
+    }
+
+    async function call(fn, args = {}) {
+      try { return await invoke(fn, args); }
+      catch (e) {
+        const msg = typeof e === 'string' ? e : (e?.message || JSON.stringify(e));
+        toast(`${fn} 失败: ${msg}`, 'err', 6000);
+        throw e;
+      }
+    }
+
+    // ── 渲染 ──
+    function renderStatus(snap) {
+      const cards = [
+        { key: 'backend', name: 'Backend API', on: snap.backend, meta: snap.backend_url + (snap.backend_health ? `\nhealth: ${snap.backend_health}` : ''), actions: ['backend'] },
+        { key: 'web', name: 'Web (Nuxt)', on: snap.web, meta: snap.web_url, actions: ['web'] },
+        { key: 'neo4j', name: 'Neo4j 图谱', on: snap.neo4j, meta: 'bolt://127.0.0.1:7687', actions: ['neo4j'], repairTarget: 'neo4j' },
+        { key: 'mineru', name: 'MinerU OCR', on: snap.mineru, meta: snap.mineru_port ? `ephemeral port ${snap.mineru_port}` : '随 backend 启动', depends: 'backend' },
+      ];
+      const grid = document.getElementById('statusGrid');
+      grid.innerHTML = cards.map(c => {
+        const light = c.on ? 'on' : 'off';
+        const statusText = c.on ? '运行中' : '未运行';
+        const acts = (c.actions || []).map(a =>
+          `<button class="small" data-start="${a}">启动</button><button class="small danger" data-stop="${a}">停止</button>`
+        ).join('');
+        const repair = c.repairTarget ? `<button class="small" data-repair="${c.repairTarget}">修复</button>` : '';
+        return `<div class="card">
+          <div class="card-head">
+            <span class="card-name">${c.name}</span>
+            <span class="light ${light}" title="${statusText}"></span>
+          </div>
+          <div class="card-meta">${c.meta || ''}</div>
+          <div class="card-actions">${acts}${repair}</div>
+        </div>`;
+      }).join('');
+
+      // 绑定按钮
+      grid.querySelectorAll('[data-start]').forEach(b => b.onclick = () => startOne(b.dataset.start));
+      grid.querySelectorAll('[data-stop]').forEach(b => b.onclick = () => stopOne(b.dataset.stop));
+      grid.querySelectorAll('[data-repair]').forEach(b => b.onclick = () => repairOne(b.dataset.repair));
+
+      // Web UI 按钮可用性
+      document.getElementById('btnOpenWeb').disabled = !snap.web;
+    }
+
+    function renderFeatures(f) {
+      lastFeatures = f;
+      const feats = [
+        ['向量检索', f.vector_enabled],
+        ['知识图谱', f.graph_enabled],
+        ['MinerU OCR', f.mineru_enabled],
+        ['认证', f.auth_enabled],
+      ];
+      document.getElementById('featuresGrid').innerHTML = feats.map(([n, on]) =>
+        `<div class="feat"><span class="feat-label">${n}</span><span class="badge ${on ? 'on' : 'off'}">${on ? 'ON' : 'OFF'}</span></div>`
+      ).join('') + `
+        <div class="feat"><span class="feat-label">Neo4j URI</span><span style="font-size:10px;font-family:monospace">${f.neo4j_uri || '—'}</span></div>
+        <div class="feat"><span class="feat-label">存储路径</span><span style="font-size:10px;font-family:monospace">${f.storage_path || '—'}</span></div>
+      `;
+      document.getElementById('pathInfo').textContent = `📁 ${f.project_root}  ·  backend ${f.backend_url}  ·  web ${f.web_url}`;
+    }
+
+    // ── 动作 ──
+    async function refreshStatus(silent = false) {
+      try {
+        const snap = await call('check_status');
+        renderStatus(snap);
+        if (!silent) toast(`检测完成：backend=${snap.backend?'✓':'✗'} web=${snap.web?'✓':'✗'} neo4j=${snap.neo4j?'✓':'✗'} mineru=${snap.mineru?'✓':'✗'}`);
+      } catch (e) {}
+    }
+
+    async function startOne(svc) {
+      toast(`启动 ${svc}…`, 'ok');
+      const r = await call('start_service', { service: svc });
+      toast(r.message, r.success ? 'ok' : 'err', 5000);
+      setTimeout(() => refreshStatus(true), svc === 'web' ? 8000 : 3000);
+    }
+
+    async function stopOne(svc) {
+      const r = await call('stop_service', { service: svc });
+      toast(r.message, r.success ? 'ok' : 'err');
+      setTimeout(() => refreshStatus(true), 1500);
+    }
+
+    async function repairOne(target) {
+      toast(`修复 ${target}…执行中`);
+      const r = await call('repair_service', { target });
+      toast(r.message, r.success ? 'ok' : 'err', 6000);
+      setTimeout(() => refreshStatus(true), 3000);
+    }
+
+    async function startAll() {
+      toast('一键启动：backend → 等待就绪 → web…', 'ok');
+      document.getElementById('btnStartAll').innerHTML = '<span class="scan"></span> 启动中';
+      try {
+        const rb = await call('start_service', { service: 'backend' });
+        toast('Backend 启动命令已发，等待 API 就绪…', 'ok');
+        // 轮询 backend health 最多 40s
+        for (let i = 0; i < 20; i++) {
+          await new Promise(r => setTimeout(r, 2000));
+          const snap = await call('check_status');
+          renderStatus(snap);
+          if (snap.backend) break;
+        }
+        const rw = await call('start_service', { service: 'web' });
+        toast('Web 启动命令已发，等待端口就绪…', 'ok');
+        for (let i = 0; i < 15; i++) {
+          await new Promise(r => setTimeout(r, 2000));
+          const snap = await call('check_status');
+          renderStatus(snap);
+          if (snap.web) { toast('全部启动完成 ✓', 'ok'); break; }
+        }
+      } catch (e) {}
+      document.getElementById('btnStartAll').innerHTML = '▶ 一键启动';
+      refreshStatus(true);
+    }
+
+    async function stopAll() {
+      toast('停止全部服务…');
+      for (const s of ['web', 'backend']) {
+        try { await call('stop_service', { service: s }); } catch (e) {}
+      }
+      setTimeout(() => refreshStatus(true), 1500);
+    }
+
+    // ── 日志 / 命令 ──
+    async function loadLog(svc) {
+      try {
+        const tail = await invoke('read_log_tail', { service: svc, lines: 300 });
+        const el = document.getElementById('consoleOut');
+        el.textContent = tail || `(空 — ${svc} 尚未输出日志)`;
+        el.scrollTop = el.scrollHeight;
+      } catch (e) {
+        document.getElementById('consoleOut').textContent = '读取失败: ' + e;
+      }
+    }
+
+    async function runCmd(line) {
+      const out = document.getElementById('consoleOut');
+      out.textContent += `\n$ ragctl ${line}\n`;
+      try {
+        const args = line.trim().split(/\s+/).filter(Boolean);
+        const r = await invoke('run_ragctl', { args });
+        out.textContent += (r.stdout || '') + (r.stderr ? ('\n[stderr]\n' + r.stderr) : '');
+        if (!r.success) out.textContent += `\n(exit ${r.exit_code})`;
+      } catch (e) {
+        out.textContent += '错误: ' + e + '\n';
+      }
+      out.scrollTop = out.scrollHeight;
+    }
+
+    // ── 事件绑定 ──
+    document.getElementById('btnStartAll').onclick = startAll;
+    document.getElementById('btnStopAll').onclick = stopAll;
+    document.getElementById('btnRefresh').onclick = () => refreshStatus(false);
+    document.getElementById('btnOpenWeb').onclick = () => invoke('open_web_ui');
+
+    document.querySelectorAll('.tab[data-log]').forEach(t => {
+      t.onclick = () => {
+        document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+        t.classList.add('active');
+        currentLogTab = t.dataset.log;
+        cmdMode = false;
+        document.getElementById('cmdWrap').style.display = 'none';
+        document.getElementById('autoRefresh').style.display = '';
+        loadLog(currentLogTab);
+      };
+    });
+
+    document.querySelector('.tab[data-cmd]').onclick = () => {
+      document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+      document.querySelector('.tab[data-cmd]').classList.add('active');
+      cmdMode = true;
+      document.getElementById('cmdWrap').style.display = '';
+      document.getElementById('autoRefresh').style.display = 'none';
+      document.getElementById('consoleOut').textContent = 'ragctl 控制台 — 输入子命令执行（输入 help 查看全部）\n> 示例: status / health / doctor / start backend / stop all / logs backend / kb list / mcp tools';
+      document.getElementById('cmdInput').focus();
+    };
+
+    document.getElementById('autoRefresh').onclick = () => {
+      autoRefresh = !autoRefresh;
+      document.getElementById('autoRefresh').textContent = autoRefresh ? '● 自动刷新' : '○ 已暂停';
+      document.getElementById('autoRefresh').style.color = autoRefresh ? 'var(--green)' : 'var(--text-dim)';
+    };
+
+    document.getElementById('cmdInput').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const v = e.target.value.trim();
+        if (v) { runCmd(v); e.target.value = ''; }
+      }
+    });
+
+    // ── 定时刷新 ──
+    function startTimers() {
+      statusTimer = setInterval(() => { if (autoRefresh) refreshStatus(true); }, 6000);
+      logTimer = setInterval(() => { if (!cmdMode && autoRefresh) loadLog(currentLogTab); }, 3500);
+    }
+
+    // ── 初始化 ──
+    (async function init() {
+      try {
+        const f = await call('detect_features');
+        renderFeatures(f);
+      } catch (e) {
+        document.getElementById('pathInfo').textContent = '配置读取失败';
+      }
+      await refreshStatus(true);
+      await loadLog('backend');
+      startTimers();
+    })();
+  </script>
+</body>
+</html>

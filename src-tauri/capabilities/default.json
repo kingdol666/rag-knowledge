@@ -1,0 +1,11 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "RAG Knowledge 桌面控制台默认权限 — 仅应用内自定义命令，不开启 fs/shell 等 plugin 高危权限",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-set-title",
+    "core:webview:allow-internal-toggle-devtools"
+  ]
+}
