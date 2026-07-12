@@ -162,6 +162,20 @@
     </div>
   </header>
 
+  <div class="section" id="bootstrapSection">
+    <h2>环境引导（零依赖也能一键启动）</h2>
+    <div class="top-actions" style="margin-bottom:12px">
+      <button class="primary" id="btnBootstrap">🚀 一键引导（检测 + 安装全部依赖 + 下载模型）</button>
+      <button id="btnCheckDeps">🔍 重新检测</button>
+      <span style="font-size:11px;color:var(--text-dim);align-self:center">适合全新 clone 的机器：自动装 uv/Python/依赖/模型</span>
+    </div>
+    <div class="grid" id="depsGrid"><div class="card"><div class="card-name">检测中…</div></div></div>
+    <div class="console-wrap" style="margin-top:10px">
+      <div class="tabs"><div class="tab active">引导日志（实时）</div></div>
+      <div class="console" id="bootstrapLog" style="height:170px">点击「一键引导」开始 — 或单独点某个依赖的「安装」按钮</div>
+    </div>
+  </div>
+
   <div class="section">
     <h2>服务状态</h2>
     <div class="grid" id="statusGrid">
@@ -172,6 +186,16 @@
   <div class="section">
     <h2>功能配置（config.yml）</h2>
     <div class="features" id="featuresGrid"></div>
+  </div>
+
+  <div class="section">
+    <h2>配置可视化编辑（config.yml + backend/config.yml + .env）
+      <button id="btnReloadCfg" class="small" style="float:right;margin-left:4px">↻ 重新加载</button>
+      <button id="btnSaveConfig" class="primary small" style="float:right">💾 保存并热重载</button>
+    </h2>
+    <div id="configEditor" class="grid" style="grid-template-columns:1fr;gap:12px">
+      <div class="card"><div class="card-name">加载中…</div></div>
+    </div>
   </div>
 
   <div class="section">
@@ -417,6 +441,197 @@
       logTimer = setInterval(() => { if (!cmdMode && autoRefresh) loadLog(currentLogTab); }, 3500);
     }
 
+    // ── 环境引导：依赖检查 + 一键安装 ──
+    function appendBootstrapLog(msg, level) {
+      const el = document.getElementById('bootstrapLog');
+      const color = level === 'done' ? 'var(--green)' : level === 'warn' ? 'var(--yellow)' : level === 'error' ? 'var(--red)' : 'var(--text-dim)';
+      el.innerHTML += `<span style="color:${color}">${msg}</span>\n`;
+      el.scrollTop = el.scrollHeight;
+    }
+
+    async function checkDeps() {
+      try {
+        const deps = await invoke('check_dependencies');
+        renderDeps(deps);
+      } catch (e) {
+        document.getElementById('depsGrid').innerHTML = `<div class="card"><div class="card-name">检测失败: ${e}</div></div>`;
+      }
+    }
+
+    function renderDeps(deps) {
+      const needInstall = deps.filter(d => !d.installed && d.installable).length;
+      const grid = document.getElementById('depsGrid');
+      grid.innerHTML = deps.map(d => {
+        const light = d.installed ? 'on' : (d.installable ? 'off' : 'idle');
+        const btn = d.installable
+          ? `<button class="small ${d.installed ? '' : 'primary'}" data-install="${d.key}" ${d.installed ? 'disabled' : ''}>${d.installed ? '✓ 就绪' : '安装'}</button>`
+          : `<span style="font-size:10px;color:var(--text-dim)">需手动装</span>`;
+        return `<div class="card">
+          <div class="card-head"><span class="card-name">${d.name}</span><span class="light ${light}"></span></div>
+          <div class="card-meta">${d.version || ''}${d.version ? '<br>' : ''}${d.detail}</div>
+          <div class="card-actions">${btn}</div>
+        </div>`;
+      }).join('');
+      grid.querySelectorAll('[data-install]').forEach(b => b.onclick = () => installOne(b.dataset.install));
+      const bb = document.getElementById('btnBootstrap');
+      bb.textContent = needInstall === 0 ? '✓ 全部就绪' : `🚀 一键引导（检测 + 安装全部依赖 + 下载模型）`;
+    }
+
+    async function installOne(key) {
+      appendBootstrapLog(`>>> 安装 ${key} ...`, 'info');
+      toast(`安装 ${key}…`);
+      try {
+        const msg = await invoke('install_dependency', { target: key });
+        appendBootstrapLog(`✓ ${msg}`, 'done');
+        toast(msg, 'ok');
+      } catch (e) {
+        appendBootstrapLog(`✗ ${key} 失败: ${e}`, 'error');
+        toast(`${key} 失败: ${e}`, 'err', 6000);
+      }
+      setTimeout(checkDeps, 1500);
+    }
+
+    async function bootstrapAll() {
+      document.getElementById('btnBootstrap').disabled = true;
+      document.getElementById('bootstrapLog').innerHTML = '';
+      appendBootstrapLog('🚀 一键引导开始（零依赖环境也能拉起）', 'done');
+      try {
+        const msg = await invoke('bootstrap_all');
+        appendBootstrapLog(`🎉 ${msg}`, 'done');
+        toast('环境引导完成，现在可一键启动', 'ok', 5000);
+        checkDeps();
+      } catch (e) {
+        appendBootstrapLog(`✗ 引导中断: ${e}`, 'error');
+        toast(`引导失败: ${e}`, 'err', 8000);
+      }
+      document.getElementById('btnBootstrap').disabled = false;
+    }
+
+    // ── 配置可视化编辑 ──
+    const CONFIG_SECTIONS = [
+      ['server', 'Server（端口 / 模式 / host / CORS / 认证）'],
+      ['storage', 'Storage（存储路径）'],
+      ['vector', 'Vector（向量检索 / ChromaDB）'],
+      ['embedding', 'Embedding（模型 / 设备 / cache）'],
+      ['graph', 'Graph（Neo4j 图谱）'],
+      ['search', 'Search（两阶段检索参数）'],
+      ['mineru', 'MinerU（OCR 引擎）'],
+      ['_env', '环境变量（.env — 优先级最高）'],
+    ];
+
+    function getNested(obj, path) {
+      return path.split('.').reduce((o, k) => (o && o[k] !== undefined) ? o[k] : undefined, obj);
+    }
+    function setNested(obj, path, value) {
+      const keys = path.split('.');
+      let o = obj;
+      for (let i = 0; i < keys.length - 1; i++) {
+        if (o[keys[i]] === undefined) o[keys[i]] = {};
+        o = o[keys[i]];
+      }
+      o[keys[keys.length - 1]] = value;
+    }
+
+    function escapeAttr(s) { return String(s).replace(/"/g, '&quot;'); }
+
+    function renderFields(val, basePath) {
+      if (val === null || typeof val !== 'object') {
+        const v = val === null || val === undefined ? '' : String(val);
+        return `<input data-path="${basePath}" data-scalar="1" value="${escapeAttr(v)}" style="border:1px solid var(--border);background:var(--panel-2);color:var(--text);padding:6px 8px;border-radius:4px;width:100%;font-size:12px">`;
+      }
+      if (Array.isArray(val)) {
+        return `<input data-path="${basePath}" data-array="1" value="${escapeAttr(val.join(', '))}" style="border:1px solid var(--border);background:var(--panel-2);color:var(--text);padding:6px 8px;border-radius:4px;width:100%;font-size:12px" placeholder="逗号分隔">`;
+      }
+      let html = '';
+      for (const [k, v] of Object.entries(val)) {
+        const p = `${basePath}.${k}`;
+        if (v !== null && typeof v === 'object' && !Array.isArray(v)) {
+          html += `<div style="margin-top:10px;padding:8px 10px;border-left:2px solid var(--accent)">
+            <div style="color:var(--accent);font-size:11px;margin-bottom:6px">${k}</div>
+            ${renderFields(v, p)}
+          </div>`;
+        } else if (Array.isArray(v)) {
+          html += `<div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+            <label style="font-size:11px;color:var(--text-dim);min-width:160px">${k} <span style="color:var(--gray)">[]</span></label>
+            <input data-path="${p}" data-array="1" value="${escapeAttr(v.join(', '))}" style="border:1px solid var(--border);background:var(--panel-2);color:var(--text);padding:6px 8px;border-radius:4px;flex:1;font-size:12px">
+          </div>`;
+        } else {
+          const bv = v === null || v === undefined ? '' : String(v);
+          html += `<div style="display:flex;align-items:center;gap:8px;margin-top:6px">
+            <label style="font-size:11px;color:var(--text-dim);min-width:160px">${k}</label>
+            <input data-path="${p}" data-scalar="1" value="${escapeAttr(bv)}" style="border:1px solid var(--border);background:var(--panel-2);color:var(--text);padding:6px 8px;border-radius:4px;flex:1;font-size:12px">
+          </div>`;
+        }
+      }
+      return html || '<div style="color:var(--text-dim);font-size:11px">（空）</div>';
+    }
+
+    function renderConfigEditor(cfg) {
+      const editor = document.getElementById('configEditor');
+      editor.innerHTML = CONFIG_SECTIONS.map(([path, title]) => {
+        const val = getNested(cfg, path);
+        if (val === undefined) return '';
+        return `<div class="card">
+          <div class="card-head">
+            <span class="card-name">${title}</span>
+            <span style="font-size:10px;color:var(--text-dim);font-family:monospace">${path}</span>
+          </div>
+          <div style="margin-top:6px">${renderFields(val, path)}</div>
+        </div>`;
+      }).join('');
+    }
+
+    async function loadConfigEditor() {
+      try {
+        const cfg = await invoke('read_config_full');
+        renderConfigEditor(cfg);
+      } catch (e) {
+        document.getElementById('configEditor').innerHTML = `<div class="card"><div class="card-name">读取配置失败: ${e}</div></div>`;
+      }
+    }
+
+    async function saveConfigFromEditor() {
+      let cfg;
+      try { cfg = await invoke('read_config_full'); }
+      catch (e) { toast('读取最新配置失败: ' + e, 'err'); return; }
+
+      const inputs = document.querySelectorAll('#configEditor input[data-path]');
+      inputs.forEach(inp => {
+        const raw = inp.value;
+        let val = raw;
+        if (inp.dataset.array) {
+          val = raw.split(',').map(s => s.trim()).filter(Boolean);
+        } else if (raw === 'true') val = true;
+        else if (raw === 'false') val = false;
+        else if (raw !== '' && /^-?\d+$/.test(raw)) val = parseInt(raw);
+        else if (raw !== '' && /^-?\d+\.\d+$/.test(raw)) val = parseFloat(raw);
+        setNested(cfg, inp.dataset.path, val);
+      });
+
+      toast('保存中…');
+      try {
+        const msg = await invoke('save_config', { config: cfg });
+        toast(msg, 'ok', 4000);
+        appendBootstrapLog('[config] ' + msg, 'done');
+      } catch (e) {
+        toast('保存失败: ' + e, 'err', 6000);
+      }
+    }
+
+    // 绑定按钮 + progress 监听
+    document.getElementById('btnBootstrap').onclick = bootstrapAll;
+    document.getElementById('btnCheckDeps').onclick = checkDeps;
+    document.getElementById('btnSaveConfig').onclick = saveConfigFromEditor;
+    document.getElementById('btnReloadCfg').onclick = loadConfigEditor;
+
+    if (_tauri?.event?.listen) {
+      _tauri.event.listen('progress', (e) => {
+        const p = e.payload;
+        const tag = p.step ? `[${p.step}] ` : '';
+        appendBootstrapLog(tag + p.msg, p.level);
+      });
+    }
+
     // ── 初始化 ──
     (async function init() {
       try {
@@ -427,6 +642,8 @@
       }
       await refreshStatus(true);
       await loadLog('backend');
+      checkDeps();
+      loadConfigEditor();
       startTimers();
     })();
   </script>

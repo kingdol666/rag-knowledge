@@ -18,6 +18,11 @@ fn main() {
             commands::read_log_tail,
             commands::open_web_ui,
             commands::run_ragctl,
+            commands::check_dependencies,
+            commands::install_dependency,
+            commands::bootstrap_all,
+            commands::read_config_full,
+            commands::save_config,
         ])
         .setup(|app| {
             #[cfg(debug_assertions)]
