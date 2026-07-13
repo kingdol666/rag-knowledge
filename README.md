@@ -1168,6 +1168,27 @@ kb-mcp 在 `main()` 启动前执行健康检查：
 
 ---
 
+## Claude Code 智能对话
+
+Web 端（`/claude-chat`）集成了完整的 **Claude Agent SDK** 客户端，提供：
+
+| 功能 | 说明 |
+|------|------|
+| 🤖 SDK 流式对话 | 通过 `@anthropic-ai/claude-agent-sdk` 实现 SSE 实时流式交互 |
+| 📎 多模态附件 | 支持图片/PDF/文档上传，自动转 SDK content block（image/document/text） |
+| 🧠 智能滚动 | 在底部自动跟随，向上阅读时显示"↓ 新消息"+ 未读计数 |
+| ✍️ 打字机渲染 | `includePartialMessages` 启用 token 级增量渲染 + 闪烁光标 |
+| 🛠️ 工具调用渲染 | 37个内置工具分类展示 + MCP 工具 + tool_use/result 配对渲染 |
+| 📋 任务/计划/审批 | TodoWrite / ExitPlanMode / AskUserQuestion 全渲染 |
+| 🔐 权限交互 | canUseTool 回调 → SSE permission_request → 审批框 → Promise resolve |
+| 💾 历史持久化 | SQLite 存储所有会话消息，支持加载/继续/删除 |
+| 📁 工作区管理 | 保存/切换/置顶/验证工作目录，与 .claude/skills + .mcp.json 自动关联 |
+| 🎨 Skills 发现 | 扫描 `.claude/skills/*/SKILL.md` 解析 frontmatter 展示描述 |
+
+**使用方式**：设置 `ANTHROPIC_API_KEY` 环境变量后，访问页面直接对话。
+
+---
+
 ## 已知限制与路线图
 
 | 限制 | 状态 | 影响 |
