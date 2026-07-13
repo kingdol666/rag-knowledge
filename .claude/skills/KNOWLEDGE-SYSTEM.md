@@ -8,12 +8,17 @@ knowledgebase (入口/调度器)
 ├── 场景路由引擎：检测到 KB 触发词 → 自动判断具体场景 → 委托 Archival
 ├── 模糊决策：无明确匹配时用"Search / Ingest / List / 等待澄清"降级
 │
-├── knowledgebase-ingest (入库)              A0→A8
+├── knowledgebase-ingest (入库)              A0→A9 + 三道质量门控
 │   ├── 触发：入库, 上传, 解析, 导入, store, upload, parse, import, ingest, add doc (20+ 中英关键词)
-│   └── 能力：A0去重 → A1调研 → A2领域分类(含子域) → A3分层KB匹配 → A4存储(按文件类型分流)
-│             → A5标签 → A6验证(含向量索引+图谱构建) → A7子KB创建检查 → A8报告
-│   ⭐ 核心原则：按文件类型分流——PDF/Word/图片走解析路径(3步:parse→create→index)，
-│      MD/TXT/代码走直接路径(2步:create→index)。不拆分文档，整篇入库。
+│   └── 能力：A0内容指纹去重(向量≥0.85) → A1调研 → A2获取内容+解析质量门控(OCR/二进制/空正文拒绝)
+│             → A3结构化分析 → A3b标签质量门控(黑名单+归一化+正文回查)
+│             → A3c描述质量门控(四要素+内容回查) → A3d KB归属决策树(子KB优先→父KB→新建)
+│             → A4找/建KB → A5存储(按文件类型分流,整篇不截断) → A6索引+打标+索引后验证
+│             → A7七项终检checklist → A8子KB评估+孤儿清理 → A9报告
+│   ⭐ 三铁律：①整篇存储不拆分 ②内容驱动(读正文决策,非文件名) ③质量门控(A2/A3b/A3c不过即返工)
+│   ⭐ 文件类型分流：PDF/Word/图片走解析路径(parse→save_parsed→index)，MD/TXT/代码走直接路径(create→index)
+│   📎 参考：references/description-guide.md (描述门控) · references/tag-quality-rules.md (标签门控)
+│            · references/sub-kb-creation.md (子KB创建)
 │
 ├── knowledgebase-manage (管理)            M1→M6
 │   ├── 触发：移动, 改名, 删除, 合并, move, rename, delete, merge, update (15+ 中英关键词)
@@ -28,14 +33,19 @@ knowledgebase (入口/调度器)
 │             → O12三层元数据一致性(磁盘↔.tree-fs.json↔.knowledge-base.yml) → O13图谱重建
 │   ⭐ 不拆分文档——文档作为整体单元存储，向量索引在嵌入时内部处理分块
 │
-├── knowledgebase-search (智能检索)   7步Agentic RAG
+├── knowledgebase-search (智能检索)   QDCVR 查询驱动·内容裁决·门控精炼
 │   ├── 触发：搜索, 查询, 问答, 检索, search, find, query, ask, RAG (20+ 中英关键词)
-│   └── 能力：Step0意图 → Step1 KB Catalog → Step2 Doc Catalog → Step3经验优先
-│             → Step4向量确认 → Step4.5图谱扩展(可选) → Step5子KB回溯 → Step6内容验证 → Step7综合回答
+│   └── 能力：Step0查询分析与改写(意图分类+实体提取+改写) → Step1智能选库(降跨域噪声)
+│             → Step2向量+两阶段召回(balance_kbs防大库主导) → Step2.5文档级去重+硬阈值过滤
+│             → Step3内容真裁决(0-8可操作打分表) → 命中≥6快速退出 → Step4标签+描述扩展(向量miss时)
+│             → Step5置信度定级+跨库盲点升级 → Step6综合回答(答案+来源+置信度+盲点)
+│   ⭐ 五铁律：①先理解再检索 ②先选库再召回 ③向量快/内容准 ④文档去重+硬阈值 ⑤宁可不给不要错给
 │
-├── knowledgebase-search-enterprise (企业检索)
+├── knowledgebase-search-enterprise (企业检索)   Phase0-5 多策略精炼
 │   ├── 触发：全库搜索, 跨KB, cross-KB, all KBs, 全局搜索, 全面 (自动从 search 升级)
-│   └── 能力：3路并行召回(Agentic+BM25+Vector) → 交叉验证去重 → 短文本过滤 → 内容重排序 → 融合展示
+│   └── 能力：Phase0查询改写 → Phase1并行3路召回(向量+标签+BM25,全 balance_kbs)
+│             → Phase2交叉验证+文档级去重+硬阈值预过滤 → Phase3内容裁决定级(0-8打分)
+│             → Phase4图谱扩展(仅P0不足/显式跨库) → Phase5融合呈现(路径+共识+盲点)
 │
 ├── knowledgebase-list (浏览)              L1→L3 只读
 │   ├── 触发：查看, 列出, 展示, 浏览, list, show, overview, tree (15+ 中英关键词)
@@ -102,8 +112,9 @@ Agents:
 ### 4. 分层知识库（Hierarchical KB）
 - **父KB** 覆盖大类，description 概述子领域
 - **子KB** 覆盖精确子域，description 精确描述
-- **自动创建阈值**：≥8 文档且跨≥2 子域 → Ingest A7 / Organize O9 自动创建子KB
-- **Search 优先匹配子KB**：Step 1 先扫子KB description
+- **自动创建阈值**：≥8 文档且跨≥2 子域 → Ingest A8 / Organize O9 自动创建子KB
+- **Search 智能选库**：QDCVR Step 1 用 kb_catalog 读 description，模型判断 top 1-3 相关 KB（子KB 优先匹配）
+- **Ingest 归属决策**：A3d 决策树按 子KB→父KB→新建 优先级落位，确保文档放对位置
 
 ---
 

@@ -23,11 +23,11 @@ kb_get_documents(kb_id)      # docs with name, path, tags, size, vector_index, d
 ```
 Lightweight: `kb_doc_catalog(kb_id)` returns `[{doc_path, name, description}]`.
 
-Check `vector_index` field per doc. Offer `kb_doc_read` or `preview_file` for details.
+Check `vector_index` field per doc. Offer `kb_doc_read` for content preview.
 
 ## L3 — Browse Tree
 ```
 fs_get_tree(include_files=True, max_depth=0)   # 0 = unlimited
 fs_get_count()                                  # folder/file/total counts
 ```
-Lightweight: `fs_catalog_all(include_files=True)` — flat list in one call.
+Lightweight: `kb_catalog()` for KB-level, `kb_doc_catalog(kb_id)` for doc-level (both id+description only, minimal context).

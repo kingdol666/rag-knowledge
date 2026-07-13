@@ -1,38 +1,117 @@
-# Description Writing Guide
+# Description Writing Guide — 描述质量门控
 
-> **Core principle**: descriptions must be based on **real content you have read**, not filenames or guesses.
+> **核心原则**：描述必须是**你读过的真实内容的精确摘要**，不是文件名、不是猜测、不是泛泛之词。
+> 描述是检索的"第一道过滤器"——`kb_catalog` / `kb_doc_catalog` / `kb_search`(元数据) 全都依赖它。烂描述 = 检索盲。
 
-## Golden Rule
-Read first, then describe. Writing a description without reading the document is prohibited.
+## 黄金法则
+
+**先读，再描述。未读正文就写描述，是禁止行为。**
 
 ```
-# Parse-path: parse → wait → read 3000 chars → describe
-# Direct-path: read content → describe
+解析路径: parse → 轮询完成 → 读 ≥3000 chars → 写描述 → 内容回查验证
+直接路径: 读全文(或前 3000 chars) → 写描述 → 内容回查验证
 ```
 
-## Document-Level Template
+---
+
+## D1 — 描述必须包含的"四要素"
+
+一条合格的文档描述，必须能让读者**只看这一句就知道这篇文档讲什么、能解决什么问题**：
+
+| 要素 | 说明 | 缺失则 |
+|---|---|---|
+| **① 主体** | 研究对象/材料/系统是什么 | 无法判断领域 |
+| **② 方法/技术** | 用了什么具体方法/模型/工艺 | 无法区分同类文档 |
+| **③ 场景/问题** | 解决什么问题、适用什么场景 | 无法判断相关性 |
+| **④ 关键数据/结论** | 关键指标、实验规模、核心发现 | 缺乏可信度锚点 |
+
+**至少含 ③ 中的具体名词 2 个**（方法名/设备名/材料名/数据集名），否则判定为"泛泛描述"，重写。
+
+## D2 — 文档级模板
+
 ```
-[Subject] + [Method/Technology] + [Problem solved / Scenario] + [Key findings/Data] + [Language]
-```
-
-**Good**: "A CNN-LSTM-based coal mill blockage fault warning method for thermal power plants. Uses DCS historical data to train a multi-input single-step prediction model, enabling gradual fault early identification through real residual analysis. Field tested on a 660 MW unit, providing 315 min early warning with no false alarms. Chinese."
-
-**Bad**: "A paper about coal mills" / "Parsed from XXX.pdf" / "test"
-
-## KB-Level Template (Hierarchical)
-**Parent KB**: `[Industry/Domain] + [sub-domains covered] + [method summary] + [content type] + [language]`
-**Sub-KB**: `[Specific equipment/Sub-domain] + [core methods] + [scenario] + [doc count] + [language]`
-
-## Self-Check
-"If someone encounters [the scenario I described], would reading just this one-sentence description let them be 100% sure this document is what they need?" → Must be "yes".
-
-## Content Verification (Mandatory)
-After writing description:
-```
-kb_doc_read(kb_id, doc_path, max_chars=500)
-# Verify key claims in description appear in real content
-# If "CNN-LSTM" in description but NOT in content → rewrite
+[主体] + [方法/技术] + [解决的问题/场景] + [关键数据/结论] + [语言]
 ```
 
-## Sub-Agent Delegation (for ≥3 docs or >50KB)
-Delegate to sub-agent with: content sample (2000 chars), filename, existing KB list, tag vocabulary. Request JSON: `title, domain, methods, scenario, key_results, language, suggested_tags, suggested_description`. Validate: description contains specific method/equipment names, content_preview matches real content.
+### ✅ 好（每条都含具体词 + 可验证）
+- "基于 CNN-LSTM 的火电厂磨煤机堵管故障预警方法。利用 DCS 历史数据训练多输入单步预测模型，通过实时残差分析实现渐变故障早期识别。在 660 MW 机组实测，提前 315 min 预警且零误报。中文。"
+- "PVA 偏光膜中 KI 浓度（1%–3%）对碘络合物（I₃⁻/I₅⁻）平衡影响的拉曼光谱研究。揭示 KI 浓度升高时 I₅⁻ 向 I₃⁻ 转化，影响偏光膜光学性能。2022 Polymers。中英混合。"
+- "Self-RAG：通过反思 token 让单一 LM 学会何时检索、如何评判检索结果、如何利用反思改进生成，提升事实性与可控性。中文整理 + 英文原文摘要。"
+
+### ❌ 坏（必须拒绝）
+| 坏描述 | 病因 |
+|---|---|
+| "一篇关于磨煤机的论文" | 无方法、无数据、无场景 |
+| "Parsed from XXX.pdf" | 用文件名/解析状态当描述 |
+| "test" / "Renamed" / "文档" | 空洞 |
+| "介绍了深度学习的相关内容" | 泛泛，无具体方法 |
+| "高分子材料研究" | 只有领域，无主体/方法/场景 |
+| "RAG 综述" | 标题复述，无增量信息 |
+
+## D3 — KB 级模板（分层）
+
+### 父 KB
+```
+[行业/大类] + [覆盖的子领域列表] + [方法脉络] + [内容类型] + [语言]
+```
+✅ "高分子双向拉伸（Biaxial Stretching）技术文献库，涵盖 PET/PVA/PP/PLA/PA 等薄膜的双向拉伸工艺、结晶机理、表征方法（WAXD/SAXS/DSC）与加工设备。中英文献混合。"
+
+### 子 KB
+```
+[具体材料/子域] + [核心方法/工艺] + [场景] + [文档数] + [语言]
+```
+✅ "PET（聚酯）双向拉伸子库：热机械本构建模、应变诱导结晶、双折射、压电性能。含 6 篇 TUe/arXiv/Polymers 文献。中英混合。"
+
+## D4 — 内容回查验证（强制，不可跳过）
+
+写完描述后，**必须**回查正文，验证描述里的**每个关键 claim**：
+
+```
+kb_doc_read(kb_id, doc_path, max_chars=800)
+```
+
+逐项核对：
+- [ ] 描述里的**方法名/模型名**在正文出现？（"CNN-LSTM" → 搜正文，确认存在）
+- [ ] 描述里的**材料/设备**在正文出现？（"660 MW 机组" → 确认）
+- [ ] 描述里的**数据/结论**与正文一致？（"315 min 预警" → 正文确有此数据）
+- [ ] 描述里的**语言标注**准确？（正文是中文/英文/混合）
+
+**任一项不匹配 → 重写描述**，而不是修改正文去迁就描述。
+> 实测案例：曾有描述写"Transformer 注意力机制"，但正文实为 CNN 图像分类 → 这种必须重写。
+
+## D5 — 子 Agent 委托时的质量契约
+
+对 ≥3 文档或 >50KB 单文档，委托子 Agent 分析时，**硬性输出契约**：
+
+```json
+{
+  "title": "具体标题（非文件名）",
+  "domain": "主领域",
+  "sub_domain": "子领域",
+  "methods": ["方法1", "方法2"],
+  "materials": ["材料1"],
+  "scenario": "解决的场景/问题",
+  "key_results": ["关键数据/结论1"],
+  "language": "zh|en|mixed",
+  "suggested_tags": ["2-5个归一化标签"],
+  "suggested_description": "≥四要素的完整描述",
+  "content_evidence": "描述中每个关键词在正文的出现位置/句子"
+}
+```
+
+**验收**：父 Agent 必须检查 `content_evidence` 非空、`methods` 和 `materials` 在正文可定位，否则驳回重做。
+
+## D6 — 自检口诀
+
+> "如果有人遇到 [我描述的场景]，只看这一句描述，能 **100% 确定** 这篇文档就是他要的吗？"
+
+- 答"是" → 过
+- 答"可能/大概" → 补具体词
+- 答"不确定" → 重读内容重写
+
+## D7 — 多语言处理
+
+- 中文文档：描述用中文，专有技术词保留英文（`Transformer` `GraphRAG`）
+- 英文文档：描述用中文摘要 + 标注"英文原文"
+- 混合：描述用中文 + 末尾标注"中英混合"
+- **绝不**直接把英文摘要当描述——必须提炼成结构化中文摘要

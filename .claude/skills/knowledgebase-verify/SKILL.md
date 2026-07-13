@@ -21,7 +21,7 @@ Flag: broken 404s, empty descriptions, untagged docs.
 `kb_doc_read` 2000 chars on parsed docs (infer from .pdf/.docx names).
 Flag: empty content (<100 chars), OCR garbage, binary residue, heading-only (no body).
 
-Use `backend_status()` for MinerU health (authoritative — `health_check()` has known false negatives).
+Use `backend_status()` for MinerU health (authoritative).
 
 ## V4 — Index Coverage & Repair
 ### Vector

@@ -505,6 +505,18 @@ class KbClient:
         """向量索引统计。"""
         return await self._get_backend("/api/v1/search/stats", kb_id=kb_id)
 
+    async def delete_kb_vectors(self, kb_id: str, kb_path: str = ""):
+        """删除某 KB 的整个向量 collection（后端 DELETE /api/v1/search/kb/{kb_id}）。
+
+        后端自动清理 kb_{uuid} 与 kb_{path} 两种命名约定，对不存在的 collection 静默处理。
+        用于孤儿 collection 清理。kb_path 可选，传则同时清理 path 命名的 collection。
+        """
+        params = {"kb_path": kb_path} if kb_path else {}
+        return await self._request(
+            "DELETE", f"/api/v1/search/kb/{kb_id}",
+            base=self.backend_url, params=params,
+        )
+
     async def graph_search(self, keyword, limit=20):
         """图谱文档搜索（按名称/路径）。"""
         return await self._get_backend(
@@ -687,3 +699,59 @@ class KbClient:
         """跨 KB 全局搜索经验。"""
         body = {"query": query, "top_k": top_k}
         return await self._post_backend_json("/api/v1/experience/global-search", body)
+
+    # ── E0/E1: 经验提取（启发式 + 任务包）──
+
+    async def experience_extract(self, kb_id: str, doc_paths: list = None,
+                                  dry_run: bool = True, mode: str = "heuristic") -> dict:
+        """E0/E1: 经验提取。mode=prepare 返回任务包；heuristic 启发式提取。
+        dry_run=True 只返回候选；False 写草稿池。"""
+        body = {"dry_run": dry_run, "mode": mode}
+        if doc_paths is not None:
+            body["doc_paths"] = doc_paths
+        return await self._post_backend_json(f"/api/v1/experience/{kb_id}/extract", body)
+
+    # ── E3: 草稿池 ──
+
+    async def experience_drafts_list(self, kb_id: str) -> dict:
+        """列出草稿池。"""
+        return await self._get_backend(f"/api/v1/experience/{kb_id}/drafts")
+
+    async def experience_draft_read(self, kb_id: str, draft_id: str) -> dict:
+        """读取草稿详情。"""
+        return await self._get_backend(f"/api/v1/experience/{kb_id}/drafts/{draft_id}")
+
+    async def experience_draft_approve(self, kb_id: str, draft_id: str, edits: dict = None) -> dict:
+        """批准草稿→正式经验。edits 可覆盖字段。"""
+        body = {"edits": edits} if edits else {}
+        return await self._post_backend_json(
+            f"/api/v1/experience/{kb_id}/drafts/{draft_id}/approve", body)
+
+    async def experience_draft_reject(self, kb_id: str, draft_id: str, reason: str = "") -> dict:
+        """拒绝草稿。"""
+        return await self._post_backend_json(
+            f"/api/v1/experience/{kb_id}/drafts/{draft_id}/reject", {"reason": reason})
+
+    # ── E6: 联动 / stale ──
+
+    async def experience_check_stale(self, kb_id: str) -> dict:
+        """检查 KB 经验与文档一致性。"""
+        return await self._get_backend(f"/api/v1/experience/{kb_id}/stale")
+
+    async def experience_check_stale_global(self) -> dict:
+        """全库 stale 检查。"""
+        return await self._post_backend_json("/api/v1/experience/stale-global", {})
+
+    async def experience_sync_kb(self, kb_id: str) -> dict:
+        """整库标记需同步。"""
+        return await self._post_backend_json(f"/api/v1/experience/{kb_id}/sync", {})
+
+    # ── E8/E11: 看板 / 衰减 ──
+
+    async def experience_dashboard(self, kb_id: str) -> dict:
+        """经验看板。"""
+        return await self._get_backend(f"/api/v1/experience/{kb_id}/dashboard")
+
+    async def experience_apply_decay(self, kb_id: str) -> dict:
+        """应用衰减规则。"""
+        return await self._post_backend_json(f"/api/v1/experience/{kb_id}/decay", {})

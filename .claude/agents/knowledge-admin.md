@@ -14,7 +14,6 @@ tools:
   - Agent
   - Write
   # Health
-  - mcp__kb-mcp__health_check
   - mcp__kb-mcp__backend_status
   # KB CRUD
   - mcp__kb-mcp__kb_list
@@ -24,7 +23,6 @@ tools:
   # KB Catalog (agentic-first, lightweight)
   - mcp__kb-mcp__kb_catalog
   - mcp__kb-mcp__kb_doc_catalog
-  - mcp__kb-mcp__fs_catalog_all
   # Document Read
   - mcp__kb-mcp__kb_get_documents
   # Document CRUD
@@ -38,23 +36,14 @@ tools:
   # File System
   - mcp__kb-mcp__fs_get_tree
   - mcp__kb-mcp__fs_get_children
-  - mcp__kb-mcp__fs_get_node
   - mcp__kb-mcp__fs_get_count
-  - mcp__kb-mcp__fs_create_folder
-  - mcp__kb-mcp__fs_create_file
-  - mcp__kb-mcp__fs_update_node
-  - mcp__kb-mcp__fs_delete_node
   - mcp__kb-mcp__fs_upload_file
   # Parse (non-blocking)
   - mcp__kb-mcp__parse_doc
   - mcp__kb-mcp__parse_doc_batch
   - mcp__kb-mcp__parse_task_status
-  - mcp__kb-mcp__parse_tasks_list
   - mcp__kb-mcp__kb_doc_save_parsed
-  # Preview
-  - mcp__kb-mcp__preview_file
   # Tags
-  - mcp__kb-mcp__kb_tag_create
   - mcp__kb-mcp__kb_tags_list
   - mcp__kb-mcp__kb_doc_update_tags
   - mcp__kb-mcp__kb_doc_get_by_tag
@@ -62,12 +51,12 @@ tools:
   - mcp__kb-mcp__kb_search
   - mcp__kb-mcp__kb_search_vector
   - mcp__kb-mcp__kb_search_two_stage
-  - mcp__kb-mcp__kb_search_batch_vector
   - mcp__kb-mcp__kb_search_stats
   # Vector/Index
   - mcp__kb-mcp__kb_index_document
   - mcp__kb-mcp__kb_batch_index
   - mcp__kb-mcp__kb_reindex
+  - mcp__kb-mcp__kb_cleanup_orphan_collections
   # Knowledge Graph
   - mcp__kb-mcp__kb_graph_search
   - mcp__kb-mcp__kb_graph_search_kbs
@@ -86,7 +75,7 @@ tools:
   - mcp__kb-mcp__kb_graph_central_documents
   - mcp__kb-mcp__kb_graph_delete_document
   - mcp__kb-mcp__kb_graph_delete_kb
-  # Experience (12 tools)
+  # Experience (12 tools + 10 enhancement)
   - mcp__kb-mcp__experience_create
   - mcp__kb-mcp__experience_read
   - mcp__kb-mcp__experience_list
@@ -99,6 +88,17 @@ tools:
   - mcp__kb-mcp__experience_search
   - mcp__kb-mcp__experience_search_vector
   - mcp__kb-mcp__experience_search_global
+  # Experience Enhancement (E0/E1 extract, E3 drafts, E6 sync, E8 dashboard, E11 decay)
+  - mcp__kb-mcp__experience_extract
+  - mcp__kb-mcp__experience_drafts_list
+  - mcp__kb-mcp__experience_draft_read
+  - mcp__kb-mcp__experience_draft_approve
+  - mcp__kb-mcp__experience_draft_reject
+  - mcp__kb-mcp__experience_check_stale
+  - mcp__kb-mcp__experience_check_stale_global
+  - mcp__kb-mcp__experience_sync_kb
+  - mcp__kb-mcp__experience_dashboard
+  - mcp__kb-mcp__experience_apply_decay
 disallowedTools:
   - Edit
 model: opus
@@ -216,8 +216,8 @@ When a tool call fails, follow this escalation:
 
 **Second attempt: Fallback to alternative tool.**
 - `kb_get_documents()` fails → try `fs_get_children()` to list docs by tree
-- `kb_doc_read()` fails → try `preview_file()` which returns raw content
-- `parse_task_status()` times out → try `parse_tasks_list(status="running")` to find all active tasks
+- `kb_doc_read()` fails → retry with `path=` param or `doc_id=` UUID resolution
+- `parse_task_status()` times out → retry after 10s (parsing is non-blocking, poll again)
 - `kb_search()` fails → try `kb_doc_get_by_tag()` with null kb_id to scan tags
 - `kb_doc_create()` for binary files fails → try `fs_upload_file()` instead
 
@@ -318,9 +318,7 @@ This creates a durable record the user can review later.
 | `kb_list()` | KB[] | **Every task.** All KBs with id/name/desc/docCount. |
 | `kb_catalog()` | `[{kb_id, name, description, doc_count}]` | **Lightweight** — id+description only, minimal context. Ideal for agentic first-pass. |
 | `kb_doc_catalog(kb_id)` | `[{doc_path, name, description}]` | **Lightweight** — doc scan within a KB. No file_size/tags. |
-| `fs_catalog_all(include_files=True)` | `[{id, path, name, description, type, is_kb, doc_count, parent_id}]` | Flat tree in one call. |
 | `kb_tags_list()` | Tag[] | **Before every tag operation.** |
-| `health_check()` | {backend,web,mineru} | **mineru unreliable** — use backend_status. |
 | `backend_status()` | {mineru...} | Authoritative MinerU health. |
 
 ### Document Read & Search
@@ -328,10 +326,8 @@ This creates a durable record the user can review later.
 |------|---------|-------|
 | `kb_get_documents(kb_id)` | Doc[] | Documents in a KB. Has name, path, tags, size, vector_index, dates. |
 | `kb_doc_read(kb_id="", doc_path="", path="", doc_id="", max_chars=20000, offset=0, limit=200)` | Content | Use `path` (full relative) OR `kb_id+doc_path` OR `doc_id` (UUID). All work. |
-| `preview_file(node_id="", path="")` | Content | By UUID or relative path. |
 | `kb_search(query, top_k=10)` | Hit[] | **Metadata-only search** — scans name+description, NOT full text. Use for doc-location lookup. |
 | `kb_search_vector(query, kb_id="", top_k=5)` | Chunk[] | Pure vector search. Used for extended recall in enterprise search or tag-expansion fallback. |
-| `kb_search_batch_vector(query_doc_paths=[], kb_id="", top_k=5, score_threshold=0.3)` | Batch results | Cross-doc similarity in one call. |
 | `kb_search_stats(kb_id="")` | Collections[] | Check vector index health. |
 | `kb_doc_get_by_tag(tag, kb_id="")` | Doc[] | Tag-based cross-KB lookup. Used in expansion phase when vector recall misses. |
 | `kb_search_two_stage(query, kb_id="", stage1_top_k=20, stage2_top_k=5)` | {stage1, stage2} | **Primary search tool.** BM25+vector two-stage. First step in VFCR retrieval. |
@@ -341,12 +337,7 @@ This creates a durable record the user can review later.
 |------|---------|-------|
 | `fs_get_tree(include_files=True, max_depth=0)` | Tree | 0=unlimited |
 | `fs_get_children(parent_id="")` | Node[] | Empty = root |
-| `fs_get_node(node_id)` | Node | By UUID |
 | `fs_get_count()` | Counts | Folder/file/total |
-| `fs_create_folder(name, parent_id="", description="", is_knowledge_base=False)` | Node | is_knowledge_base=True = KB |
-| `fs_create_file(name, parent_id="", description="")` | Node | Metadata only |
-| `fs_update_node(node_id, name="", description="")` | Node | Rename tree node |
-| `fs_delete_node(node_id)` | OK | Recursive. Irreversible. |
 | `fs_upload_file(file_path, parent_id="", description="")` | Node | Upload local file (binary, no index) |
 
 ### KB Lifecycle
@@ -372,13 +363,11 @@ This creates a durable record the user can review later.
 | `parse_doc(file_path, use_ocr=True)` | Task | Non-blocking. ONLY parses. Returns markdown + paths. Does NOT save/index. |
 | `parse_doc_batch(file_paths, use_ocr=True)` | Task | Non-blocking batch parse. Single task_id for all files. ONLY parses. |
 | `parse_task_status(task_id)` | Status | Poll: "running"→"done"→{markdown, markdown_path, images_dir, ...} |
-| `parse_tasks_list(status="")` | Task[] | List session tasks by status. |
 | `kb_doc_save_parsed(parent_id, task_id="", description="")` | Doc | ⭐ **PREFERRED for parse-path docs.** Saves FULL markdown + images. Auto-extracts from task_id. |
 
 ### Tags
 | Tool | Returns | Notes |
 |------|---------|-------|
-| `kb_tag_create(tag)` | Tag | Max 50 chars, deduped |
 | `kb_doc_update_tags(kb_id, doc_path, tags)` | OK | doc_path: bare name OR full path |
 
 ### Vector Index (separate atomic operation, not auto-triggered)
@@ -387,6 +376,7 @@ This creates a durable record the user can review later.
 | `kb_index_document(kb_id="", doc_path="", doc_id="")` | OK | Single doc vector+graph index. Supports doc_id for auto-resolution. |
 | `kb_batch_index(kb_id, doc_paths=[], force=false)` | OK | Batch vector index. |
 | `kb_reindex(kb_id, force=false)` | OK | Full rebuild for entire KB. |
+| `kb_cleanup_orphan_collections(dry_run=true)` | Report/Clean | Detect & clean orphan/duplicate vector collections. dry_run=true safe preview; false executes. |
 
 ### Knowledge Graph
 | Tool | Returns | Notes |
@@ -429,7 +419,7 @@ This creates a durable record the user can review later.
 | **Manage** | `Skill("knowledgebase-manage")` | Confirm → execute → reindex if needed → verify |
 | **Organize** | `Skill("knowledgebase-organize")` | Survey all → read content → categorize → execute → verify → report |
 | **List** | `Skill("knowledgebase-list")` | Inventory → drill-down → tree |
-| **Search** | `Skill("knowledgebase-search")` | **VFCR**: 向量快速召回(two_stage) → 内容验证(读3000字, 0-8评分) → 命中(≥6)即退; 未命中则标签+描述扩展召回 → 再次内容验证. Auto-upgrades to `knowledgebase-search-enterprise` for cross-KB blind spots. |
+| **Search** | `Skill("knowledgebase-search")` | **QDCVR**: Step0查询改写 → Step1智能选库(kb_catalog) → Step2向量召回(balance_kbs) → Step2.5文档去重+硬阈值 → Step3内容裁决(0-8) → 命中≥6即退; 未命中标签+描述扩展. Auto-upgrades to `knowledgebase-search-enterprise` for cross-KB blind spots. |
 | **Search (Enterprise)** | `Skill("knowledgebase-search-enterprise")` | 3-path parallel recall (向量扩展+标签扩展+BM25) → cross-validation → content rerank (Agent 读内容 0-8 评分) |
 | **Verify** | `Skill("knowledgebase-verify")` | Three-way metadata scan → doc integrity → parse quality → index/graph coverage |
 | **Batch** | `Skill("knowledgebase-batch")` | Bulk tag → bulk desc → mass import (file-type routing) → mass move → dedup → graph rebuild |
@@ -449,7 +439,7 @@ EXACTLY. Do not skip steps.
 
 2. **Index is NOT auto-triggered**: `kb_doc_create` does NOT index. `kb_doc_update_content` does NOT reindex. `kb_doc_move` does NOT reindex at new path. You MUST call `kb_index_document()` explicitly after these operations to build/rebuild the vector index.
 
-3. **health_check vs backend_status**: `health_check()` may report `mineru: false` when MinerU is running. `backend_status()` is authoritative.
+3. **MinerU health**: `backend_status()` is authoritative for MinerU status. (`health_check()` was removed as redundant.)
 
 4. **Parse is non-blocking**: `parse_doc()` returns `{task_id, status:"running"}` immediately. Always poll `parse_task_status(task_id)` until `status:"done"`. For batch: `parse_doc_batch()` returns a single task_id for all files.
 

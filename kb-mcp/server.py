@@ -82,12 +82,6 @@ def _running_payload(task_id: str, kind: str, detail: dict | None = None) -> str
 # HEALTH
 # ============================================================
 
-@mcp.tool()
-async def health_check() -> str:
-    """Check health of backend and web frontend."""
-    return _j(await _client().health_check())
-
-
 # ============================================================
 # KNOWLEDGE BASE MANAGEMENT (CRUD)
 # ============================================================
@@ -179,41 +173,6 @@ async def kb_doc_catalog(kb_id: str) -> str:
         "description": d.get("description", ""),
     } for d in data.get("documents", [])]
     return _j({"success": True, "kb_id": kb_id, "count": len(catalog), "catalog": catalog})
-
-
-@mcp.tool()
-async def fs_catalog_all(include_files: bool = True) -> str:
-    """全库轻量目录（扁平）—— 返回所有文件夹+文件的 [{id, path, name, description, type, is_kb, doc_count, parent_id}]。
-
-    用途：一次性获取全库结构概览（仅 id+description），Agent 据此规划检索路径。
-    与 fs_get_tree 的区别：扁平结构 + 仅必要字段（无 fileSize/metadata/dates/children 嵌套），
-    大幅减少 context 占用。include_files=False 只列文件夹。
-    """
-    tree = await _client().fs_get_tree()
-    if not isinstance(tree, list):
-        return _j(tree)
-    flat = []
-
-    def _walk(nodes, parent_id=""):
-        for n in nodes:
-            ntype = n.get("type", "folder")
-            if ntype == "file" and not include_files:
-                continue
-            flat.append({
-                "id": n.get("id"),
-                "path": n.get("path"),
-                "name": n.get("name"),
-                "description": n.get("description", ""),
-                "type": ntype,
-                "is_kb": bool(n.get("isKnowledgeBase")),
-                "doc_count": n.get("documentCount", 0),
-                "parent_id": parent_id,
-            })
-            for child in n.get("children", []):
-                _walk([child], n.get("id"))
-
-    _walk(tree)
-    return _j({"success": True, "count": len(flat), "catalog": flat})
 
 
 # ============================================================
@@ -331,39 +290,9 @@ async def fs_get_children(parent_id: str = "") -> str:
 
 
 @mcp.tool()
-async def fs_get_node(node_id: str) -> str:
-    """Get a single node by its id."""
-    return _j(await _client().fs_get_node(node_id))
-
-
-@mcp.tool()
 async def fs_get_count() -> str:
     """Get total folder, file, and combined counts."""
     return _j(await _client().fs_get_count())
-
-
-@mcp.tool()
-async def fs_create_folder(name: str, parent_id: str = "", description: str = "", is_knowledge_base: bool = False) -> str:
-    """Create a new folder (optionally as a knowledge base)."""
-    return _j(await _client().fs_create_folder(name, parent_id, description, is_knowledge_base))
-
-
-@mcp.tool()
-async def fs_create_file(name: str, parent_id: str = "", description: str = "") -> str:
-    """Create a new file node (metadata only)."""
-    return _j(await _client().fs_create_file(name, parent_id, description))
-
-
-@mcp.tool()
-async def fs_update_node(node_id: str, name: str = "", description: str = "") -> str:
-    """Update a node's name and/or description."""
-    return _j(await _client().fs_update_node(node_id, name, description))
-
-
-@mcp.tool()
-async def fs_delete_node(node_id: str) -> str:
-    """Delete a node (recursively for folders)."""
-    return _j(await _client().fs_delete_node(node_id))
 
 
 @mcp.tool()
@@ -378,12 +307,6 @@ async def fs_upload_file(file_path: str, parent_id: str = "", description: str =
 # ============================================================
 # PREVIEW
 # ============================================================
-
-@mcp.tool()
-async def preview_file(node_id: str = "", path: str = "") -> str:
-    """Preview or download a file by node id (preferred) or relative path (e.g. "test/readme.md"). Either node_id or path must be provided."""
-    return _j(await _client().preview_file(node_id, path))
-
 
 # ============================================================
 # DOCUMENT PARSING  (NON-BLOCKING)
@@ -482,16 +405,6 @@ async def parse_task_status(task_id: str) -> str:
     view = task_registry.public_view(rec)
     view["success"] = True
     return _j(view)
-
-
-@mcp.tool()
-async def parse_tasks_list(status: str = "") -> str:
-    """List background parse tasks, optionally filtered by status.
-
-    status filters by 'running', 'done', or 'error'; omit for all.
-    Handy to recall task ids submitted earlier this session.
-    """
-    return _j({"success": True, "tasks": task_registry.list_views(status)})
 
 
 @mcp.tool()
@@ -605,12 +518,6 @@ async def kb_doc_save_parsed(
 async def kb_tags_list() -> str:
     """List all registered tags in the system."""
     return _j(await _client().kb_tags_list())
-
-
-@mcp.tool()
-async def kb_tag_create(tag: str) -> str:
-    """Register a new tag (deduped, max 50 chars)."""
-    return _j(await _client().kb_tag_create(tag))
 
 
 @mcp.tool()
@@ -872,6 +779,164 @@ async def experience_search_global(query: str, top_k: int = 10) -> str:
 
 
 # ============================================================
+# EXPERIENCE ENHANCEMENT — E0/E1 提取 / E3 草稿 / E6 联动 / E8 看板 / E11 衰减
+# ============================================================
+
+@mcp.tool()
+async def experience_extract(
+    kb_id: str,
+    doc_paths: list = None,
+    dry_run: bool = True,
+    mode: str = "heuristic",
+) -> str:
+    """E0/E1: 从 KB 文档自动提取经验候选。
+
+    两种模式：
+    - mode="heuristic"（默认）：启发式规则提取候选经验。dry_run=True 返回候选列表；
+      dry_run=False 写入草稿池待审核。
+    - mode="prepare"：返回提取任务包（文档全文 + 去重上下文 + 提取模板），
+      供 Agent 用 LLM 高质量提炼（推荐用于关键 KB）。
+
+    典型场景：KB 入库新文档后扫描提取经验；批量学习某个 KB。
+
+    Args:
+        kb_id: 目标 KB（UUID 或 path）
+        doc_paths: 可选，只扫指定文档；空则扫全 KB 的 .md（排除 experience 目录）
+        dry_run: True=只报告候选（默认安全）；False=写草稿池
+        mode: heuristic（规则提取）| prepare（返回 LLM 任务包）
+
+    Returns:
+        heuristic+dry_run: {success, total_candidates, candidates: [...], hint}
+        heuristic+!dry_run: {success, drafts_created, draft_ids}
+        prepare: {success, docs_to_extract, documents, existing_scenarios, extraction_template}
+    """
+    return _j(await _client().experience_extract(kb_id, doc_paths, dry_run, mode))
+
+
+@mcp.tool()
+async def experience_drafts_list(kb_id: str) -> str:
+    """E3: 列出 KB 的经验草稿池（待审核的候选经验）。
+
+    草稿由 experience_extract(dry_run=False) 产生。Agent 审核后用
+    experience_draft_approve 入库或 experience_draft_reject 拒绝。
+
+    Returns: {success, count, drafts: [{id, title, scenario, confidence, ...}]}
+    """
+    return _j(await _client().experience_drafts_list(kb_id))
+
+
+@mcp.tool()
+async def experience_draft_read(kb_id: str, draft_id: str) -> str:
+    """E3: 读取草稿详情（含提取证据、来源文档）。
+
+    Args:
+        kb_id: KB ID 或 path
+        draft_id: 草稿 ID（draft-xxx，来自 experience_drafts_list）
+
+    Returns: {success, draft: {id, title, problem, solution, key_lessons, source_doc, ...}}
+    """
+    return _j(await _client().experience_draft_read(kb_id, draft_id))
+
+
+@mcp.tool()
+async def experience_draft_approve(
+    kb_id: str, draft_id: str, edits: dict = None,
+) -> str:
+    """E3: 批准草稿→正式经验（写入索引 + 向量索引）。
+
+    可选 edits 覆盖字段（Agent LLM 精炼后传入）。批准后草稿从池中删除，
+    经验标记 auto_extracted=true + extraction_method。
+
+    Args:
+        kb_id: KB ID 或 path
+        draft_id: 草稿 ID
+        edits: 可选字段覆盖，如 {"title":"...", "solution":"精炼后的方案", "key_lessons":[...]}
+
+    Returns: {success, approved, experience, exp_id}
+    """
+    return _j(await _client().experience_draft_approve(kb_id, draft_id, edits))
+
+
+@mcp.tool()
+async def experience_draft_reject(kb_id: str, draft_id: str, reason: str = "") -> str:
+    """E3: 拒绝草稿→移入 rejected/（保留拒绝原因供追溯）。
+
+    Args:
+        kb_id: KB ID 或 path
+        draft_id: 草稿 ID
+        reason: 拒绝原因（可选）
+
+    Returns: {success, rejected}
+    """
+    return _j(await _client().experience_draft_reject(kb_id, draft_id, reason))
+
+
+@mcp.tool()
+async def experience_check_stale(kb_id: str) -> str:
+    """E6: 检查 KB 经验与关联文档的一致性。
+
+    检测每条经验的 related_docs：
+    - 文档更新时间晚于经验 updated_at → stale（经验需重新提取）
+    - 文档不存在 → orphan（引用失效）
+
+    典型场景：文档更新后检查哪些经验过时；定期一致性审计。
+
+    Returns: {success, total, fresh, stale, orphan, stale_experiences, orphan_experiences}
+    """
+    return _j(await _client().experience_check_stale(kb_id))
+
+
+@mcp.tool()
+async def experience_check_stale_global() -> str:
+    """E6: 全库 stale 检查（遍历所有 KB 的经验）。
+
+    Returns: {success, total_experiences, stale, orphan, stale_experiences, orphan_experiences}
+    """
+    return _j(await _client().experience_check_stale_global())
+
+
+@mcp.tool()
+async def experience_sync_kb(kb_id: str) -> str:
+    """E6: 整库标记需同步（stale/orphan 经验标记 needs_sync）。
+
+    标记后 Agent 应逐条读取 related_docs，用 experience_extract 重新提取，
+    再 update_experience 更新内容。这是"文档更新→经验联动"的触发器。
+
+    Returns: {success, marked_for_sync, hint}
+    """
+    return _j(await _client().experience_sync_kb(kb_id))
+
+
+@mcp.tool()
+async def experience_dashboard(kb_id: str) -> str:
+    """E8: 经验看板——KB 经验全貌聚合统计。
+
+    含：总数、P0/P1/P2 分级、分类/严重度分布、草稿数、stale/orphan 数、需同步数、top 经验。
+
+    典型场景：评估 KB 经验覆盖度与质量；发现需补充/清理的经验。
+
+    Returns: {success, total_experiences, by_tier, summary, drafts_pending, stale, orphan, needs_sync}
+    """
+    return _j(await _client().experience_dashboard(kb_id))
+
+
+@mcp.tool()
+async def experience_apply_decay(kb_id: str) -> str:
+    """E11: 应用经验衰减规则（可信度周期性下降）。
+
+    规则：
+    - stale_unverified: 创建>30天且 0 次应用 → 标记（检索时降级）
+    - disputed: ≥3 评审且 rating<2.0 → 标记（降级到 P2）
+    - unvetted: 0 评审且 0 应用 → 标记（最高 P1）
+
+    典型场景：定期跑保持经验新鲜度；清理长期无人验证的经验。
+
+    Returns: {success, decayed: {stale_unverified, disputed, unvetted}, total_flagged}
+    """
+    return _j(await _client().experience_apply_decay(kb_id))
+
+
+# ============================================================
 # BACKEND STATUS
 # ============================================================
 
@@ -902,34 +967,6 @@ async def kb_search_vector(query: str, kb_id: str = "", top_k: int = 5,
         {success, results: [{content, score, doc_path, chunk_index, kb_id}]}
     """
     return _j(await _client().vector_search(query, kb_id, top_k, score_threshold, balance_kbs))
-
-
-@mcp.tool()
-async def kb_search_batch_vector(
-    query_doc_paths: list,
-    kb_id: str = "",
-    top_k: int = 5,
-    score_threshold: float = 0.3,
-) -> str:
-    """批量向量相似度查询：对多个源文档找出最相似的其他文档。
-
-    典型场景：
-    - 跨文档相似度分析："哪些文档与文档A和文档B内容相似？"
-    - 相关文档发现：批量查询一组文档的关联内容
-    - 去重检测：发现近重复文档
-
-    Args:
-        query_doc_paths: 源文档路径列表（相对路径，如 ["legal/contract.md", "tech/python.md"]）
-        kb_id: 可选限定知识库（路径或UUID）
-        top_k: 每个源文档返回的最相似文档数
-        score_threshold: 最低余弦相似度阈值 (0~1)，越高越严格
-
-    Returns:
-        {success, results: {doc_path: [{content, score, matched_doc_path, chunk_index, kb_id}]}, count}
-    """
-    return _j(await _client().batch_vector_search(
-        query_doc_paths, kb_id, top_k, score_threshold
-    ))
 
 
 @mcp.tool()
@@ -1035,6 +1072,129 @@ async def kb_search_stats(kb_id: str = "") -> str:
         {success, stats: {collections: [{collection, chunk_count}]}}
     """
     return _j(await _client().search_stats(kb_id))
+
+
+@mcp.tool()
+async def kb_cleanup_orphan_collections(dry_run: bool = True) -> str:
+    """检测并清理孤儿/重复的向量 collection（KB 已删除/改名但向量索引残留）。
+
+    孤儿 collection 占用空间并拖慢跨库检索（实测 27 collection vs 10 KB）。
+    本工具：① 列出向量库所有 collection ② 递归识别所有 KB（顶层 + 子KB）③ 对比找孤儿/重复 ④ 报告或清理。
+
+    ⚠️ 子KB 安全保护：递归读取 .tree-fs.json 收集所有 isKnowledgeBase 节点（含子KB），
+    子KB 的 UUID collection 不会被误判为孤儿。这修复了早期版本误删高分子子库向量的事故。
+
+    分类：
+    - **orphan（孤儿）**：collection 的 key 不匹配任何 KB（顶层或子KB）的 UUID/path/name（含测试残留 zzz_*/test*）
+    - **duplicate（重复）**：KB 同时有 kb_{UUID} 和 kb_{path} 两个 collection（历史索引命名分裂）
+
+    Args:
+        dry_run: True=仅检测报告（默认，安全）；False=执行清理（不可逆）
+
+    Returns:
+        dry_run=True:  {success, total_collections, top_kb_count, sub_kb_count, valid_collections, orphan_count, duplicate_count, reclaimable_chunks, orphans[], duplicates[], hint}
+        dry_run=False: {success, cleaned_count, cleaned_ok, cleaned[]}
+    """
+    client = _client()
+    # 1. 向量库所有 collection
+    stats = await client.search_stats("")
+    collections = (stats.get("stats", {}) or {}).get("collections", []) if isinstance(stats, dict) else []
+    all_col_names = {c.get("collection", "") for c in collections}
+
+    # 2. 当前所有 KB（UUID + path + name）—— 递归含子KB，避免误删
+    kb_data = await client.kb_list()
+    top_kbs = (kb_data.get("knowledgeBases", []) if isinstance(kb_data, dict) else [])
+    uuid_to_kb = {}  # id -> {kbId, path, name, _sub?}
+    for kb in top_kbs:
+        if kb.get("kbId"):
+            uuid_to_kb[kb["kbId"]] = kb
+    top_kb_count = len(uuid_to_kb)
+
+    # 递归读取 .tree-fs.json，收集所有 isKnowledgeBase 节点（子KB）
+    # ⚠️ kb_list 只返回顶层 KB；子KB（独立 isKnowledgeBase 文件夹）的 collection
+    #    用子KB UUID，必须纳入 valid 集合，否则被误判为孤儿误删（2026-07-13 PVA 事故根因）
+    tree = await client.fs_get_tree()
+    sub_kb_count = 0
+    def _collect_kb_nodes(nodes):
+        nonlocal sub_kb_count
+        if not isinstance(nodes, list):
+            return
+        for n in nodes:
+            if not isinstance(n, dict):
+                continue
+            if n.get("isKnowledgeBase") or n.get("is_knowledge_base"):
+                nid = n.get("id") or n.get("node_id")
+                npath = n.get("path") or n.get("name")
+                if nid and nid not in uuid_to_kb:
+                    uuid_to_kb[nid] = {"kbId": nid, "path": npath, "name": npath, "_sub": True}
+                    sub_kb_count += 1
+            _collect_kb_nodes(n.get("children", []))
+    tree_list = tree if isinstance(tree, list) else ([tree] if isinstance(tree, dict) else [])
+    _collect_kb_nodes(tree_list)
+
+    # path/name → uuid 映射（含子KB），用于 path 形式 collection 判定
+    path_to_uuid = {}
+    for uid, kb in uuid_to_kb.items():
+        if kb.get("path"):
+            path_to_uuid[kb["path"]] = uid
+        if kb.get("name"):
+            path_to_uuid[kb["name"]] = uid
+
+    # 3. 分类（子KB UUID 现已纳入 uuid_to_kb，不会被误判孤儿）
+    orphans = []
+    duplicates = []
+    for c in collections:
+        name = c.get("collection", "")
+        if not name.startswith("kb_"):
+            continue
+        key = name[3:]
+        chunks = c.get("chunk_count", 0)
+        if key in uuid_to_kb:
+            continue  # 有效 UUID collection（顶层 KB 或子KB）
+        if key in path_to_uuid:
+            uid = path_to_uuid[key]
+            if f"kb_{uid}" in all_col_names:
+                uid_chunks = next((cc.get("chunk_count", 0) for cc in collections if cc.get("collection") == f"kb_{uid}"), 0)
+                duplicates.append({
+                    "collection": name, "key": key, "chunk_count": chunks,
+                    "note": f"重复: KB 已有 UUID collection kb_{uid}({uid_chunks} chunks)"
+                })
+            # else: path collection 无 UUID 版，视为有效保留
+        else:
+            kl = key.lower()
+            note = "测试残留" if (key.startswith("zzz_") or "test" in kl or "move_test" in kl) else "孤儿: 无对应 KB"
+            orphans.append({"collection": name, "key": key, "chunk_count": chunks, "note": note})
+
+    total = len(collections)
+    reclaimable = sum(o["chunk_count"] for o in orphans) + sum(d["chunk_count"] for d in duplicates)
+
+    if dry_run:
+        return _j({
+            "success": True, "dry_run": True,
+            "total_collections": total,
+            "top_kb_count": top_kb_count,
+            "sub_kb_count": sub_kb_count,
+            "valid_collections": total - len(orphans) - len(duplicates),
+            "orphan_count": len(orphans), "duplicate_count": len(duplicates),
+            "reclaimable_chunks": reclaimable,
+            "orphans": orphans, "duplicates": duplicates,
+            "hint": "确认后用 dry_run=False 执行清理（不可逆）。重复 collection 清理前请确认 UUID 版本已覆盖其 chunks。",
+        })
+
+    # 实际清理
+    cleaned = []
+    for o in orphans + duplicates:
+        key = o["key"]
+        r = await client.delete_kb_vectors(key)
+        ok = bool(r.get("success")) if isinstance(r, dict) else False
+        cleaned.append({"collection": o["collection"], "key": key, "note": o.get("note", ""), "deleted": ok})
+    return _j({
+        "success": True, "dry_run": False,
+        "cleaned_count": len(cleaned),
+        "cleaned_ok": sum(1 for c in cleaned if c["deleted"]),
+        "reclaimed_chunks": reclaimable,
+        "cleaned": cleaned,
+    })
 
 
 @mcp.tool()

@@ -1,72 +1,177 @@
 ---
 name: knowledgebase-experience
 description: >
-  经验库管理 — 经验的创建、检索、应用、评审。经验是结构化的实践案例，
-  包含场景、问题、方案、教训、标签、评级。用于运维/故障查询时优先检索。
+  经验库全生命周期管理 — 创建/检索/应用/评审 + 自动提取/草稿/联动/看板/衰减。
+  经验是结构化的实践案例（scenario/problem/solution/lessons），从 KB 文档自动提取或手动创建，
+  用于运维/故障查询时优先检索。支持 E0-E11 完整生命周期，随知识库更新自动联动。
   Triggered by: 经验, 经验库, experience, lesson, best practice, 实践,
-  案例, 故障经验, 运维经验, lesson learned, 工作经验, previous experience.
+  案例, 故障经验, 运维经验, lesson learned, 工作经验, previous experience,
+  提取经验, 从文档提炼, 总结经验, 经验看板, 经验同步.
 ---
 
-# Experience — Lifecycle Management
+# Experience — 全生命周期管理（E0-E11）
 
-> All tools require `kb_id` (KB ID or path) as first parameter, except `experience_search_global`.
+> 经验 = 文档的"可操作精华"。每条经验是单点知识（一个问题→一个方案→一个教训），结构化、可检索、可应用、可评审。
+> 所有工具 `kb_id` 为首参（KB ID 或 path），除 `experience_search_global` / `experience_check_stale_global`。
 
-## Create
+## 核心理念
+- **文档**：全文、自由 markdown、供阅读学习
+- **经验**：单点、结构化 JSON、供检索应用、动态可信度
+- **联动**：文档更新 → 经验自动检测 stale → 触发重新提取
+
+---
+
+## E0/E1 — 自动提取（从文档挖掘经验）⭐
+
+### E0 提取任务包（LLM 高质量提炼）
 ```
-experience_create(
-    kb_id="<target KB>",
-    title="<experience title>",
-    scenario="<scenario identifier, e.g. 'coal-mill-fault-prediction'>",
-    category="lesson_learned",         # best_practice|troubleshooting|lesson_learned|optimization|tip|workflow|decision
-    problem="<what went wrong or what was needed>",
-    solution="<steps/methods taken>",
-    result="success",                  # success|partial|failed|inconclusive
-    key_lessons=["lesson1", "lesson2"], # actionable takeaway items
-    tags=["tag1", "tag2"],
-    severity="normal",                 # critical|important|normal|tip
-    related_docs=["KB/doc.md"]         # optional
-)
+experience_extract(kb_id="<KB>", mode="prepare")
+→ {documents: [{path, content}], existing_scenarios, extraction_template, hint}
 ```
+Agent 拿到任务包后用 LLM 按 `extraction_template` 提炼（去重 `existing_scenarios`），产出高质量候选。
 
-## Read
-`experience_read(kb_id, exp_id)` — full record including review history.
-
-## List
-`experience_list(kb_id, scenario="", category="", tag="")` — filtered by scenario/category/tag, sorted by rating.
-
-## Update
-`experience_update(kb_id, exp_id, <fields to change>)` — pass only fields to update. Bumps `updated_at`.
-
-## Delete
-`experience_delete(kb_id, exp_id)` — irreversible.
-
-## Apply (record usage)
+### E1 启发式提取（规则，无需 LLM）
 ```
-experience_apply(kb_id, exp_id, user="<agent/user>", context="<scenario>", result="success", notes="<optional>")
+experience_extract(kb_id="<KB>", mode="heuristic", dry_run=True)
+→ {total_candidates, candidates: [{title, scenario, problem, solution, key_lessons, confidence, ...}]}
 ```
-Increments `applied_count`.
+基于文档结构（## 段落）+ 关键词（problem/solution/lesson）启发式提取。`dry_run=False` 写入草稿池。
 
-## Review
+**提取时机**：入库新文档后（Ingest A7 通过）；批量学习某 KB；定期丰富经验库。
+
+## E2 — 质量门控（隐含在提取流程）
+- scenario 必须有领域前缀（如 `llm-hallucination`），禁止 `test`
+- solution ≥ 50 chars，含具体方法
+- related_docs 必须指向真实文档
+- 去重：同 KB 已有相似 scenario → 走草稿审核而非新建
+
+## E3 — 草稿池（候选审核）⭐
 ```
-experience_review(kb_id, exp_id, reviewer="<agent/user>", rating=5.0, comment="<feedback>")
+experience_drafts_list(kb_id)                      → 列出待审核草稿
+experience_draft_read(kb_id, draft_id)             → 读取草稿详情（含来源文档证据）
+experience_draft_approve(kb_id, draft_id, edits={}) → 批准→正式经验（edits 可 LLM 精炼后覆盖）
+experience_draft_reject(kb_id, draft_id, reason)    → 拒绝→rejected/（保留原因）
 ```
-Adds review record, recalculates `rating_avg` and `review_count`.
+**审核流程**：`drafts_list` → 逐条 `draft_read` → LLM 精炼后 `draft_approve(edits=精炼字段)` 或 `draft_reject`。
 
-## Search
-| Method | Tool |
-|---|---|
-| By scenario | `experience_find_by_scenario(kb_id, scenario="<keyword>")` |
-| Keyword (metadata) | `experience_search(kb_id, query="<question>", top_k=10)` |
-| Semantic vector | `experience_search_vector(kb_id, query="<question>", top_k=5)` |
-| Cross-KB global | `experience_search_global(query="<question>", top_k=10)` |
-| Summary | `experience_summary(kb_id)` — overview stats |
+## E4 — 经验优先检索（故障/运维型查询）
+```
+# Step 1: 经验优先
+experience_search_global(query, top_k=10)     ← 全库经验
+experience_search_vector(kb_id, query, top_k=5) ← 向量精排
+# P0/P1 经验直接给方案（秒级，不读文档）
 
-## Credibility Tiers (based on `rating_avg` from reviews + vector score)
-| Condition | Tier | Action |
+# Step 2: 经验不足才补文档
+if 经验 P0 < 2: kb_search_two_stage(query, balance_kbs=True)
+```
+**集成在 `knowledgebase-search` Step 0**：故障/运维型自动走经验优先路径。
+
+## E5 — 可信度分级（检索时定级）
+| 条件 | 层级 | 动作 |
 |---|---|---|
-| scenario match ∧ vector ≥0.65 ∧ rating_avg ≥4 | P0 Strong | Pin to top |
-| vector ≥0.55 ∧ rating_avg ≥3 | P1 Reference | Show with annotation |
-| 0.45 ≤ vector <0.55 | P2 Gray | Suppress by default |
-| vector <0.45 OR different equipment | Discard | Never present |
+| review≥3 ∧ rating≥4 | **P0 Strong** | 直接引用，置顶 |
+| rating≥3 ∨ applied≥1 | **P1 Reference** | 采用并标注 |
+| 0 review ∧ 0 applied | **P2 Unvetted** | 默认隐藏 |
+| 衰减标记 | 降一级 | stale_unverified/disputed/unvetted |
 
-Decay: stale unverified (>30d, 0 applied) → max P1; disputed (rating_avg <2.0, ≥3 reviews) → max P2; unvetted (0 reviews ∧ 0 applied) → max P1.
+## E6 — 文档联动 / stale 检测 ⭐（核心创新）
+```
+experience_check_stale(kb_id)          → 检查 KB 经验与文档一致性
+experience_check_stale_global()        → 全库检查
+experience_sync_kb(kb_id)              → 整库标记 needs_sync
+```
+**检测逻辑**：
+- 文档 mtime > 经验 updated_at → **stale**（经验过时，需重新提取）
+- 文档不存在 → **orphan**（引用失效）
+
+**联动流程**：文档更新 → `check_stale` 发现 stale → `sync_kb` 标记 → Agent 读 related_docs 重新提取 → `update_experience` 更新。
+
+## E7 — 搜索路径（强化 search skill）
+```
+故障型: experience_search_global + experience_search_vector → P0 直接答
+通用型: kb_search_two_stage → experience_search 补充
+```
+
+## E8 — 经验看板
+```
+experience_dashboard(kb_id) → {total, by_tier:{P0,P1,P2}, summary, drafts_pending, stale, orphan, needs_sync}
+```
+评估 KB 经验覆盖度与质量，发现需补充/清理的经验。
+
+## E9-E10 — 导出/批量（规划中）
+
+## E11 — 衰减周期
+```
+experience_apply_decay(kb_id) → 应用规则标记
+```
+| 规则 | 条件 | 效果 |
+|---|---|---|
+| stale_unverified | 创建>30天 ∧ 0应用 | 检索降级 |
+| disputed | ≥3评审 ∧ rating<2.0 | 降到 P2 |
+| unvetted | 0评审 ∧ 0应用 | 最高 P1 |
+
+**定期跑**（如每周）保持经验新鲜度。
+
+---
+
+## 基础 CRUD（现有，保留）
+
+### Create
+```
+experience_create(kb_id, title, scenario, category, problem, solution, result,
+                  key_lessons, tags, severity, related_docs, prerequisites, metrics)
+```
+category: best_practice|troubleshooting|lesson_learned|optimization|tip|workflow|decision
+severity: critical|important|normal|tip
+
+### Read / List / Update / Delete
+```
+experience_read(kb_id, exp_id)                                    → 含 .md 正文
+experience_list(kb_id, scenario="", category="", tag="")          → 按评分排序
+experience_update(kb_id, exp_id, **fields)                        → 自动重建向量索引
+experience_delete(kb_id, exp_id)                                  → 永久删除
+```
+
+### Apply / Review（动态可信度）
+```
+experience_apply(kb_id, exp_id, user, context, result, notes)     → applied_count+1
+experience_review(kb_id, exp_id, reviewer, rating, comment)       → 重算 rating_avg
+```
+
+### Search
+| 方法 | 工具 |
+|---|---|
+| 全局跨库 | `experience_search_global(query, top_k)` |
+| 元信息 | `experience_search(kb_id, query, top_k)` |
+| 向量语义 | `experience_search_vector(kb_id, query, top_k)` |
+| 按场景 | `experience_list(kb_id, scenario="...")` |
+| 统计 | `experience_summary(kb_id)` / `experience_dashboard(kb_id)` |
+
+---
+
+## 推荐工作流
+
+### 新文档入库 → 自动丰富经验
+```
+Ingest A7 通过 → experience_extract(kb_id, dry_run=True)
+  → 候选≥0.8 confidence: approve 入库
+  → 候选<0.8: 写草稿池，等审核
+```
+
+### 故障查询 → 经验优先答
+```
+experience_search_global(query) → P0 经验直接答（秒级）
+  → 不够才补 kb_search_two_stage
+```
+
+### 文档更新 → 经验联动
+```
+文档更新 → experience_check_stale(kb_id)
+  → stale 经验 → experience_extract 重新提取 → update_experience
+```
+
+### 定期维护
+```
+每周: experience_apply_decay(kb_id) 保持新鲜度
+每月: experience_dashboard(kb_id) 评估覆盖度，补充缺口
+```
