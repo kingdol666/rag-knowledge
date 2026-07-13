@@ -54,25 +54,47 @@ experience_draft_reject(kb_id, draft_id, reason)    → 拒绝→rejected/（保
 ```
 **审核流程**：`drafts_list` → 逐条 `draft_read` → LLM 精炼后 `draft_approve(edits=精炼字段)` 或 `draft_reject`。
 
-## E4 — 经验优先检索（故障/运维型查询）
+## E4 — 经验优先检索（QDCVR 流程，与文档检索同构）⭐
+
+经验检索已升级为**向量+内容验证**的 QDCVR 流程，与 `knowledgebase-search` 完全同构。
+**核心原则：宁可不给，不要错给**——无确认经验即诚实声明盲点，不"不懂装懂"。
+
 ```
-# Step 1: 经验优先
-experience_search_global(query, top_k=10)     ← 全库经验
-experience_search_vector(kb_id, query, top_k=5) ← 向量精排
+# Step 1: 经验优先（QDCVR 全流程内置）
+experience_search_global(query, top_k=10, score_threshold=0.45, verify_content=True)
+  → 内部: 向量召回 → 硬阈值 → 经验级去重 → 内容验证 → 可信度定级 → 诚实空返回
+  → 返回 P0/P1/P2 分级经验，含 vector_score/content_score/tier_reason
+
 # P0/P1 经验直接给方案（秒级，不读文档）
+# count=0 表示"召回N条但内容验证不过"——诚实声明无相关经验
 
 # Step 2: 经验不足才补文档
-if 经验 P0 < 2: kb_search_two_stage(query, balance_kbs=True)
+if P0+P1 < 2: kb_search_two_stage(query, balance_kbs=True)
 ```
+
+### E4 检索流程透明化
+返回值含完整检索质量元信息，**Agent 应读取并据此决策**：
+- `vector_recall`: 向量召回总数（硬阈值前）
+- `tier_counts`: {P0, P1, P2, discarded} — 分级统计
+- `message`: 检索路径摘要（如 "召回5→验证通过2→返回2 P0:1 P1:1"）
+- 每条经验含 `vector_score` + `content_score` + `tier` + `tier_reason`
+
+### E4 查询技巧（CJK 感知）
+- 中文自然语言直接查询：`"红烧肉炒糖色怎么不焦"` ✅（N-gram 分词，不再落空）
+- 故障描述口语化：`"磨煤机堵管怎么提前预警"` ✅
+- 英文术语：`"DQN experience replay"` ✅
+
 **集成在 `knowledgebase-search` Step 0**：故障/运维型自动走经验优先路径。
 
-## E5 — 可信度分级（检索时定级）
+## E5 — 可信度分级（检索时定级，与 QDCVR 内容分融合）
 | 条件 | 层级 | 动作 |
 |---|---|---|
-| review≥3 ∧ rating≥4 | **P0 Strong** | 直接引用，置顶 |
-| rating≥3 ∨ applied≥1 | **P1 Reference** | 采用并标注 |
-| 0 review ∧ 0 applied | **P2 Unvetted** | 默认隐藏 |
-| 衰减标记 | 降一级 | stale_unverified/disputed/unvetted |
+| vector≥0.65 ∧ content≥6 ∧ rating≥4 ∧ review≥1 | **P0 Strong** | 直接引用，置顶 |
+| vector≥0.45 ∧ content≥4 | **P1 Reference** | 采用并标注 |
+| vector≥0.35 ∧ content≥3 | **P2 Weak** | 默认抑制（仅 P0/P1 不足时补）|
+| 内容验证不过 OR 向量<0.35 | **DISCARD** | 永不返回（防不懂装懂）|
+| disputed (review≥3 ∧ rating<2) | 降级→max P2 | 有争议降级 |
+| unvetted (0 review ∧ 0 applied) | 降级→max P1 | 未评审压制 |
 
 ## E6 — 文档联动 / stale 检测 ⭐（核心创新）
 ```

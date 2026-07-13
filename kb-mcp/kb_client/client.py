@@ -643,6 +643,13 @@ class KbClient:
         }
         return await self._post_backend_json(f"/api/v1/experience/{kb_id}", body)
 
+    async def experience_reindex(self, kb_id: str, exp_id: str = None) -> dict:
+        """重索引经验到向量库。exp_id 为空则重索引整个 KB 的所有经验。"""
+        body = {}
+        if exp_id:
+            body["exp_id"] = exp_id
+        return await self._post_backend_json(f"/api/v1/experience/{kb_id}/reindex", body)
+
     async def experience_read(self, kb_id: str, exp_id: str) -> dict:
         """读取经验元数据和正文。"""
         return await self._get_backend(f"/api/v1/experience/{kb_id}/{exp_id}")
@@ -695,9 +702,13 @@ class KbClient:
         body = {"query": query, "top_k": top_k}
         return await self._post_backend_json(f"/api/v1/experience/{kb_id}/vector-search", body)
 
-    async def experience_search_global(self, query: str, top_k: int = 10) -> dict:
-        """跨 KB 全局搜索经验。"""
-        body = {"query": query, "top_k": top_k}
+    async def experience_search_global(self, query: str, top_k: int = 10,
+                                        score_threshold: float = None,
+                                        verify_content: bool = True) -> dict:
+        """跨 KB 全局经验检索 — QDCVR 流程（向量+内容验证）。"""
+        body: dict = {"query": query, "top_k": top_k, "verify_content": verify_content}
+        if score_threshold is not None:
+            body["score_threshold"] = score_threshold
         return await self._post_backend_json("/api/v1/experience/global-search", body)
 
     # ── E0/E1: 经验提取（启发式 + 任务包）──

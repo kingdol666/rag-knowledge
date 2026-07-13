@@ -701,6 +701,23 @@ async def experience_review(kb_id: str, exp_id: str, reviewer: str = "",
 
 
 @mcp.tool()
+async def experience_reindex(kb_id: str, exp_id: str = "") -> str:
+    """重索引经验到向量库。
+
+    用于修复：经验创建时向量索引缺失的情况。重索引后经验库可以被向量搜索召回。
+    如果 exp_id 为空，重索引整个 KB 的所有经验。
+
+    Args:
+        kb_id: 知识库 ID 或路径
+        exp_id: 经验 ID（如 "exp-xxxxxxxxxxxx"），空则全 KB
+
+    Returns:
+        {success, reindexed: n, skipped: n, errors: [...]}
+    """
+    return _j(await _client().experience_reindex(kb_id, exp_id or None))
+
+
+@mcp.tool()
 async def experience_find_by_scenario(kb_id: str, scenario: str) -> str:
     """按场景标识查找经验。这是经验检索的核心入口——Agent 应优先使用场景来定位经验。
 
@@ -763,19 +780,31 @@ async def experience_search_vector(kb_id: str, query: str, top_k: int = 5) -> st
 
 
 @mcp.tool()
-async def experience_search_global(query: str, top_k: int = 10) -> str:
-    """跨 KB 全局搜索经验：遍历所有知识库的经验，返回最相关的结果。
+async def experience_search_global(query: str, top_k: int = 10,
+                                     score_threshold: float = None,
+                                     verify_content: bool = True) -> str:
+    """跨 KB 全局经验检索 — QDCVR 流程（与文档检索同构）。
 
-    适用于"全厂所有关于故障排查的经验有哪些？"这类全库查询。
+    向量召回 → 硬阈值 → 经验级去重 → 内容验证 → 可信度定级 → 诚实空返回。
+    向量负责"快"，内容负责"准"；无确认经验则诚实声明，不"不懂装懂"。
+
+    适用于"以前遇到类似 X 问题怎么处理的""全厂有哪些 Y 方面的经验"。
+    故障/运维型查询优先用此工具。
 
     Args:
-        query: 搜索关键词
-        top_k: 返回数量（默认10）
+        query: 自然语言查询（中英文均可，向量+关键词双路匹配）
+        top_k: 返回上限（默认10）
+        score_threshold: 向量硬阈值；None=0.45（精度0.55/召回0.35）
+        verify_content: True=读正文内容验证（默认）；False=仅向量分
 
     Returns:
-        {success, query, count, experiences: [{id, title, kb_path, rating_avg, ...}]}
+        {success, query, count, experiences: [{id, title, scenario, problem, solution,
+         vector_score, content_score, tier[P0/P1/P2], tier_reason, ...}],
+         vector_recall, tier_counts, message}
+        无确认经验时 count=0 且 message 说明盲点。
     """
-    return _j(await _client().experience_search_global(query, top_k))
+    return _j(await _client().experience_search_global(
+        query, top_k, score_threshold=score_threshold, verify_content=verify_content))
 
 
 # ============================================================
