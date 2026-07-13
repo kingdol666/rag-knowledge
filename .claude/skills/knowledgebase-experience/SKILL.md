@@ -146,6 +146,9 @@ experience_create(kb_id, title, scenario, category, problem, solution, result,
 category: best_practice|troubleshooting|lesson_learned|optimization|tip|workflow|decision
 severity: critical|important|normal|tip
 
+**创建后自动完成**：向量索引（6 chunks/Markdown经验正文）+ 元数据写入（index.yml）+ 磁盘文件（experience/*.md） 三路一致。
+经验缺失向量索引时用 `experience_reindex(kb_id, exp_id)` 手动修复。
+
 ### Read / List / Update / Delete
 ```
 experience_read(kb_id, exp_id)                                    → 含 .md 正文
