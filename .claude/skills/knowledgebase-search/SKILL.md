@@ -14,6 +14,12 @@ description: >
 
 # QDCVR — 查询驱动 · 内容裁决 · 门控精炼检索
 
+**执行者：此技能由 Archival agent 执行**
+- 当 knowledgebase 调度器检测到搜索场景后 → 路由到本 skill
+- 本 skill **必须**委托 Archival agent（`Agent(subagent_type="archival", ...)`）执行
+- Archival 禁止：跳过 Step 0 查询改写、跳过内容验证、跳过盲点声明
+- 本 SKILL.md 仅作为流程参考规范，由 Archival 读取并严格执行
+
 **五条铁律**：
 1. **先理解再检索**——原始查询先改写为检索友好形态（Step 0），不直接喂给检索器。
 2. **先选库再召回**——跨库时先判定相关 KB（Step 1），避免跨域噪声和大库主导。

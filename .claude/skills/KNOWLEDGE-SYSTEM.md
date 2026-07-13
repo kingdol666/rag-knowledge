@@ -142,24 +142,38 @@ Layer 3 — KNOWLEDGE-SYSTEM.md 全局触发文档
 ├── Archival agent 内部场景诊断表单
 ```
 
-### 场景路由优先级（多场景混合作业）
+### 场景路由优先级（多场景混合作业）—— 强制执行规范
 
 ```
 用户请求 → 命中 KB 触发词？
   │
-  是 → 调用 knowledgebase skill
+  是 → 调用 knowledgebase skill   ← ⭐ 第一步：触发不可绕过
   │    ↓
-  │  主调度器检测触发矩阵 → 获取场景标签
+  │  knowledgebase 调度器（此SKILL）检测触发矩阵 → 获取场景标签
   │    ↓
-  │  Agent(subagent_type="archival",
-  │       prompt="[Detected scenario: <场景标签>] ...")
+  │  Skill("knowledgebase-<场景>")  ← ⭐ 第二步：路由到子Skill
+  │    ↓                                          禁止自行操作
+  │  子Skill 内检测到场景后:
+  │    ↓
+  │  Agent(subagent_type="archival",               ← ⭐ 第三步：必须委托Archival
+  │       prompt="[Detected scenario: <场景标签>]
+  │                <用户原始需求>")
   │    ↓
   │  Archival Step 0: 场景诊断协议（自主确认/重判）
   │    ↓
-  │  路由到子 Skill 执行
+  │  路由到子 Skill 步骤严格执行       ← ⭐ 第四步：不可跳过步骤
   │
   否 → 正常任务处理
 ```
+
+### 三层职能分离（严禁越权）
+
+| 角色 | 职责 | 禁止 |
+|------|------|------|
+| **用户** | 提出需求 | — |
+| **knowledgebase 调度器** | 匹配关键词 → 路由到子Skill | 自行调用任何MCP工具 |
+| **子Skill（如 ingest）** | 识别具体场景 → 委托Archival | 自行执行MCP操作 |
+| **Archival agent** | **唯一**可调用MCP工具执行KB操作的角色 | 跳过步骤/绕过质量门控 |
 
 ### 各子 Skill 触发词速查
 
