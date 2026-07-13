@@ -12,8 +12,25 @@ description: >
 
 # Enterprise Multi-Strategy Retrieval — 企业级多策略精炼检索
 
+**⭐ MCP 优先原则（强制）**：所有 kb-mcp 操作必须通过 MCP 工具执行（`mcp__kb-mcp__*`）。禁止用 `curl`/`python -c`/`wget` 等终端命令或直调 HTTP API。MCP 不可用时才可向用户报告。
+
 > **升级触发**：knowledgebase-search Step 5 发现确认 P0/P1 来自 <2 个 KB（跨库盲点），或用户明确要求全库/跨库/全面检索。
-> **与 VFCR 的区别**：三路并行 + 交叉验证 + 融合定级，专门对付跨库语义盲区。
+
+---
+
+## 思维框架：什么时候用 Enterprise？ ⭐
+
+```
+用户查询
+  ├── 标准 KB 搜索（指定了某个 KB）→ knowledgebase-search ✅
+  ├── 全库搜索（不指定 KB）+ 普通查询 → knowledgebase-search ✅（Step 1 自动选库）
+  └── 全库搜索 + 查询命中 <2 个 KB → knowledgebase-search-enterprise ⬆️
+      或：用户强调"全库/跨库/全面/所有 KB" → 直接升级
+```
+
+> Enterprise 比标准 QDCVR 重 3 倍（3 路并行召回），不要默认使用。先跑 QDCVR，不满足再升级。
+
+---
 
 ## Phase 0 — 查询改写（继承 QDCVR Step 0）
 
@@ -50,6 +67,11 @@ kb_search_two_stage(
 ```
 **可选 Path D — 经验库**（故障/运维型）：`experience_search_global(query, top_k=5)` + `experience_search_vector(kb_id, query, top_k=5)`。
 
+### 路径失败处理
+- Path A 向量返回 0 条 → 降低 score_threshold 到 0.25 重试
+- Path B 标签无匹配 → 用 `kb_search` 关键词检索标签描述
+- Path C BM25 无结果 → 分词后核心词检索
+
 ## Phase 2 — 交叉验证 + 文档级去重
 
 合并所有路径结果，**按 doc_path 去重**（同文档只留最高分 chunk，记录命中路径数）：
@@ -84,7 +106,7 @@ kb_doc_read(kb_id, doc_path, max_chars=3000)
 | 5 | **P1** — 补充用 |
 | ≤4 | **丢弃** |
 
-**内容分 > 一切**。三路命中但内容 ≤4 → 丢（多路可能共同跑偏）。短内容降一级。
+**内容分 > 一切**。三路命中但内容 ≤4 → 丢（多路可能共同跑偏）。
 
 ## Phase 4 — 图谱扩展（P0 <3 或需跨库桥梁时）
 
@@ -120,11 +142,21 @@ A 向量 + B 标签 + C BM25（+ D 经验，如适用）→ 去重后 N 篇 → 
 
 ---
 
+## ⚠️ NEVER 清单
+
+| ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
+|-------------|------|-------------|
+| 直接跑 enterprise 不做 QDCVR 先行 | 3 倍开销 | 默认 QDCVR，不够才升级 |
+| balance_kbs=False 全库搜索 | 大库主导结果 | 全程 `balance_kbs=True` |
+| Phase 3 跳过 doc_read | 内容分靠猜 | 读 3000 chars 正文打分 |
+| 三路共同命中也跳过验证 | 共同跑偏是可能的 | 内容 ≤4 即使三路也丢 |
+| 图谱扩展无节制 | 引入大量噪声 | 仅 P0 <3 或显式跨库时启用 |
+
 ## 规则速查
-1. **Phase 0 必做**——查询改写（同 QDCVR），原始查询不直接进三路召回
-2. **balance_kbs=True 全程**——三路都开，防大库主导
-3. **Phase 2 文档级去重**——同文档只留最高分 chunk，消灭 55 条变 5 条的冗余
-4. **硬阈值 0.30 预过滤**——跨域低分噪声直接截断
+1. **Phase 0 必做**——原始查询不直接进三路召回
+2. **balance_kbs=True 全程**——防大库主导
+3. **Phase 2 文档级去重**——消灭冗余
+4. **硬阈值 0.30 预过滤**——跨域低分截断
 5. **Phase 3 内容分定去留**——内容 ≤4 即便三路共识也丢
 6. **图谱扩展有节制**——仅 P0 不足或显式跨库时启用
-7. **诚实盲点**——跨库视角的盲点尤其要声明（某库可能命中但未召回）
+7. **诚实盲点**——跨库视角的盲点尤其要声明

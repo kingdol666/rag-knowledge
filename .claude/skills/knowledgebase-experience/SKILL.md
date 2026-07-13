@@ -11,8 +11,20 @@ description: >
 
 # Experience — 全生命周期管理（E0-E11）
 
-> 经验 = 文档的"可操作精华"。每条经验是单点知识（一个问题→一个方案→一个教训），结构化、可检索、可应用、可评审。
-> 所有工具 `kb_id` 为首参（KB ID 或 path），除 `experience_search_global` / `experience_check_stale_global`。
+**⭐ MCP 优先原则（强制）**：所有 kb-mcp 操作必须通过 MCP 工具执行（`mcp__kb-mcp__*`）。禁止用 `curl`/`python -c`/`wget` 等终端命令或直调 HTTP API。MCP 不可用时才可向用户报告。
+
+---
+
+## 思维框架：什么时候用经验？什么时候用文档？ ⭐
+
+```
+用户问了一个问题
+  ├── 运维/故障/操作型（"怎么XX""报错了"）→ 经验优先！E4 检索
+  ├── 理论/原理/综述型（"什么是XX"）→ 文档优先
+  └── "把XX总结为经验" → experience-summarize（经验总结入库）
+```
+
+---
 
 ## 核心理念
 - **文档**：全文、自由 markdown、供阅读学习
@@ -35,7 +47,8 @@ Agent 拿到任务包后用 LLM 按 `extraction_template` 提炼（去重 `exist
 experience_extract(kb_id="<KB>", mode="heuristic", dry_run=True)
 → {total_candidates, candidates: [{title, scenario, problem, solution, key_lessons, confidence, ...}]}
 ```
-基于文档结构（## 段落）+ 关键词（problem/solution/lesson）启发式提取。`dry_run=False` 写入草稿池。
+基于文档结构（## 段落）+ 关键词（problem/solution/lesson）启发式提取。
+`dry_run=False` 写入草稿池。
 
 **提取时机**：入库新文档后（Ingest A7 通过）；批量学习某 KB；定期丰富经验库。
 
@@ -49,66 +62,56 @@ experience_extract(kb_id="<KB>", mode="heuristic", dry_run=True)
 ```
 experience_drafts_list(kb_id)                      → 列出待审核草稿
 experience_draft_read(kb_id, draft_id)             → 读取草稿详情（含来源文档证据）
-experience_draft_approve(kb_id, draft_id, edits={}) → 批准→正式经验（edits 可 LLM 精炼后覆盖）
+experience_draft_approve(kb_id, draft_id, edits={}) → 批准→正式经验
 experience_draft_reject(kb_id, draft_id, reason)    → 拒绝→rejected/（保留原因）
 ```
 **审核流程**：`drafts_list` → 逐条 `draft_read` → LLM 精炼后 `draft_approve(edits=精炼字段)` 或 `draft_reject`。
 
-## E4 — 经验优先检索（QDCVR 流程，与文档检索同构）⭐
+## E4 — 经验优先检索（QDCVR 流程）⭐
 
-经验检索已升级为**向量+内容验证**的 QDCVR 流程，与 `knowledgebase-search` 完全同构。
-**核心原则：宁可不给，不要错给**——无确认经验即诚实声明盲点，不"不懂装懂"。
+**核心原则：宁可不给，不要错给**——无确认经验即诚实声明盲点。
 
 ```
-# Step 1: 经验优先（QDCVR 全流程内置）
+# Step 1: 经验优先
 experience_search_global(query, top_k=10, score_threshold=0.45, verify_content=True)
-  → 内部: 向量召回 → 硬阈值 → 经验级去重 → 内容验证 → 可信度定级 → 诚实空返回
+  → 内部: 向量召回 → 硬阈值 → 经验级去重 → 内容验证 → 可信度定级
   → 返回 P0/P1/P2 分级经验，含 vector_score/content_score/tier_reason
-
-# P0/P1 经验直接给方案（秒级，不读文档）
-# count=0 表示"召回N条但内容验证不过"——诚实声明无相关经验
+  → count=0 表示"召回N条但内容验证不过"——诚实声明无相关经验
 
 # Step 2: 经验不足才补文档
 if P0+P1 < 2: kb_search_two_stage(query, balance_kbs=True)
 ```
 
 ### E4 检索流程透明化
-返回值含完整检索质量元信息，**Agent 应读取并据此决策**：
-- `vector_recall`: 向量召回总数（硬阈值前）
-- `tier_counts`: {P0, P1, P2, discarded} — 分级统计
-- `message`: 检索路径摘要（如 "召回5→验证通过2→返回2 P0:1 P1:1"）
+返回值含完整检索质量元信息，Agent 应据此决策：
+- `vector_recall` — 向量召回总数（硬阈值前）
+- `tier_counts` — {P0, P1, P2, discarded} 分级统计
+- `message` — 检索路径摘要（如 "召回5→验证通过2→返回2 P0:1 P1:1"）
 - 每条经验含 `vector_score` + `content_score` + `tier` + `tier_reason`
 
-### E4 查询技巧（CJK 感知）
-- 中文自然语言直接查询：`"红烧肉炒糖色怎么不焦"` ✅（N-gram 分词，不再落空）
-- 故障描述口语化：`"磨煤机堵管怎么提前预警"` ✅
-- 英文术语：`"DQN experience replay"` ✅
-
-**集成在 `knowledgebase-search` Step 0**：故障/运维型自动走经验优先路径。
-
-## E5 — 可信度分级（检索时定级，与 QDCVR 内容分融合）
+## E5 — 可信度分级
 | 条件 | 层级 | 动作 |
 |---|---|---|
 | vector≥0.65 ∧ content≥6 ∧ rating≥4 ∧ review≥1 | **P0 Strong** | 直接引用，置顶 |
 | vector≥0.45 ∧ content≥4 | **P1 Reference** | 采用并标注 |
 | vector≥0.35 ∧ content≥3 | **P2 Weak** | 默认抑制（仅 P0/P1 不足时补）|
-| 内容验证不过 OR 向量<0.35 | **DISCARD** | 永不返回（防不懂装懂）|
+| 内容验证不过 OR 向量<0.35 | **DISCARD** | 永不返回 |
 | disputed (review≥3 ∧ rating<2) | 降级→max P2 | 有争议降级 |
 | unvetted (0 review ∧ 0 applied) | 降级→max P1 | 未评审压制 |
 
-## E6 — 文档联动 / stale 检测 ⭐（核心创新）
+## E6 — 文档联动 / stale 检测 ⭐
 ```
 experience_check_stale(kb_id)          → 检查 KB 经验与文档一致性
 experience_check_stale_global()        → 全库检查
 experience_sync_kb(kb_id)              → 整库标记 needs_sync
 ```
 **检测逻辑**：
-- 文档 mtime > 经验 updated_at → **stale**（经验过时，需重新提取）
+- 文档 mtime > 经验 updated_at → **stale**（经验过时）
 - 文档不存在 → **orphan**（引用失效）
 
 **联动流程**：文档更新 → `check_stale` 发现 stale → `sync_kb` 标记 → Agent 读 related_docs 重新提取 → `update_experience` 更新。
 
-## E7 — 搜索路径（强化 search skill）
+## E7 — 搜索路径
 ```
 故障型: experience_search_global + experience_search_vector → P0 直接答
 通用型: kb_search_two_stage → experience_search 补充
@@ -118,7 +121,6 @@ experience_sync_kb(kb_id)              → 整库标记 needs_sync
 ```
 experience_dashboard(kb_id) → {total, by_tier:{P0,P1,P2}, summary, drafts_pending, stale, orphan, needs_sync}
 ```
-评估 KB 经验覆盖度与质量，发现需补充/清理的经验。
 
 ## E9-E10 — 导出/批量（规划中）
 
@@ -136,24 +138,20 @@ experience_apply_decay(kb_id) → 应用规则标记
 
 ---
 
-## 基础 CRUD（现有，保留）
+## 基础 CRUD
 
 ### Create
 ```
 experience_create(kb_id, title, scenario, category, problem, solution, result,
                   key_lessons, tags, severity, related_docs, prerequisites, metrics)
 ```
-category: best_practice|troubleshooting|lesson_learned|optimization|tip|workflow|decision
-severity: critical|important|normal|tip
-
-**创建后自动完成**：向量索引（6 chunks/Markdown经验正文）+ 元数据写入（index.yml）+ 磁盘文件（experience/*.md） 三路一致。
-经验缺失向量索引时用 `experience_reindex(kb_id, exp_id)` 手动修复。
+**创建后自动完成**：向量索引（6 chunks）+ 元数据写入 + 磁盘文件 三路一致。
 
 ### Read / List / Update / Delete
 ```
 experience_read(kb_id, exp_id)                                    → 含 .md 正文
 experience_list(kb_id, scenario="", category="", tag="")          → 按评分排序
-experience_update(kb_id, exp_id, **fields)                        → 自动重建向量索引
+experience_update(kb_id, exp_id, **fields)                        → 自动重建索引
 experience_delete(kb_id, exp_id)                                  → 永久删除
 ```
 
@@ -200,3 +198,16 @@ experience_search_global(query) → P0 经验直接答（秒级）
 每周: experience_apply_decay(kb_id) 保持新鲜度
 每月: experience_dashboard(kb_id) 评估覆盖度，补充缺口
 ```
+
+---
+
+## ⚠️ NEVER 清单
+
+| ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
+|-------------|------|-------------|
+| 创建经验缺 problem/solution/lessons | 检索命中也没用 | 三者必须非空且具体 |
+| 跳过 E2 质量门控 | 低质经验污染库 | scenario/related_docs 必须验证 |
+| 维护时不跑 stale 检测 | 过时经验误导决策 | `check_stale` 至少每月一次 |
+| 不变动时狂跑 `apply_decay` | 没必要 | 每周一次足够 |
+| 把"经验"当文档写（长文/大段落） | 经验是单点结构化 | 一个问题→一个方案→一个教训 |
+| 故障查询不先查经验 | 错失秒级答案 | 故障型：经验优先，文档补充 |

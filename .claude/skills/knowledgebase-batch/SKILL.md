@@ -5,51 +5,132 @@ description: High-volume and batch operations for knowledge base management. B1-
 
 # Knowledge Batch — High-Volume Operations
 
-Each batch op follows: **survey → plan → confirm → execute → verify**.
+**⭐ MCP 优先原则（强制）**：所有 kb-mcp 操作必须通过 MCP 工具执行（`mcp__kb-mcp__*`）。禁止用 `curl`/`python -c`/`wget` 等终端命令或直调 HTTP API。MCP 不可用时才可向用户报告。
+
+**所有批量操作执行 `survey → plan → confirm → execute → verify` 五步流程**。
+
+---
+
+## 思维框架：选哪个批量操作？ ⭐
+
+```
+用户要求"批量/全部/所有"
+    │
+    ├── 统一修改标签？ → B1 Bulk Tag Migration
+    ├── 统一补充描述？ → B2 Bulk Description Update
+    ├── 从目录批量入库？ → B3 Directory Mass Ingestion
+    ├── 批量移动文档到另一KB？ → B4 Mass Document Move
+    ├── 全库去重？ → B5 Cross-KB Dedup
+    ├── 导出全库概览？ → B6 Export Summary
+    └── 全库重建图谱？ → B7 Graph Rebuild
+```
+
+### 批量操作前自检
+
+| 问题 | 如果不查后果 |
+|------|------------|
+| 目标范围多大？（10个文档还是1000个？） | 超时/资源耗尽 |
+| 是否可以 `dry_run` 预检？ | 不可逆变更无回退 |
+| 速率限制？工具能承受多少并发？ | 中途失败难恢复 |
+| 是否需要分批 + 断点续跑？ | 全部重来浪费时间 |
+
+---
 
 ## B1 — Bulk Tag Migration
-1. `kb_tags_list()` — current vocabulary
-2. Build tag mapping: old → new, merge duplicates, split generics
-3. For each KB: `kb_get_documents(kb_id)` → filter docs with target tags
-4. For each doc: `kb_doc_update_tags(kb_id, doc_path, new_tags)`
-5. Verify: `kb_doc_get_by_tag(new_tag)` — confirm doc count
+
+1. `kb_tags_list()` — 当前词表
+2. 构建标签映射：旧→新，合并重复，拆分泛化标签
+3. 对每个 KB：`kb_get_documents(kb_id)` → 筛选含目标标签的文档
+4. 对每个文档：`kb_doc_update_tags(kb_id, doc_path, new_tags)`
+5. 验证：`kb_doc_get_by_tag(new_tag)` — 确认文档数
+
+### 批量标签注意事项
+- 分批次执行（一次30个文档），防超时
+- 每批次后验证成功率，打日志
+- 发现报错文档单独标记，不等全部失败
+
+---
 
 ## B2 — Bulk Description Update
-1. `kb_get_documents(kb_id)` — identify docs with empty/weak descriptions
-2. Read 2000 chars per doc: `kb_doc_read(kb_id, doc_path, max_chars=2000)`
-3. Generate content-based description per [description-guide.md](../knowledgebase-ingest/references/description-guide.md)
-4. For each doc: `kb_doc_update_meta(kb_id, doc_path, description=new_desc)`
-5. Verify: re-read 500 chars of a random sample
+
+1. `kb_get_documents(kb_id)` — 识别弱描述文档（空/文件名/泛泛）
+2. 对每个文档读 2000 chars：`kb_doc_read(kb_id, doc_path, max_chars=2000)`
+3. 按 [description-guide.md](../knowledgebase-ingest/references/description-guide.md) 生成内容型描述
+4. 对每个文档：`kb_doc_update_meta(kb_id, doc_path, description=new_desc)`
+5. 验证：随机采样 20% 文档，`kb_doc_read` 500 chars 确认描述与内容匹配
+
+### 批量描述注意事项
+- 大库（>50文档）分批处理，每批10-15个
+- 委托子 Agent 并行生成描述（分KB执行）
+- 每次生成后用四要素（主体/方法/场景/数据）自检
+
+---
 
 ## B3 — Directory → KB Mass Ingestion
-1. Survey directory: list all files, classify by type
-2. File-type routing:
-   - PDF/DOCX/PPTX/images → `parse_doc_batch(file_paths=[...], use_ocr=true)`
-   - MD/TXT/JSON/YAML/code → read directly
+
+1. 调查目录：列出所有文件，按类型分类
+2. 文件类型路由：
+   - PDF/DOCX/PPTX/images → `parse_doc_batch(file_paths=[...], use_ocr=true)`（非阻塞）
+   - MD/TXT/JSON/YAML/code → 直接读
    - Binary → `fs_upload_file(file_path, parent_id)`
-3. Wait for all parse tasks, then store each via `kb_doc_save_parsed(parent_id, task_id, description)`
-4. For each new doc: `kb_index_document` + `kb_doc_update_tags`
-5. Verify: `kb_search_stats(kb_id)` — confirm chunk count
+3. 等待所有解析任务完成 → 存储：`kb_doc_save_parsed(parent_id, task_id, description)`
+4. 每个新文档：`kb_index_document` + `kb_doc_update_tags`
+5. 验证：`kb_search_stats(kb_id)` — 确认 chunk count
+
+### 目录入库注意事项
+- 解析文件 >10个时务必用 `parse_doc_batch`（单 task_id 管理）
+- 分批提交解析（20个一批），避免 MCP 工具超时
+- 任务队列状态的轮询间隔 ≥5秒
+
+---
 
 ## B4 — Mass Document Move (KB→KB)
-1. `kb_get_documents(source_kb_id)` — full doc list
-2. Confirm with user
-3. For each doc: `kb_doc_move(doc_path, target_kb_id)` → `kb_index_document(target_kb_id, new_path)`
-4. `kb_search_stats(target_kb_id)` + `kb_get_documents(source_kb_id)` — verify
+
+1. `kb_get_documents(source_kb_id)` — 全文档列表
+2. 向用户确认
+3. 对每个文档：`kb_doc_move(doc_path, target_kb_id)` → `kb_index_document(target_kb_id, new_path)`
+4. `kb_search_stats(target_kb_id)` + `kb_get_documents(source_kb_id)` — 验证
+
+### 批量移动注意事项
+- 源KB非空不删（迁移完毕后用户决定）
+- 移动后 `force=true` 重索引，确保 collection UUID 更新
+
+---
 
 ## B5 — Cross-KB Dedup
-1. `kb_list()` → all KBs
-2. For each KB pair: `kb_get_documents` → compare by name, then by content (500 chars)
-3. Flag duplicates: same title or >80% content overlap
-4. Confirm → keep one, delete others: `kb_doc_delete(kb_id, doc_path)`
-5. Verify: no duplicate titles remain
+
+1. `kb_list()` → 所有 KB
+2. 每对 KB 对比文档：
+   - 按文件名初筛
+   - 读 500 chars 内容对比
+3. 标记重复：同名或 >80% 内容重叠
+4. 用户确认 → 保留一个，删除其他：`kb_doc_delete(kb_id, doc_path)`
+5. 验证：无重复标题残留
+
+---
 
 ## B6 — Export Summary
-1. `kb_list()` + `kb_get_documents` per KB
-2. Generate: KB name, doc count, total size, tag coverage, vector/graph index coverage, top docs by size
-3. Output as table
+
+1. `kb_list()` + 每个 KB 的 `kb_get_documents`
+2. 输出表格：KB name | doc count | total size | tag coverage | vector/graph index coverage | top docs
+
+---
 
 ## B7 — Graph Rebuild
-1. `kb_list()` → all KB IDs
-2. `kb_graph_build_all(force=true)` — batch rebuild
-3. Verify: `kb_graph_stats()` → check node/edge counts
+
+1. `kb_list()` → 所有 KB ID
+2. `kb_graph_build_all(force=true)` — 批量重建
+3. 验证：`kb_graph_stats()` → 检查 node/edge 数合理
+
+---
+
+## ⚠️ NEVER 清单
+
+| ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
+|-------------|------|-------------|
+| 不 survey 直接跑 batch | 误伤范围超预期 | 先 `kb_list`/`kb_get_documents` 确认范围 |
+| 跳过用户确认 | 批量操作不可逆 | 所有破坏性操作先问用户 |
+| 一次性尝试解析 100 个 PDF | MCP 超时 | 分批（20个/批）提交 `parse_doc_batch` |
+| 批量操作后跳过验证 | 部分失败不知 | 采样验证 + 统计对比 |
+| 标签映射测试目标不验证存在性 | `kb_doc_get_by_tag` 返回空 | 事前确认标签真实存在于文档 |
+| 目录批量入库忽略去重 | 大量重复文档 | 入库前先做 `kb_search_vector` 指纹去重 |

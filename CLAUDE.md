@@ -378,3 +378,16 @@ server:
 - 调用正确 skill 或子Agent重新执行
 - 修正已产生的错误（如误用 `kb_doc_create` → 清理后改用 `kb_doc_save_parsed`）
 - 向用户说明纠正了什么
+
+### 第五条：⭐ MCP 优先原则（2026-07-13 新增，全库强制执行）
+
+**当 MCP 工具已连接可用时，所有知识库操作必须通过 MCP 工具执行`（mcp__kb-mcp__*）`，不得绕过。**
+
+| ❌ 禁止 | ✅ 必须 |
+|---------|---------|
+| 写 `curl` 终端命令操作 KB | 用 `mcp__kb-mcp__kb_*` 工具 |
+| 写 `python -c` 调用 HTTP API | 用 `mcp__kb-mcp__parse_doc` 工具 |
+| 用 `wget`/`httpx` 直调后端 | 用 `mcp__kb-mcp__kb_doc_*` 工具 |
+| Bash/PowerShell 中硬编码 API URL | MCP 保证了原子操作和审计追踪 |
+
+**例外条款**：仅在 MCP 明确不可用（MCP 连接失败且用户确认后），才可用终端命令或 HTTP API 作为兜底。兜底后必须向用户声明 "MCP 不可用，已用 HTTP API 兜底"。

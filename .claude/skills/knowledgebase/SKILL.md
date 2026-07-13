@@ -14,6 +14,22 @@ description: Knowledge base management — primary entry point. Use for ANY know
 
 ---
 
+## 思维框架：场景归类 ⭐
+
+```
+用户说了一句话
+  └── 包含 KB 关键词？
+       ├── 是 → 匹配下表的信号关键词
+       └── 否 → "我没能清晰理解您的需求。请说明您是要：入库文档、搜索知识、管理知识库、还是整理知识库？"
+
+匹配到后：
+  ├── 明确单一场景 → 路由对应子 Skill
+  ├── 多场景混合 → 按 Organize → Verify → Ingest → Manage → List/Search 顺序路由
+  └── 模糊回退 → 如下表
+```
+
+---
+
 ## Classify the scenario, then route to the matching sub-skill.
 
 | Signal keywords | Scenario | Skill |
@@ -41,6 +57,7 @@ description: Knowledge base management — primary entry point. Use for ANY know
 - 调度器 **禁止** 自行调用任何 kb-mcp MCP 工具
 - 调度器 **禁止** 自行搜索/读取/修改知识库
 - **唯一允许的操作**：用 `Skill("knowledgebase-<scenario>")` 路由到子 skill
+- ⭐ 并且子 Skill 执行时必须通过 MCP 工具（禁止终端/API 绕行，详见子 Skill 的 MCP 优先原则）
 
 ### ⭐ 规则 3：路由后必须委托 Archival
 - 子 skill 的 SKILL.md 中检测到场景后，**必须委托 Archival 子 Agent 执行**
@@ -57,3 +74,29 @@ description: Knowledge base management — primary entry point. Use for ANY know
 - "存/上传/store" → Ingest
 - "看/列/show" → List
 - 否则输出："我没能清晰理解您的需求。请说明您是要：入库文档、搜索知识、管理知识库、还是整理知识库？"——等待澄清，不做修改操作
+
+---
+
+## 多场景路由示例
+
+| 用户说 | 命中场景 | 路由顺序 |
+|--------|---------|---------|
+| "整理所有知识库，找到有问题的地方" | Organize | `Skill("knowledgebase-organize")` |
+| "校验+整理" | Organize + Verify | `Organize → Verify` |
+| "入库这篇PDF，然后搜一下XX" | Ingest + Search | `Ingest → Search` |
+| "把所有文档移库，再批量改标签" | Manage + Batch | `Manage → Batch` |
+| "看看有什么KB，检查一下健康度" | List + Verify | `List → Verify` |
+
+> 多场景时每个子 Skill 走完整流程。前一个完成后通知用户结果，再进下一个。
+
+---
+
+## ⚠️ NEVER 清单
+
+| ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
+|-------------|------|-------------|
+| 猜测场景而不匹配关键词 | 路由到错误子Skill | 严格匹配关键词表 |
+| 自行执行 KB 操作 | 破坏触发契约 | 路由到子Skill + 委托 Archival |
+| 跳过 Archival 直接处理 | 绕过质量门控 | 子Skill 内必须委托 Archival |
+| 对模糊请求做修改操作 | 不可逆 | 输出模糊回退消息，等澄清 |
+| 认为"看起来不像KB操作"就不路由 | 漏触发 | 不确定时默认走 knowledgebase |

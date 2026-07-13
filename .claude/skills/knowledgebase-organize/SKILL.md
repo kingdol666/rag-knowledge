@@ -5,6 +5,18 @@ description: Full collection restructuring engine. O0→O14 workflow: define KB 
 
 # Knowledge Organize — Collection Restructuring
 
+**⭐ MCP 优先原则（强制）**：所有 kb-mcp 操作必须通过 MCP 工具执行（`mcp__kb-mcp__*`）。禁止用 `curl`/`python`/`wget` 等终端命令或直调 HTTP API 替代 MCP 工具。MCP 不可用时才可向用户报告让用户决策。
+
+---
+
+## 思维框架：整理前想清楚三件事 ⭐
+
+1. **范围是什么？** — 全库整理还是单 KB？用户说了"整理"但没说范围？全库默认。
+2. **修复优先级？** — 描述质量 > 标签规范 > KB归属 > 索引覆盖 > 图谱。不会全修？至少修前三项。
+3. **哪些必须读？** — 2000 chars 不可省。不读内容直接改描述 = 猜，禁止。
+
+---
+
 Ensure every document meets all 6 compliance criteria. Documents failing any criterion are auto-fixed.
 
 ## Compliance Criteria (O0)
@@ -44,23 +56,35 @@ Reclassify misclassified docs: find correct KB by content domain → `kb_doc_mov
 3. **Move misclassified** (C3): `kb_doc_move(doc_path, correct_kb_id)` → `kb_index_document(kb_id=correct, doc_path=new_path)`
 4. **KB ops**: merge (`move all → kb_delete`), rename (`kb_update`), delete (`kb_delete`)
 
+### 高效批量修复技巧
+- 大库（>10文档）委托子 Agent 并行生成建议，分 KB 执行
+- 每次修复后立即 O5 验证，不要"先全修完再验证"——错了能及时停
+- 描述修复用 `kb_doc_update_meta`（不改正文，只改元数据）
+
 ## O5 — Verify Each Change
 After each fix: `kb_doc_read` / `kb_doc_get_by_tag` / `kb_get_documents` to confirm.
 
 ## O6 — Orphan Cleanup
-Check for orphaned `experience/` dirs, phantom `.tree-fs.json` entries.
+Check for orphaned `experience/` dirs, phantom `.tree-fs.json` entries. Report only — don't auto-delete.
 
 ## O7 — Compliance Scorecard
 Re-audit all docs. Score: C1-C6 each as N/total (target 100%).
 
 ## O8 — Tag Hygiene
 `kb_tags_list()` → `kb_doc_get_by_tag(tag)`. Clean strictly per [tag-quality-rules.md](../knowledgebase-ingest/references/tag-quality-rules.md):
-- **T1 黑名单清除**：章节标题(`Abstract`/`1 Introduction`/`References`)、测试标签(`test-*`/`*-test`)、描述性标签 → 从所有文档移除
-- **T2 同义合并**：大小写重复(`PET`/`pet`)、中英重复(`聚乙烯`/`PE`) → 统一到词表主词
-- **孤儿清除**：0 文档引用的标签自动消失
-- **单文档独有且非新概念** → 归并到主词
 
-实测现状：~40 章节标题 + ~17 测试标签 + ~15 组同义重复待清洗。
+### 标签卫生执行顺序
+1. T1 黑名单清除 → 丢弃章节标题 / 测试标签 / 描述性标签
+2. T2 同义合并 → 大小写统一（PET/pet）→ 中英合并（聚乙烯/PE）
+3. 孤儿清除 → 0 文档引用的标签自动消失（不操作，只验证）
+4. 单文档独有且非新概念 → 归并主词
+
+### 需要 `kb_doc_update_tags` 才能生效的操作
+T1 和 T2 中被文档引用的标签，必须逐个文档更新：
+```
+kb_get_documents(kb_id) → 过滤含旧标签的文档 → kb_doc_update_tags(tags=新列表)
+```
+仅删除词表的标签不会自动从文档移除。
 
 ## O9 — Sub-KB Auto-Creation
 If parent KB ≥8 docs across ≥2 sub-domains: create sub-KBs. See [sub-kb-creation.md](../knowledgebase-ingest/references/sub-kb-creation.md).
@@ -84,6 +108,19 @@ for each kb:
 
 ## O13 — Final Report
 KBs before/after, documents, moves, merges, deletions, fixes, reindexes, compliance scores.
+
+---
+
+## ⚠️ NEVER 清单
+
+| ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
+|-------------|------|-------------|
+| 不读 2000 chars 直接分类 | 文件名分类99%错 | 读正文 → 按 domain/sub_domain 分类 |
+| 修复不验证就走下一步 | 描述改了但不对 | 即时 `kb_doc_read` 500 chars 对比 |
+| 全修完再统一验证 | 中间错了无法回退 | 每步修完即 O5 |
+| 不报告用户直接删 KB | 不可逆 | 报告 + 确认后再删 |
+| 跳过 orphan cleanup | 幽灵 entry 积累 | O6 必须检查 |
+| 认为 tags_list 清除了标签 = 文档标签已清 | 词表和文档标签是两回事 | 必须逐文档 `kb_doc_update_tags` 更新 |
 
 ## Critical Rules
 - Read 2000+ chars per doc for classification — never classify by filename
