@@ -1,6 +1,6 @@
 ---
 name: knowledgebase-organize
-description: Full collection restructuring engine. O0→O14 workflow: define KB standards, deep survey every KB (read 2000+ chars per doc), audit every document against compliance standards, content-driven reclassification, execute fixes (descriptions/tags/moves/merges/renames), verify each change, auto-create sub-KBs when KB grows, batch-fix non-compliant descriptions, audit vector index coverage and reindex missing docs, clean YAML/JSON/disk three-way consistency, and knowledge graph rebuild. No document splitting. Trigger keywords: 整理, 清洗, 重组, 审计, 重构, 盘点, 全面梳理, organize, restructure, audit collection, cleanup KB, reorganize, 清洗知识库, 整理知识库, 重建索引, 重新分类, 大扫除, 看看哪里有问题, 有哪些问题, consolidation.
+description: Full collection restructuring engine. O0→O13 workflow: define KB standards, deep survey every KB (read 2000+ chars per doc), audit every document against compliance standards, content-driven reclassification, execute fixes (descriptions/tags/moves/merges/renames), verify each change, auto-create sub-KBs when KB grows, batch-fix non-compliant descriptions, audit vector index coverage and reindex missing docs, clean YAML/JSON/disk three-way consistency, and knowledge graph rebuild. No document splitting. Trigger keywords: 整理, 清洗, 重组, 审计, 重构, 盘点, 全面梳理, organize, restructure, audit collection, cleanup KB, reorganize, 清洗知识库, 整理知识库, 重建索引, 重新分类, 大扫除, 看看哪里有问题, 有哪些问题, consolidation.
 ---
 
 # Knowledge Organize — Collection Restructuring
@@ -64,6 +64,13 @@ Reclassify misclassified docs: find correct KB by content domain → `kb_doc_mov
 ## O5 — Verify Each Change
 After each fix: `kb_doc_read` / `kb_doc_get_by_tag` / `kb_get_documents` to confirm.
 
+## O5-E — 经验联动（文档变更后必查）⭐
+文档移动/重分类/改标签后，关联的经验可能失联。立即检查：
+```
+experience_check_stale(kb_id)      # 检查该 KB 经验与文档一致性
+```
+发现 stale 经验 → 标记 `needs_sync`，后续整理时更新。
+
 ## O6 — Orphan Cleanup
 Check for orphaned `experience/` dirs, phantom `.tree-fs.json` entries. Report only — don't auto-delete.
 
@@ -95,6 +102,7 @@ for each kb: docs = kb_get_documents(kb_id)
   missing = [d for d in docs if not d.vector_index]
   if missing: kb_batch_index(kb_id, [d.path for d in missing], force=true)
 ```
+> 如果整个 KB 索引都有问题（如 collection UUID 不对齐），可改用 `kb_reindex(kb_id, force=true)` 全量重建。
 
 ## O11 — Three-Way Consistency
 Cross-check disk ↔ `.tree-fs.json` ↔ `.knowledge-base.yml`. Fix: re-register via `kb_doc_create`, delete stale via `kb_doc_delete`, reindex via `kb_index_document`.

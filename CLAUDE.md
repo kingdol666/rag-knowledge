@@ -178,10 +178,12 @@ Phase 5: Fused presentation (P0→P1, P2 hidden, blind-spots declared)
 
 | Tier | Condition | Action |
 |------|-----------|--------|
-| **P0 Strong** | scenario exact match ∧ vector ≥ 0.65 ∧ rating ≥ 4 | Strong recommend, pin to top |
-| **P1 Reference** | vector ≥ 0.55 ∧ rating ≥ 3 | Recommend, annotate credibility |
-| **P2 Gray** | 0.45 ≤ vector < 0.55 | Suppress by default (show only on explicit expand) |
-| **Discard** | vector < 0.45 OR different equipment/part | Never present |
+| **P0 Strong** | vector≥0.65 ∧ content≥6 ∧ rating≥4 ∧ review≥1 | Strong recommend, pin to top |
+| **P1 Reference** | vector≥0.45 ∧ content≥4 | Recommend, annotate credibility |
+| **P2 Weak** | vector≥0.35 ∧ content≥3 | Suppress by default (show only on explicit expand) |
+| **Discard** | Content verification fails OR vector < 0.35 | Never present |
+
+Credibility modifiers: disputed (≥3 reviews ∧ rating<2.0) → downgrade to max P2; unvetted (0 reviews ∧ 0 applied) → cap at max P1.
 
 Credibility decay: stale unverified (>30d, 0 applied), disputed (rating <2.0 with ≥3 reviews), fully unvetted (0 reviews ∧ 0 applied → max P1).
 
@@ -318,6 +320,8 @@ server:
 9. **Experience heuristic extraction produces low-quality candidates** — `experience_extract(mode="heuristic")` 的 key_lessons 可能返回章节标题。**推荐**：用 `mode="prepare"` → LLM 精炼。详见 knowledgebase-experience Skill E2a 质量门控。
 10. **Graph sub-KB nodes show UUID only** — `kb_graph_kb_overview` 返回的 sub_kbs 列表中 name 字段为 UUID 而非可读名称。
 11. **Tag registry accumulates orphan tags** — `kb_tags_list()` 返回的标签列表包含 0 文档引用的历史标签（如测试标签、章节标题）。不影响搜索功能——文档级标签已清理。
+12. **`kb_graph_build_kb` 返回的 `total_relations` 可能为 0** — 这是 stats 统计 bug，实际图谱数据已写入 Neo4j。**不要**因为返回 0 就认为构建失败。用 `kb_graph_document(doc_path)` 或 `kb_graph_kb_overview(kb_id)` 抽检验证。
+13. **Experience credibility thresholds differ between CLAUDE.md and SKILL.md** — CLAUDE.md 的 P0/P1/P2 阈值已同步对齐到 SKILL.md（以 skill 为准，含 content 验证维度）。如需调整请同时改两处。
 
 ## Development Conventions
 
@@ -374,7 +378,7 @@ server:
 | A3c 描述质量 | 四要素 + 内容回查，必做 |
 | A5 存储选择 | 解析文档必须用 `kb_doc_save_parsed`，禁止用 `kb_doc_create` |
 | A6-V 索引验证 | 索引后必验证 collection 正确 + chunks ≥ 1 |
-| A7 七项终检 | C1-C7 全部 ✅ 才算完成 |
+| A7 八项终检 | C1-C8 全部 ✅ 才算完成 |
 
 ### 第四条：违规自纠机制
 

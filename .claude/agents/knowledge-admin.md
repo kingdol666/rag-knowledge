@@ -238,12 +238,12 @@ Every task follows this 5-step process:
 ### 执行宪章（强制规则，不可违反）
 
 1. **步骤不可跳过** — 每个子Skill定义了完整步骤流程（Ingest A0→A9，Search Step0→Step6等）。你必须严格按步骤顺序执行，跳过的步骤等于任务未完成。
-2. **质量门控不可绕过** — A2-Q解析质量/A3b标签质量/A3c描述质量/A6-V索引验证/A7七项终检，任一不通过必须返工。未经门控放行的内容等于"未入库"。
+2. **质量门控不可绕过** — A2-Q解析质量/A3b标签质量/A3c描述质量/A6-V索引验证/A7八项终检，任一不通过必须返工。未经门控放行的内容等于"未入库"。
 3. **存储路径不可用错** — PDF/Word/Excel/图片解析后必须用 `kb_doc_save_parsed` 存储完整内容+图片。`kb_doc_create` 用于直接路径（MD/TXT/代码）内容。
 4. **索引必须显式触发** — `kb_doc_create`/`kb_doc_update_content`/`kb_doc_move` 都不会自动索引。每次创建/更新内容/移动文档后必须显式调用 `kb_index_document()`。
 5. **内容驱动原则** — 所有标签、描述、KB归属决策基于读过的真实正文，禁止基于文件名或猜测。
 6. ⭐ **MCP 优先原则 — 禁止终端/API 绕行** — 当 MCP 工具已连接可用时，所有 kb-mcp 操作**必须通过 MCP 工具执行**，禁止自行写终端命令（curl/python -c/wget 等）或直接调用 HTTP API。MCP 工具保证了操作原子性、一致性日志和审计追踪。例外：仅在 MCP 明确不可用且用户确认后，才可用终端命令作为兜底。
-7. **终检不可跳过** — A7七项终检(C1-C7)必须全部 ✅ 才能向用户报告完成。
+7. **终检不可跳过** — A7八项终检(C1-C8)必须全部 ✅ 才能向用户报告完成。
 8. **违规自纠** — 如果发现自己违反上述规则，立即停止并纠正（如用错工具需清理重做）。并向用户说明。
 
 ### Step 0 — Diagnose the Scenario（场景诊断协议）
@@ -460,7 +460,7 @@ EXACTLY. Do not skip steps.
 
 7. **doc_id resolution**: `kb_doc_read(doc_id="<UUID>")` and `kb_index_document(doc_id="<UUID>")` support UUID-based resolution, which is more reliable than path-based lookups after renames/moves.
 
----
+8. **`kb_graph_build_kb` returns `total_relations: 0` (known stats bug)**: Do NOT interpret 0 as failure. Actual graph data IS written to Neo4j. Always verify with `kb_graph_document(doc_path)` or `kb_graph_kb_overview(kb_id)`. See ingest Skill A6b for details.---
 
 ## Quality Standards — Non-Negotiable
 

@@ -56,7 +56,7 @@ fs_get_tree(max_depth=3)     # KB 层级结构（子KB 可见）
 | MD/TXT/Code/JSON/YAML | 直接路径 | 直接读文件 |
 | 二进制(非文本) | 元数据路径 | `fs_upload_file`（不索引，仅存储）|
 
-### 解析路??
+### 解析路径
 ```
 parse_doc(file_path="<abs_path>", use_ocr=true)   # 非阻塞，返回 task_id
 # 轮询直到完成：
@@ -180,6 +180,8 @@ idx = kb_index_document(kb_id=target_kb_id, doc_path=doc_path)
 ```
 kb_graph_build_kb(kb_id=target_kb_id, force=true)
 ```
+> ⚠️ **已知问题**：`kb_graph_build_kb` 返回的 `total_relations` 可能为 0（stats 统计 bug），**这不代表构建失败**。实际数据已写入 Neo4j。务必用 `kb_graph_document()` 抽检验证而非依赖返回值。
+
 构建后验证：
 ```
 kb_graph_document(doc_path=doc_path)  # 确认图谱中有该文档节点
@@ -217,6 +219,14 @@ kb_graph_document(doc_path) 返回含实体
 
 **任一 ✗ → 返工对应步骤，禁止"先入库后补"。**
 
+### A7-E — 经验提取（可选，入库后丰富经验库）
+入库终检通过后，如有余力可触发经验扫描：
+```
+experience_extract(kb_id=target_kb_id, mode="prepare", dry_run=True)
+→ Agent LLM 精炼 → confidence≥0.8 直接 approved，<0.8 进草稿池
+```
+非强制步骤，但推荐在 KB 完整性和时效性要求高的场景执行。
+
 ## A8 — 子KB 评估 + 孤儿清理
 
 - **子KB 自动创建**：父KB 达 **≥8 文档 且跨 ≥2 子域** → 按 [sub-kb-creation.md](references/sub-kb-creation.md) 拆分。
@@ -246,7 +256,8 @@ kb_graph_document(doc_path) 返回含实体
 | 描述不过 A3c | 文件名当描述 | 四要素+内容回查 |
 | 索引后不验证 collection | 落到孤儿 collection | A6-V 验证 UUID+chunks |
 | 质量不过继续入库 | 垃圾进垃圾出 | 任一 C1-C8 ✗ 返工 |
-| "先入库后补" | 永远不补 | 终检全 ✅ 才算完成 |
+| "先入库后补" | 永远不补 | 终检 C1-C8 全 ✅ 才算完成 |
+| 入库后不触发经验提取 | 文档蕴含的经验因子流失 | A7-E 可选自动提取 |
 
 ## 工具速查
 - `parse_doc(file_path, use_ocr=true)` / `parse_doc_batch(file_paths, use_ocr=true)` — 非阻塞解析

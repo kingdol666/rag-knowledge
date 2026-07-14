@@ -48,7 +48,8 @@ experience_extract(kb_id="<KB>", mode="heuristic", dry_run=True)
 → {total_candidates, candidates: [{title, scenario, problem, solution, key_lessons, confidence, ...}]}
 ```
 基于文档结构（## 段落）+ 关键词（problem/solution/lesson）启发式提取。
-`dry_run=False` 写入草稿池。
+
+> ⚠️ **危险操作警告**：`dry_run=False` 会将候选直接写入草稿池。实测 heuristic 提取产出大量低质候选（章节标题被误认为 key_lessons）。**强烈不推荐**直接 dry_run=False——详见下方 E2c 推荐策略。
 
 **提取时机**：入库新文档后（Ingest A7 通过）；批量学习某 KB；定期丰富经验库。
 

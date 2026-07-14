@@ -62,7 +62,7 @@ All operations are **atomic**: each call syncs disk file + `.tree-fs.json` + `.k
 | 批量删除 | `kb_doc_batch_delete(kb_id, ["KB/doc1.md", ...])` | **必须用完整相对路径** |
 | 合并 A→B | Move ALL from A → `kb_delete(A)` | 先确认、先验证 A 已清空 |
 
-## M4 — 变更后重索引
+## M4 — 变更后重索引 + 经验联动
 
 | 操作 | 必须执行的重索引 |
 |------|-----------------|
@@ -70,6 +70,14 @@ All operations are **atomic**: each call syncs disk file + `.tree-fs.json` + `.k
 | 更新内容 | `kb_index_document(kb_id, doc_path)`（旧索引自动失效） |
 | 删除文档 | `kb_graph_delete_document(doc_path=old_path)` 清理图谱 |
 | 合并 KB | `kb_graph_build_kb(target_kb_id, force=false)` |
+
+### 经验联动（文档变更后必查）
+文档移动/删除/更新内容后，关联的经验可能 stale 或 orphan：
+```
+experience_check_stale(kb_id=source_kb)   # 源 KB 经验检查
+experience_check_stale(kb_id=target_kb)   # 目标 KB 经验检查
+```
+发现 stale 经验 → 后续 `experience_sync_kb` 修复。
 
 ## M5 — 验证 + 报告
 
