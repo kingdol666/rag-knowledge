@@ -5,6 +5,8 @@
 
 use serde::Serialize;
 use std::collections::HashMap;
+use std::io::{Read, Seek, SeekFrom};
+use std::net::TcpStream;
 use std::path::Path;
 use std::process::{Command, Stdio};
 use std::sync::Mutex;
@@ -51,12 +53,30 @@ pub struct Features {
     pub neo4j_uri: String,
     pub storage_path: String,
     pub project_root: String,
+    pub app_mode: String,
+    pub backend_port: u16,
+    pub web_port: u16,
 }
 
 #[derive(Serialize, Clone)]
 pub struct Ports {
     pub backend: u16,
     pub web: u16,
+}
+
+#[derive(Serialize, Clone)]
+pub struct Environment {
+    pub mode: String,           // "dev" or "prod"
+    pub backend_port: u16,
+    pub web_port: u16,
+    pub backend_url: String,
+    pub web_url: String,
+}
+
+#[derive(Serialize, Clone)]
+pub struct LogLine {
+    pub service: String,
+    pub line: String,
 }
 
 #[derive(Serialize, Clone)]
@@ -92,14 +112,82 @@ fn read_backend_config_yml() -> serde_yaml::Value {
     serde_yaml::from_str(&content).unwrap_or(serde_yaml::Value::Null)
 }
 
-pub fn get_ports() -> Ports {
-    let cfg = read_config_yml();
-    let mode = std::env::var("APP_MODE").unwrap_or_else(|_| "dev".to_string());
-    let section = &cfg["server"][&mode];
-    Ports {
-        backend: section["backend_port"].as_u64().unwrap_or(BACKEND_PORT_DEFAULT as u64) as u16,
-        web: section["frontend_port"].as_u64().unwrap_or(WEB_PORT_DEFAULT as u64) as u16,
+// ── .env 文件读写 ───────────────────────────────────────────────────────────
+
+/// 从项目根目录的 .env 文件中读取键值对
+fn read_dotenv() -> HashMap<String, String> {
+    let path = format!("{}/.env", project_root_str());
+    let mut map = HashMap::new();
+    if let Ok(content) = std::fs::read_to_string(&path) {
+        for line in content.lines() {
+            let l = line.trim();
+            if l.is_empty() || l.starts_with('#') {
+                continue;
+            }
+            if let Some(idx) = l.find('=') {
+                let k = l[..idx].trim().to_string();
+                let v = l[idx + 1..].trim().to_string();
+                map.insert(k, v);
+            }
+        }
     }
+    map
+}
+
+/// 读取当前 APP_MODE（优先级: 进程环境变量 > .env 文件 > 默认 "dev"）
+pub fn read_app_mode() -> String {
+    // 1. 进程环境变量（子进程继承）
+    if let Ok(mode) = std::env::var("APP_MODE") {
+        let m = mode.trim().to_lowercase();
+        if m == "prod" || m == "production" {
+            return "prod".to_string();
+        }
+        if m == "dev" || m == "development" {
+            return "dev".to_string();
+        }
+        // 未知值保留原值，但默认走 prod 分支:
+        return mode;
+    }
+    // 2. .env 文件
+    let dotenv = read_dotenv();
+    if let Some(mode) = dotenv.get("APP_MODE") {
+        let m = mode.trim().to_lowercase();
+        if m == "prod" || m == "production" {
+            return "prod".to_string();
+        }
+        if m == "dev" || m == "development" {
+            return "dev".to_string();
+        }
+    }
+    // 3. 默认
+    "dev".to_string()
+}
+
+/// 从 config.yml 根据 mode 读取端口，返回值同时被 .env 的 BACKEND_PORT / WEB_PORT 覆盖
+fn resolve_ports_from_config(mode: &str) -> (u16, u16) {
+    let cfg = read_config_yml();
+    let section = &cfg["server"][mode];
+    let env_backend = std::env::var("BACKEND_PORT")
+        .ok()
+        .and_then(|v| v.parse().ok())
+        .or_else(|| read_dotenv().get("BACKEND_PORT").and_then(|v| v.parse().ok()));
+    let env_web = std::env::var("WEB_PORT")
+        .ok()
+        .and_then(|v| v.parse().ok())
+        .or_else(|| read_dotenv().get("WEB_PORT").and_then(|v| v.parse().ok()));
+    let backend = env_backend.unwrap_or(
+        section["backend_port"].as_u64().unwrap_or(BACKEND_PORT_DEFAULT as u64) as u16,
+    );
+    let web = env_web.unwrap_or(
+        section["frontend_port"].as_u64().unwrap_or(WEB_PORT_DEFAULT as u64) as u16,
+    );
+    (backend, web)
+}
+
+pub fn get_ports() -> Ports {
+    let mode = read_app_mode();
+    let (backend, web) = resolve_ports_from_config(&mode);
+    Ports { backend, web }
 }
 
 // ── 命令：项目根 / 端口 / 功能探测 ──
@@ -114,11 +202,144 @@ pub fn read_ports() -> Ports {
     get_ports()
 }
 
+// ── 环境切换命令 ────────────────────────────────────────────────────────────
+
+#[tauri::command]
+pub fn get_environment() -> Environment {
+    let mode = read_app_mode();
+    let (backend_port, web_port) = resolve_ports_from_config(&mode);
+    Environment {
+        mode,
+        backend_port,
+        web_port,
+        backend_url: format!("http://localhost:{}", backend_port),
+        web_url: format!("http://localhost:{}", web_port),
+    }
+}
+
+/// 切换运行环境（dev / prod）
+///
+/// 将 APP_MODE 写入项目根 .env 文件，并同步更新 BACKEND_PORT / WEB_PORT
+/// 以匹配对应环境在 config.yml 中的默认端口。
+/// 如果前端传 stop_running=true，先尝试停止当前模式下的所有服务，
+/// 避免端口冲突。
+#[tauri::command]
+pub async fn set_environment(
+    mode: String,
+    app: tauri::AppHandle,
+) -> Result<Environment, String> {
+    let m = match mode.trim().to_lowercase().as_str() {
+        "prod" | "production" => "prod",
+        "dev" | "development" => "dev",
+        other => return Err(format!(
+            "无效环境: {} — 可选: dev / prod",
+            other
+        )),
+    };
+
+    let current = read_app_mode();
+    if current == m {
+        // 模式未变，直接返回当前配置
+        return Ok(get_environment());
+    }
+
+    let (backend_port, web_port) = resolve_ports_from_config(m);
+    let root = project_root_str();
+
+    // ── 1. 停止当前模式下的服务 ──
+    emit_progress(&app, "env", "info", &format!(
+        "切换环境 {} → {}（停止现有服务…）",
+        current, m,
+    ));
+
+    // 先关闭 web（不阻塞），再关闭 backend（确保 MinerU 随 backend lifespan 杀干净）
+    for svc in &["web", "backend"] {
+        let port = if *svc == "web" {
+            get_ports().web
+        } else {
+            get_ports().backend
+        };
+        if let Some(pid) = find_pid_on_port(port) {
+            let _ = emit_progress(
+                &app, "env", "info",
+                &format!("停止 {} (pid={}, port={})", svc, pid, port),
+            );
+            kill_pid(pid);
+            // 等端口释放
+            for _ in 0..15 {
+                std::thread::sleep(Duration::from_millis(400));
+                if find_pid_on_port(port).is_none() {
+                    break;
+                }
+            }
+        }
+    }
+
+    // ── 2. 写 .env ──
+    let env_path = format!("{}/.env", root);
+    let mut dotenv = read_dotenv();
+    dotenv.insert("APP_MODE".to_string(), m.to_string());
+    dotenv.insert("BACKEND_PORT".to_string(), backend_port.to_string());
+    dotenv.insert("WEB_PORT".to_string(), web_port.to_string());
+
+    let _ = std::fs::copy(&env_path, format!("{}.bak", env_path));
+    let mut lines = vec![
+        "# ============================================".to_string(),
+        "# RAG Knowledge Platform - Environment Variables".to_string(),
+        "# ============================================".to_string(),
+        "# Env vars override config.yml values.".to_string(),
+        "# Managed via Tauri desktop console.".to_string(),
+        "# ============================================".to_string(),
+        "".to_string(),
+    ];
+    let known = [
+        "APP_MODE", "BACKEND_PORT", "WEB_PORT",
+        "BACKEND_URL", "TREE_STORAGE_PATH",
+        "HF_ENDPOINT", "NEO4J_PASSWORD", "KB_AUTH_TOKEN", "PYTHONUTF8",
+    ];
+    for k in known {
+        if let Some(v) = dotenv.get(k) {
+            if v.is_empty() {
+                lines.push(format!("# {}=", k));
+            } else {
+                lines.push(format!("{}={}", k, v));
+            }
+        }
+    }
+    for (k, v) in &dotenv {
+        if known.contains(&k.as_str()) {
+            continue;
+        }
+        if v.is_empty() {
+            lines.push(format!("# {}=", k));
+        } else {
+            lines.push(format!("{}={}", k, v));
+        }
+    }
+    lines.push("".to_string());
+    std::fs::write(&env_path, lines.join("\n"))
+        .map_err(|e| format!("写 .env 失败: {}", e))?;
+
+    emit_progress(&app, "env", "done", &format!(
+        "✓ 环境已切换至 {} — backend :{} / web :{}",
+        m, backend_port, web_port,
+    ));
+
+    Ok(Environment {
+        mode: m.to_string(),
+        backend_port,
+        web_port,
+        backend_url: format!("http://localhost:{}", backend_port),
+        web_url: format!("http://localhost:{}", web_port),
+    })
+}
+
 #[tauri::command]
 pub fn detect_features() -> Result<Features, String> {
     let cfg = read_config_yml();
     let backend_cfg = read_backend_config_yml();
     let ports = get_ports();
+    let mode = read_app_mode();
     Ok(Features {
         vector_enabled: cfg["vector"]["enabled"].as_bool().unwrap_or(false),
         graph_enabled: cfg["graph"]["enabled"].as_bool().unwrap_or(false),
@@ -129,7 +350,19 @@ pub fn detect_features() -> Result<Features, String> {
         neo4j_uri: cfg["graph"]["uri"].as_str().unwrap_or("").to_string(),
         storage_path: cfg["storage"]["tree_fs_root"].as_str().unwrap_or("").to_string(),
         project_root: project_root_str(),
+        app_mode: mode,
+        backend_port: ports.backend,
+        web_port: ports.web,
     })
+}
+
+// ── TCP 端口检测（同步，预检用） ──
+fn port_is_listening(port: u16) -> bool {
+    TcpStream::connect_timeout(
+        &format!("127.0.0.1:{}", port).parse().unwrap(),
+        Duration::from_millis(500),
+    )
+    .is_ok()
 }
 
 // ── 命令：服务启动 / 停止 ──
@@ -140,21 +373,54 @@ pub async fn start_service(
     state: State<'_, AppState>,
 ) -> Result<ServiceResult, String> {
     let root = project_root_str();
+    let ports = get_ports();
+    let mode = read_app_mode();
+
+    // ── 预检：目标端口是否已被占用 ──
+    let pre_check = |name: &str, port: u16| -> Result<(), String> {
+        if port_is_listening(port) {
+            let pid = find_pid_on_port(port);
+            Err(format!(
+                "{} 已在运行（port {} 被占用{}）— 请先停止再启动",
+                name,
+                port,
+                pid.map(|p| format!(", pid={}", p)).unwrap_or_default(),
+            ))
+        } else {
+            Ok(())
+        }
+    };
+
     let res = match service.as_str() {
-        "backend" => spawn_backend(&root)?,
-        "web" => spawn_web(&root)?,
+        "backend" => {
+            pre_check("Backend", ports.backend)?;
+            spawn_backend(&root, &mode)?
+        }
+        "web" => {
+            pre_check("Web", ports.web)?;
+            spawn_web(&root, &mode)?
+        }
         "neo4j" => return start_neo4j(&root).await,
         "all" => {
-            let mut b = spawn_backend(&root)?;
-            // web 启动（失败则只报 backend）
-            match spawn_web(&root) {
-                Ok(w) => {
-                    if let Some(pid) = w.pid {
-                        state.pids.lock().unwrap().insert("web".into(), pid);
-                        b.message.push_str(&format!("\n web pid={}", pid));
+            pre_check("Backend", ports.backend)?;
+            let mut b = spawn_backend(&root, &mode)?;
+            if port_is_listening(ports.web) {
+                let pid = find_pid_on_port(ports.web);
+                b.message.push_str(&format!(
+                    "\n Web 已在运行 (port {} {}), 跳过",
+                    ports.web,
+                    pid.map(|p| format!("pid={}", p)).unwrap_or_default(),
+                ));
+            } else {
+                match spawn_web(&root, &mode) {
+                    Ok(w) => {
+                        if let Some(pid) = w.pid {
+                            state.pids.lock().unwrap().insert("web".into(), pid);
+                            b.message.push_str(&format!("\n web pid={}", pid));
+                        }
                     }
+                    Err(e) => b.message.push_str(&format!("\n web 启动失败: {}", e)),
                 }
-                Err(e) => b.message.push_str(&format!("\n web 启动失败: {}", e)),
             }
             b
         }
@@ -166,7 +432,7 @@ pub async fn start_service(
     Ok(res)
 }
 
-fn spawn_backend(root: &str) -> Result<ServiceResult, String> {
+fn spawn_backend(root: &str, mode: &str) -> Result<ServiceResult, String> {
     let dir = format!("{}/backend", root);
     let log_dir = format!("{}/logs", dir);
     let _ = std::fs::create_dir_all(&log_dir);
@@ -179,10 +445,12 @@ fn spawn_backend(root: &str) -> Result<ServiceResult, String> {
 
     let uv = find_uv()
         .ok_or_else(|| "uv 未找到 — 请先点「一键引导」安装 uv，或重启 Tauri 让新 PATH 生效".to_string())?;
+    let ports = get_ports();
     let child = Command::new(&uv)
         .args(["run", "python", "main.py"])
         .current_dir(&dir)
-        .env("APP_MODE", "dev")
+        .env("APP_MODE", mode)
+        .env("BACKEND_PORT", ports.backend.to_string())
         .env("PYTHONUTF8", "1")
         .env("PATH", enriched_path())
         .stdout(Stdio::from(out))
@@ -195,14 +463,14 @@ fn spawn_backend(root: &str) -> Result<ServiceResult, String> {
     Ok(ServiceResult {
         success: true,
         message: format!(
-            "Backend 启动中（uv run python main.py，cwd={}，pid={}，log={}）",
-            dir, pid, stdout_path
+            "Backend 启动中（mode={}，uv run python main.py，cwd={}，pid={}，port={}，log={}）",
+            mode, dir, pid, ports.backend, stdout_path
         ),
         pid: Some(pid),
     })
 }
 
-fn spawn_web(root: &str) -> Result<ServiceResult, String> {
+fn spawn_web(root: &str, mode: &str) -> Result<ServiceResult, String> {
     let dir = format!("{}/web", root);
     let log_dir = format!("{}/logs", dir);
     let _ = std::fs::create_dir_all(&log_dir);
@@ -217,7 +485,7 @@ fn spawn_web(root: &str) -> Result<ServiceResult, String> {
     let child = Command::new("node")
         .args(["start.mjs"])
         .current_dir(&dir)
-        .env("APP_MODE", "dev")
+        .env("APP_MODE", mode)
         .env("WEB_PORT", ports.web.to_string())
         .env("PATH", enriched_path())
         .stdout(Stdio::from(out))
@@ -230,8 +498,8 @@ fn spawn_web(root: &str) -> Result<ServiceResult, String> {
     Ok(ServiceResult {
         success: true,
         message: format!(
-            "Web 启动中（node start.mjs，cwd={}，pid={}，port={}）",
-            dir, pid, ports.web
+            "Web 启动中（mode={}，node start.mjs，cwd={}，pid={}，port={}）",
+            mode, dir, pid, ports.web
         ),
         pid: Some(pid),
     })
@@ -343,6 +611,101 @@ fn kill_pid(pid: u32) -> bool {
             .status()
             .map(|s| s.success())
             .unwrap_or(false)
+    }
+}
+
+// ── 命令：状态检测（HTTP + TCP） ──
+
+/// 一键停止所有正在运行的服务（backend + web + 所有已知端口上的孤儿进程）。
+/// 顺序：先 web 后 backend，确保 backend 的 lifespan 先 kill MinerU。
+/// 然后在所有已知端口范围内（dev/prod 两个模式的端口）扫描并清理残留 PID。
+#[tauri::command]
+pub async fn stop_all_services(
+    state: State<'_, AppState>,
+    app: tauri::AppHandle,
+) -> Result<ServiceResult, String> {
+    let ports = get_ports();
+    let dev_ports = resolve_ports_from_config("dev");
+    let prod_ports = resolve_ports_from_config("prod");
+
+    // 所有可能的端口（防止模式切换后旧端口残留）
+    let all_backend_ports = [dev_ports.0, prod_ports.0, ports.backend];
+    let all_web_ports = [dev_ports.1, prod_ports.1, ports.web];
+
+    let mut stopped = Vec::new();
+    let mut failed = Vec::new();
+
+    emit_progress(&app, "stop_all", "info", "■ 一键停止所有服务…");
+
+    // 1. 先停 web（不阻塞 backend 的 lifespan 关闭）
+    for &port in &all_web_ports {
+        if let Some(pid) = find_pid_on_port(port) {
+            emit_progress(&app, "stop_all", "info", &format!("停止 Web (pid={}, port={})", pid, port));
+            if kill_pid(pid) {
+                stopped.push(format!("Web(pid={},port={})", pid, port));
+                // 等端口释放
+                wait_port_free(port, 8);
+            } else {
+                failed.push(format!("Web(pid={})", pid));
+            }
+        }
+    }
+
+    // 2. 停 backend（会触发 lifespan → stop MinerU via Job Object）
+    for &port in &all_backend_ports {
+        if let Some(pid) = find_pid_on_port(port) {
+            emit_progress(&app, "stop_all", "info", &format!("停止 Backend (pid={}, port={})", pid, port));
+            if kill_pid(pid) {
+                stopped.push(format!("Backend(pid={},port={})", pid, port));
+                // 给 backend lifespan 时间清理 MinerU + 释放端口
+                wait_port_free(port, 12);
+            } else {
+                failed.push(format!("Backend(pid={})", pid));
+            }
+        }
+    }
+
+    // 3. 兜底扫描：清理所有已知端口上残留的孤儿进程
+    for (label, port) in [
+        ("Backend", ports.backend),
+        ("Web", ports.web),
+    ] {
+        if let Some(pid) = find_pid_on_port(port) {
+            emit_progress(&app, "stop_all", "warn", &format!(
+                "清理残留 {} 进程 (pid={}, port={})", label, pid, port
+            ));
+            if kill_pid(pid) {
+                stopped.push(format!("残留{}(pid={})", label, pid));
+                wait_port_free(port, 5);
+            }
+        }
+    }
+
+    // 清空记录
+    state.pids.lock().unwrap().clear();
+
+    if failed.is_empty() {
+        let msg = if stopped.is_empty() {
+            "所有端口空闲 — 无运行中的服务".to_string()
+        } else {
+            format!("已停止: {}", stopped.join(", "))
+        };
+        emit_progress(&app, "stop_all", "done", &msg);
+        Ok(ServiceResult { success: true, message: msg, pid: None })
+    } else {
+        let msg = format!("部分停止: {} / 失败: {}", stopped.join(", "), failed.join(", "));
+        emit_progress(&app, "stop_all", "error", &msg);
+        Err(msg)
+    }
+}
+
+/// 等待端口空闲（最多 wait_secs 秒）
+fn wait_port_free(port: u16, wait_secs: u32) {
+    for _ in 0..(wait_secs * 5) {
+        if !port_is_listening(port) {
+            return;
+        }
+        std::thread::sleep(Duration::from_millis(200));
     }
 }
 
@@ -476,6 +839,77 @@ pub fn read_log_tail(service: String, lines: Option<usize>) -> Result<String, St
     let all: Vec<&str> = content.lines().collect();
     let start = all.len().saturating_sub(n);
     Ok(all[start..].join("\n"))
+}
+
+fn get_log_path(service: &str, root: &str) -> Result<String, String> {
+    match service {
+        "backend" => Ok(format!("{}/backend/logs/desktop-stdout.log", root)),
+        "mineru" => Ok(format!("{}/backend/logs/mineru-api.log", root)),
+        "web" => Ok(format!("{}/web/logs/desktop-stdout.log", root)),
+        other => Err(format!("未知日志: {}（可选: backend / web / mineru）", other)),
+    }
+}
+
+/// 启动实时日志流 — 在后台线程中 tail 日志文件，每隔 ~500ms 检查新内容并通过
+/// `log-line` 事件推送到前端。同一服务的多次调用会创建多个线程（前端负责去重）。
+#[tauri::command]
+pub fn watch_log(
+    service: String,
+    app: tauri::AppHandle,
+) -> Result<(), String> {
+    let root = project_root_str();
+    let path = get_log_path(&service, &root)?;
+    let svc = service.clone();
+
+    std::thread::spawn(move || {
+        // 尝试打开文件，如果不存在就等待（最多 40s）
+        let mut attempts = 0;
+        let mut file = loop {
+            match std::fs::File::open(&path) {
+                Ok(f) => break Some(f),
+                Err(_) => {
+                    attempts += 1;
+                    if attempts > 80 { return; }
+                    std::thread::sleep(Duration::from_millis(500));
+                }
+            }
+        };
+
+        // 从文件末尾开始 tail
+        if let Some(ref mut f) = file {
+            let _ = f.seek(SeekFrom::End(0));
+        }
+
+        loop {
+            std::thread::sleep(Duration::from_millis(500));
+
+            let f = match &mut file {
+                Some(f) => f,
+                None => {
+                    if let Ok(new_f) = std::fs::File::open(&path) {
+                        file = Some(new_f);
+                        file.as_mut().unwrap()
+                    } else { continue; }
+                }
+            };
+
+            // 读取新增内容
+            let mut buf = String::new();
+            if f.read_to_string(&mut buf).is_err() || buf.is_empty() {
+                continue;
+            }
+            for line in buf.lines() {
+                let trimmed = line.trim();
+                if trimmed.is_empty() { continue; }
+                let _ = app.emit("log-line", LogLine {
+                    service: svc.clone(),
+                    line: trimmed.to_string(),
+                });
+            }
+        }
+    });
+
+    Ok(())
 }
 
 #[tauri::command]
@@ -846,12 +1280,117 @@ pub async fn check_dependencies() -> Result<Vec<DepStatus>, String> {
         check_uv().await,
         check_python().await,
         check_node().await,
+        check_git().await,
         check_docker().await,
         check_submodules().await,
         check_backend_deps().await,
         check_web_deps().await,
         check_models_embedding().await,
+        check_models_mineru().await,
+        check_hf_endpoint().await,
     ])
+}
+
+async fn check_git() -> DepStatus {
+    if let Some(v) = try_version("git") {
+        return DepStatus {
+            key: "git".into(),
+            name: "Git (子模块管理)".into(),
+            installed: true,
+            version: Some(v),
+            detail: "Git 可用于子模块初始化".into(),
+            installable: false,
+        };
+    }
+    DepStatus {
+        key: "git".into(),
+        name: "Git (子模块管理)".into(),
+        installed: false,
+        version: None,
+        detail: "未安装 — 子模块请手动下载".into(),
+        installable: false,
+    }
+}
+
+/// 检查 MinerU PDF 解析模型是否已下载
+async fn check_models_mineru() -> DepStatus {
+    let be_cfg = read_backend_config_yml();
+    let mineru_enabled = be_cfg["mineru"]["enabled"].as_bool().unwrap_or(false);
+
+    if !mineru_enabled {
+        return DepStatus {
+            key: "models_mineru".into(),
+            name: "MinerU OCR 模型".into(),
+            installed: true,
+            version: None,
+            detail: "MinerU 已禁用（backend/config.yml: mineru.enabled=false）".into(),
+            installable: false,
+        };
+    }
+
+    // MinerU 模型通常下载到其默认缓存位置（~/.cache/modelscope/hub 或 ~/.cache/huggingface/hub）
+    let home = if cfg!(windows) {
+        std::env::var("USERPROFILE").unwrap_or_default()
+    } else {
+        std::env::var("HOME").unwrap_or_default()
+    };
+    let model_source = be_cfg["mineru"]["model_source"]
+        .as_str()
+        .unwrap_or("modelscope");
+
+    // ModelScope 缓存路径
+    let ms_hub = format!("{}/.cache/modelscope/hub", home);
+    let hf_hub = format!("{}/.cache/huggingface/hub", home);
+
+    let model_found = if model_source == "modelscope" {
+        Path::new(&ms_hub).exists()
+            && std::fs::read_dir(&ms_hub).map(|mut r| r.next().is_some()).unwrap_or(false)
+    } else {
+        Path::new(&hf_hub).exists()
+            && std::fs::read_dir(&hf_hub).map(|mut r| r.next().is_some()).unwrap_or(false)
+    };
+
+    DepStatus {
+        key: "models_mineru".into(),
+        name: "MinerU OCR 模型".into(),
+        installed: model_found,
+        version: Some(model_source.to_string()),
+        detail: if model_found {
+            format!("模型源: {} — 已缓存", model_source)
+        } else {
+            format!(
+                "模型源: {} — 未下载（首次解析 PDF 时自动下载，~2-5GB）",
+                model_source
+            )
+        },
+        installable: false, // MinerU 模型由 mineru-api 首次运行时自动下载
+    }
+}
+
+/// 检查 HF_ENDPOINT / ModelScope 镜像配置
+async fn check_hf_endpoint() -> DepStatus {
+    let dotenv = read_dotenv();
+    let hf_endpoint = dotenv.get("HF_ENDPOINT").cloned().unwrap_or_default();
+    let using_mirror = hf_endpoint.contains("hf-mirror.com") || hf_endpoint.contains("modelscope");
+
+    DepStatus {
+        key: "hf_endpoint".into(),
+        name: "模型下载镜像".into(),
+        installed: !hf_endpoint.is_empty() || using_mirror,
+        version: if hf_endpoint.is_empty() {
+            Some("默认 hf-mirror.com".to_string())
+        } else {
+            Some(hf_endpoint.clone())
+        },
+        detail: if using_mirror {
+            "✓ 使用国内镜像（下载更快）".into()
+        } else if hf_endpoint.is_empty() {
+            "默认 hf-mirror.com 镜像 — 国内下载快".into()
+        } else {
+            format!("直连: {}（海外用户可用）", hf_endpoint)
+        },
+        installable: false,
+    }
 }
 
 // ── ensure_* 安装辅助 ──

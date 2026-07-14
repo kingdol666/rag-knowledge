@@ -313,6 +313,11 @@ server:
 4. **kb-mcp API inconsistencies** — `kb_client` has known quirks: batch_delete requires full paths while delete/read accept bare names; `file_size` in `.knowledge-base.yml` can be stale after index updates; `name` field doesn't always sync with `path`.
 5. **Cross-platform** — `pyproject.toml` uses marker-based conditional sources; Win/Linux x86_64 pull cu130 (CUDA) from the PyTorch index, macOS and aarch64 fall back to PyPI (CPU/MPS). `required-environments` allows `win32`/`linux`/`darwin`, so `uv sync` works on all three. Linux uses `prctl(PR_SET_PDEATHSIG)` as the Job Object equivalent for MinerU subprocess cleanup; macOS falls back to process-group + atexit.
 6. **Submodule management** — `backend` and `web` are git submodules (the legacy `frontend/` submodule was removed; `.gitmodules` lists only backend + web). After cloning or switching branches, run `git submodule update --init --recursive`. The `kb-mcp` directory is NOT a submodule.
+7. **Hierarchical KB search returns empty content** — 父KB（如高分子双向拉伸文献库）的 `kb_search_two_stage` 返回子KB容器条目，content 为空。子KB本身无向量chunk。**Workaround**：用 `kb_graph_kb_overview(kb_id)` 获取子KB UUID列表，在相关子KB内分别检索（见 knowledgebase-search Skill Step 1b）。
+8. **Vector index metadata may be missing after initial index** — 部分KB的文档 `vector_index` 字段可能在索引后未写入 YAML 元数据（向量实际存在于 ChromaDB）。用 `kb_reindex(kb_id, force=true)` 修复。
+9. **Experience heuristic extraction produces low-quality candidates** — `experience_extract(mode="heuristic")` 的 key_lessons 可能返回章节标题。**推荐**：用 `mode="prepare"` → LLM 精炼。详见 knowledgebase-experience Skill E2a 质量门控。
+10. **Graph sub-KB nodes show UUID only** — `kb_graph_kb_overview` 返回的 sub_kbs 列表中 name 字段为 UUID 而非可读名称。
+11. **Tag registry accumulates orphan tags** — `kb_tags_list()` 返回的标签列表包含 0 文档引用的历史标签（如测试标签、章节标题）。不影响搜索功能——文档级标签已清理。
 
 ## Development Conventions
 

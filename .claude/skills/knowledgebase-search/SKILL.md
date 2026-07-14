@@ -86,6 +86,28 @@ catalog = kb_catalog()    # 仅 [{kb_id, name, description, doc_count}]，contex
 
 **判据**：KB description 的领域与查询实体一致才入选。例：查 RAG → 只选 `AI-ML-Research`。
 
+### Step 1b — 层次化KB穿透（父KB含子KB时必做）⭐
+
+> 实测病灶：父KB搜索（如 高分子双向拉伸文献库）返回子KB容器条目，内容一律为空——子KB无向量chunk。
+
+**检测**：`kb_doc_catalog(kb_id)` 返回的条目中，若大部分为 `knowledge-base` 类型（子KB），说明这是层次化KB。
+
+**穿透策略**：
+```
+# 1. 获取子KB列表
+overview = kb_graph_kb_overview(kb_id)  → {sub_kbs: [{kb_id, doc_count}]}
+
+# 2. 对每个子KB，读其 description 判断相关性
+for sub in sub_kbs:
+    docs = kb_get_documents(sub.kb_id)  → 看首条 description + 文档类型
+
+# 3. 在相关子KB内分别搜索（并行）
+kb_search_two_stage(query=..., kb_id=relevant_sub_kb_id, ...)
+
+# 4. 合并结果 → Step 2.5 去重
+```
+**优化**：子KB ≥5时，先用 `kb_doc_catalog(kb_id)` 的 description 筛选，只搜索 top 3-5 相关子KB。
+
 ## Step 2 — 向量召回（两阶段，平衡多库）
 
 ```

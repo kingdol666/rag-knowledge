@@ -45,7 +45,30 @@
     }
     .path-info { font-size: 11px; color: var(--text-dim); margin-top: 2px; font-family: monospace; }
 
-    .top-actions { display: flex; gap: 8px; }
+    .top-actions { display: flex; gap: 8px; align-items: center; }
+
+    .env-picker {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--panel-2); border: 1px solid var(--border);
+      border-radius: 6px; padding: 5px 10px;
+    }
+    .env-label { font-size: 11px; color: var(--text-dim); }
+    .env-picker select {
+      background: var(--panel); color: var(--text);
+      border: 1px solid var(--border); border-radius: 4px;
+      padding: 4px 8px; font-size: 12px; cursor: pointer; outline: none;
+    }
+    .env-picker select:focus { border-color: var(--accent); }
+    .env-badge {
+      display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px;
+      border-radius: 4px; margin-left: 6px;
+    }
+    .env-badge.dev { background: rgba(234,179,8,0.15); color: var(--yellow); }
+    .env-badge.prod { background: rgba(34,197,94,0.15); color: var(--green); }
+    .env-switching {
+      animation: spin 0.8s linear infinite;
+      display: inline-block; margin-left: 4px;
+    }
 
     .grid {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -102,6 +125,28 @@
       padding: 12px; height: 220px; overflow-y: auto;
       white-space: pre-wrap; word-break: break-word;
     }
+    .logs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .log-panel {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 10px;
+      overflow: hidden;
+    }
+    .log-panel-head {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px; background: var(--panel-2);
+      border-bottom: 1px solid var(--border);
+    }
+    .log-panel-title { font-size: 12px; font-weight: 600; }
+    .log-panel-port { font-size: 10px; color: var(--text-dim); font-family: monospace; }
+    .log-console {
+      height: 180px; background: #0a0e13; color: #c8d3e0;
+      font-family: "Cascadia Code", "Consolas", monospace; font-size: 11px;
+      padding: 10px 12px; overflow-y: auto;
+      white-space: pre-wrap; word-break: break-word;
+    }
     .console-input-wrap {
       display: flex; border-top: 1px solid var(--border);
       background: var(--panel-2);
@@ -155,6 +200,14 @@
       </div>
     </div>
     <div class="top-actions">
+      <div class="env-picker">
+        <label class="env-label" for="envSelect">环境:</label>
+        <select id="envSelect">
+          <option value="dev">🛠 开发 (dev)</option>
+          <option value="prod">🚀 生产 (prod)</option>
+        </select>
+        <span id="envStatus" style="font-size:10px;margin-left:6px;color:var(--text-dim)"></span>
+      </div>
       <button class="primary" id="btnStartAll">▶ 一键启动</button>
       <button class="danger" id="btnStopAll">■ 全部停止</button>
       <button id="btnRefresh">⟳ 刷新检测</button>
@@ -200,20 +253,57 @@
   </div>
 
   <div class="section">
-    <h2>控制台</h2>
-    <div class="console-wrap">
-      <div class="tabs">
-        <div class="tab active" data-log="backend">Backend 日志</div>
-        <div class="tab" data-log="web">Web 日志</div>
-        <div class="tab" data-log="mineru">MinerU 日志</div>
-        <div class="tab" data-cmd="1">ragctl 指令</div>
-        <div style="flex:1"></div>
-        <div class="tab" id="autoRefresh" style="color:var(--green)">● 自动刷新</div>
+    <h2>控制台 — 实时日志</h2>
+    <div class="logs-grid">
+      <!-- Backend 日志面板 -->
+      <div class="log-panel">
+        <div class="log-panel-head">
+          <span class="log-panel-title">🔧 Backend 日志</span>
+          <span class="log-panel-port" id="backendLogPort"></span>
+          <div style="flex:1"></div>
+          <button class="small" id="btnClearBackend" title="清空">清空</button>
+        </div>
+        <div class="console log-console" id="consoleBackend">等待 Backend 输出…</div>
       </div>
-      <div class="console" id="consoleOut">等待输出…</div>
-      <div class="console-input-wrap" id="cmdWrap" style="display:none">
-        <span class="console-prompt">ragctl&gt;</span>
-        <input class="console-input" id="cmdInput" placeholder="输入 ragctl 子命令（status / health / doctor / start backend / logs backend …）回车执行" autocomplete="off" />
+      <!-- Web 日志面板 -->
+      <div class="log-panel">
+        <div class="log-panel-head">
+          <span class="log-panel-title">🌐 Web 日志</span>
+          <span class="log-panel-port" id="webLogPort"></span>
+          <div style="flex:1"></div>
+          <button class="small" id="btnClearWeb" title="清空">清空</button>
+        </div>
+        <div class="console log-console" id="consoleWeb">等待 Web 输出…</div>
+      </div>
+      <!-- MinerU 日志面板 -->
+      <div class="log-panel">
+        <div class="log-panel-head">
+          <span class="log-panel-title">📄 MinerU OCR 日志</span>
+          <span class="log-panel-port" id="mineruLogPort"></span>
+          <div style="flex:1"></div>
+          <button class="small" id="btnClearMineru" title="清空">清空</button>
+        </div>
+        <div class="console log-console" id="consoleMineru">等待 MinerU 输出…</div>
+      </div>
+      <!-- ragctl 命令面板 -->
+      <div class="log-panel">
+        <div class="log-panel-head">
+          <span class="log-panel-title">⚡ ragctl 指令</span>
+          <span style="font-size:10px;color:var(--text-dim)">直接执行 CLI 命令</span>
+          <div style="flex:1"></div>
+          <button class="small" id="btnClearCmd" title="清空">清空</button>
+        </div>
+        <div class="console log-console" id="consoleCmd">ragctl 控制台 — 输入子命令执行（输入 help 查看全部）
+> 示例: status / health / doctor / start backend / stop all / logs backend / kb list / mcp tools</div>
+        <div class="console-input-wrap">
+          <span class="console-prompt">ragctl&gt;</span>
+          <input class="console-input" id="cmdInput" placeholder="输入 ragctl 子命令…回车执行" autocomplete="off" />
+        </div>
+      </div>
+      <!-- 汇总状态条 -->
+      <div class="log-panel" style="grid-column: 1 / -1; padding: 6px 12px; display: flex; align-items: center; gap: 12px; background: var(--panel-2)">
+        <span id="autoRefresh" style="color:var(--green);cursor:pointer;font-size:12px">● 自动刷新</span>
+        <span style="font-size:11px;color:var(--text-dim)">状态每 6s 刷新 · 日志实时推送</span>
       </div>
     </div>
   </div>
@@ -229,11 +319,8 @@
     }
 
     // ── 状态 ──
-    let currentLogTab = 'backend';
-    let cmdMode = false;
     let autoRefresh = true;
     let statusTimer = null;
-    let logTimer = null;
     let lastFeatures = null;
 
     // ── 工具 ──
@@ -291,6 +378,7 @@
 
     function renderFeatures(f) {
       lastFeatures = f;
+      const modeBadge = `<span class="env-badge ${f.app_mode || 'dev'}">${(f.app_mode || 'dev').toUpperCase()}</span>`;
       const feats = [
         ['向量检索', f.vector_enabled],
         ['知识图谱', f.graph_enabled],
@@ -300,13 +388,60 @@
       document.getElementById('featuresGrid').innerHTML = feats.map(([n, on]) =>
         `<div class="feat"><span class="feat-label">${n}</span><span class="badge ${on ? 'on' : 'off'}">${on ? 'ON' : 'OFF'}</span></div>`
       ).join('') + `
+        <div class="feat"><span class="feat-label">运行模式</span><span>${modeBadge}</span></div>
         <div class="feat"><span class="feat-label">Neo4j URI</span><span style="font-size:10px;font-family:monospace">${f.neo4j_uri || '—'}</span></div>
         <div class="feat"><span class="feat-label">存储路径</span><span style="font-size:10px;font-family:monospace">${f.storage_path || '—'}</span></div>
       `;
-      document.getElementById('pathInfo').textContent = `📁 ${f.project_root}  ·  backend ${f.backend_url}  ·  web ${f.web_url}`;
+      document.getElementById('pathInfo').textContent = `📁 ${f.project_root}  ·  backend :${f.backend_port || '?'}  ·  web :${f.web_port || '?'}`;
+
+      // 同步环境选择器
+      const sel = document.getElementById('envSelect');
+      if (sel && f.app_mode) {
+        sel.value = f.app_mode;
+        updateEnvBadge(f.app_mode);
+      }
+    }
+
+    // ── 环境切换 ──
+    let envSwitching = false;
+    function updateEnvBadge(mode) {
+      const st = document.getElementById('envStatus');
+      if (st) {
+        st.innerHTML = `<span class="env-badge ${mode}">${mode.toUpperCase()}</span>`;
+      }
+    }
+
+    async function switchEnvironment(mode) {
+      if (envSwitching) return;
+      envSwitching = true;
+      const sel = document.getElementById('envSelect');
+      sel.disabled = true;
+      toast(`切换环境到 ${mode.toUpperCase()}…`, 'ok');
+
+      try {
+        const env = await invoke('set_environment', { mode });
+        toast(`环境已切换至 ${env.mode.toUpperCase()} — backend :${env.backend_port} / web :${env.web_port}`, 'ok', 5000);
+        updateEnvBadge(env.mode);
+        // 刷新 features（端口变了）
+        const f = await call('detect_features');
+        renderFeatures(f);
+        // 刷新状态
+        setTimeout(() => refreshStatus(true), 1500);
+      } catch (e) {
+        const msg = typeof e === 'string' ? e : (e?.message || '');
+        toast(`切换失败: ${msg}`, 'err', 6000);
+        // 恢复选择器
+        const f = await call('detect_features');
+        if (f.app_mode) sel.value = f.app_mode;
+      }
+      sel.disabled = false;
+      envSwitching = false;
     }
 
     // ── 动作 ──
+    let logStreamActive = { backend: false, web: false, mineru: false };
+    let logStreamContent = { backend: [], web: [], mineru: [] };
+
     async function refreshStatus(silent = false) {
       try {
         const snap = await call('check_status');
@@ -317,8 +452,17 @@
 
     async function startOne(svc) {
       toast(`启动 ${svc}…`, 'ok');
-      const r = await call('start_service', { service: svc });
-      toast(r.message, r.success ? 'ok' : 'err', 5000);
+      startLogStream(svc);
+      appendToConsole(svc, `[系统] 正在启动 ${svc}…\n`, 'info');
+      try {
+        const r = await call('start_service', { service: svc });
+        toast(r.message, r.success ? 'ok' : 'err', 5000);
+        appendToConsole(svc, r.success ? `[系统] ✓ ${r.message}\n` : `[系统] ⚠ ${r.message}\n`, r.success ? 'done' : 'warn');
+      } catch (e) {
+        const msg = typeof e === 'string' ? e : (e?.message || '');
+        appendToConsole(svc, `[错误] ${msg}\n`, 'err');
+        toast(`${svc} 启动失败: ${msg}`, 'err', 6000);
+      }
       setTimeout(() => refreshStatus(true), svc === 'web' ? 8000 : 3000);
     }
 
@@ -338,51 +482,101 @@
     async function startAll() {
       toast('一键启动：backend → 等待就绪 → web…', 'ok');
       document.getElementById('btnStartAll').innerHTML = '<span class="scan"></span> 启动中';
+      startLogStream('backend');
+      startLogStream('web');
+      appendToConsole('backend', '[系统] 🚀 正在启动 Backend…\n', 'done');
+
       try {
         const rb = await call('start_service', { service: 'backend' });
+        appendToConsole('backend', rb.success ? `[系统] ✓ ${rb.message}\n` : `[系统] ⚠ ${rb.message}\n`, rb.success ? 'done' : 'warn');
         toast('Backend 启动命令已发，等待 API 就绪…', 'ok');
         // 轮询 backend health 最多 40s
         for (let i = 0; i < 20; i++) {
           await new Promise(r => setTimeout(r, 2000));
           const snap = await call('check_status');
           renderStatus(snap);
-          if (snap.backend) break;
+          if (snap.backend) {
+            appendToConsole('backend', '[系统] ✓ Backend API 就绪\n', 'done');
+            break;
+          }
+          if (i === 19) {
+            appendToConsole('backend', '[系统] ⚠ Backend 启动超时（可能模型下载中，请查看日志）\n', 'warn');
+          }
         }
+
+        appendToConsole('web', '[系统] 🚀 正在启动 Web…\n', 'done');
         const rw = await call('start_service', { service: 'web' });
+        appendToConsole('web', rw.success ? `[系统] ✓ ${rw.message}\n` : `[系统] ⚠ ${rw.message}\n`, rw.success ? 'done' : 'warn');
         toast('Web 启动命令已发，等待端口就绪…', 'ok');
         for (let i = 0; i < 15; i++) {
           await new Promise(r => setTimeout(r, 2000));
           const snap = await call('check_status');
           renderStatus(snap);
-          if (snap.web) { toast('全部启动完成 ✓', 'ok'); break; }
+          if (snap.web) {
+            toast('全部启动完成 ✓', 'ok');
+            appendToConsole('web', '[系统] ✓ Web 就绪 — 全部启动完成\n', 'done');
+            break;
+          }
         }
-      } catch (e) {}
+      } catch (e) {
+        const msg = typeof e === 'string' ? e : (e?.message || '');
+        appendToConsole('backend', `[错误] ${msg}\n`, 'err');
+      }
       document.getElementById('btnStartAll').innerHTML = '▶ 一键启动';
       refreshStatus(true);
     }
 
     async function stopAll() {
-      toast('停止全部服务…');
-      for (const s of ['web', 'backend']) {
-        try { await call('stop_service', { service: s }); } catch (e) {}
-      }
-      setTimeout(() => refreshStatus(true), 1500);
-    }
-
-    // ── 日志 / 命令 ──
-    async function loadLog(svc) {
+      toast('停止全部服务（含孤儿进程清理）…');
+      document.getElementById('btnStopAll').innerHTML = '<span class="scan"></span> 停止中';
       try {
-        const tail = await invoke('read_log_tail', { service: svc, lines: 300 });
-        const el = document.getElementById('consoleOut');
-        el.textContent = tail || `(空 — ${svc} 尚未输出日志)`;
-        el.scrollTop = el.scrollHeight;
+        const r = await invoke('stop_all_services');
+        toast(r.message, r.success ? 'ok' : 'err', 6000);
+        ['backend', 'web', 'mineru'].forEach(s => appendToConsole(s, `[系统] ${r.message}\n`, 'done'));
       } catch (e) {
-        document.getElementById('consoleOut').textContent = '读取失败: ' + e;
+        const msg = typeof e === 'string' ? e : (e?.message || '');
+        toast(`停止完成: ${msg}`, 'ok', 6000);
+        ['backend', 'web'].forEach(s => appendToConsole(s, `[系统] ${msg}\n`, 'warn'));
+      }
+      document.getElementById('btnStopAll').innerHTML = '■ 全部停止';
+      setTimeout(() => refreshStatus(true), 2000);
+    }
+
+    // ── 日志面板操作 ──
+    const consoleMap = {
+      backend: 'consoleBackend',
+      web: 'consoleWeb',
+      mineru: 'consoleMineru',
+      cmd: 'consoleCmd',
+    };
+
+    function getConsoleEl(svc) {
+      const id = consoleMap[svc];
+      return id ? document.getElementById(id) : null;
+    }
+
+    function appendToConsole(svc, text, level) {
+      const el = getConsoleEl(svc);
+      if (!el) return;
+      const color = level === 'done' ? 'var(--green)' : level === 'warn' ? 'var(--yellow)' : level === 'err' ? 'var(--red)' : 'var(--text-dim)';
+      el.innerHTML += `<span style="color:${color}">${text}</span>`;
+      el.scrollTop = el.scrollHeight;
+      const maxLines = 2000;
+      const lines = el.innerHTML.split('\n');
+      if (lines.length > maxLines) {
+        el.innerHTML = lines.slice(-maxLines).join('\n');
       }
     }
 
+    function clearConsole(svc) {
+      const el = getConsoleEl(svc);
+      if (el) { el.innerHTML = ''; }
+      if (logStreamContent[svc]) { logStreamContent[svc] = []; }
+    }
+
+    // ── ragctl 命令 ──
     async function runCmd(line) {
-      const out = document.getElementById('consoleOut');
+      const out = document.getElementById('consoleCmd');
       out.textContent += `\n$ ragctl ${line}\n`;
       try {
         const args = line.trim().split(/\s+/).filter(Boolean);
@@ -401,27 +595,15 @@
     document.getElementById('btnRefresh').onclick = () => refreshStatus(false);
     document.getElementById('btnOpenWeb').onclick = () => invoke('open_web_ui');
 
-    document.querySelectorAll('.tab[data-log]').forEach(t => {
-      t.onclick = () => {
-        document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-        t.classList.add('active');
-        currentLogTab = t.dataset.log;
-        cmdMode = false;
-        document.getElementById('cmdWrap').style.display = 'none';
-        document.getElementById('autoRefresh').style.display = '';
-        loadLog(currentLogTab);
-      };
-    });
+    // 环境选择器
+    const envSelect = document.getElementById('envSelect');
+    envSelect.onchange = () => switchEnvironment(envSelect.value);
 
-    document.querySelector('.tab[data-cmd]').onclick = () => {
-      document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
-      document.querySelector('.tab[data-cmd]').classList.add('active');
-      cmdMode = true;
-      document.getElementById('cmdWrap').style.display = '';
-      document.getElementById('autoRefresh').style.display = 'none';
-      document.getElementById('consoleOut').textContent = 'ragctl 控制台 — 输入子命令执行（输入 help 查看全部）\n> 示例: status / health / doctor / start backend / stop all / logs backend / kb list / mcp tools';
-      document.getElementById('cmdInput').focus();
-    };
+    // 日志面板清空按钮
+    document.getElementById('btnClearBackend').onclick = () => clearConsole('backend');
+    document.getElementById('btnClearWeb').onclick = () => clearConsole('web');
+    document.getElementById('btnClearMineru').onclick = () => clearConsole('mineru');
+    document.getElementById('btnClearCmd').onclick = () => { document.getElementById('consoleCmd').textContent = ''; };
 
     document.getElementById('autoRefresh').onclick = () => {
       autoRefresh = !autoRefresh;
@@ -439,7 +621,6 @@
     // ── 定时刷新 ──
     function startTimers() {
       statusTimer = setInterval(() => { if (autoRefresh) refreshStatus(true); }, 6000);
-      logTimer = setInterval(() => { if (!cmdMode && autoRefresh) loadLog(currentLogTab); }, 3500);
     }
 
     // ── 环境引导：依赖检查 + 一键安装 ──
@@ -660,6 +841,26 @@
         const tag = p.step ? `[${p.step}] ` : '';
         appendBootstrapLog(tag + p.msg, p.level);
       });
+
+      // 实时日志流：Rust 后台线程 tail 日志文件，每隔 500ms 推送新行
+      _tauri.event.listen('log-line', (e) => {
+        const p = e.payload;
+        if (!p || !p.service || !p.line) return;
+        const svc = p.service;
+        // 缓存并直接写入对应面板
+        if (!logStreamContent[svc]) logStreamContent[svc] = [];
+        logStreamContent[svc].push(p.line);
+        if (logStreamContent[svc].length > 3000) {
+          logStreamContent[svc] = logStreamContent[svc].slice(-2000);
+        }
+        appendToConsole(svc, escapeHtml(p.line) + '\n', 'info');
+      });
+    }
+
+    function escapeHtml(s) {
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
     }
 
     // ── 初始化 ──
@@ -667,11 +868,26 @@
       try {
         const f = await call('detect_features');
         renderFeatures(f);
+        // 更新日志面板的端口信息
+        document.getElementById('backendLogPort').textContent = `port ${f.backend_port || '?'}`;
+        document.getElementById('webLogPort').textContent = `port ${f.web_port || '?'}`;
+        document.getElementById('mineruLogPort').textContent = 'ephemeral';
       } catch (e) {
         document.getElementById('pathInfo').textContent = '配置读取失败';
       }
       await refreshStatus(true);
-      await loadLog('backend');
+      // 启动实时日志流（每个面板独立）
+      startLogStream('backend');
+      startLogStream('web');
+      startLogStream('mineru');
+      // 加载初始日志内容到各面板
+      for (const svc of ['backend', 'web', 'mineru']) {
+        try {
+          const tail = await invoke('read_log_tail', { service: svc, lines: 200 });
+          const el = getConsoleEl(svc);
+          if (el && tail) el.textContent = tail;
+        } catch (e) {}
+      }
       checkDeps();
       checkClaudeCode();
       loadConfigEditor();

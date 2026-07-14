@@ -52,11 +52,36 @@ experience_extract(kb_id="<KB>", mode="heuristic", dry_run=True)
 
 **提取时机**：入库新文档后（Ingest A7 通过）；批量学习某 KB；定期丰富经验库。
 
-## E2 — 质量门控（隐含在提取流程）
+## E2 — 质量门控（强制，提取+创建均适用）⭐
+
+### E2a 启发式提取质量门控（E1 产出后强制执行）
+```
+对 E1 heuristic 产出的每个 candidate，逐项检查：
+  1. key_lessons 黑名单检测：
+     - 匹配章节标题模式（罗马数字 I./II. + 关键词如 INTRODUCTION/OVERVIEW/METHOD/CONCLUSION）→ ✗ 拒
+     - 匹配数字编号模式（"1 Introduction"/"3.1 Method"/"4.2 Results"）→ ✗ 拒
+     - 长度 < 20 chars 或 > 500 chars → ✗ 拒
+     - 是"核心要点"/"总结"/"概述"等空洞词 → ✗ 拒
+  2. problem/solution 质量检测：
+     - problem 是原文 raw dump > 300 chars → ✗ 拒（须提炼为简洁问题陈述）
+     - solution 是原文 raw dump > 500 chars → ✗ 拒
+  3. tags 非空检测：tags=[ ] → ✗ 拒
+  4. confidence < 0.8 → 走草稿池（不直接发布），需 LLM 精炼
+```
+**拒绝的候选不写入草稿池**——直接丢弃，避免污染草稿审核队列。
+
+### E2b 手动创建质量门控
 - scenario 必须有领域前缀（如 `llm-hallucination`），禁止 `test`
-- solution ≥ 50 chars，含具体方法
+- solution ≥ 50 chars，含具体方法（非"修改了代码/调了参数"等泛泛）
+- key_lessons 每条 ≥ 30 chars，可独立执行（非"需要调试"/"检查一下"）
 - related_docs 必须指向真实文档
+- tags ≥ 2 个（必须含领域词 + 场景词）
 - 去重：同 KB 已有相似 scenario → 走草稿审核而非新建
+
+### E2c 推荐提取策略
+- **入库后自动提取**：用 `mode="prepare"` → LLM 精炼 → 直接发布（跳过草稿池）
+- **批量扫描**：先 `mode="heuristic"` + `dry_run=True` 扫描 → 只保留 confidence≥0.8 的候选 → `mode="prepare"` 精炼
+- **禁止**：heuristic + dry_run=False 直接写入草稿池（实测产生大量垃圾）
 
 ## E3 — 草稿池（候选审核）⭐
 ```
