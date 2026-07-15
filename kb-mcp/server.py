@@ -133,17 +133,17 @@ async def kb_get_documents(kb_id: str) -> str:
 
 # ============================================================
 # LIGHTWEIGHT CATALOG (id + description only, agentic-first retrieval)
-# 仅返回 id/description 等最小投影，避免 file_size/tags/vector_index 等元信息污染 context。
-# Agent 应优先用这些方法读 description 判断相关性，确认后再 kb_doc_read/kb_search_vector 取详情。
+# Returns only id/description minimal projection to avoid polluting context with file_size/tags/vector_index metadata.
+# Agents should prefer these methods: read descriptions to judge relevance, confirm, then call kb_doc_read/kb_search_vector for details.
 # ============================================================
 
 @mcp.tool()
 async def kb_catalog() -> str:
-    """轻量知识库目录 —— 仅返回 [{kb_id, name, description, doc_count}]。
+    """Lightweight knowledge base catalog: returns only [{kb_id, name, description, doc_count}].
 
-    用途（agentic 优先检索的第一步）：Agent 阅读每个 KB 的 description，
-    用模型判断力决定哪个 KB 与当前场景真正相关，再深入该 KB。
-    不加载 path/file_size 等多余字段，保持 context 干净。
+    Purpose (first step of agentic-first retrieval): The agent reads each KB description,
+    uses model judgment to decide which KB is relevant to the current scenario, then drills into that KB.
+    Does not load path/file_size etc. extra fields to keep context clean.
     """
     data = await _client().kb_list()
     if not isinstance(data, dict) or not data.get("success"):
@@ -159,11 +159,11 @@ async def kb_catalog() -> str:
 
 @mcp.tool()
 async def kb_doc_catalog(kb_id: str) -> str:
-    """轻量文档目录 —— 返回某 KB 内全部文档的 [{doc_path, name, description}]（仅这三字段）。
+    """Lightweight document catalog: returns [{doc_path, name, description}] for all docs in a KB (only these 3 fields).
 
-    用途（agentic 优先检索的第二步）：进入候选 KB 后，Agent 阅读每篇文档的 description，
-    判断哪篇真正契合当前场景，确认后再 kb_doc_read 读全文或 kb_search_vector 向量精排。
-    不加载 file_size/tags/vector_index/metadata，避免污染 context。
+    Purpose (second step of agentic-first retrieval): After entering a candidate KB, the agent reads each doc's description,
+    judges which one truly matches the current scenario, then confirms before calling kb_doc_read for full text or kb_search_vector for vector ranking.
+    Does not load file_size/tags/vector_index/metadata to avoid polluting context.
     """
     data = await _client().kb_get_documents(kb_id)
     if not isinstance(data, dict) or not data.get("success"):
@@ -529,13 +529,13 @@ async def kb_doc_update_tags(kb_id: str, doc_path: str, tags: list) -> str:
 
 @mcp.tool()
 async def kb_tags_cleanup(dry_run: bool = True) -> str:
-    """检测并清理孤立标签（0 文档引用的标签）。
+    """Detect and clean up orphan tags (tags referenced by 0 documents).
 
-    遍历所有标签 → 通过 kb_doc_get_by_tag 检测引用计数 → 标记 0 引用标签为 orphan。
-    dry_run=True（默认）：仅列出孤 tag 及其数量
-    dry_run=False：从标签词表中移除孤 tag（不可逆）
+    Iterates all tags, checks reference counts via kb_doc_get_by_tag, marks 0-reference tags as orphan.
+    dry_run=True (default): only lists orphan tags and their count.
+    dry_run=False: removes orphan tags from the tag vocabulary (irreversible).
 
-    黑名单保护：以下标签模式永不清理：领域词表（PET/PVA/polymer 等）、已建 KB 的 domain tag
+    Blacklist protection: the following tag patterns are never cleaned: domain vocabulary (PET/PVA/polymer etc.), existing KB domain tags.
 
     Returns:
         dry_run=True: {success, total_tags, referenced, orphan, orphan_tags, orphan_tag_names}
@@ -543,21 +543,21 @@ async def kb_tags_cleanup(dry_run: bool = True) -> str:
     """
     client = _client()
 
-    # 1. 获取所有标签
+    # 1. Fetch all tags
     tags_resp = await client.kb_tags_list()
     all_tags = (tags_resp.get("tags", []) if isinstance(tags_resp, dict) else [])
     total = len(all_tags)
 
-    # 2. 黑名单：领域核心词永不清理
+    # 2. Blacklist: domain core terms are never cleaned
     protected_patterns = [
-        # 高分子/材料核心词
+        # Polymer/materials core terms
         "pet", "pva", "pp", "pe", "pla", "pa6", "pa56", "bopet", "bopa6", "bopp",
         "uhmwpe", "pvdf", "pmma", "ptfe", "peek", "pc", "pbs", "ps", "sebs",
         "frp", "psp", "sio2", "tio₂", "mxene", "bge-m3",
-        # 方法/技术核心词
+        # Method/technology core terms
         "深度学习", "机器学习", "强化学习", "transformer", "attention",
         "rag", "graphrag", "self-rag", "llm", "nlp", "dqn", "adam", "shap",
-        # 知识库 domain 词
+        # Knowledge base domain terms
         "polymer", "双向拉伸", "双轴拉伸", "biaxial-stretching", "高分子",
         "锂离子电池", "钠离子电池", "固态电池", "超级电容器",
         "石墨烯", "2d材料", "超材料", "纳米压痕",
@@ -574,28 +574,28 @@ async def kb_tags_cleanup(dry_run: bool = True) -> str:
 
     def _is_protected(tag: str) -> bool:
         tl = tag.lower().strip()
-        # 黑名单匹配（大小写不敏感）
+        # Blacklist match (case-insensitive)
         for p in protected_patterns:
             if tl == p.lower():
                 return True
-        # 长度≥3 且纯中文/纯英文的学术概念 → 保护
-        # 长度 <3 或含特殊字符 → 可清理
+        # Length >= 3 and pure Chinese/English academic concept -> protect
+        # Length < 3 or contains special characters -> can clean
         return False
 
     def _is_likely_garbage(tag: str) -> bool:
-        """检测明显是章节标题/测试标签/垃圾的 tag"""
+        """Detect tags that are clearly section headings, test tags, or garbage."""
         tl = tag.lower().strip()
-        # 章节标题模式
+        # Section heading pattern
         if re.search(r'^\d+(\.\d+)*\s+\w+', tl):  # "3.1 Method" / "4.2 Results"
             return True
         if re.search(r'^[ivx]+\.?\s+\w+', tl):    # "I. Introduction" / "II. Methods"
             return True
-        # 测试标签
+        # Test tag
         if tl.startswith("test-") or tl.startswith("test_") or tl == "test":
             return True
         if "test" in tl.split("-")[:1] and len(tl) < 20:
             return True
-        # 明显是章节标题的关键词
+        # Keywords that are clearly section headings
         garbage_keywords = {
             "abstract", "introduction", "method", "methods", "conclusion",
             "references", "acknowledgments", "results", "discussion",
@@ -606,34 +606,34 @@ async def kb_tags_cleanup(dry_run: bool = True) -> str:
         }
         if tl in garbage_keywords or tl.rstrip(".") in garbage_keywords:
             return True
-        # 特短标签（<3字符且非中文）
+        # Very short tag (< 3 chars and not Chinese)
         if len(tag) < 3 and not any('一' <= c <= '鿿' for c in tag):
             return True
-        # 含特殊字符（非中文非英文非数字）
+        # Contains special characters (not Chinese, not English, not digit)
         if re.search(r'[^\w一-鿿\s\-\.]', tag):
             return True
         return False
 
     _kb_id = kb_id or ""
 
-    # 3. 对每个 tag，检测引用数
+    # 3. For each tag, check reference count
     referenced = 0
     orphan_tags = []
     orphan_tag_names = []
 
-    # 批量检测：前100个 tag 用 kb_doc_get_by_tag，其余用 heuristic
-    for i, tag in enumerate(all_tags[:200]):  # 最多检测 200 个（性能考虑）
+    # Batch check: first 200 tags use kb_doc_get_by_tag; the rest use heuristic
+    for i, tag in enumerate(all_tags[:200]):  # Check at most 200 tags (performance consideration)
         try:
-            # 受保护 tag 跳过多余检测
+            # Protected tags skip redundant checks
             if _is_protected(tag):
                 referenced += 1
                 continue
-            # 垃圾 tag 直接标记
+            # Garbage tags are marked directly
             if _is_likely_garbage(tag):
                 orphan_tags.append({"tag": tag, "refs": 0, "reason": "garbage_pattern"})
                 orphan_tag_names.append(tag)
                 continue
-            # 查询实际引用
+            # Query actual references
             result = await client.kb_doc_get_by_tag(tag, kb_id="")
             if isinstance(result, dict) and result.get("success"):
                 docs = result.get("documents", [])
@@ -647,7 +647,7 @@ async def kb_tags_cleanup(dry_run: bool = True) -> str:
                 orphan_tags.append({"tag": tag, "refs": -1, "reason": "api_error"})
                 orphan_tag_names.append(tag)
         except Exception:
-            # 查询失败时不阻塞流程
+            # Don't block the process on query failure
             orphan_tags.append({"tag": tag, "refs": -1, "reason": "exception"})
             orphan_tag_names.append(tag)
 
@@ -662,11 +662,11 @@ async def kb_tags_cleanup(dry_run: bool = True) -> str:
             "orphan": orphan_count,
             "orphan_tags": orphan_tags,
             "orphan_tag_names": orphan_tag_names,
-            "hint": f"发现 {orphan_count} 个孤立标签（0引用/垃圾模式）。用 dry_run=False 执行清理（不可逆）。"
+            "hint": f"Found {orphan_count} orphan tags (0-referenced / garbage pattern). Use dry_run=False to clean (irreversible)."
         })
     else:
-        # dry_run=False: 实际删除孤 tag
-        # ⚠️ 目前 kb_tags 无 delete API，这里逐个从文档移除标签引用
+        # dry_run=False: actually delete orphan tags
+        # ⚠️ Currently kb_tags has no delete API; here we remove tag references from documents one by one
         cleaned = 0
         skipped = 0
         errors = []
@@ -675,9 +675,9 @@ async def kb_tags_cleanup(dry_run: bool = True) -> str:
                 skipped += 1
                 continue
             try:
-                # 从标签词表移除（如果 API 支持）
-                # 目前 Nuxt tags 词表来自文档标签汇总，移除孤 tag 无需 delete API
-                # 只需确认 0 引用即可（下次 tags_list 时自动刷新）
+                # Remove from tag vocabulary (if the API supports it)
+                # Currently the Nuxt tag vocabulary comes from document tag aggregation; removing orphan tags does not need a delete API
+                # Just confirm 0 references (auto-refreshes on next tags_list)
                 cleaned += 1
             except Exception as e:
                 errors.append({"tag": ot["tag"], "error": str(e)})
@@ -692,7 +692,7 @@ async def kb_tags_cleanup(dry_run: bool = True) -> str:
             "cleaned_tag_names": [o["tag"] for o in orphan_tags if o["reason"] not in ("api_error", "exception")],
             "skipped": skipped,
             "errors": errors,
-            "hint": "标签词表已从文档汇总刷新。下次 kb_tags_list() 仅返回有引用的标签。"
+            "hint": "Tag vocabulary refreshed from document aggregation. Next kb_tags_list() returns only referenced tags."
         })
 
 
@@ -703,7 +703,7 @@ async def kb_doc_get_by_tag(tag: str, kb_id: str = "") -> str:
 
 
 # ============================================================
-# EXPERIENCE MANAGEMENT --- 经验管理（21个MCP工具）
+# EXPERIENCE MANAGEMENT
 # ============================================================
 
 @mcp.tool()
@@ -712,28 +712,26 @@ async def experience_create(kb_id: str, title: str, scenario: str = "",
     result: str = "success", key_lessons: list = None, tags: list = None,
     severity: str = "normal", related_docs: list = None,
     prerequisites: list = None, metrics: str = "") -> str:
-    """创建一条经验记录。
+    """Create an experience record.
 
-    经验是实践总结的可复用知识，相比文档多了评分、应用记录、场景绑定等维度。
-    一条经验包含：问题描述、解决方案、关键教训（可执行条目列表）、结果（成功/失败）、
-    严重程度（紧急/重要/普通/提示）、场景标识、关联文档等。
+    An experience is reusable knowledge distilled from practice. Compared to documents, experiences have rating, application records, scenario binding, etc.
+    Each experience includes: problem description, solution, key lessons (actionable items list), result (success/failure),
+    severity (critical/important/normal/tip), scenario identifier, related documents, etc.
 
     Args:
-        kb_id: 知识库 ID 或路径
-        title: 经验标题
-        scenario: 场景标识（如 "coal-mill-fault-prediction"），用于按场景检索
-        category: 类别（best_practice=最佳实践, troubleshooting=故障排查,
-                  lesson_learned=经验教训, optimization=优化, tip=小技巧,
-                  workflow=工作流, decision=决策记录）
-        problem: 要解决的问题描述
-        solution: 解决方案或操作步骤
-        result: 结果（success=成功, partial=部分成功, failed=失败, inconclusive=不确定）
-        key_lessons: 关键教训列表，每条应该是可独立执行的操作条目
-        tags: 标签列表
-        severity: 严重程度（critical=紧急, important=重要, normal=普通, tip=提示）
-        related_docs: 关联的文档路径列表（如 ["Thermal-Power/doc1.md"]）
-        prerequisites: 前置条件列表
-        metrics: JSON 字符串，自定义量化指标（如 '{"effectiveness": 95, "difficulty": 60}'）
+        kb_id: Knowledge base ID or path
+        title: Experience title
+        scenario: Scenario identifier (e.g. "coal-mill-fault-prediction"), used for scenario-based retrieval
+        category: Category (best_practice, troubleshooting, lesson_learned, optimization, tip, workflow, decision)
+        problem: Description of the problem to solve
+        solution: Solution or operation steps
+        result: Result (success, partial, failed, inconclusive)
+        key_lessons: List of key lessons — each should be an independently actionable item
+        tags: List of tags
+        severity: Severity (critical, important, normal, tip)
+        related_docs: List of related document paths (e.g. ["Thermal-Power/doc1.md"])
+        prerequisites: List of prerequisites
+        metrics: JSON string of custom quantitative metrics (e.g. '{"effectiveness": 95, "difficulty": 60}')
 
     Returns:
         {success, experience: {id, title, path, scenario, ...}}
@@ -748,14 +746,14 @@ async def experience_create(kb_id: str, title: str, scenario: str = "",
 
 @mcp.tool()
 async def experience_read(kb_id: str, exp_id: str) -> str:
-    """读取一条经验的完整信息（元数据 + 正文内容）。
+    """Read full experience information (metadata + content body).
 
     Args:
-        kb_id: 知识库 ID 或路径
-        exp_id: 经验 ID（如创建时返回的 "exp-xxxxxxxxxxxx"）
+        kb_id: Knowledge base ID or path
+        exp_id: Experience ID (e.g. "exp-xxxxxxxxxxxx" returned on creation)
 
     Returns:
-        {success, experience: {id, title, ...}, content: "markdown 正文"}
+        {success, experience: {id, title, ...}, content: "markdown body"}
     """
     return _j(await _client().experience_read(kb_id, exp_id))
 
@@ -763,13 +761,13 @@ async def experience_read(kb_id: str, exp_id: str) -> str:
 @mcp.tool()
 async def experience_list(kb_id: str, scenario: str = "",
     category: str = "", tag: str = "") -> str:
-    """列出知识库中的经验，支持按场景/类别/标签过滤。结果按评分从高到低排序。
+    """List experiences in a knowledge base, supports filtering by scenario/category/tag. Results sorted by rating descending.
 
     Args:
-        kb_id: 知识库 ID 或路径
-        scenario: 可选，按场景标识过滤
-        category: 可选，按类别过滤（best_practice/troubleshooting/lesson_learned/...）
-        tag: 可选，按标签过滤
+        kb_id: Knowledge base ID or path
+        scenario: Optional, filter by scenario identifier
+        category: Optional, filter by category (best_practice/troubleshooting/lesson_learned/...)
+        tag: Optional, filter by tag
 
     Returns:
         {success, count, experiences: [{id, title, scenario, rating_avg, ...}]}
@@ -784,24 +782,24 @@ async def experience_update(kb_id: str, exp_id: str, title: str = "",
     tags: list = None, severity: str = "", status: str = "",
     related_docs: list = None, prerequisites: list = None,
     metrics: str = "") -> str:
-    """更新一条经验记录。只传需要更新的字段，不传的字段保持不变。
+    """Update an experience record. Only pass fields to update; omitted fields stay unchanged.
 
     Args:
-        kb_id: 知识库 ID 或路径
-        exp_id: 经验 ID
-        title: 新标题
-        scenario: 新场景标识
-        category: 新类别
-        problem: 新问题描述
-        solution: 新解决方案
-        result: 新结果
-        key_lessons: 新关键教训列表
-        tags: 新标签列表
-        severity: 新严重程度
-        status: 新状态（draft=草稿, published=已发布, archived=已归档）
-        related_docs: 新关联文档列表
-        prerequisites: 新前置条件列表
-        metrics: JSON 字符串，新量化指标
+        kb_id: Knowledge base ID or path
+        exp_id: Experience ID
+        title: New title
+        scenario: New scenario identifier
+        category: New category
+        problem: New problem description
+        solution: New solution
+        result: New result
+        key_lessons: New list of key lessons
+        tags: New list of tags
+        severity: New severity
+        status: New status (draft, published, archived)
+        related_docs: New list of related documents
+        prerequisites: New list of prerequisites
+        metrics: JSON string, new metrics
 
     Returns:
         {success, experience: {id, title, ...}}
@@ -821,11 +819,11 @@ async def experience_update(kb_id: str, exp_id: str, title: str = "",
 
 @mcp.tool()
 async def experience_delete(kb_id: str, exp_id: str) -> str:
-    """永久删除一条经验。不可恢复。
+    """Permanently delete an experience. Irreversible.
 
     Args:
-        kb_id: 知识库 ID 或路径
-        exp_id: 经验 ID
+        kb_id: Knowledge base ID or path
+        exp_id: Experience ID
 
     Returns:
         {success, deleted_id}
@@ -836,15 +834,15 @@ async def experience_delete(kb_id: str, exp_id: str) -> str:
 @mcp.tool()
 async def experience_apply(kb_id: str, exp_id: str, user: str = "",
     context: str = "", result: str = "", notes: str = "") -> str:
-    """标记一条经验已被应用。记录使用者、场景和效果。每次调用增加 applied_count。
+    """Mark an experience as applied. Records the user, context, and effect. Each call increments applied_count.
 
     Args:
-        kb_id: 知识库 ID 或路径
-        exp_id: 经验 ID
-        user: 使用者标识（如工号、用户名）
-        context: 应用场景描述（如 "#3机组CNN-LSTM偏差度0.8"）
-        result: 应用效果（success=成功, partial=部分有效, failed=无效）
-        notes: 备注
+        kb_id: Knowledge base ID or path
+        exp_id: Experience ID
+        user: User identifier (e.g. employee ID, username)
+        context: Application context description (e.g. "#3 Unit CNN-LSTM deviation 0.8")
+        result: Application result (success, partial, failed)
+        notes: Additional notes
 
     Returns:
         {success, experience: {..., applied_count, ...}, apply_record: {user, context, result, notes}}
@@ -855,14 +853,14 @@ async def experience_apply(kb_id: str, exp_id: str, user: str = "",
 @mcp.tool()
 async def experience_review(kb_id: str, exp_id: str, reviewer: str = "",
     rating: float = 5.0, comment: str = "") -> str:
-    """评审一条经验，给出评分（0-5分）和评论。自动更新该经验的平均评分和评审次数。
+    """Review an experience with a rating (0-5) and comment. Automatically updates the experience's average rating and review count.
 
     Args:
-        kb_id: 知识库 ID 或路径
-        exp_id: 经验 ID
-        reviewer: 评审人
-        rating: 评分 0-5（0=无用, 5=非常有用）
-        comment: 评审意见
+        kb_id: Knowledge base ID or path
+        exp_id: Experience ID
+        reviewer: Reviewer name
+        rating: Rating 0-5 (0=useless, 5=very useful)
+        comment: Review comment
 
     Returns:
         {success, experience: {..., rating_avg, review_count, ...}, review_record}
@@ -872,10 +870,10 @@ async def experience_review(kb_id: str, exp_id: str, reviewer: str = "",
 
 @mcp.tool()
 async def experience_summary(kb_id: str) -> str:
-    """获取经验的统计摘要，包括总数、按类别分布、按严重程度分布、总应用次数、平均评分、Top5经验。
+    """Get experience statistics summary, including total count, distribution by category, distribution by severity, total applications, average rating, top 5 experiences.
 
     Args:
-        kb_id: 知识库 ID 或路径
+        kb_id: Knowledge base ID or path
 
     Returns:
         {success, summary: {total, by_category, by_severity, total_applied, avg_rating, top_experiences}}
@@ -885,14 +883,14 @@ async def experience_summary(kb_id: str) -> str:
 
 @mcp.tool()
 async def experience_search(kb_id: str, query: str, top_k: int = 10) -> str:
-    """元信息搜索经验：在经验的标题、问题、方案、关键教训、标签中匹配关键词。
+    """Search experience metadata: matches keywords in title, problem, solution, key lessons, and tags.
 
-    适用于已知部分关键词的精确查找。结果按相关度+评分+应用次数综合排序。
+    Suitable for precise lookup when you already know some keywords. Results sorted by relevance + rating + application count.
 
     Args:
-        kb_id: 知识库 ID 或路径
-        query: 搜索关键词
-        top_k: 返回数量（默认10）
+        kb_id: Knowledge base ID or path
+        query: Search keywords
+        top_k: Number of results to return (default 10)
 
     Returns:
         {success, count, query, experiences: [{id, title, scenario, rating_avg, ...}]}
@@ -902,15 +900,15 @@ async def experience_search(kb_id: str, query: str, top_k: int = 10) -> str:
 
 @mcp.tool()
 async def experience_search_vector(kb_id: str, query: str, top_k: int = 5) -> str:
-    """向量语义搜索经验：用自然语言查询经验的语义内容。
+    """Vector semantic search for experiences: query the semantic content of experiences in natural language.
 
-    适用于模糊查询，如"以前遇到类似振动问题怎么处理的"。需要经验已建立向量索引。
-    自动过滤只返回经验类型的结果（doc_type=experience）。
+    Suitable for fuzzy queries like "how did we handle similar vibration issues before". Requires experiences to be vector-indexed.
+    Automatically filters to return only experience-type results (doc_type=experience).
 
     Args:
-        kb_id: 知识库 ID 或路径
-        query: 自然语言查询
-        top_k: 返回数量（默认5）
+        kb_id: Knowledge base ID or path
+        query: Natural language query
+        top_k: Number of results to return (default 5)
 
     Returns:
         {success, query, count, results: [{content, score, doc_path, chunk_index}]}
@@ -922,32 +920,32 @@ async def experience_search_vector(kb_id: str, query: str, top_k: int = 5) -> st
 async def experience_search_global(query: str, top_k: int = 10,
                                      score_threshold: float = None,
                                      verify_content: bool = True) -> str:
-    """跨 KB 全局经验检索 — QDCVR 流程（与文档检索同构）。
+    """Cross-KB global experience search -- QDCVR pipeline (isomorphic with document search).
 
-    向量召回 → 硬阈值 → 经验级去重 → 内容验证 → 可信度定级 → 诚实空返回。
-    向量负责"快"，内容负责"准"；无确认经验则诚实声明，不"不懂装懂"。
+    Vector recall -> hard threshold -> experience-level dedup -> content verification -> credibility tiering -> honest empty return.
+    Vector handles "speed", content handles "accuracy"; no confirmed experience means honest declaration, no bluffing.
 
-    适用于"以前遇到类似 X 问题怎么处理的""全厂有哪些 Y 方面的经验"。
-    故障/运维型查询优先用此工具。
+    Suitable for: "how did we handle similar X problem before", "what Y-related experiences does the whole plant have".
+    Fault/operations queries should prioritize this tool.
 
     Args:
-        query: 自然语言查询（中英文均可，向量+关键词双路匹配）
-        top_k: 返回上限（默认10）
-        score_threshold: 向量硬阈值；None=0.45（精度0.55/召回0.35）
-        verify_content: True=读正文内容验证（默认）；False=仅向量分
+        query: Natural language query (Chinese or English; dual vector + keyword matching)
+        top_k: Result cap (default 10)
+        score_threshold: Vector hard threshold; None=0.45 (precision 0.55 / recall 0.35)
+        verify_content: True=read body to verify (default); False=vector score only
 
     Returns:
         {success, query, count, experiences: [{id, title, scenario, problem, solution,
          vector_score, content_score, tier[P0/P1/P2], tier_reason, ...}],
          vector_recall, tier_counts, message}
-        无确认经验时 count=0 且 message 说明盲点。
+        When count=0, message explains the blind spot.
     """
     return _j(await _client().experience_search_global(
         query, top_k, score_threshold=score_threshold, verify_content=verify_content))
 
 
 # ============================================================
-# EXPERIENCE ENHANCEMENT — E0/E1 提取 / E3 草稿 / E6 联动 / E8 看板 / E11 衰减
+# EXPERIENCE ENHANCEMENT — E0/E1 Extraction / E3 Draft / E6 Sync / E8 Dashboard / E11 Decay
 # ============================================================
 
 @mcp.tool()
@@ -957,21 +955,21 @@ async def experience_extract(
     dry_run: bool = True,
     mode: str = "heuristic",
 ) -> str:
-    """E0/E1: 从 KB 文档自动提取经验候选。
+    """E0/E1: Auto-extract experience candidates from KB documents.
 
-    两种模式：
-    - mode="heuristic"（默认）：启发式规则提取候选经验。dry_run=True 返回候选列表；
-      dry_run=False 写入草稿池待审核。
-    - mode="prepare"：返回提取任务包（文档全文 + 去重上下文 + 提取模板），
-      供 Agent 用 LLM 高质量提炼（推荐用于关键 KB）。
+    Two modes:
+    - mode="heuristic" (default): heuristic rules extract candidate experiences. dry_run=True returns candidate list;
+      dry_run=False writes to draft pool for review.
+    - mode="prepare": returns an extraction task package (full document text + dedup context + extraction template)
+      for the agent to refine with LLM (recommended for critical KBs).
 
-    典型场景：KB 入库新文档后扫描提取经验；批量学习某个 KB。
+    Typical scenario: scanning for experiences after new documents are ingested; batch learning from a KB.
 
     Args:
-        kb_id: 目标 KB（UUID 或 path）
-        doc_paths: 可选，只扫指定文档；空则扫全 KB 的 .md（排除 experience 目录）
-        dry_run: True=只报告候选（默认安全）；False=写草稿池
-        mode: heuristic（规则提取）| prepare（返回 LLM 任务包）
+        kb_id: Target KB (UUID or path)
+        doc_paths: Optional, scan only specified docs; empty scans all .md in the KB (excluding experience directory)
+        dry_run: True=report only (default safe); False=write to draft pool
+        mode: heuristic (rule-based extraction) | prepare (returns LLM task package)
 
     Returns:
         heuristic+dry_run: {success, total_candidates, candidates: [...], hint}
@@ -983,10 +981,10 @@ async def experience_extract(
 
 @mcp.tool()
 async def experience_drafts_list(kb_id: str) -> str:
-    """E3: 列出 KB 的经验草稿池（待审核的候选经验）。
+    """E3: List the experience draft pool (pending review candidates).
 
-    草稿由 experience_extract(dry_run=False) 产生。Agent 审核后用
-    experience_draft_approve 入库或 experience_draft_reject 拒绝。
+    Drafts are produced by experience_extract(dry_run=False). Agent reviews them, then calls
+    experience_draft_approve to publish or experience_draft_reject to reject.
 
     Returns: {success, count, drafts: [{id, title, scenario, confidence, ...}]}
     """
@@ -995,11 +993,11 @@ async def experience_drafts_list(kb_id: str) -> str:
 
 @mcp.tool()
 async def experience_draft_read(kb_id: str, draft_id: str) -> str:
-    """E3: 读取草稿详情（含提取证据、来源文档）。
+    """E3: Read draft details (including extraction evidence, source document).
 
     Args:
-        kb_id: KB ID 或 path
-        draft_id: 草稿 ID（draft-xxx，来自 experience_drafts_list）
+        kb_id: KB ID or path
+        draft_id: Draft ID (draft-xxx, from experience_drafts_list)
 
     Returns: {success, draft: {id, title, problem, solution, key_lessons, source_doc, ...}}
     """
@@ -1010,15 +1008,15 @@ async def experience_draft_read(kb_id: str, draft_id: str) -> str:
 async def experience_draft_approve(
     kb_id: str, draft_id: str, edits: dict = None,
 ) -> str:
-    """E3: 批准草稿→正式经验（写入索引 + 向量索引）。
+    """E3: Approve draft -> formal experience (write index + vector index).
 
-    可选 edits 覆盖字段（Agent LLM 精炼后传入）。批准后草稿从池中删除，
-    经验标记 auto_extracted=true + extraction_method。
+    Optional edits parameter to override fields (passed after agent LLM refinement). After approval, draft is deleted from pool,
+    experience is marked auto_extracted=true with extraction_method.
 
     Args:
-        kb_id: KB ID 或 path
-        draft_id: 草稿 ID
-        edits: 可选字段覆盖，如 {"title":"...", "solution":"精炼后的方案", "key_lessons":[...]}
+        kb_id: KB ID or path
+        draft_id: Draft ID
+        edits: Optional field overrides, e.g. {"title":"...", "solution":"refined solution", "key_lessons":[...]}
 
     Returns: {success, approved, experience, exp_id}
     """
@@ -1027,12 +1025,12 @@ async def experience_draft_approve(
 
 @mcp.tool()
 async def experience_draft_reject(kb_id: str, draft_id: str, reason: str = "") -> str:
-    """E3: 拒绝草稿→移入 rejected/（保留拒绝原因供追溯）。
+    """E3: Reject draft -> move to rejected/ (retain reject reason for traceability).
 
     Args:
-        kb_id: KB ID 或 path
-        draft_id: 草稿 ID
-        reason: 拒绝原因（可选）
+        kb_id: KB ID or path
+        draft_id: Draft ID
+        reason: Rejection reason (optional)
 
     Returns: {success, rejected}
     """
@@ -1041,13 +1039,13 @@ async def experience_draft_reject(kb_id: str, draft_id: str, reason: str = "") -
 
 @mcp.tool()
 async def experience_check_stale(kb_id: str) -> str:
-    """E6: 检查 KB 经验与关联文档的一致性。
+    """E6: Check consistency between KB experiences and their related documents.
 
-    检测每条经验的 related_docs：
-    - 文档更新时间晚于经验 updated_at → stale（经验需重新提取）
-    - 文档不存在 → orphan（引用失效）
+    Checks each experience's related_docs:
+    - Document updated_at is newer than experience updated_at -> stale (experience needs re-extraction)
+    - Document does not exist -> orphan (broken reference)
 
-    典型场景：文档更新后检查哪些经验过时；定期一致性审计。
+    Typical scenarios: after document updates, check which experiences are stale; periodic consistency audit.
 
     Returns: {success, total, fresh, stale, orphan, stale_experiences, orphan_experiences}
     """
@@ -1056,7 +1054,7 @@ async def experience_check_stale(kb_id: str) -> str:
 
 @mcp.tool()
 async def experience_check_stale_global() -> str:
-    """E6: 全库 stale 检查（遍历所有 KB 的经验）。
+    """E6: Global stale check (traverses all KBs' experiences).
 
     Returns: {success, total_experiences, stale, orphan, stale_experiences, orphan_experiences}
     """
@@ -1065,10 +1063,10 @@ async def experience_check_stale_global() -> str:
 
 @mcp.tool()
 async def experience_sync_kb(kb_id: str) -> str:
-    """E6: 整库标记需同步（stale/orphan 经验标记 needs_sync）。
+    """E6: Mark entire KB for sync (stale/orphan experiences marked needs_sync).
 
-    标记后 Agent 应逐条读取 related_docs，用 experience_extract 重新提取，
-    再 update_experience 更新内容。这是"文档更新→经验联动"的触发器。
+    After marking, the agent should read each related_doc, re-extract with experience_extract,
+    then update_experience to refresh content. This is the "document update -> experience sync" trigger.
 
     Returns: {success, marked_for_sync, hint}
     """
@@ -1077,11 +1075,11 @@ async def experience_sync_kb(kb_id: str) -> str:
 
 @mcp.tool()
 async def experience_dashboard(kb_id: str) -> str:
-    """E8: 经验看板——KB 经验全貌聚合统计。
+    """E8: Experience dashboard - KB experience overview aggregate statistics.
 
-    含：总数、P0/P1/P2 分级、分类/严重度分布、草稿数、stale/orphan 数、需同步数、top 经验。
+    Includes: total count, P0/P1/P2 tiering, category/severity distribution, draft count, stale/orphan count, needs-sync count, top experiences.
 
-    典型场景：评估 KB 经验覆盖度与质量；发现需补充/清理的经验。
+    Typical scenarios: assess KB experience coverage and quality; discover experiences needing supplementation or cleanup.
 
     Returns: {success, total_experiences, by_tier, summary, drafts_pending, stale, orphan, needs_sync}
     """
@@ -1090,14 +1088,14 @@ async def experience_dashboard(kb_id: str) -> str:
 
 @mcp.tool()
 async def experience_apply_decay(kb_id: str) -> str:
-    """E11: 应用经验衰减规则（可信度周期性下降）。
+    """E11: Apply experience decay rules (periodic credibility degradation).
 
-    规则：
-    - stale_unverified: 创建>30天且 0 次应用 → 标记（检索时降级）
-    - disputed: ≥3 评审且 rating<2.0 → 标记（降级到 P2）
-    - unvetted: 0 评审且 0 应用 → 标记（最高 P1）
+    Rules:
+    - stale_unverified: created > 30 days and 0 applications -> flagged (demoted in search)
+    - disputed: >= 3 reviews and rating < 2.0 -> flagged (demoted to P2)
+    - unvetted: 0 reviews and 0 applications -> flagged (max P1)
 
-    典型场景：定期跑保持经验新鲜度；清理长期无人验证的经验。
+    Typical scenarios: periodic freshness maintenance; clean up long-unverified experiences.
 
     Returns: {success, decayed: {stale_unverified, disputed, unvetted}, total_flagged}
     """
@@ -1115,21 +1113,21 @@ async def backend_status() -> str:
 
 
 # ============================================================
-# 向量检索与两阶段精准检索（新增）
+# VECTOR SEARCH & TWO-STAGE PRECISION SEARCH
 # ============================================================
 
 @mcp.tool()
 async def kb_search_vector(query: str, kb_id: str = "", top_k: int = 5,
                             score_threshold: float = 0.0,
                             balance_kbs: bool = False) -> str:
-    """向量语义搜索文档片段。
+    """Vector semantic search for document chunks.
 
     Args:
-        query: 查询文本
-        kb_id: 限定知识库；空则跨库
-        top_k: 返回结果数
-        score_threshold: 最低余弦相似度阈值（0~1）；<=0 用后端默认(0.35)。降低可召回更多片段
-        balance_kbs: 跨库搜索时是否均衡结果（默认 False）。设为 True 可防大KB主导结果
+        query: Query text
+        kb_id: Limit to specific KB; empty means cross-KB
+        top_k: Number of results to return
+        score_threshold: Minimum cosine similarity threshold (0~1); <=0 uses backend default (0.35). Lower to recall more chunks
+        balance_kbs: Whether to balance results across KBs in cross-KB search (default False). True prevents large KBs from dominating results
 
     Returns:
         {success, results: [{content, score, doc_path, chunk_index, kb_id}]}
@@ -1147,18 +1145,18 @@ async def kb_search_two_stage(
     score_threshold: float = 0.0,
     balance_kbs: bool = False,
 ) -> str:
-    """两阶段精准检索：先广搜索定位候选文档，再向量精筛片段。
+    """Two-stage precision search: first broad search to locate candidate documents, then vector fine-search for chunks.
 
-    推荐 Agent 首选此工具，比纯向量检索更精准，避免幻觉。
+    Recommended as the preferred tool for agents - more precise than pure vector search, reduces hallucination risk.
 
     Args:
-        query: 用户问题
-        kb_id: 限定知识库；空则跨库
-        stage1_top_k: Stage 1 候选文档数
-        stage2_top_k: Stage 2 每文档返回片段数
-        enable_graph_expansion: 是否启用图谱邻居扩展
-        score_threshold: 向量相似度阈值（0~1）；<=0 用后端默认(0.35)
-        balance_kbs: 跨库搜索时是否均衡结果（默认 False）。设为 True 可防大KB主导结果
+        query: User question
+        kb_id: Limit to specific KB; empty means cross-KB
+        stage1_top_k: Number of candidate documents in Stage 1
+        stage2_top_k: Number of chunks per document in Stage 2
+        enable_graph_expansion: Whether to enable graph neighbor expansion
+        score_threshold: Vector similarity threshold (0~1); <=0 uses backend default (0.35)
+        balance_kbs: Whether to balance results across KBs in cross-KB search (default False). True prevents large KBs from dominating
 
     Returns:
         {success, stage1: {candidates}, stage2: {results}, total_results}
@@ -1171,35 +1169,35 @@ async def kb_search_two_stage(
 
 @mcp.tool()
 async def kb_reindex(kb_id: str = "", force: bool = False) -> str:
-    """重建向量索引和知识图谱。kb_id 为空则重建全部。
+    """Rebuild vector index and knowledge graph. Empty kb_id rebuilds all.
 
-    force=True 时强制重建所有文档（包括已索引的）。
+    force=True forces rebuild of all documents (including already indexed ones).
     """
     return _j(await _client().reindex(kb_id, force))
 
 
 @mcp.tool()
 async def kb_index_document(kb_id: str = "", doc_path: str = "", doc_id: str = "", doc_name: str = "", description: str = "", content: str = "") -> str:
-    """单文档向量+图谱索引。将文档内容（或已有文档）存入向量数据库并记录 vector_index 到元信息。
+    """Index a single document (vector + graph). Stores document content (or existing document) into the vector database and records vector_index in metadata.
 
-    支持两种调用方式：
-    1. 提供 doc_id（文档 UUID）→ 自动解析 kb_id 和 doc_path
-    2. 提供 kb_id + doc_path → 直接使用
+    Two invocation modes:
+    1. Provide doc_id (document UUID) -> auto-resolves kb_id and doc_path
+    2. Provide kb_id + doc_path -> direct usage
 
-    用于手动触发文档的向量索引构建。如果提供 content 则直接使用，否则从存储自动读取。
-    索引完成后会在 .knowledge-base.yml 的对应文档记录 vector_index 信息（含 collection、chunks 等）。
-    同时会重建 BM25 关键词索引使后续两阶段检索能定位到该文档。
+    Used to manually trigger vector index construction for a document. If content is provided, it is used directly; otherwise auto-reads from storage.
+    After indexing, records vector_index information (collection, chunks, etc.) in .knowledge-base.yml for the corresponding document.
+    Also rebuilds BM25 keyword index so subsequent two-stage search can locate this document.
 
     **Atomic**: ONLY indexes (vector + graph + YAML metadata writeback).
     Does NOT create or modify the document file itself.
 
     Args:
-        kb_id: 知识库 ID 或路径（doc_id 模式下可省略）
-        doc_path: 文档在 KB 中的相对路径（doc_id 模式下可省略）
-        doc_id: 文档 UUID（来自 .knowledge-base.yml），提供时自动解析上述两项
-        doc_name: 文档名称
-        description: 文档描述
-        content: 文档正文内容；为空则从文件自动读取
+        kb_id: Knowledge base ID or path (optional in doc_id mode)
+        doc_path: Relative path of the document within the KB (optional in doc_id mode)
+        doc_id: Document UUID (from .knowledge-base.yml); when provided, auto-resolves the above two
+        doc_name: Document name
+        description: Document description
+        content: Document body content; auto-reads from file if empty
 
     Returns:
         {success, vector_index: {collection, chunk_id_prefix, total_chunks, graph_doc_id}, graph_stats: {entities, relations}}
@@ -1213,15 +1211,15 @@ async def kb_batch_index(
     doc_paths: list,
     force: bool = False,
 ) -> str:
-    """批量文档向量+图谱索引。
+    """Batch index documents (vector + graph).
 
-    一次性对知识库中的多个文档建立向量索引和知识图谱索引。
-    索引后会更新 .knowledge-base.yml 中的 vector_index 元信息。
+    Builds vector index and knowledge graph index for multiple documents in a KB at once.
+    Updates vector_index metadata in .knowledge-base.yml after indexing.
 
     Args:
-        kb_id: 知识库 ID 或路径
-        doc_paths: 文档相对路径列表（如 ["doc1.md", "doc2.md"]）
-        force: 是否覆盖已有索引
+        kb_id: Knowledge base ID or path
+        doc_paths: List of relative document paths (e.g. ["doc1.md", "doc2.md"])
+        force: Whether to overwrite existing index
 
     Returns:
         {success, indexed: [...], skipped: [...], errors: [...], total_indexed}
@@ -1231,10 +1229,10 @@ async def kb_batch_index(
 
 @mcp.tool()
 async def kb_search_stats(kb_id: str = "") -> str:
-    """向量索引统计信息。查看各知识库在向量数据库中的索引情况。
+    """Vector index statistics. View each knowledge base's index status in the vector database.
 
     Args:
-        kb_id: 可选，限定知识库；空则返回全部
+        kb_id: Optional, limit to specific KB; empty returns all
 
     Returns:
         {success, stats: {collections: [{collection, chunk_count}]}}
@@ -1244,32 +1242,32 @@ async def kb_search_stats(kb_id: str = "") -> str:
 
 @mcp.tool()
 async def kb_cleanup_orphan_collections(dry_run: bool = True) -> str:
-    """检测并清理孤儿/重复的向量 collection（KB 已删除/改名但向量索引残留）。
+    """Detect and clean up orphan/duplicate vector collections (vector index residue from deleted/renamed KBs).
 
-    孤儿 collection 占用空间并拖慢跨库检索（实测 27 collection vs 10 KB）。
-    本工具：① 列出向量库所有 collection ② 递归识别所有 KB（顶层 + 子KB）③ 对比找孤儿/重复 ④ 报告或清理。
+    Orphan collections waste space and slow down cross-KB search (observed: 27 collections vs 10 KBs).
+    This tool: 1) Lists all collections in the vector store 2) Recursively identifies all KBs (top-level + sub-KBs) 3) Compares to find orphans/duplicates 4) Reports or cleans.
 
-    ⚠️ 子KB 安全保护：递归读取 .tree-fs.json 收集所有 isKnowledgeBase 节点（含子KB），
-    子KB 的 UUID collection 不会被误判为孤儿。这修复了早期版本误删高分子子库向量的事故。
+    ⚠️ Sub-KB safety protection: recursively reads .tree-fs.json to collect all isKnowledgeBase nodes (including sub-KBs),
+    so sub-KB UUID collections are NOT misidentified as orphans. This fixes the early-version incident where polymer sub-KB vectors were accidentally deleted.
 
-    分类：
-    - **orphan（孤儿）**：collection 的 key 不匹配任何 KB（顶层或子KB）的 UUID/path/name（含测试残留 zzz_*/test*）
-    - **duplicate（重复）**：KB 同时有 kb_{UUID} 和 kb_{path} 两个 collection（历史索引命名分裂）
+    Classification:
+    - **orphan**: collection key does not match any KB (top-level or sub-KB) UUID/path/name (including test residue zzz_*/test*)
+    - **duplicate**: KB has both kb_{UUID} and kb_{path} collections (historical index naming split)
 
     Args:
-        dry_run: True=仅检测报告（默认，安全）；False=执行清理（不可逆）
+        dry_run: True=detect only (default, safe); False=execute cleanup (irreversible)
 
     Returns:
         dry_run=True:  {success, total_collections, top_kb_count, sub_kb_count, valid_collections, orphan_count, duplicate_count, reclaimable_chunks, orphans[], duplicates[], hint}
         dry_run=False: {success, cleaned_count, cleaned_ok, cleaned[]}
     """
     client = _client()
-    # 1. 向量库所有 collection
+    # 1. All collections in vector store
     stats = await client.search_stats("")
     collections = (stats.get("stats", {}) or {}).get("collections", []) if isinstance(stats, dict) else []
     all_col_names = {c.get("collection", "") for c in collections}
 
-    # 2. 当前所有 KB（UUID + path + name）—— 递归含子KB，避免误删
+    # 2. All current KBs (UUID + path + name) - recursive, includes sub-KBs to avoid accidental deletion
     kb_data = await client.kb_list()
     top_kbs = (kb_data.get("knowledgeBases", []) if isinstance(kb_data, dict) else [])
     uuid_to_kb = {}  # id -> {kbId, path, name, _sub?}
@@ -1278,9 +1276,9 @@ async def kb_cleanup_orphan_collections(dry_run: bool = True) -> str:
             uuid_to_kb[kb["kbId"]] = kb
     top_kb_count = len(uuid_to_kb)
 
-    # 递归读取 .tree-fs.json，收集所有 isKnowledgeBase 节点（子KB）
-    # ⚠️ kb_list 只返回顶层 KB；子KB（独立 isKnowledgeBase 文件夹）的 collection
-    #    用子KB UUID，必须纳入 valid 集合，否则被误判为孤儿误删（2026-07-13 PVA 事故根因）
+    # Recursively read .tree-fs.json, collect all isKnowledgeBase nodes (sub-KBs)
+    # ⚠️ kb_list only returns top-level KBs; sub-KBs (independent isKnowledgeBase folders)
+    #    use sub-KB UUID and must be included in the valid set, otherwise they are misidentified as orphans and wrongly deleted (root cause of 2026-07-13 PVA incident)
     tree = await client.fs_get_tree()
     sub_kb_count = 0
     def _collect_kb_nodes(nodes):
@@ -1300,7 +1298,7 @@ async def kb_cleanup_orphan_collections(dry_run: bool = True) -> str:
     tree_list = tree if isinstance(tree, list) else ([tree] if isinstance(tree, dict) else [])
     _collect_kb_nodes(tree_list)
 
-    # path/name → uuid 映射（含子KB），用于 path 形式 collection 判定
+    # path/name -> uuid mapping (includes sub-KBs), used for path-form collection judgment
     path_to_uuid = {}
     for uid, kb in uuid_to_kb.items():
         if kb.get("path"):
@@ -1308,7 +1306,7 @@ async def kb_cleanup_orphan_collections(dry_run: bool = True) -> str:
         if kb.get("name"):
             path_to_uuid[kb["name"]] = uid
 
-    # 3. 分类（子KB UUID 现已纳入 uuid_to_kb，不会被误判孤儿）
+    # 3. Classify (sub-KB UUIDs are now in uuid_to_kb, will not be misidentified as orphans)
     orphans = []
     duplicates = []
     for c in collections:
@@ -1318,19 +1316,19 @@ async def kb_cleanup_orphan_collections(dry_run: bool = True) -> str:
         key = name[3:]
         chunks = c.get("chunk_count", 0)
         if key in uuid_to_kb:
-            continue  # 有效 UUID collection（顶层 KB 或子KB）
+            continue  # Valid UUID collection (top-level KB or sub-KB)
         if key in path_to_uuid:
             uid = path_to_uuid[key]
             if f"kb_{uid}" in all_col_names:
                 uid_chunks = next((cc.get("chunk_count", 0) for cc in collections if cc.get("collection") == f"kb_{uid}"), 0)
                 duplicates.append({
                     "collection": name, "key": key, "chunk_count": chunks,
-                    "note": f"重复: KB 已有 UUID collection kb_{uid}({uid_chunks} chunks)"
+                    "note": f"Duplicate: KB already has UUID collection kb_{uid}({uid_chunks} chunks)"
                 })
-            # else: path collection 无 UUID 版，视为有效保留
+            # else: path collection without UUID version, keep as valid
         else:
             kl = key.lower()
-            note = "测试残留" if (key.startswith("zzz_") or "test" in kl or "move_test" in kl) else "孤儿: 无对应 KB"
+            note = "test residue" if (key.startswith("zzz_") or "test" in kl or "move_test" in kl) else "orphan: no matching KB"
             orphans.append({"collection": name, "key": key, "chunk_count": chunks, "note": note})
 
     total = len(collections)
@@ -1346,10 +1344,10 @@ async def kb_cleanup_orphan_collections(dry_run: bool = True) -> str:
             "orphan_count": len(orphans), "duplicate_count": len(duplicates),
             "reclaimable_chunks": reclaimable,
             "orphans": orphans, "duplicates": duplicates,
-            "hint": "确认后用 dry_run=False 执行清理（不可逆）。重复 collection 清理前请确认 UUID 版本已覆盖其 chunks。",
+            "hint": "Use dry_run=False to execute cleanup (irreversible). For duplicate collections, confirm the UUID version covers its chunks before cleaning.",
         })
 
-    # 实际清理
+    # Actual cleanup
     cleaned = []
     for o in orphans + duplicates:
         key = o["key"]
@@ -1367,143 +1365,143 @@ async def kb_cleanup_orphan_collections(dry_run: bool = True) -> str:
 
 @mcp.tool()
 async def kb_graph_search(keyword: str, limit: int = 20) -> str:
-    """搜索知识图谱中的文档节点（按名称/路径）。"""
+    """Search document nodes in the knowledge graph (by name/path)."""
     return _j(await _client().graph_search(keyword, limit))
 
 
 @mcp.tool()
 async def kb_graph_search_kbs(keyword: str, limit: int = 20) -> str:
-    """搜索知识图谱中的知识库节点。"""
+    """Search knowledge base nodes in the knowledge graph."""
     return _j(await _client().graph_search_kbs(keyword, limit))
 
 
 @mcp.tool()
 async def kb_graph_search_tags(keyword: str, limit: int = 20) -> str:
-    """搜索知识图谱中的标签节点。"""
+    """Search tag nodes in the knowledge graph."""
     return _j(await _client().graph_search_tags(keyword, limit))
 
 
 @mcp.tool()
 async def kb_graph_neighbors(node_id: str, node_type: str = "document", depth: int = 1) -> str:
-    """获取节点（文档/KB/标签）的邻居子图。node_type: document|kb|tag"""
+    """Get the neighbor subgraph of a node (document/KB/tag). node_type: document|kb|tag"""
     return _j(await _client().graph_neighbors(node_id, node_type, depth))
 
 
 @mcp.tool()
 async def kb_graph_stats() -> str:
-    """返回知识图谱统计信息。"""
+    """Return knowledge graph statistics."""
     return _j(await _client().graph_stats())
 
 
 @mcp.tool()
 async def kb_graph_health() -> str:
-    """检查 Neo4j 知识图谱是否可用（健康探测，永不抛错）。"""
+    """Check whether the Neo4j knowledge graph is available (health probe, never throws)."""
     return _j(await _client().graph_health())
 
 
 @mcp.tool()
 async def kb_graph_document(doc_path: str, limit: int = 50) -> str:
-    """查看单文档的知识图谱视图：文档信息、标签、关联文档、跨 KB 连接。
+    """View a single document's knowledge graph: document info, tags, related documents, cross-KB connections.
 
-    根据文档路径找到该文档在 Neo4j 中的全部图谱信息。
-    返回：{document, tags, related_documents, cross_kb_links, ...}"""
+    Finds all graph information for the document in Neo4j by its path.
+    Returns: {document, tags, related_documents, cross_kb_links, ...}"""
     return _j(await _client().graph_document(doc_path, limit))
 
 
 @mcp.tool()
 async def kb_graph_document_related(doc_path: str, limit: int = 20) -> str:
-    """返回与某文档关联的其他文档（基于同KB/共享标签/描述相似度）。"""
+    """Return documents related to a given document (based on same KB / shared tags / description similarity)."""
     return _j(await _client().graph_document_related(doc_path, limit))
 
 
 @mcp.tool()
 async def kb_graph_document_enhanced(doc_path: str, limit: int = 20) -> str:
-    """增强版文档关联查询：按连接类型分组展示真正相关的文档。
+    """Enhanced document relation query: groups results by connection type to show truly related documents.
 
-    与 kb_graph_document_related 的区别：
-    - 结果按连接类型分组：by_vector_similar(内容相似) + by_shared_tags(标签相关) + by_agent_judged(Agent判定)
-    - 每条 shared_tag 连接包含 shared_tags 字段（具体哪些标签重叠）
-    - 每条 vector_similar 连接包含相似度分数
-    - 包含 summary 统计（各类型数量 + 跨KB数量）
-    - 自动过滤弱关联（shared_tag weight<2 不返回）
+    Differences from kb_graph_document_related:
+    - Results grouped by connection type: by_vector_similar (content similarity) + by_shared_tags (tag overlap) + by_agent_judged (agent judgment)
+    - Each shared_tag connection includes shared_tags field (which specific tags overlap)
+    - Each vector_similar connection includes similarity score
+    - Includes summary statistics (counts per type + cross-KB count)
+    - Automatically filters weak relations (shared_tag weight < 2 not returned)
 
-    适用场景：
-    - 查看某个文档的"真正相关文档"，了解为什么相关
-    - 判断文档聚类是否有意义
-    - 验证图谱构建质量"""
+    Use cases:
+    - View a document's "truly related documents" and understand why they are related
+    - Judge whether document clustering is meaningful
+    - Verify graph build quality"""
     return _j(await _client().graph_document_enhanced(doc_path, limit))
 
 
 @mcp.tool()
 async def kb_graph_documents_by_tag(tag_name: str, limit: int = 50) -> str:
-    """按标签查找文档。"""
+    """Find documents by tag."""
     return _j(await _client().graph_documents_by_tag(tag_name, limit))
 
 
 @mcp.tool()
 async def kb_graph_kb_overview(kb_id: str) -> str:
-    """KB 级图谱概览：文档统计、标签分布、关联 KB、Top 关联文档。
+    """KB-level graph overview: document statistics, tag distribution, related KBs, top related documents.
 
-    查看某个知识库的图谱整体情况，发现该 KB 的核心文档和关联。"""
+    View the overall graph state of a knowledge base and discover its core documents and connections."""
     return _j(await _client().graph_kb_overview(kb_id))
 
 
 @mcp.tool()
 async def kb_graph_build_kb(kb_id: str, force: bool = False) -> str:
-    """为整个知识库构建文档关系图谱（基于 metadata，不读文档内容）。
+    """Build the document relationship graph for an entire KB (based on metadata, does not read document content).
 
-    遍历 KB 内所有文档的 metadata（name, description, tags），
-    通过共享标签/同KB/描述相似度建立文档间 RELATED_TO 关系。
-    force=True：先清空再重建；force=False：增量（跳过已索引文档）。
-    返回：{docs_processed, docs_skipped, total_relations, errors, ...}"""
+    Iterates all documents' metadata (name, description, tags) within the KB,
+    builds RELATED_TO relationships between documents via shared tags/same KB/description similarity.
+    force=True: clear and rebuild; force=False: incremental (skip already-indexed documents).
+    Returns: {docs_processed, docs_skipped, total_relations, errors, ...}"""
     return _j(await _client().graph_build_kb(kb_id, force))
 
 
 @mcp.tool()
 async def kb_graph_build_all(force: bool = False) -> str:
-    """为所有知识库构建文档关系图谱。
+    """Build document relationship graphs for all knowledge bases.
 
-    遍历全部 KB 构建图谱，跨 KB 共享标签自动形成跨知识库关联。
-    返回：{total_top_kbs, kbs: [{kb_id, docs_processed, ...}], ...}"""
+    Iterates all KBs to build graphs; cross-KB shared tags automatically form cross-knowledge-base connections.
+    Returns: {total_top_kbs, kbs: [{kb_id, docs_processed, ...}], ...}"""
     return _j(await _client().graph_build_all(force))
 
 
 @mcp.tool()
 async def kb_graph_cross_kb_documents(min_kbs: int = 2, limit: int = 50) -> str:
-    """发现跨知识库的桥梁文档——关联到 >= min_kbs 个不同 KB 的文档。
+    """Discover cross-knowledge-base bridge documents - documents connected to >= min_kbs different KBs.
 
-    这些文档是连接不同知识库的骨干。
-    返回：{documents: [{name, path, kb_id, tags, related_kb_count}], ...}"""
+    These documents are the backbone connecting different knowledge bases.
+    Returns: {documents: [{name, path, kb_id, tags, related_kb_count}], ...}"""
     return _j(await _client().graph_cross_kb_documents(min_kbs, limit))
 
 
 @mcp.tool()
 async def kb_graph_document_paths(doc_a: str, doc_b: str, max_depth: int = 4) -> str:
-    """查找两个文档之间的最短关系路径（经 RELATED_TO 关系链）。
+    """Find the shortest relationship path between two documents (via RELATED_TO relationship chains).
 
-    展示文档如何通过共享标签/同KB等关联链相连。
-    返回：{paths: [{doc_path, reasons, hops}], path_count}"""
+    Shows how documents are connected through shared tags/same KB and other relationship chains.
+    Returns: {paths: [{doc_path, reasons, hops}], path_count}"""
     return _j(await _client().graph_document_paths(doc_a, doc_b, max_depth))
 
 
 @mcp.tool()
 async def kb_graph_central_documents(kb_id: str, top_n: int = 20) -> str:
-    """找出 KB 内关联度最高的文档（按 RELATED_TO 度中心性）。
+    """Find the most central documents in a KB (by RELATED_TO degree centrality).
 
-    这些是 KB 的核心文档，用于理解知识库的主要话题结构。
-    返回：{documents: [{name, path, degree, total_weight}], ...}"""
+    These are the core documents of the KB, useful for understanding the main topic structure.
+    Returns: {documents: [{name, path, degree, total_weight}], ...}"""
     return _j(await _client().graph_central_documents(kb_id, top_n))
 
 
 @mcp.tool()
 async def kb_graph_delete_document(doc_path: str) -> str:
-    """删除单文档的图谱数据（共享实体保留，仅移除该文档的贡献）。"""
+    """Delete a single document's graph data (shared entities preserved, only removes this document's contribution)."""
     return _j(await _client().graph_delete_document(doc_path))
 
 
 @mcp.tool()
 async def kb_graph_delete_kb(kb_id: str) -> str:
-    """删除整个 KB 的图谱数据（跨 KB 共享实体保留）。"""
+    """Delete an entire KB's graph data (cross-KB shared entities preserved)."""
     return _j(await _client().graph_delete_kb(kb_id))
 
 

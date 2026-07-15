@@ -17,7 +17,7 @@ DEFAULT_WEB_URL = ""  # set by caller via config.WEB_URL
 DEFAULT_BACKEND_URL = ""  # set by caller via config.BACKEND_URL
 HTTP_TIMEOUT = int(os.environ.get("MCP_HTTP_TIMEOUT", "30"))
 PARSE_TIMEOUT = int(os.environ.get("MCP_PARSE_TIMEOUT", "5000"))
-INDEX_TIMEOUT = int(os.environ.get("MCP_INDEX_TIMEOUT", "600"))  # 大文档 CPU embedding 耗时长，索引类调用单独放宽到 600s
+INDEX_TIMEOUT = int(os.environ.get("MCP_INDEX_TIMEOUT", "600"))  # Large-document CPU embedding takes time; relax index calls to 600s
 # Shared auth token — when set, attached as `Authorization: Bearer <token>` to all requests.
 AUTH_TOKEN = os.environ.get("KB_AUTH_TOKEN", "")
 
@@ -407,27 +407,27 @@ class KbClient:
         return results
 
     # ================================================================
-    # BACKEND POST/GET (新增：让 MCP 工具能调用后端 search/graph API)
+    # BACKEND POST/GET (allows MCP tools to call backend search/graph APIs)
     # ================================================================
 
     async def _post_backend_json(self, endpoint, body, timeout=None):
-        """POST JSON 到后端（base=self.backend_url）。timeout=None 用客户端默认；索引类调用传 INDEX_TIMEOUT。"""
+        """POST JSON to backend (base=self.backend_url). timeout=None uses client default; index calls pass INDEX_TIMEOUT."""
         kwargs = {"json": body}
         if timeout:
             kwargs["timeout"] = timeout
         return await self._request("POST", endpoint, base=self.backend_url, **kwargs)
 
     async def _get_backend(self, endpoint, **params):
-        """GET 后端接口。"""
+        """GET backend endpoint."""
         return await self._request("GET", endpoint, base=self.backend_url, params=params)
 
     # ================================================================
-    # 向量检索与两阶段检索（新增）
+    # VECTOR & TWO-STAGE SEARCH
     # ================================================================
 
     async def vector_search(self, query, kb_id="", top_k=5, score_threshold=0.0, balance_kbs=False):
-        """向量语义搜索。score_threshold<=0 表示用后端默认阈值。
-        balance_kbs=True 时跨库均衡，防大KB主导结果。"""
+        """Vector semantic search. score_threshold<=0 uses backend default.
+        balance_kbs=True balances across KBs to prevent large-KB dominance."""
         body = {"query": query, "top_k": top_k}
         if kb_id:
             body["kb_id"] = kb_id
@@ -438,7 +438,7 @@ class KbClient:
         return await self._post_backend_json("/api/v1/search/vector", body)
 
     async def batch_vector_search(self, query_doc_paths, kb_id="", top_k=5, score_threshold=0.3):
-        """批量向量相似度查询：对多个源文档查询相似文档。"""
+        """Batch vector similarity query: find similar documents for multiple source documents."""
         body = {
             "query_doc_paths": query_doc_paths,
             "top_k": top_k,
@@ -451,8 +451,8 @@ class KbClient:
     async def two_stage_search(self, query, kb_id="", stage1_top_k=20,
                                 stage2_top_k=5, enable_graph_expansion=True,
                                 score_threshold=0.0, balance_kbs=False):
-        """两阶段精准检索。score_threshold<=0 表示用后端默认阈值。
-        balance_kbs=True 时跨库均衡，防大KB主导结果。"""
+        """Two-stage precision search. score_threshold<=0 uses backend default.
+        balance_kbs=True balances across KBs to prevent large-KB dominance."""
         body = {
             "query": query,
             "stage1_top_k": stage1_top_k,
@@ -468,18 +468,18 @@ class KbClient:
         return await self._post_backend_json("/api/v1/search/two-stage", body)
 
     async def reindex(self, kb_id="", force=False):
-        """重建索引。"""
+        """Rebuild index."""
         body = {"force": force}
         if kb_id:
             body["kb_id"] = kb_id
         return await self._post_backend_json("/api/v1/search/reindex", body, timeout=INDEX_TIMEOUT)
 
     async def index_document(self, kb_id, doc_path, doc_name="", description="", content="", doc_id=""):
-        """单文档索引：向量 + 图谱。存入向量库并记录 vector_index 到元信息。
+        """Index a single document: vector + graph. Stores vectors and records vector_index in metadata.
 
-        支持两种模式：
-        1. doc_id 模式：提供 doc_id，自动解析 kb_id 和 doc_path
-        2. 传统模式：提供 kb_id + doc_path
+        Supports two modes:
+        1. doc_id mode: provide doc_id, auto-resolves kb_id and doc_path
+        2. Legacy mode: provide kb_id + doc_path
         """
         body = {
             "kb_id": kb_id,
@@ -493,7 +493,7 @@ class KbClient:
         return await self._post_backend_json("/api/v1/search/index-document", body, timeout=INDEX_TIMEOUT)
 
     async def batch_index_documents(self, kb_id, doc_paths, force=False):
-        """批量文档向量索引。"""
+        """Batch document vector indexing."""
         body = {
             "kb_id": kb_id,
             "doc_paths": doc_paths,
@@ -502,14 +502,15 @@ class KbClient:
         return await self._post_backend_json("/api/v1/search/batch-index", body, timeout=INDEX_TIMEOUT)
 
     async def search_stats(self, kb_id=""):
-        """向量索引统计。"""
+        """Vector index statistics."""
         return await self._get_backend("/api/v1/search/stats", kb_id=kb_id)
 
     async def delete_kb_vectors(self, kb_id: str, kb_path: str = ""):
-        """删除某 KB 的整个向量 collection（后端 DELETE /api/v1/search/kb/{kb_id}）。
+        """Delete an entire KB's vector collection (backend DELETE /api/v1/search/kb/{kb_id}).
 
-        后端自动清理 kb_{uuid} 与 kb_{path} 两种命名约定，对不存在的 collection 静默处理。
-        用于孤儿 collection 清理。kb_path 可选，传则同时清理 path 命名的 collection。
+        Backend auto-cleans both kb_{uuid} and kb_{path} naming conventions,
+        silently handling non-existent collections. Used for orphan collection cleanup.
+        kb_path is optional; when passed, also cleans the path-named collection.
         """
         params = {"kb_path": kb_path} if kb_path else {}
         return await self._request(
@@ -518,118 +519,118 @@ class KbClient:
         )
 
     async def graph_search(self, keyword, limit=20):
-        """图谱文档搜索（按名称/路径）。"""
+        """Graph document search (by name/path)."""
         return await self._get_backend(
             "/api/v1/graph/search/documents", keyword=keyword, limit=limit
         )
 
     async def graph_search_kbs(self, keyword, limit=20):
-        """图谱 KB 搜索。"""
+        """Graph KB search."""
         return await self._get_backend(
             "/api/v1/graph/search/kbs", keyword=keyword, limit=limit
         )
 
     async def graph_search_tags(self, keyword, limit=20):
-        """图谱标签搜索。"""
+        """Graph tag search."""
         return await self._get_backend(
             "/api/v1/graph/search/tags", keyword=keyword, limit=limit
         )
 
     async def graph_neighbors(self, node_id, node_type="document", depth=1):
-        """图谱邻居子图（文档/KB/标签）。"""
+        """Graph neighbor subgraph (document/KB/tag)."""
         return await self._get_backend(
             "/api/v1/graph/neighbors", node_id=node_id, node_type=node_type, depth=depth
         )
 
     async def graph_stats(self):
-        """图谱统计。"""
+        """Graph statistics."""
         return await self._get_backend("/api/v1/graph/stats")
 
     # ──────────────────────────────────────────────────────────────
-    # GRAPH v3（文档/KB/标签为中心，无 NER）
+    # GRAPH v3 (document/KB/tag centric, no NER)
     # ──────────────────────────────────────────────────────────────
 
     async def graph_health(self) -> dict:
-        """图谱健康探测（Neo4j 是否可用）。"""
+        """Graph health probe (Neo4j availability)."""
         return await self._get_backend("/api/v1/graph/health")
 
     async def graph_document(self, doc_path: str, limit: int = 50) -> dict:
-        """单文档图谱视图：文档信息 + 标签 + 关联文档 + 跨 KB 连接。"""
+        """Single document graph view: doc info + tags + related docs + cross-KB connections."""
         return await self._get_backend("/api/v1/graph/document",
                                        doc_path=doc_path, limit=limit)
 
     async def graph_document_related(self, doc_path: str, limit: int = 20) -> dict:
-        """文档的关联文档列表（质量过滤）。"""
+        """Document's related document list (quality-filtered)."""
         return await self._get_backend("/api/v1/graph/document/related",
                                        doc_path=doc_path, limit=limit)
 
     async def graph_document_enhanced(self, doc_path: str, limit: int = 20) -> dict:
-        """增强版文档关联查询：按连接类型分组（vector_similar/shared_tag/agent_judged）。"""
+        """Enhanced document relation query: grouped by connection type (vector_similar/shared_tag/agent_judged)."""
         return await self._get_backend("/api/v1/graph/document/enhanced",
                                        doc_path=doc_path, limit=limit)
 
     async def graph_documents_by_tag(self, tag_name: str, limit: int = 50) -> dict:
-        """按标签查找文档。"""
+        """Find documents by tag."""
         return await self._get_backend("/api/v1/graph/documents-by-tag",
                                        tag_name=tag_name, limit=limit)
 
     async def graph_kb_overview(self, kb_id: str) -> dict:
-        """KB 图谱概览：文档统计 + 标签分布 + 关联 KB + Top 文档。"""
+        """KB graph overview: doc stats + tag distribution + related KBs + top docs."""
         return await self._get_backend("/api/v1/graph/kb-overview", kb_id=kb_id)
 
     async def graph_build_kb(self, kb_id: str, force: bool = False) -> dict:
-        """为整个 KB 构建文档关系图谱（基于 metadata）。"""
+        """Build document relationship graph for an entire KB (based on metadata)."""
         return await self._post_backend_json(
             "/api/v1/graph/build-kb",
             {"kb_id": kb_id, "force": force}, timeout=INDEX_TIMEOUT,
         )
 
     async def graph_build_all(self, force: bool = False) -> dict:
-        """为所有 KB 构建文档关系图谱。"""
+        """Build document relationship graph for all KBs."""
         return await self._post_backend_json(
             "/api/v1/graph/build-all",
             {"force": force}, timeout=INDEX_TIMEOUT,
         )
 
     async def graph_cross_kb_documents(self, min_kbs: int = 2, limit: int = 50) -> dict:
-        """跨 KB 桥梁文档。"""
+        """Cross-KB bridge documents."""
         return await self._get_backend(
             "/api/v1/graph/cross-kb-documents", min_kbs=min_kbs, limit=limit,
         )
 
     async def graph_document_paths(self, doc_a: str, doc_b: str,
                                     max_depth: int = 4) -> dict:
-        """两文档间最短路径。"""
+        """Shortest path between two documents."""
         return await self._get_backend(
             "/api/v1/graph/document-paths",
             doc_a=doc_a, doc_b=doc_b, max_depth=max_depth,
         )
 
     async def graph_central_documents(self, kb_id: str, top_n: int = 20) -> dict:
-        """KB 内关联度最高的文档。"""
+        """Most connected documents within a KB."""
         return await self._get_backend(
             "/api/v1/graph/central-documents", kb_id=kb_id, top_n=top_n,
         )
 
     async def graph_delete_document(self, doc_path: str) -> dict:
-        """删除单文档图谱数据。"""
+        """Delete graph data for a single document."""
         return await self._request(
             "DELETE", "/api/v1/graph/document",
             base=self.backend_url, params={"doc_path": doc_path},
         )
 
     async def graph_delete_kb(self, kb_id: str) -> dict:
-        """删除整个 KB 的图谱数据。"""
+        """Delete all graph data for an entire KB."""
         return await self._request(
             "DELETE", f"/api/v1/graph/kb/{kb_id}", base=self.backend_url,
         )
 
     # ================================================================
-    # EXPERIENCE MANAGEMENT (经验管理)
+    # EXPERIENCE MANAGEMENT
     # ================================================================
 
     async def experience_init(self, kb_id: str) -> dict:
-        """初始化经验文件夹。"""
+        """Initialize the experience folder."""
         return await self._get_backend(f"/api/v1/experience/{kb_id}/init")
 
     async def experience_create(self, kb_id: str, title: str,
@@ -638,7 +639,7 @@ class KbClient:
         key_lessons: list = None, tags: list = None,
         severity: str = "normal", related_docs: list = None,
         prerequisites: list = None, metrics: dict = None) -> dict:
-        """创建新经验记录。"""
+        """Create a new experience record."""
         body = {
             "title": title, "scenario": scenario, "category": category,
             "problem": problem, "solution": solution, "result": result,
@@ -649,19 +650,19 @@ class KbClient:
         return await self._post_backend_json(f"/api/v1/experience/{kb_id}", body)
 
     async def experience_reindex(self, kb_id: str, exp_id: str = None) -> dict:
-        """重索引经验到向量库。exp_id 为空则重索引整个 KB 的所有经验。"""
+        """Reindex experience into vector store. exp_id=None reindexes all experiences in the KB."""
         body = {}
         if exp_id:
             body["exp_id"] = exp_id
         return await self._post_backend_json(f"/api/v1/experience/{kb_id}/reindex", body)
 
     async def experience_read(self, kb_id: str, exp_id: str) -> dict:
-        """读取经验元数据和正文。"""
+        """Read experience metadata and content."""
         return await self._get_backend(f"/api/v1/experience/{kb_id}/{exp_id}")
 
     async def experience_list(self, kb_id: str, scenario: str = "",
         category: str = "", tag: str = "") -> dict:
-        """列出经验，支持按场景/类别/标签过滤。"""
+        """List experiences, optionally filtered by scenario/category/tag."""
         params = {}
         if scenario: params["scenario"] = scenario
         if category: params["category"] = category
@@ -669,105 +670,105 @@ class KbClient:
         return await self._get_backend(f"/api/v1/experience/{kb_id}", **params)
 
     async def experience_update(self, kb_id: str, exp_id: str, **kwargs) -> dict:
-        """更新经验。传需要更新的字段。"""
+        """Update experience. Pass only the fields to update."""
         body = {k: v for k, v in kwargs.items() if v is not None and v != ""}
         return await self._request("PUT", f"/api/v1/experience/{kb_id}/{exp_id}",
                                    base=self.backend_url, json=body)
 
     async def experience_delete(self, kb_id: str, exp_id: str) -> dict:
-        """永久删除经验。"""
+        """Permanently delete an experience."""
         return await self._request("DELETE", f"/api/v1/experience/{kb_id}/{exp_id}",
                                    base=self.backend_url)
 
     async def experience_apply(self, kb_id: str, exp_id: str,
         user: str = "", context: str = "", result: str = "", notes: str = "") -> dict:
-        """标记经验被应用。"""
+        """Mark an experience as applied."""
         body = {"user": user, "context": context, "result": result, "notes": notes}
         return await self._post_backend_json(
             f"/api/v1/experience/{kb_id}/{exp_id}/apply", body)
 
     async def experience_review(self, kb_id: str, exp_id: str,
         reviewer: str = "", rating: float = 5.0, comment: str = "") -> dict:
-        """评审经验（评分）。"""
+        """Review an experience (rating)."""
         body = {"reviewer": reviewer, "rating": rating, "comment": comment}
         return await self._post_backend_json(
             f"/api/v1/experience/{kb_id}/{exp_id}/review", body)
 
     async def experience_summary(self, kb_id: str) -> dict:
-        """获取经验统计摘要。"""
+        """Get experience statistics summary."""
         return await self._get_backend(f"/api/v1/experience/{kb_id}/summary")
 
     async def experience_search(self, kb_id: str, query: str, top_k: int = 10) -> dict:
-        """元信息搜索经验。"""
+        """Metadata search for experiences."""
         body = {"query": query, "top_k": top_k}
         return await self._post_backend_json(f"/api/v1/experience/{kb_id}/search", body)
 
     async def experience_search_vector(self, kb_id: str, query: str, top_k: int = 5) -> dict:
-        """向量语义搜索经验。"""
+        """Vector semantic search for experiences."""
         body = {"query": query, "top_k": top_k}
         return await self._post_backend_json(f"/api/v1/experience/{kb_id}/vector-search", body)
 
     async def experience_search_global(self, query: str, top_k: int = 10,
                                         score_threshold: float = None,
                                         verify_content: bool = True) -> dict:
-        """跨 KB 全局经验检索 — QDCVR 流程（向量+内容验证）。"""
+        """Cross-KB global experience search — QDCVR pipeline (vector + content verification)."""
         body: dict = {"query": query, "top_k": top_k, "verify_content": verify_content}
         if score_threshold is not None:
             body["score_threshold"] = score_threshold
         return await self._post_backend_json("/api/v1/experience/global-search", body)
 
-    # ── E0/E1: 经验提取（启发式 + 任务包）──
+    # ── E0/E1: Experience extraction (heuristic + task bundle) ──
 
     async def experience_extract(self, kb_id: str, doc_paths: list = None,
                                   dry_run: bool = True, mode: str = "heuristic") -> dict:
-        """E0/E1: 经验提取。mode=prepare 返回任务包；heuristic 启发式提取。
-        dry_run=True 只返回候选；False 写草稿池。"""
+        """E0/E1: Experience extraction. mode=prepare returns task bundle; heuristic for heuristic extraction.
+        dry_run=True returns candidates only; False writes to draft pool."""
         body = {"dry_run": dry_run, "mode": mode}
         if doc_paths is not None:
             body["doc_paths"] = doc_paths
         return await self._post_backend_json(f"/api/v1/experience/{kb_id}/extract", body)
 
-    # ── E3: 草稿池 ──
+    # ── E3: Draft pool ──
 
     async def experience_drafts_list(self, kb_id: str) -> dict:
-        """列出草稿池。"""
+        """List draft pool."""
         return await self._get_backend(f"/api/v1/experience/{kb_id}/drafts")
 
     async def experience_draft_read(self, kb_id: str, draft_id: str) -> dict:
-        """读取草稿详情。"""
+        """Read draft details."""
         return await self._get_backend(f"/api/v1/experience/{kb_id}/drafts/{draft_id}")
 
     async def experience_draft_approve(self, kb_id: str, draft_id: str, edits: dict = None) -> dict:
-        """批准草稿→正式经验。edits 可覆盖字段。"""
+        """Approve draft -> formal experience. edits can override fields."""
         body = {"edits": edits} if edits else {}
         return await self._post_backend_json(
             f"/api/v1/experience/{kb_id}/drafts/{draft_id}/approve", body)
 
     async def experience_draft_reject(self, kb_id: str, draft_id: str, reason: str = "") -> dict:
-        """拒绝草稿。"""
+        """Reject a draft."""
         return await self._post_backend_json(
             f"/api/v1/experience/{kb_id}/drafts/{draft_id}/reject", {"reason": reason})
 
-    # ── E6: 联动 / stale ──
+    # ── E6: Sync / stale ──
 
     async def experience_check_stale(self, kb_id: str) -> dict:
-        """检查 KB 经验与文档一致性。"""
+        """Check KB experience-document consistency."""
         return await self._get_backend(f"/api/v1/experience/{kb_id}/stale")
 
     async def experience_check_stale_global(self) -> dict:
-        """全库 stale 检查。"""
+        """Global stale check."""
         return await self._post_backend_json("/api/v1/experience/stale-global", {})
 
     async def experience_sync_kb(self, kb_id: str) -> dict:
-        """整库标记需同步。"""
+        """Mark entire KB for sync."""
         return await self._post_backend_json(f"/api/v1/experience/{kb_id}/sync", {})
 
-    # ── E8/E11: 看板 / 衰减 ──
+    # ── E8/E11: Dashboard / decay ──
 
     async def experience_dashboard(self, kb_id: str) -> dict:
-        """经验看板。"""
+        """Experience dashboard."""
         return await self._get_backend(f"/api/v1/experience/{kb_id}/dashboard")
 
     async def experience_apply_decay(self, kb_id: str) -> dict:
-        """应用衰减规则。"""
+        """Apply decay rules."""
         return await self._post_backend_json(f"/api/v1/experience/{kb_id}/decay", {})
