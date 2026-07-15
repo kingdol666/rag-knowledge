@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# ============================================================
+# ragctl — RAG Knowledge Platform CLI Launcher (Linux / macOS)
+# ============================================================
+# Usage: ./ragctl <command> [options]
+#   First run: ./ragctl init   (installs everything)
+# ============================================================
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")" && pwd)"
+COMMAND_DIR="$ROOT/command"
+
+# Auto-install command deps if missing (transparent to user)
+if [ ! -d "$COMMAND_DIR/node_modules" ]; then
+    echo "  [setup] Installing ragctl dependencies..."
+    (cd "$COMMAND_DIR" && npm install --silent) >/dev/null 2>&1
+fi
+
+# On macOS or Linux with bash, exec via node directly (no .bat needed)
+if [ -f "$COMMAND_DIR/ragctl.js" ]; then
+    exec node "$COMMAND_DIR/ragctl.js" "$@"
+else
+    echo "Error: ragctl.js not found at $COMMAND_DIR/ragctl.js"
+    exit 1
+fi

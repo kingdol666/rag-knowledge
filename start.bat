@@ -18,6 +18,9 @@ set "ROOT=%~dp0"
 if "%ROOT:~-1%"=="\" set "ROOT=%ROOT:~0,-1%"
 
 echo.
+echo   💡 Tip: Use 'ragctl init' for first-time setup, then 'ragctl up' to start.
+echo   💡 Tip: Use 'ragctl doctor' to diagnose any issues.
+echo.
 echo  ==================================================
 echo    RAG Knowledge Platform - Mode: %MODE%
 echo  ==================================================

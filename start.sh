@@ -27,6 +27,9 @@ else
 fi
 
 echo ""
+echo "  💡 Tip: Use './ragctl init' for first-time setup, then './ragctl up' to start."
+echo "  💡 Tip: Use './ragctl doctor' to diagnose any issues."
+echo ""
 echo "  =================================================="
 echo "    RAG Knowledge Platform — Mode: $MODE"
 echo "  =================================================="

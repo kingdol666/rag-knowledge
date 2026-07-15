@@ -29,7 +29,7 @@ MinerU OCR Engine (ephemeral port)  ← PDF → Markdown conversion
 Claude Code / Agent
     │  MCP stdio (kb-mcp)
     ▼
-kb-mcp MCP Server              ← ~40 tools: KB CRUD, file ops, parse, search, tags
+kb-mcp MCP Server              ← 74 tools: KB CRUD, file ops, parse, search, tags, vector, graph, experience
     │  HTTP → web proxy / backend     +  direct file reads
     ▼
 Nuxt / Backend                 ← writes: parse + save pipeline
@@ -134,14 +134,13 @@ MCP Tools by category:
 - **KB CRUD:** `kb_list`, `kb_create`, `kb_update`, `kb_delete`
 - **KB Catalog (agentic-first, lightweight):** `kb_catalog`, `kb_doc_catalog`, `fs_catalog_all`
 - **Document CRUD:** `kb_doc_read`, `kb_doc_create`, `kb_doc_update_meta`, `kb_doc_update_content`, `kb_doc_delete`, `kb_doc_batch_delete`, `kb_doc_move`
-- **File System:** `fs_get_tree`, `fs_get_children`, `fs_get_node`, `fs_get_count`, `fs_create_folder`, `fs_create_file`, `fs_update_node`, `fs_delete_node`, `fs_upload_file`
-- **Parse (non-blocking):** `parse_doc`, `parse_doc_batch`, `parse_task_status`, `parse_tasks_list`
-- **Tags:** `kb_tags_list`, `kb_tag_create`, `kb_doc_update_tags`, `kb_doc_get_by_tag`
-- **Preview:** `preview_file`
-- **Search (Agentic RAG):** `kb_search` (metadata only), `kb_search_vector` (semantic), `kb_search_two_stage` (BM25→vector, primary), `kb_search_batch_vector`, `kb_search_stats`
+- **File System (4):** `fs_get_tree`, `fs_get_children`, `fs_get_count`, `fs_upload_file`
+- **Parse (non-blocking, 4):** `parse_doc`, `parse_doc_batch`, `parse_task_status`, `kb_doc_save_parsed`
+- **Tags (4):** `kb_tags_list`, `kb_doc_update_tags`, `kb_doc_get_by_tag`, `kb_tags_cleanup`
+- **Search (Agentic RAG, 4):** `kb_search` (metadata only), `kb_search_vector` (semantic), `kb_search_two_stage` (BM25→vector, primary), `kb_search_stats`
 - **Vector/Index:** `kb_index_document`, `kb_batch_index`, `kb_reindex`
 - **Knowledge Graph:** `kb_graph_search`, `kb_graph_neighbors`, `kb_graph_stats`
-- **Experience (10 tools):** `experience_create`, `experience_read`, `experience_list`, `experience_update`, `experience_delete`, `experience_apply`, `experience_review`, `experience_find_by_scenario`, `experience_summary`, `experience_search`, `experience_search_vector`, `experience_search_global`
+- **Experience (21 tools):** Full lifecycle — create/read/list/update/delete/apply/review/summary | Search: search/search_vector/search_global | Extract/Drafts: extract/drafts_list/draft_read/draft_approve/draft_reject | Health: check_stale/check_stale_global/sync_kb/dashboard/apply_decay
 
 **Architecture principle:** writes go through HTTP API (backend/web proxy), reads go through direct file access (`.tree-fs.json` + `.knowledge-base.yml`).
 
@@ -265,13 +264,51 @@ uv run python server.py --http
 
 The MCP server is normally launched by Claude Code via `.mcp.json` at the monorepo root — no manual start needed.
 
-### One-click Launch
+## Quick Start (All Platforms)
 
 ```bash
-./start.sh       # Linux/macOS
-start.bat        # Windows
+# 1. First time: one-command setup
+./ragctl init        # Windows: ragctl init
+
+# 2. Start everything
+./ragctl up          # Windows: ragctl up
+
+# 3. Check status
+./ragctl status      # Windows: ragctl status
 ```
-(Launches backend + web in separate terminals.)
+
+**ragctl** is the unified CLI for all operations — start, stop, install, test, config, health checks, KB operations, and more. See `ragctl help` for all commands.
+
+### Platform-specific launchers
+
+```bash
+# Windows (either works)
+ragctl init && ragctl up          # Recommended
+start.bat                         # Legacy launcher (for reference)
+
+# Linux / macOS (either works)
+./ragctl init && ./ragctl up      # Recommended
+./start.sh                        # Legacy launcher (for reference)
+```
+
+### One-time setup (manual, if not using `ragctl init`)
+
+```bash
+# 1. Submodules
+git submodule update --init --recursive
+
+# 2. Install deps
+cd command && npm install && cd ..
+cd backend && uv sync && cd ..
+cd web && npm install && cd ..
+cd kb-mcp && uv sync && cd ..
+
+# 3. Create .env
+cp .env.example .env   # or copy manually on Windows
+
+# 4. Start
+ragctl up
+```
 
 ## Storage Model
 
@@ -319,9 +356,19 @@ server:
 8. **Vector index metadata may be missing after initial index** — 部分KB的文档 `vector_index` 字段可能在索引后未写入 YAML 元数据（向量实际存在于 ChromaDB）。用 `kb_reindex(kb_id, force=true)` 修复。
 9. **Experience heuristic extraction produces low-quality candidates** — `experience_extract(mode="heuristic")` 的 key_lessons 可能返回章节标题。**推荐**：用 `mode="prepare"` → LLM 精炼。详见 knowledgebase-experience Skill E2a 质量门控。
 10. **Graph sub-KB nodes show UUID only** — `kb_graph_kb_overview` 返回的 sub_kbs 列表中 name 字段为 UUID 而非可读名称。
-11. **Tag registry accumulates orphan tags** — `kb_tags_list()` 返回的标签列表包含 0 文档引用的历史标签（如测试标签、章节标题）。不影响搜索功能——文档级标签已清理。
+11. **Tag registry accumulates orphan tags** — `kb_tags_list()` 返回的标签列表包含 0 文档引用的历史标签（如测试标签、章节标题）。使用 `kb_tags_cleanup(dry_run=true)` 检测，`dry_run=false` 清理。不影响搜索功能——文档级标签自动过滤。
 12. **`kb_graph_build_kb` 返回的 `total_relations` 可能为 0** — 这是 stats 统计 bug，实际图谱数据已写入 Neo4j。**不要**因为返回 0 就认为构建失败。用 `kb_graph_document(doc_path)` 或 `kb_graph_kb_overview(kb_id)` 抽检验证。
 13. **Experience credibility thresholds differ between CLAUDE.md and SKILL.md** — CLAUDE.md 的 P0/P1/P2 阈值已同步对齐到 SKILL.md（以 skill 为准，含 content 验证维度）。如需调整请同时改两处。
+14. **⭐ kb-mcp MCP 启动检查（强制规则）** — 在执行任何 KB 操作之前，必须先验证 kb-mcp MCP 服务器是否已连接：
+    - 调用 `mcp__kb-mcp__backend_status` 检测 MCP 连通性
+    - **如果 MCP 工具可用** → 正常执行，所有操作必须通过 MCP 工具（遵循 MCP 优先原则）
+    - **如果 MCP 工具不可用**（返回 "No such tool available"）：
+      1. 使用 `Bash` 检查核心服务状态：`curl -s http://localhost:8765/api/v1/health`（后端）、`netstat -ano | findstr "8765"`（端口）
+      2. 检查 `.mcp.json` 配置是否正确的 `uv run --directory kb-mcp python server.py`
+      3. 尝试手动启动 kb-mcp：`cd kb-mcp && start "kb-mcp" uv run python server.py`（Windows）或 `cd kb-mcp && uv run python server.py &`（Linux/macOS）
+      4. 如果后端健康但 MCP 仍不可用 → 通知用户 "kb-mcp MCP 未连接，请重启 Claude Code 或检查 .mcp.json"
+      5. **仅在 MCP 确认不可用且用户明确允许后**，才可用 HTTP API 作为兜底（如 `curl` 调用 localhost:6789），且必须向用户声明 "MCP 不可用，已用 HTTP API 兜底"
+    - Archival Agent 启动时将此检查作为 **Pre-Flight** 步骤，在所有 Step 0 场景诊断之前执行
 
 ## Development Conventions
 

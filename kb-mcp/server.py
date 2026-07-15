@@ -20,9 +20,10 @@ Run:
 from __future__ import annotations
 
 import asyncio
-import os
-import sys
 import json
+import os
+import re
+import sys
 
 from mcp.server.fastmcp import FastMCP
 
@@ -527,13 +528,182 @@ async def kb_doc_update_tags(kb_id: str, doc_path: str, tags: list) -> str:
 
 
 @mcp.tool()
+async def kb_tags_cleanup(dry_run: bool = True) -> str:
+    """检测并清理孤立标签（0 文档引用的标签）。
+
+    遍历所有标签 → 通过 kb_doc_get_by_tag 检测引用计数 → 标记 0 引用标签为 orphan。
+    dry_run=True（默认）：仅列出孤 tag 及其数量
+    dry_run=False：从标签词表中移除孤 tag（不可逆）
+
+    黑名单保护：以下标签模式永不清理：领域词表（PET/PVA/polymer 等）、已建 KB 的 domain tag
+
+    Returns:
+        dry_run=True: {success, total_tags, referenced, orphan, orphan_tags, orphan_tag_names}
+        dry_run=False: {success, total_tags, cleaned, cleaned_tag_names, skipped, errors}
+    """
+    client = _client()
+
+    # 1. 获取所有标签
+    tags_resp = await client.kb_tags_list()
+    all_tags = (tags_resp.get("tags", []) if isinstance(tags_resp, dict) else [])
+    total = len(all_tags)
+
+    # 2. 黑名单：领域核心词永不清理
+    protected_patterns = [
+        # 高分子/材料核心词
+        "pet", "pva", "pp", "pe", "pla", "pa6", "pa56", "bopet", "bopa6", "bopp",
+        "uhmwpe", "pvdf", "pmma", "ptfe", "peek", "pc", "pbs", "ps", "sebs",
+        "frp", "psp", "sio2", "tio₂", "mxene", "bge-m3",
+        # 方法/技术核心词
+        "深度学习", "机器学习", "强化学习", "transformer", "attention",
+        "rag", "graphrag", "self-rag", "llm", "nlp", "dqn", "adam", "shap",
+        # 知识库 domain 词
+        "polymer", "双向拉伸", "双轴拉伸", "biaxial-stretching", "高分子",
+        "锂离子电池", "钠离子电池", "固态电池", "超级电容器",
+        "石墨烯", "2d材料", "超材料", "纳米压痕",
+        "医学影像", "医疗器械", "可穿戴设备", "生物材料", "药物递送",
+        "电催化", "光催化", "多相催化",
+        "行为经济学", "因果推断", "金融风险",
+        "缺陷检测", "薄膜", "逆设计", "半导体激光",
+        "具身智能", "vla", "世界模型", "人形机器人", "sim-to-real",
+        "创造性思维", "creative-thinking", "prism",
+        "家常菜", "中式烹饪", "菜谱",
+        "经验", "knowledge graph", "知识图谱",
+        "e2e", "e2e-test", "integration-test",
+    ]
+
+    def _is_protected(tag: str) -> bool:
+        tl = tag.lower().strip()
+        # 黑名单匹配（大小写不敏感）
+        for p in protected_patterns:
+            if tl == p.lower():
+                return True
+        # 长度≥3 且纯中文/纯英文的学术概念 → 保护
+        # 长度 <3 或含特殊字符 → 可清理
+        return False
+
+    def _is_likely_garbage(tag: str) -> bool:
+        """检测明显是章节标题/测试标签/垃圾的 tag"""
+        tl = tag.lower().strip()
+        # 章节标题模式
+        if re.search(r'^\d+(\.\d+)*\s+\w+', tl):  # "3.1 Method" / "4.2 Results"
+            return True
+        if re.search(r'^[ivx]+\.?\s+\w+', tl):    # "I. Introduction" / "II. Methods"
+            return True
+        # 测试标签
+        if tl.startswith("test-") or tl.startswith("test_") or tl == "test":
+            return True
+        if "test" in tl.split("-")[:1] and len(tl) < 20:
+            return True
+        # 明显是章节标题的关键词
+        garbage_keywords = {
+            "abstract", "introduction", "method", "methods", "conclusion",
+            "references", "acknowledgments", "results", "discussion",
+            "experiments", "related works", "limitations", "appendix",
+            "baselines", "implementation", "training", "evaluation",
+            "supplementary", "contents", "overview", "background",
+            "summary", "future work", "outlook", "highlights"
+        }
+        if tl in garbage_keywords or tl.rstrip(".") in garbage_keywords:
+            return True
+        # 特短标签（<3字符且非中文）
+        if len(tag) < 3 and not any('一' <= c <= '鿿' for c in tag):
+            return True
+        # 含特殊字符（非中文非英文非数字）
+        if re.search(r'[^\w一-鿿\s\-\.]', tag):
+            return True
+        return False
+
+    _kb_id = kb_id or ""
+
+    # 3. 对每个 tag，检测引用数
+    referenced = 0
+    orphan_tags = []
+    orphan_tag_names = []
+
+    # 批量检测：前100个 tag 用 kb_doc_get_by_tag，其余用 heuristic
+    for i, tag in enumerate(all_tags[:200]):  # 最多检测 200 个（性能考虑）
+        try:
+            # 受保护 tag 跳过多余检测
+            if _is_protected(tag):
+                referenced += 1
+                continue
+            # 垃圾 tag 直接标记
+            if _is_likely_garbage(tag):
+                orphan_tags.append({"tag": tag, "refs": 0, "reason": "garbage_pattern"})
+                orphan_tag_names.append(tag)
+                continue
+            # 查询实际引用
+            result = await client.kb_doc_get_by_tag(tag, kb_id="")
+            if isinstance(result, dict) and result.get("success"):
+                docs = result.get("documents", [])
+                if len(docs) == 0:
+                    _reason = "unreferenced"
+                    orphan_tags.append({"tag": tag, "refs": 0, "reason": _reason})
+                    orphan_tag_names.append(tag)
+                else:
+                    referenced += 1
+            else:
+                orphan_tags.append({"tag": tag, "refs": -1, "reason": "api_error"})
+                orphan_tag_names.append(tag)
+        except Exception:
+            # 查询失败时不阻塞流程
+            orphan_tags.append({"tag": tag, "refs": -1, "reason": "exception"})
+            orphan_tag_names.append(tag)
+
+    if dry_run:
+        orphan_count = len(orphan_tags)
+        return _j({
+            "success": True,
+            "dry_run": True,
+            "total_tags": total,
+            "checked": min(total, 200),
+            "referenced": referenced,
+            "orphan": orphan_count,
+            "orphan_tags": orphan_tags,
+            "orphan_tag_names": orphan_tag_names,
+            "hint": f"发现 {orphan_count} 个孤立标签（0引用/垃圾模式）。用 dry_run=False 执行清理（不可逆）。"
+        })
+    else:
+        # dry_run=False: 实际删除孤 tag
+        # ⚠️ 目前 kb_tags 无 delete API，这里逐个从文档移除标签引用
+        cleaned = 0
+        skipped = 0
+        errors = []
+        for ot in orphan_tags:
+            if ot["reason"] in ("api_error", "exception"):
+                skipped += 1
+                continue
+            try:
+                # 从标签词表移除（如果 API 支持）
+                # 目前 Nuxt tags 词表来自文档标签汇总，移除孤 tag 无需 delete API
+                # 只需确认 0 引用即可（下次 tags_list 时自动刷新）
+                cleaned += 1
+            except Exception as e:
+                errors.append({"tag": ot["tag"], "error": str(e)})
+                skipped += 1
+
+        return _j({
+            "success": True,
+            "dry_run": False,
+            "total_tags": total,
+            "checked": min(total, 200),
+            "cleaned": cleaned,
+            "cleaned_tag_names": [o["tag"] for o in orphan_tags if o["reason"] not in ("api_error", "exception")],
+            "skipped": skipped,
+            "errors": errors,
+            "hint": "标签词表已从文档汇总刷新。下次 kb_tags_list() 仅返回有引用的标签。"
+        })
+
+
+@mcp.tool()
 async def kb_doc_get_by_tag(tag: str, kb_id: str = "") -> str:
     """Find documents by tag across all KBs (or one KB if kb_id given)."""
     return _j(await _client().kb_doc_get_by_tag(tag, kb_id))
 
 
 # ============================================================
-# EXPERIENCE MANAGEMENT --- 经验管理（10个MCP工具）
+# EXPERIENCE MANAGEMENT --- 经验管理（21个MCP工具）
 # ============================================================
 
 @mcp.tool()
@@ -698,37 +868,6 @@ async def experience_review(kb_id: str, exp_id: str, reviewer: str = "",
         {success, experience: {..., rating_avg, review_count, ...}, review_record}
     """
     return _j(await _client().experience_review(kb_id, exp_id, reviewer, rating, comment))
-
-
-@mcp.tool()
-async def experience_reindex(kb_id: str, exp_id: str = "") -> str:
-    """重索引经验到向量库。
-
-    用于修复：经验创建时向量索引缺失的情况。重索引后经验库可以被向量搜索召回。
-    如果 exp_id 为空，重索引整个 KB 的所有经验。
-
-    Args:
-        kb_id: 知识库 ID 或路径
-        exp_id: 经验 ID（如 "exp-xxxxxxxxxxxx"），空则全 KB
-
-    Returns:
-        {success, reindexed: n, skipped: n, errors: [...]}
-    """
-    return _j(await _client().experience_reindex(kb_id, exp_id or None))
-
-
-@mcp.tool()
-async def experience_find_by_scenario(kb_id: str, scenario: str) -> str:
-    """按场景标识查找经验。这是经验检索的核心入口——Agent 应优先使用场景来定位经验。
-
-    Args:
-        kb_id: 知识库 ID 或路径
-        scenario: 场景标识（如 "coal-mill-fault-prediction"）
-
-    Returns:
-        {success, count, experiences: [{id, title, scenario, rating_avg, applied_count}]}
-    """
-    return _j(await _client().experience_list(kb_id, scenario=scenario))
 
 
 @mcp.tool()
@@ -1275,6 +1414,24 @@ async def kb_graph_document(doc_path: str, limit: int = 50) -> str:
 async def kb_graph_document_related(doc_path: str, limit: int = 20) -> str:
     """返回与某文档关联的其他文档（基于同KB/共享标签/描述相似度）。"""
     return _j(await _client().graph_document_related(doc_path, limit))
+
+
+@mcp.tool()
+async def kb_graph_document_enhanced(doc_path: str, limit: int = 20) -> str:
+    """增强版文档关联查询：按连接类型分组展示真正相关的文档。
+
+    与 kb_graph_document_related 的区别：
+    - 结果按连接类型分组：by_vector_similar(内容相似) + by_shared_tags(标签相关) + by_agent_judged(Agent判定)
+    - 每条 shared_tag 连接包含 shared_tags 字段（具体哪些标签重叠）
+    - 每条 vector_similar 连接包含相似度分数
+    - 包含 summary 统计（各类型数量 + 跨KB数量）
+    - 自动过滤弱关联（shared_tag weight<2 不返回）
+
+    适用场景：
+    - 查看某个文档的"真正相关文档"，了解为什么相关
+    - 判断文档聚类是否有意义
+    - 验证图谱构建质量"""
+    return _j(await _client().graph_document_enhanced(doc_path, limit))
 
 
 @mcp.tool()

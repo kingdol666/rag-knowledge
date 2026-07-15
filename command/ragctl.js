@@ -1097,6 +1097,256 @@ async function cmdHealth() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════
+//  COMMAND: init  (一键初始化 — 首次运行)
+// ═══════════════════════════════════════════════════════════════════════
+
+async function cmdInit() {
+  header('Initializing RAG Knowledge Platform');
+
+  let step = 0;
+  const totalSteps = 7;
+  let failed = false;
+
+  function stepOk(msg) { step++; ok(`[${step}/${totalSteps}] ${msg}`); }
+  function stepWarn(msg) { step++; warn(`[${step}/${totalSteps}] ${msg}`); }
+  function stepErr(msg) { step++; err(`[${step}/${totalSteps}] ${msg}`); failed = true; }
+
+  // Step 1: Check prerequisites
+  stepOk('Checking prerequisites...');
+  const checks = [
+    { cmd: 'uv', name: 'uv (Python package manager)', url: 'https://docs.astral.sh/uv/' },
+    { cmd: 'node', name: 'Node.js 18+', url: 'https://nodejs.org/' },
+    { cmd: 'npm', name: 'npm', url: 'https://nodejs.org/' },
+  ];
+  for (const { cmd, name, url } of checks) {
+    if (commandExists(cmd)) {
+      console.log(`         ${_c(C.GREEN, '✓')} ${name}`);
+    } else {
+      console.log(`         ${_c(C.RED, '✗')} ${name} — install from ${url}`);
+      failed = true;
+    }
+  }
+  // Docker is optional
+  if (commandExists('docker')) {
+    console.log(`         ${_c(C.GREEN, '✓')} Docker (for Neo4j graph)`);
+  } else {
+    console.log(`         ${_c(C.YELLOW, '○')} Docker not found — graph features need Neo4j`);
+  }
+
+  // Step 2: Submodules
+  stepOk('Initializing git submodules...');
+  if (fs.existsSync(path.join(BACKEND_DIR, 'app', 'main.py')) &&
+      fs.existsSync(path.join(WEB_DIR, 'package.json'))) {
+    console.log('         Already initialized');
+  } else {
+    const result = await runExec('git submodule update --init --recursive');
+    if (result.code === 0) {
+      console.log('         Done');
+    } else {
+      stepErr(`Submodule init failed: ${result.stderr}`);
+      return 1;
+    }
+  }
+
+  // Step 3: Setup .env
+  stepOk('Setting up environment...');
+  if (!fs.existsSync(ENV_FILE)) {
+    const examplePath = path.join(PROJECT_ROOT, '.env.example');
+    if (fs.existsSync(examplePath)) {
+      fs.copyFileSync(examplePath, ENV_FILE);
+      console.log('         .env created from .env.example');
+    } else {
+      writeEnv({ APP_MODE: 'dev', PYTHONUTF8: '1' });
+      console.log('         .env created with defaults');
+    }
+  } else {
+    console.log('         .env already exists');
+  }
+
+  // Step 4: Install command/ragctl deps
+  stepOk('Installing CLI dependencies...');
+  if (!fs.existsSync(path.join(PROJECT_ROOT, 'command', 'node_modules'))) {
+    const result = await runExec('npm install --silent', { cwd: path.join(PROJECT_ROOT, 'command') });
+    if (result.code === 0) {
+      console.log('         Done (js-yaml)');
+    } else {
+      stepErr(`CLI deps install failed: ${result.stderr}`);
+    }
+  } else {
+    console.log('         Already installed');
+  }
+
+  // Step 5: Install backend deps
+  stepOk('Installing backend dependencies (uv sync)...');
+  if (fs.existsSync(path.join(BACKEND_DIR, 'uv.lock')) || fs.existsSync(path.join(BACKEND_DIR, '.venv'))) {
+    console.log('         Running uv sync (incremental)...');
+  } else {
+    console.log('         First install — this may take a few minutes...');
+  }
+  const backendResult = await runExec('uv sync', { cwd: BACKEND_DIR, timeout: 600000 });
+  if (backendResult.code === 0) {
+    console.log('         Done');
+  } else {
+    stepErr(`Backend install failed: ${backendResult.stderr}`);
+  }
+
+  // Step 6: Install web deps
+  stepOk('Installing web dependencies (npm install)...');
+  if (fs.existsSync(path.join(WEB_DIR, 'node_modules'))) {
+    console.log('         Already installed');
+  } else {
+    console.log('         First install — this may take a few minutes...');
+    const webResult = await runExec('npm install', { cwd: WEB_DIR, timeout: 600000 });
+    if (webResult.code === 0) {
+      console.log('         Done');
+    } else {
+      stepErr(`Web install failed: ${webResult.stderr}`);
+    }
+  }
+
+  // Step 7: Install kb-mcp deps
+  stepOk('Installing MCP server dependencies (uv sync)...');
+  if (fs.existsSync(path.join(MCP_DIR, 'uv.lock')) || fs.existsSync(path.join(MCP_DIR, '.venv'))) {
+    console.log('         Running uv sync (incremental)...');
+  }
+  const mcpResult = await runExec('uv sync', { cwd: MCP_DIR, timeout: 300000 });
+  if (mcpResult.code === 0) {
+    console.log('         Done');
+  } else {
+    stepErr(`MCP install failed: ${mcpResult.stderr}`);
+  }
+
+  console.log();
+  if (failed) {
+    err(_c(C.BOLD, 'Some steps failed. Fix the issues above and run `ragctl init` again.'));
+    return 1;
+  }
+
+  ok(_c(C.BOLD, 'Initialization complete!'));
+  console.log();
+  console.log(`  ${_c(C.CYAN, 'Next steps:')}`);
+  console.log(`    ragctl up          Start all services (Neo4j → Backend → Web)`);
+  console.log(`    ragctl status      Check service status`);
+  console.log(`    ragctl health      Full health check`);
+  console.log(`    ragctl doctor      Run diagnostics`);
+  console.log();
+  console.log(`  ${_c(C.GRAY, 'Or open the web UI:')} http://localhost:${getServicePorts().web}`);
+  return 0;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  COMMAND: up / down  (全栈一键启动 / 停止)
+// ═══════════════════════════════════════════════════════════════════════
+
+async function cmdUp(mode) {
+  mode = mode || getAppMode();
+  const ports = getServicePorts();
+
+  header(`Starting RAG Knowledge Platform (mode=${mode})`);
+
+  // 1. Neo4j (if docker available)
+  const composeFile = path.join(PROJECT_ROOT, 'docker-compose.yml');
+  if (fs.existsSync(composeFile)) {
+    if (!(await portInUse(7687))) {
+      info('Starting Neo4j...');
+      await startNeo4j();
+    } else {
+      info('Neo4j already running on port 7687');
+    }
+  }
+
+  // Give Neo4j a moment
+  await sleep(2000);
+
+  // 2. Backend
+  if (await portInUse(ports.backend)) {
+    warn(`Backend already running on port ${ports.backend}`);
+  } else {
+    info(`Starting Backend on port ${ports.backend}...`);
+    spawnService({
+      mode,
+      title: `RAG-Backend (${mode})`,
+      cwd: BACKEND_DIR,
+      command: 'uv',
+      args: ['run', 'python', 'main.py'],
+      env: { APP_MODE: mode },
+    });
+    for (let i = 0; i < 30; i++) {
+      await sleep(1000);
+      if (await portInUse(ports.backend)) { ok(`Backend ready on port ${ports.backend}`); break; }
+    }
+  }
+
+  // 3. Web
+  if (await portInUse(ports.web)) {
+    warn(`Web already running on port ${ports.web}`);
+  } else {
+    info(`Starting Web on port ${ports.web}...`);
+    spawnService({
+      mode,
+      title: `RAG-Web (${mode})`,
+      cwd: WEB_DIR,
+      command: 'node',
+      args: ['start.mjs'],
+      env: { APP_MODE: mode, WEB_PORT: String(ports.web) },
+    });
+    for (let i = 0; i < 20; i++) {
+      await sleep(1000);
+      if (await portInUse(ports.web)) { ok(`Web ready on port ${ports.web}`); break; }
+    }
+  }
+
+  console.log();
+  ok(_c(C.BOLD, 'All services started!'));
+  console.log(`  Backend:  http://localhost:${ports.backend}`);
+  console.log(`  Web UI:   http://localhost:${ports.web}`);
+  console.log(`  Neo4j:    bolt://localhost:7687`);
+  return 0;
+}
+
+async function cmdDown() {
+  const ports = getServicePorts();
+
+  header('Stopping RAG Knowledge Platform');
+
+  // Stop web first (depends on backend)
+  if (await portInUse(ports.web)) {
+    info(`Stopping Web on port ${ports.web}...`);
+    await stopWeb(ports.web);
+    // Wait for port release
+    for (let i = 0; i < 10; i++) {
+      await sleep(500);
+      if (!(await portInUse(ports.web))) { ok('Web stopped'); break; }
+    }
+  } else {
+    info('Web not running');
+  }
+
+  // Stop backend
+  if (await portInUse(ports.backend)) {
+    info(`Stopping Backend on port ${ports.backend}...`);
+    await stopBackend(ports.backend);
+    for (let i = 0; i < 10; i++) {
+      await sleep(500);
+      if (!(await portInUse(ports.backend))) { ok('Backend stopped'); break; }
+    }
+  } else {
+    info('Backend not running');
+  }
+
+  // Stop Neo4j (optional — user may want to keep it)
+  if (await portInUse(7687)) {
+    info('Stopping Neo4j...');
+    await stopNeo4j();
+    ok('Neo4j stopped');
+  }
+
+  console.log();
+  ok(_c(C.BOLD, 'All services stopped.'));
+  return 0;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
 //  COMMAND: doctor
 // ═══════════════════════════════════════════════════════════════════════
 
@@ -1104,12 +1354,19 @@ async function cmdDoctor() {
   header('Diagnostics');
   let issues = 0;
 
-  // Check Python
-  try {
-    const result = await runExec('python --version');
-    if (result.code === 0) ok(`Python: ${result.stdout.trim()}`);
-    else { err('Python: not found'); issues++; }
-  } catch { err('Python: not found'); issues++; }
+  // Check Python (try python3 first on Linux, then python)
+  let pythonOk = false;
+  for (const pyCmd of ['python3', 'python']) {
+    try {
+      const result = await runExec(`${pyCmd} --version`);
+      if (result.code === 0) {
+        ok(`Python: ${result.stdout.trim()} (${pyCmd})`);
+        pythonOk = true;
+        break;
+      }
+    } catch {}
+  }
+  if (!pythonOk) { err('Python: not found'); issues++; }
 
   // Check uv
   try {
@@ -1144,7 +1401,16 @@ async function cmdDoctor() {
   else { err('backend/config.yml: MISSING'); issues++; }
 
   if (fs.existsSync(ENV_FILE)) ok('.env: exists');
-  else { warn('.env: not found (will use defaults)'); issues++; }
+  else { warn('.env: not found (run: ragctl init to create from template)'); issues++; }
+
+  // Check .env.example
+  const examplePath = path.join(PROJECT_ROOT, '.env.example');
+  if (fs.existsSync(examplePath)) {
+    ok('.env.example: exists (template for new installs)');
+  } else {
+    warn('.env.example: not found (file missing)');
+    issues++;
+  }
 
   // Check submodules
   console.log();
@@ -1175,6 +1441,18 @@ async function cmdDoctor() {
     ok('Web deps: installed');
   } else {
     warn('Web deps: not installed (run: ragctl install web)');
+    issues++;
+  }
+
+  if (fs.existsSync(path.join(MCP_DIR, '.venv')) || fs.existsSync(path.join(MCP_DIR, 'uv.lock'))) {
+    ok('MCP deps: installed (or lockfile present)');
+  } else {
+    warn('MCP deps: not installed (run: ragctl install mcp)');
+    issues++;
+  }
+
+  if (!fs.existsSync(path.join(PROJECT_ROOT, 'command', 'node_modules'))) {
+    warn('CLI deps: not installed (run: cd command && npm install)');
     issues++;
   }
 
@@ -1530,8 +1808,11 @@ ${_c(C.CYAN, 'Usage:')}
   ragctl <command> [subcommand] [options]
 
 ${_c(C.CYAN, 'Commands:')}
-  start    Start services (backend, web, neo4j, mcp, all)
-  stop     Stop services (backend, web, neo4j, mcp, all)
+  init     One-time setup: checks deps, installs everything, creates .env
+  up       Start all services (Neo4j → Backend → Web)
+  down     Stop all services
+  start    Start specific service (backend, web, neo4j, mcp, all)
+  stop     Stop specific service (backend, web, neo4j, mcp, all)
   status   Show service status
   restart  Restart services
   config   Configuration management (show, get, set, reload, edit)
@@ -1542,6 +1823,12 @@ ${_c(C.CYAN, 'Commands:')}
   test     Run tests (backend, web, mcp)
   mcp      MCP server management
   kb       Knowledge base quick operations
+
+${_c(C.CYAN, 'Quick Start:')}
+  ragctl init                   First time setup (installs everything)
+  ragctl up                     Start all services
+  ragctl status                 Check status
+  ragctl health                 Full health check
 
 ${_c(C.CYAN, 'Examples:')}
   ragctl start all              Start all services (dev mode)
@@ -1638,6 +1925,22 @@ async function main() {
 
       case 'doctor':
         return await cmdDoctor();
+
+      case 'init':
+      case 'setup':
+        return await cmdInit();
+
+      case 'up':
+      case 'start-all': {
+        let mode = null;
+        const modeIdx = args.indexOf('--mode');
+        if (modeIdx !== -1 && args[modeIdx + 1]) mode = args[modeIdx + 1];
+        return await cmdUp(mode);
+      }
+
+      case 'down':
+      case 'stop-all':
+        return await cmdDown();
 
       case 'logs': {
         const service = args[1] || 'backend';

@@ -83,6 +83,43 @@ Metadata Consistency (25) | Document Quality (30) | Tag Coverage (25) | Descript
 | 图谱健康 | 15 | 图谱覆盖率 × 15 |
 | 向量覆盖 | 10 | 向量索引覆盖率 × 10 |
 
+## V7 — Tag Health (⭐ Phase 1 新增)
+
+```
+kb_tags_cleanup(dry_run=true)
+```
+检测 0 引用孤 tag 和章节标题/测试标签等垃圾模式。
+- `dry_run=false` 时从词表中清理（不可逆，建议先 preview）
+- 黑名单保护：领域核心词（PET/DL/RAG/polymer 等）永不清理
+- 垃圾模式自动检测：章节标题、测试标签、特殊字符、过短标签
+
+## V8 — Experience Health (⭐ Phase 1 新增)
+
+```
+experience_check_stale_global()
+experience_dashboard(kb_id)  # 对每个有经验的 KB
+```
+- orphan 经验：关联文档已删除 → 建议 `experience_delete` 或更新 `related_docs`
+- stale 经验：文档已更新但经验未同步 → 建议 `experience_sync_kb`
+- 测试污染：rating=0, applied=0, age>7d → 建议清理
+- 低质经验：rating<2, review≥3 (disputed) → 建议审查
+
+## V9 — Auto-Fix (⭐ Phase 1 新增)
+
+当 V1-V8 检测到问题后，可执行的自动修复路径：
+
+| 检测到的问题 | 自动修复路径 |
+|------------|------------|
+| 重复 Collection | `kb_cleanup_orphan_collections(dry_run=false)` |
+| 孤 tag | `kb_tags_cleanup(dry_run=false)` |
+| 文档缺向量索引 | `kb_index_document(kb_id, doc_path)` |
+| 文档缺图谱索引 | `kb_graph_build_kb(kb_id, force=false)` |
+| 元数据不一致 | `kb_reindex(kb_id, force=true)` 重建 |
+| orphan 经验 | `experience_delete(kb_id, exp_id)` 或 `experience_update(related_docs=[])` |
+| test 经验污染 | `experience_delete(kb_id, exp_id)`（确认后） |
+
+**Auto-fix 原则**：只修复可自动检测+可自动修复的问题；破坏性操作（删文档/删KB/合并KB）需用户确认。
+
 ## V6 — Report
 Score + key findings + single most impactful recommendation.
 

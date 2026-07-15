@@ -225,6 +225,57 @@ experience_search_global(query) → P0 经验直接答（秒级）
 每月: experience_dashboard(kb_id) 评估覆盖度，补充缺口
 ```
 
+## E12 — 经验自动体检与清理（⭐ Phase 1 新增）
+
+### 触发时机
+- 每次 `knowledgebase-verify` V8 步骤触发
+- 每月定期维护
+- 删除文档后自动联动
+
+### 自动检测流程
+```
+# Step 1: 全库 stale/orphan 检测
+experience_check_stale_global()
+  → stale=0, orphan=0 → 健康 ✅
+  → stale>0 → Step 2
+  → orphan>0 → Step 3
+
+# Step 2: 处理 stale 经验
+for each stale_exp:
+    experience_sync_kb(kb_id)
+    # 重新从关联文档提取（如文档仍存在）
+    # 无法恢复 → 标记 needs_cleanup
+
+# Step 3: 处理 orphan 经验
+for each orphan_exp:
+    read_detail = experience_read(kb_id, exp_id)
+    if applied_count == 0 and rating == 0:
+        # 无人使用的 orphan → 直接删除
+        experience_delete(kb_id, exp_id)
+    elif applied_count > 0:
+        # 有价值但关联断开 → 更新 related_docs
+        experience_update(kb_id, exp_id, related_docs=[])
+    # 否则保留并标注 needs_sync
+
+# Step 4: 测试污染检测
+for each kb with experiences:
+    summary = experience_summary(kb_id)
+    for exp in experiences where rating==0 and applied==0:
+        if age > 7d:
+            experience_delete(kb_id, exp_id)
+```
+
+### 清理决策矩阵
+
+| 条件 | 动作 |
+|------|------|
+| orphan + applied=0 + rating=0 | 🗑️ 直接删除 |
+| orphan + applied>0 | 🔧 清空 `related_docs`，保留经验内容 |
+| stale + 文档仍存在 | 🔄 `experience_sync_kb` → 重新提取 |
+| stale + 文档已删除 | → 转为 orphan，按上表处理 |
+| test 污染 (rating=0, applied=0, age>7d) | 🗑️ 直接删除 |
+| disputed (review≥3, rating<2) | ⚠️ 标记降级，建议人工审查 |
+
 ---
 
 ## ⚠️ NEVER 清单

@@ -47,6 +47,7 @@ tools:
   - mcp__kb-mcp__kb_tags_list
   - mcp__kb-mcp__kb_doc_update_tags
   - mcp__kb-mcp__kb_doc_get_by_tag
+  - mcp__kb-mcp__kb_tags_cleanup
   # Search
   - mcp__kb-mcp__kb_search
   - mcp__kb-mcp__kb_search_vector
@@ -66,6 +67,7 @@ tools:
   - mcp__kb-mcp__kb_graph_health
   - mcp__kb-mcp__kb_graph_document
   - mcp__kb-mcp__kb_graph_document_related
+  - mcp__kb-mcp__kb_graph_document_enhanced
   - mcp__kb-mcp__kb_graph_documents_by_tag
   - mcp__kb-mcp__kb_graph_kb_overview
   - mcp__kb-mcp__kb_graph_build_kb
@@ -83,7 +85,6 @@ tools:
   - mcp__kb-mcp__experience_delete
   - mcp__kb-mcp__experience_apply
   - mcp__kb-mcp__experience_review
-  - mcp__kb-mcp__experience_find_by_scenario
   - mcp__kb-mcp__experience_summary
   - mcp__kb-mcp__experience_search
   - mcp__kb-mcp__experience_search_vector
@@ -246,6 +247,37 @@ Every task follows this 5-step process:
 7. **终检不可跳过** — A7八项终检(C1-C8)必须全部 ✅ 才能向用户报告完成。
 8. **违规自纠** — 如果发现自己违反上述规则，立即停止并纠正（如用错工具需清理重做）。并向用户说明。
 
+### ⭐ Pre-Flight: MCP Connectivity Check（启动前必须执行）
+
+**Before Step 0, ALWAYS verify kb-mcp MCP is connected:**
+
+1. Call `mcp__kb-mcp__backend_status` as the very first action
+2. **If it succeeds** → MCP is connected. Proceed to Step 0.
+3. **If it fails** (returns "No such tool available" or similar error):
+   - Run diagnostic commands in Bash:
+     ```
+     # Check backend health
+     curl -s http://localhost:8765/api/v1/health
+     # Check if backend port is occupied
+     netstat -ano | findstr "8765"   (Windows)
+     netstat -tlnp | grep 8765       (Linux/macOS)
+     ```
+   - If backend is healthy but MCP is not connected:
+     - Verify `.mcp.json` exists with correct config: `uv run --directory kb-mcp python server.py`
+     - Attempt to start kb-mcp manually:
+       - Windows: `start "kb-mcp" cmd /c "cd kb-mcp && uv run python server.py"`
+       - Linux/macOS: `cd kb-mcp && nohup uv run python server.py &`
+     - Wait 3-5 seconds, retry `mcp__kb-mcp__backend_status`
+   - If MCP is still not connected after restart attempt:
+     - **Notify user**: "⚠️ kb-mcp MCP 服务器未连接。后端服务正常但 MCP 通信层不可用。请尝试重启 Claude Code，或检查 `.mcp.json` 配置。"
+     - **Ask user**: "是否允许我用 HTTP API 兜底继续操作？(curl → localhost:6789)"
+     - Only proceed with HTTP fallback if user explicitly confirms
+   - If backend is also unhealthy:
+     - Notify user: "❌ 后端服务 (8765) 不健康且 MCP 未连接。请先启动服务：`start.bat` (Windows) 或 `./start.sh` (Linux/macOS)。"
+     - **Do NOT proceed** with any KB operations
+
+**Rationale**: The kb-mcp MCP server is the canonical access layer for all KB operations. Without it, every operation would bypass the atomic guarantees, audit trail, and consistency checks that MCP tools provide. The pre-flight check catches this before any data is touched.
+
 ### Step 0 — Diagnose the Scenario（场景诊断协议）
 
 Read the task + `[Detected scenario: ...]` hint from the dispatcher. Use
@@ -338,10 +370,10 @@ This creates a durable record the user can review later.
 | `kb_get_documents(kb_id)` | Doc[] | Documents in a KB. Has name, path, tags, size, vector_index, dates. |
 | `kb_doc_read(kb_id="", doc_path="", path="", doc_id="", max_chars=20000, offset=0, limit=200)` | Content | Use `path` (full relative) OR `kb_id+doc_path` OR `doc_id` (UUID). All work. |
 | `kb_search(query, top_k=10)` | Hit[] | **Metadata-only search** — scans name+description, NOT full text. Use for doc-location lookup. |
-| `kb_search_vector(query, kb_id="", top_k=5)` | Chunk[] | Pure vector search. Used for extended recall in enterprise search or tag-expansion fallback. |
+| `kb_search_vector(query, kb_id="", top_k=5, score_threshold=0.0, balance_kbs=false)` | Chunk[] | Pure vector search. For extended recall in enterprise search or tag-expansion fallback. `score_threshold` ≤0 uses 0.35. `balance_kbs=True` for cross-KB fairness. |
 | `kb_search_stats(kb_id="")` | Collections[] | Check vector index health. |
 | `kb_doc_get_by_tag(tag, kb_id="")` | Doc[] | Tag-based cross-KB lookup. Used in expansion phase when vector recall misses. |
-| `kb_search_two_stage(query, kb_id="", stage1_top_k=20, stage2_top_k=5)` | {stage1, stage2} | **Primary search tool.** BM25+vector two-stage. First step in VFCR retrieval. |
+| `kb_search_two_stage(query, kb_id="", stage1_top_k=20, stage2_top_k=5, enable_graph_expansion=true, score_threshold=0.0, balance_kbs=false)` | {stage1, stage2} | **Primary search tool.** BM25+vector two-stage. Set `balance_kbs=True` for cross-KB to prevent large-KB dominance. `score_threshold` ≤0 uses backend default (0.35). |
 
 ### File System
 | Tool | Returns | Notes |
@@ -380,6 +412,32 @@ This creates a durable record the user can review later.
 | Tool | Returns | Notes |
 |------|---------|-------|
 | `kb_doc_update_tags(kb_id, doc_path, tags)` | OK | doc_path: bare name OR full path |
+| `kb_tags_cleanup(dry_run=true)` | Report/Clean | Detect & clean orphan tags (0 refs). dry_run preview; false removes from registry. Protected: domain terms (PET/polymer/DeepLearning etc). |
+
+### Experience — 经验全生命周期（21 tools）
+| Tool | Returns | Notes |
+|------|---------|-------|
+| `experience_create(kb_id, title, ...)`  | Exp | 创建经验。含 scenario/category/problem/solution/key_lessons/tags/severity/related_docs |
+| `experience_read(kb_id, exp_id)` | Exp+Content | 读经验正文+元数据 |
+| `experience_list(kb_id, scenario="", category="", tag="")` | Exp[] | 按场景/类别/标签过滤，按评分排序 |
+| `experience_update(kb_id, exp_id, ...)` | Exp | 更新经验字段，未传字段不变 |
+| `experience_delete(kb_id, exp_id)` | OK | 永久删除（不可逆）|
+| `experience_apply(kb_id, exp_id, user, context, result)` | Exp+Record | 标记经验已应用，applied_count+1 |
+| `experience_review(kb_id, exp_id, reviewer, rating, comment)` | Exp+Record | 评审经验 (0-5分)，重算 rating_avg |
+| `experience_summary(kb_id)` | Stats | 按类别/严重度分布、top5 经验 |
+| `experience_search(kb_id, query, top_k=10)` | Exp[] | 元信息关键词搜索（标题/问题/方案/教训/标签）|
+| `experience_search_vector(kb_id, query, top_k=5)` | Chunk[] | 向量语义搜索（需经验已索引）|
+| `experience_search_global(query, top_k=10, score_threshold, verify_content)` | Exp[]+Meta | ⭐ **主力经验检索**。QDCVR: 向量召回→硬阈值→内容验证→P0/P1/P2分级。带 tier_reason |
+| `experience_extract(kb_id, doc_paths, dry_run, mode)` | Candidates/Task | E0/E1: heuristic=规则提取, prepare=LLM任务包 |
+| `experience_drafts_list(kb_id)` | Draft[] | E3: 草稿池列表 |
+| `experience_draft_read(kb_id, draft_id)` | Draft | E3: 草稿详情+来源证据 |
+| `experience_draft_approve(kb_id, draft_id, edits)` | Exp | E3: 批准草稿→正式经验 |
+| `experience_draft_reject(kb_id, draft_id, reason)` | OK | E3: 拒绝草稿 |
+| `experience_check_stale(kb_id)` | Report | E6: 检查经验关联文档是否过时/失效 |
+| `experience_check_stale_global()` | Report | E6: 全库 stale 检查 |
+| `experience_sync_kb(kb_id)` | OK | E6: 标记需要同步的经验 |
+| `experience_dashboard(kb_id)` | Dashboard | E8: 经验看板（总数/分级/草稿/stale/orphan/需同步）|
+| `experience_apply_decay(kb_id)` | Report | E11: 衰减规则（stale>30d/ disputed/ unvetted）|
 
 ### Vector Index (separate atomic operation, not auto-triggered)
 | Tool | Returns | Notes |
@@ -400,6 +458,7 @@ This creates a durable record the user can review later.
 | `kb_graph_health()` | Health | Is Neo4j available? |
 | `kb_graph_document(doc_path, limit=50)` | Doc graph | Document node + edges. |
 | `kb_graph_document_related(doc_path, limit=20)` | Doc[] | Related documents via graph. |
+| `kb_graph_document_enhanced(doc_path, limit=20)` | Doc[]+Groups | ⭐ Enhanced: results grouped by connection type (vector_similar/shared_tags/agent_judged) with scores. Auto-filters weak edges (shared_tag weight<2). |
 | `kb_graph_documents_by_tag(tag_name, limit=50)` | Doc[] | Docs sharing a tag. |
 | `kb_graph_kb_overview(kb_id)` | Overview | KB's doc count, tag distribution in graph. |
 | `kb_graph_build_kb(kb_id, force=false)` | OK | Build graph for one KB. |

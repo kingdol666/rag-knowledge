@@ -18,6 +18,11 @@
 | MCP 工具层 | 73 工具（KB CRUD / 检索 / 图谱 / 经验） | ✅ |
 | 一键脚本 | `start.sh` / `start.bat`（开窗） | ✅ |
 | 健康检查 | `ragctl health` / `ragctl doctor` | ✅ |
+| 一键初始化 | `ragctl init` — 依赖安装 + submodule + .env 模板 | ✅ 2026-07-15 |
+| 全栈启停 | `ragctl up` / `ragctl down` — Neo4j→Backend→Web 依赖顺序 | ✅ 2026-07-15 |
+| 跨平台启动器 | `ragctl` (bash, Linux/macOS) + `ragctl.bat` (Windows) | ✅ 2026-07-15 |
+| 环境模板 | `.env.example` — 新用户复制即用 | ✅ 2026-07-15 |
+| MCP/kb-mcp 依赖检测 | `ragctl doctor` 检查 kb-mcp + command/ deps | ✅ 2026-07-15 |
 
 **本轮已完成（待提交）**：
 1. 修复 `test_protocol.py`（cwd + APP_MODE）→ 73 工具全通过

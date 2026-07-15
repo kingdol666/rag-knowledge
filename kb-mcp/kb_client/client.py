@@ -559,8 +559,13 @@ class KbClient:
                                        doc_path=doc_path, limit=limit)
 
     async def graph_document_related(self, doc_path: str, limit: int = 20) -> dict:
-        """文档的关联文档列表。"""
+        """文档的关联文档列表（质量过滤）。"""
         return await self._get_backend("/api/v1/graph/document/related",
+                                       doc_path=doc_path, limit=limit)
+
+    async def graph_document_enhanced(self, doc_path: str, limit: int = 20) -> dict:
+        """增强版文档关联查询：按连接类型分组（vector_similar/shared_tag/agent_judged）。"""
+        return await self._get_backend("/api/v1/graph/document/enhanced",
                                        doc_path=doc_path, limit=limit)
 
     async def graph_documents_by_tag(self, tag_name: str, limit: int = 50) -> dict:
