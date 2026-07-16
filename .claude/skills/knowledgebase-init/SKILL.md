@@ -1,291 +1,225 @@
 ---
 name: knowledgebase-init
 description: >
-  知识库系统全链路安装部署向导。
+  知识库系统全链路交互式安装部署向导。
   当用户输入 /knowledgebase-init 或提到"初始化知识库"、"安装知识库"、"部署知识库"、
   "setup knowledge base"、"install rag knowledge" 时触发。
-  自动完成：GitHub 拉取项目 → 安装依赖 → 下载模型 → 配置环境 → 注册 ragctl 全局指令 → 启动服务。
+  交互式引导用户完成全套部署，每个关键配置都询问用户后再设定。
   Triggered by: /knowledgebase-init, 初始化知识库, 安装知识库, 部署知识库, 知识库启动,
   setup knowledge base, install rag knowledge, deploy KB, start knowledge base,
   kb init, knowledgebase setup wizard, 知识库安装向导, 配置知识库, 引导安装知识库.
 ---
 
-# Knowledgebase Init — 全链路一键安装部署向导
+# Knowledgebase Init — 全平台交互式部署向导
 
 **执行者：此技能由 Archival agent 执行** — 必须委托 `Agent(subagent_type="archival", ...)` 执行。
 
-## 概述
+## 核心原则
 
-此 Skill 负责将 RAG Knowledge Platform 从零到全功能运行，共 6 个阶段：
+- 🔄 **全平台兼容** — Windows / Linux / macOS 三平台统一流程
+- 💬 **交互式配置** — 每个关键参数都先询问用户，用户回答后再配置
+- 🚫 **不擅自决定** — 涉及端口、路径、密码等配置，必须用户确认
+- ✅ **每步验证** — 完成一个阶段立即验证，失败即时反馈
 
-1. ✅ **预检** → 检查环境（uv/node/git/docker）并给出安装指令
-2. 📥 **拉取** → git clone 项目到 `~/rag-knowledge`
-3. 🔧 **安装** → `ragctl setup` 一键安装全部依赖 + BGE 模型
-4. ⚙️ **配置** → 交互式创建 .env + 询问 Neo4j 是否需要
-5. 🔗 **注册 ragctl 全局指令** → Linux/macOS 创建 symlink，Windows 添加 PATH
-6. 🚀 **启动验证** → `ragctl up` 启动所有服务 → 健康检查 → 最终验证
+## 工作流程
 
----
+### Phase 0 — 平台检测
 
-## Step 0 — 环境预检
+首先确定用户的操作系统（Bash: `uname -s` 或 `echo %OS%`），后续所有命令自动适配。
 
-在开始之前，先检查本地环境是否满足最低要求。
+### Phase 1 — 环境预检
 
 ```
-运行以下检查（使用 Bash 执行）：
-
-for cmd in uv node git; do
-  if command -v $cmd >/dev/null 2>&1; then
-    echo "✓ $cmd: $( $cmd --version 2>&1 | head -1 )"
-  else
-    echo "✗ $cmd 未安装"
-  fi
-done
-
-# Docker 为可选项
-if command -v docker >/dev/null 2>&1; then
-  echo "✓ docker (可选): $(docker --version 2>&1)"
-else
-  echo "○ docker 未安装 (图谱功能可选)"
-fi
+Bash: 检测以下命令是否可用:
+  uv --version
+  node --version
+  git --version
 ```
 
-**如果 uv 缺失，引导用户安装：**
-- **Linux/macOS:** `curl -LsSf https://astral.sh/uv/install.sh | sh`
-- **Windows:** `powershell -c "irm https://astral.sh/uv/install.ps1 | iex"`
+输出检测结果表格。如果有缺失，**精准给出安装命令**：
 
-**如果 node 缺失，引导用户安装：**
-- https://nodejs.org/ (安装 LTS 18+ 版本)
+| 系统 | 缺失 uv | 缺失 node |
+|------|---------|-----------|
+| Linux | `curl -LsSf https://astral.sh/uv/install.sh \| sh` | `curl -fsSL https://deb.nodesource.com/setup_20.x \| sudo -E bash - && sudo apt-get install -y nodejs` |
+| macOS | `curl -LsSf https://astral.sh/uv/install.sh \| sh` | `brew install node` |
+| Windows | `powershell -c "irm https://astral.sh/uv/install.ps1 \| iex"` | https://nodejs.org/ 下载安装包 |
 
-**所有核心依赖满足后才进入 Step 1。**
+所有核心依赖满足后才进入下一步。
 
----
-
-## Step 1 — 拉取项目
-
-```
-RAG_ROOT="${HOME}/rag-knowledge"
-
-if [ -d "$RAG_ROOT" ]; then
-    echo "项目目录已存在: $RAG_ROOT"
-    echo "正在更新..."
-    cd "$RAG_ROOT" && git pull --recurse-submodules
-else
-    echo "正在从 GitHub 拉取项目..."
-    git clone --recursive https://github.com/kingdol666/rag-knowledge.git "$RAG_ROOT"
-    cd "$RAG_ROOT"
-fi
-
-# 确保子模块完整
-git submodule update --init --recursive
-```
-
----
-
-## Step 2 — 一键安装
+### Phase 2 — 项目确认
 
 ```
-cd "$RAG_ROOT"
+【询问用户】
+项目要安装在哪个目录？
+默认: ~/rag-knowledge (即 /home/用户名/rag-knowledge 或 C:\Users\用户名\rag-knowledge)
 
-# 如果 ragctl CLI 依赖未安装，先安装
-if [ ! -d "command/node_modules" ]; then
-    (cd command && npm install --silent)
-fi
+1. 直接回车 → 使用默认路径
+2. 输入自定义路径
 
-# 执行一键部署（自动安装 uv/python/依赖/模型）
-node command/ragctl.js setup
+用户回答后，记录 RAG_ROOT 变量。
 ```
 
-**ragctl setup 会自动完成：**
-- 安装 uv（如果缺失）
-- 安装 Python 3.12（通过 uv）
-- `git submodule update --init --recursive`
-- `uv sync` (backend 依赖: FastAPI + torch + transformers + mineru)
-- `uv sync` (kb-mcp 依赖: FastMCP + httpx)
-- `npm install` (web 依赖: Nuxt 3 + Ant Design Vue)
-- 下载 BGE-M3 嵌入模型 (~2.2GB)
-- 创建 `.env` 文件
-
----
-
-## Step 3 — 配置
-
 ```
-cd "$RAG_ROOT"
+Bash: 检查 RAG_ROOT 是否已存在
+如果已存在:
+  【询问用户】
+  项目目录已存在: RAG_ROOT
+  1. 更新 (git pull) → 保留现有配置
+  2. 重新安装 → 删除目录后重新 clone
+  3. 跳过 → 保持现状
 
-# 如果 .env 已存在，跳过
-if [ -f ".env" ]; then
-    echo "✓ .env 已存在"
-else
-    cat > .env << 'EOF'
-APP_MODE=dev
-BACKEND_PORT=8765
-WEB_PORT=6789
-PYTHONUTF8=1
-EOF
-    echo "✓ .env 已创建（默认值）"
-fi
+如果不存在:
+  Bash: git clone --recursive https://github.com/kingdol666/rag-knowledge.git <RAG_ROOT>
 ```
 
-**询问用户：是否需要知识图谱功能？**
+### Phase 3 — 依赖安装
 
 ```
-知识图谱需要 Neo4j (Docker)，是否需要？[Y/n]
+【告知用户】
+接下来将安装所有依赖，包括:
+  - Backend (Python): FastAPI, torch, transformers, mineru (~3GB)
+  - Web (Node.js): Nuxt 3, Ant Design Vue (~500MB)
+  - kb-mcp (Python): FastMCP, httpx (~100MB)
+  - BGE-M3 嵌入模型 (~2.2GB)
 
-如果需要: docker compose up -d neo4j
-如果不需要: 图谱功能将在没有 Neo4j 情况下降级运行
+总计约 6GB 磁盘空间，安装时间取决于网络速度。
+
+是否继续？[Y/n]
 ```
 
----
+用户确认后执行：
+```
+Bash: cd <RAG_ROOT> && node command/ragctl.js setup
+```
 
-## Step 4 — 注册 ragctl 全局指令 ⭐
+等待安装完成。如果超时或失败，给出具体错误信息和解决方案。
 
-将 `ragctl` 注册为系统全局可用的 CLI 命令，使任何终端窗口都能直接使用。
+### Phase 4 — 交互式配置
 
-**Linux / macOS：**
+**逐个询问用户，不批量跳过：**
+
+```
+【询问 1】运行模式
+  1. dev  — 开发模式 (backend:8765, web:6789, 热重载, 控制台日志)
+  2. prod — 生产模式 (backend:8001, web:3000, 无热重载, 后台运行)
+  请选择 [1/2，默认: dev]:
+
+【询问 2】是否需要知识图谱功能？
+  知识图谱需要 Docker + Neo4j 容器（额外约 500MB 磁盘）
+  1. Y — 启动 Neo4j（推荐，支持图谱检索和文档关联）
+  2. n — 跳过（图谱功能将不可用）
+  请选择 [Y/n]:
+
+【询问 3】是否需要修改默认端口？
+  当前: backend=8765, web=6789 (dev 模式)
+  1. 保持默认
+  2. 自定义端口
+  请选择 [1/2]:
+
+如果选择自定义:
+  后端端口? [默认 8765]:
+  前端端口? [默认 6789]:
+
+【询问 4】是否需要配置 HuggingFace 镜像加速？
+  国内用户推荐 hf-mirror.com 加速模型下载
+  1. Y — 使用国内镜像
+  2. n — 直连 HuggingFace
+  请选择 [Y/n]:
+```
+
+根据用户回答写入 .env：
 ```bash
-RAG_ROOT="${HOME}/rag-knowledge"
-BIN_DIR="${HOME}/.local/bin"
-mkdir -p "$BIN_DIR"
-
-# 创建 ragctl symlink
-ln -sf "$RAG_ROOT/ragctl" "$BIN_DIR/ragctl"
-chmod +x "$BIN_DIR/ragctl"
-
-echo "✓ ragctl 已注册到 $BIN_DIR/ragctl"
-
-# 确保 ~/.local/bin 在 PATH 中
-if ! echo "$PATH" | grep -q "$BIN_DIR"; then
-    echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.bashrc"
-    echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$HOME/.zshrc" 2>/dev/null
-    echo "✓ ~/.local/bin 已添加到 PATH (bashrc + zshrc)"
-fi
+cat > <RAG_ROOT>/.env << EOF
+APP_MODE=<用户选择的模式>
+BACKEND_PORT=<用户选择的端口>
+WEB_PORT=<用户选择的端口>
+PYTHONUTF8=1
+$( [ "$USE_MIRROR" = "Y" ] && echo "HF_ENDPOINT=https://hf-mirror.com" )
+EOF
 ```
 
-**Windows：**
-```powershell
-$RAG_ROOT = "$env:USERPROFILE\rag-knowledge"
-$BIN_DIR = "$env:USERPROFILE\.local\bin"
-New-Item -ItemType Directory -Force -Path $BIN_DIR | Out-Null
-
-# 复制 ragctl.bat 和 ragctl.cmd 到 bin 目录
-Copy-Item "$RAG_ROOT\ragctl.bat" "$BIN_DIR\ragctl.bat" -Force
-Copy-Item "$RAG_ROOT\ragctl.cmd" "$BIN_DIR\ragctl.cmd" -Force
-
-# 添加到用户 PATH（永久）
-$userPath = [Environment]::GetEnvironmentVariable("Path", "User")
-if ($userPath -notlike "*$BIN_DIR*") {
-    [Environment]::SetEnvironmentVariable("Path", "$userPath;$BIN_DIR", "User")
-    Write-Host "✓ $BIN_DIR 已添加到用户 PATH"
-} else {
-    Write-Host "✓ $BIN_DIR 已在 PATH 中"
-}
-```
-
-**验证注册成功：**
-```
-ragctl --version   # 应该输出: ragctl 2.0.0
-ragctl check       # 全面环境检查
-```
-
----
-
-## Step 5 — 启动服务
+### Phase 5 — Neo4j 启动（如果用户选择需要）
 
 ```
-cd "$RAG_ROOT"
+Bash: cd <RAG_ROOT> && docker compose up -d neo4j
 
-# 一键启动所有服务
-ragctl up
-
-# 或手动启动
-node command/ragctl.js up
+Bash: 轮询检查 127.0.0.1:7687 直到可用（最多等待 60 秒）
 ```
 
-**等待服务就绪后验证：**
+### Phase 6 — ragctl 全局注册
+
+**跨平台自动注册：**
+
+| 平台 | 命令 |
+|------|------|
+| Linux/macOS | `ln -sf <RAG_ROOT>/ragctl ~/.local/bin/ragctl && chmod +x ~/.local/bin/ragctl` |
+| Windows | `copy <RAG_ROOT>\ragctl.bat %USERPROFILE%\.local\bin\ragctl.bat` |
 
 ```
-# 检查每个服务
-echo "=== Backend ===" && curl -s http://localhost:8765/api/v1/health
-echo "=== Frontend ===" && curl -s -o /dev/null -w "HTTP %{http_code}" http://localhost:6789/
-echo "=== Neo4j ===" && curl -s -o /dev/null -w "bolt available" telnet://localhost:7687 2>&1 | head -1
-echo "=== MinerU ===" && curl -s http://localhost:8765/api/v1/mineru/status
-
-# 运行全量状态检查
-ragctl status
+Bash: 验证 ragctl 可用性
+ragctl --version
 ```
 
----
+如果未生效，提示用户重启终端或执行 `export PATH="$HOME/.local/bin:$PATH"`。
 
-## Step 6 — 最终验证
-
-使用 MCP 工具进行端到端验证：
+### Phase 7 — 启动服务
 
 ```
-1. mcp__kb-mcp__backend_status()         → 验证后端 + MinerU 正常
-2. mcp__kb-mcp__kb_list()                → 验证知识库列表可获取
-3. mcp__kb-mcp__kb_graph_health()        → 验证 Neo4j 图谱连接
-4. mcp__kb-mcp__kb_search(query="test", top_k=3)  → 验证搜索功能
+Bash: cd <RAG_ROOT> && ragctl up
 ```
 
-输出安装完成报告：
+等待服务就绪（后端约 30 秒，前端约 20 秒），每 2 秒输出进度。
+
+**启动后验证：**
+```
+Bash:
+  curl -s http://localhost:<BACKEND_PORT>/api/v1/health
+  curl -s -o /dev/null -w "%{http_code}" http://localhost:<WEB_PORT>/
+  curl -s http://localhost:<BACKEND_PORT>/api/v1/mineru/status
+```
+
+### Phase 8 — MCP 最终验证
 
 ```
-═══════════════════════════════════════════════════════
-  ✅ RAG Knowledge Platform 安装成功！
+使用 MCP 工具进行端到端验证:
+  mcp__kb-mcp__backend_status()
+  mcp__kb-mcp__kb_list()
+  mcp__kb-mcp__kb_graph_health()
+  mcp__kb-mcp__kb_search(query="test", top_k=3)
+```
+
+### Phase 9 — 安装完成报告
+
+```
+══════════════════════════════════════════════════════════
+  ✅ RAG Knowledge Platform 安装完成！
 
   📊 服务状态:
-     Backend:  http://localhost:8765 (healthy)
-     Web UI:   http://localhost:6789 (在线)
-     Neo4j:    bolt://localhost:7687 (可用)
-     MinerU:   OCR 引擎就绪
+     Backend:  http://localhost:8765 ✅ healthy
+     Web UI:   http://localhost:6789 ✅ online
+     Neo4j:    bolt://localhost:7687 ✅ available
+     MinerU:   OCR ready ✅
 
-  🔧 全局指令:
-     ragctl status    查看状态
-     ragctl logs      查看日志
+  🔧 全局指令 (任意终端可用):
+     ragctl status    查看服务状态
+     ragctl logs      查看实时日志
      ragctl down      停止服务
      ragctl check     环境检查
 
-  📖 打开 Web UI: http://localhost:6789
+  🌐 打开 Web UI: http://localhost:6789
   🤖 打开 Claude Chat: http://localhost:6789/claude-chat
 
-  🎉 13 个 skills + 74 个 MCP 工具已就绪！
-═══════════════════════════════════════════════════════
+  🎉 13 skills + 74 MCP tools 已就绪！
+══════════════════════════════════════════════════════════
 ```
 
----
+## ⚠️ NEVER
 
-## ⚠️ NEVER 清单
-
-| ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
-|-------------|------|-------------|
-| 跳过预检直接 clone | 可能重复安装或环境不满足 | 先检查 backend_status + uv/node/git |
-| 不解释就直接执行命令 | 用户可能想自定义路径/端口 | 每个步骤先告知用户再执行 |
-| clone 后不更新子模块 | backend/web 目录为空 | `git submodule update --init --recursive` |
-| 安装完成后不验证 | 可能安装失败但用户不知道 | 每个阶段后验证关键输出 |
-| 忘记注册 ragctl 全局指令 | 用户每次都要 cd 到项目目录 | Step 4 必须执行 |
-| 覆盖已有 .env 不提醒 | 用户自定义配置丢失 | .env 存在时跳过，告知用户 |
-| 不询问就启动 Docker | 用户可能不需要图谱 | 先询问用户是否需要 Neo4j |
-
-## 工具速查
-
-- `mcp__kb-mcp__backend_status()` — 后端+MinerU 状态
-- `mcp__kb-mcp__kb_list()` — 知识库列表
-- `mcp__kb-mcp__kb_graph_health()` — Neo4j 图谱健康
-- `mcp__kb-mcp__kb_search(query, top_k)` — 搜索验证
-- `Bash: cd ~/rag-knowledge && node command/ragctl.js <command>` — ragctl CLI
-- `Bash: curl ...` — 健康检查
-
-## Auto-Start 机制
-
-插件的 `hooks/hooks.json` 已注册 SessionStart 钩子。
-
-每次新对话开始时，hook 自动执行：
-1. 检查 `~/rag-knowledge` 是否存在
-2. 检查 `localhost:8765/api/v1/health` 是否响应
-3. 三种情况：
-   - ✅ 项目存在 + 后端运行 → `[rag-knowledge] Backend healthy`
-   - ⚠️ 项目存在 + 后端未运行 → `[rag-knowledge] 服务未运行。输入 /knowledgebase-init 启动服务。`
-   - 📥 项目不存在 → `[rag-knowledge] 项目未安装。输入 /knowledgebase-init 自动拉取并部署。`
-
-这个自动检测确保用户安装插件后，**不需要手动配置任何东西**——系统会自动感知状态并引导用户完成部署。
+| ❌ | ✅ |
+|----|----|
+| 不问用户就覆盖已有配置 | .env 存在时先展示当前值，询问是否修改 |
+| 跳过预检直接安装 | Phase 1 必须所有核心依赖通过 |
+| 不检测平台就用 Linux 命令 | Phase 0 先确定平台，后续全部适配 |
+| 用户选了 n 还强行装 Neo4j | Phase 5 仅在用户明确选 Y 时执行 |
+| 安装失败继续下一步 | 每个 Phase 失败立即停止并报告错误 |
+| 不问端口就写死端口 | Phase 4 询问用户是否自定义 |
