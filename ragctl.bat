@@ -1,9 +1,12 @@
 @echo off
 chcp 65001 >nul 2>&1
 
-REM ragctl.bat — RAG Knowledge Platform CLI Launcher (Windows)
+REM ============================================================
+REM  ragctl.bat — RAG Knowledge Platform CLI Launcher (Windows)
+REM ============================================================
 REM Usage: ragctl <command> [options]
-REM  First run: ragctl init   (installs everything)
+REM   First run: ragctl setup   (one-click deployment)
+REM ============================================================
 
 set "ROOT=%~dp0"
 if "%ROOT:~-1%"=="\" set "ROOT=%ROOT:~0,-1%"

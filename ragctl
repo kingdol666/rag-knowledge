@@ -3,7 +3,7 @@
 # ragctl — RAG Knowledge Platform CLI Launcher (Linux / macOS)
 # ============================================================
 # Usage: ./ragctl <command> [options]
-#   First run: ./ragctl init   (installs everything)
+#   First run: ./ragctl setup   (one-click deployment)
 # ============================================================
 set -euo pipefail
 
@@ -16,7 +16,6 @@ if [ ! -d "$COMMAND_DIR/node_modules" ]; then
     (cd "$COMMAND_DIR" && npm install --silent) >/dev/null 2>&1
 fi
 
-# On macOS or Linux with bash, exec via node directly (no .bat needed)
 if [ -f "$COMMAND_DIR/ragctl.js" ]; then
     exec node "$COMMAND_DIR/ragctl.js" "$@"
 else
