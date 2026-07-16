@@ -23,7 +23,16 @@ from pathlib import Path
 # ---- anchor points (never hardcoded, derived from this file's location) ----
 
 KB_MCP_DIR = Path(__file__).resolve().parent
-PROJECT_ROOT = KB_MCP_DIR.parent
+
+# ⭐ RAG_PROJECT_ROOT env var allows running kb-mcp as a standalone MCP server
+# outside of the rag-knowledge project directory. Set it to the absolute path
+# of the rag-knowledge repo (or any directory containing config.yml + storage).
+# When not set, PROJECT_ROOT defaults to kb-mcp's parent directory.
+_RAG_ROOT = os.environ.get("RAG_PROJECT_ROOT")
+if _RAG_ROOT:
+    PROJECT_ROOT = Path(_RAG_ROOT).resolve()
+else:
+    PROJECT_ROOT = KB_MCP_DIR.parent
 
 
 def resolve_path(*parts: str) -> str:
