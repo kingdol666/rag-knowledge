@@ -1996,3 +1996,103 @@ pub async fn check_claude_code() -> Result<ClaudeCodeStatus, String> {
         detail,
     })
 }
+
+// ═══════════════════════════════════════════════════════════════════════
+//  ⭐ ragctl 一体化集成：Rust 原生实现 → 零 Node 依赖，跨平台
+// ═══════════════════════════════════════════════════════════════════════
+
+/// Native ragctl check — same as `ragctl check` but runs inside Tauri (no node needed)
+#[tauri::command]
+pub async fn ragctl_check(_app: tauri::AppHandle) -> Result<serde_json::Value, String> {
+    let deps = check_dependencies().await?;
+    let ports = get_ports();
+
+    #[derive(Serialize)]
+    struct CheckSummary {
+        deps: Vec<DepStatus>,
+        backend_up: bool,
+        web_up: bool,
+        neo4j_up: bool,
+        backend_port: u16,
+        web_port: u16,
+        project_root: String,
+        app_mode: String,
+    }
+
+    let snap = check_status().await.unwrap_or(StatusSnapshot {
+        backend: false, web: false, neo4j: false, mineru: false,
+        backend_health: None, mineru_port: None,
+        backend_url: String::new(), web_url: String::new(),
+    });
+
+    let summary = CheckSummary {
+        deps,
+        backend_up: snap.backend,
+        web_up: snap.web,
+        neo4j_up: snap.neo4j,
+        backend_port: ports.backend,
+        web_port: ports.web,
+        project_root: project_root_str(),
+        app_mode: read_app_mode(),
+    };
+
+    Ok(serde_json::to_value(&summary).unwrap_or_default())
+}
+
+/// Native ragctl deps — install all dependencies with real-time progress
+#[tauri::command]
+pub async fn ragctl_deps(app: tauri::AppHandle) -> Result<String, String> {
+    emit_progress(&app, "deps", "info", "📦 开始安装所有依赖...");
+
+    let uv = ensure_uv(&app).await?;
+    emit_progress(&app, "deps", "done", "✓ uv");
+
+    ensure_python(&uv, &app).await?;
+    emit_progress(&app, "deps", "done", "✓ Python 3.12");
+
+    let root = project_root_str();
+    let be_main = format!("{}/backend/app/main.py", root);
+    if !Path::new(&be_main).exists() {
+        ensure_submodules(&app).await?;
+        emit_progress(&app, "deps", "done", "✓ 子模块");
+    }
+
+    stream_command(&app, "deps_backend", &uv, &["sync"], &format!("{}/backend", root)).await?;
+    emit_progress(&app, "deps", "done", "✓ Backend 依赖（torch/transformers/mineru）");
+
+    if try_version("node").is_some() {
+        if !Path::new(&format!("{}/web/node_modules", root)).exists() {
+            stream_command(&app, "deps_web", "npm", &["install"], &format!("{}/web", root)).await?;
+        }
+        emit_progress(&app, "deps", "done", "✓ Web 依赖");
+    } else {
+        emit_progress(&app, "deps", "warn", "⚠ Node 未装，跳过 web 依赖");
+    }
+
+    // kb-mcp
+    let mcp_dir = format!("{}/kb-mcp", root);
+    if Path::new(&format!("{}/pyproject.toml", mcp_dir)).exists() {
+        stream_command(&app, "deps_mcp", &uv, &["sync"], &mcp_dir).await?;
+        emit_progress(&app, "deps", "done", "✓ kb-mcp 依赖");
+    }
+
+    emit_progress(&app, "deps", "done", "🎉 所有依赖安装完成");
+    Ok("所有依赖安装完成".into())
+}
+
+/// Native ragctl model — pre-download BGE-M3 embedding model
+#[tauri::command]
+pub async fn ragctl_model(app: tauri::AppHandle) -> Result<String, String> {
+    // Quick check if already downloaded
+    if let Ok(deps) = check_dependencies().await {
+        if deps.iter().any(|d| d.key == "models_embedding" && d.installed) {
+            emit_progress(&app, "model", "done", "✓ BGE-M3 模型已缓存，跳过");
+            return Ok("已缓存".into());
+        }
+    }
+
+    emit_progress(&app, "model", "info", "⏬ 下载 BGE-M3 嵌入模型（~2.2GB，使用 hf-mirror 镜像...");
+    download_embedding_model(&app).await?;
+    emit_progress(&app, "model", "done", "✓ BGE-M3 就绪");
+    Ok("模型下载完成".into())
+}

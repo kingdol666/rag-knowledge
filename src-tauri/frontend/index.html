@@ -216,11 +216,12 @@
   </header>
 
   <div class="section" id="bootstrapSection">
-    <h2>环境引导（零依赖也能一键启动）</h2>
+    <h2>🚀 一键部署 · 全平台适配 (Win/Linux/Mac)</h2>
     <div class="top-actions" style="margin-bottom:12px">
-      <button class="primary" id="btnBootstrap">🚀 一键引导（检测 + 安装全部依赖 + 下载模型）</button>
-      <button id="btnCheckDeps">🔍 重新检测</button>
-      <span style="font-size:11px;color:var(--text-dim);align-self:center">适合全新 clone 的机器：自动装 uv/Python/依赖/模型</span>
+      <button class="primary" id="btnBootstrap" style="font-size:13px;padding:8px 16px">⚡ 一键引导 (uv+Python+依赖+模型)</button>
+      <button id="btnCheckDeps" style="font-size:12px">🔍 全面检测</button>
+      <button id="btnRagctlDeps" style="font-size:12px">📦 仅装依赖</button>
+      <button id="btnRagctlModel" style="font-size:12px">🧠 仅装模型</button>
     </div>
     <div class="grid" id="depsGrid"><div class="card"><div class="card-name">检测中…</div></div></div>
     <div id="claudeCodeCard" style="margin-top:8px"></div>
@@ -632,15 +633,43 @@
     }
 
     async function checkDeps() {
-      try {
-        const deps = await invoke('check_dependencies');
-        renderDeps(deps);
-      } catch (e) {
-        document.getElementById('depsGrid').innerHTML = `<div class="card"><div class="card-name">检测失败: ${e}</div></div>`;
-      }
-    }
+  try {
+    const deps = await invoke('check_dependencies');
+    renderDeps(deps);
+  } catch (e) {
+    document.getElementById('depsGrid').innerHTML = '<div class="card"><div class="card-name">检测失败: ' + e + '</div></div>';
+  }
+}
 
-    async function checkClaudeCode() {
+async function ragctlDeps() {
+  document.getElementById('bootstrapLog').textContent = '';
+  appendBootstrapLog('📦 安装所有依赖…', 'done');
+  try {
+    const msg = await invoke('ragctl_deps');
+    appendBootstrapLog('✓ ' + msg, 'done');
+    toast(msg, 'ok', 5000);
+    checkDeps();
+  } catch (e) {
+    appendBootstrapLog('✗ ' + e, 'error');
+    toast('安装失败: ' + e, 'err', 8000);
+  }
+}
+
+async function ragctlModel() {
+  document.getElementById('bootstrapLog').textContent = '';
+  appendBootstrapLog('🧠 下载 BGE-M3 嵌入模型 (~2.2GB)…', 'done');
+  try {
+    const msg = await invoke('ragctl_model');
+    appendBootstrapLog('✓ ' + msg, 'done');
+    toast(msg, 'ok', 5000);
+    checkDeps();
+  } catch (e) {
+    appendBootstrapLog('✗ ' + e, 'error');
+    toast('模型下载失败: ' + e, 'err', 8000);
+  }
+}
+
+async function checkClaudeCode() {
       try {
         const s = await invoke('check_claude_code');
         const light = s.installed ? 'on' : 'off';
@@ -832,6 +861,8 @@
     // 绑定按钮 + progress 监听
     document.getElementById('btnBootstrap').onclick = bootstrapAll;
     document.getElementById('btnCheckDeps').onclick = checkDeps;
+    document.getElementById('btnRagctlDeps').onclick = ragctlDeps;
+    document.getElementById('btnRagctlModel').onclick = ragctlModel;
     document.getElementById('btnSaveConfig').onclick = saveConfigFromEditor;
     document.getElementById('btnReloadCfg').onclick = loadConfigEditor;
 
