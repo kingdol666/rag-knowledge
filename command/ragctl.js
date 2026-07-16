@@ -533,51 +533,66 @@ async function cmdDeps() {
 // ═══════════════════════════════════════════════════════════════════════
 
 async function cmdModel() {
-  step('BGE-M3 嵌入模型 (~2.2 GB)...');
+  step('BGE-M3 嵌入模型下载 (~2.2 GB)...');
 
-  // Check if already downloaded
-  const cacheDir = path.join(os.homedir(), '.cache', 'huggingface', 'hub', 'models--BAAI--bge-m3');
+  // 1. Quick check: is model already loadable via backend venv?
+  const backendVenvPy = path.join(BACKEND_DIR, '.venv', IS_WIN ? 'Scripts' : 'bin', IS_WIN ? 'python.exe' : 'python');
+  if (fs.existsSync(backendVenvPy)) {
+    try {
+      const check = execSync(
+        `"${backendVenvPy}" -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('BAAI/bge-m3')"`,
+        { encoding: 'utf8', timeout: 30000, stdio: ['pipe','pipe','pipe'] }
+      );
+      if (!check.includes('Error') && !check.includes('Traceback')) {
+        ok('BGE-M3 模型已缓存（跳过下载）');
+        return 0;
+      }
+    } catch {
+      // Model not cached yet, continue with download
+    }
+  }
+
+  // 2. Check huggingface cache
+  const home = os.homedir();
+  const cacheDir = path.join(home, '.cache', 'huggingface', 'hub', 'models--BAAI--bge-m3');
   if (fs.existsSync(cacheDir)) {
     const snapshots = path.join(cacheDir, 'snapshots');
     if (fs.existsSync(snapshots) && fs.readdirSync(snapshots).length > 0) {
-      ok('BGE-M3 模型已下载（跳过）');
+      ok('BGE-M3 模型已缓存（跳过下载）');
       return 0;
     }
   }
 
-  // Check if model dir exists but incomplete
-  if (fs.existsSync(path.join(BACKEND_DIR, '.venv'))) {
-    info('通过 Python 下载模型（首次使用时会自动缓存到 ~/.cache/huggingface）...');
-    console.log(`  ${_c(C.GRAY, '── 下载中，请耐心等待（约 2.2GB）──')}`);
+  // 3. Download if not found
+  if (fs.existsSync(backendVenvPy)) {
+    info('通过 Python 下载模型（约 2.2GB，使用 hf-mirror 镜像）...');
+    console.log(`  ${_c(C.GRAY, '── 下载中，请耐心等待 ──')}`);
 
-    // Use a simple Python script that pre-downloads the model
-    const pythonScript = `
+    const script = `
 import sys
-print("正在加载 sentence_transformers...")
+print("Loading sentence_transformers...")
 from sentence_transformers import SentenceTransformer
-print("正在下载 BAAI/bge-m3 模型到本地缓存...")
+print("Downloading BAAI/bge-m3 model to local cache...")
 model = SentenceTransformer("BAAI/bge-m3")
-print(f"模型下载完成: {model}")
-print(f"向量维度: {model.get_sentence_embedding_dimension()}")
+print("Model loaded. Dimension:", model.get_embedding_dimension())
 `;
+    const scriptPath = path.join(os.tmpdir(), 'ragctl_bge_download.py');
+    fs.writeFileSync(scriptPath, script, 'utf8');
 
-    const scriptPath = path.join(os.tmpdir(), 'ragctl_download_bge.py');
-    fs.writeFileSync(scriptPath, pythonScript, 'utf8');
-
-    const result = await spawnAsync('uv', ['run', 'python', scriptPath], {
-      cwd: BACKEND_DIR, env: { ...process.env, HF_HUB_ENABLE_HF_TRANSFER: '1' }
+    const result = await spawnAsync(backendVenvPy, [scriptPath], {
+      cwd: BACKEND_DIR,
+      env: { ...process.env, HF_ENDPOINT: process.env.HF_ENDPOINT || 'https://hf-mirror.com' },
     });
 
     try { fs.unlinkSync(scriptPath); } catch {}
 
     if (result.code === 0) {
       ok('BGE-M3 模型下载完成！');
-    } else {
-      warn('模型下载未完全成功，首次索引时系统会自动重试下载');
-      console.log(`  ${_c(C.GRAY, '手动验证: uv run python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer(\"BAAI/bge-m3\")"')}`);
+      return 0;
     }
+    warn('模型下载未完全成功，首次索引时系统会自动重试');
   } else {
-    warn('Backend 依赖未安装，请先运行 ragctl deps 再下载模型');
+    warn('Backend venv 未就绪，请先运行 ragctl deps 再下载模型');
   }
 
   return 0;
