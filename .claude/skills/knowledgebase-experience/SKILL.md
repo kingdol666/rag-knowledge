@@ -265,10 +265,12 @@ for each orphan_exp:
 
 # Step 4: 测试污染检测
 for each kb with experiences:
-    summary = experience_summary(kb_id)
-    for exp in experiences where rating==0 and applied==0:
-        if age > 7d:
-            experience_delete(kb_id, exp_id)
+    exp_list = experience_list(kb_id)   # ⚠️ 使用 list 而非 summary——summary 仅返回 top 5
+    for exp in exp_list where rating==0 and applied==0:
+        detail = experience_read(kb_id, exp.id)  # 获取 created_at 用于老化检查
+        age_days = (now - detail.created_at).days
+        if age_days > 7:
+            experience_delete(kb_id, exp.id)
 ```
 
 ### 清理决策矩阵

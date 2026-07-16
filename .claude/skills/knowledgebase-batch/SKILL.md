@@ -103,13 +103,13 @@ description: High-volume batch operations. B1→B7: bulk tag migration, bulk des
 
 ## B5 — Cross-KB Dedup
 
+> ⚠️ 注意：当 KB 数量大时复杂度为 O(n²)（每对 KB 比较）。优化策略：先按文档名哈希到桶中（同名的才比较），跨 KB 对超过 100 对时用 `kb_search_vector` 指纹判重替代逐对比较。
+
 1. `kb_list()` → 所有 KB
-2. 每对 KB 对比文档：
-   - 按文件名初筛
-   - 读 500 chars 内容对比
-3. 标记重复：同名或 >80% 内容重叠
-4. 用户确认 → 保留一个，删除其他：`kb_doc_delete(kb_id, doc_path)`
-5. 验证：无重复标题残留
+2. 优化路径（推荐）：`kb_search_vector(query=doc_name + 前 200 chars 特征, score_threshold=0.85)` → 高分候选即为疑似重复
+3. 完整路径（小规模）：按文件名初筛同名文档 → 读 500 chars 内容对比 → >80% 重叠标记重复
+4. 标记重复 → 用户确认 → `kb_doc_delete(kb_id, doc_path)`
+5. 验证：搜索确认无重复标题残留
 
 ---
 

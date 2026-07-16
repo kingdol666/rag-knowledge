@@ -44,8 +44,10 @@ description: >
 
 ### Phase 1 — 并行 3 路召回（全部 balance_kbs=True 防大库主导）
 
+> ⚠️ 注意：路径 A 和 C 共用 `kb_search_two_stage` 引擎（仅 stage2_top_k 参数不同），并非完全独立。路径 B（标签）是唯一真正独立的召回路径。A+C 双路共识置信度低于 A+B 或 B+C。
+
 ```
-# Path A — 向量（广网，两阶段精排）
+# Path A — 向量+BM25 两阶段精排
 mcp__kb-mcp__kb_search_two_stage(
     Phase0改写query, kb_id="",
     stage1_top_k=30, stage2_top_k=10,

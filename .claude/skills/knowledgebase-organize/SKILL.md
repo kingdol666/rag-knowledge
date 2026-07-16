@@ -41,6 +41,9 @@ fs_get_tree(include_files=True, max_depth=0)
 ```
 
 ## O2 — Deep Content Audit (Every KB, Every Document)
+
+> ⏱️ 估算：每文档 ~2s（读+分类），100 篇文档约 3-4 分钟。大库（>50 文档）委派子 Agent 并行处理。
+
 For each document:
 ```
 content = kb_doc_read(kb_id, doc.doc_path, max_chars=2000)

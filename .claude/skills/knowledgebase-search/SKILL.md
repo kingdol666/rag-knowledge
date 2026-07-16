@@ -89,7 +89,7 @@ catalog = kb_catalog()    # 仅 [{kb_id, name, description, doc_count}]，contex
 
 > 实测病灶：父KB搜索（如 高分子双向拉伸文献库）返回子KB容器条目，内容一律为空——子KB无向量chunk。
 
-**检测**：`kb_doc_catalog(kb_id)` 返回的条目中，若大部分为 `knowledge-base` 类型（子KB），说明这是层次化KB。
+**检测**：`kb_graph_kb_overview(kb_id)` → 若 `sub_kbs` 列表非空则说明是层次化KB（`kb_doc_catalog` 无 `type` 字段，无法直接区分文档与子KB容器）。
 
 **穿透策略**：
 ```
@@ -144,13 +144,13 @@ kb_search_two_stage(
 1. 硬阈值过滤：丢弃 score < 0.35 的片段
 2. 文档级去重：同一 doc_path 只保留 score 最高的 1 个 chunk
 3. 短内容降级：chunk 正文 <50 chars → 直接丢弃；50-200 chars → 标记 ⚠️，打分时降一级
-4. 排序：按 score 降序，取 top 5-8 进入 Step 3
+4. 排序：按 score 降序，取 top 5 进入 Step 3（与 Step 3 的 "top 3-5" 对齐：Step 2.5 准备 5 个候选，Step 3 对前 3-5 个进行内容验证）
 ```
 **例外**：对比型查询（A vs B）保留 A 和 B 各自最高分 chunk。
 
 ## Step 3 — 内容验证（核心裁决，独立于向量分）
 
-对 top 3-5 去重后的候选：
+对 top 5 去重后的候选进行内容验证（Step 2.5 已精简至 5 个候选）：
 ```
 kb_doc_read(kb_id, doc_path, max_chars=3000)
 ```

@@ -222,7 +222,7 @@ kb_graph_document(doc_path) 返回含实体
 ### A7-E — 经验提取（可选，入库后丰富经验库）
 入库终检通过后，如有余力可触发经验扫描：
 ```
-experience_extract(kb_id=target_kb_id, mode="prepare", dry_run=True)
+experience_extract(kb_id=target_kb_id, mode="prepare")  # ⚠️ prepare 模式不支持 dry_run，始终返回 LLM 任务包
 → Agent LLM 精炼 → confidence≥0.8 直接 approved，<0.8 进草稿池
 ```
 非强制步骤，但推荐在 KB 完整性和时效性要求高的场景执行。

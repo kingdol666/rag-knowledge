@@ -41,12 +41,12 @@ description: Knowledge base integrity and quality validation. V1→V9: three-way
 
 ## V1 — Three-Way Metadata Integrity
 
-验证磁盘文件、`.tree-fs.json` 元数据、`.knowledge-base.yml` 索引三者的一致性（见 [Storage Model](CLAUDE.md#storage-model)）。
+验证 `kb_list()` 与 `kb_get_documents()` 的文档计数一致性，以及 `fs_get_tree()` 的路径交叉引用（注意：MCP工具无法直接访问原始 `.tree-fs.json`/`.knowledge-base.yml` 文件，UUID 一致性检查已通过工具内部的原子操作保证）。
 
 1. `mcp__kb-mcp__kb_list()` vs `mcp__kb-mcp__fs_get_tree()` — flag KBs with no tree node, orphan nodes, doc count mismatches.
-2. For each KB: `mcp__kb-mcp__kb_get_documents(kb_id)` — check each doc has a matching file on disk.
-3. Check UUID consistency between `.tree-fs.json` and `.knowledge-base.yml`.
-4. Flag: phantom entries (metadata but no disk file), orphan files (disk but no metadata), UUID mismatches.
+2. For each KB: `mcp__kb-mcp__kb_get_documents(kb_id)` — check each doc has a matching file on disk via path cross-reference.
+3. ⚠️ UUID级一致性由MCP工具原子操作保证（每次 CRUD 同步更新三层），V1 验证基于路径交叉引用而非UUID直接对比。
+4. Flag: phantom entries (metadata but no disk file), orphan files (disk but no metadata).
 
 ## V2 — Document Integrity
 
