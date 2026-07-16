@@ -1,11 +1,15 @@
 ---
 name: knowledgebase-batch
-description: High-volume and batch operations for knowledge base management. B1-B7: bulk tag migration, bulk description updates, directory-to-KB mass ingestion (file-type routing, no splitting), mass document move between KBs, cross-KB dedup, export summary, and graph rebuild. Invoked by Archival when operations involve multiple documents, batch processing, or repetitive updates. Trigger keywords: 批量, 所有文档, 全部, 大规模, 批量操作, 批量标签, batch, bulk, mass, all documents, every KB, repetitive, 全量, 一次性处理, 统一修改.
+description: High-volume batch operations. B1→B7: bulk tag migration, bulk description updates, directory mass ingestion (file-type routing), mass document move, cross-KB dedup, export summary, graph rebuild. All batch ops follow survey→plan→confirm→execute→verify. Triggered by: 批量, 所有文档, 全部, 大规模, 批量操作, batch, bulk, mass, all documents, every KB, repetitive, 全量, 一次性处理, 统一修改.
 ---
 
 # Knowledge Batch — High-Volume Operations
 
 **⭐ MCP 优先原则（强制）**：所有 kb-mcp 操作必须通过 MCP 工具执行（`mcp__kb-mcp__*`）。禁止用 `curl`/`python -c`/`wget` 等终端命令或直调 HTTP API。MCP 不可用时才可向用户报告。
+
+**执行者：此技能由 Archival agent 执行**
+- 当 knowledgebase 调度器检测到对应场景后 → 路由到本 skill
+- 本 skill **必须**委托 Archival agent（`Agent(subagent_type="archival", ...)`）执行
 
 **所有批量操作执行 `survey → plan → confirm → execute → verify` 五步流程**。
 

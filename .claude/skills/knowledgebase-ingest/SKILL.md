@@ -1,6 +1,6 @@
 ---
 name: knowledgebase-ingest
-description: Document ingestion pipeline for knowledge bases. Content-first workflow with quality gates A0→A9: dedup (content fingerprint), survey, acquire real content (parse or read) with parse-quality check, structured content analysis, tag quality gate (blocklist+normalize+verify), description quality gate (4-elements+content-readback), KB-attribution decision tree (sub-KB first), store by file type, index+tag with post-index verification, full verify checklist, sub-KB auto-create + orphan cleanup. No document splitting. Trigger keywords: 入库, 上传, 导入, 存储, 解析, 解析PDF, 保存到, store, upload, import, parse, save to KB, ingest, 入库文档, 上传文档, 存入知识库, 放文档, 添加文档, add doc, put document.
+description: Document ingestion pipeline with quality gates A0→A9. Content-first workflow: dedup (content fingerprint), survey, parse with quality check, structured analysis, tag quality gate (blocklist+normalize+verify), description quality gate (4-elements+content-readback), KB-attribution decision tree (sub-KB first), store by file type, index+tag with post-index verification. No document splitting. Triggered by: 入库, 上传, 导入, 存储, 解析, 解析PDF, 保存到, store, upload, import, parse, save to KB, ingest, 入库文档, 上传文档, 存入知识库, 放文档, 添加文档, add doc, put document.
 ---
 
 # Knowledge Ingest — 内容驱动的规范入库流水线

@@ -1,13 +1,35 @@
 ---
 name: knowledgebase-manage
-description: Document and KB administration operations. M1→M6 workflow: move documents between KBs, rename/redescribe KBs or documents, delete documents or empty KBs, merge KBs, update document content. Invoked by Archival when the task involves moving, renaming, deleting, or updating existing items. Trigger keywords: 移动, 改名, 重命名, 删除文档, 删除KB, 合并KB, move, rename, delete, merge, update content, update description, 移动文档, 更新内容, 修改描述, change description.
+description: Document and KB administration. M1→M6 workflow: survey, confirm destructive ops, execute (move/rename/delete/merge/update), post-change reindex+experience linkage, verify, content update flow. All operations are atomic (disk + .tree-fs.json + .knowledge-base.yml). Triggered by: 移动, 改名, 重命名, 删除文档, 删除KB, 合并KB, move, rename, delete, merge, update content, 移动文档, 更新内容, 修改描述.
 ---
 
 # Knowledge Manage — Document & KB Administration
 
 **⭐ MCP 优先原则（强制）**：所有 kb-mcp 操作必须通过 MCP 工具执行（`mcp__kb-mcp__*`）。禁止用 `curl`/`python -c`/`wget` 等终端命令或直调 HTTP API。MCP 不可用时才可向用户报告。
 
+**执行者：此技能由 Archival agent 执行**
+- 当 knowledgebase 调度器检测到对应场景后 → 路由到本 skill
+- 本 skill **必须**委托 Archival agent（`Agent(subagent_type="archival", ...)`）执行
+
 All operations are **atomic**: each call syncs disk file + `.tree-fs.json` + `.knowledge-base.yml`.
+
+---
+
+## 思维框架
+
+本 skill 管理知识库和文档的生命周期变更。核心原则：
+
+1. **调查先行** — 任何操作前先 survey 当前结构
+2. **破坏性操作必确认** — 删除/合并不可逆，必须先问用户
+3. **变更必重索引** — move/update/delete 后自动重建向量索引+清理图谱
+4. **经验联动** — 文档变更后检查关联经验是否 stale
+5. **验证闭环** — 每步操作后必须验证结果一致性
+
+操作流程覆盖 6 个阶段（M1→M6），按场景选择路径：
+
+```
+M1 调查 → M2 确认 → M3 执行 → M4 重索引+经验联动 → M5 验证 → M6 内容更新
+```
 
 ---
 
@@ -78,6 +100,7 @@ experience_check_stale(kb_id=source_kb)   # 源 KB 经验检查
 experience_check_stale(kb_id=target_kb)   # 目标 KB 经验检查
 ```
 发现 stale 经验 → 后续 `experience_sync_kb` 修复。
+> 详见 [knowledgebase-experience](../knowledgebase-experience/SKILL.md) 经验联动流程。
 
 ## M5 — 验证 + 报告
 
@@ -90,12 +113,14 @@ kb_doc_read(kb_id, doc_path, max_chars=20000) → 展示当前内容
 用户提供新内容 → kb_doc_update_content → kb_doc_read 验证 → kb_index_document 重建索引
 ```
 
+> 参考 [CLAUDE.md 存储模型](../../../CLAUDE.md) 了解 atomic 三写一致性。
+
 ---
 
-## ⚠️ NEVER 清单
+## NEVER 清单 （禁止模式）
 
-| ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
-|-------------|------|-------------|
+| 不要这样做 | 原因 | 应该这样做 |
+|-----------|------|-----------|
 | 移动后不重索引 | 移了但搜不到 | 立刻 `kb_index_document(target, new_path)` |
 | 合并前不确认 | 不可逆 | M2 必须问用户 |
 | 删除非空 KB | 会丢文档 | 先 `kb_get_documents` → 迁移或 `kb_doc_batch_delete` |

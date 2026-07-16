@@ -614,8 +614,6 @@ async def kb_tags_cleanup(dry_run: bool = True) -> str:
             return True
         return False
 
-    _kb_id = kb_id or ""
-
     # 3. For each tag, check reference count
     referenced = 0
     orphan_tags = []

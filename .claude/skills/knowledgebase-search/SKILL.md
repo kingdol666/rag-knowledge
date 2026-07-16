@@ -1,15 +1,13 @@
 ---
 name: knowledgebase-search
 description: >
-  Query-Driven Content-Verified Retrieval (QDCVR) — 先理解查询，再精准检索。
-  核心流程：Step0 查询分析与改写 → Step1 智能选库(降跨域噪声) → Step2 向量+两阶段召回(balance_kbs 防大库主导)
-  → Step2.5 文档级去重+硬阈值过滤 → Step3 内容真裁决(打分判据可操作化) → 命中则直接回答(快速退出)
-  → 未命中用标签+描述扩展召回 → 再次内容验证。
-  向量负责"快"，内容负责"准"，查询改写负责"对"，选库负责"净"，去重阈值负责"精"。
-  Triggered by: "search", "find", "query", "ask", "retrieve", "what is",
-  "how to", "explain", "rag", "回答", "检索", "搜索", "查找内容", "问答",
-  "知识检索", "帮我查", "问一下知识库", "搜", "查询知识库", "知识库问答",
-  "知识库搜索", "问题", "哪里", "办法", "怎么解决".
+  Query-Driven Content-Verified Retrieval (QDCVR). Step0 query analysis+rewrite
+  → Step1 smart KB selection → Step2 two-stage vector+BM25 recall (balance_kbs)
+  → Step2.5 document dedup+hard threshold → Step3 content verification (0-8 scoring)
+  → fast exit if score≥6, otherwise Step4 tag+description expansion → Step5 confidence
+  rating → Step6 synthesized answer with sources and blind-spots. Vector is fast,
+  content is accurate. Triggered by: search, find, query, ask, retrieve, 搜索, 检索,
+  查询, 问答, 帮我查, 问一下知识库, 搜.
 ---
 
 # QDCVR — 查询驱动 · 内容裁决 · 门控精炼检索

@@ -1,19 +1,15 @@
 ---
 name: knowledgebase-experience-summarize
-description: >
-  经验总结入库 — 将用户的实践、流程或经验教训自动提炼为结构化经验并存入知识库。
-  识别场景 → 智能总结 → 用户确认 → experience_create 持久化 → 验证。
-  确保经验完整（问题/方案/教训/标签/指标/关联文档）且人机皆可读。
-  Triggered by: 记录这个经验, 总结一下, 保存教训, 记住流程,
-  提炼成经验, 把...做成经验, 帮我记录一下,
-  save this as experience, summarize as lesson, record this workflow,
-  and any phrase expressing intent to persist a process/lesson/experience as structured knowledge.
-  Do NOT trigger for read-only experience queries.
+description: Experience summarization and persistence. Distill user practices, processes, or lessons into structured experiences. 5-step flow: identify scenario+target KB → draft with quality golden standard (specific, actionable, independently citable) → user confirmation → experience_create persistence → verify. Ensures completeness (problem/solution/lessons/tags/related_docs). Do NOT trigger for read-only experience queries. Triggered by: 记录这个经验, 总结一下, 保存教训, 记住流程, 提炼成经验, save as experience, summarize as lesson, record workflow.
 ---
 
 # Experience Summarize — 经验总结入库
 
 **⭐ MCP 优先原则（强制）**：所有 kb-mcp 操作必须通过 MCP 工具执行（`mcp__kb-mcp__*`）。禁止用 `curl`/`python -c`/`wget` 等终端命令或直调 HTTP API。MCP 不可用时才可向用户报告。
+
+**执行者：此技能由 Archival agent 执行（`Agent(subagent_type="archival", ...)`）**
+- 当 knowledgebase 调度器检测到对应场景后 → 路由到本 skill
+- 本 skill **必须**委托 Archival agent 执行
 
 ---
 
@@ -33,7 +29,7 @@ description: >
 
 从对话提取：发生了什么？做了什么？学到了什么？识别操作上下文（设备/系统/领域）。
 
-通过 `kb_list()` 确定 `target_kb_id`：
+通过 `mcp__kb-mcp__kb_list()` 遍历所有 KB，确定 `target_kb_id`：
 
 ```
 场景属于哪个 KB 的领域？(如故障→设备KB、流程→工艺KB、经验→General-KB)
@@ -87,13 +83,13 @@ related_docs: ["KB/doc.md"]          # 真实存在的文档路径
 
 ### 完整性检查清单（Step 2 通过条件）
 
-| 字段 | 达标标准 | ❸ 不达标则 |
+| 字段 | 达标标准 | ❌ 不达标则 |
 |------|---------|-----------|
 | `title` | 含场景词+方法词（如"磨煤机堵管预警"） | 不回退 Step 1，补场景词 |
 | `problem` | 具体到时间/数量/条件（≥50 chars） | 补充细节 |
 | `solution` | 有工具/方法/步骤引用号（≥100 chars） | 重写 |
 | `key_lessons` | 每条独立可引用（≥30 chars），≥3条 | 从 solution 拆解 |
-| `related_docs` | 路径在 KB 真实存在 | 用 `kb_doc_read` 验证或调整 |
+| `related_docs` | 路径在 KB 真实存在 | 用 `mcp__kb-mcp__kb_doc_read` 验证或调整 |
 | `scenario` | kebab-case，含领域前缀 | 重命名 |
 
 ---
@@ -103,7 +99,7 @@ related_docs: ["KB/doc.md"]          # 真实存在的文档路径
 - **从已有搜索中提取**：用户之前搜了大量资料？从 top 命中里提取 `related_docs` 和 `key_lessons`
 - **从对话中提取**：用户说了"我上次做X时，Y出了问题，后来用Z修好了" → 这就是 raw experience
 - **从文档中总结**：文档里的"## 经验"或"## Lessons Learned"章节直接结构化
-- **多个教训时分类组合同类**：3-5条就够了，过多稀释可操作性
+- **多个教训时分类组同类**：3-5条就够了，过多稀释可操作性
 
 ---
 
@@ -115,8 +111,10 @@ related_docs: ["KB/doc.md"]          # 真实存在的文档路径
 
 ## Step 4 — 持久化
 
+调用 `mcp__kb-mcp__experience_create`：
+
 ```python
-result = experience_create(
+result = mcp__kb-mcp__experience_create(
     kb_id, title, scenario, category,
     problem, solution, result,
     key_lessons, tags, severity, related_docs
@@ -126,7 +124,7 @@ exp_id = result.experience.id
 
 ## Step 5 — 验证
 
-`experience_read(kb_id, exp_id)` — 确认所有字段正确存储。向用户报告 `exp_id`。
+调用 `mcp__kb-mcp__experience_read(kb_id, exp_id)` — 确认所有字段正确存储。向用户报告 `exp_id`。
 
 示例输出：
 ```
@@ -146,7 +144,7 @@ exp_id = result.experience.id
 |-------------|------|-------------|
 | 创建空经验（缺 problem/solution/lessons） | 检索命中也没用 | 缺字段就回退 Step 2 |
 | 跳过用户确认直接入库 | 用户可能有修改意见 | 必须 Step 3 → 4 |
-| `related_docs` 写不存在路径 | 引发 404 | 用 `kb_doc_read` 验证再写 |
+| `related_docs` 写不存在路径 | 引发 404 | 用 `mcp__kb-mcp__kb_doc_read` 验证再写 |
 | `scenario` 不带领域前缀 | 全局冲突，搜不到 | 如 `vla-deployment-sim2real` |
 | 只写2条lessons | 不够可操作 | 最少3条，从不同角度 |
 | 把对话原文当经验 | 无人称/无边界的场景描述无法复用 | 总结成结构化、抽象化的可复用知识 |

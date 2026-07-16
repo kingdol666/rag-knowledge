@@ -1,11 +1,15 @@
 ---
 name: knowledgebase-organize
-description: Full collection restructuring engine. O0→O13 workflow: define KB standards, deep survey every KB (read 2000+ chars per doc), audit every document against compliance standards, content-driven reclassification, execute fixes (descriptions/tags/moves/merges/renames), verify each change, auto-create sub-KBs when KB grows, batch-fix non-compliant descriptions, audit vector index coverage and reindex missing docs, clean YAML/JSON/disk three-way consistency, and knowledge graph rebuild. No document splitting. Trigger keywords: 整理, 清洗, 重组, 审计, 重构, 盘点, 全面梳理, organize, restructure, audit collection, cleanup KB, reorganize, 清洗知识库, 整理知识库, 重建索引, 重新分类, 大扫除, 看看哪里有问题, 有哪些问题, consolidation.
+description: Full collection restructuring engine. O0→O13 workflow: define compliance criteria, deep survey (2000+ chars per doc), audit every document, content-driven reclassification, execute fixes (descriptions→tags→moves→KB ops), verify each change, auto-create sub-KBs, batch-fix descriptions, audit vector index coverage, clean 3-way consistency (disk↔.tree-fs.json↔.knowledge-base.yml), knowledge graph rebuild. No document splitting. Triggered by: 整理, 清洗, 重组, 审计, 重构, 盘点, 全面梳理, organize, restructure, audit, cleanup, reorganize, 清洗知识库, 整理知识库, 大扫除.
 ---
 
 # Knowledge Organize — Collection Restructuring
 
 **⭐ MCP 优先原则（强制）**：所有 kb-mcp 操作必须通过 MCP 工具执行（`mcp__kb-mcp__*`）。禁止用 `curl`/`python`/`wget` 等终端命令或直调 HTTP API 替代 MCP 工具。MCP 不可用时才可向用户报告让用户决策。
+
+**执行者：此技能由 Archival agent 执行**
+- 当 knowledgebase 调度器检测到对应场景后 → 路由到本 skill
+- 本 skill **必须**委托 Archival agent（`Agent(subagent_type="archival", ...)`）执行
 
 ---
 

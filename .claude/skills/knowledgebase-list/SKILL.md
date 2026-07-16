@@ -1,17 +1,21 @@
 ---
 name: knowledgebase-list
-description: Knowledge base listing and discovery. L1→L3 workflow: full inventory of all KBs with document counts, KB drill-down with document metadata, folder tree browsing. Read-only. Invoked by Archival when information needs to be found or displayed. Trigger keywords: 查看, 列出, 展示, 浏览, 有什么, 列出来, 清单, list, show, overview, tree, browse, display, 知识库内容, 知识库有什么, 查看知识库, 有哪些知识库.
+description: Knowledge base listing and discovery. L1→L3 read-only workflow: full inventory (KB names + descriptions + doc counts + tag vocabulary), KB drill-down (document metadata), folder tree browsing. Lightweight methods (kb_catalog→kb_doc_catalog) for progressive disclosure. Never modifies anything. Triggered by: 查看, 列出, 展示, 浏览, 有什么, 列出来, 清单, list, show, overview, tree, browse, display, 知识库内容, 知识库有什么, 查看知识库, 有哪些知识库.
 ---
 
 # Knowledge List — Collection Overview
 
 **⭐ MCP 优先原则（强制）**：所有 kb-mcp 操作必须通过 MCP 工具执行（`mcp__kb-mcp__*`）。禁止用 `curl`/`python -c`/`wget` 等终端命令或直调 HTTP API。MCP 不可用时才可向用户报告。
 
-**Read-only. Never modify anything.**
+**执行者：此技能由 Archival agent 执行**
+- 当 knowledgebase 调度器检测到对应场景后 → 路由到本 skill
+- 本 skill **必须**委托 Archival agent（`Agent(subagent_type="archival", ...)`）执行
 
 ---
 
 ## 思维框架：用户要看多深？ ⭐
+
+用户意图决定展示层级。通过第一轮回应探测用户想要的粒度。
 
 ```
 "看看知识库有什么"
@@ -33,14 +37,18 @@ description: Knowledge base listing and discovery. L1→L3 workflow: full invent
 ---
 
 ## L1 — Full Inventory
-```
-kb_list()                    # all KBs: id, name, description, docCount
-kb_tags_list()               # full tag vocabulary
-fs_get_tree(max_depth=2)     # KB hierarchy
-```
-Lightweight: `kb_catalog()` returns `[{kb_id, name, description, doc_count}]`.
 
-Present as table: KB Name | Description | Docs.
+**目标**：返回所有 KB 的顶级概览（名称、描述、文档数、标签词表）。
+
+**执行步骤**：
+
+1. `mcp__kb-mcp__kb_list()` — 获取所有 KB：id, name, description, docCount
+2. `mcp__kb-mcp__kb_tags_list()` — 获取完整标签词表
+3. `mcp__kb-mcp__fs_get_tree(max_depth=2)` — KB 层级结构
+
+轻量方法：`mcp__kb-mcp__kb_catalog()` 返回 `[{kb_id, name, description, doc_count}]`。
+
+展示为表格：KB Name | Description | Docs.
 
 ### 汇报格式
 ```
@@ -55,19 +63,49 @@ Present as table: KB Name | Description | Docs.
 ```
 
 ## L2 — KB Drill-Down
-```
-kb_get_documents(kb_id)      # docs with name, path, tags, size, vector_index, dates
-```
-Lightweight: `kb_doc_catalog(kb_id)` returns `[{doc_path, name, description}]`.
 
-Check `vector_index` field per doc. Offer `kb_doc_read` for content preview.
+**目标**：进入特定 KB 查看文档清单及元数据。
+
+**执行步骤**：
+
+1. `mcp__kb-mcp__kb_get_documents(kb_id)` — 文档元数据：name, path, tags, size, vector_index, dates
+2. 检查每个文档的 `vector_index` 字段
+3. 按需提供 `mcp__kb-mcp__kb_doc_read()` 内容预览
+
+轻量方法：`mcp__kb-mcp__kb_doc_catalog(kb_id)` 返回 `[{doc_path, name, description}]`。
+
+**注意**：`vector_index` 字段可能缺失（见下方已知问题）。如需确认向量索引状态，可用 `mcp__kb-mcp__kb_search_vector()` 验证。
 
 ## L3 — Browse Tree
-```
-fs_get_tree(include_files=True, max_depth=0)   # 0 = unlimited
-fs_get_count()                                  # folder/file/total counts
-```
-Lightweight: `kb_catalog()` for KB-level, `kb_doc_catalog(kb_id)` for doc-level.
+
+**目标**：展示文件系统的完整树形结构。
+
+**执行步骤**：
+
+1. `mcp__kb-mcp__fs_get_tree(include_files=True, max_depth=0)` — 0 = unlimited
+2. `mcp__kb-mcp__fs_get_count()` — 文件夹/文件/总量统计
+
+轻量方法：KB 级用 `mcp__kb-mcp__kb_catalog()`，文档级用 `mcp__kb-mcp__kb_doc_catalog(kb_id)`。
+
+---
+
+## 已知问题
+
+- **Hierarchical KB listing returns empty content** — 父 KB 的 `kb_search_two_stage` 返回子 KB 容器条目，content 为空。应使用 `mcp__kb-mcp__kb_graph_kb_overview(kb_id)` 获取子 KB UUID 列表，然后在子 KB 内分别检索。
+- **Vector index metadata may be missing after initial index** — 部分文档的 `vector_index` 字段在索引后未写入 YAML。使用 `mcp__kb-mcp__kb_reindex(kb_id, force=true)` 修复（注意这是写操作，仅告知用户，不在 List 流程中自动执行）。
+- **Sub-KB nodes show UUID only in graph** — `mcp__kb-mcp__kb_graph_kb_overview` 的 sub_kbs 列表中 name 为 UUID，无人类可读名称。如需可读名，需回查 `kb_catalog()`。
+
+详见：CLAUDE.md 约定 #7, #8, #10。
+
+---
+
+## 相关参考
+
+- [CLAUDE.md — Storage Model](../../../CLAUDE.md#storage-model) — tree-fs.json + knowledge-base.yml 存储结构
+- [CLAUDE.md — Known Pitfalls #7-11](../../../CLAUDE.md#known-pitfalls) — 层次化KB、向量元数据、图谱节点命名等边界情况
+- [Memory: KB Skill System Design](../../../C:/Users/87287/.claude/projects/D--codes-ClaudeGPT-rag-project-rag-knowledge/memory/MEMORY.md#kb-skill-system-design) — skill 编号约定与 frontmatter 规范
+- [Memory: MCP First Principle](../../../C:/Users/87287/.claude/projects/D--codes-ClaudeGPT-rag-project-rag-knowledge/memory/MEMORY.md#mcp-first-principle) — MCP 优先原则实施记录
+- [Memory: Storage Path Standardization](../../../C:/Users/87287/.claude/projects/D--codes-ClaudeGPT-rag-project-rag-knowledge/memory/MEMORY.md#树存储路径统一) — 存储路径统一方案
 
 ---
 

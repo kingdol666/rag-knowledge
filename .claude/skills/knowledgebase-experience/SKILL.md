@@ -1,21 +1,27 @@
 ---
 name: knowledgebase-experience
 description: >
-  经验库全生命周期管理 — 创建/检索/应用/评审 + 自动提取/草稿/联动/看板/衰减。
-  经验是结构化的实践案例（scenario/problem/solution/lessons），从 KB 文档自动提取或手动创建，
-  用于运维/故障查询时优先检索。支持 E0-E11 完整生命周期，随知识库更新自动联动。
-  Triggered by: 经验, 经验库, experience, lesson, best practice, 实践,
-  案例, 故障经验, 运维经验, lesson learned, 工作经验, previous experience,
+  Experience full lifecycle management E0-E12. Structured practice cases
+  (scenario/problem/solution/lessons). Auto-extract from KB docs
+  (E0 prepare+LLM refine, E1 heuristic), quality gate (E2), draft pool (E3),
+  experience-first retrieval (E4 with strict P0/P1/P2 credibility tiers),
+  document linkage stale detection (E6), dashboard (E8), decay cycles (E11),
+  auto health check+cleanup (E12). Triggered by: 经验, 经验库, experience,
+  lesson, best practice, 实践, 案例, 故障经验, 运维经验, lesson learned,
   提取经验, 从文档提炼, 总结经验, 经验看板, 经验同步.
 ---
 
-# Experience — 全生命周期管理（E0-E11）
+# Experience — 全生命周期管理（E0-E12）
 
-**⭐ MCP 优先原则（强制）**：所有 kb-mcp 操作必须通过 MCP 工具执行（`mcp__kb-mcp__*`）。禁止用 `curl`/`python -c`/`wget` 等终端命令或直调 HTTP API。MCP 不可用时才可向用户报告。
+**[IMPORTANT] MCP 优先原则（强制）**：所有 kb-mcp 操作必须通过 MCP 工具执行（`mcp__kb-mcp__*`）。禁止用 `curl`/`python -c`/`wget` 等终端命令或直调 HTTP API。MCP 不可用时才可向用户报告。
+
+**执行者：此技能由 Archival agent 执行**
+- 当 knowledgebase 调度器检测到对应场景后 → 路由到本 skill
+- 本 skill **必须**委托 Archival agent（`Agent(subagent_type="archival", ...)`）执行
 
 ---
 
-## 思维框架：什么时候用经验？什么时候用文档？ ⭐
+## 思维框架：什么时候用经验？什么时候用文档？[IMPORTANT]
 
 ```
 用户问了一个问题
@@ -33,7 +39,7 @@ description: >
 
 ---
 
-## E0/E1 — 自动提取（从文档挖掘经验）⭐
+## E0/E1 — 自动提取（从文档挖掘经验）[IMPORTANT]
 
 ### E0 提取任务包（LLM 高质量提炼）
 ```
@@ -49,11 +55,11 @@ experience_extract(kb_id="<KB>", mode="heuristic", dry_run=True)
 ```
 基于文档结构（## 段落）+ 关键词（problem/solution/lesson）启发式提取。
 
-> ⚠️ **危险操作警告**：`dry_run=False` 会将候选直接写入草稿池。实测 heuristic 提取产出大量低质候选（章节标题被误认为 key_lessons）。**强烈不推荐**直接 dry_run=False——详见下方 E2c 推荐策略。
+> [WARNING] **危险操作警告**：`dry_run=False` 会将候选直接写入草稿池。实测 heuristic 提取产出大量低质候选（章节标题被误认为 key_lessons）。**强烈不推荐**直接 dry_run=False——详见下方 E2c 推荐策略。
 
-**提取时机**：入库新文档后（Ingest A7 通过）；批量学习某 KB；定期丰富经验库。
+**提取时机**：入库新文档后（Ingest A7 通过，参见 [knowledgebase-ingest](knowledgebase-ingest) 的 A7 八项终检）；批量学习某 KB；定期丰富经验库。
 
-## E2 — 质量门控（强制，提取+创建均适用）⭐
+## E2 — 质量门控（强制，提取+创建均适用）[IMPORTANT]
 
 ### E2a 启发式提取质量门控（E1 产出后强制执行）
 ```
@@ -84,7 +90,7 @@ experience_extract(kb_id="<KB>", mode="heuristic", dry_run=True)
 - **批量扫描**：先 `mode="heuristic"` + `dry_run=True` 扫描 → 只保留 confidence≥0.8 的候选 → `mode="prepare"` 精炼
 - **禁止**：heuristic + dry_run=False 直接写入草稿池（实测产生大量垃圾）
 
-## E3 — 草稿池（候选审核）⭐
+## E3 — 草稿池（候选审核）[IMPORTANT]
 ```
 experience_drafts_list(kb_id)                      → 列出待审核草稿
 experience_draft_read(kb_id, draft_id)             → 读取草稿详情（含来源文档证据）
@@ -93,7 +99,7 @@ experience_draft_reject(kb_id, draft_id, reason)    → 拒绝→rejected/（保
 ```
 **审核流程**：`drafts_list` → 逐条 `draft_read` → LLM 精炼后 `draft_approve(edits=精炼字段)` 或 `draft_reject`。
 
-## E4 — 经验优先检索（QDCVR 流程）⭐
+## E4 — 经验优先检索（QDCVR 流程）[IMPORTANT]
 
 **核心原则：宁可不给，不要错给**——无确认经验即诚实声明盲点。
 
@@ -125,7 +131,7 @@ if P0+P1 < 2: kb_search_two_stage(query, balance_kbs=True)
 | disputed (review≥3 ∧ rating<2) | 降级→max P2 | 有争议降级 |
 | unvetted (0 review ∧ 0 applied) | 降级→max P1 | 未评审压制 |
 
-## E6 — 文档联动 / stale 检测 ⭐
+## E6 — 文档联动 / stale 检测 [IMPORTANT]
 ```
 experience_check_stale(kb_id)          → 检查 KB 经验与文档一致性
 experience_check_stale_global()        → 全库检查
@@ -225,7 +231,7 @@ experience_search_global(query) → P0 经验直接答（秒级）
 每月: experience_dashboard(kb_id) 评估覆盖度，补充缺口
 ```
 
-## E12 — 经验自动体检与清理（⭐ Phase 1 新增）
+## E12 — 经验自动体检与清理（[IMPORTANT] Phase 1 新增）
 
 ### 触发时机
 - 每次 `knowledgebase-verify` V8 步骤触发
@@ -236,7 +242,7 @@ experience_search_global(query) → P0 经验直接答（秒级）
 ```
 # Step 1: 全库 stale/orphan 检测
 experience_check_stale_global()
-  → stale=0, orphan=0 → 健康 ✅
+  → stale=0, orphan=0 → 健康
   → stale>0 → Step 2
   → orphan>0 → Step 3
 
@@ -269,18 +275,26 @@ for each kb with experiences:
 
 | 条件 | 动作 |
 |------|------|
-| orphan + applied=0 + rating=0 | 🗑️ 直接删除 |
-| orphan + applied>0 | 🔧 清空 `related_docs`，保留经验内容 |
-| stale + 文档仍存在 | 🔄 `experience_sync_kb` → 重新提取 |
+| orphan + applied=0 + rating=0 | 直接删除 |
+| orphan + applied>0 | 清空 `related_docs`，保留经验内容 |
+| stale + 文档仍存在 | `experience_sync_kb` → 重新提取 |
 | stale + 文档已删除 | → 转为 orphan，按上表处理 |
-| test 污染 (rating=0, applied=0, age>7d) | 🗑️ 直接删除 |
-| disputed (review≥3, rating<2) | ⚠️ 标记降级，建议人工审查 |
+| test 污染 (rating=0, applied=0, age>7d) | 直接删除 |
+| disputed (review≥3, rating<2) | 标记降级，建议人工审查 |
 
 ---
 
-## ⚠️ NEVER 清单
+## References
 
-| ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
+- 入库流程参考：[knowledgebase-ingest](knowledgebase-ingest) — Ingest A7 终检、文档解析提交流程
+- 图谱联动参考：[knowledgebase-graph](knowledgebase-graph) — 知识图谱与经验的关联检索
+- 校验流程参考：[knowledgebase-verify](knowledgebase-verify) — 全库完整性校验（触发 E12 自动体检）
+- MEMORY.md: [experience-enhancement-implemented-20260713.md](https://github.com/rag-knowledge/rag-knowledge/blob/main/MEMORY.md) — 经验增强机制实现记录
+- CLAUDE.md: 经验可信度阈值定义（P0/P1/P2 分级标准）
+
+## [WARNING] NEVER 清单
+
+| 不要这样做 | 原因 | 应该这样做 |
 |-------------|------|-------------|
 | 创建经验缺 problem/solution/lessons | 检索命中也没用 | 三者必须非空且具体 |
 | 跳过 E2 质量门控 | 低质经验污染库 | scenario/related_docs 必须验证 |

@@ -1,6 +1,6 @@
 ---
 name: knowledgebase
-description: Knowledge base management — primary entry point. Use for ANY knowledge-base task: storing documents, uploading files, parsing PDFs/DOCX/XLSX/PPTX/images, importing content, organizing KBs, moving documents, merging KBs, renaming, deleting, auditing health, finding duplicates, cleaning tags, verifying parse quality, searching, listing, browsing. Triggered by: "knowledge base", "KB", "知识库", "KB 管理", "知识库管理", "文档管理", "store this", "parse to KB", "upload document", "import to KB", "save to KB", "organize knowledge", "audit KB", "find documents", "what KBs do I have", "show KB", "list KBs", "merge KBs", "delete KB", "整理", "入库", "入库文档", "上传", "上传文档", "解析", "解析PDF", "导入", "搜索知识库", "搜索 KB", "查看", "查看知识库", "检索知识库", "查询知识库", "帮我查", "问一下知识库", "知识库问答", "知识库搜索", "知识库管理", "经验", "经验库", "整理知识库", "清洗知识库", "核对", "校验知识库", "知识库完整性", "移动文档", "改名", "重命名", "删除KB", "合并KB", "知识库中有什么", "知识库的内容", and any phrase referencing knowledge base operations, documents, tags, or parsing.
+description: Knowledge base management — primary entry point and dispatcher. Routes user requests to the correct sub-skill based on scenario matching (ingest, search, manage, organize, verify, list, batch, experience, graph). NEVER handles KB operations directly. Triggered by: 知识库, KB, 文档管理, 入库, 上传, 解析, 搜索, 检索, 查看, 整理, 校验, 经验, 图谱, 批量, store, upload, parse, search, find, query, list, show, verify, audit, organize, experience, graph, batch, and any knowledge base operation phrase.
 ---
 
 # Knowledge Base — Dispatcher
@@ -30,9 +30,15 @@ description: Knowledge base management — primary entry point. Use for ANY know
 
 ---
 
-## Classify the scenario, then route to the matching sub-skill.
+## Sequential Processing Steps
 
-| Signal keywords | Scenario | Skill |
+### Step 1: Detect KB Keywords
+Scan user input for any trigger keyword from the frontmatter trigger list. If no keywords match, output the fuzzy fallback message and wait for clarification. Do not proceed to modification without explicit user intent.
+
+### Step 2: Classify the Scenario
+Map matched keywords to a single scenario using the classification table below. Each row maps a set of signal keywords to one scenario and its corresponding sub-skill.
+
+| Signal keywords | Scenario | Route to |
 |---|---|---|
 | 入库, 上传, 导入, 解析, store, upload, parse, ingest | **Ingest** | `Skill("knowledgebase-ingest")` |
 | 移动, 改名, 删除, 合并, move, rename, delete, merge | **Manage** | `Skill("knowledgebase-manage")` |
@@ -40,11 +46,22 @@ description: Knowledge base management — primary entry point. Use for ANY know
 | 搜索, 查询, 检索, search, find, query, RAG | **Search** | `Skill("knowledgebase-search")` |
 | 全库搜索, 跨库, cross-KB, enterprise | **Search-Enterprise** | `Skill("knowledgebase-search-enterprise")` |
 | 查看, 列出, 浏览, list, show, overview, tree | **List** | `Skill("knowledgebase-list")` |
-| 校验, 核对, 完整性, verify, validate, integrity | **Verify** | `Skill("knowledgebase-verify")` |
+| 校验, 核对, 完整性, 检查, 检测, verify, validate, integrity | **Verify** | `Skill("knowledgebase-verify")` |
 | 批量, 全量, batch, bulk, mass | **Batch** | `Skill("knowledgebase-batch")` |
 | 经验, 经验库, experience, lesson, best practice | **Experience** | `Skill("knowledgebase-experience")` |
 | 记录经验, 总结, summarize as experience | **Experience-Summarize** | `Skill("knowledgebase-experience-summarize")` |
 | 图谱, graph, neo4j, entity, build graph | **Graph** | `Skill("knowledgebase-graph")` |
+
+### Step 3: Route to Sub-Skill
+Based on classification outcome:
+- **Single scenario** — Route directly via `Skill("knowledgebase-<scenario>")`.
+- **Mixed scenarios** — Follow priority order: Organize → Verify → Ingest → Manage → List/Search. Complete each sub-skill fully before starting the next.
+- **Ambiguous / fuzzy match** — Apply fuzzy fallback rules (see Rule 5).
+
+### Step 4: Sub-Skill Delegates to Archival Agent
+Each sub-skill's SKILL.md must detect the scenario and delegate execution to the Archival sub-agent. The dispatcher's job ends at routing. The Archival agent is responsible for executing all KB operations via MCP tools.
+
+---
 
 ## Rules — 强制执行，不可绕过
 
