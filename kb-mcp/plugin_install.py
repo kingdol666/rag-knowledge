@@ -18,6 +18,10 @@ import os
 import sys
 from pathlib import Path
 
+# Force UTF-8 on Windows consoles
+if sys.platform == 'win32':
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+
 KB_MCP_DIR = Path(__file__).resolve().parent
 
 MCP_ENTRY = {
@@ -116,7 +120,7 @@ def cmd_install(target: str | None = None):
         json.dump(config, f, indent=2, ensure_ascii=False)
         f.write("\n")
 
-    print("✓ kb-mcp installed to", str(mcp_file))
+    print("[OK] kb-mcp installed to", str(mcp_file))
     print("  Servers: kb-mcp (74 tools — KB CRUD, search, graph, experience)")
     if rag_root:
         print("  RAG_PROJECT_ROOT:", rag_root)
@@ -151,7 +155,7 @@ def cmd_uninstall(target: str | None = None):
             json.dump(config, f, indent=2, ensure_ascii=False)
             f.write("\n")
 
-        print("✓ kb-mcp uninstalled from", str(mcp_file))
+        print("[OK] kb-mcp uninstalled from", str(mcp_file))
     else:
         print("kb-mcp not found in", str(mcp_file))
 
@@ -173,7 +177,7 @@ def cmd_status():
             cfg = json.load(f)
         servers = cfg.get("mcpServers", {})
         if "kb-mcp" in servers:
-            print("✓ Project .mcp.json:  installed (rag-knowledge local)")
+            print("[OK] Project .mcp.json:  installed (rag-knowledge local)")
         else:
             print("○ Project .mcp.json:  not present")
     else:
@@ -186,7 +190,7 @@ def cmd_status():
             cfg = json.load(f)
         servers = cfg.get("mcpServers", {})
         if "kb-mcp" in servers:
-            print("✓ Global ~/.claude/.mcp.json: installed (available everywhere)")
+            print("[OK] Global ~/.claude/.mcp.json: installed (available everywhere)")
             env_vars = servers["kb-mcp"].get("env", {})
             for k, v in env_vars.items():
                 print(f"    {k}={v}")
