@@ -384,16 +384,40 @@ RAGEOF
 
 ---
 
-## Phase 7 — ragctl 全局注册
+## Phase 7 — 全局注册（ragctl + MCP，任意目录可用）
 
-| 平台 | 操作 |
-|------|------|
-| Linux/macOS | `mkdir -p ~/.local/bin && ln -sf "<RAG_ROOT>/ragctl" ~/.local/bin/ragctl && chmod +x ~/.local/bin/ragctl` |
-| Windows | `mkdir %USERPROFILE%\.local\bin 2>nul && copy /Y "<RAG_ROOT>\ragctl.bat" "%USERPROFILE%\.local\bin\ragctl.bat"` |
+目标：让用户在**任意目录**启动 Claude Code 都能用这个知识库——ragctl 在 PATH 上，kb-mcp 在用户级 `~/.claude/.mcp.json` 里。
+
+### 7a — ragctl 全局注册
+
+`ragctl install` 会写一个**硬编码绝对路径**的 wrapper 到 `~/.local/bin/`（不是符号链接/拷贝——那些会因路径解析失败）。
 
 ```
-Bash: 验证 ragctl --version 可执行
+Bash: cd "<RAG_ROOT>" && ragctl install
 ```
+
+预期输出包含：`[✓] 已写入 <home>/.local/bin/ragctl(.cmd)` 且确认 `~/.local/bin` 在 PATH 中。
+验证：`Bash: ragctl status`（在 <RAG_ROOT> 之外的任意目录运行也应成功）。
+
+> 若 `~/.local/bin` 不在 PATH：Linux/macOS 提示 `echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc`；Windows 提示 `setx PATH "%PATH%;%USERPROFILE%\.local\bin"` 后重开终端。
+
+### 7b — kb-mcp 全局 MCP 注册（关键：让 77 个 MCP 工具在任意项目可用）
+
+```
+Bash: cd "<RAG_ROOT>/kb-mcp" && uv run python plugin_install.py install
+```
+
+这条命令把 kb-mcp 写入**用户级** `~/.claude/.mcp.json`（不是项目级），并自动设置 `RAG_PROJECT_ROOT=<RAG_ROOT>`，所以 kb-mcp 从任何目录都能定位 `config.yml` 和存储。
+
+预期输出：`✓ kb-mcp installed to <home>/.claude/.mcp.json` + `RAG_PROJECT_ROOT: <RAG_ROOT>`。
+
+验证：
+```
+Bash: cd "<RAG_ROOT>/kb-mcp" && uv run python plugin_install.py status
+```
+应显示 `✓ Global ~/.claude/.mcp.json: installed (available everywhere)`。
+
+> ⚠️ 注册后必须**重启 Claude Code**（或在新会话里 `/mcp` 重连）才能让全局 MCP 生效。重启后，在任意目录启动 Claude Code，`mcp__kb-mcp__*` 工具与 13 个技能都可用。
 
 ---
 
@@ -454,13 +478,18 @@ Bash:
   📁 项目目录:    <RAG_ROOT>
   📁 知识库数据:  <STORAGE_PATH>
 
-  🔧 全局指令 (任意终端可用):
+  🔧 全局指令 (任意终端/任意目录可用):
      ragctl status   ·  ragctl up/down   ·  ragctl logs   ·  ragctl check
+     ragctl desktop  ·  ragctl install
+
+  🌍 全局可用 (任意目录启动 Claude Code 都能操作本知识库):
+     13 skills (插件) + 77 MCP tools (~/.claude/.mcp.json → kb-mcp)
+     重启 Claude Code 后，在任意项目里说"搜索知识库"即可使用。
 
   🌐 打开 Web UI: http://localhost:<WEB_PORT>
   🤖 打开 Claude Chat: http://localhost:<WEB_PORT>/claude-chat
 
-  🎉 13 skills + 74 MCP tools 已就绪！
+  🎉 13 skills + 77 MCP tools 已就绪（全局）！
 ═══════════════════════════════════════════════════════════
 ```
 

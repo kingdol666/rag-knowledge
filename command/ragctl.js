@@ -4,24 +4,21 @@
  * ragctl — RAG Knowledge Platform CLI
  * ====================================
  *
- * 最强大的一键式部署工具
+ * 最强大的一键式部署工具。所有服务在 dev/prod 下均为静默启动（无终端窗口），
+ * 日志统一落盘到 {backend,web}/logs/desktop-stdout.log（与 Tauri 桌面控制台共享）。
  *
  * Commands:
  *   setup    One-click full setup (uv + deps + models + .env)
  *   check    Comprehensive health check — what's missing, how to fix
  *   deps     Install all dependencies with real-time progress
  *   model    Download BGE embedding model
- *   start    Start services (backend, web, neo4j, mcp, all)
- *   stop     Stop services
+ *   up       Start all services (silent — no terminal windows)
+ *   down     Stop all services
+ *   start    Start a specific service (backend|web|neo4j|all)
+ *   stop     Stop a specific service (backend|web|neo4j|all)
+ *   restart  Restart a specific service (backend|web|neo4j|all)
  *   status   Show service status
- *   restart  Restart services
- *   config   Configuration management
- *   health   Health check
- *   doctor   Diagnostics
- *   logs     Log viewer
- *   test     Run tests
- *   mcp      MCP management
- *   kb       KB quick operations
+ *   logs     View/tail service logs (backend|web|mineru) [--tail] [--lines N]
  */
 
 'use strict';
@@ -46,6 +43,16 @@ const ENV_FILE = path.join(PROJECT_ROOT, '.env');
 const UV_VERSION = '0.7.0'; // Recommended uv version
 
 const IS_WIN = os.platform() === 'win32';
+
+// ── Log paths (single source of truth — MUST match src-tauri watch_log paths) ──
+// Both ragctl and Tauri write/read the same files so the desktop log viewer works
+// regardless of which launcher started the service. Truncated on each start.
+const LOG_PATHS = {
+  backend: path.join(BACKEND_DIR, 'logs', 'desktop-stdout.log'),
+  web:     path.join(WEB_DIR, 'logs', 'desktop-stdout.log'),
+  mineru:  path.join(BACKEND_DIR, 'logs', 'mineru-api.log'),
+};
+function getLogPath(service) { return LOG_PATHS[service]; }
 
 // ── ANSI Colors ────────────────────────────────────────────────────────
 const C = {
@@ -152,6 +159,37 @@ function commandExists(cmd) {
     execSync(IS_WIN ? `where ${cmd}` : `command -v ${cmd}`, { stdio: 'ignore', timeout: 3000, shell: IS_WIN });
     return true;
   } catch { return false; }
+}
+
+// Locate the uv binary across versions: modern uv (0.4+) installs to
+// ~/.local/bin on every OS; older installs used ~/.cargo/bin. Returns the full
+// path to the binary if found, else "uv" / "uv.exe" (lets PATH resolve it).
+function findUvDir() {
+  const bin = IS_WIN ? 'uv.exe' : 'uv';
+  for (const rel of ['.local', '.cargo']) {
+    const dir = path.join(os.homedir(), rel, 'bin');
+    if (fs.existsSync(path.join(dir, bin))) return dir;
+  }
+  return null;
+}
+function findUvBin() {
+  const dir = findUvDir();
+  if (dir) return path.join(dir, IS_WIN ? 'uv.exe' : 'uv');
+  return IS_WIN ? 'uv.exe' : 'uv';   // fallback: let CreateProcess/PATH resolve
+}
+
+// Ensure uv is callable in THIS process before any spawn('uv', ...). Fresh
+// terminals opened right after `ragctl setup` (which setx's PATH) may not yet
+// have uv resolvable, and modern uv lives in ~/.local/bin which some shells
+// don't source by default. Safe to call repeatedly.
+function ensureUvOnPath() {
+  if (commandExists('uv')) return true;
+  const dir = findUvDir();
+  if (dir) {
+    process.env.PATH = `${dir}${path.delimiter}${process.env.PATH}`;
+    return commandExists('uv');
+  }
+  return false;
 }
 
 // ── spawnAsync — run command with real-time stdout/stderr, return exit code ──
@@ -401,10 +439,11 @@ async function cmdSetup() {
         ], { silent: true });
         if (result.code === 0) {
           ok('uv 安装成功！');
-          // Add to PATH for current session
-          const uvDir = path.join(os.homedir(), '.cargo', 'bin');
+          // Detect actual install dir (modern uv → ~/.local/bin; legacy → ~/.cargo/bin)
+          const uvDir = findUvDir() || path.join(os.homedir(), '.local', 'bin');
           process.env.PATH = `${uvDir}${path.delimiter}${process.env.PATH}`;
-          // On Windows, also add via setx for persistence
+          // On Windows, persist to PATH via setx (takes effect in NEW terminals;
+          // ensureUvOnPath() covers the current session / ragctl wrappers).
           if (IS_WIN) {
             try {
               execSync(`setx PATH "%PATH%;${uvDir}"`, { stdio: 'ignore', timeout: 5000 });
@@ -428,7 +467,7 @@ async function cmdSetup() {
       ], { silent: true, noShell: true });
       if (result.code === 0) {
         ok('uv 安装成功！');
-        const uvDir = path.join(os.homedir(), '.cargo', 'bin');
+        const uvDir = findUvDir() || path.join(os.homedir(), '.local', 'bin');
         process.env.PATH = `${uvDir}:${process.env.PATH}`;
       } else {
         err('uv 安装失败');
@@ -602,15 +641,27 @@ print("Model loaded. Dimension:", model.get_embedding_dimension())
 //  COMMANDS: start / stop / status / restart (same as before, improved)
 // ═══════════════════════════════════════════════════════════════════════
 
-function getServicePorts() {
+function getServicePorts(modeOverride) {
   const cfg = readYaml(CONFIG_YML);
   const env = readEnv(ENV_FILE);
-  const mode = env.APP_MODE || 'dev';
+  const mode = modeOverride || env.APP_MODE || 'dev';
   const server = cfg.server || {};
   const modeSection = server[mode] || {};
+  // When a mode is EXPLICITLY passed (--mode prod), resolve ports from config.yml
+  // for that mode and IGNORE .env BACKEND_PORT/WEB_PORT — otherwise .env (which
+  // pins a specific mode's ports) would silently override the runtime choice.
+  if (modeOverride) {
+    return {
+      backend: parseInt(modeSection.backend_port || '8765'),
+      web: parseInt(modeSection.frontend_port || '6789'),
+      mode,
+    };
+  }
+  // Default: .env is the single source of truth (env BACKEND_PORT/WEB_PORT win).
   return {
     backend: parseInt(env.BACKEND_PORT || modeSection.backend_port || '8765'),
-    web: parseInt(env.WEB_PORT || modeSection.frontend_port || '6789'),
+    web: parseInt(env.WEB_PORT || env.FRONTEND_PORT || modeSection.frontend_port || '6789'),
+    mode,
   };
 }
 
@@ -642,6 +693,9 @@ function findPythonProcesses(keyword) {
 }
 
 function spawnInTerminal(title, commandLine, opts = {}) {
+  // Kept for `ragctl console` (explicit "I want a live terminal") — NOT used by
+  // normal `up`/`start`. Silent detached launch is the default for all services
+  // so no terminal windows ever appear without the user asking for one.
   const env = { ...process.env, ...(opts.env || {}) };
   const cwd = opts.cwd || PROJECT_ROOT;
 
@@ -673,17 +727,54 @@ function spawnInTerminal(title, commandLine, opts = {}) {
   return false;
 }
 
-function spawnService({ mode, title, cwd, command, args, env }) {
-  const fullEnv = { ...process.env, ...(env || {}) };
-  if (mode === 'dev') {
-    const line = `${command} ${args.join(' ')}`;
-    if (spawnInTerminal(title, line, { env: fullEnv, cwd })) return;
-    warn('无可用终端 — 后台启动（ragctl logs 查看日志）');
-  }
-  spawn(command, args, {
-    cwd, env: fullEnv, detached: true, stdio: 'ignore', windowsHide: true,
-    shell: IS_WIN,
-  }).unref();
+/**
+ * Silent service launcher — used for EVERY service in both dev and prod.
+ *
+ * No terminal window is ever opened. stdout+stderr are redirected to the same
+ * log file Tauri's desktop log viewer tails, so logs flow into:
+ *   • on-disk log file        →  {backend,web}/logs/desktop-stdout.log
+ *   • Tauri desktop log UI    →  watch_log() reads those exact paths
+ *   • `ragctl logs <svc>`     →  reads/tails those exact paths
+ *
+ * The binary is spawned DIRECTLY (no `shell: true`). Spawning `uv`/`node`
+ * through a cmd.exe wrapper breaks fd inheritance on Windows and the log file
+ * stays empty even though the service runs; spawning the binary directly
+ * (matching Python's subprocess.Popen) makes the stdio fd inherit correctly.
+ * `detached: true` + `.unref()` → survives ragctl exit; `windowsHide: true`
+ * → no console window. `PYTHONUNBUFFERED` forces Python to flush in real time.
+ */
+function spawnService({ title, cwd, command, args, env, serviceName }) {
+  const fullEnv = {
+    ...process.env,
+    PYTHONUNBUFFERED: '1',
+    PYTHONUTF8: '1',
+    ...(env || {}),
+  };
+  const logPath = getLogPath(serviceName);
+  if (!logPath) throw new Error(`未知服务日志路径: ${serviceName}`);
+  fs.mkdirSync(path.dirname(logPath), { recursive: true });
+
+  // Resolve the actual binary so we can spawn WITHOUT a shell:
+  //   uv   → full path via findUvDir (modern uv in ~/.local/bin)
+  //   node → the very node.exe running this CLI (process.execPath)
+  //   other→ append .exe on Windows (CreateProcess doesn't do PATHEXT)
+  let bin = command;
+  if (command === 'uv') bin = findUvBin();
+  else if (command === 'node') bin = process.execPath;
+  else if (IS_WIN && !path.extname(command)) bin = command + '.exe';
+
+  // One fd shared by stdout+stderr — both streams land in the same file.
+  const fd = fs.openSync(logPath, 'w');   // truncate on start (matches Tauri)
+  const child = spawn(bin, args, {
+    cwd,
+    env: fullEnv,
+    detached: true,
+    stdio: ['ignore', fd, fd],
+    windowsHide: true,
+    shell: false,
+  });
+  child.unref();
+  return { pid: child.pid, logPath, bin };
 }
 
 function httpGet(url, timeout = 5000) {
@@ -698,15 +789,24 @@ function httpGet(url, timeout = 5000) {
   });
 }
 
-async function startBackend(mode, port) {
+async function startBackend(mode) {
+  const { backend: port } = getServicePorts(mode);
   if (await portInUse(port)) { warn(`Backend 已在端口 ${port} 运行`); return; }
-  info(`启动 Backend (端口 ${port}, mode=${mode})...`);
-  spawnService({ mode, title: `RAG-Backend (${mode})`, cwd: BACKEND_DIR, command: 'uv', args: ['run', 'python', 'main.py'], env: { APP_MODE: mode } });
+  info(`启动 Backend (端口 ${port}, mode=${mode}, 静默)...`);
+  const { pid } = spawnService({
+    title: `RAG-Backend (${mode})`,
+    cwd: BACKEND_DIR,
+    command: 'uv',
+    args: ['run', 'python', 'main.py'],
+    env: { APP_MODE: mode, BACKEND_PORT: String(port) },
+    serviceName: 'backend',
+  });
+  info(`Backend pid=${pid} · 日志: ${getLogPath('backend')}`);
   for (let i = 0; i < 30; i++) {
     await sleep(1000);
-    if (await portInUse(port)) { ok(`Backend 已启动 (端口 ${port})`); return; }
+    if (await portInUse(port)) { ok(`Backend 已启动 (端口 ${port}) · ragctl logs backend 查看日志`); return; }
   }
-  warn(`Backend 启动超时 (端口 ${port})`);
+  warn(`Backend 启动超时 (端口 ${port}) — 排查: ragctl logs backend`);
 }
 
 async function stopBackend(port) {
@@ -717,15 +817,26 @@ async function stopBackend(port) {
   if (stopped) ok('Backend 已停止'); else warn('未找到 Backend 进程');
 }
 
-async function startWeb(mode, port) {
+async function startWeb(mode) {
+  const { web: port, backend } = getServicePorts(mode);
   if (await portInUse(port)) { warn(`Web 已在端口 ${port} 运行`); return; }
-  info(`启动 Web 前端 (端口 ${port}, mode=${mode})...`);
-  spawnService({ mode, title: `RAG-Web (${mode})`, cwd: WEB_DIR, command: 'node', args: ['start.mjs'], env: { APP_MODE: mode, WEB_PORT: String(port) } });
-  for (let i = 0; i < 20; i++) {
+  info(`启动 Web 前端 (端口 ${port}, mode=${mode}, 静默)...`);
+  const { pid } = spawnService({
+    title: `RAG-Web (${mode})`,
+    cwd: WEB_DIR,
+    command: 'node',
+    args: ['start.mjs'],
+    // Pass both WEB_PORT and BACKEND_PORT so start.mjs binds the right port
+    // AND proxies to the mode-correct backend (overriding root .env defaults).
+    env: { APP_MODE: mode, WEB_PORT: String(port), BACKEND_PORT: String(backend) },
+    serviceName: 'web',
+  });
+  info(`Web pid=${pid} · 日志: ${getLogPath('web')}`);
+  for (let i = 0; i < 25; i++) {
     await sleep(1000);
-    if (await portInUse(port)) { ok(`Web 已启动 (端口 ${port})`); return; }
+    if (await portInUse(port)) { ok(`Web 已启动 (端口 ${port}) · ragctl logs web 查看日志`); return; }
   }
-  warn(`Web 启动超时 (端口 ${port})`);
+  warn(`Web 启动超时 (端口 ${port}) — 排查: ragctl logs web`);
 }
 
 async function stopWeb(port) {
@@ -751,23 +862,151 @@ async function stopNeo4j() {
   } catch {}
 }
 
-async function cmdUp(mode) {
-  mode = mode || getAppMode();
-  const ports = getServicePorts();
-  header(`启动 RAG Knowledge Platform (mode=${mode})`);
+// Parse `--mode dev|prod` from arg list, falling back to .env APP_MODE.
+function parseModeArg(args) {
+  const i = args.indexOf('--mode');
+  if (i !== -1 && args[i + 1]) return args[i + 1];
+  return getAppMode();
+}
+
+// First positional service arg, skipping `--mode <val>` and any other flags.
+function parseServiceArg(args) {
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--mode') { i++; continue; } // skip flag + its value
+    if (args[i].startsWith('-')) continue;        // skip other flags
+    return args[i];
+  }
+  return null;
+}
+
+// ── Per-service start/stop/restart (silent — same as `up`) ───────────────
+async function cmdStart(args) {
+  const mode = parseModeArg(args);
+  const svc = parseServiceArg(args) || 'all';
+  header(`启动服务 (mode=${mode}): ${svc}`);
   const composeFile = path.join(PROJECT_ROOT, 'docker-compose.yml');
-  if (fs.existsSync(composeFile) && !(await portInUse(7687))) { await startNeo4j(); await sleep(2000); }
-  await startBackend(mode, ports.backend);
-  await startWeb(mode, ports.web);
-  console.log(`\n  ${_c(C.GREEN, _c(C.BOLD, '所有服务已启动！'))}`);
-  console.log(`  Backend: ${_c(C.CYAN, `http://localhost:${ports.backend}`)}`);
-  console.log(`  Web UI:  ${_c(C.CYAN, `http://localhost:${ports.web}`)}`);
+  switch (svc) {
+    case 'backend':
+      await startBackend(mode); break;
+    case 'web':
+      await startWeb(mode); break;
+    case 'neo4j':
+      if (fs.existsSync(composeFile) && !(await portInUse(7687))) { await startNeo4j(); }
+      else if (await portInUse(7687)) warn('Neo4j 已在运行');
+      break;
+    case 'all':
+      if (fs.existsSync(composeFile) && !(await portInUse(7687))) { await startNeo4j(); await sleep(2000); }
+      await startBackend(mode);
+      await startWeb(mode);
+      break;
+    default:
+      err(`未知服务: ${svc}（可选: backend / web / neo4j / all）`);
+      return 1;
+  }
   return 0;
 }
 
-async function cmdDown() {
-  const ports = getServicePorts();
-  header('停止 RAG Knowledge Platform');
+async function cmdStop(args) {
+  const mode = parseModeArg(args);
+  const ports = getServicePorts(mode);
+  const svc = parseServiceArg(args) || 'all';
+  header(`停止服务 (mode=${mode}): ${svc}`);
+  switch (svc) {
+    case 'backend': await stopBackend(ports.backend); break;
+    case 'web': await stopWeb(ports.web); break;
+    case 'neo4j': await stopNeo4j(); break;
+    case 'all':
+      await stopWeb(ports.web);
+      await stopBackend(ports.backend);
+      await stopNeo4j();
+      break;
+    default:
+      err(`未知服务: ${svc}（可选: backend / web / neo4j / all）`);
+      return 1;
+  }
+  return 0;
+}
+
+async function cmdRestart(args) {
+  const svc = parseServiceArg(args) || 'all';
+  header(`重启服务: ${svc}`);
+  const stopCode = await cmdStop([svc === 'all' ? 'all' : svc]);
+  if (stopCode !== 0) return stopCode;
+  await sleep(1500);
+  const startCode = await cmdStart(args);
+  if (startCode !== 0) return startCode;
+  ok(`重启完成: ${svc}`);
+  return 0;
+}
+
+// ── Log viewer ───────────────────────────────────────────────────────────
+// `ragctl logs [service] [--tail|-f] [--lines N|-n N]`
+//   service ∈ {backend, web, mineru} (default: backend)
+// Reads the SAME files that Tauri's desktop log viewer tails and that
+// spawnService writes — so output is consistent across all three surfaces.
+async function cmdLogs(args) {
+  const positional = args.filter(a => !a.startsWith('-'));
+  const service = positional[0] || 'backend';
+  const wantTail = args.includes('--tail') || args.includes('-f') || args.includes('tail');
+  let lines = 80;
+  const li = args.indexOf('--lines'); if (li !== -1 && args[li + 1]) lines = parseInt(args[li + 1]) || 80;
+  const ni = args.indexOf('-n');      if (ni !== -1 && args[ni + 1]) lines = parseInt(args[ni + 1]) || 80;
+
+  const logPath = getLogPath(service);
+  if (!logPath) {
+    err(`未知服务: ${service}`);
+    info('可用: backend / web / mineru');
+    return 1;
+  }
+  if (!fs.existsSync(logPath)) {
+    warn(`日志文件尚未生成: ${logPath}`);
+    info(`提示: 先启动该服务 → ragctl start ${service}，日志会自动写入`);
+    info('所有服务均为静默启动（无终端窗口），日志统一落盘到此处 + Tauri 日志界面。');
+    return 1;
+  }
+
+  if (wantTail) {
+    info(`实时跟踪 ${service} 日志 (Ctrl+C 退出): ${logPath}`);
+    const child = IS_WIN
+      ? spawn('powershell', ['-NoProfile', '-Command',
+          `Get-Content -LiteralPath '${logPath.replace(/'/g, "''")}' -Tail ${lines} -Wait -Encoding utf8`],
+          { stdio: 'inherit' })
+      : spawn('tail', ['-n', String(lines), '-f', logPath], { stdio: 'inherit' });
+    return await new Promise(resolve => {
+      const done = code => resolve(code || 0);
+      child.on('close', done);
+      child.on('exit', done);
+      child.on('error', (e) => { err(`跟踪失败: ${e.message}`); resolve(1); });
+    });
+  }
+
+  const content = fs.readFileSync(logPath, 'utf8');
+  const all = content.split('\n');
+  const tail = all.slice(-lines).join('\n');
+  console.log(`\n  ${_c(C.GRAY, `── ${service} 日志（最后 ${lines} 行）── ${logPath} ──`)}`);
+  console.log(tail.endsWith('\n') ? tail : tail + '\n');
+  return 0;
+}
+
+async function cmdUp(mode) {
+  mode = mode || getAppMode();
+  const ports = getServicePorts(mode);
+  header(`启动 RAG Knowledge Platform (mode=${mode})`);
+  const composeFile = path.join(PROJECT_ROOT, 'docker-compose.yml');
+  if (fs.existsSync(composeFile) && !(await portInUse(7687))) { await startNeo4j(); await sleep(2000); }
+  await startBackend(mode);
+  await startWeb(mode);
+  console.log(`\n  ${_c(C.GREEN, _c(C.BOLD, '✓ 所有服务已静默启动（无终端窗口）'))}`);
+  console.log(`  Backend: ${_c(C.CYAN, `http://localhost:${ports.backend}`)}`);
+  console.log(`  Web UI:  ${_c(C.CYAN, `http://localhost:${ports.web}`)}`);
+  console.log(`  ${_c(C.GRAY, '查看日志: ragctl logs [backend|web|mineru] [--tail]  ·  或打开 Tauri 桌面控制台')}`);
+  return 0;
+}
+
+async function cmdDown(mode) {
+  mode = mode || getAppMode();
+  const ports = getServicePorts(mode);
+  header(`停止 RAG Knowledge Platform (mode=${mode})`);
   await stopWeb(ports.web);
   await stopBackend(ports.backend);
   await stopNeo4j();
@@ -775,17 +1014,133 @@ async function cmdDown() {
   return 0;
 }
 
-async function cmdStatus() {
-  const ports = getServicePorts();
-  header('服务状态');
-  const backendUp = await portInUse(ports.backend);
-  console.log(`  Backend (${ports.backend}): ${backendUp ? _c(C.GREEN, '● 运行中') : _c(C.RED, '○ 已停止')}`);
-  const webUp = await portInUse(ports.web);
-  console.log(`  Web     (${ports.web}): ${webUp ? _c(C.GREEN, '● 运行中') : _c(C.RED, '○ 已停止')}`);
+async function cmdStatus(modeArg) {
+  const mode = modeArg || getAppMode();
+  const ports = getServicePorts(mode);
+  header(`服务状态 (mode=${mode})`);
+
+  // Probe one HTTP service: port-listening → pid → health endpoint.
+  async function probe(port, healthPath) {
+    const listening = await portInUse(port);
+    if (!listening) return { listening: false, health: '', pid: null };
+    const pid = findPidOnPort(port);
+    const r = await httpGet(`http://localhost:${port}${healthPath}`, 3000);
+    const health = r.code === 200 ? 'healthy' : (r.code ? `HTTP ${r.code}` : 'no-response');
+    return { listening: true, health, pid };
+  }
+
+  const b = await probe(ports.backend, '/api/v1/health');
+  const w = await probe(ports.web, '/api/kb/catalog');
   const neo4jUp = await portInUse(7687);
-  console.log(`  Neo4j   (7687): ${neo4jUp ? _c(C.GREEN, '● 运行中') : _c(C.RED, '○ 已停止')}`);
+  const neo4jHttp = await portInUse(7474);
+
+  // MinerU — only meaningful when backend is healthy
+  let mineru = 'n/a (backend down)';
+  if (b.health === 'healthy') {
+    const m = await httpGet(`http://localhost:${ports.backend}/api/v1/mineru/status`, 4000);
+    mineru = m.code === 200 ? 'up' : (m.code ? `HTTP ${m.code}` : 'unreachable');
+  }
   const mcpProcs = findPythonProcesses('server.py');
-  console.log(`  MCP     (stdio): ${mcpProcs.length > 0 ? _c(C.GREEN, `● 运行中 (${mcpProcs.length} 进程)`) : _c(C.RED, '○ 已停止')}`);
+
+  const dot = (on) => on ? _c(C.GREEN, '●') : _c(C.RED, '○');
+  const hcol = (h) => h === 'healthy' ? _c(C.GREEN, h)
+    : (h ? _c(C.YELLOW, h) : _c(C.GRAY, 'stopped'));
+
+  console.log(`  ${dot(b.listening)} Backend  :${String(ports.backend).padEnd(5)} ${hcol(b.health)}${b.pid ? '  pid=' + _c(C.GRAY, b.pid) : ''}`);
+  console.log(`  ${dot(w.listening)} Web      :${String(ports.web).padEnd(5)} ${hcol(w.health)}${w.pid ? '  pid=' + _c(C.GRAY, w.pid) : ''}`);
+  console.log(`  ${dot(neo4jUp)} Neo4j    :7687  ${neo4jUp ? _c(C.GREEN, 'listening') + (neo4jHttp ? ' ' + _c(C.GRAY,'(+http :7474)') : '') : _c(C.GRAY, 'stopped')}`);
+  console.log(`  ${mineru.startsWith('up') ? _c(C.GREEN, '●') : _c(C.GRAY, '○')} MinerU          ${_c(mineru.startsWith('up') ? C.GREEN : C.GRAY, mineru)}`);
+  console.log(`  ${mcpProcs.length > 0 ? _c(C.GREEN, '●') : _c(C.GRAY, '○')} kb-mcp  (stdio) ${mcpProcs.length > 0 ? _c(C.GREEN, mcpProcs.length + ' proc') : _c(C.GRAY, 'managed by Claude Code via .mcp.json')}`);
+
+  const ready = b.health === 'healthy' && w.health === 'healthy';
+  console.log(`\n  ${_c(C.GRAY, '日志 →')} ragctl logs backend | ragctl logs web | ragctl logs mineru`);
+  console.log(`  ${ready ? _c(C.GREEN, _c(C.BOLD, '✓ 项目就绪')) : _c(C.YELLOW, '✗ 未就绪')}  ·  ${_c(C.CYAN, 'ragctl up')} 启动  ·  MCP: ${_c(C.CYAN, 'kb_project_status')} / ${_c(C.CYAN, 'kb_project_start')}`);
+  return 0;
+}
+
+// ── Global registration + Tauri launcher ────────────────────────────────
+
+// `ragctl install` — register `ragctl` globally so it works from any directory.
+// Writes a small wrapper that hardcodes the absolute project path (NOT a copy/
+// symlink of the repo wrapper — those break because ragctl.bat resolves paths
+// relative to its own location). Target dir is ~/.local/bin (same place uv
+// installs, so it's already on PATH after `ragctl setup`).
+async function cmdInstall() {
+  header('全局注册 ragctl');
+  const binDir = path.join(os.homedir(), '.local', 'bin');
+  fs.mkdirSync(binDir, { recursive: true });
+  const jsEntry = path.join(PROJECT_ROOT, 'command', 'ragctl.js');
+
+  if (IS_WIN) {
+    const dest = path.join(binDir, 'ragctl.cmd');
+    fs.writeFileSync(dest, `@echo off\r\nnode "${jsEntry}" %*\r\n`, 'utf8');
+    ok(`已写入 ${dest}`);
+  } else {
+    const dest = path.join(binDir, 'ragctl');
+    fs.writeFileSync(dest, `#!/usr/bin/env bash\nexec node "${jsEntry}" "$@"\n`, 'utf8');
+    fs.chmodSync(dest, 0o755);
+    ok(`已写入 ${dest}`);
+  }
+
+  // PATH check
+  const pathDirs = (process.env.PATH || '').split(path.delimiter);
+  if (pathDirs.includes(binDir)) {
+    ok(`${binDir} 已在 PATH 中 — ragctl 现可全局使用`);
+  } else {
+    warn(`${binDir} 尚不在 PATH 中。添加方法：`);
+    if (IS_WIN) info(`  setx PATH "%PATH%;${binDir}"   (然后重开终端)`);
+    else info(`  echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc`);
+  }
+  info('测试: 在任意目录运行 `ragctl status`');
+  return 0;
+}
+
+// `ragctl desktop` / `ragctl ui` — launch the Tauri desktop console (the GUI
+// launcher). Prefers a compiled binary; falls back to `cargo tauri dev`.
+// The Tauri app starts/monitors services through the SAME shared log files
+// ragctl uses, so the two launchers are fully interchangeable.
+async function cmdDesktop(args) {
+  header('启动 Tauri 桌面控制台');
+  const tauriDir = path.join(PROJECT_ROOT, 'src-tauri');
+  if (!fs.existsSync(path.join(tauriDir, 'Cargo.toml'))) {
+    err('src-tauri/ 未找到（Tauri 桌面应用未包含）');
+    return 1;
+  }
+  const ext = IS_WIN ? '.exe' : '';
+  const releaseBin = path.join(tauriDir, 'target', 'release', `rag-knowledge-desktop${ext}`);
+  const debugBin = path.join(tauriDir, 'target', 'debug', `rag-knowledge-desktop${ext}`);
+  const wantDev = args.includes('--dev') || args.includes('dev');
+
+  function launch(bin, label) {
+    spawn(bin, [], { detached: true, stdio: 'ignore', windowsHide: false }).unref();
+    ok(`Tauri 桌面控制台已启动 (${label})`);
+    info('桌面控制台可启动/停止/监控所有服务，日志与 ragctl 共享同一文件。');
+  }
+
+  if (!wantDev && fs.existsSync(releaseBin)) { launch(releaseBin, 'release'); return 0; }
+  if (!wantDev && fs.existsSync(debugBin)) { launch(debugBin, 'debug'); return 0; }
+
+  // No prebuilt binary → build via cargo tauri (long first compile)
+  if (!commandExists('cargo')) {
+    err('未找到编译好的 Tauri 二进制，也未找到 cargo (Rust)');
+    info('先安装 Rust: https://rustup.rs  然后构建: cd src-tauri && cargo tauri build');
+    return 1;
+  }
+  // confirm tauri CLI is available
+  let hasTauriCli = false;
+  try { execSync('cargo tauri --version', { stdio: 'ignore', timeout: 8000, shell: IS_WIN }); hasTauriCli = true; }
+  catch {
+    // try the npm-installed tauri too
+    try { execSync('npx tauri --version', { stdio: 'ignore', timeout: 15000, shell: IS_WIN }); hasTauriCli = true; } catch {}
+  }
+  if (!hasTauriCli) {
+    err('cargo-tauri CLI 未安装');
+    info('安装: cargo install tauri-cli --version "^2.0.0"  (然后重跑 ragctl desktop)');
+    return 1;
+  }
+  info('以 cargo tauri dev 启动 (首次编译需数分钟，请耐心等待)...');
+  spawn('cargo', ['tauri', 'dev'], { cwd: tauriDir, detached: true, stdio: 'ignore', windowsHide: false }).unref();
+  ok('cargo tauri dev 已在后台启动');
   return 0;
 }
 
@@ -803,25 +1158,37 @@ ${_c(C.CYAN, '⭐ 核心命令（一键式部署）:')}
   ${_c(C.BOLD, 'deps')}    安装所有依赖（实时进度条）
   ${_c(C.BOLD, 'model')}   预下载 BGE-M3 嵌入模型 (~2.2GB)
 
-${_c(C.CYAN, '服务管理:')}
-  up / start  启动所有服务
-  down / stop 停止所有服务
-  status      查看服务状态
-  restart     重启服务
+${_c(C.CYAN, '服务管理（全部静默启动 · 无终端窗口 · dev/prod 行为一致）:')}
+  up / start-all               启动全部服务（backend + web + neo4j）
+  down / stop-all              停止全部服务
+  start [backend|web|neo4j|all]  启动指定服务
+  stop  [backend|web|neo4j|all]  停止指定服务
+  restart [backend|web|neo4j|all] 重启指定服务
+  status                       查看服务状态
 
-${_c(C.CYAN, '工具:')}
-  health      健康检查
-  doctor      诊断常见问题
-  config      配置管理 (show/get/set/edit)
-  logs        查看日志
-  test        运行测试
-  kb          KB 快捷操作 (list/search/stats)
+${_c(C.CYAN, '日志（统一落盘 · 三处同源：文件 / Tauri 界面 / 本命令）:')}
+  logs [backend|web|mineru]            查看最近日志（默认 backend, 80 行）
+  logs <svc> --tail | -f               实时跟踪日志（Ctrl+C 退出）
+  logs <svc> --lines N | -n N          指定行数
+
+${_c(C.CYAN, '全局注册 / 桌面控制台:')}
+  install                              全局注册 ragctl → ~/.local/bin（任意目录可用）
+  desktop | ui [--dev]                 启动 Tauri 桌面控制台（GUI 启动器，与 ragctl 共享日志）
+
+${_c(C.CYAN, '选项:')}
+  --mode dev|prod              覆盖 .env 的 APP_MODE（影响端口/行为）
 
 ${_c(C.CYAN, '快速开始:')}
   ragctl setup             # 一键部署（首次运行推荐）
   ragctl check             # 检查环境状态
-  ragctl up                # 启动所有服务
+  ragctl up                # 静默启动所有服务（无弹窗）
   ragctl status            # 查看状态
+  ragctl logs backend --tail   # 实时查看后端日志
+
+${_c(C.GRAY, '日志路径（与 Tauri 桌面控制台共享同一文件）:')}
+${_c(C.GRAY, '  backend → backend/logs/desktop-stdout.log')}
+${_c(C.GRAY, '  web     → web/logs/desktop-stdout.log')}
+${_c(C.GRAY, '  mineru  → backend/logs/mineru-api.log')}
 `);
 }
 
@@ -829,6 +1196,10 @@ async function main() {
   if (IS_WIN) {
     try { require('child_process').execSync('chcp 65001 >nul 2>&1', { stdio: 'ignore' }); } catch {}
   }
+  // Make uv callable in this process even if a fresh terminal hasn't picked up
+  // the setx PATH update yet (modern uv lives in ~/.local/bin). No-op if uv is
+  // already on PATH.
+  ensureUvOnPath();
 
   const args = process.argv.slice(2);
   const command = args[0];
@@ -849,8 +1220,26 @@ async function main() {
         const mode = args.includes('--mode') ? args[args.indexOf('--mode') + 1] : null;
         return await cmdUp(mode);
       }
-      case 'down': case 'stop-all': return await cmdDown();
-      case 'status': return await cmdStatus();
+      case 'down': case 'stop-all': {
+        const dmode = args.includes('--mode') ? args[args.indexOf('--mode') + 1] : null;
+        return await cmdDown(dmode);
+      }
+      case 'status': {
+        const smode = args.includes('--mode') ? args[args.indexOf('--mode') + 1] : null;
+        return await cmdStatus(smode);
+      }
+
+      // Per-service lifecycle (silent — same no-terminal behavior as `up`)
+      case 'start': return await cmdStart(args.slice(1));
+      case 'stop': return await cmdStop(args.slice(1));
+      case 'restart': case 'reload': return await cmdRestart(args.slice(1));
+
+      // Logs — read/tail the same files Tauri's desktop viewer watches
+      case 'logs': return await cmdLogs(args.slice(1));
+
+      // Global registration + Tauri launcher
+      case 'install': return await cmdInstall();
+      case 'desktop': case 'ui': return await cmdDesktop(args.slice(1));
 
       default:
         err(`未知命令: ${command}`);

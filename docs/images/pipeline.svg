@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 940 210" width="940" height="210" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" role="img" aria-label="RAG Knowledge retrieval pipeline">
+  <defs>
+    <linearGradient id="p1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4f46e5"/><stop offset="100%" stop-color="#4338ca"/></linearGradient>
+    <linearGradient id="p2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#6d28d9"/></linearGradient>
+    <linearGradient id="p3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0ea5e9"/><stop offset="100%" stop-color="#0284c7"/></linearGradient>
+    <linearGradient id="p4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#06b6d4"/><stop offset="100%" stop-color="#0891b2"/></linearGradient>
+    <linearGradient id="p5" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#10b981"/><stop offset="100%" stop-color="#059669"/></linearGradient>
+    <marker id="parrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="470" y="30" text-anchor="middle" font-size="17" font-weight="700" fill="#0f172a">From document to verified answer — the QDCVR pipeline</text>
+
+  <!-- Stage 1: Document -->
+  <g>
+    <rect x="20" y="70" width="150" height="92" rx="16" fill="url(#p1)"/>
+    <!-- doc icon -->
+    <rect x="78" y="84" width="34" height="42" rx="4" fill="#ffffff"/>
+    <rect x="84" y="92" width="16" height="3" rx="1.5" fill="#4f46e5"/>
+    <rect x="84" y="100" width="22" height="3" rx="1.5" fill="#a5b4fc"/>
+    <rect x="84" y="108" width="14" height="3" rx="1.5" fill="#a5b4fc"/>
+    <text x="95" y="148" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Document</text>
+  </g>
+  <line x1="172" y1="116" x2="198" y2="116" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#parrow)"/>
+
+  <!-- Stage 2: Parse + Index -->
+  <g>
+    <rect x="200" y="70" width="150" height="92" rx="16" fill="url(#p2)"/>
+    <text x="275" y="106" text-anchor="middle" font-size="26">🔍</text>
+    <text x="275" y="138" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Parse + Index</text>
+    <text x="275" y="154" text-anchor="middle" font-size="10.5" fill="#e9d5ff">MinerU · BGE-M3</text>
+  </g>
+  <line x1="352" y1="116" x2="378" y2="116" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#parrow)"/>
+
+  <!-- Stage 3: Graph + Vector -->
+  <g>
+    <rect x="380" y="70" width="150" height="92" rx="16" fill="url(#p3)"/>
+    <!-- mini graph icon -->
+    <g stroke="#ffffff" stroke-width="2" fill="#ffffff">
+      <line x1="440" y1="100" x2="470" y2="92"/>
+      <line x1="440" y1="100" x2="470" y2="112"/>
+      <line x1="470" y1="92" x2="470" y2="112"/>
+      <circle cx="440" cy="100" r="5"/>
+      <circle cx="470" cy="92" r="5"/>
+      <circle cx="470" cy="112" r="5"/>
+    </g>
+    <text x="455" y="138" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Graph + Vector</text>
+    <text x="455" y="154" text-anchor="middle" font-size="10.5" fill="#cffafe">Neo4j · ChromaDB</text>
+  </g>
+  <line x1="532" y1="116" x2="558" y2="116" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#parrow)"/>
+
+  <!-- Stage 4: QDCVR Retrieval -->
+  <g>
+    <rect x="560" y="70" width="150" height="92" rx="16" fill="url(#p4)"/>
+    <text x="635" y="108" text-anchor="middle" font-size="24">⚡</text>
+    <text x="635" y="138" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">QDCVR Retrieval</text>
+    <text x="635" y="154" text-anchor="middle" font-size="10.5" fill="#cffafe">content-scored 0–8</text>
+  </g>
+  <line x1="712" y1="116" x2="738" y2="116" stroke="#94a3b8" stroke-width="2.5" marker-end="url(#parrow)"/>
+
+  <!-- Stage 5: Verified Answer -->
+  <g>
+    <rect x="740" y="70" width="180" height="92" rx="16" fill="url(#p5)"/>
+    <text x="830" y="108" text-anchor="middle" font-size="24">✓</text>
+    <text x="830" y="138" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff">Verified Answer</text>
+    <text x="830" y="154" text-anchor="middle" font-size="10.5" fill="#d1fae5">sources + confidence</text>
+  </g>
+</svg>

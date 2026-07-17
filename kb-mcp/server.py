@@ -30,6 +30,7 @@ from mcp.server.fastmcp import FastMCP
 from kb_client import KbClient
 
 import task_registry
+import project_manager
 
 mcp = FastMCP("kb-mcp")
 
@@ -1110,6 +1111,63 @@ async def backend_status() -> str:
     return _j(await _client().backend_status())
 
 
+@mcp.tool()
+async def kb_project_status() -> str:
+    """Full project service status — backend/web ports listening + HTTP health
+    checks, Neo4j bolt/http ports, MinerU availability, per-service PIDs, and
+    shared log file paths. Use this to check whether the project is running and
+    ready before KB operations. Returns a one-line `summary` plus a per-service
+    `services` dict. `ready` is True only when backend AND web are HTTP-healthy.
+    """
+    import asyncio
+    loop = asyncio.get_event_loop()
+    data = await loop.run_in_executor(None, project_manager.project_status)
+    return _j(data)
+
+
+@mcp.tool()
+async def kb_project_preflight() -> str:
+    """Check whether the project is SET UP and ready to start services (distinct
+    from kb_project_status, which checks whether services are already running).
+    Verifies .env exists, backend/web submodules are initialized, and backend
+    .venv + web node_modules are installed. Returns `ready_to_start` plus a list
+    of `problems` and the exact `fix` command (`ragctl setup`). Call this if
+    kb_project_start returned a preflight error, or to diagnose a fresh clone.
+    """
+    return _j(project_manager.preflight())
+
+
+@mcp.tool()
+async def kb_project_start(backend: bool = True, web: bool = True, neo4j: bool = False,
+                           mode: str = "", wait: bool = False) -> str:
+    """Silently start project services. HEADLESS on every OS and every mode —
+    NO terminal/console window opens (dev behaves identically to prod).
+    stdout+stderr are redirected to the shared log files that ragctl and the
+    Tauri desktop console also read (backend/logs/desktop-stdout.log,
+    web/logs/desktop-stdout.log). View via `ragctl logs <svc>` or Tauri.
+
+    Args:
+      backend: start the FastAPI backend (default True)
+      web: start the Nuxt web server (default True)
+      neo4j: start Neo4j via `docker compose up -d neo4j` (default False; needs Docker)
+      mode: override APP_MODE "dev"|"prod" (default "" = current env)
+      wait: if True, block until backend+web are HTTP-healthy or ~45s timeout
+            (default False — returns immediately after launch; poll kb_project_status)
+
+    Fails fast with a `preflight` block if the project isn't set up yet (missing
+    .env / submodules / deps). Services already listening are skipped (idempotent).
+    """
+    import asyncio
+    loop = asyncio.get_event_loop()
+    data = await loop.run_in_executor(
+        None,
+        lambda: project_manager.start_project(
+            backend=backend, web=web, neo4j=neo4j, mode=mode, wait=wait,
+        ),
+    )
+    return _j(data)
+
+
 # ============================================================
 # VECTOR SEARCH & TWO-STAGE PRECISION SEARCH
 # ============================================================
@@ -1518,184 +1576,68 @@ def main():
 # ================================================================
 
 def _startup_health_check_and_launch():
-    """Perform startup health check; auto-launch backend/frontend if needed.
+    """Startup health check; silently auto-launch backend/web if down.
 
-    This runs synchronously before the MCP server starts accepting
-    connections.  If the backend or frontend is unreachable, we spawn
-    them as detached child processes and wait up to 30 s for them to
-    become ready.
+    Runs synchronously before the MCP server accepts connections. Probes
+    backend + web; if either is unreachable, launches it HEADLESS (no console
+    window, dev == prod) via project_manager, with stdout+stderr redirected to
+    the shared log files (backend/logs/desktop-stdout.log,
+    web/logs/desktop-stdout.log) — NOT discarded. Then waits up to ~45 s for
+    HTTP readiness.
     """
-    import subprocess
-    import httpx
-    from pathlib import Path
-
-    # ---- load .env from project root if present ----
-    # MUST happen *before* 'import config' so that BACKEND_PORT etc.
-    # from .env are visible to config.py's module-level URL builders.
+    # Load .env BEFORE importing config so BACKEND_PORT etc. are visible.
     _load_dotenv()
+    import config  # noqa: F401 — ensures URL constants are resolved from env
 
-    import config
+    mode = project_manager.app_mode()
+    print(f"[kb-mcp] === Startup health check (mode={mode}) ===", file=sys.stderr)
+    print(f"[kb-mcp]   Backend URL : {project_manager._backend_url()}", file=sys.stderr)
+    print(f"[kb-mcp]   Web URL     : {project_manager._web_url()}", file=sys.stderr)
 
-    # ---- resolve directories ----
-    # Within the monorepo, backend/ and web/ are git submodules.
-    # This script lives at kb-mcp/server.py, so:
-    #   kb-mcp/../..    = rag-knowledge/      (project root)
-    #   .../backend/    = FastAPI submodule
-    #   .../web/        = Nuxt 3 submodule (the active frontend)
-    kb_mcp_dir = Path(__file__).resolve().parent          # kb-mcp/
-    project_root = kb_mcp_dir.parent                      # rag-knowledge/
-    backend_dir = project_root / "backend"
-    frontend_dir = project_root / "web"
-
-    backend_url = config.BACKEND_URL
-    web_url = config.WEB_URL
-    app_mode = os.environ.get("APP_MODE", "prod")
-
-    print(f"[kb-mcp] === Startup health check (mode={app_mode}) ===", file=sys.stderr)
-    print(f"[kb-mcp]   Backend URL : {backend_url}", file=sys.stderr)
-    print(f"[kb-mcp]   Frontend URL: {web_url}", file=sys.stderr)
-
-    needs_backend = False
-    needs_frontend = False
-
-    async def _probe():
-        nonlocal needs_backend, needs_frontend
-        async with httpx.AsyncClient(timeout=5) as client:
-            try:
-                r = await client.get(f"{backend_url}/api/v1/health")
-                if r.status_code == 200:
-                    print("[kb-mcp]   Backend : OK", file=sys.stderr)
-                else:
-                    needs_backend = True
-                    print(f"[kb-mcp]   Backend : returned status {r.status_code}", file=sys.stderr)
-            except Exception as e:
-                needs_backend = True
-                print(f"[kb-mcp]   Backend : unreachable ({e})", file=sys.stderr)
-
-            try:
-                r = await client.get(f"{web_url}/api/kb/catalog")
-                if r.status_code == 200:
-                    print("[kb-mcp]   Frontend: OK", file=sys.stderr)
-                else:
-                    needs_frontend = True
-                    print(f"[kb-mcp]   Frontend: returned status {r.status_code}", file=sys.stderr)
-            except Exception as e:
-                needs_frontend = True
-                print(f"[kb-mcp]   Frontend: unreachable ({e})", file=sys.stderr)
-
-    asyncio.run(_probe())
-
-    if not needs_backend and not needs_frontend:
-        print("[kb-mcp] Both services healthy, no auto-launch needed.", file=sys.stderr)
+    # If the project hasn't been set up yet, warn loudly and skip auto-launch —
+    # starting services on an un-set-up clone would either silently download
+    # multi-GB deps or crash. Guide the user to `ragctl setup`.
+    pf = project_manager.preflight()
+    if not pf["ready_to_start"]:
+        print("[kb-mcp] ⚠️  PROJECT NOT SET UP — services will not auto-launch.", file=sys.stderr)
+        for p in pf["problems"]:
+            print(f"[kb-mcp]   • {p}", file=sys.stderr)
+        print(f"[kb-mcp] FIX: {pf['fix']}", file=sys.stderr)
+        print(f"[kb-mcp]      → {pf['setup_command']}", file=sys.stderr)
+        print("[kb-mcp] (MCP server will still start so you can run ragctl setup via Bash,", file=sys.stderr)
+        print("[kb-mcp]  then restart Claude Code to reconnect.)", file=sys.stderr)
         return
 
-    if needs_backend:
-        if not backend_dir.exists():
-            print(f"[kb-mcp] ERROR: Backend directory not found: {backend_dir}", file=sys.stderr)
-        else:
-            backend_port = _port_from_url(backend_url, "8001")
-            flags_info = " (visible console)" if app_mode == "dev" else " (background)"
-            print(f"[kb-mcp] Starting backend{flags_info} (uv run python main.py, port={backend_port})...", file=sys.stderr)
-            subprocess.Popen(
-                ["uv", "run", "python", "main.py"],
-                cwd=str(backend_dir),
-                env={**os.environ, "APP_MODE": app_mode},
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                **_subprocess_flags(app_mode),
-            )
+    status = project_manager.project_status()
+    svc = status["services"]
 
-    if needs_frontend:
-        if not frontend_dir.exists():
-            print(f"[kb-mcp] ERROR: Frontend directory not found: {frontend_dir}", file=sys.stderr)
-        else:
-            npm_cmd = "npm.cmd" if sys.platform == "win32" else "npm"
-            flags_info = " (visible console)" if app_mode == "dev" else " (background)"
-            print(f"[kb-mcp] Starting frontend{flags_info} ({npm_cmd} run start)...", file=sys.stderr)
-            subprocess.Popen(
-                [npm_cmd, "run", "start"],
-                cwd=str(frontend_dir),
-                env={**os.environ, "APP_MODE": app_mode},
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                **_subprocess_flags(app_mode),
-            )
+    if status["ready"]:
+        print("[kb-mcp] All services healthy — no auto-launch needed.", file=sys.stderr)
+        return
 
-    print("[kb-mcp] Waiting for services to become ready (timeout: 30s)...", file=sys.stderr)
-    _wait_for_services(needs_backend, needs_frontend, backend_url, web_url)
+    launched = []
+    if not svc["backend"]["http_ok"]:
+        print(f"[kb-mcp]   Backend : {svc['backend']['detail']} → launching (silent, log={svc['backend']['log_path']})", file=sys.stderr)
+        launched.append(("backend", project_manager.start_service("backend", mode)))
+    else:
+        print("[kb-mcp]   Backend : OK", file=sys.stderr)
 
+    if not svc["web"]["http_ok"]:
+        print(f"[kb-mcp]   Web     : {svc['web']['detail']} → launching (silent, log={svc['web']['log_path']})", file=sys.stderr)
+        launched.append(("web", project_manager.start_service("web", mode)))
+    else:
+        print("[kb-mcp]   Web     : OK", file=sys.stderr)
 
-def _wait_for_services(needs_backend, needs_frontend, backend_url, web_url, max_wait=30):
-    """Poll backend/frontend health endpoints until ready or timeout."""
-    import time
-    import httpx
+    if not launched:
+        return
 
-    async def _poll():
-        elapsed = 0
-        backend_ok = not needs_backend
-        frontend_ok = not needs_frontend
-        async with httpx.AsyncClient(timeout=3) as client:
-            while elapsed < max_wait:
-                if needs_backend and not backend_ok:
-                    try:
-                        r = await client.get(f"{backend_url}/api/v1/health")
-                        if r.status_code == 200:
-                            backend_ok = True
-                    except Exception:
-                        pass
-
-                if needs_frontend and not frontend_ok:
-                    try:
-                        r = await client.get(f"{web_url}/api/kb/catalog")
-                        if r.status_code == 200:
-                            frontend_ok = True
-                    except Exception:
-                        pass
-
-                if backend_ok and frontend_ok:
-                    print(f"[kb-mcp] All services ready ({elapsed}s).", file=sys.stderr)
-                    return
-
-                await asyncio.sleep(2)
-                elapsed += 2
-
-        if needs_backend and not backend_ok:
-            print(f"[kb-mcp] WARNING: Backend not ready after {max_wait}s, continuing anyway.", file=sys.stderr)
-        if needs_frontend and not frontend_ok:
-            print(f"[kb-mcp] WARNING: Frontend not ready after {max_wait}s, continuing anyway.", file=sys.stderr)
-
-    asyncio.run(_poll())
-
-
-def _port_from_url(url: str, default: str = "8001") -> str:
-    """Extract the port number from a URL string."""
-    try:
-        from urllib.parse import urlparse
-        parsed = urlparse(url)
-        if parsed.port:
-            return str(parsed.port)
-    except Exception:
-        pass
-    return default
-
-
-def _subprocess_flags(app_mode: str = "prod"):
-    """Platform-appropriate subprocess flags for detached child processes.
-
-    In ``prod`` mode: hide console window (DETACHED_PROCESS | CREATE_NO_WINDOW).
-    In ``dev``  mode: show a visible console window so the developer can see
-    logs, Ctrl+C to stop, etc. (only CREATE_NEW_CONSOLE on Windows).
-    """
-    if sys.platform == "win32":
-        if app_mode == "dev":
-            # CREATE_NEW_CONSOLE (0x10) — child gets its own terminal window
-            return {"creationflags": 0x00000010}
-        else:
-            # DETACHED_PROCESS (0x08) | CREATE_NO_WINDOW (0x08000000)
-            return {"creationflags": 0x00000008 | 0x08000000}
-    if app_mode == "dev":
-        return {}
-    return {"start_new_session": True}
+    print(f"[kb-mcp] Launched {len(launched)} service(s) headless; waiting for readiness (timeout: 45s)...", file=sys.stderr)
+    waited = project_manager._wait_ready(timeout=45)
+    if waited.get("ready"):
+        print(f"[kb-mcp] All services ready ({waited.get('elapsed_s')}s).", file=sys.stderr)
+    else:
+        print(f"[kb-mcp] WARNING: services not fully ready after {waited.get('timeout_s')}s — continuing anyway.", file=sys.stderr)
+        print("[kb-mcp]   Check: ragctl logs backend | ragctl logs web  (or the Tauri desktop console)", file=sys.stderr)
 
 
 def _load_dotenv() -> None:

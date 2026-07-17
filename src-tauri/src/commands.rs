@@ -452,6 +452,7 @@ fn spawn_backend(root: &str, mode: &str) -> Result<ServiceResult, String> {
         .env("APP_MODE", mode)
         .env("BACKEND_PORT", ports.backend.to_string())
         .env("PYTHONUTF8", "1")
+        .env("PYTHONUNBUFFERED", "1")
         .env("PATH", enriched_path())
         .stdout(Stdio::from(out))
         .stderr(Stdio::from(err))

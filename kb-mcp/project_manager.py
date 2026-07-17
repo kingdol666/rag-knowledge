@@ -1,0 +1,396 @@
+# -*- coding: utf-8 -*-
+"""
+kb-mcp project service lifecycle — silent start + status.
+
+All launches are HEADLESS on every platform and every mode (dev behaves
+identically to prod): NO terminal / console window is ever opened.
+stdout+stderr are redirected to the SAME shared log files that ragctl
+(command/ragctl.js) and the Tauri desktop console (src-tauri) use, so logs
+flow into one place regardless of which launcher started the services:
+
+  backend → {project_root}/backend/logs/desktop-stdout.log
+  web     → {project_root}/web/logs/desktop-stdout.log
+  mineru  → {project_root}/backend/logs/mineru-api.log  (written by backend)
+
+This module is the single kb-mcp-side source of truth for service lifecycle.
+It backs:
+  - the MCP tools `kb_project_start` / `kb_project_status` in server.py
+  - the startup auto-launch (_startup_health_check_and_launch in server.py)
+
+ragctl and the Tauri app are independent launchers that write to the same
+log files, so all three surfaces (on-disk file, Tauri UI, `ragctl logs`)
+stay in sync no matter who started the services.
+"""
+from __future__ import annotations
+
+import os
+import sys
+import socket
+import subprocess
+import time
+from pathlib import Path
+
+try:
+    import config as _config  # type: ignore
+except Exception:  # pragma: no cover - config always present in-tree
+    _config = None
+
+
+# ── Paths ────────────────────────────────────────────────────────────────
+_KB_MCP_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(os.environ.get("RAG_PROJECT_ROOT", _KB_MCP_DIR.parent)).resolve()
+BACKEND_DIR = PROJECT_ROOT / "backend"
+WEB_DIR = PROJECT_ROOT / "web"
+
+# MUST stay in lock-step with src-tauri watch_log + ragctl LOG_PATHS.
+LOG_PATHS = {
+    "backend": BACKEND_DIR / "logs" / "desktop-stdout.log",
+    "web": WEB_DIR / "logs" / "desktop-stdout.log",
+    "mineru": BACKEND_DIR / "logs" / "mineru-api.log",
+}
+
+NEO4J_BOLT_PORT = 7687
+NEO4J_HTTP_PORT = 7474
+
+
+# ── Mode / port resolution ───────────────────────────────────────────────
+def app_mode() -> str:
+    """Active APP_MODE (env > .env > 'dev'). Matches .mcp.json + ragctl convention."""
+    return os.environ.get("APP_MODE", "dev")
+
+
+def _port_from_url(url: str, default: str) -> str:
+    try:
+        from urllib.parse import urlparse
+        p = urlparse(url).port
+        if p:
+            return str(p)
+    except Exception:
+        pass
+    return default
+
+
+def _ports() -> dict:
+    """Resolve backend + web ports. Prefer explicit env, then config URLs."""
+    bport = (
+        os.environ.get("BACKEND_PORT")
+        or _port_from_url(getattr(_config, "BACKEND_URL", ""), "8765")
+    )
+    wport = (
+        os.environ.get("WEB_PORT")
+        or os.environ.get("FRONTEND_PORT")
+        or _port_from_url(getattr(_config, "WEB_URL", ""), "6789")
+    )
+    return {"backend": int(bport), "web": int(wport)}
+
+
+def _backend_url() -> str:
+    return getattr(_config, "BACKEND_URL", f"http://localhost:{_ports()['backend']}")
+
+
+def _web_url() -> str:
+    return getattr(_config, "WEB_URL", f"http://localhost:{_ports()['web']}")
+
+
+# ── Probes ───────────────────────────────────────────────────────────────
+def port_listening(port: int, host: str = "127.0.0.1", timeout: float = 1.0) -> bool:
+    try:
+        with socket.create_connection((host, port), timeout=timeout):
+            return True
+    except OSError:
+        return False
+
+
+def _http_ok(url: str, timeout: float = 3.0) -> tuple[bool, str]:
+    """Probe an HTTP endpoint. Returns (ok, detail). trust_env=False avoids
+    HTTPS_PROXY hijacking localhost (per project convention)."""
+    try:
+        import httpx
+        with httpx.Client(timeout=timeout, trust_env=False) as c:
+            r = c.get(url)
+            return (r.status_code == 200, f"HTTP {r.status_code}")
+    except Exception as e:
+        return (False, str(e)[:140])
+
+
+def _pid_on_port(port: int) -> int | None:
+    """Best-effort PID lookup for the process listening on `port`."""
+    try:
+        if sys.platform == "win32":
+            out = subprocess.run(
+                ["cmd", "/c", f"netstat -ano | findstr :{port} | findstr LISTENING"],
+                capture_output=True, text=True, timeout=5,
+            ).stdout
+            line = out.strip().splitlines()
+            if line:
+                return int(line[0].split()[-1])
+        else:
+            out = subprocess.run(
+                ["sh", "-c", f"lsof -ti:{port} 2>/dev/null || ss -tlnp 2>/dev/null | grep ':{port}'"],
+                capture_output=True, text=True, timeout=5,
+            ).stdout
+            if out.strip():
+                return int(out.strip().splitlines()[0].split()[0])
+    except Exception:
+        pass
+    return None
+
+
+# ── Silent launch ────────────────────────────────────────────────────────
+def _silent_flags() -> dict:
+    """Always-headless subprocess flags — no console window, dev AND prod, all OSes."""
+    if sys.platform == "win32":
+        # DETACHED_PROCESS (0x8) | CREATE_NO_WINDOW (0x08000000)
+        return {"creationflags": 0x00000008 | 0x08000000}
+    # POSIX: new session detaches from controlling terminal
+    return {"start_new_session": True}
+
+
+def start_service(name: str, mode: str | None = None) -> dict:
+    """Silently launch one service (backend|web). Headless + logged.
+
+    Does NOT wait for readiness — returns pid + log path immediately.
+    Truncates the shared log file on start (matches ragctl + Tauri).
+    """
+    mode = mode or app_mode()
+    if name == "backend":
+        if not BACKEND_DIR.exists():
+            return {"success": False, "service": name, "error": f"backend dir not found: {BACKEND_DIR}"}
+        cmd = ["uv", "run", "python", "main.py"]
+        cwd = str(BACKEND_DIR)
+    elif name == "web":
+        if not WEB_DIR.exists():
+            return {"success": False, "service": name, "error": f"web dir not found: {WEB_DIR}"}
+        cmd = ["node", "start.mjs"]
+        cwd = str(WEB_DIR)
+    else:
+        return {"success": False, "service": name, "error": f"unknown service: {name} (backend|web)"}
+
+    log_path = LOG_PATHS[name]
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    log = open(log_path, "w", encoding="utf-8", errors="replace")  # truncate on start
+    try:
+        env = {**os.environ, "APP_MODE": mode, "PYTHONUTF8": "1", "PYTHONUNBUFFERED": "1"}
+        proc = subprocess.Popen(
+            cmd, cwd=cwd, env=env,
+            stdin=subprocess.DEVNULL,
+            stdout=log, stderr=subprocess.STDOUT,
+            **_silent_flags(),
+        )
+        return {
+            "success": True, "service": name, "pid": proc.pid, "mode": mode,
+            "cmd": " ".join(cmd), "cwd": cwd, "log_path": str(log_path),
+            "note": "silent launch (no terminal window); poll kb_project_status for readiness",
+        }
+    except FileNotFoundError as e:
+        return {"success": False, "service": name, "error": f"executable not found: {e.filename or e}"}
+    finally:
+        log.close()
+
+
+def start_neo4j() -> dict:
+    """Start Neo4j via docker compose (optional — requires Docker). Silent."""
+    compose = PROJECT_ROOT / "docker-compose.yml"
+    if not compose.exists():
+        return {"success": False, "service": "neo4j", "error": "docker-compose.yml not found"}
+    try:
+        subprocess.Popen(
+            ["docker", "compose", "up", "-d", "neo4j"],
+            cwd=str(PROJECT_ROOT),
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+            **_silent_flags(),
+        )
+        return {"success": True, "service": "neo4j", "note": "docker compose up -d neo4j (detached, silent)"}
+    except FileNotFoundError:
+        return {"success": False, "service": "neo4j", "error": "docker not found on PATH"}
+
+
+def _preflight_problems() -> list[str]:
+    """Detect an un-set-up project so kb_project_start fails fast with an
+    actionable message instead of (a) silently triggering a multi-GB torch
+    download via `uv run` auto-sync, or (b) crashing `node start.mjs` because
+    web/node_modules is missing. Empty list = good to go."""
+    problems = []
+    if not (PROJECT_ROOT / ".env").exists():
+        problems.append(
+            ".env missing (config file). ragctl setup creates it from .env.example."
+        )
+    if not (BACKEND_DIR / "app" / "main.py").exists():
+        problems.append(
+            "backend submodule not initialized. Run: git submodule update --init --recursive"
+        )
+    elif not (BACKEND_DIR / ".venv").exists() and not (BACKEND_DIR / "uv.lock").exists():
+        problems.append(
+            "backend dependencies not installed (no .venv/uv.lock). ragctl setup runs `uv sync`."
+        )
+    if not (WEB_DIR / "package.json").exists():
+        problems.append(
+            "web submodule not initialized. Run: git submodule update --init --recursive"
+        )
+    elif not (WEB_DIR / "node_modules").exists():
+        problems.append(
+            "web dependencies not installed (no node_modules). ragctl setup runs `npm install`."
+        )
+    return problems
+
+
+def preflight() -> dict:
+    """Return whether the project is ready to start services, plus any problems.
+    Exposed so callers (MCP tool, agent) can check before attempting a launch."""
+    problems = _preflight_problems()
+    return {
+        "ready_to_start": not problems,
+        "problems": problems,
+        "fix": (
+            "Run `ragctl setup` (one-click: uv + submodules + deps + model + .env), "
+            "or invoke the knowledgebase-init skill for a guided wizard."
+            if problems else ""
+        ),
+        "setup_command": "node command/ragctl.js setup",
+    }
+
+
+def start_project(
+    backend: bool = True,
+    web: bool = True,
+    neo4j: bool = False,
+    mode: str = "",
+    wait: bool = False,
+    timeout: int = 45,
+) -> dict:
+    """Silently start project services. Headless on every OS/mode.
+
+    Args:
+        backend: start the FastAPI backend (default True)
+        web: start the Nuxt web server (default True)
+        neo4j: start Neo4j via docker compose (default False; needs Docker)
+        mode: override APP_MODE ("dev"|"prod"); "" = use current env
+        wait: if True, block until backend+web HTTP-healthy or timeout
+        timeout: max seconds to wait when wait=True
+
+    Fails fast with an actionable `preflight` block if the project hasn't been
+    set up yet (missing .env / submodules / deps) — so the caller never waits
+    on a silent multi-GB download or a crash.
+    """
+    pf = preflight()
+    if not pf["ready_to_start"]:
+        return {
+            "success": False,
+            "error": "project not set up — services cannot start cleanly",
+            "preflight": pf,
+            "hint": "Run ragctl setup first, then retry kb_project_start.",
+        }
+
+    m = mode or app_mode()
+    ports = _ports()
+    launched = []
+
+    def _already(svc: str, port: int) -> bool:
+        if port_listening(port):
+            launched.append({"success": True, "service": svc,
+                             "note": f"already listening on port {port} — skipped"})
+            return True
+        return False
+
+    if backend and not _already("backend", ports["backend"]):
+        launched.append(start_service("backend", m))
+    if web and not _already("web", ports["web"]):
+        launched.append(start_service("web", m))
+    if neo4j:
+        if port_listening(NEO4J_BOLT_PORT):
+            launched.append({"success": True, "service": "neo4j",
+                             "note": f"already listening on port {NEO4J_BOLT_PORT} — skipped"})
+        else:
+            launched.append(start_neo4j())
+
+    waited = _wait_ready(timeout=timeout) if wait else None
+    return {
+        "success": True,
+        "mode": m,
+        "headless": True,
+        "launched": launched,
+        "wait": waited,
+        "status": project_status(),
+    }
+
+
+# ── Readiness wait + full status ─────────────────────────────────────────
+def _wait_ready(timeout: int = 45) -> dict:
+    """Poll backend+web health until both ok or timeout. Blocking."""
+    deadline = time.time() + timeout
+    b_url, w_url = _backend_url(), _web_url()
+    start = time.time()
+    while time.time() < deadline:
+        b_ok, _ = _http_ok(f"{b_url}/api/v1/health", timeout=2)
+        w_ok, _ = _http_ok(f"{w_url}/api/kb/catalog", timeout=2)
+        if b_ok and w_ok:
+            return {"ready": True, "elapsed_s": round(time.time() - start)}
+        time.sleep(2)
+    return {"ready": False, "timeout_s": timeout, "elapsed_s": round(time.time() - start)}
+
+
+def project_status() -> dict:
+    """Full project service status — ports listening + HTTP health + pids + log paths + MinerU."""
+    ports = _ports()
+    b_url, w_url = _backend_url(), _web_url()
+    mode = app_mode()
+
+    # backend
+    b_listen = port_listening(ports["backend"])
+    if b_listen:
+        b_ok, b_detail = _http_ok(f"{b_url}/api/v1/health")
+    else:
+        b_ok, b_detail = False, "port not listening"
+
+    # web
+    w_listen = port_listening(ports["web"])
+    if w_listen:
+        w_ok, w_detail = _http_ok(f"{w_url}/api/kb/catalog")
+    else:
+        w_ok, w_detail = False, "port not listening"
+
+    # neo4j
+    n_bolt = port_listening(NEO4J_BOLT_PORT)
+    n_http = port_listening(NEO4J_HTTP_PORT)
+
+    # mineru — only meaningful when backend is up
+    mineru: dict = {"available": False, "detail": "backend down"}
+    if b_ok:
+        m_ok, m_detail = _http_ok(f"{b_url}/api/v1/mineru/status", timeout=5)
+        mineru = {"available": m_ok, "detail": m_detail}
+
+    services = {
+        "backend": {
+            "port": ports["backend"], "port_listening": b_listen,
+            "http_ok": b_ok, "detail": b_detail,
+            "pid": _pid_on_port(ports["backend"]),
+            "url": b_url, "log_path": str(LOG_PATHS["backend"]),
+        },
+        "web": {
+            "port": ports["web"], "port_listening": w_listen,
+            "http_ok": w_ok, "detail": w_detail,
+            "pid": _pid_on_port(ports["web"]),
+            "url": w_url, "log_path": str(LOG_PATHS["web"]),
+        },
+        "neo4j": {
+            "bolt_port": NEO4J_BOLT_PORT, "bolt_listening": n_bolt,
+            "http_port": NEO4J_HTTP_PORT, "http_listening": n_http,
+            "log_path": "(docker-managed)",
+        },
+        "mineru": mineru,
+    }
+    ready = b_ok and w_ok
+    return {
+        "success": True,
+        "ready": ready,
+        "app_mode": mode,
+        "project_root": str(PROJECT_ROOT),
+        "services": services,
+        "summary": (
+            f"backend {'UP' if b_ok else 'DOWN'}(:{ports['backend']}) · "
+            f"web {'UP' if w_ok else 'DOWN'}(:{ports['web']}) · "
+            f"neo4j {'UP' if n_bolt else 'down'}(:{NEO4J_BOLT_PORT}) · "
+            f"mineru {'up' if mineru['available'] else 'n/a'}"
+        ),
+    }

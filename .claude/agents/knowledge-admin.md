@@ -15,6 +15,9 @@ tools:
   - Write
   # Health
   - mcp__kb-mcp__backend_status
+  - mcp__kb-mcp__kb_project_status
+  - mcp__kb-mcp__kb_project_start
+  - mcp__kb-mcp__kb_project_preflight
   # KB CRUD
   - mcp__kb-mcp__kb_list
   - mcp__kb-mcp__kb_create
@@ -247,36 +250,34 @@ Every task follows this 5-step process:
 7. **终检不可跳过** — A7八项终检(C1-C8)必须全部 ✅ 才能向用户报告完成。
 8. **违规自纠** — 如果发现自己违反上述规则，立即停止并纠正（如用错工具需清理重做）。并向用户说明。
 
-### ⭐ Pre-Flight: MCP Connectivity Check（启动前必须执行）
+### ⭐ Pre-Flight: MCP Connectivity + Auto-Start（启动前必须执行）
 
-**Before Step 0, ALWAYS verify kb-mcp MCP is connected:**
+**Before Step 0, ALWAYS verify kb-mcp MCP is connected AND backend is up:**
 
-1. Call `mcp__kb-mcp__backend_status` as the very first action
-2. **If it succeeds** → MCP is connected. Proceed to Step 0.
-3. **If it fails** (returns "No such tool available" or similar error):
-   - Run diagnostic commands in Bash:
-     ```
-     # Check backend health
-     curl -s http://localhost:8765/api/v1/health
-     # Check if backend port is occupied
-     netstat -ano | findstr "8765"   (Windows)
-     netstat -tlnp | grep 8765       (Linux/macOS)
-     ```
-   - If backend is healthy but MCP is not connected:
-     - Verify `.mcp.json` exists with correct config: `uv run --directory kb-mcp python server.py`
-     - Attempt to start kb-mcp manually:
-       - Windows: `start "kb-mcp" cmd /c "cd kb-mcp && uv run python server.py"`
-       - Linux/macOS: `cd kb-mcp && nohup uv run python server.py &`
-     - Wait 3-5 seconds, retry `mcp__kb-mcp__backend_status`
-   - If MCP is still not connected after restart attempt:
-     - **Notify user**: "⚠️ kb-mcp MCP 服务器未连接。后端服务正常但 MCP 通信层不可用。请尝试重启 Claude Code，或检查 `.mcp.json` 配置。"
-     - **Ask user**: "是否允许我用 HTTP API 兜底继续操作？(curl → localhost:6789)"
-     - Only proceed with HTTP fallback if user explicitly confirms
-   - If backend is also unhealthy:
-     - Notify user: "❌ 后端服务 (8765) 不健康且 MCP 未连接。请先启动服务：`start.bat` (Windows) 或 `./start.sh` (Linux/macOS)。"
-     - **Do NOT proceed** with any KB operations
+1. Call `mcp__kb-mcp__kb_project_status` as the very first action (full status: ports + HTTP health + PIDs + MinerU). Its `ready` field is True only when backend AND web are HTTP-healthy.
+2. **If `ready: true`** → everything is up. Proceed to Step 0.
+3. **If `ready: false` (services down)** → **silently start them via MCP** (see Auto-Start below); do NOT ask the user, do NOT open terminals.
+4. **If `kb_project_status` itself errors with "No such tool available"** → the kb-mcp MCP server is not connected to this Claude Code session. The agent cannot fix MCP-connectivity from inside the session.
+   - Run `Bash: node command/ragctl.js status` (or `ragctl status`) to see what is/isn't running.
+   - **Notify user**: "⚠️ kb-mcp MCP 服务器未连接（Claude Code 未加载 `.mcp.json`）。请重启 Claude Code 让它自动连接 kb-mcp。后端/前端可用 `ragctl up` 静默拉起。"
+   - Do NOT proceed with KB operations until MCP is connected (HTTP-API fallback only with explicit user approval per MCP-first rule).
 
-**Rationale**: The kb-mcp MCP server is the canonical access layer for all KB operations. Without it, every operation would bypass the atomic guarantees, audit trail, and consistency checks that MCP tools provide. The pre-flight check catches this before any data is touched.
+#### ⭐ Auto-Start (silent — no terminal windows, dev & prod identical)
+
+When `kb_project_status` shows services down, **start them via the MCP tool** (preferred — keeps everything in the MCP layer):
+
+```
+mcp__kb-mcp__kb_project_start(backend=true, web=true, wait=true)
+```
+
+- `kb_project_start` launches backend + web **silently** — zero terminal windows on Windows/Linux/macOS, in both dev and prod.
+- stdout/stderr → `backend/logs/desktop-stdout.log` + `web/logs/desktop-stdout.log` (same files the Tauri desktop console and `ragctl logs` read).
+- `wait=true` blocks until HTTP-healthy or ~45 s, then returns the final `status` block.
+- After it returns, **check the returned `status.ready`** (or call `kb_project_status` again). If ready → proceed. If still not ready → check `ragctl logs backend` for the error and report it (do NOT silently retry in a loop).
+
+**Fallback** (only if the MCP tool is unavailable): `Bash: node command/ragctl.js up` (also fully silent, same log files).
+
+**Why auto-start instead of asking the user:** the whole point of the plugin + ragctl + MCP integration is that KB operations "just work" after `claude plugin install`. Service startup is silent and safe to trigger; asking the user to open terminals defeats the integration. Only ask the user when the MCP layer itself is unreachable (case 4) — that genuinely requires a Claude Code restart.
 
 ### Step 0 — Diagnose the Scenario（场景诊断协议）
 
