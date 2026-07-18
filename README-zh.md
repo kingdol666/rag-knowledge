@@ -30,7 +30,9 @@
 ## 📌 目录
 
 - [🌟 核心特性](#-核心特性)
+- [🌟 特性](#-特性)
 - [🏗️ 架构](#️-架构-1)
+- [✅ 前置要求](#-前置要求)
 - [🚀 快速开始](#-快速开始)
 - [📦 安装](#-安装) — 5 种方式
 - [🖥️ 使用](#️-使用-1) — 4 种界面
@@ -74,6 +76,39 @@
 </p>
 
 三个可互换的启动器 —— **`ragctl`**、**Tauri 桌面**、**MCP `kb_project_start`** —— 都写入同一批日志文件，所以任何一个都能启动项目，任何一个都能监控。
+
+## ✅ 前置要求
+
+只需提前装两个工具 —— `ragctl setup` 会自动安装其余一切。
+
+| 工具 | 版本 | 是否必需 | 说明 |
+|------|------|----------|------|
+| **Git** | 任意 | ✅ 必需 | 克隆 + 子模块 |
+| **Node.js** | ≥ 22 | ✅ 必需 | `ragctl` CLI + Nuxt 前端 |
+| **uv** | ≥ 0.7 | ⚡ 自动安装 | Python 包管理器 —— 缺失时 `ragctl setup` 自动装 |
+| **Python** | 3.12 | ⚡ 经 uv | uv 管理 Python 环境，无需手动安装 |
+| **Docker** | 任意 | 📋 可选 | 仅 Neo4j 图谱需要。解析/搜索/经验功能无需 |
+| **Rust** | stable | 📋 可选 | 仅构建 Tauri 桌面应用时需要（`ragctl desktop`） |
+
+**磁盘空间：** 约 5 GB（Python 依赖 ~2 GB · 前端依赖 ~0.5 GB · BGE-M3 模型 ~2.2 GB · Neo4j 镜像可选）。
+
+**网络：** 首次运行会从 HuggingFace 下载 BGE-M3 嵌入模型。默认镜像 `hf-mirror.com`（国内快）；海外可设 `HF_ENDPOINT=https://huggingface.co`。
+
+<details>
+<summary><b>📦 各组件安装位置</b></summary>
+
+| 组件 | 位置 | 大小 |
+|------|------|------|
+| uv（Python 包管理） | `~/.local/bin/uv` | ~15 MB |
+| Backend Python 环境 | `backend/.venv/` | ~2 GB（torch + transformers + mineru） |
+| kb-mcp Python 环境 | `kb-mcp/.venv/` | ~50 MB（mcp + httpx + pyyaml） |
+| Web node_modules | `web/node_modules/` | ~500 MB |
+| CLI node_modules | `command/node_modules/` | ~5 MB（js-yaml） |
+| BGE-M3 模型 | `~/.cache/huggingface/` | ~2.2 GB |
+| Neo4j（可选） | Docker 卷 | ~600 MB |
+
+所有路径均可配置，不污染系统级 Python / Node。
+</details>
 
 ## 🚀 快速开始
 
@@ -148,7 +183,7 @@ ragctl setup
 4. 安装全部依赖 — 后端 (`uv sync`)、前端 (`npm install`)、kb-mcp (`uv sync`)、CLI
 5. 预下载 **BGE-M3 嵌入模型**（约 2.2 GB，默认走 `hf-mirror.com` 镜像）
 
-**前置要求：** `git` + `node` 18+。`uv`、Python 依赖、模型自动安装。Docker 可选（仅 Neo4j 图谱功能需要）。
+**前置要求：** `git` + `node` 22+。`uv`、Python 依赖、模型自动安装。Docker 可选（仅 Neo4j 图谱功能需要）。详见[✅ 前置要求](#-前置要求)。
 
 ### 方式 3 — 引导向导（Claude Code 技能）
 
@@ -226,16 +261,35 @@ ragctl desktop                    # 启动已构建的 Tauri 二进制
 ### 界面 2 — CLI（`ragctl`）
 
 ```bash
-ragctl up                          # 启动全部服务（静默）
-ragctl up --mode prod              # 用 prod 端口启动（后端 8001，前端 3000）
-ragctl status                      # 端口 + HTTP 健康 + PID + MinerU
+ragctl up                          # 启动全部服务（静默，dev 模式）
+ragctl up --appmode prod           # 用 prod 端口启动（后端 8001，前端 3000）
+ragctl up --force                  # 强制重启（先停后启）
+ragctl up --no-neo4j               # 不启动 Neo4j
+ragctl status                      # 同时显示 dev + prod 双模式状态
+ragctl status --appmode dev        # 仅显示一个模式
 ragctl logs web --tail             # 实时跟踪前端日志
-ragctl restart backend             # 重启单个服务
-ragctl down                        # 停止全部
+ragctl restart backend -f          # 强制重启单个服务
+ragctl start backend --port-backend 9000   # 自定义端口启动
+ragctl down --appmode prod         # 仅停止 prod 服务（保留共享 Neo4j）
 ragctl install                     # 全局注册 ragctl（~/.local/bin）
 ragctl desktop                     # 启动 Tauri GUI
 ragctl check                       # 全面环境审计（含修复提示）
 ```
+
+#### `--` 二级参数
+
+| 参数 | 别名 | 作用 |
+|------|------|------|
+| `--appmode dev\|prod` | `--mode`, `-m` | 选择模式（默认：`.env APP_MODE` 或 `dev`） |
+| `--port-backend N` | `--backend-port` | 覆盖后端端口 |
+| `--port-web N` | `--web-port` | 覆盖前端端口 |
+| `--no-neo4j` | — | 跳过 Neo4j |
+| `--no-backend` / `--no-web` | — | 跳过某个服务 |
+| `--only SERVICE` | — | 仅操作指定服务 |
+| `--force` | `-f` | 强制先停后启 |
+| `--timeout N` | — | 覆盖启动超时（秒） |
+| `--lines N` | `-n` | 显示日志行数 |
+| `--tail` | — | 实时跟踪日志 |
 
 完整[命令](#-命令)表。
 
@@ -277,9 +331,9 @@ experience_search_global(query="磨煤机振动")
 运行时切模式，无需改 `.env`：
 
 ```bash
-ragctl up --mode prod              # 后端 → 8001，前端 → 3000
-ragctl status --mode prod
-ragctl down --mode prod
+ragctl up --appmode prod           # 后端 → 8001，前端 → 3000
+ragctl status                      # 同时显示 dev + prod 双模式
+ragctl down --appmode prod         # 仅停止 prod（保留共享 Neo4j）
 ```
 
 ## 📋 命令
@@ -289,11 +343,13 @@ ragctl down --mode prod
 | `ragctl setup` | 一键完整部署（uv + 子模块 + 依赖 + 模型 + .env） |
 | `ragctl check` | 全面环境审计（含修复提示） |
 | `ragctl up` / `down` | 启动 / 停止所有服务（**静默，无终端**） |
-| `ragctl up --mode prod` | 用 prod 端口启动（8001 / 3000） |
+| `ragctl up --appmode prod` | 用 prod 端口启动（8001 / 3000） |
+| `ragctl up --force` | 强制重启（先停后启） |
+| `ragctl up --no-neo4j` | 不启动 Neo4j（跳过 Docker） |
 | `ragctl start [backend\|web\|neo4j\|all]` | 启动指定服务 |
 | `ragctl stop [backend\|web\|neo4j\|all]` | 停止指定服务 |
-| `ragctl restart [backend\|web\|neo4j\|all]` | 重启指定服务 |
-| `ragctl status [--mode X]` | 服务状态：端口 + HTTP 健康 + PID + MinerU |
+| `ragctl restart [服务] [-f]` | 重启服务（-f = 强制停+启） |
+| `ragctl status [--appmode X]` | 双模式状态：端口 + HTTP 健康 + PID + MinerU |
 | `ragctl logs [服务] [--tail] [--lines N]` | 查看 / 实时跟踪日志（backend/web/mineru） |
 | `ragctl deps` | 安装所有依赖（实时进度） |
 | `ragctl model` | 预下载 BGE-M3 嵌入模型 |

@@ -30,6 +30,7 @@
 
 - [🌟 Features](#-features)
 - [🏗️ Architecture](#️-architecture)
+- [✅ Prerequisites](#-prerequisites)
 - [🚀 Quick Start](#-quick-start)
 - [📦 Installation](#-installation) — 5 methods
 - [🖥️ Usage](#️-usage) — 4 interfaces
@@ -75,6 +76,39 @@
 </p>
 
 Three interchangeable launchers — **`ragctl`**, **Tauri desktop**, and the **MCP `kb_project_start`** tool — all write to the same shared log files, so any of them can start the project and any of them can monitor it.
+
+## ✅ Prerequisites
+
+Only two tools are required up front — `ragctl setup` installs everything else for you.
+
+| Tool | Version | Required? | Notes |
+|------|---------|-----------|-------|
+| **Git** | any | ✅ Required | For cloning + submodules |
+| **Node.js** | ≥ 22 | ✅ Required | For the `ragctl` CLI + Nuxt web frontend |
+| **uv** | ≥ 0.7 | ⚡ Auto-installed | Python package manager — `ragctl setup` installs it if missing |
+| **Python** | 3.12 | ⚡ Via uv | uv manages the Python env; no manual install needed |
+| **Docker** | any | 📋 Optional | Only for the Neo4j knowledge graph. Parsing/search/experience work without it. |
+| **Rust** | stable | 📋 Optional | Only to build the Tauri desktop app (`ragctl desktop`) |
+
+**Disk space:** ~5 GB (Python deps ~2 GB · Web deps ~0.5 GB · BGE-M3 model ~2.2 GB · Neo4j image optional).
+
+**Network:** First run downloads the BGE-M3 embedding model from HuggingFace. The default mirror is `hf-mirror.com` (fast inside China); set `HF_ENDPOINT=https://huggingface.co` if you're outside China or prefer the source.
+
+<details>
+<summary><b>📦 What gets installed where</b></summary>
+
+| Component | Location | Size |
+|-----------|----------|------|
+| uv (Python pkg mgr) | `~/.local/bin/uv` | ~15 MB |
+| Backend Python env | `backend/.venv/` | ~2 GB (torch + transformers + mineru) |
+| kb-mcp Python env | `kb-mcp/.venv/` | ~50 MB (mcp + httpx + pyyaml) |
+| Web node_modules | `web/node_modules/` | ~500 MB |
+| CLI node_modules | `command/node_modules/` | ~5 MB (js-yaml) |
+| BGE-M3 model | `~/.cache/huggingface/` | ~2.2 GB |
+| Neo4j (optional) | Docker volume | ~600 MB |
+
+All paths are configurable. Nothing touches system-wide Python or Node.
+</details>
 
 ## 🚀 Quick Start
 
@@ -149,7 +183,7 @@ ragctl setup
 4. Installs all dependencies — backend (`uv sync`), web (`npm install`), kb-mcp (`uv sync`), CLI
 5. Pre-downloads the **BGE-M3 embedding model** (~2.2 GB, uses `hf-mirror.com` by default)
 
-**Prerequisites:** `git` and `node` 18+. `uv`, Python deps, and the model are installed for you. Docker is optional (only for Neo4j graph features).
+**Prerequisites:** `git` and `node` 22+. `uv`, Python deps, and the model are installed for you. Docker is optional (only for Neo4j graph features). See [✅ Prerequisites](#-prerequisites) for the full matrix.
 
 ### Method 3 — Guided wizard (Claude Code skill)
 
@@ -227,16 +261,35 @@ If services aren't running, the **Archival agent silently starts them** via the 
 ### Interface 2 — CLI (`ragctl`)
 
 ```bash
-ragctl up                          # start all services (silent)
-ragctl up --mode prod              # start on prod ports (backend 8001, web 3000)
-ragctl status                      # ports + HTTP health + PIDs + MinerU
+ragctl up                          # start all services (silent, dev mode)
+ragctl up --appmode prod           # start on prod ports (backend 8001, web 3000)
+ragctl up --force                  # force restart (stop + start)
+ragctl up --no-neo4j               # start without Neo4j
+ragctl status                      # shows BOTH dev + prod status side-by-side
+ragctl status --appmode dev        # show one mode only
 ragctl logs web --tail             # live-follow web logs
-ragctl restart backend             # restart one service
-ragctl down                        # stop everything
+ragctl restart backend -f          # force-restart one service
+ragctl start backend --port-backend 9000   # custom port
+ragctl down --appmode prod         # stop prod services only (keeps shared Neo4j)
 ragctl install                     # register ragctl globally (~/.local/bin)
 ragctl desktop                     # launch Tauri GUI
 ragctl check                       # full environment audit with fix hints
 ```
+
+#### Flags (`--` secondary parameters)
+
+| Flag | Alias | Purpose |
+|------|-------|---------|
+| `--appmode dev\|prod` | `--mode`, `-m` | Select mode (default: `.env APP_MODE` or `dev`) |
+| `--port-backend N` | `--backend-port` | Override backend port |
+| `--port-web N` | `--web-port` | Override web port |
+| `--no-neo4j` | — | Skip Neo4j |
+| `--no-backend` / `--no-web` | — | Skip a service |
+| `--only SERVICE` | — | Operate on one service only |
+| `--force` | `-f` | Force stop-then-start |
+| `--timeout N` | — | Override startup timeout (seconds) |
+| `--lines N` | `-n` | Log lines to show |
+| `--tail` | — | Live-follow logs |
 
 See the full [Commands](#-commands) table.
 
@@ -278,9 +331,9 @@ experience_search_global(query="coal mill vibration")
 Switch modes at runtime without editing `.env`:
 
 ```bash
-ragctl up --mode prod              # backend → 8001, web → 3000
-ragctl status --mode prod
-ragctl down --mode prod
+ragctl up --appmode prod           # backend → 8001, web → 3000
+ragctl status                      # shows both dev + prod side-by-side
+ragctl down --appmode prod         # stop prod only (shared Neo4j preserved)
 ```
 
 ## 📋 Commands
@@ -290,17 +343,19 @@ ragctl down --mode prod
 | `ragctl setup` | One-click full deployment (uv + submodules + deps + model + .env) |
 | `ragctl check` | Full environment audit with fix hints |
 | `ragctl up` / `down` | Start / stop all services (**silent — no terminals**) |
-| `ragctl up --mode prod` | Start on prod ports (8001 / 3000) |
+| `ragctl up --appmode prod` | Start on prod ports (8001 / 3000) |
+| `ragctl up --force` | Force restart (stop + start) |
+| `ragctl up --no-neo4j` | Start without Neo4j (skip Docker) |
 | `ragctl start [backend\|web\|neo4j\|all]` | Start a specific service |
 | `ragctl stop [backend\|web\|neo4j\|all]` | Stop a specific service |
-| `ragctl restart [backend\|web\|neo4j\|all]` | Restart a specific service |
-| `ragctl status [--mode X]` | Service status: ports + HTTP health + PIDs + MinerU |
-| `ragctl logs [svc] [--tail] [--lines N]` | View / live-tail service logs (`svc` ∈ backend, web, mineru) |
+| `ragctl restart [svc] [-f]` | Restart a service (force: stop+start) |
+| `ragctl status [--appmode X]` | Dual-mode status: ports + HTTP health + PIDs + MinerU |
+| `ragctl logs [svc] [--tail] [--lines N]` | View / live-tail logs (`svc` ∈ backend, web, mineru) |
 | `ragctl deps` | Install all dependencies (real-time progress) |
 | `ragctl model` | Pre-download BGE-M3 embedding model |
-| `ragctl install` | Register `ragctl` globally → `~/.local/bin` (works from any dir) |
-| `ragctl desktop` \| `ui` | Launch the Tauri desktop console (shares logs with ragctl) |
-| `ragctl help` | Show all commands |
+| `ragctl install` | Register `ragctl` globally → `~/.local/bin` |
+| `ragctl desktop` \| `ui` | Launch the Tauri desktop console |
+| `ragctl help` | Show all commands + flags |
 
 ## 🔌 MCP Tools (77)
 
@@ -371,24 +426,16 @@ Because `ragctl`, Tauri, and the MCP `kb_project_start` tool all write to the sa
 | **Backend won't start** | Backend deps not installed | `ragctl setup` (or `cd backend && uv sync`); check `ragctl logs backend` |
 | **Web won't start** | `web/node_modules` missing | `ragctl setup` (or `cd web && npm install`) |
 | **`backend/` or `web/` is empty** | Submodules not initialized | `git submodule update --init --recursive` (or `ragctl setup`) |
-| **`--mode prod` uses dev ports** | Stale `web` submodule (pre-fix `start.mjs`) | Update the web submodule — see [web submodule note](#web-submodule-note) below |
 | **Graph queries fail** (search works) | Neo4j not running | `ragctl start neo4j` (requires Docker) |
 | **BGE model download slow/fails** | Network to HuggingFace | `HF_ENDPOINT` defaults to the `hf-mirror.com` mirror. Override: `set HF_ENDPOINT=https://huggingface.co` |
 | **Port already in use** | Previous service still running | `ragctl down` then `ragctl up`; or `ragctl restart <svc>` |
 | **kb-mcp warns "not set up" at boot** | Fresh clone, `ragctl setup` not run | The MCP server logs a clear warning — run `ragctl setup`, then restart Claude Code |
 
-<a id="web-submodule-note"></a>
-> **web submodule note:** `web/start.mjs` was fixed so runtime env overrides win over `.env` (required for `--mode prod` to use prod ports). The fix lives in the `web` submodule — commit it to the `rag-knowledge-frondend` repo and bump the submodule pointer for fresh clones to inherit it:
-> ```bash
-> cd web && git add start.mjs && git commit -m "fix: runtime env wins over .env for --mode overrides" && git push
-> cd .. && git add web && git commit -m "chore: bump web submodule"
-> ```
-
 ## ❓ FAQ
 
 **Does it really open no terminal windows?** Yes. Verified with PowerShell: while all services run, `python.exe` and `node.exe` own **zero** visible windows. `windowsHide` + detached binary spawn (no `cmd.exe` wrapper) on Windows; `start_new_session` on POSIX.
 
-**Dev or prod — what's the difference?** Ports and config. Dev: backend `8765` / web `6789`. Prod: backend `8001` / web `3000`. Switch with `--mode prod`. Both are fully silent.
+**Dev or prod — what's the difference?** Ports and config. Dev: backend `8765` / web `6789`. Prod: backend `8001` / web `3000`. Switch with `--appmode prod`. Both are fully silent. `ragctl status` shows both modes side-by-side so you always know what's running.
 
 **Where is my data?** All local — under `web/storage/tree-file-system/` (KB files) and Neo4j (graph). No cloud, no telemetry.
 

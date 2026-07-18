@@ -29,7 +29,7 @@ MinerU OCR Engine (ephemeral port)  ← PDF → Markdown conversion
 Claude Code / Agent
     │  MCP stdio (kb-mcp)
     ▼
-kb-mcp MCP Server              ← ~63 tools: KB CRUD, file ops, parse, search, tags, vector, graph, experience
+kb-mcp MCP Server              ← 77 tools: KB CRUD, file ops, parse, search, tags, vector, graph, experience
     │  HTTP → web proxy / backend     +  direct file reads
     ▼
 Nuxt / Backend                 ← writes: parse + save pipeline
