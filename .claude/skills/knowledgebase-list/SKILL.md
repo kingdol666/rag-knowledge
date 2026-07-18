@@ -99,12 +99,13 @@ description: Knowledge base listing and discovery. L1→L3 read-only workflow: f
 ## 存储模型
 
 ```
-web/storage/tree-file-system/
+$TREE_STORAGE_PATH/
 ├── .tree-fs.json                    # 全局树结构索引
 ├── {knowledge-base-name}/
 │   ├── .knowledge-base.yml          # KB 文档索引 (name, description, path, tags)
 │   └── doc1.md                      # Markdown 文档
 ```
+- **存储路径**：从 config.yml 读取 `TREE_STORAGE_PATH`（默认 `./storage/tree-file-system`）
 - **Writes** → HTTP API (backend/web proxy)
 - **Reads** → 直接文件访问 (`.tree-fs.json` + `.knowledge-base.yml`)
 - **三写原子一致性**：`fs_upload_file` → 同时更新 ①磁盘文件 ②`.tree-fs.json` ③`.knowledge-base.yml`。任何一层失败则整体回滚。

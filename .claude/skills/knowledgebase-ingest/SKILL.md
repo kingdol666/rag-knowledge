@@ -6,8 +6,6 @@ description: Document ingestion pipeline with quality gates A0→A9. Content-fir
 # Knowledge Ingest — 内容驱动的规范入库流水线
 
 **执行者：Archival agent — 必须委托 `Agent(subagent_type="archival", ...)` 执行**
-- 当 knowledgebase 调度器检测到入库场景后 → 路由到本 skill
-- 本 skill **必须**委托 Archival agent（`Agent(subagent_type="archival", ...)`）执行
 - Archival 禁止：跳过步骤、绕过门控、用错存储工具
 
 **四条铁律**：

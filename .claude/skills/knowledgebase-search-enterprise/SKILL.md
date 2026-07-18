@@ -10,7 +10,6 @@ description: >
 
 **执行者：Archival agent — 必须委托 `Agent(subagent_type="archival", ...)` 执行**
 - Archival 禁止：跳过企业级多策略检索流程、跳过内容裁决
-- 本 skill **必须**委托 Archival agent（`Agent(subagent_type="archival", ...)`）执行
 
 > **升级触发**：knowledgebase-search Step 5 发现确认 P0/P1 来自 <2 个 KB（跨库盲点），或用户明确要求全库/跨库/全面检索。
 

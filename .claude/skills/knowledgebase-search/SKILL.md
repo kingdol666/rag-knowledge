@@ -13,8 +13,6 @@ description: >
 # QDCVR — 查询驱动 · 内容裁决 · 门控精炼检索
 
 **执行者：Archival agent — 必须委托 `Agent(subagent_type="archival", ...)` 执行**
-- 当 knowledgebase 调度器检测到搜索场景后 → 路由到本 skill
-- 本 skill **必须**委托 Archival agent（`Agent(subagent_type="archival", ...)`）执行
 - Archival 禁止：跳过 Step 0 查询改写、跳过内容验证、跳过盲点声明
 
 **六条铁律**（包含 ⭐ MCP 优先原则）：

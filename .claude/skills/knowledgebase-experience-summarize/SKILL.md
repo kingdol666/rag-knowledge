@@ -7,7 +7,7 @@ description: Experience summarization and persistence. Distill user practices, p
 
 **⭐ MCP 优先原则**：[references/skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则) — MCP 优先，禁止 terminal/HTTP 绕过
 
-**执行者：此技能由 Archival agent 执行（`Agent(subagent_type="archival", ...)`）**
+**执行者：Archival agent — 必须委托 `Agent(subagent_type="archival", ...)` 执行**
 
 ---
 
