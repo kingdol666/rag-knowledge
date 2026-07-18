@@ -164,7 +164,7 @@ A 向量 + B 标签 + C BM25（+ D 经验，如适用）→ 去重后 N 篇 → 
 7. **诚实盲点**——跨库视角的盲点尤其要声明
 
 ## 参考文件
-- [经验可信度模型](../knowledgebase/references/experience-credibility.md) — 经验 P0/P1/P2 阈值 + 全局搜索升级规则
+- **经验可信度模型** — P0: vector≥0.65∧content≥6∧rating≥4∧review≥1, P1: ≥0.45∧≥4, P2: ≥0.35∧≥3 | disputed降P2, unvetted降P1 | 短内容<50chars降P2
 - `knowledgebase-search` skill — 前置 QDCVR 标准流程（本 skill 在其 Step 5 触发升级）
 - MEMORY.md: `ingest-search-skill-upgrade-20260713.md` — 实测 10 病灶引用
 - MEMORY.md: `mcp-first-principle.md` — MCP 优先原则全库执行细则

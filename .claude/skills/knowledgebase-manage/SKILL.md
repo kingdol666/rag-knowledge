@@ -111,7 +111,7 @@ kb_doc_read(kb_id, doc_path, max_chars=20000) → 展示当前内容
 用户提供新内容 → kb_doc_update_content → kb_doc_read 验证 → kb_index_document 重建索引
 ```
 
-> 参考 [存储模型](../knowledgebase/references/storage-model.md) 了解 atomic 三写一致性。全局安装插件后可独立访问。
+> **三写原子一致性**：磁盘文件 + .tree-fs.json + .knowledge-base.yml 同步更新。任何一层失败整体回滚。
 
 ---
 

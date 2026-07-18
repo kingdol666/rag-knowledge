@@ -89,21 +89,31 @@ description: Knowledge base listing and discovery. L1→L3 read-only workflow: f
 
 ## 已知问题
 
-- **Hierarchical KB listing returns empty content** — 父 KB 的 `kb_search_two_stage` 返回子 KB 容器条目，content 为空。应使用 `mcp__kb-mcp__kb_graph_kb_overview(kb_id)` 获取子 KB UUID 列表，然后在子 KB 内分别检索。
-- **Vector index metadata may be missing after initial index** — 部分文档的 `vector_index` 字段在索引后未写入 YAML。使用 `mcp__kb-mcp__kb_reindex(kb_id, force=true)` 修复（注意这是写操作，仅告知用户，不在 List 流程中自动执行）。
-- **Sub-KB nodes show UUID only in graph** — `mcp__kb-mcp__kb_graph_kb_overview` 的 sub_kbs 列表中 name 为 UUID，无人类可读名称。如需可读名，需回查 `kb_catalog()`。
+- **层次化KB搜索返回空内容** — 父 KB 的 `kb_search_two_stage` 返回子 KB 容器条目，content 为空。子KB本身无向量chunk。应使用 `kb_graph_kb_overview(kb_id)` 获取子 KB UUID 列表，然后在子 KB 内分别检索。
+- **向量索引元数据可能缺失** — 部分文档的 `vector_index` 字段在索引后未写入 YAML（向量实际存在于 ChromaDB）。用 `kb_reindex(kb_id, force=true)` 修复（写操作，List 流程不自动执行）。
+- **图谱子KB节点仅显示UUID** — `kb_graph_kb_overview` 的子 KB name 字段为 UUID 而非可读名称。回查 `kb_catalog()` 获取可读名。
+- **`kb_graph_build_kb` 返回的 `total_relations` 可能为 0** — 这是 stats 统计 bug，实际图谱数据已写入 Neo4j。**不要**因为返回 0 就认为构建失败。用 `kb_graph_document(doc_path)` 抽检验证。
+- **标签注册表积累孤儿标签** — `kb_tags_list()` 返回的标签列表包含 0 文档引用的历史标签。用 `kb_tags_cleanup(dry_run=true)` 检测。不影响搜索功能——文档级标签自动过滤。
+- **⭐ kb-mcp MCP 启动检查** — 执行任何 KB 操作前，先调用 `mcp__kb-mcp__backend_status` 验证 MCP 连通性。MCP 不可用时：① Bash 检查服务 ② 检查 `.mcp.json` ③ 手动启动 kb-mcp ④ 后端健康但 MCP 不可用 → 通知用户重启 Claude Code ⑤ 仅在用户确认后才用 HTTP API 兜底。
 
-详见：[known-pitfalls.md § #7, #8, #10](../knowledgebase/references/known-pitfalls.md)。
+## 存储模型
+
+```
+web/storage/tree-file-system/
+├── .tree-fs.json                    # 全局树结构索引
+├── {knowledge-base-name}/
+│   ├── .knowledge-base.yml          # KB 文档索引 (name, description, path, tags)
+│   └── doc1.md                      # Markdown 文档
+```
+- **Writes** → HTTP API (backend/web proxy)
+- **Reads** → 直接文件访问 (`.tree-fs.json` + `.knowledge-base.yml`)
+- **三写原子一致性**：`fs_upload_file` → 同时更新 ①磁盘文件 ②`.tree-fs.json` ③`.knowledge-base.yml`。任何一层失败则整体回滚。
 
 ---
 
-## 相关参考
+## 参考
 
-- [存储模型](../knowledgebase/references/storage-model.md) — tree-fs.json + knowledge-base.yml 存储结构 + 三写原子一致性
-- [已知坑 #7-11](../knowledgebase/references/known-pitfalls.md) — 层次化KB、向量元数据、图谱节点命名等边界情况
-- [知识库技能触发契约](../knowledgebase/references/skill-trigger-contract.md) — skill 触发链 + Archival 委托规范
-- [MCP 优先原则](../knowledgebase/references/skill-trigger-contract.md) — 所有 KB 操作必须通过 MCP 工具
-- [经验可信度模型](../knowledgebase/references/experience-credibility.md) — P0/P1/P2 分级标准
+- [知识库技能触发契约](../knowledgebase/references/skill-trigger-contract.md) — 全文详见 knowledgebase 通用参考：skill 触发链、Archival 委托、MCP 优先原则
 
 > 以上参考文件位于 `knowledgebase/references/` 目录，全局安装插件后可独立访问。
 

@@ -147,6 +147,7 @@ Step 3 — 内容 ≥ 5 则直接作答（跳过文档检索）
 - 每条经验含 `vector_score` + `content_score` + `tier` + `tier_reason`
 
 ## E5 — 可信度分级
+
 | 条件 | 层级 | 动作 |
 |---|---|---|
 | vector≥0.65 ∧ content≥6 ∧ rating≥4 ∧ review≥1 | **P0 Strong** | 直接引用，置顶 |
@@ -155,6 +156,20 @@ Step 3 — 内容 ≥ 5 则直接作答（跳过文档检索）
 | 内容验证不过 OR 向量<0.35 | **DISCARD** | 永不返回 |
 | disputed (review≥3 ∧ rating<2) | 降级→max P2 | 有争议降级 |
 | unvetted (0 review ∧ 0 applied) | 降级→max P1 | 未评审压制 |
+
+### 可信度修饰符
+
+| 修饰符 | 条件 | 效果 |
+|--------|------|------|
+| disputed | ≥3 reviews ∧ rating<2.0 | 降级至最多 P2 |
+| unvetted | 0 reviews ∧ 0 applied | 上限最多 P1 |
+
+### 短内容虚假命中防护
+
+向量搜索可能返回极短片段（如仅"## 问题"）并伴随虚高评分：
+- Chunks < 50 chars → 降级到 P2（隐藏）
+- 同一文档 >50% 片段为短内容 → 降级整篇文档
+- 例外：同文档存在其他 P0/P1 片段 → 短片段放行 |
 
 ## E6 — 文档联动 / stale 检测 + 自动更新 [IMPORTANT]
 
@@ -345,7 +360,6 @@ for each kb with experiences:
 - 图谱联动参考：[knowledgebase-graph](knowledgebase-graph) — 知识图谱与经验的关联检索
 - 校验流程参考：[knowledgebase-verify](knowledgebase-verify) — 全库完整性校验（触发 E12 自动体检）
 - MEMORY.md: 参见项目 memory 目录下的 experience-enhancement-implemented 记录
-- [经验可信度模型](../knowledgebase/references/experience-credibility.md) — P0/P1/P2 分级标准、衰减周期、短内容防护
 
 ## [WARNING] NEVER 清单
 
