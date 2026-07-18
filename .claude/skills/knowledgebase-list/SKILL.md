@@ -104,7 +104,7 @@ description: Knowledge base listing and discovery. L1→L3 read-only workflow: f
 - [存储模型](../knowledgebase/references/storage-model.md) — tree-fs.json + knowledge-base.yml 存储结构 + 三写原子一致性
 - [已知坑 #7-11](../knowledgebase/references/known-pitfalls.md) — 层次化KB、向量元数据、图谱节点命名等边界情况
 - [知识库技能触发契约](../knowledgebase/references/skill-trigger-contract.md) — skill 触发链 + Archival 委托规范
-- [MCP 优先原则](../knowledgebase/references/skill-trigger-contract.md#第五条-mcp-优先原则) — 所有 KB 操作必须通过 MCP 工具
+- [MCP 优先原则](../knowledgebase/references/skill-trigger-contract.md) — 所有 KB 操作必须通过 MCP 工具
 - [经验可信度模型](../knowledgebase/references/experience-credibility.md) — P0/P1/P2 分级标准
 
 > 以上参考文件位于 `knowledgebase/references/` 目录，全局安装插件后可独立访问。
