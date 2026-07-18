@@ -95,17 +95,17 @@ description: Knowledge base listing and discovery. L1→L3 read-only workflow: f
 - **Vector index metadata may be missing after initial index** — 部分文档的 `vector_index` 字段在索引后未写入 YAML。使用 `mcp__kb-mcp__kb_reindex(kb_id, force=true)` 修复（注意这是写操作，仅告知用户，不在 List 流程中自动执行）。
 - **Sub-KB nodes show UUID only in graph** — `mcp__kb-mcp__kb_graph_kb_overview` 的 sub_kbs 列表中 name 为 UUID，无人类可读名称。如需可读名，需回查 `kb_catalog()`。
 
-详见：[known-pitfalls.md § #7, #8, #10](references/known-pitfalls.md)。
+详见：[known-pitfalls.md § #7, #8, #10](../knowledgebase/references/known-pitfalls.md)。
 
 ---
 
 ## 相关参考
 
-- [存储模型](references/storage-model.md) — tree-fs.json + knowledge-base.yml 存储结构 + 三写原子一致性
-- [已知坑 #7-11](references/known-pitfalls.md) — 层次化KB、向量元数据、图谱节点命名等边界情况
-- [知识库技能触发契约](references/skill-trigger-contract.md) — skill 触发链 + Archival 委托规范
-- [MCP 优先原则](references/skill-trigger-contract.md#第五条-mcp-优先原则) — 所有 KB 操作必须通过 MCP 工具
-- [经验可信度模型](references/experience-credibility.md) — P0/P1/P2 分级标准
+- [存储模型](../knowledgebase/references/storage-model.md) — tree-fs.json + knowledge-base.yml 存储结构 + 三写原子一致性
+- [已知坑 #7-11](../knowledgebase/references/known-pitfalls.md) — 层次化KB、向量元数据、图谱节点命名等边界情况
+- [知识库技能触发契约](../knowledgebase/references/skill-trigger-contract.md) — skill 触发链 + Archival 委托规范
+- [MCP 优先原则](../knowledgebase/references/skill-trigger-contract.md#第五条-mcp-优先原则) — 所有 KB 操作必须通过 MCP 工具
+- [经验可信度模型](../knowledgebase/references/experience-credibility.md) — P0/P1/P2 分级标准
 
 > 以上参考文件位于 `knowledgebase/references/` 目录，全局安装插件后可独立访问。
 

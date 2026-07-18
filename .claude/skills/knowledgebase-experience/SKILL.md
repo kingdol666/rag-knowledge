@@ -292,7 +292,7 @@ for each kb with experiences:
 - 图谱联动参考：[knowledgebase-graph](knowledgebase-graph) — 知识图谱与经验的关联检索
 - 校验流程参考：[knowledgebase-verify](knowledgebase-verify) — 全库完整性校验（触发 E12 自动体检）
 - MEMORY.md: 参见项目 memory 目录下的 experience-enhancement-implemented 记录
-- [经验可信度模型](references/experience-credibility.md) — P0/P1/P2 分级标准、衰减周期、短内容防护
+- [经验可信度模型](../knowledgebase/references/experience-credibility.md) — P0/P1/P2 分级标准、衰减周期、短内容防护
 
 ## [WARNING] NEVER 清单
 
