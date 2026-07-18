@@ -99,26 +99,53 @@ experience_draft_reject(kb_id, draft_id, reason)    → 拒绝→rejected/（保
 ```
 **审核流程**：`drafts_list` → 逐条 `draft_read` → LLM 精炼后 `draft_approve(edits=精炼字段)` 或 `draft_reject`。
 
-## E4 — 经验优先检索（QDCVR 流程）[IMPORTANT]
+## E4 — 经验优先检索（内容裁决）[IMPORTANT]
 
-**核心原则：宁可不给，不要错给**——无确认经验即诚实声明盲点。
+**核心原则：内容优先，宁可不给，不要错给**——无确认经验即诚实声明盲点。
+
+### E4a 检索流程（两步走）
 
 ```
-# Step 1: 经验优先
-experience_search_global(query, top_k=10, score_threshold=0.45, verify_content=True)
-  → 内部: 向量召回 → 硬阈值 → 经验级去重 → 内容验证 → 可信度定级
-  → 返回 P0/P1/P2 分级经验，含 vector_score/content_score/tier_reason
-  → count=0 表示"召回N条但内容验证不过"——诚实声明无相关经验
+Step 1 — 经验优先（向量召回 → 内容裁决）
+  experience_search_global(query, top_k=8, score_threshold=0.45, verify_content=True)
+    → 内部: 向量召回 → 硬阈值 → 经验级去重 → 内容验证 → 可信度定级
 
-# Step 2: 经验不足才补文档
-if P0+P1 < 2: kb_search_two_stage(query, balance_kbs=True)
+Step 2 — 内容二次裁决（强制，不可跳过）⭐
+  对 Step 1 返回的每条 P0/P1 经验，必须 experience_read(kb_id, exp_id, max_chars=2000)
+  独立做 0-6 内容评分（向量分不左右决策）：
+
+  | 维度 | 分 | 判据 |
+  |------|-----|------|
+  | **场景匹配** (0-2) | 2=直接对应查询场景；1=相关领域可迁移；0=无关 |
+  | **方案可执行** (0-2) | 2=含具体步骤/配置/命令；1=方向性指导；0=泛泛描述 |
+  | **教训可引用** (0-2) | 2=可独立引用的具体经验；1=需结合原文理解；0=空洞 |
+
+  内容评分 < 3 → 丢弃（向量分再高也没用）
+  内容评分 3-4 → P2 弱参考（标注置信度不足）
+  内容评分 ≥ 5 → 纳入答案
+
+Step 3 — 内容 ≥ 5 则直接作答（跳过文档检索）
+  无 P0/P1 或内容 < 3 → 补充 kb_search_two_stage 文档检索
 ```
 
-### E4 检索流程透明化
-返回值含完整检索质量元信息，Agent 应据此决策：
+### E4b 检索结果呈现规范
+
+```
+## 经验（优先检索）
+- [P0/P1/P2] <经验标题> @ <KB/exp_id>
+  - 场景：<scenario>
+  - 内容评分：<score>/6（场景X + 方案X + 教训X）
+  - 可信度：<rating> 分 · <applied> 次应用 · <review> 次评审
+  - 关联文档：<related_docs>
+
+（仅内容 ≥ 5 的经验纳入答案正文）
+（无内容 ≥ 3 的经验 → 诚实声明"无相关经验"→ 补充文档检索）
+```
+
+### E4c 检索透明化
 - `vector_recall` — 向量召回总数（硬阈值前）
 - `tier_counts` — {P0, P1, P2, discarded} 分级统计
-- `message` — 检索路径摘要（如 "召回5→验证通过2→返回2 P0:1 P1:1"）
+- `content_ruling` — 内容裁决摘要（"召回5→读4→合格2 P0:1 P1:1 P2:2"）
 - 每条经验含 `vector_score` + `content_score` + `tier` + `tier_reason`
 
 ## E5 — 可信度分级
@@ -131,17 +158,45 @@ if P0+P1 < 2: kb_search_two_stage(query, balance_kbs=True)
 | disputed (review≥3 ∧ rating<2) | 降级→max P2 | 有争议降级 |
 | unvetted (0 review ∧ 0 applied) | 降级→max P1 | 未评审压制 |
 
-## E6 — 文档联动 / stale 检测 [IMPORTANT]
+## E6 — 文档联动 / stale 检测 + 自动更新 [IMPORTANT]
+
 ```
 experience_check_stale(kb_id)          → 检查 KB 经验与文档一致性
 experience_check_stale_global()        → 全库检查
 experience_sync_kb(kb_id)              → 整库标记 needs_sync
 ```
+
 **检测逻辑**：
 - 文档 mtime > 经验 updated_at → **stale**（经验过时）
 - 文档不存在 → **orphan**（引用失效）
 
-**联动流程**：文档更新 → `check_stale` 发现 stale → `sync_kb` 标记 → Agent 读 related_docs 重新提取 → `update_experience` 更新。
+### E6a 经验更新迭代流程（stale → re-extract → update）⭐
+
+当 `experience_check_stale` 发现 stale 经验时，按以下流程更新：
+
+```
+Step 1: experience_read(kb_id, exp_id) → 读取当前经验内容
+Step 2: kb_doc_read(kb_id, related_doc_path, max_chars=5000) → 读取关联文档最新内容
+Step 3: LLM 对比 文档新内容 vs 经验旧内容，判断是否需要更新：
+        - 文档新增了哪些内容？
+        - 旧经验的 problem/solution/key_lessons 是否依然准确？
+        - 是否有新的可提取经验？
+Step 4a: 经验仍准确 → experience_update(kb_id, exp_id, updated_at=now) → 刷新时间戳
+Step 4b: 经验需更新 → LLM 提炼新的 problem/solution/key_lessons
+          → experience_update(kb_id, exp_id, **updated_fields) → 自动重建向量索引
+Step 4c: 文档已不包含原经验内容 → 标记 orphan → 按 E12 orphan 矩阵处理
+Step 5: experience_sync_kb(kb_id) → 清除 stale 标记
+```
+
+**更新优先级**：
+| 经验状态 | 动作 | 理由 |
+|----------|------|------|
+| stale + P1/P0 + applied>0 | 优先更新 | 高价值经验，确保准确 |
+| stale + P2 + applied=0 | 延迟处理 | 低价值，静默标记 |
+| orphan + applied>0 | 保留内容，清 related_docs | 经验仍有用 |
+| orphan + applied=0 + rating=0 | 直接删除 | 零价值残留 |
+
+**联动流程**：文档更新 → `check_stale` 发现 stale → Agent 读 related_docs 重新提取 → `update_experience` 更新 → `sync_kb` 验证。
 
 ## E7 — 搜索路径
 ```
