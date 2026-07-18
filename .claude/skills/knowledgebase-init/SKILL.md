@@ -1,18 +1,23 @@
 ---
 name: knowledgebase-init
 description: >
-  知识库系统全链路交互式安装部署向导。
-  当用户输入 /knowledgebase-init 或提到"初始化知识库"、"安装知识库"、"部署知识库"、
-  "setup knowledge base"、"install rag knowledge" 时触发。
-  交互式引导用户完成全套部署，每个关键配置都询问用户后再设定。
-  包含：项目路径选择（绝对/相对）· 知识库存储路径 · 后台访问控制 · MinerU OCR 开关 ·
-  Neo4j 图谱开关 · 端口配置 · 镜像加速 · 自动更新。
-  Triggered by: /knowledgebase-init, 初始化知识库, 安装知识库, 部署知识库, 知识库启动,
-  setup knowledge base, install rag knowledge, deploy KB, start knowledge base,
+  Interactive installation wizard for the RAG Knowledge Platform. Guides users
+  through full deployment: platform detection, prerequisite checks, project path
+  selection, clone/pull, dependency install, 12-point interactive config (mode,
+  ports, storage, auth, MinerU, Neo4j, HF mirror…), global ragctl registration,
+  service startup, full-chain validation. Triggered by: /knowledgebase-init,
+  init KB, setup knowledge base, install rag knowledge, deploy KB, start KB,
+  bootstrap, getting started, 初始化知识库, 安装知识库, 部署知识库, 知识库启动,
   kb init, knowledgebase setup wizard, 知识库安装向导, 配置知识库, 引导安装知识库.
 ---
 
-# Knowledgebase Init — 全平台生产级交互式部署向导
+# Knowledgebase Init — 全平台交互式部署向导
+
+**执行者：此技能由主 Agent 直接执行（不委托 Archival）**
+- init 是用户交互式安装向导，需要实时问答和确认
+- 主 Agent 根据本 skill 的编排，引导用户逐步完成平台检测、依赖安装、配置选择、服务启动
+- 所有 Bash 命令（git clone、ragctl setup、ragctl up 等）由主 Agent 直接执行
+- 仅在安装完成后，如需验证 KB 功能（如搜索测试、标签检查），才委托 Archival agent
 
 **执行者：此技能由 Archival agent 执行** — 必须委托 `Agent(subagent_type="archival", ...)` 执行。
 
