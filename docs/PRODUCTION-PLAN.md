@@ -167,7 +167,7 @@ ragctl down      # 优雅停止
 #### D1. 测试现代化
 - 重写 `test_server.py`：用当前 MCP 工具签名（`kb_doc_read(kb_id, doc_path)` 配对）、`kb_update` 后追踪新 path、dedup/batch 断言更新。
 - 新增端到端套件：`ragctl up` → 解析一个 fixture PDF → search → graph build → `ragctl down`（全链路）。
-- CI 加 `ragctl up --mode prod` smoke（prod 路径回归）。
+- CI 加 `ragctl up --appmode prod` smoke（prod 路径回归）。
 
 #### D2. 可观测性
 - backend 暴露 `/api/v1/metrics`（Prometheus 格式：请求数、解析时长、向量查询数）。

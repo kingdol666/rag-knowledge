@@ -56,7 +56,7 @@ After `ragctl install`, `ragctl` is available globally in any terminal via `~/.l
 
 - `--mode dev\|prod` — Override .env APP_MODE (affects ports and behavior)
 - `--help` — Show help
-- `--version` — Show version (2.0.0)
+- `--version` — Show version (2.1.0)
 
 ## Examples
 
@@ -77,7 +77,7 @@ ragctl logs backend
 ragctl logs backend --tail
 
 # Start in production mode
-ragctl up --mode prod
+ragctl up --appmode prod
 
 # Register globally for use from any directory
 ragctl install

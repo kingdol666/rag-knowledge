@@ -1386,7 +1386,7 @@ async function cmdDesktop(args) {
 
 function showHelp() {
   console.log(`
-${_c(C.BOLD, 'ragctl')} — RAG Knowledge Platform CLI  v2.0.0
+${_c(C.BOLD, 'ragctl')} — RAG Knowledge Platform CLI  v2.1.0
 
 ${_c(C.CYAN, '核心命令:')}
   ${_c(C.BOLD, 'setup')}            一键完整部署（自动安装 uv → 依赖 → 模型 → 配置）
@@ -1455,7 +1455,7 @@ async function main() {
   const command = args[0];
 
   if (!command || command === 'help' || command === '--help') { showHelp(); return 0; }
-  if (command === '--version') { console.log('ragctl 2.0.0'); return 0; }
+  if (command === '--version') { console.log('ragctl 2.1.0'); return 0; }
 
   // Route to sub-args (everything after the command name)
   const subArgs = args.slice(1);
