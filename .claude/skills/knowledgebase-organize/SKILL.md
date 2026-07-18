@@ -5,11 +5,9 @@ description: Full collection restructuring engine. O0→O13 workflow: define com
 
 # Knowledge Organize — Collection Restructuring
 
-**⭐ MCP 优先原则（强制）**：所有 kb-mcp 操作必须通过 MCP 工具执行（`mcp__kb-mcp__*`）。禁止用 `curl`/`python`/`wget` 等终端命令或直调 HTTP API 替代 MCP 工具。MCP 不可用时才可向用户报告让用户决策。
+**⭐ MCP 优先原则**：[references/skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则) — MCP 优先，禁止 terminal/HTTP 绕过
 
-**执行者：此技能由 Archival agent 执行**
-- 当 knowledgebase 调度器检测到对应场景后 → 路由到本 skill
-- 本 skill **必须**委托 Archival agent（`Agent(subagent_type="archival", ...)`）执行
+**执行者：Archival agent — 必须委托 `Agent(subagent_type="archival", ...)` 执行**
 
 ---
 

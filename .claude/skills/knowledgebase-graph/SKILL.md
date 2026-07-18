@@ -5,11 +5,9 @@ description: Knowledge graph build, query, and analysis for Neo4j-powered docume
 
 # Knowledge Graph — Build, Query, Analyze
 
-**⭐ MCP 优先原则（强制）**：所有 kb-mcp 操作必须通过 MCP 工具执行（`mcp__kb-mcp__*`）。禁止用 `curl`/`python -c`/`wget` 等终端命令或直调 HTTP API。MCP 不可用时才可向用户报告。
+**⭐ MCP 优先原则**：[references/skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则) — MCP 优先，禁止 terminal/HTTP 绕过
 
-**执行者：此技能由 Archival agent 执行**
-- 当 knowledgebase 调度器检测到对应场景后 → 路由到本 skill
-- 本 skill **必须**委托 Archival agent（`Agent(subagent_type="archival", ...)`）执行
+**执行者：Archival agent — 必须委托 `Agent(subagent_type="archival", ...)` 执行**
 
 Graph nodes: `Document`, `KnowledgeBase`, `Tag`. Edges: `BELONGS_TO`, `HAS_SUBKB`, `HAS_TAG`, `RELATED_TO`.
 

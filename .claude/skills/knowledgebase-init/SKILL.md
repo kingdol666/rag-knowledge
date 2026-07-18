@@ -15,11 +15,8 @@ description: >
 
 **执行者：此技能由主 Agent 直接执行（不委托 Archival）**
 - init 是用户交互式安装向导，需要实时问答和确认
-- 主 Agent 根据本 skill 的编排，引导用户逐步完成平台检测、依赖安装、配置选择、服务启动
 - 所有 Bash 命令（git clone、ragctl setup、ragctl up 等）由主 Agent 直接执行
-- 仅在安装完成后，如需验证 KB 功能（如搜索测试、标签检查），才委托 Archival agent
-
-**执行者：此技能由 Archival agent 执行** — 必须委托 `Agent(subagent_type="archival", ...)` 执行。
+- 仅在安装完成后，如需验证 KB 功能，才委托 Archival agent
 
 ## 核心原则
 
