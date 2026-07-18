@@ -80,7 +80,7 @@ tools:
   - mcp__kb-mcp__kb_graph_central_documents
   - mcp__kb-mcp__kb_graph_delete_document
   - mcp__kb-mcp__kb_graph_delete_kb
-  # Experience (12 tools + 10 enhancement)
+  # Experience (11 base + 10 enhancement = 21 total)
   - mcp__kb-mcp__experience_create
   - mcp__kb-mcp__experience_read
   - mcp__kb-mcp__experience_list

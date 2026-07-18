@@ -103,9 +103,9 @@ description: Knowledge base listing and discovery. L1→L3 read-only workflow: f
 
 - [CLAUDE.md — Storage Model](../../../CLAUDE.md#storage-model) — tree-fs.json + knowledge-base.yml 存储结构
 - [CLAUDE.md — Known Pitfalls #7-11](../../../CLAUDE.md#known-pitfalls) — 层次化KB、向量元数据、图谱节点命名等边界情况
-- [Architecture: KB Skill Design & Conventions](CLAUDE.md#knowledge-skill-system-) — skill naming &amp; frontmatter standards
-- [Architecture: MCP-First Principle](CLAUDE.md#mcp-first-principle) — MCP 优先原则
-- [Architecture: Storage Model](CLAUDE.md#storage-model) — 三层存储模型
+- CLAUDE.md — ⚡ 知识库技能触发契约 — skill 触发链 + Archival 委托规范
+- CLAUDE.md — 第五条：⭐ MCP 优先原则 — 所有 KB 操作必须通过 MCP 工具
+- [CLAUDE.md — Storage Model](../../../CLAUDE.md#storage-model) — 三层存储模型
 
 ---
 
