@@ -291,7 +291,7 @@ for each kb with experiences:
 - 入库流程参考：[knowledgebase-ingest](knowledgebase-ingest) — Ingest A7 终检、文档解析提交流程
 - 图谱联动参考：[knowledgebase-graph](knowledgebase-graph) — 知识图谱与经验的关联检索
 - 校验流程参考：[knowledgebase-verify](knowledgebase-verify) — 全库完整性校验（触发 E12 自动体检）
-- MEMORY.md: [experience-enhancement-implemented-20260713.md](https://github.com/rag-knowledge/rag-knowledge/blob/main/MEMORY.md) — 经验增强机制实现记录
+- MEMORY.md: 参见项目 memory 目录下的 experience-enhancement-implemented 记录
 - CLAUDE.md: 经验可信度阈值定义（P0/P1/P2 分级标准）
 
 ## [WARNING] NEVER 清单

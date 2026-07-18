@@ -69,7 +69,7 @@ echo ""
 # Launch silently — background, fully detached, output → shared log files.
 # `> file 2>&1` captures stdout+stderr; `&` detaches; `disown` (bash) detaches from shell.
 echo -e "  ${CYAN}Starting Backend (silent)...${NC}  log: backend/logs/desktop-stdout.log"
-( cd "$ROOT/backend" && APP_MODE="$MODE" PYTHONUNBUFFERED=1 nohup uv run python main.py \
+( cd "$ROOT/backend" && APP_MODE="$MODE" PYTHONUNBUFFERED=1 PYTHONUTF8=1 nohup uv run python main.py \
     > "$ROOT/backend/logs/desktop-stdout.log" 2>&1 & ) 2>/dev/null
 
 echo -e "  ${CYAN}Starting Web (silent)...${NC}  log: web/logs/desktop-stdout.log"

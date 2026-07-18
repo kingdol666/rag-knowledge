@@ -131,7 +131,7 @@ function portInUse(port) {
 function findPidOnPort(port) {
   try {
     if (IS_WIN) {
-      const output = execSync(`netstat -ano | findstr :${port} | findstr LISTENING`, { encoding: 'utf8', timeout: 10000, stdio: ['pipe','pipe','pipe'] });
+      const output = execSync(`netstat -ano | findstr :${port} | findstr LISTENING`, { encoding: 'utf8', timeout: 10000, stdio: 'pipe', windowsHide: true });
       const parts = output.trim().split(/\s+/);
       if (parts.length > 0) return parseInt(parts[parts.length - 1]);
     } else {
@@ -146,7 +146,7 @@ function findPidOnPort(port) {
 function killPid(pid, force = false) {
   try {
     if (IS_WIN) {
-      execSync(`taskkill /PID ${pid} /T${force ? ' /F' : ''}`, { timeout: 10000, stdio: ['pipe','pipe','pipe'] });
+      execSync(`taskkill /PID ${pid} /T${force ? ' /F' : ''}`, { timeout: 10000, stdio: 'pipe', windowsHide: true });
     } else {
       process.kill(pid, force ? 'SIGKILL' : 'SIGTERM');
     }
@@ -378,24 +378,29 @@ async function cmdCheck() {
     addResult('warn', 'BGE-M3 嵌入模型', `${modelSnapshot}（首次向量索引时自动下载 ~2.2GB）`, '预下载: ragctl model');
   }
 
-  // 6. Ports
+  // 6. Ports (show both dev and prod)
   console.log(`\n${_c(C.BOLD, '── 端口状态 ──')}\n`);
 
-  const ports = [
-    [8765, 'Backend API'],
+  const devPorts = [
+    [8765, 'Backend API (dev)'],
     [6789, 'Web UI (dev)'],
+  ];
+  const prodPorts = [
+    [8001, 'Backend API (prod)'],
     [3000, 'Web UI (prod)'],
+  ];
+  const sharedPorts = [
     [7687, 'Neo4j Bolt'],
     [7474, 'Neo4j HTTP'],
   ];
 
-  for (const [port, name] of ports) {
+  for (const [port, name] of [...devPorts, ...prodPorts, ...sharedPorts]) {
     if (await portInUse(port)) {
       const pid = findPidOnPort(port);
       const pidInfo = pid ? ` (PID ${pid})` : '';
       addResult('pass', `端口 ${port} (${name})`, `运行中${pidInfo}`, null);
     } else {
-      addResult('warn', `端口 ${port} (${name})`, '未使用', '服务未启动，运行: ragctl up');
+      addResult('warn', `端口 ${port} (${name})`, '未使用', '对应服务未启动');
     }
   }
 
@@ -672,12 +677,11 @@ function findPythonProcesses(keyword) {
   const procs = [];
   try {
     if (IS_WIN) {
-      const output = execSync('tasklist /FO CSV /NH', { encoding: 'utf8', timeout: 10000, stdio: ['pipe','pipe','pipe'] });
+      const output = execSync(`wmic process where "name like '%python%'" get processid,commandline /format:csv`, { encoding: 'utf8', timeout: 10000, stdio: 'pipe', windowsHide: true });
       for (const line of output.split('\n')) {
-        if (line.includes(name) || line.includes('pythonw.exe')) {
-          const match = line.match(/"(\d+)"/);
-          if (match) procs.push({ pid: parseInt(match[1]), cmd: '' });
-        }
+        if (keyword && !line.toLowerCase().includes(keyword.toLowerCase())) continue;
+        const match = line.match(/(\d+)/);
+        if (match) procs.push({ pid: parseInt(match[1]), cmd: line });
       }
     } else {
       const output = execSync('ps aux', { encoding: 'utf8', timeout: 10000, stdio: ['pipe','pipe','pipe'] });
@@ -765,14 +769,44 @@ function spawnService({ title, cwd, command, args, env, serviceName }) {
 
   // One fd shared by stdout+stderr — both streams land in the same file.
   const fd = fs.openSync(logPath, 'w');   // truncate on start (matches Tauri)
-  const child = spawn(bin, args, {
+
+  // Platform-specific spawn: silence is mandatory, never flash a terminal.
+  // ─
+  // Two strategies, chosen per service:
+  //
+  //  • Backend (Python/uv → MinerU grandchildren):
+  //      windowsHide:true ONLY → CREATE_NO_WINDOW → a *hidden* console that
+  //      all grandchildren inherit, so no process ever AllocConsole()s a
+  //      visible window. MUST NOT add detached:true here — libuv's
+  //      DETACHED_PROCESS makes Windows IGNORE CREATE_NO_WINDOW (MSDN), and
+  //      detached-then-grandchild was the original "backend pops a terminal"
+  //      bug.
+  //
+  //  • Web (node → Nuxt → Vite):
+  //      detached:true + windowsHide:true. Nuxt/Vite's dev server PROBES the
+  //      console during bootstrap and HANGS forever under a hidden console
+  //      (CREATE_NO_WINDOW) — it only completes startup under DETACHED_PROCESS
+  //      (no console at all). Detached does NOT pop a window here because the
+  //      web child tree (node/nuxt/vite) never calls AllocConsole.
+  //
+  //  Both use stdio ['pipe', fd, fd] with stdin closed immediately (EOF),
+  //  which is the most compatible stdin shape across runtimes.
+  //
+  // POSIX: detached:true → start_new_session (child survives terminal close).
+  const useDetached = !IS_WIN || serviceName === 'web';
+  const spawnOpts = {
     cwd,
     env: fullEnv,
-    detached: true,
-    stdio: ['ignore', fd, fd],
+    stdio: ['pipe', fd, fd],
     windowsHide: true,
     shell: false,
-  });
+  };
+  if (useDetached) {
+    spawnOpts.detached = true;
+  }
+  const child = spawn(bin, args, spawnOpts);
+  // Close stdin immediately so the child sees EOF (prevents Nuxt/Vite hang).
+  try { child.stdin.end(); } catch {}
   child.unref();
   return { pid: child.pid, logPath, bin };
 }
@@ -789,9 +823,10 @@ function httpGet(url, timeout = 5000) {
   });
 }
 
-async function startBackend(mode) {
-  const { backend: port } = getServicePorts(mode);
-  if (await portInUse(port)) { warn(`Backend 已在端口 ${port} 运行`); return; }
+async function startBackend(mode, portOverride = null) {
+  const { backend: defaultPort } = getServicePorts(mode);
+  const port = portOverride || defaultPort;
+  if (await portInUse(port)) { warn(`Backend 已在端口 ${port} 运行 (mode=${mode})`); return; }
   info(`启动 Backend (端口 ${port}, mode=${mode}, 静默)...`);
   const { pid } = spawnService({
     title: `RAG-Backend (${mode})`,
@@ -802,7 +837,8 @@ async function startBackend(mode) {
     serviceName: 'backend',
   });
   info(`Backend pid=${pid} · 日志: ${getLogPath('backend')}`);
-  for (let i = 0; i < 30; i++) {
+  const timeout = 30;
+  for (let i = 0; i < timeout; i++) {
     await sleep(1000);
     if (await portInUse(port)) { ok(`Backend 已启动 (端口 ${port}) · ragctl logs backend 查看日志`); return; }
   }
@@ -813,26 +849,25 @@ async function stopBackend(port) {
   let stopped = false;
   const pid = findPidOnPort(port);
   if (pid) { killPid(pid, true); stopped = true; }
-  for (const p of findPythonProcesses('main.py')) { killPid(p.pid, true); stopped = true; }
-  if (stopped) ok('Backend 已停止'); else warn('未找到 Backend 进程');
+  if (stopped) ok('Backend 已停止'); else warn(`未找到 Backend 进程 (端口 ${port})`);
 }
 
-async function startWeb(mode) {
-  const { web: port, backend } = getServicePorts(mode);
-  if (await portInUse(port)) { warn(`Web 已在端口 ${port} 运行`); return; }
+async function startWeb(mode, portOverride = null) {
+  const { web: defaultPort, backend } = getServicePorts(mode);
+  const port = portOverride || defaultPort;
+  if (await portInUse(port)) { warn(`Web 已在端口 ${port} 运行 (mode=${mode})`); return; }
   info(`启动 Web 前端 (端口 ${port}, mode=${mode}, 静默)...`);
   const { pid } = spawnService({
     title: `RAG-Web (${mode})`,
     cwd: WEB_DIR,
     command: 'node',
     args: ['start.mjs'],
-    // Pass both WEB_PORT and BACKEND_PORT so start.mjs binds the right port
-    // AND proxies to the mode-correct backend (overriding root .env defaults).
     env: { APP_MODE: mode, WEB_PORT: String(port), BACKEND_PORT: String(backend) },
     serviceName: 'web',
   });
   info(`Web pid=${pid} · 日志: ${getLogPath('web')}`);
-  for (let i = 0; i < 25; i++) {
+  const timeout = 25;
+  for (let i = 0; i < timeout; i++) {
     await sleep(1000);
     if (await portInUse(port)) { ok(`Web 已启动 (端口 ${port}) · ragctl logs web 查看日志`); return; }
   }
@@ -863,41 +898,148 @@ async function stopNeo4j() {
 }
 
 // Parse `--mode dev|prod` from arg list, falling back to .env APP_MODE.
-function parseModeArg(args) {
-  const i = args.indexOf('--mode');
-  if (i !== -1 && args[i + 1]) return args[i + 1];
-  return getAppMode();
-}
+// ── Unified Flag Parser ─────────────────────────────────────────────────
+// Parses --flag value and --flag (boolean) args into a structured object.
+// Supports: --appmode dev|prod, --port-backend N, --port-web N, --host HOST,
+//           --no-neo4j, --no-backend, --no-web, --only SVC, --force, --timeout N,
+//           --skip-check, --lines N, --tail
+function parseFlags(args) {
+  const flags = {
+    appmode: null,       // --appmode dev|prod
+    portBackend: null,   // --port-backend N
+    portWeb: null,       // --port-web N
+    host: null,          // --host HOST
+    noNeo4j: false,      // --no-neo4j
+    noBackend: false,    // --no-backend
+    noWeb: false,        // --no-web
+    only: null,          // --only SERVICE
+    force: false,        // --force
+    timeout: null,       // --timeout N
+    skipCheck: false,    // --skip-check
+    lines: 80,           // --lines N
+    tail: false,         // --tail / -f
+    positional: [],      // non-flag args (service name, etc.)
+  };
 
-// First positional service arg, skipping `--mode <val>` and any other flags.
-function parseServiceArg(args) {
+  const flagMap = {
+    '--appmode':     'appmode',
+    '--mode':        'appmode',     // --mode is alias for --appmode
+    '-m':            'appmode',     // -m dev|prod shortcut
+    '--port-backend':'portBackend',
+    '--backend-port':'portBackend', // alias
+    '--port-web':    'portWeb',
+    '--web-port':    'portWeb',     // alias
+    '--host':        'host',
+    '--no-neo4j':    'noNeo4j',
+    '--no-backend':  'noBackend',
+    '--no-web':      'noWeb',
+    '--only':        'only',
+    '--force':       'force',
+    '-f':            'force',       // -f shortcut
+    '--timeout':     'timeout',
+    '--skip-check':  'skipCheck',
+    '--lines':       'lines',
+    '-n':            'lines',       // -n N shortcut
+    '--tail':        'tail',
+  };
+
   for (let i = 0; i < args.length; i++) {
-    if (args[i] === '--mode') { i++; continue; } // skip flag + its value
-    if (args[i].startsWith('-')) continue;        // skip other flags
-    return args[i];
+    const arg = args[i];
+    const key = flagMap[arg];
+    if (key === undefined) {
+      // Not a recognized flag — collect as positional
+      if (!arg.startsWith('-')) flags.positional.push(arg);
+      continue;
+    }
+    // Boolean flags (no value argument)
+    if (['noNeo4j', 'noBackend', 'noWeb', 'force', 'skipCheck', 'tail'].includes(key)) {
+      flags[key] = true;
+      continue;
+    }
+    // Value flags
+    const val = args[i + 1];
+    if (val && !val.startsWith('-')) {
+      if (key === 'lines' || key === 'timeout' || key === 'portBackend' || key === 'portWeb') {
+        flags[key] = parseInt(val) || flags[key];
+      } else {
+        flags[key] = val;
+      }
+      i++; // consume value
+    }
   }
-  return null;
+
+  // Resolve appmode: flag > .env > 'dev'
+  if (!flags.appmode) flags.appmode = getAppMode();
+  // Validate
+  if (!['dev', 'prod'].includes(flags.appmode)) {
+    flags.appmode = 'dev';
+  }
+
+  return flags;
 }
 
-// ── Per-service start/stop/restart (silent — same as `up`) ───────────────
+// Resolve the first positional arg as service name.
+function getService(flags) {
+  return flags.positional[0] || null;
+}
+
+// ── Per-service start/stop/restart ──────────────────────────────────────
 async function cmdStart(args) {
-  const mode = parseModeArg(args);
-  const svc = parseServiceArg(args) || 'all';
+  const flags = parseFlags(args);
+  const svc = getService(flags) || flags.only || 'all';
+  const mode = flags.appmode;
+  const ports = getServicePorts(mode);
+
   header(`启动服务 (mode=${mode}): ${svc}`);
+
+  // Handle --port-backend / --port-web overrides
+  if (flags.portBackend) ports.backend = flags.portBackend;
+  if (flags.portWeb) ports.web = flags.portWeb;
+
   const composeFile = path.join(PROJECT_ROOT, 'docker-compose.yml');
+
+  async function doStartBackend() {
+    if (flags.noBackend) { warn('Backend 已跳过 (--no-backend)'); return; }
+    if (flags.force && await portInUse(ports.backend)) {
+      info(`强制重启: 先停止端口 ${ports.backend} 上的 Backend...`);
+      await stopBackend(ports.backend);
+      await sleep(1000);
+    }
+    await startBackend(mode, flags.portBackend || null);
+  }
+  async function doStartWeb() {
+    if (flags.noWeb) { warn('Web 已跳过 (--no-web)'); return; }
+    if (flags.force && await portInUse(ports.web)) {
+      info(`强制重启: 先停止端口 ${ports.web} 上的 Web...`);
+      await stopWeb(ports.web);
+      await sleep(1000);
+    }
+    await startWeb(mode, flags.portWeb || null);
+  }
+  async function doStartNeo4j() {
+    if (flags.noNeo4j) { warn('Neo4j 已跳过 (--no-neo4j)'); return; }
+    if (fs.existsSync(composeFile) && !(await portInUse(7687))) {
+      await startNeo4j();
+      await sleep(2000);
+    } else if (await portInUse(7687)) {
+      ok('Neo4j 已在运行');
+    }
+  }
+
   switch (svc) {
     case 'backend':
-      await startBackend(mode); break;
+      await doStartBackend();
+      break;
     case 'web':
-      await startWeb(mode); break;
+      await doStartWeb();
+      break;
     case 'neo4j':
-      if (fs.existsSync(composeFile) && !(await portInUse(7687))) { await startNeo4j(); }
-      else if (await portInUse(7687)) warn('Neo4j 已在运行');
+      await doStartNeo4j();
       break;
     case 'all':
-      if (fs.existsSync(composeFile) && !(await portInUse(7687))) { await startNeo4j(); await sleep(2000); }
-      await startBackend(mode);
-      await startWeb(mode);
+      await doStartNeo4j();
+      await doStartBackend();
+      await doStartWeb();
       break;
     default:
       err(`未知服务: ${svc}（可选: backend / web / neo4j / all）`);
@@ -907,10 +1049,15 @@ async function cmdStart(args) {
 }
 
 async function cmdStop(args) {
-  const mode = parseModeArg(args);
+  const flags = parseFlags(args);
+  const svc = getService(flags) || flags.only || 'all';
+  const mode = flags.appmode;
   const ports = getServicePorts(mode);
-  const svc = parseServiceArg(args) || 'all';
+  if (flags.portBackend) ports.backend = flags.portBackend;
+  if (flags.portWeb) ports.web = flags.portWeb;
+
   header(`停止服务 (mode=${mode}): ${svc}`);
+
   switch (svc) {
     case 'backend': await stopBackend(ports.backend); break;
     case 'web': await stopWeb(ports.web); break;
@@ -918,7 +1065,7 @@ async function cmdStop(args) {
     case 'all':
       await stopWeb(ports.web);
       await stopBackend(ports.backend);
-      await stopNeo4j();
+      if (!flags.noNeo4j) await stopNeo4j();
       break;
     default:
       err(`未知服务: ${svc}（可选: backend / web / neo4j / all）`);
@@ -928,14 +1075,33 @@ async function cmdStop(args) {
 }
 
 async function cmdRestart(args) {
-  const svc = parseServiceArg(args) || 'all';
-  header(`重启服务: ${svc}`);
-  const stopCode = await cmdStop([svc === 'all' ? 'all' : svc]);
+  const flags = parseFlags(args);
+  // restart = stop + start (force implied)
+  flags.force = true;
+  const svc = getService(flags) || flags.only || 'all';
+  header(`重启服务 (mode=${flags.appmode}): ${svc}`);
+
+  const stopArgs = svc === 'all' ? ['all'] : [svc];
+  // Build args array for cmdStop
+  const stopFlags = [];
+  if (flags.appmode) stopFlags.push('--appmode', flags.appmode);
+  if (flags.noNeo4j) stopFlags.push('--no-neo4j');
+  const stopCode = await cmdStop([...stopArgs, ...stopFlags]);
   if (stopCode !== 0) return stopCode;
   await sleep(1500);
-  const startCode = await cmdStart(args);
+
+  const startArgs = svc === 'all' ? ['all'] : [svc];
+  const startFlags = [];
+  if (flags.appmode) startFlags.push('--appmode', flags.appmode);
+  if (flags.force) startFlags.push('--force');
+  if (flags.noNeo4j) startFlags.push('--no-neo4j');
+  if (flags.noBackend) startFlags.push('--no-backend');
+  if (flags.noWeb) startFlags.push('--no-web');
+  if (flags.portBackend) startFlags.push('--port-backend', String(flags.portBackend));
+  if (flags.portWeb) startFlags.push('--port-web', String(flags.portWeb));
+  const startCode = await cmdStart([...startArgs, ...startFlags]);
   if (startCode !== 0) return startCode;
-  ok(`重启完成: ${svc}`);
+  ok(`重启完成: ${svc} (mode=${flags.appmode})`);
   return 0;
 }
 
@@ -945,12 +1111,10 @@ async function cmdRestart(args) {
 // Reads the SAME files that Tauri's desktop log viewer tails and that
 // spawnService writes — so output is consistent across all three surfaces.
 async function cmdLogs(args) {
-  const positional = args.filter(a => !a.startsWith('-'));
-  const service = positional[0] || 'backend';
-  const wantTail = args.includes('--tail') || args.includes('-f') || args.includes('tail');
-  let lines = 80;
-  const li = args.indexOf('--lines'); if (li !== -1 && args[li + 1]) lines = parseInt(args[li + 1]) || 80;
-  const ni = args.indexOf('-n');      if (ni !== -1 && args[ni + 1]) lines = parseInt(args[ni + 1]) || 80;
+  const flags = parseFlags(args);
+  const service = getService(flags) || 'backend';
+  const wantTail = flags.tail;
+  const lines = flags.lines;
 
   const logPath = getLogPath(service);
   if (!logPath) {
@@ -988,38 +1152,111 @@ async function cmdLogs(args) {
   return 0;
 }
 
-async function cmdUp(mode) {
-  mode = mode || getAppMode();
+async function cmdUp(args) {
+  const flags = parseFlags(args);
+  const mode = flags.appmode;
   const ports = getServicePorts(mode);
+  if (flags.portBackend) ports.backend = flags.portBackend;
+  if (flags.portWeb) ports.web = flags.portWeb;
+
+  // Warn if the OTHER mode's ports are occupied (mixed-mode guard)
+  const otherMode = mode === 'dev' ? 'prod' : 'dev';
+  const otherPorts = getServicePorts(otherMode);
+  const otherBackendUp = await portInUse(otherPorts.backend);
+  const otherWebUp = await portInUse(otherPorts.web);
+  if (otherBackendUp || otherWebUp) {
+    warn(`${otherMode} 模式服务仍在运行（Backend:${otherPorts.backend} ${otherBackendUp ? 'UP' : 'DOWN'}, Web:${otherPorts.web} ${otherWebUp ? 'UP' : 'DOWN'}）`);
+    info(`当前启动 mode=${mode}，如需停止 ${otherMode}：ragctl down --appmode ${otherMode}`);
+  }
+
   header(`启动 RAG Knowledge Platform (mode=${mode})`);
+  info(`端口: Backend=${ports.backend}, Web=${ports.web}`);
+
   const composeFile = path.join(PROJECT_ROOT, 'docker-compose.yml');
-  if (fs.existsSync(composeFile) && !(await portInUse(7687))) { await startNeo4j(); await sleep(2000); }
-  await startBackend(mode);
-  await startWeb(mode);
-  console.log(`\n  ${_c(C.GREEN, _c(C.BOLD, '✓ 所有服务已静默启动（无终端窗口）'))}`);
-  console.log(`  Backend: ${_c(C.CYAN, `http://localhost:${ports.backend}`)}`);
-  console.log(`  Web UI:  ${_c(C.CYAN, `http://localhost:${ports.web}`)}`);
-  console.log(`  ${_c(C.GRAY, '查看日志: ragctl logs [backend|web|mineru] [--tail]  ·  或打开 Tauri 桌面控制台')}`);
+
+  // Neo4j (shared between modes)
+  if (!flags.noNeo4j && fs.existsSync(composeFile) && !(await portInUse(7687))) {
+    await startNeo4j(); await sleep(2000);
+  } else if (flags.noNeo4j) {
+    warn('Neo4j 已跳过 (--no-neo4j)');
+  }
+
+  // Backend
+  if (flags.noBackend) {
+    warn('Backend 已跳过 (--no-backend)');
+  } else if (flags.force && await portInUse(ports.backend)) {
+    info(`强制重启: 先停止端口 ${ports.backend} 上的 Backend...`);
+    await stopBackend(ports.backend);
+    await sleep(1000);
+    await startBackend(mode, flags.portBackend || null);
+  } else {
+    await startBackend(mode, flags.portBackend || null);
+  }
+
+  // Web
+  if (flags.noWeb) {
+    warn('Web 已跳过 (--no-web)');
+  } else if (flags.force && await portInUse(ports.web)) {
+    info(`强制重启: 先停止端口 ${ports.web} 上的 Web...`);
+    await stopWeb(ports.web);
+    await sleep(1000);
+    await startWeb(mode, flags.portWeb || null);
+  } else {
+    await startWeb(mode, flags.portWeb || null);
+  }
+
+  // Summary
+  const bUp = await portInUse(ports.backend);
+  const wUp = await portInUse(ports.web);
+  console.log(`\n  ${bUp && wUp ? _c(C.GREEN, _c(C.BOLD, '✓ 所有服务已静默启动（无终端窗口）')) : _c(C.YELLOW, '⚠ 部分服务未就绪')}`);
+  if (bUp) console.log(`  Backend (${mode}): ${_c(C.CYAN, `http://localhost:${ports.backend}`)}`);
+  if (wUp) console.log(`  Web UI  (${mode}): ${_c(C.CYAN, `http://localhost:${ports.web}`)}`);
+  console.log(`  ${_c(C.GRAY, '查看日志: ragctl logs [backend|web|mineru] --tail')}`);
+  console.log(`  ${_c(C.GRAY, '查看状态: ragctl status')}`);
   return 0;
 }
 
-async function cmdDown(mode) {
-  mode = mode || getAppMode();
+async function cmdDown(args) {
+  const flags = parseFlags(args);
+  const mode = flags.appmode;
   const ports = getServicePorts(mode);
+  if (flags.portBackend) ports.backend = flags.portBackend;
+  if (flags.portWeb) ports.web = flags.portWeb;
+
   header(`停止 RAG Knowledge Platform (mode=${mode})`);
+  info(`目标端口: Backend=${ports.backend}, Web=${ports.web}`);
+
   await stopWeb(ports.web);
   await stopBackend(ports.backend);
-  await stopNeo4j();
-  ok('所有服务已停止');
+
+  // Neo4j is shared infra — only stop if explicitly requested via --all or --stop-neo4j
+  // (prevents `down --appmode prod` from killing Neo4j needed by dev)
+  if (flags.positional.includes('all') || args.includes('--all')) {
+    await stopNeo4j();
+  }
+
+  ok(`所有 ${mode} 服务已停止 (Neo4j 保留)`);
   return 0;
 }
 
-async function cmdStatus(modeArg) {
-  const mode = modeArg || getAppMode();
-  const ports = getServicePorts(mode);
-  header(`服务状态 (mode=${mode})`);
+async function cmdStatus(args) {
+  const flags = parseFlags(args);
 
-  // Probe one HTTP service: port-listening → pid → health endpoint.
+  // If user specifies --appmode, show only that mode. Otherwise show both.
+  if (flags.appmode && (args.includes('--appmode') || args.includes('--mode') || args.includes('-m'))) {
+    return await _showModeStatus(flags.appmode);
+  }
+
+  // Default: show both dev and prod
+  await _showModeStatus('dev');
+  console.log('');
+  await _showModeStatus('prod');
+  return 0;
+}
+
+async function _showModeStatus(mode) {
+  const ports = getServicePorts(mode);
+
   async function probe(port, healthPath) {
     const listening = await portInUse(port);
     if (!listening) return { listening: false, health: '', pid: null };
@@ -1034,7 +1271,6 @@ async function cmdStatus(modeArg) {
   const neo4jUp = await portInUse(7687);
   const neo4jHttp = await portInUse(7474);
 
-  // MinerU — only meaningful when backend is healthy
   let mineru = 'n/a (backend down)';
   if (b.health === 'healthy') {
     const m = await httpGet(`http://localhost:${ports.backend}/api/v1/mineru/status`, 4000);
@@ -1046,16 +1282,16 @@ async function cmdStatus(modeArg) {
   const hcol = (h) => h === 'healthy' ? _c(C.GREEN, h)
     : (h ? _c(C.YELLOW, h) : _c(C.GRAY, 'stopped'));
 
+  const ready = b.health === 'healthy' && w.health === 'healthy';
+
+  console.log(`${_c(C.BOLD, _c(C.CYAN, `  ══ ${mode.toUpperCase()} MODE ══`))}${ready ? '  ' + _c(C.GREEN, '✓ READY') : '  ' + _c(C.YELLOW, '✗ NOT READY')}`);
   console.log(`  ${dot(b.listening)} Backend  :${String(ports.backend).padEnd(5)} ${hcol(b.health)}${b.pid ? '  pid=' + _c(C.GRAY, b.pid) : ''}`);
   console.log(`  ${dot(w.listening)} Web      :${String(ports.web).padEnd(5)} ${hcol(w.health)}${w.pid ? '  pid=' + _c(C.GRAY, w.pid) : ''}`);
-  console.log(`  ${dot(neo4jUp)} Neo4j    :7687  ${neo4jUp ? _c(C.GREEN, 'listening') + (neo4jHttp ? ' ' + _c(C.GRAY,'(+http :7474)') : '') : _c(C.GRAY, 'stopped')}`);
-  console.log(`  ${mineru.startsWith('up') ? _c(C.GREEN, '●') : _c(C.GRAY, '○')} MinerU          ${_c(mineru.startsWith('up') ? C.GREEN : C.GRAY, mineru)}`);
-  console.log(`  ${mcpProcs.length > 0 ? _c(C.GREEN, '●') : _c(C.GRAY, '○')} kb-mcp  (stdio) ${mcpProcs.length > 0 ? _c(C.GREEN, mcpProcs.length + ' proc') : _c(C.GRAY, 'managed by Claude Code via .mcp.json')}`);
-
-  const ready = b.health === 'healthy' && w.health === 'healthy';
-  console.log(`\n  ${_c(C.GRAY, '日志 →')} ragctl logs backend | ragctl logs web | ragctl logs mineru`);
-  console.log(`  ${ready ? _c(C.GREEN, _c(C.BOLD, '✓ 项目就绪')) : _c(C.YELLOW, '✗ 未就绪')}  ·  ${_c(C.CYAN, 'ragctl up')} 启动  ·  MCP: ${_c(C.CYAN, 'kb_project_status')} / ${_c(C.CYAN, 'kb_project_start')}`);
-  return 0;
+  if (mode === 'dev') {
+    console.log(`  ${dot(neo4jUp)} Neo4j    :7687  ${neo4jUp ? _c(C.GREEN, 'listening') + (neo4jHttp ? ' ' + _c(C.GRAY,'(+http :7474)') : '') : _c(C.GRAY, 'stopped')}`);
+    console.log(`  ${mineru.startsWith('up') ? _c(C.GREEN, '●') : _c(C.GRAY, '○')} MinerU          ${_c(mineru.startsWith('up') ? C.GREEN : C.GRAY, mineru)}`);
+    console.log(`  ${mcpProcs.length > 0 ? _c(C.GREEN, '●') : _c(C.GRAY, '○')} kb-mcp  (stdio) ${mcpProcs.length > 0 ? _c(C.GREEN, mcpProcs.length + ' proc') : _c(C.GRAY, 'managed by Claude Code via .mcp.json')}`);
+  }
 }
 
 // ── Global registration + Tauri launcher ────────────────────────────────
@@ -1150,45 +1386,62 @@ async function cmdDesktop(args) {
 
 function showHelp() {
   console.log(`
-${_c(C.BOLD, 'ragctl')} — RAG Knowledge Platform 一键部署 CLI
+${_c(C.BOLD, 'ragctl')} — RAG Knowledge Platform CLI  v2.0.0
 
-${_c(C.CYAN, '⭐ 核心命令（一键式部署）:')}
-  ${_c(C.BOLD, 'setup')}   一键完整部署（自动安装 uv → 依赖 → 模型 → 配置）
-  ${_c(C.BOLD, 'check')}   全面环境检查（显示缺失项 + 修复方案）
-  ${_c(C.BOLD, 'deps')}    安装所有依赖（实时进度条）
-  ${_c(C.BOLD, 'model')}   预下载 BGE-M3 嵌入模型 (~2.2GB)
+${_c(C.CYAN, '核心命令:')}
+  ${_c(C.BOLD, 'setup')}            一键完整部署（自动安装 uv → 依赖 → 模型 → 配置）
+  ${_c(C.BOLD, 'check')}            全面环境检查（显示缺失项 + 修复方案）
+  ${_c(C.BOLD, 'deps')}             安装所有依赖（实时进度）
+  ${_c(C.BOLD, 'model')}            预下载 BGE-M3 嵌入模型 (~2.2GB)
 
-${_c(C.CYAN, '服务管理（全部静默启动 · 无终端窗口 · dev/prod 行为一致）:')}
-  up / start-all               启动全部服务（backend + web + neo4j）
-  down / stop-all              停止全部服务
-  start [backend|web|neo4j|all]  启动指定服务
-  stop  [backend|web|neo4j|all]  停止指定服务
-  restart [backend|web|neo4j|all] 重启指定服务
-  status                       查看服务状态
+${_c(C.CYAN, '服务管理（全部静默启动 · 无终端窗口）:')}
+  up / start-all             启动全部服务（根据 --appmode 选择端口组）
+  down / stop-all            停止全部服务
+  start [svc]                启动指定服务 (backend|web|neo4j|all)
+  stop  [svc]                停止指定服务
+  restart [svc]              重启指定服务（自动 stop + start）
+  status                     查看服务状态（默认同时显示 dev + prod）
 
-${_c(C.CYAN, '日志（统一落盘 · 三处同源：文件 / Tauri 界面 / 本命令）:')}
-  logs [backend|web|mineru]            查看最近日志（默认 backend, 80 行）
-  logs <svc> --tail | -f               实时跟踪日志（Ctrl+C 退出）
-  logs <svc> --lines N | -n N          指定行数
+${_c(C.CYAN, '日志:')}
+  logs [svc]                 查看最近日志（默认 backend, 80 行）
+  logs [svc] --tail          实时跟踪日志（Ctrl+C 退出）
+  logs [svc] --lines N       指定行数
 
-${_c(C.CYAN, '全局注册 / 桌面控制台:')}
-  install                              全局注册 ragctl → ~/.local/bin（任意目录可用）
-  desktop | ui [--dev]                 启动 Tauri 桌面控制台（GUI 启动器，与 ragctl 共享日志）
+${_c(C.CYAN, '全局注册 / 桌面:')}
+  install                    全局注册 ragctl → ~/.local/bin（任意目录可用）
+  desktop / ui [--dev]       启动 Tauri 桌面控制台
 
-${_c(C.CYAN, '选项:')}
-  --mode dev|prod              覆盖 .env 的 APP_MODE（影响端口/行为）
+${_c(C.CYAN, '选项 (-- 二级参数):')}
+  ${_c(C.BOLD, '--appmode')} dev|prod    选择启动模式（默认: .env APP_MODE 或 dev）
+           别名: --mode, -m
+  ${_c(C.BOLD, '--port-backend')} N     覆盖后端端口
+           别名: --backend-port
+  ${_c(C.BOLD, '--port-web')} N          覆盖前端端口
+           别名: --web-port
+  ${_c(C.BOLD, '--host')} HOST           覆盖主机地址
+  ${_c(C.BOLD, '--no-neo4j')}            跳过 Neo4j
+  ${_c(C.BOLD, '--no-backend')}          跳过 Backend
+  ${_c(C.BOLD, '--no-web')}              跳过 Web
+  ${_c(C.BOLD, '--only')} SERVICE        仅操作指定服务
+  ${_c(C.BOLD, '--force')} / ${_c(C.BOLD, '-f')}      强制（先停后启，用于 up/start）
+  ${_c(C.BOLD, '--timeout')} N           启动超时秒数（默认: backend=30, web=25）
+  ${_c(C.BOLD, '--skip-check')}          跳过 pre-flight 检查
 
-${_c(C.CYAN, '快速开始:')}
-  ragctl setup             # 一键部署（首次运行推荐）
-  ragctl check             # 检查环境状态
-  ragctl up                # 静默启动所有服务（无弹窗）
-  ragctl status            # 查看状态
-  ragctl logs backend --tail   # 实时查看后端日志
+${_c(C.CYAN, '使用示例:')}
+  ${_c(C.BOLD, 'ragctl up --appmode dev')}             # 以 dev 模式启动（8765+6789）
+  ${_c(C.BOLD, 'ragctl up --appmode prod')}            # 以 prod 模式启动（8001+3000）
+  ${_c(C.BOLD, 'ragctl up -m dev --force')}            # 强制重启 dev 模式
+  ${_c(C.BOLD, 'ragctl up --no-neo4j')}                # 启动但不启动 Neo4j
+  ${_c(C.BOLD, 'ragctl start backend --port-backend 9000')}  # 自定义端口启动 Backend
+  ${_c(C.BOLD, 'ragctl down --appmode prod')}          # 停止 prod 模式服务
+  ${_c(C.BOLD, 'ragctl status')}                       # 同时查看 dev + prod 状态
+  ${_c(C.BOLD, 'ragctl status --appmode dev')}         # 仅查看 dev 状态
+  ${_c(C.BOLD, 'ragctl restart web -m prod -f')}       # 强制重启 prod Web
+  ${_c(C.BOLD, 'ragctl logs backend --tail --lines 100')} # 实时跟踪后端日志
 
-${_c(C.GRAY, '日志路径（与 Tauri 桌面控制台共享同一文件）:')}
-${_c(C.GRAY, '  backend → backend/logs/desktop-stdout.log')}
-${_c(C.GRAY, '  web     → web/logs/desktop-stdout.log')}
-${_c(C.GRAY, '  mineru  → backend/logs/mineru-api.log')}
+${_c(C.GRAY, '端口对照:')}
+${_c(C.GRAY, '  dev:  Backend=8765  Web=6789')}
+${_c(C.GRAY, '  prod: Backend=8001  Web=3000')}
 `);
 }
 
@@ -1196,9 +1449,6 @@ async function main() {
   if (IS_WIN) {
     try { require('child_process').execSync('chcp 65001 >nul 2>&1', { stdio: 'ignore' }); } catch {}
   }
-  // Make uv callable in this process even if a fresh terminal hasn't picked up
-  // the setx PATH update yet (modern uv lives in ~/.local/bin). No-op if uv is
-  // already on PATH.
   ensureUvOnPath();
 
   const args = process.argv.slice(2);
@@ -1207,39 +1457,31 @@ async function main() {
   if (!command || command === 'help' || command === '--help') { showHelp(); return 0; }
   if (command === '--version') { console.log('ragctl 2.0.0'); return 0; }
 
+  // Route to sub-args (everything after the command name)
+  const subArgs = args.slice(1);
+
   try {
     switch (command) {
-      // ⭐ NEW commands
-      case 'setup': return await cmdSetup();
+      // Core (init = setup alias for backward compat)
+      case 'setup': case 'init': return await cmdSetup();
       case 'check': return await cmdCheck();
       case 'deps': return await cmdDeps();
       case 'model': return await cmdModel();
 
       // Service management
-      case 'up': case 'start-all': {
-        const mode = args.includes('--mode') ? args[args.indexOf('--mode') + 1] : null;
-        return await cmdUp(mode);
-      }
-      case 'down': case 'stop-all': {
-        const dmode = args.includes('--mode') ? args[args.indexOf('--mode') + 1] : null;
-        return await cmdDown(dmode);
-      }
-      case 'status': {
-        const smode = args.includes('--mode') ? args[args.indexOf('--mode') + 1] : null;
-        return await cmdStatus(smode);
-      }
+      case 'up': case 'start-all': return await cmdUp(subArgs);
+      case 'down': case 'stop-all': return await cmdDown(subArgs);
+      case 'start': return await cmdStart(subArgs);
+      case 'stop': return await cmdStop(subArgs);
+      case 'restart': case 'reload': return await cmdRestart(subArgs);
+      case 'status': return await cmdStatus(subArgs);
 
-      // Per-service lifecycle (silent — same no-terminal behavior as `up`)
-      case 'start': return await cmdStart(args.slice(1));
-      case 'stop': return await cmdStop(args.slice(1));
-      case 'restart': case 'reload': return await cmdRestart(args.slice(1));
+      // Logs
+      case 'logs': return await cmdLogs(subArgs);
 
-      // Logs — read/tail the same files Tauri's desktop viewer watches
-      case 'logs': return await cmdLogs(args.slice(1));
-
-      // Global registration + Tauri launcher
+      // Registration + desktop
       case 'install': return await cmdInstall();
-      case 'desktop': case 'ui': return await cmdDesktop(args.slice(1));
+      case 'desktop': case 'ui': return await cmdDesktop(subArgs);
 
       default:
         err(`未知命令: ${command}`);

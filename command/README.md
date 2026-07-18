@@ -6,127 +6,104 @@ Built with Node.js, zero external dependencies except `js-yaml`.
 ## Quick Install
 
 ```bash
-cd command
-npm install
-npm link
+# One-click setup (first time)
+ragctl setup
+
+# Register globally (available from any directory)
+ragctl install
 ```
 
-After `npm link`, `ragctl` is available globally in any terminal — just like `claude` or `git`.
-
-## Usage
-
-```bash
-ragctl <command> [subcommand] [options]
-```
+After `ragctl install`, `ragctl` is available globally in any terminal via `~/.local/bin`.
 
 ## Commands
 
-### Service Management
+### Core Commands (One-Click)
 
 | Command | Description |
 |---------|-------------|
-| `ragctl start [backend\|web\|neo4j\|mcp\|all]` | Start services |
-| `ragctl stop [backend\|web\|neo4j\|mcp\|all]` | Stop services |
-| `ragctl restart [backend\|web\|neo4j\|all]` | Restart services |
-| `ragctl status` | Show service status with health info |
-| `ragctl health` | Health check for all services |
+| `ragctl setup` | One-click full deployment (uv + submodules + .env + deps + model) |
+| `ragctl check` | Comprehensive environment health check with fix suggestions |
+| `ragctl deps` | Install all dependencies with real-time progress |
+| `ragctl model` | Pre-download BGE-M3 embedding model (~2.2GB) |
 
-### Configuration
-
-| Command | Description |
-|---------|-------------|
-| `ragctl config show` | Show all configuration (config.yml + .env + effective) |
-| `ragctl config get <key>` | Get a config value (dot notation, e.g. `server.dev.backend_port`) |
-| `ragctl config set <key> <value>` | Set a config value (auto-writes to .env or config.yml, hot-reloads) |
-| `ragctl config reload` | Hot-reload config from files via backend API |
-| `ragctl config edit [shared\|backend\|env]` | Open config file in editor |
-
-### Diagnostics
+### Service Management (Silent — No Terminal Windows)
 
 | Command | Description |
 |---------|-------------|
-| `ragctl doctor` | Diagnose system requirements, config files, submodules, deps, ports |
-| `ragctl logs [backend\|web\|mineru] --lines N` | View last N lines of service logs |
+| `ragctl up` / `ragctl start-all` | Start all services (Neo4j + Backend + Web) |
+| `ragctl down` / `ragctl stop-all` | Stop all services |
+| `ragctl start [backend\|web\|neo4j\|all]` | Start specific service |
+| `ragctl stop [backend\|web\|neo4j\|all]` | Stop specific service |
+| `ragctl restart [backend\|web\|neo4j\|all]` | Restart specific service |
+| `ragctl status` | Show service status (Backend/Web/Neo4j/MinerU/kb-mcp) |
 
-### Dependencies & Tests
-
-| Command | Description |
-|---------|-------------|
-| `ragctl install [backend\|web\|mcp\|neo4j\|all]` | Install dependencies |
-| `ragctl test [backend\|web\|mcp\|all] [--integration]` | Run tests |
-
-### MCP Server
+### Logs (Shared with Tauri Desktop Console)
 
 | Command | Description |
 |---------|-------------|
-| `ragctl mcp start` | Start MCP server (stdio mode) |
-| `ragctl mcp stop` | Stop MCP server |
-| `ragctl mcp status` | Check MCP server status |
-| `ragctl mcp tools` | List all available MCP tools |
+| `ragctl logs [backend\|web\|mineru]` | View recent logs (default: backend, 80 lines) |
+| `ragctl logs <svc> --tail` / `-f` | Real-time log tail (Ctrl+C to exit) |
+| `ragctl logs <svc> --lines N` / `-n N` | Specify number of lines |
 
-### Knowledge Base
+### Global Registration & Desktop
 
 | Command | Description |
 |---------|-------------|
-| `ragctl kb list` | List all knowledge bases |
-| `ragctl kb search "<query>"` | Search knowledge bases |
-| `ragctl kb stats` | Show KB statistics |
+| `ragctl install` | Register `ragctl` globally in `~/.local/bin` |
+| `ragctl desktop` / `ragctl ui` | Launch Tauri desktop console (GUI launcher) |
 
-## Options
+### Options
 
-- `--mode <dev\|prod>` — Mode override (for `start` and `restart`)
-- `--lines N` / `-n N` — Number of log lines (for `logs`, default: 50)
-- `--integration` / `-i` — Include integration tests (for `test`)
-- `--help` / `-h` — Show help
-- `--version` / `-V` — Show version
+- `--mode dev\|prod` — Override .env APP_MODE (affects ports and behavior)
+- `--help` — Show help
+- `--version` — Show version (2.0.0)
 
 ## Examples
 
 ```bash
-# Start all services in dev mode
-ragctl start all
+# First-time setup
+ragctl setup
 
-# Start backend in production mode
-ragctl start backend --mode prod
-
-# Stop everything
-ragctl stop all
+# Start everything silently (no terminal windows)
+ragctl up
 
 # Check what's running
 ragctl status
 
-# Change backend port
-ragctl config set server.dev.backend_port 9000
+# View backend logs
+ragctl logs backend
 
-# Run diagnostics
-ragctl doctor
+# Tail backend logs in real-time
+ragctl logs backend --tail
 
-# View last 100 lines of backend logs
-ragctl logs backend --lines 100
+# Start in production mode
+ragctl up --mode prod
 
-# Install everything
-ragctl install all
-
-# Run backend tests
-ragctl test backend
-
-# List MCP tools
-ragctl mcp tools
-
-# Search knowledge bases
-ragctl kb search "vector search"
+# Register globally for use from any directory
+ragctl install
 ```
 
 ## Architecture
 
 ```
-ragctl (global bin, via npm link)
+ragctl (global bin, ~/.local/bin)
   └── command/ragctl.js (main CLI, Node.js)
-       ├── Reads: config.yml, .env, backend/config.yml
-       ├── HTTP:  calls backend API for health/config-reload/kb ops
-       ├── Process: netstat/wmic/taskkill (Windows), lsof/kill (Linux)
-       └── YAML:  js-yaml for config read/write
+       ├── Reads: config.yml, .env
+       ├── spawnService(): silent detached launch (Windows: CREATE_NO_WINDOW for backend,
+       │                  DETACHED_PROCESS for web/Nuxt)
+       ├── HTTP: health probes for status
+       └── YAML: js-yaml for config reading
 ```
 
 The CLI has **zero Python dependencies** — it runs entirely on Node.js.
-Only `js-yaml` npm package is required (installed via `npm install`).
+Only `js-yaml` npm package is required.
+
+## Log Paths (Shared Across All Launchers)
+
+| Service | Log Path |
+|---------|----------|
+| Backend | `backend/logs/desktop-stdout.log` |
+| Web | `web/logs/desktop-stdout.log` |
+| MinerU | `backend/logs/mineru-api.log` |
+
+All three surfaces (ragctl logs, Tauri desktop console, on-disk files) read the same files.

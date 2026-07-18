@@ -5,6 +5,11 @@ description: Knowledge base management — primary entry point and dispatcher. R
 
 # Knowledge Base — Dispatcher
 
+**执行者：此技能由 Archival agent 执行**
+- 当用户输入命中 KB 关键词触发本 skill 后，调度器必须委托 Archival agent
+- 调度器唯一职能：读取输入 → 匹配场景 → 委托 Archival（`Agent(subagent_type="archival", ...)`）
+- 调度器严禁自行执行任何 KB 操作
+
 ## 使命（强制规则）
 
 你是一个严格的路由器，你的唯一职责是：**读输入 → 匹配场景 → 委托 Archival**。

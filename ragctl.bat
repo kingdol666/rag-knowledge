@@ -2,7 +2,7 @@
 chcp 65001 >nul 2>&1
 
 REM ============================================================
-REM  ragctl.bat — RAG Knowledge Platform CLI Launcher (Windows)
+REM  ragctl.bat - RAG Knowledge Platform CLI Launcher (Windows)
 REM ============================================================
 REM Usage: ragctl <command> [options]
 REM   First run: ragctl setup   (one-click deployment)

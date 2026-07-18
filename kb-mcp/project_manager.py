@@ -120,6 +120,7 @@ def _pid_on_port(port: int) -> int | None:
             out = subprocess.run(
                 ["cmd", "/c", f"netstat -ano | findstr :{port} | findstr LISTENING"],
                 capture_output=True, text=True, timeout=5,
+                **_run_silent_args(),
             ).stdout
             line = out.strip().splitlines()
             if line:
@@ -136,14 +137,99 @@ def _pid_on_port(port: int) -> int | None:
     return None
 
 
+# ── Executable resolution ────────────────────────────────────────────────
+def _which(name: str) -> str:
+    """Resolve the FULL PATH to an executable (uv/node) so we can spawn it
+    directly via CreateProcess without a shell.
+
+    Search order:
+      1. ``shutil.which`` (honors PATH + PATHEXT)
+      2. Common install dirs that aren't always on PATH in fresh terminals:
+         - uv:  ``~/.local/bin`` (standalone installer), ``~/.cargo/bin`` (cargo)
+         - node: ``%APPDATA%\\npm``, ``%ProgramFiles%\\nodejs``
+      3. Bare name + ``.exe`` fallback (lets the OS try one last time)
+
+    Returns the resolved path or the bare name so the caller always gets a
+    usable string.
+    """
+    from shutil import which as _shutil_which
+
+    found = _shutil_which(name)
+    if found:
+        return found
+
+    home = Path.home()
+    if sys.platform == "win32":
+        exe = f"{name}.exe"
+        candidates = [
+            home / ".local" / "bin" / exe,                 # modern uv
+            home / ".cargo" / "bin" / exe,                 # legacy uv (cargo)
+            home / "AppData" / "Roaming" / "npm" / exe,    # node/npm global
+            home / "AppData" / "Local" / "Programs" / name / exe,
+            Path(os.environ.get("ProgramFiles", r"C:\Program Files")) / "nodejs" / exe,
+        ]
+    else:
+        candidates = [
+            home / ".local" / "bin" / name,
+            home / ".cargo" / "bin" / name,
+            Path("/usr/local/bin") / name,
+            Path("/usr/bin") / name,
+        ]
+    for c in candidates:
+        try:
+            if c.is_file():
+                return str(c)
+        except OSError:
+            continue
+
+    # Last resort: bare name (+ .exe on Windows); CreateProcess will search PATH.
+    return f"{name}.exe" if sys.platform == "win32" else name
+
+
 # ── Silent launch ────────────────────────────────────────────────────────
 def _silent_flags() -> dict:
-    """Always-headless subprocess flags — no console window, dev AND prod, all OSes."""
+    """Always-headless subprocess flags — no console/GUI window ever, dev AND
+    prod, every OS.
+
+    Windows strategy (defense in depth — three independent layers):
+      1. ``CREATE_NO_WINDOW`` — console-subsystem process with a HIDDEN console.
+         Children INHERIT this hidden console, so they never call
+         ``AllocConsole()`` to make a new visible one. (MUST NOT be combined
+         with ``DETACHED_PROCESS``: per MSDN, ``CREATE_NO_WINDOW`` is *ignored*
+         when ``DETACHED_PROCESS`` is also set, and ``DETACHED_PROCESS`` alone
+         risks child processes allocating a fresh visible console.)
+      2. ``CREATE_NEW_PROCESS_GROUP`` — isolates Ctrl-C so the launcher's signal
+         handling never cascades into the service.
+      3. ``STARTUPINFO(STARTF_USESHOWWINDOW, SW_HIDE)`` — if the binary is
+         GUI-subsystem or spawns a windowed helper, force-hide the window.
+
+    POSIX: ``start_new_session`` detaches from the controlling terminal.
+    """
     if sys.platform == "win32":
-        # DETACHED_PROCESS (0x8) | CREATE_NO_WINDOW (0x08000000)
-        return {"creationflags": 0x00000008 | 0x08000000}
-    # POSIX: new session detaches from controlling terminal
+        flags = 0
+        if hasattr(subprocess, "CREATE_NO_WINDOW"):
+            flags |= subprocess.CREATE_NO_WINDOW
+        if hasattr(subprocess, "CREATE_NEW_PROCESS_GROUP"):
+            flags |= subprocess.CREATE_NEW_PROCESS_GROUP
+        si = subprocess.STARTUPINFO()  # type: ignore[attr-defined]
+        si.dwFlags |= getattr(subprocess, "STARTF_USESHOWWINDOW", 0)
+        si.wShowWindow = 0  # SW_HIDE
+        return {"creationflags": flags, "startupinfo": si}
     return {"start_new_session": True}
+
+
+def _run_silent_args() -> dict:
+    """Kwargs for ``subprocess.run`` so status probes (netstat/lsof/taskkill)
+    never flash a console window on Windows. Combine with capture_output=True."""
+    if sys.platform == "win32":
+        flags = 0
+        if hasattr(subprocess, "CREATE_NO_WINDOW"):
+            flags |= subprocess.CREATE_NO_WINDOW
+        si = subprocess.STARTUPINFO()  # type: ignore[attr-defined]
+        si.dwFlags |= getattr(subprocess, "STARTF_USESHOWWINDOW", 0)
+        si.wShowWindow = 0  # SW_HIDE
+        return {"creationflags": flags, "startupinfo": si}
+    return {}
 
 
 def start_service(name: str, mode: str | None = None) -> dict:
@@ -156,12 +242,14 @@ def start_service(name: str, mode: str | None = None) -> dict:
     if name == "backend":
         if not BACKEND_DIR.exists():
             return {"success": False, "service": name, "error": f"backend dir not found: {BACKEND_DIR}"}
-        cmd = ["uv", "run", "python", "main.py"]
+        uv_bin = _which("uv")
+        cmd = [uv_bin, "run", "python", "main.py"]
         cwd = str(BACKEND_DIR)
     elif name == "web":
         if not WEB_DIR.exists():
             return {"success": False, "service": name, "error": f"web dir not found: {WEB_DIR}"}
-        cmd = ["node", "start.mjs"]
+        node_bin = _which("node")
+        cmd = [node_bin, "start.mjs"]
         cwd = str(WEB_DIR)
     else:
         return {"success": False, "service": name, "error": f"unknown service: {name} (backend|web)"}

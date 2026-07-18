@@ -2,9 +2,9 @@
 chcp 65001 >nul 2>&1
 
 REM ============================================================
-REM  ragctl.cmd — RAG Knowledge Platform CLI (Windows cmd)
+REM  ragctl.cmd - RAG Knowledge Platform CLI (Windows cmd)
 REM ============================================================
-REM Same as ragctl.bat — provides .cmd extension for cmd.exe compatibility
+REM Same as ragctl.bat - provides .cmd extension for cmd.exe compatibility
 REM ============================================================
 
 set "ROOT=%~dp0"

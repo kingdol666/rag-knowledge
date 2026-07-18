@@ -29,7 +29,7 @@ MinerU OCR Engine (ephemeral port)  ← PDF → Markdown conversion
 Claude Code / Agent
     │  MCP stdio (kb-mcp)
     ▼
-kb-mcp MCP Server              ← 74 tools: KB CRUD, file ops, parse, search, tags, vector, graph, experience
+kb-mcp MCP Server              ← ~63 tools: KB CRUD, file ops, parse, search, tags, vector, graph, experience
     │  HTTP → web proxy / backend     +  direct file reads
     ▼
 Nuxt / Backend                 ← writes: parse + save pipeline
@@ -47,7 +47,6 @@ rag-knowledge/
 ├── kb-mcp/                 # [local] MCP server — provides ~40 MCP tools for KB operations
 ├── .claude/skills/         # OMC skills (knowledgebase dispatcher, ingest, search, manage, etc.)
 ├── .claude/agents/         # Archival agent definition (knowledge-admin.md)
-├── .codex/                 # Parallel agent/skill definitions for Codex
 ├── docs/ARCHITECTURE.md    # Detailed architecture + MCP dev guide
 └── README.md               # Project overview + roadmap
 ```
@@ -268,7 +267,7 @@ The MCP server is normally launched by Claude Code via `.mcp.json` at the monore
 
 ```bash
 # 1. First time: one-command setup
-./ragctl init        # Windows: ragctl init
+./ragctl setup       # Windows: ragctl setup
 
 # 2. Start everything
 ./ragctl up          # Windows: ragctl up
@@ -283,15 +282,15 @@ The MCP server is normally launched by Claude Code via `.mcp.json` at the monore
 
 ```bash
 # Windows (either works)
-ragctl init && ragctl up          # Recommended
+ragctl setup && ragctl up          # Recommended
 start.bat                         # Legacy launcher (for reference)
 
 # Linux / macOS (either works)
-./ragctl init && ./ragctl up      # Recommended
+./ragctl setup && ./ragctl up      # Recommended
 ./start.sh                        # Legacy launcher (for reference)
 ```
 
-### One-time setup (manual, if not using `ragctl init`)
+### One-time setup (manual, if not using `ragctl setup`)
 
 ```bash
 # 1. Submodules
