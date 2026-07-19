@@ -29,7 +29,7 @@ MinerU OCR Engine (ephemeral port)  ← PDF → Markdown conversion
 Claude Code / Agent
     │  MCP stdio (kb-mcp)
     ▼
-kb-mcp MCP Server              ← 77 tools: KB CRUD, file ops, parse, search, tags, vector, graph, experience
+kb-mcp MCP Server              ← 74 tools: KB CRUD, file ops, parse, search, tags, vector, graph, experience
     │  HTTP → web proxy / backend     +  direct file reads
     ▼
 Nuxt / Backend                 ← writes: parse + save pipeline
@@ -44,7 +44,7 @@ rag-knowledge/
 ├── start.bat / start.sh    # One-click launch scripts
 ├── backend/                # [submodule] rag-knowledge-backend — FastAPI + MinerU
 ├── web/                    # [submodule] rag-knowledge-frondend — Nuxt 3 UI (only frontend)
-├── kb-mcp/                 # [local] MCP server — provides 77 MCP tools for KB operations
+├── kb-mcp/                 # [local] MCP server — provides 74 MCP tools for KB operations
 ├── .claude/skills/         # OMC skills (knowledgebase dispatcher, ingest, search, manage, etc.)
 ├── .claude/agents/         # Archival agent definition (knowledge-admin.md)
 ├── docs/ARCHITECTURE.md    # Detailed architecture + MCP dev guide
@@ -118,7 +118,7 @@ Key properties:
 
 ```
 kb-mcp/
-├── server.py               # 77 MCP tools via FastMCP; parse tools are NON-BLOCKING
+├── server.py               # 74 MCP tools via FastMCP; parse tools are NON-BLOCKING
 ├── client.py               # Copy of KbClient for quick tests
 ├── kb_client/
 │   └── client.py           # All HTTP logic (server.py has zero HTTP code)
@@ -128,7 +128,7 @@ kb-mcp/
 └── .mcp.json (at root)     # Connects kb-mcp to Claude Code via stdio
 ```
 
-MCP Tools by category (77 tools total):
+MCP Tools by category (74 tools total):
 - **Health:** `backend_status`
 - **Project lifecycle:** `kb_project_status`, `kb_project_start`, `kb_project_preflight`
 - **KB CRUD:** `kb_list`, `kb_create`, `kb_update`, `kb_delete`
@@ -140,8 +140,8 @@ MCP Tools by category (77 tools total):
 - **Tags (4):** `kb_tags_list`, `kb_doc_update_tags`, `kb_doc_get_by_tag`, `kb_tags_cleanup`
 - **Search (Agentic RAG, 4):** `kb_search` (metadata only), `kb_search_vector` (semantic), `kb_search_two_stage` (BM25→vector, primary), `kb_search_stats`
 - **Vector/Index:** `kb_index_document`, `kb_batch_index`, `kb_reindex`, `kb_cleanup_orphan_collections`
-- **Knowledge Graph (18 tools):** `kb_graph_search`, `kb_graph_search_kbs`, `kb_graph_search_tags`, `kb_graph_neighbors`, `kb_graph_stats`, `kb_graph_health`, `kb_graph_document`, `kb_graph_document_related`, `kb_graph_document_enhanced`, `kb_graph_documents_by_tag`, `kb_graph_kb_overview`, `kb_graph_build_kb`, `kb_graph_build_all`, `kb_graph_cross_kb_documents`, `kb_graph_document_paths`, `kb_graph_central_documents`, `kb_graph_delete_document`, `kb_graph_delete_kb`
-- **Experience (21 tools):** Full lifecycle — create/read/list/update/delete/apply/review/summary | Search: search/search_vector/search_global | Extract/Drafts: extract/drafts_list/draft_read/draft_approve/draft_reject | Health: check_stale/check_stale_global/sync_kb/dashboard/apply_decay
+- **Knowledge Graph (14 tools):** `kb_graph_search` (unified — node_type=all/document/kb/tag), `kb_graph_neighbors`, `kb_graph_stats`, `kb_graph_health`, `kb_graph_document`, `kb_graph_document_related`, `kb_graph_documents_by_tag`, `kb_graph_kb_overview`, `kb_graph_build` (unified — kb_id=""=all KBs), `kb_graph_cross_kb_documents`, `kb_graph_document_paths`, `kb_graph_central_documents`, `kb_graph_delete_document`, `kb_graph_delete_kb`
+- **Experience (22 tools):** Full lifecycle — create/read/list/update/delete/apply/review/summary | Search: search/search_vector/search_global/**search_smart**(推荐入口, 意图识别+自适应阈值+多轮降级)/**rerank**(多维语义重排序) | Extract/Drafts: extract/drafts_list/draft_read/draft_approve/draft_reject | Health: **check_stale**(空 kb_id=全库)/sync_kb/dashboard/apply_decay
 
 **Architecture principle:** writes go through HTTP API (backend/web proxy), reads go through direct file access (`.tree-fs.json` + `.knowledge-base.yml`).
 
@@ -186,6 +186,8 @@ Phase 5: Fused presentation (P0→P1, P2 hidden, blind-spots declared)
 Credibility modifiers: disputed (≥3 reviews ∧ rating<2.0) → downgrade to max P2; unvetted (0 reviews ∧ 0 applied) → cap at max P1.
 
 Credibility decay: stale unverified (>30d, 0 applied), disputed (rating <2.0 with ≥3 reviews), fully unvetted (0 reviews ∧ 0 applied → max P1).
+
+- **Counter-Example Detection (NEW Phase 0):** domain mismatch penalty — if query and experience share generic terms but differ in domain-specific nouns, content score is penalized (e.g., "battery thermal management" vs "data center thermal management")
 
 ### Short-Content False Positive Guard
 
@@ -358,7 +360,7 @@ server:
 9. **Experience heuristic extraction produces low-quality candidates** — `experience_extract(mode="heuristic")` 的 key_lessons 可能返回章节标题。**推荐**：用 `mode="prepare"` → LLM 精炼。详见 knowledgebase-experience Skill E2a 质量门控。
 10. **Graph sub-KB nodes show UUID only** — `kb_graph_kb_overview` 返回的 sub_kbs 列表中 name 字段为 UUID 而非可读名称。
 11. **Tag registry accumulates orphan tags** — `kb_tags_list()` 返回的标签列表包含 0 文档引用的历史标签（如测试标签、章节标题）。使用 `kb_tags_cleanup(dry_run=true)` 检测，`dry_run=false` 清理。不影响搜索功能——文档级标签自动过滤。
-12. **`kb_graph_build_kb` 返回的 `total_relations` 可能为 0** — 这**不是** bug：`total_relations` 统计的是**本次执行新创建**的关系数。当 `force=false` 且所有文档已有图谱索引时，新创建关系数为 0，但 Neo4j 中已有关系完整。用 `kb_graph_document(doc_path)` 或 `kb_graph_kb_overview(kb_id)` 验证已有图谱状态。
+12. **`kb_graph_build` 返回的 `total_relations` 可能为 0** — 这**不是** bug：`total_relations` 统计的是**本次执行新创建**的关系数。当 `force=false` 且所有文档已有图谱索引时，新创建关系数为 0，但 Neo4j 中已有关系完整。用 `kb_graph_document(doc_path)` 或 `kb_graph_kb_overview(kb_id)` 验证已有图谱状态。
 13. **Experience credibility thresholds differ between CLAUDE.md and SKILL.md** — CLAUDE.md 的 P0/P1/P2 阈值已同步对齐到 SKILL.md（以 skill 为准，含 content 验证维度）。如需调整请同时改两处。
 14. **⭐ kb-mcp MCP 启动检查（强制规则）** — 在执行任何 KB 操作之前，必须先验证 kb-mcp MCP 服务器是否已连接：
     - 调用 `mcp__kb-mcp__backend_status` 检测 MCP 连通性

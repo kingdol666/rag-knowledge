@@ -116,7 +116,7 @@ Cross-check disk ↔ `.tree-fs.json` ↔ `.knowledge-base.yml`. Fix: re-register
 ```
 for each kb:
     if kb_graph_kb_overview(kb_id).doc_count < actual_doc_count:
-        kb_graph_build_kb(kb_id, force=true)
+        kb_graph_build(kb_id, force=true)
 ```
 
 ## O13 — Final Report

@@ -121,7 +121,7 @@ description: High-volume batch operations. B1→B7: bulk tag migration, bulk des
 ## B7 — Graph Rebuild
 
 1. `kb_list()` → 所有 KB ID
-2. `kb_graph_build_all(force=true)` — 批量重建
+2. `kb_graph_build(force=true)` — 批量重建（空 kb_id = 全库）
 3. 验证：`kb_graph_stats()` → 检查 node/edge 数合理
 
 ---

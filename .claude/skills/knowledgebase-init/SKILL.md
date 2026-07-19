@@ -403,7 +403,7 @@ Bash: cd "<RAG_ROOT>" && ragctl install
 
 > 若 `~/.local/bin` 不在 PATH：Linux/macOS 提示 `echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc`；Windows 提示 `setx PATH "%PATH%;%USERPROFILE%\.local\bin"` 后重开终端。
 
-### 7b — kb-mcp 全局 MCP 注册（关键：让 77 个 MCP 工具在任意项目可用）
+### 7b — kb-mcp 全局 MCP 注册（关键：让 74 个 MCP 工具在任意项目可用）
 
 ```
 Bash: cd "<RAG_ROOT>/kb-mcp" && uv run python plugin_install.py install
@@ -485,13 +485,13 @@ Bash:
      ragctl desktop  ·  ragctl install
 
   🌍 全局可用 (任意目录启动 Claude Code 都能操作本知识库):
-     13 skills (插件) + 77 MCP tools (~/.claude/.mcp.json → kb-mcp)
+     13 skills (插件) + 74 MCP tools (~/.claude/.mcp.json → kb-mcp)
      重启 Claude Code 后，在任意项目里说"搜索知识库"即可使用。
 
   🌐 打开 Web UI: http://localhost:<WEB_PORT>
   🤖 打开 Claude Chat: http://localhost:<WEB_PORT>/claude-chat
 
-  🎉 13 skills + 77 MCP tools 已就绪（全局）！
+  🎉 13 skills + 74 MCP tools 已就绪（全局）！
 ═══════════════════════════════════════════════════════════
 ```
 

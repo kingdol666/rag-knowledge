@@ -739,6 +739,94 @@ async def kb_doc_get_by_tag(tag: str, kb_id: str = "") -> str:
 # EXPERIENCE MANAGEMENT
 # ============================================================
 
+def _detect_query_type(query: str) -> str:
+    """Detect query intent type from keywords. No LLM needed."""
+    ql = query.lower()
+    troubleshoot_kw = ["怎么", "如何", "故障", "报错", "失败", "修复", "排查", "解决",
+                        "how to", "fix", "error", "fail", "troubleshoot", "debug", "bug",
+                        "不工作", "出问题", "异常", "crash", "timeout"]
+    decision_kw = ["选", "对比", "选择", "推荐", "哪个好", "评估", "which", "compare",
+                   "recommend", "best option", "方案对比", "优缺点"]
+    best_practice_kw = ["最佳实践", "经验", "practice", "pattern", "规范", "标准流程",
+                        "best way", "推荐做法", "标准做法"]
+
+    if any(kw in ql for kw in troubleshoot_kw):
+        return "troubleshooting"
+    if any(kw in ql for kw in decision_kw):
+        return "decision"
+    if any(kw in ql for kw in best_practice_kw):
+        return "best_practice"
+    return "learning"
+
+
+def _tokenize_for_match(text: str) -> list:
+    """Tokenize text for matching. Supports CJK bigram + English words."""
+    text = text.lower().strip()
+    tokens = []
+    for part in text.split():
+        if not part:
+            continue
+        has_cjk = any('一' <= ch <= '鿿' for ch in part)
+        if has_cjk:
+            cjk_chars = [ch for ch in part if '一' <= ch <= '鿿' or ch.isalnum()]
+            for i in range(len(cjk_chars) - 1):
+                tokens.append("".join(cjk_chars[i:i+2]))
+        for w in part.replace('/', ' ').replace('-', ' ').split():
+            if len(w) >= 2:
+                tokens.append(w)
+    seen = set()
+    result = []
+    for t in tokens:
+        if t not in seen:
+            seen.add(t)
+            result.append(t)
+    return result
+
+
+def _compute_match_details(query: str, exp: dict) -> dict:
+    """Compute detailed match information for retrieval transparency."""
+    query_tokens = _tokenize_for_match(query)
+    title = exp.get("title", "").lower()
+    scenario = exp.get("scenario", "").lower()
+    tags = [t.lower() for t in exp.get("tags", [])]
+
+    combined = f"{title} {scenario} {' '.join(tags)}"
+    domain_match = [t for t in query_tokens if t in combined]
+    problem_match = [t for t in query_tokens if t in exp.get("problem", "").lower()]
+
+    return {
+        "domain_match": domain_match[:5],
+        "problem_match": problem_match[:5],
+        "coverages": {
+            "domain": round(len(domain_match) / max(len(query_tokens), 1), 2),
+            "problem": round(len(problem_match) / max(len(query_tokens), 1), 2),
+        }
+    }
+
+
+def _compute_ranking_reason(exp: dict) -> str:
+    """Generate human-readable ranking reason."""
+    parts = []
+    tier = exp.get("tier", "")
+    rating = exp.get("rating_avg", 0)
+    applied = exp.get("applied_count", 0)
+    vector_score = exp.get("vector_score", 0)
+    content_score = exp.get("content_score", 0)
+
+    if vector_score >= 0.65:
+        parts.append("high-semantic-match")
+    if content_score >= 6:
+        parts.append("high-content-relevance")
+    if rating >= 4:
+        parts.append(f"high-rating({rating})")
+    if applied >= 2:
+        parts.append(f"verified({applied}x)")
+    if tier == "P0":
+        parts.insert(0, "P0-strong-evidence")
+
+    return "; ".join(parts) if parts else f"tier={tier}"
+
+
 @mcp.tool()
 async def experience_create(kb_id: str, title: str, scenario: str = "",
     category: str = "tip", problem: str = "", solution: str = "",
@@ -995,6 +1083,169 @@ async def experience_search_global(query: str, top_k: int = 10,
         query, top_k, score_threshold=score_threshold, verify_content=verify_content))
 
 
+@mcp.tool()
+async def experience_search_smart(query: str, top_k: int = 10,
+                                   score_threshold: float = None,
+                                   verify_content: bool = True) -> str:
+    """Intelligent multi-path experience retrieval -- the RECOMMENDED entry point for experience search.
+
+    Enhances experience_search_global with:
+    - Query intent analysis (troubleshooting/learning/best_practice/decision)
+    - Adaptive thresholding (stricter for troubleshooting 0.55, relaxed for learning 0.35)
+    - Multi-round retrieval with automatic query expansion (up to 3 rounds)
+    - Retrieval transparency (match_details, retrieval_paths, ranking_reason per result)
+
+    Rounds: Round1=original threshold, Round2=threshold*0.7 if 0 results, Round3=threshold*0.5+skip content verify.
+
+    Args:
+        query: Natural language query (Chinese or English)
+        top_k: Result cap (default 10)
+        score_threshold: Vector hard threshold; None=adaptive (type-based, recommended)
+        verify_content: True=content verification (default, recommended for first 2 rounds)
+
+    Returns:
+        {success, query, query_type, count, rounds, degraded,
+         adaptive_threshold, effective_threshold,
+         experiences: [{..., match_details, retrieval_paths, ranking_reason}],
+         tier_counts, message}
+    """
+    # 1. Query understanding
+    query_type = _detect_query_type(query)
+
+    # 2. Adaptive threshold
+    type_thresholds = {"troubleshooting": 0.55, "decision": 0.50, "best_practice": 0.45, "learning": 0.35}
+    adaptive = type_thresholds.get(query_type, 0.45)
+    threshold = score_threshold if score_threshold is not None else adaptive
+
+    # 3. Multi-round retrieval
+    client = _client()
+    result = await client.experience_search_global(
+        query, top_k=top_k * 2, score_threshold=threshold, verify_content=verify_content)
+    rounds = 1
+    degraded = False
+    effective_threshold = threshold
+
+    # Round 2: lower threshold if zero results
+    if isinstance(result, dict) and result.get("count", 0) == 0 and threshold > 0.25:
+        effective_threshold = max(threshold * 0.7, 0.25)
+        result = await client.experience_search_global(
+            query, top_k=top_k * 2, score_threshold=effective_threshold, verify_content=verify_content)
+        rounds = 2
+        degraded = True
+
+    # Round 3: further lowered, skip content verification
+    if isinstance(result, dict) and result.get("count", 0) == 0 and effective_threshold > 0.20:
+        effective_threshold = max(effective_threshold * 0.5, 0.15)
+        result = await client.experience_search_global(
+            query, top_k=top_k, score_threshold=effective_threshold, verify_content=False)
+        rounds = 3
+        degraded = True
+
+    # 4. Enrich with retrieval transparency
+    if isinstance(result, dict):
+        result["query_type"] = query_type
+        result["rounds"] = rounds
+        result["degraded"] = degraded
+        result["adaptive_threshold"] = adaptive
+        result["effective_threshold"] = effective_threshold
+        # Add match_details and ranking_reason for each experience
+        for exp in result.get("experiences", []):
+            exp["retrieval_paths"] = ["vector", "keyword"]
+            exp["match_details"] = _compute_match_details(query, exp)
+            exp["ranking_reason"] = _compute_ranking_reason(exp)
+
+    return _j(result)
+
+
+@mcp.tool()
+async def experience_rerank(query: str, experiences_json: str) -> str:
+    """Semantic reranking for experience search results -- multi-dimensional scoring.
+
+    Re-ranks candidate experiences based on: tag overlap, problem match, solution match,
+    and credibility (rating + applied_count). This is a lightweight MCP-side tool
+    (no backend call). Use after experience_search_smart for final ordering.
+
+    Args:
+        query: The original user query
+        experiences_json: JSON string of experience list (from search results)
+
+    Returns:
+        {success, ranked: [{id, title, scenario, tier, relevance_score, reason,
+          vector_score, content_score, rating_avg, applied_count}],
+         original_count, reranked_count, query}
+    """
+    try:
+        exps = json.loads(experiences_json)
+    except Exception:
+        return _j({"success": False, "error": "Invalid experiences_json: not valid JSON"})
+
+    if not exps:
+        return _j({"success": True, "ranked": [], "original_count": 0, "reranked_count": 0,
+                    "message": "No experiences to rerank"})
+
+    ranked = []
+    query_tokens = _tokenize_for_match(query)
+
+    for exp in exps:
+        score = 0.0
+        reasons = []
+
+        # Tag match (weight: up to 0.45)
+        tags = exp.get("tags", [])
+        tag_text = " ".join(tags).lower()
+        tag_matches = [t for t in query_tokens if t in tag_text]
+        if tag_matches:
+            score += min(len(tag_matches) * 0.15, 0.45)
+            reasons.append("tag-match:" + ",".join(tag_matches[:3]))
+
+        # Problem match (weight: up to 0.3)
+        problem = exp.get("problem", "").lower()
+        prob_matches = [t for t in query_tokens if t in problem]
+        if prob_matches:
+            score += min(len(prob_matches) * 0.1, 0.3)
+            reasons.append("problem-match")
+
+        # Solution match (weight: up to 0.2)
+        solution = exp.get("solution", "").lower()
+        sol_matches = [t for t in query_tokens if t in solution]
+        if sol_matches:
+            score += min(len(sol_matches) * 0.08, 0.2)
+            reasons.append("solution-match")
+
+        # Credibility boost (weight: up to 0.25)
+        rating = exp.get("rating_avg", 0) or 0
+        applied = exp.get("applied_count", 0) or 0
+        credibility = min(rating / 5.0 * 0.15, 0.15) + min(applied / 10.0 * 0.1, 0.1)
+        score += credibility
+        if credibility > 0.15:
+            reasons.append("high-credibility(r={},a={})".format(rating, applied))
+
+        ranked.append({
+            "id": exp.get("id", ""),
+            "title": exp.get("title", ""),
+            "scenario": exp.get("scenario", ""),
+            "tier": exp.get("tier", "P2"),
+            "relevance_score": round(min(score, 1.0), 3),
+            "reason": "; ".join(reasons) if reasons else "comprehensive",
+            "vector_score": exp.get("vector_score", 0) or 0,
+            "content_score": exp.get("content_score", 0) or 0,
+            "rating_avg": rating,
+            "applied_count": applied,
+        })
+
+    # Sort by relevance score descending
+    ranked.sort(key=lambda x: (-x["relevance_score"], -x["vector_score"], -x["content_score"]))
+
+    return _j({
+        "success": True,
+        "ranked": ranked,
+        "original_count": len(exps),
+        "reranked_count": len(ranked),
+        "query": query,
+        "hint": "Ranked by multi-dimensional relevance. Use experience_read to verify before acting on top results."
+    })
+
+
 # ============================================================
 # EXPERIENCE ENHANCEMENT — E0/E1 Extraction / E3 Draft / E6 Sync / E8 Dashboard / E11 Decay
 # ============================================================
@@ -1097,8 +1348,12 @@ async def experience_draft_reject(kb_id: str, draft_id: str, reason: str = "") -
 
 
 @mcp.tool()
-async def experience_check_stale(kb_id: str) -> str:
-    """E6: Check consistency between KB experiences and their related documents.
+async def experience_check_stale(kb_id: str = "") -> str:
+    """E6: Check consistency between experiences and their related documents.
+
+    Unified entry — replaces the former experience_check_stale /
+    experience_check_stale_global pair. Empty kb_id = global check across all KBs;
+    a specific kb_id = single-KB check.
 
     Checks each experience's related_docs:
     - Document updated_at is newer than experience updated_at -> stale (experience needs re-extraction)
@@ -1106,19 +1361,14 @@ async def experience_check_stale(kb_id: str) -> str:
 
     Typical scenarios: after document updates, check which experiences are stale; periodic consistency audit.
 
-    Returns: {success, total, fresh, stale, orphan, stale_experiences, orphan_experiences}
+    Returns (single-KB): {success, total, fresh, stale, orphan, stale_experiences, orphan_experiences}
+    Returns (global):    {success, total_experiences, stale, orphan, stale_experiences, orphan_experiences}
     """
+    client = _client()
+    if not kb_id or not kb_id.strip():
+        return _j(await client.experience_check_stale_global())
     if (err := _require_kb(kb_id)): return err
-    return _j(await _client().experience_check_stale(kb_id))
-
-
-@mcp.tool()
-async def experience_check_stale_global() -> str:
-    """E6: Global stale check (traverses all KBs' experiences).
-
-    Returns: {success, total_experiences, stale, orphan, stale_experiences, orphan_experiences}
-    """
-    return _j(await _client().experience_check_stale_global())
+    return _j(await client.experience_check_stale(kb_id))
 
 
 @mcp.tool()
@@ -1529,21 +1779,47 @@ async def kb_cleanup_orphan_collections(dry_run: bool = True) -> str:
 
 
 @mcp.tool()
-async def kb_graph_search(keyword: str, limit: int = 20) -> str:
-    """Search document nodes in the knowledge graph (by name/path)."""
-    return _j(await _client().graph_search(keyword, limit))
+async def kb_graph_search(keyword: str, node_type: str = "all", limit: int = 20) -> str:
+    """Search nodes in the knowledge graph by keyword (name/path/label).
 
+    Unified entry for graph node search — replaces the former
+    kb_graph_search / kb_graph_search_kbs / kb_graph_search_tags trio.
 
-@mcp.tool()
-async def kb_graph_search_kbs(keyword: str, limit: int = 20) -> str:
-    """Search knowledge base nodes in the knowledge graph."""
-    return _j(await _client().graph_search_kbs(keyword, limit))
+    Args:
+        keyword: Search term.
+        node_type: "all" (default) runs document+kb+tag in parallel and merges;
+                   "document", "kb", or "tag" runs a single node-type search.
+        limit: Max results per node type.
 
-
-@mcp.tool()
-async def kb_graph_search_tags(keyword: str, limit: int = 20) -> str:
-    """Search tag nodes in the knowledge graph."""
-    return _j(await _client().graph_search_tags(keyword, limit))
+    Returns:
+        node_type="all": {success, keyword, documents, kbs, tags, counts}
+        specific node_type: the raw backend response for that node type.
+    """
+    client = _client()
+    if node_type == "document":
+        return _j(await client.graph_search(keyword, limit))
+    if node_type == "kb":
+        return _j(await client.graph_search_kbs(keyword, limit))
+    if node_type == "tag":
+        return _j(await client.graph_search_tags(keyword, limit))
+    # "all" — run all three and merge under typed keys
+    docs, kbs, tags = await asyncio.gather(
+        client.graph_search(keyword, limit),
+        client.graph_search_kbs(keyword, limit),
+        client.graph_search_tags(keyword, limit),
+    )
+    return _j({
+        "success": True,
+        "keyword": keyword,
+        "documents": docs if isinstance(docs, list) else (docs.get("results", []) if isinstance(docs, dict) else []),
+        "kbs": kbs if isinstance(kbs, list) else (kbs.get("results", []) if isinstance(kbs, dict) else []),
+        "tags": tags if isinstance(tags, list) else (tags.get("results", []) if isinstance(tags, dict) else []),
+        "counts": {
+            "documents": len(docs) if isinstance(docs, list) else (len(docs.get("results", [])) if isinstance(docs, dict) else 0),
+            "kbs": len(kbs) if isinstance(kbs, list) else (len(kbs.get("results", [])) if isinstance(kbs, dict) else 0),
+            "tags": len(tags) if isinstance(tags, list) else (len(tags.get("results", [])) if isinstance(tags, dict) else 0),
+        },
+    })
 
 
 @mcp.tool()
@@ -1582,25 +1858,6 @@ async def kb_graph_document_related(doc_path: str, limit: int = 20) -> str:
 
 
 @mcp.tool()
-async def kb_graph_document_enhanced(doc_path: str, limit: int = 20) -> str:
-    """Enhanced document relation query: groups results by connection type to show truly related documents.
-
-    Differences from kb_graph_document_related:
-    - Results grouped by connection type: by_vector_similar (content similarity) + by_shared_tags (tag overlap) + by_agent_judged (agent judgment)
-    - Each shared_tag connection includes shared_tags field (which specific tags overlap)
-    - Each vector_similar connection includes similarity score
-    - Includes summary statistics (counts per type + cross-KB count)
-    - Automatically filters weak relations (shared_tag weight < 2 not returned)
-
-    Use cases:
-    - View a document's "truly related documents" and understand why they are related
-    - Judge whether document clustering is meaningful
-    - Verify graph build quality"""
-    if (err := _require_param("doc_path", doc_path)): return err
-    return _j(await _client().graph_document_enhanced(doc_path, limit))
-
-
-@mcp.tool()
 async def kb_graph_documents_by_tag(tag_name: str, limit: int = 50) -> str:
     """Find documents by tag."""
     if (err := _require_param("tag_name", tag_name)): return err
@@ -1617,24 +1874,30 @@ async def kb_graph_kb_overview(kb_id: str) -> str:
 
 
 @mcp.tool()
-async def kb_graph_build_kb(kb_id: str, force: bool = False) -> str:
-    """Build the document relationship graph for an entire KB (based on metadata, does not read document content).
+async def kb_graph_build(kb_id: str = "", force: bool = False) -> str:
+    """Build the document relationship graph for one KB (kb_id given) or all KBs (kb_id empty).
 
-    Iterates all documents' metadata (name, description, tags) within the KB,
-    builds RELATED_TO relationships between documents via shared tags/same KB/description similarity.
+    Unified entry — replaces the former kb_graph_build_kb / kb_graph_build_all pair.
+    Empty kb_id builds graphs for every KB (cross-KB shared tags form cross-KB connections);
+    a specific kb_id builds only that KB.
+
+    Iterates documents' metadata (name, description, tags) and builds RELATED_TO
+    relationships via shared tags / same KB / description similarity. Does NOT read
+    document content.
     force=True: clear and rebuild; force=False: incremental (skip already-indexed documents).
-    Returns: {docs_processed, docs_skipped, total_relations, errors, ...}"""
+
+    Returns (per-KB): {docs_processed, docs_skipped, total_relations, errors, ...}
+    Returns (all):    {total_top_kbs, kbs: [{kb_id, docs_processed, ...}], ...}
+
+    Note: total_relations counts relations CREATED this run. When force=false and all
+    docs are already indexed, total_relations is 0 but the graph IS populated — verify
+    with kb_graph_document(doc_path) or kb_graph_kb_overview(kb_id).
+    """
+    client = _client()
+    if not kb_id or not kb_id.strip():
+        return _j(await client.graph_build_all(force))
     if (err := _require_kb(kb_id)): return err
-    return _j(await _client().graph_build_kb(kb_id, force))
-
-
-@mcp.tool()
-async def kb_graph_build_all(force: bool = False) -> str:
-    """Build document relationship graphs for all knowledge bases.
-
-    Iterates all KBs to build graphs; cross-KB shared tags automatically form cross-knowledge-base connections.
-    Returns: {total_top_kbs, kbs: [{kb_id, docs_processed, ...}], ...}"""
-    return _j(await _client().graph_build_all(force))
+    return _j(await client.graph_build_kb(kb_id, force))
 
 
 @mcp.tool()

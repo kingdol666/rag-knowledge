@@ -176,9 +176,9 @@ idx = kb_index_document(kb_id=target_kb_id, doc_path=doc_path)
 
 ### A6b 知识图谱构建（向量索引后立即执行）⭐
 ```
-kb_graph_build_kb(kb_id=target_kb_id, force=true)
+kb_graph_build(kb_id=target_kb_id, force=true)
 ```
-> ⚠️ **已知问题**：`kb_graph_build_kb` 返回的 `total_relations` 可能为 0（stats 统计 bug），**这不代表构建失败**。实际数据已写入 Neo4j。务必用 `kb_graph_document()` 抽检验证而非依赖返回值。
+> ⚠️ **已知问题**：`kb_graph_build` 返回的 `total_relations` 可能为 0（stats 统计 bug），**这不代表构建失败**。实际数据已写入 Neo4j。务必用 `kb_graph_document()` 抽检验证而非依赖返回值。
 
 构建后验证：
 ```

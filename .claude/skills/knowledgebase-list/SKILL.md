@@ -92,7 +92,7 @@ description: Knowledge base listing and discovery. L1→L3 read-only workflow: f
 - **层次化KB搜索返回空内容** — 父 KB 的 `kb_search_two_stage` 返回子 KB 容器条目，content 为空。子KB本身无向量chunk。应使用 `kb_graph_kb_overview(kb_id)` 获取子 KB UUID 列表，然后在子 KB 内分别检索。
 - **向量索引元数据可能缺失** — 部分文档的 `vector_index` 字段在索引后未写入 YAML（向量实际存在于 ChromaDB）。用 `kb_reindex(kb_id, force=true)` 修复（写操作，List 流程不自动执行）。
 - **图谱子KB节点仅显示UUID** — `kb_graph_kb_overview` 的子 KB name 字段为 UUID 而非可读名称。回查 `kb_catalog()` 获取可读名。
-- **`kb_graph_build_kb` 返回的 `total_relations` 可能为 0** — 这是 stats 统计 bug，实际图谱数据已写入 Neo4j。**不要**因为返回 0 就认为构建失败。用 `kb_graph_document(doc_path)` 抽检验证。
+- **`kb_graph_build` 返回的 `total_relations` 可能为 0** — 这是 stats 统计 bug，实际图谱数据已写入 Neo4j。**不要**因为返回 0 就认为构建失败。用 `kb_graph_document(doc_path)` 抽检验证。
 - **标签注册表积累孤儿标签** — `kb_tags_list()` 返回的标签列表包含 0 文档引用的历史标签。用 `kb_tags_cleanup(dry_run=true)` 检测。不影响搜索功能——文档级标签自动过滤。
 - **⭐ kb-mcp MCP 启动检查** — 执行任何 KB 操作前，先调用 `mcp__kb-mcp__backend_status` 验证 MCP 连通性。MCP 不可用时：① Bash 检查服务 ② 检查 `.mcp.json` ③ 手动启动 kb-mcp ④ 后端健康但 MCP 不可用 → 通知用户重启 Claude Code ⑤ 仅在用户确认后才用 HTTP API 兜底。
 

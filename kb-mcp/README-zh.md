@@ -5,13 +5,13 @@
 </h1>
 
 <p align="center">
-  <strong>MCP 服务器 · 77 个工具 · KB 全生命周期 · 搜索 · 图谱 · 经验</strong><br/>
+  <strong>MCP 服务器 · 74 个工具 · KB 全生命周期 · 搜索 · 图谱 · 经验</strong><br/>
   <em>连接 Claude Code 代理与 RAG Knowledge Platform 的 MCP 工具层</em>
 </p>
 
 <p align="center">
   <a href="#-快速开始"><img src="https://img.shields.io/badge/%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B-3%20%E6%AD%A5-blue?style=for-the-badge" /></a>
-  <a href="#-工具77"><img src="https://img.shields.io/badge/MCP-77%20%E5%B7%A5%E5%85%B7-blueviolet?style=for-the-badge" /></a>
+  <a href="#-工具74"><img src="https://img.shields.io/badge/MCP-74%20%E5%B7%A5%E5%85%B7-blueviolet?style=for-the-badge" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" /></a>
   <a href="#-技术栈"><img src="https://img.shields.io/badge/Python-3.12-blue?style=for-the-badge" /></a>
   <a href="#-技术栈"><img src="https://img.shields.io/badge/FastMCP-latest-9cf?style=for-the-badge" /></a>
@@ -30,7 +30,7 @@
 - [🌟 概述](#-概述)
 - [🏗️ 架构](#️-架构)
 - [🚀 快速开始](#-快速开始)
-- [🔌 工具（77）](#-工具77)
+- [🔌 工具（74）](#-工具74)
 - [📡 客户端库](#-客户端库)
 - [⚙️ 配置](#️-配置)
 - [📁 项目结构](#-项目结构)
@@ -40,7 +40,7 @@
 
 ## 🌟 概述
 
-`kb-mcp` 是 MCP（Model Context Protocol）服务器，将 Claude Code（或任何 MCP 兼容代理）桥接到 RAG Knowledge Platform。提供 **77 个工具**，按 13 个类别组织 — 足以在不离开代理对话的情况下管理生产知识库的方方面面。
+`kb-mcp` 是 MCP（Model Context Protocol）服务器，将 Claude Code（或任何 MCP 兼容代理）桥接到 RAG Knowledge Platform。提供 **74 个工具**，按 13 个类别组织 — 足以在不离开代理对话的情况下管理生产知识库的方方面面。
 
 **核心原则：**
 
@@ -60,7 +60,7 @@
                    │ MCP stdio (FastMCP)
 ┌──────────────────▼───────────────────────┐
 │              kb-mcp/server.py             │
-│         ~77 @mcp.tool() 定义              │
+│         ~74 @mcp.tool() 定义              │
 │         零 HTTP 代码 — 向下委托            │
 └──────┬──────────────────────┬────────────┘
        │ kb_client (HTTP)     │ 直接文件 I/O
@@ -99,7 +99,7 @@ uv run python server.py --http
 
 > **通常无需手动运行 kb-mcp。** Claude Code 在打开项目时通过 `../.mcp.json` 自动启动。首次 `uv run` 自动同步依赖。全局使用时，`claude plugin install rag-knowledge` 将其注册到 `~/.claude/.mcp.json`。
 
-## 🔌 工具（77）
+## 🔌 工具（74）
 
 所有工具可通过 `mcp__kb-mcp__*` 从任何 MCP 客户端访问。按领域组织：
 
@@ -155,26 +155,26 @@ uv run python server.py --http
 | `fs_get_count()` | 文件和文件夹总数。 |
 | `fs_upload_file(path, content)` | 上传并注册文件至文件系统。 |
 
-### 知识图谱（18）
+### 知识图谱（14）
 
 | 子类别 | 工具 |
 |--------|------|
 | **健康 & 统计** | `kb_graph_health()`, `kb_graph_stats()` |
-| **搜索** | `kb_graph_search(keyword)`, `kb_graph_search_kbs(query)`, `kb_graph_search_tags(query)` |
+| **搜索** | `kb_graph_search(keyword, node_type)` — `node_type`: all（默认）/ document / kb / tag |
 | **探索** | `kb_graph_neighbors(node_id)`, `kb_graph_kb_overview(kb_id)`, `kb_graph_cross_kb_documents()` |
-| **文档中心** | `kb_graph_document(doc_path)`, `kb_graph_document_related(doc_path)`, `kb_graph_document_enhanced(doc_path)`, `kb_graph_document_paths(doc_path)`, `kb_graph_documents_by_tag(tag)` |
+| **文档中心** | `kb_graph_document(doc_path)`, `kb_graph_document_related(doc_path)`, `kb_graph_document_paths(doc_path)`, `kb_graph_documents_by_tag(tag)` |
 | **中心度** | `kb_graph_central_documents(kb_id)` |
-| **构建 & 清理** | `kb_graph_build_kb(kb_id)`, `kb_graph_build_all()`, `kb_graph_delete_document(doc_path)`, `kb_graph_delete_kb(kb_id)` |
+| **构建 & 清理** | `kb_graph_build(kb_id)`（空 = 全库）, `kb_graph_delete_document(doc_path)`, `kb_graph_delete_kb(kb_id)` |
 
-### 经验（21）
+### 经验（22）
 
 | 子类别 | 工具 |
 |--------|------|
 | **增删改查** | `experience_create()`, `experience_read(id)`, `experience_list()`, `experience_update()`, `experience_delete()` |
 | **操作** | `experience_apply(id)`, `experience_review(id, rating, comment)`, `experience_summary(kb_id)` |
-| **搜索** | `experience_search(query)`, `experience_search_vector(query)`, `experience_search_global(query)` |
+| **搜索** | `experience_search(query)`, `experience_search_vector(query)`, `experience_search_global(query)`, `experience_search_smart(query)`（推荐入口）, `experience_rerank(query, exps)` |
 | **提取 & 草稿** | `experience_extract(mode, kb_id)`, `experience_drafts_list()`, `experience_draft_read(id)`, `experience_draft_approve(id)`, `experience_draft_reject(id)` |
-| **健康** | `experience_check_stale(kb_id)`, `experience_check_stale_global()`, `experience_sync_kb(kb_id)`, `experience_dashboard()`, `experience_apply_decay()` |
+| **健康** | `experience_check_stale(kb_id)`（空 = 全库）, `experience_sync_kb(kb_id)`, `experience_dashboard()`, `experience_apply_decay()` |
 
 ### 标签 & 清理（4）
 
@@ -263,7 +263,7 @@ monorepo 根目录的 `.mcp.json` 为 Claude Code 自动配置 kb-mcp：
 
 ```
 kb-mcp/
-├── server.py                # FastMCP 服务器 — ~77 @mcp.tool() 定义（零 HTTP 代码）
+├── server.py                # FastMCP 服务器 — ~74 @mcp.tool() 定义（零 HTTP 代码）
 ├── project_manager.py       # 服务生命周期：启动/停止/状态（子进程管理）
 ├── task_registry.py         # 进程内异步后台任务管理器（解析作业）
 ├── config.py                # 从共享 config.yml 读取 URL（零硬编码路径）

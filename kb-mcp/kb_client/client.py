@@ -787,6 +787,15 @@ class KbClient:
             body["score_threshold"] = score_threshold
         return await self._post_backend_json("/api/v1/experience/global-search", body)
 
+    async def experience_search_smart(self, query: str, top_k: int = 10,
+                                       score_threshold: float = None,
+                                       verify_content: bool = True) -> dict:
+        """Smart experience search: delegates to experience_search_global.
+        The MCP tool layer adds query understanding, adaptive thresholds,
+        multi-round retrieval, and transparency metadata."""
+        return await self.experience_search_global(
+            query, top_k, score_threshold=score_threshold, verify_content=verify_content)
+
     # ── E0/E1: Experience extraction (heuristic + task bundle) ──
 
     async def experience_extract(self, kb_id: str, doc_paths: list = None,

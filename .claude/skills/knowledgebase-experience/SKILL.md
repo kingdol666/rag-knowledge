@@ -105,7 +105,8 @@ experience_draft_reject(kb_id, draft_id, reason)    → 拒绝→rejected/（保
 
 ```
 Step 1 — 经验优先（向量召回 → 内容裁决）
-  experience_search_global(query, top_k=8, score_threshold=0.45, verify_content=True)
+  experience_search_smart(query, top_k=8) — 推荐入口 (内部: 意图识别→自适应阈值→多轮降级→检索透明化)
+  experience_search_global(query, top_k=8, score_threshold=0.45, verify_content=True) — 底层入口（兼容）
     → 内部: 向量召回 → 硬阈值 → 经验级去重 → 内容验证 → 可信度定级
 
 Step 2 — 内容二次裁决（强制，不可跳过）⭐
@@ -146,6 +147,50 @@ Step 3 — 内容 ≥ 5 则直接作答（跳过文档检索）
 - `content_ruling` — 内容裁决摘要（"召回5→读4→合格2 P0:1 P1:1 P2:2"）
 - 每条经验含 `vector_score` + `content_score` + `tier` + `tier_reason`
 
+## E4d — 智能检索增强 (Phase 0, 2026-07-19) [IMPORTANT]
+
+### 推荐检索入口: experience_search_smart
+```
+experience_search_smart(query, top_k=8)
+  → 内部: 查询意图识别 → 自适应阈值 → 多路径召回 → 多轮降级 → 检索透明化
+```
+
+### 查询意图自动识别与自适应阈值
+| 类型 | 阈值 | 策略 |
+|------|------|------|
+| troubleshooting (故障排查) | 0.55 | 宁缺毋滥，只要高质量 |
+| best_practice (最佳实践) | 0.45 | 中等门槛 |
+| learning (学习参考) | 0.35 | 可接受弱相关 |
+| decision (决策支持) | 0.50 | 需强证据 |
+
+### 多轮检索降级
+Round 1: 原始查询 + 自适应阈值 → 0 结果
+  → Round 2: 降阈值 30% → 0 结果
+    → Round 3: 再降 40% + 跳过内容验证 → 有结果则标注 degraded
+    → 始终 0 → 诚实声明 "无相关经验"
+
+### 检索透明化字段
+每条返回的经验包含:
+- `retrieval_paths`: 召回路径列表 (vector, keyword)
+- `match_details`: {domain_match, problem_match, coverages}
+- `ranking_reason`: 人类可读的排序理由
+
+### 反例检测 (Counter-Example Detection)
+`_content_verify` 增强: 提取 query 和 experience 的领域词，检测差异。
+若 domain_diff > 50% 且 overlap < 30% → 降分惩罚 (multiplier 0.5) → 防误报。
+
+### 智能重排序
+```
+experience_rerank(query, experiences_json)
+  → 多维度打分: 标签匹配(0.45) + 问题匹配(0.3) + 方案匹配(0.2) + 可信度(0.25)
+  → 输出排序后结果 + 每条排序理由
+```
+
+### 与 E4a 的关系
+- E4a Step 1 的底层调用 `experience_search_global` 不变（兼容性）
+- E4d 的 `experience_search_smart` 是推荐入口，在 `_global` 之上增加了意图识别+多轮降级+透明化
+- Agent 应优先使用 `experience_search_smart`，仅在需要完全手动控制阈值时使用 `_global`
+
 ## E5 — 可信度分级
 
 | 条件 | 层级 | 动作 |
@@ -174,8 +219,7 @@ Step 3 — 内容 ≥ 5 则直接作答（跳过文档检索）
 ## E6 — 文档联动 / stale 检测 + 自动更新 [IMPORTANT]
 
 ```
-experience_check_stale(kb_id)          → 检查 KB 经验与文档一致性
-experience_check_stale_global()        → 全库检查
+experience_check_stale(kb_id)          → 检查 KB 经验与文档一致性（空 kb_id = 全库检查）
 experience_sync_kb(kb_id)              → 整库标记 needs_sync
 ```
 
@@ -213,7 +257,8 @@ Step 5: experience_sync_kb(kb_id) → 清除 stale 标记
 
 ## E7 — 搜索路径
 ```
-故障型: experience_search_global + experience_search_vector → P0 直接答
+故障型: experience_search_smart (推荐) → P0 直接答
+  优化: experience_search_smart → experience_rerank → 最终排序
 通用型: kb_search_two_stage → experience_search 补充
 ```
 
@@ -264,10 +309,12 @@ experience_review(kb_id, exp_id, reviewer, rating, comment)       → 重算 rat
 ### Search
 | 方法 | 工具 |
 |---|---|
+| 智能检索（推荐入口） | `experience_search_smart(query, top_k)` |
 | 全局跨库 | `experience_search_global(query, top_k)` |
 | 元信息 | `experience_search(kb_id, query, top_k)` |
 | 向量语义 | `experience_search_vector(kb_id, query, top_k)` |
 | 按场景 | `experience_list(kb_id, scenario="...")` |
+| 智能重排序 | `experience_rerank(query, experiences_json)` |
 | 统计 | `experience_summary(kb_id)` / `experience_dashboard(kb_id)` |
 
 ---
@@ -309,7 +356,7 @@ experience_search_global(query) → P0 经验直接答（秒级）
 ### 自动检测流程
 ```
 # Step 1: 全库 stale/orphan 检测
-experience_check_stale_global()
+experience_check_stale()   # 空 kb_id = 全库检查
   → stale=0, orphan=0 → 健康
   → stale>0 → Step 2
   → orphan>0 → Step 3
@@ -370,4 +417,5 @@ for each kb with experiences:
 | 维护时不跑 stale 检测 | 过时经验误导决策 | `check_stale` 至少每月一次 |
 | 不变动时狂跑 `apply_decay` | 没必要 | 每周一次足够 |
 | 把"经验"当文档写（长文/大段落） | 经验是单点结构化 | 一个问题→一个方案→一个教训 |
-| 故障查询不先查经验 | 错失秒级答案 | 故障型：经验优先，文档补充 |
+| 故障查询不先查经验 | 错失秒级答案 | 故障型：`experience_search_smart` 优先，`experience_search_global` 兜底，文档补充 |
+| 直接调 experience_search_global 做故障查询 | 丢失智能意图识别+多轮降级 | 用 `experience_search_smart` 作为推荐入口，`_global` 仅在手动控制时使用 |

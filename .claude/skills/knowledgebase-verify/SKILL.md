@@ -77,7 +77,7 @@ Use `mcp__kb-mcp__backend_status()` for MinerU health (authoritative).
 
 ### Graph
 `mcp__kb-mcp__kb_graph_health()` → Neo4j available? `mcp__kb-mcp__kb_graph_kb_overview(kb_id)` → doc_count vs actual.
-**Repair**: `mcp__kb-mcp__kb_graph_build_kb(kb_id, force=true)`.
+**Repair**: `mcp__kb-mcp__kb_graph_build(kb_id, force=true)`.
 **Clean stale**: `mcp__kb-mcp__kb_graph_delete_document(doc_path)` for deleted docs.
 
 ## V5 — Scorecard (max 115)
@@ -130,7 +130,7 @@ Score + key findings + single most impactful recommendation.
 
 ## V8 — Experience Health
 
-`mcp__kb-mcp__experience_check_stale_global()`
+`mcp__kb-mcp__experience_check_stale()` (空 kb_id = 全库检查)
 `mcp__kb-mcp__experience_dashboard(kb_id)` — 对每个有经验的 KB
 
 - orphan 经验：关联文档已删除 → 建议 `mcp__kb-mcp__experience_delete` 或更新 `related_docs`
@@ -147,7 +147,7 @@ Score + key findings + single most impactful recommendation.
 | 重复 Collection | `mcp__kb-mcp__kb_cleanup_orphan_collections(dry_run=false)` |
 | 孤 tag | `mcp__kb-mcp__kb_tags_cleanup(dry_run=false)` |
 | 文档缺向量索引 | `mcp__kb-mcp__kb_index_document(kb_id, doc_path)` |
-| 文档缺图谱索引 | `mcp__kb-mcp__kb_graph_build_kb(kb_id, force=false)` |
+| 文档缺图谱索引 | `mcp__kb-mcp__kb_graph_build(kb_id, force=false)` |
 | 元数据不一致 | `mcp__kb-mcp__kb_reindex(kb_id, force=true)` 重建 |
 | orphan 经验 | `mcp__kb-mcp__experience_delete(kb_id, exp_id)` 或 `mcp__kb-mcp__experience_update(related_docs=[])` |
 | test 经验污染 | `mcp__kb-mcp__experience_delete(kb_id, exp_id)`（确认后） |

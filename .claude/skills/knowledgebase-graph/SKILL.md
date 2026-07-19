@@ -56,17 +56,16 @@ Graph nodes: `Document`, `KnowledgeBase`, `Tag`. Edges: `BELONGS_TO`, `HAS_SUBKB
     │   → kb_graph_documents_by_tag(tag_name, limit=50)
     │
     ├── "关键词搜"
-    │   → 文档: kb_graph_search(keyword, limit=20)
-    │   → KB:   kb_graph_search_kbs(keyword, limit=20)
-    │   → 标签: kb_graph_search_tags(keyword, limit=20)
+    │   → kb_graph_search(keyword, node_type="all", limit=20)
+    │     (node_type: all/document/kb/tag — all 合并三类结果)
     │
     ├── "图谱健康/统计"
     │   → kb_graph_health() — Neo4j 是否可用
     │   → kb_graph_stats() — 节点/边计数
     │
     ├── "重建图谱"
-    │   → 单KB: kb_graph_build_kb(kb_id, force=true)
-    │   → 全库: kb_graph_build_all(force=true)
+    │   → kb_graph_build(kb_id="", force=true)
+    │     (空 kb_id=全库；指定 kb_id=单KB)
     │
     └── "清理图谱/删节点"
         → kb_graph_delete_document(doc_path) — 单文档
@@ -78,8 +77,7 @@ Graph nodes: `Document`, `KnowledgeBase`, `Tag`. Edges: `BELONGS_TO`, `HAS_SUBKB
 ## Build
 
 ```
-kb_graph_build_kb(kb_id, force=false)    # 单KB（增量）
-kb_graph_build_all(force=false)          # 全库
+kb_graph_build(kb_id="", force=false)    # 空 kb_id=全库；指定 kb_id=单KB（增量）
 ```
 - `force=false`: 跳过已索引文档（快）
 - `force=true`: 完全重建（schema变更/清理后使用）
@@ -120,9 +118,8 @@ kb_graph_document_paths(doc_a, doc_b, max_depth=4)   # path between two docs
 
 ## Keyword Search
 ```
-kb_graph_search(keyword, limit=20)        # document nodes
-kb_graph_search_kbs(keyword, limit=20)    # KB nodes
-kb_graph_search_tags(keyword, limit=20)   # tag nodes
+kb_graph_search(keyword, node_type="all", limit=20)
+# node_type: "all"（默认，合并 document+kb+tag）/ "document" / "kb" / "tag"
 ```
 
 ## Cleanup
@@ -134,7 +131,7 @@ Use after deleting documents or KBs to keep graph clean.
 
 ## After Document Move
 1. `kb_graph_delete_document(doc_path=old_path)` — remove stale node
-2. `kb_graph_build_kb(kb_id=target, force=false)` — incremental add to new KB
+2. `kb_graph_build(kb_id=target, force=false)` — incremental add to new KB
 
 ---
 
@@ -146,6 +143,6 @@ Use after deleting documents or KBs to keep graph clean.
 | `force=false` 当 full rebuild | 仅增量，新 schema 不改旧数据 | Schema 变更后必须 `force=true` |
 | 删文档不删图节点 | 孤立节点污染结果 | 删文档后必须 `kb_graph_delete_document()` |
 | 误读 `total_relations=0` | stats bug，实际有数据 | `kb_graph_document()` 抽检验证 |
-| 用 `kb_graph_build_all` 频繁跑 | 重，消耗 Neo4j 资源 | 仅批量清理后使用，日常用 `kb_graph_build_kb` 单 KB |
+| 用 `kb_graph_build()`（空 kb_id=全库）频繁跑 | 重，消耗 Neo4j 资源 | 仅批量清理后用全库；日常用 `kb_graph_build(kb_id=...)` 单 KB |
 
 See [graph-tools.md](references/graph-tools.md) for full tool parameter reference.

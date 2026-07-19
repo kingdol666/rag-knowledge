@@ -61,26 +61,22 @@ tools:
   - mcp__kb-mcp__kb_batch_index
   - mcp__kb-mcp__kb_reindex
   - mcp__kb-mcp__kb_cleanup_orphan_collections
-  # Knowledge Graph
+  # Knowledge Graph (14 tools — search/build/stale unified)
   - mcp__kb-mcp__kb_graph_search
-  - mcp__kb-mcp__kb_graph_search_kbs
-  - mcp__kb-mcp__kb_graph_search_tags
   - mcp__kb-mcp__kb_graph_neighbors
   - mcp__kb-mcp__kb_graph_stats
   - mcp__kb-mcp__kb_graph_health
   - mcp__kb-mcp__kb_graph_document
   - mcp__kb-mcp__kb_graph_document_related
-  - mcp__kb-mcp__kb_graph_document_enhanced
   - mcp__kb-mcp__kb_graph_documents_by_tag
   - mcp__kb-mcp__kb_graph_kb_overview
-  - mcp__kb-mcp__kb_graph_build_kb
-  - mcp__kb-mcp__kb_graph_build_all
+  - mcp__kb-mcp__kb_graph_build
   - mcp__kb-mcp__kb_graph_cross_kb_documents
   - mcp__kb-mcp__kb_graph_document_paths
   - mcp__kb-mcp__kb_graph_central_documents
   - mcp__kb-mcp__kb_graph_delete_document
   - mcp__kb-mcp__kb_graph_delete_kb
-  # Experience (11 base + 10 enhancement = 21 total)
+  # Experience (22 tools: CRUD + search + extract/draft + health/decay)
   - mcp__kb-mcp__experience_create
   - mcp__kb-mcp__experience_read
   - mcp__kb-mcp__experience_list
@@ -92,6 +88,8 @@ tools:
   - mcp__kb-mcp__experience_search
   - mcp__kb-mcp__experience_search_vector
   - mcp__kb-mcp__experience_search_global
+  - mcp__kb-mcp__experience_search_smart
+  - mcp__kb-mcp__experience_rerank
   # Experience Enhancement (E0/E1 extract, E3 drafts, E6 sync, E8 dashboard, E11 decay)
   - mcp__kb-mcp__experience_extract
   - mcp__kb-mcp__experience_drafts_list
@@ -99,7 +97,6 @@ tools:
   - mcp__kb-mcp__experience_draft_approve
   - mcp__kb-mcp__experience_draft_reject
   - mcp__kb-mcp__experience_check_stale
-  - mcp__kb-mcp__experience_check_stale_global
   - mcp__kb-mcp__experience_sync_kb
   - mcp__kb-mcp__experience_dashboard
   - mcp__kb-mcp__experience_apply_decay
@@ -415,7 +412,7 @@ This creates a durable record the user can review later.
 | `kb_doc_update_tags(kb_id, doc_path, tags)` | OK | doc_path: bare name OR full path |
 | `kb_tags_cleanup(dry_run=true)` | Report/Clean | Detect & clean orphan tags (0 refs). dry_run preview; false removes from registry. Protected: domain terms (PET/polymer/DeepLearning etc). |
 
-### Experience — 经验全生命周期（21 tools）
+### Experience — 经验全生命周期（22 tools）
 | Tool | Returns | Notes |
 |------|---------|-------|
 | `experience_create(kb_id, title, ...)`  | Exp | 创建经验。含 scenario/category/problem/solution/key_lessons/tags/severity/related_docs |
@@ -428,14 +425,15 @@ This creates a durable record the user can review later.
 | `experience_summary(kb_id)` | Stats | 按类别/严重度分布、top5 经验 |
 | `experience_search(kb_id, query, top_k=10)` | Exp[] | 元信息关键词搜索（标题/问题/方案/教训/标签）|
 | `experience_search_vector(kb_id, query, top_k=5)` | Chunk[] | 向量语义搜索（需经验已索引）|
-| `experience_search_global(query, top_k=10, score_threshold, verify_content)` | Exp[]+Meta | ⭐ **主力经验检索**。QDCVR: 向量召回→硬阈值→内容验证→P0/P1/P2分级。带 tier_reason |
+| `experience_search_global(query, top_k=10, score_threshold, verify_content)` | Exp[]+Meta | 跨库 QDCVR 主力检索：向量召回→硬阈值→内容验证→P0/P1/P2分级。带 tier_reason |
+| `experience_search_smart(query, top_k=10, score_threshold, verify_content)` | Exp[]+Meta | ⭐ **推荐入口**。在 `_global` 之上叠加：意图识别→自适应阈值→多轮降级→检索透明化（match_details/ranking_reason）|
+| `experience_rerank(query, experiences_json)` | Ranked[] | 多维语义重排序（标签/问题/方案匹配+可信度加权），`_smart` 之后做最终排序 |
 | `experience_extract(kb_id, doc_paths, dry_run, mode)` | Candidates/Task | E0/E1: heuristic=规则提取, prepare=LLM任务包 |
 | `experience_drafts_list(kb_id)` | Draft[] | E3: 草稿池列表 |
 | `experience_draft_read(kb_id, draft_id)` | Draft | E3: 草稿详情+来源证据 |
 | `experience_draft_approve(kb_id, draft_id, edits)` | Exp | E3: 批准草稿→正式经验 |
 | `experience_draft_reject(kb_id, draft_id, reason)` | OK | E3: 拒绝草稿 |
-| `experience_check_stale(kb_id)` | Report | E6: 检查经验关联文档是否过时/失效 |
-| `experience_check_stale_global()` | Report | E6: 全库 stale 检查 |
+| `experience_check_stale(kb_id="")` | Report | E6: 检查经验关联文档是否过时/失效。空 kb_id=全库检查 |
 | `experience_sync_kb(kb_id)` | OK | E6: 标记需要同步的经验 |
 | `experience_dashboard(kb_id)` | Dashboard | E8: 经验看板（总数/分级/草稿/stale/orphan/需同步）|
 | `experience_apply_decay(kb_id)` | Report | E11: 衰减规则（stale>30d/ disputed/ unvetted）|
@@ -451,19 +449,15 @@ This creates a durable record the user can review later.
 ### Knowledge Graph
 | Tool | Returns | Notes |
 |------|---------|-------|
-| `kb_graph_search(keyword, limit=20)` | Entity[] | Graph entity search. |
-| `kb_graph_search_kbs(keyword, limit=20)` | KB[] | Search KB nodes in graph. |
-| `kb_graph_search_tags(keyword, limit=20)` | Tag[] | Search tag nodes in graph. |
+| `kb_graph_search(keyword, node_type="all", limit=20)` | Mixed | Unified graph node search. node_type: "all" (default — merges document+kb+tag) / "document" / "kb" / "tag". |
 | `kb_graph_neighbors(node_id, node_type="document", depth=1)` | Subgraph | Entity neighbor exploration. |
 | `kb_graph_stats()` | Stats | Entity/relation counts. |
 | `kb_graph_health()` | Health | Is Neo4j available? |
-| `kb_graph_document(doc_path, limit=50)` | Doc graph | Document node + edges. |
-| `kb_graph_document_related(doc_path, limit=20)` | Doc[] | Related documents via graph. |
-| `kb_graph_document_enhanced(doc_path, limit=20)` | Doc[]+Groups | ⭐ Enhanced: results grouped by connection type (vector_similar/shared_tags/agent_judged) with scores. Auto-filters weak edges (shared_tag weight<2). |
+| `kb_graph_document(doc_path, limit=50)` | Doc graph | Document node + edges (full graph view: tags, related docs, cross-KB links). |
+| `kb_graph_document_related(doc_path, limit=20)` | Doc[] | Related documents via graph (shared tags / same KB / vector similarity). |
 | `kb_graph_documents_by_tag(tag_name, limit=50)` | Doc[] | Docs sharing a tag. |
 | `kb_graph_kb_overview(kb_id)` | Overview | KB's doc count, tag distribution in graph. |
-| `kb_graph_build_kb(kb_id, force=false)` | OK | Build graph for one KB. |
-| `kb_graph_build_all(force=false)` | OK | Build graph for all KBs. |
+| `kb_graph_build(kb_id="", force=false)` | OK | Build graph: empty kb_id = all KBs; specific kb_id = one KB. |
 | `kb_graph_cross_kb_documents(min_kbs=2, limit=50)` | Doc[] | Bridge docs across KBs. |
 | `kb_graph_document_paths(doc_a, doc_b, max_depth=4)` | Path[] | Shortest path between two docs. |
 | `kb_graph_central_documents(kb_id, top_n=20)` | Doc[] | Hub docs (reviews/surveys). |
@@ -520,7 +514,7 @@ EXACTLY. Do not skip steps.
 
 7. **doc_id resolution**: `kb_doc_read(doc_id="<UUID>")` and `kb_index_document(doc_id="<UUID>")` support UUID-based resolution, which is more reliable than path-based lookups after renames/moves.
 
-8. **`kb_graph_build_kb` returns `total_relations: 0` (known stats bug)**: Do NOT interpret 0 as failure. Actual graph data IS written to Neo4j. Always verify with `kb_graph_document(doc_path)` or `kb_graph_kb_overview(kb_id)`. See ingest Skill A6b for details.---
+8. **`kb_graph_build` returns `total_relations: 0` (known stats bug)**: Do NOT interpret 0 as failure. Actual graph data IS written to Neo4j. Always verify with `kb_graph_document(doc_path)` or `kb_graph_kb_overview(kb_id)`. See ingest Skill A6b for details.---
 
 ## Quality Standards — Non-Negotiable
 
@@ -530,7 +524,7 @@ EXACTLY. Do not skip steps.
 - FORBIDDEN: empty, "test", "TBD", filename-as-desc, tags like "doc"/"misc".
 - ALWAYS survey before acting: `kb_list()` then `kb_tags_list()`.
 - ALWAYS index after creating: `kb_index_document()` or `kb_batch_index()`.
-- ALWAYS rebuild graph after structural changes: `kb_graph_build_kb()` or `kb_graph_build_all()`.
+- ALWAYS rebuild graph after structural changes: `kb_graph_build(kb_id)` for one KB or `kb_graph_build()` (empty kb_id) for all KBs.
 
 ## Module Mode
 
