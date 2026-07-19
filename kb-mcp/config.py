@@ -70,8 +70,8 @@ def _url_from_config(key: str, section: str | None = None) -> str | None:
     """Extract a URL from config.yml. Returns None if not found."""
     cfg = _read_config_yml()
     server = cfg.get("server", {})
-    mode = section or os.environ.get("APP_MODE", "prod")
-    block = server.get(mode, server.get("prod", {}))
+    mode = section or os.environ.get("APP_MODE", "dev")
+    block = server.get(mode, server.get("dev", {}))
     return block.get(key)
 
 
@@ -102,11 +102,11 @@ def _default_web_url() -> str:
 def _frontend_port() -> str:
     """Frontend port from config.yml or env."""
     cfg = _read_config_yml()
-    mode = os.environ.get("APP_MODE", "prod")
+    mode = os.environ.get("APP_MODE", "dev")
     port = cfg.get("server", {}).get(mode, {}).get("frontend_port")
     if port:
         return str(port)
-    return "3000"
+    return "6789"
 
 
 def _default_backend_url() -> str:
@@ -128,10 +128,10 @@ def _default_backend_url() -> str:
 
     # 3) build from config.yml port
     cfg = _read_config_yml()
-    mode = os.environ.get("APP_MODE", "prod")
+    mode = os.environ.get("APP_MODE", "dev")
     port = cfg.get("server", {}).get(mode, {}).get("backend_port")
     hostname = os.environ.get("BACKEND_HOST", "localhost")
-    return f"http://{hostname}:{port or 8001}"
+    return f"http://{hostname}:{port or 8765}"
 
 
 def _default_mineru_url() -> str:
