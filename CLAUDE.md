@@ -405,6 +405,7 @@ server:
 | 校验, 核对, 完整性, 检查, 一致性, 检测, verify, validate, integrity, health check, quality audit | `Skill("knowledgebase")` |
 | 经验, 经验库, 经验教训, 故障经验, 运维经验, 实践, 案例, 怎么处理, experience, lesson, best practice, previous experience | `Skill("knowledgebase")` |
 | 图谱, 知识图谱, 实体关系, graph, knowledge graph, neo4j, entity, build graph | `Skill("knowledgebase")` |
+| 初始化, 安装知识库, 部署知识库, 知识库安装, 配置知识库, init, setup, install, deploy, bootstrap, 知识库启动, 搭建知识库, getting started | `Skill("knowledgebase-init")` |
 
 **例外条款**：仅当用户请求明确不涉及KB操作（如问代码实现、聊架构设计）时，可以不走此流程。有疑问时**默认路由到知识库指令**。
 
@@ -415,6 +416,8 @@ server:
 2. **立即委托 Archival 子 Agent**：`Agent(subagent_type="archival", ...)`
 3. Archival 接到委托后，执行其 `Step 0 场景诊断协议` 自主确认场景
 4. 路由到子 Skill（如 `knowledgebase-ingest`）严格按步骤执行
+
+**例外**：`knowledgebase-init` 由**主 Agent 直接执行**，不委托 Archival（详见 knowledgebase-init SKILL.md）。
 
 **严禁**：调度器在 skill 内自行执行操作，必须委托 Archival。
 
