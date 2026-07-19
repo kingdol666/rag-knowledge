@@ -54,6 +54,24 @@ def _j(data) -> str:
     return json.dumps(data, ensure_ascii=False)
 
 
+def _require_kb(kb_id: str) -> str | None:
+    """MCP tool input validation: return error JSON if kb_id is empty, None otherwise.
+
+    Prevents empty kb_id from producing double-slash URLs (/api/.../{empty}//...)
+    that result in opaque HTTP 404 errors for the calling agent.
+    """
+    if not kb_id or not kb_id.strip():
+        return _j({"success": False, "error": "kb_id is required and cannot be empty", "status": 400})
+    return None
+
+
+def _require_param(name: str, value: str) -> str | None:
+    """MCP tool input validation: return error JSON if value is empty, None otherwise."""
+    if not value or not value.strip():
+        return _j({"success": False, "error": f"{name} is required and cannot be empty", "status": 400})
+    return None
+
+
 def _exists(file_path: str) -> bool:
     from pathlib import Path
     return bool(file_path) and Path(file_path).exists()
@@ -103,12 +121,14 @@ async def kb_create(name: str, description: str = "", parent_id: str = "") -> st
 @mcp.tool()
 async def kb_update(kb_id: str, name: str = "", description: str = "") -> str:
     """Update a knowledge base's name and/or description. kb_id accepts path or UUID."""
+    if (err := _require_kb(kb_id)): return err
     return _j(await _client().kb_update(kb_id, name, description))
 
 
 @mcp.tool()
 async def kb_delete(kb_id: str) -> str:
     """Delete an entire knowledge base and all its contents (irreversible). kb_id accepts either the path string or the UUID returned by kb_create."""
+    if (err := _require_kb(kb_id)): return err
     return _j(await _client().kb_delete(kb_id))
 
 
@@ -129,6 +149,7 @@ async def kb_search(query: str, top_k: int = 10) -> str:
 @mcp.tool()
 async def kb_get_documents(kb_id: str) -> str:
     """List all documents inside a knowledge base. kb_id accepts path or UUID."""
+    if (err := _require_kb(kb_id)): return err
     return _j(await _client().kb_get_documents(kb_id))
 
 
@@ -166,6 +187,7 @@ async def kb_doc_catalog(kb_id: str) -> str:
     judges which one truly matches the current scenario, then confirms before calling kb_doc_read for full text or kb_search_vector for vector ranking.
     Does not load file_size/tags/vector_index/metadata to avoid polluting context.
     """
+    if (err := _require_kb(kb_id)): return err
     data = await _client().kb_get_documents(kb_id)
     if not isinstance(data, dict) or not data.get("success"):
         return _j(data)
@@ -200,12 +222,15 @@ async def kb_doc_create(kb_id: str, name: str, content: str, description: str = 
 
     **Atomic**: ONLY creates the document (file + .tree-fs.json + .knowledge-base.yml with file ID).
     Does NOT index. Use kb_index_document or kb_batch_index separately."""
+    if (err := _require_kb(kb_id)): return err
     return _j(await _client().kb_doc_create(kb_id, name, content, description))
 
 
 @mcp.tool()
 async def kb_doc_update_meta(kb_id: str, doc_path: str, name: str = "", description: str = "") -> str:
     """Update a document's metadata (name, description)."""
+    if (err := _require_kb(kb_id)): return err
+    if (err := _require_param("doc_path", doc_path)): return err
     return _j(await _client().kb_doc_update_meta(kb_id, doc_path, name, description))
 
 
@@ -215,6 +240,8 @@ async def kb_doc_update_content(kb_id: str, doc_path: str, content: str) -> str:
 
     **Atomic**: ONLY updates the file content + syncs .tree-fs.json + .knowledge-base.yml.
     Does NOT re-index. Use kb_index_document separately if needed."""
+    if (err := _require_kb(kb_id)): return err
+    if (err := _require_param("doc_path", doc_path)): return err
     return _j(await _client().kb_doc_update_content(kb_id, doc_path, content))
 
 
@@ -224,6 +251,8 @@ async def kb_doc_delete(kb_id: str, doc_path: str) -> str:
 
     Removes file from disk + .tree-fs.json + .knowledge-base.yml.
     Automatically cleans up vector chunks and graph nodes (fire-and-forget)."""
+    if (err := _require_kb(kb_id)): return err
+    if (err := _require_param("doc_path", doc_path)): return err
     return _j(await _client().kb_doc_delete(kb_id, doc_path))
 
 
@@ -233,6 +262,7 @@ async def kb_doc_batch_delete(kb_id: str, doc_paths: list) -> str:
 
     Removes files from disk + .tree-fs.json + .knowledge-base.yml.
     Automatically cleans up vector chunks and graph nodes (fire-and-forget)."""
+    if (err := _require_kb(kb_id)): return err
     return _j(await _client().kb_doc_batch_delete(kb_id, doc_paths))
 
 
@@ -247,6 +277,8 @@ async def kb_doc_move(doc_path: str, target_kb_id: str) -> str:
 
     The reindex is fire-and-forget (non-blocking). For critical moves, verify
     with kb_search_vector or kb_graph_document afterward."""
+    if (err := _require_param("doc_path", doc_path)): return err
+    if (err := _require_kb(target_kb_id)): return err
     return _j(await _client().kb_doc_move(doc_path, target_kb_id))
 
 
@@ -525,6 +557,8 @@ async def kb_tags_list() -> str:
 @mcp.tool()
 async def kb_doc_update_tags(kb_id: str, doc_path: str, tags: list) -> str:
     """Update a document's tags. kb_id accepts UUID; doc_path accepts full path or bare filename."""
+    if (err := _require_kb(kb_id)): return err
+    if (err := _require_param("doc_path", doc_path)): return err
     return _j(await _client().kb_doc_update_tags(kb_id, doc_path, tags))
 
 
@@ -620,8 +654,8 @@ async def kb_tags_cleanup(dry_run: bool = True) -> str:
     orphan_tags = []
     orphan_tag_names = []
 
-    # Batch check: first 200 tags use kb_doc_get_by_tag; the rest use heuristic
-    for i, tag in enumerate(all_tags[:200]):  # Check at most 200 tags (performance consideration)
+    # Full scan: check all tags (no performance cap — previously limited to 200)
+    for i, tag in enumerate(all_tags):
         try:
             # Protected tags skip redundant checks
             if _is_protected(tag):
@@ -735,6 +769,7 @@ async def experience_create(kb_id: str, title: str, scenario: str = "",
     Returns:
         {success, experience: {id, title, path, scenario, ...}}
     """
+    if (err := _require_kb(kb_id)): return err
     parsed_metrics = json.loads(metrics) if metrics else {}
     return _j(await _client().experience_create(
         kb_id, title, scenario, category, problem, solution, result,
@@ -754,6 +789,8 @@ async def experience_read(kb_id: str, exp_id: str) -> str:
     Returns:
         {success, experience: {id, title, ...}, content: "markdown body"}
     """
+    if (err := _require_kb(kb_id)): return err
+    if (err := _require_param("exp_id", exp_id)): return err
     return _j(await _client().experience_read(kb_id, exp_id))
 
 
@@ -771,6 +808,7 @@ async def experience_list(kb_id: str, scenario: str = "",
     Returns:
         {success, count, experiences: [{id, title, scenario, rating_avg, ...}]}
     """
+    if (err := _require_kb(kb_id)): return err
     return _j(await _client().experience_list(kb_id, scenario, category, tag))
 
 
@@ -803,6 +841,8 @@ async def experience_update(kb_id: str, exp_id: str, title: str = "",
     Returns:
         {success, experience: {id, title, ...}}
     """
+    if (err := _require_kb(kb_id)): return err
+    if (err := _require_param("exp_id", exp_id)): return err
     kwargs = {}
     for k, v in [("title", title), ("scenario", scenario), ("category", category),
                  ("problem", problem), ("solution", solution), ("result", result),
@@ -827,6 +867,8 @@ async def experience_delete(kb_id: str, exp_id: str) -> str:
     Returns:
         {success, deleted_id}
     """
+    if (err := _require_kb(kb_id)): return err
+    if (err := _require_param("exp_id", exp_id)): return err
     return _j(await _client().experience_delete(kb_id, exp_id))
 
 
@@ -846,6 +888,8 @@ async def experience_apply(kb_id: str, exp_id: str, user: str = "",
     Returns:
         {success, experience: {..., applied_count, ...}, apply_record: {user, context, result, notes}}
     """
+    if (err := _require_kb(kb_id)): return err
+    if (err := _require_param("exp_id", exp_id)): return err
     return _j(await _client().experience_apply(kb_id, exp_id, user, context, result, notes))
 
 
@@ -864,8 +908,9 @@ async def experience_review(kb_id: str, exp_id: str, reviewer: str = "",
     Returns:
         {success, experience: {..., rating_avg, review_count, ...}, review_record}
     """
+    if (err := _require_kb(kb_id)): return err
+    if (err := _require_param("exp_id", exp_id)): return err
     return _j(await _client().experience_review(kb_id, exp_id, reviewer, rating, comment))
-
 
 @mcp.tool()
 async def experience_summary(kb_id: str) -> str:
@@ -877,6 +922,7 @@ async def experience_summary(kb_id: str) -> str:
     Returns:
         {success, summary: {total, by_category, by_severity, total_applied, avg_rating, top_experiences}}
     """
+    if (err := _require_kb(kb_id)): return err
     return _j(await _client().experience_summary(kb_id))
 
 
@@ -885,15 +931,18 @@ async def experience_search(kb_id: str, query: str, top_k: int = 10) -> str:
     """Search experience metadata: matches keywords in title, problem, solution, key lessons, and tags.
 
     Suitable for precise lookup when you already know some keywords. Results sorted by relevance + rating + application count.
+    When kb_id is empty, automatically falls back to cross-KB global search (experience_search_global).
 
     Args:
-        kb_id: Knowledge base ID or path
+        kb_id: Knowledge base ID or path (empty string "" triggers cross-KB global search)
         query: Search keywords
         top_k: Number of results to return (default 10)
 
     Returns:
         {success, count, query, experiences: [{id, title, scenario, rating_avg, ...}]}
     """
+    if not kb_id or not kb_id.strip():
+        return await experience_search_global(query=query, top_k=top_k, verify_content=False)
     return _j(await _client().experience_search(kb_id, query, top_k))
 
 
@@ -903,15 +952,18 @@ async def experience_search_vector(kb_id: str, query: str, top_k: int = 5) -> st
 
     Suitable for fuzzy queries like "how did we handle similar vibration issues before". Requires experiences to be vector-indexed.
     Automatically filters to return only experience-type results (doc_type=experience).
+    When kb_id is empty, automatically falls back to cross-KB global search (experience_search_global).
 
     Args:
-        kb_id: Knowledge base ID or path
+        kb_id: Knowledge base ID or path (empty string "" triggers cross-KB global search)
         query: Natural language query
         top_k: Number of results to return (default 5)
 
     Returns:
         {success, query, count, results: [{content, score, doc_path, chunk_index}]}
     """
+    if not kb_id or not kb_id.strip():
+        return await experience_search_global(query=query, top_k=top_k, verify_content=False)
     return _j(await _client().experience_search_vector(kb_id, query, top_k))
 
 
@@ -975,6 +1027,7 @@ async def experience_extract(
         heuristic+!dry_run: {success, drafts_created, draft_ids}
         prepare: {success, docs_to_extract, documents, existing_scenarios, extraction_template}
     """
+    if (err := _require_kb(kb_id)): return err
     return _j(await _client().experience_extract(kb_id, doc_paths, dry_run, mode))
 
 
@@ -987,6 +1040,7 @@ async def experience_drafts_list(kb_id: str) -> str:
 
     Returns: {success, count, drafts: [{id, title, scenario, confidence, ...}]}
     """
+    if (err := _require_kb(kb_id)): return err
     return _j(await _client().experience_drafts_list(kb_id))
 
 
@@ -1000,6 +1054,8 @@ async def experience_draft_read(kb_id: str, draft_id: str) -> str:
 
     Returns: {success, draft: {id, title, problem, solution, key_lessons, source_doc, ...}}
     """
+    if (err := _require_kb(kb_id)): return err
+    if (err := _require_param("draft_id", draft_id)): return err
     return _j(await _client().experience_draft_read(kb_id, draft_id))
 
 
@@ -1019,6 +1075,8 @@ async def experience_draft_approve(
 
     Returns: {success, approved, experience, exp_id}
     """
+    if (err := _require_kb(kb_id)): return err
+    if (err := _require_param("draft_id", draft_id)): return err
     return _j(await _client().experience_draft_approve(kb_id, draft_id, edits))
 
 
@@ -1033,6 +1091,8 @@ async def experience_draft_reject(kb_id: str, draft_id: str, reason: str = "") -
 
     Returns: {success, rejected}
     """
+    if (err := _require_kb(kb_id)): return err
+    if (err := _require_param("draft_id", draft_id)): return err
     return _j(await _client().experience_draft_reject(kb_id, draft_id, reason))
 
 
@@ -1048,6 +1108,7 @@ async def experience_check_stale(kb_id: str) -> str:
 
     Returns: {success, total, fresh, stale, orphan, stale_experiences, orphan_experiences}
     """
+    if (err := _require_kb(kb_id)): return err
     return _j(await _client().experience_check_stale(kb_id))
 
 
@@ -1069,6 +1130,7 @@ async def experience_sync_kb(kb_id: str) -> str:
 
     Returns: {success, marked_for_sync, hint}
     """
+    if (err := _require_kb(kb_id)): return err
     return _j(await _client().experience_sync_kb(kb_id))
 
 
@@ -1082,6 +1144,7 @@ async def experience_dashboard(kb_id: str) -> str:
 
     Returns: {success, total_experiences, by_tier, summary, drafts_pending, stale, orphan, needs_sync}
     """
+    if (err := _require_kb(kb_id)): return err
     return _j(await _client().experience_dashboard(kb_id))
 
 
@@ -1098,6 +1161,7 @@ async def experience_apply_decay(kb_id: str) -> str:
 
     Returns: {success, decayed: {stale_unverified, disputed, unvetted}, total_flagged}
     """
+    if (err := _require_kb(kb_id)): return err
     return _j(await _client().experience_apply_decay(kb_id))
 
 
@@ -1216,11 +1280,35 @@ async def kb_search_two_stage(
 
     Returns:
         {success, stage1: {candidates}, stage2: {results}, total_results}
+        When cross-KB search results come from <2 distinct KBs (BM25 blind spot),
+        an auto-upgrade supplementary vector search is appended as _cross_kb_fallback.
     """
-    return _j(await _client().two_stage_search(
+    result = await _client().two_stage_search(
         query, kb_id, stage1_top_k, stage2_top_k, enable_graph_expansion,
         score_threshold, balance_kbs
-    ))
+    )
+    # P2.1: Auto-upgrade for cross-KB BM25 blind spot.
+    # When searching across all KBs with empty kb_id and the two-stage
+    # results come from <2 distinct KBs, run a supplementary vector search
+    # with balance_kbs=True to surface semantically relevant docs from
+    # other KBs that BM25 missed.
+    if not kb_id and result.get("success") and not balance_kbs:
+        stage2 = result.get("stage2", {})
+        results = stage2.get("results", []) if isinstance(stage2, dict) else []
+        distinct_kbs = set(r.get("kb_id") for r in results if r.get("kb_id"))
+        if len(distinct_kbs) < 2 and results:
+            supplement = await _client().vector_search(
+                query, kb_id="", top_k=max(stage2_top_k, 5),
+                score_threshold=score_threshold, balance_kbs=True
+            )
+            if supplement.get("success") and supplement.get("count", 0) > 0:
+                result["_cross_kb_fallback"] = {
+                    "triggered": True,
+                    "reason": f"BM25 stage1 returned results from only {len(distinct_kbs)} KB(s); supplementing with balanced vector search",
+                    "supplement_count": supplement.get("count", 0),
+                    "supplement": supplement.get("results", []),
+                }
+    return _j(result)
 
 
 @mcp.tool()
@@ -1228,8 +1316,28 @@ async def kb_reindex(kb_id: str = "", force: bool = False) -> str:
     """Rebuild vector index and knowledge graph. Empty kb_id rebuilds all.
 
     force=True forces rebuild of all documents (including already indexed ones).
+
+    After reindexing, automatically verifies the vector index is queryable
+    (prevents silent index corruption where collection exists but returns 0 results).
     """
-    return _j(await _client().reindex(kb_id, force))
+    result = await _client().reindex(kb_id, force)
+    # Post-reindex verification: if KB was specified and documents were processed,
+    # run a quick search to confirm the index is actually usable
+    processed = result.get("total_indexed") or result.get("total_docs", 0)
+    if kb_id and result.get("success") and processed > 0:
+        docs = await _client().kb_get_documents(kb_id)
+        doc_list = docs.get("documents", []) if isinstance(docs, dict) else []
+        if doc_list and len(doc_list) > 0:
+            # Use the first document's first heading/title word as a test query
+            first_doc = doc_list[0]
+            test_query = first_doc.get("name", "").replace(".md", "").replace("-", " ")[:60]
+            if test_query.strip():
+                verify = await _client().vector_search(test_query, kb_id=kb_id, top_k=1)
+                if verify.get("success") and verify.get("count", 0) > 0:
+                    result["_verify"] = "ok"
+                else:
+                    result["_verify"] = "WARNING: vector search returned 0 results after reindex — index may be corrupted"
+    return _j(result)
 
 
 @mcp.tool()
@@ -1280,6 +1388,7 @@ async def kb_batch_index(
     Returns:
         {success, indexed: [...], skipped: [...], errors: [...], total_indexed}
     """
+    if (err := _require_kb(kb_id)): return err
     return _j(await _client().batch_index_documents(kb_id, doc_paths, force))
 
 
@@ -1461,12 +1570,14 @@ async def kb_graph_document(doc_path: str, limit: int = 50) -> str:
 
     Finds all graph information for the document in Neo4j by its path.
     Returns: {document, tags, related_documents, cross_kb_links, ...}"""
+    if (err := _require_param("doc_path", doc_path)): return err
     return _j(await _client().graph_document(doc_path, limit))
 
 
 @mcp.tool()
 async def kb_graph_document_related(doc_path: str, limit: int = 20) -> str:
     """Return documents related to a given document (based on same KB / shared tags / description similarity)."""
+    if (err := _require_param("doc_path", doc_path)): return err
     return _j(await _client().graph_document_related(doc_path, limit))
 
 
@@ -1485,12 +1596,14 @@ async def kb_graph_document_enhanced(doc_path: str, limit: int = 20) -> str:
     - View a document's "truly related documents" and understand why they are related
     - Judge whether document clustering is meaningful
     - Verify graph build quality"""
+    if (err := _require_param("doc_path", doc_path)): return err
     return _j(await _client().graph_document_enhanced(doc_path, limit))
 
 
 @mcp.tool()
 async def kb_graph_documents_by_tag(tag_name: str, limit: int = 50) -> str:
     """Find documents by tag."""
+    if (err := _require_param("tag_name", tag_name)): return err
     return _j(await _client().graph_documents_by_tag(tag_name, limit))
 
 
@@ -1499,6 +1612,7 @@ async def kb_graph_kb_overview(kb_id: str) -> str:
     """KB-level graph overview: document statistics, tag distribution, related KBs, top related documents.
 
     View the overall graph state of a knowledge base and discover its core documents and connections."""
+    if (err := _require_kb(kb_id)): return err
     return _j(await _client().graph_kb_overview(kb_id))
 
 
@@ -1510,6 +1624,7 @@ async def kb_graph_build_kb(kb_id: str, force: bool = False) -> str:
     builds RELATED_TO relationships between documents via shared tags/same KB/description similarity.
     force=True: clear and rebuild; force=False: incremental (skip already-indexed documents).
     Returns: {docs_processed, docs_skipped, total_relations, errors, ...}"""
+    if (err := _require_kb(kb_id)): return err
     return _j(await _client().graph_build_kb(kb_id, force))
 
 
@@ -1537,6 +1652,8 @@ async def kb_graph_document_paths(doc_a: str, doc_b: str, max_depth: int = 4) ->
 
     Shows how documents are connected through shared tags/same KB and other relationship chains.
     Returns: {paths: [{doc_path, reasons, hops}], path_count}"""
+    if (err := _require_param("doc_a", doc_a)): return err
+    if (err := _require_param("doc_b", doc_b)): return err
     return _j(await _client().graph_document_paths(doc_a, doc_b, max_depth))
 
 
@@ -1546,18 +1663,21 @@ async def kb_graph_central_documents(kb_id: str, top_n: int = 20) -> str:
 
     These are the core documents of the KB, useful for understanding the main topic structure.
     Returns: {documents: [{name, path, degree, total_weight}], ...}"""
+    if (err := _require_kb(kb_id)): return err
     return _j(await _client().graph_central_documents(kb_id, top_n))
 
 
 @mcp.tool()
 async def kb_graph_delete_document(doc_path: str) -> str:
     """Delete a single document's graph data (shared entities preserved, only removes this document's contribution)."""
+    if (err := _require_param("doc_path", doc_path)): return err
     return _j(await _client().graph_delete_document(doc_path))
 
 
 @mcp.tool()
 async def kb_graph_delete_kb(kb_id: str) -> str:
     """Delete an entire KB's graph data (cross-KB shared entities preserved)."""
+    if (err := _require_kb(kb_id)): return err
     return _j(await _client().graph_delete_kb(kb_id))
 
 

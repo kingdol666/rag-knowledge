@@ -358,7 +358,7 @@ server:
 9. **Experience heuristic extraction produces low-quality candidates** — `experience_extract(mode="heuristic")` 的 key_lessons 可能返回章节标题。**推荐**：用 `mode="prepare"` → LLM 精炼。详见 knowledgebase-experience Skill E2a 质量门控。
 10. **Graph sub-KB nodes show UUID only** — `kb_graph_kb_overview` 返回的 sub_kbs 列表中 name 字段为 UUID 而非可读名称。
 11. **Tag registry accumulates orphan tags** — `kb_tags_list()` 返回的标签列表包含 0 文档引用的历史标签（如测试标签、章节标题）。使用 `kb_tags_cleanup(dry_run=true)` 检测，`dry_run=false` 清理。不影响搜索功能——文档级标签自动过滤。
-12. **`kb_graph_build_kb` 返回的 `total_relations` 可能为 0** — 这是 stats 统计 bug，实际图谱数据已写入 Neo4j。**不要**因为返回 0 就认为构建失败。用 `kb_graph_document(doc_path)` 或 `kb_graph_kb_overview(kb_id)` 抽检验证。
+12. **`kb_graph_build_kb` 返回的 `total_relations` 可能为 0** — 这**不是** bug：`total_relations` 统计的是**本次执行新创建**的关系数。当 `force=false` 且所有文档已有图谱索引时，新创建关系数为 0，但 Neo4j 中已有关系完整。用 `kb_graph_document(doc_path)` 或 `kb_graph_kb_overview(kb_id)` 验证已有图谱状态。
 13. **Experience credibility thresholds differ between CLAUDE.md and SKILL.md** — CLAUDE.md 的 P0/P1/P2 阈值已同步对齐到 SKILL.md（以 skill 为准，含 content 验证维度）。如需调整请同时改两处。
 14. **⭐ kb-mcp MCP 启动检查（强制规则）** — 在执行任何 KB 操作之前，必须先验证 kb-mcp MCP 服务器是否已连接：
     - 调用 `mcp__kb-mcp__backend_status` 检测 MCP 连通性
@@ -370,6 +370,8 @@ server:
       4. 如果后端健康但 MCP 仍不可用 → 通知用户 "kb-mcp MCP 未连接，请重启 Claude Code 或检查 .mcp.json"
       5. **仅在 MCP 确认不可用且用户明确允许后**，才可用 HTTP API 作为兜底（如 `curl` 调用 localhost:6789），且必须向用户声明 "MCP 不可用，已用 HTTP API 兜底"
     - Archival Agent 启动时将此检查作为 **Pre-Flight** 步骤，在所有 Step 0 场景诊断之前执行
+15. **⭐ MCP 代码修改需重启** — kb-mcp 是长驻 stdio 进程。对 `server.py`/`kb_client/client.py`/`config.py` 的任何修改都需要**重启 Claude Code**（或断开 MCP 连接后重连）才能生效。修改后如果行为未变化，先确认 MCP 已重启。
+16. **Dev-mode watchfiles 重载风暴** — `APP_MODE=dev` 时 uvicorn 可能因日志/数据库文件变化触发无限重载循环，导致后端 HTTP 不响应。长会话建议 `APP_MODE=prod`；dev 模式已限制仅监视 `app/` 目录（排除 logs/storage/chroma_db）。
 
 ## Development Conventions
 

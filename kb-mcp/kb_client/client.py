@@ -29,6 +29,26 @@ class KbClient:
     Call aclose() when done, or use as an async context manager.
     """
 
+    # ---- parameter validation helpers ----
+
+    @staticmethod
+    def _require_kb_id(kb_id: str) -> dict | None:
+        """Return error dict if kb_id is empty/blank; None otherwise.
+
+        Prevents double-slash URLs (/api/.../{empty}//...) that cause HTTP 404.
+        Call at the top of any method that places kb_id in the URL path.
+        """
+        if not kb_id or not kb_id.strip():
+            return {"success": False, "error": "kb_id is required (cannot be empty)", "status": 400}
+        return None
+
+    @staticmethod
+    def _require_exp_id(exp_id: str) -> dict | None:
+        """Return error dict if exp_id is empty/blank; None otherwise."""
+        if not exp_id or not exp_id.strip():
+            return {"success": False, "error": "exp_id is required (cannot be empty)", "status": 400}
+        return None
+
     def __init__(self, web_url=DEFAULT_WEB_URL, backend_url=DEFAULT_BACKEND_URL, timeout=HTTP_TIMEOUT):
         self.web_url = web_url.rstrip("/")
         self.backend_url = backend_url.rstrip("/")
@@ -114,30 +134,31 @@ class KbClient:
     # ================================================================
 
     async def health_check(self):
-        """Check health of backend, MinerU, and web services."""
-        async with httpx.AsyncClient(timeout=5, trust_env=False) as c:
-            status = {"backend": False, "mineru": False, "web": False, "errors": []}
-            for name, url in [
-                ("backend", f"{self.backend_url}/api/v1/health"),
-                ("web", f"{self.web_url}/api/kb/catalog"),
-            ]:
-                try:
-                    r = await c.get(url)
-                    status[name] = r.status_code == 200
-                except Exception as e:
-                    status["errors"].append(f"{name}: {e}")
-            # MinerU status — call the backend's /api/v1/mineru/status endpoint
+        """Check health of backend, MinerU, and web services.
+        Uses the shared client for connection pooling and auth consistency."""
+        client = await self._ensure_client()
+        status = {"backend": False, "mineru": False, "web": False, "errors": []}
+        for name, url in [
+            ("backend", f"{self.backend_url}/api/v1/health"),
+            ("web", f"{self.web_url}/api/kb/catalog"),
+        ]:
             try:
-                r = await c.get(f"{self.backend_url}/api/v1/mineru/status")
-                if r.status_code == 200:
-                    data = r.json()
-                    status["mineru"] = bool(data.get("running", False))
-                else:
-                    status["errors"].append(f"mineru: HTTP {r.status_code}")
+                r = await client.get(url)
+                status[name] = r.status_code == 200
             except Exception as e:
-                status["errors"].append(f"mineru: {e}")
-            status["all_ok"] = status["backend"] and status["web"]
-            return status
+                status["errors"].append(f"{name}: {e}")
+        # MinerU status — call the backend's /api/v1/mineru/status endpoint
+        try:
+            r = await client.get(f"{self.backend_url}/api/v1/mineru/status")
+            if r.status_code == 200:
+                data = r.json()
+                status["mineru"] = bool(data.get("running", False))
+            else:
+                status["errors"].append(f"mineru: HTTP {r.status_code}")
+        except Exception as e:
+            status["errors"].append(f"mineru: {e}")
+        status["all_ok"] = status["backend"] and status["web"]
+        return status
 
     # ================================================================
     # KNOWLEDGE BASE MANAGEMENT (CRUD)
@@ -184,7 +205,15 @@ class KbClient:
 
         Accepts doc_id, kb_id+doc_path, or path alone. When doc_id is provided,
         it is resolved to a path via the web API. When kb_id and doc_path
-        are provided, doc_path is resolved relative to the KB."""
+        are provided, doc_path is resolved relative to the KB.
+
+        Path normalization: backslashes (Windows) are auto-converted to
+        forward slashes so callers don't need to worry about platform differences."""
+        if not any([doc_id, path, kb_id]):
+            return {"success": False, "error": "At least one of doc_id, path, or kb_id+doc_path is required", "status": 400}
+        # Normalize path separators: backslash → forward slash
+        path = path.replace("\\", "/") if path else path
+        doc_path = doc_path.replace("\\", "/") if doc_path else doc_path
         params = {"max_chars": max_chars, "offset": offset, "limit": limit}
         if doc_id:
             params["doc_id"] = doc_id
@@ -556,30 +585,40 @@ class KbClient:
 
     async def graph_document(self, doc_path: str, limit: int = 50) -> dict:
         """Single document graph view: doc info + tags + related docs + cross-KB connections."""
+        if not doc_path or not doc_path.strip():
+            return {"success": False, "error": "doc_path is required (cannot be empty)", "status": 400}
         return await self._get_backend("/api/v1/graph/document",
                                        doc_path=doc_path, limit=limit)
 
     async def graph_document_related(self, doc_path: str, limit: int = 20) -> dict:
         """Document's related document list (quality-filtered)."""
+        if not doc_path or not doc_path.strip():
+            return {"success": False, "error": "doc_path is required (cannot be empty)", "status": 400}
         return await self._get_backend("/api/v1/graph/document/related",
                                        doc_path=doc_path, limit=limit)
 
     async def graph_document_enhanced(self, doc_path: str, limit: int = 20) -> dict:
         """Enhanced document relation query: grouped by connection type (vector_similar/shared_tag/agent_judged)."""
+        if not doc_path or not doc_path.strip():
+            return {"success": False, "error": "doc_path is required (cannot be empty)", "status": 400}
         return await self._get_backend("/api/v1/graph/document/enhanced",
                                        doc_path=doc_path, limit=limit)
 
     async def graph_documents_by_tag(self, tag_name: str, limit: int = 50) -> dict:
         """Find documents by tag."""
+        if not tag_name or not tag_name.strip():
+            return {"success": False, "error": "tag_name is required (cannot be empty)", "status": 400}
         return await self._get_backend("/api/v1/graph/documents-by-tag",
                                        tag_name=tag_name, limit=limit)
 
     async def graph_kb_overview(self, kb_id: str) -> dict:
         """KB graph overview: doc stats + tag distribution + related KBs + top docs."""
+        if (err := self._require_kb_id(kb_id)): return err
         return await self._get_backend("/api/v1/graph/kb-overview", kb_id=kb_id)
 
     async def graph_build_kb(self, kb_id: str, force: bool = False) -> dict:
         """Build document relationship graph for an entire KB (based on metadata)."""
+        if (err := self._require_kb_id(kb_id)): return err
         return await self._post_backend_json(
             "/api/v1/graph/build-kb",
             {"kb_id": kb_id, "force": force}, timeout=INDEX_TIMEOUT,
@@ -601,6 +640,10 @@ class KbClient:
     async def graph_document_paths(self, doc_a: str, doc_b: str,
                                     max_depth: int = 4) -> dict:
         """Shortest path between two documents."""
+        if not doc_a or not doc_a.strip():
+            return {"success": False, "error": "doc_a is required (cannot be empty)", "status": 400}
+        if not doc_b or not doc_b.strip():
+            return {"success": False, "error": "doc_b is required (cannot be empty)", "status": 400}
         return await self._get_backend(
             "/api/v1/graph/document-paths",
             doc_a=doc_a, doc_b=doc_b, max_depth=max_depth,
@@ -608,12 +651,15 @@ class KbClient:
 
     async def graph_central_documents(self, kb_id: str, top_n: int = 20) -> dict:
         """Most connected documents within a KB."""
+        if (err := self._require_kb_id(kb_id)): return err
         return await self._get_backend(
             "/api/v1/graph/central-documents", kb_id=kb_id, top_n=top_n,
         )
 
     async def graph_delete_document(self, doc_path: str) -> dict:
         """Delete graph data for a single document."""
+        if not doc_path or not doc_path.strip():
+            return {"success": False, "error": "doc_path is required (cannot be empty)", "status": 400}
         return await self._request(
             "DELETE", "/api/v1/graph/document",
             base=self.backend_url, params={"doc_path": doc_path},
@@ -621,6 +667,7 @@ class KbClient:
 
     async def graph_delete_kb(self, kb_id: str) -> dict:
         """Delete all graph data for an entire KB."""
+        if (err := self._require_kb_id(kb_id)): return err
         return await self._request(
             "DELETE", f"/api/v1/graph/kb/{kb_id}", base=self.backend_url,
         )
@@ -631,6 +678,7 @@ class KbClient:
 
     async def experience_init(self, kb_id: str) -> dict:
         """Initialize the experience folder."""
+        if (err := self._require_kb_id(kb_id)): return err
         return await self._get_backend(f"/api/v1/experience/{kb_id}/init")
 
     async def experience_create(self, kb_id: str, title: str,
@@ -640,6 +688,7 @@ class KbClient:
         severity: str = "normal", related_docs: list = None,
         prerequisites: list = None, metrics: dict = None) -> dict:
         """Create a new experience record."""
+        if (err := self._require_kb_id(kb_id)): return err
         body = {
             "title": title, "scenario": scenario, "category": category,
             "problem": problem, "solution": solution, "result": result,
@@ -651,6 +700,7 @@ class KbClient:
 
     async def experience_reindex(self, kb_id: str, exp_id: str = None) -> dict:
         """Reindex experience into vector store. exp_id=None reindexes all experiences in the KB."""
+        if (err := self._require_kb_id(kb_id)): return err
         body = {}
         if exp_id:
             body["exp_id"] = exp_id
@@ -658,11 +708,14 @@ class KbClient:
 
     async def experience_read(self, kb_id: str, exp_id: str) -> dict:
         """Read experience metadata and content."""
+        if (err := self._require_kb_id(kb_id)): return err
+        if (err := self._require_exp_id(exp_id)): return err
         return await self._get_backend(f"/api/v1/experience/{kb_id}/{exp_id}")
 
     async def experience_list(self, kb_id: str, scenario: str = "",
         category: str = "", tag: str = "") -> dict:
         """List experiences, optionally filtered by scenario/category/tag."""
+        if (err := self._require_kb_id(kb_id)): return err
         params = {}
         if scenario: params["scenario"] = scenario
         if category: params["category"] = category
@@ -671,18 +724,24 @@ class KbClient:
 
     async def experience_update(self, kb_id: str, exp_id: str, **kwargs) -> dict:
         """Update experience. Pass only the fields to update."""
+        if (err := self._require_kb_id(kb_id)): return err
+        if (err := self._require_exp_id(exp_id)): return err
         body = {k: v for k, v in kwargs.items() if v is not None and v != ""}
         return await self._request("PUT", f"/api/v1/experience/{kb_id}/{exp_id}",
                                    base=self.backend_url, json=body)
 
     async def experience_delete(self, kb_id: str, exp_id: str) -> dict:
         """Permanently delete an experience."""
+        if (err := self._require_kb_id(kb_id)): return err
+        if (err := self._require_exp_id(exp_id)): return err
         return await self._request("DELETE", f"/api/v1/experience/{kb_id}/{exp_id}",
                                    base=self.backend_url)
 
     async def experience_apply(self, kb_id: str, exp_id: str,
         user: str = "", context: str = "", result: str = "", notes: str = "") -> dict:
         """Mark an experience as applied."""
+        if (err := self._require_kb_id(kb_id)): return err
+        if (err := self._require_exp_id(exp_id)): return err
         body = {"user": user, "context": context, "result": result, "notes": notes}
         return await self._post_backend_json(
             f"/api/v1/experience/{kb_id}/{exp_id}/apply", body)
@@ -690,21 +749,32 @@ class KbClient:
     async def experience_review(self, kb_id: str, exp_id: str,
         reviewer: str = "", rating: float = 5.0, comment: str = "") -> dict:
         """Review an experience (rating)."""
+        if (err := self._require_kb_id(kb_id)): return err
+        if (err := self._require_exp_id(exp_id)): return err
         body = {"reviewer": reviewer, "rating": rating, "comment": comment}
         return await self._post_backend_json(
             f"/api/v1/experience/{kb_id}/{exp_id}/review", body)
 
     async def experience_summary(self, kb_id: str) -> dict:
         """Get experience statistics summary."""
+        if (err := self._require_kb_id(kb_id)): return err
         return await self._get_backend(f"/api/v1/experience/{kb_id}/summary")
 
     async def experience_search(self, kb_id: str, query: str, top_k: int = 10) -> dict:
-        """Metadata search for experiences."""
+        """Metadata search for experiences.
+        NOTE: When kb_id is empty, the MCP tool layer (server.py) should
+        automatically fall back to experience_search_global before calling this method.
+        """
+        if (err := self._require_kb_id(kb_id)): return err
         body = {"query": query, "top_k": top_k}
         return await self._post_backend_json(f"/api/v1/experience/{kb_id}/search", body)
 
     async def experience_search_vector(self, kb_id: str, query: str, top_k: int = 5) -> dict:
-        """Vector semantic search for experiences."""
+        """Vector semantic search for experiences.
+        NOTE: When kb_id is empty, the MCP tool layer (server.py) should
+        automatically fall back to experience_search_global before calling this method.
+        """
+        if (err := self._require_kb_id(kb_id)): return err
         body = {"query": query, "top_k": top_k}
         return await self._post_backend_json(f"/api/v1/experience/{kb_id}/vector-search", body)
 
@@ -723,6 +793,7 @@ class KbClient:
                                   dry_run: bool = True, mode: str = "heuristic") -> dict:
         """E0/E1: Experience extraction. mode=prepare returns task bundle; heuristic for heuristic extraction.
         dry_run=True returns candidates only; False writes to draft pool."""
+        if (err := self._require_kb_id(kb_id)): return err
         body = {"dry_run": dry_run, "mode": mode}
         if doc_paths is not None:
             body["doc_paths"] = doc_paths
@@ -732,20 +803,24 @@ class KbClient:
 
     async def experience_drafts_list(self, kb_id: str) -> dict:
         """List draft pool."""
+        if (err := self._require_kb_id(kb_id)): return err
         return await self._get_backend(f"/api/v1/experience/{kb_id}/drafts")
 
     async def experience_draft_read(self, kb_id: str, draft_id: str) -> dict:
         """Read draft details."""
+        if (err := self._require_kb_id(kb_id)): return err
         return await self._get_backend(f"/api/v1/experience/{kb_id}/drafts/{draft_id}")
 
     async def experience_draft_approve(self, kb_id: str, draft_id: str, edits: dict = None) -> dict:
         """Approve draft -> formal experience. edits can override fields."""
+        if (err := self._require_kb_id(kb_id)): return err
         body = {"edits": edits} if edits else {}
         return await self._post_backend_json(
             f"/api/v1/experience/{kb_id}/drafts/{draft_id}/approve", body)
 
     async def experience_draft_reject(self, kb_id: str, draft_id: str, reason: str = "") -> dict:
         """Reject a draft."""
+        if (err := self._require_kb_id(kb_id)): return err
         return await self._post_backend_json(
             f"/api/v1/experience/{kb_id}/drafts/{draft_id}/reject", {"reason": reason})
 
@@ -753,6 +828,7 @@ class KbClient:
 
     async def experience_check_stale(self, kb_id: str) -> dict:
         """Check KB experience-document consistency."""
+        if (err := self._require_kb_id(kb_id)): return err
         return await self._get_backend(f"/api/v1/experience/{kb_id}/stale")
 
     async def experience_check_stale_global(self) -> dict:
@@ -761,14 +837,17 @@ class KbClient:
 
     async def experience_sync_kb(self, kb_id: str) -> dict:
         """Mark entire KB for sync."""
+        if (err := self._require_kb_id(kb_id)): return err
         return await self._post_backend_json(f"/api/v1/experience/{kb_id}/sync", {})
 
     # ── E8/E11: Dashboard / decay ──
 
     async def experience_dashboard(self, kb_id: str) -> dict:
         """Experience dashboard."""
+        if (err := self._require_kb_id(kb_id)): return err
         return await self._get_backend(f"/api/v1/experience/{kb_id}/dashboard")
 
     async def experience_apply_decay(self, kb_id: str) -> dict:
         """Apply decay rules."""
+        if (err := self._require_kb_id(kb_id)): return err
         return await self._post_backend_json(f"/api/v1/experience/{kb_id}/decay", {})
