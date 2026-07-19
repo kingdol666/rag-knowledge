@@ -55,7 +55,7 @@ experience_extract(kb_id="<KB>", mode="heuristic", dry_run=True)
 
 > [WARNING] **危险操作警告**：`dry_run=False` 会将候选直接写入草稿池。实测 heuristic 提取产出大量低质候选（章节标题被误认为 key_lessons）。**强烈不推荐**直接 dry_run=False——详见下方 E2c 推荐策略。
 
-**提取时机**：入库新文档后（Ingest A7 通过，参见 [knowledgebase-ingest](knowledgebase-ingest) 的 A7 八项终检）；批量学习某 KB；定期丰富经验库。
+**提取时机**：入库新文档后（Ingest A7 通过，参见 [knowledgebase-ingest](../knowledgebase-ingest/SKILL.md) 的 A7 八项终检）；批量学习某 KB；定期丰富经验库。
 
 ## E2 — 质量门控（强制，提取+创建均适用）[IMPORTANT]
 
@@ -349,7 +349,7 @@ experience_search_global(query) → P0 经验直接答（秒级）
 ## E12 — 经验自动体检与清理（[IMPORTANT] Phase 1 新增）
 
 ### 触发时机
-- 每次 `knowledgebase-verify` V8 步骤触发
+- 每次 `knowledgebase-verify` V8 步骤触发（参见 [knowledgebase-verify](../knowledgebase-verify/SKILL.md)）
 - 每月定期维护
 - 删除文档后自动联动
 
@@ -403,9 +403,9 @@ for each kb with experiences:
 
 ## References
 
-- 入库流程参考：[knowledgebase-ingest](knowledgebase-ingest) — Ingest A7 终检、文档解析提交流程
-- 图谱联动参考：[knowledgebase-graph](knowledgebase-graph) — 知识图谱与经验的关联检索
-- 校验流程参考：[knowledgebase-verify](knowledgebase-verify) — 全库完整性校验（触发 E12 自动体检）
+- 入库流程参考：[knowledgebase-ingest](../knowledgebase-ingest/SKILL.md) — Ingest A7 终检、文档解析提交流程
+- 图谱联动参考：[knowledgebase-graph](../knowledgebase-graph/SKILL.md) — 知识图谱与经验的关联检索
+- 校验流程参考：[knowledgebase-verify](../knowledgebase-verify/SKILL.md) — 全库完整性校验（触发 E12 自动体检）
 - MEMORY.md: 参见项目 memory 目录下的 experience-enhancement-implemented 记录
 
 ## [WARNING] NEVER 清单

@@ -29,6 +29,7 @@ description: Knowledge base management — primary entry point and dispatcher. R
 
 匹配到后：
   ├── 明确单一场景 → 路由对应子 Skill
+  ├── Init 场景 → 主 Agent 直接执行 `Skill("knowledgebase-init")`，不经过 Archival
   ├── 多场景混合 → 按 Organize → Verify → Ingest → Manage → List/Search 顺序路由
   └── 模糊回退 → 如下表
 ```
@@ -56,6 +57,7 @@ Map matched keywords to a single scenario using the classification table below. 
 | 经验, 经验库, experience, lesson, best practice | **Experience** | `Skill("knowledgebase-experience")` |
 | 记录经验, 总结, summarize as experience | **Experience-Summarize** | `Skill("knowledgebase-experience-summarize")` |
 | 图谱, graph, neo4j, entity, build graph | **Graph** | `Skill("knowledgebase-graph")` |
+| 初始化, 安装, 部署, 配置, init, setup, install, deploy, bootstrap, getting started | **Init** | `Skill("knowledgebase-init")` (main agent — 不委托 Archival) |
 
 ### Step 3: Route to Sub-Skill
 Based on classification outcome:
@@ -95,6 +97,7 @@ Each sub-skill's SKILL.md must detect the scenario and delegate execution to the
 - "查/问/search" → Search
 - "存/上传/store" → Ingest
 - "看/列/show" → List
+- "初始化/安装/部署/setup" → Init (main agent, 不委托 Archival)
 - 否则输出："我没能清晰理解您的需求。请说明您是要：入库文档、搜索知识、管理知识库、还是整理知识库？"——等待澄清，不做修改操作
 
 ---
