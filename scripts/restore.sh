@@ -8,7 +8,7 @@
 #   ./scripts/restore.sh <backup-dir>
 #
 # WARNING: This overwrites current data. Stop services first!
-#   ./scripts/stop.sh
+#   ragctl down
 #   ./scripts/restore.sh storage/backups/2026-07-14_12-00-00
 # ============================================================
 set -euo pipefail
@@ -33,7 +33,7 @@ echo "  =========================================="
 if [ -f "$ROOT/storage/pids/backend.pid" ] || [ -f "$ROOT/storage/pids/web.pid" ]; then
     echo ""
     echo -e "  ${YELLOW}[WARN]${NC} Services appear to be running!"
-    echo "  Run ./scripts/stop.sh first, then retry."
+    echo "  Run ragctl down first, then retry."
     exit 1
 fi
 
@@ -93,7 +93,7 @@ echo "  =========================================="
 echo -e "  ${GREEN}Restore complete!${NC}"
 echo ""
 echo "  Next steps:"
-echo "    1. Start services:  ./scripts/start-prod.sh"
+echo "    1. Start services:  ragctl up"
 echo "    2. Rebuild graph:   use kb_graph_build (empty kb_id) or kb-mcp tool"
 echo "    3. Verify:          check a few docs in the web UI"
 echo "  =========================================="

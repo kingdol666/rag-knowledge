@@ -5,8 +5,8 @@ import json
 import os
 import sys
 
-# 默认 dev 模式（web 6789 / backend 8765）；直接 `uv run python tests/test_server.py`
-# 不带 APP_MODE 时避免回退 prod 打到 3000 端口（无服务）致全链路失败。
+# 默认 dev 模式（web 6789 / backend 8765）；所有层级（.mcp.json / config.py /
+# project_manager.py / web paths）一致默认 "dev"，无需显式设置也可正常工作。
 os.environ.setdefault("APP_MODE", "dev")
 
 import server

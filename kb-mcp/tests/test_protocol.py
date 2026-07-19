@@ -6,9 +6,8 @@ import os
 import sys
 import threading
 
-# 默认 dev 模式（6789/8765）；直接 `uv run python tests/test_protocol.py` 不带 APP_MODE 时
-# 避免回退 prod 打到 3000 端口（无服务）致全部请求失败。
-# 设 APP_MODE=prod 或已设值时尊重已有值。
+# 默认 dev 模式（6789/8765）；所有层级（.mcp.json / config.py / project_manager.py /
+# web paths）一致默认 "dev"，无需显式设置也可正常工作。设 APP_MODE=prod 时走生产端口。
 os.environ.setdefault("APP_MODE", "dev")
 
 import config
