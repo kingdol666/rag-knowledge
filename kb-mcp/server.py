@@ -1482,6 +1482,51 @@ async def kb_project_start(backend: bool = True, web: bool = True, neo4j: bool =
     return _j(data)
 
 
+@mcp.tool()
+async def kb_project_version(local_only: bool = False) -> str:
+    """Show local project version (root VERSION file + git SHA) and compare with
+    the latest GitHub release / default-branch VERSION. Use this to decide whether
+    an update is available before calling kb_project_update.
+
+    Args:
+      local_only: if True, skip the network call and only report local version
+    """
+    import asyncio
+    loop = asyncio.get_event_loop()
+    data = await loop.run_in_executor(
+        None, lambda: project_manager.project_version(local_only=local_only),
+    )
+    return _j(data)
+
+
+@mcp.tool()
+async def kb_project_update(check_only: bool = False, force: bool = False,
+                            no_deps: bool = False, restart: bool = False) -> str:
+    """Check GitHub for a newer version of the project and optionally pull it.
+    Delegates to `ragctl update` (single source of truth for version compare +
+    git pull --recurse-submodules + optional deps reinstall).
+
+    Safety:
+      - Refuses to pull over a dirty worktree unless force=True
+      - Prefer check_only=True first to preview, then call again with check_only=False
+
+    Args:
+      check_only: dry-run — report only, never pull (default False)
+      force: pull even if versions look equal / worktree is dirty
+      no_deps: after pull, skip `ragctl deps` reinstall
+      restart: after pull, run `ragctl up --force` to reload services
+    """
+    import asyncio
+    loop = asyncio.get_event_loop()
+    data = await loop.run_in_executor(
+        None,
+        lambda: project_manager.project_update(
+            check_only=check_only, force=force, no_deps=no_deps, restart=restart,
+        ),
+    )
+    return _j(data)
+
+
 # ============================================================
 # VECTOR SEARCH & TWO-STAGE PRECISION SEARCH
 # ============================================================

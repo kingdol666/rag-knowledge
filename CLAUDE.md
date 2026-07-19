@@ -29,7 +29,7 @@ MinerU OCR Engine (ephemeral port)  ← PDF → Markdown conversion
 Claude Code / Agent
     │  MCP stdio (kb-mcp)
     ▼
-kb-mcp MCP Server              ← 74 tools: KB CRUD, file ops, parse, search, tags, vector, graph, experience
+kb-mcp MCP Server              ← 76 tools: KB CRUD, file ops, parse, search, tags, vector, graph, experience, project lifecycle
     │  HTTP → web proxy / backend     +  direct file reads
     ▼
 Nuxt / Backend                 ← writes: parse + save pipeline
@@ -44,8 +44,8 @@ rag-knowledge/
 ├── start.bat / start.sh    # One-click launch scripts
 ├── backend/                # [submodule] rag-knowledge-backend — FastAPI + MinerU
 ├── web/                    # [submodule] rag-knowledge-frondend — Nuxt 3 UI (only frontend)
-├── kb-mcp/                 # [local] MCP server — provides 74 MCP tools for KB operations
-├── .claude/skills/         # OMC skills (knowledgebase dispatcher, ingest, search, manage, etc.)
+├── kb-mcp/                 # [local] MCP server — provides 76 MCP tools for KB operations
+├── .claude/skills/         # OMC skills (knowledgebase dispatcher, ingest, search, manage, init, update, etc.)
 ├── .claude/agents/         # Archival agent definition (knowledge-admin.md)
 ├── docs/ARCHITECTURE.md    # Detailed architecture + MCP dev guide
 └── README.md               # Project overview + roadmap
@@ -118,19 +118,20 @@ Key properties:
 
 ```
 kb-mcp/
-├── server.py               # 74 MCP tools via FastMCP; parse tools are NON-BLOCKING
+├── server.py               # 76 MCP tools via FastMCP; parse tools are NON-BLOCKING
 ├── client.py               # Copy of KbClient for quick tests
 ├── kb_client/
 │   └── client.py           # All HTTP logic (server.py has zero HTTP code)
 ├── config.py               # Reads URLs from shared config.yml; zero hardcoded paths
 ├── task_registry.py        # In-process async background task manager for parse jobs
+├── project_manager.py      # Silent service lifecycle + version/update via ragctl
 ├── pyproject.toml          # MCP + httpx deps
 └── .mcp.json (at root)     # Connects kb-mcp to Claude Code via stdio
 ```
 
-MCP Tools by category (74 tools total):
+MCP Tools by category (76 tools total):
 - **Health:** `backend_status`
-- **Project lifecycle:** `kb_project_status`, `kb_project_start`, `kb_project_preflight`
+- **Project lifecycle (5):** `kb_project_status`, `kb_project_start`, `kb_project_preflight`, `kb_project_version`, `kb_project_update`
 - **KB CRUD:** `kb_list`, `kb_create`, `kb_update`, `kb_delete`
 - **KB Catalog (agentic-first, lightweight):** `kb_catalog`, `kb_doc_catalog`
 - **Document Read:** `kb_get_documents`
@@ -406,6 +407,7 @@ server:
 | 经验, 经验库, 经验教训, 故障经验, 运维经验, 实践, 案例, 怎么处理, experience, lesson, best practice, previous experience | `Skill("knowledgebase")` |
 | 图谱, 知识图谱, 实体关系, graph, knowledge graph, neo4j, entity, build graph | `Skill("knowledgebase")` |
 | 初始化, 安装知识库, 部署知识库, 知识库安装, 配置知识库, init, setup, install, deploy, bootstrap, 知识库启动, 搭建知识库, getting started | `Skill("knowledgebase-init")` |
+| 更新知识库, 升级知识库, 检查更新, 拉取最新, 新版本, update KB, upgrade knowledge base, check for updates, ragctl update | `Skill("knowledgebase-update")` |
 
 **例外条款**：仅当用户请求明确不涉及KB操作（如问代码实现、聊架构设计）时，可以不走此流程。有疑问时**默认路由到知识库指令**。
 
@@ -417,7 +419,7 @@ server:
 3. Archival 接到委托后，执行其 `Step 0 场景诊断协议` 自主确认场景
 4. 路由到子 Skill（如 `knowledgebase-ingest`）严格按步骤执行
 
-**例外**：`knowledgebase-init` 由**主 Agent 直接执行**，不委托 Archival（详见 knowledgebase-init SKILL.md）。
+**例外**：`knowledgebase-init` 与 `knowledgebase-update` 由**主 Agent 直接执行**，不委托 Archival（详见对应 SKILL.md）。
 
 **严禁**：调度器在 skill 内自行执行操作，必须委托 Archival。
 

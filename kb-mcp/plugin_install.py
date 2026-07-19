@@ -121,7 +121,7 @@ def cmd_install(target: str | None = None):
         f.write("\n")
 
     print("[OK] kb-mcp installed to", str(mcp_file))
-    print("  Servers: kb-mcp (74 tools — KB CRUD, search, graph, experience)")
+    print("  Servers: kb-mcp (76 tools — KB CRUD, search, graph, experience, project lifecycle)")
     if rag_root:
         print("  RAG_PROJECT_ROOT:", rag_root)
     else:

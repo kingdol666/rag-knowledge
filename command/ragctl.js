@@ -19,6 +19,10 @@
  *   restart  Restart a specific service (backend|web|neo4j|all)
  *   status   Show service status
  *   logs     View/tail service logs (backend|web|mineru) [--tail] [--lines N]
+ *   version  Show local + remote version (VERSION file + git SHA)
+ *   update   Check GitHub for newer release and pull if available
+ *   install  Register ragctl globally
+ *   desktop  Launch Tauri desktop console
  */
 
 'use strict';
@@ -40,9 +44,254 @@ const MCP_DIR = path.join(PROJECT_ROOT, 'kb-mcp');
 const CONFIG_YML = path.join(PROJECT_ROOT, 'config.yml');
 const BACKEND_CONFIG_YML = path.join(BACKEND_DIR, 'config.yml');
 const ENV_FILE = path.join(PROJECT_ROOT, '.env');
+const RUN_DIR = path.join(PROJECT_ROOT, '.run');
+const VERSION_FILE = path.join(PROJECT_ROOT, 'VERSION');
 const UV_VERSION = '0.7.0'; // Recommended uv version
+const REQUIRED_PYTHON = '3.12';
+const MIN_NODE_MAJOR = 18; // Nuxt 3 + modern CLI; 22 preferred, 18+ accepted
+// Canonical remote identity for update checks (override via env if forked)
+const GITHUB_OWNER = process.env.RAG_GITHUB_OWNER || 'kingdol666';
+const GITHUB_REPO = process.env.RAG_GITHUB_REPO || 'rag-knowledge';
+const GITHUB_DEFAULT_BRANCH = process.env.RAG_GITHUB_BRANCH || 'master';
 
 const IS_WIN = os.platform() === 'win32';
+
+// ── Version helpers (single source of truth: root VERSION file) ──────────
+function readLocalVersion() {
+  try {
+    const raw = fs.readFileSync(VERSION_FILE, 'utf8').trim();
+    if (raw) return raw.replace(/^v/i, '');
+  } catch {}
+  // Fallback: command/package.json
+  try {
+    const pkg = JSON.parse(fs.readFileSync(path.join(PROJECT_ROOT, 'command', 'package.json'), 'utf8'));
+    if (pkg.version) return String(pkg.version).replace(/^v/i, '');
+  } catch {}
+  return '0.0.0';
+}
+
+function getLocalGitInfo() {
+  const info = { sha: null, branch: null, dirty: false, isGit: false };
+  try {
+    execSync('git rev-parse --is-inside-work-tree', {
+      cwd: PROJECT_ROOT, stdio: 'ignore', timeout: 5000, windowsHide: true,
+    });
+    info.isGit = true;
+  } catch {
+    return info;
+  }
+  try {
+    info.sha = execSync('git rev-parse --short HEAD', {
+      cwd: PROJECT_ROOT, encoding: 'utf8', timeout: 5000, stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true,
+    }).trim();
+  } catch {}
+  try {
+    info.branch = execSync('git rev-parse --abbrev-ref HEAD', {
+      cwd: PROJECT_ROOT, encoding: 'utf8', timeout: 5000, stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true,
+    }).trim();
+  } catch {}
+  try {
+    const dirty = execSync('git status --porcelain', {
+      cwd: PROJECT_ROOT, encoding: 'utf8', timeout: 8000, stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true,
+    }).trim();
+    info.dirty = dirty.length > 0;
+  } catch {}
+  return info;
+}
+
+// Semver compare: returns -1 if a<b, 0 if equal, 1 if a>b. Non-semver falls back to string compare.
+function compareSemver(a, b) {
+  const parse = (v) => {
+    const clean = String(v || '0').replace(/^v/i, '').split(/[-+]/)[0];
+    const parts = clean.split('.').map((x) => {
+      const n = parseInt(x, 10);
+      return Number.isFinite(n) ? n : 0;
+    });
+    while (parts.length < 3) parts.push(0);
+    return parts;
+  };
+  const pa = parse(a);
+  const pb = parse(b);
+  for (let i = 0; i < 3; i++) {
+    if (pa[i] < pb[i]) return -1;
+    if (pa[i] > pb[i]) return 1;
+  }
+  return 0;
+}
+
+function httpsGetJson(url, timeoutMs = 12000) {
+  return new Promise((resolve, reject) => {
+    const req = https.get(url, {
+      headers: {
+        'User-Agent': `ragctl/${readLocalVersion()}`,
+        Accept: 'application/vnd.github+json',
+      },
+      timeout: timeoutMs,
+    }, (res) => {
+      let body = '';
+      res.setEncoding('utf8');
+      res.on('data', (c) => { body += c; });
+      res.on('end', () => {
+        if (res.statusCode && res.statusCode >= 400) {
+          reject(new Error(`HTTP ${res.statusCode}: ${body.slice(0, 200)}`));
+          return;
+        }
+        try { resolve(JSON.parse(body)); }
+        catch (e) { reject(new Error(`Invalid JSON from ${url}: ${e.message}`)); }
+      });
+    });
+    req.on('timeout', () => { req.destroy(new Error(`Timeout fetching ${url}`)); });
+    req.on('error', reject);
+  });
+}
+
+async function fetchRemoteVersionInfo() {
+  // Prefer GitHub latest release tag; fall back to default-branch VERSION file content.
+  const result = {
+    remoteVersion: null,
+    remoteTag: null,
+    remoteSha: null,
+    remoteUrl: `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}`,
+    source: null, // 'release' | 'branch-version' | 'branch-sha'
+    error: null,
+  };
+  try {
+    const release = await httpsGetJson(
+      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/releases/latest`,
+    );
+    if (release && release.tag_name) {
+      result.remoteTag = release.tag_name;
+      result.remoteVersion = String(release.tag_name).replace(/^v/i, '');
+      result.remoteSha = (release.target_commitish && release.target_commitish.length === 40)
+        ? release.target_commitish.slice(0, 7)
+        : null;
+      result.remoteUrl = release.html_url || result.remoteUrl;
+      result.source = 'release';
+      return result;
+    }
+  } catch (e) {
+    // No releases (or network/API error) — try branch VERSION content next.
+    result.error = `release lookup: ${e.message}`;
+  }
+
+  try {
+    // Raw VERSION from default branch
+    const rawUrl = `https://raw.githubusercontent.com/${GITHUB_OWNER}/${GITHUB_REPO}/${GITHUB_DEFAULT_BRANCH}/VERSION`;
+    const body = await new Promise((resolve, reject) => {
+      const req = https.get(rawUrl, {
+        headers: { 'User-Agent': `ragctl/${readLocalVersion()}` },
+        timeout: 12000,
+      }, (res) => {
+        let data = '';
+        res.setEncoding('utf8');
+        res.on('data', (c) => { data += c; });
+        res.on('end', () => {
+          if (res.statusCode && res.statusCode >= 400) {
+            reject(new Error(`HTTP ${res.statusCode}`));
+            return;
+          }
+          resolve(data);
+        });
+      });
+      req.on('timeout', () => req.destroy(new Error('Timeout')));
+      req.on('error', reject);
+    });
+    const ver = String(body || '').trim().replace(/^v/i, '');
+    if (ver) {
+      result.remoteVersion = ver;
+      result.source = 'branch-version';
+    }
+  } catch (e) {
+    result.error = (result.error ? result.error + '; ' : '') + `branch VERSION: ${e.message}`;
+  }
+
+  // Always try to get tip SHA of default branch for SHA-level freshness
+  try {
+    const ref = await httpsGetJson(
+      `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/commits/${GITHUB_DEFAULT_BRANCH}`,
+    );
+    if (ref && ref.sha) {
+      result.remoteSha = String(ref.sha).slice(0, 7);
+      if (!result.source) result.source = 'branch-sha';
+    }
+  } catch (e) {
+    result.error = (result.error ? result.error + '; ' : '') + `branch SHA: ${e.message}`;
+  }
+
+  return result;
+}
+
+function runGit(args, opts = {}) {
+  const { silent = true, allowFail = false, timeout = 120000 } = opts;
+  // spawnSync for proper argv (no shell quoting bugs on Windows)
+  const { spawnSync } = require('child_process');
+  const res = spawnSync('git', args, {
+    cwd: PROJECT_ROOT,
+    encoding: 'utf8',
+    timeout,
+    windowsHide: true,
+    // inherit stderr so user sees progress; capture stdout
+    stdio: silent ? ['ignore', 'pipe', 'pipe'] : ['ignore', 'pipe', 'inherit'],
+  });
+  if (res.error) {
+    if (allowFail) return { code: 1, stdout: '', stderr: String(res.error.message || res.error) };
+    throw res.error;
+  }
+  const code = res.status == null ? 1 : res.status;
+  if (code !== 0 && !allowFail) {
+    const err = new Error(`git ${args.join(' ')} failed (exit ${code})`);
+    err.status = code;
+    err.stdout = res.stdout || '';
+    err.stderr = res.stderr || '';
+    throw err;
+  }
+  return { code, stdout: res.stdout || '', stderr: res.stderr || '' };
+}
+
+/**
+ * Compare local HEAD vs a remote tip SHA.
+ * Returns: 'behind' | 'ahead' | 'equal' | 'diverged' | 'unknown'
+ * Uses git merge-base ancestry when possible (works offline after fetch).
+ */
+function compareGitTips(localSha, remoteSha) {
+  if (!localSha || !remoteSha) return 'unknown';
+  const loc = String(localSha).slice(0, 7);
+  const rem = String(remoteSha).slice(0, 7);
+  if (loc === rem) return 'equal';
+  // Try full SHAs via git rev-parse / merge-base
+  try {
+    const fullLocal = runGit(['rev-parse', 'HEAD'], { allowFail: true }).stdout.trim();
+    // Resolve remote sha if short
+    let fullRemote = remoteSha;
+    const resolved = runGit(['rev-parse', '--verify', remoteSha], { allowFail: true });
+    if (resolved.code === 0 && resolved.stdout.trim()) fullRemote = resolved.stdout.trim();
+    // If remote short sha isn't in local object db yet, try origin/branch
+    if (resolved.code !== 0) {
+      const originRef = runGit(['rev-parse', `origin/${GITHUB_DEFAULT_BRANCH}`], { allowFail: true });
+      if (originRef.code === 0) fullRemote = originRef.stdout.trim();
+    }
+    if (fullLocal && fullRemote && fullLocal === fullRemote) return 'equal';
+    const aIsAncOfB = runGit(['merge-base', '--is-ancestor', fullLocal, fullRemote], { allowFail: true });
+    const bIsAncOfA = runGit(['merge-base', '--is-ancestor', fullRemote, fullLocal], { allowFail: true });
+    if (aIsAncOfB.code === 0) return 'behind';   // local ancestor of remote → need pull
+    if (bIsAncOfA.code === 0) return 'ahead';    // remote ancestor of local → local has unpushed commits
+    // Both not ancestors → diverged (or objects missing)
+    if (aIsAncOfB.code === 1 && bIsAncOfA.code === 1) return 'diverged';
+  } catch {}
+  // Fallback: unequal short shas without ancestry info
+  return loc === rem ? 'equal' : 'unknown';
+}
+
+/**
+ * Best-effort: refresh origin refs (network) then return origin/<branch> short SHA.
+ * Non-fatal on network failure — falls back to existing origin/* ref.
+ */
+function fetchOriginTip(branch = GITHUB_DEFAULT_BRANCH) {
+  runGit(['fetch', 'origin', branch, '--prune'], { allowFail: true, timeout: 60000 });
+  const r = runGit(['rev-parse', '--short', `origin/${branch}`], { allowFail: true });
+  if (r.code === 0 && r.stdout.trim()) return r.stdout.trim();
+  return null;
+}
 
 // ── Log paths (single source of truth — MUST match src-tauri watch_log paths) ──
 // Both ragctl and Tauri write/read the same files so the desktop log viewer works
@@ -53,6 +302,47 @@ const LOG_PATHS = {
   mineru:  path.join(BACKEND_DIR, 'logs', 'mineru-api.log'),
 };
 function getLogPath(service) { return LOG_PATHS[service]; }
+
+// ── Runtime PID bookkeeping (.run/*.pid) ────────────────────────────────
+// Used by status/stop to avoid relying solely on port scans (which can false-
+// positive when unrelated processes bind the same port).
+function ensureRunDir() {
+  try { fs.mkdirSync(RUN_DIR, { recursive: true }); } catch {}
+}
+function pidFile(service, mode) {
+  return path.join(RUN_DIR, `${service}-${mode || getAppMode()}.pid`);
+}
+function writePid(service, mode, pid, port) {
+  ensureRunDir();
+  const payload = { pid, port, mode, startedAt: new Date().toISOString() };
+  try { fs.writeFileSync(pidFile(service, mode), JSON.stringify(payload), 'utf8'); } catch {}
+}
+function readPid(service, mode) {
+  try {
+    const raw = fs.readFileSync(pidFile(service, mode), 'utf8');
+    return JSON.parse(raw);
+  } catch { return null; }
+}
+function clearPid(service, mode) {
+  try { fs.unlinkSync(pidFile(service, mode)); } catch {}
+}
+function isPidAlive(pid) {
+  if (!pid || !Number.isFinite(pid)) return false;
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch {
+    // On Windows, process.kill(pid, 0) can throw for access/ESRCH.
+    // Fall through to a tasklist probe.
+  }
+  if (!IS_WIN) return false;
+  try {
+    const out = execSync(`tasklist /FI "PID eq ${pid}" /NH`, {
+      encoding: 'utf8', timeout: 5000, stdio: 'pipe', windowsHide: true,
+    });
+    return out.includes(String(pid));
+  } catch { return false; }
+}
 
 // ── ANSI Colors ────────────────────────────────────────────────────────
 const C = {
@@ -192,6 +482,110 @@ function ensureUvOnPath() {
   return false;
 }
 
+// Persist a directory onto the user PATH without the classic Windows `setx
+// PATH "%PATH%;..."` trap (setx truncates at 1024 chars and expands %PATH%
+// incorrectly when nested inside cmd.exe). Prefer PowerShell [Environment]
+// for user-scope updates; on POSIX just print an export hint.
+function appendUserPath(dir) {
+  if (!dir) return false;
+  try {
+    if (IS_WIN) {
+      const ps = `
+$dir = '${dir.replace(/'/g, "''")}';
+$cur = [Environment]::GetEnvironmentVariable('Path', 'User');
+if (-not $cur) { $cur = '' }
+$parts = $cur -split ';' | Where-Object { $_ -and $_.Trim() -ne '' }
+if ($parts -contains $dir) { exit 0 }
+$new = if ($cur) { "$cur;$dir" } else { $dir }
+[Environment]::SetEnvironmentVariable('Path', $new, 'User')
+`;
+      execSync(`powershell -NoProfile -ExecutionPolicy Bypass -Command ${JSON.stringify(ps)}`, {
+        stdio: 'ignore', timeout: 10000, windowsHide: true,
+      });
+      process.env.PATH = `${dir}${path.delimiter}${process.env.PATH || ''}`;
+      return true;
+    }
+    // POSIX: cannot safely rewrite shell rc from here; caller should hint.
+    process.env.PATH = `${dir}${path.delimiter}${process.env.PATH || ''}`;
+    return false;
+  } catch {
+    return false;
+  }
+}
+
+function nodeMajor() {
+  const m = String(process.versions.node || '').match(/^(\d+)/);
+  return m ? parseInt(m[1], 10) : 0;
+}
+
+function hasPython312() {
+  // Prefer uv-managed pin (backend/.python-version or pyproject requires-python).
+  // Also accept a system python3.12 if present — uv will still manage the venv.
+  if (commandExists('python3.12') || commandExists('py')) {
+    try {
+      if (commandExists('python3.12')) {
+        const v = execSync('python3.12 --version', { encoding: 'utf8', timeout: 5000, stdio: ['pipe','pipe','pipe'] }).trim();
+        if (/3\.12\./.test(v)) return true;
+      }
+    } catch {}
+  }
+  // uv can download CPython 3.12 on demand when network is available — treat
+  // "uv present" as sufficient for setup; actual pin is enforced by uv sync.
+  return commandExists('uv') || !!findUvDir();
+}
+
+async function waitForHttpOk(url, { timeoutSec = 45, intervalMs = 1000, expectBodyIncludes = null } = {}) {
+  const deadline = Date.now() + timeoutSec * 1000;
+  let last = { code: 0, body: '' };
+  while (Date.now() < deadline) {
+    last = await httpGet(url, Math.min(intervalMs + 500, 5000));
+    if (last.code === 200) {
+      if (!expectBodyIncludes || (last.body && last.body.includes(expectBodyIncludes))) {
+        return { ok: true, ...last };
+      }
+    }
+    await sleep(intervalMs);
+  }
+  return { ok: false, ...last };
+}
+
+function preflightReady({ requireModel = false } = {}) {
+  // Lightweight gate used by `up`/`start` so a fresh clone fails fast with an
+  // actionable message instead of spawning half-broken services.
+  const problems = [];
+  if (!fs.existsSync(path.join(BACKEND_DIR, 'app', 'main.py'))) {
+    problems.push('backend submodule missing — run: git submodule update --init --recursive  (or ragctl setup)');
+  }
+  if (!fs.existsSync(path.join(WEB_DIR, 'package.json'))) {
+    problems.push('web submodule missing — run: git submodule update --init --recursive  (or ragctl setup)');
+  }
+  if (!fs.existsSync(ENV_FILE)) {
+    problems.push('.env missing — run: ragctl setup  (or copy .env.example → .env)');
+  }
+  if (!fs.existsSync(path.join(BACKEND_DIR, '.venv')) && !fs.existsSync(path.join(BACKEND_DIR, 'uv.lock'))) {
+    problems.push('backend deps not installed — run: ragctl setup  (or ragctl deps)');
+  }
+  if (!fs.existsSync(path.join(WEB_DIR, 'node_modules'))) {
+    problems.push('web deps not installed — run: ragctl setup  (or ragctl deps)');
+  }
+  if (!fs.existsSync(path.join(MCP_DIR, 'uv.lock')) && !fs.existsSync(path.join(MCP_DIR, '.venv'))) {
+    problems.push('kb-mcp deps not installed — run: ragctl setup  (or ragctl deps)');
+  }
+  if (!ensureUvOnPath()) {
+    problems.push('uv not found on PATH — run: ragctl setup');
+  }
+  if (nodeMajor() < MIN_NODE_MAJOR) {
+    problems.push(`Node.js ${process.version} is too old (need >= ${MIN_NODE_MAJOR}). Install from https://nodejs.org/`);
+  }
+  if (requireModel) {
+    const modelDir = path.join(PROJECT_ROOT, 'models_cache', 'hub', 'models--BAAI--bge-m3');
+    const hfDir = path.join(os.homedir(), '.cache', 'huggingface', 'hub', 'models--BAAI--bge-m3');
+    const present = [modelDir, hfDir].some(d => fs.existsSync(d));
+    if (!present) problems.push('BGE-M3 model not cached — run: ragctl model  (optional; first index will auto-download)');
+  }
+  return problems;
+}
+
 // ── spawnAsync — run command with real-time stdout/stderr, return exit code ──
 function spawnAsync(command, args = [], opts = {}) {
   return new Promise((resolve) => {
@@ -274,21 +668,37 @@ async function cmdCheck() {
   // 2. Prerequisites
   console.log(`\n${_c(C.BOLD, '── 核心依赖 ──')}\n`);
 
+  // Ensure freshly-installed uv is visible in THIS process before probing.
+  ensureUvOnPath();
+
   // uv check with version
   let uvVersion = '';
   try {
     uvVersion = execSync('uv --version', { encoding: 'utf8', timeout: 5000, stdio: ['pipe','pipe','pipe'] }).trim();
-    const match = uvVersion.match(/uv (\d+\.\d+\.\d+)/);
-    const ver = match ? match[1] : 'unknown';
     addResult('pass', 'uv (Python 包管理器)', `已安装: ${uvVersion}`, null);
   } catch {
     addResult('fail', 'uv (Python 包管理器)', '未找到 uv', IS_WIN
-      ? '运行: powershell -c "irm https://astral.sh/uv/install.ps1 | iex"'
-      : '运行: curl -LsSf https://astral.sh/uv/install.sh | sh');
+      ? '运行: ragctl setup  或  powershell -c "irm https://astral.sh/uv/install.ps1 | iex"'
+      : '运行: ragctl setup  或  curl -LsSf https://astral.sh/uv/install.sh | sh');
   }
 
-  // Node.js
-  addResult('pass', 'Node.js', process.version, null);
+  // Node.js (accept >=18; recommend 22)
+  const major = nodeMajor();
+  if (major >= 22) {
+    addResult('pass', 'Node.js', `${process.version} (推荐版本)`, null);
+  } else if (major >= MIN_NODE_MAJOR) {
+    addResult('warn', 'Node.js', `${process.version} (可用，推荐 ≥22)`, '升级: https://nodejs.org/');
+  } else {
+    addResult('fail', 'Node.js', `${process.version} 过旧 (需要 ≥${MIN_NODE_MAJOR})`, '安装/升级: https://nodejs.org/');
+  }
+
+  // Python 3.12 pin (backend requires ==3.12.*)
+  if (hasPython312()) {
+    addResult('pass', 'Python 3.12', 'uv 可管理 / 系统已具备', null);
+  } else {
+    addResult('warn', 'Python 3.12', '未检测到；uv sync 时会自动下载 CPython 3.12（需网络）',
+      '离线环境请预装 Python 3.12 或预先准备 backend/.venv');
+  }
 
   // npm
   try {
@@ -368,39 +778,67 @@ async function cmdCheck() {
     addResult('warn', 'CLI (js-yaml)', '依赖未安装', '运行: cd command && npm install');
   }
 
-  // 5. BGE Model
+  // 5. BGE Model (project models_cache first, then HF hub cache)
   console.log(`\n${_c(C.BOLD, '── AI 模型 ──')}\n`);
-  const modelDir = path.join(os.homedir(), '.cache', 'huggingface', 'hub', 'models--BAAI--bge-m3');
-  const modelSnapshot = fs.existsSync(modelDir) ? fs.readdirSync(path.join(modelDir, 'snapshots')).length > 0 ? '已下载' : '未完成' : '未下载';
-  if (modelSnapshot === '已下载') {
-    addResult('pass', 'BGE-M3 嵌入模型', '已下载 (向量搜索核心模型)', null);
+  const projectModelDir = path.join(PROJECT_ROOT, 'models_cache', 'hub', 'models--BAAI--bge-m3');
+  const hfModelDir = path.join(os.homedir(), '.cache', 'huggingface', 'hub', 'models--BAAI--bge-m3');
+  function modelStatus(dir) {
+    if (!fs.existsSync(dir)) return '未下载';
+    const snapshots = path.join(dir, 'snapshots');
+    if (fs.existsSync(snapshots) && fs.readdirSync(snapshots).length > 0) return '已下载';
+    return '未完成';
+  }
+  const projectStatus = modelStatus(projectModelDir);
+  const hfStatus = modelStatus(hfModelDir);
+  if (projectStatus === '已下载' || hfStatus === '已下载') {
+    const where = projectStatus === '已下载' ? 'project models_cache/' : 'HF hub cache';
+    addResult('pass', 'BGE-M3 嵌入模型', `已缓存 (${where})`, null);
   } else {
-    addResult('warn', 'BGE-M3 嵌入模型', `${modelSnapshot}（首次向量索引时自动下载 ~2.2GB）`, '预下载: ragctl model');
+    addResult('warn', 'BGE-M3 嵌入模型', `${projectStatus}/${hfStatus}（首次向量索引时自动下载 ~2.2GB）`, '预下载: ragctl model');
   }
 
-  // 6. Ports (show both dev and prod)
+  // 6. Ports (show both dev and prod) — use health probes, not bare listening
   console.log(`\n${_c(C.BOLD, '── 端口状态 ──')}\n`);
 
-  const devPorts = [
-    [8765, 'Backend API (dev)'],
-    [6789, 'Web UI (dev)'],
-  ];
-  const prodPorts = [
-    [8001, 'Backend API (prod)'],
-    [3000, 'Web UI (prod)'],
+  const portProbes = [
+    [8765, 'Backend API (dev)', '/api/v1/health'],
+    [6789, 'Web UI (dev)', '/api/kb/catalog'],
+    [8001, 'Backend API (prod)', '/api/v1/health'],
+    [3000, 'Web UI (prod)', '/api/kb/catalog'],
   ];
   const sharedPorts = [
-    [7687, 'Neo4j Bolt'],
-    [7474, 'Neo4j HTTP'],
+    [7687, 'Neo4j Bolt', null],
+    [7474, 'Neo4j HTTP', null],
   ];
 
-  for (const [port, name] of [...devPorts, ...prodPorts, ...sharedPorts]) {
+  for (const [port, name, healthPath] of portProbes) {
+    if (await portInUse(port)) {
+      const pid = findPidOnPort(port);
+      let health = '';
+      if (healthPath) {
+        const r = await httpGet(`http://127.0.0.1:${port}${healthPath}`, 2500);
+        health = r.code === 200 ? 'healthy' : (r.code ? `HTTP ${r.code}` : 'no-response');
+      }
+      const pidInfo = pid ? ` (PID ${pid})` : '';
+      const healthInfo = health ? ` [${health}]` : '';
+      // Listening but unhealthy is a warning (zombie / wrong process)
+      if (health && health !== 'healthy') {
+        addResult('warn', `端口 ${port} (${name})`, `占用中但未就绪${pidInfo}${healthInfo}`,
+          '可能是无关进程占用端口，或服务启动失败。排查: ragctl logs backend|web / ragctl down --force');
+      } else {
+        addResult('pass', `端口 ${port} (${name})`, `运行中${pidInfo}${healthInfo}`, null);
+      }
+    } else {
+      addResult('warn', `端口 ${port} (${name})`, '未使用', '对应服务未启动');
+    }
+  }
+  for (const [port, name] of sharedPorts) {
     if (await portInUse(port)) {
       const pid = findPidOnPort(port);
       const pidInfo = pid ? ` (PID ${pid})` : '';
       addResult('pass', `端口 ${port} (${name})`, `运行中${pidInfo}`, null);
     } else {
-      addResult('warn', `端口 ${port} (${name})`, '未使用', '对应服务未启动');
+      addResult('warn', `端口 ${port} (${name})`, '未使用', '图谱功能可选；启动: ragctl start neo4j 或 docker compose up -d neo4j');
     }
   }
 
@@ -430,8 +868,19 @@ async function cmdSetup() {
   header('RAG Knowledge Platform — 一键部署');
   console.log(`  ${_c(C.GRAY, '这将自动安装所有缺失的依赖、模型和配置。')}\n`);
 
+  // 0. Node gate (hard fail — nothing else can proceed without a modern Node)
+  const major = nodeMajor();
+  if (major < MIN_NODE_MAJOR) {
+    err(`Node.js ${process.version} 过旧（需要 ≥${MIN_NODE_MAJOR}，推荐 22）`);
+    info('请先安装/升级 Node.js: https://nodejs.org/');
+    return 1;
+  }
+  if (major < 22) {
+    warn(`Node.js ${process.version} 可用但低于推荐版本 22 — 建议升级以避免 Nuxt 边缘兼容问题`);
+  }
+
   // 1. Install uv if missing
-  if (!commandExists('uv')) {
+  if (!commandExists('uv') && !findUvDir()) {
     step('安装 uv (Python 包管理器)...');
     if (IS_WIN) {
       info('下载 uv 安装脚本...');
@@ -447,16 +896,15 @@ async function cmdSetup() {
           // Detect actual install dir (modern uv → ~/.local/bin; legacy → ~/.cargo/bin)
           const uvDir = findUvDir() || path.join(os.homedir(), '.local', 'bin');
           process.env.PATH = `${uvDir}${path.delimiter}${process.env.PATH}`;
-          // On Windows, persist to PATH via setx (takes effect in NEW terminals;
-          // ensureUvOnPath() covers the current session / ragctl wrappers).
-          if (IS_WIN) {
-            try {
-              execSync(`setx PATH "%PATH%;${uvDir}"`, { stdio: 'ignore', timeout: 5000 });
-            } catch {}
+          // Persist user PATH safely (no setx truncation)
+          if (appendUserPath(uvDir)) {
+            info(`uv 已写入用户 PATH: ${uvDir}`);
+          } else {
+            info(`uv 已安装到: ${uvDir}（当前会话已可用；新终端如找不到请手动加 PATH）`);
           }
-          info(`uv 已安装到: ${uvDir}`);
         } else {
           err(`uv 安装失败 (exit ${result.code})`);
+          if (result.stderr) console.log(`  ${_c(C.GRAY, result.stderr.slice(0, 400))}`);
           console.log(`  ${_c(C.YELLOW, '手动安装: https://docs.astral.sh/uv/getting-started/installation/')}`);
           return 1;
         }
@@ -473,17 +921,37 @@ async function cmdSetup() {
       if (result.code === 0) {
         ok('uv 安装成功！');
         const uvDir = findUvDir() || path.join(os.homedir(), '.local', 'bin');
-        process.env.PATH = `${uvDir}:${process.env.PATH}`;
+        process.env.PATH = `${uvDir}${path.delimiter}${process.env.PATH}`;
+        info(`uv 已安装到: ${uvDir}`);
+        info('若新终端找不到 uv: echo \'export PATH="$HOME/.local/bin:$PATH"\' >> ~/.bashrc && source ~/.bashrc');
       } else {
         err('uv 安装失败');
+        if (result.stderr) console.log(`  ${_c(C.GRAY, result.stderr.slice(0, 400))}`);
         return 1;
       }
     }
     try { fs.unlinkSync(path.join(os.tmpdir(), 'uv-install.ps1')); } catch {}
   } else {
+    ensureUvOnPath();
     let uvVer = '';
     try { uvVer = execSync('uv --version', { encoding: 'utf8', timeout: 5000, stdio: ['pipe','pipe','pipe'] }).trim(); } catch {}
     ok(`uv 已安装: ${uvVer}`);
+  }
+
+  // Make sure subsequent `uv sync` / `uv python` can resolve the binary.
+  if (!ensureUvOnPath()) {
+    err('uv 安装后仍无法在 PATH 中找到 — 请重开终端后重试 ragctl setup');
+    return 1;
+  }
+
+  // 1b. Ensure CPython 3.12 is available for the backend pin (==3.12.*)
+  step('确保 Python 3.12 可用（backend 硬性要求）...');
+  try {
+    const pyResult = await spawnAsync('uv', ['python', 'install', REQUIRED_PYTHON], { silent: true });
+    if (pyResult.code === 0) ok(`Python ${REQUIRED_PYTHON} 已就绪（uv 管理）`);
+    else warn(`uv python install ${REQUIRED_PYTHON} 返回 ${pyResult.code} — uv sync 时将重试`);
+  } catch (e) {
+    warn(`无法预装 Python ${REQUIRED_PYTHON}: ${e.message}`);
   }
 
   // 2. Git submodules
@@ -491,9 +959,18 @@ async function cmdSetup() {
   if (fs.existsSync(path.join(BACKEND_DIR, 'app', 'main.py')) && fs.existsSync(path.join(WEB_DIR, 'package.json'))) {
     ok('子模块已初始化');
   } else {
+    if (!commandExists('git')) {
+      err('Git 未安装，无法初始化子模块');
+      info('安装: https://git-scm.com/downloads  然后重跑 ragctl setup');
+      return 1;
+    }
     const result = await spawnAsync('git', ['submodule', 'update', '--init', '--recursive'], { cwd: PROJECT_ROOT, silent: true });
     if (result.code === 0) ok('子模块初始化完成');
-    else { err('子模块初始化失败'); return 1; }
+    else {
+      err('子模块初始化失败');
+      if (result.stderr) console.log(`  ${_c(C.GRAY, result.stderr.slice(0, 500))}`);
+      return 1;
+    }
   }
 
   // 3. .env
@@ -504,22 +981,53 @@ async function cmdSetup() {
       fs.copyFileSync(examplePath, ENV_FILE);
       ok('.env 已从 .env.example 创建');
     } else {
-      writeEnv({ APP_MODE: 'dev', PYTHONUTF8: '1' });
+      writeEnv({ APP_MODE: 'dev', PYTHONUTF8: '1', PYTHONUNBUFFERED: '1' });
       ok('.env 已创建（默认值）');
     }
   } else {
     ok('.env 已存在');
   }
 
-  // 4. Install dependencies with progress
-  await cmdDeps();
+  // Ensure required storage dirs exist (fresh clone has none — .gitignore hides them)
+  step('创建运行时目录...');
+  for (const rel of [
+    'storage/tree-file-system',
+    'chroma_db',
+    'models_cache',
+    'backend/logs',
+    'web/logs',
+    '.run',
+  ]) {
+    const abs = path.join(PROJECT_ROOT, rel);
+    if (!fs.existsSync(abs)) {
+      fs.mkdirSync(abs, { recursive: true });
+      info(`创建 ${rel}/`);
+    }
+  }
+  ok('运行时目录就绪');
 
-  // 5. BGE Model
+  // 4. Install dependencies with progress
+  const depsCode = await cmdDeps();
+  if (depsCode !== 0) {
+    err('依赖安装失败 — 修复后重跑 ragctl setup / ragctl deps');
+    return depsCode;
+  }
+
+  // 5. BGE Model (best-effort — network may be restricted)
   await cmdModel();
 
-  // 6. Final check
+  // 6. Optional: global ragctl registration (best-effort)
+  try { await cmdInstall(); } catch {}
+
+  // 7. Final check
   console.log();
-  return await cmdCheck();
+  const checkCode = await cmdCheck();
+  if (checkCode === 0) {
+    console.log(`\n  ${_c(C.GREEN, _c(C.BOLD, '下一步: ragctl up'))}`);
+  } else {
+    console.log(`\n  ${_c(C.YELLOW, '环境仍有待修复项 — 见上方 check 输出')}`);
+  }
+  return checkCode;
 }
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -528,6 +1036,12 @@ async function cmdSetup() {
 
 async function cmdDeps() {
   step('安装所有依赖（实时进度）...');
+
+  if (!ensureUvOnPath()) {
+    err('uv 未找到 — 请先运行 ragctl setup 安装 uv');
+    return 1;
+  }
+  const uvBin = findUvBin();
 
   // CLI deps
   const cliNodeModules = path.join(PROJECT_ROOT, 'command', 'node_modules');
@@ -540,12 +1054,23 @@ async function cmdDeps() {
     ok('CLI 依赖已安装');
   }
 
-  // Backend (uv sync with real-time output)
+  // Backend (uv sync with real-time output). Pin Python 3.12 explicitly so a
+  // machine whose default python is 3.11/3.13 doesn't pick the wrong interpreter.
   info('安装 Backend (Python) 依赖...');
-  console.log(`  ${_c(C.GRAY, '── uv sync backend ──')}`);
-  const beResult = await spawnAsync('uv', ['sync'], { cwd: BACKEND_DIR });
+  console.log(`  ${_c(C.GRAY, '── uv sync backend (python ' + REQUIRED_PYTHON + ') ──')}`);
+  // Prefer `uv sync --python 3.12`; fall back to plain sync if flag unsupported.
+  let beResult = await spawnAsync(uvBin, ['sync', '--python', REQUIRED_PYTHON], { cwd: BACKEND_DIR, noShell: true });
+  if (beResult.code !== 0) {
+    warn(`uv sync --python ${REQUIRED_PYTHON} 失败，回退到默认 uv sync…`);
+    beResult = await spawnAsync(uvBin, ['sync'], { cwd: BACKEND_DIR, noShell: true });
+  }
   if (beResult.code === 0) ok('Backend 依赖安装完成');
-  else { err('Backend 依赖安装失败'); return 1; }
+  else {
+    err('Backend 依赖安装失败');
+    info('常见原因: 网络/代理拦截 PyTorch 索引、磁盘不足、无 Python 3.12');
+    info('排查: cd backend && uv sync --python 3.12');
+    return 1;
+  }
 
   // Web (npm install with real-time output)
   if (!fs.existsSync(path.join(WEB_DIR, 'node_modules'))) {
@@ -557,13 +1082,14 @@ async function cmdDeps() {
   } else {
     ok('Web 依赖已安装（增量: npm install）');
     console.log(`  ${_c(C.GRAY, '── npm install web (incremental) ──')}`);
-    await spawnAsync('npm', ['install'], { cwd: WEB_DIR });
+    const webInc = await spawnAsync('npm', ['install'], { cwd: WEB_DIR });
+    if (webInc.code !== 0) warn(`Web 增量安装返回 ${webInc.code}（已有 node_modules，可忽略）`);
   }
 
   // MCP
   info('安装 MCP Server 依赖...');
   console.log(`  ${_c(C.GRAY, '── uv sync kb-mcp ──')}`);
-  const mcpResult = await spawnAsync('uv', ['sync'], { cwd: MCP_DIR });
+  const mcpResult = await spawnAsync(uvBin, ['sync'], { cwd: MCP_DIR, noShell: true });
   if (mcpResult.code === 0) ok('MCP 依赖安装完成');
   else { err('MCP 依赖安装失败'); return 1; }
 
@@ -579,62 +1105,74 @@ async function cmdDeps() {
 async function cmdModel() {
   step('BGE-M3 嵌入模型下载 (~2.2 GB)...');
 
-  // 1. Quick check: is model already loadable via backend venv?
+  // 1. Project-level models_cache (preferred — shared with backend download_model.py)
+  const projectCache = path.join(PROJECT_ROOT, 'models_cache', 'hub', 'models--BAAI--bge-m3');
+  const hfCache = path.join(os.homedir(), '.cache', 'huggingface', 'hub', 'models--BAAI--bge-m3');
+  function hasSnapshots(dir) {
+    try {
+      const snapshots = path.join(dir, 'snapshots');
+      return fs.existsSync(snapshots) && fs.readdirSync(snapshots).length > 0;
+    } catch { return false; }
+  }
+  if (hasSnapshots(projectCache) || hasSnapshots(hfCache)) {
+    ok('BGE-M3 模型已缓存（跳过下载）');
+    return 0;
+  }
+
+  // 2. Quick check: is model already loadable via backend venv?
   const backendVenvPy = path.join(BACKEND_DIR, '.venv', IS_WIN ? 'Scripts' : 'bin', IS_WIN ? 'python.exe' : 'python');
   if (fs.existsSync(backendVenvPy)) {
     try {
-      const check = execSync(
-        `"${backendVenvPy}" -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('BAAI/bge-m3')"`,
-        { encoding: 'utf8', timeout: 30000, stdio: ['pipe','pipe','pipe'] }
-      );
-      if (!check.includes('Error') && !check.includes('Traceback')) {
-        ok('BGE-M3 模型已缓存（跳过下载）');
-        return 0;
+      // Prefer the project's own downloader (handles hf-mirror + proxy quirks)
+      const downloader = path.join(BACKEND_DIR, 'app', 'utils', 'download_model.py');
+      if (fs.existsSync(downloader)) {
+        info('通过 backend download_model.py 下载（支持 hf-mirror / 断点续传）...');
+        console.log(`  ${_c(C.GRAY, '── 下载中，请耐心等待（约 2.2GB）──')}`);
+        const result = await spawnAsync(backendVenvPy, [downloader], {
+          cwd: BACKEND_DIR,
+          env: {
+            ...process.env,
+            HF_ENDPOINT: process.env.HF_ENDPOINT || 'https://hf-mirror.com',
+            // Avoid corporate/local HTTPS_PROXY hijacking the mirror
+            HTTPS_PROXY: '', HTTP_PROXY: '', https_proxy: '', http_proxy: '',
+          },
+        });
+        if (result.code === 0 && (hasSnapshots(projectCache) || hasSnapshots(hfCache))) {
+          ok('BGE-M3 模型下载完成！');
+          return 0;
+        }
       }
-    } catch {
-      // Model not cached yet, continue with download
-    }
-  }
 
-  // 2. Check huggingface cache
-  const home = os.homedir();
-  const cacheDir = path.join(home, '.cache', 'huggingface', 'hub', 'models--BAAI--bge-m3');
-  if (fs.existsSync(cacheDir)) {
-    const snapshots = path.join(cacheDir, 'snapshots');
-    if (fs.existsSync(snapshots) && fs.readdirSync(snapshots).length > 0) {
-      ok('BGE-M3 模型已缓存（跳过下载）');
-      return 0;
-    }
-  }
-
-  // 3. Download if not found
-  if (fs.existsSync(backendVenvPy)) {
-    info('通过 Python 下载模型（约 2.2GB，使用 hf-mirror 镜像）...');
-    console.log(`  ${_c(C.GRAY, '── 下载中，请耐心等待 ──')}`);
-
-    const script = `
-import sys
+      // Fallback: sentence-transformers direct load
+      info('回退：通过 sentence-transformers 触发下载...');
+      const script = `
+import os
+os.environ.setdefault("HF_ENDPOINT", os.environ.get("HF_ENDPOINT", "https://hf-mirror.com"))
 print("Loading sentence_transformers...")
 from sentence_transformers import SentenceTransformer
 print("Downloading BAAI/bge-m3 model to local cache...")
 model = SentenceTransformer("BAAI/bge-m3")
-print("Model loaded. Dimension:", model.get_embedding_dimension())
+print("Model loaded. Dimension:", model.get_sentence_embedding_dimension())
 `;
-    const scriptPath = path.join(os.tmpdir(), 'ragctl_bge_download.py');
-    fs.writeFileSync(scriptPath, script, 'utf8');
-
-    const result = await spawnAsync(backendVenvPy, [scriptPath], {
-      cwd: BACKEND_DIR,
-      env: { ...process.env, HF_ENDPOINT: process.env.HF_ENDPOINT || 'https://hf-mirror.com' },
-    });
-
-    try { fs.unlinkSync(scriptPath); } catch {}
-
-    if (result.code === 0) {
-      ok('BGE-M3 模型下载完成！');
-      return 0;
+      const scriptPath = path.join(os.tmpdir(), 'ragctl_bge_download.py');
+      fs.writeFileSync(scriptPath, script, 'utf8');
+      const result = await spawnAsync(backendVenvPy, [scriptPath], {
+        cwd: BACKEND_DIR,
+        env: {
+          ...process.env,
+          HF_ENDPOINT: process.env.HF_ENDPOINT || 'https://hf-mirror.com',
+          HTTPS_PROXY: '', HTTP_PROXY: '', https_proxy: '', http_proxy: '',
+        },
+      });
+      try { fs.unlinkSync(scriptPath); } catch {}
+      if (result.code === 0) {
+        ok('BGE-M3 模型下载完成！');
+        return 0;
+      }
+      warn('模型下载未完全成功，首次索引时系统会自动重试');
+    } catch (e) {
+      warn(`模型下载异常: ${e.message}`);
     }
-    warn('模型下载未完全成功，首次索引时系统会自动重试');
   } else {
     warn('Backend venv 未就绪，请先运行 ragctl deps 再下载模型');
   }
@@ -823,78 +1361,222 @@ function httpGet(url, timeout = 5000) {
   });
 }
 
-async function startBackend(mode, portOverride = null) {
+async function startBackend(mode, portOverride = null, opts = {}) {
   const { backend: defaultPort } = getServicePorts(mode);
   const port = portOverride || defaultPort;
-  if (await portInUse(port)) { warn(`Backend 已在端口 ${port} 运行 (mode=${mode})`); return; }
-  info(`启动 Backend (端口 ${port}, mode=${mode}, 静默)...`);
-  const { pid } = spawnService({
-    title: `RAG-Backend (${mode})`,
-    cwd: BACKEND_DIR,
-    command: 'uv',
-    args: ['run', 'python', 'main.py'],
-    env: { APP_MODE: mode, BACKEND_PORT: String(port) },
-    serviceName: 'backend',
-  });
-  info(`Backend pid=${pid} · 日志: ${getLogPath('backend')}`);
-  const timeout = 30;
-  for (let i = 0; i < timeout; i++) {
-    await sleep(1000);
-    if (await portInUse(port)) { ok(`Backend 已启动 (端口 ${port}) · ragctl logs backend 查看日志`); return; }
+  const timeoutSec = opts.timeoutSec || 60;
+
+  if (await portInUse(port)) {
+    // Verify it's actually OUR healthy backend, not a zombie / unrelated process.
+    const health = await httpGet(`http://127.0.0.1:${port}/api/v1/health`, 2500);
+    if (health.code === 200 && (health.body || '').includes('healthy')) {
+      warn(`Backend 已在端口 ${port} 运行 (mode=${mode}, healthy)`);
+      return { ok: true, already: true, port };
+    }
+    err(`端口 ${port} 已被占用，但 /api/v1/health 未返回 healthy`);
+    info(`排查: netstat/lsof 查 PID，或 ragctl down --appmode ${mode} --force`);
+    info(`日志: ragctl logs backend`);
+    return { ok: false, port, reason: 'port-occupied-unhealthy' };
   }
-  warn(`Backend 启动超时 (端口 ${port}) — 排查: ragctl logs backend`);
+
+  info(`启动 Backend (端口 ${port}, mode=${mode}, 静默)...`);
+  let spawned;
+  try {
+    spawned = spawnService({
+      title: `RAG-Backend (${mode})`,
+      cwd: BACKEND_DIR,
+      command: 'uv',
+      args: ['run', 'python', 'main.py'],
+      env: { APP_MODE: mode, BACKEND_PORT: String(port) },
+      serviceName: 'backend',
+    });
+  } catch (e) {
+    err(`Backend 启动失败: ${e.message}`);
+    return { ok: false, port, reason: 'spawn-failed' };
+  }
+  info(`Backend pid=${spawned.pid} · 日志: ${getLogPath('backend')}`);
+  writePid('backend', mode, spawned.pid, port);
+
+  // Wait for REAL readiness (health endpoint), not just bind.
+  const probe = await waitForHttpOk(
+    `http://127.0.0.1:${port}/api/v1/health`,
+    { timeoutSec, intervalMs: 1000, expectBodyIncludes: 'healthy' },
+  );
+  if (probe.ok) {
+    ok(`Backend 已就绪 (端口 ${port}) · ragctl logs backend 查看日志`);
+    return { ok: true, port, pid: spawned.pid };
+  }
+  warn(`Backend 启动超时 (端口 ${port}, ${timeoutSec}s) — 排查: ragctl logs backend`);
+  // Dump last few log lines for quick diagnosis
+  try {
+    const logPath = getLogPath('backend');
+    if (fs.existsSync(logPath)) {
+      const lines = fs.readFileSync(logPath, 'utf8').split('\n').slice(-15).join('\n');
+      if (lines.trim()) console.log(`  ${_c(C.GRAY, lines)}`);
+    }
+  } catch {}
+  return { ok: false, port, pid: spawned.pid, reason: 'timeout' };
 }
 
-async function stopBackend(port) {
+async function stopBackend(port, mode = null) {
   let stopped = false;
+  // Prefer PID file (precise) then fall back to port scan
+  if (mode) {
+    const rec = readPid('backend', mode);
+    if (rec && rec.pid && isPidAlive(rec.pid)) {
+      if (killPid(rec.pid, false)) {
+        // Give graceful window then force
+        await sleep(1500);
+        if (isPidAlive(rec.pid)) killPid(rec.pid, true);
+        stopped = true;
+      }
+    }
+    clearPid('backend', mode);
+  }
   const pid = findPidOnPort(port);
-  if (pid) { killPid(pid, true); stopped = true; }
+  if (pid) {
+    // Graceful then force
+    killPid(pid, false);
+    await sleep(1500);
+    if (isPidAlive(pid)) killPid(pid, true);
+    stopped = true;
+  }
   if (stopped) ok('Backend 已停止'); else warn(`未找到 Backend 进程 (端口 ${port})`);
+  return stopped;
 }
 
-async function startWeb(mode, portOverride = null) {
+async function startWeb(mode, portOverride = null, opts = {}) {
   const { web: defaultPort, backend } = getServicePorts(mode);
   const port = portOverride || defaultPort;
-  if (await portInUse(port)) { warn(`Web 已在端口 ${port} 运行 (mode=${mode})`); return; }
-  info(`启动 Web 前端 (端口 ${port}, mode=${mode}, 静默)...`);
-  const { pid } = spawnService({
-    title: `RAG-Web (${mode})`,
-    cwd: WEB_DIR,
-    command: 'node',
-    args: ['start.mjs'],
-    env: { APP_MODE: mode, WEB_PORT: String(port), BACKEND_PORT: String(backend) },
-    serviceName: 'web',
-  });
-  info(`Web pid=${pid} · 日志: ${getLogPath('web')}`);
-  const timeout = 25;
-  for (let i = 0; i < timeout; i++) {
-    await sleep(1000);
-    if (await portInUse(port)) { ok(`Web 已启动 (端口 ${port}) · ragctl logs web 查看日志`); return; }
+  const timeoutSec = opts.timeoutSec || 45;
+
+  if (await portInUse(port)) {
+    const health = await httpGet(`http://127.0.0.1:${port}/api/kb/catalog`, 2500);
+    if (health.code === 200) {
+      warn(`Web 已在端口 ${port} 运行 (mode=${mode}, healthy)`);
+      return { ok: true, already: true, port };
+    }
+    err(`端口 ${port} 已被占用，但 Web 健康检查未通过`);
+    info(`可能是无关进程（常见: 其他 dev server / Docker 映射）。换端口: --port-web <N>`);
+    return { ok: false, port, reason: 'port-occupied-unhealthy' };
   }
-  warn(`Web 启动超时 (端口 ${port}) — 排查: ragctl logs web`);
+
+  info(`启动 Web 前端 (端口 ${port}, mode=${mode}, 静默)...`);
+  let spawned;
+  try {
+    spawned = spawnService({
+      title: `RAG-Web (${mode})`,
+      cwd: WEB_DIR,
+      command: 'node',
+      args: ['start.mjs'],
+      env: {
+        APP_MODE: mode,
+        WEB_PORT: String(port),
+        FRONTEND_PORT: String(port),
+        BACKEND_PORT: String(backend),
+        BACKEND_URL: `http://localhost:${backend}`,
+      },
+      serviceName: 'web',
+    });
+  } catch (e) {
+    err(`Web 启动失败: ${e.message}`);
+    return { ok: false, port, reason: 'spawn-failed' };
+  }
+  info(`Web pid=${spawned.pid} · 日志: ${getLogPath('web')}`);
+  writePid('web', mode, spawned.pid, port);
+
+  // Prefer /api/kb/catalog (real Nuxt server route). Fall back to any 200 on /
+  // for partial readiness while Nitro is still compiling in dev.
+  let probe = await waitForHttpOk(
+    `http://127.0.0.1:${port}/api/kb/catalog`,
+    { timeoutSec, intervalMs: 1000 },
+  );
+  if (!probe.ok) {
+    // Last chance: root responds at all
+    probe = await waitForHttpOk(
+      `http://127.0.0.1:${port}/`,
+      { timeoutSec: 5, intervalMs: 1000 },
+    );
+  }
+  if (probe.ok) {
+    ok(`Web 已就绪 (端口 ${port}) · ragctl logs web 查看日志`);
+    return { ok: true, port, pid: spawned.pid };
+  }
+  warn(`Web 启动超时 (端口 ${port}, ${timeoutSec}s) — 排查: ragctl logs web`);
+  try {
+    const logPath = getLogPath('web');
+    if (fs.existsSync(logPath)) {
+      const lines = fs.readFileSync(logPath, 'utf8').split('\n').slice(-15).join('\n');
+      if (lines.trim()) console.log(`  ${_c(C.GRAY, lines)}`);
+    }
+  } catch {}
+  return { ok: false, port, pid: spawned.pid, reason: 'timeout' };
 }
 
-async function stopWeb(port) {
+async function stopWeb(port, mode = null) {
   let stopped = false;
+  if (mode) {
+    const rec = readPid('web', mode);
+    if (rec && rec.pid && isPidAlive(rec.pid)) {
+      killPid(rec.pid, false);
+      await sleep(1500);
+      if (isPidAlive(rec.pid)) killPid(rec.pid, true);
+      stopped = true;
+    }
+    clearPid('web', mode);
+  }
   const pid = findPidOnPort(port);
-  if (pid) { killPid(pid, true); stopped = true; }
+  if (pid) {
+    killPid(pid, false);
+    await sleep(1500);
+    if (isPidAlive(pid)) killPid(pid, true);
+    stopped = true;
+  }
   if (stopped) ok('Web 已停止'); else warn('未找到 Web 进程');
+  return stopped;
 }
 
 async function startNeo4j() {
   const composeFile = path.join(PROJECT_ROOT, 'docker-compose.yml');
-  if (!fs.existsSync(composeFile)) { warn('docker-compose.yml 未找到'); return; }
+  if (!fs.existsSync(composeFile)) { warn('docker-compose.yml 未找到'); return { ok: false, reason: 'no-compose' }; }
+  if (!commandExists('docker')) {
+    warn('Docker 未找到 — 跳过 Neo4j（图谱功能不可用，其他功能不受影响）');
+    return { ok: false, reason: 'no-docker' };
+  }
+  // Detect daemon not running (docker binary present but engine down)
   try {
-    await spawnAsync('docker', ['compose', 'up', '-d', 'neo4j'], { cwd: PROJECT_ROOT, silent: true });
-    ok('Neo4j 已启动');
-  } catch { warn('Docker 未找到 — 跳过 Neo4j'); }
+    execSync('docker info', { stdio: 'ignore', timeout: 8000, windowsHide: true });
+  } catch {
+    warn('Docker 引擎未运行 — 跳过 Neo4j（请启动 Docker Desktop / dockerd）');
+    return { ok: false, reason: 'docker-daemon-down' };
+  }
+  try {
+    const r = await spawnAsync('docker', ['compose', 'up', '-d', 'neo4j'], { cwd: PROJECT_ROOT, silent: true });
+    if (r.code !== 0) {
+      warn(`Neo4j 启动失败 (exit ${r.code})`);
+      if (r.stderr) console.log(`  ${_c(C.GRAY, r.stderr.slice(0, 300))}`);
+      return { ok: false, reason: 'compose-failed' };
+    }
+    // Wait for bolt port
+    for (let i = 0; i < 40; i++) {
+      if (await portInUse(7687)) { ok('Neo4j 已启动'); return { ok: true }; }
+      await sleep(1000);
+    }
+    warn('Neo4j 已拉起但 bolt:7687 尚未就绪（后台继续启动中）');
+    return { ok: true, pending: true };
+  } catch (e) {
+    warn(`Docker 调用异常 — 跳过 Neo4j: ${e.message}`);
+    return { ok: false, reason: 'exception' };
+  }
 }
 
 async function stopNeo4j() {
+  if (!commandExists('docker')) return false;
   try {
     await spawnAsync('docker', ['compose', 'down'], { cwd: PROJECT_ROOT, silent: true });
     ok('Neo4j 已停止');
-  } catch {}
+    return true;
+  } catch { return false; }
 }
 
 // Parse `--mode dev|prod` from arg list, falling back to .env APP_MODE.
@@ -992,38 +1674,55 @@ async function cmdStart(args) {
 
   header(`启动服务 (mode=${mode}): ${svc}`);
 
+  // Pre-flight: fail fast on fresh clones
+  if (!flags.skipCheck) {
+    const problems = preflightReady();
+    if (problems.length) {
+      err('环境未就绪，拒绝启动：');
+      for (const p of problems) console.log(`  ${_c(C.YELLOW, '• ' + p)}`);
+      info('一键修复: ragctl setup');
+      return 1;
+    }
+  }
+
   // Handle --port-backend / --port-web overrides
   if (flags.portBackend) ports.backend = flags.portBackend;
   if (flags.portWeb) ports.web = flags.portWeb;
 
   const composeFile = path.join(PROJECT_ROOT, 'docker-compose.yml');
+  const timeoutSec = flags.timeout || null;
+  let failed = false;
 
   async function doStartBackend() {
-    if (flags.noBackend) { warn('Backend 已跳过 (--no-backend)'); return; }
+    if (flags.noBackend) { warn('Backend 已跳过 (--no-backend)'); return true; }
     if (flags.force && await portInUse(ports.backend)) {
       info(`强制重启: 先停止端口 ${ports.backend} 上的 Backend...`);
-      await stopBackend(ports.backend);
+      await stopBackend(ports.backend, mode);
       await sleep(1000);
     }
-    await startBackend(mode, flags.portBackend || null);
+    const r = await startBackend(mode, flags.portBackend || null, { timeoutSec: timeoutSec || 60 });
+    if (!r.ok) failed = true;
+    return r.ok;
   }
   async function doStartWeb() {
-    if (flags.noWeb) { warn('Web 已跳过 (--no-web)'); return; }
+    if (flags.noWeb) { warn('Web 已跳过 (--no-web)'); return true; }
     if (flags.force && await portInUse(ports.web)) {
       info(`强制重启: 先停止端口 ${ports.web} 上的 Web...`);
-      await stopWeb(ports.web);
+      await stopWeb(ports.web, mode);
       await sleep(1000);
     }
-    await startWeb(mode, flags.portWeb || null);
+    const r = await startWeb(mode, flags.portWeb || null, { timeoutSec: timeoutSec || 45 });
+    if (!r.ok) failed = true;
+    return r.ok;
   }
   async function doStartNeo4j() {
-    if (flags.noNeo4j) { warn('Neo4j 已跳过 (--no-neo4j)'); return; }
+    if (flags.noNeo4j) { warn('Neo4j 已跳过 (--no-neo4j)'); return true; }
     if (fs.existsSync(composeFile) && !(await portInUse(7687))) {
       await startNeo4j();
-      await sleep(2000);
     } else if (await portInUse(7687)) {
       ok('Neo4j 已在运行');
     }
+    return true; // Neo4j is optional — never fail the whole start for it
   }
 
   switch (svc) {
@@ -1045,7 +1744,7 @@ async function cmdStart(args) {
       err(`未知服务: ${svc}（可选: backend / web / neo4j / all）`);
       return 1;
   }
-  return 0;
+  return failed ? 1 : 0;
 }
 
 async function cmdStop(args) {
@@ -1059,13 +1758,15 @@ async function cmdStop(args) {
   header(`停止服务 (mode=${mode}): ${svc}`);
 
   switch (svc) {
-    case 'backend': await stopBackend(ports.backend); break;
-    case 'web': await stopWeb(ports.web); break;
+    case 'backend': await stopBackend(ports.backend, mode); break;
+    case 'web': await stopWeb(ports.web, mode); break;
     case 'neo4j': await stopNeo4j(); break;
     case 'all':
-      await stopWeb(ports.web);
-      await stopBackend(ports.backend);
-      if (!flags.noNeo4j) await stopNeo4j();
+      await stopWeb(ports.web, mode);
+      await stopBackend(ports.backend, mode);
+      if (!flags.noNeo4j && (flags.force || flags.positional.includes('all') || args.includes('--all'))) {
+        await stopNeo4j();
+      }
       break;
     default:
       err(`未知服务: ${svc}（可选: backend / web / neo4j / all）`);
@@ -1159,6 +1860,21 @@ async function cmdUp(args) {
   if (flags.portBackend) ports.backend = flags.portBackend;
   if (flags.portWeb) ports.web = flags.portWeb;
 
+  // Pre-flight: refuse to start a half-broken stack
+  if (!flags.skipCheck) {
+    const problems = preflightReady();
+    if (problems.length) {
+      header(`启动 RAG Knowledge Platform (mode=${mode}) — 预检失败`);
+      err('环境未就绪：');
+      for (const p of problems) console.log(`  ${_c(C.YELLOW, '• ' + p)}`);
+      console.log();
+      info('一键修复: ragctl setup');
+      info('仅检查:   ragctl check');
+      info('强制跳过: ragctl up --skip-check   （不推荐）');
+      return 1;
+    }
+  }
+
   // Warn if the OTHER mode's ports are occupied (mixed-mode guard)
   const otherMode = mode === 'dev' ? 'prod' : 'dev';
   const otherPorts = getServicePorts(otherMode);
@@ -1173,47 +1889,68 @@ async function cmdUp(args) {
   info(`端口: Backend=${ports.backend}, Web=${ports.web}`);
 
   const composeFile = path.join(PROJECT_ROOT, 'docker-compose.yml');
+  const timeoutSec = flags.timeout || null;
+  let backendOk = true;
+  let webOk = true;
 
-  // Neo4j (shared between modes)
+  // Neo4j (shared between modes) — optional
   if (!flags.noNeo4j && fs.existsSync(composeFile) && !(await portInUse(7687))) {
-    await startNeo4j(); await sleep(2000);
+    await startNeo4j();
   } else if (flags.noNeo4j) {
     warn('Neo4j 已跳过 (--no-neo4j)');
+  } else if (await portInUse(7687)) {
+    ok('Neo4j 已在运行');
   }
 
   // Backend
   if (flags.noBackend) {
     warn('Backend 已跳过 (--no-backend)');
-  } else if (flags.force && await portInUse(ports.backend)) {
-    info(`强制重启: 先停止端口 ${ports.backend} 上的 Backend...`);
-    await stopBackend(ports.backend);
-    await sleep(1000);
-    await startBackend(mode, flags.portBackend || null);
   } else {
-    await startBackend(mode, flags.portBackend || null);
+    if (flags.force && await portInUse(ports.backend)) {
+      info(`强制重启: 先停止端口 ${ports.backend} 上的 Backend...`);
+      await stopBackend(ports.backend, mode);
+      await sleep(1000);
+    }
+    const r = await startBackend(mode, flags.portBackend || null, { timeoutSec: timeoutSec || 60 });
+    backendOk = !!r.ok;
   }
 
   // Web
   if (flags.noWeb) {
     warn('Web 已跳过 (--no-web)');
-  } else if (flags.force && await portInUse(ports.web)) {
-    info(`强制重启: 先停止端口 ${ports.web} 上的 Web...`);
-    await stopWeb(ports.web);
-    await sleep(1000);
-    await startWeb(mode, flags.portWeb || null);
   } else {
-    await startWeb(mode, flags.portWeb || null);
+    if (flags.force && await portInUse(ports.web)) {
+      info(`强制重启: 先停止端口 ${ports.web} 上的 Web...`);
+      await stopWeb(ports.web, mode);
+      await sleep(1000);
+    }
+    const r = await startWeb(mode, flags.portWeb || null, { timeoutSec: timeoutSec || 45 });
+    webOk = !!r.ok;
   }
 
-  // Summary
-  const bUp = await portInUse(ports.backend);
-  const wUp = await portInUse(ports.web);
-  console.log(`\n  ${bUp && wUp ? _c(C.GREEN, _c(C.BOLD, '✓ 所有服务已静默启动（无终端窗口）')) : _c(C.YELLOW, '⚠ 部分服务未就绪')}`);
+  // Summary — use health, not bare port
+  const bHealth = backendOk
+    ? await httpGet(`http://127.0.0.1:${ports.backend}/api/v1/health`, 2500)
+    : { code: 0 };
+  const wHealth = webOk
+    ? await httpGet(`http://127.0.0.1:${ports.web}/api/kb/catalog`, 2500)
+    : { code: 0 };
+  const bUp = bHealth.code === 200;
+  const wUp = wHealth.code === 200;
+
+  console.log();
+  if (bUp && wUp) {
+    console.log(`  ${_c(C.GREEN, _c(C.BOLD, '✓ 所有服务已静默启动并就绪（无终端窗口）'))}`);
+  } else {
+    console.log(`  ${_c(C.YELLOW, '⚠ 部分服务未就绪')}`);
+    if (!bUp) err(`Backend 未就绪 — 看日志: ragctl logs backend`);
+    if (!wUp) err(`Web 未就绪 — 看日志: ragctl logs web`);
+  }
   if (bUp) console.log(`  Backend (${mode}): ${_c(C.CYAN, `http://localhost:${ports.backend}`)}`);
   if (wUp) console.log(`  Web UI  (${mode}): ${_c(C.CYAN, `http://localhost:${ports.web}`)}`);
   console.log(`  ${_c(C.GRAY, '查看日志: ragctl logs [backend|web|mineru] --tail')}`);
   console.log(`  ${_c(C.GRAY, '查看状态: ragctl status')}`);
-  return 0;
+  return (bUp && wUp) ? 0 : 1;
 }
 
 async function cmdDown(args) {
@@ -1226,13 +1963,17 @@ async function cmdDown(args) {
   header(`停止 RAG Knowledge Platform (mode=${mode})`);
   info(`目标端口: Backend=${ports.backend}, Web=${ports.web}`);
 
-  await stopWeb(ports.web);
-  await stopBackend(ports.backend);
+  await stopWeb(ports.web, mode);
+  await stopBackend(ports.backend, mode);
 
-  // Neo4j is shared infra — only stop if explicitly requested via --all or --stop-neo4j
+  // Neo4j is shared infra — only stop if explicitly requested via --all / --force-neo4j
   // (prevents `down --appmode prod` from killing Neo4j needed by dev)
-  if (flags.positional.includes('all') || args.includes('--all')) {
-    await stopNeo4j();
+  if (flags.positional.includes('all') || args.includes('--all') || flags.force) {
+    // Only stop Neo4j when user is explicit; --force alone shouldn't kill shared DB
+    // unless combined with 'all' positional or --all.
+    if (flags.positional.includes('all') || args.includes('--all')) {
+      await stopNeo4j();
+    }
   }
 
   ok(`所有 ${mode} 服务已停止 (Neo4j 保留)`);
@@ -1318,14 +2059,18 @@ async function cmdInstall() {
     ok(`已写入 ${dest}`);
   }
 
-  // PATH check
+  // PATH check + safe persist on Windows
   const pathDirs = (process.env.PATH || '').split(path.delimiter);
   if (pathDirs.includes(binDir)) {
     ok(`${binDir} 已在 PATH 中 — ragctl 现可全局使用`);
   } else {
-    warn(`${binDir} 尚不在 PATH 中。添加方法：`);
-    if (IS_WIN) info(`  setx PATH "%PATH%;${binDir}"   (然后重开终端)`);
-    else info(`  echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc`);
+    if (IS_WIN && appendUserPath(binDir)) {
+      ok(`已将 ${binDir} 写入用户 PATH（新开终端后生效）`);
+    } else {
+      warn(`${binDir} 尚不在 PATH 中。添加方法：`);
+      if (IS_WIN) info(`  手动: 系统属性 → 环境变量 → Path → 新建 ${binDir}`);
+      else info(`  echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc`);
+    }
   }
   info('测试: 在任意目录运行 `ragctl status`');
   return 0;
@@ -1380,19 +2125,347 @@ async function cmdDesktop(args) {
   return 0;
 }
 
+// ── Version + Update ───────────────────────────────────────────────────
+
+async function cmdVersion(args = []) {
+  const json = args.includes('--json');
+  const localVersion = readLocalVersion();
+  const git = getLocalGitInfo();
+  let remote = null;
+  if (!args.includes('--local')) {
+    try { remote = await fetchRemoteVersionInfo(); } catch (e) {
+      remote = { error: e.message };
+    }
+    // Prefer local origin/* tip (after lightweight fetch) for accurate ancestry
+    if (git.isGit) {
+      const originTip = fetchOriginTip(git.branch && git.branch !== 'HEAD' ? git.branch : GITHUB_DEFAULT_BRANCH);
+      if (originTip) {
+        remote = remote || {};
+        // Keep GitHub API sha if present, but origin tip is authoritative for pull decision
+        remote.originSha = originTip;
+        if (!remote.remoteSha) remote.remoteSha = originTip;
+        if (!remote.source) remote.source = 'origin-ref';
+      }
+    }
+  }
+
+  const payload = {
+    local: {
+      version: localVersion,
+      sha: git.sha,
+      branch: git.branch,
+      dirty: git.dirty,
+      is_git: git.isGit,
+      project_root: PROJECT_ROOT,
+    },
+    remote: remote ? {
+      version: remote.remoteVersion || null,
+      tag: remote.remoteTag || null,
+      sha: remote.remoteSha || null,
+      origin_sha: remote.originSha || null,
+      url: remote.remoteUrl || `https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}`,
+      source: remote.source || null,
+      error: remote.error || null,
+    } : null,
+  };
+
+  // Decide update status: semver first, then git ancestry
+  let comparison = 'unknown';
+  let updateAvailable = null;
+  if (remote && remote.remoteVersion) {
+    const cmp = compareSemver(localVersion, remote.remoteVersion);
+    if (cmp < 0) { comparison = 'behind'; updateAvailable = true; }
+    else if (cmp > 0) { comparison = 'ahead'; updateAvailable = false; }
+    else {
+      // same VERSION number — refine with git ancestry
+      const tip = remote.originSha || remote.remoteSha;
+      const rel = compareGitTips(git.sha, tip);
+      comparison = rel === 'equal' ? 'equal' : rel;
+      updateAvailable = rel === 'behind' || rel === 'diverged';
+    }
+  } else if (remote && (remote.originSha || remote.remoteSha) && git.sha) {
+    const tip = remote.originSha || remote.remoteSha;
+    const rel = compareGitTips(git.sha, tip);
+    comparison = rel;
+    updateAvailable = rel === 'behind' || rel === 'diverged';
+  }
+  payload.update_available = updateAvailable;
+  payload.comparison = comparison;
+
+  if (json) {
+    console.log(JSON.stringify(payload, null, 2));
+    return 0;
+  }
+
+  header(`ragctl version  v${localVersion}`);
+  info(`Local version : ${_c(C.BOLD, localVersion)}`);
+  if (git.isGit) {
+    info(`Git           : ${git.branch || '?'} @ ${git.sha || '?'}${git.dirty ? ' (dirty)' : ''}`);
+  } else {
+    warn('Not a git checkout — update via git pull unavailable');
+  }
+  info(`Project root  : ${PROJECT_ROOT}`);
+
+  if (remote) {
+    if (remote.remoteVersion || remote.remoteSha || remote.originSha) {
+      const rSha = remote.originSha || remote.remoteSha || '';
+      info(`Remote        : ${remote.remoteVersion ? 'v' + remote.remoteVersion : '(no VERSION)'} ${remote.remoteTag ? `(${remote.remoteTag})` : ''} ${rSha ? '@ ' + rSha : ''}`);
+      info(`Source        : ${remote.source || 'n/a'} · ${remote.remoteUrl || ''}`);
+      if (updateAvailable === true) {
+        warn(`Update available: ${comparison} (local ${localVersion}@${git.sha || '?'} → remote ${remote.remoteVersion || ''}@${rSha})`);
+        info('Run: ragctl update');
+      } else if (updateAvailable === false) {
+        ok(`Up to date / local ahead (${comparison})`);
+      } else {
+        warn(`Could not determine update status (${comparison})${remote.error ? ': ' + remote.error : ''}`);
+      }
+    } else {
+      warn(`Could not reach GitHub: ${remote.error || 'unknown error'}`);
+    }
+  }
+  return 0;
+}
+
+/**
+ * ragctl update — compare local VERSION/SHA with GitHub, pull if newer.
+ *
+ * Flags:
+ *   --check / -n     Dry-run: only report, never pull
+ *   --force / -f     Pull even if versions look equal (or only SHA differs)
+ *   --no-deps        After pull, skip reinstalling deps
+ *   --restart        After pull, restart services (ragctl up --force)
+ *   --json           Machine-readable result
+ *   --yes / -y       Non-interactive (always proceed when update available)
+ */
+async function cmdUpdate(args = []) {
+  const flags = {
+    check: args.includes('--check') || args.includes('-n'),
+    force: args.includes('--force') || args.includes('-f'),
+    noDeps: args.includes('--no-deps'),
+    restart: args.includes('--restart'),
+    json: args.includes('--json'),
+    yes: args.includes('--yes') || args.includes('-y'),
+  };
+
+  header(flags.check ? '检查更新 (dry-run)' : '检查并更新项目');
+
+  const localVersion = readLocalVersion();
+  const git = getLocalGitInfo();
+  if (!git.isGit) {
+    err('当前目录不是 git 仓库，无法自动更新。请重新 clone：');
+    info(`  git clone --recursive https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}.git`);
+    return 1;
+  }
+
+  info(`Local  : v${localVersion}  (${git.branch || '?'} @ ${git.sha || '?'}${git.dirty ? ', dirty' : ''})`);
+
+  let remote;
+  try {
+    remote = await fetchRemoteVersionInfo();
+  } catch (e) {
+    err(`无法获取远程版本: ${e.message}`);
+    return 1;
+  }
+  // Always try local origin tip (more accurate for ancestry than short GitHub API sha)
+  const branch = git.branch && git.branch !== 'HEAD' ? git.branch : GITHUB_DEFAULT_BRANCH;
+  const originTip = fetchOriginTip(branch);
+  if (originTip) {
+    remote.originSha = originTip;
+    if (!remote.remoteSha) remote.remoteSha = originTip;
+    if (!remote.source) remote.source = 'origin-ref';
+  }
+
+  if (!remote.remoteVersion && !remote.remoteSha && !remote.originSha) {
+    err(`无法获取远程版本信息: ${remote.error || 'unknown'}`);
+    info('可检查网络 / 代理，或手动: git pull --recurse-submodules');
+    return 1;
+  }
+
+  const tipSha = remote.originSha || remote.remoteSha || '';
+  info(`Remote : ${remote.remoteVersion ? 'v' + remote.remoteVersion : '(no VERSION)'} ${remote.remoteTag ? `(${remote.remoteTag})` : ''} ${tipSha ? '@ ' + tipSha : ''}  [${remote.source || 'n/a'}]`);
+
+  let needUpdate = false;
+  let reason = '';
+  let relation = 'unknown';
+
+  if (remote.remoteVersion) {
+    const cmp = compareSemver(localVersion, remote.remoteVersion);
+    if (cmp < 0) {
+      needUpdate = true;
+      relation = 'behind';
+      reason = `version behind (${localVersion} < ${remote.remoteVersion})`;
+    } else if (cmp > 0) {
+      relation = 'ahead';
+      reason = `local ahead (${localVersion} > ${remote.remoteVersion})`;
+    } else {
+      relation = compareGitTips(git.sha, tipSha);
+      if (relation === 'behind' || relation === 'diverged') {
+        needUpdate = true;
+        reason = `same version ${localVersion} but git is ${relation} (local ${git.sha} vs remote ${tipSha})`;
+      } else if (relation === 'ahead') {
+        reason = `same version ${localVersion}; local commits not on remote (ahead)`;
+      } else if (relation === 'equal') {
+        reason = `up to date (v${localVersion} @ ${git.sha})`;
+      } else {
+        reason = `same version ${localVersion}; git relation unknown`;
+      }
+    }
+  } else {
+    relation = compareGitTips(git.sha, tipSha);
+    if (relation === 'behind' || relation === 'diverged') {
+      needUpdate = true;
+      reason = `git is ${relation} (local ${git.sha} ≠ remote ${tipSha})`;
+    } else if (relation === 'ahead') {
+      reason = `local ahead of remote (${git.sha} has commits not on ${tipSha})`;
+    } else if (relation === 'equal') {
+      reason = `SHA match (${git.sha})`;
+    } else {
+      reason = `unable to compare SHAs (local ${git.sha}, remote ${tipSha})`;
+    }
+  }
+
+  if (flags.force && !needUpdate) {
+    needUpdate = true;
+    reason = (reason ? reason + '; ' : '') + 'forced by --force';
+  }
+
+  if (!needUpdate) {
+    ok(`已是最新 / 无需 pull: ${reason}`);
+    if (flags.json) {
+      console.log(JSON.stringify({
+        success: true, updated: false, reason, relation,
+        local: { version: localVersion, sha: git.sha },
+        remote: { version: remote.remoteVersion, sha: tipSha, tag: remote.remoteTag },
+      }, null, 2));
+    }
+    return 0;
+  }
+
+  warn(`发现更新: ${reason}`);
+  if (flags.check) {
+    info('Dry-run 模式 — 未执行 pull。去掉 --check 以实际更新。');
+    if (flags.json) {
+      console.log(JSON.stringify({
+        success: true, updated: false, dry_run: true, reason, relation,
+        local: { version: localVersion, sha: git.sha },
+        remote: { version: remote.remoteVersion, sha: tipSha, tag: remote.remoteTag },
+      }, null, 2));
+    }
+    return 0;
+  }
+
+  // Safety: refuse to pull over dirty tree unless --force
+  if (git.dirty && !flags.force) {
+    err('工作区有未提交改动，拒绝自动 pull（避免覆盖本地修改）。');
+    info('处理方式：');
+    info('  1. 提交/暂存改动后重试');
+    info('  2. 或 stash: git stash -u && ragctl update && git stash pop');
+    info('  3. 确认可丢弃本地改动时: ragctl update --force');
+    return 1;
+  }
+
+  // Fetch + pull with submodules
+  step('git fetch origin');
+  let r = runGit(['fetch', 'origin', '--tags', '--prune'], { allowFail: true });
+  if (r.code !== 0) {
+    err(`git fetch 失败 (exit ${r.code})`);
+    if (r.stderr) console.error(r.stderr);
+    return 1;
+  }
+  ok('fetch 完成');
+
+  step(`git pull --ff-only origin ${branch}`);
+  r = runGit(['pull', '--ff-only', '--recurse-submodules', 'origin', branch], { allowFail: true });
+  if (r.code !== 0) {
+    // ff-only may fail on diverged history — offer merge fallback only with --force
+    if (flags.force) {
+      warn('fast-forward 失败，--force 下尝试 merge pull…');
+      r = runGit(['pull', '--no-rebase', '--recurse-submodules', 'origin', branch], { allowFail: true });
+    }
+    if (r.code !== 0) {
+      err(`git pull 失败 (exit ${r.code})`);
+      if (r.stderr) console.error(r.stderr);
+      info('可能原因: 本地与远程分叉，或本地超前。手动处理: git status / git pull --rebase');
+      return 1;
+    }
+  }
+  ok('pull 完成');
+
+  step('同步子模块');
+  r = runGit(['submodule', 'update', '--init', '--recursive'], { allowFail: true });
+  if (r.code !== 0) {
+    warn(`submodule update 返回 ${r.code} — 可稍后手动: git submodule update --init --recursive`);
+  } else {
+    ok('子模块已同步');
+  }
+
+  const newVersion = readLocalVersion();
+  const newGit = getLocalGitInfo();
+  ok(`更新后版本: v${newVersion} @ ${newGit.sha || '?'}`);
+
+  // Optional: reinstall deps (safe incremental)
+  if (!flags.noDeps) {
+    step('增量重装依赖 (ragctl deps)');
+    try {
+      const depsCode = await cmdDeps();
+      if (depsCode === 0) ok('依赖已同步');
+      else warn(`deps 返回 ${depsCode} — 可稍后手动: ragctl deps`);
+    } catch (e) {
+      warn(`deps 失败: ${e.message}`);
+    }
+  } else {
+    info('已跳过依赖重装 (--no-deps)');
+  }
+
+  // Re-register global wrapper so path stays correct after moves (cheap)
+  try { await cmdInstall(); } catch {}
+
+  // Optional restart
+  if (flags.restart) {
+    step('重启服务 (ragctl up --force)');
+    try {
+      await cmdUp(['--force', '--skip-check']);
+    } catch (e) {
+      warn(`重启失败: ${e.message} — 可手动: ragctl up --force`);
+    }
+  } else {
+    info('提示: 若服务正在运行，建议重启以加载新代码: ragctl up --force');
+    info('      MCP 代码变更需重启 Claude Code 才能生效。');
+  }
+
+  if (flags.json) {
+    console.log(JSON.stringify({
+      success: true,
+      updated: true,
+      reason,
+      relation,
+      before: { version: localVersion, sha: git.sha },
+      after: { version: newVersion, sha: newGit.sha },
+      remote: { version: remote.remoteVersion, sha: tipSha, tag: remote.remoteTag },
+    }, null, 2));
+  } else {
+    console.log('');
+    ok(`更新完成: v${localVersion} → v${newVersion}`);
+  }
+  return 0;
+}
+
 // ═══════════════════════════════════════════════════════════════════════
 //  CLI Entry Point
 // ═══════════════════════════════════════════════════════════════════════
 
 function showHelp() {
+  const ver = readLocalVersion();
   console.log(`
-${_c(C.BOLD, 'ragctl')} — RAG Knowledge Platform CLI  v2.1.0
+${_c(C.BOLD, 'ragctl')} — RAG Knowledge Platform CLI  v${ver}
 
 ${_c(C.CYAN, '核心命令:')}
-  ${_c(C.BOLD, 'setup')}            一键完整部署（自动安装 uv → 依赖 → 模型 → 配置）
+  ${_c(C.BOLD, 'setup')}            一键完整部署（自动安装 uv → Python 3.12 → 依赖 → 模型 → 配置）
   ${_c(C.BOLD, 'check')}            全面环境检查（显示缺失项 + 修复方案）
-  ${_c(C.BOLD, 'deps')}             安装所有依赖（实时进度）
+  ${_c(C.BOLD, 'deps')}             安装所有依赖（实时进度；backend 固定 Python 3.12）
   ${_c(C.BOLD, 'model')}            预下载 BGE-M3 嵌入模型 (~2.2GB)
+  ${_c(C.BOLD, 'version')}          显示本地/远程版本（VERSION + git SHA）
+  ${_c(C.BOLD, 'update')}           对比 GitHub 最新版并拉取更新（含子模块）
 
 ${_c(C.CYAN, '服务管理（全部静默启动 · 无终端窗口）:')}
   up / start-all             启动全部服务（根据 --appmode 选择端口组）
@@ -1411,6 +2484,12 @@ ${_c(C.CYAN, '全局注册 / 桌面:')}
   install                    全局注册 ragctl → ~/.local/bin（任意目录可用）
   desktop / ui [--dev]       启动 Tauri 桌面控制台
 
+${_c(C.CYAN, '更新相关:')}
+  version [--local] [--json]           查看本地/远程版本
+  update [--check] [--force] [--yes]   检查并拉取最新版
+  update --no-deps                     拉取后跳过依赖重装
+  update --restart                     拉取后强制重启服务
+
 ${_c(C.CYAN, '选项 (-- 二级参数):')}
   ${_c(C.BOLD, '--appmode')} dev|prod    选择启动模式（默认: .env APP_MODE 或 dev）
            别名: --mode, -m
@@ -1423,7 +2502,7 @@ ${_c(C.CYAN, '选项 (-- 二级参数):')}
   ${_c(C.BOLD, '--no-backend')}          跳过 Backend
   ${_c(C.BOLD, '--no-web')}              跳过 Web
   ${_c(C.BOLD, '--only')} SERVICE        仅操作指定服务
-  ${_c(C.BOLD, '--force')} / ${_c(C.BOLD, '-f')}      强制（先停后启，用于 up/start）
+  ${_c(C.BOLD, '--force')} / ${_c(C.BOLD, '-f')}      强制（先停后启，用于 up/start；update 时覆盖脏工作区）
   ${_c(C.BOLD, '--timeout')} N           启动超时秒数（默认: backend=30, web=25）
   ${_c(C.BOLD, '--skip-check')}          跳过 pre-flight 检查
 
@@ -1438,6 +2517,9 @@ ${_c(C.CYAN, '使用示例:')}
   ${_c(C.BOLD, 'ragctl status --appmode dev')}         # 仅查看 dev 状态
   ${_c(C.BOLD, 'ragctl restart web -m prod -f')}       # 强制重启 prod Web
   ${_c(C.BOLD, 'ragctl logs backend --tail --lines 100')} # 实时跟踪后端日志
+  ${_c(C.BOLD, 'ragctl version')}                      # 对比本地/远程版本
+  ${_c(C.BOLD, 'ragctl update --check')}               # 仅检查是否有新版本
+  ${_c(C.BOLD, 'ragctl update --yes --restart')}       # 拉取最新并重启服务
 
 ${_c(C.GRAY, '端口对照:')}
 ${_c(C.GRAY, '  dev:  Backend=8765  Web=6789')}
@@ -1453,9 +2535,10 @@ async function main() {
 
   const args = process.argv.slice(2);
   const command = args[0];
+  const ver = readLocalVersion();
 
-  if (!command || command === 'help' || command === '--help') { showHelp(); return 0; }
-  if (command === '--version') { console.log('ragctl 2.1.0'); return 0; }
+  if (!command || command === 'help' || command === '--help' || command === '-h') { showHelp(); return 0; }
+  if (command === '--version' || command === '-V') { console.log(`ragctl ${ver}`); return 0; }
 
   // Route to sub-args (everything after the command name)
   const subArgs = args.slice(1);
@@ -1467,6 +2550,8 @@ async function main() {
       case 'check': return await cmdCheck();
       case 'deps': return await cmdDeps();
       case 'model': return await cmdModel();
+      case 'version': case 'ver': return await cmdVersion(subArgs);
+      case 'update': case 'upgrade': return await cmdUpdate(subArgs);
 
       // Service management
       case 'up': case 'start-all': return await cmdUp(subArgs);

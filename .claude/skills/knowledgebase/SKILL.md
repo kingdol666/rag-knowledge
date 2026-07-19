@@ -58,6 +58,7 @@ Map matched keywords to a single scenario using the classification table below. 
 | 记录经验, 总结, summarize as experience | **Experience-Summarize** | `Skill("knowledgebase-experience-summarize")` |
 | 图谱, graph, neo4j, entity, build graph | **Graph** | `Skill("knowledgebase-graph")` |
 | 初始化, 安装, 部署, 配置, init, setup, install, deploy, bootstrap, getting started | **Init** | `Skill("knowledgebase-init")` (main agent — 不委托 Archival) |
+| 更新, 升级, 检查更新, 拉取最新, 新版本, update, upgrade, check for updates, ragctl update | **Update** | `Skill("knowledgebase-update")` (main agent — 不委托 Archival) |
 
 ### Step 3: Route to Sub-Skill
 Based on classification outcome:
@@ -98,6 +99,7 @@ Each sub-skill's SKILL.md must detect the scenario and delegate execution to the
 - "存/上传/store" → Ingest
 - "看/列/show" → List
 - "初始化/安装/部署/setup" → Init (main agent, 不委托 Archival)
+- "更新/升级/检查更新/update" → Update (main agent, 不委托 Archival)
 - 否则输出："我没能清晰理解您的需求。请说明您是要：入库文档、搜索知识、管理知识库、还是整理知识库？"——等待澄清，不做修改操作
 
 ---

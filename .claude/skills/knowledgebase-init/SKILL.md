@@ -325,12 +325,15 @@ Bash: cd "<RAG_ROOT>" && node command/ragctl.js setup
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   每次启动时是否自动检查并拉取项目更新？
-  （git pull --recurse-submodules）
+  （等价于 ragctl update；对比根目录 VERSION 与 GitHub latest release）
   
-  1. Y — 启用（推荐）
-  2. n — 禁用（手动 ragctl update）
+  1. Y — 启用（推荐：启动时 ragctl update --check，有新版本再提示确认拉取）
+  2. n — 禁用（手动: ragctl update / 说「更新知识库」触发 knowledgebase-update）
   请选择 [Y/n，默认: Y]:
 ```
+
+> 实际拉取统一走 `ragctl update`（或 MCP `kb_project_update` / skill `knowledgebase-update`），
+> 不会在未确认时 `git reset --hard`。脏工作区默认拒绝自动 pull。
 
 ### 配置确认汇总
 ```
@@ -403,7 +406,7 @@ Bash: cd "<RAG_ROOT>" && ragctl install
 
 > 若 `~/.local/bin` 不在 PATH：Linux/macOS 提示 `echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc`；Windows 提示 `setx PATH "%PATH%;%USERPROFILE%\.local\bin"` 后重开终端。
 
-### 7b — kb-mcp 全局 MCP 注册（关键：让 74 个 MCP 工具在任意项目可用）
+### 7b — kb-mcp 全局 MCP 注册（关键：让 76 个 MCP 工具在任意项目可用）
 
 ```
 Bash: cd "<RAG_ROOT>/kb-mcp" && uv run python plugin_install.py install
@@ -419,7 +422,7 @@ Bash: cd "<RAG_ROOT>/kb-mcp" && uv run python plugin_install.py status
 ```
 应显示 `✓ Global ~/.claude/.mcp.json: installed (available everywhere)`。
 
-> ⚠️ 注册后必须**重启 Claude Code**（或在新会话里 `/mcp` 重连）才能让全局 MCP 生效。重启后，在任意目录启动 Claude Code，`mcp__kb-mcp__*` 工具与 13 个技能都可用。
+> ⚠️ 注册后必须**重启 Claude Code**（或在新会话里 `/mcp` 重连）才能让全局 MCP 生效。重启后，在任意目录启动 Claude Code，`mcp__kb-mcp__*` 工具与 14 个技能都可用。
 
 ---
 
@@ -482,16 +485,17 @@ Bash:
 
   🔧 全局指令 (任意终端/任意目录可用):
      ragctl status   ·  ragctl up/down   ·  ragctl logs   ·  ragctl check
-     ragctl desktop  ·  ragctl install
+     ragctl version  ·  ragctl update    ·  ragctl desktop  ·  ragctl install
 
   🌍 全局可用 (任意目录启动 Claude Code 都能操作本知识库):
-     13 skills (插件) + 74 MCP tools (~/.claude/.mcp.json → kb-mcp)
+     14 skills (插件) + 74+ MCP tools (~/.claude/.mcp.json → kb-mcp)
      重启 Claude Code 后，在任意项目里说"搜索知识库"即可使用。
+     说「更新知识库」→ knowledgebase-update（版本对比 + 安全拉取）
 
   🌐 打开 Web UI: http://localhost:<WEB_PORT>
   🤖 打开 Claude Chat: http://localhost:<WEB_PORT>/claude-chat
 
-  🎉 13 skills + 74 MCP tools 已就绪（全局）！
+  🎉 14 skills + 76 MCP tools 已就绪（全局）！
 ═══════════════════════════════════════════════════════════
 ```
 

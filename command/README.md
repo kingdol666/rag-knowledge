@@ -25,6 +25,8 @@ After `ragctl install`, `ragctl` is available globally in any terminal via `~/.l
 | `ragctl check` | Comprehensive environment health check with fix suggestions |
 | `ragctl deps` | Install all dependencies with real-time progress |
 | `ragctl model` | Pre-download BGE-M3 embedding model (~2.2GB) |
+| `ragctl version` | Show local VERSION + git SHA vs GitHub remote |
+| `ragctl update` | Check GitHub and pull latest (submodules + optional deps) |
 
 ### Service Management (Silent — No Terminal Windows)
 
@@ -52,11 +54,23 @@ After `ragctl install`, `ragctl` is available globally in any terminal via `~/.l
 | `ragctl install` | Register `ragctl` globally in `~/.local/bin` |
 | `ragctl desktop` / `ragctl ui` | Launch Tauri desktop console (GUI launcher) |
 
+### Update Flags
+
+| Flag | Description |
+|------|-------------|
+| `update --check` / `-n` | Dry-run version compare only |
+| `update --force` / `-f` | Pull even if equal / dirty worktree |
+| `update --no-deps` | Skip deps reinstall after pull |
+| `update --restart` | Run `ragctl up --force` after pull |
+| `update --yes` / `-y` | Non-interactive |
+| `version --local` | Skip network remote lookup |
+| `version --json` / `update --json` | Machine-readable output |
+
 ### Options
 
 - `--mode dev\|prod` — Override .env APP_MODE (affects ports and behavior)
 - `--help` — Show help
-- `--version` — Show version (2.1.0)
+- `--version` — Show version (from root `VERSION` file)
 
 ## Examples
 
@@ -78,6 +92,12 @@ ragctl logs backend --tail
 
 # Start in production mode
 ragctl up --appmode prod
+
+# Version compare + safe update
+ragctl version
+ragctl update --check
+ragctl update --yes --restart
+```
 
 # Register globally for use from any directory
 ragctl install

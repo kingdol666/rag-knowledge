@@ -14,8 +14,8 @@
   <a href="#-核心特性"><img src="https://img.shields.io/badge/%E7%89%B9%E6%80%A7-%E8%A7%81%E4%B8%8B%E6%96%87-9cf?style=for-the-badge" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" /></a>
   <a href="#-platforms"><img src="https://img.shields.io/badge/platform-Win%20%7C%20Linux%20%7C%20macOS-lightgrey?style=for-the-badge" /></a>
-  <a href="#-mcp-工具-74"><img src="https://img.shields.io/badge/MCP-74%20tools-blueviolet?style=for-the-badge" /></a>
-  <a href="#-技能-13"><img src="https://img.shields.io/badge/Skills-13-orange?style=for-the-badge" /></a>
+  <a href="#-mcp-工具-76"><img src="https://img.shields.io/badge/MCP-76%20tools-blueviolet?style=for-the-badge" /></a>
+  <a href="#-技能-14"><img src="https://img.shields.io/badge/Skills-14-orange?style=for-the-badge" /></a>
   <a href="#-静默无头运行"><img src="https://img.shields.io/badge/startup-silent%20%26%20headless-success?style=for-the-badge" /></a>
 </p>
 
@@ -38,8 +38,8 @@
 - [🖥️ 使用](#️-使用-1) — 4 种界面
 - [⚙️ 配置](#️-配置-1)
 - [📋 命令](#-命令)
-- [🔌 MCP 工具（74）](#-mcp-工具74)
-- [🎯 技能（13）](#-技能13)
+- [🔌 MCP 工具（76）](#-mcp-工具76)
+- [🎯 技能（14）](#-技能14)
 - [🤫 静默无头运行](#-静默无头运行)
 - [🛠️ 故障排查](#️-故障排查)
 - [❓ 常见问题](#-常见问题)
@@ -57,8 +57,8 @@
 - 💡 **经验库（E0–E12）** — 结构化教训，P0/P1/P2 可信度分级、衰减周期、草稿审批
 
 **集成与运维**
-- 🔌 **74 个 MCP 工具** — KB 全生命周期、搜索、图谱、经验、解析 + 静默服务管理
-- 🎯 **13 个 Claude Code 技能** — 自然语言命令，中英双语触发
+- 🔌 **76 个 MCP 工具** — KB 全生命周期、搜索、图谱、经验、解析 + 静默服务管理
+- 🎯 **14 个 Claude Code 技能** — 自然语言命令，中英双语触发
 - 🤫 **静默无头启动** — 所有启动器（`ragctl`、`start.bat/.sh`、Tauri）**零终端窗口**，dev == prod
 - 📓 **统一日志** — 磁盘文件 · Tauri 控制台 · `ragctl logs`，三处读同一批文件
 - 🖥️ **Tauri 桌面控制台** — 可视化启停、依赖安装、实时日志、配置编辑
@@ -84,7 +84,7 @@
 | 工具 | 版本 | 是否必需 | 说明 |
 |------|------|----------|------|
 | **Git** | 任意 | ✅ 必需 | 克隆 + 子模块 |
-| **Node.js** | ≥ 22 | ✅ 必需 | `ragctl` CLI + Nuxt 前端 |
+| **Node.js** | ≥ 18（推荐 22） | ✅ 必需 | `ragctl` CLI + Nuxt 前端 |
 | **uv** | ≥ 0.7 | ⚡ 自动安装 | Python 包管理器 —— 缺失时 `ragctl setup` 自动装 |
 | **Python** | 3.12 | ⚡ 经 uv | uv 管理 Python 环境，无需手动安装 |
 | **Docker** | 任意 | 📋 可选 | 仅 Neo4j 图谱需要。解析/搜索/经验功能无需 |
@@ -142,7 +142,7 @@ ragctl setup            # Windows
 ragctl up               # → http://localhost:6789
 ```
 
-> 在**项目目录内**打开 Claude Code 会自动加载 13 个技能 + kb-mcp MCP 服务器（无需安装——这是项目级插件机制）。
+> 在**项目目录内**打开 Claude Code 会自动加载 14 个技能 + kb-mcp MCP 服务器（无需安装——这是项目级插件机制）。
 
 ### 检查健康状态
 
@@ -151,7 +151,7 @@ ragctl status           # backend/web/neo4j/mineru + HTTP 健康 + PID
 ragctl logs backend --tail   # 实时跟踪后端日志（Ctrl+C 退出）
 ```
 
-完成 —— 一个完整的知识库，74 个 MCP 工具 + 13 个技能已接入 Claude Code。详见[使用](#️-使用-1)。
+完成 —— 一个完整的知识库，76 个 MCP 工具 + 14 个技能已接入 Claude Code。详见[使用](#️-使用-1)。
 
 ## 📦 安装
 
@@ -161,12 +161,12 @@ ragctl logs backend --tail   # 实时跟踪后端日志（Ctrl+C 退出）
 
 ```bash
 claude plugin marketplace add kingdol666/rag-knowledge   # 添加 marketplace
-claude plugin install rag-knowledge                      # 安装 13 技能插件
+claude plugin install rag-knowledge                      # 安装 14 技能插件
 ```
 
 然后在 Claude Code 里说 *"初始化知识库"* → `knowledgebase-init` 技能克隆仓库、运行 `ragctl setup`、配置、启动服务。（本地开发检出而非 GitHub？用 `claude plugin marketplace add "./"`。）
 
-该技能会**自动全局注册 `ragctl`**（`ragctl install` → `~/.local/bin`）和**自动全局注册 `kb-mcp`**（`~/.claude/.mcp.json` + `RAG_PROJECT_ROOT`），所以配置完成后整套系统**在任何目录、任何 Claude Code 会话中皆可用** —— 13 个技能 + 74 个 MCP 工具 + `ragctl` CLI。在任意位置重启 Claude Code 后说"搜索知识库"即可。
+该技能会**自动全局注册 `ragctl`**（`ragctl install` → `~/.local/bin`）和**自动全局注册 `kb-mcp`**（`~/.claude/.mcp.json` + `RAG_PROJECT_ROOT`），所以配置完成后整套系统**在任何目录、任何 Claude Code 会话中皆可用** —— 14 个技能 + 76 个 MCP 工具 + `ragctl` CLI。在任意位置重启 Claude Code 后说"搜索知识库"即可。说「更新知识库」可走 `knowledgebase-update` 做版本对比与安全拉取。
 
 ### 方式 2 — 一键 CLI（`ragctl setup`）
 
@@ -232,7 +232,7 @@ ragctl desktop                    # 启动已构建的 Tauri 二进制
 
 开发时可用 `cargo tauri dev`。
 
-> **技能 + MCP 说明：** 13 个 knowledgebase 技能通过[方式 1](#方式-1--claude-code-插件marketplace--最新鲜体验)（`claude plugin install`）注册，或在项目目录内打开 Claude Code 时自动加载。`kb-mcp` MCP 服务器（74 工具）通过 `.mcp.json` 自动连接；首次 `uv run` 自动同步其 3 个轻量依赖，无需手动操作。
+> **技能 + MCP 说明：** 14 个 knowledgebase 技能通过[方式 1](#方式-1--claude-code-插件marketplace--最新鲜体验)（`claude plugin install`）注册，或在项目目录内打开 Claude Code 时自动加载。`kb-mcp` MCP 服务器（76 工具）通过 `.mcp.json` 自动连接；首次 `uv run` 自动同步其 3 个轻量依赖，无需手动操作。
 
 ## 🖥️ 使用
 
@@ -303,7 +303,7 @@ ragctl desktop                     # 或：cd src-tauri && cargo tauri dev
 
 ### 界面 4 — 任意 MCP 客户端
 
-74 个工具经 MCP 暴露，任何 MCP 兼容代理都能用：
+76 个工具经 MCP 暴露，任何 MCP 兼容代理都能用：
 
 ```python
 # 示例：从 Python MCP 客户端
@@ -353,17 +353,20 @@ ragctl down --appmode prod         # 仅停止 prod（保留共享 Neo4j）
 | `ragctl logs [服务] [--tail] [--lines N]` | 查看 / 实时跟踪日志（backend/web/mineru） |
 | `ragctl deps` | 安装所有依赖（实时进度） |
 | `ragctl model` | 预下载 BGE-M3 嵌入模型 |
+| `ragctl version` | 显示本地 VERSION + git SHA，并对比 GitHub 远程 |
+| `ragctl update` | 检查 GitHub 并拉取最新版（含子模块 + 可选依赖重装） |
+| `ragctl update --check` | 仅对比版本（dry-run，不 pull） |
 | `ragctl install` | 全局注册 ragctl → `~/.local/bin`（任意目录可用） |
 | `ragctl desktop` \| `ui` | 启动 Tauri 桌面控制台（与 ragctl 共享日志） |
 | `ragctl help` | 显示所有命令 |
 
-## 🔌 MCP 工具（74）
+## 🔌 MCP 工具（76）
 
 全部通过 `mcp__kb-mcp__*` 从 Claude Code 或任意 MCP 客户端访问。分类精选：
 
 | 类别 | 示例 |
 |------|------|
-| **服务生命周期** | `kb_project_start`、`kb_project_status`、`kb_project_preflight`、`backend_status` |
+| **服务生命周期** | `kb_project_start`、`kb_project_status`、`kb_project_preflight`、`kb_project_version`、`kb_project_update`、`backend_status` |
 | KB CRUD | `kb_list`、`kb_create`、`kb_update`、`kb_delete`、`kb_catalog` |
 | 文档 CRUD | `kb_doc_create`、`kb_doc_read`、`kb_doc_update_content`、`kb_doc_save_parsed`、`kb_doc_move` |
 | 搜索 | `kb_search`、`kb_search_vector`、`kb_search_two_stage`、`kb_search_stats` |
@@ -380,13 +383,16 @@ ragctl down --appmode prod         # 仅停止 prod（保留共享 Neo4j）
 | `kb_project_preflight()` | 项目**是否已配置**？`.env`/子模块/依赖检查 + 精确修复命令 |
 | `kb_project_status()` | 服务**是否在运行**？端口 + HTTP 健康 + PID + MinerU + 日志路径 + `ready` |
 | `kb_project_start(backend, web, neo4j, mode, wait)` | 静默拉起服务（无头、落盘日志、幂等）。`wait=true` 阻塞到 HTTP 就绪 |
+| `kb_project_version(local_only)` | 本地 VERSION + git SHA，对比 GitHub latest release / 默认分支 |
+| `kb_project_update(check_only, force, no_deps, restart)` | 检查并安全拉取最新版（默认拒绝脏工作区；先 check 再 pull） |
 
-## 🎯 技能（13）
+## 🎯 技能（14）
 
 | 技能 | 流程 | 用途 |
 |------|------|------|
 | **knowledgebase** | 路由 | 调度用户意图到正确子技能 |
 | **knowledgebase-init** | 阶段 0→11 | 全新安装引导向导（部署+配置+启动） |
+| **knowledgebase-update** | 阶段 0→5 | 版本检查 + 安全拉取 GitHub 更新 |
 | **knowledgebase-ingest** | A0→A9 | 带质量门控的文档入库 |
 | **knowledgebase-search** | 步骤0→6 | QDCVR 内容验证检索 |
 | **knowledgebase-search-enterprise** | 阶段0→5 | 多策略跨库搜索 |
@@ -449,7 +455,7 @@ ragctl logs mineru -n 200    # MinerU 输出 200 行
 
 **需要 Docker 吗？** 仅 Neo4j 知识图谱需要。其他功能（解析、搜索、经验）不需要。
 
-**没有 Claude Code 能用吗？** 能。`http://localhost:6789` 的 Web UI 功能完整，任意 MCP 客户端也能直接调用 74 个工具。
+**没有 Claude Code 能用吗？** 能。`http://localhost:6789` 的 Web UI 功能完整，任意 MCP 客户端也能直接调用 76 个工具。
 
 ## 📁 项目结构
 
@@ -457,10 +463,10 @@ ragctl logs mineru -n 200    # MinerU 输出 200 行
 rag-knowledge/
 ├── backend/             ← [子模块] FastAPI + MinerU OCR
 ├── web/                 ← [子模块] Nuxt 3 + Ant Design Vue
-├── kb-mcp/              ← MCP 服务器 — 74 工具（+ project_manager.py 生命周期）
+├── kb-mcp/              ← MCP 服务器 — 76 工具（+ project_manager.py 生命周期）
 ├── command/             ← ragctl CLI（Node.js）
 ├── src-tauri/           ← Tauri 桌面应用（Rust）
-├── .claude/             ← Claude Code 技能（13）+ archival 代理
+├── .claude/             ← Claude Code 技能（14）+ archival 代理
 ├── .claude-plugin/      ← 插件 + marketplace 清单（claude plugin install）
 ├── .mcp.json            ← kb-mcp MCP 自动注册
 ├── config.yml           ← 中央配置（端口唯一真相源）

@@ -6,7 +6,7 @@
 
 <p align="center">
   <strong>Enterprise-Grade Document Intelligence & Agentic Knowledge Base</strong><br/>
-  <em>PDF Parsing · QDCVR Semantic Search · Neo4j Knowledge Graph · Experience Library · MCP-Native (74 tools) · 13 Claude Code Skills · Silent Headless Startup</em>
+  <em>PDF Parsing · QDCVR Semantic Search · Neo4j Knowledge Graph · Experience Library · MCP-Native (76 tools) · 14 Claude Code Skills · Silent Headless Startup</em>
 </p>
 
 <p align="center">
@@ -16,8 +16,8 @@
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" /></a>
   <a href="https://github.com/kingdol666/rag-knowledge/releases"><img src="https://img.shields.io/github/v/release/kingdol666/rag-knowledge?style=for-the-badge&color=blueviolet" /></a>
   <a href="#-platforms"><img src="https://img.shields.io/badge/Platform-Win%20%7C%20Linux%20%7C%20macOS-lightgrey?style=for-the-badge" /></a>
-  <a href="#-mcp-tools"><img src="https://img.shields.io/badge/MCP-74%20tools-blueviolet?style=for-the-badge&logo=code" /></a>
-  <a href="#-skills"><img src="https://img.shields.io/badge/Skills-13-orange?style=for-the-badge&logo=openai" /></a>
+  <a href="#-mcp-tools"><img src="https://img.shields.io/badge/MCP-76%20tools-blueviolet?style=for-the-badge&logo=code" /></a>
+  <a href="#-skills"><img src="https://img.shields.io/badge/Skills-14-orange?style=for-the-badge&logo=openai" /></a>
   <a href="#-plugin"><img src="https://img.shields.io/badge/Install-Plugin-brightgreen?style=for-the-badge&logo=claude" /></a>
 </p>
 
@@ -46,8 +46,8 @@
 - [📦 Install](#-install)
 - [🖥️ Usage](#️-usage)
 - [📋 CLI Reference](#-cli-reference)
-- [🔌 MCP Tools (74)](#-mcp-tools)
-- [🎯 Skills (13)](#-skills)
+- [🔌 MCP Tools (76)](#-mcp-tools)
+- [🎯 Skills (14)](#-skills)
 - [🏗️ Architecture](#️-architecture)
 - [⚙️ Configuration](#️-configuration)
 - [🤫 Silent Operation](#-silent-operation)
@@ -97,7 +97,7 @@ The `knowledgebase-init` skill runs:
 | 10 | Runs full-chain validation (backend health, MCP tools, KB list, search) |
 | 11 | Prints a complete installation report |
 
-All guided, all silent. 13 skills + 74 MCP tools ready globally.
+All guided, all silent. 14 skills + 76 MCP tools ready globally.
 </details>
 
 ### Path B — git clone · *classic*
@@ -123,7 +123,7 @@ curl http://localhost:8765/api/v1/health   # → {"status":"healthy"}
 ```
 
 > [!NOTE]
-> **Opening Claude Code inside the project** auto-loads all 13 skills + `kb-mcp` MCP server (via `.mcp.json` at the project root). No manual MCP config needed.
+> **Opening Claude Code inside the project** auto-loads all 14 skills + `kb-mcp` MCP server (via `.mcp.json` at the project root). No manual MCP config needed.
 
 ---
 
@@ -134,7 +134,7 @@ Only two tools are required upfront — `ragctl setup` installs everything else 
 | Tool | Version | Required? | Notes |
 |------|---------|-----------|-------|
 | **Git** | any | ✅ Required | Cloning + submodules |
-| **Node.js** | ≥ 22 | ✅ Required | `ragctl` CLI + Nuxt frontend |
+| **Node.js** | ≥ 18 (22 recommended) | ✅ Required | `ragctl` CLI + Nuxt frontend |
 | **uv** | ≥ 0.7 | ⚡ Auto-installed | Python package manager — `ragctl setup` installs if missing |
 | **Python** | 3.12 | ⚡ via uv | uv manages the Python env; no manual Python install needed |
 | **Docker** | any | 📋 Optional | Only for Neo4j graph. Parsing/search/experience work without it |
@@ -169,7 +169,7 @@ All paths configurable. Nothing touches system-wide Python or Node.
 |---|---|
 | Separate search, storage, and AI layers | **Unified**: document parsing → indexing → search → graph → experience — one pipeline |
 | Manual setup with complex CLI | **One command**: `ragctl setup` installs everything; or say "初始化知识库" |
-| Hard to integrate with agents | **Native**: 74 MCP tools + 13 Claude Code skills, any MCP client works |
+| Hard to integrate with agents | **Native**: 76 MCP tools + 14 Claude Code skills, any MCP client works |
 | Separate dev/prod configurations | **Single config**: `config.yml` is the source of truth; `--appmode` switches at runtime |
 | Terminal windows clutter | **Silent headless**: all launchers start services with zero terminal windows |
 | No structured knowledge reuse | **Experience library**: E0–E12 lifecycle with P0/P1/P2 credibility tiers |
@@ -190,8 +190,8 @@ All paths configurable. Nothing touches system-wide Python or Node.
 | 🔍 **Multi-strategy search** | BM25 + vector two-stage recall · cross-KB enterprise search · tag semantic + graph expansion · balance_kbs |
 | 📊 **Knowledge graph** | Neo4j-powered · 14 graph tools · entity/relation graphs · cross-KB document bridges · centrality discovery · path queries |
 | 💡 **Experience library** | E0–E12 full lifecycle · structured problem→solution→lessons · P0/P1/P2 credibility tiers · stale detection · decay cycles · draft-approve workflow |
-| 🔌 **74 MCP tools** | KB CRUD · search · graph · experience · parsing · tags · vector/index · service lifecycle · all MCP-native · non-blocking parse |
-| 🎯 **13 Claude Code skills** | Natural-language commands · bilingual triggers (中/EN) · auto-dispatch to Archival agent · self-contained for global plugin · 12 Archival + 1 init |
+| 🔌 **76 MCP tools** | KB CRUD · search · graph · experience · parsing · tags · vector/index · service lifecycle · all MCP-native · non-blocking parse |
+| 🎯 **14 Claude Code skills** | Natural-language commands · bilingual triggers (中/EN) · auto-dispatch to Archival agent · self-contained for global plugin · init + update + 12 Archival |
 | 🤫 **Silent headless** | Every launcher (`ragctl`, `start.bat/.sh`, Tauri) runs with **zero terminal windows** · dev and prod behave identically · all logs unified across surfaces |
 
 ---
@@ -207,7 +207,7 @@ claude plugin install rag-knowledge
 
 Then say: **"初始化知识库"** / **"set up the knowledge base"**
 
-The skill auto-registers `ragctl` globally (`ragctl install` → `~/.local/bin`) and `kb-mcp` globally (`~/.claude/.mcp.json` with `RAG_PROJECT_ROOT`). After setup the platform works **from any directory, any Claude Code session** — 13 skills + 74 MCP tools + `ragctl` CLI.
+The skill auto-registers `ragctl` globally (`ragctl install` → `~/.local/bin`) and `kb-mcp` globally (`~/.claude/.mcp.json` with `RAG_PROJECT_ROOT`). After setup the platform works **from any directory, any Claude Code session** — 14 skills + 76 MCP tools + `ragctl` CLI.
 
 <details>
 <summary><b>Alternative: git clone + manual</b></summary>
@@ -325,19 +325,22 @@ Open `http://localhost:6789` — browse KBs, search documents, explore the graph
 | `ragctl logs [svc] [--tail] [--lines N]` | View / live-tail logs |
 | `ragctl deps` | Install all dependencies (real-time progress) |
 | `ragctl model` | Pre-download BGE-M3 embedding model (~2.2 GB) |
+| `ragctl version` | Show local VERSION + git SHA vs GitHub remote |
+| `ragctl update` | Check GitHub and pull latest (submodules + optional deps) |
+| `ragctl update --check` | Dry-run version compare only |
 | `ragctl install` | Register `ragctl` globally → `~/.local/bin` |
 | `ragctl desktop` · `ui` | Launch Tauri desktop console |
 | `ragctl help` | All commands + flags |
 
 ---
 
-## 🔌 MCP Tools (74)
+## 🔌 MCP Tools (76)
 
 All accessible via `mcp__kb-mcp__*` from Claude Code or any MCP client.
 
 | Category | Count | Key tools |
 |----------|-------|-----------|
-| **Service life cycle** | 4 | `kb_project_start`, `kb_project_status`, `kb_project_preflight`, `backend_status` |
+| **Service life cycle** | 6 | `kb_project_start`, `kb_project_status`, `kb_project_preflight`, `kb_project_version`, `kb_project_update`, `backend_status` |
 | **KB CRUD** | 7 | `kb_list`, `kb_create`, `kb_update`, `kb_delete`, `kb_catalog`, `kb_doc_catalog`, `kb_get_documents` |
 | **Document CRUD** | 7 | `kb_doc_read`, `kb_doc_create`, `kb_doc_update_meta`, `kb_doc_update_content`, `kb_doc_delete`, `kb_doc_batch_delete`, `kb_doc_move` |
 | **File System** | 4 | `fs_get_tree`, `fs_get_children`, `fs_get_count`, `fs_upload_file` |
@@ -350,12 +353,13 @@ All accessible via `mcp__kb-mcp__*` from Claude Code or any MCP client.
 
 ---
 
-## 🎯 Skills (13)
+## 🎯 Skills (14)
 
 | Skill | Flow | Purpose |
 |-------|------|---------|
 | **knowledgebase** | Router | Dispatch user intent to the correct sub-skill |
 | **knowledgebase-init** | Phase 0→11 | Guided fresh-install wizard (main agent) |
+| **knowledgebase-update** | Phase 0→5 | Version check + safe GitHub pull (main agent) |
 | **knowledgebase-ingest** | A0→A9 | Document ingestion with quality gates |
 | **knowledgebase-search** | Step 0–6 | QDCVR retrieval with content verification |
 | **knowledgebase-search-enterprise** | Phase 0–5 | Multi-strategy cross-KB search |
@@ -494,7 +498,7 @@ Only for the Neo4j knowledge graph. Parsing, search, and experience all work wit
 <details>
 <summary><b>Can I use this without Claude Code?</b></summary>
 
-Yes. The Web UI at `http://localhost:6789` is fully functional, and any MCP client can call the 74 tools.
+Yes. The Web UI at `http://localhost:6789` is fully functional, and any MCP client can call the 76 tools.
 </details>
 
 ---
@@ -505,7 +509,7 @@ Yes. The Web UI at `http://localhost:6789` is fully functional, and any MCP clie
 rag-knowledge/
 ├── backend/              ← [submodule] FastAPI + MinerU OCR engine
 ├── web/                  ← [submodule] Nuxt 3 + Ant Design Vue
-├── kb-mcp/               ← MCP server — 74 tools
+├── kb-mcp/               ← MCP server — 76 tools
 ├── command/              ← ragctl CLI (Node.js, js-yaml)
 ├── src-tauri/            ← Tauri v2 desktop application (Rust)
 ├── .claude/              ← Claude Code skills (13) + Archival agent

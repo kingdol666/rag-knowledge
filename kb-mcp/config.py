@@ -9,7 +9,7 @@ are resolved relative to known anchors (__file__ location).
 Resolution rules:
   - kb-mcp package dir  = directory containing this file
   - project root        = parent of kb-mcp dir (where config.yml lives)
-  - storage             = {project_root}/web/storage/tree-file-system
+  - storage             = {project_root}/storage/tree-file-system  (config.yml / TREE_STORAGE_PATH)
 
 Usage:
     from config import WEB_URL, BACKEND_URL, MINERU_URL, resolve_path

@@ -258,7 +258,18 @@ def start_service(name: str, mode: str | None = None) -> dict:
     log_path.parent.mkdir(parents=True, exist_ok=True)
     log = open(log_path, "w", encoding="utf-8", errors="replace")  # truncate on start
     try:
-        env = {**os.environ, "APP_MODE": mode, "PYTHONUTF8": "1", "PYTHONUNBUFFERED": "1"}
+        env = {
+            **os.environ,
+            "APP_MODE": mode,
+            "PYTHONUTF8": "1",
+            "PYTHONUNBUFFERED": "1",
+        }
+        # Pin ports so web proxies to the correct backend even when .env differs.
+        ports = _ports()
+        env["BACKEND_PORT"] = str(ports["backend"])
+        env["WEB_PORT"] = str(ports["web"])
+        env["FRONTEND_PORT"] = str(ports["web"])
+        env["BACKEND_URL"] = f"http://localhost:{ports['backend']}"
         proc = subprocess.Popen(
             cmd, cwd=cwd, env=env,
             stdin=subprocess.DEVNULL,
@@ -482,3 +493,175 @@ def project_status() -> dict:
             f"mineru {'up' if mineru['available'] else 'n/a'}"
         ),
     }
+
+
+# ── Version / Update (delegates to ragctl.js — single source of truth) ───
+def _ragctl_js() -> Path:
+    return PROJECT_ROOT / "command" / "ragctl.js"
+
+
+def _extract_json_blob(text: str):
+    """Extract a top-level JSON object from mixed human+JSON stdout.
+
+    ragctl prints a human header then a JSON object when --json is set.
+    A naive rfind('{') hits nested objects and fails — prefer a full-line
+    JSON object, then balanced-brace scan.
+    """
+    if not text:
+        return None
+    import json as _json
+
+    try:
+        return _json.loads(text)
+    except Exception:
+        pass
+
+    # Prefer a line that is itself a complete JSON object
+    for line in reversed(text.splitlines()):
+        s = line.strip()
+        if s.startswith("{") and s.endswith("}"):
+            try:
+                return _json.loads(s)
+            except Exception:
+                continue
+
+    # Balanced-brace scan from each '{'
+    for i, ch in enumerate(text):
+        if ch != "{":
+            continue
+        depth = 0
+        in_str = False
+        escape = False
+        for j in range(i, len(text)):
+            c = text[j]
+            if in_str:
+                if escape:
+                    escape = False
+                elif c == "\\":
+                    escape = True
+                elif c == '"':
+                    in_str = False
+                continue
+            if c == '"':
+                in_str = True
+            elif c == "{":
+                depth += 1
+            elif c == "}":
+                depth -= 1
+                if depth == 0:
+                    candidate = text[i : j + 1]
+                    try:
+                        return _json.loads(candidate)
+                    except Exception:
+                        break
+    return None
+
+
+def _run_ragctl(args: list[str], timeout: int = 180) -> dict:
+    """Run `node command/ragctl.js <args>` and return structured result.
+
+    Prefers --json output when the subcommand supports it. Never raises —
+    returns {success, exit_code, stdout, stderr, data?} so MCP tools stay
+    resilient under network / git failures.
+    """
+    js = _ragctl_js()
+    if not js.exists():
+        return {
+            "success": False,
+            "error": f"ragctl.js not found at {js}",
+            "hint": "Are you inside a full rag-knowledge checkout?",
+        }
+    node = _which("node")
+    try:
+        proc = subprocess.run(
+            [node, str(js), *args],
+            cwd=str(PROJECT_ROOT),
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+            encoding="utf-8",
+            errors="replace",
+            **_run_silent_args(),
+        )
+    except subprocess.TimeoutExpired:
+        return {"success": False, "error": f"ragctl {' '.join(args)} timed out after {timeout}s"}
+    except FileNotFoundError:
+        return {"success": False, "error": "node not found on PATH — install Node.js ≥18"}
+    except Exception as e:
+        return {"success": False, "error": f"failed to run ragctl: {e}"}
+
+    stdout = (proc.stdout or "").strip()
+    stderr = (proc.stderr or "").strip()
+    data = _extract_json_blob(stdout)
+
+    return {
+        "success": proc.returncode == 0,
+        "exit_code": proc.returncode,
+        "stdout": stdout[-4000:] if stdout else "",
+        "stderr": stderr[-2000:] if stderr else "",
+        "data": data,
+        "command": f"node command/ragctl.js {' '.join(args)}",
+    }
+
+
+def project_version(local_only: bool = False) -> dict:
+    """Return local VERSION + optional remote GitHub comparison via ragctl version --json."""
+    args = ["version", "--json"]
+    if local_only:
+        args.append("--local")
+    result = _run_ragctl(args, timeout=30)
+    if result.get("data"):
+        return {"success": True, **result["data"], "via": "ragctl"}
+    # Fallback: read VERSION file directly if ragctl failed
+    ver_file = PROJECT_ROOT / "VERSION"
+    local_ver = ver_file.read_text(encoding="utf-8").strip() if ver_file.exists() else "0.0.0"
+    return {
+        "success": result.get("success", False),
+        "local": {"version": local_ver, "project_root": str(PROJECT_ROOT)},
+        "remote": None,
+        "update_available": None,
+        "error": result.get("error") or result.get("stderr") or "ragctl version failed",
+        "via": "fallback",
+    }
+
+
+def project_update(
+    check_only: bool = False,
+    force: bool = False,
+    no_deps: bool = False,
+    restart: bool = False,
+) -> dict:
+    """Check GitHub for a newer version and optionally pull it via ragctl update.
+
+    Args:
+        check_only: dry-run — report only, never pull
+        force: pull even if versions look equal / dirty worktree
+        no_deps: after pull, skip `ragctl deps`
+        restart: after pull, run `ragctl up --force`
+    """
+    args = ["update", "--json", "--yes"]
+    if check_only:
+        args.append("--check")
+    if force:
+        args.append("--force")
+    if no_deps:
+        args.append("--no-deps")
+    if restart:
+        args.append("--restart")
+    # Pull can take a while (network + submodule + optional deps)
+    timeout = 60 if check_only else 600
+    result = _run_ragctl(args, timeout=timeout)
+    payload = {
+        "success": result.get("success", False),
+        "check_only": check_only,
+        "command": result.get("command"),
+        "exit_code": result.get("exit_code"),
+    }
+    if result.get("data"):
+        payload.update(result["data"])
+    else:
+        payload["stdout"] = result.get("stdout")
+        payload["stderr"] = result.get("stderr")
+        if result.get("error"):
+            payload["error"] = result["error"]
+    return payload
