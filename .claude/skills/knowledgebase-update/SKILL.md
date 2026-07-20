@@ -30,7 +30,7 @@ description: >
 ```
 1. 若当前目录（或父目录）存在 VERSION + command/ragctl.js → RAG_ROOT = 该目录
 2. 否则读环境变量 RAG_PROJECT_ROOT
-3. 否则读 ~/.claude/.mcp.json 里 kb-mcp.env.RAG_PROJECT_ROOT
+3. 否则读 ~/.claude.json → mcpServers → kb-mcp → env.RAG_PROJECT_ROOT
 4. 仍找不到 → 提示用户先跑 knowledgebase-init，或 cd 到安装目录
 ```
 

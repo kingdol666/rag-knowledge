@@ -27,7 +27,7 @@ description: >
 - 💬 **逐项询问** — 每个关键决策点由用户明确回答后才执行
 - 🚫 **零擅自决策** — 涉及路径、端口、密码、功能开关的配置，必须有用户确认
 - ✅ **每步验证** — 完成一个阶段立即验证，失败即时反馈
-- 📌 **MCP 全局安装可选** — 插件安装已提供全局 MCP；仅在用户明确要求时才写 `~/.claude/.mcp.json`
+- 📌 **MCP 全局安装可选** — 插件安装已提供全局 MCP；仅在用户明确要求时才写 `~/.claude.json` → `mcpServers`
 
 ---
 
@@ -545,7 +545,7 @@ Bash: cd "<RAG_ROOT>" && ragctl install
 
   ✅ 当前已通过插件/项目 .mcp.json 提供 — 本知识库可直接使用
 
-  是否额外注册到全局 ~/.claude/.mcp.json？
+  是否额外注册到全局 ~/.claude.json → mcpServers？
   （仅当你想在其他非插件项目里也使用本知识库时需要）
 
   1. n — 跳过（推荐，插件安装已覆盖全局）
@@ -559,13 +559,13 @@ Bash: cd "<RAG_ROOT>" && ragctl install
 Bash: cd "<RAG_ROOT>/kb-mcp" && uv run python plugin_install.py install
 ```
 
-预期输出：`✓ kb-mcp installed to <home>/.claude/.mcp.json` + `RAG_PROJECT_ROOT: <RAG_ROOT>`。
+预期输出：`[OK] kb-mcp installed [global (~/.claude.json → mcpServers)]` + `RAG_PROJECT_ROOT: <RAG_ROOT>`。
 
 验证：
 ```
 Bash: cd "<RAG_ROOT>/kb-mcp" && uv run python plugin_install.py status
 ```
-应显示 `✓ Global ~/.claude/.mcp.json: installed (available everywhere)`。
+应显示 `[OK] Global ~/.claude.json: installed (available everywhere)`。
 
 > ⚠️ 全局注册后必须**重启 Claude Code**（或在新会话里 `/mcp` 重连）才能让全局 MCP 生效。
 

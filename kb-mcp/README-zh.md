@@ -97,7 +97,7 @@ uv run python server.py
 uv run python server.py --http
 ```
 
-> **通常无需手动运行 kb-mcp。** Claude Code 在打开项目时通过 `../.mcp.json` 自动启动。首次 `uv run` 自动同步依赖。全局使用时，`claude plugin install rag-knowledge` 将其注册到 `~/.claude/.mcp.json`。
+> **通常无需手动运行 kb-mcp。** Claude Code 在打开项目时通过 `../.mcp.json` 自动启动。首次 `uv run` 自动同步依赖。全局使用时，`claude plugin install rag-knowledge` 将其注册到 `~/.claude.json` → `mcpServers`。
 
 ## 🔌 工具（76）
 
@@ -269,7 +269,7 @@ kb-mcp/
 ├── project_manager.py       # 服务生命周期 + 版本/更新（委托 ragctl）
 ├── task_registry.py         # 进程内异步后台任务管理器（解析作业）
 ├── config.py                # 从共享 config.yml 读取 URL（零硬编码路径）
-├── plugin_install.py        # 全局注册：ragctl → ~/.local/bin、MCP → ~/.claude/.mcp.json
+├── plugin_install.py        # 全局注册：ragctl → ~/.local/bin、MCP → ~/.claude.json → mcpServers
 ├── kb_client/
 │   └── client.py            # 所有 HTTP 逻辑（server.py 零 HTTP — 委托至此）
 ├── pyproject.toml           # 3 个依赖：mcp + httpx + pyyaml

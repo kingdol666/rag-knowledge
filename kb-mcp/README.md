@@ -97,7 +97,7 @@ uv run python server.py
 uv run python server.py --http
 ```
 
-> **Normally you don't run kb-mcp manually.** Claude Code auto-launches it via `../.mcp.json` when you open the project. The first `uv run` auto-syncs deps if needed. For global usage, `claude plugin install rag-knowledge` registers it in `~/.claude/.mcp.json`.
+> **Normally you don't run kb-mcp manually.** Claude Code auto-launches it via `../.mcp.json` when you open the project. The first `uv run` auto-syncs deps if needed. For global usage, `claude plugin install rag-knowledge` registers it in `~/.claude.json` → `mcpServers`.
 
 ## 🔌 Tools (76)
 
@@ -269,7 +269,7 @@ kb-mcp/
 ├── project_manager.py       # Service lifecycle + version/update (delegates to ragctl)
 ├── task_registry.py         # In-process async background task manager for parse jobs
 ├── config.py                # Reads URLs from shared config.yml (zero hardcoded paths)
-├── plugin_install.py        # Global registraton: ragctl → ~/.local/bin, MCP → ~/.claude/.mcp.json
+├── plugin_install.py        # Global registraton: ragctl → ~/.local/bin, MCP → ~/.claude.json → mcpServers
 ├── kb_client/
 │   └── client.py            # All HTTP logic (server.py has zero HTTP — delegates here)
 ├── pyproject.toml           # 3 deps: mcp + httpx + pyyaml

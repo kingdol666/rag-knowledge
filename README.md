@@ -207,7 +207,7 @@ claude plugin install rag-knowledge
 
 Then say: **"初始化知识库"** / **"set up the knowledge base"**
 
-The skill auto-registers `ragctl` globally (`ragctl install` → `~/.local/bin`) and `kb-mcp` globally (`~/.claude/.mcp.json` with `RAG_PROJECT_ROOT`). After setup the platform works **from any directory, any Claude Code session** — 14 skills + 76 MCP tools + `ragctl` CLI.
+The skill auto-registers `ragctl` globally (`ragctl install` → `~/.local/bin`) and `kb-mcp` globally (`~/.claude.json` → `mcpServers` with `RAG_PROJECT_ROOT`). After setup the platform works **from any directory, any Claude Code session** — 14 skills + 76 MCP tools + `ragctl` CLI.
 
 <details>
 <summary><b>Alternative: git clone + manual</b></summary>
