@@ -46,9 +46,9 @@ if ! check_cmd uv; then echo -e "  ${RED}[ERROR]${NC} 'uv' not found";  missing=
 if ! check_cmd node; then echo -e "  ${RED}[ERROR]${NC} 'node' not found"; missing=1; fi
 [[ $missing -ne 0 ]] && exit 1
 
-# Submodule check
-[ -d "$ROOT/backend/app" ] || { echo -e "  ${RED}[ERROR]${NC} Backend submodule not found. Run: git submodule update --init --recursive"; exit 1; }
-[ -f "$ROOT/web/package.json" ] || { echo -e "  ${RED}[ERROR]${NC} Web submodule not found. Run: git submodule update --init --recursive"; exit 1; }
+# Project integrity check
+[ -d "$ROOT/backend/app" ] || { echo -e "  ${RED}[ERROR]${NC} Backend not found. Run: ragctl setup"; exit 1; }
+[ -f "$ROOT/web/package.json" ] || { echo -e "  ${RED}[ERROR]${NC} Web not found. Run: ragctl setup"; exit 1; }
 
 # Install web deps if needed
 [ -d "$ROOT/web/node_modules" ] || { echo "  Installing web deps..."; (cd "$ROOT/web" && npm install); }

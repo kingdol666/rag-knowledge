@@ -119,14 +119,14 @@ Bash: 检查 <RAG_ROOT> 是否已存在
     ⚠️ 目录已存在: <RAG_ROOT>
     
     如何处理？
-    1. 更新 (git pull --recurse-submodules) — 保留现有配置和数据
+    1. 更新 (git pull) — 保留现有配置和数据
     2. 重新安装 — 删除后重新 clone（⚠️ 数据将丢失）
     3. 跳过 — 保持现状，不修改
     请选择 [1/2/3]:
   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 如果不存在:
-  Bash: git clone --recursive https://github.com/kingdol666/rag-knowledge.git "<RAG_ROOT>"
+  Bash: git clone https://github.com/kingdol666/rag-knowledge.git "<RAG_ROOT>"
   验证: ls <RAG_ROOT>/config.yml 存在
 ```
 

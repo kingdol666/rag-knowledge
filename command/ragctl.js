@@ -553,10 +553,10 @@ function preflightReady({ requireModel = false } = {}) {
   // actionable message instead of spawning half-broken services.
   const problems = [];
   if (!fs.existsSync(path.join(BACKEND_DIR, 'app', 'main.py'))) {
-    problems.push('backend submodule missing — run: git submodule update --init --recursive  (or ragctl setup)');
+    problems.push('backend missing — run: ragctl setup');
   }
   if (!fs.existsSync(path.join(WEB_DIR, 'package.json'))) {
-    problems.push('web submodule missing — run: git submodule update --init --recursive  (or ragctl setup)');
+    problems.push('web missing — run: ragctl setup');
   }
   if (!fs.existsSync(ENV_FILE)) {
     problems.push('.env missing — run: ragctl setup  (or copy .env.example → .env)');
@@ -712,7 +712,7 @@ async function cmdCheck() {
     const gitVer = execSync('git --version', { encoding: 'utf8', timeout: 5000, stdio: ['pipe','pipe','pipe'] }).trim();
     addResult('pass', 'Git', gitVer, null);
   } catch {
-    addResult('warn', 'Git', '未找到 Git（子模块管理需要）', '安装: https://git-scm.com/downloads');
+    addResult('warn', 'Git', '未找到 Git（版本管理需要）', '安装: https://git-scm.com/downloads');
   }
 
   // Docker (optional)
@@ -730,8 +730,8 @@ async function cmdCheck() {
     ['config.yml', CONFIG_YML, '主配置文件缺失'],
     ['backend/config.yml', BACKEND_CONFIG_YML, '后端配置文件缺失'],
     ['.env', ENV_FILE, '环境变量文件缺失（运行: ragctl setup）'],
-    ['backend/app/main.py', path.join(BACKEND_DIR, 'app', 'main.py'), '后端子模块未初始化（运行: git submodule update --init --recursive）'],
-    ['web/package.json', path.join(WEB_DIR, 'package.json'), '前端子模块未初始化（运行: git submodule update --init --recursive）'],
+    ['backend/app/main.py', path.join(BACKEND_DIR, 'app', 'main.py'), 'backend/ 缺失（运行: ragctl setup）'],
+    ['web/package.json', path.join(WEB_DIR, 'package.json'), 'web/ 缺失（运行: ragctl setup）'],
     ['kb-mcp/server.py', path.join(MCP_DIR, 'server.py'), 'kb-mcp 目录缺失'],
     ['.env.example', path.join(PROJECT_ROOT, '.env.example'), '.env.example 模板缺失'],
   ];
@@ -953,23 +953,14 @@ async function cmdSetup() {
     warn(`无法预装 Python ${REQUIRED_PYTHON}: ${e.message}`);
   }
 
-  // 2. Git submodules
-  step('初始化 Git 子模块...');
+  // 2. Verify project integrity (backend & web are part of the repo)
+  step('验证项目完整性...');
   if (fs.existsSync(path.join(BACKEND_DIR, 'app', 'main.py')) && fs.existsSync(path.join(WEB_DIR, 'package.json'))) {
-    ok('子模块已初始化');
+    ok('项目完整性验证通过');
   } else {
-    if (!commandExists('git')) {
-      err('Git 未安装，无法初始化子模块');
-      info('安装: https://git-scm.com/downloads  然后重跑 ragctl setup');
-      return 1;
-    }
-    const result = await spawnAsync('git', ['submodule', 'update', '--init', '--recursive'], { cwd: PROJECT_ROOT, silent: true });
-    if (result.code === 0) ok('子模块初始化完成');
-    else {
-      err('子模块初始化失败');
-      if (result.stderr) console.log(`  ${_c(C.GRAY, result.stderr.slice(0, 500))}`);
-      return 1;
-    }
+    err('项目文件不完整 — backend/ 或 web/ 缺失');
+    info('请重新克隆仓库: git clone https://github.com/kingdol666/rag-knowledge.git');
+    return 1;
   }
 
   // 3. .env
@@ -2252,7 +2243,7 @@ async function cmdUpdate(args = []) {
   const git = getLocalGitInfo();
   if (!git.isGit) {
     err('当前目录不是 git 仓库，无法自动更新。请重新 clone：');
-    info(`  git clone --recursive https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}.git`);
+    info(`  git clone https://github.com/${GITHUB_OWNER}/${GITHUB_REPO}.git`);
     return 1;
   }
 
@@ -2276,7 +2267,7 @@ async function cmdUpdate(args = []) {
 
   if (!remote.remoteVersion && !remote.remoteSha && !remote.originSha) {
     err(`无法获取远程版本信息: ${remote.error || 'unknown'}`);
-    info('可检查网络 / 代理，或手动: git pull --recurse-submodules');
+    info('可检查网络 / 代理，或手动: git pull');
     return 1;
   }
 
@@ -2363,7 +2354,7 @@ async function cmdUpdate(args = []) {
     return 1;
   }
 
-  // Fetch + pull with submodules
+  // Fetch + pull
   step('git fetch origin');
   let r = runGit(['fetch', 'origin', '--tags', '--prune'], { allowFail: true });
   if (r.code !== 0) {
@@ -2374,12 +2365,12 @@ async function cmdUpdate(args = []) {
   ok('fetch 完成');
 
   step(`git pull --ff-only origin ${branch}`);
-  r = runGit(['pull', '--ff-only', '--recurse-submodules', 'origin', branch], { allowFail: true });
+  r = runGit(['pull', '--ff-only', 'origin', branch], { allowFail: true });
   if (r.code !== 0) {
     // ff-only may fail on diverged history — offer merge fallback only with --force
     if (flags.force) {
       warn('fast-forward 失败，--force 下尝试 merge pull…');
-      r = runGit(['pull', '--no-rebase', '--recurse-submodules', 'origin', branch], { allowFail: true });
+      r = runGit(['pull', '--no-rebase', 'origin', branch], { allowFail: true });
     }
     if (r.code !== 0) {
       err(`git pull 失败 (exit ${r.code})`);
@@ -2389,14 +2380,6 @@ async function cmdUpdate(args = []) {
     }
   }
   ok('pull 完成');
-
-  step('同步子模块');
-  r = runGit(['submodule', 'update', '--init', '--recursive'], { allowFail: true });
-  if (r.code !== 0) {
-    warn(`submodule update 返回 ${r.code} — 可稍后手动: git submodule update --init --recursive`);
-  } else {
-    ok('子模块已同步');
-  }
 
   const newVersion = readLocalVersion();
   const newGit = getLocalGitInfo();
@@ -2464,7 +2447,7 @@ ${_c(C.CYAN, '核心命令:')}
   ${_c(C.BOLD, 'deps')}             安装所有依赖（实时进度；backend 固定 Python 3.12）
   ${_c(C.BOLD, 'model')}            预下载 BGE-M3 嵌入模型 (~2.2GB)
   ${_c(C.BOLD, 'version')}          显示本地/远程版本（VERSION + git SHA）
-  ${_c(C.BOLD, 'update')}           对比 GitHub 最新版并拉取更新（含子模块）
+  ${_c(C.BOLD, 'update')}           对比 GitHub 最新版并拉取更新
 
 ${_c(C.CYAN, '服务管理（全部静默启动 · 无终端窗口）:')}
   up / start-all             启动全部服务（根据 --appmode 选择端口组）

@@ -76,7 +76,7 @@ Bash: cd "<RAG_ROOT>" && node command/ragctl.js update --check
 | 已是最新 | 报告完成，**停止**（除非用户坚持 `--force`） |
 | 可更新 | 进入 Phase 2 询问是否拉取 |
 | 本地超前 | 说明本地版本号更高（开发分支），默认不降级 |
-| 网络失败 | 给出手动命令：`git pull --recurse-submodules` |
+| 网络失败 | 给出手动命令：`git pull` |
 
 ---
 
@@ -86,7 +86,7 @@ Bash: cd "<RAG_ROOT>" && node command/ragctl.js update --check
 发现新版本 v<local> → v<remote>。
 
 是否现在更新？
-  1. Y — 拉取最新（git pull --ff-only --recurse-submodules + 增量 deps）
+  1. Y — 拉取最新（git pull --ff-only + 增量 deps）
   2. n — 仅记录，不更新
   3. Y+重启 — 拉取后 ragctl up --force
   4. 仅代码 — 拉取但跳过 deps（--no-deps）

@@ -317,7 +317,7 @@ def _preflight_problems() -> list[str]:
         )
     if not (BACKEND_DIR / "app" / "main.py").exists():
         problems.append(
-            "backend submodule not initialized. Run: git submodule update --init --recursive"
+            "backend/ directory missing. Run: ragctl setup"
         )
     elif not (BACKEND_DIR / ".venv").exists() and not (BACKEND_DIR / "uv.lock").exists():
         problems.append(
@@ -325,7 +325,7 @@ def _preflight_problems() -> list[str]:
         )
     if not (WEB_DIR / "package.json").exists():
         problems.append(
-            "web submodule not initialized. Run: git submodule update --init --recursive"
+            "web/ directory missing. Run: ragctl setup"
         )
     elif not (WEB_DIR / "node_modules").exists():
         problems.append(
@@ -342,7 +342,7 @@ def preflight() -> dict:
         "ready_to_start": not problems,
         "problems": problems,
         "fix": (
-            "Run `ragctl setup` (one-click: uv + submodules + deps + model + .env), "
+            "Run `ragctl setup` (one-click: uv + deps + model + .env), "
             "or invoke the knowledgebase-init skill for a guided wizard."
             if problems else ""
         ),

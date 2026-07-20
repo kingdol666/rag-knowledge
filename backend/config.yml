@@ -1,0 +1,10 @@
+# ============================================
+# MinerU OCR / PDF Engine Configuration
+# ============================================
+
+mineru:
+  enabled: true
+  host: "127.0.0.1"
+  start_on_boot: true
+  startup_timeout: 60
+  model_source: "modelscope"

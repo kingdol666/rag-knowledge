@@ -21,12 +21,12 @@ After `ragctl install`, `ragctl` is available globally in any terminal via `~/.l
 
 | Command | Description |
 |---------|-------------|
-| `ragctl setup` | One-click full deployment (uv + submodules + .env + deps + model) |
+| `ragctl setup` | One-click full deployment (uv + deps + model + .env) |
 | `ragctl check` | Comprehensive environment health check with fix suggestions |
 | `ragctl deps` | Install all dependencies with real-time progress |
 | `ragctl model` | Pre-download BGE-M3 embedding model (~2.2GB) |
 | `ragctl version` | Show local VERSION + git SHA vs GitHub remote |
-| `ragctl update` | Check GitHub and pull latest (submodules + optional deps) |
+| `ragctl update` | Check GitHub and pull latest (+ optional deps) |
 
 ### Service Management (Silent — No Terminal Windows)
 

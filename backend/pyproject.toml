@@ -1,0 +1,73 @@
+[project]
+name = "rag-knowledge-backend"
+version = "1.0.0"
+description = "RAG Knowledge Backend — API gateway for RAG Knowledge Platform"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "fastapi>=0.139.0",
+    "pydantic>=2.13.4",
+    "uvicorn[standard]>=0.49.0",
+    "python-multipart>=0.0.32",
+    "python-dotenv>=1.2.2",
+    "pyyaml>=6.0.3",
+    "pytest>=9.1.1",
+    "httpx>=0.28.1",
+    # ── 向量检索核心栈（版本需与 [tool.uv.sources] 的 PyTorch CUDA 索引配对） ──
+    # ⚠️ torch / torchvision 通过 [tool.uv.sources] 从 PyTorch 官方 cu130 索引安装，
+    #    Windows 上 uv sync 默认会拿到 +cu130 的 CUDA wheel（而非 PyPI 的 +cpu 版）。
+    "torch==2.12.1",
+    "torchvision==0.27.1",
+    # ⚠️ transformers 必须 <5.0.0：MinerU 3.4.x 的 pipeline 后端依赖
+    #    `transformers.pytorch_utils.find_pruneable_heads_and_indices`，
+    #    该函数在 transformers 5.x 已被移除，会导致 OCR 解析 ImportError。
+    #    sentence-transformers 5.x 接受 >=4.41.0，所以二者交集为 4.41 ~ 4.99。
+    "transformers>=4.57.3,<5.0.0",
+    "sentence-transformers>=5.0.0,<6.0.0",
+    "accelerate>=1.0.0",
+    "huggingface-hub>=0.34.0,<1.0.0",
+    "tokenizers>=0.22.0,<0.23.0",
+    "numpy>=2.0.0,<3.0.0",
+    "chromadb>=1.5.9",
+    # ── 知识图谱 ──
+    "neo4j>=6.2.0",
+    # ── 关键词检索 ──
+    "jieba>=0.42.1",
+    # ── MinerU OCR 引擎（pipeline 后端，随 backend venv 运行） ──
+    #    mineru[core] 含其所需模型与依赖；pipeline 后端依赖 torch + torchvision。
+    "mineru[core]>=3.4.2,<3.5.0",
+]
+
+[tool.uv]
+package = false
+# 三平台一等支持：uv sync 在 Windows / Linux / macOS 均通过。
+required-environments = [
+    "sys_platform == 'win32' or sys_platform == 'linux' or sys_platform == 'darwin'",
+]
+
+# ── PyTorch 索引（平台/GPU 条件化）──────────────────────────────────
+# CUDA wheel 仅 Windows + Linux x86_64 走 PyTorch 官方 cu130 索引；
+# macOS（MPS/CPU）与 Linux aarch64 自动回退默认 PyPI（CPU/MPS wheel）。
+# explicit=true：marker 不匹配时该索引不被其他包使用，干净回退 PyPI。
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[tool.uv.sources]
+# marker 匹配 → cu130 索引（+cu130 CUDA wheel）；
+# marker 不匹配（macOS / Linux aarch64）→ 自动回退 PyPI。
+torch = [
+    { index = "pytorch-cu130", marker = "sys_platform == 'win32' or (sys_platform == 'linux' and platform_machine == 'x86_64')" },
+]
+torchvision = [
+    { index = "pytorch-cu130", marker = "sys_platform == 'win32' or (sys_platform == 'linux' and platform_machine == 'x86_64')" },
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+pythonpath = ["."]
+addopts = "-q"
+markers = [
+    "integration: end-to-end tests requiring a running MinerU engine (skipped unless --run-integration)",
+]

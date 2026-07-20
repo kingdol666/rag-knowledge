@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Monorepo for a document intelligence platform: PDF parsing (MinerU OCR), tree-based knowledge base management, keyword search, and an MCP tool layer for Agentic KB operations.
 
-**Tech stack:** Python 3.12 + FastAPI · TypeScript + Nuxt 3 + Ant Design Vue · MCP (Python FastMCP) · Git submodules
+**Tech stack:** Python 3.12 + FastAPI · TypeScript + Nuxt 3 + Ant Design Vue · MCP (Python FastMCP)
 
 ## Architecture
 
@@ -42,8 +42,8 @@ Nuxt / Backend                 ← writes: parse + save pipeline
 rag-knowledge/
 ├── config.yml              # Single source of truth for ports (shared across all modules)
 ├── start.bat / start.sh    # One-click launch scripts
-├── backend/                # [submodule] rag-knowledge-backend — FastAPI + MinerU
-├── web/                    # [submodule] rag-knowledge-frondend — Nuxt 3 UI (only frontend)
+├── backend/                # FastAPI + MinerU (Python 3.12)
+├── web/                    # Nuxt 3 UI (TypeScript)
 ├── kb-mcp/                 # [local] MCP server — provides 76 MCP tools for KB operations
 ├── .claude/skills/         # OMC skills (knowledgebase dispatcher, ingest, search, manage, init, update, etc.)
 ├── .claude/agents/         # Archival agent definition (knowledge-admin.md)
@@ -297,10 +297,7 @@ start.bat                         # Legacy launcher (for reference)
 ### One-time setup (manual, if not using `ragctl setup`)
 
 ```bash
-# 1. Submodules
-git submodule update --init --recursive
-
-# 2. Install deps
+# 1. Install deps
 cd command && npm install && cd ..
 cd backend && uv sync && cd ..
 cd web && npm install && cd ..
@@ -354,7 +351,7 @@ server:
 3. **HTTPS_PROXY hijacks localhost** — httpx calls use `trust_env=False` to avoid localhost calls being proxied to 7890. If adding new httpx calls, use the same flag.
 4. **kb-mcp API inconsistencies** — `kb_client` has known quirks: batch_delete requires full paths while delete/read accept bare names; `file_size` in `.knowledge-base.yml` can be stale after index updates; `name` field doesn't always sync with `path`.
 5. **Cross-platform** — `pyproject.toml` uses marker-based conditional sources; Win/Linux x86_64 pull cu130 (CUDA) from the PyTorch index, macOS and aarch64 fall back to PyPI (CPU/MPS). `required-environments` allows `win32`/`linux`/`darwin`, so `uv sync` works on all three. Linux uses `prctl(PR_SET_PDEATHSIG)` as the Job Object equivalent for MinerU subprocess cleanup; macOS falls back to process-group + atexit.
-6. **Submodule management** — `backend` and `web` are git submodules (the legacy `frontend/` submodule was removed; `.gitmodules` lists only backend + web). After cloning or switching branches, run `git submodule update --init --recursive`. The `kb-mcp` directory is NOT a submodule.
+6. **Submodule management** — `backend` and `web` are now part of the main repository (not git submodules). The legacy submodule configuration has been removed. The `kb-mcp` directory has always been part of the main repo.
 7. **Hierarchical KB search returns empty content** — 父KB（如高分子双向拉伸文献库）的 `kb_search_two_stage` 返回子KB容器条目，content 为空。子KB本身无向量chunk。**Workaround**：用 `kb_graph_kb_overview(kb_id)` 获取子KB UUID列表，在相关子KB内分别检索（见 knowledgebase-search Skill Step 1b）。
 8. **Vector index metadata may be missing after initial index** — 部分KB的文档 `vector_index` 字段可能在索引后未写入 YAML 元数据（向量实际存在于 ChromaDB）。用 `kb_reindex(kb_id, force=true)` 修复。
 9. **Experience heuristic extraction produces low-quality candidates** — `experience_extract(mode="heuristic")` 的 key_lessons 可能返回章节标题。**推荐**：用 `mode="prepare"` → LLM 精炼。详见 knowledgebase-experience Skill E2a 质量门控。

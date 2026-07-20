@@ -1443,7 +1443,7 @@ async def kb_project_status() -> str:
 async def kb_project_preflight() -> str:
     """Check whether the project is SET UP and ready to start services (distinct
     from kb_project_status, which checks whether services are already running).
-    Verifies .env exists, backend/web submodules are initialized, and backend
+    Verifies .env exists, backend/web are initialized, and backend
     .venv + web node_modules are installed. Returns `ready_to_start` plus a list
     of `problems` and the exact `fix` command (`ragctl setup`). Call this if
     kb_project_start returned a preflight error, or to diagnose a fresh clone.
