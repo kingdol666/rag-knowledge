@@ -1469,7 +1469,7 @@ async def kb_project_start(backend: bool = True, web: bool = True, neo4j: bool =
             (default False — returns immediately after launch; poll kb_project_status)
 
     Fails fast with a `preflight` block if the project isn't set up yet (missing
-    .env / submodules / deps). Services already listening are skipped (idempotent).
+    .env / deps). Services already listening are skipped (idempotent).
     """
     import asyncio
     loop = asyncio.get_event_loop()
@@ -1504,7 +1504,7 @@ async def kb_project_update(check_only: bool = False, force: bool = False,
                             no_deps: bool = False, restart: bool = False) -> str:
     """Check GitHub for a newer version of the project and optionally pull it.
     Delegates to `ragctl update` (single source of truth for version compare +
-    git pull --recurse-submodules + optional deps reinstall).
+    git pull + optional deps reinstall).
 
     Safety:
       - Refuses to pull over a dirty worktree unless force=True

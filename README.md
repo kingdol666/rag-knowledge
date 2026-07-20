@@ -103,8 +103,8 @@ All guided, all silent. 14 skills + 76 MCP tools ready globally.
 ### Path B — git clone · *classic*
 
 ```bash
-# 1. Clone (recursive pulls all submodules)
-git clone --recursive https://github.com/kingdol666/rag-knowledge.git
+# 1. Clone
+git clone https://github.com/kingdol666/rag-knowledge.git
 cd rag-knowledge
 
 # 2. One-click setup
@@ -133,7 +133,7 @@ Only two tools are required upfront — `ragctl setup` installs everything else 
 
 | Tool | Version | Required? | Notes |
 |------|---------|-----------|-------|
-| **Git** | any | ✅ Required | Cloning + submodules |
+| **Git** | any | ✅ Required | Cloning |
 | **Node.js** | ≥ 18 (22 recommended) | ✅ Required | `ragctl` CLI + Nuxt frontend |
 | **uv** | ≥ 0.7 | ⚡ Auto-installed | Python package manager — `ragctl setup` installs if missing |
 | **Python** | 3.12 | ⚡ via uv | uv manages the Python env; no manual Python install needed |
@@ -213,14 +213,13 @@ The skill auto-registers `ragctl` globally (`ragctl install` → `~/.local/bin`)
 <summary><b>Alternative: git clone + manual</b></summary>
 
 ```bash
-git clone --recursive https://github.com/kingdol666/rag-knowledge.git
+git clone https://github.com/kingdol666/rag-knowledge.git
 cd rag-knowledge
 
 # One-click (recommended)
 ragctl setup
 
 # Or step-by-step
-git submodule update --init --recursive
 cd backend && uv sync && cd ..
 cd kb-mcp  && uv sync && cd ..
 cd web && npm install && cd ..
@@ -326,7 +325,7 @@ Open `http://localhost:6789` — browse KBs, search documents, explore the graph
 | `ragctl deps` | Install all dependencies (real-time progress) |
 | `ragctl model` | Pre-download BGE-M3 embedding model (~2.2 GB) |
 | `ragctl version` | Show local VERSION + git SHA vs GitHub remote |
-| `ragctl update` | Check GitHub and pull latest (submodules + optional deps) |
+| `ragctl update` | Check GitHub and pull latest (+ optional deps) |
 | `ragctl update --check` | Dry-run version compare only |
 | `ragctl install` | Register `ragctl` globally → `~/.local/bin` |
 | `ragctl desktop` · `ui` | Launch Tauri desktop console |
@@ -462,7 +461,7 @@ ragctl logs mineru --lines 200 # 200 lines of OCR output
 | MCP not connecting | `uv` not on PATH (fresh terminal) | `ragctl setup` installs uv; reopen terminal |
 | Backend won't start | deps not installed | `ragctl setup` (or `cd backend && uv sync`) |
 | Web won't start | `node_modules` missing | `ragctl setup` (or `cd web && npm install`) |
-| `backend/` or `web/` is empty | submodules not initialized | `git submodule update --init --recursive` |
+| `backend/` or `web/` is empty | repo not fully cloned | `ragctl setup` |
 | Graph queries fail (search works) | Neo4j not running | `ragctl start neo4j` (requires Docker) |
 | BGE model download slow/fails | network to HuggingFace | set `HF_ENDPOINT=https://huggingface.co` |
 | Port already in use | previous service still running | `ragctl down` then `ragctl up` |
@@ -507,8 +506,8 @@ Yes. The Web UI at `http://localhost:6789` is fully functional, and any MCP clie
 
 ```
 rag-knowledge/
-├── backend/              ← [submodule] FastAPI + MinerU OCR engine
-├── web/                  ← [submodule] Nuxt 3 + Ant Design Vue
+├── backend/              ← FastAPI + MinerU OCR engine
+├── web/                  ← Nuxt 3 + Ant Design Vue
 ├── kb-mcp/               ← MCP server — 76 tools
 ├── command/              ← ragctl CLI (Node.js, js-yaml)
 ├── src-tauri/            ← Tauri v2 desktop application (Rust)

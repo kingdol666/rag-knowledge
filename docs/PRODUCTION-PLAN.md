@@ -18,7 +18,7 @@
 | MCP 工具层 | 73 工具（KB CRUD / 检索 / 图谱 / 经验） | ✅ |
 | 一键脚本 | `start.sh` / `start.bat`（开窗） | ✅ |
 | 健康检查 | `ragctl health` / `ragctl doctor` | ✅ |
-| 一键初始化 | `ragctl init` — 依赖安装 + submodule + .env 模板 | ✅ 2026-07-15 |
+| 一键初始化 | `ragctl init` — 依赖安装 + .env 模板 | ✅ 2026-07-15 |
 | 全栈启停 | `ragctl up` / `ragctl down` — Neo4j→Backend→Web 依赖顺序 | ✅ 2026-07-15 |
 | 跨平台启动器 | `ragctl` (bash, Linux/macOS) + `ragctl.bat` (Windows) | ✅ 2026-07-15 |
 | 环境模板 | `.env.example` — 新用户复制即用 | ✅ 2026-07-15 |
@@ -42,7 +42,7 @@
 | **首次运行体验** | 直接 `ragctl start`，配置全靠手改 | `ragctl init` 交互向导 | P0 |
 | **生产部署** | 仅 dev 模式 | systemd / Windows 服务 / Docker | P1 |
 | **数据安全** | 无备份 | `ragctl backup` / `restore` | P1 |
-| **分发形态** | 源码 + submodule | 桌面安装包（Tauri） | P2 |
+| **分发形态** | 源码 | 桌面安装包（Tauri） | P2 |
 | **测试现代化** | test_server.py 逻辑过时 | 重写 + 端到端套件 | P2 |
 | **运维可观测** | 无 | 指标 dashboard | P3 |
 
@@ -82,7 +82,7 @@
 - **目标**：`git clone` 后第一条命令 `ragctl init`，交互式完成全部前置。
 - **步骤**：
   1. `ragctl doctor` 检查依赖（uv/node/npm/docker），缺哪个提示装哪个。
-  2. `git submodule update --init --recursive`。
+  2. 验证项目完整性（backend/、web/ 已随仓库克隆）。
   3. `ragctl install all`（uv sync + npm install）。
   4. 交互问：端口（默认 8765/6789）、存储路径（默认 ./storage）、是否启用向量/图谱/MinerU（默认全开）、APP_MODE（默认 dev）→ 写 `.env`。
   5. 可选：`docker compose up -d neo4j`（启用图谱时）。

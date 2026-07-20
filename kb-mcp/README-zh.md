@@ -109,7 +109,7 @@ uv run python server.py --http
 |------|------|
 | `kb_project_start(backend, web, neo4j, mode, wait)` | 静默启动服务（无头、日志落盘、幂等）。`wait=true` 阻塞至 HTTP 就绪。 |
 | `kb_project_status()` | 服务是否运行？端口 + HTTP 健康 + PID + MinerU + 日志路径 + `ready` 布尔值。 |
-| `kb_project_preflight()` | 项目是否已配置？`.env`/子模块/依赖检查 + 精确 `fix` 命令。 |
+| `kb_project_preflight()` | 项目是否已配置？`.env`/依赖检查 + 精确 `fix` 命令。 |
 | `kb_project_version(local_only)` | 本地 VERSION + git SHA，对比 GitHub latest release / 默认分支。 |
 | `kb_project_update(check_only, force, no_deps, restart)` | 安全更新：先 dry-run；脏工作区默认拒绝；可选依赖重装与服务重启。 |
 | `backend_status()` | 快速后端健康检查。 |

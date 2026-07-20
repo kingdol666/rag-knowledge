@@ -20,10 +20,8 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - name: Checkout (with submodules)
+      - name: Checkout
         uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: Setup Python 3.12
         uses: actions/setup-python@v5
@@ -76,8 +74,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: recursive
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'

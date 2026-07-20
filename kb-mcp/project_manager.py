@@ -369,7 +369,7 @@ def start_project(
         timeout: max seconds to wait when wait=True
 
     Fails fast with an actionable `preflight` block if the project hasn't been
-    set up yet (missing .env / submodules / deps) — so the caller never waits
+    set up yet (missing .env / deps) — so the caller never waits
     on a silent multi-GB download or a crash.
     """
     pf = preflight()
@@ -648,7 +648,7 @@ def project_update(
         args.append("--no-deps")
     if restart:
         args.append("--restart")
-    # Pull can take a while (network + submodule + optional deps)
+    # Pull can take a while (network + optional deps)
     timeout = 60 if check_only else 600
     result = _run_ragctl(args, timeout=timeout)
     payload = {

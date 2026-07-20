@@ -109,7 +109,7 @@ All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by 
 |------|-------------|
 | `kb_project_start(backend, web, neo4j, mode, wait)` | Silently launch services (headless, logged to files, idempotent). `wait=true` blocks until HTTP-healthy. |
 | `kb_project_status()` | Are services running? Ports + HTTP health + PIDs + MinerU + log paths + `ready` boolean. |
-| `kb_project_preflight()` | Is the project set up? `.env`/submodules/deps check + exact `fix` command. |
+| `kb_project_preflight()` | Is the project set up? `.env`/deps check + exact `fix` command. |
 | `kb_project_version(local_only)` | Local VERSION + git SHA, compared with GitHub latest release / default branch. |
 | `kb_project_update(check_only, force, no_deps, restart)` | Safe update: dry-run first, refuse dirty worktree unless force, optional deps + restart. |
 | `backend_status()` | Quick backend health check. |
