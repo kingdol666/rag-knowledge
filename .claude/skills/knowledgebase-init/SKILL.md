@@ -1,16 +1,16 @@
 ---
 name: knowledgebase-init
 description: >
-  Interactive installation wizard for the RAG Knowledge Platform. Auto-detects
-  the plugin install location (no manual clone path needed), then guides users
-  through: prerequisite checks, dependency install, 10-point interactive config
-  (mode, ports, storage, auth, MinerU, Neo4j, HF mirror…), ragctl global
-  registration, service startup, full-chain validation. MCP global registration
-  is opt-in only (plugins already provide global MCP). Triggered by:
-  /knowledgebase-init, init KB, setup knowledge base, install rag knowledge,
-  deploy KB, start KB, bootstrap, getting started, 初始化知识库, 安装知识库,
-  部署知识库, 知识库启动, kb init, knowledgebase setup wizard, 知识库安装向导,
-  配置知识库, 引导安装知识库.
+  Interactive installation wizard for the RAG Knowledge Platform. Supports two
+  install methods: (A) plugin install — auto-detects project in ~/.claude/plugins/cache/;
+  (B) skills copy — if project not found, asks user for path and git clones if needed.
+  Then guides through: prerequisite checks, dependency install, 10-point interactive
+  config (mode, ports, storage, auth, MinerU, Neo4j, model source…), ragctl global
+  registration, optional MCP global registration (~/.claude.json → mcpServers, user
+  consent required), service startup, full-chain validation. Triggered by:
+  /knowledgebase-init, init KB, setup knowledge base, install rag knowledge, deploy KB,
+  start KB, bootstrap, getting started, 初始化知识库, 安装知识库, 部署知识库, 知识库启动,
+  kb init, knowledgebase setup wizard, 知识库安装向导, 配置知识库, 引导安装知识库.
 ---
 
 # Knowledgebase Init — 全平台交互式部署向导
@@ -22,12 +22,13 @@ description: >
 
 ## 核心原则
 
-- 🔍 **自动定位** — 项目已通过插件安装到磁盘，先自动找到它，不问"装在哪里"
+- 🔍 **自动定位优先** — 先扫插件缓存 + CWD + git 根；找不到再问用户（含 clone 选项）
+- 📦 **两种安装方式** — 插件安装（项目已在缓存）或 skills 复制（需 clone），init 都能处理
 - 🔄 **全平台兼容** — Windows / Linux / macOS 三平台统一流程
 - 💬 **逐项询问** — 每个关键决策点由用户明确回答后才执行
 - 🚫 **零擅自决策** — 涉及路径、端口、密码、功能开关的配置，必须有用户确认
 - ✅ **每步验证** — 完成一个阶段立即验证，失败即时反馈
-- 📌 **MCP 全局安装可选** — 插件安装已提供全局 MCP；仅在用户明确要求时才写 `~/.claude.json` → `mcpServers`
+- 📌 **MCP 全局安装需用户同意** — 插件安装已提供全局 MCP；仅用户明确选 Y 才写 `~/.claude.json` → `mcpServers`
 
 ---
 
@@ -68,31 +69,85 @@ Bash: uname -s  (Linux/macOS) 或 echo %OS% (Windows)
 
 ---
 
-## Phase 2 — 项目位置自动检测 ⭐
+## 两种安装方式（均支持）
 
-**项目已通过插件安装到磁盘上（插件安装会自动 clone 到 Claude 的插件目录）。此阶段自动定位它，不再问"装到哪里"。**
+本 init skill 同时支持两种安装方式，Phase 2 会自动识别：
 
-### 检测策略（按优先级依次尝试）
+| 方式 | 项目代码位置 | skills 位置 | 检测路径 |
+|------|-------------|-------------|----------|
+| **A. 插件安装** | `~/.claude/plugins/cache/rag-knowledge/rag-knowledge/<version>/` | 随插件一起加载 | Phase 2 方法 1（插件缓存） |
+| **B. Skills 复制** | 不存在，需要 clone | `~/.claude/skills/knowledgebase-*/`（用户手动复制） | Phase 2 方法 2/3 → 可能触发 clone |
 
-**方法 A — Git 仓库根目录（最可靠）**
+**方式 A（插件安装）**：用户通过 `/plugin install rag-knowledge@rag-knowledge` 安装，Claude Code 自动 clone 项目到插件缓存目录，skills + MCP 都随插件加载。init 只需定位 + 配置 + 启动。
 
-如果当前工作目录在项目 git 仓库内：
-```
-Bash: git rev-parse --show-toplevel
-```
-验证返回路径下存在 `config.yml` + `ragctl` + `backend/` → 命中。
+**方式 B（Skills 复制）**：用户只把 `.claude/skills/knowledgebase-*/` 复制到 `~/.claude/skills/`，项目代码不在磁盘。init 需要先 clone 项目到用户指定路径，再配置 + 启动。适合不想装插件、只想用 skill 引导的用户。
 
-**方法 B — 从工作目录向上查找签名文件**
+**两种方式最终都会**：
+1. 定位/clone 项目代码到 `<RAG_ROOT>`
+2. 安装依赖 + 配置 `.env` + `config.yml`
+3. 全局注册 `ragctl`（`ragctl install`）
+4. **询问**是否全局注册 MCP（`~/.claude.json` → `mcpServers`，需用户同意）
+5. 启动服务 + 全链路验证
 
-从 CWD 向上最多 5 层，查找同时包含以下文件的目录：
+---
+
+## Phase 2 — 项目定位与 Clone ⭐
+
+**目标**：确定 `<RAG_ROOT>`（项目根目录，含 config.yml + ragctl + backend/）。
+按优先级依次尝试 4 种方法，找到即停；全未命中则询问用户（含 clone 选项）。
+
+### 签名验证（所有方法共用）
+
+一个有效的 `<RAG_ROOT>` 必须同时包含：
 - `config.yml`（单一配置源）
 - `ragctl` 或 `ragctl.bat`（CLI 入口）
 - `backend/` 目录
 
 ```
+verify_signature(d):
+  return exists(d/config.yml) AND (exists(d/ragctl) OR exists(d/ragctl.bat)) AND exists(d/backend)
+```
+
+### 方法 1 — 插件缓存扫描（方式 A：插件安装的首要路径）
+
+Claude Code 把插件 clone 到 `~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/`。
+
+```
+Linux/macOS:
+  for cache_root in "$HOME/.claude/plugins/cache"; do
+    [ -d "$cache_root" ] || continue
+    # 扫描所有 rag-knowledge 命中（可能有多个版本，取最新）
+    find "$cache_root" -maxdepth 4 -name "config.yml" -path "*rag-knowledge*" 2>/dev/null | while read f; do
+      d=$(dirname "$f")
+      verify_signature "$d" && echo "$d"
+    done | sort -V | tail -1   # 取版本号最大的
+  done
+
+PowerShell (Windows):
+  $cacheRoot = "$env:USERPROFILE\.claude\plugins\cache"
+  if (Test-Path $cacheRoot) {
+    Get-ChildItem -Path $cacheRoot -Recurse -Filter "config.yml" -Depth 4 -ErrorAction SilentlyContinue |
+      Where-Object {
+        $d = $_.DirectoryName
+        $_.FullName -match "rag-knowledge" -and
+        ((Test-Path "$d\ragctl") -or (Test-Path "$d\ragctl.bat")) -and (Test-Path "$d\backend")
+      } | Sort-Object FullName -Descending | Select-Object -First 1 | ForEach-Object { Write-Output $_.DirectoryName }
+  }
+```
+
+### 方法 2 — Git 仓库根目录（CWD 在项目内）
+
+```
+Bash: git rev-parse --show-toplevel 2>/dev/null
+→ 验证签名 → 命中
+```
+
+### 方法 3 — 从 CWD 向上查找签名（5 层）
+
+```
 Bash (Linux/macOS):
   d=$(pwd); for i in 1 2 3 4 5; do
-    if [ -f "$d/config.yml" ] && [ -f "$d/ragctl" ] && [ -d "$d/backend" ]; then echo "$d"; break; fi
+    verify_signature "$d" && echo "$d" && break
     d=$(dirname "$d")
   done
 
@@ -103,101 +158,104 @@ PowerShell (Windows):
   }
 ```
 
-**方法 C — Claude Code 插件缓存目录扫描（插件安装的首要路径）**
+### 方法 4 — 询问用户（含 clone 选项）
 
-Claude Code 把插件 clone 到用户主目录下的缓存中。**首要扫描路径**：
+若方法 1/2/3 均未找到（典型场景：方式 B skills 复制，项目代码尚未 clone）：
 
-```
-~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/
-```
-
-示例（本项目）：
-```
-~/.claude/plugins/cache/rag-knowledge/rag-knowledge/2.3.0/
-```
-
-```
-Linux/macOS:
-  # 1. 精确查找 rag-knowledge 插件缓存（推荐）
-  for cache_root in "$HOME/.claude/plugins/cache"; do
-    [ -d "$cache_root" ] || continue
-    find "$cache_root" -maxdepth 4 -name "config.yml" -path "*rag-knowledge*" 2>/dev/null | while read f; do
-      d=$(dirname "$f")
-      # 验证三件套签名
-      [ -f "$d/ragctl" ] || [ -f "$d/ragctl.bat" ] || continue
-      [ -d "$d/backend" ] || continue
-      echo "$d"
-    done
-  done
-
-PowerShell (Windows):
-  $cacheRoot = "$env:USERPROFILE\.claude\plugins\cache"
-  if (Test-Path $cacheRoot) {
-    Get-ChildItem -Path $cacheRoot -Recurse -Filter "config.yml" -Depth 4 -ErrorAction SilentlyContinue |
-      Where-Object { $_.FullName -match "rag-knowledge" } |
-      ForEach-Object {
-        $d = $_.DirectoryName
-        if (((Test-Path "$d\ragctl") -or (Test-Path "$d\ragctl.bat")) -and (Test-Path "$d\backend")) {
-          Write-Output $d
-        }
-      }
-  }
-
-兜底：也扫描这些位置（旧版/变体）
-  ~/.claude/marketplaces/
-  ~/.claude/cache/
-  %APPDATA%\Claude\plugins\
-
-在所有路径下递归查找 config.yml + ragctl 的组合（最多 5 层深）。
-```
-
-**方法 D — 兜底：询问用户**
-
-若 A/B/C 均未找到，向用户展示已尝试的位置并询问：
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ❓ 未自动检测到 RAG Knowledge 项目位置
+  ❓ 未自动检测到 RAG Knowledge 项目代码
 
-  已尝试：git 根目录、CWD 向上查找、插件缓存目录
+  已尝试：插件缓存、CWD git 根、CWD 向上 5 层
 
-  请提供项目根目录的完整路径
-  （包含 config.yml + ragctl + backend/ 的目录）:
+  项目代码（backend/web/kb-mcp 等）需要放在哪里？
+
+  请输入目标路径（三种情况自动处理）：
+    • 路径已存在且是本项目 → 直接使用
+    • 路径不存在           → 自动 git clone 到此路径
+    • 路径已存在但非本项目 → 询问是否 clone 到子目录
+
+  示例输入：
+    Linux/macOS: ~/rag-knowledge  或  /data/projects/rag-knowledge
+    Windows:     D:\projects\rag-knowledge
 
   > 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-### 检测结果确认
+**用户输入路径 `<P>` 后的三种处理**：
 
-找到候选路径后，**必须**验证签名并让用户确认：
+**情况 4a — `<P>` 存在且签名验证通过** → `RAG_ROOT = <P>`（用户已有项目）
+
+**情况 4b — `<P>` 不存在** → 自动 clone：
+```
+Bash: mkdir -p "<P>" && git clone https://github.com/kingdol666/rag-knowledge.git "<P>"
+验证: verify_signature("<P>") → 通过则 RAG_ROOT = <P>
+失败 → 显示错误，回到方法 4 重新询问
+```
+
+**中国区 clone 加速**（若直连 GitHub 失败/慢）：
+```
+# 方案 1：ghproxy 镜像（无需配置，直接替换 URL）
+git clone https://ghproxy.com/https://github.com/kingdol666/rag-knowledge.git "<P>"
+
+# 方案 2：用户已有代理（如 Clash 7890）
+HTTPS_PROXY=http://127.0.0.1:7890 git clone https://github.com/kingdol666/rag-knowledge.git "<P>"
+
+# 方案 3：Gitee 镜像（若有）
+git clone https://gitee.com/<user>/rag-knowledge.git "<P>"
+```
+
+> clone 失败时向用户展示这三种加速方案并询问选哪个，不要静默重试。
+
+**情况 4c — `<P>` 存在但签名不通过**（空目录或非本项目）：
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  ⚠ 路径已存在但不是 RAG Knowledge 项目: <P>
+
+  1. Clone 到 <P>/rag-knowledge 子目录
+  2. 重新输入其他路径
+  3. 取消安装
+  请选择 [1/2/3]:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+选 1 → `git clone ... "<P>/rag-knowledge"` → `RAG_ROOT = <P>/rag-knowledge`
+选 2 → 回到方法 4 重新询问
+选 3 → 终止
+
+### 检测结果确认（无论哪个方法命中）
+
+找到 `<RAG_ROOT>` 后，**必须**让用户确认：
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ✅ 已检测到 RAG Knowledge Platform 项目
+  ✅ 已定位 RAG Knowledge Platform 项目
 
   📁 路径:   <RAG_ROOT>
   🏷️ 版本:   <cat <RAG_ROOT>/VERSION>
-  🔗 来源:   <方法 A/B/C/D>
+  🔗 来源:   <方法 1 插件缓存 / 2 git 根 / 3 CWD 上溯 / 4 用户指定 / 4b git clone>
   📦 结构:   config.yml ✅  ragctl ✅  backend/ ✅  web/ ✅  kb-mcp/ ✅
 
   是否使用此位置继续安装？[Y/n]:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-用户 `n` → 回到方法 D 让用户手动输入。
+用户 `n` → 回到方法 4 让用户手动输入。
 
-### 可选：更新项目代码
+### 可选：更新项目代码（仅对已存在的 RAG_ROOT，非新 clone）
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   🔄 代码更新检查
 
-  是否在安装前拉取最新代码？(git pull)
+  是否在安装前拉取最新代码？(git pull --ff-only)
   1. Y — 拉取最新（推荐，脏工作区会自动跳过）
   2. n — 使用当前版本
   请选择 [Y/n，默认: Y]:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
+
+> 新 clone（情况 4b/4c-1）跳过此步骤——已是最新代码。
 
 用户选 Y：
 ```
@@ -534,23 +592,36 @@ Bash: cd "<RAG_ROOT>" && ragctl install
 | **项目本地安装**（git clone） | 仅项目目录内（`.mcp.json`） | ❌ 不需要（除非用户要在其他项目用） |
 | **多项目共享** | — | ✅ 仅此场景需要 |
 
-### 询问用户
+### 询问用户（根据安装方式智能推荐）
 
+根据 Phase 2 的来源标签（方法 1 = 插件安装 / 方法 4b = clone）调整推荐：
+
+**情况 A — 插件安装（Phase 2 方法 1 命中）**：
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   🌐 kb-mcp 全局 MCP 注册（可选）
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  kb-mcp（76 个 MCP 工具）的可用范围:
+  检测到插件安装方式 — kb-mcp 已随插件全局可用（任意目录）。
 
-  ✅ 当前已通过插件/项目 .mcp.json 提供 — 本知识库可直接使用
-
-  是否额外注册到全局 ~/.claude.json → mcpServers？
-  （仅当你想在其他非插件项目里也使用本知识库时需要）
-
-  1. n — 跳过（推荐，插件安装已覆盖全局）
-  2. Y — 注册到全局
+  是否额外写入 ~/.claude.json → mcpServers？（通常不需要）
+  1. n — 跳过（推荐，插件已覆盖全局）
+  2. Y — 仍写入全局 ~/.claude.json
   请选择 [Y/n，默认: n]:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**情况 B — Skills 复制 / git clone（Phase 2 方法 4 命中）**：
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🌐 kb-mcp 全局 MCP 注册（可选）
+
+  检测到 clone/手动安装方式 — kb-mcp 目前仅项目目录内可用（.mcp.json）。
+  若你想在**其他项目**也使用这 76 个 MCP 工具，需要全局注册。
+
+  是否写入 ~/.claude.json → mcpServers？
+  1. Y — 注册全局（在任意目录/任意 Claude Code 会话可用）
+  2. n — 仅项目内使用（跳过）
+  请选择 [Y/n，默认: Y]:
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
@@ -651,9 +722,10 @@ Bash:
 
 | ❌ | ✅ |
 |----|----|
-| 问用户"项目装在哪里"或"clone 到哪个目录" | Phase 2 自动检测，找到后让用户确认 |
-| 检测失败后直接放弃 | 依次尝试 A→B→C→D 四种方法，最后才问用户 |
+| 方法 1/2/3 未命中就直接放弃 | 依次尝试 1→2→3→4，方法 4 含 clone 选项 |
 | 不验证签名就用一个路径 | 必须存在 `config.yml` + `ragctl` + `backend/` 三件套 |
+| 用户路径不存在时直接报错退出 | 询问后自动 `git clone` 到该路径（情况 4b） |
+| 路径已存在但非本项目时强行覆盖 | 询问：clone 到子目录 / 重新输入 / 取消（情况 4c） |
 | 强制执行 `git pull` 或 `git reset --hard` | 拉取用 `--ff-only`，脏工作区跳过并提示 |
 | 不问用户就覆盖已有 .env | 展示当前 .env 内容，询问是否修改每一项 |
 | 跳过预检直接安装依赖 | Phase 1 所有核心依赖 ✅ 后继续 |
@@ -662,5 +734,6 @@ Bash:
 | 安装失败（非零退出）继续下一步 | 每个 Phase 失败立即停止，给出 3 个选项 |
 | 不验证写端口 | 端口范围检查 (1024-65535) + 是否被占用检查 |
 | 不展示最终确认清单 | 所有决策点汇总展示，等用户最终确认 |
-| **默认执行全局 MCP 注册** | **Phase 7 默认跳过；仅用户明确选 Y 才执行** |
+| **默认执行全局 MCP 注册** | **Phase 7 默认跳过；仅用户明确选 Y 才写 `~/.claude.json`** |
+| **写 MCP 到 `~/.claude/.mcp.json`** | **全局 MCP 写 `~/.claude.json` → `mcpServers`（唯一正确路径）** |
 | 用错误的 shell 语法 | 所有命令根据 OS_TYPE 自动适配（/ vs \\ 路径分隔符） |
