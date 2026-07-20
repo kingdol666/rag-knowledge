@@ -67,7 +67,7 @@
       <div class="settings-content">
         <a-spin :spinning="loading">
           <!-- Config Sections -->
-          <template v-if="activeSection !== '__env'">
+          <template v-if="activeSection !== '__env' && activeSection !== '__cleanup'">
             <div class="section-card" v-if="currentSection">
               <div class="section-header">
                 <div class="section-title-area">
@@ -107,7 +107,7 @@
           </template>
 
           <!-- Environment Variables Section -->
-          <template v-else>
+          <template v-else-if="activeSection === '__env'">
             <div class="section-card">
               <div class="section-header">
                 <div class="section-title-area">
@@ -124,6 +124,80 @@
                   />
                 </div>
               </div>
+            </div>
+          </template>
+
+          <!-- Cleanup / Storage Section -->
+          <template v-else>
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-title-area">
+                  <h2 class="section-title">存储管理</h2>
+                  <p class="section-desc">清理 MinerU 解析缓存和临时文件，释放磁盘空间</p>
+                </div>
+                <div class="section-actions">
+                  <a-button @click="scanCleanup" :loading="cleanupScanning" size="small">
+                    <ReloadOutlined />扫描
+                  </a-button>
+                </div>
+              </div>
+
+              <a-spin :spinning="cleanupScanning">
+                <!-- Cleanup table -->
+                <table class="cleanup-table" v-if="cleanupItems.length > 0">
+                  <thead>
+                    <tr>
+                      <th>类别</th>
+                      <th>大小</th>
+                      <th>说明</th>
+                      <th>操作</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="item in cleanupItems" :key="item.name">
+                      <td class="item-name">{{ item.name }}</td>
+                      <td class="item-size">
+                        <span :class="{ 'size-zero': item.size_bytes === 0 }">
+                          {{ item.size_human }}
+                        </span>
+                      </td>
+                      <td class="item-desc">{{ item.desc }}</td>
+                      <td class="item-action">
+                        <a-button
+                          v-if="item.size_bytes > 0"
+                          size="small"
+                          :danger="item.name === '模型缓存'"
+                          type="primary"
+                          :loading="cleanupRunning === item.name"
+                          :disabled="cleanupRunning !== null"
+                          @click="doClean(item)"
+                        >
+                          <DeleteOutlined />清理
+                        </a-button>
+                        <a-tag v-else color="success">已清空</a-tag>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <!-- Empty state -->
+                <a-empty
+                  v-if="!cleanupScanning && cleanupItems.length === 0"
+                  description="点击「扫描」查看可清理的缓存"
+                />
+
+                <!-- Total freed -->
+                <div v-if="cleanupFreed > 0" class="cleanup-result">
+                  <CheckCircleOutlined class="result-icon" />
+                  <span class="result-text">已释放 {{ formatBytes(cleanupFreed) }} 磁盘空间</span>
+                </div>
+
+                <!-- Model cache warning -->
+                <div class="cleanup-warning" v-if="cleanupModelSize > 0">
+                  <ExclamationCircleOutlined />
+                  <span>模型缓存（{{ formatBytes(cleanupModelSize) }}）包含 BGE-M3 嵌入模型和 MinerU OCR 模型，清理后首次使用需重新下载。</span>
+                </div>
+              </a-spin>
             </div>
           </template>
         </a-spin>
@@ -155,6 +229,7 @@ import {
   SettingOutlined, CloudServerOutlined, DatabaseOutlined, ThunderboltOutlined,
   ExperimentOutlined, ShareAltOutlined, SearchOutlined, FileTextOutlined,
   CodeOutlined, ReloadOutlined, CheckOutlined, ExclamationCircleOutlined,
+  DeleteOutlined, CheckCircleOutlined, ClearOutlined,
 } from '@ant-design/icons-vue'
 
 // ── Types ──────────────────────────────────────────────────────────────
@@ -183,7 +258,7 @@ interface ConfigSection {
 const iconMap: Record<string, any> = {
   CloudServerOutlined, DatabaseOutlined, ThunderboltOutlined,
   ExperimentOutlined, ShareAltOutlined, SearchOutlined, FileTextOutlined,
-  SettingOutlined,
+  SettingOutlined, ClearOutlined,
 }
 
 // ── State ──────────────────────────────────────────────────────────────
@@ -213,7 +288,7 @@ const effectiveMode = computed(() => effective.app_mode)
 const sections = computed(() => schema.value)
 
 const currentSection = computed(() => {
-  if (activeSection.value === '__env') return null
+  if (activeSection.value === '__env' || activeSection.value === '__cleanup') return null
   return schema.value[activeSection.value]
 })
 
@@ -361,6 +436,87 @@ function discardChanges() {
   message.info('已放弃修改')
 }
 
+// ── Cleanup ──────────────────────────────────────────────────────────────
+interface CleanItem {
+  name: string
+  desc: string
+  size_bytes: number
+  size_human: string
+  will_clean: boolean
+  message: string
+}
+
+const cleanupScanning = ref(false)
+const cleanupRunning = ref<string | null>(null)
+const cleanupItems = ref<CleanItem[]>([])
+const cleanupFreed = ref(0)
+const cleanupModelSize = ref(0)
+
+function formatBytes(b: number): string {
+  if (b < 1024) return `${b} B`
+  if (b < 1024 * 1024) return `${(b / 1024).toFixed(1)} KB`
+  if (b < 1024 * 1024 * 1024) return `${(b / (1024 * 1024)).toFixed(1)} MB`
+  return `${(b / (1024 * 1024 * 1024)).toFixed(2)} GB`
+}
+
+async function scanCleanup() {
+  cleanupScanning.value = true
+  cleanupFreed.value = 0
+  try {
+    const res = await $fetch<any>('/api/system/clean', {
+      method: 'POST',
+      body: { scope: 'all', dry_run: true },
+    })
+    cleanupItems.value = res.items || []
+    // Track model cache size
+    const modelItem = cleanupItems.value.find((i: CleanItem) => i.name === '模型缓存')
+    cleanupModelSize.value = modelItem?.size_bytes || 0
+  } catch (e: any) {
+    message.error('扫描失败: ' + (e.message || '后端未响应'))
+    cleanupItems.value = []
+  } finally {
+    cleanupScanning.value = false
+  }
+}
+
+async function doClean(item: CleanItem) {
+  // Map item name to scope
+  const scopeMap: Record<string, string> = {
+    'MinerU 解析产物': 'mineru',
+    '服务日志': 'logs',
+    'Python 缓存': 'pycache',
+    '模型缓存': 'model',
+  }
+  const scope = scopeMap[item.name] || 'mineru'
+
+  // Model cache requires double confirmation
+  if (scope === 'model') {
+    if (!confirm(`⚠️ 确认清理模型缓存 (${item.size_human})？\n\n清理后首次向量索引或 PDF 解析需要重新下载模型（~4GB）。`)) {
+      return
+    }
+  }
+
+  try {
+    cleanupRunning.value = item.name
+    const res = await $fetch<any>('/api/system/clean', {
+      method: 'POST',
+      body: { scope, force: true },
+    })
+    if (res.success) {
+      cleanupFreed.value += res.total_freed_bytes || 0
+      message.success(`${item.name}已清理 — 释放 ${res.total_freed_human}`)
+      // Rescan
+      await scanCleanup()
+    } else {
+      message.error(res.note || '清理失败')
+    }
+  } catch (e: any) {
+    message.error('清理失败: ' + (e.message || '后端未响应'))
+  } finally {
+    cleanupRunning.value = null
+  }
+}
+
 // ── Lifecycle ──────────────────────────────────────────────────────────
 onMounted(() => {
   loadConfig()
@@ -373,7 +529,7 @@ watch(envSchema, (val) => {
   }
 })
 
-// Expose __env for sidebar
+// Expose __env + __cleanup for sidebar
 const sectionsWithEnv = computed(() => {
   const result = { ...schema.value }
   if (envSchema.value.label) {
@@ -382,6 +538,11 @@ const sectionsWithEnv = computed(() => {
       icon: envSchema.value.icon,
       description: envSchema.value.description,
     }
+  }
+  (result as any).__cleanup = {
+    label: '存储管理',
+    icon: 'ClearOutlined',
+    description: '清理缓存与 MinerU 解析产物',
   }
   return result
 })
@@ -750,6 +911,98 @@ const ConfigField = defineComponent({
   .effective-banner { flex-wrap: wrap; gap: 12px; }
   .banner-divider { display: none; }
   .action-bar { min-width: 90vw; bottom: 12px; }
+}
+
+/* ── Cleanup Table ── */
+.cleanup-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+}
+.cleanup-table th {
+  text-align: left;
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--kb-fg-3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--kb-border);
+}
+.cleanup-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--kb-border-light, var(--kb-border));
+  font-size: 13.5px;
+  vertical-align: middle;
+}
+.cleanup-table tr:last-child td {
+  border-bottom: none;
+}
+.cleanup-table .item-name {
+  font-weight: 600;
+  color: var(--kb-fg);
+  white-space: nowrap;
+}
+.cleanup-table .item-size {
+  white-space: nowrap;
+  font-family: var(--kb-font-mono);
+  font-weight: 600;
+  color: var(--kb-primary);
+}
+.cleanup-table .item-size .size-zero {
+  color: var(--kb-fg-4);
+}
+.cleanup-table .item-desc {
+  color: var(--kb-fg-3);
+  font-size: 12.5px;
+}
+.cleanup-table .item-action {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.cleanup-result {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 20px;
+  margin: 12px 0;
+  background: linear-gradient(135deg, rgba(82, 196, 26, 0.08), rgba(82, 196, 26, 0.02));
+  border: 1px solid rgba(82, 196, 26, 0.2);
+  border-radius: var(--kb-radius);
+}
+.cleanup-result .result-icon {
+  font-size: 18px;
+  color: var(--kb-green, #52c41a);
+}
+.cleanup-result .result-text {
+  font-weight: 600;
+  color: var(--kb-fg);
+  font-size: 14px;
+}
+
+.cleanup-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 16px;
+  margin: 8px 0;
+  background: var(--kb-warning-soft, rgba(250, 173, 20, 0.08));
+  border: 1px solid var(--kb-warning-border, rgba(250, 173, 20, 0.2));
+  border-radius: var(--kb-radius);
+  color: var(--kb-fg-2);
+  font-size: 12.5px;
+}
+.cleanup-warning .anticon {
+  color: var(--kb-warning, #faad14);
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+
+.section-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 }
 </style>
 

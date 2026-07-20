@@ -23,6 +23,7 @@
  *   update   Check GitHub for newer release and pull if available
  *   install  Register ragctl globally
  *   desktop  Launch Tauri desktop console
+ *   clean    Clean caches and MinerU parse artifacts (--mineru/--logs/--pycache/--model/--all)
  */
 
 'use strict';
@@ -35,6 +36,7 @@ const net = require('net');
 const http = require('http');
 const https = require('https');
 const yaml = require('js-yaml');
+const readline = require('readline');
 
 // ── Project Paths ──────────────────────────────────────────────────────
 const PROJECT_ROOT = path.resolve(__dirname, '..');
@@ -2066,6 +2068,207 @@ async function cmdInstall() {
   return 0;
 }
 
+// ── Clean: cache & MinerU artifact management ───────────────────────────
+
+// Recursively compute a directory's size in bytes (best-effort, skips errors).
+function dirSizeBytes(dir) {
+  if (!dir || !fs.existsSync(dir)) return 0;
+  let total = 0;
+  const walk = (d) => {
+    let entries;
+    try { entries = fs.readdirSync(d, { withFileTypes: true }); } catch { return; }
+    for (const e of entries) {
+      const p = path.join(d, e.name);
+      try {
+        if (e.isDirectory()) walk(p);
+        else total += fs.statSync(p).size;
+      } catch {}
+    }
+  };
+  walk(dir);
+  return total;
+}
+
+function fmtSize(bytes) {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
+}
+
+// rm -rf — force-remove a path, never throws.
+function rmrf(target) {
+  try { fs.rmSync(target, { recursive: true, force: true }); return true; }
+  catch { return false; }
+}
+
+// Scan for __pycache__ / .pytest_cache / *.pyc under a root (depth-limited).
+function findPyCacheDirs(root, maxDepth = 4) {
+  const found = [];
+  if (!fs.existsSync(root)) return found;
+  const walk = (d, depth) => {
+    if (depth > maxDepth) return;
+    let entries;
+    try { entries = fs.readdirSync(d, { withFileTypes: true }); } catch { return; }
+    for (const e of entries) {
+      if (!e.isDirectory()) continue;
+      const p = path.join(d, e.name);
+      if (e.name === '__pycache__' || e.name === '.pytest_cache') {
+        found.push(p);
+      } else if (!e.name.startsWith('.') && e.name !== 'node_modules' && e.name !== '.venv' && e.name !== 'site-packages') {
+        walk(p, depth + 1);
+      }
+    }
+  };
+  walk(root, 0);
+  return found;
+}
+
+// Interactive y/N prompt. Returns true for [y]/[yes].
+function confirm(message) {
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  return new Promise((resolve) => {
+    rl.question(message, (answer) => {
+      rl.close();
+      resolve(['y', 'yes'].includes(String(answer).toLowerCase().trim()));
+    });
+  });
+}
+
+// `ragctl clean` — reclaim disk by removing caches and MinerU parse artifacts.
+//
+// Safety model:
+//   • Default scope = MinerU output only (the most common ask, always safe —
+//     artifacts are already imported into the KB before they land here).
+//   • Model caches are NEVER touched without an explicit --model flag, and
+//     require an extra yes-confirm (re-download is ~4 GB for BGE-M3 alone).
+//   • KB data (storage/tree-file-system), .env, and config.yml are never
+//     in scope — clean only deletes what ragctl/setup/parse generated.
+async function cmdClean(args) {
+  header('清理缓存与 MinerU 解析产物');
+
+  const dryRun = args.includes('--dry-run') || args.includes('-n');
+  const force = args.includes('--force') || args.includes('-y') || args.includes('--yes');
+  const wantMineru = args.includes('--mineru') || args.includes('--parse');
+  const wantLogs = args.includes('--logs');
+  const wantPycache = args.includes('--pycache');
+  const wantModel = args.includes('--model') || args.includes('--models');
+  const wantAll = args.includes('--all');
+  // No specific scope flag → default to MinerU output (the primary use case).
+  const defaultScope = !wantMineru && !wantLogs && !wantPycache && !wantModel && !wantAll;
+  const scopeMineru = wantMineru || defaultScope || wantAll;
+  const scopeLogs = wantLogs || wantAll;
+  const scopePycache = wantPycache || wantAll;
+  const scopeModel = wantModel;  // never implied by --all
+
+  // ---- gather targets -----------------------------------------------------
+
+  // 1. MinerU parse output — backend/output/{uuid}/{stem.md, images/, uploads/}
+  const mineruOut = path.join(BACKEND_DIR, 'output');
+  const mineruSize = dirSizeBytes(mineruOut);
+
+  // 2. Service logs — backend/logs + web/logs
+  const logDirs = [path.join(BACKEND_DIR, 'logs'), path.join(WEB_DIR, 'logs')];
+  const logsSize = logDirs.reduce((s, d) => s + dirSizeBytes(d), 0);
+
+  // 3. Python __pycache__ / .pytest_cache under backend/ and kb-mcp/
+  const pyDirs = [
+    ...findPyCacheDirs(BACKEND_DIR),
+    ...findPyCacheDirs(MCP_DIR),
+  ];
+  const pySize = pyDirs.reduce((s, d) => s + dirSizeBytes(d), 0);
+
+  // 4. Model caches (LARGE — explicit --model only)
+  const modelDirs = [path.join(PROJECT_ROOT, 'models_cache')];
+  const home = os.homedir();
+  const msCache = path.join(home, '.cache', 'modelscope');
+  if (fs.existsSync(msCache)) modelDirs.push(msCache);
+  const modelSize = modelDirs.reduce((s, d) => s + dirSizeBytes(d), 0);
+
+  // ---- print scan table ---------------------------------------------------
+
+  console.log(`\n  ${_c(C.BOLD, '扫描结果:')}\n`);
+  const rows = [
+    ['MinerU 解析产物', mineruSize, scopeMineru, 'backend/output/ — 解析生成的 md/images/uploads'],
+    ['服务日志', logsSize, scopeLogs, 'backend/logs/ + web/logs/'],
+    ['Python 缓存', pySize, scopePycache, '__pycache__ / .pytest_cache（可重建）'],
+    ['模型缓存', modelSize, scopeModel, 'BGE-M3 + MinerU 模型（清理后需重新下载）'],
+  ];
+  console.log(`  ${'类别'.padEnd(18)}${'大小'.padEnd(12)}${'操作'.padEnd(10)}说明`);
+  console.log(`  ${'─'.repeat(70)}`);
+  for (const [name, size, enabled, desc] of rows) {
+    const op = enabled
+      ? (size > 0 ? _c(C.GREEN, '清理'.padEnd(10)) : _c(C.GRAY, '空'.padEnd(10)))
+      : _c(C.GRAY, '跳过'.padEnd(10));
+    console.log(`  ${name.padEnd(18)}${fmtSize(size).padEnd(12)}${op}${_c(C.GRAY, desc)}`);
+  }
+
+  // ---- compute active set & total -----------------------------------------
+
+  const active = [];
+  if (scopeMineru && mineruSize > 0) active.push({ name: 'MinerU 解析产物', size: mineruSize, paths: [mineruOut], mode: 'contents', safe: true });
+  if (scopeLogs && logsSize > 0) active.push({ name: '服务日志', size: logsSize, paths: logDirs, mode: 'contents', safe: true });
+  if (scopePycache && pySize > 0) active.push({ name: 'Python 缓存', size: pySize, paths: pyDirs, mode: 'dirs', safe: true });
+  if (scopeModel && modelSize > 0) active.push({ name: '模型缓存', size: modelSize, paths: modelDirs, mode: 'dirs', safe: false });
+
+  const totalSize = active.reduce((s, t) => s + t.size, 0);
+
+  if (active.length === 0) {
+    console.log(`\n  ${_c(C.GREEN, '✓')} 所选范围内无需清理 — 全部为空。`);
+    console.log(`  ${_c(C.GRAY, '提示: ragctl clean --all (安全项) · ragctl clean --model (含模型, 重新下载)')}`);
+    return 0;
+  }
+
+  console.log(`\n  ${_c(C.BOLD, '将清理:')} ${active.map(t => `${t.name} (${fmtSize(t.size)})`).join(' · ')}`);
+  console.log(`  ${_c(C.BOLD, '释放空间:')} ${_c(C.CYAN, fmtSize(totalSize))}`);
+
+  if (dryRun) {
+    console.log(`\n  ${_c(C.GRAY, 'ⓘ --dry-run 模式：仅扫描，未删除任何文件')}`);
+    return 0;
+  }
+
+  // ---- confirm ------------------------------------------------------------
+
+  const hasModel = active.some(t => !t.safe);
+  if (hasModel && !force) {
+    console.log(`\n  ${_c(C.RED, '⚠ 模型缓存将被删除 — 下次使用需重新下载 ~' + fmtSize(modelSize))}`);
+  }
+  if (!force) {
+    const msg = hasModel
+      ? `\n  ${_c(C.BOLD, '输入 yes 确认清理 (含模型): ')}`
+      : `\n  ${_c(C.BOLD, '确认清理以上内容? [y/N]: ')}`;
+    const yes = await confirm(msg);
+    if (!yes) { console.log(`  ${_c(C.GRAY, '已取消')}`); return 0; }
+  }
+
+  // ---- execute ------------------------------------------------------------
+
+  let freed = 0;
+  for (const t of active) {
+    for (const p of t.paths) {
+      if (!p || !fs.existsSync(p)) continue;
+      const sz = dirSizeBytes(p);
+      if (t.mode === 'contents') {
+        // Delete directory contents but keep the directory itself.
+        let entries = [];
+        try { entries = fs.readdirSync(p, { withFileTypes: true }); } catch {}
+        for (const e of entries) rmrf(path.join(p, e.name));
+        ok(`已清空 ${path.relative(PROJECT_ROOT, p) || p}/`);
+      } else {
+        rmrf(p);
+        ok(`已删除 ${path.relative(PROJECT_ROOT, p) || p}`);
+      }
+      freed += sz;
+    }
+  }
+
+  console.log(`\n  ${_c(C.GREEN, _c(C.BOLD, '✓ 清理完成 — 释放 ' + fmtSize(freed) + ' 磁盘空间'))}`);
+  if (hasModel) {
+    info('模型已删除 — 下次 ragctl model 或首次向量索引时自动重新下载');
+  }
+  return 0;
+}
+
 // `ragctl desktop` / `ragctl ui` — launch the Tauri desktop console (the GUI
 // launcher). Prefers a compiled binary; falls back to `cargo tauri dev`.
 // The Tauri app starts/monitors services through the SAME shared log files
@@ -2466,6 +2669,16 @@ ${_c(C.CYAN, '全局注册 / 桌面:')}
   install                    全局注册 ragctl → ~/.local/bin（任意目录可用）
   desktop / ui [--dev]       启动 Tauri 桌面控制台
 
+${_c(C.CYAN, '清理缓存:')}
+  clean                      清理 MinerU 解析产物（默认范围，安全）
+  clean --dry-run            仅扫描，不删除
+  clean --mineru             仅清理 backend/output/（PDF 解析 md/images/uploads）
+  clean --logs               同时清理 backend/logs + web/logs
+  clean --pycache            同时清理 __pycache__ / .pytest_cache
+  clean --all                所有安全项（mineru+logs+pycache，不含模型）
+  clean --model              含模型缓存（BGE-M3 ~4GB，需重新下载，需二次确认）
+  clean --force / -y         跳过确认提示
+
 ${_c(C.CYAN, '更新相关:')}
   version [--local] [--json]           查看本地/远程版本
   update [--check] [--force] [--yes]   检查并拉取最新版
@@ -2549,6 +2762,9 @@ async function main() {
       // Registration + desktop
       case 'install': return await cmdInstall();
       case 'desktop': case 'ui': return await cmdDesktop(subArgs);
+
+      // Cache & artifact cleanup
+      case 'clean': case 'prune': return await cmdClean(subArgs);
 
       default:
         err(`未知命令: ${command}`);

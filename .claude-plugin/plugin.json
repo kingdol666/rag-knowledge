@@ -1,8 +1,8 @@
 {
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "rag-knowledge",
-  "version": "2.2.0",
-  "description": "Enterprise-Grade Document Intelligence Knowledge Base — 14 knowledgebase skills, 76 MCP tools, PDF parsing, semantic search, Neo4j graph, experience library. Install/setup/bootstrap a fresh project, guided config, dependency install, silent service start, version check + safe update. Triggered by: 知识库, KB, knowledge base, 文档, document, 搜索, search, 入库, ingest, 经验, experience, 图谱, graph, 整理, organize, 校验, verify, 初始化, 安装, 部署, 配置, setup, install, bootstrap, init, deploy, getting started, 更新, 升级, update, upgrade, start the project, ragctl.",
+  "version": "2.3.0",
+  "description": "Enterprise-Grade Document Intelligence Knowledge Base — 14 knowledgebase skills, 76 MCP tools, PDF parsing (MinerU OCR), semantic search (BM25+vector), Neo4j knowledge graph, experience lifecycle management (E0-E12), silent headless startup via ragctl. Cross-platform (Win/Linux/macOS). Triggered by: 知识库, KB, knowledge base, 文档, document, 搜索, search, 入库, ingest, 经验, experience, 图谱, graph, 整理, organize, 校验, verify, 初始化, 安装, 部署, setup, install, bootstrap, init, deploy, 更新, 升级, update, upgrade.",
   "author": {
     "name": "kingdol",
     "email": "kingdol6080@gmail.com"
@@ -10,8 +10,38 @@
   "homepage": "https://github.com/kingdol666/rag-knowledge",
   "repository": "https://github.com/kingdol666/rag-knowledge",
   "license": "MIT",
-  "keywords": ["knowledge-base", "rag", "document", "semantic-search", "graph", "neo4j", "experience", "mcp", "agentic"],
-  "skills": ["./.claude/skills/"],
-  "agents": ["./.claude/agents/"],
-  "requiredTools": ["Bash"]
+  "keywords": [
+    "knowledge-base",
+    "rag",
+    "document-intelligence",
+    "semantic-search",
+    "knowledge-graph",
+    "neo4j",
+    "experience-management",
+    "mcp",
+    "agentic",
+    "pdf-parsing",
+    "mineru",
+    "vector-search",
+    "cross-platform"
+  ],
+  "skills": [
+    "./.claude/skills/knowledgebase/",
+    "./.claude/skills/knowledgebase-batch/",
+    "./.claude/skills/knowledgebase-experience/",
+    "./.claude/skills/knowledgebase-experience-summarize/",
+    "./.claude/skills/knowledgebase-graph/",
+    "./.claude/skills/knowledgebase-ingest/",
+    "./.claude/skills/knowledgebase-init/",
+    "./.claude/skills/knowledgebase-list/",
+    "./.claude/skills/knowledgebase-manage/",
+    "./.claude/skills/knowledgebase-organize/",
+    "./.claude/skills/knowledgebase-search/",
+    "./.claude/skills/knowledgebase-search-enterprise/",
+    "./.claude/skills/knowledgebase-update/",
+    "./.claude/skills/knowledgebase-verify/"
+  ],
+  "mcpServers": "./.mcp.json",
+  "commands": "./commands/",
+  "requiredTools": ["Bash", "PowerShell"]
 }
