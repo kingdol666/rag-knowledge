@@ -597,13 +597,6 @@ class KbClient:
         return await self._get_backend("/api/v1/graph/document/related",
                                        doc_path=doc_path, limit=limit)
 
-    async def graph_document_enhanced(self, doc_path: str, limit: int = 20) -> dict:
-        """Enhanced document relation query: grouped by connection type (vector_similar/shared_tag/agent_judged)."""
-        if not doc_path or not doc_path.strip():
-            return {"success": False, "error": "doc_path is required (cannot be empty)", "status": 400}
-        return await self._get_backend("/api/v1/graph/document/enhanced",
-                                       doc_path=doc_path, limit=limit)
-
     async def graph_documents_by_tag(self, tag_name: str, limit: int = 50) -> dict:
         """Find documents by tag."""
         if not tag_name or not tag_name.strip():

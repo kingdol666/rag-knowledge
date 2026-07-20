@@ -488,7 +488,7 @@ Bash:
      ragctl version  ·  ragctl update    ·  ragctl desktop  ·  ragctl install
 
   🌍 全局可用 (任意目录启动 Claude Code 都能操作本知识库):
-     14 skills (插件) + 74+ MCP tools (~/.claude/.mcp.json → kb-mcp)
+     14 skills (插件) + 76 MCP tools (~/.claude/.mcp.json → kb-mcp)
      重启 Claude Code 后，在任意项目里说"搜索知识库"即可使用。
      说「更新知识库」→ knowledgebase-update（版本对比 + 安全拉取）
 

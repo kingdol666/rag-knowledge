@@ -46,13 +46,13 @@ Map matched keywords to a single scenario using the classification table below. 
 
 | Signal keywords | Scenario | Route to |
 |---|---|---|
-| 入库, 上传, 导入, 解析, store, upload, parse, ingest | **Ingest** | `Skill("knowledgebase-ingest")` |
+| 入库, 上传, 导入, 解析, 盘点, store, upload, parse, ingest | **Ingest** | `Skill("knowledgebase-ingest")` |
 | 移动, 改名, 删除, 合并, move, rename, delete, merge | **Manage** | `Skill("knowledgebase-manage")` |
-| 整理, 清洗, 重组, 审计, organize, restructure, audit | **Organize** | `Skill("knowledgebase-organize")` |
-| 搜索, 查询, 检索, search, find, query, RAG | **Search** | `Skill("knowledgebase-search")` |
-| 全库搜索, 跨库, cross-KB, enterprise | **Search-Enterprise** | `Skill("knowledgebase-search-enterprise")` |
-| 查看, 列出, 浏览, list, show, overview, tree | **List** | `Skill("knowledgebase-list")` |
-| 校验, 核对, 完整性, 检查, 检测, verify, validate, integrity | **Verify** | `Skill("knowledgebase-verify")` |
+| 整理, 清洗, 重组, 大扫除, organize, restructure | **Organize** | `Skill("knowledgebase-organize")` |
+| 搜索, 查询, 检索, 哪里, 办法, 怎么解决, search, find, query, RAG, how to, explain, what is | **Search** | `Skill("knowledgebase-search")` |
+| 全库搜索, 跨库, 跨知识库, cross-KB, enterprise | **Search-Enterprise** | `Skill("knowledgebase-search-enterprise")` |
+| 查看, 列出, 浏览, 内容, list, show, overview, tree | **List** | `Skill("knowledgebase-list")` |
+| 校验, 核对, 完整性, 检查, 检测, 审计知识库, 检测问题, audit, verify, validate, integrity | **Verify** | `Skill("knowledgebase-verify")` |
 | 批量, 全量, batch, bulk, mass | **Batch** | `Skill("knowledgebase-batch")` |
 | 经验, 经验库, experience, lesson, best practice | **Experience** | `Skill("knowledgebase-experience")` |
 | 记录经验, 总结, summarize as experience | **Experience-Summarize** | `Skill("knowledgebase-experience-summarize")` |

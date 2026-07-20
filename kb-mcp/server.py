@@ -11,7 +11,7 @@ kb_client/client.py ??this file contains zero HTTP code.
 Long-running parse jobs (parse_doc / parse_doc_batch)
 are NON-BLOCKING: they hand the slow work to an in-process background
 task (task_registry) and return a task_id immediately. Poll results with
-parse_task_status(task_id) / parse_tasks_list().
+parse_task_status(task_id).
 
 Run:
   python server.py            # stdio mode (for Agent harness)
@@ -690,7 +690,7 @@ async def kb_tags_cleanup(dry_run: bool = True) -> str:
             "success": True,
             "dry_run": True,
             "total_tags": total,
-            "checked": min(total, 200),
+            "checked": total,
             "referenced": referenced,
             "orphan": orphan_count,
             "orphan_tags": orphan_tags,
@@ -720,7 +720,7 @@ async def kb_tags_cleanup(dry_run: bool = True) -> str:
             "success": True,
             "dry_run": False,
             "total_tags": total,
-            "checked": min(total, 200),
+            "checked": total,
             "cleaned": cleaned,
             "cleaned_tag_names": [o["tag"] for o in orphan_tags if o["reason"] not in ("api_error", "exception")],
             "skipped": skipped,

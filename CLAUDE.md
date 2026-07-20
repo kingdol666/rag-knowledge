@@ -119,7 +119,6 @@ Key properties:
 ```
 kb-mcp/
 ├── server.py               # 76 MCP tools via FastMCP; parse tools are NON-BLOCKING
-├── client.py               # Copy of KbClient for quick tests
 ├── kb_client/
 │   └── client.py           # All HTTP logic (server.py has zero HTTP code)
 ├── config.py               # Reads URLs from shared config.yml; zero hardcoded paths

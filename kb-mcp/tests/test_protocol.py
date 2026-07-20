@@ -36,7 +36,7 @@ messages = [
     json.dumps({"jsonrpc": "2.0", "method": "notifications/initialized"}),
     json.dumps({"jsonrpc": "2.0", "id": 2, "method": "tools/list", "params": {}}),
     json.dumps({"jsonrpc": "2.0", "id": 3, "method": "tools/call",
-                "params": {"name": "health_check", "arguments": {}}}),
+                "params": {"name": "backend_status", "arguments": {}}}),
     json.dumps({"jsonrpc": "2.0", "id": 4, "method": "tools/call",
                 "params": {"name": "kb_list", "arguments": {}}}),
 ]
@@ -82,10 +82,10 @@ if 3 in responses:
     content = responses[3].get("result", {}).get("content", [])
     if content:
         data = json.loads(content[0].get("text", "{}"))
-        health_ok = data.get("all_ok", False)
-        print(f"[CALL health_check] all_ok={health_ok} backend={data.get('backend')} mineru={data.get('mineru')} web={data.get('web')}")
+        health_ok = data.get("backend_health", {}).get("status") == "healthy"
+        print(f"[CALL backend_status] backend={data.get('backend_health', {}).get('status')} mineru_available={data.get('mineru_status', {}).get('available')}")
 else:
-    print("[CALL health_check] NO RESPONSE")
+    print("[CALL backend_status] NO RESPONSE")
 
 if 4 in responses:
     content = responses[4].get("result", {}).get("content", [])

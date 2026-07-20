@@ -46,7 +46,6 @@ const BACKEND_CONFIG_YML = path.join(BACKEND_DIR, 'config.yml');
 const ENV_FILE = path.join(PROJECT_ROOT, '.env');
 const RUN_DIR = path.join(PROJECT_ROOT, '.run');
 const VERSION_FILE = path.join(PROJECT_ROOT, 'VERSION');
-const UV_VERSION = '0.7.0'; // Recommended uv version
 const REQUIRED_PYTHON = '3.12';
 const MIN_NODE_MAJOR = 18; // Nuxt 3 + modern CLI; 22 preferred, 18+ accepted
 // Canonical remote identity for update checks (override via env if forked)
