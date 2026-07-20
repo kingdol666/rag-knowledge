@@ -40,6 +40,9 @@ vector:
 # -- Embedding Model --
 embedding:
   model_name: "BAAI/bge-m3"
+  # Model download source — China users: use "modelscope" (faster, Alibaba Cloud CDN).
+  # Alternatives: "hf-mirror" (hf-mirror.com) / "huggingface" (huggingface.co, overseas).
+  model_source: "modelscope"
   cache_dir: "./models_cache"
   device: "auto"
   batch_size: 32

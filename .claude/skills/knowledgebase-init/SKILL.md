@@ -103,22 +103,52 @@ PowerShell (Windows):
   }
 ```
 
-**方法 C — 插件缓存目录扫描**
+**方法 C — Claude Code 插件缓存目录扫描（插件安装的首要路径）**
 
-Claude Code 把插件 clone 到用户主目录下的缓存中。扫描这些路径：
+Claude Code 把插件 clone 到用户主目录下的缓存中。**首要扫描路径**：
+
+```
+~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/
+```
+
+示例（本项目）：
+```
+~/.claude/plugins/cache/rag-knowledge/rag-knowledge/2.3.0/
+```
 
 ```
 Linux/macOS:
-  ~/.claude/plugins/cache/
+  # 1. 精确查找 rag-knowledge 插件缓存（推荐）
+  for cache_root in "$HOME/.claude/plugins/cache"; do
+    [ -d "$cache_root" ] || continue
+    find "$cache_root" -maxdepth 4 -name "config.yml" -path "*rag-knowledge*" 2>/dev/null | while read f; do
+      d=$(dirname "$f")
+      # 验证三件套签名
+      [ -f "$d/ragctl" ] || [ -f "$d/ragctl.bat" ] || continue
+      [ -d "$d/backend" ] || continue
+      echo "$d"
+    done
+  done
+
+PowerShell (Windows):
+  $cacheRoot = "$env:USERPROFILE\.claude\plugins\cache"
+  if (Test-Path $cacheRoot) {
+    Get-ChildItem -Path $cacheRoot -Recurse -Filter "config.yml" -Depth 4 -ErrorAction SilentlyContinue |
+      Where-Object { $_.FullName -match "rag-knowledge" } |
+      ForEach-Object {
+        $d = $_.DirectoryName
+        if (((Test-Path "$d\ragctl") -or (Test-Path "$d\ragctl.bat")) -and (Test-Path "$d\backend")) {
+          Write-Output $d
+        }
+      }
+  }
+
+兜底：也扫描这些位置（旧版/变体）
   ~/.claude/marketplaces/
   ~/.claude/cache/
-
-Windows:
-  %USERPROFILE%\.claude\plugins\cache\
-  %USERPROFILE%\.claude\marketplaces\
   %APPDATA%\Claude\plugins\
 
-在每个目录下递归查找 config.yml + ragctl 的组合（最多 4 层深）。
+在所有路径下递归查找 config.yml + ragctl 的组合（最多 5 层深）。
 ```
 
 **方法 D — 兜底：询问用户**
@@ -347,23 +377,36 @@ Bash: cd "<RAG_ROOT>" && node command/ragctl.js setup
   > ************
 ```
 
-### 配置 9: HuggingFace 镜像加速
+### 配置 9: 模型下载源（BGE-M3 + MinerU）⭐
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  🚀 配置 9/10: HuggingFace 镜像加速
+  🚀 配置 9/10: 模型下载源
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  国内用户可以通过 hf-mirror.com 镜像加速模型下载（BGE-M3 ~2.2GB）。
+  BGE-M3 嵌入模型 (~2.2GB) 和 MinerU OCR 模型 (~2-5GB) 需要下载。
+  选择下载源（写入 config.yml: embedding.model_source）:
 
-  你需要配置镜像吗？
-  1. Y — 使用 hf-mirror.com（国内推荐）
-  2. n — 直连 HuggingFace（海外/已翻墙用户）
-  3. 自定义镜像地址
+  1. modelscope  — ModelScope (modelscope.cn)
+                   ⭐ 中国区推荐：阿里云 CDN，国内下载最快、最稳
+  2. hf-mirror   — HuggingFace Mirror (hf-mirror.com)
+                   国内可用，速度次于 ModelScope
+  3. huggingface — HuggingFace (huggingface.co)
+                   海外用户 / 已翻墙用户
+
   请选择 [1/2/3，默认: 1]:
-
-  （如选 3）请输入镜像地址:
-  > https://your-mirror.example.com
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
+
+**关键说明**：
+- 选 `modelscope`（默认）→ `config.yml` 写入 `embedding.model_source: modelscope`
+  下载时优先走 `https://modelscope.cn/BAAI/bge-m3/resolve/master/`，失败自动 fallback 到 hf-mirror → huggingface
+- 选 `hf-mirror` → 走 `https://hf-mirror.com/`，fallback 到 huggingface.co
+- 选 `huggingface` → 直连 huggingface.co（海外）
+
+下载逻辑（`backend/app/utils/download_model.py`）：
+- 每个文件按优先级尝试多个源，单文件失败自动切换到下一个源
+- 关闭系统 HTTPS_PROXY（避免 Clash 7890 劫持 modelscope/hf-mirror 的 HTTPS）
+- 支持断点续传 + 大文件进度显示
 
 ### 配置 10: 自动更新
 ```
@@ -395,7 +438,7 @@ Bash: cd "<RAG_ROOT>" && node command/ragctl.js setup
   访问控制:     <auth: yes/no>
   MinerU OCR:   <enabled/disabled>
   Neo4j 图谱:   <enabled/disabled>
-  HF 镜像:      <mirror_url or "直连">
+  模型下载源:   <modelscope|hf-mirror|huggingface>
   自动更新:     <yes/no>
 
   确认以上配置？[Y/n/修改某项编号]
@@ -406,7 +449,24 @@ Bash: cd "<RAG_ROOT>" && node command/ragctl.js setup
 
 ## Phase 5 — 写入配置
 
-根据用户所有回答，创建 `.env` 文件：
+根据用户所有回答，**同时更新两个文件**：
+
+### 5a. 更新 `config.yml`（`embedding.model_source`）
+
+根据配置 9 的选择，用 `node`/`python` 修改 `<RAG_ROOT>/config.yml`：
+
+```yaml
+embedding:
+  model_name: "BAAI/bge-m3"
+  model_source: "<modelscope|hf-mirror|huggingface>"  # ← 用户选择
+  cache_dir: "./models_cache"
+  ...
+```
+
+> ⚠️ 必须修改 `config.yml` 的 `embedding.model_source`，因为 `download_model.py` 读取的是这里，
+> 不是 `.env`。保持 config.yml 其他字段不变（用 yaml 库读写，不要字符串替换）。
+
+### 5b. 创建 `.env`
 
 ```bash
 cat > "<RAG_ROOT>/.env" << 'RAGEOF'
@@ -423,8 +483,9 @@ PYTHONUTF8=1
 # === 访问控制 ===
 KB_AUTH_TOKEN=<用户设置的 token 或留空>
 
-# === 模型下载 ===
-HF_ENDPOINT=<用户选择的镜像地址或留空>
+# === 模型下载 (主配置在 config.yml embedding.model_source) ===
+# HF_ENDPOINT 作为 huggingface_hub 库的 fallback hint
+HF_ENDPOINT=<根据配置 9: modelscope→https://hf-mirror.com / hf-mirror→https://hf-mirror.com / huggingface→https://huggingface.co>
 
 # === Neo4j ===
 NEO4J_PASSWORD=<用户设置的密码>
@@ -433,6 +494,14 @@ NEO4J_PASSWORD=<用户设置的密码>
 RAG_AUTO_UPDATE=<true/false>
 RAGEOF
 ```
+
+**HF_ENDPOINT 映射表**（根据配置 9 的选择）：
+
+| 配置 9 选择 | config.yml `embedding.model_source` | `.env HF_ENDPOINT` |
+|---|---|---|
+| `1. modelscope`（默认） | `modelscope` | `https://hf-mirror.com` |
+| `2. hf-mirror` | `hf-mirror` | `https://hf-mirror.com` |
+| `3. huggingface` | `huggingface` | `https://huggingface.co` |
 
 ---
 

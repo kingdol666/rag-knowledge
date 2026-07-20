@@ -11,7 +11,7 @@
  *   setup    One-click full setup (uv + deps + models + .env)
  *   check    Comprehensive health check — what's missing, how to fix
  *   deps     Install all dependencies with real-time progress
- *   model    Download BGE embedding model
+ *   model    Download BGE embedding model (--source modelscope|hf-mirror|huggingface)
  *   up       Start all services (silent — no terminal windows)
  *   down     Stop all services
  *   start    Start a specific service (backend|web|neo4j|all)
@@ -1094,8 +1094,21 @@ async function cmdDeps() {
 //  ⭐ NEW: model — Pre-download BGE-M3 embedding model
 // ═══════════════════════════════════════════════════════════════════════
 
-async function cmdModel() {
-  step('BGE-M3 嵌入模型下载 (~2.2 GB)...');
+async function cmdModel(args = []) {
+  // --source modelscope|hf-mirror|huggingface overrides config.yml embedding.model_source
+  const sourceIdx = args.indexOf('--source');
+  const sourceOverride = sourceIdx >= 0 && args[sourceIdx + 1]
+    ? args[sourceIdx + 1] : null;
+  const sourceLabel = sourceOverride
+    ? sourceOverride
+    : 'config.yml embedding.model_source (默认 modelscope)';
+  step(`BGE-M3 嵌入模型下载 (~2.2 GB) [源: ${sourceLabel}]...`);
+
+  // Build download_model.py args
+  const dlArgs = [];
+  if (sourceOverride) {
+    dlArgs.push('--source', sourceOverride);
+  }
 
   // 1. Project-level models_cache (preferred — shared with backend download_model.py)
   const projectCache = path.join(PROJECT_ROOT, 'models_cache', 'hub', 'models--BAAI--bge-m3');
@@ -1115,12 +1128,12 @@ async function cmdModel() {
   const backendVenvPy = path.join(BACKEND_DIR, '.venv', IS_WIN ? 'Scripts' : 'bin', IS_WIN ? 'python.exe' : 'python');
   if (fs.existsSync(backendVenvPy)) {
     try {
-      // Prefer the project's own downloader (handles hf-mirror + proxy quirks)
+      // Prefer the project's own downloader (handles modelscope / hf-mirror / proxy quirks)
       const downloader = path.join(BACKEND_DIR, 'app', 'utils', 'download_model.py');
       if (fs.existsSync(downloader)) {
-        info('通过 backend download_model.py 下载（支持 hf-mirror / 断点续传）...');
+        info('通过 backend download_model.py 下载（多源 fallback：modelscope → hf-mirror → huggingface）...');
         console.log(`  ${_c(C.GRAY, '── 下载中，请耐心等待（约 2.2GB）──')}`);
-        const result = await spawnAsync(backendVenvPy, [downloader], {
+        const result = await spawnAsync(backendVenvPy, [downloader, ...dlArgs], {
           cwd: BACKEND_DIR,
           env: {
             ...process.env,
@@ -2649,6 +2662,9 @@ ${_c(C.CYAN, '核心命令:')}
   ${_c(C.BOLD, 'check')}            全面环境检查（显示缺失项 + 修复方案）
   ${_c(C.BOLD, 'deps')}             安装所有依赖（实时进度；backend 固定 Python 3.12）
   ${_c(C.BOLD, 'model')}            预下载 BGE-M3 嵌入模型 (~2.2GB)
+          model --source modelscope   ⭐ 中国区推荐（阿里云 CDN，默认）
+          model --source hf-mirror    HuggingFace 镜像 (hf-mirror.com)
+          model --source huggingface  HuggingFace 直连（海外）
   ${_c(C.BOLD, 'version')}          显示本地/远程版本（VERSION + git SHA）
   ${_c(C.BOLD, 'update')}           对比 GitHub 最新版并拉取更新
 
@@ -2744,7 +2760,7 @@ async function main() {
       case 'setup': case 'init': return await cmdSetup();
       case 'check': return await cmdCheck();
       case 'deps': return await cmdDeps();
-      case 'model': return await cmdModel();
+      case 'model': return await cmdModel(subArgs);
       case 'version': case 'ver': return await cmdVersion(subArgs);
       case 'update': case 'upgrade': return await cmdUpdate(subArgs);
 

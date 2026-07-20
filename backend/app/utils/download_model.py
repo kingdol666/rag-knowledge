@@ -81,12 +81,19 @@ WARNING_MSG = f"""
 def _load_embedding_config() -> dict:
     import yaml
     if not SHARED_CONFIG.exists():
-        return {"model_name": "BAAI/bge-m3", "cache_dir": "./models_cache"}
+        return {
+            "model_name": "BAAI/bge-m3",
+            "cache_dir": "./models_cache",
+            "model_source": "modelscope",
+        }
     with open(SHARED_CONFIG, encoding="utf-8") as f:
         cfg = yaml.safe_load(f) or {}
     e = cfg.get("embedding", {})
-    return {"model_name": e.get("model_name", "BAAI/bge-m3"),
-            "cache_dir": e.get("cache_dir", "./models_cache")}
+    return {
+        "model_name": e.get("model_name", "BAAI/bge-m3"),
+        "cache_dir": e.get("cache_dir", "./models_cache"),
+        "model_source": e.get("model_source", "modelscope"),
+    }
 
 
 @contextlib.contextmanager
@@ -116,9 +123,48 @@ def _abs_cache(raw: str) -> Path:
 
 
 def _resolve_base_url(model_name: str) -> str:
-    """从 HF_ENDPOINT 派生下载 URL。默认 hf-mirror.com（中国区快）；海外设 HF_ENDPOINT=https://huggingface.co。"""
+    """从 HF_ENDPOINT 派生 HuggingFace 下载 URL。默认 hf-mirror.com（中国区快）；海外设 HF_ENDPOINT=https://huggingface.co。"""
     endpoint = os.environ.get("HF_ENDPOINT", "https://hf-mirror.com").rstrip("/")
     return f"{endpoint}/{model_name}/resolve/main"
+
+
+def _modelscope_file_url(model_name: str, filename: str) -> str:
+    """构建 ModelScope 单文件下载 URL（中国区推荐，阿里云 CDN）。
+
+    ModelScope 采用 HuggingFace 兼容的 ``/resolve/master/`` 路径格式：
+        https://modelscope.cn/<org>/<model>/resolve/master/<file>
+
+    （旧的 ``/api/v1/.../repo`` 端点已弃用，返回 404）
+    """
+    return f"https://modelscope.cn/{model_name}/resolve/master/{filename}"
+
+
+def _build_download_urls(model_name: str, filename: str, source: str = "modelscope") -> list[str]:
+    """根据 model_source 构建候选下载 URL 列表（按优先级排序）。
+
+    - ``modelscope`` (默认，中国区推荐): ModelScope → hf-mirror → huggingface.co
+    - ``hf-mirror``: hf-mirror.com → huggingface.co
+    - ``huggingface``: huggingface.co 直连
+    """
+    source = (source or "modelscope").lower().strip()
+    urls: list[str] = []
+
+    if source == "modelscope":
+        urls.append(_modelscope_file_url(model_name, filename))
+        # Fallback to HF mirror if ModelScope fails
+        endpoint = os.environ.get("HF_ENDPOINT", "https://hf-mirror.com").rstrip("/")
+        urls.append(f"{endpoint}/{model_name}/resolve/main/{filename}")
+        urls.append(f"https://huggingface.co/{model_name}/resolve/main/{filename}")
+    elif source in ("hf-mirror", "huggingface", "hf"):
+        endpoint = os.environ.get("HF_ENDPOINT", "https://hf-mirror.com").rstrip("/")
+        urls.append(f"{endpoint}/{model_name}/resolve/main/{filename}")
+        if "huggingface" not in endpoint:
+            urls.append(f"https://huggingface.co/{model_name}/resolve/main/{filename}")
+    else:
+        # Custom endpoint
+        urls.append(f"{source.rstrip('/')}/{model_name}/resolve/main/{filename}")
+
+    return urls
 
 
 def _fmt_size(b: int) -> str:
@@ -249,10 +295,11 @@ def _format_duration(seconds: float) -> str:
     return f"{m}m{s}s"
 
 
-def _try_download_via_http(model_name: str, cache_dir: str) -> bool:
+def _try_download_via_http(model_name: str, cache_dir: str, source: str = "modelscope") -> bool:
     """通过 HTTP 直接下载文件到正确的缓存结构。
 
     使用断点续传 + 大文件进度显示。不依赖 huggingface_hub API。
+    支持多源（ModelScope / hf-mirror / HuggingFace）逐文件 fallback。
     """
     import requests
     from requests.adapters import HTTPAdapter
@@ -260,18 +307,18 @@ def _try_download_via_http(model_name: str, cache_dir: str) -> bool:
 
     session = requests.Session()
     # 必须关闭 trust_env，防止系统 HTTPS_PROXY（如 Clash 7890）
-    # 劫持 hf-mirror.com 的 HTTPS 请求导致 SSL 错误 / 超时
+    # 劫持 hf-mirror.com / modelscope.cn 的 HTTPS 请求导致 SSL 错误 / 超时
     session.trust_env = False
     retries = Retry(total=2, backoff_factor=0.3,
                     status_forcelist=[500, 502, 503, 504])
     session.mount("https://", HTTPAdapter(max_retries=retries))
 
-    # 尝试多个镜像（从 HF_ENDPOINT 派生，默认 hf-mirror.com，fallback huggingface.co）
-    base_url = _resolve_base_url(model_name)
-    urls_to_try = [base_url]
-    if "huggingface" not in base_url:
-        urls_to_try.append(
-            base_url.replace("hf-mirror.com", "huggingface.co"))
+    source_label = {
+        "modelscope": "ModelScope (modelscope.cn — 中国区推荐)",
+        "hf-mirror": "HuggingFace Mirror (hf-mirror.com)",
+        "huggingface": "HuggingFace (huggingface.co)",
+    }.get(source, f"自定义源: {source}")
+    logger.info("Download source: %s", source_label)
 
     hub_name = f"models--{model_name.replace('/', '--')}"
     hub_dir = Path(cache_dir) / "hub" / hub_name
@@ -296,35 +343,40 @@ def _try_download_via_http(model_name: str, cache_dir: str) -> bool:
         logger.info("Already cached: %d/%d files", existing, len(FILES))
 
     success_count = existing
-    # 只跳过已完整下载的文件，确保所有文件都尝试下载
-    for base_url in urls_to_try:
-        logger.info("Using mirror: %s", base_url)
-        for i, filename in enumerate(FILES):
-            url = f"{base_url}/{filename}"
-            dest = snap_dir / filename
+    failed_files: list[str] = []
 
-            # 跳过已存在的文件
-            if dest.exists() and dest.stat().st_size > 0:
-                continue
+    # 逐文件下载，每个文件尝试多个源（ModelScope → hf-mirror → HF）
+    for i, filename in enumerate(FILES):
+        dest = snap_dir / filename
 
-            logger.info("  [%d/%d] %s", i + 1, len(FILES), filename)
+        # 跳过已存在的文件
+        if dest.exists() and dest.stat().st_size > 0:
+            continue
 
+        logger.info("  [%d/%d] %s", i + 1, len(FILES), filename)
+
+        # 构建该文件的候选 URL 列表（按 model_source 优先级）
+        candidate_urls = _build_download_urls(model_name, filename, source)
+        downloaded = False
+
+        for url_idx, url in enumerate(candidate_urls):
             try:
                 _download_file(session, url, dest)
+                downloaded = True
                 success_count += 1
+                break
             except Exception as e:
-                logger.warning("  [FAIL] %s -> %s", filename, _short_err(e))
-                # 如果是关键大文件失败，尝试下一个镜像
-                if filename in ("pytorch_model.bin", "onnx/model.onnx_data",
-                                "onnx/model.onnx"):
-                    break
-        # 如果所有文件都下载成功了，退出镜像循环
-        all_ok = all(
-            (snap_dir / f).exists() and (snap_dir / f).stat().st_size > 0
-            for f in FILES
-        )
-        if all_ok:
-            break
+                src_name = "ModelScope" if "modelscope" in url else (
+                    "hf-mirror" if "hf-mirror" in url else "HuggingFace")
+                logger.warning("    [%s fail] %s", src_name, _short_err(e))
+                # 删除可能的部分下载
+                tmp = Path(str(dest) + ".tmp")
+                if tmp.exists():
+                    tmp.unlink(missing_ok=True)
+
+        if not downloaded:
+            failed_files.append(filename)
+            logger.error("  [FAIL] %s — 所有源均失败", filename)
 
     # 验证
     model_file = snap_dir / "pytorch_model.bin"
@@ -348,6 +400,9 @@ def _try_download_via_http(model_name: str, cache_dir: str) -> bool:
 
     logger.info("Downloaded %d/%d files (model: %s)",
                 success_count, len(FILES), _fmt_size(model_size))
+    if failed_files:
+        logger.warning("Failed files: %d (non-critical if model.bin OK): %s",
+                       len(failed_files), failed_files[:5])
     return True
 
 
@@ -371,29 +426,35 @@ def _short_err(e: Exception) -> str:
     return str(e).replace("\n", " ")[:120]
 
 
-def ensure_model_downloaded(force: bool = False) -> bool:
+def ensure_model_downloaded(force: bool = False, source: str | None = None) -> bool:
     """主入口：检查并下载 Embedding 模型。
 
     Returns True=成功/已有缓存, False=下载失败。
+
+    Args:
+        force: 强制重新下载（清除已有缓存）
+        source: 下载源 — ``modelscope`` (默认，中国区推荐) / ``hf-mirror`` / ``huggingface``
+                None 时从 config.yml embedding.model_source 读取。
     """
-    cache_dir = _abs_cache(_load_embedding_config()["cache_dir"])
+    cfg = _load_embedding_config()
+    if source is None:
+        source = cfg.get("model_source", "modelscope")
+    cache_dir = _abs_cache(cfg["cache_dir"])
     cache_dir.mkdir(parents=True, exist_ok=True)
 
     # ── Embedding 模型（向量检索必需）──────────────────────────
-    emb_ok = _ensure_embedding_model(cache_dir, force)
+    emb_ok = _ensure_embedding_model(cache_dir, force, source, cfg["model_name"])
 
     # Embedding 是硬依赖
     return bool(emb_ok)
 
 
-def _ensure_embedding_model(cache_dir: Path, force: bool) -> bool:
+def _ensure_embedding_model(cache_dir: Path, force: bool, source: str, model_name: str) -> bool:
     """下载 embedding 模型（BGE-M3）。"""
-    cfg = _load_embedding_config()
-    model_name = cfg["model_name"]
-
     logger.info(GRADE)
     logger.info("  Embedding Model Setup")
     logger.info("  Model : %s", model_name)
+    logger.info("  Source: %s", source)
     logger.info("  Cache : %s", cache_dir)
     logger.info(GRADE)
 
@@ -407,8 +468,8 @@ def _ensure_embedding_model(cache_dir: Path, force: bool) -> bool:
         logger.info("Embedding model already cached -> skip download")
         return True
 
-    logger.info("Starting download (HTTP direct, resumable, progress)...")
-    success = _try_download_via_http(model_name, str(cache_dir))
+    logger.info("Starting download (HTTP direct, resumable, progress, multi-source)...")
+    success = _try_download_via_http(model_name, str(cache_dir), source)
 
     if success:
         logger.info(GRADE)
@@ -422,7 +483,13 @@ def _ensure_embedding_model(cache_dir: Path, force: bool) -> bool:
 
 def main():
     force = "--force" in sys.argv or "-f" in sys.argv
-    return 0 if ensure_model_downloaded(force=force) else 1
+    # Allow CLI override of source: --source modelscope / hf-mirror / huggingface
+    source = None
+    if "--source" in sys.argv:
+        idx = sys.argv.index("--source")
+        if idx + 1 < len(sys.argv):
+            source = sys.argv[idx + 1]
+    return 0 if ensure_model_downloaded(force=force, source=source) else 1
 
 
 if __name__ == "__main__":

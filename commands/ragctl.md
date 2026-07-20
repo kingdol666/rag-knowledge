@@ -24,6 +24,7 @@ Execute ragctl commands. Use the appropriate shell for the platform:
 | `test` | Run full-stack validation tests |
 | `config` | Show current configuration |
 | `health` | Quick health check on all endpoints |
+| `model` | Download BGE-M3 embedding model (~2.2GB). Supports `--source modelscope\|hf-mirror\|huggingface` |
 | `clean` | Clean caches — MinerU parse artifacts (default), logs, pycache, or model cache |
 | `install` | Register ragctl globally to `~/.local/bin` |
 | `version` | Show local + remote version |
@@ -59,3 +60,4 @@ When the user invokes `/ragctl <command>`:
 - `/ragctl status` → `ragctl status`
 - `/ragctl up` → `ragctl up`
 - `/ragctl clean --dry-run` → `ragctl clean --dry-run`
+- `/ragctl model --source modelscope` → download BGE-M3 from ModelScope (China-recommended)
