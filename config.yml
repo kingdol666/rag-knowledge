@@ -19,7 +19,7 @@ server:
   prod:
     host: "0.0.0.0"
     backend_port: 8001
-    frontend_port: 3000
+    frontend_port: 3008
     backend_url: "http://localhost:8001"
 
 # -- Storage (tree-file-system path) --

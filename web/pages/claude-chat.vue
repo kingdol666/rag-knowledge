@@ -52,9 +52,9 @@
         </div>
 
         <a-select v-model:value="permissionMode" style="width:140px">
-          <a-select-option v-for="m in PERMISSION_MODES" :key="m" :value="m">{{ PERMISSION_MODE_INFO[m].label }}</a-select-option>
+          <a-select-option v-for="m in PERMISSION_MODES" :key="m" :value="m">{{ PERMISSION_MODE_INFO[m as PermissionMode].label }}</a-select-option>
         </a-select>
-        <a-tooltip :title="PERMISSION_MODE_INFO[permissionMode].desc"><InfoCircleOutlined style="cursor:help" /></a-tooltip>
+        <a-tooltip :title="PERMISSION_MODE_INFO[permissionMode as PermissionMode].desc"><InfoCircleOutlined style="cursor:help" /></a-tooltip>
         <a-input v-model:value="model" placeholder="Model (leave empty for default)" style="width:160px" allow-clear />
         <a-tooltip title="推理深度（越高越慢但思考越深入，Ultracode=max+workflows模式）">
           <a-select v-model:value="reasoningEffort" style="width:120px" size="small">
@@ -260,7 +260,7 @@
           <span class="queue-context">
             <a-tag v-if="item.model && item.model !== model" color="blue" size="small" class="queue-tag">🤖 {{ item.model }}</a-tag>
             <a-tag v-if="item.reasoningEffort && item.reasoningEffort !== 'auto'" color="purple" size="small" class="queue-tag">{{ item.reasoningEffort }}</a-tag>
-            <a-tag v-if="item.permissionMode !== permissionMode" color="orange" size="small" class="queue-tag">{{ PERMISSION_MODE_INFO[item.permissionMode]?.label || item.permissionMode }}</a-tag>
+            <a-tag v-if="item.permissionMode !== permissionMode" color="orange" size="small" class="queue-tag">{{ PERMISSION_MODE_INFO[item.permissionMode as PermissionMode]?.label || item.permissionMode }}</a-tag>
           </span>
           <!-- Error message (on hover) -->
           <a-tooltip v-if="item.status === 'failed' && item.error" :title="item.error">
@@ -606,7 +606,7 @@ interface QueueItem {
   created_at: number
   /** Context snapshot at queue time (ensures consistency even if user changes settings later) */
   cwd: string
-  permissionMode: string
+  permissionMode: PermissionMode
   model: string
   reasoningEffort: string
   /** Original attachments (snapshot of names — actual files already uploaded at queue time) */
@@ -950,11 +950,11 @@ function consumeQueue() {
 
 // ══════ Auto-consumption hook: streaming changed ══════
 
-watch(streaming, (newVal, oldVal) => {
+watch(streaming, (newVal: boolean, oldVal: boolean | undefined) => {
   // Only care about true→false transitions (stream just ended).
   // Guard against phantom firings (newVal === oldVal) and the initial
   // mount (newVal is false and oldVal is undefined).
-  if (!newVal && oldVal && newVal !== oldVal) {
+  if (!newVal && oldVal !== undefined && newVal !== oldVal) {
     setTimeout(() => consumeQueue(), 300)
   }
 })

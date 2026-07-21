@@ -47,7 +47,7 @@ function highlightCode(code: string, lang?: string): string {
 // Processes inline $...$ and block $$...$$ delimiters.
 // Uses a tokenizer + renderer pair so marked does NOT parse
 // delimiter-looking characters inside code spans / fenced code.
-const mathExtension: marked.MarkedExtension = {
+const mathExtension = {
   extensions: [
     {
       name: 'math',
@@ -99,7 +99,7 @@ const mathExtension: marked.MarkedExtension = {
 // ── Enhanced Code Block Renderer ───────────────────────────
 // Highlights code with highlight.js, adds a language label badge,
 // and handles Mermaid diagram blocks specially.
-const codeBlockExtension: marked.MarkedExtension = {
+const codeBlockExtension = {
   renderer: {
     code(this: any, token: any) {
       const lang = (token.lang || '').trim()
