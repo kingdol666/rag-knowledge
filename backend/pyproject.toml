@@ -24,6 +24,7 @@ dependencies = [
     "transformers>=4.57.3,<5.0.0",
     "sentence-transformers>=5.0.0,<6.0.0",
     "accelerate>=1.0.0",
+    # huggingface-hub 用作 BGE-M3 模型下载的 fallback（download_model.py 用 requests 直连）
     "huggingface-hub>=0.34.0,<1.0.0",
     "tokenizers>=0.22.0,<0.23.0",
     "numpy>=2.0.0,<3.0.0",

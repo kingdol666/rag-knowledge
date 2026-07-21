@@ -1008,6 +1008,9 @@ async function cmdSetup() {
   // 5. BGE Model (best-effort — network may be restricted)
   await cmdModel();
 
+  // 5b. MinerU VLM model — pre-download so first parse is fast
+  await cmdMineruModel();
+
   // 6. Optional: global ragctl registration (best-effort)
   try { await cmdInstall(); } catch {}
 
@@ -1186,7 +1189,85 @@ print("Model loaded. Dimension:", model.get_sentence_embedding_dimension())
 }
 
 // ═══════════════════════════════════════════════════════════════════════
-//  COMMANDS: start / stop / status / restart (same as before, improved)
+//  ⭐ mineru-model — Pre-download MinerU VLM model for PDF parsing
+// ═══════════════════════════════════════════════════════════════════════
+
+async function cmdMineruModel(args = []) {
+  step('MinerU VLM 模型预下载 (OCR/PDF解析引擎，~2-5 GB)...');
+
+  // Check if mineru-api is already available
+  const backendVenvPy = path.join(BACKEND_DIR, '.venv', IS_WIN ? 'Scripts' : 'bin', IS_WIN ? 'python.exe' : 'python');
+  if (!fs.existsSync(backendVenvPy)) {
+    warn('Backend venv 未就绪 — 请先运行 ragctl deps');
+    return 1;
+  }
+
+  // Read MinerU model source from backend/config.yml
+  const backendCfg = readYaml(BACKEND_CONFIG_YML);
+  const mineruCfg = (backendCfg && backendCfg.mineru) || {};
+  const modelSource = mineruCfg.model_source || 'modelscope';
+  const sourceLabels = {
+    modelscope: 'ModelScope (modelscope.cn — 中国区推荐，阿里云 CDN)',
+    huggingface: 'HuggingFace (huggingface.co — 海外)',
+  };
+  const sourceLabel = sourceLabels[modelSource] || modelSource;
+  info('MinerU 模型源: ' + sourceLabel);
+
+  // Pre-download by starting mineru-api briefly with VLM preload enabled
+  info('启动 mineru-api 进行模型预下载（首次约需 2-10 分钟）...');
+  console.log('  ' + _c(C.GRAY, '── mineru-api VLM preload ──'));
+
+  const scriptPath = path.join(os.tmpdir(), 'ragctl_mineru_preload.py');
+  const script = [
+    'import subprocess, sys, time, os, signal',
+    'cmd = [sys.executable, "-m", "mineru.cli.fast_api", "--host", "127.0.0.1", "--enable-vlm-preload", "true", "--port", "0"]',
+    'env = os.environ.copy()',
+    'env["MINERU_MODEL_SOURCE"] = "' + modelSource + '"',
+    'env["MINERU_DEFAULT_BACKEND"] = "pipeline"',
+    'for k in ["HTTPS_PROXY","HTTP_PROXY","https_proxy","http_proxy"]: env.pop(k, None)',
+    'creationflags = 0x08000000 if sys.platform == "win32" else 0',
+    'proc = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env=env, creationflags=creationflags)',
+    'print("[OK] mineru-api started (pid " + str(proc.pid) + ") — waiting for VLM model download...")',
+    'deadline = time.time() + 600',
+    'while time.time() < deadline:',
+    '    if proc.poll() is not None:',
+    '        print("[DONE] mineru-api exited (code " + str(proc.returncode) + ") — model may already be cached")',
+    '        break',
+    '    time.sleep(2)',
+    'if proc.poll() is None:',
+    '    print("[OK] MinerU VLM model download complete (or already cached)")',
+    '    if sys.platform == "win32":',
+    '        subprocess.run(["taskkill","/PID",str(proc.pid),"/T","/F"], capture_output=True)',
+    '    else:',
+    '        os.killpg(os.getpgid(proc.pid), signal.SIGTERM)',
+    '        proc.wait(timeout=10)',
+    '    sys.exit(0)',
+    'else:',
+    '    print("[WARN] mineru-api exited early — will retry on first parse")',
+    '    sys.exit(0)',
+  ].join('\n');
+
+  fs.writeFileSync(scriptPath, script, 'utf8');
+
+  const result = await spawnAsync(backendVenvPy, [scriptPath], {
+    cwd: BACKEND_DIR,
+    env: {
+      ...process.env,
+      HTTPS_PROXY: '', HTTP_PROXY: '', https_proxy: '', http_proxy: '',
+    },
+  });
+  try { fs.unlinkSync(scriptPath); } catch {}
+
+  if (result.code === 0) {
+    ok('MinerU VLM 模型就绪');
+  } else {
+    warn('MinerU VLM 模型预下载未完成（非致命 — 首次 PDF 解析时会自动下载）');
+  }
+  return 0;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  COMMANDS: start / stop / status / restart
 // ═══════════════════════════════════════════════════════════════════════
 
 function getServicePorts(modeOverride) {
@@ -2665,6 +2746,7 @@ ${_c(C.CYAN, '核心命令:')}
           model --source modelscope   ⭐ 中国区推荐（阿里云 CDN，默认）
           model --source hf-mirror    HuggingFace 镜像 (hf-mirror.com)
           model --source huggingface  HuggingFace 直连（海外）
+  ${_c(C.BOLD, 'mineru-model')}      预下载 MinerU VLM 模型 (PDF解析引擎，~2-5GB)
   ${_c(C.BOLD, 'version')}          显示本地/远程版本（VERSION + git SHA）
   ${_c(C.BOLD, 'update')}           对比 GitHub 最新版并拉取更新
 
@@ -2692,7 +2774,7 @@ ${_c(C.CYAN, '清理缓存:')}
   clean --logs               同时清理 backend/logs + web/logs
   clean --pycache            同时清理 __pycache__ / .pytest_cache
   clean --all                所有安全项（mineru+logs+pycache，不含模型）
-  clean --model              含模型缓存（BGE-M3 ~4GB，需重新下载，需二次确认）
+  clean --model              含模型缓存（BGE-M3 ~4GB + MinerU ~2-5GB，需重新下载，需二次确认）
   clean --force / -y         跳过确认提示
 
 ${_c(C.CYAN, '更新相关:')}
@@ -2761,6 +2843,7 @@ async function main() {
       case 'check': return await cmdCheck();
       case 'deps': return await cmdDeps();
       case 'model': return await cmdModel(subArgs);
+      case 'mineru-model': return await cmdMineruModel(subArgs);
       case 'version': case 'ver': return await cmdVersion(subArgs);
       case 'update': case 'upgrade': return await cmdUpdate(subArgs);
 
