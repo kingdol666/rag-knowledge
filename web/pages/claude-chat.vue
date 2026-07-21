@@ -349,7 +349,7 @@
       <div class="input-bar">
         <!-- Attachment button + hidden file input -->
         <a-tooltip title="添加附件（图片/PDF/文档）">
-          <a-button class="att-btn" @click="triggerFilePicker" :disabled="streaming">
+          <a-button class="att-btn" @click="triggerFilePicker">
             <PaperClipOutlined />
           </a-button>
         </a-tooltip>
@@ -360,7 +360,6 @@
             class="kb-btn"
             :class="{ active: kbEnhanced }"
             @click="toggleKbEnhanced"
-            :disabled="streaming"
           >
             <DatabaseOutlined />
           </a-button>
@@ -373,13 +372,14 @@
         />
         <a-textarea
           v-model:value="input" ref="inputRef"
-          :placeholder="inputPlaceholder"
+          :placeholder="streaming ? '回答中… 输入消息可加入队列 (Enter/Shift+Enter 发送)' : inputPlaceholder"
           :auto-size="{ minRows: 1, maxRows: 6 }"
-          @keydown="onKeydown" :disabled="streaming"
+          @keydown="onKeydown"
         />
-        <a-button type="primary" :loading="streaming" :disabled="!input.trim() && !attachments.length" @click="send" title="发送 (Enter)"><SendOutlined /></a-button>
-        <a-tooltip title="排队发送消息（当前对话结束后自动发出）">
-          <a-button :disabled="!input.trim()" @click="addToQueue">➕ 队列</a-button>
+        <a-tooltip :title="streaming ? '加入队列（回答结束后自动发送）' : '发送 (Enter)'">
+          <a-button type="primary" :disabled="!input.trim() && !attachments.length" @click="send">
+            <SendOutlined />{{ streaming ? ' 队列' : '' }}
+          </a-button>
         </a-tooltip>
         <a-button v-if="streaming" danger @click="abort">中断</a-button>
       </div>
@@ -656,8 +656,8 @@ let detachedAbortController: AbortController | null = null
 function newConversation() {
   const savedInput = input.value
 
-  // Queue is independent of conversation state — preserve it
-  // (do NOT clear messageQueue here)
+  // ⭐ Queue survives new conversation — it represents user intent
+  //    that was explicitly added. Do NOT clear it here.
 
   // If streaming: detach current SSE stream (keep it alive, don't abort)
   if (streaming.value && abortController.value) {
@@ -829,7 +829,7 @@ function addToQueue() {
   const text = input.value.trim()
   if (!text) return
 
-  const snapshot: QueueItem = {
+  messageQueue.value.push({
     id: `q_${++queueIdCounter}`,
     text,
     status: 'pending',
@@ -840,13 +840,11 @@ function addToQueue() {
     reasoningEffort: reasoningEffort.value,
     attachmentNames: attachments.value.map((a) => a.name),
     retryCount: 0,
-  }
+  })
 
-  messageQueue.value.push(snapshot)
   input.value = ''
   saveQueueToStorage()
-
-  antMessage.success(`已加入队列 (${messageQueue.value.length})`)
+  antMessage.success(`已加入队列 (${queueCounts.value.pending + 1})`)
 }
 
 /**
@@ -880,95 +878,84 @@ function clearQueue() {
  */
 function toggleQueuePause() {
   queuePaused.value = !queuePaused.value
-  if (!queuePaused.value) {
-    // Resuming — try consuming next if idle
+  if (!queuePaused.value && !streaming.value) {
     consumeQueue()
   }
   antMessage.info(queuePaused.value ? '队列已暂停' : '队列已恢复')
 }
 
 /**
- * ⭐ Core queue consumer: takes the head-of-line pending item and sends it.
- * Called when:
- *   (a) streaming ends and there's a next item
- *   (b) queue is unpaused
- *   (c) an item is manually added-to-queue while idle
+ * ⭐ Core queue consumer — sends the next PENDING item in FIFO order.
+ *
+ * Called ONLY from the streaming → false watch callback (the response-completed
+ * hook). Never called directly by the user. Checks pause + streaming guard
+ * to prevent double-send, then fires sendRaw for the head-of-line item.
  */
 function consumeQueue() {
   if (queuePaused.value) return
-  if (streaming.value) return
-  if (messageQueue.value.length === 0) return
+  if (streaming.value) return         // safety—should never be true here
 
   const nextIdx = messageQueue.value.findIndex((item) => item.status === 'pending')
   if (nextIdx === -1) return
 
   const item = messageQueue.value[nextIdx]
-
-  // Mark as sending
   item.status = 'sending'
   item.error = undefined
   saveQueueToStorage()
 
-  // ⭐ Save current context to restore after queue item is done
+  // Restore the context snapshot captured at queue time
   const savedCwd = cwd.value
-  const savedPermissionMode = permissionMode.value
+  const savedPm = permissionMode.value
   const savedModel = model.value
-  const savedReasoningEffort = reasoningEffort.value
+  const savedEffort = reasoningEffort.value
 
-  // ⭐ Restore context snapshot from queue time
   cwd.value = item.cwd
   permissionMode.value = item.permissionMode as any
   model.value = item.model
   reasoningEffort.value = item.reasoningEffort as any
 
-  // Push user message and send
+  // Push user bubble + fire (sendRaw handles streaming=true internally)
   messages.push({ kind: 'user', text: item.text, id: Date.now() })
 
-  // ⭐ CRITICAL: Set streaming = true IMMEDIATELY (before nextTick) to prevent
-  //    a second consumeQueue call from picking up another pending item.
-  //    sendRaw just confirms (already true); finally block resets to false.
-  streaming.value = true
-
   nextTick(() => {
-    sendRaw(item.text).then(() => {
-      // Success — remove from queue
-      item.status = 'sent'
-      saveQueueToStorage()
-      // Scheduled removal: we keep 'sent' items for a moment so the UI can show status,
-      // then remove them after a brief time to let the user see completion
-      setTimeout(() => {
-        messageQueue.value = messageQueue.value.filter((q) => q.id !== item.id)
+    sendRaw(item.text)
+      .then(() => {
+        item.status = 'sent'
         saveQueueToStorage()
-      }, 800)
-    }).catch((err) => {
-      // Failure
-      item.error = err?.message || String(err)
-      item.retryCount++
-      if (item.retryCount < MAX_QUEUE_RETRIES) {
-        item.status = 'pending'
-        antMessage.warning(`队列消息发送失败 (${item.retryCount}/${MAX_QUEUE_RETRIES}): ${item.error}. 将自动重试...`)
-      } else {
-        item.status = 'failed'
-        antMessage.error(`队列消息发送彻底失败 (${MAX_QUEUE_RETRIES} 次重试均已失败): ${item.error}`)
-      }
-      saveQueueToStorage()
-    }).finally(() => {
-      // Restore context
-      cwd.value = savedCwd
-      permissionMode.value = savedPermissionMode
-      model.value = savedModel
-      reasoningEffort.value = savedReasoningEffort
-    })
+        setTimeout(() => {
+          messageQueue.value = messageQueue.value.filter((q) => q.id !== item.id)
+          saveQueueToStorage()
+        }, 800)
+      })
+      .catch((err) => {
+        item.error = err?.message || String(err)
+        item.retryCount++
+        if (item.retryCount < MAX_QUEUE_RETRIES) {
+          item.status = 'pending'
+          antMessage.warning(`队列消息发送失败 (${item.retryCount}/${MAX_QUEUE_RETRIES}): ${item.error}. 将自动重试...`)
+        } else {
+          item.status = 'failed'
+          antMessage.error(`队列消息发送彻底失败 (${MAX_QUEUE_RETRIES} 次重试均已失败): ${item.error}`)
+        }
+        saveQueueToStorage()
+      })
+      .finally(() => {
+        cwd.value = savedCwd
+        permissionMode.value = savedPm as any
+        model.value = savedModel
+        reasoningEffort.value = savedEffort
+      })
   })
 }
 
-/**
- * ⭐ Auto-consumption watcher: fires when streaming ends.
- */
-watch(streaming, (val) => {
-  if (!val) {
-    // Streaming just ended — give a tiny delay for final messages to render,
-    // then consume the next queue item if any
+// ══════ Auto-consumption hook: streaming changed ══════
+
+let _lastStreamingVal = false
+watch(streaming, (newVal, oldVal) => {
+  // We only care about true→false transitions (stream just ended).
+  // Guard against phantom firings (newVal === oldVal) and the initial
+  // mount (newVal is false and oldVal is undefined).
+  if (!newVal && oldVal && newVal !== oldVal) {
     setTimeout(() => consumeQueue(), 300)
   }
 })
@@ -1000,11 +987,10 @@ function sendQueueItem(item: QueueItem) {
     antMessage.warning('正在回答中，请等待当前回答完成')
     return
   }
-  // Remove from queue first
   messageQueue.value = messageQueue.value.filter((q) => q.id !== item.id)
   saveQueueToStorage()
 
-  // Restore its context
+  // Restore context snapshot from this item
   const prevCwd = cwd.value
   const prevPm = permissionMode.value
   const prevModel = model.value
@@ -1025,20 +1011,19 @@ function sendQueueItem(item: QueueItem) {
   })
 }
 
-/** Retry a failed queue item */
+/** Retry a failed queue item — goes back to pending, then the next consumeQueue cycle picks it up */
 function retryQueueItem(item: QueueItem) {
-  if (streaming.value) return
   if (item.status !== 'failed') return
   item.status = 'pending'
   item.error = undefined
   item.retryCount = 0
   saveQueueToStorage()
-  consumeQueue()
+  // If idle right now, send immediately
+  if (!streaming.value) consumeQueue()
 }
 
 /** Retry all failed items */
 function retryAllFailed() {
-  if (streaming.value) return
   for (const item of messageQueue.value) {
     if (item.status === 'failed') {
       item.status = 'pending'
@@ -1047,7 +1032,7 @@ function retryAllFailed() {
     }
   }
   saveQueueToStorage()
-  consumeQueue()
+  if (!streaming.value) consumeQueue()
 }
 
 function statusLabel(status: string): string {
@@ -1493,7 +1478,8 @@ function send() {
   const atts = [...attachments.value]
   if (!prompt && !atts.length) return
 
-  // ⭐ Streaming → queue it (preserves context snapshot)
+  // ⭐ Streaming → auto-queue. User presses Enter/Send → goes to the back
+  //    of the queue. The model is busy; their message waits calmly.
   if (streaming.value) {
     if (!prompt) {
       antMessage.warning('回答中暂不支持仅附件排队，请输入文本或等待回答完成')
@@ -1503,6 +1489,7 @@ function send() {
     return
   }
 
+  // ⭐ Idle → send directly (not through the queue).
   const attSummary = atts.length
     ? `\n\n📎 Attachments (${atts.length}): ${atts.map(a => a.name).join(', ')}`
     : ''
@@ -1606,8 +1593,8 @@ function onKeydown(e: KeyboardEvent) {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault()
     if (streaming.value) {
-      // Streaming → queue
-      addToQueue()
+      // Answer in progress → auto-queue, don't block user
+      if (input.value.trim()) addToQueue()
     } else {
       send()
     }
@@ -1683,8 +1670,7 @@ function clearChat() {
   isAtBottom.value = true
   kbEnhanced.value = false
   selectedKbIds.value = []
-  // Queue is independent — preserve it across chat clears
-  // (do NOT clear messageQueue here)
+  // ⭐ Queue preserved: it's independent of chat state
   // Abort all background sessions
   for (const bg of bgSessions.value) {
     try { bg.abortController?.abort() } catch { /* already done */ }
@@ -1804,9 +1790,10 @@ onMounted(() => {
   loadKbCatalog()
   loadQueueFromStorage()
   nextTick(bindScrollListener)
-  // If queue was restored from localStorage with pending items, try consuming
+  // If queue was restored from localStorage with pending items,
+  // try consuming now (will only fire if streaming is idle)
   if (messageQueue.value.some(item => item.status === 'pending')) {
-    consumeQueue()
+    nextTick(() => consumeQueue())
   }
 })
 
