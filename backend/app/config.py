@@ -33,8 +33,8 @@ def _detect_mode() -> str:
 
     Priority:
       1. APP_MODE env — explicit choice.
-      2. NO_RELOAD=1  — force prod (disable hot reload), overrides APP_MODE=dev.
-      3. Fallback     — prod.
+      2. NO_RELOAD=1  — force prod (disable hot reload).
+      3. Fallback     — dev (matches JS-side default in paths.mjs / dynamic-config.ts).
     """
     no_reload = os.environ.get("NO_RELOAD", "0").strip() == "1"
     if no_reload:
@@ -42,7 +42,7 @@ def _detect_mode() -> str:
     mode = os.environ.get("APP_MODE", "").strip().lower()
     if mode in ("dev", "prod"):
         return mode
-    return "prod"
+    return "dev"
 
 
 # Runtime-generated auth token (set by main.py lifespan when auth enabled + no env token).
@@ -114,7 +114,7 @@ class Config:
 
     @property
     def server_port(self) -> int:
-        return int(self._server_cfg.get("backend_port", 8001))
+        return int(self._server_cfg.get("backend_port", 8765))
 
     @property
     def cors_origins(self) -> list:

@@ -163,7 +163,7 @@ export function getAppMode() {
  *
  *   const cfg = getServerConfig()
  *   cfg.backend_port   // "8765" (dev) or "8001" (prod)
- *   cfg.frontend_port  // "6789" (dev) or "3000" (prod)
+ *   cfg.frontend_port  // "6789" (dev) or "3000" (prod) — reads from config.yml
  *   cfg.backend_url    // "http://localhost:8765"
  *   cfg.cors_origins   // ["http://localhost:6789", ...]
  *
