@@ -120,33 +120,31 @@ The `knowledgebase-init` skill detects your OS, checks prerequisites, clones the
 
 ### Method B: Skills Copy + Init Wizard
 
-Use this when you don't want to install a plugin but still want a guided, interactive setup. The skills are copied manually to your global skills directory; the init skill then clones the project and configures everything.
+Use this when you don't want to install a plugin but still want a guided, interactive setup. The skills are copied manually to your global skills directory; the init skill then picks up the project and configures everything.
 
 ```bash
-# Step 1 — Clone the repository
-git clone https://github.com/kingdol666/rag-knowledge.git /tmp/rag-knowledge
+# Step 1 — Clone the repository to your desired location
+git clone https://github.com/kingdol666/rag-knowledge.git ~/rag-knowledge
 
 # Step 2 — Copy skills and agents to your global Claude Code directory
 mkdir -p ~/.claude/skills ~/.claude/agents
 
 # Copy all knowledgebase skills
-cp -r /tmp/rag-knowledge/.claude/skills/knowledgebase* ~/.claude/skills/
+cp -r ~/rag-knowledge/.claude/skills/knowledgebase* ~/.claude/skills/
 
 # Copy the Archival agent
-cp /tmp/rag-knowledge/.claude/agents/knowledge-admin.md ~/.claude/agents/
+cp ~/rag-knowledge/.claude/agents/knowledge-admin.md ~/.claude/agents/
 
-# Step 3 — Clean up the temp clone (optional)
-rm -rf /tmp/rag-knowledge
-
-# Step 4 — Start the init wizard (in any Claude Code session)
+# Step 3 — Start the init wizard (in any Claude Code session)
+# The skill detects the method-4-b clone as the project root.
 "初始化知识库"
 # —or—
 "/knowledgebase-init"
 ```
 
-The init skill will detect that the project code isn't on disk yet (skills-only installation), then ask you where to clone it. It handles:
+The init skill detects the existing project at `~/rag-knowledge` (via its Phase 2 auto-detection), then:
 
-1. **Clone** — `git clone https://github.com/kingdol666/rag-knowledge.git <your-chosen-path>`
+1. **Prerequisite check** — verifies uv, node, git are installed; installs missing ones
 2. **Setup** — `ragctl setup` (all dependencies + BGE-M3 model)
 3. **Configure** — 10 interactive questions (ports, storage, auth, Neo4j, model source…)
 4. **Global registration** — `ragctl install` (ragctl available from any terminal)
@@ -160,7 +158,7 @@ The init skill will detect that the project code isn't on disk yet (skills-only 
 
 **What you get after completion:**
 - `ragctl` available globally from any terminal
-- Project code at your chosen path
+- Project code at `~/rag-knowledge` (or your chosen path)
 - Skills available globally (already copied to `~/.claude/skills/`)
 - MCP tools available globally (if you chose Y in Phase 7)
 
@@ -264,7 +262,7 @@ Only these tools need to be installed before you begin — `ragctl setup` handle
 
 **Resource requirements:**
 - **Disk:** ~5 GB total
-- **Network:** First run downloads BGE-M3 (~2.2 GB) from HuggingFace. Default mirror is `hf-mirror.com` (fast inside China); set `HF_ENDPOINT=https://huggingface.co` outside China.
+- **Network:** First run downloads BGE-M3 (~2.2 GB). Default source is **ModelScope** (Alibaba Cloud CDN, fast inside China). Set `embedding.model_source: huggingface` in config.yml for overseas use.
 
 <details>
 <summary><b>📦 What gets installed and where</b></summary>
@@ -276,7 +274,7 @@ Only these tools need to be installed before you begin — `ragctl setup` handle
 | kb-mcp venv | `kb-mcp/.venv/` | ~50 MB (mcp + httpx + pyyaml) |
 | Web deps | `web/node_modules/` | ~500 MB |
 | CLI deps | `command/node_modules/` | ~5 MB (js-yaml) |
-| BGE-M3 model | `~/.cache/huggingface/` | ~2.2 GB |
+| BGE-M3 model | `~/.cache/modelscope/` or `~/.cache/huggingface/` | ~2.2 GB |
 | Neo4j (optional) | Docker volume | ~600 MB |
 
 All paths configurable. Nothing touches system-wide Python or Node.
@@ -396,7 +394,7 @@ Open `http://localhost:6789` — browse KBs, search documents, explore the graph
 | `ragctl status [--appmode X]` | Dual-mode status: ports + HTTP health + PIDs + MinerU |
 | `ragctl logs [svc] [--tail] [--lines N]` | View / live-tail logs |
 | `ragctl deps` | Install all dependencies (real-time progress) |
-| `ragctl model` | Pre-download BGE-M3 embedding model (~2.2 GB) |
+| `ragctl model` | Pre-download BGE-M3 embedding model (~2.2 GB). Supports `--source modelscope\|hf-mirror\|huggingface` |
 | `ragctl version` | Show local VERSION + git SHA vs GitHub remote |
 | `ragctl update` | Check GitHub and pull latest (+ optional deps) |
 | `ragctl update --check` | Dry-run version compare only |
