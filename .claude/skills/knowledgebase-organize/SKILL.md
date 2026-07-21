@@ -94,24 +94,29 @@ for each doc in KB:
 
 ### 3a. 子KB 拆分检测
 
-对每个文档数 **≥6** 的 KB，分析其内容子领域分布：
+对每个文档数 **≥6** 的 KB，分析其内容子领域分布。
+**必须使用** [sub-kb-creation.md 中的三轴相似度协议](../knowledgebase-ingest/references/sub-kb-creation.md#multi-dimensional-similarity-scoring)：
 
 ```
-scan KB → 读每篇 1000 chars → 归类子领域
+scan KB → 读每篇 1000 chars → 提取关键实体 → 归类子领域（同 entity_sim ≥ 0.4 归一组）
 结果: {kb_id, kb_name, doc_count, sub_domains: {sub_domain: [doc_paths]}}
 ```
 
-**拆分条件**：有 ≥2 个子领域，且每个子领域 ≥2 篇文档。
+**拆分条件**：有 ≥2 个子领域（inter-group similarity ≤ 0.25），且每个子领域 ≥2 篇文档。
 
 ### 3b. 跨KB 合并检测
 
-对所有 KB 对（尤其命名相似的），分析内容重叠度：
+对所有 KB 对（尤其命名相似的），**必须**使用三轴综合相似度计算：
 
 ```
-compare(kb_a.docs, kb_b.docs) → domain_overlap_score
+Axis 1 (0.3) = tag_similarity:    |tags(a) ∩ tags(b)| / |tags(a) ∪ tags(b)|
+Axis 2 (0.4) = entity_similarity: |entities(a) ∩ entities(b)| / |entities(a) ∪ entities(b)|
+Axis 3 (0.3) = domain_similarity: 三级分类对比 (l1/l2/l3)
+
+total = 0.3*tag + 0.4*entity + 0.3*domain
 ```
 
-**合并条件**：overlap ≥60% → 评估是否需要合并为一个父 KB + 子 KB。
+完整决策矩阵见 [sub-kb-creation.md § 决策矩阵](../knowledgebase-ingest/references/sub-kb-creation.md#decision-matrix)。
 
 ### 3c. KB 层级分析
 
@@ -291,6 +296,43 @@ kb_graph_build(kb_id="", force=true)    # 空 = 全库
 | L5 合并 | 源 KB 已删除, 目标 KB + 子KB 文档正确 |
 | L6 层级 | `fs_get_tree(max_depth=3)` 层级正确 |
 | L7 索引 | `kb_search_stats(kb_id)` 确认 collection + chunks ≥ 1 |
+
+---
+
+## O5b — 元数据三级一致性校验 ⭐（强制，结构变更后必须执行）
+
+每个 L3/L4/L5/L6 操作完成后，**必须**校验三层元数据：
+
+```
+# 1. 三层存在一致性
+for each affected KB:
+    kb_get_documents(kb_id)            # 返回 metadata 列表
+    for each doc in metadata:
+        disk_exists = fs_get_children(parent_id=<dir>) 检查所有 .md
+        treefs_exists = doc in .tree-fs.json
+        yml_exists = doc in .knowledge-base.yml
+
+# 2. UUID 同步校验
+# 移动/创建后 UUID 是否一致，若有分叉重新注册
+
+# 3. 文件内容校验
+# 随机抽查 20% 的文档：kb_doc_read → 确认返回正确内容
+```
+
+**校验规则**：
+- 三层中任一缺失 → 标记 `INCONSISTENCY`，重新注册缺失层
+- UUID 不一致 → `kb_doc_move` 后原路径 UUID 可能残留，清理
+- 内容读取失败 → 文件可能损坏或路径指向错误
+
+```
+# 实例修复：三层不一致
+if tree_entry.missing_on_disk:
+    kb_doc_delete(kb_id, doc.doc_path)    # 清理幽灵 entry
+elif disk_file.missing_in_treefs:
+    kb_doc_create(kb_id, name, content, description)  # 重新注册
+elif yml_entry.missing:
+    kb_doc_update_meta(kb_id, doc.doc_path, description=<补全>)  # 补全 YAML
+```
 
 ---
 
