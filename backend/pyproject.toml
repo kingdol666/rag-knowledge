@@ -21,8 +21,9 @@ dependencies = [
     #    `transformers.pytorch_utils.find_pruneable_heads_and_indices`，
     #    该函数在 transformers 5.x 已被移除，会导致 OCR 解析 ImportError。
     #    sentence-transformers 5.x 接受 >=4.41.0，所以二者交集为 4.41 ~ 4.99。
+    #    已验证组合：torch 2.12.1 + transformers 4.57.6 + sentence-transformers 5.6.0 (2026-07-21)
     "transformers>=4.57.3,<5.0.0",
-    "sentence-transformers>=5.0.0,<6.0.0",
+    "sentence-transformers>=5.6.0,<6.0.0",
     "accelerate>=1.0.0",
     # huggingface-hub 用作 BGE-M3 模型下载的 fallback（download_model.py 用 requests 直连）
     "huggingface-hub>=0.34.0,<1.0.0",

@@ -1219,15 +1219,20 @@ async function cmdMineruModel(args = []) {
 
   const scriptPath = path.join(os.tmpdir(), 'ragctl_mineru_preload.py');
   const script = [
-    'import subprocess, sys, time, os, signal',
-    'cmd = [sys.executable, "-m", "mineru.cli.fast_api", "--host", "127.0.0.1", "--enable-vlm-preload", "true", "--port", "0"]',
+    'import subprocess, sys, time, os, signal, socket',
+    '# Pick a free high port',
+    'sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)',
+    'sock.bind(("127.0.0.1", 0))',
+    'port = sock.getsockname()[1]',
+    'sock.close()',
+    'cmd = [sys.executable, "-m", "mineru.cli.fast_api", "--host", "127.0.0.1", "--port", str(port), "--enable-vlm-preload", "true"]',
     'env = os.environ.copy()',
     'env["MINERU_MODEL_SOURCE"] = "' + modelSource + '"',
     'env["MINERU_DEFAULT_BACKEND"] = "pipeline"',
     'for k in ["HTTPS_PROXY","HTTP_PROXY","https_proxy","http_proxy"]: env.pop(k, None)',
     'creationflags = 0x08000000 if sys.platform == "win32" else 0',
     'proc = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env=env, creationflags=creationflags)',
-    'print("[OK] mineru-api started (pid " + str(proc.pid) + ") — waiting for VLM model download...")',
+    'print("[OK] mineru-api started (pid " + str(proc.pid) + ") on port " + str(port) + " — waiting for VLM model download...")',
     'deadline = time.time() + 600',
     'while time.time() < deadline:',
     '    if proc.poll() is not None:',
