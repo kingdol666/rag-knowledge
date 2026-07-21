@@ -563,7 +563,7 @@ function preflightReady({ requireModel = false } = {}) {
   if (!fs.existsSync(ENV_FILE)) {
     problems.push('.env missing — run: ragctl setup  (or copy .env.example → .env)');
   }
-  if (!fs.existsSync(path.join(BACKEND_DIR, '.venv')) && !fs.existsSync(path.join(BACKEND_DIR, 'uv.lock'))) {
+  if (!fs.existsSync(path.join(BACKEND_DIR, '.venv'))) {
     problems.push('backend deps not installed — run: ragctl setup  (or ragctl deps)');
   }
   if (!fs.existsSync(path.join(WEB_DIR, 'node_modules'))) {

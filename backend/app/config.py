@@ -210,7 +210,7 @@ class Config:
 
     @property
     def vector_score_threshold(self) -> float:
-        return float(self.vector.get("score_threshold", 0.3))
+        return float(self.vector.get("score_threshold", 0.35))
 
     @property
     def experience_score_threshold(self) -> float:
@@ -274,14 +274,13 @@ class Config:
 
     @property
     def graph_password(self) -> str:
-        """读取密码，优先从环境变量 NEO4J_PASSWORD 获取，再 fallback config.yml。
+        """Read Neo4j password. Env NEO4J_PASSWORD wins; falls back to config.yml.
 
-        支持 ${NEO4J_PASSWORD} 语法从环境变量读取。
+        ${VAR:-default} patterns in config.yml are already expanded by
+        _expand_env_in_config() during _load_config(), so only plain
+        env-override logic is needed here.
         """
-        pw = os.environ.get("NEO4J_PASSWORD") or self.graph.get("password", "")
-        if isinstance(pw, str) and pw.startswith("${") and pw.endswith("}"):
-            pw = os.environ.get(pw[2:-1], "")
-        return pw
+        return os.environ.get("NEO4J_PASSWORD") or self.graph.get("password", "")
 
     @property
     def graph_database(self) -> str:
