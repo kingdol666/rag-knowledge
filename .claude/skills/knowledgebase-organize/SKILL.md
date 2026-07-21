@@ -51,6 +51,9 @@ description: >
 5. **禁止文件拆分** — 文档作为完整单元，不截断/摘要/拆分
 6. **⭐ MCP 优先** — 所有操作通过 MCP 工具，禁止终端/HTTP 绕行
 7. **先确认再执行** — 任何不可逆操作（删除/合并 KB）必须用户确认后才执行
+8. **单文档 KB 必须归并** — 仅 1 篇文档的 KB 不可独立存在，O3 中标记为"待归并"
+9. **三轴权重自适应** — 标签词表为空时：entity_sim 升为 0.55，domain_sim 升为 0.45（tag 无数据不可信）
+10. **O3 自动生成 combo** — O3a+O3b 跑完后必须生成合并+拆分的组合方案，不让用户手动组合
 
 ---
 
@@ -82,7 +85,10 @@ for each doc in KB:
       tag_quality:     [OK | EMPTY | GENERIC | BLOCKLIST | COUNT_LOW]
       domain:          <根据内容推断的子领域>
       kb_alignment:    [MATCH | MISMATCH]
+      suggested_tags:  <[2-5 content-derived tags]>    ← ⭐ 审计时自动生成
 ```
+
+> **标签在 O2 审计阶段自动生成**，不等到 L2。L2 只做清洗、归一化和批量写回。
 
 > ⏱ 估算：每篇 ~1s，100 篇约 2 分钟。
 
