@@ -1193,16 +1193,14 @@ print("Model loaded. Dimension:", model.get_sentence_embedding_dimension())
 // ═══════════════════════════════════════════════════════════════════════
 
 async function cmdMineruModel(args = []) {
-  step('MinerU VLM 模型预下载 (OCR/PDF解析引擎，~2-3 GB)...');
+  step('MinerU Pipeline + VLM 模型预下载 (OCR/PDF解析引擎，~5-7 GB)...');
 
-  // Check if mineru-api is already available
   const backendVenvPy = path.join(BACKEND_DIR, '.venv', IS_WIN ? 'Scripts' : 'bin', IS_WIN ? 'python.exe' : 'python');
   if (!fs.existsSync(backendVenvPy)) {
     warn('Backend venv 未就绪 — 请先运行 ragctl deps');
     return 1;
   }
 
-  // Read MinerU model source from backend/config.yml
   const backendCfg = readYaml(BACKEND_CONFIG_YML);
   const mineruCfg = (backendCfg && backendCfg.mineru) || {};
   const modelSource = mineruCfg.model_source || 'modelscope';
@@ -1210,65 +1208,38 @@ async function cmdMineruModel(args = []) {
     modelscope: 'ModelScope (modelscope.cn — 中国区推荐，阿里云 CDN)',
     huggingface: 'HuggingFace (huggingface.co — 海外)',
   };
-  const sourceLabel = sourceLabels[modelSource] || modelSource;
-  info('MinerU 模型源: ' + sourceLabel);
+  info('MinerU 模型源: ' + (sourceLabels[modelSource] || modelSource));
 
-  // The MinerU VLM model ID — used by mineru's pipeline backend
-  const MINERU_MODEL_ID = 'OpenDataLab/MinerU2.5-Pro-2605-1.2B';
+  // ⭐ Remove stale MinerU config so models-download does an actual download
+  //    (mineru-models-download checks if models-dir is configured and skips
+  //    the download if it is — stale pointer = 25K of config, no model file).
+  const mineruConfigPath = path.join(os.homedir(), 'mineru.json');
+  if (fs.existsSync(mineruConfigPath)) {
+    info('删除旧 mineru.json 配置以确保强制下载...');
+    try { fs.unlinkSync(mineruConfigPath); } catch {}
+  }
 
-  // Pre-download the model using modelscope SDK
-  info('下载 MinerU VLM 模型: ' + MINERU_MODEL_ID + ' (~2-3 GB)...');
-  console.log('  ' + _c(C.GRAY, '── 下载中，请耐心等待（首次约需 2-10 分钟）──'));
+  info('通过 mineru-models-download 下载并配置（自动更新 models-dir）...');
+  console.log('  ' + _c(C.GRAY, '── mineru-models-download --model_type all --source ' + modelSource + ' ──'));
+  console.log('  ' + _c(C.GRAY, '预计 ~5-7 GB（首次 5-15 分钟）'));
 
-  const scriptPath = path.join(os.tmpdir(), 'ragctl_mineru_download.py');
-  const script = [
-    'import sys, os, time',
-    '# Disable proxy to prevent Clash 7890 from intercepting modelscope/huggingface',
-    'for k in ["HTTPS_PROXY","HTTP_PROXY","https_proxy","http_proxy"]:',
-    '    os.environ.pop(k, None)',
-    '',
-    'model_id = ' + JSON.stringify(MINERU_MODEL_ID),
-    'source = ' + JSON.stringify(modelSource),
-    '',
-    '# Resolve cache directory: env MODELSCOPE_CACHE > default ~/.cache/modelscope',
-    'ms_cache = os.environ.get("MODELSCOPE_CACHE") or os.path.expanduser("~/.cache/modelscope")',
-    '',
-    'if source == "modelscope":',
-    '    os.environ.setdefault("MODELSCOPE_CACHE", ms_cache)',
-    '    from modelscope import snapshot_download',
-    '    print(f"[INFO] Downloading {model_id} from ModelScope (Aliyun CDN)...")',
-    '    print(f"[INFO] Cache directory: {ms_cache}")',
-    '    # snapshot_download with cache_dir explicitly to ensure the model lands',
-    '    # where MinerU expects it at runtime (modelscope SDK resolves via MODELSCOPE_CACHE)',
-    '    local_dir = snapshot_download(model_id, cache_dir=ms_cache)',
-    '    print(f"[OK] Model cached to: {local_dir}")',
-    '    sys.exit(0)',
-    'else:',
-    '    # huggingface fallback',
-    '    hf_cache = os.environ.get("HF_HOME") or os.path.expanduser("~/.cache/huggingface")',
-    '    from huggingface_hub import snapshot_download as hf_snapshot',
-    '    print(f"[INFO] Downloading {model_id} from HuggingFace...")',
-    '    print(f"[INFO] Cache directory: {hf_cache}")',
-    '    local_dir = hf_snapshot(repo_id=model_id, cache_dir=hf_cache)',
-    '    print(f"[OK] Model cached to: {local_dir}")',
-    '    sys.exit(0)',
-  ].join('\n');
-
-  fs.writeFileSync(scriptPath, script, 'utf8');
-
-  const result = await spawnAsync(backendVenvPy, [scriptPath], {
+  const result = await spawnAsync(backendVenvPy, [
+    '-m', 'mineru.cli.models_download',
+    '--model_type', 'all',
+    '--source', modelSource,
+  ], {
     cwd: BACKEND_DIR,
     env: {
       ...process.env,
+      MINERU_MODEL_SOURCE: modelSource,
       HTTPS_PROXY: '', HTTP_PROXY: '', https_proxy: '', http_proxy: '',
     },
   });
-  try { fs.unlinkSync(scriptPath); } catch {}
 
   if (result.code === 0) {
-    ok('MinerU VLM 模型就绪');
+    ok('MinerU 所有模型已下载并配置完成');
   } else {
-    warn('MinerU VLM 模型预下载未完成（非致命 — 首次 PDF 解析时会自动下载）');
+    warn('MinerU 模型下载未完全完成（非致命 — 首次 PDF 解析时会自动下载）');
   }
   return 0;
 }
@@ -2753,7 +2724,7 @@ ${_c(C.CYAN, '核心命令:')}
           model --source modelscope   ⭐ 中国区推荐（阿里云 CDN，默认）
           model --source hf-mirror    HuggingFace 镜像 (hf-mirror.com)
           model --source huggingface  HuggingFace 直连（海外）
-  ${_c(C.BOLD, 'mineru-model')}      预下载 MinerU VLM 模型 (PDF解析引擎，~2-5GB)
+  ${_c(C.BOLD, 'mineru-model')}      预下载 MinerU Pipeline + VLM 模型 (OCR引擎，~5-7GB)
   ${_c(C.BOLD, 'version')}          显示本地/远程版本（VERSION + git SHA）
   ${_c(C.BOLD, 'update')}           对比 GitHub 最新版并拉取更新
 

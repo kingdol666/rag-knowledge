@@ -428,7 +428,7 @@ class MineruApiManager:
 
     def _spawn_and_wait(self, exe: Path, env: dict[str, str], timeout: float) -> bool:
         """Spawn mineru-api on ``self.port`` and poll ``/health`` until ready."""
-        cmd = [str(exe), "--host", self.host, "--port", str(self.port), "--enable-vlm-preload", "true"]
+        cmd = [str(exe), "--host", self.host, "--port", str(self.port)]
         _LOG_DIR.mkdir(parents=True, exist_ok=True)
         log_handle = open(_MINERU_LOG, "ab", buffering=0)
 
