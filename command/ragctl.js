@@ -1193,7 +1193,7 @@ print("Model loaded. Dimension:", model.get_sentence_embedding_dimension())
 // ═══════════════════════════════════════════════════════════════════════
 
 async function cmdMineruModel(args = []) {
-  step('MinerU VLM 模型预下载 (OCR/PDF解析引擎，~2-5 GB)...');
+  step('MinerU VLM 模型预下载 (OCR/PDF解析引擎，~2-3 GB)...');
 
   // Check if mineru-api is already available
   const backendVenvPy = path.join(BACKEND_DIR, '.venv', IS_WIN ? 'Scripts' : 'bin', IS_WIN ? 'python.exe' : 'python');
@@ -1213,42 +1213,36 @@ async function cmdMineruModel(args = []) {
   const sourceLabel = sourceLabels[modelSource] || modelSource;
   info('MinerU 模型源: ' + sourceLabel);
 
-  // Pre-download by starting mineru-api briefly with VLM preload enabled
-  info('启动 mineru-api 进行模型预下载（首次约需 2-10 分钟）...');
-  console.log('  ' + _c(C.GRAY, '── mineru-api VLM preload ──'));
+  // The MinerU VLM model ID — used by mineru's pipeline backend
+  const MINERU_MODEL_ID = 'OpenDataLab/MinerU2.5-Pro-2605-1.2B';
 
-  const scriptPath = path.join(os.tmpdir(), 'ragctl_mineru_preload.py');
+  // Pre-download the model using modelscope SDK
+  info('下载 MinerU VLM 模型: ' + MINERU_MODEL_ID + ' (~2-3 GB)...');
+  console.log('  ' + _c(C.GRAY, '── 下载中，请耐心等待（首次约需 2-10 分钟）──'));
+
+  const scriptPath = path.join(os.tmpdir(), 'ragctl_mineru_download.py');
   const script = [
-    'import subprocess, sys, time, os, signal, socket',
-    '# Pick a free high port',
-    'sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)',
-    'sock.bind(("127.0.0.1", 0))',
-    'port = sock.getsockname()[1]',
-    'sock.close()',
-    'cmd = [sys.executable, "-m", "mineru.cli.fast_api", "--host", "127.0.0.1", "--port", str(port), "--enable-vlm-preload", "true"]',
-    'env = os.environ.copy()',
-    'env["MINERU_MODEL_SOURCE"] = "' + modelSource + '"',
-    'env["MINERU_DEFAULT_BACKEND"] = "pipeline"',
-    'for k in ["HTTPS_PROXY","HTTP_PROXY","https_proxy","http_proxy"]: env.pop(k, None)',
-    'creationflags = 0x08000000 if sys.platform == "win32" else 0',
-    'proc = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, env=env, creationflags=creationflags)',
-    'print("[OK] mineru-api started (pid " + str(proc.pid) + ") on port " + str(port) + " — waiting for VLM model download...")',
-    'deadline = time.time() + 600',
-    'while time.time() < deadline:',
-    '    if proc.poll() is not None:',
-    '        print("[DONE] mineru-api exited (code " + str(proc.returncode) + ") — model may already be cached")',
-    '        break',
-    '    time.sleep(2)',
-    'if proc.poll() is None:',
-    '    print("[OK] MinerU VLM model download complete (or already cached)")',
-    '    if sys.platform == "win32":',
-    '        subprocess.run(["taskkill","/PID",str(proc.pid),"/T","/F"], capture_output=True)',
-    '    else:',
-    '        os.killpg(os.getpgid(proc.pid), signal.SIGTERM)',
-    '        proc.wait(timeout=10)',
+    'import sys, os, time',
+    '# Disable proxy to prevent Clash 7890 from intercepting modelscope/huggingface',
+    'for k in ["HTTPS_PROXY","HTTP_PROXY","https_proxy","http_proxy"]:',
+    '    os.environ.pop(k, None)',
+    '',
+    'model_id = ' + JSON.stringify(MINERU_MODEL_ID),
+    'source = ' + JSON.stringify(modelSource),
+    '',
+    'if source == "modelscope":',
+    '    os.environ.setdefault("MODELSCOPE_CACHE", os.path.expanduser("~/.cache/modelscope"))',
+    '    from modelscope import snapshot_download',
+    '    print(f"[INFO] Downloading {model_id} from ModelScope (Aliyun CDN)...")',
+    '    local_dir = snapshot_download(model_id, cache_dir=os.path.expanduser("~/.cache/modelscope"))',
+    '    print(f"[OK] Model cached to: {local_dir}")',
     '    sys.exit(0)',
     'else:',
-    '    print("[WARN] mineru-api exited early — will retry on first parse")',
+    '    # huggingface fallback',
+    '    from huggingface_hub import snapshot_download as hf_snapshot',
+    '    print(f"[INFO] Downloading {model_id} from HuggingFace...")',
+    '    local_dir = hf_snapshot(repo_id=model_id, cache_dir=os.path.expanduser("~/.cache/huggingface"))',
+    '    print(f"[OK] Model cached to: {local_dir}")',
     '    sys.exit(0)',
   ].join('\n');
 
