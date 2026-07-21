@@ -391,7 +391,7 @@ class MineruApiManager:
             return False
 
         env = os.environ.copy()
-        # GPU acceleration enabled (CUDA-capable torch 2.8.0+cu128 installed)
+        # GPU acceleration enabled (CUDA-capable torch installed)
         # pipeline backend — stable, high quality, leverages GPU where available
         env["MINERU_DEFAULT_BACKEND"] = "pipeline"
         try:
@@ -400,6 +400,11 @@ class MineruApiManager:
         except Exception:
             _default_source = "modelscope"
         env.setdefault("MINERU_MODEL_SOURCE", _default_source)
+
+        # ⭐ Propagate ModelScope cache path so MinerU finds pre-downloaded VLM model
+        # at the same location modelscope SDK cached it (respect user's MODELSCOPE_CACHE).
+        _ms_cache = os.environ.get("MODELSCOPE_CACHE") or os.path.expanduser("~/.cache/modelscope")
+        env.setdefault("MODELSCOPE_CACHE", _ms_cache)
 
         # In auto-port mode, try a few distinct free ports — ephemeral ports
         # carry a small TOCTOU race between our probe socket and mineru-api
