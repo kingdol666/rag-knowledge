@@ -950,9 +950,8 @@ function consumeQueue() {
 
 // ══════ Auto-consumption hook: streaming changed ══════
 
-let _lastStreamingVal = false
 watch(streaming, (newVal, oldVal) => {
-  // We only care about true→false transitions (stream just ended).
+  // Only care about true→false transitions (stream just ended).
   // Guard against phantom firings (newVal === oldVal) and the initial
   // mount (newVal is false and oldVal is undefined).
   if (!newVal && oldVal && newVal !== oldVal) {
