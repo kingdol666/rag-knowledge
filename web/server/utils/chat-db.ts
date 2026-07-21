@@ -122,6 +122,15 @@ export function listSessions(limit = 50): SessionRow[] {
     .all(limit) as SessionRow[]
 }
 
+/** 获取单个会话的元信息（标题等），用于历史回放时在顶部展示用户最初的问题。 */
+export function getSessionMeta(sessionId: string): { title: string | null; model: string | null } | null {
+  return (
+    getDb()
+      .prepare('SELECT title, model FROM sessions WHERE session_id = ?')
+      .get(sessionId) as { title: string | null; model: string | null } | undefined
+  ) ?? null
+}
+
 export function getSessionMessages(sessionId: string): MessageRow[] {
   return getDb()
     .prepare(

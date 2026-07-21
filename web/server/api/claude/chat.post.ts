@@ -376,6 +376,35 @@ export default defineEventHandler(async (event) => {
       }
     })
 
+    // ══════ 用户提问持久化（放在 for-await 前，覆盖多轮 resume 和首轮新会话） ══════
+    // 构造用户消息文本（不含系统 KB 指令，与前端 send() 格式一致）
+    const attSummaryMT = hasAttachments && attachments!.length
+      ? `\n\n📎 Attachments (${attachments!.length}): ${attachments!.map(a => a.name).join(', ')}`
+      : ''
+    const kbSummaryMT = kbEnhanced
+      ? (kbIds.length
+        ? `\n\n🔍 KB-enhanced: searching ${kbIds.length} KB(s)`
+        : '\n\n🔍 KB-enhanced: searching all KBs')
+      : ''
+    const userText = prompt + attSummaryMT + kbSummaryMT
+    /**
+     * 持久化用户提问到 SQLite（用于历史回放渲染）。
+     * - 多轮 resume：立即存入（SDK 不发 system/init，这里直接用 resume 作为 sessionId）。
+     * - 新会话首轮：等 init 拿到 sessionId 后存入。
+     */
+    let _userSaved = false
+    const saveUserMessage = (sid: string) => {
+      if (_userSaved) return
+      _userSaved = true
+      try {
+        saveMessage(sid, 'user', JSON.stringify({
+          type: 'user',
+          message: { role: 'user', content: [{ type: 'text', text: userText }] },
+        }))
+      } catch { /* DB failure is non-fatal */ }
+    }
+    if (resume) saveUserMessage(resume)
+
     for await (const message of q) {
       if (message.type === 'system' && message.subtype === 'init') {
         sessionId = (message as any).session_id || ''
@@ -385,6 +414,8 @@ export default defineEventHandler(async (event) => {
           permissionMode: pm,
           model: (message as any).model || model || undefined,
         })
+        // ⭐ 新会话首轮：从 init 拿到的 sessionId 存入用户提问
+        saveUserMessage(sessionId)
       }
       if (sessionId) {
         try {

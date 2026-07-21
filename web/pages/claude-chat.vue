@@ -1,91 +1,91 @@
 <template>
   <div class="claude-chat-page">
-    <!-- header -->
-    <div class="chat-header">
-      <div>
-        <h2><RobotOutlined /> {{ $t('chat.title') }}</h2>
-        <p class="hint">{{ $t('chat.subtitle') }}</p>
+    <!-- ═══ Header (fixed top) ═══ -->
+    <div class="chat-header-wrapper">
+      <div class="chat-header">
+        <div>
+          <h2><RobotOutlined /> {{ $t('chat.title') }}</h2>
+          <p class="hint">{{ $t('chat.subtitle') }}</p>
+        </div>
+        <div class="header-actions">
+          <a-tooltip title="新建对话（不打断当前流式，后台继续）">
+            <a-button type="primary" ghost @click="newConversation" :disabled="!messages.length && !streaming">
+              <PlusSquareOutlined /> {{ $t('chat.newChat') }}
+            </a-button>
+          </a-tooltip>
+          <a-button @click="panelOpen = true"><AppstoreOutlined /> {{ $t('chat.env') }}</a-button>
+          <a-button @click="loadSessions" :loading="loadingSessions"><HistoryOutlined /> {{ $t('chat.history') }}</a-button>
+          <a-button @click="clearChat"><ClearOutlined /> {{ $t('chat.clear') }}</a-button>
+        </div>
       </div>
-      <div class="header-actions">
-        <a-tooltip title="新建对话（不打断当前流式，后台继续）">
-          <a-button type="primary" ghost @click="newConversation" :disabled="!messages.length && !streaming">
-            <PlusSquareOutlined /> {{ $t('chat.newChat') }}
-          </a-button>
-        </a-tooltip>
-        <a-button @click="panelOpen = true"><AppstoreOutlined /> {{ $t('chat.env') }}</a-button>
-        <a-button @click="loadSessions" :loading="loadingSessions"><HistoryOutlined /> {{ $t('chat.history') }}</a-button>
-        <a-button @click="clearChat"><ClearOutlined /> {{ $t('chat.clear') }}</a-button>
-      </div>
-    </div>
 
-    <!-- Toolbar -->
-    <div class="toolbar">
-      <!-- Workspace selector (replaces raw cwd text input) -->
-      <div class="workspace-selector">
-        <a-select
-          v-model:value="cwd"
-          :options="workspaceOptions"
-          :placeholder="$t('chat.workspacePlaceholder')"
-          show-search
-          allow-clear
-          style="min-width:320px;flex:1"
-          @change="onWorkspaceChange"
-        >
-          <template #option="{ label, value, desc, pin }">
-            <div class="ws-option">
-              <div class="ws-option-main">
-                <PushpinOutlined v-if="pin" style="color:var(--kb-amber);font-size:11px;margin-right:4px" />
-                <FolderOpenOutlined style="margin-right:6px;color:var(--kb-primary)" />
-                <span style="font-weight:600">{{ label }}</span>
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="workspace-selector">
+          <a-select
+            v-model:value="cwd"
+            :options="workspaceOptions"
+            :placeholder="$t('chat.workspacePlaceholder')"
+            show-search
+            allow-clear
+            style="min-width:320px;flex:1"
+            @change="onWorkspaceChange"
+          >
+            <template #option="{ label, value, desc, pin }">
+              <div class="ws-option">
+                <div class="ws-option-main">
+                  <PushpinOutlined v-if="pin" style="color:var(--kb-amber);font-size:11px;margin-right:4px" />
+                  <FolderOpenOutlined style="margin-right:6px;color:var(--kb-primary)" />
+                  <span style="font-weight:600">{{ label }}</span>
+                </div>
+                <div class="ws-option-path">{{ value }}</div>
+                <div v-if="desc" class="ws-option-desc">{{ desc }}</div>
               </div>
-              <div class="ws-option-path">{{ value }}</div>
-              <div v-if="desc" class="ws-option-desc">{{ desc }}</div>
-            </div>
-          </template>
+            </template>
+          </a-select>
+          <a-tooltip :title="$t('chat.manageWorkspace')">
+            <a-button @click="wsManagerOpen = true"><FolderOpenOutlined /></a-button>
+          </a-tooltip>
+          <a-tooltip :title="$t('chat.addWorkspace')">
+            <a-button @click="addCurrentWorkspace"><PlusOutlined /></a-button>
+          </a-tooltip>
+        </div>
+
+        <a-select v-model:value="permissionMode" style="width:140px">
+          <a-select-option v-for="m in PERMISSION_MODES" :key="m" :value="m">{{ PERMISSION_MODE_INFO[m].label }}</a-select-option>
         </a-select>
-        <a-tooltip :title="$t('chat.manageWorkspace')">
-          <a-button @click="wsManagerOpen = true"><FolderOpenOutlined /></a-button>
-        </a-tooltip>
-        <a-tooltip :title="$t('chat.addWorkspace')">
-          <a-button @click="addCurrentWorkspace"><PlusOutlined /></a-button>
+        <a-tooltip :title="PERMISSION_MODE_INFO[permissionMode].desc"><InfoCircleOutlined style="cursor:help" /></a-tooltip>
+        <a-input v-model:value="model" placeholder="Model (leave empty for default)" style="width:160px" allow-clear />
+        <a-tooltip title="推理深度（越高越慢但思考越深入，Ultracode=max+workflows模式）">
+          <a-select v-model:value="reasoningEffort" style="width:120px" size="small">
+            <a-select-option value="auto">🤖 Auto</a-select-option>
+            <a-select-option value="low">⚡ Low</a-select-option>
+            <a-select-option value="medium">🔋 Medium</a-select-option>
+            <a-select-option value="high">🧠 High</a-select-option>
+            <a-select-option value="xhigh">🔥 X-High</a-select-option>
+            <a-select-option value="max">🚀 Max (Ultracode)</a-select-option>
+          </a-select>
         </a-tooltip>
       </div>
 
-      <a-select v-model:value="permissionMode" style="width:140px">
-        <a-select-option v-for="m in PERMISSION_MODES" :key="m" :value="m">{{ PERMISSION_MODE_INFO[m].label }}</a-select-option>
-      </a-select>
-      <a-tooltip :title="PERMISSION_MODE_INFO[permissionMode].desc"><InfoCircleOutlined style="cursor:help" /></a-tooltip>
-      <a-input v-model:value="model" placeholder="Model (leave empty for default)" style="width:160px" allow-clear />
-      <!-- ⭐ Thinking depth control — full Claude Code modes -->
-      <a-tooltip title="推理深度（越高越慢但思考越深入，Ultracode=max+workflows模式）">
-        <a-select v-model:value="reasoningEffort" style="width:120px" size="small">
-          <a-select-option value="auto">🤖 Auto</a-select-option>
-          <a-select-option value="low">⚡ Low</a-select-option>
-          <a-select-option value="medium">🔋 Medium</a-select-option>
-          <a-select-option value="high">🧠 High</a-select-option>
-          <a-select-option value="xhigh">🔥 X-High</a-select-option>
-          <a-select-option value="max">🚀 Max (Ultracode)</a-select-option>
-        </a-select>
-      </a-tooltip>
+      <!-- meta bar -->
+      <div v-if="(currentSessionId || initInfo.model) || bgSessions.length" class="meta-bar">
+        <a-tag v-if="currentSessionId" color="green">active session {{ currentSessionId.slice(0, 12) }}…</a-tag>
+        <a-tag v-if="initInfo.model" color="blue">{{ initInfo.model }}</a-tag>
+        <a-tag v-for="m in initInfo.mcpServers" :key="m.name" :color="m.status === 'ready' ? 'green' : 'orange'">🔌 {{ m.name }} · {{ m.status }}</a-tag>
+        <template v-for="bg in bgSessions" :key="bg.id">
+          <a-tooltip :title="'后台运行中: ' + bg.prompt.slice(0, 60) + '… — 点击切换回来'">
+            <a-tag color="processing" style="cursor:pointer" @click="switchToBg(bg)">
+              <SyncOutlined spin /> {{ bg.id.slice(0, 8) }}…
+            </a-tag>
+          </a-tooltip>
+        </template>
+      </div>
     </div>
 
-    <!-- meta -->
-    <div v-if="(currentSessionId || initInfo.model) || bgSessions.length" class="meta-bar">
-      <a-tag v-if="currentSessionId" color="green">active session {{ currentSessionId.slice(0, 12) }}…</a-tag>
-      <a-tag v-if="initInfo.model" color="blue">{{ initInfo.model }}</a-tag>
-      <a-tag v-for="m in initInfo.mcpServers" :key="m.name" :color="m.status === 'ready' ? 'green' : 'orange'">🔌 {{ m.name }} · {{ m.status }}</a-tag>
-      <!-- Background sessions -->
-      <template v-for="bg in bgSessions" :key="bg.id">
-        <a-tooltip :title="'后台运行中: ' + bg.prompt.slice(0, 60) + '… — 点击切换回来'">
-          <a-tag color="processing" style="cursor:pointer" @click="switchToBg(bg)">
-            <SyncOutlined spin /> {{ bg.id.slice(0, 8) }}…
-          </a-tag>
-        </a-tooltip>
-      </template>
-    </div>
+    <!-- ═══ Chat messages (natural height — scrolls with .page-content) ═══ -->
+    <div class="messages" ref="msgRef">
 
-    <!-- Message list -->
-    <div class="messages" ref="msgRef" @scroll="onMessagesScroll">
       <div v-if="!messages.length && !streamingText" class="empty">
         <RobotOutlined style="font-size:40px;color:var(--kb-primary)" />
         <p>{{ $t('chat.title') }}</p>
@@ -211,8 +211,13 @@
       </transition>
     </div>
 
-    <!-- ⭐ Quick Action Pills -->
-    <div class="quick-actions" v-if="!streaming">
+    <!-- 弹性占位：内容少时把 footer 顶到底部，保证输入区始终贴底 -->
+    <div class="chat-spacer" aria-hidden="true"></div>
+
+    <!-- ═══ Footer (fixed bottom) ═══ -->
+    <div class="chat-footer-wrapper">
+      <!-- ⭐ Quick Action Pills -->
+      <div class="quick-actions" v-if="!streaming">
       <span class="qa-label">⚡</span>
       <div class="qa-scroll">
         <span v-for="act in QUICK_ACTIONS" :key="act.label" class="qa-pill" @click="queueAction(act)">
@@ -221,27 +226,67 @@
       </div>
     </div>
 
-    <!-- ⭐ Message Queue Panel -->
+    <!-- ⭐ Message Queue Panel (production-grade with context snapshots) -->
     <div v-if="messageQueue.length" class="queue-panel">
       <div class="queue-head">
-        <OrderedListOutlined /> 消息队列 ({{ messageQueue.length }})
-        <a-button size="small" type="link" @click="clearQueue"><DeleteOutlined /> 清空</a-button>
+        <OrderedListOutlined /> 消息队列 ({{ queueCounts.pending }} 待发{{ queueCounts.sending ? ', ' + queueCounts.sending + ' 发送中' : '' }}{{ queueCounts.failed ? ', ' + queueCounts.failed + ' 失败' : '' }})
+        <span class="queue-head-actions">
+          <a-tooltip :title="queuePaused ? '恢复队列' : '暂停队列'">
+            <a-button size="small" type="text" @click="toggleQueuePause">
+              <PauseCircleOutlined v-if="!queuePaused" />
+              <CaretRightOutlined v-else style="color: var(--kb-emerald)" />
+            </a-button>
+          </a-tooltip>
+          <a-tooltip title="重试所有失败">
+            <a-button size="small" type="text" :disabled="!queueCounts.failed" @click="retryAllFailed">
+              <SyncOutlined />
+            </a-button>
+          </a-tooltip>
+          <a-button size="small" type="link" @click="clearQueue"><DeleteOutlined /> 清空待发</a-button>
+        </span>
       </div>
-      <div v-for="(item, i) in messageQueue" :key="item.id" class="queue-item">
+      <div v-for="(item, i) in messageQueue" :key="item.id" :class="['queue-item', item.status]">
         <template v-if="item.status === 'editing'">
           <a-input v-model:value="queueEditText" size="small" style="flex:1" @keyup.enter="confirmEdit(item)" />
           <a-button size="small" type="primary" @click="confirmEdit(item)">✓</a-button>
           <a-button size="small" @click="cancelEdit(item)">✗</a-button>
         </template>
         <template v-else>
+          <!-- Status indicator -->
+          <span class="queue-status-dot" :class="item.status" :title="statusLabel(item.status)"></span>
           <span class="queue-idx">{{ i + 1 }}.</span>
           <span class="queue-text">{{ item.text.slice(0, 60) }}{{ item.text.length > 60 ? '…' : '' }}</span>
+          <!-- Context tags (when different from current) -->
+          <span class="queue-context">
+            <a-tag v-if="item.model && item.model !== model" color="blue" size="small" class="queue-tag">🤖 {{ item.model }}</a-tag>
+            <a-tag v-if="item.reasoningEffort && item.reasoningEffort !== 'auto'" color="purple" size="small" class="queue-tag">{{ item.reasoningEffort }}</a-tag>
+            <a-tag v-if="item.permissionMode !== permissionMode" color="orange" size="small" class="queue-tag">{{ PERMISSION_MODE_INFO[item.permissionMode]?.label || item.permissionMode }}</a-tag>
+          </span>
+          <!-- Error message (on hover) -->
+          <a-tooltip v-if="item.status === 'failed' && item.error" :title="item.error">
+            <span class="queue-error-icon">⚠</span>
+          </a-tooltip>
           <span class="queue-actions">
-            <a-tooltip title="编辑"><a-button size="small" type="text" @click="startEdit(item)"><EditOutlined /></a-button></a-tooltip>
-            <a-tooltip title="删除"><a-button size="small" type="text" danger @click="removeFromQueue(item.id)"><DeleteOutlined /></a-button></a-tooltip>
-            <a-tooltip title="立即发送"><a-button size="small" type="primary" ghost :disabled="streaming" @click="sendQueueItem(item)"><SendOutlined /></a-button></a-tooltip>
+            <a-tooltip title="编辑">
+              <a-button size="small" type="text" @click="startEdit(item)" :disabled="item.status === 'sending'"><EditOutlined /></a-button>
+            </a-tooltip>
+            <a-tooltip title="删除">
+              <a-button size="small" type="text" danger @click="removeFromQueue(item.id)" :disabled="item.status === 'sending'"><DeleteOutlined /></a-button>
+            </a-tooltip>
+            <!-- Retry button (failed items only) -->
+            <a-tooltip v-if="item.status === 'failed'" title="重试发送">
+              <a-button size="small" type="primary" ghost @click="retryQueueItem(item)"><SyncOutlined /></a-button>
+            </a-tooltip>
+            <!-- Manual send (skip line) -->
+            <a-tooltip v-if="item.status === 'pending'" title="立即发送（跳过队列）">
+              <a-button size="small" type="primary" ghost :disabled="streaming" @click="sendQueueItem(item)"><SendOutlined /></a-button>
+            </a-tooltip>
           </span>
         </template>
+      </div>
+      <!-- Paused indicator -->
+      <div v-if="queuePaused && queueCounts.pending" class="queue-paused-banner">
+        <PauseCircleOutlined /> 队列已暂停 — {{ queueCounts.pending }} 条等待中
       </div>
     </div>
 
@@ -332,12 +377,13 @@
           :auto-size="{ minRows: 1, maxRows: 6 }"
           @keydown="onKeydown" :disabled="streaming"
         />
-        <a-button type="primary" :loading="streaming" :disabled="!input.trim() && !attachments.length" @click="send">发送</a-button>
+        <a-button type="primary" :loading="streaming" :disabled="!input.trim() && !attachments.length" @click="send" title="发送 (Enter)"><SendOutlined /></a-button>
         <a-tooltip title="排队发送消息（当前对话结束后自动发出）">
           <a-button :disabled="!input.trim()" @click="addToQueue">➕ 队列</a-button>
         </a-tooltip>
         <a-button v-if="streaming" danger @click="abort">中断</a-button>
       </div>
+    </div>
     </div>
 
     <!-- Environment (tools/MCP/skills) panel -->
@@ -525,6 +571,7 @@ import {
   SearchOutlined, DatabaseOutlined, BookOutlined,
   OrderedListOutlined, EditOutlined, SendOutlined,
   PlusSquareOutlined, SyncOutlined,
+  PauseCircleOutlined, CaretRightOutlined,
 } from '@ant-design/icons-vue'
 import { PERMISSION_MODES, PERMISSION_MODE_INFO, type PermissionMode } from '~/utils/claude'
 import { MessageProcessor, type UIMessage } from '~/utils/claude-messages'
@@ -541,6 +588,8 @@ const input = ref('')
 const messages = reactive<UIMessage[]>([])
 const streaming = ref(false)
 const currentSessionId = ref('')
+// 回放的消息里是否已包含用户提问气泡（新会话有，旧会话没有）。
+// 主题卡片仅在「没有用户气泡」时显示，避免与真实用户消息重复。
 const msgRef = ref<HTMLElement | null>(null)
 const inputRef = ref<any>(null)
 const abortController = ref<AbortController | null>(null)
@@ -549,11 +598,33 @@ const processor = new MessageProcessor()
 // ⭐ Reasoning effort control
 const reasoningEffort = ref<'auto' | 'low' | 'medium' | 'high' | 'xhigh' | 'max'>('auto')
 
-// ⭐ Message queue
-interface QueueItem { id: string; text: string; status: 'pending' | 'editing' | 'sent'; created_at: number }
+// ⭐ Message queue — production-grade FIFO with context snapshots
+interface QueueItem {
+  id: string
+  text: string
+  status: 'pending' | 'editing' | 'sending' | 'sent' | 'failed'
+  created_at: number
+  /** Context snapshot at queue time (ensures consistency even if user changes settings later) */
+  cwd: string
+  permissionMode: string
+  model: string
+  reasoningEffort: string
+  /** Original attachments (snapshot of names — actual files already uploaded at queue time) */
+  attachmentNames: string[]
+  /** Error message if status === 'failed' */
+  error?: string
+  /** Sent count increments each retry attempt */
+  retryCount: number
+}
 const messageQueue = ref<QueueItem[]>([])
 const queueEditText = ref('')
 let queueIdCounter = 0
+/** When true, queue auto-consumption is paused */
+const queuePaused = ref(false)
+/** Maximum auto-retries before marking as failed */
+const MAX_QUEUE_RETRIES = 3
+/** localStorage persistence key */
+const QUEUE_STORAGE_KEY = 'claude-chat-queue'
 
 // ⭐ Background sessions (running conversation continues after "New Chat")
 interface BgSession {
@@ -584,7 +655,9 @@ let detachedAbortController: AbortController | null = null
  */
 function newConversation() {
   const savedInput = input.value
-  messageQueue.value = []
+
+  // Queue is independent of conversation state — preserve it
+  // (do NOT clear messageQueue here)
 
   // If streaming: detach current SSE stream (keep it alive, don't abort)
   if (streaming.value && abortController.value) {
@@ -684,33 +757,226 @@ function queueAction(act: typeof QUICK_ACTIONS[0]) {
   nextTick(() => inputRef.value?.focus?.())
 }
 
-// Auto-consumption: when streaming ends, pop queue
-watch(streaming, (val) => {
-  if (!val && messageQueue.value.length > 0) {
-    const item = messageQueue.value.shift()!
-    item.status = 'sent'
-    messages.push({ kind: 'user', text: item.text, id: Date.now() })
-    nextTick(() => sendRaw(item.text))
-  }
-})
+/**
+ * ═══════════════════════════════════════════════════════════════════
+ * ⭐ Production-Grade Message Queue
+ *
+ * Design:
+ * 1. Context snapshot at queue time — KB settings, model, permission mode
+ *    are captured and locked so queue items don't change behavior mid-queue.
+ * 2. Explicit state machine: pending → sending → sent | failed
+ * 3. Retry with configurable max attempts (MAX_QUEUE_RETRIES)
+ * 4. localStorage persistence for crash recovery (page refresh = queue survives)
+ * 5. Pause/resume for manual control
+ * 6. Sequential consumption — one item at a time, only when streaming is idle
+ *     AND the previous item's result has fully returned
+ * ═══════════════════════════════════════════════════════════════════
+ */
 
+// Persistence helpers
+function saveQueueToStorage() {
+  try {
+    const serializable = messageQueue.value.map((item) => ({
+      id: item.id,
+      text: item.text,
+      status: item.status,
+      created_at: item.created_at,
+      cwd: item.cwd,
+      permissionMode: item.permissionMode,
+      model: item.model,
+      reasoningEffort: item.reasoningEffort,
+      attachmentNames: item.attachmentNames,
+      error: item.error,
+      retryCount: item.retryCount,
+    }))
+    localStorage.setItem(QUEUE_STORAGE_KEY, JSON.stringify(serializable))
+  } catch {
+    /* localStorage may be full or unavailable */
+  }
+}
+
+function loadQueueFromStorage() {
+  try {
+    const raw = localStorage.getItem(QUEUE_STORAGE_KEY)
+    if (!raw) return
+    const parsed = JSON.parse(raw)
+    if (!Array.isArray(parsed)) return
+    // Reset any 'sending' items back to 'pending' (crashed mid-send)
+    messageQueue.value = parsed.map((item: any) => ({
+      ...item,
+      status: item.status === 'sending' ? 'pending' : item.status,
+      retryCount: item.retryCount ?? 0,
+      attachmentNames: item.attachmentNames ?? [],
+      error: item.status === 'sending' ? '上次发送中断，重试中...' : item.error,
+    }))
+    // Restore ID counter
+    const maxNum = messageQueue.value.reduce((max: number, item: QueueItem) => {
+      const num = parseInt(item.id.replace('q_', ''), 10)
+      return Number.isNaN(num) ? max : Math.max(max, num)
+    }, 0)
+    queueIdCounter = maxNum
+  } catch {
+    /* Corrupt localStorage entry — ignore */
+  }
+}
+
+/**
+ * Core: add a message to the end of the queue with full context snapshot.
+ * If the queue is empty and no streaming is active, the item is consumed immediately
+ * (it's a direct send, not actually queued).
+ */
 function addToQueue() {
   const text = input.value.trim()
   if (!text) return
-  messageQueue.value.push({ id: `q_${++queueIdCounter}`, text, status: 'pending', created_at: Date.now() })
+
+  const snapshot: QueueItem = {
+    id: `q_${++queueIdCounter}`,
+    text,
+    status: 'pending',
+    created_at: Date.now(),
+    cwd: cwd.value,
+    permissionMode: permissionMode.value,
+    model: model.value,
+    reasoningEffort: reasoningEffort.value,
+    attachmentNames: attachments.value.map((a) => a.name),
+    retryCount: 0,
+  }
+
+  messageQueue.value.push(snapshot)
   input.value = ''
+  saveQueueToStorage()
+
   antMessage.success(`已加入队列 (${messageQueue.value.length})`)
 }
 
+/**
+ * Remove a specific item from the queue (bypassing the sequential order).
+ * Does NOT affect the currently-sending item.
+ */
 function removeFromQueue(id: string) {
-  messageQueue.value = messageQueue.value.filter(item => item.id !== id)
+  const idx = messageQueue.value.findIndex((item) => item.id === id)
+  if (idx === -1) return
+  if (messageQueue.value[idx].status === 'sending') {
+    antMessage.warning('当前正在发送中，无法删除')
+    return
+  }
+  messageQueue.value.splice(idx, 1)
+  saveQueueToStorage()
 }
 
+/**
+ * Clear all PENDING items. The currently-sending item (if any) is not cleared.
+ */
 function clearQueue() {
-  messageQueue.value = []
+  messageQueue.value = messageQueue.value.filter((item) => item.status === 'sending')
+  saveQueueToStorage()
+  antMessage.success('队列已清空')
 }
+
+/**
+ * ⭐ Toggle queue pause/resume.
+ * When paused, auto-consumption is suspended but current send continues.
+ * When resumed, the next pending item starts immediately.
+ */
+function toggleQueuePause() {
+  queuePaused.value = !queuePaused.value
+  if (!queuePaused.value) {
+    // Resuming — try consuming next if idle
+    consumeQueue()
+  }
+  antMessage.info(queuePaused.value ? '队列已暂停' : '队列已恢复')
+}
+
+/**
+ * ⭐ Core queue consumer: takes the head-of-line pending item and sends it.
+ * Called when:
+ *   (a) streaming ends and there's a next item
+ *   (b) queue is unpaused
+ *   (c) an item is manually added-to-queue while idle
+ */
+function consumeQueue() {
+  if (queuePaused.value) return
+  if (streaming.value) return
+  if (messageQueue.value.length === 0) return
+
+  const nextIdx = messageQueue.value.findIndex((item) => item.status === 'pending')
+  if (nextIdx === -1) return
+
+  const item = messageQueue.value[nextIdx]
+
+  // Mark as sending
+  item.status = 'sending'
+  item.error = undefined
+  saveQueueToStorage()
+
+  // ⭐ Save current context to restore after queue item is done
+  const savedCwd = cwd.value
+  const savedPermissionMode = permissionMode.value
+  const savedModel = model.value
+  const savedReasoningEffort = reasoningEffort.value
+
+  // ⭐ Restore context snapshot from queue time
+  cwd.value = item.cwd
+  permissionMode.value = item.permissionMode as any
+  model.value = item.model
+  reasoningEffort.value = item.reasoningEffort as any
+
+  // Push user message and send
+  messages.push({ kind: 'user', text: item.text, id: Date.now() })
+
+  // ⭐ CRITICAL: Set streaming = true IMMEDIATELY (before nextTick) to prevent
+  //    a second consumeQueue call from picking up another pending item.
+  //    sendRaw just confirms (already true); finally block resets to false.
+  streaming.value = true
+
+  nextTick(() => {
+    sendRaw(item.text).then(() => {
+      // Success — remove from queue
+      item.status = 'sent'
+      saveQueueToStorage()
+      // Scheduled removal: we keep 'sent' items for a moment so the UI can show status,
+      // then remove them after a brief time to let the user see completion
+      setTimeout(() => {
+        messageQueue.value = messageQueue.value.filter((q) => q.id !== item.id)
+        saveQueueToStorage()
+      }, 800)
+    }).catch((err) => {
+      // Failure
+      item.error = err?.message || String(err)
+      item.retryCount++
+      if (item.retryCount < MAX_QUEUE_RETRIES) {
+        item.status = 'pending'
+        antMessage.warning(`队列消息发送失败 (${item.retryCount}/${MAX_QUEUE_RETRIES}): ${item.error}. 将自动重试...`)
+      } else {
+        item.status = 'failed'
+        antMessage.error(`队列消息发送彻底失败 (${MAX_QUEUE_RETRIES} 次重试均已失败): ${item.error}`)
+      }
+      saveQueueToStorage()
+    }).finally(() => {
+      // Restore context
+      cwd.value = savedCwd
+      permissionMode.value = savedPermissionMode
+      model.value = savedModel
+      reasoningEffort.value = savedReasoningEffort
+    })
+  })
+}
+
+/**
+ * ⭐ Auto-consumption watcher: fires when streaming ends.
+ */
+watch(streaming, (val) => {
+  if (!val) {
+    // Streaming just ended — give a tiny delay for final messages to render,
+    // then consume the next queue item if any
+    setTimeout(() => consumeQueue(), 300)
+  }
+})
+
+// ── Queue item actions (from UI) ──
 
 function startEdit(item: QueueItem) {
+  if (item.status === 'sending') return
   item.status = 'editing'
   queueEditText.value = item.text
 }
@@ -720,6 +986,7 @@ function confirmEdit(item: QueueItem) {
     item.text = queueEditText.value.trim()
   }
   item.status = 'pending'
+  saveQueueToStorage()
 }
 
 function cancelEdit(item: QueueItem) {
@@ -727,11 +994,84 @@ function cancelEdit(item: QueueItem) {
   queueEditText.value = ''
 }
 
+/** Manually send a specific queue item immediately (skip the line) */
 function sendQueueItem(item: QueueItem) {
-  messageQueue.value = messageQueue.value.filter(q => q.id !== item.id)
+  if (streaming.value) {
+    antMessage.warning('正在回答中，请等待当前回答完成')
+    return
+  }
+  // Remove from queue first
+  messageQueue.value = messageQueue.value.filter((q) => q.id !== item.id)
+  saveQueueToStorage()
+
+  // Restore its context
+  const prevCwd = cwd.value
+  const prevPm = permissionMode.value
+  const prevModel = model.value
+  const prevEffort = reasoningEffort.value
+  cwd.value = item.cwd
+  permissionMode.value = item.permissionMode as any
+  model.value = item.model
+  reasoningEffort.value = item.reasoningEffort as any
+
   messages.push({ kind: 'user', text: item.text, id: Date.now() })
-  nextTick(() => sendRaw(item.text))
+  nextTick(() => {
+    sendRaw(item.text).finally(() => {
+      cwd.value = prevCwd
+      permissionMode.value = prevPm as any
+      model.value = prevModel
+      reasoningEffort.value = prevEffort
+    })
+  })
 }
+
+/** Retry a failed queue item */
+function retryQueueItem(item: QueueItem) {
+  if (streaming.value) return
+  if (item.status !== 'failed') return
+  item.status = 'pending'
+  item.error = undefined
+  item.retryCount = 0
+  saveQueueToStorage()
+  consumeQueue()
+}
+
+/** Retry all failed items */
+function retryAllFailed() {
+  if (streaming.value) return
+  for (const item of messageQueue.value) {
+    if (item.status === 'failed') {
+      item.status = 'pending'
+      item.error = undefined
+      item.retryCount = 0
+    }
+  }
+  saveQueueToStorage()
+  consumeQueue()
+}
+
+function statusLabel(status: string): string {
+  const map: Record<string, string> = {
+    pending: '等待发送',
+    sending: '发送中…',
+    sent: '已发送 ✓',
+    failed: '发送失败 ✗',
+    editing: '编辑中',
+  }
+  return map[status] || status
+}
+
+/** Queue counts by status */
+const queueCounts = computed(() => {
+  let pending = 0, sending = 0, sent = 0, failed = 0
+  for (const item of messageQueue.value) {
+    if (item.status === 'pending') pending++
+    else if (item.status === 'sending') sending++
+    else if (item.status === 'sent') sent++
+    else if (item.status === 'failed') failed++
+  }
+  return { pending, sending, sent, failed }
+})
 
 // ⭐ Workspace state
 const wsManagerOpen = ref(false)
@@ -843,6 +1183,37 @@ function md(t: string) {
   }
 }
 
+/**
+ * 代码块增强：给每个 <pre> 加复制按钮 + 语言标签角标（仅处理一次，幂等）。
+ * 在每条消息渲染后调用。
+ */
+function enhanceCodeBlocks() {
+  const root = msgRef.value
+  if (!root) return
+  const pres = root.querySelectorAll('pre')
+  pres.forEach((pre) => {
+    if ((pre as HTMLElement).dataset.enhanced) return
+    const code = pre.querySelector('code')
+    const lang = (code?.className || '').match(/language-([\w+-]+)/)?.[1] || ''
+    const el = pre as HTMLElement
+    el.dataset.enhanced = '1'
+    el.classList.add('code-block')
+    if (lang) { el.dataset.lang = lang; el.classList.add('has-lang') }
+    const btn = document.createElement('button')
+    btn.className = 'code-copy-btn'
+    btn.type = 'button'
+    btn.textContent = '复制'
+    btn.addEventListener('click', () => {
+      const text = code?.textContent || pre.textContent || ''
+      navigator.clipboard?.writeText(text).then(() => {
+        btn.textContent = '已复制 ✓'
+        setTimeout(() => { btn.textContent = '复制' }, 1500)
+      }).catch(() => {})
+    })
+    pre.appendChild(btn)
+  })
+}
+
 // ── Mermaid diagram rendering after content updates ──
 const { initMermaid } = useMarkdownRenderer()
 let mermaidTimer: ReturnType<typeof setTimeout> | null = null
@@ -869,8 +1240,22 @@ const isAtBottom = ref(true)
 const unreadCount = ref(0)
 const SCROLL_THRESHOLD = 80 // px — 距底部多少以内算"在底部"
 
+/**
+ * 真正的滚动容器：现在 .messages 自己 overflow:auto 滚动（三段式布局）。
+ * 从 .messages 向上找最近的滚动祖先（兼容性兜底）。
+ */
+function getScrollEl(): HTMLElement | null {
+  let el: HTMLElement | null = msgRef.value
+  while (el) {
+    const ov = getComputedStyle(el).overflowY
+    if (ov === 'auto' || ov === 'scroll') return el
+    el = el.parentElement
+  }
+  return msgRef.value
+}
+
 function onMessagesScroll() {
-  const el = msgRef.value
+  const el = getScrollEl()
   if (!el) return
   const distFromBottom = el.scrollHeight - el.scrollTop - el.clientHeight
   isAtBottom.value = distFromBottom < SCROLL_THRESHOLD
@@ -880,7 +1265,7 @@ function onMessagesScroll() {
 
 function scrollToBottom(behavior: ScrollBehavior = 'smooth') {
   nextTick(() => {
-    const el = msgRef.value
+    const el = getScrollEl()
     if (!el) return
     el.scrollTo({ top: el.scrollHeight, behavior })
     isAtBottom.value = true
@@ -895,7 +1280,7 @@ function scrollToBottomRAF() {
   rafPending = true
   requestAnimationFrame(() => {
     rafPending = false
-    const el = msgRef.value
+    const el = getScrollEl()
     if (!el) return
     el.scrollTop = el.scrollHeight // instant（高频流式不用 smooth）
   })
@@ -988,6 +1373,7 @@ function handleSdkMessage(sdkMsg: any) {
     showStreamingCursor.value = false
   }
   smartScroll()
+  nextTick(enhanceCodeBlocks)
 }
 
 function handleSseBlock(block: string) {
@@ -1023,7 +1409,7 @@ function handleSseBlock(block: string) {
   handleSdkMessage(obj)
 }
 
-async function sendRaw(prompt: string, atts?: Attachment[]) {
+async function sendRaw(prompt: string, atts?: Attachment[]): Promise<void> {
   streaming.value = true
   const myGenId = streamGenId // Capture which generation this stream belongs to
   // User sends → force scroll to bottom to follow
@@ -1075,8 +1461,11 @@ async function sendRaw(prompt: string, atts?: Attachment[]) {
     if (e.name === 'AbortError') {
       messages.push({ kind: 'system', subtype: 'abort', text: '_已中断_', id: Date.now() })
     } else {
-      antMessage.error(e?.message || String(e))
-      messages.push({ kind: 'error', text: e?.message || String(e), id: Date.now() })
+      const errMsg = e?.message || String(e)
+      antMessage.error(errMsg)
+      messages.push({ kind: 'error', text: errMsg, id: Date.now() })
+      // ⭐ Re-throw so queue consumer can detect failures
+      throw e
     }
   } finally {
     // Only update state if this is still the active stream
@@ -1102,7 +1491,17 @@ async function sendRaw(prompt: string, atts?: Attachment[]) {
 function send() {
   const prompt = input.value.trim()
   const atts = [...attachments.value]
-  if ((!prompt && !atts.length) || streaming.value) return
+  if (!prompt && !atts.length) return
+
+  // ⭐ Streaming → queue it (preserves context snapshot)
+  if (streaming.value) {
+    if (!prompt) {
+      antMessage.warning('回答中暂不支持仅附件排队，请输入文本或等待回答完成')
+      return
+    }
+    addToQueue()
+    return
+  }
 
   const attSummary = atts.length
     ? `\n\n📎 Attachments (${atts.length}): ${atts.map(a => a.name).join(', ')}`
@@ -1284,7 +1683,8 @@ function clearChat() {
   isAtBottom.value = true
   kbEnhanced.value = false
   selectedKbIds.value = []
-  messageQueue.value = []
+  // Queue is independent — preserve it across chat clears
+  // (do NOT clear messageQueue here)
   // Abort all background sessions
   for (const bg of bgSessions.value) {
     try { bg.abortController?.abort() } catch { /* already done */ }
@@ -1390,10 +1790,24 @@ function onWorkspaceChange(path: string | undefined) {
   }
 }
 
+// ⭐ 滚动监听挂在真正的滚动容器上（.messages 自己 overflow:auto 滚动）
+let _boundScrollEl: HTMLElement | null = null
+function bindScrollListener() {
+  _boundScrollEl?.removeEventListener('scroll', onMessagesScroll)
+  _boundScrollEl = getScrollEl()
+  _boundScrollEl?.addEventListener('scroll', onMessagesScroll, { passive: true })
+}
+
 onMounted(() => {
   loadWorkspaces()
   loadSkillCatalog()
   loadKbCatalog()
+  loadQueueFromStorage()
+  nextTick(bindScrollListener)
+  // If queue was restored from localStorage with pending items, try consuming
+  if (messageQueue.value.some(item => item.status === 'pending')) {
+    consumeQueue()
+  }
 })
 
 /* * Load Skills catalog (with descriptions from SKILL.md frontmatter) */
@@ -1474,22 +1888,41 @@ async function deleteHistory(sid: string) {
 
 <style scoped>
 /* ═══════════════════════════════════════════════════
- * Claude Chat — Using kb- design tokens (theme.css)
- * Message cards: semantic color background + subtle shadow instead of left-border cliche
+ * Claude Chat — ChatGPT-style layout
+ * Header (fixed) → Messages (scrollable) → Footer (fixed)
  * ═══════════════════════════════════════════════════ */
 
 .claude-chat-page {
   display: flex; flex-direction: column;
-  height: calc(100vh - 80px);
+  flex: 1 1 auto;        /* 拉伸填满 .page-content（flex 方式，绕过 container-type 对百分比高度的破坏） */
+  min-height: 0;         /* 允许收缩，让内部 messages 的 overflow 生效 */
+  box-sizing: border-box;
   padding: var(--kb-space-lg);
-  gap: var(--kb-space);
+  gap: 0;
   max-width: 1100px; margin: 0 auto; width: 100%;
+  overflow: hidden;      /* 自身不滚，滚动交给 messages */
+}
+
+/* ── Header wrapper (own flex row — never overlaps messages) ── */
+.chat-header-wrapper {
+  flex-shrink: 0;
+  display: flex; flex-direction: column;
+  gap: var(--kb-space-sm);
+  padding-bottom: var(--kb-space-sm);
+  border-bottom: 1px solid var(--kb-border);
+  background: var(--kb-bg);
 }
 
 /* ── Header ── */
-.chat-header { display: flex; justify-content: space-between; align-items: flex-start; flex-shrink: 0; }
-.chat-header h2 { margin: 0; font-size: 22px; font-weight: 700; letter-spacing: -0.3px; color: var(--kb-fg); }
-.chat-header .hint { margin: 5px 0 0; color: var(--kb-fg-3); font-size: 12.5px; }
+.chat-header { display: flex; justify-content: space-between; align-items: center; gap: var(--kb-space); }
+.chat-header h2 {
+  margin: 0; font-size: 22px; font-weight: 600; font-style: italic;
+  font-family: var(--kb-font-serif);
+  letter-spacing: 0; color: var(--kb-fg);
+  display: flex; align-items: center; gap: 10px;
+}
+.chat-header h2 :deep(.anticon) { color: var(--kb-primary); }
+.chat-header .hint { margin: 3px 0 0; color: var(--kb-fg-mute); font-size: 12px; }
 .chat-header .hint code {
   background: var(--kb-primary-soft); color: var(--kb-primary);
   padding: 1px 6px; border-radius: var(--kb-radius-sm);
@@ -1497,82 +1930,139 @@ async function deleteHistory(sid: string) {
 }
 .header-actions { display: flex; gap: var(--kb-space-xs); flex-shrink: 0; }
 
-/* ── Toolbar ── */
+/* ── Toolbar (轻量化：去掉框/阴影，融入 header，控件紧凑) ── */
 .toolbar {
-  display: flex; gap: var(--kb-space-sm); align-items: center; flex-wrap: wrap; flex-shrink: 0;
-  padding: var(--kb-space-sm) var(--kb-space);
-  background: var(--kb-bg-elevated);
-  border: 1px solid var(--kb-border);
-  border-radius: var(--kb-radius);
-  box-shadow: var(--kb-shadow-xs);
+  display: flex; gap: 6px; align-items: center; flex-wrap: wrap; flex-shrink: 0;
+  padding: 4px 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
 }
-.toolbar > .ant-input { flex: 1; min-width: 260px; }
-.workspace-selector { display: flex; gap: 6px; align-items: center; flex: 1; min-width: 320px; }
+.toolbar :deep(.ant-select-selector),
+.toolbar :deep(.ant-input) { min-height: 30px; font-size: 12.5px; }
+.toolbar :deep(.ant-select) { }
+.toolbar > .ant-input { flex: 1; min-width: 200px; }
+.workspace-selector { display: flex; gap: 6px; align-items: center; flex: 1; min-width: 280px; }
 .ws-option { padding: 4px 0; }
 .ws-option-main { display: flex; align-items: center; font-size: 13px; }
 .ws-option-path { font-size: 11px; color: var(--kb-fg-mute); font-family: var(--kb-font-mono); margin-top: 2px; word-break: break-all; }
 .ws-option-desc { font-size: 11px; color: var(--kb-fg-mute); margin-top: 1px; }
 .meta-bar {
-  display: flex; gap: var(--kb-space-xs); align-items: center; flex-wrap: wrap;
-  padding: 2px 0; flex-shrink: 0;
+  display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+  padding: 0;
+  font-size: 11px;
+  opacity: 0.85;
+}
+.meta-bar :deep(.ant-tag) { margin-right: 0; font-size: 11px; padding: 0 7px; line-height: 18px; }
+
+/* ── Messages container (independent scroll area between header & footer) ── */
+.messages {
+  flex: 1 1 auto;
+  min-height: 0;           /* 关键：允许 flex item 收缩，overflow 才能生效 */
+  overflow-y: auto;        /* 只有消息区滚动，header/footer 永远不会被卷走或遮挡 */
+  /* 去掉外框/阴影/独立背景 —— 消息融入页面，最大化阅读空间（ChatGPT 风格） */
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: var(--kb-space-lg) var(--kb-space-lg) var(--kb-space);
+  scroll-behavior: smooth;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--kb-space);
 }
 
-/* ── Messages container ── */
-.messages {
-  flex: 1; overflow-y: auto;
-  background: var(--kb-bg-elevated);
-  border: 1px solid var(--kb-border);
-  border-radius: var(--kb-radius-lg);
-  padding: var(--kb-space-lg);
-  box-shadow: var(--kb-shadow-sm);
-  scroll-behavior: smooth;
+/* 弹性占位（保留，内容少时把 footer 顶到底） */
+.chat-spacer { display: none; }
+
+.empty { text-align: center; padding: 100px 20px; }
+.empty :deep(.anticon) { font-size: 48px; color: var(--kb-gold-bright); margin-bottom: var(--kb-space); filter: drop-shadow(0 0 18px var(--kb-gold-glow)); animation: empty-glow 3s ease-in-out infinite; }
+.empty :deep(.anticon) svg { display: block; }
+.empty p:first-of-type {
+  font-family: var(--kb-font-serif);
+  font-size: 28px; font-weight: 600; font-style: italic;
+  color: var(--kb-fg-2);
+  margin: var(--kb-space) 0 var(--kb-space-sm);
+  letter-spacing: 0.02em;
 }
-.empty { text-align: center; padding: 80px 20px; }
-.empty > p:first-child { font-size: 40px; margin-bottom: var(--kb-space); }
-.empty p:nth-child(2) { color: var(--kb-fg-2); font-size: 16px; font-weight: 500; margin: 0 0 6px; }
-.empty .muted { font-size: 12.5px; color: var(--kb-fg-mute); margin: 0; }
+.empty p.muted {
+  font-size: 13px; color: var(--kb-fg-mute); margin: 0;
+  font-family: var(--kb-font-serif); font-style: italic;
+}
+/* Gold ornament between title and subtitle */
+.empty p:first-of-type::after {
+  content: '❦';
+  display: block;
+  font-style: normal;
+  font-size: 18px;
+  color: var(--kb-gold);
+  margin-top: var(--kb-space-sm);
+  opacity: 0.65;
+}
 .empty code {
-  background: var(--kb-primary-soft); color: var(--kb-primary);
-  padding: 1px 6px; border-radius: var(--kb-radius-sm);
+  background: var(--kb-gold-soft); color: var(--kb-gold-deep);
+  padding: 1px 7px; border-radius: 4px;
   font-family: var(--kb-font-mono); font-size: 11px; font-weight: 600;
+}
+@keyframes empty-glow {
+  0%, 100% { filter: drop-shadow(0 0 12px var(--kb-gold-glow)); transform: translateY(0); }
+  50% { filter: drop-shadow(0 0 28px var(--kb-gold-glow)); transform: translateY(-3px); }
 }
 .muted { color: var(--kb-fg-mute); font-size: 11px; }
 
-/* ═══ Message cards ═══ */
+/* ═══ Message rows — ChatGPT-style alignment (assistant left, user right) ═══ */
 .msg {
-  margin-bottom: var(--kb-space);
-  padding: var(--kb-space) var(--kb-space-lg);
-  border-radius: var(--kb-radius);
-  border: 1px solid var(--kb-border);
-  box-shadow: var(--kb-shadow-xs);
+  width: 100%;
+  max-width: 768px;        /* 阅读最佳宽度，居中 */
+  margin: 0 auto;          /* 居中 */
   animation: kb-fade-up 0.3s var(--kb-ease) both;
+  padding: 0;              /* 默认无内边距，由子类型自定义 */
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
 }
 
-/* User — Cobalt blue */
+/* User — 右对齐气泡（主色），无标签头，纯气泡 */
 .msg.user {
-  background: var(--kb-primary-tint);
-  border-color: var(--kb-primary-soft);
+  align-self: flex-end;
+  max-width: 78%;
+  margin: 0;
+  background: linear-gradient(160deg, var(--kb-primary) 0%, var(--kb-primary-hover) 100%);
+  color: #fff;
+  border-radius: 18px 18px 4px 18px;
+  padding: 10px 16px;
+  box-shadow:
+    0 2px 8px var(--kb-primary-glow),
+    inset 0 1px 0 rgba(255,255,255,0.15);
 }
 
-/* Assistant — Emerald green */
+/* Assistant — 左对齐，无框，带头像（消息直接展示，最大可读性） */
 .msg.assistant {
-  background: var(--kb-bg-elevated);
-  border-color: var(--kb-emerald-soft);
+  align-self: flex-start;
+  max-width: 768px;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
 }
 
-/* Thinking — No card, blended into background */
+/* Thinking — 紧凑可折叠，弱化 */
 .msg.thinking {
+  align-self: center;
+  max-width: 768px;
   background: transparent; border: none; box-shadow: none; padding: 0;
-  margin-bottom: var(--kb-space-sm);
 }
 
-/* Tool use / result — Amber, professional tool feel */
+/* Tool use / result — 紧凑卡片，全宽居中，弱化视觉 */
 .msg.tool_use, .msg.tool_result {
+  align-self: center;
+  max-width: 768px;
   background: var(--kb-bg-subtle);
-  border-color: var(--kb-border);
-  padding: var(--kb-space-sm) var(--kb-space);
+  border: 1px solid var(--kb-border);
+  padding: 8px 12px;
   border-radius: var(--kb-radius-sm);
-  margin-bottom: var(--kb-space-sm);
 }
 .msg.tool_result {
   border-color: var(--kb-emerald-soft);
@@ -1585,79 +2075,121 @@ async function deleteHistory(sid: string) {
 
 /* Plan — Purple */
 .msg.plan {
+  align-self: center;
   background: var(--kb-bg-elevated);
-  border-color: var(--kb-violet);
+  border: 1px solid var(--kb-violet);
   border-left: 4px solid var(--kb-violet);
+  border-radius: var(--kb-radius);
+  padding: var(--kb-space) var(--kb-space-lg);
 }
 
 /* Todo — Amber */
 .msg.todo {
+  align-self: center;
   background: var(--kb-amber-soft);
-  border-color: var(--kb-amber);
+  border: 1px solid var(--kb-amber);
+  border-radius: var(--kb-radius);
+  padding: var(--kb-space) var(--kb-space-lg);
 }
 
 /* Ask user — Interactive card */
 .msg.ask_user {
+  align-self: center;
   background: var(--kb-bg-elevated);
-  border-color: var(--kb-amber);
+  border: 1px solid var(--kb-amber);
   border-left: 4px solid var(--kb-amber);
+  border-radius: var(--kb-radius);
+  padding: var(--kb-space) var(--kb-space-lg);
 }
 
 /* System — Info Card */
 .msg.system {
+  align-self: center;
   background: var(--kb-bg-subtle);
-  border-color: var(--kb-border);
+  border: 1px solid var(--kb-border);
+  border-radius: var(--kb-radius-sm);
   font-size: 12px;
   padding: var(--kb-space-sm) var(--kb-space);
 }
 
 /* Result — Completion summary */
 .msg.result {
+  align-self: center;
   background: var(--kb-bg-elevated);
-  border-color: var(--kb-border-strong);
+  border: 1px solid var(--kb-border-strong);
   border-top: 3px solid var(--kb-primary);
-  border-radius: 0 0 var(--kb-radius) var(--kb-radius);
-  margin-top: var(--kb-space);
+  border-radius: var(--kb-radius);
+  padding: var(--kb-space) var(--kb-space-lg);
+  margin-top: var(--kb-space-sm);
 }
 .msg.result.err { border-top-color: var(--kb-rose); }
 
 /* Error */
 .msg.error {
+  align-self: center;
   background: var(--kb-rose-soft);
-  border-color: var(--kb-rose);
+  border: 1px solid var(--kb-rose);
 }
 
-/* ── Message content ── */
+/* ── Message head: avatar circle + name (assistant only; user bubbles hide it) ── */
 .msg-head {
-  font-size: 11px; font-weight: 700; letter-spacing: 0.3px;
-  text-transform: uppercase;
-  color: var(--kb-fg-mute);
-  margin-bottom: var(--kb-space-sm);
-  display: flex; align-items: center; gap: var(--kb-space-xs);
+  font-size: 13px; font-weight: 600;
+  color: var(--kb-fg);
+  margin-bottom: 6px;
+  display: flex; align-items: center; gap: 8px;
 }
-.msg.user .msg-head { color: var(--kb-primary); }
-.msg.assistant .msg-head { color: var(--kb-emerald); }
+.msg-head :deep(.anticon),
+.msg-head > svg {
+  display: inline-grid; place-items: center;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--kb-gold-soft);
+  color: var(--kb-gold-deep);
+  font-size: 14px;
+}
+.msg.assistant .msg-head :deep(.anticon) {
+  background: linear-gradient(135deg, var(--kb-primary), var(--kb-gold-deep));
+  color: #fff;
+  box-shadow: 0 2px 8px var(--kb-primary-glow);
+}
+/* 用户气泡：隐藏头部标签，气泡本身即标识 */
+.msg.user .msg-head { display: none; }
 .msg.tool_use .msg-head { color: var(--kb-amber); }
 
 .msg-text {
-  line-height: 1.7; word-break: break-word;
-  color: var(--kb-fg); font-size: 14.5px;
+  line-height: 1.75; word-break: break-word;
+  color: var(--kb-fg); font-size: 15px;
   text-wrap: pretty;
+  font-feature-settings: 'kern' 1, 'liga' 1;
 }
-.msg.user .msg-text { color: var(--kb-fg); }
+/* 用户气泡内文字为白色 */
+.msg.user .msg-text { color: #fff; }
+.msg.user .msg-text :deep(strong) { color: #fff; }
+.msg.user .msg-text :deep(code) { background: rgba(255,255,255,0.18); color: #fff; }
+.msg.user .msg-text :deep(a) { color: #fff; text-decoration: underline; }
 
-/* ── Markdown rendering enhancements ── */
+/* ── Markdown rendering: illuminated manuscript typography ── */
 .msg-text :deep(h1),
 .msg-text :deep(h2),
 .msg-text :deep(h3) {
-  font-weight: 700; letter-spacing: -0.2px; margin: var(--kb-space) 0 var(--kb-space-sm);
+  font-family: var(--kb-font-serif);
+  font-weight: 600; font-style: italic;
+  letter-spacing: -0.01em; line-height: 1.35;
+  margin: var(--kb-space) 0 var(--kb-space-sm);
   color: var(--kb-fg);
 }
-.msg-text :deep(h1) { font-size: 20px; }
-.msg-text :deep(h2) { font-size: 17px; }
-.msg-text :deep(h3) { font-size: 15px; }
-.msg-text :deep(h4) { font-size: 14px; font-weight: 700; margin: var(--kb-space-sm) 0; color: var(--kb-fg); }
-.msg-text :deep(h5), .msg-text :deep(h6) { font-size: 13px; font-weight: 700; margin: var(--kb-space-sm) 0; color: var(--kb-fg-2); }
+.msg-text :deep(h1) { font-size: 22px; }
+.msg-text :deep(h2) { font-size: 18px; }
+.msg-text :deep(h3) { font-size: 16px; }
+.msg-text :deep(h4) { font-size: 14px; font-weight: 700; margin: var(--kb-space-sm) 0; color: var(--kb-fg); font-family: var(--kb-font); }
+.msg-text :deep(h5), .msg-text :deep(h6) { font-size: 13px; font-weight: 700; margin: var(--kb-space-sm) 0; color: var(--kb-fg-2); font-family: var(--kb-font); }
+/* Assistant headings get a subtle gold left accent */
+.msg.assistant .msg-text :deep(h1),
+.msg.assistant .msg-text :deep(h2),
+.msg.assistant .msg-text :deep(h3) {
+  border-left: 3px solid var(--kb-gold);
+  padding-left: 14px;
+}
 .msg-text :deep(p) { margin: var(--kb-space-sm) 0; }
 .msg-text :deep(ul), .msg-text :deep(ol) { padding-left: 20px; margin: var(--kb-space-sm) 0; }
 .msg-text :deep(li) { margin: 4px 0; }
@@ -1682,17 +2214,50 @@ async function deleteHistory(sid: string) {
   border-bottom-width: 2px; border-radius: 4px; padding: 1px 5px;
 }
 
-/* Code blocks -- dark IDE theme */
+/* Code blocks — illuminated manuscript inset panel (gold-trimmed dark) */
 .msg-text :deep(pre) {
-  background: var(--kb-bg-dark);
-  color: #c8d3e0;
+  position: relative;
+  background: linear-gradient(180deg, #1a1612 0%, #15110d 100%);
+  color: #d5cfc6;
   padding: var(--kb-space) var(--kb-space-lg);
-  border-radius: var(--kb-radius-sm);
+  padding-top: 30px;
+  border-radius: var(--kb-radius);
   overflow-x: auto;
   font-family: var(--kb-font-mono);
   font-size: 12.5px; line-height: 1.6;
-  margin: var(--kb-space-sm) 0;
-  border: 1px solid rgba(255,255,255,0.06);
+  margin: var(--kb-space) 0;
+  border: 1px solid var(--kb-gold-deep);
+  box-shadow:
+    inset 0 1px 0 rgba(196, 154, 74, 0.12),
+    0 4px 20px rgba(21, 17, 13, 0.3);
+}
+/* 语言标签角标 */
+.msg-text :deep(pre.code-block.has-lang)::before {
+  content: attr(data-lang);
+  position: absolute; top: 8px; left: 14px;
+  font-size: 10.5px; font-weight: 600; letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: rgba(200, 211, 224, 0.45);
+  font-family: var(--kb-font-mono);
+  pointer-events: none;
+}
+/* 复制按钮（hover 显示） */
+.msg-text :deep(pre .code-copy-btn) {
+  position: absolute; top: 6px; right: 6px;
+  font-size: 11px; font-weight: 500;
+  padding: 3px 9px; border-radius: 6px;
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.06);
+  color: rgba(220,228,238,0.85);
+  cursor: pointer; opacity: 0;
+  transition: all 0.18s var(--kb-ease);
+}
+.msg-text :deep(pre:hover .code-copy-btn),
+.msg-text :deep(pre .code-copy-btn:focus) { opacity: 1; }
+.msg-text :deep(pre .code-copy-btn:hover) {
+  background: rgba(255,255,255,0.14);
+  color: #fff;
+  border-color: rgba(255,255,255,0.25);
 }
 .msg-text :deep(pre code) {
   background: transparent; color: inherit; padding: 0;
@@ -1722,13 +2287,25 @@ async function deleteHistory(sid: string) {
   color: var(--kb-fg-2);
 }
 .msg-text :deep(blockquote) {
-  border-left: 3px solid var(--kb-primary);
+  border-left: 3px solid var(--kb-gold);
   padding-left: var(--kb-space);
   margin: var(--kb-space-sm) 0;
   color: var(--kb-fg-3);
+  font-style: italic;
 }
 .msg-text :deep(strong) { color: var(--kb-fg); font-weight: 700; }
-.msg-text :deep(hr) { border: none; border-top: 1px solid var(--kb-border); margin: var(--kb-space) 0; }
+/* Ornamental horizontal rule — gold fleuron */
+.msg-text :deep(hr) {
+  border: none; text-align: center;
+  margin: var(--kb-space-lg) 0 var(--kb-space);
+  overflow: visible; height: 0;
+}
+.msg-text :deep(hr)::after {
+  content: '❦';
+  color: var(--kb-gold);
+  font-size: 16px;
+  opacity: 0.5;
+}
 .msg-text :deep(a) { color: var(--kb-primary); text-decoration: none; }
 .msg-text :deep(a:hover) { text-decoration: underline; }
 
@@ -1823,43 +2400,49 @@ async function deleteHistory(sid: string) {
 
 /* ═══ Thinking ═══ */
 .think-details {
-  background: var(--kb-bg-subtle);
-  border: 1px solid var(--kb-border);
+  background: linear-gradient(135deg, var(--kb-gold-soft) 0%, transparent 100%);
+  border: 1px solid var(--kb-gold-deep);
+  border-left: 3px solid var(--kb-gold);
   border-radius: var(--kb-radius-sm);
   padding: var(--kb-space-sm) var(--kb-space);
   transition: all var(--kb-dur-fast) var(--kb-ease);
 }
-.think-details:hover { border-color: var(--kb-border-strong); }
+.think-details:hover { border-left-color: var(--kb-primary); }
 .think-details summary {
   cursor: pointer; font-size: 12px; font-weight: 600;
-  color: var(--kb-fg-3);
+  font-family: var(--kb-font-serif); font-style: italic;
+  color: var(--kb-gold-deep);
   display: flex; align-items: center; gap: var(--kb-space-xs);
   user-select: none;
+  letter-spacing: 0.02em;
 }
 .think-body {
   font-size: 12.5px; color: var(--kb-fg-3);
   white-space: pre-wrap;
   padding: var(--kb-space-sm) 0 0;
-  border-top: 1px solid var(--kb-border);
+  border-top: 1px solid var(--kb-gold-deep);
   margin-top: var(--kb-space-sm);
   max-height: 320px; overflow-y: auto;
-  line-height: 1.6;
+  line-height: 1.65;
+  font-style: italic;
 }
 
-/* ═══ Tool cards ═══ */
+/* ═══ Tool cards — marginalia annotation style ═══ */
 .tool-card { border-radius: var(--kb-radius-sm); }
 .tool-head {
   display: flex; align-items: center; gap: var(--kb-space-sm);
   margin-bottom: 2px; flex-wrap: wrap;
 }
 .tool-badge {
-  font-size: 11.5px; font-weight: 700; letter-spacing: 0.2px;
-  padding: 3px 10px; border-radius: var(--kb-radius-sm);
-  background: var(--kb-amber-soft); color: var(--kb-amber);
+  font-size: 11px; font-weight: 700; letter-spacing: 0.3px;
+  padding: 3px 10px; border-radius: 4px;
+  background: var(--kb-amber-soft); color: var(--kb-gold-deep);
   font-family: var(--kb-font-mono);
+  border: 1px solid rgba(212, 175, 106, 0.3);
 }
 .tool-badge.mcp {
   background: rgba(124, 92, 255, 0.1); color: var(--kb-violet);
+  border-color: rgba(124, 92, 255, 0.25);
 }
 .tool-preview {
   font-size: 11.5px; color: var(--kb-fg-3);
@@ -1967,7 +2550,7 @@ async function deleteHistory(sid: string) {
 }
 
 /* ═══ Input area ═══ */
-.input-area { position: relative; flex-shrink: 0; }
+.input-area { position: relative; }
 .slash-menu {
   position: absolute; bottom: 100%; left: 0; right: 0;
   max-height: 260px; overflow-y: auto;
@@ -2007,21 +2590,38 @@ async function deleteHistory(sid: string) {
 .input-bar {
   display: flex; gap: var(--kb-space-sm); align-items: flex-end;
   background: var(--kb-bg-elevated);
-  border: 1px solid var(--kb-border);
-  border-radius: var(--kb-radius-lg);
-  padding: var(--kb-space-sm);
-  box-shadow: var(--kb-shadow-md);
+  border: 1.5px solid var(--kb-border);
+  border-radius: 26px;                 /* ChatGPT 风格大圆角胶囊 */
+  padding: 8px 8px 8px 14px;
+  box-shadow: var(--kb-shadow-sm);
   transition: border-color var(--kb-dur-fast) var(--kb-ease), box-shadow var(--kb-dur-fast) var(--kb-ease);
 }
 .input-bar:focus-within {
-  border-color: var(--kb-primary);
-  box-shadow: var(--kb-shadow-md), 0 0 0 3px rgba(37,99,235,0.08);
+  border-color: var(--kb-gold);
+  box-shadow: var(--kb-shadow-sm), 0 0 0 4px var(--kb-gold-glow);
 }
 .input-bar :deep(.ant-input) {
   flex: 1; border: none; box-shadow: none; background: transparent;
-  font-size: 14px; resize: none;
+  font-size: 15px; line-height: 1.5; resize: none; padding: 6px 4px;
 }
 .input-bar :deep(.ant-input:focus) { box-shadow: none; }
+/* 输入栏内的图标按钮统一为圆形（仅附件/KB 这类纯图标按钮） */
+.input-bar :deep(.ant-btn.att-btn),
+.input-bar :deep(.ant-btn.kb-btn) {
+  border-radius: 50%; width: 38px; height: 38px;
+  min-width: 38px; padding: 0;
+  display: inline-grid; place-items: center;
+  flex-shrink: 0;
+}
+/* 主操作按钮（发送）做成突出的主色圆形 */
+.input-bar :deep(.ant-btn-primary) {
+  border-radius: 50%; width: 40px; height: 40px; min-width: 40px; padding: 0;
+  display: inline-grid; place-items: center;
+  box-shadow: 0 2px 12px var(--kb-gold-glow), 0 2px 6px var(--kb-primary-glow);
+}
+.input-bar :deep(.ant-btn-primary[disabled]) {
+  box-shadow: none; opacity: 0.5;
+}
 
 /* ═══ Environment panel ═══ */
 .env-item {
@@ -2050,16 +2650,25 @@ async function deleteHistory(sid: string) {
   border: 1px solid rgba(255,255,255,0.06);
 }
 
-/* ═══ Scrollbar (chat messages) ═══ */
-.messages::-webkit-scrollbar { width: 8px; }
-.messages::-webkit-scrollbar-track { background: transparent; }
+/* ═══ Scrollbar (gold-themed, illuminated manuscript) ═══ */
+.messages::-webkit-scrollbar { width: 9px; }
+.messages::-webkit-scrollbar-track {
+  background: rgba(212, 175, 106, 0.06);
+  border-radius: var(--kb-radius-pill);
+}
 .messages::-webkit-scrollbar-thumb {
-  background: var(--kb-border-strong);
+  background: linear-gradient(180deg, var(--kb-gold-deep), var(--kb-gold));
   border-radius: var(--kb-radius-pill);
   border: 2px solid transparent; background-clip: content-box;
+  box-shadow: 0 0 6px rgba(212, 175, 106, 0.2);
 }
 .messages::-webkit-scrollbar-thumb:hover {
-  background: var(--kb-fg-mute); background-clip: content-box;
+  background: linear-gradient(180deg, var(--kb-gold), var(--kb-gold-bright));
+  background-clip: content-box;
+}
+.messages {
+  scrollbar-width: thin;
+  scrollbar-color: var(--kb-gold-deep) rgba(212, 175, 106, 0.08);
 }
 
 /* ═══ Workspace Manager ═══ */
@@ -2200,8 +2809,7 @@ async function deleteHistory(sid: string) {
 
 /* ═══ Streaming typewriter rendering ═══ */
 .streaming-msg {
-  border-color: var(--kb-emerald) !important;
-  border-left: 3px solid var(--kb-emerald);
+  border-left: 3px solid var(--kb-gold) !important;
   position: relative;
 }
 .streaming-msg .msg-text::after {
@@ -2210,30 +2818,31 @@ async function deleteHistory(sid: string) {
 }
 .stream-cursor {
   display: inline-block;
-  width: 8px; height: 18px;
-  background: var(--kb-emerald);
+  width: 7px; height: 17px;
+  background: linear-gradient(180deg, var(--kb-gold-bright), var(--kb-primary));
   margin-left: 2px;
   vertical-align: text-bottom;
-  border-radius: 1px;
+  border-radius: 2px;
   animation: blink-cursor 0.9s steps(2) infinite;
+  box-shadow: 0 0 8px var(--kb-gold-glow);
 }
 @keyframes blink-cursor {
   0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
+  51%, 100% { opacity: 0.3; }
 }
 
-/* ═══ Typing dot animation (no streaming text) ═══ */
+/* ═══ Typing dot animation — gold ink drops ═══ */
 .typing-msg {
-  background: var(--kb-bg-elevated);
-  border-color: var(--kb-emerald-soft);
+  background: transparent;
 }
 .typing-dots {
-  display: flex; gap: 5px; padding: 6px 0;
+  display: flex; gap: 6px; padding: 8px 0;
 }
 .typing-dots span {
-  width: 8px; height: 8px; border-radius: 50%;
-  background: var(--kb-emerald);
+  width: 7px; height: 7px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--kb-gold-bright), var(--kb-gold));
   animation: typing-bounce 1.3s ease-in-out infinite;
+  box-shadow: 0 0 6px var(--kb-gold-glow);
 }
 .typing-dots span:nth-child(2) { animation-delay: 0.18s; }
 .typing-dots span:nth-child(3) { animation-delay: 0.36s; }
@@ -2280,13 +2889,13 @@ async function deleteHistory(sid: string) {
   opacity: 0; transform: translateY(10px);
 }
 
-/* Message cards entrance animation (overrides kb-fade-up, makes new messages livelier) */
+/* Message cards entrance — gentle illuminated reveal */
 .msg {
-  animation: msg-in 0.35s var(--kb-ease) both;
+  animation: msg-in 0.45s var(--kb-ease-out) both;
 }
 @keyframes msg-in {
-  from { opacity: 0; transform: translateY(10px) scale(0.99); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from { opacity: 0; transform: translateY(12px); filter: blur(2px); }
+  to { opacity: 1; transform: translateY(0); filter: blur(0); }
 }
 .streaming-msg { animation: none; } /* Streaming bubble should not re-enter */
 
@@ -2298,6 +2907,17 @@ async function deleteHistory(sid: string) {
 .history-item :deep(.ant-list-item-extra) { margin-inline-start: 8px; }
 .history-item :deep(.ant-list-item-action) { margin-inline-start: 8px; }
 .history-item :deep(.ant-popconfirm) { /* Ensure delete button click bubble prevention */ }
+
+/* ═══ Footer wrapper (fixed at bottom) ═══ */
+/* ═══ Footer wrapper (own flex row — never overlaps messages) ═══ */
+.chat-footer-wrapper {
+  flex-shrink: 0;
+  display: flex; flex-direction: column;
+  gap: var(--kb-space-xs);
+  padding-top: var(--kb-space-xs);
+  border-top: 1px solid var(--kb-border);
+  background: var(--kb-bg);
+}
 
 /* ═══ Quick Actions ═══ */
 .quick-actions {
@@ -2314,19 +2934,22 @@ async function deleteHistory(sid: string) {
   transition: all var(--kb-dur-fast) var(--kb-ease);
   flex-shrink: 0; user-select: none;
 }
-.qa-pill:hover { border-color: var(--kb-primary); color: var(--kb-primary); background: var(--kb-primary-tint); }
+.qa-pill:hover { border-color: var(--kb-gold); color: var(--kb-gold-deep); background: var(--kb-gold-soft); }
 
-/* ═══ Message Queue Panel ═══ */
+/* ═══ Message Queue Panel (production-grade) ═══ */
 .queue-panel {
   flex-shrink: 0;
   background: var(--kb-amber-soft); border: 1px solid var(--kb-amber);
   border-radius: var(--kb-radius); padding: var(--kb-space-sm) var(--kb-space);
-  margin-bottom: var(--kb-space-sm);
 }
 .queue-head {
   display: flex; align-items: center; gap: var(--kb-space-sm);
   font-size: 12px; font-weight: 700; color: var(--kb-amber);
   margin-bottom: var(--kb-space-sm);
+}
+.queue-head-actions {
+  margin-left: auto;
+  display: flex; align-items: center; gap: 2px;
 }
 .queue-item {
   display: flex; align-items: center; gap: var(--kb-space-sm);
@@ -2334,16 +2957,58 @@ async function deleteHistory(sid: string) {
   border-bottom: 1px solid rgba(245,158,11,0.15);
 }
 .queue-item:last-child { border-bottom: none; }
-.queue-idx { font-weight: 600; color: var(--kb-fg-mute); min-width: 20px; }
+.queue-item.sending {
+  opacity: 0.7;
+}
+.queue-item.failed {
+  border-left: 3px solid var(--kb-rose);
+  padding-left: 8px;
+  background: rgba(244, 63, 94, 0.05);
+  border-radius: 0 var(--kb-radius-sm) var(--kb-radius-sm) 0;
+}
+
+/* Status dot */
+.queue-status-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  display: inline-block;
+}
+.queue-status-dot.pending { background: var(--kb-fg-mute); }
+.queue-status-dot.sending {
+  background: var(--kb-primary);
+  animation: queue-pulse 1s ease-in-out infinite;
+}
+.queue-status-dot.sent { background: var(--kb-emerald); }
+.queue-status-dot.failed { background: var(--kb-rose); }
+@keyframes queue-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+.queue-idx { font-weight: 600; color: var(--kb-fg-mute); min-width: 20px; font-size: 11px; }
 .queue-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--kb-fg-2); }
+.queue-context {
+  display: flex; gap: 3px; flex-shrink: 0;
+}
+.queue-tag { font-size: 10px !important; line-height: 16px !important; padding: 0 4px !important; }
+.queue-error-icon { color: var(--kb-rose); font-size: 13px; flex-shrink: 0; cursor: help; }
 .queue-actions { display: flex; gap: 2px; flex-shrink: 0; }
+
+/* Paused banner */
+.queue-paused-banner {
+  margin-top: var(--kb-space-sm);
+  padding: var(--kb-space-sm) var(--kb-space);
+  background: var(--kb-bg-subtle);
+  border: 1px dashed var(--kb-border);
+  border-radius: var(--kb-radius-sm);
+  font-size: 12px; color: var(--kb-fg-mute);
+  text-align: center;
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
 
 /* ═══ Mobile responsive ═══ */
 @media (max-width: 768px) {
   .claude-chat-page {
     padding: var(--kb-space-sm);
-    height: calc(100vh - 52px);
-    gap: var(--kb-space-sm);
   }
   .chat-header { flex-direction: column; gap: var(--kb-space-sm); }
   .chat-header h2 { font-size: 17px; }
@@ -2353,7 +3018,7 @@ async function deleteHistory(sid: string) {
   .toolbar :deep(.ant-select) { width: 100% !important; }
   .toolbar > .ant-input,
   .toolbar :deep(.ant-select) { max-width: 100%; }
-  .messages { padding: var(--kb-space-sm); border-radius: var(--kb-radius); }
+  .messages { padding: var(--kb-space-sm); border-radius: var(--kb-radius); margin: var(--kb-space-sm) 0; }
   .msg { padding: var(--kb-space-sm); }
 
   /* Mobile input area adaptation */
@@ -2377,6 +3042,18 @@ async function deleteHistory(sid: string) {
 @media (min-width: 769px) and (max-width: 1024px) {
   .claude-chat-page { max-width: 100%; padding: var(--kb-space); }
   .toolbar .workspace-selector { min-width: 200px; }
+}
+</style>
+
+<!-- ═══ 全局样式（非 scoped）：让书本 layout 的 .page-content 在渲染 claude-chat 时
+     变成 flex 列容器并禁止自身滚动。这样 .claude-chat-page 用 flex:1 拉伸填满，
+     绕过 .page-content 的 container-type 对子元素百分比高度的破坏。
+     :has() 限定只在包含 claude-chat 时生效，不影响其他页面。 ═══ -->
+<style>
+.page-content:has(.claude-chat-page) {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;   /* 外层不滚，滚动交给 .messages */
 }
 </style>
 

@@ -6,11 +6,11 @@
 
 <p align="center">
   <strong>Enterprise-Grade Document Intelligence & Agentic Knowledge Base</strong><br/>
-  <em>PDF Parsing · QDCVR Semantic Search · Neo4j Knowledge Graph · Experience Library · MCP-Native (76 tools) · 14 Claude Code Skills · Silent Headless Startup</em>
+  <em>PDF Parsing · QDCVR Semantic Search · Neo4j Knowledge Graph · Experience Library<br/>76 MCP Tools · 14 Claude Code Skills · Silent Headless Startup · Cross-Platform</em>
 </p>
 
 <p align="center">
-  <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick%20Start-3%20steps-blue?style=for-the-badge&logo=rocket" /></a>
+  <a href="#-three-install-methods"><img src="https://img.shields.io/badge/Quick%20Start-3%20methods-blue?style=for-the-badge&logo=rocket" /></a>
   <a href="https://github.com/kingdol666/rag-knowledge/stargazers"><img src="https://img.shields.io/github/stars/kingdol666/rag-knowledge?style=for-the-badge&color=yellow" /></a>
   <a href="#-features"><img src="https://img.shields.io/badge/Features-8%20pillars-9cf?style=for-the-badge" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" /></a>
@@ -18,7 +18,6 @@
   <a href="#-platforms"><img src="https://img.shields.io/badge/Platform-Win%20%7C%20Linux%20%7C%20macOS-lightgrey?style=for-the-badge" /></a>
   <a href="#-mcp-tools"><img src="https://img.shields.io/badge/MCP-76%20tools-blueviolet?style=for-the-badge&logo=code" /></a>
   <a href="#-skills"><img src="https://img.shields.io/badge/Skills-14-orange?style=for-the-badge&logo=openai" /></a>
-  <a href="#-plugin"><img src="https://img.shields.io/badge/Install-Plugin-brightgreen?style=for-the-badge&logo=claude" /></a>
 </p>
 
 <p align="center">
@@ -39,11 +38,10 @@
 
 ## 📌 Table of Contents
 
-- [🚀 Quick Start](#-quick-start)
+- [🚀 Three Install Methods](#-three-install-methods)
 - [✅ Prerequisites](#-prerequisites)
 - [💡 Why This Project](#-why-this-project)
 - [🌟 Features](#-features)
-- [📦 Install](#-install)
 - [🖥️ Usage](#️-usage)
 - [📋 CLI Reference](#-cli-reference)
 - [🔌 MCP Tools (76)](#-mcp-tools)
@@ -59,77 +57,201 @@
 
 ---
 
-## 🚀 Quick Start
+## 🚀 Three Install Methods
 
-> [!TIP]
-> **Two paths, same result.** Pick whichever fits you — both end with a fully running knowledge base.
+> [!IMPORTANT]
+> **Only the following three installation methods are supported.** Each method produces a fully working platform — pick the one that fits your workflow.
 
-### Path A — Claude Code plugin · *recommended*
+| Method | Best for | End result |
+|--------|----------|------------|
+| **[A. Claude Code Plugin](#method-a-claude-code-plugin-recommended)** · *recommended* | You use Claude Code and want everything global | 14 skills + 76 MCP tools available from **any directory**, any Claude Code session |
+| **[B. Skills Copy + Init Wizard](#method-b-skills-copy--init-wizard)** | You don't want a plugin but still want a guided setup | Skills copied to `~/.claude/skills/`; project cloned to your chosen path; `/knowledgebase-init` does the rest |
+| **[C. Git Clone + Local Project](#method-c-git-clone--local-project)** | You want full manual control, all contained in one directory | Everything lives inside the project directory; skills + MCP load only when Claude Code is opened here |
+
+---
+
+### Method A: Claude Code Plugin · *recommended*
+
+This is the fastest path. The plugin installs skills globally so they're available from **any Claude Code session, any directory, any project**.
 
 ```bash
-# 1. Install the plugin (one time, 30 seconds)
+# Step 1 — Install the plugin (one command, ~30 seconds)
 claude plugin marketplace add kingdol666/rag-knowledge
 claude plugin install rag-knowledge
 
-# 2. Just say:
+# Step 2 — Start the init wizard (just say it)
 "初始化知识库"
 # —or—
 "set up the knowledge base"
-
-# 3. Watch the 11-phase wizard run — it clones, installs, configures, and starts everything.
 ```
 
-<details>
-<summary><b>🧙 What happens behind the scenes</b></summary>
+The `knowledgebase-init` skill detects your OS, checks prerequisites, clones the project (or locates it in the plugin cache), installs all dependencies, walks you through 10 interactive config questions, registers `ragctl` globally, and starts all services — silently, with zero terminal windows.
 
-The `knowledgebase-init` skill runs:
+**What you get after completion:**
+- `ragctl` available from any terminal
+- 14 skills available from any Claude Code directory
+- 76 MCP tools available globally (plugin's `mcpServers` declaration provides kb-mcp everywhere)
+- Web UI at `http://localhost:6789` (dev) or `http://localhost:3000` (prod)
+- Claude Chat at `http://localhost:6789/claude-chat`
+
+<details>
+<summary><b>🧙 What happens in each phase</b></summary>
 
 | Phase | What it does |
 |-------|-------------|
 | 0 | Detects your OS (Windows / Linux / macOS) |
-| 1 | Checks prerequisites (uv, node, git, docker) |
-| 2–3 | Clones or updates the repo |
+| 1 | Checks prerequisites (uv, node, git, docker) — gives install commands if missing |
+| 2 | Auto-locates project (plugin cache → git root → CWD search → ask user + clone if needed) |
+| 3 | Confirms dependency installation (~6 GB total, 10–30 min) |
 | 4 | Runs `ragctl setup` — installs ALL dependencies + BGE-M3 model |
-| 5 | Asks 12 interactive config questions (mode, ports, storage, auth…) |
-| 6 | Writes `.env` with your choices |
-| 7 | Registers `ragctl` globally + `kb-mcp` as a global MCP server |
-| 8–9 | Starts Neo4j + all services (silently, no terminals) |
-| 10 | Runs full-chain validation (backend health, MCP tools, KB list, search) |
-| 11 | Prints a complete installation report |
-
-All guided, all silent. 14 skills + 76 MCP tools ready globally.
+| 5 | Writes `.env` from 10 interactive config questions |
+| 6 | Registers `ragctl` globally (`~/.local/bin`) |
+| 7 | (Optional) Registers kb-mcp globally in `~/.claude.json` — skipped by default since plugin already covers it |
+| 8 | Starts Neo4j docker container (if the user opted in) |
+| 9 | Starts all services silently |
+| 10 | Full-chain validation — backend health, MCP tools, KB list, search, graph health |
+| 11 | Installation report — ports, URLs, next steps |
 </details>
 
-### Path B — git clone · *classic*
+> [!NOTE]
+> **Plugin install already provides global MCP coverage.** The `mcpServers` field in `plugin.json` registers kb-mcp for all Claude Code sessions. Phase 7 of the init wizard asks whether you also want it in `~/.claude.json` — the default is "skip" because the plugin already handles it.
+
+---
+
+### Method B: Skills Copy + Init Wizard
+
+Use this when you don't want to install a plugin but still want a guided, interactive setup. The skills are copied manually to your global skills directory; the init skill then clones the project and configures everything.
 
 ```bash
-# 1. Clone
+# Step 1 — Clone the repository
+git clone https://github.com/kingdol666/rag-knowledge.git /tmp/rag-knowledge
+
+# Step 2 — Copy skills and agents to your global Claude Code directory
+mkdir -p ~/.claude/skills ~/.claude/agents
+
+# Copy all knowledgebase skills
+cp -r /tmp/rag-knowledge/.claude/skills/knowledgebase* ~/.claude/skills/
+
+# Copy the Archival agent
+cp /tmp/rag-knowledge/.claude/agents/knowledge-admin.md ~/.claude/agents/
+
+# Step 3 — Clean up the temp clone (optional)
+rm -rf /tmp/rag-knowledge
+
+# Step 4 — Start the init wizard (in any Claude Code session)
+"初始化知识库"
+# —or—
+"/knowledgebase-init"
+```
+
+The init skill will detect that the project code isn't on disk yet (skills-only installation), then ask you where to clone it. It handles:
+
+1. **Clone** — `git clone https://github.com/kingdol666/rag-knowledge.git <your-chosen-path>`
+2. **Setup** — `ragctl setup` (all dependencies + BGE-M3 model)
+3. **Configure** — 10 interactive questions (ports, storage, auth, Neo4j, model source…)
+4. **Global registration** — `ragctl install` (ragctl available from any terminal)
+5. **Optional MCP global** — writes kb-mcp to `~/.claude.json` → `mcpServers` (you choose Y/n)
+
+> [!NOTE]
+> After Phase 7 global MCP registration, **restart Claude Code** (or `/mcp` reconnect) so the new global MCP config takes effect.
+
+> [!WARNING]
+> After copying skills, **restart Claude Code** for the new skills to appear. The init wizard (`/knowledgebase-init`) is triggered by saying "初始化知识库" or "set up the knowledge base" in any Claude Code session.
+
+**What you get after completion:**
+- `ragctl` available globally from any terminal
+- Project code at your chosen path
+- Skills available globally (already copied to `~/.claude/skills/`)
+- MCP tools available globally (if you chose Y in Phase 7)
+
+---
+
+### Method C: Git Clone + Local Project
+
+For when you want everything contained in one directory — skills and MCP only load when Claude Code is opened **inside the project**.
+
+```bash
+# Step 1 — Clone the repository
 git clone https://github.com/kingdol666/rag-knowledge.git
 cd rag-knowledge
 
-# 2. One-click setup
-ragctl setup          # → uv + deps + model + .env (5–30 min first time)
+# Step 2 — One-click setup
+# Windows (PowerShell)
+./ragctl setup
 
-# 3. Start
-ragctl up             # → http://localhost:6789 (silent, no terminal windows)
+# Linux / macOS (Bash)
+./ragctl setup
+
+# Step 3 — Start all services
+# Windows
+./ragctl up
+
+# Linux / macOS
+./ragctl up
+
+# Step 4 — Open Claude Code in this directory
+claude
 ```
 
-### ✅ Verify everything
+When Claude Code starts inside `rag-knowledge/`, it auto-loads:
+- **`.mcp.json`** at the project root → kb-mcp MCP server (76 tools)
+- **`.claude/skills/*`** → all 14 knowledgebase skills
+- **`.claude/agents/knowledge-admin.md`** → Archival agent
+
+**Manual step-by-step (instead of `ragctl setup`):**
 
 ```bash
-ragctl status          # shows dev + prod side-by-side
-ragctl logs backend    # peek at recent backend activity
-curl http://localhost:8765/api/v1/health   # → {"status":"healthy"}
+# Install backend deps
+cd backend && uv sync && cd ..
+
+# Install kb-mcp deps
+cd kb-mcp && uv sync && cd ..
+
+# Install web deps
+cd web && npm install && cd ..
+
+# Create .env
+cp .env.example .env
+
+# (Optional) Pre-download BGE-M3 model
+./ragctl model
+
+# Start
+./ragctl up
 ```
 
-> [!NOTE]
-> **Opening Claude Code inside the project** auto-loads all 14 skills + `kb-mcp` MCP server (via `.mcp.json` at the project root). No manual MCP config needed.
+**What you get after completion:**
+- Everything lives inside the `rag-knowledge/` directory
+- Skills + MCP load automatically only when Claude Code is opened here
+- `ragctl` is available as `./ragctl` from the project root
+- Optionally: run `./ragctl install` to register `ragctl` globally
+
+---
+
+### ✅ Verify Everything
+
+```bash
+# Check all services (dev + prod side-by-side)
+ragctl status
+
+# Health checks
+curl http://localhost:8765/api/v1/health   # Backend (dev)
+curl http://localhost:6789                  # Web UI (dev)
+
+# MCP connectivity (run in Claude Code)
+kb_search query="test"
+
+# Open the UI
+start http://localhost:6789      # Windows
+open http://localhost:6789       # macOS
+xdg-open http://localhost:6789   # Linux
+```
 
 ---
 
 ## ✅ Prerequisites
 
-Only two tools are required upfront — `ragctl setup` installs everything else for you.
+Only these tools need to be installed before you begin — `ragctl setup` handles everything else.
 
 | Tool | Version | Required? | Notes |
 |------|---------|-----------|-------|
@@ -137,14 +259,15 @@ Only two tools are required upfront — `ragctl setup` installs everything else 
 | **Node.js** | ≥ 18 (22 recommended) | ✅ Required | `ragctl` CLI + Nuxt frontend |
 | **uv** | ≥ 0.7 | ⚡ Auto-installed | Python package manager — `ragctl setup` installs if missing |
 | **Python** | 3.12 | ⚡ via uv | uv manages the Python env; no manual Python install needed |
-| **Docker** | any | 📋 Optional | Only for Neo4j graph. Parsing/search/experience work without it |
+| **Docker** | any | 📋 Optional | Only for Neo4j graph. Parsing, search, and experience work without it |
 | **Rust** | stable | 📋 Optional | Only to build the Tauri desktop app |
 
+**Resource requirements:**
 - **Disk:** ~5 GB total
 - **Network:** First run downloads BGE-M3 (~2.2 GB) from HuggingFace. Default mirror is `hf-mirror.com` (fast inside China); set `HF_ENDPOINT=https://huggingface.co` outside China.
 
 <details>
-<summary><b>📦 What gets installed where</b></summary>
+<summary><b>📦 What gets installed and where</b></summary>
 
 | Component | Location | Size |
 |-----------|----------|------|
@@ -168,7 +291,7 @@ All paths configurable. Nothing touches system-wide Python or Node.
 | Traditional KB tools | RAG Knowledge Platform |
 |---|---|
 | Separate search, storage, and AI layers | **Unified**: document parsing → indexing → search → graph → experience — one pipeline |
-| Manual setup with complex CLI | **One command**: `ragctl setup` installs everything; or say "初始化知识库" |
+| Manual setup with complex CLI | **One command or one phrase**: `ragctl setup` or "初始化知识库" |
 | Hard to integrate with agents | **Native**: 76 MCP tools + 14 Claude Code skills, any MCP client works |
 | Separate dev/prod configurations | **Single config**: `config.yml` is the source of truth; `--appmode` switches at runtime |
 | Terminal windows clutter | **Silent headless**: all launchers start services with zero terminal windows |
@@ -196,65 +319,15 @@ All paths configurable. Nothing touches system-wide Python or Node.
 
 ---
 
-## 📦 Install
-
-### Primary: Claude Code plugin
-
-```bash
-claude plugin marketplace add kingdol666/rag-knowledge
-claude plugin install rag-knowledge
-```
-
-Then say: **"初始化知识库"** / **"set up the knowledge base"**
-
-The skill auto-registers `ragctl` globally (`ragctl install` → `~/.local/bin`) and `kb-mcp` globally (`~/.claude.json` → `mcpServers` with `RAG_PROJECT_ROOT`). After setup the platform works **from any directory, any Claude Code session** — 14 skills + 76 MCP tools + `ragctl` CLI.
-
-<details>
-<summary><b>Alternative: git clone + manual</b></summary>
-
-```bash
-git clone https://github.com/kingdol666/rag-knowledge.git
-cd rag-knowledge
-
-# One-click (recommended)
-ragctl setup
-
-# Or step-by-step
-cd backend && uv sync && cd ..
-cd kb-mcp  && uv sync && cd ..
-cd web && npm install && cd ..
-cp .env.example .env
-ragctl model   # pre-download BGE-M3 (optional — auto-downloads on first index)
-ragctl up
-```
-</details>
-
-<details>
-<summary><b>Tauri desktop console</b></summary>
-
-```bash
-# Build once
-cd src-tauri && cargo tauri build
-
-# Launch either way:
-ragctl desktop          # launches the built binary
-cargo tauri dev         # dev mode with hot-reload
-```
-
-The desktop console provides visual start/stop, dependency install, real-time logs, and a config editor — all sharing the same log files as `ragctl`.
-</details>
-
----
-
 ## 🖥️ Usage
 
 Four interfaces, one backend. Pick whichever fits your workflow.
 
 ### 1. Claude Code · *natural language*
 
-After `claude plugin install`, just describe what you want:
+After installation, just describe what you want in plain English or Chinese:
 
-```
+```text
 "ingest every PDF in ./papers into a new 'ML-research' KB"
   → knowledgebase-ingest (A0→A9 quality gates)
 
@@ -329,6 +402,7 @@ Open `http://localhost:6789` — browse KBs, search documents, explore the graph
 | `ragctl update --check` | Dry-run version compare only |
 | `ragctl install` | Register `ragctl` globally → `~/.local/bin` |
 | `ragctl desktop` · `ui` | Launch Tauri desktop console |
+| `ragctl clean` | Clean MinerU parse artifacts + caches (`--model` needs double confirm) |
 | `ragctl help` | All commands + flags |
 
 ---
@@ -372,7 +446,7 @@ All accessible via `mcp__kb-mcp__*` from Claude Code or any MCP client.
 | **knowledgebase-batch** | B1→B7 | High-volume batch operations |
 
 > [!NOTE]
-> All skills are **self-contained** — no external CLAUDE.md dependencies. 12 skills delegate to the Archival agent; `init` runs on the main agent.
+> All skills are **self-contained** — no external CLAUDE.md dependencies. 12 skills delegate to the Archival agent; `init` and `update` run on the main agent directly.
 
 ---
 
@@ -465,6 +539,8 @@ ragctl logs mineru --lines 200 # 200 lines of OCR output
 | Graph queries fail (search works) | Neo4j not running | `ragctl start neo4j` (requires Docker) |
 | BGE model download slow/fails | network to HuggingFace | set `HF_ENDPOINT=https://huggingface.co` |
 | Port already in use | previous service still running | `ragctl down` then `ragctl up` |
+| Skills not showing in /skills | Not in project dir (Method C) | `cd rag-knowledge` and restart Claude Code |
+| `ragctl` not found globally | `ragctl install` skipped | run `ragctl install` from project root |
 
 ---
 
@@ -500,6 +576,20 @@ Only for the Neo4j knowledge graph. Parsing, search, and experience all work wit
 Yes. The Web UI at `http://localhost:6789` is fully functional, and any MCP client can call the 76 tools.
 </details>
 
+<details>
+<summary><b>Which install method should I choose?</b></summary>
+
+- **Plugin** (Method A) — the easiest. Skills and MCP are global. Best for most users.
+- **Skills Copy** (Method B) — if you want to avoid plugins but still want global skills and a guided init.
+- **Local Project** (Method C) — if you want everything contained in one folder. Skills and MCP only load when Claude Code is opened inside the project.
+</details>
+
+<details>
+<summary><b>How do I update after installation?</b></summary>
+
+Say "更新知识库" or `/knowledgebase-update` in Claude Code, or run `ragctl update` from the terminal. The update uses `git pull --ff-only` by default — dirty worktrees are protected.
+</details>
+
 ---
 
 ## 📁 Project Structure
@@ -507,15 +597,17 @@ Yes. The Web UI at `http://localhost:6789` is fully functional, and any MCP clie
 ```
 rag-knowledge/
 ├── backend/              ← FastAPI + MinerU OCR engine
-├── web/                  ← Nuxt 3 + Ant Design Vue
+├── web/                  ← Nuxt 3 + Ant Design Vue (incl. Claude Chat with Agent SDK)
 ├── kb-mcp/               ← MCP server — 76 tools
 ├── command/              ← ragctl CLI (Node.js, js-yaml)
 ├── src-tauri/            ← Tauri v2 desktop application (Rust)
-├── .claude/              ← Claude Code skills (13) + Archival agent
+├── .claude/              ← Claude Code skills (14) + Archival agent
 ├── .claude-plugin/       ← Plugin + marketplace manifests
-├── .mcp.json             ← kb-mcp MCP auto-connect
+├── .mcp.json             ← kb-mcp MCP auto-connect (local project)
 ├── config.yml            ← Central configuration (single source of truth)
 ├── docker-compose.yml    ← Neo4j container
+├── .env.example          ← Environment variable template
+├── VERSION               ← Semantic version (used by ragctl version/update)
 ├── ragctl / ragctl.bat   ← CLI entry (Linux·macOS / Windows)
 ├── start.bat / start.sh  ← Silent launchers (delegate to ragctl up)
 └── README.md
@@ -529,6 +621,7 @@ rag-knowledge/
 |-----------|-----------|
 | Backend | Python 3.12 · FastAPI · MinerU OCR · ChromaDB |
 | Frontend | TypeScript · Nuxt 3 · Ant Design Vue · "Nocturne Atelier" theme |
+| Claude Chat | Vue 3 · Anthropic Claude Agent SDK (SSE streaming) · SQLite history · Production message queue |
 | MCP Server | Python · FastMCP · httpx |
 | CLI | Node.js · js-yaml |
 | Desktop | Rust · Tauri v2 · reqwest · tokio |
