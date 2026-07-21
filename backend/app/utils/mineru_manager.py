@@ -651,12 +651,6 @@ class MineruApiManager:
                 self.port = None
             return self.start(timeout=timeout)
 
-        # Closing the job handle kills anything still in it (defensive — the
-        # taskkill above already handled the main pid). It also frees the
-        # kernel object so the next start() creates a fresh job.
-        _close_job_handle(self._job_handle)
-        self._job_handle = None
-
     def health(self) -> dict:
         try:
             resp = httpx.get(f"{self._base_url}/health", timeout=5.0, trust_env=False)
