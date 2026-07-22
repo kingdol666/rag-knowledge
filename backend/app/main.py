@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import config
+from app.middleware.rate_limit import init_rate_limiter, rate_limit_middleware
 from app.api.routes import (
     health_router,
     parse_router,
@@ -155,6 +156,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# ── Rate limiting (sliding-window per IP; configurable via config.yml) ──
+init_rate_limiter(config._config.get("server", {}))
+app.middleware("http")(rate_limit_middleware)
 
 # Register routes
 app.include_router(health_router)

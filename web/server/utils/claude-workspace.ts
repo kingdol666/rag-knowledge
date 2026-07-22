@@ -14,7 +14,7 @@
 import Database from 'better-sqlite3'
 import { resolve, dirname } from 'path'
 import { fileURLToPath } from 'url'
-import { mkdirSync, existsSync } from 'fs'
+import { mkdirSync, existsSync, statSync } from 'fs'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const MONOREPO_ROOT = resolve(__dirname, '../../..')
@@ -117,7 +117,7 @@ export function validatePath(path: string): { valid: boolean; exists: boolean; i
   try {
     const exists = existsSync(path)
     if (!exists) return { valid: false, exists: false, isDirectory: false, error: '路径不存在' }
-    const stat = require('fs').statSync(path)
+    const stat = statSync(path)
     return { valid: true, exists: true, isDirectory: stat.isDirectory() }
   } catch (e: any) {
     return { valid: false, exists: false, isDirectory: false, error: e?.message || '验证失败' }

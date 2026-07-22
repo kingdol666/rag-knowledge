@@ -1,4 +1,4 @@
-﻿﻿<template>
+﻿<template>
   <div class="file-system-page">
     <!-- Animated background -->
     <div class="ambient-bg">
@@ -639,6 +639,7 @@ import { Modal, message } from 'ant-design-vue'
 import { useFileSystem } from '~/composables/useFileSystem'
 import { useFilePreview } from '~/composables/useFilePreview'
 import { useParseTaskQueue } from '~/composables/useParseTaskQueue'
+import { useFileSystemUpload } from '~/composables/useFileSystemUpload'
 import type { TreeNode } from '~/composables/useTreeFileSystem'
 
 const { t } = useI18n()
@@ -681,8 +682,6 @@ const queue = useParseTaskQueue()
 // Dialog state
 const showCreateFolderDialog = ref(false)
 const showEditDialog = ref(false)
-const showUploadFileDialog = ref(false)
-const showBatchUploadDialog = ref(false)
 const showParseDialog = ref(false)
 const showFullscreenPreview = ref(false)
 
@@ -691,14 +690,6 @@ const createParentId = ref<string | null>(null)
 const createFolderForm = ref({ name: '', description: '', isKnowledgeBase: true })
 const editingNode = ref<TreeNode | null>(null)
 const editForm = ref({ name: '', description: '' })
-const uploadFileList = ref<any[]>([])
-const uploadDescription = ref('')
-const uploadingFile = ref(false)
-const batchUploadFileList = ref<any[]>([])
-const batchUploadDescription = ref('')
-const batchFileDescriptions = ref<string[]>([])
-const batchUploading = ref(false)
-const batchUploadProgress = ref({ completed: 0, total: 0, currentFile: '' })
 const parsing = ref(false)
 const parseProgress = ref({ completed: 0, total: 0, currentFile: '' })
 const parseResults = ref<any[]>([])
@@ -799,6 +790,31 @@ const handleRefresh = async () => {
   }
 }
 
+const {
+  showUploadFileDialog,
+  uploadFileList,
+  uploadDescription,
+  uploadingFile,
+  showBatchUploadDialog,
+  batchUploadFileList,
+  batchUploading,
+  handleCreateFile,
+  handleBatchCreateFile,
+  handleUploadFile,
+  handleBatchUpload,
+  beforeUploadFile,
+  beforeBatchUploadFile,
+  closeUploadFileDialog,
+  closeBatchUploadDialog
+} = useFileSystemUpload({
+  createParentId,
+  selectedNode,
+  uploadFile,
+  uploadFiles,
+  fetchChildren,
+  handleRefresh
+})
+
 const handleSelect = async (keys: string[], info: any) => {
   if (keys.length > 0) {
     const nodeId = keys[0]
@@ -871,20 +887,6 @@ const handleCreateChild = (parent: TreeNode) => {
   showCreateFolderDialog.value = true
 }
 
-const handleCreateFile = (parent: TreeNode) => {
-  createParentId.value = parent.id
-  uploadFileList.value = []
-  showUploadFileDialog.value = true
-}
-
-const handleBatchCreateFile = (parent: TreeNode) => {
-  createParentId.value = parent.id
-  batchUploadFileList.value = []
-  batchUploadDescription.value = ''
-  batchFileDescriptions.value = []
-  showBatchUploadDialog.value = true
-}
-
 const handleEdit = (node: TreeNode) => {
   editingNode.value = node
   editForm.value = {
@@ -952,104 +954,6 @@ const handleSubmitCreateFolder = async () => {
     console.error('Create folder error:', error)
     message.error(error.message || t('fs.createFailed'))
   }
-}
-
-const handleUploadFile = async () => {
-  if (uploadFileList.value.length === 0) {
-    message.error(t('fs.selectFileRequired'))
-    return
-  }
-
-  uploadingFile.value = true
-  try {
-    const fileItem = uploadFileList.value[0]
-    const file = fileItem.originFileObj || fileItem
-
-    if (!file) {
-      message.error(t('fs.fileInvalid'))
-      return
-    }
-
-    await uploadFile(file, createParentId.value, uploadDescription.value)
-    message.success(t('fs.uploadSuccess'))
-    closeUploadFileDialog()
-    await handleRefresh()
-  } catch (error: any) {
-    console.error('Upload file error:', error)
-    message.error(error.message || t('fs.uploadFailed'))
-  } finally {
-    uploadingFile.value = false
-  }
-}
-
-const beforeUploadFile = (file: any) => {
-  return false
-}
-
-const closeUploadFileDialog = () => {
-  showUploadFileDialog.value = false
-  uploadFileList.value = []
-  uploadDescription.value = ''
-  createParentId.value = null
-}
-
-const handleBatchUpload = async () => {
-  if (batchUploadFileList.value.length === 0) {
-    message.error(t('fs.selectFileRequired'))
-    return
-  }
-
-  batchUploading.value = true
-  batchUploadProgress.value = { completed: 0, total: batchUploadFileList.value.length, currentFile: '' }
-
-  try {
-    const files = batchUploadFileList.value.map((item, index) => ({
-      file: item.originFileObj || item,
-      description: batchFileDescriptions.value[index] || batchUploadDescription.value || ''
-    }))
-
-    const results = await uploadFiles(
-      files,
-      createParentId.value,
-      (completed, total, currentFile) => {
-        batchUploadProgress.value = { completed, total, currentFile }
-      }
-    )
-
-    const successCount = results.filter(r => r.success).length
-    const failCount = results.length - successCount
-
-    if (failCount === 0) {
-      message.success(t('fs.uploadSuccess') + ` ${successCount} ` + t('fs.files'))
-    } else {
-      message.warning(t('fs.uploadSuccess') + `: ${successCount} ` + t('fs.files') + ` ${t('action.success')}, ${failCount} ` + t('fs.files') + ` ${t('action.error')}`)
-    }
-
-    closeBatchUploadDialog()
-
-    if (selectedNode.value && selectedNode.value.type === 'folder') {
-      await fetchChildren(selectedNode.value.id)
-    }
-  } catch (error: any) {
-    console.error('Batch upload error:', error)
-    message.error(error.message || t('fs.uploadFailed'))
-  } finally {
-    batchUploading.value = false
-    batchUploadProgress.value = { completed: 0, total: 0, currentFile: '' }
-  }
-}
-
-const beforeBatchUploadFile = (file: any) => {
-  return false
-}
-
-const closeBatchUploadDialog = () => {
-  showBatchUploadDialog.value = false
-  batchUploadFileList.value = []
-  batchUploadDescription.value = ''
-  batchFileDescriptions.value = []
-  batchUploadProgress.value = { completed: 0, total: 0, currentFile: '' }
-  createParentId.value = null
 }
 
 const handleSubmitEdit = async () => {

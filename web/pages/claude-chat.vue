@@ -580,6 +580,13 @@ import {
   formatSize, attachmentIcon as attIcon, attachmentTypeLabel as attTypeLabel,
   type Attachment,
 } from '~/utils/claude-tools'
+import {
+  saveQueueToStorage,
+  loadQueueFromStorage,
+  statusLabel,
+  MAX_QUEUE_RETRIES,
+  type QueueItem,
+} from '~/composables/useChatQueue'
 
 const cwd = ref('')
 const permissionMode = ref<PermissionMode>('bypassPermissions')
@@ -598,33 +605,11 @@ const processor = new MessageProcessor()
 // ⭐ Reasoning effort control
 const reasoningEffort = ref<'auto' | 'low' | 'medium' | 'high' | 'xhigh' | 'max'>('auto')
 
-// ⭐ Message queue — production-grade FIFO with context snapshots
-interface QueueItem {
-  id: string
-  text: string
-  status: 'pending' | 'editing' | 'sending' | 'sent' | 'failed'
-  created_at: number
-  /** Context snapshot at queue time (ensures consistency even if user changes settings later) */
-  cwd: string
-  permissionMode: PermissionMode
-  model: string
-  reasoningEffort: string
-  /** Original attachments (snapshot of names — actual files already uploaded at queue time) */
-  attachmentNames: string[]
-  /** Error message if status === 'failed' */
-  error?: string
-  /** Sent count increments each retry attempt */
-  retryCount: number
-}
 const messageQueue = ref<QueueItem[]>([])
 const queueEditText = ref('')
 let queueIdCounter = 0
 /** When true, queue auto-consumption is paused */
 const queuePaused = ref(false)
-/** Maximum auto-retries before marking as failed */
-const MAX_QUEUE_RETRIES = 3
-/** localStorage persistence key */
-const QUEUE_STORAGE_KEY = 'claude-chat-queue'
 
 // ⭐ Background sessions (running conversation continues after "New Chat")
 interface BgSession {
@@ -773,53 +758,6 @@ function queueAction(act: typeof QUICK_ACTIONS[0]) {
  * ═══════════════════════════════════════════════════════════════════
  */
 
-// Persistence helpers
-function saveQueueToStorage() {
-  try {
-    const serializable = messageQueue.value.map((item) => ({
-      id: item.id,
-      text: item.text,
-      status: item.status,
-      created_at: item.created_at,
-      cwd: item.cwd,
-      permissionMode: item.permissionMode,
-      model: item.model,
-      reasoningEffort: item.reasoningEffort,
-      attachmentNames: item.attachmentNames,
-      error: item.error,
-      retryCount: item.retryCount,
-    }))
-    localStorage.setItem(QUEUE_STORAGE_KEY, JSON.stringify(serializable))
-  } catch {
-    /* localStorage may be full or unavailable */
-  }
-}
-
-function loadQueueFromStorage() {
-  try {
-    const raw = localStorage.getItem(QUEUE_STORAGE_KEY)
-    if (!raw) return
-    const parsed = JSON.parse(raw)
-    if (!Array.isArray(parsed)) return
-    // Reset any 'sending' items back to 'pending' (crashed mid-send)
-    messageQueue.value = parsed.map((item: any) => ({
-      ...item,
-      status: item.status === 'sending' ? 'pending' : item.status,
-      retryCount: item.retryCount ?? 0,
-      attachmentNames: item.attachmentNames ?? [],
-      error: item.status === 'sending' ? '上次发送中断，重试中...' : item.error,
-    }))
-    // Restore ID counter
-    const maxNum = messageQueue.value.reduce((max: number, item: QueueItem) => {
-      const num = parseInt(item.id.replace('q_', ''), 10)
-      return Number.isNaN(num) ? max : Math.max(max, num)
-    }, 0)
-    queueIdCounter = maxNum
-  } catch {
-    /* Corrupt localStorage entry — ignore */
-  }
-}
-
 /**
  * Core: add a message to the end of the queue with full context snapshot.
  * If the queue is empty and no streaming is active, the item is consumed immediately
@@ -843,7 +781,7 @@ function addToQueue() {
   })
 
   input.value = ''
-  saveQueueToStorage()
+  saveQueueToStorage(messageQueue.value)
   antMessage.success(`已加入队列 (${queueCounts.value.pending + 1})`)
 }
 
@@ -859,7 +797,7 @@ function removeFromQueue(id: string) {
     return
   }
   messageQueue.value.splice(idx, 1)
-  saveQueueToStorage()
+  saveQueueToStorage(messageQueue.value)
 }
 
 /**
@@ -867,7 +805,7 @@ function removeFromQueue(id: string) {
  */
 function clearQueue() {
   messageQueue.value = messageQueue.value.filter((item) => item.status === 'sending')
-  saveQueueToStorage()
+  saveQueueToStorage(messageQueue.value)
   antMessage.success('队列已清空')
 }
 
@@ -901,7 +839,7 @@ function consumeQueue() {
   const item = messageQueue.value[nextIdx]
   item.status = 'sending'
   item.error = undefined
-  saveQueueToStorage()
+  saveQueueToStorage(messageQueue.value)
 
   // Restore the context snapshot captured at queue time
   const savedCwd = cwd.value
@@ -921,10 +859,10 @@ function consumeQueue() {
     sendRaw(item.text)
       .then(() => {
         item.status = 'sent'
-        saveQueueToStorage()
+        saveQueueToStorage(messageQueue.value)
         setTimeout(() => {
           messageQueue.value = messageQueue.value.filter((q) => q.id !== item.id)
-          saveQueueToStorage()
+          saveQueueToStorage(messageQueue.value)
         }, 800)
       })
       .catch((err) => {
@@ -937,7 +875,7 @@ function consumeQueue() {
           item.status = 'failed'
           antMessage.error(`队列消息发送彻底失败 (${MAX_QUEUE_RETRIES} 次重试均已失败): ${item.error}`)
         }
-        saveQueueToStorage()
+        saveQueueToStorage(messageQueue.value)
       })
       .finally(() => {
         cwd.value = savedCwd
@@ -972,7 +910,7 @@ function confirmEdit(item: QueueItem) {
     item.text = queueEditText.value.trim()
   }
   item.status = 'pending'
-  saveQueueToStorage()
+  saveQueueToStorage(messageQueue.value)
 }
 
 function cancelEdit(item: QueueItem) {
@@ -987,7 +925,7 @@ function sendQueueItem(item: QueueItem) {
     return
   }
   messageQueue.value = messageQueue.value.filter((q) => q.id !== item.id)
-  saveQueueToStorage()
+  saveQueueToStorage(messageQueue.value)
 
   // Restore context snapshot from this item
   const prevCwd = cwd.value
@@ -1016,7 +954,7 @@ function retryQueueItem(item: QueueItem) {
   item.status = 'pending'
   item.error = undefined
   item.retryCount = 0
-  saveQueueToStorage()
+  saveQueueToStorage(messageQueue.value)
   // If idle right now, send immediately
   if (!streaming.value) consumeQueue()
 }
@@ -1030,19 +968,8 @@ function retryAllFailed() {
       item.retryCount = 0
     }
   }
-  saveQueueToStorage()
+  saveQueueToStorage(messageQueue.value)
   if (!streaming.value) consumeQueue()
-}
-
-function statusLabel(status: string): string {
-  const map: Record<string, string> = {
-    pending: '等待发送',
-    sending: '发送中…',
-    sent: '已发送 ✓',
-    failed: '发送失败 ✗',
-    editing: '编辑中',
-  }
-  return map[status] || status
 }
 
 /** Queue counts by status */
@@ -1787,7 +1714,11 @@ onMounted(() => {
   loadWorkspaces()
   loadSkillCatalog()
   loadKbCatalog()
-  loadQueueFromStorage()
+  const restored = loadQueueFromStorage()
+  if (restored) {
+    messageQueue.value = restored.queue
+    queueIdCounter = restored.maxId
+  }
   nextTick(bindScrollListener)
   // If queue was restored from localStorage with pending items,
   // try consuming now (will only fire if streaming is idle)

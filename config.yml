@@ -11,6 +11,11 @@ server:
     - "*"
   auth:
     enabled: false
+  rate_limit:
+    enabled: true
+    window_sec: 60
+    max_requests: 120
+    heavy_max: 20
   dev:
     host: "0.0.0.0"
     backend_port: 8765
