@@ -32,9 +32,11 @@ class TwoStageSearchService:
             logger.info("_ensure_keyword_index: reading KBs from %s", storage_reader.root)
             kbs = storage_reader.list_knowledge_bases()
             logger.info("_ensure_keyword_index: found %d KBs", len(kbs))
-            if kb_id:
-                kbs = [kb for kb in kbs if kb["kb_id"] == kb_id or kb["path"] == kb_id]
-                logger.info("_ensure_keyword_index: filtered to %d KBs", len(kbs))
+            # K1 fix: always build the FULL index across all KBs (no kb_id filter).
+            # Hierarchical parent KBs' documents live in child KB collections;
+            # filtering at build time + the _keyword_built cache would miss child
+            # docs and cause stale indices across different kb_id queries.
+            # KB scoping is applied at search time via resolved kb_id sets.
 
             all_docs: list[dict] = []
             for kb in kbs:
@@ -44,6 +46,10 @@ class TwoStageSearchService:
                 for doc in docs:
                     doc_path = doc.get("path", "")
                     if not doc_path:
+                        continue
+                    # K1: skip child-KB container entries (directories listed as docs)
+                    full = storage_reader.root / doc_path
+                    if full.is_dir():
                         continue
                     content = storage_reader.read_document_content(doc_path, max_chars=_BM25_MAX_CONTENT_CHARS)
                     all_docs.append({
@@ -190,14 +196,19 @@ class TwoStageSearchService:
         # Ensure keyword index is built before searching
         self._ensure_keyword_index(kb_id)
 
-        # BM25 关键词检索
-        kw_results = keyword_index_service.search(query, top_k=top_k)
+        # K1 fix: resolve hierarchical parent KB to include all descendant KB docs
+        resolved_kb_ids: set[str] | None = None
+        if kb_id:
+            try:
+                from app.services.storage_reader_service import storage_reader
+                resolved_kb_ids = set(storage_reader.resolve_kb_ids_with_children(kb_id))
+            except Exception:
+                resolved_kb_ids = {kb_id}
+
+        # BM25 关键词检索 — K1 fix: pass kb_ids to BM25 for scoped scoring
+        # (correct IDF within KB scope, not post-filter that drops all results)
+        kw_results = keyword_index_service.search(query, top_k=top_k, kb_ids=resolved_kb_ids)
         for r in kw_results:
-            # 按 kb_id 过滤：如果指定了 kb_id，只保留属于该 KB 的文档
-            if kb_id:
-                doc_kb_id = r.get("kb_id", "") or self._infer_kb_id(r["doc_path"])
-                if doc_kb_id != kb_id and not r["doc_path"].startswith(kb_id):
-                    continue
             candidates[r["doc_path"]] = {
                 "doc_path": r["doc_path"], "score": r["score"] * kw_weight,
                 "name": r.get("name", ""), "source": "keyword",

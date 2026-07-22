@@ -53,20 +53,42 @@ class KeywordIndexService:
         logger.info("BM25 index built: %d docs, %d unique tokens",
                     self._doc_count, len(self._inverted))
 
-    def search(self, query: str, top_k: int = 10) -> list[dict[str, Any]]:
+    def search(self, query: str, top_k: int = 10,
+               kb_ids: set[str] | None = None) -> list[dict[str, Any]]:
+        """BM25 search. If kb_ids is given, only score documents whose kb_id
+        is in the set (K1 fix: correct IDF/TF within the KB scope, not post-filter)."""
         if not self._built or self._doc_count == 0:
             return []
         tokens = self._tokenize(query)
+
+        # Build the set of valid doc indices (all docs, or filtered by kb_id)
+        if kb_ids:
+            valid_docs = {i for i, d in enumerate(self._docs)
+                          if d.get("kb_id", "") in kb_ids}
+            if not valid_docs:
+                return []
+        else:
+            valid_docs = None
+
+        # Scoped document count for IDF (only valid docs count)
+        scoped_count = len(valid_docs) if valid_docs is not None else self._doc_count
+
         scores: dict[int, float] = defaultdict(float)
         k1, b = 1.5, 0.75
         for token in tokens:
             postings = self._inverted.get(token, [])
             if not postings:
                 continue
+            # Filter postings to valid docs
+            scoped_postings = [(di, tf) for di, tf in postings
+                               if valid_docs is None or di in valid_docs]
+            if not scoped_postings:
+                continue
             idf = math.log(
-                (self._doc_count - len(postings) + 0.5) / (len(postings) + 0.5) + 1
+                (scoped_count - len(scoped_postings) + 0.5)
+                / (len(scoped_postings) + 0.5) + 1
             )
-            for doc_idx, tf in postings:
+            for doc_idx, tf in scoped_postings:
                 dl = self._doc_len[doc_idx]
                 denom = tf + k1 * (1 - b + b * dl / self._avg_len)
                 score = idf * (tf * (k1 + 1)) / denom if denom > 0 else 0

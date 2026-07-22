@@ -397,13 +397,29 @@ class KbClient:
     # TAGS MANAGEMENT
     # ================================================================
 
-    async def kb_tags_list(self):
-        """List all registered tags."""
-        return await self._get("/api/kb/tags")
+    async def kb_tags_list(self, live=False, include_garbage=False):
+        """List all registered tags.
+        live=True rebuilds from documents first (purges orphans + garbage).
+        include_garbage=True returns raw registry including test-residue tags."""
+        params = {}
+        if live:
+            params["live"] = "true"
+        if include_garbage:
+            params["include_garbage"] = "true"
+        return await self._get("/api/kb/tags", **params)
 
     async def kb_tag_create(self, tag):
         """Register a new tag (dedup)."""
         return await self._post_json("/api/kb/tags", {"tag": tag})
+
+    async def kb_tag_remove(self, tag):
+        """Remove a single tag from the registry."""
+        return await self._request("DELETE", "/api/kb/tags", params={"tag": tag})
+
+    async def kb_tags_cleanup_orphans(self):
+        """Remove ALL orphan (unreferenced) + garbage tags in one call."""
+        return await self._request("DELETE", "/api/kb/tags", params={"cleanup_orphans": "true"})
+
 
     async def kb_doc_update_tags(self, kb_id, doc_path, tags):
         """Update a document's tags (string[])."""

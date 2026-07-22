@@ -112,6 +112,27 @@ class StorageReaderService:
                     queue.append(f.get("id"))
         return result
 
+    def resolve_kb_ids_with_children(self, kb_id: str) -> list[str]:
+        """Resolve a kb_id (UUID or path) to itself + all descendant kb_ids.
+
+        For hierarchical/parent KBs this returns the parent UUID plus every
+        child KB UUID, so search services can query all descendant collections
+        instead of only the parent's (K1 fix: parent KBs with docs in child KBs).
+        Non-hierarchical KBs return ``[kb_id]`` unchanged.
+        """
+        # Normalise kb_id to UUID form
+        resolved_uuid = kb_id
+        tree = self.read_tree_fs()
+        for f in tree.get("folders", []):
+            if f.get("isKnowledgeBase") and (f.get("id") == kb_id or f.get("path") == kb_id):
+                resolved_uuid = f.get("id", kb_id)
+                break
+        result = [resolved_uuid]
+        for skb in self.list_sub_kbs(kb_id):
+            if skb.get("kb_id") and skb["kb_id"] not in result:
+                result.append(skb["kb_id"])
+        return result
+
     def list_documents(self, kb_path: str) -> list[dict[str, Any]]:
         yml_path = self.root / kb_path / ".knowledge-base.yml"
         if not yml_path.exists():

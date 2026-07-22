@@ -104,6 +104,28 @@ class VectorService:
             return [c for c in cols if c.name.startswith(prefix)]
         except Exception:
             return []
+    def _resolve_hierarchical_collections(self, kb_id: str) -> list:
+        """Resolve kb_id to parent + all descendant KB collections (K1 fix).
+
+        Hierarchical parent KBs store documents in child KB collections.
+        This resolves the parent UUID to all descendant UUIDs and gathers
+        their ChromaDB collections so search covers the full subtree.
+        """
+        try:
+            from app.services.storage_reader_service import storage_reader
+            all_kb_ids = storage_reader.resolve_kb_ids_with_children(kb_id)
+        except Exception:
+            all_kb_ids = [kb_id]
+        cols = []
+        for kid in all_kb_ids:
+            col = self._safe_get_collection(kid)
+            if col is not None:
+                cols.append(col)
+        if not cols:
+            col = self._safe_get_collection(kb_id)
+            if col is not None:
+                cols.append(col)
+        return cols
 
     # ── 索引构建 ──────────────────────────────────────────────────
 
@@ -170,7 +192,7 @@ class VectorService:
         query_embedding = embedding_service.embed_one(query)
 
         if kb_id:
-            collections = [self._safe_get_collection(kb_id)]
+            collections = self._resolve_hierarchical_collections(kb_id)
         else:
             collections = self._all_kb_collections()
 
@@ -369,7 +391,7 @@ class VectorService:
             {doc_path: [{content, score, matched_doc_path, chunk_index}, ...], ...}
         """
         if kb_id:
-            collections = [self._safe_get_collection(kb_id)]
+            collections = self._resolve_hierarchical_collections(kb_id)
         else:
             collections = self._all_kb_collections()
 
@@ -453,7 +475,7 @@ class VectorService:
         result_map: dict[str, list[dict[str, Any]]] = {p: [] for p in doc_paths}
 
         if kb_id:
-            cols = [self._safe_get_collection(kb_id)]
+            cols = self._resolve_hierarchical_collections(kb_id)
         else:
             cols = self._all_kb_collections()
 

@@ -46,10 +46,13 @@ export class TagManagementService {
     await writeJsonAtomic(this.filePath, this.cache)
   }
 
-  /** Return all registered tags. */
-  async listTags(): Promise<string[]> {
+  /** Return all registered tags, excluding garbage patterns by default.
+   *  Pass { includeGarbage: true } to get the raw registry (for admin/debug). */
+  async listTags(options?: { includeGarbage?: boolean }): Promise<string[]> {
     const reg = await this.load()
-    return [...reg.tags]
+    if (options?.includeGarbage) return [...reg.tags]
+    // K3 fix: filter test-residue / section-heading / garbage tags at read time
+    return reg.tags.filter(t => !TagManagementService.isGarbageTag(t))
   }
 
   /** Remove a tag from the registry. */
@@ -62,14 +65,36 @@ export class TagManagementService {
     }
   }
 
-  /** Rebuild the registry by scanning all .knowledge-base.yml files. */
+  /** Rebuild the registry by scanning all .knowledge-base.yml files (garbage-filtered). */
   async rebuildTags(): Promise<string[]> {
     const { KnowledgeBaseYamlService } = await import('~/server/services/knowledge-base-yaml-service')
     const yamlService = new KnowledgeBaseYamlService(this.basePath)
     const allTags = await yamlService.getAllTags()
-    this.cache = { tags: allTags, updated_at: new Date().toISOString() }
+    const cleanTags = allTags.filter(t => !TagManagementService.isGarbageTag(t))
+    this.cache = { tags: cleanTags, updated_at: new Date().toISOString() }
     await this.save()
-    return allTags
+    return cleanTags
+  }
+
+  /** K3 fix: remove tags not referenced by any document (orphan cleanup).
+   *  Scans all .knowledge-base.yml once for live tags, then prunes the registry. */
+  async removeOrphanTags(): Promise<{ removed: string[]; kept: string[] }> {
+    const { KnowledgeBaseYamlService } = await import('~/server/services/knowledge-base-yaml-service')
+    const yamlService = new KnowledgeBaseYamlService(this.basePath)
+    const liveTags = new Set(await yamlService.getAllTags())
+    const reg = await this.load()
+    const removed: string[] = []
+    const kept: string[] = []
+    for (const tag of reg.tags) {
+      if (liveTags.has(tag) && !TagManagementService.isGarbageTag(tag)) {
+        kept.push(tag)
+      } else {
+        removed.push(tag)
+      }
+    }
+    this.cache = { tags: kept, updated_at: new Date().toISOString() }
+    await this.save()
+    return { removed, kept }
   }
 
   /** Validate a tags array: must be string[], each trim non-empty <= 50. */

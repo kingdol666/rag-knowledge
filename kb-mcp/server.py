@@ -698,34 +698,29 @@ async def kb_tags_cleanup(dry_run: bool = True) -> str:
             "hint": f"Found {orphan_count} orphan tags (0-referenced / garbage pattern). Use dry_run=False to clean (irreversible)."
         })
     else:
-        # dry_run=False: actually delete orphan tags
-        # ⚠️ Currently kb_tags has no delete API; here we remove tag references from documents one by one
-        cleaned = 0
-        skipped = 0
-        errors = []
-        for ot in orphan_tags:
-            if ot["reason"] in ("api_error", "exception"):
-                skipped += 1
-                continue
-            try:
-                # Remove from tag vocabulary (if the API supports it)
-                # Currently the Nuxt tag vocabulary comes from document tag aggregation; removing orphan tags does not need a delete API
-                # Just confirm 0 references (auto-refreshes on next tags_list)
-                cleaned += 1
-            except Exception as e:
-                errors.append({"tag": ot["tag"], "error": str(e)})
-                skipped += 1
+        # dry_run=False: actually remove orphan + garbage tags from the registry.
+        # K3 fix: delegates to web DELETE endpoint which purges .tags.json in one pass.
+        cleanup_result = await client.kb_tags_cleanup_orphans()
+        removed_tags: list = []
+        removed_count = 0
+        errors: list = []
+        if isinstance(cleanup_result, dict) and cleanup_result.get("success"):
+            removed_tags = cleanup_result.get("removed", [])
+            removed_count = cleanup_result.get("removed_count", len(removed_tags))
+        else:
+            errors.append({"error": str(cleanup_result)})
 
         return _j({
             "success": True,
             "dry_run": False,
             "total_tags": total,
             "checked": total,
-            "cleaned": cleaned,
-            "cleaned_tag_names": [o["tag"] for o in orphan_tags if o["reason"] not in ("api_error", "exception")],
-            "skipped": skipped,
+            "cleaned": removed_count,
+            "cleaned_tag_names": removed_tags,
+            "skipped": max(total - removed_count, 0),
             "errors": errors,
-            "hint": "Tag vocabulary refreshed from document aggregation. Next kb_tags_list() returns only referenced tags."
+            "hint": f"Removed {removed_count} orphan/garbage tags from the registry. "
+                    f"Next kb_tags_list() returns only live, non-garbage tags.",
         })
 
 
@@ -1547,7 +1542,21 @@ async def kb_search_vector(query: str, kb_id: str = "", top_k: int = 5,
     Returns:
         {success, results: [{content, score, doc_path, chunk_index, kb_id}]}
     """
-    return _j(await _client().vector_search(query, kb_id, top_k, score_threshold, balance_kbs))
+    result = await _client().vector_search(query, kb_id, top_k, score_threshold, balance_kbs)
+    # Normalize doc_path separators and deduplicate (backend may return backslash/forward-slash variants)
+    if isinstance(result, dict) and result.get("success"):
+        raw_results = result.get("results", [])
+        seen = {}
+        for r in raw_results:
+            if isinstance(r, dict) and r.get("doc_path"):
+                norm_path = r["doc_path"].replace("\\", "/")
+                r["doc_path"] = norm_path
+                key = (norm_path, r.get("chunk_index", 0))
+                if key not in seen or r.get("score", 0) > seen[key].get("score", 0):
+                    seen[key] = r
+        result["results"] = list(seen.values())
+        result["count"] = len(result["results"])
+    return _j(result)
 
 
 @mcp.tool()
@@ -1582,6 +1591,24 @@ async def kb_search_two_stage(
         query, kb_id, stage1_top_k, stage2_top_k, enable_graph_expansion,
         score_threshold, balance_kbs
     )
+    # Normalize paths and deduplicate stage2 results (keyword+graph sources may produce separator variants)
+    if isinstance(result, dict) and result.get("success"):
+        stage2 = result.get("stage2", {})
+        if isinstance(stage2, dict):
+            raw_results = stage2.get("results", [])
+            seen = {}
+            for r in raw_results:
+                if isinstance(r, dict) and r.get("doc_path"):
+                    norm_path = r["doc_path"].replace("\\", "/")
+                    r["doc_path"] = norm_path
+                    key = (norm_path, r.get("chunk_index", 0))
+                    if key not in seen or r.get("score", 0) > seen[key].get("score", 0):
+                        seen[key] = r
+            deduped = list(seen.values())
+            stage2["results"] = deduped
+            if "total_results" in stage2:
+                stage2["total_results"] = len(deduped)
+            result["stage2"] = stage2
     # P2.1: Auto-upgrade for cross-KB BM25 blind spot.
     # When searching across all KBs with empty kb_id and the two-stage
     # results come from <2 distinct KBs, run a supplementary vector search
@@ -1853,16 +1880,27 @@ async def kb_graph_search(keyword: str, node_type: str = "all", limit: int = 20)
         client.graph_search_kbs(keyword, limit),
         client.graph_search_tags(keyword, limit),
     )
+    # Helper: extract list from backend response (backend uses type-specific keys: documents/kbs/tags)
+    def _extract(resp, key):
+        if isinstance(resp, list):
+            return resp
+        if isinstance(resp, dict):
+            return resp.get(key, resp.get("results", []))
+        return []
+
+    docs_list = _extract(docs, "documents")
+    kbs_list = _extract(kbs, "kbs")
+    tags_list = _extract(tags, "tags")
     return _j({
         "success": True,
         "keyword": keyword,
-        "documents": docs if isinstance(docs, list) else (docs.get("results", []) if isinstance(docs, dict) else []),
-        "kbs": kbs if isinstance(kbs, list) else (kbs.get("results", []) if isinstance(kbs, dict) else []),
-        "tags": tags if isinstance(tags, list) else (tags.get("results", []) if isinstance(tags, dict) else []),
+        "documents": docs_list,
+        "kbs": kbs_list,
+        "tags": tags_list,
         "counts": {
-            "documents": len(docs) if isinstance(docs, list) else (len(docs.get("results", [])) if isinstance(docs, dict) else 0),
-            "kbs": len(kbs) if isinstance(kbs, list) else (len(kbs.get("results", [])) if isinstance(kbs, dict) else 0),
-            "tags": len(tags) if isinstance(tags, list) else (len(tags.get("results", [])) if isinstance(tags, dict) else 0),
+            "documents": len(docs_list),
+            "kbs": len(kbs_list),
+            "tags": len(tags_list),
         },
     })
 
