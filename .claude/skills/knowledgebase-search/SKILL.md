@@ -135,8 +135,7 @@ kb_search_two_stage(
 
 ## Step 2.5 — 文档级去重 + 硬阈值过滤 ⭐（精炼结果集）
 
-> 实测病灶：单次查询返回 55 条，`Self-RAG.md` 出现 5 次，大量 score<0.4 噪声未截断。
-> ⭐ `kb_search_vector` 已在 MCP 层自动归一化路径（反斜杠→正斜杠）并按 (doc_path, chunk_index) 去重。`kb_search_two_stage` 的 stage2 结果仍需手动去重。
+> ⭐ `kb_search_vector` 和 `kb_search_two_stage` 均已在 MCP 层自动归一化路径（反斜杠→正斜杠）并按 (doc_path, chunk_index) 去重。Agent 仍需执行文档级去重（同一文档只留最高分 chunk）。
 
 对 `stage2.results` 执行：
 

@@ -38,7 +38,7 @@
 
 ## 📌 Table of Contents
 
-- [🚀 Three Install Methods](#-three-install-methods)
+- [🚀 Four Install Methods](#-four-install-methods)
 - [✅ Prerequisites](#-prerequisites)
 - [💡 Why This Project](#-why-this-project)
 - [🌟 Features](#-features)
@@ -57,17 +57,17 @@
 
 ---
 
-## 🚀 Three Install Methods
+## 🚀 Four Install Methods
 
 > [!IMPORTANT]
-> **Only the following three installation methods are supported.** Each method produces a fully working platform — pick the one that fits your workflow.
+> **Each method produces a fully working platform — pick the one that fits your workflow.**
 
 | Method | Best for | End result |
 |--------|----------|------------|
 | **[A. Claude Code Plugin](#method-a-claude-code-plugin-recommended)** · *recommended* | You use Claude Code and want everything global | 14 skills + 76 MCP tools available from **any directory**, any Claude Code session |
-| **[B. Skills Copy + Init Wizard](#method-b-skills-copy--init-wizard)** | You don't want a plugin but still want a guided setup | Skills copied to `~/.claude/skills/`; project cloned to your chosen path; `/knowledgebase-init` does the rest |
-| **[C. Git Clone + Local Project](#method-c-git-clone--local-project)** | You want full manual control, all contained in one directory | Everything lives inside the project directory; skills + MCP load only when Claude Code is opened here |
-
+| **[B. OMP Global Install](#method-b-omp-global-install)** · *new!* | You use **Oh My Pi (OMP)** as your coding agent | Skills + agent + MCP tools available globally in every OMP session |
+| **[C. Skills Copy + Init Wizard](#method-c-skills-copy--init-wizard)** | You don't want a plugin but still want a guided setup | Skills copied to `~/.claude/skills/`; project cloned to your chosen path; `/knowledgebase-init` does the rest |
+| **[D. Git Clone + Local Project](#method-d-git-clone--local-project)** | You want full manual control, all contained in one directory | Everything lives inside the project directory; skills + MCP load only when opened here |
 ---
 
 ### Method A: Claude Code Plugin · *recommended*
@@ -118,7 +118,74 @@ The `knowledgebase-init` skill detects your OS, checks prerequisites, clones the
 
 ---
 
-### Method B: Skills Copy + Init Wizard
+### Method B: OMP Global Install
+
+> [!NOTE]
+> **[Oh My Pi (OMP)](https://github.com/can1357/oh-my-pi)** is an open-source coding agent harness with its own skill, agent, and MCP discovery system. This method makes the knowledge base available in **every OMP session, from any directory**.
+
+```bash
+# Step 1 — Clone the repository
+git clone https://github.com/kingdol666/rag-knowledge.git ~/rag-knowledge
+
+# Step 2 — Run the OMP global installer (one command)
+cd ~/rag-knowledge
+node scripts/install_omp.cjs
+```
+
+The installer copies to `~/.omp/agent/`:
+
+| Component | Destination | What it does |
+|-----------|------------|-------------|
+| **14 Skills** | `~/.omp/agent/skills/knowledgebase*/` | All knowledgebase skills available globally |
+| **Archival Agent** | `~/.omp/agent/agents/archival.md` | Deep OMP-native agent with 5-layer data model mastery |
+| **ragctl Command** | `~/.omp/agent/commands/ragctl.md` | `/ragctl` slash command in any OMP session |
+| **MCP Server** | `~/.omp/agent/mcp.json` | kb-mcp with 76 tools — uses `${RAG_PROJECT_ROOT}` (not hardcoded) |
+| **Env Var** | `~/.omp/agent/.env` | `RAG_PROJECT_ROOT=<your-path>` — OMP loads this at every session start |
+
+> [!TIP]
+> **No hardcoded paths.** The MCP config uses `${RAG_PROJECT_ROOT}/kb-mcp` — OMP expands it dynamically from `~/.omp/agent/.env` at every session start. If you move the project, just update `RAG_PROJECT_ROOT` in `~/.omp/agent/.env`.
+
+**Step 3 — Initialize the platform:**
+
+```bash
+# Option A: Guided init (recommended) — say this in any OMP session:
+"初始化知识库"
+# —or—
+"set up the knowledge base"
+
+# Option B: Manual CLI
+cd ~/rag-knowledge
+ragctl setup && ragctl up
+```
+
+**Step 4 — Restart OMP** so the global MCP config takes effect.
+
+<details>
+<summary><b>🔄 What makes the OMP agent different?</b></summary>
+
+The OMP-native `archival.md` agent is fully optimized for the OMP harness:
+
+- **5-layer data model** baked into the system prompt (Disk → .tree-fs.json → .knowledge-base.yml → ChromaDB → Neo4j)
+- **76-tool map** with correct OMP naming (`mcp__kb_mcp_*`)
+- **10 known gotchas** from real-world testing (path separators, hierarchy bugs, timeout workarounds)
+- **Consistency invariants** — which operations auto-sync and which need manual reindexing
+- `autoloadSkills: true` — auto-loads all 14 knowledgebase skills
+- `read-summarize: false` — returns raw file content (needed for content-driven decisions)
+
+</details>
+
+<details>
+<summary><b>🧹 Uninstall</b></summary>
+
+```bash
+node scripts/install_omp.cjs --uninstall
+```
+Removes all knowledgebase skills, the archival agent, ragctl command, and kb-mcp MCP entry from `~/.omp/agent/`. Other OMP configurations are left intact.
+
+</details>
+
+---
+### Method C: Skills Copy + Init Wizard
 
 Use this when you don't want to install a plugin but still want a guided, interactive setup. The skills are copied manually to your global skills directory; the init skill then picks up the project and configures everything.
 
@@ -164,7 +231,7 @@ The init skill detects the existing project at `~/rag-knowledge` (via its Phase 
 
 ---
 
-### Method C: Git Clone + Local Project
+### Method D: Git Clone + Local Project
 
 For when you want everything contained in one directory — skills and MCP only load when Claude Code is opened **inside the project**.
 
@@ -577,9 +644,22 @@ Yes. The Web UI at `http://localhost:6789` is fully functional, and any MCP clie
 <details>
 <summary><b>Which install method should I choose?</b></summary>
 
-- **Plugin** (Method A) — the easiest. Skills and MCP are global. Best for most users.
-- **Skills Copy** (Method B) — if you want to avoid plugins but still want global skills and a guided init.
-- **Local Project** (Method C) — if you want everything contained in one folder. Skills and MCP only load when Claude Code is opened inside the project.
+- **Claude Code Plugin** (Method A) — the easiest for Claude Code users. Skills and MCP are global.
+- **OMP Global** (Method B) — for **Oh My Pi** users. Skills + agent + MCP available in every OMP session.
+- **Skills Copy** (Method C) — if you want to avoid plugins but still want global skills and a guided init.
+- **Local Project** (Method D) — if you want everything contained in one folder. Skills and MCP only load when opened inside the project.
+</details>
+
+<details>
+<summary><b>What is OMP and how is it different from Claude Code?</b></summary>
+
+[Oh My Pi (OMP)](https://github.com/can1357/oh-my-pi) is an open-source coding agent harness. It uses a different skill/agent/MCP discovery system than Claude Code:
+
+- OMP discovers agents from `.omp/agents/` (not `.claude/agents/`)
+- OMP skills use `skill://` protocol references (not `Skill()`)
+- OMP MCP tools are named `mcp__kb_mcp_*` (underscores, not dashes)
+
+This project ships **both** Claude Code (`.claude/`) and OMP (`.omp/`) configurations. Use `scripts/install_omp.cjs` to install globally for OMP.
 </details>
 
 <details>
@@ -600,8 +680,10 @@ rag-knowledge/
 ├── command/              ← ragctl CLI (Node.js, js-yaml)
 ├── src-tauri/            ← Tauri v2 desktop application (Rust)
 ├── .claude/              ← Claude Code skills (14) + Archival agent
+├── .omp/                 ← OMP-native agent, commands, MCP config
 ├── .claude-plugin/       ← Plugin + marketplace manifests
-├── .mcp.json             ← kb-mcp MCP auto-connect (local project)
+├── scripts/              ← GPU detection, skill validation, OMP installer
+├── .mcp.json             ← kb-mcp MCP auto-connect (Claude Code local project)
 ├── config.yml            ← Central configuration (single source of truth)
 ├── docker-compose.yml    ← Neo4j container
 ├── .env.example          ← Environment variable template

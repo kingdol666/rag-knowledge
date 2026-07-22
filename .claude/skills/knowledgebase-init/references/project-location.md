@@ -5,8 +5,36 @@
 ## Signature (all methods verify this)
 
 A valid `<RAG_ROOT>` must contain all three: `config.yml` + (`ragctl` or `ragctl.bat`) + `backend/`.
+## Method 0 — OMP Global MCP Config (primary for OMP installs)
 
-## Method 1 — Plugin Cache Scan (primary for plugin installs)
+If the user installed via `scripts/install_omp.cjs`, the project path is embedded in `~/.omp/agent/mcp.json`:
+
+```bash
+# Linux/macOS — extract kb-mcp --directory arg from OMP global config
+OMP_MCP="$HOME/.omp/agent/mcp.json"
+[ -f "$OMP_MCP" ] && python3 -c "
+import json,sys
+c=json.load(open('$OMP_MCP'))
+args=c.get('mcpServers',{}).get('kb-mcp',{}).get('args',[])
+i=args.index('--directory') if '--directory' in args else -1
+print(args[i+1] if i>=0 else '',end='')
+" 2>/dev/null | while read d; do [ -d "$d" ] && echo "$(dirname "$d")"; done
+```
+
+```powershell
+# Windows
+$ompMcp = "$env:USERPROFILE\.omp\agent\mcp.json"
+if (Test-Path $ompMcp) {
+  $cfg = Get-Content $ompMcp -Raw | ConvertFrom-Json
+  $kbmcp = $cfg.mcpServers.'kb-mcp'
+  if ($kbmcp) {
+    $idx = [Array]::IndexOf($kbmcp.args, '--directory')
+    if ($idx -ge 0) { $kbDir = $kbmcp.args[$idx + 1]; if (Test-Path $kbDir) { Split-Path $kbDir -Parent } }
+  }
+}
+```
+
+ ## Method 1 — Plugin Cache Scan (primary for plugin installs)
 
 Claude Code clones plugins to `~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/`.
 

@@ -38,7 +38,7 @@
 
 ## 📌 目录
 
-- [🚀 三种安装方式](#-三种安装方式)
+- [🚀 四种安装方式](#-四种安装方式)
 - [✅ 前置要求](#-前置要求)
 - [💡 为什么选择这个项目](#-为什么选择这个项目)
 - [🌟 核心特性](#-核心特性)
@@ -57,16 +57,17 @@
 
 ---
 
-## 🚀 三种安装方式
+## 🚀 四种安装方式
 
 > [!IMPORTANT]
-> **仅支持以下三种安装方式。** 每种方式都能产生完整可用的平台 — 选择最适合你的。
+> **每种方式都能产生完整可用的平台 — 选择最适合你的。**
 
 | 方式 | 适合人群 | 最终结果 |
 |------|---------|---------|
 | **[A. Claude Code 插件](#方式-a-claude-code-插件推荐)** · *推荐* | 使用 Claude Code，希望全局可用 | 14 个技能 + 76 个 MCP 工具在**任意目录**、任意 Claude Code 会话中可用 |
-| **[B. Skills 复制 + 初始化向导](#方式-b-skills-复制--初始化向导)** | 不想装插件，但仍需要引导式安装 | Skills 复制到 `~/.claude/skills/`；项目 clone 到你指定路径；`/knowledgebase-init` 完成后续工作 |
-| **[C. Git Clone + 本地项目](#方式-c-git-clone--本地项目)** | 需要完全手动控制，所有内容在一个目录内 | 所有内容在项目目录内；skills + MCP 仅在此目录打开 Claude Code 时加载 |
+| **[B. OMP 全局安装](#方式-b-omp-全局安装)** · *新！* | 使用 **Oh My Pi (OMP)** 作为编码 Agent | Skills + Agent + MCP 工具在每个 OMP 会话中全局可用 |
+| **[C. Skills 复制 + 初始化向导](#方式-c-skills-复制--初始化向导)** | 不想装插件，但仍需要引导式安装 | Skills 复制到 `~/.claude/skills/`；项目 clone 到你指定路径 |
+| **[D. Git Clone + 本地项目](#方式-d-git-clone--本地项目)** | 需要完全手动控制，所有内容在一个目录内 | 所有内容在项目目录内；skills + MCP 仅在此目录打开时加载 |
 
 ---
 
@@ -118,7 +119,74 @@ claude plugin install rag-knowledge
 
 ---
 
-### 方式 B: Skills 复制 + 初始化向导
+### 方式 B: OMP 全局安装
+
+> [!NOTE]
+> **[Oh My Pi (OMP)](https://github.com/can1357/oh-my-pi)** 是一个开源编码 Agent 框架，拥有自己的 skill、agent 和 MCP 发现系统。此方式让知识库系统在**每个 OMP 会话、任意目录**中全局可用。
+
+```bash
+# 第一步 — Clone 仓库
+git clone https://github.com/kingdol666/rag-knowledge.git ~/rag-knowledge
+
+# 第二步 — 运行 OMP 全局安装器（一条命令）
+cd ~/rag-knowledge
+node scripts/install_omp.cjs
+```
+
+安装器会将以下内容复制到 `~/.omp/agent/`：
+
+| 组件 | 目标路径 | 作用 |
+|------|---------|------|
+| **14 个 Skills** | `~/.omp/agent/skills/knowledgebase*/` | 所有知识库技能全局可用 |
+| **Archival Agent** | `~/.omp/agent/agents/archival.md` | OMP 原生深度优化 Agent，内置 5 层数据模型 |
+| **ragctl 命令** | `~/.omp/agent/commands/ragctl.md` | 任意 OMP 会话中的 `/ragctl` 命令 |
+| **MCP 服务** | `~/.omp/agent/mcp.json` | kb-mcp 76 个工具 — 使用 `${RAG_PROJECT_ROOT}` 变量（非硬编码） |
+| **环境变量** | `~/.omp/agent/.env` | `RAG_PROJECT_ROOT=<你的路径>` — OMP 每次会话启动时自动加载 |
+
+> [!TIP]
+> **无硬编码路径。** MCP 配置使用 `${RAG_PROJECT_ROOT}/kb-mcp` — OMP 在每次会话启动时从 `~/.omp/agent/.env` 动态展开。如果项目移动了位置，只需修改 `~/.omp/agent/.env` 中的 `RAG_PROJECT_ROOT` 即可。
+
+**第三步 — 初始化平台：**
+
+```bash
+# 方式一：引导初始化（推荐）— 在任意 OMP 会话中说：
+"初始化知识库"
+# 或者
+"set up the knowledge base"
+
+# 方式二：手动 CLI
+cd ~/rag-knowledge
+ragctl setup && ragctl up
+```
+
+**第四步 — 重启 OMP**，让全局 MCP 配置生效。
+
+<details>
+<summary><b>🔄 OMP Agent 有什么不同？</b></summary>
+
+OMP 原生 `archival.md` Agent 针对 OMP 框架进行了深度优化：
+
+- **5 层数据模型** 内置在系统提示中（磁盘 → .tree-fs.json → .knowledge-base.yml → ChromaDB → Neo4j）
+- **76 工具地图** 使用正确的 OMP 命名（`mcp__kb_mcp_*`）
+- **10 条已知陷阱** 来自真实测试（路径分隔符、层级 KB 搜索 bug、超时规避）
+- **一致性不变量表** — 哪些操作自动同步、哪些需要手动重索引
+- `autoloadSkills: true` — 自动加载所有 14 个知识库技能
+- `read-summarize: false` — 返回原始文件内容（内容驱动决策需要）
+
+</details>
+
+<details>
+<summary><b>🧹 卸载</b></summary>
+
+```bash
+node scripts/install_omp.cjs --uninstall
+```
+移除所有 knowledgebase 技能、archival agent、ragctl 命令和 kb-mcp MCP 条目。其他 OMP 配置不受影响。
+
+</details>
+
+---
+### 方式 C: Skills 复制 + 初始化向导
 
 不想安装插件，但仍想要引导式交互安装时使用此方式。手动将 skills 复制到全局 skills 目录；初始化技能会识别已有项目并完成后续配置。
 
@@ -163,7 +231,7 @@ cp ~/rag-knowledge/.claude/agents/knowledge-admin.md ~/.claude/agents/
 
 ---
 
-### 方式 C: Git Clone + 本地项目
+### 方式 D: Git Clone + 本地项目
 
 所有内容在一个目录内 — skills 和 MCP 仅在**项目目录内**打开 Claude Code 时加载。
 
@@ -576,9 +644,22 @@ ragctl logs mineru --lines 200 # 200 行 OCR 输出
 <details>
 <summary><b>应该选择哪种安装方式？</b></summary>
 
-- **插件**（方式 A）—— 最简单。Skills 和 MCP 全局可用。适合大多数用户。
-- **Skills 复制**（方式 B）—— 不想用插件但仍要全局 skills 和引导式初始化。
-- **本地项目**（方式 C）—— 所有内容在一个文件夹里。Skills 和 MCP 仅在项目目录内打开 Claude Code 时加载。
+- **Claude Code 插件**（方式 A）—— Claude Code 用户最简单。Skills 和 MCP 全局可用。
+- **OMP 全局**（方式 B）—— **Oh My Pi** 用户。Skills + Agent + MCP 在每个 OMP 会话可用。
+- **Skills 复制**（方式 C）—— 不想用插件但仍要全局 skills 和引导式初始化。
+- **本地项目**（方式 D）—— 所有内容在一个文件夹里。Skills 和 MCP 仅在项目目录内打开时加载。
+</details>
+
+<details>
+<summary><b>OMP 是什么？和 Claude Code 有什么区别？</b></summary>
+
+[Oh My Pi (OMP)](https://github.com/can1357/oh-my-pi) 是一个开源编码 Agent 框架。它使用与 Claude Code 不同的 skill/agent/MCP 发现系统：
+
+- OMP 从 `.omp/agents/` 发现 agent（不是 `.claude/agents/`）
+- OMP 使用 `skill://` 协议引用（不是 `Skill()`）
+- OMP 的 MCP 工具命名为 `mcp__kb_mcp_*`（下划线，不是连字符）
+
+本项目同时提供 Claude Code（`.claude/`）和 OMP（`.omp/`）两套配置。使用 `scripts/install_omp.cjs` 全局安装 OMP 版本。
 </details>
 
 <details>
@@ -599,8 +680,10 @@ rag-knowledge/
 ├── command/              ← ragctl CLI（Node.js、js-yaml）
 ├── src-tauri/            ← Tauri v2 桌面应用（Rust）
 ├── .claude/              ← Claude Code skills（14）+ Archival agent
+├── .omp/                 ← OMP 原生 agent、命令、MCP 配置
 ├── .claude-plugin/       ← 插件 + marketplace 清单
-├── .mcp.json             ← kb-mcp MCP 自动连接（本地项目）
+├── scripts/              ← GPU 检测、技能验证、OMP 安装器
+├── .mcp.json             ← kb-mcp MCP 自动连接（Claude Code 本地项目）
 ├── config.yml            ← 中央配置（单一真相源）
 ├── docker-compose.yml    ← Neo4j 容器
 ├── .env.example          ← 环境变量模板

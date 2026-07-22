@@ -38,7 +38,7 @@ description: >
 |-------|------|---------|
 | **0** GPU 检测 | `node scripts/detect_gpu.cjs` → 确定 `TORCH_VARIANT` | [gpu-and-torch.md](references/gpu-and-torch.md) §检测 |
 | **1** 环境审计 | `ragctl check` → 分类缺失项 → 快路径判定 | 见下方"快路径" |
-| **2** 项目定位 | 4 方法自动检测 / clone | [project-location.md](references/project-location.md) |
+| **2** 项目定位 | 5 方法自动检测 / clone（OMP MCP config → plugin cache → git root → CWD → ask） | [project-location.md](references/project-location.md) |
 | **3** 核心依赖 | 仅装缺失的 uv/Node/Python3.12 | [incremental-install.md](references/incremental-install.md) §核心依赖 |
 | **4** 项目依赖 | 仅装缺失的 backend/web/mcp/cli + GPU torch | [gpu-and-torch.md](references/gpu-and-torch.md) §安装 + [incremental-install.md](references/incremental-install.md) §项目依赖 |
 | **5** 模型下载 | 仅下载缺失的 BGE-M3 / MinerU | [incremental-install.md](references/incremental-install.md) §模型 |
