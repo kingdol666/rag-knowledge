@@ -2341,6 +2341,179 @@ async function cmdClean(args) {
   return 0;
 }
 
+// `ragctl backup` / `ragctl restore` — Cross-platform backup & restore
+// (replaces the bash-only scripts/backup.sh and scripts/restore.sh).
+// Uses tar (available on Windows 10+, macOS, Linux) + docker for Neo4j.
+//
+// Usage:
+//   ragctl backup [dest] [--dry-run] [-y]     Backs up KB docs + ChromaDB + Neo4j
+//   ragctl restore <src> [--force] [-y]        Restores from a backup dir
+
+const NEO4J_CONTAINER = 'rag-knowledge-neo4j';
+
+// tar is available on Windows 10+ (bsdtar/libarchive), macOS (bsdtar), Linux (GNU tar).
+// Flags -czf / -xzf are portable across all three.
+function tarAvailable() {
+  try { execSync('tar --version', { stdio: 'ignore', timeout: 5000, shell: IS_WIN }); return true; }
+  catch { return false; }
+}
+
+// `ragctl backup [dest-dir] [--dry-run] [-y]`
+async function cmdBackup(args = []) {
+  const dryRun = args.includes('--dry-run') || args.includes('-n');
+
+  const positional = args.filter(a => !a.startsWith('-'));
+  const timestamp = new Date().toISOString().replace(/[:T]/g, '-').slice(0, 19);
+  const destDir = positional[0]
+    ? path.resolve(positional[0])
+    : path.join(PROJECT_ROOT, 'storage', 'backups', timestamp);
+
+  header('RAG Knowledge Platform — Backup');
+  console.log(`  ${_c(C.GRAY, '目标:')} ${destDir}`);
+  if (dryRun) console.log(`  ${_c(C.YELLOW, '[DRY-RUN] 仅扫描，不写入')}`);
+  console.log('');
+
+  if (!tarAvailable()) {
+    err('未找到 tar — Windows 10 1803+ 自带 bsdtar，Linux/macOS 默认有');
+    return 1;
+  }
+
+  if (!dryRun) fs.mkdirSync(destDir, { recursive: true });
+
+  let failCount = 0;
+
+  // ── 1. KB Documents + Metadata ────────────────────────────
+  step('1/3 — KB 文档 + 元数据 (tree-file-system)');
+  const treeFs = path.join(PROJECT_ROOT, 'storage', 'tree-file-system');
+  if (fs.existsSync(treeFs)) {
+    info(`源: storage/tree-file-system (${fmtSize(dirSizeBytes(treeFs))})`);
+    if (!dryRun) {
+      const archive = path.join(destDir, 'tree-fs.tar.gz');
+      const r = await spawnAsync('tar', ['-czf', archive, '-C', path.join(PROJECT_ROOT, 'storage'), 'tree-file-system'], { silent: true });
+      if (r.code === 0) ok(`tree-fs.tar.gz (${fmtSize(fs.statSync(archive).size)})`);
+      else { err(`打包失败: ${(r.stderr || '').slice(0, 200)}`); failCount++; }
+    } else info('[DRY-RUN] 将打包 tree-fs.tar.gz');
+  } else warn('storage/tree-file-system/ 不存在，跳过');
+
+  // ── 2. Vector Index (ChromaDB) ────────────────────────────
+  step('2/3 — 向量索引 (chroma_db)');
+  const chromaDir = path.join(PROJECT_ROOT, 'chroma_db');
+  if (fs.existsSync(chromaDir)) {
+    info(`源: chroma_db/ (${fmtSize(dirSizeBytes(chromaDir))})`);
+    if (!dryRun) {
+      const archive = path.join(destDir, 'chroma_db.tar.gz');
+      const r = await spawnAsync('tar', ['-czf', archive, '-C', PROJECT_ROOT, 'chroma_db'], { silent: true });
+      if (r.code === 0) ok(`chroma_db.tar.gz (${fmtSize(fs.statSync(archive).size)})`);
+      else { err(`打包失败: ${(r.stderr || '').slice(0, 200)}`); failCount++; }
+    } else info('[DRY-RUN] 将打包 chroma_db.tar.gz');
+  } else warn('chroma_db/ 不存在 — 先运行 kb_reindex');
+
+  // ── 3. Neo4j Graph Database ───────────────────────────────
+  step('3/3 — Neo4j 图数据库');
+  let neo4jRunning = false;
+  try {
+    const out = execSync('docker ps --format {{.Names}}', { encoding: 'utf8', timeout: 8000, shell: IS_WIN, stdio: ['pipe', 'pipe', 'pipe'] });
+    neo4jRunning = out.split('\n').some(n => n.trim() === NEO4J_CONTAINER);
+  } catch {}
+
+  if (neo4jRunning) {
+    if (!dryRun) {
+      const dumpResult = await spawnAsync('docker', ['exec', NEO4J_CONTAINER, 'neo4j-admin', 'database', 'dump', 'neo4j', '--to-path=/tmp', '--overwrite-destination=true'], { silent: true });
+      if (dumpResult.code === 0) {
+        const cpResult = await spawnAsync('docker', ['cp', `${NEO4J_CONTAINER}:/tmp/neo4j.dump`, path.join(destDir, 'neo4j.dump')], { silent: true });
+        if (cpResult.code === 0) ok(`neo4j.dump (${fmtSize(fs.statSync(path.join(destDir, 'neo4j.dump')).size)})`);
+        else warn('dump 已创建但复制失败');
+      } else {
+        warn(`Neo4j dump 失败 — 社区版不支持 database dump，可用 schema export 替代`);
+      }
+    } else info('[DRY-RUN] 将通过 docker exec 导出 neo4j.dump');
+  } else warn('Neo4j 容器未运行 — 图数据库未备份（可选）');
+
+  // ── Summary ─────────────────────────────────────────────
+  console.log('');
+  if (failCount > 0) { err(`备份完成，${failCount} 项失败`); return 1; }
+  ok(dryRun ? `[DRY-RUN] 无错误 → ${destDir}` : `备份完成!  位置: ${destDir}`);
+  return 0;
+}
+
+// `ragctl restore <backup-dir> [--force] [-y]`
+async function cmdRestore(args = []) {
+  const positional = args.filter(a => !a.startsWith('-'));
+  const skipConfirm = args.includes('--force') || args.includes('-y') || args.includes('--yes');
+  const backupDir = positional[0] ? path.resolve(positional[0]) : null;
+
+  header('RAG Knowledge Platform — Restore');
+  if (!backupDir || !fs.existsSync(backupDir)) {
+    err('用法: ragctl restore <backup-directory>');
+    info('示例: ragctl restore storage/backups/2026-07-14_12-00-00');
+    return 1;
+  }
+  console.log(`  ${_c(C.GRAY, '来源:')} ${backupDir}\n`);
+
+  // Pre-flight: services must be stopped
+  const { backend: bp, web: wp } = getServicePorts(getAppMode());
+  if ((await portInUse(bp)) || (await portInUse(wp))) {
+    err('服务仍在运行 — 恢复前先停止: ragctl down');
+    return 1;
+  }
+
+  if (!tarAvailable()) { err('未找到 tar'); return 1; }
+
+  if (!skipConfirm) {
+    warn('此操作将覆盖当前数据!');
+    if (!await confirm('确定继续恢复?')) { info('已取消'); return 0; }
+  }
+
+  let failCount = 0;
+
+  // 1. tree-file-system
+  step('1/3 — 恢复 KB 文档');
+  const treeArchive = path.join(backupDir, 'tree-fs.tar.gz');
+  if (fs.existsSync(treeArchive)) {
+    rmrf(path.join(PROJECT_ROOT, 'storage', 'tree-file-system'));
+    const r = await spawnAsync('tar', ['-xzf', treeArchive, '-C', path.join(PROJECT_ROOT, 'storage')], { silent: true });
+    if (r.code === 0) ok('tree-file-system 已恢复'); else { err('恢复失败'); failCount++; }
+  } else warn('无 tree-fs.tar.gz，跳过');
+
+  // 2. chroma_db
+  step('2/3 — 恢复向量索引');
+  const chromaArchive = path.join(backupDir, 'chroma_db.tar.gz');
+  if (fs.existsSync(chromaArchive)) {
+    rmrf(path.join(PROJECT_ROOT, 'chroma_db'));
+    const r = await spawnAsync('tar', ['-xzf', chromaArchive, '-C', PROJECT_ROOT], { silent: true });
+    if (r.code === 0) ok('chroma_db 已恢复'); else { err('恢复失败'); failCount++; }
+  } else warn('无 chroma_db.tar.gz，跳过');
+
+  // 3. neo4j
+  step('3/3 — 恢复 Neo4j 图数据库');
+  const neo4jDump = path.join(backupDir, 'neo4j.dump');
+  if (fs.existsSync(neo4jDump)) {
+    let neo4jRunning = false;
+    try {
+      const out = execSync('docker ps --format {{.Names}}', { encoding: 'utf8', timeout: 8000, shell: IS_WIN, stdio: ['pipe', 'pipe', 'pipe'] });
+      neo4jRunning = out.split('\n').some(n => n.trim() === NEO4J_CONTAINER);
+    } catch {}
+
+    if (neo4jRunning) {
+      const cpResult = await spawnAsync('docker', ['cp', neo4jDump, `${NEO4J_CONTAINER}:/tmp/neo4j.dump`], { silent: true });
+      if (cpResult.code === 0) {
+        info('手动完成恢复:');
+        info(`  docker exec ${NEO4J_CONTAINER} neo4j-admin database load neo4j --from-path=/tmp --overwrite-destination=true`);
+        info(`  docker restart ${NEO4J_CONTAINER}`);
+        ok('neo4j.dump 已就位');
+      } else warn('dump 复制失败');
+    } else {
+      warn('Neo4j 容器未运行 — 启动后手动恢复');
+      info(`  docker cp ${neo4jDump} ${NEO4J_CONTAINER}:/tmp/neo4j.dump`);
+    }
+  } else warn('无 neo4j.dump，跳过');
+
+  console.log('');
+  if (failCount > 0) { err(`恢复完成，${failCount} 项失败`); return 1; }
+  ok('恢复完成!  下一步: ragctl up → kb_graph_build 验证');
+  return 0;
+}
+
 // `ragctl desktop` / `ragctl ui` — launch the Tauri desktop console (the GUI
 // launcher). Prefers a compiled binary; falls back to `cargo tauri dev`.
 // The Tauri app starts/monitors services through the SAME shared log files
@@ -2755,6 +2928,12 @@ ${_c(C.CYAN, '清理缓存:')}
   clean --model              含模型缓存（BGE-M3 ~4GB + MinerU ~2-5GB，需重新下载，需二次确认）
   clean --force / -y         跳过确认提示
 
+${_c(C.CYAN, '备份 / 恢复 (跨平台 · 替代 scripts/backup.sh):')}
+  backup [dest]             备份 KB文档 + ChromaDB + Neo4j图数据库
+  backup --dry-run          仅扫描，不写入
+  restore <dir>             从备份目录恢复（覆盖当前数据，先 ragctl down）
+  restore <dir> --force     跳过确认提示
+
 ${_c(C.CYAN, '更新相关:')}
   version [--local] [--json]           查看本地/远程版本
   update [--check] [--force] [--yes]   检查并拉取最新版
@@ -2842,7 +3021,8 @@ async function main() {
 
       // Cache & artifact cleanup
       case 'clean': case 'prune': return await cmdClean(subArgs);
-
+      case 'backup': return await cmdBackup(subArgs);
+      case 'restore': return await cmdRestore(subArgs);
       default:
         err(`未知命令: ${command}`);
         showHelp();

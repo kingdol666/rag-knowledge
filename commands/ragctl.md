@@ -27,6 +27,8 @@ Execute ragctl commands. Use the appropriate shell for the platform:
 | `model` | Download BGE-M3 embedding model (~2.2GB). Supports `--source modelscope\|hf-mirror\|huggingface` |
 | `clean` | Clean caches — MinerU parse artifacts (default), logs, pycache, or model cache |
 | `install` | Register ragctl globally to `~/.local/bin` |
+| `backup` | Cross-platform backup: KB docs + ChromaDB + Neo4j graph. Supports `--dry-run` |
+| `restore` | Restore from backup directory (overwrites data, stops services first). Supports `--force` |
 | `version` | Show local + remote version |
 | `update` | Check GitHub for newer release and pull if available |
 

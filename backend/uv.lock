@@ -2013,7 +2013,7 @@ requires-dist = [
     { name = "python-dotenv", specifier = ">=1.2.2" },
     { name = "python-multipart", specifier = ">=0.0.32" },
     { name = "pyyaml", specifier = ">=6.0.3" },
-    { name = "sentence-transformers", specifier = ">=5.0.0,<6.0.0" },
+    { name = "sentence-transformers", specifier = ">=5.6.0,<6.0.0" },
     { name = "tokenizers", specifier = ">=0.22.0,<0.23.0" },
     { name = "torch", marker = "(platform_machine != 'x86_64' and sys_platform == 'linux') or (sys_platform != 'linux' and sys_platform != 'win32')", specifier = "==2.12.1" },
     { name = "torch", marker = "(platform_machine == 'x86_64' and sys_platform == 'linux') or sys_platform == 'win32'", specifier = "==2.12.1", index = "https://download.pytorch.org/whl/cu130" },
