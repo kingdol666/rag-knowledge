@@ -5,7 +5,7 @@ description: High-volume batch operations. B1→B7: bulk tag migration, bulk des
 
 # Knowledge Batch — High-Volume Operations
 
-**⭐ MCP 优先原则**：[references/skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则) — MCP 优先，禁止 terminal/HTTP 绕过
+**⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型）+ [MCP 优先原则](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则)（禁止 terminal/HTTP 绕过）
 
 **执行者：Archival agent — 必须委托 `Agent(subagent_type="archival", ...)` 执行**
 
@@ -70,19 +70,28 @@ description: High-volume batch operations. B1→B7: bulk tag migration, bulk des
 
 ## B3 — Directory → KB Mass Ingestion
 
+> **⭐ 质量门控强制要求**：B3 批量入库**不得绕过** Ingest 的质量门控。每个文档必须经过 Ingest A0-A7 的等效检查。
+> 批量是"量"的优化（并行/分批），不是"质"的降级。详见 [knowledgebase-ingest](../knowledgebase-ingest/SKILL.md) A0-A7。
+
 1. 调查目录：列出所有文件，按类型分类
-2. 文件类型路由：
+2. **A0 去重（每文件必做）**：`kb_search_vector(query=<文件名+前200chars特征>, score_threshold=0.85)` → ≥0.85 命中则跳过（已存在）
+3. 文件类型路由：
    - PDF/DOCX/PPTX/images → `parse_doc_batch(file_paths=[...], use_ocr=true)`（非阻塞）
    - MD/TXT/JSON/YAML/code → 直接读
    - Binary → `fs_upload_file(file_path, parent_id)`
-3. 等待所有解析任务完成 → 存储：`kb_doc_save_parsed(parent_id, task_id, description)`
-4. 每个新文档：`kb_index_document` + `kb_doc_update_tags`
-5. 验证：`kb_search_stats(kb_id)` — 确认 chunk count
+4. 等待所有解析任务完成 → **A2-Q 解析质量检查**（乱码/空正文/二进制残留 → 拒绝入库）
+5. 存储：`kb_doc_save_parsed(parent_id, task_id, description)`（解析文档必须用 save_parsed，禁止 kb_doc_create）
+6. **A3b 标签质量门控**：每个文档标签过 [tag-quality-rules.md](../knowledgebase-ingest/references/tag-quality-rules.md) T1黑名单+T2归一化+T3正文回查
+7. **A3c 描述质量门控**：每个文档描述过四要素（主体/方法/场景/数据）+ 内容回查
+8. 每个新文档：`kb_index_document` + `kb_doc_update_tags`
+9. **A6-V 索引验证**：`kb_search_stats(kb_id)` 确认 collection 正确 + chunks ≥ 1
+10. 验证：`kb_search_stats(kb_id)` — 确认 chunk count；**A7 抽样终检**（随机 20% 文档 kb_doc_read 确认内容/标签/描述一致）
 
 ### 目录入库注意事项
 - 解析文件 >10个时务必用 `parse_doc_batch`（单 task_id 管理）
 - 分批提交解析（20个一批），避免 MCP 工具超时
 - 任务队列状态的轮询间隔 ≥5秒
+- **质量门控不可跳过**：B3 是 Ingest A0-A7 的批量包装，不是简化版。跳过 A0 去重 → 重复文档堆积；跳过 A3b → 标签污染；跳过 A6-V → 向量漏索引
 
 ---
 

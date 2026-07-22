@@ -5,7 +5,7 @@ description: Knowledge graph build, query, and analysis for Neo4j-powered docume
 
 # Knowledge Graph — Build, Query, Analyze
 
-**⭐ MCP 优先原则**：[references/skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则) — MCP 优先，禁止 terminal/HTTP 绕过
+**⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型）+ [MCP 优先原则](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则)（禁止 terminal/HTTP 绕过）
 
 **执行者：Archival agent — 必须委托 `Agent(subagent_type="archival", ...)` 执行**
 
@@ -101,6 +101,8 @@ kb_graph_health()     # Neo4j availability check
 ## KB Overview
 `kb_graph_kb_overview(kb_id)` — doc count, sub-KBs, tag distribution, related KBs, top central docs.
 
+> **已知显示限制**：`related_kbs[].name` 和 `sub_kbs[].name` 返回 **UUID** 而非可读名称。用 `kb_catalog()` 回查 UUID→名称映射。
+
 ## Document-Centric Query
 | Task | Tool |
 |---|---|
@@ -108,6 +110,8 @@ kb_graph_health()     # Neo4j availability check
 | Related docs only | `kb_graph_document_related(doc_path, limit=20)` |
 | Docs by tag | `kb_graph_documents_by_tag(tag_name, limit=50)` |
 | Neighborhood exploration | `kb_graph_neighbors(node_id, node_type, depth=1)` |
+
+> **路径格式**：`kb_graph_*` 工具用**正斜杠**路径（如 `Energy-Batteries/lithium-ion-design.md`）。`kb_get_documents` 在 Windows 返回**反斜杠**路径（如 `Energy-Batteries\lithium-ion-design.md`）。跨工具传参时统一转正斜杠。
 
 ## Cross-KB Discovery
 ```
@@ -119,8 +123,11 @@ kb_graph_document_paths(doc_a, doc_b, max_depth=4)   # path between two docs
 ## Keyword Search
 ```
 kb_graph_search(keyword, node_type="all", limit=20)
-# node_type: "all"（默认，合并 document+kb+tag）/ "document" / "kb" / "tag"
+# node_type: "all"（默认，合并 document+kb+tag 三类结果）/ "document" / "kb" / "tag"
+# Returns: {documents:[...], kbs:[...], tags:[...], counts:{documents, kbs, tags}}
 ```
+- `node_type="all"` returns all three node types in one call (documents/kbs/tags arrays).
+- For precision, use a specific `node_type` ("document"/"kb"/"tag") to get only that type.
 
 ## Cleanup
 ```

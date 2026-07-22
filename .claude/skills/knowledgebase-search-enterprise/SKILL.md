@@ -6,7 +6,7 @@ description: >
 
 # Enterprise Multi-Strategy Retrieval — 企业级多策略精炼检索
 
-**⭐ MCP 优先原则**：[references/skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则) — MCP 优先，禁止 terminal/HTTP 绕过
+**⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型）+ [MCP 优先原则](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则)（禁止 terminal/HTTP 绕过）
 
 **执行者：Archival agent — 必须委托 `Agent(subagent_type="archival", ...)` 执行**
 - Archival 禁止：跳过企业级多策略检索流程、跳过内容裁决
@@ -165,5 +165,4 @@ A 向量 + B 标签 + C BM25（+ D 经验，如适用）→ 去重后 N 篇 → 
 ## 参考文件
 - **经验可信度模型** — P0: vector≥0.65∧content≥6∧rating≥4∧review≥1, P1: ≥0.45∧≥4, P2: ≥0.35∧≥3 | disputed降P2, unvetted降P1 | 短内容<50chars降P2
 - `knowledgebase-search` skill — 前置 QDCVR 标准流程（本 skill 在其 Step 5 触发升级）
-- MEMORY.md: `ingest-search-skill-upgrade-20260713.md` — 实测 10 病灶引用
-- MEMORY.md: `mcp-first-principle.md` — MCP 优先原则全库执行细则
+- [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) — MCP 优先原则全库执行细则（第五条）

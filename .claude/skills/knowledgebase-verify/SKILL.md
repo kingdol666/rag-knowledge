@@ -5,7 +5,7 @@ description: Knowledge base integrity and quality validation. V1→V9: three-way
 
 # Knowledge Verify — Integrity & Quality
 
-**⭐ MCP 优先原则**：[references/skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则) — MCP 优先，禁止 terminal/HTTP 绕过
+**⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型）+ [MCP 优先原则](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则)（禁止 terminal/HTTP 绕过）
 
 **执行者：Archival agent — 必须委托 `Agent(subagent_type="archival", ...)` 执行**
 
@@ -45,6 +45,8 @@ description: Knowledge base integrity and quality validation. V1→V9: three-way
 2. For each KB: `mcp__kb-mcp__kb_get_documents(kb_id)` — check each doc has a matching file on disk via path cross-reference.
 3. ⚠️ UUID级一致性由MCP工具原子操作保证（每次 CRUD 同步更新三层），V1 验证基于路径交叉引用而非UUID直接对比。
 4. Flag: phantom entries (metadata but no disk file), orphan files (disk but no metadata).
+
+> **已知正常现象**（非不一致）：`kb_get_documents()` 返回的条目数可能比 `kb_catalog` 的 `doc_count` 多——多出的条目是**子KB容器**（`file_type: knowledge-base`，非真实文档）。用 `fs_get_tree(max_depth=2)` 区分父子层级。
 
 ## V2 — Document Integrity
 
@@ -121,12 +123,17 @@ Score + key findings + single most impactful recommendation.
 
 ## V7 — Tag Health
 
-`mcp__kb-mcp__kb_tags_cleanup(dry_run=true)`
-
 检测 0 引用孤 tag 和章节标题/测试标签等垃圾模式。
+
+**首选方法（推荐）**：用 `kb_tags_list()` 获取全量标签，Agent 自行识别垃圾模式（章节标题、测试标签、特殊字符、过短标签）。
+- 优点：秒级返回，不触发超时
+- 识别规则：匹配 `Abstract`/`1 Introduction`/`References`/`3 Method` 等章节模式；`test-*`/`e2e-*`/`mcp-test-*` 等测试残留；长度 <3 chars 的碎片标签
+
+**备选方法（可能超时）**：`kb_tags_cleanup(dry_run=true)` — 遍历全量标签逐个查询引用数。
+- ⚠️ **已知超时风险**：标签数 >200 时，逐个查询引用的 HTTP 调用累积超过 30s MCP 超时。测试实测 444 tags 时 3 次超时。
+- 若需执行，建议通过 CLI: `node command/ragctl.js` 或直接调后端 API `/api/v1/tags/cleanup`
 - `dry_run=false` 时从词表中清理（不可逆，建议先 preview）
 - 黑名单保护：领域核心词（PET/DL/RAG/polymer 等）永不清理
-- 垃圾模式自动检测：章节标题、测试标签、特殊字符、过短标签
 
 ## V8 — Experience Health
 

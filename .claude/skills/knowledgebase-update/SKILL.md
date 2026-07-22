@@ -9,6 +9,8 @@ description: >
 ---
 
 # Knowledgebase Update — 版本检查与安全升级
+> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+76工具地图）
+
 
 **执行者：此技能由主 Agent 直接执行（不委托 Archival）**
 - update 是运维/安装类操作，需要直接跑 CLI / 展示版本对比

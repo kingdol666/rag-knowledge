@@ -1,5 +1,15 @@
 # Sub-KB Creation and Merge Guide
 
+> **⭐ 阈值权威源（单一真相源）**：本文件定义的文档数阈值被 Ingest A8 和 Organize O3a/O3b **共同引用**。
+> 修改此处阈值即同时更新两个 skill 的行为，避免不一致。
+>
+> | 阈值 | 值 | 用途 |
+> |------|-----|------|
+> | `SUB_KB_CHECK_THRESHOLD` | **≥6 篇** | 触发拆分/合并检查（Organize O3a 全库扫描时） |
+> | `SUB_KB_AUTO_SPLIT_THRESHOLD` | **≥8 篇 且 ≥2 子域** | Ingest A8 单文档入库时自动创建子KB |
+> | `SUB_KB_MIN_GROUP_SIZE` | **≥2 篇/子域** | 每个子领域最少文档数 |
+> | `MERGE_OVERLAP_THRESHOLD` | **≥60%** | 跨KB 合并的内容重叠阈值 |
+
 ## ═══════════════════════════════════════════
 # SIMILARITY DETECTION METHODOLOGY
 ## ═══════════════════════════════════════════

@@ -352,7 +352,7 @@ server:
 4. **kb-mcp API inconsistencies** — `kb_client` has known quirks: batch_delete requires full paths while delete/read accept bare names; `file_size` in `.knowledge-base.yml` can be stale after index updates; `name` field doesn't always sync with `path`.
 5. **Cross-platform** — `pyproject.toml` uses marker-based conditional sources; Win/Linux x86_64 pull cu130 (CUDA) from the PyTorch index, macOS and aarch64 fall back to PyPI (CPU/MPS). `required-environments` allows `win32`/`linux`/`darwin`, so `uv sync` works on all three. Linux uses `prctl(PR_SET_PDEATHSIG)` as the Job Object equivalent for MinerU subprocess cleanup; macOS falls back to process-group + atexit.
 6. **Submodule management** — `backend` and `web` are now part of the main repository (not git submodules). The legacy submodule configuration has been removed. The `kb-mcp` directory has always been part of the main repo.
-7. **Hierarchical KB search returns empty content** — 父KB（如高分子双向拉伸文献库）的 `kb_search_two_stage` 返回子KB容器条目，content 为空。子KB本身无向量chunk。**Workaround**：用 `kb_graph_kb_overview(kb_id)` 获取子KB UUID列表，在相关子KB内分别检索（见 knowledgebase-search Skill Step 1b）。
+7. **Hierarchical KB search returns empty content** — 父KB（如高分子双向拉伸文献库）的 `kb_search_two_stage` 返回子KB容器条目，content 为空。**正确 Workaround**（2026-07-22 实测验证）：子KB文档的向量chunk实际存储在**父KB collection**下，搜子KB UUID返回0结果。用 `kb_search_vector(kb_id=<父KB>)` 检索真实内容（不是 two_stage，不是搜子KB）。`kb_graph_kb_overview(kb_id)` 仅用于查看子KB结构，不作搜索入口（见 knowledgebase-search Skill Step 1b）。
 8. **Vector index metadata may be missing after initial index** — 部分KB的文档 `vector_index` 字段可能在索引后未写入 YAML 元数据（向量实际存在于 ChromaDB）。用 `kb_reindex(kb_id, force=true)` 修复。
 9. **Experience heuristic extraction produces low-quality candidates** — `experience_extract(mode="heuristic")` 的 key_lessons 可能返回章节标题。**推荐**：用 `mode="prepare"` → LLM 精炼。详见 knowledgebase-experience Skill E2a 质量门控。
 10. **Graph sub-KB nodes show UUID only** — `kb_graph_kb_overview` 返回的 sub_kbs 列表中 name 字段为 UUID 而非可读名称。
@@ -392,18 +392,23 @@ server:
 
 用户请求包含下表关键词（中/英/组合）时，**禁止自行处理**，必须调用对应的 knowledgebase 技能：
 
+> **⭐ 一致性验证**：修改本表或任何 skill 后，运行 `node scripts/validate_skills.cjs` 确保 8 项跨 skill 一致性检查通过（路由无冲突、阈值同步、引用可达、编号一致等）。
+
 | 关键词信号（命中任意即触发） | 必须调用的技能 |
 |---|---|
-| 知识库, KB, 知识库管理, 文档管理, 入库, 上传文档, 解析PDF, 导入, 存储, 保存到 kb, 放文档, 添加文档, 整理知识库, 清洗知识库, 盘点, 大扫除, store, upload, parse, ingest, save to KB, add doc, put document | `Skill("knowledgebase")` |
+| 知识库, KB, 知识库管理, 文档管理, 入库, 上传文档, 解析PDF, 导入, 存储, 保存到 kb, 放文档, 添加文档, store, upload, parse, ingest, save to KB, add doc, put document | `Skill("knowledgebase")` |
 | 搜索知识库, 检索, 查询, 帮我查, 问一下, 知识库问答, 搜, 哪里, 办法, 怎么解决, search, find, query, ask, retrieve, what is, how to, explain, RAG | `Skill("knowledgebase")` |
 | 查看, 展示, 浏览, 有什么, 列出来, 清单, 内容, list, show, overview, tree, browse, display | `Skill("knowledgebase")` |
 | 移动, 改名, 重命名, 删除文档, 删除KB, 合并, 更新内容, move, rename, delete, merge, update content | `Skill("knowledgebase")` |
+| 整理, 整理知识库, 清洗知识库, 盘点, 大扫除, 全面梳理, 重组, 归并, 归类, organize, restructure, cleanup, reorganize | `Skill("knowledgebase")` |
 | 批量, 所有文档, 全部, 全量, 统一, batch, bulk, mass, all documents, every KB | `Skill("knowledgebase")` |
-| 校验, 核对, 完整性, 检查, 一致性, 检测, verify, validate, integrity, health check, quality audit | `Skill("knowledgebase")` |
+| 校验, 核对, 完整性, 一致性, 检测, 审计, 审计知识库, verify, validate, integrity, health check, quality audit | `Skill("knowledgebase")` |
 | 经验, 经验库, 经验教训, 故障经验, 运维经验, 实践, 案例, 怎么处理, experience, lesson, best practice, previous experience | `Skill("knowledgebase")` |
 | 图谱, 知识图谱, 实体关系, graph, knowledge graph, neo4j, entity, build graph | `Skill("knowledgebase")` |
 | 初始化, 安装知识库, 部署知识库, 知识库安装, 配置知识库, init, setup, install, deploy, bootstrap, 知识库启动, 搭建知识库, getting started | `Skill("knowledgebase-init")` |
 | 更新知识库, 升级知识库, 检查更新, 拉取最新, 新版本, update KB, upgrade knowledge base, check for updates, ragctl update | `Skill("knowledgebase-update")` |
+
+> **⭐ 最长匹配优先**：`检查` 单独 → Verify；`检查更新` → Update（取最长匹配）。`总结经验` → Experience-Summarize；`总结知识库内容` → List。
 
 **例外条款**：仅当用户请求明确不涉及KB操作（如问代码实现、聊架构设计）时，可以不走此流程。有疑问时**默认路由到知识库指令**。
 

@@ -13,7 +13,7 @@ description: >
 
 # Experience — 全生命周期管理（E0-E12）
 
-**⭐ MCP 优先原则**：[references/skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则) — MCP 优先，禁止 terminal/HTTP 绕过
+**⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型）+ [MCP 优先原则](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则)（禁止 terminal/HTTP 绕过）
 
 **执行者：Archival agent — 必须委托 `Agent(subagent_type="archival", ...)` 执行**
 
@@ -147,49 +147,13 @@ Step 3 — 内容 ≥ 5 则直接作答（跳过文档检索）
 - `content_ruling` — 内容裁决摘要（"召回5→读4→合格2 P0:1 P1:1 P2:2"）
 - 每条经验含 `vector_score` + `content_score` + `tier` + `tier_reason`
 
-## E4d — 智能检索增强 (Phase 0, 2026-07-19) [IMPORTANT]
+## E4d — 智能检索增强 [IMPORTANT]
 
-### 推荐检索入口: experience_search_smart
-```
-experience_search_smart(query, top_k=8)
-  → 内部: 查询意图识别 → 自适应阈值 → 多路径召回 → 多轮降级 → 检索透明化
-```
+**推荐入口**: `experience_search_smart(query, top_k=8)` — 内部实现查询意图识别 + 自适应阈值（troubleshooting 0.55 / best_practice 0.45 / learning 0.35 / decision 0.50）+ 多轮降级 + 反例检测 + 透明化字段。
 
-### 查询意图自动识别与自适应阈值
-| 类型 | 阈值 | 策略 |
-|------|------|------|
-| troubleshooting (故障排查) | 0.55 | 宁缺毋滥，只要高质量 |
-| best_practice (最佳实践) | 0.45 | 中等门槛 |
-| learning (学习参考) | 0.35 | 可接受弱相关 |
-| decision (决策支持) | 0.50 | 需强证据 |
+详细机制（意图阈值表、3 轮降级逻辑、counter-example detection、rerank 权重、与 E4a 关系）见 [smart-search-and-cleanup.md](references/smart-search-and-cleanup.md) §E4d。
 
-### 多轮检索降级
-Round 1: 原始查询 + 自适应阈值 → 0 结果
-  → Round 2: 降阈值 30% → 0 结果
-    → Round 3: 再降 40% + 跳过内容验证 → 有结果则标注 degraded
-    → 始终 0 → 诚实声明 "无相关经验"
-
-### 检索透明化字段
-每条返回的经验包含:
-- `retrieval_paths`: 召回路径列表 (vector, keyword)
-- `match_details`: {domain_match, problem_match, coverages}
-- `ranking_reason`: 人类可读的排序理由
-
-### 反例检测 (Counter-Example Detection)
-`_content_verify` 增强: 提取 query 和 experience 的领域词，检测差异。
-若 domain_diff > 50% 且 overlap < 30% → 降分惩罚 (multiplier 0.5) → 防误报。
-
-### 智能重排序
-```
-experience_rerank(query, experiences_json)
-  → 多维度打分: 标签匹配(0.45) + 问题匹配(0.3) + 方案匹配(0.2) + 可信度(0.25)
-  → 输出排序后结果 + 每条排序理由
-```
-
-### 与 E4a 的关系
-- E4a Step 1 的底层调用 `experience_search_global` 不变（兼容性）
-- E4d 的 `experience_search_smart` 是推荐入口，在 `_global` 之上增加了意图识别+多轮降级+透明化
-- Agent 应优先使用 `experience_search_smart`，仅在需要完全手动控制阈值时使用 `_global`
+> Agent 应优先使用 `experience_search_smart`；仅在需手动控制阈值时用 `experience_search_global`。
 
 ## E5 — 可信度分级
 
@@ -346,58 +310,15 @@ experience_search_global(query) → P0 经验直接答（秒级）
 每月: experience_dashboard(kb_id) 评估覆盖度，补充缺口
 ```
 
-## E12 — 经验自动体检与清理（[IMPORTANT] Phase 1 新增）
+## E12 — 经验自动体检与清理 [IMPORTANT]
 
-### 触发时机
-- 每次 `knowledgebase-verify` V8 步骤触发（参见 [knowledgebase-verify](../knowledgebase-verify/SKILL.md)）
-- 每月定期维护
-- 删除文档后自动联动
+**触发**：每次 `knowledgebase-verify` V8 步骤 / 每月定期 / 删除文档后联动。
 
-### 自动检测流程
-```
-# Step 1: 全库 stale/orphan 检测
-experience_check_stale()   # 空 kb_id = 全库检查
-  → stale=0, orphan=0 → 健康
-  → stale>0 → Step 2
-  → orphan>0 → Step 3
+**流程**：`experience_check_stale()`（空 kb_id=全库）→ stale/orphan 检测 → 分类处理 → 测试污染清理。
 
-# Step 2: 处理 stale 经验
-for each stale_exp:
-    experience_sync_kb(kb_id)
-    # 重新从关联文档提取（如文档仍存在）
-    # 无法恢复 → 标记 needs_cleanup
+清理决策矩阵（orphan/stale/test污染/disputed 各条件对应动作）和详细检测流程见 [smart-search-and-cleanup.md](references/smart-search-and-cleanup.md) §E12。
 
-# Step 3: 处理 orphan 经验
-for each orphan_exp:
-    read_detail = experience_read(kb_id, exp_id)
-    if applied_count == 0 and rating == 0:
-        # 无人使用的 orphan → 直接删除
-        experience_delete(kb_id, exp_id)
-    elif applied_count > 0:
-        # 有价值但关联断开 → 更新 related_docs
-        experience_update(kb_id, exp_id, related_docs=[])
-    # 否则保留并标注 needs_sync
-
-# Step 4: 测试污染检测
-for each kb with experiences:
-    exp_list = experience_list(kb_id)   # ⚠️ 使用 list 而非 summary——summary 仅返回 top 5
-    for exp in exp_list where rating==0 and applied==0:
-        detail = experience_read(kb_id, exp.id)  # 获取 created_at 用于老化检查
-        age_days = (now - detail.created_at).days
-        if age_days > 7:
-            experience_delete(kb_id, exp.id)
-```
-
-### 清理决策矩阵
-
-| 条件 | 动作 |
-|------|------|
-| orphan + applied=0 + rating=0 | 直接删除 |
-| orphan + applied>0 | 清空 `related_docs`，保留经验内容 |
-| stale + 文档仍存在 | `experience_sync_kb` → 重新提取 |
-| stale + 文档已删除 | → 转为 orphan，按上表处理 |
-| test 污染 (rating=0, applied=0, age>7d) | 直接删除 |
-| disputed (review≥3, rating<2) | 标记降级，建议人工审查 |
+> ⚠️ 测试污染检测必须用 `experience_list`（非 summary，后者仅返回 top 5），获取 `created_at` 做 >7d 老化判断。
 
 ---
 
@@ -406,7 +327,7 @@ for each kb with experiences:
 - 入库流程参考：[knowledgebase-ingest](../knowledgebase-ingest/SKILL.md) — Ingest A7 终检、文档解析提交流程
 - 图谱联动参考：[knowledgebase-graph](../knowledgebase-graph/SKILL.md) — 知识图谱与经验的关联检索
 - 校验流程参考：[knowledgebase-verify](../knowledgebase-verify/SKILL.md) — 全库完整性校验（触发 E12 自动体检）
-- MEMORY.md: 参见项目 memory 目录下的 experience-enhancement-implemented 记录
+- 经验增强机制设计：E0-E12 完整生命周期（extract/drafts/stale/sync/dashboard/decay），分层架构（后端数据/MCP编排/Agent LLM）
 
 ## [WARNING] NEVER 清单
 

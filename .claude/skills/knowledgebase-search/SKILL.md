@@ -11,6 +11,8 @@ description: >
 ---
 
 # QDCVR — 查询驱动 · 内容裁决 · 门控精炼检索
+> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+76工具地图）
+
 
 **执行者：Archival agent — 必须委托 `Agent(subagent_type="archival", ...)` 执行**
 - Archival 禁止：跳过 Step 0 查询改写、跳过内容验证、跳过盲点声明
@@ -85,25 +87,24 @@ catalog = kb_catalog()    # 仅 [{kb_id, name, description, doc_count}]，contex
 
 ### Step 1b — 层次化KB穿透（父KB含子KB时必做）⭐
 
-> 实测病灶：父KB搜索（如 高分子双向拉伸文献库）返回子KB容器条目，内容一律为空——子KB无向量chunk。
+> ⚠️ **实测真相**（2026-07-22 端到端测试验证）：父KB的 `kb_search_two_stage` 返回子KB容器条目（content 一律为空）。**子KB文档的向量 chunk 实际存储在父KB collection 下**（搜子KB UUID 返回 0 结果，`kb_search_stats(子KB)` 显示 chunk_count=0）。
 
-**检测**：`kb_graph_kb_overview(kb_id)` → 若 `sub_kbs` 列表非空则说明是层次化KB（`kb_doc_catalog` 无 `type` 字段，无法直接区分文档与子KB容器）。
-
-**穿透策略**：
+**正确穿透策略**——用纯向量搜父KB（不是 two_stage，不是搜子KB）：
 ```
-# 1. 获取子KB列表
-overview = kb_graph_kb_overview(kb_id)  → {sub_kbs: [{kb_id, doc_count}]}
-
-# 2. 对每个子KB，读其 description 判断相关性
-for sub in sub_kbs:
-    docs = kb_get_documents(sub.kb_id)  → 看首条 description + 文档类型
-
-# 3. 在相关子KB内分别搜索（并行）
-kb_search_two_stage(query=..., kb_id=relevant_sub_kb_id, ...)
-
-# 4. 合并结果 → Step 2.5 去重
+# 父KB的 two_stage 返回空容器，但 kb_search_vector 能取到真实内容
+results = kb_search_vector(query=..., kb_id=<父KB_id>, score_threshold=0.35, top_k=10)
+# 结果的 doc_path 会带子KB路径前缀（如 "高分子...\\03_PET_BOPET\\xxx.md"），
+# content 字段有真实正文 —— 这就是穿透成功
 ```
-**优化**：子KB ≥5时，先用 `kb_doc_catalog(kb_id)` 的 description 筛选，只搜索 top 3-5 相关子KB。
+
+**辅助：了解子KB结构**（不用于搜索，仅用于了解组织）：
+```
+overview = kb_graph_kb_overview(kb_id=<父KB>)  → sub_kbs 结构 + 文档数
+# ⚠️ sub_kbs[].name 返回 UUID，用 kb_catalog() 回查可读名
+# ⚠️ 不要对 sub_kb_id 做 kb_search_two_stage / kb_search_vector —— 返回 0
+```
+
+> ❌ **错误做法**（旧文档误导）：获取子KB UUID 后在各子KB内分别搜索 → 全部返回 0，误判"无相关内容"。
 
 ## Step 2 — 向量召回（两阶段，平衡多库）
 
@@ -135,14 +136,15 @@ kb_search_two_stage(
 ## Step 2.5 — 文档级去重 + 硬阈值过滤 ⭐（精炼结果集）
 
 > 实测病灶：单次查询返回 55 条，`Self-RAG.md` 出现 5 次，大量 score<0.4 噪声未截断。
+> ⭐ `kb_search_vector` 已在 MCP 层自动归一化路径（反斜杠→正斜杠）并按 (doc_path, chunk_index) 去重。`kb_search_two_stage` 的 stage2 结果仍需手动去重。
 
 对 `stage2.results` 执行：
 
 ```
 1. 硬阈值过滤：丢弃 score < 0.35 的片段
-2. 文档级去重：同一 doc_path 只保留 score 最高的 1 个 chunk
+2. 文档级去重：同一 doc_path（归一化正斜杠后）只保留 score 最高的 1 个 chunk
 3. 短内容降级：chunk 正文 <50 chars → 直接丢弃；50-200 chars → 标记 ⚠️，打分时降一级
-4. 排序：按 score 降序，取 top 5 进入 Step 3（与 Step 3 的 "top 3-5" 对齐：Step 2.5 准备 5 个候选，Step 3 对前 3-5 个进行内容验证）
+4. 排序：按 score 降序，取 top 5 进入 Step 3
 ```
 **例外**：对比型查询（A vs B）保留 A 和 B 各自最高分 chunk。
 
