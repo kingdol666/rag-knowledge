@@ -553,7 +553,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, nextTick, onMounted, watch } from 'vue'
+import { ref, reactive, computed, nextTick, onMounted, onUnmounted, watch } from 'vue'
 import { parseMarkdown } from '~/utils/markdown'
 import { useMarkdownRenderer } from '~/composables/useMarkdownRenderer'
 import 'katex/dist/katex.min.css'
@@ -1725,6 +1725,22 @@ onMounted(() => {
   if (messageQueue.value.some(item => item.status === 'pending')) {
     nextTick(() => consumeQueue())
   }
+})
+
+onUnmounted(() => {
+  // Clean up all listeners and timers to prevent memory leaks.
+  // Every other large page (file-system, knowledge-graph, knowledge-search)
+  // has this hook — claude-chat was the only one missing it despite being
+  // the largest component (110KB) with the most event sources.
+  _boundScrollEl?.removeEventListener('scroll', onMessagesScroll)
+  _boundScrollEl = null
+  if (mermaidTimer) {
+    clearTimeout(mermaidTimer)
+    mermaidTimer = null
+  }
+  // Abort any active SSE stream + all background sessions
+  try { abortController.value?.abort() } catch { /* already done */ }
+  abortAllBgSessions()
 })
 
 /* * Load Skills catalog (with descriptions from SKILL.md frontmatter) */

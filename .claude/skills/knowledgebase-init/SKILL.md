@@ -47,7 +47,7 @@ description: >
 | **8** MCP 注册 | 可选，默认跳过 | [configuration.md](references/configuration.md) §Phase 8 |
 | **9** Neo4j | 已运行则跳过 | `docker compose up -d neo4j` |
 | **10** 服务启动 | 已 healthy 则跳过 | `ragctl up` |
-| **11** 全链验证 | health + MCP + torch match | 见下方"验证" |
+| **11** 全链验证 | health + MCP 连通性预检（[mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)）+ torch match | 见下方"验证" |
 
 > **Phase 2 跳过条件**：若 Phase 1 的 `ragctl check` 成功运行（CWD 已在项目内），说明 `<RAG_ROOT>` 已确定，跳过 Phase 2。
 
@@ -111,9 +111,11 @@ cd "<RAG_ROOT 或 CWD>" && ragctl check 2>&1
 curl -s http://localhost:<BACKEND_PORT>/api/v1/health   # → {"status":"healthy"}
 curl -s -o /dev/null -w "%{http_code}" http://localhost:<WEB_PORT>/   # → 200
 
-# MCP（如已连接）
-mcp__kb-mcp__backend_status()   # backend + MinerU
-mcp__kb-mcp__kb_list()          # KB 列表
+# MCP 连通性 + 服务预检（强制，用 kb-mcp MCP 工具执行标准 Pre-Flight）
+# 完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)：
+mcp__kb-mcp__kb_project_status()      # ready==true 才算双健康；ready==false 用 kb_project_start(wait=true) 拉起后回查
+mcp__kb-mcp__kb_catalog()             # 冒烟测试：确认 MCP↔backend 返回真实数据（非空、非错误）
+mcp__kb-mcp__backend_status()         # backend + MinerU 可用性
 
 # Torch GPU 最终确认
 node scripts/detect_gpu.cjs --verify-torch   # torch_match: ok

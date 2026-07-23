@@ -85,10 +85,25 @@ def _ports() -> dict:
 
 
 def _backend_url() -> str:
+    """Backend URL — re-read from env each call (config.py loads .env at import;
+    this stays correct even if env changes after module load)."""
+    url = os.environ.get("BACKEND_URL")
+    if url:
+        return url
+    port = os.environ.get("BACKEND_PORT")
+    if port:
+        return f"http://localhost:{port}"
     return getattr(_config, "BACKEND_URL", f"http://localhost:{_ports()['backend']}")
 
 
 def _web_url() -> str:
+    """Web URL — re-read from env each call."""
+    url = os.environ.get("WEB_URL")
+    if url:
+        return url
+    port = os.environ.get("WEB_PORT") or os.environ.get("FRONTEND_PORT")
+    if port:
+        return f"http://localhost:{port}"
     return getattr(_config, "WEB_URL", f"http://localhost:{_ports()['web']}")
 
 

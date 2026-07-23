@@ -34,6 +34,31 @@ if _RAG_ROOT:
 else:
     PROJECT_ROOT = KB_MCP_DIR.parent
 
+# ---- load .env into os.environ (before URL resolution) ----
+# Priority: existing env vars (shell / .mcp.json) > .env > config.yml.
+# Using setdefault so .env only fills in vars not already in the environment.
+
+def _load_dotenv() -> None:
+    """Load `.env` from PROJECT_ROOT into os.environ (setdefault — env wins over .env)."""
+    env_path = PROJECT_ROOT / ".env"
+    if not env_path.exists():
+        return
+    try:
+        with open(env_path, encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#") or "=" not in line:
+                    continue
+                key, _, val = line.partition("=")
+                key = key.strip()
+                val = val.strip().strip("\"'")
+                if key:
+                    os.environ.setdefault(key, val)
+    except Exception:
+        pass  # .env is best-effort; config.yml still works as fallback
+
+_load_dotenv()
+
 
 def resolve_path(*parts: str) -> str:
     """Resolve a relative path to absolute, anchored at the kb-mcp directory.
@@ -157,6 +182,6 @@ MINERU_URL = os.environ.get("MINERU_URL") or _default_mineru_url()
 # Set KB_AUTH_TOKEN in .env (or environment) to match server.auth.enabled=true on backend/web.
 AUTH_TOKEN = os.environ.get("KB_AUTH_TOKEN", "")
 
-# Timeouts (env-configurable, with sensible defaults)
-HTTP_TIMEOUT = int(os.environ.get("MCP_HTTP_TIMEOUT", "30"))
-PARSE_TIMEOUT = int(os.environ.get("MCP_PARSE_TIMEOUT", "300"))
+# NOTE: HTTP_TIMEOUT / PARSE_TIMEOUT live in kb_client/client.py (the single
+# source of truth — they are consumed there by KbClient). Do NOT re-declare
+# them here: the previous duplicate diverged (config had 300, client had 5000).

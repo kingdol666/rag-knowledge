@@ -929,7 +929,7 @@ const handleDelete = async (node: TreeNode) => {
 
 const handleSubmitCreateFolder = async () => {
   if (!createFolderForm.value.name.trim()) {
-    message.success(t('fs.nameRequired'))
+    message.error(t('fs.nameRequired'))
     return
   }
 

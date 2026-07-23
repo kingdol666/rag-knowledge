@@ -54,7 +54,7 @@ def _find_vector_similar_docs(doc_path: str, content: str, kb_id: str) -> list[d
         if not query:
             return []
         results = vs.search(query=query, kb_id=kb_id, top_k=3,
-                            score_threshold=0.35)
+                            score_threshold=config.vector_score_threshold)
         # 排除自身
         return [
             {"doc_path": r["doc_path"], "score": r["score"]}
@@ -71,7 +71,11 @@ router = APIRouter(prefix="/api/v1/search", tags=["Search"])
 
 @router.get("/debug-paths")
 async def debug_paths(kb_id: str = "", doc_path: str = "") -> dict[str, Any]:
-    """Debug: test path resolution logic."""
+    """Debug: test path resolution logic. Dev-mode only — exposes internal
+    storage paths, KB enumeration, and config internals that have no place in
+    a production deployment."""
+    if config.app_mode != "dev":
+        raise HTTPException(404, "Not found")
     kbs = storage_reader.list_knowledge_bases()
     kb_path = next(
         (kb["path"] for kb in kbs
@@ -461,9 +465,16 @@ async def delete_kb_vectors(kb_id: str, kb_path: str = "") -> dict[str, Any]:
     delete_kb 内部对不存在的 collection 静默处理，故可安全地对两个候选都调用。
     """
     candidates = list(dict.fromkeys([c for c in [kb_id, kb_path] if c]))  # 去重保序
+    # Use _get_vs() readiness guard (not the bare _vs singleton) so we don't
+    # trigger a lazy ChromaDB init when the service isn't ready — matching the
+    # sibling delete_document_vectors handler and all other search routes.
+    vs = _get_vs()
+    if not vs:
+        return {"success": True, "kb_id": kb_id, "kb_path": kb_path,
+                "cleaned": [], "note": "vector service not ready — nothing to delete"}
     for cand in candidates:
         try:
-            _vs.delete_kb(cand)
+            vs.delete_kb(cand)
             logger.info("Deleted vector collection for %s", cand)
         except Exception as e:
             logger.warning("delete_kb failed for %s: %s", cand, e)

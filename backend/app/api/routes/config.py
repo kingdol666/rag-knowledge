@@ -20,6 +20,7 @@ from pydantic import BaseModel
 
 from app.config import config
 from app.utils.paths import CONFIG_PATH, SHARED_CONFIG_PATH, ENV_PATH, PROJECT_ROOT
+from app.utils.atomic_io import atomic_write_text
 from app.api.routes.config_schema import CONFIG_SCHEMA, ENV_SCHEMA
 from app.api.deps.auth import verify_token
 
@@ -56,6 +57,31 @@ def _read_env_file(path: Path) -> dict[str, str]:
                 key, _, val = line.partition("=")
                 result[key.strip()] = val.strip()
     return result
+
+_SECRET_KEY_SUFFIXES = ("TOKEN", "PASSWORD", "SECRET", "KEY", "CREDENTIAL")
+
+
+def _is_secret_env_key(key: str) -> bool:
+    """True for env keys holding secrets (never safe to return verbatim on GET).
+
+    Driven by ENV_SCHEMA (any field flagged type=password) plus a suffix guard
+    (KB_AUTH_TOKEN, *_PASSWORD / *_SECRET / *_KEY / *_CREDENTIAL) so unknown
+    future keys are also protected. The GET /api/v1/config endpoint is
+    unauthenticated by design (local desktop console) — without redaction it
+    leaked KB_AUTH_TOKEN / NEO4J_PASSWORD / any API keys to any caller.
+    """
+    if not key:
+        return False
+    field = ENV_SCHEMA.get("fields", {}).get(key)
+    if isinstance(field, dict) and field.get("type") == "password":
+        return True
+    upper = key.upper()
+    return any(upper.endswith(s) for s in _SECRET_KEY_SUFFIXES)
+
+
+def _redact_env(env_data: dict[str, str]) -> dict[str, str]:
+    """Return a copy of env_data with secret values masked (key preserved for UI)."""
+    return {k: ("••••••" if v and _is_secret_env_key(k) else v) for k, v in env_data.items()}
 
 
 def _yaml_scalar(val: Any) -> str:
@@ -203,10 +229,8 @@ async def get_config() -> dict[str, Any]:
     # Effective values (after env override) for display
     effective = {
         "app_mode": mode,
-        "backend_port": os.environ.get("BACKEND_PORT") or str(config.server_port),
-        "frontend_port": os.environ.get("WEB_PORT") or os.environ.get("FRONTEND_PORT") or str(
-            combined.get("server", {}).get(mode, {}).get("frontend_port", "")
-        ),
+        "backend_port": str(config.server_port),
+        "frontend_port": config.frontend_port,
         "backend_url": os.environ.get("BACKEND_URL") or str(
             combined.get("server", {}).get(mode, {}).get("backend_url", "")
         ),
@@ -219,7 +243,7 @@ async def get_config() -> dict[str, Any]:
     return {
         "success": True,
         "config": combined,
-        "env": env_data,
+        "env": _redact_env(env_data),
         "schema": CONFIG_SCHEMA,
         "env_schema": ENV_SCHEMA,
         "effective": effective,
@@ -258,8 +282,7 @@ async def update_config(req: ConfigUpdateRequest) -> dict[str, Any]:
 
         if SHARED_CONFIG_PATH:
             yaml_content = _build_yaml(shared_data)
-            with open(SHARED_CONFIG_PATH, "w", encoding="utf-8") as f:
-                f.write(yaml_content)
+            atomic_write_text(SHARED_CONFIG_PATH, yaml_content)
             logger.info("Shared config.yml written to %s", SHARED_CONFIG_PATH)
 
         # 2. Merge and write backend/config.yml
@@ -270,8 +293,7 @@ async def update_config(req: ConfigUpdateRequest) -> dict[str, Any]:
             backend_data[section] = _deep_merge(existing_sec, new_sec)
 
         yaml_content = _build_backend_yaml(backend_data)
-        with open(CONFIG_PATH, "w", encoding="utf-8") as f:
-            f.write(yaml_content)
+        atomic_write_text(CONFIG_PATH, yaml_content)
         logger.info("Backend config.yml written to %s", CONFIG_PATH)
 
         # 3. Write .env file
@@ -289,17 +311,21 @@ async def update_config(req: ConfigUpdateRequest) -> dict[str, Any]:
                     merged_env[key] = val
 
             env_content = _build_env_file(merged_env)
-            with open(ENV_PATH, "w", encoding="utf-8") as f:
-                f.write(env_content)
+            atomic_write_text(ENV_PATH, env_content)
             logger.info(".env written to %s", ENV_PATH)
 
             # Apply env vars to current process
             for key, val in req.env.items():
                 if val:
                     os.environ[key] = val
-                elif key in os.environ and key not in ("APP_MODE",):
-                    # Don't delete APP_MODE, just clear optional ones
-                    pass
+                elif key in os.environ and key != "APP_MODE":
+                    # Empty value = user cleared it in the UI → remove from the
+                    # running process so it falls back to config.yml / default.
+                    # The previous `pass` here was dead code: it claimed to clear
+                    # optional vars but never did, so a UI clear never took effect
+                    # until a full restart. APP_MODE is intentionally preserved
+                    # (clearing it would flip the mode unexpectedly).
+                    os.environ.pop(key, None)
 
         # 4. Hot-reload config in memory
         config.reload()
@@ -331,7 +357,7 @@ async def reload_config() -> dict[str, Any]:
             "message": "Configuration reloaded successfully",
             "effective": {
                 "app_mode": config.app_mode,
-                "backend_port": os.environ.get("BACKEND_PORT") or str(config.server_port),
+                "backend_port": str(config.server_port),
                 "vector_enabled": config.vector_enabled,
                 "graph_enabled": config.graph_enabled,
             },

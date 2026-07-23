@@ -11,7 +11,7 @@
 #   docker compose down -v            # 停止并删除数据卷（重置密码/清空数据）
 #
 # 密码配置（单一来源）:
-#   读取 .env 中的 NEO4J_PASSWORD（默认 changeme，生产环境务必修改）。
+#   读取 .env 中的 NEO4J_PASSWORD（默认 123456，生产环境务必修改）。
 #   后端 config.yml 的 graph.password 也用 ${NEO4J_PASSWORD}，三者自动一致。
 #
 #   ⚠️ NEO4J_AUTH 仅在数据卷首次创建时生效。若要改密码：

@@ -611,8 +611,12 @@ const filteredDocs = computed(() => {
 
 // Methods
 const loadCatalog = async () => {
-  catalog.value = await fetchCatalog()
-  allTags.value = await fetchAllTags()
+  try {
+    catalog.value = await fetchCatalog()
+    allTags.value = await fetchAllTags()
+  } catch (err: any) {
+    antMessage.error(err?.message || '加载知识库目录失败')
+  }
 }
 
 /** Toggle expand/collapse of a KB in the left panel to reveal sub-KBs. */
@@ -638,13 +642,18 @@ const toggleKbExpand = async (kb: KbCatalogEntry, event?: Event) => {
 const selectKb = async (kb: KbCatalogEntry) => {
   activeKb.value = kb
   loading.value = true
-  const [subKbs, docs] = await Promise.all([
-    fetchSubCatalog(kb.kbId),
-    fetchDocuments(kb.kbId),
-  ])
-  subKbList.value = subKbs
-  documents.value = docs
-  loading.value = false
+  try {
+    const [subKbs, docs] = await Promise.all([
+      fetchSubCatalog(kb.kbId),
+      fetchDocuments(kb.kbId),
+    ])
+    subKbList.value = subKbs
+    documents.value = docs
+  } catch (err: any) {
+    antMessage.error(err?.message || '加载知识库失败')
+  } finally {
+    loading.value = false
+  }
 }
 
 /** Navigate into a sub-KB — push current KB to history for breadcrumb. */

@@ -130,6 +130,10 @@ Each sub-skill's SKILL.md must detect the scenario and delegate execution to the
 - 典型案例：`更新知识库` 同时命中"更新"(Update) + "知识库"(通用) → 取更长 → **Update**
 - 此规则防止短前缀关键词劫持更精确的长关键词
 
+### ⭐ 规则 7：Pre-Flight 不可省略（MCP 连通性 + 服务预检）
+- 任何子 Skill（ingest/search/manage/organize/verify/list/batch/experience/graph/search-enterprise）开始作业前，**必须先跑 Pre-Flight**：用 `mcp__kb-mcp__kb_project_status` 一探双检（MCP 已连接 + backend/web 双健康），未就绪则静默 `kb_project_start` 拉起，再冒烟测试确认连通，详见 [mcp-preflight-check.md](references/mcp-preflight-check.md)。
+>- MCP 未连接到本会话时（报 "No such tool"），子 Skill **禁止**硬跑 KB 操作，须通知用户重启 Claude Code（init/update 生命周期 skill 走 `ragctl` CLI 不受此约束）。
+
 ---
 
 ## 多场景路由示例

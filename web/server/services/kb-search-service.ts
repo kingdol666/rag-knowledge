@@ -72,16 +72,25 @@ export class KbSearchService {
   /** All knowledge bases (including sub-KBs). */
   async getCatalog(): Promise<KbCatalogEntry[]> {
     const meta = await this.readTreeFs()
+    // Count live files per KB folder (by id OR path) instead of trusting the
+    // denormalized documentCount, which can drift when docs are created with a
+    // path-string parentId. This self-heals any existing drift.
+    const norm = (p: string) => p.replace(/\\/g, '/').toLowerCase()
     return meta.folders
       .filter((f) => f.isKnowledgeBase)
-      .map((f) => ({
-        kbId: f.id,
-        name: f.name,
-        description: f.description || '',
-        documentCount: f.documentCount ?? 0,
-        path: f.path,
-        parentId: f.parentId ?? null,
-      }))
+      .map((f) => {
+        const liveCount = meta.files.filter(
+          (file) => file.parentId === f.id || (file.parentId && norm(file.parentId) === norm(f.path))
+        ).length
+        return {
+          kbId: f.id,
+          name: f.name,
+          description: f.description || '',
+          documentCount: liveCount,
+          path: f.path,
+          parentId: f.parentId ?? null,
+        }
+      })
   }
 
   /** Top-level knowledge bases (parentId is null). */
@@ -199,12 +208,43 @@ export class KbSearchService {
     }
   }
 
+  /** Tokenize a query into searchable terms.
+   *  - Latin/space-separated words: split on whitespace/punctuation.
+   *  - CJK (no word boundaries): emit 2-char bigrams so multi-char queries match
+   *    documents whose name/description contain those characters as substrings.
+   *  Keeps this metadata-only search useful for multi-term and CJK queries while
+   *  still never touching document bodies (full-text search is kb_search_two_stage). */
+  private tokenizeQuery(q: string): string[] {
+    const tokens: string[] = []
+    // Latin runs ≥2 chars
+    const latin = q.match(/[a-z0-9]{2,}/gi)
+    if (latin) tokens.push(...latin.map((t) => t.toLowerCase()))
+    // CJK runs → 2-char bigrams (covers 中日韩 without a dictionary/segmenter)
+    const cjkRuns = q.match(/[\u4e00-\u9fff\u3040-\u30ff\uac00-\ud7af]{2,}/g)
+    if (cjkRuns) {
+      for (const run of cjkRuns) {
+        for (let i = 0; i < run.length - 1; i++) tokens.push(run.slice(i, i + 2))
+      }
+    }
+    return tokens.filter((t) => t.length >= 2)
+  }
+
   private scoreDocument(doc: KnowledgeBaseDocument, q: string): number {
     const name = (doc.name || '').toLowerCase()
     const desc = (doc.description || '').toLowerCase()
     let score = 0
+    // Highest signal: the full query appears as one contiguous phrase.
     if (name.includes(q)) score += 10
     if (desc.includes(q)) score += 5
+    // Per-token matching so multi-term / CJK queries still hit when the terms
+    // appear as separate substrings in name/description.
+    const tokens = this.tokenizeQuery(q)
+    if (tokens.length > 1) {
+      for (const t of tokens) {
+        if (name.includes(t)) score += 3
+        if (desc.includes(t)) score += 1
+      }
+    }
     return score
   }
 

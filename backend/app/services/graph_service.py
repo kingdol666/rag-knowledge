@@ -164,19 +164,30 @@ class GraphService:
                 return kb["kb_id"]
         return raw
 
+    def _resolve_kb_name(self, kb_id):
+        """Resolve the human-readable KB name for a kb_id (or path).
+        list_knowledge_bases() returns ALL KB folders (top-level + sub-KBs),
+        so a single pass suffices. Falls back to '' (keeps any existing name)."""
+        from app.services.storage_reader_service import storage_reader
+        for kb in storage_reader.list_knowledge_bases():
+            if kb.get("kb_id") == kb_id or kb.get("path") == kb_id:
+                return kb.get("name") or kb.get("path") or ""
+        return ""
+
     def index_document(self, doc_path="", content="", kb_id="", doc_name="", description="", tags=None, similar_docs=None, agent_relations=None):
         from app.services.storage_reader_service import storage_reader
         gid = _graph_doc_id(doc_path)
         norm = _norm_path(doc_path)
         tags = tags or []
         parent_kb_id = storage_reader.get_kb_parent(kb_id) or ""
+        kb_name = self._resolve_kb_name(kb_id) if kb_id else ""
         try:
             with self.driver.session(database=config.graph_database) as session:
                 self._ensure_schema(session)
                 only_agent = (not kb_id and not tags and agent_relations and not similar_docs)
                 shared_tag_edge_count = 0
                 if not only_agent:
-                    self._write_doc_metadata(session, gid, norm, kb_id, doc_name, description, tags, parent_kb_id)
+                    self._write_doc_metadata(session, gid, norm, kb_id, doc_name, description, tags, parent_kb_id, kb_name)
                     if tags:
                         shared_tag_edge_count = self._relate_by_shared_tags(session, gid, kb_id, tags)
                     if similar_docs:
@@ -190,20 +201,21 @@ class GraphService:
                          doc_path, len(tags) if tags else 0, shared_tag_edge_count)
         return {"graph_doc_id": gid, "kb_id": kb_id, "parent_kb_id": parent_kb_id or None, "tag_count": len(tags) if tags else 0, "shared_tag_relations": shared_tag_edge_count, "vector_relations": len(similar_docs) if similar_docs else 0, "agent_relations": agent_count if agent_relations else 0, "indexed_at": _now_iso()}
 
-    def _write_doc_metadata(self, session, gid, doc_path, kb_id, doc_name, description, tags, parent_kb_id=""):
+    def _write_doc_metadata(self, session, gid, doc_path, kb_id, doc_name, description, tags, parent_kb_id="", kb_name=""):
+        # SET kb.name = coalesce($kb_name, kb.name): always-SET so re-indexing
+        # back-fills the human-readable name onto nodes originally seeded with
+        # their UUID (the historical ON CREATE SET kb.name=$kb_id bug).
         if parent_kb_id:
             session.run("""
                 MERGE (d:Document {graph_doc_id: $gid}) SET d.path=$doc_path, d.kb_id=$kb_id, d.name=$doc_name, d.description=$description, d.indexed_at=datetime(), d.schema_version=$sv
-                WITH d MERGE (kb:KnowledgeBase {kb_id: $kb_id}) ON CREATE SET kb.name=$kb_id MERGE (d)-[:BELONGS_TO]->(kb)
+                WITH d MERGE (kb:KnowledgeBase {kb_id: $kb_id}) SET kb.name = coalesce($kb_name, kb.name) MERGE (d)-[:BELONGS_TO]->(kb)
                 WITH kb MERGE (parent:KnowledgeBase {kb_id: $parent_kb_id}) MERGE (parent)-[:HAS_SUBKB]->(kb)
-            """, gid=gid, doc_path=doc_path, kb_id=kb_id, doc_name=doc_name, description=description, sv=_GRAPH_SCHEMA_VERSION, parent_kb_id=parent_kb_id)
+            """, gid=gid, doc_path=doc_path, kb_id=kb_id, doc_name=doc_name, description=description, sv=_GRAPH_SCHEMA_VERSION, parent_kb_id=parent_kb_id, kb_name=kb_name)
         else:
             session.run("""
                 MERGE (d:Document {graph_doc_id: $gid}) SET d.path=$doc_path, d.kb_id=$kb_id, d.name=$doc_name, d.description=$description, d.indexed_at=datetime(), d.schema_version=$sv
-                WITH d MERGE (kb:KnowledgeBase {kb_id: $kb_id}) ON CREATE SET kb.name=$kb_id MERGE (d)-[:BELONGS_TO]->(kb)
-            """, gid=gid, doc_path=doc_path, kb_id=kb_id, doc_name=doc_name, description=description, sv=_GRAPH_SCHEMA_VERSION)
-        if tags:
-            session.run("UNWIND $tags AS t MERGE (tag:Tag {name: t}) WITH tag MATCH (d:Document {graph_doc_id: $gid}) MERGE (d)-[:HAS_TAG]->(tag)", tags=tags, gid=gid)
+                WITH d MERGE (kb:KnowledgeBase {kb_id: $kb_id}) SET kb.name = coalesce($kb_name, kb.name) MERGE (d)-[:BELONGS_TO]->(kb)
+            """, gid=gid, doc_path=doc_path, kb_id=kb_id, doc_name=doc_name, description=description, sv=_GRAPH_SCHEMA_VERSION, kb_name=kb_name)
 
     def _relate_by_shared_tags(self, session, gid, kb_id, tags):
         """创建基于共享标签的关联，带质量过滤：
@@ -264,7 +276,7 @@ class GraphService:
         for sim in similar_docs:
             op = sim.get("doc_path", "")
             sc = sim.get("score", 0.0)
-            if not op or sc < 0.35: continue
+            if not op or sc < config.vector_score_threshold: continue
             og = _graph_doc_id(op)
             session.run("MATCH (me:Document {graph_doc_id: $gid}) MATCH (other:Document {graph_doc_id: $og}) MERGE (me)-[r:RELATED_TO]->(other) ON CREATE SET r.reason='vector_similar', r.weight=$sc, r.created_at=datetime() ON MATCH SET r.weight=$sc, r.reason='vector_similar'", gid=gid, og=og, sc=round(sc, 4))
             session.run("MATCH (other:Document {graph_doc_id: $og}) MATCH (me:Document {graph_doc_id: $gid}) MERGE (other)-[r:RELATED_TO]->(me) ON CREATE SET r.reason='vector_similar', r.weight=$sc, r.created_at=datetime() ON MATCH SET r.weight=$sc, r.reason='vector_similar'", gid=gid, og=og, sc=round(sc, 4))
@@ -404,7 +416,7 @@ class GraphService:
                 doc_paths=doc_paths,
                 kb_id=None,  # 跨库搜索
                 top_k=8,
-                score_threshold=0.35,
+                score_threshold=config.vector_score_threshold,
             )
 
             with self.driver.session(database=config.graph_database) as session:
@@ -413,7 +425,7 @@ class GraphService:
                     for sim in similar_docs:
                         matched_path = sim.get("matched_doc_path", "")
                         score = sim.get("score", 0.0)
-                        if not matched_path or score < 0.35:
+                        if not matched_path or score < config.vector_score_threshold:
                             continue
                         # 跳过自引用
                         if _norm_path(matched_path) == _norm_path(doc_path):
@@ -704,11 +716,11 @@ class GraphService:
             # 向量相似关联
             vec = [dict(r) for r in s.run("""
                 MATCH (me:Document {graph_doc_id: $gid})-[r:RELATED_TO {reason: 'vector_similar'}]->(other:Document)
-                WHERE r.weight >= 0.35
+                WHERE r.weight >= $threshold
                 RETURN other.path AS path, other.name AS name, other.kb_id AS kb_id,
                        r.weight AS score
                 ORDER BY r.weight DESC LIMIT $limit
-            """, gid=gid, limit=limit)]
+            """, gid=gid, limit=limit, threshold=config.vector_score_threshold)]
 
             # 标签关联（共享≥2，或同一KB共享≥1）
             tag = [dict(r) for r in s.run("""

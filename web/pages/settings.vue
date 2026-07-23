@@ -547,8 +547,6 @@ const sectionsWithEnv = computed(() => {
   return result
 })
 
-// Override sections to include env
-watch(sectionsWithEnv, () => {}, { immediate: true })
 
 // ── ConfigField Component ──────────────────────────────────────────────
 const ConfigField = defineComponent({

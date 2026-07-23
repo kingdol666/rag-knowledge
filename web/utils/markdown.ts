@@ -17,6 +17,7 @@
 import { marked } from 'marked'
 import hljs from 'highlight.js/lib/common'
 import katex from 'katex'
+import DOMPurify from 'dompurify'
 
 // ── Helpers ────────────────────────────────────────────────
 function escapeHtml(text: string): string {
@@ -156,7 +157,15 @@ export function renderMarkdown(md: string): string {
       gfm: true,
       breaks: true,
     }) as string
-    return `<div class="markdown-body">${rendered}</div>`
+    // SECURITY: sanitize the marked output before it reaches v-html.
+    // Without this, a document containing <script> or <img onerror=...>
+    // would execute arbitrary JS when previewed. marked v5+ removed its
+    // built-in sanitizer, so DOMPurify is the defense layer.
+    const clean = DOMPurify.sanitize(rendered, {
+      ADD_TAGS: ['span', 'div', 'details', 'summary'], // legit from our extensions
+      ADD_ATTR: ['data-lang', 'class', 'id'],          // code-block badges / KaTeX
+    })
+    return `<div class="markdown-body">${clean}</div>`
   } catch {
     return md
   }
@@ -169,10 +178,14 @@ export function renderMarkdown(md: string): string {
 export function parseMarkdown(md: string): string {
   if (!md) return ''
   try {
-    return marked.parse(md.replace(/\r\n/g, '\n'), {
+    const rendered = marked.parse(md.replace(/\r\n/g, '\n'), {
       gfm: true,
       breaks: true,
     }) as string
+    return DOMPurify.sanitize(rendered, {
+      ADD_TAGS: ['span', 'div', 'details', 'summary'],
+      ADD_ATTR: ['data-lang', 'class', 'id'],
+    })
   } catch {
     return md
   }

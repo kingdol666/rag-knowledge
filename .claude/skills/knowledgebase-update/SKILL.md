@@ -17,6 +17,11 @@ description: >
 - 所有 Bash 命令由主 Agent 执行；可用 MCP `kb_project_version` / `kb_project_update` 作为等价入口
 - 不涉及文档 CRUD，无需 Archival
 
+> **⭐ Pre-Flight 提示**：本 skill 可走 MCP（`kb_project_version` / `kb_project_update`）或 `ragctl` CLI 两条等价路径。
+> - 走 MCP 路径前**必须**按 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md) 完成 MCP 连通性 + 服务预检（拉更新前验一次；pull 后重跑一次确认服务恢复）。
+> - 走 `ragctl` CLI 路径不受 MCP 连通性约束（CLI 直跑），但 pull 后仍应用 `ragctl status` 验证服务恢复。
+> - MCP 不可用时默认走 `ragctl` CLI，无需用户额外确认。
+
 ## 核心原则
 
 - 🔎 **先查后更** — 默认先 dry-run（`--check`），展示本地 vs 远程，用户确认后再 pull

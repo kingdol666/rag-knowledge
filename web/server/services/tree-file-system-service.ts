@@ -289,7 +289,7 @@ export class TreeFileSystemService {
     this.metadata.files.push(file)
 
     if (file.parentId) {
-      const parentFolder = this.metadata.folders.find(f => f.id === file.parentId)
+      const parentFolder = await this.getFolderById(file.parentId)
       if (parentFolder) {
         parentFolder.documentCount++
         parentFolder.updatedAt = now.toISOString()
@@ -406,7 +406,7 @@ export class TreeFileSystemService {
     this.metadata.files.push(file)
 
     if (parentId) {
-      const parentFolder = this.metadata.folders.find(f => f.id === parentId)
+      const parentFolder = await this.getFolderById(parentId)
       if (parentFolder) {
         parentFolder.documentCount++
         parentFolder.updatedAt = now.toISOString()
@@ -919,7 +919,7 @@ export class TreeFileSystemService {
     this.metadata.files = this.metadata.files.filter(f => f.id !== id)
 
     if (file.parentId) {
-      const parentFolder = this.metadata.folders.find(f => f.id === file.parentId)
+      const parentFolder = await this.getFolderById(file.parentId)
       if (parentFolder) {
         parentFolder.documentCount--
         parentFolder.updatedAt = new Date().toISOString()
@@ -1199,7 +1199,7 @@ export class TreeFileSystemService {
     let updatedMetadata = file.metadata || {}
 
     if (file.parentId) {
-      const oldParent = this.metadata.folders.find(f => f.id === file.parentId)
+      const oldParent = await this.getFolderById(file.parentId)
       if (oldParent) {
         oldParent.documentCount--
         oldParent.updatedAt = new Date().toISOString()
@@ -1218,7 +1218,7 @@ export class TreeFileSystemService {
     this.metadata.files[fileIndex] = movedFile
 
     if (targetParentId) {
-      const newParent = this.metadata.folders.find(f => f.id === targetParentId)
+      const newParent = await this.getFolderById(targetParentId)
       if (newParent) {
         newParent.documentCount++
         newParent.updatedAt = now

@@ -63,7 +63,7 @@ def main() -> int:
         print("  → 向量搜索将在运行时降级到 BM25")
 
     host = config.server_host
-    port = int(os.environ.get("BACKEND_PORT", config.server_port))
+    port = config.server_port  # env-aware single source: BACKEND_PORT env > config.yml > 8765
 
     print(f"Loaded configuration from config.yml [mode={config.app_mode}]")
     print(f"  Server host: {host}")

@@ -11,6 +11,21 @@ description: Knowledge base listing and discovery. L1→L3 read-only workflow: f
 
 ---
 
+## ⭐ Pre-Flight — MCP 连通性 + 项目服务预检（强制，所有作业的第一步）
+
+> 完整规则与边界情况见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)。本预检早于本 skill 的所有编号步骤（L1/L2/L3）。
+
+**未通过预检，禁止开始后续步骤。**
+
+1. **一探双检** — 调用 `mcp__kb-mcp__kb_project_status`：调用成功即证明 MCP 已连接，按 `ready` 分支（`ready==true` ⇔ backend+web 双健康）；报 "No such tool" → 走 Case C。
+2. **分支处置**：
+   - **Case A `ready==true`** → 就绪。
+   - **Case B `ready==false`** → 先 `kb_project_preflight`（未安装则报 `problems`+`ragctl setup` 让用户处理并停止）；已安装则静默 `kb_project_start(backend=true, web=true, wait=true)`，回查 `ready==true` 才继续，否则读 `ragctl logs backend` 报错停止。
+   - **Case C MCP 未连接** → 会话内无法自愈（MCP 由 Claude Code 启动加载）；`node command/ragctl.js status` 诊断并通知用户重启 Claude Code；**禁止**未连通硬跑操作（HTTP 兜底须用户明确同意）。
+3. **冒烟测试** — `ready==true` 后正式操作前先做一次轻量只读往返（`kb_catalog()` / `kb_doc_catalog()`），确认 MCP↔backend 返回真实数据再作业。
+
+---
+
 ## 思维框架：用户要看多深？ ⭐
 
 用户意图决定展示层级。通过第一轮回应探测用户想要的粒度。

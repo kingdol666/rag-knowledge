@@ -249,32 +249,38 @@ Every task follows this 5-step process:
 
 ### ⭐ Pre-Flight: MCP Connectivity + Auto-Start（启动前必须执行）
 
-**Before Step 0, ALWAYS verify kb-mcp MCP is connected AND backend is up:**
+> **权威细则**：[mcp-preflight-check.md](../skills/knowledgebase/references/mcp-preflight-check.md)。本段是各子 Skill Pre-Flight 的执行者版本。
 
-1. Call `mcp__kb-mcp__kb_project_status` as the very first action (full status: ports + HTTP health + PIDs + MinerU). Its `ready` field is True only when backend AND web are HTTP-healthy.
-2. **If `ready: true`** → everything is up. Proceed to Step 0.
-3. **If `ready: false` (services down)** → **silently start them via MCP** (see Auto-Start below); do NOT ask the user, do NOT open terminals.
-4. **If `kb_project_status` itself errors with "No such tool available"** → the kb-mcp MCP server is not connected to this Claude Code session. The agent cannot fix MCP-connectivity from inside the session.
-   - Run `Bash: node command/ragctl.js status` (or `ragctl status`) to see what is/isn't running.
-   - **Notify user**: "⚠️ kb-mcp MCP 服务器未连接（Claude Code 未加载 `.mcp.json`）。请重启 Claude Code 让它自动连接 kb-mcp。后端/前端可用 `ragctl up` 静默拉起。"
-   - Do NOT proceed with KB operations until MCP is connected (HTTP-API fallback only with explicit user approval per MCP-first rule).
+**Before Step 0, ALWAYS verify kb-mcp MCP is connected AND backend/web are up. 一探双检：**
 
-#### ⭐ Auto-Start (silent — no terminal windows, dev & prod identical)
+1. Call `mcp__kb-mcp__kb_project_status` as the very first action (full status: ports + HTTP health + PIDs + MinerU). Its `ready` field is True only when backend AND web are HTTP-healthy. **调用成功即证明 MCP 已连接**；报 "No such tool available" → 走 Case C。
+2. **Case A `ready==true`** → 就绪，进入冒烟测试。
+3. **Case B `ready==false`（服务离线）** → 先调 `kb_project_preflight()`：
+   - `ready_to_start==false` → 项目未安装，把 `problems` + `fix`（通常 `ragctl setup`）报告用户，**停止**，不盲目重试。
+   - `ready_to_start==true` → **静默拉起服务（不问用户、不开终端）**：图谱/整理/跨库类带 `neo4j=true`，其余默认：
+     ```
+     mcp__kb-mcp__kb_project_start(backend=true, web=true[, neo4j=true], wait=true)
+     ```
+     `wait=true` 阻塞至 HTTP 健康或 ~45s 超时，返回最终状态块。stdout/stderr → `backend/logs/desktop-stdout.log` + `web/logs/desktop-stdout.log`（dev/prod 一致，零终端窗口）。
+   - **回查** `status.ready`（或再调 `kb_project_status`）：就绪 → 冒烟测试；仍不就绪 → 读 `ragctl logs backend` 报错并停止，**禁止静默循环重试**。
+4. **Case C — MCP 未连接到本会话**（`kb_project_status` 报 "No such tool"）：MCP 由 Claude Code 启动加载，会话中无法自愈。
+   - 诊断：`Bash: node command/ragctl.js status`（或 `ragctl status`）。
+   - **通知用户**：「⚠️ kb-mcp MCP 服务器未连接（Claude Code 未加载 `.mcp.json`）。请重启 Claude Code 让它自动连接 kb-mcp。后端/前端可用 `ragctl up` 静默拉起。」
+   - **禁止**在 MCP 未连通时继续 KB 操作（HTTP-API 兜底仅限用户明确同意后，并须声明 "MCP 不可用，已用 HTTP API 兜底"）。
 
-When `kb_project_status` shows services down, **start them via the MCP tool** (preferred — keeps everything in the MCP layer):
+#### 冒烟测试（Case A/B 就绪后必做，早于 Step 0）
 
-```
-mcp__kb-mcp__kb_project_start(backend=true, web=true, wait=true)
-```
+`ready==true` 后、正式作业前，做一次**轻量只读** MCP 往返，确认 MCP↔backend 真实可达（不仅端口通，且能返回数据）：
 
-- `kb_project_start` launches backend + web **silently** — zero terminal windows on Windows/Linux/macOS, in both dev and prod.
-- stdout/stderr → `backend/logs/desktop-stdout.log` + `web/logs/desktop-stdout.log` (same files the Tauri desktop console and `ragctl logs` read).
-- `wait=true` blocks until HTTP-healthy or ~45 s, then returns the final `status` block.
-- After it returns, **check the returned `status.ready`** (or call `kb_project_status` again). If ready → proceed. If still not ready → check `ragctl logs backend` for the error and report it (do NOT silently retry in a loop).
+- 通用首选：`mcp__kb-mcp__kb_catalog()`（返回 KB 清单）。
+- 解析类（ingest）顺带 `backend_status()` 确认 **MinerU OCR 引擎可用**，否则 `parse_doc(use_ocr=true)` 会失败。
+- 图谱/整理/跨库类顺带 `kb_graph_health()` 确认 Neo4j 在线。
 
-**Fallback** (only if the MCP tool is unavailable): `Bash: node command/ragctl.js up` (also fully silent, same log files).
+返回真实数据（非空、非错误）→ **预检全通过**，进入 Step 0。
 
-**Why auto-start instead of asking the user:** the whole point of the plugin + ragctl + MCP integration is that KB operations "just work" after `claude plugin install`. Service startup is silent and safe to trigger; asking the user to open terminals defeats the integration. Only ask the user when the MCP layer itself is unreachable (case 4) — that genuinely requires a Claude Code restart.
+**Fallback**（仅 MCP 工具不可用时）：`Bash: node command/ragctl.js up`（同样静默、同源日志）。
+
+**Why auto-start instead of asking:** the plugin + ragctl + MCP integration means KB ops "just work" after `claude plugin install`. Service startup is silent and safe to trigger; asking the user to open terminals defeats the integration. Only ask when the MCP layer itself is unreachable (Case C) — that genuinely requires a Claude Code restart.
 
 ### Step 0 — Diagnose the Scenario（场景诊断协议）
 

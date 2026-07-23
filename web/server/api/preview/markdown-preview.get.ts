@@ -7,6 +7,17 @@ import {
   toTreeStorageRelativePath,
 } from '~/server/utils/runtime-paths'
 
+/** Escape a user-controlled string for safe interpolation into HTML text/attribute context.
+ * Guards preview templates against stored XSS via crafted filenames. */
+function escapeHtml(value: unknown): string {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const fileId = query.id as string
@@ -176,7 +187,7 @@ export default defineEventHandler(async (event) => {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${file.name}</title>
+  <title>${escapeHtml(file.name)}</title>
   <!-- KaTeX: math formula rendering (CSS only; the HTML is pre-rendered server-side) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.22/dist/katex.min.css" crossorigin="anonymous">
   <style>
@@ -454,7 +465,7 @@ export default defineEventHandler(async (event) => {
 </head>
 <body>
   <div class="markdown-header">
-    <h1>${file.name}</h1>
+    <h1>${escapeHtml(file.name)}</h1>
     <div class="markdown-meta">
       <span>📄 文件大小: ${formatFileSize(file.fileSize)}</span>
       <span>🕐 更新时间: ${new Date(file.updatedAt).toLocaleString('zh-CN')}</span>

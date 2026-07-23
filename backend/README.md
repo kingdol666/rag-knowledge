@@ -147,7 +147,7 @@ BACKEND_PORT=9000 APP_MODE=dev uv run python main.py
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET` | `/api/v1/search/debug-paths` | Debug path resolution |
+| `GET` | `/api/v1/search/debug-paths` | Debug path resolution (dev-mode only) |
 | `POST` | `/api/v1/search/vector` | Semantic vector search (BGE-M3) |
 | `POST` | `/api/v1/search/batch-vector` | Batch vector search |
 | `POST` | `/api/v1/search/two-stage` | Two-stage: BM25 → vector rerank |

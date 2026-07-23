@@ -7,7 +7,7 @@ import { getTreeFileSystemService } from '~/server/utils/tree-service'
  * **Atomic operation**: ONLY creates a new knowledge base folder.
  * Writes folder to disk + .tree-fs.json + .knowledge-base.yml (with KB ID).
  *
- * Does NOT initialize experience folder (use GET /api/v1/experience/{kbId}/init separately).
+ * Does NOT initialize experience folder (use POST /api/v1/experience/{kbId}/init separately).
  */
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)

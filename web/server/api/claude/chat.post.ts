@@ -25,7 +25,10 @@ import { query as claudeQuery } from '@anthropic-ai/claude-agent-sdk'
 import { getProjectRoot, type PermissionMode } from '~/server/utils/claude-config'
 import { addPending, denyAllPending, resolvePending } from '~/server/utils/claude-pending'
 import { upsertSession, saveMessage } from '~/server/utils/chat-db'
+import { resolve } from 'path'
 import { readFileSync, statSync } from 'fs'
+import { resolveWithinAnyRoot } from '~/server/utils/safe-paths'
+import { getTreeStorageAbsolutePath } from '~/server/utils/runtime-paths'
 
 interface Attachment {
   name: string
@@ -163,20 +166,39 @@ function buildKbInstruction(kbIds: string[]): string {
  * pathNote is a hint text telling the user "N file paths referenced for Claude to Read".
  */
 function attachmentsToBlocks(atts: Attachment[]): {
-  blocks: any[]
+  blocks: Record<string, unknown>[]
   pathNote: string
 } {
-  const blocks: any[] = []
+  const blocks: Record<string, unknown>[] = []
   const referencedPaths: string[] = []
+
+  // Allowed attachment roots: the Claude upload dir + tree-file-system.
+  // UPLOAD_DIR is resolved lazily here to avoid duplicating the path math in
+  // upload.post.ts; it mirrors `storage/claude-uploads` under MONOREPO_ROOT.
+  const uploadDir = resolve(getTreeStorageAbsolutePath(), '..', 'claude-uploads')
+  const allowedRoots = [uploadDir, getTreeStorageAbsolutePath()]
 
   for (const att of atts) {
     try {
-      const stat = statSync(att.path)
+      // SECURITY (P0): every client-supplied path MUST be contained under an
+      // allowed root before we touch the filesystem. Without this a caller can
+      // POST attachments:[{path:'C:/Windows/win.ini'}] and exfiltrate any file
+      // the server process can read (then inline it into the model prompt or
+      // base64-ship it to Anthropic). Only paths handed back by
+      // /api/claude/upload (or tree-storage docs) are accepted here.
+      const safePath = resolveWithinAnyRoot(att.path, allowedRoots)
+      if (!safePath) {
+        // Skip out-of-bounds attachments silently — never reveal the rejection
+        // shape, just behave as if the file did not exist.
+        continue
+      }
+
+      const stat = statSync(safePath)
       if (!stat.isFile()) continue
 
       if (att.isImage) {
         // Image -> image content block (base64)
-        const data = readFileSync(att.path).toString('base64')
+        const data = readFileSync(safePath).toString('base64')
         blocks.push({
           type: 'image',
           source: {
@@ -187,7 +209,7 @@ function attachmentsToBlocks(atts: Attachment[]): {
         })
       } else if (att.isPdf) {
         // PDF -> document content block (base64)
-        const data = readFileSync(att.path).toString('base64')
+        const data = readFileSync(safePath).toString('base64')
         blocks.push({
           type: 'document',
           source: {
@@ -198,14 +220,14 @@ function attachmentsToBlocks(atts: Attachment[]): {
         })
       } else if (att.isText && att.size <= TEXT_INLINE_LIMIT) {
         // Text -> inline in text block (with filename annotation)
-        const content = readFileSync(att.path, 'utf-8')
+        const content = readFileSync(safePath, 'utf-8')
         blocks.push({
           type: 'text',
           text: `\n\n--- 附件: ${att.name} ---\n${content}\n--- /附件: ${att.name} ---\n`,
         })
       } else {
         // Large file / Office / other binary -> inject path, let Claude Read
-        referencedPaths.push(att.path)
+        referencedPaths.push(safePath)
       }
     } catch {
       // Failure processing one attachment does not affect others

@@ -844,15 +844,21 @@ const togglePreview = async (path: string) => {
 
 const loadPreview = async () => {
   previewLoading.value = true
-  const res = await docManager.readDocument(previewPath.value, {
-    offset: previewOffset.value,
-    limit: 200,
-    maxChars: 30000,
-  })
-  previewContent.value += res.content
-  previewTruncated.value = res.truncated
-  previewOffset.value += 200
-  previewLoading.value = false
+  try {
+    const res = await docManager.readDocument(previewPath.value, {
+      offset: previewOffset.value,
+      limit: 200,
+      maxChars: 30000,
+    })
+    previewContent.value += res.content
+    previewTruncated.value = res.truncated
+    previewOffset.value += 200
+  } catch (err: any) {
+    message.error(err?.message || '加载文档失败')
+    previewOpen.value = false
+  } finally {
+    previewLoading.value = false
+  }
 }
 
 const loadMorePreview = () => loadPreview()
@@ -870,8 +876,12 @@ const handleReindex = async () => {
 }
 
 onMounted(async () => {
-  catalog.value = await docManager.fetchCatalog()
-  allTags.value = await docManager.fetchAllTags()
+  try {
+    catalog.value = await docManager.fetchCatalog()
+    allTags.value = await docManager.fetchAllTags()
+  } catch (err: any) {
+    message.error(err?.message || '初始化失败，请检查后端服务')
+  }
   // Initialize search graph canvas size
   if (searchGraphContainerRef.value) {
     const rect = searchGraphContainerRef.value.getBoundingClientRect()

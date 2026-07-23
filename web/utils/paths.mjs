@@ -6,7 +6,7 @@
  */
 
 import path from 'node:path'
-import { readFileSync } from 'node:fs'
+import { readFileSync, existsSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
 // ── key anchor ────────────────────────────────────────────────────────
@@ -37,6 +37,26 @@ function findAndReadConfig() {
     try { return readFileSync(candidate, 'utf-8') } catch { /* next */ }
   }
   return null
+}
+
+/**
+ * Minimal .env reader (matches dynamic-config.ts precedence). Returns {} if absent.
+ * Reads PROJECT_ROOT/.env (rag-knowledge/.env) so env overrides are visible to
+ * every consumer of getServerConfig(), not only to dynamic-config.ts callers.
+ */
+function readDotenv() {
+  const envPath = path.join(PARENT, '.env')
+  if (!existsSync(envPath)) return {}
+  const result = {}
+  for (const line of readFileSync(envPath, 'utf-8').split('\n')) {
+    const trimmed = line.trim()
+    if (!trimmed || trimmed.startsWith('#') || !trimmed.includes('=')) continue
+    const eq = trimmed.indexOf('=')
+    const key = trimmed.slice(0, eq).trim()
+    const val = trimmed.slice(eq + 1).trim().replace(/^["']|["']$/g, '')
+    if (key) result[key] = val
+  }
+  return result
 }
 
 // ── YAML parser (sufficient for our config.yml) ───────────────────────
@@ -185,6 +205,25 @@ export function getServerConfig() {
   if (modeSection && typeof modeSection === 'object') {
     Object.assign(merged, modeSection)
   }
+
+  // ENV-AWARE OVERRIDE (parity with dynamic-config.ts getDynamicServerConfig):
+  // process.env wins, then .env, then config.yml. Without this, callers of
+  // getServerConfig() (experience routes, tree-file-system-service, start.mjs,
+  // nuxt.config) silently diverged from getDynamicBackendUrl() consumers
+  // whenever BACKEND_URL/BACKEND_PORT/WEB_PORT were set via env. This keeps a
+  // single precedence rule across the whole web subsystem.
+  const dotenv = readDotenv()
+  const envBackendUrl = process.env.BACKEND_URL || dotenv.BACKEND_URL
+  const envBackendPort = process.env.BACKEND_PORT || dotenv.BACKEND_PORT
+  const envWebPort = process.env.WEB_PORT || process.env.FRONTEND_PORT
+    || dotenv.WEB_PORT || dotenv.FRONTEND_PORT
+  if (envBackendUrl) {
+    merged.backend_url = envBackendUrl
+  } else if (envBackendPort) {
+    merged.backend_url = `http://localhost:${envBackendPort}`
+  }
+  if (envWebPort) merged.frontend_port = envWebPort
+
   return merged
 }
 

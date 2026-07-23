@@ -853,7 +853,13 @@ async def experience_create(kb_id: str, title: str, scenario: str = "",
         {success, experience: {id, title, path, scenario, ...}}
     """
     if (err := _require_kb(kb_id)): return err
-    parsed_metrics = json.loads(metrics) if metrics else {}
+    if metrics:
+        try:
+            parsed_metrics = json.loads(metrics)
+        except (json.JSONDecodeError, TypeError):
+            return _j({"success": False, "error": "Invalid metrics: not valid JSON"})
+    else:
+        parsed_metrics = {}
     return _j(await _client().experience_create(
         kb_id, title, scenario, category, problem, solution, result,
         key_lessons or [], tags or [], severity, related_docs or [],
@@ -935,7 +941,11 @@ async def experience_update(kb_id: str, exp_id: str, title: str = "",
     if tags: kwargs["tags"] = tags
     if related_docs: kwargs["related_docs"] = related_docs
     if prerequisites: kwargs["prerequisites"] = prerequisites
-    if metrics: kwargs["metrics"] = json.loads(metrics)
+    if metrics:
+        try:
+            kwargs["metrics"] = json.loads(metrics)
+        except (json.JSONDecodeError, TypeError):
+            return _j({"success": False, "error": "Invalid metrics: not valid JSON"})
     return _j(await _client().experience_update(kb_id, exp_id, **kwargs))
 
 
@@ -1428,9 +1438,9 @@ async def kb_project_status() -> str:
     ready before KB operations. Returns a one-line `summary` plus a per-service
     `services` dict. `ready` is True only when backend AND web are HTTP-healthy.
     """
-    import asyncio
-    loop = asyncio.get_event_loop()
-    data = await loop.run_in_executor(None, project_manager.project_status)
+    # asyncio is imported at module top; to_thread is the modern, non-deprecated
+    # way to run a sync fn in a worker (avoids get_event_loop() deprecation).
+    data = await asyncio.to_thread(project_manager.project_status)
     return _j(data)
 
 
@@ -1466,10 +1476,7 @@ async def kb_project_start(backend: bool = True, web: bool = True, neo4j: bool =
     Fails fast with a `preflight` block if the project isn't set up yet (missing
     .env / deps). Services already listening are skipped (idempotent).
     """
-    import asyncio
-    loop = asyncio.get_event_loop()
-    data = await loop.run_in_executor(
-        None,
+    data = await asyncio.to_thread(
         lambda: project_manager.start_project(
             backend=backend, web=web, neo4j=neo4j, mode=mode, wait=wait,
         ),
@@ -1486,10 +1493,8 @@ async def kb_project_version(local_only: bool = False) -> str:
     Args:
       local_only: if True, skip the network call and only report local version
     """
-    import asyncio
-    loop = asyncio.get_event_loop()
-    data = await loop.run_in_executor(
-        None, lambda: project_manager.project_version(local_only=local_only),
+    data = await asyncio.to_thread(
+        lambda: project_manager.project_version(local_only=local_only),
     )
     return _j(data)
 
@@ -1511,10 +1516,7 @@ async def kb_project_update(check_only: bool = False, force: bool = False,
       no_deps: after pull, skip `ragctl deps` reinstall
       restart: after pull, run `ragctl up --force` to reload services
     """
-    import asyncio
-    loop = asyncio.get_event_loop()
-    data = await loop.run_in_executor(
-        None,
+    data = await asyncio.to_thread(
         lambda: project_manager.project_update(
             check_only=check_only, force=force, no_deps=no_deps, restart=restart,
         ),
@@ -2109,9 +2111,12 @@ def _startup_health_check_and_launch():
 def _load_dotenv() -> None:
     """Load `.env` from the monorepo root into ``os.environ`` if present.
 
-    Unconditionally overrides existing values — ``.env`` is the single
-    source of truth for project configuration.  Call this *before* any
-    code that reads env vars (``import config``, etc.).
+    Uses ``setdefault`` so an explicitly-exported shell / .mcp.json env var
+    ALWAYS wins over the file — this is the project-wide documented priority
+    (shell/.mcp.json env > .env > config.yml, see kb-mcp/config.py:35).
+    The previous unconditional overwrite silently clobbered intentionally-set
+    env vars (e.g. BACKEND_PORT injected by .mcp.json / project_manager).
+    Call this *before* any code that reads env vars (``import config``, etc.).
     """
     from pathlib import Path
     env_path = Path(__file__).resolve().parent.parent / ".env"
@@ -2126,7 +2131,7 @@ def _load_dotenv() -> None:
             key = key.strip()
             val = val.strip().strip("\"'")
             if key:
-                os.environ[key] = val
+                os.environ.setdefault(key, val)
 
 if __name__ == "__main__":
     main()

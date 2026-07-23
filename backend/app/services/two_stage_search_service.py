@@ -9,7 +9,6 @@ import logging
 from typing import Any
 
 from app.config import config
-from app.services.graph_service import graph_service
 from app.services.keyword_index_service import (
     keyword_index_service,
     _BM25_MAX_CONTENT_CHARS,
@@ -219,6 +218,12 @@ class TwoStageSearchService:
             neighbor_paths: dict[str, float] = {}
             for c in list(candidates.values())[:5]:
                 try:
+                    # Lazy import: graph_service imports neo4j at module top, so
+                    # an eager module-level import here would hard-fail the whole
+                    # two_stage_search_service (and thus search.py) when neo4j is
+                    # not installed — defeating search.py's _get_graph_service()
+                    # lazy fallback. Import only when graph expansion is active.
+                    from app.services.graph_service import graph_service
                     neighbor_results = graph_service.get_related_documents(c["doc_path"])
                     for nr in neighbor_results:
                         p = nr.get("path", "")

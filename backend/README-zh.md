@@ -147,7 +147,7 @@ BACKEND_PORT=9000 APP_MODE=dev uv run python main.py
 
 | 方法 | 端点 | 说明 |
 |------|------|------|
-| `GET` | `/api/v1/search/debug-paths` | 调试路径解析 |
+| `GET` | `/api/v1/search/debug-paths` | 调试路径解析（仅 dev 模式） |
 | `POST` | `/api/v1/search/vector` | 语义向量搜索（BGE-M3） |
 | `POST` | `/api/v1/search/batch-vector` | 批量向量搜索 |
 | `POST` | `/api/v1/search/two-stage` | 两阶段：BM25 → 向量重排 |

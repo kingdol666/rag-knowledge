@@ -403,6 +403,12 @@ function writeEnv(env) {
 }
 
 function getAppMode() {
+  // Project-wide precedence: process.env > .env > default 'dev'.
+  // The previous .env-only read made `APP_MODE=prod ragctl up` launch dev,
+  // diverging from the backend (config.py) and Tauri (commands.rs) which both
+  // honor process.env first.
+  const envMode = process.env.APP_MODE;
+  if (envMode === 'prod' || envMode === 'dev') return envMode;
   const env = readEnv(ENV_FILE);
   return env.APP_MODE || 'dev';
 }
@@ -569,7 +575,7 @@ function preflightReady({ requireModel = false } = {}) {
   if (!fs.existsSync(path.join(WEB_DIR, 'node_modules'))) {
     problems.push('web deps not installed — run: ragctl setup  (or ragctl deps)');
   }
-  if (!fs.existsSync(path.join(MCP_DIR, 'uv.lock')) && !fs.existsSync(path.join(MCP_DIR, '.venv'))) {
+  if (!fs.existsSync(path.join(MCP_DIR, '.venv'))) {
     problems.push('kb-mcp deps not installed — run: ragctl setup  (or ragctl deps)');
   }
   if (!ensureUvOnPath()) {
@@ -751,7 +757,7 @@ async function cmdCheck() {
   console.log(`\n${_c(C.BOLD, '── 依赖安装状态 ──')}\n`);
 
   // Backend
-  if (fs.existsSync(path.join(BACKEND_DIR, '.venv')) || fs.existsSync(path.join(BACKEND_DIR, 'uv.lock'))) {
+  if (fs.existsSync(path.join(BACKEND_DIR, '.venv'))) {
     addResult('pass', 'Backend (Python)', '依赖已安装 (uv sync)', null);
   } else {
     addResult('fail', 'Backend (Python)', '依赖未安装', '运行: ragctl deps');
@@ -766,7 +772,7 @@ async function cmdCheck() {
   }
 
   // MCP
-  if (fs.existsSync(path.join(MCP_DIR, '.venv')) || fs.existsSync(path.join(MCP_DIR, 'uv.lock'))) {
+  if (fs.existsSync(path.join(MCP_DIR, '.venv'))) {
     addResult('pass', 'MCP Server (Python)', '依赖已安装 (uv sync)', null);
   } else {
     addResult('fail', 'MCP Server (Python)', '依赖未安装', '运行: ragctl deps');
@@ -1251,20 +1257,24 @@ async function cmdMineruModel(args = []) {
 function getServicePorts(modeOverride) {
   const cfg = readYaml(CONFIG_YML);
   const env = readEnv(ENV_FILE);
-  const mode = modeOverride || env.APP_MODE || 'dev';
+  const envMode = env.APP_MODE || 'dev';
+  const mode = modeOverride || envMode;
   const server = cfg.server || {};
   const modeSection = server[mode] || {};
-  // When a mode is EXPLICITLY passed (--mode prod), resolve ports from config.yml
-  // for that mode and IGNORE .env BACKEND_PORT/WEB_PORT — otherwise .env (which
-  // pins a specific mode's ports) would silently override the runtime choice.
-  if (modeOverride) {
+  // When user EXPLICITLY forces a DIFFERENT mode than .env pins (e.g. `--appmode prod`
+  // while .env has APP_MODE=dev), use config.yml ports for that mode so .env's
+  // port pins don't silently override the runtime mode choice. Note: parseFlags
+  // always defaults flags.appmode to getAppMode() (reads .env APP_MODE), so when
+  // the user doesn't pass --appmode, modeOverride === envMode → .env ports win.
+  if (modeOverride && modeOverride !== envMode) {
     return {
       backend: parseInt(modeSection.backend_port || '8765'),
       web: parseInt(modeSection.frontend_port || '6789'),
       mode,
     };
   }
-  // Default: .env is the single source of truth (env BACKEND_PORT/WEB_PORT win).
+  // Default (no explicit mode switch): .env is the single source of truth
+  // (env BACKEND_PORT/WEB_PORT win over config.yml defaults).
   return {
     backend: parseInt(env.BACKEND_PORT || modeSection.backend_port || '8765'),
     web: parseInt(env.WEB_PORT || env.FRONTEND_PORT || modeSection.frontend_port || '6789'),

@@ -46,7 +46,7 @@ async def check_stale_global():
     return await experience_service.check_stale_global()
 
 
-@router.get("/{kb_id}/init")
+@router.post("/{kb_id}/init", dependencies=[Depends(verify_token)])
 async def init_experience(kb_id: str):
     """初始化经验文件夹。KB创建后调用一次即可。确保在真正的KB路径下创建。"""
     # 先通过 resolve 把 UUID 转成实际路径，避免在 UUID 名称下创建空目录
@@ -62,7 +62,7 @@ async def create_experience(kb_id: str, body: ExperienceCreate):
     return await experience_service.create_experience(kb_id, body)
 
 
-@router.post("/{kb_id}/reindex")
+@router.post("/{kb_id}/reindex", dependencies=[Depends(verify_token)])
 async def reindex_experiences(kb_id: str, body: dict = None):
     """重索引经验到向量库。exp_id 为空则重索引整个 KB。
 
@@ -107,8 +107,8 @@ async def vector_search_experiences(kb_id: str, body: dict = None):
 
 # ── E0/E1: 经验提取（启发式 + 任务包）── 静态路由 ──
 
-@router.post("/{kb_id}/extract")
-async def extract_experiences(kb_id: str, body: dict = None, dependencies=None):
+@router.post("/{kb_id}/extract", dependencies=[Depends(verify_token)])
+async def extract_experiences(kb_id: str, body: dict = None):
     """E0/E1: 经验提取。dry_run=True 返回候选任务包；False 写草稿池。"""
     body = body or {}
     doc_paths = body.get("doc_paths")

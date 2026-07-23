@@ -15,11 +15,12 @@ import httpx
 
 DEFAULT_WEB_URL = ""  # set by caller via config.WEB_URL
 DEFAULT_BACKEND_URL = ""  # set by caller via config.BACKEND_URL
-HTTP_TIMEOUT = int(os.environ.get("MCP_HTTP_TIMEOUT", "30"))
-PARSE_TIMEOUT = int(os.environ.get("MCP_PARSE_TIMEOUT", "5000"))
-INDEX_TIMEOUT = int(os.environ.get("MCP_INDEX_TIMEOUT", "600"))  # Large-document CPU embedding takes time; relax index calls to 600s
-# Shared auth token — when set, attached as `Authorization: Bearer <token>` to all requests.
-AUTH_TOKEN = os.environ.get("KB_AUTH_TOKEN", "")
+HTTP_TIMEOUT = int(os.environ.get("MCP_HTTP_TIMEOUT", "30"))  # seconds — general API calls
+# Parse/upload calls can take minutes (MinerU OCR on large PDFs). 300s ceiling;
+# the previous 5000 (seconds ≈ 83min) was a units slip that let a hung parse
+# pin a background task for over an hour. Override via MCP_PARSE_TIMEOUT.
+PARSE_TIMEOUT = int(os.environ.get("MCP_PARSE_TIMEOUT", "300"))  # seconds
+INDEX_TIMEOUT = int(os.environ.get("MCP_INDEX_TIMEOUT", "600"))  # seconds — large-doc CPU embedding
 
 
 class KbClient:
@@ -59,9 +60,17 @@ class KbClient:
 
     async def _ensure_client(self):
         if self._client is None or self._client.is_closed:
+            # Read the auth token LIVE at (re)creation time instead of freezing
+            # the module global at import. When KB_AUTH_TOKEN lives only in
+            # .env (the documented setup), the import-time capture ran BEFORE
+            # config._load_dotenv() populated os.environ, so the header was
+            # never attached and every request 401'd once backend auth enabled.
+            # Also rebuild when the token changes so a runtime .env reload is
+            # picked up on the next request (cheap — clients are pooled).
+            token = os.environ.get("KB_AUTH_TOKEN", "").strip()
             headers = {}
-            if AUTH_TOKEN:
-                headers["Authorization"] = f"Bearer {AUTH_TOKEN}"
+            if token:
+                headers["Authorization"] = f"Bearer {token}"
             self._client = httpx.AsyncClient(
                 timeout=self.timeout, trust_env=False, headers=headers
             )
@@ -209,11 +218,17 @@ class KbClient:
 
         Path normalization: backslashes (Windows) are auto-converted to
         forward slashes so callers don't need to worry about platform differences."""
-        if not any([doc_id, path, kb_id]):
-            return {"success": False, "error": "At least one of doc_id, path, or kb_id+doc_path is required", "status": 400}
         # Normalize path separators: backslash → forward slash
         path = path.replace("\\", "/") if path else path
         doc_path = doc_path.replace("\\", "/") if doc_path else doc_path
+        # A standalone doc_path containing a path separator is a full relative
+        # path (e.g. "KB/sub/doc.md") — treat it as `path` so it resolves without
+        # requiring a matching kb_id. Bare filenames still need kb_id+doc_path.
+        if not path and doc_path and ("/" in doc_path or kb_id == "") and not any([doc_id, kb_id]):
+            path = doc_path
+            doc_path = ""
+        if not any([doc_id, path, kb_id, doc_path]):
+            return {"success": False, "error": "At least one of doc_id, path, or kb_id+doc_path is required", "status": 400}
         params = {"max_chars": max_chars, "offset": offset, "limit": limit}
         if doc_id:
             params["doc_id"] = doc_id
@@ -688,7 +703,7 @@ class KbClient:
     async def experience_init(self, kb_id: str) -> dict:
         """Initialize the experience folder."""
         if (err := self._require_kb_id(kb_id)): return err
-        return await self._get_backend(f"/api/v1/experience/{kb_id}/init")
+        return await self._post_backend_json(f"/api/v1/experience/{kb_id}/init", {})
 
     async def experience_create(self, kb_id: str, title: str,
         scenario: str = "", category: str = "tip", problem: str = "",

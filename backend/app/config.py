@@ -114,7 +114,38 @@ class Config:
 
     @property
     def server_port(self) -> int:
+        """Effective backend port. Single source of truth.
+
+        Priority: BACKEND_PORT env (incl. .env) > config.yml server.{mode}.backend_port > 8765.
+        Every consumer — main.py bind, lifespan logger, config API — reads this
+        so the env-overridden port is reported consistently everywhere.
+        """
+        env_port = os.environ.get("BACKEND_PORT", "").strip()
+        if env_port:
+            try:
+                return int(env_port)
+            except ValueError:
+                pass
         return int(self._server_cfg.get("backend_port", 8765))
+
+    @property
+    def frontend_port(self) -> str:
+        """Effective frontend (web) port. Single source of truth.
+
+        Priority: WEB_PORT / FRONTEND_PORT env (incl. .env) > config.yml
+        server.{mode}.frontend_port > "" (empty when not configured).
+
+        The backend never binds this port (the Nuxt web server does); it is
+        exposed so the config API / desktop console report the paired web port.
+        """
+        env_port = (
+            os.environ.get("WEB_PORT", "").strip()
+            or os.environ.get("FRONTEND_PORT", "").strip()
+        )
+        if env_port:
+            return env_port
+        port = self._server_cfg.get("frontend_port")
+        return str(port) if port else ""
 
     @property
     def cors_origins(self) -> list:

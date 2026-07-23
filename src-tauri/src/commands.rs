@@ -320,6 +320,16 @@ pub async fn set_environment(
     std::fs::write(&env_path, lines.join("\n"))
         .map_err(|e| format!("写 .env 失败: {}", e))?;
 
+    // Sync the in-process env so subsequent read_app_mode() /
+    // resolve_ports_from_config() calls (which both read process.env FIRST)
+    // agree with the file we just persisted. Without this, a desktop app
+    // launched from a shell exporting APP_MODE/BACKEND_PORT would report the
+    // OLD (stale) values after a mode switch — the UI shows success while
+    // get_ports()/get_environment() keep returning the previous mode's ports.
+    std::env::set_var("APP_MODE", m);
+    std::env::set_var("BACKEND_PORT", backend_port.to_string());
+    std::env::set_var("WEB_PORT", web_port.to_string());
+
     emit_progress(&app, "env", "done", &format!(
         "✓ 环境已切换至 {} — backend :{} / web :{}",
         m, backend_port, web_port,
@@ -1825,6 +1835,20 @@ pub async fn save_config(
             let _ = std::fs::copy(&env_path, format!("{}.bak", env_path));
             std::fs::write(&env_path, lines.join("\n"))
                 .map_err(|e| format!("写 .env 失败: {}", e))?;
+
+            // Sync process env with the persisted file so in-process resolution
+            // (read_app_mode / resolve_ports_from_config, both process.env-first)
+            // matches the desktop console's saved config. Empty values unset.
+            for k in &known {
+                if let Some(v) = env_obj.get(*k) {
+                    let vs = env_val_to_string(v);
+                    if vs.is_empty() {
+                        std::env::remove_var(k);
+                    } else {
+                        std::env::set_var(k, vs);
+                    }
+                }
+            }
         }
     }
 

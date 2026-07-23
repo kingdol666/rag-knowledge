@@ -43,6 +43,36 @@ _DEFAULT_OUTPUT_ROOT = PROJECT_ROOT / "output"
 # Singleton instance for MineruParseService
 _mineru_service_instance: MineruParseService | None = None
 
+async def _parse_file(
+    service: MineruParseService,
+    fname: str,
+    content: bytes,
+    out_dir: str | Path,
+    use_ocr: bool,
+) -> MineruParseResult:
+    """Parse a single file via MinerU, isolating failures into a result object.
+
+    Shared by both the SSE-streaming and JSON batch endpoints so the per-file
+    parse + error-capture logic exists in exactly one place.
+    """
+    try:
+        return await service.parse_async(
+            file_content=content,
+            filename=fname,
+            output_dir=out_dir,
+            use_ocr=use_ocr,
+            poll_interval=_BATCH_POLL_INTERVAL,
+            poll_timeout=_BATCH_POLL_TIMEOUT,
+        )
+    except Exception as exc:  # noqa: BLE001 — isolate per-file failure
+        logger.exception("Batch parse failed for file (%s)", fname)
+        return MineruParseResult(
+            success=False,
+            output_dir=str(out_dir),
+            source_filename=fname,
+            error=f"{type(exc).__name__}: {exc}",
+        )
+
 
 def _get_mineru_manager() -> "MineruApiManager | None":
     """Get the MinerU manager from app state (lazy import to avoid circular deps)."""
@@ -299,25 +329,10 @@ async def batch_parse_file_vt_stream(
 
         # Concurrently submit + await each file's parse. Each coroutine owns
         # its own output_dir; failures are captured per-file (never raised).
+        # Delegates to the shared module-level _parse_file helper.
         async def _parse_one(index: int) -> MineruParseResult:
             fname, content, out_dir = uploads[index]
-            try:
-                return await service.parse_async(
-                    file_content=content,
-                    filename=fname,
-                    output_dir=out_dir,
-                    use_ocr=use_ocr,
-                    poll_interval=_BATCH_POLL_INTERVAL,
-                    poll_timeout=_BATCH_POLL_TIMEOUT,
-                )
-            except Exception as exc:  # noqa: BLE001 — isolate per-file failure
-                logger.exception("Batch parse failed for file %d (%s)", index + 1, fname)
-                return MineruParseResult(
-                    success=False,
-                    output_dir=str(out_dir),
-                    source_filename=fname,
-                    error=f"{type(exc).__name__}: {exc}",
-                )
+            return await _parse_file(service, fname, content, out_dir, use_ocr)
 
         # gather preserves input order — results[i] corresponds to uploads[i].
         results = await asyncio.gather(*(_parse_one(i) for i in range(total)))
@@ -436,23 +451,7 @@ async def batch_parse_file_vt(
 
     async def _parse_one(index: int) -> MineruParseResult:
         fname, content, out_dir = uploads[index]
-        try:
-            return await service.parse_async(
-                file_content=content,
-                filename=fname,
-                output_dir=out_dir,
-                use_ocr=use_ocr,
-                poll_interval=_BATCH_POLL_INTERVAL,
-                poll_timeout=_BATCH_POLL_TIMEOUT,
-            )
-        except Exception as exc:  # noqa: BLE001 — isolate per-file failure
-            logger.exception("Batch parse failed for file %d (%s)", index + 1, fname)
-            return MineruParseResult(
-                success=False,
-                output_dir=str(out_dir),
-                source_filename=fname,
-                error=f"{type(exc).__name__}: {exc}",
-            )
+        return await _parse_file(service, fname, content, out_dir, use_ocr)
 
     results = await asyncio.gather(*(_parse_one(i) for i in range(n_files)))
 

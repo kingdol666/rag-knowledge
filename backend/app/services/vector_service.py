@@ -10,7 +10,7 @@
 from __future__ import annotations
 
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -25,7 +25,11 @@ logger = logging.getLogger(__name__)
 
 
 def _now_iso() -> str:
-    return datetime.now().isoformat()
+    # UTC-aware, matching graph_service._now_iso() and experience_service.
+    # The previous naive-local datetime produced indexed_at timestamps in a
+    # different timezone than every other service, corrupting time-based
+    # comparisons (stale detection, decay) across the metadata YAML.
+    return datetime.now(timezone.utc).isoformat()
 
 
 class VectorService:
