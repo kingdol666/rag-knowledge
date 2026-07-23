@@ -34,6 +34,7 @@ function getDb(): Database.Database {
       cwd TEXT,
       permission_mode TEXT,
       model TEXT,
+      engine TEXT DEFAULT 'claude',
       created_at TEXT DEFAULT (datetime('now')),
       updated_at TEXT DEFAULT (datetime('now')),
       message_count INTEGER DEFAULT 0
@@ -47,6 +48,12 @@ function getDb(): Database.Database {
     );
     CREATE INDEX IF NOT EXISTS idx_messages_session ON messages(session_id);
   `)
+  // Backwards-compat: add engine column to pre-existing sessions table
+  try {
+    _db.exec(`ALTER TABLE sessions ADD COLUMN engine TEXT DEFAULT 'claude'`)
+  } catch {
+    /* Column already exists — safe to ignore */
+  }
   return _db
 }
 
@@ -56,6 +63,7 @@ export interface SessionRow {
   cwd: string | null
   permission_mode: string | null
   model: string | null
+  engine: string
   created_at: string
   updated_at: string
   message_count: number
@@ -77,17 +85,19 @@ export function upsertSession(
     cwd?: string
     permissionMode?: string
     model?: string
+    engine?: string
   },
 ) {
   getDb()
     .prepare(
-      `INSERT INTO sessions (session_id, title, cwd, permission_mode, model)
-       VALUES (@session_id, @title, @cwd, @permission_mode, @model)
+      `INSERT INTO sessions (session_id, title, cwd, permission_mode, model, engine)
+       VALUES (@session_id, @title, @cwd, @permission_mode, @model, @engine)
        ON CONFLICT(session_id) DO UPDATE SET
          title = COALESCE(excluded.title, sessions.title),
          cwd = COALESCE(excluded.cwd, sessions.cwd),
          permission_mode = COALESCE(excluded.permission_mode, sessions.permission_mode),
          model = COALESCE(excluded.model, sessions.model),
+         engine = COALESCE(excluded.engine, sessions.engine),
          updated_at = datetime('now')`,
     )
     .run({
@@ -96,6 +106,7 @@ export function upsertSession(
       cwd: fields.cwd ?? null,
       permission_mode: fields.permissionMode ?? null,
       model: fields.model ?? null,
+      engine: fields.engine ?? null,
     })
 }
 
@@ -113,13 +124,14 @@ export function saveMessage(sessionId: string, sdkType: string, content: string)
   tx()
 }
 
-export function listSessions(limit = 50): SessionRow[] {
-  return getDb()
-    .prepare(
-      `SELECT session_id, title, cwd, permission_mode, model, created_at, updated_at, message_count
-       FROM sessions ORDER BY updated_at DESC LIMIT ?`,
-    )
-    .all(limit) as SessionRow[]
+export function listSessions(limit = 50, engine?: string): SessionRow[] {
+  const sql = engine
+    ? `SELECT session_id, title, cwd, permission_mode, model, engine, created_at, updated_at, message_count
+       FROM sessions WHERE engine = ? ORDER BY updated_at DESC LIMIT ?`
+    : `SELECT session_id, title, cwd, permission_mode, model, engine, created_at, updated_at, message_count
+       FROM sessions ORDER BY updated_at DESC LIMIT ?`
+  const stmt = getDb().prepare(sql)
+  return (engine ? stmt.all(engine, limit) : stmt.all(limit)) as SessionRow[]
 }
 
 /** 获取单个会话的元信息（标题等），用于历史回放时在顶部展示用户最初的问题。 */

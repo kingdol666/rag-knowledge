@@ -1,13 +1,22 @@
 <template>
-  <div class="claude-chat-page">
+  <div class="claude-chat-page" :data-engine="engine" :style="engineThemeVars">
     <!-- ═══ Header (fixed top) ═══ -->
     <div class="chat-header-wrapper">
       <div class="chat-header">
-        <div>
-          <h2><RobotOutlined /> {{ $t('chat.title') }}</h2>
-          <p class="hint">{{ $t('chat.subtitle') }}</p>
+        <div class="header-title-group">
+          <h2>
+            <span class="engine-icon">{{ ENGINE_MAP[engine].icon }}</span>
+            {{ engine === 'omp' ? 'OMP' : $t('chat.title') }}
+          </h2>
+          <p class="hint">{{ engine === 'omp' ? 'Oh My Pi Coding Agent' : $t('chat.subtitle') }}</p>
         </div>
         <div class="header-actions">
+          <a-select
+            v-model:value="engine"
+            class="engine-selector"
+            :options="ENGINES.map(e => ({ value: e.name, label: e.icon + ' ' + e.label }))"
+            @change="onEngineChange"
+          />
           <a-tooltip title="新建对话（不打断当前流式，后台继续）">
             <a-button type="primary" ghost @click="newConversation" :disabled="!messages.length && !streaming">
               <PlusSquareOutlined /> {{ $t('chat.newChat') }}
@@ -101,7 +110,7 @@
 
         <!-- assistant -->
         <template v-else-if="m.kind === 'assistant'">
-          <div class="msg-head"><RobotOutlined /> Claude</div>
+          <div class="msg-head"><RobotOutlined /> {{ engine === 'omp' ? 'OMP' : 'Claude' }}</div>
           <div class="msg-text" v-html="md(m.html)"></div>
         </template>
 
@@ -191,14 +200,14 @@
 
       <!-- ⭐ Streaming bubble: real-time text from stream_event -->
       <div v-if="streamingText" class="msg assistant streaming-msg">
-        <div class="msg-head"><RobotOutlined /> Claude</div>
+        <div class="msg-head"><RobotOutlined /> {{ engine === 'omp' ? 'OMP' : 'Claude' }}</div>
         <div class="msg-text" v-html="md(streamingText)"></div>
         <span v-if="showStreamingCursor" class="stream-cursor"></span>
       </div>
 
       <!-- ⭐ Working indicator (dot animation when no streaming text) -->
       <div v-if="streaming && !streamingText" class="msg assistant typing-msg">
-        <div class="msg-head"><RobotOutlined /> Claude</div>
+        <div class="msg-head"><RobotOutlined /> {{ engine === 'omp' ? 'OMP' : 'Claude' }}</div>
         <div class="typing-dots"><span></span><span></span><span></span></div>
       </div>
 
@@ -564,7 +573,6 @@ import {
   MessageOutlined, DeleteOutlined, BulbOutlined,
   CodeOutlined, FileTextOutlined, CheckSquareOutlined,
   QuestionCircleOutlined, LockOutlined, ThunderboltOutlined,
-  FolderOpenOutlined, PlusOutlined, SaveOutlined,
   PushpinOutlined, ArrowRightOutlined,
   PaperClipOutlined, CloseOutlined,
   VerticalAlignBottomOutlined,
@@ -574,6 +582,7 @@ import {
   PauseCircleOutlined, CaretRightOutlined,
 } from '@ant-design/icons-vue'
 import { PERMISSION_MODES, PERMISSION_MODE_INFO, type PermissionMode } from '~/utils/claude'
+import { ENGINES, ENGINE_MAP, ENGINE_THEME, ENGINE_STORAGE_KEY, normalizeEngine, type EngineName } from '~/utils/chat-engine'
 import { MessageProcessor, type UIMessage } from '~/utils/claude-messages'
 import {
   BUILT_IN_TOOLS, TOOL_CATEGORY_ORDER,
@@ -601,6 +610,33 @@ const msgRef = ref<HTMLElement | null>(null)
 const inputRef = ref<any>(null)
 const abortController = ref<AbortController | null>(null)
 const processor = new MessageProcessor()
+
+// ⭐ Engine selection (Claude Code | OMP) — persisted in localStorage.
+//   Switching engine isolates all chat state (messages, session, history)
+//   but preserves the input box content so users can keep typing.
+const engine = ref<EngineName>(
+  normalizeEngine(typeof localStorage !== 'undefined' ? localStorage.getItem(ENGINE_STORAGE_KEY) : 'claude'),
+)
+// Inline theme CSS variables for the active engine (applied via :style).
+const engineThemeVars = computed(() => ENGINE_THEME[engine.value])
+
+/**
+ * Per-engine state snapshots — on engine switch, the current engine's state
+ * is saved and the new engine's saved state is restored. This keeps Claude
+ * and OMP conversations fully isolated (messages, session id, init info).
+ */
+interface EngineStateSnapshot {
+  messages: UIMessage[]
+  currentSessionId: string
+  cwd: string
+  permissionMode: PermissionMode
+  model: string
+  initTools: string[]
+  initMcpServers: { name: string; status: string }[]
+  initModel: string
+  slashCommands: string[]
+}
+const engineSnapshots = new Map<EngineName, EngineStateSnapshot>()
 
 // ⭐ Reasoning effort control
 const reasoningEffort = ref<'auto' | 'low' | 'medium' | 'high' | 'xhigh' | 'max'>('auto')
@@ -1342,6 +1378,7 @@ async function sendRaw(prompt: string, atts?: Attachment[]): Promise<void> {
         kbEnhanced: kbEnhanced.value || undefined,
         kbIds: kbEnhanced.value && selectedKbIds.value.length ? selectedKbIds.value : undefined,
         reasoningEffort: reasoningEffort.value === 'auto' ? undefined : reasoningEffort.value,
+        engine: engine.value,
       }),
       signal: abortController.value.signal,
     })
@@ -1604,6 +1641,77 @@ function clearChat() {
   bgSessions.value = []
 }
 
+/**
+ * ⭐ Engine switch — isolate chat state per engine.
+ *
+ * Behavior:
+ *  1. Save the current engine's full state (messages, session, init info).
+ *  2. Reset the chat to a fresh conversation for the new engine.
+ *  3. Restore the new engine's previously-saved state if it exists.
+ *  4. Persist the engine choice to localStorage.
+ *
+ * The input box content is preserved across the switch (per the spec).
+ */
+function onEngineChange(newEngine: EngineName) {
+  if (newEngine === engine.value) return
+
+  const savedInput = input.value
+
+  // 1. Snapshot the current engine's state
+  engineSnapshots.set(engine.value, {
+    messages: [...messages],
+    currentSessionId: currentSessionId.value,
+    cwd: cwd.value,
+    permissionMode: permissionMode.value,
+    model: model.value,
+    initTools: [...initInfo.tools],
+    initMcpServers: [...initInfo.mcpServers],
+    initModel: initInfo.model,
+    slashCommands: [...slashCommands.value],
+  })
+
+  // 2. Abort any in-flight stream
+  try { abortController.value?.abort() } catch { /* already done */ }
+
+  // 3. Reset chat state
+  messages.length = 0
+  processor.reset()
+  currentSessionId.value = ''
+  initInfo.tools = []
+  initInfo.mcpServers = []
+  initInfo.model = ''
+  slashCommands.value = []
+  streamingText.value = ''
+  streamingThinking.value = ''
+  showStreamingCursor.value = false
+  bgSessions.value = []
+
+  // 4. Restore the target engine's saved state (if any)
+  const snapshot = engineSnapshots.get(newEngine)
+  if (snapshot) {
+    messages.push(...snapshot.messages)
+    currentSessionId.value = snapshot.currentSessionId
+    cwd.value = snapshot.cwd
+    permissionMode.value = snapshot.permissionMode
+    model.value = snapshot.model
+    initInfo.tools = snapshot.initTools
+    initInfo.mcpServers = snapshot.initMcpServers
+    initInfo.model = snapshot.initModel
+    slashCommands.value = snapshot.slashCommands
+  }
+
+  // 5. Persist engine choice
+  engine.value = newEngine
+  try { localStorage.setItem(ENGINE_STORAGE_KEY, newEngine) } catch { /* storage disabled */ }
+
+  // 6. Preserve input text
+  input.value = savedInput
+  nextTick(() => inputRef.value?.focus?.())
+
+  const meta = ENGINE_MAP[newEngine]
+  antMessage.success(`已切换到 ${meta.icon} ${meta.label}`)
+}
+
 // -- Workspace management --
 
 /* * Load all workspaces */
@@ -1759,7 +1867,7 @@ watch(cwd, () => loadSkillCatalog())
 async function loadSessions() {
   loadingSessions.value = true
   try {
-    const d = await $fetch('/api/claude/history')
+    const d = await $fetch('/api/claude/history', { params: { engine: engine.value } })
     sessions.value = (d as any).sessions || []
     sessionsVisible.value = true
   } catch (e: any) {
@@ -2975,6 +3083,22 @@ async function deleteHistory(sid: string) {
 @media (min-width: 769px) and (max-width: 1024px) {
   .claude-chat-page { max-width: 100%; padding: var(--kb-space); }
   .toolbar .workspace-selector { min-width: 200px; }
+}
+
+/* ═════════════════════════════════════════════════════
+   Engine selector + theme accent
+   ═════════════════════════════════════════════════════ */
+.header-title-group { display: flex; flex-direction: column; gap: 0; }
+.engine-icon { font-size: 20px; }
+.engine-selector { width: 150px; flex-shrink: 0; }
+.engine-selector :deep(.ant-select-selector) {
+  border-radius: var(--kb-radius-sm);
+  font-weight: 600;
+}
+/* OMP engine accent — blue-purple primary glow on the selector */
+.claude-chat-page[data-engine="omp"] .engine-selector :deep(.ant-select-selector) {
+  border-color: var(--kb-primary-soft);
+  background: var(--kb-primary-tint);
 }
 </style>
 

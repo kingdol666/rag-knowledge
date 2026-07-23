@@ -21,8 +21,8 @@
  *
  * Uses AsyncIterable<SDKUserMessage> prompt form to feed multimodal content blocks to the SDK.
  */
-import { query as claudeQuery } from '@anthropic-ai/claude-agent-sdk'
-import { getProjectRoot, type PermissionMode } from '~/server/utils/claude-config'
+import { getEngine, normalizeEngine, type PermissionMode } from '~/server/engines'
+import { getProjectRoot } from '~/server/utils/claude-config'
 import { addPending, denyAllPending, resolvePending } from '~/server/utils/claude-pending'
 import { upsertSession, saveMessage } from '~/server/utils/chat-db'
 import { resolve } from 'path'
@@ -52,6 +52,7 @@ interface ChatBody {
   kbEnhanced?: boolean
   kbIds?: string[]
   reasoningEffort?: 'auto' | 'low' | 'medium' | 'high' | 'xhigh' | 'max'
+  engine?: 'claude' | 'omp'
 }
 
 /** Safe read-only tools (pre-approved in all modes) */
@@ -244,7 +245,7 @@ function attachmentsToBlocks(atts: Attachment[]): {
 export default defineEventHandler(async (event) => {
   const body = await readBody<ChatBody>(event)
   const { prompt, cwd, permissionMode, model, allowedTools, resume, maxTurns, attachments,
-    reasoningEffort } = body || {}
+    reasoningEffort, engine: engineParam } = body || {}
   const kbEnhanced: boolean = body?.kbEnhanced === true
   const kbIds: string[] = Array.isArray(body?.kbIds) ? body.kbIds : []
 
@@ -260,6 +261,7 @@ export default defineEventHandler(async (event) => {
       ? (permissionMode as PermissionMode)
       : 'default'
 
+  const engineName = normalizeEngine(engineParam)
   const workCwd = cwd?.trim() || getProjectRoot()
 
   const effectiveAllowedTools =
@@ -294,6 +296,7 @@ export default defineEventHandler(async (event) => {
 
   res.write(
     `event: meta\ndata: ${JSON.stringify({
+      engine: engineName,
       cwd: workCwd,
       permissionMode: pm,
       model: model || 'default',
@@ -305,101 +308,43 @@ export default defineEventHandler(async (event) => {
   let queryClosed = false
 
   try {
-    // Build prompt: with attachments use AsyncIterable<SDKUserMessage> for multimodal content
-    // Without attachments keep plain string (backward compatible)
-    let promptArg: string | AsyncIterable<any>
-
-    if (hasAttachments && attachmentBlocks.length > 0) {
-      // Multimodal: text + image/document blocks
-      async function* msgStream() {
-        yield {
-          type: 'user' as const,
-          message: {
-            role: 'user' as const,
-            content: [
-              { type: 'text', text: fullPromptText },
-              ...attachmentBlocks,
-            ],
-          },
-          parent_tool_use_id: null,
+    // Permission callback factory — shared by both engines (approval modes only)
+    const onPermissionRequest = needsCanUseTool
+      ? async (
+          toolName: string,
+          input: Record<string, unknown>,
+          toolUseId: string,
+          sid: string,
+        ): Promise<{ behavior: string; message?: string }> => {
+          res.write(
+            `event: permission_request\ndata: ${JSON.stringify({
+              toolName,
+              input,
+              toolUseId,
+              sessionId: sid || sessionId,
+            })}\n\n`,
+          )
+          const { promise, resolve } = Promise.withResolvers<{ behavior: string; message?: string }>()
+          addPending(sessionId || '_pre_init', toolUseId, toolName, input, resolve as any)
+          setTimeout(() => {
+            resolvePending(sessionId || '_pre_init', toolUseId, {
+              behavior: 'deny',
+              message: '审批超时（5 分钟未响应）',
+            })
+          }, PERMISSION_TIMEOUT_MS)
+          return promise
         }
-      }
-      promptArg = msgStream()
-    } else {
-      promptArg = fullPromptText
-    }
+      : undefined
 
-    const q = claudeQuery({
-      prompt: promptArg,
-      options: {
-        cwd: workCwd,
-        permissionMode: pm,
-        model: model || undefined,
-        allowedTools: effectiveAllowedTools,
-        resume: resume || undefined,
-        maxTurns: maxTurns || 50,
-        settingSources: ['user', 'project'],
-        env: { ...process.env },
-        // Pass reasoning_effort if set
-        ...(reasoningEffort && reasoningEffort !== 'auto'
-          ? { reasoning_effort: reasoningEffort as 'low' | 'medium' | 'high' | 'xhigh' | 'max' }
-          : {}),
-        // Enable streaming: send stream_event (token-level deltas) for frontend typewriter rendering
-        includePartialMessages: true,
-        ...(needsCanUseTool
-          ? {
-              canUseTool: async (
-                toolName: string,
-                input: Record<string, unknown>,
-                opts: any,
-              ) => {
-                const toolUseId: string =
-                  opts?.tool_use_id || `tu_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
-                res.write(
-                  `event: permission_request\ndata: ${JSON.stringify({
-                    toolName,
-                    input,
-                    toolUseId,
-                    sessionId,
-                  })}\n\n`,
-                )
-                return new Promise((resolve) => {
-                  addPending(
-                    sessionId || '_pre_init',
-                    toolUseId,
-                    toolName,
-                    input,
-                    resolve,
-                  )
-                  setTimeout(() => {
-                    resolvePending(
-                      sessionId || '_pre_init',
-                      toolUseId,
-                      {
-                        behavior: 'deny',
-                        message: '审批超时（5 分钟未响应）',
-                      },
-                    )
-                  }, PERMISSION_TIMEOUT_MS)
-                })
-              },
-            }
-          : {}),
-      },
-    })
-
+    // Abort signal — triggered on client disconnect
+    const abortController = new AbortController()
     event.node.req.on('close', () => {
       queryClosed = true
       denyAllPending(sessionId || '_pre_init', 'Client disconnected')
-      try {
-        ;(q as any).close?.()
-      } catch {
-        /* Already ended */
-      }
+      abortController.abort()
     })
 
-    // ══════ 用户提问持久化（放在 for-await 前，覆盖多轮 resume 和首轮新会话） ══════
-    // 构造用户消息文本（不含系统 KB 指令，与前端 send() 格式一致）
+    // ══════ 用户提问持久化（放在 query 前，覆盖多轮 resume 和首轮新会话） ══════
     const attSummaryMT = hasAttachments && attachments!.length
       ? `\n\n📎 Attachments (${attachments!.length}): ${attachments!.map(a => a.name).join(', ')}`
       : ''
@@ -409,11 +354,6 @@ export default defineEventHandler(async (event) => {
         : '\n\n🔍 KB-enhanced: searching all KBs')
       : ''
     const userText = prompt + attSummaryMT + kbSummaryMT
-    /**
-     * 持久化用户提问到 SQLite（用于历史回放渲染）。
-     * - 多轮 resume：立即存入（SDK 不发 system/init，这里直接用 resume 作为 sessionId）。
-     * - 新会话首轮：等 init 拿到 sessionId 后存入。
-     */
     let _userSaved = false
     const saveUserMessage = (sid: string) => {
       if (_userSaved) return
@@ -427,6 +367,30 @@ export default defineEventHandler(async (event) => {
     }
     if (resume) saveUserMessage(resume)
 
+    // Resolve engine and build the engine-agnostic query request
+    const engine = getEngine(engineName)
+
+    // Multimodal attachment blocks are only used by the Claude engine.
+    // OMP receives path hints embedded in fullPromptText instead.
+    const isClaude = engineName === 'claude'
+
+    const q = engine.query({
+      prompt,
+      cwd: workCwd,
+      permissionMode: pm,
+      model: model || undefined,
+      allowedTools: effectiveAllowedTools,
+      resume: resume || undefined,
+      maxTurns: maxTurns || 50,
+      reasoningEffort: reasoningEffort && reasoningEffort !== 'auto' ? reasoningEffort : undefined,
+      fullPromptText,
+      ...(isClaude && hasAttachments && attachmentBlocks.length > 0
+        ? { attachmentBlocks: attachmentBlocks as any }
+        : {}),
+      onPermissionRequest,
+      signal: abortController.signal,
+    })
+
     for await (const message of q) {
       if (message.type === 'system' && message.subtype === 'init') {
         sessionId = (message as any).session_id || ''
@@ -435,6 +399,7 @@ export default defineEventHandler(async (event) => {
           cwd: workCwd,
           permissionMode: pm,
           model: (message as any).model || model || undefined,
+          engine: engineName,
         })
         // ⭐ 新会话首轮：从 init 拿到的 sessionId 存入用户提问
         saveUserMessage(sessionId)
