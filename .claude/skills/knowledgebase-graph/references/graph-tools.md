@@ -8,12 +8,12 @@
 
 | Tool | Parameters | Purpose |
 |------|-----------|---------|
-| `kb_graph_search` | `keyword`, `node_type="all"`, `limit=20` | Unified graph node search. `node_type`: `"all"` (default — merges document+kb+tag results), `"document"`, `"kb"`, or `"tag"` |
+| `kb_graph_search` | `keyword`, `node_type="all"`, `limit=20` | Unified graph node search. ⚠️ **参数是 `keyword`（非 query）**. `node_type`: `"all"` (default — merges document+kb+tag results), `"document"`, `"kb"`, or `"tag"`. ⚠️ `node_type="tag"` 当前对所有标签返回空（按标签查文档请用 `kb_doc_get_by_tag`） |
 | `kb_graph_document` | `doc_path`, `limit=50` | Full graph view of a document: its tags, related documents, and cross-KB connections |
 | `kb_graph_document_related` | `doc_path`, `limit=20` | Related documents for a given document (by shared tags, same KB, vector similarity) |
-| `kb_graph_documents_by_tag` | `tag_name`, `limit=50` | Find all documents tagged with a specific tag |
+| `kb_graph_documents_by_tag` | `tag_name`, `limit=50` | ⚠️ **当前对 tag 恒返回空**（图谱用 doc-doc `RELATED_TO{shared_tag}` 边建模，未建 tag→doc 直连）。按标签查文档请用 `kb_doc_get_by_tag(tag)`（走 YAML registry，可靠） |
 | `kb_graph_kb_overview` | `kb_id` | KB-level graph overview: doc count, sub-KBs, tag distribution, related KBs, top documents by centrality |
-| `kb_graph_neighbors` | `node_id`, `node_type`, `depth=1` | Get neighbor subgraph around a document, KB, or tag node |
+| `kb_graph_neighbors` | `node_id`, `node_type`, `depth=1` | Get neighbor subgraph around a document, KB, or tag node. ⚠️ **参数是 `node_id`（非 `node_path`）** |
 | `kb_graph_cross_kb_documents` | `min_kbs=2`, `limit=50` | Discover bridge documents connected to multiple KBs via shared tags |
 
 ---
@@ -57,6 +57,7 @@
 
 - **Graph v4 metadata model**: nodes are `Document` (keyed by `graph_doc_id = "doc::path/to/doc.md"`), `KnowledgeBase` (keyed by `kb_id`), and `Tag` (keyed by `name`). Edges are `BELONGS_TO`, `HAS_SUBKB`, `HAS_TAG`, and `RELATED_TO`.
 - **Automatic relationships**: three paths establish `RELATED_TO` edges -- shared tags (`shared_tag`), vector similarity (`vector_similar`, weight = cosine similarity), and agent judgment (`continuation`/`implementation`, weight 1.0-1.5).
+- ⚠️ **实测 tag 边行为（2026-07-23 验证）**：标签共享实际建模为 doc-doc `RELATED_TO{shared_tag}` 边（graph_stats 实测 shared_tag=1382），`HAS_TAG` 边未实际填充。因此 `kb_graph_documents_by_tag` 与 `kb_graph_search(node_type="tag")` 对所有标签返回空。按标签查文档请用 `kb_doc_get_by_tag(tag)`（走 YAML registry，可靠）。
 - **Incremental vs force**: `force=false` skips already-indexed documents (fast); `force=true` clears and rebuilds (slow but thorough -- use after schema upgrades).
 - **No NER parsing**: the v4 graph builds relationships from document **metadata** (tags, KB membership), not content entity extraction.
 - **Graph index is written back** to `.knowledge-base.yml` automatically after build (symmetric with `vector_index`).

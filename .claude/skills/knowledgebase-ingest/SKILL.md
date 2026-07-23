@@ -183,6 +183,7 @@ save = kb_doc_save_parsed(
     description=A3c 产出的合格描述
 )
 ```
+⚠️ **参数是 `parent_id`，不是 `kb_id`**（与多数工具命名不同；传 `kb_id` 会被 schema 拒绝）。推荐 **`task_id` 模式**：传 A2 的 task_id 即自动提取完整 markdown + images_dir，无需手动拼 markdown_path。
 自动：完整 markdown 落盘 + 所有图片复制到 KB `images/` + 原子更新 `.tree-fs.json` + `.knowledge-base.yml`。
 
 **绝不用 `kb_doc_create` 存解析文档**——它截断内容且丢图片。

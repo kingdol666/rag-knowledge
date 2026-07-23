@@ -271,6 +271,11 @@ experience_create(kb_id, title, scenario, category, problem, solution, result,
 ```
 **创建后自动完成**：向量索引（6 chunks）+ 元数据写入 + 磁盘文件 三路一致。
 
+**⚠️ 必须使用合法枚举值**（非法值返回 HTTP 422）：
+- `category` ∈ {`best_practice`, `troubleshooting`, `lesson_learned`, `optimization`, `tip`, `workflow`, `decision`}（❌ 不是 `bug`/`issue`）
+- `severity` ∈ {`critical`, `important`, `normal`, `tip`}（❌ 不是 `high`/`low`）
+- 注意 `tip` 同时是 category 和 severity 的合法值；`result` 默认 `success`
+
 ### Read / List / Update / Delete
 ```
 experience_read(kb_id, exp_id)                                    → 含 .md 正文
