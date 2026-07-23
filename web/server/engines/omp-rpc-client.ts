@@ -9,23 +9,38 @@
  * per-query binary spawn). Process is killed when the query completes or the
  * HTTP connection closes.
  */
-import { spawn, type ChildProcess } from 'child_process'
-import { resolve, dirname } from 'path'
-import { fileURLToPath } from 'url'
+import { spawn, type ChildProcess, execFileSync } from 'child_process'
+import { existsSync } from 'fs'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-// Resolve OMP CLI from web/node_modules — the package was npm-installed there.
-// From web/server/engines/ → web/server/ → web/ → web/node_modules/...
-const OMP_CLI_PATH = resolve(
-  __dirname,
-  '..',
-  '..',
-  'node_modules',
-  '@oh-my-pi',
-  'pi-coding-agent',
-  'dist',
-  'cli.js',
-)
+/**
+ * Resolve the OMP CLI executable.
+ * Priority:
+ *   1. Local bundled cli.js (when @oh-my-pi/pi-coding-agent is npm-installed)
+ *   2. The `omp` binary on PATH (global Bun install)
+ * Returns the spawn target as { command, args }. The local cli.js must run
+ * under `bun` (Bun-bundled script); the global `omp` binary runs directly.
+ */
+function resolveOmpCli(cwd: string): { command: string; args: string[] } {
+  // 1) Local package (optional) — npm-installed @oh-my-pi/pi-coding-agent.
+  try {
+    const { createRequire } = require('module')
+    const r = createRequire(import.meta.url + '/../..')
+    const cliPath = r.resolve('@oh-my-pi/pi-coding-agent/dist/cli.js')
+    if (existsSync(cliPath)) {
+      return { command: 'bun', args: [cliPath] }
+    }
+  } catch { /* package not installed */ }
+  // 2) Global `omp` binary on PATH.
+  const probe = process.platform === 'win32' ? 'where' : 'which'
+  try {
+    execFileSync(probe, ['omp'], { stdio: 'ignore' })
+    return { command: 'omp', args: [] }
+  } catch { /* omp not on PATH */ }
+  throw new Error(
+    "OMP CLI not found. Install it globally (`bun add -g @oh-my-pi/pi-coding-agent`) "
+    + "or locally (`npm i @oh-my-pi/pi-coding-agent`) in web/.",
+  )
+}
 
 interface PendingRequest {
   resolve: (frame: any) => void
@@ -48,10 +63,14 @@ export class OmpRpcClient {
     private model?: string,
     private sessionPath?: string,
   ) {
-    const args = [OMP_CLI_PATH, '--mode', 'rpc', '--cwd', cwd]
+    const cli = resolveOmpCli(cwd)
+    const args = [...cli.args, '--mode', 'rpc', '--cwd', cwd]
     if (model) args.push('--model', model)
+    // Resume a prior session: OMP's CLI accepts `--resume <sessionId>` to load
+    // the on-disk JSONL, restoring full multi-turn context across requests.
+    if (sessionPath) args.push('--resume', sessionPath)
 
-    this.proc = spawn('bun', args, {
+    this.proc = spawn(cli.command, args, {
       stdio: ['pipe', 'pipe', 'pipe'],
       windowsHide: true,
       env: { ...process.env },

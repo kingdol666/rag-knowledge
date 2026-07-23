@@ -1,4 +1,4 @@
-﻿﻿import { getServerConfig, resolveProjectPath } from './utils/paths.mjs'
+﻿import { getServerConfig, resolveProjectPath } from './utils/paths.mjs'
 
 // All backend URL from shared config.yml — no hardcoded port
 // ENV > config.yml: BACKEND_URL > BACKEND_PORT > config.yml
@@ -20,6 +20,12 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
   ],
+
+  nitro: {
+    // Enable WebSocket support for the integrated terminal (node-pty over WS).
+    // Without this, defineWebSocketHandler routes are ignored.
+    experimental: { websocket: true },
+  },
 
   app: {
     head: {

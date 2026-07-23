@@ -10,9 +10,7 @@ description: >
   rename, delete, merge, organize, verify, audit, graph, experience, list,
   batch, and any knowledge-base operation.
 model: opus
-autoloadSkills: true
-read-summarize: false
-spawns: ""
+readSummarize: false
 ---
 
 # Archival — Knowledge Base Administrator & Document Intelligence Expert

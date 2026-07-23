@@ -84,7 +84,13 @@ export class ClaudeEngine implements ChatEngine {
                 const toolUseId: string =
                   opts?.tool_use_id ||
                   `tu_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
-                return req.onPermissionRequest!(toolName, input, toolUseId, '')
+                // The permission UI resolves { behavior: 'allow'|'deny', ... }.
+                // Narrow to the SDK's PermissionResult discriminated union.
+                const res = await req.onPermissionRequest!(toolName, input, toolUseId, '')
+                if (res.behavior === 'deny') {
+                  return { behavior: 'deny' as const, message: res.message ?? 'Denied' }
+                }
+                return { behavior: 'allow' as const }
               },
             }
           : {}),

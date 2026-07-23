@@ -11,12 +11,25 @@
           <p class="hint">{{ engine === 'omp' ? 'Oh My Pi Coding Agent' : $t('chat.subtitle') }}</p>
         </div>
         <div class="header-actions">
-          <a-select
-            v-model:value="engine"
-            class="engine-selector"
-            :options="ENGINES.map(e => ({ value: e.name, label: e.icon + ' ' + e.label }))"
-            @change="onEngineChange"
-          />
+          <div class="engine-selector-wrap">
+            <a-select
+              v-model:value="engine"
+              class="engine-selector"
+              :options="ENGINES.map(e => ({ value: e.name, label: e.icon + ' ' + e.label }))"
+              @change="onEngineChange"
+            />
+            <!-- ⭐ Availability indicator: green dot = SDK available, red = missing -->
+            <a-tooltip :title="engineAvailability[engine] ? `${ENGINE_MAP[engine].label} SDK ready` : `${ENGINE_MAP[engine].label} SDK not installed`">
+              <span class="engine-status-dot" :class="engineAvailability[engine] ? 'ok' : 'no'">
+                <span class="engine-status-pulse"></span>
+              </span>
+            </a-tooltip>
+          </div>
+          <a-tooltip title="集成终端 — 在侧边打开原生终端，默认工作目录跟随当前工作区">
+            <a-button :type="terminalDrawerOpen ? 'primary' : 'default'" @click="openTerminal">
+              <CodepenOutlined /> 终端
+            </a-button>
+          </a-tooltip>
           <a-tooltip title="新建对话（不打断当前流式，后台继续）">
             <a-button type="primary" ghost @click="newConversation" :disabled="!messages.length && !streaming">
               <PlusSquareOutlined /> {{ $t('chat.newChat') }}
@@ -558,6 +571,36 @@
         <a-button type="primary" @click="allowPermission">允许 (Allow)</a-button>
       </template>
     </a-modal>
+    <!-- ⭐ Integrated terminal (node-pty over WebSocket) -->
+    <a-drawer
+      v-model:open="terminalDrawerOpen"
+      title="集成终端"
+      placement="right"
+      width="520"
+      :body-style="{ padding: 0, background: '#0d1117', height: 'calc(100% - 55px)' }"
+      :header-style="{ background: '#161b22', borderBottom: '1px solid #30363d' }"
+      @close="closeTerminal"
+    >
+      <template #extra>
+        <a-space size="small">
+          <a-tag v-if="terminalHandle?.connected.value" color="green" :bordered="false" style="font-size:11px">
+            <span class="term-conn-dot"></span> 已连接
+          </a-tag>
+          <a-tag v-else color="orange" :bordered="false" style="font-size:11px">连接中…</a-tag>
+          <a-tooltip title="重连终端（跟随当前工作区目录）">
+            <a-button size="small" type="text" style="color:#8b949e" @click="reconnectTerminal">
+              <SyncOutlined />
+            </a-button>
+          </a-tooltip>
+        </a-space>
+      </template>
+      <div ref="terminalContainer" class="terminal-xterm-host"></div>
+      <div class="terminal-hint">
+        <span class="terminal-hint-cwd" v-if="cwd">📁 {{ cwd }}</span>
+        <span class="terminal-hint-cwd" v-else>📁 项目根目录</span>
+        <span class="terminal-hint-note">原生终端 · 输入 exit 关闭会话</span>
+      </div>
+    </a-drawer>
   </div>
 </template>
 
@@ -580,6 +623,9 @@ import {
   OrderedListOutlined, EditOutlined, SendOutlined,
   PlusSquareOutlined, SyncOutlined,
   PauseCircleOutlined, CaretRightOutlined,
+ FolderOpenOutlined, PlusOutlined, CodeFilled,
+ CheckCircleFilled, CloseCircleFilled, LoadingOutlined,
+ CodepenOutlined,
 } from '@ant-design/icons-vue'
 import { PERMISSION_MODES, PERMISSION_MODE_INFO, type PermissionMode } from '~/utils/claude'
 import { ENGINES, ENGINE_MAP, ENGINE_THEME, ENGINE_STORAGE_KEY, normalizeEngine, type EngineName } from '~/utils/chat-engine'
@@ -596,7 +642,63 @@ import {
   MAX_QUEUE_RETRIES,
   type QueueItem,
 } from '~/composables/useChatQueue'
+import { useTerminal, type TerminalHandle } from '~/composables/useTerminal'
 
+// ⭐ Engine availability — probed once on mount from /api/claude/engines.
+// Drives the green/red status dot next to the engine selector. Both engines
+// run in-process via their SDKs, so "package installed" == "available".
+const engineAvailability = ref<{ claude: boolean; omp: boolean }>({ claude: true, omp: true })
+async function probeEngines() {
+  try {
+    const res = await $fetch<{ engines: { claude: { available: boolean }; omp: { available: boolean } } }>('/api/claude/engines')
+    engineAvailability.value = {
+      claude: res.engines.claude.available,
+      omp: res.engines.omp.available,
+    }
+  } catch {
+    // If the probe fails, assume both are available so the UI isn't stuck red.
+    engineAvailability.value = { claude: true, omp: true }
+  }
+}
+
+// ⭐ Integrated terminal (node-pty over WebSocket). Opened in a right-side
+// drawer; defaults its cwd to the selected workspace or the project root.
+const terminalDrawerOpen = ref(false)
+const terminalHandle = ref<TerminalHandle | null>(null)
+const terminalContainer = ref<HTMLElement | null>(null)
+function openTerminal() {
+  const targetCwd = cwd.value || ''
+  // If a handle exists but the cwd changed, re-point it; otherwise create.
+  if (!terminalHandle.value) {
+    terminalHandle.value = useTerminal(targetCwd)
+  } else if (terminalHandle.value.cwd.value !== targetCwd) {
+    terminalHandle.value.setCwd(targetCwd)
+  }
+  terminalDrawerOpen.value = true
+  // Wait for the drawer DOM, then mount xterm.
+  nextTick(() => {
+    if (terminalContainer.value && terminalHandle.value) {
+      // If never opened, call open(); the composable guards re-entry.
+      if (!terminalHandle.value.terminal) {
+        terminalHandle.value.open(terminalContainer.value)
+        nextTick(() => terminalHandle.value?.focus())
+      } else {
+        terminalHandle.value.focus()
+      }
+    }
+  })
+}
+function closeTerminal() {
+  terminalDrawerOpen.value = false
+  // Keep the PTY alive across open/close so the session resumes instantly;
+  // full dispose only on component unmount.
+}
+function reconnectTerminal() {
+  if (!terminalHandle.value) return
+  const targetCwd = cwd.value || ''
+  terminalHandle.value.terminal?.clear()
+  terminalHandle.value.setCwd(targetCwd)
+}
 const cwd = ref('')
 const permissionMode = ref<PermissionMode>('bypassPermissions')
 const model = ref('')
@@ -1822,6 +1924,7 @@ onMounted(() => {
   loadWorkspaces()
   loadSkillCatalog()
   loadKbCatalog()
+  probeEngines()
   const restored = loadQueueFromStorage()
   if (restored) {
     messageQueue.value = restored.queue
@@ -1849,6 +1952,9 @@ onUnmounted(() => {
   // Abort any active SSE stream + all background sessions
   try { abortController.value?.abort() } catch { /* already done */ }
   abortAllBgSessions()
+  // Dispose the integrated terminal PTY (closes the WebSocket).
+  terminalHandle.value?.dispose()
+  terminalHandle.value = null
 })
 
 /* * Load Skills catalog (with descriptions from SKILL.md frontmatter) */
@@ -3091,6 +3197,11 @@ async function deleteHistory(sid: string) {
 .header-title-group { display: flex; flex-direction: column; gap: 0; }
 .engine-icon { font-size: 20px; }
 .engine-selector { width: 150px; flex-shrink: 0; }
+.engine-selector-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
 .engine-selector :deep(.ant-select-selector) {
   border-radius: var(--kb-radius-sm);
   font-weight: 600;
@@ -3099,6 +3210,81 @@ async function deleteHistory(sid: string) {
 .claude-chat-page[data-engine="omp"] .engine-selector :deep(.ant-select-selector) {
   border-color: var(--kb-primary-soft);
   background: var(--kb-primary-tint);
+}
+
+/* ⭐ Engine availability status dot — green (ok) / red (missing SDK) */
+.engine-status-dot {
+  position: absolute;
+  top: 50%;
+  right: 30px;
+  transform: translateY(-50%);
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  z-index: 2;
+  pointer-events: auto;
+  cursor: help;
+}
+.engine-status-dot.ok {
+  background: #22c55e;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.18);
+}
+.engine-status-dot.no {
+  background: #ef4444;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.18);
+}
+.engine-status-pulse {
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  animation: engine-pulse 2s ease-out infinite;
+}
+.engine-status-dot.ok .engine-status-pulse { background: rgba(34, 197, 94, 0.35); }
+.engine-status-dot.no .engine-status-pulse { background: rgba(239, 68, 68, 0.35); }
+@keyframes engine-pulse {
+  0%   { transform: scale(0.6); opacity: 0.9; }
+  70%  { transform: scale(2.2); opacity: 0; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* ⭐ Integrated terminal */
+.terminal-xterm-host {
+  width: 100%;
+  height: calc(100% - 34px);
+  padding: 8px;
+  background: #0d1117;
+  overflow: hidden;
+}
+.terminal-xterm-host :deep(.xterm) {
+  padding: 4px 8px;
+  height: 100%;
+}
+.terminal-xterm-host :deep(.xterm-viewport) {
+  background: #0d1117 !important;
+  overflow-y: auto;
+}
+.terminal-hint {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 14px;
+  background: #161b22;
+  border-top: 1px solid #30363d;
+  font-size: 11px;
+  color: #8b949e;
+  font-family: 'JetBrains Mono', Consolas, monospace;
+}
+.terminal-hint-cwd { color: #58a6ff; }
+.terminal-hint-note { color: #6e7681; }
+.term-conn-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #22c55e;
+  margin-right: 4px;
+  vertical-align: middle;
 }
 </style>
 
