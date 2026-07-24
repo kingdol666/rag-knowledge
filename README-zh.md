@@ -1,63 +1,92 @@
 <div align="center">
-  <img src="./docs/images/logo.svg" alt="RAG Knowledge Platform" width="120" />
 
-  <h1>RAG Knowledge Platform</h1>
+<img src="./docs/images/logo.svg" alt="RAG Knowledge Platform" width="128" height="128" />
 
-  <p><strong>企业级文档智能与 Agentic 知识库平台</strong></p>
+# RAG Knowledge Platform
 
-  <p>
-    <em>PDF 解析 &middot; QDCVR 语义搜索 &middot; Neo4j 知识图谱 &middot; 经验库<br>
-    76 个 MCP 工具 &middot; 14 个 Claude Code 技能 &middot; 静默无头启动 &middot; 跨平台</em>
-  </p>
+### 企业级文档智能与 Agentic 知识库平台
 
-  <p>
-    <a href="#-快速开始"><img src="https://img.shields.io/badge/快速开始-3步-4338ca?style=for-the-badge&logo=rocket" /></a>
-    &nbsp;
-    <a href="https://github.com/kingdol666/rag-knowledge/stargazers"><img src="https://img.shields.io/github/stars/kingdol666/rag-knowledge?style=for-the-badge&color=facc15" /></a>
-    &nbsp;
-    <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-22c55e?style=for-the-badge" /></a>
-    &nbsp;
-    <a href="https://github.com/kingdol666/rag-knowledge/releases"><img src="https://img.shields.io/github/v/release/kingdol666/rag-knowledge?style=for-the-badge&color=8b5cf6&label=版本" /></a>
-  </p>
+**从原始 PDF 到可验证、可被 Agent 查询的知识 —— 全程一条流水线，内容验证检索拒绝被向量相似度欺骗。**
 
-  <p>
-    <a href="#-核心特性"><img src="https://img.shields.io/badge/特性-8大支柱-0ea5e9?style=for-the-badge" /></a>
-    &nbsp;
-    <a href="#-平台支持"><img src="https://img.shields.io/badge/平台-Win_%7C_Linux_%7C_macOS-6b7280?style=for-the-badge" /></a>
-    &nbsp;
-    <a href="#-mcp-工具--76"><img src="https://img.shields.io/badge/MCP-76个工具-8b5cf6?style=for-the-badge&logo=code" /></a>
-    &nbsp;
-    <a href="#-技能--14"><img src="https://img.shields.io/badge/技能-14个-f97316?style=for-the-badge&logo=openai" /></a>
-  </p>
+<p>
+<em>QDCVR 语义搜索 &middot; Neo4j 知识图谱 &middot; 经验全生命周期 (E0–E12)<br>
+76 个 MCP 工具 &middot; 14 个 Agent 技能 &middot; MinerU OCR &middot; 跨平台</em>
+</p>
 
-  <p>
-    <sub>
-      <a href="./README.md">English</a>
-      &nbsp;&middot;&nbsp;
-      <a href="./README-zh.md"><b>中文</b></a>
-    </sub>
-  </p>
-</div>
+<p>
+<a href="#-快速开始"><img src="https://img.shields.io/badge/快速开始-3条命令-4338ca?style=for-the-badge&logo=rocket" /></a>
+&nbsp;
+<img src="https://img.shields.io/badge/平台-Win_%7C_Linux_%7C_macOS-334155?style=for-the-badge&logo=linux" />
+&nbsp;
+<img src="https://img.shields.io/badge/MCP工具-76个-8b5cf6?style=for-the-badge&logo=code" />
+&nbsp;
+<img src="https://img.shields.io/badge/技能-14个-f97316?style=for-the-badge&logo=openai" />
+</p>
 
-<br>
+<p>
+<a href="https://github.com/kingdol666/rag-knowledge/stargazers"><img src="https://img.shields.io/github/stars/kingdol666/rag-knowledge?style=flat-square&color=facc15" /></a>
+&nbsp;
+<a href="https://github.com/kingdol666/rag-knowledge/releases"><img src="https://img.shields.io/github/v/release/kingdol666/rag-knowledge?style=flat-square&color=8b5cf6&label=版本" /></a>
+&nbsp;
+<img src="https://img.shields.io/badge/Python-3.12-3776ab?style=flat-square&logo=python&logoColor=white" />
+&nbsp;
+<img src="https://img.shields.io/badge/license-MIT-22c55e?style=flat-square" />
+&nbsp;
+<img src="https://img.shields.io/badge/状态-生产就绪-0ea5e9?style=flat-square" />
+</p>
 
-<div align="center">
-  <img src="./docs/images/rag-architecture.png" alt="RAG Knowledge Platform — 5-layer architecture" width="880" />
-</div>
-
-<br>
+<p>
+<sub><a href="./README.md">English</a></sub> &nbsp;&middot;&nbsp; <sub><b>中文</b></sub>
+</p>
 
 ---
 
-## 📌 目录
+<img src="./docs/images/rag-architecture.png" alt="RAG Knowledge Platform — 5层架构" width="900" />
 
-| | 章节 | | 章节 |
-|:---:|---|:---:|---|
-| 🚀 | [快速开始](#-快速开始) | 🔌 | [MCP 工具（76）](#-mcp-工具--76) |
-| ✅ | [前置要求](#-前置要求) | 🎯 | [技能（14）](#-技能--14) |
-| 💡 | [为什么选择这个项目](#-为什么选择这个项目) | 🏗️ | [架构](#️-架构) |
-| 🌟 | [核心特性](#-核心特性) | ⚙️ | [配置](#️-配置) |
-| 🖥️ | [使用方式](#️-使用方式) | 🛠️ | [故障排查](#️-故障排查) |
+</div>
+
+<br>
+
+## ✨ 为什么会有这个项目
+
+> **现代 RAG 的核心问题：** 向量高相似 ≠ 内容相关。查询 *"PET 双向拉伸"* 时，向量检索会开心地返回 *"PP 薄膜"* 文献（余弦相似度 0.90）—— 二者都处在"聚合物薄膜"的语义空间里，嵌入模型被骗了。LLM 随后幻觉出一个自信但错误的答案。
+
+本平台在**检索层**而非生成层解决这个问题。其核心方法 —— **QDCVR（查询驱动 · 内容验证检索）** —— 会读取候选文档正文，按独立的 **0–8 内容评分标准**打分，并执行一条不留情面的规则：
+
+> ### 🎯 *“向量很快召回，内容才是真裁决。”*
+> 即使向量相似度高达 **0.95**，只要内容评分 **≤ 4**，该文档就会被**丢弃**。
+
+<div align="center">
+
+| | 传统知识库工具 | **RAG Knowledge Platform** |
+|:---:|:---|:---|
+| 🔍 | 单一搜索策略（向量*或*关键词） | **多策略**：BM25 + 向量 + 标签语义 + 图谱扩展 |
+| 🧠 | 盲信向量相似度 | **内容验证检索** —— 独立的 0–8 内容裁决 |
+| 🤖 | AI 是后挂的，难集成 Agent | **Agent 原生**：76 个 MCP 工具，14 个技能，任意 MCP 客户端可用 |
+| 💡 | 无结构化知识复用 | **经验库**：E0–E12 全生命周期，P0/P1/P2 可信度分级 |
+| 🔧 | 多工具复杂安装，配置分散 | **一条命令** `ragctl setup`，单一 `config.yml` 真相源 |
+| 🪟 | 满屏终端窗口 | **静默无头** —— dev 和 prod 均零终端窗口 |
+
+</div>
+
+---
+
+## 🌟 八大支柱
+
+<div align="center">
+<img src="./docs/images/rag-pipeline.png" alt="QDCVR Agentic 优先企业检索流水线" width="900" />
+</div>
+
+| | 支柱 | 你将获得 |
+|:---:|:---|:---|
+| 📄 | **文档解析** | PDF / Word / Excel / PPT / 图片 → Markdown，基于 **MinerU OCR** 引擎 |
+| 🧠 | **QDCVR 检索** | 查询驱动、内容验证的检索 —— 独立 0–8 内容评分 |
+| 🔍 | **多策略搜索** | BM25 + 向量两阶段召回 · 跨库企业搜索 · `balance_kbs` 多样性防护 |
+| 📊 | **知识图谱** | Neo4j 驱动 · 14 个图谱工具 · 实体/关系图 · 跨库文档桥接 |
+| 💡 | **经验库** | E0–E12 全生命周期 · 结构化问题→方案→教训 · P0/P1/P2 可信度 · 衰减 |
+| 🔌 | **76 个 MCP 工具** | 知识库 CRUD · 搜索 · 图谱 · 经验 · 解析 · 标签 · 向量索引 · 生命周期 · 全 MCP 原生 |
+| 🎯 | **14 个 Agent 技能** | 自然语言命令 · 中英双语触发 · 自动分发到 Archival Agent |
+| 🤫 | **静默无头** | 所有启动器均 **零终端窗口** · dev 和 prod 行为一致 |
 
 ---
 
@@ -80,52 +109,36 @@ cd rag-knowledge
 完成。打开 **http://localhost:6789** 即可使用。
 
 <details>
-<summary><b>📋 <code>ragctl setup</code> 具体做了什么？</b></summary>
-
-| 步骤 | 操作 | 耗时 |
-|------|------|------|
-| 1 | 安装 `uv`（Python 包管理器），如缺失 | ~5 秒 |
-| 2 | 确保 Python 3.12 可用（uv 管理） | ~10 秒 |
-| 3 | 验证项目完整性（`backend/` + `web/`） | 即时 |
-| 4 | 从 `.env.example` 创建 `.env` | 即时 |
-| 5 | 安装后端依赖（FastAPI + torch + transformers + MinerU） | 5–15 分钟 |
-| 6 | 安装 kb-mcp 依赖（MCP 服务端） | ~30 秒 |
-| 7 | 安装前端依赖（Nuxt 3 + Ant Design Vue） | ~1 分钟 |
-| 8 | 预下载 BGE-M3 嵌入模型（~2.2 GB） | 2–10 分钟 |
-| 9 | 预下载 MinerU VLM 模型（OCR 引擎） | 3–10 分钟 |
-| 10 | 全局注册 `ragctl` → `~/.local/bin` | 即时 |
-| 11 | 最终环境检查 | ~2 秒 |
-
-</details>
-
-<details>
-<summary><b>🔧 Windows 用户 — 使用 PowerShell</b></summary>
+<summary><b>🔧 Windows 用户 — 使用相同命令（原生）</b></summary>
 
 ```powershell
-# 同样的命令，Windows 原生：
 .\ragctl.bat setup
 .\ragctl.bat up
 
-# 或已全局注册后：
+# 或 ragctl 全局注册后：
 ragctl setup
 ragctl up
 ```
-
 </details>
 
 > [!TIP]
 > **没有 Claude Code？没问题。** Web UI 完全独立运行。用任何 MCP 客户端即可访问 76 个工具，或直接在 `http://localhost:6789` 浏览和搜索。
 
+### ✅ 验证一切正常
+
+```bash
+ragctl status                                   # 双模式：dev + prod 并排显示
+curl http://localhost:8765/api/v1/health        # → {"status":"healthy"}
+```
+
 ---
 
-### 四种安装方式
-
-> 每种方式都能产生完整可用的平台 — 选择最适合你的。
+## 💻 四种安装方式
 
 <table>
 <tr>
 <th width="25%">A. Claude Code 插件<br><sub><code>推荐</code></sub></th>
-<th width="25%">B. OMP 全局安装<br><sub><code>Oh My Pi</code></sub></th>
+<th width="25%">B. OMP 全局安装</th>
 <th width="25%">C. Skills 复制 + 向导</th>
 <th width="25%">D. Git Clone（本地）</th>
 </tr>
@@ -139,7 +152,7 @@ claude plugin marketplace add kingdol666/rag-knowledge
 claude plugin install rag-knowledge
 ```
 
-然后说：`"初始化知识库"`
+然后你可以在 Claude Code || OMP 中简单地询问：`"初始化知识库系统"`。(/knowledgebase-init)
 
 </td>
 <td valign="top">
@@ -166,7 +179,7 @@ cp -r ~/rag-knowledge/.claude/skills/knowledgebase* ~/.claude/skills/
 </td>
 <td valign="top">
 
-需要完全手动控制，所有内容在一个目录
+需要完全手动控制
 
 ```bash
 git clone https://github.com/kingdol666/rag-knowledge.git
@@ -178,12 +191,24 @@ cd rag-knowledge
 </tr>
 </table>
 
-### ✅ 验证一切正常
+<details>
+<summary><b>📋 <code>ragctl setup</code> 具体做了什么？</b></summary>
 
-```bash
-ragctl status                 # 双模式: dev + prod 并排显示
-curl http://localhost:8765/api/v1/health   # → {"status":"healthy"}
-```
+| 步骤 | 操作 | 耗时 |
+|------|------|------|
+| 1 | 安装 `uv`（Python 包管理器），如缺失 | ~5 秒 |
+| 2 | 确保 Python 3.12 可用（uv 管理） | ~10 秒 |
+| 3 | 验证项目完整性（`backend/` + `web/`） | 即时 |
+| 4 | 从 `.env.example` 创建 `.env` | 即时 |
+| 5 | 安装后端依赖（FastAPI + torch + transformers + MinerU） | 5–15 分钟 |
+| 6 | 安装 kb-mcp 依赖（MCP 服务端） | ~30 秒 |
+| 7 | 安装前端依赖（Nuxt 3 + Ant Design Vue） | ~1 分钟 |
+| 8 | 预下载 BGE-M3 嵌入模型（~2.2 GB） | 2–10 分钟 |
+| 9 | 预下载 MinerU VLM 模型（OCR 引擎） | 3–10 分钟 |
+| 10 | 全局注册 `ragctl` → `~/.local/bin` | 即时 |
+| 11 | 最终环境检查 | ~2 秒 |
+
+</details>
 
 ---
 
@@ -191,126 +216,20 @@ curl http://localhost:8765/api/v1/health   # → {"status":"healthy"}
 
 只需以下工具在**开始前已安装** — `ragctl setup` 自动处理其余一切。
 
-<table>
-<tr>
-<th>工具</th><th>版本</th><th>是否必需</th><th>说明</th>
-</tr>
-<tr>
-<td><b>Git</b></td><td>任意</td><td>✅ 必需</td><td>克隆仓库</td>
-</tr>
-<tr>
-<td><b>Node.js</b></td><td>≥ 18（推荐 22）</td><td>✅ 必需</td><td><code>ragctl</code> CLI + Nuxt 前端</td>
-</tr>
-<tr>
-<td><b>uv</b></td><td>≥ 0.7</td><td>⚡ 自动安装</td><td>Python 包管理器 — <code>ragctl setup</code> 缺失时自动安装</td>
-</tr>
-<tr>
-<td><b>Python</b></td><td>3.12</td><td>⚡ via uv</td><td>uv 管理 Python 环境；无需手动安装 Python</td>
-</tr>
-<tr>
-<td><b>Docker</b></td><td>任意</td><td>📋 可选</td><td>仅 Neo4j 图谱需要。解析、搜索、经验功能不需要</td>
-</tr>
-<tr>
-<td><b>Rust</b></td><td>stable</td><td>📋 可选</td><td>仅构建 Tauri 桌面应用需要</td>
-</tr>
-</table>
+| 工具 | 版本 | 是否必需 | 说明 |
+|------|------|:--------:|------|
+| **Git** | 任意 | ✅ 必需 | 克隆仓库 |
+| **Node.js** | ≥ 18（推荐 22） | ✅ 必需 | `ragctl` CLI + Nuxt 前端 |
+| **uv** | ≥ 0.7 | ⚡ 自动安装 | Python 包管理器 — 缺失时 `ragctl setup` 自动安装 |
+| **Python** | 3.12 | ⚡ via uv | uv 管理 Python 环境；无需手动安装 |
+| **Docker** | 任意 | 📋 可选 | 仅 Neo4j 图谱需要。解析、搜索、经验功能不需要 |
+| **Rust** | stable | 📋 可选 | 仅构建 Tauri 桌面应用需要 |
 
 > **资源需求：** ~5 GB 磁盘 · 首次运行下载 BGE-M3（~2.2 GB）。默认源：**ModelScope**（国内快速）。海外用户在 `config.yml` 中设 `embedding.model_source: huggingface`。
 
 ---
 
-## 💡 为什么选择这个项目
-
-<table>
-<tr>
-<td width="50%" valign="top">
-
-### 传统知识库工具
-
-- 搜索、存储、AI 分层割裂
-- 手动安装，CLI 复杂
-- 难以集成 Agent
-- dev/prod 配置分离
-- 终端窗口杂乱
-- 无结构化知识复用
-- 单一搜索策略
-
-</td>
-<td width="50%" valign="top">
-
-### RAG Knowledge Platform
-
-- ✅ **统一流水线**：解析 → 索引 → 搜索 → 图谱 → 经验
-- ✅ **一条命令或一句话**：`ragctl setup` 或 `"初始化知识库"`
-- ✅ **原生 Agent 集成**：76 个 MCP 工具 + 14 个技能
-- ✅ **单一配置**：`config.yml` 是唯一真相源；`--appmode` 运行时切换
-- ✅ **静默无头**：dev 和 prod 均零终端窗口
-- ✅ **经验库**：E0–E12 全生命周期，P0/P1/P2 可信度分级
-- ✅ **多策略搜索**：BM25 + 向量 + 标签语义 + 图谱扩展
-
-</td>
-</tr>
-</table>
-
----
-
-## 🌟 核心特性
-
-<div align="center">
-  <img src="./docs/images/rag-pipeline.png" alt="QDCVR 检索流水线" width="880" />
-</div>
-
-<table>
-<tr>
-<th width="5%">图标</th><th width="20%">支柱</th><th>说明</th>
-</tr>
-<tr>
-<td align="center">📄</td>
-<td><b>文档解析</b></td>
-<td>PDF / Word / Excel / PPT / 图片 → Markdown，基于 <b>MinerU OCR</b> 引擎</td>
-</tr>
-<tr>
-<td align="center">🧠</td>
-<td><b>QDCVR 检索</b></td>
-<td>查询驱动、内容验证的检索 — 独立 0–8 内容评分。<em>向量很快，内容更准。</em></td>
-</tr>
-<tr>
-<td align="center">🔍</td>
-<td><b>多策略搜索</b></td>
-<td>BM25 + 向量两阶段召回 · 跨库企业搜索 · 标签语义 + 图谱扩展 · <code>balance_kbs</code></td>
-</tr>
-<tr>
-<td align="center">📊</td>
-<td><b>知识图谱</b></td>
-<td>Neo4j 驱动 · 14 个图谱工具 · 实体/关系图 · 跨库文档桥接 · 中心性发现</td>
-</tr>
-<tr>
-<td align="center">💡</td>
-<td><b>经验库</b></td>
-<td>E0–E12 全生命周期 · 结构化问题→方案→教训 · P0/P1/P2 可信度 · 陈旧检测 · 草稿审批</td>
-</tr>
-<tr>
-<td align="center">🔌</td>
-<td><b>76 个 MCP 工具</b></td>
-<td>知识库 CRUD · 搜索 · 图谱 · 经验 · 解析 · 标签 · 向量索引 · 服务生命周期 · 全 MCP 原生</td>
-</tr>
-<tr>
-<td align="center">🎯</td>
-<td><b>14 个 Claude Code 技能</b></td>
-<td>自然语言命令 · 中英双语触发 · 自动分发到 Archival Agent</td>
-</tr>
-<tr>
-<td align="center">🤫</td>
-<td><b>静默无头</b></td>
-<td>所有启动器均 <b>零终端窗口</b> · dev 和 prod 行为一致 · 日志统一</td>
-</tr>
-</table>
-
----
-
-## 🖥️ 使用方式
-
-四种界面，一个后端。选择适合你的工作流。
+## 🖥️ 使用方式 — 四种界面，一个后端
 
 ### 1. Claude Code — *自然语言*
 
@@ -337,7 +256,6 @@ curl http://localhost:8765/api/v1/health   # → {"status":"healthy"}
 ```bash
 ragctl up                     # 启动全部（静默，dev 模式）
 ragctl up --appmode prod      # prod 端口（8001/3000）
-ragctl up --force             # 强制重启
 ragctl status                 # 双模式：dev + prod 并排
 ragctl logs web --tail        # 实时跟踪 Web 日志
 ragctl restart backend -f     # 强制重启单个服务
@@ -365,6 +283,8 @@ ragctl down --appmode prod    # 仅停止 prod（Neo4j 保留）
 | `ragctl desktop` · `ui` | 启动 Tauri 桌面控制台 |
 | `ragctl clean` | 清理 MinerU 产物 + 缓存（`--model` 需二次确认） |
 
+**Flags：** `--appmode dev\|prod`（`--mode`, `-m`）、`--port-backend N`、`--port-web N`、`--no-neo4j` / `--no-backend` / `--no-web`、`--force`（`-f`）、`--tail`
+
 </details>
 
 ### 3. MCP 客户端 — *任意 Agent*
@@ -382,12 +302,12 @@ kb_graph_cross_kb_documents(min_kbs=2)
 
 ---
 
-## 🔌 MCP 工具 — 76
+## 🔌 MCP 工具 — 76 个
 
 全部通过 `mcp__kb-mcp__*` 从 Claude Code 或任意 MCP 客户端访问。
 
 | 类别 | 数量 | 关键工具 |
-|------|------|---------|
+|------|:----:|---------|
 | **服务生命周期** | 6 | `kb_project_start`, `kb_project_status`, `kb_project_preflight`, `kb_project_version`, `kb_project_update`, `backend_status` |
 | **知识库 CRUD** | 7 | `kb_list`, `kb_create`, `kb_update`, `kb_delete`, `kb_catalog`, `kb_doc_catalog`, `kb_get_documents` |
 | **文档 CRUD** | 7 | `kb_doc_read`, `kb_doc_create`, `kb_doc_update_meta`, `kb_doc_update_content`, `kb_doc_delete`, `kb_doc_batch_delete`, `kb_doc_move` |
@@ -401,7 +321,7 @@ kb_graph_cross_kb_documents(min_kbs=2)
 
 ---
 
-## 🎯 技能 — 14
+## 🎯 技能 — 14 个
 
 | 技能 | 流程 | 用途 |
 |------|------|------|
@@ -424,6 +344,47 @@ kb_graph_cross_kb_documents(min_kbs=2)
 
 ---
 
+## 🧠 QDCVR 检索方法
+
+旗舰贡献。一条七阶段流水线，让检索变得可信：
+
+```
+查询 → Step 0: 意图识别 + 改写 → Step 1: 智能选库
+      → Step 2: 两阶段召回 (BM25 → 向量, balance_kbs)
+      → Step 2.5: 去重 + 硬阈值
+      → Step 3: 内容验证 (0–8 打分) ⭐
+      → Step 5: 置信度分级 (P0 / P1 / P2)
+      → Step 6: 回答 + 盲点声明
+```
+
+**内容验证评分标准**从三个维度给每个候选打分：
+
+| 维度 | 分值 | 判据 |
+|------|:----:|------|
+| 主题相关 | 0–3 | 3 = 正文直接围绕查询主体 |
+| 场景/问题匹配 | 0–3 | 3 = 直接解决查询的问题 |
+| 答案证据 | 0–2 | 2 = 含可直接引用的数据/步骤/结论 |
+
+> **决策规则：** `≥ 6 分 → 采纳 (P0)` · `= 5 分 → 补充 (P1)` · `≤ 4 分 → 丢弃` — **与向量相似度无关。**
+
+<details>
+<summary><b>📖 经验可信度模型 (P0/P1/P2)</b></summary>
+
+结构化运维知识（问题→方案→教训）通过 13 阶段全生命周期（**E0–E12**）管理，含可信度分级和时效衰减：
+
+| 层级 | 条件 | 呈现方式 |
+|------|------|---------|
+| **P0 强** | 向量≥0.65 ∧ 内容≥6 ∧ 评分≥4 ∧ 审核数≥1 | 直接引用作答 |
+| **P1 已确认** | 向量≥0.45 ∧ 内容≥4 | 引用并标注 |
+| **P2 补充** | 向量≥0.35 ∧ 内容≥3 | 默认隐藏，按需展开 |
+| **丢弃** | 内容验证失败 或 向量 < 0.35 | 永不呈现 |
+
+**衰减规则：** 陈旧未验证（>30天, 应用0次）→ 降级；有争议（评分<2, 审核≥3）→ 强制封顶 P2；未审核（0审核 ∧ 应用0次）→ 封顶 P1。
+
+</details>
+
+---
+
 ## 🏗️ 架构
 
 ```
@@ -437,7 +398,7 @@ kb_graph_cross_kb_documents(min_kbs=2)
          │  服务间通信
          ▼
 ┌──────────────────┐
-│  FastAPI Backend  │  端口 8765 (dev) / 8001 (prod)
+│  FastAPI 后端     │  端口 8765 (dev) / 8001 (prod)
 │  + MinerU OCR     │  临时端口
 └────────┬─────────┘
          │  文件读取
@@ -454,6 +415,16 @@ kb_graph_cross_kb_documents(min_kbs=2)
 ```
 
 > **原则：** 写入 → HTTP API（后端/Web 代理）。读取 → 直接文件访问（`.tree-fs.json` + `.knowledge-base.yml`）。
+
+### 五层数据模型
+
+| 层级 | 内容 | 格式 |
+|------|------|------|
+| L1 原始 | 原始文档 | PDF / DOCX / XLSX / PNG |
+| L2 解析 | Markdown + 图片 | `.md` |
+| L3 向量 | 分块嵌入 | ChromaDB collections |
+| L4 图谱 | 实体/关系节点 | Neo4j |
+| L5 经验 | 结构化教训 | YAML + Markdown |
 
 ---
 
@@ -481,7 +452,7 @@ ragctl down --appmode prod     # 仅停止 prod（Neo4j 保留）
 
 ### API 速率限制
 
-后端内置滑动窗口速率限制器（在 `config.yml` 中配置）：
+内置滑动窗口速率限制器（在 `config.yml` 中配置）：
 
 ```yaml
 server:
@@ -509,8 +480,6 @@ ragctl logs backend            # 最近 80 行
 ragctl logs web --tail         # 实时跟踪（Ctrl+C 退出）
 ragctl logs mineru --lines 200 # 200 行 OCR 输出
 ```
-
-> 无论用哪个启动器启动服务（`ragctl`、Tauri、MCP 的 `kb_project_start`），它们都写入相同文件。
 
 ---
 
@@ -578,6 +547,7 @@ rag-knowledge/
 ├── .omp/                 ← OMP 原生 Agent、命令、MCP 配置
 ├── .claude-plugin/       ← 插件 + 市场清单
 ├── scripts/              ← GPU 检测、技能验证、OMP 安装器
+├── docs/                 ← 架构、论文框架、测试方案
 ├── .mcp.json             ← kb-mcp MCP 自动连接 (Claude Code 本地项目)
 ├── config.yml            ← 中央配置（唯一真相源）
 ├── docker-compose.yml    ← Neo4j 容器
@@ -626,19 +596,23 @@ MIT © [kingdol](https://github.com/kingdol666)
 ---
 
 <div align="center">
-  <sub>使用</sub>
-  <a href="https://fastapi.tiangolo.com/">FastAPI</a>
-  <sub>·</sub>
-  <a href="https://nuxt.com/">Nuxt 3</a>
-  <sub>·</sub>
-  <a href="https://neo4j.com/">Neo4j</a>
-  <sub>·</sub>
-  <a href="https://www.chromadb.com/">ChromaDB</a>
-  <sub>·</sub>
-  <a href="https://modelcontextprotocol.io/">MCP</a>
-  <sub>·</sub>
-  <a href="https://mineru.net/">MinerU</a>
-  <sub> 构建</sub>
-  <br><br>
-  <sub>⭐ 如果这个项目对你有帮助，请给个 Star！</sub>
+
+<sub>使用</sub>
+<a href="https://fastapi.tiangolo.com/">FastAPI</a>
+<sub>·</sub>
+<a href="https://nuxt.com/">Nuxt 3</a>
+<sub>·</sub>
+<a href="https://neo4j.com/">Neo4j</a>
+<sub>·</sub>
+<a href="https://www.chromadb.com/">ChromaDB</a>
+<sub>·</sub>
+<a href="https://modelcontextprotocol.io/">MCP</a>
+<sub>·</sub>
+<a href="https://mineru.net/">MinerU</a>
+<sub> 构建</sub>
+
+<br><br>
+
+<sub>⭐ 如果这个项目对你有帮助，请给个 Star！</sub>
+
 </div>

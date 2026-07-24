@@ -335,7 +335,7 @@ try {
     gpu_name: null,
     vram_mb: null,
     cuda_driver_version: null,
-    torch_variant: (platform === 'win32' || (platform === 'linux' && isX86_64)) ? 'cpu-forced' : 'cpu',
+    torch_variant: (platform === 'win32' || (platform === 'linux' && (arch === 'x64' || arch === 'ia32'))) ? 'cpu-forced' : 'cpu',
     torch_wheel: (platform === 'win32' || (platform === 'linux' && (arch === 'x64' || arch === 'ia32'))) ? '+cpu' : 'PyPI-default',
     supports_cu130_index: (platform === 'win32' || platform === 'linux') && (arch === 'x64' || arch === 'ia32'),
     description: `Detection failed (${e.message}) — falling back to CPU`,
