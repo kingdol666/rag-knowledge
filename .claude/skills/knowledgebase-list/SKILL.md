@@ -130,8 +130,9 @@ $TREE_STORAGE_PATH/
 
 | ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
 |-------------|------|-------------|
-| 非读-only 操作（改/删/移） | List 是纯查看 | 读-only，其他操作路由到 Manage/Ingest |
-| 全库用 `fs_get_tree(max_depth=0)` | 大库拖慢 | 先 L1 用 `max_depth=2`，再按需 L3 |
-| 不展示标签词表 | 用户想看分类 | L1 必须展示 `kb_tags_list()` |
-| 不用 lightweight 方法 | 信息过载 | `kb_catalog`→`kb_doc_catalog` 递进 |
-| 省略 KB 的 description | 用户靠名字猜内容 | L1 必须展示 description |
+| 非读-only 操作（改/删/移） | List 是纯查看——破坏用户"只是看看"的预期 | 读-only，其他操作路由到 Manage/Ingest |
+| 全库用 `fs_get_tree(max_depth=0)` | 大库（>500文件）序列化 524KB JSON 拖慢 context | 先 L1 用 `max_depth=2`，按需才 L3 全树 |
+| 不展示标签词表 | 用户无法判断知识库覆盖了哪些领域 | L1 必须展示 `kb_tags_list()` |
+| 信任 `doc_count` 为精确文档数 | 含子KB容器条目——实际文档数偏少 | 用 `file_type` 过滤或 `fs_get_tree` 区分 |
+| `vector_index` 缺失就报"未索引" | YAML 元数据可能漏写——向量实际在 ChromaDB | 用 `kb_search_vector(query, kb_id)` 实测验证 |
+| 展示子KB用 UUID | `kb_graph_kb_overview` 返回 UUID——用户看不懂 | 回查 `kb_catalog()` 获取可读名 |

@@ -10,6 +10,8 @@ description: >
 
 # Knowledgebase Update — 版本检查与安全升级
 > **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+76工具地图）
+>
+> **关于跨技能引用**：本 skill 引用的 `kb-architecture.md` 和 `mcp-preflight-check.md` 位于 `knowledgebase/references/`（共享引用，非本地副本）。这是**刻意的 DRY 设计**——14 个技能作为同一插件打包发布（见 `.claude-plugin/plugin.json`），始终同目录共存，故共享引用路径稳定。如需将 update 独立分发，需将这两个文件复制到本地 `references/`。
 
 
 **执行者：此技能由主 Agent 直接执行（不委托 Archival）**
@@ -188,11 +190,11 @@ mcp__kb-mcp__backend_status()
 
 ## ⚠️ NEVER
 
-| ❌ | ✅ |
-|----|----|
-| 不问用户直接 `git reset --hard` | 默认 `--ff-only`；脏树拒绝；`--force` 需确认 |
-| 跳过 dry-run 直接 pull | Phase 1 必须先 `--check` |
-| 版本对比用硬编码字符串 | 读 `VERSION` + GitHub API / raw VERSION |
-| 更新失败仍报成功 | 检查 exit code + 新 VERSION |
-| 在非 git 目录硬 pull | Phase 0 检测 is_git，引导 re-clone 或 init |
-| 用 curl 绕过 ragctl 自己拼 git | 统一 `ragctl update` / MCP `kb_project_update` |
+| ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
+|-------------|------|-------------|
+| 不问用户直接 `git reset --hard` | 不可逆覆盖——用户的本地修改永久丢失 | 默认 `--ff-only`；脏树拒绝；`--force` 需二次确认 |
+| 跳过 dry-run 直接 pull | 盲更新——用户不知道变更范围 | Phase 1 必须先 `--check`，展示版本对比 |
+| 版本对比用硬编码字符串 | 版本号会变——硬编码迅速过时 | 读 `VERSION` 文件 + GitHub API / raw VERSION |
+| 更新失败仍报成功 | 用户误信已更新——实际代码未变 | 检查 exit code + 读新 `VERSION` 确认 |
+| 在非 git 目录硬 pull | `git pull` 报错——非 git 仓库无法操作 | Phase 0 检测 is_git，引导 re-clone 或 init |
+| 用 curl 绕过 ragctl 自己拼 git | 绕过原子性和审计——手动 git 可能留下半合并状态 | 统一 `ragctl update` / MCP `kb_project_update` |

@@ -320,8 +320,23 @@ class GraphService:
             sub_results.append({"kb_id": sub["kb_id"], "kb_path": sub["path"], **sub_r})
         self._relate_kbs_by_tags(kb_id_resolved, sub_kbs)
         total_docs = direct["docs_processed"] + sum(s["docs_processed"] for s in sub_results)
-        total_rels = direct["total_relations"] + sum(s["total_relations"] for s in sub_results)
-        return {"success": True, "kb_id": kb_id_resolved, "kb_path": kb_path, "docs_processed": total_docs, "docs_skipped": direct["docs_skipped"] + sum(s["docs_skipped"] for s in sub_results), "total_relations": total_rels, "sub_kb_count": len(sub_kbs), "sub_kbs": sub_results, "errors": direct["errors"] + [e for s in sub_results for e in s["errors"]]}
+        # Count ACTUAL relationships from Neo4j instead of the incomplete per-doc
+        # accumulation (which misses vector_similar edges built in a separate phase).
+        all_kb_ids = [kb_id_resolved] + [s["kb_id"] for s in sub_kbs]
+        actual_total_rels = direct["total_relations"] + sum(s["total_relations"] for s in sub_results)
+        try:
+            with self.driver.session(database=config.graph_database) as session:
+                rec = session.run(
+                    "UNWIND $kb_ids AS kid "
+                    "MATCH (d:Document {kb_id: kid})-[r]->() "
+                    "RETURN count(r) AS cnt",
+                    kb_ids=all_kb_ids,
+                ).single()
+                if rec:
+                    actual_total_rels = rec["cnt"]
+        except Exception as e:
+            logger.warning("Post-build relation count query failed: %s", e)
+        return {"success": True, "kb_id": kb_id_resolved, "kb_path": kb_path, "docs_processed": total_docs, "docs_skipped": direct["docs_skipped"] + sum(s["docs_skipped"] for s in sub_results), "total_relations": actual_total_rels, "sub_kb_count": len(sub_kbs), "sub_kbs": sub_results, "errors": direct["errors"] + [e for s in sub_results for e in s["errors"]]}
 
     def _build_single_kb_docs(self, kb_id, kb_path, force, parent_kb_id=""):
         from app.services.storage_reader_service import storage_reader

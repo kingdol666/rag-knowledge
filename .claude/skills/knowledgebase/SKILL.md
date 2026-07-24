@@ -94,15 +94,10 @@ Each sub-skill's SKILL.md must detect the scenario and delegate execution to the
 > **触发契约完整版**：[skill-trigger-contract.md](references/skill-trigger-contract.md)（摘自 CLAUDE.md，含五条强制规则和 MCP 优先原则）。
 
 ### ⭐ 规则 1：触发不可绕过
-- **用户请求含上表任意关键词 → 必须路由到 knowledgebase 技能**
-- 禁止用主观经验、通用知识或MCP工具直接执行
-- 无法确定时默认路由，不做"我觉得不像KB操作"的判断
+用户请求含上表任意关键词 → 必须路由到 knowledgebase 技能。禁止用主观经验或通用知识直接执行。完整触发关键词表 + 例外条款见 [skill-trigger-contract.md 第一条](references/skill-trigger-contract.md)。
 
 ### ⭐ 规则 2：不可自行操作
-- 调度器 **禁止** 自行调用任何 kb-mcp MCP 工具
-- 调度器 **禁止** 自行搜索/读取/修改知识库
-- **唯一允许的操作**：路由到 `skill://knowledgebase-<scenario>` 获取详细流程
-- ⭐ 并且子 Skill 执行时必须通过 MCP 工具（禁止终端/API 绕行，详见子 Skill 的 MCP 优先原则）
+调度器**唯一职责**：路由到 `skill://knowledgebase-<scenario>`。禁止自行调用 MCP 工具或搜索/修改知识库。子 Skill 执行时的 MCP 优先原则详见 [skill-trigger-contract.md 第五条](references/skill-trigger-contract.md)。
 
 ### ⭐ 规则 3：路由后必须委托 Archival
 - 子 skill 的 SKILL.md 中检测到场景后，**必须委托 Archival 子 Agent 执行**

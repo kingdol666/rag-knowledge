@@ -160,4 +160,4 @@ Use after deleting documents or KBs to keep graph clean.
 | 误读 `total_relations=0` | stats bug，实际有数据 | `kb_graph_document()` 抽检验证 |
 | 用 `kb_graph_build()`（空 kb_id=全库）频繁跑 | 重，消耗 Neo4j 资源 | 仅批量清理后用全库；日常用 `kb_graph_build(kb_id=...)` 单 KB |
 
-See [graph-tools.md](references/graph-tools.md) for full tool parameter reference.
+**⭐ MANDATORY — READ [graph-tools.md](references/graph-tools.md) before any graph build/query operation** — full 14-tool parameter reference with known gotchas per tool.
