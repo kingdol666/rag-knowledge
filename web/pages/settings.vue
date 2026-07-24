@@ -229,7 +229,7 @@ import {
   SettingOutlined, CloudServerOutlined, DatabaseOutlined, ThunderboltOutlined,
   ExperimentOutlined, ShareAltOutlined, SearchOutlined, FileTextOutlined,
   CodeOutlined, ReloadOutlined, CheckOutlined, ExclamationCircleOutlined,
-  DeleteOutlined, CheckCircleOutlined, ClearOutlined,
+  DeleteOutlined, CheckCircleOutlined, ClearOutlined, BulbOutlined,
 } from '@ant-design/icons-vue'
 
 // ── Types ──────────────────────────────────────────────────────────────
@@ -258,7 +258,7 @@ interface ConfigSection {
 const iconMap: Record<string, any> = {
   CloudServerOutlined, DatabaseOutlined, ThunderboltOutlined,
   ExperimentOutlined, ShareAltOutlined, SearchOutlined, FileTextOutlined,
-  SettingOutlined, ClearOutlined,
+  SettingOutlined, ClearOutlined, BulbOutlined,
 }
 
 // ── State ──────────────────────────────────────────────────────────────

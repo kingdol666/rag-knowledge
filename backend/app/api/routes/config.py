@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/config", tags=["Configuration"])
 
 # Sections stored in the shared config.yml (rag-knowledge/config.yml)
-SHARED_SECTIONS = ("server", "storage", "vector", "embedding", "graph", "search")
+SHARED_SECTIONS = ("server", "storage", "vector", "embedding", "graph", "search", "experience_auto")
 # Sections stored in backend/config.yml
 BACKEND_SECTIONS = ("mineru",)
 
@@ -330,6 +330,13 @@ async def update_config(req: ConfigUpdateRequest) -> dict[str, Any]:
         # 4. Hot-reload config in memory
         config.reload()
         logger.info("Configuration hot-reloaded successfully")
+
+        # Notify meditation scheduler to pick up new interval/enabled state
+        try:
+            from app.services.experience_meditation_service import meditation_scheduler
+            meditation_scheduler.notify_config_change()
+        except Exception:
+            pass  # scheduler not available — non-fatal
 
         # 5. Return updated config
         return await get_config()

@@ -135,8 +135,20 @@ CONFIG_SCHEMA: dict[str, Any] = {
             "model_source": {"label": "模型源", "type": "select", "options": ["modelscope", "huggingface"], "description": "modelscope 国内更快。", "default": "modelscope"},
         },
     },
+    "experience_auto": {
+        "label": "经验自动总结 (冥想记忆)",
+        "icon": "BulbOutlined",
+        "description": "定期自动从高频问题+知识库回答归纳经验草稿。类似 OpenClaw 冥想记忆：采集问题→匹配KB→验证文档→生成草稿。",
+        "fields": {
+            "enabled": {"label": "启用定时冥想", "type": "boolean", "description": "开启后按设定间隔自动运行经验归纳。草稿进入审核池，需确认后生效。", "default": False},
+            "interval_hours": {"label": "运行间隔 (小时)", "type": "int", "description": "两次冥想循环之间的间隔。修改后下个周期热生效。", "default": 24, "min": 1, "max": 168},
+            "lookback_days": {"label": "回溯天数", "type": "int", "description": "扫描最近N天的问答历史作为归纳源。", "default": 7, "min": 1, "max": 90},
+            "min_cluster_count": {"label": "最小簇大小", "type": "int", "description": "同类问题至少出现N次才考虑归纳（过滤一次性问题）。", "default": 2, "min": 1, "max": 20},
+            "max_drafts_per_run": {"label": "每轮最大草稿数", "type": "int", "description": "每轮冥想最多生成的经验草稿数（宁缺毋滥）。", "default": 5, "min": 1, "max": 50},
+            "dry_run": {"label": "试运行模式", "type": "boolean", "description": "仅记录归纳结果到日志，不实际创建草稿。用于调优参数。", "default": False},
+        },
+    },
 }
-
 ENV_SCHEMA: dict[str, Any] = {
     "label": "环境变量 (.env)",
     "icon": "SettingOutlined",

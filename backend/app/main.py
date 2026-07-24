@@ -119,6 +119,18 @@ async def lifespan(app: FastAPI):
     else:
         logger.info("Graph (Neo4j) disabled in config — skipping probe")
 
+    # ── Start Experience Meditation Scheduler ────────────────────────
+    try:
+        from app.services.experience_meditation_service import meditation_scheduler
+        meditation_scheduler.start()
+        if config.experience_auto_config.get("enabled", False):
+            logger.info("Experience meditation: ENABLED (interval=%dh)",
+                        config.experience_auto_config.get("interval_hours", 24))
+        else:
+            logger.info("Experience meditation: disabled (will activate if config enables it)")
+    except Exception:
+        logger.exception("Meditation scheduler startup failed (non-fatal)")
+
 
     yield
 
@@ -134,6 +146,13 @@ async def lifespan(app: FastAPI):
             logger.info("Neo4j driver closed")
         except Exception:
             pass
+
+    # ── Stop Experience Meditation Scheduler ─────────────────────────
+    try:
+        from app.services.experience_meditation_service import meditation_scheduler
+        await meditation_scheduler.stop()
+    except Exception:
+        pass
 
     logger.info("RAG Knowledge Backend stopped.")
 

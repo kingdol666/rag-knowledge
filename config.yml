@@ -79,3 +79,15 @@ search:
     stage1_graph_weight: 0.5
     graph_neighbor_depth: 1
     min_candidates: 3
+
+
+# -- Experience Auto-Summarization (Meditation) --
+# Periodic auto-induction of experiences from recurring user questions.
+# Like OpenClaw's meditation memory: harvest Q&A → match KB → verify docs → draft experiences.
+experience_auto:
+  enabled: false               # Master switch. false = scheduler stays idle.
+  interval_hours: 24           # How often to run a meditation cycle.
+  lookback_days: 7             # Scan questions from the last N days.
+  min_cluster_count: 2         # Min similar questions in a cluster to consider.
+  max_drafts_per_run: 5        # Cap auto-created drafts per cycle (quality > quantity).
+  dry_run: false               # true = log results only, do NOT create drafts.

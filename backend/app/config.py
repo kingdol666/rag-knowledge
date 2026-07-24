@@ -92,7 +92,7 @@ class Config:
         if "server" in shared:
             self._config.setdefault("server", {}).update(shared["server"])
 
-        for section in ("storage", "vector", "embedding", "graph", "search"):
+        for section in ("storage", "vector", "embedding", "graph", "search", "experience_auto"):
             if section in shared:
                 self._config[section] = shared[section]
 
@@ -359,6 +359,17 @@ class Config:
     @property
     def two_stage_config(self) -> dict:
         return self.search_config.get("two_stage", {})
+
+    # ── Experience Auto-Summarization (Meditation) ───────────────────
+
+    @property
+    def experience_auto_config(self) -> dict:
+        """Experience meditation scheduler config.
+
+        Returns dict with keys: enabled, interval_hours, lookback_days,
+        min_cluster_count, max_drafts_per_run, dry_run.
+        """
+        return self._config.get("experience_auto", {})
 
 
 config = Config()

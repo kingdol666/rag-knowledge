@@ -19,6 +19,23 @@ from app.api.deps.auth import verify_token
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/v1/experience", tags=["Experience"])
+from app.services.experience_meditation_service import meditation_scheduler
+
+
+# ── Meditation (auto-summarization) ────────────────────────────────────
+# These are static routes — must precede the {kb_id} dynamic routes.
+
+@router.get("/meditation/status")
+async def meditation_status():
+    """Get the experience meditation scheduler status."""
+    return {"success": True, "status": meditation_scheduler.status}
+
+
+@router.post("/meditation/run", dependencies=[Depends(verify_token)])
+async def meditation_run():
+    """Manually trigger one meditation cycle immediately."""
+    report = await meditation_scheduler.run_meditation_now()
+    return {"success": not report.get("error"), "report": report}
 
 
 @router.post("/global-search")

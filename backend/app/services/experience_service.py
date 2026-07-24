@@ -538,7 +538,8 @@ class ExperienceService:
         by_category = {}
         by_severity = {}
         total_applied = 0
-        avg_rating = 0.0
+        rated_exps = []  # 仅 review_count > 0 的经验
+        unrated_count = 0
         # V2: 对每条经验计算综合可信度评分
         def _credibility_score(e: dict) -> float:
             """0-1: 综合可信度。考虑时效性、应用次数、评分。"""
@@ -562,9 +563,13 @@ class ExperienceService:
             sev = e.get("severity", "normal")
             by_severity[sev] = by_severity.get(sev, 0) + 1
             total_applied += e.get("applied_count", 0)
-            avg_rating += e.get("rating_avg", 0)
+            if e.get("review_count", 0) > 0:
+                rated_exps.append(e.get("rating_avg", 0))
+            else:
+                unrated_count += 1
 
-        avg_rating = round(avg_rating / total, 2) if total > 0 else 0.0
+        # avg_rating 仅基于已评审经验，避免未评审经验(0.0)拉低均值
+        reviewed_avg_rating = round(sum(rated_exps) / len(rated_exps), 2) if rated_exps else 0.0
 
         return {
             "success": True,
@@ -573,8 +578,9 @@ class ExperienceService:
                 "by_category": by_category,
                 "by_severity": by_severity,
                 "total_applied": total_applied,
-                "avg_rating": avg_rating,
-                "total_tags": len(index.get("experience_tags", [])),
+                "avg_rating": reviewed_avg_rating,  # 仅已评审经验的均值
+                "unrated_count": unrated_count,      # 未评审经验数
+                "reviewed_count": len(rated_exps),   # 已评审经验数
                 "top_experiences": [
                     {"id": e["id"], "title": e.get("title", ""), "rating": e.get("rating_avg", 0),
                      "credibility": _credibility_score(e)}
