@@ -10,6 +10,7 @@ dist/
 .env
 .env.local
 .env.*.local
+.env.skillopt
 
 # IDE
 .vscode/
@@ -35,6 +36,10 @@ garden-gpt-image-2/
 *.bak
 temp/
 tmp/
+
+# SkillOpt-Sleep tool artifacts (probe scripts + run logs, local only)
+.skillopt-sleep/
+.skillopt-*/
 
 # Runtime data
 storage/
