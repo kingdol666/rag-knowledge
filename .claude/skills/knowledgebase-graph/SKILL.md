@@ -1,6 +1,7 @@
 ---
 name: knowledgebase-graph
-description: Knowledge graph build, query, and analysis for Neo4j-powered document relationship graph. Based on document metadata (tags, KB membership). Build per KB or globally, query (KB overview, document-centric, cross-KB discovery, keyword search, neighborhood exploration), cleanup (delete document/KB nodes). Triggered by: 图谱, 知识图谱, graph, knowledge graph, neo4j, 实体关系, entity, relationship, build graph, 构建图谱, cross-KB, 跨知识库, document path, 文档路径, central document, 核心文档.
+description: >
+  Knowledge graph build, query, and analysis for Neo4j-powered document relationship graph. Based on document metadata (tags, KB membership). Build per KB or globally, query (KB overview, document-centric, cross-KB discovery, keyword search, neighborhood exploration), cleanup (delete document/KB nodes). Triggered by: 图谱, 知识图谱, graph, knowledge graph, neo4j, 实体关系, entity, relationship, build graph, 构建图谱, cross-KB, 跨知识库, document path, 文档路径, central document, 核心文档.
 ---
 
 # Knowledge Graph — Build, Query, Analyze

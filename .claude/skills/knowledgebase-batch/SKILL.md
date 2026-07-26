@@ -1,6 +1,7 @@
 ---
 name: knowledgebase-batch
-description: High-volume batch operations. B1→B7: bulk tag migration, bulk description updates, directory mass ingestion (file-type routing), mass document move, cross-KB dedup, export summary, graph rebuild. All batch ops follow survey→plan→confirm→execute→verify. Triggered by: 批量, 所有文档, 全部, 大规模, 批量操作, batch, bulk, mass, all documents, every KB, repetitive, 全量, 一次性处理, 统一修改.
+description: >
+  High-volume batch operations. B1→B7: bulk tag migration, bulk description updates, directory mass ingestion (file-type routing), mass document move, cross-KB dedup, export summary, graph rebuild. All batch ops follow survey→plan→confirm→execute→verify. Triggered by: 批量, 所有文档, 全部, 大规模, 批量操作, batch, bulk, mass, all documents, every KB, repetitive, 全量, 一次性处理, 统一修改.
 ---
 
 # Knowledge Batch — High-Volume Operations

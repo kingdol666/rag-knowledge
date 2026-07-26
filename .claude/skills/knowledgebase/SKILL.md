@@ -1,6 +1,7 @@
 ---
 name: knowledgebase
-description: Knowledge base management — primary entry point and dispatcher. Routes user requests to the correct sub-skill based on scenario matching (ingest, search, manage, organize, verify, list, batch, experience, graph). NEVER handles KB operations directly. Triggered by: 知识库, KB, 文档管理, 入库, 上传, 解析, 搜索, 检索, 查看, 整理, 校验, 经验, 图谱, 批量, store, upload, parse, search, find, query, list, show, verify, audit, organize, experience, graph, batch, and any knowledge base operation phrase.
+description: >
+  Knowledge base management — primary entry point and dispatcher. Routes user requests to the correct sub-skill based on scenario matching (ingest, search, manage, organize, verify, list, batch, experience, graph). NEVER handles KB operations directly. Triggered by: 知识库, KB, 文档管理, 入库, 上传, 解析, 搜索, 检索, 查看, 整理, 校验, 经验, 图谱, 批量, store, upload, parse, search, find, query, list, show, verify, audit, organize, experience, graph, batch, and any knowledge base operation phrase.
 ---
 
 # Knowledge Base — Dispatcher

@@ -1,6 +1,7 @@
 ---
 name: knowledgebase-verify
-description: Knowledge base integrity and quality validation. V1→V9: three-way metadata consistency (disk↔.tree-fs.json↔.knowledge-base.yml), document integrity, parse quality, index coverage+repair, scorecard (max 115), report, tag health (orphan+trash detection), experience health (stale+orphan+test pollution), auto-fix (repeat collections, orphan tags, missing indexes). Read-only by default; repair requires explicit instruction. Triggered by: 校验, 核对, 完整性, 健康检查, 验证, 检查, 一致性, verify, validate, integrity, health check, quality audit, check KB, 检测问题, 审计知识库.
+description: >
+  Knowledge base integrity and quality validation. V1→V9: three-way metadata consistency (disk↔.tree-fs.json↔.knowledge-base.yml), document integrity, parse quality, index coverage+repair, scorecard (max 115), report, tag health (orphan+trash detection), experience health (stale+orphan+test pollution), auto-fix (repeat collections, orphan tags, missing indexes). Read-only by default; repair requires explicit instruction. Triggered by: 校验, 核对, 完整性, 健康检查, 验证, 检查, 一致性, verify, validate, integrity, health check, quality audit, check KB, 检测问题, 审计知识库.
 ---
 
 # Knowledge Verify — Integrity & Quality

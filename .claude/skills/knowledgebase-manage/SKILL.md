@@ -1,6 +1,7 @@
 ---
 name: knowledgebase-manage
-description: Document and KB administration. M1→M6 workflow: survey, confirm destructive ops, execute (move/rename/delete/merge/update), post-change reindex+experience linkage, verify, content update flow. All operations are atomic (disk + .tree-fs.json + .knowledge-base.yml). Triggered by: 移动, 改名, 重命名, 删除文档, 删除KB, 合并KB, move, rename, delete, merge, update content, 移动文档, 更新内容, 修改描述.
+description: >
+  Document and KB administration. M1→M6 workflow: survey, confirm destructive ops, execute (move/rename/delete/merge/update), post-change reindex+experience linkage, verify, content update flow. All operations are atomic (disk + .tree-fs.json + .knowledge-base.yml). Triggered by: 移动, 改名, 重命名, 删除文档, 删除KB, 合并KB, move, rename, delete, merge, update content, 移动文档, 更新内容, 修改描述.
 ---
 
 # Knowledge Manage — Document & KB Administration

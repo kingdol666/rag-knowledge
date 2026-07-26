@@ -1,6 +1,7 @@
 ---
 name: knowledgebase-list
-description: Knowledge base listing and discovery. L1→L3 read-only workflow: full inventory (KB names + descriptions + doc counts + tag vocabulary), KB drill-down (document metadata), folder tree browsing. Lightweight methods (kb_catalog→kb_doc_catalog) for progressive disclosure. Never modifies anything. Triggered by: 查看, 列出, 展示, 浏览, 有什么, 列出来, 清单, list, show, overview, tree, browse, display, 知识库内容, 知识库有什么, 查看知识库, 有哪些知识库.
+description: >
+  Knowledge base listing and discovery. L1→L3 read-only workflow: full inventory (KB names + descriptions + doc counts + tag vocabulary), KB drill-down (document metadata), folder tree browsing. Lightweight methods (kb_catalog→kb_doc_catalog) for progressive disclosure. Never modifies anything. Triggered by: 查看, 列出, 展示, 浏览, 有什么, 列出来, 清单, list, show, overview, tree, browse, display, 知识库内容, 知识库有什么, 查看知识库, 有哪些知识库.
 ---
 
 # Knowledge List — Collection Overview
