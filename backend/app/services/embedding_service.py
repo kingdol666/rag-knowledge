@@ -16,18 +16,11 @@ from app.utils.paths import PROJECT_ROOT
 
 logger = logging.getLogger(__name__)
 
-# ── 模块级：在 huggingface_hub/requests/urllib3 初始化前净化环境 ──────
-# 系统环境的 HTTPS_PROXY（如 Clash/V2Ray 客户端）会劫持 huggingface.co 的
-# HTTPS 请求，导致 SSL 错误。必须在任何网络库初始化前清除。
+# ── 项目级 HF 缓存目录（mkdir 保留在顶层；env 净化移入 get_model 避免 import 副作用）──
+# 系统环境的 HTTPS_PROXY（如 Clash/V2Ray 客户端）会劫持 HuggingFace 的 HTTPS 请求，
+# 导致 SSL 错误；这些 env 清除逻辑已移至 get_model()，按需在首次加载模型前执行。
 _HF_CACHE = (PROJECT_ROOT.parent / config.embedding_cache_dir).resolve()
 _HF_CACHE.mkdir(parents=True, exist_ok=True)
-os.environ["HF_HOME"] = str(_HF_CACHE)
-os.environ.setdefault("HF_ENDPOINT", "https://huggingface.co")
-for _k in ("HTTPS_PROXY", "HTTP_PROXY", "http_proxy", "https_proxy",
-           "CURL_CA_BUNDLE", "REQUESTS_CA_BUNDLE"):
-    os.environ.pop(_k, None)
-logger.info("HF_HOME=%s HF_ENDPOINT=%s (env sanitized at import)",
-            os.environ["HF_HOME"], os.environ["HF_ENDPOINT"])
 
 
 class EmbeddingService:
@@ -41,6 +34,15 @@ class EmbeddingService:
     @classmethod
     def get_model(cls):
         if cls._model is None and cls._available:
+            # 净化环境：必须在任何 huggingface_hub/requests 初始化前完成，否则系统
+            # HTTPS_PROXY 会劫持请求。从模块顶层移入此处以消除 import 副作用。
+            os.environ["HF_HOME"] = str(_HF_CACHE)
+            os.environ.setdefault("HF_ENDPOINT", "https://hf-mirror.com")
+            for _k in ("HTTPS_PROXY", "HTTP_PROXY", "http_proxy", "https_proxy",
+                       "CURL_CA_BUNDLE", "REQUESTS_CA_BUNDLE"):
+                os.environ.pop(_k, None)
+            logger.info("HF_HOME=%s HF_ENDPOINT=%s (env sanitized before model load)",
+                        os.environ["HF_HOME"], os.environ["HF_ENDPOINT"])
             try:
                 from sentence_transformers import SentenceTransformer
 

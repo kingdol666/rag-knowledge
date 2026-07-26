@@ -27,14 +27,17 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: 'pip'
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
 
       - name: Install uv
-        run: pip install uv
+        uses: astral-sh/setup-uv@v6
 
       # 验证三平台 lockfile 解析（marker 条件源：Win/Linux x86_64→cu130，macOS/aarch64→PyPI）
       - name: Backend — uv sync
@@ -46,19 +49,26 @@ jobs:
         working-directory: backend
         run: uv run pytest -q
 
-      - name: Web — npm install
+      - name: Web — npm ci
         working-directory: web
-        run: npm install
+        run: npm ci
 
       # 验证 cross-env 跨平台（Windows cmd 的 `set VAR=` 在 POSIX 失败）
       - name: Web — build
         working-directory: web
         run: npm run build
 
+      # 类型检查（advisory）：当前存在 5 个预存 TS 错误（knowledge-base.vue antMessage /
+      # terminal.ts ws types / experience api $fetch），待单独修复后再去掉 continue-on-error。
+      - name: Web — type-check
+        working-directory: web
+        continue-on-error: true
+        run: npx vue-tsc --noEmit
+
       # ragctl CLI smoke — syntax + check (no service start in CI)
-      - name: CLI — install deps
+      - name: CLI — npm ci
         working-directory: command
-        run: npm install
+        run: npm ci
 
       - name: CLI — ragctl check / help
         shell: bash
@@ -77,7 +87,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install uv
+          cache: 'pip'
+      - uses: astral-sh/setup-uv@v6
       - name: kb-mcp — uv sync
         working-directory: kb-mcp
         run: uv sync
@@ -86,3 +97,13 @@ jobs:
         run: |
           uv run python -c "import server; print('import ok'); import config; print(config.WEB_URL, config.BACKEND_URL)"
           echo "tool count: $(grep -c '@mcp.tool()' server.py)"
+
+  tauri-check:
+    name: Tauri build check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: cargo check
+        working-directory: src-tauri
+        run: cargo check

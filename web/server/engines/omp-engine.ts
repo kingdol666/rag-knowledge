@@ -207,7 +207,7 @@ export class OmpEngine implements ChatEngine {
             is_error: stopReason === 'error',
             total_cost_usd: cost,
             duration_ms: Date.now() - state.startTime,
-            num_turns: 1,
+            num_turns: messages.filter((m: any) => m.role === 'assistant').length || 1,
             usage: { input_tokens: inputTokens, output_tokens: outputTokens },
             stop_reason: stopReason,
             terminal_reason: stopReason,

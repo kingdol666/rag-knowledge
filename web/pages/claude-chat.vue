@@ -237,7 +237,7 @@
 
       <!-- ⭐ Jump to latest button (floating when not at bottom) -->
       <transition name="jump-fade">
-        <div v-if="!isAtBottom && (streaming || messages.length)" class="jump-latest" @click="scrollToBottom()">
+        <div v-if="!isAtBottom && (streaming || messages.length)" class="jump-latest" role="button" tabindex="0" aria-label="跳到最新" @click="scrollToBottom()" @keydown.enter="scrollToBottom()">
           <VerticalAlignBottomOutlined />
           <span v-if="unreadCount" class="jump-badge">{{ unreadCount }}</span>
         </div>
@@ -253,7 +253,7 @@
       <div class="quick-actions" v-if="!streaming">
       <span class="qa-label">⚡</span>
       <div class="qa-scroll">
-        <span v-for="act in QUICK_ACTIONS" :key="act.label" class="qa-pill" @click="queueAction(act)">
+        <span v-for="act in QUICK_ACTIONS" :key="act.label" class="qa-pill" role="button" tabindex="0" @click="queueAction(act)" @keydown.enter="queueAction(act)">
           {{ act.icon }} {{ act.label }}
         </span>
       </div>
@@ -372,8 +372,11 @@
           v-for="(cmd, i) in filteredSlash"
           :key="cmd"
           :class="['slash-item', { active: i === slashIdx }]"
+          role="button"
+          tabindex="0"
           @click="pickSlash(cmd)"
           @mouseenter="slashIdx = i"
+          @keydown.enter="pickSlash(cmd)"
         >
           <span class="slash-cmd">/{{ cmd }}</span>
           <span v-if="slashDescriptions[cmd]" class="slash-desc">{{ slashDescriptions[cmd] }}</span>
@@ -519,7 +522,7 @@
         <!-- Saved workspace list -->
         <div class="ws-list">
           <div v-for="ws in workspaces" :key="ws.id" class="ws-item">
-            <div class="ws-item-info" @click="selectWorkspace(ws)">
+            <div class="ws-item-info" role="button" tabindex="0" @click="selectWorkspace(ws)" @keydown.enter="selectWorkspace(ws)">
               <div class="ws-item-name">
                 <PushpinOutlined v-if="ws.pin_order" style="color:var(--kb-amber);font-size:11px" />
                 <FolderOpenOutlined style="color:var(--kb-primary)" />
@@ -638,7 +641,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, nextTick, onMounted, onUnmounted, watch } from 'vue'
-import { parseMarkdown } from '~/utils/markdown'
+import { renderMd as md } from '~/utils/markdown'
 import { useMarkdownRenderer } from '~/composables/useMarkdownRenderer'
 import 'katex/dist/katex.min.css'
 import { message as antMessage } from 'ant-design-vue'
@@ -680,6 +683,39 @@ import { useLatestTodoStore } from '~/composables/useLatestTodoStore'
 import AgentStatusLight from '~/components/AgentStatusLight.vue'
 import SubagentSidebar from '~/components/SubagentSidebar.vue'
 import TodoPanel from '~/components/TodoPanel.vue'
+
+// ── Queue setTimeout tracking (cleared on unmount to prevent leaks) ──
+const _queueTimers = new Set<ReturnType<typeof setTimeout>>()
+/** Wrapped setTimeout that auto-registers with _queueTimers for cleanup. */
+function _queueTimeout(fn: () => void, ms: number): ReturnType<typeof setTimeout> {
+  const id = setTimeout(() => { _queueTimers.delete(id); fn() }, ms)
+  _queueTimers.add(id)
+  return id
+}
+
+/** Workspace record returned by /api/claude/workspaces. */
+interface Workspace {
+  id: string | number
+  name: string
+  path: string
+  pin_order?: number | null
+  description?: string
+  last_used?: string
+}
+/** Session metadata returned by /api/claude/history. */
+interface SessionInfo {
+  session_id: string
+  title?: string | null
+  updated_at?: string
+  message_count?: number
+  model?: string
+}
+/** Skill catalog entry returned by /api/claude/skills. */
+interface SkillInfo {
+  name: string
+  description?: string
+  source?: string
+}
 
 // ⭐ Engine availability — probed once on mount from /api/claude/engines.
 // Drives the green/red status dot next to the engine selector. Both engines
@@ -1057,7 +1093,7 @@ function consumeQueue() {
       .then(() => {
         item.status = 'sent'
         saveQueueToStorage(messageQueue.value)
-        setTimeout(() => {
+        _queueTimeout(() => {
           messageQueue.value = messageQueue.value.filter((q) => q.id !== item.id)
           saveQueueToStorage(messageQueue.value)
         }, 800)
@@ -1090,7 +1126,7 @@ watch(streaming, (newVal: boolean, oldVal: boolean | undefined) => {
   // Guard against phantom firings (newVal === oldVal) and the initial
   // mount (newVal is false and oldVal is undefined).
   if (!newVal && oldVal !== undefined && newVal !== oldVal) {
-    setTimeout(() => consumeQueue(), 300)
+    _queueTimeout(() => consumeQueue(), 300)
   }
 })
 
@@ -1183,7 +1219,7 @@ const queueCounts = computed(() => {
 
 // ⭐ Workspace state
 const wsManagerOpen = ref(false)
-const workspaces = ref<any[]>([])
+const workspaces = ref<Workspace[]>([])
 const wsForm = ref({ name: '', path: '', description: '' })
 const workspaceOptions = computed(() => {
   return workspaces.value.map((ws: any) => ({
@@ -1220,7 +1256,7 @@ const kbOptions = computed(() =>
 // ⭐ Tool/skill catalog state
 const toolSearch = ref('')
 const skillSearch = ref('')
-const skillCatalog = ref<any[]>([])
+const skillCatalog = ref<SkillInfo[]>([])
 const filteredSkills = computed(() => {
   const q = skillSearch.value.trim().toLowerCase()
   if (!q) return skillCatalog.value
@@ -1261,7 +1297,7 @@ const slashIdx = ref(0)
 const slashDescriptions = computed(() => {
   const map: Record<string, string> = {}
   for (const s of skillCatalog.value) {
-    map[s.name] = s.description
+    if (s.description) map[s.name] = s.description
   }
   return map
 })
@@ -1269,7 +1305,7 @@ const slashDescriptions = computed(() => {
 // Panel / Modals
 const panelOpen = ref(false)
 const sessionsVisible = ref(false)
-const sessions = ref<any[]>([])
+const sessions = ref<SessionInfo[]>([])
 const loadingSessions = ref(false)
 
 // Permission approval (canUseTool)
@@ -1282,21 +1318,13 @@ const permissionReq = ref<{
   sessionId: string
 } | null>(null)
 
-function md(t: string) {
-  if (!t) return ''
-  try {
-    return parseMarkdown(t)
-  } catch {
-    return '<pre>' + t.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</pre>'
-  }
-}
 
 /**
  * 代码块增强：给每个 <pre> 加复制按钮 + 语言标签角标（仅处理一次，幂等）。
  * 在每条消息渲染后调用。
  */
-function enhanceCodeBlocks() {
-  const root = msgRef.value
+function enhanceCodeBlocks(scopeEl?: HTMLElement) {
+  const root = scopeEl || msgRef.value
   if (!root) return
   const pres = root.querySelectorAll('pre')
   pres.forEach((pre) => {
@@ -1547,7 +1575,11 @@ function handleSdkMessage(sdkMsg: unknown) {
     }
   }
   smartScroll()
-  nextTick(enhanceCodeBlocks)
+  nextTick(() => {
+    // Only scan the latest message node — O(n) instead of re-scanning every <pre>.
+    const msgs = msgRef.value?.querySelectorAll('.msg')
+    enhanceCodeBlocks(msgs?.[msgs.length - 1] as HTMLElement | undefined)
+  })
 }
 
 function handleSseBlock(block: string) {
@@ -1965,7 +1997,7 @@ function onEngineChange(newEngine: EngineName) {
 /* * Load all workspaces */
 async function loadWorkspaces() {
   try {
-    const d: any = await $fetch('/api/claude/workspaces')
+    const d = await $fetch<{ workspaces: Workspace[] }>('/api/claude/workspaces')
     workspaces.value = d.workspaces || []
   } catch { /* Silently ignore */ }
 }
@@ -2020,7 +2052,7 @@ async function togglePin(ws: any) {
 }
 
 /* * Delete workspace */
-async function deleteWorkspace(id: number) {
+async function deleteWorkspace(id: string | number) {
   try {
     await $fetch(`/api/claude/workspaces/${id}`, { method: 'DELETE' })
     await loadWorkspaces()
@@ -2104,12 +2136,19 @@ onUnmounted(() => {
   // Dispose the integrated terminal PTY (closes the WebSocket).
   terminalHandle.value?.dispose()
   terminalHandle.value = null
+  // Clear pending queue timers (prevent leaks on unmount mid-retry).
+  for (const t of _queueTimers) clearTimeout(t)
+  _queueTimers.clear()
+  // Drop per-engine snapshots + sidebar stores so memory is reclaimed.
+  engineSnapshots.clear()
+  subagentStore.clear()
+  todoStore.clearAll()
 })
 
 /* * Load Skills catalog (with descriptions from SKILL.md frontmatter) */
 async function loadSkillCatalog() {
   try {
-    const d: any = await $fetch('/api/claude/skills', {
+    const d = await $fetch<{ skills: SkillInfo[] }>('/api/claude/skills', {
       params: { cwd: cwd.value.trim() || undefined },
     })
     skillCatalog.value = d.skills || []
@@ -2122,8 +2161,8 @@ watch(cwd, () => loadSkillCatalog())
 async function loadSessions() {
   loadingSessions.value = true
   try {
-    const d = await $fetch('/api/claude/history', { params: { engine: engine.value } })
-    sessions.value = (d as any).sessions || []
+    const d = await $fetch<{ sessions: SessionInfo[] }>('/api/claude/history', { params: { engine: engine.value } })
+    sessions.value = d.sessions || []
     sessionsVisible.value = true
   } catch (e: any) {
     antMessage.error('加载历史失败: ' + (e?.message || e))

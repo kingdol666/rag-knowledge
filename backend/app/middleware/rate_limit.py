@@ -23,6 +23,11 @@ _DEFAULT_ENABLED = True
 _DEFAULT_WINDOW_SEC = 60          # sliding window size
 _DEFAULT_MAX_REQUESTS = 120       # requests per window per IP (general)
 _DEFAULT_HEAVY_MAX = 20           # for write-heavy endpoints (parse, mineru)
+# Whether to trust X-Forwarded-For for client IP. Default OFF: in a direct
+# deployment the header is trivially spoofable, allowing bypass of per-IP
+# limits. Enable only behind a trusted reverse proxy that overwrites (does not
+# append) the header. Set via server.rate_limit.trust_proxy.
+_TRUST_PROXY = False
 
 # Paths that get the stricter "heavy" limit (CPU/IO intensive operations).
 _HEAVY_PATH_PREFIXES = (
@@ -63,10 +68,16 @@ class RateLimiter:
         self._cleanup_interval = 500
 
     def _client_ip(self, request: Request) -> str:
-        # Trust X-Forwarded-For only if behind a known proxy; default to direct IP.
+        # Trust X-Forwarded-For only behind a known reverse proxy.
+        # Default OFF: in a direct deployment the header is trivially spoofable,
+        # letting a client bypass per-IP limits by rotating forged values.
+        if not _TRUST_PROXY:
+            return request.client.host if request.client else "unknown"
+        # When enabled, take the RIGHTMOST (last) segment — added by the closest
+        # trusted proxy, hardest for the originating client to forge.
         forwarded = request.headers.get("x-forwarded-for", "")
         if forwarded:
-            return forwarded.split(",")[0].strip()
+            return forwarded.split(",")[-1].strip()
         return request.client.host if request.client else "unknown"
 
     def _is_heavy(self, path: str) -> bool:
@@ -126,8 +137,9 @@ _limiter: RateLimiter | None = None
 
 def init_rate_limiter(config_dict: dict | None = None) -> None:
     """Initialize the global rate limiter from config.yml server.rate_limit."""
-    global _limiter
+    global _limiter, _TRUST_PROXY
     cfg = (config_dict or {}).get("rate_limit", {})
+    _TRUST_PROXY = bool(cfg.get("trust_proxy", False))
     _limiter = RateLimiter(
         enabled=cfg.get("enabled", _DEFAULT_ENABLED),
         window_sec=cfg.get("window_sec", _DEFAULT_WINDOW_SEC),

@@ -17,6 +17,7 @@ import yaml
 
 from app.config import config
 from app.utils.paths import get_storage_root
+from app.utils.atomic_io import atomic_write_text
 from app.models.experience_models import (
     ExperienceCategory,
     ExperienceCreate,
@@ -97,9 +98,9 @@ class ExperienceService:
     def _write_index(self, kb_path: str, data: dict) -> bool:
         idx = self._index_path(kb_path)
         try:
-            idx.write_text(
+            atomic_write_text(
+                idx,
                 yaml.dump(data, allow_unicode=True, sort_keys=False, indent=2, default_flow_style=False),
-                encoding="utf-8",
             )
             return True
         except Exception as e:
@@ -217,7 +218,7 @@ class ExperienceService:
         md_content = self._generate_markdown(exp_entry)
         md_path = self.storage_root / _normalize_path(exp_entry["path"])
         md_path.parent.mkdir(parents=True, exist_ok=True)
-        md_path.write_text(md_content, encoding="utf-8")
+        atomic_write_text(md_path, md_content)
 
         # 更新索引
         index = self._read_index(kb_path)
@@ -418,7 +419,7 @@ class ExperienceService:
                 md_path = self.storage_root / _normalize_path(exp["path"])
                 if md_path.exists():
                     md_content = self._generate_markdown(exp)
-                    md_path.write_text(md_content, encoding="utf-8")
+                    atomic_write_text(md_path, md_content)
 
                 self._write_index(kb_path, index)
 
@@ -1327,7 +1328,7 @@ class ExperienceService:
                  "created_at": datetime.now(timezone.utc).isoformat()}
         dpath = self._draft_path(kb_path, draft_id)
         dpath.parent.mkdir(parents=True, exist_ok=True)
-        dpath.write_text(json.dumps(draft, ensure_ascii=False, indent=2), encoding="utf-8")
+        atomic_write_text(dpath, json.dumps(draft, ensure_ascii=False, indent=2))
         return {"success": True, "draft_id": draft_id, "draft": draft}
 
     async def list_drafts(self, kb_id: str) -> dict:
@@ -1393,8 +1394,9 @@ class ExperienceService:
         draft = json.loads(dpath.read_text(encoding="utf-8"))
         draft["rejected_reason"] = reason
         draft["rejected_at"] = datetime.now(timezone.utc).isoformat()
-        (rejected_dir / f"{draft_id}.json").write_text(
-            json.dumps(draft, ensure_ascii=False, indent=2), encoding="utf-8")
+        atomic_write_text(
+            rejected_dir / f"{draft_id}.json",
+            json.dumps(draft, ensure_ascii=False, indent=2))
         dpath.unlink()
         return {"success": True, "rejected": draft_id}
 

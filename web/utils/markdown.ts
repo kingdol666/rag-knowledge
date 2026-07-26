@@ -82,7 +82,6 @@ const mathExtension = {
           const html = katex.renderToString(token.text, {
             displayMode: token.display,
             throwOnError: false,
-            trust: true,
           })
           return token.display
             ? `<div class="math-block">${html}</div>`
@@ -188,6 +187,31 @@ export function parseMarkdown(md: string): string {
     })
   } catch {
     return md
+  }
+}
+
+/**
+ * Render markdown to sanitized HTML with a safe escaped-<pre> fallback on error.
+ * Shared by claude-chat.vue and SubagentSidebar.vue to avoid duplicate md() copies.
+ */
+export function renderMd(t: string): string {
+  if (!t) return ''
+  try {
+    return parseMarkdown(t)
+  } catch {
+    return `<pre>${escapeHtml(t)}</pre>`
+  }
+}
+
+/**
+ * Pretty-print a tool input object for collapsible <pre> display.
+ * Shared by claude-chat.vue (fmt) and SubagentSidebar.vue (fmtInput).
+ */
+export function formatJsonInput(input: unknown): string {
+  try {
+    return JSON.stringify(input, null, 2)
+  } catch {
+    return String(input)
   }
 }
 

@@ -35,6 +35,12 @@ def _yaml_lock(kb_path: str) -> threading.Lock:
 
 class StorageReaderService:
     """读取 web 端 tree-file-system 存储。"""
+    def __init__(self) -> None:
+        # Instance-level mtime cache for read_tree_fs(): avoids re-reading +
+        # re-parsing .tree-fs.json on every hot-path call (N+1 disk reads).
+        self._tree_fs_cache: dict[str, Any] | None = None
+        self._tree_fs_mtime: int | None = None
+        self._cache_lock = threading.Lock()
 
     @property
     def root(self) -> Path:
@@ -45,10 +51,24 @@ class StorageReaderService:
         return self.root / ".tree-fs.json"
 
     def read_tree_fs(self) -> dict[str, Any]:
-        if not self.tree_fs_path.exists():
+        path = self.tree_fs_path
+        if not path.exists():
+            # Invalidate cache when the source file disappears.
+            with self._cache_lock:
+                self._tree_fs_cache = None
+                self._tree_fs_mtime = None
             return {"folders": [], "files": []}
         try:
-            return json.loads(self.tree_fs_path.read_text(encoding="utf-8"))
+            mtime = path.stat().st_mtime_ns
+            with self._cache_lock:
+                if (self._tree_fs_cache is not None
+                        and self._tree_fs_mtime == mtime):
+                    return self._tree_fs_cache
+            data = json.loads(path.read_text(encoding="utf-8"))
+            with self._cache_lock:
+                self._tree_fs_cache = data
+                self._tree_fs_mtime = mtime
+            return data
         except Exception as e:
             logger.warning("Failed to read .tree-fs.json: %s", e)
             return {"folders": [], "files": []}

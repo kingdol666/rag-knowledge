@@ -254,7 +254,7 @@ import { computed, watch } from 'vue'
 import AgentStatusLight from './AgentStatusLight.vue'
 import { useSubagentStore } from '~/composables/useSubagentStore'
 import { MessageProcessor } from '~/utils/claude-messages'
-import { parseMarkdown } from '~/utils/markdown'
+import { renderMd as md, formatJsonInput as fmtInput } from '~/utils/markdown'
 import {
   RobotOutlined, CodeOutlined, CheckSquareOutlined, FileTextOutlined,
   ThunderboltOutlined, BulbOutlined, QuestionCircleOutlined,
@@ -305,28 +305,6 @@ const drawerTitle = computed(() => {
   return `${s.type || 'task'} · 子 Agent`
 })
 
-/** Render markdown to sanitized HTML; fall back to an escaped <pre> on error. */
-function md(t: string): string {
-  if (!t) return ''
-  try {
-    return parseMarkdown(t)
-  } catch {
-    const esc = t
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-    return `<pre>${esc}</pre>`
-  }
-}
-
-/** Pretty-print a tool input object for the collapsible <pre>. */
-function fmtInput(input: unknown): string {
-  try {
-    return JSON.stringify(input, null, 2)
-  } catch {
-    return String(input)
-  }
-}
 
 /** Truncate a long result string, marking the cut. */
 function truncate(s: string, max: number): string {

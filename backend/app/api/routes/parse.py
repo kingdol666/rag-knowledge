@@ -180,7 +180,8 @@ async def parse_file_vt_legacy(
     out = _resolve_output_dir(output_dir)
 
     content = await file.read()
-    result = service.parse(
+    result = await asyncio.to_thread(
+        service.parse,
         file_content=content,
         filename=file.filename or "document.pdf",
         output_dir=out,
