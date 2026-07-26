@@ -29,17 +29,23 @@ class KeywordIndexService:
         self._avg_len: float = 0.0
         self._doc_count: int = 0
         self._built: bool = False
+    @staticmethod
+    def _doc_text(doc: dict[str, Any]) -> str:
+        """Concatenate searchable text (name + description + first
+        _BM25_MAX_CONTENT_CHARS of content). Shared by build/add_document."""
+        return " ".join([
+            doc.get("name", ""),
+            doc.get("description", ""),
+            doc.get("content", "")[:_BM25_MAX_CONTENT_CHARS],
+        ])
+
 
     def build(self, documents: list[dict[str, Any]]) -> None:
         self._docs = []
         self._inverted = defaultdict(list)
         self._doc_len = []
         for idx, doc in enumerate(documents):
-            text = " ".join([
-                doc.get("name", ""),
-                doc.get("description", ""),
-                doc.get("content", "")[:_BM25_MAX_CONTENT_CHARS],
-            ])
+            text = self._doc_text(doc)
             tokens = self._tokenize(text)
             tf = Counter(tokens)
             for token, count in tf.items():
@@ -52,6 +58,43 @@ class KeywordIndexService:
         self._built = True
         logger.info("BM25 index built: %d docs, %d unique tokens",
                     self._doc_count, len(self._inverted))
+
+    def add_document(self, doc: dict[str, Any]) -> None:
+        """Incrementally add one document to the BM25 index without rebuilding.
+
+        O(single-doc tokenize) instead of O(all docs). Use after build() to
+        absorb newly-indexed docs. If a doc with the same path already exists,
+        it is replaced in place (re-index case). No-op if the index was never
+        built — the lazy build in two_stage picks the doc up on first search.
+        """
+        if not self._built:
+            return
+        doc_path = doc.get("path", "")
+        idx = next((i for i, d in enumerate(self._docs) if d.get("path") == doc_path), -1)
+        if idx >= 0:
+            self._remove_inverted_at(idx)
+            self._docs[idx] = doc
+        else:
+            idx = len(self._docs)
+            self._docs.append(doc)
+            self._doc_len.append(0)
+        text = self._doc_text(doc)
+        tokens = self._tokenize(text)
+        tf = Counter(tokens)
+        for token, count in tf.items():
+            self._inverted[token].append((idx, count))
+        self._doc_len[idx] = len(tokens)
+        self._doc_count = len(self._docs)
+        self._avg_len = sum(self._doc_len) / max(1, self._doc_count)
+        logger.debug("BM25 incremental add: %r (total %d docs)", doc_path, self._doc_count)
+
+    def _remove_inverted_at(self, idx: int) -> None:
+        """Strip all inverted-list postings pointing at doc index idx."""
+        for token in list(self._inverted.keys()):
+            postings = self._inverted[token]
+            postings[:] = [(i, c) for (i, c) in postings if i != idx]
+            if not postings:
+                del self._inverted[token]
 
     def search(self, query: str, top_k: int = 10,
                kb_ids: set[str] | None = None) -> list[dict[str, Any]]:

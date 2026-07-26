@@ -89,25 +89,48 @@ export class OmpRpcClient {
         }
         this.pending.clear()
       }
+      // Reject waitReady() so SSE callers don't hang forever when OMP fails
+      // to start (missing binary, bad path, spawn error before 'ready').
+      this.failReady(err)
     })
-    this.proc.on('exit', () => {
+    this.proc.on('exit', (code) => {
       // Reject any pending requests on unexpected exit
       for (const [, p] of this.pending) {
         clearTimeout(p.timer)
         p.reject(new Error('OMP process exited unexpectedly'))
       }
       this.pending.clear()
+      // If the process dies before emitting 'ready', reject waitReady() —
+      // otherwise chat.post.ts's `for await` blocks forever and the dead
+      // child is never cleaned up (zombie bun process + hung SSE).
+      if (!this.ready) {
+        this.failReady(new Error(`OMP process exited before ready (code=${code})`))
+      }
     })
   }
 
   /** Wait for the `{ type: "ready" }` frame. */
   async waitReady(timeoutMs = 30000): Promise<void> {
     const timer = setTimeout(() => {
-      throw new Error('OMP RPC: ready timeout (30s)')
+      // MUST reject the promise — throwing inside setTimeout escapes as an
+      // uncaught exception and leaves readyPromise pending forever, which
+      // permanently hangs the SSE stream.
+      this.failReady(new Error(`OMP RPC: ready timeout (${timeoutMs}ms)`))
     }, timeoutMs)
-    await this.readyPromise
-    clearTimeout(timer)
+    try {
+      await this.readyPromise
+    } finally {
+      clearTimeout(timer)
+    }
     this.ready = true
+  }
+
+  /** Reject readyPromise if not already resolved. No-op after success. */
+  private failReady(err: Error): void {
+    if (!this.ready) {
+      this.ready = true // guard against late 'ready' frame resolving a rejected promise
+      this.readyPromise.reject(err)
+    }
   }
 
   private onStdout(chunk: Buffer) {

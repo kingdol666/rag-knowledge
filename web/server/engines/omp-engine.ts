@@ -30,6 +30,10 @@ export class OmpEngine implements ChatEngine {
       startTime: Date.now(),
       streamingText: '',
       streamingThinking: '',
+      // Track tool_use ids already streamed via toolcall_start so the
+      // subsequent message_end frame doesn't emit them a second time
+      // (would render duplicate tool cards in the UI).
+      emittedToolUseIds: new Set<string>(),
     }
 
     const enqueue = (msg: StandardMessage): void => {
@@ -112,7 +116,7 @@ export class OmpEngine implements ChatEngine {
               },
             })
           } else if (evt.type === 'toolcall_start') {
-            const toolUseId = evt.toolCallId || `tu_${Date.now()}`
+            const toolUseId = evt.toolCallId || `tu_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
             enqueue({
               type: 'assistant',
               message: {
@@ -125,6 +129,8 @@ export class OmpEngine implements ChatEngine {
                 }],
               },
             })
+            // Record so message_end can skip re-emitting the same tool_use.
+            state.emittedToolUseIds.add(toolUseId)
           }
           break
         }
@@ -140,7 +146,12 @@ export class OmpEngine implements ChatEngine {
               content.push({ type: 'thinking', thinking: state.streamingThinking })
             }
             for (const b of msg.content || []) {
-              if (b.type === 'tool_use') content.push(b)
+              if (b.type === 'tool_use') {
+                // Skip tool_use already streamed via toolcall_start — without
+                // this guard the same call renders two cards (start + end).
+                if (b.id && state.emittedToolUseIds.has(b.id)) continue
+                content.push(b)
+              }
             }
             if (content.length > 0) {
               enqueue({

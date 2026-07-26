@@ -106,11 +106,13 @@ async def vector_search(req: VectorSearchRequest) -> dict[str, Any]:
     vs = _get_vs()
     if not vs:
         return {"success": True, "results": [], "count": 0, "note": "vector service not ready"}
-    results = vs.search(query=req.query, kb_id=req.kb_id,
-                                    top_k=req.top_k, doc_paths=req.doc_paths,
-                                    score_threshold=req.score_threshold,
-                                    balance_kbs=req.balance_kbs)
-    return {"success": True, "results": results, "count": len(results)}
+    results = await asyncio.to_thread(
+        vs.search,
+        query=req.query, kb_id=req.kb_id,
+        top_k=req.top_k, doc_paths=req.doc_paths,
+        score_threshold=req.score_threshold,
+        balance_kbs=req.balance_kbs,
+    )
 
 
 @router.post("/batch-vector")
@@ -133,7 +135,8 @@ async def batch_vector_search(req: BatchVectorSearchRequest) -> dict[str, Any]:
     vs = _get_vs()
     if not vs:
         return {"success": True, "results": {}, "count": 0, "note": "vector service not ready"}
-    results = vs.find_similar_docs(
+    results = await asyncio.to_thread(
+        vs.find_similar_docs,
         doc_paths=req.query_doc_paths,
         kb_id=req.kb_id,
         top_k=req.top_k,
@@ -148,7 +151,8 @@ async def two_stage_search(req: TwoStageSearchRequest) -> dict[str, Any]:
     """两阶段精准检索：广搜索 → 文档向量精筛。"""
     if not config.vector_enabled:
         raise HTTPException(503, "Vector search is disabled")
-    result = two_stage_search_service.search(
+    result = await asyncio.to_thread(
+        two_stage_search_service.search,
         query=req.query, kb_id=req.kb_id,
         stage1_top_k=req.stage1_top_k, stage2_top_k=req.stage2_top_k,
         enable_graph_expansion=req.enable_graph_expansion,
@@ -257,9 +261,16 @@ async def index_document(req: IndexDocumentRequest) -> dict[str, Any]:
         except Exception as e:
             logger.warning("Failed to write back graph_index: %s", e)
 
-    # Invalidate keyword index so BM25 picks up new content on next search
     if vector_index or graph_stats:
-        two_stage_search_service.invalidate_keyword_index()
+        # Incremental BM25 update — avoids forcing a full rebuild (which
+        # re-reads every doc from disk) on the next two-stage search.
+        two_stage_search_service.add_document({
+            "path": resolved_doc_path,
+            "name": req.doc_name or "",
+            "description": req.description or "",
+            "content": content,
+            "kb_id": req.kb_id,
+        })
 
     return {"success": True, "vector_index": vector_index,
             "graph_index": graph_stats, "graph_stats": graph_stats}

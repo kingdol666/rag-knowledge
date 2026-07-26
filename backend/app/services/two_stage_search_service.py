@@ -69,6 +69,14 @@ class TwoStageSearchService:
         """Force rebuild on next search (call after indexing a document)."""
         self._keyword_built = False
 
+    def add_document(self, doc: dict[str, Any]) -> None:
+        """Incrementally add one doc to the BM25 index. No-op if the index
+        was never built (lazy build on first search picks it up). Prefer this
+        over invalidate_keyword_index() after indexing a single doc — it
+        avoids forcing a full BM25 rebuild on the next search."""
+        if self._keyword_built:
+            keyword_index_service.add_document(doc)
+
     @staticmethod
     def _infer_kb_id(doc_path: str) -> str:
         """从 doc_path 前缀推断 kb_id（e.g. 'Thermal-Power-Monitoring/...' -> 'a2cfead0-...'）。
