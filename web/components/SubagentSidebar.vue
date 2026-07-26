@@ -40,11 +40,14 @@
     <!-- ═══ 2. Card list (scrollable) ═══ -->
     <div class="sb-list">
       <!-- Empty state -->
-      <div v-if="sessions.length === 0" class="sb-empty">
-        <RobotOutlined class="sb-empty-icon" />
-        <p class="sb-empty-text">暂无子 Agent</p>
-        <p class="sb-empty-hint">当主 Agent 委托 Task/Agent 工具时，子 Agent 会在此显示</p>
-      </div>
+      <EmptyState
+        v-if="sessions.length === 0"
+        :icon="RobotOutlined"
+        title="暂无子 Agent"
+        hint="当主 Agent 委托 Task/Agent 工具时，子 Agent 会在此显示"
+        size="compact"
+        fill
+      />
 
       <!-- Session cards -->
       <button
@@ -426,37 +429,6 @@ function formatClock(ts: number): string {
   min-height: 0;
   overflow-y: auto;
   padding: 10px;
-}
-
-/* ── Empty state ── */
-.sb-empty {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 40px 24px;
-  text-align: center;
-  color: var(--kb-fg-3);
-}
-.sb-empty-icon {
-  font-size: 40px;
-  color: var(--kb-fg-mute);
-  margin-bottom: 8px;
-}
-.sb-empty-text {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 500;
-  color: var(--kb-fg-2);
-}
-.sb-empty-hint {
-  margin: 4px 0 0;
-  font-size: 12.5px;
-  line-height: 1.6;
-  color: var(--kb-fg-mute);
-  max-width: 240px;
 }
 
 /* ── Session card ── */

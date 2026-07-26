@@ -59,16 +59,18 @@
 
           <div class="panel-body tree-body">
             <a-spin :spinning="loading">
-              <div v-if="treeData.length === 0" class="empty-state">
-                <div class="empty-icon">
-                  <FolderOpenOutlined />
-                </div>
-                <p class="empty-text">{{ $t('fs.empty') }}</p>
-                <a-button type="primary" class="empty-action" @click="handleCreateRoot">
-                  <PlusOutlined />
-                  {{ $t('fs.createFirst') }}
-                </a-button>
-              </div>
+              <EmptyState
+                v-if="treeData.length === 0"
+                :icon="FolderOpenOutlined"
+                :title="$t('fs.empty')"
+              >
+                <template #action>
+                  <a-button type="primary" @click="handleCreateRoot">
+                    <PlusOutlined />
+                    {{ $t('fs.createFirst') }}
+                  </a-button>
+                </template>
+              </EmptyState>
 
               <a-tree v-else v-model:expandedKeys="expandedKeys" v-model:selectedKeys="selectedKeys"
                 :tree-data="formattedTreeData" :show-icon="true" :block-node="true" class="custom-tree"
@@ -1453,43 +1455,6 @@ const navigateToNode = (node: TreeNode) => {
 .panel-body::-webkit-scrollbar-thumb {
   background: var(--kb-border-strong);
   border-radius: 2px;
-}
-
-/* ========== Empty State ========== */
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 48px 20px;
-  text-align: center;
-}
-
-.empty-icon {
-  width: 64px;
-  height: 64px;
-  border-radius: 20px;
-  background: var(--kb-primary-soft);
-  border: 1px solid var(--kb-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  color: var(--kb-primary);
-  margin-bottom: 16px;
-}
-
-.empty-text {
-  color: var(--kb-fg-3);
-  font-size: 13px;
-  margin-bottom: 16px;
-}
-
-.empty-action {
-  height: 34px;
-  padding: 0 16px;
-  font-size: 13px;
-  border-radius: 8px;
 }
 
 .folder-icon {

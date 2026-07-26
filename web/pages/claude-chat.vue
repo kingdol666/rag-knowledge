@@ -225,7 +225,7 @@
       <!-- ⭐ Streaming bubble: real-time text from stream_event -->
       <div v-if="streamingText" class="msg assistant streaming-msg">
         <div class="msg-head"><RobotOutlined /> {{ engine === 'omp' ? 'OMP' : 'Claude' }}</div>
-        <div class="msg-text" v-html="md(streamingText)"></div>
+        <div class="msg-text" v-html="streamingHtml"></div>
         <span v-if="showStreamingCursor" class="stream-cursor"></span>
       </div>
 
@@ -1443,6 +1443,27 @@ function streamScroll() {
 const streamingText = ref('')
 const streamingThinking = ref('')
 const showStreamingCursor = ref(false)
+
+/* ⭐ Streaming markdown throttle: re-parsing markdown on every token (which
+ * calls marked + DOMPurify over the entire accumulated text) is O(n) per
+ * delta — for long answers this jank-bombs the main thread. We re-render at
+ * most once per 220ms via a timestamp gate, and immediately on the final
+ * delta when the cursor hides (stream end). */
+const streamingHtml = ref('')
+let _streamMdLast = 0
+let _streamMdRaf = 0
+function recomputeStreamingHtml(force = false) {
+  const now = performance.now()
+  if (force || now - _streamMdLast >= 220) {
+    _streamMdLast = now
+    streamingHtml.value = streamingText.value ? md(streamingText.value) : ''
+  }
+}
+watch(streamingText, () => {
+  if (_streamMdRaf) return
+  _streamMdRaf = requestAnimationFrame(() => { _streamMdRaf = 0; recomputeStreamingHtml() })
+})
+watch(showStreamingCursor, (show) => { if (!show && streamingText.value) recomputeStreamingHtml(true) })
 
 // ── Mermaid watchers (must be AFTER streamingText is defined) ──
 watch(() => messages.length, () => { nextTick(scheduleMermaidRender) })

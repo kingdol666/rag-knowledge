@@ -38,9 +38,11 @@
           </div>
           <div class="panel-body">
             <a-spin :spinning="loading">
-              <div v-if="catalog.length === 0 && !loading" class="empty-state">
-                <a-empty :description="$t('kb.noKb')" />
-              </div>
+              <EmptyState
+                v-if="catalog.length === 0 && !loading"
+                :icon="DatabaseOutlined"
+                :title="$t('kb.noKb')"
+              />
               <template v-for="kb in catalog" :key="kb.kbId">
                 <!-- Top-level KB item -->
                 <div
@@ -170,13 +172,17 @@
             <!-- Document card area -->
             <div class="doc-table-wrapper">
               <a-spin :spinning="loading">
-                <div v-if="filteredDocs.length === 0 && !loading" class="empty-state">
-                  <a-empty description="暂无文档">
+                <EmptyState
+                  v-if="filteredDocs.length === 0 && !loading"
+                  :icon="FileTextOutlined"
+                  title="暂无文档"
+                >
+                  <template #action>
                     <a-button type="primary" @click="showCreateDocDialog = true">
                       <PlusOutlined /> 新建文档
                     </a-button>
-                  </a-empty>
-                </div>
+                  </template>
+                </EmptyState>
                 <div v-else class="doc-grid">
                   <div
                     v-for="doc in filteredDocs"
@@ -1051,7 +1057,6 @@ onMounted(async () => {
 .doc-size { font-size: 11px; color: var(--kb-fg-mute); margin-left: auto; font-family: var(--kb-font-mono); }
 
 /* Empty State */
-.empty-state { padding: 60px 20px; text-align: center; }
 .no-selection { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px; text-align: center; }
 .no-sel-icon { width: 64px; height: 64px; border-radius: 20px; display: grid; place-items: center; font-size: 28px; color: var(--kb-primary); background: var(--kb-primary-soft); margin-bottom: 16px; }
 .no-sel-text { font-size: 15px; color: var(--kb-fg-3); margin: 0; }

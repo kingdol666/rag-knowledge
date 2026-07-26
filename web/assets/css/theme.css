@@ -106,6 +106,79 @@
   --kb-dur-slow: 0.6s;
 }
 
+/* ============================================================
+ * DAY ATELIER — Light theme variant
+ * The same scholar's library, after sunrise: warm linen desk
+ * beneath ivory pages, gold filigree catching daylight. Brand
+ * continuity with Nocturne — only the luminance flips.
+ * Activated via [data-theme="light"] on <html>.
+ * ============================================================ */
+[data-theme="light"] {
+  /* —— Linen shell (the room — bright, airy) —— */
+  --kb-shell: #e6dccc;             /* warm linen */
+  --kb-shell-2: #efe7d6;           /* sun-bleached straw */
+  --kb-shell-3: #ddd1ba;           /* worn hemp */
+  --kb-shell-glow: #c49a4a;        /* daylight gold edge */
+
+  /* —— Ivory pages (brighter than parchment) —— */
+  --kb-bg: #fefcf6;                /* ivory sheet */
+  --kb-bg-elevated: #ffffff;       /* bleached lift */
+  --kb-bg-subtle: #f6f1e4;         /* recessed margin */
+  --kb-bg-dark: #2a2118;
+  --kb-bg-code: #2b251c;           /* keep code dark for contrast */
+
+  /* —— Ink (deep brown for legibility on ivory) —— */
+  --kb-fg: #2a1f15;                /* strong espresso ink */
+  --kb-fg-2: #5a4a36;              /* secondary */
+  --kb-fg-3: #8a7860;              /* tertiary */
+  --kb-fg-mute: #b0a088;           /* muted */
+
+  /* —— Deckle edges (slightly stronger on light) —— */
+  --kb-border: #ddd0bc;
+  --kb-border-strong: #c4b395;
+
+  /* —— Gold leaf — deepened for contrast on bright grounds —— */
+  --kb-gold: #a07a35;              /* antique gold */
+  --kb-gold-bright: #c89a48;       /* burnished */
+  --kb-gold-deep: #6f5520;         /* engraved */
+  --kb-gold-soft: #f3ead0;         /* gold tint wash */
+  --kb-gold-glow: rgba(160, 122, 53, 0.30);
+
+  /* Brand — Copper (slightly richer on light) */
+  --kb-primary: #a83a22;
+  --kb-primary-hover: #8c2f1a;
+  --kb-primary-soft: #fbe7df;
+  --kb-primary-tint: #fdf3ef;
+  --kb-primary-glow: rgba(168, 58, 34, 0.22);
+
+  /* Accents stay — slight luminance tuning */
+  --kb-cyan: #2f5d80;
+  --kb-cyan-soft: #e3edf3;
+  --kb-emerald: #4d7d4d;
+  --kb-emerald-soft: #e5ede5;
+  --kb-amber: #a8842f;
+  --kb-amber-soft: #f3ead4;
+  --kb-violet: #6d4fe8;
+  --kb-rose: #a83e4e;
+  --kb-rose-soft: #f3e1e3;
+
+  /* Shadows — softer in daylight */
+  --kb-shadow-xs: 0 1px 2px rgba(90, 70, 40, 0.06);
+  --kb-shadow-sm: 0 1px 3px rgba(90, 70, 40, 0.08), 0 1px 2px rgba(90, 70, 40, 0.05);
+  --kb-shadow-md: 0 6px 20px rgba(90, 70, 40, 0.10), 0 2px 6px rgba(90, 70, 40, 0.06);
+  --kb-shadow-lg: 0 18px 44px rgba(90, 70, 40, 0.14), 0 6px 16px rgba(90, 70, 40, 0.08);
+  --kb-shadow-primary: 0 10px 26px rgba(168, 58, 34, 0.24);
+  --kb-shadow-primary-lg: 0 18px 42px rgba(168, 58, 34, 0.30);
+  --kb-shadow-gold: 0 8px 24px rgba(200, 154, 72, 0.22);
+}
+
+/* —— Theme transition: smooth color shift without jank —— */
+html, body, .book-page, .ant-btn, .ant-card, .ant-input,
+.ant-select-selector, .ant-modal-content, .ant-drawer-content,
+.ant-tag, .ant-tooltip-inner, .ant-table-thead > tr > th {
+  transition: background-color 0.4s var(--kb-ease-out), border-color 0.4s var(--kb-ease-out), color 0.4s var(--kb-ease-out);
+}
+
 body {
   font-family: var(--kb-font);
   -webkit-font-smoothing: antialiased;

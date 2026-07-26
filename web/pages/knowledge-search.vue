@@ -98,9 +98,11 @@
       <a-spin :spinning="loading">
         <!-- Catalog view -->
         <div v-if="view === 'catalog'">
-          <div v-if="catalog.length === 0 && !loading" class="empty-state">
-            <a-empty :description="$t('kb.noKb')" />
-          </div>
+          <EmptyState
+            v-if="catalog.length === 0 && !loading"
+            :icon="DatabaseOutlined"
+            :title="$t('kb.noKb')"
+          />
           <div v-else class="kb-grid">
             <div
               v-for="kb in catalog"
@@ -201,9 +203,11 @@
           </div>
 
           <!-- Empty state -->
-          <div v-if="subKbList.length === 0 && kbDocuments.length === 0 && !loading" class="empty-state">
-            <a-empty :description="$t('kb.noDocs')" />
-          </div>
+          <EmptyState
+            v-if="subKbList.length === 0 && kbDocuments.length === 0 && !loading"
+            :icon="FileTextOutlined"
+            :title="$t('kb.noDocs')"
+          />
         </div>
 
         <!-- Search results -->
@@ -228,9 +232,11 @@
             </div>
           </div>
 
-          <div v-if="searchResults.length === 0 && !loading" class="empty-state">
-            <a-empty :description="$t('search.noResults')" />
-          </div>
+          <EmptyState
+            v-if="searchResults.length === 0 && !loading"
+            :icon="SearchOutlined"
+            :title="$t('search.noResults')"
+          />
 
           <!-- List view -->
           <div v-show="resultsTab === 'list'" class="results-list">
@@ -1013,9 +1019,6 @@ onUnmounted(() => {
 .verify-status:has(.verify-pass) { background: var(--kb-emerald-soft); }
 .verify-status:has(.verify-warn) { background: var(--kb-amber-soft); }
 
-/* Empty State */
-.empty-state { padding: 70px 20px; text-align: center; }
-.empty-state :deep(.ant-empty-description) { color: var(--kb-fg-3); }
 
 /* Preview Drawer */
 .preview-content { background: var(--kb-bg-subtle); border: 1px solid var(--kb-border); border-radius: var(--kb-radius); padding: 18px; }

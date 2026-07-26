@@ -122,9 +122,11 @@
             </svg>
             <div v-if="graphLoading" class="canvas-loading"><a-spin size="large" tip="构建知识图谱中..." /></div>
             <div v-if="!graphLoading && graphData.nodes.length === 0" class="canvas-empty">
-              <div class="empty-icon"><ShareAltOutlined /></div>
-              <p class="empty-text">暂无图谱数据</p>
-              <a-button type="primary" @click="handleRebuild"><BuildOutlined /><span>构建图谱</span></a-button>
+              <EmptyState :icon="ShareAltOutlined" title="暂无图谱数据">
+                <template #action>
+                  <a-button type="primary" @click="handleRebuild"><BuildOutlined /><span>构建图谱</span></a-button>
+                </template>
+              </EmptyState>
             </div>
           </div>
         </div>
@@ -197,11 +199,12 @@
             <NodeDetailPanel :node="docCenterSelectedNode" :related-nodes="docCenterRelatedNodes" :all-nodes="docCenterSimNodes" @select="selectDocCenterNode" />
           </aside>
         </div>
-        <div v-else-if="!docSearching" class="doc-center-empty">
-          <div class="empty-icon"><FileSearchOutlined /></div>
-          <p class="empty-text">搜索并选择一个文档，查看其关联图谱</p>
-          <p class="empty-hint">文档中心视图会展示该文档的KB归属、标签关联、跨KB连接</p>
-        </div>
+        <EmptyState
+          v-else-if="!docSearching"
+          :icon="FileSearchOutlined"
+          title="搜索并选择一个文档，查看其关联图谱"
+          hint="文档中心视图会展示该文档的KB归属、标签关联、跨KB连接"
+        />
       </div>
 
       <!-- ============ Cross-KB analysis view ============ -->
@@ -235,11 +238,12 @@
               </div>
             </div>
           </div>
-          <div v-else-if="!crossKbLoading" class="cross-kb-empty">
-            <div class="empty-icon"><SwapOutlined /></div>
-            <p class="empty-text">暂无跨KB桥梁文档</p>
-            <p class="empty-hint">跨KB分析需要Neo4j图谱数据库支持</p>
-          </div>
+          <EmptyState
+            v-else-if="!crossKbLoading"
+            :icon="SwapOutlined"
+            title="暂无跨KB桥梁文档"
+            hint="跨KB分析需要Neo4j图谱数据库支持"
+          />
         </a-spin>
       </div>
 
@@ -940,9 +944,6 @@ onUnmounted(() => {
 
 /* Loading/Empty */
 .canvas-loading, .canvas-empty { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; background: rgba(255,255,255,0.85); backdrop-filter: blur(6px); z-index: 5; }
-.empty-icon { width: 64px; height: 64px; border-radius: 20px; display: grid; place-items: center; font-size: 28px; color: var(--kb-primary); background: var(--kb-primary-soft); }
-.empty-text { font-size: 16px; color: var(--kb-fg-3); margin: 0; }
-.empty-hint { font-size: 13px; color: var(--kb-fg-mute); margin: 4px 0 0; }
 
 /* Detail Panel */
 .detail-panel { background: var(--kb-bg-elevated); border: 1px solid var(--kb-border); border-radius: var(--kb-radius-lg); box-shadow: var(--kb-shadow-md); display: flex; flex-direction: column; max-height: calc(100vh - 280px); overflow: hidden; }
@@ -1004,7 +1005,6 @@ onUnmounted(() => {
 .doc-search-info { flex: 1; min-width: 0; }
 .doc-search-name { font-size: 14px; font-weight: 600; color: var(--kb-fg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .doc-search-path { font-size: 12px; color: var(--kb-fg-mute); font-family: var(--kb-font-mono); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.doc-center-empty { padding: 60px 20px; text-align: center; }
 
 /* ============ Cross-KB Analysis View ============ */
 .cross-kb-layout { display: flex; flex-direction: column; gap: 20px; }
@@ -1029,7 +1029,6 @@ onUnmounted(() => {
 .relation-agent_judged { background: var(--kb-primary-soft); color: var(--kb-primary-hover); }
 .related-count { font-size: 12px; color: var(--kb-fg-3); }
 .cross-kb-tags { display: flex; gap: 4px; flex-wrap: wrap; }
-.cross-kb-empty { padding: 60px 20px; text-align: center; }
 
 /* ============ Path Discovery View ============ */
 .path-layout { display: flex; flex-direction: column; gap: 24px; max-width: 900px; margin: 0 auto; width: 100%; }

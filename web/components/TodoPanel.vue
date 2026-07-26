@@ -1,11 +1,13 @@
 <template>
   <div class="todo-panel" :class="{ compact }">
     <!-- ── Empty state: no snapshot or no todos ────────────────────── -->
-    <div v-if="total === 0" class="todo-empty">
-      <CheckSquareOutlined class="todo-empty-icon" />
-      <p class="todo-empty-text">暂无任务清单</p>
-      <p class="todo-empty-hint">Agent 使用 TodoWrite 时会在此实时显示进度</p>
-    </div>
+    <EmptyState
+      v-if="total === 0"
+      :icon="CheckSquareOutlined"
+      title="暂无任务清单"
+      hint="Agent 使用 TodoWrite 时会在此实时显示进度"
+      size="compact"
+    />
 
     <template v-else>
       <!-- ── Header (hidden in compact mode) ─────────────────────────── -->
@@ -274,38 +276,6 @@ const progressPct = computed(() =>
   text-decoration-color: var(--kb-fg-mute);
   color: var(--kb-fg-mute);
   opacity: 0.6;
-}
-
-/* ── Empty state ─────────────────────────────────────────────── */
-.todo-empty {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: 2px;
-  padding: 18px 10px;
-}
-
-.todo-empty-icon {
-  font-size: 26px;
-  color: var(--kb-fg-mute);
-  margin-bottom: 6px;
-  opacity: 0.7;
-}
-
-.todo-empty-text {
-  margin: 0;
-  font-size: 13px;
-  color: var(--kb-fg-3);
-  font-weight: 500;
-}
-
-.todo-empty-hint {
-  margin: 0;
-  font-size: 11.5px;
-  color: var(--kb-fg-mute);
-  line-height: 1.5;
 }
 
 /* ── Spin keyframe ───────────────────────────────────────────── */

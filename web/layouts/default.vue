@@ -110,6 +110,7 @@
                 <CompressOutlined v-else />
               </button>
               <LangSwitcher />
+              <Theme-toggle />
             </div>
           </div>
 
@@ -407,6 +408,25 @@ watch(() => route.fullPath, () => {
       transparent 45%,
       rgba(15, 12, 9, 0.25) 80%,
       rgba(10, 8, 6, 0.55) 100%);
+}
+
+/* —— Light theme: video retreats to a soft warm wash, shadows lift —— */
+:global([data-theme='light']) .library-bg-video.is-ready {
+  opacity: 0.42;
+  filter: saturate(0.7) brightness(1.08) sepia(0.12);
+}
+:global([data-theme='light']) .library-bg-overlay {
+  background:
+    radial-gradient(ellipse 80% 80% at 50% 50%,
+      rgba(255, 250, 235, 0.35) 0%,
+      rgba(245, 238, 222, 0.55) 60%,
+      rgba(220, 205, 175, 0.75) 100%);
+}
+:global([data-theme='light']) .shelf-shadow {
+  background: rgba(120, 100, 70, 0.10) !important;
+}
+:global([data-theme='light']) .dust-mote {
+  opacity: 0.25 !important;
 }
 
 /* ── Library atmosphere ─────────────────────────────────── */
