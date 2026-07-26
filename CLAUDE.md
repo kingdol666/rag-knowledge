@@ -458,3 +458,12 @@ server:
 | Bash/PowerShell 中硬编码 API URL | MCP 保证了原子操作和审计追踪 |
 
 **例外条款**：仅在 MCP 明确不可用（MCP 连接失败且用户确认后），才可用终端命令或 HTTP API 作为兜底。兜底后必须向用户声明 "MCP 不可用，已用 HTTP API 兜底"。
+
+<!-- SKILLOPT-SLEEP:LEARNED START -->
+## Learned preferences & procedures
+
+_This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
+
+- ⭐ 向量索引更新不自动：kb_doc_create、kb_doc_update_content、kb_doc_move 操作后必须显式调用 kb_index_document 重建向量索引。不显式重建会导致向量层使用 stale 旧 chunk，是搜索漏文档的 #1 数据损坏成因。该规则无例外，不可省略。
+- 文档写入/修改流程终检项：任何产生或变更文档内容的操作完成后，必须在同一步骤内显式调用 kb_index_document 并验证 collection 正确 + chunks ≥ 1。未通过此终检的写入视为未完成，不得进入下一步。
+<!-- SKILLOPT-SLEEP:LEARNED END -->

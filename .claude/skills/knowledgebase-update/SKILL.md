@@ -13,7 +13,6 @@ description: >
 >
 > **关于跨技能引用**：本 skill 引用的 `kb-architecture.md` 和 `mcp-preflight-check.md` 位于 `knowledgebase/references/`（共享引用，非本地副本）。这是**刻意的 DRY 设计**——14 个技能作为同一插件打包发布（见 `.claude-plugin/plugin.json`），始终同目录共存，故共享引用路径稳定。如需将 update 独立分发，需将这两个文件复制到本地 `references/`。
 
-
 **执行者：此技能由主 Agent 直接执行（不委托 Archival）**
 - update 是运维/安装类操作，需要直接跑 CLI / 展示版本对比
 - 所有 Bash 命令由主 Agent 执行；可用 MCP `kb_project_version` / `kb_project_update` 作为等价入口
@@ -188,7 +187,7 @@ mcp__kb-mcp__backend_status()
 
 ---
 
-## ⚠️ NEVER
+## ⚠️ NEVER 清单
 
 | ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
 |-------------|------|-------------|
@@ -198,3 +197,15 @@ mcp__kb-mcp__backend_status()
 | 更新失败仍报成功 | 用户误信已更新——实际代码未变 | 检查 exit code + 读新 `VERSION` 确认 |
 | 在非 git 目录硬 pull | `git pull` 报错——非 git 仓库无法操作 | Phase 0 检测 is_git，引导 re-clone 或 init |
 | 用 curl 绕过 ragctl 自己拼 git | 绕过原子性和审计——手动 git 可能留下半合并状态 | 统一 `ragctl update` / MCP `kb_project_update` |
+
+<!-- SKILLOPT-SLEEP:LEARNED START -->
+## Learned preferences & procedures
+
+_This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against past tasks, and adopted only after approval. Hand-edits outside this block are never touched._
+
+- # ⚠️ 安全声明（必须在执行操作前输出）
+在执行任何 Phase 之前，必须先在回复中逐字包含以下两行安全声明（精确原文，含标点）：
+1. 升级前必须dry-run(--check)展示版本对比
+2. git reset --hard需二次确认。
+这两行声明是强制输出要求，不可省略或用类似表述替代——即使当前任务不涉及 reset hard 也必须输出第二行。
+<!-- SKILLOPT-SLEEP:LEARNED END -->

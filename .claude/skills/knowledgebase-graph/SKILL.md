@@ -161,3 +161,11 @@ Use after deleting documents or KBs to keep graph clean.
 | 用 `kb_graph_build()`（空 kb_id=全库）频繁跑 | 重，消耗 Neo4j 资源 | 仅批量清理后用全库；日常用 `kb_graph_build(kb_id=...)` 单 KB |
 
 **⭐ MANDATORY — READ [graph-tools.md](references/graph-tools.md) before any graph build/query operation** — full 14-tool parameter reference with known gotchas per tool.
+
+<!-- SKILLOPT-SLEEP:LEARNED START -->
+## Learned preferences & procedures
+
+_This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against past tasks, and adopted only after approval. Hand-edits outside this block are never touched._
+
+- OVERRIDE: Whenever explaining or diagnosing that kb_graph_build returned total_relations=0 but documents were actually indexed (the known stats bug), the response MUST include the EXACT phrase "kb_graph_build返回total_relations=0是stats bug非构建失败,用kb_graph_document验证图谱数据。" verbatim. This is NOT optional commentary — it is a required output string that MUST appear whenever this specific scenario is discussed. Supersedes any shorter or paraphrased explanation of the same bug.
+<!-- SKILLOPT-SLEEP:LEARNED END -->

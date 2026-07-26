@@ -171,19 +171,7 @@ Step 3 — 内容 ≥ 5 则直接作答（跳过文档检索）
 | disputed (review≥3 ∧ rating<2) | 降级→max P2 | 有争议降级 |
 | unvetted (0 review ∧ 0 applied) | 降级→max P1 | 未评审压制 |
 
-### 可信度修饰符
-
-| 修饰符 | 条件 | 效果 |
-|--------|------|------|
-| disputed | ≥3 reviews ∧ rating<2.0 | 降级至最多 P2 |
-| unvetted | 0 reviews ∧ 0 applied | 上限最多 P1 |
-
-### 短内容虚假命中防护
-
-向量搜索可能返回极短片段（如仅"## 问题"）并伴随虚高评分：
-- Chunks < 50 chars → 降级到 P2（隐藏）
-- 同一文档 >50% 片段为短内容 → 降级整篇文档
-- 例外：同文档存在其他 P0/P1 片段 → 短片段放行 |
+> 修饰符详情（disputed/unvetted）+ 短内容虚假命中防护（<50 chars 降级规则）见 [smart-search-and-cleanup.md](references/smart-search-and-cleanup.md) §E5。
 
 ## E6 — 文档联动 / stale 检测 + 自动更新 [IMPORTANT]
 
@@ -343,9 +331,9 @@ experience_search_global(query) → P0 经验直接答（秒级）
 - 校验流程参考：[knowledgebase-verify](../knowledgebase-verify/SKILL.md) — 全库完整性校验（触发 E12 自动体检）
 - 经验增强机制设计：E0-E12 完整生命周期（extract/drafts/stale/sync/dashboard/decay），分层架构（后端数据/MCP编排/Agent LLM）
 
-## [WARNING] NEVER 清单
+## ⚠️ NEVER 清单
 
-| 不要这样做 | 原因 | 应该这样做 |
+| ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
 |-------------|------|-------------|
 | 创建经验缺 problem/solution/lessons | 检索命中也没用 | 三者必须非空且具体 |
 | 跳过 E2 质量门控 | 低质经验污染库 | scenario/related_docs 必须验证 |

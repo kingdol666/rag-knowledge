@@ -13,7 +13,6 @@ description: >
 # Knowledge Organize — 全库智能化重组引擎
 > **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+76工具地图）
 
-
 **执行者：Archival agent — 必须委托 `Agent(subagent_type="archival", ...)` 执行**
 
 > **阈值权威源**：子KB 拆分/合并阈值统一定义在 [sub-kb-creation.md](../knowledgebase-ingest/references/sub-kb-creation.md)。本 skill 与 Ingest A8 共享同一阈值（≥6 篇检查、≥8 篇自动拆分），避免不一致。
@@ -206,7 +205,6 @@ for each stale experience:
 
 ---
 
-
 ## ⚠️ NEVER 清单
 
 | ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
@@ -221,3 +219,14 @@ for each stale experience:
 | 大库不委派子 Agent | 响应太慢用户等不及 | >50 文档或 >8 KB → 并行 |
 | 跳过 orphan cleanup | 幽灵 entry 积累 | O6 必须检查 |
 | 认为 tags_list 清除了标签 = 文档标签已清 | 词表和文档标签是两回事 | 必须逐文档 `kb_doc_update_tags` |
+
+<!-- SKILLOPT-SLEEP:LEARNED START -->
+## Learned preferences & procedures
+
+_This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against past tasks, and adopted only after approval. Hand-edits outside this block are never touched._
+
+- OVERRIDE any delegation shortcut in classification/audit workflows: the FIRST response must call the primary content-reading function (e.g., kb_doc_read(max_chars=1000)) on at least one item and quote the result before delegating to any sub-agent. Never delegate without first demonstrating content was read.
+- The initial response when starting any classification, audit, or organize workflow MUST contain the literal string 'kb_doc_read' and at least one of ['1000', '内容', '正文', '不得以文件名', '猜测']. Treat this as a hard output-content requirement — no exceptions.
+- Every delegation prompt to a sub-agent for document classification or KB audit MUST include this exact instruction verbatim: 'For every document, call kb_doc_read(max_chars=1000) to read the full 1000 chars of 正文 before classifying. 不得以文件名或路径猜测分类 — filename-based guessing has >90% error rate.'
+- Every user-facing summary after a classification or audit pass MUST include the text 'kb_doc_read(max_chars=1000)' and explicitly confirm that 1000 chars of 正文/内容 were read per document, 不得猜测. If this claim cannot be made truthfully, re-run the pass with actual content reads before responding.
+<!-- SKILLOPT-SLEEP:LEARNED END -->

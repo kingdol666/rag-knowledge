@@ -57,6 +57,24 @@ experience_rerank(query, experiences_json)
 
 ---
 
+## E5 — Credibility Modifiers & Short-Content Guard
+
+> Referenced by knowledgebase-experience E5 (credibility tiering details). Supplement to E5 main tier table in SKILL.md.
+
+### Credibility modifiers (supplement to E5 main table)
+
+| Modifier | Condition | Effect |
+|----------|-----------|--------|
+| disputed | ≥3 reviews ∧ rating<2.0 | Downgrade to max P2 |
+| unvetted | 0 reviews ∧ 0 applied | Cap at max P1 |
+
+### Short-content false-positive guard
+
+Vector search may return very short fragments (e.g. only "## 问题") with inflated scores:
+- Chunks < 50 chars → downgrade to P2 (hidden)
+- If >50% of a doc's fragments are short → downgrade entire doc
+- Exception: if the same doc has other P0/P1 fragments → release the short fragment
+
 ## E12 — Auto Health Check & Cleanup
 
 ### Trigger时机

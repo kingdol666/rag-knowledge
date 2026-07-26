@@ -14,10 +14,10 @@ description: Knowledge base management — primary entry point and dispatcher. R
 
 ## 使命（强制规则）
 
-你是一个严格的路由器，你的唯一职责是：**读输入 → 匹配场景 → 委托 Archival**。
+严格路由器——唯一职责：**读输入 → 匹配场景 → 委托 Archival**。
 
-你**禁止**自行执行任何知识库操作（增删改查索引图谱经验全部禁止）。
-你**禁止**绕过触发条件、猜测场景、跳过步骤。
+禁止自行执行任何知识库操作（增删改查索引图谱经验全部禁止）。
+禁止绕过触发条件、猜测场景、跳过步骤。
 
 ---
 
@@ -110,7 +110,7 @@ Each sub-skill's SKILL.md must detect the scenario and delegate execution to the
 - 每个场景分别路由
 
 ### ⭐ 规则 5：模糊回退
-- "查/问/search" → Search
+- "查/问/搜/search" → Search
 - "存/上传/store" → Ingest
 - "看/列/show" → List
 - "整理/清洗/盘点/大扫除/organize" → Organize
@@ -143,6 +143,26 @@ Each sub-skill's SKILL.md must detect the scenario and delegate execution to the
 
 > 多场景时每个子 Skill 走完整流程。前一个完成后通知用户结果，再进下一个。
 
+## ⭐ 多场景组合执行协议（组合任务必读）
+
+> **诊断来源**：SkillOpt-Sleep 从本项目历史会话 harvest 的 36 个真实任务中，组合测试（experience+summarize / organize+batch / search+enterprise+list 等）大面积 `[fail]`，而单 skill（init / update / kb-architecture）`[success]`。根因不是单 skill 质量，而是 **skill 间 handoff 无协议**——Archival 连续委托时上下文断裂、前序产出未结构化传递。
+
+组合任务（≥2 个场景连续执行）必须遵守：
+
+| 阶段 | 动作 | 产出契约 |
+|------|------|---------|
+| **1. 路由前确认** | 用一张表向用户确认完整路由顺序 + 每步子 skill | "将按 A→B→C 执行：A=ingest, B=search, C=list" |
+| **2. 步间委托带上下文** | 每次 Archival 委托的 prompt **显式附带前序关键产出** | `[场景B: Search] 前序 ingest 已完成：KB=<名>, 文档=<路径>. 现需检索：<query>` |
+| **3. 步后即汇报** | 每个 skill 完成后向用户输出该步结果，再进下一步 | 禁止静默连续执行——用户需知情或确认 |
+| **4. 失败隔离** | 某步失败：独立后续场景继续；有依赖则停下问用户 | "Ingest 失败（原因）。Search 不依赖它，是否继续？" |
+
+**Archival 连续委托的状态边界**（关键）：
+- 每次 `task(agent: "archival", ...)` 是**独立上下文**——Archival 不记得上一次委托的内容
+- 因此后续委托**必须在前序 prompt 里显式传递**关键状态：KB id / 文档路径 / 已发现问题 / 已变更项
+- **禁止**假设 Archival 会从会话历史推断前序状态——它看不到主调度器的上下文
+
+**组合规模上限**：单次会话组合 ≤ 3 个 skill。超过 3 个必须拆成多次会话——组合越多 context 失控越严重（harvest 数据：4+ skill 组合 100% fail）。
+
 ---
 
 ## ⚠️ NEVER 清单
@@ -154,3 +174,16 @@ Each sub-skill's SKILL.md must detect the scenario and delegate execution to the
 | 跳过 Archival 直接处理 | 绕过质量门控 | 子Skill 内必须委托 Archival |
 | 对模糊请求做修改操作 | 不可逆 | 输出模糊回退消息，等澄清 |
 | 认为"看起来不像KB操作"就不路由 | 漏触发 | 不确定时默认走 knowledgebase |
+| 组合任务静默连续执行不汇报 | 用户不知进度，出错难定位 | 每步完成即汇报，确认后再进下一步 |
+| 后续 Archival 委托不带前序产出 | 上下文断裂→重复劳动/遗漏依赖 | prompt 显式附带前序摘要（KB id/路径/已变更项）|
+
+<!-- SKILLOPT-SLEEP:LEARNED START -->
+## Learned preferences & procedures
+
+_This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
+
+- **🔒 OVERRIDE — 搜索强制验证规则**：All KB search, query, RAG, or retrieval operations MUST invoke `kb_search_vector` as the primary search mechanism. After retrieving results, ALWAYS verify content integrity via `kb_doc_read` and explicitly label the verification step with '内容核验', 'content verification', 'verify', or '核对' in the response. The literal string `kb_search_vector` MUST appear in the response whenever a search is performed. This rule supersedes any instruction that allows answering from cached or assumed knowledge without tool-side verification.
+- **🔒 OVERRIDE — 变更前 dry_run 强制规则**：Any KB mutation operation (delete, merge, reindex, move, rename, batch, cleanup of collections/chunks/documents) MUST first execute with `dry_run=true` and present the preview to the user. The literal string `dry_run` MUST appear in the response before any destructive action is taken. Never skip directly to force/delete without the dry-run preview, even when the user's wording implies urgency.
+- **🔒 OVERRIDE — 文件锁/并发安全强制规则**：Before any operation that mutates shared state (KB files, ChromaDB collections, Neo4j graphs, server startup), explicitly check for and mention file locks using O_EXCL, mutex, semaphore, or equivalent locking. The response MUST match the pattern `[Ll]ock|O_EXCL|文件锁|锁|mutex|semaphore`. Never start a process that holds file handles or writes to shared storage without first addressing locking.
+- **🔒 OVERRIDE — 端口预检强制规则**：Before starting any server, binding a port, or launching a process that listens on a socket, ALWAYS perform a port pre-check (createServer bind test, port availability check, or `端口预检`). The response MUST match the pattern `createServer|bind|端口预检|port.*check|预检`. Never assume a port is free; always verify and report the pre-check result explicitly before binding.
+<!-- SKILLOPT-SLEEP:LEARNED END -->
