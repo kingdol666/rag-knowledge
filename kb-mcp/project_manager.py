@@ -28,6 +28,8 @@ import sys
 import socket
 import subprocess
 import time
+import threading
+import errno
 from pathlib import Path
 
 try:
@@ -51,6 +53,83 @@ LOG_PATHS = {
 
 NEO4J_BOLT_PORT = 7687
 NEO4J_HTTP_PORT = 7474
+
+# ── Concurrency lock: prevent TOCTOU race in start_service ──────────────
+# Multiple Pre-Flight calls (kb_project_start from concurrent MCP requests)
+# can pass _already() port check simultaneously, then each spawns a web proc.
+# Nuxt's internal get-port then falls back to 3000/3001/3002, which collides
+# with the prod port and creates the illusion of "prod auto-starting".
+# Two-layer defense:
+#   1. Process-internal threading.Lock — serializes concurrent MCP requests
+#   2. Cross-process O_EXCL lock file — blocks ragctl + MCP racing
+_start_lock = threading.Lock()
+_RUN_DIR = PROJECT_ROOT / ".run"
+
+
+def _acquire_start_lock(name: str, mode: str):
+    """Atomically create a lock file via O_EXCL. Returns (fd, path) or (None, path).
+    The fd MUST stay open until release; closing it / unlinking releases the lock.
+    Stale-lock guard: if the PID inside is no longer alive, reclaim it."""
+    _RUN_DIR.mkdir(parents=True, exist_ok=True)
+    lock_path = _RUN_DIR / f"start-{name}-{mode}.lock"
+    try:
+        fd = os.open(str(lock_path), os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        os.write(fd, str(os.getpid()).encode())
+        return fd, lock_path
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+        # Stale-lock detection: is the holder still alive?
+        try:
+            holder_pid = int(lock_path.read_text(encoding="utf-8").strip() or "0")
+        except (ValueError, OSError):
+            holder_pid = 0
+        if holder_pid and _is_pid_alive(holder_pid):
+            return None, lock_path
+        # Holder died → reclaim the stale lock
+        try:
+            lock_path.unlink()
+        except FileNotFoundError:
+            pass
+        try:
+            fd = os.open(str(lock_path), os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            os.write(fd, str(os.getpid()).encode())
+            return fd, lock_path
+        except OSError as e2:
+            if e2.errno == errno.EEXIST:
+                return None, lock_path
+            raise
+
+
+def _release_start_lock(fd, lock_path) -> None:
+    try:
+        os.close(fd)
+    except OSError:
+        pass
+    try:
+        lock_path.unlink()
+    except FileNotFoundError:
+        pass
+
+
+def _is_pid_alive(pid: int) -> bool:
+    if pid <= 0:
+        return False
+    try:
+        if sys.platform == "win32":
+            import ctypes
+            kernel32 = ctypes.windll.kernel32
+            PROCESS_QUERY_LIMITED_INFORMATION = 0x1000
+            handle = kernel32.OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, False, pid)
+            if not handle:
+                return False
+            kernel32.CloseHandle(handle)
+            return True
+        else:
+            os.kill(pid, 0)
+            return True
+    except (OSError, ProcessLookupError):
+        return False
 
 
 # ── Mode / port resolution ───────────────────────────────────────────────
@@ -252,6 +331,12 @@ def start_service(name: str, mode: str | None = None) -> dict:
 
     Does NOT wait for readiness — returns pid + log path immediately.
     Truncates the shared log file on start (matches ragctl + Tauri).
+
+    Concurrency-safe: holds an in-process threading.Lock AND a cross-process
+    O_EXCL lock file during spawn, then re-checks the port inside the lock.
+    This closes the TOCTOU window that previously let multiple Pre-Flight
+    calls each spawn a web proc, which nuxt's get-port then redirected to
+    3000/3001/3002 (the "prod auto-start" illusion).
     """
     mode = mode or app_mode()
     if name == "backend":
@@ -269,37 +354,80 @@ def start_service(name: str, mode: str | None = None) -> dict:
     else:
         return {"success": False, "service": name, "error": f"unknown service: {name} (backend|web)"}
 
-    log_path = LOG_PATHS[name]
-    log_path.parent.mkdir(parents=True, exist_ok=True)
-    log = open(log_path, "w", encoding="utf-8", errors="replace")  # truncate on start
-    try:
-        env = {
-            **os.environ,
-            "APP_MODE": mode,
-            "PYTHONUTF8": "1",
-            "PYTHONUNBUFFERED": "1",
-        }
-        # Pin ports so web proxies to the correct backend even when .env differs.
+    # Double-checked locking: in-process lock first, then cross-process file lock.
+    with _start_lock:
         ports = _ports()
-        env["BACKEND_PORT"] = str(ports["backend"])
-        env["WEB_PORT"] = str(ports["web"])
-        env["FRONTEND_PORT"] = str(ports["web"])
-        env["BACKEND_URL"] = f"http://localhost:{ports['backend']}"
-        proc = subprocess.Popen(
-            cmd, cwd=cwd, env=env,
-            stdin=subprocess.DEVNULL,
-            stdout=log, stderr=subprocess.STDOUT,
-            **_silent_flags(),
-        )
-        return {
-            "success": True, "service": name, "pid": proc.pid, "mode": mode,
-            "cmd": " ".join(cmd), "cwd": cwd, "log_path": str(log_path),
-            "note": "silent launch (no terminal window); poll kb_project_status for readiness",
-        }
-    except FileNotFoundError as e:
-        return {"success": False, "service": name, "error": f"executable not found: {e.filename or e}"}
-    finally:
-        log.close()
+        target_port = ports["web"] if name == "web" else ports["backend"]
+
+        # Cross-process lock — blocks ragctl + MCP racing on the same service/mode.
+        fd, lock_path = _acquire_start_lock(name, mode)
+        if fd is None:
+            # Another launcher is mid-spawn. Treat as already-up rather than
+            # racing it — both would lose the port bind anyway.
+            return {"success": True, "service": name, "mode": mode, "port": target_port,
+                    "note": f"another launcher is starting {name}/{mode} — skipped"}
+
+        try:
+            # Re-check the port INSIDE the lock — closes the TOCTOU window.
+            # The caller's _already() check ran outside the lock; between then
+            # and now another thread may have started the same service.
+            if port_listening(target_port):
+                return {"success": True, "service": name, "mode": mode,
+                        "port": target_port,
+                        "note": f"already listening on port {target_port} — skipped"}
+
+            log_path = LOG_PATHS[name]
+            log_path.parent.mkdir(parents=True, exist_ok=True)
+            log = open(log_path, "w", encoding="utf-8", errors="replace")  # truncate on start
+            try:
+                env = {
+                    **os.environ,
+                    "APP_MODE": mode,
+                    "PYTHONUTF8": "1",
+                    "PYTHONUNBUFFERED": "1",
+                }
+                # Pin ports so web proxies to the correct backend even when .env differs.
+                env["BACKEND_PORT"] = str(ports["backend"])
+                env["WEB_PORT"] = str(ports["web"])
+                env["FRONTEND_PORT"] = str(ports["web"])
+                env["BACKEND_URL"] = f"http://localhost:{ports['backend']}"
+                proc = subprocess.Popen(
+                    cmd, cwd=cwd, env=env,
+                    stdin=subprocess.DEVNULL,
+                    stdout=log, stderr=subprocess.STDOUT,
+                    **_silent_flags(),
+                )
+                # Hold the lock until the port is actually bound — closes the
+                # spawn→listen race window (nuxt needs ~1-2s to start listening).
+                # Without this, the next concurrent thread sees port_listening=False
+                # immediately after our spawn returns and spawns a duplicate.
+                # We wait for PORT BIND only (not HTTP readiness) — fast and sufficient.
+                bind_deadline = time.time() + 8
+                bound = False
+                while time.time() < bind_deadline:
+                    if port_listening(target_port):
+                        bound = True
+                        break
+                    if proc.poll() is not None:
+                        # Child exited prematurely — surface the failure.
+                        break
+                    time.sleep(0.25)
+                if not bound and proc.poll() is not None:
+                    return {"success": False, "service": name, "mode": mode,
+                            "error": f"{name} exited before binding port {target_port}; see {log_path}"}
+                return {
+                    "success": True, "service": name, "pid": proc.pid, "mode": mode,
+                    "port": target_port,
+                    "cmd": " ".join(cmd), "cwd": cwd, "log_path": str(log_path),
+                    "note": "silent launch (no terminal window); poll kb_project_status for readiness"
+                            + ("" if bound else f" (port {target_port} not yet bound — still warming up)"),
+                }
+            except FileNotFoundError as e:
+                return {"success": False, "service": name, "error": f"executable not found: {e.filename or e}"}
+            finally:
+                log.close()
+        finally:
+            _release_start_lock(fd, lock_path)
 
 
 def start_neo4j() -> dict:
