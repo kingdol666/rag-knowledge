@@ -19,7 +19,10 @@ export interface TodoItem {
   activeForm: string
 }
 
-export type UIMessage =
+export type UIMessage = ({
+  /** parent_tool_use_id when this message came from a delegated child agent. */
+  parentToolUseId?: string
+}) & (
   | { kind: 'user'; text: string; id: number }
   | { kind: 'assistant'; html: string; id: number }
   | { kind: 'thinking'; text: string; id: number }
@@ -29,7 +32,7 @@ export type UIMessage =
       display: string
       isMcp: boolean
       server?: string
-      input: any
+      input: Record<string, unknown>
       toolUseId: string
       id: number
     }
@@ -65,10 +68,49 @@ export type UIMessage =
       id: number
     }
   | { kind: 'error'; text: string; id: number }
+)
 
 interface ToolUseCache {
   name: string
   input: Record<string, unknown>
+}
+
+/** Content block inside an SDK assistant/user message. Fields are optional
+ * because the SDK occasionally omits them; callers guard with truthiness. */
+type SdkContentBlock = {
+  type: string
+  text?: string
+  thinking?: string
+  id?: string
+  name?: string
+  input?: Record<string, unknown>
+  tool_use_id?: string
+  content?: unknown
+  is_error?: boolean
+  [k: string]: unknown
+}
+interface SdkMsg {
+  type: 'system' | 'assistant' | 'user' | 'result' | 'stream_event' | string
+  subtype?: string
+  parent_tool_use_id?: string | null
+  subagent_type?: string
+  task_description?: string
+  session_id?: string
+  model?: string
+  cwd?: string
+  permissionMode?: string
+  tools?: string[]
+  mcp_servers?: Array<{ name: string; status: string }>
+  message?: { role?: string; content?: SdkContentBlock[] }
+  usage?: Record<string, number>
+  total_cost_usd?: number
+  duration_ms?: number
+  num_turns?: number
+  is_error?: boolean
+  stop_reason?: string
+  terminal_reason?: string
+  modelUsage?: unknown
+  result?: string
 }
 
 export class MessageProcessor {
@@ -103,7 +145,7 @@ export class MessageProcessor {
   }
 
   /** Format tool input as readable preview (picks key fields by tool type). */
-  static formatInputPreview(name: string, input: any): string {
+  static formatInputPreview(name: string, input: Record<string, unknown> | undefined): string {
     if (!input || typeof input !== 'object') return ''
     const mcpMatch = name.match(/^mcp__(.+?)__(.+)$/)
     const baseName = mcpMatch ? mcpMatch[2] : name
@@ -133,29 +175,44 @@ export class MessageProcessor {
     return parts.join(' ')
   }
 
-  /** Process one SDK message, returns 0..N UI messages. */
-  process(msg: any): UIMessage[] {
-    if (!msg || typeof msg.type !== 'string') return []
+  /**
+   * Process one SDK message, returns 0..N UI messages.
+   * `onTodo` (optional) is invoked with the latest TodoWrite snapshot so a
+   * caller-side store can render a dedicated live todo panel.
+   */
+  process(
+    raw: unknown,
+    onTodo?: (todos: TodoItem[], toolUseId: string) => void,
+  ): UIMessage[] {
+    if (!raw || typeof raw !== 'object' || !('type' in raw)) return []
+    // SDK messages are dynamic external IPC payloads. After the shape check
+    // above, one typed read is the sanctioned boundary; everything below is
+    // typed against SdkMsg.
+    const msg = raw as SdkMsg
     const out: UIMessage[] = []
-
-    // Stream partial messages: stream_event (content_block_delta etc.)
-    // Frontend uses a dedicated onStreamDelta handler; return empty here to avoid new UI messages
-    if (msg.type === 'stream_event') {
-      return out
+    const parentToolUseId: string | undefined =
+      typeof msg.parent_tool_use_id === 'string' && msg.parent_tool_use_id
+        ? msg.parent_tool_use_id
+        : undefined
+    const push = (m: UIMessage): void => {
+      if (parentToolUseId) m.parentToolUseId = parentToolUseId
+      out.push(m)
     }
+
+    // Stream partial messages: handled by the dedicated stream-delta path.
+    if (msg.type === 'stream_event') return out
 
     if (msg.type === 'system') {
       if (msg.subtype === 'init') {
-        const tools: string[] = msg.tools || []
-        const mcps: any[] = msg.mcp_servers || []
+        const tools: string[] = Array.isArray(msg.tools) ? msg.tools : []
+        const mcps = Array.isArray(msg.mcp_servers) ? msg.mcp_servers : []
         const mcpLine =
           mcps.length > 0
-            ? mcps
-                .map((m) => `${m.name}(${m.status})`)
-                .join(', ')
+            ? mcps.map((m) => `${m.name}(${m.status})`).join(', ')
             : '无'
+        const sid = typeof msg.session_id === 'string' ? msg.session_id : ''
         const text =
-          `**会话初始化** · session \`${(msg.session_id || '').slice(0, 12)}…\`\n` +
+          `**会话初始化** · session \`${sid.slice(0, 12)}…\`\n` +
           `- model: \`${msg.model || 'default'}\`\n` +
           `- cwd: \`${msg.cwd || ''}\`\n` +
           `- permission: \`${msg.permissionMode || 'default'}\`\n` +
@@ -163,58 +220,55 @@ export class MessageProcessor {
             tools.length ? '（' + tools.slice(0, 10).join(', ') + (tools.length > 10 ? '…' : '') + '）' : ''
           }\n` +
           `- MCP servers: ${mcpLine}`
-        out.push({ kind: 'system', subtype: 'init', text, id: this.nextId() })
+        push({ kind: 'system', subtype: 'init', text, id: this.nextId() })
       }
-      // thinking_tokens / other system subtypes — don't flood the UI
       return out
     }
 
     if (msg.type === 'assistant') {
-      const blocks: any[] = msg.message?.content || []
+      const blocks = msg.message?.content || []
       const textParts: string[] = []
       for (const b of blocks) {
         if (b.type === 'text' && b.text) {
           textParts.push(b.text)
         } else if (b.type === 'thinking' && b.thinking) {
-          out.push({ kind: 'thinking', text: b.thinking, id: this.nextId() })
+          push({ kind: 'thinking', text: b.thinking, id: this.nextId() })
         } else if (b.type === 'tool_reference') {
-          // tool_reference is a reference marker within assistant content blocks (not an actual invocation); skip it
           continue
-        } else if (b.type === 'tool_use') {          const id: string = b.id || ''
+        } else if (b.type === 'tool_use') {
+          const id: string = b.id || ''
           const name: string = b.name || 'Tool'
-          const input = b.input || {}
+          const input: Record<string, unknown> = b.input || {}
           this.toolCache.set(id, { name, input })
           const parsed = MessageProcessor.parseToolName(name)
           if (name === 'TodoWrite' && Array.isArray(input.todos)) {
-            out.push({
-              kind: 'todo',
-              todos: input.todos as TodoItem[],
-              id: this.nextId(),
-            })
+            const todos = input.todos as TodoItem[]
+            onTodo?.(todos, id)
+            push({ kind: 'todo', todos, id: this.nextId() })
           } else if (name === 'ExitPlanMode' && input.plan) {
-            out.push({ kind: 'plan', plan: String(input.plan), id: this.nextId() })
+            push({ kind: 'plan', plan: String(input.plan), id: this.nextId() })
           } else if (name === 'AskUserQuestion') {
-            // Claude Code built-in interactive question tool
             const header = String(input.header || 'Claude 想向你确认')
-            const questions = Array.isArray(input.questions)
-              ? input.questions
-              : []
-            const q0: any = questions[0] || {}
-            const opts: any[] = Array.isArray(q0.options) ? q0.options : []
-            out.push({
+            const questions = Array.isArray(input.questions) ? input.questions : []
+            const q0 = (questions[0] || {}) as Record<string, unknown>
+            const opts = Array.isArray(q0.options) ? q0.options : []
+            push({
               kind: 'ask_user',
               header,
               question: String(q0.question || ''),
-              options: opts.map((o: any) => ({
-                label: String(o.label || ''),
-                description: o.description ? String(o.description) : undefined,
-              })),
+              options: opts.map((o) => {
+                const opt = o as Record<string, unknown>
+                return {
+                  label: String(opt.label || ''),
+                  description: opt.description ? String(opt.description) : undefined,
+                }
+              }),
               toolUseId: id,
               answered: false,
               id: this.nextId(),
             })
           } else {
-            out.push({
+            push({
               kind: 'tool_use',
               toolName: name,
               display: parsed.display,
@@ -228,30 +282,24 @@ export class MessageProcessor {
         }
       }
       if (textParts.length) {
-        out.push({
-          kind: 'assistant',
-          html: textParts.join('\n\n'),
-          id: this.nextId(),
-        })
+        push({ kind: 'assistant', html: textParts.join('\n\n'), id: this.nextId() })
       }
       return out
     }
 
     if (msg.type === 'user') {
-      const blocks: any[] = msg.message?.content || []
+      const blocks = msg.message?.content || []
       for (const b of blocks) {
         if (b.type === 'tool_result') {
           const id: string = b.tool_use_id || ''
           const cached = this.toolCache.get(id)
           const toolName = cached?.name || 'Tool'
-          if (toolName === 'TodoWrite') continue // already rendered from tool_use
-          if (toolName === 'AskUserQuestion') continue // interactive card already rendered; skip SDK auto-result
+          if (toolName === 'TodoWrite') continue
+          if (toolName === 'AskUserQuestion') continue
           const content =
-            typeof b.content === 'string'
-              ? b.content
-              : JSON.stringify(b.content)
+            typeof b.content === 'string' ? b.content : JSON.stringify(b.content)
           const parsed = MessageProcessor.parseToolName(toolName)
-          out.push({
+          push({
             kind: 'tool_result',
             toolName,
             display: parsed.display,
@@ -261,15 +309,14 @@ export class MessageProcessor {
             id: this.nextId(),
           })
         } else if (b.type === 'text' && b.text) {
-          // Plain text from user (rare, user message inside tool loop)
-          out.push({ kind: 'user', text: b.text, id: this.nextId() })
+          push({ kind: 'user', text: b.text, id: this.nextId() })
         }
       }
       return out
     }
 
     if (msg.type === 'result') {
-      const usage = msg.usage || {}
+      const usage = (msg.usage || {}) as Record<string, number>
       const cost = Number(msg.total_cost_usd || 0)
       const lines: string[] = [
         `**${msg.is_error ? '❌ 执行出错' : '✅ 完成'}** — **${msg.num_turns || 0} 轮** · **$${cost.toFixed(4)}** · **${((msg.duration_ms || 0) / 1000).toFixed(1)}s**`,
@@ -282,22 +329,19 @@ export class MessageProcessor {
         `| 终止原因 | \`${msg.terminal_reason || msg.stop_reason || '—'}\` |`,
       ]
       if (msg.modelUsage && typeof msg.modelUsage === 'object') {
-        const models = Object.keys(msg.modelUsage)
+        const mu = msg.modelUsage as Record<string, Record<string, number>>
+        const models = Object.keys(mu)
         if (models.length) {
-          lines.push('')
-          lines.push('**模型用量明细**')
+          lines.push('', '**模型用量明细**')
           for (const m of models) {
-            const u = msg.modelUsage[m]
+            const u = mu[m]
             lines.push(
               `- \`${m}\`: $${Number(u.costUSD || 0).toFixed(4)} · ${u.outputTokens || 0} out · ${u.inputTokens || 0} in`,
             )
           }
         }
       }
-      if (msg.result) {
-        // Result text is already stream-rendered by assistant messages; result only shows metrics, no duplicate output
-      }
-      out.push({
+      push({
         kind: 'result',
         html: lines.join('\n'),
         cost,

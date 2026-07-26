@@ -24,7 +24,18 @@
                 <span class="engine-status-pulse"></span>
               </span>
             </a-tooltip>
+            <!-- ⭐ Main-agent status lamp: idle/running/done/error -->
+            <AgentStatusLight :status="mainAgentStatus" size="small" :label="streaming ? '执行中' : ''" />
           </div>
+          <!-- ⭐ Subagent + todo sidebar toggle (shows running count badge) -->
+          <a-tooltip :title="`子 Agent 面板（${subagentStore.totalCount.value} 个 / ${subagentStore.runningCount.value} 运行中）`">
+            <a-badge :count="subagentStore.runningCount.value" :offset="[-4, 4]" size="small">
+              <a-button :type="agentSidebarOpen ? 'primary' : 'default'" @click="agentSidebarOpen = !agentSidebarOpen">
+                <RobotOutlined /> 子 Agent
+              </a-button>
+            </a-badge>
+          </a-tooltip>
+          <div class="header-spacer" />
           <a-tooltip title="集成终端 — 在侧边打开原生终端，默认工作目录跟随当前工作区">
             <a-button :type="terminalDrawerOpen ? 'primary' : 'default'" @click="openTerminal">
               <CodepenOutlined /> 终端
@@ -468,6 +479,27 @@
       </a-tabs>
     </a-drawer>
 
+    <!-- ⭐ Agent sidebar — live todo panel + delegated subagent transcripts -->
+    <a-drawer
+      v-model:open="agentSidebarOpen"
+      placement="right"
+      width="400"
+      :title="undefined"
+      :body-style="{ padding: 0, height: '100%', display: 'flex', flexDirection: 'column' }"
+      class="agent-sidebar-drawer"
+    >
+      <div class="agent-sidebar-inner">
+        <!-- Live todo list (compact, top) -->
+        <div class="agent-sidebar-todo">
+          <TodoPanel :engine="engine" compact />
+        </div>
+        <!-- Subagent cards + detail drawer (fills remaining height) -->
+        <div class="agent-sidebar-agents">
+          <SubagentSidebar :engine="engine" @close="agentSidebarOpen = false" />
+        </div>
+      </div>
+    </a-drawer>
+
     <!-- ⭐ Workspace manager -->
     <a-modal v-model:open="wsManagerOpen" title="工作区管理" width="620" :footer="null">
       <div class="ws-manager-body">
@@ -583,7 +615,7 @@
     >
       <template #extra>
         <a-space size="small">
-          <a-tag v-if="terminalHandle?.connected.value" color="green" :bordered="false" style="font-size:11px">
+          <a-tag v-if="terminalHandle?.connected" color="green" :bordered="false" style="font-size:11px">
             <span class="term-conn-dot"></span> 已连接
           </a-tag>
           <a-tag v-else color="orange" :bordered="false" style="font-size:11px">连接中…</a-tag>
@@ -643,6 +675,11 @@ import {
   type QueueItem,
 } from '~/composables/useChatQueue'
 import { useTerminal, type TerminalHandle } from '~/composables/useTerminal'
+import { useSubagentStore } from '~/composables/useSubagentStore'
+import { useLatestTodoStore } from '~/composables/useLatestTodoStore'
+import AgentStatusLight from '~/components/AgentStatusLight.vue'
+import SubagentSidebar from '~/components/SubagentSidebar.vue'
+import TodoPanel from '~/components/TodoPanel.vue'
 
 // ⭐ Engine availability — probed once on mount from /api/claude/engines.
 // Drives the green/red status dot next to the engine selector. Both engines
@@ -671,7 +708,7 @@ function openTerminal() {
   // If a handle exists but the cwd changed, re-point it; otherwise create.
   if (!terminalHandle.value) {
     terminalHandle.value = useTerminal(targetCwd)
-  } else if (terminalHandle.value.cwd.value !== targetCwd) {
+  } else if (terminalHandle.value.cwd !== targetCwd) {
     terminalHandle.value.setCwd(targetCwd)
   }
   terminalDrawerOpen.value = true
@@ -712,6 +749,28 @@ const msgRef = ref<HTMLElement | null>(null)
 const inputRef = ref<any>(null)
 const abortController = ref<AbortController | null>(null)
 const processor = new MessageProcessor()
+
+// ⭐ Subagent + todo stores — feed from handleSdkMessage to populate the
+// right sidebar (delegated Task/Agent transcripts + live todo list).
+const subagentStore = useSubagentStore()
+const todoStore = useLatestTodoStore()
+// parent_tool_use_ids that already have a delegation marker on the main
+// timeline. Prevents duplicate markers when a child emits many messages.
+const markedSubagents = new Set<string>()
+// Right sidebar (subagents + todos) toggle.
+const agentSidebarOpen = ref(false)
+// Main-agent status lamp: idle when not streaming, running while streaming,
+// done/error derived from the last result message.
+const mainAgentStatus = computed<'idle' | 'running' | 'done' | 'error'>(() => {
+  if (streaming.value) return 'running'
+  // last result message determines terminal status
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const m = messages[i]
+    if (m.kind === 'result') return m.isError ? 'error' : 'done'
+    if (m.kind === 'error') return 'error'
+  }
+  return 'idle'
+})
 
 // ⭐ Engine selection (Claude Code | OMP) — persisted in localStorage.
 //   Switching engine isolates all chat state (messages, session, history)
@@ -1367,59 +1426,125 @@ watch(streaming, (val) => {
 })
 
 /* * Handle stream_event (token-level delta) — typewriter */
-function handleStreamEvent(sdkMsg: any) {
-  const evt = sdkMsg.event
-  if (!evt || !evt.type) return
+function handleStreamEvent(sdkMsg: unknown) {
+  if (typeof sdkMsg !== 'object' || sdkMsg === null) return
+  const evt = (sdkMsg as Record<string, unknown>).event as Record<string, unknown> | undefined
+  if (!evt || typeof evt.type !== 'string') return
 
   if (evt.type === 'content_block_start' && evt.index !== undefined) {
-    const block = evt.content_block
+    const block = evt.content_block as Record<string, unknown> | undefined
     if (block?.type === 'text') {
-      // New text block → accumulate into streamingText
       showStreamingCursor.value = true
     } else if (block?.type === 'thinking') {
       streamingThinking.value = ''
     }
   } else if (evt.type === 'content_block_delta') {
-    const delta = evt.delta
-    if (delta?.type === 'text_delta' && delta.text) {
+    const delta = evt.delta as Record<string, unknown> | undefined
+    if (delta?.type === 'text_delta' && typeof delta.text === 'string') {
       streamingText.value += delta.text
       showStreamingCursor.value = true
-      streamScroll() // 流式专用 RAF 节流滚动
-    } else if (delta?.type === 'thinking_delta' && delta.thinking) {
+      streamScroll()
+    } else if (delta?.type === 'thinking_delta' && typeof delta.thinking === 'string') {
       streamingThinking.value += delta.thinking
     }
-  } else if (evt.type === 'content_block_stop') {
-    // Block ends, keep text (replaced by full assistant message)
   } else if (evt.type === 'message_stop') {
     showStreamingCursor.value = false
   }
 }
 
-function handleSdkMessage(sdkMsg: any) {
-  // ⭐ Streaming partial message → typewriter delta
-  if (sdkMsg.type === 'stream_event') {
+function handleSdkMessage(sdkMsg: unknown) {
+  // ⭐ Streaming partial message → typewriter delta (also feeds subagent store)
+  if (typeof sdkMsg === 'object' && sdkMsg !== null && (sdkMsg as Record<string, unknown>).type === 'stream_event') {
     handleStreamEvent(sdkMsg)
+    // Forward deltas to subagent store so child typewriters update live
+    subagentStore.ingest([], sdkMsg, engine.value)
     return
   }
 
-  // ⭐ Full assistant message → clear streaming buffer
-  if (sdkMsg.type === 'assistant') {
+  // ⭐ Full assistant message → clear main streaming buffer
+  if (typeof sdkMsg === 'object' && sdkMsg !== null && (sdkMsg as Record<string, unknown>).type === 'assistant') {
     streamingText.value = ''
     streamingThinking.value = ''
   }
 
-  const uiMsgs = processor.process(sdkMsg)
-  for (const m of uiMsgs) messages.push(m)
-  if (sdkMsg.type === 'system' && sdkMsg.subtype === 'init') {
-    currentSessionId.value = sdkMsg.session_id || ''
-    initInfo.tools = sdkMsg.tools || []
-    initInfo.mcpServers = (sdkMsg.mcp_servers || []).map((m: any) => ({ name: m.name, status: m.status }))
-    initInfo.model = sdkMsg.model || ''
-    slashCommands.value = sdkMsg.slash_commands || []
+  // Process into UIMessages. The onTodo callback updates the LIVE todo panel —
+  // but ONLY for main-agent messages. A subagent's own TodoWrite must not
+  // clobber the main panel (its todos are filed into its session by ingest).
+  const rawObj = (typeof sdkMsg === 'object' && sdkMsg !== null ? sdkMsg : {}) as Record<string, unknown>
+  const msgParentId = typeof rawObj.parent_tool_use_id === 'string' ? rawObj.parent_tool_use_id : null
+  const uiMsgs = processor.process(sdkMsg, (todos, id) => {
+    if (!msgParentId) todoStore.update(engine.value, todos, id)
+  })
+
+  // ⭐ Detect Agent/Task tool_use on the MAIN timeline and register a sidebar
+  // card immediately. This covers async/background delegations whose child
+  // messages never reach the frontend (they arrive after SSE closes) — without
+  // this, the sidebar would stay empty for those delegations. For sync Task
+  // delegations, child messages later enrich the registered card's transcript.
+  if (!msgParentId && rawObj.type === 'assistant') {
+    const blocks = (rawObj.message as Record<string, unknown> | undefined)?.content
+    if (Array.isArray(blocks)) {
+      for (const b of blocks) {
+        const blk = b as Record<string, unknown>
+        if (blk.type === 'tool_use' && (blk.name === 'Agent' || blk.name === 'Task')) {
+          const inp = (blk.input as Record<string, unknown>) || {}
+          const tuid = typeof blk.id === 'string' ? blk.id : ''
+          if (tuid) {
+            subagentStore.registerDelegation(tuid, engine.value, {
+              subagentType: typeof inp.subagent_type === 'string' ? inp.subagent_type
+                : typeof inp.agent_type === 'string' ? inp.agent_type
+                : typeof inp.agentType === 'string' ? inp.agentType : blk.name,
+              taskDescription: typeof inp.description === 'string' ? inp.description
+                : typeof inp.prompt === 'string' ? inp.prompt.slice(0, 120) : undefined,
+            })
+          }
+        }
+      }
+    }
   }
-  if (sdkMsg.type === 'result') {
-    streaming.value = false
-    showStreamingCursor.value = false
+  // ⭐ Route child-agent (subagent) messages into the sidebar store. If this
+  // message belongs to a delegated child, we surface a compact "delegation"
+  // marker on the main timeline instead of the full nested transcript — the
+  // full transcript lives in the sidebar (click to expand).
+  const isChild = subagentStore.ingest(uiMsgs, sdkMsg, engine.value)
+  if (isChild) {
+    // Avoid flooding the main timeline; the sidebar is the source of truth.
+    // We only push a lightweight marker when the delegation starts (the first
+    // child message for a given parent_tool_use_id) so the user sees activity.
+    const parentId = msgParentId as string
+    if (!markedSubagents.has(parentId)) {
+      markedSubagents.add(parentId)
+      const childType = (rawObj.subagent_type as string) || 'subagent'
+      const childDesc = (rawObj.task_description as string) || '(delegated task)'
+      messages.push({
+        kind: 'system',
+        subtype: 'subagent',
+        text: `🤖 **委托子 Agent**: \`${childType}\` — ${childDesc}\n\n_详情见右侧「子 Agent」面板_`,
+        id: Date.now(),
+      })
+    }
+  } else {
+    for (const m of uiMsgs) messages.push(m)
+  }
+
+  // init / result side-effects (only relevant for main-agent messages)
+  if (typeof sdkMsg === 'object' && sdkMsg !== null) {
+    const msg = sdkMsg as Record<string, unknown>
+    if (msg.type === 'system' && msg.subtype === 'init') {
+      currentSessionId.value = (msg.session_id as string) || ''
+      initInfo.tools = Array.isArray(msg.tools) ? (msg.tools as string[]) : []
+      initInfo.mcpServers = (Array.isArray(msg.mcp_servers) ? msg.mcp_servers : []).map(
+        (m) => ({ name: (m as Record<string, string>).name, status: (m as Record<string, string>).status }),
+      )
+      initInfo.model = (msg.model as string) || ''
+      slashCommands.value = Array.isArray(msg.slash_commands) ? (msg.slash_commands as string[]) : []
+    }
+    if (msg.type === 'result') {
+      streaming.value = false
+      showStreamingCursor.value = false
+      // ⭐ Main turn ended → finalize any still-running subagents for this engine
+      subagentStore.finalizeEngine(engine.value)
+    }
   }
   smartScroll()
   nextTick(enhanceCodeBlocks)
@@ -1525,6 +1650,10 @@ async function sendRaw(prompt: string, atts?: Attachment[]): Promise<void> {
       showStreamingCursor.value = false
       streamingText.value = ''
       streamingThinking.value = ''
+      // ⭐ Stream ended (success/error/abort) → finalize still-running subagents
+      // so their status lamps flip running → done. More reliable than the
+      // result-message hook alone.
+      subagentStore.finalizeEngine(engine.value)
       smartScroll()
     }
     // Clean up background session when its stream finishes
@@ -1676,7 +1805,18 @@ function useSlash(cmd: string) {
   nextTick(() => inputRef.value?.focus?.())
 }
 
-function abort() { abortController.value?.abort() }
+/**
+ * ⭐ Interrupt the current response.
+ * Aborts the in-flight SSE stream; the sendRaw finally-block flips streaming
+ * to false, which triggers the watch(streaming) → consumeQueue() hook so the
+ * next queued message flows automatically. Running subagents are finalized
+ * (their status lamps flip from running → done) so the sidebar reflects reality.
+ */
+function abort() {
+  abortController.value?.abort()
+  subagentStore.finalizeEngine(engine.value)
+  antMessage.info('已中断当前回答，队列后续消息将自动继续')
+}
 
 // Permission approval
 function parseToolDisplay(name: string): string {
@@ -1741,6 +1881,10 @@ function clearChat() {
     try { bg.abortController?.abort() } catch { /* already done */ }
   }
   bgSessions.value = []
+  // ⭐ Clear subagent + todo stores so the sidebar resets with the chat
+  subagentStore.clear()
+  todoStore.clearAll()
+  markedSubagents.clear()
 }
 
 /**
@@ -1787,6 +1931,8 @@ function onEngineChange(newEngine: EngineName) {
   streamingThinking.value = ''
   showStreamingCursor.value = false
   bgSessions.value = []
+  // ⭐ Subagent transcripts belong to the switched-out engine's conversation;
+  //    clear them (todos are per-engine in the store, so they persist correctly).
 
   // 4. Restore the target engine's saved state (if any)
   const snapshot = engineSnapshots.get(newEngine)
@@ -1951,7 +2097,10 @@ onUnmounted(() => {
   }
   // Abort any active SSE stream + all background sessions
   try { abortController.value?.abort() } catch { /* already done */ }
-  abortAllBgSessions()
+  for (const bg of bgSessions.value) {
+    try { bg.abortController?.abort() } catch { /* already done */ }
+  }
+  bgSessions.value = []
   // Dispose the integrated terminal PTY (closes the WebSocket).
   terminalHandle.value?.dispose()
   terminalHandle.value = null
@@ -3286,6 +3435,28 @@ async function deleteHistory(sid: string) {
   margin-right: 4px;
   vertical-align: middle;
 }
+
+/* ⭐ Agent sidebar drawer — todo panel (top) + subagent list (fills height) */
+.agent-sidebar-inner {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+.agent-sidebar-todo {
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--kb-border, #e5e7eb);
+  max-height: 45%;
+  overflow: auto;
+}
+.agent-sidebar-agents {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+/* header layout tweak: status lamp + sidebar button sit with the engine selector */
+.header-spacer { width: 4px; flex-shrink: 0; }
 </style>
 
 <!-- ═══ 全局样式（非 scoped）：让书本 layout 的 .page-content 在渲染 claude-chat 时

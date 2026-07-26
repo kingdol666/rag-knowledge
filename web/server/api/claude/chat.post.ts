@@ -57,9 +57,13 @@ interface ChatBody {
 
 /** Safe read-only tools (pre-approved in all modes) */
 const SAFE_READS = ['Read', 'Glob', 'Grep']
-/** All tools (bypassPermissions mode) */
+/**
+ * All tools (bypassPermissions mode). Includes `Task` so the main agent can
+ * delegate to subagents — required for the subagent sidebar to ever populate.
+ * Subagents themselves are loaded from .claude/agents/ via settingSources.
+ */
 const ALL_TOOLS = [
-  'Read', 'Glob', 'Grep', 'Bash', 'Edit', 'Write', 'WebSearch', 'WebFetch',
+  'Read', 'Glob', 'Grep', 'Bash', 'Edit', 'Write', 'WebSearch', 'WebFetch', 'Task',
 ]
 
 const PERMISSION_TIMEOUT_MS = 5 * 60 * 1000

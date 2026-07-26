@@ -73,6 +73,10 @@ export class ClaudeEngine implements ChatEngine {
           : {}),
         // Enable token-level streaming for typewriter rendering
         includePartialMessages: true,
+        // ⭐ Forward full subagent transcripts (text/thinking/tool) so the web UI
+        // can render nested Task/Agent delegations in a dedicated sidebar.
+        // Without this, only tool_use/tool_result blocks from subagents arrive.
+        forwardSubagentText: true,
         // Wire permission callback if provided (for approval modes)
         ...(req.onPermissionRequest
           ? {

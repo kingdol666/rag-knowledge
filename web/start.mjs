@@ -3,6 +3,7 @@ import path from 'node:path'
 import fs from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { spawn } from 'node:child_process'
+import net from 'node:net'
 import {
   PROJECT_ROOT,
   NUXT_CLI_CANDIDATES,
@@ -107,6 +108,33 @@ if (!nuxtCliPath) {
   process.exit(1)
 }
 
+// ── Pre-flight: configured port must be free (NO silent fallback) ─────
+// User requirement: 启动则一定要在配置端口启动,被占用即报错退出,严禁 nuxt
+// 内部 get-port 自动 fallback 到 3000/3001/3002(造成 "prod 自动启动" 错觉)。
+// 这里主动 bind+close 探测,失败立即 process.exit(1),nuxt 根本不会启动。
+async function ensurePortFree(host, portNum) {
+  return new Promise((resolve) => {
+    const tester = net.createServer()
+    tester.once('error', () => resolve(false))
+    tester.once('listening', () => tester.close(() => resolve(true)))
+    tester.listen({ host, port: portNum })
+  })
+}
+
+const _portOk = await ensurePortFree(host, Number(port))
+if (!_portOk) {
+  console.error('')
+  console.error(`✖ Port ${port} on ${host} is already in use.`)
+  console.error(`  Configured port for APP_MODE=${mode} cannot be acquired.`)
+  console.error(`  This launcher REFUSES to fall back to another port.`)
+  console.error(`  → Free the port, then retry. Diagnose with:`)
+  console.error(`      ragctl status                  # 看当前 dev/prod 进程`)
+  console.error(`      ragctl down --appmode ${mode}    # 停掉当前模式`)
+  console.error(`    Or change WEB_PORT in .env / config.yml.`)
+  process.exit(1)
+}
+
+console.log(`[start.mjs] port ${port} is free, launching nuxt...`)
 // ── launch Nuxt ──────────────────────────────────────────────────────
 const child = spawn(
   process.execPath,

@@ -7,6 +7,7 @@
 import { ClaudeEngine } from './claude-engine'
 import { OmpEngine } from './omp-engine'
 import type { ChatEngine, EngineName } from './types'
+export type { PermissionMode } from './types'
 
 const _claudeEngine = new ClaudeEngine()
 const _ompEngine = new OmpEngine()

@@ -146,6 +146,13 @@ export class OmpEngine implements ChatEngine {
               enqueue({
                 type: 'assistant',
                 message: { role: 'assistant', content },
+                // ⭐ Subagent passthrough — OMP frames may carry these fields
+                // when a delegated child agent (Task/Agent tool) produces the
+                // message. Forward them so the web UI can group nested
+                // transcripts in the subagent sidebar.
+                parent_tool_use_id: frame.parent_tool_use_id || msg.parent_tool_use_id || null,
+                subagent_type: frame.subagent_type || frame.agent_type || msg.subagent_type || undefined,
+                task_description: frame.task_description || msg.task_description || msg.description || undefined,
               })
             }
             state.streamingText = ''
