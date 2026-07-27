@@ -1267,92 +1267,78 @@ const navigateToNode = (node: TreeNode) => {
 
 /* ========== Page Header ========== */
 .page-header {
-  position: relative;
-  z-index: 10;
-  padding: 24px 32px;
-  border-bottom: 1px solid var(--kb-border);
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(20px);
+  margin-bottom: 24px;
+  animation: kb-fade-up 0.5s var(--kb-ease-out) both;
 }
-
 .header-content {
-  max-width: 1600px;
-  margin: 0 auto;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
 }
-
 .header-left {
   display: flex;
   align-items: center;
   gap: 16px;
 }
-
 .header-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
-  background: linear-gradient(135deg, var(--kb-primary), var(--kb-cyan));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 22px;
+  width: 54px;
+  height: 54px;
+  border-radius: 15px;
+  display: grid;
+  place-items: center;
+  font-size: 25px;
   color: #fff;
+  background: linear-gradient(135deg, var(--kb-primary), var(--kb-gold-deep));
+  box-shadow: var(--kb-shadow-primary);
 }
-
-.header-title {
-  font-size: 22px;
+.header-text h1 {
+  font-size: 26px;
   font-weight: 800;
   color: var(--kb-fg);
-  margin: 0;
-  line-height: 1.3;
+  margin: 0 0 3px;
+  letter-spacing: -0.5px;
+  font-family: var(--kb-font-serif);
 }
-
-.header-subtitle {
-  font-size: 13px;
+.header-text p {
+  font-size: 14px;
   color: var(--kb-fg-3);
-  margin: 2px 0 0;
+  margin: 0;
 }
-
 .header-actions {
   display: flex;
   gap: 10px;
 }
-
 .action-btn {
-  height: 38px;
+  height: 40px;
   padding: 0 18px;
-  border-radius: 10px;
-  font-size: 13px;
+  border-radius: 11px;
+  font-size: 14px;
   display: flex;
   align-items: center;
-  gap: 6px;
-  transition: all 0.3s ease;
+  gap: 7px;
+  transition: all var(--kb-dur-fast) var(--kb-ease);
 }
-
 .refresh-btn {
   background: var(--kb-bg-elevated) !important;
   border: 1px solid var(--kb-border) !important;
   color: var(--kb-fg-2) !important;
 }
-
 .refresh-btn:hover {
-  background: var(--kb-primary-tint) !important;
-  border-color: var(--kb-primary) !important;
-  color: var(--kb-primary) !important;
+  background: var(--kb-gold-soft) !important;
+  border-color: var(--kb-gold) !important;
+  color: var(--kb-gold-deep) !important;
   transform: translateY(-1px);
 }
-
 .create-btn {
-  background: linear-gradient(135deg, var(--kb-primary), var(--kb-cyan)) !important;
-  border: none !important;
+  background: linear-gradient(135deg, var(--kb-primary) 0%, #c95530 100%) !important;
+  border-color: var(--kb-primary) !important;
   box-shadow: var(--kb-shadow-primary);
 }
-
 .create-btn:hover {
+  background: linear-gradient(135deg, var(--kb-primary-hover) 0%, #b84724 100%) !important;
+  border-color: var(--kb-primary-hover) !important;
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+  box-shadow: var(--kb-shadow-primary-lg);
 }
 
 /* ========== Main Content ========== */
@@ -2554,13 +2540,8 @@ const navigateToNode = (node: TreeNode) => {
 
   .mini-create-btn span {
     display: none;
+}
   }
-}
-
-/* ========== Dark Mode Overrides ========== */
-:global([data-theme='dark']) .page-header {
-  background: rgba(22, 27, 34, 0.92);
-}
 
 :global([data-theme='dark']) .node-badge.file-badge {
   color: var(--kb-cyan);
