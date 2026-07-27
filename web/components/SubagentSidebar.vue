@@ -744,6 +744,10 @@ function formatClock(ts: number): string {
   color: var(--kb-violet);
   border-color: rgba(124, 92, 255, 0.25);
 }
+:global([data-theme='dark']) .tool-badge.mcp {
+  background: rgba(163, 113, 247, 0.12);
+  border-color: rgba(163, 113, 247, 0.3);
+}
 .tool-badge.err {
   background: var(--kb-rose-soft);
   color: var(--kb-rose);
@@ -756,11 +760,8 @@ function formatClock(ts: number): string {
   word-break: break-all;
   flex: 1;
   min-width: 0;
-}
-.tool-input,
-.tool-result-pre {
   background: var(--kb-bg-code);
-  color: #d5cfc6;
+  color: var(--kb-fg-2);
   padding: 9px 12px;
   border-radius: var(--kb-radius-sm);
   font-family: var(--kb-font-mono);
@@ -771,7 +772,7 @@ function formatClock(ts: number): string {
   margin: 6px 0 0;
   white-space: pre-wrap;
   word-break: break-word;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--kb-border);
 }
 .tool-card details,
 .tool-result-pre ~ details {

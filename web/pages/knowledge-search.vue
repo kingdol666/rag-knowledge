@@ -1111,5 +1111,11 @@ onUnmounted(() => {
   .results-summary { flex-direction: column; gap: 12px; align-items: flex-start; }
   .summary-right { flex-direction: column; gap: 8px; align-items: flex-start; }
 }
-</style>
 
+/* ============ Dark Mode Overrides ============ */
+:global([data-theme='dark']) .graph-toolbar { background: rgba(22,27,34,0.95); }
+:global([data-theme='dark']) .graph-legend { background: rgba(22,27,34,0.95); }
+:global([data-theme='dark']) .type-document { color: var(--kb-cyan) !important; }
+:global([data-theme='dark']) .type-tag { color: var(--kb-emerald) !important; }
+
+</style>

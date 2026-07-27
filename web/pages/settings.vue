@@ -1002,5 +1002,16 @@ const ConfigField = defineComponent({
   gap: 8px;
   align-items: center;
 }
+
+/* ============================================================
+ * Dark Mode Overrides
+ * ============================================================ */
+:global([data-theme='dark']) :deep(.action-info) {
+  color: var(--kb-fg-2);
+}
+
+:global([data-theme='dark']) :deep(.list-item-remove) {
+  background: var(--kb-gold-soft);
+}
 </style>
 

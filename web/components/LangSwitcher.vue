@@ -38,9 +38,9 @@ function handleSwitch({ key }: { key: string }) {
   gap: 4px;
   padding: 4px 10px;
   border-radius: 5px;
-  border: 1px solid #d5c8b0;
-  background: rgba(250,245,235,0.6);
-  color: #8b775a;
+  border: 1px solid var(--kb-border-strong);
+  background: var(--kb-bg-subtle);
+  color: var(--kb-fg-3);
   font-size: 11px;
   font-weight: 500;
   font-family: var(--kb-font);
@@ -49,7 +49,7 @@ function handleSwitch({ key }: { key: string }) {
   white-space: nowrap;
 }
 .lang-switcher-btn:hover {
-  background: rgba(184,71,36,0.08);
+  background: var(--kb-primary-tint);
   border-color: var(--kb-primary);
   color: var(--kb-primary);
 }

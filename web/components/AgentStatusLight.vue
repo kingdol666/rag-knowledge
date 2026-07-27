@@ -52,20 +52,21 @@ withDefaults(defineProps<Props>(), {
 
 /* ── Status colors ─────────────────────────────────────── */
 .lamp-idle {
-  background: #9ca3af;
+  background: var(--kb-fg-mute);
 }
 
 .lamp-running {
-  background: var(--kb-emerald, #10b981);
+  background: var(--kb-emerald);
+  box-shadow: 0 0 6px var(--kb-emerald-soft);
 }
 
 .lamp-done {
-  background: var(--kb-emerald, #10b981);
+  background: var(--kb-emerald);
 }
 
 .lamp-error {
-  background: #ef4444;
-  box-shadow: 0 0 6px rgba(239, 68, 68, 0.5);
+  background: var(--kb-rose);
+  box-shadow: 0 0 6px rgba(248, 81, 73, 0.5);
 }
 
 /* ── Pulsing halo (only when running + pulse enabled) ──── */

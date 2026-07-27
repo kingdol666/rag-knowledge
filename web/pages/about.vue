@@ -718,5 +718,80 @@ const handleSubmit = () => {
   .contact-content { flex-direction: column; }
   .contact-form-card { padding: 30px; }
 }
+/* ── Dark mode overrides ── */
+:global([data-theme='dark']) .intro-section,
+:global([data-theme='dark']) .tech-section,
+:global([data-theme='dark']) .use-cases-section,
+:global([data-theme='dark']) .contact-section {
+  background: var(--kb-shell);
+}
+:global([data-theme='dark']) .features-detail-section {
+  background: var(--kb-bg);
+  border-color: var(--kb-border);
+}
+:global([data-theme='dark']) .section-desc {
+  color: var(--kb-fg-3);
+}
+:global([data-theme='dark']) .intro-card,
+:global([data-theme='dark']) .tech-layer,
+:global([data-theme='dark']) .use-case-card {
+  background: var(--kb-bg-elevated);
+  border-color: var(--kb-border);
+}
+:global([data-theme='dark']) .main-intro {
+  background: linear-gradient(160deg, var(--kb-bg-elevated), var(--kb-primary-tint));
+  border-color: var(--kb-border);
+}
+:global([data-theme='dark']) .tech-card {
+  background: var(--kb-bg);
+  border-color: var(--kb-border);
+}
+:global([data-theme='dark']) .feature-description {
+  color: var(--kb-fg-2);
+}
+:global([data-theme='dark']) .feature-points li {
+  color: var(--kb-fg-2);
+}
+:global([data-theme='dark']) .contact-label {
+  color: var(--kb-fg-3);
+}
+:global([data-theme='dark']) .contact-value {
+  color: var(--kb-fg);
+}
+:global([data-theme='dark']) .about-footer {
+  background: var(--kb-bg-dark);
+  color: var(--kb-fg-mute);
+}
+:global([data-theme='dark']) .brand-text {
+  color: var(--kb-fg);
+}
+:global([data-theme='dark']) .ring {
+  border-color: rgba(88, 166, 255, 0.2);
+}
+:global([data-theme='dark']) .ring-content {
+  color: var(--kb-fg-2);
+}
+:global([data-theme='dark']) .hero-subtitle {
+  color: var(--kb-fg-3);
+}
+:global([data-theme='dark']) .secondary-btn {
+  background: rgba(255,255,255,0.06) !important;
+  border-color: var(--kb-border-strong) !important;
+  color: var(--kb-fg-2) !important;
+}
+:global([data-theme='dark']) .secondary-btn:hover {
+  background: rgba(255,255,255,0.1) !important;
+  border-color: var(--kb-gold) !important;
+  color: var(--kb-fg) !important;
+}
+:global([data-theme='dark']) .outline-text {
+  -webkit-text-stroke-color: rgba(255,255,255,0.2);
+}
+:global([data-theme='dark']) .gradient-text {
+  background: linear-gradient(100deg, var(--kb-fg) 0%, var(--kb-cyan) 40%, var(--kb-primary) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
 </style>
 

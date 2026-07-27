@@ -2556,6 +2556,28 @@ const navigateToNode = (node: TreeNode) => {
     display: none;
   }
 }
+
+/* ========== Dark Mode Overrides ========== */
+:global([data-theme='dark']) .page-header {
+  background: rgba(22, 27, 34, 0.92);
+}
+
+:global([data-theme='dark']) .node-badge.file-badge {
+  color: var(--kb-cyan);
+}
+
+:global([data-theme='dark']) .tag-folder {
+  border-color: var(--kb-primary-glow) !important;
+}
+
+:global([data-theme='dark']) .tag-file {
+  border-color: rgba(88, 166, 255, 0.2) !important;
+  color: var(--kb-cyan) !important;
+}
+
+:global([data-theme='dark']) .child-card:hover {
+  border-color: var(--kb-primary-glow);
+}
 </style>
 
 <style>
@@ -2598,5 +2620,78 @@ const navigateToNode = (node: TreeNode) => {
 
 .custom-tree .ant-tree-switcher {
   color: var(--kb-fg-mute) !important;
+}
+/* ═══════════════════════════════════════════════════════════
+   DARK MODE — Ant Design Tree overrides
+   ═══════════════════════════════════════════════════════════ */
+[data-theme='dark'] .sidebar-panel {
+  background: var(--kb-bg-code);
+  border-color: var(--kb-border);
+}
+[data-theme='dark'] .panel-body {
+  background: var(--kb-bg-code);
+}
+
+/* Tree list — inner scroll container */
+[data-theme='dark'] .custom-tree,
+[data-theme='dark'] .ant-tree,
+[data-theme='dark'] .ant-tree-list,
+[data-theme='dark'] .ant-tree-list-holder,
+[data-theme='dark'] .ant-tree-list-holder-inner {
+  background: var(--kb-bg-code) !important;
+}
+
+/* Tree node content wrapper — default state */
+[data-theme='dark'] .custom-tree .ant-tree-node-content-wrapper {
+  background: transparent !important;
+  color: var(--kb-fg-2) !important;
+}
+[data-theme='dark'] .custom-tree .ant-tree-node-content-wrapper:hover {
+  background: var(--kb-bg-subtle) !important;
+}
+
+/* Tree switcher arrows */
+[data-theme='dark'] .custom-tree .ant-tree-switcher {
+  color: var(--kb-fg-mute) !important;
+}
+[data-theme='dark'] .ant-tree-switcher:hover {
+  color: var(--kb-gold-bright) !important;
+}
+
+/* Tree indent lines */
+[data-theme='dark'] .ant-tree-show-line .ant-tree-indent-unit::before {
+  border-right-color: var(--kb-border) !important;
+}
+
+/* Tree node hover — whole row */
+[data-theme='dark'] .custom-tree .ant-tree-treenode:hover {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* Tree node selected */
+[data-theme='dark'] .custom-tree .ant-tree-node-content-wrapper.ant-tree-node-selected {
+  background-color: var(--kb-primary-soft) !important;
+  color: var(--kb-primary) !important;
+}
+[data-theme='dark'] .custom-tree .ant-tree-node-selected {
+  background: transparent !important;
+}
+
+/* File badge color in dark mode */
+[data-theme='dark'] .node-badge.file-badge {
+  color: var(--kb-cyan) !important;
+}
+
+/* Panel header dark */
+[data-theme='dark'] .panel-header {
+  border-bottom-color: var(--kb-border);
+}
+[data-theme='dark'] .tree-body {
+  background: var(--kb-bg-code);
+}
+
+/* Tree node name */
+[data-theme='dark'] .node-name {
+  color: var(--kb-fg);
 }
 </style>

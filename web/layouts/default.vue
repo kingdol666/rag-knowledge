@@ -393,42 +393,22 @@ watch(() => route.fullPath, () => {
   filter: none;
 }
 .library-bg-video.is-ready {
-  opacity: 0.96;
+  opacity: 0.42;
+  filter: saturate(0.7) brightness(1.08) sepia(0.12);
 }
 
-/* Soft vignette only — keeps edge UI legible without muting the video's colors */
+/* Warm vignette — soft wash for light theme default */
 .library-bg-overlay {
   position: absolute;
   inset: 0;
   z-index: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 75% 75% at 50% 50%,
-      transparent 0%,
-      transparent 45%,
-      rgba(15, 12, 9, 0.25) 80%,
-      rgba(10, 8, 6, 0.55) 100%);
-}
-
-/* —— Light theme: video retreats to a soft warm wash, shadows lift —— */
-:global([data-theme='light']) .library-bg-video.is-ready {
-  opacity: 0.42;
-  filter: saturate(0.7) brightness(1.08) sepia(0.12);
-}
-:global([data-theme='light']) .library-bg-overlay {
-  background:
     radial-gradient(ellipse 80% 80% at 50% 50%,
       rgba(255, 250, 235, 0.35) 0%,
       rgba(245, 238, 222, 0.55) 60%,
       rgba(220, 205, 175, 0.75) 100%);
 }
-:global([data-theme='light']) .shelf-shadow {
-  background: rgba(120, 100, 70, 0.10) !important;
-}
-:global([data-theme='light']) .dust-mote {
-  opacity: 0.25 !important;
-}
-
 /* ── Library atmosphere ─────────────────────────────────── */
 .library-atmosphere {
   position: absolute;
@@ -438,30 +418,31 @@ watch(() => route.fullPath, () => {
 }
 .shelf-shadow {
   position: absolute;
-  background: rgba(0, 0, 0, 0.4);
+  background: rgba(120, 100, 70, 0.10);
 }
 .shelf-shadow.shelf-top {
   top: 0; left: 0; right: 0; height: 8px;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.55), transparent);
+  background: linear-gradient(180deg, rgba(120, 100, 70, 0.18), transparent);
 }
 .shelf-shadow.shelf-left {
   left: 0; top: 0; bottom: 0; width: 6px;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0.45), transparent);
+  background: linear-gradient(90deg, rgba(120, 100, 70, 0.14), transparent);
 }
 .shelf-shadow.shelf-right {
   right: 0; top: 0; bottom: 0; width: 6px;
-  background: linear-gradient(270deg, rgba(0, 0, 0, 0.45), transparent);
+  background: linear-gradient(270deg, rgba(120, 100, 70, 0.14), transparent);
 }
 
-/* Dust motes — gold motes drifting in candlelight */
+/* Dust motes — gold motes drifting in daylight */
 .dust-mote {
   position: absolute;
   top: -10px;
-  background: radial-gradient(circle, rgba(212, 175, 106, 0.55) 0%, rgba(212, 175, 106, 0.12) 70%, transparent 100%);
+  background: radial-gradient(circle, rgba(200, 169, 106, 0.35) 0%, rgba(200, 169, 106, 0.08) 70%, transparent 100%);
   border-radius: 50%;
   animation: dust-float linear infinite;
   filter: blur(0.3px);
-  box-shadow: 0 0 4px rgba(212, 175, 106, 0.3);
+  box-shadow: 0 0 4px rgba(200, 169, 106, 0.2);
+  opacity: 0.25;
 }
 @keyframes dust-float {
   0%   { transform: translateY(0) translateX(0); opacity: 0; }
@@ -1415,4 +1396,122 @@ watch(() => route.fullPath, () => {
     padding: 10px 14px !important;
   }
 }
+/* ============================================================
+ * DARK MODE OVERRIDES — [data-theme="dark"]
+ * Inverts the book pages and shell to true dark backgrounds
+
+<style>
+/* ============================================================
+ * DARK MODE — global overrides (non-scoped)
+ * ============================================================ */
+[data-theme='dark'] .library-shell {
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 35%, rgba(88, 166, 255, 0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 70% at 50% 50%, #161b22 0%, #0d1117 70%);
+}
+[data-theme='dark'] .library-bg-video.is-ready {
+  opacity: 0.15;
+  filter: saturate(0.4) brightness(0.6);
+}
+[data-theme='dark'] .library-bg-overlay {
+  background:
+    radial-gradient(ellipse 75% 75% at 50% 50%,
+      transparent 0%, transparent 45%,
+      rgba(0, 0, 0, 0.35) 80%, rgba(0, 0, 0, 0.75) 100%);
+}
+[data-theme='dark'] .shelf-shadow.shelf-top {
+  background: linear-gradient(180deg, rgba(0,0,0,0.6), transparent);
+}
+[data-theme='dark'] .shelf-shadow.shelf-left {
+  background: linear-gradient(90deg, rgba(0,0,0,0.5), transparent);
+}
+[data-theme='dark'] .shelf-shadow.shelf-right {
+  background: linear-gradient(270deg, rgba(0,0,0,0.5), transparent);
+}
+[data-theme='dark'] .dust-mote {
+  background: radial-gradient(circle, rgba(88, 166, 255, 0.3) 0%, rgba(88, 166, 255, 0.06) 70%, transparent 100%);
+  box-shadow: 0 0 4px rgba(88, 166, 255, 0.2);
+  opacity: 0.4 !important;
+}
+[data-theme='dark'] .book-page {
+  background:
+    linear-gradient(135deg, #1c2128 0%, #161b22 28%, #1c2128 55%, #0d1117 100%) !important;
+  box-shadow:
+    inset 0 0 80px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+}
+[data-theme='dark'] .page-texture { opacity: 0.02; }
+[data-theme='dark'] .book-plate {
+  border-color: var(--kb-gold);
+  background: linear-gradient(180deg, rgba(212,175,106,0.08), rgba(224,85,58,0.03));
+  box-shadow: inset 0 0 0 3px rgba(22,27,34,0.5), inset 0 0 0 4px rgba(212,175,106,0.3), 0 2px 8px rgba(0,0,0,0.4);
+}
+[data-theme='dark'] .plate-text { color: var(--kb-gold-bright); }
+[data-theme='dark'] .toc-label { color: var(--kb-fg-3); }
+[data-theme='dark'] .toc-divider { background: linear-gradient(90deg, var(--kb-gold), transparent); }
+[data-theme='dark'] .toc-number { color: var(--kb-fg-mute); }
+[data-theme='dark'] .toc-icon { color: var(--kb-fg-3); }
+[data-theme='dark'] .toc-title { color: var(--kb-fg); }
+[data-theme='dark'] .toc-dots { border-bottom-color: var(--kb-border-strong); }
+[data-theme='dark'] .toc-page-num { color: var(--kb-fg-mute); }
+[data-theme='dark'] .toc-item:hover { background: var(--kb-primary-tint); }
+[data-theme='dark'] .toc-item.active {
+  background: linear-gradient(90deg, var(--kb-primary-soft), rgba(224,85,58,0.02));
+}
+[data-theme='dark'] .page-left-footer { border-top-color: var(--kb-border); }
+[data-theme='dark'] .footer-ornament { color: var(--kb-gold); }
+[data-theme='dark'] .footer-text { color: var(--kb-fg-mute); }
+[data-theme='dark'] .page-right-header { border-bottom-color: var(--kb-border); }
+[data-theme='dark'] .page-running-head { color: var(--kb-fg-3); }
+[data-theme='dark'] .running-dot { color: var(--kb-gold); }
+[data-theme='dark'] .running-chapter { color: var(--kb-fg-mute); }
+[data-theme='dark'] .mini-btn {
+  border-color: var(--kb-border-strong);
+  background: var(--kb-bg-subtle);
+  color: var(--kb-fg-3);
+}
+[data-theme='dark'] .mini-btn:hover {
+  background: var(--kb-primary-soft);
+  border-color: var(--kb-primary);
+  color: var(--kb-primary);
+}
+[data-theme='dark'] .page-right-footer { border-top-color: var(--kb-border); color: var(--kb-fg-mute); }
+[data-theme='dark'] .page-decor { color: var(--kb-gold); }
+[data-theme='dark'] .book-spine {
+  box-shadow: inset 1px 0 4px rgba(0,0,0,0.5), inset -1px 0 4px rgba(255,240,200,0.1), 0 0 12px rgba(0,0,0,0.6);
+}
+[data-theme='dark'] .spine-groove { background: rgba(0,0,0,0.4); box-shadow: 0 1px 0 rgba(255,240,200,0.1); }
+[data-theme='dark'] .spine-label { color: #2a1f10; text-shadow: 0 1px 0 rgba(255,240,200,0.15); }
+[data-theme='dark'] .page-curl-left { background: linear-gradient(90deg, rgba(0,0,0,0.15), transparent); }
+[data-theme='dark'] .page-curl-right { background: linear-gradient(270deg, rgba(0,0,0,0.15), transparent); }
+[data-theme='dark'] .page-stack { background: var(--kb-border); }
+[data-theme='dark'] .nav-arrow {
+  border-color: var(--kb-border-strong);
+  background: rgba(13,17,23,0.85);
+  color: var(--kb-gold);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+}
+[data-theme='dark'] .nav-arrow:hover {
+  background: var(--kb-primary-soft);
+  border-color: var(--kb-gold);
+  color: var(--kb-gold-bright);
+  box-shadow: 0 0 28px var(--kb-primary-glow), 0 6px 20px rgba(0,0,0,0.6);
+}
+[data-theme='dark'] .mobile-bottom-nav {
+  background: linear-gradient(180deg, rgba(22,27,34,0.95), rgba(13,17,23,0.98));
+  border-top-color: var(--kb-border);
+}
+[data-theme='dark'] .mob-nav-btn {
+  border-color: var(--kb-border-strong);
+  background: var(--kb-bg-subtle);
+  color: var(--kb-gold);
+}
+[data-theme='dark'] .mob-page-num { color: var(--kb-gold-bright); }
+[data-theme='dark'] .mob-page-sep { color: var(--kb-gold); }
+[data-theme='dark'] .mob-page-total { color: var(--kb-fg-mute); }
+[data-theme='dark'] .mobile-drawer-backdrop { background: rgba(0,0,0,0.55); }
+[data-theme='dark'] .page-content::-webkit-scrollbar-track { background: rgba(48,54,61,0.3); }
+[data-theme='dark'] .page-content::-webkit-scrollbar-thumb { background: rgba(139,148,158,0.4); }
+[data-theme='dark'] .page-content::-webkit-scrollbar-thumb:hover { background: rgba(88,166,255,0.5); }
+[data-theme='dark'] .page-content { scrollbar-color: rgba(139,148,158,0.4) rgba(48,54,61,0.3); }
 </style>

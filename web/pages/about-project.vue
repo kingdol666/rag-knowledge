@@ -448,5 +448,23 @@ const guideSteps = [
 .contact-links { display: flex; gap: 12px; flex-wrap: wrap; }
 .contact-btn { height: 46px; border-radius: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: all var(--kb-dur) var(--kb-ease); }
 .contact-btn:hover { transform: translateY(-2px); box-shadow: var(--kb-shadow-md); }
+/* ── Dark mode overrides ── */
+:global([data-theme='dark']) .about-project-page {
+  background: var(--kb-shell);
+}
+:global([data-theme='dark']) .header-content p {
+  color: var(--kb-fg-3);
+}
+:global([data-theme='dark']) .page-header::before {
+  opacity: 0.3;
+}
+:global([data-theme='dark']) .arch-layer {
+  background: var(--kb-bg);
+  border-color: var(--kb-border);
+}
+:global([data-theme='dark']) .timeline-content {
+  background: var(--kb-bg);
+  border-color: var(--kb-border);
+}
 </style>
 

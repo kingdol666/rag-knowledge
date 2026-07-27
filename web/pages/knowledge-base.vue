@@ -1190,5 +1190,23 @@ onMounted(async () => {
   .doc-grid { grid-template-columns: 1fr; }
   .doc-list-header { flex-direction: column; gap: 12px; align-items: flex-start; }
 }
+
+/* ── Dark mode ── */
+/* Pre blocks: ensure text color uses the foreground variable */
+:global([data-theme='dark']) .preview-markdown-client .markdown-body pre {
+  color: var(--kb-fg-2);
+}
+
+/* Math blocks: keep the subtle overlay consistent in dark mode */
+:global([data-theme='dark']) .preview-markdown-client .markdown-body .math-block {
+  background: rgba(255,255,255,0.04);
+}
+
+/* Mermaid diagrams: flip black tint to white tint for dark backgrounds */
+:global([data-theme='dark']) .preview-markdown-client .markdown-body .mermaid,
+:global([data-theme='dark']) .preview-markdown-client .markdown-body pre.mermaid,
+:global([data-theme='dark']) .preview-markdown-client .markdown-body pre > code.language-mermaid {
+  background: rgba(255,255,255,0.02);
+}
 </style>
 

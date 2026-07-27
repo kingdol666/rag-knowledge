@@ -3517,6 +3517,55 @@ async function deleteHistory(sid: string) {
 }
 /* header layout tweak: status lamp + sidebar button sit with the engine selector */
 .header-spacer { width: 4px; flex-shrink: 0; }
+
+/* ═══════════════════════════════════════════════════
+ * Dark mode overrides ([data-theme="dark"])
+ * Keep light defaults; only adjust elements that
+ * assume a light background or clash with dark palette.
+ * ═══════════════════════════════════════════════════ */
+
+/* History session list avatar — #1677ff AntD blue → adaptive cyan */
+:global([data-theme='dark']) .history-item :deep(.anticon) {
+  color: var(--kb-cyan) !important;
+}
+
+/* Code blocks — swap warm brown gradient for slate; keep gold trim */
+:global([data-theme='dark']) .msg-text :deep(pre) {
+  background: linear-gradient(180deg, #161b22 0%, #0d1117 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(196, 154, 74, 0.12),
+    0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* Math block — slightly more visible surface on dark */
+:global([data-theme='dark']) .msg-text :deep(.math-block) {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Scrollbar — track/glow use dark-mode gold channels */
+:global([data-theme='dark']) .messages::-webkit-scrollbar-track {
+  background: rgba(210, 153, 34, 0.06);
+}
+:global([data-theme='dark']) .messages::-webkit-scrollbar-thumb {
+  box-shadow: 0 0 6px rgba(210, 153, 34, 0.2);
+}
+:global([data-theme='dark']) .messages {
+  scrollbar-color: var(--kb-gold-deep) rgba(210, 153, 34, 0.08);
+}
+
+/* Active KB selector toggle — blue ring → dark-mode primary ring */
+:global([data-theme='dark']) .kb-btn.active {
+  box-shadow: 0 0 0 2px rgba(224, 85, 58, 0.15);
+}
+
+/* Tool badges — use dark-mode gold/violet channels */
+:global([data-theme='dark']) .tool-badge {
+  border-color: rgba(184, 148, 90, 0.3);
+}
+:global([data-theme='dark']) .tool-badge.mcp {
+  background: rgba(163, 113, 247, 0.1);
+  border-color: rgba(163, 113, 247, 0.25);
+}
 </style>
 
 <!-- ═══ 全局样式（非 scoped）：让书本 layout 的 .page-content 在渲染 claude-chat 时

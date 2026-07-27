@@ -5,7 +5,7 @@
     :title="theme === 'dark' ? $t('common.theme.light') : $t('common.theme.dark')"
     :aria-label="theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'"
   >
-    <BulbFilled v-if="theme === 'dark'" />
+    <BulbFilled v-if="theme === 'light'" />
     <BulbOutlined v-else />
   </button>
 </template>
@@ -17,7 +17,7 @@ import { BulbFilled, BulbOutlined } from '@ant-design/icons-vue'
 type Theme = 'dark' | 'light'
 const STORAGE_KEY = 'kb-theme'
 
-const theme = ref<Theme>('dark')
+const theme = ref<Theme>('light')
 
 function applyTheme(t: Theme) {
   if (process.client) {
@@ -26,14 +26,14 @@ function applyTheme(t: Theme) {
 }
 
 function toggle() {
-  theme.value = theme.value === 'dark' ? 'light' : 'dark'
+  theme.value = theme.value === 'light' ? 'dark' : 'light'
 }
 
 onMounted(() => {
-  let initial: Theme = 'dark'
+  let initial: Theme = 'light'
   if (process.client) {
     const saved = localStorage.getItem(STORAGE_KEY) as Theme | null
-    if (saved === 'light' || saved === 'dark') {
+    if (saved === 'dark' || saved === 'light') {
       initial = saved
     }
   }
@@ -58,7 +58,7 @@ watch(theme, (t) => {
   padding: 0;
   border-radius: 6px;
   border: 1px solid var(--kb-border);
-  background: rgba(250, 245, 235, 0.6);
+  background: var(--kb-bg-subtle);
   color: var(--kb-gold-deep);
   font-size: 13px;
   cursor: pointer;
@@ -67,7 +67,7 @@ watch(theme, (t) => {
 .theme-toggle-btn:hover {
   background: var(--kb-gold-soft);
   border-color: var(--kb-gold);
-  color: var(--kb-gold-deep);
+  color: var(--kb-gold);
   transform: rotate(15deg);
 }
 .theme-toggle-btn:focus-visible {

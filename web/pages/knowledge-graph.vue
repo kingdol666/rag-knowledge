@@ -1075,5 +1075,19 @@ onUnmounted(() => {
   .path-arrow { display: none; }
   .cross-kb-grid { grid-template-columns: 1fr; }
 }
+
+/* ============ Dark mode overrides ============ */
+:global([data-theme='dark']) .graph-toolbar { background: rgba(22,27,34,0.95); }
+:global([data-theme='dark']) .graph-legend { background: rgba(22,27,34,0.95); }
+:global([data-theme='dark']) .node-count-info { background: rgba(22,27,34,0.95); }
+:global([data-theme='dark']) .canvas-loading,
+:global([data-theme='dark']) .canvas-empty { background: rgba(13,17,23,0.9); }
+:global([data-theme='dark']) .health-banner { color: var(--kb-amber); }
+:global([data-theme='dark']) .health-hint { color: var(--kb-amber); }
+:global([data-theme='dark']) .relation-shared_tag { color: var(--kb-amber); }
+:global([data-theme='dark']) .relation-vector_similar { background: rgba(163,113,247,0.12); color: var(--kb-violet); }
+:global([data-theme='dark']) .type-document { color: var(--kb-cyan) !important; }
+:global([data-theme='dark']) .type-tag { color: var(--kb-emerald) !important; }
+:global([data-theme='dark']) .path-selected { color: var(--kb-emerald); }
 </style>
 

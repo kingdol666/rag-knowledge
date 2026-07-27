@@ -1,90 +1,97 @@
 /* ============================================================
- * RAG Knowledge Base — Global Design System theme.css (v4)
- * "Nocturne Atelier" — dark academia luxury: aged parchment pages
- * resting on a deep walnut scholar's desk, illuminated by gold
- * filigree and candlelight amber. The book metaphor, after dark.
+ * RAG Knowledge Base — Global Design System theme.css (v5)
+ * Dual-theme system: LIGHT (default) + DARK (true dark mode)
  *
- * v4 — Atmospheric dark shell + bright readable content surfaces.
- *      Gold leaf accents, richer shadows, refined serif hierarchy.
+ * :root              = Light theme (warm ivory/linen scholar)
+ * [data-theme="dark"] = Dark theme (deep slate with white text)
+ *
+ * All components use CSS custom properties so switching works
+ * globally via a single attribute on <html>.
  * ============================================================ */
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
+/* ============================================================
+ * LIGHT THEME — Default (:root)
+ * Warm ivory pages on linen desk, copper accents, gold filigree
+ * ============================================================ */
 :root {
-  /* —— Nocturne shell (the room around the book) —— */
-  --kb-shell: #15110d;             /* deep walnut ink */
-  --kb-shell-2: #1e1812;           /* warm espresso */
-  --kb-shell-3: #2a2118;           /* aged leather */
-  --kb-shell-glow: #3d2e1e;        /* candlelit edge */
+  /* —— Shell (the room around the content) —— */
+  --kb-shell: #f0e6d6;
+  --kb-shell-2: #e8dcc8;
+  --kb-shell-3: #ddd1ba;
+  --kb-shell-glow: #c49a4a;
 
-  /* —— Parchment content surfaces (the pages — stay bright) —— */
-  --kb-bg: #f4ede0;                /* aged parchment */
-  --kb-bg-elevated: #fbf5e9;       /* lifted sheet */
-  --kb-bg-subtle: #ede3d2;         /* recessed margin */
-  --kb-bg-dark: #15110d;
-  --kb-bg-code: #1a1612;
+  /* —— Content surfaces (ivory pages) —— */
+  --kb-bg: #fefcf6;
+  --kb-bg-elevated: #ffffff;
+  --kb-bg-subtle: #f6f1e4;
+  --kb-bg-dark: #1a1612;
+  --kb-bg-code: #1e1a15;
 
-  --kb-fg: #2a2118;                /* warm espresso ink */
-  --kb-fg-2: #4a3d2e;              /* secondary text */
-  --kb-fg-3: #7a6852;              /* tertiary / captions */
-  --kb-fg-mute: #a89580;           /* muted */
+  /* —— Ink (warm brown for legibility on ivory) —— */
+  --kb-fg: #2a1f15;
+  --kb-fg-2: #5a4a36;
+  --kb-fg-3: #8a7860;
+  --kb-fg-mute: #b0a088;
 
-  --kb-border: #ddd0bc;            /* deckle edge */
-  --kb-border-strong: #c9b89e;     /* ruled line */
+  /* —— Borders —— */
+  --kb-border: #e0d5c0;
+  --kb-border-strong: #c9b89e;
 
-  /* —— Gold leaf (the new aristocratic accent) —— */
-  --kb-gold: #b8945a;              /* antique gold */
-  --kb-gold-bright: #d4af6a;       /* burnished highlight */
-  --kb-gold-deep: #8a6d3b;         /* engraved gold */
-  --kb-gold-soft: #f0e4cc;         /* gold tint wash */
-  --kb-gold-glow: rgba(212, 175, 106, 0.35);
+  /* —— Gold leaf —— */
+  --kb-gold: #a07a35;
+  --kb-gold-bright: #c89a48;
+  --kb-gold-deep: #6f5520;
+  --kb-gold-soft: #f3ead0;
+  --kb-gold-glow: rgba(160, 122, 53, 0.30);
 
-  /* Brand color — Copper (primary action, warm and steady) */
+  /* —— Copper primary —— */
   --kb-primary: #b84724;
   --kb-primary-hover: #9e3818;
-  --kb-primary-soft: #f6e7e0;
-  --kb-primary-tint: #fbf2ec;
+  --kb-primary-soft: #fbe7df;
+  --kb-primary-tint: #fdf3ef;
   --kb-primary-glow: rgba(184, 71, 36, 0.25);
 
-  /* Accent colors — Ultramarine + Moss + Amber */
-  --kb-cyan: #3a6b8f;
-  --kb-cyan-soft: #e6eef5;
-  --kb-emerald: #5a8f5a;
-  --kb-emerald-soft: #e8f0e8;
-  --kb-amber: #c49a4a;
-  --kb-amber-soft: #f5ede0;
-  --kb-violet: #7c5cff;
-  --kb-rose: #b84a5a;
-  --kb-rose-soft: #f5e6e8;
+  /* —— Accent colors —— */
+  --kb-cyan: #2f5d80;
+  --kb-cyan-soft: #e3edf3;
+  --kb-emerald: #4d7d4d;
+  --kb-emerald-soft: #e5ede5;
+  --kb-amber: #a8842f;
+  --kb-amber-soft: #f3ead4;
+  --kb-violet: #6d4fe8;
+  --kb-rose: #b83e4e;
+  --kb-rose-soft: #f3e1e3;
 
-  /* Syntax-highlight token colors (warm palette) */
+  /* —— Syntax highlight (warm palette for light bg) —— */
   --hl-keyword: #b84724;
-  --hl-string: #5a8f5a;
-  --hl-number: #7c5cff;
+  --hl-string: #4d7d4d;
+  --hl-number: #6d4fe8;
   --hl-comment: #a69b90;
-  --hl-function: #3a6b8f;
-  --hl-builtin: #c49a4a;
-  --hl-regex: #b84a5a;
+  --hl-function: #2f5d80;
+  --hl-builtin: #a8842f;
+  --hl-regex: #b83e4e;
   --hl-tag: #b84724;
-  --hl-meta: #3a6b8f;
+  --hl-meta: #2f5d80;
 
-  /* Shadows: warm, deep, layered — chiaroscuro */
-  --kb-shadow-xs: 0 1px 2px rgba(21, 17, 13, 0.08);
-  --kb-shadow-sm: 0 1px 3px rgba(21, 17, 13, 0.10), 0 1px 2px rgba(21, 17, 13, 0.06);
-  --kb-shadow-md: 0 6px 20px rgba(21, 17, 13, 0.12), 0 2px 6px rgba(21, 17, 13, 0.07);
-  --kb-shadow-lg: 0 18px 44px rgba(21, 17, 13, 0.18), 0 6px 16px rgba(21, 17, 13, 0.10);
-  --kb-shadow-primary: 0 10px 26px rgba(184, 71, 36, 0.30);
-  --kb-shadow-primary-lg: 0 18px 42px rgba(184, 71, 36, 0.38);
-  --kb-shadow-gold: 0 8px 24px rgba(212, 175, 106, 0.28);
+  /* —— Shadows —— */
+  --kb-shadow-xs: 0 1px 2px rgba(90, 70, 40, 0.06);
+  --kb-shadow-sm: 0 1px 3px rgba(90, 70, 40, 0.08), 0 1px 2px rgba(90, 70, 40, 0.05);
+  --kb-shadow-md: 0 6px 20px rgba(90, 70, 40, 0.10), 0 2px 6px rgba(90, 70, 40, 0.06);
+  --kb-shadow-lg: 0 18px 44px rgba(90, 70, 40, 0.14), 0 6px 16px rgba(90, 70, 40, 0.08);
+  --kb-shadow-primary: 0 10px 26px rgba(184, 71, 36, 0.24);
+  --kb-shadow-primary-lg: 0 18px 42px rgba(184, 71, 36, 0.30);
+  --kb-shadow-gold: 0 8px 24px rgba(200, 154, 72, 0.22);
 
-  /* Border radius */
+  /* —— Border radius —— */
   --kb-radius-sm: 6px;
   --kb-radius: 10px;
   --kb-radius-lg: 14px;
   --kb-radius-xl: 20px;
   --kb-radius-pill: 999px;
 
-  /* Spacing */
+  /* —— Spacing —— */
   --kb-space-xs: 4px;
   --kb-space-sm: 8px;
   --kb-space: 16px;
@@ -92,13 +99,13 @@
   --kb-space-xl: 32px;
   --kb-space-2xl: 48px;
 
-  /* Typography — Cormorant Garamond brings literary gravitas */
+  /* —— Typography —— */
   --kb-font: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
   --kb-font-serif: 'Cormorant Garamond', 'Playfair Display', 'Noto Serif SC', Georgia, 'Times New Roman', serif;
   --kb-font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --kb-font-display: 'Cormorant Garamond', Georgia, serif;
 
-  /* Animation */
+  /* —— Animation —— */
   --kb-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
   --kb-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --kb-dur-fast: 0.2s;
@@ -107,78 +114,91 @@
 }
 
 /* ============================================================
- * DAY ATELIER — Light theme variant
- * The same scholar's library, after sunrise: warm linen desk
- * beneath ivory pages, gold filigree catching daylight. Brand
- * continuity with Nocturne — only the luminance flips.
- * Activated via [data-theme="light"] on <html>.
+ * DARK THEME — [data-theme="dark"]
+ * Deep charcoal/navy shell with crisp white text,
+ * amber-gold accents, slate code surfaces
  * ============================================================ */
-[data-theme="light"] {
-  /* —— Linen shell (the room — bright, airy) —— */
-  --kb-shell: #e6dccc;             /* warm linen */
-  --kb-shell-2: #efe7d6;           /* sun-bleached straw */
-  --kb-shell-3: #ddd1ba;           /* worn hemp */
-  --kb-shell-glow: #c49a4a;        /* daylight gold edge */
+[data-theme="dark"] {
+  /* —— Shell (deep slate) —— */
+  --kb-shell: #0d1117;
+  --kb-shell-2: #161b22;
+  --kb-shell-3: #21262d;
+  --kb-shell-glow: #30363d;
 
-  /* —— Ivory pages (brighter than parchment) —— */
-  --kb-bg: #fefcf6;                /* ivory sheet */
-  --kb-bg-elevated: #ffffff;       /* bleached lift */
-  --kb-bg-subtle: #f6f1e4;         /* recessed margin */
-  --kb-bg-dark: #2a2118;
-  --kb-bg-code: #2b251c;           /* keep code dark for contrast */
+  /* —— Content surfaces (dark charcoal) —— */
+  --kb-bg: #161b22;
+  --kb-bg-elevated: #1c2128;
+  --kb-bg-subtle: #0d1117;
+  --kb-bg-dark: #010409;
+  --kb-bg-code: #0d1117;
 
-  /* —— Ink (deep brown for legibility on ivory) —— */
-  --kb-fg: #2a1f15;                /* strong espresso ink */
-  --kb-fg-2: #5a4a36;              /* secondary */
-  --kb-fg-3: #8a7860;              /* tertiary */
-  --kb-fg-mute: #b0a088;           /* muted */
+  /* —— Ink (white/light gray for dark backgrounds) —— */
+  --kb-fg: #e6edf3;
+  --kb-fg-2: #c9d1d9;
+  --kb-fg-3: #8b949e;
+  --kb-fg-mute: #6e7681;
 
-  /* —— Deckle edges (slightly stronger on light) —— */
-  --kb-border: #ddd0bc;
-  --kb-border-strong: #c4b395;
+  /* —— Borders —— */
+  --kb-border: #30363d;
+  --kb-border-strong: #484f58;
 
-  /* —— Gold leaf — deepened for contrast on bright grounds —— */
-  --kb-gold: #a07a35;              /* antique gold */
-  --kb-gold-bright: #c89a48;       /* burnished */
-  --kb-gold-deep: #6f5520;         /* engraved */
-  --kb-gold-soft: #f3ead0;         /* gold tint wash */
-  --kb-gold-glow: rgba(160, 122, 53, 0.30);
+  /* —— Gold (brighter for dark backgrounds) —— */
+  --kb-gold: #d4af6a;
+  --kb-gold-bright: #e8c878;
+  --kb-gold-deep: #b8945a;
+  --kb-gold-soft: #2d2418;
+  --kb-gold-glow: rgba(212, 175, 106, 0.35);
 
-  /* Brand — Copper (slightly richer on light) */
-  --kb-primary: #a83a22;
-  --kb-primary-hover: #8c2f1a;
-  --kb-primary-soft: #fbe7df;
-  --kb-primary-tint: #fdf3ef;
-  --kb-primary-glow: rgba(168, 58, 34, 0.22);
+  /* —— Copper (slightly brighter for visibility on dark) —— */
+  --kb-primary: #e0553a;
+  --kb-primary-hover: #f0674a;
+  --kb-primary-soft: #2d1410;
+  --kb-primary-tint: #1f1010;
+  --kb-primary-glow: rgba(224, 85, 58, 0.30);
 
-  /* Accents stay — slight luminance tuning */
-  --kb-cyan: #2f5d80;
-  --kb-cyan-soft: #e3edf3;
-  --kb-emerald: #4d7d4d;
-  --kb-emerald-soft: #e5ede5;
-  --kb-amber: #a8842f;
-  --kb-amber-soft: #f3ead4;
-  --kb-violet: #6d4fe8;
-  --kb-rose: #a83e4e;
-  --kb-rose-soft: #f3e1e3;
+  /* —— Accent colors (brighter for dark bg) —— */
+  --kb-cyan: #58a6ff;
+  --kb-cyan-soft: #0d1b2d;
+  --kb-emerald: #3fb950;
+  --kb-emerald-soft: #0d1f14;
+  --kb-amber: #d29922;
+  --kb-amber-soft: #2d1f0d;
+  --kb-violet: #a371f7;
+  --kb-rose: #f85149;
+  --kb-rose-soft: #2d1014;
 
-  /* Shadows — softer in daylight */
-  --kb-shadow-xs: 0 1px 2px rgba(90, 70, 40, 0.06);
-  --kb-shadow-sm: 0 1px 3px rgba(90, 70, 40, 0.08), 0 1px 2px rgba(90, 70, 40, 0.05);
-  --kb-shadow-md: 0 6px 20px rgba(90, 70, 40, 0.10), 0 2px 6px rgba(90, 70, 40, 0.06);
-  --kb-shadow-lg: 0 18px 44px rgba(90, 70, 40, 0.14), 0 6px 16px rgba(90, 70, 40, 0.08);
-  --kb-shadow-primary: 0 10px 26px rgba(168, 58, 34, 0.24);
-  --kb-shadow-primary-lg: 0 18px 42px rgba(168, 58, 34, 0.30);
-  --kb-shadow-gold: 0 8px 24px rgba(200, 154, 72, 0.22);
+  /* —— Syntax highlight (vibrant on dark bg) —— */
+  --hl-keyword: #ff7b72;
+  --hl-string: #a5d6ff;
+  --hl-number: #79c0ff;
+  --hl-comment: #8b949e;
+  --hl-function: #d2a8ff;
+  --hl-builtin: #ffa657;
+  --hl-regex: #f85149;
+  --hl-tag: #ff7b72;
+  --hl-meta: #d2a8ff;
+
+  /* —— Shadows (subtle dark shadows) —— */
+  --kb-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.30);
+  --kb-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.40), 0 1px 2px rgba(0, 0, 0, 0.20);
+  --kb-shadow-md: 0 6px 20px rgba(0, 0, 0, 0.40), 0 2px 6px rgba(0, 0, 0, 0.20);
+  --kb-shadow-lg: 0 18px 44px rgba(0, 0, 0, 0.50), 0 6px 16px rgba(0, 0, 0, 0.30);
+  --kb-shadow-primary: 0 10px 26px rgba(224, 85, 58, 0.35);
+  --kb-shadow-primary-lg: 0 18px 42px rgba(224, 85, 58, 0.45);
+  --kb-shadow-gold: 0 8px 24px rgba(212, 175, 106, 0.30);
 }
 
 /* —— Theme transition: smooth color shift without jank —— */
 html, body, .book-page, .ant-btn, .ant-card, .ant-input,
 .ant-select-selector, .ant-modal-content, .ant-drawer-content,
-.ant-tag, .ant-tooltip-inner, .ant-table-thead > tr > th {
+.ant-tag, .ant-tooltip-inner, .ant-table-thead > tr > th,
+.ant-dropdown-menu, .ant-message-notice-content, .ant-popover-inner {
   transition: background-color 0.4s var(--kb-ease-out), border-color 0.4s var(--kb-ease-out), color 0.4s var(--kb-ease-out);
 }
 
+/* ============================================================
+ * BODY + BASE
+ * ============================================================ */
 body {
   font-family: var(--kb-font);
   -webkit-font-smoothing: antialiased;
@@ -191,7 +211,7 @@ body {
   overflow: hidden;
 }
 
-/* —— Gold foil text effect (use via .text-gold-foil) —— */
+/* —— Gold foil text effect —— */
 .text-gold-foil {
   background: linear-gradient(135deg,
     var(--kb-gold-deep) 0%,
@@ -209,8 +229,6 @@ body {
   0%, 100% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
 }
-
-/* Texture overlay disabled in book layout — paper texture lives on .page-texture */
 
 /* —— Keyframes —— */
 @keyframes kb-fade-up {
@@ -243,7 +261,9 @@ body {
   to { transform: scaleX(1); transform-origin: left; }
 }
 
-/* —— Scrollbar —— */
+/* ============================================================
+ * SCROLLBAR
+ * ============================================================ */
 * { scrollbar-width: thin; scrollbar-color: var(--kb-border-strong) transparent; }
 *::-webkit-scrollbar { width: 8px; height: 8px; }
 *::-webkit-scrollbar-track { background: transparent; }
@@ -257,7 +277,10 @@ body {
 
 ::selection { background: var(--kb-gold-soft); color: var(--kb-gold-deep); }
 
-/* —— Ant Design component overrides (Nocturne Atelier) —— */
+/* ============================================================
+ * ANT DESIGN COMPONENT OVERRIDES
+ * Works for both themes via CSS variables
+ * ============================================================ */
 .ant-btn {
   border-radius: var(--kb-radius-sm);
   font-weight: 500;
@@ -266,12 +289,13 @@ body {
   letter-spacing: 0.01em;
 }
 .ant-btn-primary {
-  background: linear-gradient(135deg, var(--kb-primary) 0%, #c95530 100%);
+  background: linear-gradient(135deg, var(--kb-primary) 0%, var(--kb-primary-hover) 100%);
   border-color: var(--kb-primary);
-  box-shadow: 0 2px 8px rgba(184, 71, 36, 0.2);
+  box-shadow: 0 2px 8px var(--kb-primary-glow);
+  color: #fff;
 }
 .ant-btn-primary:hover {
-  background: linear-gradient(135deg, var(--kb-primary-hover) 0%, #b84724 100%);
+  background: linear-gradient(135deg, var(--kb-primary-hover) 0%, var(--kb-primary) 100%);
   border-color: var(--kb-primary-hover);
   transform: translateY(-1px);
   box-shadow: var(--kb-shadow-primary);
@@ -279,18 +303,27 @@ body {
 .ant-btn-default {
   border-color: var(--kb-border-strong);
   color: var(--kb-fg-2);
+  background: var(--kb-bg-elevated);
 }
 .ant-btn-default:hover {
   border-color: var(--kb-gold);
-  color: var(--kb-gold-deep);
-  background: rgba(212, 175, 106, 0.06);
+  color: var(--kb-gold);
+  background: var(--kb-gold-soft);
   transform: translateY(-1px);
+}
+.ant-btn-text {
+  color: var(--kb-fg-2);
+}
+.ant-btn-text:hover {
+  color: var(--kb-primary);
+  background: var(--kb-primary-tint) !important;
 }
 .ant-card {
   border-radius: var(--kb-radius-lg);
   border-color: var(--kb-border);
   overflow: hidden;
   background: var(--kb-bg-elevated);
+  color: var(--kb-fg);
   transition: border-color var(--kb-dur) var(--kb-ease), box-shadow var(--kb-dur) var(--kb-ease);
 }
 .ant-card-hoverable:hover {
@@ -301,8 +334,19 @@ body {
   border-radius: var(--kb-radius-lg);
   background: var(--kb-bg-elevated);
   box-shadow: var(--kb-shadow-lg);
+  color: var(--kb-fg);
 }
-.ant-modal-header { border-radius: var(--kb-radius-lg) var(--kb-radius-lg) 0 0; }
+.ant-modal-header {
+  border-radius: var(--kb-radius-lg) var(--kb-radius-lg) 0 0;
+  background: var(--kb-bg-elevated);
+  border-bottom: 1px solid var(--kb-border);
+  color: var(--kb-fg);
+}
+.ant-modal-title { color: var(--kb-fg); }
+.ant-modal-body { color: var(--kb-fg-2); }
+.ant-modal-close { color: var(--kb-fg-3); }
+.ant-modal-close:hover { color: var(--kb-fg); }
+
 .ant-tag {
   border-radius: var(--kb-radius-sm);
   font-weight: 600;
@@ -314,26 +358,55 @@ body {
   border-color: var(--kb-border-strong);
   transition: all var(--kb-dur-fast) var(--kb-ease);
   background: var(--kb-bg-elevated);
+  color: var(--kb-fg);
 }
+.ant-input::placeholder { color: var(--kb-fg-mute); }
 .ant-input:hover { border-color: var(--kb-gold); }
-.ant-input-affix-wrapper { border-radius: var(--kb-radius-sm); }
+.ant-input-affix-wrapper {
+  border-radius: var(--kb-radius-sm);
+  background: var(--kb-bg-elevated);
+  border-color: var(--kb-border-strong);
+  color: var(--kb-fg);
+}
+.ant-input-affix-wrapper .ant-input { background: transparent; }
 .ant-select-selector {
   border-radius: var(--kb-radius-sm) !important;
   border-color: var(--kb-border-strong) !important;
+  background: var(--kb-bg-elevated) !important;
+  color: var(--kb-fg) !important;
 }
+.ant-select-selection-placeholder { color: var(--kb-fg-mute) !important; }
 .ant-select:hover .ant-select-selector { border-color: var(--kb-gold) !important; }
+.ant-select-dropdown {
+  background: var(--kb-bg-elevated) !important;
+  border: 1px solid var(--kb-border) !important;
+  border-radius: var(--kb-radius-sm) !important;
+  box-shadow: var(--kb-shadow-md) !important;
+}
+.ant-select-item { color: var(--kb-fg) !important; }
+.ant-select-item-option-active { background: var(--kb-primary-tint) !important; }
+.ant-select-item-option-selected { background: var(--kb-primary-soft) !important; color: var(--kb-primary) !important; font-weight: 600; }
+
 .ant-tabs-tab { font-weight: 500; font-size: 13.5px; color: var(--kb-fg-3); }
-.ant-tabs-tab-active .ant-tabs-tab-btn { color: var(--kb-gold-deep) !important; font-weight: 600; }
+.ant-tabs-tab-active .ant-tabs-tab-btn { color: var(--kb-gold) !important; font-weight: 600; }
 .ant-tabs-ink-bar { background: linear-gradient(90deg, var(--kb-gold), var(--kb-gold-bright)) !important; height: 2px !important; }
+.ant-tabs-nav { background: transparent; }
+
 .ant-tooltip-inner {
   border-radius: var(--kb-radius-sm);
   font-size: 12.5px;
-  background: var(--kb-shell-2);
-  border: 1px solid rgba(212, 175, 106, 0.25);
+  background: var(--kb-shell-3);
+  color: var(--kb-fg);
+  border: 1px solid var(--kb-border-strong);
 }
+.ant-tooltip-arrow::before { background: var(--kb-shell-3) !important; }
+
 .ant-drawer-content { border-radius: var(--kb-radius-lg) 0 0 var(--kb-radius-lg); background: var(--kb-bg-elevated); }
 .ant-drawer-header { border-bottom: 1px solid var(--kb-border); background: var(--kb-bg-elevated); }
-.ant-table { border-radius: var(--kb-radius); background: transparent; }
+.ant-drawer-title { color: var(--kb-fg); }
+.ant-drawer-wrapper-body { background: var(--kb-bg-elevated); }
+
+.ant-table { border-radius: var(--kb-radius); background: transparent; color: var(--kb-fg); }
 .ant-table-thead > tr > th {
   background: linear-gradient(180deg, var(--kb-bg-subtle), var(--kb-bg-elevated)) !important;
   color: var(--kb-gold-deep);
@@ -343,6 +416,14 @@ body {
   letter-spacing: 0.03em;
   border-bottom: 2px solid var(--kb-gold) !important;
 }
+[data-theme="dark"] .ant-table-thead > tr > th {
+  color: var(--kb-gold-bright);
+}
+.ant-table-tbody > tr > td {
+  color: var(--kb-fg-2);
+  border-bottom: 1px solid var(--kb-border);
+}
+.ant-table-tbody > tr:hover > td { background: var(--kb-primary-tint) !important; }
 .ant-empty-description { color: var(--kb-fg-3); }
 .ant-spin-text { color: var(--kb-fg-3); }
 .ant-list-item:hover { background: var(--kb-primary-tint); }
@@ -353,12 +434,28 @@ body {
   box-shadow: var(--kb-shadow-lg);
   padding: 4px;
   border: 1px solid var(--kb-border);
+  background: var(--kb-bg-elevated);
 }
-.ant-dropdown-menu-item { border-radius: 6px; }
-.ant-dropdown-menu-item:hover { background: var(--kb-primary-tint); }
+.ant-dropdown-menu-item {
+  border-radius: 6px;
+  color: var(--kb-fg-2);
+}
+.ant-dropdown-menu-item:hover { background: var(--kb-primary-tint); color: var(--kb-primary); }
 
-/* —— Drawer/Avatar/Menu global overrides —— */
-.ant-drawer-wrapper-body { background: var(--kb-bg-elevated); }
+/* —— Popover / Popconfirm —— */
+.ant-popover-inner {
+  border-radius: var(--kb-radius-sm);
+  background: var(--kb-bg-elevated);
+  border: 1px solid var(--kb-border);
+  box-shadow: var(--kb-shadow-md);
+  color: var(--kb-fg);
+}
+.ant-popover-inner-content { color: var(--kb-fg-2); }
+.ant-popover-title { color: var(--kb-fg); border-bottom: 1px solid var(--kb-border); }
+.ant-popconfirm-message { font-size: 13.5px; color: var(--kb-fg); }
+.ant-popover-arrow::before { background: var(--kb-bg-elevated) !important; }
+
+/* —— Avatar —— */
 .ant-avatar { flex-shrink: 0; }
 
 /* —— Notification messages —— */
@@ -366,11 +463,26 @@ body {
   border-radius: var(--kb-radius) !important;
   box-shadow: var(--kb-shadow-md) !important;
   border: 1px solid var(--kb-border) !important;
+  background: var(--kb-bg-elevated) !important;
+  color: var(--kb-fg) !important;
 }
 
-/* —— Popconfirm —— */
-.ant-popconfirm-message { font-size: 13.5px; }
-.ant-popover-inner { border-radius: var(--kb-radius-sm); }
+/* —— Checkbox / Radio / Switch —— */
+.ant-checkbox-inner { background: var(--kb-bg-elevated); border-color: var(--kb-border-strong); }
+.ant-checkbox-checked .ant-checkbox-inner { background: var(--kb-primary); border-color: var(--kb-primary); }
+.ant-radio-inner { background: var(--kb-bg-elevated); border-color: var(--kb-border-strong); }
+.ant-radio-checked .ant-radio-inner { border-color: var(--kb-primary); }
+.ant-radio-checked .ant-radio-inner::after { background: var(--kb-primary); }
+
+/* —— Pagination —— */
+.ant-pagination-item { background: var(--kb-bg-elevated); border-color: var(--kb-border); }
+.ant-pagination-item a { color: var(--kb-fg-2); }
+.ant-pagination-item-active { border-color: var(--kb-primary); }
+.ant-pagination-item-active a { color: var(--kb-primary); }
+.ant-pagination-prev .ant-pagination-item-link,
+.ant-pagination-next .ant-pagination-item-link {
+  background: var(--kb-bg-elevated); border-color: var(--kb-border); color: var(--kb-fg-2);
+}
 
 /* —— Transition helpers —— */
 .fade-enter-active, .fade-leave-active { transition: opacity 0.25s var(--kb-ease); }
@@ -380,33 +492,34 @@ body {
 .text-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .text-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 
-/* —— Page transition —— */
+/* —— Page transitions —— */
 .page-enter-active, .page-leave-active {
   transition: opacity 0.3s var(--kb-ease-out), transform 0.3s var(--kb-ease-out);
 }
 .page-enter-from { opacity: 0; transform: translateY(12px); }
 .page-leave-to { opacity: 0; transform: translateY(-8px); }
-
 .layout-enter-active, .layout-leave-active { transition: opacity 0.2s var(--kb-ease); }
 .layout-enter-from, .layout-leave-to { opacity: 0; }
 
-/* —— Generic card gloss —— */
+/* ============================================================
+ * GENERIC COMPONENTS
+ * ============================================================ */
 .kb-card-glow { position: relative; overflow: hidden; }
 .kb-card-glow::after {
   content: '';
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
   background: radial-gradient(circle at 50% 0%, rgba(184,71,36,0.05), transparent 60%);
   opacity: 0;
   transition: opacity var(--kb-dur) var(--kb-ease);
   pointer-events: none;
 }
+[data-theme="dark"] .kb-card-glow::after {
+  background: radial-gradient(circle at 50% 0%, rgba(224,85,58,0.08), transparent 60%);
+}
 .kb-card-glow:hover::after { opacity: 1; }
 
-/* —— Empty state —— */
 .kb-empty-state {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   padding: 60px 20px; text-align: center;
@@ -424,15 +537,15 @@ body {
 .ant-input:focus, .ant-input-focused,
 .ant-input-affix-wrapper:focus, .ant-input-affix-wrapper-focused {
   border-color: var(--kb-primary) !important;
-  box-shadow: 0 0 0 3px rgba(184,71,36,0.1) !important;
+  box-shadow: 0 0 0 3px var(--kb-primary-glow) !important;
 }
 
 /* —— Table selection —— */
 .ant-table-tbody > tr.ant-table-row-selected > td { background: var(--kb-primary-tint) !important; }
 
-/* —— Code block common style —— */
+/* —— Code block —— */
 .kb-code-block {
-  background: var(--kb-bg-subtle);
+  background: var(--kb-bg-code);
   border: 1px solid var(--kb-border);
   border-radius: var(--kb-radius);
   padding: 18px;
@@ -444,15 +557,12 @@ body {
   word-break: break-word;
 }
 
-/* —— Text marks —— */
 .ant-alert { border-radius: var(--kb-radius-sm); }
 .ant-table-wrapper { border-radius: var(--kb-radius); }
 
-/* ════════════════════════════════════════════════════════════════
- *  GLOBAL MARKDOWN PROSE — .markdown-body
- *  Applied on any .markdown-body inside the book layout, the KB
- *  preview drawer, and chat messages.
- * ════════════════════════════════════════════════════════════════ */
+/* ============================================================
+ * MARKDOWN PROSE — .markdown-body
+ * ============================================================ */
 .markdown-body {
   font-size: 14.5px;
   line-height: 1.78;
@@ -461,7 +571,6 @@ body {
   overflow-wrap: break-word;
 }
 
-/* —— Headings —— */
 .markdown-body h1,
 .markdown-body h2,
 .markdown-body h3,
@@ -515,12 +624,10 @@ body {
 .markdown-body h5 { font-size: 0.92em; color: var(--kb-fg-3); text-transform: uppercase; letter-spacing: 0.04em; }
 .markdown-body h6 { font-size: 0.85em; color: var(--kb-fg-mute); }
 
-/* —— Paragraphs —— */
 .markdown-body p { margin: 12px 0; }
 .markdown-body p:first-child { margin-top: 0; }
 .markdown-body p:last-child { margin-bottom: 0; }
 
-/* —— Links —— */
 .markdown-body a {
   color: var(--kb-primary);
   text-decoration: none;
@@ -532,7 +639,6 @@ body {
   border-bottom-color: var(--kb-primary);
 }
 
-/* —— Strong / Em / Del / Mark —— */
 .markdown-body strong { font-weight: 700; color: var(--kb-fg); }
 .markdown-body em { font-style: italic; }
 .markdown-body del, .markdown-body s { color: var(--kb-fg-mute); }
@@ -543,7 +649,6 @@ body {
   border-radius: 2px;
 }
 
-/* —— Inline code —— */
 .markdown-body code {
   background: var(--kb-bg-subtle);
   padding: 2px 7px;
@@ -555,7 +660,7 @@ body {
   border: 1px solid var(--kb-border);
 }
 
-/* ═══ Code Block Wrapper + Language Label ═══ */
+/* —— Code block wrapper + language label —— */
 .markdown-body .code-block-wrapper {
   position: relative;
   margin: 16px 0;
@@ -565,40 +670,36 @@ body {
 }
 .markdown-body .code-block-wrapper .code-lang-label {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 0; right: 0;
   font-family: var(--kb-font-mono);
   font-size: 10.5px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #c8d3e0;
-  background: rgba(255,255,255,0.07);
+  color: var(--kb-fg-3);
+  background: rgba(128,128,128,0.12);
   padding: 4px 12px;
   border-radius: 0 10px 0 7px;
-  border-left: 1px solid rgba(255,255,255,0.1);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-left: 1px solid var(--kb-border);
+  border-bottom: 1px solid var(--kb-border);
   z-index: 2;
   user-select: none;
   pointer-events: none;
   backdrop-filter: blur(6px);
 }
-.markdown-body .code-block-wrapper pre {
-  margin: 0;
-  border-radius: 10px;
-}
+.markdown-body .code-block-wrapper pre { margin: 0; border-radius: 10px; }
 
 /* —— Preformatted code blocks —— */
 .markdown-body pre {
   background: var(--kb-bg-code);
-  color: #e6e1dc;
+  color: var(--kb-fg-2);
   padding: 18px 20px;
   border-radius: 10px;
   overflow-x: auto;
   font-size: 13.5px;
   line-height: 1.65;
   margin: 14px 0;
-  border: 1px solid rgba(255,255,255,0.06);
+  border: 1px solid var(--kb-border);
   font-family: var(--kb-font-mono);
 }
 .markdown-body pre code {
@@ -610,34 +711,33 @@ body {
   font-weight: 400;
 }
 
-/* ═══ Highlight.js Token Colors — Warm Dark Theme ═══ */
-/* Tuned for readability on the dark code-block background */
-.hljs { color: #e6e1dc; background: transparent; }
-.hljs-comment, .hljs-quote { color: #7c7268; font-style: italic; }
-.hljs-keyword, .hljs-selector-tag, .hljs-type { color: #e8907a; font-weight: 500; }
-.hljs-string, .hljs-addition { color: #b5d97f; }
-.hljs-number, .hljs-literal { color: #c8a3e6; }
-.hljs-title, .hljs-title.function_, .hljs-section, .hljs-name { color: #8ccae8; }
-.hljs-attribute, .hljs-variable, .hljs-template-variable { color: #e8c87a; }
-.hljs-built_in, .hljs-class .hljs-title, .hljs-selector-class, .hljs-selector-id { color: #e8c87a; }
-.hljs-regexp { color: #f0a3a3; }
-.hljs-symbol, .hljs-bullet, .hljs-link { color: #8ccae8; }
-.hljs-meta, .hljs-meta .hljs-keyword { color: #8ccae8; font-weight: 500; }
-.hljs-tag { color: #e8907a; }
-.hljs-tag .hljs-name { color: #e8907a; font-weight: 500; }
-.hljs-tag .hljs-attr { color: #e8c87a; }
-.hljs-doctag { color: #e8907a; }
-.hljs-selector-attr, .hljs-selector-pseudo { color: #e8c87a; }
-.hljs-deletion { color: #f0a3a3; }
+/* ═══ Highlight.js Token Colors — Adapt per theme ═══ */
+.hljs { color: var(--kb-fg-2); background: transparent; }
+.hljs-comment, .hljs-quote { color: var(--kb-fg-mute); font-style: italic; }
+.hljs-keyword, .hljs-selector-tag, .hljs-type { color: var(--hl-keyword); font-weight: 500; }
+.hljs-string, .hljs-addition { color: var(--hl-string); }
+.hljs-number, .hljs-literal { color: var(--hl-number); }
+.hljs-title, .hljs-title.function_, .hljs-section, .hljs-name { color: var(--hl-function); }
+.hljs-attribute, .hljs-variable, .hljs-template-variable { color: var(--hl-builtin); }
+.hljs-built_in, .hljs-class .hljs-title, .hljs-selector-class, .hljs-selector-id { color: var(--hl-builtin); }
+.hljs-regexp { color: var(--hl-regexp); }
+.hljs-symbol, .hljs-bullet, .hljs-link { color: var(--hl-function); }
+.hljs-meta, .hljs-meta .hljs-keyword { color: var(--hl-meta); font-weight: 500; }
+.hljs-tag { color: var(--hl-tag); }
+.hljs-tag .hljs-name { color: var(--hl-tag); font-weight: 500; }
+.hljs-tag .hljs-attr { color: var(--hl-builtin); }
+.hljs-doctag { color: var(--hl-tag); }
+.hljs-selector-attr, .hljs-selector-pseudo { color: var(--hl-builtin); }
+.hljs-deletion { color: var(--hl-regexp); }
 .hljs-emphasis { font-style: italic; }
 .hljs-strong { font-weight: 700; }
-.hljs-params { color: #e6e1dc; }
-.hljs-subst { color: #e6e1dc; }
-.hljs-code, .hljs-formula, .hljs-property { color: #b5d97f; }
-.hljs-operator { color: #e6e1dc; }
-.hljs-punctuation { color: #a69b90; }
+.hljs-params { color: var(--kb-fg-2); }
+.hljs-subst { color: var(--kb-fg-2); }
+.hljs-code, .hljs-formula, .hljs-property { color: var(--hl-string); }
+.hljs-operator { color: var(--kb-fg-2); }
+.hljs-punctuation { color: var(--kb-fg-mute); }
 
-/* ═══ Tables ═══ */
+/* —— Tables —— */
 .markdown-body table {
   border-collapse: separate;
   border-spacing: 0;
@@ -670,15 +770,12 @@ body {
   color: var(--kb-fg-2);
 }
 .markdown-body tr:last-child td { border-bottom: none; }
-.markdown-body tbody tr:nth-child(even) td { background: rgba(184,71,36,0.022); }
-.markdown-body tbody tr:hover td { background: rgba(184,71,36,0.06); }
+.markdown-body tbody tr:nth-child(even) td { background: rgba(128,128,128,0.03); }
+.markdown-body tbody tr:hover td { background: var(--kb-primary-tint); }
 
 /* —— Lists —— */
 .markdown-body ul,
-.markdown-body ol {
-  padding-left: 26px;
-  margin: 10px 0;
-}
+.markdown-body ol { padding-left: 26px; margin: 10px 0; }
 .markdown-body ul { list-style: disc; }
 .markdown-body ul li::marker { color: var(--kb-primary); }
 .markdown-body ol { list-style: decimal; }
@@ -688,7 +785,7 @@ body {
 .markdown-body li > ol { margin: 6px 0; }
 .markdown-body li::marker { color: var(--kb-primary); }
 
-/* —— Task Lists (GFM checkboxes) —— */
+/* —— Task lists —— */
 .markdown-body .task-list-item,
 .markdown-body li.task-list-item {
   list-style-type: none;
@@ -709,7 +806,7 @@ body {
   padding: 10px 18px;
   margin: 16px 0;
   color: var(--kb-fg-3);
-  background: linear-gradient(135deg, rgba(184,71,36,0.04), rgba(184,71,36,0.01));
+  background: var(--kb-primary-tint);
   border-radius: 0 10px 10px 0;
   position: relative;
 }
@@ -717,7 +814,7 @@ body {
 .markdown-body blockquote p:last-child { margin-bottom: 0; }
 .markdown-body blockquote blockquote { margin: 8px 0; }
 
-/* —— Horizontal Rule —— */
+/* —— HR —— */
 .markdown-body hr {
   border: none;
   height: 1px;
@@ -739,7 +836,7 @@ body {
   box-shadow: var(--kb-shadow-lg);
 }
 
-/* —— Definition Lists —— */
+/* —— Definition lists —— */
 .markdown-body dl { margin: 14px 0; }
 .markdown-body dt { font-weight: 700; color: var(--kb-fg); margin-top: 10px; }
 .markdown-body dd { margin-left: 24px; color: var(--kb-fg-2); margin-bottom: 8px; }
@@ -778,7 +875,7 @@ body {
 .markdown-body details[open] summary::before { transform: translateY(-50%) rotate(90deg); }
 .markdown-body details[open] summary { margin-bottom: 10px; }
 
-/* —— Keyboard Input —— */
+/* —— Keyboard —— */
 .markdown-body kbd {
   font-family: var(--kb-font-mono);
   font-size: 0.85em;
@@ -799,7 +896,6 @@ body {
   text-decoration: none;
 }
 
-/* —— Sub / Superscript —— */
 .markdown-body sub, .markdown-body sup { font-size: 0.78em; line-height: 0; }
 
 /* —— Footnotes —— */
@@ -813,7 +909,7 @@ body {
 .markdown-body .footnotes ol { padding-left: 20px; }
 .markdown-body .footnotes li { margin: 6px 0; }
 
-/* ═══ KaTeX Math — global ═══ */
+/* —— KaTeX —— */
 .markdown-body .math-inline,
 .markdown-body span.math-inline { display: inline; }
 .markdown-body .math-inline .katex { font-size: 1.08em; }
@@ -839,7 +935,7 @@ body {
   font-family: var(--kb-font-mono);
 }
 
-/* ═══ Mermaid Diagrams — global ═══ */
+/* —— Mermaid —— */
 .markdown-body .mermaid,
 .markdown-body pre.mermaid,
 .markdown-body .mermaid-code-block,
@@ -861,7 +957,6 @@ body {
   border: none;
 }
 
-/* Mermaid rendered SVG container */
 .mermaid-rendered {
   text-align: center;
   margin: 22px 0;
@@ -874,7 +969,6 @@ body {
 }
 .mermaid-rendered svg { max-width: 100%; height: auto; }
 
-/* Mermaid loading placeholder */
 .mermaid-loading {
   text-align: center;
   margin: 22px 0;
@@ -886,11 +980,9 @@ body {
   border-radius: 10px;
 }
 
-/* Mermaid error badge */
 .mermaid-error-badge {
   position: absolute;
-  top: 6px;
-  right: 8px;
+  top: 6px; right: 8px;
   font-size: 10.5px;
   color: var(--kb-rose);
   background: var(--kb-rose-soft);
@@ -901,7 +993,7 @@ body {
   font-weight: 500;
 }
 
-/* ═══ Responsive Markdown ═══ */
+/* —— Responsive —— */
 @media (max-width: 640px) {
   .markdown-body { font-size: 13.5px; }
   .markdown-body h1 { font-size: 1.5em; }
@@ -914,14 +1006,14 @@ body {
   .code-block-wrapper .code-lang-label { font-size: 9.5px; padding: 3px 9px; }
 }
 
-/* ═══ Print Styles ═══ */
+/* —— Print —— */
 @media print {
   .markdown-body { color: #000; font-size: 12pt; line-height: 1.6; }
   .markdown-body h1,.markdown-body h2,.markdown-body h3,
   .markdown-body h4,.markdown-body h5,.markdown-body h6 { page-break-after: avoid; }
   .markdown-body pre, .markdown-body blockquote, .markdown-body table { page-break-inside: avoid; }
   .markdown-body a { color: #000; text-decoration: underline; }
-  .markdown-body pre { background: #f5f5f5; border: 1px solid #ddd; }
+  .markdown-body pre { background: #f5f5f5; border: 1px solid #ddd; color: #333; }
   .markdown-body img { max-width: 100% !important; box-shadow: none; }
 }
 
