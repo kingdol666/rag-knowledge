@@ -59,7 +59,7 @@ Graph nodes: `Document`, `KnowledgeBase`, `Tag`. Edges: `BELONGS_TO`, `HAS_SUBKB
     │   → kb_graph_document_paths(doc_a, doc_b, max_depth=4)
     │
     ├── "按标签查文档"
-    │   ⚠️ `kb_graph_documents_by_tag` 当前对 tag 返回空（图谱用 doc-doc `RELATED_TO{shared_tag}` 边建模，未建 tag→doc 直连）
+    │   ⚠️ `kb_graph_documents_by_tag` 已移除（对 tag 返回空），请用 `kb_doc_get_by_tag`（图谱用 doc-doc `RELATED_TO{shared_tag}` 边建模，未建 tag→doc 直连）
     │   → **推荐 `kb_doc_get_by_tag(tag)`**（走 YAML registry，可靠，跨 skill 通用）
     │
     ├── "关键词搜"
@@ -115,7 +115,7 @@ kb_graph_stats()  # check neo4j_available field     # Neo4j availability check
 |---|---|
 | Full graph of a doc | `kb_graph_document(doc_path, limit=50)` |
 | Related docs only | `kb_graph_document_related(doc_path, limit=20)` |
-| Docs by tag | ⚠️ `kb_doc_get_by_tag(tag)`（推荐，走 YAML）；`kb_graph_documents_by_tag` 对 tag 恒返回空 |
+| Docs by tag | ⚠️ `kb_doc_get_by_tag(tag)`（推荐，走 YAML）；`kb_graph_documents_by_tag` 已移除（对 tag 恒返回空），请用 `kb_doc_get_by_tag` |
 | Neighborhood exploration | Use `kb_graph_document(doc_path)` — returns related documents including neighbors |
 
 > **路径格式**：`kb_graph_*` 工具用**正斜杠**路径（如 `Energy-Batteries/lithium-ion-design.md`）。`kb_get_documents` 在 Windows 返回**反斜杠**路径（如 `Energy-Batteries\lithium-ion-design.md`）。跨工具传参时统一转正斜杠。

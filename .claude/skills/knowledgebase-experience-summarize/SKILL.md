@@ -214,7 +214,7 @@ KB 重命名/移动：经验目录自动跟随，但需 `kb_reindex(force=true)`
 | 采集脚本写入任何数据 | 脚本只读 | 入库只走 MCP 工具 |
 | MEDITATION 产出不报告 | 用户不知情 | 阶段4 输出报告 |
 | 用 summary 的 avg_rating 判断库质量 | 未评审经验算0.0拉低均值，误导 | 看 `reviewed_count` + `unrated_count` 字段区分 |
-| 信任采集脚本的原始输出不经KB验证 | 聊天库含系统输出伪装为user | 每个候选经 `kb_catalog` 匹配 + 向量搜索验证 |
+| 信任采集脚本的原始输出不经KB验证 | 聊天库含系统输出伪装为user | 每个候选经 `kb_list(lightweight=true)` 匹配 + 向量搜索验证 |
 
 <!-- SKILLOPT-SLEEP:LEARNED START -->
 ## Learned preferences & procedures

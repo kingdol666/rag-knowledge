@@ -74,7 +74,7 @@ description: >
 | **对比型** | "A vs B""区别" | 多实体并行召回 |
 | **故障/运维型** | "报错""失败""怎么解决" | **先查经验库**（experience-first），再查文档 |
 | **经验/案例型** | "有没有类似案例""以前怎么处理" | `experience_search_global` 优先，不足补文档 |
-| **导航型** | "哪里有""有没有" | kb_catalog + kb_doc_catalog 描述匹配 |
+| **导航型** | "哪里有""有没有" | kb_list(lightweight=true) + kb_get_documents(lightweight=true) 描述匹配 |
 
 ### 0b 核心实体提取
 从查询里提取：**主体**(PET/RAG/锂电池) + **属性**(结晶度/幻觉/热管理) + **约束**(工艺参数/2024)。

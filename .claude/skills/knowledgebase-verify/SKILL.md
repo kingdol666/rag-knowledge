@@ -60,7 +60,7 @@ description: >
 3. ⚠️ UUID级一致性由MCP工具原子操作保证（每次 CRUD 同步更新三层），V1 验证基于路径交叉引用而非UUID直接对比。
 4. Flag: phantom entries (metadata but no disk file), orphan files (disk but no metadata).
 
-> **已知正常现象**（非不一致）：`kb_get_documents()` 返回的条目数可能比 `kb_catalog` 的 `doc_count` 多——多出的条目是**子KB容器**（`file_type: knowledge-base`，非真实文档）。用 `fs_get_tree(max_depth=2)` 区分父子层级。
+> **已知正常现象**（非不一致）：`kb_get_documents()` 返回的条目数可能比 `kb_list(lightweight=true)` 的 `doc_count` 多——多出的条目是**子KB容器**（`file_type: knowledge-base`，非真实文档）。用 `fs_get_tree(max_depth=2)` 区分父子层级。
 
 ## V2 — Document Integrity
 
@@ -186,6 +186,6 @@ Score + key findings + single most impactful recommendation.
 | 大批量 doc_read 无进度汇报 | 用户以为卡死——>50 文档时耗时不可忽略 | 报告进度"x/N 已检查" |
 | Neo4j 挂了就不做其他检查 | V1-V4 V6 不依赖 Neo4j | 跳过 V5 Graph Health，其他照常 |
 | 评分报告不写修复建议 | 用户看了不知道先修哪个 | V6 必须含"首要建议"（性价比最高的修复） |
-| 信任 `kb_catalog` 的 `doc_count` 为真实文档数 | 含子KB容器条目——实际文档数偏少 | 用 `file_type: knowledge-base` 过滤或 `fs_get_tree` 确认 |
+| 信任 `kb_list(lightweight=true)` 的 `doc_count` 为真实文档数 | 含子KB容器条目——实际文档数偏少 | 用 `file_type: knowledge-base` 过滤或 `fs_get_tree` 确认 |
 | 在非解析文档上跑 V3 Parse Quality | MD/TXT 直建文档无 OCR 痕迹——白检 | V3 仅对 `.pdf`/`.docx`/`.pptx` 来源文档执行 |
 | 采样低于下限就出报告 | 统计不显著——小样本掩盖系统性问题 | 严格按采样表下限（至少10/25/50） |

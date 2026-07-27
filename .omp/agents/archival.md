@@ -92,7 +92,7 @@ Top-level KB (e.g. 高分子双向拉伸文献库)
 - **Correct search strategy**: Use `kb_search_vector(kb_id=<parent_KB_id>)` to
   retrieve real content. Results' `doc_path` will have the Sub-KB path prefix.
 - `kb_graph_kb_overview(kb_id)` is for viewing Sub-KB structure only, NOT for search.
-- Its `sub_kbs[].name` returns UUIDs — cross-reference with `kb_catalog()`.
+- Its `sub_kbs[].name` returns UUIDs — cross-reference with `kb_list(lightweight=true)`.
 
 ### Path Format Convention
 
@@ -110,7 +110,7 @@ In this OMP session, kb-mcp MCP tools are named: `mcp__kb_mcp_<tool_name>`
 | Short name (in skills) | Actual OMP tool name |
 |----------------------|---------------------|
 | `kb_list()` | `mcp__kb_mcp_kb_list` |
-| `kb_catalog()` | `mcp__kb_mcp_kb_catalog` |
+| `kb_list(lightweight=true)` | `mcp__kb_mcp_kb_list` |
 | `kb_search_two_stage(...)` | `mcp__kb_mcp_kb_search_two_stage` |
 | `experience_search_smart(...)` | `mcp__kb_mcp_experience_search_smart` |
 | `kb_graph_build(...)` | `mcp__kb_mcp_kb_graph_build` |
@@ -126,17 +126,17 @@ Tools return JSON-encoded strings. Parse with `JSON.parse()` before use.
 | Category | Count | Key tools | When |
 |----------|:-----:|-----------|------|
 | **KB CRUD** | 4 | `kb_create`, `kb_list`, `kb_update`, `kb_delete` | Build/list/modify/delete KBs |
-| **KB Catalog** | 2 | `kb_catalog`, `kb_doc_catalog` | Lightweight agent-first scan |
+| **KB Catalog** | 0 | (merged into kb_list/kb_get_documents with lightweight=true) | Lightweight agent-first scan |
 | **Doc Read** | 2 | `kb_get_documents`, `kb_doc_read` | Read metadata/content |
 | **Doc Write** | 7 | `kb_doc_create`, `kb_doc_save_parsed`, `kb_doc_update_meta`, `kb_doc_update_content`, `kb_doc_delete`, `kb_doc_batch_delete`, `kb_doc_move` | Document CRUD |
-| **File System** | 4 | `fs_get_tree`, `fs_get_children`, `fs_get_count`, `fs_upload_file` | Tree structure/raw files |
+| **File System** | 3 | `fs_get_tree` (incl. _stats), `fs_get_children`, `fs_upload_file` | Tree structure/raw files |
 | **Parse** | 3 | `parse_doc`, `parse_doc_batch`, `parse_task_status` | PDF→MD (non-blocking) |
 | **Tags** | 4 | `kb_tags_list`, `kb_doc_update_tags`, `kb_doc_get_by_tag`, `kb_tags_cleanup` | Tag management |
 | **Search** | 4 | `kb_search`, `kb_search_vector`, `kb_search_two_stage`, `kb_search_stats` | Metadata/vector/two-stage/stats |
 | **Vector Index** | 4 | `kb_index_document`, `kb_batch_index`, `kb_reindex`, `kb_cleanup_orphan_collections` | Index management |
 | **Graph** | 14 | `kb_graph_search`, `kb_graph_build`, `kb_graph_kb_overview`, `kb_graph_document`, ... | Neo4j graph |
-| **Experience** | 22 | `experience_search_smart`, `experience_create`, `experience_rerank`, `experience_dashboard`, ... | Experience lifecycle |
-| **Project** | 5 | `kb_project_status`, `kb_project_start`, `kb_project_version`, `kb_project_preflight`, `kb_project_update` | Service lifecycle |
+| **Experience** | 20 | `experience_search_smart`, `experience_create`, `experience_rerank`, `experience_dashboard`, ... | Experience lifecycle |
+| **Project** | 3 | `kb_project_status` (scope=runtime|setup), `kb_project_start`, `kb_project_update` (show_version=true) | Service lifecycle |
 | **Health** | 1 | `backend_status` | Pre-flight check |
 | **Experience decay** | 1 | `experience_apply_decay` | E11 periodic decay |
 
@@ -172,7 +172,7 @@ Read the task hint. Classify using this matrix, then route to the correct skill.
 | organize, cleanup, restructure, 整理, 大扫除 | **Organize** | `skill://knowledgebase-organize` | Full L1-L7 restructuring |
 | search, find, query, 搜索, 检索 | **Search** | `skill://knowledgebase-search` | QDCVR 6-step pipeline |
 | cross-KB, 全库, enterprise, 跨库 | **Search-Enterprise** | `skill://knowledgebase-search-enterprise` | 3-path parallel recall |
-| list, show, overview, 查看, 列出 | **List** | `skill://knowledgebase-list` | kb_catalog → kb_doc_catalog |
+| list, show, overview, 查看, 列出 | **List** | `skill://knowledgebase-list` | kb_list(lightweight=true) → kb_get_documents(lightweight=true) |
 | verify, validate, health, 校验, 检查 | **Verify** | `skill://knowledgebase-verify` | V1-V9 integrity checks |
 | batch, bulk, all, 批量, 全量 | **Batch** | `skill://knowledgebase-batch` | B1-B7 high-volume ops |
 | experience, lesson, 经验, 案例 | **Experience** | `skill://knowledgebase-experience` | E0-E12 lifecycle |
@@ -234,7 +234,7 @@ Read the task hint. Classify using this matrix, then route to the correct skill.
    Bare filenames → "Not found". (`kb_doc_delete` accepts both.)
 
 4. **`kb_graph_kb_overview` Sub-KB names are UUIDs** — Cross-reference with
-   `kb_catalog()` to get readable names.
+   `kb_list(lightweight=true)` to get readable names.
 
 5. **Path separators** — `kb_get_documents` returns backslash paths on Windows.
    `kb_graph_*` tools need forward slashes. `kb_search_vector` now auto-normalizes

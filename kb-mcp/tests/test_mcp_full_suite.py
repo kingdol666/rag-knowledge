@@ -153,11 +153,6 @@ async def test_fs_get_tree(client):
     return f"✅ fs_get_tree: {len(r)} root nodes"
 
 
-async def test_fs_get_count(client):
-    r = await _call(client, "fs_get_count")
-    assert r.get("total", 0) > 0
-    return f"✅ fs_get_count: {r['total']} total"
-
 
 async def test_fs_get_children(client):
     r = await _call(client, "fs_get_children")
@@ -271,7 +266,7 @@ async def run_all():
         # Tags
         test_tag_create, test_tags_list, test_doc_update_tags, test_doc_get_by_tag,
         # File System
-        test_fs_get_tree, test_fs_get_count, test_fs_get_children,
+        test_fs_get_tree, test_fs_get_children,
         # Search (Agentic RAG)
         test_search_metadata, test_search_vector, test_search_two_stage,
         test_search_batch_vector, test_search_stats,

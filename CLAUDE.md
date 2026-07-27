@@ -130,18 +130,18 @@ kb-mcp/
 
 MCP Tools by category (66 tools total):
 - **Health:** `backend_status`
-- **Project lifecycle (5):** `kb_project_status`, `kb_project_start`, `kb_project_preflight`, `kb_project_version`, `kb_project_update`
+- **Project lifecycle (3):** `kb_project_status` (scope=runtime|setup), `kb_project_start`, `kb_project_update` (show_version=true for version check)
 - **KB CRUD:** `kb_list`, `kb_create`, `kb_update`, `kb_delete`
-- **KB Catalog (agentic-first, lightweight):** `kb_catalog`, `kb_doc_catalog`
+- **KB Catalog (agentic-first, lightweight):** use `kb_list(lightweight=true)`, `kb_get_documents(lightweight=true)`
 - **Document Read:** `kb_get_documents`
 - **Document CRUD:** `kb_doc_read`, `kb_doc_create`, `kb_doc_update_meta`, `kb_doc_update_content`, `kb_doc_delete`, `kb_doc_batch_delete`, `kb_doc_move`
-- **File System (4):** `fs_get_tree`, `fs_get_children`, `fs_get_count`, `fs_upload_file`
+- **File System (3):** `fs_get_tree` (incl. `_stats`), `fs_get_children`, `fs_upload_file`
 - **Parse (non-blocking, 4):** `parse_doc`, `parse_doc_batch`, `parse_task_status`, `kb_doc_save_parsed`
 - **Tags (4):** `kb_tags_list`, `kb_doc_update_tags`, `kb_doc_get_by_tag`, `kb_tags_cleanup`
 - **Search (Agentic RAG, 4):** `kb_search` (metadata only), `kb_search_vector` (semantic), `kb_search_two_stage` (BM25→vector, primary), `kb_search_stats`
 - **Vector/Index:** `kb_index_document`, `kb_batch_index`, `kb_reindex`, `kb_cleanup_orphan_collections`
-- **Knowledge Graph (14 tools):** `kb_graph_search` (unified — node_type=all/document/kb/tag), `kb_graph_neighbors`, `kb_graph_stats`, `kb_graph_health`, `kb_graph_document`, `kb_graph_document_related`, `kb_graph_documents_by_tag`, `kb_graph_kb_overview`, `kb_graph_build` (unified — kb_id=""=all KBs), `kb_graph_cross_kb_documents`, `kb_graph_document_paths`, `kb_graph_central_documents`, `kb_graph_delete_document`, `kb_graph_delete_kb`
-- **Experience (22 tools):** Full lifecycle — create/read/list/update/delete/apply/review/summary | Search: search/search_vector/search_global/**search_smart**(推荐入口, 意图识别+自适应阈值+多轮降级)/**rerank**(多维语义重排序) | Extract/Drafts: extract/drafts_list/draft_read/draft_approve/draft_reject | Health: **check_stale**(空 kb_id=全库)/sync_kb/dashboard/apply_decay
+- **Knowledge Graph (11 tools):** `kb_graph_search` (unified), `kb_graph_stats` (incl. `neo4j_available`), `kb_graph_document`, `kb_graph_document_related`, `kb_graph_kb_overview`, `kb_graph_build` (unified), `kb_graph_cross_kb_documents`, `kb_graph_document_paths`, `kb_graph_central_documents`, `kb_graph_delete_document`, `kb_graph_delete_kb`
+- **Experience (20 tools):** Full lifecycle — create/read/list/update/delete/apply/review/summary | Search: search_global/**search_smart**(推荐入口)/**rerank** | Extract/Drafts: extract/drafts_list/draft_read/draft_approve/draft_reject | Health: **check_stale**(空 kb_id=全库)/sync_kb/dashboard/apply_decay
 
 **Architecture principle:** writes go through HTTP API (backend/web proxy), reads go through direct file access (`.tree-fs.json` + `.knowledge-base.yml`).
 
@@ -150,8 +150,8 @@ MCP Tools by category (66 tools total):
 ### Agentic-First Retrieval Pipeline (6 stages)
 
 ```
-User Query → [Step 0: Intent Recognition] → [Step 1: kb_catalog() Agentic KB scan]
-  → [Step 2: kb_doc_catalog() Agentic doc scan]
+User Query → [Step 0: Intent Recognition] → [Step 1: kb_list(lightweight=true) Agentic KB scan]
+  → [Step 2: kb_get_documents(lightweight=true) Agentic doc scan]
   → [Step 3: Experience-first (if operational/fault query, strict P0/P1/P2)]
   → [Step 4: Vector confirmation (auxiliary, within confirmed candidates)]
   → [Step 5: Content verification (kb_doc_read mandatory)]
@@ -164,7 +164,7 @@ When standard `kb_search_two_stage` cross-KB search returns candidates from <2 d
 
 ```
 Phase 1: Parallel 3-path recall
-  ├── Path A: kb_catalog() → Agentic KB judgment
+  ├── Path A: kb_list(lightweight=true) → Agentic KB judgment
   ├── Path B: kb_search_two_stage() → BM25 + vector
   └── Path C: kb_search_vector(kb_id="") → pure vector cross-KB semantic
 

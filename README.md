@@ -62,7 +62,7 @@ This platform solves that at the **retrieval layer**, not the generation layer. 
 |:---:|:---|:---|
 | 🔍 | Single search strategy (vector *or* keyword) | **Multi-strategy**: BM25 + vector + tag-semantic + graph expansion |
 | 🧠 | Trust vector similarity blindly | **Content-verified retrieval** — independent 0–8 adjudication |
-| 🤖 | Bolt-on AI, hard to integrate with agents | **Agent-native**: 76 MCP tools, 14 skills — any MCP client works |
+| 🤖 | Bolt-on AI, hard to integrate with agents | **Agent-native**: 66 MCP tools, 14 skills — any MCP client works |
 | 💡 | No structured knowledge reuse | **Experience library**: E0–E12 lifecycle with P0/P1/P2 credibility |
 | 🔧 | Complex multi-tool setup, scattered configs | **One command** `ragctl setup`, single `config.yml` source of truth |
 | 🪟 | Terminal windows everywhere | **Silent headless** — zero terminals in dev *and* prod |
@@ -84,7 +84,7 @@ This platform solves that at the **retrieval layer**, not the generation layer. 
 | 🔍 | **Multi-strategy search** | BM25 + vector two-stage recall · cross-KB enterprise search · `balance_kbs` diversity guard |
 | 📊 | **Knowledge graph** | Neo4j-powered · 14 graph tools · entity/relation graphs · cross-KB document bridges |
 | 💡 | **Experience library** | E0–E12 lifecycle · structured problem→solution→lessons · P0/P1/P2 credibility · decay |
-| 🔌 | **76 MCP tools** | KB CRUD · search · graph · experience · parsing · tags · vector/index · lifecycle — all MCP-native |
+| 🔌 | **66 MCP tools** | KB CRUD · search · graph · experience · parsing · tags · vector/index · lifecycle — all MCP-native |
 | 🎯 | **14 agent skills** | Natural-language commands · bilingual triggers (中/EN) · auto-dispatch to Archival agent |
 | 🤫 | **Silent headless** | Every launcher runs with **zero terminal windows** · dev and prod behave identically |
 
@@ -122,7 +122,7 @@ ragctl up
 </details>
 
 > [!TIP]
-> **No Claude Code? No problem.** The Web UI is fully functional standalone. Use any MCP client to access 76 tools, or just browse/search at `http://localhost:6789`.
+> **No Claude Code? No problem.** The Web UI is fully functional standalone. Use any MCP client to access 66 tools, or just browse/search at `http://localhost:6789`.
 
 ### ✅ Verify Everything Works
 
@@ -147,7 +147,7 @@ All four end with the **same working platform**. Methods **A / B / C** are **age
 <tr>
 <td valign="top">
 
-You use **Claude Code** and want everything (skills + 76 MCP tools + commands) registered globally.
+You use **Claude Code** and want everything (skills + 66 MCP tools + commands) registered globally.
 
 ```bash
 # Run inside a Claude Code session:
@@ -232,7 +232,7 @@ The **knowledgebase-init** wizard runs live on your **main agent** (real-time, i
 | **7** | Registers `ragctl` globally → `~/.local/bin` | already registered |
 | **8** | **Optional** global MCP registration into `~/.claude.json` → `mcpServers` | you decline |
 | **9–10** | Starts Neo4j (if Docker) + backend + web — silent, zero terminals | already healthy |
-| **11** | Full-chain validation: HTTP health + MCP round-trip (`kb_catalog`) + torch↔GPU match | — |
+| **11** | Full-chain validation: HTTP health + MCP round-trip (`kb_list(lightweight=true)`) + torch↔GPU match | — |
 
 Every phase is **incremental** — no re-installs, no re-downloads, no repeated questions. If your environment is already complete, Phase 1 detects it and **skips straight to validation**.
 
@@ -242,7 +242,7 @@ Every phase is **incremental** — no re-installs, no re-downloads, no repeated 
 <details>
 <summary><b>💬 Right after init — start working with your KB in the same conversation</b></summary>
 
-The wizard hands you a healthy system and the commands to use it. Keep talking in the **same session** — the 76 MCP tools and 14 skills are live, so plain language works immediately:
+The wizard hands you a healthy system and the commands to use it. Keep talking in the **same session** — the 66 MCP tools and 14 skills are live, so plain language works immediately:
 
 ```text
 "list all knowledge bases"                              → knowledgebase-list (L1→L3)
@@ -374,10 +374,10 @@ All accessible via `mcp__kb-mcp__*` from Claude Code or any MCP client.
 
 | Category | Count | Key tools |
 |----------|:-----:|-----------|
-| **Service lifecycle** | 6 | `kb_project_start`, `kb_project_status`, `kb_project_preflight`, `kb_project_version`, `kb_project_update`, `backend_status` |
-| **KB CRUD** | 7 | `kb_list`, `kb_create`, `kb_update`, `kb_delete`, `kb_catalog`, `kb_doc_catalog`, `kb_get_documents` |
+| **Service lifecycle** | 3 | `kb_project_status` (runtime\|setup), `kb_project_start`, `kb_project_update` (show_version), `backend_status` |
+| **KB CRUD** | 5 | `kb_list` (lightweight=true for catalog), `kb_create`, `kb_update`, `kb_delete`, `kb_get_documents` (lightweight=true for catalog) |
 | **Document CRUD** | 7 | `kb_doc_read`, `kb_doc_create`, `kb_doc_update_meta`, `kb_doc_update_content`, `kb_doc_delete`, `kb_doc_batch_delete`, `kb_doc_move` |
-| **File System** | 4 | `fs_get_tree`, `fs_get_children`, `fs_get_count`, `fs_upload_file` |
+| **File System** | 3 | `fs_get_tree` (incl. _stats), `fs_get_children`, `fs_upload_file` |
 | **Parse** | 4 | `parse_doc`, `parse_doc_batch`, `parse_task_status`, `kb_doc_save_parsed` |
 | **Tags** | 4 | `kb_tags_list`, `kb_doc_update_tags`, `kb_doc_get_by_tag`, `kb_tags_cleanup` |
 | **Search** | 4 | `kb_search`, `kb_search_vector`, `kb_search_two_stage`, `kb_search_stats` |
@@ -593,7 +593,7 @@ Only for the Neo4j knowledge graph. Parsing, search, and experience all work wit
 <details>
 <summary><b>Can I use this without Claude Code?</b></summary>
 
-Yes. The Web UI at `http://localhost:6789` is fully functional, and any MCP client can call the 76 tools.
+Yes. The Web UI at `http://localhost:6789` is fully functional, and any MCP client can call the 66 tools.
 </details>
 
 </details>
@@ -606,7 +606,7 @@ Yes. The Web UI at `http://localhost:6789` is fully functional, and any MCP clie
 rag-knowledge/
 ├── backend/              ← FastAPI + MinerU OCR engine
 ├── web/                  ← Nuxt 3 + Ant Design Vue (incl. Claude Chat with Agent SDK)
-├── kb-mcp/               ← MCP server — 76 tools
+├── kb-mcp/               ← MCP server — 66 tools
 ├── command/              ← ragctl CLI (Node.js, js-yaml)
 ├── src-tauri/            ← Tauri v2 desktop application (Rust)
 ├── .claude/              ← Claude Code skills (14) + Archival agent

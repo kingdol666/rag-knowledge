@@ -104,7 +104,7 @@ python scripts/meditation_source.py --json --days 14
 ```
 对每个 cluster.representative：
   1. KB 相关性判断：
-     - 该问题是否属于某 KB 的领域？（用 kb_catalog 匹配）
+     - 该问题是否属于某 KB 的领域？（用 kb_list(lightweight=true) 匹配）
      - 否 → 丢弃（非 KB 问题不归纳经验）
   2. 已有经验检查：
      experience_search_smart(query=representative, top_k=5)
@@ -203,7 +203,7 @@ python scripts/meditation_source.py --json --days 14
 | ❌ 不要 | 原因 | ✅ 应该 |
 |--------|------|---------|
 | 把每个问题都归纳 | 膨胀低质 | 只归纳满足信号阈值的 |
-| 跳过 KB 相关性确认 | 产出非 KB 垃圾 | 每个候选先匹配 kb_catalog |
+| 跳过 KB 相关性确认 | 产出非 KB 垃圾 | 每个候选先匹配 kb_list(lightweight=true) |
 | 跳过已有经验检查 | 重复归纳 | 先 experience_search_smart |
 | 降低质量标准（因为是自动） | 冥想≠批量产垃圾 | 同样过完整质量门控 |
 | 自动入库不报告 | 用户不知情 | 阶段4 输出报告，重要经验仍可用户确认 |

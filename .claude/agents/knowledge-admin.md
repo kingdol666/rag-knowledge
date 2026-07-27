@@ -17,15 +17,12 @@ tools:
   - mcp__kb-mcp__backend_status
   - mcp__kb-mcp__kb_project_status
   - mcp__kb-mcp__kb_project_start
-  - mcp__kb-mcp__kb_project_preflight
   # KB CRUD
   - mcp__kb-mcp__kb_list
   - mcp__kb-mcp__kb_create
   - mcp__kb-mcp__kb_update
   - mcp__kb-mcp__kb_delete
-  # KB Catalog (agentic-first, lightweight)
-  - mcp__kb-mcp__kb_catalog
-  - mcp__kb-mcp__kb_doc_catalog
+  # KB Catalog (agentic-first, lightweight — use kb_list/kb_get_documents with lightweight=true)
   # Document Read
   - mcp__kb-mcp__kb_get_documents
   # Document CRUD
@@ -39,7 +36,6 @@ tools:
   # File System
   - mcp__kb-mcp__fs_get_tree
   - mcp__kb-mcp__fs_get_children
-  - mcp__kb-mcp__fs_get_count
   - mcp__kb-mcp__fs_upload_file
   # Parse (non-blocking)
   - mcp__kb-mcp__parse_doc
@@ -63,12 +59,9 @@ tools:
   - mcp__kb-mcp__kb_cleanup_orphan_collections
   # Knowledge Graph (14 tools — search/build/stale unified)
   - mcp__kb-mcp__kb_graph_search
-  - mcp__kb-mcp__kb_graph_neighbors
   - mcp__kb-mcp__kb_graph_stats
-  - mcp__kb-mcp__kb_graph_health
   - mcp__kb-mcp__kb_graph_document
   - mcp__kb-mcp__kb_graph_document_related
-  - mcp__kb-mcp__kb_graph_documents_by_tag
   - mcp__kb-mcp__kb_graph_kb_overview
   - mcp__kb-mcp__kb_graph_build
   - mcp__kb-mcp__kb_graph_cross_kb_documents
@@ -255,7 +248,7 @@ Every task follows this 5-step process:
 
 1. Call `mcp__kb-mcp__kb_project_status` as the very first action (full status: ports + HTTP health + PIDs + MinerU). Its `ready` field is True only when backend AND web are HTTP-healthy. **调用成功即证明 MCP 已连接**；报 "No such tool available" → 走 Case C。
 2. **Case A `ready==true`** → 就绪，进入冒烟测试。
-3. **Case B `ready==false`（服务离线）** → 先调 `kb_project_preflight()`：
+3. **Case B `ready==false`（服务离线）** → 先调 `kb_project_status(scope="setup")`：
    - `ready_to_start==false` → 项目未安装，把 `problems` + `fix`（通常 `ragctl setup`）报告用户，**停止**，不盲目重试。
    - `ready_to_start==true` → **静默拉起服务（不问用户、不开终端）**：图谱/整理/跨库类带 `neo4j=true`，其余默认：
      ```
@@ -272,9 +265,9 @@ Every task follows this 5-step process:
 
 `ready==true` 后、正式作业前，做一次**轻量只读** MCP 往返，确认 MCP↔backend 真实可达（不仅端口通，且能返回数据）：
 
-- 通用首选：`mcp__kb-mcp__kb_catalog()`（返回 KB 清单）。
+- 通用首选：`mcp__kb-mcp__kb_list(lightweight=true)`（返回 KB 清单）。
 - 解析类（ingest）顺带 `backend_status()` 确认 **MinerU OCR 引擎可用**，否则 `parse_doc(use_ocr=true)` 会失败。
-- 图谱/整理/跨库类顺带 `kb_graph_health()` 确认 Neo4j 在线。
+- 图谱/整理/跨库类顺带 `kb_graph_stats()` 确认 Neo4j 在线（检查 `neo4j_available` 字段）。
 
 返回真实数据（非空、非错误）→ **预检全通过**，进入 Step 0。
 
@@ -363,8 +356,8 @@ This creates a durable record the user can review later.
 | Tool | Returns | When |
 |------|---------|------|
 | `kb_list()` | KB[] | **Every task.** All KBs with id/name/desc/docCount. |
-| `kb_catalog()` | `[{kb_id, name, description, doc_count}]` | **Lightweight** — id+description only, minimal context. Ideal for agentic first-pass. |
-| `kb_doc_catalog(kb_id)` | `[{doc_path, name, description}]` | **Lightweight** — doc scan within a KB. No file_size/tags. |
+| `kb_list(lightweight=true)` | `[{kb_id, name, description, doc_count}]` | **Lightweight** — id+description only. Ideal for agentic first-pass. |
+| `kb_get_documents(kb_id, lightweight=true)` | `[{doc_path, name, description}]` | **Lightweight** — doc scan within a KB. No file_size/tags. |
 | `kb_tags_list()` | Tag[] | **Before every tag operation.** |
 | `backend_status()` | {mineru...} | Authoritative MinerU health. |
 
@@ -384,7 +377,7 @@ This creates a durable record the user can review later.
 |------|---------|-------|
 | `fs_get_tree(include_files=True, max_depth=0)` | Tree | 0=unlimited |
 | `fs_get_children(parent_id="")` | Node[] | Empty = root |
-| `fs_get_count()` | Counts | Folder/file/total |
+
 | `fs_upload_file(file_path, parent_id="", description="")` | Node | Upload local file (binary, no index) |
 
 ### KB Lifecycle
@@ -429,8 +422,8 @@ This creates a durable record the user can review later.
 | `experience_apply(kb_id, exp_id, user, context, result)` | Exp+Record | 标记经验已应用，applied_count+1 |
 | `experience_review(kb_id, exp_id, reviewer, rating, comment)` | Exp+Record | 评审经验 (0-5分)，重算 rating_avg |
 | `experience_summary(kb_id)` | Stats | 按类别/严重度分布、top5 经验 |
-| `experience_search(kb_id, query, top_k=10)` | Exp[] | 元信息关键词搜索（标题/问题/方案/教训/标签）|
-| `experience_search_vector(kb_id, query, top_k=5)` | Chunk[] | 向量语义搜索（需经验已索引）|
+| `experience_search_global(query, top_k=10, mode="keyword")` | Exp[] | 元信息关键词搜索（标题/问题/方案/教训/标签）|
+| `experience_search_global(query, top_k=10, mode="vector")` | Chunk[] | 向量语义搜索（需经验已索引）|
 | `experience_search_global(query, top_k=10, score_threshold, verify_content)` | Exp[]+Meta | 跨库 QDCVR 主力检索：向量召回→硬阈值→内容验证→P0/P1/P2分级。带 tier_reason |
 | `experience_search_smart(query, top_k=10, score_threshold, verify_content)` | Exp[]+Meta | ⭐ **推荐入口**。在 `_global` 之上叠加：意图识别→自适应阈值→多轮降级→检索透明化（match_details/ranking_reason）|
 | `experience_rerank(query, experiences_json)` | Ranked[] | 多维语义重排序（标签/问题/方案匹配+可信度加权），`_smart` 之后做最终排序 |
@@ -456,12 +449,10 @@ This creates a durable record the user can review later.
 | Tool | Returns | Notes |
 |------|---------|-------|
 | `kb_graph_search(keyword, node_type="all", limit=20)` | Mixed | Unified graph node search. node_type: "all" (default — merges document+kb+tag) / "document" / "kb" / "tag". |
-| `kb_graph_neighbors(node_id, node_type="document", depth=1)` | Subgraph | Entity neighbor exploration. |
-| `kb_graph_stats()` | Stats | Entity/relation counts. |
-| `kb_graph_health()` | Health | Is Neo4j available? |
+| `kb_graph_stats()` | Stats+Health | Entity/relation counts + `neo4j_available` health probe. |
 | `kb_graph_document(doc_path, limit=50)` | Doc graph | Document node + edges (full graph view: tags, related docs, cross-KB links). |
 | `kb_graph_document_related(doc_path, limit=20)` | Doc[] | Related documents via graph (shared tags / same KB / vector similarity). |
-| `kb_graph_documents_by_tag(tag_name, limit=50)` | Doc[] | Docs sharing a tag. |
+| `kb_doc_get_by_tag(tag, kb_id="")` | Doc[] | Docs sharing a tag (YAML registry, reliable). |
 | `kb_graph_kb_overview(kb_id)` | Overview | KB's doc count, tag distribution in graph. |
 | `kb_graph_build(kb_id="", force=false)` | OK | Build graph: empty kb_id = all KBs; specific kb_id = one KB. |
 | `kb_graph_cross_kb_documents(min_kbs=2, limit=50)` | Doc[] | Bridge docs across KBs. |
@@ -490,7 +481,7 @@ This creates a durable record the user can review later.
 | **Manage** | `Skill("knowledgebase-manage")` | Confirm → execute → reindex if needed → verify |
 | **Organize** | `Skill("knowledgebase-organize")` | Survey all → read content → categorize → execute → verify → report |
 | **List** | `Skill("knowledgebase-list")` | Inventory → drill-down → tree |
-| **Search** | `Skill("knowledgebase-search")` | **QDCVR**: Step0查询改写 → Step1智能选库(kb_catalog) → Step2向量召回(balance_kbs) → Step2.5文档去重+硬阈值 → Step3内容裁决(0-8) → 命中≥6即退; 未命中标签+描述扩展. Auto-upgrades to `knowledgebase-search-enterprise` for cross-KB blind spots. |
+| **Search** | `Skill("knowledgebase-search")` | **QDCVR**: Step0查询改写 → Step1智能选库(kb_list lightweight) → Step2向量召回(balance_kbs) → Step2.5文档去重+硬阈值 → Step3内容裁决(0-8) → 命中≥6即退; 未命中标签+描述扩展. Auto-upgrades to `knowledgebase-search-enterprise` for cross-KB blind spots. |
 | **Search (Enterprise)** | `Skill("knowledgebase-search-enterprise")` | 3-path parallel recall (向量扩展+标签扩展+BM25) → cross-validation → content rerank (Agent 读内容 0-8 评分) |
 | **Verify** | `Skill("knowledgebase-verify")` | Three-way metadata scan → doc integrity → parse quality → index/graph coverage |
 | **Batch** | `Skill("knowledgebase-batch")` | Bulk tag → bulk desc → mass import (file-type routing) → mass move → dedup → graph rebuild |

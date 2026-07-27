@@ -109,8 +109,6 @@ uv run python server.py --http
 |------|------|
 | `kb_project_start(backend, web, neo4j, mode, wait)` | 静默启动服务（无头、日志落盘、幂等）。`wait=true` 阻塞至 HTTP 就绪。 |
 | `kb_project_status()` | 服务是否运行？端口 + HTTP 健康 + PID + MinerU + 日志路径 + `ready` 布尔值。 |
-| `kb_project_preflight()` | 项目是否已配置？`.env`/依赖检查 + 精确 `fix` 命令。 |
-| `kb_project_version(local_only)` | 本地 VERSION + git SHA，对比 GitHub latest release / 默认分支。 |
 | `kb_project_update(check_only, force, no_deps, restart)` | 安全更新：先 dry-run；脏工作区默认拒绝；可选依赖重装与服务重启。 |
 | `backend_status()` | 快速后端健康检查。 |
 
@@ -122,8 +120,8 @@ uv run python server.py --http
 | `kb_create(name, description, parent_id)` | 创建新 KB（可选作为子 KB）。 |
 | `kb_update(kb_id, name, description)` | 更新 KB 元数据。 |
 | `kb_delete(kb_id)` | 删除 KB 及其所有文档。 |
-| `kb_catalog()` | Agentic 优先的 KB 扫描 — 名称、描述、文档数、标签词汇表。 |
-| `kb_doc_catalog(kb_id)` | 按 KB 的文档扫描 — 每个文档的元数据概览。 |
+| `kb_list(lightweight=true)` | Agentic 优先的 KB 扫描 — 名称、描述、文档数（轻量模式）。 |
+| `kb_get_documents(kb_id, lightweight=true)` | 按 KB 的文档扫描 — 每个文档的元数据概览（轻量模式）。 |
 
 ### 文档增删改查（9）
 
@@ -154,17 +152,16 @@ uv run python server.py --http
 |------|------|
 | `fs_get_tree()` | 完整文件树及元数据（文件夹、文件、大小、日期）。 |
 | `fs_get_children(node_path)` | 指定文件夹节点的子节点。 |
-| `fs_get_count()` | 文件和文件夹总数。 |
 | `fs_upload_file(path, content)` | 上传并注册文件至文件系统。 |
 
-### 知识图谱（14）
+### 知识图谱（11）
 
 | 子类别 | 工具 |
 |--------|------|
-| **健康 & 统计** | `kb_graph_health()`, `kb_graph_stats()` |
+| **健康 & 统计** | `kb_graph_stats()` (incl. `neo4j_available` health probe) |
 | **搜索** | `kb_graph_search(keyword, node_type)` — `node_type`: all（默认）/ document / kb / tag |
-| **探索** | `kb_graph_neighbors(node_id)`, `kb_graph_kb_overview(kb_id)`, `kb_graph_cross_kb_documents()` |
-| **文档中心** | `kb_graph_document(doc_path)`, `kb_graph_document_related(doc_path)`, `kb_graph_document_paths(doc_path)`, `kb_graph_documents_by_tag(tag)` |
+| **探索** | `kb_graph_kb_overview(kb_id)`, `kb_graph_cross_kb_documents()` |
+| **文档中心** | `kb_graph_document(doc_path)`, `kb_graph_document_related(doc_path)`, `kb_graph_document_paths(doc_path)` |
 | **中心度** | `kb_graph_central_documents(kb_id)` |
 | **构建 & 清理** | `kb_graph_build(kb_id)`（空 = 全库）, `kb_graph_delete_document(doc_path)`, `kb_graph_delete_kb(kb_id)` |
 
@@ -174,7 +171,7 @@ uv run python server.py --http
 |--------|------|
 | **增删改查** | `experience_create()`, `experience_read(id)`, `experience_list()`, `experience_update()`, `experience_delete()` |
 | **操作** | `experience_apply(id)`, `experience_review(id, rating, comment)`, `experience_summary(kb_id)` |
-| **搜索** | `experience_search(query)`, `experience_search_vector(query)`, `experience_search_global(query)`, `experience_search_smart(query)`（推荐入口）, `experience_rerank(query, exps)` |
+| **搜索** | `experience_search_global(query)` (keyword/vector/global), `experience_search_smart(query)`（推荐入口）, `experience_rerank(query, exps)` |
 | **提取 & 草稿** | `experience_extract(mode, kb_id)`, `experience_drafts_list()`, `experience_draft_read(id)`, `experience_draft_approve(id)`, `experience_draft_reject(id)` |
 | **健康** | `experience_check_stale(kb_id)`（空 = 全库）, `experience_sync_kb(kb_id)`, `experience_dashboard()`, `experience_apply_decay()` |
 

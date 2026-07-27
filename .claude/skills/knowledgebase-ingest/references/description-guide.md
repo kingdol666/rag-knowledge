@@ -1,7 +1,7 @@
 # Description Writing Guide — 描述质量门控
 
 > **核心原则**：描述必须是**你读过的真实内容的精确摘要**，不是文件名、不是猜测、不是泛泛之词。
-> 描述是检索的"第一道过滤器"——`kb_catalog` / `kb_doc_catalog` / `kb_search`(元数据) 全都依赖它。烂描述 = 检索盲。
+> 描述是检索的"第一道过滤器"——`kb_list(lightweight=true)` / `kb_get_documents(lightweight=true)` / `kb_search`(元数据) 全都依赖它。烂描述 = 检索盲。
 
 ## 黄金法则
 

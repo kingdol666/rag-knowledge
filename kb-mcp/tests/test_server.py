@@ -75,9 +75,8 @@ async def run_tests():
     d = json.loads(await server.fs_get_tree())
     check("fs_get_tree", isinstance(d, list) and len(d) > 0, f"{len(d)} roots")
 
-    # 14. fs_get_count
-    d = json.loads(await server.fs_get_count())
-    check("fs_get_count", d.get("total", 0) > 0, f"folders={d.get('folders')} files={d.get('files')}")
+    # 14. fs_get_count — merged into fs_get_tree (_stats field), skip
+    pass
 
     # prompts_* tools were removed (FastMCP no longer exposes prompts in server.py).
 

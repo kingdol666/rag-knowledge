@@ -109,8 +109,6 @@ All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by 
 |------|-------------|
 | `kb_project_start(backend, web, neo4j, mode, wait)` | Silently launch services (headless, logged to files, idempotent). `wait=true` blocks until HTTP-healthy. |
 | `kb_project_status()` | Are services running? Ports + HTTP health + PIDs + MinerU + log paths + `ready` boolean. |
-| `kb_project_preflight()` | Is the project set up? `.env`/deps check + exact `fix` command. |
-| `kb_project_version(local_only)` | Local VERSION + git SHA, compared with GitHub latest release / default branch. |
 | `kb_project_update(check_only, force, no_deps, restart)` | Safe update: dry-run first, refuse dirty worktree unless force, optional deps + restart. |
 | `backend_status()` | Quick backend health check. |
 
@@ -122,8 +120,8 @@ All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by 
 | `kb_create(name, description, parent_id)` | Create a new KB (optionally as a sub-KB). |
 | `kb_update(kb_id, name, description)` | Update KB metadata. |
 | `kb_delete(kb_id)` | Delete a KB and all its documents. |
-| `kb_catalog()` | Agentic-first KB scan — names, descriptions, doc counts, tag vocabulary. |
-| `kb_doc_catalog(kb_id)` | Per-KB document scan — metadata overview for each document. |
+| `kb_list(lightweight=true)` | Agentic-first KB scan — names, descriptions, doc counts (lightweight mode). |
+| `kb_get_documents(kb_id, lightweight=true)` | Per-KB document scan — metadata overview (lightweight mode). |
 
 ### Document CRUD (9)
 
@@ -154,17 +152,16 @@ All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by 
 |------|-------------|
 | `fs_get_tree()` | Full file tree with metadata (folders, files, sizes, dates). |
 | `fs_get_children(node_path)` | Children of a specific folder node. |
-| `fs_get_count()` | Total file and folder count. |
 | `fs_upload_file(path, content)` | Upload + register a file in the file system. |
 
-### Knowledge Graph (14)
+### Knowledge Graph (11)
 
 | Sub-category | Tools |
 |-------------|-------|
-| **Health & Stats** | `kb_graph_health()`, `kb_graph_stats()` |
+| **Health & Stats** | `kb_graph_stats()` (incl. `neo4j_available` health probe) |
 | **Search** | `kb_graph_search(keyword, node_type)` — `node_type`: all (default) / document / kb / tag |
-| **Exploration** | `kb_graph_neighbors(node_id)`, `kb_graph_kb_overview(kb_id)`, `kb_graph_cross_kb_documents()` |
-| **Document-centric** | `kb_graph_document(doc_path)`, `kb_graph_document_related(doc_path)`, `kb_graph_document_paths(doc_path)`, `kb_graph_documents_by_tag(tag)` |
+| **Exploration** | `kb_graph_kb_overview(kb_id)`, `kb_graph_cross_kb_documents()` |
+| **Document-centric** | `kb_graph_document(doc_path)`, `kb_graph_document_related(doc_path)`, `kb_graph_document_paths(doc_path)` |
 | **Centrality** | `kb_graph_central_documents(kb_id)` |
 | **Build & Cleanup** | `kb_graph_build(kb_id)` (empty = all KBs), `kb_graph_delete_document(doc_path)`, `kb_graph_delete_kb(kb_id)` |
 
@@ -174,7 +171,7 @@ All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by 
 |-------------|-------|
 | **CRUD** | `experience_create()`, `experience_read(id)`, `experience_list()`, `experience_update()`, `experience_delete()` |
 | **Actions** | `experience_apply(id)`, `experience_review(id, rating, comment)`, `experience_summary(kb_id)` |
-| **Search** | `experience_search(query)`, `experience_search_vector(query)`, `experience_search_global(query)`, `experience_search_smart(query)` (推荐入口), `experience_rerank(query, exps)` |
+| **Search** | `experience_search_global(query)` (keyword/vector/global), `experience_search_smart(query)` (推荐入口), `experience_rerank(query, exps)` |
 | **Extract & Drafts** | `experience_extract(mode, kb_id)`, `experience_drafts_list()`, `experience_draft_read(id)`, `experience_draft_approve(id)`, `experience_draft_reject(id)` |
 | **Health** | `experience_check_stale(kb_id)` (空 = 全库), `experience_sync_kb(kb_id)`, `experience_dashboard()`, `experience_apply_decay()` |
 

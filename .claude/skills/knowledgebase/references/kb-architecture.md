@@ -59,7 +59,7 @@
 
 **关键坑**（⭐ 经实测验证）：
 - **父 KB 的 `kb_search_two_stage` 返回子 KB 容器条目（content 为空）** → 正确做法：用 **`kb_search_vector(kb_id=<父KB>)`** 检索真实内容（子 KB 文档的向量 chunk 存储在**父 KB collection** 下，搜子 KB UUID 返回 0 结果）。`kb_graph_kb_overview(kb_id)` 仅用于查看子 KB 结构/文档数，**不能**作为搜索入口。
-- `kb_doc_catalog` 无 type 字段区分文档 vs 子KB容器 → 用 `file_type: knowledge-base` 或 `fs_get_tree(max_depth=2)` 区分
+- `kb_get_documents(lightweight=true)` 无 type 字段区分文档 vs 子KB容器 → 用 `file_type: knowledge-base` 或 `fs_get_tree(max_depth=2)` 区分
 - `kb_graph_kb_overview.related_kbs[].name` 和 `sub_kbs[].name` 返回 UUID → 用 `kb_list(lightweight=true)` 回查可读名
 
 ## 66 个 MCP 工具地图（按操作类型）
@@ -67,7 +67,7 @@
 | 类别 | 工具数 | 代表工具 | 何时用 |
 |------|--------|---------|--------|
 | **KB CRUD** | 4 | `kb_create` `kb_list` `kb_update` `kb_delete` | 建库/列库/改库/删库 |
-| **KB Catalog** | 2 | `kb_catalog` `kb_doc_catalog` | 轻量列库（agent 第一步扫描） |
+| **KB Catalog** | 0 | (merged into kb_list/kb_get_documents lightweight mode) | 轻量列库（agent 第一步扫描） |
 | **文档读** | 2 | `kb_get_documents` `kb_doc_read` | 读元数据/读正文（检索后必读） |
 | **文档写** | 7 | `kb_doc_create` `kb_doc_save_parsed` `kb_doc_update_meta` `kb_doc_update_content` `kb_doc_delete` `kb_doc_batch_delete` `kb_doc_move` | 文档 CRUD |
 | **文件系统** | 3 | `fs_get_tree` `fs_get_children` `fs_upload_file` | 树结构/原始文件 (_stats in fs_get_tree) |
