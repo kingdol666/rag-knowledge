@@ -5,13 +5,13 @@
 </h1>
 
 <p align="center">
-  <strong>MCP Server · 76 Tools · KB Lifecycle · Search · Graph · Experience</strong><br/>
+  <strong>MCP Server · 66 Tools · KB Lifecycle · Search · Graph · Experience</strong><br/>
   <em>The MCP tool layer connecting Claude Code agents to the RAG Knowledge Platform</em>
 </p>
 
 <p align="center">
   <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick%20Start-3%20steps-blue?style=for-the-badge" /></a>
-  <a href="#-tools-76"><img src="https://img.shields.io/badge/MCP-76%20tools-blueviolet?style=for-the-badge" /></a>
+  <a href="#-tools-66"><img src="https://img.shields.io/badge/MCP-66%20tools-blueviolet?style=for-the-badge" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" /></a>
   <a href="#-tech-stack"><img src="https://img.shields.io/badge/Python-3.12-blue?style=for-the-badge" /></a>
   <a href="#-tech-stack"><img src="https://img.shields.io/badge/FastMCP-latest-9cf?style=for-the-badge" /></a>
@@ -30,7 +30,7 @@
 - [🌟 Overview](#-overview)
 - [🏗️ Architecture](#️-architecture)
 - [🚀 Quick Start](#-quick-start)
-- [🔌 Tools (76)](#-tools-76)
+- [🔌 Tools (66)](#-tools-66)
 - [📡 Client Library](#-client-library)
 - [⚙️ Configuration](#️-configuration)
 - [📁 Project Structure](#-project-structure)
@@ -40,7 +40,7 @@
 
 ## 🌟 Overview
 
-`kb-mcp` is the MCP (Model Context Protocol) server that bridges Claude Code (or any MCP-compatible agent) to the RAG Knowledge Platform. It provides **76 tools** organized into 11 categories — enough to manage every aspect of a production knowledge base without leaving the agent conversation.
+`kb-mcp` is the MCP (Model Context Protocol) server that bridges Claude Code (or any MCP-compatible agent) to the RAG Knowledge Platform. It provides **66 tools** organized into 11 categories — enough to manage every aspect of a production knowledge base without leaving the agent conversation.
 
 **Key principles:**
 
@@ -60,7 +60,7 @@
                    │ MCP stdio (FastMCP)
 ┌──────────────────▼───────────────────────┐
 │              kb-mcp/server.py             │
-│         ~76 @mcp.tool() definitions       │
+│         ~66 @mcp.tool() definitions       │
 │         Zero HTTP code — delegates down   │
 └──────┬──────────────────────┬────────────┘
        │ kb_client (HTTP)     │ direct file I/O
@@ -99,11 +99,11 @@ uv run python server.py --http
 
 > **Normally you don't run kb-mcp manually.** Claude Code auto-launches it via `../.mcp.json` when you open the project. The first `uv run` auto-syncs deps if needed. For global usage, `claude plugin install rag-knowledge` registers it in `~/.claude.json` → `mcpServers`.
 
-## 🔌 Tools (76)
+## 🔌 Tools (66)
 
 All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by domain:
 
-### Service Lifecycle (6) — silent, headless management
+### Service Lifecycle (3) — silent, headless management
 
 | Tool | Description |
 |------|-------------|
@@ -112,7 +112,7 @@ All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by 
 | `kb_project_update(check_only, force, no_deps, restart)` | Safe update: dry-run first, refuse dirty worktree unless force, optional deps + restart. |
 | `backend_status()` | Quick backend health check. |
 
-### KB CRUD (6)
+### KB CRUD (5)
 
 | Tool | Description |
 |------|-------------|
@@ -146,7 +146,7 @@ All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by 
 | `kb_search_two_stage(query, balance_kbs)` | **Primary search tool.** BM25 recall → vector rerank with cross-KB balancing. |
 | `kb_search_stats()` | Search index statistics (document count, chunk count, collection sizes). |
 
-### File System (4)
+### File System (3)
 
 | Tool | Description |
 |------|-------------|
@@ -165,7 +165,7 @@ All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by 
 | **Centrality** | `kb_graph_central_documents(kb_id)` |
 | **Build & Cleanup** | `kb_graph_build(kb_id)` (empty = all KBs), `kb_graph_delete_document(doc_path)`, `kb_graph_delete_kb(kb_id)` |
 
-### Experience (22)
+### Experience (20)
 
 | Sub-category | Tools |
 |-------------|-------|
@@ -262,7 +262,7 @@ The `.mcp.json` at the monorepo root auto-configures kb-mcp for Claude Code:
 
 ```
 kb-mcp/
-├── server.py                # FastMCP server — ~76 @mcp.tool() definitions (zero HTTP code)
+├── server.py                # FastMCP server — ~66 @mcp.tool() definitions (zero HTTP code)
 ├── project_manager.py       # Service lifecycle + version/update (delegates to ragctl)
 ├── task_registry.py         # In-process async background task manager for parse jobs
 ├── config.py                # Reads URLs from shared config.yml (zero hardcoded paths)

@@ -75,7 +75,7 @@
 | **标签** | 4 | `kb_tags_list` `kb_doc_update_tags` `kb_doc_get_by_tag` `kb_tags_cleanup` | 标签管理 |
 | **搜索** | 4 | `kb_search` `kb_search_vector` `kb_search_two_stage` `kb_search_stats` | 元数据/向量/两阶段/统计 |
 | **向量索引** | 4 | `kb_index_document` `kb_batch_index` `kb_reindex` `kb_cleanup_orphan_collections` | 索引管理 |
-| **图谱** | 14 | `kb_graph_search` `kb_graph_build` `kb_graph_kb_overview` `kb_graph_document` ... | Neo4j 图谱 |
+| **图谱** | 11 | `kb_graph_search` `kb_graph_build` `kb_graph_kb_overview` `kb_graph_document` ... | Neo4j 图谱 |
 | **经验** | 20 | `experience_search_smart` `experience_search_global` `experience_create` `experience_rerank` ... | 经验库全生命周期 |
 | **项目** | 3 | `kb_project_status` `kb_project_start` `kb_project_update` | 服务生命周期 |
 | **健康** | 1 | `backend_status` | 预检 |

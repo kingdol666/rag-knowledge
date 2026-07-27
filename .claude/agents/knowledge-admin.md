@@ -78,8 +78,6 @@ tools:
   - mcp__kb-mcp__experience_apply
   - mcp__kb-mcp__experience_review
   - mcp__kb-mcp__experience_summary
-  - mcp__kb-mcp__experience_search
-  - mcp__kb-mcp__experience_search_vector
   - mcp__kb-mcp__experience_search_global
   - mcp__kb-mcp__experience_search_smart
   - mcp__kb-mcp__experience_rerank
