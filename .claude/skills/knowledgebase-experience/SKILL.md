@@ -216,7 +216,7 @@ Step 5: experience_sync_kb(kb_id) → 清除 stale 标记
 ```
 故障型: experience_search_smart (推荐) → P0 直接答
   优化: experience_search_smart → experience_rerank → 最终排序
-通用型: kb_search_two_stage → experience_search 补充
+通用型: kb_search_two_stage → experience_search_global 补充
 ```
 
 ## E8 — 经验看板
@@ -277,8 +277,8 @@ experience_review(kb_id, exp_id, reviewer, rating, comment)       → 重算 rat
 |---|---|
 | 智能检索（推荐入口） | `experience_search_smart(query, top_k)` |
 | 全局跨库 | `experience_search_global(query, top_k)` |
-| 元信息 | `experience_search(kb_id, query, top_k)` |
-| 向量语义 | `experience_search_vector(kb_id, query, top_k)` |
+| 元信息 | `experience_search_global(kb_id, query, top_k)` |
+| 向量语义 | `experience_search_global(kb_id, query, top_k)` |
 | 按场景 | `experience_list(kb_id, scenario="...")` |
 | 智能重排序 | `experience_rerank(query, experiences_json)` |
 | 统计 | `experience_summary(kb_id)` / `experience_dashboard(kb_id)` |

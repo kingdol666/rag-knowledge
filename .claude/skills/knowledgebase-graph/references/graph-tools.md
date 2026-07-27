@@ -23,7 +23,7 @@
 | Tool | Parameters | Purpose |
 |------|-----------|---------|
 | `kb_graph_stats` | _(none)_ | Global graph statistics: node count, edge count, relationship type distribution |
-| `kb_graph_health` | _(none)_ | Check whether the Neo4j database is available and responsive |
+| `kb_graph_stats` | _(none)_ | Global graph statistics + Neo4j availability (`neo4j_available` field) |
 
 ---
 

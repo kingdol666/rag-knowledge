@@ -67,7 +67,7 @@ Graph nodes: `Document`, `KnowledgeBase`, `Tag`. Edges: `BELONGS_TO`, `HAS_SUBKB
     │     (node_type: all/document/kb/tag — all 合并三类结果)
     │
     ├── "图谱健康/统计"
-    │   → kb_graph_health() — Neo4j 是否可用
+    │   → kb_graph_stats()  # check neo4j_available field — Neo4j 是否可用
     │   → kb_graph_stats() — 节点/边计数
     │
     ├── "重建图谱"
@@ -102,13 +102,13 @@ kb_graph_kb_overview(kb_id)  # doc_count 是否匹配实际文档数
 ## Global Stats
 ```
 kb_graph_stats()      # node/edge counts, relationship distribution
-kb_graph_health()     # Neo4j availability check
+kb_graph_stats()  # check neo4j_available field     # Neo4j availability check
 ```
 
 ## KB Overview
 `kb_graph_kb_overview(kb_id)` — doc count, sub-KBs, tag distribution, related KBs, top central docs.
 
-> **已知显示限制**：`related_kbs[].name` 和 `sub_kbs[].name` 返回 **UUID** 而非可读名称。用 `kb_catalog()` 回查 UUID→名称映射。
+> **已知显示限制**：`related_kbs[].name` 和 `sub_kbs[].name` 返回 **UUID** 而非可读名称。用 `kb_list(lightweight=true)` 回查 UUID→名称映射。
 
 ## Document-Centric Query
 | Task | Tool |
@@ -116,7 +116,7 @@ kb_graph_health()     # Neo4j availability check
 | Full graph of a doc | `kb_graph_document(doc_path, limit=50)` |
 | Related docs only | `kb_graph_document_related(doc_path, limit=20)` |
 | Docs by tag | ⚠️ `kb_doc_get_by_tag(tag)`（推荐，走 YAML）；`kb_graph_documents_by_tag` 对 tag 恒返回空 |
-| Neighborhood exploration | `kb_graph_neighbors(node_id, node_type, depth=1)` — ⚠️ 参数 `node_id`（非 `node_path`） |
+| Neighborhood exploration | Use `kb_graph_document(doc_path)` — returns related documents including neighbors |
 
 > **路径格式**：`kb_graph_*` 工具用**正斜杠**路径（如 `Energy-Batteries/lithium-ion-design.md`）。`kb_get_documents` 在 Windows 返回**反斜杠**路径（如 `Energy-Batteries\lithium-ion-design.md`）。跨工具传参时统一转正斜杠。
 
@@ -155,7 +155,7 @@ Use after deleting documents or KBs to keep graph clean.
 
 | ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
 |-------------|------|-------------|
-| 不构建图谱就直接查 | 空结果误解 | 先 `kb_graph_health()` 确认可用再查 |
+| 不构建图谱就直接查 | 空结果误解 | 先 `kb_graph_stats()  # check neo4j_available field` 确认可用再查 |
 | `force=false` 当 full rebuild | 仅增量，新 schema 不改旧数据 | Schema 变更后必须 `force=true` |
 | 删文档不删图节点 | 孤立节点污染结果 | 删文档后必须 `kb_graph_delete_document()` |
 | 误读 `total_relations=0` | stats bug，实际有数据 | `kb_graph_document()` 抽检验证 |

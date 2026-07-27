@@ -7,7 +7,7 @@
 
 ## 为什么必须有这一步
 
-kb-mcp 的 76 个工具全部通过 HTTP 转发到后端服务。两件事缺一不可，**只查其一等于没查**：
+kb-mcp 的 66 个工具全部通过 HTTP 转发到后端服务。两件事缺一不可，**只查其一等于没查**：
 
 1. **kb-mcp MCP server 已连接到当前 Claude Code 会话** —— 由 Claude Code **启动时**按 `.mcp.json` 加载，会话进行中无法变更。
 2. **后端（FastAPI）+ 前端（Nuxt）服务已运行且 HTTP 健康** —— MCP 工具实际转发的目标。
@@ -34,7 +34,7 @@ kb-mcp 的 76 个工具全部通过 HTTP 转发到后端服务。两件事缺一
 
 ### 2-A. Case B — 服务未起（MCP 在线，服务离线）
 
-1. 先调 `mcp__kb-mcp__kb_project_preflight()`：
+1. 先调 `mcp__kb-mcp__kb_project_status(scope="setup")`：
    - `ready_to_start == false` → 项目未安装。把 `problems` 与 `fix`（通常 `ragctl setup`）报告用户，**停止**，不盲目重试。
    - `ready_to_start == true` → 继续。
 2. 静默拉起服务（**不问用户、不开终端**）：
@@ -59,7 +59,7 @@ MCP server 由 Claude Code **启动时**加载，**会话中无法重连**。处
 
 `ready == true` 之后、**正式操作之前**，做一次**轻量只读** MCP 往返，确认 MCP↔backend 真实可达（不仅端口通，且能返回数据）：
 
-- 通用首选：`mcp__kb-mcp__kb_catalog()`（返回 KB 清单）。
+- 通用首选：`mcp__kb-mcp__kb_list(lightweight=true)`（返回 KB 清单）。
 - 或：`mcp__kb-mcp__kb_tags_list()`（返回标签词表）。
 - 各 skill 也可用自己流程中的首个只读探针（检索类的 `kb_search`、图类的 `kb_graph_stats` 等）。
 
@@ -72,18 +72,18 @@ MCP server 由 Claude Code **启动时**加载，**会话中无法重连**。处
 | `kb_project_status` 结果 | 判定 | 动作 |
 |---|---|---|
 | 成功 + `ready==true` | 就绪 | 冒烟测试 → 作业 |
-| 成功 + `ready==false` | 服务离线 | `preflight` → `kb_project_start(wait=true)` → 回查 → 冒烟测试 |
+| 成功 + `ready==false` | 服务离线 | `kb_project_status(scope="setup")` → `kb_project_start(wait=true)` → 回查 → 冒烟测试 |
 | `No such tool` | MCP 未连接 | `ragctl status` 诊断 → 通知用户重启 Claude Code → 停止 |
 
 ---
 
 ## 各 skill 的额外注意
 
-- **图谱 / 整理 / 跨库检索**：`kb_project_start` 须带 `neo4j=true`（依赖 Neo4j，需 Docker）。冒烟测试可顺带 `kb_graph_health()` 确认图数据库在线。
+- **图谱 / 整理 / 跨库检索**：`kb_project_start` 须带 `neo4j=true`（依赖 Neo4j，需 Docker）。冒烟测试可顺带 `kb_graph_stats()` 确认图数据库在线（检查 `neo4j_available` 字段）。
 - **解析类（ingest）**：服务就绪后顺带 `backend_status()` 确认 **MinerU OCR 引擎可用**，否则 `parse_doc(use_ocr=true)` 会失败。
 - **Init / Update（生命周期 skill）**：二者是安装/运维 skill，MCP 连通性是它们的**产物或前置**而非作业前提：
   - **init**：完成安装/注册后，**必须**跑本预检（含冒烟测试）验证连通，作为 Phase「全链验证」的组成。
-  - **update**：拉取更新**前**应先通过本预检（MCP 在线才能用 `kb_project_version` 对比版本）；拉取**后**重跑本预检确认服务恢复。
+  - **update**：拉取更新**前**应先通过本预检（MCP 在线才能用 `kb_project_update(show_version=true)` 对比版本）；拉取**后**重跑本预检确认服务恢复。
 
 ---
 

@@ -29,7 +29,7 @@ MinerU OCR Engine (ephemeral port)  ← PDF → Markdown conversion
 Claude Code / Agent
     │  MCP stdio (kb-mcp)
     ▼
-kb-mcp MCP Server              ← 76 tools: KB CRUD, file ops, parse, search, tags, vector, graph, experience, project lifecycle
+kb-mcp MCP Server              ← 66 tools: KB CRUD, file ops, parse, search, tags, vector, graph, experience, project lifecycle
     │  HTTP → web proxy / backend     +  direct file reads
     ▼
 Nuxt / Backend                 ← writes: parse + save pipeline
@@ -44,7 +44,7 @@ rag-knowledge/
 ├── start.bat / start.sh    # One-click launch scripts
 ├── backend/                # FastAPI + MinerU (Python 3.12)
 ├── web/                    # Nuxt 3 UI (TypeScript)
-├── kb-mcp/                 # [local] MCP server — provides 76 MCP tools for KB operations
+├── kb-mcp/                 # [local] MCP server — provides 66 MCP tools for KB operations
 ├── .claude/skills/         # OMC skills (knowledgebase dispatcher, ingest, search, manage, init, update, etc.)
 ├── .claude/agents/         # Archival agent definition (knowledge-admin.md)
 ├── docs/ARCHITECTURE.md    # Detailed architecture + MCP dev guide
@@ -118,7 +118,7 @@ Key properties:
 
 ```
 kb-mcp/
-├── server.py               # 76 MCP tools via FastMCP; parse tools are NON-BLOCKING
+├── server.py               # 66 MCP tools via FastMCP; parse tools are NON-BLOCKING
 ├── kb_client/
 │   └── client.py           # All HTTP logic (server.py has zero HTTP code)
 ├── config.py               # Reads URLs from shared config.yml; zero hardcoded paths
@@ -128,7 +128,7 @@ kb-mcp/
 └── .mcp.json (at root)     # Connects kb-mcp to Claude Code via stdio
 ```
 
-MCP Tools by category (76 tools total):
+MCP Tools by category (66 tools total):
 - **Health:** `backend_status`
 - **Project lifecycle (5):** `kb_project_status`, `kb_project_start`, `kb_project_preflight`, `kb_project_version`, `kb_project_update`
 - **KB CRUD:** `kb_list`, `kb_create`, `kb_update`, `kb_delete`

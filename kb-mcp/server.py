@@ -107,8 +107,23 @@ def _running_payload(task_id: str, kind: str, detail: dict | None = None) -> str
 # ============================================================
 
 @mcp.tool()
-async def kb_list() -> str:
-    """List all knowledge bases with id, name, description, and document count."""
+async def kb_list(lightweight: bool = False) -> str:
+    """List all knowledge bases with id, name, description, and document count.
+
+    Set lightweight=True for a minimal catalog [{kb_id, name, description, doc_count}]
+    that keeps agent context clean (no file_size/tags/vector_index metadata).
+    Default lightweight=False returns the full backend response."""
+    if lightweight:
+        data = await _client().kb_list()
+        if not isinstance(data, dict) or not data.get("success"):
+            return _j(data)
+        catalog = [{
+            "kb_id": kb.get("kbId") or kb.get("path"),
+            "name": kb.get("name") or kb.get("path"),
+            "description": kb.get("description", ""),
+            "doc_count": kb.get("documentCount", 0),
+        } for kb in data.get("knowledgeBases", [])]
+        return _j({"success": True, "count": len(catalog), "catalog": catalog})
     return _j(await _client().kb_list())
 
 
@@ -147,56 +162,24 @@ async def kb_search(query: str, top_k: int = 10) -> str:
 
 
 @mcp.tool()
-async def kb_get_documents(kb_id: str) -> str:
-    """List all documents inside a knowledge base. kb_id accepts path or UUID."""
+async def kb_get_documents(kb_id: str, lightweight: bool = False) -> str:
+    """List all documents inside a knowledge base. kb_id accepts path or UUID.
+
+    Set lightweight=True for a minimal catalog [{doc_path, name, description}]
+    that keeps agent context clean (no file_size/tags/vector_index metadata).
+    Default lightweight=False returns the full backend response."""
     if (err := _require_kb(kb_id)): return err
+    if lightweight:
+        data = await _client().kb_get_documents(kb_id)
+        if not isinstance(data, dict) or not data.get("success"):
+            return _j(data)
+        catalog = [{
+            "doc_path": d.get("path"),
+            "name": d.get("name"),
+            "description": d.get("description", ""),
+        } for d in data.get("documents", [])]
+        return _j({"success": True, "kb_id": kb_id, "count": len(catalog), "catalog": catalog})
     return _j(await _client().kb_get_documents(kb_id))
-
-
-# ============================================================
-# LIGHTWEIGHT CATALOG (id + description only, agentic-first retrieval)
-# Returns only id/description minimal projection to avoid polluting context with file_size/tags/vector_index metadata.
-# Agents should prefer these methods: read descriptions to judge relevance, confirm, then call kb_doc_read/kb_search_vector for details.
-# ============================================================
-
-@mcp.tool()
-async def kb_catalog() -> str:
-    """Lightweight knowledge base catalog: returns only [{kb_id, name, description, doc_count}].
-
-    Purpose (first step of agentic-first retrieval): The agent reads each KB description,
-    uses model judgment to decide which KB is relevant to the current scenario, then drills into that KB.
-    Does not load path/file_size etc. extra fields to keep context clean.
-    """
-    data = await _client().kb_list()
-    if not isinstance(data, dict) or not data.get("success"):
-        return _j(data)
-    catalog = [{
-        "kb_id": kb.get("kbId") or kb.get("path"),
-        "name": kb.get("name") or kb.get("path"),
-        "description": kb.get("description", ""),
-        "doc_count": kb.get("documentCount", 0),
-    } for kb in data.get("knowledgeBases", [])]
-    return _j({"success": True, "count": len(catalog), "catalog": catalog})
-
-
-@mcp.tool()
-async def kb_doc_catalog(kb_id: str) -> str:
-    """Lightweight document catalog: returns [{doc_path, name, description}] for all docs in a KB (only these 3 fields).
-
-    Purpose (second step of agentic-first retrieval): After entering a candidate KB, the agent reads each doc's description,
-    judges which one truly matches the current scenario, then confirms before calling kb_doc_read for full text or kb_search_vector for vector ranking.
-    Does not load file_size/tags/vector_index/metadata to avoid polluting context.
-    """
-    if (err := _require_kb(kb_id)): return err
-    data = await _client().kb_get_documents(kb_id)
-    if not isinstance(data, dict) or not data.get("success"):
-        return _j(data)
-    catalog = [{
-        "doc_path": d.get("path"),
-        "name": d.get("name"),
-        "description": d.get("description", ""),
-    } for d in data.get("documents", [])]
-    return _j({"success": True, "kb_id": kb_id, "count": len(catalog), "catalog": catalog})
 
 
 # ============================================================
@@ -293,14 +276,15 @@ async def fs_get_tree(include_files: bool = True, max_depth: int = 0) -> str:
     Returns the complete tree-schema starting from root folders, with
     recursive nesting. Set include_files=False to see only folder structure.
     Set max_depth>0 to limit nesting depth (1=root KBs only, 2=KB+first
-    level children, etc.). 0 means unlimited."""
+    level children, etc.). 0 means unlimited.
+    Response includes _stats: {folders, files, total} count metadata."""
     tree = await _client().fs_get_tree()
+    count_data = await _client().fs_get_count()
 
     def _filter(nodes, depth=1):
         out = []
         for n in nodes:
             node_type = n.get("type", "")
-            # When include_files is False, skip ALL file nodes at every level
             if not include_files and node_type == "file":
                 continue
             copy = {k: v for k, v in n.items() if k != "children"}
@@ -314,19 +298,18 @@ async def fs_get_tree(include_files: bool = True, max_depth: int = 0) -> str:
             out.append(copy)
         return out
 
-    return _j(_filter(tree))
+    result = _filter(tree)
+    if isinstance(count_data, dict):
+        result_with_stats = {"tree": result, "_stats": count_data}
+    else:
+        result_with_stats = {"tree": result}
+    return _j(result_with_stats)
 
 
 @mcp.tool()
 async def fs_get_children(parent_id: str = "") -> str:
     """Get immediate children (folders + files) of a folder."""
     return _j(await _client().fs_get_children(parent_id))
-
-
-@mcp.tool()
-async def fs_get_count() -> str:
-    """Get total folder, file, and combined counts."""
-    return _j(await _client().fs_get_count())
 
 
 @mcp.tool()
@@ -1020,47 +1003,6 @@ async def experience_summary(kb_id: str) -> str:
 
 
 @mcp.tool()
-async def experience_search(kb_id: str, query: str, top_k: int = 10) -> str:
-    """Search experience metadata: matches keywords in title, problem, solution, key lessons, and tags.
-
-    Suitable for precise lookup when you already know some keywords. Results sorted by relevance + rating + application count.
-    When kb_id is empty, automatically falls back to cross-KB global search (experience_search_global).
-
-    Args:
-        kb_id: Knowledge base ID or path (empty string "" triggers cross-KB global search)
-        query: Search keywords
-        top_k: Number of results to return (default 10)
-
-    Returns:
-        {success, count, query, experiences: [{id, title, scenario, rating_avg, ...}]}
-    """
-    if not kb_id or not kb_id.strip():
-        return await experience_search_global(query=query, top_k=top_k, verify_content=False)
-    return _j(await _client().experience_search(kb_id, query, top_k))
-
-
-@mcp.tool()
-async def experience_search_vector(kb_id: str, query: str, top_k: int = 5) -> str:
-    """Vector semantic search for experiences: query the semantic content of experiences in natural language.
-
-    Suitable for fuzzy queries like "how did we handle similar vibration issues before". Requires experiences to be vector-indexed.
-    Automatically filters to return only experience-type results (doc_type=experience).
-    When kb_id is empty, automatically falls back to cross-KB global search (experience_search_global).
-
-    Args:
-        kb_id: Knowledge base ID or path (empty string "" triggers cross-KB global search)
-        query: Natural language query
-        top_k: Number of results to return (default 5)
-
-    Returns:
-        {success, query, count, results: [{content, score, doc_path, chunk_index}]}
-    """
-    if not kb_id or not kb_id.strip():
-        return await experience_search_global(query=query, top_k=top_k, verify_content=False)
-    return _j(await _client().experience_search_vector(kb_id, query, top_k))
-
-
-@mcp.tool()
 async def experience_search_global(query: str, top_k: int = 10,
                                      score_threshold: float = None,
                                      verify_content: bool = True) -> str:
@@ -1431,29 +1373,22 @@ async def backend_status() -> str:
 
 
 @mcp.tool()
-async def kb_project_status() -> str:
-    """Full project service status — backend/web ports listening + HTTP health
-    checks, Neo4j bolt/http ports, MinerU availability, per-service PIDs, and
-    shared log file paths. Use this to check whether the project is running and
-    ready before KB operations. Returns a one-line `summary` plus a per-service
-    `services` dict. `ready` is True only when backend AND web are HTTP-healthy.
-    """
-    # asyncio is imported at module top; to_thread is the modern, non-deprecated
-    # way to run a sync fn in a worker (avoids get_event_loop() deprecation).
+async def kb_project_status(scope: str = "runtime") -> str:
+    """Full project service status.
+
+    scope="runtime" (default): backend/web ports listening + HTTP health checks,
+    Neo4j bolt/http ports, MinerU availability, per-service PIDs, and shared log
+    file paths. Returns a one-line `summary` plus a per-service `services` dict.
+    `ready` is True only when backend AND web are HTTP-healthy.
+
+    scope="setup": Check whether the project is SET UP and ready to start services.
+    Verifies .env exists, backend/web are initialized, and backend .venv + web
+    node_modules are installed. Returns `ready_to_start` plus a list of `problems`
+    and the exact `fix` command (`ragctl setup`)."""
+    if scope == "setup":
+        return _j(project_manager.preflight())
     data = await asyncio.to_thread(project_manager.project_status)
     return _j(data)
-
-
-@mcp.tool()
-async def kb_project_preflight() -> str:
-    """Check whether the project is SET UP and ready to start services (distinct
-    from kb_project_status, which checks whether services are already running).
-    Verifies .env exists, backend/web are initialized, and backend
-    .venv + web node_modules are installed. Returns `ready_to_start` plus a list
-    of `problems` and the exact `fix` command (`ragctl setup`). Call this if
-    kb_project_start returned a preflight error, or to diagnose a fresh clone.
-    """
-    return _j(project_manager.preflight())
 
 
 @mcp.tool()
@@ -1485,37 +1420,35 @@ async def kb_project_start(backend: bool = True, web: bool = True, neo4j: bool =
 
 
 @mcp.tool()
-async def kb_project_version(local_only: bool = False) -> str:
-    """Show local project version (root VERSION file + git SHA) and compare with
-    the latest GitHub release / default-branch VERSION. Use this to decide whether
-    an update is available before calling kb_project_update.
-
-    Args:
-      local_only: if True, skip the network call and only report local version
-    """
-    data = await asyncio.to_thread(
-        lambda: project_manager.project_version(local_only=local_only),
-    )
-    return _j(data)
-
-
-@mcp.tool()
 async def kb_project_update(check_only: bool = False, force: bool = False,
-                            no_deps: bool = False, restart: bool = False) -> str:
+                            no_deps: bool = False, restart: bool = False,
+                            show_version: bool = False) -> str:
     """Check GitHub for a newer version of the project and optionally pull it.
     Delegates to `ragctl update` (single source of truth for version compare +
     git pull + optional deps reinstall).
 
+    Modes:
+    - show_version=True: Show local project version (VERSION file + git SHA)
+      compared with the latest GitHub release. Does NOT pull.
+    - check_only=True: dry-run — report only, never pull (default False)
+    - check_only=False: pull the update
+
     Safety:
       - Refuses to pull over a dirty worktree unless force=True
-      - Prefer check_only=True first to preview, then call again with check_only=False
+      - Prefer check_only=True first to preview
 
     Args:
       check_only: dry-run — report only, never pull (default False)
       force: pull even if versions look equal / worktree is dirty
       no_deps: after pull, skip `ragctl deps` reinstall
       restart: after pull, run `ragctl up --force` to reload services
+      show_version: show local vs remote version without pulling (default False)
     """
+    if show_version:
+        data = await asyncio.to_thread(
+            lambda: project_manager.project_version(local_only=False),
+        )
+        return _j(data)
     data = await asyncio.to_thread(
         lambda: project_manager.project_update(
             check_only=check_only, force=force, no_deps=no_deps, restart=restart,
@@ -1908,21 +1841,19 @@ async def kb_graph_search(keyword: str, node_type: str = "all", limit: int = 20)
 
 
 @mcp.tool()
-async def kb_graph_neighbors(node_id: str, node_type: str = "document", depth: int = 1) -> str:
-    """Get the neighbor subgraph of a node (document/KB/tag). node_type: document|kb|tag"""
-    return _j(await _client().graph_neighbors(node_id, node_type, depth))
-
-
-@mcp.tool()
 async def kb_graph_stats() -> str:
-    """Return knowledge graph statistics."""
-    return _j(await _client().graph_stats())
+    """Return knowledge graph statistics and Neo4j availability.
 
-
-@mcp.tool()
-async def kb_graph_health() -> str:
-    """Check whether the Neo4j knowledge graph is available (health probe, never throws)."""
-    return _j(await _client().graph_health())
+    Response includes node/edge counts, relationship distribution, and
+    a `neo4j_available` boolean (health probe, never throws)."""
+    stats = await _client().graph_stats()
+    try:
+        health = await _client().graph_health()
+    except Exception:
+        health = {"available": False}
+    if isinstance(stats, dict):
+        stats["neo4j_available"] = health.get("available", False) if isinstance(health, dict) else False
+    return _j(stats)
 
 
 @mcp.tool()
@@ -1940,13 +1871,6 @@ async def kb_graph_document_related(doc_path: str, limit: int = 20) -> str:
     """Return documents related to a given document (based on same KB / shared tags / description similarity)."""
     if (err := _require_param("doc_path", doc_path)): return err
     return _j(await _client().graph_document_related(doc_path, limit))
-
-
-@mcp.tool()
-async def kb_graph_documents_by_tag(tag_name: str, limit: int = 50) -> str:
-    """Find documents by tag."""
-    if (err := _require_param("tag_name", tag_name)): return err
-    return _j(await _client().graph_documents_by_tag(tag_name, limit))
 
 
 @mcp.tool()

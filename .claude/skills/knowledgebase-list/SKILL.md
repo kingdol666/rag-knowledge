@@ -50,7 +50,7 @@ description: >
 2. `mcp__kb-mcp__kb_tags_list()` — 获取完整标签词表
 3. `mcp__kb-mcp__fs_get_tree(max_depth=2)` — KB 层级结构
 
-轻量方法：`mcp__kb-mcp__kb_catalog()` 返回 `[{kb_id, name, description, doc_count}]`。
+轻量方法：`mcp__kb-mcp__kb_list(lightweight=true)` 返回 `[{kb_id, name, description, doc_count}]`。
 
 展示为表格：KB Name | Description | Docs.
 
@@ -76,7 +76,7 @@ description: >
 2. 检查每个文档的 `vector_index` 字段
 3. 按需提供 `mcp__kb-mcp__kb_doc_read()` 内容预览
 
-轻量方法：`mcp__kb-mcp__kb_doc_catalog(kb_id)` 返回 `[{doc_path, name, description}]`。
+轻量方法：`mcp__kb-mcp__kb_get_documents(lightweight=true, kb_id)` 返回 `[{doc_path, name, description}]`。
 
 **注意**：`vector_index` 字段可能缺失（见下方已知问题）。如需确认向量索引状态，可用 `mcp__kb-mcp__kb_search_vector()` 验证。
 
@@ -87,9 +87,9 @@ description: >
 **执行步骤**：
 
 1. `mcp__kb-mcp__fs_get_tree(include_files=True, max_depth=0)` — 0 = unlimited
-2. `mcp__kb-mcp__fs_get_count()` — 文件夹/文件/总量统计
+2. `mcp__kb-mcp__fs_get_tree()["_stats"]` — 文件夹/文件/总量统计
 
-轻量方法：KB 级用 `mcp__kb-mcp__kb_catalog()`，文档级用 `mcp__kb-mcp__kb_doc_catalog(kb_id)`。
+轻量方法：KB 级用 `mcp__kb-mcp__kb_list(lightweight=true)`，文档级用 `mcp__kb-mcp__kb_get_documents(lightweight=true, kb_id)`。
 
 ---
 
@@ -97,7 +97,7 @@ description: >
 
 - **层次化KB搜索返回空内容** — 父 KB 的 `kb_search_two_stage` 返回子 KB 容器条目，content 为空。**正确做法**：用 `kb_search_vector(kb_id=<父KB>)` 检索真实内容（子 KB 文档的向量 chunk 存在父 KB collection 下，搜子 KB UUID 返回 0）。`kb_graph_kb_overview(kb_id)` 仅用于查看子 KB 结构，不作搜索入口。
 - **向量索引元数据可能缺失** — 部分文档的 `vector_index` 字段在索引后未写入 YAML（向量实际存在于 ChromaDB）。用 `kb_reindex(kb_id, force=true)` 修复（写操作，List 流程不自动执行）。
-- **图谱子KB节点仅显示UUID** — `kb_graph_kb_overview` 的子 KB name 字段为 UUID 而非可读名称。回查 `kb_catalog()` 获取可读名。
+- **图谱子KB节点仅显示UUID** — `kb_graph_kb_overview` 的子 KB name 字段为 UUID 而非可读名称。回查 `kb_list(lightweight=true)` 获取可读名。
 - **`kb_graph_build` 返回的 `total_relations` 可能为 0** — 这是 stats 统计 bug，实际图谱数据已写入 Neo4j。**不要**因为返回 0 就认为构建失败。用 `kb_graph_document(doc_path)` 抽检验证。
 - **标签注册表积累孤儿标签** — `kb_tags_list()` 返回的标签列表包含 0 文档引用的历史标签。用 `kb_tags_list()` + Agent 自行识别垃圾模式（推荐），或 `kb_tags_cleanup(dry_run=true)` 检测（>200 tags 时可能超时）。不影响搜索功能——文档级标签自动过滤。
 - **`kb_search_vector` 路径自动归一化** — MCP 层已自动将反斜杠路径转为正斜杠并按 (doc_path, chunk_index) 去重。`kb_search_two_stage` 结果仍需 Agent 手动去重。
@@ -136,4 +136,4 @@ $TREE_STORAGE_PATH/
 | 不展示标签词表 | 用户无法判断知识库覆盖了哪些领域 | L1 必须展示 `kb_tags_list()` |
 | 信任 `doc_count` 为精确文档数 | 含子KB容器条目——实际文档数偏少 | 用 `file_type` 过滤或 `fs_get_tree` 区分 |
 | `vector_index` 缺失就报"未索引" | YAML 元数据可能漏写——向量实际在 ChromaDB | 用 `kb_search_vector(query, kb_id)` 实测验证 |
-| 展示子KB用 UUID | `kb_graph_kb_overview` 返回 UUID——用户看不懂 | 回查 `kb_catalog()` 获取可读名 |
+| 展示子KB用 UUID | `kb_graph_kb_overview` 返回 UUID——用户看不懂 | 回查 `kb_list(lightweight=true)` 获取可读名 |

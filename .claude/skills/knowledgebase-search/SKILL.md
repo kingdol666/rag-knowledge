@@ -11,7 +11,7 @@ description: >
 ---
 
 # QDCVR — 查询驱动 · 内容裁决 · 门控精炼检索
-> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+76工具地图）
+> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+66工具地图）
 
 
 **执行者：Archival agent — 必须委托 `Agent(subagent_type="archival", ...)` 执行**
@@ -93,7 +93,7 @@ description: >
 > 实测病灶：全库盲搜 → 大库（Materials-ML 11docs/1156chunks）主导结果，跨域噪声涌入。
 
 ```
-catalog = kb_catalog()    # 仅 [{kb_id, name, description, doc_count}]，context 友好
+catalog = kb_list(lightweight=true)    # 仅 [{kb_id, name, description, doc_count}]，context 友好
 ```
 - 用模型判断力读每个 KB 的 description，选 **top 1-3 真正相关** 的 KB。
 - **优先在选中的 1-3 个 KB 内检索**（`kb_id=<选中KB>`）；仅当选中 <2 KB 或无命中时才全库 `kb_id=""`。
@@ -116,7 +116,7 @@ results = kb_search_vector(query=..., kb_id=<父KB_id>, score_threshold=0.35, to
 **辅助：了解子KB结构**（不用于搜索，仅用于了解组织）：
 ```
 overview = kb_graph_kb_overview(kb_id=<父KB>)  → sub_kbs 结构 + 文档数
-# ⚠️ sub_kbs[].name 返回 UUID，用 kb_catalog() 回查可读名
+# ⚠️ sub_kbs[].name 返回 UUID，用 kb_list(lightweight=true) 回查可读名
 # ⚠️ 不要对 sub_kb_id 做 kb_search_two_stage / kb_search_vector —— 返回 0
 ```
 
@@ -196,7 +196,7 @@ kb_doc_read(kb_id, doc_path, max_chars=3000)
 ```
 kb_tags_list()
 kb_doc_get_by_tag(tag="<语义匹配的标签>", kb_id=Step1选中库 或 "")
-kb_doc_catalog(kb_id)   # 新发现 KB 的文档描述清单
+kb_get_documents(lightweight=true, kb_id)   # 新发现 KB 的文档描述清单
 kb_search_vector(Step0改写query, kb_id="", top_k=10, score_threshold=0.30)
 ```
 

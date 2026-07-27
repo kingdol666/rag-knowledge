@@ -11,7 +11,7 @@ description: >
 - 调度器唯一职能：读取输入 → 匹配场景 → 委托 Archival（`Agent(subagent_type="archival", ...)`）
 - 调度器严禁自行执行任何 KB 操作
 
-> **⭐ KB 架构心智模型**：本系统的知识库是 5 层数据模型（磁盘 .md ↔ .tree-fs.json ↔ .knowledge-base.yml ↔ ChromaDB 向量 ↔ Neo4j 图谱），76 个 MCP 工具按操作类型分类。委托 Archival 前，Archival **必须先读** [kb-architecture.md](references/kb-architecture.md) 建立正确的心智模型——理解哪些操作原子同步、哪些需手动重索引、层级 KB 的坑、路径格式约定。
+> **⭐ KB 架构心智模型**：本系统的知识库是 5 层数据模型（磁盘 .md ↔ .tree-fs.json ↔ .knowledge-base.yml ↔ ChromaDB 向量 ↔ Neo4j 图谱），66 个 MCP 工具按操作类型分类。委托 Archival 前，Archival **必须先读** [kb-architecture.md](references/kb-architecture.md) 建立正确的心智模型——理解哪些操作原子同步、哪些需手动重索引、层级 KB 的坑、路径格式约定。
 
 ## 使命（强制规则）
 

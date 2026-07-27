@@ -79,7 +79,7 @@ python scripts/meditation_source.py --json --days 14
 
 ```
 对每个候选问题簇：
-  1. kb_catalog() 匹配 → 非 KB 问题丢弃
+  1. kb_list(lightweight=true) 匹配 → 非 KB 问题丢弃
   2. experience_search_smart(query) → 已有 P0/P1 覆盖则跳过
   3. kb_search_two_stage(query, kb_id) → 提取 related_docs + 答案基础
 ```

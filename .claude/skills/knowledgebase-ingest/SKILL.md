@@ -5,7 +5,7 @@ description: >
 ---
 
 # Knowledge Ingest — 内容驱动的规范入库流水线
-> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+76工具地图）
+> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+66工具地图）
 
 
 **执行者：Archival agent — 必须委托 `Agent(subagent_type="archival", ...)` 执行**

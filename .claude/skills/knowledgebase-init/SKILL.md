@@ -19,7 +19,7 @@ description: >
 ---
 
 # Knowledgebase Init — 智能增量部署向导
-> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+76工具地图）
+> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+66工具地图）
 
 **执行者：主 Agent 直接执行（不委托 Archival）** — init 需要实时交互，所有 Bash 命令由主 Agent 执行。
 
@@ -113,7 +113,7 @@ curl -s -o /dev/null -w "%{http_code}" http://localhost:<WEB_PORT>/   # → 200
 # MCP 连通性 + 服务预检（强制，用 kb-mcp MCP 工具执行标准 Pre-Flight）
 # 完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)：
 mcp__kb-mcp__kb_project_status()      # ready==true 才算双健康；ready==false 用 kb_project_start(wait=true) 拉起后回查
-mcp__kb-mcp__kb_catalog()             # 冒烟测试：确认 MCP↔backend 返回真实数据（非空、非错误）
+mcp__kb-mcp__kb_list(lightweight=true)             # 冒烟测试：确认 MCP↔backend 返回真实数据（非空、非错误）
 mcp__kb-mcp__backend_status()         # backend + MinerU 可用性
 
 # Torch GPU 最终确认

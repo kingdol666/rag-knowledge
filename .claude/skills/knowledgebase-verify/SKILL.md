@@ -92,7 +92,7 @@ Use `mcp__kb-mcp__backend_status()` for MinerU health (authoritative).
 **Repair**: `mcp__kb-mcp__kb_index_document(kb_id, doc_path)` or `mcp__kb-mcp__kb_batch_index(kb_id, [paths], force=true)`.
 
 ### Graph
-`mcp__kb-mcp__kb_graph_health()` → Neo4j available? `mcp__kb-mcp__kb_graph_kb_overview(kb_id)` → doc_count vs actual.
+`mcp__kb-mcp__kb_graph_stats()  # check neo4j_available field` → Neo4j available? `mcp__kb-mcp__kb_graph_kb_overview(kb_id)` → doc_count vs actual.
 **Repair**: `mcp__kb-mcp__kb_graph_build(kb_id, force=true)`.
 **Clean stale**: `mcp__kb-mcp__kb_graph_delete_document(doc_path)` for deleted docs.
 

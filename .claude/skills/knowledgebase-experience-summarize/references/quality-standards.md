@@ -104,7 +104,7 @@ key_lessons:
 
 ```
 创建前先查：
-  experience_search(kb_id, query="<scenario 关键词>") → 看是否命中
+  experience_search_global(kb_id, query="<scenario 关键词>") → 看是否命中
   experience_list(kb_id, scenario="<同 scenario>") → 看是否已存在
 
 命中已有 → experience_update 补充新教训/更新方案

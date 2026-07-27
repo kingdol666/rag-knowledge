@@ -153,7 +153,7 @@ Step 3: 跨库引用修复：
   → experience_update(别库, exp_id, related_docs=[新路径])
 Step 4: 验证：
   experience_list(new_name) → 确认经验数量未变
-  experience_search_vector(new_name, "测试查询") → 确认检索正常
+  experience_search_global(new_name, "测试查询") → 确认检索正常
 ```
 
 ---

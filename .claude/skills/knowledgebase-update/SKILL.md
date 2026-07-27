@@ -9,16 +9,16 @@ description: >
 ---
 
 # Knowledgebase Update — 版本检查与安全升级
-> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+76工具地图）
+> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+66工具地图）
 >
 > **关于跨技能引用**：本 skill 引用的 `kb-architecture.md` 和 `mcp-preflight-check.md` 位于 `knowledgebase/references/`（共享引用，非本地副本）。这是**刻意的 DRY 设计**——14 个技能作为同一插件打包发布（见 `.claude-plugin/plugin.json`），始终同目录共存，故共享引用路径稳定。如需将 update 独立分发，需将这两个文件复制到本地 `references/`。
 
 **执行者：此技能由主 Agent 直接执行（不委托 Archival）**
 - update 是运维/安装类操作，需要直接跑 CLI / 展示版本对比
-- 所有 Bash 命令由主 Agent 执行；可用 MCP `kb_project_version` / `kb_project_update` 作为等价入口
+- 所有 Bash 命令由主 Agent 执行；可用 MCP `kb_project_update` 作为等价入口
 - 不涉及文档 CRUD，无需 Archival
 
-> **⭐ Pre-Flight 提示**：本 skill 可走 MCP（`kb_project_version` / `kb_project_update`）或 `ragctl` CLI 两条等价路径。
+> **⭐ Pre-Flight 提示**：本 skill 可走 MCP（`kb_project_update`）或 `ragctl` CLI 两条等价路径。
 > - 走 MCP 路径前**必须**按 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md) 完成 MCP 连通性 + 服务预检（拉更新前验一次；pull 后重跑一次确认服务恢复）。
 > - 走 `ragctl` CLI 路径不受 MCP 连通性约束（CLI 直跑），但 pull 后仍应用 `ragctl status` 验证服务恢复。
 > - MCP 不可用时默认走 `ragctl` CLI，无需用户额外确认。
@@ -52,7 +52,7 @@ Bash: cd "<RAG_ROOT>" && node command/ragctl.js version --local
 
 **优先 MCP（已连接时）：**
 ```
-mcp__kb-mcp__kb_project_version()
+mcp__kb-mcp__kb_project_update(show_version=true)
 # 或
 mcp__kb-mcp__kb_project_update(check_only=true)
 ```

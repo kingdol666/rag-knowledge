@@ -74,7 +74,7 @@ mcp__kb-mcp__kb_search_two_stage(
     balance_kbs=True
 )
 ```
-**可选 Path D — 经验库**（故障/运维型）：`mcp__kb-mcp__experience_search_global(query, top_k=5)` + `mcp__kb-mcp__experience_search_vector(kb_id, query, top_k=5)`。
+**可选 Path D — 经验库**（故障/运维型）：`mcp__kb-mcp__experience_search_global(query, top_k=5)` + `mcp__kb-mcp__experience_search_global(kb_id, query, top_k=5)`。
 
 #### 路径失败处理
 - Path A 向量返回 0 条 → 降低 score_threshold 到 0.25 重试
