@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """End-to-end test for the decoupled kb-mcp architecture."""
 import asyncio
 import json

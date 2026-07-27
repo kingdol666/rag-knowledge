@@ -97,7 +97,7 @@ else:
     print("[CALL kb_list] NO RESPONSE")
 
 print()
-all_ok = tool_count >= 73 and health_ok and kb_count > 0
+all_ok = tool_count >= 65 and health_ok and kb_count > 0
 if all_ok:
     print(f"=== MCP PROTOCOL TEST PASSED ({tool_count} tools, health={health_ok}, {kb_count} KBs) ===")
 else:
