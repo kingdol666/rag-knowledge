@@ -113,6 +113,7 @@ async def vector_search(req: VectorSearchRequest) -> dict[str, Any]:
         score_threshold=req.score_threshold,
         balance_kbs=req.balance_kbs,
     )
+    return {"success": True, "results": results, "count": len(results)}
 
 
 @router.post("/batch-vector")
