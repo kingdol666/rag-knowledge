@@ -1,0 +1,5 @@
+import faiss; print("FAISS: OK")
+from sentence_transformers import SentenceTransformer; print("SentenceTransformer: OK")
+from rank_bm25 import BM25Okapi; print("BM25: OK")
+import chromadb; print("ChromaDB: OK")
+print("ALL LIBRARIES WORKING")
