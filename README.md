@@ -10,7 +10,7 @@
 
 <p>
 <em>QDCVR Semantic Search &middot; Neo4j Knowledge Graph &middot; Experience Lifecycle (E0–E12)<br>
-76 MCP Tools &middot; 14 Agent Skills &middot; MinerU OCR &middot; Cross-Platform</em>
+66 MCP Tools &middot; 14 Agent Skills &middot; MinerU OCR &middot; Cross-Platform</em>
 </p>
 
 <p>
@@ -18,7 +18,7 @@
 &nbsp;
 <img src="https://img.shields.io/badge/Platform-Win_%7C_Linux_%7C_macOS-334155?style=for-the-badge&logo=linux" />
 &nbsp;
-<img src="https://img.shields.io/badge/MCP_Tools-76-8b5cf6?style=for-the-badge&logo=code" />
+<img src="https://img.shields.io/badge/MCP_Tools-66-8b5cf6?style=for-the-badge&logo=code" />
 &nbsp;
 <img src="https://img.shields.io/badge/Skills-14-f97316?style=for-the-badge&logo=openai" />
 </p>
@@ -82,7 +82,7 @@ This platform solves that at the **retrieval layer**, not the generation layer. 
 | 📄 | **Document parsing** | PDF / Word / Excel / PPT / images → Markdown via **MinerU OCR** engine |
 | 🧠 | **QDCVR retrieval** | Query-driven, content-verified retrieval — independent 0–8 content scoring |
 | 🔍 | **Multi-strategy search** | BM25 + vector two-stage recall · cross-KB enterprise search · `balance_kbs` diversity guard |
-| 📊 | **Knowledge graph** | Neo4j-powered · 14 graph tools · entity/relation graphs · cross-KB document bridges |
+| 📊 | **Knowledge graph** | Neo4j-powered · 11 graph tools · entity/relation graphs · cross-KB document bridges |
 | 💡 | **Experience library** | E0–E12 lifecycle · structured problem→solution→lessons · P0/P1/P2 credibility · decay |
 | 🔌 | **66 MCP tools** | KB CRUD · search · graph · experience · parsing · tags · vector/index · lifecycle — all MCP-native |
 | 🎯 | **14 agent skills** | Natural-language commands · bilingual triggers (中/EN) · auto-dispatch to Archival agent |
@@ -368,7 +368,7 @@ Open **http://localhost:6789** — browse KBs, search documents, explore the gra
 
 ---
 
-## 🔌 MCP Tools — 76
+## 🔌 MCP Tools — 66
 
 All accessible via `mcp__kb-mcp__*` from Claude Code or any MCP client.
 
