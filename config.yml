@@ -83,6 +83,13 @@ search:
 # -- Experience Auto-Summarization (Meditation) --
 # Periodic auto-induction of experiences from recurring user questions.
 # Like OpenClaw's meditation memory: harvest Q&A → match KB → verify docs → draft experiences.
+#
+# To enable:
+#   1. Set enabled: true
+#   2. FIRST SET dry_run: true — runs and logs what it would do WITHOUT creating drafts
+#   3. Check backend logs to verify clustering quality
+#   4. Set dry_run: false when satisfied
+# Important: consumes LLM tokens (uses omp/ark engines configured in .env)
 experience_auto:
   enabled: false               # Master switch. false = scheduler stays idle.
   interval_hours: 24           # How often to run a meditation cycle.

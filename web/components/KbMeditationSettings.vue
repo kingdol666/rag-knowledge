@@ -158,8 +158,8 @@
       <a-alert
         v-if="runResult"
         :type="runResult.success ? 'success' : 'error'"
-        :message="runResult.success ? '冥想已触发' : '触发失败'"
-        :description="runResult.success ? `运行 ID: ${runResult.run_id || 'N/A'}` : runResult.error"
+        :message="runResult.success ? $t('meditation.triggerSuccess') : $t('meditation.triggerFailed')"
+        :description="runResult.success ? `Run ID: ${runResult.run_id || 'N/A'}` : runResult.error"
         closable
         style="margin-top: 16px;"
         @close="runResult = null"
@@ -167,7 +167,7 @@
       <a-alert
         v-if="saveResult"
         :type="saveResult.success ? 'success' : 'error'"
-        :message="saveResult.success ? '配置已保存' : '保存失败'"
+        :message="saveResult.success ? $t('meditation.saveSuccess') : $t('meditation.saveFailed')"
         :description="saveResult.error || ''"
         closable
         style="margin-top: 16px;"
@@ -286,13 +286,13 @@ async function handleSave() {
     })
     if (res?.success) {
       saveResult.value = { success: true }
-      message.success('冥想配置已保存')
+      message.success($t('meditation.saveSuccess'))
     } else {
-      saveResult.value = { success: false, error: res?.error || '未知错误' }
+      saveResult.value = { success: false, error: res?.error || $t('meditation.unknownError') }
     }
   } catch (err: any) {
-    saveResult.value = { success: false, error: err?.message || '保存失败' }
-    message.error('保存冥想配置失败')
+    saveResult.value = { success: false, error: err?.message || $t('meditation.saveFailed') }
+    message.error($t('meditation.saveFailed'))
   } finally {
     saving.value = false
   }
@@ -309,22 +309,20 @@ async function handleRun() {
       body: { kb_id: props.activeKbId, trigger: 'manual' },
     })
     if (res?.success) {
-      // Backend returns {success, report} — extract summary for display
       const report = res.report || {}
       runResult.value = {
         success: true,
         run_id: report.drafts_created === 0 ? 'no-drafts' : `drafts:${report.drafts_created}`,
       }
-      message.success(report.summary || '冥想已触发')
-      // Reload status after a short delay
+      message.success(report.summary || $t('meditation.triggerSuccess'))
       setTimeout(() => loadConfig(), 2000)
     } else {
-      runResult.value = { success: false, error: res?.error || res?.report?.error || '未知错误' }
-      message.error('触发冥想失败')
+      runResult.value = { success: false, error: res?.error || res?.report?.error || $t('meditation.unknownError') }
+      message.error($t('meditation.triggerFailed'))
     }
   } catch (err: any) {
-    runResult.value = { success: false, error: err?.message || '触发失败' }
-    message.error('触发冥想失败')
+    runResult.value = { success: false, error: err?.message || $t('meditation.triggerFailed') }
+    message.error($t('meditation.triggerFailed'))
   } finally {
     running.value = false
   }

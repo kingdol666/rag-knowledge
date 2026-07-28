@@ -115,7 +115,7 @@
               </div>
               <div class="kb-card-body">
                 <div class="kb-card-name">{{ kb.name }}</div>
-                <div class="kb-card-desc">{{ kb.description || '无描述' }}</div>
+                <div class="kb-card-desc">{{ kb.description || $t('common.noDescription') }}</div>
                 <div class="kb-card-stat">
                   <FileTextOutlined />
                   <span>{{ kb.documentCount }} {{ $t('kb.docs') }}</span>
@@ -159,7 +159,7 @@
                 </div>
                 <div class="sub-kb-card-body">
                   <div class="sub-kb-card-name">{{ subKb.name }}</div>
-                  <div class="sub-kb-card-desc">{{ subKb.description || '无描述' }}</div>
+                  <div class="sub-kb-card-desc">{{ subKb.description || $t('common.noDescription') }}</div>
                   <div class="sub-kb-card-stat">
                     <FileTextOutlined />
                     <span>{{ subKb.documentCount }} 篇文档</span>
@@ -189,7 +189,7 @@
                   <FileTextOutlined class="doc-icon" />
                   <div class="doc-info">
                     <div class="doc-name">{{ doc.name }}</div>
-                    <div class="doc-desc">{{ doc.description || '无描述' }}</div>
+                    <div class="doc-desc">{{ doc.description || $t('common.noDescription') }}</div>
                   </div>
                 </div>
                 <div class="doc-item-side">
@@ -251,7 +251,7 @@
                   <FileTextOutlined class="result-icon" />
                   <div class="result-info">
                     <div class="result-name">{{ hit.docName || hit.doc_name }}</div>
-                    <div class="result-desc">{{ hit.description || '无描述' }}</div>
+                    <div class="result-desc">{{ hit.description || $t('common.noDescription') }}</div>
                   </div>
                 </div>
 

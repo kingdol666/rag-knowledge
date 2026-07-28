@@ -72,6 +72,17 @@ def _require_param(name: str, value: str) -> str | None:
     return None
 
 
+async def _auto_index_doc(kb_id: str, doc_path: str) -> None:
+    """Fire-and-forget: index a document (vector + graph) after create/update.
+
+    Runs in background via task_registry.submit(). Silently catches errors
+    so a failed index never blocks the create/update response."""
+    try:
+        await _client().index_document(kb_id, doc_path)
+    except Exception as exc:
+        print(f"[auto-index] WARNING: index failed for {kb_id}/{doc_path}: {exc}", file=sys.stderr)
+
+
 def _exists(file_path: str) -> bool:
     from pathlib import Path
     return bool(file_path) and Path(file_path).exists()
@@ -204,9 +215,23 @@ async def kb_doc_create(kb_id: str, name: str, content: str, description: str = 
     """Create a new Markdown document in a KB. Auto-dedup on name collision.
 
     **Atomic**: ONLY creates the document (file + .tree-fs.json + .knowledge-base.yml with file ID).
-    Does NOT index. Use kb_index_document or kb_batch_index separately."""
+    Automatically triggers background indexing (vector + graph) after creation.
+    Indexing is fire-and-forget: the create returns immediately while indexing runs in background.
+    Use kb_index_document to force re-index if needed."""
     if (err := _require_kb(kb_id)): return err
-    return _j(await _client().kb_doc_create(kb_id, name, content, description))
+    result = await _client().kb_doc_create(kb_id, name, content, description)
+    # Fire-and-forget auto-indexing
+    if isinstance(result, dict) and result.get("success"):
+        doc = result.get("document", {})
+        doc_path = doc.get("path", "")
+        if doc_path:
+            task_id = task_registry.submit(
+                _auto_index_doc(kb_id, doc_path),
+                kind="auto-index",
+                meta={"kb_id": kb_id, "doc_path": doc_path, "action": "create"}
+            )
+            result["_auto_index"] = {"triggered": True, "task_id": task_id, "note": "Background indexing (vector+graph) started. Check with parse_task_status if needed."}
+    return _j(result)
 
 
 @mcp.tool()
@@ -222,10 +247,21 @@ async def kb_doc_update_content(kb_id: str, doc_path: str, content: str) -> str:
     """Overwrite a document's content.
 
     **Atomic**: ONLY updates the file content + syncs .tree-fs.json + .knowledge-base.yml.
-    Does NOT re-index. Use kb_index_document separately if needed."""
+    Automatically triggers background re-indexing (vector + graph) after update.
+    Indexing is fire-and-forget: the update returns immediately while indexing runs in background.
+    Use kb_index_document to force re-index if needed."""
     if (err := _require_kb(kb_id)): return err
     if (err := _require_param("doc_path", doc_path)): return err
-    return _j(await _client().kb_doc_update_content(kb_id, doc_path, content))
+    result = await _client().kb_doc_update_content(kb_id, doc_path, content)
+    # Fire-and-forget auto-reindexing
+    if isinstance(result, dict) and result.get("success"):
+        task_id = task_registry.submit(
+            _auto_index_doc(kb_id, doc_path),
+            kind="auto-index",
+            meta={"kb_id": kb_id, "doc_path": doc_path, "action": "update"}
+        )
+        result["_auto_index"] = {"triggered": True, "task_id": task_id, "note": "Background re-indexing (vector+graph) started. Check with parse_task_status if needed."}
+    return _j(result)
 
 
 @mcp.tool()

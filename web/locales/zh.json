@@ -5,7 +5,8 @@
       "subtitle": "智能文档管理平台",
       "description": "基于 RAG 技术的智能知识管理系统，提供文档解析、知识检索与图谱可视化"
     },
-    "theme": { "light": "浅色", "dark": "深色", "system": "跟随系统" }
+    "theme": { "light": "浅色", "dark": "深色", "system": "跟随系统" },
+    "noDescription": "无描述"
   },
   "nav": {
     "home": "首页",
@@ -473,29 +474,30 @@
   },
   "meditation": {
     "title": "冥想设置",
-    "subtitle": "自动经验提取配置",
+    "subtitle": "自动归纳设置",
     "enabled": "已启用",
-    "disabled": "已停用",
+    "disabled": "已禁用",
     "configTitle": "知识库冥想设置",
     "runBtn": "立即运行冥想",
     "saveBtn": "保存配置",
-    "harness": "运行引擎",
+    "harness": "引擎",
     "model": "模型",
-    "intervalHours": "运行间隔 (小时)",
-    "minCluster": "最小聚类数",
+    "intervalHours": "间隔（小时）",
+    "minCluster": "最小聚类",
     "maxDrafts": "每轮最大草稿",
-    "maxBudget": "最大预算 (USD)",
+    "maxBudget": "最大预算（美元）",
     "autoPublish": "自动发布",
-    "incremental": "增量模式",
+    "incremental": "增量",
     "lastRun": "上次运行",
-    "lastStatus": "上次状态",
+    "lastStatus": "最后状态",
     "totalRuns": "总运行次数",
-    "totalExp": "生成经验",
+    "totalExp": "已生成经验",
     "neverRun": "从未运行",
     "triggerSuccess": "冥想已触发",
     "triggerFailed": "触发失败",
     "saveSuccess": "冥想配置已保存",
-    "saveFailed": "保存冥想配置失败"
+    "saveFailed": "保存失败",
+    "unknownError": "未知错误"
   },
   "action": {
     "save": "保存",

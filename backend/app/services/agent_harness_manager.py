@@ -478,6 +478,7 @@ class AgentHarnessManager:
         log_path = _LOG_DIR / f"meditation-agent-{run_id}.log"
 
         # Write task prompt to temp file (for omp @ref; claude uses stdin)
+        prompt_file = None
         try:
             prompt_file = Path(tempfile.mktemp(suffix=".txt"))
             prompt_file.write_text(task_prompt, encoding="utf-8")
@@ -485,11 +486,12 @@ class AgentHarnessManager:
             prompt_file = _LOG_DIR / f"meditation-prompt-{run_id}.txt"
             prompt_file.write_text(task_prompt, encoding="utf-8")
 
-        # Build command
         try:
             cmd = [cfg["exe"]] + cfg["build_args"](kb_config, str(prompt_file))
         except Exception as e:
             finish_run(run_id, status="failed", error=f"cmd_build: {e}")
+            if prompt_file and prompt_file.exists():
+                prompt_file.unlink(missing_ok=True)
             return {"success": False, "error": f"Failed to build command: {e}", "run_id": run_id}
 
         # Resolve executable path on Windows
@@ -514,6 +516,8 @@ class AgentHarnessManager:
             log_fp = open(str(log_path), "a", encoding="utf-8")
         except Exception as e:
             finish_run(run_id, status="failed", error=f"log_open: {e}")
+            if prompt_file and prompt_file.exists():
+                prompt_file.unlink(missing_ok=True)
             return {"success": False, "error": f"Cannot open log: {e}", "run_id": run_id}
 
         log_fp.write(f"=== Meditation Run {run_id} ===\n")

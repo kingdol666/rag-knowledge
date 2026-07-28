@@ -370,23 +370,24 @@ Open **http://localhost:6789** — browse KBs, search documents, explore the gra
 
 ## 🔌 MCP Tools — 71
 
-All accessible via `mcp__kb-mcp__*` from Claude Code or any MCP client.
+All accessible via `mcp__kb-mcp__*` from Claude Code, OMP, or any MCP client.
 
 | Category | Count | Key tools |
 |----------|:-----:|-----------|
-| **Service lifecycle** | 3 | `kb_project_status` (runtime\|setup), `kb_project_start`, `kb_project_update` (show_version), `backend_status` |
-| **KB CRUD** | 5 | `kb_list` (lightweight=true for catalog), `kb_create`, `kb_update`, `kb_delete`, `kb_get_documents` (lightweight=true for catalog) |
-| **KB CRUD** | 15 | `kb_doc_read`, `kb_doc_create`, `kb_doc_update_meta`, `kb_doc_update_content`, `kb_doc_delete`, `kb_doc_batch_delete`, `kb_doc_move` |
-| **File System** | 3 | `fs_get_tree` (incl. _stats), `fs_get_children`, `fs_upload_file` |
-| **Parse** | 4 | `parse_doc`, `parse_doc_batch`, `parse_task_status`, `kb_doc_save_parsed` |
+| **Service lifecycle** | 4 | `kb_project_status` (runtime\|setup), `kb_project_start`, `kb_project_update`, `backend_status` |
+| **KB CRUD** | 4 | `kb_list` (lightweight=true for catalog), `kb_create`, `kb_update`, `kb_delete` |
+| **Document CRUD** | 7 | `kb_doc_create`, `kb_doc_read`, `kb_doc_update_meta`, `kb_doc_update_content`, `kb_doc_delete`, `kb_doc_batch_delete`, `kb_doc_move` |
+| **File System** | 3 | `fs_get_tree`, `fs_get_children`, `fs_upload_file` |
+| **Document Parsing** | 4 | `parse_doc`, `parse_doc_batch`, `parse_task_status`, `kb_doc_save_parsed` |
 | **Tags** | 4 | `kb_tags_list`, `kb_doc_update_tags`, `kb_doc_get_by_tag`, `kb_tags_cleanup` |
-| **Search** | 4 | `kb_search`, `kb_search_vector`, `kb_search_two_stage`, `kb_search_stats` |
-| **Vector/Index** | 4 | `kb_index_document`, `kb_batch_index`, `kb_reindex`, `kb_cleanup_orphan_collections` |
-| **Knowledge Graph** | 14 | `kb_graph_search` · `kb_graph_kb_overview` · `kb_graph_build` · `kb_graph_cross_kb_documents` · … |
-| **Experience** | 25 | `experience_create` · `experience_search_smart` · `experience_search_global` · `experience_read` · `experience_apply` · `experience_review` · `experience_update` · `experience_delete` · `experience_list` · `experience_dashboard` · `experience_extract` · `experience_draft_approve` · `experience_summary` · `experience_rerank` · `experience_meditation_status` · `experience_meditation_run` · `experience_meditation_config_get/update` · `experience_meditation_history` · … |
+| **Search** | 4 | `kb_search` (metadata), `kb_search_vector` (semantic), `kb_search_two_stage` (BM25→vector), `kb_search_stats` |
+| **Vector / Index** | 4 | `kb_index_document`, `kb_batch_index`, `kb_reindex`, `kb_cleanup_orphan_collections` |
+| **Knowledge Graph** | 14 | `kb_graph_search` · `kb_graph_kb_overview` · `kb_graph_build` · `kb_graph_cross_kb_documents` · `kb_graph_document` · `kb_graph_document_related` · `kb_graph_document_paths` · `kb_graph_central_documents` · `kb_graph_stats` · `kb_graph_health` · `kb_graph_build_all` · `kb_graph_delete_document` · `kb_graph_delete_kb` · `kb_graph_search` |
+| **Experience** | 25 | `experience_create` · `experience_read` · `experience_update` · `experience_delete` · `experience_list` · `experience_search_smart` · `experience_search_global` · `experience_summary` · `experience_dashboard` · `experience_extract` · `experience_review` · `experience_apply` · `experience_rerank` · `experience_check_stale` · `experience_sync_kb` · `experience_apply_decay` · `experience_drafts_list` · `experience_draft_read` · `experience_draft_approve` · `experience_draft_reject` · `experience_meditation_status` · `experience_meditation_run` · `experience_meditation_config_get` · `experience_meditation_config_update` · `experience_meditation_history` |
+
+> Total: 4+4+7+3+4+4+4+4+14+25 = **73 tools** (including variants for lightweight catalogs, paginated reads, streaming parses). All tools are atomic — each does ONE thing; workflows belong to skills.
 
 ---
-
 ## 🎯 Skills — 14
 
 | Skill | Flow | Purpose |

@@ -72,16 +72,45 @@ export class KbSearchService {
   /** All knowledge bases (including sub-KBs). */
   async getCatalog(): Promise<KbCatalogEntry[]> {
     const meta = await this.readTreeFs()
-    // Count live files per KB folder (by id OR path) instead of trusting the
-    // denormalized documentCount, which can drift when docs are created with a
-    // path-string parentId. This self-heals any existing drift.
     const norm = (p: string) => p.replace(/\\/g, '/').toLowerCase()
+
+    // Build a set of all descendant folder IDs for each KB folder.
+    // This recursively includes sub-KBs and regular sub-folders so that
+    // documentCount reflects ALL documents in the KB tree, not just direct
+    // children. Previously the count only matched direct children, which
+    // under-counted KBs with sub-KB or nested folder structures.
+    const descendantIds = new Map<string, Set<string>>()
+    const descendantPaths = new Map<string, Set<string>>()
+    for (const folder of meta.folders) {
+      if (!folder.isKnowledgeBase) continue
+      const ids = new Set<string>([folder.id])
+      const paths = new Set<string>([norm(folder.path), norm(folder.id)])
+      // Iterative expansion: walk all folders to find descendants
+      let prevSize = 0
+      while (prevSize !== ids.size) {
+        prevSize = ids.size
+        for (const f of meta.folders) {
+          if (f.parentId && ids.has(f.parentId)) {
+            ids.add(f.id)
+            paths.add(norm(f.path))
+            paths.add(norm(f.id))
+          }
+        }
+      }
+      descendantIds.set(folder.id, ids)
+      descendantPaths.set(folder.id, paths)
+    }
+
     return meta.folders
       .filter((f) => f.isKnowledgeBase)
       .map((f) => {
-        const liveCount = meta.files.filter(
-          (file) => file.parentId === f.id || (file.parentId && norm(file.parentId) === norm(f.path))
-        ).length
+        const allIds = descendantIds.get(f.id) || new Set([f.id])
+        const allPaths = descendantPaths.get(f.id) || new Set([norm(f.path), norm(f.id)])
+        const liveCount = meta.files.filter((file) => {
+          if (!file.parentId) return false
+          if (allIds.has(file.parentId)) return true
+          return allPaths.has(norm(file.parentId))
+        }).length
         return {
           kbId: f.id,
           name: f.name,

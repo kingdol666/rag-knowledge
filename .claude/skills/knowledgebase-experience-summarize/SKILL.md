@@ -62,18 +62,34 @@ description: >
 
 ### 四阶段流程
 
-**阶段1 — 采集问题源**
+> 💡 **双路径**: 优先走 MCP 冥想工具（`experience_meditation_*`），CLI 脚本作为离线采集备选。
 
-优先用当前会话上下文（最精准），辅助用历史聊天库：
+**阶段0 — 检查冥想调度器状态（MCP 优先）**
 
-```bash
-# 历史聊天库采集（只读，永不写入）
-python scripts/meditation_source.py --days 7 --top 30
-# JSON 模式（供解析）：
-python scripts/meditation_source.py --json --days 14
+```
+experience_meditation_status(kb_id)   → {enabled, interval_hours, last_run, running_now, config: {...}}
+experience_meditation_config_get(kb_id)  → 读取 KB 级冥想配置
+experience_meditation_history(kb_id)     → 查看历史运行记录
 ```
 
-脚本读 `storage/claude-chat.db` → 清洗噪声 → 聚类高频问题 → 输出 JSON。同时回顾当前会话的 KB 问答。
+**阶段1 — 采集问题源**
+
+MCP 路径（推荐）：
+```
+# 从冥想信号库采集（优先）
+experience_meditation_signals(kb_id, days=7) → 已有聚类信号
+experience_meditation_run(kb_id, trigger="manual") → 手动触发一轮冥想（走 agent harness）
+```
+
+CLI 路径（离线备选）：
+```bash
+python scripts/meditation_source.py --days 7 --top 30
+python scripts/meditation_source.py --json --days 14  # JSON 模式
+```
+
+同时回顾当前会话的 KB 问答上下文（最精准）。
+
+<!-- CLI 路径说明在上方已完整覆盖 -->
 
 **阶段2 — KB 相关性确认 + 答案检索**
 

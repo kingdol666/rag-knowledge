@@ -66,7 +66,7 @@
                   </div>
                   <div class="kb-item-body">
                     <div class="kb-item-name">{{ kb.name }}</div>
-                    <div class="kb-item-desc">{{ kb.description || '无描述' }}</div>
+                    <div class="kb-item-desc">{{ kb.description || $t('common.noDescription') }}</div>
                     <div class="kb-item-stat">
                       <FileTextOutlined />
                       <span>{{ kb.documentCount }} 篇</span>
@@ -160,7 +160,7 @@
                   </div>
                   <div class="sub-kb-card-body">
                     <div class="sub-kb-card-name" :title="subKb.name">{{ subKb.name }}</div>
-                    <div class="sub-kb-card-desc" :title="subKb.description">{{ subKb.description || '无描述' }}</div>
+                    <div class="sub-kb-card-desc" :title="subKb.description">{{ subKb.description || $t('common.noDescription') }}</div>
                     <div class="sub-kb-card-stat">
                       <FileTextOutlined />
                       <span>{{ subKb.documentCount }} 篇</span>
@@ -200,7 +200,7 @@
                       </div>
                       <div class="doc-card-info">
                         <div class="doc-card-name" :title="doc.name">{{ doc.name }}</div>
-                        <div class="doc-card-desc" :title="doc.description">{{ doc.description || '无描述' }}</div>
+                        <div class="doc-card-desc" :title="doc.description">{{ doc.description || $t('common.noDescription') }}</div>
                       </div>
                       <a-dropdown :trigger="['click']" @click.stop>
                         <a-button type="text" size="small" class="doc-more-btn">
