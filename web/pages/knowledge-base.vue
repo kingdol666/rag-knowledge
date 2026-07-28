@@ -19,7 +19,7 @@
           </a-button>
           <a-button class="action-btn" @click="showMeditationSettings = true">
             <SettingOutlined />
-            <span>冥想设置</span>
+            <span>{{ $t('meditation.title') }}</span>
           </a-button>
           <a-button type="primary" class="action-btn" @click="showCreateDocDialog = true">
             <PlusOutlined />

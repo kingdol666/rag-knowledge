@@ -82,7 +82,7 @@
             </a-form-item>
           </a-col>
           <a-col :span="12">
-            <a-form-item label="运行间隔 (小时)">
+            <a-form-item :label="$t('meditation.intervalHours')">
               <a-input-number
                 v-model:value="config.interval_hours"
                 :min="0"
@@ -90,14 +90,14 @@
                 :step="1"
                 style="width: 100%"
               />
-              <span class="form-hint ml-2">0 = 仅手动</span>
+              <span class="form-hint ml-2">{{ $t('meditation.intervalZeroHint') }}</span>
             </a-form-item>
           </a-col>
         </a-row>
 
         <a-row :gutter="16">
           <a-col :span="8">
-            <a-form-item label="最小聚类数">
+            <a-form-item :label="$t('meditation.minCluster')">
               <a-input-number
                 v-model:value="config.min_cluster_count"
                 :min="1"
@@ -108,7 +108,7 @@
             </a-form-item>
           </a-col>
           <a-col :span="8">
-            <a-form-item label="每轮最大草稿">
+            <a-form-item :label="$t('meditation.maxDrafts')">
               <a-input-number
                 v-model:value="config.max_drafts_per_run"
                 :min="1"
@@ -119,7 +119,7 @@
             </a-form-item>
           </a-col>
           <a-col :span="8">
-            <a-form-item label="最大预算 (USD)">
+            <a-form-item :label="$t('meditation.maxBudget')">
               <a-input-number
                 v-model:value="config.max_budget_usd"
                 :min="0"
@@ -141,7 +141,7 @@
           @click="handleRun"
         >
           <ThunderboltOutlined />
-          立即运行冥想
+          {{ $t('meditation.runNow') }}
         </a-button>
         <a-button
           type="default"
@@ -150,7 +150,7 @@
           @click="handleSave"
         >
           <SaveOutlined />
-          保存配置
+          {{ $t('meditation.saveConfig') }}
         </a-button>
       </div>
 
@@ -179,11 +179,12 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { message } from 'ant-design-vue'
 import { ExperimentOutlined, ThunderboltOutlined, SaveOutlined } from '@ant-design/icons-vue'
 import type { MeditationConfig, MeditationRunStatus } from '~/types/knowledge-base-yaml'
 
-const { $t: $t_ } = useNuxtApp()
+const { t } = useI18n()
 
 const props = defineProps<{
   activeKbId: string
@@ -225,7 +226,7 @@ const ompModels = ref<Array<{ id: string; name: string; provider: string }>>([])
 const modelsLoading = ref(false)
 // Dynamic model list based on harness
 const availableModels = computed(() => {
-  const defaultOption = { value: '', label: $t_('meditation.modelDefault') }
+  const defaultOption = { value: '', label: t('meditation.modelDefault') }
   if (config.value.harness === 'omp' && ompModels.value.length > 0) {
     const ompList = ompModels.value.map(m => ({
       value: m.id,
