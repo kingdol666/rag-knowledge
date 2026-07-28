@@ -1064,37 +1064,17 @@ async def experience_search_smart(query: str, top_k: int = 10,
     adaptive = type_thresholds.get(query_type, 0.45)
     threshold = score_threshold if score_threshold is not None else adaptive
 
-    # 3. Multi-round retrieval
+    # 3. Single-pass call to backend (backend handles its own multi-round degradation)
     client = _client()
     result = await client.experience_search_global(
         query, top_k=top_k * 2, score_threshold=threshold, verify_content=verify_content)
-    rounds = 1
-    degraded = False
-    effective_threshold = threshold
 
-    # Round 2: lower threshold if zero results
-    if isinstance(result, dict) and result.get("count", 0) == 0 and threshold > 0.25:
-        effective_threshold = max(threshold * 0.7, 0.25)
-        result = await client.experience_search_global(
-            query, top_k=top_k * 2, score_threshold=effective_threshold, verify_content=verify_content)
-        rounds = 2
-        degraded = True
-
-    # Round 3: further lowered, skip content verification
-    if isinstance(result, dict) and result.get("count", 0) == 0 and effective_threshold > 0.20:
-        effective_threshold = max(effective_threshold * 0.5, 0.15)
-        result = await client.experience_search_global(
-            query, top_k=top_k, score_threshold=effective_threshold, verify_content=False)
-        rounds = 3
-        degraded = True
-
-    # 4. Enrich with retrieval transparency
+    # Backend already reports rounds/degraded/threshold in its response;
+    # we enrich with retrieval transparency but do NOT add our own rounds.
     if isinstance(result, dict):
         result["query_type"] = query_type
-        result["rounds"] = rounds
-        result["degraded"] = degraded
         result["adaptive_threshold"] = adaptive
-        result["effective_threshold"] = effective_threshold
+        result["effective_threshold"] = result.get("threshold", threshold)
         # Add match_details and ranking_reason for each experience
         for exp in result.get("experiences", []):
             exp["retrieval_paths"] = ["vector", "keyword"]
@@ -1361,6 +1341,79 @@ async def experience_apply_decay(kb_id: str) -> str:
     if (err := _require_kb(kb_id)): return err
     return _j(await _client().experience_apply_decay(kb_id))
 
+
+
+# ============================================================
+# MEDITATION (Experience Auto-Summarization)
+# ============================================================
+
+@mcp.tool()
+async def experience_meditation_status(kb_id: str = "") -> str:
+    """Get meditation status: scheduler, harness health, circuit breaker, per-KB configs.
+
+    Args:
+        kb_id: Optional KB filter; empty returns global status
+
+    Returns: {success, scheduler, harnesses, circuit_breaker, kb_configs}
+    """
+    if kb_id:
+        return _j(await _client().meditation_status(kb_id))
+    return _j(await _client().meditation_status())
+
+
+@mcp.tool()
+async def experience_meditation_run(kb_id: str = "", trigger: str = "manual") -> str:
+    """Manually trigger a meditation run. Optionally scoped to one KB.
+
+    Args:
+        kb_id: Target KB (empty = all enabled KBs)
+        trigger: "manual" | "scheduled" | "incremental"
+
+    Returns: {success, report}
+    """
+    return _j(await _client().meditation_run(kb_id, trigger))
+
+
+@mcp.tool()
+async def experience_meditation_config_get(kb_id: str) -> str:
+    """Get meditation config for a KB.
+
+    Args:
+        kb_id: Target KB (UUID or path)
+
+    Returns: {success, kb_id, kb_path, config: {...}, source}
+    """
+    if (err := _require_kb(kb_id)): return err
+    return _j(await _client().meditation_config_get(kb_id))
+
+
+@mcp.tool()
+async def experience_meditation_config_update(kb_id: str, config: dict) -> str:
+    """Update meditation config for a KB. Only pass fields to change.
+
+    Args:
+        kb_id: Target KB (UUID or path)
+        config: Dict of config fields to update, e.g. {"enabled": true, "harness": "claude", "interval_hours": 12}
+
+    Returns: {success, kb_id, kb_path, config}
+    """
+    if (err := _require_kb(kb_id)): return err
+    if not config:
+        return _j({"success": False, "error": "config parameter is required"})
+    return _j(await _client().meditation_config_update(kb_id, config))
+
+
+@mcp.tool()
+async def experience_meditation_history(kb_id: str = "", limit: int = 20) -> str:
+    """List recent meditation runs, optionally filtered by KB.
+
+    Args:
+        kb_id: Optional KB filter
+        limit: Max results (default 20)
+
+    Returns: {success, count, runs: [{id, kb_id, harness, trigger, status, ...}]}
+    """
+    return _j(await _client().meditation_history(kb_id, limit))
 
 # ============================================================
 # BACKEND STATUS

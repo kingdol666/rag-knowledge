@@ -7,6 +7,7 @@ from app.api.routes.graph import router as graph_router
 from app.api.routes.experience import router as experience_router
 from app.api.routes.config import router as config_router
 from app.api.routes.system import router as system_router
+from app.api.routes.meditation import router as meditation_router
 
 __all__ = [
     "health_router",
@@ -14,7 +15,6 @@ __all__ = [
     "mineru_router",
     "search_router",
     "graph_router",
-    "experience_router",
     "config_router",
-    "system_router",
+    "meditation_router",
 ]

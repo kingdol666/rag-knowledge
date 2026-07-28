@@ -17,6 +17,10 @@
             <ReloadOutlined />
             <span>{{ $t('action.refresh') }}</span>
           </a-button>
+          <a-button class="action-btn" @click="showMeditationSettings = true">
+            <SettingOutlined />
+            <span>冥想设置</span>
+          </a-button>
           <a-button type="primary" class="action-btn" @click="showCreateDocDialog = true">
             <PlusOutlined />
             <span>{{ $t('kb.createDocTitle') }}</span>
@@ -452,6 +456,17 @@
         </div>
       </a-spin>
     </a-drawer>
+
+    <!-- Meditation settings drawer -->
+    <a-drawer
+      v-model:open="showMeditationSettings"
+      title="知识库冥想设置"
+      placement="right"
+      :width="460"
+      class="meditation-drawer"
+    >
+      <KbMeditationSettings :active-kb-id="activeKb?.kbId || ''" />
+    </a-drawer>
   </div>
 </template>
 
@@ -464,7 +479,7 @@ import {
   EditOutlined, FormOutlined, TagsOutlined, DragOutlined,
   DeleteOutlined, DownOutlined,
   RightOutlined, FolderOutlined, FolderOpenOutlined,
-  ExpandOutlined, ExportOutlined,
+  ExpandOutlined, ExportOutlined, SettingOutlined,
 } from '@ant-design/icons-vue'
 import { useKbDocuments } from '~/composables/useKbDocuments'
 import type { KbDoc } from '~/composables/useKbDocuments'
@@ -502,6 +517,7 @@ const showEditContentDialog = ref(false)
 const showTagsDialog = ref(false)
 const showMoveDialog = ref(false)
 const showPreviewDrawer = ref(false)
+const showMeditationSettings = ref(false)
 const submitting = ref(false)
 const contentLoading = ref(false)
 

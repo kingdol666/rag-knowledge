@@ -10,7 +10,7 @@
 
 <p>
 <em>QDCVR Semantic Search &middot; Neo4j Knowledge Graph &middot; Experience Lifecycle (E0–E12)<br>
-66 MCP Tools &middot; 14 Agent Skills &middot; MinerU OCR &middot; Cross-Platform</em>
+71 MCP Tools (25 experience · 15 KB CRUD · 11 graph · 4 search · 4 vector · 4 parse) &middot; 14 Agent Skills &middot; MinerU OCR &middot; Cross-Platform</em>
 </p>
 
 <p>
@@ -18,7 +18,7 @@
 &nbsp;
 <img src="https://img.shields.io/badge/Platform-Win_%7C_Linux_%7C_macOS-334155?style=for-the-badge&logo=linux" />
 &nbsp;
-<img src="https://img.shields.io/badge/MCP_Tools-66-8b5cf6?style=for-the-badge&logo=code" />
+<img src="https://img.shields.io/badge/MCP_Tools-71-8b5cf6?style=for-the-badge&logo=code" />
 &nbsp;
 <img src="https://img.shields.io/badge/Skills-14-f97316?style=for-the-badge&logo=openai" />
 </p>
@@ -62,7 +62,7 @@ This platform solves that at the **retrieval layer**, not the generation layer. 
 |:---:|:---|:---|
 | 🔍 | Single search strategy (vector *or* keyword) | **Multi-strategy**: BM25 + vector + tag-semantic + graph expansion |
 | 🧠 | Trust vector similarity blindly | **Content-verified retrieval** — independent 0–8 adjudication |
-| 🤖 | Bolt-on AI, hard to integrate with agents | **Agent-native**: 66 MCP tools, 14 skills — any MCP client works |
+| 🤖 | Bolt-on AI, hard to integrate with agents | **Agent-native**: 71 MCP tools, 14 skills — any MCP client works |
 | 💡 | No structured knowledge reuse | **Experience library**: E0–E12 lifecycle with P0/P1/P2 credibility |
 | 🔧 | Complex multi-tool setup, scattered configs | **One command** `ragctl setup`, single `config.yml` source of truth |
 | 🪟 | Terminal windows everywhere | **Silent headless** — zero terminals in dev *and* prod |
@@ -84,7 +84,7 @@ This platform solves that at the **retrieval layer**, not the generation layer. 
 | 🔍 | **Multi-strategy search** | BM25 + vector two-stage recall · cross-KB enterprise search · `balance_kbs` diversity guard |
 | 📊 | **Knowledge graph** | Neo4j-powered · 11 graph tools · entity/relation graphs · cross-KB document bridges |
 | 💡 | **Experience library** | E0–E12 lifecycle · structured problem→solution→lessons · P0/P1/P2 credibility · decay |
-| 🔌 | **66 MCP tools** | KB CRUD · search · graph · experience · parsing · tags · vector/index · lifecycle — all MCP-native |
+| 🔌 | **71 MCP tools** | KB CRUD · search · graph · experience · parsing · tags · vector/index · lifecycle — all MCP-native |
 | 🎯 | **14 agent skills** | Natural-language commands · bilingual triggers (中/EN) · auto-dispatch to Archival agent |
 | 🤫 | **Silent headless** | Every launcher runs with **zero terminal windows** · dev and prod behave identically |
 
@@ -122,7 +122,7 @@ ragctl up
 </details>
 
 > [!TIP]
-> **No Claude Code? No problem.** The Web UI is fully functional standalone. Use any MCP client to access 66 tools, or just browse/search at `http://localhost:6789`.
+> **No Claude Code? No problem.** The Web UI is fully functional standalone. Use any MCP client to access 71 tools, or just browse/search at `http://localhost:6789`.
 
 ### ✅ Verify Everything Works
 
@@ -147,7 +147,7 @@ All four end with the **same working platform**. Methods **A / B / C** are **age
 <tr>
 <td valign="top">
 
-You use **Claude Code** and want everything (skills + 66 MCP tools + commands) registered globally.
+You use **Claude Code** and want everything (skills + 71 MCP tools + commands) registered globally.
 
 ```bash
 # Run inside a Claude Code session:
@@ -242,7 +242,7 @@ Every phase is **incremental** — no re-installs, no re-downloads, no repeated 
 <details>
 <summary><b>💬 Right after init — start working with your KB in the same conversation</b></summary>
 
-The wizard hands you a healthy system and the commands to use it. Keep talking in the **same session** — the 66 MCP tools and 14 skills are live, so plain language works immediately:
+The wizard hands you a healthy system and the commands to use it. Keep talking in the **same session** — the 71 MCP tools and 14 skills are live, so plain language works immediately:
 
 ```text
 "list all knowledge bases"                              → knowledgebase-list (L1→L3)
@@ -368,7 +368,7 @@ Open **http://localhost:6789** — browse KBs, search documents, explore the gra
 
 ---
 
-## 🔌 MCP Tools — 66
+## 🔌 MCP Tools — 71
 
 All accessible via `mcp__kb-mcp__*` from Claude Code or any MCP client.
 
@@ -376,14 +376,14 @@ All accessible via `mcp__kb-mcp__*` from Claude Code or any MCP client.
 |----------|:-----:|-----------|
 | **Service lifecycle** | 3 | `kb_project_status` (runtime\|setup), `kb_project_start`, `kb_project_update` (show_version), `backend_status` |
 | **KB CRUD** | 5 | `kb_list` (lightweight=true for catalog), `kb_create`, `kb_update`, `kb_delete`, `kb_get_documents` (lightweight=true for catalog) |
-| **Document CRUD** | 7 | `kb_doc_read`, `kb_doc_create`, `kb_doc_update_meta`, `kb_doc_update_content`, `kb_doc_delete`, `kb_doc_batch_delete`, `kb_doc_move` |
+| **KB CRUD** | 15 | `kb_doc_read`, `kb_doc_create`, `kb_doc_update_meta`, `kb_doc_update_content`, `kb_doc_delete`, `kb_doc_batch_delete`, `kb_doc_move` |
 | **File System** | 3 | `fs_get_tree` (incl. _stats), `fs_get_children`, `fs_upload_file` |
 | **Parse** | 4 | `parse_doc`, `parse_doc_batch`, `parse_task_status`, `kb_doc_save_parsed` |
 | **Tags** | 4 | `kb_tags_list`, `kb_doc_update_tags`, `kb_doc_get_by_tag`, `kb_tags_cleanup` |
 | **Search** | 4 | `kb_search`, `kb_search_vector`, `kb_search_two_stage`, `kb_search_stats` |
 | **Vector/Index** | 4 | `kb_index_document`, `kb_batch_index`, `kb_reindex`, `kb_cleanup_orphan_collections` |
 | **Knowledge Graph** | 14 | `kb_graph_search` · `kb_graph_kb_overview` · `kb_graph_build` · `kb_graph_cross_kb_documents` · … |
-| **Experience** | 22 | `experience_create` · `experience_search_global` · `experience_search_smart` · `experience_dashboard` · `experience_extract` · … |
+| **Experience** | 25 | `experience_create` · `experience_search_smart` · `experience_search_global` · `experience_read` · `experience_apply` · `experience_review` · `experience_update` · `experience_delete` · `experience_list` · `experience_dashboard` · `experience_extract` · `experience_draft_approve` · `experience_summary` · `experience_rerank` · `experience_meditation_status` · `experience_meditation_run` · `experience_meditation_config_get/update` · `experience_meditation_history` · … |
 
 ---
 
@@ -448,6 +448,55 @@ Structured operational knowledge (problem→solution→lessons) is managed throu
 **Decay rules:** stale-unverified (>30d, 0 applied) → demoted; disputed (rating<2, ≥3 reviews) → hard cap P2; unvetted (0 reviews ∧ 0 applied) → cap P1.
 
 </details>
+
+<details>
+<summary><b>🧘 Experience Auto-Meditation (v3.0)</b></summary>
+
+Automatic experience synthesis from recurring user questions. Backend scheduler harvests Q&A signals, then spawns an AI agent (OMP or Claude Code) to synthesize structured experiences — without the backend ever touching an LLM API.
+
+**Architecture:**
+```
+Backend Scheduler (mechanical only — no LLM)
+  │  harvest → cluster → score → per-KB filter
+  │
+  └─ spawn Agent Harness subprocess
+       │  omp -p --auto-approve
+       │  claude -p --bare --output-format json
+       │
+       └─ Agent uses MCP tools → writes experiences directly
+```
+
+**Key features:**
+- **KB-level control**: Each KB has independent meditation config in `.knowledge-base.yml` metadata (enabled/harness/model/interval/auto_publish)
+- **Pluggable harness**: **OMP** (default, uses `omp -p`) or **Claude Code** (`claude -p --bare`)
+- **Dynamic model selection**: Real-time `omp models --json` RPC → 12+ available models (DeepSeek V4 Pro/Flash, GLM-5.2, Kimi K3, etc.) selectable per KB
+- **Empty model = engine default**: OMP uses its default model (e.g. deepseek-v4-pro); Claude uses sonnet
+- **Circuit breaker**: 3 consecutive agent failures → 24h cooldown
+- **Signal harvesting**: Extracts Q&A pairs from chat history → triggers incremental meditation
+- **Quality gating**: Every experience verified via `kb_doc_read` before creation — refuses to fabricate when cited docs don't exist
+- **Parser**: Robust JSON extraction from OMP streaming output — handles ` ```json ` code fences, `turn_end`/`message_end` events, and regex fallback for malformed JSON
+
+**MCP Tools (5 new):**
+| Tool | Description |
+|------|-------------|
+| `experience_meditation_status` | Global scheduler + harness health + circuit breaker status |
+| `experience_meditation_run` | Manually trigger meditation (global or per-KB) |
+| `experience_meditation_config_get` | Read per-KB meditation config |
+| `experience_meditation_config_update` | Update per-KB meditation config |
+| `experience_meditation_history` | View recent meditation run history |
+
+**CLI commands:**
+```bash
+ragctl meditation status              # Check system status
+ragctl meditation run                 # Trigger a run
+ragctl meditation history --lines=10  # View run history
+ragctl meditation config <kb_id>      # View KB config
+```
+
+**Database:** `storage/meditation.db` (SQLite, WAL mode) — `meditation_signals` + `meditation_runs` tables.
+
+</details>
+
 
 ---
 
@@ -593,7 +642,7 @@ Only for the Neo4j knowledge graph. Parsing, search, and experience all work wit
 <details>
 <summary><b>Can I use this without Claude Code?</b></summary>
 
-Yes. The Web UI at `http://localhost:6789` is fully functional, and any MCP client can call the 66 tools.
+Yes. The Web UI at `http://localhost:6789` is fully functional, and any MCP client can call the 71 tools.
 </details>
 
 </details>
@@ -606,10 +655,10 @@ Yes. The Web UI at `http://localhost:6789` is fully functional, and any MCP clie
 rag-knowledge/
 ├── backend/              ← FastAPI + MinerU OCR engine
 ├── web/                  ← Nuxt 3 + Ant Design Vue (incl. Claude Chat with Agent SDK)
-├── kb-mcp/               ← MCP server — 66 tools
+├── kb-mcp/               ← MCP server — 71 tools
 ├── command/              ← ragctl CLI (Node.js, js-yaml)
 ├── src-tauri/            ← Tauri v2 desktop application (Rust)
-├── .claude/              ← Claude Code skills (14) + Archival agent
+├── .claude/              ← Claude Code skills (14) + Archival agent (knowledge-admin.md)
 ├── .omp/                 ← OMP-native agent, commands, MCP config
 ├── .claude-plugin/       ← Plugin + marketplace manifests
 ├── scripts/              ← GPU detection, skill validation, OMP installer

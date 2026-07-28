@@ -2941,13 +2941,15 @@ ${_c(C.CYAN, '清理缓存:')}
 ${_c(C.CYAN, '备份 / 恢复 (跨平台 · 替代 scripts/backup.sh):')}
   backup [dest]             备份 KB文档 + ChromaDB + Neo4j图数据库
   backup --dry-run          仅扫描，不写入
-  restore <dir>             从备份目录恢复（覆盖当前数据，先 ragctl down）
-  restore <dir> --force     跳过确认提示
+  restore [src]             从指定备份恢复
 
-${_c(C.CYAN, '更新相关:')}
-  version [--local] [--json]           查看本地/远程版本
-  update [--check] [--force] [--yes]   检查并拉取最新版
-  update --no-deps                     拉取后跳过依赖重装
+${_c(C.CYAN, '经验冥想 (自动经验沉淀):')}
+  meditation status [kb]   查看冥想状态（全局或按KB）
+  meditation run [kb]      手动触发一次冥想运行
+  meditation history [kb]  查看最近冥想运行历史
+  meditation config <kb>   查看/设置 KB 冥想配置
+
+${_c(C.CYAN, '示例:')}
   update --restart                     拉取后强制重启服务
 
 ${_c(C.CYAN, '选项 (-- 二级参数):')}
@@ -2987,6 +2989,128 @@ ${_c(C.GRAY, '  prod: Backend=8001  Web=3000')}
 `);
 }
 
+// ── Meditation ────────────────────────────────────────────────────────
+
+async function cmdMeditation(args) {
+  const [sub, ...rest] = args;
+  const backendUrl = getBackendUrl();
+
+  async function apiGet(path) {
+    const res = await fetch(`${backendUrl}${path}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+    return res.json();
+  }
+
+  async function apiPost(path, body) {
+    const res = await fetch(`${backendUrl}${path}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+    return res.json();
+  }
+
+  switch (sub) {
+    case 'status': {
+      const kbId = rest[0] || '';
+      const url = kbId ? `/api/v1/meditation/status?kb_id=${kbId}` : '/api/v1/meditation/status';
+      const data = await apiGet(url);
+      if (data.success) {
+        console.log('\n🧘 Meditation Status');
+        console.log('═══════════════════');
+        console.log(`  Scheduler: ${data.scheduler?.enabled ? '✅ enabled' : '⏸ disabled'}`);
+        if (data.scheduler?.running_now) console.log('  Currently running: YES');
+        if (data.scheduler?.last_run) console.log(`  Last run: ${data.scheduler.last_run}`);
+        console.log('');
+        console.log('  Harness Status:');
+        for (const [name, info] of Object.entries(data.harnesses || {})) {
+          const status = info.installed ? '✅' : '❌';
+          console.log(`    ${status} ${name}: ${info.version || 'not installed'}`);
+        }
+        if (data.circuit_breaker) {
+          for (const [name, cb] of Object.entries(data.circuit_breaker)) {
+            if (cb.tripped) console.log(`    ⚠ ${name} circuit breaker OPEN until ${new Date(cb.until * 1000).toISOString()}`);
+          }
+        }
+        console.log('');
+        if (data.kb_configs?.length) {
+          console.log('  KB Configs:');
+          for (const kc of data.kb_configs) {
+            const cfg = kc.config;
+            console.log(`    ${cfg.enabled ? '🧘' : '⏸'} ${kc.kb_name}: harness=${cfg.harness} interval=${cfg.interval_hours}h runs=${cfg.total_runs} exp=${cfg.total_experiences_generated}`);
+          }
+        }
+      } else {
+        console.log(JSON.stringify(data, null, 2));
+      }
+      break;
+    }
+
+    case 'run': {
+      const kbId = rest.find(a => !a.startsWith('--')) || '';
+      const data = await apiPost('/api/v1/meditation/run', { kb_id: kbId, trigger: 'manual' });
+      console.log(data.success ? '✅ Meditation triggered' : `❌ Failed: ${data.error || JSON.stringify(data)}`);
+      if (data.report) console.log(JSON.stringify(data.report, null, 2));
+      break;
+    }
+
+    case 'history': {
+      const kbId = rest[0] || '';
+      const limit = parseInt(rest.find(a => a.startsWith('--lines='))?.split('=')[1] || '20', 10);
+      const url = `/api/v1/meditation/history?limit=${limit}${kbId ? `&kb_id=${kbId}` : ''}`;
+      const data = await apiGet(url);
+      if (data.success && data.runs) {
+        console.log('\n🧘 Meditation History');
+        console.log('═════════════════════');
+        for (const r of data.runs) {
+          const statusIcon = r.status === 'completed' ? '✅' : r.status === 'failed' ? '❌' : r.status === 'timeout' ? '⏰' : '🔄';
+          console.log(`  ${statusIcon} #${r.id}: ${r.kb_id} via ${r.harness} (${r.trigger})`);
+          console.log(`     ${r.started_at} → ${r.finished_at || '...'}  exp=${r.experiences_created} drafts=${r.drafts_created}`);
+          if (r.error) console.log(`     Error: ${r.error}`);
+        }
+      } else {
+        console.log(JSON.stringify(data, null, 2));
+      }
+      break;
+    }
+
+    case 'config': {
+      const kbId = rest[0];
+      if (!kbId) {
+        console.log('Usage: ragctl meditation config <kb_id>');
+        return 1;
+      }
+      const data = await apiGet(`/api/v1/meditation/config?kb_id=${kbId}`);
+      if (data.success) {
+        console.log(`\n🧘 Meditation Config for ${data.kb_path}`);
+        console.log('═══════════════════════════════════');
+        console.log(JSON.stringify(data.config, null, 2));
+      } else {
+        console.log(JSON.stringify(data, null, 2));
+      }
+      break;
+    }
+
+    default:
+      console.log(`
+🧘 ragctl meditation <subcommand> [options]
+
+Subcommands:
+  status [kb_id]     Show meditation status (global or per-KB)
+  run [kb_id]        Manually trigger a meditation run
+  history [kb_id]    Show recent meditation runs (--lines=N)
+  config <kb_id>     Show meditation config for a KB
+
+Examples:
+  ragctl meditation status
+  ragctl meditation status my-kb
+  ragctl meditation run
+  ragctl meditation run my-kb
+  ragctl meditation history --lines=10
+`);
+      return 1;
+  }
+ }
 async function main() {
   if (IS_WIN) {
     try { require('child_process').execSync('chcp 65001 >nul 2>&1', { stdio: 'ignore' }); } catch {}
@@ -3033,7 +3157,7 @@ async function main() {
       case 'clean': case 'prune': return await cmdClean(subArgs);
       case 'backup': return await cmdBackup(subArgs);
       case 'restore': return await cmdRestore(subArgs);
-      default:
+      case 'meditation': case 'meditate': return await cmdMeditation(subArgs);
         err(`未知命令: ${command}`);
         showHelp();
         return 1;

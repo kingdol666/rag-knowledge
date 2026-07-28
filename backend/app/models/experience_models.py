@@ -48,6 +48,14 @@ class ExperienceCreate(BaseModel):
     related_docs: list[str] = Field(default_factory=list)
     prerequisites: list[str] = Field(default_factory=list)
     metrics: dict[str, Any] = Field(default_factory=dict)
+    # ── Meditation / auto-extraction fields ──
+    auto_extracted: bool = False
+    harness: str = ""
+    confidence: float = 1.0
+    source_questions: list[str] = Field(default_factory=list)
+    source_cluster_count: int = 0
+    vetted: bool = True
+    meditation_run_id: str = ""
 
 
 class ExperienceUpdate(BaseModel):

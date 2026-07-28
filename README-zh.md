@@ -10,7 +10,7 @@
 
 <p>
 <em>QDCVR 语义搜索 &middot; Neo4j 知识图谱 &middot; 经验全生命周期 (E0–E12)<br>
-66 个 MCP 工具 &middot; 14 个 Agent 技能 &middot; MinerU OCR &middot; 跨平台</em>
+71 个 MCP 工具 &middot; 14 个 Agent 技能 &middot; MinerU OCR &middot; 跨平台</em>
 </p>
 
 <p>
@@ -18,7 +18,7 @@
 &nbsp;
 <img src="https://img.shields.io/badge/平台-Win_%7C_Linux_%7C_macOS-334155?style=for-the-badge&logo=linux" />
 &nbsp;
-<img src="https://img.shields.io/badge/MCP工具-66个-8b5cf6?style=for-the-badge&logo=code" />
+<img src="https://img.shields.io/badge/MCP工具-71个-8b5cf6?style=for-the-badge&logo=code" />
 &nbsp;
 <img src="https://img.shields.io/badge/技能-14个-f97316?style=for-the-badge&logo=openai" />
 </p>
@@ -62,7 +62,7 @@
 |:---:|:---|:---|
 | 🔍 | 单一搜索策略（向量*或*关键词） | **多策略**：BM25 + 向量 + 标签语义 + 图谱扩展 |
 | 🧠 | 盲信向量相似度 | **内容验证检索** —— 独立的 0–8 内容裁决 |
-| 🤖 | AI 是后挂的，难集成 Agent | **Agent 原生**：66 个 MCP 工具，14 个技能，任意 MCP 客户端可用 |
+| 🤖 | AI 是后挂的，难集成 Agent | **Agent 原生**：71 个 MCP 工具，14 个技能，任意 MCP 客户端可用 |
 | 💡 | 无结构化知识复用 | **经验库**：E0–E12 全生命周期，P0/P1/P2 可信度分级 |
 | 🔧 | 多工具复杂安装，配置分散 | **一条命令** `ragctl setup`，单一 `config.yml` 真相源 |
 | 🪟 | 满屏终端窗口 | **静默无头** —— dev 和 prod 均零终端窗口 |
@@ -84,7 +84,7 @@
 | 🔍 | **多策略搜索** | BM25 + 向量两阶段召回 · 跨库企业搜索 · `balance_kbs` 多样性防护 |
 | 📊 | **知识图谱** | Neo4j 驱动 · 11 个图谱工具 · 实体/关系图 · 跨库文档桥接 |
 | 💡 | **经验库** | E0–E12 全生命周期 · 结构化问题→方案→教训 · P0/P1/P2 可信度 · 衰减 |
-| 🔌 | **66 个 MCP 工具** | 知识库 CRUD · 搜索 · 图谱 · 经验 · 解析 · 标签 · 向量索引 · 生命周期 · 全 MCP 原生 |
+| 🔌 | **71 个 MCP 工具** | 知识库 CRUD · 搜索 · 图谱 · 经验 · 解析 · 标签 · 向量索引 · 生命周期 · 全 MCP 原生 |
 | 🎯 | **14 个 Agent 技能** | 自然语言命令 · 中英双语触发 · 自动分发到 Archival Agent |
 | 🤫 | **静默无头** | 所有启动器均 **零终端窗口** · dev 和 prod 行为一致 |
 

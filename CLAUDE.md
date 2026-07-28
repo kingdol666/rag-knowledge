@@ -29,7 +29,7 @@ MinerU OCR Engine (ephemeral port)  ← PDF → Markdown conversion
 Claude Code / Agent
     │  MCP stdio (kb-mcp)
     ▼
-kb-mcp MCP Server              ← 66 tools: KB CRUD, file ops, parse, search, tags, vector, graph, experience, project lifecycle
+kb-mcp MCP Server              ← 71 tools: KB CRUD, file ops, parse, search, tags, vector, graph, experience, project lifecycle
     │  HTTP → web proxy / backend     +  direct file reads
     ▼
 Nuxt / Backend                 ← writes: parse + save pipeline
@@ -128,7 +128,7 @@ kb-mcp/
 └── .mcp.json (at root)     # Connects kb-mcp to Claude Code via stdio
 ```
 
-MCP Tools by category (66 tools total):
+MCP Tools by category (71 tools total):
 - **Health:** `backend_status`
 - **Project lifecycle (3):** `kb_project_status` (scope=runtime|setup), `kb_project_start`, `kb_project_update` (show_version=true for version check)
 - **KB CRUD:** `kb_list`, `kb_create`, `kb_update`, `kb_delete`
@@ -371,6 +371,23 @@ server:
     - Archival Agent 启动时将此检查作为 **Pre-Flight** 步骤，在所有 Step 0 场景诊断之前执行
 15. **⭐ MCP 代码修改需重启** — kb-mcp 是长驻 stdio 进程。对 `server.py`/`kb_client/client.py`/`config.py` 的任何修改都需要**重启 Claude Code**（或断开 MCP 连接后重连）才能生效。修改后如果行为未变化，先确认 MCP 已重启。
 16. **Dev-mode watchfiles 重载风暴** — `APP_MODE=dev` 时 uvicorn 可能因日志/数据库文件变化触发无限重载循环，导致后端 HTTP 不响应。长会话建议 `APP_MODE=prod`；dev 模式已限制仅监视 `app/` 目录（排除 logs/storage/chroma_db）。
+17. **经验自动冥想（Agent-Harness 架构）** — 后端 scheduler 不调 LLM，而是 spawn `omp -p` 或 `claude -p` 子进程：
+    - **Agent harness 子进程通过 MCP 工具直接写经验** → 后端只记录运行报告
+    - **Harness 默认 OMP**（项目自带），可切换 claude；claude 需 `ANTHROPIC_API_KEY` 环境变量（`--bare` 模式）
+    - **KB 级配置**存在 `.knowledge-base.yml` metadata.meditation 字段，随 KB 移动/合并
+    - **Circuit breaker**：连续 3 次 agent 失败 → 24h 禁重试
+    - **启发式降级**：harness 不可用时自动 fallback 到机械提取（confidence=0.3）
+    - **Agent 日志**：`backend/logs/meditation-agent-{run_id}.log`
+    - 首次运行前验证 harness：`omp --version` 或 `claude --version`
+18. **经验自动生成默认不进正式库** — auto_extracted=True 且 vetted=False 的经验：
+    - 最高 P1（搜索时 cap 在 P1）
+    - applied≥2 + rating≥4.0 → vetted=True → 可升 P0
+    - review≥3 + rating<2.0 → decay_flag="disputed" → cap P2
+    - auto_publish=false（默认）→ 全部进草稿池待审核
+19. **冥想信号表** — `storage/meditation.db`（独立 SQLite，WAL 模式）：
+    - `meditation_signals`：Q&A 对 + 检索文档 + 反馈状态
+    - `meditation_runs`：每次运行的 harness/状态/产出/cost
+    - 与 `claude-chat.db` 解耦，避免锁竞争
 
 ## Development Conventions
 

@@ -5,6 +5,7 @@ import logging
 import logging.handlers
 from pathlib import Path
 from contextlib import asynccontextmanager
+from app.api.routes.meditation import router as meditation_router
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import config
@@ -119,6 +120,14 @@ async def lifespan(app: FastAPI):
     else:
         logger.info("Graph (Neo4j) disabled in config — skipping probe")
 
+    # ── Init Meditation DB ─────────────────────────────────────────
+    try:
+        from app.services.meditation_db import init_db
+        init_db()
+        logger.info("Meditation DB initialized")
+    except Exception:
+        logger.exception("Meditation DB init failed (non-fatal)")
+
     # ── Start Experience Meditation Scheduler ────────────────────────
     try:
         from app.services.experience_meditation_service import meditation_scheduler
@@ -130,7 +139,6 @@ async def lifespan(app: FastAPI):
             logger.info("Experience meditation: disabled (will activate if config enables it)")
     except Exception:
         logger.exception("Meditation scheduler startup failed (non-fatal)")
-
 
     yield
 
@@ -188,7 +196,7 @@ app.include_router(search_router)
 app.include_router(graph_router)
 app.include_router(experience_router)
 app.include_router(config_router)
-app.include_router(system_router)
+app.include_router(meditation_router)
 
 
 @app.get("/")

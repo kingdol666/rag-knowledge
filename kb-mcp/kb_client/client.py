@@ -477,6 +477,10 @@ class KbClient:
             kwargs["timeout"] = timeout
         return await self._request("POST", endpoint, base=self.backend_url, **kwargs)
 
+    async def _put_backend_json(self, endpoint, body):
+        """PUT JSON to backend (base=self.backend_url)."""
+        return await self._request("PUT", endpoint, base=self.backend_url, json=body)
+
     async def _get_backend(self, endpoint, **params):
         """GET backend endpoint."""
         return await self._request("GET", endpoint, base=self.backend_url, params=params)
@@ -884,3 +888,40 @@ class KbClient:
         """Apply decay rules."""
         if (err := self._require_kb_id(kb_id)): return err
         return await self._post_backend_json(f"/api/v1/experience/{kb_id}/decay", {})
+
+    async def meditation_status(self, kb_id: str = "") -> dict:
+        """Get meditation status."""
+        params = {}
+        if kb_id:
+            params["kb_id"] = kb_id
+        return await self._get_backend("/api/v1/meditation/status", **params)
+
+    async def meditation_run(self, kb_id: str = "", trigger: str = "manual") -> dict:
+        """Trigger meditation run."""
+        return await self._post_backend_json("/api/v1/meditation/run", {
+            "kb_id": kb_id, "trigger": trigger,
+        })
+
+    async def meditation_history(self, kb_id: str = "", limit: int = 20) -> dict:
+        """List meditation runs."""
+        params = {"limit": limit}
+        if kb_id:
+            params["kb_id"] = kb_id
+        return await self._get_backend("/api/v1/meditation/history", **params)
+
+    async def meditation_config_get(self, kb_id: str) -> dict:
+        """Get meditation config for a KB."""
+        return await self._get_backend("/api/v1/meditation/config", kb_id=kb_id)
+
+    async def meditation_config_update(self, kb_id: str, config: dict) -> dict:
+        """Update meditation config."""
+        return await self._put_backend_json("/api/v1/meditation/config", {
+            "kb_id": kb_id, "config": config,
+        })
+
+    async def meditation_signals(self, kb_id: str = "", days: int = 7) -> dict:
+        """List meditation signals."""
+        params = {"days": days}
+        if kb_id:
+            params["kb_id"] = kb_id
+        return await self._get_backend("/api/v1/meditation/signals", **params)

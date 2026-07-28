@@ -228,6 +228,206 @@ def _match_kb(cluster: dict, kbs: list[dict]) -> str | None:
     return best_path if best_score > 0 else None
 
 
+# ── Signal Harvesting (Chat DB → meditation_signals) ─────────────────
+
+def harvest_signals_to_db(db_path: str, days: int = 7, kb_filter: str = "") -> int:
+    """Extract real KB Q&A signals from chat DB by parsing MCP tool calls.
+
+    ONLY captures signals where the user asked a question AND the assistant
+    made actual MCP tool calls to kb_search_*/kb_doc_read against a specific KB.
+    This ensures every signal is backed by real KB interaction — no fake signals.
+
+    Returns count of new signals inserted.
+    """
+    import sqlite3 as _sqlite3
+    from app.services.meditation_db import save_signal, get_pending_signals
+
+    if not os.path.exists(db_path):
+        logger.debug("Chat DB not found: %s", db_path)
+        return 0
+
+    try:
+        conn = _sqlite3.connect(db_path)
+        conn.row_factory = _sqlite3.Row
+    except Exception as e:
+        logger.warning("Failed to open chat DB: %s", e)
+        return 0
+
+    inserted = 0
+    try:
+        # Step 1: Find user messages (sdk_type='user')
+        user_rows = conn.execute(
+            """SELECT id, session_id, content, created_at FROM messages
+               WHERE sdk_type = 'user'
+                 AND created_at >= datetime('now', ?)
+               ORDER BY created_at DESC LIMIT 100""",
+            (f"-{days} days",),
+        ).fetchall()
+
+        for user_row in user_rows:
+            try:
+                user_data = json.loads(user_row["content"])
+            except Exception:
+                continue
+
+            # Extract user question text
+            user_msg = user_data.get("message", {})
+            content_blocks = user_msg.get("content", [])
+            if isinstance(content_blocks, str):
+                question_text = content_blocks
+            elif isinstance(content_blocks, list):
+                question_text = " ".join(
+                    b.get("text", "") for b in content_blocks
+                    if isinstance(b, dict) and b.get("type") == "text"
+                )
+            else:
+                question_text = str(content_blocks)
+
+            if not question_text or len(question_text) < 10:
+                continue
+            if _is_noise(question_text):
+                continue
+
+            session_id = user_row["session_id"] or ""
+
+            # Step 2: Find assistant response in same session with KB tool calls
+            assistant_rows = conn.execute(
+                """SELECT id, content FROM messages
+                   WHERE session_id = ? AND sdk_type = 'assistant'
+                     AND id > ?
+                   ORDER BY id ASC LIMIT 5""",
+                (session_id, user_row["id"]),
+            ).fetchall()
+
+            kb_ids_found = set()
+            retrieved_docs = []
+            assistant_answer = ""
+
+            for asst_row in assistant_rows:
+                try:
+                    asst_data = json.loads(asst_row["content"])
+                except Exception:
+                    continue
+
+                asst_msg = asst_data.get("message", {})
+                asst_content = asst_msg.get("content", [])
+                if isinstance(asst_content, str):
+                    assistant_answer = asst_content[:1000]
+                    continue
+                if not isinstance(asst_content, list):
+                    continue
+
+                for block in asst_content:
+                    if not isinstance(block, dict):
+                        continue
+                    # Extract text for answer
+                    if block.get("type") == "text":
+                        assistant_answer += block.get("text", "")[:500]
+                    # Extract tool_use blocks
+                    if block.get("type") == "tool_use":
+                        tool_name = block.get("name", "")
+                        tool_input = block.get("input", {})
+                        # Check if this is a KB-related tool call
+                        if any(kw in tool_name for kw in ["kb_search", "kb_doc_read", "kb_list", "kb_get"]):
+                            kb_id = tool_input.get("kb_id", "") or tool_input.get("kbId", "")
+                            if kb_id and kb_filter and kb_id != kb_filter:
+                                continue  # Skip if filtering for a different KB
+                            if kb_id:
+                                kb_ids_found.add(kb_id)
+                            doc_path = tool_input.get("doc_path", "") or tool_input.get("path", "")
+                            if doc_path:
+                                retrieved_docs.append({"path": doc_path})
+                    # Check for tool_result with kb references
+                    if block.get("type") == "tool_result":
+                        result_content = block.get("content", "")
+                        if isinstance(result_content, str) and "kb_" in result_content:
+                            pass  # Already captured via tool_use
+
+            # Only create signal if we found actual KB tool calls
+            if not kb_ids_found:
+                continue
+
+            # Use the first KB found, or the filter
+            target_kb = kb_filter if kb_filter else list(kb_ids_found)[0]
+
+            # Dedup: check if similar question already exists
+            existing = get_pending_signals(target_kb, days=days)
+            if any(
+                _tokenize(question_text) & _tokenize(s.get("question_text", ""))
+                for s in existing
+            ):
+                continue
+
+            try:
+                save_signal(
+                    session_id=session_id,
+                    kb_id=target_kb,
+                    question_text=question_text[:500],
+                    retrieved_docs=retrieved_docs[:10],
+                    assistant_answer=assistant_answer[:2000],
+                    resolved=False,
+                )
+                inserted += 1
+            except Exception:
+                pass
+
+    except Exception as e:
+        logger.warning("Signal harvesting error: %s", e)
+    finally:
+        try:
+            conn.close()
+        except Exception:
+            pass
+
+    if inserted:
+        logger.info("Harvested %d real KB interaction signals from chat DB (last %d days)", inserted, days)
+        _check_incremental_trigger(kb_filter, inserted)
+    return inserted
+
+
+def _check_incremental_trigger(kb_id: str, new_count: int) -> None:
+    """Check if incremental meditation should be triggered for a KB."""
+    if not kb_id or kb_id == "unknown":
+        return
+    try:
+        from app.services.kb_meditation_config import get_meditation_config
+        from app.services.meditation_db import get_pending_signals
+        cfg = get_meditation_config(kb_id)
+        if not cfg.get("success"):
+            return
+        config = cfg["config"]
+        if not config.get("enabled") or not config.get("incremental_enabled", True):
+            return
+        min_count = config.get("min_cluster_count", 2)
+        pending = get_pending_signals(kb_id, days=config.get("interval_hours", 24) // 24 or 7)
+        if len(pending) >= min_count:
+            logger.info("Incremental trigger: %d signals >= %d threshold for KB %s",
+                        len(pending), min_count, kb_id)
+            # Fire-and-forget: don't block the harvester
+            asyncio.ensure_future(_fire_incremental_meditation(kb_id, config, pending))
+    except Exception:
+        logger.debug("Incremental trigger check skipped", exc_info=True)
+
+
+async def _fire_incremental_meditation(kb_id: str, config: dict, signals: list) -> None:
+    """Fire incremental meditation for a KB (non-blocking)."""
+    try:
+        from app.services.agent_harness_manager import agent_harness
+        from app.services.kb_meditation_config import get_meditation_config
+        cfg = get_meditation_config(kb_id)
+        kb_path = cfg.get("kb_path", kb_id)
+        result = await agent_harness.synthesize_experiences(
+            kb_path=kb_path, kb_id=kb_id, signals=signals,
+            kb_config=config, trigger="incremental",
+        )
+        if result.get("success"):
+            from app.services.meditation_db import mark_signals_derived
+            signal_ids = [s.get("id") for s in signals if s.get("id")]
+            if signal_ids:
+                mark_signals_derived(signal_ids)
+    except Exception as e:
+        logger.warning("Incremental meditation failed for KB %s: %s", kb_id, e)
+
 # ── Meditation Scheduler ──────────────────────────────────────────────────
 
 class ExperienceMeditationScheduler:
@@ -253,8 +453,15 @@ class ExperienceMeditationScheduler:
         self._task: asyncio.Task | None = None
         self._last_run: datetime | None = None
         self._last_result: dict | None = None
-        self._running = False
+        self._lock = asyncio.Lock()
+        self._kb_locks: dict[str, asyncio.Lock] = {}
         self._wake = asyncio.Event()
+
+    def _get_kb_lock(self, kb_path: str) -> asyncio.Lock:
+        """Get or create a per-KB lock to prevent concurrent meditation on same KB."""
+        if kb_path not in self._kb_locks:
+            self._kb_locks[kb_path] = asyncio.Lock()
+        return self._kb_locks[kb_path]
 
     # ── Lifecycle ──────────────────────────────────────────────────────
 
@@ -290,7 +497,7 @@ class ExperienceMeditationScheduler:
         return {
             "enabled": cfg.get("enabled", False),
             "interval_hours": cfg.get("interval_hours", 24),
-            "running_now": self._running,
+            "running_now": self._lock.locked(),
             "last_run": self._last_run.isoformat() if self._last_run else None,
             "last_result": self._last_result,
             "next_run_eta": self._next_run_eta(),
@@ -309,15 +516,14 @@ class ExperienceMeditationScheduler:
         mins = int((delta.total_seconds() % 3600) // 60)
         return f"{hrs}h {mins}m"
 
-    # ── Background Loop ────────────────────────────────────────────────
+    # ── Background Loop (KB-aware) ──────────────────────────────────────
 
     async def _loop(self):
-        """Main scheduler loop. Reads config each iteration for hot-reload."""
+        """Main scheduler loop. KB-aware: iterates over KBs with meditation configs."""
         while True:
             try:
                 cfg = config.experience_auto_config
                 if not cfg.get("enabled", False):
-                    # Disabled — sleep 5 min then re-check (hot-enable support).
                     self._wake.clear()
                     try:
                         await asyncio.wait_for(self._wake.wait(), timeout=300)
@@ -326,18 +532,16 @@ class ExperienceMeditationScheduler:
                     continue
 
                 interval = int(cfg.get("interval_hours", 24))
-                # Sleep for the interval, but wake early if config changes.
                 self._wake.clear()
                 try:
                     await asyncio.wait_for(self._wake.wait(), timeout=interval * 3600)
                 except asyncio.TimeoutError:
                     pass
 
-                # Re-check enabled after wake (might have been disabled).
                 if not config.experience_auto_config.get("enabled", False):
                     continue
 
-                await self.run_meditation_now()
+                await self._run_kb_aware_meditation()
 
             except asyncio.CancelledError:
                 raise
@@ -345,14 +549,131 @@ class ExperienceMeditationScheduler:
                 logger.exception("Meditation loop error — will retry next cycle")
                 await asyncio.sleep(60)
 
+    async def _run_kb_aware_meditation(self) -> dict:
+        """KB-aware meditation: harvest signals → iterate KBs → spawn agent harness."""
+        from app.services.kb_meditation_config import get_all_kb_meditation_configs
+        from app.services.agent_harness_manager import agent_harness
+        from app.services.meditation_db import get_pending_signals
+
+        self._last_run = datetime.now(timezone.utc)
+        report = {
+            "timestamp": self._last_run.isoformat(),
+            "kbs_scanned": 0,
+            "kbs_meditated": 0,
+            "experiences_created": 0,
+            "drafts_created": 0,
+            "errors": [],
+            "results": [],
+        }
+
+        try:
+            kb_configs = get_all_kb_meditation_configs()
+            report["kbs_scanned"] = len(kb_configs)
+
+            for kb_cfg in kb_configs:
+                kb_id = kb_cfg["kb_id"]
+                kb_path = kb_cfg["kb_path"]
+                kb_name = kb_cfg.get("kb_name", kb_path)
+                config = kb_cfg["config"]
+
+                if not config.get("enabled", False):
+                    continue
+
+                # Check if due
+                last_run_at = config.get("last_run_at")
+                if last_run_at:
+                    try:
+                        last_dt = datetime.fromisoformat(last_run_at)
+                        interval_h = config.get("interval_hours", 24)
+                        if (datetime.now(timezone.utc) - last_dt).total_seconds() < interval_h * 3600:
+                            continue  # Not due yet
+                    except Exception:
+                        pass
+
+                # Get pending signals
+                lookback_days = config.get("interval_hours", 24) // 24 or 7
+                signals = get_pending_signals(kb_id, days=lookback_days)
+                if not signals:
+                    continue
+
+                # Check KB lock
+                kb_lock = self._get_kb_lock(kb_path)
+                if kb_lock.locked():
+                    continue
+
+                logger.info("Meditation: triggering for KB %s (%d signals)", kb_name, len(signals))
+
+                try:
+                    async with kb_lock:
+                        result = await agent_harness.synthesize_experiences(
+                            kb_path=kb_path,
+                            kb_id=kb_id,
+                            signals=signals,
+                            kb_config=config,
+                            trigger="scheduled",
+                        )
+                    report["results"].append({
+                        "kb_id": kb_id,
+                        "kb_name": kb_name,
+                        "result": result,
+                    })
+                    if result.get("success"):
+                        report["kbs_meditated"] += 1
+                        report["experiences_created"] += len(result.get("experiences", []))
+                        report["drafts_created"] += len(result.get("drafts", []))
+
+                        # Mark signals as derived
+                        from app.services.meditation_db import mark_signals_derived
+                        signal_ids = [s.get("id") for s in signals if s.get("id")]
+                        if signal_ids:
+                            mark_signals_derived(signal_ids)
+
+                        # Update KB YAML metadata
+                        from app.services.kb_meditation_config import update_meditation_config
+                        update_meditation_config(kb_id, {
+                            "last_run_at": self._last_run.isoformat(),
+                            "last_run_status": "success",
+                            "total_runs": config.get("total_runs", 0) + 1,
+                            "total_experiences_generated": config.get("total_experiences_generated", 0) + len(result.get("experiences", [])) + len(result.get("drafts", [])),
+                        })
+                    else:
+                        report["errors"].append(f"{kb_name}: {result.get('error', 'unknown')}")
+                        from app.services.kb_meditation_config import update_meditation_config
+                        update_meditation_config(kb_id, {
+                            "last_run_at": self._last_run.isoformat(),
+                            "last_run_status": "failed",
+                            "total_runs": config.get("total_runs", 0) + 1,
+                        })
+
+                except Exception as e:
+                    logger.exception("Meditation failed for KB %s: %s", kb_name, e)
+                    report["errors"].append(f"{kb_name}: {e}")
+
+            self._last_result = report
+            logger.info("KB-aware meditation complete: scanned=%d meditated=%d exp=%d drafts=%d errors=%d",
+                        report["kbs_scanned"], report["kbs_meditated"],
+                        report["experiences_created"], report["drafts_created"],
+                        len(report["errors"]))
+            return report
+
+        except Exception as e:
+            logger.exception("KB-aware meditation cycle failed")
+            report["error"] = str(e)
+            self._last_result = report
+            return report
+
     # ── Meditation Cycle ───────────────────────────────────────────────
 
-    async def run_meditation_now(self) -> dict:
+    async def run_meditation_now(self, kb_id: str | None = None) -> dict:
         """Run one meditation cycle. Returns a report dict.
+
+        Args:
+            kb_id: If provided, only meditate on this specific KB.
+                  If None, run for all KBs (subject to per-KB enabled config).
 
         Steps:
           1. Harvest question clusters from chat DB
-          2. Load KB catalog
+          2. Load KB catalog (optionally filter to kb_id)
           3. For each cluster ≥ min_cluster_count:
              a. Match to KB
              b. Vector-search KB for answer docs
@@ -361,9 +682,13 @@ class ExperienceMeditationScheduler:
              e. Create draft
           4. Return report
         """
-        if self._running:
+        if self._lock.locked():
             return {"success": False, "error": "Meditation already running"}
-        self._running = True
+        async with self._lock:
+            return await self._run_meditation_cycle(kb_filter=kb_id)
+
+    async def _run_meditation_cycle(self, kb_filter: str | None = None) -> dict:
+        """Core meditation cycle logic (called under lock)."""
         self._last_run = datetime.now(timezone.utc)
 
         cfg = config.experience_auto_config
@@ -408,6 +733,19 @@ class ExperienceMeditationScheduler:
                 for f in tree.get("folders", [])
                 if f.get("isKnowledgeBase")
             ]
+            # Apply optional KB filter
+            if kb_filter:
+                kbs = [
+                    k for k in kbs
+                    if k["id"] == kb_filter or k["path"] == kb_filter
+                    or k["path"].replace("\\", "/") == kb_filter.replace("\\", "/")
+                ]
+                if not kbs:
+                    report["summary"] = f"KB not found or not a knowledge base: {kb_filter}"
+                    report["error"] = "kb_not_found"
+                    self._last_result = report
+                    return report
+                logger.info("Meditation: filtered to single KB: %s", kbs[0]["name"])
             if not kbs:
                 report["summary"] = "No knowledge bases found."
                 self._last_result = report
@@ -429,12 +767,15 @@ class ExperienceMeditationScheduler:
                     continue
                 report["kb_matched"] += 1
 
-                # 3b. Search KB for answer docs (real content verification)
+                # 3b. Search KB for answer docs (run in executor to avoid blocking)
                 try:
                     from app.services.vector_service import vector_service
-                    results = vector_service.search(
-                        query=cluster["representative"],
-                        kb_id=kb_path, top_k=3, score_threshold=0.3,
+                    results = await asyncio.get_event_loop().run_in_executor(
+                        None,
+                        lambda: vector_service.search(
+                            query=cluster["representative"],
+                            kb_id=kb_path, top_k=3, score_threshold=0.3,
+                        )
                     )
                 except Exception as e:
                     logger.warning("Meditation: vector search failed for '%s': %s",
@@ -446,7 +787,7 @@ class ExperienceMeditationScheduler:
                         f"{cluster['representative'][:60]} (no docs found)")
                     continue
 
-                # Collect verified doc paths + snippets (REAL KB content)
+                # Collect verified doc paths + snippets
                 related_docs = []
                 doc_snippets = []
                 for r in results[:3]:
@@ -465,13 +806,21 @@ class ExperienceMeditationScheduler:
                     existing = await experience_service.search_experiences(
                         kb_path, cluster["representative"], top_k=3)
                     exps = existing.get("experiences", [])
-                    if exps and any(e.get("_score", 0) > 0.6 for e in exps):
+                    cluster_tokens = _tokenize(cluster["representative"])
+                    covered = False
+                    for e in exps:
+                        exp_text = f"{e.get('title','')} {e.get('scenario','')} {e.get('problem','')}".lower()
+                        token_matches = sum(1 for t in cluster_tokens if t.lower() in exp_text)
+                        if token_matches >= 2:
+                            covered = True
+                            break
+                    if covered:
                         report["already_covered"] += 1
                         report["skipped_covered"].append(
                             cluster["representative"][:80])
                         continue
                 except Exception:
-                    pass  # Non-fatal — proceed to draft creation
+                    pass
 
                 # 3d. Build draft from verified doc content
                 solution_parts = []
@@ -480,12 +829,9 @@ class ExperienceMeditationScheduler:
                 solution = "\n\n".join(solution_parts) if solution_parts else \
                     "从知识库文档中自动归纳，待审核时精炼。"
 
-                # Extract key lessons from doc snippets (bilingual heuristic)
                 _LESSON_KW = (
-                    # Chinese signal words for actionable sentences
                     "建议", "应该", "需要", "注意", "必须", "关键", "确保",
                     "避免", "推荐", "最佳", "重要", "首先", "核心", "步骤",
-                    # English signal words for actionable sentences
                     "recommend", "should", "must", "key", "important",
                     "ensure", "avoid", "critical", "best", "essential",
                     "first", "always", "never", "use", "apply", "implement",
@@ -493,7 +839,6 @@ class ExperienceMeditationScheduler:
                 )
                 key_lessons = []
                 for snip in doc_snippets:
-                    # Split on sentence boundaries (CN + EN + markdown)
                     sentences = re.split(r'[.。！？\n;；]|(?:\d+[.)]\s)', snip)
                     for s in sentences:
                         s = s.strip().lstrip('-*• ')
@@ -505,7 +850,6 @@ class ExperienceMeditationScheduler:
                     if len(key_lessons) >= 3:
                         break
                 if not key_lessons:
-                    # Fallback: extract longest informative sentences as proto-lessons
                     all_sents = sorted(
                         [s.strip() for snip in doc_snippets
                          for s in re.split(r'[.。！？\n]', snip)
@@ -514,7 +858,6 @@ class ExperienceMeditationScheduler:
                     key_lessons = all_sents[:2] if all_sents else \
                         ["待审核时从文档中提炼具体可执行教训。"]
 
-                # Derive scenario from representative question
                 tokens = _tokenize(cluster["representative"])
                 scenario = "auto-" + "-".join(list(tokens)[:3]) if tokens else "auto-meditation"
                 scenario = re.sub(r'[^a-zA-Z0-9\u4e00-\u9fff-]', '', scenario)[:60]
@@ -552,7 +895,6 @@ class ExperienceMeditationScheduler:
                     report["drafts_created"] = drafts_made
                     continue
 
-                # 3e. Create draft in review pool
                 try:
                     r = await experience_service.save_draft(kb_path, draft_data)
                     if r.get("success"):
@@ -585,8 +927,6 @@ class ExperienceMeditationScheduler:
             report["error"] = str(e)
             self._last_result = report
             return report
-        finally:
-            self._running = False
 
 
 # Singleton

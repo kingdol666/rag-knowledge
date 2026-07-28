@@ -108,40 +108,70 @@ class ExperienceService:
             return False
 
     def _generate_markdown(self, exp: dict) -> str:
-        """从经验元数据生成 Markdown 正文。"""
+        """Generate Skill-like Markdown body from experience metadata.
+
+        Format: YAML frontmatter + structured sections (触发场景/诊断/方案/教训/关联文档).
+        Compatible with both manual and auto-generated experiences.
+        """
         lines = []
+
+        # ── YAML Frontmatter (for vector index + retrieval metadata) ──
+        lines.append("---")
+        lines.append(f"id: {exp.get('id', '')}")
+        lines.append(f"title: \"{exp.get('title', '')}\"")
+        lines.append(f"scenario: {exp.get('scenario', '')}")
+        lines.append(f"category: {exp.get('category', 'tip')}")
+        lines.append(f"severity: {exp.get('severity', 'normal')}")
+        tags = exp.get('tags', [])
+        lines.append(f"tags: [{', '.join(tags)}]")
+        lines.append(f"kb: {exp.get('kb_path', '')}")
+        lines.append(f"auto_extracted: {exp.get('auto_extracted', False)}")
+        lines.append(f"harness: {exp.get('harness', 'manual')}")
+        lines.append(f"confidence: {exp.get('confidence', 1.0)}")
+        lines.append(f"vetted: {exp.get('vetted', True)}")
+        lines.append(f"created_at: {exp.get('created_at', '')}")
+        lines.append(f"applied_count: {exp.get('applied_count', 0)}")
+        lines.append(f"rating_avg: {exp.get('rating_avg', 0.0)}")
+        lines.append("---")
+        lines.append("")
+
+        # ── Title ──
         lines.append(f"# {exp.get('title', '')}")
         lines.append("")
-        lines.append("## 经验概览")
-        lines.append(f"- **知识库**: {exp.get('kb_path', '')}")
-        lines.append(f"- **类别**: {exp.get('category', 'tip')}")
-        lines.append(f"- **严重程度**: {exp.get('severity', 'normal')}")
-        lines.append(f"- **场景**: {exp.get('scenario', '')}")
-        lines.append(f"- **创建时间**: {exp.get('created_at', '')}")
-        lines.append("")
+
+        # ── 触发场景 ──
         if exp.get("problem"):
-            lines.append("## 问题")
+            lines.append("## 触发场景")
             lines.append(exp["problem"])
             lines.append("")
+
+        # ── 诊断/方案 ──
         if exp.get("solution"):
-            lines.append("## 方案")
+            lines.append("## 解决方案")
             lines.append(exp["solution"])
             lines.append("")
+
+        # ── 关键教训（可独立引用）──
         if exp.get("key_lessons"):
-            lines.append("## 关键教训")
-            for i, lesson in enumerate(exp["key_lessons"], 1):
-                lines.append(f"{i}. {lesson}")
+            lines.append("## 关键教训（可独立引用）")
+            for lesson in exp["key_lessons"]:
+                lines.append(f"- **{lesson[:80]}{'...' if len(lesson) > 80 else ''}**")
             lines.append("")
+
+        # ── 关联文档 ──
         if exp.get("related_docs"):
-            lines.append("## 关联知识")
+            lines.append("## 关联文档")
             for doc in exp["related_docs"]:
-                lines.append(f"- 📄 {doc}")
+                lines.append(f"- \U0001f4c4 {doc}")
             lines.append("")
+
+        # ── 量化指标 ──
         if exp.get("metrics"):
             lines.append("## 量化指标")
             for k, v in exp["metrics"].items():
                 lines.append(f"- **{k}**: {v}")
             lines.append("")
+
         lines.append("---")
         lines.append(f"*经验 ID: {exp.get('id', '')}*")
         return "\n".join(lines)
@@ -206,6 +236,14 @@ class ExperienceService:
             "related_docs": data.related_docs,
             "prerequisites": data.prerequisites,
             "metrics": data.metrics,
+            # ── Meditation / auto-extraction fields ──
+            "auto_extracted": getattr(data, "auto_extracted", False),
+            "harness": getattr(data, "harness", "manual"),
+            "confidence": getattr(data, "confidence", 1.0),
+            "source_questions": getattr(data, "source_questions", []),
+            "source_cluster_count": getattr(data, "source_cluster_count", 0),
+            "vetted": getattr(data, "vetted", True),
+            "meditation_run_id": getattr(data, "meditation_run_id", ""),
             "author": "",
             "created_at": now,
             "updated_at": now,
@@ -504,6 +542,8 @@ class ExperienceService:
                 # 只保留最近 100 条
                 if len(apply_records) > 100:
                     exp["apply_records"] = apply_records[-100:]
+                # ── Vetted upgrade path (4.1): auto-extracted + 2 applies + 4.0 rating → vetted ──
+                self._check_vetted_upgrade(exp)
                 self._write_index(kb_path, index)
                 return {"success": True, "experience": exp, "apply_record": req.model_dump()}
         return {"success": False, "error": f"Experience not found: {exp_id}"}
@@ -521,9 +561,49 @@ class ExperienceService:
                 exp["rating_avg"] = round(((old_avg * old_count) + req.rating) / new_count, 2)
                 exp["review_count"] = new_count
                 exp["updated_at"] = datetime.now(timezone.utc).isoformat()
+                # ── Low-rating auto-downgrade (4.2): 3+ reviews + avg < 2.0 → disputed ──
+                self._check_low_rating_downgrade(exp)
+                # ── Vetted upgrade check after review ──
+                self._check_vetted_upgrade(exp)
                 self._write_index(kb_path, index)
                 return {"success": True, "experience": exp, "review_record": req.model_dump()}
         return {"success": False, "error": f"Experience not found: {exp_id}"}
+
+    # ── Evolution: Vetted upgrade + Low-rating downgrade ──────────────
+
+    @staticmethod
+    def _check_vetted_upgrade(exp: dict) -> None:
+        """4.1: Auto-extracted experience with enough evidence becomes vetted.
+
+        Conditions: auto_extracted=True AND NOT vetted AND applied>=2 AND rating>=4.0
+        Effect: vetted=True, can break through P1 cap to P0.
+        """
+        if exp.get("vetted", True):
+            return  # Already vetted
+        if not exp.get("auto_extracted", False):
+            return  # Manual experiences are already vetted
+        applied = exp.get("applied_count", 0)
+        rating = exp.get("rating_avg", 0.0)
+        reviews = exp.get("review_count", 0)
+        if applied >= 2 and rating >= 4.0 and reviews >= 1:
+            exp["vetted"] = True
+            logger.info("Experience %s upgraded to vetted (applied=%d, rating=%.1f)",
+                        exp.get("id"), applied, rating)
+
+    @staticmethod
+    def _check_low_rating_downgrade(exp: dict) -> None:
+        """4.2: Low-rated experience gets disputed flag.
+
+        Conditions: review_count>=3 AND rating_avg<2.0
+        Effect: decay_flag="disputed", vetted=False → capped at P2.
+        """
+        reviews = exp.get("review_count", 0)
+        rating = exp.get("rating_avg", 0.0)
+        if reviews >= 3 and rating < 2.0:
+            exp["decay_flag"] = "disputed"
+            exp["vetted"] = False
+            logger.info("Experience %s flagged as disputed (reviews=%d, rating=%.1f)",
+                        exp.get("id"), reviews, rating)
 
     async def experience_summary(self, kb_id: str) -> dict:
         kb_path = self._resolve_kb_path(kb_id)
@@ -890,32 +970,51 @@ class ExperienceService:
 
     @staticmethod
     def _tier_experience(vector_score: float, content_score: int,
-                          rating: float, applied: int, review_count: int) -> tuple[str, str]:
-        """可信度定级（与 experience skill E5 模型对齐）。
+                          rating: float, applied: int, review_count: int,
+                          decay_flag: str = "", vetted: bool = True) -> tuple[str, str]:
+        """Credibility tier with decay_flag and vetted awareness.
 
-        P0 Strong:   vector≥0.65 ∧ content≥6 ∧ rating≥4
-        P1 Reference: vector≥0.45 ∧ content≥4
-        P2 Weak:     vector≥0.35 ∧ content≥3 （默认抑制）
-        Discard:     其他
-        返回 (tier, reason)。
+        P0 Strong:   vector>=0.65 ∧ content>=6 ∧ rating>=4 ∧ vetted=True
+        P1 Reference: vector>=0.45 ∧ content>=4
+        P2 Weak:     vector>=0.35 ∧ content>=3 (default suppressed)
+        Discard:     otherwise
+
+        Decay penalties applied BEFORE tier assignment:
+          - stale_unverified: vector_score *= 0.7
+          - disputed: capped at P2 max
+        Unvetted (auto_extracted): capped at P1 max
         """
-        # 衰减修正：低评分/未评审压低层级
+        # Apply decay penalty to vector score
+        effective_score = vector_score
+        decay_mod = ""
+        if decay_flag == "stale_unverified":
+            effective_score *= 0.7
+            decay_mod = " [stale_unverified x0.7]"
+        elif decay_flag == "disputed":
+            decay_mod = " [disputed->max P2]"
+
         credibility_mod = ""
         if review_count >= 3 and rating < 2.0:
-            credibility_mod = " [disputed→max P2]"
-        elif review_count == 0 and applied == 0:
-            credibility_mod = " [unvetted→max P1]"
+            credibility_mod = " [disputed->max P2]"
+        elif not vetted:
+            credibility_mod = " [unvetted->max P1]"
 
-        if vector_score >= 0.65 and content_score >= 6 and rating >= 4 and review_count >= 1:
-            return "P0", f"vector={vector_score:.2f} content={content_score} rating={rating}" + credibility_mod
-        if vector_score >= 0.45 and content_score >= 4:
-            # unvetted 经验最高 P1
-            if credibility_mod and "disputed" in credibility_mod:
-                return "P2", f"disputed downgraded (vector={vector_score:.2f} content={content_score})"
-            return "P1", f"vector={vector_score:.2f} content={content_score} rating={rating}" + credibility_mod
-        if vector_score >= 0.35 and content_score >= 3:
-            return "P2", f"weak (vector={vector_score:.2f} content={content_score})" + credibility_mod
-        return "DISCARD", f"vector={vector_score:.2f} content={content_score} below threshold"
+        # Disputed always capped at P2
+        if decay_flag == "disputed" or (review_count >= 3 and rating < 2.0):
+            if effective_score >= 0.35 and content_score >= 3:
+                return "P2", f"disputed (vector={effective_score:.2f} content={content_score})" + decay_mod
+            return "DISCARD", f"disputed below threshold (vector={effective_score:.2f} content={content_score})" + decay_mod
+
+        if effective_score >= 0.65 and content_score >= 6 and rating >= 4 and review_count >= 1 and vetted:
+            return "P0", f"vector={effective_score:.2f} content={content_score} rating={rating} vetted" + decay_mod
+        if effective_score >= 0.45 and content_score >= 4:
+            if not vetted and effective_score >= 0.65 and content_score >= 6:
+                # Unvetted high quality still capped at P1
+                pass
+            return "P1", f"vector={effective_score:.2f} content={content_score} rating={rating}" + credibility_mod
+        if effective_score >= 0.35 and content_score >= 3:
+            return "P2", f"weak (vector={effective_score:.2f} content={content_score})" + credibility_mod
+        return "DISCARD", f"vector={effective_score:.2f} content={content_score} below threshold"
 
     async def search_experiences_global(self, query: str, top_k: int = 10,
                                          score_threshold: float | None = None,
@@ -1075,13 +1174,14 @@ class ExperienceService:
                 else:
                     content_score = 4 if vector_score >= 0.55 else 3
                 relevant = True
-
-            # ── Step 5: 可信度定级 ──
             rating = exp.get("rating_avg", 0)
             applied = exp.get("applied_count", 0)
             review_count = exp.get("review_count", 0)
+            decay_flag = exp.get("decay_flag", "")
+            vetted = exp.get("vetted", True)
             tier, tier_reason = self._tier_experience(
-                vector_score, content_score, rating, applied, review_count)
+                vector_score, content_score, rating, applied, review_count,
+                decay_flag=decay_flag, vetted=vetted)
 
             if tier == "DISCARD":
                 continue
@@ -1372,6 +1472,13 @@ class ExperienceService:
             key_lessons=draft.get("key_lessons", []), tags=draft.get("tags", []),
             severity=draft.get("severity", "normal"), related_docs=draft.get("related_docs", []),
             prerequisites=draft.get("prerequisites", []), metrics=draft.get("metrics", {}),
+            auto_extracted=draft.get("auto_extracted", True),
+            harness=draft.get("harness", "manual"),
+            confidence=draft.get("confidence", 1.0),
+            source_questions=draft.get("source_questions", []),
+            source_cluster_count=draft.get("source_cluster_count", 0),
+            vetted=True,  # Manually approved → vetted
+            meditation_run_id=draft.get("meditation_run_id", ""),
         )
         r = await self.create_experience(kb_id, create_data)
         if r.get("success"):
