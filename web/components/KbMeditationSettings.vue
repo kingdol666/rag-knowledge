@@ -183,6 +183,8 @@ import { message } from 'ant-design-vue'
 import { ExperimentOutlined, ThunderboltOutlined, SaveOutlined } from '@ant-design/icons-vue'
 import type { MeditationConfig, MeditationRunStatus } from '~/types/knowledge-base-yaml'
 
+const { $t: $t_ } = useNuxtApp()
+
 const props = defineProps<{
   activeKbId: string
 }>()
@@ -221,10 +223,8 @@ const harnessStatus = ref<Record<string, { installed: boolean; version?: string 
 // Real OMP models fetched from backend
 const ompModels = ref<Array<{ id: string; name: string; provider: string }>>([])
 const modelsLoading = ref(false)
-
 // Dynamic model list based on harness
 const availableModels = computed(() => {
-  const { $t: $t_ } = useNuxtApp()
   const defaultOption = { value: '', label: $t_('meditation.modelDefault') }
   if (config.value.harness === 'omp' && ompModels.value.length > 0) {
     const ompList = ompModels.value.map(m => ({
