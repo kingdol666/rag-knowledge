@@ -460,7 +460,7 @@
     <!-- Meditation settings drawer -->
     <a-drawer
       v-model:open="showMeditationSettings"
-      title="知识库冥想设置"
+      :title="$t('meditation.configTitle')"
       placement="right"
       :width="460"
       class="meditation-drawer"

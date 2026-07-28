@@ -561,6 +561,57 @@ body {
 .ant-table-wrapper { border-radius: var(--kb-radius); }
 
 /* ============================================================
+ * FORM + DRAWER + DESCRIPTIONS
+ * Ensures all Ant Design sub-components inherit theme colors
+ * correctly in both light and dark modes.
+ * ============================================================ */
+
+/* —— Form labels —— */
+.ant-form-item-label > label {
+  color: var(--kb-fg) !important;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+/* —— Descriptions (bordered — used in meditation status) —— */
+.ant-descriptions-bordered .ant-descriptions-item-label {
+  background: var(--kb-bg-subtle) !important;
+  color: var(--kb-fg-3) !important;
+  font-weight: 500;
+}
+.ant-descriptions-bordered .ant-descriptions-item-content {
+  background: var(--kb-bg-elevated) !important;
+  color: var(--kb-fg) !important;
+}
+
+/* —— InputNumber —— */
+.ant-input-number .ant-input-number-input { color: var(--kb-fg) !important; }
+.ant-input-number {
+  background: var(--kb-bg-elevated) !important;
+  border-color: var(--kb-border-strong) !important;
+}
+
+/* —— Select selected value —— */
+.ant-select-selection-item { color: var(--kb-fg) !important; }
+
+/* —— Tags (both themes) —— */
+.ant-tag { color: var(--kb-fg-2); }
+.ant-tag-default {
+  color: var(--kb-fg-2) !important;
+  background: var(--kb-bg-subtle) !important;
+  border-color: var(--kb-border) !important;
+}
+
+/* —— Spin —— */
+.ant-spin-dot-item { background-color: var(--kb-primary) !important; }
+
+/* —— Drawer body —— */
+.ant-drawer-body { color: var(--kb-fg) !important; }
+
+/* —— Modal confirm —— */
+.ant-modal-confirm-body .ant-modal-confirm-content { color: var(--kb-fg-2) !important; }
+
+/* ============================================================
  * MARKDOWN PROSE — .markdown-body
  * ============================================================ */
 .markdown-body {
