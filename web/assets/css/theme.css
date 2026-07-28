@@ -634,12 +634,123 @@ body {
 /* —— Select selected value —— */
 .ant-select-selection-item { color: var(--kb-fg) !important; }
 
-/* —— Tags (both themes) —— */
+/* —— Tags (comprehensive — all colored variants + dark mode) —— */
 .ant-tag { color: var(--kb-fg-2); }
 .ant-tag-default {
   color: var(--kb-fg-2) !important;
   background: var(--kb-bg-subtle) !important;
   border-color: var(--kb-border) !important;
+}
+/* Colored tags: dark backgrounds + white text on dark theme via CSS vars */
+.ant-tag-green {
+  color: #1d4a1d !important;
+  background: #d4edd4 !important;
+  border-color: #a3d4a3 !important;
+}
+.ant-tag-blue {
+  color: #1a3a5c !important;
+  background: #d4e6f8 !important;
+  border-color: #a3c8e8 !important;
+}
+.ant-tag-red {
+  color: #5c1a1a !important;
+  background: #f8d4d4 !important;
+  border-color: #e8a3a3 !important;
+}
+.ant-tag-orange {
+  color: #5c3a1a !important;
+  background: #f8e8d4 !important;
+  border-color: #e8c8a3 !important;
+}
+.ant-tag-purple {
+  color: #3a1a5c !important;
+  background: #e8d4f8 !important;
+  border-color: #c8a3e8 !important;
+}
+.ant-tag-cyan {
+  color: #1a4a5c !important;
+  background: #d4f0f8 !important;
+  border-color: #a3dce8 !important;
+}
+
+/* Dark mode: invert colored tags — dark bg + light text */
+[data-theme="dark"] .ant-tag-green {
+  color: #7ee07e !important;
+  background: #0f2610 !important;
+  border-color: #1d4a1d !important;
+}
+[data-theme="dark"] .ant-tag-blue {
+  color: #88c8f8 !important;
+  background: #0c1a2a !important;
+  border-color: #1a3a5c !important;
+}
+[data-theme="dark"] .ant-tag-red {
+  color: #f08888 !important;
+  background: #261010 !important;
+  border-color: #5c1a1a !important;
+}
+[data-theme="dark"] .ant-tag-orange {
+  color: #f0c888 !important;
+  background: #261a0e !important;
+  border-color: #5c3a1a !important;
+}
+[data-theme="dark"] .ant-tag-purple {
+  color: #c8a8f8 !important;
+  background: #1a0c26 !important;
+  border-color: #3a1a5c !important;
+}
+[data-theme="dark"] .ant-tag-cyan {
+  color: #88e0f0 !important;
+  background: #0c1e26 !important;
+  border-color: #1a4a5c !important;
+}
+
+/* —— Badge (count) —— */
+.ant-badge-count {
+  background: var(--kb-primary) !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+/* —— Switch text (ON/OFF labels) —— */
+.ant-switch-inner-checked { color: #fff !important; }
+.ant-switch-inner-unchecked { color: var(--kb-fg-3) !important; }
+
+/* —— Modal close X button —— */
+.ant-modal-close-x {
+  color: var(--kb-fg-3) !important;
+}
+.ant-modal-close-x:hover {
+  color: var(--kb-fg) !important;
+}
+
+/* —— Alert (dark mode fix) —— */
+[data-theme="dark"] .ant-alert-success {
+  background: #0c1e14 !important;
+  border-color: #1d4a1d !important;
+  color: #7ee07e !important;
+}
+[data-theme="dark"] .ant-alert-error {
+  background: #261010 !important;
+  border-color: #5c1a1a !important;
+  color: #f08888 !important;
+}
+[data-theme="dark"] .ant-alert-info {
+  background: #0c1a2a !important;
+  border-color: #1a3a5c !important;
+  color: #88c8f8 !important;
+}
+[data-theme="dark"] .ant-alert-warning {
+  background: #261a0e !important;
+  border-color: #5c3a1a !important;
+  color: #f0c888 !important;
+}
+[data-theme="dark"] .ant-alert-message { color: inherit !important; }
+[data-theme="dark"] .ant-alert-description { color: inherit !important; }
+
+/* —— Tabs active tab bg in dark mode —— */
+[data-theme="dark"] .ant-tabs-tab-active {
+  background: var(--kb-bg-subtle) !important;
 }
 
 /* —— Spin —— */
