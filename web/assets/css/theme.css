@@ -402,9 +402,49 @@ body {
 .ant-tooltip-arrow::before { background: var(--kb-shell-3) !important; }
 
 .ant-drawer-content { border-radius: var(--kb-radius-lg) 0 0 var(--kb-radius-lg); background: var(--kb-bg-elevated); }
-.ant-drawer-header { border-bottom: 1px solid var(--kb-border); background: var(--kb-bg-elevated); }
-.ant-drawer-title { color: var(--kb-fg); }
+.ant-drawer-header {
+  border-bottom: 1px solid var(--kb-border);
+  background: var(--kb-bg-elevated);
+  padding: 16px 24px;
+}
+.ant-drawer-title {
+  color: var(--kb-fg) !important;
+  font-weight: 600;
+  font-size: 16px;
+}
+.ant-drawer-close {
+  color: var(--kb-fg-2) !important;
+  background: transparent;
+  border: none;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all var(--kb-dur-fast) var(--kb-ease);
+}
+.ant-drawer-close:hover {
+  background: var(--kb-bg-subtle) !important;
+  color: var(--kb-fg) !important;
+}
+.ant-drawer-close:focus {
+  color: var(--kb-fg) !important;
+}
+.ant-drawer-close .anticon,
+.ant-drawer-close .anticon-close,
+.ant-drawer-close svg {
+  color: var(--kb-fg-2) !important;
+  fill: var(--kb-fg-2) !important;
+}
+.ant-drawer-close:hover .anticon,
+.ant-drawer-close:hover svg {
+  color: var(--kb-fg) !important;
+  fill: var(--kb-fg) !important;
+}
 .ant-drawer-wrapper-body { background: var(--kb-bg-elevated); }
+.ant-drawer-extra { color: var(--kb-fg-3); }
+.ant-drawer-body { color: var(--kb-fg) !important; }
 
 .ant-table { border-radius: var(--kb-radius); background: transparent; color: var(--kb-fg); }
 .ant-table-thead > tr > th {
