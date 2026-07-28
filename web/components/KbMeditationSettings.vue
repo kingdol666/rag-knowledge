@@ -5,24 +5,24 @@
       <div class="med-header">
         <div class="med-header-left">
           <ExperimentOutlined class="med-icon" />
-          <span class="med-title">冥想设置</span>
+          <span class="med-title">{{ $t('meditation.title') }}</span>
         </div>
-        <a-tag v-if="config.enabled" color="green">已启用</a-tag>
-        <a-tag v-else color="default">已停用</a-tag>
+        <a-tag v-if="config.enabled" color="green">{{ $t('meditation.enabled') }}</a-tag>
+        <a-tag v-else color="default">{{ $t('meditation.disabled') }}</a-tag>
       </div>
 
       <!-- Run status -->
       <div v-if="runStatus" class="med-status-bar">
         <a-descriptions size="small" :column="2" bordered>
-          <a-descriptions-item label="上次运行">{{ runStatus.last_run_at || '从未运行' }}</a-descriptions-item>
-          <a-descriptions-item label="上次状态">
-            <a-tag v-if="runStatus.last_run_status === 'completed'" color="green">完成</a-tag>
-            <a-tag v-else-if="runStatus.last_run_status === 'failed'" color="red">失败</a-tag>
-            <a-tag v-else-if="runStatus.last_run_status === 'running'" color="blue">运行中</a-tag>
+          <a-descriptions-item :label="$t('meditation.lastRun')">{{ runStatus.last_run_at || $t('meditation.neverRun') }}</a-descriptions-item>
+          <a-descriptions-item :label="$t('meditation.lastStatus')">
+            <a-tag v-if="runStatus.last_run_status === 'completed'" color="green">{{ $t('meditation.statusCompleted') }}</a-tag>
+            <a-tag v-else-if="runStatus.last_run_status === 'failed'" color="red">{{ $t('meditation.statusFailed') }}</a-tag>
+            <a-tag v-else-if="runStatus.last_run_status === 'running'" color="blue">{{ $t('meditation.statusRunning') }}</a-tag>
             <span v-else>{{ runStatus.last_run_status || '-' }}</span>
           </a-descriptions-item>
-          <a-descriptions-item label="总运行次数">{{ runStatus.total_runs }}</a-descriptions-item>
-          <a-descriptions-item label="生成经验">{{ runStatus.total_experiences_generated }}</a-descriptions-item>
+          <a-descriptions-item :label="$t('meditation.totalRuns')">{{ runStatus.total_runs }}</a-descriptions-item>
+          <a-descriptions-item :label="$t('meditation.totalExp')">{{ runStatus.total_experiences_generated }}</a-descriptions-item>
         </a-descriptions>
       </div>
 
@@ -30,37 +30,37 @@
       <a-form :model="config" layout="vertical" class="med-form">
         <a-row :gutter="16">
           <a-col :span="12">
-            <a-form-item label="启用冥想">
+            <a-form-item :label="$t('meditation.enableLabel')">
               <a-switch v-model:checked="config.enabled" />
-              <span class="form-hint ml-2">{{ config.enabled ? '自动运行已开启' : '手动触发' }}</span>
+              <span class="form-hint ml-2">{{ config.enabled ? $t('meditation.enabledHintOn') : $t('meditation.enabledHintOff') }}</span>
             </a-form-item>
           </a-col>
           <a-col :span="12">
-            <a-form-item label="自动发布">
+            <a-form-item :label="$t('meditation.autoPublish')">
               <a-switch v-model:checked="config.auto_publish" />
-              <span class="form-hint ml-2">高于置信度阈值时自动发布</span>
+              <span class="form-hint ml-2">{{ $t('meditation.autoPublishHint') }}</span>
             </a-form-item>
           </a-col>
         </a-row>
 
         <a-row :gutter="16">
           <a-col :span="12">
-            <a-form-item label="增量模式">
+            <a-form-item :label="$t('meditation.incremental')">
               <a-switch v-model:checked="config.incremental_enabled" />
-              <span class="form-hint ml-2">仅分析新增/变更文档</span>
+              <span class="form-hint ml-2">{{ $t('meditation.incrementalHint') }}</span>
             </a-form-item>
           </a-col>
           <a-col :span="12">
-            <a-form-item label="运行引擎">
+            <a-form-item :label="$t('meditation.harness')">
               <a-select v-model:value="config.harness" :loading="harnessLoading">
                 <a-select-option value="omp">
-                  OMP {{ harnessStatus.omp ? '✅' : '❌ 未安装' }}
+                  {{ $t('meditation.harnessOmp') }} {{ harnessStatus.omp ? '✅' : '❌' }}
                 </a-select-option>
                 <a-select-option value="claude">
-                  Claude Code {{ harnessStatus.claude ? '✅' : '⚠️ 需API Key' }}
+                  {{ $t('meditation.harnessClaude') }} {{ harnessStatus.claude ? '✅' : '⚠️' }}
                 </a-select-option>
                 <a-select-option value="heuristic">
-                  启发式（无LLM） {{ harnessStatus.heuristic ? '✅' : '' }}
+                  {{ $t('meditation.harnessHeuristic') }} {{ harnessStatus.heuristic ? '✅' : '' }}
                 </a-select-option>
               </a-select>
             </a-form-item>
@@ -69,7 +69,7 @@
 
         <a-row :gutter="16">
           <a-col :span="12">
-            <a-form-item label="模型">
+            <a-form-item :label="$t('meditation.model')">
               <a-select v-model:value="config.model">
                 <a-select-option
                   v-for="m in availableModels"
@@ -224,7 +224,8 @@ const modelsLoading = ref(false)
 
 // Dynamic model list based on harness
 const availableModels = computed(() => {
-  const defaultOption = { value: '', label: '引擎默认模型' }
+  const { $t: $t_ } = useNuxtApp()
+  const defaultOption = { value: '', label: $t_('meditation.modelDefault') }
   if (config.value.harness === 'omp' && ompModels.value.length > 0) {
     const ompList = ompModels.value.map(m => ({
       value: m.id,
@@ -360,7 +361,7 @@ onMounted(() => {
 
 .med-icon {
   font-size: 18px;
-  color: var(--kb-primary, #7c3aed);
+  color: var(--kb-primary);
 }
 
 .med-title {
@@ -376,7 +377,7 @@ onMounted(() => {
 }
 
 .form-hint {
-  color: var(--kb-fg-secondary, #888);
+  color: var(--kb-fg-3);
   font-size: 12px;
   margin-left: 8px;
 }
@@ -390,6 +391,6 @@ onMounted(() => {
   gap: 10px;
   margin-top: 20px;
   padding-top: 16px;
-  border-top: 1px solid var(--kb-border, #e8e8e8);
+  border-top: 1px solid var(--kb-border);
 }
 </style>
