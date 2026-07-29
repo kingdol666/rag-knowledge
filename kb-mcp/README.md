@@ -5,13 +5,13 @@
 </h1>
 
 <p align="center">
-  <strong>MCP Server · 66 Tools · KB Lifecycle · Search · Graph · Experience</strong><br/>
+  <strong>MCP Server · 71 Tools · KB Lifecycle · Search · Graph · Experience</strong><br/>
   <em>The MCP tool layer connecting Claude Code agents to the RAG Knowledge Platform</em>
 </p>
 
 <p align="center">
   <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick%20Start-3%20steps-blue?style=for-the-badge" /></a>
-  <a href="#-tools-66"><img src="https://img.shields.io/badge/MCP-66%20tools-blueviolet?style=for-the-badge" /></a>
+  <a href="#-tools-71"><img src="https://img.shields.io/badge/MCP-71%20tools-blueviolet?style=for-the-badge" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" /></a>
   <a href="#-tech-stack"><img src="https://img.shields.io/badge/Python-3.12-blue?style=for-the-badge" /></a>
   <a href="#-tech-stack"><img src="https://img.shields.io/badge/FastMCP-latest-9cf?style=for-the-badge" /></a>
@@ -30,7 +30,7 @@
 - [🌟 Overview](#-overview)
 - [🏗️ Architecture](#️-architecture)
 - [🚀 Quick Start](#-quick-start)
-- [🔌 Tools (66)](#-tools-66)
+- [🔌 Tools (71)](#-tools-71)
 - [📡 Client Library](#-client-library)
 - [⚙️ Configuration](#️-configuration)
 - [📁 Project Structure](#-project-structure)
@@ -40,7 +40,7 @@
 
 ## 🌟 Overview
 
-`kb-mcp` is the MCP (Model Context Protocol) server that bridges Claude Code (or any MCP-compatible agent) to the RAG Knowledge Platform. It provides **66 tools** organized into 11 categories — enough to manage every aspect of a production knowledge base without leaving the agent conversation.
+`kb-mcp` is the MCP (Model Context Protocol) server that bridges Claude Code (or any MCP-compatible agent) to the RAG Knowledge Platform. It provides **71 tools** organized into 11 categories — enough to manage every aspect of a production knowledge base without leaving the agent conversation.
 
 **Key principles:**
 
@@ -99,7 +99,7 @@ uv run python server.py --http
 
 > **Normally you don't run kb-mcp manually.** Claude Code auto-launches it via `../.mcp.json` when you open the project. The first `uv run` auto-syncs deps if needed. For global usage, `claude plugin install rag-knowledge` registers it in `~/.claude.json` → `mcpServers`.
 
-## 🔌 Tools (66)
+## 🔌 Tools (71)
 
 All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by domain:
 

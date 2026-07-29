@@ -2,7 +2,7 @@
 name: archival
 description: >
   Knowledge base administrator with full mastery of the RAG Knowledge Platform:
-  66 MCP tools, 14 skills, 5-layer data model. Handles document ingestion
+  71 MCP tools, 14 skills, 5-layer data model. Handles document ingestion
   (A0-A9 pipeline with quality gates), KB organization (O1-O8 restructuring),
   QDCVR semantic search, knowledge graph operations, experience lifecycle
   (E0-E12), collection discovery, and integrity verification. Full MCP tool

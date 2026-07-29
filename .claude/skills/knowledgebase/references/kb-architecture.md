@@ -79,21 +79,20 @@
 
 | 类别 | 工具数 | 代表工具 | 何时用 |
 |------|--------|---------|--------|
-| **KB CRUD** | 4 | `kb_create` `kb_list` `kb_update` `kb_delete` | 建库/列库/改库/删库 |
-| **KB Catalog** | 0 | (merged into kb_list/kb_get_documents lightweight mode) | 轻量列库（agent 第一步扫描） |
-| **文档读** | 2 | `kb_get_documents` `kb_doc_read` | 读元数据/读正文（检索后必读） |
-| **文档写** | 7 | `kb_doc_create` `kb_doc_save_parsed` `kb_doc_update_meta` `kb_doc_update_content` `kb_doc_delete` `kb_doc_batch_delete` `kb_doc_move` | 文档 CRUD |
-| **文件系统** | 3 | `fs_get_tree` `fs_get_children` `fs_upload_file` | 树结构/原始文件 (_stats in fs_get_tree) |
-| **解析** | 3 | `parse_doc` `parse_doc_batch` `parse_task_status` | PDF→MD（非阻塞）；`kb_doc_save_parsed` 归入文档写 |
+| **KB CRUD** | 6 | `kb_list` `kb_create` `kb_update` `kb_delete` `kb_search` `kb_get_documents` | 建库/列库/搜库/删库 |
+| **文档读写** | 8 | `kb_doc_read` `kb_doc_create` `kb_doc_save_parsed` `kb_doc_update_meta` `kb_doc_update_content` `kb_doc_delete` `kb_doc_batch_delete` `kb_doc_move` | 文档 CRUD（`save_parsed` 存解析产物） |
+| **文件系统** | 3 | `fs_get_tree` `fs_get_children` `fs_upload_file` | 树结构/原始文件 |
+| **解析** | 3 | `parse_doc` `parse_doc_batch` `parse_task_status` | PDF→MD（非阻塞） |
 | **标签** | 4 | `kb_tags_list` `kb_doc_update_tags` `kb_doc_get_by_tag` `kb_tags_cleanup` | 标签管理 |
-| **搜索** | 4 | `kb_search` `kb_search_vector` `kb_search_two_stage` `kb_search_stats` | 元数据/向量/两阶段/统计 |
+| **搜索** | 3 | `kb_search_vector` `kb_search_two_stage` `kb_search_stats` | 向量/两阶段/统计 |
 | **向量索引** | 4 | `kb_index_document` `kb_batch_index` `kb_reindex` `kb_cleanup_orphan_collections` | 索引管理 |
 | **图谱** | 11 | `kb_graph_search` `kb_graph_build` `kb_graph_kb_overview` `kb_graph_document` ... | Neo4j 图谱 |
-| **经验** | 20 | `experience_search_smart` `experience_search_global` `experience_create` `experience_rerank` ... | 经验库全生命周期 |
-| **项目** | 3 | `kb_project_status` `kb_project_start` `kb_project_update` | 服务生命周期 |
-| **健康** | 1 | `backend_status` | 预检 |
+| **经验** | 20 | `experience_search_smart` `experience_search_global` `experience_create` `experience_rerank` ... | 经验库全生命周期 (E0-E12) |
+| **冥想** | 5 | `experience_meditation_status` `experience_meditation_run` `experience_meditation_config_get/update` `experience_meditation_history` | 经验自动归纳（经验子系统的调度器） |
+| **项目** | 4 | `backend_status` `kb_project_status` `kb_project_start` `kb_project_update` | 服务生命周期 |
+| **健康** | — | (merged into 项目) | 预检（`backend_status`） |
 
-> 合计 66 工具。`kb_doc_save_parsed` 横跨解析+写入（解析产物落盘入库），归入文档写避免重复计数。
+> 合计 71 工具。`kb_doc_save_parsed` 横跨解析+写入（解析产物落盘入库），归入文档写避免重复计数。Meditation 5 个工具（status/run/config_get/config_update/history）是经验的自动归纳子系统。
 
 > **写入路径原则**：写操作（create/update/delete/move）必须走 MCP 工具（HTTP→后端→原子更新三层）。读操作可以直接读文件，但推荐用 MCP 工具保证一致性。
 

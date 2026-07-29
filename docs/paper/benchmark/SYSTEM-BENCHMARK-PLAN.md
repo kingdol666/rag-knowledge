@@ -6,7 +6,7 @@
 > **差异化王牌**: content-overrides-vector 原则 + 经验生命周期 E0-E12 + 完整 KB 生命周期管理 + **五层数据一致性模型** + **冥想自动归纳** + **多格式解析质量**
 > **必比对手**: CRAG, Self-RAG, MCP-Pyserini (RAGFlow/Dify 作为系统级对照)
 > **版本**: v6.0 Final · **最后更新**: 2026-07-29
-> **对齐系统**: RAG Knowledge Platform v2.3.0 · 73 MCP Tools · 14 Skills · 5-Layer Data Model
+> **对齐系统**: RAG Knowledge Platform v2.3.0 · 71 MCP Tools · 14 Skills · 5-Layer Data Model
 
 ---
 
@@ -415,7 +415,7 @@ Stage B: 系统级对比 (S1-S3 vs Ours)
     | 一致性模型 | ✗ | ✗ | ✗ | ✓ |
     | 冥想归纳 | ✗ | ✗ | ✗ | ✓ |
     | 标签管理 | ✗ | 部分 | ✗ | ✓ |
-    | Agent 工具 | ✗ | 部分 | ✗ | 73 MCP |
+    | Agent 工具 | ✗ | 部分 | ✗ | 71 MCP |
 ```
 
 #### 预期结果表 (Table 3 — 核心大表)

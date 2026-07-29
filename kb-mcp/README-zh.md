@@ -5,13 +5,13 @@
 </h1>
 
 <p align="center">
-  <strong>MCP 服务器 · 66 个工具 · KB 全生命周期 · 搜索 · 图谱 · 经验</strong><br/>
+  <strong>MCP 服务器 · 71 个工具 · KB 全生命周期 · 搜索 · 图谱 · 经验</strong><br/>
   <em>连接 Claude Code 代理与 RAG Knowledge Platform 的 MCP 工具层</em>
 </p>
 
 <p align="center">
   <a href="#-快速开始"><img src="https://img.shields.io/badge/%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B-3%20%E6%AD%A5-blue?style=for-the-badge" /></a>
-  <a href="#-工具66"><img src="https://img.shields.io/badge/MCP-66%20%E5%B7%A5%E5%85%B7-blueviolet?style=for-the-badge" /></a>
+  <a href="#-工具71"><img src="https://img.shields.io/badge/MCP-71%20%E5%B7%A5%E5%85%B7-blueviolet?style=for-the-badge" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" /></a>
   <a href="#-技术栈"><img src="https://img.shields.io/badge/Python-3.12-blue?style=for-the-badge" /></a>
   <a href="#-技术栈"><img src="https://img.shields.io/badge/FastMCP-latest-9cf?style=for-the-badge" /></a>
@@ -30,7 +30,7 @@
 - [🌟 概述](#-概述)
 - [🏗️ 架构](#️-架构)
 - [🚀 快速开始](#-快速开始)
-- [🔌 工具（66）](#-工具66)
+- [🔌 工具（71）](#-工具71)
 - [📡 客户端库](#-客户端库)
 - [⚙️ 配置](#️-配置)
 - [📁 项目结构](#-项目结构)
@@ -40,7 +40,7 @@
 
 ## 🌟 概述
 
-`kb-mcp` 是 MCP（Model Context Protocol）服务器，将 Claude Code（或任何 MCP 兼容代理）桥接到 RAG Knowledge Platform。提供 **66 个工具**，按 11 个类别组织 — 足以在不离开代理对话的情况下管理生产知识库的方方面面。
+`kb-mcp` 是 MCP（Model Context Protocol）服务器，将 Claude Code（或任何 MCP 兼容代理）桥接到 RAG Knowledge Platform。提供 **71 个工具**，按 11 个类别组织 — 足以在不离开代理对话的情况下管理生产知识库的方方面面。
 
 **核心原则：**
 
@@ -99,7 +99,7 @@ uv run python server.py --http
 
 > **通常无需手动运行 kb-mcp。** Claude Code 在打开项目时通过 `../.mcp.json` 自动启动。首次 `uv run` 自动同步依赖。全局使用时，`claude plugin install rag-knowledge` 将其注册到 `~/.claude.json` → `mcpServers`。
 
-## 🔌 工具（66）
+## 🔌 工具（71）
 
 所有工具可通过 `mcp__kb-mcp__*` 从任何 MCP 客户端访问。按领域组织：
 
