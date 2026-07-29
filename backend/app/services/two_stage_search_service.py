@@ -166,7 +166,7 @@ class TwoStageSearchService:
                 c.get("source", "keyword") for c in candidates
                 if _norm_path(c.get("doc_path", "")) == norm_doc_path
             ))
-            primary_source = stage1_sources[0] if stage1_sources else "keyword"
+            primary_source = stage1_sources[0] if stage1_sources else "vector"
 
             for chunk in chunks:
                 results.append({

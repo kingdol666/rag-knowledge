@@ -35,16 +35,22 @@
 
 ## 一致性不变量（atomic 保证）
 
-**每次 MCP CRUD 调用原子更新 ①②③**（后端保证三层同步）。但 ④⑤ 需显式触发：
+**每次 MCP CRUD 调用原子更新 ①②③**（后端保证三层同步）。④⑤（向量+图谱）行为如下：
 
-| 操作 | 自动同步 | 需手动触发 |
-|------|---------|-----------|
-| `kb_doc_create` / `kb_doc_save_parsed` | ①②③ | `kb_index_document` (→④) + `kb_graph_build` (→⑤) |
-| `kb_doc_update_content` | ①③ | `kb_index_document` (→④，内容变向量必须重算) |
-| `kb_doc_move` | ①②③ | `kb_index_document(target)` (→④) + 图谱清理 |
-| `kb_doc_delete` | ①②③ | 向量 collection 残留需 `kb_reindex(force=true)` 清理 |
+| 操作 | 自动同步 | 向量层④ | 图谱层⑤ | 说明 |
+|------|---------|---------|---------|------|
+| `kb_doc_create` | ①②③ | ✅ 自动（fire-and-forget auto-index） | ✅ 自动 | 创建后后台自动索引 |
+| `kb_doc_save_parsed` | ①②③ | ❌ 需手动 `kb_index_document` | ❌ 需手动 | **注意：与 create 不同，不自动索引** |
+| `kb_doc_update_content` | ①③ | ✅ 自动（auto-reindex，<1s） | ✅ 自动 | 内容变更后向量自动重算，新内容立即可搜 |
+| `kb_doc_update_tags` | ③ | 不影响④ | ✅ 自动（触发 graph reindex） | 标签变更同步图谱 |
+| `kb_doc_move` | ①②③ | ✅ 自动（目标端重索引） | 自动清理源端 | 移动后目标自动索引 |
+| `kb_doc_delete` | ①②③ | ✅ 自动清理 chunks | ✅ 自动清理图节点 | 删除彻底（向量不再残留） |
+| `kb_doc_batch_delete` | ①②③ | ✅ 自动 | ✅ 自动 | 同单删 |
 
-> ⚠️ **最常见的一致性破坏**：修改内容/移动文档后忘记重索引 → 向量层用旧 chunk → 搜索漏召回。`kb_doc_update_content` **不会**自动重索引。
+> ⚠️ **唯一需手动重索引的场景**：`kb_doc_save_parsed`（解析产物入库后须显式 `kb_index_document`）。
+> 旧版"update_content/delete/move 需手动重索引"的描述已**过时**——这些操作现已自动管理④⑤层。
+>
+> ⚠️ **并发索引安全**：auto-index 与显式 `kb_index_document` 现已加 per-collection 写锁串行化，无竞态。若仍遇"索引存在但搜不到"，`kb_reindex(force=true)` 可修复。
 
 ## KB 层级结构
 
@@ -58,6 +64,11 @@
 ```
 
 **关键坑**（⭐ 经实测验证）：
+- ⭐ **`kb_doc_update_content` 已自动重索引**（旧版需手动，现已自动 auto-reindex）。
+- ⭐ **`kb_doc_save_parsed` 不自动索引**（与 create 不同，必须显式 `kb_index_document`）。
+- ⭐ **`experience_search_smart` 支持 kb_id 参数**限定单库搜索。
+- ⭐ **`kb_search_two_stage` 的 stage2_top_k 严格生效**。
+- ⭐ **垃圾 tag 门控**：纯数字/单字符/章节标题被拒绝（返回 400）。
 - **父 KB 的 `kb_search_two_stage` 返回子 KB 容器条目（content 为空）** → 正确做法：用 **`kb_search_vector(kb_id=<父KB>)`** 检索真实内容（子 KB 文档的向量 chunk 存储在**父 KB collection** 下，搜子 KB UUID 返回 0 结果）。`kb_graph_kb_overview(kb_id)` 仅用于查看子 KB 结构/文档数，**不能**作为搜索入口。
 - `kb_get_documents(lightweight=true)` 无 type 字段区分文档 vs 子KB容器 → 用 `file_type: knowledge-base` 或 `fs_get_tree(max_depth=2)` 区分
 - `kb_graph_kb_overview.related_kbs[].name` 和 `sub_kbs[].name` 返回 UUID → 用 `kb_list(lightweight=true)` 回查可读名

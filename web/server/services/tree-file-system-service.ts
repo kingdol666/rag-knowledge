@@ -714,45 +714,49 @@ export class TreeFileSystemService {
         }
       }
       // Update YAML for knowledge-base folders (the .yml moved with dir rename)
-      if (folder.isKnowledgeBase) {
-        try {
-          const yamlData = await this.yamlService.read(newPath)
-          if (yamlData) {
-            yamlData.knowledge_base.path = newPath
-            yamlData.knowledge_base.root_path = join(this.basePath, newPath)
-            if (request.name) yamlData.knowledge_base.name = request.name
-            yamlData.knowledge_base.updated_at = now
-            // Rebuild YAML at new path with correct path info
-            const docs = [...(yamlData.documents || [])]
-            await this.yamlService.create(
-              newPath,
-              yamlData.knowledge_base.name,
-              request.description ?? yamlData.knowledge_base.description,
-              { id: yamlData.knowledge_base.id || folder.id }
-            )
-            if (docs.length > 0) {
-              // Rebase document paths from old KB path to new KB path
-              const oldPrefix = folder.path + (folder.path.includes('\\') ? '\\' : '/')
-              const newPrefix = newPath + (folder.path.includes('\\') ? '\\' : '/')
-              for (const d of docs) {
-                if (d.path && d.path.startsWith(oldPrefix)) {
-                  d.path = newPrefix + d.path.slice(oldPrefix.length)
-                }
+      try {
+        const yamlData = await this.yamlService.read(newPath)
+        if (yamlData) {
+          yamlData.knowledge_base.path = newPath
+          yamlData.knowledge_base.root_path = join(this.basePath, newPath)
+          if (request.name) yamlData.knowledge_base.name = request.name
+          yamlData.knowledge_base.updated_at = now
+          // Rebuild YAML at new path with correct path info
+          const docs = [...(yamlData.documents || [])]
+          await this.yamlService.create(
+            newPath,
+            yamlData.knowledge_base.name,
+            request.description ?? yamlData.knowledge_base.description,
+            { id: yamlData.knowledge_base.id || folder.id }
+          )
+          if (docs.length > 0) {
+            // Rebase document paths from old KB path to new KB path
+            const norm = (p: string) => (p || '').replace(/\\/g, '/')
+            const oldPrefix = norm(folder.path) + '/'
+            const newPrefix = norm(newPath) + '/'
+            for (const d of docs) {
+              const np = norm(d.path)
+              if (np.startsWith(oldPrefix)) {
+                d.path = newPrefix + np.slice(oldPrefix.length)
+              } else {
+                // Fallback: rebuild path from basename
+                const base = np.split('/').pop() || d.path || d.name
+                d.path = newPrefix + base
               }
-              await this.yamlService.addDocuments(newPath, docs.map(d => ({
-                name: d.name,
-                description: d.description,
-                path: d.path,
-                fileType: d.file_type,
-                fileSize: d.file_size,
-                metadata: d.metadata || {},
-                tags: d.tags,
-              })))
             }
+            await this.yamlService.addDocuments(newPath, docs.map(d => ({
+              name: d.name,
+              description: d.description,
+              path: d.path,
+              fileType: d.file_type,
+              fileSize: d.file_size,
+              metadata: d.metadata || {},
+              tags: d.tags,
+            })))
           }
-        } catch {
-          // YAML may not exist yet; ok
         }
+      } catch {
+        // YAML may not exist yet; ok
       }
     }
 

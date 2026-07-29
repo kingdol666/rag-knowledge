@@ -105,6 +105,7 @@ export class TagManagementService {
       if (typeof t !== 'string') return null
       const trimmed = t.trim()
       if (!trimmed || trimmed.length > 50) return null
+      if (TagManagementService.isGarbageTag(trimmed)) return null
       clean.push(trimmed)
     }
     return clean
@@ -151,6 +152,12 @@ export class TagManagementService {
 
     // Truncation smell: ends with a space then truncated word
     if (/\s[a-zA-Z]{1,4}$/.test(s) && s.length < 22) return true
+
+    // T1e: numeric-only tag (e.g. "123")
+    if (/^\d+$/.test(s)) return true
+
+    // T1f: single-character tag (e.g. "x")
+    if (s.length === 1) return true
 
     return false
   }

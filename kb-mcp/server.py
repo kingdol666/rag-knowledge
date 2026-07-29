@@ -1069,7 +1069,8 @@ async def experience_search_global(query: str, top_k: int = 10,
 @mcp.tool()
 async def experience_search_smart(query: str, top_k: int = 10,
                                    score_threshold: float = None,
-                                   verify_content: bool = True) -> str:
+                                   verify_content: bool = True,
+                                   kb_id: str = "") -> str:
     """Intelligent multi-path experience retrieval -- the RECOMMENDED entry point for experience search.
 
     Enhances experience_search_global with:
@@ -1104,6 +1105,15 @@ async def experience_search_smart(query: str, top_k: int = 10,
     client = _client()
     result = await client.experience_search_global(
         query, top_k=top_k * 2, score_threshold=threshold, verify_content=verify_content)
+    # Scope to a single KB when kb_id is provided (default remains cross-KB/global)
+    if kb_id and isinstance(result, dict):
+        _kb_norm = kb_id.replace("\\", "/").strip()
+        _kept = [e for e in result.get("experiences", [])
+                 if _kb_norm in (str(e.get("kb_id", "")).replace("\\", "/"),
+                                 str(e.get("kb_path", "")).replace("\\", "/"))]
+        result["experiences"] = _kept
+        result["count"] = len(_kept)
+        result["scoped_kb_id"] = kb_id
 
     # Backend already reports rounds/degraded/threshold in its response;
     # we enrich with retrieval transparency but do NOT add our own rounds.
@@ -1629,9 +1639,14 @@ async def kb_search_two_stage(
                     if key not in seen or r.get("score", 0) > seen[key].get("score", 0):
                         seen[key] = r
             deduped = list(seen.values())
+            # FIX: cap total results at stage2_top_k so the parameter actually
+            # controls result count (previously returned up to top_k*candidates).
+            deduped = deduped[:stage2_top_k]
             stage2["results"] = deduped
             if "total_results" in stage2:
                 stage2["total_results"] = len(deduped)
+            if "total_results" in result:
+                result["total_results"] = len(deduped)
             result["stage2"] = stage2
     # P2.1: Auto-upgrade for cross-KB BM25 blind spot.
     # When searching across all KBs with empty kb_id and the two-stage

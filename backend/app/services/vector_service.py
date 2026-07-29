@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import logging
 from datetime import datetime, timezone
+import threading
 from pathlib import Path
 from typing import Any
 
@@ -62,9 +63,52 @@ class VectorService:
 
     # ── Collection 管理 ──────────────────────────────────────────
 
+    def _canonical_kb_id(self, kb_id: str) -> str:
+        """Return the UUID form of a kb_id.
+
+        UUID-like values pass through; path/name values resolve to their UUID
+        so collection naming is always kb_<UUID>. This prevents the
+        kb_<NAME> vs kb_<UUID> fragmentation where moved/updated documents
+        become invisible to vector search (root cause of BUG#2/BUG#5 in QA).
+        """
+        if not kb_id:
+            return kb_id
+        # UUID v4 heuristic: 36 chars with 4 dashes
+        if len(kb_id) == 36 and kb_id.count("-") == 4:
+            return kb_id
+        cache = getattr(self, "_kb_id_cache", None)
+        if cache is None:
+            cache = {}
+            self._kb_id_cache = cache
+        if kb_id in cache:
+            return cache[kb_id]
+        try:
+            from app.services.storage_reader_service import storage_reader
+            for kb in storage_reader.list_knowledge_bases():
+                if kb.get("path") == kb_id and kb.get("kb_id"):
+                    cache[kb_id] = kb["kb_id"]
+                    return kb["kb_id"]
+        except Exception:
+            pass
+        return kb_id
+
     def _collection_name(self, kb_id: str) -> str:
-        safe = "".join(c if c.isalnum() or c in "-_" else "_" for c in kb_id)
+        canonical = self._canonical_kb_id(kb_id)
+        safe = "".join(c if c.isalnum() or c in "-_" else "_" for c in canonical)
         return f"{config.vector_collection_prefix}{safe}"
+
+    # Per-collection write locks — serialize concurrent index_document calls
+    # on the same KB to prevent the ChromaDB concurrent-write race that left
+    # collections "counted but unqueryable" (auto-index vs explicit-index).
+    _collection_locks: dict = {}
+    _locks_guard = threading.Lock()
+
+    def _collection_lock(self, kb_id: str):
+        canonical = self._canonical_kb_id(kb_id)
+        with self._locks_guard:
+            if canonical not in self._collection_locks:
+                self._collection_locks[canonical] = threading.Lock()
+            return self._collection_locks[canonical]
 
     def _get_or_create_collection(self, kb_id: str):
         return self.client.get_or_create_collection(
@@ -146,27 +190,28 @@ class VectorService:
             return {}
 
         embeddings = embedding_service.embed(chunks)
-        collection = self._get_or_create_collection(kb_id)
-
-        self._delete_doc_chunks(collection, doc_path)
-
-        chunk_ids = [f"{doc_path}__chunk_{i}" for i in range(len(chunks))]
-        chunk_metadatas = [
-            {
-                "doc_path": doc_path,
-                "kb_id": kb_id,
-                "chunk_index": i,
-                "total_chunks": len(chunks),
-                **(metadata or {}),
-            }
-            for i in range(len(chunks))
-        ]
-        collection.upsert(
-            ids=chunk_ids,
-            embeddings=embeddings,
-            documents=chunks,
-            metadatas=chunk_metadatas,
-        )
+        # Per-collection lock: serialize concurrent writes to this KB's
+        # collection so the auto-index + explicit-index race can't corrupt it.
+        with self._collection_lock(kb_id):
+            collection = self._get_or_create_collection(kb_id)
+            self._delete_doc_chunks(collection, doc_path)
+            chunk_ids = [f"{doc_path}__chunk_{i}" for i in range(len(chunks))]
+            chunk_metadatas = [
+                {
+                    "doc_path": doc_path,
+                    "kb_id": kb_id,
+                    "chunk_index": i,
+                    "total_chunks": len(chunks),
+                    **(metadata or {}),
+                }
+                for i in range(len(chunks))
+            ]
+            collection.upsert(
+                ids=chunk_ids,
+                embeddings=embeddings,
+                documents=chunks,
+                metadatas=chunk_metadatas,
+            )
 
         vector_index = {
             "collection": self._collection_name(kb_id),

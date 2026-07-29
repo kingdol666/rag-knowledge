@@ -216,6 +216,18 @@ class GraphService:
                 MERGE (d:Document {graph_doc_id: $gid}) SET d.path=$doc_path, d.kb_id=$kb_id, d.name=$doc_name, d.description=$description, d.indexed_at=datetime(), d.schema_version=$sv
                 WITH d MERGE (kb:KnowledgeBase {kb_id: $kb_id}) SET kb.name = coalesce($kb_name, kb.name) MERGE (d)-[:BELONGS_TO]->(kb)
             """, gid=gid, doc_path=doc_path, kb_id=kb_id, doc_name=doc_name, description=description, sv=_GRAPH_SCHEMA_VERSION, kb_name=kb_name)
+        # Create Tag nodes + HAS_TAG edges (FIX: the tag relation layer was
+        # never built, so _relate_by_shared_tags queries always returned 0).
+        # First drop stale HAS_TAG edges so removed tags don't linger.
+        if tags:
+            session.run("MATCH (d:Document {graph_doc_id: $gid})-[r:HAS_TAG]->() DELETE r", gid=gid)
+            for _tag in set(str(t).strip() for t in tags if t and str(t).strip()):
+                session.run(
+                    "MATCH (d:Document {graph_doc_id: $gid}) "
+                    "MERGE (t:Tag {name: $tag}) "
+                    "MERGE (d)-[:HAS_TAG]->(t)",
+                    gid=gid, tag=_tag,
+                )
 
     def _relate_by_shared_tags(self, session, gid, kb_id, tags):
         """创建基于共享标签的关联，带质量过滤：
@@ -336,6 +348,13 @@ class GraphService:
                     actual_total_rels = rec["cnt"]
         except Exception as e:
             logger.warning("Post-build relation count query failed: %s", e)
+        # FIX: build vector_similar edges for this KB. Previously only the
+        # global build_all_graphs created similarity edges, so single-KB
+        # builds produced zero RELATED_TO edges between documents.
+        try:
+            self._build_vector_similarity_edges(force=force, kb_id=kb_id_resolved)
+        except Exception as e:
+            logger.warning("Single-KB vector similarity build failed: %s", e)
         return {"success": True, "kb_id": kb_id_resolved, "kb_path": kb_path, "docs_processed": total_docs, "docs_skipped": direct["docs_skipped"] + sum(s["docs_skipped"] for s in sub_results), "total_relations": actual_total_rels, "sub_kb_count": len(sub_kbs), "sub_kbs": sub_results, "errors": direct["errors"] + [e for s in sub_results for e in s["errors"]]}
 
     def _build_single_kb_docs(self, kb_id, kb_path, force, parent_kb_id=""):
@@ -360,7 +379,7 @@ class GraphService:
                 errors.append({"doc_path": doc_path, "reason": str(e)[:200]})
         return {"docs_processed": len(processed), "docs_skipped": len(skipped), "total_relations": total_relations, "processed": processed, "skipped": skipped, "errors": errors}
 
-    def _build_vector_similarity_edges(self, force=False) -> dict:
+    def _build_vector_similarity_edges(self, force=False, kb_id=None) -> dict:
         """读取所有文档内容，计算向量相似度，创建 vector_similar 关联边。
 
         使用 embedding 模型对每篇文档内容编码，然后在 ChromaDB 中搜索相似文档。
@@ -387,8 +406,14 @@ class GraphService:
             return {"enabled": False, "total_edges": 0, "cross_kb_edges": 0,
                     "errors": ["No vector/embedding service available"]}
 
-        # 收集所有文档
-        kbs = storage_reader.list_knowledge_bases()
+        # Collect docs: when kb_id is given, limit to that KB + descendants
+        # (as similarity sources); the similarity search itself stays cross-KB
+        # so intra-/cross-KB related docs are still discovered.
+        if kb_id:
+            _target_ids = set(storage_reader.resolve_kb_ids_with_children(kb_id))
+            kbs = [kb for kb in storage_reader.list_knowledge_bases() if kb["kb_id"] in _target_ids]
+        else:
+            kbs = storage_reader.list_knowledge_bases()
         all_docs = []  # [{path, kb_id, content, name, description, tags}]
         for kb in kbs:
             docs = storage_reader.list_documents(kb["path"])
