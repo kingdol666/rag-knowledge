@@ -10,7 +10,7 @@
 
 <p>
 <em>QDCVR Semantic Search &middot; Neo4j Knowledge Graph &middot; Experience Lifecycle (E0–E12)<br>
-76 MCP Tools (22 experience · 15 KB CRUD · 14 graph · 4 search · 4 tags · 4 index · 4 lifecycle · 4 vector · 4 parse · 3 fs · 2 catalog) &middot; 14 Agent Skills &middot; MinerU OCR &middot; Cross-Platform</em>
+71 MCP Tools (25 experience · 11 graph · 8 document · 4 service · 4 KB CRUD · 4 search · 4 vector/index · 4 parsing · 4 tags · 3 fs) &middot; 14 Agent Skills &middot; MinerU OCR &middot; Cross-Platform</em>
 </p>
 
 <p>
@@ -18,7 +18,7 @@
 &nbsp;
 <img src="https://img.shields.io/badge/Platform-Win_%7C_Linux_%7C_macOS-334155?style=for-the-badge&logo=linux" />
 &nbsp;
-<img src="https://img.shields.io/badge/MCP_Tools-76-8b5cf6?style=for-the-badge&logo=code" />
+<img src="https://img.shields.io/badge/MCP_Tools-71-8b5cf6?style=for-the-badge&logo=code" />
 &nbsp;
 <img src="https://img.shields.io/badge/Skills-14-f97316?style=for-the-badge&logo=openai" />
 </p>
@@ -62,7 +62,7 @@ This platform solves that at the **retrieval layer**, not the generation layer. 
 |:---:|:---|:---|
 | 🔍 | Single search strategy (vector *or* keyword) | **Multi-strategy**: BM25 + vector + tag-semantic + graph expansion |
 | 🧠 | Trust vector similarity blindly | **Content-verified retrieval** — independent 0–8 adjudication |
-| 🤖 | Bolt-on AI, hard to integrate with agents | **Agent-native**: 76 MCP tools, 14 skills — any MCP client works |
+| 🤖 | Bolt-on AI, hard to integrate with agents | **Agent-native**: 71 MCP tools, 14 skills — any MCP client works |
 | 💡 | No structured knowledge reuse | **Experience library**: E0–E12 lifecycle with P0/P1/P2 credibility |
 | 🔧 | Complex multi-tool setup, scattered configs | **One command** `ragctl setup`, single `config.yml` source of truth |
 | 🪟 | Terminal windows everywhere | **Silent headless** — zero terminals in dev *and* prod |
@@ -84,7 +84,7 @@ This platform solves that at the **retrieval layer**, not the generation layer. 
 | 🔍 | **Multi-strategy search** | BM25 + vector two-stage recall · cross-KB enterprise search · `balance_kbs` diversity guard |
 | 📊 | **Knowledge graph** | Neo4j-powered · 11 graph tools · entity/relation graphs · cross-KB document bridges |
 | 💡 | **Experience library** | E0–E12 lifecycle · structured problem→solution→lessons · P0/P1/P2 credibility · decay |
-| 🔌 | **76 MCP tools** | KB CRUD · search · graph · experience · parsing · tags · vector/index · lifecycle — all MCP-native |
+| 🔌 | **71 MCP tools** | KB CRUD · search · graph · experience · parsing · tags · vector/index · lifecycle — all MCP-native |
 | 🎯 | **14 agent skills** | Natural-language commands · bilingual triggers (中/EN) · auto-dispatch to Archival agent |
 | 🤫 | **Silent headless** | Every launcher runs with **zero terminal windows** · dev and prod behave identically |
 
@@ -122,7 +122,7 @@ ragctl up
 </details>
 
 > [!TIP]
-> **No Claude Code? No problem.** The Web UI is fully functional standalone. Use any MCP client to access 76 tools, or just browse/search at `http://localhost:6789`.
+> **No Claude Code? No problem.** The Web UI is fully functional standalone. Use any MCP client to access 71 tools, or just browse/search at `http://localhost:6789`.
 
 ### ✅ Verify Everything Works
 
@@ -147,7 +147,7 @@ All four end with the **same working platform**. Methods **A / B / C** are **age
 <tr>
 <td valign="top">
 
-You use **Claude Code** and want everything (skills + 76 MCP tools + commands) registered globally.
+You use **Claude Code** and want everything (skills + 71 MCP tools + commands) registered globally.
 
 ```bash
 # Run inside a Claude Code session:
@@ -242,7 +242,7 @@ Every phase is **incremental** — no re-installs, no re-downloads, no repeated 
 <details>
 <summary><b>💬 Right after init — start working with your KB in the same conversation</b></summary>
 
-The wizard hands you a healthy system and the commands to use it. Keep talking in the **same session** — the 76 MCP tools and 14 skills are live, so plain language works immediately:
+The wizard hands you a healthy system and the commands to use it. Keep talking in the **same session** — the 71 MCP tools and 14 skills are live, so plain language works immediately:
 
 ```text
 "list all knowledge bases"                              → knowledgebase-list (L1→L3)
@@ -368,26 +368,25 @@ Open **http://localhost:6789** — browse KBs, search documents, explore the gra
 
 ---
 
-## 🔌 MCP Tools — 76
+## 🔌 MCP Tools — 71
 
 All accessible via `mcp__kb-mcp__*` from Claude Code, OMP, or any MCP client.
 
 | Category | Count | Key tools |
 |----------|:-----:|-----------|
-| **Service lifecycle** | 5 | `kb_project_status` (runtime\|setup), `kb_project_start`, `kb_project_update`, `backend_status`, `kb_project_version` |
-| **KB CRUD + Catalog** | 6 | `kb_list` (lightweight), `kb_create`, `kb_update`, `kb_delete`, `kb_catalog`, `kb_doc_catalog` |
-| **Document CRUD** | 7 | `kb_doc_create`, `kb_doc_read`, `kb_doc_update_meta`, `kb_doc_update_content`, `kb_doc_delete`, `kb_doc_batch_delete`, `kb_doc_move` |
-| **File System** | 4 | `fs_get_tree`, `fs_get_children`, `fs_get_count`, `fs_upload_file` |
-| **Document Parsing** | 3 | `parse_doc`, `parse_doc_batch`, `parse_task_status` |
-| **Tags** | 4 | `kb_tags_list`, `kb_doc_update_tags`, `kb_doc_get_by_tag`, `kb_tags_cleanup` |
+| **Service lifecycle** | 4 | `backend_status`, `kb_project_status` (runtime\|setup), `kb_project_start`, `kb_project_update` |
+| **KB CRUD** | 4 | `kb_list` (lightweight), `kb_create`, `kb_update`, `kb_delete` |
+| **Document** | 8 | `kb_get_documents`, `kb_doc_read`, `kb_doc_create`, `kb_doc_update_meta`, `kb_doc_update_content`, `kb_doc_delete`, `kb_doc_batch_delete`, `kb_doc_move` |
+| **File System** | 3 | `fs_get_tree`, `fs_get_children`, `fs_upload_file` |
+| **Parsing** | 4 | `parse_doc`, `parse_doc_batch`, `parse_task_status`, `kb_doc_save_parsed` |
+| **Tags** | 4 | `kb_tags_list`, `kb_doc_update_tags`, `kb_tags_cleanup`, `kb_doc_get_by_tag` |
 | **Search** | 4 | `kb_search` (metadata), `kb_search_vector` (semantic), `kb_search_two_stage` (BM25→vector), `kb_search_stats` |
 | **Vector / Index** | 4 | `kb_index_document`, `kb_batch_index`, `kb_reindex`, `kb_cleanup_orphan_collections` |
-| **Knowledge Graph** | 14 | `kb_graph_search` · `kb_graph_kb_overview` · `kb_graph_build` · `kb_graph_build_all` · `kb_graph_document` · `kb_graph_document_related` · `kb_graph_document_paths` · `kb_graph_central_documents` · `kb_graph_cross_kb_documents` · `kb_graph_stats` · `kb_graph_health` · `kb_graph_delete_document` · `kb_graph_delete_kb` · `kb_graph_documents_by_tag` |
-| **Experience** | 22 | `experience_create` · `experience_read` · `experience_update` · `experience_delete` · `experience_list` · `experience_search_smart` (with kb\_id scope) · `experience_search_global` · `experience_summary` · `experience_dashboard` · `experience_extract` · `experience_review` · `experience_apply` · `experience_rerank` · `experience_check_stale` · `experience_sync_kb` · `experience_apply_decay` · `experience_drafts_list` · `experience_draft_read` · `experience_draft_approve` · `experience_draft_reject` · `experience_meditation_status` · `experience_meditation_run` · `experience_meditation_config_get` · `experience_meditation_config_update` · `experience_meditation_history` |
-| **Saved Parse** | 1 | `kb_doc_save_parsed` (parse→KB bridge) |
-| **Total** | **76** | All atomic — each does ONE thing; workflows belong to skills |
+| **Knowledge Graph** | 11 | `kb_graph_search` · `kb_graph_stats` · `kb_graph_document` · `kb_graph_document_related` · `kb_graph_kb_overview` · `kb_graph_build` · `kb_graph_cross_kb_documents` · `kb_graph_document_paths` · `kb_graph_central_documents` · `kb_graph_delete_document` · `kb_graph_delete_kb` |
+| **Experience** | 25 | `experience_create` · `experience_read` · `experience_list` · `experience_update` · `experience_delete` · `experience_apply` · `experience_review` · `experience_summary` · `experience_search_global` · `experience_search_smart` (with kb_id scope) · `experience_rerank` · `experience_extract` · `experience_drafts_list` · `experience_draft_read` · `experience_draft_approve` · `experience_draft_reject` · `experience_check_stale` · `experience_sync_kb` · `experience_dashboard` · `experience_apply_decay` · `experience_meditation_status` · `experience_meditation_run` · `experience_meditation_config_get` · `experience_meditation_config_update` · `experience_meditation_history` |
+| **Total** | **71** | All atomic — each does ONE thing; workflows belong to skills |
 
-> Note: Experience = 17 core + 5 meditation = 22. All tools verified against kb-mcp/server.py. Count includes dual-invocation tools once (doc_id or kb_id+doc_path).
+> Count verified: 71 @mcp.tool() in kb-mcp/server.py. Experience = 20 core + 5 meditation.
 
 ---
 ## 🎯 Skills — 14
@@ -647,7 +646,7 @@ Only for the Neo4j knowledge graph. Parsing, search, and experience all work wit
 <details>
 <summary><b>Can I use this without Claude Code?</b></summary>
 
-Yes. The Web UI at `http://localhost:6789` is fully functional, and any MCP client can call the 76 tools.
+Yes. The Web UI at `http://localhost:6789` is fully functional, and any MCP client can call the 71 tools.
 </details>
 
 </details>
@@ -660,7 +659,7 @@ Yes. The Web UI at `http://localhost:6789` is fully functional, and any MCP clie
 rag-knowledge/
 ├── backend/              ← FastAPI + MinerU OCR engine
 ├── web/                  ← Nuxt 3 + Ant Design Vue (incl. Claude Chat with Agent SDK)
-├── kb-mcp/               ← MCP server — 76 tools
+├── kb-mcp/               ← MCP server — 71 tools
 ├── command/              ← ragctl CLI (Node.js, js-yaml)
 ├── src-tauri/            ← Tauri v2 desktop application (Rust)
 ├── .claude/              ← Claude Code skills (14) + Archival agent (knowledge-admin.md)

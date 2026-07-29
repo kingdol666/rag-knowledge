@@ -60,7 +60,7 @@
                    │ MCP stdio (FastMCP)
 ┌──────────────────▼───────────────────────┐
 │              kb-mcp/server.py             │
-│         ~66 @mcp.tool() definitions       │
+│         71 @mcp.tool() definitions       │
 │         Zero HTTP code — delegates down   │
 └──────┬──────────────────────┬────────────┘
        │ kb_client (HTTP)     │ direct file I/O
@@ -262,7 +262,7 @@ The `.mcp.json` at the monorepo root auto-configures kb-mcp for Claude Code:
 
 ```
 kb-mcp/
-├── server.py                # FastMCP server — ~66 @mcp.tool() definitions (zero HTTP code)
+├── server.py                # FastMCP server — 71 @mcp.tool() definitions (zero HTTP code)
 ├── project_manager.py       # Service lifecycle + version/update (delegates to ragctl)
 ├── task_registry.py         # In-process async background task manager for parse jobs
 ├── config.py                # Reads URLs from shared config.yml (zero hardcoded paths)

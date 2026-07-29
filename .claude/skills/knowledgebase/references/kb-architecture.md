@@ -75,7 +75,7 @@
 - `kb_get_documents(lightweight=true)` 无 type 字段区分文档 vs 子KB容器 → 用 `file_type: knowledge-base` 或 `fs_get_tree(max_depth=2)` 区分
 - `kb_graph_kb_overview.related_kbs[].name` 和 `sub_kbs[].name` 返回 UUID → 用 `kb_list(lightweight=true)` 回查可读名
 
-## 76 个 MCP 工具地图（按操作类型）
+## 71 个 MCP 工具地图（按操作类型）
 
 | 类别 | 工具数 | 代表工具 | 何时用 |
 |------|--------|---------|--------|

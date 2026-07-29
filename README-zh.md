@@ -10,7 +10,7 @@
 
 <p>
 <em>QDCVR 语义搜索 &middot; Neo4j 知识图谱 &middot; 经验全生命周期 (E0–E12)<br>
-76 个 MCP 工具 &middot; 14 个 Agent 技能 &middot; MinerU OCR &middot; 跨平台</em>
+71 个 MCP 工具 &middot; 14 个 Agent 技能 &middot; MinerU OCR &middot; 跨平台</em>
 </p>
 
 <p>
@@ -18,7 +18,7 @@
 &nbsp;
 <img src="https://img.shields.io/badge/平台-Win_%7C_Linux_%7C_macOS-334155?style=for-the-badge&logo=linux" />
 &nbsp;
-<img src="https://img.shields.io/badge/MCP工具-76个-8b5cf6?style=for-the-badge&logo=code" />
+<img src="https://img.shields.io/badge/MCP工具-71个-8b5cf6?style=for-the-badge&logo=code" />
 &nbsp;
 <img src="https://img.shields.io/badge/技能-14个-f97316?style=for-the-badge&logo=openai" />
 </p>
@@ -62,7 +62,7 @@
 |:---:|:---|:---|
 | 🔍 | 单一搜索策略（向量*或*关键词） | **多策略**：BM25 + 向量 + 标签语义 + 图谱扩展 |
 | 🧠 | 盲信向量相似度 | **内容验证检索** —— 独立的 0–8 内容裁决 |
-| 🤖 | AI 是后挂的，难集成 Agent | **Agent 原生**：76 个 MCP 工具，14 个技能，任意 MCP 客户端可用 |
+| 🤖 | AI 是后挂的，难集成 Agent | **Agent 原生**：71 个 MCP 工具，14 个技能，任意 MCP 客户端可用 |
 | 💡 | 无结构化知识复用 | **经验库**：E0–E12 全生命周期，P0/P1/P2 可信度分级 |
 | 🔧 | 多工具复杂安装，配置分散 | **一条命令** `ragctl setup`，单一 `config.yml` 真相源 |
 | 🪟 | 满屏终端窗口 | **静默无头** —— dev 和 prod 均零终端窗口 |
@@ -84,7 +84,7 @@
 | 🔍 | **多策略搜索** | BM25 + 向量两阶段召回 · 跨库企业搜索 · `balance_kbs` 多样性防护 |
 | 📊 | **知识图谱** | Neo4j 驱动 · 11 个图谱工具 · 实体/关系图 · 跨库文档桥接 |
 | 💡 | **经验库** | E0–E12 全生命周期 · 结构化问题→方案→教训 · P0/P1/P2 可信度 · 衰减 |
-| 🔌 | **76 个 MCP 工具** | 知识库 CRUD · 搜索 · 图谱 · 经验 · 解析 · 标签 · 向量索引 · 生命周期 · 全 MCP 原生 |
+| 🔌 | **71 个 MCP 工具** | 知识库 CRUD · 搜索 · 图谱 · 经验 · 解析 · 标签 · 向量索引 · 生命周期 · 全 MCP 原生 |
 | 🎯 | **14 个 Agent 技能** | 自然语言命令 · 中英双语触发 · 自动分发到 Archival Agent |
 | 🤫 | **静默无头** | 所有启动器均 **零终端窗口** · dev 和 prod 行为一致 |
 
@@ -302,24 +302,25 @@ kb_graph_cross_kb_documents(min_kbs=2)
 
 ---
 
-## 🔌 MCP 工具 — 66 个
+## 🔌 MCP 工具 — 71
 
 全部通过 `mcp__kb-mcp__*` 从 Claude Code 或任意 MCP 客户端访问。
 
 | 类别 | 数量 | 关键工具 |
 |------|:----:|---------|
-| **服务生命周期** | 3 | `kb_project_status` (runtime\|setup), `kb_project_start`, `kb_project_update` (show_version), `backend_status` |
-| **知识库 CRUD** | 5 | `kb_list` (lightweight=true for catalog), `kb_create`, `kb_update`, `kb_delete`, `kb_get_documents` (lightweight=true for catalog) |
-| **文档 CRUD** | 7 | `kb_doc_read`, `kb_doc_create`, `kb_doc_update_meta`, `kb_doc_update_content`, `kb_doc_delete`, `kb_doc_batch_delete`, `kb_doc_move` |
-| **文件系统** | 3 | `fs_get_tree` (incl. _stats), `fs_get_children`, `fs_upload_file` |
+| **服务/健康** | 4 | `backend_status`, `kb_project_status` (runtime\|setup), `kb_project_start`, `kb_project_update` |
+| **KB CRUD** | 4 | `kb_list` (lightweight), `kb_create`, `kb_update`, `kb_delete` |
+| **文档** | 8 | `kb_get_documents`, `kb_doc_read`, `kb_doc_create`, `kb_doc_update_meta`, `kb_doc_update_content`, `kb_doc_delete`, `kb_doc_batch_delete`, `kb_doc_move` |
+| **文件系统** | 3 | `fs_get_tree`, `fs_get_children`, `fs_upload_file` |
 | **解析** | 4 | `parse_doc`, `parse_doc_batch`, `parse_task_status`, `kb_doc_save_parsed` |
-| **标签** | 4 | `kb_tags_list`, `kb_doc_update_tags`, `kb_doc_get_by_tag`, `kb_tags_cleanup` |
+| **标签** | 4 | `kb_tags_list`, `kb_doc_update_tags`, `kb_tags_cleanup`, `kb_doc_get_by_tag` |
 | **搜索** | 4 | `kb_search`, `kb_search_vector`, `kb_search_two_stage`, `kb_search_stats` |
 | **向量/索引** | 4 | `kb_index_document`, `kb_batch_index`, `kb_reindex`, `kb_cleanup_orphan_collections` |
-| **知识图谱** | 14 | `kb_graph_search` · `kb_graph_kb_overview` · `kb_graph_build` · `kb_graph_cross_kb_documents` · … |
-| **经验** | 22 | `experience_create` · `experience_search_global` · `experience_search_smart` · `experience_dashboard` · `experience_extract` · … |
+| **知识图谱** | 11 | `kb_graph_search` · `kb_graph_stats` · `kb_graph_document` · `kb_graph_document_related` · `kb_graph_kb_overview` · `kb_graph_build` · `kb_graph_cross_kb_documents` · `kb_graph_document_paths` · `kb_graph_central_documents` · `kb_graph_delete_document` · `kb_graph_delete_kb` |
+| **经验** | 25 | `experience_create` · `experience_read` · `experience_list` · `experience_update` · `experience_delete` · `experience_apply` · `experience_review` · `experience_summary` · `experience_search_global` · `experience_search_smart` (含 kb_id 限定) · `experience_rerank` · `experience_extract` · `experience_drafts_list` · `experience_draft_read` · `experience_draft_approve` · `experience_draft_reject` · `experience_check_stale` · `experience_sync_kb` · `experience_dashboard` · `experience_apply_decay` · `experience_meditation_status` · `experience_meditation_run` · `experience_meditation_config_get` · `experience_meditation_config_update` · `experience_meditation_history` |
+| **总计** | **71** | 每个工具原子职责；工作流由 skill 编排 |
 
----
+> 计数验证: server.py 中 71 个 @mcp.tool()。经验 = 20 核心 + 5 冥想。
 
 ## 🎯 技能 — 14 个
 

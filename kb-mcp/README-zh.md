@@ -60,7 +60,7 @@
                    │ MCP stdio (FastMCP)
 ┌──────────────────▼───────────────────────┐
 │              kb-mcp/server.py             │
-│         ~66 @mcp.tool() 定义              │
+│         71 @mcp.tool() 定义              │
 │         零 HTTP 代码 — 向下委托            │
 └──────┬──────────────────────┬────────────┘
        │ kb_client (HTTP)     │ 直接文件 I/O
@@ -262,7 +262,7 @@ monorepo 根目录的 `.mcp.json` 为 Claude Code 自动配置 kb-mcp：
 
 ```
 kb-mcp/
-├── server.py                # FastMCP 服务器 — ~66 @mcp.tool() 定义（零 HTTP 代码）
+├── server.py                # FastMCP 服务器 — 71 @mcp.tool() 定义（零 HTTP 代码）
 ├── project_manager.py       # 服务生命周期 + 版本/更新（委托 ragctl）
 ├── task_registry.py         # 进程内异步后台任务管理器（解析作业）
 ├── config.py                # 从共享 config.yml 读取 URL（零硬编码路径）

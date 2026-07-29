@@ -29,7 +29,7 @@ MinerU OCR Engine (ephemeral port)  ← PDF → Markdown conversion
 Claude Code / Agent
     │  MCP stdio (kb-mcp)
     ▼
-kb-mcp MCP Server              ← 76 tools: KB CRUD, file ops, parse, search, tags, vector, graph, experience, project lifecycle
+kb-mcp MCP Server              ← 71 tools: KB CRUD, file ops, parse, search, tags, vector, graph, experience, project lifecycle
     │  HTTP → web proxy / backend     +  direct file reads
     ▼
 Nuxt / Backend                 ← writes: parse + save pipeline
@@ -128,7 +128,7 @@ kb-mcp/
 └── .mcp.json (at root)     # Connects kb-mcp to Claude Code via stdio
 ```
 
-MCP Tools by category (76 tools total):
+MCP Tools by category (71 tools total):
 - **Health:** `backend_status`
 - **Project lifecycle (3):** `kb_project_status` (scope=runtime|setup), `kb_project_start`, `kb_project_update` (show_version=true for version check)
 - **KB CRUD:** `kb_list`, `kb_create`, `kb_update`, `kb_delete`
@@ -141,7 +141,7 @@ MCP Tools by category (76 tools total):
 - **Search (Agentic RAG, 4):** `kb_search` (metadata only), `kb_search_vector` (semantic), `kb_search_two_stage` (BM25→vector, primary), `kb_search_stats`
 - **Vector/Index:** `kb_index_document`, `kb_batch_index`, `kb_reindex`, `kb_cleanup_orphan_collections`
 - **Knowledge Graph (11 tools):** `kb_graph_search` (unified), `kb_graph_stats` (incl. `neo4j_available`), `kb_graph_document`, `kb_graph_document_related`, `kb_graph_kb_overview`, `kb_graph_build` (unified), `kb_graph_cross_kb_documents`, `kb_graph_document_paths`, `kb_graph_central_documents`, `kb_graph_delete_document`, `kb_graph_delete_kb`
-- **Experience (20 tools):** Full lifecycle — create/read/list/update/delete/apply/review/summary | Search: search_global/**search_smart**(推荐入口)/**rerank** | Extract/Drafts: extract/drafts_list/draft_read/draft_approve/draft_reject | Health: **check_stale**(空 kb_id=全库)/sync_kb/dashboard/apply_decay
+- **Experience (25 tools):** Full lifecycle — create/read/list/update/delete/apply/review/summary | Search: search_global/**search_smart**(推荐入口)/**rerank** | Extract/Drafts: extract/drafts_list/draft_read/draft_approve/draft_reject | Health: **check_stale**(空kb_id=全库)/sync_kb/dashboard/apply_decay | Meditation (5): **meditation_status/meditation_run/meditation_config_get/meditation_config_update/meditation_history**
 
 **Architecture principle:** writes go through HTTP API (backend/web proxy), reads go through direct file access (`.tree-fs.json` + `.knowledge-base.yml`).
 
