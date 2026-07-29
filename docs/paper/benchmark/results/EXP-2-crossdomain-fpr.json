@@ -1,0 +1,54 @@
+{
+  "experiment": "EXP-2",
+  "title": "Cross-Domain False Positive Rate",
+  "timestamp": "2026-07-29T10:02:41.738758+00:00",
+  "n_queries": 5,
+  "results": [
+    {
+      "query": "thermal management electronics cooling",
+      "expected_kb": "Energy-Batteries",
+      "label": "跨域热能",
+      "flat_kbs_found": [
+        "Energy-Batteries"
+      ],
+      "fpr": 0.0
+    },
+    {
+      "query": "polymer mechanical deformation models",
+      "expected_kb": "高分子双向拉伸文献库",
+      "label": "跨域高分子",
+      "flat_kbs_found": [
+        "unknown"
+      ],
+      "fpr": 0.0
+    },
+    {
+      "query": "optimization algorithm convergence speed",
+      "expected_kb": "AI-ML-Research",
+      "label": "跨域优化",
+      "flat_kbs_found": [
+        "unknown"
+      ],
+      "fpr": 0.6
+    },
+    {
+      "query": "hydrogel drug delivery biomaterial",
+      "expected_kb": "Biomedical-Engineering",
+      "label": "跨域水凝胶",
+      "flat_kbs_found": [
+        "unknown"
+      ],
+      "fpr": 1.0
+    },
+    {
+      "query": "photocatalysis carbon dioxide reduction",
+      "expected_kb": "Chemistry-Catalysis",
+      "label": "跨域催化",
+      "flat_kbs_found": [
+        "unknown"
+      ],
+      "fpr": 0.0
+    }
+  ],
+  "flat_fpr_avg": 0.32
+}

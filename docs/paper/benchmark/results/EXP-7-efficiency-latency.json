@@ -1,0 +1,18 @@
+{
+  "experiment": "EXP-7",
+  "title": "Efficiency & Latency Comparison",
+  "timestamp": "2026-07-29T10:02:41.738758+00:00",
+  "n_samples": 10,
+  "flat_vector": {
+    "mean_ms": 34.5,
+    "std_ms": 4.4,
+    "min_ms": 32.0,
+    "max_ms": 46.9
+  },
+  "two_stage": {
+    "mean_ms": 64.9,
+    "std_ms": 8.7,
+    "min_ms": 58.1,
+    "max_ms": 84.7
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "benchmark_title": "RAG Knowledge Platform — Real-Time System Benchmark",
+  "timestamp": "2026-07-29T10:02:41.738758+00:00",
+  "experiments": [
+    "EXP-0",
+    "EXP-1",
+    "EXP-2",
+    "EXP-7",
+    "EXP-9",
+    "EXP-10",
+    "EXP-11",
+    "EXP-12",
+    "EXP-16"
+  ],
+  "results": {
+    "baseline": "14 KBs, 13699 chunks, 191 nodes",
+    "retrieval": "20 queries, 5.0 avg hits, 46ms avg latency",
+    "cross_domain_fpr": "32% average FPR across 5 adversarial queries",
+    "latency": "Flat: 34.5ms, Two-Stage: 64.9ms",
+    "consistency": "5-layer consistent: False",
+    "bridges": "10 cross-KB bridge documents",
+    "hierarchy": "5 KBs (5 root, 0 sub)",
+    "cross_lingual": "All 6 Chinese queries hit: True",
+    "diversity": "balance_kbs active across 3 test queries"
+  }
+}
