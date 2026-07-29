@@ -45,8 +45,6 @@ vector:
 # -- Embedding Model --
 embedding:
   model_name: "BAAI/bge-m3"
-  # Model download source — China users: use "modelscope" (faster, Alibaba Cloud CDN).
-  # Alternatives: "hf-mirror" (hf-mirror.com) / "huggingface" (huggingface.co, overseas).
   model_source: "modelscope"
   cache_dir: "./models_cache"
   device: "auto"
@@ -79,21 +77,10 @@ search:
     graph_neighbor_depth: 1
     min_candidates: 3
 
-
-# -- Experience Auto-Summarization (Meditation) --
-# Periodic auto-induction of experiences from recurring user questions.
-# Like OpenClaw's meditation memory: harvest Q&A → match KB → verify docs → draft experiences.
-#
-# To enable:
-#   1. Set enabled: true
-#   2. FIRST SET dry_run: true — runs and logs what it would do WITHOUT creating drafts
-#   3. Check backend logs to verify clustering quality
-#   4. Set dry_run: false when satisfied
-# Important: consumes LLM tokens (uses omp/ark engines configured in .env)
 experience_auto:
-  enabled: false               # Master switch. false = scheduler stays idle.
-  interval_hours: 24           # How often to run a meditation cycle.
-  lookback_days: 7             # Scan questions from the last N days.
-  min_cluster_count: 2         # Min similar questions in a cluster to consider.
-  max_drafts_per_run: 5        # Cap auto-created drafts per cycle (quality > quantity).
-  dry_run: false               # true = log results only, do NOT create drafts.
+  enabled: false
+  interval_hours: 24
+  lookback_days: 7
+  min_cluster_count: 2
+  max_drafts_per_run: 5
+  dry_run: false
