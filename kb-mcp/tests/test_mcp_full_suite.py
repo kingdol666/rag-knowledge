@@ -132,7 +132,9 @@ async def test_tags_list(client):
 
 
 async def test_doc_update_tags(client):
-    r = await _call(client, "kb_doc_update_tags", kb_id=_TEST_KB_NAME, doc_path=_DOC_PATH, tags=[_TAG, "test"])
+    # NOTE: "test" is rejected by web-side isGarbageTag (tag-management-service.ts T1b filter).
+    #       Use content-meaningful tags that pass the garbage filter.
+    r = await _call(client, "kb_doc_update_tags", kb_id=_TEST_KB_NAME, doc_path=_DOC_PATH, tags=[_TAG, "polymer"])
     assert r.get("success")
     return "✅ kb_doc_update_tags: OK"
 

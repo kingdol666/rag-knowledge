@@ -582,6 +582,17 @@ class KbClient:
             base=self.backend_url, params=params,
         )
 
+    async def delete_document_vectors(self, kb_id: str, doc_path: str) -> dict:
+        """Delete a single document's vector chunks (backend DELETE /api/v1/search/document).
+
+        Called on document delete/move to clean up stale vectors. Backend
+        silently handles non-existent chunks. Returns {success, kb_id, doc_path, cleaned}.
+        """
+        return await self._request(
+            "DELETE", "/api/v1/search/document",
+            base=self.backend_url, params={"kb_id": kb_id, "doc_path": doc_path},
+        )
+
     async def graph_search(self, keyword, limit=20):
         """Graph document search (by name/path)."""
         return await self._get_backend(

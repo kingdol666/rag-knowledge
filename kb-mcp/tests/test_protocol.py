@@ -9,7 +9,7 @@ import threading
 # 默认 dev 模式（6789/8765）；所有层级（.mcp.json / config.py / project_manager.py /
 # web paths）一致默认 "dev"，无需显式设置也可正常工作。设 APP_MODE=prod 时走生产端口。
 os.environ.setdefault("APP_MODE", "dev")
-
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
 
 # server.py 在 kb-mcp/ 根目录（不在 tests/），subprocess 必须以仓库根为 cwd 才能找到它。

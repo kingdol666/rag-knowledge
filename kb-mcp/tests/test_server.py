@@ -32,8 +32,8 @@ async def run_tests():
     kb_path = d.get("knowledgeBase", {}).get("path", "")
     check("kb_create", d.get("success"), f"path={kb_path}")
 
-    # 4. kb_update
-    d = json.loads(await server.kb_update(kb_path, name="Decouple_Renamed", description="Renamed"))
+    # 4. kb_update (description only — renaming changes kb_path, breaking subsequent calls)
+    d = json.loads(await server.kb_update(kb_path, description="Updated via test"))
     check("kb_update", d.get("success"))
 
     # 5. kb_doc_create
@@ -48,7 +48,7 @@ async def run_tests():
     check("kb_doc_create_dedup", "(1)" in dedup_name, f"name={dedup_name}")
 
     # 7. kb_doc_read
-    d = json.loads(await server.kb_doc_read(doc_path))
+    d = json.loads(await server.kb_doc_read(kb_id=kb_path, doc_path="test-doc.md"))
     check("kb_doc_read", len(d.get("content", "")) > 0, f"lines={d.get('totalLines')}")
 
     # 8. kb_doc_update_content
@@ -73,7 +73,8 @@ async def run_tests():
 
     # 13. fs_get_tree
     d = json.loads(await server.fs_get_tree())
-    check("fs_get_tree", isinstance(d, list) and len(d) > 0, f"{len(d)} roots")
+    tree = d.get("tree", d) if isinstance(d, dict) else d
+    check("fs_get_tree", isinstance(tree, list) and len(tree) > 0, f"{len(tree)} roots")
 
     # 14. fs_get_count — merged into fs_get_tree (_stats field), skip
     pass

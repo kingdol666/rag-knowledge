@@ -142,6 +142,15 @@ def _running_payload(task_id: str, kind: str, detail: dict | None = None) -> str
 # HEALTH
 # ============================================================
 
+async def health_check() -> str:
+    """Combined health check for backend, web, and MinerU services.
+
+    Returns {backend, web, mineru, all_ok} as a JSON string.
+    Convenience wrapper for the E2E test and internal diagnostics;
+    agents should use the backend_status MCP tool instead.
+    """
+    return _j(await _client().health_check())
+
 # ============================================================
 # KNOWLEDGE BASE MANAGEMENT (CRUD)
 # ============================================================
@@ -312,8 +321,7 @@ async def kb_doc_delete(kb_id: str, doc_path: str) -> str:
 
 @mcp.tool()
 async def kb_doc_batch_delete(kb_id: str, doc_paths: list) -> str:
-    """Delete multiple documents at once.
-
+    """Delete multiple documents at once."""
     result = await _client().kb_doc_batch_delete(kb_id, doc_paths)
     # Fire-and-forget: clean up graph + vectors for each doc
     for dp in doc_paths:
