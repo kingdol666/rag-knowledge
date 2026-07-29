@@ -44,7 +44,7 @@ description: >
 ---
 
 # Knowledgebase Init — 智能增量部署向导
-> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+66工具地图）
+> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+71工具地图）
 
 **执行者：主 Agent 直接执行（不委托 Archival）** — init 需要实时交互，所有 Bash 命令由主 Agent 执行。
 

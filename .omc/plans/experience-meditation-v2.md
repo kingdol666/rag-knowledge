@@ -60,7 +60,7 @@
 3. **经验质量 = 人工总结质量**：agent 执行的就是 `knowledgebase-experience-summarize` skill 本身（同一套 prompt、同一套质量门控），不是后端重写的缩水版
 4. **进程级隔离**：agent 崩溃/超时/超预算不影响后端（MinerU Job Object 模式已有成熟的生命周期管理）
 5. **Harness 可插拔**：claude 和 omp 只是 `subprocess.Popen` 的不同 executable + flags
-6. **MCP 工具自动可用**：通过 `--mcp-config .mcp.json`，agent 子进程连上 kb-mcp，直接调用全部 66 个工具
+6. **MCP 工具自动可用**：通过 `--mcp-config .mcp.json`，agent 子进程连上 kb-mcp，直接调用全部 71 个工具
 
 ### 双层运行模式
 

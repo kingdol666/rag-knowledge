@@ -24,7 +24,7 @@ description: >
 **Step 7 — 服务重启**: ragctl restart → 等待 backend+web 双健康(health endpoint 200)。
 **Step 8 — 全链验证**: kb_project_status 确认 ready==true → kb_list(lightweight=true) 冒烟测试 → 功能回归。
 # Knowledgebase Update — 版本检查与安全升级
-> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+66工具地图）
+> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+71工具地图）
 >
 > **关于跨技能引用**：本 skill 引用的 `kb-architecture.md` 和 `mcp-preflight-check.md` 位于 `knowledgebase/references/`（共享引用，非本地副本）。这是**刻意的 DRY 设计**——14 个技能作为同一插件打包发布（见 `.claude-plugin/plugin.json`），始终同目录共存，故共享引用路径稳定。如需将 update 独立分发，需将这两个文件复制到本地 `references/`。
 

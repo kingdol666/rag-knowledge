@@ -18,7 +18,7 @@ description: >
 - KB 整理与重组 → `skill://knowledgebase-organize` — 子KB拆分/跨库归并后需重索引
 - KB 完整性校验 → `skill://knowledgebase-verify` — 三向一致性+索引覆盖率修复
 - 知识图谱 → `skill://knowledgebase-graph` — 图谱构建/文档路径/跨库发现
-- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)（5层数据模型+66工具地图）
+- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)（5层数据模型+71工具地图）
 - 批量操作 → `skill://knowledgebase-batch` — 批量入库/标签迁移/去重
 
 ## Sequential Workflow
@@ -30,7 +30,7 @@ description: >
 **Step 6 — 扩展召回 (Step 4-5)**: 标签+描述扩展→再验证→P0 Strong/P1 Confirmed/P2 Supplement 置信度定级。
 **Step 7 — 综合回答 (Step 6)**: P0/P1 结构化输出 + 来源(按置信度)+ 盲点诚实声明 + 不足2个KB时升级到 enterprise 搜索。
 # QDCVR — 查询驱动 · 内容裁决 · 门控精炼检索
-> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+66工具地图）
+> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+71工具地图）
 
 
 **执行者：Archival agent — 必须通过 Task 工具委托执行**

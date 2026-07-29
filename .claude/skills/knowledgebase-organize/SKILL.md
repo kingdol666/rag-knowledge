@@ -11,7 +11,7 @@ description: >
 ---
 
 # Knowledge Organize — 全库智能化重组引擎
-> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+66工具地图）
+> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+71工具地图）
 
 **执行者：Archival agent — 必须通过 Task 工具委托执行**
 

@@ -21,6 +21,7 @@ tools:
   - mcp__kb-mcp__backend_status
   - mcp__kb-mcp__kb_project_status
   - mcp__kb-mcp__kb_project_start
+  - mcp__kb-mcp__kb_project_update
   # KB CRUD
   - mcp__kb-mcp__kb_list
   - mcp__kb-mcp__kb_create
@@ -95,6 +96,12 @@ tools:
   - mcp__kb-mcp__experience_sync_kb
   - mcp__kb-mcp__experience_dashboard
   - mcp__kb-mcp__experience_apply_decay
+  # Meditation (experience auto-summarization — 5 tools)
+  - mcp__kb-mcp__experience_meditation_status
+  - mcp__kb-mcp__experience_meditation_run
+  - mcp__kb-mcp__experience_meditation_config_get
+  - mcp__kb-mcp__experience_meditation_config_update
+  - mcp__kb-mcp__experience_meditation_history
 disallowedTools:
   - Edit
 model: opus
