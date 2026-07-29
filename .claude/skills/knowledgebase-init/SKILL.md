@@ -16,6 +16,31 @@ description: >
   knowledge base, install rag knowledge, deploy KB, start KB, bootstrap,
   getting started, 初始化知识库, 安装知识库, 部署知识库, 知识库启动,
   kb init, knowledgebase setup wizard, 知识库安装向导, 配置知识库, 引导安装知识库.
+
+## ⭐ 相关 Skills
+- 架构理解 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)
+- GPU 检测脚本 → `scripts/detect_gpu.cjs` (CWD)
+- 增量安装 → [incremental-install.md](references/incremental-install.md)
+- 配置向导 → [configuration.md](references/configuration.md)
+- GPU 自适应 PyTorch → [gpu-and-torch.md](references/gpu-and-torch.md)
+- MCP 连通性预检 → `skill://knowledgebase` 的 [mcp-preflight-check.md](references/../knowledgebase/references/mcp-preflight-check.md)
+- 更新到最新版 → `skill://knowledgebase-update`
+- 安装后校验 → `skill://knowledgebase-verify` 的 V1-V9 完整性检查流
+
+## Sequential Workflow (当用户要求初始化/安装)
+
+**Step 1 — GPU 检测**: 运行 `node scripts/detect_gpu.cjs`，记录 TORCH_VARIANT。
+**Step 2 — 环境审计**: 运行 `ragctl check`，分类缺失项 → 快路径判定。
+**Step 3 — 项目定位**: 5 方法检测 RAG_ROOT，见 [project-location.md](references/project-location.md)。
+**Step 4 — 核心依赖**: 仅装缺失的 uv/Node/Python3.12。
+**Step 5 — 项目依赖**: 仅装缺失的 backend/web/mcp/cli + GPU torch。
+**Step 6 — 模型下载**: 仅下载缺失的 BGE-M3 / MinerU。
+**Step 7 — 配置**: 仅问缺失项，写入 config.yml + .env。
+**Step 8 — ragctl 注册**: 已注册则跳过。
+**Step 9 — MCP 注册**: 可选，默认跳过。
+**Step 10 — Neo4j**: 已运行则跳过。
+**Step 11 — 服务启动**: 已 healthy 则跳过。
+**Step 12 — 全链验证**: health + MCP 预检 + torch GPU 匹配确认。
 ---
 
 # Knowledgebase Init — 智能增量部署向导

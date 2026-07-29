@@ -8,6 +8,21 @@ description: >
   升级知识库, 检查更新, 拉取最新版, 有新版本吗, 版本更新, project update.
 ---
 
+
+## ⭐ 相关 Skills
+- 初始化安装 → `skill://knowledgebase-init`
+- 校验完整性 → `skill://knowledgebase-verify`
+- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)
+
+## Sequential Workflow
+**Step 1 — 版本检查**: ragctl version --json → 对比本地VERSION vs GitHub最新release。
+**Step 2 — 安全预检**: git status --porcelain 确认无脏工作区 → git fetch origin --dry-run。
+**Step 3 — 更新预览**: ragctl update --check-only → 展示将要变更的文件列表和版本差异。
+**Step 4 — 执行更新**: 用户确认后 ragctl update → git pull --ff-only → 更新后端依赖(uv sync) → 更新前端依赖(npm ci) → 更新MCP依赖。
+**Step 5 — 依赖验证**: ragctl check → 确认核心依赖/项目文件/AI模型/服务健康全部通过。
+**Step 6 — 模型检查**: 验证BGE-M3缓存(>1GB) + MinerU模型可用(backend_status确认)。
+**Step 7 — 服务重启**: ragctl restart → 等待 backend+web 双健康(health endpoint 200)。
+**Step 8 — 全链验证**: kb_project_status 确认 ready==true → kb_list(lightweight=true) 冒烟测试 → 功能回归。
 # Knowledgebase Update — 版本检查与安全升级
 > **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+66工具地图）
 >

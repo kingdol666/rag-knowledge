@@ -39,6 +39,15 @@ description: >
 
 ---
 
+## Sequential Workflow
+**Step 1 — 检测KB关键词**: 扫描用户输入，匹配 frontmatter 的 trigger 关键词列表。使用 kb_list(lightweight=true) 确认 KB catalog 可达。无匹配则输出模糊回退消息，等待澄清。
+**Step 2 — 最长匹配场景分类**: 按最长关键词优先规则，将命中的关键词映射到单一场景（Ingest/Search/Manage/Organize/Verify/List/Batch/Experience/Graph/Init/Update）。
+**Step 3 — 单场景路由**: 路由到对应的 skill://knowledgebase-<scenario>，读取子Skill内容获取详细步骤。Init/Update 场景由主Agent直接执行，不委托Archival。
+**Step 4 — 多场景混合路由**: 按 Organize → Verify → Ingest → Manage → List/Search 优先级顺序依次路由，每个场景分别委托Archival执行。
+**Step 5 — Archival 委托**: 子Skill委托 Archival agent 执行（task(agent: "archival", prompt="[场景标签] + 用户需求")），Archival负责自主确认场景并严格执行子Skill的全部步骤。
+**Step 6 — 组合任务协议**: >=2个场景时：先确认路由顺序 → 步间委托显式附带前序关键产出（KB id/文档路径/已变更项）→ 每步完成即汇报 → 失败隔离。
+**Step 7 — 模糊回退处理**: 无法明确分类时按模糊回退规则：查/问/搜→Search, 存/上传→Ingest, 看/列→List, 整理→Organize, 校验→Verify。仍不确定则输出澄清问题。
+
 ## Sequential Processing Steps
 
 ### Step 1: Detect KB Keywords
@@ -165,6 +174,15 @@ Each sub-skill's SKILL.md must detect the scenario and delegate execution to the
 **组合规模上限**：单次会话组合 ≤ 3 个 skill。超过 3 个必须拆成多次会话——组合越多 context 失控越严重（harvest 数据：4+ skill 组合 100% fail）。
 
 ---
+
+
+## Tool Quick Reference
+The dispatcher uses these tools for Pre-Flight checks:
+- kb_list(lightweight=true) — verify KB catalog reachable
+- kb_project_status — check backend+web+neo4j+mineru health
+- kb_project_start — silently start unhealthy services
+- backend_status — check MinerU OCR engine availability
+- kb_catalog — read-only catalog probe for MCP connectivity
 
 ## ⚠️ NEVER 清单
 

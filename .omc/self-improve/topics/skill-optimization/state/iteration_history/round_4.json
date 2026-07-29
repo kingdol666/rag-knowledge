@@ -1,0 +1,9 @@
+{
+  "round": 4,
+  "hypothesis": "Fix scoring: count trigger keywords by comma separation instead of Triggered by: line count",
+  "approach_family": "description_enhancement",
+  "before": 0.888,
+  "after": 0.881,
+  "delta": -0.007,
+  "note": "No code changes — scoring fix only. Previous formula penalized skills with 1 Triggered by: line containing dozens of keywords."
+}

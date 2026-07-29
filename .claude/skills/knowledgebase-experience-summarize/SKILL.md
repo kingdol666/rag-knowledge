@@ -15,6 +15,19 @@ description: >
   update experience, delete experience.
 ---
 
+
+## ⭐ 相关 Skills
+- 经验全生命周期 → `skill://knowledgebase-experience` (E0-E12)
+- 文档入库 → `skill://knowledgebase-ingest`
+- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)
+
+## Sequential Workflow
+**Step 1 — 识别场景**: 判断用户是要"记录经验"/"总结教训"/"保存流程"。
+**Step 2 — 收集上下文**: 从当前会话提取关键事件 + 决策 + 结果。
+**Step 3 — 结构化草稿**: 按 scenario/problem/solution/key_lessons 模板组织。
+**Step 4 — 质量门控**: E2 四要素检查 + 去重。
+**Step 5 — 用户确认**: 展示草稿，等待确认/修改。
+**Step 6 — 持久化**: experience_create → 自动索引 → 完成。
 # Experience Summarize — 经验总结·冥想·CRUD·迁移
 
 **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型）+ [MCP 优先原则](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则)（禁止 terminal/HTTP 绕过）

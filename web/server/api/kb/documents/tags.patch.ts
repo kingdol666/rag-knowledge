@@ -3,6 +3,7 @@ import { getTreeFileSystemService } from '~/server/utils/tree-service'
 import { getKnowledgeBaseYamlService } from '~/server/services/knowledge-base-yaml-service'
 import { getTreeStorageAbsolutePath } from '~/server/utils/runtime-paths'
 import { getTagManagementService, TagManagementService } from '~/server/services/tag-management-service'
+import { getDynamicBackendUrl } from '~/server/utils/dynamic-config'
 
 /** PATCH /api/kb/documents/tags — update a document's tags. */
 export default defineEventHandler(async (event) => {
@@ -45,11 +46,30 @@ export default defineEventHandler(async (event) => {
   const tagService = getTagManagementService()
   await tagService.ensureTags(tags)
 
+  // FIX: Trigger graph reindex so the Document node's tags field stays in sync.
+  // Without this, kb_graph_document shows stale tags after kb_doc_update_tags.
+  const backendUrl = getDynamicBackendUrl()
+  fetch(`${backendUrl}/api/v1/search/index-document`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      kb_id: kb.id,
+      doc_path: resolvedPath,
+      doc_name: '',
+      description: '',
+    }),
+  }).then(() => {
+    console.log(`[tags.patch] graph reindex triggered for ${resolvedPath}`)
+  }).catch((e) => {
+    console.warn(`[tags.patch] graph reindex failed (non-fatal): ${e}`)
+  })
+
   return {
     success: true,
     kb_id: kb.id,
     kb_path: kb.path,
     docPath: resolvedPath,
-    tags
+    tags,
+    _note: 'Tags updated. Graph reindex triggered in background.'
   }
 })

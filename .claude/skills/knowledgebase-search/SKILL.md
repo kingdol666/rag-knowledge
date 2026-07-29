@@ -10,6 +10,25 @@ description: >
   查询, 问答, 帮我查, 问一下知识库, 搜.
 ---
 
+## ⭐ 相关 Skills
+- 跨库企业级搜索（P0/P1 <2 KB 时触发）→ `skill://knowledgebase-search-enterprise` — 并行3路径召回 + 图谱扩展
+- 文档入库 → `skill://knowledgebase-ingest` — A0-A9 管线确保检索源质量
+- KB 管理 → `skill://knowledgebase-manage` — 文档移动/重命名/删除/合并
+- 经验优先检索 → `skill://knowledgebase-experience` 的 E4 经验优先检索（故障/运维型查询必走）
+- KB 整理与重组 → `skill://knowledgebase-organize` — 子KB拆分/跨库归并后需重索引
+- KB 完整性校验 → `skill://knowledgebase-verify` — 三向一致性+索引覆盖率修复
+- 知识图谱 → `skill://knowledgebase-graph` — 图谱构建/文档路径/跨库发现
+- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)（5层数据模型+66工具地图）
+- 批量操作 → `skill://knowledgebase-batch` — 批量入库/标签迁移/去重
+
+## Sequential Workflow
+**Step 1 — 查询分析 (Step 0)**: 意图分类（事实型/方法型/对比型/故障型/导航型）→ 核心实体提取 → 查询改写为声明句+关键词（故障型先查经验库）。
+**Step 2 — 智能选库 (Step 1)**: `kb_list(lightweight=true)` → 读 KB description 语义匹配 → 选定 top 1-3 目标 KB；含子KB时用 `kb_search_vector` 搜父KB穿透。
+**Step 3 — 两阶段检索 (Step 2)**: `kb_search_two_stage(balance_kbs=True)` — Stage1 BM25+图谱候选 → Stage2 向量精细搜索 → 按场景调参。
+**Step 4 — 去重过滤 (Step 2.5)**: 硬阈值过滤(score<0.35丢弃) → 文档级去重(同文档留最高分) → 短内容降级 → top 5 进验证。
+**Step 5 — 内容验证 (Step 3)**: `kb_doc_read(3000 chars)` → 0-8 rubric 打分(主题相关/场景匹配/答案证据) → content-overrides-vector → ≥6快速退出/5扩展/≤4降级。
+**Step 6 — 扩展召回 (Step 4-5)**: 标签+描述扩展→再验证→P0 Strong/P1 Confirmed/P2 Supplement 置信度定级。
+**Step 7 — 综合回答 (Step 6)**: P0/P1 结构化输出 + 来源(按置信度)+ 盲点诚实声明 + 不足2个KB时升级到 enterprise 搜索。
 # QDCVR — 查询驱动 · 内容裁决 · 门控精炼检索
 > **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+66工具地图）
 

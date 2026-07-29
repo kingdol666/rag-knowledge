@@ -14,6 +14,22 @@ Graph nodes: `Document`, `KnowledgeBase`, `Tag`. Edges: `BELONGS_TO`, `HAS_SUBKB
 
 ---
 
+## ⭐ 相关 Skills
+- 文档入库建索引 → `skill://knowledgebase-ingest` (A6 向量+图谱索引)
+- 批量重建图谱 → `skill://knowledgebase-batch` (B7 全库重建)
+- 跨库知识发现 → `skill://knowledgebase-search-enterprise`
+- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)
+
+## Sequential Workflow
+**Step 1 — Check Neo4j**: kb_graph_stats() 确认 neo4j_available 为 true，否则 kb_project_start(neo4j=true) 拉起。
+**Step 2 — 选择查询类型**: 根据用户需求选择操作类型（概览/文档查询/跨库发现/关键词搜索/构建/清理）。
+**Step 3 — KB 概览查询**: kb_graph_kb_overview(kb_id) → doc_count、子KB、标签分布、top中心文档。
+**Step 4 — 文档中心查询**: kb_graph_document(doc_path) 获取全部关联 / kb_graph_document_related(doc_path) 仅相关文档。
+**Step 5 — 跨库桥接发现**: kb_graph_cross_kb_documents(min_kbs=2) → 桥接文档 → kb_graph_central_documents(kb_id) → 核心文档。
+**Step 6 — 文档路径查询**: kb_graph_document_paths(doc_a, doc_b, max_depth=4) → 两文档间最短关系路径。
+**Step 7 — 关键词搜索**: kb_graph_search(keyword, node_type="all") → 按名称/路径子串匹配节点。
+**Step 8 — Build 构建/重建**: kb_graph_build(kb_id, force=false) 增量 / force=true 全量重建 → kb_graph_stats() 验证。
+**Step 9 — Cleanup 清理**: kb_graph_delete_document(doc_path) 删文档节点 / kb_graph_delete_kb(kb_id) 删KB全图。
 ## ⭐ Pre-Flight（强制，所有作业第一步）
 
 **未通过预检禁止作业。** 执行 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md) 的完整流程（一探双检 `kb_project_status` → 分支处置 → 冒烟测试）。 本 skill 强依赖 Neo4j，`kb_project_start` 必须带 `neo4j=true`。

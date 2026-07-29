@@ -4,6 +4,18 @@ description: >
   Enterprise multi-strategy retrieval. Auto-upgrades from knowledgebase-search when P0/P1 docs come from <2 KBs. Parallel 3-path recall (vector + tag semantic + BM25) with balance_kbs, cross-validation dedup, content ruling (0-8 scoring), graph expansion (only when P0<3), fused presentation with cross-KB blind-spot declaration. Triggered by: 全库搜索, 所有KB, 跨知识库, 跨库, cross-KB, all KBs, enterprise search, 全局搜索, 全面的, thorough search, comprehensive.
 ---
 
+
+## ⭐ 相关 Skills
+- 单库检索 → `skill://knowledgebase-search` (QDCVR 两阶段)
+- 跨库桥接文档 → `skill://knowledgebase-graph` (Cross-KB Discovery)
+- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)
+
+## Sequential Workflow
+**Step 1 — 查询分析+改写**: 提取核心概念，生成多角度查询变体。
+**Step 2 — 并行3路径召回**: 向量语义 + 标签语义 + BM25 关键词 三路并行。
+**Step 3 — 跨验证去重**: 多路径结果交叉验证 + 文档级去重。
+**Step 4 — 内容裁决**: 0-8 rubric 打分 → 独立于向量的内容验证。
+**Step 5 — 融合呈现**: 按 KB 分组 + 跨库盲点声明。
 # Enterprise Multi-Strategy Retrieval — 企业级多策略精炼检索
 
 **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型）+ [MCP 优先原则](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则)（禁止 terminal/HTTP 绕过）

@@ -19,6 +19,26 @@ description: >
 
 ---
 
+
+## ⭐ 相关 Skills
+- 文档入库 → `skill://knowledgebase-ingest`
+- KB 管理 → `skill://knowledgebase-manage`
+- 校验验证 → `skill://knowledgebase-verify`
+- 批量操作 → `skill://knowledgebase-batch`
+- 子KB 创建协议 → `skill://knowledgebase-ingest` 的 [sub-kb-creation.md](references/../knowledgebase-ingest/references/sub-kb-creation.md)
+- 经验联动 → `skill://knowledgebase-experience`
+- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)
+
+## Sequential Workflow (O1→O8)
+**Step 1 — O1 全局调研**: kb_list + kb_tags_list + fs_get_tree → 全库拓扑图。
+**Step 2 — O2 深度审计**: 逐文档 kb_doc_read(1000 chars) → 标记描述/标签/领域质量。
+**Step 3 — O3 层级分析**: 子KB拆分检测 + 跨KB合并检测 + 层级分析。
+**Step 4 — O4 修复执行**: L1描述→L2标签→L3重分类→L4拆分→L5合并→L6层级→L7索引。
+**Step 5 — O5 逐层验证**: 每层修完立即 O5+O5b 三级一致性。
+**Step 6 — O6 经验联动**: experience_check_stale + 标记需 review 的经验。
+**Step 7 — O7 合规策略**: 按用户指定策略筛选修复范围。
+**Step 8 — O8 终验报告**: 前后对比 + 修复统计 + 合规评分。
+
 ## ⭐ Pre-Flight（强制，所有作业第一步）
 
 **未通过预检禁止作业。** 执行 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md) 的完整流程（一探双检 `kb_project_status` → 分支处置 → 冒烟测试）。 本 skill 强依赖 Neo4j（L7 索引+图谱重建），`kb_project_start` 必须带 `neo4j=true`。

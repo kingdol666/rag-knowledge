@@ -4,6 +4,27 @@ description: >
   Knowledge base integrity and quality validation. V1→V9: three-way metadata consistency (disk↔.tree-fs.json↔.knowledge-base.yml), document integrity, parse quality, index coverage+repair, scorecard (max 115), report, tag health (orphan+trash detection), experience health (stale+orphan+test pollution), auto-fix (repeat collections, orphan tags, missing indexes). Read-only by default; repair requires explicit instruction. Triggered by: 校验, 核对, 完整性, 健康检查, 验证, 检查, 一致性, verify, validate, integrity, health check, quality audit, check KB, 检测问题, 审计知识库.
 ---
 
+## ⭐ 相关 Skills
+- KB 整理清洗 → `skill://knowledgebase-organize` (O1-O8 全流程)
+- 文档/KB 管理 → `skill://knowledgebase-manage` (移动/删除/合并)
+- 批量操作 → `skill://knowledgebase-batch` (B1-B7 批量流程)
+- 经验健康检查 → `skill://knowledgebase-experience` 的 V8 经验健康
+- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)
+- 更新到最新版 → `skill://knowledgebase-update`
+
+## Sequential Workflow (当用户要求校验/检查)
+
+**Step 1 — 确定校验范围**: 快速检查(V1+V5 10%抽样) / 常规健康(V1→V9) / 深度审计(V1→V9 全量)。
+**Step 2 — V1 三层元数据一致性**: kb_list() vs fs_get_tree() vs kb_get_documents() 交叉验证。
+**Step 3 — V2 文档完整性**: 按采样策略 doc_read 检查文档是否可读。
+**Step 4 — V3 解析质量**: 检查 PDF/DOCX 来源文档的 OCR/Markdown 质量。
+**Step 5 — V4 索引覆盖+修复**: 检查向量索引和图谱索引覆盖率。
+**Step 6 — V5 评分卡**: 按 115 分制计算综合健康分。
+**Step 7 — V6 报告**: 输出总分 + 关键发现 + 首要建议。
+**Step 8 — V7 标签健康**: 检测孤 tag 和垃圾模式。
+**Step 9 — V8 经验健康**: 检测 stale/orphan/test 污染经验。
+**Step 10 — V9 自动修复 (需用户确认)**: 修复检测到的问题。
+
 # Knowledge Verify — Integrity & Quality
 
 **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型）+ [MCP 优先原则](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则)（禁止 terminal/HTTP 绕过）

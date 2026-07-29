@@ -1,11 +1,11 @@
-# QDCVR 知识库平台 — CIKM 2027 可发表级完整评测方案（v5.0 优化版）
+# QDCVR 知识库平台 — CIKM 2027 可发表级完整评测方案（v6.0 最终版）
 
-> **本文是评测的唯一权威文档，取代之前所有版本（含 v4.0）。**
+> **本文是评测的唯一权威文档，取代之前所有版本（含 v5.0）。**
 > **目标**: CIKM 2027 Full Research Paper §6 Experimental Evaluation
 > **叙事定位**: _Organize First, Retrieve Later_ — 领域结构 + 内容验证 + 经验生命周期
-> **差异化王牌**: content-overrides-vector 原则 + 经验生命周期 E0-E12 + 完整 KB 生命周期管理 + **五层数据一致性模型**
+> **差异化王牌**: content-overrides-vector 原则 + 经验生命周期 E0-E12 + 完整 KB 生命周期管理 + **五层数据一致性模型** + **冥想自动归纳** + **多格式解析质量**
 > **必比对手**: CRAG, Self-RAG, MCP-Pyserini (RAGFlow/Dify 作为系统级对照)
-> **版本**: v5.0 Optimized · **最后更新**: 2026-07-28
+> **版本**: v6.0 Final · **最后更新**: 2026-07-29
 > **对齐系统**: RAG Knowledge Platform v2.3.0 · 73 MCP Tools · 14 Skills · 5-Layer Data Model
 
 ---
@@ -16,13 +16,17 @@
 - [1. 评测哲学与方法论](#1-评测哲学)
 - [2. 基线系统选择与辩护](#2-基线系统)
 - [3. 数据集与评测资源](#3-数据集)
-- [4. 十二个实验（完整设计）](#4-十二个实验)
-- [5. 综合评分与论文产出物映射](#5-综合评分)
-- [6. 统计协议](#6-统计协议)
-- [7. 审稿人预判防御矩阵](#7-防御矩阵)
-- [8. 执行路线图与资源评估](#8-执行)
-- [9. 结果输出规范](#9-输出规范)
-- [10. 新增实验与系统对齐变更](#10-变更日志)
+- [4. 实验总览（18 实验 × 4 层评测金字塔）](#4-实验总览)
+- [5. Layer 1 — 检索精度 (EXP-1~4, EXP-7~8, EXP-15)](#5-layer-1-检索精度)
+- [6. Layer 2 — 功能正确性 (EXP-5~6, EXP-11, EXP-17)](#6-layer-2-功能正确性)
+- [7. Layer 3 — 系统完整性 (EXP-9~10, EXP-12, EXP-16, EXP-18)](#7-layer-3-系统完整性)
+- [8. Layer 0 — 数据基础层 (EXP-13~14)](#8-layer-0-数据基础层)
+- [9. 综合评分与论文产出物映射](#9-综合评分)
+- [10. 统计协议](#10-统计协议)
+- [11. 审稿人预判防御矩阵](#11-防御矩阵)
+- [12. 执行路线图与资源评估](#12-执行)
+- [13. 结果输出规范](#13-输出规范)
+- [14. 变更日志](#14-变更日志)
 
 ---
 
@@ -30,38 +34,61 @@
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│ 每个实验必须对应论文逻辑链的一个环节，否则审稿人会问"这证明什么"       │
+│ 每个实验必须对应论文逻辑链的一个环节，否则审稿人会问"这证明什么"         │
 └──────────────────────────────────────────────────────────────────────┘
 
-Problem  ───  RAG 系统在扁平语料上产生系统性跨域误召回
-  │           (EXP-0: 实测 thermal management 污染 4 领域; FPR=0.60 Flat vs 0.00 Domain)
-  │
-Insight  ──  误召回根因不是嵌入模型差，而是语料缺乏领域结构
-  │           + 向量相似度不等于内容相关性（向量分数欺骗性）
-  │
-Claims  ───  C1: 领域组织压缩搜索空间 → 高效        [EXP-1, EXP-3]
-  │          C2: 领域边界消除跨域误召回 → 准确        [EXP-2]
-  │          C3: content-overrides-vector → 可信      [EXP-4]
-  │          C4: 经验 E0-E12 加速运维检索              [EXP-5]
-  │          C5: 自动归档 A0-A9 准确可靠               [EXP-6]
-  │          C6: QDCVR 在效率-精度联合指标上超越基线     [EXP-7, EXP-8]
-  │          C7: 五层一致性模型保障数据可靠性           [EXP-9]
-  │          C8: 图谱桥接文档实现跨域知识发现           [EXP-10]
-  │          C9: balance_kbs 防止大库霸权              [EXP-11]
-  │          C10: 递归层级结构正确反映嵌套 KB          [EXP-12]
-  │
-Comparison   vs CRAG (后验证) / Self-RAG (反射token) / MCP-Pyserini (纯IR工具)
-  │          vs RAGFlow / Dify / LightRAG (系统级对照)  [EXP-7]
-  │
-Ablation  ─  消融 8 个组件 + 2 个新组件（递归计数 + 自动索引）  [EXP-8]
-  │
-Result   ──  论文 Table 1-8 + Figure 1-9
+Foundation (Layer 0)
+────────────────────
+  EXP-13: 多格式解析质量 → 入库管线的可靠性基础
+  EXP-14: 增量索引正确性 → 数据新鲜度和并发安全
+
+Problem
+───────
+  RAG 系统在扁平语料上产生系统性跨域误召回
+  (EXP-0: 实测 thermal management 污染 4 领域; FPR=0.60 Flat vs 0.00 Domain)
+
+Insight
+───────
+  误召回根因不是嵌入模型差，而是语料缺乏领域结构
+  + 向量相似度不等于内容相关性（向量分数欺骗性）
+
+Claims
+──────
+  C1:  领域组织压缩搜索空间 → 高效              [EXP-1, EXP-3]
+  C2:  领域边界消除跨域误召回 → 准确              [EXP-2]
+  C3:  content-overrides-vector → 可信            [EXP-4]
+  C4:  经验 E0-E12 加速运维检索                   [EXP-5]
+  C5:  自动归档 A0-A9 准确可靠                    [EXP-6]
+  C6:  QDCVR 在效率-精度联合指标上超越基线          [EXP-7, EXP-8]
+  C7:  五层一致性模型保障数据可靠性                 [EXP-9]
+  C8:  图谱桥接文档实现跨域知识发现                 [EXP-10]
+  C9:  balance_kbs 防止大库霸权                    [EXP-11]
+  C10: 递归层级结构正确反映嵌套 KB                 [EXP-12]
+  C11: 冥想自动归纳持续生产高质量经验               [EXP-13] ⭐ NEW
+  C12: MinerU 多格式解析达到可接受准确率             [EXP-14] ⭐ NEW
+  C13: 增量索引维护入库后检索一致性                 [EXP-15] ⭐ NEW
+  C14: 跨语言检索能力达标                          [EXP-16] ⭐ NEW
+  C15: 标签生命周期管理有效                         [EXP-17] ⭐ NEW
+  C16: 系统可线性扩展到大规模语料                   [EXP-18] ⭐ NEW
+
+Comparison
+──────────
+  vs CRAG (后验证) / Self-RAG (反射token) / MCP-Pyserini (纯IR工具)
+  vs RAGFlow / Dify / LightRAG (系统级对照)
+
+Ablation
+────────
+  消融 10 个组件 (含增量索引 + 固定向量索引)
+
+Result
+──────
+  论文 Table 1-14 + Figure 1-12
 ```
 
-### 十大核心声明（Claims）及其验证实验
+### 十六大核心声明（Claims）及其验证实验
 
 | Claim | 声明内容 | 验证实验 | 如果成立，证明什么 |
-|:-----:|---------|:-------:|------------------|
+|:-----:|---------|:-------:|-------------------|
 | **C1** | 领域组织使搜索空间压缩 ≥1000×，P@5 不降 | EXP-1, EXP-3 | "组织优先"的效率价值 |
 | **C2** | 领域边界消除跨域误召回，FPR 相对降低 ≥80% | EXP-2 | 结构解决了扁平 RAG 无法解决的跨域污染 |
 | **C3** | content-overrides-vector 原则独立于向量分裁决 | EXP-4 | CRAG/Self-RAG 做不到的可解释裁决 |
@@ -72,41 +99,50 @@ Result   ──  论文 Table 1-8 + Figure 1-9
 | **C8** | 图谱桥接文档发现跨域知识联系 | EXP-10 | Neo4j 图谱的实用价值 |
 | **C9** | balance_kbs 多样性守卫防止大库检索霸权 | EXP-11 | 公平检索的工程保障 |
 | **C10** | 递归层级正确计数嵌套 KB 文档 | EXP-12 | 层级结构模型的正确性 |
+| **C11** ⭐ | 冥想自动归纳持续生产高质量经验（≥60% 可审批率） | EXP-13 | 经验知识库自我增长的自动化价值 |
+| **C12** ⭐ | MinerU 解析在不同格式上达到可接受准确率（≥85% markdown fidelity） | EXP-14 | 入库管线可靠性基础 |
+| **C13** ⭐ | 增量索引维护入库→检索一致性，无索引过期 | EXP-15 | 系统长期运行的数据可靠性 |
+| **C14** ⭐ | 跨语言检索在中文查询上不弱于英文查询 | EXP-16 | 系统多语言能力 |
+| **C15** ⭐ | 标签生命周期管理有效：自动去重、孤儿清理、标签检索 | EXP-17 | 标签系统的工程价值 |
+| **C16** ⭐ | 系统吞吐和延迟可线性扩展到 10× 数据量 | EXP-18 | 大规模部署可行性 |
 
 ---
 
 ## 1. 评测哲学
 
-### 1.1 三层评测金字塔
+### 1.1 四层评测金字塔（v6.0 扩展）
 
 ```
-        ┌──────────────┐
-        │  Layer 3     │  系统级端到端 (EXP-9, EXP-10, EXP-12)
-        │  System E2E  │  数据完整性、图谱功能、层级正确性
-        ├──────────────┤
-        │  Layer 2     │  功能正确性 (EXP-5, EXP-6, EXP-11)
-        │  Functional  │  经验管道、归档分类、多样性守卫
-        ├──────────────┤
-        │  Layer 1     │  检索精度 (EXP-1~4, EXP-7, EXP-8)
-        │  Retrieval   │  P@k, FPR, nDCG, MRR + 统计检验
-        └──────────────┘
+        ┌─────────────────────────┐
+        │  Layer 3  System E2E    │  系统级端到端
+        │  EXP-9~12, EXP-16, 18   │  一致性/图谱/层级/跨语言/扩展性
+        ├─────────────────────────┤
+        │  Layer 2  Functional    │  功能正确性
+        │  EXP-5~6, EXP-11, 17    │  经验/归档/多样性/标签
+        ├─────────────────────────┤
+        │  Layer 1  Retrieval     │  检索精度
+        │  EXP-1~4, EXP-7~8, 15   │  P@k/FPR/nDCG/MRR + 增量
+        ├─────────────────────────┤
+        │  Layer 0  Data Found.   │  数据基底层 ⭐ NEW
+        │  EXP-13~14              │  解析质量 / 增量索引正确性
+        └─────────────────────────┘
 ```
 
-**每层回答不同审稿人问题**：
-- Layer 1 → "你的检索比 CRAG 好在哪？（定量）"
-- Layer 2 → "你的系统功能真能用吗？（经验/归档/多样性）"
-- Layer 3 → "数据完整性、图谱、层级结构怎么样？（系统设计）"
+**Layer 0 是 v6.0 新增的基础层**：审稿人会问"你的检索好是因为解析做得好还是检索算法好？"
+如果没有 Layer 0，我们无法区分 pipeline 效应的来源，消融实验也不完整。
 
 ### 1.2 与纯 IR 基准的本质区别
 
 | | 纯 IR Benchmark | 本评测方案 |
 |---|---|---|
-| 视角 | 算法精度竞赛 | 系统功能完整性 + 数据一致性 |
-| 指标 | 单一 P@k, nDCG | 精度 + 效率 + 功能 + 可用性 + 一致性 |
+| 视角 | 算法精度竞赛 | 系统功能完整性 + 数据一致性 + **数据质量** |
+| 指标 | 单一 P@k, nDCG | 精度 + 效率 + 功能 + 可用性 + 一致性 + **解析质量** |
 | 基线 | 仅检索方法 | 检索方法 + 完整系统 + 消融组件 |
-| 数据 | 静态 benchmark | 动态：上传→分类→检索→整理→经验→验证 |
+| 数据 | 静态 benchmark | 动态：上传→解析→分类→检索→整理→经验→验证→**冥想** |
 | 统计 | 通常是 | 必须（配对检验 + CI + 效应量 + Bonferroni） |
 | **数据一致性** | 不测 | **5 层模型完整性验证（独有）** |
+| **增量索引** | 不测 | **ADO 周期验证（独有）** |
+| **解析质量** | 不测 | **多格式 fidelity 评测（独有）** |
 
 ---
 
@@ -125,64 +161,92 @@ CIKM 审稿人会要求与**最相关已发表工作**对比，且基线必须**
 | **B5: Self-RAG-style** ⭐ | 反射验证 | 内容验证对手 | 用 LLM 模拟 reflection token |
 | **B6: MCP-Pyserini** | Agent IR | **必须引用+区分** | 调用其 MCP 工具做检索对比 |
 | **B7: 两阶段搜索 (不含内容验证)** | 我们的系统消融 | 验证内容验证的独立贡献 | 同管线但跳过 Step 3 |
+| **B8: Flat QDCVR (无 KB 选择)** | 我们的系统消融 | 验证 KB 选择的独立贡献 | 同管线但 kb_id="" |
 | **S1: RAGFlow** | 知识库系统 | 系统级对照 | 同文档集，测入库→检索完整流程 |
 | **S2: Dify** | 知识库平台 | 系统级对照 | 同文档集，测功能覆盖 |
 | **S3: LightRAG** | 图增强 RAG | 图方法对照 | 同文档集，测图增强效果 |
-
-### 2.2 基线实现策略
-
-| 基线 | 实现方式 | 公平性保证 |
-|------|---------|-----------|
-| B1-B3, B7 | 本系统内实现（同嵌入、同语料） | 只改变检索策略 |
-| B4 CRAG | 实现评估器管线（无 web 回退，用 cross-KB 替代） | 同语料、同 top-k |
-| B5 Self-RAG | LLM 模拟 IS_REL/IS_SUP 判断 | 同 LLM、同语料 |
-| B6 MCP-Pyserini | 如其开源可用则直接调用；否则诚实声明版本差异 | 记录使用的 commit |
-| S1-S3 | 手动安装 → 导入同文档集 → 测同样查询 → 记录 | 同文档集、同查询 |
+| **P1: Unstructured.io** ⭐ | 解析基线 | 解析质量对照 | 同 PDF 集，测 markdown fidelity |
+| **P2: LlamaParse** ⭐ | 解析基线 | 解析质量对照 | 同 PDF 集，测 table/formula |
 
 ### 2.3 对比公平性声明（论文必写）
 
-> *"All baselines use the same document corpus, the same embedding model (BGE-M3, 1024-dim), and the same query set. Retrieval baselines (B1-B5, B7) are implemented within the same infrastructure, varying only the retrieval strategy. System baselines (S1-S3) are tested with identical document sets. Any differences in preprocessing or chunking are documented and discussed."*
+> *"All baselines use the same document corpus, the same embedding model (BGE-M3, 1024-dim), and the same query set. Retrieval baselines (B1-B8) are implemented within the same infrastructure, varying only the retrieval strategy. System baselines (S1-S3) are tested with identical document sets. Parse baselines (P1-P2) are tested with identical PDF inputs. Any differences in preprocessing or chunking are documented and discussed."*
 
 ---
 
 ## 3. 数据集
 
-### 3.1 评测数据集总览
+### 3.1 评测数据集总览（v6.0 扩展）
 
 | 数据集 | 来源 | 规模 | 用途 | 类型 |
 |--------|------|:----:|------|:----:|
-| **D1: arXiv-6D** | arXiv API | 60 篇 (6领域×10) | EXP-1,2,3,6,7,8 | 多领域科学论文 |
-| **D2: MS MARCO dev** | MS MARCO | 6,980 查询 | EXP-1,3,7 | 标准检索 benchmark |
+| **D1: arXiv-6D** | arXiv API | 60 篇 (6领域×10) | EXP-1,2,3,6,7,8,14 | 多领域科学论文 |
+| **D2: MS MARCO dev** | MS MARCO | 6,980 查询 | EXP-1,3,7,16 | 标准检索 benchmark |
 | **D3: BEIR-subset** | BEIR | NFCorpus+SciFact | EXP-1,7 | 标准 IR 零样本评测 |
 | **D4: StackOverflow-QA** | SO Data Dump | 50 QA pairs | EXP-5 | 运维/故障型查询 |
-| **D5: TechDocs-mixed** | ReadTheDocs+GitHub | 30 篇 (中英混合) | EXP-6 | 多语言文档 |
-| **D6: 系统现有数据** | 13 KB × 64 docs | 13,709 chunks | EXP-2,4,8,9,10,11,12 | 跨域对抗+消融+一致性 |
+| **D5: TechDocs-mixed** | ReadTheDocs+GitHub | 30 篇 (中英混合) | EXP-6,14 | 多语言文档 |
+| **D6: 系统现有数据** | 13 KB × 154 docs | 13,709 chunks | EXP-2,4,8,9,10,11,12,15,18 | 跨域对抗+消融+一致性 |
 | **D7: 对抗查询集** | 人工构造 | 15 条 | EXP-2 | 跨域对抗 |
 | **D8: 图谱桥接文档** | Neo4j 现网 | 50 篇跨KB桥文档 | EXP-10 | 图谱验证 |
+| **D9: Multi-format corpus** ⭐ | 构造 | 40 文件 (PDF/Word/Excel/Image) | EXP-14 | 解析质量 |
+| **D10: Chat session DB** ⭐ | 系统收集 | 100+ 用户对话 | EXP-13 | 冥想输入源 |
+| **D11: Chinese queries** ⭐ | 人工构造 | 30 中文查询 | EXP-16 | 跨语言能力 |
+| **D12: Scalability corpus** ⭐ | 构造 | 10× 规模 (600 篇) | EXP-18 | 扩展性 |
+| **D13: Tag benchmark** ⭐ | 构造 | 30 篇含标签 | EXP-17 | 标签评估 |
 
-### 3.2 数据集使用矩阵
+### 3.2 数据集使用矩阵（v6.0 扩展）
 
 ```
-        D1    D2    D3    D4    D5    D6    D7    D8
-EXP-1    ✓     ✓     ✓                    检索精度
-EXP-2    ✓                         ✓     ✓     跨域 FPR
-EXP-3    ✓     ✓     ✓                    多基线
-EXP-4    ✓                              内容裁决
-EXP-5                ✓     ✓             经验加速
-EXP-6    ✓                    ✓          归档准确率
-EXP-7    ✓     ✓     ✓                    效率延迟
-EXP-8    ✓                         ✓     消融
-EXP-9                              ✓     五层一致性
-EXP-10                             ✓     ✓  图谱桥接
-EXP-11                             ✓     多样性守卫
-EXP-12                             ✓     递归层级
+         D1  D2  D3  D4  D5  D6  D7  D8  D9 D10 D11 D12 D13
+EXP-1     ✓   ✓   ✓
+EXP-2     ✓                   ✓   ✓
+EXP-3     ✓   ✓   ✓
+EXP-4     ✓
+EXP-5             ✓   ✓
+EXP-6     ✓               ✓
+EXP-7     ✓   ✓   ✓
+EXP-8     ✓                   ✓
+EXP-9                             ✓
+EXP-10                            ✓   ✓
+EXP-11                            ✓
+EXP-12                            ✓
+EXP-13                                        ✓
+EXP-14    ✓               ✓       ✓   ✓
+EXP-15                            ✓
+EXP-16    ✓   ✓                               ✓
+EXP-17                        ✓   ✓                       ✓
+EXP-18                            ✓                   ✓
 ```
 
 ---
 
-## 4. 十二个实验
+## 4. 实验总览
+
+| 实验 | 标题 | Layer | Claim | 指标 | 数据集 |
+|:----:|------|:-----:|:-----:|------|:-----:|
+| EXP-0 | 系统基线 + 跨域污染实证 | — | Problem | 系统快照, FPR | D6 |
+| EXP-1 | 检索精度主实验 | L1 | C1 | P@k, nDCG, MRR, MAP | D1,D2,D3 |
+| EXP-2 | 跨域误召回消除 | L1 | C2 | FPR, KB Diversity | D1,D6,D7 |
+| EXP-3 | 多基线全面对比 | L1 | C1,C6 | 全指标 vs 8 基线 | D1,D2,D3 |
+| EXP-4 | Content-Overrides-Vector 实证 | L1 | C3 | FPPR, scatter | D1 |
+| EXP-5 | 经验管道有效性 | L2 | C4 | docs_read, exp_hit_rate | D4,D5 |
+| EXP-6 | 自动归档与知识组织 | L2 | C5 | Top-1 Acc, Tag quality | D1,D5 |
+| EXP-7 | 效率与成本对比 | L1 | C6 | Latency breakdown, P@5/ms | D1,D2,D3 |
+| EXP-8 | 消融实验 (10 组件) | L1 | C6 | ΔP@5 per component | D1,D6 |
+| EXP-9 | 五层数据一致性验证 | L3 | C7 | 5-layer status (✓/✗) | D6 |
+| EXP-10 | 图谱桥接文档评估 | L3 | C8 | Relevance, hit rate | D6,D8 |
+| EXP-11 | balance_kbs 多样性守卫 | L2 | C9 | Shannon entropy, dominance | D6 |
+| EXP-12 | 递归层级结构验证 | L3 | C10 | Count accuracy | D6 |
+| **EXP-13** ⭐ | **冥想自动归纳质量** | **L0** | **C11** | **Approve rate, signal P/R** | **D6,D10** |
+| **EXP-14** ⭐ | **多格式解析质量** | **L0** | **C12** | **MD fidelity, table acc** | **D1,D5,D9** |
+| **EXP-15** ⭐ | **增量索引正确性** | **L1** | **C13** | **ADO cycle consistency** | **D6** |
+| **EXP-16** ⭐ | **跨语言检索能力** | **L3** | **C14** | **ΔP@5(zh vs en)** | **D1,D2,D11** |
+| **EXP-17** ⭐ | **标签管理生命周期** | **L2** | **C15** | **Tag P/R, dedup rate** | **D6,D13** |
+| **EXP-18** ⭐ | **系统扩展性测试** | **L3** | **C16** | **Throughput, latency@scale** | **D6,D12** |
 
 ---
+
+## 5. Layer 1 — 检索精度 (EXP-1~4, EXP-7~8, EXP-15)
 
 ### EXP-0: 系统状态基线 + 跨域污染实证
 
@@ -298,7 +362,7 @@ Stage B: 对每条查询执行
   B2. Domain: kb_list(lightweight=true) → 选库 → kb_search_vector(q, kb_id=selected, top_k=5)
   B3. GroundTruth: kb_search_vector(q, kb_id=<correct_kb>, top_k=5)
 
-Stage C: 计算
+Stage C: 度量
   → FPR = top-5 中来自非目标 KB 的文档数 / 5
   → KB Diversity (Shannon entropy): -Σ p_i·log₂(p_i)
   → Domain Selection Accuracy: Agent 选中正确 KB 的比例
@@ -328,12 +392,13 @@ Stage D: 跨域混淆矩阵
 #### 协议
 
 ```
-Stage A: 检索方法对比 (B1-B7 vs Ours)
+Stage A: 检索方法对比 (B1-B8 vs Ours)
   → 使用 D1 + D2 统一评测
   → B4 (CRAG): 实现评估器→三档动作→如 Incorrect 则 cross-KB 扩展
   → B5 (Self-RAG): LLM 逐 chunk 输出 IS_REL/IS_SUP
   → B6 (MCP-Pyserini): 如其 MCP 可用则调用；否则用等价的 BM25+dense 实现 + 诚实声明
   → B7 (Two-stage without content verification): 我们的管线跳过 Step 3
+  → B8 (Flat QDCVR without KB selection): 同管线但 kb_id="" 
   → 所有方法同嵌入、同 top-k、同查询
 
 Stage B: 系统级对比 (S1-S3 vs Ours)
@@ -348,23 +413,25 @@ Stage B: 系统级对比 (S1-S3 vs Ours)
     | 图谱桥接 | ✗ | ✗ | ✗ | ✓ |
     | 多样性守卫 | ✗ | ✗ | ✗ | ✓ |
     | 一致性模型 | ✗ | ✗ | ✗ | ✓ |
+    | 冥想归纳 | ✗ | ✗ | ✗ | ✓ |
+    | 标签管理 | ✗ | 部分 | ✗ | ✓ |
     | Agent 工具 | ✗ | 部分 | ✗ | 73 MCP |
 ```
 
 #### 预期结果表 (Table 3 — 核心大表)
 
-| Method | P@5 | nDCG@5 | FPR↓ | Latency(ms) | Search Space | 额外功能 |
-|--------|:---:|:------:|:----:|:----------:|:------------:|---------|
-| B1: Vector-only | — | — | — | — | 13,709 | — |
-| B2: BM25+Vector | — | — | — | — | 13,709 | — |
-| B3: Vec+CE Rerank | — | — | — | — | 13,709 | — |
-| B4: CRAG-style | — | — | — | — | 13,709 | 后验证 |
-| B5: Self-RAG-style | — | — | — | — | 13,709 | 反射 |
-| B6: MCP-Pyserini | — | — | — | — | 13,709 | MCP |
-| B7: Two-stage (no verify) | — | — | — | — | 13,709 | 两阶段 |
-| **QDCVR (ours)** | — | — | — | — | **~12** | **全部** |
+| Method | P@5 | nDCG@5 | FPR↓ | Latency(ms) | Search Space | 额外功能数 |
+|--------|:---:|:------:|:----:|:----------:|:------------:|:----------:|
+| B1: Vector-only | — | — | — | — | 13,709 | 0 |
+| B2: BM25+Vector | — | — | — | — | 13,709 | 0 |
+| B3: Vec+CE Rerank | — | — | — | — | 13,709 | 0 |
+| B4: CRAG-style | — | — | — | — | 13,709 | 1 |
+| B5: Self-RAG-style | — | — | — | — | 13,709 | 1 |
+| B6: MCP-Pyserini | — | — | — | — | 13,709 | 1 |
+| B7: Two-stage (no verify) | — | — | — | — | 13,709 | 0 |
+| B8: QDCVR Flat (no KB sel) | — | — | — | — | 13,709 | 0 |
+| **QDCVR (ours)** | — | — | — | — | **~12** | **9** |
 | *Best baseline* | *best* | *best* | *best* | *best* | — | — |
-| *Δ Ours - Best* | *±X* | *±X* | *±X* | *±X* | ***×1,142*** | — |
 
 ---
 
@@ -384,12 +451,9 @@ Stage A: 对每条查询 (D1, 60 条)
 Stage B: 构建 Content-vs-Vector 散点图
   → 横轴: Vector Score [0,1]
   → 纵轴: Content Score [0,8]
-  → 颜色: 绿色 = Accept (c≥6), 红色 = Discard (c≤4), 蓝色 = Supplement (c=5)
   → 关键区域: 右下角 (v>0.6, c≤4) = QDCVR 正确截断的假阳性
 
 Stage C: 量化 C-over-V 贡献
-  → 被 C-over-V 丢弃但向量分 >0.6 的文档数
-  → 如果没有内容验证，这些会成为 top-5 假阳性
   → False Positive Prevention Rate (FPPR) 对比 CRAG 和 Self-RAG
 ```
 
@@ -398,71 +462,167 @@ Stage C: 量化 C-over-V 贡献
 | 场景 | 数量 | 说明 |
 |------|:---:|------|
 | 高向量 (>0.6) + 低内容 (≤4) | ~18% | QDCVR 正确截断 |
-| 低向量 (<0.5) + 高内容 (≥6) | ~8% | QDCVR 正确保留 |
-| 高向量 (>0.6) + 高内容 (≥6) | ~65% | 一致 |
-| 低向量 (<0.5) + 低内容 (≤4) | ~9% | 一致 |
-
-**验收**: C-over-V 使得至少 15% 的向量假阳性被截断
+| 高向量 + 高内容 → Accept | ~65% | 正确通过 |
+| 低向量 + 高内容 → Accept | ~5% | C-over-V 挽救 |
 
 ---
 
-### EXP-5: 经验生命周期有效性
+### EXP-7: 效率与成本对比
 
-**对应论文**: §6.5 Experience Lifecycle Evaluation (Table 5)
-**假设 (H4)**: 经验优先检索使运维查询的文档读取减少 ≥50%。
+**对应论文**: §6.6 Efficiency Analysis (Table 7)
+**目的**: 证明 QDCVR 的延迟是可接受的，且效率-精度联合指标优于基线。
 
 #### 协议
 
 ```
-Stage A: 经验种子创建
-  A1. 构造 20 条种子经验 (problem → solution → lessons)
-  A2. 人工标注: P0/P1/P2 等级 + scenario + tags
-  A3. experience_create() → 入库 + 索引
+Stage A: 延迟分解
+  → Query Understanding (ms)
+  → KB Selection (ms)
+  → Two-Stage Recall (ms)
+  → Content Verification (ms) ← 瓶颈
+  → Confidence Tiering (ms)
+  → Answer Synthesis (ms)
+
+Stage B: 方法间延迟对比
+  → B1 (Vector): 纯向量检索
+  → B3 (Vec+CE): 向量 + Cross-Encoder 重排
+  → B4 (CRAG): 评估器
+  → QDCVR: 完整管线
+```
+
+#### 预期结果表 (Table 7)
+
+| Stage | Latency (ms) | % of Total |
+|-------|:------------:|:----------:|
+| Query Understanding | — | —% |
+| KB Selection | — | —% |
+| Two-Stage Recall (BM25+Graph) | — | —% |
+| Content Verification | — | —% |
+| Confidence Tiering | — | —% |
+| **Total** | — | **100%** |
+
+| Method | Latency (ms) | P@5 | P@5/ms (×1000) |
+|--------|:------------:|:---:|:--------------:|
+| B1: Vector-only | — | — | — |
+| B3: Vec+CE | — | — | — |
+| B4: CRAG-style | — | — | — |
+| **QDCVR** | — | — | — |
+
+---
+
+### EXP-8: 消融实验（增强版 — 10 个组件）
+
+**对应论文**: §6.7 Ablation Study (Table 8, Figure 7)
+**目的**: 证明每个组件有独立的、可测量的边际贡献。
+
+#### 消融矩阵（v6.0 扩展）
+
+| 变体 | 移除的组件 | 验证的 Claim | 预期 ΔP@5 | 预期 ΔFPR |
+|------|-----------|:-----------:|:---------:|:---------:|
+| QDCVR-full | — (完整系统) | baseline | 0.000 | 0.000 |
+| −ContentVerify | 0-8 内容验证 (Step 3) | C3 | **−0.15** | **+0.28** |
+| −Archiving | 自动归档 → 扁平 KB | C5, C1 | **−0.12** | **+0.22** |
+| −DomainScope | KB 选择 → 全库检索 | C1, C2 | **−0.08** | **+0.18** |
+| −QueryRewrite | 查询理解 (Step 0) | — | −0.03 | +0.02 |
+| −Balance | balance_kbs 多样性守卫 | C9 | −0.02 | +0.01 |
+| −Experience | 经验优先路由 | C4 | −0.01ˣ | — |
+| −BlindSpot | 盲点声明 | — | — | — |
+| **−RecursiveCount** | 递归文档计数 | C10 | **−0.04** | **+0.03** |
+| **−AutoIndex** | 自动索引 | C7 | **−0.06** | **+0.09** |
+| **−IncrementalIndex** ⭐ | 增量索引 → 全量重建 | C13 | **−0.05** | **+0.05** |
+
+**验收**: 至少 6 个组件的移除产生统计显著的性能下降 (p < 0.05 after Bonferroni)
+
+---
+
+### EXP-15 ⭐ 增量索引正确性（新实验）
+
+**对应论文**: §6.12 Incremental Indexing Correctness
+**假设 (H13)**: 增量索引 (ADO: Add-Document-Observe) 周期中，新文档可检索、旧文档不变、删除后不可检索。
+
+#### 协议
+
+```
+Stage A: 基线快照
+  → 对测试 KB 执行 10 条查询，记录 top-5 基线
+
+Stage B: 增量添加
+  → 分 3 轮每轮添加 3 篇文档并立即索引 (不重建全量索引)
+  → 每轮后:
+    B1. 验证新文档可检索 (kb_search_vector 命中)
+    B2. 验证旧文档排名不变 (查询 10 条基线查询，top-5 顺序未改变)
+    B3. 记录索引延迟 (ms per doc)
+
+Stage C: 增量更新
+  → 更新 2 篇文档内容
+  → 验证: 旧 chunk 不可检索，新 chunk 可检索
+
+Stage D: 增量删除
+  → 删除 2 篇文档
+  → 验证: 删除后搜索不再命中
+  → 验证: BM25 索引和向量索引均清理
+
+Stage E: 混合操作压力测试
+  → 快速交替 add/update/delete x 3 轮
+  → 验证: 每次操作后一致性检查通过
+```
+
+#### 预期结果表 (Table 13)
+
+| 操作 | 检索一致性 | 延迟 (ms) | 备注 |
+|------|:---------:|:---------:|------|
+| Add 3 docs × 3 rounds | ✓ | — | 增量 add_document |
+| Update 2 docs | ✓ | — | 旧chunk清理+新chunk索引 |
+| Delete 2 docs | ✓ | — | ChromaDB + BM25 均清理 |
+| Mixed stress (3 rounds) | ✓ | — | 无索引过期 |
+| Full rebuild vs incremental diff | ≤5% | — | 结果等效性 |
+
+**验收**: 所有 ADO 操作后检索一致性 100%，增量 rebuild 与全量 rebuild 结果差异 ≤5%
+
+---
+
+## 6. Layer 2 — 功能正确性 (EXP-5~6, EXP-11, EXP-17)
+
+### EXP-5: 经验管道有效性
+
+**对应论文**: §6.5 Experience Pipeline
+**假设 (H4)**: 经验的增量使用使运维查询的文档数量减少 ≥50%。
+
+#### 协议
+
+```
+Stage A: 种子经验创建
+  A1. 对 6 个领域 KB，每 KB 创建 3 条种子经验 (18 条)
+  A2. experience_create() → 入库 + 索引
 
 Stage B: 自动经验提取 (E0-E1)
   B1. 对 D1 的 60 篇 arXiv 文档
   B2. experience_extract(kb_id, doc_path)
   B3. 评估自动提取质量:
     → 提取成功率
-    → Problem 准确率 (是否抓住了论文核心贡献)
-    → Solution 完整性 (是否可操作)
-    → Lessons 实用性 (是否可复用)
-    → 5-point Likert 人工评分
+    → Problem 准确率 (5-point Likert)
+    → Solution 完整性
+    → Lessons 实用性
 
 Stage C: 经验检索
   C1. 构造 30 条运维/故障查询 (D4: StackOverflow QA pairs)
   C2. 两条路径对比:
-    Path-A (Doc-only): kb_search_two_stage(query) → 读文档 → 找答案
-    Path-B (Exp-first): experience_search_smart(query) → 命中用经验 → 否则回退文档
-  C3. 记录:
-    → docs_read (Path-A vs Path-B)
-    → time_to_answer
-    → answer_quality (1-5 人工评分)
+    Path-A (Doc-only): kb_search_two_stage(query)
+    Path-B (Exp-first): experience_search_smart(query)
+  C3. 记录: docs_read, time_to_answer, answer_quality
 
 Stage D: 经验可信度分级验证 (E4)
   D1. 人工标注 20 条经验的"真实可信度等级"
   D2. 系统自动分级
-  D3. 计算: Tier Accuracy, Cohen's κ, 混淆矩阵
+  D3. 计算: Tier Accuracy, Cohen's κ
 
 Stage E: 时效衰减 (E11)
-  E1. 标记经验的不同时间跨度 (7d/30d/90d) + applied_count 状态
+  E1. 标记经验的不同时间跨度 (7d/30d/90d)
   E2. 运行衰减规则
   E3. 验证: 过期未用经验是否被正确降级
 ```
 
 #### 预期结果表
-
-**Table 5a: Experience Pipeline Quality**
-
-| Metric | Value | Target |
-|--------|:-----:|:------:|
-| Auto-extraction recall | — | ≥60% |
-| Problem accuracy (human) | — | ≥3.5/5 |
-| Solution completeness (human) | — | ≥3.5/5 |
-| Lessons usefulness (human) | — | ≥3.0/5 |
-| Experience hit rate@5 | — | ≥80% |
-
-**Table 5b: Experience Acceleration**
 
 | Metric | Doc-only | Exp-first | Reduction |
 |--------|:--------:|:---------:|:---------:|
@@ -470,16 +630,11 @@ Stage E: 时效衰减 (E11)
 | Avg time (s) | — | — | ≥40% |
 | Avg answer quality | — | — | ≥0 |
 
-**Table 5c: Tier Accuracy**
-
-| | Human P0 | Human P1 | Human P2 | Human Discard |
-|---|:---:|:---:|:---:|:---:|
-| System P0 | TP | | | FP |
-| System P1 | | TP | | |
-| System P2 | | | TP | |
-| System Discard | FN | | | TN |
-
-Cohen's κ: — (target >0.7)
+| Metric | Value | Target |
+|--------|:-----:|:------:|
+| Auto-extraction recall | — | ≥60% |
+| Problem accuracy (human) | — | ≥3.5/5 |
+| Tier Accuracy | — | κ > 0.7 |
 
 ---
 
@@ -493,24 +648,20 @@ Cohen's κ: — (target >0.7)
 ```
 Stage A: 归档准确性
   A1. 从 D1+D5 抽取 40 篇文档 (holdout)
-  A2. 记录真实领域标签 (arXiv 分类 + 人工确认)
-  A3. 模拟 A3d 决策: 读正文 1500 chars → 匹配 kb_list(lightweight=true) descriptions → 预测归属
-  A4. 计算: Top-1/Top-3 Accuracy, per-domain F1
+  A2. 模拟 A3d 决策: 读正文 1500 chars → 匹配 kb descriptions → 预测归属
+  A3. 计算: Top-1/Top-3 Accuracy, per-domain F1
 
 Stage B: 标签生成质量
-  B1. 对 A1 的文档，检查自动生成的 tags
-  B2. 人工评估: 标签是否领域相关、不冗余、有意义
-  B3. 评分: tag_relevance (1-5)
+  B1. 检查自动生成的 tags
+  B2. 人工评估: tag_relevance (1-5)
 
 Stage C: 归档稳健性
-  C1. 对抗性标题测试 (D5 batch 6):
-    标题歧义文档 (如 "Deep Learning for Battery Management" → 应归 AI-ML 非 Energy)
-  C2. 验证系统基于内容（非标题/文件名）分类
+  C1. 对抗性标题测试: 标题歧义文档
+  C2. 验证基于内容（非文件名）分类
 
-Stage D: 知识整理功能 (S4)
-  D1. 对测试 KB 运行 organize → verify 流程
-  D2. 记录: 发现的问题数、修复的问题数、孤儿标签数
-  D3. 验证: 三层一致性 (磁盘 ↔ .tree-fs.json ↔ .knowledge-base.yml)
+Stage D: 知识整理功能
+  D1. 运行 organize → verify 流程
+  D2. 验证: 三层一致性 (磁盘 ↔ .tree-fs.json ↔ .knowledge-base.yml)
 ```
 
 #### 预期结果表 (Table 6)
@@ -519,124 +670,95 @@ Stage D: 知识整理功能 (S4)
 |--------|:-----:|:------:|
 | Top-1 classification accuracy | — | ≥80% |
 | Top-3 classification accuracy | — | ≥95% |
-| Macro F1 (per-domain avg) | — | ≥75% |
 | Tag quality score (human) | — | ≥3.5/5 |
 | Adversarial title accuracy | — | ≥60% |
 | 3-layer consistency | — | 100% |
-| Orphan tags cleaned | — | 100% |
-| Index coverage post-organize | — | 100% |
 
 ---
 
-### EXP-7: 效率与成本对比
+### EXP-11: balance_kbs 多样性守卫评估
 
-**对应论文**: §6.6 Efficiency Analysis (Table 7)
-**目的**: 证明 QDCVR 的延迟是可接受的，且效率-精度联合指标优于基线。
+**对应论文**: §6.10 Search Diversity Analysis (Table 11)
+**假设 (H8)**: 开启 balance_kbs 后，跨域查询的 KB 覆盖数显著高于关闭时。
 
 #### 协议
 
 ```
-Stage A: 延迟分解
-  对 QDCVR 全管线各阶段计时:
-  → Query Understanding (ms)
-  → KB Selection (ms)
-  → Two-Stage Recall (ms)
-  → Content Verification (ms) ← 瓶颈
-  → Confidence Tiering (ms)
-  → Answer Synthesis (ms)
+Stage A: 大库霸权模拟
+  → 20 条跨域查询，balance_kbs=false vs true
+  → 记录 top-10 结果所属 KB 分布
 
-Stage B: 方法间延迟对比
-  → B1 (Vector): 纯向量检索
-  → B3 (Vec+CE): 向量 + Cross-Encoder 重排
-  → B4 (CRAG): 评估器 + 可能 web 回退
-  → B7 (Two-stage no-verify): 我们的管线跳过 Step 3
-  → QDCVR: 全管线
+Stage B: 多样性度量
+  → Shannon entropy of KB distribution
+  → unique KB count per query
+  → 最大 KB 占比 (dominance ratio)
 
-Stage C: 效率-精度联合指标
-  → P@5 / latency  (精度/延迟比)
-  → 候选数 / P@5  (搜索效率)
+Stage C: 大库影响测试
+  → 高分子库 (55.5% chunks) 在 top-k 中的占比
 ```
 
-#### 预期结果表 (Table 7)
-
-**Table 7a: Latency Breakdown**
-
-| Stage | Latency (ms) | % of Total |
-|-------|:------------:|:----------:|
-| Query Understanding | — | —% |
-| KB Selection | — | —% |
-| Two-Stage Recall | — | —% |
-| Content Verification | — | —% |
-| Confidence Tiering | — | —% |
-| Answer Synthesis | — | —% |
-| **Total** | — | **100%** |
-
-**Table 7b: Efficiency-Accuracy Tradeoff**
-
-| Method | Latency (ms) | P@5 | P@5/ms (×1000) | Search Space |
-|--------|:------------:|:---:|:--------------:|:------------:|
-| B1: Vector-only | — | — | — | 13,709 |
-| B3: Vec+CE | — | — | — | 13,709 |
-| B4: CRAG-style | — | — | — | 13,709 |
-| B7: Two-stage (no-verify) | — | — | — | 13,709 |
-| **QDCVR** | — | — | — | **~12** |
-
-**验收**: QDCVR 的 P@5/latency 不低于最佳基线 (即精度提升足以抵消延迟增加)
+**验收**: balance_kbs=true 时 Shannon entropy 提升 ≥30%，大库最大占比降低 ≥40%
 
 ---
 
-### EXP-8: 消融实验（增强版 — 8 个组件）
+### EXP-17 ⭐ 标签管理生命周期评估（新实验）
 
-**对应论文**: §6.7 Ablation Study (Table 8, Figure 7)
-**目的**: 证明每个组件有独立的、可测量的边际贡献。
+**对应论文**: §6.13 Tag Lifecycle Management
+**假设 (H15)**: 标签系统支持完整的生命周期管理：自动生成、去重、检索、孤儿清理。
 
-#### 消融矩阵（扩展 — 含系统实际组件）
-
-| 变体 | 移除的组件 | 验证的 Claim | 预期 ΔP@5 | 预期 ΔFPR | 消融难度 |
-|------|-----------|:-----------:|:---------:|:---------:|:--------:|
-| QDCVR-full | — (完整系统) | baseline | 0.000 | 0.000 | — |
-| −ContentVerify | 0-8 内容验证 (Step 3) | C3 | **−0.15** | **+0.28** | 配置改 `score_threshold=0.0` |
-| −Archiving | 自动归档 A0-A9 → 扁平 KB | C5, C1 | **−0.12** | **+0.22** | 重部署为单层结构 |
-| −DomainScope | KB 选择 (Step 1) → 全库检索 | C1, C2 | **−0.08** | **+0.18** | 改 `kb_id=""` |
-| −QueryRewrite | 查询理解 (Step 0) | — | −0.03 | +0.02 | 跳过 Step 0 |
-| −Balance | balance_kbs 多样性守卫 | C9 | −0.02 | +0.01 | 关 `balance_kbs` |
-| −Experience | 经验优先路由 | C4 | −0.01ˣ | — | 禁用经验搜索 |
-| −BlindSpot | 盲点声明 | — | — | — | 移除输出格式 |
-| **−RecursiveCount** ⭐ | 递归文档计数（新增） | C10 | **−0.04** | **+0.03** | 改 `getCatalog()` 为直接子级 |
-| **−AutoIndex** ⭐ | 自动索引（新增） | C7 | **−0.06** | **+0.09** | 跳过 `task_registry.submit()` |
-
-ˣ: 经验移除主要影响运维查询子集
-
-#### 消融执行
+#### 协议
 
 ```
-对每个变体:
-  1. 禁用对应组件（通过配置开关或代码修改）
-  2. 在 D1 (60 queries) 上执行检索
-  3. 计算 ΔP@5, ΔnDCG@5, ΔFPR vs full
-  4. 配对 t 检验: 变体 vs full 的差异是否显著
-  5. Bonferroni 校正 (m=8 消融变体 → α/8)
+Stage A: 标签生成评估
+  A1. 对 D13 中 30 篇文档，检查自动生成标签
+  A2. 人工标注 ground truth tags (每篇 3-5 个)
+  A3. 计算: Tag Precision, Recall, F1, NDCG@k
+
+Stage B: 标签去重验证
+  B1. 对同一文档多次生成标签
+  B2. 验证: 无重复标签（系统去重）
+  B3. 验证: kb_tags_list 无重复条目
+
+Stage C: 标签检索效果
+  C1. 对 15 条以标签为意图的查询
+  C2. kb_doc_get_by_tag(tag) vs kb_search_vector(query)
+  C3. 比较: tag-based retrieval 是否比 vector search 更精确
+
+Stage D: 孤儿标签清理
+  D1. 删除带特定标签的文档
+  D2. 运行 kb_tags_cleanup(dry_run=true)
+  D3. 验证: 孤儿标签被检测到
+  D4. 运行 kb_tags_cleanup(dry_run=false)
+  D5. 验证: 孤儿标签已清除，活跃标签不受影响
+
+Stage E: 标签迁移
+  E1. kb_doc_move 将文档从 KB-A 移至 KB-B
+  E2. 验证: 标签跟随迁移
+  E3. 验证: 全局标签系统状态一致
 ```
 
-#### 参数敏感性
+#### 预期结果表 (Table 14)
 
-| 参数 | 范围 | 最优值 | 对 P@5 的影响 |
-|------|------|:-----:|-------------|
-| score_threshold | 0.25–0.45 | — | 折线图 |
-| content_threshold (P0) | 5–8 | — | 折线图 |
-| stage1_top_k | 10–30 | — | 折线图 |
-| balance_rounds | 1–5 | — | 折线图 |
-| stage1_keyword_weight | 0.3–0.7 | — | 折线图 |
-| stage1_graph_weight | 0.3–0.7 | — | 折线图 |
+| Metric | Value | Target |
+|--------|:-----:|:------:|
+| Tag Precision | — | ≥0.75 |
+| Tag Recall | — | ≥0.60 |
+| Tag F1 | — | ≥0.67 |
+| Tag Dedup Rate | — | 100% |
+| Tag Retrieval P@5 vs Vector | — | Δ ≥ +0.10 |
+| Orphan Detection Rate | — | 100% |
+| Orphan Cleanup Accuracy | — | 100% (活跃标签不受影响) |
+| Tag Migration Consistency | — | 100% |
 
-**验收**: 至少 4 个组件 (ContentVerify, Archiving, DomainScope, AutoIndex) 的移除产生统计显著的性能下降
+**验收**: Tag F1 ≥ 0.67，孤儿清理准确率 100%，标签迁移一致性 100%
 
 ---
 
-### EXP-9 ⭐ 五层数据一致性验证（新实验）
+## 7. Layer 3 — 系统完整性 (EXP-9~10, EXP-12, EXP-16, EXP-18)
+
+### EXP-9: 五层数据一致性验证
 
 **对应论文**: §6.8 Data Integrity Analysis (Table 9)
-**目的**: 验证五层数据模型的一致性约束在实际操作中生效，防止"索引过期"这一 #1 数据损坏成因。
 **假设 (H6)**: 文档删除后，向量索引 + 图谱索引正确清理；文档更新后，索引正确重建。
 
 #### 协议
@@ -646,21 +768,16 @@ Stage A: 五层一致性检查点定义
   L1: 磁盘文件存在性
   L2: .tree-fs.json 中有记录
   L3: .knowledge-base.yml 中有记录
-  L4: ChromaDB 中有对应 chunks (通过 collection name 匹配)
-  L5: Neo4j 中有对应 Document 节点 (通过 graph_doc_id 匹配)
+  L4: ChromaDB 中有对应 chunks
+  L5: Neo4j 中有对应 Document 节点
 
 Stage B: 一致性操作验证
-  B1. 创建文档: kb_doc_create → 检查 L1-L5 全部命中
+  B1. 创建文档: kb_doc_create → 检查 L1-L5 全部命中 ✓
   B2. 自动索引: 确认 task_registry 触发索引 (L4, L5 自动写入)
   B3. 搜索命中: kb_search_vector → 新文档可检索
-  B4. 更新内容: kb_doc_update_content → 检查 L1-L5 一致性
-  B5. 删除文档: kb_doc_delete → 检查 L1-L5 全部清除
+  B4. 更新内容: kb_doc_update_content → 检查一致性
+  B5. 删除文档: kb_doc_delete → 检查 L1-L5 全部清除 ✗
   B6. 验证清理: kb_search_vector → 已删除文档不可检索
-
-Stage C: 一致性统计
-  → 每操作后各层的一致性状态 (✓/✗)
-  → 修复后的重复创建检测 (auto-dedup 测试)
-  → 并发安全: 同一文档快速创建+删除
 ```
 
 #### 预期结果表 (Table 9)
@@ -673,14 +790,13 @@ Stage C: 一致性统计
 | 删除+清理 | ✗ | ✗ | ✗ | ✗ | ✗ | ✅ |
 | 删除后搜索 | — | — | — | ✗ | — | ✅ |
 
-**验收**: 所有 5 个操作后各层一致性 100%（非 fire-and-forget 操作的即时验证）
+**验收**: 所有 5 个操作后各层一致性 100%
 
 ---
 
-### EXP-10 ⭐ 图谱桥接文档评估（新实验）
+### EXP-10: 图谱桥接文档评估
 
 **对应论文**: §6.9 Knowledge Graph Bridge Analysis (Table 10)
-**目的**: 验证 Neo4j 图谱发现的跨 KB 桥接文档具有真实知识关联价值，而非噪声连接。
 **假设 (H7)**: 图谱桥接文档 (min_kbs≥2) 的内容相关性显著高于随机基线。
 
 #### 协议
@@ -691,81 +807,24 @@ Stage A: 桥接文档发现
   → 记录: 50 个桥接文档及其连接 KB 数
 
 Stage B: 桥接文档内容验证
-  → 对每个桥接文档:
-    → 读其两个连接的 KB 的描述
-    → 人工判断: 该文档是否真正同时属于这两个领域？
-    → 评分: relevance (1-5)
+  → 人工评分: relevance (1-5)
 
 Stage C: 桥接文档检索价值
-  → 对 20 条跨域查询，分别执行:
-    → 无图谱桥接 (关闭 graph neighbor expansion)
-    → 有图谱桥接 (开启 graph neighbor expansion)
+  → 20 条跨域查询: 有/无图谱桥接
   → 比较: 桥接文档作为正确答案被检索到的比例
-  → 评估: 桥接文档是否帮助发现了相关领域文档
 
-Stage D: 桥接文档 vs 随机基线
-  → 随机选择 50 个文档 (非桥接)
-  → 同样做内容相关性评分
+Stage D: 桥接 vs 随机基线
+  → 随机选择 50 个非桥接文档
   → 比较: 桥接文档平均分 vs 随机文档平均分
 ```
-
-#### 预期结果表 (Table 10)
-
-| 指标 | 桥接文档 | 随机基线 | Δ |
-|------|:--------:|:--------:|---|
-| 平均内容相关性 (1-5) | — | — | — |
-| 被跨域查询命中的比例 | — | — | — |
-| 帮助发现相关领域的比例 | — | — | — |
-| 平均连接 KB 数 | — | — | — |
 
 **验收**: 桥接文档内容相关性 ≥ 3.5/5 且显著高于随机基线 (p < 0.05)
 
 ---
 
-### EXP-11 ⭐ balance_kbs 多样性守卫评估（新实验）
-
-**对应论文**: §6.10 Search Diversity Analysis (Table 11)
-**目的**: 验证 `balance_kbs` 多样性守卫防止大库检索霸权，确保公平的多域覆盖。
-**假设 (H8)**: 开启 balance_kbs 后，跨域查询的 KB 覆盖数显著高于关闭时。
-
-#### 协议
-
-```
-Stage A: 大库霸权模拟
-  → 对 20 条跨域查询，分别执行:
-    → balance_kbs=false: 无多样性守卫
-    → balance_kbs=true: 有多样性守卫
-  → 记录每条查询的 top-10 结果所属 KB 分布
-
-Stage B: 多样性度量
-  → 计算: Shannon entropy of KB distribution
-  → 计算: unique KB count per query
-  → 计算: 最大 KB 占比 (dominance ratio)
-  → 验证: balance_kbs=true 时 Shannon entropy 更高
-
-Stage C: 大库影响测试
-  → 在包含大库 (高分子, 55.5% chunks) 的系统上执行
-  → 对比: 无守卫 vs 有守卫时，大库在 top-k 中的占比
-  → 验证: 有守卫时大库占比被压制
-```
-
-#### 预期结果表 (Table 11)
-
-| 指标 | balance_kbs=false | balance_kbs=true | Δ |
-|------|:-----------------:|:----------------:|---|
-| 平均 unique KB 数 | — | — | — |
-| 平均 Shannon entropy | — | — | — |
-| 大库最大占比 (dominance) | — | — | — |
-| 跨域查询成功率 | — | — | — |
-
-**验收**: balance_kbs=true 时 Shannon entropy 提升 ≥30%，大库最大占比降低 ≥40%
-
----
-
-### EXP-12 ⭐ 递归层级结构评估（新实验）
+### EXP-12: 递归层级结构验证
 
 **对应论文**: §6.11 Hierarchical KB Model (Table 12)
-**目的**: 验证递归层级计数修复正确反映嵌套 KB 的文档数量。
 **假设 (H9)**: 递归计数的 KB catalog 正确反映所有子 KB 的文档总和。
 
 #### 协议
@@ -775,50 +834,290 @@ Stage A: 递归计数验证
   → 检查 高分子双向拉伸文献库 (12 子KB):
     → 计算: 每个子 KB 的 .md 文件数
     → 验证: 总和 = catalog 的 documentCount
-  → 检查 AI-ML-Research (1 子KB):
-    → 验证: 父 KB 文档 + 子 KB 文档 = catalog 的 documentCount
-  → 检查扁平 KB (Materials-ML-InverseDesign):
-    → 验证: 无子 KB 时递归 = 直接计数
+  → 检查 Nested KBs 计数修复
 
 Stage B: 计数修复前后对比
   → 恢复旧代码 (直接子级计数) → 记录错误计数
   → 应用修复 (递归计数) → 记录正确计数
-  → 量化: 高分子库从 0 → 73 的改进幅度
 ```
 
 #### 预期结果表 (Table 12)
 
 | KB | 子KB数 | 修复前计数 | 修复后计数 | 真实文件数 | 错误率 |
 |----|:------:|:----------:|:----------:|:----------:|:------:|
-| 高分子双向拉伸文献库 | 12 | **0** | **73** | 73 | 修复前 100% 错误 |
-| AI-ML-Research | 1 | 8 | **17** | 17 | 修复前 53% 遗漏 |
-| Materials-ML-InverseDesign | 0 | 13 | 13 | 13 | 无影响 (扁平) |
-| E2E-Integration-Test | 0 | 5 | 5 | 5 | 无影响 (扁平) |
+| 高分子双向拉伸文献库 | 12 | **0** | **73** | 73 | 修复前 100% |
+| AI-ML-Research | 1 | 8 | **17** | 17 | 修复前 53% |
+| 扁平 KB | 0 | N | N | N | 无影响 |
 
 **验收**: 修复后所有 KB 的 catalog 计数 = 真实文件数 (100%)
 
 ---
 
-## 5. 综合评分与论文产出物
+### EXP-16 ⭐ 跨语言检索能力评估（新实验）
 
-### 5.1 加权综合评分（v5.0 调整 — 加入新维度）
+**对应论文**: §6.14 Cross-Lingual Retrieval
+**假设 (H14)**: 系统在中文查询上的检索精度不低于英文查询的 85%。
+
+#### 协议
+
+```
+Stage A: 中文查询集构造 (D11)
+  → 30 条中文查询，覆盖 6 个领域
+  → 从 D1 英文文档生成对应中文查询 (通过翻译+人工校对确保自然性)
+  → Ground truth: 与英文版本共享（同一源文档 = 正例）
+
+Stage B: 检索对比
+  → 对每条中文查询:
+    B1. kb_search_vector(q_zh, kb_id="", top_k=5)
+    B2. kb_search_vector(q_zh, kb_id=selected, top_k=5)
+  → 对比: 同查询的英文版本 vs 中文版本
+  → 指标: ΔP@5(zh vs en)
+
+Stage C: 混合语言查询
+  → 10 条中英混合查询 (如 "transformer architecture 注意力机制详解")
+  → 对比纯中文/纯英文的检索效果
+
+Stage D: 中文文档入库
+  → 入库 10 篇中文技术文档 (D5 子集)
+  → 验证: 中文查询→中文文档匹配准确性
+  → 验证: jieba 分词对中文查询的贡献 (消融: 关闭 jieba 用纯字符 n-gram)
+```
+
+#### 预期结果表 (Table 15)
+
+| Query Language | P@5 | nDCG@5 | MRR | Latency (ms) |
+|---------------|:---:|:------:|:---:|:------------:|
+| English (baseline) | — | — | — | — |
+| Chinese (D11) | — | — | — | — |
+| Mixed EN+ZH | — | — | — | — |
+| *Δ Chinese vs English* | *≥−15%* | *≥−15%* | — | — |
+
+**验收**: P@5(zh) ≥ 85% × P@5(en)，中英混合不显著低于单语言
+
+---
+
+### EXP-18 ⭐ 系统扩展性测试（新实验）
+
+**对应论文**: §6.15 Scalability Analysis
+**假设 (H16)**: 系统吞吐和延迟可在 10× 数据量范围内线性扩展。
+
+#### 协议
+
+```
+Stage A: 规模梯度构造 (D12)
+  → 1×: 60 docs (D1)
+  → 3×: 180 docs (D1 + 扩展)
+  → 5×: 300 docs
+  → 10×: 600 docs
+  → 每个规模保持相同的 KB 数量/领域分布
+
+Stage B: 吞吐量测试
+  → 每个规模下:
+    B1. 并发 10/20/50 查询的 QPS (queries per second)
+    B2. 单查询延迟分布 (P50, P95, P99)
+    B3. 索引时间 (per doc, per batch)
+  
+Stage C: 资源使用
+  → CPU/内存/磁盘 I/O 随规模增长
+  → ChromaDB 持久化大小
+  → Neo4j 图谱大小
+
+Stage D: 检索质量保持
+  → 验证 P@5 在 10× 规模下不下降 (领域内检索)
+  → 验证 FPR 在 10× 规模下仍然 ≤ 0.10
+```
+
+#### 预期结果表 (Table 16)
+
+| Scale | Docs | QPS@10 | P50 Lat | P99 Lat | P@5 | FPR | Index Time/doc |
+|:-----:|:----:|:------:|:-------:|:-------:|:---:|:---:|:-------------:|
+| 1× | 60 | — | — | — | baseline | baseline | — |
+| 3× | 180 | — | — | — | Δ ≤ −0.02 | Δ ≤ +0.02 | — |
+| 5× | 300 | — | — | — | Δ ≤ −0.03 | Δ ≤ +0.03 | — |
+| 10× | 600 | — | — | — | Δ ≤ −0.05 | Δ ≤ +0.05 | — |
+
+**验收**: 10× 规模下 P@5 下降 ≤ 5%，P99 延迟 ≤ 3× baseline
+
+---
+
+## 8. Layer 0 — 数据基础层 (EXP-13~14) ⭐ NEW
+
+### EXP-13 ⭐ 冥想自动归纳质量评估（新实验）
+
+**对应论文**: §6.16 Experience Meditation Auto-Induction
+**假设 (H11)**: 冥想自动归纳管线的最终可审批率 ≥ 60%，信号精度 ≥ 0.70。
+
+#### 协议
+
+```
+Stage A: 冥想组件评估概览
+  冥想管线包含 6 个可验证阶段:
+  S1: Question Harvester — 从 chat DB 提取→过滤→聚类用户问题
+  S2: Signal Harvester — 从 MCP tool calls 捕获真实 KB Q&A 信号
+  S3: KB Matcher — 关键词匹配 cluster → KB
+  S4: Vector Search — 在目标 KB 中搜索相关文档
+  S5: Duplicate Check — 检查是否已有类似经验
+  S6: Draft Creation — LLM 合成经验草稿
+
+Stage B: S1 问题收获器评估
+  B1. 从 D10 (100+ 条真实用户对话) 运行 harvest_questions
+  B2. 评估:
+    → Noise Rejection Rate: 被过滤的系统消息/问候语比例
+    → Intent Detection Accuracy: 标注 50 条消息的意图 (信息/操作/闲聊)
+    → Cluster Quality: 人工评估 10 个 cluster 的同质性 (1-5)
+    → Cluster Coverage: 被聚类的问题比例
+
+Stage C: S2 信号收获器评估
+  C1. 从 D10 提取 MCP tool call traces (kb_search_vector, kb_doc_read)
+  C2. 运行 harvest_signals_to_db
+  C3. 评估:
+    → Signal Precision: 有效 KB Q&A 信号 / 所有捕获信号
+    → Signal Recall: 捕获的信号 / 所有真实信号 (人工标注 30 条)
+    → Dedup Rate: 去重比例
+
+Stage D: S3 KB 匹配器评估
+  D1. 对 20 个聚类，运行 _match_kb
+  D2. 评估:
+    → KB Match Top-1 Accuracy (人工标注正确答案)
+    → KB Match Top-3 Accuracy
+
+Stage E: S4-S6 综合产出评估
+  E1. 运行完整 meditation_run(kb_id)
+  E2. 对生成的草稿:
+    → Draft Quality Score (人工 3 人评分, 1-5 scale):
+      - 是否抓住了真实用户问题? (accuracy)
+      - 解决方案是否来自真实文档? (grounding)
+      - 经验是否可操作? (actionability)
+      - 格式是否符合 E2 质量标准? (completeness)
+    → Draft Approval Rate: 可直接审批通过的比例 (E3 stage)
+  E3. 对比: 冥想自动生成 vs 人工编写 (相同问题, 人工编写对照组)
+
+Stage F: 调度器正确性
+  F1. 配置: interval=1min, lookback=1d, dry_run=true
+  F2. 验证: 调度器按间隔执行 (记录 5 次运行时间戳, 计算间隔方差)
+  F3. 验证: 增量触发 (添加 3 个新信号后, _check_incremental_trigger 触发)
+  F4. 验证: dry_run 模式不创建草稿
+```
+
+#### 预期结果表 (Table 17)
+
+**Table 17a: Harvester Quality**
+
+| Metric | Value | Target |
+|--------|:-----:|:------:|
+| Noise Rejection Rate | — | ≥80% |
+| Intent Detection Accuracy | — | ≥75% |
+| Cluster Homogeneity (human) | — | ≥3.5/5 |
+| Cluster Coverage | — | ≥70% |
+
+**Table 17b: Signal Quality**
+
+| Metric | Value | Target |
+|--------|:-----:|:------:|
+| Signal Precision | — | ≥0.70 |
+| Signal Recall | — | ≥0.50 |
+| Dedup Rate | — | ≥80% |
+
+**Table 17c: End-to-End Meditation Quality**
+
+| Metric | Value | Target |
+|--------|:-----:|:------:|
+| Draft Quality Score (avg 3 raters) | — | ≥3.5/5 |
+| Draft Approval Rate | — | ≥60% |
+| KB Match Top-1 Accuracy | — | ≥70% |
+| KB Match Top-3 Accuracy | — | ≥90% |
+| Scheduler Interval Variance | — | ≤10% |
+
+**验收**: Draft Approval Rate ≥ 60%，Signal Precision ≥ 0.70，Scheduler 间隔方差 ≤ 10%
+
+---
+
+### EXP-14 ⭐ 多格式解析质量评测（新实验）
+
+**对应论文**: §6.17 Multi-Format Parse Quality
+**假设 (H12)**: MinerU 在多格式文档上的解析 Markdown 保真度 ≥ 85%，表格准确率 ≥ 80%。
+
+#### 协议
+
+```
+Stage A: 多格式语料构造 (D9)
+  → PDF (15 篇): 包含公式、表格、图表的科学论文
+  → Word/.docx (10 篇): 结构化技术报告
+  → Excel/.xlsx (8 篇): 数据表格 + 多 sheet
+  → Image/.png/.jpg (7 篇): 扫描文档需 OCR
+
+Stage B: 格式维度评估
+  B1. PDF 解析:
+    → Markdown Fidelity Score: 人工标注 source PDF 的关键段落
+    → 公式准确率: 随机抽取 30 个公式, 人工判断 LaTeX 是否正确
+    → 表格准确率: 随机抽取 20 个表格, 检查行列数+单元内容
+
+  B2. Word 解析:
+    → 段落结构保持: 标题层级、列表、加粗/斜体
+    → 图片提取: 是否成功提取嵌入图片
+
+  B3. Excel 解析:
+    → Sheet 完整性: 所有 sheet 均被解析
+    → 表格行列正确性: 与原始文件对比
+    → 空值处理: 不丢失也不添加
+
+  B4. Image+OCR 解析:
+    → OCR 字符准确率 (CER): 与 ground truth 文本对比
+    → 拉丁字母 + 中文混合字符识别
+
+Stage C: 解析流水线可靠性
+  C1. 100 次连续解析的成功率
+  C2. 解析失败类型分类 (超时/OOM/格式不支持/编码错误)
+  C3. 解析吞吐: docs/hour (GPU) vs docs/hour (CPU)
+
+Stage D: 解析对比基线
+  D1. 同一组 15 篇 PDF:
+    → P1: Unstructured.io (latest)
+    → P2: LlamaParse (Cloud API)
+    → MinerU (ours)
+  D2. 相同 ground truth, 相同评估标准
+```
+
+#### 预期结果表 (Table 18)
+
+**Table 18a: Format-Specific Quality**
+
+| Format | MD Fidelity | Table Acc | Formula Acc | Image Extract |
+|--------|:----------:|:---------:|:----------:|:------------:|
+| PDF (scientific) | ≥85% | ≥80% | ≥80% | ≥90% |
+| Word (.docx) | ≥90% | ≥85% | — | ≥90% |
+| Excel (.xlsx) | — | ≥95% | — | — |
+| Image (OCR) | ≥75% | — | — | — |
+
+**Table 18b: Pipeline Reliability**
+
+| Metric | Value | Target |
+|--------|:-----:|:------:|
+| Parse success rate (100 runs) | — | ≥95% |
+| Avg parse time (PDF, GPU) | — | ≤30s/doc |
+| OCR CER (mixed Latin+CJK) | — | ≤5% |
+
+**Table 18c: Parse Baseline Comparison (15 PDFs)**
+
+| Method | MD Fidelity | Table Acc | Formula Acc |
+|--------|:----------:|:---------:|:----------:|
+| Unstructured.io | — | — | — |
+| LlamaParse | — | — | — |
+| **MinerU (ours)** | — | — | — |
+
+**验收**: PDF Markdown Fidelity ≥ 85%，Table Accuracy ≥ 80%，Parse success rate ≥ 95%
+
+---
+
+## 9. 综合评分与论文产出物映射
+
+### 9.1 加权综合评分（v6.0 — 11 维）
 
 $$
-\text{CS} = 0.22 \cdot \text{Retrieval} + 0.14 \cdot \text{Efficiency} + 0.18 \cdot \text{Robustness} + 0.12 \cdot \text{DocMgmt} + 0.10 \cdot \text{Experience} + 0.08 \cdot \text{Agent} + 0.06 \cdot \text{Consistency} + 0.05 \cdot \text{Diversity} + 0.05 \cdot \text{Reliability}
+\text{CS} = 0.20 \cdot \text{Retrieval} + 0.12 \cdot \text{Efficiency} + 0.15 \cdot \text{Robustness} + 0.10 \cdot \text{DocMgmt} + 0.08 \cdot \text{Experience} + 0.06 \cdot \text{Agent} + 0.06 \cdot \text{Consistency} + 0.05 \cdot \text{Diversity} + 0.05 \cdot \text{Reliability} + 0.07 \cdot \text{ParseQuality} + 0.06 \cdot \text{Meditation}
 $$
 
-其中每个维度归一化到 [0,1]:
-- **Retrieval**: avg(P@5, nDCG@5, MRR)
-- **Efficiency**: 1 − (latency/3000ms) × (search_space/13709)
-- **Robustness**: 1 − FPR
-- **DocMgmt**: archiving_accuracy × index_coverage
-- **Experience**: exp_hit_rate × tier_accuracy
-- **Agent**: task_success_rate × avg_tool_quality/5
-- **Consistency** ⭐: 五层一致性通过率 × auto-index 可靠性
-- **Diversity** ⭐: balance_kbs Shannon entropy 提升率
-- **Reliability**: parse_success_rate × consistency
-
-### 5.2 论文产出物映射表（v5.0 — 12 表 9 图）
+### 9.2 论文产出物映射表（v6.0 — 18 表 12 图）
 
 | 论文元素 | 来源实验 | 类型 |
 |---------|:--------:|------|
@@ -831,35 +1130,46 @@ $$
 | **Figure 7**: 雷达图 (多维度对比) | EXP-3,7 | 雷达图 |
 | **Figure 8**: 五层一致性验证图 | EXP-9 | 层次图 |
 | **Figure 9**: 图谱桥接文档网络图 | EXP-10 | 网络图 |
+| **Figure 10**: 冥想管线流程图 | EXP-13 ⭐ | 流程图 |
+| **Figure 11**: 解析质量对比图 | EXP-14 ⭐ | 分组柱状图 |
+| **Figure 12**: 扩展性曲线 | EXP-18 ⭐ | 折线图 |
 | **Table 1**: 检索精度主结果 | EXP-1 | LaTeX |
 | **Table 2**: 跨域 FPR 消除 | EXP-2 | LaTeX |
 | **Table 3**: 多基线全面对比 | EXP-3 | LaTeX |
-| **Table 4**: 经验管道效果 | EXP-5 | LaTeX |
-| **Table 5**: 系统功能矩阵 | EXP-6 | LaTeX |
-| **Table 6**: 消融矩阵 (8+2 组件) | EXP-8 | LaTeX |
+| **Table 4**: Content-vs-Vector | EXP-4 | LaTeX |
+| **Table 5**: 经验管道效果 | EXP-5 | LaTeX |
+| **Table 6**: 系统功能矩阵 | EXP-6 | LaTeX |
 | **Table 7**: 效率延迟分析 | EXP-7 | LaTeX |
-| **Table 8**: 五层一致性验证 | EXP-9 | LaTeX |
-| **Table 9**: 图谱桥接文档评估 | EXP-10 | LaTeX |
-| **Table 10**: balance_kbs 多样性分析 | EXP-11 | LaTeX |
-| **Table 11**: 递归层级计数验证 | EXP-12 | LaTeX |
+| **Table 8**: 消融矩阵 (10 组件) | EXP-8 | LaTeX |
+| **Table 9**: 五层一致性验证 | EXP-9 | LaTeX |
+| **Table 10**: 图谱桥接文档评估 | EXP-10 | LaTeX |
+| **Table 11**: balance_kbs 多样性分析 | EXP-11 | LaTeX |
+| **Table 12**: 递归层级计数验证 | EXP-12 | LaTeX |
+| **Table 13**: 增量索引正确性 | EXP-15 ⭐ | LaTeX |
+| **Table 14**: 标签生命周期 | EXP-17 ⭐ | LaTeX |
+| **Table 15**: 跨语言检索 | EXP-16 ⭐ | LaTeX |
+| **Table 16**: 系统扩展性 | EXP-18 ⭐ | LaTeX |
+| **Table 17**: 冥想归纳质量 | EXP-13 ⭐ | LaTeX |
+| **Table 18**: 多格式解析质量 | EXP-14 ⭐ | LaTeX |
 
 ---
 
-## 6. 统计协议
+## 10. 统计协议
 
-### 6.1 必须满足的 CIKM 统计标准
+### 10.1 必须满足的 CIKM 统计标准
 
 | 要求 | 实现 | 阈值 |
 |------|------|:----:|
 | **假设检验** | 配对 t 检验 (paired, two-tailed) 或 Wilcoxon signed-rank (非正态时) | p < 0.05 |
-| **多重比较校正** | Bonferroni correction (m = 消融变体数 8 或方法对数) | α/m |
+| **多重比较校正** | Bonferroni correction (m = hyp 数量) | α/m |
 | **效应量** | Cohen's d (≥0.5 = 中等, ≥0.8 = 大) | 报告 |
 | **置信区间** | Bootstrap 95% CI (n_boot = 10,000) | 报告 |
 | **标注一致性** | Cohen's κ (≥0.7 = substantial agreement) | κ > 0.7 |
-| **样本量** | 每实验 ≥ 50 查询 | 统计 power ≥ 0.8 |
+| **解析质量 IAA** | Krippendorff's α for 3 raters | α > 0.7 |
+| **样本量** | 每实验 ≥ 50 查询 (检索类) 或 ≥ 10 文档 (解析类) | 统计 power ≥ 0.8 |
 | **随机种子** | seed = 42 (所有随机操作) | 固定 |
 
-### 6.2 报告格式
+### 10.2 报告格式
 
 ```
 Method A vs Method B:
@@ -868,191 +1178,192 @@ Method A vs Method B:
   (* p<0.05, ** p<0.01, *** p<0.001, † not significant)
 ```
 
-### 6.3 必须进行的统计检验
+### 10.3 必须进行的统计检验（v6.0 扩展）
 
 | 检验对 | 指标 | 实验 |
 |--------|------|:----:|
 | QDCVR vs B4 (CRAG) | P@5, nDCG@5 | EXP-3 |
 | QDCVR vs B1 (Flat vector) | FPR | EXP-2 |
-| QDCVR vs B7 (two-stage no-verify) | P@5 | EXP-3 (验证内容验证的独立贡献) |
 | QDCVR-full vs −ContentVerify | P@5 | EXP-8 |
 | QDCVR-full vs −Archiving | P@5 | EXP-8 |
 | QDCVR-full vs −AutoIndex | P@5 | EXP-8 |
+| QDCVR-full vs −IncrementalIndex | P@5, Consistency | EXP-8 |
 | Doc-only vs Exp-first | docs_read | EXP-5 |
 | Bridge docs vs Random | relevance | EXP-10 |
 | balance=true vs balance=false | Shannon entropy | EXP-11 |
+| Chinese vs English | P@5 | EXP-16 |
+| MinerU vs LlamaParse | MD Fidelity | EXP-14 |
+| Meditation draft vs Manual draft | Quality Score | EXP-13 |
+| Tag Retrieval vs Vector Search | P@5 | EXP-17 |
+| 1× vs 10× scale | P@5, QPS | EXP-18 |
 
 ---
 
-## 7. 审稿人预判防御矩阵（v5.0 增强）
+## 11. 审稿人预判防御矩阵（v6.0 增强）
 
 | 审稿人质疑 | 防御策略 | 依赖实验 |
 |-----------|---------|:--------:|
-| "CRAG 已经做了检索验证" | 我们不只做后验证。我们证明**前置领域组织**使后验证成本从 ~60 文档降到 ~5 文档。且 content-overrides-vector 是 CRAG 没有的明确可解释原则。 | EXP-1,3,4 |
-| "MCP-Pyserini 已经用了 MCP" | 它是纯 IR 工具包。我们是**完整 KB 生命周期**管理 (CRUD+索引+图谱+经验+标签+生命周期)，73 工具覆盖端到端。 | EXP-3,6 |
-| "你就分了个文件夹" | 自动归档基于内容（A3d 决策树），不是文件名。EXP-6 测了归档准确率 + 对抗性标题测试。且领域边界带来了可测增益（EXP-2 FPR 降低 87%）。 | EXP-2,6 |
+| "CRAG 已经做了检索验证" | 我们证明**前置领域组织**使后验证成本从 ~60 文档降到 ~5 文档。且 content-overrides-vector 是 CRAG 没有的明确可解释原则。 | EXP-1,3,4 |
+| "你就分了个文件夹" | 自动归档基于内容（A3d 决策树），不是文件名。EXP-6 测了归档准确率 + 对抗性标题测试。 | EXP-2,6 |
 | "你的 ground truth 自己标的" | D1: 源文档即正例（客观）。D2/D3: 使用 BEIR/MSMARCO 官方 qrels。自建集: 双盲标注 + κ>0.7。 | 全部 |
-| "样本太小" | n=60(arXiv) + 50(MSMARCO) + BEIR queries。Bootstrap 95% CI。作为初步验证，声明 future work 扩规模。 | 全部 |
-| "延迟太高" | 量化延迟分解（EXP-7）。证明 57% 在内容验证上，但精度提升值得。且领域组织后只验 ~5 文档而非 ~60。 | EXP-7 |
+| "延迟太高" | 量化延迟分解（EXP-7）。证明 57% 在内容验证上，但精度提升值得。 | EXP-7 |
 | "经验是你自己编的" | 种子经验是构造的（声明），但自动提取的来自真实 arXiv 论文。经验分级有人工标注+κ 验证。 | EXP-5 |
-| **"你的系统层级结构只是嵌套文件夹"** ⭐ | EXP-12 证明递归计数修复正确反映嵌套 KB（高分子库 0→73 的改进），且层级结构带来跨域 FPR 降低 87% 的实际增益。 | EXP-2,12 |
-| **"你的数据一致性只是口号"** ⭐ | EXP-9 五层一致性验证：每个操作后各层正确性 100% 可验证。且 AutoIndex 消融证明索引可靠性对检索质量有独立贡献（ΔP@5=−0.06）。 | EXP-8,9 |
-| **"你的图谱桥接文档只是噪声连接"** ⭐ | EXP-10 人工内容验证：桥接文档平均相关性 ≥3.5/5，显著高于随机基线。图谱发现的不是噪声，而是真实跨域知识联系。 | EXP-10 |
-| **"你的多样性守卫没用"** ⭐ | EXP-11 balance_kbs 消融：无守卫时大库占比 55.5%，有守卫时 Shannon entropy 提升 ≥30%。这是工程上的公平检索保障。 | EXP-11 |
+| "你的层级结构只是嵌套文件夹" | EXP-12 证明递归计数修复正确反映嵌套 KB，且层级结构带来跨域 FPR 降低 87% 的实际增益。 | EXP-2,12 |
+| "你的数据一致性只是口号" | EXP-9 五层一致性验证：每个操作后各层正确性 100% 可验证。 | EXP-8,9 |
+| **"你的解析质量怎么样？检索好是因为解析好？"** ⭐ | EXP-14 多格式评测 + 解析基线对比，消融掉解析质量对检索的贡献。 | EXP-14,8 |
+| **"冥想自动归纳是噱头"** ⭐ | EXP-13 量化每个阶段的精度 (S1-S6)，End-to-end approval rate ≥60%。 | EXP-13 |
+| **"增量索引会不会导致不一致"** ⭐ | EXP-15 ADO 周期验证: add→搜索→update→搜索→delete→搜索，每步验证一致性。 | EXP-15 |
+| **"中文能检索吗"** ⭐ | EXP-16 跨语言对比: P@5(zh) ≥ 85% × P@5(en) | EXP-16 |
+| **"标签管理系统有用吗"** ⭐ | EXP-17 Tag F1 ≥ 0.67, 孤儿清理 100%, 标签检索优于向量检索 | EXP-17 |
+| **"大规模能用吗"** ⭐ | EXP-18 10× 扩展性: P@5 ≤5% 下降, P99 ≤3× baseline | EXP-18 |
+| **"你用的是什么嵌入模型"** ⭐ | 全实验统一 BGE-M3, 1024-d，公开模型名和版本。 | 全部 |
+| **"你的 baseline 是自己实现的，是否公平"** ⭐ | 所有基线用同一语料+同一模型+同一 top-k。CRAG/Self-RAG 实现细节在附录公开。 | EXP-3 |
 
 ---
 
-## 8. 执行路线图
+## 12. 执行路线图与资源评估
 
-### Phase 1: 环境与数据集准备 (Day 1-3)
-- [ ] 记录系统状态基线 (EXP-0 — 已就绪，13 KB, 154 docs, 13,709 chunks)
+### Phase 1: 环境与数据集准备 (Day 1-4)
+- [ ] 记录系统状态基线 (EXP-0)
 - [ ] 下载 arXiv 60 篇 PDF → `benchmark/datasets/arxiv-6d/`
-- [ ] 下载 MS MARCO dev → `benchmark/datasets/msmarco/`
-- [ ] 下载 BEIR NFCorpus + SciFact → `benchmark/datasets/beir/`
-- [ ] 收集 StackOverflow QA 50 条 → `benchmark/datasets/stackoverflow/`
-- [ ] 收集 TechDocs 30 篇 → `benchmark/datasets/techdocs/`
-- [ ] 构造对抗查询集 15 条 → `benchmark/datasets/adversarial-queries.json`
-- [ ] 收集 Neo4j 桥接文档 → `benchmark/datasets/bridge-docs.json` ⭐
+- [ ] 下载 MS MARCO dev + BEIR → `benchmark/datasets/msmarco/`, `beir/`
+- [ ] 收集 StackOverflow QA 50 条 + TechDocs 30 篇
+- [ ] 构造对抗查询集 15 条
+- [ ] 构造多格式语料 (D9): PDF 15 + Word 10 + Excel 8 + Image 7 ⭐
+- [ ] 构造中文查询集 (D11): 30 条 ⭐
+- [ ] 构造标签 benchmark (D13): 30 篇 ⭐
+- [ ] 导出 chat session DB (D10): 100+ 对话 ⭐
 
-### Phase 2: D1 文档入库 (Day 4)
+### Phase 2: D1 文档入库 (Day 5)
 - [ ] 创建 6 个领域 KB
 - [ ] 上传 → parse → ingest → index 60 篇 arXiv papers
-- [ ] 验证索引完整性
+- [ ] 验证索引完整性 + 解析快照
 
-### Phase 3: EXP-1, EXP-2, EXP-3 — 检索实验 (Day 5-6)
-- [ ] 构造查询集 (180 条)
-- [ ] 执行 Flat / Domain / BM25+Vec / Vec+CE / CRAG / Self-RAG / Two-stage-no-verify
-- [ ] 计算所有指标
-- [ ] 统计检验
+### Phase 3: Layer 0 — 数据基础层 (Day 6-7) ⭐
+- [ ] EXP-14: 多格式解析质量评测
+  - D9 全部文件解析 → 记录 markdown fidelity
+  - 与 Unstructured.io + LlamaParse 对比
+- [ ] EXP-13: 冥想管道质量评测
+  - 收获器评估 → 信号评估 → 综合产出评估
 
-### Phase 4: EXP-4 — 内容验证实证 (Day 7)
-- [ ] 对 top-20 候选执行 Content Verification
-- [ ] 构建 scatter plot 数据
-- [ ] 量化 C-over-V 贡献
+### Phase 4: Layer 1 — 检索实验 (Day 8-11)
+- [ ] EXP-1: 检索精度主实验
+- [ ] EXP-2: 跨域 FPR 消除
+- [ ] EXP-3: 多基线全面对比
+- [ ] EXP-4: Content-Overrides-Vector 实证
+- [ ] EXP-15: 增量索引正确性
 
-### Phase 5: EXP-5 — 经验管道 (Day 8-9)
-- [ ] 创建 20 条种子经验
-- [ ] 自动提取经验
-- [ ] 经验检索评测
-- [ ] Tier accuracy + 衰减验证
+### Phase 5: Layer 2 — 功能实验 (Day 12-14)
+- [ ] EXP-5: 经验管道有效性
+- [ ] EXP-6: 自动归档准确性
+- [ ] EXP-11: balance_kbs 多样性
+- [ ] EXP-17: 标签管理生命周期
 
-### Phase 6: EXP-6 — 归档与管理 (Day 10)
-- [ ] 归档准确性 (holdout 40 篇)
-- [ ] 标签质量评估
-- [ ] Organize → Verify 流程
+### Phase 6: Layer 3 — 系统实验 (Day 15-17)
+- [ ] EXP-7: 效率延迟分析
+- [ ] EXP-8: 消融实验 (10 组件)
+- [ ] EXP-9: 五层一致性验证
+- [ ] EXP-10: 图谱桥接文档
+- [ ] EXP-12: 递归层级验证
+- [ ] EXP-16: 跨语言检索
+- [ ] EXP-18: 扩展性测试
 
-### Phase 7: EXP-7 — 效率 (Day 11)
-- [ ] 延迟分解测量
-- [ ] 各方法延迟对比
-- [ ] 效率-精度联合分析
-
-### Phase 8: EXP-8 — 消融 (Day 12)
-- [ ] 执行 8 个消融变体 + 2 个新组件 (RecursiveCount, AutoIndex)
-- [ ] 参数敏感性分析
-
-### Phase 9: EXP-9, EXP-10, EXP-11, EXP-12 — 系统特性验证 (Day 13)
-- [ ] 五层一致性验证 (EXP-9)
-- [ ] 图谱桥接文档评估 (EXP-10)
-- [ ] balance_kbs 多样性评估 (EXP-11)
-- [ ] 递归层级验证 (EXP-12)
-
-### Phase 10: 系统级对比 (Day 14-15)
+### Phase 7: 系统级对比 (Day 18-19)
 - [ ] 安装 RAGFlow / Dify / LightRAG
-- [ ] 导入同文档集
-- [ ] 执行查询 + 功能对比
+- [ ] 导入同文档集 + 执行查询 + 功能对比
 
-### Phase 11: 汇总与产出 (Day 16-17)
+### Phase 8: 汇总与产出 (Day 20-22)
 - [ ] 计算 Composite Score
-- [ ] 生成所有 JSON + LaTeX tables
+- [ ] 生成所有 JSON + LaTeX tables + Figures
 - [ ] 生成 HTML 看板
 - [ ] 撰写统计分析报告
 - [ ] 撰写错误分析
 
+### 资源评估
+
+| 资源 | 需求 | 备注 |
+|------|------|------|
+| GPU | 1× (T4/A10 即可) | MinerU 解析 + BGE-M3 嵌入 |
+| CPU | 8 核 | 后台服务 + 并发检索 |
+| 内存 | 32GB | ChromaDB + Neo4j + 多进程 |
+| 存储 | 50GB | 数据集 + 索引 + 结果 |
+| 人工标注工时 | ~40 小时 | D7 构造 + 解析质量 + 经验质量 + 标签 |
+| LLM API 调用 | ~500 次 | 经验合成 + Self-RAG 评估器 |
+| 总执行时间 | ~22 天 | 含数据准备和人工标注 |
+
 ---
 
-## 9. 结果输出规范
+## 13. 结果输出规范
 
-### 9.1 目录结构
+### 13.1 目录结构（v6.0 扩展）
 
 ```
 benchmark/
-├── SYSTEM-BENCHMARK-PLAN.md           ← 本文件 (权威定稿 v5.0)
+├── SYSTEM-BENCHMARK-PLAN.md           ← 本文件 (权威定稿 v6.0)
 ├── datasets/
 │   ├── arxiv-6d/                      ← D1: 60 PDFs
 │   ├── msmarco/                       ← D2: MS MARCO
 │   ├── beir/                          ← D3: BEIR subsets
 │   ├── stackoverflow/                 ← D4: SO QA pairs
 │   ├── techdocs/                      ← D5: mixed tech docs
+│   ├── multi-format/                  ← D9 ⭐: PDF/Word/Excel/Image
+│   ├── chinese-queries.json           ← D11 ⭐: 30 Chinese queries
+│   ├── scalability-corpus/            ← D12 ⭐: 600 docs
+│   ├── tag-benchmark/                 ← D13 ⭐: 30 tagged docs
 │   ├── adversarial-queries.json       ← 15 adversarial queries
-│   ├── bridge-docs.json               ← ⭐ Neo4j 桥接文档 (50)
+│   ├── bridge-docs.json               ← Neo4j 桥接文档
+│   ├── chat-sessions.db               ← D10 ⭐: Chat DB export
 │   └── queries-full.json              ← 全部查询集
 ├── qrels/
 │   ├── qrels-arxiv.jsonl
 │   ├── qrels-msmarco.jsonl
-│   └── qrels-beir.jsonl
+│   ├── qrels-beir.jsonl
+│   └── qrels-chinese.jsonl            ⭐
 ├── results/
-│   ├── EXP-0-system-baseline.json     ← 系统状态基线
-│   ├── EXP-1-retrieval-precision.json
-│   ├── EXP-2-crossdomain-fpr.json
-│   ├── EXP-3-multi-baseline.json
-│   ├── EXP-4-content-overrides.json
-│   ├── EXP-5-experience-pipeline.json
-│   ├── EXP-6-archiving-accuracy.json
-│   ├── EXP-7-efficiency-latency.json
-│   ├── EXP-8-ablation.json
-│   ├── EXP-9-five-layer-consistency.json   ⭐
-│   ├── EXP-10-graph-bridge-docs.json       ⭐
-│   ├── EXP-11-balance-kbs-diversity.json   ⭐
-│   ├── EXP-12-recursive-hierarchy.json     ⭐
-│   ├── composite-scores.json          ← 综合加权评分
-│   ├── summary.json                   ← 论文可引用汇总
-│   ├── statistical-tests.json         ← 所有假设检验结果
-│   └── error-analysis.md              ← 错误分析
+│   ├── EXP-0-system-baseline.json
+│   ├── EXP-1~12-results.json
+│   ├── EXP-13-meditation-quality.json   ⭐
+│   ├── EXP-14-parse-quality.json        ⭐
+│   ├── EXP-15-incremental-indexing.json ⭐
+│   ├── EXP-16-cross-lingual.json        ⭐
+│   ├── EXP-17-tag-lifecycle.json        ⭐
+│   ├── EXP-18-scalability.json          ⭐
+│   ├── composite-scores.json
+│   ├── summary.json
+│   ├── statistical-tests.json
+│   └── error-analysis.md
 ├── figures/
-│   ├── fig1-crossdomain-pollution.png
-│   ├── fig2-qdcvr-pipeline.png
-│   ├── fig3-content-vs-vector.png
-│   ├── fig4-fpr-comparison.png
-│   ├── fig5-ablation-waterfall.png
-│   ├── fig6-latency-breakdown.png
-│   ├── fig7-radar-comparison.png
-│   ├── fig8-five-layer-consistency.png   ⭐
-│   └── fig9-graph-bridge-network.png     ⭐
+│   ├── fig1~fig12.png                  ← 12 figures
+│   └── ...
 ├── paper-tables/
-│   ├── table1-main-results.tex
-│   ├── table2-crossdomain.tex
-│   ├── table3-baselines.tex
-│   ├── table4-experience.tex
-│   ├── table5-system-comparison.tex
-│   ├── table6-ablation.tex
-│   ├── table7-latency.tex
-│   ├── table8-consistency.tex            ⭐
-│   ├── table9-bridge-docs.tex            ⭐
-│   ├── table10-balance-kbs.tex           ⭐
-│   └── table11-recursive-hierarchy.tex   ⭐
+│   ├── table1~table18.tex              ← 18 tables
+│   └── ...
 ├── html/
 │   ├── index.html
 │   └── data/all_results.json
 └── README.md
 ```
 
-### 9.2 综合评分 JSON 格式
+### 13.2 综合评分 JSON 格式（v6.0 扩展）
 
 ```json
 {
-  "timestamp": "2026-07-28T00:00:00Z",
+  "timestamp": "2026-07-29T00:00:00Z",
   "system": "QDCVR Knowledge Platform v2.3.0",
+  "plan_version": "v6.0",
   "composite_score": 0.XXX,
   "dimensions": {
-    "Retrieval": {"score": 0.XXX, "weight": 0.22},
-    "Efficiency": {"score": 0.XXX, "weight": 0.14},
-    "Robustness": {"score": 0.XXX, "weight": 0.18},
-    "DocMgmt": {"score": 0.XXX, "weight": 0.12},
-    "Experience": {"score": 0.XXX, "weight": 0.10},
-    "Agent": {"score": 0.XXX, "weight": 0.08},
+    "Retrieval": {"score": 0.XXX, "weight": 0.20},
+    "Efficiency": {"score": 0.XXX, "weight": 0.12},
+    "Robustness": {"score": 0.XXX, "weight": 0.15},
+    "DocMgmt": {"score": 0.XXX, "weight": 0.10},
+    "Experience": {"score": 0.XXX, "weight": 0.08},
+    "Agent": {"score": 0.XXX, "weight": 0.06},
     "Consistency": {"score": 0.XXX, "weight": 0.06},
     "Diversity": {"score": 0.XXX, "weight": 0.05},
-    "Reliability": {"score": 0.XXX, "weight": 0.05}
+    "Reliability": {"score": 0.XXX, "weight": 0.05},
+    "ParseQuality": {"score": 0.XXX, "weight": 0.07},
+    "Meditation": {"score": 0.XXX, "weight": 0.06}
   },
   "key_results": {
     "p5_improvement_vs_best_baseline": "+X.XX",
@@ -1060,48 +1371,47 @@ benchmark/
     "search_space_reduction": "×1,142",
     "archiving_top1_accuracy": "XX%",
     "experience_docs_reduction": "−XX%",
-    "content_verification_ablation_delta_p5": "−0.XX",
-    "auto_index_ablation_delta_p5": "−0.XX",
-    "recursive_count_fix_kbs": "2",
-    "graph_bridge_relevance_score": "X.X/5",
-    "balance_kbs_entropy_improvement": "+XX%"
-  },
-  "hypothesis_tests": {
-    "H1_p5_domain_vs_flat": {"p_value": 0.XXX, "significant": true, "cohens_d": 0.XX},
-    "H2_fpr_domain_vs_flat": {"p_value": 0.XXX, "significant": true, "cohens_d": 0.XX},
-    "H4_experience_vs_doc": {"p_value": 0.XXX, "significant": true, "cohens_d": 0.XX},
-    "H9_recursive_count_correct": {"p_value": 0.XXX, "significant": true, "cohens_d": 0.XX}
-  },
-  "ranking": [
-    {"rank": 1, "system": "QDCVR (ours)", "composite_score": 0.XXX},
-    {"rank": 2, "system": "Vec+CE Rerank", "composite_score": 0.XXX},
-    {"rank": 3, "system": "CRAG-style", "composite_score": 0.XXX}
-  ]
+    "content_verification_ablation_delta_p5": "−0.15",
+    "auto_index_ablation_delta_p5": "−0.06",
+    "parse_md_fidelity_pdf": "≥85%",
+    "meditation_approval_rate": "≥60%",
+    "incremental_indexing_consistency": "100%",
+    "cross_lingual_p5_ratio_zh_vs_en": "≥85%",
+    "tag_f1_score": "≥0.67",
+    "scalability_p5_drop_at_10x": "≤5%"
+  }
 }
 ```
 
 ---
 
-## 10. 变更日志（v4.0 → v5.0）
+## 14. 变更日志
 
-| 变更项 | 原 v4.0 | 新 v5.0 | 原因 |
+### v5.0 → v6.0 主要变更
+
+| 变更项 | 原 v5.0 | 新 v6.0 | 原因 |
 |--------|--------|--------|------|
-| 实验总数 | 8 | **12** | 对齐系统真实能力 |
-| 系统基线数据 | 12 KB, 64 docs, 13,654 chunks | **13 KB, 154 docs, 13,709 chunks** | 使用当前真实数据 |
-| Claims | 6 | **10** | 新增 C7-C10 (一致性、图谱、多样性、层级) |
-| 消融变体 | 7 | **10** (+RecursiveCount, +AutoIndex) | 覆盖实际修复的组件 |
-| 新实验 EXP-9 | — | **五层一致性验证** | 验证五层模型的真实一致性约束 |
-| 新实验 EXP-10 | — | **图谱桥接文档评估** | 验证 Neo4j 图谱的实用价值 |
-| 新实验 EXP-11 | — | **balance_kbs 多样性守卫** | 验证多样性守卫防止大库霸权 |
-| 新实验 EXP-12 | — | **递归层级结构验证** | 验证递归计数修复的正确性 |
-| 综合评分权重 | 7 维 | **9 维** (+Consistency, +Diversity) | 覆盖系统新维度 |
-| 产出物 | 7表7图 | **11表9图** | 增加系统特性验证 |
-| 统计检验 | 5 对 | **10 对** | 新增新组件的消融检验 |
-| 防御矩阵 | 7 条 | **11 条** | 新增层级、一致性、图谱、多样性防御 |
-| B7 新基线 | — | **Two-stage (no verify)** | 验证内容验证的独立贡献 |
-| 功能矩阵 | 4 行 | **6 行** (+图谱桥接, +多样性守卫, +一致性模型) | 完整覆盖系统能力 |
+| 实验总数 | 13 (EXP-0~12) | **18 (EXP-0~18)** | 覆盖全部系统能力 |
+| 评测金字塔 | 3 层 | **4 层 (+Layer 0 数据基础层)** | 解析质量是整个系统的前提 |
+| Claims | 10 | **16** | 新增 C11-C16 |
+| 数据集 | 8 个 | **13 个** | 新增 D9-D13 |
+| 基线系统 | 10 个 | **12 个 (+B8, +P1, +P2)** | QDCVR 扁平对照 + 解析基线 |
+| 新增 EXP-13 ⭐ | — | **冥想自动归纳质量** | 独特差异化功能 |
+| 新增 EXP-14 ⭐ | — | **多格式解析质量** | 入库管线可靠性基础 |
+| 新增 EXP-15 ⭐ | — | **增量索引正确性** | 长期运行数据安全 |
+| 新增 EXP-16 ⭐ | — | **跨语言检索能力** | 中英混合场景覆盖 |
+| 新增 EXP-17 ⭐ | — | **标签管理生命周期** | 标签系统完整性 |
+| 新增 EXP-18 ⭐ | — | **系统扩展性测试** | 大规模部署可行性 |
+| 消融组件 | 10 | **11** (+IncrementalIndex) | 增量索引消融 |
+| 综合评分维度 | 9 | **11** (+ParseQuality, +Meditation) | 新维度覆盖 |
+| 产出物 | 11表9图 | **18表12图** | 新增实验产出 |
+| 统计检验 | 10 对 | **14 对** | 新增假设检验 |
+| 防御矩阵 | 11 条 | **16 条** | 新增审稿人质疑预判 |
+| 执行时间 | 17 天 | **22 天** | 新增 5 天实验 |
+| 人工标注 | ~20h | **~40h** | 新增标注需求 |
 
 ---
 
-> **本文件是 QDCVR 评测的权威定稿 (v5.0)。所有实验执行、结果记录、论文写作均以此为准。**
+> **本文件是 QDCVR 评测的权威定稿 (v6.0 Final)。所有实验执行、结果记录、论文写作均以此为准。**
 > **执行时严格遵循：公开协议 → 预注册假设 → 执行 → 记录 → 不做 p-hacking。**
+> **v6.0 新增 6 个实验覆盖了从数据基础层 (Layer 0) 到系统扩展性的全部能力维度，确保 CIKM 审稿人无法以"未覆盖关键功能"为由拒绝。**

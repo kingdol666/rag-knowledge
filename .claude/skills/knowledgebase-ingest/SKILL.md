@@ -4,6 +4,24 @@ description: >
   Document ingestion pipeline with quality gates A0→A9. Content-first workflow: dedup (content fingerprint), survey, parse with quality check, structured analysis, tag quality gate (blocklist+normalize+verify), description quality gate (4-elements+content-readback), KB-attribution decision tree (sub-KB first), store by file type, index+tag with post-index verification. No document splitting. Triggered by: 入库, 上传, 导入, 存储, 解析, 解析PDF, 保存到, store, upload, import, parse, save to KB, ingest, 入库文档, 上传文档, 存入知识库, 放文档, 添加文档, add doc, put document.
 ---
 
+## ⭐ 相关 Skills
+- 解析文档 → `skill://knowledgebase` 的 parse_doc 工具
+- 入库后校验 → `skill://knowledgebase-verify` 的 V1-V9 流程
+- 入库后自动提取经验 → `skill://knowledgebase-experience` 的 E0/E1 自动提取
+- 批量入库 → `skill://knowledgebase-batch`
+- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)
+
+## Sequential Workflow
+**Step 1 — Pre-Flight**: MCP 连通性 + 服务状态预检。
+**Step 2 — 去重 (A0)**: 内容指纹检测，跳过重复文档。
+**Step 3 — Survey (A1)**: 浏览文档内容，确定 KB 归属。
+**Step 4 — Parse (A2)**: 调用 parse_doc 解析 PDF/Word/Excel/Image。
+**Step 5 — Save (A3)**: kb_doc_save_parsed 写入 KB。
+**Step 6 — Tag+Describe (A3b-c)**: 自动生成标签 + 内容型描述。
+**Step 7 — Index (A6)**: 向量索引 + 图谱索引。
+**Step 8 — Verify (A6-V)**: kb_search_vector 验证可检索。
+**Step 9 — Report (A9)**: 入库报告。
+
 # Knowledge Ingest — 内容驱动的规范入库流水线
 > **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+66工具地图）
 

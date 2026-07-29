@@ -4,6 +4,23 @@ description: >
   Document and KB administration. M1→M6 workflow: survey, confirm destructive ops, execute (move/rename/delete/merge/update), post-change reindex+experience linkage, verify, content update flow. All operations are atomic (disk + .tree-fs.json + .knowledge-base.yml). Triggered by: 移动, 改名, 重命名, 删除文档, 删除KB, 合并KB, move, rename, delete, merge, update content, 移动文档, 更新内容, 修改描述.
 ---
 
+## ⭐ 相关 Skills
+- 文档入库 → `skill://knowledgebase-ingest`
+- 整理重组 → `skill://knowledgebase-organize`
+- 批量操作 → `skill://knowledgebase-batch`
+- 校验 → `skill://knowledgebase-verify`
+- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)
+
+## Sequential Workflow
+**Step 1 — Survey 场景确认**: kb_list() + kb_get_documents() 确认操作目标（移动/改名/删除/合并/更新）和影响范围。
+**Step 2 — M2 破坏性操作确认**: 删除/合并/移动操作先 dry_run 预览 → 展示影响面 → 等待用户确认。
+**Step 3 — M3 文档移动 (kb_doc_move)**: kb_doc_move(doc_path, target_kb_id) → 移动后自动重索引 → kb_search_stats() 验证。
+**Step 4 — M3 文档改名 (kb_doc_update_meta)**: kb_doc_update_meta(kb_id, doc_path, name=new_name) → 更新元数据。
+**Step 5 — M3 文档删除 (kb_doc_delete)**: kb_doc_delete(kb_id, doc_path) → 清理向量索引+图谱节点+磁盘文件。
+**Step 6 — M3 KB合并 (kb_doc_move + kb_delete)**: 源KB所有文档移动到目标KB → kb_delete(source_kb_id) 清理空KB。
+**Step 7 — M4 后变更验证**: kb_reindex(kb_id) 重建索引 → kb_graph_build(kb_id, force=true) 重建图谱 → experience_check_stale(kb_id) 经验联动。
+**Step 8 — M5 终验**: 三层一致性检查(disk↔tree-fs↔knowledge-base.yml) + 搜索验证 + 20%内容抽查。
+
 # Knowledge Manage — Document & KB Administration
 
 **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型）+ [MCP 优先原则](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则)（禁止 terminal/HTTP 绕过）

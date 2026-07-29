@@ -535,12 +535,35 @@ class VectorService:
     # ── 内部工具 ──────────────────────────────────────────────────
 
     def _delete_doc_chunks(self, collection, doc_path: str) -> None:
-        try:
-            existing = collection.get(where={"doc_path": doc_path})
-            if existing["ids"]:
-                collection.delete(ids=existing["ids"])
-        except Exception:
-            pass
+        """Delete all chunks for a document. Normalizes path separators
+        to handle Windows backslash vs forward slash mismatch."""
+        # Normalize to forward slashes for consistent matching
+        norm_path = doc_path.replace("\\", "/")
+        deleted_any = False
+        for path_variant in [doc_path, norm_path, doc_path.replace("/", "\\")]:
+            try:
+                existing = collection.get(where={"doc_path": path_variant})
+                if existing and existing.get("ids"):
+                    collection.delete(ids=existing["ids"])
+                    deleted_any = True
+                    logger.info("Deleted %d chunks for %s (variant=%s)", len(existing["ids"]), doc_path, path_variant[:50])
+            except Exception as e:
+                logger.debug("delete chunks variant %s failed: %s", path_variant[:50], e)
+        if not deleted_any:
+            # Last resort: scan all chunks and match by substring
+            try:
+                all_data = collection.get()
+                if all_data and all_data.get("ids"):
+                    to_delete = []
+                    for i, meta in enumerate(all_data.get("metadatas", [])):
+                        stored = (meta.get("doc_path", "")).replace("\\", "/")
+                        if stored == norm_path:
+                            to_delete.append(all_data["ids"][i])
+                    if to_delete:
+                        collection.delete(ids=to_delete)
+                        logger.info("Fallback delete: removed %d chunks for %s", len(to_delete), doc_path)
+            except Exception as e:
+                logger.warning("Fallback chunk scan failed for %s: %s", doc_path, e)
 
     def _chunk_text(self, text: str) -> list[str]:
         size = config.vector_chunk_size

@@ -4,6 +4,23 @@ description: >
   Knowledge base listing and discovery. L1→L3 read-only workflow: full inventory (KB names + descriptions + doc counts + tag vocabulary), KB drill-down (document metadata), folder tree browsing. Lightweight methods (kb_list→kb_get_documents with lightweight=true) for progressive disclosure. Never modifies anything. Triggered by: 查看, 列出, 展示, 浏览, 有什么, 列出来, 清单, list, show, overview, tree, browse, display, 知识库内容, 知识库有什么, 查看知识库, 有哪些知识库.
 ---
 
+## ⭐ 相关 Skills
+- 搜索检索 → `skill://knowledgebase-search`
+- KB 管理 → `skill://knowledgebase-manage`
+- 整理重组 → `skill://knowledgebase-organize`
+- 校验 → `skill://knowledgebase-verify`
+- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)
+
+## Sequential Workflow
+**Step 1 — Pre-Flight 预检**: 执行 mcp-preflight-check 的一探双检，确认MCP+backend+web健康。
+**Step 2 — 确定查看范围**: 全量清单 / 指定KB drill-down / 目录树浏览 / 标签查询。
+**Step 3 — L1 全量清单**: kb_catalog() → 获取所有KB的 name+description+doc_count → 格式化输出。
+**Step 4 — L2 KB drill-down**: kb_doc_catalog(kb_id) → 获取指定KB的文档元数据（名称/描述/标签/文件大小/解析日期）。
+**Step 5 — L3 目录树浏览**: fs_get_tree(include_files=true, max_depth=3) → 浏览KB层级 + 文档文件结构。
+**Step 6 — 标签查询**: kb_doc_get_by_tag(tag, kb_id) → 按标签跨KB查找关联文档。
+**Step 7 — 格式化输出**: 按用户要求输出（表格/列表/树形/JSON），含文档数/标签覆盖/索引状态统计。
+**Step 8 — 交互式深化**: 从清单中选择具体文档 → kb_doc_read() 查看内容 → 支持下一步操作（搜索/管理/整理）。
+
 # Knowledge List — Collection Overview
 
 **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型）+ [MCP 优先原则](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则)（禁止 terminal/HTTP 绕过）

@@ -11,6 +11,26 @@ description: >
   提取经验, 从文档提炼, 总结经验, 经验看板, 经验同步.
 ---
 
+## ⭐ 相关 Skills
+- 文档入库后自动提取经验 → `skill://knowledgebase-ingest` 的 A7 八项终检
+- 文档优先检索 → `skill://knowledgebase-search` (QDCVR) / `skill://knowledgebase-search-enterprise` (跨库)
+- 批量操作经验 → `skill://knowledgebase-batch` 的 B6 导出步骤
+- 经验总结入库 → `skill://knowledgebase-experience-summarize` (完整 E0-E12 提取+审核流程)
+- KB 完整性校验 → `skill://knowledgebase-verify` 的 V8 经验健康检查
+- KB 整理重组 → `skill://knowledgebase-organize`
+- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)
+
+## Sequential Workflow (按场景选择入口)
+
+**Step 1 — Pre-Flight 预检**: 执行 mcp-preflight-check 的一探双检流程，确认 MCP+backend+web 健康。
+**Step 2 — 场景路由**: 判断用户需求属于哪个入口（故障查询/新文档/管理/维护）。
+**Step 3 — 故障查询 (经验优先)**: experience_search_smart(query) → E4a 内容裁决 (0-6 评分) → 内容>=5 直接答 / 否则回退 kb_search_two_stage。
+**Step 4 — 新文档自动提取**: 入库后 → experience_extract(kb_id, mode="prepare", dry_run=True) → E2 质量门控 → approve 或进入草稿池。
+**Step 5 — 经验管理 (CRUD)**: experience_create/update/delete/apply/review → 自动索引 + 元数据写入。
+**Step 6 — 定期维护**: experience_check_stale → E6a stale 更新流程 → experience_apply_decay → experience_sync_kb。
+**Step 7 — 草稿审核 (E3)**: drafts_list → draft_read → draft_approve(edits=精炼字段) 或 draft_reject。
+**Step 8 — 看板监控 (E8)**: experience_dashboard(kb_id) → 全面统计 + 待处理数。
+
 # Experience — 全生命周期管理（E0-E12）
 
 **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型）+ [MCP 优先原则](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则)（禁止 terminal/HTTP 绕过）

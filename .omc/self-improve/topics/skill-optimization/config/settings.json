@@ -1,0 +1,19 @@
+{
+  "number_of_agents": 3,
+  "max_iterations": 5,
+  "plateau_threshold": 0.05,
+  "plateau_window": 3,
+  "target_value": 0.85,
+  "primary_metric": "skill_quality_score",
+  "benchmark_direction": "higher_is_better",
+  "benchmark_command": "node .claude/scripts/validate-skills.cjs --all --json --output .omc/self-improve/topics/skill-optimization/tracking/raw_data.json",
+  "benchmark_format": "json",
+  "regression_threshold": 0.03,
+  "circuit_breaker_threshold": 3,
+  "target_branch": "main",
+  "auto_push": false,
+  "auto_pr": false,
+  "sealed_files": [],
+  "topic_slug": "skill-optimization",
+  "trust_confirmed": true
+}

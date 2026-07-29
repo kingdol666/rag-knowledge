@@ -14,6 +14,30 @@ description: >
 
 ---
 
+
+## ⭐ 相关 Skills
+- 单文档入库 → `skill://knowledgebase-ingest` (A0-A9 管线)
+- KB 管理 → `skill://knowledgebase-manage`
+- 整理重组 → `skill://knowledgebase-organize`
+- 校验验证 → `skill://knowledgebase-verify`
+- 图谱重建 → `skill://knowledgebase-graph`
+- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)
+
+## Sequential Workflow
+**Step 1 — Pre-Flight 预检**: 执行 mcp-preflight-check 的一探双检，未就绪则静默 kb_project_start 拉起服务。
+**Step 2 — Survey 范围确认**: kb_list() + kb_get_documents() 确认操作范围，评估目标规模（文档数/KB数）。
+**Step 3 — 操作类型路由**: 根据用户需求匹配 B1-B7 批量操作类型，必要时多类型组合。
+**Step 4 — Plan 方案展示**: 向用户展示 dry_run 预览 + 分批策略（20个/批）+ 速率限制，等待确认。
+**Step 5 — B1 批量标签迁移**: kb_tags_list() → 构建标签映射 → kb_doc_update_tags() 30个/批 → kb_doc_get_by_tag() 验证。
+**Step 6 — B2 批量描述更新**: 识别弱描述 → kb_doc_read(2000 chars) → 四要素内容描述 → kb_doc_update_meta() 10-15个/批。
+**Step 7 — B3 目录批量入库**: parse_doc_batch(20个/批) → A0去重+A2-Q检查+A3b标签门控+A3c描述门控+A6索引+A7终检。
+**Step 8 — B4 批量文档迁移**: kb_doc_move() + kb_index_document(force=true) → kb_search_stats() 验证源/目标两端。
+**Step 9 — B5 跨KB去重**: kb_search_vector(score_threshold=0.85) 指纹判重 → 用户确认 → kb_doc_delete()。
+**Step 10 — B6 导出概览**: kb_list() + kb_get_documents() → 统计表（文档数/标签覆盖/索引覆盖/top文档）。
+**Step 11 — B7 图谱全量重建**: kb_graph_build(kb_id="", force=true) → kb_graph_stats() 验证节点/边数。
+**Step 12 — Execute 分批执行**: 每20个为一批，批次完成记录checkpoint，验证成功率。
+**Step 13 — Verify 终验**: 采样 20% + 统计前后对比（文档数/标签数/索引覆盖率）。
+
 ## ⭐ Pre-Flight（强制，所有作业第一步）
 
 **未通过预检禁止作业。** 执行 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md) 的完整流程（一探双检 `kb_project_status` → 分支处置 → 冒烟测试）。

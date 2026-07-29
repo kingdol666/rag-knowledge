@@ -1,0 +1,18 @@
+{
+  "round": 3,
+  "hypothesis": "Expand workflow steps to 8-14 per skill + fix dispatcher to use **Step N** format",
+  "approach_family": "workflow_clarity",
+  "before": 0.872,
+  "after": 0.888,
+  "delta": 0.016,
+  "changes": [
+    "knowledgebase-batch: 5 -> 13 workflow steps (B1-B7 routing + survey/plan/execute/verify)",
+    "knowledgebase-graph: 5 -> 9 steps (add KB overview, cross-KB, cleanup detail)",
+    "knowledgebase-update: 5 -> 8 steps (add model check, dependency verify, full-chain validation)",
+    "knowledgebase-list: 5 -> 8 steps (add pre-flight, tag query, interactive deepening)",
+    "knowledgebase-manage: 5 -> 8 steps (break down M3 into move/rename/delete/merge sub-steps)",
+    "knowledgebase dispatcher: added 7-step Sequential Workflow with **Step N** format",
+    "knowledgebase-verify: already had 10 steps (no change needed)",
+    "knowledgebase-init: already had 12 steps (no change needed)"
+  ]
+}
