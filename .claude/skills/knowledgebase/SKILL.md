@@ -6,9 +6,9 @@ description: >
 
 # Knowledge Base — Dispatcher
 
-**执行者：此技能由 Archival agent 执行**
+**执行者：调度器匹配场景 → 委托 Archival 子 Agent 执行**
 - 当用户输入命中 KB 关键词触发本 skill 后，调度器必须委托 Archival agent
-- 调度器唯一职能：读取输入 → 匹配场景 → 委托 Archival（`Agent(subagent_type="archival", ...)`）
+- 调度器唯一职能：读取输入 → 匹配场景 → 用 `task` 工具委托 Archival
 - 调度器严禁自行执行任何 KB 操作
 
 > **⭐ KB 架构心智模型**：本系统的知识库是 5 层数据模型（磁盘 .md ↔ .tree-fs.json ↔ .knowledge-base.yml ↔ ChromaDB 向量 ↔ Neo4j 图谱），71 个 MCP 工具按操作类型分类。委托 Archival 前，Archival **必须先读** [kb-architecture.md](references/kb-architecture.md) 建立正确的心智模型——理解 5 层一致性规则、哪些操作需手动 `kb_index_document`（仅有 `kb_doc_save_parsed`）、层级 KB 的坑、路径格式约定、以及**修复后的不变量**（update_content/delete/move 均已自动索引）。
@@ -44,7 +44,7 @@ description: >
 **Step 2 — 最长匹配场景分类**: 按最长关键词优先规则，将命中的关键词映射到单一场景（Ingest/Search/Manage/Organize/Verify/List/Batch/Experience/Graph/Init/Update）。
 **Step 3 — 单场景路由**: 路由到对应的 skill://knowledgebase-<scenario>，读取子Skill内容获取详细步骤。Init/Update 场景由主Agent直接执行，不委托Archival。
 **Step 4 — 多场景混合路由**: 按 Organize → Verify → Ingest → Manage → List/Search 优先级顺序依次路由，每个场景分别委托Archival执行。
-**Step 5 — Archival 委托**: 子Skill委托 Archival agent 执行（task(agent: "archival", prompt="[场景标签] + 用户需求")），Archival负责自主确认场景并严格执行子Skill的全部步骤。
+**Step 5 — Archival 委托**: 用 `task` 工具委托 Archival agent 执行（见下方委托模板），Archival 负责自主确认场景并严格执行子 Skill 的全部步骤。
 **Step 6 — 组合任务协议**: >=2个场景时：先确认路由顺序 → 步间委托显式附带前序关键产出（KB id/文档路径/已变更项）→ 每步完成即汇报 → 失败隔离。
 **Step 7 — 模糊回退处理**: 无法明确分类时按模糊回退规则：查/问/搜→Search, 存/上传→Ingest, 看/列→List, 整理→Organize, 校验→Verify。仍不确定则输出澄清问题。
 
@@ -83,19 +83,23 @@ Based on classification outcome:
 - **Mixed scenarios** — Follow priority order: Organize → Verify → Ingest → Manage → List/Search. Complete each sub-skill fully before starting the next.
 - **Ambiguous / fuzzy match** — Apply fuzzy fallback rules (see Rule 5).
 
-### Step 4: Sub-Skill Delegates to Archival Agent
+### Step 4: Delegate to Archival Agent via Task Tool
 Each sub-skill's SKILL.md must detect the scenario and delegate execution to the Archival sub-agent. The dispatcher's job ends at routing. The Archival agent is responsible for executing all KB operations via MCP tools.
 
-> **⭐ Archival 委托 prompt 模板**（必须包含架构引用）：
-> Delegate to the Archival agent with:
+> **⭐ Archival 委托模板**（OMP / Claude Code 通用）—— 使用 `task` 工具：
 > ```
-> task(agent: "archival", prompt="[Detected scenario: <场景标签>]
->
-> ⭐ 操作前必读 skill://knowledgebase/references/kb-architecture.md 建立 5 层数据模型心智模型。
->
-> 用户需求：<原始需求>")
+> task(
+>   tasks=[{
+>     "agent": "archival",
+>     "name": "KB-<Scenario>",
+>     "task": "[场景: <场景标签>]\n⭐ 操作前必读 skill://knowledgebase/references/kb-architecture.md\n\n用户需求：<原始需求>",
+>     "effort": "med"
+>   }],
+>   context="RAG Knowledge Platform — MCP tools via kb-mcp, backend on :8765"
+> )
 > ```
-> (Claude Code equivalent: `Agent(subagent_type="archival", prompt=...)`)
+> **OMP harness**: 主 Agent 读取此 skill 后，使用 `task` 工具的 `tasks[]` 数组委托 Archival agent。每个 task item 的 `agent` 字段设为 `"archival"`，`task` 字段包含完整指令（场景标签 + 架构引用 + 用户需求）。
+> **Claude Code harness**: 等价写法 `Agent(subagent_type="archival", prompt=...)`，OMP 自动适配。
 
 ---
 
@@ -111,7 +115,7 @@ Each sub-skill's SKILL.md must detect the scenario and delegate execution to the
 
 ### ⭐ 规则 3：路由后必须委托 Archival
 - 子 skill 的 SKILL.md 中检测到场景后，**必须委托 Archival 子 Agent 执行**
-- 委托方式：`task(agent: "archival", prompt="[Detected scenario: <场景标签>]<用户原始需求>")`
+- 委托方式：使用 `task` 工具，`tasks=[{"agent": "archival", "task": "[场景: <标签>] <用户需求>"}]`（详见 Step 4 模板）
 - Archival 负责自主确认场景并严格执行子 skill 的全部步骤
 - **严禁**在 skill 内自行调用 MCP 工具，所有工具操作只能由 Archival agent 执行
 
@@ -167,7 +171,7 @@ Each sub-skill's SKILL.md must detect the scenario and delegate execution to the
 | **4. 失败隔离** | 某步失败：独立后续场景继续；有依赖则停下问用户 | "Ingest 失败（原因）。Search 不依赖它，是否继续？" |
 
 **Archival 连续委托的状态边界**（关键）：
-- 每次 `task(agent: "archival", ...)` 是**独立上下文**——Archival 不记得上一次委托的内容
+- 每次 `task(tasks=[{"agent": "archival", ...}])` 是**独立上下文**——Archival 不记得上一次委托的内容
 - 因此后续委托**必须在前序 prompt 里显式传递**关键状态：KB id / 文档路径 / 已发现问题 / 已变更项
 - **禁止**假设 Archival 会从会话历史推断前序状态——它看不到主调度器的上下文
 

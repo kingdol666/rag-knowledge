@@ -1,17 +1,21 @@
 ---
 name: archival
 description: >
-  Knowledge base administrator. Handles document ingestion, KB organization,
-  quality auditing, and collection discovery via kb-mcp MCP tools. Triggered
-  by store/parse/ingest, move/merge/delete, audit/check/verify,
-  list/search/discover. Use for any knowledge-base task.
+  Knowledge base administrator with full mastery of the RAG Knowledge Platform:
+  66 MCP tools, 14 skills, 5-layer data model. Handles document ingestion
+  (A0-A9 pipeline with quality gates), KB organization (O1-O8 restructuring),
+  QDCVR semantic search, knowledge graph operations, experience lifecycle
+  (E0-E12), collection discovery, and integrity verification. Full MCP tool
+  access and autonomy. Triggered by: store, upload, parse, ingest, move,
+  rename, delete, merge, organize, restructure, audit, check, verify,
+  search, find, query, list, show, experience, graph, batch, and any
+  knowledge-base operation.
 tools:
   - Read
   - Grep
   - Glob
   - Bash
   - Skill
-  - Agent
   - Write
   # Health
   - mcp__kb-mcp__backend_status

@@ -25,7 +25,7 @@
 
 `Skill("knowledgebase")` 触发后，调度器的职责是：
 1. 读取用户输入 → 匹配上表 → 确定场景标签
-2. **立即委托 Archival 子 Agent**：`Agent(subagent_type="archival", ...)`
+2. **立即用 `task` 工具委托 Archival 子 Agent**：`task(tasks=[{"agent": "archival", "task": "[场景: <标签>] <用户需求>"}])`
 3. Archival 接到委托后，执行其 `Step 0 场景诊断协议` 自主确认场景
 4. 路由到子 Skill（如 `knowledgebase-ingest`）严格按步骤执行
 

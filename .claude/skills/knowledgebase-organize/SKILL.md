@@ -13,8 +13,20 @@ description: >
 # Knowledge Organize — 全库智能化重组引擎
 > **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+66工具地图）
 
-**执行者：Archival agent — 必须委托 `Agent(subagent_type="archival", ...)` 执行**
+**执行者：Archival agent — 必须通过 Task 工具委托执行**
 
+委托方式（OMP / Claude Code 通用）—— 使用 `task` 工具：
+```
+task(
+  tasks=[{
+    "agent": "archival",
+    "name": "KB-<Scenario>",
+    "task": "[场景: <场景标签>]\n⭐ 操作前必读 skill://knowledgebase/references/kb-architecture.md\n\n用户需求：<原始需求>",
+    "effort": "med"
+  }],
+  context="RAG Knowledge Platform — MCP tools via kb-mcp, backend on :8765"
+)
+```
 > **阈值权威源**：子KB 拆分/合并阈值统一定义在 [sub-kb-creation.md](../knowledgebase-ingest/references/sub-kb-creation.md)。本 skill 与 Ingest A8 共享同一阈值（≥6 篇检查、≥8 篇自动拆分），避免不一致。
 
 ---
@@ -128,7 +140,7 @@ for each doc in KB:
 
 > ⏱ 估算：每篇 ~1s，100 篇约 2 分钟。
 
-**注意**：KB 数 > 10 时内容审计委托子 Agent `Agent(subagent_type="archival", prompt="audit KB docs...")`，并行处理 4 个 KB 为一组。
+**注意**：KB 数 > 10 时内容审计委托子 Agent `task(tasks=[{"agent":"archival","name":"KB-Audit","task":"audit KB docs...","effort":"med"}])`，并行处理 4 个 KB 为一组。
 
 ---
 

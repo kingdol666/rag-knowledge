@@ -32,8 +32,20 @@ description: >
 
 **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型）+ [MCP 优先原则](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则)（禁止 terminal/HTTP 绕过）
 
-**执行者：Archival agent — 必须委托 `Agent(subagent_type="archival", ...)` 执行**
+**执行者：Archival agent — 必须通过 Task 工具委托执行**
 
+委托方式（OMP / Claude Code 通用）—— 使用 `task` 工具：
+```
+task(
+  tasks=[{
+    "agent": "archival",
+    "name": "KB-<Scenario>",
+    "task": "[场景: <场景标签>]\n⭐ 操作前必读 skill://knowledgebase/references/kb-architecture.md\n\n用户需求：<原始需求>",
+    "effort": "med"
+  }],
+  context="RAG Knowledge Platform — MCP tools via kb-mcp, backend on :8765"
+)
+```
 ---
 
 ## ⭐ Pre-Flight（强制，所有作业第一步）
