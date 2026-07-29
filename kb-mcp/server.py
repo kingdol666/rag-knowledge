@@ -82,6 +82,35 @@ async def _auto_index_doc(kb_id: str, doc_path: str) -> None:
     except Exception as exc:
         print(f"[auto-index] WARNING: index failed for {kb_id}/{doc_path}: {exc}", file=sys.stderr)
 
+async def _auto_unindex_doc(kb_id: str, doc_path: str) -> None:
+    """Fire-and-forget: clean graph + vectors for a deleted document.
+
+    Runs in background; silently catches errors so cleanup failure
+    never blocks the delete response."""
+    try:
+        await _client().delete_document_vectors(kb_id, doc_path)
+    except Exception as exc:
+        print(f"[auto-unindex] WARNING: vector cleanup failed for {kb_id}/{doc_path}: {exc}", file=sys.stderr)
+    try:
+        await _client().graph_delete_document(doc_path)
+    except Exception as exc:
+        print(f"[auto-unindex] WARNING: graph cleanup failed for {kb_id}/{doc_path}: {exc}", file=sys.stderr)
+
+async def _auto_unindex_kb(kb_id: str) -> None:
+    """Fire-and-forget: clean graph + vectors for a deleted KB.
+
+    Runs in background; silently catches errors so cleanup failure
+    never blocks the delete response."""
+    try:
+        await _client().delete_kb_vectors(kb_id)
+    except Exception as exc:
+        print(f"[auto-unindex] WARNING: vector cleanup failed for KB {kb_id}: {exc}", file=sys.stderr)
+    try:
+        await _client().graph_delete_kb(kb_id)
+    except Exception as exc:
+        print(f"[auto-unindex] WARNING: graph cleanup failed for KB {kb_id}: {exc}", file=sys.stderr)
+
+
 
 def _exists(file_path: str) -> bool:
     from pathlib import Path
@@ -155,7 +184,10 @@ async def kb_update(kb_id: str, name: str = "", description: str = "") -> str:
 async def kb_delete(kb_id: str) -> str:
     """Delete an entire knowledge base and all its contents (irreversible). kb_id accepts either the path string or the UUID returned by kb_create."""
     if (err := _require_kb(kb_id)): return err
-    return _j(await _client().kb_delete(kb_id))
+    result = await _client().kb_delete(kb_id)
+    # Fire-and-forget: clean up graph + vectors
+    asyncio.create_task(_auto_unindex_kb(kb_id))
+    return _j(result)
 
 
 @mcp.tool()
@@ -272,17 +304,21 @@ async def kb_doc_delete(kb_id: str, doc_path: str) -> str:
     Automatically cleans up vector chunks and graph nodes (fire-and-forget)."""
     if (err := _require_kb(kb_id)): return err
     if (err := _require_param("doc_path", doc_path)): return err
-    return _j(await _client().kb_doc_delete(kb_id, doc_path))
+    result = await _client().kb_doc_delete(kb_id, doc_path)
+    # Fire-and-forget: clean up graph + vectors (don't block the response)
+    asyncio.create_task(_auto_unindex_doc(kb_id, doc_path))
+    return _j(result)
 
 
 @mcp.tool()
 async def kb_doc_batch_delete(kb_id: str, doc_paths: list) -> str:
     """Delete multiple documents at once.
 
-    Removes files from disk + .tree-fs.json + .knowledge-base.yml.
-    Automatically cleans up vector chunks and graph nodes (fire-and-forget)."""
-    if (err := _require_kb(kb_id)): return err
-    return _j(await _client().kb_doc_batch_delete(kb_id, doc_paths))
+    result = await _client().kb_doc_batch_delete(kb_id, doc_paths)
+    # Fire-and-forget: clean up graph + vectors for each doc
+    for dp in doc_paths:
+        asyncio.create_task(_auto_unindex_doc(kb_id, dp))
+    return _j(result)
 
 
 @mcp.tool()

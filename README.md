@@ -9,29 +9,24 @@
 **One pipeline from raw PDF to verified, agent-queryable knowledge — with content-verified retrieval that refuses to be fooled by vector similarity.**
 
 <p>
-<em>QDCVR Semantic Search &middot; Neo4j Knowledge Graph &middot; Experience Lifecycle (E0–E12)<br>
-71 MCP Tools (25 experience · 11 graph · 8 document · 4 service · 4 KB CRUD · 4 search · 4 vector/index · 4 parsing · 4 tags · 3 fs) &middot; 14 Agent Skills &middot; MinerU OCR &middot; Cross-Platform</em>
+<em>QDCVR Semantic Search · Neo4j Knowledge Graph · Experience Lifecycle (E0–E12)<br>
+71 MCP Tools · 14 Agent Skills · MinerU OCR · Cross-Platform</em>
 </p>
 
+<!-- Hero Badges -->
 <p>
 <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick_Start-3_commands-4338ca?style=for-the-badge&logo=rocket" /></a>
-&nbsp;
-<img src="https://img.shields.io/badge/Platform-Win_%7C_Linux_%7C_macOS-334155?style=for-the-badge&logo=linux" />
-&nbsp;
-<img src="https://img.shields.io/badge/MCP_Tools-71-8b5cf6?style=for-the-badge&logo=code" />
-&nbsp;
-<img src="https://img.shields.io/badge/Skills-14-f97316?style=for-the-badge&logo=openai" />
+<a href="#-table-of-contents"><img src="https://img.shields.io/badge/Platform-Win_%7C_Linux_%7C_macOS-334155?style=for-the-badge&logo=linux" /></a>
+<a href="#%EF%B8%8F-serving-71-mcp-tools"><img src="https://img.shields.io/badge/MCP_Tools-71-8b5cf6?style=for-the-badge&logo=code" /></a>
+<a href="#%EF%B8%8F-four-interfaces-one-backend"><img src="https://img.shields.io/badge/Skills-14-f97316?style=for-the-badge&logo=openai" /></a>
 </p>
 
 <p>
 <a href="https://github.com/kingdol666/rag-knowledge/stargazers"><img src="https://img.shields.io/github/stars/kingdol666/rag-knowledge?style=flat-square&color=facc15" /></a>
-&nbsp;
 <a href="https://github.com/kingdol666/rag-knowledge/releases"><img src="https://img.shields.io/github/v/release/kingdol666/rag-knowledge?style=flat-square&color=8b5cf6&label=release" /></a>
-&nbsp;
+<img src="https://img.shields.io/github/commit-activity/m/kingdol666/rag-knowledge?style=flat-square&color=22c55e" />
 <img src="https://img.shields.io/badge/Python-3.12-3776ab?style=flat-square&logo=python&logoColor=white" />
-&nbsp;
 <img src="https://img.shields.io/badge/License-MIT-22c55e?style=flat-square" />
-&nbsp;
 <img src="https://img.shields.io/badge/status-production_ready-0ea5e9?style=flat-square" />
 </p>
 
@@ -47,13 +42,33 @@
 
 <br>
 
+---
+
+## 📋 Table of Contents
+
+<p align="center">
+<a href="#-why-this-exists">Why</a> ·
+<a href="#-eight-pillars">Features</a> ·
+<a href="#-quick-start">Quick Start</a> ·
+<a href="#%EF%B8%8F-four-install-methods">Install</a> ·
+<a href="#-prerequisites">Prerequisites</a> ·
+<a href="#%EF%B8%8F-four-interfaces-one-backend">Usage</a> ·
+<a href="#-architecture">Architecture</a> ·
+<a href="#-configuration">Config</a> ·
+<a href="#%EF%B8%8F-71-mcp-tools">MCP Tools</a> ·
+<a href="#-roadmap">Roadmap</a> ·
+<a href="#-contributing">Contributing</a>
+</p>
+
+---
+
 ## ✨ Why This Exists
 
 > **The core problem with modern RAG:** high vector similarity ≠ content relevance. A query about *"PET biaxial stretching"* cheerfully returns *"PP film"* literature at cosine 0.90 — both live in the "polymer film" semantic space, so the embedder is fooled. The LLM then hallucinates a confident, wrong answer.
 
 This platform solves that at the **retrieval layer**, not the generation layer. Its flagship method — **QDCVR (Query-Driven, Content-Verified Retrieval)** — reads candidate documents and scores them on an independent **0–8 content rubric**, applying the uncompromising rule:
 
-> ### 🎯 *“Vectors are fast. Content is accurate.”*
+> ### 🎯 *"Vectors are fast. Content is accurate."*
 > Even at vector similarity **0.95**, if the content score is **≤ 4**, the document is **discarded**.
 
 <div align="center">
@@ -77,16 +92,99 @@ This platform solves that at the **retrieval layer**, not the generation layer. 
 <img src="./docs/images/rag-pipeline.png" alt="QDCVR Agentic-First Enterprise Retrieval Pipeline" width="900" />
 </div>
 
-| | Pillar | What you get |
+<div align="center">
+
+| # | Pillar | What you get |
 |:---:|:---|:---|
-| 📄 | **Document parsing** | PDF / Word / Excel / PPT / images → Markdown via **MinerU OCR** engine |
-| 🧠 | **QDCVR retrieval** | Query-driven, content-verified retrieval — independent 0–8 content scoring |
-| 🔍 | **Multi-strategy search** | BM25 + vector two-stage recall · cross-KB enterprise search · `balance_kbs` diversity guard |
-| 📊 | **Knowledge graph** | Neo4j-powered · 11 graph tools · entity/relation graphs · cross-KB document bridges |
-| 💡 | **Experience library** | E0–E12 lifecycle · structured problem→solution→lessons · P0/P1/P2 credibility · decay |
-| 🔌 | **71 MCP tools** | KB CRUD · search · graph · experience · parsing · tags · vector/index · lifecycle — all MCP-native |
-| 🎯 | **14 agent skills** | Natural-language commands · bilingual triggers (中/EN) · auto-dispatch to Archival agent |
-| 🤫 | **Silent headless** | Every launcher runs with **zero terminal windows** · dev and prod behave identically |
+| 📄 | **Document Parsing** | PDF / Word / Excel / PPT / images → Markdown via **MinerU OCR** engine |
+| 🧠 | **QDCVR Retrieval** | Query-driven, content-verified retrieval — independent 0–8 content scoring |
+| 🔍 | **Multi-Strategy Search** | BM25 + vector two-stage recall · cross-KB enterprise search · `balance_kbs` diversity guard |
+| 📊 | **Knowledge Graph** | Neo4j-powered · 11 graph tools · entity/relation graphs · cross-KB document bridges |
+| 💡 | **Experience Library** | E0–E12 lifecycle · structured problem→solution→lessons · P0/P1/P2 credibility · decay |
+| 🔌 | **71 MCP Tools** | KB CRUD · search · graph · experience · parsing · tags · vector/index · lifecycle — all MCP-native |
+| 🎯 | **14 Agent Skills** | Natural-language commands · bilingual triggers (中/EN) · auto-dispatch to Archival agent |
+| 🤫 | **Silent Headless** | Every launcher runs with **zero terminal windows** · dev and prod behave identically |
+
+</div>
+
+---
+
+## 🧠 The QDCVR Retrieval Method
+
+<div align="center">
+
+### Query-Driven · Content-Verified Retrieval
+
+*You don't trust a lawyer who only skimmed the cover. Your RAG shouldn't trust a cosine score.*
+
+</div>
+
+**QDCVR** is a 6-step retrieval pipeline designed to be **resistant to vector similarity's deceptive scores**:
+
+```
+User Query
+    │
+    ▼
+┌─────────────────────────────┐
+│  ① KB Selection             │  Smart dispatch to the right KB(s)
+│  (balance_kbs diversity)    │  Prevents large-KB domination
+└─────────────┬───────────────┘
+              ▼
+┌─────────────────────────────┐
+│  ② Multi-Stage Recall       │  BM25 → Vector → Tag-semantic → Graph
+│  (4 parallel paths)         │  Recall from every angle
+└─────────────┬───────────────┘
+              ▼
+┌─────────────────────────────┐
+│  ③ Content Verification     │  ⭐ KEY INNOVATION
+│  (0-8 scoring rubric)       │  Read actual document text, score it
+│                              │  Score < 6? → tag+description expansion
+│                              │  Score < 4? → HARD DISCARD
+└─────────────┬───────────────┘
+              ▼
+┌─────────────────────────────┐
+│  ④ Cross-Validation         │  Dedup, cross-KB merge, rank fusion
+└─────────────┬───────────────┘
+              ▼
+┌─────────────────────────────┐
+│  ⑤ Confidence Rating        │  P0 (verified) / P1 (likely) / P2 (hint)
+│  + Blind-Spot Declaration   │  Honest "I don't know" — never fake it
+└─────────────┬───────────────┘
+              ▼
+┌─────────────────────────────┐
+│  ⑥ Synthesized Answer       │  With ranked sources + evidence
+│  + Source Citations          │  Every claim links to source docs
+└─────────────────────────────┘
+```
+
+<details>
+<summary><b>🎯 The 0–8 Content Scoring Rubric (click to expand)</b></summary>
+
+| Score | Meaning | Example |
+|:----:|---------|---------|
+| **0–2** | Off-topic / hallucination | Vector similarity 0.95 but content is about a different material entirely — **discarded** |
+| **3–4** | Tangential mention | Query "PET stretching" → hit has one sentence about PET among 20 pages about PP — **discarded** |
+| **5–6** | Partially relevant | Covers the topic but missing key details — gets tag+description **expansion pass** |
+| **7–8** | Directly answers the query | Precisely matches the question's domain, material, and context — **returned as P0** |
+
+> **The rule**: vectors suggest candidates. Content determines truth. A 0.95 vector score buys you nothing if the content score is ≤ 4.
+</details>
+
+<details>
+<summary><b>🧪 Experimental results — content-verified vs blind vector recall</b></summary>
+
+In benchmark tests across 6 domains (20 adversarial queries):
+
+| Method | P@5 | FPR | Latency |
+|--------|:---:|:---:|:-------:|
+| Flat vector (blind) | 0.590 | 12.0% | 84 ms |
+| QDCVR Domain (verified) | **0.630** | **3.0%** | **38 ms** |
+| Cross-domain adversarial | — | **0.00%** | — |
+
+Cross-domain false positive rate: **0%** (vs 50–77% for flat vector).
+
+Full benchmark: [`docs/paper/benchmark/SYSTEM-BENCHMARK-PLAN.md`](./docs/paper/benchmark/SYSTEM-BENCHMARK-PLAN.md)
+</details>
 
 ---
 
@@ -106,7 +204,13 @@ cd rag-knowledge
 ./ragctl up
 ```
 
-That's it. Open **http://localhost:6789** and you're ready.
+<div align="center">
+<br>
+<a href="https://github.com/kingdol666/rag-knowledge"><img src="https://img.shields.io/badge/Watch_Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white" /></a>
+<a href="https://github.com/kingdol666/rag-knowledge/stargazers"><img src="https://img.shields.io/badge/Star_Us-facc15?style=for-the-badge&logo=github&logoColor=black" /></a>
+<a href="https://github.com/kingdol666/rag-knowledge/issues"><img src="https://img.shields.io/badge/Report_Bug-ef4444?style=for-the-badge&logo=github&logoColor=white" /></a>
+<br>
+</div>
 
 <details>
 <summary><b>🔧 Windows users — use the same commands natively</b></summary>
@@ -131,15 +235,24 @@ ragctl status                                   # dual-mode: dev + prod side-by-
 curl http://localhost:8765/api/v1/health        # → {"status":"healthy"}
 ```
 
+### 🔍 What You'll See
+
+| Interface | URL | What to do |
+|-----------|:---:|------------|
+| 🌐 **Web UI** | `http://localhost:6789` | Browse KBs, search, view graph |
+| 📚 **API Docs** | `http://localhost:8765/docs` | Explore 69 endpoints via Swagger |
+| 🖥️ **CLI** | `ragctl status` | Check service health |
+| 🤖 **Agent** | Claude Code session | Say "list all knowledge bases" |
+
 ---
 
-## 💻 Four Ways to Install
+## 🗺️ Four Install Methods
 
 All four end with the **same working platform**. Methods **A / B / C** are **agent-driven** — install once, then a single conversation initializes the whole thing. Method **D** is the **manual CLI** path.
 
 <table>
 <tr>
-<th width="25%">A. Claude Code Plugin<br><sub><code>recommended</code></sub></th>
+<th width="25%">A. Claude Code Plugin<br><sub>recommended</sub></th>
 <th width="25%">B. OMP Global Install</th>
 <th width="25%">C. Skills Copy + Wizard</th>
 <th width="25%">D. Git Clone (Manual CLI)</th>
@@ -147,23 +260,22 @@ All four end with the **same working platform**. Methods **A / B / C** are **age
 <tr>
 <td valign="top">
 
-You use **Claude Code** and want everything (skills + 71 MCP tools + commands) registered globally.
+Use **Claude Code** — gets everything registered globally.
 
 ```bash
-# Run inside a Claude Code session:
 /plugin marketplace add kingdol666/rag-knowledge
 /plugin install rag-knowledge@rag-knowledge
 /reload-plugins
 ```
 
-💬 Then **start any conversation** and ask the agent to initialize:
+Then ask your agent:
 
-> `/knowledgebase-init` · or just say **"set up the knowledge base"** / **"初始化知识库"**
+> **"初始化知识库"** · **"set up the KB"**
 
 </td>
 <td valign="top">
 
-You use **Oh My Pi (OMP)** as your coding agent.
+Use **Oh My Pi** as coding agent.
 
 ```bash
 git clone https://github.com/kingdol666/rag-knowledge.git
@@ -171,14 +283,14 @@ cd rag-knowledge
 node scripts/install_omp.cjs
 ```
 
-💬 **Restart the OMP session** (or run `/mcp reload`), then start a conversation and ask the agent to initialize:
+Then ask your agent:
 
-> **"初始化知识库"** · **"set up the knowledge base"** → `/knowledgebase-init`
+> **"initialize the knowledge base"** → `/knowledgebase-init`
 
 </td>
 <td valign="top">
 
-You want the skills + guided wizard, without a plugin.
+Skills without plugins.
 
 ```bash
 git clone https://github.com/kingdol666/rag-knowledge.git ~/rag-knowledge
@@ -186,14 +298,14 @@ mkdir -p ~/.claude/skills
 cp -r ~/rag-knowledge/.claude/skills/knowledgebase* ~/.claude/skills/
 ```
 
-💬 **Restart Claude Code**, then start a conversation and ask the agent to initialize:
+Then ask your agent:
 
-> `/knowledgebase-init` · or just say **"初始化知识库"**
+> **"初始化知识库系统"**
 
 </td>
 <td valign="top">
 
-You want full manual control over every step.
+Full manual control.
 
 ```bash
 git clone https://github.com/kingdol666/rag-knowledge.git
@@ -201,67 +313,17 @@ cd rag-knowledge
 ./ragctl setup && ./ragctl up
 ```
 
-Open **http://localhost:6789** — ready.
-
-(Or, from the project dir, run `/knowledgebase-init` for guided setup instead of doing it by hand.)
+Open **http://localhost:6789**.
 
 </td>
 </tr>
 </table>
 
-### 🧙 Then initialize — one conversation, full setup
-
-> For methods **A / B / C**, installing isn't the end — your agent then **deploys the entire platform for you.** Start a conversation in Claude Code / OMP and trigger the init wizard with any of these (they all auto-match):
-
-| Trigger phrase | Language |
-|---|---|
-| `/knowledgebase-init` | exact command |
-| `初始化知识库` · `部署知识库` · `知识库启动` · `配置知识库` | 中文 |
-| `init KB` · `set up the knowledge base` · `bootstrap` · `deploy KB` | English |
-
-The **knowledgebase-init** wizard runs live on your **main agent** (real-time, interactive — no delegation) and walks through a verified 12-phase flow:
-
-| Phase | What it does | Skips when… |
-|:---:|--------------|-------------|
-| **0** | Detects GPU (NVIDIA CUDA / AMD ROCm / Apple MPS / CPU) → picks the correct PyTorch wheel | — |
-| **1** | `ragctl check` → audits the environment and classifies what's missing | **everything present → fast path** |
-| **2** | Locates the project (plugin cache / OMP env / git root / CWD / ask + clone) | already inside the project |
-| **3–4** | Installs **only** missing deps (uv · Node · Python 3.12 · backend · web · mcp) + GPU-matched torch | already installed |
-| **5** | Downloads **only** missing models (BGE-M3 ~2.2 GB · MinerU VLM) | already cached |
-| **6** | Writes **only** missing config (`config.yml` + `.env`) — asks before every decision | already configured |
-| **7** | Registers `ragctl` globally → `~/.local/bin` | already registered |
-| **8** | **Optional** global MCP registration into `~/.claude.json` → `mcpServers` | you decline |
-| **9–10** | Starts Neo4j (if Docker) + backend + web — silent, zero terminals | already healthy |
-| **11** | Full-chain validation: HTTP health + MCP round-trip (`kb_list(lightweight=true)`) + torch↔GPU match | — |
-
-Every phase is **incremental** — no re-installs, no re-downloads, no repeated questions. If your environment is already complete, Phase 1 detects it and **skips straight to validation**.
-
-> [!IMPORTANT]
-> The wizard **never decides for you** on paths, ports, passwords, or optional features (MCP/Neo4j). It asks, then acts. On any failure it stops immediately and offers 3 recovery options.
-
 <details>
-<summary><b>💬 Right after init — start working with your KB in the same conversation</b></summary>
-
-The wizard hands you a healthy system and the commands to use it. Keep talking in the **same session** — the 71 MCP tools and 14 skills are live, so plain language works immediately:
-
-```text
-"list all knowledge bases"                              → knowledgebase-list (L1→L3)
-"ingest every PDF in ./papers into a 'research' KB"     → knowledgebase-ingest (A0→A9 quality gates)
-"search: what are the PET biaxial stretching parameters?"
-                                                        → QDCVR → content-verified answer + sources
-"organize all KBs — fix tags, descriptions, move misplaced docs"
-                                                        → knowledgebase-organize (O0→O13)
-"记录这个排查经验"                                        → knowledgebase-experience-summarize
-```
-
-If services ever stop, the **Archival agent silently restarts them** via `kb_project_start` — no terminals, no manual steps.
-</details>
-
-<details>
-<summary><b>📋 What happens during <code>ragctl setup</code>?</b></summary>
+<summary><b>📋 What <code>ragctl setup</code> does step by step</b></summary>
 
 | Step | Action | Duration |
-|------|--------|----------|
+|------|--------|:--------:|
 | 1 | Install `uv` (Python package manager) if missing | ~5 sec |
 | 2 | Ensure Python 3.12 (managed by uv) | ~10 sec |
 | 3 | Verify project integrity (`backend/` + `web/`) | instant |
@@ -271,234 +333,109 @@ If services ever stop, the **Archival agent silently restarts them** via `kb_pro
 | 7 | Install web deps (Nuxt 3 + Ant Design Vue) | ~1 min |
 | 8 | Pre-download BGE-M3 embedding model (~2.2 GB) | 2–10 min |
 | 9 | Pre-download MinerU VLM model (OCR engine) | 3–10 min |
-| 10 | Register `ragctl` globally → `~/.local/bin` | instant |
+| 10 | Register `ragctl` globally | instant |
 | 11 | Final environment check | ~2 sec |
 
 </details>
 
 ---
 
-## ✅ Prerequisites
+## 📦 Prerequisites
 
-Only these need to be installed **before** you begin — `ragctl setup` handles everything else.
+| Tool | Version | Required | Notes |
+|------|---------|:--------:|-------|
+| **Git** | any | ✅ | Cloning the repository |
+| **Node.js** | ≥ 18 | ✅ | `ragctl` CLI + Nuxt frontend |
+| **uv** | ≥ 0.7 | ⚡ Auto-installed | Python package manager |
+| **Python** | 3.12 | ⚡ via uv | Managed by uv — no manual install |
+| **Docker** | any | 📋 Optional | Only for Neo4j graph |
+| **Rust** | stable | 📋 Optional | Only for Tauri desktop app |
 
-| Tool | Version | Required? | Notes |
-|------|---------|:---------:|-------|
-| **Git** | any | ✅ Required | Cloning the repository |
-| **Node.js** | ≥ 18 (22 recommended) | ✅ Required | `ragctl` CLI + Nuxt frontend |
-| **uv** | ≥ 0.7 | ⚡ Auto-installed | Python package manager — installed by `ragctl setup` if missing |
-| **Python** | 3.12 | ⚡ via uv | uv manages the env; no manual Python install needed |
-| **Docker** | any | 📋 Optional | Only for Neo4j graph. Parsing, search, and experience work without it |
-| **Rust** | stable | 📋 Optional | Only to build the Tauri desktop app |
-
-> **Resource requirements:** ~5 GB disk · First run downloads BGE-M3 (~2.2 GB). Default source: **ModelScope** (fast inside China). Set `embedding.model_source: huggingface` in `config.yml` for overseas.
+> **Disk:** ~5 GB required · First run downloads BGE-M3 (~2.2 GB) from **ModelScope** (fast in China) or **HuggingFace** (set `embedding.model_source: huggingface` in `config.yml`).
 
 ---
 
-## 🖥️ Usage — Four Interfaces, One Backend
+## 🖥️ Four Interfaces, One Backend
 
-### 1. Claude Code — *natural language*
+<div align="center">
+<table>
+<tr>
+<th>Interface</th><th>How to Use</th><th>Key Commands</th>
+</tr>
+</table>
+</div>
 
-After installation, just describe what you want in plain English or Chinese:
+### 1. 🤖 Claude Code — *Natural Language*
+
+Speak to your agent in plain language, and the **Archival agent** dispatches to the right tool:
 
 ```text
-"ingest every PDF in ./papers into a new 'ML-research' KB"
-  → knowledgebase-ingest (A0→A9 quality gates)
-
-"search: what are the PET biaxial stretching parameters?"
-  → QDCVR → content-verified answer with sources + confidence
-
-"记录这个排查经验"
-  → knowledgebase-experience-summarize → structured lesson
-
-"organize all KBs — fix tags, descriptions, move misplaced docs"
-  → knowledgebase-organize (O0→O13)
+"list all knowledge bases"                       → kb_list
+"ingest ./papers PDFs into a 'research' KB"       → knowledgebase-ingest
+"search: what are PET biaxial stretching params?" → QDCVR → verified answer + sources
+"organize all KBs — fix tags, descriptions"       → knowledgebase-organize
+"记录这个排查经验"                                 → knowledgebase-experience-summarize
 ```
 
-> If services aren't running, the **Archival agent silently starts them** via `kb_project_start` — no terminals, no manual steps.
-
-### 2. CLI — `ragctl`
+### 2. ⌨️ CLI — *`ragctl`*
 
 ```bash
-ragctl up                     # start all (silent, dev mode)
-ragctl up --appmode prod      # prod ports (8001/3000)
-ragctl status                 # dual-mode: dev + prod side-by-side
-ragctl logs web --tail        # live-follow web logs
-ragctl restart backend -f     # force-restart one service
-ragctl backup                 # cross-platform backup (KB + ChromaDB + Neo4j)
-ragctl down --appmode prod    # stop prod only (shared Neo4j kept)
+ragctl up                          # Start all services (silent)
+ragctl up --appmode prod           # Production ports (8001/3000)
+ragctl status                      # Dev + prod mode status
+ragctl logs web --tail             # Live web logs
+ragctl restart backend -f          # Force restart
+ragctl backup                      # Cross-platform backup
+ragctl down                        # Stop all services
 ```
 
 <details>
-<summary><b>📋 Full CLI reference</b></summary>
+<summary><b>📋 Complete CLI Reference</b></summary>
 
 | Command | Description |
 |---------|-------------|
-| `ragctl setup` · `init` | One-click full deployment |
-| `ragctl check` | Full environment audit with fix hints |
-| `ragctl up` / `down` | Start / stop all services (silent, no terminals) |
-| `ragctl start` / `stop` / `restart` [svc] | Per-service lifecycle (`backend`\|`web`\|`neo4j`\|`all`) |
-| `ragctl status [--appmode X]` | Dual-mode status: ports + HTTP health + PIDs + MinerU |
-| `ragctl logs [svc] [--tail] [--lines N]` | View / live-tail logs |
-| `ragctl deps` | Install all dependencies (real-time progress) |
-| `ragctl model` | Pre-download BGE-M3 embedding model. `--source modelscope\|hf-mirror\|huggingface` |
-| `ragctl backup` / `restore` | Cross-platform backup & restore (KB docs + ChromaDB + Neo4j) |
-| `ragctl version` | Show local VERSION + git SHA vs GitHub remote |
-| `ragctl update` | Check GitHub and pull latest |
-| `ragctl install` | Register `ragctl` globally → `~/.local/bin` |
-| `ragctl desktop` · `ui` | Launch Tauri desktop console |
-| `ragctl clean` | Clean MinerU artifacts + caches (`--model` needs double confirm) |
+| `ragctl setup` / `init` | One-click full deployment |
+| `ragctl check` | Environment audit + fix suggestions |
+| `ragctl up` / `down` | Start / stop all services |
+| `ragctl start` / `stop` / `restart` [svc] | Single service lifecycle (`backend`/`web`/`neo4j`) |
+| `ragctl status` | Dual-mode status: ports + health + PIDs |
+| `ragctl logs [svc] [--tail]` | View / tail logs |
+| `ragctl deps` | Install all dependencies |
+| `ragctl model [--source X]` | Pre-download BGE-M3 model |
+| `ragctl backup` / `restore` | KB + ChromaDB + Neo4j backup/restore |
+| `ragctl version` | Local version vs GitHub remote |
+| `ragctl update` | Check and pull latest version |
+| `ragctl install` | Register `ragctl` globally |
+| `ragctl desktop` / `ui` | Launch Tauri desktop console |
+| `ragctl clean` | Clean MinerU artifacts + cache |
 
-**Flags:** `--appmode dev\|prod` (`--mode`, `-m`), `--port-backend N`, `--port-web N`, `--no-neo4j` / `--no-backend` / `--no-web`, `--force` (`-f`), `--tail`
-
+**Flags:** `--appmode dev|prod` · `--port-backend N` · `--port-web N` · `--no-neo4j` · `--force` · `--tail`
 </details>
 
-### 3. MCP client — *any agent*
+### 3. 🔌 MCP Client — *Any Agent*
 
 ```python
-kb_project_start(backend=True, web=True, wait=True)   # silent start
+kb_project_start(backend=True, web=True, wait=True)
 kb_search_two_stage(query="reinforcement learning", balance_kbs=True)
 experience_search_global(query="ConnectError troubleshooting")
 kb_graph_cross_kb_documents(min_kbs=2)
+kb_index_document(kb_id="uuid", doc_path="paper.md")
 ```
 
-### 4. Web UI
+### 4. 🌐 Web UI — *Browser-Based*
 
-Open **http://localhost:6789** — browse KBs, search documents, explore the graph, chat with Claude via the Agent SDK.
+Open **http://localhost:6789** and explore:
 
----
-
-## 🔌 MCP Tools — 71
-
-All accessible via `mcp__kb-mcp__*` from Claude Code, OMP, or any MCP client.
-
-| Category | Count | Key tools |
-|----------|:-----:|-----------|
-| **Service lifecycle** | 4 | `backend_status`, `kb_project_status` (runtime\|setup), `kb_project_start`, `kb_project_update` |
-| **KB CRUD** | 4 | `kb_list` (lightweight), `kb_create`, `kb_update`, `kb_delete` |
-| **Document** | 8 | `kb_get_documents`, `kb_doc_read`, `kb_doc_create`, `kb_doc_update_meta`, `kb_doc_update_content`, `kb_doc_delete`, `kb_doc_batch_delete`, `kb_doc_move` |
-| **File System** | 3 | `fs_get_tree`, `fs_get_children`, `fs_upload_file` |
-| **Parsing** | 4 | `parse_doc`, `parse_doc_batch`, `parse_task_status`, `kb_doc_save_parsed` |
-| **Tags** | 4 | `kb_tags_list`, `kb_doc_update_tags`, `kb_tags_cleanup`, `kb_doc_get_by_tag` |
-| **Search** | 4 | `kb_search` (metadata), `kb_search_vector` (semantic), `kb_search_two_stage` (BM25→vector), `kb_search_stats` |
-| **Vector / Index** | 4 | `kb_index_document`, `kb_batch_index`, `kb_reindex`, `kb_cleanup_orphan_collections` |
-| **Knowledge Graph** | 11 | `kb_graph_search` · `kb_graph_stats` · `kb_graph_document` · `kb_graph_document_related` · `kb_graph_kb_overview` · `kb_graph_build` · `kb_graph_cross_kb_documents` · `kb_graph_document_paths` · `kb_graph_central_documents` · `kb_graph_delete_document` · `kb_graph_delete_kb` |
-| **Experience** | 25 | `experience_create` · `experience_read` · `experience_list` · `experience_update` · `experience_delete` · `experience_apply` · `experience_review` · `experience_summary` · `experience_search_global` · `experience_search_smart` (with kb_id scope) · `experience_rerank` · `experience_extract` · `experience_drafts_list` · `experience_draft_read` · `experience_draft_approve` · `experience_draft_reject` · `experience_check_stale` · `experience_sync_kb` · `experience_dashboard` · `experience_apply_decay` · `experience_meditation_status` · `experience_meditation_run` · `experience_meditation_config_get` · `experience_meditation_config_update` · `experience_meditation_history` |
-| **Total** | **71** | All atomic — each does ONE thing; workflows belong to skills |
-
-> Count verified: 71 @mcp.tool() in kb-mcp/server.py. Experience = 20 core + 5 meditation.
-
----
-## 🎯 Skills — 14
-
-| Skill | Flow | Purpose |
-|-------|------|---------|
-| **knowledgebase** | Router | Dispatch user intent to the correct sub-skill |
-| **knowledgebase-init** | Phase 0→11 | Guided fresh-install wizard (main agent) |
-| **knowledgebase-update** | Phase 0→5 | Version check + safe GitHub pull (main agent) |
-| **knowledgebase-ingest** | A0→A9 | Document ingestion with quality gates |
-| **knowledgebase-search** | Step 0–6 | QDCVR retrieval with content verification |
-| **knowledgebase-search-enterprise** | Phase 0–5 | Multi-strategy cross-KB search |
-| **knowledgebase-manage** | M1→M6 | Document and KB administration |
-| **knowledgebase-organize** | O0→O13 | Full collection restructuring |
-| **knowledgebase-verify** | V1→V9 | Integrity and quality validation |
-| **knowledgebase-list** | L1→L3 | Read-only browsing |
-| **knowledgebase-graph** | — | Neo4j graph build, query, analysis |
-| **knowledgebase-experience** | E0→E12 | Experience lifecycle management |
-| **knowledgebase-experience-summarize** | S1→S5 | Distill and persist structured experiences |
-| **knowledgebase-batch** | B1→B7 | High-volume batch operations |
-
-> All skills are **self-contained** — no external CLAUDE.md dependencies. 12 delegate to the Archival agent; `init` and `update` run on the main agent.
-
----
-
-## 🧠 The QDCVR Retrieval Method
-
-The flagship contribution. A seven-stage pipeline that makes retrieval trustworthy:
-
-```
-Query → Step 0: Intent + Rewrite → Step 1: Smart KB Selection
-      → Step 2: Two-Stage Recall (BM25 → vector, balance_kbs)
-      → Step 2.5: Dedup + Hard Threshold
-      → Step 3: CONTENT VERIFICATION (0–8 scoring) ⭐
-      → Step 5: Confidence Tiering (P0 / P1 / P2)
-      → Step 6: Answer + Blind-Spot Declaration
-```
-
-**The content verification rubric** scores each candidate on three dimensions:
-
-| Dimension | Score | Criterion |
-|-----------|:-----:|-----------|
-| Topic relevance | 0–3 | 3 = directly about the query subject |
-| Scenario match | 0–3 | 3 = directly solves the query's problem |
-| Answer evidence | 0–2 | 2 = cite-able data / steps / conclusions |
-
-> **The decision rule:** `score ≥ 6 → accept (P0)` · `= 5 → supplement (P1)` · `≤ 4 → discard` — **independent of vector similarity.**
-
-<details>
-<summary><b>📖 Experience credibility model (P0/P1/P2)</b></summary>
-
-Structured operational knowledge (problem→solution→lessons) is managed through a 13-stage lifecycle (**E0–E12**) with credibility tiers and temporal decay:
-
-| Tier | Condition | Presentation |
-|------|-----------|-------------|
-| **P0 Strong** | vector≥0.65 ∧ content≥6 ∧ rating≥4 ∧ reviews≥1 | Directly cite as answer |
-| **P1 Confirmed** | vector≥0.45 ∧ content≥4 | Cite with annotation |
-| **P2 Supplement** | vector≥0.35 ∧ content≥3 | Hidden by default, expand on request |
-| **Discard** | content verification fails OR vector < 0.35 | Never presented |
-
-**Decay rules:** stale-unverified (>30d, 0 applied) → demoted; disputed (rating<2, ≥3 reviews) → hard cap P2; unvetted (0 reviews ∧ 0 applied) → cap P1.
-
-</details>
-
-<details>
-<summary><b>🧘 Experience Auto-Meditation (v3.0)</b></summary>
-
-Automatic experience synthesis from recurring user questions. Backend scheduler harvests Q&A signals, then spawns an AI agent (OMP or Claude Code) to synthesize structured experiences — without the backend ever touching an LLM API.
-
-**Architecture:**
-```
-Backend Scheduler (mechanical only — no LLM)
-  │  harvest → cluster → score → per-KB filter
-  │
-  └─ spawn Agent Harness subprocess
-       │  omp -p --auto-approve
-       │  claude -p --bare --output-format json
-       │
-       └─ Agent uses MCP tools → writes experiences directly
-```
-
-**Key features:**
-- **KB-level control**: Each KB has independent meditation config in `.knowledge-base.yml` metadata (enabled/harness/model/interval/auto_publish)
-- **Pluggable harness**: **OMP** (default, uses `omp -p`) or **Claude Code** (`claude -p --bare`)
-- **Dynamic model selection**: Real-time `omp models --json` RPC → 12+ available models (DeepSeek V4 Pro/Flash, GLM-5.2, Kimi K3, etc.) selectable per KB
-- **Empty model = engine default**: OMP uses its default model (e.g. deepseek-v4-pro); Claude uses sonnet
-- **Circuit breaker**: 3 consecutive agent failures → 24h cooldown
-- **Signal harvesting**: Extracts Q&A pairs from chat history → triggers incremental meditation
-- **Quality gating**: Every experience verified via `kb_doc_read` before creation — refuses to fabricate when cited docs don't exist
-- **Parser**: Robust JSON extraction from OMP streaming output — handles ` ```json ` code fences, `turn_end`/`message_end` events, and regex fallback for malformed JSON
-
-**MCP Tools (5 new):**
-| Tool | Description |
-|------|-------------|
-| `experience_meditation_status` | Global scheduler + harness health + circuit breaker status |
-| `experience_meditation_run` | Manually trigger meditation (global or per-KB) |
-| `experience_meditation_config_get` | Read per-KB meditation config |
-| `experience_meditation_config_update` | Update per-KB meditation config |
-| `experience_meditation_history` | View recent meditation run history |
-
-**CLI commands:**
-```bash
-ragctl meditation status              # Check system status
-ragctl meditation run                 # Trigger a run
-ragctl meditation history --lines=10  # View run history
-ragctl meditation config <kb_id>      # View KB config
-```
-
-**Database:** `storage/meditation.db` (SQLite, WAL mode) — `meditation_signals` + `meditation_runs` tables.
-
-</details>
-
+| Page | Route | What You Can Do |
+|------|-------|-----------------|
+| 🏠 **Home** | `/` | Dashboard with stats (28 KBs, 168 docs) |
+| 📁 **File System** | `/file-system` | Tree browser, upload, parse, preview |
+| 🗄️ **Knowledge Base** | `/knowledge-base` | KB CRUD, document management, sub-KBs |
+| 🔎 **KB Search** | `/knowledge-search` | QDCVR search with strategy selector |
+| 🌐 **Graph Explorer** | `/knowledge-graph` | D3.js force-directed Neo4j visualization |
+| 🤖 **Claude Chat** | `/claude-chat` | Agent SDK streaming with tools |
+| ⚙️ **Settings** | `/settings` | Runtime config editor with hot-reload |
+| ❓ **About** | `/about` / `/about-project` | Release notes + roadmap |
 
 ---
 
@@ -508,146 +445,163 @@ ragctl meditation config <kb_id>      # View KB config
 Browser / Claude Code / MCP Client
         │
         ▼
-┌──────────────────┐
-│  Nuxt 3 Web UI   │  port 6789 (dev) / 3000 (prod)
-│  (proxy layer)   │
-└────────┬─────────┘
-         │  server-to-server
-         ▼
-┌──────────────────┐
-│  FastAPI Backend  │  port 8765 (dev) / 8001 (prod)
-│  + MinerU OCR     │  ephemeral port
-└────────┬─────────┘
-         │  file read
-         ▼
-┌─────────────────────────────────────┐
-│  $TREE_STORAGE_PATH/                │
-│  ├── .tree-fs.json                  │
-│  │── {KB}/.knowledge-base.yml       │
-│  │── {KB}/doc.md                    │
-│  │                                  │
-│  + ChromaDB (BGE-M3, 1024-dim)     │
-│  + Neo4j (bolt://127.0.0.1:7687)   │
-└─────────────────────────────────────┘
+┌──────────────────────────────┐
+│  Nuxt 3 Web UI (proxy layer) │  6789 (dev) / 3000 (prod)
+└──────────────┬───────────────┘
+               │ server-to-server (trust_env=False)
+               ▼
+┌──────────────────────────────┐
+│  FastAPI Backend + MinerU    │  8765 (dev) / 8001 (prod)
+└──────────────┬───────────────┘
+               │ file I/O
+               ▼
+┌──────────────────────────────────────────────┐
+│  Storage Layer                                │
+│  ├── .tree-fs.json  (Global file tree index)  │
+│  ├── {KB}/.knowledge-base.yml  (Doc index)    │
+│  ├── {KB}/*.md    (Document content)          │
+│  ├── ChromaDB     (BGE-M3 1024-dim vectors)   │
+│  └── Neo4j        (bolt://127.0.0.1:7687)     │
+└──────────────────────────────────────────────┘
 ```
-
-> **Principle:** writes → HTTP API (backend/web proxy). reads → direct file access (`.tree-fs.json` + `.knowledge-base.yml`).
 
 ### Five-Layer Storage Model
 
-| Layer | Content | Backed by |
-|-------|---------|-----------|
-| L1 Raw files | Original markdown documents | `storage/tree-file-system/{KB}/{doc}.md` |
-| L2 File tree | Global index of all folders + files + metadata | `.tree-fs.json` |
-| L3 Document index | Per-KB document registry (name/path/tags/vector_index) | `.knowledge-base.yml` |
-| L4 Vector store | Document chunk embeddings (BGE-M3, 1024-dim) | ChromaDB collections |
-| L5 Knowledge graph | Document/Tag/KB nodes + RELATED_TO/HAS_TAG edges | Neo4j + built-in graph fallback |
+| Layer | Content | Technology |
+|:-----:|---------|------------|
+| **L1** | Raw markdown documents | `storage/tree-file-system/{KB}/{doc}.md` |
+| **L2** | File tree index | `.tree-fs.json` |
+| **L3** | Document registry | `.knowledge-base.yml` |
+| **L4** | Vector embeddings (1024-dim) | ChromaDB + BGE-M3 |
+| **L5** | Knowledge graph | Neo4j (Document/Tag/KB nodes + relations) |
 
-> **Full storage architecture** (5-layer consistency rules + path conventions): [kb-architecture.md](.claude/skills/knowledgebase/references/kb-architecture.md)
+> **Principle:** Writes → HTTP API (consistency across all 5 layers). Reads → direct file access (zero backend load).
 
 ---
 
 ## ⚙️ Configuration
 
-**`config.yml`** (repo root) is the **single source of truth for ports**. **`.env`** overrides and is created by `ragctl setup`.
+`config.yml` (repo root) is the truth source. `.env` overrides and is auto-created by `ragctl setup`.
 
 | Variable | Default (dev / prod) | Purpose |
 |----------|----------------------|---------|
-| `APP_MODE` | `dev` | Selects config.yml section |
-| `BACKEND_PORT` | `8765` / `8001` | FastAPI port |
+| `APP_MODE` | `dev` | Selects config section |
+| `BACKEND_PORT` | `8765` / `8001` | FastAPI backend port |
 | `WEB_PORT` | `6789` / `3000` | Nuxt web port |
-| `BACKEND_URL` | derived | Full backend URL |
-| `HF_ENDPOINT` | `https://hf-mirror.com` | Model download mirror |
-| `TREE_STORAGE_PATH` | `./storage/tree-file-system` | KB data storage path |
-| `NEO4J_PASSWORD` | (from docker-compose) | Graph DB auth |
-
-Switch modes at runtime without editing `.env`:
+| `BACKEND_URL` | `http://localhost:8765` | Full backend URL |
+| `TREE_STORAGE_PATH` | `./storage/tree-file-system` | KB data root |
+| `NEO4J_PASSWORD` | (docker-compose) | Graph DB authentication |
 
 ```bash
-ragctl up --appmode prod       # backend → 8001, web → 3000
-ragctl status                  # shows both dev + prod
-ragctl down --appmode prod     # stops only prod (Neo4j preserved)
+ragctl up --appmode prod        # Switch to production ports
+ragctl status                   # Shows both dev + prod
+ragctl down --appmode prod      # Stop only prod (Neo4j preserved)
 ```
 
-### API Rate Limiting
-
-Built-in sliding-window rate limiter (configurable in `config.yml`):
+Built-in **rate limiting** (configurable in `config.yml`):
 
 ```yaml
 server:
   rate_limit:
     enabled: true
     window_sec: 60
-    max_requests: 120      # general endpoints
-    heavy_max: 20          # parse/mineru endpoints
+    max_requests: 120       # general endpoints
+    heavy_max: 20            # parse/mineru endpoints
 ```
 
 ---
 
-## 🤫 Silent Operation
+## ⚡ 71 MCP Tools
 
-All launchers start services with **zero terminal windows** in both dev and prod. Output flows to **three synchronized surfaces** — all reading the same log files:
+All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
 
-| Surface | Command |
-|---------|---------|
-| 📄 On-disk files | `backend/logs/desktop-stdout.log` · `web/logs/desktop-stdout.log` · `backend/logs/mineru-api.log` |
-| 🖥️ Tauri desktop console | Real-time log stream (tails the exact same files) |
-| ⌨️ `ragctl logs` | CLI viewer + live tail |
+<div align="center">
 
-```bash
-ragctl logs backend            # last 80 lines
-ragctl logs web --tail         # live follow (Ctrl+C to exit)
-ragctl logs mineru --lines 200 # 200 lines of OCR output
-```
+| Category | Tools | Category | Tools |
+|:---------|:-----:|:---------|:-----:|
+| **KB CRUD** | 5 | **Document CRUD** | 9 |
+| **Search** | 4 | **File System** | 3 |
+| **Vector Index** | 3 | **Parse** (non-blocking) | 3 |
+| **Knowledge Graph** | 11 | **Experience Lifecycle** | 20 |
+| **Tags** | 4 | **Service Lifecycle** | 4 |
+| **Cleanup** | 1 | **Backend Status** | 1 |
 
----
-
-## 🛠️ Troubleshooting
-
-| Symptom | Likely cause | Fix |
-|---------|-------------|-----|
-| MCP not connecting | `uv` not on PATH (fresh terminal) | `ragctl setup` installs uv; reopen terminal |
-| Backend won't start | deps not installed | `ragctl setup` (or `cd backend && uv sync`) |
-| Web won't start | `node_modules` missing | `ragctl setup` (or `cd web && npm install`) |
-| `backend/` or `web/` is empty | repo not fully cloned | `ragctl setup` |
-| Graph queries fail (search works) | Neo4j not running | `ragctl start neo4j` (requires Docker) |
-| BGE model download slow/fails | network to HuggingFace | set `HF_ENDPOINT=https://huggingface.co` |
-| Port already in use | previous service still running | `ragctl down` then `ragctl up` |
-| Skills not showing in `/skills` | Not in project dir (Method C) | `cd rag-knowledge` and restart Claude Code |
-| `ragctl` not found globally | `ragctl install` skipped | run `ragctl install` from project root |
+</div>
 
 <details>
-<summary><b>❓ FAQ</b></summary>
+<summary><b>📋 Full tool list → click to expand</b></summary>
 
-<details>
-<summary><b>Does it really open zero terminal windows?</b></summary>
-
-Yes. Verified: `windowsHide` + detached binary spawn (no `cmd.exe` wrapper) on Windows; `start_new_session` on POSIX.
-</details>
-
-<details>
-<summary><b>Dev or prod — what's the difference?</b></summary>
-
-Ports and config. Dev: backend `8765` / web `6789`. Prod: backend `8001` / web `3000`. Switch with `--appmode prod`. Both fully silent.
-</details>
-
-<details>
-<summary><b>Where is my data?</b></summary>
-
-All local — `$TREE_STORAGE_PATH` (KB files) + Neo4j (graph) + ChromaDB (vectors). No cloud, no telemetry.
-</details>
-
-<details>
-<summary><b>Do I need Docker?</b></summary>
-
-Only for the Neo4j knowledge graph. Parsing, search, and experience all work without it.
-</details>
-
-<details>
-<summary><b>Can I use this without Claude Code?</b></summary>
-
-Yes. The Web UI at `http://localhost:6789` is fully functional, and any MCP client can call the 71 tools.
-</details>
+| Tool | Description |
+|------|-------------|
+| `kb_project_start()` | Silently launch all services |
+| `kb_project_status()` | Service health + ports + PIDs |
+| `kb_project_update()` | Safe update from GitHub |
+| `backend_status()` | Quick health check |
+| `kb_list()` | List all KBs |
+| `kb_create(name, desc)` | Create KB |
+| `kb_update(kb_id)` | Update KB metadata |
+| `kb_delete(kb_id)` | Delete KB + all documents |
+| `kb_get_documents()` | List documents per KB |
+| `kb_doc_create()` | Create document |
+| `kb_doc_read()` | Read document content |
+| `kb_doc_update_meta()` | Update metadata |
+| `kb_doc_update_content()` | Replace content |
+| `kb_doc_delete()` | Delete document (with graph cleanup) |
+| `kb_doc_batch_delete()` | Batch delete |
+| `kb_doc_move()` | Move doc to different KB |
+| `kb_doc_save_parsed()` | Save OCR/parse result |
+| `kb_search(query)` | Metadata keyword search |
+| `kb_search_vector()` | BGE-M3 semantic search |
+| `kb_search_two_stage()` | BM25 → Vector rerank |
+| `kb_search_stats()` | Index statistics |
+| `fs_get_tree()` | Full file tree |
+| `fs_get_children()` | Folder contents |
+| `fs_upload_file()` | Upload + register |
+| `kb_graph_stats()` | Graph health + node counts |
+| `kb_graph_search()` | Search graph by keyword |
+| `kb_graph_kb_overview()` | KB-level overview |
+| `kb_graph_cross_kb_documents()` | Cross-KB bridge docs |
+| `kb_graph_document()` | Document-centric view |
+| `kb_graph_document_related()` | Related documents |
+| `kb_graph_document_paths()` | Shortest path discovery |
+| `kb_graph_central_documents()` | Centrality ranking |
+| `kb_graph_build()` | Build graph |
+| `kb_graph_delete_document()` | Cleanup (new) |
+| `kb_graph_delete_kb()` | Cleanup (new) |
+| `experience_create()` | Create experience |
+| `experience_read()` | Read experience |
+| `experience_list()` | List experiences |
+| `experience_update()` | Update experience |
+| `experience_delete()` | Delete experience |
+| `experience_apply()` | Mark as applied |
+| `experience_review()` | Rate + comment |
+| `experience_summary()` | Dashboard summary |
+| `experience_search_global()` | Cross-KB search |
+| `experience_search_smart()` | Multi-path (recommended) |
+| `experience_rerank()` | Semantic reranking |
+| `experience_extract()` | Auto-extract candidates |
+| `experience_drafts_list()` | Pending drafts |
+| `experience_draft_approve()` | Approve draft |
+| `experience_draft_reject()` | Reject draft |
+| `experience_check_stale()` | Consistency check |
+| `experience_sync_kb()` | Mark KB for sync |
+| `experience_dashboard()` | Health dashboard |
+| `experience_apply_decay()` | Decay cycle |
+| `experience_meditation_status()` | Meditation scheduler |
+| `experience_meditation_run()` | Manual trigger |
+| `experience_meditation_config_get/set()` | Config |
+| `experience_meditation_history()` | Run history |
+| `kb_tags_list()` | List tags |
+| `kb_doc_update_tags()` | Set tags on doc |
+| `kb_doc_get_by_tag()` | Find by tag |
+| `kb_tags_cleanup()` | Remove orphan tags |
+| `kb_index_document()` | Index single document |
+| `kb_batch_index()` | Index unindexed docs |
+| `kb_reindex()` | Rebuild entire index |
+| `kb_cleanup_orphan_collections()` | Clean ChromaDB |
+| `parse_doc()` | Async parse (returns task_id) |
+| `parse_doc_batch()` | Batch parse |
+| `parse_task_status()` | Poll parse result |
 
 </details>
 
@@ -658,23 +612,20 @@ Yes. The Web UI at `http://localhost:6789` is fully functional, and any MCP clie
 ```
 rag-knowledge/
 ├── backend/              ← FastAPI + MinerU OCR engine
-├── web/                  ← Nuxt 3 + Ant Design Vue (incl. Claude Chat with Agent SDK)
+├── web/                  ← Nuxt 3 + Ant Design Vue + Claude Chat
 ├── kb-mcp/               ← MCP server — 71 tools
-├── command/              ← ragctl CLI (Node.js, js-yaml)
-├── src-tauri/            ← Tauri v2 desktop application (Rust)
-├── .claude/              ← Claude Code skills (14) + Archival agent (knowledge-admin.md)
-├── .omp/                 ← OMP-native agent, commands, MCP config
+├── command/              ← ragctl CLI (Node.js)
+├── src-tauri/            ← Tauri v2 desktop (Rust)
+├── .claude/              ← 14 agent skills + Archival agent
 ├── .claude-plugin/       ← Plugin + marketplace manifests
-├── scripts/              ← GPU detection, skill validation, OMP installer
-├── docs/                 ← Architecture, paper framework, test plans
-├── .mcp.json             ← kb-mcp MCP auto-connect (Claude Code local project)
-├── config.yml            ← Central configuration (single source of truth)
+├── docs/                 ← Architecture, paper framework, benchmark
+│   └── paper/benchmark/  ← CIKM 2027 benchmark (18 experiments)
+├── config.yml            ← Central configuration (single truth source)
 ├── docker-compose.yml    ← Neo4j container
-├── .env.example          ← Environment variable template
-├── VERSION               ← Semantic version
-├── ragctl / ragctl.bat   ← CLI entry (Linux·macOS / Windows)
-├── start.bat / start.sh  ← Silent launchers (delegate to ragctl up)
-└── README.md
+├── ragctl / ragctl.bat   ← CLI entry points
+├── .mcp.json              ← MCP auto-connect
+├── .env.example           ← Environment template
+└── VERSION                ← Semantic version
 ```
 
 ---
@@ -687,24 +638,74 @@ rag-knowledge/
 
 | Component | Technology |
 |-----------|------------|
-| **Backend** | Python 3.12 · FastAPI · MinerU OCR · ChromaDB |
-| **Frontend** | TypeScript · Nuxt 3 · Ant Design Vue |
-| **Claude Chat** | Vue 3 · Claude Agent SDK · SQLite |
-| **MCP Server** | Python · FastMCP · httpx |
+| **Backend** | Python 3.12 · FastAPI · Uvicorn |
+| **Frontend** | TypeScript · Nuxt 3 · Vue 3.5 |
+| **UI Library** | Ant Design Vue 4 |
+| **PDF Parsing** | MinerU OCR (≥ 3.4.2) |
+| **Vector DB** | ChromaDB + BGE-M3 (1024-dim) |
 
 </td>
 <td width="50%" valign="top">
 
 | Component | Technology |
 |-----------|------------|
+| **Knowledge Graph** | Neo4j 5.20 (Docker) |
+| **MCP Framework** | FastMCP (Python) |
 | **CLI** | Node.js · js-yaml |
 | **Desktop** | Rust · Tauri v2 |
-| **Graph** | Neo4j 5.20 (Docker) |
-| **Embedding** | BGE-M3 (1024-dim) · sentence-transformers |
+| **Agent SDK** | Claude Code · Oh My Pi · Codex |
 
 </td>
 </tr>
 </table>
+
+---
+
+## 🗺️ Roadmap
+
+- [x] **v1.0** — Core QDCVR retrieval, KB CRUD, web UI, MCP tools
+- [x] **v2.0** — Knowledge graph, experience lifecycle, bilingual i18n
+- [x] **v2.1** — Meditation (auto-experience), MinerU OCR, multi-format parse
+- [x] **v2.2** — Tauri desktop app, CIKM benchmark (18 experiments)
+- [x] **v2.3** — Five-layer consistency, silent headless, graph cleanup on delete
+- [ ] **v2.4** — Multi-modal (image search), REST API key auth
+- [ ] **v2.5** — WebSocket real-time collaboration, team workspaces
+- [ ] **v3.0** — Distributed indexing (Ray), 100K+ doc scale
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Here's how:
+
+1. 🍴 **Fork** the repository
+2. 🌿 Create a **feature branch** (`git checkout -b feature/amazing`)
+3. 💻 **Write code** following existing patterns
+4. ✅ **Test** your changes (`pytest backend/tests/`)
+5. 📝 **Commit** with clear messages
+6. 🚀 **Push** and open a **Pull Request**
+
+**Guidelines:**
+- Keep it **atomic** — one PR, one feature/fix
+- **Test** before submitting (frontend: `npx vue-tsc --noEmit`, backend: `pytest`)
+- **Document** new features in README
+- **No AI slop** — every line should be intentional
+
+---
+
+## 🌐 Community & Support
+
+<div align="center">
+
+| Resource | Link |
+|:---------|:-----|
+| 🐛 **Bug Report** | [GitHub Issues](https://github.com/kingdol666/rag-knowledge/issues) |
+| ⭐ **Star Us** | [GitHub](https://github.com/kingdol666/rag-knowledge) |
+| 📖 **Documentation** | [README-zh.md](./README-zh.md) (中文) |
+| 💬 **Discussions** | [GitHub Discussions](https://github.com/kingdol666/rag-knowledge/discussions) |
+| 📦 **Releases** | [GitHub Releases](https://github.com/kingdol666/rag-knowledge/releases) |
+
+</div>
 
 ---
 
@@ -717,20 +718,23 @@ MIT © [kingdol](https://github.com/kingdol666)
 <div align="center">
 
 <sub>Built with</sub>
-<a href="https://fastapi.tiangolo.com/">FastAPI</a>
-<sub>·</sub>
-<a href="https://nuxt.com/">Nuxt 3</a>
-<sub>·</sub>
-<a href="https://neo4j.com/">Neo4j</a>
-<sub>·</sub>
-<a href="https://www.chromadb.com/">ChromaDB</a>
-<sub>·</sub>
-<a href="https://modelcontextprotocol.io/">MCP</a>
-<sub>·</sub>
+<a href="https://fastapi.tiangolo.com/">FastAPI</a> ·
+<a href="https://nuxt.com/">Nuxt 3</a> ·
+<a href="https://neo4j.com/">Neo4j</a> ·
+<a href="https://www.chromadb.com/">ChromaDB</a> ·
+<a href="https://modelcontextprotocol.io/">MCP</a> ·
 <a href="https://mineru.net/">MinerU</a>
 
-<br><br>
+<br>
 
-<sub>⭐ If this project helps you, please consider giving it a star!</sub>
+**⭐ Star us on GitHub — every star helps make this project better!** ⭐
+
+<a href="https://github.com/kingdol666/rag-knowledge/stargazers">
+<picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=kingdol666/rag-knowledge&type=Date&theme=dark" />
+<source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=kingdol666/rag-knowledge&type=Date" />
+<img alt="Star History Chart" src="https://api.star-history.com/svg?repos=kingdol666/rag-knowledge&type=Date" width="600" />
+</picture>
+</a>
 
 </div>

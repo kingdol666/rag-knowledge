@@ -295,4 +295,15 @@ web/
 
 ## 📄 License
 
-MIT · Part of the [RAG Knowledge Platform](https://github.com/kingdol666/rag-knowledge)
+MIT © [kingdol](https://github.com/kingdol666) · Part of the [RAG Knowledge Platform](https://github.com/kingdol666/rag-knowledge)
+
+---
+
+<div align="center">
+
+<sub>Part of</sub>
+<a href="https://github.com/kingdol666/rag-knowledge"><b>RAG Knowledge Platform</b></a>
+<br>
+⭐ <a href="https://github.com/kingdol666/rag-knowledge">Star us on GitHub</a> ⭐
+
+</div>

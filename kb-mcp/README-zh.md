@@ -295,4 +295,14 @@ kb-mcp/
 
 ## 📄 许可证
 
-MIT · 隶属于 [RAG Knowledge Platform](https://github.com/kingdol666/rag-knowledge)
+MIT © [kingdol](https://github.com/kingdol666) · 隶属于 [RAG Knowledge Platform](https://github.com/kingdol666/rag-knowledge)
+---
+
+<div align="center">
+
+<sub>隶属于</sub>
+<a href="https://github.com/kingdol666/rag-knowledge"><b>RAG Knowledge Platform</b></a>
+<br>
+⭐ <a href="https://github.com/kingdol666/rag-knowledge">在 GitHub 上给我们点星</a> ⭐
+
+</div>
