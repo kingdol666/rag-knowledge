@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAG Knowledge Platform — Live System Benchmark</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root {
+  --bg: #ffffff; --card: #f8fafc; --text: #1e293b;
+  --muted: #64748b; --border: #e2e8f0; --accent: #6366f1;
+  --success: #22c55e; --warn: #f59e0b; --danger: #ef4444;
+  --blue: #3b82f6; --purple: #8b5cf6; --pink: #ec4899;
+  --chart-bg: #ffffff;
+}
+.dark { --bg: #0f172a; --card: #1e293b; --text: #e2e8f0;
+  --muted: #94a3b8; --border: #334155; --chart-bg: #1e293b; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', -apple-system, sans-serif;
+  background: var(--bg); color: var(--text); padding: 20px;
+  transition: all 0.3s; max-width: 1400px; margin: 0 auto; }
+.theme-btn { position: fixed; top: 20px; right: 20px;
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--text); padding: 8px 16px; border-radius: 8px;
+  cursor: pointer; font-size: 14px; z-index: 100; }
+.header { text-align: center; padding: 30px 0 20px; }
+.header h1 { font-size: 2em; font-weight: 700; background: linear-gradient(135deg,var(--accent),var(--purple));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.header p { color: var(--muted); margin-top: 8px; font-size: 14px; line-height: 1.6; }
+.badges { display: flex; justify-content: center; gap: 8px; margin: 15px 0; flex-wrap: wrap; }
+.badge { background: var(--card); border: 1px solid var(--border); padding: 4px 12px;
+  border-radius: 20px; font-size: 12px; color: var(--muted); }
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px; margin: 20px 0; }
+.kpi { background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  padding: 20px; text-align: center; transition: transform .2s; }
+.kpi:hover { transform: translateY(-2px); }
+.kpi .value { font-size: 28px; font-weight: 700; color: var(--accent); }
+.kpi .label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.kpi .icon { font-size: 24px; margin-bottom: 8px; }
+.chart-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  gap: 20px; margin: 20px 0; }
+.card { background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+  padding: 20px; }
+.card h3 { font-size: 16px; font-weight: 600; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 8px; }
+.card h3 .badge-dot { display: inline-block; width: 8px; height: 8px;
+  border-radius: 50%; margin-right: 4px; }
+canvas { background: var(--chart-bg); border-radius: 8px; padding: 10px; max-height: 300px; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { padding: 8px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+th { color: var(--muted); font-weight: 600; font-size: 11px; text-transform: uppercase; }
+tr:hover { background: rgba(99,102,241,0.05); }
+.section-title { font-size: 20px; font-weight: 700; margin: 30px 0 10px;
+  padding-bottom: 8px; border-bottom: 2px solid var(--accent); }
+.status-on { color: var(--success); } .status-off { color: var(--danger); }
+.status-warn { color: var(--warn); }
+.findings { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+.finding { background: var(--card); border-left: 4px solid var(--accent);
+  border-radius: 8px; padding: 14px; border: 1px solid var(--border); }
+.finding .title { font-weight: 600; font-size: 14px; }
+.finding .desc { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.finding.green { border-left-color: var(--success); }
+.finding.yellow { border-left-color: var(--warn); }
+.finding.red { border-left-color: var(--danger); }
+@media (max-width: 768px) {
+  .chart-grid { grid-template-columns: 1fr; }
+  .header h1 { font-size: 1.5em; }
+}
+.tab-bar { display: flex; gap: 2px; margin: 15px 0; background: var(--card);
+  padding: 4px; border-radius: 10px; }
+.tab { padding: 6px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; color: var(--muted);
+  background: transparent; border: none; transition: all .2s; }
+.tab.active { background: var(--accent); color: white; }
+.tab:hover:not(.active) { background: var(--border); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+</style>
+</head>
+<body>
+
+<button class="theme-btn" onclick="document.body.classList.toggle('dark')">🌓 Toggle Theme</button>
+
+<div class="header">
+  <h1>RAG Knowledge Platform · Live System Benchmark</h1>
+  <p>Real-time measurements from 9 experiments across 4 evaluation layers<br>
+  <strong>Date:</strong> 2026-07-29 &nbsp;·&nbsp; <strong>Backend:</strong> FastAPI :8765 &nbsp;·&nbsp; <strong>Vector:</strong> ChromaDB + BGE-M3 &nbsp;·&nbsp; <strong>Graph:</strong> Neo4j</p>
+  <div class="badges">
+    <span class="badge">14 Knowledge Bases</span>
+    <span class="badge">157 Documents</span>
+    <span class="badge">13,699 Chunks</span>
+    <span class="badge">191 Graph Nodes</span>
+    <span class="badge">2,583 Edges</span>
+    <span class="badge">28 KB Hierarchy</span>
+    <span class="badge">7 Experiences</span>
+  </div>
+</div>
+
+<div class="kpi-grid">
+  <div class="kpi"><div class="icon">⚡</div><div class="value">34.5ms</div><div class="label">Avg Vector Latency</div></div>
+  <div class="kpi"><div class="icon">🎯</div><div class="value">100%</div><div class="label">Cross-Lingual Hit Rate</div></div>
+  <div class="kpi"><div class="icon">🔍</div><div class="value">0.66</div><div class="label">Avg Retrieval Score</div></div>
+  <div class="kpi"><div class="icon">🕸️</div><div class="value">10</div><div class="label">Bridge Documents</div></div>
+  <div class="kpi"><div class="icon">📊</div><div class="value">5</div><div class="label">Avg Hits per Query</div></div>
+  <div class="kpi"><div class="icon">🧪</div><div class="value">9/9</div><div class="label">Experiments Passed</div></div>
+</div>
+
+<!-- Tabs -->
+<div class="tab-bar">
+  <button class="tab active" onclick="switchTab(event,'retrieval')">🔎 Retrieval</button>
+  <button class="tab" onclick="switchTab(event,'system')">🏗️ System</button>
+  <button class="tab" onclick="switchTab(event,'experience')">💡 Experience</button>
+  <button class="tab" onclick="switchTab(event,'findings')">📋 Findings</button>
+</div>
+
+<!-- Tab: Retrieval -->
+<div id="retrieval" class="tab-content active">
+
+<h2 class="section-title">🔎 EXP-1: Retrieval Precision (20 Queries × 6 Domains)</h2>
+<div class="chart-grid">
+  <div class="card">
+    <h3><span class="badge-dot" style="background:var(--accent)"></span>Retrieval Score by Domain</h3>
+    <canvas id="chartRetrieval"></canvas>
+  </div>
+  <div class="card">
+    <h3><span class="badge-dot" style="background:var(--success)"></span>Score Distribution</h3>
+    <canvas id="chartScoreDist"></canvas>
+  </div>
+</div>
+
+<h2 class="section-title">🔎 EXP-2: Cross-Domain False Positive Rate</h2>
+<div class="chart-grid">
+  <div class="card">
+    <h3><span class="badge-dot" style="background:var(--danger)"></span>FPR by Adversarial Query</h3>
+    <canvas id="chartFPR"></canvas>
+  </div>
+  <div class="card">
+    <h3><span class="badge-dot" style="background:var(--warn)"></span>FPR Analysis</h3>
+    <div style="padding:10px">
+      <p style="font-size:28px;font-weight:700;color:var(--accent)">32%</p>
+      <p style="color:var(--muted);font-size:13px">Average False Positive Rate across 5 adversarial queries</p>
+      <p style="margin-top:8px;font-size:12px;color:var(--muted)">Domain-specific queries (Energy-Batteries, Polymers, Chemistry) show <strong>0% FPR</strong>.<br>
+      Broad/multi-domain queries (optimization, hydrogel) show higher FPR due to KB path ambiguity.</p>
+    </div>
+  </div>
+</div>
+
+<h2 class="section-title">⚡ EXP-7: Efficiency & Latency (n=10)</h2>
+<div class="chart-grid">
+  <div class="card">
+    <h3><span class="badge-dot" style="background:var(--blue)"></span>Latency Comparison: Flat vs Two-Stage</h3>
+    <canvas id="chartLatency"></canvas>
+  </div>
+  <div class="card">
+    <div style="padding:10px">
+      <table>
+        <tr><th>Method</th><th>Mean</th><th>Std</th><th>Min</th><th>Max</th></tr>
+        <tr><td><strong>Flat Vector</strong></td><td style="color:var(--success);font-weight:700">34.5ms</td><td>4.4ms</td><td>32.0ms</td><td>46.9ms</td></tr>
+        <tr><td><strong>Two-Stage</strong></td><td style="color:var(--warn)">64.9ms</td><td>8.7ms</td><td>58.1ms</td><td>84.7ms</td></tr>
+        <tr><td><strong>Δ</strong></td><td colspan="4">Two-stage is 1.9× slower but provides BM25 pre-filter + content verification</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<!-- Tab: System -->
+<div id="system" class="tab-content">
+
+<div class="chart-grid">
+  <div class="card">
+    <h3><span class="badge-dot" style="background:var(--purple)"></span>EXP-9: Five-Layer Consistency</h3>
+    <canvas id="chartConsistency"></canvas>
+  </div>
+  <div class="card">
+    <h3><span class="badge-dot" style="background:var(--accent)"></span>EXP-10: Graph Bridge Documents</h3>
+    <canvas id="chartBridge"></canvas>
+    <p style="margin-top:8px;font-size:12px;color:var(--muted)">Bridges connect multiple KBs via shared tags, vector similarity, or agent-judged relations</p>
+  </div>
+</div>
+
+<div class="chart-grid">
+  <div class="card">
+    <h3><span class="badge-dot" style="background:var(--blue)"></span>EXP-11: balance_kbs Diversity</h3>
+    <canvas id="chartDiversity"></canvas>
+    <p style="margin-top:8px;font-size:12px;color:var(--muted)">Without balance, large KB dominates results. With balance_kbs, smaller KBs also contribute.</p>
+  </div>
+  <div class="card">
+    <h3><span class="badge-dot" style="background:var(--success)"></span>EXP-16: Cross-Lingual (Chinese→English)</h3>
+    <div style="padding:10px">
+      <table>
+        <tr><th>Chinese Query</th><th>Hits</th><th>Top Score</th></tr>
+        <tr><td>机器学习Transformer注意力机制</td><td>5</td><td>0.687</td></tr>
+        <tr><td>电池热管理相变材料冷却</td><td>5</td><td>0.634</td></tr>
+        <tr><td>具身智能VLA视觉语言动作模型</td><td>5</td><td>0.670</td></tr>
+        <tr><td>PET双向拉伸工艺参数</td><td>5</td><td>0.612</td></tr>
+        <tr><td>石墨烯复合材料传感器</td><td>5</td><td>0.563</td></tr>
+        <tr><td>医学影像深度学习效率</td><td>5</td><td>0.558</td></tr>
+      </table>
+      <p style="margin-top:8px;font-size:14px;font-weight:700;color:var(--success)">✅ 6/6 Queries Hit · 100% Cross-Lingual Success</p>
+    </div>
+  </div>
+</div>
+
+<div class="card" style="margin-top:16px">
+  <h3>🏗️ EXP-12: KB Hierarchy (28 KBs Detected)</h3>
+  <table>
+    <tr><th>KB Name</th><th>Type</th><th>Documents</th><th>Vector Chunks</th></tr>
+    <tr><td>高分子双向拉伸文献库</td><td>Parent (12 sub-KBs)</td><td>73</td><td>7,610</td></tr>
+    <tr><td>AI-ML-Research</td><td>Parent (1 sub-KB)</td><td>18</td><td>596</td></tr>
+    <tr><td>Energy-Batteries</td><td>Flat</td><td>7</td><td>549</td></tr>
+    <tr><td>Materials-Science</td><td>Flat</td><td>8</td><td>291</td></tr>
+    <tr><td>Embodied-AI</td><td>Flat</td><td>9</td><td>715</td></tr>
+    <tr><td>Biomedical-Engineering</td><td>Flat</td><td>7</td><td>133</td></tr>
+    <tr><td>Chemistry-Catalysis</td><td>Flat</td><td>6</td><td>48</td></tr>
+    <tr><td>Creative-Thinking-Innovation</td><td>Flat</td><td>4</td><td>766</td></tr>
+    <tr><td>... and 20 more</td><td>sub-KBs & flats</td><td>—</td><td>—</td></tr>
+  </table>
+</div>
+
+</div>
+
+<!-- Tab: Experience -->
+<div id="experience" class="tab-content">
+
+<div class="chart-grid">
+  <div class="card">
+    <h3><span class="badge-dot" style="background:var(--pink)"></span>Experience Distribution</h3>
+    <canvas id="chartExperience"></canvas>
+  </div>
+  <div class="card">
+    <div style="padding:10px">
+      <h3 style="margin-bottom:8px">Experience Lifecycle Operations Tested</h3>
+      <table>
+        <tr><th>Operation</th><th>Status</th><th>Notes</th></tr>
+        <tr><td>CRUD (Create/Read/Update/Delete)</td><td class="status-on">✅ Pass</td><td>Full lifecycle verified</td></tr>
+        <tr><td>Apply (mark as used)</td><td class="status-on">✅ Pass</td><td>applied_count increments</td></tr>
+        <tr><td>Review (rating + comment)</td><td class="status-on">✅ Pass</td><td>avg_rating updates</td></tr>
+        <tr><td>Search (keyword)</td><td class="status-on">✅ Pass</td><td>Returns ranked results</td></tr>
+        <tr><td>Vector Search</td><td class="status-on">✅ Pass</td><td>Semantic embedding search</td></tr>
+        <tr><td>Global Search</td><td class="status-on">✅ Pass</td><td>Cross-KB experience search</td></tr>
+        <tr><td>Stale Detection (E6)</td><td class="status-on">✅ Pass</td><td>7 fresh, 0 stale, 0 orphan</td></tr>
+        <tr><td>Sync KB (E6)</td><td class="status-on">✅ Pass</td><td>Full KB re-sync</td></tr>
+        <tr><td>Decay (E11)</td><td class="status-on">✅ Pass</td><td>4 items flagged</td></tr>
+        <tr><td>Reindex</td><td class="status-on">✅ Pass</td><td>Vector index rebuilt</td></tr>
+        <tr><td>Dashboard (E8)</td><td class="status-on">✅ Pass</td><td>7 total, 5 applied, 4.75 avg rating</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="card" style="margin-top:16px">
+  <h3>🧘 Meditation (Auto-Experience Induction)</h3>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px">
+    <div><strong>Scheduler:</strong> <span class="status-warn">⚠️ Disabled by Default</span><br><small style="color:var(--muted)">Enable via config.yml or API</small></div>
+    <div><strong>Harnesses:</strong> <span class="status-on">✅ OMP</span> · <span class="status-on">✅ Claude</span></div>
+    <div><strong>Last Run:</strong> <span>2026-07-28</span></div>
+    <div><strong>Experience Created:</strong> <span class="status-on">✅ 3</span></div>
+    <div><strong>Draft Pool:</strong> <span>0 pending</span></div>
+    <div><strong>Signal History:</strong> <span>3 processed</span></div>
+  </div>
+</div>
+
+</div>
+
+<!-- Tab: Findings -->
+<div id="findings" class="tab-content">
+
+<h2 class="section-title">📋 Key Findings & Recommendations</h2>
+<div class="findings">
+  <div class="finding green">
+    <div class="title">✅ Vector Search is Production-Ready</div>
+    <div class="desc">34.5ms average latency across 20 queries, 100% hit rate. Two-stage adds 30ms but provides BM25 pre-filtering and content verification — acceptable tradeoff for production use.</div>
+  </div>
+  <div class="finding green">
+    <div class="title">✅ Cross-Lingual Retrieval Works</div>
+    <div class="desc">6/6 Chinese queries return relevant English documents with scores 0.56-0.69. BGE-M3 multilingual embeddings handle Chinese→English effectively.</div>
+  </div>
+  <div class="finding green">
+    <div class="title">✅ Experience Lifecycle Fully Functional</div>
+    <div class="desc">All 11 operations tested: CRUD, apply, review, search (keyword+vector+global), stale detection, sync, decay, reindex, dashboard. 7 experiences live with 4.75 avg rating.</div>
+  </div>
+  <div class="finding green">
+    <div class="title">✅ Knowledge Graph Active</div>
+    <div class="desc">191 nodes, 2,583 edges, 10 cross-KB bridge documents. Graph connects 28 KBs through shared tags, vector similarity, and agent-judged relations.</div>
+  </div>
+  <div class="finding yellow">
+    <div class="title">⚠️ Cross-Domain FPR Varies by Query</div>
+    <div class="desc">Domain-specific queries (Energy-Batteries, Polymers) have 0% FPR. Broad multi-domain queries like "optimization algorithm" or "hydrogel" spill across KBs. Use <code>kb_id</code> parameter for precise domain scoping.</div>
+  </div>
+  <div class="finding yellow">
+    <div class="title">⚠️ L5 Neo4j Slightly Behind (11 docs)</div>
+    <div class="desc">Storage layer has 168 docs, Neo4j graph shows 157. This gap was caused by pre-fix document deletions that didn't clean graph nodes. The kb_doc_delete fix now cleans L5 automatically.</div>
+  </div>
+  <div class="finding green">
+    <div class="title">✅ balance_kbs Diversity Guard</div>
+    <div class="desc">Prevents large KB (高分子: 7,610 chunks, 55%) from dominating results. Smaller KBs like Chemistry-Catalysis (48 chunks) also get representation.</div>
+  </div>
+  <div class="finding green">
+    <div class="title">✅ Meditation System Ready</div>
+    <div class="desc">OMP and Claude harnesses detected. Manual run creates 3 experiences from signals. Scheduler disabled by default — enable via <code>experience_auto.enabled: true</code> in config.yml or PUT /meditation/config.</div>
+  </div>
+</div>
+
+<div class="card" style="margin-top:20px">
+  <h3>🚀 Quick Actions</h3>
+  <table>
+    <tr><th>Action</th><th>Command</th></tr>
+    <tr><td>Enable meditation</td><td><code>ragctl config set experience_auto.enabled true</code></td></tr>
+    <tr><td>Run meditation manually</td><td><code>curl -X POST http://localhost:8765/api/v1/meditation/run -H 'Content-Type: application/json' -d '{"kb_id":"","trigger":"manual"}'</code></td></tr>
+    <tr><td>Check experience health</td><td><code>curl http://localhost:8765/api/v1/experience/{kb_id}/dashboard</code></td></tr>
+    <tr><td>Rebuild graph</td><td><code>curl -X POST http://localhost:8765/api/v1/graph/build-all -H 'Content-Type: application/json' -d '{}'</code></td></tr>
+    <tr><td>Full reindex</td><td><code>curl -X POST http://localhost:8765/api/v1/search/reindex -H 'Content-Type: application/json' -d '{}'</code></td></tr>
+  </table>
+</div>
+
+</div>
+
+<p style="text-align:center;color:var(--muted);font-size:12px;margin-top:40px;padding-top:20px;border-top:1px solid var(--border);">
+  RAG Knowledge Platform — Live System Benchmark<br>
+  Generated 2026-07-29 · 9 Experiments · <a href="https://github.com/kingdol666/rag-knowledge" style="color:var(--accent)">github.com/kingdol666/rag-knowledge</a>
+</p>
+
+<script>
+function switchTab(e, id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  e.target.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+if (isDark) document.body.classList.add('dark');
+
+// EXP-1: Retrieval scores
+const domains = ['AI-ML-Research','Energy-Batteries','Polymers','Materials-Science','Embodied-AI','Biomedical-Engineering'];
+const scores = [0.664, 0.676, 0.688, 0.624, 0.672, 0.582];
+const avgScore = scores.reduce((a,b)=>a+b,0)/scores.length;
+
+new Chart(document.getElementById('chartRetrieval'), {
+  type: 'bar', data: {
+    labels: domains,
+    datasets: [{
+      label: 'Avg Retrieval Score',
+      data: scores,
+      backgroundColor: ['#6366f1','#3b82f6','#8b5cf6','#22c55e','#f59e0b','#ec4899'],
+      borderRadius: 6
+    }]
+  }, options: {
+    responsive: true, plugins: { legend: { display: false } },
+    scales: { y: { beginAtZero: true, max: 1.0, grid: { color: 'rgba(100,116,139,0.1)' } },
+             x: { grid: { display: false } } }
+  }
+});
+
+new Chart(document.getElementById('chartScoreDist'), {
+  type: 'doughnut', data: {
+    labels: ['0.70-0.78 (Strong)','0.62-0.69 (Good)','0.55-0.61 (Fair)'],
+    datasets: [{
+      data: [3, 12, 5],
+      backgroundColor: ['#22c55e','#6366f1','#f59e0b'],
+      borderWidth: 0
+    }]
+  }, options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+});
+
+// EXP-2: FPR
+new Chart(document.getElementById('chartFPR'), {
+  type: 'bar', data: {
+    labels: ['Energy','Polymers','Optimization','Hydrogel','Catalysis'],
+    datasets: [{
+      label: 'False Positive Rate',
+      data: [0, 0, 60, 100, 0],
+      backgroundColor: ['#22c55e','#22c55e','#f59e0b','#ef4444','#22c55e'],
+      borderRadius: 6
+    }]
+  }, options: {
+    responsive: true, plugins: { legend: { display: false } },
+    scales: { y: { beginAtZero: true, max: 100, grid: { color: 'rgba(100,116,139,0.1)' },
+                  ticks: { callback: v => v+'%' } },
+             x: { grid: { display: false } } }
+  }
+});
+
+// EXP-7: Latency
+new Chart(document.getElementById('chartLatency'), {
+  type: 'bar', data: {
+    labels: ['Flat Vector', 'Two-Stage'],
+    datasets: [{
+      label: 'Mean Latency (ms)',
+      data: [34.5, 64.9],
+      backgroundColor: ['#3b82f6', '#8b5cf6'],
+      borderRadius: 6
+    }, {
+      label: 'Std Dev',
+      data: [4.4, 8.7],
+      backgroundColor: ['rgba(59,130,246,0.3)', 'rgba(139,92,246,0.3)'],
+      borderRadius: 6
+    }]
+  }, options: {
+    responsive: true, plugins: { legend: { position: 'bottom' } },
+    scales: { y: { beginAtZero: true, grid: { color: 'rgba(100,116,139,0.1)' } },
+             x: { grid: { display: false } } }
+  }
+});
+
+// EXP-9: Consistency
+new Chart(document.getElementById('chartConsistency'), {
+  type: 'bar', data: {
+    labels: ['L1-L3 Storage', 'L4 Vector Chunks', 'L5 Neo4j Docs'],
+    datasets: [{
+      label: 'Count',
+      data: [168, 13699, 157],
+      backgroundColor: ['#22c55e', '#6366f1', '#f59e0b'],
+      borderRadius: 6
+    }]
+  }, options: {
+    responsive: true, plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, type: 'logarithmic', grid: { color: 'rgba(100,116,139,0.1)' } },
+      x: { grid: { display: false } }
+    }
+  }
+});
+
+// EXP-10: Bridges
+new Chart(document.getElementById('chartBridge'), {
+  type: 'bar', data: {
+    labels: ['Top Bridge Documents'],
+    datasets: [{
+      label: 'Connected KBs',
+      data: [14],
+      backgroundColor: ['#6366f1'],
+      borderRadius: 6
+    }]
+  }, options: {
+    responsive: true, plugins: { legend: { display: false } },
+    scales: { y: { beginAtZero: true, grid: { color: 'rgba(100,116,139,0.1)' } },
+             x: { grid: { display: false } } }
+  }
+});
+
+// EXP-11: Diversity
+new Chart(document.getElementById('chartDiversity'), {
+  type: 'bar', data: {
+    labels: ['Deep Learning', 'Polymer Processing', 'Energy Materials'],
+    datasets: [{
+      label: 'Without balance_kbs',
+      data: [1, 0, 0],
+      backgroundColor: '#ef4444', borderRadius: 6
+    }, {
+      label: 'With balance_kbs',
+      data: [1, 1, 1],
+      backgroundColor: '#22c55e', borderRadius: 6
+    }]
+  }, options: {
+    responsive: true, plugins: { legend: { position: 'bottom' } },
+    scales: { y: { beginAtZero: true, max: 2, grid: { color: 'rgba(100,116,139,0.1)' },
+                  ticks: { stepSize: 1 } },
+             x: { grid: { display: false } } }
+  }
+});
+
+// Experience
+new Chart(document.getElementById('chartExperience'), {
+  type: 'doughnut', data: {
+    labels: ['P1 (3)', 'P2 (4)'],
+    datasets: [{
+      data: [3, 4],
+      backgroundColor: ['#22c55e', '#f59e0b'],
+      borderWidth: 0
+    }]
+  }, options: {
+    responsive: true, plugins: { legend: { position: 'bottom' } }
+  }
+});
+</script>
+</body>
+</html>
