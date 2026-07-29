@@ -29,9 +29,11 @@
     │
     │  kb_graph_build 写这里
     ▼
-⑤ Neo4j (知识图谱：Document/Tag/KB 节点 + RELATED_TO/HAS_TAG 边)
+⑤ 图存储 (知识图谱：Document/Tag/KB 节点 + RELATED_TO/HAS_TAG 边 — Neo4j 或内置图存储)
     │  kb_graph_* 查这里
 ```
+
+> ⚠️ 图谱支持 **Neo4j** 与 **内置图存储**（无 Neo4j 时自动降级）。`kb_graph_stats` 的 `neo4j_available` 标记：true=Neo4j 已连接，false=内置图存储。两种模式下 kb_graph_* 工具均正常工作。
 
 ## 一致性不变量（atomic 保证）
 
@@ -73,7 +75,7 @@
 - `kb_get_documents(lightweight=true)` 无 type 字段区分文档 vs 子KB容器 → 用 `file_type: knowledge-base` 或 `fs_get_tree(max_depth=2)` 区分
 - `kb_graph_kb_overview.related_kbs[].name` 和 `sub_kbs[].name` 返回 UUID → 用 `kb_list(lightweight=true)` 回查可读名
 
-## 66 个 MCP 工具地图（按操作类型）
+## 76 个 MCP 工具地图（按操作类型）
 
 | 类别 | 工具数 | 代表工具 | 何时用 |
 |------|--------|---------|--------|
