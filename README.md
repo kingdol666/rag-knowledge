@@ -17,7 +17,7 @@
 <p>
 <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick_Start-3_commands-4338ca?style=for-the-badge&logo=rocket" /></a>
 <a href="#-table-of-contents"><img src="https://img.shields.io/badge/Platform-Win_%7C_Linux_%7C_macOS-334155?style=for-the-badge&logo=linux" /></a>
-<a href="#%EF%B8%8F-serving-71-mcp-tools"><img src="https://img.shields.io/badge/MCP_Tools-71-8b5cf6?style=for-the-badge&logo=code" /></a>
+<a href="#-72-mcp-tools"><img src="https://img.shields.io/badge/MCP_Tools-72-8b5cf6?style=for-the-badge&logo=code" /></a>
 <a href="#%EF%B8%8F-four-interfaces-one-backend"><img src="https://img.shields.io/badge/Skills-14-f97316?style=for-the-badge&logo=openai" /></a>
 </p>
 
@@ -55,7 +55,7 @@
 <a href="#%EF%B8%8F-four-interfaces-one-backend">Usage</a> ·
 <a href="#-architecture">Architecture</a> ·
 <a href="#-configuration">Config</a> ·
-<a href="#%EF%B8%8F-71-mcp-tools">MCP Tools</a> ·
+<a href="#%EF%B8%8F-72-mcp-tools">MCP Tools</a> ·
 <a href="#-roadmap">Roadmap</a> ·
 <a href="#-contributing">Contributing</a>
 </p>
@@ -428,7 +428,7 @@ Open **http://localhost:6789** and explore:
 
 | Page | Route | What You Can Do |
 |------|-------|-----------------|
-| 🏠 **Home** | `/` | Dashboard with stats (28 KBs, 168 docs) |
+| 🏠 **Home** | `/` | Live dashboard with real-time KB/doc/tag/edge stats |
 | 📁 **File System** | `/file-system` | Tree browser, upload, parse, preview |
 | 🗄️ **Knowledge Base** | `/knowledge-base` | KB CRUD, document management, sub-KBs |
 | 🔎 **KB Search** | `/knowledge-search` | QDCVR search with strategy selector |
@@ -519,12 +519,11 @@ All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
 
 | Category | Tools | Category | Tools |
 |:---------|:-----:|:---------|:-----:|
-| **KB CRUD** | 5 | **Document CRUD** | 9 |
-| **Search** | 4 | **File System** | 3 |
-| **Vector Index** | 3 | **Parse** (non-blocking) | 3 |
-| **Knowledge Graph** | 11 | **Experience Lifecycle** | 20 |
-| **Tags** | 4 | **Service Lifecycle** | 4 |
-| **Cleanup** | 1 | **Backend Status** | 1 |
+| **Service Lifecycle** | 4 | **KB CRUD** | 6 |
+| **Document CRUD** | 8 | **Search** | 3 |
+| **Vector Index** | 5 | **File System** | 3 |
+| **Knowledge Graph** | 11 | **Experience (+Meditation)** | 25 |
+| **Tags** | 4 | **Parse** (non-blocking) | 3 |
 
 </div>
 

@@ -252,7 +252,7 @@
 | Backend (FastAPI) | ✅ | 端口 8766，健康 |
 | MinerU OCR | ✅ | PID 49364，端口 61392 |
 | Web Proxy (Nuxt 3) | ✅ | 端口 6789 |
-| kb-mcp MCP | ✅ | 71 工具均可用，2 冗余已删除 |
+| kb-mcp MCP | ✅ | 72 工具均可用，2 冗余已删除 |
 | ChromaDB (向量) | ✅ | 1033+ chunks，bge-m3 |
 | Neo4j (图谱) | ✅ | 497 节点 / 3959 边 |
 | 经验库 | ⚠️ | 19 条经验，1 orphan |

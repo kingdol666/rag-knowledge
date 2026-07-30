@@ -103,7 +103,7 @@ uv run python server.py --http
 
 All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by domain:
 
-### Service Lifecycle (3) — silent, headless management
+### Service Lifecycle (4) — silent, headless management
 
 | Tool | Description |
 |------|-------------|
@@ -112,7 +112,7 @@ All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by 
 | `kb_project_update(check_only, force, no_deps, restart)` | Safe update: dry-run first, refuse dirty worktree unless force, optional deps + restart. |
 | `backend_status()` | Quick backend health check. |
 
-### KB CRUD (5)
+### KB CRUD (6)
 
 | Tool | Description |
 |------|-------------|
@@ -165,7 +165,7 @@ All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by 
 | **Centrality** | `kb_graph_central_documents(kb_id)` |
 | **Build & Cleanup** | `kb_graph_build(kb_id)` (empty = all KBs), `kb_graph_delete_document(doc_path)`, `kb_graph_delete_kb(kb_id)` |
 
-### Experience (20)
+### Experience (25 — incl. 5 Meditation)
 
 | Sub-category | Tools |
 |-------------|-------|
