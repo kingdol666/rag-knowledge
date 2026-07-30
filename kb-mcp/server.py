@@ -117,12 +117,13 @@ def _exists(file_path: str) -> bool:
     return bool(file_path) and Path(file_path).exists()
 
 
-def _running_payload(task_id: str, kind: str, detail: dict | None = None) -> str:
-    """Immediate 'parse is running' reply returned for non-blocking parse tools."""
+def _running_payload(task_id: str, kind: str, detail: dict | None = None,
+                     message: str = "parsing task is running; call parse_task_status to get the result") -> str:
+    """Immediate 'task is running' reply returned for non-blocking tools."""
     payload = {
         "success": True,
         "status": "running",
-        "message": "parsing task is running; call parse_task_status to get the result",
+        "message": message,
         "task_id": task_id,
         "kind": kind,
     }
@@ -495,6 +496,21 @@ async def parse_task_status(task_id: str) -> str:
     status is 'running', 'done', or 'error'. When done, result holds the
     parse summary (markdown_path, image_count, ...). When error, error
     holds the message. Use this to poll tasks from parse_doc* tools.
+    """
+    rec = task_registry.get(task_id)
+    if rec is None:
+        return _j({"success": False, "error": f"unknown task_id: {task_id}"})
+    view = task_registry.public_view(rec)
+    view["success"] = True
+    return _j(view)
+
+@mcp.tool()
+async def kb_task_status(task_id: str) -> str:
+    """Check the status of ANY non-blocking background task (kb_reindex, kb_graph_build).
+
+    status is 'running', 'done', or 'error'. When done, result holds the task output
+    (reindex stats, graph relations, etc.). Works for all task_registry tasks including
+    parse_doc and meditation_run — use this as the universal task poller.
     """
     rec = task_registry.get(task_id)
     if rec is None:
@@ -1577,13 +1593,46 @@ async def experience_meditation_status(kb_id: str = "") -> str:
 async def experience_meditation_run(kb_id: str = "", trigger: str = "manual") -> str:
     """Manually trigger a meditation run. Optionally scoped to one KB.
 
+    NON-BLOCKING: returns a task_id immediately; poll with
+    experience_meditation_task_status(task_id) for the result.
+    The meditation agent (omp/claude) may run for several minutes.
+
     Args:
         kb_id: Target KB (empty = all enabled KBs)
         trigger: "manual" | "scheduled" | "incremental"
 
-    Returns: {success, report}
+    Returns: {success, status:'running', task_id, kb_id} right away.
+    When done, poll experience_meditation_task_status → result holds
+    {success, report/experiences/drafts}.
     """
-    return _j(await _client().meditation_run(kb_id, trigger))
+    client = _client()
+    meta = {"kb_id": kb_id, "trigger": trigger}
+
+    async def _work():
+        return await client.meditation_run(kb_id, trigger)
+
+    task_id = task_registry.submit(_work(), "meditation_run", meta)
+    return _running_payload(
+        task_id, "meditation_run", {"kb_id": kb_id},
+        message="meditation is running; call experience_meditation_task_status to get the result",
+    )
+
+
+@mcp.tool()
+async def experience_meditation_task_status(task_id: str) -> str:
+    """Check the status of a non-blocking meditation run.
+
+    status is 'running', 'done', or 'error'. When done, result holds the
+    meditation report (experiences_created, drafts_created, summary, ...).
+    When error, error holds the message. Use this to poll tasks from
+    experience_meditation_run.
+    """
+    rec = task_registry.get(task_id)
+    if rec is None:
+        return _j({"success": False, "error": f"unknown task_id: {task_id}"})
+    view = task_registry.public_view(rec)
+    view["success"] = True
+    return _j(view)
 
 
 @mcp.tool()
@@ -1844,27 +1893,36 @@ async def kb_reindex(kb_id: str = "", force: bool = False) -> str:
 
     force=True forces rebuild of all documents (including already indexed ones).
 
-    After reindexing, automatically verifies the vector index is queryable
-    (prevents silent index corruption where collection exists but returns 0 results).
+    NON-BLOCKING: returns a task_id immediately; poll with kb_task_status(task_id).
+    For small KBs this finishes in seconds; for large KBs (50+ docs, force=True) it
+    can take minutes (re-embedding all documents). The result includes a post-reindex
+    verification that confirms the vector index is queryable.
     """
-    result = await _client().reindex(kb_id, force)
-    # Post-reindex verification: if KB was specified and documents were processed,
-    # run a quick search to confirm the index is actually usable
-    processed = result.get("total_indexed") or result.get("total_docs", 0)
-    if kb_id and result.get("success") and processed > 0:
-        docs = await _client().kb_get_documents(kb_id)
-        doc_list = docs.get("documents", []) if isinstance(docs, dict) else []
-        if doc_list and len(doc_list) > 0:
-            # Use the first document's first heading/title word as a test query
-            first_doc = doc_list[0]
-            test_query = first_doc.get("name", "").replace(".md", "").replace("-", " ")[:60]
-            if test_query.strip():
-                verify = await _client().vector_search(test_query, kb_id=kb_id, top_k=1)
-                if verify.get("success") and verify.get("count", 0) > 0:
-                    result["_verify"] = "ok"
-                else:
-                    result["_verify"] = "WARNING: vector search returned 0 results after reindex — index may be corrupted"
-    return _j(result)
+    client = _client()
+    meta = {"kb_id": kb_id, "force": force}
+
+    async def _work():
+        result = await client.reindex(kb_id, force)
+        # Post-reindex verification: if KB was specified and documents were processed,
+        # run a quick search to confirm the index is actually usable
+        processed = result.get("total_indexed") or result.get("total_docs", 0)
+        if kb_id and result.get("success") and processed > 0:
+            docs = await client.kb_get_documents(kb_id)
+            doc_list = docs.get("documents", []) if isinstance(docs, dict) else []
+            if doc_list and len(doc_list) > 0:
+                first_doc = doc_list[0]
+                test_query = first_doc.get("name", "").replace(".md", "").replace("-", " ")[:60]
+                if test_query.strip():
+                    verify = await client.vector_search(test_query, kb_id=kb_id, top_k=1)
+                    if verify.get("success") and verify.get("count", 0) > 0:
+                        result["_verify"] = "ok"
+                    else:
+                        result["_verify"] = "WARNING: vector search returned 0 results after reindex — index may be corrupted"
+        return result
+
+    task_id = task_registry.submit(_work(), "kb_reindex", meta)
+    return _running_payload(task_id, "kb_reindex", {"kb_id": kb_id, "force": force},
+                            message="reindex is running; call kb_task_status to get the result")
 
 
 @mcp.tool()
@@ -2165,6 +2223,9 @@ async def kb_graph_build(kb_id: str = "", force: bool = False) -> str:
     Empty kb_id builds graphs for every KB (cross-KB shared tags form cross-KB connections);
     a specific kb_id builds only that KB.
 
+    NON-BLOCKING: returns a task_id immediately; poll with kb_task_status(task_id).
+    For small KBs this finishes in seconds; for large KBs (50+ docs) it can take a minute+.
+
     Iterates documents' metadata (name, description, tags) and builds RELATED_TO
     relationships via shared tags / same KB / description similarity. Does NOT read
     document content.
@@ -2178,10 +2239,18 @@ async def kb_graph_build(kb_id: str = "", force: bool = False) -> str:
     with kb_graph_document(doc_path) or kb_graph_kb_overview(kb_id).
     """
     client = _client()
-    if not kb_id or not kb_id.strip():
-        return _j(await client.graph_build_all(force))
-    if (err := _require_kb(kb_id)): return err
-    return _j(await client.graph_build_kb(kb_id, force))
+    if kb_id and kb_id.strip():
+        if (err := _require_kb(kb_id)): return err
+    meta = {"kb_id": kb_id, "force": force}
+
+    async def _work():
+        if not kb_id or not kb_id.strip():
+            return await client.graph_build_all(force)
+        return await client.graph_build_kb(kb_id, force)
+
+    task_id = task_registry.submit(_work(), "kb_graph_build", meta)
+    return _running_payload(task_id, "kb_graph_build", {"kb_id": kb_id},
+                            message="graph build is running; call kb_task_status to get the result")
 
 
 @mcp.tool()

@@ -99,22 +99,115 @@ async def meditation_run(body: dict = None):
 
 
 async def _run_kb_meditation(kb_id: str, trigger: str) -> dict:
-    """Run meditation for a specific KB using agent harness."""
+    """Run meditation for a specific KB using agent harness.
+
+    Signal sourcing (cascading — always feeds the agent real content):
+      1. Pending signals from meditation_signals table (Q&A pairs saved during chat)
+      2. If empty: harvest recent user questions from chat DB + vector-search KB for answers
+      3. If still empty: synthesize signals from the KB's own documents (doc-based extraction)
+    The agent is ALWAYS invoked — never returns "no data" without trying all sources.
+    """
     config_result = get_meditation_config(kb_id)
     if not config_result.get("success"):
         return config_result
 
     config = config_result["config"]
     kb_path = config_result["kb_path"]
-
-    # Get pending signals
     lookback_days = config.get("interval_hours", 24) // 24 or 7
+
+    # ── Source 1: pending signals from meditation_signals table ──
     signals = get_pending_signals(kb_id, days=lookback_days)
+    signal_source = "pending_signals"
+
+    # ── Source 2: harvest from chat DB + enrich with KB vector search ──
+    if not signals:
+        from app.services.experience_meditation_service import harvest_questions, _CHAT_DB_REL
+        from app.utils.paths import PROJECT_ROOT
+        chat_db = str(PROJECT_ROOT.parent / _CHAT_DB_REL)
+        clusters = harvest_questions(chat_db, lookback_days)
+        if clusters:
+            # Convert clusters to signal-shaped dicts + vector-search KB for answer docs
+            from app.services.vector_service import vector_service
+            from app.services.meditation_db import save_signal
+            import asyncio as _aio
+            for cluster in clusters[:10]:
+                q = cluster["representative"]
+                # Vector-search KB for relevant docs to attach as context
+                try:
+                    results = await _aio.get_event_loop().run_in_executor(
+                        None,
+                        lambda q=q: vector_service.search(
+                            query=q, kb_id=kb_path, top_k=3, score_threshold=0.3,
+                        )
+                    )
+                    docs = [
+                        {"path": r.get("doc_path", "").replace("\\", "/"),
+                         "score": r.get("score", 0),
+                         "snippet": r.get("content", "")[:200]}
+                        for r in (results or [])[:3]
+                    ]
+                except Exception:
+                    docs = []
+                # Save as a real signal so it's traceable + deduped going forward
+                try:
+                    save_signal(
+                        session_id=f"harvest-{trigger}",
+                        kb_id=kb_id,
+                        question_text=q[:500],
+                        retrieved_docs=docs,
+                        assistant_answer="",
+                        resolved=False,
+                    )
+                except Exception:
+                    pass
+                signals.append({
+                    "question_text": q[:500],
+                    "assistant_answer": "",
+                    "retrieved_docs": docs,
+                })
+            signal_source = "chat_harvest"
+            logger.info("Meditation: harvested %d Q&A from chat DB for KB %s",
+                        len(signals), kb_path)
+
+    # ── Source 3: synthesize signals from KB documents themselves (fix: storage_reader singleton) ──
+    if not signals:
+        # No chat history — let the agent read the KB's documents directly.
+        from app.services.experience_service import experience_service
+        from app.services.storage_reader_service import storage_reader
+        kb_path_resolved = experience_service._resolve_kb_path(kb_id)
+        content_docs = []
+        if kb_path_resolved:
+            raw_docs = storage_reader.list_documents(kb_path_resolved)
+            for d in (raw_docs or []):
+                if d.get("file_type") == "md":
+                    content_docs.append({
+                        "path": d.get("path", "").replace("\\", "/"),
+                        "name": d.get("name", ""),
+                        "description": d.get("description", ""),
+                    })
+                if len(content_docs) >= 8:
+                    break
+        if content_docs:
+            for d in content_docs:
+                dp = d["path"]
+                title = d["name"] or dp.rsplit("/", 1)[-1]
+                desc = d["description"]
+                signals.append({
+                    "question_text": f"从文档「{title}」中提取可操作经验。文档摘要: {desc[:200]}" if desc
+                                     else f"总结文档「{title}」中的核心方法论与关键结论。",
+                    "assistant_answer": "",
+                    "retrieved_docs": [{"path": dp, "score": 1.0, "snippet": desc[:200]}],
+                })
+            signal_source = "kb_documents"
+            logger.info("Meditation: synthesized %d doc-based signals for KB %s",
+                        len(signals), kb_path)
 
     if not signals:
-        return {"success": True, "message": "No pending signals for this KB", "signals_count": 0}
+        return {"success": False,
+                "error": "KB has no documents and no chat history — nothing to meditate on",
+                "kb_id": kb_id, "kb_path": kb_path}
 
-    # Spawn agent
+    # ── Spawn agent (always — no silent heuristic fallback for manual trigger) ──
     result = await agent_harness.synthesize_experiences(
         kb_path=kb_path,
         kb_id=kb_id,
@@ -122,7 +215,8 @@ async def _run_kb_meditation(kb_id: str, trigger: str) -> dict:
         kb_config=config,
         trigger=trigger,
     )
-
+    result["signal_source"] = signal_source
+    result["signals_fed"] = len(signals)
     return result
 
 

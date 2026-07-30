@@ -243,7 +243,8 @@ experience_dashboard(kb_id) → {total, by_tier:{P0,P1,P2}, summary, drafts_pend
 
 ```
 experience_meditation_status()   → 调度器状态（enabled/interval/last_run/harnesses/circuit_breakers）
-experience_meditation_run(kb_id) → 手动触发一次冥想（对指定 KB 提取经验草稿）
+experience_meditation_run(kb_id) → 手动触发一次冥想（**非阻塞**：立即返回 task_id，agent 后台运行数分钟）
+experience_meditation_task_status(task_id) → 轮询冥想任务结果（status: running→done，done 时含 experiences/summary）
 experience_meditation_config_get(kb_id)   → 读取某 KB 的冥想配置
 experience_meditation_config_update(kb_id, enabled, auto_publish, ...) → 更新冥想配置
 experience_meditation_history(kb_id, limit) → 查看冥想运行历史

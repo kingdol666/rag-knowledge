@@ -139,9 +139,9 @@ MCP Tools by category (72 tools total):
 - **Parse (3, non-blocking):** `parse_doc`, `parse_doc_batch`, `parse_task_status`  # (kb_doc_save_parsed counted under Doc Write above)
 - **Tags (4):** `kb_tags_list`, `kb_doc_update_tags`, `kb_doc_get_by_tag`, `kb_tags_cleanup`
 - **Search (Agentic RAG, 4):** `kb_search` (metadata only), `kb_search_vector` (semantic), `kb_search_two_stage` (BM25→vector, primary), `kb_search_stats`
-- **Vector/Index (5):** `kb_index_document`, `kb_batch_index`, `kb_reindex`, `kb_cleanup_orphan_collections`, `kb_find_duplicates`
-- **Knowledge Graph (11 tools):** `kb_graph_search` (unified), `kb_graph_stats` (incl. `neo4j_available`), `kb_graph_document`, `kb_graph_document_related`, `kb_graph_kb_overview`, `kb_graph_build` (unified), `kb_graph_cross_kb_documents`, `kb_graph_document_paths`, `kb_graph_central_documents`, `kb_graph_delete_document`, `kb_graph_delete_kb`
-- **Experience (25 tools):** Full lifecycle — create/read/list/update/delete/apply/review/summary | Search: search_global/**search_smart**(推荐入口)/**rerank** | Extract/Drafts: extract/drafts_list/draft_read/draft_approve/draft_reject | Health: **check_stale**(空kb_id=全库)/sync_kb/dashboard/apply_decay | Meditation (5): **meditation_status/meditation_run/meditation_config_get/meditation_config_update/meditation_history**
+- **Vector/Index (6):** `kb_index_document`, `kb_batch_index`, **`kb_reindex`**(→task_id,non-blocking), `kb_cleanup_orphan_collections`, `kb_find_duplicates`, **`kb_task_status`**(通用任务轮询)
+- **Knowledge Graph (11 tools):** `kb_graph_search` (unified), `kb_graph_stats` (incl. `neo4j_available`), `kb_graph_document`, `kb_graph_document_related`, `kb_graph_kb_overview`, **`kb_graph_build`**(→task_id,non-blocking), `kb_graph_cross_kb_documents`, `kb_graph_document_paths`, `kb_graph_central_documents`, `kb_graph_delete_document`, `kb_graph_delete_kb
+- **Experience (26 tools):** Full lifecycle — create/read/list/**update**(auto-reindex)/delete/apply/review/summary | Search: search_global/**search_smart**(推荐入口)/**rerank** | Extract/Drafts: extract/drafts_list/draft_read/draft_approve/draft_reject | Health: **check_stale**(空kb_id=全库)/sync_kb/dashboard/apply_decay | Meditation (6, **meditation_run non-blocking**): **meditation_status**/meditation_run(→task_id,立即返回)/**meditation_task_status**(轮询结果)/meditation_config_get/meditation_config_update/meditation_history
 
 **Architecture principle:** writes go through HTTP API (backend/web proxy), reads go through direct file access (`.tree-fs.json` + `.knowledge-base.yml`).
 

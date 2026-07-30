@@ -384,12 +384,32 @@ class AgentHarnessManager:
         breaker_msg = self._check_circuit(harness)
         if breaker_msg:
             logger.warning("Circuit breaker: %s", breaker_msg)
+            if trigger == "manual":
+                # Manual trigger should not silently produce low-quality heuristic output.
+                return {"success": False,
+                        "error": f"Agent harness '{harness}' circuit breaker tripped: {breaker_msg}. "
+                                 f"Wait or reset the breaker, then retry.",
+                        "harness": harness, "trigger": trigger}
             return await self._heuristic_fallback(kb_path, kb_id, signals, kb_config, trigger)
 
         # Check harness availability
         probe = await self.probe_harness(harness)
         if not probe.get("installed", False):
-            logger.info("Harness %s not available, falling back to heuristic", harness)
+            logger.info("Harness %s not available", harness)
+            if trigger == "manual":
+                # Manual trigger: tell user the agent isn't ready, don't silently
+                # produce placeholder experiences.
+                missing = []
+                if not probe.get("installed"):
+                    missing.append(f"executable '{harness}' not found on PATH")
+                if harness == "claude" and not probe.get("api_key_configured"):
+                    missing.append("ANTHROPIC_API_KEY not set")
+                return {"success": False,
+                        "error": f"Agent harness '{harness}' is not available for real LLM synthesis. "
+                                 f"Issues: {'; '.join(missing)}. "
+                                 f"Install/configure the harness, then retry meditation.",
+                        "harness": harness, "probe": probe, "trigger": trigger}
+            # Scheduled/incremental: silent fallback is acceptable
             return await self._heuristic_fallback(kb_path, kb_id, signals, kb_config, trigger)
 
         # Build task prompt
@@ -409,7 +429,19 @@ class AgentHarnessManager:
         max_drafts = kb_config.get("max_drafts_per_run", 3)
         auto_publish = kb_config.get("auto_publish", False)
 
+        # Prepend system prompt so BOTH harnesses (claude via --system-prompt-file,
+        # omp via @prompt_file) get the quality standards and doc-reading instructions.
+        sys_prompt = ""
+        try:
+            sys_prompt = _SYSTEM_PROMPT_PATH.read_text(encoding="utf-8").strip()
+        except Exception:
+            pass
+
         lines = [
+            sys_prompt,
+            "",
+            "---",
+            "",
             "## 本次冥想任务",
             "",
             f"目标知识库: {kb_name} (id={kb_id}, path={kb_path})",

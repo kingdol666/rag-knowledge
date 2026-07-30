@@ -21,6 +21,7 @@ HTTP_TIMEOUT = int(os.environ.get("MCP_HTTP_TIMEOUT", "30"))  # seconds — gene
 # pin a background task for over an hour. Override via MCP_PARSE_TIMEOUT.
 PARSE_TIMEOUT = int(os.environ.get("MCP_PARSE_TIMEOUT", "300"))  # seconds
 INDEX_TIMEOUT = int(os.environ.get("MCP_INDEX_TIMEOUT", "600"))  # seconds — large-doc CPU embedding
+MEDITATION_TIMEOUT = int(os.environ.get("MCP_MEDITATION_TIMEOUT", "600"))  # seconds — meditation agent (omp/claude) may run minutes
 
 
 class KbClient:
@@ -915,7 +916,7 @@ class KbClient:
         """Trigger meditation run."""
         return await self._post_backend_json("/api/v1/meditation/run", {
             "kb_id": kb_id, "trigger": trigger,
-        })
+        }, timeout=MEDITATION_TIMEOUT)
 
     async def meditation_history(self, kb_id: str = "", limit: int = 20) -> dict:
         """List meditation runs."""
