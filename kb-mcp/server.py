@@ -844,7 +844,9 @@ async def kb_find_duplicates(kb_id: str = "", threshold: float = 0.90) -> str:
                 "recommendation": f"Identical content (SHA256 match). Keep one, delete {len(group)-1}.",
             })
 
-    # 3. Phase B: near-dup vector detection — search each doc's content against its KB
+    # 3. Phase B: near-dup vector detection — CONCURRENT vector search.
+    # OPTIMIZATION: was N sequential (read+search) HTTP round-trips (~170 for
+    # 77 docs → 30s MCP timeout). Now all probes fire concurrently via gather.
     exact_paths = set()
     for pair in exact_dup_pairs:
         for d in pair["documents"]:
@@ -853,36 +855,52 @@ async def kb_find_duplicates(kb_id: str = "", threshold: float = 0.90) -> str:
     near_dup_pairs: list = []
     seen_pairs: set = set()
 
-    for kid, dp, dname, fsize in all_docs:
-        if (kid, dp) in exact_paths: continue  # already flagged as exact dup
+    # Phase B step 1: concurrently read content + vector-search for all candidates
+    async def _near_dup_probe(kid, dp, dname):
+        if (kid, dp) in exact_paths:
+            return None
         try:
             read_resp = await client.kb_doc_read(kb_id=kid, doc_path=dp, max_chars=500)
-            if not isinstance(read_resp, dict): continue
+            if not isinstance(read_resp, dict):
+                return None
             probe_content = read_resp.get("content", "")
-            if not probe_content or len(probe_content) < 50: continue
-            # Vector search within same KB for near-dups
+            if not probe_content or len(probe_content) < 50:
+                return None
             search_resp = await client.vector_search(probe_content[:500], kb_id=kid, top_k=5, score_threshold=threshold)
-            if not isinstance(search_resp, dict): continue
-            for hit in search_resp.get("results", []):
-                hit_path = hit.get("doc_path", "").replace("\\", "/")
-                my_path = dp.replace("\\", "/")
-                if hit_path == my_path: continue
-                score = hit.get("score", 0)
-                if score < threshold: continue
-                pair_key = tuple(sorted([my_path, hit_path]))
-                if pair_key in seen_pairs: continue
-                seen_pairs.add(pair_key)
-                near_dup_pairs.append({
-                    "type": "near",
-                    "similarity": round(score, 4),
-                    "documents": [
-                        {"kb_id": kid, "doc_path": dp.replace("\\", "/"), "name": dname},
-                        {"kb_id": kid, "doc_path": hit_path, "name": hit.get("doc_path", "").replace("\\", "/").split("/")[-1]},
-                    ],
-                    "recommendation": f"High vector similarity ({score:.2%}). Read both to confirm, keep the more complete version.",
-                })
+            if not isinstance(search_resp, dict):
+                return None
+            return (kid, dp, dname, search_resp.get("results", []))
         except Exception:
+            return None
+
+    probe_results = await asyncio.gather(*[_near_dup_probe(k, d, n) for k, d, n, _ in all_docs])
+
+    # Phase B step 2: collect near-dup pairs from concurrent results
+    for result in probe_results:
+        if result is None:
             continue
+        kid, dp, dname, hits = result
+        for hit in hits:
+            hit_path = hit.get("doc_path", "").replace("\\", "/")
+            my_path = dp.replace("\\", "/")
+            if hit_path == my_path:
+                continue
+            score = hit.get("score", 0)
+            if score < threshold:
+                continue
+            pair_key = tuple(sorted([my_path, hit_path]))
+            if pair_key in seen_pairs:
+                continue
+            seen_pairs.add(pair_key)
+            near_dup_pairs.append({
+                "type": "near",
+                "similarity": round(score, 4),
+                "documents": [
+                    {"kb_id": kid, "doc_path": my_path, "name": dname},
+                    {"kb_id": kid, "doc_path": hit_path, "name": hit.get("doc_path", "").replace("\\", "/").split("/")[-1]},
+                ],
+                "recommendation": f"High vector similarity ({score:.2%}). Read both to confirm, keep the more complete version.",
+            })
 
     all_dups = exact_dup_pairs + near_dup_pairs
     return _j({
