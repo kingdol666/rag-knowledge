@@ -16,10 +16,15 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'docPath is required' })
   }
 
-  const tags = TagManagementService.validateTags(body.tags)
+  // Validate + filter tags: drop garbage-tag entries instead of rejecting the
+  // entire array (fixes round-trip bug where docs carrying legacy garbage tags
+  // are bricked for any tag edit). validateTags still rejects non-array input.
+  let tags = TagManagementService.validateTags(body.tags)
   if (tags === null) {
     throw createError({ statusCode: 400, statusMessage: 'tags must be a string[] with non-empty entries (max 50 chars each)' })
   }
+  // If validateTags filtered some out, we still proceed with the clean subset.
+  // (validateTags already drops garbage internally via isGarbageTag per-tag)
 
   const treeService = await getTreeFileSystemService()
   await treeService.reloadMetadata()

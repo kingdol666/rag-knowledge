@@ -877,7 +877,7 @@ async def kb_find_duplicates(kb_id: str = "", threshold: float = 0.90) -> str:
                     "similarity": round(score, 4),
                     "documents": [
                         {"kb_id": kid, "doc_path": dp.replace("\\", "/"), "name": dname},
-                        {"kb_id": kid, "doc_path": hit_path, "name": hit.get("doc_path", "").split("/")[-1]},
+                        {"kb_id": kid, "doc_path": hit_path, "name": hit.get("doc_path", "").replace("\\", "/").split("/")[-1]},
                     ],
                     "recommendation": f"High vector similarity ({score:.2%}). Read both to confirm, keep the more complete version.",
                 })

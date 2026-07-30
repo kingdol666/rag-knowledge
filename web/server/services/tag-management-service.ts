@@ -134,7 +134,7 @@ export class TagManagementService {
       if (typeof t !== 'string') return null
       const trimmed = t.trim()
       if (!trimmed || trimmed.length > 50) return null
-      if (TagManagementService.isGarbageTag(trimmed)) return null
+      if (TagManagementService.isGarbageTag(trimmed)) continue  // filter, don't reject
       clean.push(trimmed)
     }
     return clean
