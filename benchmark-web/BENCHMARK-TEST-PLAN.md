@@ -1,164 +1,283 @@
-# QDCVR Benchmark — Complete Retrieval Test Plan v1.0
-# Target: CIKM 2027 Experimental Evaluation
-# Date: 2026-07-27
+# QDCVR+MoE Benchmark — System-Unique Test Plan v2.0
+# Target: Measure KB Management Automation + MoE-style Activation + Content Verification
+# Date: 2026-07-30
 
-## 0. Pre-flight Checklist
+## 0. What Makes This System Different
 
-- [x] Benchmark backend running on port 8800
-- [x] Project API running on port 8765
-- [ ] Documents loaded (target: 30+ across 6 domains)
-- [ ] Query set defined (target: 30+ queries with ground truth)
-- [ ] All 8 baselines verified functional
+Standard RAG benchmarks measure "given a query and N documents, can you find the right one?"
+This system does something fundamentally different:
 
-## 1. Document Loading (Phase A)
+  ┌─────────────────────────────────────────────────────┐
+  │              MoE-style QDCVR Architecture            │
+  │                                                      │
+  │  User Query                                          │
+  │     │                                                │
+  │     ▼                                                │
+  │  ┌──────────────────────┐                            │
+  │  │ Step 0: Query Analyze │  Intent classification    │
+  │  │ → 改写为检索友好形态   │  Entity extraction        │
+  │  └──────┬───────────────┘                            │
+  │         │                                            │
+  │         ▼                                            │
+  │  ┌──────────────────────┐                            │
+  │  │ Step 1: MoE Router    │  ← THE CORE INNOVATION    │
+  │  │ kb_list(lightweight)  │  Read KB descriptions     │
+  │  │ → Select top 1-3 KBs  │  Activate ONLY these KBs  │
+  │  │ → IGNORE others       │  ← 像 MoE gate 一样       │
+  │  └──────┬───────────────┘                            │
+  │         │                                            │
+  │         ▼                                            │
+  │  ┌──────────────────────┐                            │
+  │  │ Step 2: Activated     │  Vector search ONLY on     │
+  │  │ Search (仅选中KB)     │  activated KBs            │
+  │  │ kb_search_vector/      │  NOT full scan            │
+  │  │ kb_search_two_stage    │                            │
+  │  └──────┬───────────────┘                            │
+  │         │                                            │
+  │         ▼                                            │
+  │  ┌──────────────────────┐                            │
+  │  │ Step 3: Content       │  kb_doc_read 3000 chars   │
+  │  │ Verification          │  0-8 rubric scoring       │
+  │  │ → 独立裁决,不盲信向量  │  Content > Vector         │
+  │  └──────┬───────────────┘                            │
+  │         │                                            │
+  │         ▼                                            │
+  │  ┌──────────────────────┐                            │
+  │  │ Step 6: Answer +      │  P0/P1/P2 置信度          │
+  │  │ Blind-spot声明        │  + 来源 + 盲区             │
+  │  └──────────────────────┘                            │
+  └─────────────────────────────────────────────────────┘
 
-Load documents representing diverse domains into the benchmark backend.
-Each document MUST have: id, content, title, domain.
+The key metrics for THIS system are NOT P@1/P@5 — they are:
 
-### Domain Distribution (target: 5 docs × 6 domains = 30 docs)
+  A. KB ROUTING ACCURACY: Does Step 1 select the correct KB(s)?
+  B. SEARCH SPACE REDUCTION: How many chunks are filtered out?
+  C. CONTENT VERIFICATION ACCURACY: Does Step 3 correctly judge relevance?
+  D. END-TO-END ANSWER QUALITY: Does the final answer contain verified evidence?
+  E. INGEST AUTOMATION QUALITY: Auto-tag + auto-subKB routing accuracy
 
-| Domain | Documents | Example Topics |
-|--------|:---------:|---------------|
-| AI-ML-Research | 5 | DQN, Transformer, RAG, SHAP, Adam optimizer |
-| Energy-Batteries | 5 | Li-ion thermal, solid-state, Na-ion, supercapacitor, SOC estimation |
-| Materials-Science | 5 | MXene, graphene, 2D materials, ML potentials, metamaterials |
-| Biomedical-Engineering | 5 | Medical imaging, wearables, EEG, tissue engineering, drug delivery |
-| Embodied-AI | 5 | VLA models, humanoid robots, world models, Sim-to-Real |
-| Chemistry-Catalysis | 5 | Electrocatalysis, photocatalysis, heterogeneous catalysis |
 
-### Loading method:
-```
-POST /api/docs/batch  with array of {id, content, title, domain}
-```
+## I. BENCHMARK DESIGN PRINCIPLES
 
-## 2. Query Design (Phase B)
+### Principle 1: Use REAL documents from the actual 14 KBs
+No synthetic docs. Use existing documents from 高分子双向拉伸文献库 (77 docs,
+13 sub-KBs), AI-ML-Research (20 docs), etc. This tests the system as-deployed.
 
-Design queries that test specific retrieval capabilities.
-Each query MUST have: query text, correct_domain, correct_doc_id.
+### Principle 2: Measure KB ROUTING, not just retrieval
+The unique value is the MoE gate — selecting which KB to activate. Compare:
+- QDCVR-MoE: Step 1 selects KBs → search only those
+- QDCVR-Flat: Skip Step 1 → search all KBs (ablation)
+- The difference = MoE routing contribution
 
-### Query Categories:
+### Principle 3: Measure CONTENT VERIFICATION, not just vector similarity
+Vector score is a HINT. Content score is the VERDICT.
+Compare answer quality with and without Step 3 content verification.
 
-**Category 1: Domain-Specific (18 queries, 3 per domain)**
-- Q-AI-1: "deep Q-network reinforcement learning Atari games experience replay" → AI-ML-Research/dqn
-- Q-AI-2: "multi-head self-attention scaled dot-product transformer architecture" → AI-ML-Research/transformer
-- Q-AI-3: "SHAP value explainable AI feature importance model interpretation" → AI-ML-Research
-- Q-EN-1: "battery thermal management phase change material liquid cooling PCM" → Energy-Batteries/battery
-- Q-EN-2: "solid-state electrolyte lithium ion conductivity sulfide NASICON" → Energy-Batteries
-- Q-EN-3: "sodium ion battery cathode anode comparison LFP NMC" → Energy-Batteries
-- Q-MA-1: "MXene Ti3C2Tx supercapacitor specific capacitance interlayer" → Materials-Science/mxene
-- Q-MA-2: "machine learning interatomic potential DFT replacement materials" → Materials-Science
-- Q-MA-3: "2D materials graphene transition metal dichalcogenide roadmap" → Materials-Science
-- Q-BI-1: "convolutional neural network medical imaging chest X-ray pneumonia" → Biomedical-Engineering/medical
-- Q-BI-2: "wearable multimodal sensor motion detection accelerometer deep learning" → Biomedical-Engineering
-- Q-BI-3: "intracranial EEG brain-computer interface neural recording implantable" → Biomedical-Engineering
-- Q-EM-1: "humanoid robot loco-manipulation vision-language-action model" → Embodied-AI/robot
-- Q-EM-2: "Sim-to-Real transfer domain randomization legged locomotion policy" → Embodied-AI
-- Q-EM-3: "world model embodied AI Dreamer reinforcement learning planning" → Embodied-AI
-- Q-CH-1: "electrocatalysis hydrogen evolution reaction oxygen evolution overpotential" → Chemistry-Catalysis
-- Q-CH-2: "heterogeneous catalysis machine learning potential surface reaction barrier" → Chemistry-Catalysis
-- Q-CH-3: "photocatalysis TiO2 fluoroalkylation ligand metal charge transfer" → Chemistry-Catalysis
+### Principle 4: Measure SEARCH SPACE REDUCTION
+A 77-doc KB with 7612 chunks: how many chunks does each query actually scan?
+The MoE architecture should scan << 7612 on average.
 
-**Category 2: Cross-Domain Adversarial (8 queries)**
-Queries whose vocabulary overlaps multiple domains — testing FPR.
-- Q-AD-1: "reinforcement learning optimization policy gradient materials design" → ambiguity: AI-ML vs Materials-ML
-- Q-AD-2: "deep learning CNN lightweight efficient model edge deployment" → ambiguity: AI-ML vs Biomedical vs Industrial
-- Q-AD-3: "graph neural network state estimation prediction time series" → ambiguity: AI-ML vs Energy vs Materials
-- Q-AD-4: "thermal management cooling heat transfer computational fluid dynamics" → ambiguity: Energy vs Materials-Science
-- Q-AD-5: "machine learning healthcare diagnosis classification detection" → ambiguity: AI-ML vs Biomedical
-- Q-AD-6: "neural network membrane design polymer electrolyte inverse optimization" → ambiguity: AI-ML vs Materials vs Energy
-- Q-AD-7: "attention mechanism robot control manipulation planning vision" → ambiguity: AI-ML vs Embodied-AI
-- Q-AD-8: "catalyst design screening high-throughput computational prediction" → ambiguity: Chemistry vs Materials-Science
+### Principle 5: Measure INGEST AUTOMATION
+How well does the system auto-tag and auto-route new documents into sub-KBs?
 
-**Category 3: Ambiguous/Boundary (4 queries)**
-- Q-AM-1: "transformer architecture natural language processing" → AI-ML-Research (but 'transformer' appears in many domains)
-- Q-AM-2: "energy storage battery materials electrolyte electrode design" → Energy (but overlaps with Materials)
-- Q-AM-3: "sensor detection monitoring real-time wearable biomedical" → Biomedical (but overlaps with Materials)
-- Q-AM-4: "machine learning model training optimization gradient descent" → AI-ML (generic ML terms)
 
-**Total: 30 queries**
+## II. TEST PHASES
 
-## 3. Baseline Methods (Phase C)
+### Phase A: KB Routing Accuracy (MoE Gate Test)
+────────────────────────────────────────────────
+What: Given 20 queries spanning 6+ domains, does Step 1 select the correct KB?
 
-8 methods to test per query:
+Method:
+  1. For each query, run the FULL QDCVR pipeline
+  2. Record which KB(s) Step 1 selected
+  3. Compare against ground-truth "correct KB" annotation
+  4. Also run as ablation: skip Step 1, search ALL KBs
 
-| ID | Method | Realness | Implementation |
-|----|--------|:--------:|---------------|
-| M1 | BM25 | [REAL] | rank_bm25 library |
-| M2 | Dense | [REAL] | FAISS + BGE-M3 |
-| M3 | Hybrid | [REAL] | BM25 + FAISS fusion (α=0.5) |
-| M4 | CE Rerank | [REAL] | FAISS top-20 → cross-encoder/ms-marco-MiniLM-L-6-v2 rerank |
-| M5 | CRAG | [ALGO] | Dense top-20 → evaluator → Correct/Incorrect/Ambiguous → expand |
-| M6 | Self-RAG | [ALGO] | Dense top-20 → ISREL/ISSUP/ISUSE reflection → filter |
-| M7 | QDCVR Flat | [PROJECT] | Your system: kb_search_vector(kb_id="") |
-| M8 | QDCVR Domain | [PROJECT] | Your system: kb_search_vector(kb_id=<domain>) |
+Metrics:
+  - KB Selection Precision: % of queries where correct KB is in selected set
+  - KB Selection Recall: % of all correct KBs that were selected
+  - Over-selection Rate: avg # of KBs selected (lower = more efficient)
+  - Routing Latency: time spent in Step 1
 
-## 4. Execution Protocol (Phase D)
+Queries (20 total):
+  ┌──────┬──────────────────────────────────────────────────┬──────────────────────┐
+  │ ID   │ Query                                             │ Correct KB(s)         │
+  ├──────┼──────────────────────────────────────────────────┼──────────────────────┤
+  │ R-01 │ BOPET薄膜拉伸过程中的应变诱导结晶行为              │ 高分子双向拉伸/03_PET │
+  │ R-02 │ PVA偏光片薄膜的双向拉伸工艺与光学性能              │ 高分子双向拉伸/04_PVA │
+  │ R-03 │ BOPP电容膜击穿强度与拉伸比的关系                  │ 高分子双向拉伸/05_PP  │
+  │ R-04 │ PLA可降解薄膜的热定型松弛行为                      │ 高分子双向拉伸/06_PLA │
+  │ R-05 │ 尼龙6双向拉伸过程中的晶型转变                      │ 高分子双向拉伸/07_PA  │
+  │ R-06 │ Adam优化器的自适应学习率与偏差校正机制             │ AI-ML-Research        │
+  │ R-07 │ Transformer多头自注意力与位置编码                  │ AI-ML-Research        │
+  │ R-08 │ RAG检索增强生成的三种范式对比                      │ AI-ML-Research        │
+  │ R-09 │ 锂离子电池相变材料热管理中的铜泡沫复合材料         │ Energy-Batteries      │
+  │ R-10 │ 固态电解质LLZO离子电导率与界面稳定性               │ Energy-Batteries      │
+  │ R-11 │ MXene Ti3C2Tx的层间距调控与赝电容机理              │ Materials-Science     │
+  │ R-12 │ 机器学习原子间势函数替代DFT计算                    │ Materials-Science     │
+  │ R-13 │ 脑机接口颅内EEG的PEDOT:PSS电极阻抗优化             │ Biomedical-Engineering│
+  │ R-14 │ 细菌纤维素骨组织工程支架的羟基磷灰石矿化           │ Biomedical-Engineering│
+  │ R-15 │ RT-2视觉语言动作模型的sim-to-real泛化             │ Embodied-AI           │
+  │ R-16 │ DreamerV3世界模型的离散隐空间想象规划             │ Embodied-AI           │
+  │ R-17 │ 单原子催化剂M-N4位点的CO2还原法拉第效率           │ Chemistry-Catalysis   │
+  │ R-18 │ TiO2光催化氟烷基化的配体-金属电荷转移机理          │ Chemistry-Catalysis   │
+  │ R-19 │ 2D材料范德华异质结的能带工程与twistronics         │ Materials-Science     │
+  │     │   (adversarial: also matches 高分子库 physics)     │                       │
+  │ R-20 │ 强化学习在材料逆设计中的应用                      │ Materials-ML-Inverse  │
+  │     │   (cross-domain: AI-ML ∩ Materials)               │ Design                │
+  └──────┴──────────────────────────────────────────────────┴──────────────────────┘
 
-For each of the 30 queries:
-1. Call `POST /api/search` with query + all 8 methods + top_k=5
-2. Record: results, latencies, scores per method
-3. For adversarial queries (Cat 2+3), also call `POST /api/compare` for FPR analysis
 
-Total API calls: 30 queries × 1 request = 30 requests (each tests all 8 methods)
-Plus: 12 adversarial queries × 1 compare request = 12 requests
-**Total: ~42 API calls**
+### Phase B: Search Space Reduction (Efficiency Test)
+────────────────────────────────────────────────
+What: How many chunks does the system actually scan per query?
 
-## 5. Metrics (Phase E)
+Method:
+  1. For each of the 20 queries above, record:
+     a) Total chunks in full KB set: ~30,000 (all 14 KBs)
+     b) Chunks in activated KBs (Step 1): typically 500-8000
+     c) Chunks in Step 2 recall candidates (stage1_top_k): 20
+     d) Chunks in Step 2.5 after dedup+threshold: typically 3-8
+     e) Chunks actually read in Step 3 (kb_doc_read, max_chars=3000): typically 1-5
+  2. Compare QDCVR-MoE vs QDCVR-Flat (skip Step 1)
 
-Per query per method:
-- P@1, P@3, P@5 (ground-truth doc in top-k)
-- nDCG@5 (normalized discounted cumulative gain)
-- MRR (mean reciprocal rank of first correct result)
-- FPR (false positive rate = fraction of top-5 from wrong domain)
-- Latency (ms)
-- Search space size (chunks scanned)
+Metrics:
+  - Search Space Compression Ratio = (c) / (b)  — Step 2 compresses activated KB
+  - MoE Reduction Ratio = (b) / (a)  — Step 1 compresses full KB set
+  - Total Reduction Ratio = (e) / (a)  — end-to-end: read 5 docs out of 30K chunks
+  - Avg chunks scanned per query
 
-Aggregate:
-- Mean ± std for all metrics
-- Paired t-test: M8 vs M1-M7 (Bonferroni corrected)
-- Cohen's d effect size
-- Win/Tie/Loss counts
+Expected: Total Reduction Ratio should be ~30K → 5 = 6000x
 
-## 6. Results Storage (Phase F)
 
-All results saved to:
-```
-benchmark-web/backend/results/
-├── raw/
-│   ├── query_001.json ... query_030.json    ← raw API responses
-│   └── compare_001.json ... compare_012.json ← FPR comparison data
-├── aggregate.json                            ← computed metrics
-├── statistical_tests.json                    ← significance tests
-└── summary.json                              ← paper-ready summary
-```
+### Phase C: Content Verification Accuracy (Step 3 Test)
+────────────────────────────────────────────────
+What: Does Step 3 correctly separate relevant from irrelevant results?
 
-Plus LaTeX-ready tables in:
-```
-benchmark/paper-tables/
-├── table1-main-results.tex   ← 8 methods × 7 metrics
-├── table2-crossdomain.tex    ← FPR comparison
-└── table3-ablation.tex       ← if ablation done
-```
+Method:
+  1. For the top 5 results from Step 2 (before Step 3), annotate ground-truth:
+     - Score 0-2: Irrelevant — wrong domain or topic
+     - Score 3-5: Partially relevant — adjacent domain, useful background
+     - Score 6-8: Directly relevant — answers the query
+  2. Run Step 3 content verification (kb_doc_read + 0-8 scoring)
+  3. Compare system content score vs human annotation
 
-## 7. Success Criteria
+Metrics:
+  - Content Score Accuracy: correlation between system 0-8 and human 0-2/3-5/6-8
+  - False Positive Rate: system scores ≥6 but human says ≤2
+  - False Negative Rate: system scores ≤4 but human says ≥6
+  - P0/P1/P2 tier accuracy: does tier assignment match human judgment?
 
-| Criterion | Threshold |
-|-----------|:---------:|
-| Documents loaded | ≥ 30 across ≥ 6 domains |
-| Queries executed | 30 |
-| All 8 baselines functional | 8/8 |
-| QDCVR Domain P@5 ≥ best baseline | P@5 improvement |
-| QDCVR Domain FPR ≤ 0.05 | Near-zero cross-domain pollution |
-| Statistical significance | p < 0.05 after Bonferroni |
-| Effect size | Cohen's d ≥ 0.8 |
+Test set: Sample 30 result pairs (query, doc) from Phase A, annotate manually.
 
-## 8. Execution Order
 
-1. [ ] Load all 30 documents via batch API
-2. [ ] Verify document count: GET /api/docs
-3. [ ] Execute all 30 queries via /api/search (saves raw results)
-4. [ ] Execute 12 adversarial queries via /api/compare (FPR analysis)
-5. [ ] Compute aggregate metrics
-6. [ ] Run statistical tests
-7. [ ] Generate tables and figures
-8. [ ] Write summary report
+### Phase D: Ingest Automation Quality (Auto-Management Test)
+────────────────────────────────────────────────
+What: When new documents are ingested, does the system correctly:
+  - Assign accurate tags?
+  - Route to the correct KB/sub-KB?
+  - Generate useful descriptions?
+
+Method:
+  1. Select 10 real research paper abstracts (not yet in any KB)
+  2. Run the full A0-A9 ingest pipeline:
+     parse_doc → A2-Q parse quality → A3a structured analysis →
+     A3b tag quality gate → A3c description quality gate →
+     A4 KB attribution decision tree → A5 store → A6 index
+  3. For each document, record:
+     - Auto-assigned tags (predicted)
+     - Auto-selected KB (predicted)
+     - Auto-generated description (predicted)
+  4. Compare against human annotations (ground truth)
+
+Metrics:
+  - Tag Precision: % of auto-tags that are correct (human-approved)
+  - Tag Recall: % of human-expected tags that were auto-assigned
+  - KB Routing Accuracy: % of docs routed to correct KB
+  - Sub-KB Routing Accuracy: % of docs correctly routed to sub-KB (if applicable)
+  - Description Quality Score: 0-4 rubric (domain identified + method named +
+    problem stated + key finding mentioned)
+
+
+### Phase E: End-to-End Answer Quality (Full Pipeline Test)
+────────────────────────────────────────────────
+What: Given a query, does the FULL QDCVR+MoE pipeline produce a correct,
+evidence-backed answer?
+
+Method:
+  1. For 15 queries from Phase A, run the complete pipeline
+  2. Evaluate the final answer on:
+     a) Factual correctness (0-3): Does the answer contain verifiable facts?
+     b) Evidence grounding (0-3): Are claims backed by specific document citations?
+     c) Completeness (0-2): Does the answer address all parts of the query?
+     d) Blind-spot honesty (0-2): Does the answer admit what it doesn't know?
+  3. Compare: QDCVR-MoE vs QDCVR-Flat vs BM25-only
+
+Metrics:
+  - Answer Quality Score (0-10 composite)
+  - Hallucination Rate: claims not supported by cited documents
+  - Blind-spot Declaration Rate: % of answers that honestly declare gaps
+
+
+### Phase F: Experience Extraction Quality (Meditation Test)
+────────────────────────────────────────────────
+What: After Q&A pairs are accumulated as "signals", does the meditation
+system correctly extract actionable experiences?
+
+Method:
+  1. Collect 10 Q&A pairs as signals (use Phase E queries + answers)
+  2. Trigger meditation: experience_meditation_run(kb_id)
+  3. Evaluate extracted experiences:
+     - Is the title actionable (not just the doc title)?
+     - Does the problem statement correctly capture the Q&A intent?
+     - Does the solution contain specific, actionable steps?
+     - Are key_lessons independently useful?
+
+Metrics:
+  - Experience Actionability Score (0-5): Can someone act on this?
+  - Signal-to-Experience Conversion Rate: useful experiences / total signals
+  - Content Fidelity: does the experience accurately reflect the source doc?
+
+
+## III. COMPARISON BASELINES (Simplified)
+
+Not comparing against external RAG methods — comparing against ABLATIONS of our own system:
+
+| ID  | Method                          | What it tests                              |
+|-----|---------------------------------|--------------------------------------------|
+| B1  | QDCVR-MoE (full)               | Complete pipeline — our system             |
+| B2  | QDCVR-Flat (no Step 1)         | Ablation: skip KB routing — search all KBs |
+| B3  | QDCVR-NoVerify (no Step 3)     | Ablation: skip content verification        |
+| B4  | BM25-only (no QDCVR)           | Baseline: pure keyword retrieval           |
+
+The comparisons tell us:
+- B1 vs B2: Contribution of MoE KB routing
+- B1 vs B3: Contribution of content verification
+- B1 vs B4: Overall QDCVR improvement over BM25
+
+
+## IV. METRICS SUMMARY TABLE
+
+| Phase | Primary Metric | Target |
+|-------|---------------|--------|
+| A: KB Routing | KB Selection Precision | ≥ 90% |
+| A: KB Routing | Over-selection Rate | ≤ 3 KBs avg |
+| B: Space Reduction | Total Reduction Ratio (e/a) | ≥ 1000x |
+| B: Space Reduction | MoE Reduction Ratio (b/a) | ≥ 10x |
+| C: Content Verify | Content Score Accuracy | ≥ 85% agreement |
+| C: Content Verify | False Positive Rate | ≤ 10% |
+| D: Ingest Quality | KB Routing Accuracy | ≥ 90% |
+| D: Ingest Quality | Tag Precision | ≥ 80% |
+| E: Answer Quality | Answer Quality Score | ≥ 7/10 |
+| E: Answer Quality | Hallucination Rate | ≤ 5% |
+| F: Experience | Actionability Score | ≥ 3/5 |
+
+## V. EXECUTION PLAN
+
+1. [ ] Phase A: Run 20 KB routing queries, compare MoE vs Flat
+2. [ ] Phase B: Record chunk counts at each pipeline stage
+3. [ ] Phase C: Human-annotate 30 result pairs, compare Step 3 scores
+4. [ ] Phase D: Ingest 10 new paper abstracts, evaluate auto-management
+5. [ ] Phase E: Run full pipeline on 15 queries, evaluate answers
+6. [ ] Phase F: Accumulate signals, trigger meditation, evaluate experiences
+7. [ ] Generate HTML report with all metrics
