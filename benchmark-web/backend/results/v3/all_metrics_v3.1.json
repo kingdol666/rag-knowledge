@@ -1,0 +1,34 @@
+{
+  "version": "3.1",
+  "date": "2026-07-30",
+  "change": "Experience subsystem optimized: heuristic fallback rewritten + data cleaned",
+  "phase_a_score": 92.9,
+  "phase_b_score": 99.5,
+  "phase_c_score": 92.0,
+  "phase_d_old": 59.6,
+  "phase_d_new": 89.9,
+  "phase_e_score": 92.0,
+  "aggregate_old": 88.9,
+  "aggregate_new": 93.4,
+  "phase_d_detail": {
+    "total_experiences": 7,
+    "total_drafts": 0,
+    "published_experiences": 7,
+    "actionability_avg": 4.14,
+    "content_fidelity": 2.86,
+    "prepare_mode_quality": 0.85,
+    "meditation_high_quality_rate": 1.0,
+    "heuristic_quality_after_fix": 0.75,
+    "test_pollution_removed": 2,
+    "placeholder_drafts_rejected": 4
+  },
+  "fixes_applied": [
+    "Rewrote _heuristic_fallback with structured Q&A extraction (no more 'Answer 0/1' placeholders)",
+    "Added quality gate: signals <50 chars or no actionable content are skipped, not placeholdered",
+    "Dynamic confidence scoring based on structural richness (0.75 cap for heuristic, 1.0 for LLM)",
+    "Deleted 2 test-pollution experiences (Test Experience, Benchmark Test)",
+    "Rejected 4 heuristic placeholder drafts in polymer KB",
+    "Category auto-detection: troubleshooting/optimization/workflow/best_practice",
+    "Tag extraction from question keywords (domain + method terms)"
+  ]
+}

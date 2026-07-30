@@ -876,43 +876,173 @@ class AgentHarnessManager:
 
     # ── Heuristic Fallback ─────────────────────────────────────────────
 
+    @staticmethod
+    def _extract_structured_qa(question: str, answer: str, retrieved_docs: list) -> dict:
+        """Structured extraction from a Q&A pair — no placeholder dumping.
+        Returns None if the signal lacks actionable content (quality gate)."""
+        import re as _re
+
+        if not answer or len(answer.strip()) < 50:
+            return None  # Quality gate: answer too short to be actionable
+
+        # ── Extract key_lessons from list items or causal sentences ──
+        lessons: list[str] = []
+        # Bullet/numbered list items (strongest signal)
+        list_items = _re.findall(r'(?:^|\n)\s*(?:[-*•]|\d+[.)])\s+(.+?)(?=\n|$)', answer)
+        for item in list_items[:5]:
+            t = item.strip().rstrip('.')
+            if len(t) >= 20:
+                lessons.append(t)
+        # Causal sentences (because/therefore/thus/so/导致/因此/从而)
+        if len(lessons) < 2:
+            causal = _re.findall(
+                r'[^.\n]*(?:therefore|thus|hence|so that|导致|因此|从而|使得|说明)[^.\n]*[.]?',
+                answer, _re.IGNORECASE,
+            )
+            for c in causal[:3]:
+                t = c.strip()
+                if len(t) >= 20 and t not in '; '.join(lessons):
+                    lessons.append(t)
+        # Fallback: first 2 sentences of the answer (>=30 chars each)
+        if not lessons:
+            sents = [s.strip() for s in _re.split(r'[.!?。！？]', answer) if len(s.strip()) >= 30]
+            lessons = sents[:3]
+        if not lessons:
+            return None  # No extractable knowledge
+
+        # ── Extract actionable solution sentences ──
+        # Imperative/specific patterns: "use X", "set Y to Z", numbers, config keys
+        action_words = (
+            r'use|using|set|configure|install|run|apply|enable|disable|'
+            r'使用|设置|配置|安装|运行|应用|启用|禁用|需要|建议|推荐'
+        )
+        action_sents = [
+            s.strip() for s in _re.split(r'(?<=[.!?。！？])\s+', answer)
+            if len(s.strip()) >= 25 and _re.search(action_words, s, _re.IGNORECASE)
+        ]
+        if not action_sents:
+            # Take the longest sentence as the best-available solution
+            all_sents = [s.strip() for s in _re.split(r'(?<=[.!?。！？])\s+', answer) if len(s.strip()) >= 25]
+            action_sents = sorted(all_sents, key=len, reverse=True)[:2]
+        if not action_sents:
+            return None
+        solution = ' '.join(action_sents[:3])
+
+        # ── Extract domain tags from the question ──
+        # Stopwords to filter
+        _stop = {
+            'the','a','an','is','are','how','to','what','why','when','where',
+            'of','in','on','for','with','and','or','not','can','do','does',
+            '的','了','是','在','和','与','如何','什么','为什么','怎么','吗','呢','吧',
+        }
+        # English words (2+ chars) + CJK runs
+        tokens = _re.findall(r'[a-zA-Z][a-zA-Z0-9_-]{1,}', question)  # 2+ char latin tokens
+        cjk = _re.findall(r'[\u4e00-\u9fff]{2,}', question)
+        candidates = [t.lower() for t in tokens if t.lower() not in _stop and len(t) >= 2] + cjk
+        # Dedup + take top 4 by frequency proxy (longer = more specific)
+        seen, tags = set(), []
+        for t in sorted(candidates, key=len, reverse=True):
+            k = t.lower()
+            if k not in seen:
+                seen.add(k)
+                tags.append(t)
+            if len(tags) >= 4:
+                break
+        if not tags:
+            tags = ['auto-extracted']
+
+        # ── Confidence based on structural richness ──
+        score = 0.0
+        score += min(0.2, len(lessons) / 5 * 0.2)            # up to 0.2 for lessons
+        score += min(0.2, len(action_sents) / 3 * 0.2)       # up to 0.2 for actionable sents
+        score += min(0.15, len(tags) / 4 * 0.15)             # up to 0.15 for tags
+        score += min(0.15, min(len(answer), 2000) / 2000 * 0.15)  # up to 0.15 for length
+        score += 0.2 if retrieved_docs else 0.0               # 0.2 if backed by docs
+        score += 0.1 if list_items else 0.0                   # 0.1 bonus for structured lists
+        confidence = round(min(0.75, score), 3)  # heuristic caps at 0.75 (LLM path can reach 1.0)
+
+        # ── Title: question core (strip filler) ──
+        title_core = question.strip().rstrip('?？.。!！')[:55]
+        title = title_core if title_core else 'Auto-extracted experience'
+
+        # ── Category heuristic ──
+        q_lower = question.lower()
+        if any(w in q_lower for w in ['error', 'fail', '报错', '失败', 'connect', 'crash', 'bug', '异常']):
+            category = 'troubleshooting'
+            severity = 'important'
+        elif any(w in q_lower for w in ['optimize', 'best', 'tune', '优化', '最佳', '调优']):
+            category = 'optimization'
+            severity = 'normal'
+        elif any(w in q_lower for w in ['how to', '怎么做', '如何', '步骤', '流程']):
+            category = 'workflow'
+            severity = 'normal'
+        else:
+            category = 'best_practice'
+            severity = 'normal'
+
+        return {
+            'title': title,
+            'problem': question.strip()[:500],
+            'solution': solution[:1200],
+            'key_lessons': lessons[:5],
+            'tags': tags,
+            'category': category,
+            'severity': severity,
+            'related_docs': [d.get('path', '') if isinstance(d, dict) else str(d)
+                             for d in (retrieved_docs or [])][:3],
+            'confidence': confidence,
+            'extraction_method': 'heuristic-structured',
+            'auto_extracted': True,
+            'harness': 'heuristic',
+            'vetted': False,
+        }
+
     async def _heuristic_fallback(
         self, kb_path: str, kb_id: str, signals: list[dict],
         kb_config: dict, trigger: str,
     ) -> dict:
-        """Fallback: use existing mechanical extraction when agent is unavailable."""
+        """Structured heuristic extraction when the LLM agent is unavailable.
+        Quality-gated: signals without actionable content are skipped, not placeholdered."""
         from app.services.meditation_db import create_run, finish_run
         from app.services.experience_service import experience_service
 
         run_id = create_run(kb_id, "heuristic", trigger)
         drafts = []
+        skipped = []
 
         try:
             max_drafts = kb_config.get("max_drafts_per_run", 3)
             created = 0
-            for sig in signals[:max_drafts]:
+            for sig in signals:
+                if created >= max_drafts:
+                    break
                 question = sig.get("question_text", "")
                 if not question or len(question) < 10:
                     continue
-                draft_data = {
-                    "title": f"[启发式] {question[:60]}",
-                    "scenario": f"heuristic-{created}",
-                    "category": "best_practice",
-                    "problem": question,
-                    "solution": sig.get("assistant_answer", "")[:500] or "待精炼",
-                    "key_lessons": ["此经验由启发式引擎自动生成，待审核时精炼。"],
-                    "tags": ["启发式", "auto-meditation"],
-                    "severity": "normal",
-                    "related_docs": [],
-                    "extraction_method": "heuristic",
-                    "auto_extracted": True,
-                    "harness": "heuristic",
-                    "confidence": 0.3,
-                    "vetted": False,
-                }
-                r = await experience_service.save_draft(kb_id, draft_data)
+                answer = sig.get("assistant_answer", "")
+                # Parse retrieved_docs JSON
+                docs_raw = sig.get("retrieved_docs", "[]")
+                try:
+                    retrieved_docs = json.loads(docs_raw) if isinstance(docs_raw, str) else (docs_raw or [])
+                except Exception:
+                    retrieved_docs = []
+
+                extracted = self._extract_structured_qa(question, answer, retrieved_docs)
+                if not extracted:
+                    skipped.append({
+                        "question": question[:80],
+                        "reason": "No actionable content (answer <50 chars or no extractable lessons)",
+                    })
+                    continue  # Quality gate: skip, don't placeholder
+
+                extracted["scenario"] = f"heuristic-{created}"
+                r = await experience_service.save_draft(kb_id, extracted)
                 if r.get("success"):
-                    drafts.append({"title": draft_data["title"], "draft_id": r.get("draft_id")})
+                    drafts.append({
+                        "title": extracted["title"],
+                        "draft_id": r.get("draft_id"),
+                        "confidence": extracted["confidence"],
+                    })
                     created += 1
 
             finish_run(
@@ -920,7 +1050,7 @@ class AgentHarnessManager:
                 status="completed",
                 drafts_created=len(drafts),
                 signals_processed=len(signals),
-                report_json=json.dumps({"drafts": drafts}, ensure_ascii=False),
+                report_json=json.dumps({"drafts": drafts, "skipped": skipped}, ensure_ascii=False),
             )
             # Update KB meditation config with run stats
             try:
@@ -941,8 +1071,9 @@ class AgentHarnessManager:
                     mark_signals_derived(signal_ids)
             except Exception as e:
                 logger.warning("Failed to mark signals derived: %s", e)
-            return {"success": True, "experiences": [], "drafts": drafts, "run_id": run_id,
-                    "harness": "heuristic", "note": "Used heuristic fallback"}
+            return {"success": True, "experiences": [], "drafts": drafts, "skipped": skipped,
+                    "run_id": run_id, "harness": "heuristic",
+                    "note": "Structured heuristic extraction (quality-gated)"}
 
         except Exception as e:
             logger.exception("Heuristic fallback failed")
