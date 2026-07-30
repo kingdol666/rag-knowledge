@@ -221,7 +221,7 @@ console.log('');
 console.log(`  📁 Skills:     ${skillDirs.length} knowledgebase skills → ~/.omp/agent/skills/`);
 console.log(`  🤖 Agent:      archival.md → ~/.omp/agent/agents/`);
 console.log(`  📋 Command:    ragctl → ~/.omp/agent/commands/`);
-console.log(`  🔌 MCP:        kb-mcp (71 tools) → ~/.omp/agent/mcp.json`);
+console.log(`  🔌 MCP:        kb-mcp (72 tools) → ~/.omp/agent/mcp.json`);
 console.log(`  🌐 Env:        RAG_PROJECT_ROOT → ~/.omp/agent/.env`);
 console.log('');
 console.log('  How path resolution works:');
