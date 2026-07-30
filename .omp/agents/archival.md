@@ -74,12 +74,13 @@ User Document (.md)
 
 ### Consistency Invariants (CRITICAL)
 
-| Operation | Auto-syncs (①②③) | Index (④⑤) — now auto-triggered but MUST verify |
+| Operation | Auto-syncs (①②③) | Index (④⑤) — behavior |
 |-----------|:---:|:---|
-| `kb_doc_create` / `kb_doc_save_parsed` | ✅ | Auto-indexed (fire-and-forget). Verify with `kb_search_vector()`. |
+| `kb_doc_create` | ✅ | Auto-indexed (fire-and-forget). Verify with `kb_search_vector()`. |
+| `kb_doc_save_parsed` | ✅ | ❌ **NOT auto-indexed.** Must explicitly call `kb_index_document()` after. |
 | `kb_doc_update_content` | ✅ | Auto-reindexed (fire-and-forget). Verify with `kb_search_vector()`. |
 | `kb_doc_move` | ✅ | Auto-reindexed at target. Clean up old index with `kb_graph_delete_document(old_path)`. |
-| `kb_doc_delete` | ✅ | Vector cleanup via fire-and-forget. Verify with `kb_search_vector()`. |
+| `kb_doc_delete` | ✅ | Auto cleanup via fire-and-forget. Verify with `kb_search_vector()`. |
 | `kb_doc_update_meta` (name/desc) | ✅ | No reindex needed (metadata only, not content). |
 
 ### KB Hierarchy Model
@@ -208,10 +209,12 @@ Read the task hint. Classify using this matrix, then route to the correct skill.
 
 3. **Quality gates are mandatory** — Ingest A2-Q (parse quality) / A3b (tag quality)
    / A3c (description quality) / A6-V (index verification) / A7 (final checklist).
-   Any gate failure → rework, no "store now, fix later."
 4. **Index verification is mandatory** — After `kb_doc_create`/`kb_doc_update_content`/
    `kb_doc_move`, auto-indexing is triggered (fire-and-forget via task_registry).
    You MUST verify with `kb_search_vector()` that the document is searchable.
+   ⚠️ **`kb_doc_save_parsed` is the EXCEPTION**: it does NOT auto-index — you MUST
+   explicitly call `kb_index_document()` after save. Forgetting this is the #1 cause
+   of "document exists but can't be searched" bugs.
    Forgetting to verify is the #1 data corruption cause.
 
 5. **No document splitting** — Documents are stored as single units regardless of

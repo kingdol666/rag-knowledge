@@ -25,7 +25,7 @@ description: >
 **Step 1 — Pre-Flight 预检**: 执行 mcp-preflight-check 的一探双检流程，确认 MCP+backend+web 健康。
 **Step 2 — 场景路由**: 判断用户需求属于哪个入口（故障查询/新文档/管理/维护）。
 **Step 3 — 故障查询 (经验优先)**: experience_search_smart(query) → E4a 内容裁决 (0-6 评分) → 内容>=5 直接答 / 否则回退 kb_search_two_stage。
-**Step 4 — 新文档自动提取**: 入库后 → experience_extract(kb_id, mode="prepare", dry_run=True) → E2 质量门控 → approve 或进入草稿池。
+**Step 4 — 新文档自动提取**: 入库后 → `experience_extract(kb_id, mode="prepare")` 获取文档+模板 → Agent LLM 精炼 → E2 质量门控 → 直接发布或进入草稿池。批量扫描时先 `experience_extract(kb_id, mode="heuristic", dry_run=True)` 筛选高置信候选。
 **Step 5 — 经验管理 (CRUD)**: experience_create/update/delete/apply/review → 自动索引 + 元数据写入。
 **Step 6 — 定期维护**: experience_check_stale → E6a stale 更新流程 → experience_apply_decay → experience_sync_kb。
 **Step 7 — 草稿审核 (E3)**: drafts_list → draft_read → draft_approve(edits=精炼字段) 或 draft_reject。
@@ -237,6 +237,26 @@ Step 5: experience_sync_kb(kb_id) → 清除 stale 标记
 experience_dashboard(kb_id) → {total, by_tier:{P0,P1,P2}, summary, drafts_pending, stale, orphan, needs_sync}
 ```
 
+## E8a — 冥想自动归纳（Meditation）
+
+经验子系统内置自动归纳调度器，从知识库文档中自动提取经验候选。
+
+```
+experience_meditation_status()   → 调度器状态（enabled/interval/last_run/harnesses/circuit_breakers）
+experience_meditation_run(kb_id) → 手动触发一次冥想（对指定 KB 提取经验草稿）
+experience_meditation_config_get(kb_id)   → 读取某 KB 的冥想配置
+experience_meditation_config_update(kb_id, enabled, auto_publish, ...) → 更新冥想配置
+experience_meditation_history(kb_id, limit) → 查看冥想运行历史
+```
+
+| 工具 | 用途 | 频率 |
+|------|------|------|
+| `experience_meditation_status` | 巡检：调度器是否启用、harness 健康、熔断器状态 | 每次经验操作前 |
+| `experience_meditation_run` | 手动触发：对新入库文档快速提取经验 | 入库后按需 |
+| `experience_meditation_config_get/update` | 配置：开启/关闭自动归纳，设置 auto_publish | 按需 |
+| `experience_meditation_history` | 审计：查看历史运行记录、产出数量 | 巡检时 |
+
+
 ## E9-E10 — 导出与批量操作
 
 当前无专用导出工具。替代方案：
@@ -302,7 +322,7 @@ experience_review(kb_id, exp_id, reviewer, rating, comment)       → 重算 rat
 
 ### 新文档入库 → 自动丰富经验
 ```
-Ingest A7 通过 → experience_extract(kb_id, dry_run=True)
+Ingest A7 通过 → experience_extract(kb_id, mode="heuristic", dry_run=True)
   → 候选≥0.8 confidence: approve 入库
   → 候选<0.8: 写草稿池，等审核
 ```
