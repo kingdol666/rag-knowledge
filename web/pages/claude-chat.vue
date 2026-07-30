@@ -486,10 +486,11 @@
     <a-drawer
       v-model:open="agentSidebarOpen"
       placement="right"
-      width="400"
-      :title="undefined"
+      width="420"
+      :title="$t('chat.subAgentPanel', { total: subagentStore.totalCount.value, running: subagentStore.runningCount.value })"
       :body-style="{ padding: 0, height: '100%', display: 'flex', flexDirection: 'column' }"
       class="agent-sidebar-drawer"
+      :destroy-on-close="false"
     >
       <div class="agent-sidebar-inner">
         <!-- Live todo list (compact, top) -->
@@ -568,7 +569,7 @@
                 <span class="history-title">{{ item.title || item.session_id.slice(0, 16) + '…' }}</span>
               </template>
               <template #description>
-                {{ new Date(item.updated_at).toLocaleString() }} · {{ item.message_count }} + ' ' + $t('chat.messageCount')
+                {{ new Date(item.updated_at).toLocaleString() }} · {{ item.message_count }} {{ $t('chat.messageCount') }}
                 <span v-if="item.model" class="muted">· {{ item.model }}</span>
               </template>
               <template #avatar><MessageOutlined style="font-size:20px;color:#1677ff" /></template>
@@ -611,15 +612,16 @@
       v-model:open="terminalDrawerOpen"
       :title="$t('chat.integratedTerminal')"
       placement="right"
-      width="520"
+      width="540"
       :body-style="{ padding: 0, background: '#0d1117', height: 'calc(100% - 55px)' }"
       :header-style="{ background: '#161b22', borderBottom: '1px solid #30363d' }"
+      :destroy-on-close="false"
       @close="closeTerminal"
     >
       <template #extra>
         <a-space size="small">
           <a-tag v-if="terminalHandle?.connected" color="green" :bordered="false" style="font-size:11px">
-            <span class="term-conn-dot"></span> + ' ' + $t('chat.connected')
+            <span class="term-conn-dot"></span> {{ $t('chat.connected') }}
           </a-tag>
           <a-tag v-else color="orange" :bordered="false" style="font-size:11px">{{ $t('chat.connecting') }}</a-tag>
           <a-tooltip :title="$t('chat.reconnectTerminal')">
@@ -633,14 +635,14 @@
       <div class="terminal-hint">
         <span class="terminal-hint-cwd" v-if="cwd">📁 {{ cwd }}</span>
         <span class="terminal-hint-cwd" v-else>📁 {{ $t('chat.projectRoot') }}</span>
-        <span class="terminal-hint-note">原生终端 · 输入 exit 关闭会话</span>
+        <span class="terminal-hint-note">{{ $t('chat.terminalNativeHint') }}</span>
       </div>
     </a-drawer>
   </div>
 </template>
-
 <script setup lang="ts">
 import { ref, reactive, computed, nextTick, onMounted, onUnmounted, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { renderMd as md } from '~/utils/markdown'
 import { useMarkdownRenderer } from '~/composables/useMarkdownRenderer'
 import 'katex/dist/katex.min.css'
@@ -684,7 +686,7 @@ import AgentStatusLight from '~/components/AgentStatusLight.vue'
 import SubagentSidebar from '~/components/SubagentSidebar.vue'
 import TodoPanel from '~/components/TodoPanel.vue'
 
-// ── Queue setTimeout tracking (cleared on unmount to prevent leaks) ──
+const { t } = useI18n()
 const _queueTimers = new Set<ReturnType<typeof setTimeout>>()
 /** Wrapped setTimeout that auto-registers with _queueTimers for cleanup. */
 function _queueTimeout(fn: () => void, ms: number): ReturnType<typeof setTimeout> {
@@ -2223,7 +2225,7 @@ async function loadHistory(sid: string) {
       } catch { /* Single replay failure does not affect others */ }
     }
     loadingMsg()
-    antMessage.success(`已加载历史会话（${d.count} + ' ' + $t('chat.messageCount')，渲染 ${replayedCount} 条），继续对话自动续接`)
+    antMessage.success(t('chat.historyLoaded', { total: d.count, replayed: replayedCount }))
   } catch (e: any) {
     loadingMsg()
     antMessage.error('Failed to load history: ' + (e?.message || e?.data?.statusMessage || e))

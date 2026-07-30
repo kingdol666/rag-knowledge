@@ -254,8 +254,8 @@
 
 <script setup lang="ts">
 import { computed, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 import AgentStatusLight from './AgentStatusLight.vue'
-import { useSubagentStore } from '~/composables/useSubagentStore'
 import { MessageProcessor } from '~/utils/claude-messages'
 import { renderMd as md, formatJsonInput as fmtInput } from '~/utils/markdown'
 import {
@@ -285,8 +285,9 @@ const {
   selectedId,
   selected,
   select,
-  clearFinished,
 } = useSubagentStore()
+
+const { t } = useI18n()
 
 // Drawer open state mirrors selectedId (open ⟺ a session is selected).
 const drawerOpen = computed<boolean>({
@@ -304,8 +305,8 @@ const engineEmoji = computed(() => (props.engine === 'omp' ? '⚡' : '🤖'))
 
 const drawerTitle = computed(() => {
   const s = selected.value
-  if (!s) return $t('agent.title') + ' ' + $t('agent.detailSuffix')
-  return `${s.type || 'task'} · ${$t('agent.title')}`
+  if (!s) return t('agent.title') + ' ' + t('agent.detailSuffix')
+  return `${s.type || 'task'} · ${t('agent.title')}`
 })
 
 
