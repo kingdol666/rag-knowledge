@@ -15,7 +15,7 @@
     <!-- Drawer panel -->
     <a-drawer
       v-model:open="panelOpen"
-      title="解析任务队列"
+      :title="$t('parseQueue.title')"
       placement="right"
       :width="420"
     >
@@ -34,9 +34,9 @@
                   <a-tooltip :title="item.fileNames.join(', ')" placement="topLeft">
                     <span class="task-name">{{ item.name }}</span>
                   </a-tooltip>
-                  <a-tag v-if="item.status === 'running'" color="processing">解析中</a-tag>
-                  <a-tag v-else-if="item.status === 'saving'" color="warning">保存中</a-tag>
-                  <a-tag v-else-if="item.status === 'done'" color="success">完成</a-tag>
+                  <a-tag v-if="item.status === 'running'" color="processing">{{ $t('parseQueue.parsing') }}</a-tag>
+                  <a-tag v-else-if="item.status === 'saving'" color="warning">{{ $t('parseQueue.saving') }}</a-tag>
+                  <a-tag v-else-if="item.status === 'done'" color="success">{{ $t('parseQueue.completed') }}</a-tag>
                   <a-tag v-else-if="item.status === 'error'" color="error">{{ $t("parseQueue.failed") }}</a-tag>
                 </div>
               </template>
@@ -52,23 +52,23 @@
                       size="small"
                     />
                     <div v-if="item.progress.currentFile" class="progress-file">
-                      当前: {{ item.progress.currentFile }}
+                      {{ $t('parseQueue.current', { file: item.progress.currentFile }) }}
                     </div>
                   </div>
 
                   <!-- Result summary for completed tasks -->
                   <div v-if="item.status === 'done' && item.result" class="task-result">
                     <span :class="item.result.success ? 'result-ok' : 'result-fail'">
-                      {{ item.result.successfulFiles }}/{{ item.result.totalFiles }} 成功
+                      {{ $t('parseQueue.successful', { n: item.result.successfulFiles, total: item.result.totalFiles }) }}
                       <template v-if="item.result.failedFiles > 0">
-                        · {{ item.result.failedFiles }} 失败
+                        · {{ $t('parseQueue.failedCount', { n: item.result.failedFiles }) }}
                       </template>
                       <template v-if="item.result.savedCount != null">
-                        · 入库 {{ item.result.savedCount }} 个
+                        · {{ $t('parseQueue.savedCount', { n: item.result.savedCount }) }}
                       </template>
                     </span>
                     <div v-if="item.parentName" class="result-target">
-                      目标: {{ item.parentName }}
+                      {{ $t('parseQueue.target', { name: item.parentName }) }}
                     </div>
                   </div>
 
@@ -81,7 +81,7 @@
                   <div class="task-meta">
                     <span class="task-time">{{ formatTime(item.createdAt) }}</span>
                     <span v-if="item.finishedAt" class="task-time">
-                      耗时 {{ elapsed(item.createdAt, item.finishedAt) }}
+                      {{ $t('parseQueue.elapsed', { time: elapsed(item.createdAt, item.finishedAt) }) }}
                     </span>
                   </div>
                 </div>

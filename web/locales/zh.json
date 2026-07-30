@@ -5,7 +5,11 @@
       "subtitle": "智能文档管理平台",
       "description": "基于 RAG 技术的智能知识管理系统，提供文档解析、知识检索与图谱可视化"
     },
-    "theme": { "light": "浅色", "dark": "深色", "system": "跟随系统" },
+    "theme": {
+      "light": "浅色",
+      "dark": "深色",
+      "system": "跟随系统"
+    },
     "noDescription": "无描述"
   },
   "nav": {
@@ -21,7 +25,9 @@
   },
   "lang": {
     "switch": "English",
-    "label": "语言"
+    "label": "语言",
+    "chinese": "中文",
+    "switchTo": "EN"
   },
   "home": {
     "badge": "AI 驱动的知识管理",
@@ -35,18 +41,54 @@
     "coverage": "索引覆盖",
     "coreCapabilities": "核心能力",
     "features": [
-      { "icon": "📄", "title": "文档解析", "desc": "PDF/Word/Excel/PPTX/图片 → Markdown，基于 MinerU OCR 引擎" },
-      { "icon": "🔍", "title": "智能检索", "desc": "QDCVR 检索：意图分析→智能选库→向量召回→内容验证，确保精准" },
-      { "icon": "🕸️", "title": "知识图谱", "desc": "Neo4j 驱动的跨库文档关系图谱，支持桥梁发现与中心度分析" },
-      { "icon": "🧪", "title": "经验库", "desc": "结构化 P0/P1/P2 分级经验全生命周期，自动提取与衰减规则" },
-      { "icon": "🤖", "title": "AI Agent", "desc": "Claude Code + 72 MCP 工具，自主知识库管理与智能问答" },
-      { "icon": "⚙️", "title": "管理与校验", "desc": "完整 CRUD、标签卫生、完整性审计、Collection 健康自动修复" }
+      {
+        "icon": "📄",
+        "title": "文档解析",
+        "desc": "PDF/Word/Excel/PPTX/图片 → Markdown，基于 MinerU OCR 引擎"
+      },
+      {
+        "icon": "🔍",
+        "title": "智能检索",
+        "desc": "QDCVR 检索：意图分析→智能选库→向量召回→内容验证，确保精准"
+      },
+      {
+        "icon": "🕸️",
+        "title": "知识图谱",
+        "desc": "Neo4j 驱动的跨库文档关系图谱，支持桥梁发现与中心度分析"
+      },
+      {
+        "icon": "🧪",
+        "title": "经验库",
+        "desc": "结构化 P0/P1/P2 分级经验全生命周期，自动提取与衰减规则"
+      },
+      {
+        "icon": "🤖",
+        "title": "AI Agent",
+        "desc": "Claude Code + 72 MCP 工具，自主知识库管理与智能问答"
+      },
+      {
+        "icon": "⚙️",
+        "title": "管理与校验",
+        "desc": "完整 CRUD、标签卫生、完整性审计、Collection 健康自动修复"
+      }
     ],
     "quickLinks": {
-      "fileSystem": { "title": "文件系统", "desc": "管理文档树与上传" },
-      "search": { "title": "知识检索", "desc": "多策略语义检索" },
-      "kbManager": { "title": "知识库管理", "desc": "文档增删改查与标签管理" },
-      "graph": { "title": "知识图谱", "desc": "可视化关系探索" }
+      "fileSystem": {
+        "title": "文件系统",
+        "desc": "管理文档树与上传"
+      },
+      "search": {
+        "title": "知识检索",
+        "desc": "多策略语义检索"
+      },
+      "kbManager": {
+        "title": "知识库管理",
+        "desc": "文档增删改查与标签管理"
+      },
+      "graph": {
+        "title": "知识图谱",
+        "desc": "可视化关系探索"
+      }
     }
   },
   "fs": {
@@ -226,7 +268,28 @@
     "tagsSaveFailed": "保存标签失败",
     "moveFailed": "移动文档失败",
     "deleteFailed": "删除文档失败",
-    "selectKbPrompt": "选择左侧知识库查看文档"
+    "selectKbPrompt": "选择左侧知识库查看文档",
+    "docCount": "{n} 篇文档",
+    "subKbCount": "{n} 个子库",
+    "newDoc": "新建",
+    "subKbTitle": "子知识库 ({n})",
+    "noDocsTitle": "暂无文档",
+    "newDocBtn": "新建文档",
+    "editMetaMenu": "编辑元数据",
+    "editContentMenu": "编辑内容",
+    "manageTagsMenu": "管理标签",
+    "moveToOther": "移动到其他库",
+    "deleteDocMenu": "删除文档",
+    "selectKbView": "选择左侧知识库查看文档",
+    "newDocModal": "新建文档",
+    "targetKb": "目标知识库",
+    "selectKb": "选择知识库",
+    "docName": "文档名称",
+    "docNamePlaceholder": "输入文档名称（自动添加 .md 后缀）",
+    "editMetaModal": "编辑元数据",
+    "editContentModal": "编辑文档内容",
+    "manageTagsModal": "管理标签",
+    "moveDocModal": "移动文档"
   },
   "search": {
     "title": "知识检索",
@@ -258,7 +321,28 @@
     "content": "内容",
     "relevance": "相关度",
     "documentMatch": "文档匹配",
-    "semanticMatch": "语义匹配"
+    "semanticMatch": "语义匹配",
+    "qdcvr": "QDCVR 精准召回",
+    "subKbTitle": "子知识库 ({n})",
+    "docCount": "{n} 篇文档",
+    "docTitle": "文档 ({n})",
+    "duration": "耗时 {n}ms",
+    "listView": "列表",
+    "graphView": "关联图谱",
+    "contentVerify": "内容验证",
+    "verifyOff": "关闭验证",
+    "combinedScore": "综合",
+    "vectorScore": "向量",
+    "rawScore": "得分",
+    "viewRelationGraph": "查看关联图谱",
+    "kbLabel": "知识库",
+    "docLabel": "文档",
+    "tagLabel": "标签",
+    "searchFirst": "先执行搜索，再查看关联图谱",
+    "typeKb": "知识库",
+    "typeDoc": "文档",
+    "typeTag": "标签",
+    "metaKb": "知识库"
   },
   "graph": {
     "title": "知识图谱",
@@ -288,7 +372,58 @@
     "findPath": "查找路径",
     "degree": "度中心性",
     "weight": "权重",
-    "relatedKbs": "关联知识库"
+    "relatedKbs": "关联知识库",
+    "legend": {
+      "shared": "共享标签",
+      "similar": "内容相似"
+    },
+    "showNodes": "显示 {count} / {total} 个节点",
+    "buildGraph": "构建图谱",
+    "neo4jNav": "Neo4j 可视化导航",
+    "zoomIn": "放大",
+    "zoomOut": "缩小",
+    "resetView": "重置视图",
+    "fitView": "自动适配",
+    "relayout": "重新布局",
+    "building": "构建知识图谱中...",
+    "noGraphDataTitle": "暂无图谱数据",
+    "filterNodes": "过滤节点...",
+    "searchDoc": "搜索文档",
+    "searchDocPlaceholder": "输入文档名称或路径关键词搜索...",
+    "centerDoc": "中心文档",
+    "selectDocHint": "搜索并选择一个文档，查看其关联图谱",
+    "selectDocDesc": "文档中心视图会展示该文档的KB归属、标签关联、跨KB连接",
+    "crossKbBridge": "跨知识库桥梁文档",
+    "crossKbBridgeDesc": "通过共享标签或向量相似度关联到不同知识库的文档，是知识图谱中的关键桥梁节点",
+    "bridgeKb": "桥接知识库:",
+    "relatedDocs": "{n} 篇关联文档",
+    "noCrossKb": "暂无跨KB桥梁文档",
+    "searchDocBtn": "搜索文档",
+    "pathDiscovery": "文档关联路径发现",
+    "pathDiscoveryDesc": "选择两个文档，发现它们在知识图谱中的最短关联路径",
+    "selected": "已选择",
+    "pathFound": "找到关联路径，共 {length} 步",
+    "pathNotFound": "未找到两个文档之间的关联路径（可能需要增加搜索深度或建立更多关联）",
+    "clickNodeHint": "点击图谱节点查看详情",
+    "clickNodeHintDesc": "支持拖拽、缩放、点击交互",
+    "belongsToKb": "所属知识库",
+    "docCountLabel": "文档数",
+    "path": "路径",
+    "score": "得分",
+    "relatedNodes": "关联节点 ({n})",
+    "noRelated": "无关联节点",
+    "tooManyNodes": "节点数量较多，仅显示前 {max} 个节点",
+    "docNotFound": "未找到匹配文档",
+    "searchFailed": "搜索失败",
+    "docGraphLoaded": "已加载文档关联图谱: {name}",
+    "docGraphLoadFailed": "加载文档图谱失败",
+    "neo4jRequired": "跨KB分析需要Neo4j支持，当前不可用",
+    "pathFindFailed": "路径查找失败",
+    "loadFailed": "加载图谱失败",
+    "refreshing": "正在刷新图谱...",
+    "rebuildSuccess": "图谱重建成功！\n文档: {docs}篇\n向量关联: {edges}条 (跨库{cross}条)\nKB间关联: {pairs}对",
+    "rebuildAbnormal": "后端图谱构建返回异常，已重新加载本地图谱",
+    "rebuildFailed": "后端图谱构建失败，已重新加载本地图谱"
   },
   "chat": {
     "title": "Claude Code 对话",
@@ -309,7 +444,130 @@
     "model": "模型",
     "context": "上下文文件",
     "noWorkspace": "未选择工作区",
-    "sessionTitle": "对话会话"
+    "sessionTitle": "对话会话",
+    "agentSDK": "Agent SDK 流式交互",
+    "executing": "执行中",
+    "subAgentPanel": "子 Agent 面板（{total} 个 / {running} 运行中）",
+    "subAgent": "子 Agent",
+    "terminal": "终端",
+    "terminalTooltip": "集成终端 — 在侧边打开原生终端，默认工作目录跟随当前工作区",
+    "newChatTooltip": "新建对话（不打断当前流式，后台继续）",
+    "bgRunning": "后台运行中: {prompt}… — 点击切换回来",
+    "jumpToLatest": "跳到最新",
+    "messageQueue": "消息队列 ({pending} 待发{ sending, } {failed} 失败)",
+    "pending": "待发",
+    "sending": "发送中",
+    "resumeQueue": "恢复队列",
+    "pauseQueue": "暂停队列",
+    "retryAllFailed": "重试所有失败",
+    "clearPending": "清空待发",
+    "retrySend": "重试发送",
+    "sendNow": "立即发送（跳过队列）",
+    "queuePaused": "队列已暂停 — {count} 条等待中",
+    "remove": "移除",
+    "commands": "指令（{shown}/{total}）",
+    "envPanel": "Claude Code 环境",
+    "workspaceManager": "工作区管理",
+    "historySessions": "历史会话（SQLite 持久化）",
+    "integratedTerminal": "集成终端",
+    "permission": "权限",
+    "newChat": "新建对话",
+    "edit": "编辑",
+    "delete": "删除",
+    "failed": "失败",
+    "abort": "中断",
+    "attachFile": "添加附件（图片/PDF/文档）",
+    "streamingPlaceholder": "回答中… 输入消息可加入队列 (Enter/Shift+Enter 发送)",
+    "addToQueue": "加入队列（回答结束后自动发送）",
+    "sendEnter": "发送 (Enter)",
+    "builtinToolsCount": "内置工具（{count}）",
+    "searchTools": "搜索工具…",
+    "sessionToolsCount": "会话工具（{count}）",
+    "skillsCount": "Skills（{count}）",
+    "searchSkills": "搜索 Skill…",
+    "noMatchingSkills": "无匹配 Skill",
+    "project": "项目",
+    "user": "用户",
+    "slashCommandsCount": "Slash 指令（{count}）",
+    "workspaceManagerDesc": "保存常用工作目录，快速切换 Claude Code 运行上下文（加载对应 .claude/skills + .mcp.json）",
+    "workspaceNamePlaceholder": "工作区名称（如 RAG知识库）",
+    "workspacePathPlaceholder": "绝对路径",
+    "save": "保存",
+    "lastUsed": "上次使用",
+    "selectAndStart": "选择并开始对话",
+    "togglePin": "置顶切换",
+    "confirmDeleteWs": "删除此工作区？",
+    "noSavedWs": "还没有保存的工作区",
+    "addFirstWs": "填写上方表单添加第一个工作区",
+    "loading": "加载中…",
+    "messageCount": "条消息",
+    "confirmDeleteSession": "删除此会话及其消息？",
+    "clickToLoadHistory": "点击整行加载历史消息并继续对话",
+    "toolPermissionRequest": "工具权限请求",
+    "claudeWantsToUseTool": "Claude 想使用工具",
+    "permissionNote": "允许则 Claude 继续执行；拒绝则该工具被跳过。",
+    "deny": "拒绝",
+    "allow": "允许",
+    "connected": "已连接",
+    "connecting": "连接中…",
+    "reconnectTerminalTooltip": "重连终端（跟随当前工作区目录）",
+    "projectRoot": "项目根目录",
+    "terminalNativeHint": "原生终端 · 输入 exit 关闭会话",
+    "newChatCreated": "新对话已创建",
+    "bgSessionsContinue": "（{count} 个对话在后台继续）",
+    "switchedToBg": "已切换到后台对话",
+    "addedToQueue": "已加入队列 ({position})",
+    "cannotDeleteSending": "当前正在发送中，无法删除",
+    "queueCleared": "队列已清空",
+    "queuePausedMsg": "队列已暂停",
+    "queueResumed": "队列已恢复",
+    "queueSendFailed": "队列消息发送失败 ({retry}/{max}): {error}. 将自动重试...",
+    "queueSendFailedPermanently": "队列消息发送彻底失败 ({max} 次重试均已失败): {error}",
+    "waitingForResponse": "正在回答中，请等待当前回答完成",
+    "inputPlaceholderWithAttach": "描述你想让 Claude 对附件做什么（Enter 发送 · Shift+Enter 换行）…",
+    "inputPlaceholderNoAttach": "问 Claude（Enter 发送 · 输入 / 触发指令 · 📎加附件 · Shift+Enter 换行）…",
+    "unknownError": "未知错误",
+    "aborted": "已中断",
+    "bgConversationCompleted": "后台对话已完成: {prompt}…",
+    "cannotQueueAttachOnly": "回答中暂不支持仅附件排队，请输入文本或等待回答完成",
+    "attachmentsAdded": "已添加 {count} 个附件",
+    "uploadFailed": "上传失败: {error}",
+    "abortedQueueContinues": "已中断当前回答，队列后续消息将自动继续",
+    "approvalSendFailed": "审批发送失败: {error}",
+    "switchedToEngine": "已切换到 {icon} {label}",
+    "workspaceSaved": "工作区「{name}」已保存",
+    "saveFailed": "保存失败: {error}",
+    "switchedToWs": "已切换到工作区: {name}",
+    "wsDeleted": "已删除",
+    "deleteFailed": "删除失败: {error}",
+    "enterOrSelectPath": "请先输入或选择一个工作目录路径",
+    "wsAlreadyExists": "「{name}」已存在",
+    "wsSwitchedSessionReset": "工作目录已切换，会话已重置",
+    "loadHistoryFailed": "加载历史失败: {error}",
+    "loadingHistorySession": "正在加载历史会话…",
+    "historyLoaded": "已加载历史会话（{total} 条消息，渲染 {replayed} 条），继续对话自动续接",
+    "deleted": "已删除",
+    "addAttachment": "添加附件（图片/PDF/文档）",
+    "placeholderStreaming": "回答中… 输入消息可加入队列 (Enter/Shift+Enter 发送)",
+    "queue": " 队列",
+    "permissionRequest": "工具权限请求",
+    "terminalHint": "原生终端 · 输入 exit 关闭会话",
+    "commandsLabel": "指令",
+    "stopBtn": "中断",
+    "builtinTools": "内置工具",
+    "sessionTools": "会话工具",
+    "loadAfterInit": "会话启动后加载",
+    "noMatchingSkill": "无匹配 Skill",
+    "slashCommands": "Slash 指令",
+    "workspaceManagerHint": "保存常用工作目录，快速切换 Claude Code 运行上下文（加载对应 .claude/skills + .mcp.json）",
+    "absolutePath": "绝对路径",
+    "deleteWorkspaceConfirm": "删除此工作区？",
+    "noWorkspaces": "还没有保存的工作区",
+    "addFirstWorkspace": "填写上方表单添加第一个工作区",
+    "deleteSessionConfirm": "删除此会话及其消息？",
+    "claudeWantsToUse": "Claude 想使用工具",
+    "permissionHint": "允许则 Claude 继续执行；拒绝则该工具被跳过。",
+    "reconnectTerminal": "重连终端（跟随当前工作区目录）"
   },
   "settings": {
     "changedCount": "有 {count} 项配置已修改，保存后将自动持久化并热生效",
@@ -337,9 +595,314 @@
     "reloaded": "配置已重载",
     "editor": "编辑器",
     "editConfig": "编辑配置文件",
-    "reload": "重载",
+    "reload": "刷新",
     "restartRequired": "部分更改需要重启服务",
-    "configSaved": "配置已保存并热重载"
+    "configSaved": "配置已保存并热重载",
+    "cleanupTitle": "存储管理",
+    "cleanupDesc": "清理 MinerU 解析缓存和临时文件，释放磁盘空间",
+    "cleanupScan": "扫描",
+    "cleanupCategory": "类别",
+    "cleanupSize": "大小",
+    "cleanupDescCol": "说明",
+    "cleanupAction": "操作",
+    "cleanupDelete": "清理",
+    "cleanupCleared": "已清空",
+    "cleanupEmptyDesc": "点击「扫描」查看可清理的缓存",
+    "cleanupFreed": "已释放 {size} 磁盘空间",
+    "cleanupModelWarning": "模型缓存（{size}）包含 BGE-M3 嵌入模型和 MinerU OCR 模型，清理后需重新下载。",
+    "changesInfo": "有 {n} 项配置已修改，保存后将自动持久化并热生效",
+    "discard": "放弃修改",
+    "saveAndHot": "保存并热生效",
+    "hotApplied": "配置已保存并热生效！端口变更需刷新页面。",
+    "changesDiscarded": "已放弃修改",
+    "confirmCleanModel": "⚠️ 确认清理模型缓存 ({size})？\n\n清理后首次向量索引或 PDF 解析需要重新下载模型（~4GB）。",
+    "cleanedSuccess": "{name}已清理 — 释放 {freed}",
+    "scanFailure": "扫描失败: {msg}",
+    "cleanFailure": "清理失败: {msg}",
+    "modelCache": "模型缓存",
+    "enabled": "已开启",
+    "disabled": "已关闭",
+    "inputPlaceholder": "输入值后按回车添加",
+    "defaultVal": "默认: {val}",
+    "minVal": "最小: {val}",
+    "maxVal": "最大: {val}",
+    "envVarTag": "环境变量",
+    "optionalTag": "可选",
+    "loadFailed": "加载配置失败",
+    "saveFailed": "保存失败",
+    "saveConfigFailed": "保存配置失败",
+    "mineruCache": "MinerU 解析产物",
+    "serviceLogs": "服务日志",
+    "pythonCache": "Python 缓存",
+    "sections": {
+      "server": {
+        "label": "服务器配置",
+        "desc": "前后端服务的端口、地址与跨域配置。修改端口需重启对应服务才能完全生效。"
+      },
+      "storage": {
+        "label": "存储配置",
+        "desc": "知识库文件系统的存储路径配置。"
+      },
+      "vector": {
+        "label": "向量检索配置",
+        "desc": "ChromaDB 向量索引与检索参数，控制语义搜索行为。"
+      },
+      "embedding": {
+        "label": "Embedding 模型配置",
+        "desc": "文本向量化模型参数，影响向量索引和搜索质量。"
+      },
+      "graph": {
+        "label": "知识图谱配置 (Neo4j)",
+        "desc": "Neo4j 图数据库连接与知识图谱构建参数。"
+      },
+      "search": {
+        "label": "两阶段检索配置",
+        "desc": "BM25 + 向量两阶段精准检索参数调优。"
+      },
+      "mineru": {
+        "label": "MinerU OCR 引擎",
+        "desc": "PDF/DOCX 文档 OCR 解析引擎配置。端口自动分配。"
+      },
+      "experience_auto": {
+        "label": "经验自动总结 (冥想记忆)",
+        "desc": "定期自动从高频问题+知识库回答归纳经验草稿。"
+      }
+    },
+    "fields": {
+      "cors_origins": {
+        "label": "CORS 允许来源",
+        "desc": "跨域允许的来源列表。[\\\"*\\\"] 表示允许所有来源（开发推荐）。"
+      },
+      "dev": {
+        "label": "开发模式 (Dev)",
+        "desc": "APP_MODE=dev 时使用此段配置，启用热重载。"
+      },
+      "host": {
+        "label": "监听地址",
+        "desc": "后端绑定的网络接口。0.0.0.0 表示所有接口。"
+      },
+      "backend_port": {
+        "label": "后端端口",
+        "desc": "FastAPI 后端端口，默认 8765。"
+      },
+      "frontend_port": {
+        "label": "前端端口",
+        "desc": "Nuxt 3 前端端口，默认 6789。"
+      },
+      "backend_url": {
+        "label": "后端完整 URL",
+        "desc": "后端服务完整访问地址。"
+      },
+      "prod": {
+        "label": "生产模式 (Prod)",
+        "desc": "APP_MODE=prod 时使用此段配置，关闭热重载。"
+      },
+      "tree_fs_root": {
+        "label": "知识库存储路径",
+        "desc": "tree-file-system 根目录路径。"
+      },
+      "enabled": {
+        "label": "启用",
+        "desc": "开启后使用对应功能。"
+      },
+      "persist_dir": {
+        "label": "ChromaDB 持久化目录",
+        "desc": "向量数据库持久化路径。"
+      },
+      "collection_prefix": {
+        "label": "Collection 前缀",
+        "desc": "ChromaDB collection 名称前缀。"
+      },
+      "chunk_size": {
+        "label": "文档分块大小",
+        "desc": "文档切分为向量块的最大字符数。"
+      },
+      "chunk_overlap": {
+        "label": "分块重叠量",
+        "desc": "相邻文档块之间的重叠字符数。"
+      },
+      "top_k": {
+        "label": "返回结果数 (Top K)",
+        "desc": "向量搜索返回的最相似结果数。"
+      },
+      "score_threshold": {
+        "label": "文档相似度阈值",
+        "desc": "文档向量搜索最低余弦相似度。bge-m3 建议 0.3-0.5。"
+      },
+      "experience_score_threshold": {
+        "label": "经验相似度阈值",
+        "desc": "经验库检索最低相似度，高于文档阈值。"
+      },
+      "model_name": {
+        "label": "模型名称",
+        "desc": "HuggingFace/ModelScope 模型标识符。默认 BAAI/bge-m3。"
+      },
+      "cache_dir": {
+        "label": "模型缓存目录",
+        "desc": "模型文件本地缓存路径。"
+      },
+      "device": {
+        "label": "计算设备",
+        "desc": "auto 自动检测 CUDA。"
+      },
+      "batch_size": {
+        "label": "批处理大小",
+        "desc": "单次推理的文档块数量。GPU 可增大加速。"
+      },
+      "normalize": {
+        "label": "向量归一化",
+        "desc": "L2 归一化后余弦相似度等于点积。"
+      },
+      "uri": {
+        "label": "Neo4j 连接 URI",
+        "desc": "Bolt 协议连接地址。"
+      },
+      "username": {
+        "label": "用户名",
+        "desc": "Neo4j 用户名。"
+      },
+      "password": {
+        "label": "密码",
+        "desc": "Neo4j 密码。环境变量 NEO4J_PASSWORD 优先级更高。"
+      },
+      "database": {
+        "label": "数据库名称",
+        "desc": "Neo4j 数据库名。"
+      },
+      "pool": {
+        "label": "连接池配置",
+        "desc": "Neo4j Driver 连接池参数。"
+      },
+      "max_connection_pool_size": {
+        "label": "最大连接数",
+        "desc": "连接池最大连接数。"
+      },
+      "connection_acquisition_timeout": {
+        "label": "获取连接超时 (秒)",
+        "desc": "从连接池获取连接最大等待时间。"
+      },
+      "max_connection_lifetime": {
+        "label": "连接最大生命周期 (秒)",
+        "desc": "连接最长存活时间。"
+      },
+      "retry": {
+        "label": "重试策略",
+        "desc": "瞬态失败的重试配置。"
+      },
+      "max_attempts": {
+        "label": "最大重试次数",
+        "desc": "操作失败后最大重试次数。"
+      },
+      "base_delay": {
+        "label": "基础重试延迟 (秒)",
+        "desc": "首次重试等待时间，指数退避。"
+      },
+      "two_stage": {
+        "label": "两阶段检索",
+        "desc": "Stage 1 BM25 广召回, Stage 2 向量精筛。"
+      },
+      "stage1_top_k": {
+        "label": "Stage 1 召回数",
+        "desc": "BM25 候选文档数。"
+      },
+      "stage2_top_k": {
+        "label": "Stage 2 精筛数",
+        "desc": "向量精筛后最终返回数。"
+      },
+      "stage1_keyword_weight": {
+        "label": "关键词权重",
+        "desc": "BM25 关键词搜索权重。"
+      },
+      "stage1_graph_weight": {
+        "label": "图谱权重",
+        "desc": "知识图谱扩展权重。"
+      },
+      "graph_neighbor_depth": {
+        "label": "图谱邻居深度",
+        "desc": "图谱扩展搜索跳数。"
+      },
+      "min_candidates": {
+        "label": "最少候选数",
+        "desc": "两阶段检索最低候选文档数。"
+      },
+      "start_on_boot": {
+        "label": "随后端启动",
+        "desc": "是否在后端启动时自动拉起。"
+      },
+      "startup_timeout": {
+        "label": "启动超时 (秒)",
+        "desc": "等待 MinerU 就绪最大时间。"
+      },
+      "model_source": {
+        "label": "模型源",
+        "desc": "modelscope 国内更快。"
+      },
+      "interval_hours": {
+        "label": "运行间隔 (小时)",
+        "desc": "两次冥想循环之间的间隔。修改后下个周期热生效。"
+      },
+      "lookback_days": {
+        "label": "回溯天数",
+        "desc": "扫描最近N天的问答历史作为归纳源。"
+      },
+      "min_cluster_count": {
+        "label": "最小簇大小",
+        "desc": "同类问题至少出现N次才考虑归纳（过滤一次性问题）。"
+      },
+      "max_drafts_per_run": {
+        "label": "每轮最大草稿数",
+        "desc": "每轮冥想最多生成的经验草稿数（宁缺毋滥）。"
+      },
+      "dry_run": {
+        "label": "试运行模式",
+        "desc": "仅记录归纳结果到日志，不实际创建草稿。用于调优参数。"
+      },
+      "APP_MODE": {
+        "label": "运行模式",
+        "desc": "dev = 开发模式（热重载）；prod = 生产模式。决定使用 config.yml 的 dev/prod 段落。"
+      },
+      "BACKEND_PORT": {
+        "label": "后端端口覆盖",
+        "desc": "覆盖 config.yml 后端端口。留空使用 config.yml 值。"
+      },
+      "WEB_PORT": {
+        "label": "前端端口覆盖",
+        "desc": "覆盖 config.yml 前端端口。留空使用 config.yml 值。"
+      },
+      "TREE_STORAGE_PATH": {
+        "label": "存储路径覆盖",
+        "desc": "覆盖 config.yml storage.tree_fs_root。留空使用 config.yml 值。"
+      },
+      "NEO4J_PASSWORD": {
+        "label": "Neo4j 密码",
+        "desc": "Neo4j 密码。优先级高于 config.yml graph.password。"
+      },
+      "NO_RELOAD": {
+        "label": "禁用热重载",
+        "desc": "设为 1 即使 APP_MODE=dev 也不热重载。"
+      },
+      "PYTHONUTF8": {
+        "label": "强制 UTF-8",
+        "desc": "设为 1 强制 Python UTF-8，解决 Windows GBK 问题。"
+      },
+      "envSection": {
+        "label": "环境变量 (.env)",
+        "desc": "环境变量优先级高于 config.yml。修改后需重启对应服务完全生效。"
+      }
+    },
+    "cleanupItems": {
+      "mineruCache": "MinerU 解析产物",
+      "serviceLogs": "服务日志",
+      "pythonCache": "Python 缓存"
+    },
+    "cleanAllSafe": "一键清理",
+    "cleanAllSafeDesc": "清理 MinerU 输出 + 日志 + Python 缓存（不含模型缓存）",
+    "cleanAllSafeConfirm": "确认清理所有安全项（MinerU 输出 + 日志 + Python 缓存）？模型缓存不会被删除。",
+    "cleanAllSuccess": "所有安全项已清理 — 释放 {size}",
+    "mineruEntries": "MinerU 解析文档 ({count})",
+    "parsedDoc": "解析文档",
+    "createdAt": "创建时间",
+    "notSet": "(不设置)"
   },
   "about": {
     "title": "关于 RAG 知识库",
@@ -458,7 +1021,7 @@
   "parseQueue": {
     "title": "解析任务",
     "running": "运行中",
-    "completed": "已完成",
+    "completed": "完成",
     "failed": "失败",
     "noTasks": "暂无解析任务",
     "clear": "清除已完成",
@@ -469,8 +1032,15 @@
     "viewResult": "查看结果",
     "saveToKb": "保存到知识库",
     "remove": "移除",
-    "parsing": "解析中...",
-    "ocrMode": "OCR 模式"
+    "parsing": "解析中",
+    "ocrMode": "OCR 模式",
+    "saving": "保存中",
+    "current": "当前: {file}",
+    "successful": "{n}/{total} 成功",
+    "failedCount": "{n} 失败",
+    "savedCount": "入库 {n} 个",
+    "target": "目标: {name}",
+    "elapsed": "耗时 {time}"
   },
   "meditation": {
     "title": "冥想设置",
@@ -539,5 +1109,28 @@
     "error": "错误",
     "warning": "警告",
     "info": "提示"
+  },
+  "agent": {
+    "title": "子 Agent",
+    "noDescription": "(无描述)",
+    "clearCompleted": "清除已完成",
+    "closePanel": "关闭{title}面板",
+    "noAgents": "暂无{title}",
+    "noAgentsHint": "当主 Agent 委托 Task/Agent 工具时，{title} 会在此显示",
+    "detail": "详情",
+    "toolCalls": "工具调用次数",
+    "messages": "消息数",
+    "ompEngine": "OMP 引擎",
+    "claudeEngine": "Claude 引擎",
+    "detailSuffix": "详情"
+  },
+  "todo": {
+    "title": "任务清单",
+    "noTasks": "暂无{title}",
+    "noTasksHint": "Agent 使用 TodoWrite 时会在此实时显示进度",
+    "progress": "任务进度 {pct}%",
+    "completed": "完成 {n}",
+    "inProgress": "进行中 {n}",
+    "pending": "待办 {n}"
   }
 }

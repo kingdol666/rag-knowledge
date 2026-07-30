@@ -145,7 +145,7 @@
           <div v-if="subKbList.length > 0" class="sub-kb-section">
             <div class="section-title">
               <DatabaseOutlined />
-              <span>子知识库 ({{ subKbList.length }})</span>
+              <span>{{ $t('search.subKbTitle', { n: subKbList.length }) }}</span>
             </div>
             <div class="sub-kb-grid">
               <div
@@ -162,7 +162,7 @@
                   <div class="sub-kb-card-desc">{{ subKb.description || $t('common.noDescription') }}</div>
                   <div class="sub-kb-card-stat">
                     <FileTextOutlined />
-                    <span>{{ subKb.documentCount }} 篇文档</span>
+                    <span>{{ $t('search.docCount', { n: subKb.documentCount }) }}</span>
                   </div>
                 </div>
                 <div class="sub-kb-card-arrow">
@@ -176,7 +176,7 @@
           <div v-if="kbDocuments.length > 0" class="doc-section">
             <div class="section-title">
               <FileTextOutlined />
-              <span>文档 ({{ kbDocuments.length }})</span>
+              <span>{{ $t('search.docTitle', { n: kbDocuments.length }) }}</span>
             </div>
             <div class="doc-list">
               <div
@@ -217,18 +217,18 @@
             <div class="summary-left">
               <span class="summary-count">{{ $t('search.results') }}: {{ searchResults.length }}</span>
               <a-tag :color="modeColors[searchMode]">{{ modeLabels[searchMode] }}</a-tag>
-              <span class="summary-time" v-if="searchDuration > 0">耗时 {{ searchDuration }}ms</span>
+              <span class="summary-time" v-if="searchDuration > 0">{{ $t('search.duration', { n: searchDuration }) }}</span>
             </div>
             <div class="summary-right">
               <div class="results-tab-switcher">
                 <div :class="['tab-btn', { active: resultsTab === 'list' }]" @click="resultsTab = 'list'">
-                  <UnorderedListOutlined /><span>列表</span>
+                  <UnorderedListOutlined /><span>{{ $t('search.listView') }}</span>
                 </div>
                 <div :class="['tab-btn', { active: resultsTab === 'graph' }]" @click="resultsTab = 'graph'">
-                  <ShareAltOutlined /><span>关联图谱</span>
+                  <ShareAltOutlined /><span>{{ $t('search.graphView') }}</span>
                 </div>
               </div>
-              <a-switch v-model:checked="autoVerifyContent" checked-children="内容验证" un-checked-children="关闭验证" size="small" />
+              <a-switch v-model:checked="autoVerifyContent" :checked-children="$t('search.contentVerify')" :un-checked-children="$t('search.verifyOff')" size="small" />
             </div>
           </div>
 
@@ -263,12 +263,12 @@
                 <!-- Score info -->
                 <div class="result-scores">
                   <div class="score-group" v-if="hit.combined_score !== undefined">
-                    <span class="score-label">综合</span>
+                    <span class="score-label">{{ $t('search.combinedScore') }}</span>
                     <a-progress :percent="Math.round(hit.combined_score * 100)" :stroke-color="getScoreColor(hit.combined_score)" size="small" style="width: 120px;" />
                     <span class="score-value">{{ hit.combined_score.toFixed(4) }}</span>
                   </div>
                   <div class="score-group" v-if="hit.vector_score !== undefined && searchMode !== 'keyword'">
-                    <span class="score-label">向量</span>
+                    <span class="score-label">{{ $t('search.vectorScore') }}</span>
                     <a-progress :percent="Math.round(hit.vector_score * 100)" :stroke-color="getScoreColor(hit.vector_score)" size="small" style="width: 100px;" />
                     <span class="score-value">{{ hit.vector_score.toFixed(4) }}</span>
                   </div>
@@ -277,7 +277,7 @@
                     <span class="score-value">{{ hit.bm25_score.toFixed(2) }}</span>
                   </div>
                   <div class="score-group" v-if="hit.score !== undefined && searchMode !== 'two-stage'">
-                    <span class="score-label">得分</span>
+                    <span class="score-label">{{ $t('search.rawScore') }}</span>
                     <a-progress :percent="Math.round(hit.score * 100)" :stroke-color="getScoreColor(hit.score)" size="small" style="width: 100px;" />
                     <span class="score-value">{{ hit.score.toFixed(4) }}</span>
                   </div>
@@ -301,7 +301,7 @@
                 <div class="result-actions" v-if="hit.path">
                   <a-button size="small" type="link" @click="viewDocInGraph(hit.path)">
                     <ShareAltOutlined />
-                    <span>查看关联图谱</span>
+                    <span>{{ $t('search.viewRelationGraph') }}</span>
                   </a-button>
                 </div>
               </div>
@@ -313,14 +313,14 @@
             <div class="search-graph-layout">
               <div class="search-graph-canvas" ref="searchGraphContainerRef">
                 <div class="graph-toolbar">
-                  <a-tooltip title="放大"><a-button type="text" size="small" class="tool-btn" @click="searchGraphZoom = Math.min(3, searchGraphZoom * 1.2)"><ZoomInOutlined /></a-button></a-tooltip>
-                  <a-tooltip title="缩小"><a-button type="text" size="small" class="tool-btn" @click="searchGraphZoom = Math.max(0.2, searchGraphZoom * 0.8)"><ZoomOutOutlined /></a-button></a-tooltip>
-                  <a-tooltip title="重置"><a-button type="text" size="small" class="tool-btn" @click="searchGraphZoom = 1; searchGraphPanX = 0; searchGraphPanY = 0"><CompressOutlined /></a-button></a-tooltip>
+                  <a-tooltip :title="$t('graph.zoomIn')"><a-button type="text" size="small" class="tool-btn" @click="searchGraphZoom = Math.min(3, searchGraphZoom * 1.2)"><ZoomInOutlined /></a-button></a-tooltip>
+                  <a-tooltip :title="$t('graph.zoomOut')"><a-button type="text" size="small" class="tool-btn" @click="searchGraphZoom = Math.max(0.2, searchGraphZoom * 0.8)"><ZoomOutOutlined /></a-button></a-tooltip>
+                  <a-tooltip :title="$t('graph.resetView')"><a-button type="text" size="small" class="tool-btn" @click="searchGraphZoom = 1; searchGraphPanX = 0; searchGraphPanY = 0"><CompressOutlined /></a-button></a-tooltip>
                 </div>
                 <div class="graph-legend">
-                  <div class="legend-item"><span class="legend-dot kb-dot"></span><span>知识库</span></div>
-                  <div class="legend-item"><span class="legend-dot doc-dot"></span><span>文档</span></div>
-                  <div class="legend-item"><span class="legend-dot tag-dot"></span><span>标签</span></div>
+                  <div class="legend-item"><span class="legend-dot kb-dot"></span><span>{{ $t('search.kbLabel') }}</span></div>
+                  <div class="legend-item"><span class="legend-dot doc-dot"></span><span>{{ $t('search.docLabel') }}</span></div>
+                  <div class="legend-item"><span class="legend-dot tag-dot"></span><span>{{ $t('search.tagLabel') }}</span></div>
                 </div>
                 <svg :width="searchGraphWidth" :height="searchGraphHeight" @mousedown="onSearchGraphMouseDown" @mousemove="onSearchGraphMouseMove" @mouseup="onSearchGraphMouseUp" @mouseleave="onSearchGraphMouseUp" @wheel.prevent="onSearchGraphWheel" style="cursor: grab;">
                   <defs>
@@ -340,7 +340,7 @@
                 </svg>
                 <div v-if="searchGraphNodes.length === 0" class="graph-empty">
                   <ShareAltOutlined style="font-size: 32px; color: var(--kb-fg-mute);" />
-                  <p style="margin-top: 12px; color: var(--kb-fg-3);">先执行搜索，再查看关联图谱</p>
+                  <p style="margin-top: 12px; color: var(--kb-fg-3);">{{ $t('search.searchFirst') }}</p>
                 </div>
               </div>
               <!-- Graph node detail -->
@@ -353,19 +353,19 @@
                   </div>
                   <div>
                     <h3 class="sgd-name">{{ searchGraphNodeSelected.label }}</h3>
-                    <a-tag size="small" :class="`type-tag type-${searchGraphNodeSelected.type}`">{{ searchGraphNodeSelected.type === 'kb' ? '知识库' : searchGraphNodeSelected.type === 'document' ? '文档' : '标签' }}</a-tag>
+                    <a-tag size="small" :class="`type-tag type-${searchGraphNodeSelected.type}`">{{ searchGraphNodeSelected.type === 'kb' ? $t('search.typeKb') : searchGraphNodeSelected.type === 'document' ? $t('search.typeDoc') : $t('search.typeTag') }}</a-tag>
                   </div>
                 </div>
                 <div v-if="searchGraphNodeSelected.description" class="sgd-desc">{{ searchGraphNodeSelected.description }}</div>
-                <div v-if="searchGraphNodeSelected.kb_name" class="sgd-meta"><span class="meta-label">知识库</span><span>{{ searchGraphNodeSelected.kb_name }}</span></div>
-                <div v-if="searchGraphNodeSelected.path" class="sgd-meta"><span class="meta-label">路径</span><span class="mono-path">{{ searchGraphNodeSelected.path }}</span></div>
-                <div v-if="searchGraphNodeSelected.score !== undefined" class="sgd-meta"><span class="meta-label">检索得分</span><span>{{ searchGraphNodeSelected.score.toFixed(4) }}</span></div>
+                <div v-if="searchGraphNodeSelected.kb_name" class="sgd-meta"><span class="meta-label">{{ $t('search.metaKb') }}</span><span>{{ searchGraphNodeSelected.kb_name }}</span></div>
+                <div v-if="searchGraphNodeSelected.path" class="sgd-meta"><span class="meta-label">{{ $t('search.path') }}</span><span class="mono-path">{{ searchGraphNodeSelected.path }}</span></div>
+                <div v-if="searchGraphNodeSelected.score !== undefined" class="sgd-meta"><span class="meta-label">{{ $t('search.score') }}</span><span>{{ searchGraphNodeSelected.score.toFixed(4) }}</span></div>
                 <div v-if="searchGraphNodeSelected.tags && searchGraphNodeSelected.tags.length" class="sgd-meta">
-                  <span class="meta-label">标签</span>
+                  <span class="meta-label">{{ $t('search.tagLabel') }}</span>
                   <div class="sgd-tags"><a-tag v-for="t in searchGraphNodeSelected.tags" :key="t" color="green" size="small">{{ t }}</a-tag></div>
                 </div>
                 <div class="sgd-related" v-if="searchGraphRelatedNodes.length > 0">
-                  <div class="sgd-related-title"><ShareAltOutlined /> 关联节点 ({{ searchGraphRelatedNodes.length }})</div>
+                  <div class="sgd-related-title"><ShareAltOutlined /> Related Nodes ({{ searchGraphRelatedNodes.length }})</div>
                   <div class="sgd-related-list">
                     <div v-for="rn in searchGraphRelatedNodes" :key="rn.id" class="sgd-related-item" @click="searchGraphNodeSelected = rn">
                       <div class="sgd-related-icon" :class="`icon-${rn.type}`">
@@ -380,8 +380,8 @@
               </aside>
               <aside class="search-graph-detail search-graph-empty" v-else>
                 <ShareAltOutlined style="font-size: 32px; color: var(--kb-primary); background: var(--kb-primary-soft); width: 64px; height: 64px; border-radius: 20px; display: grid; place-items: center;" />
-                <p style="font-size: 15px; color: var(--kb-fg-2); font-weight: 600; margin: 16px 0 4px;">点击图谱节点查看详情</p>
-                <p style="font-size: 13px; color: var(--kb-fg-mute); margin: 0;">文档、知识库、标签的关联关系一目了然</p>
+                <p style="font-size: 15px; color: var(--kb-fg-2); font-weight: 600; margin: 16px 0 4px;">Click a graph node to view details</p>
+                <p style="font-size: 13px; color: var(--kb-fg-mute); margin: 0;">Document, KB, and tag relationships at a glance</p>
               </aside>
             </div>
           </div>
@@ -417,6 +417,7 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { message } from 'ant-design-vue'
 import {
@@ -435,6 +436,8 @@ import type { GraphData, GraphNode } from '~/composables/useKbGraph'
 import { renderMarkdown } from '~/utils/markdown'
 import { useMarkdownRenderer } from '~/composables/useMarkdownRenderer'
 import 'katex/dist/katex.min.css'
+const { t } = useI18n()
+
 
 type View = 'catalog' | 'kb-docs' | 'results'
 
@@ -469,10 +472,9 @@ const view = ref<View>('catalog')
 const searchQuery = ref('')
 const searchMode = ref<SearchMode>('two-stage')
 const selectedKbId = ref<string | undefined>(undefined)
-const topK = ref(10)
+const balanceKbs = ref(true)  // Enable cross-KB balancing to prevent large KB dominance
 const bm25TopK = ref(20)
 const autoVerifyContent = ref(false)
-const balanceKbs = ref(true)  // 默认开启跨库均衡，防大KB主导
 const selectedTag = ref<string>('')
 const searchDuration = ref(0)
 
@@ -534,9 +536,9 @@ watch([renderedPreview, previewOpen], () => {
 })
 
 const modeLabels: Record<SearchMode, string> = {
-  'two-stage': 'BM25 + 向量',
-  'vector': '向量语义',
-  'keyword': 'BM25 关键词',
+  'two-stage': 'BM25 + Vector',
+  'vector': 'Vector Semantic',
+  'keyword': 'BM25 Keyword',
 }
 const modeColors: Record<SearchMode, string> = {
   'two-stage': 'geekblue',
@@ -621,10 +623,10 @@ const handleSearch = async () => {
 
     // Auto content verification
     if (autoVerifyContent.value && searchResults.value.length > 0) {
-      await verifyResults(q)
+      await runAutoVerification()
     }
   } catch (err: any) {
-    message.error(err.message || '检索失败')
+    message.error(err.message || 'Search failed')
   } finally {
     loading.value = false
   }
@@ -754,17 +756,16 @@ const verifyResults = async (query: string) => {
       const res = await docManager.readDocument(path, { limit: 50, maxChars: 5000 })
       const content = (res.content || '').toLowerCase()
       const hasKeyword = keywords.some(kw => content.includes(kw))
-      const hasContent = content.length > 100
-
+      const hasContent = content.length > 50
       if (hasKeyword && hasContent) {
-        verificationMap.value[path] = { relevant: true, reason: '内容包含关键词，验证通过' }
+        verificationMap.value[path] = { relevant: true, reason: 'Content contains keywords - verified' }
       } else if (hasContent) {
-        verificationMap.value[path] = { relevant: true, reason: '内容充实，语义可能相关' }
+        verificationMap.value[path] = { relevant: true, reason: 'Content is substantial, likely relevant' }
       } else {
-        verificationMap.value[path] = { relevant: false, reason: '内容过短或无关键词匹配' }
+        verificationMap.value[path] = { relevant: false, reason: 'Content too short or no keyword match' }
       }
     } catch {
-      verificationMap.value[path] = { relevant: false, reason: '无法读取文档内容' }
+      verificationMap.value[path] = { relevant: false, reason: 'Unable to read document content' }
     }
   }
 }
@@ -857,10 +858,9 @@ const loadPreview = async () => {
       maxChars: 30000,
     })
     previewContent.value += res.content
-    previewTruncated.value = res.truncated
     previewOffset.value += 200
   } catch (err: any) {
-    message.error(err?.message || '加载文档失败')
+    message.error(err?.message || 'Failed to load document')
     previewOpen.value = false
   } finally {
     previewLoading.value = false
@@ -873,9 +873,9 @@ const handleReindex = async () => {
   reindexing.value = true
   try {
     const res = await advancedSearch.reindex({ force: false })
-    message.success(res.message || '索引重建成功')
+    message.success(res.message || t('search.rebuildSuccess') || 'Index rebuilt successfully')
   } catch (err: any) {
-    message.error(err.message || '重建索引失败')
+    message.error(err.message || t('search.rebuildFailed') || 'Failed to rebuild index')
   } finally {
     reindexing.value = false
   }
@@ -883,12 +883,11 @@ const handleReindex = async () => {
 
 onMounted(async () => {
   try {
-    catalog.value = await docManager.fetchCatalog()
     allTags.value = await docManager.fetchAllTags()
+    catalog.value = await docManager.fetchCatalog()
   } catch (err: any) {
-    message.error(err?.message || '初始化失败，请检查后端服务')
+    message.error(err?.message || t('search.initFailed') || 'Initialization failed, check backend service')
   }
-  // Initialize search graph canvas size
   if (searchGraphContainerRef.value) {
     const rect = searchGraphContainerRef.value.getBoundingClientRect()
     searchGraphWidth.value = rect.width

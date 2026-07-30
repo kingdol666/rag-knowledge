@@ -82,24 +82,24 @@
       <div v-show="activeView === 'full'" class="graph-layout">
         <div class="graph-canvas-wrapper">
           <div class="graph-toolbar">
-            <a-tooltip title="放大"><a-button type="text" size="small" class="tool-btn" @click="zoomIn"><ZoomInOutlined /></a-button></a-tooltip>
-            <a-tooltip title="缩小"><a-button type="text" size="small" class="tool-btn" @click="zoomOut"><ZoomOutOutlined /></a-button></a-tooltip>
-            <a-tooltip title="重置视图"><a-button type="text" size="small" class="tool-btn" @click="resetView"><CompressOutlined /></a-button></a-tooltip>
+            <a-tooltip :title="$t('graph.zoomIn')"><a-button type="text" size="small" class="tool-btn" @click="zoomIn"><ZoomInOutlined /></a-button></a-tooltip>
+            <a-tooltip :title="$t('graph.zoomOut')"><a-button type="text" size="small" class="tool-btn" @click="zoomOut"><ZoomOutOutlined /></a-button></a-tooltip>
+            <a-tooltip :title="$t('graph.resetView')"><a-button type="text" size="small" class="tool-btn" @click="resetView"><CompressOutlined /></a-button></a-tooltip>
             <a-divider type="vertical" />
-            <a-tooltip title="自动适配"><a-button type="text" size="small" class="tool-btn" @click="fitView"><ExpandOutlined /></a-button></a-tooltip>
-            <a-tooltip title="重新布局"><a-button type="text" size="small" class="tool-btn" @click="restartSimulation"><ReloadOutlined /></a-button></a-tooltip>
+            <a-tooltip :title="$t('graph.fitView')"><a-button type="text" size="small" class="tool-btn" @click="fitView"><ExpandOutlined /></a-button></a-tooltip>
+            <a-tooltip :title="$t('graph.relayout')"><a-button type="text" size="small" class="tool-btn" @click="restartSimulation"><ReloadOutlined /></a-button></a-tooltip>
           </div>
 
           <div class="graph-legend">
             <div class="legend-item"><span class="legend-dot kb-dot"></span><span>{{ $t('graph.kbs') }}</span></div>
             <div class="legend-item"><span class="legend-dot doc-dot"></span><span>{{ $t('graph.docs') }}</span></div>
             <div class="legend-item"><span class="legend-dot tag-dot"></span><span>{{ $t('graph.tags') }}</span></div>
-            <div class="legend-item"><span class="legend-line shared-line"></span><span>共享标签</span></div>
-            <div class="legend-item"><span class="legend-line vector-line"></span><span>内容相似</span></div>
+            <div class="legend-item"><span class="legend-line shared-line"></span><span>{{ $t('graph.legend.shared') }}</span></div>
+            <div class="legend-item"><span class="legend-line vector-line"></span><span>{{ $t('graph.legend.similar') }}</span></div>
           </div>
 
           <div class="node-count-info" v-if="graphData.nodes.length > 0">
-            <span>显示 {{ renderedNodes.length }} / {{ graphData.nodes.length }} 个节点</span>
+            <span>{{ $t('graph.showNodes', { count: renderedNodes.length, total: graphData.nodes.length }) }}</span>
           </div>
 
           <div class="svg-container" ref="svgContainerRef">
@@ -120,11 +120,11 @@
                 </g>
               </g>
             </svg>
-            <div v-if="graphLoading" class="canvas-loading"><a-spin size="large" tip="构建知识图谱中..." /></div>
+            <div v-if="graphLoading" class="canvas-loading"><a-spin size="large" :tip="$t('graph.building')" /></div>
             <div v-if="!graphLoading && graphData.nodes.length === 0" class="canvas-empty">
-              <EmptyState :icon="ShareAltOutlined" title="暂无图谱数据">
+              <EmptyState :icon="ShareAltOutlined" :title="$t('graph.noGraphDataTitle')">
                 <template #action>
-                  <a-button type="primary" @click="handleRebuild"><BuildOutlined /><span>构建图谱</span></a-button>
+                  <a-button type="primary" @click="handleRebuild"><BuildOutlined /><span>{{ $t('graph.buildGraph') }}</span></a-button>
                 </template>
               </EmptyState>
             </div>
@@ -133,7 +133,7 @@
 
         <aside class="detail-panel">
           <div class="filter-section">
-            <a-input-search v-model:value="filterQuery" placeholder="过滤节点..." size="small" class="filter-input" allow-clear />
+            <a-input-search v-model:value="filterQuery" :placeholder="$t('graph.filterNodes')" size="small" class="filter-input" allow-clear />
             <div class="filter-tags">
               <a-tag-checkable v-model:checked="showKbNodes" class="filter-tag kb-filter">{{ $t('graph.kbs') }}</a-tag-checkable>
               <a-tag-checkable v-model:checked="showDocNodes" class="filter-tag doc-filter">{{ $t('graph.docs') }}</a-tag-checkable>
@@ -147,7 +147,7 @@
       <!-- ============ Document center view ============ -->
       <div v-show="activeView === 'doc-center'" class="doc-center-layout">
         <div class="doc-center-search">
-          <a-input-search v-model:value="docSearchQuery" placeholder="输入文档名称或路径关键词搜索..." enter-button="搜索文档" size="large" @search="handleDocSearch" :loading="docSearching" />
+          <a-input-search v-model:value="docSearchQuery" :placeholder="$t('graph.searchDocPlaceholder')" :enter-button="$t('graph.searchDocBtn')" size="large" @search="handleDocSearch" :loading="docSearching" />
           <div v-if="docSearchResults.length > 0" class="doc-search-results">
             <div v-for="doc in docSearchResults" :key="doc.doc_path || doc.path" class="doc-search-item" @click="loadDocumentGraph(doc.doc_path || doc.path)">
               <FileTextOutlined class="doc-search-icon" />
@@ -163,17 +163,17 @@
         <div v-if="docCenterGraph.nodes.length > 0" class="graph-layout">
           <div class="graph-canvas-wrapper">
             <div class="graph-toolbar">
-              <a-tooltip title="放大"><a-button type="text" size="small" class="tool-btn" @click="zoomIn"><ZoomInOutlined /></a-button></a-tooltip>
-              <a-tooltip title="缩小"><a-button type="text" size="small" class="tool-btn" @click="zoomOut"><ZoomOutOutlined /></a-button></a-tooltip>
+              <a-tooltip :title="$t('graph.zoomIn')"><a-button type="text" size="small" class="tool-btn" @click="zoomIn"><ZoomInOutlined /></a-button></a-tooltip>
+              <a-tooltip :title="$t('graph.zoomOut')"><a-button type="text" size="small" class="tool-btn" @click="zoomOut"><ZoomOutOutlined /></a-button></a-tooltip>
               <a-tooltip :title="$t('action.reset')"><a-button type="text" size="small" class="tool-btn" @click="resetView"><CompressOutlined /></a-button></a-tooltip>
               <a-divider type="vertical" />
-              <a-tooltip title="自动适配"><a-button type="text" size="small" class="tool-btn" @click="fitView"><ExpandOutlined /></a-button></a-tooltip>
+              <a-tooltip :title="$t('graph.fitView')"><a-button type="text" size="small" class="tool-btn" @click="fitView"><ExpandOutlined /></a-button></a-tooltip>
             </div>
             <div class="graph-legend">
               <div class="legend-item"><span class="legend-dot kb-dot"></span><span>{{ $t('graph.kbs') }}</span></div>
               <div class="legend-item"><span class="legend-dot doc-dot"></span><span>{{ $t('graph.docs') }}</span></div>
               <div class="legend-item"><span class="legend-dot tag-dot"></span><span>{{ $t('graph.tags') }}</span></div>
-              <div class="legend-item"><span class="legend-dot center-dot"></span><span>中心文档</span></div>
+              <div class="legend-item"><span class="legend-dot center-dot"></span><span>{{ $t('graph.centerDoc') }}</span></div>
             </div>
             <div class="svg-container" ref="docSvgContainerRef">
               <svg ref="docSvgRef" :width="canvasWidth" :height="canvasHeight" @mousedown="onCanvasMouseDown" @mousemove="onCanvasMouseMove" @mouseup="onCanvasMouseUp" @mouseleave="onCanvasMouseUp" @wheel.prevent="onWheel">
@@ -202,16 +202,16 @@
         <EmptyState
           v-else-if="!docSearching"
           :icon="FileSearchOutlined"
-          title="搜索并选择一个文档，查看其关联图谱"
-          hint="文档中心视图会展示该文档的KB归属、标签关联、跨KB连接"
+          :title="$t('graph.selectDocHint')"
+          :hint="$t('graph.selectDocDesc')"
         />
       </div>
 
       <!-- ============ Cross-KB analysis view ============ -->
       <div v-show="activeView === 'cross-kb'" class="cross-kb-layout">
         <div class="cross-kb-header">
-          <h3 class="section-subtitle">跨知识库桥梁文档</h3>
-          <p class="section-desc">通过共享标签或向量相似度关联到不同知识库的文档，是知识图谱中的关键桥梁节点</p>
+          <h3 class="section-subtitle">{{ $t('graph.crossKbBridge') }}</h3>
+          <p class="section-desc">{{ $t('graph.crossKbBridgeDesc') }}</p>
         </div>
         <a-spin :spinning="crossKbLoading">
           <div v-if="crossKbDocs.length > 0" class="cross-kb-grid">
@@ -225,12 +225,12 @@
               </div>
               <div class="cross-kb-card-body">
                 <div class="cross-kb-bridges">
-                  <span class="bridge-label">桥接知识库:</span>
+                  <span class="bridge-label">{{ $t('graph.bridgeKb') }}</span>
                   <a-tag v-for="kb in doc.bridging_kbs" :key="kb" color="blue" size="small">{{ kb }}</a-tag>
                 </div>
                 <div class="cross-kb-relation">
                   <span class="relation-badge" :class="`relation-${doc.relation_type}`">{{ doc.relation_type }}</span>
-                  <span class="related-count">{{ doc.related_docs }} 篇关联文档</span>
+                  <span class="related-count">{{ $t('graph.relatedDocs', { n: doc.related_docs }) }}</span>
                 </div>
                 <div class="cross-kb-tags" v-if="doc.tags && doc.tags.length">
                   <a-tag v-for="t in doc.tags.slice(0, 5)" :key="t" color="green" size="small">{{ t }}</a-tag>
@@ -241,8 +241,8 @@
           <EmptyState
             v-else-if="!crossKbLoading"
             :icon="SwapOutlined"
-            title="暂无跨KB桥梁文档"
-            hint="跨KB分析需要Neo4j图谱数据库支持"
+            :title="$t('graph.noCrossKb')"
+            :hint="$t('graph.neo4jUnavailable')"
           />
         </a-spin>
       </div>
@@ -250,13 +250,13 @@
       <!-- ============ Path discovery view ============ -->
       <div v-show="activeView === 'path'" class="path-layout">
         <div class="path-header">
-          <h3 class="section-subtitle">文档关联路径发现</h3>
-          <p class="section-desc">选择两个文档，发现它们在知识图谱中的最短关联路径</p>
+          <h3 class="section-subtitle">{{ $t('graph.pathDiscovery') }}</h3>
+          <p class="section-desc">{{ $t('graph.pathDiscoveryDesc') }}</p>
         </div>
         <div class="path-selector">
           <div class="path-input-group">
-            <label class="path-label">起点文档</label>
-            <a-input-search v-model:value="pathSearchA" placeholder="搜索起点文档..." @search="handlePathSearchA" size="default" />
+            <label class="path-label">{{ $t('graph.docA') }}</label>
+            <a-input-search v-model:value="pathSearchA" :placeholder="$t('graph.searchDocPlaceholder')" @search="handlePathSearchA" size="default" />
             <div v-if="pathResultsA.length > 0" class="path-search-results">
               <div v-for="doc in pathResultsA" :key="doc.doc_path || doc.path" class="path-search-item" :class="{ selected: pathDocA === (doc.doc_path || doc.path) }" @click="selectPathDoc('A', doc)">
                 <FileTextOutlined /> {{ doc.doc_name || doc.name || (doc.path || '').split(/[\\/]/).pop() }}
@@ -264,15 +264,15 @@
               </div>
             </div>
             <div v-if="pathDocA" class="path-selected">
-              <CheckCircleOutlined /> 已选择: {{ pathDocA }}
+              <CheckCircleOutlined /> {{ $t('graph.selected') }}: {{ pathDocA }}
             </div>
           </div>
           <div class="path-arrow">
             <ArrowRightOutlined />
           </div>
           <div class="path-input-group">
-            <label class="path-label">终点文档</label>
-            <a-input-search v-model:value="pathSearchB" placeholder="搜索终点文档..." @search="handlePathSearchB" size="default" />
+            <label class="path-label">{{ $t('graph.docB') }}</label>
+            <a-input-search v-model:value="pathSearchB" :placeholder="$t('graph.searchDocPlaceholder')" @search="handlePathSearchB" size="default" />
             <div v-if="pathResultsB.length > 0" class="path-search-results">
               <div v-for="doc in pathResultsB" :key="doc.doc_path || doc.path" class="path-search-item" :class="{ selected: pathDocB === (doc.doc_path || doc.path) }" @click="selectPathDoc('B', doc)">
                 <FileTextOutlined /> {{ doc.doc_name || doc.name || (doc.path || '').split(/[\\/]/).pop() }}
@@ -280,21 +280,21 @@
               </div>
             </div>
             <div v-if="pathDocB" class="path-selected">
-              <CheckCircleOutlined /> 已选择: {{ pathDocB }}
+              <CheckCircleOutlined /> {{ $t('graph.selected') }}: {{ pathDocB }}
             </div>
           </div>
         </div>
         <div class="path-action" v-if="pathDocA && pathDocB">
           <a-button type="primary" size="large" @click="findPath" :loading="pathFinding">
             <NodeIndexOutlined />
-            <span>发现关联路径</span>
+            <span>{{ $t('graph.findPath') }}</span>
           </a-button>
         </div>
         <div v-if="pathResult" class="path-result">
           <div v-if="pathResult.found && pathResult.path && pathResult.path.length > 0" class="path-chain">
             <div class="path-chain-header">
               <CheckCircleOutlined class="path-found-icon" />
-              <span>找到关联路径，共 {{ pathResult.length }} 步</span>
+              <span>{{ $t('graph.pathFound', { length: pathResult.length }) }}</span>
             </div>
             <div class="path-chain-list">
               <div v-for="(step, i) in pathResult.path" :key="i" class="path-step">
@@ -309,7 +309,7 @@
           </div>
           <div v-else class="path-not-found">
             <CloseCircleOutlined />
-            <span>未找到两个文档之间的关联路径（可能需要增加搜索深度或建立更多关联）</span>
+            <span>{{ $t('graph.pathNotFound') }}</span>
           </div>
         </div>
       </div>
@@ -319,6 +319,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted, watch, defineComponent, h } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { message } from 'ant-design-vue'
 import {
   ShareAltOutlined, ReloadOutlined, BuildOutlined,
@@ -341,13 +342,14 @@ const {
 
 // -- View mode --
 type ViewMode = 'full' | 'doc-center' | 'cross-kb' | 'path'
+const { t } = useI18n()
 const activeView = ref<ViewMode>('full')
-const viewTabs = [
-  { key: 'full' as ViewMode, label: '全局图谱', icon: ShareAltOutlined },
-  { key: 'doc-center' as ViewMode, label: '文档中心', icon: FileSearchOutlined },
-  { key: 'cross-kb' as ViewMode, label: '跨KB分析', icon: SwapOutlined },
-  { key: 'path' as ViewMode, label: '路径发现', icon: NodeIndexOutlined },
-]
+const viewTabs = computed(() => [
+  { key: 'full' as ViewMode, label: t('graph.graphView'), icon: ShareAltOutlined },
+  { key: 'doc-center' as ViewMode, label: t('graph.centralDocs'), icon: FileSearchOutlined },
+  { key: 'cross-kb' as ViewMode, label: t('graph.crossKbBridges'), icon: SwapOutlined },
+  { key: 'path' as ViewMode, label: t('graph.pathBetween'), icon: NodeIndexOutlined },
+])
 
 // -- Global graph data --
 const graphData = ref<GraphData>({ nodes: [], edges: [] })
@@ -419,16 +421,17 @@ const NodeDetailPanel = defineComponent({
   },
   emits: ['select'],
   setup(props, { emit }) {
+    const { t } = useI18n()
     return () => {
       if (!props.node) {
         return h('div', { class: 'no-selection' }, [
           h('div', { class: 'no-sel-icon' }, h(ShareAltOutlined)),
-          h('p', { class: 'no-sel-text' }, '点击图谱节点查看详情'),
-          h('p', { class: 'no-sel-hint' }, '支持拖拽、缩放、点击交互'),
+          h('p', { class: 'no-sel-text' }, t('graph.clickNodeHint')),
+          h('p', { class: 'no-sel-hint' }, t('graph.clickNodeHintDesc')),
         ])
       }
       const n = props.node
-      const typeLabel = n.type === 'kb' ? '知识库' : n.type === 'document' ? '文档' : '标签'
+      const typeLabel = n.type === 'kb' ? t('graph.kbs') : n.type === 'document' ? t('graph.docs') : t('graph.tags')
       const typeIcon = n.type === 'kb' ? h(DatabaseOutlined) : n.type === 'document' ? h(FileTextOutlined) : h(TagOutlined)
       return h('div', { class: 'node-detail' }, [
         h('div', { class: 'detail-header' }, [
@@ -441,30 +444,30 @@ const NodeDetailPanel = defineComponent({
         n.description ? h('div', { class: 'detail-desc' }, n.description) : null,
         h('div', { class: 'detail-meta' }, [
           n.kb_name ? h('div', { class: 'meta-item' }, [
-            h('span', { class: 'meta-label' }, '所属知识库'),
+            h('span', { class: 'meta-label' }, t('graph.belongsToKb')),
             h('span', { class: 'meta-value' }, n.kb_name),
           ]) : null,
           n.doc_count !== undefined ? h('div', { class: 'meta-item' }, [
-            h('span', { class: 'meta-label' }, '文档数'),
+            h('span', { class: 'meta-label' }, t('graph.docCountLabel')),
             h('span', { class: 'meta-value' }, String(n.doc_count)),
           ]) : null,
           n.path ? h('div', { class: 'meta-item' }, [
-            h('span', { class: 'meta-label' }, '路径'),
+            h('span', { class: 'meta-label' }, t('graph.path')),
             h('span', { class: 'meta-value mono-path' }, n.path),
           ]) : null,
           n.score !== undefined ? h('div', { class: 'meta-item' }, [
-            h('span', { class: 'meta-label' }, '得分'),
+            h('span', { class: 'meta-label' }, t('graph.score')),
             h('span', { class: 'meta-value' }, n.score.toFixed(4)),
           ]) : null,
           n.tags && n.tags.length ? h('div', { class: 'meta-item' }, [
-            h('span', { class: 'meta-label' }, '标签'),
+            h('span', { class: 'meta-label' }, t('graph.tags')),
             h('div', { class: 'meta-tags' }, n.tags.map((t: string) => h('a-tag', { key: t, color: 'green' }, t))),
           ]) : null,
         ]),
         h('div', { class: 'related-section' }, [
           h('div', { class: 'related-title' }, [
             h(ShareAltOutlined),
-            h('span', `关联节点 (${props.relatedNodes.length})`),
+            h('span', t('graph.relatedNodes', { n: props.relatedNodes.length })),
           ]),
           h('div', { class: 'related-list' }, [
             ...props.relatedNodes.map(rn => h('div', {
@@ -474,9 +477,9 @@ const NodeDetailPanel = defineComponent({
                 rn.type === 'kb' ? h(DatabaseOutlined) : rn.type === 'document' ? h(FileTextOutlined) : h(TagOutlined)
               ),
               h('span', { class: 'related-name' }, rn.label),
-              h('span', { class: 'related-type' }, rn.type === 'kb' ? '知识库' : rn.type === 'document' ? '文档' : '标签'),
+              h('span', { class: 'related-type' }, rn.type === 'kb' ? t('graph.kbs') : rn.type === 'document' ? t('graph.docs') : t('graph.tags')),
             ])),
-            props.relatedNodes.length === 0 ? h('div', { class: 'related-empty' }, '无关联节点') : null,
+            props.relatedNodes.length === 0 ? h('div', { class: 'related-empty' }, t('graph.noRelated')) : null,
           ]),
         ]),
       ])
@@ -570,7 +573,7 @@ const initSimulation = () => {
   const limitedEdges = graphData.value.edges.filter(e => validIds.has(e.source) && validIds.has(e.target))
   if (limited.length < nodes.length) {
     graphData.value = { nodes: limited, edges: limitedEdges }
-    message.info(`节点数量较多，仅显示前 ${maxNodes} 个节点`)
+    message.info(t('graph.tooManyNodes', { max: maxNodes }))
   }
   simNodes.value = limited.map(n => ({ ...n, x: W / 2 + (Math.random() - 0.5) * 300, y: H / 2 + (Math.random() - 0.5) * 300, vx: 0, vy: 0, fx: null, fy: null }))
   startSimulation()
@@ -736,8 +739,8 @@ const handleDocSearch = async () => {
   try {
     const res = await searchGraph(q, 'documents', { limit: 20 })
     docSearchResults.value = res.documents || []
-    if (docSearchResults.value.length === 0) message.info('未找到匹配文档')
-  } catch { message.error('搜索失败') }
+    if (docSearchResults.value.length === 0) message.info(t('graph.docNotFound'))
+  } catch { message.error(t('graph.searchFailed')) }
   finally { docSearching.value = false }
 }
 const loadDocumentGraph = async (docPath: string) => {
@@ -764,8 +767,8 @@ const loadDocumentGraph = async (docPath: string) => {
     startDocCenterSimulation()
     // Switch to doc-center view if not already
     if (activeView.value !== 'doc-center') activeView.value = 'doc-center'
-    message.success(`已加载文档关联图谱: ${docPath.split(/[\\/]/).pop()}`)
-  } catch { message.error('加载文档图谱失败') }
+    message.success(t('graph.docGraphLoaded', { name: docPath.split(/[\\/]/).pop() || '' }))
+  } catch { message.error(t('graph.docGraphLoadFailed')) }
 }
 
 // ——— Cross-KB analysis ———
@@ -774,7 +777,7 @@ const loadCrossKbDocs = async () => {
   try {
     crossKbDocs.value = await getCrossKbDocuments(50)
   } catch {
-    message.warning('跨KB分析需要Neo4j支持，当前不可用')
+    message.warning(t('graph.neo4jRequired'))
     crossKbDocs.value = []
   }
   finally { crossKbLoading.value = false }
@@ -806,9 +809,9 @@ const findPath = async () => {
   try {
     pathResult.value = await findDocumentPaths(pathDocA.value, pathDocB.value, 4)
     if (pathResult.value && !pathResult.value.found) {
-      message.info('未找到关联路径，尝试增加搜索深度或选择其他文档')
+      message.info(t('graph.pathNotFound'))
     }
-  } catch { message.error('路径查找失败') }
+  } catch { message.error(t('graph.pathFindFailed')) }
   finally { pathFinding.value = false }
 }
 
@@ -822,10 +825,10 @@ const loadGraph = async () => {
     graphData.value = data
     initSimulation()
     try { stats.value = await fetchStats() } catch {}
-  } catch (err: any) { message.error(err.message || '加载图谱失败') }
+  } catch (err: any) { message.error(err.message || t('graph.loadFailed')) }
   finally { graphLoading.value = false }
 }
-const handleRefresh = () => { loadGraph(); message.info('正在刷新图谱...') }
+const handleRefresh = () => { loadGraph(); message.info(t('graph.refreshing')) }
 const handleRebuild = async () => {
   rebuilding.value = true
   try {
@@ -834,10 +837,10 @@ const handleRebuild = async () => {
       const r = result?.result || {}
       const p2 = r?.phase2_vector_similarity || {}
       const p3 = r?.phase3_kb_relations || {}
-      message.success(`图谱重建成功！\n文档: ${r?.phase1_metadata?.docs_processed || 0}篇\n向量关联: ${p2.total_edges || 0}条 (跨库${p2.cross_kb_edges || 0}条)\nKB间关联: ${p3.total_kb_pairs || 0}对`, 8)
+      message.success(t('graph.rebuildSuccess', { docs: r?.phase1_metadata?.docs_processed || 0, edges: p2.total_edges || 0, cross: p2.cross_kb_edges || 0, pairs: p3.total_kb_pairs || 0 }), 8)
       await loadGraph()
-    } else { message.warning('后端图谱构建返回异常，已重新加载本地图谱'); await loadGraph() }
-  } catch (err: any) { message.warning(err.message || '后端图谱构建失败，已重新加载本地图谱'); await loadGraph() }
+    } else { message.warning(t('graph.rebuildAbnormal')); await loadGraph() }
+  } catch (err: any) { message.warning(err.message || t('graph.rebuildFailed')); await loadGraph() }
   finally { rebuilding.value = false }
 }
 

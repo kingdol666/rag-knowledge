@@ -17,9 +17,9 @@
         </a-tag>
         <a-tag v-if="effective.vector_enabled" color="cyan"><ThunderboltOutlined /> {{ $t('settings.vectorSearch') }}</a-tag>
         <a-tag v-if="effective.graph_enabled" color="purple"><ShareAltOutlined /> {{ $t('settings.knowledgeGraph') }}</a-tag>
-        <a-tag v-if="effective.mineru_enabled" color="orange"><FileTextOutlined /> MinerU</a-tag>
+        <a-tag v-if="effective.mineru_enabled" color="orange"><FileTextOutlined /> {{ $t('settings.mineru') }}</a-tag>
         <a-button @click="loadConfig" :loading="loading" class="reload-btn">
-          <ReloadOutlined />刷新
+          <ReloadOutlined />{{ $t('settings.refresh') }}
         </a-button>
       </div>
     </div>
@@ -166,7 +166,7 @@
                         <a-button
                           v-if="item.size_bytes > 0"
                           size="small"
-                          :danger="item.name === '模型缓存'"
+                          :danger="item.name === t('settings.modelCache')"
                           type="primary"
                           :loading="cleanupRunning === item.name"
                           :disabled="cleanupRunning !== null"
@@ -180,22 +180,46 @@
                   </tbody>
                 </table>
 
+                <!-- MinerU output entries -->
+                <div v-if="mineruEntries.length > 0" class="mineru-entries-section">
+                  <div class="mineru-entries-header">
+                    <span class="mineru-entries-title">{{ $t('settings.mineruEntries', { count: mineruEntries.length }) }}</span>
+                    <span class="mineru-entries-total">{{ formatBytes(mineruTotalSize) }}</span>
+                  </div>
+                  <table class="cleanup-table mineru-table">
+                    <thead>
+                      <tr>
+                        <th>{{ $t('settings.parsedDoc') }}</th>
+                        <th>{{ $t('settings.cleanupSize') }}</th>
+                        <th>{{ $t('settings.createdAt') }}</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="entry in mineruEntries.slice(0, 20)" :key="entry.id">
+                        <td class="item-name">{{ entry.filename }}</td>
+                        <td class="item-size">{{ entry.size_human }}</td>
+                        <td class="item-date">{{ formatDate(entry.created_at) }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
                 <!-- Empty state -->
                 <a-empty
                   v-if="!cleanupScanning && cleanupItems.length === 0"
-                  description="点击「扫描」查看可清理的缓存"
+                  :description="$t('settings.cleanupEmptyDesc')"
                 />
 
                 <!-- Total freed -->
                 <div v-if="cleanupFreed > 0" class="cleanup-result">
                   <CheckCircleOutlined class="result-icon" />
-                  <span class="result-text">已释放 {{ formatBytes(cleanupFreed) }} 磁盘空间</span>
+                  <span class="result-text">{{ $t('settings.cleanupFreed', { size: formatBytes(cleanupFreed) }) }}</span>
                 </div>
 
                 <!-- Model cache warning -->
                 <div class="cleanup-warning" v-if="cleanupModelSize > 0">
                   <ExclamationCircleOutlined />
-                  <span>模型缓存（{{ formatBytes(cleanupModelSize) }}）包含 BGE-M3 嵌入模型和 MinerU OCR 模型，清理后首次使用需重新下载。</span>
+                  <span>{{ $t('settings.cleanupModelWarning', { size: formatBytes(cleanupModelSize) }) }}</span>
                 </div>
               </a-spin>
             </div>
@@ -209,12 +233,12 @@
       <div v-if="hasChanges" class="action-bar">
         <div class="action-info">
           <ExclamationCircleOutlined class="action-icon" />
-          <span>有 {{ changedCount }} 项配置已修改，保存后将自动持久化并热生效</span>
+          <span>{{ $t('settings.changesInfo', { n: changedCount }) }}</span>
         </div>
         <div class="action-buttons">
-          <a-button @click="discardChanges" :disabled="saving">放弃修改</a-button>
+          <a-button @click="discardChanges" :disabled="saving">{{ $t('settings.discard') }}</a-button>
           <a-button type="primary" @click="saveConfig" :loading="saving" class="save-btn">
-            <CheckOutlined />保存并热生效
+            <CheckOutlined />{{ $t('settings.saveAndHot') }}
           </a-button>
         </div>
       </div>
@@ -223,6 +247,7 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { ref, reactive, computed, onMounted, watch, defineComponent, h } from 'vue'
 import { message } from 'ant-design-vue'
 import {
@@ -231,6 +256,8 @@ import {
   CodeOutlined, ReloadOutlined, CheckOutlined, ExclamationCircleOutlined,
   DeleteOutlined, CheckCircleOutlined, ClearOutlined, BulbOutlined,
 } from '@ant-design/icons-vue'
+
+const { t } = useI18n()
 
 // ── Types ──────────────────────────────────────────────────────────────
 interface ConfigField {
@@ -328,6 +355,35 @@ function setConfigValue(section: string, groupKey: string, subKey: string | unde
   }
 }
 
+// ── Schema Translation ──────────────────────────────────────────────────
+// Translate backend schema labels/descriptions using i18n
+function translateSchema(schema: Record<string, any>) {
+  const translated: Record<string, any> = {}
+  for (const [sectionKey, section] of Object.entries(schema)) {
+    const sec: any = { ...section }
+    const sl = t(`settings.sections.${sectionKey}.label`)
+    const sd = t(`settings.sections.${sectionKey}.desc`)
+    if (sl !== `settings.sections.${sectionKey}.label`) sec.label = sl
+    if (sd !== `settings.sections.${sectionKey}.desc`) sec.description = sd
+    if (sec.fields) sec.fields = translateFields(sec.fields)
+    translated[sectionKey] = sec
+  }
+  return translated
+}
+function translateFields(fields: Record<string, any>): Record<string, any> {
+  const result: Record<string, any> = {}
+  for (const [fieldKey, field] of Object.entries(fields)) {
+    const f: any = { ...field }
+    const fl = t(`settings.fields.${fieldKey}.label`)
+    const fd = t(`settings.fields.${fieldKey}.desc`)
+    if (fl !== `settings.fields.${fieldKey}.label`) f.label = fl
+    if (fd !== `settings.fields.${fieldKey}.desc`) f.description = fd
+    if (f.fields) f.fields = translateFields(f.fields)
+    result[fieldKey] = f
+  }
+  return result
+}
+
 // ── API ────────────────────────────────────────────────────────────────
 async function loadConfig() {
   loading.value = true
@@ -346,8 +402,8 @@ async function loadConfig() {
       originalEnv.value = { ...res.env }
 
       // Schema
-      schema.value = res.schema || {}
-      envSchema.value = res.env_schema || { label: '', icon: '', description: '', fields: {} }
+      schema.value = translateSchema(res.schema || {})
+      const envRaw = res.env_schema || { label: '', icon: '', description: '', fields: {} }
 
       // Effective values
       if (res.effective) {
@@ -360,7 +416,7 @@ async function loadConfig() {
       }
     }
   } catch (e: any) {
-    message.error('加载配置失败: ' + (e.message || e))
+    message.error(t('settings.loadFailed') + ': ' + (e.message || e))
   } finally {
     loading.value = false
   }
@@ -404,23 +460,23 @@ async function saveConfig() {
         effective.mineru_enabled = freshCfg.mineru_enabled
 
         if (needsReload) {
-          message.success('配置已保存并热生效！存储路径变更需要刷新页面。', 5)
+          message.success(t('settings.hotApplied'), 5)
           // Auto-reload after 2 seconds to let the user see the message
           setTimeout(() => {
             window.location.reload()
           }, 2000)
         } else {
-          message.success('配置已保存并热生效！前后端均已刷新。')
+          message.success(t('settings.hotApplied'))
         }
       } catch {
         // Config refresh failed, but the save itself succeeded
-        message.success('配置已保存并热生效！（前端配置刷新失败，可能需要手动刷新页面）')
+        message.success(t('settings.hotApplied'))
       }
     } else {
-      message.error('保存失败')
+      message.error(t('settings.saveFailed'))
     }
   } catch (e: any) {
-    message.error('保存配置失败: ' + (e.message || e))
+    message.error(t('settings.saveConfigFailed') + ': ' + (e.message || e))
   } finally {
     saving.value = false
   }
@@ -433,7 +489,7 @@ function discardChanges() {
   Object.keys(envData).forEach(k => delete envData[k])
   Object.assign(envData, { ...originalEnv.value })
 
-  message.info('已放弃修改')
+  message.info(t('settings.changesDiscarded'))
 }
 
 // ── Cleanup ──────────────────────────────────────────────────────────────
@@ -451,6 +507,16 @@ const cleanupRunning = ref<string | null>(null)
 const cleanupItems = ref<CleanItem[]>([])
 const cleanupFreed = ref(0)
 const cleanupModelSize = ref(0)
+const mineruEntries = ref<any[]>([])
+const mineruTotalSize = computed(() => mineruEntries.value.reduce((s: number, e: any) => s + (e.size_bytes || 0), 0))
+
+function formatDate(iso: string): string {
+  if (!iso) return '-'
+  try {
+    const d = new Date(iso)
+    return d.toLocaleDateString() + ' ' + d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  } catch { return iso }
+}
 
 function formatBytes(b: number): string {
   if (b < 1024) return `${b} B`
@@ -468,11 +534,12 @@ async function scanCleanup() {
       body: { scope: 'all', dry_run: true },
     })
     cleanupItems.value = res.items || []
+    mineruEntries.value = res.mineru_entries || []
     // Track model cache size
-    const modelItem = cleanupItems.value.find((i: CleanItem) => i.name === '模型缓存')
+    const modelItem = cleanupItems.value.find((i: CleanItem) => i.name === t('settings.modelCache'))
     cleanupModelSize.value = modelItem?.size_bytes || 0
   } catch (e: any) {
-    message.error('扫描失败: ' + (e.message || '后端未响应'))
+    message.error(t('settings.scanFailure', { msg: e.message || 'Backend not responding' }))
     cleanupItems.value = []
   } finally {
     cleanupScanning.value = false
@@ -482,16 +549,16 @@ async function scanCleanup() {
 async function doClean(item: CleanItem) {
   // Map item name to scope
   const scopeMap: Record<string, string> = {
-    'MinerU 解析产物': 'mineru',
-    '服务日志': 'logs',
-    'Python 缓存': 'pycache',
-    '模型缓存': 'model',
+    [t('settings.mineruCache')]: 'mineru',
+    [t('settings.serviceLogs')]: 'logs',
+    [t('settings.pythonCache')]: 'pycache',
+    [t('settings.modelCache')]: 'model',
   }
   const scope = scopeMap[item.name] || 'mineru'
 
   // Model cache requires double confirmation
   if (scope === 'model') {
-    if (!confirm(`⚠️ 确认清理模型缓存 (${item.size_human})？\n\n清理后首次向量索引或 PDF 解析需要重新下载模型（~4GB）。`)) {
+    if (!confirm(t('settings.confirmCleanModel', { size: item.size_human }))) {
       return
     }
   }
@@ -504,14 +571,14 @@ async function doClean(item: CleanItem) {
     })
     if (res.success) {
       cleanupFreed.value += res.total_freed_bytes || 0
-      message.success(`${item.name}已清理 — 释放 ${res.total_freed_human}`)
+      message.success(t('settings.cleanedSuccess', { name: item.name, freed: res.total_freed_human }))
       // Rescan
       await scanCleanup()
     } else {
-      message.error(res.note || '清理失败')
+      message.error(res.note || t('settings.cleanFailure', { msg: 'unknown' }))
     }
   } catch (e: any) {
-    message.error('清理失败: ' + (e.message || '后端未响应'))
+    message.error(t('settings.cleanFailure', { msg: e.message || 'Backend not responding' }))
   } finally {
     cleanupRunning.value = null
   }
@@ -540,13 +607,34 @@ const sectionsWithEnv = computed(() => {
     }
   }
   (result as any).__cleanup = {
-    label: '存储管理',
+    label: t('settings.cleanupTitle'),
     icon: 'ClearOutlined',
-    description: '清理缓存与 MinerU 解析产物',
+    description: t('settings.cleanupDesc'),
   }
   return result
 })
 
+
+async function cleanAllSafe() {
+  if (!confirm(t('settings.cleanAllSafeConfirm'))) return
+  cleanupRunning.value = '__all__'
+  let totalFreed = 0
+  const scopes = ['mineru', 'logs', 'pycache']
+  for (const scope of scopes) {
+    try {
+      const res = await $fetch<any>('/api/system/clean', {
+        method: 'POST',
+        body: { scope, force: true },
+      })
+      if (res.success) totalFreed += res.total_freed_bytes || 0
+    } catch (e: any) {
+      message.error(scope + ': ' + (e?.message || e))
+    }
+  }
+  message.success(t('settings.cleanAllSuccess', { size: formatBytes(totalFreed) }))
+  cleanupRunning.value = null
+  await scanCleanup()
+}
 
 // ── ConfigField Component ──────────────────────────────────────────────
 const ConfigField = defineComponent({
@@ -583,7 +671,7 @@ const ConfigField = defineComponent({
             h('span', { class: 'toggle-track' }, [
               h('span', { class: 'toggle-thumb' }),
             ]),
-            h('span', { class: 'toggle-label' }, val ? '已开启' : '已关闭'),
+            h('span', { class: 'toggle-label' }, val ? t('settings.enabled') : t('settings.disabled')),
           ]),
         ])
       } else if (f.type === 'select') {
@@ -593,7 +681,7 @@ const ConfigField = defineComponent({
           onChange: (e: Event) => onChange((e.target as HTMLSelectElement).value),
         }, [
           ...(f.options || []).map((opt: string) =>
-            h('option', { value: opt, selected: opt === val }, opt || '(不设置)')
+            h('option', { value: opt, selected: opt === val }, opt || t('settings.notSet'))
           ),
         ])
       } else if (f.type === 'int') {
@@ -650,7 +738,7 @@ const ConfigField = defineComponent({
           h('input', {
             class: 'field-input list-add-input',
             type: 'text',
-            placeholder: '输入值后按回车添加',
+            placeholder: t('settings.inputPlaceholder'),
             onKeydown: (e: KeyboardEvent) => {
               if (e.key === 'Enter') {
                 e.preventDefault()
@@ -679,11 +767,11 @@ const ConfigField = defineComponent({
           h('label', { class: 'field-label' }, f.label),
           h('div', { class: 'field-desc' }, f.description),
           h('div', { class: 'field-meta' }, [
-            f.default !== undefined ? h('span', { class: 'meta-tag default-tag' }, `默认: ${typeof f.default === 'boolean' ? (f.default ? 'true' : 'false') : f.default}`) : null,
-            f.min !== undefined ? h('span', { class: 'meta-tag' }, `最小: ${f.min}`) : null,
-            f.max !== undefined ? h('span', { class: 'meta-tag' }, `最大: ${f.max}`) : null,
-            f.env_only ? h('span', { class: 'meta-tag env-tag' }, '环境变量') : null,
-            f.optional ? h('span', { class: 'meta-tag optional-tag' }, '可选') : null,
+            f.default !== undefined ? h('span', { class: 'meta-tag default-tag' }, t('settings.defaultVal', { val: typeof f.default === 'boolean' ? (f.default ? 'true' : 'false') : f.default })) : null,
+            f.min !== undefined ? h('span', { class: 'meta-tag' }, t('settings.minVal', { val: f.min })) : null,
+            f.max !== undefined ? h('span', { class: 'meta-tag' }, t('settings.maxVal', { val: f.max })) : null,
+            f.env_only ? h('span', { class: 'meta-tag env-tag' }, t('settings.envVarTag')) : null,
+            f.optional ? h('span', { class: 'meta-tag optional-tag' }, t('settings.optionalTag')) : null,
           ].filter(Boolean)),
         ]),
         h('div', { class: 'field-control' }, input),

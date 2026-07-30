@@ -548,7 +548,9 @@ const navigateToFileSystem = () => {
 const scrollToFeatures = () => {
   const element = document.getElementById('features')
   if (element) {
-    element.scrollIntoView({ behavior: 'smooth' })
+    // Smooth scroll via scrollTop (scrollIntoView breaks iframe-embedded previews)
+    const scroller = element.closest('.page-content') || document.scrollingElement || document.body
+    scroller.scrollTo({ top: element.offsetTop - 20, behavior: 'smooth' })
   }
 }
 

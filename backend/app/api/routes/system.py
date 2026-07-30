@@ -9,9 +9,9 @@ from __future__ import annotations
 
 import logging
 import shutil
+from datetime import datetime
 from pathlib import Path
 from typing import Any
-
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
 
@@ -114,6 +114,37 @@ def _find_pycache_dirs(root: Path, max_depth: int = 4) -> list[Path]:
     _walk(root, 0)
     return found
 
+def _scan_mineru_entries() -> list[dict[str, Any]]:
+    """Scan backend/output/ for individual parsed-document folders."""
+    entries: list[dict[str, Any]] = []
+    if not OUTPUT_DIR.exists():
+        return entries
+    for child in sorted(OUTPUT_DIR.iterdir(), key=lambda p: p.stat().st_mtime, reverse=True):
+        if not child.is_dir():
+            continue
+        # Find the parsed .md file (skip images/ and uploads/ subdirs)
+        md_files = [f for f in child.iterdir() if f.is_file() and f.suffix == ".md"]
+        filename = md_files[0].stem if md_files else child.name
+        md_path = str(md_files[0].relative_to(BACKEND_DIR)) if md_files else ""
+        total_size = _dir_size(child)
+        images_dir = child / "images"
+        uploads_dir = child / "uploads"
+        has_images = images_dir.exists() and any(images_dir.iterdir())
+        has_uploads = uploads_dir.exists() and any(uploads_dir.iterdir())
+        created_ts = child.stat().st_mtime
+        created_at = datetime.fromtimestamp(created_ts).isoformat()
+        entries.append({
+            "id": child.name,
+            "filename": filename,
+            "markdown_path": md_path,
+            "size_bytes": total_size,
+            "size_human": _fmt_size(total_size),
+            "created_at": created_at,
+            "has_images": has_images,
+            "has_uploads": has_uploads,
+        })
+    return entries
+
 
 # ── Request / Response ───────────────────────────────────────────────────
 
@@ -138,6 +169,19 @@ class CleanItem(BaseModel):
     message: str = ""
 
 
+
+class MineruEntry(BaseModel):
+    """A single MinerU parsed-output entry (one document folder)."""
+    id: str                          # folder UUID name
+    filename: str                    # parsed .md filename (stem)
+    markdown_path: str               # relative path to .md file
+    size_bytes: int                  # total folder size
+    size_human: str                  # human-readable size
+    created_at: str = ""             # ISO timestamp of folder creation
+    has_images: bool = False         # whether images/ subfolder has content
+    has_uploads: bool = False        # whether uploads/ subfolder has content
+
+
 class CleanResponse(BaseModel):
     """Cache clean result."""
 
@@ -147,10 +191,15 @@ class CleanResponse(BaseModel):
     total_freed_bytes: int = 0
     total_freed_human: str = ""
     note: str = ""
-
+    mineru_entries: list[MineruEntry] = []
 
 # ── Endpoint ──────────────────────────────────────────────────────────────
 
+
+@router.get("/clean/mineru-entries")
+async def list_mineru_entries() -> dict[str, Any]:
+    """List MinerU parsed-output entries (backend/output/) with details."""
+    return {"success": True, "entries": _scan_mineru_entries()}
 
 @router.post("/clean", response_model=CleanResponse, dependencies=[Depends(verify_token)])
 async def clean_caches(req: CleanRequest) -> CleanResponse:
@@ -245,10 +294,12 @@ async def clean_caches(req: CleanRequest) -> CleanResponse:
 
     # ── Dry run → return scan results ──
     if req.dry_run:
+        mineru_entries = _scan_mineru_entries()
         return CleanResponse(
             success=True,
             dry_run=True,
             items=items,
+            mineru_entries=mineru_entries,
             note="--dry-run: 仅扫描，未删除任何文件",
         )
 
@@ -288,7 +339,7 @@ async def clean_caches(req: CleanRequest) -> CleanResponse:
         success=True,
         dry_run=False,
         items=items,
-        total_freed_bytes=total_freed,
         total_freed_human=_fmt_size(total_freed),
+        mineru_entries=_scan_mineru_entries(),
         note="清理完成",
     )

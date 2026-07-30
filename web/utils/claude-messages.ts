@@ -155,7 +155,7 @@ export class MessageProcessor {
     } else if (['Read', 'Write', 'Edit'].includes(baseName) && input.file_path) {
       parts.push(String(input.file_path))
       if (baseName === 'Edit' && input.old_string) {
-        parts.push(`— 替换 ${(input.old_string as string).length} 字符`)
+        parts.push(`— Replaced ${(input.old_string as string).length} chars`)
       }
     } else if (baseName === 'Glob' && input.pattern) {
       parts.push(String(input.pattern))
@@ -209,14 +209,14 @@ export class MessageProcessor {
         const mcpLine =
           mcps.length > 0
             ? mcps.map((m) => `${m.name}(${m.status})`).join(', ')
-            : '无'
+            : 'None'
         const sid = typeof msg.session_id === 'string' ? msg.session_id : ''
         const text =
-          `**会话初始化** · session \`${sid.slice(0, 12)}…\`\n` +
+          `**Session Init** · session \`${sid.slice(0, 12)}…\`\n` +
           `- model: \`${msg.model || 'default'}\`\n` +
           `- cwd: \`${msg.cwd || ''}\`\n` +
           `- permission: \`${msg.permissionMode || 'default'}\`\n` +
-          `- tools: ${tools.length} 个${
+          `- tools: ${tools.length} tools${
             tools.length ? '（' + tools.slice(0, 10).join(', ') + (tools.length > 10 ? '…' : '') + '）' : ''
           }\n` +
           `- MCP servers: ${mcpLine}`
@@ -248,7 +248,7 @@ export class MessageProcessor {
           } else if (name === 'ExitPlanMode' && input.plan) {
             push({ kind: 'plan', plan: String(input.plan), id: this.nextId() })
           } else if (name === 'AskUserQuestion') {
-            const header = String(input.header || 'Claude 想向你确认')
+            const header = String(input.header || 'Claude wants to confirm')
             const questions = Array.isArray(input.questions) ? input.questions : []
             const q0 = (questions[0] || {}) as Record<string, unknown>
             const opts = Array.isArray(q0.options) ? q0.options : []
@@ -319,20 +319,20 @@ export class MessageProcessor {
       const usage = (msg.usage || {}) as Record<string, number>
       const cost = Number(msg.total_cost_usd || 0)
       const lines: string[] = [
-        `**${msg.is_error ? '❌ 执行出错' : '✅ 完成'}** — **${msg.num_turns || 0} 轮** · **$${cost.toFixed(4)}** · **${((msg.duration_ms || 0) / 1000).toFixed(1)}s**`,
+        `**${msg.is_error ? '❌ Error' : '✅ Done'}** — **${msg.num_turns || 0} turns** · **$${cost.toFixed(4)}** · **${((msg.duration_ms || 0) / 1000).toFixed(1)}s**`,
         ``,
-        `| 指标 | 值 |`,
+        `| Metric | Value |`,
         `| --- | --- |`,
-        `| 输入 tokens | ${usage.input_tokens || 0} |`,
-        `| 输出 tokens | ${usage.output_tokens || 0} |`,
-        `| 缓存命中 | ${usage.cache_read_input_tokens || 0} |`,
-        `| 终止原因 | \`${msg.terminal_reason || msg.stop_reason || '—'}\` |`,
+        `| Input tokens | ${usage.input_tokens || 0} |`,
+        `| Output tokens | ${usage.output_tokens || 0} |`,
+        `| Cache hit | ${usage.cache_read_input_tokens || 0} |`,
+        `| Stop reason | \`${msg.terminal_reason || msg.stop_reason || '—'}\` |`,
       ]
       if (msg.modelUsage && typeof msg.modelUsage === 'object') {
         const mu = msg.modelUsage as Record<string, Record<string, number>>
         const models = Object.keys(mu)
         if (models.length) {
-          lines.push('', '**模型用量明细**')
+          lines.push('', '**Model Usage Details**')
           for (const m of models) {
             const u = mu[m]
             lines.push(

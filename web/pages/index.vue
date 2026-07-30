@@ -12,7 +12,7 @@
       <!-- Hero -->
       <section class="hero">
         <div class="hero-badge">
-          <ThunderboltOutlined /> AI 驱动的知识管理
+          <ThunderboltOutlined /> {{ $t('home.badge') }}
         </div>
 
         <h1 class="hero-title">
@@ -21,15 +21,15 @@
         </h1>
 
         <p class="hero-sub">
-          基于检索增强生成技术，打造智能化的企业级知识管理平台
+          {{ $t('home.subtitle') }}
         </p>
 
         <div class="hero-actions">
           <a-button type="primary" size="large" class="btn-primary" @click="navigateToFileSystem">
-            <FolderOpenOutlined /> 进入文件系统 <RightOutlined class="btn-arrow" />
+            <FolderOpenOutlined /> {{ $t('home.enterFS') }} <RightOutlined class="btn-arrow" />
           </a-button>
           <a-button size="large" class="btn-secondary" @click="scrollToFeatures">
-            <InfoCircleOutlined /> 了解更多
+            <InfoCircleOutlined /> {{ $t('home.learnMore') }}
           </a-button>
         </div>
 
@@ -78,7 +78,7 @@
           <SearchOutlined />
           <div>
             <strong>{{ $t('search.title') }}</strong>
-            <span>QDCVR 精准召回</span>
+            <span>{{ $t('search.qdcvr') }}</span>
           </div>
           <RightOutlined class="ql-arrow" />
         </div>
@@ -86,7 +86,7 @@
           <RobotOutlined />
           <div>
             <strong>{{ $t('nav.claudeChat') }}</strong>
-            <span>Agent SDK 流式交互</span>
+            <span>{{ $t('chat.agentSDK') }}</span>
           </div>
           <RightOutlined class="ql-arrow" />
         </div>
@@ -94,7 +94,7 @@
           <ShareAltOutlined />
           <div>
             <strong>{{ $t('settings.knowledgeGraph') }}</strong>
-            <span>Neo4j 可视化导航</span>
+            <span>{{ $t('graph.neo4jNav') }}</span>
           </div>
           <RightOutlined class="ql-arrow" />
         </div>
@@ -104,7 +104,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import {
   RightOutlined, ThunderboltOutlined, FolderOpenOutlined,
@@ -112,17 +113,11 @@ import {
   ShareAltOutlined,
 } from '@ant-design/icons-vue'
 
+const { t, tm } = useI18n()
 const router = useRouter()
 const featuresRef = ref<HTMLElement>()
 
-const features = [
-  { icon: '📄', title: '智能解析', desc: 'PDF/Word/Excel/PPT/图片 → Markdown，MinerU OCR 高精度' },
-  { icon: '🔎', title: '精准检索', desc: 'QDCVR 六步检索 + 内容裁决，向量/CDI/经验三路召回' },
-  { icon: '🧠', title: 'AI 对话', desc: '完整 Claude Code 客户端，流式 / 工具 / 技能 / 多模态' },
-  { icon: '🌐', title: '知识图谱', desc: 'Neo4j 文档关系图谱，跨 KB 桥梁 + 路径发现' },
-  { icon: '🏷️', title: '标签体系', desc: '结构化标签管理，自动归一化 + 黑名单过滤' },
-  { icon: '📊', title: '经验复用', desc: '经验库 E0-E11 生命周期，检索优先 / 衰减 / 联动' },
-]
+const features = computed(() => tm('home.features'))
 
 function navigateToFileSystem() { router.push('/file-system') }
 function navigateTo(path: string) { router.push(path) }

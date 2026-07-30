@@ -18,12 +18,12 @@
           <div class="intro-section">
             <h2 class="section-title">
               <InfoCircleOutlined />
-              项目概述
+              Project Overview
             </h2>
             <p class="intro-text">
-              RAG Knowledge Base 是一个基于检索增强生成（Retrieval-Augmented Generation, RAG）技术的智能知识管理系统。
-              该系统旨在帮助用户高效地管理、检索和利用知识资源，通过结合大语言模型的生成能力与精准的知识检索技术，
-              为用户提供智能问答、文档解析和知识发现服务。
+              RAG Knowledge Base is an intelligent knowledge management system based on Retrieval-Augmented Generation (RAG) technology.
+              It helps users efficiently manage, search, and utilize knowledge resources by combining LLM generation with precise knowledge retrieval,
+              providing intelligent Q&A, document parsing, and knowledge discovery services.
             </p>
             <div class="tech-badges">
               <a-tag color="purple">Vue 3</a-tag>
@@ -122,7 +122,7 @@
         <a-card class="glass-card guide-card">
           <h2 class="section-title">
             <ReadOutlined />
-            快速开始
+            Quick Start
           </h2>
           <a-timeline class="guide-timeline">
             <a-timeline-item v-for="(step, index) in guideSteps" :key="index" :color="step.color">
@@ -149,20 +149,20 @@
           </h2>
           <div class="contact-content">
             <p class="contact-text">
-              如果您对项目有任何疑问、建议或合作意向，欢迎通过以下方式Contact us：
+              If you have any questions, suggestions, or collaboration ideas, feel free to contact us:
             </p>
             <div class="contact-links">
               <a-button type="primary" size="large" class="contact-btn">
                 <GithubOutlined />
-                GitHub 仓库
+                GitHub Repository
               </a-button>
               <a-button size="large" class="contact-btn">
                 <MailOutlined />
-                发送邮件
+                Send Email
               </a-button>
               <a-button size="large" class="contact-btn">
                 <BookOutlined />
-                查看文档
+                View Documentation
               </a-button>
             </div>
           </div>
@@ -215,43 +215,43 @@ import {
 const features = [
   {
     icon: FolderOutlined,
-    title: '知识库管理',
-    description: '支持多级文件夹结构，可创建、编辑、删除知识库，支持批量文件上传和解析',
+    title: 'Knowledge Base Management',
+    description: 'Multi-level folder structure, create/edit/delete KBs, batch file upload and parsing',
     gradient: 'linear-gradient(135deg, #8b5cf6, #a78bfa)',
     descIcon: FolderOpenOutlined
   },
   {
     icon: FileSearchOutlined,
-    title: '智能检索',
-    description: '基于向量检索技术，支持语义搜索和关键词搜索，快速定位所需知识',
+    title: 'Smart Search',
+    description: 'Vector-based retrieval, semantic search and keyword search for fast knowledge discovery',
     gradient: 'linear-gradient(135deg, #3b82f6, #60a5fa)',
     descIcon: SearchOutlined
   },
   {
     icon: RobotOutlined,
-    title: 'AI 问答',
-    description: '集成大语言模型，基于检索到的知识进行智能问答，提供准确答案',
+    title: 'AI Q&A',
+    description: 'LLM-powered intelligent Q&A based on retrieved knowledge, providing accurate answers',
     gradient: 'linear-gradient(135deg, #10b981, #34d399)',
     descIcon: MessageOutlined
   },
   {
     icon: SafetyOutlined,
-    title: '文档解析',
-    description: '支持 PDF、Word、Markdown 等多种格式文档的自动解析和内容提取',
+    title: 'Document Parsing',
+    description: 'Auto-parse PDF, Word, Markdown and more formats with content extraction',
     gradient: 'linear-gradient(135deg, #f59e0b, #fbbf24)',
     descIcon: FileTextOutlined
   },
   {
     icon: ThunderboltOutlined,
-    title: '实时处理',
-    description: '支持实时文档解析进度显示，后台异步处理，不阻塞用户操作',
+    title: 'Real-time Processing',
+    description: 'Real-time parse progress display, async background processing',
     gradient: 'linear-gradient(135deg, #ec4899, #f472b6)',
     descIcon: SyncOutlined
   },
   {
     icon: CloudOutlined,
-    title: '云端同步',
-    description: '支持知识库的导入导出，便于备份和跨环境迁移',
+    title: 'Cloud Sync',
+    description: 'Import/export KBs for backup and cross-environment migration',
     gradient: 'linear-gradient(135deg, #06b6d4, #22d3ee)',
     descIcon: CloudUploadOutlined
   }
@@ -261,8 +261,8 @@ const features = [
 const architecture = [
   {
     icon: GlobalOutlined,
-    title: '前端层',
-    description: '基于 Vue 3 + Nuxt 3 构建的现代化用户界面，采用 TypeScript 开发',
+    title: 'Frontend Layer',
+    description: 'Modern UI built with Vue 3 + Nuxt 3, developed in TypeScript',
     color: 'linear-gradient(135deg, #8b5cf6, #a78bfa)',
     technologies: [
       { name: 'Vue 3', icon: 'CodeOutlined' },
@@ -274,8 +274,8 @@ const architecture = [
   },
   {
     icon: ApiOutlined,
-    title: 'API 层',
-    description: '基于 Python FastAPI 构建的高性能 RESTful API 服务',
+    title: 'API Layer',
+    description: 'High-performance RESTful API built with Python FastAPI',
     color: 'linear-gradient(135deg, #3b82f6, #60a5fa)',
     technologies: [
       { name: 'Python', icon: 'CodeOutlined' },
@@ -286,8 +286,8 @@ const architecture = [
   },
   {
     icon: DatabaseOutlined,
-    title: '数据层',
-    description: '支持多种数据存储方案，包括向量数据库和关系型数据库',
+    title: 'Data Layer',
+    description: 'Multiple storage backends including vector database and relational database',
     color: 'linear-gradient(135deg, #10b981, #34d399)',
     technologies: [
       { name: 'ChromaDB', icon: DeploymentUnitOutlined },
@@ -298,8 +298,8 @@ const architecture = [
   },
   {
     icon: CodeOutlined,
-    title: 'AI 层',
-    description: '集成大语言模型和嵌入模型，提供智能问答和知识检索能力',
+    title: 'AI Layer',
+    description: 'LLM and embedding models for intelligent Q&A and knowledge retrieval',
     color: 'linear-gradient(135deg, #f59e0b, #fbbf24)',
     technologies: [
       { name: 'OpenAI', icon: RobotOutlined },
@@ -314,32 +314,32 @@ const architecture = [
 const highlights = [
   {
     icon: HeartOutlined,
-    title: '开源免费',
-    description: '项目完全开源，基于 MIT 协议，可自由使用和二次开发',
+    title: 'Open Source',
+    description: 'Fully open source under MIT license, free to use and modify',
     color: 'linear-gradient(135deg, #8b5cf6, #a78bfa)'
   },
   {
     icon: RocketOutlined,
-    title: '易于部署',
-    description: '提供 Docker 部署方案，支持一键启动，降低部署门槛',
+    title: 'Easy Deployment',
+    description: 'Docker deployment with one-click startup, low deployment barrier',
     color: 'linear-gradient(135deg, #3b82f6, #60a5fa)'
   },
   {
     icon: AppstoreAddOutlined,
-    title: '高度可扩展',
-    description: '模块化架构设计，支持自定义组件和插件扩展',
+    title: 'Highly Extensible',
+    description: 'Modular architecture design, supports custom components and plugins',
     color: 'linear-gradient(135deg, #10b981, #34d399)'
   },
   {
     icon: LockOutlined,
-    title: '安全可靠',
-    description: '支持用户认证和权限管理，保障数据安全',
+    title: 'Secure & Reliable',
+    description: 'User authentication and permission management for data security',
     color: 'linear-gradient(135deg, #f59e0b, #fbbf24)'
   },
   {
     icon: MobileOutlined,
-    title: '响应式设计',
-    description: '适配多种屏幕尺寸，支持桌面端和移动端访问',
+    title: 'Responsive Design',
+    description: 'Adapts to multiple screen sizes, supports desktop and mobile',
     color: 'linear-gradient(135deg, #ec4899, #f472b6)'
   }
 ]
@@ -348,26 +348,26 @@ const highlights = [
 const guideSteps = [
   {
     icon: FolderOutlined,
-    title: '创建知识库',
-    description: '在文件系统中创建您的第一个知识库文件夹',
+    title: 'Create KB',
+    description: 'Create your first knowledge base folder in the file system',
     color: '#8b5cf6'
   },
   {
     icon: CloudUploadOutlined,
-    title: '上传文档',
-    description: '将 PDF、Word 或 Markdown 文档上传到知识库中',
+    title: 'Upload Documents',
+    description: 'Upload PDF, Word, or Markdown documents to the KB',
     color: '#3b82f6'
   },
   {
     icon: FileTextOutlined,
-    title: '解析文档',
-    description: '系统自动解析文档内容，提取文本和元数据',
+    title: 'Parse Documents',
+    description: 'System auto-parses document content, extracts text and metadata',
     color: '#10b981'
   },
   {
     icon: SearchOutlined,
-    title: '开始检索',
-    description: '使用搜索功能或 AI 问答，快速获取所需知识',
+    title: 'Start Searching',
+    description: 'Use search or AI Q&A to quickly access knowledge',
     color: '#f59e0b'
   }
 ]

@@ -5,7 +5,11 @@
       "subtitle": "Intelligent Document Management Platform",
       "description": "AI-powered knowledge management system with RAG technology, document parsing, knowledge retrieval and graph visualization"
     },
-    "theme": { "light": "Light", "dark": "Dark", "system": "System" },
+    "theme": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    },
     "noDescription": "No description"
   },
   "nav": {
@@ -21,7 +25,9 @@
   },
   "lang": {
     "switch": "中文",
-    "label": "Language"
+    "label": "Language",
+    "chinese": "Chinese",
+    "switchTo": "中文"
   },
   "home": {
     "badge": "AI-Powered Knowledge Management",
@@ -35,18 +41,54 @@
     "coverage": "Index Coverage",
     "coreCapabilities": "Core Capabilities",
     "features": [
-      { "icon": "📄", "title": "Doc Parsing", "desc": "PDF/Word/Excel/PPTX/images → Markdown via MinerU OCR engine" },
-      { "icon": "🔍", "title": "Smart Search", "desc": "QDCVR retrieval: intent analysis → KB selection → vector recall → content verification" },
-      { "icon": "🕸️", "title": "Knowledge Graph", "desc": "Neo4j-powered cross-KB document relations, bridge discovery, centrality analysis" },
-      { "icon": "🧪", "title": "Experience Base", "desc": "Structured P0/P1/P2 graded experience lifecycle with auto-extraction and decay rules" },
-      { "icon": "🤖", "title": "AI Agent", "desc": "Claude Code + 72 MCP tools for autonomous KB management and intelligent Q&A" },
-      { "icon": "⚙️", "title": "Manage & Verify", "desc": "Full CRUD, tag hygiene, integrity audit, collection health with auto-fix" }
+      {
+        "icon": "📄",
+        "title": "Doc Parsing",
+        "desc": "PDF/Word/Excel/PPTX/images → Markdown via MinerU OCR engine"
+      },
+      {
+        "icon": "🔍",
+        "title": "Smart Search",
+        "desc": "QDCVR retrieval: intent analysis → KB selection → vector recall → content verification"
+      },
+      {
+        "icon": "🕸️",
+        "title": "Knowledge Graph",
+        "desc": "Neo4j-powered cross-KB document relations, bridge discovery, centrality analysis"
+      },
+      {
+        "icon": "🧪",
+        "title": "Experience Base",
+        "desc": "Structured P0/P1/P2 graded experience lifecycle with auto-extraction and decay rules"
+      },
+      {
+        "icon": "🤖",
+        "title": "AI Agent",
+        "desc": "Claude Code + 72 MCP tools for autonomous KB management and intelligent Q&A"
+      },
+      {
+        "icon": "⚙️",
+        "title": "Manage & Verify",
+        "desc": "Full CRUD, tag hygiene, integrity audit, collection health with auto-fix"
+      }
     ],
     "quickLinks": {
-      "fileSystem": { "title": "File System", "desc": "Manage document tree & uploads" },
-      "search": { "title": "Knowledge Search", "desc": "Multi-strategy semantic retrieval" },
-      "kbManager": { "title": "KB Manager", "desc": "Document CRUD & tag management" },
-      "graph": { "title": "Knowledge Graph", "desc": "Visual relation exploration" }
+      "fileSystem": {
+        "title": "File System",
+        "desc": "Manage document tree & uploads"
+      },
+      "search": {
+        "title": "Knowledge Search",
+        "desc": "Multi-strategy semantic retrieval"
+      },
+      "kbManager": {
+        "title": "KB Manager",
+        "desc": "Document CRUD & tag management"
+      },
+      "graph": {
+        "title": "Knowledge Graph",
+        "desc": "Visual relation exploration"
+      }
     }
   },
   "fs": {
@@ -195,8 +237,8 @@
     "selectKbHint": "Select a KB to view its documents",
     "kbRequired": "Please select a knowledge base",
     "nameRequiredMsg": "Please enter document name",
-    "searchDocs": "Search document name...",
-    "allKb": "All Knowledge Bases",
+    "searchDocs": "Search doc name...",
+    "allKb": "All KBs",
     "subKb": "Sub-KB",
     "noSubKb": "No sub-KBs",
     "editContentTitle": "Edit Document Content",
@@ -226,7 +268,28 @@
     "tagsSaveFailed": "Failed to save tags",
     "moveFailed": "Failed to move document",
     "deleteFailed": "Failed to delete document",
-    "selectKbPrompt": "Select a KB to view its documents"
+    "selectKbPrompt": "Select a KB to view its documents",
+    "docCount": "{n} doc(s)",
+    "subKbCount": "{n} sub-KB(s)",
+    "newDoc": "New",
+    "subKbTitle": "Sub-KBs ({n})",
+    "noDocsTitle": "No documents",
+    "newDocBtn": "New Document",
+    "editMetaMenu": "Edit Metadata",
+    "editContentMenu": "Edit Content",
+    "manageTagsMenu": "Manage Tags",
+    "moveToOther": "Move to other KB",
+    "deleteDocMenu": "Delete Document",
+    "selectKbView": "Select a KB from the left to view documents",
+    "newDocModal": "New Document",
+    "targetKb": "Target KB",
+    "selectKb": "Select KB",
+    "docName": "Document Name",
+    "docNamePlaceholder": "Enter document name (.md suffix auto-added)",
+    "editMetaModal": "Edit Metadata",
+    "editContentModal": "Edit Document Content",
+    "manageTagsModal": "Manage Tags",
+    "moveDocModal": "Move Document"
   },
   "search": {
     "title": "Knowledge Search",
@@ -258,7 +321,28 @@
     "content": "Content",
     "relevance": "Relevance",
     "documentMatch": "Document Match",
-    "semanticMatch": "Semantic Match"
+    "semanticMatch": "Semantic Match",
+    "qdcvr": "QDCVR Precision Search",
+    "subKbTitle": "Sub-KBs ({n})",
+    "docCount": "{n} doc(s)",
+    "docTitle": "Documents ({n})",
+    "duration": "{n}ms",
+    "listView": "List",
+    "graphView": "Relation Graph",
+    "contentVerify": "Content Verify",
+    "verifyOff": "Verify Off",
+    "combinedScore": "Combined",
+    "vectorScore": "Vector",
+    "rawScore": "Score",
+    "viewRelationGraph": "View relation graph",
+    "kbLabel": "KB",
+    "docLabel": "Document",
+    "tagLabel": "Tag",
+    "searchFirst": "Run a search first to view relation graph",
+    "typeKb": "Knowledge Base",
+    "typeDoc": "Document",
+    "typeTag": "Tag",
+    "metaKb": "KB"
   },
   "graph": {
     "title": "Knowledge Graph",
@@ -288,7 +372,58 @@
     "findPath": "Find Path",
     "degree": "Degree",
     "weight": "Weight",
-    "relatedKbs": "Related KBs"
+    "relatedKbs": "Related KBs",
+    "legend": {
+      "shared": "Shared Tags",
+      "similar": "Content Similarity"
+    },
+    "showNodes": "Showing {count} / {total} nodes",
+    "buildGraph": "Build Graph",
+    "neo4jNav": "Neo4j Visual Navigation",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "resetView": "Reset view",
+    "fitView": "Fit to view",
+    "relayout": "Re-layout",
+    "building": "Building knowledge graph...",
+    "noGraphDataTitle": "No graph data",
+    "filterNodes": "Filter nodes...",
+    "searchDoc": "Search doc",
+    "searchDocPlaceholder": "Enter document name or path keyword...",
+    "centerDoc": "Central Document",
+    "selectDocHint": "Search and select a document to view its relation graph",
+    "selectDocDesc": "Document center view shows KB ownership, tag associations, and cross-KB connections",
+    "crossKbBridge": "Cross-KB Bridge Documents",
+    "crossKbBridgeDesc": "Documents linked to multiple KBs via shared tags or vector similarity — key bridge nodes in the knowledge graph",
+    "bridgeKb": "Bridging KBs:",
+    "relatedDocs": "{n} related docs",
+    "noCrossKb": "No cross-KB bridge documents",
+    "searchDocBtn": "Search Document",
+    "pathDiscovery": "Document Path Discovery",
+    "pathDiscoveryDesc": "Select two documents to discover the shortest association path in the knowledge graph",
+    "selected": "Selected",
+    "pathFound": "Path found, {length} steps total",
+    "pathNotFound": "No association path found between the two documents (try increasing search depth or building more connections)",
+    "clickNodeHint": "Click a graph node to view details",
+    "clickNodeHintDesc": "Drag, zoom, and click to interact",
+    "belongsToKb": "KB",
+    "docCountLabel": "Docs",
+    "path": "Path",
+    "score": "Score",
+    "relatedNodes": "Related nodes ({n})",
+    "noRelated": "No related nodes",
+    "tooManyNodes": "Too many nodes, showing first {max}",
+    "docNotFound": "No matching documents found",
+    "searchFailed": "Search failed",
+    "docGraphLoaded": "Document graph loaded: {name}",
+    "docGraphLoadFailed": "Failed to load document graph",
+    "neo4jRequired": "Cross-KB analysis requires Neo4j, currently unavailable",
+    "pathFindFailed": "Path finding failed",
+    "loadFailed": "Failed to load graph",
+    "refreshing": "Refreshing graph...",
+    "rebuildSuccess": "Graph rebuilt!\nDocs: {docs}\nEdges: {edges} (cross-KB {cross})\nKB pairs: {pairs}",
+    "rebuildAbnormal": "Backend returned abnormal result, reloaded local graph",
+    "rebuildFailed": "Backend graph build failed, reloaded local graph"
   },
   "chat": {
     "title": "Claude Code Chat",
@@ -309,7 +444,130 @@
     "model": "Model",
     "context": "Context files",
     "noWorkspace": "No workspace selected",
-    "sessionTitle": "Chat Session"
+    "sessionTitle": "Chat Session",
+    "agentSDK": "Agent SDK Streaming",
+    "executing": "Running",
+    "subAgentPanel": "Sub Agents ({total} total / {running} running)",
+    "subAgent": "Sub Agents",
+    "terminal": "Terminal",
+    "terminalTooltip": "Integrated terminal — opens native terminal in sidebar, cwd follows workspace",
+    "newChatTooltip": "New conversation (won't interrupt current streaming, continues in background)",
+    "bgRunning": "Running in background: {prompt}… — Click to switch",
+    "jumpToLatest": "Jump to latest",
+    "messageQueue": "Message Queue ({pending} pending{ sending, } {failed} failed)",
+    "pending": "pending",
+    "sending": "sending",
+    "resumeQueue": "Resume Queue",
+    "pauseQueue": "Pause Queue",
+    "retryAllFailed": "Retry all failed",
+    "clearPending": "Clear pending",
+    "retrySend": "Retry send",
+    "sendNow": "Send now (skip queue)",
+    "queuePaused": "Queue paused — {count} pending",
+    "remove": "Remove",
+    "commands": "Commands ({shown}/{total})",
+    "envPanel": "Claude Code Environment",
+    "workspaceManager": "Workspace Manager",
+    "historySessions": "History Sessions (SQLite)",
+    "integratedTerminal": "Integrated Terminal",
+    "permission": "Permission",
+    "newChat": "New Chat",
+    "edit": "Edit",
+    "delete": "Delete",
+    "failed": "Failed",
+    "abort": "Abort",
+    "attachFile": "Attach files (images/PDFs/documents)",
+    "streamingPlaceholder": "Answering… Type to queue (Enter/Shift+Enter to send)",
+    "addToQueue": "Add to queue (sent after response completes)",
+    "sendEnter": "Send (Enter)",
+    "builtinToolsCount": "Built-in tools ({count})",
+    "searchTools": "Search tools...",
+    "sessionToolsCount": "Session tools ({count})",
+    "skillsCount": "Skills ({count})",
+    "searchSkills": "Search Skills...",
+    "noMatchingSkills": "No matching skills",
+    "project": "Project",
+    "user": "User",
+    "slashCommandsCount": "Slash commands ({count})",
+    "workspaceManagerDesc": "Save frequently used working directories for quick switching between Claude Code contexts (loads .claude/skills + .mcp.json)",
+    "workspaceNamePlaceholder": "Workspace name (e.g. RAG-KB)",
+    "workspacePathPlaceholder": "Absolute path",
+    "save": "Save",
+    "lastUsed": "Last used",
+    "selectAndStart": "Select and start chat",
+    "togglePin": "Toggle pin",
+    "confirmDeleteWs": "Delete this workspace?",
+    "noSavedWs": "No saved workspaces yet",
+    "addFirstWs": "Fill in the form above to add your first workspace",
+    "loading": "Loading…",
+    "messageCount": "messages",
+    "confirmDeleteSession": "Delete this session and its messages?",
+    "clickToLoadHistory": "Click a row to load history and continue conversation",
+    "toolPermissionRequest": "Tool Permission Request",
+    "claudeWantsToUseTool": "Claude wants to use tool",
+    "permissionNote": "Allow to continue; deny to skip the tool.",
+    "deny": "Deny",
+    "allow": "Allow",
+    "connected": "Connected",
+    "connecting": "Connecting...",
+    "reconnectTerminalTooltip": "Reconnect terminal (follows current workspace)",
+    "projectRoot": "Project root",
+    "terminalNativeHint": "Native terminal · Type exit to close session",
+    "newChatCreated": "New conversation created",
+    "bgSessionsContinue": "({count} conversations continue in background)",
+    "switchedToBg": "Switched to background conversation",
+    "addedToQueue": "Added to queue ({position})",
+    "cannotDeleteSending": "Currently sending, cannot delete",
+    "queueCleared": "Queue cleared",
+    "queuePausedMsg": "Queue paused",
+    "queueResumed": "Queue resumed",
+    "queueSendFailed": "Queue message send failed ({retry}/{max}): {error}. Will retry...",
+    "queueSendFailedPermanently": "Queue message send permanently failed ({max} retries exhausted): {error}",
+    "waitingForResponse": "Waiting for response, please wait",
+    "inputPlaceholderWithAttach": "Describe what you want Claude to do with attachments (Enter to send · Shift+Enter for newline)…",
+    "inputPlaceholderNoAttach": "Ask Claude (Enter to send · / for commands · 📎 to attach · Shift+Enter for newline)…",
+    "unknownError": "Unknown error",
+    "aborted": "Aborted",
+    "bgConversationCompleted": "Background conversation completed: {prompt}…",
+    "cannotQueueAttachOnly": "Cannot queue attachments only during response, please enter text or wait",
+    "attachmentsAdded": "Added {count} attachment(s)",
+    "uploadFailed": "Upload failed: {error}",
+    "abortedQueueContinues": "Aborted current response, queued messages will continue",
+    "approvalSendFailed": "Approval send failed: {error}",
+    "switchedToEngine": "Switched to {icon} {label}",
+    "workspaceSaved": "Workspace \"{name}\" saved",
+    "saveFailed": "Save failed: {error}",
+    "switchedToWs": "Switched to workspace: {name}",
+    "wsDeleted": "Deleted",
+    "deleteFailed": "Delete failed: {error}",
+    "enterOrSelectPath": "Please enter or select a working directory path",
+    "wsAlreadyExists": "\"{name}\" already exists",
+    "wsSwitchedSessionReset": "Workspace directory switched, session reset",
+    "loadHistoryFailed": "Failed to load history: {error}",
+    "loadingHistorySession": "Loading history session…",
+    "historyLoaded": "History session loaded ({total} messages, rendered {replayed}), continue chatting to append",
+    "deleted": "Deleted",
+    "addAttachment": "Add attachment (images/PDF/docs)",
+    "placeholderStreaming": "Responding... type to queue message (Enter/Shift+Enter to send)",
+    "queue": " Queue",
+    "permissionRequest": "Tool Permission Request",
+    "terminalHint": "Native terminal · Type exit to close session",
+    "commandsLabel": "Commands",
+    "stopBtn": "Stop",
+    "builtinTools": "Built-in Tools",
+    "sessionTools": "Session Tools",
+    "loadAfterInit": "Loaded after session start",
+    "noMatchingSkill": "No matching Skills",
+    "slashCommands": "Slash Commands",
+    "workspaceManagerHint": "Save common working directories for quick Claude Code context switching (loads .claude/skills + .mcp.json)",
+    "absolutePath": "Absolute path",
+    "deleteWorkspaceConfirm": "Delete this workspace?",
+    "noWorkspaces": "No saved workspaces yet",
+    "addFirstWorkspace": "Fill in the form above to add your first workspace",
+    "deleteSessionConfirm": "Delete this session and its messages?",
+    "claudeWantsToUse": "Claude wants to use tool",
+    "permissionHint": "Allow to continue; deny to skip this tool.",
+    "reconnectTerminal": "Reconnect terminal (follows current workspace dir)"
   },
   "settings": {
     "changedCount": "{count} configuration items changed, will auto-persist and hot-reload on save",
@@ -339,7 +597,312 @@
     "editConfig": "Edit Config File",
     "reload": "Reload",
     "restartRequired": "Restart required for some changes",
-    "configSaved": "Configuration saved and hot-reloaded"
+    "configSaved": "Configuration saved and hot-reloaded",
+    "cleanupTitle": "Storage Management",
+    "cleanupDesc": "Clean up MinerU parse cache and temp files to free disk space",
+    "cleanupScan": "Scan",
+    "cleanupCategory": "Category",
+    "cleanupSize": "Size",
+    "cleanupDescCol": "Description",
+    "cleanupAction": "Action",
+    "cleanupDelete": "Clean",
+    "cleanupCleared": "Cleared",
+    "cleanupEmptyDesc": "Click \"Scan\" to check cleanable cache",
+    "cleanupFreed": "Released {size} disk space",
+    "cleanupModelWarning": "Model cache ({size}) contains BGE-M3 + MinerU OCR models. Cleaning requires re-download (~4GB).",
+    "changesInfo": "{n} configuration item(s) modified — save to persist & hot-apply",
+    "discard": "Discard Changes",
+    "saveAndHot": "Save & Hot-Reload",
+    "hotApplied": "Configuration saved & hot-applied! Port changes require page refresh.",
+    "changesDiscarded": "All changes discarded",
+    "confirmCleanModel": "⚠️ Confirm cleaning model cache ({size})?\n\nVector search & PDF parsing will need to re-download (~4GB) on first use.",
+    "cleanedSuccess": "{name} cleaned — freed {freed}",
+    "scanFailure": "Scan failed: {msg}",
+    "cleanFailure": "Cleanup failed: {msg}",
+    "modelCache": "Model Cache",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "inputPlaceholder": "Enter value and press Enter to add",
+    "defaultVal": "Default: {val}",
+    "minVal": "Min: {val}",
+    "maxVal": "Max: {val}",
+    "envVarTag": "Environment Variable",
+    "optionalTag": "Optional",
+    "loadFailed": "Failed to load config",
+    "saveFailed": "Save failed",
+    "saveConfigFailed": "Failed to save config",
+    "mineruCache": "MinerU Parsed Cache",
+    "serviceLogs": "Service Logs",
+    "pythonCache": "Python Cache",
+    "sections": {
+      "server": {
+        "label": "Server Config",
+        "desc": "Port, address, and CORS settings for frontend/backend services. Port changes require service restart."
+      },
+      "storage": {
+        "label": "Storage Config",
+        "desc": "Knowledge base file system storage path configuration."
+      },
+      "vector": {
+        "label": "Vector Search Config",
+        "desc": "ChromaDB vector index and retrieval parameters for semantic search."
+      },
+      "embedding": {
+        "label": "Embedding Model Config",
+        "desc": "Text embedding model parameters affecting vector indexing and search quality."
+      },
+      "graph": {
+        "label": "Knowledge Graph Config (Neo4j)",
+        "desc": "Neo4j graph database connection and knowledge graph build parameters."
+      },
+      "search": {
+        "label": "Two-Stage Search Config",
+        "desc": "BM25 + vector two-stage precision search parameter tuning."
+      },
+      "mineru": {
+        "label": "MinerU OCR Engine",
+        "desc": "PDF/DOCX document OCR parsing engine configuration. Port auto-assigned."
+      },
+      "experience_auto": {
+        "label": "Experience Auto-Summary (Meditation)",
+        "desc": "Periodically auto-extract experience drafts from frequent queries + KB answers."
+      }
+    },
+    "fields": {
+      "cors_origins": {
+        "label": "CORS Origins",
+        "desc": "Cross-origin allowed origins list. [\"*\"] for all (dev recommended)."
+      },
+      "dev": {
+        "label": "Dev Mode",
+        "desc": "APP_MODE=dev settings, hot-reload enabled."
+      },
+      "host": {
+        "label": "Listen Address",
+        "desc": "Network interface the backend binds to. 0.0.0.0 = all interfaces."
+      },
+      "backend_port": {
+        "label": "Backend Port",
+        "desc": "FastAPI backend port, default 8765."
+      },
+      "frontend_port": {
+        "label": "Frontend Port",
+        "desc": "Nuxt 3 frontend port, default 6789."
+      },
+      "backend_url": {
+        "label": "Backend URL",
+        "desc": "Full backend service access URL."
+      },
+      "prod": {
+        "label": "Production Mode",
+        "desc": "APP_MODE=prod settings, hot-reload disabled."
+      },
+      "tree_fs_root": {
+        "label": "KB Storage Path",
+        "desc": "Tree file system root directory path."
+      },
+      "enabled": {
+        "label": "Enable Vector Search",
+        "desc": "Enable ChromaDB semantic search. Disable falls back to BM25 keyword search."
+      },
+      "persist_dir": {
+        "label": "ChromaDB Persist Dir",
+        "desc": "Vector database persistence path."
+      },
+      "collection_prefix": {
+        "label": "Collection Prefix",
+        "desc": "ChromaDB collection name prefix."
+      },
+      "chunk_size": {
+        "label": "Chunk Size",
+        "desc": "Max characters per document chunk."
+      },
+      "chunk_overlap": {
+        "label": "Chunk Overlap",
+        "desc": "Overlap characters between adjacent chunks."
+      },
+      "top_k": {
+        "label": "Top K Results",
+        "desc": "Number of most similar results from vector search."
+      },
+      "score_threshold": {
+        "label": "Doc Score Threshold",
+        "desc": "Minimum cosine similarity for document vector search. bge-m3: 0.3-0.5."
+      },
+      "experience_score_threshold": {
+        "label": "Experience Score Threshold",
+        "desc": "Minimum similarity for experience retrieval, higher than document threshold."
+      },
+      "model_name": {
+        "label": "Model Name",
+        "desc": "HuggingFace/ModelScope model identifier. Default BAAI/bge-m3."
+      },
+      "cache_dir": {
+        "label": "Model Cache Dir",
+        "desc": "Local model file cache path."
+      },
+      "device": {
+        "label": "Compute Device",
+        "desc": "auto = auto-detect CUDA."
+      },
+      "batch_size": {
+        "label": "Batch Size",
+        "desc": "Document chunks per inference batch. GPU can increase for speed."
+      },
+      "normalize": {
+        "label": "Vector Normalization",
+        "desc": "L2 normalization makes cosine similarity equal to dot product."
+      },
+      "uri": {
+        "label": "Neo4j URI",
+        "desc": "Bolt protocol connection address."
+      },
+      "username": {
+        "label": "Username",
+        "desc": "Neo4j username."
+      },
+      "password": {
+        "label": "Password",
+        "desc": "Neo4j password. Env NEO4J_PASSWORD takes priority."
+      },
+      "database": {
+        "label": "Database Name",
+        "desc": "Neo4j database name."
+      },
+      "pool": {
+        "label": "Connection Pool",
+        "desc": "Neo4j Driver connection pool parameters."
+      },
+      "max_connection_pool_size": {
+        "label": "Max Connections",
+        "desc": "Connection pool max size."
+      },
+      "connection_acquisition_timeout": {
+        "label": "Acquisition Timeout (s)",
+        "desc": "Max wait time to acquire connection from pool."
+      },
+      "max_connection_lifetime": {
+        "label": "Max Connection Lifetime (s)",
+        "desc": "Max connection lifetime."
+      },
+      "retry": {
+        "label": "Retry Policy",
+        "desc": "Transient failure retry configuration."
+      },
+      "max_attempts": {
+        "label": "Max Retry Attempts",
+        "desc": "Max retry attempts after operation failure."
+      },
+      "base_delay": {
+        "label": "Base Retry Delay (s)",
+        "desc": "Initial retry wait time, exponential backoff."
+      },
+      "two_stage": {
+        "label": "Two-Stage Search",
+        "desc": "Stage 1 BM25 broad recall, Stage 2 vector precision ranking."
+      },
+      "stage1_top_k": {
+        "label": "Stage 1 Recall Count",
+        "desc": "BM25 candidate document count."
+      },
+      "stage2_top_k": {
+        "label": "Stage 2 Precision Count",
+        "desc": "Final results after vector precision ranking."
+      },
+      "stage1_keyword_weight": {
+        "label": "Keyword Weight",
+        "desc": "BM25 keyword search weight."
+      },
+      "stage1_graph_weight": {
+        "label": "Graph Weight",
+        "desc": "Knowledge graph expansion weight."
+      },
+      "graph_neighbor_depth": {
+        "label": "Graph Neighbor Depth",
+        "desc": "Graph expansion search hop count."
+      },
+      "min_candidates": {
+        "label": "Min Candidates",
+        "desc": "Minimum candidate documents for two-stage search."
+      },
+      "start_on_boot": {
+        "label": "Start on Boot",
+        "desc": "Auto-start MinerU when backend starts."
+      },
+      "startup_timeout": {
+        "label": "Startup Timeout (s)",
+        "desc": "Max time to wait for MinerU ready."
+      },
+      "model_source": {
+        "label": "Model Source",
+        "desc": "modelscope is faster in China."
+      },
+      "interval_hours": {
+        "label": "Run Interval (hours)",
+        "desc": "Interval between meditation cycles. Hot-applied on next cycle."
+      },
+      "lookback_days": {
+        "label": "Lookback Days",
+        "desc": "Scan Q&A history from last N days as induction source."
+      },
+      "min_cluster_count": {
+        "label": "Min Cluster Size",
+        "desc": "Similar questions must appear at least N times before induction."
+      },
+      "max_drafts_per_run": {
+        "label": "Max Drafts Per Run",
+        "desc": "Maximum experience drafts per meditation run."
+      },
+      "dry_run": {
+        "label": "Dry Run Mode",
+        "desc": "Only log induction results, don't create drafts. For parameter tuning."
+      },
+      "APP_MODE": {
+        "label": "App Mode",
+        "desc": "dev = development (hot-reload); prod = production. Determines which config.yml section to use."
+      },
+      "BACKEND_PORT": {
+        "label": "Backend Port Override",
+        "desc": "Override config.yml backend port. Leave empty to use config.yml value."
+      },
+      "WEB_PORT": {
+        "label": "Frontend Port Override",
+        "desc": "Override config.yml frontend port. Leave empty to use config.yml value."
+      },
+      "TREE_STORAGE_PATH": {
+        "label": "Storage Path Override",
+        "desc": "Override config.yml storage.tree_fs_root. Leave empty to use config.yml value."
+      },
+      "NEO4J_PASSWORD": {
+        "label": "Neo4j Password",
+        "desc": "Neo4j password. Takes priority over config.yml graph.password."
+      },
+      "NO_RELOAD": {
+        "label": "Disable Hot Reload",
+        "desc": "Set to 1 to disable hot-reload even when APP_MODE=dev."
+      },
+      "PYTHONUTF8": {
+        "label": "Force UTF-8",
+        "desc": "Set to 1 to force Python UTF-8, fixing Windows GBK issues."
+      },
+      "envSection": {
+        "label": "Environment Variables (.env)",
+        "desc": "Env vars take priority over config.yml. Restart required for full effect."
+      }
+    },
+    "cleanupItems": {
+      "mineruCache": "MinerU Parsed Cache",
+      "serviceLogs": "Service Logs",
+      "pythonCache": "Python Cache"
+    },
+    "cleanAllSafe": "Clean All Safe",
+    "cleanAllSafeDesc": "Clean MinerU output + logs + Python cache (excludes model cache)",
+    "cleanAllSafeConfirm": "Clean all safe items (MinerU output + logs + Python cache)? Model cache will NOT be deleted.",
+    "cleanAllSuccess": "All safe items cleaned — freed {size}",
+    "mineruEntries": "MinerU Parsed Documents ({count})",
+    "parsedDoc": "Parsed document",
+    "createdAt": "Created",
+    "notSet": "(not set)"
   },
   "about": {
     "title": "About RAG Knowledge Base",
@@ -470,7 +1033,14 @@
     "saveToKb": "Save to KB",
     "remove": "Remove",
     "parsing": "Parsing...",
-    "ocrMode": "OCR Mode"
+    "ocrMode": "OCR Mode",
+    "saving": "Saving...",
+    "current": "Current: {file}",
+    "successful": "{n}/{total} successful",
+    "failedCount": "{n} failed",
+    "savedCount": "Saved {n} to KB",
+    "target": "Target: {name}",
+    "elapsed": "Elapsed {time}"
   },
   "meditation": {
     "title": "Meditation Settings",
@@ -539,5 +1109,28 @@
     "error": "Error",
     "warning": "Warning",
     "info": "Info"
+  },
+  "agent": {
+    "title": "Sub Agent",
+    "noDescription": "(No description)",
+    "clearCompleted": "Clear completed",
+    "closePanel": "Close {title} panel",
+    "noAgents": "No {title}",
+    "noAgentsHint": "When the main Agent delegates Task/Agent tools, {title} will appear here",
+    "detail": "Detail",
+    "toolCalls": "Tool calls",
+    "messages": "Messages",
+    "ompEngine": "OMP Engine",
+    "claudeEngine": "Claude Engine",
+    "detailSuffix": "Detail"
+  },
+  "todo": {
+    "title": "Task List",
+    "noTasks": "No {title}",
+    "noTasksHint": "When Agent uses TodoWrite, progress will display here in real-time",
+    "progress": "Task Progress {pct}%",
+    "completed": "Completed {n}",
+    "inProgress": "In Progress {n}",
+    "pending": "Pending {n}"
   }
 }

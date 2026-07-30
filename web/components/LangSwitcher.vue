@@ -2,15 +2,15 @@
   <a-dropdown :trigger="['click']" placement="bottomRight">
     <button class="lang-switcher-btn">
       <GlobalOutlined />
-      <span>{{ locale === 'en' ? 'EN' : '中文' }}</span>
+      <span>{{ locale === 'zh' ? '中文' : 'EN' }}</span>
     </button>
     <template #overlay>
       <a-menu @click="handleSwitch">
         <a-menu-item key="en">
-          <span :class="{ 'lang-active': locale === 'en' }">🇺🇸 English</span>
+          <span :class="{ 'lang-active': locale === 'en' }">English</span>
         </a-menu-item>
         <a-menu-item key="zh">
-          <span :class="{ 'lang-active': locale === 'zh' }">🇨🇳 中文</span>
+          <span :class="{ 'lang-active': locale === 'zh' }">中文</span>
         </a-menu-item>
       </a-menu>
     </template>

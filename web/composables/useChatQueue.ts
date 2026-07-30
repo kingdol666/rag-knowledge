@@ -117,7 +117,7 @@ function parseStoredItem(raw: unknown): QueueItem | null {
     attachmentNames,
     retryCount,
     error: wasSending
-      ? '上次发送中断，重试中...'
+      ? 'Retrying after interruption...'
       : typeof rawError === 'string' ? rawError : undefined,
   }
 }
@@ -149,11 +149,11 @@ export function loadQueueFromStorage(): LoadedQueue | null {
 /** Human-readable label for a queue status (used in tooltips). */
 export function statusLabel(status: string): string {
   const map: Record<string, string> = {
-    pending: '等待发送',
-    sending: '发送中…',
-    sent: '已发送 ✓',
-    failed: '发送失败 ✗',
-    editing: '编辑中',
+    pending: 'Pending',
+    sending: 'Sending...',
+    sent: 'Sent ✓',
+    failed: 'Failed ✗',
+    editing: 'Editing',
   }
   return map[status] || status
 }

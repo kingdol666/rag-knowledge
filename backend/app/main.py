@@ -197,6 +197,7 @@ app.include_router(graph_router)
 app.include_router(experience_router)
 app.include_router(config_router)
 app.include_router(meditation_router)
+app.include_router(system_router)
 
 
 @app.get("/")

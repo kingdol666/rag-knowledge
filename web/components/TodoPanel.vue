@@ -4,8 +4,8 @@
     <EmptyState
       v-if="total === 0"
       :icon="CheckSquareOutlined"
-      title="暂无任务清单"
-      hint="Agent 使用 TodoWrite 时会在此实时显示进度"
+      :title="$t('todo.noTasks', { title: $t('todo.title') })"
+      :hint="$t('todo.noTasksHint')"
       size="compact"
     />
 
@@ -14,7 +14,7 @@
       <div v-if="!compact" class="todo-header">
         <div class="todo-title-row">
           <CheckSquareOutlined class="todo-title-icon" />
-          <span class="todo-title-text">任务清单</span>
+          <span class="todo-title-text">{{ $t('todo.title') }}</span>
           <SyncOutlined v-if="inProgress > 0" class="todo-active-indicator" />
           <span class="todo-progress-chip">{{ done }} / {{ total }}</span>
         </div>
@@ -24,19 +24,19 @@
           :aria-valuenow="progressPct"
           aria-valuemin="0"
           aria-valuemax="100"
-          :aria-label="`任务进度 ${progressPct}%`"
+          :aria-label="$t('todo.progress', { pct: progressPct })"
         >
           <div class="todo-progress-fill" :style="{ width: `${progressPct}%` }" />
         </div>
         <div class="todo-legend">
           <span class="legend-item">
-            <span class="legend-dot dot-completed" />完成 {{ done }}
+            <span class="legend-dot dot-completed" />{{ $t('todo.completed', { n: done }) }}
           </span>
           <span class="legend-item">
-            <span class="legend-dot dot-in-progress" />进行中 {{ inProgress }}
+            <span class="legend-dot dot-in-progress" />{{ $t('todo.inProgress', { n: inProgress }) }}
           </span>
           <span class="legend-item">
-            <span class="legend-dot dot-pending" />待办 {{ pending }}
+            <span class="legend-dot dot-pending" />{{ $t('todo.pending', { n: pending }) }}
           </span>
         </div>
       </div>

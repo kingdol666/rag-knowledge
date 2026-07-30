@@ -69,7 +69,7 @@
                     <div class="kb-item-desc">{{ kb.description || $t('common.noDescription') }}</div>
                     <div class="kb-item-stat">
                       <FileTextOutlined />
-                      <span>{{ kb.documentCount }} 篇</span>
+                      <span>{{ kb.documentCount }} {{ $t('kb.docCount') }}</span>
                     </div>
                   </div>
                 </div>
@@ -90,12 +90,12 @@
                       <div class="kb-item-name">{{ subKb.name }}</div>
                       <div class="kb-item-stat">
                         <FileTextOutlined />
-                        <span>{{ subKb.documentCount }} 篇</span>
+                        <span>{{ subKb.documentCount }} {{ $t('kb.docCount') }}</span>
                       </div>
                     </div>
                   </div>
                   <div v-if="(subKbMap[kb.kbId] || []).length === 0 && !loadingSubKbs.has(kb.kbId)" class="sub-kb-empty">
-                    无子知识库
+                    {{ $t('kb.noSubKb') }}
                   </div>
                 </div>
               </template>
@@ -110,7 +110,7 @@
             <div class="doc-breadcrumb">
               <a-button type="link" size="small" @click="goTopLevel">
                 <DatabaseOutlined />
-                <span>全部知识库</span>
+                <span>{{ $t('kb.allKb') }}</span>
               </a-button>
               <template v-for="(histKb, hi) in kbNavHistory" :key="histKb.kbId">
                 <span class="breadcrumb-sep">/</span>
@@ -124,20 +124,20 @@
             <div class="doc-list-header">
               <div class="doc-list-title">
                 <h2 class="doc-list-name">{{ activeKb.name }}</h2>
-                <a-tag color="blue">{{ filteredDocs.length }} 篇文档</a-tag>
-                <a-tag v-if="subKbList.length > 0" color="purple">{{ subKbList.length }} 个子库</a-tag>
+                <a-tag color="blue">{{ $t('kb.docCount', { n: filteredDocs.length }) }}</a-tag>
+                <a-tag v-if="subKbList.length > 0" color="purple">{{ $t('kb.subKbCount', { n: subKbList.length }) }}</a-tag>
               </div>
               <div class="doc-list-actions">
                 <a-input-search
                   v-model:value="docFilter"
-                  placeholder="搜索文档名..."
+                  :placeholder="$t('kb.searchDocs')"
                   size="small"
                   style="width: 200px;"
                   allow-clear
                 />
                 <a-button type="primary" size="small" @click="showCreateDocDialog = true">
                   <PlusOutlined />
-                  新建
+                  {{ $t('kb.newDoc') }}
                 </a-button>
               </div>
             </div>
@@ -146,7 +146,7 @@
             <div v-if="subKbList.length > 0" class="sub-kb-section">
               <div class="section-title">
                 <FolderOpenOutlined />
-                <span>子知识库 ({{ subKbList.length }})</span>
+                <span>{{ $t('kb.subKbTitle', { n: subKbList.length }) }}</span>
               </div>
               <div class="sub-kb-grid">
                 <div
@@ -163,7 +163,7 @@
                     <div class="sub-kb-card-desc" :title="subKb.description">{{ subKb.description || $t('common.noDescription') }}</div>
                     <div class="sub-kb-card-stat">
                       <FileTextOutlined />
-                      <span>{{ subKb.documentCount }} 篇</span>
+                      <span>{{ subKb.documentCount }} {{ $t('kb.docCount') }}</span>
                     </div>
                   </div>
                   <div class="sub-kb-card-arrow">
@@ -179,11 +179,11 @@
                 <EmptyState
                   v-if="filteredDocs.length === 0 && !loading"
                   :icon="FileTextOutlined"
-                  title="暂无文档"
+                  :title="$t('kb.noDocsTitle')"
                 >
                   <template #action>
                     <a-button type="primary" @click="showCreateDocDialog = true">
-                      <PlusOutlined /> 新建文档
+                      <PlusOutlined /> {{ $t('kb.newDocBtn') }}
                     </a-button>
                   </template>
                 </EmptyState>
@@ -210,24 +210,24 @@
                           <a-menu>
                             <a-menu-item @click="openEditMetaDialog(doc)">
                               <EditOutlined />
-                              <span>编辑元数据</span>
+                              <span>{{ $t('kb.editMetaMenu') }}</span>
                             </a-menu-item>
                             <a-menu-item @click="openEditContentDialog(doc)">
                               <FormOutlined />
-                              <span>编辑内容</span>
+                              <span>{{ $t('kb.editContentMenu') }}</span>
                             </a-menu-item>
                             <a-menu-item @click="openTagsDialog(doc)">
                               <TagsOutlined />
-                              <span>管理标签</span>
+                              <span>{{ $t('kb.manageTagsMenu') }}</span>
                             </a-menu-item>
                             <a-menu-item @click="openMoveDialog(doc)">
                               <DragOutlined />
-                              <span>移动到其他库</span>
+                              <span>{{ $t('kb.moveToOther') }}</span>
                             </a-menu-item>
                             <a-menu-divider />
                             <a-menu-item danger @click="handleDeleteDoc(doc)">
                               <DeleteOutlined />
-                              <span>删除文档</span>
+                              <span>{{ $t('kb.deleteDocMenu') }}</span>
                             </a-menu-item>
                           </a-menu>
                         </template>
@@ -250,81 +250,81 @@
           <!-- Unselected state -->
           <div v-else class="no-selection">
             <div class="no-sel-icon"><DatabaseOutlined /></div>
-            <p class="no-sel-text">选择左侧知识库查看文档</p>
+            <p class="no-sel-text">{{ $t('kb.selectKbView') }}</p>
           </div>
         </section>
       </div>
     </main>
 
     <!-- New document dialog -->
-    <a-modal v-model:open="showCreateDocDialog" title="新建文档" :width="640" @cancel="showCreateDocDialog = false">
+    <a-modal v-model:open="showCreateDocDialog" :title="$t('kb.newDocModal')" :width="640" @cancel="showCreateDocDialog = false">
       <a-form :model="createForm" layout="vertical">
-        <a-form-item label="目标知识库" required>
+        <a-form-item :label="$t('kb.targetKb')" required>
           <a-select
             v-model:value="createForm.kbId"
-            placeholder="选择知识库"
+            :placeholder="$t('kb.selectKb')"
             :options="catalog.map(kb => ({ value: kb.kbId, label: kb.name }))"
           />
         </a-form-item>
-        <a-form-item label="文档名称" required>
-          <a-input v-model:value="createForm.name" placeholder="输入文档名称（自动添加 .md 后缀）" />
+        <a-form-item :label="$t('kb.docName')" required>
+          <a-input v-model:value="createForm.name" :placeholder="$t('kb.docNamePlaceholder')" />
         </a-form-item>
-        <a-form-item label="描述">
-          <a-input v-model:value="createForm.description" placeholder="简要描述文档内容（可选）" />
+        <a-form-item :label="$t('kb.description')">
+          <a-input v-model:value="createForm.description" :placeholder="$t('kb.descriptionPlaceholder')" />
         </a-form-item>
-        <a-form-item label="文档内容">
+        <a-form-item :label="$t('kb.content')">
           <a-textarea
             v-model:value="createForm.content"
             :rows="8"
-            placeholder="输入 Markdown 内容..."
+            :placeholder="$t('kb.contentPlaceholder')"
             class="content-editor"
           />
         </a-form-item>
       </a-form>
       <template #footer>
-        <a-button @click="showCreateDocDialog = false">取消</a-button>
-        <a-button type="primary" :loading="submitting" @click="handleCreateDoc">创建</a-button>
+        <a-button @click="showCreateDocDialog = false">{{ $t('kb.cancel') }}</a-button>
+        <a-button type="primary" :loading="submitting" @click="handleCreateDoc">{{ $t('kb.create') }}</a-button>
       </template>
     </a-modal>
 
     <!-- Edit metadata dialog -->
-    <a-modal v-model:open="showEditMetaDialog" title="编辑元数据" :width="520" @cancel="showEditMetaDialog = false">
+    <a-modal v-model:open="showEditMetaDialog" :title="$t('kb.editMetaModal')" :width="520" @cancel="showEditMetaDialog = false">
       <a-form :model="editMetaForm" layout="vertical">
-        <a-form-item label="文档名称" required>
+        <a-form-item :label="$t('kb.docName')" required>
           <a-input v-model:value="editMetaForm.name" />
         </a-form-item>
-        <a-form-item label="描述">
+        <a-form-item :label="$t('kb.description')">
           <a-textarea v-model:value="editMetaForm.description" :rows="3" />
         </a-form-item>
       </a-form>
       <template #footer>
-        <a-button @click="showEditMetaDialog = false">取消</a-button>
-        <a-button type="primary" :loading="submitting" @click="handleEditMeta">保存</a-button>
+        <a-button @click="showEditMetaDialog = false">{{ $t('kb.cancel') }}</a-button>
+        <a-button type="primary" :loading="submitting" @click="handleEditMeta">{{ $t('kb.save') }}</a-button>
       </template>
     </a-modal>
 
     <!-- Edit content dialog -->
-    <a-modal v-model:open="showEditContentDialog" title="编辑文档内容" :width="800" @cancel="showEditContentDialog = false">
+    <a-modal v-model:open="showEditContentDialog" :title="$t('kb.editContentModal')" :width="800" @cancel="showEditContentDialog = false">
       <div class="edit-content-wrapper">
         <a-spin :spinning="contentLoading">
           <a-textarea
             v-model:value="editContentValue"
             :rows="20"
             class="content-editor"
-            placeholder="加载中..."
+            :placeholder="$t('action.loading')"
           />
         </a-spin>
       </div>
       <template #footer>
-        <a-button @click="showEditContentDialog = false">取消</a-button>
-        <a-button type="primary" :loading="submitting" @click="handleEditContent">保存内容</a-button>
+        <a-button @click="showEditContentDialog = false">{{ $t('kb.cancel') }}</a-button>
+        <a-button type="primary" :loading="submitting" @click="handleEditContent">{{ $t('kb.save') }}</a-button>
       </template>
     </a-modal>
 
     <!-- Tag management dialog -->
-    <a-modal v-model:open="showTagsDialog" title="管理标签" :width="520" @cancel="showTagsDialog = false">
+    <a-modal v-model:open="showTagsDialog" :title="$t('kb.manageTagsModal')" :width="520" @cancel="showTagsDialog = false">
       <div class="tags-dialog-content">
-        <p class="tags-hint">为文档 <strong>{{ editingDoc?.name }}</strong> 管理标签</p>
+        <p class="tags-hint">{{ $t('kb.manageTagsFor', { name: editingDoc?.name }) }}</p>
         <div class="tags-current">
           <a-tag
             v-for="(tag, i) in editingTags"
@@ -333,19 +333,19 @@
             color="green"
             @close="removeTag(i)"
           >{{ tag }}</a-tag>
-          <span v-if="editingTags.length === 0" class="no-tags">暂无标签</span>
+          <span v-if="editingTags.length === 0" class="no-tags">{{ $t('kb.noTags') }}</span>
         </div>
         <a-divider />
         <div class="tags-add">
           <a-input
             v-model:value="newTagValue"
-            placeholder="输入标签后回车添加"
+            :placeholder="$t('kb.inputTagPlaceholder')"
             @press-enter="addTag"
           />
-          <a-button type="primary" @click="addTag">添加</a-button>
+          <a-button type="primary" @click="addTag">{{ $t('kb.addTagBtn') }}</a-button>
         </div>
         <div v-if="allTags.length > 0" class="tags-suggest">
-          <p class="tags-suggest-title">已有标签（点击添加）：</p>
+          <p class="tags-suggest-title">{{ $t('kb.existingTags') }}</p>
           <div class="tags-suggest-list">
             <a-tag
               v-for="t in allTags.filter(t => !editingTags.includes(t))"
@@ -357,32 +357,32 @@
         </div>
       </div>
       <template #footer>
-        <a-button @click="showTagsDialog = false">取消</a-button>
-        <a-button type="primary" :loading="submitting" @click="handleSaveTags">保存标签</a-button>
+        <a-button @click="showTagsDialog = false">{{ $t('kb.cancel') }}</a-button>
+        <a-button type="primary" :loading="submitting" @click="handleSaveTags">{{ $t('kb.save') }}</a-button>
       </template>
     </a-modal>
 
     <!-- Move document dialog -->
-    <a-modal v-model:open="showMoveDialog" title="移动文档" :width="480" @cancel="showMoveDialog = false">
+    <a-modal v-model:open="showMoveDialog" :title="$t('kb.moveDocModal')" :width="480" @cancel="showMoveDialog = false">
       <div class="move-dialog-content">
-        <p class="move-hint">将文档 <strong>{{ editingDoc?.name }}</strong> 移动到：</p>
+        <p class="move-hint">{{ $t('kb.moveDocTo', { name: editingDoc?.name }) }}</p>
         <a-select
           v-model:value="moveTargetKbId"
-          placeholder="选择目标知识库"
+          :placeholder="$t('kb.selectTargetKb')"
           style="width: 100%;"
           :options="catalog.filter(kb => kb.kbId !== activeKb?.kbId).map(kb => ({ value: kb.kbId, label: kb.name }))"
         />
       </div>
       <template #footer>
-        <a-button @click="showMoveDialog = false">取消</a-button>
-        <a-button type="primary" :loading="submitting" @click="handleMoveDoc">移动</a-button>
+        <a-button @click="showMoveDialog = false">{{ $t('kb.cancel') }}</a-button>
+        <a-button type="primary" :loading="submitting" @click="handleMoveDoc">{{ $t('kb.move') }}</a-button>
       </template>
     </a-modal>
 
     <!-- Document preview drawer — format-aware rendering -->
     <a-drawer
       v-model:open="showPreviewDrawer"
-      :title="previewDoc?.name || '文档预览'"
+      :title="previewDoc?.name || $t('kb.docPreview')"
       placement="right"
       :width="drawerWidth"
       class="doc-preview-drawer"
@@ -394,7 +394,7 @@
           <a-tag v-for="t in (previewDoc.tags || [])" :key="t" color="green">{{ t }}</a-tag>
           <span v-if="previewDoc.file_size" class="preview-size">{{ formatFileSize(previewDoc.file_size) }}</span>
           <a-button type="link" size="small" class="preview-fullscreen-btn" @click="openFullPreview">
-            <ExpandOutlined /> 全屏
+            <ExpandOutlined /> {{ $t('fs.fullscreen') }}
           </a-button>
         </div>
 
@@ -411,7 +411,7 @@
         <div v-else-if="previewType === 'markdown' && !previewDocId" class="preview-body preview-markdown-client">
           <div class="markdown-body" v-html="renderedMarkdown"></div>
           <div v-if="previewTruncated" class="preview-more">
-            <a-button :loading="previewLoading" @click="loadMorePreview">加载更多</a-button>
+            <a-button :loading="previewLoading" @click="loadMorePreview">{{ $t('kb.loadMore') }}</a-button>
           </div>
         </div>
 
@@ -439,7 +439,7 @@
           <pre><code :class="previewLanguage">{{ previewContent }}</code></pre>
           <div v-if="previewTruncated" class="preview-more">
             <a-button :loading="previewLoading" @click="loadMorePreview">
-              <DownOutlined /> 加载更多
+              <DownOutlined /> {{ $t('kb.loadMore') }}
             </a-button>
           </div>
         </div>
@@ -449,9 +449,9 @@
           <div class="preview-unsupported-icon">
             <FileTextOutlined />
           </div>
-          <p>{{ previewTypeLabel }} 格式暂不支持内嵌预览</p>
+          <p>{{ $t('fs.none') }} format not supported for inline preview</p>
           <a-button type="primary" size="small" @click="openFullPreview">
-            <ExportOutlined /> 在新窗口查看
+            <ExportOutlined /> {{ $t('fs.newWindow') }}
           </a-button>
         </div>
       </a-spin>
@@ -471,8 +471,10 @@
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n'
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { message, Modal } from 'ant-design-vue'
+
 import {
   DatabaseOutlined, ReloadOutlined, PlusOutlined,
   AppstoreOutlined, FileTextOutlined, EllipsisOutlined,
@@ -487,6 +489,8 @@ import type { KbCatalogEntry } from '~/composables/useKnowledgeSearch'
 import { renderMarkdown } from '~/utils/markdown'
 import { useMarkdownRenderer } from '~/composables/useMarkdownRenderer'
 import 'katex/dist/katex.min.css'
+
+const { t } = useI18n()
 
 const {
   loading, fetchCatalog, fetchSubCatalog, fetchDocuments, readDocument,
@@ -562,8 +566,8 @@ function detectPreviewType(doc: KbDoc): string {
 const previewType = computed(() => previewDoc.value ? detectPreviewType(previewDoc.value) : 'unknown')
 const previewDocId = computed(() => previewDoc.value?.doc_id || '')
 const previewTypeLabel = computed(() => {
-  const map: Record<string,string> = {markdown:'Markdown',image:'图片',pdf:'PDF',code:'代码',text:'文本',unsupported:'此',unknown:'此'}
-  return map[previewType.value] || '此'
+  const map: Record<string,string> = {markdown:'Markdown',image:'Image',pdf:'PDF',code:'Code',text:'Text',unsupported:'Unsupported',unknown:'Unknown'}
+  return map[previewType.value] || 'Unknown'
 })
 
 /** Client-side markdown renderer (fallback when doc has no tree-fs file ID).
@@ -637,7 +641,7 @@ const loadCatalog = async () => {
     catalog.value = await fetchCatalog()
     allTags.value = await fetchAllTags()
   } catch (err: any) {
-    antMessage.error(err?.message || '加载知识库目录失败')
+    antMessage.error(err?.message || 'Failed to load catalog')
   }
 }
 
@@ -672,7 +676,7 @@ const selectKb = async (kb: KbCatalogEntry) => {
     subKbList.value = subKbs
     documents.value = docs
   } catch (err: any) {
-    antMessage.error(err?.message || '加载知识库失败')
+    antMessage.error(err?.message || 'Failed to load KB')
   } finally {
     loading.value = false
   }
@@ -711,7 +715,7 @@ const handleRefresh = async () => {
   if (activeKb.value) {
     await selectKb(activeKb.value)
   }
-  message.success('已刷新')
+  message.success(t('kb.refreshSuccess'))
 }
 
 const formatFileSize = (bytes: number): string => {
@@ -724,8 +728,8 @@ const formatFileSize = (bytes: number): string => {
 
 // New document
 const handleCreateDoc = async () => {
-  if (!createForm.value.kbId) { message.error('请选择知识库'); return }
-  if (!createForm.value.name.trim()) { message.error('请输入文档名称'); return }
+  if (!createForm.value.kbId) { message.error(t('kb.kbRequired')); return }
+  if (!createForm.value.name.trim()) { message.error(t('kb.nameRequiredMsg')); return }
   submitting.value = true
   try {
     await createDocument(
@@ -734,12 +738,12 @@ const handleCreateDoc = async () => {
       createForm.value.content || '# ' + createForm.value.name.trim(),
       createForm.value.description.trim()
     )
-    message.success('文档创建成功')
+    message.success(t('kb.createSuccess'))
     showCreateDocDialog.value = false
     createForm.value = { kbId: '', name: '', description: '', content: '' }
     await handleRefresh()
   } catch (err: any) {
-    message.error(err.message || '创建失败')
+    message.error(err.message || t('kb.createFailed'))
   } finally {
     submitting.value = false
   }
@@ -760,11 +764,11 @@ const handleEditMeta = async () => {
       name: editMetaForm.value.name,
       description: editMetaForm.value.description,
     })
-    message.success('元数据已更新')
+    message.success(t('kb.metaUpdated'))
     showEditMetaDialog.value = false
     await selectKb(activeKb.value)
   } catch (err: any) {
-    message.error(err.message || '更新失败')
+    message.error(err.message || t('kb.metaUpdateFailed'))
   } finally {
     submitting.value = false
   }
@@ -780,7 +784,7 @@ const openEditContentDialog = async (doc: KbDoc) => {
     const res = await readDocument(doc.path, { limit: 500, maxChars: 100000 })
     editContentValue.value = res.content
   } catch (err: any) {
-    message.error('加载内容失败')
+    message.error(t('kb.contentLoadFailed'))
   } finally {
     contentLoading.value = false
   }
@@ -791,10 +795,10 @@ const handleEditContent = async () => {
   submitting.value = true
   try {
     await updateDocumentContent(activeKb.value.kbId, editingDoc.value.path, editContentValue.value)
-    message.success('内容已保存')
+    message.success(t('kb.contentSaved'))
     showEditContentDialog.value = false
   } catch (err: any) {
-    message.error(err.message || '保存失败')
+    message.error(err.message || t('kb.contentSaveFailed'))
   } finally {
     submitting.value = false
   }
@@ -811,7 +815,7 @@ const openTagsDialog = (doc: KbDoc) => {
 const addTag = () => {
   const tag = newTagValue.value.trim()
   if (!tag) return
-  if (editingTags.value.includes(tag)) { message.warning('标签已存在'); return }
+  if (editingTags.value.includes(tag)) { message.warning(t('kb.tagExists') || 'Tag already exists'); return }
   editingTags.value.push(tag)
   newTagValue.value = ''
 }
@@ -831,12 +835,12 @@ const handleSaveTags = async () => {
   submitting.value = true
   try {
     await updateDocumentTags(activeKb.value.kbId, editingDoc.value.path, editingTags.value)
-    message.success('标签已保存')
+    message.success(t('kb.tagsSaved'))
     showTagsDialog.value = false
     await selectKb(activeKb.value)
     allTags.value = await fetchAllTags()
   } catch (err: any) {
-    message.error(err.message || '保存标签失败')
+    message.error(err.message || t('kb.tagsSaveFailed'))
   } finally {
     submitting.value = false
   }
@@ -851,15 +855,15 @@ const openMoveDialog = (doc: KbDoc) => {
 
 const handleMoveDoc = async () => {
   if (!editingDoc.value) return
-  if (!moveTargetKbId.value) { message.error('请选择目标知识库'); return }
+  if (!moveTargetKbId.value) { message.error(t('kb.selectTargetKb')); return }
   submitting.value = true
   try {
     await moveDocument(editingDoc.value.path, moveTargetKbId.value)
-    message.success('文档移动成功')
+    message.success(t('kb.docMoved'))
     showMoveDialog.value = false
     await handleRefresh()
   } catch (err: any) {
-    message.error(err.message || '移动失败')
+    message.error(err.message || t('kb.moveFailed'))
   } finally {
     submitting.value = false
   }
@@ -868,19 +872,19 @@ const handleMoveDoc = async () => {
 // Delete document
 const handleDeleteDoc = (doc: KbDoc) => {
   Modal.confirm({
-    title: '确认删除',
-    content: `确定要删除文档 "${doc.name}" 吗？此操作不可撤销。`,
-    okText: '删除',
+    title: t('kb.deleteConfirmMsg'),
+    content: t('kb.deleteDocConfirm', { name: doc.name }),
+    okText: t('action.delete'),
     okType: 'danger',
-    cancelText: '取消',
+    cancelText: t('action.cancel'),
     onOk: async () => {
       if (!activeKb.value) return
       try {
         await deleteDocument(activeKb.value.kbId, doc.path)
-        message.success('文档已删除')
+        message.success(t('kb.deleteSuccess') || 'Document deleted')
         await selectKb(activeKb.value)
       } catch (err: any) {
-        message.error(err.message || '删除失败')
+        message.error(err.message || t('kb.deleteFailed'))
       }
     },
   })
@@ -916,7 +920,7 @@ const loadPreview = async () => {
     previewTruncated.value = res.truncated
     previewOffset.value += 200
   } catch (err: any) {
-    message.error('加载预览失败')
+    message.error(t('kb.previewFailed') || 'Failed to load preview')
   } finally {
     previewLoading.value = false
   }

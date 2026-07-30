@@ -1227,3 +1227,131 @@ body {
   }
   .page-enter-from, .page-leave-to { transform: none; }
 }
+
+/* ============================================================
+ * ACRYLIC / FROSTED GLASS OVERLAYS (v6 enhancement)
+ * Adds depth & modernity while preserving the warm scholar palette.
+ * Applied to elevated cards, stat bars, page headers, and modals.
+ * ============================================================ */
+
+/* —— Frosted tokens (theme-aware) —— */
+:root {
+  --kb-glass-bg: rgba(255, 252, 246, 0.62);
+  --kb-glass-bg-strong: rgba(255, 252, 246, 0.78);
+  --kb-glass-border: rgba(255, 250, 235, 0.55);
+  --kb-glass-blur: 14px;
+  --kb-glass-saturate: 1.06;
+  --kb-glass-tint: rgba(196, 152, 70, 0.05);
+}
+[data-theme="dark"] {
+  --kb-glass-bg: rgba(28, 33, 40, 0.58);
+  --kb-glass-bg-strong: rgba(28, 33, 40, 0.74);
+  --kb-glass-border: rgba(255, 255, 255, 0.07);
+  --kb-glass-blur: 16px;
+  --kb-glass-saturate: 1.10;
+  --kb-glass-tint: rgba(212, 175, 106, 0.04);
+}
+
+/* —— Mixin class: apply to any card-like surface —— */
+.kb-glass {
+  background: var(--kb-glass-bg) !important;
+  backdrop-filter: blur(var(--kb-glass-blur)) saturate(var(--kb-glass-saturate));
+  -webkit-backdrop-filter: blur(var(--kb-glass-blur)) saturate(var(--kb-glass-saturate));
+  border: 1px solid var(--kb-glass-border) !important;
+  box-shadow:
+    var(--kb-shadow-md),
+    inset 0 1px 0 rgba(255, 250, 235, 0.35);
+}
+[data-theme="dark"] .kb-glass {
+  box-shadow:
+    var(--kb-shadow-md),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+.kb-glass::before {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--kb-glass-tint), transparent 60%);
+  pointer-events: none; z-index: 0;
+}
+
+/* —— Apply to Ant Design cards (top-level content cards) —— */
+.ant-card.kb-card-glow,
+.ant-card-hoverable {
+  backdrop-filter: blur(8px) saturate(1.04);
+  -webkit-backdrop-filter: blur(8px) saturate(1.04);
+}
+
+/* —— Page header bar frost (running head on right page) —— */
+.page-right-header {
+  backdrop-filter: blur(10px) saturate(1.05);
+  -webkit-backdrop-filter: blur(10px) saturate(1.05);
+  background: linear-gradient(180deg,
+    var(--kb-glass-bg-strong) 0%,
+    rgba(255, 252, 246, 0.30) 100%) !important;
+}
+[data-theme="dark"] .page-right-header {
+  background: linear-gradient(180deg,
+    var(--kb-glass-bg-strong) 0%,
+    rgba(28, 33, 40, 0.20) 100%) !important;
+}
+
+/* —— Modal & Drawer frosted surface —— */
+.ant-modal-content,
+.ant-drawer-content {
+  backdrop-filter: blur(20px) saturate(1.08);
+  -webkit-backdrop-filter: blur(20px) saturate(1.08);
+}
+
+/* —— Dropdown / popover glass —— */
+.ant-dropdown-menu,
+.ant-popover-inner,
+.ant-select-dropdown,
+.ant-tooltip-inner {
+  backdrop-filter: blur(12px) saturate(1.06);
+  -webkit-backdrop-filter: blur(12px) saturate(1.06);
+}
+
+/* —— Fallback: when backdrop-filter unsupported, keep solid surfaces —— */
+@supports not (backdrop-filter: blur(1px)) {
+  .kb-glass { background: var(--kb-glass-bg-strong) !important; }
+  .page-right-header { background: var(--kb-bg-elevated) !important; }
+}
+
+/* ============================================================
+ * CUSTOM CURSOR — Copper glow + gold ring on interactive hover
+ * Warm metallic point that respects the scholar aesthetic.
+ * Disabled on touch devices & reduced-motion users.
+ * ============================================================ */
+
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  /* Base cursor: warm copper dot with soft halo */
+  body {
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 28 28'><defs><radialGradient id='h' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='%23b24422' stop-opacity='0.30'/><stop offset='100%25' stop-color='%23b24422' stop-opacity='0'/></radialGradient></defs><circle cx='14' cy='14' r='13' fill='url(%23h)'/><circle cx='14' cy='14' r='3' fill='%23b24422'/><circle cx='14' cy='14' r='3' fill='none' stroke='%239e7a38' stroke-width='1'/></svg>") 14 14, default;
+  }
+  /* Pointer (links, buttons, clickable): gold ring */
+  a, button, .ant-btn, .ql-card, .feature-card,
+  .toc-item, .ant-card-hoverable, .ant-list-item,
+  [role="button"], .kb-glass, .mini-btn, .mobile-bottom-nav button {
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><defs><radialGradient id='g' cx='50%25' cy='50%25' r='50%25'><stop offset='0%25' stop-color='%23c49846' stop-opacity='0.40'/><stop offset='100%25' stop-color='%23c49846' stop-opacity='0'/></radialGradient></defs><circle cx='16' cy='16' r='15' fill='url(%23g)'/><circle cx='16' cy='16' r='7' fill='none' stroke='%239e7a38' stroke-width='1.5'/><circle cx='16' cy='16' r='2' fill='%239e7a38'/></svg>") 16 16, pointer;
+  }
+  /* Text fields: thin caret-style */
+  input, textarea, .ant-input, [contenteditable="true"] {
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='20' height='28' viewBox='0 0 20 28'><line x1='10' y1='3' x2='10' y2='25' stroke='%23b24422' stroke-width='1.5'/></svg>") 10 14, text;
+  }
+}
+
+/* —— Glass sweep micro-interaction on frosted cards —— */
+.kb-glass::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(120deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.08) 45%,
+    transparent 60%);
+  opacity: 0;
+  transition: opacity 0.4s var(--kb-ease-out);
+  pointer-events: none; z-index: 1;
+}
+.kb-glass:hover::after { opacity: 1; }

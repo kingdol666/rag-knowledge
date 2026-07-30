@@ -8,7 +8,7 @@
 
 export interface ToolCatalogEntry {
   name: string
-  category: '文件' | '执行' | '搜索' | '网络' | '任务' | '交互' | 'MCP' | '其他'
+  category: 'File' | 'Execute' | 'Search' | 'Network' | 'Task' | 'Interaction' | 'MCP' | 'Other'
   description: string
   icon?: string
 }
@@ -16,56 +16,56 @@ export interface ToolCatalogEntry {
 /** Full set of Claude Code SDK built-in tools (from sdk-tools.d.ts) */
 export const BUILT_IN_TOOLS: ToolCatalogEntry[] = [
   // Files
-  { name: 'Read', category: '文件', description: '读取文件内容（支持图片/PDF/Office 自动识别）', icon: '📖' },
-  { name: 'Write', category: '文件', description: '创建或覆写文件', icon: '✏️' },
-  { name: 'Edit', category: '文件', description: '字符串精确替换编辑（首选，非整文件覆写）', icon: '🔧' },
-  { name: 'NotebookEdit', category: '文件', description: '编辑 Jupyter Notebook 单元格', icon: '📓' },
+  { name: 'Read', category: 'File', description: 'Read file content (auto-detect images/PDF/Office)', icon: '📖' },
+  { name: 'Write', category: 'File', description: 'Create or overwrite files', icon: '✏️' },
+  { name: 'Edit', category: 'File', description: 'String-precise replace editing (preferred, not full-file overwrite)', icon: '🔧' },
+  { name: 'NotebookEdit', category: 'File', description: 'Edit Jupyter Notebook cells', icon: '📓' },
 
   // Execution
-  { name: 'Bash', category: '执行', description: '执行 shell 命令（受权限模式管控）', icon: '⚡' },
-  { name: 'REPL', category: '执行', description: 'Python 交互式代码执行环境', icon: '🐍' },
+  { name: 'Bash', category: 'Execute', description: 'Execute shell commands (governed by permission mode)', icon: '⚡' },
+  { name: 'REPL', category: 'Execute', description: 'Python interactive code execution environment', icon: '🐍' },
 
   // Search
-  { name: 'Glob', category: '搜索', description: '按文件名模式匹配查找文件', icon: '🔍' },
-  { name: 'Grep', category: '搜索', description: '按内容正则搜索文件', icon: '🔎' },
+  { name: 'Glob', category: 'Search', description: 'Pattern-match files by name', icon: '🔍' },
+  { name: 'Grep', category: 'Search', description: 'Regex search file content', icon: '🔎' },
 
   // Network
-  { name: 'WebSearch', category: '网络', description: '实时网络搜索', icon: '🌐' },
-  { name: 'WebFetch', category: '网络', description: '抓取指定 URL 内容', icon: '🔗' },
+  { name: 'WebSearch', category: 'Network', description: 'Real-time web search', icon: '🌐' },
+  { name: 'WebFetch', category: 'Network', description: 'Fetch content from URL', icon: '🔗' },
 
   // Tasks
-  { name: 'Agent', category: '任务', description: '启动子 Agent（并行/专项任务）', icon: '🤖' },
-  { name: 'Task', category: '任务', description: '后台任务管理', icon: '📋' },
-  { name: 'TaskCreate', category: '任务', description: '创建后台任务', icon: '➕' },
-  { name: 'TaskUpdate', category: '任务', description: '更新后台任务状态', icon: '🔄' },
-  { name: 'TaskGet', category: '任务', description: '查询任务详情', icon: '👀' },
-  { name: 'TaskList', category: '任务', description: '列出所有任务', icon: '📊' },
-  { name: 'TaskOutput', category: '任务', description: '读取任务输出', icon: '📤' },
-  { name: 'TaskStop', category: '任务', description: '停止任务', icon: '⏹️' },
-  { name: 'TodoWrite', category: '任务', description: '写入任务清单（计划跟踪）', icon: '✅' },
-  { name: 'Workflow', category: '任务', description: '动态工作流编排', icon: '⚙️' },
-  { name: 'Monitor', category: '任务', description: '实时监控任务', icon: '📡' },
-  { name: 'ExitPlanMode', category: '任务', description: '退出计划模式（提交方案）', icon: '🎯' },
-  { name: 'EnterPlanMode', category: '任务', description: '进入计划模式（只读探索）', icon: '📝' },
-  { name: 'EnterWorktree', category: '任务', description: '创建 git worktree 隔离环境', icon: '🌳' },
-  { name: 'ExitWorktree', category: '任务', description: '退出 worktree', icon: '🚪' },
-  { name: 'ReportFindings', category: '任务', description: '汇报探索发现', icon: '📈' },
-  { name: 'Projects', category: '任务', description: '项目列表与切换', icon: '📁' },
+  { name: 'Agent', category: 'Task', description: 'Launch sub Agent (parallel/specialized tasks)', icon: '🤖' },
+  { name: 'Task', category: 'Task', description: 'Background task management', icon: '📋' },
+  { name: 'TaskCreate', category: 'Task', description: 'Create background task', icon: '➕' },
+  { name: 'TaskUpdate', category: 'Task', description: 'Update background task status', icon: '🔄' },
+  { name: 'TaskGet', category: 'Task', description: 'Query task details', icon: '👀' },
+  { name: 'TaskList', category: 'Task', description: 'List all tasks', icon: '📊' },
+  { name: 'TaskOutput', category: 'Task', description: 'Read task output', icon: '📤' },
+  { name: 'TaskStop', category: 'Task', description: 'Stop task', icon: '⏹️' },
+  { name: 'TodoWrite', category: 'Task', description: 'Write task list (plan tracking)', icon: '✅' },
+  { name: 'Workflow', category: 'Task', description: 'Dynamic workflow orchestration', icon: '⚙️' },
+  { name: 'Monitor', category: 'Task', description: 'Real-time task monitoring', icon: '📡' },
+  { name: 'ExitPlanMode', category: 'Task', description: 'Exit plan mode (submit proposal)', icon: '🎯' },
+  { name: 'EnterPlanMode', category: 'Task', description: 'Enter plan mode (read-only exploration)', icon: '📝' },
+  { name: 'EnterWorktree', category: 'Task', description: 'Create git worktree isolated environment', icon: '🌳' },
+  { name: 'ExitWorktree', category: 'Task', description: 'Exit worktree', icon: '🚪' },
+  { name: 'ReportFindings', category: 'Task', description: 'Report exploration findings', icon: '📈' },
+  { name: 'Projects', category: 'Task', description: 'Project list and switching', icon: '📁' },
 
   // Interaction
-  { name: 'AskUserQuestion', category: '交互', description: '向用户提问（选项式）', icon: '❓' },
-  { name: 'PushNotification', category: '交互', description: '推送系统通知', icon: '🔔' },
+  { name: 'AskUserQuestion', category: 'Interaction', description: 'Ask user a question (multiple choice)', icon: '❓' },
+  { name: 'PushNotification', category: 'Interaction', description: 'Push system notification', icon: '🔔' },
 
   // Other
-  { name: 'CronCreate', category: '其他', description: '创建定时任务', icon: '⏰' },
-  { name: 'CronList', category: '其他', description: '列出定时任务', icon: '📅' },
-  { name: 'CronDelete', category: '其他', description: '删除定时任务', icon: '🗑️' },
-  { name: 'ScheduleWakeup', category: '其他', description: '调度唤醒', icon: '⏲️' },
-  { name: 'Artifact', category: '其他', description: '创建/管理 Artifact', icon: '🎨' },
-  { name: 'ClaudeDesign', category: '其他', description: 'Pencil 设计文件操作', icon: '✨' },
-  { name: 'ReadMcpResource', category: 'MCP', description: '读取 MCP 资源', icon: '🔌' },
-  { name: 'ReadMcpResourceDir', category: 'MCP', description: '列出 MCP 资源目录', icon: '🔌' },
-  { name: 'ListMcpResources', category: 'MCP', description: '列出所有 MCP 资源', icon: '🔌' },
+  { name: 'CronCreate', category: 'Other', description: 'Create scheduled task', icon: '⏰' },
+  { name: 'CronList', category: 'Other', description: 'List scheduled tasks', icon: '📅' },
+  { name: 'CronDelete', category: 'Other', description: 'Delete scheduled task', icon: '🗑️' },
+  { name: 'ScheduleWakeup', category: 'Other', description: 'Schedule wakeup', icon: '⏲️' },
+  { name: 'Artifact', category: 'Other', description: 'Create/manage artifacts', icon: '🎨' },
+  { name: 'ClaudeDesign', category: 'Other', description: 'Pencil design file operations', icon: '✨' },
+  { name: 'ReadMcpResource', category: 'MCP', description: 'Read MCP resource', icon: '🔌' },
+  { name: 'ReadMcpResourceDir', category: 'MCP', description: 'List MCP resource directory', icon: '🔌' },
+  { name: 'ListMcpResources', category: 'MCP', description: 'List all MCP resources', icon: '🔌' },
 ]
 
 /** Grouped by category */
@@ -79,7 +79,7 @@ export const TOOLS_BY_CATEGORY: Record<string, ToolCatalogEntry[]> = BUILT_IN_TO
 )
 
 /** Tool category display order */
-export const TOOL_CATEGORY_ORDER = ['文件', '执行', '搜索', '网络', '任务', '交互', 'MCP', '其他']
+export const TOOL_CATEGORY_ORDER = ['File', 'Execute', 'Search', 'Network', 'Task', 'Interaction', 'MCP', 'Other']
 
 // ══════ Attachment utility functions ══════
 
@@ -111,8 +111,8 @@ export function attachmentIcon(att: Attachment): string {
 
 /** Attachment type label */
 export function attachmentTypeLabel(att: Attachment): string {
-  if (att.isImage) return '图片'
+  if (att.isImage) return 'Image'
   if (att.isPdf) return 'PDF'
-  if (att.isText) return '文本'
-  return '文件'
+  if (att.isText) return 'Text'
+  return 'File'
 }

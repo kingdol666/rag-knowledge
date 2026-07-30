@@ -2,55 +2,57 @@
   <div class="claude-chat-page" :data-engine="engine" :style="engineThemeVars">
     <!-- ═══ Header (fixed top) ═══ -->
     <div class="chat-header-wrapper">
-      <div class="chat-header">
-        <div class="header-title-group">
-          <h2>
-            <span class="engine-icon">{{ ENGINE_MAP[engine].icon }}</span>
-            {{ engine === 'omp' ? 'OMP' : $t('chat.title') }}
-          </h2>
-          <p class="hint">{{ engine === 'omp' ? 'Oh My Pi Coding Agent' : $t('chat.subtitle') }}</p>
-        </div>
-        <div class="header-actions">
-          <div class="engine-selector-wrap">
-            <a-select
-              v-model:value="engine"
-              class="engine-selector"
-              :options="ENGINES.map(e => ({ value: e.name, label: e.icon + ' ' + e.label }))"
-              @change="onEngineChange"
-            />
-            <!-- ⭐ Availability indicator: green dot = SDK available, red = missing -->
-            <a-tooltip :title="engineAvailability[engine] ? `${ENGINE_MAP[engine].label} SDK ready` : `${ENGINE_MAP[engine].label} SDK not installed`">
-              <span class="engine-status-dot" :class="engineAvailability[engine] ? 'ok' : 'no'">
-                <span class="engine-status-pulse"></span>
-              </span>
-            </a-tooltip>
-            <!-- ⭐ Main-agent status lamp: idle/running/done/error -->
-            <AgentStatusLight :status="mainAgentStatus" size="small" :label="streaming ? '执行中' : ''" />
+      <!-- Page header (matches .page-header pattern used by other pages) -->
+      <header class="page-header chat-page-header">
+        <div class="header-content">
+          <div class="header-left">
+            <div class="header-icon chat-engine-icon">
+              <RobotOutlined />
+            </div>
+            <div class="header-text">
+              <h1 class="header-title">{{ engine === 'omp' ? 'OMP Coding Agent' : $t('chat.title') }}</h1>
+              <p class="header-subtitle">{{ engine === 'omp' ? 'Oh My Pi Coding Agent' : $t('chat.subtitle') }}</p>
+            </div>
           </div>
-          <!-- ⭐ Subagent + todo sidebar toggle (shows running count badge) -->
-          <a-tooltip :title="`子 Agent 面板（${subagentStore.totalCount.value} 个 / ${subagentStore.runningCount.value} 运行中）`">
-            <a-badge :count="subagentStore.runningCount.value" :offset="[-4, 4]" size="small">
-              <a-button :type="agentSidebarOpen ? 'primary' : 'default'" @click="agentSidebarOpen = !agentSidebarOpen">
-                <RobotOutlined /> 子 Agent
+          <div class="header-actions">
+            <div class="engine-selector-wrap">
+              <a-select
+                v-model:value="engine"
+                class="engine-selector"
+                :options="ENGINES.map(e => ({ value: e.name, label: e.icon + ' ' + e.label }))"
+                @change="onEngineChange"
+              />
+              <a-tooltip :title="engineAvailability[engine] ? `${ENGINE_MAP[engine].label} SDK ready` : `${ENGINE_MAP[engine].label} SDK not installed`">
+                <span class="engine-status-dot" :class="engineAvailability[engine] ? 'ok' : 'no'">
+                  <span class="engine-status-pulse"></span>
+                </span>
+              </a-tooltip>
+              <AgentStatusLight :status="mainAgentStatus" size="small" :label="streaming ? $t('chat.executing') : ''" />
+            </div>
+            <a-tooltip :title="$t('chat.subAgentPanel', { total: subagentStore.totalCount.value, running: subagentStore.runningCount.value })">
+              <a-badge :count="subagentStore.runningCount.value" :offset="[-4, 4]" size="small">
+                <a-button class="action-btn" :type="agentSidebarOpen ? 'primary' : 'default'" @click="agentSidebarOpen = !agentSidebarOpen">
+                  <RobotOutlined /> {{ $t('chat.subAgent') }}
+                </a-button>
+              </a-badge>
+            </a-tooltip>
+            <div class="header-spacer" />
+            <a-tooltip :title="$t('chat.terminalTooltip')">
+              <a-button class="action-btn" :type="terminalDrawerOpen ? 'primary' : 'default'" @click="openTerminal">
+                <CodepenOutlined /> {{ $t('chat.terminal') }}
               </a-button>
-            </a-badge>
-          </a-tooltip>
-          <div class="header-spacer" />
-          <a-tooltip title="集成终端 — 在侧边打开原生终端，默认工作目录跟随当前工作区">
-            <a-button :type="terminalDrawerOpen ? 'primary' : 'default'" @click="openTerminal">
-              <CodepenOutlined /> 终端
-            </a-button>
-          </a-tooltip>
-          <a-tooltip title="新建对话（不打断当前流式，后台继续）">
-            <a-button type="primary" ghost @click="newConversation" :disabled="!messages.length && !streaming">
-              <PlusSquareOutlined /> {{ $t('chat.newChat') }}
-            </a-button>
-          </a-tooltip>
-          <a-button @click="panelOpen = true"><AppstoreOutlined /> {{ $t('chat.env') }}</a-button>
-          <a-button @click="loadSessions" :loading="loadingSessions"><HistoryOutlined /> {{ $t('chat.history') }}</a-button>
-          <a-button @click="clearChat"><ClearOutlined /> {{ $t('chat.clear') }}</a-button>
+            </a-tooltip>
+            <a-tooltip :title="$t('chat.newChatTooltip')">
+              <a-button class="action-btn" type="primary" ghost @click="newConversation" :disabled="!messages.length && !streaming">
+                <PlusSquareOutlined /> {{ $t('chat.newChat') }}
+              </a-button>
+            </a-tooltip>
+            <a-button class="action-btn" @click="panelOpen = true"><AppstoreOutlined /> {{ $t('chat.env') }}</a-button>
+            <a-button class="action-btn" @click="loadSessions" :loading="loadingSessions"><HistoryOutlined /> {{ $t('chat.history') }}</a-button>
+            <a-button class="action-btn" @click="clearChat"><ClearOutlined /> {{ $t('chat.clear') }}</a-button>
+          </div>
         </div>
-      </div>
+      </header>
 
       <!-- Toolbar -->
       <div class="toolbar">
@@ -89,7 +91,6 @@
         </a-select>
         <a-tooltip :title="PERMISSION_MODE_INFO[permissionMode as PermissionMode].desc"><InfoCircleOutlined style="cursor:help" /></a-tooltip>
         <a-input v-model:value="model" placeholder="Model (leave empty for default)" style="width:160px" allow-clear />
-        <a-tooltip title="推理深度（越高越慢但思考越深入，Ultracode=max+workflows模式）">
           <a-select v-model:value="reasoningEffort" style="width:120px" size="small">
             <a-select-option value="auto">🤖 Auto</a-select-option>
             <a-select-option value="low">⚡ Low</a-select-option>
@@ -98,7 +99,6 @@
             <a-select-option value="xhigh">🔥 X-High</a-select-option>
             <a-select-option value="max">🚀 Max (Ultracode)</a-select-option>
           </a-select>
-        </a-tooltip>
       </div>
 
       <!-- meta bar -->
@@ -107,7 +107,7 @@
         <a-tag v-if="initInfo.model" color="blue">{{ initInfo.model }}</a-tag>
         <a-tag v-for="m in initInfo.mcpServers" :key="m.name" :color="m.status === 'ready' ? 'green' : 'orange'">🔌 {{ m.name }} · {{ m.status }}</a-tag>
         <template v-for="bg in bgSessions" :key="bg.id">
-          <a-tooltip :title="'后台运行中: ' + bg.prompt.slice(0, 60) + '… — 点击切换回来'">
+          <a-tooltip :title="$t('chat.bgRunning', { prompt: bg.prompt.slice(0, 60) })">
             <a-tag color="processing" style="cursor:pointer" @click="switchToBg(bg)">
               <SyncOutlined spin /> {{ bg.id.slice(0, 8) }}…
             </a-tag>
@@ -237,7 +237,7 @@
 
       <!-- ⭐ Jump to latest button (floating when not at bottom) -->
       <transition name="jump-fade">
-        <div v-if="!isAtBottom && (streaming || messages.length)" class="jump-latest" role="button" tabindex="0" aria-label="跳到最新" @click="scrollToBottom()" @keydown.enter="scrollToBottom()">
+        <div v-if="!isAtBottom && (streaming || messages.length)" class="jump-latest" role="button" tabindex="0" :aria-label="$t('chat.jumpToLatest')" @click="scrollToBottom()" @keydown.enter="scrollToBottom()">
           <VerticalAlignBottomOutlined />
           <span v-if="unreadCount" class="jump-badge">{{ unreadCount }}</span>
         </div>
@@ -262,20 +262,20 @@
     <!-- ⭐ Message Queue Panel (production-grade with context snapshots) -->
     <div v-if="messageQueue.length" class="queue-panel">
       <div class="queue-head">
-        <OrderedListOutlined /> 消息队列 ({{ queueCounts.pending }} 待发{{ queueCounts.sending ? ', ' + queueCounts.sending + ' 发送中' : '' }}{{ queueCounts.failed ? ', ' + queueCounts.failed + ' 失败' : '' }})
+        <OrderedListOutlined /> {{ $t('chat.messageQueue', { pending: queueCounts.pending, sending: queueCounts.sending ? ', ' + queueCounts.sending + ' ' + $t('chat.sending') : '', failed: queueCounts.failed ? ', ' + queueCounts.failed + ' ' + $t('chat.failed') : '' }) }}
         <span class="queue-head-actions">
-          <a-tooltip :title="queuePaused ? '恢复队列' : '暂停队列'">
+          <a-tooltip :title="queuePaused ? $t('chat.resumeQueue') : $t('chat.pauseQueue')">
             <a-button size="small" type="text" @click="toggleQueuePause">
               <PauseCircleOutlined v-if="!queuePaused" />
               <CaretRightOutlined v-else style="color: var(--kb-emerald)" />
             </a-button>
           </a-tooltip>
-          <a-tooltip title="重试所有失败">
+          <a-tooltip :title="$t('chat.retryAllFailed')">
             <a-button size="small" type="text" :disabled="!queueCounts.failed" @click="retryAllFailed">
               <SyncOutlined />
             </a-button>
           </a-tooltip>
-          <a-button size="small" type="link" @click="clearQueue"><DeleteOutlined /> 清空待发</a-button>
+          <a-button size="small" type="link" @click="clearQueue"><DeleteOutlined /> {{ $t('chat.clearPending') }}</a-button>
         </span>
       </div>
       <div v-for="(item, i) in messageQueue" :key="item.id" :class="['queue-item', item.status]">
@@ -300,18 +300,18 @@
             <span class="queue-error-icon">⚠</span>
           </a-tooltip>
           <span class="queue-actions">
-            <a-tooltip title="编辑">
+            <a-tooltip :title="$t('chat.edit')">
               <a-button size="small" type="text" @click="startEdit(item)" :disabled="item.status === 'sending'"><EditOutlined /></a-button>
             </a-tooltip>
-            <a-tooltip title="删除">
+            <a-tooltip :title="$t('chat.delete')">
               <a-button size="small" type="text" danger @click="removeFromQueue(item.id)" :disabled="item.status === 'sending'"><DeleteOutlined /></a-button>
             </a-tooltip>
             <!-- Retry button (failed items only) -->
-            <a-tooltip v-if="item.status === 'failed'" title="重试发送">
+            <a-tooltip v-if="item.status === 'failed'" :title="$t('chat.retrySend')">
               <a-button size="small" type="primary" ghost @click="retryQueueItem(item)"><SyncOutlined /></a-button>
             </a-tooltip>
             <!-- Manual send (skip line) -->
-            <a-tooltip v-if="item.status === 'pending'" title="立即发送（跳过队列）">
+            <a-tooltip v-if="item.status === 'pending'" :title="$t('chat.sendNow')">
               <a-button size="small" type="primary" ghost :disabled="streaming" @click="sendQueueItem(item)"><SendOutlined /></a-button>
             </a-tooltip>
           </span>
@@ -319,7 +319,7 @@
       </div>
       <!-- Paused indicator -->
       <div v-if="queuePaused && queueCounts.pending" class="queue-paused-banner">
-        <PauseCircleOutlined /> 队列已暂停 — {{ queueCounts.pending }} 条等待中
+        <PauseCircleOutlined /> {{ $t('chat.queuePaused', { count: queueCounts.pending }) }}
       </div>
     </div>
 
@@ -333,7 +333,7 @@
             <span class="att-name">{{ att.name }}</span>
             <span class="att-type">{{ attTypeLabel(att) }} · {{ formatSize(att.size) }}</span>
           </div>
-          <a-tooltip title="移除">
+          <a-tooltip :title="$t('chat.remove')">
             <a-button type="text" size="small" danger @click="removeAttachment(att.id)">
               <CloseOutlined />
             </a-button>
@@ -367,7 +367,7 @@
       </div>
 
       <div v-if="slashOpen && filteredSlash.length" class="slash-menu">
-        <div class="slash-menu-head">指令（{{ filteredSlash.length }}/{{ allSlashCommands.length }}）<span class="muted">↑↓ 选择 · Enter 确认</span></div>
+        <div class="slash-menu-head">{{ $t('chat.commands', { shown: filteredSlash.length, total: allSlashCommands.length }) }}</div>
         <div
           v-for="(cmd, i) in filteredSlash"
           :key="cmd"
@@ -384,7 +384,7 @@
       </div>
       <div class="input-bar">
         <!-- Attachment button + hidden file input -->
-        <a-tooltip title="添加附件（图片/PDF/文档）">
+        <a-tooltip :title="$t('chat.addAttachment')">
           <a-button class="att-btn" @click="triggerFilePicker">
             <PaperClipOutlined />
           </a-button>
@@ -408,26 +408,26 @@
         />
         <a-textarea
           v-model:value="input" ref="inputRef"
-          :placeholder="streaming ? '回答中… 输入消息可加入队列 (Enter/Shift+Enter 发送)' : inputPlaceholder"
+          :placeholder="streaming ? $t('chat.placeholderStreaming') : inputPlaceholder"
           :auto-size="{ minRows: 1, maxRows: 6 }"
           @keydown="onKeydown"
         />
-        <a-tooltip :title="streaming ? '加入队列（回答结束后自动发送）' : '发送 (Enter)'">
+        <a-tooltip :title="streaming ? $t('chat.addToQueue') : $t('chat.send')">
           <a-button type="primary" :disabled="!input.trim() && !attachments.length" @click="send">
-            <SendOutlined />{{ streaming ? ' 队列' : '' }}
+            <SendOutlined />{{ streaming ? $t('chat.queue') : '' }}
           </a-button>
         </a-tooltip>
-        <a-button v-if="streaming" danger @click="abort">中断</a-button>
+        <a-button v-if="streaming" danger @click="abort">{{ $t('chat.stopBtn') }}</a-button>
       </div>
     </div>
     </div>
 
     <!-- Environment (tools/MCP/skills) panel -->
-    <a-drawer v-model:open="panelOpen" title="Claude Code 环境" width="600" placement="right">
+    <a-drawer v-model:open="panelOpen" :title="$t('chat.envPanel')" width="600" placement="right">
       <a-tabs>
         <!-- ⭐ Built-in tools (categorized) -->
-        <a-tab-pane key="builtin" :tab="`内置工具 (${BUILT_IN_TOOLS.length})`">
-          <a-input-search v-model:value="toolSearch" placeholder="搜索工具…" style="margin-bottom:12px" allow-clear />
+        <a-tab-pane key="builtin" :tab="`${$t('chat.builtinTools')} (${BUILT_IN_TOOLS.length})`">
+          <a-input-search v-model:value="toolSearch" :placeholder="$t('chat.searchTools')" style="margin-bottom:12px" allow-clear />
           <div v-for="cat in TOOL_CATEGORY_ORDER" :key="cat">
             <template v-if="filteredToolsByCategory(cat).length">
               <div class="cat-header">{{ cat }} · {{ filteredToolsByCategory(cat).length }}</div>
@@ -443,15 +443,15 @@
         </a-tab-pane>
 
         <!-- ⭐ Session active tools (from init) -->
-        <a-tab-pane key="tools" :tab="`会话工具 (${initInfo.tools.length})`">
-          <p class="muted" v-if="!initInfo.tools.length">会话启动后从 init 消息加载</p>
+        <a-tab-pane key="tools" :tab="`${$t('chat.sessionTools')} (${initInfo.tools.length})`">
+          <p class="muted" v-if="!initInfo.tools.length">{{ $t('chat.loadAfterInit') }}</p>
           <div v-for="t in initInfo.tools" :key="t" class="env-item">
             <a-tag>{{ t.startsWith('mcp__') ? '🔌' : '🛠' }}</a-tag> {{ t }}
           </div>
         </a-tab-pane>
 
         <a-tab-pane key="mcp" :tab="`MCP (${initInfo.mcpServers.length})`">
-          <p class="muted" v-if="!initInfo.mcpServers.length">会话启动后加载</p>
+          <p class="muted" v-if="!initInfo.mcpServers.length">{{ $t('chat.loadAfterInit') }}</p>
           <div v-for="m in initInfo.mcpServers" :key="m.name" class="env-item">
             <a-tag :color="m.status === 'ready' ? 'green' : 'orange'">{{ m.status }}</a-tag>
             <strong>{{ m.name }}</strong>
@@ -460,7 +460,7 @@
 
         <!-- ⭐ Skills (with descriptions) -->
         <a-tab-pane key="skills" :tab="`Skills (${skillCatalog.length})`">
-          <a-input-search v-model:value="skillSearch" placeholder="搜索 Skill…" style="margin-bottom:12px" allow-clear />
+          <a-input-search v-model:value="skillSearch" :placeholder="$t('chat.searchSkills')" style="margin-bottom:12px" allow-clear />
           <div v-for="s in filteredSkills" :key="s.name" class="env-item skill-env" @click="useSlash(s.name)">
             <div class="skill-info">
               <span class="slash-cmd">/{{ s.name }}</span>
@@ -473,8 +473,8 @@
         </a-tab-pane>
 
         <!-- ⭐ Slash commands (loaded from SDK init) -->
-        <a-tab-pane key="slash" :tab="`Slash 指令 (${slashCommands.length})`">
-          <p class="muted" v-if="!slashCommands.length">会话启动后加载</p>
+        <a-tab-pane key="slash" :tab="`${$t('chat.slashCommands')} (${slashCommands.length})`">
+          <p class="muted" v-if="!slashCommands.length">{{ $t('chat.loadAfterInit') }}</p>
           <div v-for="c in slashCommands" :key="c" class="env-item slash-env" @click="useSlash(c)">
             <span class="slash-cmd">/{{ c }}</span>
           </div>
@@ -504,18 +504,18 @@
     </a-drawer>
 
     <!-- ⭐ Workspace manager -->
-    <a-modal v-model:open="wsManagerOpen" title="工作区管理" width="620" :footer="null">
+    <a-modal v-model:open="wsManagerOpen" :title="$t('chat.workspaceManager')" width="620" :footer="null">
       <div class="ws-manager-body">
         <div class="ws-manager-header">
-          <p class="muted">保存常用工作目录，快速切换 Claude Code 运行上下文（加载对应 .claude/skills + .mcp.json）</p>
+          <p class="muted">{{ $t('chat.workspaceManagerHint') }}</p>
         </div>
 
         <!-- New workspace form -->
         <div class="ws-form">
-          <a-input v-model:value="wsForm.name" placeholder="工作区名称（如 RAG知识库）" style="flex:2" />
-          <a-input v-model:value="wsForm.path" placeholder="绝对路径" style="flex:3" />
+          <a-input v-model:value="wsForm.name" :placeholder="$t('chat.workspaceNamePlaceholder')" style="flex:2" />
+          <a-input v-model:value="wsForm.path" :placeholder="$t('chat.absolutePath')" style="flex:3" />
           <a-button type="primary" @click="saveWorkspace" :disabled="!wsForm.name || !wsForm.path">
-            <SaveOutlined /> 保存
+            <SaveOutlined /> {{ $t('action.save') }}
           </a-button>
         </div>
 
@@ -530,35 +530,35 @@
               </div>
               <div class="ws-item-path">{{ ws.path }}</div>
               <div v-if="ws.description" class="ws-item-desc">{{ ws.description }}</div>
-              <div v-if="ws.last_used" class="ws-item-meta">上次使用: {{ new Date(ws.last_used).toLocaleString() }}</div>
+              <div v-if="ws.last_used" class="ws-item-meta">$t('chat.lastUsed') + ': ' {{ new Date(ws.last_used).toLocaleString() }}</div>
             </div>
             <div class="ws-item-actions">
-              <a-tooltip title="选择并开始对话">
+              <a-tooltip :title="$t('chat.selectAndStart')">
                 <a-button size="small" type="primary" ghost @click="selectWorkspace(ws)"><ArrowRightOutlined /></a-button>
               </a-tooltip>
-              <a-tooltip title="置顶切换">
+              <a-tooltip :title="$t('chat.togglePin')">
                 <a-button size="small" @click="togglePin(ws)">
                   <PushpinOutlined :style="ws.pin_order ? {color:'var(--kb-amber)'} : {}" />
                 </a-button>
               </a-tooltip>
-              <a-popconfirm title="删除此工作区？" @confirm="deleteWorkspace(ws.id)">
+              <a-popconfirm :title="$t('chat.deleteWorkspaceConfirm')" @confirm="deleteWorkspace(ws.id)">
                 <a-button size="small" danger><DeleteOutlined /></a-button>
               </a-popconfirm>
             </div>
           </div>
           <div v-if="!workspaces.length" class="ws-empty">
             <FolderOpenOutlined style="font-size:32px;color:var(--kb-fg-mute)" />
-            <p>还没有保存的工作区</p>
-            <p class="muted">填写上方表单添加第一个工作区</p>
+            <p>{{ $t('chat.noWorkspaces') }}</p>
+            <p class="muted">{{ $t('chat.addFirstWorkspace') }}</p>
           </div>
         </div>
       </div>
     </a-modal>
 
     <!-- History sessions -->
-    <a-modal v-model:open="sessionsVisible" title="历史会话（SQLite 持久化）" width="680">
+    <a-modal v-model:open="sessionsVisible" :title="$t('chat.historySessions')" width="680">
       <template #extra>
-        <a-button v-if="loadingSessions" loading size="small">加载中…</a-button>
+        <a-button v-if="loadingSessions" loading size="small">{{ $t('action.loading') }}</a-button>
       </template>
       <a-list :data-source="sessions" size="small" :loading="loadingSessions">
         <template #renderItem="{ item }">
@@ -568,19 +568,19 @@
                 <span class="history-title">{{ item.title || item.session_id.slice(0, 16) + '…' }}</span>
               </template>
               <template #description>
-                {{ new Date(item.updated_at).toLocaleString() }} · {{ item.message_count }} 条消息
+                {{ new Date(item.updated_at).toLocaleString() }} · {{ item.message_count }} + ' ' + $t('chat.messageCount')
                 <span v-if="item.model" class="muted">· {{ item.model }}</span>
               </template>
               <template #avatar><MessageOutlined style="font-size:20px;color:#1677ff" /></template>
             </a-list-item-meta>
             <template #extra>
-              <a-popconfirm title="删除此会话及其消息？" @confirm.stop="deleteHistory(item.session_id)">
+              <a-popconfirm :title="$t('chat.deleteSessionConfirm')" @confirm.stop="deleteHistory(item.session_id)">
                 <a-button size="small" danger @click.stop><DeleteOutlined /></a-button>
               </a-popconfirm>
             </template>
           </a-list-item>
         </template>
-        <template #footer><span class="muted">点击整行加载历史消息并继续对话</span></template>
+        <template #footer><span class="muted">{{ $t('chat.clickToLoadHistory') }}</span></template>
       </a-list>
     </a-modal>
 
@@ -591,25 +591,25 @@
       :maskClosable="false"
       :keyboard="false"
       width="600"
-      title="工具权限请求"
+      :title="$t('chat.permissionRequest')"
     >
       <div v-if="permissionReq" class="perm-body">
-        <p class="perm-hint">Claude 想使用工具 <a-tag color="orange">{{ permissionReq.display }}</a-tag></p>
+        <p class="perm-hint">{{ $t('chat.claudeWantsToUse') }} <a-tag color="orange">{{ permissionReq.display }}</a-tag></p>
         <div class="perm-input-block">
           <div class="muted">Input:</div>
           <pre class="perm-input">{{ fmt(permissionReq.input) }}</pre>
         </div>
-        <p class="muted" style="margin-top:10px">允许则 Claude 继续执行；拒绝则该工具被跳过。</p>
+        <p class="muted" style="margin-top:10px">{{ $t('chat.permissionHint') }}</p>
       </div>
       <template #footer>
-        <a-button danger @click="denyPermission">拒绝 (Deny)</a-button>
-        <a-button type="primary" @click="allowPermission">允许 (Allow)</a-button>
+        <a-button danger @click="denyPermission">{{ $t('chat.deny') }} (Deny)</a-button>
+        <a-button type="primary" @click="allowPermission">{{ $t('chat.allow') }} (Allow)</a-button>
       </template>
     </a-modal>
     <!-- ⭐ Integrated terminal (node-pty over WebSocket) -->
     <a-drawer
       v-model:open="terminalDrawerOpen"
-      title="集成终端"
+      :title="$t('chat.integratedTerminal')"
       placement="right"
       width="520"
       :body-style="{ padding: 0, background: '#0d1117', height: 'calc(100% - 55px)' }"
@@ -619,10 +619,10 @@
       <template #extra>
         <a-space size="small">
           <a-tag v-if="terminalHandle?.connected" color="green" :bordered="false" style="font-size:11px">
-            <span class="term-conn-dot"></span> 已连接
+            <span class="term-conn-dot"></span> + ' ' + $t('chat.connected')
           </a-tag>
-          <a-tag v-else color="orange" :bordered="false" style="font-size:11px">连接中…</a-tag>
-          <a-tooltip title="重连终端（跟随当前工作区目录）">
+          <a-tag v-else color="orange" :bordered="false" style="font-size:11px">{{ $t('chat.connecting') }}</a-tag>
+          <a-tooltip :title="$t('chat.reconnectTerminal')">
             <a-button size="small" type="text" style="color:#8b949e" @click="reconnectTerminal">
               <SyncOutlined />
             </a-button>
@@ -632,7 +632,7 @@
       <div ref="terminalContainer" class="terminal-xterm-host"></div>
       <div class="terminal-hint">
         <span class="terminal-hint-cwd" v-if="cwd">📁 {{ cwd }}</span>
-        <span class="terminal-hint-cwd" v-else>📁 项目根目录</span>
+        <span class="terminal-hint-cwd" v-else>📁 {{ $t('chat.projectRoot') }}</span>
         <span class="terminal-hint-note">原生终端 · 输入 exit 关闭会话</span>
       </div>
     </a-drawer>
@@ -882,7 +882,7 @@ function newConversation() {
     // Save current state as background session
     const bg: BgSession = {
       id: 'bg_' + Date.now().toString(36),
-      prompt: messages.filter(m => m.kind === 'user').pop()?.text || '(无文本)',
+      prompt: messages.filter(m => m.kind === 'user').pop()?.text || '(no text)',
       cwd: cwd.value,
       permissionMode: permissionMode.value,
       model: model.value,
@@ -923,7 +923,7 @@ function newConversation() {
   // Keep input text
   input.value = savedInput
   nextTick(() => inputRef.value?.focus?.())
-  antMessage.success('新对话已创建' + (bgSessions.value.length ? `（${bgSessions.value.length} 个对话在后台继续）` : ''))
+  antMessage.success('New conversation created' + (bgSessions.value.length ? `（${bgSessions.value.length} 个对话在后台继续）` : ''))
 }
 
 /**
@@ -944,7 +944,7 @@ function switchToBg(bg: BgSession) {
   currentSessionId.value = bg.sessionId
   // Allow abort of the background session now that it's active
   abortController.value = bg.abortController
-  antMessage.success('已切换到后台对话')
+  antMessage.success('Switched to background session')
 }
 
 /**
@@ -969,7 +969,6 @@ const QUICK_ACTIONS = [
   { icon: '🧹', label: 'Audit KB', action: 'please verify all knowledge bases' },
   { icon: '⚡', label: 'Clear', action: '/clear' },
 ]
-
 function queueAction(act: typeof QUICK_ACTIONS[0]) {
   input.value = act.action + (act.action.endsWith(' ') ? '' : ' ')
   nextTick(() => inputRef.value?.focus?.())
@@ -1039,7 +1038,7 @@ function removeFromQueue(id: string) {
 function clearQueue() {
   messageQueue.value = messageQueue.value.filter((item) => item.status === 'sending')
   saveQueueToStorage(messageQueue.value)
-  antMessage.success('队列已清空')
+  antMessage.success('Queue cleared')
 }
 
 /**
@@ -1052,7 +1051,7 @@ function toggleQueuePause() {
   if (!queuePaused.value && !streaming.value) {
     consumeQueue()
   }
-  antMessage.info(queuePaused.value ? '队列已暂停' : '队列已恢复')
+  antMessage.info(queuePaused.value ? 'Queue paused' : 'Queue resumed')
 }
 
 /**
@@ -1154,7 +1153,7 @@ function cancelEdit(item: QueueItem) {
 /** Manually send a specific queue item immediately (skip the line) */
 function sendQueueItem(item: QueueItem) {
   if (streaming.value) {
-    antMessage.warning('正在回答中，请等待当前回答完成')
+    antMessage.warning('Currently responding, please wait')
     return
   }
   messageQueue.value = messageQueue.value.filter((q) => q.id !== item.id)
@@ -1237,7 +1236,7 @@ const ACCEPTED_TYPES = 'image/* ,.pdf,.md,.txt,.json,.yaml,.yml,.xml,.js,.ts,.js
 const inputPlaceholder = computed(() =>
   attachments.value.length
     ? `描述你想让 Claude 对附件做什么（Enter 发送 · Shift+Enter 换行）…`
-    : '问 Claude（Enter 发送 · 输入 / 触发指令 · 📎加附件 · Shift+Enter 换行）…'
+    : 'Ask Claude (Enter send · / commands · 📎 attach · Shift+Enter newline)...'
 )
 
 // KB-enhanced answer state
@@ -1338,12 +1337,12 @@ function enhanceCodeBlocks(scopeEl?: HTMLElement) {
     const btn = document.createElement('button')
     btn.className = 'code-copy-btn'
     btn.type = 'button'
-    btn.textContent = '复制'
+    btn.textContent = 'Copy'
     btn.addEventListener('click', () => {
       const text = code?.textContent || pre.textContent || ''
       navigator.clipboard?.writeText(text).then(() => {
-        btn.textContent = '已复制 ✓'
-        setTimeout(() => { btn.textContent = '复制' }, 1500)
+        btn.textContent = 'Copied ✓'
+        setTimeout(() => { btn.textContent = 'Copy' }, 1500)
       }).catch(() => {})
     })
     pre.appendChild(btn)
@@ -1628,7 +1627,7 @@ function handleSseBlock(block: string) {
     return
   }
   if (evt === 'error') {
-    messages.push({ kind: 'error', text: obj.error || '未知错误', id: Date.now() })
+    messages.push({ kind: 'error', text: obj.error || 'Unknown error', id: Date.now() })
     streaming.value = false
     return
   }
@@ -1687,7 +1686,7 @@ async function sendRaw(prompt: string, atts?: Attachment[]): Promise<void> {
   } catch (e: any) {
     if (myGenId !== streamGenId) return // Silently ignore errors from detached streams
     if (e.name === 'AbortError') {
-      messages.push({ kind: 'system', subtype: 'abort', text: '_已中断_', id: Date.now() })
+      messages.push({ kind: 'system', subtype: 'abort', text: '_Interrupted_', id: Date.now() })
     } else {
       const errMsg = e?.message || String(e)
       antMessage.error(errMsg)
@@ -1712,7 +1711,7 @@ async function sendRaw(prompt: string, atts?: Attachment[]): Promise<void> {
     // Clean up background session when its stream finishes
     bgSessions.value = bgSessions.value.filter(s => {
       if (s.abortController === abortController.value || s.id === activeBgId.value) {
-        antMessage.info('后台对话已完成: ' + (s.prompt?.slice(0, 40) || '') + '…')
+        antMessage.info('Background session completed: ' + (s.prompt?.slice(0, 40) || '') + '…')
         return false
       }
       return true
@@ -1729,7 +1728,7 @@ function send() {
   //    of the queue. The model is busy; their message waits calmly.
   if (streaming.value) {
     if (!prompt) {
-      antMessage.warning('回答中暂不支持仅附件排队，请输入文本或等待回答完成')
+      antMessage.warning('Cannot queue attachment-only while responding. Enter text or wait.')
       return
     }
     addToQueue()
@@ -1776,7 +1775,7 @@ async function onFilePicked(e: Event) {
       antMessage.success(`已添加 ${d.count} 个附件`)
     }
   } catch (e: any) {
-    antMessage.error('上传失败: ' + (e?.message || e?.data?.statusMessage || e))
+    antMessage.error('Upload failed: ' + (e?.message || e?.data?.statusMessage || e))
   } finally {
     target.value = '' // 允许重复选择同一文件
   }
@@ -1868,7 +1867,7 @@ function useSlash(cmd: string) {
 function abort() {
   abortController.value?.abort()
   subagentStore.finalizeEngine(engine.value)
-  antMessage.info('已中断当前回答，队列后续消息将自动继续')
+  antMessage.info('Response interrupted. Queued messages continue automatically.')
 }
 
 // Permission approval
@@ -1893,7 +1892,7 @@ async function allowPermission() {
       },
     })
   } catch (e: any) {
-    antMessage.error('审批发送失败: ' + (e?.message || e))
+    antMessage.error('Approval send failed: ' + (e?.message || e))
   }
   permissionReq.value = null
 }
@@ -2041,7 +2040,7 @@ async function saveWorkspace() {
     wsForm.value = { name: '', path: '', description: '' }
     await loadWorkspaces()
   } catch (e: any) {
-    antMessage.error('保存失败: ' + (e?.message || e?.data?.statusMessage || e))
+    antMessage.error('Save failed: ' + (e?.message || e?.data?.statusMessage || e))
   }
 }
 
@@ -2077,9 +2076,9 @@ async function deleteWorkspace(id: string | number) {
   try {
     await $fetch(`/api/claude/workspaces/${id}`, { method: 'DELETE' })
     await loadWorkspaces()
-    antMessage.success('已删除')
+    antMessage.success('Deleted')
   } catch (e: any) {
-    antMessage.error('删除失败: ' + (e?.message || e))
+    antMessage.error('Delete failed: ' + (e?.message || e))
   }
 }
 
@@ -2087,7 +2086,7 @@ async function deleteWorkspace(id: string | number) {
 async function addCurrentWorkspace() {
   const path = cwd.value.trim()
   if (!path) {
-    antMessage.warning('请先输入或选择一个工作目录路径')
+    antMessage.warning('Please enter or select a working directory path')
     return
   }
   const existing = workspaces.value.find((ws: any) => ws.path === path)
@@ -2106,7 +2105,7 @@ function onWorkspaceChange(path: string | undefined) {
     // Directory changed; suggest clearing session (not forced)
     if (messages.length > 0) {
       clearChat()
-      antMessage.info('工作目录已切换，会话已重置')
+      antMessage.info('Working directory changed, session reset')
     }
   }
 }
@@ -2186,7 +2185,7 @@ async function loadSessions() {
     sessions.value = d.sessions || []
     sessionsVisible.value = true
   } catch (e: any) {
-    antMessage.error('加载历史失败: ' + (e?.message || e))
+    antMessage.error('Failed to load history: ' + (e?.message || e))
   } finally {
     loadingSessions.value = false
   }
@@ -2194,7 +2193,7 @@ async function loadSessions() {
 
 async function loadHistory(sid: string) {
   sessionsVisible.value = false
-  const loadingMsg = antMessage.loading('正在加载历史会话…', 0)
+  const loadingMsg = antMessage.loading('Loading history session...', 0)
   try {
     const d: any = await $fetch(`/api/claude/history/${encodeURIComponent(sid)}`)
     clearChat()
@@ -2224,10 +2223,10 @@ async function loadHistory(sid: string) {
       } catch { /* Single replay failure does not affect others */ }
     }
     loadingMsg()
-    antMessage.success(`已加载历史会话（${d.count} 条消息，渲染 ${replayedCount} 条），继续对话自动续接`)
+    antMessage.success(`已加载历史会话（${d.count} + ' ' + $t('chat.messageCount')，渲染 ${replayedCount} 条），继续对话自动续接`)
   } catch (e: any) {
     loadingMsg()
-    antMessage.error('加载历史失败: ' + (e?.message || e?.data?.statusMessage || e))
+    antMessage.error('Failed to load history: ' + (e?.message || e?.data?.statusMessage || e))
   }
 }
 
@@ -2235,9 +2234,9 @@ async function deleteHistory(sid: string) {
   try {
     await $fetch(`/api/claude/history/${encodeURIComponent(sid)}`, { method: 'DELETE' })
     sessions.value = sessions.value.filter((s: any) => s.session_id !== sid)
-    antMessage.success('已删除')
+    antMessage.success('Deleted')
   } catch (e: any) {
-    antMessage.error('删除失败: ' + (e?.message || e))
+    antMessage.error('Delete failed: ' + (e?.message || e))
   }
 }
 </script>
@@ -2250,49 +2249,102 @@ async function deleteHistory(sid: string) {
 
 .claude-chat-page {
   display: flex; flex-direction: column;
-  flex: 1 1 auto;        /* 拉伸填满 .page-content（flex 方式，绕过 container-type 对百分比高度的破坏） */
-  min-height: 0;         /* 允许收缩，让内部 messages 的 overflow 生效 */
+  flex: 1 1 auto;
+  min-height: 0;
   box-sizing: border-box;
-  padding: var(--kb-space-lg);
-  gap: 0;
-  max-width: 1100px; margin: 0 auto; width: 100%;
-  overflow: hidden;      /* 自身不滚，滚动交给 messages */
+  padding: 6px 4px;
+  gap: var(--kb-space-sm);
+  max-width: 100%; margin: 0 auto; width: 100%;
+  overflow: hidden;
+  position: relative;
 }
+/* Arc-style ambient glow behind the chat */
+.claude-chat-page::before {
+  content: '';
+  position: absolute; inset: -40px;
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 0%, rgba(178, 68, 34, 0.06), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 85% 100%, rgba(196, 152, 70, 0.05), transparent 60%);
+  pointer-events: none; z-index: 0;
+}
+[data-theme="dark"] .claude-chat-page::before {
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 0%, rgba(224, 85, 58, 0.10), transparent 60%),
+    radial-gradient(ellipse 50% 40% at 85% 100%, rgba(212, 175, 106, 0.08), transparent 60%);
+}
+.claude-chat-page > * { position: relative; z-index: 1; }
 
-/* ── Header wrapper (own flex row — never overlaps messages) ── */
+/* ── Header wrapper — Arc frosted panel ── */
 .chat-header-wrapper {
   flex-shrink: 0;
   display: flex; flex-direction: column;
   gap: var(--kb-space-sm);
-  padding-bottom: var(--kb-space-sm);
-  border-bottom: 1px solid var(--kb-border);
-  background: var(--kb-bg);
+  padding: 14px 20px 10px;
+  border-radius: var(--kb-radius-lg);
+  border: 1px solid rgba(255, 250, 235, 0.40);
+  background: var(--kb-glass-bg);
+  backdrop-filter: blur(18px) saturate(1.12);
+  -webkit-backdrop-filter: blur(18px) saturate(1.12);
+  box-shadow: var(--kb-shadow-sm), inset 0 1px 0 rgba(255, 250, 235, 0.45);
+  position: relative;
+}
+[data-theme="dark"] .chat-header-wrapper {
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: var(--kb-shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+/* Arc subtle top-edge light */
+.chat-header-wrapper::after {
+  content: ''; position: absolute; top: 0; left: 16px; right: 16px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(196, 152, 70, 0.35), transparent);
 }
 
-/* ── Header ── */
-.chat-header { display: flex; justify-content: space-between; align-items: center; gap: var(--kb-space); }
-.chat-header h2 {
-  margin: 0; font-size: 22px; font-weight: 600; font-style: italic;
+/* ── Page header (matches the .page-header pattern on all other pages) ── */
+.chat-page-header { margin-bottom: 14px; animation: kb-fade-up 0.5s var(--kb-ease-out) both; }
+.chat-page-header .header-content { display: flex; justify-content: space-between; align-items: center; gap: var(--kb-space); }
+.chat-page-header .header-left { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.chat-page-header .header-icon {
+  width: 48px; height: 48px; border-radius: 14px;
+  display: grid; place-items: center;
+  font-size: 22px; color: #fff;
+  background: linear-gradient(135deg, var(--kb-primary), var(--kb-gold-deep));
+  box-shadow: var(--kb-shadow-primary);
+  flex-shrink: 0;
+}
+.chat-page-header .header-text h1 {
+  font-size: 24px; font-weight: 800; color: var(--kb-fg);
+  margin: 0 0 2px; letter-spacing: -0.5px;
   font-family: var(--kb-font-serif);
-  letter-spacing: 0; color: var(--kb-fg);
-  display: flex; align-items: center; gap: 10px;
 }
-.chat-header h2 :deep(.anticon) { color: var(--kb-primary); }
-.chat-header .hint { margin: 3px 0 0; color: var(--kb-fg-mute); font-size: 12px; }
-.chat-header .hint code {
-  background: var(--kb-primary-soft); color: var(--kb-primary);
-  padding: 1px 6px; border-radius: var(--kb-radius-sm);
-  font-family: var(--kb-font-mono); font-size: 11px; font-weight: 600;
+.chat-page-header .header-text p { font-size: 13px; color: var(--kb-fg-3); margin: 0; }
+.chat-page-header .header-actions {
+  display: flex; gap: var(--kb-space-xs); flex-shrink: 0;
+  overflow-x: auto; scrollbar-width: thin;
+  scrollbar-color: var(--kb-border-strong) transparent;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
 }
-.header-actions { display: flex; gap: var(--kb-space-xs); flex-shrink: 0; }
+.chat-page-header .header-actions::-webkit-scrollbar { height: 4px; }
+.chat-page-header .header-actions::-webkit-scrollbar-thumb { background: var(--kb-border-strong); border-radius: 2px; }
+.chat-page-header .header-actions > * { flex-shrink: 0; }
+.chat-page-header .action-btn {
+  height: 38px; padding: 0 14px; border-radius: 11px; font-size: 13px;
+  display: flex; align-items: center; gap: 6px; white-space: nowrap;
+}
 
-/* ── Toolbar (轻量化：去掉框/阴影，融入 header，控件紧凑) ── */
+/* ── Toolbar (frosted control bar — matches other pages' glass control rows) ── */
 .toolbar {
-  display: flex; gap: 6px; align-items: center; flex-wrap: wrap; flex-shrink: 0;
-  padding: 4px 0;
-  background: transparent;
-  border: none;
-  box-shadow: none;
+  display: flex; gap: 8px; align-items: center; flex-wrap: wrap; flex-shrink: 0;
+  padding: 8px 14px;
+  background: rgba(255, 252, 246, 0.45);
+  backdrop-filter: blur(10px) saturate(1.06);
+  -webkit-backdrop-filter: blur(10px) saturate(1.06);
+  border: 1px solid rgba(184, 148, 90, 0.16);
+  border-radius: var(--kb-radius);
+  box-shadow: var(--kb-shadow-xs);
+}
+[data-theme="dark"] .toolbar {
+  background: rgba(28, 33, 40, 0.42);
+  border-color: rgba(255, 255, 255, 0.06);
 }
 .toolbar :deep(.ant-select-selector),
 .toolbar :deep(.ant-input) { min-height: 30px; font-size: 12.5px; }
@@ -2945,17 +2997,26 @@ async function deleteHistory(sid: string) {
 }
 .input-bar {
   display: flex; gap: var(--kb-space-sm); align-items: flex-end;
-  background: var(--kb-bg-elevated);
-  border: 1.5px solid var(--kb-border);
-  border-radius: 26px;                 /* ChatGPT 风格大圆角胶囊 */
-  padding: 8px 8px 8px 14px;
-  box-shadow: var(--kb-shadow-sm);
-  transition: border-color var(--kb-dur-fast) var(--kb-ease), box-shadow var(--kb-dur-fast) var(--kb-ease);
+  background: rgba(255, 252, 246, 0.55);
+  backdrop-filter: blur(16px) saturate(1.10);
+  -webkit-backdrop-filter: blur(16px) saturate(1.10);
+  border: 1px solid rgba(184, 148, 90, 0.22);
+  border-radius: 28px;
+  padding: 8px 8px 8px 16px;
+  box-shadow: var(--kb-shadow-sm), inset 0 1px 0 rgba(255, 250, 235, 0.50);
+  transition: all var(--kb-dur-fast) var(--kb-ease);
+}
+[data-theme="dark"] .input-bar {
+  background: rgba(28, 33, 40, 0.52);
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: var(--kb-shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 .input-bar:focus-within {
   border-color: var(--kb-gold);
-  box-shadow: var(--kb-shadow-sm), 0 0 0 4px var(--kb-gold-glow);
+  background: rgba(255, 252, 246, 0.72);
+  box-shadow: var(--kb-shadow-sm), 0 0 0 4px var(--kb-gold-glow), inset 0 1px 0 rgba(255, 250, 235, 0.60);
 }
+[data-theme="dark"] .input-bar:focus-within { background: rgba(28, 33, 40, 0.70); }
 .input-bar :deep(.ant-input) {
   flex: 1; border: none; box-shadow: none; background: transparent;
   font-size: 15px; line-height: 1.5; resize: none; padding: 6px 4px;
@@ -3270,27 +3331,49 @@ async function deleteHistory(sid: string) {
   flex-shrink: 0;
   display: flex; flex-direction: column;
   gap: var(--kb-space-xs);
-  padding-top: var(--kb-space-xs);
-  border-top: 1px solid var(--kb-border);
-  background: var(--kb-bg);
+  padding: 10px 20px 12px;
+  border-radius: var(--kb-radius-lg);
+  border: 1px solid rgba(255, 250, 235, 0.40);
+  background: var(--kb-glass-bg);
+  backdrop-filter: blur(18px) saturate(1.12);
+  -webkit-backdrop-filter: blur(18px) saturate(1.12);
+  box-shadow: var(--kb-shadow-sm), inset 0 1px 0 rgba(255, 250, 235, 0.45);
+  position: relative;
+}
+[data-theme="dark"] .chat-footer-wrapper {
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow: var(--kb-shadow-sm), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+/* Arc subtle top-edge light */
+.chat-footer-wrapper::after {
+  content: ''; position: absolute; top: 0; left: 16px; right: 16px; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(196, 152, 70, 0.30), transparent);
 }
 
-/* ═══ Quick Actions ═══ */
-.quick-actions {
-  display: flex; align-items: center; gap: 6px; flex-shrink: 0;
-  padding: 4px 0;
-}
-.qa-label { font-size: 13px; flex-shrink: 0; margin-right: 2px; }
-.qa-scroll { display: flex; gap: 5px; overflow-x: auto; flex: 1; }
 .qa-pill {
   white-space: nowrap; cursor: pointer; font-size: 11.5px; font-weight: 500;
-  padding: 3px 10px; border-radius: var(--kb-radius-pill);
-  background: var(--kb-bg-subtle); border: 1px solid var(--kb-border);
+  padding: 4px 12px; border-radius: var(--kb-radius-pill);
+  background: rgba(255, 250, 235, 0.35);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(184, 148, 90, 0.22);
   color: var(--kb-fg-2);
   transition: all var(--kb-dur-fast) var(--kb-ease);
   flex-shrink: 0; user-select: none;
 }
-.qa-pill:hover { border-color: var(--kb-gold); color: var(--kb-gold-deep); background: var(--kb-gold-soft); }
+[data-theme="dark"] .qa-pill {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.10);
+}
+.qa-pill:hover {
+  border-color: var(--kb-gold);
+  color: var(--kb-gold-deep);
+  background: rgba(212, 175, 106, 0.14);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(184, 148, 90, 0.18);
+}
+.qa-label { font-size: 13px; flex-shrink: 0; margin-right: 2px; }
+.qa-scroll { display: flex; gap: 5px; overflow-x: auto; flex: 1; padding-bottom: 2px; }
 
 /* ═══ Message Queue Panel (production-grade) ═══ */
 .queue-panel {
@@ -3577,6 +3660,12 @@ async function deleteHistory(sid: string) {
   display: flex;
   flex-direction: column;
   overflow: hidden;   /* 外层不滚，滚动交给 .messages */
+  padding: 8px 14px !important;  /* shrink default 24px 36px → give chat max room */
+}
+/* When claude-chat is active, shrink the left TOC page so the chat (right page) gets more width */
+.book-container:has(.claude-chat-page) .page-left {
+  max-width: 300px !important;
+  min-width: 240px !important;
 }
 </style>
 

@@ -4,23 +4,23 @@
     <header class="sb-header">
       <div class="sb-title">
         <RobotOutlined class="sb-title-icon" />
-        <span class="sb-title-text">子 Agent</span>
+        <span class="sb-title-text">{{ $t('agent.title') }}</span>
         <span class="sb-engine" :title="engineLabel">{{ engineEmoji }}</span>
       </div>
 
-      <div class="sb-count" :title="`运行中 ${runningCount} / 共 ${totalCount}`">
+      <div class="sb-count" :title="`Running ${runningCount} / Total ${totalCount}`">
         <span class="sb-count-run">{{ runningCount }}</span>
         <span class="sb-count-sep">/</span>
         <span class="sb-count-tot">{{ totalCount }}</span>
       </div>
 
       <div class="sb-actions">
-        <a-tooltip title="清除已完成">
+        <a-tooltip :title="$t('agent.clearCompleted')">
           <button
             type="button"
             class="sb-icon-btn"
             :disabled="totalCount === 0"
-            aria-label="清除已完成的子 Agent"
+            :aria-label="$t('agent.clearCompleted') + ' ' + $t('agent.title')"
             @click="clearFinished"
           >
             <DeleteOutlined />
@@ -29,7 +29,7 @@
         <button
           type="button"
           class="sb-icon-btn"
-          aria-label="关闭子 Agent 面板"
+          :aria-label="$t('agent.closePanel', { title: $t('agent.title') })"
           @click="emit('close')"
         >
           <CloseOutlined />
@@ -43,8 +43,8 @@
       <EmptyState
         v-if="sessions.length === 0"
         :icon="RobotOutlined"
-        title="暂无子 Agent"
-        hint="当主 Agent 委托 Task/Agent 工具时，子 Agent 会在此显示"
+        :title="$t('agent.noAgents', { title: $t('agent.title') })"
+        :hint="$t('agent.noAgentsHint', { title: $t('agent.title') })"
         size="compact"
         fill
       />
@@ -68,18 +68,18 @@
           <span class="type-badge">{{ session.type || 'task' }}</span>
           <span
             class="engine-tag"
-            :title="session.engine === 'omp' ? 'OMP 引擎' : 'Claude 引擎'"
+            :title="session.engine === 'omp' ? $t('agent.ompEngine') : $t('agent.claudeEngine')"
           >{{ session.engine === 'omp' ? '⚡' : '🤖' }}</span>
           <span class="card-time">{{ relativeTime(session.updatedAt) }}</span>
         </div>
 
         <!-- Row 2: description (2-line clamp) -->
-        <p class="card-desc">{{ session.description || '(无描述)' }}</p>
+        <p class="card-desc">{{ session.description || $t("agent.noDescription") }}</p>
 
         <!-- Row 3: footer chips -->
         <div class="card-foot">
-          <span class="foot-chip" title="工具调用次数">🔧 {{ session.toolCount }}</span>
-          <span class="foot-chip" title="消息数">💬 {{ session.messages.length }}</span>
+          <span class="foot-chip" :title="$t('agent.toolCalls')">🔧 {{ session.toolCount }}</span>
+          <span class="foot-chip" :title="$t('agent.messages')">💬 {{ session.messages.length }}</span>
           <span v-if="session.error" class="foot-err">{{ session.error }}</span>
         </div>
       </button>
@@ -103,7 +103,7 @@
               <span class="dh-type">{{ selected.type || 'task' }}</span>
               <span class="dh-engine">{{ selected.engine === 'omp' ? '⚡ OMP' : '🤖 Claude' }}</span>
             </div>
-            <p class="dh-desc">{{ selected.description || '(无描述)' }}</p>
+            <p class="dh-desc">{{ selected.description || $t("agent.noDescription") }}</p>
             <div class="dh-stats">
               <span>{{ formatClock(selected.createdAt) }}</span>
               <span class="dh-dot">·</span>
@@ -304,8 +304,8 @@ const engineEmoji = computed(() => (props.engine === 'omp' ? '⚡' : '🤖'))
 
 const drawerTitle = computed(() => {
   const s = selected.value
-  if (!s) return '子 Agent 详情'
-  return `${s.type || 'task'} · 子 Agent`
+  if (!s) return $t('agent.title') + ' ' + $t('agent.detailSuffix')
+  return `${s.type || 'task'} · ${$t('agent.title')}`
 })
 
 
