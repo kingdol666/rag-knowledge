@@ -1,283 +1,410 @@
-# QDCVR+MoE Benchmark — System-Unique Test Plan v2.0
-# Target: Measure KB Management Automation + MoE-style Activation + Content Verification
+# QDCVR Knowledge Base System — Comprehensive Benchmark Plan v3.0
+# Holistic Evaluation: Ingestion + Organization + Retrieval + Experience + End-to-End
+# Target: CIKM 2027 / SIGIR 2027 Experimental Evaluation
 # Date: 2026-07-30
 
-## 0. What Makes This System Different
+## 0. Philosophy: What Are We Actually Evaluating?
 
-Standard RAG benchmarks measure "given a query and N documents, can you find the right one?"
-This system does something fundamentally different:
+Standard RAG benchmarks measure one thing: "given query Q and corpus C, rank documents correctly."
+This system does FIVE fundamentally different things:
 
-  ┌─────────────────────────────────────────────────────┐
-  │              MoE-style QDCVR Architecture            │
-  │                                                      │
-  │  User Query                                          │
-  │     │                                                │
-  │     ▼                                                │
-  │  ┌──────────────────────┐                            │
-  │  │ Step 0: Query Analyze │  Intent classification    │
-  │  │ → 改写为检索友好形态   │  Entity extraction        │
-  │  └──────┬───────────────┘                            │
-  │         │                                            │
-  │         ▼                                            │
-  │  ┌──────────────────────┐                            │
-  │  │ Step 1: MoE Router    │  ← THE CORE INNOVATION    │
-  │  │ kb_list(lightweight)  │  Read KB descriptions     │
-  │  │ → Select top 1-3 KBs  │  Activate ONLY these KBs  │
-  │  │ → IGNORE others       │  ← 像 MoE gate 一样       │
-  │  └──────┬───────────────┘                            │
-  │         │                                            │
-  │         ▼                                            │
-  │  ┌──────────────────────┐                            │
-  │  │ Step 2: Activated     │  Vector search ONLY on     │
-  │  │ Search (仅选中KB)     │  activated KBs            │
-  │  │ kb_search_vector/      │  NOT full scan            │
-  │  │ kb_search_two_stage    │                            │
-  │  └──────┬───────────────┘                            │
-  │         │                                            │
-  │         ▼                                            │
-  │  ┌──────────────────────┐                            │
-  │  │ Step 3: Content       │  kb_doc_read 3000 chars   │
-  │  │ Verification          │  0-8 rubric scoring       │
-  │  │ → 独立裁决,不盲信向量  │  Content > Vector         │
-  │  └──────┬───────────────┘                            │
-  │         │                                            │
-  │         ▼                                            │
-  │  ┌──────────────────────┐                            │
-  │  │ Step 6: Answer +      │  P0/P1/P2 置信度          │
-  │  │ Blind-spot声明        │  + 来源 + 盲区             │
-  │  └──────────────────────┘                            │
-  └─────────────────────────────────────────────────────┘
+  ┌──────────────────────────────────────────────────────────┐
+  │               KNOWLEDGE BASE LIFECYCLE                    │
+  │                                                           │
+  │  ① INGEST         ② ORGANIZE       ③ RETRIEVE            │
+  │  Raw PDF/Word      Auto-tag         MoE gate → QDCVR     │
+  │  → Auto-parse      → Sub-KB route   → Content verify     │
+  │  → Auto-tag        → Dedup          → Answer + blind-spot │
+  │  → Auto-describe   → Restructure                          │
+  │  → Auto-index      → Verify                               │
+  │                                                           │
+  │  ④ EXPERIENCE      ⑤ VERIFY                               │
+  │  Q&A → Meditation  Integrity check                        │
+  │  → Extract         → Orphan detection                     │
+  │  → Publish         → Consistency audit                    │
+  └──────────────────────────────────────────────────────────┘
 
-The key metrics for THIS system are NOT P@1/P@5 — they are:
-
-  A. KB ROUTING ACCURACY: Does Step 1 select the correct KB(s)?
-  B. SEARCH SPACE REDUCTION: How many chunks are filtered out?
-  C. CONTENT VERIFICATION ACCURACY: Does Step 3 correctly judge relevance?
-  D. END-TO-END ANSWER QUALITY: Does the final answer contain verified evidence?
-  E. INGEST AUTOMATION QUALITY: Auto-tag + auto-subKB routing accuracy
+Each phase needs its OWN test data, ground truth, metrics, and success criteria.
+No existing benchmark covers this — we must design it from scratch.
 
 
-## I. BENCHMARK DESIGN PRINCIPLES
+## I. TEST DATA REQUIREMENTS
 
-### Principle 1: Use REAL documents from the actual 14 KBs
-No synthetic docs. Use existing documents from 高分子双向拉伸文献库 (77 docs,
-13 sub-KBs), AI-ML-Research (20 docs), etc. This tests the system as-deployed.
+### Dataset A: Ingestion Test Set (30 documents)
+─────────────────────────────────────────
+30 real research paper abstracts NOT currently in any KB.
+Each document needs HUMAN annotation:
 
-### Principle 2: Measure KB ROUTING, not just retrieval
-The unique value is the MoE gate — selecting which KB to activate. Compare:
-- QDCVR-MoE: Step 1 selects KBs → search only those
-- QDCVR-Flat: Skip Step 1 → search all KBs (ablation)
-- The difference = MoE routing contribution
+  {
+    "id": "ingest-001",
+    "title": "Strain-Induced Crystallization of PET During Biaxial Stretching",
+    "content": "<full abstract text>",
+    "ground_truth": {
+      "primary_kb": "高分子双向拉伸文献库",
+      "sub_kb": "03_PET_BOPET - 聚酯双向拉伸",
+      "tags": ["PET", "应变诱导结晶", "双向拉伸", "聚酯", "结晶动力学"],
+      "description": "研究了PET在双向拉伸过程中的应变诱导结晶行为，分析了拉伸温度和拉伸比对结晶度和晶态结构的影响。采用DSC和WAXD表征手段。",
+      "category": "research_paper",
+      "language": "en"
+    }
+  }
 
-### Principle 3: Measure CONTENT VERIFICATION, not just vector similarity
-Vector score is a HINT. Content score is the VERDICT.
-Compare answer quality with and without Step 3 content verification.
-
-### Principle 4: Measure SEARCH SPACE REDUCTION
-A 77-doc KB with 7612 chunks: how many chunks does each query actually scan?
-The MoE architecture should scan << 7612 on average.
-
-### Principle 5: Measure INGEST AUTOMATION
-How well does the system auto-tag and auto-route new documents into sub-KBs?
-
-
-## II. TEST PHASES
-
-### Phase A: KB Routing Accuracy (MoE Gate Test)
-────────────────────────────────────────────────
-What: Given 20 queries spanning 6+ domains, does Step 1 select the correct KB?
-
-Method:
-  1. For each query, run the FULL QDCVR pipeline
-  2. Record which KB(s) Step 1 selected
-  3. Compare against ground-truth "correct KB" annotation
-  4. Also run as ablation: skip Step 1, search ALL KBs
-
-Metrics:
-  - KB Selection Precision: % of queries where correct KB is in selected set
-  - KB Selection Recall: % of all correct KBs that were selected
-  - Over-selection Rate: avg # of KBs selected (lower = more efficient)
-  - Routing Latency: time spent in Step 1
-
-Queries (20 total):
-  ┌──────┬──────────────────────────────────────────────────┬──────────────────────┐
-  │ ID   │ Query                                             │ Correct KB(s)         │
-  ├──────┼──────────────────────────────────────────────────┼──────────────────────┤
-  │ R-01 │ BOPET薄膜拉伸过程中的应变诱导结晶行为              │ 高分子双向拉伸/03_PET │
-  │ R-02 │ PVA偏光片薄膜的双向拉伸工艺与光学性能              │ 高分子双向拉伸/04_PVA │
-  │ R-03 │ BOPP电容膜击穿强度与拉伸比的关系                  │ 高分子双向拉伸/05_PP  │
-  │ R-04 │ PLA可降解薄膜的热定型松弛行为                      │ 高分子双向拉伸/06_PLA │
-  │ R-05 │ 尼龙6双向拉伸过程中的晶型转变                      │ 高分子双向拉伸/07_PA  │
-  │ R-06 │ Adam优化器的自适应学习率与偏差校正机制             │ AI-ML-Research        │
-  │ R-07 │ Transformer多头自注意力与位置编码                  │ AI-ML-Research        │
-  │ R-08 │ RAG检索增强生成的三种范式对比                      │ AI-ML-Research        │
-  │ R-09 │ 锂离子电池相变材料热管理中的铜泡沫复合材料         │ Energy-Batteries      │
-  │ R-10 │ 固态电解质LLZO离子电导率与界面稳定性               │ Energy-Batteries      │
-  │ R-11 │ MXene Ti3C2Tx的层间距调控与赝电容机理              │ Materials-Science     │
-  │ R-12 │ 机器学习原子间势函数替代DFT计算                    │ Materials-Science     │
-  │ R-13 │ 脑机接口颅内EEG的PEDOT:PSS电极阻抗优化             │ Biomedical-Engineering│
-  │ R-14 │ 细菌纤维素骨组织工程支架的羟基磷灰石矿化           │ Biomedical-Engineering│
-  │ R-15 │ RT-2视觉语言动作模型的sim-to-real泛化             │ Embodied-AI           │
-  │ R-16 │ DreamerV3世界模型的离散隐空间想象规划             │ Embodied-AI           │
-  │ R-17 │ 单原子催化剂M-N4位点的CO2还原法拉第效率           │ Chemistry-Catalysis   │
-  │ R-18 │ TiO2光催化氟烷基化的配体-金属电荷转移机理          │ Chemistry-Catalysis   │
-  │ R-19 │ 2D材料范德华异质结的能带工程与twistronics         │ Materials-Science     │
-  │     │   (adversarial: also matches 高分子库 physics)     │                       │
-  │ R-20 │ 强化学习在材料逆设计中的应用                      │ Materials-ML-Inverse  │
-  │     │   (cross-domain: AI-ML ∩ Materials)               │ Design                │
-  └──────┴──────────────────────────────────────────────────┴──────────────────────┘
+Domain distribution: 5 per domain × 6 domains = 30
+- 高分子双向拉伸: 5 (spread across PET/PVA/BOPP/PLA/Physics sub-KBs)
+- AI-ML-Research: 5
+- Energy-Batteries: 5
+- Materials-Science: 5
+- Biomedical-Engineering: 5
+- Embodied-AI: 5
 
 
-### Phase B: Search Space Reduction (Efficiency Test)
-────────────────────────────────────────────────
-What: How many chunks does the system actually scan per query?
+### Dataset B: Organization Test Set (messy KB state)
+─────────────────────────────────────────
+Create a deliberately messy KB state and measure improvement:
 
-Method:
-  1. For each of the 20 queries above, record:
-     a) Total chunks in full KB set: ~30,000 (all 14 KBs)
-     b) Chunks in activated KBs (Step 1): typically 500-8000
-     c) Chunks in Step 2 recall candidates (stage1_top_k): 20
-     d) Chunks in Step 2.5 after dedup+threshold: typically 3-8
-     e) Chunks actually read in Step 3 (kb_doc_read, max_chars=3000): typically 1-5
-  2. Compare QDCVR-MoE vs QDCVR-Flat (skip Step 1)
+Pre-state (messy):
+  - 5 documents with missing tags
+  - 3 documents with empty descriptions
+  - 2 duplicate document pairs (same content, different names)
+  - 1 document in wrong KB (misclassified)
+  - 1 KB that should be split into sub-KBs (8+ related docs)
+
+Post-state (after Organize):
+  - All tags populated
+  - All descriptions >= quality threshold
+  - Duplicates detected and flagged
+  - Misclassified document moved to correct KB
+  - Sub-KB created with appropriate documents
+
+This is a CONTROLLED experiment — we create the messy state deliberately
+so we know the ground truth for every fix needed.
+
+
+### Dataset C: Retrieval Test Set (40 queries)
+─────────────────────────────────────────
+40 queries with human-annotated ground truth:
+
+For EACH query, annotate:
+  - correct_kb: which KB(s) should the MoE gate activate?
+  - relevant_docs: list of doc_paths that contain the answer (graded 0-3)
+    0 = irrelevant, 1 = tangentially related, 2 = partially answers, 3 = directly answers
+  - answer_fragment: the specific text that answers the query (for content verification eval)
+
+Query categories:
+  - Cat 1: Domain-Specific (24 queries, 4 per domain × 6 domains)
+    Tests: KB routing accuracy + retrieval precision
+  - Cat 2: Cross-Domain Adversarial (10 queries)
+    Tests: MoE gate robustness — does it activate the right KBs when vocabulary overlaps?
+  - Cat 3: Edge Cases (6 queries)
+    Tests: Empty results, ambiguous intent, out-of-domain questions
+
+
+### Dataset D: Experience Test Set (15 Q&A pairs)
+─────────────────────────────────────────
+15 question-answer pairs from real KB usage, with human evaluation of
+extracted experiences:
+
+For each Q&A pair:
+  - query: what the user asked
+  - answer: what the system returned (with source docs)
+  - expected_experience: what SHOULD be extracted
+    - actionable_title
+    - problem_statement
+    - solution_steps
+    - key_lessons (3-5 bullet points)
+
+
+## II. EVALUATION PHASES
+
+### Phase A: Ingestion Accuracy (30 documents)
+
+Pipeline: Raw document → parse_doc → A2-Q parse quality → A3a analysis →
+          A3b tag quality → A3c description quality → A4 KB attribution →
+          A5 store (kb_doc_save_parsed) → A6 index (kb_index_document)
 
 Metrics:
-  - Search Space Compression Ratio = (c) / (b)  — Step 2 compresses activated KB
-  - MoE Reduction Ratio = (b) / (a)  — Step 1 compresses full KB set
-  - Total Reduction Ratio = (e) / (a)  — end-to-end: read 5 docs out of 30K chunks
-  - Avg chunks scanned per query
+┌────────────────────┬──────────────────────────────────────────┬────────┐
+│ Metric             │ Definition                               │ Target │
+├────────────────────┼──────────────────────────────────────────┼────────┤
+│ KB Routing Acc.    │ % docs routed to correct primary KB      │ ≥ 90%  │
+│ Sub-KB Routing Acc.│ % docs routed to correct sub-KB          │ ≥ 80%  │
+│ Tag Precision      │ (# correct auto-tags) / (# auto-tags)    │ ≥ 80%  │
+│ Tag Recall         │ (# auto-tags ∩ expected) / (# expected)  │ ≥ 70%  │
+│ Tag F1             │ Harmonic mean of precision & recall      │ ≥ 75%  │
+│ Desc Quality Score │ 0-4 rubric (domain+method+problem+result)│ ≥ 3.0  │
+│ Parse Quality      │ % docs passing A2-Q gate on first try    │ ≥ 95%  │
+│ Index Success Rate │ % docs searchable after kb_index_document│ 100%   │
+│ Ingest Latency     │ End-to-end time per document (seconds)   │ ≤ 30s  │
+└────────────────────┴──────────────────────────────────────────┴────────┘
 
-Expected: Total Reduction Ratio should be ~30K → 5 = 6000x
+Description Quality Rubric (0-4):
+  0 = Empty or "TBD"
+  1 = Only filename paraphrased (not content-based)
+  2 = Domain identified + general topic mentioned
+  3 = Domain + method/technique + problem context
+  4 = Domain + method + problem + key finding/conclusion + language tag
+
+Procedure:
+  1. Load Dataset A (30 annotated documents) into a staging area
+  2. For each document, run the full A0-A9 ingest pipeline
+  3. Record all auto-generated tags, description, and KB routing decision
+  4. Compare against human ground truth
+  5. Compute all metrics
+  6. Run kb_search_vector on each ingested doc to verify index success
 
 
-### Phase C: Content Verification Accuracy (Step 3 Test)
-────────────────────────────────────────────────
-What: Does Step 3 correctly separate relevant from irrelevant results?
-
-Method:
-  1. For the top 5 results from Step 2 (before Step 3), annotate ground-truth:
-     - Score 0-2: Irrelevant — wrong domain or topic
-     - Score 3-5: Partially relevant — adjacent domain, useful background
-     - Score 6-8: Directly relevant — answers the query
-  2. Run Step 3 content verification (kb_doc_read + 0-8 scoring)
-  3. Compare system content score vs human annotation
-
-Metrics:
-  - Content Score Accuracy: correlation between system 0-8 and human 0-2/3-5/6-8
-  - False Positive Rate: system scores ≥6 but human says ≤2
-  - False Negative Rate: system scores ≤4 but human says ≥6
-  - P0/P1/P2 tier accuracy: does tier assignment match human judgment?
-
-Test set: Sample 30 result pairs (query, doc) from Phase A, annotate manually.
-
-
-### Phase D: Ingest Automation Quality (Auto-Management Test)
-────────────────────────────────────────────────
-What: When new documents are ingested, does the system correctly:
-  - Assign accurate tags?
-  - Route to the correct KB/sub-KB?
-  - Generate useful descriptions?
-
-Method:
-  1. Select 10 real research paper abstracts (not yet in any KB)
-  2. Run the full A0-A9 ingest pipeline:
-     parse_doc → A2-Q parse quality → A3a structured analysis →
-     A3b tag quality gate → A3c description quality gate →
-     A4 KB attribution decision tree → A5 store → A6 index
-  3. For each document, record:
-     - Auto-assigned tags (predicted)
-     - Auto-selected KB (predicted)
-     - Auto-generated description (predicted)
-  4. Compare against human annotations (ground truth)
+### Phase B: Organization Quality (controlled messy KB)
 
 Metrics:
-  - Tag Precision: % of auto-tags that are correct (human-approved)
-  - Tag Recall: % of human-expected tags that were auto-assigned
-  - KB Routing Accuracy: % of docs routed to correct KB
-  - Sub-KB Routing Accuracy: % of docs correctly routed to sub-KB (if applicable)
-  - Description Quality Score: 0-4 rubric (domain identified + method named +
-    problem stated + key finding mentioned)
+┌──────────────────────┬────────────────────────────────────────┬────────┐
+│ Metric               │ Definition                             │ Target │
+├──────────────────────┼────────────────────────────────────────┼────────┤
+│ Tag Gap Closure      │ % of missing tags corrected            │ 100%   │
+│ Desc Gap Closure     │ % of empty/wrong descriptions fixed    │ 100%   │
+│ Duplicate Recall     │ % of known duplicates detected         │ ≥ 95%  │
+│ Duplicate Precision  │ % of flagged duplicates that are real  │ ≥ 90%  │
+│ Misclass Correction  │ % of misclassified docs moved correctly│ 100%   │
+│ Sub-KB Split Quality │ Is the new sub-KB appropriately scoped?│ Binary │
+│ Sub-KB Doc Routing   │ % docs correctly assigned to new sub-KB│ ≥ 90%  │
+│ Three-Way Consistency│ disk↔.tree-fs↔.yml all match post-fix  │ 100%   │
+│ Ops Safety           │ All destructive ops used dry_run first │ 100%   │
+└──────────────────────┴────────────────────────────────────────┴────────┘
+
+Procedure:
+  1. Set up the controlled messy KB state (Dataset B)
+  2. Run kb_verify (V1-V9) to get baseline health score
+  3. Run kb_organize (O1-O8) full restructuring
+  4. Run kb_verify again to get post-organize health score
+  5. Check each known issue was resolved
+  6. Verify no regressions (no new issues introduced)
+  7. Check three-way metadata consistency
 
 
-### Phase E: End-to-End Answer Quality (Full Pipeline Test)
-────────────────────────────────────────────────
-What: Given a query, does the FULL QDCVR+MoE pipeline produce a correct,
-evidence-backed answer?
-
-Method:
-  1. For 15 queries from Phase A, run the complete pipeline
-  2. Evaluate the final answer on:
-     a) Factual correctness (0-3): Does the answer contain verifiable facts?
-     b) Evidence grounding (0-3): Are claims backed by specific document citations?
-     c) Completeness (0-2): Does the answer address all parts of the query?
-     d) Blind-spot honesty (0-2): Does the answer admit what it doesn't know?
-  3. Compare: QDCVR-MoE vs QDCVR-Flat vs BM25-only
-
-Metrics:
-  - Answer Quality Score (0-10 composite)
-  - Hallucination Rate: claims not supported by cited documents
-  - Blind-spot Declaration Rate: % of answers that honestly declare gaps
-
-
-### Phase F: Experience Extraction Quality (Meditation Test)
-────────────────────────────────────────────────
-What: After Q&A pairs are accumulated as "signals", does the meditation
-system correctly extract actionable experiences?
-
-Method:
-  1. Collect 10 Q&A pairs as signals (use Phase E queries + answers)
-  2. Trigger meditation: experience_meditation_run(kb_id)
-  3. Evaluate extracted experiences:
-     - Is the title actionable (not just the doc title)?
-     - Does the problem statement correctly capture the Q&A intent?
-     - Does the solution contain specific, actionable steps?
-     - Are key_lessons independently useful?
+### Phase C: Retrieval Quality (40 queries)
 
 Metrics:
-  - Experience Actionability Score (0-5): Can someone act on this?
-  - Signal-to-Experience Conversion Rate: useful experiences / total signals
-  - Content Fidelity: does the experience accurately reflect the source doc?
+┌──────────────────────┬──────────────────────────────────────────┬────────┐
+│ Metric               │ Definition                               │ Target │
+├──────────────────────┼──────────────────────────────────────────┼────────┤
+│ MoE Routing Prec.    │ % queries where correct KB is activated  │ ≥ 95%  │
+│ MoE Routing Recall   │ % of all correct KBs that were activated │ ≥ 90%  │
+│ Recall@5             │ % queries with ≥1 relevant doc in top-5  │ ≥ 90%  │
+│ Precision@5          │ (# relevant docs in top-5) / 5           │ ≥ 70%  │
+│ MRR                  │ Mean reciprocal rank of first relevant   │ ≥ 0.80 │
+│ nDCG@5               │ Normalized discounted cumulative gain    │ ≥ 0.75 │
+│ Content Verify Acc.  │ Agreement between system 0-8 & human 0-3 │ ≥ 85%  │
+│ False Positive Rate  │ System scores ≥6 but human = 0           │ ≤ 10%  │
+│ False Negative Rate  │ System scores ≤4 but human = 3           │ ≤ 10%  │
+│ Blind-spot Rate       │ % answers that honestly declare gaps     │ ≥ 80%  │
+│ Search Space Red.    │ (total chunks) / (chunks in activated KB)│ ≥ 5×   │
+│ Avg Latency          │ End-to-end query time (seconds)          │ ≤ 3s   │
+└──────────────────────┴──────────────────────────────────────────┴────────┘
+
+Procedure:
+  1. Load Dataset C (40 annotated queries)
+  2. For each query, run the full QDCVR pipeline:
+     Step 0: Query analysis → record intent + entities
+     Step 1: MoE KB selection → record which KBs activated
+     Step 2: Two-stage search → record results + scores
+     Step 2.5: Dedup + threshold → record filtered results
+     Step 3: Content verification → record 0-8 scores
+     Step 6: Answer synthesis → record final answer + blind-spots
+  3. Compare against human ground truth
+  4. Compute all metrics
+  5. Also run as ABLATIONS:
+     - QDCVR-Flat (skip Step 1): measure MoE contribution
+     - QDCVR-NoVerify (skip Step 3): measure content verification contribution
 
 
-## III. COMPARISON BASELINES (Simplified)
+### Phase D: Experience Quality (15 Q&A pairs)
 
-Not comparing against external RAG methods — comparing against ABLATIONS of our own system:
+Metrics:
+┌──────────────────────┬──────────────────────────────────────────┬────────┐
+│ Metric               │ Definition                               │ Target │
+├──────────────────────┼──────────────────────────────────────────┼────────┤
+│ Actionability Score  │ 0-5: Can someone act on this experience? │ ≥ 3.0  │
+│ Content Fidelity     │ Does experience match source doc? (0-3)  │ ≥ 2.5  │
+│ Problem Accuracy     │ Does problem statement match Q&A intent? │ ≥ 80%  │
+│ Solution Specificity │ Does solution contain concrete steps?    │ ≥ 70%  │
+│ Key Lessons Quality  │ Are lessons independently useful? (0-3)  │ ≥ 2.0  │
+│ Signal Conversion    │ Useful experiences / total Q&A signals   │ ≥ 60%  │
+│ Meditation Success   │ % of meditation runs without errors      │ 100%   │
+└──────────────────────┴──────────────────────────────────────────┴────────┘
 
-| ID  | Method                          | What it tests                              |
-|-----|---------------------------------|--------------------------------------------|
-| B1  | QDCVR-MoE (full)               | Complete pipeline — our system             |
-| B2  | QDCVR-Flat (no Step 1)         | Ablation: skip KB routing — search all KBs |
-| B3  | QDCVR-NoVerify (no Step 3)     | Ablation: skip content verification        |
-| B4  | BM25-only (no QDCVR)           | Baseline: pure keyword retrieval           |
+Actionability Rubric (0-5):
+  0 = Placeholder / "此经验由启发式引擎自动生成"
+  1 = Generic advice with no specifics
+  2 = Mentions a technique but no implementation details
+  3 = Actionable with concrete steps (specific parameters/methods)
+  4 = Actionable + references source documents + includes constraints
+  5 = Actionable + source-verified + includes failure modes + alternatives
 
-The comparisons tell us:
-- B1 vs B2: Contribution of MoE KB routing
-- B1 vs B3: Contribution of content verification
-- B1 vs B4: Overall QDCVR improvement over BM25
+Procedure:
+  1. Collect 15 real Q&A interactions as "signals" in a test KB
+  2. Run experience_extract with mode="prepare" to get extraction templates
+  3. LLM refines candidates and creates experiences
+  4. Alternatively, trigger meditation: experience_meditation_run(kb_id)
+  5. Human-evaluate each extracted experience on the rubric
+  6. Compare auto-extracted vs human-expected experiences
 
 
-## IV. METRICS SUMMARY TABLE
+### Phase E: End-to-End Pipeline (10 complete cycles)
 
-| Phase | Primary Metric | Target |
-|-------|---------------|--------|
-| A: KB Routing | KB Selection Precision | ≥ 90% |
-| A: KB Routing | Over-selection Rate | ≤ 3 KBs avg |
-| B: Space Reduction | Total Reduction Ratio (e/a) | ≥ 1000x |
-| B: Space Reduction | MoE Reduction Ratio (b/a) | ≥ 10x |
-| C: Content Verify | Content Score Accuracy | ≥ 85% agreement |
-| C: Content Verify | False Positive Rate | ≤ 10% |
-| D: Ingest Quality | KB Routing Accuracy | ≥ 90% |
-| D: Ingest Quality | Tag Precision | ≥ 80% |
-| E: Answer Quality | Answer Quality Score | ≥ 7/10 |
-| E: Answer Quality | Hallucination Rate | ≤ 5% |
-| F: Experience | Actionability Score | ≥ 3/5 |
+Full lifecycle test: Raw PDF → Ingest → Search → Experience
 
-## V. EXECUTION PLAN
+Metrics:
+┌──────────────────────┬──────────────────────────────────────────┬────────┐
+│ Metric               │ Definition                               │ Target │
+├──────────────────────┼──────────────────────────────────────────┼────────┤
+│ Pipeline Success Rate│ % of documents completing full lifecycle  │ ≥ 95%  │
+│ End-to-End Latency   │ PDF ingest → searchable (seconds)        │ ≤ 60s  │
+│ Answer Correctness   │ % answers with factually correct info    │ ≥ 85%  │
+│ Evidence Grounding   │ % claims backed by specific doc citation │ ≥ 90%  │
+│ Hallucination Rate   │ % claims NOT supported by cited docs     │ ≤ 5%   │
+│ User Satisfaction    │ Simulated user rating (1-5)              │ ≥ 4.0  │
+└──────────────────────┴──────────────────────────────────────────┴────────┘
 
-1. [ ] Phase A: Run 20 KB routing queries, compare MoE vs Flat
-2. [ ] Phase B: Record chunk counts at each pipeline stage
-3. [ ] Phase C: Human-annotate 30 result pairs, compare Step 3 scores
-4. [ ] Phase D: Ingest 10 new paper abstracts, evaluate auto-management
-5. [ ] Phase E: Run full pipeline on 15 queries, evaluate answers
-6. [ ] Phase F: Accumulate signals, trigger meditation, evaluate experiences
-7. [ ] Generate HTML report with all metrics
+Procedure:
+  1. Select 10 real PDFs from diverse domains
+  2. For each PDF:
+     a) Phase A: Full ingest pipeline (parse → tag → describe → store → index)
+     b) Phase C: Run 2 queries against the newly ingested doc
+     c) Phase D: Extract 1 experience from the Q&A pair
+     d) Record all metrics at each stage
+  3. Compute aggregate end-to-end metrics
+
+
+## III. COMPARATIVE BASELINES
+
+We compare against ABLATIONS of our own system (not external RAG systems):
+
+┌─────┬─────────────────────────┬──────────────────────────────────┐
+│ ID  │ Method                  │ What It Tests                    │
+├─────┼─────────────────────────┼──────────────────────────────────┤
+│ S0  │ QDCVR-MoE (Full)        │ Complete pipeline — our system   │
+│ S1  │ QDCVR-Flat              │ Ablation: skip MoE routing       │
+│ S2  │ QDCVR-NoVerify          │ Ablation: skip content verify    │
+│ S3  │ BM25-only               │ Baseline: pure keyword retrieval │
+│ S4  │ Manual Ingest           │ Baseline: human-written tags/desc│
+│ S5  │ No Organization         │ Baseline: skip organize step     │
+└─────┴─────────────────────────┴──────────────────────────────────┘
+
+Comparisons tell us:
+  - S0 vs S1: Contribution of MoE KB routing (Phase C)
+  - S0 vs S2: Contribution of content verification (Phase C)
+  - S0 vs S3: Overall retrieval improvement (Phase C)
+  - S0 vs S4: Auto-ingest quality vs human baseline (Phase A)
+  - S0 vs S5: Organization impact on retrieval quality (Phase B→C)
+
+
+## IV. AGGREGATE SYSTEM SCORE
+
+A single composite score (0-100) weighting all phases:
+
+┌────────────────────┬───────┬────────────────────────────────────┐
+│ Phase              │ Weight│ How Scored                         │
+├────────────────────┼───────┼────────────────────────────────────┤
+│ A: Ingestion       │  25%  │ Avg of all Phase A metrics         │
+│ B: Organization    │  20%  │ % of known issues resolved         │
+│ C: Retrieval       │  30%  │ Weighted: Recall@5(0.4) + MRR(0.3)│
+│                    │       │ + ContentVerify(0.2) + MoE(0.1)    │
+│ D: Experience      │  15%  │ Avg actionability + fidelity       │
+│ E: End-to-End      │  10%  │ Pipeline success + correctness     │
+├────────────────────┼───────┼────────────────────────────────────┤
+│ TOTAL              │ 100%  │ Weighted sum                       │
+└────────────────────┴───────┴────────────────────────────────────┘
+
+Target: System Score ≥ 85/100 for publication-ready evaluation.
+
+
+## V. STATISTICAL RIGOR
+
+For each metric comparing S0 vs any baseline:
+  1. Paired t-test (α = 0.05, Bonferroni-corrected for 5 comparisons → α' = 0.01)
+  2. Cohen's d effect size (target ≥ 0.8 for "large" effect)
+  3. 95% confidence intervals for all mean values
+  4. Bootstrap resampling (n=10,000) for metrics with non-normal distributions
+
+Minimum sample sizes for statistical power:
+  - Phase A: 30 documents (power > 0.80 for d ≥ 0.6)
+  - Phase C: 40 queries (power > 0.80 for d ≥ 0.5)
+  - Phase D: 15 Q&A pairs (exploratory — power may be limited)
+
+## VI. EXECUTION CHECKLIST
+
+Phase A: Ingestion Accuracy
+  □ Prepare 30 annotated test documents (Dataset A)
+  □ Set up clean staging KB for test
+  □ Run A0-A9 pipeline on all 30 documents
+  □ Record all auto-generated metadata
+  □ Human-evaluate tag precision/recall
+  □ Human-score all descriptions (0-4 rubric)
+  □ Verify index success via kb_search_vector
+  □ Compute all Phase A metrics
+  □ Compare S0 (auto) vs S4 (human baseline)
+
+Phase B: Organization Quality
+  □ Set up controlled messy KB state
+  □ Run kb_verify baseline (pre-organize health score)
+  □ Run full O1-O8 organize pipeline
+  □ Run kb_verify post-organize
+  □ Check each known issue resolved
+  □ Verify three-way metadata consistency
+  □ Compute all Phase B metrics
+
+Phase C: Retrieval Quality
+  □ Prepare 40 annotated queries (Dataset C)
+  □ Run S0 (full QDCVR) on all 40 queries
+  □ Run S1 (flat), S2 (no-verify), S3 (BM25) ablations
+  □ Human-evaluate content verification scores
+  □ Compute all Phase C metrics
+  □ Run statistical tests (t-test, Cohen's d, bootstrap)
+
+Phase D: Experience Quality
+  □ Collect 15 Q&A pairs as meditation signals
+  □ Run experience_extract (prepare mode)
+  □ LLM-refine and create experiences
+  □ Human-score all experiences on actionability rubric
+  □ Compare auto vs human-expected experiences
+  □ Compute all Phase D metrics
+
+Phase E: End-to-End
+  □ Select 10 real PDFs
+  □ Run full lifecycle for each (Ingest → Search → Experience)
+  □ Record all metrics at each stage
+  □ Compute aggregate end-to-end metrics
+  □ Score hallucination rate via human review
+
+Phase F: Report Generation
+  □ Compute aggregate System Score
+  □ Generate LaTeX tables for paper
+  □ Generate HTML visualization report
+  □ Write findings and discussion section
+
+
+## VII. DELIVERABLES
+
+1. **Complete metrics JSON** — all raw + aggregate results
+2. **HTML visualization report** — interactive charts + tables
+3. **LaTeX paper tables** — table1 (main), table2 (ablation), table3 (experience)
+4. **Statistical analysis** — t-tests, effect sizes, confidence intervals
+5. **Human annotation dataset** — released for reproducibility
+6. **Benchmark methodology paper** — describing the evaluation framework
+
+## VIII. TIMELINE
+
+┌────────────┬────────────────────────┬────────┐
+│ Phase      │ Task                   │ Est.   │
+├────────────┼────────────────────────┼────────┤
+│ Preparation│ Create Dataset A (30)  │ 2 days │
+│ Preparation│ Create Dataset C (40)  │ 1 day  │
+│ Preparation│ Create Dataset B+D     │ 1 day  │
+│ Execution  │ Phase A: Ingestion     │ 1 day  │
+│ Execution  │ Phase B: Organization  │ 0.5 day│
+│ Execution  │ Phase C: Retrieval     │ 1 day  │
+│ Execution  │ Phase D: Experience    │ 0.5 day│
+│ Execution  │ Phase E: End-to-End    │ 1 day  │
+│ Analysis   │ Statistics + Report    │ 2 days │
+├────────────┼────────────────────────┼────────┤
+│ Total      │                        │ ~10 days│
+└────────────┴────────────────────────┴────────┘
