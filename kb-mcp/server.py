@@ -680,72 +680,32 @@ async def kb_tags_cleanup(dry_run: bool = True) -> str:
         # Length < 3 or contains special characters -> can clean
         return False
 
-    def _is_likely_garbage(tag: str) -> bool:
-        """Detect tags that are clearly section headings, test tags, or garbage."""
-        tl = tag.lower().strip()
-        # Section heading pattern
-        if re.search(r'^\d+(\.\d+)*\s+\w+', tl):  # "3.1 Method" / "4.2 Results"
-            return True
-        if re.search(r'^[ivx]+\.?\s+\w+', tl):    # "I. Introduction" / "II. Methods"
-            return True
-        # Test tag
-        if tl.startswith("test-") or tl.startswith("test_") or tl == "test":
-            return True
-        if "test" in tl.split("-")[:1] and len(tl) < 20:
-            return True
-        # Keywords that are clearly section headings
-        garbage_keywords = {
-            "abstract", "introduction", "method", "methods", "conclusion",
-            "references", "acknowledgments", "results", "discussion",
-            "experiments", "related works", "limitations", "appendix",
-            "baselines", "implementation", "training", "evaluation",
-            "supplementary", "contents", "overview", "background",
-            "summary", "future work", "outlook", "highlights"
-        }
-        if tl in garbage_keywords or tl.rstrip(".") in garbage_keywords:
-            return True
-        # Very short tag (< 3 chars and not Chinese)
-        if len(tag) < 3 and not any('一' <= c <= '鿿' for c in tag):
-            return True
-        # Contains special characters (not Chinese, not English, not digit)
-        if re.search(r'[^\w一-鿿\s\-\.]', tag):
-            return True
-        return False
+    # 3. One-pass analysis: single HTTP call scans all .knowledge-base.yml
+    # once (O(M) = ~31 file reads) and returns the full referenced/orphan
+    # classification. Replaces the old O(N×M) pattern of N concurrent HTTP
+    # probes to kb_doc_get_by_tag (~150 tags × 31 KBs = ~4650 file reads,
+    # which reliably exceeded the 30s MCP tool timeout).
+    analysis = await client.kb_tags_analysis()
+    if not isinstance(analysis, dict) or not analysis.get("success"):
+        return _j({"success": False, "error": "tag analysis failed", "detail": str(analysis)[:200]})
 
-    # 3. For each tag, check reference count
-    referenced = 0
-    orphan_tags = []
-    orphan_tag_names = []
+    backend_orphan = analysis.get("orphan_tags", [])
+    backend_referenced = analysis.get("referenced", [])
 
-    # Full scan: check all tags (no performance cap — previously limited to 200)
-    for i, tag in enumerate(all_tags):
-        try:
-            # Protected tags skip redundant checks
-            if _is_protected(tag):
-                referenced += 1
-                continue
-            # Garbage tags are marked directly
-            if _is_likely_garbage(tag):
-                orphan_tags.append({"tag": tag, "refs": 0, "reason": "garbage_pattern"})
-                orphan_tag_names.append(tag)
-                continue
-            # Query actual references
-            result = await client.kb_doc_get_by_tag(tag, kb_id="")
-            if isinstance(result, dict) and result.get("success"):
-                docs = result.get("documents", [])
-                if len(docs) == 0:
-                    _reason = "unreferenced"
-                    orphan_tags.append({"tag": tag, "refs": 0, "reason": _reason})
-                    orphan_tag_names.append(tag)
-                else:
-                    referenced += 1
-            else:
-                orphan_tags.append({"tag": tag, "refs": -1, "reason": "api_error"})
-                orphan_tag_names.append(tag)
-        except Exception:
-            # Don't block the process on query failure
-            orphan_tags.append({"tag": tag, "refs": -1, "reason": "exception"})
-            orphan_tag_names.append(tag)
+    # 4. Domain-protection overlay (pure in-memory, no I/O): rescue protected
+    # domain-vocabulary tags from the orphan list even if currently 0 refs.
+    # The backend already classifies generic garbage (isGarbageTag); this
+    # layer adds deployment-specific domain terms (PET/PVA/具身智能 etc.).
+    orphan_tags: list = []
+    orphan_tag_names: list = []
+    referenced = len(backend_referenced)
+    for entry in backend_orphan:
+        tag = entry.get("tag", "")
+        if _is_protected(tag):
+            referenced += 1
+            continue
+        orphan_tags.append(entry)
+        orphan_tag_names.append(tag)
 
     if dry_run:
         orphan_count = len(orphan_tags)
@@ -792,6 +752,150 @@ async def kb_doc_get_by_tag(tag: str, kb_id: str = "") -> str:
     """Find documents by tag across all KBs (or one KB if kb_id given)."""
     return _j(await _client().kb_doc_get_by_tag(tag, kb_id))
 
+@mcp.tool()
+async def kb_find_duplicates(kb_id: str = "", threshold: float = 0.90) -> str:
+    """Find duplicate / near-duplicate documents via content hash + vector similarity.
+
+    Two-layer detection:
+      1. EXACT: SHA256 of normalized content (whitespace-trimmed, lowercase).
+      2. NEAR: vector similarity >= threshold (default 0.90) within the same KB.
+
+    Args:
+        kb_id: scope to one KB (path or UUID). Empty = scan ALL KBs (slower).
+        threshold: vector similarity cutoff for near-dup (0.85-0.95 recommended).
+
+    Returns grouped duplicate clusters with recommendation (keep newest, merge tags).
+    """
+    import hashlib
+
+    client = _client()
+
+    # 1. Gather all KBs to scan. For a parent KB, also include its sub-KBs.
+    kbs_to_scan: list = []
+    if kb_id:
+        # Direct docs of the specified KB
+        kbs_to_scan.append((kb_id, await client.kb_get_documents(kb_id)))
+        # If it has sub-KBs, include their docs too (parent KBs have 0 direct docs)
+        try:
+            overview = await client.graph_kb_overview(kb_id)
+            if isinstance(overview, dict) and overview.get("success"):
+                for sub in overview.get("overview", {}).get("sub_kbs", []):
+                    sub_id = sub.get("kb_id", "")
+                    if sub_id and sub_id != kb_id:
+                        kbs_to_scan.append((sub_id, await client.kb_get_documents(sub_id)))
+        except Exception:
+            pass  # not a parent KB or graph unavailable
+    else:
+        list_resp = await client.kb_list()
+        if isinstance(list_resp, dict):
+            for kb in list_resp.get("knowledgeBases", []):
+                kid = kb.get("kbId") or kb.get("id") or kb.get("path", "")
+                if not kid: continue
+                kbs_to_scan.append((kid, await client.kb_get_documents(kid)))
+
+    # 2. Phase A: exact-hash dedup — read content, normalize, hash.
+    # OPTIMIZATION: pre-filter by file_size so we only read content for
+    # size-similar candidates. 170 docs → ~10-20 candidates instead of 170.
+    size_buckets: dict[int, list[tuple]] = {}  # rounded_size -> [(kid, dp, dname, fsize)]
+    all_docs: list[tuple] = []  # (kb_id, doc_path, doc_name, file_size)
+
+    for kid, resp in kbs_to_scan:
+        if not isinstance(resp, dict) or not resp.get("success"): continue
+        for doc in resp.get("documents", []):
+            dp = doc.get("path", "")
+            if not dp or doc.get("file_type") == "knowledge-base": continue
+            fsize = doc.get("file_size", 0)
+            all_docs.append((kid, dp, doc.get("name", ""), fsize))
+            # Bucket by rounded size (±5% tolerance via integer division)
+            if fsize > 0:
+                bucket = max(1, round(fsize / 50) * 50)  # 50-byte buckets
+                size_buckets.setdefault(bucket, []).append((kid, dp, doc.get("name", ""), fsize))
+
+    hash_groups: dict[str, list] = {}
+    exact_dup_pairs: list = []
+
+    # Only hash docs that share a size bucket with at least one other doc
+    candidates = set()
+    for bucket, docs in size_buckets.items():
+        if len(docs) > 1:
+            for d in docs:
+                candidates.add((d[0], d[1]))
+
+    for kid, dp, dname, fsize in all_docs:
+        if (kid, dp) not in candidates:
+            continue  # unique size → cannot be exact dup, skip content read
+        try:
+            read_resp = await client.kb_doc_read(kb_id=kid, doc_path=dp, max_chars=5000)
+            if not isinstance(read_resp, dict): continue
+            content = read_resp.get("content", "")
+            if not content or len(content) < 50: continue
+            normalized = " ".join(content.lower().split())
+            h = hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+            hash_groups.setdefault(h, []).append({"kb_id": kid, "doc_path": dp.replace("\\", "/"), "name": dname})
+        except Exception:
+            continue
+
+    for h, group in hash_groups.items():
+        if len(group) > 1:
+            exact_dup_pairs.append({
+                "type": "exact",
+                "similarity": 1.0,
+                "documents": group,
+                "recommendation": f"Identical content (SHA256 match). Keep one, delete {len(group)-1}.",
+            })
+
+    # 3. Phase B: near-dup vector detection — search each doc's content against its KB
+    exact_paths = set()
+    for pair in exact_dup_pairs:
+        for d in pair["documents"]:
+            exact_paths.add((d["kb_id"], d["doc_path"]))
+
+    near_dup_pairs: list = []
+    seen_pairs: set = set()
+
+    for kid, dp, dname, fsize in all_docs:
+        if (kid, dp) in exact_paths: continue  # already flagged as exact dup
+        try:
+            read_resp = await client.kb_doc_read(kb_id=kid, doc_path=dp, max_chars=500)
+            if not isinstance(read_resp, dict): continue
+            probe_content = read_resp.get("content", "")
+            if not probe_content or len(probe_content) < 50: continue
+            # Vector search within same KB for near-dups
+            search_resp = await client.vector_search(probe_content[:500], kb_id=kid, top_k=5, score_threshold=threshold)
+            if not isinstance(search_resp, dict): continue
+            for hit in search_resp.get("results", []):
+                hit_path = hit.get("doc_path", "").replace("\\", "/")
+                my_path = dp.replace("\\", "/")
+                if hit_path == my_path: continue
+                score = hit.get("score", 0)
+                if score < threshold: continue
+                pair_key = tuple(sorted([my_path, hit_path]))
+                if pair_key in seen_pairs: continue
+                seen_pairs.add(pair_key)
+                near_dup_pairs.append({
+                    "type": "near",
+                    "similarity": round(score, 4),
+                    "documents": [
+                        {"kb_id": kid, "doc_path": dp.replace("\\", "/"), "name": dname},
+                        {"kb_id": kid, "doc_path": hit_path, "name": hit.get("doc_path", "").split("/")[-1]},
+                    ],
+                    "recommendation": f"High vector similarity ({score:.2%}). Read both to confirm, keep the more complete version.",
+                })
+        except Exception:
+            continue
+
+    all_dups = exact_dup_pairs + near_dup_pairs
+    return _j({
+        "success": True,
+        "kb_id": kb_id or "(all)",
+        "docs_scanned": len(all_docs),
+        "exact_duplicates": len(exact_dup_pairs),
+        "near_duplicates": len(near_dup_pairs),
+        "total_duplicate_groups": len(all_dups),
+        "duplicate_groups": all_dups,
+        "hint": f"Found {len(all_dups)} duplicate group(s). Use kb_doc_delete to remove confirmed duplicates." if all_dups
+                else "No duplicates found.",
+    })
 
 # ============================================================
 # EXPERIENCE MANAGEMENT
@@ -2000,7 +2104,12 @@ async def kb_graph_stats() -> str:
     except Exception:
         health = {"available": False}
     if isinstance(stats, dict):
-        stats["neo4j_available"] = health.get("available", False) if isinstance(health, dict) else False
+        # graph_health() returns the full {"success":..., "health":{...}} envelope;
+        # unwrap the inner health object to read the actual availability flag.
+        inner = health.get("health", health) if isinstance(health, dict) else {}
+        if not isinstance(inner, dict):
+            inner = {}
+        stats["neo4j_available"] = inner.get("available", False)
     return _j(stats)
 
 

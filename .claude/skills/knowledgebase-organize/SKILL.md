@@ -43,7 +43,7 @@ task(
 
 ## Sequential Workflow (O1→O8)
 **Step 1 — O1 全局调研**: kb_list + kb_tags_list + fs_get_tree → 全库拓扑图。
-**Step 2 — O2 深度审计**: 逐文档 kb_doc_read(1000 chars) → 标记描述/标签/领域质量。
+**Step 2 — O2 深度审计**: 逐文档 kb_doc_read(1000 chars) → 标记描述/标签/领域质量 + **kb_find_duplicates(kb_id) 检测重复文档对**（exact SHA256 + near 向量 ≥0.90）。
 **Step 3 — O3 层级分析**: 子KB拆分检测 + 跨KB合并检测 + 层级分析。
 **Step 4 — O4 修复执行**: L1描述→L2标签→L3重分类→L4拆分→L5合并→L6层级→L7索引。
 **Step 5 — O5 逐层验证**: 每层修完立即 O5+O5b 三级一致性。
@@ -198,6 +198,7 @@ total = 0.3*tag + 0.4*entity + 0.3*domain
 
 | 层级 | 操作 | 风险 | 关键命令 |
 |------|------|------|---------|
+| **L0** 去重清理 | 删除 exact/near 重复文档 | 需验证 | `kb_find_duplicates` → `kb_doc_delete`（保留更完整版，合并标签/描述差异） |
 | **L1** 描述修复 | 内容型描述重写（四要素） | 零风险 | `kb_doc_update_meta` / `kb_update` |
 | **L2** 标签卫生 | T1黑名单清除 + T2归一化 + T3计数 | 零风险 | `kb_doc_update_tags`（黑名单见 [tag-quality-rules.md](../knowledgebase-ingest/references/tag-quality-rules.md)） |
 | **L3** 文档重分类 | 错位文档移到正确 KB | 需验证 | `kb_doc_move` + `kb_index_document` |

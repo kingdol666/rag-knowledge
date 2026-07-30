@@ -172,15 +172,12 @@ Score + key findings + single most impactful recommendation.
 
 检测 0 引用孤 tag 和章节标题/测试标签等垃圾模式。
 
-**首选方法（推荐）**：用 `kb_tags_list()` 获取全量标签，Agent 自行识别垃圾模式（章节标题、测试标签、特殊字符、过短标签）。
-- 优点：秒级返回，不触发超时
-- 识别规则：匹配 `Abstract`/`1 Introduction`/`References`/`3 Method` 等章节模式；`test-*`/`e2e-*`/`mcp-test-*` 等测试残留；长度 <3 chars 的碎片标签
-
-**备选方法（可能超时）**：`kb_tags_cleanup(dry_run=true)` — 遍历全量标签逐个查询引用数。
-- ⚠️ **已知超时风险**：标签数 >200 时，逐个查询引用的 HTTP 调用累积超过 30s MCP 超时。测试实测 444 tags 时 3 次超时。
-- 若需执行，建议通过 CLI: `node command/ragctl.js` 或直接调后端 API `/api/v1/tags/cleanup`
-- `dry_run=false` 时从词表中清理（不可逆，建议先 preview）
-- 黑名单保护：领域核心词（PET/DL/RAG/polymer 等）永不清理
+**推荐方法**：`kb_tags_cleanup(dry_run=true)` — 单次 O(M) 扫描全库，即时返回 orphan 分类结果。
+- 2026-07-30 优化后：从 O(N×M) N 次 HTTP 探测改为单次 `/api/kb/tags/analysis` 调用，151 tags 实测 <100ms
+- 返回 `{orphan_tags: [{tag, refs, reason}], referenced, orphan}`
+- reason 分两类：`unreferenced`（0 文档引用）+ `garbage_pattern`（章节标题/测试残留/特殊字符，由 web 层 `isGarbageTag` 识别）
+- 领域核心词保护：PET/PVA/DL/RAG/polymer/具身智能 等由 MCP 层 protected_patterns 保护，即使 0 引用也不清理
+- `dry_run=false` 执行清理（委托 web `removeOrphanTags`，不可逆，建议先 preview）
 
 ## V8 — Experience Health
 

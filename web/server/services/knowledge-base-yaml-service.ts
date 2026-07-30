@@ -446,21 +446,54 @@ export class KnowledgeBaseYamlService {
   }
 
   /**
-   * Collect all tags used across all knowledge bases.
+   * Build a tag→document-count map in a SINGLE pass over ALL KBs.
+   * Recursively walks the tree to find every .knowledge-base.yml (including
+   * nested sub-KBs that listAll() misses). This is the O(M) foundation for
+   * orphan detection and tag stats — replaces the O(N×M) pattern of calling
+   * getDocumentsByTag once per tag.
    */
-  async getAllTags(): Promise<string[]> {
-    const tags = new Set<string>()
-    const kbs = await this.listAll()
-    for (const kb of kbs) {
-      const data = await this.read(kb.path)
-      if (!data) continue
-      for (const doc of data.documents) {
-        for (const t of doc.tags || []) {
-          tags.add(t)
+  async getTagReferenceCounts(): Promise<Map<string, number>> {
+    const counts = new Map<string, number>()
+    const ymlFiles = await this._findAllKbYamlFiles(this.baseDir)
+    for (const ymlPath of ymlFiles) {
+      try {
+        const content = await fs.readFile(ymlPath, 'utf-8')
+        const data = yaml.load(content) as KnowledgeBaseYaml | null
+        for (const doc of data?.documents || []) {
+          for (const t of doc.tags || []) {
+            counts.set(t, (counts.get(t) || 0) + 1)
+          }
         }
+      } catch { /* skip unreadable yml */ }
+    }
+    return counts
+  }
+
+  /** Recursively walk the tree, return every .knowledge-base.yml path. */
+  private async _findAllKbYamlFiles(dir: string): Promise<string[]> {
+    const results: string[] = []
+    let entries: import('fs').Dirent[]
+    try {
+      entries = await fs.readdir(dir, { withFileTypes: true })
+    } catch { return results }
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name)
+      if (entry.isDirectory()) {
+        if (entry.name.startsWith('.') || entry.name === 'node_modules') continue
+        results.push(...await this._findAllKbYamlFiles(fullPath))
+      } else if (entry.name === KNOWLEDGE_BASE_YAML_FILENAME) {
+        results.push(fullPath)
       }
     }
-    return Array.from(tags)
+    return results
+  }
+
+  /**
+   * Collect all tags used across all knowledge bases.
+   * Delegates to getTagReferenceCounts (one scan) and discards counts.
+   */
+  async getAllTags(): Promise<string[]> {
+    return Array.from((await this.getTagReferenceCounts()).keys())
   }
 }
 

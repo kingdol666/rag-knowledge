@@ -96,6 +96,35 @@ export class TagManagementService {
     await this.save()
     return { removed, kept }
   }
+  /** One-pass orphan ANALYSIS (dry-run equivalent).
+   *  Scans all .knowledge-base.yml once via getTagReferenceCounts, then
+   *  classifies every registry tag into referenced / orphan with a reason.
+   *  Replaces the MCP layer's O(N×M) pattern of N HTTP probes. */
+  async analyzeTags(): Promise<{
+    total: number
+    referenced: { tag: string; refs: number }[]
+    orphan: { tag: string; refs: number; reason: string }[]
+  }> {
+    const { KnowledgeBaseYamlService } = await import('~/server/services/knowledge-base-yaml-service')
+    const yamlService = new KnowledgeBaseYamlService(this.basePath)
+    const tagCounts = await yamlService.getTagReferenceCounts()
+    const reg = await this.load()
+    const referenced: { tag: string; refs: number }[] = []
+    const orphan: { tag: string; refs: number; reason: string }[] = []
+    for (const tag of reg.tags) {
+      if (TagManagementService.isGarbageTag(tag)) {
+        orphan.push({ tag, refs: 0, reason: 'garbage_pattern' })
+      } else {
+        const refs = tagCounts.get(tag) || 0
+        if (refs > 0) {
+          referenced.push({ tag, refs })
+        } else {
+          orphan.push({ tag, refs: 0, reason: 'unreferenced' })
+        }
+      }
+    }
+    return { total: reg.tags.length, referenced, orphan }
+  }
 
   /** Validate a tags array: must be string[], each trim non-empty <= 50. */
   static validateTags(tags: any): string[] | null {

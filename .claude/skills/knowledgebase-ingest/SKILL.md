@@ -71,17 +71,27 @@ task(
 
 ---
 
-## A0 — 去重（内容指纹，不只是文件名）
+## A0 — 去重（内容指纹，不只是文件名）⭐
 
+**自动化工具（推荐）**：
+```
+# 单次调用，SHA256 精确哈希 + 向量相似度双重检测
+kb_find_duplicates(kb_id="<目标KB>", threshold=0.90)
+```
+- 返回 `{duplicate_groups: [{type: "exact"|"near", similarity, documents, recommendation}]}`
+- `exact`（SHA256 匹配）→ 直接跳过，报告"已存在 @ <path>"
+- `near`（向量相似度 ≥ threshold）→ 读两篇前 800 chars 对比 → 重复跳过，仅补标签/描述差异
+
+**手动兜底（工具不可用时）**：
 ```
 # 第一道：文件名 + 元数据
 kb_search(query="<filename without ext>", top_k=5)
 
 # 第二道：内容指纹（防"改名重复入库"）
-kb_search_vector(query="<正文前 500 chars 改写为陈述句>", top_k=5, score_threshold=0.8)
+kb_search_vector(query="<正文前 500 chars 改写为陈述句>", top_k=5, score_threshold=0.85)
 ```
-- 文件名命中 + 文件大小相近(±10%) → 读 500 chars 二次确认 → **重复则跳过**，报告"已存在 @ <path>"。
-- 向量命中 score ≥ 0.85 → **极可能重复**，读两篇前 800 chars 对比 → 重复跳过，仅补标签/描述差异。
+- 文件名命中 + 文件大小相近(±10%) → 读 500 chars 二次确认 → **重复则跳过**
+- 向量命中 score ≥ 0.85 → 读两篇前 800 chars 对比 → 重复跳过，仅补标签/描述差异
 - **不重复** → 进入 A1。
 
 ## A1 — 调研（全库现状）

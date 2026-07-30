@@ -434,6 +434,10 @@ class KbClient:
     async def kb_tags_cleanup_orphans(self):
         """Remove ALL orphan (unreferenced) + garbage tags in one call."""
         return await self._request("DELETE", "/api/kb/tags", params={"cleanup_orphans": "true"})
+    async def kb_tags_analysis(self):
+        """One-pass orphan analysis (dry-run) — single HTTP call.
+        Replaces the N-probe pattern of calling kb_doc_get_by_tag per tag."""
+        return await self._get("/api/kb/tags/analysis")
 
 
     async def kb_doc_update_tags(self, kb_id, doc_path, tags):
