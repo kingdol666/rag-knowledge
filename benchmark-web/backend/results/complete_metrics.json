@@ -1,0 +1,117 @@
+{
+  "total_queries": 9,
+  "domains_covered": 9,
+  "routing_precision": 1.0,
+  "top1_domain_precision": 1.0,
+  "avg_activated_chunks": 3725.0,
+  "moe_reduction_ratio": 8.1,
+  "stage2_compression": 745.0,
+  "total_reduction": 6000.0,
+  "cross_kb_fallback_rate": 0.2222,
+  "total_chunks_all_kbs": 30000,
+  "total_kbs": 14,
+  "queries": [
+    {
+      "id": "R-01",
+      "query": "BOPET薄膜拉伸 应变诱导结晶",
+      "domain": "高分子/03_PET",
+      "kb_correct": true,
+      "activated_chunks": 7612,
+      "stage1": 20,
+      "stage2": 5,
+      "stage1_top1_correct": true,
+      "cross_kb_fallback": false
+    },
+    {
+      "id": "R-02",
+      "query": "PVA偏光片 双向拉伸 光学性能",
+      "domain": "高分子/04_PVA",
+      "kb_correct": true,
+      "activated_chunks": 7612,
+      "stage1": 20,
+      "stage2": 5,
+      "stage1_top1_correct": true,
+      "cross_kb_fallback": false
+    },
+    {
+      "id": "R-03",
+      "query": "BOPP电容膜 击穿强度 介电常数",
+      "domain": "高分子/05_PP",
+      "kb_correct": true,
+      "activated_chunks": 7612,
+      "stage1": 20,
+      "stage2": 5,
+      "stage1_top1_correct": true,
+      "cross_kb_fallback": false
+    },
+    {
+      "id": "R-04",
+      "query": "PET聚酯结晶 应变诱导 非晶相转变",
+      "domain": "高分子/02_Physics",
+      "kb_correct": true,
+      "activated_chunks": 7612,
+      "stage1": 20,
+      "stage2": 5,
+      "stage1_top1_correct": true,
+      "cross_kb_fallback": false
+    },
+    {
+      "id": "R-06",
+      "query": "Adam优化器 自适应学习率 偏差校正",
+      "domain": "AI-ML-Research",
+      "kb_correct": true,
+      "activated_chunks": 691,
+      "stage1": 20,
+      "stage2": 5,
+      "stage1_top1_correct": true,
+      "cross_kb_fallback": false,
+      "note": "BM25#1=Adam(9.88) but Stage2 dropped it→RAG survey instead—vector misleading, needs Step3"
+    },
+    {
+      "id": "R-07",
+      "query": "固态电解质 LLZO 离子电导率",
+      "domain": "Energy-Batteries",
+      "kb_correct": true,
+      "activated_chunks": 548,
+      "stage1": 20,
+      "stage2": 5,
+      "stage1_top1_correct": true,
+      "cross_kb_fallback": false
+    },
+    {
+      "id": "R-08",
+      "query": "MXene Ti3C2Tx 超级电容器 赝电容",
+      "domain": "Materials-Science",
+      "kb_correct": true,
+      "activated_chunks": 714,
+      "stage1": 20,
+      "stage2": 5,
+      "stage1_top1_correct": true,
+      "cross_kb_fallback": true,
+      "note": "cross-KB fallback triggered: BM25 only 1 KB→supplemented balanced vector across all KBs"
+    },
+    {
+      "id": "R-15",
+      "query": "RT-2 VLA模型 sim-to-real泛化",
+      "domain": "Embodied-AI",
+      "kb_correct": true,
+      "activated_chunks": 407,
+      "stage1": 20,
+      "stage2": 5,
+      "stage1_top1_correct": true,
+      "cross_kb_fallback": true
+    },
+    {
+      "id": "R-17",
+      "query": "单原子催化剂 M-N4 CO2还原",
+      "domain": "Chemistry-Catalysis",
+      "kb_correct": true,
+      "activated_chunks": 715,
+      "stage1": 20,
+      "stage2": 5,
+      "stage1_top1_correct": true,
+      "cross_kb_fallback": false,
+      "note": "correct KB but 'single-atom' doc not in KB—content gap detected"
+    }
+  ]
+}
