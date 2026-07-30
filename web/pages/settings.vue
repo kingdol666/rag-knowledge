@@ -132,12 +132,12 @@
             <div class="section-card">
               <div class="section-header">
                 <div class="section-title-area">
-                  <h2 class="section-title">存储管理</h2>
-                  <p class="section-desc">清理 MinerU 解析缓存和临时文件，释放磁盘空间</p>
+                  <h2 class="section-title">{{ $t('settings.cleanupTitle') }}</h2>
+                  <p class="section-desc">{{ $t('settings.cleanupDesc') }}</p>
                 </div>
                 <div class="section-actions">
                   <a-button @click="scanCleanup" :loading="cleanupScanning" size="small">
-                    <ReloadOutlined />扫描
+                    <ReloadOutlined />{{ $t('settings.cleanupScan') }}
                   </a-button>
                 </div>
               </div>
@@ -147,10 +147,10 @@
                 <table class="cleanup-table" v-if="cleanupItems.length > 0">
                   <thead>
                     <tr>
-                      <th>类别</th>
-                      <th>大小</th>
-                      <th>说明</th>
-                      <th>操作</th>
+                      <th>{{ $t('settings.cleanupCategory') }}</th>
+                      <th>{{ $t('settings.cleanupSize') }}</th>
+                      <th>{{ $t('settings.cleanupDescCol') }}</th>
+                      <th>{{ $t('settings.cleanupAction') }}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -172,9 +172,9 @@
                           :disabled="cleanupRunning !== null"
                           @click="doClean(item)"
                         >
-                          <DeleteOutlined />清理
+                          <DeleteOutlined />{{ $t('settings.cleanupDelete') }}
                         </a-button>
-                        <a-tag v-else color="success">已清空</a-tag>
+                        <a-tag v-else color="success">{{ $t('settings.cleanupCleared') }}</a-tag>
                       </td>
                     </tr>
                   </tbody>
@@ -525,6 +525,29 @@ function formatBytes(b: number): string {
   return `${(b / (1024 * 1024 * 1024)).toFixed(2)} GB`
 }
 
+// Map backend Chinese cleanup item names → i18n keys (supports both zh/en input)
+const CLEANUP_NAME_KEYS: Record<string, string> = {
+  'MinerU 解析产物': 'settings.cleanupItems.mineruCache',
+  'MinerU Parsed Cache': 'settings.cleanupItems.mineruCache',
+  '服务日志': 'settings.cleanupItems.serviceLogs',
+  'Service Logs': 'settings.cleanupItems.serviceLogs',
+  'Python 缓存': 'settings.cleanupItems.pythonCache',
+  'Python Cache': 'settings.cleanupItems.pythonCache',
+  '模型缓存': 'settings.modelCache',
+  'Model Cache': 'settings.modelCache',
+}
+function translateCleanupName(name: string): string {
+  const key = CLEANUP_NAME_KEYS[name]
+  return key ? t(key) : name
+}
+function translateCleanupDesc(name: string, _desc: string): string {
+  const key = CLEANUP_NAME_KEYS[name]
+  if (!key) return _desc
+  const descKey = key === 'settings.modelCache' ? 'settings.modelCacheDesc' : key + 'Desc'
+  const translated = t(descKey)
+  return translated !== descKey ? translated : _desc
+}
+
 async function scanCleanup() {
   cleanupScanning.value = true
   cleanupFreed.value = 0
@@ -533,7 +556,11 @@ async function scanCleanup() {
       method: 'POST',
       body: { scope: 'all', dry_run: true },
     })
-    cleanupItems.value = res.items || []
+    cleanupItems.value = (res.items || []).map((item: CleanItem) => ({
+      ...item,
+      name: translateCleanupName(item.name),
+      desc: translateCleanupDesc(item.name, item.desc),
+    }))
     mineruEntries.value = res.mineru_entries || []
     // Track model cache size
     const modelItem = cleanupItems.value.find((i: CleanItem) => i.name === t('settings.modelCache'))

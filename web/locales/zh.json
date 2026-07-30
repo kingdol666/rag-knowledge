@@ -893,7 +893,10 @@
     "cleanupItems": {
       "mineruCache": "MinerU 解析产物",
       "serviceLogs": "服务日志",
-      "pythonCache": "Python 缓存"
+      "pythonCache": "Python 缓存",
+      "mineruCacheDesc": "PDF 解析生成的 markdown / images / uploads（backend/output/）",
+      "serviceLogsDesc": "backend/logs/ + web/logs/（旧日志文件）",
+      "pythonCacheDesc": "__pycache__ / .pytest_cache（可安全重建）"
     },
     "cleanAllSafe": "一键清理",
     "cleanAllSafeDesc": "清理 MinerU 输出 + 日志 + Python 缓存（不含模型缓存）",
@@ -902,7 +905,8 @@
     "mineruEntries": "MinerU 解析文档 ({count})",
     "parsedDoc": "解析文档",
     "createdAt": "创建时间",
-    "notSet": "(不设置)"
+    "notSet": "(不设置)",
+    "modelCacheDesc": "BGE-M3 嵌入模型 + MinerU 模型（清理后需重新下载 ~4 GB）"
   },
   "about": {
     "title": "关于 RAG 知识库",

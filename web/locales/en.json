@@ -893,7 +893,10 @@
     "cleanupItems": {
       "mineruCache": "MinerU Parsed Cache",
       "serviceLogs": "Service Logs",
-      "pythonCache": "Python Cache"
+      "pythonCache": "Python Cache",
+      "mineruCacheDesc": "PDF parse output: markdown / images / uploads (backend/output/)",
+      "serviceLogsDesc": "backend/logs/ + web/logs/ (old log files)",
+      "pythonCacheDesc": "__pycache__ / .pytest_cache (safe to rebuild)"
     },
     "cleanAllSafe": "Clean All Safe",
     "cleanAllSafeDesc": "Clean MinerU output + logs + Python cache (excludes model cache)",
@@ -902,7 +905,8 @@
     "mineruEntries": "MinerU Parsed Documents ({count})",
     "parsedDoc": "Parsed document",
     "createdAt": "Created",
-    "notSet": "(not set)"
+    "notSet": "(not set)",
+    "modelCacheDesc": "BGE-M3 embedding + MinerU models (~4 GB re-download after clean)"
   },
   "about": {
     "title": "About RAG Knowledge Base",
