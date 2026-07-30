@@ -196,7 +196,6 @@ const navItems = computed(() => [
   { path: '/knowledge-graph',  label: 'Graph Explorer',icon: ShareAltOutlined,     pageNum: '05', chapter: 'Relations' },
   { path: '/claude-chat',   label: 'Claude Chat',      icon: RobotOutlined,        pageNum: '06', chapter: 'Assistant' },
   { path: '/settings',      label: 'Settings',         icon: SettingOutlined,      pageNum: '07', chapter: 'Configuration' },
-  { path: '/about',         label: 'About',            icon: QuestionCircleOutlined, pageNum: '08', chapter: 'Appendix' },
 ])
 
 // ── State ───────────────────────────────────────────────────
