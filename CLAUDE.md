@@ -29,7 +29,7 @@ MinerU OCR Engine (ephemeral port)  ← PDF → Markdown conversion
 Claude Code / Agent
     │  MCP stdio (kb-mcp)
     ▼
-kb-mcp MCP Server              ← 71 tools: KB CRUD, file ops, parse, search, tags, vector, graph, experience, project lifecycle
+kb-mcp MCP Server              ← 72 tools: KB CRUD, file ops, parse, search, tags, vector, graph, experience, project lifecycle
     │  HTTP → web proxy / backend     +  direct file reads
     ▼
 Nuxt / Backend                 ← writes: parse + save pipeline
@@ -44,7 +44,7 @@ rag-knowledge/
 ├── start.bat / start.sh    # One-click launch scripts
 ├── backend/                # FastAPI + MinerU (Python 3.12)
 ├── web/                    # Nuxt 3 UI (TypeScript)
-├── kb-mcp/                 # [local] MCP server — provides 76 MCP tools for KB operations (KB CRUD · parse · search · vector · graph · tags · experience · project lifecycle)
+├── kb-mcp/                 # [local] MCP server — provides 72 MCP tools for KB operations (KB CRUD · parse · search · vector · graph · tags · experience · project lifecycle)
 ├── .claude/skills/         # OMC skills (knowledgebase dispatcher, ingest, search, manage, init, update, etc.)
 ├── .claude/agents/         # Archival agent definition (knowledge-admin.md)
 ├── docs/ARCHITECTURE.md    # Detailed architecture + MCP dev guide
@@ -118,7 +118,7 @@ Key properties:
 
 ```
 kb-mcp/
-├── server.py               # 66 MCP tools via FastMCP; parse tools are NON-BLOCKING
+├── server.py               # 72 MCP tools via FastMCP; parse tools are NON-BLOCKING
 ├── kb_client/
 │   └── client.py           # All HTTP logic (server.py has zero HTTP code)
 ├── config.py               # Reads URLs from shared config.yml; zero hardcoded paths
@@ -128,7 +128,7 @@ kb-mcp/
 └── .mcp.json (at root)     # Connects kb-mcp to Claude Code via stdio
 ```
 
-MCP Tools by category (71 tools total):
+MCP Tools by category (72 tools total):
 - **Health:** `backend_status`
 - **Project lifecycle (3):** `kb_project_status` (scope=runtime|setup), `kb_project_start`, `kb_project_update` (show_version=true for version check)
 - **KB CRUD:** `kb_list`, `kb_create`, `kb_update`, `kb_delete`
@@ -136,10 +136,10 @@ MCP Tools by category (71 tools total):
 - **Document Read:** `kb_get_documents`
 - **Document CRUD:** `kb_doc_read`, `kb_doc_create`, `kb_doc_update_meta`, `kb_doc_update_content`, `kb_doc_delete`, `kb_doc_batch_delete`, `kb_doc_move`
 - **File System (3):** `fs_get_tree` (incl. `_stats`), `fs_get_children`, `fs_upload_file`
-- **Parse (non-blocking, 4):** `parse_doc`, `parse_doc_batch`, `parse_task_status`, `kb_doc_save_parsed`
+- **Parse (3, non-blocking):** `parse_doc`, `parse_doc_batch`, `parse_task_status`  # (kb_doc_save_parsed counted under Doc Write above)
 - **Tags (4):** `kb_tags_list`, `kb_doc_update_tags`, `kb_doc_get_by_tag`, `kb_tags_cleanup`
 - **Search (Agentic RAG, 4):** `kb_search` (metadata only), `kb_search_vector` (semantic), `kb_search_two_stage` (BM25→vector, primary), `kb_search_stats`
-- **Vector/Index:** `kb_index_document`, `kb_batch_index`, `kb_reindex`, `kb_cleanup_orphan_collections`
+- **Vector/Index (5):** `kb_index_document`, `kb_batch_index`, `kb_reindex`, `kb_cleanup_orphan_collections`, `kb_find_duplicates`
 - **Knowledge Graph (11 tools):** `kb_graph_search` (unified), `kb_graph_stats` (incl. `neo4j_available`), `kb_graph_document`, `kb_graph_document_related`, `kb_graph_kb_overview`, `kb_graph_build` (unified), `kb_graph_cross_kb_documents`, `kb_graph_document_paths`, `kb_graph_central_documents`, `kb_graph_delete_document`, `kb_graph_delete_kb`
 - **Experience (25 tools):** Full lifecycle — create/read/list/update/delete/apply/review/summary | Search: search_global/**search_smart**(推荐入口)/**rerank** | Extract/Drafts: extract/drafts_list/draft_read/draft_approve/draft_reject | Health: **check_stale**(空kb_id=全库)/sync_kb/dashboard/apply_decay | Meditation (5): **meditation_status/meditation_run/meditation_config_get/meditation_config_update/meditation_history**
 

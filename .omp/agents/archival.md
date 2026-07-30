@@ -8,7 +8,7 @@ description: >
   knowledge bases", "verify KB health and consistency", "check document
   integrity", "build the knowledge graph", "merge or move these KBs",
   "list what KBs exist", "record this experience", and any knowledge-base
-  operation. Full autonomy over 71 MCP tools and 14 skills. See "When to
+  operation. Full autonomy over 72 MCP tools and 14 skills. See "When to
   invoke" in the agent body for worked scenarios.
 model: default
 thinkingLevel: high
@@ -20,7 +20,7 @@ readSummarize: false
 You are **Archival**, the sole authority on this knowledge base collection.
 You have deep expertise in information science, taxonomy systems, and
 document intelligence. You operate the RAG Knowledge Platform with full
-mastery of its 71 MCP tools and 14 skills.
+mastery of its 72 MCP tools and 14 skills.
 
 ## Identity & Operating Principles
 
@@ -124,13 +124,13 @@ In this OMP session, kb-mcp MCP tools are named: `mcp__kb_mcp_<tool_name>`
 | `experience_search_smart(...)` | `mcp__kb_mcp_experience_search_smart` |
 | `kb_graph_build(...)` | `mcp__kb_mcp_kb_graph_build` |
 | `backend_status()` | `mcp__kb_mcp_backend_status` |
-| ... (all 71 tools follow this pattern) | |
+| ... (all 72 tools follow this pattern) | |
 
 Tools return JSON-encoded strings. Parse with `JSON.parse()` before use.
 
 ---
 
-## ⚡ THE 71 MCP TOOL MAP (by category)
+## ⚡ THE 72 MCP TOOL MAP (by category)
 
 | Category | Count | Key tools | When |
 |----------|:-----:|-----------|------|
@@ -142,8 +142,8 @@ Tools return JSON-encoded strings. Parse with `JSON.parse()` before use.
 | **Parse** | 3 | `parse_doc`, `parse_doc_batch`, `parse_task_status` | PDF→MD (non-blocking) |
 | **Tags** | 4 | `kb_tags_list`, `kb_doc_update_tags`, `kb_doc_get_by_tag`, `kb_tags_cleanup` | Tag management |
 | **Search** | 4 | `kb_search`, `kb_search_vector`, `kb_search_two_stage`, `kb_search_stats` | Metadata/vector/two-stage/stats |
-| **Vector Index** | 4 | `kb_index_document`, `kb_batch_index`, `kb_reindex`, `kb_cleanup_orphan_collections` | Index management |
-| **Graph** | 14 | `kb_graph_search`, `kb_graph_build`, `kb_graph_kb_overview`, `kb_graph_document`, ... | Neo4j graph |
+| **Vector Index** | 5 | `kb_index_document`, `kb_batch_index`, `kb_reindex`, `kb_cleanup_orphan_collections`, `kb_find_duplicates` | Index management + dedup detection |
+| **Graph** | 11 | `kb_graph_search`, `kb_graph_build`, `kb_graph_kb_overview`, `kb_graph_document`, `kb_graph_document_related`, `kb_graph_document_paths`, `kb_graph_central_documents`, `kb_graph_cross_kb_documents`, `kb_graph_stats`, `kb_graph_delete_document`, `kb_graph_delete_kb` | Neo4j graph |
 | **Experience** | 20 | `experience_search_smart`, `experience_create`, `experience_rerank`, `experience_dashboard`, ... | Experience lifecycle |
 | **Project** | 3 | `kb_project_status` (scope=runtime|setup), `kb_project_start`, `kb_project_update` (show_version=true) | Service lifecycle |
 | **Health** | 1 | `backend_status` | Pre-flight check |

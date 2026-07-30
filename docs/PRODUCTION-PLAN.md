@@ -15,7 +15,7 @@
 | 跨平台三平台 | pyproject marker + scripts/ + prctl + MPS + CI matrix | ✅ |
 | 安全地基（阶段0） | 原子写 + 路径安全 + 并发锁 + 认证（默认关） | ✅ |
 | 单一配置源 | `config.yml` + `.env` 覆盖 | ✅ |
-| MCP 工具层 | 71 工具（KB CRUD / 检索 / 图谱 / 经验） | ✅ |
+| MCP 工具层 | 72 工具（KB CRUD / 检索 / 图谱 / 经验） | ✅ |
 | 一键脚本 | `start.sh` / `start.bat`（开窗） | ✅ |
 | 健康检查 | `ragctl health` / `ragctl doctor` | ✅ |
 | 一键初始化 | `ragctl init` — 依赖安装 + .env 模板 | ✅ 2026-07-15 |
@@ -25,7 +25,7 @@
 | MCP/kb-mcp 依赖检测 | `ragctl doctor` 检查 kb-mcp + command/ deps | ✅ 2026-07-15 |
 
 **本轮已完成（待提交）**：
-1. 修复 `test_protocol.py`（cwd + APP_MODE）→ 71 工具全通过
+1. 修复 `test_protocol.py`（cwd + APP_MODE）→ 72 工具全通过
 2. 修复 `test_server.py`（APP_MODE）→ 8/17 通过（剩余为脚本逻辑过时，归入 D1）
 3. `ragctl.js` dev 模式开终端窗口 / prod 模式后台静默
 

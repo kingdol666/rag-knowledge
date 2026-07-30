@@ -5,13 +5,13 @@
 </h1>
 
 <p align="center">
-  <strong>MCP Server · 71 Tools · KB Lifecycle · Search · Graph · Experience</strong><br/>
+  <strong>MCP Server · 72 Tools · KB Lifecycle · Search · Graph · Experience</strong><br/>
   <em>The MCP tool layer connecting Claude Code agents to the RAG Knowledge Platform</em>
 </p>
 
 <p align="center">
   <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick%20Start-3%20steps-blue?style=for-the-badge" /></a>
-  <a href="#-tools-71"><img src="https://img.shields.io/badge/MCP-71%20tools-blueviolet?style=for-the-badge" /></a>
+  <a href="#-tools-72"><img src="https://img.shields.io/badge/MCP-72%20tools-blueviolet?style=for-the-badge" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" /></a>
   <a href="#-tech-stack"><img src="https://img.shields.io/badge/Python-3.12-blue?style=for-the-badge" /></a>
   <a href="#-tech-stack"><img src="https://img.shields.io/badge/FastMCP-latest-9cf?style=for-the-badge" /></a>
@@ -30,7 +30,7 @@
 - [🌟 Overview](#-overview)
 - [🏗️ Architecture](#️-architecture)
 - [🚀 Quick Start](#-quick-start)
-- [🔌 Tools (71)](#-tools-71)
+- [🔌 Tools (72)](#-tools-72)
 - [📡 Client Library](#-client-library)
 - [⚙️ Configuration](#️-configuration)
 - [📁 Project Structure](#-project-structure)
@@ -40,7 +40,7 @@
 
 ## 🌟 Overview
 
-`kb-mcp` is the MCP (Model Context Protocol) server that bridges Claude Code (or any MCP-compatible agent) to the RAG Knowledge Platform. It provides **71 tools** organized into 11 categories — enough to manage every aspect of a production knowledge base without leaving the agent conversation.
+`kb-mcp` is the MCP (Model Context Protocol) server that bridges Claude Code (or any MCP-compatible agent) to the RAG Knowledge Platform. It provides **72 tools** organized into 11 categories — enough to manage every aspect of a production knowledge base without leaving the agent conversation.
 
 **Key principles:**
 
@@ -60,7 +60,7 @@
                    │ MCP stdio (FastMCP)
 ┌──────────────────▼───────────────────────┐
 │              kb-mcp/server.py             │
-│         71 @mcp.tool() definitions       │
+│         72 @mcp.tool() definitions       │
 │         Zero HTTP code — delegates down   │
 └──────┬──────────────────────┬────────────┘
        │ kb_client (HTTP)     │ direct file I/O
@@ -99,7 +99,7 @@ uv run python server.py --http
 
 > **Normally you don't run kb-mcp manually.** Claude Code auto-launches it via `../.mcp.json` when you open the project. The first `uv run` auto-syncs deps if needed. For global usage, `claude plugin install rag-knowledge` registers it in `~/.claude.json` → `mcpServers`.
 
-## 🔌 Tools (71)
+## 🔌 Tools (72)
 
 All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by domain:
 
@@ -192,13 +192,14 @@ All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by 
 | `parse_doc_batch(file_paths, kb_id)` | Submit multiple files for parsing. |
 | `parse_task_status(task_id)` | Poll the status of a parse task (pending → running → done/failed). |
 
-### Vector Index (3)
+### Vector Index (4)
 
 | Tool | Description |
 |------|-------------|
 | `kb_index_document(doc_path, kb_id)` | Index a single document into the vector store. |
 | `kb_batch_index(kb_id)` | Index all unindexed documents in a KB. |
 | `kb_reindex(kb_id, force)` | Rebuild vector index for a KB. Use `force=true` to overwrite existing. |
+| `kb_find_duplicates(kb_id, threshold)` | Detect exact (SHA256) + near (vector similarity) duplicate documents. |
 
 ### Cleanup (1)
 
@@ -262,7 +263,7 @@ The `.mcp.json` at the monorepo root auto-configures kb-mcp for Claude Code:
 
 ```
 kb-mcp/
-├── server.py                # FastMCP server — 71 @mcp.tool() definitions (zero HTTP code)
+├── server.py                # FastMCP server — 72 @mcp.tool() definitions (zero HTTP code)
 ├── project_manager.py       # Service lifecycle + version/update (delegates to ragctl)
 ├── task_registry.py         # In-process async background task manager for parse jobs
 ├── config.py                # Reads URLs from shared config.yml (zero hardcoded paths)

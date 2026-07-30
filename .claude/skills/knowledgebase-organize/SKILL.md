@@ -14,7 +14,7 @@ description: >
 
 ## ⭐ Execution Model · Pre-Flight · Architecture（作业首步，强制）
 
-**执行者：Archival agent** — 用 `task` 委托执行（**委托模板 + 三角色执行模型 + 组合任务边界**：必读 [execution-model.md](../knowledgebase/references/execution-model.md)）。**Pre-Flight**：未通过禁作业 — 一探双检 `kb_project_status` → 分支处置 → 冒烟测试，完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)。**心智模型**：操作前必读 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层模型 + 一致性不变量 + 71 工具地图）；MCP 优先原则（禁 terminal/HTTP 绕过）见 [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) 第五条。
+**执行者：Archival agent** — 用 `task` 委托执行（**委托模板 + 三角色执行模型 + 组合任务边界**：必读 [execution-model.md](../knowledgebase/references/execution-model.md)）。**Pre-Flight**：未通过禁作业 — 一探双检 `kb_project_status` → 分支处置 → 冒烟测试，完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)。**心智模型**：操作前必读 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层模型 + 一致性不变量 + 72 工具地图）；MCP 优先原则（禁 terminal/HTTP 绕过）见 [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) 第五条。
 
 > 本 skill 强依赖 Neo4j（L7 索引+图谱重建），`kb_project_start` 必须带 `neo4j=true`。
 > **阈值权威源**：子KB 拆分/合并阈值统一定义在 [sub-kb-creation.md](../knowledgebase-ingest/references/sub-kb-creation.md)。本 skill 与 Ingest A8 共享同一阈值（≥6 篇检查、≥8 篇自动拆分），避免不一致。

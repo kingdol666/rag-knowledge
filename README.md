@@ -10,7 +10,7 @@
 
 <p>
 <em>QDCVR Semantic Search · Neo4j Knowledge Graph · Experience Lifecycle (E0–E12)<br>
-71 MCP Tools · 14 Agent Skills · MinerU OCR · Cross-Platform</em>
+72 MCP Tools · 14 Agent Skills · MinerU OCR · Cross-Platform</em>
 </p>
 
 <!-- Hero Badges -->
@@ -77,7 +77,7 @@ This platform solves that at the **retrieval layer**, not the generation layer. 
 |:---:|:---|:---|
 | 🔍 | Single search strategy (vector *or* keyword) | **Multi-strategy**: BM25 + vector + tag-semantic + graph expansion |
 | 🧠 | Trust vector similarity blindly | **Content-verified retrieval** — independent 0–8 adjudication |
-| 🤖 | Bolt-on AI, hard to integrate with agents | **Agent-native**: 71 MCP tools, 14 skills — any MCP client works |
+| 🤖 | Bolt-on AI, hard to integrate with agents | **Agent-native**: 72 MCP tools, 14 skills — any MCP client works |
 | 💡 | No structured knowledge reuse | **Experience library**: E0–E12 lifecycle with P0/P1/P2 credibility |
 | 🔧 | Complex multi-tool setup, scattered configs | **One command** `ragctl setup`, single `config.yml` source of truth |
 | 🪟 | Terminal windows everywhere | **Silent headless** — zero terminals in dev *and* prod |
@@ -101,7 +101,7 @@ This platform solves that at the **retrieval layer**, not the generation layer. 
 | 🔍 | **Multi-Strategy Search** | BM25 + vector two-stage recall · cross-KB enterprise search · `balance_kbs` diversity guard |
 | 📊 | **Knowledge Graph** | Neo4j-powered · 11 graph tools · entity/relation graphs · cross-KB document bridges |
 | 💡 | **Experience Library** | E0–E12 lifecycle · structured problem→solution→lessons · P0/P1/P2 credibility · decay |
-| 🔌 | **71 MCP Tools** | KB CRUD · search · graph · experience · parsing · tags · vector/index · lifecycle — all MCP-native |
+| 🔌 | **72 MCP Tools** | KB CRUD · search · graph · experience · parsing · tags · vector/index · lifecycle — all MCP-native |
 | 🎯 | **14 Agent Skills** | Natural-language commands · bilingual triggers (中/EN) · auto-dispatch to Archival agent |
 | 🤫 | **Silent Headless** | Every launcher runs with **zero terminal windows** · dev and prod behave identically |
 
@@ -226,7 +226,7 @@ ragctl up
 </details>
 
 > [!TIP]
-> **No Claude Code? No problem.** The Web UI is fully functional standalone. Use any MCP client to access 71 tools, or just browse/search at `http://localhost:6789`.
+> **No Claude Code? No problem.** The Web UI is fully functional standalone. Use any MCP client to access 72 tools, or just browse/search at `http://localhost:6789`.
 
 ### ✅ Verify Everything Works
 
@@ -511,7 +511,7 @@ server:
 
 ---
 
-## ⚡ 71 MCP Tools
+## ⚡ 72 MCP Tools
 
 All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
 
@@ -613,7 +613,7 @@ All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
 rag-knowledge/
 ├── backend/              ← FastAPI + MinerU OCR engine
 ├── web/                  ← Nuxt 3 + Ant Design Vue + Claude Chat
-├── kb-mcp/               ← MCP server — 71 tools
+├── kb-mcp/               ← MCP server — 72 tools
 ├── command/              ← ragctl CLI (Node.js)
 ├── src-tauri/            ← Tauri v2 desktop (Rust)
 ├── .claude/              ← 14 agent skills + Archival agent

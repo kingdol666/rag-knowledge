@@ -96,7 +96,7 @@ MCP 工具已连接时，**所有 KB 操作必须通过 `mcp__kb-mcp__*` 工具�
 14 个 skill 作为同一插件打包发布（见 `.claude-plugin/plugin.json`），始终同目录共存。引用**共享参考**统一用相对路径：
 
 ```
-../knowledgebase/references/kb-architecture.md        ← 5 层数据模型 + 一致性不变量 + 71 工具地图
+../knowledgebase/references/kb-architecture.md        ← 5 层数据模型 + 一致性不变量 + 72 工具地图
 ../knowledgebase/references/execution-model.md         ← 本文件
 ../knowledgebase/references/mcp-preflight-check.md     ← Pre-Flight 完整流程
 ../knowledgebase/references/skill-trigger-contract.md  ← 触发契约 + 五条强制规则
