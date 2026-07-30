@@ -1,0 +1,88 @@
+{
+  "v": "3.0",
+  "date": "2026-07-30",
+  "pa": {
+    "total_docs": 30,
+    "kb_routing_correct": 29,
+    "kb_routing_accuracy": 0.967,
+    "subkb_routing_correct": 28,
+    "subkb_routing_accuracy": 0.933,
+    "tag_precision": 0.93,
+    "tag_recall": 0.78,
+    "tag_f1": 0.848,
+    "desc_quality_avg": 3.7,
+    "index_success_rate": 1.0,
+    "parse_quality_pass": 0.95,
+    "avg_ingest_latency_s": 25,
+    "issues": [
+      {
+        "sev": "critical",
+        "issue": "ml-co2 misclassified (nuclear physics in Chemistry)",
+        "impact": "1/30"
+      },
+      {
+        "sev": "warning",
+        "issue": "3 docs missing tags",
+        "impact": "10%"
+      }
+    ]
+  },
+  "pa_s": 92.9,
+  "pb": {
+    "health_score": 93,
+    "orphan_tags": 0,
+    "orphan_collections": 3,
+    "duplicate_groups": 4,
+    "redundant_copies": 5,
+    "misclassified": 1,
+    "tag_gap_docs": 3,
+    "three_way_consistency": 0.99,
+    "ops_safety": 1.0,
+    "total_kbs": 14,
+    "total_docs": 177,
+    "total_tags": 152,
+    "vector_coverage": 0.99,
+    "graph_coverage": 0.99
+  },
+  "pb_s": 99.5,
+  "pc": {
+    "queries": 9,
+    "domains": 9,
+    "moe_precision": 1.0,
+    "recall_5": 0.89,
+    "precision_5": 0.71,
+    "mrr": 0.94,
+    "ndcg_5": 0.82,
+    "content_verify": 0.89,
+    "fpr": 0.0,
+    "fnr": 0.11,
+    "search_reduction": 8.1,
+    "total_compression": 6000,
+    "cross_kb_fallback": 0.22,
+    "latency_s": 2.5
+  },
+  "pc_s": 92.0,
+  "pd": {
+    "experiences": 17,
+    "drafts": 4,
+    "published": 2,
+    "actionability": 1.8,
+    "content_fidelity": 2.1,
+    "prepare_quality": 0.85,
+    "meditation_runs": 3,
+    "meditation_gen": 6,
+    "meditation_quality": 0.5
+  },
+  "pd_s": 59.6,
+  "pe": {
+    "cycles": 5,
+    "success_rate": 1.0,
+    "latency_s": 35,
+    "answer_correctness": 0.85,
+    "evidence_grounding": 0.9,
+    "hallucination": 0.05,
+    "satisfaction": 3.8
+  },
+  "pe_s": 92.0,
+  "agg": 88.9
+}
