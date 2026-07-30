@@ -18,7 +18,7 @@ description: >
 - 经验总结入库 → `skill://knowledgebase-experience-summarize` (完整 E0-E12 提取+审核流程)
 - KB 完整性校验 → `skill://knowledgebase-verify` 的 V8 经验健康检查
 - KB 整理重组 → `skill://knowledgebase-organize`
-- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)
+- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)
 
 ## Sequential Workflow (按场景选择入口)
 
@@ -33,28 +33,9 @@ description: >
 
 # Experience — 全生命周期管理（E0-E12）
 
-**⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型）+ [MCP 优先原则](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则)（禁止 terminal/HTTP 绕过）
+## ⭐ Execution Model · Pre-Flight · Architecture（作业首步，强制）
 
-**执行者：Archival agent — 必须通过 Task 工具委托执行**
-
-委托方式（OMP / Claude Code 通用）—— 使用 `task` 工具：
-```
-task(
-  tasks=[{
-    "agent": "archival",
-    "name": "KB-<Scenario>",
-    "task": "[场景: <场景标签>]\n⭐ 操作前必读 skill://knowledgebase/references/kb-architecture.md\n\n用户需求：<原始需求>",
-    "effort": "med"
-  }],
-  context="RAG Knowledge Platform — MCP tools via kb-mcp, backend on :8765"
-)
-```
----
-
-## ⭐ Pre-Flight（强制，所有作业第一步）
-
-**未通过预检禁止作业。** 执行 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md) 的完整流程（一探双检 `kb_project_status` → 分支处置 → 冒烟测试）。
----
+**执行者：Archival agent** — 用 `task` 委托执行（**委托模板 + 三角色执行模型 + 组合任务边界**：必读 [execution-model.md](../knowledgebase/references/execution-model.md)）。**Pre-Flight**：未通过禁作业 — 一探双检 `kb_project_status` → 分支处置 → 冒烟测试，完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)。**心智模型**：操作前必读 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层模型 + 一致性不变量 + 71 工具地图）；MCP 优先原则（禁 terminal/HTTP 绕过）见 [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) 第五条。
 
 ## 思维框架：什么时候用经验？什么时候用文档？[IMPORTANT]
 

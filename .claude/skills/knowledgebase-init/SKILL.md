@@ -18,12 +18,12 @@ description: >
   kb init, knowledgebase setup wizard, 知识库安装向导, 配置知识库, 引导安装知识库.
 
 ## ⭐ 相关 Skills
-- 架构理解 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)
+- 架构理解 + 执行模型 → `skill://knowledgebase` 的 [kb-architecture.md](../knowledgebase/references/kb-architecture.md) + [execution-model.md](../knowledgebase/references/execution-model.md)
 - GPU 检测脚本 → `scripts/detect_gpu.cjs` (CWD)
 - 增量安装 → [incremental-install.md](references/incremental-install.md)
 - 配置向导 → [configuration.md](references/configuration.md)
 - GPU 自适应 PyTorch → [gpu-and-torch.md](references/gpu-and-torch.md)
-- MCP 连通性预检 → `skill://knowledgebase` 的 [mcp-preflight-check.md](references/../knowledgebase/references/mcp-preflight-check.md)
+- MCP 连通性预检 → `skill://knowledgebase` 的 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)
 - 更新到最新版 → `skill://knowledgebase-update`
 - 安装后校验 → `skill://knowledgebase-verify` 的 V1-V9 完整性检查流
 

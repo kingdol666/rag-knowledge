@@ -9,13 +9,13 @@ description: >
 - KB 管理 → `skill://knowledgebase-manage`
 - 整理重组 → `skill://knowledgebase-organize`
 - 校验 → `skill://knowledgebase-verify`
-- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)
+- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)
 
 ## Sequential Workflow
 **Step 1 — Pre-Flight 预检**: 执行 mcp-preflight-check 的一探双检，确认MCP+backend+web健康。
 **Step 2 — 确定查看范围**: 全量清单 / 指定KB drill-down / 目录树浏览 / 标签查询。
-**Step 3 — L1 全量清单**: kb_catalog() → 获取所有KB的 name+description+doc_count → 格式化输出。
-**Step 4 — L2 KB drill-down**: kb_doc_catalog(kb_id) → 获取指定KB的文档元数据（名称/描述/标签/文件大小/解析日期）。
+**Step 3 — L1 全量清单**: kb_list() → 获取所有KB的 name+description+doc_count → 格式化输出。
+**Step 4 — L2 KB drill-down**: kb_get_documents(kb_id) → 获取指定KB的文档元数据（名称/描述/标签/文件大小/解析日期）。
 **Step 5 — L3 目录树浏览**: fs_get_tree(include_files=true, max_depth=3) → 浏览KB层级 + 文档文件结构。
 **Step 6 — 标签查询**: kb_doc_get_by_tag(tag, kb_id) → 按标签跨KB查找关联文档。
 **Step 7 — 格式化输出**: 按用户要求输出（表格/列表/树形/JSON），含文档数/标签覆盖/索引状态统计。
@@ -23,28 +23,9 @@ description: >
 
 # Knowledge List — Collection Overview
 
-**⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型）+ [MCP 优先原则](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则)（禁止 terminal/HTTP 绕过）
+## ⭐ Execution Model · Pre-Flight · Architecture（作业首步，强制）
 
-**执行者：Archival agent — 必须通过 Task 工具委托执行**
-
-委托方式（OMP / Claude Code 通用）—— 使用 `task` 工具：
-```
-task(
-  tasks=[{
-    "agent": "archival",
-    "name": "KB-<Scenario>",
-    "task": "[场景: <场景标签>]\n⭐ 操作前必读 skill://knowledgebase/references/kb-architecture.md\n\n用户需求：<原始需求>",
-    "effort": "med"
-  }],
-  context="RAG Knowledge Platform — MCP tools via kb-mcp, backend on :8765"
-)
-```
----
-
-## ⭐ Pre-Flight（强制，所有作业第一步）
-
-**未通过预检禁止作业。** 执行 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md) 的完整流程（一探双检 `kb_project_status` → 分支处置 → 冒烟测试）。
----
+**执行者：Archival agent** — 用 `task` 委托执行（**委托模板 + 三角色执行模型 + 组合任务边界**：必读 [execution-model.md](../knowledgebase/references/execution-model.md)）。**Pre-Flight**：未通过禁作业 — 一探双检 `kb_project_status` → 分支处置 → 冒烟测试，完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)。**心智模型**：操作前必读 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层模型 + 一致性不变量 + 71 工具地图）；MCP 优先原则（禁 terminal/HTTP 绕过）见 [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) 第五条。
 
 ## 思维框架：用户要看多深？ ⭐
 

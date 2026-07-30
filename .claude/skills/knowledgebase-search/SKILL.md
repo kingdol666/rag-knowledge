@@ -18,7 +18,7 @@ description: >
 - KB 整理与重组 → `skill://knowledgebase-organize` — 子KB拆分/跨库归并后需重索引
 - KB 完整性校验 → `skill://knowledgebase-verify` — 三向一致性+索引覆盖率修复
 - 知识图谱 → `skill://knowledgebase-graph` — 图谱构建/文档路径/跨库发现
-- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)（5层数据模型+71工具地图）
+- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+71工具地图）
 - 批量操作 → `skill://knowledgebase-batch` — 批量入库/标签迁移/去重
 
 ## Sequential Workflow
@@ -30,29 +30,11 @@ description: >
 **Step 6 — 扩展召回 (Step 4-5)**: 标签+描述扩展→再验证→P0 Strong/P1 Confirmed/P2 Supplement 置信度定级。
 **Step 7 — 综合回答 (Step 6)**: P0/P1 结构化输出 + 来源(按置信度)+ 盲点诚实声明 + 不足2个KB时升级到 enterprise 搜索。
 # QDCVR — 查询驱动 · 内容裁决 · 门控精炼检索
-> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+71工具地图）
+## ⭐ Execution Model · Pre-Flight · Architecture（作业首步，强制）
 
+**执行者：Archival agent** — 用 `task` 委托执行（**委托模板 + 三角色执行模型 + 组合任务边界**：必读 [execution-model.md](../knowledgebase/references/execution-model.md)）。**Pre-Flight**：未通过禁作业 — 一探双检 `kb_project_status` → 分支处置 → 冒烟测试，完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)。**心智模型**：操作前必读 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层模型 + 一致性不变量 + 71 工具地图）；MCP 优先原则（禁 terminal/HTTP 绕过）见 [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) 第五条。
 
-**执行者：Archival agent — 必须通过 Task 工具委托执行**
-
-委托方式（OMP / Claude Code 通用）—— 使用 `task` 工具：
-```
-task(
-  tasks=[{
-    "agent": "archival",
-    "name": "KB-<Scenario>",
-    "task": "[场景: <场景标签>]\n⭐ 操作前必读 skill://knowledgebase/references/kb-architecture.md\n\n用户需求：<原始需求>",
-    "effort": "med"
-  }],
-  context="RAG Knowledge Platform — MCP tools via kb-mcp, backend on :8765"
-)
-```
 - Archival 禁止：跳过 Step 0 查询改写、跳过内容验证、跳过盲点声明
----
-
-## ⭐ Pre-Flight（强制，所有作业第一步）
-
-**未通过预检禁止作业。** 执行 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md) 的完整流程（一探双检 `kb_project_status` → 分支处置 → 冒烟测试）。
 ---
 
 

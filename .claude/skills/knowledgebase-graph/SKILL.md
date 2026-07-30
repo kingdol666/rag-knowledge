@@ -6,22 +6,10 @@ description: >
 
 # Knowledge Graph — Build, Query, Analyze
 
-**⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型）+ [MCP 优先原则](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则)（禁止 terminal/HTTP 绕过）
+## ⭐ Execution Model · Pre-Flight · Architecture（作业首步，强制）
 
-**执行者：Archival agent — 必须通过 Task 工具委托执行**
+**执行者：Archival agent** — 用 `task` 委托执行（**委托模板 + 三角色执行模型 + 组合任务边界**：必读 [execution-model.md](../knowledgebase/references/execution-model.md)）。**Pre-Flight**：未通过禁作业 — 一探双检 `kb_project_status` → 分支处置 → 冒烟测试，完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)。**心智模型**：操作前必读 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层模型 + 一致性不变量 + 71 工具地图）；MCP 优先原则（禁 terminal/HTTP 绕过）见 [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) 第五条。
 
-委托方式（OMP / Claude Code 通用）—— 使用 `task` 工具：
-```
-task(
-  tasks=[{
-    "agent": "archival",
-    "name": "KB-<Scenario>",
-    "task": "[场景: <场景标签>]\n⭐ 操作前必读 skill://knowledgebase/references/kb-architecture.md\n\n用户需求：<原始需求>",
-    "effort": "med"
-  }],
-  context="RAG Knowledge Platform — MCP tools via kb-mcp, backend on :8765"
-)
-```
 Graph nodes: `Document`, `KnowledgeBase`, `Tag`. Edges: `BELONGS_TO`, `HAS_SUBKB`, `HAS_TAG`, `RELATED_TO`.
 
 ---
@@ -30,7 +18,7 @@ Graph nodes: `Document`, `KnowledgeBase`, `Tag`. Edges: `BELONGS_TO`, `HAS_SUBKB
 - 文档入库建索引 → `skill://knowledgebase-ingest` (A6 向量+图谱索引)
 - 批量重建图谱 → `skill://knowledgebase-batch` (B7 全库重建)
 - 跨库知识发现 → `skill://knowledgebase-search-enterprise`
-- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)
+- 架构心智模型 → [kb-architecture.md](../knowledgebase/references/kb-architecture.md)
 
 ## Sequential Workflow
 **Step 1 — Check Neo4j**: kb_graph_stats() 确认 neo4j_available 为 true，否则 kb_project_start(neo4j=true) 拉起。
@@ -42,9 +30,7 @@ Graph nodes: `Document`, `KnowledgeBase`, `Tag`. Edges: `BELONGS_TO`, `HAS_SUBKB
 **Step 7 — 关键词搜索**: kb_graph_search(keyword, node_type="all") → 按名称/路径子串匹配节点。
 **Step 8 — Build 构建/重建**: kb_graph_build(kb_id, force=false) 增量 / force=true 全量重建 → kb_graph_stats() 验证。
 **Step 9 — Cleanup 清理**: kb_graph_delete_document(doc_path) 删文档节点 / kb_graph_delete_kb(kb_id) 删KB全图。
-## ⭐ Pre-Flight（强制，所有作业第一步）
 
-**未通过预检禁止作业。** 执行 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md) 的完整流程（一探双检 `kb_project_status` → 分支处置 → 冒烟测试）。 本 skill 强依赖 Neo4j，`kb_project_start` 必须带 `neo4j=true`。
 ---
 
 ## 思维框架：先想清楚要查什么 ⭐

@@ -6,23 +6,9 @@ description: >
 
 # Knowledge Batch — High-Volume Operations
 
-**⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型）+ [MCP 优先原则](../knowledgebase/references/skill-trigger-contract.md#第五条mcp-优先原则)（禁止 terminal/HTTP 绕过）
+## ⭐ Execution Model · Pre-Flight · Architecture（作业首步，强制）
 
-**执行者：Archival agent — 必须通过 Task 工具委托执行**
-
-委托方式（OMP / Claude Code 通用）—— 使用 `task` 工具：
-```
-task(
-  tasks=[{
-    "agent": "archival",
-    "name": "KB-<Scenario>",
-    "task": "[场景: <场景标签>]\n⭐ 操作前必读 skill://knowledgebase/references/kb-architecture.md\n\n用户需求：<原始需求>",
-    "effort": "med"
-  }],
-  context="RAG Knowledge Platform — MCP tools via kb-mcp, backend on :8765"
-)
-```
-**所有批量操作执行 `survey → plan → confirm → execute → verify` 五步流程**。
+**执行者：Archival agent** — 用 `task` 委托执行（**委托模板 + 三角色执行模型 + 组合任务边界**：必读 [execution-model.md](../knowledgebase/references/execution-model.md)）。**Pre-Flight**：未通过禁作业 — 一探双检 `kb_project_status` → 分支处置 → 冒烟测试，完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)。**心智模型**：操作前必读 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层模型 + 一致性不变量 + 71 工具地图）；MCP 优先原则（禁 terminal/HTTP 绕过）见 [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) 第五条。
 
 ---
 
@@ -33,7 +19,7 @@ task(
 - 整理重组 → `skill://knowledgebase-organize`
 - 校验验证 → `skill://knowledgebase-verify`
 - 图谱重建 → `skill://knowledgebase-graph`
-- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)
+- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)
 
 ## Sequential Workflow
 **Step 1 — Pre-Flight 预检**: 执行 mcp-preflight-check 的一探双检，未就绪则静默 kb_project_start 拉起服务。
@@ -49,11 +35,6 @@ task(
 **Step 11 — B7 图谱全量重建**: kb_graph_build(kb_id="", force=true) → kb_graph_stats() 验证节点/边数。
 **Step 12 — Execute 分批执行**: 每20个为一批，批次完成记录checkpoint，验证成功率。
 **Step 13 — Verify 终验**: 采样 20% + 统计前后对比（文档数/标签数/索引覆盖率）。
-
-## ⭐ Pre-Flight（强制，所有作业第一步）
-
-**未通过预检禁止作业。** 执行 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md) 的完整流程（一探双检 `kb_project_status` → 分支处置 → 冒烟测试）。
----
 
 ## 思维框架：选哪个批量操作？ ⭐
 

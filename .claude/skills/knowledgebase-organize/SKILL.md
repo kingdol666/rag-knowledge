@@ -11,35 +11,22 @@ description: >
 ---
 
 # Knowledge Organize — 全库智能化重组引擎
-> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+71工具地图）
 
-**执行者：Archival agent — 必须通过 Task 工具委托执行**
+## ⭐ Execution Model · Pre-Flight · Architecture（作业首步，强制）
 
-委托方式（OMP / Claude Code 通用）—— 使用 `task` 工具：
-```
-task(
-  tasks=[{
-    "agent": "archival",
-    "name": "KB-<Scenario>",
-    "task": "[场景: <场景标签>]\n⭐ 操作前必读 skill://knowledgebase/references/kb-architecture.md\n\n用户需求：<原始需求>",
-    "effort": "med"
-  }],
-  context="RAG Knowledge Platform — MCP tools via kb-mcp, backend on :8765"
-)
-```
+**执行者：Archival agent** — 用 `task` 委托执行（**委托模板 + 三角色执行模型 + 组合任务边界**：必读 [execution-model.md](../knowledgebase/references/execution-model.md)）。**Pre-Flight**：未通过禁作业 — 一探双检 `kb_project_status` → 分支处置 → 冒烟测试，完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)。**心智模型**：操作前必读 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层模型 + 一致性不变量 + 71 工具地图）；MCP 优先原则（禁 terminal/HTTP 绕过）见 [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) 第五条。
+
+> 本 skill 强依赖 Neo4j（L7 索引+图谱重建），`kb_project_start` 必须带 `neo4j=true`。
 > **阈值权威源**：子KB 拆分/合并阈值统一定义在 [sub-kb-creation.md](../knowledgebase-ingest/references/sub-kb-creation.md)。本 skill 与 Ingest A8 共享同一阈值（≥6 篇检查、≥8 篇自动拆分），避免不一致。
-
----
-
 
 ## ⭐ 相关 Skills
 - 文档入库 → `skill://knowledgebase-ingest`
 - KB 管理 → `skill://knowledgebase-manage`
 - 校验验证 → `skill://knowledgebase-verify`
 - 批量操作 → `skill://knowledgebase-batch`
-- 子KB 创建协议 → `skill://knowledgebase-ingest` 的 [sub-kb-creation.md](references/../knowledgebase-ingest/references/sub-kb-creation.md)
+- 子KB 创建协议 → `skill://knowledgebase-ingest` 的 [sub-kb-creation.md](../knowledgebase-ingest/references/sub-kb-creation.md)
 - 经验联动 → `skill://knowledgebase-experience`
-- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)
+- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)
 
 ## Sequential Workflow (O1→O8)
 **Step 1 — O1 全局调研**: kb_list + kb_tags_list + fs_get_tree → 全库拓扑图。
@@ -50,11 +37,6 @@ task(
 **Step 6 — O6 经验联动**: experience_check_stale + 标记需 review 的经验。
 **Step 7 — O7 合规策略**: 按用户指定策略筛选修复范围。
 **Step 8 — O8 终验报告**: 前后对比 + 修复统计 + 合规评分。
-
-## ⭐ Pre-Flight（强制，所有作业第一步）
-
-**未通过预检禁止作业。** 执行 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md) 的完整流程（一探双检 `kb_project_status` → 分支处置 → 冒烟测试）。 本 skill 强依赖 Neo4j（L7 索引+图谱重建），`kb_project_start` 必须带 `neo4j=true`。
----
 
 ## 核心能力
 

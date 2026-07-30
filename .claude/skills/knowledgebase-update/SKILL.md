@@ -12,7 +12,7 @@ description: >
 ## ⭐ 相关 Skills
 - 初始化安装 → `skill://knowledgebase-init`
 - 校验完整性 → `skill://knowledgebase-verify`
-- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](references/../knowledgebase/references/kb-architecture.md)
+- 架构心智模型 + 执行模型 → `skill://knowledgebase` 的 [kb-architecture.md](../knowledgebase/references/kb-architecture.md) + [execution-model.md](../knowledgebase/references/execution-model.md)
 
 ## Sequential Workflow
 **Step 1 — 版本检查**: ragctl version --json → 对比本地VERSION vs GitHub最新release。

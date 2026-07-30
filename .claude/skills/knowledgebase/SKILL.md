@@ -86,20 +86,7 @@ Based on classification outcome:
 ### Step 4: Delegate to Archival Agent via Task Tool
 Each sub-skill's SKILL.md must detect the scenario and delegate execution to the Archival sub-agent. The dispatcher's job ends at routing. The Archival agent is responsible for executing all KB operations via MCP tools.
 
-> **⭐ Archival 委托模板**（OMP / Claude Code 通用）—— 使用 `task` 工具：
-> ```
-> task(
->   tasks=[{
->     "agent": "archival",
->     "name": "KB-<Scenario>",
->     "task": "[场景: <场景标签>]\n⭐ 操作前必读 skill://knowledgebase/references/kb-architecture.md\n\n用户需求：<原始需求>",
->     "effort": "med"
->   }],
->   context="RAG Knowledge Platform — MCP tools via kb-mcp, backend on :8765"
-> )
-> ```
-> **OMP harness**: 主 Agent 读取此 skill 后，使用 `task` 工具的 `tasks[]` 数组委托 Archival agent。每个 task item 的 `agent` 字段设为 `"archival"`，`task` 字段包含完整指令（场景标签 + 架构引用 + 用户需求）。
-> **Claude Code harness**: 等价写法 `Agent(subagent_type="archival", prompt=...)`，OMP 自动适配。
+> **⭐ Archival 委托模板**：用 `task` 工具委托——标准 `task(tasks=[{"agent":"archival","task":"[场景: <标签>] ⭐必读 kb-architecture.md\n用户需求：<原始需求>","effort":"med"}])` 模板 + 三角色执行模型 + 组合任务边界，统一见 [execution-model.md](references/execution-model.md)。委托核心：`task` 字段必含 **场景标签 + 架构必读引用 + 用户原始需求**；OMP/Claude Code 通用。
 
 ---
 
@@ -159,23 +146,10 @@ Each sub-skill's SKILL.md must detect the scenario and delegate execution to the
 
 ## ⭐ 多场景组合执行协议（组合任务必读）
 
-> **诊断来源**：SkillOpt-Sleep 从本项目历史会话 harvest 的 36 个真实任务中，组合测试（experience+summarize / organize+batch / search+enterprise+list 等）大面积 `[fail]`，而单 skill（init / update / kb-architecture）`[success]`。根因不是单 skill 质量，而是 **skill 间 handoff 无协议**——Archival 连续委托时上下文断裂、前序产出未结构化传递。
+> **诊断来源**（SkillOpt-Sleep harvest 36 个真实任务）：单 skill（init/update/architecture）`[success]`，组合任务（experience+summarize / organize+batch / search+enterprise+list）大面积 `[fail]`。根因非单 skill 质量，而是 **skill 间 handoff 无协议**——Archival 连续委托时上下文断裂、前序产出未结构化传递。
 
-组合任务（≥2 个场景连续执行）必须遵守：
+组合任务（≥2 场景）必须遵守 4 阶段契约（路由前确认 → 步间委托带上下文 → 步后即汇报 → 失败隔离）+ Archival 独立上下文边界 + **组合规模上限 ≤ 3 skill**（4+ 组合历史 100% fail），完整表格与产出契约见 [execution-model.md](references/execution-model.md#组合任务2-场景委托边界)。
 
-| 阶段 | 动作 | 产出契约 |
-|------|------|---------|
-| **1. 路由前确认** | 用一张表向用户确认完整路由顺序 + 每步子 skill | "将按 A→B→C 执行：A=ingest, B=search, C=list" |
-| **2. 步间委托带上下文** | 每次 Archival 委托的 prompt **显式附带前序关键产出** | `[场景B: Search] 前序 ingest 已完成：KB=<名>, 文档=<路径>. 现需检索：<query>` |
-| **3. 步后即汇报** | 每个 skill 完成后向用户输出该步结果，再进下一步 | 禁止静默连续执行——用户需知情或确认 |
-| **4. 失败隔离** | 某步失败：独立后续场景继续；有依赖则停下问用户 | "Ingest 失败（原因）。Search 不依赖它，是否继续？" |
-
-**Archival 连续委托的状态边界**（关键）：
-- 每次 `task(tasks=[{"agent": "archival", ...}])` 是**独立上下文**——Archival 不记得上一次委托的内容
-- 因此后续委托**必须在前序 prompt 里显式传递**关键状态：KB id / 文档路径 / 已发现问题 / 已变更项
-- **禁止**假设 Archival 会从会话历史推断前序状态——它看不到主调度器的上下文
-
-**组合规模上限**：单次会话组合 ≤ 3 个 skill。超过 3 个必须拆成多次会话——组合越多 context 失控越严重（harvest 数据：4+ skill 组合 100% fail）。
 
 ---
 
@@ -186,7 +160,6 @@ The dispatcher uses these tools for Pre-Flight checks:
 - kb_project_status — check backend+web+neo4j+mineru health
 - kb_project_start — silently start unhealthy services
 - backend_status — check MinerU OCR engine availability
-- kb_catalog — read-only catalog probe for MCP connectivity
 
 ## ⚠️ NEVER 清单
 
