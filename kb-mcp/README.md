@@ -5,13 +5,13 @@
 </h1>
 
 <p align="center">
-  <strong>MCP Server · 72 Tools · KB Lifecycle · Search · Graph · Experience</strong><br/>
+  <strong>MCP Server · 74 Tools · KB Lifecycle · Search · Graph · Experience</strong><br/>
   <em>The MCP tool layer connecting Claude Code agents to the RAG Knowledge Platform</em>
 </p>
 
 <p align="center">
   <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick%20Start-3%20steps-blue?style=for-the-badge" /></a>
-  <a href="#-tools-72"><img src="https://img.shields.io/badge/MCP-72%20tools-blueviolet?style=for-the-badge" /></a>
+  <a href="#-tools-74"><img src="https://img.shields.io/badge/MCP-74%20tools-blueviolet?style=for-the-badge" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" /></a>
   <a href="#-tech-stack"><img src="https://img.shields.io/badge/Python-3.12-blue?style=for-the-badge" /></a>
   <a href="#-tech-stack"><img src="https://img.shields.io/badge/FastMCP-latest-9cf?style=for-the-badge" /></a>
@@ -30,7 +30,7 @@
 - [🌟 Overview](#-overview)
 - [🏗️ Architecture](#️-architecture)
 - [🚀 Quick Start](#-quick-start)
-- [🔌 Tools (72)](#-tools-72)
+- [🔌 Tools (74)](#-tools-74)
 - [📡 Client Library](#-client-library)
 - [⚙️ Configuration](#️-configuration)
 - [📁 Project Structure](#-project-structure)
@@ -40,7 +40,7 @@
 
 ## 🌟 Overview
 
-`kb-mcp` is the MCP (Model Context Protocol) server that bridges Claude Code (or any MCP-compatible agent) to the RAG Knowledge Platform. It provides **72 tools** organized into 11 categories — enough to manage every aspect of a production knowledge base without leaving the agent conversation.
+`kb-mcp` is the MCP (Model Context Protocol) server that bridges Claude Code (or any MCP-compatible agent) to the RAG Knowledge Platform. It provides **74 tools** organized into 11 categories — enough to manage every aspect of a production knowledge base without leaving the agent conversation.
 
 **Key principles:**
 
@@ -60,7 +60,7 @@
                    │ MCP stdio (FastMCP)
 ┌──────────────────▼───────────────────────┐
 │              kb-mcp/server.py             │
-│         72 @mcp.tool() definitions       │
+│         74 @mcp.tool() definitions       │
 │         Zero HTTP code — delegates down   │
 └──────┬──────────────────────┬────────────┘
        │ kb_client (HTTP)     │ direct file I/O
@@ -99,7 +99,7 @@ uv run python server.py --http
 
 > **Normally you don't run kb-mcp manually.** Claude Code auto-launches it via `../.mcp.json` when you open the project. The first `uv run` auto-syncs deps if needed. For global usage, `claude plugin install rag-knowledge` registers it in `~/.claude.json` → `mcpServers`.
 
-## 🔌 Tools (72)
+## 🔌 Tools (74)
 
 All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by domain:
 
@@ -107,105 +107,135 @@ All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by 
 
 | Tool | Description |
 |------|-------------|
-| `kb_project_start(backend, web, neo4j, mode, wait)` | Silently launch services (headless, logged to files, idempotent). `wait=true` blocks until HTTP-healthy. |
-| `kb_project_status()` | Are services running? Ports + HTTP health + PIDs + MinerU + log paths + `ready` boolean. |
-| `kb_project_update(check_only, force, no_deps, restart)` | Safe update: dry-run first, refuse dirty worktree unless force, optional deps + restart. |
-| `backend_status()` | Quick backend health check. |
+| `kb_project_start()` | Silently start project services. HEADLESS on every OS and every mode — |
+| `kb_project_status()` | Full project service status. |
+| `kb_project_update()` | Check GitHub for a newer version of the project and optionally pull it. |
+| `backend_status()` | Get backend service health and MinerU OCR engine status. |
 
-### KB CRUD (6)
+### KB CRUD (5)
 
 | Tool | Description |
 |------|-------------|
-| `kb_list()` | List all knowledge bases with metadata. |
-| `kb_create(name, description, parent_id)` | Create a new KB (optionally as a sub-KB). |
-| `kb_update(kb_id, name, description)` | Update KB metadata. |
-| `kb_delete(kb_id)` | Delete a KB and all its documents. |
-| `kb_list(lightweight=true)` | Agentic-first KB scan — names, descriptions, doc counts (lightweight mode). |
-| `kb_get_documents(kb_id, lightweight=true)` | Per-KB document scan — metadata overview (lightweight mode). |
+| `kb_list()` | List all knowledge bases with id, name, description, and document count. |
+| `kb_create()` | Create a new knowledge base. parent_id is an optional tree folder UUID for nesting (omit for root). Returns knowledgeBase with id (UUID) and path -- both work as kb_id in other tools. |
+| `kb_update()` | Update a knowledge base's name and/or description. kb_id accepts path or UUID. |
+| `kb_delete()` | Delete an entire knowledge base and all its contents (irreversible). kb_id accepts either the path string or the UUID returned by kb_create. |
+| `kb_find_duplicates()` | Find duplicate / near-duplicate documents via content hash + vector similarity. |
 
 ### Document CRUD (9)
 
 | Tool | Description |
 |------|-------------|
-| `kb_doc_create(kb_id, name, content, description)` | Create a new document with content + metadata. |
-| `kb_doc_read(kb_id, doc_path)` | Read full document content (for content verification step). |
-| `kb_doc_update_meta(kb_id, doc_path, name, description)` | Update document metadata. |
-| `kb_doc_update_content(kb_id, doc_path, content)` | Replace document content. |
-| `kb_doc_delete(kb_id, doc_path)` | Delete a single document. |
-| `kb_doc_batch_delete(kb_id, doc_paths)` | Delete multiple documents at once. |
-| `kb_doc_move(doc_path, target_kb_id)` | Move a document to a different KB. |
-| `kb_doc_save_parsed(kb_id, doc_path, ...)` | Save parsed content (post-OCR) — different from `kb_doc_create`. |
-| `kb_get_documents(kb_id)` | List all documents in a KB with full metadata. |
+| `kb_get_documents()` | List all documents inside a knowledge base. kb_id accepts path or UUID. |
+| `kb_doc_create()` | Create a new Markdown document in a KB. Auto-dedup on name collision. |
+| `kb_doc_read()` | Read the content of a document (Markdown body, paginated). |
+| `kb_doc_update_meta()` | Update a document's metadata (name, description). |
+| `kb_doc_update_content()` | Overwrite a document's content. |
+| `kb_doc_delete()` | Delete a single document. |
+| `kb_doc_batch_delete()` | Delete multiple documents at once. |
+| `kb_doc_move()` | Move a document to a different knowledge base. |
+| `kb_doc_save_parsed()` |  |
 
 ### Search (4)
 
 | Tool | Description |
 |------|-------------|
-| `kb_search(query, kb_ids)` | Metadata-only keyword search across KBs. |
-| `kb_search_vector(query, kb_id)` | Semantic vector search (BGE-M3 1024-dim). |
-| `kb_search_two_stage(query, balance_kbs)` | **Primary search tool.** BM25 recall → vector rerank with cross-KB balancing. |
-| `kb_search_stats()` | Search index statistics (document count, chunk count, collection sizes). |
+| `kb_search()` | Search KB metadata by keyword across ALL knowledge bases. Scans only document |
+| `kb_search_vector()` | Vector semantic search for document chunks. |
+| `kb_search_two_stage()` |  |
+| `kb_search_stats()` | Vector index statistics. View each knowledge base's index status in the vector database. |
 
 ### File System (3)
 
 | Tool | Description |
 |------|-------------|
-| `fs_get_tree()` | Full file tree with metadata (folders, files, sizes, dates). |
-| `fs_get_children(node_path)` | Children of a specific folder node. |
-| `fs_upload_file(path, content)` | Upload + register a file in the file system. |
+| `fs_get_tree()` | Get the full file system tree of knowledge bases and their contents. |
+| `fs_get_children()` | Get immediate children (folders + files) of a folder. |
+| `fs_upload_file()` | Upload a local file into the file system tree. file_path is an absolute local disk path. parent_id is a tree folder UUID (empty = root). |
 
 ### Knowledge Graph (11)
 
-| Sub-category | Tools |
-|-------------|-------|
-| **Health & Stats** | `kb_graph_stats()` (incl. `neo4j_available` health probe) |
-| **Search** | `kb_graph_search(keyword, node_type)` — `node_type`: all (default) / document / kb / tag |
-| **Exploration** | `kb_graph_kb_overview(kb_id)`, `kb_graph_cross_kb_documents()` |
-| **Document-centric** | `kb_graph_document(doc_path)`, `kb_graph_document_related(doc_path)`, `kb_graph_document_paths(doc_path)` |
-| **Centrality** | `kb_graph_central_documents(kb_id)` |
-| **Build & Cleanup** | `kb_graph_build(kb_id)` (empty = all KBs), `kb_graph_delete_document(doc_path)`, `kb_graph_delete_kb(kb_id)` |
+| Tool | Description |
+|------|-------------|
+| `kb_graph_build()` | Build the document relationship graph for one KB (kb_id given) or all KBs (kb_id empty). |
+| `kb_graph_central_documents()` | Find the most central documents in a KB (by RELATED_TO degree centrality). |
+| `kb_graph_cross_kb_documents()` | Discover cross-knowledge-base bridge documents - documents connected to >= min_kbs different KBs. |
+| `kb_graph_delete_document()` | Delete a single document's graph data (shared entities preserved, only removes this document's contribution). |
+| `kb_graph_delete_kb()` | Delete an entire KB's graph data (cross-KB shared entities preserved). |
+| `kb_graph_document()` | View a single document's knowledge graph: document info, tags, related documents, cross-KB connections. |
+| `kb_graph_document_paths()` | Find the shortest relationship path between two documents (via RELATED_TO relationship chains). |
+| `kb_graph_document_related()` | Return documents related to a given document (based on same KB / shared tags / description similarity). |
+| `kb_graph_kb_overview()` | KB-level graph overview: document statistics, tag distribution, related KBs, top related documents. |
+| `kb_graph_search()` | Search nodes in the knowledge graph by keyword (name/path/label). |
+| `kb_graph_stats()` | Return knowledge graph statistics and Neo4j availability. |
 
-### Experience (25 — incl. 5 Meditation)
+### Experience (20)
 
-| Sub-category | Tools |
-|-------------|-------|
-| **CRUD** | `experience_create()`, `experience_read(id)`, `experience_list()`, `experience_update()`, `experience_delete()` |
-| **Actions** | `experience_apply(id)`, `experience_review(id, rating, comment)`, `experience_summary(kb_id)` |
-| **Search** | `experience_search_global(query)` (keyword/vector/global), `experience_search_smart(query)` (推荐入口), `experience_rerank(query, exps)` |
-| **Extract & Drafts** | `experience_extract(mode, kb_id)`, `experience_drafts_list()`, `experience_draft_read(id)`, `experience_draft_approve(id)`, `experience_draft_reject(id)` |
-| **Health** | `experience_check_stale(kb_id)` (空 = 全库), `experience_sync_kb(kb_id)`, `experience_dashboard()`, `experience_apply_decay()` |
+| Tool | Description |
+|------|-------------|
+| `experience_apply()` | Mark an experience as applied. Records the user, context, and effect. Each call increments applied_count. |
+| `experience_apply_decay()` | E11: Apply experience decay rules (periodic credibility degradation). |
+| `experience_check_stale()` | E6: Check consistency between experiences and their related documents. |
+| `experience_create()` | Create an experience record. |
+| `experience_dashboard()` | E8: Experience dashboard - KB experience overview aggregate statistics. |
+| `experience_delete()` | Permanently delete an experience. Irreversible. |
+| `experience_draft_approve()` | E3: Approve draft -> formal experience (write index + vector index). |
+| `experience_draft_read()` | E3: Read draft details (including extraction evidence, source document). |
+| `experience_draft_reject()` | E3: Reject draft -> move to rejected/ (retain reject reason for traceability). |
+| `experience_drafts_list()` | E3: List the experience draft pool (pending review candidates). |
+| `experience_extract()` |  |
+| `experience_list()` | List experiences in a knowledge base, supports filtering by scenario/category/tag. Results sorted by rating descending. |
+| `experience_read()` | Read full experience information (metadata + content body). |
+| `experience_rerank()` | Semantic reranking for experience search results -- multi-dimensional scoring. |
+| `experience_review()` | Review an experience with a rating (0-5) and comment. Automatically updates the experience's average rating and review count. |
+| `experience_search_global()` | Cross-KB global experience search -- QDCVR pipeline (isomorphic with document search). |
+| `experience_search_smart()` | Intelligent multi-path experience retrieval -- the RECOMMENDED entry point for experience search. |
+| `experience_summary()` | Get experience statistics summary, including total count, distribution by category, distribution by severity, total applications, average rating, top 5 experiences. |
+| `experience_sync_kb()` | E6: Mark entire KB for sync (stale/orphan experiences marked needs_sync). |
+| `experience_update()` |  |
+
+### Meditation (6) — auto-insight scheduler
+
+| Tool | Description |
+|------|-------------|
+| `experience_meditation_config_get()` | Get meditation config for a KB. |
+| `experience_meditation_config_update()` | Update meditation config for a KB. Only pass fields to change. |
+| `experience_meditation_history()` | List recent meditation runs, optionally filtered by KB. |
+| `experience_meditation_run()` | Manually trigger a meditation run. Optionally scoped to one KB. |
+| `experience_meditation_status()` | Get meditation status: scheduler, harness health, circuit breaker, per-KB configs. |
+| `experience_meditation_task_status()` | Check the status of a non-blocking meditation run. |
 
 ### Tags & Cleanup (4)
 
 | Tool | Description |
 |------|-------------|
-| `kb_tags_list(kb_id)` | List all tags with document counts. |
-| `kb_doc_update_tags(doc_path, tags)` | Set tags on a document. |
-| `kb_doc_get_by_tag(tag)` | Find documents by tag. |
-| `kb_tags_cleanup(dry_run)` | Remove orphan tags (0 document references). |
+| `kb_tags_list()` | List all registered tags in the system. |
+| `kb_doc_update_tags()` | Update a document's tags. kb_id accepts UUID; doc_path accepts full path or bare filename. |
+| `kb_doc_get_by_tag()` | Find documents by tag across all KBs (or one KB if kb_id given). |
+| `kb_tags_cleanup()` | Detect and clean up orphan tags (tags referenced by 0 documents). |
 
 ### Parse (3) — non-blocking
 
 | Tool | Description |
 |------|-------------|
-| `parse_doc(file_path, kb_id)` | Submit a file for async parsing. Returns `task_id` immediately. |
-| `parse_doc_batch(file_paths, kb_id)` | Submit multiple files for parsing. |
-| `parse_task_status(task_id)` | Poll the status of a parse task (pending → running → done/failed). |
+| `parse_doc()` | Parse a document (PDF / Image / Word / Excel) into Markdown. |
+| `parse_doc_batch()` | Batch: parse multiple documents (PDF / Image / Word / Excel) into Markdown. |
+| `parse_task_status()` | Check the status of a non-blocking parse task. |
 
 ### Vector Index (4)
 
 | Tool | Description |
 |------|-------------|
-| `kb_index_document(doc_path, kb_id)` | Index a single document into the vector store. |
-| `kb_batch_index(kb_id)` | Index all unindexed documents in a KB. |
-| `kb_reindex(kb_id, force)` | Rebuild vector index for a KB. Use `force=true` to overwrite existing. |
-| `kb_find_duplicates(kb_id, threshold)` | Detect exact (SHA256) + near (vector similarity) duplicate documents. |
+| `kb_index_document()` | Index a single document (vector + graph). Stores document content (or existing document) into the vector database and records vector_index in metadata. |
+| `kb_batch_index()` | Batch index documents (vector + graph). |
+| `kb_reindex()` | Rebuild vector index and knowledge graph. Empty kb_id rebuilds all. |
+| `kb_task_status()` | Check the status of ANY non-blocking background task (kb_reindex, kb_graph_build). |
 
 ### Cleanup (1)
 
 | Tool | Description |
 |------|-------------|
-| `kb_cleanup_orphan_collections(dry_run)` | Detect and remove orphan ChromaDB collections. |
+| `kb_cleanup_orphan_collections()` | Detect and clean up orphan/duplicate vector collections (vector index residue from deleted/renamed KBs). |
 
 ## 📡 Client Library
 
@@ -263,7 +293,7 @@ The `.mcp.json` at the monorepo root auto-configures kb-mcp for Claude Code:
 
 ```
 kb-mcp/
-├── server.py                # FastMCP server — 72 @mcp.tool() definitions (zero HTTP code)
+├── server.py                # FastMCP server — 74 @mcp.tool() definitions (zero HTTP code)
 ├── project_manager.py       # Service lifecycle + version/update (delegates to ragctl)
 ├── task_registry.py         # In-process async background task manager for parse jobs
 ├── config.py                # Reads URLs from shared config.yml (zero hardcoded paths)

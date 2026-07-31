@@ -240,7 +240,7 @@ curl http://localhost:8765/api/v1/health        # → {"status":"healthy"}
 | Interface | URL | What to do |
 |-----------|:---:|------------|
 | 🌐 **Web UI** | `http://localhost:6789` | Browse KBs, search, view graph |
-| 📚 **API Docs** | `http://localhost:8765/docs` | Explore 69 endpoints via Swagger |
+| 📚 **API Docs** | `http://localhost:8765/docs` | Explore 76 endpoints via Swagger |
 | 🖥️ **CLI** | `ragctl status` | Check service health |
 | 🤖 **Agent** | Claude Code session | Say "list all knowledge bases" |
 

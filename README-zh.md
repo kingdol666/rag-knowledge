@@ -235,7 +235,7 @@ curl http://localhost:8765/api/v1/health        # → {"status":"healthy"}
 | 界面 | 地址 | 用途 |
 |------|:----:|------|
 | 🌐 **Web UI** | `http://localhost:6789` | 浏览 KB、搜索、图谱可视化 |
-| 📚 **API 文档** | `http://localhost:8765/docs` | Swagger UI，69 个端点 |
+| 📚 **API 文档** | `http://localhost:8765/docs` | Swagger UI，76 个端点 |
 | 🖥️ **CLI** | `ragctl status` | 服务健康检查 |
 | 🤖 **Agent** | Claude Code 会话 | 说"列出所有知识库" |
 
