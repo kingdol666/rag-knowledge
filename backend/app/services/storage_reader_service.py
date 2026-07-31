@@ -14,11 +14,14 @@ import yaml
 
 from app.utils.paths import get_storage_root
 from app.utils.atomic_io import atomic_write_text
+from app.utils.file_lock import file_lock, yaml_lock_path
 
 logger = logging.getLogger(__name__)
 
 # Per-YAML-path write lock registry — prevents concurrent read-modify-write
 # races when multiple threads index documents in the same KB.
+# 跨进程互斥改用 file_lock（web 与 backend 两进程共享同一 YAML 文件，
+# 线程锁无法阻止跨进程读改写竞争 —— 并发 create + 自动索引写回曾丢失文档条目）。
 _yaml_locks_guard = threading.Lock()
 _yaml_locks: dict[str, threading.Lock] = {}
 
@@ -31,6 +34,12 @@ def _yaml_lock(kb_path: str) -> threading.Lock:
             lk = threading.Lock()
             _yaml_locks[kb_path] = lk
         return lk
+
+
+def _yaml_file_lock(kb_path: str):
+    """跨进程文件锁：与 web 端 withFileLock 同协议，锁住整个 read-modify-write。"""
+    yml_path = Path(get_storage_root()) / kb_path / ".knowledge-base.yml"
+    return file_lock(yaml_lock_path(yml_path))
 
 
 class StorageReaderService:
@@ -153,6 +162,48 @@ class StorageReaderService:
                 result.append(skb["kb_id"])
         return result
 
+    def resolve_kb_path_for_doc(self, doc_path: str, kb_id: str = "") -> str:
+        """从文档路径解析其所属 KB 的 path（最长前缀匹配），兜底用 kb_id 匹配。
+
+        子库文档的 YAML 写回必须落在子库自身的 .knowledge-base.yml；
+        若调用方传入的是父库/根库的 kb_id，写回会因"文档不在该 YAML 中"
+        而静默失败（auto-index 空操作缺陷的根因之一）。
+        """
+        norm_doc = (doc_path or "").replace("\\", "/").strip("/")
+        if norm_doc:
+            tree = self.read_tree_fs()
+            best = ""
+            for f in tree.get("folders", []):
+                if not f.get("isKnowledgeBase"):
+                    continue
+                fp = (f.get("path") or "").replace("\\", "/").strip("/")
+                if not fp:
+                    continue
+                if norm_doc == fp or norm_doc.startswith(fp + "/"):
+                    if len(fp) > len(best):
+                        best = fp
+            if best:
+                return best
+        if kb_id:
+            for kb in self.list_knowledge_bases():
+                if kb["kb_id"] == kb_id or kb["path"] == kb_id:
+                    return kb["path"]
+        return ""
+
+    def resolve_kb_uuid_for_path(self, kb_path: str) -> str:
+        """KB path（含子库路径）→ KB UUID。解析失败返回空串。"""
+        if not kb_path:
+            return ""
+        norm_target = kb_path.replace("\\", "/").strip("/").lower()
+        tree = self.read_tree_fs()
+        for f in tree.get("folders", []):
+            if not f.get("isKnowledgeBase"):
+                continue
+            fp = (f.get("path") or "").replace("\\", "/").strip("/").lower()
+            if fp == norm_target and f.get("id"):
+                return f["id"]
+        return ""
+
     def list_documents(self, kb_path: str) -> list[dict[str, Any]]:
         yml_path = self.root / kb_path / ".knowledge-base.yml"
         if not yml_path.exists():
@@ -208,7 +259,7 @@ class StorageReaderService:
         if not yml_path.exists():
             logger.warning("YAML not found: %s", yml_path)
             return False
-        with _yaml_lock(kb_path):
+        with _yaml_file_lock(kb_path):
             try:
                 data = yaml.safe_load(yml_path.read_text(encoding="utf-8"))
                 if not data or "documents" not in data:
@@ -245,7 +296,7 @@ class StorageReaderService:
         if not yml_path.exists():
             logger.warning("YAML not found: %s", yml_path)
             return False
-        with _yaml_lock(kb_path):
+        with _yaml_file_lock(kb_path):
             try:
                 data = yaml.safe_load(yml_path.read_text(encoding="utf-8"))
                 if not data or "documents" not in data:

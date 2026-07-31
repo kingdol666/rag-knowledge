@@ -535,7 +535,7 @@ export class TreeFileSystemService {
    * Synchronize the KB YAML index update.
    * First match by path, then traverse parentId chain upward for sub-KBs.
    */
-  private async updateYamlForFile(file: FileNode, preservedTags?: string[]): Promise<void> {
+  private async updateYamlForFile(file: FileNode, preservedTags?: string[], preservedIndex?: { vector_index?: Record<string, any>; graph_index?: Record<string, any> }): Promise<void> {
     try {
       // First match by path
       let knowledgeBaseId = this.getKnowledgeBaseId(file.path)
@@ -560,6 +560,10 @@ export class TreeFileSystemService {
         fileSize: file.fileSize,
         metadata: file.metadata,
         tags: preservedTags,
+        // delete-then-add 重建条目时保留索引状态（vector_index/graph_index 由 backend 写回，
+        // 丢了会让文档看似未索引，直到下次索引写回才恢复）
+        vector_index: preservedIndex?.vector_index,
+        graph_index: preservedIndex?.graph_index,
       })
     } catch (error) {
       console.error('Failed to update knowledge base YAML:', error)
@@ -578,6 +582,28 @@ export class TreeFileSystemService {
       const norm = (p: string) => p.replace(/\\/g, '/')
       const existing = data.documents.find(d => norm(d.path || '') === norm(filePath))
       return existing?.tags
+    } catch {
+      return undefined
+    }
+  }
+
+  /**
+   * Read vector_index/graph_index recorded in KB YAML for a file.
+   * Mirrors readYamlDocTags — used by delete-then-add rebuilds so index state survives.
+   */
+  private async readYamlDocIndexes(filePath: string): Promise<{ vector_index?: Record<string, any>; graph_index?: Record<string, any> } | undefined> {
+    try {
+      const knowledgeBaseId = this.getKnowledgeBaseId(filePath)
+      if (!knowledgeBaseId) return undefined
+      const data = await this.yamlService.read(knowledgeBaseId)
+      if (!data?.documents) return undefined
+      const norm = (p: string) => p.replace(/\\/g, '/')
+      const existing = data.documents.find(d => norm(d.path || '') === norm(filePath))
+      if (!existing) return undefined
+      return {
+        vector_index: existing.vector_index,
+        graph_index: existing.graph_index,
+      }
     } catch {
       return undefined
     }
@@ -815,14 +841,25 @@ export class TreeFileSystemService {
       updatedAt: now
     }
 
-    // Capture existing tags first -- removeFileFromYaml deletes the entire entry, and subsequent addDocument without existingIndex would lose tags
+    // Capture existing tags + index state first -- removeFileFromYaml deletes the entire entry, and subsequent addDocument without existingIndex would lose them
     const preservedTags = await this.readYamlDocTags(file.path)
+    const preservedIndex = await this.readYamlDocIndexes(file.path)
     // Remove old entry from KB YAML, then add the updated one (path may have changed).
     await this.removeFileFromYaml(file)
-    await this.updateYamlForFile(updatedFile, preservedTags)
+    await this.updateYamlForFile(updatedFile, preservedTags, preservedIndex)
 
     this.metadata.files[fileIndex] = updatedFile
     await this.saveMetadata()
+
+    // Rename (path change) must sync indexes the same way a move does:
+    // delete old-path vector chunks + graph node, index the new path.
+    // Without this, renamed docs left stale chunks under the old path and
+    // search kept returning old-name/old-content hits (silent staleness).
+    if (newPath !== file.path) {
+      this.triggerReindexAfterMove(file, updatedFile).catch((e) => {
+        console.warn(`[updateFile] rename index sync failed (non-fatal):`, e)
+      })
+    }
 
     return updatedFile
   }
@@ -1121,11 +1158,12 @@ export class TreeFileSystemService {
       fileSize: stats.size,
       updatedAt: now,
     }
-    // Capture existing tags first (same as updateFile, avoid tag loss in delete-then-add flow)
+    // Capture existing tags + index state first (same as updateFile, avoid tag loss in delete-then-add flow)
     const preservedTags = await this.readYamlDocTags(file.path)
+    const preservedIndex = await this.readYamlDocIndexes(file.path)
     // Sync KB YAML index so document listings reflect the new size
     await this.removeFileFromYaml(file)
-    await this.updateYamlForFile(updatedFile, preservedTags)
+    await this.updateYamlForFile(updatedFile, preservedTags, preservedIndex)
     this.metadata.files[fileIndex] = updatedFile
     await this.saveMetadata()
     return updatedFile
@@ -1230,8 +1268,9 @@ export class TreeFileSystemService {
     }
 
     const preservedTags = await this.readYamlDocTags(file.path)
+    const preservedIndex = await this.readYamlDocIndexes(file.path)
     await this.removeFileFromYaml(file)
-    await this.updateYamlForFile(movedFile, preservedTags)
+    await this.updateYamlForFile(movedFile, preservedTags, preservedIndex)
     await this.saveMetadata()
 
     // Fire-and-forget: clean old indexes (vector + graph) and index new path.
@@ -1286,6 +1325,9 @@ export class TreeFileSystemService {
       }
 
       // 3. Index new path (vector + graph + metadata write-back to target YAML)
+      // skip_graph=false：move 已删除旧路径的图谱节点，新路径必须立即重建图谱，
+      // 否则图谱数据静默丢失（节点消失/标签边丢失）。
+      // 标签由后端从目标 YAML 元数据回退读取，保证 HAS_TAG/RELATED 边恢复。
       if (targetKbId) {
         try {
           const resp = await fetch(`${backendUrl}/api/v1/search/index-document`, {
@@ -1296,6 +1338,7 @@ export class TreeFileSystemService {
               doc_path: newDocPath,
               doc_name: movedFile.name,
               description: movedFile.description || '',
+              skip_graph: false,
             }),
           })
           if (resp.ok) {

@@ -26,6 +26,8 @@ export interface KnowledgeBaseDocument {
   tags?: string[]
   /** Vector Index Metadata (written by backend) */
   vector_index?: Record<string, any>
+  /** Graph Index Metadata (written by backend) */
+  graph_index?: Record<string, any>
 }
 
 export interface KnowledgeBaseInfo {

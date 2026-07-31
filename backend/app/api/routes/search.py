@@ -209,13 +209,34 @@ async def index_document(req: IndexDocumentRequest) -> dict[str, Any]:
         if not content:
             raise HTTPException(404, f"Document content not found: {resolved_doc_path}")
 
+    # 解析 kb_path 用于 YAML 写回与标签回退：按文档实际位置解析，
+    # 子库文档必须写回子库自身的 .knowledge-base.yml（否则写回静默失败）。
+    kb_path = storage_reader.resolve_kb_path_for_doc(resolved_doc_path, req.kb_id)
+    # 向量 collection 同样按文档实际归属解析（UUID 形式）：
+    # 调用方传父库/路径名 kb_id 时，若直接用原值，chunk 会写进父库 collection，
+    # 与子库旧 chunk 分裂成两份（R3 回归发现的向量分裂缺陷）。
+    owner_kb_id = (
+        storage_reader.resolve_kb_uuid_for_path(kb_path) or req.kb_id
+        if kb_path else req.kb_id
+    )
+
+    # 标签回退：调用方未传 tags（move/auto-index/batch 路径）时，
+    # 从 YAML 元数据读取文档标签，保证图谱 HAS_TAG 边不丢失。
+    if not req.tags and kb_path:
+        meta = storage_reader.get_document_metadata(kb_path, resolved_doc_path)
+        if meta and meta.get("tags"):
+            req.tags = [
+                t.get("name", str(t)) if isinstance(t, dict) else str(t)
+                for t in meta["tags"]
+            ]
+
     vector_index = {}
     vs = _get_vs()
     if vs:
         try:
             vector_index = await asyncio.to_thread(
                 vs.index_document,
-                kb_id=req.kb_id, doc_path=resolved_doc_path, content=content,
+                kb_id=owner_kb_id, doc_path=resolved_doc_path, content=content,
                 metadata={"description": req.description, "name": req.doc_name},
             )
         except Exception as e:
@@ -239,13 +260,14 @@ async def index_document(req: IndexDocumentRequest) -> dict[str, Any]:
             except Exception as e:
                 logger.warning("Graph indexing failed: %s", e)
 
-    # 解析 kb_path 用于 YAML 写回
-    kbs = storage_reader.list_knowledge_bases()
-    kb_path = next(
-        (kb["path"] for kb in kbs
-         if kb["kb_id"] == req.kb_id or kb["path"] == req.kb_id),
-        ""
-    )
+    # 解析 kb_path 用于 YAML 写回（复用上方按文档位置解析的结果）
+    if not kb_path:
+        kbs = storage_reader.list_knowledge_bases()
+        kb_path = next(
+            (kb["path"] for kb in kbs
+             if kb["kb_id"] == req.kb_id or kb["path"] == req.kb_id),
+            ""
+        )
 
     if vector_index and kb_path:
         storage_reader.update_document_vector_index(
@@ -310,10 +332,13 @@ async def batch_index_documents(req: BatchIndexDocumentRequest) -> dict[str, Any
         if kb_path and "/" not in doc_path.replace("\\", "/"):
             resolved = f"{kb_path}/{doc_path.lstrip('/').lstrip('\\')}"
 
+        # 按文档实际位置解析其 YAML 归属（子库文档写子库 YAML，避免写回空操作）
+        doc_kb_path = storage_reader.resolve_kb_path_for_doc(resolved, req.kb_id) or kb_path
+
         if not req.force:
             # 检查是否已有向量索引
-            if kb_path:
-                doc_meta = storage_reader.get_document_metadata(kb_path, resolved)
+            if doc_kb_path:
+                doc_meta = storage_reader.get_document_metadata(doc_kb_path, resolved)
                 if doc_meta and doc_meta.get("vector_index"):
                     skipped.append({"doc_path": doc_path, "reason": "already indexed"})
                     continue
@@ -326,23 +351,29 @@ async def batch_index_documents(req: BatchIndexDocumentRequest) -> dict[str, Any
         try:
             vi = {}
             if vs:
+                # 向量 collection 按文档实际归属解析（子库文档写子库 collection，
+                # 避免与调用方 kb_id 不一致时分裂成两份 chunk）
+                owner_kb_id = (
+                    storage_reader.resolve_kb_uuid_for_path(doc_kb_path) or req.kb_id
+                    if doc_kb_path else req.kb_id
+                )
                 vi = await asyncio.to_thread(
                     vs.index_document,
-                    kb_id=req.kb_id, doc_path=resolved, content=content,
+                    kb_id=owner_kb_id, doc_path=resolved, content=content,
                 )
             # 批量索引仅建向量（skip_graph=True 逻辑）
             # 图谱在整理阶段由 graph_build_kb 按 KB 统一构建，
             # 比逐文档构建更高效且能建立 KB 内文档间关联
             gi = {}
-            if vi and kb_path:
+            if vi and doc_kb_path:
                 storage_reader.update_document_vector_index(
-                    kb_path=kb_path, doc_path=resolved, vector_index=vi,
+                    kb_path=doc_kb_path, doc_path=resolved, vector_index=vi,
                 )
             # Phase 1: graph_index 写回 YAML
-            if gi and kb_path:
+            if gi and doc_kb_path:
                 try:
                     storage_reader.update_document_graph_index(
-                        kb_path=kb_path, doc_path=resolved, graph_index=gi,
+                        kb_path=doc_kb_path, doc_path=resolved, graph_index=gi,
                     )
                 except Exception as e:
                     logger.warning("graph_index writeback failed for %s: %s", doc_path, e)

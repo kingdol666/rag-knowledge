@@ -1548,6 +1548,11 @@ class ExperienceService:
                                    "updated_at": exp_updated, "related_docs": related})
             else:
                 exp.pop("stale_status", None)
+                # E6 闭环：经验已修复（文档不再新于经验）时清除 needs_sync，
+                # 否则看板永远显示待同步（修复前标记一旦设置永不清理）。
+                if exp.get("needs_sync"):
+                    exp["needs_sync"] = False
+                    exp.pop("sync_requested_at", None)
                 ok_count += 1
         self._write_index(kb_path, index)
         return {"success": True, "kb_id": kb_id,

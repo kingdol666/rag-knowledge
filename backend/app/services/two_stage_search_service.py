@@ -129,7 +129,8 @@ class TwoStageSearchService:
                 query=query, doc_paths=candidate_paths,
                 top_k_per_doc=stage2_top_k, kb_id=kb_id,
             )
-        else:
+        elif candidate_paths:
+            # 候选不足（1~2 个）时拓宽到全局向量检索
             chunks = vector_service.search(query=query, kb_id=kb_id,
                                            top_k=stage2_top_k * 3,
                                            score_threshold=score_threshold,
@@ -137,6 +138,12 @@ class TwoStageSearchService:
             chunks_map = {}
             for c in chunks:
                 chunks_map.setdefault(c["doc_path"], []).append(c)
+        else:
+            # Stage1 零候选（查询与语料无词法重叠，如乱码/无效查询）：
+            # 不做全局向量回退 —— 纯向量相似度会返回低分噪声块（0.3~0.5），
+            # 误导调用方产生幻觉结果。返回空结果由上层（QDCVR 内容裁决）处理盲区。
+            logger.info("two_stage: stage1 empty for query %r — skip global vector fallback", query)
+            chunks_map = {}
 
         # Fallback: 向量服务不可用时，直接用 BM25（Stage 1）结果，并从磁盘补正文（不再返回空 content）
         if not any(chunks_map.values()):

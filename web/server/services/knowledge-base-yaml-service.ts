@@ -15,12 +15,24 @@ import type {
 import { KNOWLEDGE_BASE_YAML_FILENAME } from '~/types/knowledge-base-yaml'
 import { writeTextAtomic } from '~/server/utils/atomic-write'
 import { withKbLock } from '~/server/utils/kb-mutex'
+import { withFileLock, yamlLockPath } from '~/server/utils/file-lock'
 
 export class KnowledgeBaseYamlService {
   private baseDir: string
 
   constructor(baseDir: string) {
     this.baseDir = baseDir
+  }
+
+  /**
+   * 序列化 YAML 读改写：进程内 withKbLock + 跨进程 withFileLock。
+   * web 与 backend 两进程都会写 .knowledge-base.yml（backend 写回 vector_index/graph_index），
+   * 仅进程内锁无法阻止跨进程 RMW 竞争（并发 create + 自动索引写回曾丢失文档条目）。
+   * 锁协议与 backend/app/utils/file_lock.py 一致（O_EXCL + 时间戳 + 过期抢占）。
+   */
+  private withYamlWrite<T>(knowledgeBaseId: string, fn: () => Promise<T>): Promise<T> {
+    const lockPath = yamlLockPath(this.getYamlPath(knowledgeBaseId))
+    return withKbLock(knowledgeBaseId, () => withFileLock(lockPath, fn))
   }
 
   /**
@@ -143,7 +155,7 @@ export class KnowledgeBaseYamlService {
     knowledgeBaseId: string,
     updates: Partial<Pick<KnowledgeBaseInfo, 'name' | 'description'>>
   ): Promise<KnowledgeBaseYaml | null> {
-    return withKbLock(knowledgeBaseId, async () => {
+    return this.withYamlWrite(knowledgeBaseId, async () => {
     const data = await this.read(knowledgeBaseId)
     if (!data) return null
 
@@ -178,7 +190,7 @@ export class KnowledgeBaseYamlService {
       tags?: string[]
     }
   ): Promise<KnowledgeBaseYaml | null> {
-    return withKbLock(knowledgeBaseId, async () => {
+    return this.withYamlWrite(knowledgeBaseId, async () => {
     let data = await this.read(knowledgeBaseId)
     if (!data) {
       // If YAML doesn't exist, create it first (create does not hold lock, avoids deadlock on non-reentrant lock)
@@ -206,7 +218,11 @@ export class KnowledgeBaseYamlService {
       // Preserve existing tags: when updateFile / updateFileContent uses "delete-then-add" to rebuild entries,
       // tags would be silently cleared unless explicitly retained (fixes data bug of tag loss after update).
       // Prefer the caller-provided fileInfo.tags; otherwise fall back to the existing entry's tags.
-      tags: fileInfo.tags ?? (existingIndex >= 0 ? data.documents[existingIndex].tags : undefined)
+      tags: fileInfo.tags ?? (existingIndex >= 0 ? data.documents[existingIndex].tags : undefined),
+      // Preserve index metadata the same way: content updates / renames rebuild the entry,
+      // and losing vector_index makes the doc look unindexed until the next writeback.
+      vector_index: (fileInfo as any).vector_index ?? (existingIndex >= 0 ? data.documents[existingIndex].vector_index : undefined),
+      graph_index: (fileInfo as any).graph_index ?? (existingIndex >= 0 ? (data.documents[existingIndex] as any).graph_index : undefined),
     }
 
     if (existingIndex >= 0) {
@@ -242,7 +258,7 @@ export class KnowledgeBaseYamlService {
       tags?: string[]
     }>
   ): Promise<KnowledgeBaseYaml | null> {
-    return withKbLock(knowledgeBaseId, async () => {
+    return this.withYamlWrite(knowledgeBaseId, async () => {
     let data = await this.read(knowledgeBaseId)
     if (!data) {
       data = await this.create(knowledgeBaseId, knowledgeBaseId)
@@ -266,7 +282,10 @@ export class KnowledgeBaseYamlService {
         added_at: existingIndex >= 0 ? data.documents[existingIndex].added_at : now,
         updated_at: now,
         metadata: fileInfo.metadata,
-        tags: fileInfo.tags ?? (existingIndex >= 0 ? data.documents[existingIndex].tags : undefined)
+        tags: fileInfo.tags ?? (existingIndex >= 0 ? data.documents[existingIndex].tags : undefined),
+        // Preserve index metadata (同 addDocument)：delete-then-add 重建条目时不丢索引状态
+        vector_index: (fileInfo as any).vector_index ?? (existingIndex >= 0 ? data.documents[existingIndex].vector_index : undefined),
+        graph_index: (fileInfo as any).graph_index ?? (existingIndex >= 0 ? (data.documents[existingIndex] as any).graph_index : undefined),
       }
 
       if (existingIndex >= 0) {
@@ -293,7 +312,7 @@ export class KnowledgeBaseYamlService {
     knowledgeBaseId: string,
     filePath: string
   ): Promise<KnowledgeBaseYaml | null> {
-    return withKbLock(knowledgeBaseId, async () => {
+    return this.withYamlWrite(knowledgeBaseId, async () => {
     const data = await this.read(knowledgeBaseId)
     if (!data) return null
 
@@ -319,7 +338,7 @@ export class KnowledgeBaseYamlService {
     knowledgeBaseId: string,
     filePaths: string[]
   ): Promise<KnowledgeBaseYaml | null> {
-    return withKbLock(knowledgeBaseId, async () => {
+    return this.withYamlWrite(knowledgeBaseId, async () => {
     const data = await this.read(knowledgeBaseId)
     if (!data) return null
 
@@ -383,7 +402,7 @@ export class KnowledgeBaseYamlService {
     docPath: string,
     tags: string[]
   ): Promise<KnowledgeBaseYaml | null> {
-    return withKbLock(knowledgeBaseId, async () => {
+    return this.withYamlWrite(knowledgeBaseId, async () => {
     const data = await this.read(knowledgeBaseId)
     if (!data) return null
     const normPath = docPath.replace(/\\/g, "/")

@@ -134,6 +134,18 @@ class MineruParseService:
             result_payload, stem
         )
 
+        # 4b. 空内容拒绝：空白页/纯色图解析出空 markdown 时不得报 success，
+        # 否则调用方会带着空文档继续入库（A2-Q 质量门控空转）。
+        if not (markdown_text or "").strip():
+            logger.warning("Empty parse result for %s (no text content)", filename)
+            return MineruParseResult(
+                success=False,
+                output_dir=str(output_path),
+                source_filename=filename,
+                error="Empty parse result: no text content extracted",
+                metadata={"task_id": task_id, "submission": submission},
+            )
+
         # 5. Persist markdown under output_dir ──────────────────────────
         md_path: Optional[Path] = None
         if markdown_text:
@@ -228,6 +240,17 @@ class MineruParseService:
 
         # 4. Extract markdown content ───────────────────────────────────
         markdown_text = self._extract_markdown(raw)
+
+        # 4b. 空内容拒绝：空白页/纯色图解析出空 markdown 时不得报 success。
+        if not (markdown_text or "").strip():
+            logger.warning("Empty parse result for %s (no text content)", filename)
+            return MineruParseResult(
+                success=False,
+                output_dir=str(output_path),
+                source_filename=filename,
+                error="Empty parse result: no text content extracted",
+                metadata={"raw_response": raw},
+            )
 
         md_path: Optional[Path] = None
         if markdown_text:

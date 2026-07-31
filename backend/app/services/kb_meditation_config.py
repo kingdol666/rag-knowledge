@@ -110,6 +110,15 @@ def update_meditation_config(kb_id: str, updates: dict) -> dict:
 
     yaml_path = _get_kb_yaml_path(kb_path)
 
+    # 跨进程文件锁：与 web 端 YAML 写路径同协议，避免 RMW 竞争丢字段
+    from app.utils.file_lock import file_lock, yaml_lock_path
+
+    with file_lock(yaml_lock_path(yaml_path)):
+        return _update_meditation_config_locked(kb_path, yaml_path, updates)
+
+
+def _update_meditation_config_locked(kb_path: str, yaml_path: Path, updates: dict) -> dict:
+    """持有文件锁时的实际更新逻辑（读改写全程在锁内）。"""
     # Read existing YAML
     if yaml_path.exists():
         try:
