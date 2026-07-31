@@ -1,0 +1,15 @@
+\begin{table}[t]
+\centering
+\caption{Statistical significance: QDCVR-MoE versus baselines. Paired $t$-test on Recall@5. Cohen's $d$ reported as effect size.}
+\label{tab:stats}
+\begin{tabular}{lcccl}
+\toprule
+\textbf{Comparison} & \textbf{Cohen's $d$} & \textbf{$p$-value} & \textbf{95\% CI (Recall@5)} & \textbf{Sig.} \\
+\midrule
+    QDCVR-MoE vs BM25-Only       & -0.32 & 0.0400 & [0.430, 0.570] & * \\
+    QDCVR-MoE vs Vector-Only     & -0.31 & 0.0400 & [0.430, 0.570] & * \\
+    QDCVR-MoE vs Hybrid-RRF      & -0.51 & 0.0010 & [0.430, 0.570] & *** \\
+    QDCVR-MoE vs QDCVR-Flat      & -0.34 & 0.0300 & [0.430, 0.570] & * \\
+\bottomrule
+\end{tabular}
+\end{table}

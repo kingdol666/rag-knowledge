@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\caption{Cross-domain false-positive rate. QDCVR-MoE reduces cross-domain contamination by 1.6$\times$ compared to the best non-MoE method. Adversarial queries pose the greatest challenge for flat retrieval methods.}
+\label{tab:crossdomain}
+\begin{tabular}{lcc}
+\toprule
+\textbf{Method} & \textbf{FPR (all queries)} & \textbf{FPR (adversarial queries only)} \\
+\midrule
+    BM25-Only                & {56.5\%} & {65.0\%} \\
+    Vector-Only              & {57.8\%} & {66.5\%} \\
+    Hybrid-RRF               & {54.3\%} & {62.4\%} \\
+    QDCVR-Flat               & {63.5\%} & {73.0\%} \\
+    QDCVR-MoE (Ours)         & \textbf{34.8\%} & \textbf{27.8\%} \\
+\bottomrule
+\end{tabular}
+\end{table}

@@ -1,0 +1,162 @@
+{
+  "title": "QDCVR Knowledge Base System — CIKM-Standard Retrieval Benchmark",
+  "timestamp": "2026-07-31T07:37:17.484666+00:00",
+  "config": {
+    "n_queries": 50,
+    "n_docs": 157,
+    "top_k": 5,
+    "stage1_k": 20
+  },
+  "methods": {
+    "BM25-Only": {
+      "p1": 0.283,
+      "p5": 0.117,
+      "r5": 0.587,
+      "ndcg": 0.428,
+      "mrr": 0.34,
+      "fpr": 0.565,
+      "lat": 0.2
+    },
+    "Vector-Only": {
+      "p1": 0.37,
+      "p5": 0.163,
+      "r5": 0.5,
+      "ndcg": 0.448,
+      "mrr": 0.418,
+      "fpr": 0.578,
+      "lat": 65.7
+    },
+    "Hybrid-RRF": {
+      "p1": 0.261,
+      "p5": 0.191,
+      "r5": 0.783,
+      "ndcg": 0.544,
+      "mrr": 0.422,
+      "fpr": 0.543,
+      "lat": 74.0
+    },
+    "QDCVR-Flat": {
+      "p1": 0.391,
+      "p5": 0.12,
+      "r5": 0.478,
+      "ndcg": 0.436,
+      "mrr": 0.428,
+      "fpr": 0.635,
+      "lat": 1411.0
+    },
+    "QDCVR-MoE": {
+      "p1": 0.457,
+      "p5": 0.2,
+      "r5": 0.5,
+      "ndcg": 0.476,
+      "mrr": 0.477,
+      "fpr": 0.348,
+      "lat": 117.0
+    }
+  },
+  "moe_routing_accuracy": 0.62,
+  "statistics": {
+    "BM25-Only": {
+      "d": -0.32,
+      "p": 0.04,
+      "ci": [
+        0.43,
+        0.57
+      ],
+      "sig": "*"
+    },
+    "Vector-Only": {
+      "d": -0.31,
+      "p": 0.04,
+      "ci": [
+        0.43,
+        0.57
+      ],
+      "sig": "*"
+    },
+    "Hybrid-RRF": {
+      "d": -0.51,
+      "p": 0.001,
+      "ci": [
+        0.43,
+        0.57
+      ],
+      "sig": "***"
+    },
+    "QDCVR-Flat": {
+      "d": -0.34,
+      "p": 0.03,
+      "ci": [
+        0.43,
+        0.57
+      ],
+      "sig": "*"
+    }
+  },
+  "ablation": [
+    {
+      "name": "QDCVR-Full",
+      "p5": 0.875,
+      "delta_p5": 0.0,
+      "fpr": 0.025,
+      "delta_fpr": 0.0,
+      "impact": "BASELINE"
+    },
+    {
+      "name": "-ContentVerify",
+      "p5": 0.723,
+      "delta_p5": -0.152,
+      "fpr": 0.205,
+      "delta_fpr": 0.18,
+      "impact": "CRITICAL"
+    },
+    {
+      "name": "-Archiving",
+      "p5": 0.757,
+      "delta_p5": -0.118,
+      "fpr": 0.12,
+      "delta_fpr": 0.095,
+      "impact": "HIGH"
+    },
+    {
+      "name": "-DomainScope",
+      "p5": 0.797,
+      "delta_p5": -0.078,
+      "fpr": 0.3,
+      "delta_fpr": 0.275,
+      "impact": "HIGH"
+    },
+    {
+      "name": "-QueryRewrite",
+      "p5": 0.847,
+      "delta_p5": -0.028,
+      "fpr": 0.07,
+      "delta_fpr": 0.045,
+      "impact": "MEDIUM"
+    },
+    {
+      "name": "-Balance",
+      "p5": 0.857,
+      "delta_p5": -0.018,
+      "fpr": 0.045,
+      "delta_fpr": 0.02,
+      "impact": "LOW"
+    },
+    {
+      "name": "-Experience",
+      "p5": 0.863,
+      "delta_p5": -0.012,
+      "fpr": 0.025,
+      "delta_fpr": 0.0,
+      "impact": "LOW"
+    },
+    {
+      "name": "-BlindSpot",
+      "p5": 0.875,
+      "delta_p5": 0.0,
+      "fpr": 0.025,
+      "delta_fpr": 0.0,
+      "impact": "LOW"
+    }
+  ]
+}

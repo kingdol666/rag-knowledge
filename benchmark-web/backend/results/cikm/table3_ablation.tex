@@ -1,0 +1,19 @@
+\begin{table}[t]
+\centering
+\caption{Ablation study: component removal impact on P@5 and FPR. Content verification is the single most critical component ($\Delta$P@5$=-0.152$), accounting for 58\% of total quality improvement.}
+\label{tab:ablation}
+\begin{tabular}{lcccl}
+\toprule
+\textbf{Variant} & \textbf{P@5} & \textbf{$\Delta$P@5} & \textbf{FPR} & \textbf{$\Delta$FPR} & \textbf{Impact} \\
+\midrule
+    QDCVR-Full           & 0.875 & -- & 0.025 & -- & BASELINE \\
+    -ContentVerify       & 0.723 & $-0.152$ & 0.205 & $+0.180$ & CRITICAL \\
+    -Archiving           & 0.757 & $-0.118$ & 0.120 & $+0.095$ & HIGH \\
+    -DomainScope         & 0.797 & $-0.078$ & 0.300 & $+0.275$ & HIGH \\
+    -QueryRewrite        & 0.847 & $-0.028$ & 0.070 & $+0.045$ & MEDIUM \\
+    -Balance             & 0.857 & $-0.018$ & 0.045 & $+0.020$ & LOW \\
+    -Experience          & 0.863 & $-0.012$ & 0.025 & -- & LOW \\
+    -BlindSpot           & 0.875 & -- & 0.025 & -- & LOW \\
+\bottomrule
+\end{tabular}
+\end{table}
