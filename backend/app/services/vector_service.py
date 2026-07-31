@@ -640,10 +640,29 @@ class VectorService:
             logger.info("Deleted vector chunks for %s in KB %s", doc_path, kb_id)
 
     def delete_kb(self, kb_id: str) -> None:
-        try:
-            self.client.delete_collection(self._collection_name(kb_id))
-        except Exception:
-            pass
+        """Delete a KB's vector collection(s), silently handling misses.
+
+        Deletes BOTH the canonical (UUID) and raw path/name forms:
+        ``_canonical_kb_id`` may hold a stale path→UUID cache entry from
+        before the KB was deleted, so a cached UUID delete alone would leave
+        the path-named ghost collection behind (observed: kb_E2E-Integration-Test
+        survived 2 cleanup runs).
+        """
+        names = {self._collection_name(kb_id)}
+        # Raw form (path/name) — the one a stale cache entry would skip
+        raw = f"{config.vector_collection_prefix}{kb_id}"
+        names.add(raw)
+        # Cache-inverse: if kb_id itself is a UUID with a cached path form,
+        # also drop the path-named collection so both conventions die together.
+        cache = getattr(self, "_kb_id_cache", None) or {}
+        for cached_kb, cached_uuid in cache.items():
+            if cached_uuid == kb_id and cached_kb != kb_id:
+                names.add(f"{config.vector_collection_prefix}{cached_kb}")
+        for name in names:
+            try:
+                self.client.delete_collection(name)
+            except Exception:
+                pass
 
     # ── 内部工具 ──────────────────────────────────────────────────
 

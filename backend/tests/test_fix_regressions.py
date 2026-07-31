@@ -397,6 +397,50 @@ class TestVectorOwnerResolution:
 
 
 # ──────────────────────────────────────────────────────────────────────────
+# F8 — delete_kb must drop BOTH UUID and path-named collections
+# ──────────────────────────────────────────────────────────────────────────
+
+class TestDeleteKbCleansBothForms:
+    def test_stale_path_cache_does_not_leave_ghost_collection(self, monkeypatch):
+        """Bug: _canonical_kb_id caches path→UUID; after the KB is deleted the
+        cache still resolves the path to the (now gone) UUID collection, so
+        delete_kb('path') kept deleting the UUID collection and left the
+        path-named ghost (kb_E2E-Integration-Test) behind forever.
+        """
+        from unittest.mock import MagicMock
+        from app.services import vector_service as vs_mod
+
+        vs = vs_mod.VectorService()
+        # stale cache: path resolved before the KB was deleted
+        vs._kb_id_cache = {"E2E-Integration-Test": "1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c"}
+        deleted = []
+        fake_client = MagicMock()
+        fake_client.delete_collection.side_effect = lambda name: deleted.append(name)
+        vs._client = fake_client
+
+        vs.delete_kb("E2E-Integration-Test")
+
+        assert "kb_E2E-Integration-Test" in deleted, deleted
+        assert any("1eb3a7d9" in n for n in deleted), deleted
+
+    def test_uuid_form_also_drops_cached_path_collection(self, monkeypatch):
+        from unittest.mock import MagicMock
+        from app.services import vector_service as vs_mod
+
+        vs = vs_mod.VectorService()
+        vs._kb_id_cache = {"Old-Name": "abc-1234"}
+        deleted = []
+        fake_client = MagicMock()
+        fake_client.delete_collection.side_effect = lambda name: deleted.append(name)
+        vs._client = fake_client
+
+        vs.delete_kb("abc-1234")
+
+        assert "kb_Old-Name" in deleted, deleted
+        assert "kb_abc-1234" in deleted, deleted
+
+
+# ──────────────────────────────────────────────────────────────────────────
 # F6 — check_stale clears needs_sync when fresh
 # ──────────────────────────────────────────────────────────────────────────
 

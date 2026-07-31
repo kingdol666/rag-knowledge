@@ -10,14 +10,14 @@
 
 <p>
 <em>QDCVR Semantic Search · Neo4j Knowledge Graph · Experience Lifecycle (E0–E12)<br>
-72 MCP Tools · 14 Agent Skills · MinerU OCR · Cross-Platform</em>
+74 MCP Tools · 14 Agent Skills · MinerU OCR · Cross-Platform</em>
 </p>
 
 <!-- Hero Badges -->
 <p>
 <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick_Start-3_commands-4338ca?style=for-the-badge&logo=rocket" /></a>
 <a href="#-table-of-contents"><img src="https://img.shields.io/badge/Platform-Win_%7C_Linux_%7C_macOS-334155?style=for-the-badge&logo=linux" /></a>
-<a href="#-72-mcp-tools"><img src="https://img.shields.io/badge/MCP_Tools-72-8b5cf6?style=for-the-badge&logo=code" /></a>
+<a href="#-74-mcp-tools"><img src="https://img.shields.io/badge/MCP_Tools-74-8b5cf6?style=for-the-badge&logo=code" /></a>
 <a href="#%EF%B8%8F-four-interfaces-one-backend"><img src="https://img.shields.io/badge/Skills-14-f97316?style=for-the-badge&logo=openai" /></a>
 </p>
 
@@ -55,7 +55,7 @@
 <a href="#%EF%B8%8F-four-interfaces-one-backend">Usage</a> ·
 <a href="#-architecture">Architecture</a> ·
 <a href="#-configuration">Config</a> ·
-<a href="#%EF%B8%8F-72-mcp-tools">MCP Tools</a> ·
+<a href="#%EF%B8%8F-74-mcp-tools">MCP Tools</a> ·
 <a href="#-roadmap">Roadmap</a> ·
 <a href="#-contributing">Contributing</a>
 </p>
@@ -77,7 +77,7 @@ This platform solves that at the **retrieval layer**, not the generation layer. 
 |:---:|:---|:---|
 | 🔍 | Single search strategy (vector *or* keyword) | **Multi-strategy**: BM25 + vector + tag-semantic + graph expansion |
 | 🧠 | Trust vector similarity blindly | **Content-verified retrieval** — independent 0–8 adjudication |
-| 🤖 | Bolt-on AI, hard to integrate with agents | **Agent-native**: 72 MCP tools, 14 skills — any MCP client works |
+| 🤖 | Bolt-on AI, hard to integrate with agents | **Agent-native**: 74 MCP tools, 14 skills — any MCP client works |
 | 💡 | No structured knowledge reuse | **Experience library**: E0–E12 lifecycle with P0/P1/P2 credibility |
 | 🔧 | Complex multi-tool setup, scattered configs | **One command** `ragctl setup`, single `config.yml` source of truth |
 | 🪟 | Terminal windows everywhere | **Silent headless** — zero terminals in dev *and* prod |
@@ -101,7 +101,7 @@ This platform solves that at the **retrieval layer**, not the generation layer. 
 | 🔍 | **Multi-Strategy Search** | BM25 + vector two-stage recall · cross-KB enterprise search · `balance_kbs` diversity guard |
 | 📊 | **Knowledge Graph** | Neo4j-powered · 11 graph tools · entity/relation graphs · cross-KB document bridges |
 | 💡 | **Experience Library** | E0–E12 lifecycle · structured problem→solution→lessons · P0/P1/P2 credibility · decay |
-| 🔌 | **72 MCP Tools** | KB CRUD · search · graph · experience · parsing · tags · vector/index · lifecycle — all MCP-native |
+| 🔌 | **74 MCP Tools** | KB CRUD · search · graph · experience · parsing · tags · vector/index · lifecycle — all MCP-native |
 | 🎯 | **14 Agent Skills** | Natural-language commands · bilingual triggers (中/EN) · auto-dispatch to Archival agent |
 | 🤫 | **Silent Headless** | Every launcher runs with **zero terminal windows** · dev and prod behave identically |
 
@@ -226,7 +226,7 @@ ragctl up
 </details>
 
 > [!TIP]
-> **No Claude Code? No problem.** The Web UI is fully functional standalone. Use any MCP client to access 72 tools, or just browse/search at `http://localhost:6789`.
+> **No Claude Code? No problem.** The Web UI is fully functional standalone. Use any MCP client to access 74 tools, or just browse/search at `http://localhost:6789`.
 
 ### ✅ Verify Everything Works
 
@@ -511,7 +511,7 @@ server:
 
 ---
 
-## ⚡ 72 MCP Tools
+## ⚡ 74 MCP Tools
 
 All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
 
@@ -519,10 +519,10 @@ All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
 
 | Category | Tools | Category | Tools |
 |:---------|:-----:|:---------|:-----:|
-| **Service Lifecycle** | 4 | **KB CRUD** | 6 |
-| **Document CRUD** | 8 | **Search** | 3 |
+| **Service Lifecycle** | 4 | **KB CRUD** | 5 |
+| **Document CRUD** | 9 | **Search** | 4 |
 | **Vector Index** | 5 | **File System** | 3 |
-| **Knowledge Graph** | 11 | **Experience (+Meditation)** | 25 |
+| **Knowledge Graph** | 11 | **Experience (+Meditation)** | 26 |
 | **Tags** | 4 | **Parse** (non-blocking) | 3 |
 
 </div>
@@ -541,6 +541,7 @@ All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
 | `kb_update(kb_id)` | Update KB metadata |
 | `kb_delete(kb_id)` | Delete KB + all documents |
 | `kb_get_documents()` | List documents per KB |
+| `kb_find_duplicates()` | Detect duplicate/near-duplicate docs |
 | `kb_doc_create()` | Create document |
 | `kb_doc_read()` | Read document content |
 | `kb_doc_update_meta()` | Update metadata |
@@ -580,6 +581,7 @@ All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
 | `experience_rerank()` | Semantic reranking |
 | `experience_extract()` | Auto-extract candidates |
 | `experience_drafts_list()` | Pending drafts |
+| `experience_draft_read()` | Read draft + evidence |
 | `experience_draft_approve()` | Approve draft |
 | `experience_draft_reject()` | Reject draft |
 | `experience_check_stale()` | Consistency check |
@@ -588,8 +590,10 @@ All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
 | `experience_apply_decay()` | Decay cycle |
 | `experience_meditation_status()` | Meditation scheduler |
 | `experience_meditation_run()` | Manual trigger |
-| `experience_meditation_config_get/set()` | Config |
+| `experience_meditation_config_get()` | Read meditation config |
+| `experience_meditation_config_update()` | Update meditation config |
 | `experience_meditation_history()` | Run history |
+| `experience_meditation_task_status()` | Poll meditation run |
 | `kb_tags_list()` | List tags |
 | `kb_doc_update_tags()` | Set tags on doc |
 | `kb_doc_get_by_tag()` | Find by tag |
@@ -597,6 +601,7 @@ All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
 | `kb_index_document()` | Index single document |
 | `kb_batch_index()` | Index unindexed docs |
 | `kb_reindex()` | Rebuild entire index |
+| `kb_task_status()` | Poll any background task |
 | `kb_cleanup_orphan_collections()` | Clean ChromaDB |
 | `parse_doc()` | Async parse (returns task_id) |
 | `parse_doc_batch()` | Batch parse |
@@ -612,7 +617,7 @@ All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
 rag-knowledge/
 ├── backend/              ← FastAPI + MinerU OCR engine
 ├── web/                  ← Nuxt 3 + Ant Design Vue + Claude Chat
-├── kb-mcp/               ← MCP server — 72 tools
+├── kb-mcp/               ← MCP server — 74 tools
 ├── command/              ← ragctl CLI (Node.js)
 ├── src-tauri/            ← Tauri v2 desktop (Rust)
 ├── .claude/              ← 14 agent skills + Archival agent

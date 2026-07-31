@@ -10,13 +10,13 @@
 
 <p>
 <em>QDCVR 语义搜索 · Neo4j 知识图谱 · 经验全生命周期 (E0–E12)<br>
-72 个 MCP 工具 · 14 个 Agent 技能 · MinerU OCR · 跨平台</em>
+74 个 MCP 工具 · 14 个 Agent 技能 · MinerU OCR · 跨平台</em>
 </p>
 
 <p>
 <a href="#-快速开始"><img src="https://img.shields.io/badge/快速开始-3条命令-4338ca?style=for-the-badge&logo=rocket" /></a>
 <a href="#-目录"><img src="https://img.shields.io/badge/平台-Win_%7C_Linux_%7C_macOS-334155?style=for-the-badge&logo=linux" /></a>
-<a href="#%EF%B8%8F-72-个-mcp-工具"><img src="https://img.shields.io/badge/MCP工具-72个-8b5cf6?style=for-the-badge&logo=code" /></a>
+<a href="#%EF%B8%8F-74-个-mcp-工具"><img src="https://img.shields.io/badge/MCP工具-74个-8b5cf6?style=for-the-badge&logo=code" /></a>
 <a href="#%EF%B8%8F-四种界面一个后端"><img src="https://img.shields.io/badge/技能-14个-f97316?style=for-the-badge&logo=openai" /></a>
 </p>
 
@@ -52,7 +52,7 @@
 <a href="#%EF%B8%8F-四种界面一个后端">使用</a> ·
 <a href="#-系统架构">架构</a> ·
 <a href="#-配置">配置</a> ·
-<a href="#%EF%B8%8F-72-个-mcp-工具">MCP 工具</a> ·
+<a href="#%EF%B8%8F-74-个-mcp-工具">MCP 工具</a> ·
 <a href="#-路线图">路线图</a> ·
 <a href="#-贡献指南">贡献</a>
 </p>
@@ -74,7 +74,7 @@
 |:---:|:---|:---|
 | 🔍 | 单一搜索策略（向量*或*关键词） | **多策略**：BM25 + 向量 + 标签语义 + 图谱扩展 |
 | 🧠 | 盲信向量相似度 | **内容验证检索** —— 独立的 0–8 内容裁决 |
-| 🤖 | AI 是后挂的，难集成 Agent | **Agent 原生**：72 个 MCP 工具，14 个技能，任意 MCP 客户端 |
+| 🤖 | AI 是后挂的，难集成 Agent | **Agent 原生**：74 个 MCP 工具，14 个技能，任意 MCP 客户端 |
 | 💡 | 无结构化知识复用 | **经验库**：E0–E12 全生命周期，P0/P1/P2 可信度分级 |
 | 🔧 | 多工具复杂安装，配置分散 | **一条命令** `ragctl setup`，单一 `config.yml` 真相源 |
 | 🪟 | 满屏终端窗口 | **静默无头** —— dev 和 prod 均零终端窗口 |
@@ -98,7 +98,7 @@
 | 🔍 | **多策略搜索** | BM25 + 向量两阶段召回 · 跨库企业搜索 · `balance_kbs` 多样性防护 |
 | 📊 | **知识图谱** | Neo4j 驱动 · 11 个图谱工具 · 实体/关系图 · 跨库文档桥接 |
 | 💡 | **经验库** | E0–E12 全生命周期 · 结构化问题→方案→教训 · P0/P1/P2 可信度 · 衰减 |
-| 🔌 | **72 个 MCP 工具** | 知识库 CRUD · 搜索 · 图谱 · 经验 · 解析 · 标签 · 向量索引 · 生命周期 |
+| 🔌 | **74 个 MCP 工具** | 知识库 CRUD · 搜索 · 图谱 · 经验 · 解析 · 标签 · 向量索引 · 生命周期 |
 | 🎯 | **14 个 Agent 技能** | 自然语言命令 · 中英双语触发 · 自动分发到 Archival Agent |
 | 🤫 | **静默无头** | 所有启动器均 **零终端窗口** · dev 和 prod 行为一致 |
 
@@ -221,7 +221,7 @@ ragctl up
 </details>
 
 > [!TIP]
-> **没有 Claude Code？没问题。** Web UI 完全独立运行。用任何 MCP 客户端即可访问 72 个工具，或直接在 `http://localhost:6789` 浏览和搜索。
+> **没有 Claude Code？没问题。** Web UI 完全独立运行。用任何 MCP 客户端即可访问 74 个工具，或直接在 `http://localhost:6789` 浏览和搜索。
 
 ### ✅ 验证一切正常
 
@@ -440,7 +440,7 @@ ragctl down --appmode prod      # 仅停止 prod，保留 Neo4j
 
 ---
 
-## ⚡ 72 个 MCP 工具
+## ⚡ 74 个 MCP 工具
 
 所有工具均可通过 `mcp__kb-mcp__*` 从任何 MCP 兼容 Agent 访问。
 
@@ -448,10 +448,10 @@ ragctl down --appmode prod      # 仅停止 prod，保留 Neo4j
 
 | 类别 | 数量 | 类别 | 数量 |
 |:-----|:----:|:-----|:----:|
-| **服务生命周期** | 4 | **知识库 CRUD** | 6 |
-| **文档 CRUD** | 8 | **搜索** | 3 |
+| **服务生命周期** | 4 | **知识库 CRUD** | 5 |
+| **文档 CRUD** | 9 | **搜索** | 4 |
 | **向量索引** | 5 | **文件系统** | 3 |
-| **知识图谱** | 11 | **经验（含冥想）** | 25 |
+| **知识图谱** | 11 | **经验（含冥想）** | 26 |
 | **标签** | 4 | **解析**（非阻塞） | 3 |
 </div>
 
