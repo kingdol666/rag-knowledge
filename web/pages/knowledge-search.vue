@@ -474,6 +474,7 @@ const searchMode = ref<SearchMode>('two-stage')
 const selectedKbId = ref<string | undefined>(undefined)
 const balanceKbs = ref(true)  // Enable cross-KB balancing to prevent large KB dominance
 const bm25TopK = ref(20)
+const topK = ref(10)  // Number of results to display per search
 const autoVerifyContent = ref(false)
 const selectedTag = ref<string>('')
 const searchDuration = ref(0)

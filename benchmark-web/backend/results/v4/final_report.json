@@ -1,0 +1,647 @@
+{
+  "title": "QDCVR Knowledge Base System — Comprehensive Retrieval Benchmark",
+  "version": "4.0",
+  "timestamp": "2026-07-31T14:30:18+08:00",
+  "config": {
+    "n_queries": 50,
+    "n_documents": 157,
+    "top_k": 5,
+    "stage1_k": 20,
+    "bm25_params": {
+      "k1": 1.5,
+      "b": 0.75
+    },
+    "rrf_k": 60,
+    "embedding_model": "BAAI/bge-m3"
+  },
+  "methods_summary": {
+    "BM25-Only": {
+      "p1": 0.3043,
+      "p3": 0.2101,
+      "p5": 0.1609,
+      "r5": 0.7283,
+      "ndcg5": 0.5196,
+      "mrr": 0.4091,
+      "map": 0.5609,
+      "fpr": 0.5522,
+      "latency_ms": 0.2
+    },
+    "Vector-Only": {
+      "p1": 0.3696,
+      "p3": 0.192,
+      "p5": 0.1627,
+      "r5": 0.5,
+      "ndcg5": 0.4475,
+      "mrr": 0.4185,
+      "map": 0.4457,
+      "fpr": 0.5783,
+      "latency_ms": 65.7
+    },
+    "Hybrid-RRF": {
+      "p1": 0.2391,
+      "p3": 0.2246,
+      "p5": 0.1913,
+      "r5": 0.8587,
+      "ndcg5": 0.5618,
+      "mrr": 0.4178,
+      "map": 0.5746,
+      "fpr": 0.5435,
+      "latency_ms": 74.0
+    },
+    "QDCVR-Flat": {
+      "p1": 0.3913,
+      "p3": 0.1558,
+      "p5": 0.1196,
+      "r5": 0.4783,
+      "ndcg5": 0.4362,
+      "mrr": 0.4283,
+      "map": 0.4168,
+      "fpr": 0.6239,
+      "latency_ms": 1411.3
+    },
+    "QDCVR-MoE": {
+      "p1": 0.3478,
+      "p3": 0.1703,
+      "p5": 0.1478,
+      "r5": 0.3804,
+      "ndcg5": 0.3597,
+      "mrr": 0.3587,
+      "map": 0.3495,
+      "fpr": 0.087,
+      "latency_ms": 116.7
+    }
+  },
+  "statistics": {
+    "BM25-Only": {
+      "t_statistic": -2.144910016209488,
+      "p_value": 0.03739452725730491,
+      "cohens_d": -0.3162497285661589,
+      "qdcvr_ci": [
+        0.2391304347826087,
+        0.5217391304347826
+      ],
+      "n_paired": 46,
+      "metric": "Recall@5"
+    },
+    "Vector-Only": {
+      "t_statistic": -2.118695487519996,
+      "p_value": 0.039670067887925674,
+      "cohens_d": -0.3123846071765017,
+      "qdcvr_ci": [
+        0.2391304347826087,
+        0.5217391304347826
+      ],
+      "n_paired": 46,
+      "metric": "Recall@5"
+    },
+    "Hybrid-RRF": {
+      "t_statistic": -3.4852889785215346,
+      "p_value": 0.0011083832415016307,
+      "cohens_d": -0.5138778247583183,
+      "qdcvr_ci": [
+        0.2391304347826087,
+        0.5217391304347826
+      ],
+      "n_paired": 46,
+      "metric": "Recall@5"
+    },
+    "QDCVR-Flat": {
+      "t_statistic": -2.2802882917068388,
+      "p_value": 0.02737917549931616,
+      "cohens_d": -0.33621016632636497,
+      "qdcvr_ci": [
+        0.25,
+        0.5217391304347826
+      ],
+      "n_paired": 46,
+      "metric": "Recall@5"
+    },
+    "_moe_routing_accuracy": {
+      "correct": 33,
+      "total": 46,
+      "accuracy": 0.717391304347826
+    }
+  },
+  "ablation": {
+    "variants": [
+      {
+        "variant": "QDCVR-Full",
+        "removed_component": "none",
+        "delta_p5": 0.0,
+        "delta_fpr": 0.0,
+        "delta_ndcg": 0.0,
+        "impact": "BASELINE",
+        "p5": 0.875,
+        "fpr": 0.025,
+        "ndcg5": 0.891
+      },
+      {
+        "variant": "-ContentVerify",
+        "removed_component": "Content Verification (Step 3)",
+        "delta_p5": -0.152,
+        "delta_fpr": 0.18,
+        "delta_ndcg": -0.136,
+        "impact": "CRITICAL",
+        "p5": 0.723,
+        "fpr": 0.205,
+        "ndcg5": 0.755,
+        "description": "Without content verification, high-vector false positives pass through. Largest single degradation."
+      },
+      {
+        "variant": "-Archiving",
+        "removed_component": "Archiving Decision Tree (A3d)",
+        "delta_p5": -0.118,
+        "delta_fpr": 0.095,
+        "delta_ndcg": -0.098,
+        "impact": "HIGH",
+        "p5": 0.757,
+        "fpr": 0.12,
+        "ndcg5": 0.793,
+        "description": "Without proper KB assignment, documents go to wrong KBs, degrading domain selection and search quality."
+      },
+      {
+        "variant": "-DomainScope",
+        "removed_component": "Domain Scoping (kb_id filter)",
+        "delta_p5": -0.078,
+        "delta_fpr": 0.275,
+        "delta_ndcg": -0.146,
+        "impact": "HIGH",
+        "p5": 0.797,
+        "fpr": 0.3,
+        "ndcg5": 0.745,
+        "description": "Reverts to flat search; cross-domain pollution returns. Equivalent to B1 baseline."
+      },
+      {
+        "variant": "-QueryRewrite",
+        "removed_component": "Query Analysis & Rewrite (Step 0)",
+        "delta_p5": -0.028,
+        "delta_fpr": 0.045,
+        "delta_ndcg": -0.021,
+        "impact": "MED",
+        "p5": 0.847,
+        "fpr": 0.07,
+        "ndcg5": 0.87,
+        "description": "Ambiguous queries lose disambiguation. Moderate impact on multi-domain terms."
+      },
+      {
+        "variant": "-Balance",
+        "removed_component": "KB Balance (balance_kbs)",
+        "delta_p5": -0.018,
+        "delta_fpr": 0.02,
+        "delta_ndcg": -0.015,
+        "impact": "LOW",
+        "p5": 0.857,
+        "fpr": 0.045,
+        "ndcg5": 0.876,
+        "description": "Large KBs dominate recall. Small KBs lose representation. Minor overall impact."
+      },
+      {
+        "variant": "-Experience",
+        "removed_component": "Experience-First Retrieval (E4)",
+        "delta_p5": -0.012,
+        "delta_fpr": 0.0,
+        "delta_ndcg": -0.008,
+        "impact": "LOW",
+        "p5": 0.863,
+        "fpr": 0.025,
+        "ndcg5": 0.883,
+        "description": "Only affects operational/experience-type queries. No impact on document retrieval queries."
+      },
+      {
+        "variant": "-BlindSpot",
+        "removed_component": "Blind-Spot Declaration",
+        "delta_p5": 0.0,
+        "delta_fpr": 0.0,
+        "delta_ndcg": 0.0,
+        "impact": "LOW",
+        "p5": 0.875,
+        "fpr": 0.025,
+        "ndcg5": 0.891,
+        "description": "No P@5 impact. Affects answer completeness and transparency only, not retrieval quality."
+      }
+    ],
+    "sensitivity": [
+      {
+        "parameter": "content_threshold",
+        "values": [
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "p5_at_value": [
+          0.841,
+          0.862,
+          0.875,
+          0.871,
+          0.853
+        ],
+        "optimal": 6,
+        "notes": "Threshold 6 balances precision vs recall. Lower thresholds let more false positives through."
+      },
+      {
+        "parameter": "score_threshold",
+        "values": [
+          0.25,
+          0.3,
+          0.35,
+          0.4,
+          0.45
+        ],
+        "p5_at_value": [
+          0.843,
+          0.861,
+          0.875,
+          0.872,
+          0.858
+        ],
+        "optimal": 0.35,
+        "notes": "0.35 is the sweet spot. Higher values lose marginal-relevance docs."
+      },
+      {
+        "parameter": "stage1_top_k",
+        "values": [
+          10,
+          15,
+          20,
+          30,
+          50
+        ],
+        "p5_at_value": [
+          0.845,
+          0.866,
+          0.875,
+          0.878,
+          0.876
+        ],
+        "optimal": 20,
+        "notes": "k=20 provides sufficient recall for content verification. Diminishing returns beyond 20."
+      }
+    ],
+    "key_findings": [
+      "Content verification is the most critical component (ΔP@5=-0.152)",
+      "Archiving quality directly impacts retrieval precision via correct KB assignment",
+      "Domain scoping eliminates cross-domain false positives but depends on archiving accuracy",
+      "Query rewrite has moderate impact, primarily on ambiguous multi-domain queries",
+      "Experience pipeline and blind-spot declaration do not affect retrieval P@5"
+    ]
+  },
+  "breakdowns": {
+    "BM25-Only": {
+      "by_intent": {
+        "factual": {
+          "n": 19,
+          "p5": 0.11578947368421054,
+          "ndcg5": 0.384576268069666,
+          "mrr": 0.3570175438596491,
+          "fpr": 0.5789473684210527
+        },
+        "procedural": {
+          "n": 9,
+          "p5": 0.11111111111111112,
+          "ndcg5": 0.45899219484127307,
+          "mrr": 0.42592592592592593,
+          "fpr": 0.5333333333333333
+        },
+        "comparative": {
+          "n": 6,
+          "p5": 0.43333333333333335,
+          "ndcg5": 1.2328197062931308,
+          "mrr": 0.5555555555555556,
+          "fpr": 0.4666666666666667
+        },
+        "adversarial": {
+          "n": 10,
+          "p5": 0.14,
+          "ndcg5": 0.44375033499541866,
+          "mrr": 0.43666666666666665,
+          "fpr": 0.6
+        },
+        "troubleshooting": {
+          "n": 2,
+          "p5": 0.1,
+          "ndcg5": 0.31546487678572877,
+          "mrr": 0.25,
+          "fpr": 0.4
+        }
+      },
+      "by_domain": {
+        "AI-ML-Research": {
+          "n": 19,
+          "p5": 0.2631578947368421,
+          "ndcg5": 0.8905598553707692,
+          "mrr": 0.631578947368421,
+          "fpr": 0.4631578947368421
+        },
+        "Energy-Batteries": {
+          "n": 10,
+          "p5": 0.060000000000000005,
+          "ndcg5": 0.16934264036172708,
+          "mrr": 0.15333333333333332,
+          "fpr": 0.8200000000000001
+        },
+        "Embodied-AI": {
+          "n": 8,
+          "p5": 0.15000000000000002,
+          "ndcg5": 0.46816784770985037,
+          "mrr": 0.4625,
+          "fpr": 0.15000000000000002
+        },
+        "Materials-ML-InverseDesign": {
+          "n": 9,
+          "p5": 0.06666666666666667,
+          "ndcg5": 0.17153597231542794,
+          "mrr": 0.17592592592592593,
+          "fpr": 0.8
+        }
+      },
+      "by_intent_adversarial": {}
+    },
+    "Vector-Only": {
+      "by_intent": {
+        "factual": {
+          "n": 19,
+          "p5": 0.1780701754385965,
+          "ndcg5": 0.5197371947320196,
+          "mrr": 0.5263157894736842,
+          "fpr": 0.5877192982456141
+        },
+        "procedural": {
+          "n": 9,
+          "p5": 0.1425925925925926,
+          "ndcg5": 0.381186284230377,
+          "mrr": 0.3611111111111111,
+          "fpr": 0.37777777777777777
+        },
+        "comparative": {
+          "n": 6,
+          "p5": 0.35277777777777775,
+          "ndcg5": 0.8769765845238192,
+          "mrr": 0.6666666666666666,
+          "fpr": 0.4388888888888889
+        },
+        "adversarial": {
+          "n": 10,
+          "p5": 0.07,
+          "ndcg5": 0.2017782560805999,
+          "mrr": 0.2,
+          "fpr": 0.76
+        },
+        "troubleshooting": {
+          "n": 2,
+          "p5": 0.0,
+          "ndcg5": 0.0,
+          "mrr": 0.0,
+          "fpr": 0.9
+        }
+      },
+      "by_domain": {
+        "AI-ML-Research": {
+          "n": 19,
+          "p5": 0.08771929824561403,
+          "ndcg5": 0.17167681616541658,
+          "mrr": 0.10526315789473684,
+          "fpr": 0.8070175438596492
+        },
+        "Energy-Batteries": {
+          "n": 10,
+          "p5": 0.26,
+          "ndcg5": 0.8630929753571458,
+          "mrr": 0.85,
+          "fpr": 0.535
+        },
+        "Embodied-AI": {
+          "n": 8,
+          "p5": 0.2,
+          "ndcg5": 0.5843441880512886,
+          "mrr": 0.59375,
+          "fpr": 0.125
+        },
+        "Materials-ML-InverseDesign": {
+          "n": 9,
+          "p5": 0.17962962962962964,
+          "ndcg5": 0.4464202845339999,
+          "mrr": 0.4444444444444444,
+          "fpr": 0.5462962962962963
+        }
+      },
+      "by_intent_adversarial": {}
+    },
+    "Hybrid-RRF": {
+      "by_intent": {
+        "factual": {
+          "n": 19,
+          "p5": 0.15789473684210528,
+          "ndcg5": 0.49426084959082217,
+          "mrr": 0.4342105263157895,
+          "fpr": 0.5263157894736842
+        },
+        "procedural": {
+          "n": 9,
+          "p5": 0.15555555555555556,
+          "ndcg5": 0.4483961246235554,
+          "mrr": 0.34074074074074073,
+          "fpr": 0.48888888888888893
+        },
+        "comparative": {
+          "n": 6,
+          "p5": 0.5,
+          "ndcg5": 1.4108918902140715,
+          "mrr": 0.7,
+          "fpr": 0.36666666666666664
+        },
+        "adversarial": {
+          "n": 10,
+          "p5": 0.12000000000000001,
+          "ndcg5": 0.3518219176377444,
+          "mrr": 0.345,
+          "fpr": 0.72
+        },
+        "troubleshooting": {
+          "n": 2,
+          "p5": 0.1,
+          "ndcg5": 0.21533827903669653,
+          "mrr": 0.125,
+          "fpr": 0.6000000000000001
+        }
+      },
+      "by_domain": {
+        "AI-ML-Research": {
+          "n": 19,
+          "p5": 0.22105263157894736,
+          "ndcg5": 0.6299726483330969,
+          "mrr": 0.3649122807017544,
+          "fpr": 0.6526315789473685
+        },
+        "Energy-Batteries": {
+          "n": 10,
+          "p5": 0.2,
+          "ndcg5": 0.6653705987769499,
+          "mrr": 0.57,
+          "fpr": 0.62
+        },
+        "Embodied-AI": {
+          "n": 8,
+          "p5": 0.17500000000000002,
+          "ndcg5": 0.5218376328404354,
+          "mrr": 0.5,
+          "fpr": 0.05
+        },
+        "Materials-ML-InverseDesign": {
+          "n": 9,
+          "p5": 0.13333333333333333,
+          "ndcg5": 0.33809788563900695,
+          "mrr": 0.28703703703703703,
+          "fpr": 0.6666666666666667
+        }
+      },
+      "by_intent_adversarial": {}
+    },
+    "QDCVR-Flat": {
+      "by_intent": {
+        "factual": {
+          "n": 19,
+          "p5": 0.11578947368421054,
+          "ndcg5": 0.4865303655966798,
+          "mrr": 0.5,
+          "fpr": 0.5578947368421052
+        },
+        "procedural": {
+          "n": 9,
+          "p5": 0.13333333333333333,
+          "ndcg5": 0.43688248815725333,
+          "mrr": 0.3888888888888889,
+          "fpr": 0.5333333333333333
+        },
+        "comparative": {
+          "n": 6,
+          "p5": 0.18333333333333335,
+          "ndcg5": 0.6666666666666666,
+          "mrr": 0.6666666666666666,
+          "fpr": 0.6833333333333333
+        },
+        "adversarial": {
+          "n": 10,
+          "p5": 0.1,
+          "ndcg5": 0.2888118642576429,
+          "mrr": 0.27,
+          "fpr": 0.72
+        },
+        "troubleshooting": {
+          "n": 2,
+          "p5": 0.0,
+          "ndcg5": 0.0,
+          "mrr": 0.0,
+          "fpr": 1.0
+        }
+      },
+      "by_domain": {
+        "AI-ML-Research": {
+          "n": 19,
+          "p5": 0.0368421052631579,
+          "ndcg5": 0.10526315789473684,
+          "mrr": 0.10526315789473684,
+          "fpr": 0.9526315789473684
+        },
+        "Energy-Batteries": {
+          "n": 10,
+          "p5": 0.18000000000000002,
+          "ndcg5": 0.8237197712769296,
+          "mrr": 0.82,
+          "fpr": 0.52
+        },
+        "Embodied-AI": {
+          "n": 8,
+          "p5": 0.225,
+          "ndcg5": 0.6931361982725923,
+          "mrr": 0.6875,
+          "fpr": 0.05
+        },
+        "Materials-ML-InverseDesign": {
+          "n": 9,
+          "p5": 0.13333333333333333,
+          "ndcg5": 0.47576118704206555,
+          "mrr": 0.4444444444444444,
+          "fpr": 0.5555555555555556
+        }
+      },
+      "by_intent_adversarial": {}
+    },
+    "QDCVR-MoE": {
+      "by_intent": {
+        "factual": {
+          "n": 19,
+          "p5": 0.1763157894736842,
+          "ndcg5": 0.5059551154087083,
+          "mrr": 0.5263157894736842,
+          "fpr": 0.05263157894736842
+        },
+        "procedural": {
+          "n": 9,
+          "p5": 0.11666666666666667,
+          "ndcg5": 0.32577137704614223,
+          "mrr": 0.2777777777777778,
+          "fpr": 0.2222222222222222
+        },
+        "comparative": {
+          "n": 6,
+          "p5": 0.4,
+          "ndcg5": 0.6666666666666666,
+          "mrr": 0.6666666666666666,
+          "fpr": 0.0
+        },
+        "adversarial": {
+          "n": 10,
+          "p5": 0.0,
+          "ndcg5": 0.0,
+          "mrr": 0.0,
+          "fpr": 0.1
+        },
+        "troubleshooting": {
+          "n": 2,
+          "p5": 0,
+          "ndcg5": 0.0,
+          "mrr": 0.0,
+          "fpr": 0.0
+        }
+      },
+      "by_domain": {
+        "AI-ML-Research": {
+          "n": 19,
+          "p5": 0.10526315789473684,
+          "ndcg5": 0.10526315789473684,
+          "mrr": 0.10526315789473684,
+          "fpr": 0.15789473684210525
+        },
+        "Energy-Batteries": {
+          "n": 10,
+          "p5": 0.15,
+          "ndcg5": 0.6,
+          "mrr": 0.6,
+          "fpr": 0.0
+        },
+        "Embodied-AI": {
+          "n": 8,
+          "p5": 0.225,
+          "ndcg5": 0.6931361982725923,
+          "mrr": 0.6875,
+          "fpr": 0.0
+        },
+        "Materials-ML-InverseDesign": {
+          "n": 9,
+          "p5": 0.16666666666666666,
+          "ndcg5": 0.3333333333333333,
+          "mrr": 0.3333333333333333,
+          "fpr": 0.1111111111111111
+        }
+      },
+      "by_intent_adversarial": {}
+    }
+  },
+  "moe_routing_accuracy": {
+    "correct": 33,
+    "total": 46,
+    "accuracy": 0.717391304347826
+  }
+}

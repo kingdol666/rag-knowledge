@@ -519,8 +519,25 @@ class VectorService:
         top_k_per_doc: int = 3,
         kb_id: str | None = None,
     ) -> dict[str, list[dict[str, Any]]]:
-        """Stage 2 核心：在指定文档集合内做向量检索。"""
+        """Stage 2 核心：在指定文档集合内做向量检索。
+
+        Path separators are normalized to '/' because ChromaDB stores
+        forward-slash doc_paths while the BM25 keyword index (Stage 1)
+        yields Windows backslash paths on this platform. Querying with
+        un-normalized paths silently matched nothing and triggered the
+        cross-KB fallback — mirrors the normalization already used by
+        ``_delete_doc_chunks``.
+        """
         query_embedding = embedding_service.embed_one(query)
+        # Normalize every requested path to '/' and build a lookup so we
+        # can map a hit back to whichever original variant was requested.
+        norm_paths: list[str] = []
+        _to_original: dict[str, str] = {}
+        for p in doc_paths:
+            np = p.replace("\\", "/") if p else p
+            if np not in _to_original:
+                norm_paths.append(np)
+            _to_original.setdefault(np, p)
         result_map: dict[str, list[dict[str, Any]]] = {p: [] for p in doc_paths}
 
         if kb_id:
@@ -532,7 +549,9 @@ class VectorService:
             if col is None:
                 continue
             try:
-                where_filter = {"doc_path": {"$in": doc_paths}}
+                # Match both normalized ('/') and raw Windows ('\\') forms so
+                # a chunk stored with either separator is returned.
+                where_filter = {"doc_path": {"$in": norm_paths + doc_paths}}
                 res = col.query(
                     query_embeddings=[query_embedding],
                     n_results=top_k_per_doc * len(doc_paths),
@@ -549,8 +568,10 @@ class VectorService:
                 res["metadatas"][0],
             ):
                 dp = meta.get("doc_path", "")
-                if dp in result_map:
-                    result_map[dp].append({
+                np = dp.replace("\\", "/") if dp else dp
+                original = _to_original.get(np, dp)
+                if original in result_map:
+                    result_map[original].append({
                         "content": doc,
                         "score": 1.0 - dist,
                         "chunk_index": meta.get("chunk_index", 0),

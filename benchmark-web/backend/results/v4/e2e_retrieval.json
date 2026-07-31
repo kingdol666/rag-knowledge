@@ -1,0 +1,659 @@
+[
+  {
+    "kb_dir": "AI-ML-Research",
+    "kb_uuid": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+    "query": "Adam优化器beta1 beta2默认参数动量",
+    "expected_stem": "NeuralNetworkOptimization-Adam",
+    "vector-scoped": {
+      "n": 2,
+      "top_score": 0.5404223203659058,
+      "top_doc": "AI-ML-Research/RAG-Research/paper_rag_survey.md",
+      "found": false,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "vector-crossKB": {
+      "n": 5,
+      "top_score": 0.5537041425704956,
+      "top_doc": "Embodied-AI/humanoid-embodied.md",
+      "found": false,
+      "wrong_domain_count": 4,
+      "wrong_examples": [
+        "Embodied-AI/humanoid-embodied.md",
+        "Economics-DataScience/financial-risk.md"
+      ]
+    },
+    "twostage-scoped": {
+      "n": 5,
+      "top_score": 8.87178642620943,
+      "top_doc": "AI-ML-Research/NeuralNetworkOptimization-Adam.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-crossKB": {
+      "n": 5,
+      "top_score": 0.523230791091919,
+      "top_doc": "高分子双向拉伸文献库/09_Equipment_Process - 设备与工艺/01_MicroVoid-AM-Extrusion-arXiv-2025.md",
+      "found": false,
+      "wrong_domain_count": 5,
+      "wrong_examples": [
+        "高分子双向拉伸文献库/09_Equipment_Process - 设备与工艺/01_MicroVoid-AM-Extrusion-arXiv-2025.md",
+        "高分子双向拉伸文献库/06_PLA_Biodegradable - 可生物降解聚合物拉伸/03_GraftPolymer-SoDip-ML-arXiv-2025.md"
+      ]
+    }
+  },
+  {
+    "kb_dir": "AI-ML-Research/RAG-Research",
+    "kb_uuid": "578dc012-95a5-443b-aa08-1e493e3ec167",
+    "query": "RAG检索增强生成模块化范式检索器",
+    "expected_stem": "RAG-Survey",
+    "vector-scoped": {
+      "n": 2,
+      "top_score": 0.641075849533081,
+      "top_doc": "AI-ML-Research/RAG-Research/experience/exp-9c48338b4f9b.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "vector-crossKB": {
+      "n": 2,
+      "top_score": 0.641075849533081,
+      "top_doc": "AI-ML-Research/RAG-Research/experience/exp-9c48338b4f9b.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-scoped": {
+      "n": 1,
+      "top_score": 0.601401686668396,
+      "top_doc": "AI-ML-Research/RAG-Research/paper_rag_survey.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-crossKB": {
+      "n": 5,
+      "top_score": 0.601401686668396,
+      "top_doc": "AI-ML-Research/RAG-Research/paper_rag_survey.md",
+      "found": true,
+      "wrong_domain_count": 4,
+      "wrong_examples": [
+        "Embodied-AI/XR-1-具身VLA大模型.md",
+        "Embodied-AI/2025年具身智能机器人十大发展趋势.md"
+      ]
+    }
+  },
+  {
+    "kb_dir": "Embodied-AI",
+    "kb_uuid": "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+    "query": "XR-1具身VLA大模型UVMC多模态表征",
+    "expected_stem": "XR-1-具身VLA大模型",
+    "vector-scoped": {
+      "n": 5,
+      "top_score": 0.5863686800003052,
+      "top_doc": "Embodied-AI/XR-1-具身VLA大模型.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "vector-crossKB": {
+      "n": 5,
+      "top_score": 0.5863686800003052,
+      "top_doc": "Embodied-AI/XR-1-具身VLA大模型.md",
+      "found": true,
+      "wrong_domain_count": 2,
+      "wrong_examples": [
+        "Materials-ML-InverseDesign/ML-DefectDetection-Prediction/mxene-supercapacitor.md",
+        "Biomedical-Engineering/可穿戴器械.md"
+      ]
+    },
+    "twostage-scoped": {
+      "n": 5,
+      "top_score": 0.6993353962898254,
+      "top_doc": "Embodied-AI/XR-1-具身VLA大模型.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-crossKB": {
+      "n": 5,
+      "top_score": 0.6993353962898254,
+      "top_doc": "Embodied-AI/XR-1-具身VLA大模型.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    }
+  },
+  {
+    "kb_dir": "Energy-Batteries",
+    "kb_uuid": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+    "query": "锂电池热管理相变材料PCM石蜡冷却",
+    "expected_stem": "battery-thermal-management",
+    "vector-scoped": {
+      "n": 1,
+      "top_score": 0.6114795207977295,
+      "top_doc": "Energy-Batteries/battery-thermal-management.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "vector-crossKB": {
+      "n": 1,
+      "top_score": 0.6114795207977295,
+      "top_doc": "Energy-Batteries/battery-thermal-management.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-scoped": {
+      "n": 3,
+      "top_score": 0.6114795207977295,
+      "top_doc": "Energy-Batteries/battery-thermal-management.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-crossKB": {
+      "n": 5,
+      "top_score": 0.6114795207977295,
+      "top_doc": "Energy-Batteries/battery-thermal-management.md",
+      "found": true,
+      "wrong_domain_count": 2,
+      "wrong_examples": [
+        "Materials-Science/mxene-energy-storage.md",
+        "高分子双向拉伸文献库/02_Physics_Mechanism - 拉伸物理与机理/Mimicking-Polymer-Processing-Meso-Scale-Relaxation-Crystallization-PE-Uni-Biaxial-Stretching-Molecules-2024.md"
+      ]
+    }
+  },
+  {
+    "kb_dir": "Energy-Batteries",
+    "kb_uuid": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+    "query": "固态电池无机电解质LLZO锂镧锆氧",
+    "expected_stem": "solid-state-batteries",
+    "vector-scoped": {
+      "n": 2,
+      "top_score": 0.5772975087165833,
+      "top_doc": "Energy-Batteries/sodium-ion-batteries.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "vector-crossKB": {
+      "n": 3,
+      "top_score": 0.5772975087165833,
+      "top_doc": "Energy-Batteries/sodium-ion-batteries.md",
+      "found": true,
+      "wrong_domain_count": 1,
+      "wrong_examples": [
+        "高分子双向拉伸文献库/04_PVA_BOPVA - 聚乙烯醇双向拉伸/PVA-Birefringence-OpticalMethods_s02_MaterialsSurvey.md"
+      ]
+    },
+    "twostage-scoped": {
+      "n": 5,
+      "top_score": 0.5772975087165833,
+      "top_doc": "Energy-Batteries/sodium-ion-batteries.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-crossKB": {
+      "n": 5,
+      "top_score": 0.5772975087165833,
+      "top_doc": "Energy-Batteries/sodium-ion-batteries.md",
+      "found": true,
+      "wrong_domain_count": 1,
+      "wrong_examples": [
+        "Materials-Science/mxene-energy-storage.md"
+      ]
+    }
+  },
+  {
+    "kb_dir": "Materials-Science",
+    "kb_uuid": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+    "query": "MXene Ti3C2Tx储能器件超级电容",
+    "expected_stem": "mxene-energy-storage",
+    "vector-scoped": {
+      "n": 2,
+      "top_score": 0.6241145730018616,
+      "top_doc": "Materials-Science/mxene-energy-storage.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "vector-crossKB": {
+      "n": 2,
+      "top_score": 0.6241145730018616,
+      "top_doc": "Materials-Science/mxene-energy-storage.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-scoped": {
+      "n": 3,
+      "top_score": 0.6241145730018616,
+      "top_doc": "Materials-Science/mxene-energy-storage.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-crossKB": {
+      "n": 5,
+      "top_score": 0.6241145730018616,
+      "top_doc": "Materials-Science/mxene-energy-storage.md",
+      "found": true,
+      "wrong_domain_count": 1,
+      "wrong_examples": [
+        "Energy-Batteries/supercapacitors.md"
+      ]
+    }
+  },
+  {
+    "kb_dir": "Materials-Science",
+    "kb_uuid": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+    "query": "二维材料TMD MoS2能带石墨烯",
+    "expected_stem": "2d-materials-roadmap",
+    "vector-scoped": {
+      "n": 4,
+      "top_score": 0.5453947186470032,
+      "top_doc": "Materials-Science/2d-materials-roadmap.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "vector-crossKB": {
+      "n": 5,
+      "top_score": 0.573089599609375,
+      "top_doc": "Chemistry-Catalysis/electrocatalysis.md",
+      "found": true,
+      "wrong_domain_count": 3,
+      "wrong_examples": [
+        "Chemistry-Catalysis/electrocatalysis.md",
+        "高分子双向拉伸文献库/10_Characterization - 表征技术/Polymer-Membrane-Characterization-Techniques-Membranes-2020.md"
+      ]
+    },
+    "twostage-scoped": {
+      "n": 5,
+      "top_score": 0.5570607781410217,
+      "top_doc": "Materials-Science/2d-materials-roadmap.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-crossKB": {
+      "n": 5,
+      "top_score": 0.5570607781410217,
+      "top_doc": "Materials-Science/2d-materials-roadmap.md",
+      "found": true,
+      "wrong_domain_count": 2,
+      "wrong_examples": [
+        "高分子双向拉伸文献库/05_PP_BOPP - 聚丙烯双向拉伸/01_LiquidMetal-BOPP-Capacitor-NatComms-2024.md",
+        "高分子双向拉伸文献库/01_Reviews - 综述与评论/Biaxial-Stretching-Polymer-Nanocomposites-Frontiers-2021.md"
+      ]
+    }
+  },
+  {
+    "kb_dir": "Chemistry-Catalysis",
+    "kb_uuid": "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+    "query": "电催化HER析氢反应过电位铂",
+    "expected_stem": "electrocatalysis",
+    "vector-scoped": {
+      "n": 1,
+      "top_score": 0.5716198086738586,
+      "top_doc": "Chemistry-Catalysis/electrocatalysis.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "vector-crossKB": {
+      "n": 1,
+      "top_score": 0.5716198086738586,
+      "top_doc": "Chemistry-Catalysis/electrocatalysis.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-scoped": {
+      "n": 4,
+      "top_score": 0.5716198086738586,
+      "top_doc": "Chemistry-Catalysis/electrocatalysis.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-crossKB": {
+      "n": 5,
+      "top_score": 0.5716198086738586,
+      "top_doc": "Chemistry-Catalysis/electrocatalysis.md",
+      "found": true,
+      "wrong_domain_count": 1,
+      "wrong_examples": [
+        "Energy-Batteries/lithium-ion-design.md"
+      ]
+    }
+  },
+  {
+    "kb_dir": "Biomedical-Engineering",
+    "kb_uuid": "61960453-755c-4a4b-aa03-6d9453556572",
+    "query": "CNN胸部X光肺炎检测DenseNet",
+    "expected_stem": "医学影像",
+    "vector-scoped": {
+      "n": 5,
+      "top_score": 0.4734439253807068,
+      "top_doc": "Biomedical-Engineering/efficient-dl-medical-imaging.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "vector-crossKB": {
+      "n": 5,
+      "top_score": 0.5370640158653259,
+      "top_doc": "Materials-ML-InverseDesign/ML-DefectDetection-Prediction/Defect detection in wrap film product using compact convolutional.md",
+      "found": false,
+      "wrong_domain_count": 5,
+      "wrong_examples": [
+        "Materials-ML-InverseDesign/ML-DefectDetection-Prediction/Defect detection in wrap film product using compact convolutional.md",
+        "Materials-ML-InverseDesign/ML-DefectDetection-Prediction/Quantifying defects in thin films using machine vision.md"
+      ]
+    },
+    "twostage-scoped": {
+      "n": 5,
+      "top_score": 0.4734439253807068,
+      "top_doc": "Biomedical-Engineering/efficient-dl-medical-imaging.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-crossKB": {
+      "n": 5,
+      "top_score": 0.5370640158653259,
+      "top_doc": "Materials-ML-InverseDesign/ML-DefectDetection-Prediction/Defect detection in wrap film product using compact convolutional.md",
+      "found": false,
+      "wrong_domain_count": 4,
+      "wrong_examples": [
+        "Materials-ML-InverseDesign/ML-DefectDetection-Prediction/Defect detection in wrap film product using compact convolutional.md",
+        "Materials-ML-InverseDesign/ML-DefectDetection-Prediction/Quantifying defects in thin films using machine vision.md"
+      ]
+    }
+  },
+  {
+    "kb_dir": "Economics-DataScience",
+    "kb_uuid": "27bb748f-9fc5-4223-b0c3-8365dbc42dea",
+    "query": "金融风险VaR强化学习估计",
+    "expected_stem": "financial-risk",
+    "vector-scoped": {
+      "n": 1,
+      "top_score": 0.6427727341651917,
+      "top_doc": "Economics-DataScience/financial-risk.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "vector-crossKB": {
+      "n": 1,
+      "top_score": 0.6427727341651917,
+      "top_doc": "Economics-DataScience/financial-risk.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-scoped": {
+      "n": 3,
+      "top_score": 0.6427727341651917,
+      "top_doc": "Economics-DataScience/financial-risk.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-crossKB": {
+      "n": 5,
+      "top_score": 0.6427727341651917,
+      "top_doc": "Economics-DataScience/financial-risk.md",
+      "found": true,
+      "wrong_domain_count": 3,
+      "wrong_examples": [
+        "Materials-ML-InverseDesign/RL-Inorganic-InverseDesign/rl-diffusion-inverse-materials.md",
+        "Materials-ML-InverseDesign/ML-DefectDetection-Prediction/Deep reinforcement learning assisted surrogate model management for expensive constrained multi-objective optimization.md"
+      ]
+    }
+  },
+  {
+    "kb_dir": "Creative-Thinking-Innovation",
+    "kb_uuid": "f1046402-5b29-416d-be28-5445ee6384ff",
+    "query": "PRISM多刺激创意方法论",
+    "expected_stem": "PRISM-Framework",
+    "vector-scoped": {
+      "n": 1,
+      "top_score": 0.704811155796051,
+      "top_doc": "Creative-Thinking-Innovation/PRISM-Framework-Multi-Stimulus-Ideation-2025.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "vector-crossKB": {
+      "n": 1,
+      "top_score": 0.704811155796051,
+      "top_doc": "Creative-Thinking-Innovation/PRISM-Framework-Multi-Stimulus-Ideation-2025.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-scoped": {
+      "n": 1,
+      "top_score": 0.704811155796051,
+      "top_doc": "Creative-Thinking-Innovation/PRISM-Framework-Multi-Stimulus-Ideation-2025.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-crossKB": {
+      "n": 5,
+      "top_score": 0.704811155796051,
+      "top_doc": "Creative-Thinking-Innovation/PRISM-Framework-Multi-Stimulus-Ideation-2025.md",
+      "found": true,
+      "wrong_domain_count": 4,
+      "wrong_examples": [
+        "Materials-ML-InverseDesign/ML-DefectDetection-Prediction/Deep reinforcement learning assisted surrogate model management for expensive constrained multi-objective optimization.md",
+        "Materials-ML-InverseDesign/RL-Inorganic-InverseDesign/rl-diffusion-inverse-materials.md"
+      ]
+    }
+  },
+  {
+    "kb_dir": "高分子双向拉伸文献库",
+    "kb_uuid": "cd57e37c-fbd9-4a0a-9775-212cb68f81bc",
+    "query": "PET双折射应变诱导结晶取向",
+    "expected_stem": "PET-Birefringence",
+    "vector-scoped": {
+      "n": 5,
+      "top_score": 0.5763578414916992,
+      "top_doc": "高分子双向拉伸文献库/polymer-characterization-handbook.md",
+      "found": false,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "vector-crossKB": {
+      "n": 5,
+      "top_score": 0.5763578414916992,
+      "top_doc": "高分子双向拉伸文献库/polymer-characterization-handbook.md",
+      "found": false,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-scoped": {
+      "n": 5,
+      "top_score": 0.5543990135192871,
+      "top_doc": "高分子双向拉伸文献库/03_PET_BOPET - 聚酯双向拉伸/PET-BiaxialStretching-ThermomechanicalModelling-TUe-2015.md",
+      "found": false,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-crossKB": {
+      "n": 5,
+      "top_score": 0.5543990135192871,
+      "top_doc": "高分子双向拉伸文献库/03_PET_BOPET - 聚酯双向拉伸/PET-BiaxialStretching-ThermomechanicalModelling-TUe-2015.md",
+      "found": false,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    }
+  },
+  {
+    "kb_dir": "高分子双向拉伸文献库/04_PVA_BOPVA - 聚乙烯醇双向拉伸",
+    "kb_uuid": "4920ade1-3916-4a70-8d94-19f72f2d9956",
+    "query": "PVA偏光片结构流延工艺碘",
+    "expected_stem": "PVA-Polarizers",
+    "vector-scoped": {
+      "n": 0,
+      "top_score": null,
+      "top_doc": null,
+      "found": false,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "vector-crossKB": {
+      "n": 4,
+      "top_score": 0.6029855012893677,
+      "top_doc": "高分子双向拉伸文献库/polymer-characterization-handbook.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-scoped": {
+      "n": 5,
+      "top_score": 6.373832485763167,
+      "top_doc": "高分子双向拉伸文献库/04_PVA_BOPVA - 聚乙烯醇双向拉伸/PVA-Birefringence-OpticalMethods_s02_MaterialsSurvey.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-crossKB": {
+      "n": 5,
+      "top_score": 0.5705134868621826,
+      "top_doc": "高分子双向拉伸文献库/04_PVA_BOPVA - 聚乙烯醇双向拉伸/PVA-Polarizers-Processing_s02_IodineComplexAndBeyond.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    }
+  },
+  {
+    "kb_dir": "高分子双向拉伸文献库/05_PP_BOPP - 聚丙烯双向拉伸",
+    "kb_uuid": "93ae62b0-",
+    "query": "BOPP薄膜电容器储能介电",
+    "expected_stem": "BOPP-Review-Capacitors",
+    "vector-scoped": {
+      "n": 0,
+      "top_score": null,
+      "top_doc": null,
+      "found": false,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "vector-crossKB": {
+      "n": 5,
+      "top_score": 0.5971775054931641,
+      "top_doc": "高分子双向拉伸文献库/05_PP_BOPP - 聚丙烯双向拉伸/01_LiquidMetal-BOPP-Capacitor-NatComms-2024.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-scoped": {
+      "n": 0,
+      "top_score": null,
+      "top_doc": null,
+      "found": false,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-crossKB": {
+      "n": 5,
+      "top_score": 0.5971775054931641,
+      "top_doc": "高分子双向拉伸文献库/05_PP_BOPP - 聚丙烯双向拉伸/01_LiquidMetal-BOPP-Capacitor-NatComms-2024.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    }
+  },
+  {
+    "kb_dir": "Materials-ML-InverseDesign/RL-Polymer-InverseDesign",
+    "kb_uuid": "d72eaeab-9438-4cad-a276-fadf14220c72",
+    "query": "强化学习聚合物逆设计RLPolyG",
+    "expected_stem": "zhou-et-al-2025",
+    "vector-scoped": {
+      "n": 0,
+      "top_score": null,
+      "top_doc": null,
+      "found": false,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "vector-crossKB": {
+      "n": 5,
+      "top_score": 0.6044126152992249,
+      "top_doc": "Materials-ML-InverseDesign/RL-Inorganic-InverseDesign/Deep reinforcement learning for inverse.md",
+      "found": false,
+      "wrong_domain_count": 3,
+      "wrong_examples": [
+        "AI-ML-Research/RAG-Research/paper_rag_survey.md",
+        "Economics-DataScience/financial-risk.md"
+      ]
+    },
+    "twostage-scoped": {
+      "n": 4,
+      "top_score": 5.345157191754033,
+      "top_doc": "Materials-ML-InverseDesign/RL-Polymer-InverseDesign/zhou-et-al-2025-de-novo-design-of-polymers-with-specified-properties-using-reinforcement-learning.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-crossKB": {
+      "n": 5,
+      "top_score": 0.6044126152992249,
+      "top_doc": "Materials-ML-InverseDesign/RL-Inorganic-InverseDesign/Deep reinforcement learning for inverse.md",
+      "found": false,
+      "wrong_domain_count": 3,
+      "wrong_examples": [
+        "高分子双向拉伸文献库/06_PLA_Biodegradable - 可生物降解聚合物拉伸/03_GraftPolymer-SoDip-ML-arXiv-2025.md",
+        "高分子双向拉伸文献库/10_Handbooks_Industry - 工业手册与指南/Solid-State-Biaxial-Orientation-Polymers-ETH-2018.md"
+      ]
+    }
+  },
+  {
+    "kb_dir": "Materials-ML-InverseDesign/ML-DefectDetection-Prediction",
+    "kb_uuid": "a63bf852-ab32-4ce7-834c-08bc7466c221",
+    "query": "机器视觉薄膜缺陷定量检测",
+    "expected_stem": "Quantifying defects",
+    "vector-scoped": {
+      "n": 3,
+      "top_score": 0.5931416153907776,
+      "top_doc": "Materials-ML-InverseDesign/ML-DefectDetection-Prediction/semiconductor laser.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "vector-crossKB": {
+      "n": 4,
+      "top_score": 0.5931416153907776,
+      "top_doc": "Materials-ML-InverseDesign/ML-DefectDetection-Prediction/semiconductor laser.md",
+      "found": true,
+      "wrong_domain_count": 1,
+      "wrong_examples": [
+        "高分子双向拉伸文献库/10_Handbooks_Industry - 工业手册与指南/NIST-BOPP-Tenter-Frame-Processing-2004.md"
+      ]
+    },
+    "twostage-scoped": {
+      "n": 5,
+      "top_score": 0.5931416153907776,
+      "top_doc": "Materials-ML-InverseDesign/ML-DefectDetection-Prediction/semiconductor laser.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    },
+    "twostage-crossKB": {
+      "n": 5,
+      "top_score": 0.5931416153907776,
+      "top_doc": "Materials-ML-InverseDesign/ML-DefectDetection-Prediction/semiconductor laser.md",
+      "found": true,
+      "wrong_domain_count": 0,
+      "wrong_examples": []
+    }
+  }
+]
