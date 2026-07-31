@@ -153,11 +153,18 @@ class VectorService:
         except Exception:
             return []
     def _resolve_hierarchical_collections(self, kb_id: str) -> list:
-        """Resolve kb_id to parent + all descendant KB collections (K1 fix).
+        """Resolve kb_id to all descendant KB collections.
 
         Hierarchical parent KBs store documents in child KB collections.
         This resolves the parent UUID to all descendant UUIDs and gathers
         their ChromaDB collections so search covers the full subtree.
+
+        After UUID-based resolution, an *ancestor-collection fallback*
+        walks up the folder tree for any child KB that lacks a dedicated
+        ChromaDB collection, falling back to the nearest ancestor KB's
+        collection.  This protects against collection UUID drift — for
+        example when a sub-KB was re-imported with a different UUID, or
+        when a KB was moved to a new parent without reindexing.
         """
         try:
             from app.services.storage_reader_service import storage_reader
@@ -165,16 +172,56 @@ class VectorService:
         except Exception:
             all_kb_ids = [kb_id]
         cols = []
+        seen = set()
         for kid in all_kb_ids:
             col = self._safe_get_collection(kid)
             if col is not None:
-                cols.append(col)
+                cname = col.name
+                if cname not in seen:
+                    cols.append(col)
+                    seen.add(cname)
+
+        # --- Ancestor-collection fallback (KB-operation resilience) ---
+        # If a child KB has no dedicated collection, walk UP the tree to
+        # find the nearest ancestor KB that DOES have one.  In the common
+        # flat-index architecture (all sub-KB docs indexed under the root
+        # KB's collection), this correctly scopes retrieval to the ancestor's
+        # collection whose doc_paths naturally cover the entire subtree.
+        # This guarantees retrieval correctness after KB moves, merges, and
+        # splits without requiring reindexing.
+        try:
+            tree = storage_reader.read_tree_fs()
+            for kid in all_kb_ids:
+                if any(kid == self._canonical_kb_id(c.name[3:]).split('-')[0]
+                       for c in cols if c.name.startswith('kb_')):
+                    continue  # already resolved
+                current = kid
+                for _ in range(10):  # max depth — walk up to ancestor
+                    # Match folder by id OR path (handles partial/truncated UUIDs)
+                    folder = next((f for f in tree.get("folders", [])
+                                   if f.get("id") == current or f.get("path") == current), None)
+                    if not folder:
+                        break
+                    # Try to get collection for this folder
+                    anc_col = self._safe_get_collection(current)
+                    if anc_col is not None and anc_col.name not in seen:
+                        cols.append(anc_col)
+                        seen.add(anc_col.name)
+                        break  # found an ancestor collection — stop walking
+                    # Go up to parent
+                    pid = folder.get("parentId")
+                    if not pid or pid == current:
+                        break
+                    current = pid
+        except Exception:
+            pass
+
+        # Last-ditch: single-kb fallback (original logic)
         if not cols:
             col = self._safe_get_collection(kb_id)
             if col is not None:
                 cols.append(col)
         return cols
-
     # ── 索引构建 ──────────────────────────────────────────────────
 
     def index_document(
