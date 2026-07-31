@@ -574,14 +574,18 @@ class KbClient:
         """Vector index statistics."""
         return await self._get_backend("/api/v1/search/stats", kb_id=kb_id)
 
-    async def delete_kb_vectors(self, kb_id: str, kb_path: str = ""):
+    async def delete_kb_vectors(self, kb_id: str, kb_path: str = "", path_only: bool = False):
         """Delete an entire KB's vector collection (backend DELETE /api/v1/search/kb/{kb_id}).
 
         Backend auto-cleans both kb_{uuid} and kb_{path} naming conventions,
         silently handling non-existent collections. Used for orphan collection cleanup.
         kb_path is optional; when passed, also cleans the path-named collection.
+        path_only=True: delete ONLY the raw path/name-named collection, never the
+        UUID one — for duplicate cleanup where the KB still owns real UUID vectors.
         """
         params = {"kb_path": kb_path} if kb_path else {}
+        if path_only:
+            params["path_only"] = "true"
         return await self._request(
             "DELETE", f"/api/v1/search/kb/{kb_id}",
             base=self.backend_url, params=params,

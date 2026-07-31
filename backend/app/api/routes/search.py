@@ -500,12 +500,16 @@ async def search_stats(kb_id: str | None = None) -> dict[str, Any]:
 
 
 @router.delete("/kb/{kb_id}", dependencies=[Depends(verify_token)])
-async def delete_kb_vectors(kb_id: str, kb_path: str = "") -> dict[str, Any]:
+async def delete_kb_vectors(kb_id: str, kb_path: str = "", path_only: bool = False) -> dict[str, Any]:
     """删除某知识库的整个向量 collection。
 
     自动清理两种命名约定（kb_{uuid} 与 kb_{path}），因为历史索引可能用 UUID 也可能用 path。
     KB 删除时由 web 端联动调用，避免孤儿 collection 累积（Fix 4.2）。
     delete_kb 内部对不存在的 collection 静默处理，故可安全地对两个候选都调用。
+
+    path_only=True：仅删除 kb_{kb_id} 原名形式（不做 canonical/UUID 解析），
+    用于 duplicate 清理 —— 库仍存在且持有 UUID 真数据时，只应删 path-named
+    重复集合，绝不能把 UUID 版一并删掉（2026-07-31 事故：cleanup 误删 714/548 chunks）。
     """
     candidates = list(dict.fromkeys([c for c in [kb_id, kb_path] if c]))  # 去重保序
     # Use _get_vs() readiness guard (not the bare _vs singleton) so we don't
@@ -515,13 +519,19 @@ async def delete_kb_vectors(kb_id: str, kb_path: str = "") -> dict[str, Any]:
     if not vs:
         return {"success": True, "kb_id": kb_id, "kb_path": kb_path,
                 "cleaned": [], "note": "vector service not ready — nothing to delete"}
+    cleaned = []
     for cand in candidates:
         try:
-            vs.delete_kb(cand)
-            logger.info("Deleted vector collection for %s", cand)
+            if path_only:
+                vs.delete_kb_path_only(cand)
+            else:
+                vs.delete_kb(cand)
+            cleaned.append(cand)
+            logger.info("Deleted vector collection for %s (path_only=%s)", cand, path_only)
         except Exception as e:
             logger.warning("delete_kb failed for %s: %s", cand, e)
-    return {"success": True, "kb_id": kb_id, "kb_path": kb_path, "cleaned": candidates}
+    return {"success": True, "kb_id": kb_id, "kb_path": kb_path,
+            "path_only": path_only, "cleaned": cleaned}
 
 
 @router.delete("/document", dependencies=[Depends(verify_token)])

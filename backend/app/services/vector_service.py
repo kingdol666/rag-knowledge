@@ -664,6 +664,21 @@ class VectorService:
             except Exception:
                 pass
 
+    def delete_kb_path_only(self, kb_id: str) -> None:
+        """Delete ONLY the raw path/name-named collection (kb_<kb_id> as-is),
+        never the canonical UUID collection.
+
+        Used by orphan/duplicate cleanup: when a KB still exists and owns a
+        real UUID collection, the path-named duplicate must be removed WITHOUT
+        touching the UUID one. Routing the path through _collection_name()
+        would resolve to the UUID form and delete production vectors
+        (2026-07-31 incident: kb_Materials-Science cleanup deleted 714 chunks).
+        """
+        try:
+            self.client.delete_collection(f"{config.vector_collection_prefix}{kb_id}")
+        except Exception:
+            pass
+
     # ── 内部工具 ──────────────────────────────────────────────────
 
     def _delete_doc_chunks(self, collection, doc_path: str) -> None:

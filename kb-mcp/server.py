@@ -2114,6 +2114,7 @@ async def kb_cleanup_orphan_collections(dry_run: bool = True) -> str:
                 uid_chunks = next((cc.get("chunk_count", 0) for cc in collections if cc.get("collection") == f"kb_{uid}"), 0)
                 duplicates.append({
                     "collection": name, "key": key, "chunk_count": chunks,
+                    "is_duplicate": True,  # 删除时只删 path-named 版，绝不碰 UUID 真数据
                     "note": f"Duplicate: KB already has UUID collection kb_{uid}({uid_chunks} chunks)"
                 })
             # else: path collection without UUID version, keep as valid
@@ -2139,10 +2140,13 @@ async def kb_cleanup_orphan_collections(dry_run: bool = True) -> str:
         })
 
     # Actual cleanup
+    # ⚠️ duplicate 清理只删 path-named 版（path_only=True）：库仍存在且持有 UUID
+    # 真数据时，delete_kb_vectors(key) 会把 UUID 版一并删掉（2026-07-31 事故：
+    # kb_Materials-Science/kb_Energy-Batteries 的 714/548 chunks 被误删）。
     cleaned = []
     for o in orphans + duplicates:
         key = o["key"]
-        r = await client.delete_kb_vectors(key)
+        r = await client.delete_kb_vectors(key, path_only=bool(o.get("is_duplicate")))
         ok = bool(r.get("success")) if isinstance(r, dict) else False
         cleaned.append({"collection": o["collection"], "key": key, "note": o.get("note", ""), "deleted": ok})
     return _j({

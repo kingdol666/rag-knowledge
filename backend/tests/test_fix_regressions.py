@@ -439,6 +439,27 @@ class TestDeleteKbCleansBothForms:
         assert "kb_Old-Name" in deleted, deleted
         assert "kb_abc-1234" in deleted, deleted
 
+    def test_path_only_never_touches_uuid_collection(self, monkeypatch):
+        """2026-07-31 incident regression: duplicate cleanup routed the path
+        name through delete_kb_vectors, which resolved it to the UUID
+        collection and deleted 714/548 production chunks. delete_kb_path_only
+        must delete ONLY kb_<raw-name> and never the canonical UUID form.
+        """
+        from unittest.mock import MagicMock
+        from app.services import vector_service as vs_mod
+
+        vs = vs_mod.VectorService()
+        vs._kb_id_cache = {"Materials-Science": "79c67037-481c-4213-b5b8-e684ecb6f6ba"}
+        deleted = []
+        fake_client = MagicMock()
+        fake_client.delete_collection.side_effect = lambda name: deleted.append(name)
+        vs._client = fake_client
+
+        vs.delete_kb_path_only("Materials-Science")
+
+        assert deleted == ["kb_Materials-Science"], deleted
+        assert not any("79c67037" in n for n in deleted), deleted
+
 
 # ──────────────────────────────────────────────────────────────────────────
 # F6 — check_stale clears needs_sync when fresh
