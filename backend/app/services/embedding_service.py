@@ -26,10 +26,37 @@ _HF_CACHE.mkdir(parents=True, exist_ok=True)
 class EmbeddingService:
     _model: Any | None = None
     _available: bool = True
+    # Bounded retry for transient load failures (e.g. CUDA "Cannot copy out of
+    # meta tensor" during a concurrent-load race). We only give up after this
+    # many consecutive failures, so a one-off hiccup does not permanently
+    # disable vector search until process restart (E2E BUG-1).
+    _load_failures: int = 0
+    _MAX_LOAD_FAILURES: int = 3
 
     @classmethod
     def is_available(cls) -> bool:
         return cls._available
+
+    @classmethod
+    def _record_load_failure(cls, exc: Exception) -> None:
+        """Record a model-load failure; permanently degrade only after the
+        bounded retry budget is exhausted. Transient failures (e.g. a CUDA
+        meta-tensor race during concurrent first-load) get another chance on
+        the next embed() call instead of dooming the whole process."""
+        cls._load_failures += 1
+        if cls._load_failures >= cls._MAX_LOAD_FAILURES:
+            cls._available = False
+            logger.warning(
+                "Embedding model unavailable after %d attempts: %s. "
+                "Vector search permanently degraded until process restart.",
+                cls._load_failures, exc,
+            )
+        else:
+            logger.warning(
+                "Embedding model load failed (attempt %d/%d): %s. "
+                "Will retry on next request.",
+                cls._load_failures, cls._MAX_LOAD_FAILURES, exc,
+            )
 
     @classmethod
     def get_model(cls):
@@ -57,6 +84,7 @@ class EmbeddingService:
                 logger.info("Embedding model loaded: %s on %s (cache=%s)",
                             config.embedding_model_name, config.embedding_device,
                             _HF_CACHE)
+                cls._load_failures = 0
             except OSError as e:
                 # local_files_only 失败：可能从未执行 download_model.py
                 # （如首次部署或缓存被清除），尝试在线下载
@@ -69,14 +97,11 @@ class EmbeddingService:
                     )
                     logger.info("Embedding model loaded FROM NETWORK: %s",
                                 config.embedding_model_name)
+                    cls._load_failures = 0
                 except Exception as e2:
-                    cls._available = False
-                    logger.warning("Embedding model unavailable: %s. "
-                                   "Vector search will be degraded.", e2)
+                    cls._record_load_failure(e2)
             except Exception as e:
-                cls._available = False
-                logger.warning("Embedding model unavailable: %s. "
-                               "Vector search will be degraded.", e)
+                cls._record_load_failure(e)
         return cls._model
 
     @classmethod

@@ -111,6 +111,44 @@ async def _auto_unindex_kb(kb_id: str) -> None:
         print(f"[auto-unindex] WARNING: graph cleanup failed for KB {kb_id}: {exc}", file=sys.stderr)
 
 
+def _norm(s: str) -> str:
+    return (s or "").replace("\\", "/").strip().lower()
+
+
+async def _resolve_kb_aliases(client, kb_id: str) -> set[str]:
+    """Resolve a kb_id to the set of all its identifiers (UUID, path, name).
+
+    The backend's experience search returns hits keyed by ``kb_path``, but
+    callers may pass any of UUID/path/name as ``kb_id``. Returning all forms
+    lets the scope filter match regardless of which form the caller used.
+    Falls back to just the normalised kb_id if the catalog fetch fails.
+    """
+    aliases = {_norm(kb_id)}
+    try:
+        # Allow tests to inject a precomputed catalog via attribute hook.
+        catalog = getattr(client, "_kb_aliases", None)
+        if catalog is None:
+            data = await client.kb_list()
+            catalog = data.get("knowledgeBases", []) if isinstance(data, dict) else []
+        for kb in catalog:
+            ids = [kb.get("kbId"), kb.get("kb_id"), kb.get("id"), kb.get("path"), kb.get("name")]
+            if _norm(kb_id) in {_norm(x) for x in ids if x}:
+                for x in ids:
+                    if x:
+                        aliases.add(_norm(x))
+                break
+    except Exception:
+        pass
+    return aliases
+
+
+def _matches_any_alias(exp: dict, aliases: set[str]) -> bool:
+    """True if the experience's kb_id/kb_path matches any alias."""
+    for field in ("kb_id", "kb_path", "kb_name"):
+        if _norm(exp.get(field, "")) in aliases:
+            return True
+    return False
+
 
 def _exists(file_path: str) -> bool:
     from pathlib import Path
@@ -1287,12 +1325,15 @@ async def experience_search_smart(query: str, top_k: int = 10,
     client = _client()
     result = await client.experience_search_global(
         query, top_k=top_k * 2, score_threshold=threshold, verify_content=verify_content)
-    # Scope to a single KB when kb_id is provided (default remains cross-KB/global)
+    # Scope to a single KB when kb_id is provided (default remains cross-KB/global).
+    # The backend response carries ``kb_path`` (and sometimes ``kb_id``), so we
+    # must resolve the requested kb_id to ALL of its aliases (UUID / path /
+    # name) and match any of them — otherwise passing a UUID silently drops
+    # every hit because UUID ∉ kb_path (E2E BUG-2).
     if kb_id and isinstance(result, dict):
-        _kb_norm = kb_id.replace("\\", "/").strip()
+        aliases = await _resolve_kb_aliases(client, kb_id)
         _kept = [e for e in result.get("experiences", [])
-                 if _kb_norm in (str(e.get("kb_id", "")).replace("\\", "/"),
-                                 str(e.get("kb_path", "")).replace("\\", "/"))]
+                 if _matches_any_alias(e, aliases)]
         result["experiences"] = _kept
         result["count"] = len(_kept)
         result["scoped_kb_id"] = kb_id

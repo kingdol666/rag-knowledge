@@ -155,6 +155,35 @@ class GraphService:
                 return kb["path"]
         return ""
 
+    def _resolve_doc_path(self, doc_path: str) -> str:
+        """Normalise a doc_path for graph lookups.
+
+        Graph nodes are keyed on graph_doc_id = 'doc::' + full_path. A bare
+        filename (no KB prefix) never matches an ingest-time id and silently
+        returns an empty graph (E2E BUG-4). Resolve a bare name to its full
+        kb-prefixed path by scanning the storage catalog; full paths and
+        already-canonical forms pass through unchanged.
+        """
+        if not doc_path:
+            return doc_path
+        # Already qualified (contains a separator) → use as-is.
+        if "/" in doc_path or "\\" in doc_path:
+            return doc_path
+        try:
+            from app.services.storage_reader_service import storage_reader
+            for kb in storage_reader.list_knowledge_bases():
+                kb_path = kb.get("path", "")
+                if not kb_path:
+                    continue
+                for d in storage_reader.list_documents(kb_path):
+                    name = (d.get("name") or "").strip()
+                    dp = (d.get("path") or "").replace("\\", "/")
+                    if name == doc_path or dp.rsplit("/", 1)[-1] == doc_path:
+                        return dp
+        except Exception as e:
+            logger.debug("doc path resolution failed for %s: %s", doc_path, e)
+        return doc_path
+
     def _resolve_kb_id(self, raw):
         if re.match(r"^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", raw.lower()):
             return raw
@@ -695,7 +724,6 @@ class GraphService:
         with self.driver.session(database=config.graph_database) as s:
             return [dict(r) for r in s.run("MATCH (t:Tag) WHERE t.name CONTAINS $k OPTIONAL MATCH (t)<-[:HAS_TAG]-(d:Document) WITH t, count(d) AS dc RETURN t.name AS name, dc AS doc_count ORDER BY dc DESC LIMIT $limit", k=keyword, limit=limit)]
 
-    @_retry_transient
     def get_related_documents(self, doc_path, limit=20):
         """获取与目标文档真正相关的文档（质量过滤）。
 
@@ -705,7 +733,7 @@ class GraphService:
         - agent_judged: 直接通过
         按综合相关性得分排序：vector_similar(0.7) > agent_judged(0.5) > shared_tag(0.3)
         """
-        gid = _graph_doc_id(doc_path)
+        gid = _graph_doc_id(self._resolve_doc_path(doc_path))
         with self.driver.session(database=config.graph_database) as s:
             return [dict(r) for r in s.run("""
                 MATCH (me:Document {graph_doc_id: $gid})-[r:RELATED_TO]->(other:Document)
@@ -747,7 +775,7 @@ class GraphService:
           "summary": {total, vector_count, tag_count, agent_count, cross_kb_count}
         }
         """
-        gid = _graph_doc_id(doc_path)
+        gid = _graph_doc_id(self._resolve_doc_path(doc_path))
         with self.driver.session(database=config.graph_database) as s:
             # 获取文档自身的 kb_id
             me_rec = s.run("MATCH (d:Document {graph_doc_id: $gid}) RETURN d.kb_id AS kb_id", gid=gid).single()
@@ -799,7 +827,7 @@ class GraphService:
 
     @_retry_transient
     def get_related_documents_by_reason(self, doc_path, reason, limit=20):
-        gid = _graph_doc_id(doc_path)
+        gid = _graph_doc_id(self._resolve_doc_path(doc_path))
         with self.driver.session(database=config.graph_database) as s:
             return [dict(r) for r in s.run("MATCH (me:Document {graph_doc_id: $gid})-[r:RELATED_TO {reason: $reason}]->(other:Document) RETURN other.graph_doc_id AS graph_doc_id, other.path AS path, other.name AS name, other.kb_id AS kb_id, r.weight AS weight ORDER BY r.weight DESC LIMIT $limit", gid=gid, reason=reason, limit=limit)]
 
@@ -818,7 +846,7 @@ class GraphService:
         - 返回 relevance 综合得分
         - cross_kb_links 仅包含真正跨KB且有意义的连接
         """
-        gid = _graph_doc_id(doc_path)
+        gid = _graph_doc_id(self._resolve_doc_path(doc_path))
         with self.driver.session(database=config.graph_database) as s:
             doc = s.run("""
                 MATCH (d:Document {graph_doc_id: $gid})
