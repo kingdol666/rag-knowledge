@@ -1,0 +1,8 @@
+# soul-config.yml — 宪法层,自动流程只读
+# 由 soul_config_update(人工/管理员)修改
+
+kb_scope: []              # 公开库 kb_id 列表;空=仅人格问答不可学习;["*"]=全库;禁含 soul- 前缀库
+is_template: true         # 仅模板库为 true;soul_list/路由/learn_all 排除
+route_weight: 1.0         # 0.0=停用(路由排除)
+domain_labels: []         # 路由初筛领域标签(中文)
+supported_task_types: []  # 路由 task_type 注册值

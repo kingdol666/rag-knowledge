@@ -13,6 +13,8 @@ from typing import Any, Optional
 
 import yaml
 
+logger = logging.getLogger(__name__)
+
 from app.utils.paths import get_storage_root
 from app.utils.atomic_io import atomic_write_text
 DEFAULT_MEDITATION_CONFIG: dict[str, Any] = {
@@ -33,6 +35,10 @@ DEFAULT_MEDITATION_CONFIG: dict[str, Any] = {
     "incremental_enabled": True,
     "created_at": None,
     "updated_at": None,
+    # ── SOUL extension (M0.3): meditation_mode routes the scheduler branch ──
+    "meditation_mode": "experience",   # "experience" | "soul"; soul KBs override to "soul"
+    "max_questions_per_run": 10,       # soul mode: max questions per learn run
+    "min_pas_auto_approve": 4.0,       # reserved: PAS threshold (manual approval is the norm)
 }
 
 
@@ -119,6 +125,7 @@ def update_meditation_config(kb_id: str, updates: dict) -> dict:
 
 def _update_meditation_config_locked(kb_path: str, yaml_path: Path, updates: dict) -> dict:
     """持有文件锁时的实际更新逻辑（读改写全程在锁内）。"""
+    kb_id = kb_path  # 路径即合法 kb_id(平台约定: UUID 或路径均可)
     # Read existing YAML
     if yaml_path.exists():
         try:

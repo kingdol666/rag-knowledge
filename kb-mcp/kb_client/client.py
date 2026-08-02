@@ -22,6 +22,7 @@ HTTP_TIMEOUT = int(os.environ.get("MCP_HTTP_TIMEOUT", "30"))  # seconds — gene
 PARSE_TIMEOUT = int(os.environ.get("MCP_PARSE_TIMEOUT", "300"))  # seconds
 INDEX_TIMEOUT = int(os.environ.get("MCP_INDEX_TIMEOUT", "600"))  # seconds — large-doc CPU embedding
 MEDITATION_TIMEOUT = int(os.environ.get("MCP_MEDITATION_TIMEOUT", "600"))  # seconds — meditation agent (omp/claude) may run minutes
+SOUL_TIMEOUT = int(os.environ.get("MCP_SOUL_TIMEOUT", "120"))  # seconds — soul_ask sync synthesis
 
 
 class KbClient:
@@ -764,7 +765,8 @@ class KbClient:
         solution: str = "", result: str = "success",
         key_lessons: list = None, tags: list = None,
         severity: str = "normal", related_docs: list = None,
-        prerequisites: list = None, metrics: dict = None) -> dict:
+        prerequisites: list = None, metrics: dict = None,
+        source_questions: list = None) -> dict:
         """Create a new experience record."""
         if (err := self._require_kb_id(kb_id)): return err
         body = {
@@ -773,6 +775,7 @@ class KbClient:
             "key_lessons": key_lessons or [], "tags": tags or [],
             "severity": severity, "related_docs": related_docs or [],
             "prerequisites": prerequisites or [], "metrics": metrics or {},
+            "source_questions": source_questions or [],
         }
         return await self._post_backend_json(f"/api/v1/experience/{kb_id}", body)
 
@@ -938,6 +941,123 @@ class KbClient:
         """Apply decay rules."""
         if (err := self._require_kb_id(kb_id)): return err
         return await self._post_backend_json(f"/api/v1/experience/{kb_id}/decay", {})
+
+    # ================================================================
+    # SOUL (人格训练系统)
+    # ================================================================
+
+    async def soul_ask(self, query: str, soul_kb_id: str = "", task_goal: str = "",
+                       task_type: str = "", context_override: str = "",
+                       conversation_id: str = "") -> dict:
+        """人格注入问答(同步;长任务由 MCP 层 task_registry 包裹)。"""
+        body = {
+            "query": query, "soul_kb_id": soul_kb_id, "task_goal": task_goal,
+            "task_type": task_type, "async_mode": False,
+            "context_override": context_override, "conversation_id": conversation_id,
+        }
+        return await self._post_backend_json("/api/v1/soul/ask", body, timeout=SOUL_TIMEOUT + 15)
+
+    async def soul_status(self, soul_kb_id: str, summary_window: int = 30) -> dict:
+        if (err := self._require_kb_id(soul_kb_id)): return err
+        return await self._get_backend(
+            f"/api/v1/soul/{soul_kb_id}/status", summary_window=summary_window)
+
+    async def soul_list(self) -> dict:
+        return await self._get_backend("/api/v1/soul/list")
+
+    async def soul_bootstrap(self, soul_kb_id: str, kb_scope: list = None,
+                             domain_labels: list = None,
+                             supported_task_types: list = None) -> dict:
+        """后端侧初始化(soul-config.yml + profile + meditation config)。"""
+        return await self._post_backend_json("/api/v1/soul/bootstrap", {
+            "soul_kb_id": soul_kb_id, "kb_scope": kb_scope or [],
+            "domain_labels": domain_labels or [],
+            "supported_task_types": supported_task_types or [],
+        })
+
+    async def soul_config_update(self, soul_kb_id: str, kb_scope: list = None,
+                                 domain_labels: list = None,
+                                 supported_task_types: list = None,
+                                 route_weight: float = None) -> dict:
+        if (err := self._require_kb_id(soul_kb_id)): return err
+        body = {}
+        if kb_scope is not None: body["kb_scope"] = kb_scope
+        if domain_labels is not None: body["domain_labels"] = domain_labels
+        if supported_task_types is not None: body["supported_task_types"] = supported_task_types
+        if route_weight is not None: body["route_weight"] = route_weight
+        return await self._put_backend_json(f"/api/v1/soul/{soul_kb_id}/config", body)
+
+    async def soul_delete(self, soul_kb_id: str, purge_experiences: bool = False) -> dict:
+        """删除前 checkpoint + 缓存清理(后端侧);web 层 KB 删除由 MCP 工具编排。"""
+        if (err := self._require_kb_id(soul_kb_id)): return err
+        return await self._request(
+            "DELETE", f"/api/v1/soul/{soul_kb_id}", base=self.backend_url,
+            params={"purge_experiences": purge_experiences})
+
+    async def soul_router(self, query: str, task_goal: str = "", task_type: str = "") -> dict:
+        return await self._post_backend_json("/api/v1/soul/router", {
+            "query": query, "task_goal": task_goal, "task_type": task_type,
+        })
+
+    async def soul_router_status(self) -> dict:
+        return await self._get_backend("/api/v1/soul/router/status")
+
+    async def soul_learn(self, soul_kb_id: str, doc_paths: list, limit: int = 5) -> dict:
+        if (err := self._require_kb_id(soul_kb_id)): return err
+        return await self._post_backend_json(
+            f"/api/v1/soul/{soul_kb_id}/learn",
+            {"doc_paths": doc_paths, "limit": limit}, timeout=MEDITATION_TIMEOUT)
+
+    async def soul_learn_all(self, soul_kb_id: str = "", max_docs: int = 20,
+                             dry_run: bool = False) -> dict:
+        url = f"/api/v1/soul/{soul_kb_id}/learn-all" if soul_kb_id else "/api/v1/soul/learn-all"
+        if soul_kb_id:
+            return await self._post_backend_json(url, {"max_docs": max_docs, "dry_run": dry_run},
+                                                 timeout=MEDITATION_TIMEOUT)
+        return await self._post_backend_json(url, {"max_docs": max_docs, "dry_run": dry_run},
+                                             timeout=MEDITATION_TIMEOUT)
+
+    async def soul_eval(self, soul_kb_id: str, question: str, answer: str,
+                        evidence_paths: list) -> dict:
+        if (err := self._require_kb_id(soul_kb_id)): return err
+        return await self._post_backend_json(
+            f"/api/v1/soul/{soul_kb_id}/eval",
+            {"question": question, "answer": answer, "evidence_paths": evidence_paths or []},
+            timeout=SOUL_TIMEOUT)
+
+    async def soul_checkpoint(self, soul_kb_id: str) -> dict:
+        if (err := self._require_kb_id(soul_kb_id)): return err
+        return await self._post_backend_json(f"/api/v1/soul/{soul_kb_id}/checkpoint", {})
+
+    async def soul_review_drafts(self, soul_kb_id: str, draft_type: str = "memory",
+                                 action: str = "list", draft_id: str = "",
+                                 force: bool = False) -> dict:
+        if (err := self._require_kb_id(soul_kb_id)): return err
+        return await self._post_backend_json(f"/api/v1/soul/{soul_kb_id}/review-drafts", {
+            "type": draft_type, "action": action, "draft_id": draft_id, "force": force,
+        })
+
+    async def soul_calibrate(self, soul_kb_id: str) -> dict:
+        if (err := self._require_kb_id(soul_kb_id)): return err
+        return await self._post_backend_json(
+            f"/api/v1/soul/{soul_kb_id}/calibrate", {}, timeout=SOUL_TIMEOUT)
+
+    async def soul_reflect(self, soul_kb_id: str) -> dict:
+        if (err := self._require_kb_id(soul_kb_id)): return err
+        return await self._post_backend_json(
+            f"/api/v1/soul/{soul_kb_id}/reflect", {}, timeout=MEDITATION_TIMEOUT)
+
+    async def soul_rollback(self, soul_kb_id: str, checkpoint_id: str) -> dict:
+        if (err := self._require_kb_id(soul_kb_id)): return err
+        return await self._post_backend_json(
+            f"/api/v1/soul/{soul_kb_id}/rollback", {"checkpoint_id": checkpoint_id})
+
+    async def soul_export(self, soul_kb_id: str, min_score: float = 4.0,
+                          limit: int = 1000) -> dict:
+        if (err := self._require_kb_id(soul_kb_id)): return err
+        return await self._post_backend_json(
+            f"/api/v1/soul/{soul_kb_id}/export",
+            {"min_score": min_score, "limit": limit})
 
     async def meditation_status(self, kb_id: str = "") -> dict:
         """Get meditation status."""

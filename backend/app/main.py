@@ -19,6 +19,7 @@ from app.api.routes import (
     experience_router,
     config_router,
     system_router,
+    soul_router,
 )
 
 # ── Logging: console + rotating file ───────────────────────────────
@@ -197,6 +198,7 @@ app.include_router(graph_router)
 app.include_router(experience_router)
 app.include_router(config_router)
 app.include_router(meditation_router)
+app.include_router(soul_router)
 app.include_router(system_router)
 
 

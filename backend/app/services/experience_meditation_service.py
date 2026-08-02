@@ -579,6 +579,12 @@ class ExperienceMeditationScheduler:
                 if not config.get("enabled", False):
                     continue
 
+                # ── M0.4 SOUL mode branch: soul KBs skip the entire experience path ──
+                mode = config.get("meditation_mode", "experience")
+                if mode == "soul":
+                    await self._run_soul_meditation(kb_cfg)
+                    continue
+
                 # Check if due
                 last_run_at = config.get("last_run_at")
                 if last_run_at:
@@ -661,6 +667,65 @@ class ExperienceMeditationScheduler:
             report["error"] = str(e)
             self._last_result = report
             return report
+
+    async def _run_soul_meditation(self, kb_cfg: dict) -> dict:
+        """Soul-mode meditation: incremental soul learning (2.6 完整实现).
+
+        调度器路径与手动 soul_learn 共用 per-soul 锁(learn_incremental 内部获取),
+        不用本循环的 kb_lock(避免与手动路径互斥语义不一致)。
+        """
+        from app.services.kb_meditation_config import update_meditation_config
+
+        kb_id = kb_cfg["kb_id"]
+        kb_path = kb_cfg.get("kb_path", kb_id)
+        config = kb_cfg.get("config", {})
+
+        # Due check (soul mode manages its own interval/cooldown)
+        last_run_at = config.get("last_run_at")
+        if last_run_at:
+            try:
+                last_dt = datetime.fromisoformat(last_run_at)
+                interval_h = config.get("interval_hours", 24)
+                if (datetime.now(timezone.utc) - last_dt).total_seconds() < interval_h * 3600:
+                    return {"mode": "soul", "kb_id": kb_id, "status": "not_due"}
+            except Exception:
+                pass
+
+        logger.info("Soul meditation trigger for %s (mode=soul)", kb_id)
+        try:
+            from app.services.soul_learn import learn_incremental
+            report = await learn_incremental(kb_id)
+        except Exception as e:
+            logger.exception("Soul meditation failed for %s", kb_id)
+            try:
+                update_meditation_config(kb_id, {
+                    "last_run_at": datetime.now(timezone.utc).isoformat(),
+                    "last_run_status": "failed",
+                    "total_runs": config.get("total_runs", 0) + 1,
+                })
+            except Exception:
+                pass
+            return {"mode": "soul", "kb_id": kb_id, "kb_path": kb_path,
+                    "status": "failed", "error": str(e)[:300]}
+
+        ok = bool(report.get("success", True)) and not report.get("error")
+        try:
+            update_meditation_config(kb_id, {
+                "last_run_at": datetime.now(timezone.utc).isoformat(),
+                "last_run_status": "success" if ok else "failed",
+                "total_runs": config.get("total_runs", 0) + 1,
+                "total_experiences_generated": config.get("total_experiences_generated", 0)
+                + int(report.get("memories_created", 0) or 0),
+            })
+        except Exception as e:
+            logger.warning("Failed to update soul meditation config for %s: %s", kb_id, e)
+
+        return {"mode": "soul", "kb_id": kb_id, "kb_path": kb_path,
+                "status": "completed" if ok else "failed",
+                "questions": report.get("questions_generated", 0),
+                "memories": report.get("memories_created", 0),
+                "gaps": report.get("gaps_count", 0),
+                "cost": report.get("cost_estimate", 0.0)}
 
     # ── Meditation Cycle ───────────────────────────────────────────────
 

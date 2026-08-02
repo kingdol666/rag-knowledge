@@ -1217,7 +1217,8 @@ async def experience_create(kb_id: str, title: str, scenario: str = "",
     category: str = "tip", problem: str = "", solution: str = "",
     result: str = "success", key_lessons: list = None, tags: list = None,
     severity: str = "normal", related_docs: list = None,
-    prerequisites: list = None, metrics: str = "") -> str:
+    prerequisites: list = None, metrics: str = "",
+    source_questions: list = None) -> str:
     """Create an experience record.
 
     An experience is reusable knowledge distilled from practice. Compared to documents, experiences have rating, application records, scenario binding, etc.
@@ -1238,6 +1239,7 @@ async def experience_create(kb_id: str, title: str, scenario: str = "",
         related_docs: List of related document paths (e.g. ["Thermal-Power/doc1.md"])
         prerequisites: List of prerequisites
         metrics: JSON string of custom quantitative metrics (e.g. '{"effectiveness": 95, "difficulty": 60}')
+        source_questions: List of source questions this experience was distilled from (SOUL learning provenance)
 
     Returns:
         {success, experience: {id, title, path, scenario, ...}}
@@ -1253,7 +1255,7 @@ async def experience_create(kb_id: str, title: str, scenario: str = "",
     return _j(await _client().experience_create(
         kb_id, title, scenario, category, problem, solution, result,
         key_lessons or [], tags or [], severity, related_docs or [],
-        prerequisites or [], parsed_metrics
+        prerequisites or [], parsed_metrics, source_questions or []
     ))
 
 
@@ -2617,6 +2619,281 @@ def _load_dotenv() -> None:
             val = val.strip().strip("\"'")
             if key:
                 os.environ.setdefault(key, val)
+
+# ================================================================
+# SOUL 人格训练系统工具(16 个,薄封装 /api/v1/soul/*)
+# ================================================================
+
+_TEMPLATE_DOCS = ["soul-definition.md", "values.md", "thinking-style.md", "memory-conventions.md"]
+
+
+def _soul_name_valid(name: str) -> str | None:
+    """校验 soul_name;返回错误信息或 None(实现见 soul_validate.py)。"""
+    from soul_validate import soul_name_valid
+    return soul_name_valid(name)
+
+
+def _soul_storage_root() -> Path:
+    """storage/tree-file-system 根(与模板 FS 读取共用)。"""
+    try:
+        from config import resolve_path
+        return Path(resolve_path("storage/tree-file-system"))
+    except Exception:
+        return Path(__file__).resolve().parent.parent / "storage" / "tree-file-system"
+
+
+@mcp.tool()
+async def soul_ask(query: str, soul_kb_id: str = "", task_goal: str = "",
+                    task_type: str = "", async_mode: bool = False,
+                    context_override: str = "", conversation_id: str = "") -> str:
+    """人格注入问答: 人格一致 + 知识增强 + 可溯源引用 + PAS 分。
+
+    soul_kb_id 为空时自动路由(按 task_goal/task_type/query 匹配最适 SOUL);
+    显式指定则完全跳过路由。async_mode=True 返回 task_id(kb_task_status 轮询)。
+
+    Args:
+        query: 问题(1-4000 字)
+        soul_kb_id: 指定 SOUL(空=自动路由)
+        task_goal: 任务目标(如"教学"/"研究"),辅助路由
+        task_type: 任务类型(如"技术方案评审"),辅助路由
+        async_mode: True=异步返回 task_id
+        context_override: 临时背景知识(不持久化)
+        conversation_id: 对话 ID(M1 no-op 文档化)
+
+    Returns:
+        {answer, citations, pas_score, persona_bundle, selected_soul, route_reason,
+         route_confidence, route_candidates, route_uncertain, language_style_warning}
+    """
+    if async_mode:
+        async def _work():
+            return await _client().soul_ask(
+                query, soul_kb_id, task_goal, task_type, context_override, conversation_id)
+        task_id = task_registry.submit(
+            _work(), "soul_ask", {"query": query[:80], "soul_kb_id": soul_kb_id})
+        return _running_payload(task_id, "soul_ask", {"soul_kb_id": soul_kb_id})
+    return _j(await _client().soul_ask(
+        query, soul_kb_id, task_goal, task_type, context_override, conversation_id))
+
+
+@mcp.tool()
+async def soul_status(soul_kb_id: str, summary_window: int = 30) -> str:
+    """SOUL 学习指标: 草稿/记忆/缺口/判官分歧/路由统计/成本。"""
+    return _j(await _client().soul_status(soul_kb_id, summary_window))
+
+
+@mcp.tool()
+async def soul_list() -> str:
+    """列出全部 SOUL 库(排除模板)。"""
+    return _j(await _client().soul_list())
+
+
+@mcp.tool()
+async def soul_router(query: str, task_goal: str = "", task_type: str = "") -> str:
+    """独立路由工具: 返回候选 SOUL 排序(可审计入口)。"""
+    return _j(await _client().soul_router(query, task_goal, task_type))
+
+
+@mcp.tool()
+async def soul_init(soul_name: str, template: str = "soul-模板", kb_scope: list = None,
+                     domain_labels: list = None, supported_task_types: list = None) -> str:
+    """创建新 SOUL: 模板复制 4 文档 + soul-config + 初始 profile + 索引。
+
+    编排层(kb-mcp): kb_create(web) → 模板 FS 读 4 文档 → kb_doc_create ×4(web)
+    → POST /api/v1/soul/bootstrap(后端: soul-config/profile/meditation config)
+    → 索引 4 文档(60s 内可检索)。初始化低频,多次 HTTP 可接受。
+
+    Args:
+        soul_name: SOUL 名(如 "soul-材料学")
+        template: 模板库名(默认 soul-模板)
+        kb_scope: 学习范围(公开库 kb_id 列表;空=仅人格问答;["*"]=全库)
+        domain_labels: 路由领域标签(中文)
+        supported_task_types: 路由任务类型注册值
+
+    Returns:
+        {kb_id, name, profile_summary_generated, meditation_config_created, docs_created}
+    """
+    import asyncio as _asyncio
+
+    name = soul_name.strip()
+    if not name.startswith("soul-"):
+        name = f"soul-{name}"
+    if (err := _soul_name_valid(name)):
+        return _j({"success": False, "error": "invalid_soul_name", "detail": err})
+
+    client = _client()
+    # 1) 建库(web 层)
+    created = await client.kb_create(name)
+    kb_id = (created.get("knowledgeBase") or {}).get("id") or name
+    if not created.get("success", True) and created.get("error"):
+        return _j(created)
+
+    # 2) 模板文档 FS 读取 + 逐文档创建
+    storage_root = _soul_storage_root()
+    template_dir = storage_root / template
+    docs_created = []
+    for doc in _TEMPLATE_DOCS:
+        src = template_dir / doc
+        if not src.exists():
+            continue
+        content = src.read_text(encoding="utf-8", errors="replace")
+        r = await client.kb_doc_create(kb_id, doc, content)
+        docs_created.append({"name": doc, "ok": bool(r.get("success", True))})
+
+    # 3) 后端 bootstrap(soul-config + profile + meditation config)
+    boot = await client.soul_bootstrap(kb_id, kb_scope or [], domain_labels or [], supported_task_types or [])
+
+    # 4) 索引 4 文档(AC25: 60s 内可检索)
+    for doc in _TEMPLATE_DOCS:
+        try:
+            await client.index_document(kb_id, doc)
+        except Exception as e:
+            print(f"[soul_init] index warning {doc}: {e}", file=sys.stderr)
+
+    return _j({
+        "success": True,
+        "kb_id": kb_id,
+        "name": name,
+        "docs_created": docs_created,
+        "profile_summary_generated": bool(boot.get("profile_summary_generated")),
+        "meditation_config_created": bool(boot.get("meditation_config_created")),
+    })
+
+
+@mcp.tool()
+async def soul_config_update(soul_kb_id: str, kb_scope: list = None,
+                              domain_labels: list = None,
+                              supported_task_types: list = None,
+                              route_weight: float = None) -> str:
+    """更新 SOUL 配置(kb_scope/domain_labels/supported_task_types/route_weight)。
+
+    scope 缩小后旧范围来源记忆标记 stale(不删)。route_weight=0 停用路由。
+    """
+    return _j(await _client().soul_config_update(
+        soul_kb_id, kb_scope, domain_labels, supported_task_types, route_weight))
+
+
+@mcp.tool()
+async def soul_delete(soul_kb_id: str, purge_experiences: bool = False) -> str:
+    """删除 SOUL: 先 checkpoint(快照保留)→ 删 KB(web 层)→ 清理路由缓存 + tombstone。
+
+    purge_experiences=True 时后端另行处理共享经验关联清理。
+    """
+    import json as _json
+    from datetime import datetime as _dt
+    from pathlib import Path as _Path
+    client = _client()
+    pre = await client.soul_delete(soul_kb_id, purge_experiences)
+    deleted = await client.kb_delete(soul_kb_id)
+    # tombstone 记入路由日志(可审计)
+    try:
+        log = _Path(__file__).resolve().parent.parent / "backend" / "app" / "data" / "router-log.jsonl"
+        log.parent.mkdir(parents=True, exist_ok=True)
+        with open(log, "a", encoding="utf-8") as f:
+            f.write(_json.dumps({
+                "timestamp": _dt.now().isoformat(), "action": "soul_delete",
+                "soul_kb_id": soul_kb_id, "purged": purge_experiences,
+            }, ensure_ascii=False) + "\n")
+    except Exception:
+        pass
+    return _j({"success": True, "checkpoint_saved": pre.get("checkpoint_saved"),
+               "deleted": deleted, "purged": purge_experiences})
+
+
+@mcp.tool()
+async def soul_learn(soul_kb_id: str, doc_paths: list, limit: int = 5) -> str:
+    """自主学习: 提问→带引用自答→四维自评(双判官)→蒸馏(人格记忆+知识经验)。
+
+    异步: 立即返回 task_id,kb_task_status 轮询;入口预算检查(累计 cost 超限拒绝)。
+
+    Args:
+        soul_kb_id: SOUL 库
+        doc_paths: 学习文档路径列表(≤5 篇,须在 kb_scope 内)
+        limit: 单次问题上限
+    """
+    async def _work():
+        return await _client().soul_learn(soul_kb_id, doc_paths, limit)
+    task_id = task_registry.submit(
+        _work(), "soul_learn", {"soul_kb_id": soul_kb_id, "doc_paths": len(doc_paths)})
+    return _running_payload(task_id, "soul_learn", {"soul_kb_id": soul_kb_id})
+
+
+@mcp.tool()
+async def soul_eval(soul_kb_id: str, question: str, answer: str,
+                     evidence_paths: list) -> str:
+    """单条四维自评(接地性/完整性/思维一致/信息增益)。"""
+    return _j(await _client().soul_eval(soul_kb_id, question, answer, evidence_paths))
+
+
+@mcp.tool()
+async def soul_checkpoint(soul_kb_id: str) -> str:
+    """生成时间戳快照(5 人格文档 + soul-config SHA256 + memories/drafts 清单+hash)。"""
+    return _j(await _client().soul_checkpoint(soul_kb_id))
+
+
+@mcp.tool()
+async def soul_review_drafts(soul_kb_id: str, draft_type: str = "memory",
+                              action: str = "list", draft_ids: list = None,
+                              force: bool = False) -> str:
+    """草稿审批闭环: list/approve/reject 人格记忆或认知草稿。
+
+    approve 后自动注册为 KB 文档并索引(60s 内可检索);接地性<3 或均分<3 需 force=True。
+
+    Args:
+        soul_kb_id: SOUL 库
+        draft_type: memory|cognition
+        action: list|approve|reject
+        draft_ids: approve/reject 的草稿 id(单条)
+        force: 低分审批强制标记
+    """
+    draft_id = (draft_ids or [""])[0] if draft_ids else ""
+    return _j(await _client().soul_review_drafts(
+        soul_kb_id, draft_type, action, draft_id, force))
+
+
+@mcp.tool()
+async def soul_calibrate(soul_kb_id: str) -> str:
+    """校准: 对校准集重跑自评,输出漂移报告;提示词变更自动全量重跑。"""
+    return _j(await _client().soul_calibrate(soul_kb_id))
+
+
+@mcp.tool()
+async def soul_learn_all(soul_kb_id: str = "", max_docs: int = 20,
+                          dry_run: bool = False) -> str:
+    """全库自举: 遍历全部 SOUL × kb_scope 批量增量学习。
+
+    dry_run=True 返回预估统计(不执行);文档级 content SHA256 全局去重防跨 SOUL 重复学习。
+
+    Args:
+        soul_kb_id: 指定单 SOUL(空=全部)
+        max_docs: 单次最大文档数
+        dry_run: 只估算不执行
+    """
+    async def _work():
+        return await _client().soul_learn_all(soul_kb_id, max_docs, dry_run)
+    if dry_run:
+        return _j(await _client().soul_learn_all(soul_kb_id, max_docs, True))
+    task_id = task_registry.submit(
+        _work(), "soul_learn_all", {"soul_kb_id": soul_kb_id, "max_docs": max_docs})
+    return _running_payload(task_id, "soul_learn_all", {"soul_kb_id": soul_kb_id or "*"})
+
+
+@mcp.tool()
+async def soul_reflect(soul_kb_id: str) -> str:
+    """反思: 认知草稿 vs 人格定义结构化 diff 报告(先自动 checkpoint)。"""
+    return _j(await _client().soul_reflect(soul_kb_id))
+
+
+@mcp.tool()
+async def soul_rollback(soul_kb_id: str, checkpoint_id: str) -> str:
+    """回滚到检查点(memories/ + cognition-drafts/;宪法层永不回滚)。"""
+    return _j(await _client().soul_rollback(soul_kb_id, checkpoint_id))
+
+
+@mcp.tool()
+async def soul_export(soul_kb_id: str, min_score: float = 4.0, limit: int = 1000) -> str:
+    """导出训练数据 JSONL(供 LoRA/DPO): question/evidence_paths/answer/scores/persona。"""
+    return _j(await _client().soul_export(soul_kb_id, min_score, limit))
+
 
 if __name__ == "__main__":
     main()

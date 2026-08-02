@@ -906,6 +906,372 @@ class AgentHarnessManager:
         except Exception:
             return ""
 
+    # ── Generic Completion (SOUL) ──────────────────────────────────────
+
+    # Rough per-1k-token cost estimate (fixed rates, budget accounting only)
+    _TOKEN_COST_PER_1K: dict[str, float] = {"claude": 0.005, "omp": 0.001}
+    # Rough synthesis-time estimate: seconds per token (sync-timeout estimation)
+    _TOKENS_PER_SEC: dict[str, float] = {"claude": 0.02, "omp": 0.015}
+
+    async def complete(
+        self,
+        prompt: str,
+        kb_config: dict | None = None,
+        result_schema: dict | None = None,
+        system_prompt_path: str | Path | None = None,
+        timeout_sec: int = 120,
+        max_budget_usd: float | None = None,
+        expected_output_tokens: int = 512,
+    ) -> dict:
+        """Generic single-shot LLM completion via the claude/omp harness.
+
+        Fully independent of the meditation pipeline: the caller supplies the
+        prompt, an optional JSON schema (claude branch), and an optional system
+        prompt file. Reuses only the spawn / semaphore / circuit-breaker /
+        timeout / process-cleanup machinery of this manager.
+
+        NOTE: caller-owned call counting and budget check-and-deduct live in the
+        SOUL run context (see soul_learn/soul_service); this method is stateless
+        and returns token/cost estimates for the caller to accumulate.
+
+        Args:
+            prompt: The full user prompt (system content should be wrapped in
+                <USER_CONTENT>...</USER_CONTENT> tags per SOUL injection-defense
+                convention).
+            kb_config: harness/model/timeout settings (same keys as meditation
+                config: harness, model, timeout_sec, max_budget_usd).
+            result_schema: JSON schema for claude --json-schema; when provided,
+                ``parsed`` is populated from the validated JSON. For omp, the
+                schema is embedded in the prompt instead and parsed best-effort.
+            system_prompt_path: optional system prompt file (claude
+                --system-prompt-file; omp gets it prepended to the prompt).
+            timeout_sec: per-call hard timeout (default 120).
+            max_budget_usd: claude --max-budget-usd override.
+            expected_output_tokens: used for the sync-time estimate.
+
+        Returns:
+            {"success": bool, "text": str, "parsed": dict|list|None,
+             "harness": str, "error": str|None, "elapsed": float,
+             "token_estimate": int, "cost_estimate": float,
+             "estimated_seconds": float}
+        """
+        cfg = kb_config or {}
+        harness = cfg.get("harness", "omp")
+        start = time.time()
+
+        if harness not in HARNESS_CONFIG:
+            return self._complete_error(
+                f"Unknown harness: {harness}", harness, start)
+
+        # Circuit breaker
+        breaker_msg = self._check_circuit(harness)
+        if breaker_msg:
+            return self._complete_error(
+                f"Harness '{harness}' circuit breaker tripped: {breaker_msg}",
+                harness, start)
+
+        # Probe availability
+        probe = await self.probe_harness(harness)
+        if not probe.get("installed", False):
+            missing = [f"executable '{harness}' not found on PATH"]
+            if harness == "claude" and not probe.get("api_key_configured"):
+                missing.append("ANTHROPIC_API_KEY not set")
+            return self._complete_error(
+                f"Harness '{harness}' unavailable: {'; '.join(missing)}",
+                harness, start, probe=probe)
+
+        # System prompt (omp branch: prepend; claude branch: --system-prompt-file)
+        sys_text = ""
+        if system_prompt_path:
+            try:
+                sys_text = Path(system_prompt_path).read_text(encoding="utf-8").strip()
+            except Exception:
+                sys_text = ""
+
+        final_prompt = prompt
+        if harness == "omp" and sys_text:
+            final_prompt = sys_text + "\n\n---\n\n" + prompt
+
+        # Write prompt to temp file (omp @ref; claude reads from stdin)
+        prompt_file = None
+        try:
+            prompt_file = Path(tempfile.mktemp(suffix=".txt"))
+            prompt_file.write_text(final_prompt, encoding="utf-8")
+        except Exception as e:
+            return self._complete_error(f"prompt_write: {e}", harness, start)
+
+        # Build CLI args (bypass module-level globals RESULT_SCHEMA / _SYSTEM_PROMPT_PATH)
+        timeout = cfg.get("timeout_sec", timeout_sec)
+        budget = max_budget_usd or cfg.get("max_budget_usd", 0.05)
+        model = cfg.get("model", "")
+        if harness == "omp":
+            cmd = [HARNESS_CONFIG["omp"]["exe"], "-p", "--auto-approve",
+                   "--no-session", "--mode=json", "--max-time", str(timeout)]
+            if model:
+                cmd += ["--model", model]
+            cmd += [f"@{prompt_file}"]
+            stdin_needed = False
+        else:  # claude
+            cmd = [HARNESS_CONFIG["claude"]["exe"], "-p", "--output-format", "json",
+                   "--model", model or "claude-sonnet-4-20250514",
+                   "--max-budget-usd", str(budget),
+                   "--dangerously-skip-permissions", "--no-session-persistence",
+                   "--bare", "--mcp-config", str(_MCP_CONFIG_PATH),
+                   "--add-dir", str(PROJECT_ROOT.parent)]
+            if system_prompt_path:
+                cmd += ["--system-prompt-file", str(system_prompt_path)]
+            if result_schema:
+                cmd += ["--json-schema", json.dumps(result_schema)]
+            stdin_needed = True
+
+        run_id = f"soul-{int(time.time_ns()):x}"
+        log_path = _LOG_DIR / f"soul-complete-{run_id}.log"
+        logger.info("[Soul-complete] harness=%s run_id=%s", harness, run_id)
+
+        try:
+            log_fp = open(str(log_path), "a", encoding="utf-8")
+        except Exception as e:
+            self._cleanup_prompt_file(prompt_file)
+            return self._complete_error(f"log_open: {e}", harness, start)
+
+        log_fp.write(f"=== Soul Complete {run_id} ===\n")
+        log_fp.write(f"Harness: {harness}\nCommand: {' '.join(cmd)}\n\n")
+
+        popen_kwargs: dict = dict(
+            cwd=str(PROJECT_ROOT.parent),
+            stdout=log_fp,
+            stderr=subprocess.STDOUT,
+            env={**os.environ, "PYTHONUNBUFFERED": "1", "PYTHONUTF8": "1"},
+            close_fds=True,
+        )
+        popen_kwargs["stdin"] = subprocess.PIPE if stdin_needed else subprocess.DEVNULL
+        if sys.platform == "win32":
+            popen_kwargs["creationflags"] = (
+                subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.CREATE_NO_WINDOW
+            )
+            si = subprocess.STARTUPINFO()
+            si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+            si.wShowWindow = 0
+            popen_kwargs["startupinfo"] = si
+        else:
+            popen_kwargs["start_new_session"] = True
+
+        try:
+            proc = subprocess.Popen(cmd, **popen_kwargs)
+        except FileNotFoundError:
+            log_fp.close()
+            self._cleanup_prompt_file(prompt_file)
+            self._record_failure(harness)
+            return self._complete_error(
+                f"Executable not found: {HARNESS_CONFIG[harness]['exe']}",
+                harness, start)
+
+        _assign_pid_to_job(self._job_handle, proc.pid)
+
+        if stdin_needed and proc.stdin:
+            try:
+                proc.stdin.write(final_prompt.encode("utf-8"))
+                proc.stdin.close()
+            except Exception:
+                pass
+
+        try:
+            await self._watch_process(proc, log_path, timeout)
+        except Exception as e:
+            logger.warning("Soul-complete watch error: %s", e)
+
+        self._cleanup_prompt_file(prompt_file)
+        log_fp.close()
+        exit_code = proc.poll()
+
+        if exit_code is None:
+            self._terminate_process(proc)
+            self._record_failure(harness)
+            return self._complete_error("timeout", harness, start)
+
+        text, parsed = self._parse_complete_log(log_path, harness, result_schema)
+        if not text and parsed is None:
+            self._record_failure(harness)
+            return self._complete_error(
+                "parse_failed", harness, start,
+                detail=self._read_log_tail(log_path))
+
+        self._record_success(harness)
+        token_estimate = max(1, (len(prompt) + len(text)) // 4)
+        rate = self._TOKEN_COST_PER_1K.get(harness, 0.001)
+        cost_estimate = round(token_estimate / 1000 * rate, 6)
+        est_sec = (token_estimate + expected_output_tokens) * \
+            self._TOKENS_PER_SEC.get(harness, 0.015)
+
+        return {
+            "success": True,
+            "text": text,
+            "parsed": parsed,
+            "harness": harness,
+            "error": None,
+            "elapsed": round(time.time() - start, 2),
+            "token_estimate": token_estimate,
+            "cost_estimate": cost_estimate,
+            "estimated_seconds": round(est_sec, 1),
+        }
+
+    @staticmethod
+    def _cleanup_prompt_file(prompt_file: Path | None) -> None:
+        if prompt_file and prompt_file.exists():
+            try:
+                prompt_file.unlink(missing_ok=True)
+            except Exception:
+                pass
+
+    def _complete_error(
+        self, error: str, harness: str, start: float,
+        probe: dict | None = None, detail: str = "",
+    ) -> dict:
+        return {
+            "success": False,
+            "text": "",
+            "parsed": None,
+            "harness": harness,
+            "error": error,
+            "probe": probe,
+            "detail": detail[:2000] if detail else "",
+            "elapsed": round(time.time() - start, 2),
+            "token_estimate": 0,
+            "cost_estimate": 0.0,
+            "estimated_seconds": 0.0,
+        }
+
+    def _parse_complete_log(
+        self, log_path: Path, harness: str, result_schema: dict | None
+    ) -> tuple[str, Any]:
+        """Extract (text, parsed) from a soul-complete log.
+
+        - omp: line-delimited JSON events → last assistant text → JSON block
+        - claude: --output-format json → last JSON object; ``result`` field is
+          the final message (string JSON when --json-schema was used)
+        """
+        if not log_path.exists():
+            return "", None
+        try:
+            content = log_path.read_text(encoding="utf-8", errors="replace")
+        except Exception:
+            return "", None
+
+        text = ""
+        if harness == "omp":
+            # Strategy: line-delimited JSON events (agent_end/turn_end/message_end)
+            for line in content.split("\n"):
+                line = line.strip()
+                if not line or not line.startswith("{"):
+                    continue
+                try:
+                    event = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if event.get("type") in ("agent_end", "turn_end", "message_end"):
+                    msg_data = event.get("message") or event.get("messages", [])
+                    msg_list = [msg_data] if isinstance(msg_data, dict) else msg_data
+                    assistant_msgs = [
+                        m for m in msg_list
+                        if isinstance(m, dict) and m.get("role") == "assistant"
+                    ]
+                    if assistant_msgs:
+                        blocks = assistant_msgs[-1].get("content", [])
+                        text = "\n".join(
+                            b.get("text", "") for b in blocks if b.get("type") == "text"
+                        )
+                        if text.strip():
+                            break
+        else:  # claude
+            # --output-format json: single JSON object with a "result" field
+            candidates = []
+            for line in content.split("\n"):
+                line = line.strip()
+                if not line or not line.startswith("{"):
+                    continue
+                try:
+                    obj = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                if isinstance(obj, dict):
+                    candidates.append(obj)
+            if candidates:
+                obj = candidates[-1]
+                result = obj.get("result")
+                if isinstance(result, str):
+                    text = result
+                elif isinstance(result, (dict, list)):
+                    return "", result
+                elif obj.get("type") == "error":
+                    return "", None
+
+        if not text.strip():
+            # Fallback: brace-counted JSON block anywhere in the log
+            block = self._extract_json_block(content)
+            if block is not None:
+                if isinstance(block, str):
+                    text = block
+                else:
+                    return "", block
+            if not text.strip():
+                return "", None
+
+        parsed = None
+        if result_schema is not None or text.lstrip().startswith(("{", "[")):
+            block = self._extract_json_block(text)
+            if block is not None and not isinstance(block, str):
+                parsed = block
+        return text.strip(), parsed
+
+    @staticmethod
+    def _extract_json_block(text: str) -> Any | None:
+        """Extract the first balanced JSON value (dict/list) from text.
+
+        Handles ```json fences and trailing prose. Returns None when no valid
+        JSON object/array is found.
+        """
+        search_text = text
+        if search_text.lstrip().startswith("```"):
+            first_nl = search_text.find("\n")
+            if first_nl > 0:
+                search_text = search_text[first_nl + 1:]
+        if search_text.rstrip().endswith("```"):
+            search_text = search_text[:search_text.rfind("```")].rstrip()
+
+        # Direct parse first
+        try:
+            return json.loads(search_text.strip())
+        except (json.JSONDecodeError, TypeError):
+            pass
+
+        for start in re.finditer(r'[{\[]', search_text):
+            s = start.start()
+            depth = 0
+            in_str = False
+            escape = False
+            for i in range(s, len(search_text)):
+                ch = search_text[i]
+                if in_str:
+                    if escape:
+                        escape = False
+                    elif ch == "\\":
+                        escape = True
+                    elif ch == '"':
+                        in_str = False
+                    continue
+                if ch == '"':
+                    in_str = True
+                elif ch in "{[":
+                    depth += 1
+                elif ch in "}]":
+                    depth -= 1
+                    if depth == 0:
+                        try:
+                            return json.loads(search_text[s:i + 1])
+                        except json.JSONDecodeError:
+                            break
+        return None
+
     # ── Heuristic Fallback ─────────────────────────────────────────────
 
     @staticmethod
