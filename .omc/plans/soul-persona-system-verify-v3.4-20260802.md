@@ -82,7 +82,18 @@
 
 **新增后端端点:** `POST /api/v1/soul/bootstrap`(见 §11.1,含错误码契约)。
 
-## 8. 裁决
+## 8. 三轮实施机制核查(2026-08-02)
+
+主会话定向验证: `client.kb_list` → **web 层** `GET /api/kb/catalog`(client.py:207-209)——后端无 KB 列表 HTTP 端点依赖;MCP 错误模式实证: 内联校验返回 `_j({success:false, error})`(server.py:64/71/351/1870),工具体透传后端响应;`_kb_exists` 辅助(:350)可复用。
+
+**并入计划的 4 项实施机制(§0 三轮 + 正文):**
+
+1. **KB 枚举来源(§1.7)**: 后端 soul_list/soul_router/learn_all 统一用 `storage_reader_service.list_knowledge_bases`(.tree-fs.json,进程内),不依赖 web /api/kb/catalog(那是 MCP kb_list 的数据源)。
+2. **错误契约(§11.1 头部)**: 后端 = HTTPException(detail={error, detail});kb-mcp 工具层 = `_j({success:false, error:<code>, detail})`;对齐现有实证模式。
+3. **soul_kb_id 语义(§1.5)**: 接受 UUID 或路径(对齐现有 kb 工具),存在性校验复用 `_kb_exists` :350。
+4. **§12 开发启动清单**: 环境前置(ragctl up/status、harness 探测、data/ 目录、基线采集)→ M0 严格顺序(0.1→0.3→0.4 + 回归)→ M1 起点(先 1.2 complete(),再 1.1 模板)→ 每里程碑验收/回归/测试收尾 → 踩坑速查(5 条)。
+
+## 9. 裁决
 
 - v3.3 的 5 处行号引用误差**全部为行号偏移,内容语义不变**,不影响任何任务/AC 的可执行性
 - M0.1(透传 source_questions)与 M0.3(扩展 DEFAULT_MEDITATION_CONFIG)为**实施前提**,已实证确认缺口存在且修复路径明确
