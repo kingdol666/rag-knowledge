@@ -638,8 +638,16 @@ class VectorService:
         if col:
             self._delete_doc_chunks(col, doc_path)
             logger.info("Deleted vector chunks for %s in KB %s", doc_path, kb_id)
+        # Split-brain sweep: legacy sub-KB docs may be indexed into the PARENT
+        # collection (高分子 01-11 sub-KBs etc.), so the kb-resolved collection
+        # can miss them entirely. Sweep every KB collection by exact doc_path
+        # (chunk metadata carries the full path) to guarantee cascade cleanup.
+        for other in self._all_kb_collections():
+            if col is not None and other.name == col.name:
+                continue
+            self._delete_doc_chunks(other, doc_path)
 
-    def delete_kb(self, kb_id: str) -> None:
+    def delete_kb(self, kb_id: str, kb_path: str = "") -> None:
         """Delete a KB's vector collection(s), silently handling misses.
 
         Deletes BOTH the canonical (UUID) and raw path/name forms:
@@ -647,6 +655,11 @@ class VectorService:
         before the KB was deleted, so a cached UUID delete alone would leave
         the path-named ghost collection behind (observed: kb_E2E-Integration-Test
         survived 2 cleanup runs).
+
+        kb_path (optional): when given, also sweeps ALL collections for chunks
+        whose doc_path lives under this KB — legacy sub-KB docs are indexed
+        into the parent collection, so deleting only the sub-KB's own (missing)
+        collection would leave their vectors behind.
         """
         names = {self._collection_name(kb_id)}
         # Raw form (path/name) — the one a stale cache entry would skip
@@ -663,6 +676,14 @@ class VectorService:
                 self.client.delete_collection(name)
             except Exception:
                 pass
+        # Split-brain sweep: purge this KB's chunks from other collections
+        # (e.g. sub-KB chunks living in the parent collection).
+        if kb_path:
+            prefix = kb_path.replace("\\", "/").strip("/")
+            for col in self._all_kb_collections():
+                if col.name in names:
+                    continue
+                self._delete_chunks_by_path_prefix(col, prefix)
 
     def delete_kb_path_only(self, kb_id: str) -> None:
         """Delete ONLY the raw path/name-named collection (kb_<kb_id> as-is),
@@ -711,6 +732,35 @@ class VectorService:
                         logger.info("Fallback delete: removed %d chunks for %s", len(to_delete), doc_path)
             except Exception as e:
                 logger.warning("Fallback chunk scan failed for %s: %s", doc_path, e)
+
+    def _delete_chunks_by_path_prefix(self, collection, path_prefix: str) -> None:
+        """Delete all chunks whose doc_path starts with the given prefix.
+
+        Used by the split-brain sweep in delete_kb: legacy sub-KB docs are
+        indexed into the parent collection with their full path as doc_path,
+        so a prefix match reliably identifies a deleted KB's orphaned chunks
+        regardless of which collection they landed in.
+        """
+        prefix = path_prefix.replace("\\", "/").lower().rstrip("/") + "/"
+        try:
+            all_data = collection.get()
+        except Exception as e:
+            logger.warning("prefix sweep get failed for %s: %s", collection.name, e)
+            return
+        if not all_data or not all_data.get("ids"):
+            return
+        to_delete = []
+        for i, meta in enumerate(all_data.get("metadatas", [])):
+            stored = (meta.get("doc_path", "") or "").replace("\\", "/").lower()
+            if stored.startswith(prefix):
+                to_delete.append(all_data["ids"][i])
+        if to_delete:
+            try:
+                collection.delete(ids=to_delete)
+                logger.info("Prefix sweep: removed %d chunks under %s from %s",
+                            len(to_delete), path_prefix, collection.name)
+            except Exception as e:
+                logger.warning("prefix sweep delete failed for %s: %s", collection.name, e)
 
     def _chunk_text(self, text: str) -> list[str]:
         size = config.vector_chunk_size

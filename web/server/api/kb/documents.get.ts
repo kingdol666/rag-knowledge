@@ -16,7 +16,10 @@ export default defineEventHandler(async (event) => {
   const treeService = await getTreeFileSystemService()
   await treeService.reloadMetadata()
   const folder = await treeService.getFolderById(kbId)
-  const resolvedKbId = folder?.path || kbId
+  if (!folder) {
+    throw createError({ statusCode: 404, statusMessage: `knowledge base not found: ${kbId}` })
+  }
+  const resolvedKbId = folder.path
   const documents = await service.getKbDocuments(resolvedKbId)
   return { success: true, kbId: resolvedKbId, count: documents.length, documents }
 })

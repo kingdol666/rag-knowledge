@@ -525,7 +525,7 @@ async def delete_kb_vectors(kb_id: str, kb_path: str = "", path_only: bool = Fal
             if path_only:
                 vs.delete_kb_path_only(cand)
             else:
-                vs.delete_kb(cand)
+                vs.delete_kb(cand, kb_path=kb_path)
             cleaned.append(cand)
             logger.info("Deleted vector collection for %s (path_only=%s)", cand, path_only)
         except Exception as e:

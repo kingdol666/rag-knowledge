@@ -142,6 +142,45 @@ async def _resolve_kb_aliases(client, kb_id: str) -> set[str]:
     return aliases
 
 
+async def _kb_exists(client, kb_id: str) -> bool:
+    """Check if a kb_id (UUID or path) corresponds to a known KB (root or sub)."""
+    if not kb_id or not kb_id.strip():
+        return False
+    kb_id_norm = _norm(kb_id)
+    try:
+        data = await client.kb_list()
+        if isinstance(data, dict):
+            for kb in data.get("knowledgeBases", []):
+                if (_norm(kb.get("kbId", "")) == kb_id_norm or
+                    _norm(kb.get("id", "")) == kb_id_norm or
+                    _norm(kb.get("path", "")) == kb_id_norm or
+                    _norm(kb.get("name", "")) == kb_id_norm):
+                    return True
+        tree = await client.fs_get_tree()
+        def _find_in_tree(nodes):
+            if not isinstance(nodes, list):
+                return False
+            for n in nodes:
+                if not isinstance(n, dict):
+                    continue
+                if n.get("isKnowledgeBase") or n.get("is_knowledge_base"):
+                    nid = n.get("id") or n.get("node_id", "")
+                    npath = n.get("path") or n.get("name", "")
+                    if (_norm(nid) == kb_id_norm or
+                        _norm(npath) == kb_id_norm or
+                        _norm(n.get("name", "")) == kb_id_norm):
+                        return True
+                if _find_in_tree(n.get("children", [])):
+                    return True
+            return False
+        tree_list = tree if isinstance(tree, list) else ([tree] if isinstance(tree, dict) else [])
+        if _find_in_tree(tree_list):
+            return True
+    except Exception:
+        pass
+    return False
+
+
 def _matches_any_alias(exp: dict, aliases: set[str]) -> bool:
     """True if the experience's kb_id/kb_path matches any alias."""
     for field in ("kb_id", "kb_path", "kb_name"):
@@ -198,11 +237,42 @@ async def health_check() -> str:
 async def kb_list(lightweight: bool = False) -> str:
     """List all knowledge bases with id, name, description, and document count.
 
-    Set lightweight=True for a minimal catalog [{kb_id, name, description, doc_count}]
+    Set lightweight=True for a minimal catalog [{kb_id, name, description, doc_count, path, parent_id}]
     that keeps agent context clean (no file_size/tags/vector_index metadata).
-    Default lightweight=False returns the full backend response."""
+    Default lightweight=False returns the full backend response enriched with sub-KBs."""
+    client = _client()
+    data = await client.kb_list()
+    top_kbs = (data.get("knowledgeBases", []) if isinstance(data, dict) else [])
+
+    # Fetch sub-KBs from the full tree (kb_list alone returns only root KBs)
+    sub_kbs = []
+    try:
+        tree = await client.fs_get_tree()
+        def _collect_kb_nodes(nodes):
+            if not isinstance(nodes, list):
+                return
+            for n in nodes:
+                if not isinstance(n, dict):
+                    continue
+                if n.get("isKnowledgeBase") or n.get("is_knowledge_base"):
+                    nid = n.get("id") or n.get("node_id")
+                    parent_id = n.get("parentId") or n.get("parent_id") or ""
+                    if nid and parent_id:
+                        sub_kbs.append({
+                            "kbId": nid,
+                            "path": n.get("path") or n.get("name", ""),
+                            "name": n.get("name") or n.get("path", ""),
+                            "description": "",
+                            "documentCount": 0,
+                            "parentId": parent_id,
+                        })
+                _collect_kb_nodes(n.get("children", []))
+        tree_list = tree if isinstance(tree, list) else ([tree] if isinstance(tree, dict) else [])
+        _collect_kb_nodes(tree_list)
+    except Exception:
+        pass
+
     if lightweight:
-        data = await _client().kb_list()
         if not isinstance(data, dict) or not data.get("success"):
             return _j(data)
         catalog = [{
@@ -210,9 +280,25 @@ async def kb_list(lightweight: bool = False) -> str:
             "name": kb.get("name") or kb.get("path"),
             "description": kb.get("description", ""),
             "doc_count": kb.get("documentCount", 0),
-        } for kb in data.get("knowledgeBases", [])]
+            "path": kb.get("path", ""),
+            "parent_id": kb.get("parentId", ""),
+        } for kb in top_kbs]
+        for skb in sub_kbs:
+            catalog.append({
+                "kb_id": skb["kbId"],
+                "name": skb["name"],
+                "description": skb.get("description", ""),
+                "doc_count": skb.get("documentCount", 0),
+                "path": skb.get("path", ""),
+                "parent_id": skb.get("parentId", ""),
+            })
         return _j({"success": True, "count": len(catalog), "catalog": catalog})
-    return _j(await _client().kb_list())
+
+    if isinstance(data, dict) and "knowledgeBases" in data:
+        for skb in sub_kbs:
+            data["knowledgeBases"].append(skb)
+        data["count"] = len(data["knowledgeBases"])
+    return _j(data)
 
 
 @mcp.tool()
@@ -260,8 +346,11 @@ async def kb_get_documents(kb_id: str, lightweight: bool = False) -> str:
     that keeps agent context clean (no file_size/tags/vector_index metadata).
     Default lightweight=False returns the full backend response."""
     if (err := _require_kb(kb_id)): return err
+    client = _client()
+    if not await _kb_exists(client, kb_id):
+        return _j({"success": False, "error": f"knowledge base not found: {kb_id}"})
     if lightweight:
-        data = await _client().kb_get_documents(kb_id)
+        data = await client.kb_get_documents(kb_id)
         if not isinstance(data, dict) or not data.get("success"):
             return _j(data)
         catalog = [{
@@ -270,7 +359,7 @@ async def kb_get_documents(kb_id: str, lightweight: bool = False) -> str:
             "description": d.get("description", ""),
         } for d in data.get("documents", [])]
         return _j({"success": True, "kb_id": kb_id, "count": len(catalog), "catalog": catalog})
-    return _j(await _client().kb_get_documents(kb_id))
+    return _j(await client.kb_get_documents(kb_id))
 
 
 # ============================================================
@@ -428,7 +517,35 @@ async def fs_get_tree(include_files: bool = True, max_depth: int = 0) -> str:
 @mcp.tool()
 async def fs_get_children(parent_id: str = "") -> str:
     """Get immediate children (folders + files) of a folder."""
-    return _j(await _client().fs_get_children(parent_id))
+    client = _client()
+    if parent_id and parent_id.strip():
+        import uuid as _uuid_mod
+        try:
+            _uuid_mod.UUID(parent_id)
+        except ValueError:
+            try:
+                tree = await client.fs_get_tree()
+                def _find_folder(nodes, target):
+                    if not isinstance(nodes, list):
+                        return None
+                    for n in nodes:
+                        if not isinstance(n, dict):
+                            continue
+                        npath = _norm(n.get("path") or n.get("name", ""))
+                        if npath == _norm(target):
+                            return n.get("id") or n.get("node_id")
+                        found = _find_folder(n.get("children", []), target)
+                        if found:
+                            return found
+                    return None
+                tree_list = tree if isinstance(tree, list) else ([tree] if isinstance(tree, dict) else [])
+                resolved = _find_folder(tree_list, parent_id)
+                if resolved:
+                    return _j(await client.fs_get_children(resolved))
+                return _j({"success": False, "error": f"folder not found: {parent_id}"})
+            except Exception as e:
+                return _j({"success": False, "error": f"folder resolution failed: {e}"})
+    return _j(await client.fs_get_children(parent_id))
 
 
 @mcp.tool()
@@ -534,11 +651,29 @@ async def parse_task_status(task_id: str) -> str:
     status is 'running', 'done', or 'error'. When done, result holds the
     parse summary (markdown_path, image_count, ...). When error, error
     holds the message. Use this to poll tasks from parse_doc* tools.
+
+    Full markdown content is omitted from the response to keep it compact;
+    use kb_doc_save_parsed(task_id) to persist the parsed content into a KB.
     """
     rec = task_registry.get(task_id)
     if rec is None:
         return _j({"success": False, "error": f"unknown task_id: {task_id}"})
     view = task_registry.public_view(rec)
+    # Slim: strip full markdown from parse results; keep stats only
+    if isinstance(view, dict) and view.get("status") == "done":
+        result = view.get("result")
+        if isinstance(result, dict) and "markdown" in result:
+            slimmed = {}
+            for k, v in result.items():
+                if k == "markdown":
+                    slimmed["markdown_omitted"] = True
+                    slimmed["markdown_length"] = len(v) if isinstance(v, str) else 0
+                elif k in ("markdown_path", "image_count", "source_filename",
+                           "method", "chars", "pages", "status", "kind"):
+                    slimmed[k] = v
+                else:
+                    slimmed[k] = v
+            view["result"] = slimmed
     view["success"] = True
     return _j(view)
 
@@ -549,11 +684,27 @@ async def kb_task_status(task_id: str) -> str:
     status is 'running', 'done', or 'error'. When done, result holds the task output
     (reindex stats, graph relations, etc.). Works for all task_registry tasks including
     parse_doc and meditation_run — use this as the universal task poller.
+    Parse task results have markdown content omitted (use kb_doc_save_parsed for full content).
     """
     rec = task_registry.get(task_id)
     if rec is None:
         return _j({"success": False, "error": f"unknown task_id: {task_id}"})
     view = task_registry.public_view(rec)
+    # Slim parse results: omit full markdown
+    if isinstance(view, dict) and view.get("status") == "done":
+        result = view.get("result")
+        if isinstance(result, dict) and "markdown" in result:
+            slimmed = {}
+            for k, v in result.items():
+                if k == "markdown":
+                    slimmed["markdown_omitted"] = True
+                    slimmed["markdown_length"] = len(v) if isinstance(v, str) else 0
+                elif k in ("markdown_path", "image_count", "source_filename",
+                           "method", "chars", "pages", "status", "kind"):
+                    slimmed[k] = v
+                else:
+                    slimmed[k] = v
+            view["result"] = slimmed
     view["success"] = True
     return _j(view)
 
@@ -1337,6 +1488,21 @@ async def experience_search_smart(query: str, top_k: int = 10,
         result["experiences"] = _kept
         result["count"] = len(_kept)
         result["scoped_kb_id"] = kb_id
+        # Recompute tier_counts and message to reflect kb-scoped results
+        tier_counts = {"P0": 0, "P1": 0, "P2": 0, "discarded": 0}
+        for r in _kept:
+            tier = r.get("tier", "")
+            if tier in tier_counts:
+                tier_counts[tier] += 1
+        result["tier_counts"] = tier_counts
+        vec_count = result.get("vector_recall", 0)
+        kw_count = result.get("keyword_recall", 0)
+        result["message"] = (
+            f"向量{vec_count}+关键词{kw_count}召回 -> "
+            f"经验级过滤 -> 返回{len(_kept)} "
+            f"(P0:{tier_counts['P0']} P1:{tier_counts['P1']} P2:{tier_counts['P2']}, "
+            f"scoped to {kb_id})"
+        )
 
     # Backend already reports rounds/degraded/threshold in its response;
     # we enrich with retrieval transparency but do NOT add our own rounds.
@@ -1832,7 +1998,10 @@ async def kb_search_vector(query: str, kb_id: str = "", top_k: int = 5,
     Returns:
         {success, results: [{content, score, doc_path, chunk_index, kb_id}]}
     """
-    result = await _client().vector_search(query, kb_id, top_k, score_threshold, balance_kbs)
+    client = _client()
+    if kb_id and kb_id.strip() and not await _kb_exists(client, kb_id):
+        return _j({"success": False, "error": f"knowledge base not found: {kb_id}"})
+    result = await client.vector_search(query, kb_id, top_k, score_threshold, balance_kbs)
     # Normalize doc_path separators and deduplicate (backend may return backslash/forward-slash variants)
     if isinstance(result, dict) and result.get("success"):
         raw_results = result.get("results", [])
@@ -1877,7 +2046,10 @@ async def kb_search_two_stage(
         When cross-KB search results come from <2 distinct KBs (BM25 blind spot),
         an auto-upgrade supplementary vector search is appended as _cross_kb_fallback.
     """
-    result = await _client().two_stage_search(
+    client = _client()
+    if kb_id and kb_id.strip() and not await _kb_exists(client, kb_id):
+        return _j({"success": False, "error": f"knowledge base not found: {kb_id}"})
+    result = await client.two_stage_search(
         query, kb_id, stage1_top_k, stage2_top_k, enable_graph_expansion,
         score_threshold, balance_kbs
     )

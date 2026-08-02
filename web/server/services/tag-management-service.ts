@@ -167,9 +167,7 @@ export class TagManagementService {
 
     // T1b: test-artifact patterns
     if (/\b(test|demo|debug|scratch|tmp)\b/i.test(s)) return true
-    if (s.startsWith('test-') || s.endsWith('-test') ||
-        s.startsWith('mcp-') || s.startsWith('batch-') ||
-        s.startsWith('graph-')) return true
+    if (s.startsWith('test-') || s.endsWith('-test')) return true
 
     // T1c: meta / status tags (not content tags)
     const metaWords = ['完整版', '基线对比', '拆分测试',

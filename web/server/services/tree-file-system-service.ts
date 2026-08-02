@@ -7,6 +7,7 @@ import { join, dirname, basename, extname } from 'path'
 import { mkdir, writeFile, readFile, unlink, rmdir, rm, readdir, stat, rename, cp } from 'fs/promises'
 import { existsSync } from 'fs'
 import { v4 as uuidv4 } from 'uuid'
+import { createHash } from 'crypto'
 import type {
   BaseNode,
   FolderNode,
@@ -363,6 +364,27 @@ export class TreeFileSystemService {
     const ext = extname(dedupedFilename).toLowerCase()
     const baseName = basename(dedupedFilename, ext)
 
+    // Content dedup: compute hash of incoming buffer before writing.
+    const bufferHash = createHash('sha256').update(fileBuffer).digest('hex')
+
+    // Check sibling files for identical content (same parent, same name or size fast path).
+    const siblingFiles = this.metadata.files.filter(f => f.parentId === parentId)
+    for (const sibling of siblingFiles) {
+      // Fast path: same name or same size
+      if (sibling.name !== dedupedFilename && sibling.fileSize !== fileBuffer.length) continue
+      try {
+        const siblingPath = join(this.basePath, sibling.path)
+        if (!existsSync(siblingPath)) continue
+        const siblingContent = await readFile(siblingPath)
+        if (siblingContent.length !== fileBuffer.length) continue
+        const siblingHash = createHash('sha256').update(siblingContent).digest('hex')
+        if (siblingHash === bufferHash) {
+          console.log(`[uploadFile] content dedup: '${originalFilename}' identical to existing '${sibling.name}'`)
+          return { ...sibling, deduped: true } as FileResponse
+        }
+      } catch { /* skip unreadable sibling */ }
+    }
+
     let relativePath: string
 
    if (parentId) {
@@ -528,6 +550,25 @@ export class TreeFileSystemService {
       if (folder) return folder.path
     }
 
+    return null
+  }
+
+  /**
+   * Like getKnowledgeBaseId but returns the KB's UUID (folder.id) for backend
+   * graph/vector calls, not the path. Backend keys graph nodes by UUID so we
+   * must send the UUID to avoid ghost duplicates. Falls back to folder.path
+   * only when id is missing.
+   */
+  private getKnowledgeBaseUuid(filePath: string): string | null {
+    const parts = filePath.split(/[/\\]/)
+    for (let i = parts.length; i > 0; i--) {
+      const candidatePath = parts.slice(0, i).join('/')
+      const norm = (p: string) => p.replace(/\\/g, '/').toLowerCase()
+      const folder = this.metadata.folders.find(
+        f => f.isKnowledgeBase && norm(f.path) === norm(candidatePath)
+      )
+      if (folder) return folder.id || folder.path
+    }
     return null
   }
 
@@ -916,6 +957,26 @@ export class TreeFileSystemService {
           }
         }
       }
+
+      // Fire-and-forget: clean vector collection + graph data for this KB.
+      // Backend auto-cleans both kb_<uuid> and kb_<path> naming conventions.
+      const kbId = folder.id || folder.path
+      const config = getServerConfig()
+      const backendUrl = process.env.BACKEND_URL || config.backend_url || 'http://localhost:8765'
+      fetch(`${backendUrl}/api/v1/search/kb/${encodeURIComponent(kbId)}`, {
+        method: 'DELETE',
+      }).then(() => {
+        console.log(`[deleteFolder] cleaned vector collection for KB: ${kbId}`)
+      }).catch((e) => {
+        console.warn(`[deleteFolder] vector collection cleanup failed (non-fatal):`, e)
+      })
+      fetch(`${backendUrl}/api/v1/graph/kb/${encodeURIComponent(kbId)}`, {
+        method: 'DELETE',
+      }).then(() => {
+        console.log(`[deleteFolder] cleaned graph data for KB: ${kbId}`)
+      }).catch((e) => {
+        console.warn(`[deleteFolder] graph data cleanup failed (non-fatal):`, e)
+      })
     }
 
     return {
@@ -994,7 +1055,7 @@ export class TreeFileSystemService {
     try {
       const config = getServerConfig()
       const backendUrl = process.env.BACKEND_URL || config.backend_url || 'http://localhost:8765'
-      const kbId = this.getKnowledgeBaseId(file.path)
+      const kbId = this.getKnowledgeBaseUuid(file.path)
       const docPath = file.path
 
       // 1. Delete graph node (cross-KB shared entities are preserved)
@@ -1299,8 +1360,8 @@ export class TreeFileSystemService {
     try {
       const config = getServerConfig()
       const backendUrl = process.env.BACKEND_URL || config.backend_url || 'http://localhost:8765'
-      const sourceKbId = this.getKnowledgeBaseId(sourceFile.path)
-      const targetKbId = this.getKnowledgeBaseId(movedFile.path)
+      const sourceKbId = this.getKnowledgeBaseUuid(sourceFile.path)
+      const targetKbId = this.getKnowledgeBaseUuid(movedFile.path)
       const oldDocPath = sourceFile.path
       const newDocPath = movedFile.path
 
@@ -1376,7 +1437,7 @@ export class TreeFileSystemService {
   private async _doIndexDocument(file: FileResponse): Promise<void> {
     const config = getServerConfig()
     const backendUrl = process.env.BACKEND_URL || config.backend_url || 'http://localhost:8765'
-    const kbId = this.getKnowledgeBaseId(file.path)
+    const kbId = this.getKnowledgeBaseUuid(file.path)
     if (!kbId) {
       console.warn(`[indexDocument] cannot resolve KB for ${file.path} — skip`)
       return

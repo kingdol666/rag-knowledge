@@ -1239,11 +1239,13 @@ class ExperienceService:
                 "query_type": query_type, "rounds": rounds, "degraded": degraded,
             }
 
+        # tier_counts computed from final (returned), not scored_results (pre-suppression),
+        # so the stats always match what the caller actually receives.
         tier_counts = {"P0": 0, "P1": 0, "P2": 0, "discarded": 0}
-        for r in scored_results:
+        for r in final:
             if r["tier"] in tier_counts:
                 tier_counts[r["tier"]] += 1
-        tier_counts["discarded"] = len(vector_hits) - len(scored_results)
+        tier_counts["discarded"] = len(vector_hits) - len(final)
 
         vec_count = len([h for h in vector_hits.values() if not h.get("_from_keyword")])
         kw_count = len([h for h in vector_hits.values() if h.get("_from_keyword")])
@@ -1258,7 +1260,7 @@ class ExperienceService:
             "query_type": query_type,
             "rounds": rounds,
             "degraded": degraded,
-            "message": f"向量{vec_count}+关键词{kw_count}召回 → 内容验证通过{len(scored_results)} → 返回{len(final)} (P0:{tier_counts['P0']} P1:{tier_counts['P1']} P2:{tier_counts['P2']})",
+            "message": f"向量{vec_count}+关键词{kw_count}召回 → 经验级内容验证通过{len(scored_results)} → 返回{len(final)} (P0:{tier_counts['P0']} P1:{tier_counts['P1']} P2:{tier_counts['P2']})",
         }
 
 

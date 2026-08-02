@@ -19,13 +19,17 @@ export default defineEventHandler(async (event) => {
   // Validate + filter tags: drop garbage-tag entries instead of rejecting the
   // entire array (fixes round-trip bug where docs carrying legacy garbage tags
   // are bricked for any tag edit). validateTags still rejects non-array input.
+  const inputTags = Array.isArray(body.tags) ? body.tags : null
   let tags = TagManagementService.validateTags(body.tags)
   if (tags === null) {
     throw createError({ statusCode: 400, statusMessage: 'tags must be a string[] with non-empty entries (max 50 chars each)' })
   }
-  // If validateTags filtered some out, we still proceed with the clean subset.
-  // (validateTags already drops garbage internally via isGarbageTag per-tag)
-
+  // Surface dropped garbage tags so callers can see what was filtered
+  const rawStrings: string[] = inputTags ? inputTags.filter((t: unknown): t is string => typeof t === 'string') : []
+  const droppedTags = rawStrings.filter(t => TagManagementService.isGarbageTag(t.trim()))
+  const droppedNote = droppedTags.length > 0
+    ? `${droppedTags.length} tag(s) filtered as garbage: ${droppedTags.join(', ')}`
+    : null
   const treeService = await getTreeFileSystemService()
   await treeService.reloadMetadata()
 
@@ -69,7 +73,7 @@ export default defineEventHandler(async (event) => {
     console.warn(`[tags.patch] graph reindex failed (non-fatal): ${e}`)
   })
 
-  return {
+  const result: Record<string, unknown> = {
     success: true,
     kb_id: kb.id,
     kb_path: kb.path,
@@ -77,4 +81,9 @@ export default defineEventHandler(async (event) => {
     tags,
     _note: 'Tags updated. Graph reindex triggered in background.'
   }
+  if (droppedTags.length > 0) {
+    result._dropped_tags = droppedTags
+    result._note = droppedNote
+  }
+  return result
 })

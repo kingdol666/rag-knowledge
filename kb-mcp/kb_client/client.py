@@ -90,19 +90,49 @@ class KbClient:
     # ---- low-level HTTP ----
 
     async def _request(self, method, endpoint, base=None, **kwargs):
-        """Send an HTTP request and return parsed JSON (or error dict)."""
-        client = await self._ensure_client()
-        url = f"{base or self.web_url}{endpoint}"
-        try:
-            resp = await client.request(method, url, **kwargs)
-            if resp.status_code >= 400:
-                return {"success": False, "error": resp.text[:500], "status": resp.status_code}
-            ct = resp.headers.get("content-type", "")
-            if "json" in ct:
-                return resp.json()
-            return {"success": True, "content_type": ct, "content_length": len(resp.content)}
-        except Exception as e:
-            return {"success": False, "error": f"{type(e).__name__}: {e}"}
+        """Send an HTTP request and return parsed JSON (or error dict).
+
+        Transparently retries HTTP 429 (Too Many Requests) up to 3 attempts,
+        respecting the Retry-After header (capped at 30 s)."""
+        import asyncio
+        import logging
+        _logger = logging.getLogger("kb_client")
+        max_attempts = 3
+        for attempt in range(1, max_attempts + 1):
+            client = await self._ensure_client()
+            url = f"{base or self.web_url}{endpoint}"
+            try:
+                resp = await client.request(method, url, **kwargs)
+                if resp.status_code == 429:
+                    retry_after = 5  # default
+                    try:
+                        ra_header = resp.headers.get("Retry-After", "")
+                        if ra_header:
+                            retry_after = min(int(ra_header), 30)
+                    except (ValueError, TypeError):
+                        pass
+                    try:
+                        body = resp.json()
+                        ra_body = body.get("retry_after_sec") or body.get("retry_after")
+                        if ra_body is not None:
+                            retry_after = min(int(ra_body), 30)
+                    except Exception:
+                        pass
+                    if attempt < max_attempts:
+                        _logger.warning(
+                            "HTTP 429 from %s %s (attempt %d/%d), retrying in %ds",
+                            method, url, attempt, max_attempts, retry_after)
+                        await asyncio.sleep(retry_after)
+                        continue
+                if resp.status_code >= 400:
+                    return {"success": False, "error": resp.text[:500], "status": resp.status_code}
+                ct = resp.headers.get("content-type", "")
+                if "json" in ct:
+                    return resp.json()
+                return {"success": True, "content_type": ct, "content_length": len(resp.content)}
+            except Exception as e:
+                return {"success": False, "error": f"{type(e).__name__}: {e}"}
+        return {"success": False, "error": "429 rate limit exceeded after retries", "status": 429}
 
     async def _get(self, endpoint, **params):
         return await self._request("GET", endpoint, params=params)
