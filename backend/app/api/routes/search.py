@@ -223,7 +223,10 @@ async def index_document(req: IndexDocumentRequest) -> dict[str, Any]:
     # 标签回退：调用方未传 tags（move/auto-index/batch 路径）时，
     # 从 YAML 元数据读取文档标签，保证图谱 HAS_TAG 边不丢失。
     if not req.tags and kb_path:
-        meta = storage_reader.get_document_metadata(kb_path, resolved_doc_path)
+        try:
+            meta = storage_reader.get_document_metadata(resolved_doc_path)
+        except Exception:
+            meta = None
         if meta and meta.get("tags"):
             req.tags = [
                 t.get("name", str(t)) if isinstance(t, dict) else str(t)
@@ -338,7 +341,10 @@ async def batch_index_documents(req: BatchIndexDocumentRequest) -> dict[str, Any
         if not req.force:
             # 检查是否已有向量索引
             if doc_kb_path:
-                doc_meta = storage_reader.get_document_metadata(doc_kb_path, resolved)
+                try:
+                    doc_meta = storage_reader.get_document_metadata(resolved)
+                except Exception:
+                    doc_meta = None
                 if doc_meta and doc_meta.get("vector_index"):
                     skipped.append({"doc_path": doc_path, "reason": "already indexed"})
                     continue

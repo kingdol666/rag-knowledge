@@ -5,6 +5,7 @@ MCP 工具为薄封装;长任务(learn/learn-all/ask-async)由 kb-mcp 层 task_r
 """
 from __future__ import annotations
 
+import asyncio
 import logging
 from typing import Any
 
@@ -317,7 +318,11 @@ async def status(soul_kb_id: str, summary_window: int = Query(30)):
 
 @router.post("/{soul_kb_id}/learn")
 async def learn(soul_kb_id: str, req: dict[str, Any], _: None = Depends(verify_token)):
-    """自主学习(同步执行;kb-mcp 层包裹为异步任务)。"""
+    """自主学习(同步执行;kb-mcp 层包裹为异步任务)。
+
+    训练协程用 asyncio.shield 保护: 客户端断开/超时不取消训练,
+    长轮次训练(rounds>1)仍完整执行到最后一轮。
+    """
     if not soul_config.resolve_soul_kb_path(soul_kb_id):
         raise _err(404, "kb_not_found")
     if soul_config.is_template_kb(soul_kb_id):
@@ -327,7 +332,7 @@ async def learn(soul_kb_id: str, req: dict[str, Any], _: None = Depends(verify_t
     rounds = int(req.get("rounds") or 1)
     if not doc_paths:
         raise _err(400, "missing_docs", "doc_paths 必填")
-    report = await soul_learn.learn_docs(soul_kb_id, doc_paths, limit=limit, rounds=rounds)
+    report = await asyncio.shield(soul_learn.learn_docs(soul_kb_id, doc_paths, limit=limit, rounds=rounds))
     return {"success": True, "task_id": None, "report": report}
 
 
@@ -337,7 +342,7 @@ async def learn_all_global(req: dict[str, Any], _: None = Depends(verify_token))
     max_docs = int(req.get("max_docs") or 20)
     dry_run = bool(req.get("dry_run"))
     rounds = int(req.get("rounds") or 1)
-    report = await soul_learn.learn_all(soul_kb_id="", max_docs=max_docs, dry_run=dry_run, rounds=rounds)
+    report = await asyncio.shield(soul_learn.learn_all(soul_kb_id="", max_docs=max_docs, dry_run=dry_run, rounds=rounds))
     return {"success": True, "task_id": None, "report": report}
 
 
@@ -346,7 +351,7 @@ async def learn_all(soul_kb_id: str, req: dict[str, Any], _: None = Depends(veri
     max_docs = int(req.get("max_docs") or 20)
     dry_run = bool(req.get("dry_run"))
     rounds = int(req.get("rounds") or 1)
-    report = await soul_learn.learn_all(soul_kb_id=soul_kb_id or "", max_docs=max_docs, dry_run=dry_run, rounds=rounds)
+    report = await asyncio.shield(soul_learn.learn_all(soul_kb_id=soul_kb_id or "", max_docs=max_docs, dry_run=dry_run, rounds=rounds))
     return {"success": True, "task_id": None, "report": report}
 
 

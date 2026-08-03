@@ -3109,6 +3109,129 @@ async function cmdSoul(args) {
   const flagOn = (name) => args.includes(name);
 
   switch (sub) {
+    case 'distill': case 'distill-persona': {
+      // ragctl soul distill <dot-skill产出目录> [--name soul-xxx] [--scope kb1,kb2]
+      //   [--labels a,b] [--harness omp|claude] [--types t1,t2]
+      // 补天(dot-skill)蒸馏产物 → SOUL 人格一键创建(先天种子)
+      const personaDir = rest.find(a => !a.startsWith('--'));
+      if (!personaDir) {
+        console.log('用法: ragctl soul distill <dot-skill产出目录> [--name soul-xxx] [--scope kb1,kb2] [--labels a,b] [--harness omp|claude]');
+        console.log('  输入目录需含 meta.json + persona.md + work.md(dot-skill /dot-skill 蒸馏产物)');
+        console.log('  示例: ragctl soul distill .claude/skills/dot-skill/skills/colleague/example_jiaxiu --scope AI-ML-Research');
+        break;
+      }
+      const fsD = require('fs');
+      const pathD = require('path');
+      const dir = pathD.resolve(personaDir);
+      const metaPath = pathD.join(dir, 'meta.json');
+      const personaPath = pathD.join(dir, 'persona.md');
+      const workPath = pathD.join(dir, 'work.md');
+      if (!fsD.existsSync(metaPath)) { err(`meta.json 不存在: ${metaPath}`); break; }
+      let meta = {};
+      try { meta = JSON.parse(fsD.readFileSync(metaPath, 'utf8')); } catch (e) { err(`meta.json 解析失败: ${e.message}`); break; }
+
+      const slug = meta.slug || pathD.basename(dir);
+      const name = flagVal('--name') || (slug.startsWith('soul-') ? slug : `soul-${slug}`);
+      const displayName = meta.name || name;
+      const scope = flagVal('--scope');
+      const labels = flagVal('--labels');
+      const types = flagVal('--types');
+      const harness = flagVal('--harness');
+
+      // domain_labels 默认从补天 meta 提炼(性格标签 + 印象)
+      let domainLabels = labels ? labels.split(',').map(s => s.trim()) : [];
+      if (!domainLabels.length) {
+        const tags = (meta.tags && meta.tags.personality) || [];
+        domainLabels = tags.slice(0, 3);
+        if (meta.impression) domainLabels.push(String(meta.impression).slice(0, 12));
+      }
+      const taskTypes = types ? types.split(',').map(s => s.trim()) : ['知识答疑'];
+
+      // 读取 SOUL 模板(与 soul_init 同源: storage/tree-file-system/soul-template/)
+      const tplDir = pathD.join(PROJECT_ROOT, 'storage', 'tree-file-system', 'soul-template');
+      function tpl(doc) {
+        const p = pathD.join(tplDir, doc);
+        if (!fsD.existsSync(p)) { err(`模板缺失: ${p}`); return null; }
+        return fsD.readFileSync(p, 'utf8');
+      }
+      const tplDef = tpl('soul-definition.md');
+      const tplThink = tpl('thinking-style.md');
+      const tplValues = tpl('values.md');
+      const tplMem = tpl('memory-conventions.md');
+      if (tplDef === null || tplThink === null || tplValues === null || tplMem === null) break;
+
+      const personaText = fsD.existsSync(personaPath) ? fsD.readFileSync(personaPath, 'utf8') : '';
+      const workText = fsD.existsSync(workPath) ? fsD.readFileSync(workPath, 'utf8') : '';
+      if (!personaText && !workText) { err('persona.md 与 work.md 均为空 — 无法蒸馏'); break; }
+
+      // 融合: 模板结构(profile/language-style 解析依赖) + 补天人格原文(进化基础)
+      const soulDef = `${tplDef}\n\n---\n\n# 补天蒸馏人格: ${displayName}\n\n${personaText || '(无 persona.md, 仅使用模板人格)'}\n`;
+      const thinkStyle = `${tplThink}\n\n---\n\n# 补天蒸馏工作方式: ${displayName}\n\n${workText || '(无 work.md)'}\n`;
+
+      // 1) 建库(web 层)
+      const portsD = getServicePorts();
+      const webUrl = `http://127.0.0.1:${portsD.web}`;
+      const kbRes = await fetch(`${webUrl}/api/kb/create`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, description: `补天蒸馏人格: ${displayName} — ${meta.impression || ''}`.slice(0, 300) }),
+      }).catch(e => ({ _error: e.message }));
+      const kbJson = kbRes._error ? kbRes : await kbRes.json();
+      if (kbRes._error || !(kbJson && kbJson.knowledgeBase)) {
+        err(`建库失败: ${kbRes._error || JSON.stringify(kbJson).slice(0, 200)}`);
+        break;
+      }
+      const kbId = kbJson.knowledgeBase.id;
+      ok(`知识库已创建: ${name} (${kbId})`);
+
+      // 2) 写 4 个人格文档(web 层, 原子)
+      const docs = [
+        ['soul-definition.md', soulDef],
+        ['thinking-style.md', thinkStyle],
+        ['values.md', tplValues],
+        ['memory-conventions.md', tplMem],
+      ];
+      for (const [docName, content] of docs) {
+        const r = await fetch(`${webUrl}/api/kb/documents/create`, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ kbId, name: docName, content }),
+        });
+        if (!r.ok) { warn(`文档创建失败 ${docName}: ${r.status}`); }
+      }
+      ok('4 个人格文档已写入(模板结构 + 补天人格内容)');
+
+      // 3) bootstrap(后端: soul-config + profile-summary + meditation config)
+      const boot = await apiPost('/api/v1/soul/bootstrap', {
+        soul_kb_id: kbId,
+        kb_scope: scope ? scope.split(',').map(s => s.trim()) : ['*'],
+        domain_labels: domainLabels,
+        supported_task_types: taskTypes,
+        harness: harness || '',
+        model: '',
+      });
+      if (!boot.success) { warn(`bootstrap 警告: ${JSON.stringify(boot).slice(0, 200)}`); }
+      else ok(`bootstrap 完成: profile=${boot.profile_summary_generated} meditation=${boot.meditation_config_created}`);
+
+      // 4) 索引 4 文档
+      for (const docName of ['soul-definition.md', 'thinking-style.md', 'values.md', 'memory-conventions.md']) {
+        try {
+          await apiPost('/api/v1/search/index-document', { kb_id: kbId, doc_path: docName });
+        } catch (e) { warn(`索引失败 ${docName}: ${e.message}`); }
+      }
+      ok('4 文档已索引(60s 内可检索)');
+
+      console.log(`\n🧠 补天蒸馏完成 → SOUL 人格: ${name}`);
+      console.log('════════════════════════════════════');
+      console.log(`  kb_id:    ${kbId}`);
+      console.log(`  labels:   ${domainLabels.join(', ') || '—'}`);
+      console.log(`  scope:    ${scope || '["*"] 全部知识库'}`);
+      console.log(`  harness:  ${harness || '(全局默认)'}`);
+      console.log('');
+      console.log(`  下一步 — 后天好奇心训练(先天种子进化):`);
+      console.log(`    ragctl soul learn-all ${name} --rounds 2`);
+      console.log(`    ragctl soul review ${name} --action list   # 审查记忆草稿`);
+      console.log(`    ragctl soul ask "问题" --soul ${name}      # 人格增强问答`);
+      break;
+    }
     case 'list': {
       const souls = await apiGet('/api/v1/soul/list');
       console.log('\n🤖 SOUL Personas');
@@ -3214,21 +3337,25 @@ async function cmdSoul(args) {
       break;
     }
     case 'ask': {
-      // ragctl soul ask <query> [--soul kb_id] [--type 文献综述] [--goal 研究]
+      // ragctl soul ask <query> [--soul kb_id] [--type 文献综述] [--goal 研究] [--qdcvr]
       const query = rest.join(' ');
-      if (!query) { console.log('用法: ragctl soul ask <query> [--soul kb_id] [--type 任务类型] [--goal 目标]'); break; }
+      if (!query) { console.log('用法: ragctl soul ask <query> [--soul kb_id] [--type 任务类型] [--goal 目标] [--qdcvr 先检索后人格]'); break; }
       const soulKbId = flagVal('--soul');
       const taskType = flagVal('--type');
       const taskGoal = flagVal('--goal');
-      console.log(`\n🤖 人格问答中(约 1-2 分钟)…${soulKbId ? ` [人格: ${soulKbId}]` : ' [自动路由]'}`);
-      const res = await apiPost('/api/v1/soul/ask', {
+      const qdcvr = flagOn('--qdcvr');
+      console.log(`\n🤖 人格问答中(约 1-2 分钟)…${soulKbId ? ` [人格: ${soulKbId}]` : ' [自动路由]'}${qdcvr ? ' [QDCVR 先检索后人格]' : ''}`);
+      const endpoint = qdcvr ? '/api/v1/soul/qdcvr-ask' : '/api/v1/soul/ask';
+      const res = await apiPost(endpoint, {
         query, soul_kb_id: soulKbId, task_type: taskType, task_goal: taskGoal,
+        top_k: qdcvr ? 5 : undefined,
       });
       console.log('════════════════════════');
       console.log(res.answer || JSON.stringify(res));
       console.log('════════════════════════');
       if (res.selected_soul) console.log(`路由 → ${res.selected_soul} (conf ${res.route_confidence})`);
       if (res.pas_score !== undefined && res.pas_score !== null) console.log(`PAS: ${res.pas_score}`);
+      if (res.evidence_count !== undefined) console.log(`证据注入: ${res.evidence_count} 条(先检索后人格)`);
       if (res.citations?.length) {
         console.log(`引用(${res.citations.length}):`);
         for (const c of res.citations.slice(0, 5)) console.log(`  • ${c.path} (${c.score?.toFixed?.(3) ?? c.score})`);
@@ -3290,6 +3417,7 @@ async function cmdSoul(args) {
     default:
       console.log(`\n🤖 SOUL 人格管理 — 用法:`);
       console.log('  ragctl soul list                                   列出全部人格');
+      console.log('  ragctl soul distill <dot-skill目录> [--scope k1,k2]  补天蒸馏产物→SOUL(先天种子)');
       console.log('  ragctl soul status <soul_kb_id>                    人格学习指标');
       console.log('  ragctl soul init <name> [--scope k1,k2] [--labels a,b] [--harness omp|claude]  创建人格(后端兼容入口)');
       console.log('  ragctl soul learn <soul_kb_id> --docs=kb/f1,kb/f2 [--rounds N]  训练指定文档(固定轮数)');

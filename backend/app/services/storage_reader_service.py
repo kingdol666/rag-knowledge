@@ -226,14 +226,6 @@ class StorageReaderService:
             logger.warning("Failed to read %s: %s", full_path, e)
             return ""
 
-    def get_document_metadata(self, kb_path: str, doc_path: str) -> dict[str, Any] | None:
-        docs = self.list_documents(kb_path)
-        norm = doc_path.replace("\\", "/")
-        for d in docs:
-            if d.get("path", "").replace("\\", "/") == norm:
-                return d
-        return None
-
     def find_document_by_id(self, doc_id: str) -> dict[str, Any] | None:
         """在所有 KB 的 .knowledge-base.yml 中按文档 ID (UUID) 查找文档。
 

@@ -98,6 +98,20 @@ soul_ask(query, soul_kb_id=<选中或空>, task_goal, task_type,
 
 (实际以 `soul_list` 返回为准;新人格可随时创建)
 
+## ⭐ 一键入口(推荐): soul_qdcvr_ask
+
+后端已提供 QDCVR+SOUL 组合编排入口, 一条调用完成
+"两阶段检索 → 硬阈值0.35 → 文档去重 → 短内容过滤 → 人格合成":
+
+```
+soul_qdcvr_ask(query, soul_kb_id="", task_goal, task_type, top_k=5, async_mode=True)
+→ {answer, citations, pas_score, selected_soul, route_*, evidence_count}
+```
+
+- 显式人格 → 检索范围 = 该人格 kb_scope; 自动路由 → 跨库
+- 无命中 → 人格诚实降级(不编造)
+- 前端: 问答 modal "一键检索+人格回答"; ragctl: `ragctl soul ask --qdcvr`
+
 ## 与 knowledgebase-search-enterprise 的关系
 
 - enterprise(跨库精检索): 需要跨库证据定位 → 用 kb_search_two_stage(balance_kbs)
@@ -119,6 +133,7 @@ soul_ask(query, soul_kb_id=<选中或空>, task_goal, task_type,
 
 - `soul_router(query, task_goal, task_type)` — 路由决策预览(可审计)
 - `soul_ask(query, soul_kb_id="", task_goal, task_type, context_override, async_mode=True)` — 人格化问答
+- `soul_qdcvr_ask(query, soul_kb_id="", task_goal, task_type, top_k=5, async_mode=True)` — 一键检索+人格回答(推荐)
 - `kb_task_status(task_id)` — 异步轮询
 - `kb_search_two_stage(query, kb_id, stage2_top_k)` — 预检索(可选)
 - `soul_list()` — 人格清单/标签速查

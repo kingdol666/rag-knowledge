@@ -1,6 +1,7 @@
 """Meditation API Routes — status, run, history, signals, config."""
 from __future__ import annotations
 
+import asyncio
 import logging
 from typing import Any
 
@@ -118,7 +119,8 @@ async def _run_kb_meditation(kb_id: str, trigger: str) -> dict:
     if config.get("meditation_mode") == "soul":
         from app.services.soul_learn import learn_incremental
         rounds = int(config.get("rounds_per_run", 1) or 1)
-        report = await learn_incremental(kb_id, rounds=rounds)
+        # shield: 客户端断开不取消训练(长轮次完整执行)
+        report = await asyncio.shield(learn_incremental(kb_id, rounds=rounds))
         ok = bool(report.get("success", True)) and not report.get("error")
         try:
             from app.services.kb_meditation_config import update_meditation_config
