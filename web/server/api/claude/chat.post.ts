@@ -51,6 +51,8 @@ interface ChatBody {
   attachments?: Attachment[]
   kbEnhanced?: boolean
   kbIds?: string[]
+  soulEnhanced?: boolean
+  soulKbId?: string
   reasoningEffort?: 'auto' | 'low' | 'medium' | 'high' | 'xhigh' | 'max'
   engine?: 'claude' | 'omp'
 }
@@ -83,12 +85,44 @@ function toMediaType(mime: string): string {
 }
 
 /**
- * Build a KB-enhanced system instruction prepended to the user prompt.
- * When kbEnhanced is true, this tells Claude Agent to use the
- * knowledgebase-search skill for retrieval-augmented answers.
+ * Build a SOUL persona-enhanced system instruction.
+ * When soulEnhanced is true, tells the agent to answer with the selected
+ * SOUL persona via soul_ask (soul-rag skill), auto-routing if none given.
  *
- * @param kbIds - selected KB IDs; empty = search ALL KBs
+ * @param soulKbId - selected SOUL kb_id; empty = auto-route
  */
+function buildSoulInstruction(soulKbId: string): string {
+  const personaLine = soulKbId
+    ? `Use the SOUL persona \`${soulKbId}\` explicitly (do NOT auto-route).`
+    : 'Let the SOUL router auto-select the best-matching persona (do NOT guess).'
+
+  return [
+    '',
+    '## [System: SOUL Persona-Augmented Answer Mode]',
+    '',
+    'You are answering with a SOUL persona to make the answer persona-consistent and evidence-grounded.',
+    'Follow these steps strictly:',
+    '',
+    '### Step 1: Invoke soul_ask',
+    `Invoke \`soul_ask\` (via the \`soul-rag\` skill or directly the kb-mcp soul_ask tool) with the user question. ${personaLine}`,
+    '  - Pass task_type/task_goal if inferable from the question',
+    '  - If soul_ask returns route_uncertain=true, report the candidates to the user',
+    '',
+    '### Step 2: Present the persona answer',
+    'Return the soul_ask answer verbatim as the main answer.',
+    '  - Include its citations (path + score) when present',
+    '  - Report pas_score (persona alignment 0-5)',
+    '  - If soul_ask reports retrieval failure (no citations), state honestly that the KB lacks evidence',
+    '',
+    '### Critical Reminders:',
+    '- **Persona first, evidence second** -- the answer must sound like the persona AND cite real sources',
+    '- Never fabricate citations -- soul_ask only returns real retrieval paths',
+    '- If the SOUL system is unavailable, fall back to a normal answer and say so',
+    '',
+    '---',
+    '',
+  ].join('\n')
+}
 function buildKbInstruction(kbIds: string[]): string {
   if (kbIds.length > 0) {
     const kbIdList = kbIds.map((id) => '`' + id + '`').join(', ')
@@ -286,8 +320,13 @@ export default defineEventHandler(async (event) => {
   // KB-enhanced instruction (prepended when toggle is on)
   const kbInstruction = kbEnhanced ? buildKbInstruction(kbIds) : ''
 
-  // Full prompt = KB instruction + user input + path hint
-  const fullPromptText = kbInstruction + prompt + pathNote
+  // SOUL persona-enhanced instruction (prepended when toggle is on)
+  const soulEnhanced: boolean = body?.soulEnhanced === true
+  const soulKbId: string = body?.soulKbId || ''
+  const soulInstruction = soulEnhanced ? buildSoulInstruction(soulKbId) : ''
+
+  // Full prompt = KB instruction + SOUL instruction + user input + path hint
+  const fullPromptText = kbInstruction + soulInstruction + prompt + pathNote
 
   setResponseHeaders(event, {
     'Content-Type': 'text/event-stream; charset=utf-8',

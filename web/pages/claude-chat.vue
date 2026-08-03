@@ -366,6 +366,27 @@
         <span v-else class="kb-hint selected">{{ selectedKbIds.length }} KB(s) selected</span>
       </div>
 
+      <!-- SOUL persona selector row (visible when SOUL-enhanced mode is on) -->
+      <div v-if="soulEnhanced" class="kb-selector-row soul-selector-row">
+        <span class="kb-selector-label"><RobotOutlined /> SOUL:</span>
+        <a-select
+          v-model:value="selectedSoulId"
+          :options="soulOptions"
+          :loading="loadingSouls"
+          placeholder="自动路由(不指定人格)"
+          style="min-width: 200px; flex: 1; max-width: 400px"
+          size="small"
+          allow-clear
+        >
+          <template #notFoundContent>
+            <span v-if="loadingSouls">Loading SOULs...</span>
+            <span v-else>No SOULs found</span>
+          </template>
+        </a-select>
+        <span v-if="!selectedSoulId" class="kb-hint">自动路由: 按任务匹配最适人格</span>
+        <span v-else class="kb-hint selected">{{ selectedSoulName }}</span>
+      </div>
+
       <div v-if="slashOpen && filteredSlash.length" class="slash-menu">
         <div class="slash-menu-head">{{ $t('chat.commands', { shown: filteredSlash.length, total: allSlashCommands.length }) }}</div>
         <div
@@ -398,6 +419,17 @@
             @click="toggleKbEnhanced"
           >
             <DatabaseOutlined />
+          </a-button>
+        </a-tooltip>
+
+        <!-- SOUL persona-enhanced toggle (人格检索增强) -->
+        <a-tooltip :title="soulEnhanced ? 'SOUL persona ON (click to disable)' : 'SOUL: answer with persona (auto-route if none selected)'">
+          <a-button
+            class="kb-btn soul-btn"
+            :class="{ active: soulEnhanced }"
+            @click="toggleSoulEnhanced"
+          >
+            <RobotOutlined />
           </a-button>
         </a-tooltip>
 
@@ -1243,6 +1275,16 @@ const inputPlaceholder = computed(() =>
 
 // KB-enhanced answer state
 const kbEnhanced = ref(false)
+
+// ── SOUL persona-enhanced state ──
+const soulEnhanced = ref(false)
+const selectedSoulId = ref<string>('')
+const soulOptions = ref<{ label: string; value: string }[]>([])
+const loadingSouls = ref(false)
+const selectedSoulName = computed(() => {
+  const hit = soulOptions.value.find(o => o.value === selectedSoulId.value)
+  return hit?.label || selectedSoulId.value
+})
 const selectedKbIds = ref<string[]>([])
 const availableKbs = ref<Array<{ kbId: string; name: string; description: string; documentCount: number }>>([])
 const loadingKbs = ref(false)
@@ -1658,6 +1700,8 @@ async function sendRaw(prompt: string, atts?: Attachment[]): Promise<void> {
         attachments: atts && atts.length ? atts : undefined,
         kbEnhanced: kbEnhanced.value || undefined,
         kbIds: kbEnhanced.value && selectedKbIds.value.length ? selectedKbIds.value : undefined,
+        soulEnhanced: soulEnhanced.value || undefined,
+        soulKbId: soulEnhanced.value ? (selectedSoulId.value || undefined) : undefined,
         reasoningEffort: reasoningEffort.value === 'auto' ? undefined : reasoningEffort.value,
         engine: engine.value,
       }),
@@ -1795,6 +1839,28 @@ function toggleKbEnhanced() {
   }
 }
 
+// SOUL persona-enhanced functions
+function toggleSoulEnhanced() {
+  soulEnhanced.value = !soulEnhanced.value
+  if (soulEnhanced.value && !soulOptions.value.length) {
+    loadSoulOptions()
+  }
+}
+
+async function loadSoulOptions() {
+  loadingSouls.value = true
+  try {
+    const list = await $fetch<any>('/api/soul/list')
+    soulOptions.value = (list || [])
+      .filter((s: any) => !s.is_template)
+      .map((s: any) => ({ label: s.name, value: s.kb_id }))
+  } catch (e) {
+    console.warn('loadSoulOptions failed:', e)
+  } finally {
+    loadingSouls.value = false
+  }
+}
+
 async function loadKbCatalog() {
   loadingKbs.value = true
   try {
@@ -1929,6 +1995,8 @@ function clearChat() {
   isAtBottom.value = true
   kbEnhanced.value = false
   selectedKbIds.value = []
+  soulEnhanced.value = false
+  selectedSoulId.value = ''
   // ⭐ Queue preserved: it's independent of chat state
   // Abort all background sessions
   for (const bg of bgSessions.value) {

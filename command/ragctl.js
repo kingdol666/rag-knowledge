@@ -2991,6 +2991,227 @@ ${_c(C.GRAY, '  prod: Backend=8001  Web=3000')}
 
 // ── Meditation ────────────────────────────────────────────────────────
 
+/** Backend base URL (dev:8765 / prod:8001, env/config overrides). Fixes getBackendUrl is not defined. */
+function getBackendUrl() {
+  const ports = getServicePorts();
+  return `http://127.0.0.1:${ports.backend}`;
+}
+
+// ── SOUL ──────────────────────────────────────────────────────────────
+
+async function cmdSoul(args) {
+  const [sub, ...rest] = args;
+  const backendUrl = getBackendUrl();
+
+  async function apiGet(path) {
+    const res = await fetch(`${backendUrl}${path}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+    return res.json();
+  }
+  async function apiPost(path, body) {
+    const res = await fetch(`${backendUrl}${path}`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+    return res.json();
+  }
+  async function apiPut(path, body) {
+    const res = await fetch(`${backendUrl}${path}`, {
+      method: 'PUT', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+    return res.json();
+  }
+  async function apiDelete(path) {
+    const res = await fetch(`${backendUrl}${path}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
+    return res.json();
+  }
+
+  const enc = encodeURIComponent;
+
+  // 取 flag 值: 支持 `--flag value` 与 `--flag=value` 两种写法
+  function flagVal(name) {
+    const eq = args.find(a => a.startsWith(`${name}=`));
+    if (eq) return eq.split('=').slice(1).join('=');
+    const idx = args.indexOf(name);
+    return idx >= 0 && idx + 1 < args.length ? args[idx + 1] : '';
+  }
+  const flagOn = (name) => args.includes(name);
+
+  switch (sub) {
+    case 'list': {
+      const souls = await apiGet('/api/v1/soul/list');
+      console.log('\n🤖 SOUL Personas');
+      console.log('════════════════');
+      if (!souls.length) { console.log('  (空 — 尚无 SOUL,用 ragctl soul init 创建)'); break; }
+      for (const s of souls) {
+        const status = s._status || {};
+        console.log(`  ${s.is_template ? '📄' : '🧠'} ${s.name}  [scope: ${(s.kb_scope || []).join(',') || '空(仅问答)'}]`);
+        console.log(`      labels: ${(s.domain_labels || []).join(', ') || '—'} | task_types: ${(s.supported_task_types || []).join(', ') || '—'} | weight: ${s.route_weight}`);
+      }
+      break;
+    }
+    case 'status': {
+      const kbId = rest[0];
+      if (!kbId) { console.log('用法: ragctl soul status <soul_kb_id>'); break; }
+      const st = await apiGet(`/api/v1/soul/${enc(kbId)}/status?summary_window=30`);
+      console.log(`\n🧠 ${kbId} 学习指标`);
+      console.log('════════════════════');
+      console.log(`  记忆: ${st.total_memories} | 待审草稿: ${st.drafts_pending_review} | 缺口: ${st.total_gaps}`);
+      console.log(`  判官分歧: ${st.judge_divergence_count} | stale 记忆: ${st.stale_memory_count} | training_stale: ${st.training_stale}`);
+      console.log(`  掌握: ${st.mastery?.question_count ?? 0} 问题, 均分 ${st.mastery?.avg_score ?? 0}`);
+      console.log(`  成本: $${st.estimated_cost_usd?.toFixed?.(4) ?? st.estimated_cost_usd} | 路由成本: $${st.route_cost_usd}`);
+      if (st.recent_learned_docs?.length) {
+        console.log(`  最近学习:`);
+        for (const d of st.recent_learned_docs.slice(0, 5)) console.log(`    • ${d.doc_path} (score ${d.score})`);
+      }
+      break;
+    }
+    case 'init': case 'create': {
+      // ragctl soul init <name> --scope kb1,kb2 --labels 材料,催化 --types 文献综述
+      const name = rest[0];
+      if (!name) { console.log('用法: ragctl soul init <soul_name> [--scope kb1,kb2] [--labels a,b] [--types t1,t2]'); break; }
+      const scope = flagVal('--scope');
+      const labels = flagVal('--labels');
+      const types = flagVal('--types');
+      const full = name.startsWith('soul-') ? name : `soul-${name}`;
+      // 后端 /init 兼容入口(实际编排在 kb-mcp);此处提示 MCP 路径
+      const res = await apiPost('/api/v1/soul/init', {
+        soul_name: full,
+        kb_scope: scope ? scope.split(',').map(s => s.trim()) : [],
+        domain_labels: labels ? labels.split(',').map(s => s.trim()) : [],
+        supported_task_types: types ? types.split(',').map(s => s.trim()) : [],
+      }).catch(e => ({ _error: e.message }));
+      if (res._error) {
+        console.log(`\n⚠ 后端 /init 为兼容入口: ${res._error}`);
+        console.log('   完整创建(模板复制+profile+索引)请用 MCP 工具 soul_init 或 Web SOUL 页面');
+      } else {
+        console.log(`\n🧠 ${full} 初始化请求已提交:`, JSON.stringify(res).slice(0, 200));
+      }
+      break;
+    }
+    case 'learn': {
+      const posArgs = rest.filter(a => !a.startsWith('--'));
+      const kbId = posArgs[0];
+      const docs = flagVal('--docs');
+      if (!kbId || !docs) { console.log('用法: ragctl soul learn <soul_kb_id> --docs kb/doc1,kb/doc2 [--limit 6]'); break; }
+      const limit = parseInt(flagVal('--limit') || '6');
+      const res = await apiPost(`/api/v1/soul/${enc(kbId)}/learn`, { doc_paths: docs.split(',').map(s => s.trim()), limit });
+      console.log(`\n🧠 ${kbId} 训练已触发:`, JSON.stringify(res.report || res).slice(0, 300));
+      break;
+    }
+    case 'learn-all': case 'train-all': {
+      // 过滤 flag 参数: kbId 是第一个非 -- 开头的参数
+      const posArgs = rest.filter(a => !a.startsWith('--'));
+      const kbId = posArgs[0] || '';
+      const dry = flagOn('--dry-run');
+      const path = kbId ? `/api/v1/soul/${enc(kbId)}/learn-all` : '/api/v1/soul/learn-all';
+      const res = await apiPost(path, { max_docs: 20, dry_run: dry });
+      console.log(`\n🌱 全库自举(${kbId || '全部人格'}${dry ? ' dry-run' : ''}):`);
+      const r = res.report || {};
+      if (r.estimated_llm_calls !== undefined) {
+        console.log(`  预估: ${r.estimated_llm_calls} LLM 调用 | 唯一文档: ${r.unique_docs} | 重复: ${r.duplicate_docs} | 跨人格重叠: ${r.cross_soul_overlap_pct}%`);
+        for (const p of r.per_soul_breakdown || []) console.log(`    • ${p.soul_kb_id.slice(0, 20)}: ${p.scope_docs} 文档`);
+      } else {
+        console.log(JSON.stringify(r, null, 2).slice(0, 400));
+      }
+      break;
+    }
+    case 'ask': {
+      // ragctl soul ask <query> [--soul kb_id] [--type 文献综述] [--goal 研究]
+      const query = rest.join(' ');
+      if (!query) { console.log('用法: ragctl soul ask <query> [--soul kb_id] [--type 任务类型] [--goal 目标]'); break; }
+      const soulKbId = flagVal('--soul');
+      const taskType = flagVal('--type');
+      const taskGoal = flagVal('--goal');
+      console.log(`\n🤖 人格问答中(约 1-2 分钟)…${soulKbId ? ` [人格: ${soulKbId}]` : ' [自动路由]'}`);
+      const res = await apiPost('/api/v1/soul/ask', {
+        query, soul_kb_id: soulKbId, task_type: taskType, task_goal: taskGoal,
+      });
+      console.log('════════════════════════');
+      console.log(res.answer || JSON.stringify(res));
+      console.log('════════════════════════');
+      if (res.selected_soul) console.log(`路由 → ${res.selected_soul} (conf ${res.route_confidence})`);
+      if (res.pas_score !== undefined && res.pas_score !== null) console.log(`PAS: ${res.pas_score}`);
+      if (res.citations?.length) {
+        console.log(`引用(${res.citations.length}):`);
+        for (const c of res.citations.slice(0, 5)) console.log(`  • ${c.path} (${c.score?.toFixed?.(3) ?? c.score})`);
+      }
+      break;
+    }
+    case 'router': {
+      const query = rest.join(' ');
+      if (!query) { console.log('用法: ragctl soul router <query> [--type 任务类型]'); break; }
+      const taskType = flagVal('--type');
+      const res = await apiPost('/api/v1/soul/router', { query, task_type: taskType });
+      console.log(`\n🧭 路由决策: ${res.route_uncertain ? '不确定(候选如下)' : `→ ${res.top1} (conf ${res.route_confidence})`}`);
+      for (const c of (res.ranked || []).slice(0, 5)) {
+        console.log(`  • ${c.kb_id}  score=${c.score}  ${c.reason || ''}`);
+      }
+      break;
+    }
+    case 'review': {
+      const kbId = rest[0];
+      if (!kbId) { console.log('用法: ragctl soul review <soul_kb_id> [--action list|approve|reject] [--draft id]'); break; }
+      const action = flagVal('--action') || 'list';
+      const draftId = flagVal('--draft');
+      const res = await apiPost(`/api/v1/soul/${enc(kbId)}/review-drafts`, {
+        action, type: 'memory', draft_id: draftId,
+      });
+      if (action === 'list') {
+        console.log(`\n📋 ${kbId} 记忆草稿(${res.drafts?.length || 0}):`);
+        for (const d of (res.drafts || []).slice(0, 10)) {
+          const s = d.scores || {};
+          console.log(`  • ${d.draft_id}  G${s.groundedness ?? '-'} C${s.completeness ?? '-'} C${s.coherence ?? '-'} I${s.info_gain ?? '-'} | ${d.question?.slice(0, 50)}`);
+        }
+      } else {
+        console.log(`\n✅ ${action}:`, JSON.stringify(res).slice(0, 200));
+      }
+      break;
+    }
+    case 'reflect': {
+      const kbId = rest[0];
+      if (!kbId) { console.log('用法: ragctl soul reflect <soul_kb_id>'); break; }
+      const res = await apiPost(`/api/v1/soul/${enc(kbId)}/reflect`, {});
+      console.log(`\n🔍 反思完成: drift=${res.drift_detected} | ${res.report_path || ''}`);
+      break;
+    }
+    case 'export': {
+      const kbId = rest[0];
+      if (!kbId) { console.log('用法: ragctl soul export <soul_kb_id> [--min-score 4]'); break; }
+      const minScore = parseFloat(flagVal('--min-score') || '4');
+      const res = await apiPost(`/api/v1/soul/${enc(kbId)}/export`, { min_score: minScore, limit: 1000 });
+      console.log(`\n📤 导出: ${res.record_count || 0} 条 → ${res.export_path || ''}`);
+      break;
+    }
+    case 'delete': {
+      const kbId = rest[0];
+      if (!kbId) { console.log('用法: ragctl soul delete <soul_kb_id>'); break; }
+      const res = await apiDelete(`/api/v1/soul/${enc(kbId)}`);
+      console.log(`\n🗑 删除请求已提交: checkpoint=${res.checkpoint_saved || '—'} (完整删除需经 kb-mcp soul_delete 或 Web)`);
+      break;
+    }
+    default:
+      console.log(`\n🤖 SOUL 人格管理 — 用法:`);
+      console.log('  ragctl soul list                                   列出全部人格');
+      console.log('  ragctl soul status <soul_kb_id>                    人格学习指标');
+      console.log('  ragctl soul init <name> [--scope k1,k2] [--labels a,b]  创建人格(后端兼容入口)');
+      console.log('  ragctl soul learn <soul_kb_id> --docs=kb/f1,kb/f2  训练指定文档');
+      console.log('  ragctl soul learn-all [soul_kb_id] [--dry-run]     全库自举(增量)');
+      console.log('  ragctl soul ask <query> [--soul kb] [--type t] [--goal g]  人格问答(自动路由)');
+      console.log('  ragctl soul router <query> [--type t]              路由决策预览');
+      console.log('  ragctl soul review <soul_kb_id> [--action approve] [--draft id]  记忆审批');
+      console.log('  ragctl soul reflect <soul_kb_id>                   人格反思');
+      console.log('  ragctl soul export <soul_kb_id> [--min-score 4]    导出训练数据');
+      console.log('  ragctl soul delete <soul_kb_id>                    删除人格');
+      console.log('  完整能力(模板复制/索引/审批)请用 Web SOUL 页面或 MCP soul_* 工具');
+  }
+  return 0;
+}
+
 async function cmdMeditation(args) {
   const [sub, ...rest] = args;
   const backendUrl = getBackendUrl();
@@ -3158,6 +3379,7 @@ async function main() {
       case 'backup': return await cmdBackup(subArgs);
       case 'restore': return await cmdRestore(subArgs);
       case 'meditation': case 'meditate': return await cmdMeditation(subArgs);
+      case 'soul': case 'persona': return await cmdSoul(subArgs);
         err(`未知命令: ${command}`);
         showHelp();
         return 1;

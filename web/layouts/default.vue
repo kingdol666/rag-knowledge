@@ -194,8 +194,9 @@ const navItems = computed(() => [
   { path: '/knowledge-base',label: 'Knowledge Base',   icon: DatabaseOutlined,     pageNum: '03', chapter: 'Collections' },
   { path: '/knowledge-search', label: 'KB Search',     icon: SearchOutlined,       pageNum: '04', chapter: 'Retrieval' },
   { path: '/knowledge-graph',  label: 'Graph Explorer',icon: ShareAltOutlined,     pageNum: '05', chapter: 'Relations' },
-  { path: '/claude-chat',   label: 'Claude Chat',      icon: RobotOutlined,        pageNum: '06', chapter: 'Assistant' },
-  { path: '/settings',      label: 'Settings',         icon: SettingOutlined,      pageNum: '07', chapter: 'Configuration' },
+  { path: '/soul',             label: 'SOUL Personas',   icon: RobotOutlined,        pageNum: '06', chapter: 'Persona' },
+  { path: '/claude-chat',      label: 'Claude Chat',      icon: RobotOutlined,        pageNum: '07', chapter: 'Assistant' },
+  { path: '/settings',         label: 'Settings',         icon: SettingOutlined,      pageNum: '08', chapter: 'Configuration' },
 ])
 
 // ── State ───────────────────────────────────────────────────
