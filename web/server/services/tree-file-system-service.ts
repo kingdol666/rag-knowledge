@@ -922,7 +922,10 @@ export class TreeFileSystemService {
     }
 
     const folderPath = join(this.basePath, folder.path)
-    if (existsSync(folderPath)) {
+    // 同名 path 安全: 重复创建的同名 KB 共享同一磁盘目录,
+    // 删除其中一个时只移除元数据, 不得连带删除其他 KB 的磁盘数据
+    const sharedPath = this.metadata.folders.some(f => f.id !== id && f.path === folder.path)
+    if (existsSync(folderPath) && !sharedPath) {
       await this.deleteDirectoryRecursive(folderPath)
     }
 
