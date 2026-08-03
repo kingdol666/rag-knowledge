@@ -44,6 +44,21 @@ async def main() -> int:
         return 1
 
     async with httpx.AsyncClient() as client:
+        # 名称 → UUID 映射(soul_list 返回 kb_id/name;测试集用 name 标注)
+        name_to_id: dict[str, str] = {}
+        try:
+            resp = await client.get(f"{args.backend}/api/v1/soul/list", timeout=30)
+            for s in resp.json() or []:
+                name_to_id[s.get("name", "")] = s.get("kb_id", "")
+        except Exception:
+            pass
+
+        def _resolve(expected: str) -> str:
+            """expected_soul 可为名称或 UUID;统一转 UUID 与 router 的 top1 比对。"""
+            if expected in name_to_id:
+                return name_to_id[expected]
+            return expected
+
         per_soul = defaultdict(lambda: {"tp": 0, "total": 0, "predicted": 0})
         confidences = []
         rows = []
@@ -58,7 +73,8 @@ async def main() -> int:
             if conf is not None:
                 confidences.append(conf)
             expected = c["expected_soul"]
-            hit = top1 == expected
+            expected_id = _resolve(expected)
+            hit = bool(top1) and top1 == expected_id
             per_soul[expected]["total"] += 1
             per_soul[expected]["predicted"] += 1
             if hit:

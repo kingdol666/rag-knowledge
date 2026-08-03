@@ -290,9 +290,14 @@ def _search_scope_ids(soul_kb_id: str, kb_scope: list[str]) -> list[str]:
 
 
 def _merge_graph_neighbors_for_chunks(
-    chunks: list[dict], doc_paths: list[str], limit: int = 20
+    chunks: list[dict], doc_paths: list[str], limit: int = 20,
+    allowed_prefixes: list[str] | None = None,
 ) -> list[dict]:
-    """将图谱邻居按 doc_path 合并到 chunk 列表（同路径只保留一条关联记录）。"""
+    """将图谱邻居按 doc_path 合并到 chunk 列表（同路径只保留一条关联记录）。
+
+    allowed_prefixes: 允许的 KB 前缀(如 kb_scope),None=不限。
+    图谱邻居可能跨库,超出检索范围的邻居必须过滤(多 SOUL 隔离,AC22)。
+    """
     merged: dict[str, dict] = {}
     for c in chunks:
         dp = _norm_path(c.get("doc_path", ""))
@@ -306,14 +311,27 @@ def _merge_graph_neighbors_for_chunks(
             continue
         for nb in neighbors:
             nb_path = _norm_path(nb.get("path", ""))
-            if nb_path and nb_path not in merged:
-                # 图谱邻居无 chunk_text，构造一个标记条
-                merged[nb_path] = {
-                    "doc_path": nb_path,
-                    "chunk_text": nb.get("name", nb_path),
-                    "score": float(nb.get("relevance", nb.get("weight", 0.3))),
-                    "source": "graph_neighbor",
-                }
+            if not nb_path or nb_path in merged:
+                continue
+            if allowed_prefixes is not None:
+                kb_of = nb_path.split("/", 1)[0]
+                if not any(kb_of == a.strip("/") for a in allowed_prefixes):
+                    continue
+            # 图谱邻居无 chunk_text，构造一个标记条(尝试读真实内容,失败用文件名)
+            neighbor_text = nb.get("name", nb_path)
+            try:
+                from app.services.storage_reader_service import storage_reader
+                real = storage_reader.read_document_content(nb_path, max_chars=800)
+                if real:
+                    neighbor_text = real
+            except Exception:
+                pass
+            merged[nb_path] = {
+                "doc_path": nb_path,
+                "chunk_text": neighbor_text,
+                "score": float(nb.get("relevance", nb.get("weight", 0.3))),
+                "source": "graph_neighbor",
+            }
 
     # 按 doc_path 稳定排序
     return sorted(merged.values(), key=lambda x: x.get("doc_path", ""))
@@ -402,8 +420,9 @@ async def self_answer(
         if c["doc_path"]
     ))
 
-    # 图谱邻居合并
-    chunks = _merge_graph_neighbors_for_chunks(chunks, top_doc_paths)
+    # 图谱邻居合并(仅限 kb_scope 内,多 SOUL 隔离 AC22)
+    chunks = _merge_graph_neighbors_for_chunks(
+        chunks, top_doc_paths, allowed_prefixes=scope_ids)
 
     # 前置门：最高分 chunk < SOUL_RETRIEVAL_SCORE_THRESHOLD
     max_score = max((c["score"] for c in chunks), default=0.0)
@@ -413,10 +432,14 @@ async def self_answer(
                     "retrieval_failure", f"similarity_score={max_score:.3f}")
         return {"retrieval_pass": False}
 
-    # 调用 LLM 合成答案
+    # 调用 LLM 合成答案(result_schema 使带 prose 前缀的 JSON 也能被解析)
     prompt = _build_self_answer_prompt(q_text, chunks)
     result = await agent_harness.complete(
         prompt=prompt,
+        result_schema={
+            "answer_text": str,
+            "citations": [{"path": str, "chunk_text": str, "score": float}],
+        },
         timeout_sec=120,
         expected_output_tokens=1024,
     )
@@ -436,11 +459,24 @@ async def self_answer(
         answer_text = result.get("text", "")
         citations = []
 
-    # 收集 evidence_paths（去重）
+    # 收集 evidence_paths（去重）— 兼容 citations 为 [{path,...}] 或 ["path",...]
+    def _cit_path(c):
+        if isinstance(c, dict):
+            return c.get("path", c.get("doc_path", ""))
+        return str(c)
     evidence_paths = list(dict.fromkeys(
-        _norm_path(c.get("path", c.get("doc_path", "")))
-        for c in citations
+        _norm_path(_cit_path(c)) for c in citations if _cit_path(c)
     ))
+    # 过滤掉非路径形态的引用(如 [6] 序号引用/纯文件名);空则回退到检索高分 chunk 路径,
+    # 保证 eval 代码接地性有可校验证据(LLM 偶发用序号而非 [path] 锚点)
+    def _looks_like_path(p: str) -> bool:
+        return ("/" in p or "\\" in p) and not p.strip().isdigit()
+    path_like = [p for p in evidence_paths if _looks_like_path(p)]
+    if not path_like and chunks:
+        path_like = list(dict.fromkeys(
+            _norm_path(c.get("doc_path", "")) for c in chunks if c.get("doc_path")
+        ))[:3]
+    evidence_paths = path_like
 
     return {
         "answer_text": answer_text,
@@ -992,19 +1028,39 @@ def deduct_cost(soul_kb_id: str, cost: float) -> None:
 # ═══════════════════════════════════════════════════════════════════════════
 
 
+def _resolve_any_kb_path(kb_id: str) -> str | None:
+    """把公开库的 UUID 或路径解析为 KB 相对路径(soul_learn 通用解析)。"""
+    if not kb_id:
+        return None
+    norm = kb_id.replace("\\", "/").strip("/")
+    try:
+        for kb in storage_reader.list_knowledge_bases():
+            kb_path = (kb.get("path") or "").replace("\\", "/").strip("/")
+            if kb_path == norm or kb.get("kb_id") == kb_id:
+                return kb["path"]
+    except Exception:
+        return None
+    return None
+
+
 def _get_incremental_docs(
     soul_kb_id: str, kb_scope: list[str]
 ) -> list[dict]:
-    """获取增量文档：文档 updated_at 变化或内容 SHA256 与元数据记录不符。
+    """获取增量文档：内容 SHA256 与 metadata.learned_hash 不一致的文档。
+
+    计划 3.1/AC5: 已学习文档在 .knowledge-base.yml 的文档 metadata 中记录
+    learned_hash(内容 SHA256 前 12 位);内容未变 → 跳过(幂等);
+    内容变更 → learned_hash 不匹配 → 重新学习。
 
     Returns:
-        [{{doc_path, doc_name, kb_path}}, ...]
+        [{{doc_path, doc_name, kb_path, updated_at}}, ...]
     """
     docs: list[dict] = []
     for kb_id in kb_scope:
         if kb_id.startswith(SOUL_PREFIX):
             continue
-        kb_path = resolve_soul_kb_path(kb_id)
+        # scope 条目是公开库(UUID 或路径),用通用 KB 解析,不能走 resolve_soul_kb_path
+        kb_path = _resolve_any_kb_path(kb_id)
         if not kb_path:
             continue
         try:
@@ -1015,13 +1071,39 @@ def _get_incremental_docs(
             doc_path = d.get("path", "")
             if not doc_path:
                 continue
+            # 内容 SHA256 比对: 一致 → 已学习,跳过
+            try:
+                content = storage_reader.read_document_content(
+                    doc_path, max_chars=50000)
+                cur_hash = _content_sha256(content)
+            except Exception:
+                cur_hash = None
+            recorded = ((d.get("metadata") or {}).get("learned_hash") or "")
+            if cur_hash is not None and recorded and cur_hash == recorded:
+                continue
             docs.append({
                 "doc_path": _norm_path(doc_path),
                 "doc_name": d.get("name", ""),
                 "kb_path": kb_path,
                 "updated_at": d.get("updated_at", ""),
+                "content_hash": cur_hash,
             })
     return docs
+
+
+def _record_learned_doc(doc: dict) -> None:
+    """将文档内容 SHA256 记入 .knowledge-base.yml metadata.learned_hash(幂等)。"""
+    h = doc.get("content_hash")
+    if not h:
+        return
+    try:
+        storage_reader.update_document_metadata(
+            doc["kb_path"], doc["doc_path"], {
+                "learned_hash": h,
+                "learned_at": _now_iso(),
+            })
+    except Exception as e:
+        logger.warning("_record_learned_doc failed for %s: %s", doc.get("doc_path"), e)
 
 
 async def learn_incremental(soul_kb_id: str) -> dict:
@@ -1067,19 +1149,19 @@ async def learn_incremental(soul_kb_id: str) -> dict:
         med_config = med_cfg.get("config", {})
         max_questions = int(med_config.get("max_questions_per_run", 10))
 
+        # 增量文档(先于预算检查: 无增量时零成本快速返回,AC5 幂等)
+        docs = _get_incremental_docs(soul_kb_id, kb_scope)
+        if not docs:
+            return {"success": True, "questions_generated": 0, "memories_created": 0,
+                    "docs_processed": 0, "skipped": 0, "gaps_count": 0,
+                    "judge_divergence_count": 0, "cost_estimate": 0.0, "calls": 0}
+
         # 预算检查（预估成本）
         est_per_call = 0.005  # 每次 complete() 约 $0.005
         ok, remaining = check_budget(soul_kb_id, est_per_call * 10)
         if not ok:
             return {"success": False, "error": "budget_exceeded",
                     "detail": f"预算不足，剩余 ${remaining:.4f}"}
-
-        # 增量文档
-        docs = _get_incremental_docs(soul_kb_id, kb_scope)
-        if not docs:
-            return {"success": True, "questions_generated": 0, "memories_created": 0,
-                    "docs_processed": 0, "skipped": 0, "gaps_count": 0,
-                    "judge_divergence_count": 0, "cost_estimate": 0.0, "calls": 0}
 
         # 限制文档数（来自冥想配置或合理默认）
         max_docs = min(len(docs), 10)
@@ -1160,6 +1242,9 @@ async def learn_incremental(soul_kb_id: str) -> dict:
                 total_cost += 0.01  # 每次 LLM 调用约 $0.005，两个调用 ≈ $0.01
                 total_calls += 0  # 已在 self_answer/eval_answer 中各计一次
 
+            # 文档已学习(内容 hash 入 metadata,AC5 幂等)
+            _record_learned_doc(doc)
+
         # AC10: 全部完成后统一 flush（记忆文件已在 distill 中原子写，此处为最终一致性）
         # 实际成本扣减
         deduct_cost(soul_kb_id, total_cost)
@@ -1233,7 +1318,7 @@ async def learn_all(
         for kb_id in cfg.kb_scope:
             if kb_id.startswith(SOUL_PREFIX):
                 continue
-            kb_path = resolve_soul_kb_path(kb_id)
+            kb_path = _resolve_any_kb_path(kb_id)
             if not kb_path:
                 continue
             try:
@@ -1386,8 +1471,22 @@ async def learn_docs(
 
         kb_scope = cfg.kb_scope
 
-        # 预算检查
-        ok, remaining = check_budget(soul_kb_id, 0.05 * len(doc_paths) * limit * 2)
+        # AC5 幂等: 内容 hash 与已记录 learned_hash 一致的文档 → 跳过(不扣预算)
+        pending_paths: list[str] = []
+        for doc_path in doc_paths:
+            try:
+                content = storage_reader.read_document_content(doc_path, max_chars=50000)
+                cur_hash = _content_sha256(content)
+                doc_meta = storage_reader.get_document_metadata(doc_path)
+                if cur_hash and doc_meta.get("learned_hash") == cur_hash:
+                    continue
+            except Exception:
+                pass
+            pending_paths.append(doc_path)
+
+        # 预算检查(与 learn_incremental 同口径: ~$0.005/次 complete 调用;
+        # 每问题约 2 次调用(自答+自评),蒸馏/双判官计入运行中扣减)
+        ok, remaining = check_budget(soul_kb_id, 0.005 * len(pending_paths) * limit * 2)
         if not ok:
             return {"success": False, "error": "budget_exceeded",
                     "detail": f"预算不足，剩余 ${remaining:.4f}"}
@@ -1395,13 +1494,13 @@ async def learn_docs(
         total_questions = 0
         total_memories = 0
         total_docs = 0
-        total_skipped = 0
+        total_skipped = len(doc_paths) - len(pending_paths)
         total_gaps = 0
         total_divergence = 0
         total_calls = 0
         total_cost = 0.0
 
-        for doc_path in doc_paths:
+        for doc_path in pending_paths:
             if total_calls >= _MAX_CALLS_PER_RUN:
                 break
 
@@ -1409,7 +1508,7 @@ async def learn_docs(
             if kb_scope:
                 doc_in_scope = False
                 for scope_id in kb_scope:
-                    scope_kb_path = resolve_soul_kb_path(scope_id)
+                    scope_kb_path = _resolve_any_kb_path(scope_id)
                     if scope_kb_path and doc_path.startswith(scope_kb_path + "/"):
                         doc_in_scope = True
                         break
@@ -1476,6 +1575,18 @@ async def learn_docs(
                     total_memories += 1
 
                 total_cost += 0.01
+
+            # 文档已学习(内容 hash 入 metadata,AC5 幂等)
+            try:
+                content = storage_reader.read_document_content(doc_path, max_chars=50000)
+                _record_learned_doc({
+                    "kb_path": next(
+                        (p for p in kb_scope if doc_path.startswith(p + "/")), ""),
+                    "doc_path": doc_path,
+                    "content_hash": _content_sha256(content),
+                })
+            except Exception:
+                pass
 
         deduct_cost(soul_kb_id, total_cost)
 

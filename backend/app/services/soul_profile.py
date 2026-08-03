@@ -310,7 +310,9 @@ def _normalize_text(text: str) -> str:
 
 # ── generate_profile_summary ────────────────────────────────────────────────
 
-_SYSTEM_PROMPT_PATH = "backend/app/services/prompts/soul_profile_summary_v1.txt"
+_SYSTEM_PROMPT_PATH = str(
+    Path(__file__).resolve().parent / "prompts" / "soul_profile_summary_v1.txt"
+)
 
 
 async def generate_profile_summary(soul_kb_id: str) -> str:
@@ -363,7 +365,7 @@ async def generate_profile_summary(soul_kb_id: str) -> str:
             kb_config=kb_config,
             result_schema=None,
             system_prompt_path=_SYSTEM_PROMPT_PATH,
-            timeout_sec=120,
+            timeout_sec=300,
             expected_output_tokens=256,
         )
     except Exception as e:

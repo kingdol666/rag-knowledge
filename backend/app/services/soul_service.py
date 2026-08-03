@@ -126,15 +126,28 @@ async def _retrieve_knowledge(soul_kb_id: str, query: str, kb_scope: list[str]) 
         r = two_stage_search_service.search(
             query=query, kb_id=scope[0], stage2_top_k=8, enable_graph_expansion=True,
             balance_kbs=True)
-    results = r.get("results", []) if isinstance(r, dict) else []
+    results = r.get("stage2", {}).get("results", []) if isinstance(r, dict) else []
+    if not results:
+        # 兼容旧契约(直接 results 键)
+        results = r.get("results", []) if isinstance(r, dict) else []
     chunks: list[dict] = []
     for res in results:
         doc_path = res.get("doc_path") or ""
-        for c in res.get("chunks", []) or []:
+        sub = res.get("chunks") or []
+        if sub:
+            # 分组结构(按文档聚合)
+            for c in sub:
+                chunks.append({
+                    "path": doc_path,
+                    "chunk_text": c.get("chunk_text") or c.get("text") or c.get("content") or "",
+                    "score": float(c.get("score", 0.0) or 0.0),
+                })
+        else:
+            # 扁平结构(每条即一个 chunk)
             chunks.append({
                 "path": doc_path,
-                "chunk_text": c.get("chunk_text") or c.get("text") or c.get("content") or "",
-                "score": float(c.get("score", 0.0) or 0.0),
+                "chunk_text": res.get("content") or res.get("chunk_text") or res.get("text") or "",
+                "score": float(res.get("score", 0.0) or 0.0),
             })
     # 按 score 降序去重(path+chunk_text 相同)
     seen = set()
@@ -302,6 +315,11 @@ async def _soul_ask_inner(query: str, soul_kb_id: str, task_goal: str, task_type
     if not synth.get("success"):
         return {"success": False, "error": synth.get("error"), "detail": synth.get("detail", "")}
     parsed = synth.get("parsed") or {}
+    if isinstance(parsed, list):
+        # 模型偶发输出 JSON 数组(如 [{"answer_text": ...}]);取首元素
+        parsed = parsed[0] if parsed and isinstance(parsed[0], dict) else {}
+    if not isinstance(parsed, dict):
+        parsed = {}
     answer = parsed.get("answer_text") or synth.get("text", "")[:4000]
     if not answer:
         return {"success": False, "error": "harness_unavailable", "detail": "合成无输出"}

@@ -97,12 +97,16 @@ async def soul_bootstrap(req: dict[str, Any]):
 
 async def _bootstrap_impl(soul_kb_id: str, kb_scope: list[str],
                           domain_labels: list[str], supported_task_types: list[str]) -> dict:
-    if not soul_kb_id or not soul_kb_id.startswith(soul_config.SOUL_PREFIX):
+    if not soul_kb_id:
         raise _err(400, "invalid_soul_name", "名称必须以 soul- 前缀开头")
-    if not soul_config.resolve_soul_kb_path(soul_kb_id):
+    # UUID 或路径 → 相对路径(前缀校验含在解析内: 非 soul- 库返回 None)
+    resolved = soul_config.resolve_soul_kb_path(soul_kb_id)
+    if not resolved:
+        raise _err(400, "invalid_soul_name", "名称必须以 soul- 前缀开头且为已存在的 SOUL 库")
+    if not soul_config.resolve_soul_kb_path(resolved):
         raise _err(404, "kb_not_found", "库不存在(请先经 web API 创建)")
     valid, reasons = soul_config.validate_scope(kb_scope)
-    if any("soul-" in r for r in reasons):
+    if any(r == "scope_contains_soul_kb" for r in reasons):
         raise _err(400, "scope_contains_soul_kb", "; ".join(reasons))
     if kb_scope and not valid:
         raise _err(400, "scope_kb_missing", "; ".join(reasons))
@@ -161,7 +165,7 @@ async def soul_config_update(soul_kb_id: str, req: dict[str, Any],
     old_scope = list(cfg.kb_scope)
     if "kb_scope" in req:
         valid, reasons = soul_config.validate_scope(req["kb_scope"] or [])
-        if any("soul-" in r for r in reasons):
+        if any(r == "scope_contains_soul_kb" for r in reasons):
             raise _err(400, "scope_contains_soul_kb", "; ".join(reasons))
         if req["kb_scope"] and not valid:
             raise _err(400, "scope_kb_missing", "; ".join(reasons))
@@ -263,6 +267,15 @@ async def learn(soul_kb_id: str, req: dict[str, Any], _: None = Depends(verify_t
     return {"success": True, "task_id": None, "report": report}
 
 
+@router.post("/learn-all")
+async def learn_all_global(req: dict[str, Any], _: None = Depends(verify_token)):
+    """全库自举: 遍历全部 SOUL × kb_scope(不指定 soul_kb_id 时)。"""
+    max_docs = int(req.get("max_docs") or 20)
+    dry_run = bool(req.get("dry_run"))
+    report = await soul_learn.learn_all(soul_kb_id="", max_docs=max_docs, dry_run=dry_run)
+    return {"success": True, "task_id": None, "report": report}
+
+
 @router.post("/{soul_kb_id}/learn-all")
 async def learn_all(soul_kb_id: str, req: dict[str, Any], _: None = Depends(verify_token)):
     max_docs = int(req.get("max_docs") or 20)
@@ -341,6 +354,6 @@ async def export_training(soul_kb_id: str, req: dict[str, Any],
         raise _err(404, "kb_not_found")
     result = await soul_memory.export_training_data(
         soul_kb_id,
-        min_score=float(req.get("min_score") or 4.0),
+        min_score=float(req["min_score"]) if "min_score" in req and req["min_score"] is not None else 4.0,
         limit=int(req.get("limit") or 1000))
     return {"success": True, **result}

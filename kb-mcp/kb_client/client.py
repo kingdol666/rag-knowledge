@@ -22,7 +22,7 @@ HTTP_TIMEOUT = int(os.environ.get("MCP_HTTP_TIMEOUT", "30"))  # seconds — gene
 PARSE_TIMEOUT = int(os.environ.get("MCP_PARSE_TIMEOUT", "300"))  # seconds
 INDEX_TIMEOUT = int(os.environ.get("MCP_INDEX_TIMEOUT", "600"))  # seconds — large-doc CPU embedding
 MEDITATION_TIMEOUT = int(os.environ.get("MCP_MEDITATION_TIMEOUT", "600"))  # seconds — meditation agent (omp/claude) may run minutes
-SOUL_TIMEOUT = int(os.environ.get("MCP_SOUL_TIMEOUT", "120"))  # seconds — soul_ask sync synthesis
+SOUL_TIMEOUT = int(os.environ.get("MCP_SOUL_TIMEOUT", "240"))  # seconds — soul_ask sync synthesis
 
 
 class KbClient:
@@ -968,12 +968,15 @@ class KbClient:
     async def soul_bootstrap(self, soul_kb_id: str, kb_scope: list = None,
                              domain_labels: list = None,
                              supported_task_types: list = None) -> dict:
-        """后端侧初始化(soul-config.yml + profile + meditation config)。"""
+        """后端侧初始化(soul-config.yml + profile + meditation config)。
+
+        含初始 profile-summary 生成(harness 调用),可超过默认 30s → 用 INDEX_TIMEOUT。
+        """
         return await self._post_backend_json("/api/v1/soul/bootstrap", {
             "soul_kb_id": soul_kb_id, "kb_scope": kb_scope or [],
             "domain_labels": domain_labels or [],
             "supported_task_types": supported_task_types or [],
-        })
+        }, timeout=INDEX_TIMEOUT)
 
     async def soul_config_update(self, soul_kb_id: str, kb_scope: list = None,
                                  domain_labels: list = None,
@@ -1010,10 +1013,9 @@ class KbClient:
 
     async def soul_learn_all(self, soul_kb_id: str = "", max_docs: int = 20,
                              dry_run: bool = False) -> dict:
-        url = f"/api/v1/soul/{soul_kb_id}/learn-all" if soul_kb_id else "/api/v1/soul/learn-all"
-        if soul_kb_id:
-            return await self._post_backend_json(url, {"max_docs": max_docs, "dry_run": dry_run},
-                                                 timeout=MEDITATION_TIMEOUT)
+        # 空 soul_kb_id → /api/v1/soul/learn-all(全库自举路由)
+        url = (f"/api/v1/soul/{soul_kb_id}/learn-all" if soul_kb_id
+               else "/api/v1/soul/learn-all")
         return await self._post_backend_json(url, {"max_docs": max_docs, "dry_run": dry_run},
                                              timeout=MEDITATION_TIMEOUT)
 

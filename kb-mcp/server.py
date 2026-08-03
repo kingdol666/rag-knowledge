@@ -24,6 +24,7 @@ import json
 import os
 import re
 import sys
+from pathlib import Path
 
 from mcp.server.fastmcp import FastMCP
 
@@ -2634,12 +2635,23 @@ def _soul_name_valid(name: str) -> str | None:
 
 
 def _soul_storage_root() -> Path:
-    """storage/tree-file-system 根(与模板 FS 读取共用)。"""
+    """storage/tree-file-system 根(与模板 FS 读取共用)。
+
+    resolve_path 相对 kb-mcp 目录解析,可能返回不存在的路径;
+    优先取真实存在的仓库根路径。
+    """
+    repo_root = Path(__file__).resolve().parent.parent
+    candidates = []
     try:
         from config import resolve_path
-        return Path(resolve_path("storage/tree-file-system"))
+        candidates.append(Path(resolve_path("storage/tree-file-system")))
     except Exception:
-        return Path(__file__).resolve().parent.parent / "storage" / "tree-file-system"
+        pass
+    candidates.append(repo_root / "storage" / "tree-file-system")
+    for p in candidates:
+        if p.exists():
+            return p
+    return candidates[-1]
 
 
 @mcp.tool()
@@ -2786,7 +2798,7 @@ async def soul_delete(soul_kb_id: str, purge_experiences: bool = False) -> str:
     deleted = await client.kb_delete(soul_kb_id)
     # tombstone 记入路由日志(可审计)
     try:
-        log = _Path(__file__).resolve().parent.parent / "backend" / "app" / "data" / "router-log.jsonl"
+        log = _Path(__file__).resolve().parent.parent.parent / "backend" / "app" / "data" / "router-log.jsonl"
         log.parent.mkdir(parents=True, exist_ok=True)
         with open(log, "a", encoding="utf-8") as f:
             f.write(_json.dumps({
@@ -2842,9 +2854,32 @@ async def soul_review_drafts(soul_kb_id: str, draft_type: str = "memory",
         soul_kb_id: SOUL 库
         draft_type: memory|cognition
         action: list|approve|reject
-        draft_ids: approve/reject 的草稿 id(单条)
+        draft_ids: approve/reject 的草稿 id 列表(逐条审批,批量串行)
         force: 低分审批强制标记
     """
+    if action in ("approve", "reject") and draft_ids:
+        results = []
+        for did in draft_ids:
+            r = await _client().soul_review_drafts(
+                soul_kb_id, draft_type, action, did, force)
+            results.append(r)
+        # 汇总: 全部成功 → success; 部分成功 → 附失败明细
+        ok = [r for r in results if r.get("success")]
+        bad = [r for r in results if not r.get("success")]
+        if bad and not ok:
+            return _j({"success": False, "error": bad[0].get("error", "approve_failed"),
+                       "detail": bad[0].get("detail", ""), "results": results})
+        merged: dict = {"success": True, "results": results}
+        for key in ("approved", "indexed"):
+            vals = [r[key] for r in ok if isinstance(r.get(key), (bool, list))]
+            if vals and isinstance(vals[0], list):
+                merged[key] = [v for lst in vals for v in lst]
+            elif vals:
+                merged[key] = all(vals)
+        if bad:
+            merged["partial_failures"] = [
+                {"draft_id": r.get("draft_id", ""), "error": r.get("error")} for r in bad]
+        return _j(merged)
     draft_id = (draft_ids or [""])[0] if draft_ids else ""
     return _j(await _client().soul_review_drafts(
         soul_kb_id, draft_type, action, draft_id, force))

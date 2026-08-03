@@ -358,6 +358,20 @@ async def approve_draft(
                     kb_path, doc_rel_path, graph_result
                 )
 
+            # 增量 BM25 更新(与 index_document 路由同路径;否则 two_stage stage1
+            # 关键词/图谱候选找不到新记忆,AC14 的 60s 可检索会失败)
+            try:
+                from app.services.two_stage_search_service import two_stage_search_service
+                two_stage_search_service.add_document({
+                    "path": doc_rel_path,
+                    "name": f"{draft_id}.md",
+                    "description": fm.get("question", "")[:200],
+                    "content": body,
+                    "kb_id": kb_path,
+                })
+            except Exception as e:
+                logger.warning("BM25 incremental update failed for %s: %s", draft_id, e)
+
             indexed = True
     except Exception as e:
         logger.warning("Registration/index failure for %s: %s", draft_id, e)
@@ -547,7 +561,7 @@ async def create_checkpoint(soul_kb_id: str) -> dict[str, Any]:
         return {"success": False, "error": "lock_timeout"}
 
     try:
-        return _create_checkpoint_locked(soul_kb_id, _soul_dir)
+        return await _create_checkpoint_locked(soul_kb_id, _soul_dir)
     finally:
         lock.release()
 
@@ -1009,7 +1023,11 @@ async def export_training_data(
                 continue
             if fm.get("status") != "approved":
                 continue
-            pas = fm.get("pas_score", 0.0)
+            pas = fm.get("pas_score") or 0.0
+            try:
+                pas = float(pas)
+            except (TypeError, ValueError):
+                pas = 0.0
             if pas < min_score:
                 continue
 

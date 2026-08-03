@@ -40,7 +40,7 @@ ROUTER_TTL_SECONDS = 300
 ROUTER_MAX_CANDIDATES = 8
 SYNC_MAX_RETRIES = 3
 CHECKPOINT_MAX_COUNT = 30
-SYNTHESIS_TIMEOUT_SECONDS = 60
+SYNTHESIS_TIMEOUT_SECONDS = 180
 
 
 # ── SoulConfig 数据类 ──────────────────────────────────────────────────────
@@ -353,6 +353,7 @@ _SOUL_SUBDIRS = [
     "reports",
     "questions",
     "calibration",
+    "checkpoints",
     "audit",
     "training",
 ]

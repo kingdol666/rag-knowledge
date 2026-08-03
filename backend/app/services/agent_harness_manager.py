@@ -980,7 +980,7 @@ class AgentHarnessManager:
                 f"Harness '{harness}' unavailable: {'; '.join(missing)}",
                 harness, start, probe=probe)
 
-        # System prompt (omp branch: prepend; claude branch: --system-prompt-file)
+        # System prompt (omp branch: --system-prompt override; claude: --system-prompt-file)
         sys_text = ""
         if system_prompt_path:
             try:
@@ -990,7 +990,9 @@ class AgentHarnessManager:
 
         final_prompt = prompt
         if harness == "omp" and sys_text:
-            final_prompt = sys_text + "\n\n---\n\n" + prompt
+            # omp 默认注入 coding-assistant 系统提示词,会把单次补全跑成全 agent;
+            # 用 --system-prompt 覆盖为调用方指定的角色(纯文本补全、快且可控)。
+            final_prompt = prompt
 
         # Write prompt to temp file (omp @ref; claude reads from stdin)
         prompt_file = None
@@ -1006,7 +1008,9 @@ class AgentHarnessManager:
         model = cfg.get("model", "")
         if harness == "omp":
             cmd = [HARNESS_CONFIG["omp"]["exe"], "-p", "--auto-approve",
-                   "--no-session", "--mode=json", "--max-time", str(timeout)]
+                   "--no-session", "--mode=json", "--no-tools", "--max-time", str(timeout)]
+            if sys_text:
+                cmd += ["--system-prompt", sys_text]
             if model:
                 cmd += ["--model", model]
             cmd += [f"@{prompt_file}"]

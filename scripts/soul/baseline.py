@@ -52,11 +52,8 @@ async def collect(backend: str) -> dict:
                 "stage2_top_k": 10, "enable_graph_expansion": False,
                 "score_threshold": 0.0, "balance_kbs": False,
             })
-            results = r.get("results", []) if isinstance(r, dict) else []
-            paths = sorted({
-                c.get("doc_path") for res in results
-                for c in (res.get("chunks") or []) if isinstance(res, dict)
-            })
+            results = r.get("stage2", {}).get("results", []) if isinstance(r, dict) else []
+            paths = sorted({c.get("doc_path") for c in results if isinstance(c, dict)})
             two_stage.append({"query": q, "result_paths": paths, "count": len(paths)})
 
         # 3. 经验草稿计数(非 soul KB,由 kb_list 语义: 根库)
@@ -78,7 +75,7 @@ async def main() -> int:
 
     out_dir = ROOT / "reports"
     out_dir.mkdir(parents=True, exist_ok=True)
-    out_path = args.out or out_dir / f"soul-baseline-{datetime.now():%Y%m%d}.json"
+    out_path = Path(args.out) if args.out else out_dir / f"soul-baseline-{datetime.now():%Y%m%d}.json"
 
     data = await collect(args.backend)
     out_path.write_text(

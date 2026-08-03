@@ -281,6 +281,65 @@ class StorageReaderService:
                 logger.error("Failed to update vector_index: %s", e)
                 return False
 
+    def get_document_metadata(self, doc_path: str) -> dict[str, Any]:
+        """读取某文档的 metadata 字段(不修改)。
+
+        doc_path 可为完整路径或相对 KB 路径。
+        """
+        norm = doc_path.replace("\\", "/")
+        for kb in self.list_knowledge_bases():
+            kb_path = (kb.get("path") or "").replace("\\", "/").strip("/")
+            if norm.startswith(kb_path + "/") or norm == kb_path:
+                try:
+                    yml_path = self.root / kb_path / ".knowledge-base.yml"
+                    if not yml_path.exists():
+                        continue
+                    data = yaml.safe_load(yml_path.read_text(encoding="utf-8"))
+                    for doc in (data or {}).get("documents", []):
+                        if doc.get("path", "").replace("\\", "/") == norm:
+                            return doc.get("metadata") or {}
+                except Exception:
+                    pass
+        return {}
+
+    def update_document_metadata(
+        self,
+        kb_path: str,
+        doc_path: str,
+        updates: dict[str, Any],
+    ) -> bool:
+        """更新 .knowledge-base.yml 中某文档的 metadata 字段(合并写入)。
+
+        用于 SOUL 记录 learned_hash 等增量学习状态(计划 3.1: hash 存入文档 metadata)。
+        """
+        yml_path = self.root / kb_path / ".knowledge-base.yml"
+        if not yml_path.exists():
+            logger.warning("YAML not found: %s", yml_path)
+            return False
+        with _yaml_file_lock(kb_path):
+            try:
+                data = yaml.safe_load(yml_path.read_text(encoding="utf-8"))
+                if not data or "documents" not in data:
+                    return False
+                norm = doc_path.replace("\\", "/")
+                for doc in data["documents"]:
+                    if doc.get("path", "").replace("\\", "/") == norm:
+                        meta = doc.get("metadata") or {}
+                        meta.update(updates)
+                        doc["metadata"] = meta
+                        break
+                else:
+                    logger.warning("Document not found in YAML: %s", doc_path)
+                    return False
+                atomic_write_text(
+                    yml_path,
+                    yaml.dump(data, allow_unicode=True, sort_keys=False, indent=2),
+                )
+                return True
+            except Exception as e:
+                logger.error("Failed to update document metadata: %s", e)
+                return False
+
     def update_document_graph_index(
         self,
         kb_path: str,

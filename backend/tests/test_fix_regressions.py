@@ -26,6 +26,7 @@ import sys
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import pytest
@@ -485,16 +486,19 @@ class TestNeedsSyncClearedOnFresh:
         import os
         os.utime(doc, (old, old))
 
+        # exp updated AFTER the doc was last modified → fresh (relative dates,
+        # so the test stays deterministic as wall-clock advances)
+        exp_updated = datetime.now(timezone.utc) - timedelta(hours=1)
         index_path = tmp_path / kb_name / "experience" / ".experience-index.yml"
         index_path.write_text(
             "experiences:\n"
             "  - id: exp-1\n"
             "    title: t\n"
-            "    updated_at: '2026-07-31T00:00:00+00:00'\n"
+            f"    updated_at: '{exp_updated.isoformat()}'\n"
             "    related_docs:\n"
             "      - KB/doc.md\n"
             "    needs_sync: true\n"
-            "    sync_requested_at: '2026-07-31T00:00:00+00:00'\n",
+            f"    sync_requested_at: '{exp_updated.isoformat()}'\n",
             encoding="utf-8",
         )
 
@@ -526,12 +530,14 @@ class TestNeedsSyncClearedOnFresh:
         doc = tmp_path / kb_name / "doc.md"
         doc.write_text("# doc", encoding="utf-8")
 
+        # exp updated BEFORE the doc was last modified → stale (relative dates)
+        exp_updated = datetime.now(timezone.utc) - timedelta(days=1)
         index_path = tmp_path / kb_name / "experience" / ".experience-index.yml"
         index_path.write_text(
             "experiences:\n"
             "  - id: exp-1\n"
             "    title: t\n"
-            "    updated_at: '2026-07-30T00:00:00+00:00'\n"
+            f"    updated_at: '{exp_updated.isoformat()}'\n"
             "    related_docs:\n"
             "      - KB/doc.md\n"
             "    needs_sync: true\n",
