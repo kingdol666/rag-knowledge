@@ -13,6 +13,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from app.api.deps.auth import verify_token
 from app.services import soul_config, soul_service, soul_router
 from app.services import soul_learn, soul_memory, soul_profile
+from app.services.agent_harness_manager import agent_harness
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +22,26 @@ router = APIRouter(prefix="/api/v1/soul", tags=["soul"])
 
 def _err(status: int, code: str, detail: str = "") -> HTTPException:
     return HTTPException(status_code=status, detail={"error": code, "detail": detail})
+
+
+@router.post("/qdcvr-ask")
+async def soul_qdcvr_ask(req: dict[str, Any]):
+    """QDCVR + SOUL 组合问答: 先检索知识库(两阶段+去重+硬阈值), 再注入人格增强回答。"""
+    query = (req.get("query") or "").strip()
+    if not query or len(query) > 4000:
+        raise _err(400, "invalid_query", "query 长度 1-4000")
+    result = await soul_service.soul_qdcvr_ask(
+        query=query,
+        soul_kb_id=req.get("soul_kb_id") or "",
+        task_goal=req.get("task_goal") or "",
+        task_type=req.get("task_type") or "",
+        top_k=int(req.get("top_k") or 5),
+    )
+    if not result.get("success"):
+        code = result.get("error", "internal")
+        status = 408 if code == "timeout" else (404 if code == "kb_not_found" else 400)
+        raise _err(status, code, result.get("detail", ""))
+    return result
 
 
 @router.post("/ask")
@@ -46,7 +67,7 @@ async def soul_ask(req: dict[str, Any]):
 
 @router.get("/list")
 async def soul_list():
-    """列出全部非模板 SOUL 库(含 profile 摘要与配置)。"""
+    """列出全部非模板 SOUL 库(含 profile 摘要与配置 + meditation 运行摘要)。"""
     souls = []
     for item in soul_config.list_soul_kbs(include_template=False):
         kb_id = item["kb_id"]
@@ -56,6 +77,23 @@ async def soul_list():
         except Exception:
             cfg = soul_config.SoulConfig()
             summary = ""
+        # meditation 摘要(harness/model/定时状态)
+        med = {}
+        try:
+            from app.services.kb_meditation_config import get_meditation_config
+            mc = get_meditation_config(kb_id).get("config", {})
+            med = {
+                "harness": mc.get("harness", "omp"),
+                "model": mc.get("model", ""),
+                "enabled": bool(mc.get("enabled", False)),
+                "meditation_mode": mc.get("meditation_mode", "experience"),
+                "interval_hours": mc.get("interval_hours", 24),
+                "rounds_per_run": int(mc.get("rounds_per_run", 1) or 1),
+                "max_questions_per_run": int(mc.get("max_questions_per_run", 10) or 10),
+                "max_budget_usd": float(mc.get("max_budget_usd", 0.15) or 0.15),
+            }
+        except Exception:
+            pass
         souls.append({
             "kb_id": kb_id,
             "name": item.get("name", ""),
@@ -64,8 +102,22 @@ async def soul_list():
             "domain_labels": cfg.domain_labels,
             "supported_task_types": cfg.supported_task_types,
             "is_template": bool(cfg.is_template),
+            "meditation": med,
         })
     return souls
+
+
+@router.get("/settings")
+async def soul_settings():
+    """SOUL 系统级设置: 默认 harness/model + 各 harness 可用性。"""
+    from app.config import config as _cfg
+    harness_status = await agent_harness.get_all_harness_status()
+    return {
+        "success": True,
+        "default_harness": _cfg.soul_default_harness,
+        "default_model": _cfg.soul_default_model,
+        "harnesses": harness_status.get("harnesses", {}),
+    }
 
 
 @router.post("/init")
@@ -77,9 +129,11 @@ async def soul_init(req: dict[str, Any]):
     soul_kb_id = (req.get("soul_name") or req.get("soul_kb_id") or "").strip()
     return await _bootstrap_impl(
         soul_kb_id,
-        kb_scope=req.get("kb_scope") or [],
+        kb_scope=req.get("kb_scope") if req.get("kb_scope") else ["*"],
         domain_labels=req.get("domain_labels") or [],
         supported_task_types=req.get("supported_task_types") or [],
+        harness=req.get("harness") or "",
+        model=req.get("model") or "",
     )
 
 
@@ -89,14 +143,17 @@ async def soul_bootstrap(req: dict[str, Any]):
     soul_kb_id = (req.get("soul_kb_id") or "").strip()
     return await _bootstrap_impl(
         soul_kb_id,
-        kb_scope=req.get("kb_scope") or [],
+        kb_scope=req.get("kb_scope") if req.get("kb_scope") else ["*"],
         domain_labels=req.get("domain_labels") or [],
         supported_task_types=req.get("supported_task_types") or [],
+        harness=req.get("harness") or "",
+        model=req.get("model") or "",
     )
 
 
 async def _bootstrap_impl(soul_kb_id: str, kb_scope: list[str],
-                          domain_labels: list[str], supported_task_types: list[str]) -> dict:
+                          domain_labels: list[str], supported_task_types: list[str],
+                          harness: str = "", model: str = "") -> dict:
     if not soul_kb_id:
         raise _err(400, "invalid_soul_name", "名称必须以 soul- 前缀开头")
     # UUID 或路径 → 相对路径(前缀校验含在解析内: 非 soul- 库返回 None)
@@ -131,12 +188,18 @@ async def _bootstrap_impl(soul_kb_id: str, kb_scope: list[str],
     # meditation config: mode=soul, enabled=false, budget=0.15
     try:
         from app.services.kb_meditation_config import update_meditation_config
-        update_meditation_config(soul_kb_id, {
+        from app.config import config as _app_config
+        default_harness = _app_config.soul_default_harness
+        updates: dict[str, Any] = {
             "meditation_mode": "soul",
             "enabled": False,
             "max_budget_usd": 0.15,
             "max_questions_per_run": 10,
-        })
+        }
+        # harness/model: 显式传入优先, 否则全局默认(配置驱动)
+        updates["harness"] = (harness or default_harness).strip() or default_harness
+        updates["model"] = model or _app_config.soul_default_model
+        update_meditation_config(soul_kb_id, updates)
         meditation_created = True
     except Exception as e:
         logger.warning("meditation config failed for %s: %s", soul_kb_id, e)
@@ -261,9 +324,10 @@ async def learn(soul_kb_id: str, req: dict[str, Any], _: None = Depends(verify_t
         raise _err(400, "is_template")
     doc_paths = req.get("doc_paths") or []
     limit = int(req.get("limit") or 5)
+    rounds = int(req.get("rounds") or 1)
     if not doc_paths:
         raise _err(400, "missing_docs", "doc_paths 必填")
-    report = await soul_learn.learn_docs(soul_kb_id, doc_paths, limit=limit)
+    report = await soul_learn.learn_docs(soul_kb_id, doc_paths, limit=limit, rounds=rounds)
     return {"success": True, "task_id": None, "report": report}
 
 
@@ -272,7 +336,8 @@ async def learn_all_global(req: dict[str, Any], _: None = Depends(verify_token))
     """全库自举: 遍历全部 SOUL × kb_scope(不指定 soul_kb_id 时)。"""
     max_docs = int(req.get("max_docs") or 20)
     dry_run = bool(req.get("dry_run"))
-    report = await soul_learn.learn_all(soul_kb_id="", max_docs=max_docs, dry_run=dry_run)
+    rounds = int(req.get("rounds") or 1)
+    report = await soul_learn.learn_all(soul_kb_id="", max_docs=max_docs, dry_run=dry_run, rounds=rounds)
     return {"success": True, "task_id": None, "report": report}
 
 
@@ -280,7 +345,8 @@ async def learn_all_global(req: dict[str, Any], _: None = Depends(verify_token))
 async def learn_all(soul_kb_id: str, req: dict[str, Any], _: None = Depends(verify_token)):
     max_docs = int(req.get("max_docs") or 20)
     dry_run = bool(req.get("dry_run"))
-    report = await soul_learn.learn_all(soul_kb_id=soul_kb_id or "", max_docs=max_docs, dry_run=dry_run)
+    rounds = int(req.get("rounds") or 1)
+    report = await soul_learn.learn_all(soul_kb_id=soul_kb_id or "", max_docs=max_docs, dry_run=dry_run, rounds=rounds)
     return {"success": True, "task_id": None, "report": report}
 
 

@@ -75,19 +75,26 @@ async def _complete_checked(prompt: str, ctx: AskRunContext, kb_config: dict | N
 
 
 def _kb_config_for(soul_kb_id: str) -> dict:
-    """从 soul KB 的 meditation 配置取 harness/model。"""
+    """从 soul KB 的 meditation 配置取 harness/model(未显式设置时回退全局默认)。"""
     try:
         from app.services.kb_meditation_config import get_meditation_config
         cfg = get_meditation_config(soul_kb_id).get("config", {})
-        return {"harness": cfg.get("harness", "omp"), "model": cfg.get("model", "")}
+        harness = (cfg.get("harness") or "").strip() or "omp"
+        return {"harness": harness, "model": cfg.get("model", "") or ""}
     except Exception:
-        return {"harness": "omp", "model": ""}
+        try:
+            from app.config import config
+            return {"harness": config.soul_default_harness, "model": config.soul_default_model}
+        except Exception:
+            return {"harness": "omp", "model": ""}
 
 
 # ── 知识检索(kb_scope 内,图谱邻居合并) ────────────────────────────────
 
-def _search_scope(soul_kb_id: str, kb_scope: list[str]) -> list[str]:
-    """检索范围: kb_scope 空 → 仅人格库自身;否则 kb_scope 内公开库。"""
+def _search_scope(soul_kb_id: str, kb_scope: list[str]) -> list[str] | None:
+    """检索范围: kb_scope 空 → 仅人格库自身;含 "*" → None(全库);否则显式公开库。"""
+    if "*" in kb_scope:
+        return None
     scope = [k for k in kb_scope if k != "*"]
     if not scope:
         return [soul_kb_id]
@@ -119,13 +126,36 @@ async def _retrieve_knowledge(soul_kb_id: str, query: str, kb_scope: list[str]) 
     返回 {"chunks": [{path, chunk_text, score}], "candidates": [...]}
     """
     scope = _search_scope(soul_kb_id, kb_scope)
-    if len(scope) == 1:
+    if scope is None:
+        # 全库(通配符 *): 跨库均衡检索
+        r = two_stage_search_service.search(
+            query=query, stage2_top_k=8, enable_graph_expansion=True,
+            balance_kbs=True)
+    elif len(scope) == 1:
         r = two_stage_search_service.search(
             query=query, kb_id=scope[0], stage2_top_k=8, enable_graph_expansion=True)
     else:
-        r = two_stage_search_service.search(
-            query=query, kb_id=scope[0], stage2_top_k=8, enable_graph_expansion=True,
-            balance_kbs=True)
+        # 多库: 逐库检索后按 score 合并去重(库间无污染)
+        merged_raw: list[dict] = []
+        for kid in scope:
+            try:
+                rr = two_stage_search_service.search(
+                    query=query, kb_id=kid, stage2_top_k=8,
+                    enable_graph_expansion=True)
+            except Exception as e:
+                logger.debug("scope search failed for %s: %s", kid, e)
+                continue
+            if isinstance(rr, dict):
+                merged_raw.extend(rr.get("stage2", {}).get("results", []))
+        seen_pairs: set[tuple] = set()
+        merged: list[dict] = []
+        for res in sorted(merged_raw, key=lambda x: x.get("score", 0.0), reverse=True):
+            key = (res.get("doc_path", ""), (res.get("content") or "")[:80])
+            if key in seen_pairs:
+                continue
+            seen_pairs.add(key)
+            merged.append(res)
+        r = {"stage2": {"results": merged}, "candidates": []}
     results = r.get("stage2", {}).get("results", []) if isinstance(r, dict) else []
     if not results:
         # 兼容旧契约(直接 results 键)
@@ -227,6 +257,99 @@ async def _pas_score(answer: str, persona: dict, ctx: AskRunContext, kb_config: 
 
 
 # ── soul_ask 编排 ──────────────────────────────────────────────────────
+
+async def soul_qdcvr_ask(query: str, soul_kb_id: str = "", task_goal: str = "",
+                         task_type: str = "", top_k: int = 5) -> dict:
+    """QDCVR + SOUL 组合问答: 先按 knowledgebase-search skill 流程检索知识,
+    再注入人格做增强回答。
+
+    检索侧(与 skill Step 2/2.5 对齐):
+      - 两阶段检索(scope 感知: 显式人格按 kb_scope, 自动路由跨库)
+      - 硬阈值过滤(score >= 0.35)
+      - 文档级去重(同 doc 留最高分 chunk)
+      - 短内容过滤(<50 chars 丢弃)
+      - top_k 片段拼成 context_override 注入人格合成
+
+    合成侧: 与 soul_ask 完全相同(人格注入 + 证据引用锚点校验 + PAS 评分),
+    但回答必须基于注入的检索证据。
+    """
+    # 1. 检索范围: 显式人格 → 其 kb_scope; 自动路由 → 全库
+    scope: list[str] | None = None
+    if soul_kb_id:
+        try:
+            cfg = soul_config.read_soul_config(soul_kb_id)
+            scope = _search_scope(soul_kb_id, cfg.kb_scope)
+        except Exception:
+            scope = None
+
+    # 2. 两阶段检索(knowledgebase-search skill Step 2 同引擎)
+    if scope is None:
+        r = two_stage_search_service.search(
+            query=query, stage2_top_k=8, enable_graph_expansion=True, balance_kbs=True)
+    elif len(scope) == 1:
+        r = two_stage_search_service.search(
+            query=query, kb_id=scope[0], stage2_top_k=8, enable_graph_expansion=True)
+    else:
+        merged_raw: list[dict] = []
+        for kid in scope:
+            try:
+                rr = two_stage_search_service.search(
+                    query=query, kb_id=kid, stage2_top_k=8, enable_graph_expansion=True)
+            except Exception:
+                continue
+            if isinstance(rr, dict):
+                merged_raw.extend(rr.get("stage2", {}).get("results", []))
+        r = {"stage2": {"results": merged_raw}}
+    results = r.get("stage2", {}).get("results", []) if isinstance(r, dict) else []
+
+    # 3. 展开为片段 + 文档级去重 + 硬阈值 + 短内容过滤(skill Step 2.5)
+    chunks: list[dict] = []
+    for res in results:
+        doc_path = res.get("doc_path") or ""
+        sub = res.get("chunks") or []
+        if sub:
+            for c in sub:
+                chunks.append({
+                    "path": doc_path,
+                    "chunk_text": c.get("chunk_text") or c.get("text") or c.get("content") or "",
+                    "score": float(c.get("score", 0.0) or 0.0),
+                })
+        else:
+            chunks.append({
+                "path": doc_path,
+                "chunk_text": res.get("content") or res.get("chunk_text") or res.get("text") or "",
+                "score": float(res.get("score", 0.0) or 0.0),
+            })
+    chunks = [c for c in chunks if c["chunk_text"] and len(c["chunk_text"].strip()) >= 50]
+    chunks = [c for c in chunks if c["score"] >= 0.35]
+    chunks.sort(key=lambda x: x["score"], reverse=True)
+    seen_docs: set[str] = set()
+    deduped: list[dict] = []
+    for c in chunks:
+        key = c["path"]
+        if key in seen_docs:
+            continue
+        seen_docs.add(key)
+        deduped.append(c)
+    top = deduped[:top_k]
+
+    if not top:
+        # 无命中: 交给人格诚实降级(soul_ask 空证据会声明盲区)
+        result = await soul_ask(query, soul_kb_id, task_goal, task_type, context_override="")
+        result["evidence_count"] = 0
+        return result
+
+    # 4. 构建注入上下文(带来源标注)
+    override = "\n\n---\n\n".join(
+        f"[{i + 1}] 来源: {c['path']} (score={c['score']:.3f})\n{c['chunk_text'][:800]}"
+        for i, c in enumerate(top)
+    )
+
+    # 5. 人格增强合成(与 soul_ask 同链路, 证据已注入)
+    result = await soul_ask(query, soul_kb_id, task_goal, task_type, context_override=override)
+    result["evidence_count"] = len(top)
+    return result
+
 
 async def soul_ask(query: str, soul_kb_id: str = "", task_goal: str = "",
                    task_type: str = "", context_override: str = "",

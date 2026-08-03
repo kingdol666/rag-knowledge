@@ -21,7 +21,7 @@ HTTP_TIMEOUT = int(os.environ.get("MCP_HTTP_TIMEOUT", "30"))  # seconds — gene
 # pin a background task for over an hour. Override via MCP_PARSE_TIMEOUT.
 PARSE_TIMEOUT = int(os.environ.get("MCP_PARSE_TIMEOUT", "300"))  # seconds
 INDEX_TIMEOUT = int(os.environ.get("MCP_INDEX_TIMEOUT", "600"))  # seconds — large-doc CPU embedding
-MEDITATION_TIMEOUT = int(os.environ.get("MCP_MEDITATION_TIMEOUT", "600"))  # seconds — meditation agent (omp/claude) may run minutes
+MEDITATION_TIMEOUT = int(os.environ.get("MCP_MEDITATION_TIMEOUT", "1800"))  # seconds — meditation/learn_incremental (omp/claude) may run 10+ min on multi-doc soul runs
 SOUL_TIMEOUT = int(os.environ.get("MCP_SOUL_TIMEOUT", "240"))  # seconds — soul_ask sync synthesis
 
 
@@ -957,6 +957,15 @@ class KbClient:
         }
         return await self._post_backend_json("/api/v1/soul/ask", body, timeout=SOUL_TIMEOUT + 15)
 
+    async def soul_qdcvr_ask(self, query: str, soul_kb_id: str = "", task_goal: str = "",
+                             task_type: str = "", top_k: int = 5) -> dict:
+        """QDCVR+SOUL 组合问答(先检索后人格, 后端编排)。"""
+        body = {
+            "query": query, "soul_kb_id": soul_kb_id, "task_goal": task_goal,
+            "task_type": task_type, "top_k": top_k,
+        }
+        return await self._post_backend_json("/api/v1/soul/qdcvr-ask", body, timeout=SOUL_TIMEOUT + 15)
+
     async def soul_status(self, soul_kb_id: str, summary_window: int = 30) -> dict:
         if (err := self._require_kb_id(soul_kb_id)): return err
         return await self._get_backend(
@@ -967,15 +976,19 @@ class KbClient:
 
     async def soul_bootstrap(self, soul_kb_id: str, kb_scope: list = None,
                              domain_labels: list = None,
-                             supported_task_types: list = None) -> dict:
+                             supported_task_types: list = None,
+                             harness: str = "", model: str = "") -> dict:
         """后端侧初始化(soul-config.yml + profile + meditation config)。
 
         含初始 profile-summary 生成(harness 调用),可超过默认 30s → 用 INDEX_TIMEOUT。
+        harness/model 空 → 全局默认(soul.default_harness / default_model)。
         """
         return await self._post_backend_json("/api/v1/soul/bootstrap", {
             "soul_kb_id": soul_kb_id, "kb_scope": kb_scope or [],
             "domain_labels": domain_labels or [],
             "supported_task_types": supported_task_types or [],
+            "harness": harness or "",
+            "model": model or "",
         }, timeout=INDEX_TIMEOUT)
 
     async def soul_config_update(self, soul_kb_id: str, kb_scope: list = None,
@@ -1005,18 +1018,20 @@ class KbClient:
     async def soul_router_status(self) -> dict:
         return await self._get_backend("/api/v1/soul/router/status")
 
-    async def soul_learn(self, soul_kb_id: str, doc_paths: list, limit: int = 5) -> dict:
+    async def soul_learn(self, soul_kb_id: str, doc_paths: list, limit: int = 5,
+                         rounds: int = 1) -> dict:
         if (err := self._require_kb_id(soul_kb_id)): return err
         return await self._post_backend_json(
             f"/api/v1/soul/{soul_kb_id}/learn",
-            {"doc_paths": doc_paths, "limit": limit}, timeout=MEDITATION_TIMEOUT)
+            {"doc_paths": doc_paths, "limit": limit, "rounds": rounds},
+            timeout=MEDITATION_TIMEOUT)
 
     async def soul_learn_all(self, soul_kb_id: str = "", max_docs: int = 20,
-                             dry_run: bool = False) -> dict:
+                             dry_run: bool = False, rounds: int = 1) -> dict:
         # 空 soul_kb_id → /api/v1/soul/learn-all(全库自举路由)
         url = (f"/api/v1/soul/{soul_kb_id}/learn-all" if soul_kb_id
                else "/api/v1/soul/learn-all")
-        return await self._post_backend_json(url, {"max_docs": max_docs, "dry_run": dry_run},
+        return await self._post_backend_json(url, {"max_docs": max_docs, "dry_run": dry_run, "rounds": rounds},
                                              timeout=MEDITATION_TIMEOUT)
 
     async def soul_eval(self, soul_kb_id: str, question: str, answer: str,

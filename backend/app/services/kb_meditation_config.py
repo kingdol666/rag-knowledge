@@ -39,7 +39,17 @@ DEFAULT_MEDITATION_CONFIG: dict[str, Any] = {
     "meditation_mode": "experience",   # "experience" | "soul"; soul KBs override to "soul"
     "max_questions_per_run": 10,       # soul mode: max questions per learn run
     "min_pas_auto_approve": 4.0,       # reserved: PAS threshold (manual approval is the norm)
+    "rounds_per_run": 1,               # soul mode: 固定轮数训练(每轮 learn_incremental 学一批增量)
 }
+
+
+def _default_harness() -> str:
+    """配置驱动的默认 harness(soul.default_harness, 默认 omp)。"""
+    try:
+        from app.config import config
+        return config.soul_default_harness
+    except Exception:
+        return "omp"
 
 
 def _normalize_path(p: str) -> str:
@@ -98,6 +108,16 @@ def get_meditation_config(kb_id: str) -> dict:
     # Merge with defaults for backward compatibility
     config = dict(DEFAULT_MEDITATION_CONFIG)
     config.update({k: v for k, v in stored.items() if v is not None or k in stored})
+
+    # 配置驱动默认: 未显式指定 harness/model 时, 使用全局默认(soul.default_harness)
+    if not config.get("harness"):
+        config["harness"] = _default_harness()
+    if not config.get("model"):
+        try:
+            from app.config import config as _app_config
+            config["model"] = _app_config.soul_default_model
+        except Exception:
+            config["model"] = ""
 
     return {
         "success": True,

@@ -89,13 +89,18 @@ def _query_hash(query: str) -> str:
 
 
 def _kb_config_for(soul_kb_id: str) -> dict:
-    """从 soul KB 的 meditation 配置取 harness/model。"""
+    """从 soul KB 的 meditation 配置取 harness/model(未显式设置时回退全局默认)。"""
     try:
         from app.services.kb_meditation_config import get_meditation_config
         cfg = get_meditation_config(soul_kb_id).get("config", {})
-        return {"harness": cfg.get("harness", "omp"), "model": cfg.get("model", "")}
+        harness = (cfg.get("harness") or "").strip() or "omp"
+        return {"harness": harness, "model": cfg.get("model", "") or ""}
     except Exception:
-        return {"harness": "omp", "model": ""}
+        try:
+            from app.config import config
+            return {"harness": config.soul_default_harness, "model": config.soul_default_model}
+        except Exception:
+            return {"harness": "omp", "model": ""}
 
 
 # ── 公开 API ────────────────────────────────────────────────────────────

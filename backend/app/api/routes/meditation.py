@@ -113,6 +113,33 @@ async def _run_kb_meditation(kb_id: str, trigger: str) -> dict:
 
     config = config_result["config"]
     kb_path = config_result["kb_path"]
+
+    # ── SOUL 模式: 手动触发 = 增量人格学习(与调度器同路径) ──
+    if config.get("meditation_mode") == "soul":
+        from app.services.soul_learn import learn_incremental
+        rounds = int(config.get("rounds_per_run", 1) or 1)
+        report = await learn_incremental(kb_id, rounds=rounds)
+        ok = bool(report.get("success", True)) and not report.get("error")
+        try:
+            from app.services.kb_meditation_config import update_meditation_config
+            from datetime import datetime, timezone as _tz
+            update_meditation_config(kb_id, {
+                "last_run_at": datetime.now(_tz.utc).isoformat(),
+                "last_run_status": "success" if ok else "failed",
+                "total_runs": config.get("total_runs", 0) + 1,
+                "total_experiences_generated": config.get("total_experiences_generated", 0)
+                + int(report.get("memories_created", 0) or 0),
+            })
+        except Exception as e:
+            logger.warning("soul meditation config update failed: %s", e)
+        return {
+            "success": ok,
+            "mode": "soul",
+            "kb_id": kb_id,
+            "kb_path": kb_path,
+            "report": report,
+        }
+
     lookback_days = config.get("interval_hours", 24) // 24 or 7
 
     # ── Source 1: pending signals from meditation_signals table ──

@@ -62,6 +62,16 @@
             <a-tag v-if="!soul.kb_scope || soul.kb_scope.length === 0" color="orange">空(仅问答)</a-tag>
           </div>
         </div>
+        <!-- 引擎与定时状态 -->
+        <div class="card-scope">
+          <span class="scope-label">引擎</span>
+          <div class="scope-tags">
+            <a-tag :color="(soul.meditation?.harness || 'omp') === 'claude' ? 'gold' : 'green'">{{ soul.meditation?.harness || 'omp' }}</a-tag>
+            <a-tag v-if="soul.meditation?.model" color="cyan">{{ soul.meditation.model }}</a-tag>
+            <a-tag v-if="soul.meditation?.enabled && soul.meditation?.meditation_mode === 'soul'" color="red">自动训练 {{ soul.meditation.interval_hours }}h × {{ soul.meditation.rounds_per_run }}轮</a-tag>
+            <a-tag v-else color="default">未启用自动训练</a-tag>
+          </div>
+        </div>
         <div class="card-scope">
           <span class="scope-label">领域标签</span>
           <div class="scope-tags">
@@ -117,7 +127,8 @@
           <a-input v-model:value="form.soul_name" placeholder="如 soul-材料学" />
         </a-form-item>
         <a-form-item label="学习范围 kb_scope(公开库,可多选;空=仅问答)">
-          <a-select v-model:value="form.kb_scope" mode="multiple" placeholder="选择知识库" style="width:100%">
+          <a-checkbox v-model:value="form.allKb">全部知识库参与(默认, kb_scope=["*"])</a-checkbox>
+          <a-select v-model:value="form.kb_scope" mode="multiple" placeholder="选择知识库" style="width:100%; margin-top:6px" :disabled="form.allKb">
             <a-select-option v-for="kb in kbCatalog" :key="kb.kb_id" :value="kb.kb_id">{{ kb.name }}</a-select-option>
           </a-select>
         </a-form-item>
@@ -126,6 +137,13 @@
         </a-form-item>
         <a-form-item label="任务类型 supported_task_types">
           <a-select v-model:value="form.supported_task_types" mode="tags" placeholder="如 文献综述 / 技术选型" style="width:100%" />
+        </a-form-item>
+        <a-form-item :label="`训练 harness(默认 ${defaultHarness || 'omp'},可单独指定)`">
+          <a-select v-model:value="form.harness" style="width:100%">
+            <a-select-option value="">跟随全局默认 ({{ defaultHarness || 'omp' }})</a-select-option>
+            <a-select-option value="omp">omp {{ harnessInstalled('omp') ? '(可用)' : '(未安装)' }}</a-select-option>
+            <a-select-option value="claude">claude {{ harnessInstalled('claude') ? '(可用)' : '(需 ANTHROPIC_API_KEY)' }}</a-select-option>
+          </a-select>
         </a-form-item>
         <div class="modal-actions">
           <a-button @click="createOpen = false">取消</a-button>
@@ -154,6 +172,34 @@
         <a-form-item label="路由权重(0=退出路由)">
           <a-slider v-model:value="editForm.route_weight" :min="0" :max="2" :step="0.1" />
         </a-form-item>
+        <a-divider style="margin:8px 0">训练引擎(per-SOUL, 覆盖全局默认)</a-divider>
+        <a-form-item label="harness(训练/冥想引擎)">
+          <a-select v-model:value="editForm.harness" style="width:100%">
+            <a-select-option value="omp">omp</a-select-option>
+            <a-select-option value="claude">claude</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item label="模型(空=引擎默认)">
+          <a-input v-model:value="editForm.model" placeholder="如 deepseek/deepseek-v4-flash" />
+        </a-form-item>
+        <a-divider style="margin:8px 0">自动训练(定时调度)</a-divider>
+        <a-form-item label="启用定时自动训练">
+          <a-switch v-model:value="editForm.autoTrainEnabled" />
+        </a-form-item>
+        <div class="ask-row">
+          <a-form-item label="间隔(小时)">
+            <a-input-number v-model:value="editForm.intervalHours" :min="1" :max="720" />
+          </a-form-item>
+          <a-form-item label="每轮固定轮数">
+            <a-input-number v-model:value="editForm.roundsPerRun" :min="1" :max="20" />
+          </a-form-item>
+          <a-form-item label="每轮预算($)">
+            <a-input-number v-model:value="editForm.maxBudgetUsd" :min="0.01" :max="2" :step="0.05" />
+          </a-form-item>
+        </div>
+        <a-form-item label="每轮问题上限">
+          <a-input-number v-model:value="editForm.maxQuestions" :min="1" :max="20" />
+        </a-form-item>
         <div class="modal-actions">
           <a-button @click="editOpen = false">取消</a-button>
           <a-button type="primary" :loading="savingConfig" @click="doSaveConfig">保存</a-button>
@@ -177,19 +223,34 @@
         </a-radio-group>
 
         <template v-if="trainMode === 'docs'">
-          <a-form-item label="学习文档(须在 kb_scope 内)">
-            <a-select v-model:value="trainForm.doc_paths" mode="multiple" style="width:100%" placeholder="选择文档">
-              <a-select-option v-for="d in scopeDocs(trainingSoul)" :key="d" :value="d">{{ d }}</a-select-option>
+          <a-form-item label="学习文档(按 kb_scope 内文档, 可多选)">
+            <a-select v-model:value="trainForm.doc_paths" mode="multiple" style="width:100%" placeholder="选择文档" :loading="loadingDocs">
+              <a-select-option v-for="d in docOptions" :key="d.path" :value="d.path">{{ d.path }}</a-select-option>
             </a-select>
           </a-form-item>
-          <a-form-item label="每文档问题上限">
-            <a-input-number v-model:value="trainForm.limit" :min="1" :max="10" />
-          </a-form-item>
+          <div class="ask-row">
+            <a-form-item label="每文档问题上限">
+              <a-input-number v-model:value="trainForm.limit" :min="1" :max="10" />
+            </a-form-item>
+            <a-form-item label="固定训练轮数 rounds">
+              <a-input-number v-model:value="trainForm.rounds" :min="1" :max="20" />
+              <div class="train-hint">每轮独立预算, 学一批增量文档; 全部学完后自动停止</div>
+            </a-form-item>
+          </div>
         </template>
         <template v-else>
           <a-form-item label="单人格全库自举(空=所有人格)">
             <a-alert type="info" show-icon message="按 learned_hash 增量学习: 已学文档跳过,内容变更自动重学" />
           </a-form-item>
+          <div class="ask-row">
+            <a-form-item label="固定训练轮数 rounds">
+              <a-input-number v-model:value="trainForm.rounds" :min="1" :max="20" />
+              <div class="train-hint">每轮学一批增量文档(每轮≤30 次 LLM 调用), 直到轮数用完或全部学完</div>
+            </a-form-item>
+            <a-form-item label="每轮文档数上限">
+              <a-input-number v-model:value="trainForm.maxDocs" :min="1" :max="50" />
+            </a-form-item>
+          </div>
           <a-checkbox v-model:value="trainForm.dry_run">仅估算(dry-run,不执行)</a-checkbox>
         </template>
 
@@ -228,6 +289,17 @@
           <a-form-item label="临时背景 context_override(可选,仅本次生效)">
             <a-textarea v-model:value="askForm.context_override" :rows="2" placeholder="注入检索到的片段,人格基于此加工" />
           </a-form-item>
+          <div class="ask-row">
+            <a-button :loading="searchingKb" @click="doPreSearch"><SearchOutlined /> 先检索知识库(填充上下文)</a-button>
+            <a-button type="primary" ghost :loading="asking" @click="doQdcvrAsk"><RobotOutlined /> 一键检索+人格回答</a-button>
+            <span v-if="preSearchChunks.length" class="train-hint">已检索 {{ preSearchChunks.length }} 条片段(score≥0.35), 已注入 context_override</span>
+          </div>
+          <div v-if="preSearchChunks.length" class="pre-search-list">
+            <div v-for="(c, i) in preSearchChunks" :key="i" class="cite-item">
+              <span class="cite-path">{{ c.path }}</span>
+              <span class="cite-score">{{ c.score?.toFixed?.(3) ?? c.score }}</span>
+            </div>
+          </div>
           <div class="modal-actions">
             <a-button @click="askOpen = false">关闭</a-button>
             <a-button type="primary" :loading="asking" @click="doAsk">提问</a-button>
@@ -297,7 +369,7 @@ import { ref, onMounted, computed } from 'vue'
 import {
   RobotOutlined, PlusOutlined, ReloadOutlined, MoreOutlined, SettingOutlined,
   MessageOutlined, ExperimentOutlined, AuditOutlined, SyncOutlined,
-  CameraOutlined, ExportOutlined, DeleteOutlined,
+  CameraOutlined, ExportOutlined, DeleteOutlined, SearchOutlined,
 } from '@ant-design/icons-vue'
 import { message } from 'ant-design-vue'
 
@@ -311,6 +383,16 @@ interface Soul {
   supported_task_types?: string[]
   route_weight?: number
   is_template?: boolean
+  meditation?: {
+    harness?: string
+    model?: string
+    enabled?: boolean
+    meditation_mode?: string
+    interval_hours?: number
+    rounds_per_run?: number
+    max_questions_per_run?: number
+    max_budget_usd?: number
+  }
   _status?: any
   _training?: boolean
   _trainingMsg?: string
@@ -324,8 +406,16 @@ const creating = ref(false)
 const savingConfig = ref(false)
 const training = ref(false)
 const asking = ref(false)
+const searchingKb = ref(false)
 const toast = ref('')
 const toastType = ref<'ok' | 'err'>('ok')
+
+// 系统级设置(默认 harness)
+const soulSettings = ref<any>(null)
+const defaultHarness = computed(() => soulSettings.value?.default_harness || 'omp')
+const docOptions = ref<{ path: string }[]>([])
+const loadingDocs = ref(false)
+const preSearchChunks = ref<any[]>([])
 
 // Modals
 const createOpen = ref(false)
@@ -334,12 +424,16 @@ const trainOpen = ref(false)
 const askOpen = ref(false)
 const reviewOpen = ref(false)
 
-const form = ref({ soul_name: '', kb_scope: [] as string[], domain_labels: [] as string[], supported_task_types: [] as string[] })
+const form = ref({ soul_name: '', kb_scope: [] as string[], domain_labels: [] as string[], supported_task_types: [] as string[], harness: '', allKb: true })
 const editing = ref<Soul | null>(null)
-const editForm = ref({ kb_scope: [] as string[], domain_labels: [] as string[], supported_task_types: [] as string[], route_weight: 1 })
+const editForm = ref({
+  kb_scope: [] as string[], domain_labels: [] as string[], supported_task_types: [] as string[], route_weight: 1,
+  harness: 'omp', model: '', autoTrainEnabled: false, intervalHours: 24, roundsPerRun: 1,
+  maxBudgetUsd: 0.15, maxQuestions: 10,
+})
 const trainingSoul = ref<Soul | null>(null)
 const trainMode = ref<'docs' | 'all'>('docs')
-const trainForm = ref({ doc_paths: [] as string[], limit: 6, dry_run: false })
+const trainForm = ref({ doc_paths: [] as string[], limit: 6, dry_run: false, rounds: 1, maxDocs: 10 })
 const trainResult = ref('')
 const askSoul = ref<Soul | null>(null)
 const askForm = ref({ query: '', task_type: '', task_goal: '', context_override: '' })
@@ -359,6 +453,10 @@ function soulAvatar(name: string) {
 }
 function soulName(kbId: string) {
   return souls.value.find(s => s.kb_id === kbId)?.name || kbId.slice(0, 8)
+}
+function harnessInstalled(name: string): boolean {
+  const h = soulSettings.value?.harnesses?.[name]
+  return !!h?.installed
 }
 function scopeDocs(soul: Soul): string[] {
   const out: string[] = []
@@ -389,6 +487,10 @@ async function loadAll() {
       const cat = await $fetch<any>('/api/kb/catalog')
       kbCatalog.value = cat?.knowledgeBases || []
     } catch { /* noop */ }
+    // SOUL 系统设置(默认 harness)
+    try {
+      soulSettings.value = await $fetch<any>('/api/soul/settings')
+    } catch { /* noop */ }
   } catch (e: any) {
     showToast(`加载失败: ${e.message}`, 'err')
   } finally {
@@ -396,9 +498,33 @@ async function loadAll() {
   }
 }
 
+// 加载某人格 scope 内的全部文档(供训练选择)
+async function loadScopeDocs(soul: Soul) {
+  loadingDocs.value = true
+  docOptions.value = []
+  try {
+    const scope = (soul.kb_scope || []).filter((s: string) => s !== '*')
+    const kbs = scope.length
+      ? kbCatalog.value.filter((kb: any) => scope.includes(kb.kb_id) || scope.includes(kb.name))
+      : kbCatalog.value
+    const paths = new Set<string>()
+    await Promise.all(kbs.map(async (kb: any) => {
+      try {
+        const res = await $fetch<any>(`/api/kb/documents?kb_id=${encodeURIComponent(kb.kb_id)}`)
+        for (const d of (res?.documents || [])) {
+          if (d.path && (d.file_type === 'md' || d.path.endsWith('.md'))) paths.add(d.path)
+        }
+      } catch { /* noop */ }
+    }))
+    docOptions.value = [...paths].sort().map(p => ({ path: p }))
+  } finally {
+    loadingDocs.value = false
+  }
+}
+
 // ── CRUD ──
 function openCreate() {
-  form.value = { soul_name: '', kb_scope: [], domain_labels: [], supported_task_types: [] }
+  form.value = { soul_name: '', kb_scope: [], domain_labels: [], supported_task_types: [], harness: '', allKb: true }
   createOpen.value = true
 }
 async function doCreate() {
@@ -412,11 +538,14 @@ async function doCreate() {
       body: { name: kbName, description: `SOUL 人格 ${kbName}` },
     })
     const kbId = kb?.knowledgeBase?.id || kbName
+    const kbScope = form.value.allKb ? ['*'] : (form.value.kb_scope || [])
     await $fetch<any>('/api/v1/soul/bootstrap', { baseURL: useRuntimeConfig().public.backendUrl as any || '', method: 'POST', body: {
       soul_kb_id: kbId,
-      kb_scope: form.value.kb_scope,
+      kb_scope: kbScope,
       domain_labels: form.value.domain_labels,
       supported_task_types: form.value.supported_task_types,
+      harness: form.value.harness || '',
+      model: '',
     } }).catch(() => { /* bootstrap 可能经 MCP;忽略 */ })
     createOpen.value = false
     showToast(`人格 ${kbName} 已创建`)
@@ -429,11 +558,19 @@ async function doCreate() {
 }
 function openEdit(soul: Soul) {
   editing.value = soul
+  const med = soul.meditation || {}
   editForm.value = {
     kb_scope: soul.kb_scope || [],
     domain_labels: soul.domain_labels || [],
     supported_task_types: soul.supported_task_types || [],
     route_weight: soul.route_weight ?? 1,
+    harness: med.harness || 'omp',
+    model: med.model || '',
+    autoTrainEnabled: !!med.enabled && med.meditation_mode === 'soul',
+    intervalHours: med.interval_hours || 24,
+    roundsPerRun: med.rounds_per_run || 1,
+    maxBudgetUsd: med.max_budget_usd || 0.15,
+    maxQuestions: med.max_questions_per_run || 10,
   }
   editOpen.value = true
 }
@@ -441,7 +578,22 @@ async function doSaveConfig() {
   if (!editing.value) return
   savingConfig.value = true
   try {
+    // soul-config 层(scope/标签/任务/权重)
     await $fetch('/api/soul/config', { method: 'PUT', body: { soul_kb_id: editing.value.kb_id, ...editForm.value } })
+    // meditation 层(harness/model/定时训练) — 合并语义,不丢 SOUL 字段
+    await $fetch('/api/kb/meditation', { method: 'PUT', body: {
+      kb_id: editing.value.kb_id,
+      config: {
+        harness: editForm.value.harness,
+        model: editForm.value.model,
+        enabled: editForm.value.autoTrainEnabled,
+        meditation_mode: 'soul',
+        interval_hours: editForm.value.intervalHours,
+        rounds_per_run: editForm.value.roundsPerRun,
+        max_budget_usd: editForm.value.maxBudgetUsd,
+        max_questions_per_run: editForm.value.maxQuestions,
+      },
+    } })
     editOpen.value = false
     showToast('配置已保存')
     await loadAll()
@@ -470,9 +622,11 @@ function confirmDelete(soul: Soul) {
 function openTrain(soul: Soul) {
   trainingSoul.value = soul
   trainMode.value = 'docs'
-  trainForm.value = { doc_paths: [], limit: 6, dry_run: false }
+  trainForm.value = { doc_paths: [], limit: 6, dry_run: false, rounds: 1, maxDocs: 10 }
   trainResult.value = ''
+  preSearchChunks.value = []
   trainOpen.value = true
+  loadScopeDocs(soul)
 }
 async function doTrain() {
   if (!trainingSoul.value) return
@@ -483,13 +637,19 @@ async function doTrain() {
       if (!trainForm.value.doc_paths.length) { message.warning('请选择学习文档'); return }
       const res = await $fetch<any>('/api/soul/learn', {
         method: 'POST',
-        body: { soul_kb_id: trainingSoul.value.kb_id, doc_paths: trainForm.value.doc_paths, limit: trainForm.value.limit },
+        body: {
+          soul_kb_id: trainingSoul.value.kb_id, doc_paths: trainForm.value.doc_paths,
+          limit: trainForm.value.limit, rounds: trainForm.value.rounds || 1,
+        },
       })
       trainResult.value = JSON.stringify(res?.report || res, null, 2)
     } else {
       const res = await $fetch<any>('/api/soul/train-all', {
         method: 'POST',
-        body: { soul_kb_id: trainingSoul.value.kb_id, max_docs: 20, dry_run: trainForm.value.dry_run },
+        body: {
+          soul_kb_id: trainingSoul.value.kb_id, max_docs: trainForm.value.maxDocs || 10,
+          dry_run: trainForm.value.dry_run, rounds: trainForm.value.rounds || 1,
+        },
       })
       trainResult.value = JSON.stringify(res?.report || res, null, 2)
     }
@@ -508,7 +668,73 @@ function openAsk(soul?: Soul) {
   askSoul.value = soul || null  // null = 自动路由
   askForm.value = { query: '', task_type: '', task_goal: '', context_override: '' }
   askResult.value = null
+  preSearchChunks.value = []
   askOpen.value = true
+}
+async function doPreSearch() {
+  if (!askForm.value.query.trim()) { message.warning('请先输入问题再检索'); return }
+  searchingKb.value = true
+  try {
+    // 检索范围: 显式人格时优先其 kb_scope(单库则限定该库, 多库/全库/自动路由则全库)
+    let kbId = ''
+    const scope = (askSoul.value?.kb_scope || []).filter((s: string) => s !== '*')
+    if (askSoul.value && scope.length === 1) {
+      const hit = kbCatalog.value.find((kb: any) => kb.kb_id === scope[0] || kb.name === scope[0])
+      kbId = hit?.kb_id || scope[0]
+    }
+    const res = await $fetch<any>('/api/soul/pre-search', {
+      method: 'POST',
+      body: { query: askForm.value.query, kb_id: kbId, top_k: 5 },
+    })
+    if (res?.success && res.chunks?.length) {
+      preSearchChunks.value = res.chunks
+      askForm.value.context_override = res.context_override
+      showToast(`已检索 ${res.chunks.length} 条片段并注入上下文`)
+    } else {
+      preSearchChunks.value = []
+      askForm.value.context_override = ''
+      showToast('知识库未检索到相关片段(将诚实降级)', 'err')
+    }
+  } catch (e: any) {
+    showToast(`检索失败: ${e.message}`, 'err')
+  } finally {
+    searchingKb.value = false
+  }
+}
+async function doQdcvrAsk() {
+  if (!askForm.value.query.trim()) { message.warning('请输入问题'); return }
+  asking.value = true
+  askResult.value = null
+  try {
+    // 一键 QDCVR+SOUL: 后端先检索(两阶段+阈值+去重)再注入人格合成
+    let kbId = ''
+    const scope = (askSoul.value?.kb_scope || []).filter((s: string) => s !== '*')
+    if (askSoul.value && scope.length === 1) {
+      const hit = kbCatalog.value.find((kb: any) => kb.kb_id === scope[0] || kb.name === scope[0])
+      kbId = hit?.kb_id || scope[0]
+    }
+    const res = await $fetch<any>('/api/soul/qdcvr-ask', {
+      method: 'POST',
+      body: {
+        query: askForm.value.query,
+        soul_kb_id: askSoul.value?.kb_id || '',
+        task_type: askForm.value.task_type,
+        task_goal: askForm.value.task_goal,
+        top_k: 5,
+      },
+    })
+    if (res?.success === false) {
+      askResult.value = { answer: `错误: ${res.error} ${res.detail || ''}` }
+    } else {
+      askResult.value = res
+      const ev = (res as any)?.evidence_count ?? (res?.citations?.length ?? 0)
+      showToast(`已检索 ${ev} 条证据并人格化回答`)
+    }
+  } catch (e: any) {
+    askResult.value = { answer: `检索+回答失败: ${e.message}` }
+  } finally {
+    asking.value = false
+  }
 }
 async function doAsk() {
   if (!askForm.value.query.trim()) { message.warning('请输入问题'); return }
@@ -690,6 +916,18 @@ onMounted(loadAll)
 .cite-item { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; padding: 3px 0; }
 .cite-path { color: var(--kb-ink-dim); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .cite-score { color: var(--kb-gold, #b8860b); flex-shrink: 0; }
+
+.pre-search-list {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border: 1px dashed var(--kb-border, #d9d9d9);
+  border-radius: 6px;
+  max-height: 140px;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.02);
+}
+.train-hint { font-size: 12px; color: var(--kb-ink-dim, #888); margin-top: 2px; }
+.card-scope { margin-top: 6px; }
 
 .score-cell { display: inline-block; margin-right: 4px; background: rgba(82,196,26,.12); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
 .score-cell.low { background: rgba(245,34,45,.12); color: #f5222d; }

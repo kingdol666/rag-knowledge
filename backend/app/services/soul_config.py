@@ -261,6 +261,12 @@ def validate_scope(scope: list[str]) -> tuple[list[str], list[str]]:
             reasons.append("scope_kb_missing")
             continue
 
+        # 全库通配符: "*" 表示全部公开库参与(学习/检索由调用方展开)
+        if item == "*":
+            valid.append(item)
+            reasons.append("ok")
+            continue
+
         # 尝试匹配
         kb = by_id.get(item) or by_path.get(item)
         if kb is None:

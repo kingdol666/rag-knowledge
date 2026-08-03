@@ -280,11 +280,15 @@ async def generate_questions(doc_path: str, num: int = 6) -> list[dict]:
 # ═══════════════════════════════════════════════════════════════════════════
 
 
-def _search_scope_ids(soul_kb_id: str, kb_scope: list[str]) -> list[str]:
+def _search_scope_ids(soul_kb_id: str, kb_scope: list[str]) -> list[str] | None:
     """解析检索范围 KB ID 列表。
 
-    kb_scope 空 → 仅 soul KB 自身。
+    - kb_scope 空 → 仅 soul KB 自身
+    - 含 "*" → None(全库检索,由检索层展开为全部集合)
+    - 否则 → 显式公开库列表
     """
+    if "*" in kb_scope:
+        return None
     if not kb_scope:
         soul_path = resolve_soul_kb_path(soul_kb_id)
         if soul_path:
@@ -385,30 +389,50 @@ async def self_answer(
     q_text = q.get("q_text", "")
 
     scope_ids = _search_scope_ids(soul_kb_id, kb_scope)
-    if not scope_ids:
-        # 无有效检索范围 → 仅 soul KB
-        soul_path = resolve_soul_kb_path(soul_kb_id)
-        if soul_path:
-            scope_ids = [soul_path]
-
-    # 确定检索策略
-    if not kb_scope:
-        # 仅 soul KB 自身
-        search_kwargs: dict[str, Any] = {"kb_id": scope_ids[0] if scope_ids else None}
-    elif len(scope_ids) == 1:
-        search_kwargs = {"kb_id": scope_ids[0]}
+    if scope_ids is None:
+        # 全库(通配符 *): 跨库均衡检索,不限库
+        search_kwargs: dict[str, Any] = {"balance_kbs": True}
     else:
-        search_kwargs = {"balance_kbs": True, "kb_id": scope_ids[0] if scope_ids else None}
+        if not scope_ids:
+            # 无有效检索范围 → 仅 soul KB
+            soul_path = resolve_soul_kb_path(soul_kb_id)
+            if soul_path:
+                scope_ids = [soul_path]
+
+        # 确定检索策略: 多库逐库检索后合并(库间无污染)
+        if len(scope_ids) == 1:
+            search_kwargs = {"kb_id": scope_ids[0]}
+        else:
+            search_kwargs = {"balance_kbs": True}
 
     search_kwargs.setdefault("score_threshold", SOUL_RETRIEVAL_SCORE_THRESHOLD)
 
     try:
-        search_result = two_stage_search_service.search(query=q_text, **search_kwargs)
+        if scope_ids is not None and len(scope_ids) > 1:
+            # 多库: 每个 scope 库单独检索,按 score 降序合并去重
+            merged_raw: list[dict] = []
+            for kid in scope_ids:
+                try:
+                    rr = two_stage_search_service.search(
+                        query=q_text, kb_id=kid, **search_kwargs)
+                except Exception:
+                    continue
+                merged_raw.extend(rr.get("stage2", {}).get("results", []))
+            seen_pairs: set[tuple] = set()
+            results_raw = []
+            for r in sorted(merged_raw, key=lambda x: x.get("score", 0), reverse=True):
+                key = (r.get("doc_path", ""), (r.get("content") or "")[:80])
+                if key in seen_pairs:
+                    continue
+                seen_pairs.add(key)
+                results_raw.append(r)
+        else:
+            search_result = two_stage_search_service.search(query=q_text, **search_kwargs)
+            results_raw = search_result.get("stage2", {}).get("results", [])
     except Exception as e:
         logger.error("self_answer: search failed: %s", e)
         return {"retrieval_pass": False}
 
-    results_raw = search_result.get("stage2", {}).get("results", [])
     # 归一化为统一 chunk 格式含 chunk_text
     chunks: list[dict] = []
     for r in results_raw:
@@ -824,6 +848,25 @@ async def distill(
     memories_dir = sdir / "memories"
     memories_dir.mkdir(parents=True, exist_ok=True)
 
+    # 幂等守卫: 同 q_hash 已存在且为 approved 的记忆 → 跳过(避免覆盖已审批记忆)
+    mem_filename = f"{today}-{qh}.md"
+    mem_path = memories_dir / mem_filename
+    if mem_path.exists():
+        try:
+            raw = mem_path.read_text(encoding="utf-8", errors="replace")
+            if raw.startswith("---"):
+                end = raw.find("\n---", 3)
+                if end > 0:
+                    existing = yaml.safe_load(raw[3:end]) or {}
+                    if existing.get("status") == "approved":
+                        return {
+                            "memory_path": None, "synced_to_experience": False,
+                            "pending_sync": False,
+                            "skipped_reason": "already_approved_memory",
+                        }
+        except Exception:
+            pass
+
     evidence_block = "\n".join(
         f"- {_norm_path(p)}: {scores.get('groundedness', 0)}"
         for p in evidence_paths[:10]
@@ -944,7 +987,7 @@ async def distill(
 
 
 def _read_cost_log(soul_kb_id: str) -> float:
-    """读取 cost-log.jsonl 累计成本。"""
+    """读取 cost-log.jsonl 累计成本(生命周期累计,仅供审计)。"""
     try:
         sdir = soul_kb_dir(soul_kb_id)
         log_path = sdir / "audit" / "cost-log.jsonl"
@@ -967,30 +1010,48 @@ def _read_cost_log(soul_kb_id: str) -> float:
         return 0.0
 
 
+def _begin_run_budget(soul_kb_id: str) -> None:
+    """开启一次学习运行: 把历史累计成本快照为本次运行的基线。
+
+    预算语义为"每轮上限 max_budget_usd"(契约 §6/meditation config),
+    而非生命周期累计: 否则上一轮耗尽的成本会让后续定时训练永久拒绝。
+    per-soul 锁内调用(learn_incremental/learn_docs 均持锁后调用),
+    同人格并发串行,无竞态。
+    """
+    _budget_state[soul_kb_id] = {
+        "run_baseline": _read_cost_log(soul_kb_id),
+        "cost": 0.0,
+        "calls": 0,
+    }
+
+
 def check_budget(soul_kb_id: str, est_cost: float) -> tuple[bool, float]:
-    """检查 SOUL 预算是否充足。
+    """检查 SOUL 预算是否充足(本轮口径)。
 
     Args:
         soul_kb_id: SOUL KB ID。
         est_cost: 预估本次成本（美元）。
 
     Returns:
-        (ok, remaining): ok 表示预算充足，remaining 为剩余预算。
+        (ok, remaining): ok 表示本轮预算充足，remaining 为本轮剩余预算。
     """
-    # 获取 max_budget_usd
+    # 获取 max_budget_usd(每轮上限)
     med_cfg = get_meditation_config(soul_kb_id)
     if med_cfg.get("success"):
         max_budget = float(med_cfg.get("config", {}).get("max_budget_usd", SOUL_BUDGET_USD_PER_RUN))
     else:
         max_budget = SOUL_BUDGET_USD_PER_RUN
 
-    # 累计成本 = cost-log.jsonl 总和 + 内存中未持久化增量
+    # 本轮成本 = 累计成本 - 本轮基线(历史成本不计入本轮预算)
     persisted = _read_cost_log(soul_kb_id)
+    baseline = _budget_state.get(soul_kb_id, {}).get("run_baseline", 0.0)
+    run_cost = max(0.0, persisted - baseline)
+    # 未持久化的内存增量也计入本轮
     in_memory = _budget_state.get(soul_kb_id, {}).get("cost", 0.0)
-    cumulative = persisted + in_memory
+    run_cost = max(run_cost, in_memory)
 
-    remaining = max_budget - cumulative
-    ok = (cumulative + est_cost) <= max_budget
+    remaining = max_budget - run_cost
+    ok = (run_cost + est_cost) <= max_budget
     return ok, round(remaining, 6)
 
 
@@ -1047,26 +1108,83 @@ def _resolve_any_kb_path(kb_id: str) -> str | None:
     return None
 
 
+def _scope_kb_paths(kb_scope: list[str]) -> list[str]:
+    """把 kb_scope 解析为公开库相对路径列表(学习/训练用)。
+
+    - 含 "*" → 全部公开库(排除 soul- 前缀人格库)
+    - 否则 → 显式列表逐个解析(UUID 或路径均可)
+    """
+    if "*" in kb_scope:
+        try:
+            kbs = storage_reader.list_knowledge_bases()
+        except Exception:
+            return []
+        return [kb["path"] for kb in kbs
+                if kb.get("path") and not (kb.get("name") or "").startswith(SOUL_PREFIX)]
+    paths: list[str] = []
+    for kb_id in kb_scope:
+        if kb_id.startswith(SOUL_PREFIX):
+            continue
+        p = _resolve_any_kb_path(kb_id)
+        if p:
+            paths.append(p)
+    return paths
+
+
+def _soul_learned_hashes(soul_kb_id: str) -> dict[str, str]:
+    """读取 SOUL 的已学文档哈希表(per-SOUL, 存于 人格库 questions/learned-hashes.json)。
+
+    {doc_path: content_sha256[:12]}。每个 SOUL 独立记录, 同一知识库文档可被
+    不同人格各自学习(各自蒸馏自己的记忆), 不受其他 SOUL 的训练进度影响。
+    """
+    try:
+        sdir = soul_kb_dir(soul_kb_id)
+        p = sdir / "questions" / "learned-hashes.json"
+        if not p.exists():
+            return {}
+        data = json.loads(p.read_text(encoding="utf-8"))
+        return data if isinstance(data, dict) else {}
+    except Exception as e:
+        logger.warning("_soul_learned_hashes failed for %s: %s", soul_kb_id, e)
+        return {}
+
+
+def _record_soul_learned(soul_kb_id: str, doc_path: str, content_hash: str) -> None:
+    """记录该 SOUL 已学习某文档(per-SOUL 哈希表, 幂等)。"""
+    if not content_hash:
+        return
+    try:
+        sdir = soul_kb_dir(soul_kb_id)
+        qdir = sdir / "questions"
+        qdir.mkdir(parents=True, exist_ok=True)
+        p = qdir / "learned-hashes.json"
+        data: dict[str, str] = {}
+        if p.exists():
+            try:
+                data = json.loads(p.read_text(encoding="utf-8")) or {}
+            except Exception:
+                data = {}
+        data[_norm_path(doc_path)] = content_hash
+        atomic_write_text(p, json.dumps(data, ensure_ascii=False, indent=2))
+    except Exception as e:
+        logger.warning("_record_soul_learned failed for %s: %s", doc_path, e)
+
+
 def _get_incremental_docs(
     soul_kb_id: str, kb_scope: list[str]
 ) -> list[dict]:
-    """获取增量文档：内容 SHA256 与 metadata.learned_hash 不一致的文档。
+    """获取增量文档：内容 SHA256 与该 SOUL 已学哈希不一致的文档。
 
-    计划 3.1/AC5: 已学习文档在 .knowledge-base.yml 的文档 metadata 中记录
-    learned_hash(内容 SHA256 前 12 位);内容未变 → 跳过(幂等);
-    内容变更 → learned_hash 不匹配 → 重新学习。
+    计划 3.1/AC5(per-SOUL 版): 每个 SOUL 在 questions/learned-hashes.json
+    记录自己的已学文档(内容 SHA256 前 12 位);内容未变 → 跳过(幂等);
+    内容变更 → 哈希不匹配 → 重新学习。不同 SOUL 互不影响。
 
     Returns:
         [{{doc_path, doc_name, kb_path, updated_at}}, ...]
     """
+    learned = _soul_learned_hashes(soul_kb_id)
     docs: list[dict] = []
-    for kb_id in kb_scope:
-        if kb_id.startswith(SOUL_PREFIX):
-            continue
-        # scope 条目是公开库(UUID 或路径),用通用 KB 解析,不能走 resolve_soul_kb_path
-        kb_path = _resolve_any_kb_path(kb_id)
-        if not kb_path:
-            continue
+    for kb_path in _scope_kb_paths(kb_scope):
         try:
             doc_list = storage_reader.list_documents(kb_path)
         except Exception:
@@ -1075,14 +1193,20 @@ def _get_incremental_docs(
             doc_path = d.get("path", "")
             if not doc_path:
                 continue
+            # 跳过子库目录(非文档, list_documents 会把子 KB 文件夹一并返回)
+            if (d.get("file_type") or "") == "knowledge-base":
+                continue
             # 内容 SHA256 比对: 一致 → 已学习,跳过
             try:
                 content = storage_reader.read_document_content(
                     doc_path, max_chars=50000)
+                if not content:
+                    # 目录或无法读取的占位条目 → 不参与学习
+                    continue
                 cur_hash = _content_sha256(content)
             except Exception:
                 cur_hash = None
-            recorded = ((d.get("metadata") or {}).get("learned_hash") or "")
+            recorded = learned.get(_norm_path(doc_path)) or ""
             if cur_hash is not None and recorded and cur_hash == recorded:
                 continue
             docs.append({
@@ -1095,41 +1219,189 @@ def _get_incremental_docs(
     return docs
 
 
-def _record_learned_doc(doc: dict) -> None:
-    """将文档内容 SHA256 记入 .knowledge-base.yml metadata.learned_hash(幂等)。"""
+def _record_learned_doc(soul_kb_id: str, doc: dict) -> None:
+    """将该文档记入 SOUL 的已学哈希表(per-SOUL, 幂等)。
+
+    兼容旧调用(仅 doc 参数)时回退为全局文档 metadata 记录。
+    """
     h = doc.get("content_hash")
     if not h:
         return
+    _record_soul_learned(soul_kb_id, doc.get("doc_path", ""), h)
+    # 保留文档级 metadata 记录(信息性, 决策已改为 per-SOUL)
     try:
-        storage_reader.update_document_metadata(
-            doc["kb_path"], doc["doc_path"], {
-                "learned_hash": h,
-                "learned_at": _now_iso(),
-            })
+        kb_path = doc.get("kb_path") or ""
+        if kb_path:
+            storage_reader.update_document_metadata(
+                kb_path, doc["doc_path"], {
+                    "learned_hash": h,
+                    "learned_at": _now_iso(),
+                })
     except Exception as e:
-        logger.warning("_record_learned_doc failed for %s: %s", doc.get("doc_path"), e)
+        logger.warning("_record_learned_doc metadata failed for %s: %s", doc.get("doc_path"), e)
 
 
-async def learn_incremental(soul_kb_id: str) -> dict:
+async def _learn_incremental_once(soul_kb_id: str, round_idx: int = 1) -> dict:
+    """单轮增量学习(调用方必须已持有 per-soul 锁)。
+
+    每轮独立预算基线(_begin_run_budget), 独立增量扫描。
+    返回与 learn_incremental 相同的报告结构。
+    """
+    # 读取配置
+    try:
+        cfg = read_soul_config(soul_kb_id)
+    except ValueError:
+        return {"success": False, "error": "kb_not_found", "detail": "非 SOUL 知识库"}
+
+    if cfg.is_template:
+        return {"success": False, "error": "is_template", "detail": "模板库不可学习"}
+
+    # 本轮预算基线(历史累计成本不计入本轮,契约 §6 每轮上限)
+    _begin_run_budget(soul_kb_id)
+
+    kb_scope = cfg.kb_scope
+
+    # 冥想配置
+    med_cfg = get_meditation_config(soul_kb_id)
+    med_config = med_cfg.get("config", {})
+    max_questions = int(med_config.get("max_questions_per_run", 10))
+
+    # 增量文档(先于预算检查: 无增量时零成本快速返回,AC5 幂等)
+    docs = _get_incremental_docs(soul_kb_id, kb_scope)
+    if not docs:
+        return {"success": True, "questions_generated": 0, "memories_created": 0,
+                "docs_processed": 0, "skipped": 0, "gaps_count": 0,
+                "judge_divergence_count": 0, "cost_estimate": 0.0, "calls": 0}
+
+    # 预算检查（预估成本）
+    est_per_call = 0.005  # 每次 complete() 约 $0.005
+    ok, remaining = check_budget(soul_kb_id, est_per_call * 10)
+    if not ok:
+        return {"success": False, "error": "budget_exceeded",
+                "detail": f"预算不足，剩余 ${remaining:.4f}"}
+
+    # 限制文档数（来自冥想配置或合理默认）
+    max_docs = min(len(docs), 10)
+
+    # 累计统计
+    total_questions = 0
+    total_memories = 0
+    total_docs = 0
+    total_skipped = 0
+    total_gaps = 0
+    total_divergence = 0
+    total_calls = 0
+    total_cost = 0.0
+
+    # 待写入记忆缓存（AC10：全部 LLM 完成后统一写入）
+    pending_memories: list[tuple[Path, str]] = []
+
+    for doc in docs[:max_docs]:
+        if total_calls >= _MAX_CALLS_PER_RUN:
+            total_skipped += 1
+            break
+
+        doc_path = doc["doc_path"]
+        total_docs += 1
+
+        # 生成问题
+        questions = await generate_questions(doc_path, num=min(max_questions, 6))
+        if not questions:
+            continue
+        # 限制每文档问题数
+        questions = questions[:max_questions]
+
+        for q_item in questions:
+            if total_calls >= _MAX_CALLS_PER_RUN:
+                break
+
+            total_questions += 1
+
+            # 自答
+            sa_result = await self_answer(q_item, soul_kb_id, kb_scope)
+            total_calls += 1
+            if not sa_result.get("retrieval_pass"):
+                total_gaps += 1
+                continue
+
+            answer_text = sa_result.get("answer_text", "")
+            citations = sa_result.get("citations", [])
+            evidence_paths = sa_result.get("evidence_paths", [])
+
+            # 评估
+            a_wrap = {"answer_text": answer_text, "citations": citations}
+            eval_result = await eval_answer(
+                q_item, a_wrap, evidence_paths, soul_kb_id
+            )
+            total_calls += 1
+
+            if eval_result.get("judge_divergence") is not None:
+                total_divergence += 1
+
+            # 蒸馏
+            dist_result = await distill(
+                q=q_item,
+                a=a_wrap,
+                evidence_paths=evidence_paths,
+                scores=eval_result.get("scores", {}),
+                soul_kb_id=soul_kb_id,
+                qh=q_item.get("q_hash", ""),
+                doc_source=doc_path,
+                prompt_version=eval_result.get("eval_prompt_version", "soul_eval_v1"),
+                judge_divergence=eval_result.get("judge_divergence"),
+                pas_score=eval_result.get("pas_score"),
+            )
+
+            if dist_result.get("memory_path"):
+                total_memories += 1
+
+            # 累计成本
+            total_cost += 0.01  # 每次 LLM 调用约 $0.005，两个调用 ≈ $0.01
+            total_calls += 0  # 已在 self_answer/eval_answer 中各计一次
+
+        # 文档已学习(内容 hash 入 SOUL 已学表,AC5 幂等)
+        # 仅在有产出时标记,允许解析失败/零问题的文档下次重试
+        if total_questions > 0:
+            _record_learned_doc(soul_kb_id, doc)
+
+    # AC10: 全部完成后统一 flush（记忆文件已在 distill 中原子写，此处为最终一致性）
+    # 实际成本扣减
+    deduct_cost(soul_kb_id, total_cost)
+
+    return {
+        "success": True,
+        "round": round_idx,
+        "questions_generated": total_questions,
+        "memories_created": total_memories,
+        "docs_processed": total_docs,
+        "skipped": total_skipped,
+        "gaps_count": total_gaps,
+        "judge_divergence_count": total_divergence,
+        "cost_estimate": round(total_cost, 6),
+        "calls": total_calls,
+    }
+
+
+async def learn_incremental(soul_kb_id: str, rounds: int = 1) -> dict:
     """增量学习：获取 SOUL scope 内变更文档 → 生成问题 → 自答 → 评估 → 蒸馏。
 
-    流程：
-    1. 获取 per-soul 锁（超时 → lock_timeout）
-    2. 预算检查
-    3. 增量文档扫描
-    4. 每文档 generate_questions → self_answer → eval_answer → distill
-    5. 全部 LLM 调用完成后统一 flush（AC10）
-    6. 扣减实际成本
-    7. 调用计数 ≤ 30/run
+    固定轮数训练(rounds > 1): 锁内循环多轮, 每轮独立预算基线 + 增量扫描,
+    上一轮学过的文档被 learned_hash 跳过, 下一轮继续学新文档, 直到
+    rounds 用尽或全部文档学完。每轮真实产出(记忆草稿/learned_hash)并更新
+    SOUL 文件, 不是假训练。
 
     Args:
         soul_kb_id: SOUL KB ID。
+        rounds: 训练轮数(>=1)。每轮最多 30 次 LLM 调用 / 10 文档。
 
     Returns:
-        {{questions_generated, memories_created, docs_processed, skipped,
-          gaps_count, judge_divergence_count, cost_estimate, calls}}
+        {{success, questions_generated, memories_created, docs_processed,
+          skipped, gaps_count, judge_divergence_count, cost_estimate, calls,
+          rounds_completed, per_round: [...]}}
     """
-    # 获取锁
+    rounds = max(1, int(rounds or 1))
+
+    # 获取锁(整轮训练持锁, 与手动/调度路径互斥语义一致)
     try:
         lock = get_soul_lock(soul_kb_id)
         await asyncio.wait_for(lock.acquire(), timeout=PER_SOUL_LOCK_TIMEOUT)
@@ -1137,134 +1409,57 @@ async def learn_incremental(soul_kb_id: str) -> dict:
         return {"success": False, "error": "lock_timeout", "detail": "无法获取 SOUL 学习锁"}
 
     try:
-        # 读取配置
-        try:
-            cfg = read_soul_config(soul_kb_id)
-        except ValueError:
-            return {"success": False, "error": "kb_not_found", "detail": "非 SOUL 知识库"}
+        per_round: list[dict] = []
+        totals: dict[str, float | int] = {
+            "questions_generated": 0, "memories_created": 0, "docs_processed": 0,
+            "skipped": 0, "gaps_count": 0, "judge_divergence_count": 0,
+            "cost_estimate": 0.0, "calls": 0,
+        }
+        first_error: str | None = None
 
-        if cfg.is_template:
-            return {"success": False, "error": "is_template", "detail": "模板库不可学习"}
-
-        kb_scope = cfg.kb_scope
-
-        # 冥想配置
-        med_cfg = get_meditation_config(soul_kb_id)
-        med_config = med_cfg.get("config", {})
-        max_questions = int(med_config.get("max_questions_per_run", 10))
-
-        # 增量文档(先于预算检查: 无增量时零成本快速返回,AC5 幂等)
-        docs = _get_incremental_docs(soul_kb_id, kb_scope)
-        if not docs:
-            return {"success": True, "questions_generated": 0, "memories_created": 0,
-                    "docs_processed": 0, "skipped": 0, "gaps_count": 0,
-                    "judge_divergence_count": 0, "cost_estimate": 0.0, "calls": 0}
-
-        # 预算检查（预估成本）
-        est_per_call = 0.005  # 每次 complete() 约 $0.005
-        ok, remaining = check_budget(soul_kb_id, est_per_call * 10)
-        if not ok:
-            return {"success": False, "error": "budget_exceeded",
-                    "detail": f"预算不足，剩余 ${remaining:.4f}"}
-
-        # 限制文档数（来自冥想配置或合理默认）
-        max_docs = min(len(docs), 10)
-
-        # 累计统计
-        total_questions = 0
-        total_memories = 0
-        total_docs = 0
-        total_skipped = 0
-        total_gaps = 0
-        total_divergence = 0
-        total_calls = 0
-        total_cost = 0.0
-
-        # 待写入记忆缓存（AC10：全部 LLM 完成后统一写入）
-        pending_memories: list[tuple[Path, str]] = []
-
-        for doc in docs[:max_docs]:
-            if total_calls >= _MAX_CALLS_PER_RUN:
-                total_skipped += 1
+        for r in range(1, rounds + 1):
+            rep = await _learn_incremental_once(soul_kb_id, round_idx=r)
+            if not rep.get("success"):
+                # 预算不足/模板/锁等致命错误: 记录后停止后续轮次
+                if first_error is None:
+                    first_error = rep.get("error", "unknown")
+                per_round.append({"round": r, **rep})
+                break
+            per_round.append(rep)
+            for k in totals:
+                totals[k] = float(totals.get(k, 0)) + float(rep.get(k, 0))
+            # 本轮零增量(全部学完) → 提前结束, 不空转
+            if rep.get("docs_processed", 0) == 0 and rep.get("questions_generated", 0) == 0:
                 break
 
-            doc_path = doc["doc_path"]
-            total_docs += 1
-
-            # 生成问题
-            questions = await generate_questions(doc_path, num=min(max_questions, 6))
-            if not questions:
-                continue
-            # 限制每文档问题数
-            questions = questions[:max_questions]
-
-            for q_item in questions:
-                if total_calls >= _MAX_CALLS_PER_RUN:
-                    break
-
-                total_questions += 1
-
-                # 自答
-                sa_result = await self_answer(q_item, soul_kb_id, kb_scope)
-                total_calls += 1
-                if not sa_result.get("retrieval_pass"):
-                    total_gaps += 1
-                    continue
-
-                answer_text = sa_result.get("answer_text", "")
-                citations = sa_result.get("citations", [])
-                evidence_paths = sa_result.get("evidence_paths", [])
-
-                # 评估
-                a_wrap = {"answer_text": answer_text, "citations": citations}
-                eval_result = await eval_answer(
-                    q_item, a_wrap, evidence_paths, soul_kb_id
-                )
-                total_calls += 1
-
-                if eval_result.get("judge_divergence") is not None:
-                    total_divergence += 1
-
-                # 蒸馏
-                dist_result = await distill(
-                    q=q_item,
-                    a=a_wrap,
-                    evidence_paths=evidence_paths,
-                    scores=eval_result.get("scores", {}),
-                    soul_kb_id=soul_kb_id,
-                    qh=q_item.get("q_hash", ""),
-                    doc_source=doc_path,
-                    prompt_version=eval_result.get("eval_prompt_version", "soul_eval_v1"),
-                    judge_divergence=eval_result.get("judge_divergence"),
-                    pas_score=eval_result.get("pas_score"),
-                )
-
-                if dist_result.get("memory_path"):
-                    total_memories += 1
-
-                # 累计成本
-                total_cost += 0.01  # 每次 LLM 调用约 $0.005，两个调用 ≈ $0.01
-                total_calls += 0  # 已在 self_answer/eval_answer 中各计一次
-
-            # 文档已学习(内容 hash 入 metadata,AC5 幂等)
-            # 仅在有产出时标记,允许解析失败/零问题的文档下次重试
-            if total_questions > 0:
-                _record_learned_doc(doc)
-
-        # AC10: 全部完成后统一 flush（记忆文件已在 distill 中原子写，此处为最终一致性）
-        # 实际成本扣减
-        deduct_cost(soul_kb_id, total_cost)
+        if first_error:
+            return {
+                "success": False,
+                "error": first_error,
+                "rounds_completed": len(per_round),
+                "per_round": per_round,
+                "questions_generated": int(totals.get("questions_generated", 0)),
+                "memories_created": int(totals.get("memories_created", 0)),
+                "docs_processed": int(totals.get("docs_processed", 0)),
+                "skipped": int(totals.get("skipped", 0)),
+                "gaps_count": int(totals.get("gaps_count", 0)),
+                "judge_divergence_count": int(totals.get("judge_divergence_count", 0)),
+                "cost_estimate": round(totals.get("cost_estimate", 0.0), 6),
+                "calls": int(totals.get("calls", 0)),
+            }
 
         return {
             "success": True,
-            "questions_generated": total_questions,
-            "memories_created": total_memories,
-            "docs_processed": total_docs,
-            "skipped": total_skipped,
-            "gaps_count": total_gaps,
-            "judge_divergence_count": total_divergence,
-            "cost_estimate": round(total_cost, 6),
-            "calls": total_calls,
+            "rounds_completed": len(per_round),
+            "per_round": per_round,
+            "questions_generated": int(totals.get("questions_generated", 0)),
+            "memories_created": int(totals.get("memories_created", 0)),
+            "docs_processed": int(totals.get("docs_processed", 0)),
+            "skipped": int(totals.get("skipped", 0)),
+            "gaps_count": int(totals.get("gaps_count", 0)),
+            "judge_divergence_count": int(totals.get("judge_divergence_count", 0)),
+            "cost_estimate": round(totals.get("cost_estimate", 0.0), 6),
+            "calls": int(totals.get("calls", 0)),
         }
 
     except Exception as e:
@@ -1283,6 +1478,7 @@ async def learn_all(
     soul_kb_id: str = "",
     max_docs: int = 20,
     dry_run: bool = False,
+    rounds: int = 1,
 ) -> dict:
     """全量学习：遍历所有 SOUL KB（排除模板），全局内容去重，执行增量学习。
 
@@ -1290,13 +1486,14 @@ async def learn_all(
         soul_kb_id: 可选单 SOUL 过滤（空 = 全部非模板 SOUL）。
         max_docs: 最大处理文档数（总文档数上限）。
         dry_run: True 时仅返回预估，不执行实际学习。
+        rounds: 固定轮数(每 SOUL 锁内循环轮次, 每轮学一批增量)。
 
     Returns:
         dry_run:
             {{estimated_llm_calls, unique_docs, duplicate_docs,
               cross_soul_overlap_pct, per_soul_breakdown: [...]}}
         非 dry_run:
-            {{souls: [{{soul_kb_id, questions, memories, docs}}], total_*}}
+            {{souls: [{{soul_kb_id, questions, memories, docs, rounds}}], total_*}}
     """
     if soul_kb_id:
         souls = [{"kb_id": soul_kb_id, "name": soul_kb_id}]
@@ -1321,12 +1518,7 @@ async def learn_all(
             continue
         if cfg.is_template:
             continue
-        for kb_id in cfg.kb_scope:
-            if kb_id.startswith(SOUL_PREFIX):
-                continue
-            kb_path = _resolve_any_kb_path(kb_id)
-            if not kb_path:
-                continue
+        for kb_path in _scope_kb_paths(cfg.kb_scope):
             try:
                 doc_list = storage_reader.list_documents(kb_path)
             except Exception:
@@ -1338,7 +1530,7 @@ async def learn_all(
                 all_docs.append({
                     "doc_path": dp,
                     "soul_kb_id": sid,
-                    "kb_id": kb_id,
+                    "kb_id": kb_path,
                 })
 
     # 去重（按内容 SHA256）
@@ -1412,13 +1604,14 @@ async def learn_all(
             continue
         if cfg.is_template:
             continue
-        result = await learn_incremental(sid)
+        result = await learn_incremental(sid, rounds=rounds)
         if result.get("success"):
             soul_results.append({
                 "soul_kb_id": sid,
                 "questions": result.get("questions_generated", 0),
                 "memories": result.get("memories_created", 0),
                 "docs": result.get("docs_processed", 0),
+                "rounds": result.get("rounds_completed", rounds),
             })
             total_questions += result.get("questions_generated", 0)
             total_memories += result.get("memories_created", 0)
@@ -1447,18 +1640,26 @@ async def learn_docs(
     soul_kb_id: str,
     doc_paths: list[str],
     limit: int = 5,
+    rounds: int = 1,
 ) -> dict:
     """手动学习入口：指定文档列表，走完整 generate_questions → self_answer → eval_answer → distill 管道。
+
+    固定轮数(rounds > 1): 锁内循环多轮, 每轮独立预算基线;
+    已学文档(learned_hash 匹配)在后续轮次自动幂等跳过(0 成本)。
 
     Args:
         soul_kb_id: SOUL KB ID。
         doc_paths: 待学习文档路径列表。
         limit: 每文档最大问题数，默认 5。
+        rounds: 训练轮数(>=1)。
 
     Returns:
         {{questions_generated, memories_created, docs_processed, skipped,
-          gaps_count, judge_divergence_count, cost_estimate, calls}}
+          gaps_count, judge_divergence_count, cost_estimate, calls,
+          rounds_completed, per_round: [...]}}
     """
+    rounds = max(1, int(rounds or 1))
+
     # 获取锁
     try:
         lock = get_soul_lock(soul_kb_id)
@@ -1466,6 +1667,73 @@ async def learn_docs(
     except asyncio.TimeoutError:
         return {"success": False, "error": "lock_timeout", "detail": "无法获取 SOUL 学习锁"}
 
+    try:
+        per_round: list[dict] = []
+        totals: dict[str, float | int] = {
+            "questions_generated": 0, "memories_created": 0, "docs_processed": 0,
+            "skipped": 0, "gaps_count": 0, "judge_divergence_count": 0,
+            "cost_estimate": 0.0, "calls": 0,
+        }
+        first_error: str | None = None
+
+        for r in range(1, rounds + 1):
+            rep = await _learn_docs_once(soul_kb_id, doc_paths, limit, round_idx=r)
+            if not rep.get("success"):
+                if first_error is None:
+                    first_error = rep.get("error", "unknown")
+                per_round.append({"round": r, **rep})
+                break
+            per_round.append(rep)
+            for k in totals:
+                totals[k] = float(totals.get(k, 0)) + float(rep.get(k, 0))
+            # 本轮零产出(全部已学幂等跳过) → 提前结束
+            if rep.get("docs_processed", 0) == 0 and rep.get("questions_generated", 0) == 0:
+                break
+
+        if first_error:
+            return {
+                "success": False,
+                "error": first_error,
+                "rounds_completed": len(per_round),
+                "per_round": per_round,
+                "questions_generated": int(totals.get("questions_generated", 0)),
+                "memories_created": int(totals.get("memories_created", 0)),
+                "docs_processed": int(totals.get("docs_processed", 0)),
+                "skipped": int(totals.get("skipped", 0)),
+                "gaps_count": int(totals.get("gaps_count", 0)),
+                "judge_divergence_count": int(totals.get("judge_divergence_count", 0)),
+                "cost_estimate": round(totals.get("cost_estimate", 0.0), 6),
+                "calls": int(totals.get("calls", 0)),
+            }
+
+        return {
+            "success": True,
+            "rounds_completed": len(per_round),
+            "per_round": per_round,
+            "questions_generated": int(totals.get("questions_generated", 0)),
+            "memories_created": int(totals.get("memories_created", 0)),
+            "docs_processed": int(totals.get("docs_processed", 0)),
+            "skipped": int(totals.get("skipped", 0)),
+            "gaps_count": int(totals.get("gaps_count", 0)),
+            "judge_divergence_count": int(totals.get("judge_divergence_count", 0)),
+            "cost_estimate": round(totals.get("cost_estimate", 0.0), 6),
+            "calls": int(totals.get("calls", 0)),
+        }
+
+    except Exception as e:
+        logger.error("learn_docs failed: %s", e, exc_info=True)
+        return {"success": False, "error": "internal", "detail": str(e)[:300]}
+    finally:
+        lock.release()
+
+
+async def _learn_docs_once(
+    soul_kb_id: str,
+    doc_paths: list[str],
+    limit: int = 5,
+    round_idx: int = 1,
+) -> dict:
+    """单轮显式文档学习(调用方必须已持有 per-soul 锁)。"""
     try:
         try:
             cfg = read_soul_config(soul_kb_id)
@@ -1475,16 +1743,21 @@ async def learn_docs(
         if cfg.is_template:
             return {"success": False, "error": "is_template", "detail": "模板库不可学习"}
 
+        # 本轮预算基线(历史累计成本不计入本轮,契约 §6 每轮上限)
+        _begin_run_budget(soul_kb_id)
+
         kb_scope = cfg.kb_scope
 
-        # AC5 幂等: 内容 hash 与已记录 learned_hash 一致的文档 → 跳过(不扣预算)
+        # AC5 幂等(per-SOUL): 内容 hash 与已记录 learned_hash 一致的文档 → 跳过(不扣预算)
+        learned = _soul_learned_hashes(soul_kb_id)
         pending_paths: list[str] = []
         for doc_path in doc_paths:
             try:
                 content = storage_reader.read_document_content(doc_path, max_chars=50000)
+                if not content:
+                    continue  # 目录/占位条目 → 跳过
                 cur_hash = _content_sha256(content)
-                doc_meta = storage_reader.get_document_metadata(doc_path)
-                if cur_hash and doc_meta.get("learned_hash") == cur_hash:
+                if cur_hash and learned.get(_norm_path(doc_path)) == cur_hash:
                     continue
             except Exception:
                 pass
@@ -1512,23 +1785,27 @@ async def learn_docs(
 
             # scope 校验：文档是否在 kb_scope 内
             if kb_scope:
-                doc_in_scope = False
-                for scope_id in kb_scope:
-                    scope_kb_path = _resolve_any_kb_path(scope_id)
-                    if scope_kb_path and doc_path.startswith(scope_kb_path + "/"):
-                        doc_in_scope = True
-                        break
-                    if scope_kb_path and doc_path.startswith(scope_kb_path):
-                        doc_in_scope = True
-                        break
-                # 也检查文档路径前缀是否匹配任何 scope KB 路径
-                if not doc_in_scope:
-                    try:
-                        doc_kb = storage_reader.resolve_kb_path_for_doc(doc_path)
-                        if doc_kb in kb_scope:
+                # 全库通配符 "*": 所有公开库文档均在范围内(默认人格范围)
+                if "*" in kb_scope:
+                    doc_in_scope = True
+                else:
+                    doc_in_scope = False
+                    for scope_id in kb_scope:
+                        scope_kb_path = _resolve_any_kb_path(scope_id)
+                        if scope_kb_path and doc_path.startswith(scope_kb_path + "/"):
                             doc_in_scope = True
-                    except Exception:
-                        pass
+                            break
+                        if scope_kb_path and doc_path.startswith(scope_kb_path):
+                            doc_in_scope = True
+                            break
+                    # 也检查文档路径前缀是否匹配任何 scope KB 路径
+                    if not doc_in_scope:
+                        try:
+                            doc_kb = storage_reader.resolve_kb_path_for_doc(doc_path)
+                            if doc_kb in kb_scope:
+                                doc_in_scope = True
+                        except Exception:
+                            pass
                 if not doc_in_scope:
                     _append_gap(soul_kb_id, "", doc_path, "scope_kb_missing",
                                 f"doc {doc_path} outside kb_scope")
@@ -1588,9 +1865,19 @@ async def learn_docs(
             if total_questions > 0:
                 try:
                     content = storage_reader.read_document_content(doc_path, max_chars=50000)
-                    _record_learned_doc({
-                        "kb_path": next(
-                            (p for p in kb_scope if doc_path.startswith(p + "/")), ""),
+                    kb_path_for_doc = ""
+                    for scope_id in kb_scope:
+                        if scope_id == "*":
+                            continue
+                        scope_kb_path = _resolve_any_kb_path(scope_id)
+                        if scope_kb_path and doc_path.startswith(scope_kb_path + "/"):
+                            kb_path_for_doc = scope_kb_path
+                            break
+                    if not kb_path_for_doc:
+                        # 全库范围(*): 按文档归属解析真实 KB 路径,保证文档级 metadata 可写
+                        kb_path_for_doc = storage_reader.resolve_kb_path_for_doc(doc_path) or ""
+                    _record_learned_doc(soul_kb_id, {
+                        "kb_path": kb_path_for_doc,
                         "doc_path": doc_path,
                         "content_hash": _content_sha256(content),
                     })
@@ -1601,6 +1888,7 @@ async def learn_docs(
 
         return {
             "success": True,
+            "round": round_idx,
             "questions_generated": total_questions,
             "memories_created": total_memories,
             "docs_processed": total_docs,
@@ -1614,8 +1902,6 @@ async def learn_docs(
     except Exception as e:
         logger.error("learn_docs failed: %s", e, exc_info=True)
         return {"success": False, "error": "internal", "detail": str(e)[:300]}
-    finally:
-        lock.release()
 
 
 # ═══════════════════════════════════════════════════════════════════════════

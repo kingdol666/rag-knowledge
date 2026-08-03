@@ -8,3 +8,14 @@ mineru:
   start_on_boot: true
   startup_timeout: 60
   model_source: "modelscope"
+
+# ============================================
+# SOUL 人格系统配置
+# ============================================
+
+soul:
+  # 冥想/SOUL 训练的默认 harness: omp | claude
+  # 每 SOUL 可在 meditation config 中单独覆盖(harness 字段)
+  default_harness: "omp"
+  # 默认模型(空 = 引擎默认: OMP 用其内置默认,claude 用 sonnet)
+  default_model: ""

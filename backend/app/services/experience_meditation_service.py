@@ -518,12 +518,45 @@ class ExperienceMeditationScheduler:
 
     # ── Background Loop (KB-aware) ──────────────────────────────────────
 
+    def _soul_mode_active(self) -> bool:
+        """是否存在已启用(meditation_mode=soul 且 enabled=True)的人格库。
+
+        SOUL 定时训练独立于 experience_auto 全局开关: 只要有人格库开启
+        soul 冥想,调度循环就必须持续唤醒(间隔取各库最小 interval_hours)。
+        """
+        try:
+            from app.services.kb_meditation_config import get_all_kb_meditation_configs
+            for kb_cfg in get_all_kb_meditation_configs():
+                c = kb_cfg.get("config", {})
+                if c.get("meditation_mode") == "soul" and c.get("enabled"):
+                    return True
+        except Exception:
+            pass
+        return False
+
+    def _soul_min_interval_hours(self) -> int | None:
+        """已启用 soul 库的最小 interval_hours(决定循环唤醒间隔)。"""
+        try:
+            from app.services.kb_meditation_config import get_all_kb_meditation_configs
+            mins: list[int] = []
+            for kb_cfg in get_all_kb_meditation_configs():
+                c = kb_cfg.get("config", {})
+                if c.get("meditation_mode") == "soul" and c.get("enabled"):
+                    try:
+                        mins.append(int(c.get("interval_hours", 24)))
+                    except (TypeError, ValueError):
+                        continue
+            return min(mins) if mins else None
+        except Exception:
+            return None
+
     async def _loop(self):
         """Main scheduler loop. KB-aware: iterates over KBs with meditation configs."""
         while True:
             try:
                 cfg = config.experience_auto_config
-                if not cfg.get("enabled", False):
+                soul_active = self._soul_mode_active()
+                if not cfg.get("enabled", False) and not soul_active:
                     self._wake.clear()
                     try:
                         await asyncio.wait_for(self._wake.wait(), timeout=300)
@@ -531,14 +564,19 @@ class ExperienceMeditationScheduler:
                         pass
                     continue
 
+                # 唤醒间隔: 全局经验冥想与 soul 库各自 interval 取最小,
+                # 保证 interval_hours 更短的人格库也能按时触发
                 interval = int(cfg.get("interval_hours", 24))
+                soul_interval = self._soul_min_interval_hours()
+                if soul_interval and soul_interval < interval:
+                    interval = soul_interval
                 self._wake.clear()
                 try:
                     await asyncio.wait_for(self._wake.wait(), timeout=interval * 3600)
                 except asyncio.TimeoutError:
                     pass
 
-                if not config.experience_auto_config.get("enabled", False):
+                if not config.experience_auto_config.get("enabled", False) and not self._soul_mode_active():
                     continue
 
                 await self._run_kb_aware_meditation()
@@ -694,7 +732,8 @@ class ExperienceMeditationScheduler:
         logger.info("Soul meditation trigger for %s (mode=soul)", kb_id)
         try:
             from app.services.soul_learn import learn_incremental
-            report = await learn_incremental(kb_id)
+            rounds = int(config.get("rounds_per_run", 1) or 1)
+            report = await learn_incremental(kb_id, rounds=rounds)
         except Exception as e:
             logger.exception("Soul meditation failed for %s", kb_id)
             try:

@@ -2688,6 +2688,36 @@ async def soul_ask(query: str, soul_kb_id: str = "", task_goal: str = "",
 
 
 @mcp.tool()
+async def soul_qdcvr_ask(query: str, soul_kb_id: str = "", task_goal: str = "",
+                         task_type: str = "", top_k: int = 5,
+                         async_mode: bool = False) -> str:
+    """QDCVR + SOUL 组合问答: 先按 knowledgebase-search skill 流程检索知识,
+    再注入人格增强回答(不是直接 soul_ask, 而是先检索后人格)。
+
+    检索侧与 skill Step 2/2.5 对齐: 两阶段检索 → 硬阈值 0.35 → 文档级去重
+    → 短内容过滤 → top_k 片段注入 context_override → 人格合成(引用+PAS)。
+
+    Args:
+        query: 问题(1-4000 字)
+        soul_kb_id: 指定 SOUL(空=自动路由; 显式时按 kb_scope 限定检索)
+        task_goal: 任务目标, 辅助路由
+        task_type: 任务类型, 辅助路由
+        top_k: 注入片段数(默认 5)
+        async_mode: True=异步返回 task_id(kb_task_status 轮询)
+
+    Returns:
+        {answer, citations, pas_score, selected_soul, route_*, evidence_count}
+    """
+    async def _work():
+        return await _client().soul_qdcvr_ask(query, soul_kb_id, task_goal, task_type, top_k)
+    if async_mode:
+        task_id = task_registry.submit(
+            _work(), "soul_qdcvr_ask", {"query": query[:80], "soul_kb_id": soul_kb_id})
+        return _running_payload(task_id, "soul_qdcvr_ask", {"soul_kb_id": soul_kb_id})
+    return _j(await _client().soul_qdcvr_ask(query, soul_kb_id, task_goal, task_type, top_k))
+
+
+@mcp.tool()
 async def soul_status(soul_kb_id: str, summary_window: int = 30) -> str:
     """SOUL 学习指标: 草稿/记忆/缺口/判官分歧/路由统计/成本。"""
     return _j(await _client().soul_status(soul_kb_id, summary_window))
@@ -2707,7 +2737,8 @@ async def soul_router(query: str, task_goal: str = "", task_type: str = "") -> s
 
 @mcp.tool()
 async def soul_init(soul_name: str, template: str = "soul-template", kb_scope: list = None,
-                     domain_labels: list = None, supported_task_types: list = None) -> str:
+                     domain_labels: list = None, supported_task_types: list = None,
+                     harness: str = "", model: str = "") -> str:
     """创建新 SOUL: 模板复制 4 文档 + soul-config + 初始 profile + 索引。
 
     编排层(kb-mcp): kb_create(web) → 模板 FS 读 4 文档 → kb_doc_create ×4(web)
@@ -2717,9 +2748,11 @@ async def soul_init(soul_name: str, template: str = "soul-template", kb_scope: l
     Args:
         soul_name: SOUL 名(如 "soul-材料学")
         template: 模板库名(默认 soul-template)
-        kb_scope: 学习范围(公开库 kb_id 列表;空=仅人格问答;["*"]=全库)
+        kb_scope: 学习范围(公开库 kb_id 列表;缺省/空=全库["*"];创建后可用 soul_config_update 改)
         domain_labels: 路由领域标签(中文)
         supported_task_types: 路由任务类型注册值
+        harness: 训练 harness(omp|claude;空=全局默认 soul.default_harness)
+        model: 训练模型(空=引擎默认)
 
     Returns:
         {kb_id, name, profile_summary_generated, meditation_config_created, docs_created}
@@ -2752,7 +2785,16 @@ async def soul_init(soul_name: str, template: str = "soul-template", kb_scope: l
         docs_created.append({"name": doc, "ok": bool(r.get("success", True))})
 
     # 3) 后端 bootstrap(soul-config + profile + meditation config)
-    boot = await client.soul_bootstrap(kb_id, kb_scope or [], domain_labels or [], supported_task_types or [])
+    #    默认 kb_scope=["*"]: 全部公开库均可参与学习/检索;
+    #    需要"仅人格问答"(不学习任何公开库)时,创建后经 soul_config_update 显式设 kb_scope=[]
+    boot = await client.soul_bootstrap(
+        kb_id,
+        kb_scope if kb_scope else ["*"],
+        domain_labels or [],
+        supported_task_types or [],
+        harness or "",
+        model or "",
+    )
 
     # 4) 索引 4 文档(AC25: 60s 内可检索)
     for doc in _TEMPLATE_DOCS:
@@ -2812,20 +2854,21 @@ async def soul_delete(soul_kb_id: str, purge_experiences: bool = False) -> str:
 
 
 @mcp.tool()
-async def soul_learn(soul_kb_id: str, doc_paths: list, limit: int = 5) -> str:
+async def soul_learn(soul_kb_id: str, doc_paths: list, limit: int = 5, rounds: int = 1) -> str:
     """自主学习: 提问→带引用自答→四维自评(双判官)→蒸馏(人格记忆+知识经验)。
 
-    异步: 立即返回 task_id,kb_task_status 轮询;入口预算检查(累计 cost 超限拒绝)。
+    异步: 立即返回 task_id,kb_task_status 轮询;入口预算检查(每轮成本超限拒绝)。
 
     Args:
         soul_kb_id: SOUL 库
         doc_paths: 学习文档路径列表(≤5 篇,须在 kb_scope 内)
         limit: 单次问题上限
+        rounds: 固定轮数(默认 1;>1 时锁内循环多轮, 每轮独立预算基线+增量扫描)
     """
     async def _work():
-        return await _client().soul_learn(soul_kb_id, doc_paths, limit)
+        return await _client().soul_learn(soul_kb_id, doc_paths, limit, rounds)
     task_id = task_registry.submit(
-        _work(), "soul_learn", {"soul_kb_id": soul_kb_id, "doc_paths": len(doc_paths)})
+        _work(), "soul_learn", {"soul_kb_id": soul_kb_id, "doc_paths": len(doc_paths), "rounds": rounds})
     return _running_payload(task_id, "soul_learn", {"soul_kb_id": soul_kb_id})
 
 
@@ -2893,7 +2936,7 @@ async def soul_calibrate(soul_kb_id: str) -> str:
 
 @mcp.tool()
 async def soul_learn_all(soul_kb_id: str = "", max_docs: int = 20,
-                          dry_run: bool = False) -> str:
+                          dry_run: bool = False, rounds: int = 1) -> str:
     """全库自举: 遍历全部 SOUL × kb_scope 批量增量学习。
 
     dry_run=True 返回预估统计(不执行);文档级 content SHA256 全局去重防跨 SOUL 重复学习。
@@ -2902,13 +2945,14 @@ async def soul_learn_all(soul_kb_id: str = "", max_docs: int = 20,
         soul_kb_id: 指定单 SOUL(空=全部)
         max_docs: 单次最大文档数
         dry_run: 只估算不执行
+        rounds: 固定轮数(每 SOUL 锁内循环轮次, 每轮学一批增量; 默认 1)
     """
     async def _work():
-        return await _client().soul_learn_all(soul_kb_id, max_docs, dry_run)
+        return await _client().soul_learn_all(soul_kb_id, max_docs, dry_run, rounds)
     if dry_run:
-        return _j(await _client().soul_learn_all(soul_kb_id, max_docs, True))
+        return _j(await _client().soul_learn_all(soul_kb_id, max_docs, True, rounds))
     task_id = task_registry.submit(
-        _work(), "soul_learn_all", {"soul_kb_id": soul_kb_id, "max_docs": max_docs})
+        _work(), "soul_learn_all", {"soul_kb_id": soul_kb_id, "max_docs": max_docs, "rounds": rounds})
     return _running_payload(task_id, "soul_learn_all", {"soul_kb_id": soul_kb_id or "*"})
 
 

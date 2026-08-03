@@ -92,7 +92,7 @@ class Config:
         if "server" in shared:
             self._config.setdefault("server", {}).update(shared["server"])
 
-        for section in ("storage", "vector", "embedding", "graph", "search", "experience_auto"):
+        for section in ("storage", "vector", "embedding", "graph", "search", "experience_auto", "soul"):
             if section in shared:
                 self._config[section] = shared[section]
 
@@ -370,6 +370,27 @@ class Config:
         min_cluster_count, max_drafts_per_run, dry_run.
         """
         return self._config.get("experience_auto", {})
+
+    # ── SOUL ─────────────────────────────────────────────────────────
+
+    @property
+    def soul_config(self) -> dict:
+        """SOUL 人格系统配置(soul 段)。
+
+        Keys: default_harness (omp|claude), default_model (空=引擎默认).
+        """
+        return self._config.get("soul", {})
+
+    @property
+    def soul_default_harness(self) -> str:
+        """全局默认 harness(配置驱动,默认 omp)。"""
+        h = str(self.soul_config.get("default_harness", "omp") or "omp").strip().lower()
+        return h if h in ("omp", "claude") else "omp"
+
+    @property
+    def soul_default_model(self) -> str:
+        """全局默认模型(空=引擎默认)。"""
+        return str(self.soul_config.get("default_model", "") or "").strip()
 
 
 config = Config()

@@ -2999,6 +2999,73 @@ function getBackendUrl() {
 
 // ── SOUL ──────────────────────────────────────────────────────────────
 
+/**
+ * ragctl harness [omp|claude] [--model M] — 全局默认 harness(配置驱动, 写 backend/config.yml soul 段)
+ * 无参 = 查看当前默认; 带参 = 设置(默认 omp)。
+ */
+async function cmdHarness(args) {
+  const positional = args.filter(a => !a.startsWith('--'));
+  const target = (positional[0] || '').toLowerCase();
+  const modelFlagIdx = args.indexOf('--model');
+  const model = modelFlagIdx >= 0 && args[modelFlagIdx + 1] ? args[modelFlagIdx + 1] : '';
+
+  const backendCfgPath = path.join(BACKEND_DIR, 'config.yml');
+  const cfg = readYaml(backendCfgPath);
+  const current = (cfg.soul && cfg.soul.default_harness) || 'omp';
+
+  if (!target) {
+    header('全局默认 harness(SOUL 训练/冥想引擎)');
+    console.log(`  当前默认: ${_c(C.CYAN, current)}`);
+    console.log(`  默认模型: ${_c(C.CYAN, (cfg.soul && cfg.soul.default_model) || '(引擎默认)')}`);
+    console.log(`  配置来源: ${backendCfgPath}`);
+    console.log('');
+    console.log(`  设置: ragctl harness <omp|claude> [--model M]`);
+    console.log(`  单人格覆盖: ragctl soul harness <soul_kb_id> <omp|claude> [--model M]`);
+    console.log(`  说明: 每个 SOUL 的 meditation config 可单独指定 harness; 未指定时回退此全局默认。`);
+    return 0;
+  }
+
+  if (!['omp', 'claude'].includes(target)) {
+    err(`未知 harness: ${target}(可选 omp|claude)`);
+    return 1;
+  }
+
+  // 可用性校验(安装但未配置 key 的 claude 会警告)
+  if (target === 'claude') {
+    try {
+      const r = execSync('claude --version', { stdio: ['ignore', 'pipe', 'pipe'], timeout: 15000 });
+      const hasKey = !!process.env.ANTHROPIC_API_KEY;
+      if (!hasKey) warn('claude CLI 已安装但 ANTHROPIC_API_KEY 未设置 — 调用将失败直到配置密钥');
+      else ok(`claude 可用: ${r.toString().trim()}`);
+    } catch {
+      warn('claude CLI 未安装或不在 PATH — 设置仍会写入, 但训练会回退/失败');
+    }
+  } else {
+    try {
+      const r = execSync('omp --version', { stdio: ['ignore', 'pipe', 'pipe'], timeout: 15000 });
+      ok(`omp 可用: ${r.toString().trim()}`);
+    } catch {
+      warn('omp CLI 未安装或不在 PATH — 训练将不可用');
+    }
+  }
+
+  if (!cfg.soul) cfg.soul = {};
+  cfg.soul.default_harness = target;
+  if (args.includes('--model')) cfg.soul.default_model = model;
+
+  try {
+    const body = yaml.dump(cfg, { indent: 2, lineWidth: -1, noRefs: true, sortKeys: false });
+    fs.writeFileSync(backendCfgPath, body, 'utf8');
+  } catch (e) {
+    err(`写入配置失败: ${e.message}`);
+    return 1;
+  }
+  ok(`全局默认 harness → ${target}${model ? ` (model=${model})` : ''}`);
+  info('后端重启后生效(ragctl restart backend); 已创建的 SOUL 未显式指定 harness 时自动回退此默认');
+  return 0;
+}
+
+
 async function cmdSoul(args) {
   const [sub, ...rest] = args;
   const backendUrl = getBackendUrl();
@@ -3071,12 +3138,13 @@ async function cmdSoul(args) {
       break;
     }
     case 'init': case 'create': {
-      // ragctl soul init <name> --scope kb1,kb2 --labels 材料,催化 --types 文献综述
+      // ragctl soul init <name> --scope kb1,kb2 --labels 材料,催化 --types 文献综述 --harness omp
       const name = rest[0];
-      if (!name) { console.log('用法: ragctl soul init <soul_name> [--scope kb1,kb2] [--labels a,b] [--types t1,t2]'); break; }
+      if (!name) { console.log('用法: ragctl soul init <soul_name> [--scope kb1,kb2] [--labels a,b] [--types t1,t2] [--harness omp|claude]'); break; }
       const scope = flagVal('--scope');
       const labels = flagVal('--labels');
       const types = flagVal('--types');
+      const harness = flagVal('--harness');
       const full = name.startsWith('soul-') ? name : `soul-${name}`;
       // 后端 /init 兼容入口(实际编排在 kb-mcp);此处提示 MCP 路径
       const res = await apiPost('/api/v1/soul/init', {
@@ -3084,12 +3152,14 @@ async function cmdSoul(args) {
         kb_scope: scope ? scope.split(',').map(s => s.trim()) : [],
         domain_labels: labels ? labels.split(',').map(s => s.trim()) : [],
         supported_task_types: types ? types.split(',').map(s => s.trim()) : [],
+        harness,
+        model: '',
       }).catch(e => ({ _error: e.message }));
       if (res._error) {
         console.log(`\n⚠ 后端 /init 为兼容入口: ${res._error}`);
         console.log('   完整创建(模板复制+profile+索引)请用 MCP 工具 soul_init 或 Web SOUL 页面');
       } else {
-        console.log(`\n🧠 ${full} 初始化请求已提交:`, JSON.stringify(res).slice(0, 200));
+        console.log(`\n🧠 ${full} 初始化请求已提交${harness ? ` [harness=${harness}]` : ''}:`, JSON.stringify(res).slice(0, 200));
       }
       break;
     }
@@ -3097,10 +3167,11 @@ async function cmdSoul(args) {
       const posArgs = rest.filter(a => !a.startsWith('--'));
       const kbId = posArgs[0];
       const docs = flagVal('--docs');
-      if (!kbId || !docs) { console.log('用法: ragctl soul learn <soul_kb_id> --docs kb/doc1,kb/doc2 [--limit 6]'); break; }
+      if (!kbId || !docs) { console.log('用法: ragctl soul learn <soul_kb_id> --docs kb/doc1,kb/doc2 [--limit 6] [--rounds N]'); break; }
       const limit = parseInt(flagVal('--limit') || '6');
-      const res = await apiPost(`/api/v1/soul/${enc(kbId)}/learn`, { doc_paths: docs.split(',').map(s => s.trim()), limit });
-      console.log(`\n🧠 ${kbId} 训练已触发:`, JSON.stringify(res.report || res).slice(0, 300));
+      const rounds = parseInt(flagVal('--rounds') || '1');
+      const res = await apiPost(`/api/v1/soul/${enc(kbId)}/learn`, { doc_paths: docs.split(',').map(s => s.trim()), limit, rounds });
+      console.log(`\n🧠 ${kbId} 训练已触发(rounds=${rounds}):`, JSON.stringify(res.report || res).slice(0, 300));
       break;
     }
     case 'learn-all': case 'train-all': {
@@ -3108,15 +3179,37 @@ async function cmdSoul(args) {
       const posArgs = rest.filter(a => !a.startsWith('--'));
       const kbId = posArgs[0] || '';
       const dry = flagOn('--dry-run');
+      const rounds = parseInt(flagVal('--rounds') || '1');
       const path = kbId ? `/api/v1/soul/${enc(kbId)}/learn-all` : '/api/v1/soul/learn-all';
-      const res = await apiPost(path, { max_docs: 20, dry_run: dry });
-      console.log(`\n🌱 全库自举(${kbId || '全部人格'}${dry ? ' dry-run' : ''}):`);
+      const res = await apiPost(path, { max_docs: 20, dry_run: dry, rounds });
+      console.log(`\n🌱 全库自举(${kbId || '全部人格'}${dry ? ' dry-run' : ''}, rounds=${rounds}):`);
       const r = res.report || {};
       if (r.estimated_llm_calls !== undefined) {
         console.log(`  预估: ${r.estimated_llm_calls} LLM 调用 | 唯一文档: ${r.unique_docs} | 重复: ${r.duplicate_docs} | 跨人格重叠: ${r.cross_soul_overlap_pct}%`);
         for (const p of r.per_soul_breakdown || []) console.log(`    • ${p.soul_kb_id.slice(0, 20)}: ${p.scope_docs} 文档`);
       } else {
         console.log(JSON.stringify(r, null, 2).slice(0, 400));
+      }
+      break;
+    }
+    case 'harness': {
+      // ragctl soul harness <soul_kb_id> <omp|claude> [--model M] — 指定单个 SOUL 的训练引擎
+      const kbId = rest[0];
+      const harness = rest[1];
+      if (!kbId || !harness) {
+        console.log('用法: ragctl soul harness <soul_kb_id> <omp|claude> [--model M]');
+        console.log('  查看: ragctl soul harness <soul_kb_id>  (不带引擎参数时显示当前配置)');
+        break;
+      }
+      if (!['omp', 'claude'].includes(harness)) { console.log(`❌ 未知 harness: ${harness}(可选 omp|claude)`); break; }
+      const cfgRes = await apiPut('/api/v1/meditation/config', {
+        kb_id: kbId,
+        config: { harness, model: flagVal('--model'), meditation_mode: 'soul' },
+      });
+      if (cfgRes.success) {
+        console.log(`\n⚙️ ${kbId} harness → ${cfgRes.config?.harness}${cfgRes.config?.model ? ` (model=${cfgRes.config.model})` : ''}`);
+      } else {
+        console.log(`❌ 设置失败: ${cfgRes.error || JSON.stringify(cfgRes)}`);
       }
       break;
     }
@@ -3198,9 +3291,10 @@ async function cmdSoul(args) {
       console.log(`\n🤖 SOUL 人格管理 — 用法:`);
       console.log('  ragctl soul list                                   列出全部人格');
       console.log('  ragctl soul status <soul_kb_id>                    人格学习指标');
-      console.log('  ragctl soul init <name> [--scope k1,k2] [--labels a,b]  创建人格(后端兼容入口)');
-      console.log('  ragctl soul learn <soul_kb_id> --docs=kb/f1,kb/f2  训练指定文档');
-      console.log('  ragctl soul learn-all [soul_kb_id] [--dry-run]     全库自举(增量)');
+      console.log('  ragctl soul init <name> [--scope k1,k2] [--labels a,b] [--harness omp|claude]  创建人格(后端兼容入口)');
+      console.log('  ragctl soul learn <soul_kb_id> --docs=kb/f1,kb/f2 [--rounds N]  训练指定文档(固定轮数)');
+      console.log('  ragctl soul learn-all [soul_kb_id] [--dry-run] [--rounds N]   全库自举(增量, 固定轮数)');
+      console.log('  ragctl soul harness <soul_kb_id> <omp|claude> [--model M]    指定单人格训练引擎');
       console.log('  ragctl soul ask <query> [--soul kb] [--type t] [--goal g]  人格问答(自动路由)');
       console.log('  ragctl soul router <query> [--type t]              路由决策预览');
       console.log('  ragctl soul review <soul_kb_id> [--action approve] [--draft id]  记忆审批');
@@ -3380,6 +3474,7 @@ async function main() {
       case 'restore': return await cmdRestore(subArgs);
       case 'meditation': case 'meditate': return await cmdMeditation(subArgs);
       case 'soul': case 'persona': return await cmdSoul(subArgs);
+      case 'harness': return await cmdHarness(subArgs);
         err(`未知命令: ${command}`);
         showHelp();
         return 1;
