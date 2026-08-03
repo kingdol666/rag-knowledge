@@ -16,6 +16,7 @@ description: >
   knowledge base, install rag knowledge, deploy KB, start KB, bootstrap,
   getting started, 初始化知识库, 安装知识库, 部署知识库, 知识库启动,
   kb init, knowledgebase setup wizard, 知识库安装向导, 配置知识库, 引导安装知识库.
+---
 
 ## ⭐ 相关 Skills
 - 架构理解 + 执行模型 → `skill://knowledgebase` 的 [kb-architecture.md](../knowledgebase/references/kb-architecture.md) + [execution-model.md](../knowledgebase/references/execution-model.md)

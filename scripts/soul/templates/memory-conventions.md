@@ -1,4 +1,4 @@
-# 记忆约定 — soul-模板
+# 记忆约定 — soul-template
 
 ## 记忆类型
 - 人格记忆(memories/): 高质量问答沉淀,frontmatter 含 question/q_hash/evidence_paths/scores/pas_score

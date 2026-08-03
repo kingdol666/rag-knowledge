@@ -2706,7 +2706,7 @@ async def soul_router(query: str, task_goal: str = "", task_type: str = "") -> s
 
 
 @mcp.tool()
-async def soul_init(soul_name: str, template: str = "soul-模板", kb_scope: list = None,
+async def soul_init(soul_name: str, template: str = "soul-template", kb_scope: list = None,
                      domain_labels: list = None, supported_task_types: list = None) -> str:
     """创建新 SOUL: 模板复制 4 文档 + soul-config + 初始 profile + 索引。
 
@@ -2716,7 +2716,7 @@ async def soul_init(soul_name: str, template: str = "soul-模板", kb_scope: lis
 
     Args:
         soul_name: SOUL 名(如 "soul-材料学")
-        template: 模板库名(默认 soul-模板)
+        template: 模板库名(默认 soul-template)
         kb_scope: 学习范围(公开库 kb_id 列表;空=仅人格问答;["*"]=全库)
         domain_labels: 路由领域标签(中文)
         supported_task_types: 路由任务类型注册值
@@ -2798,7 +2798,7 @@ async def soul_delete(soul_kb_id: str, purge_experiences: bool = False) -> str:
     deleted = await client.kb_delete(soul_kb_id)
     # tombstone 记入路由日志(可审计)
     try:
-        log = _Path(__file__).resolve().parent.parent.parent / "backend" / "app" / "data" / "router-log.jsonl"
+        log = _Path(__file__).resolve().parent.parent / "backend" / "app" / "data" / "router-log.jsonl"
         log.parent.mkdir(parents=True, exist_ok=True)
         with open(log, "a", encoding="utf-8") as f:
             f.write(_json.dumps({

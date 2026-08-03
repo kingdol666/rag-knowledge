@@ -50,7 +50,7 @@ _route_cost_usd: float = 0.0
 _cost_lock = asyncio.Lock()
 
 # 路由日志路径(backend/app/data,与测试集同目录)
-_LOG_DIR = PROJECT_ROOT.parent / "app" / "data"
+_LOG_DIR = PROJECT_ROOT / "app" / "data"
 _LOG_DIR.mkdir(parents=True, exist_ok=True)
 _log_path = _LOG_DIR / "router-log.jsonl"
 _log_lock = asyncio.Lock()
