@@ -215,6 +215,10 @@ async def _pas_score(answer: str, persona: dict, ctx: AskRunContext, kb_config: 
     if not r.get("success"):
         return None, None
     parsed = r.get("parsed") or {}
+    if isinstance(parsed, list):
+        parsed = parsed[0] if parsed and isinstance(parsed[0], dict) else {}
+    if not isinstance(parsed, dict):
+        parsed = {}
     try:
         pas = float(parsed.get("pas_score", 0))
     except (TypeError, ValueError):
@@ -328,6 +332,16 @@ async def _soul_ask_inner(query: str, soul_kb_id: str, task_goal: str, task_type
     citations = []
     valid_paths = {c["path"] for c in chunks}
     for cit in parsed.get("citations", []) or []:
+        if not isinstance(cit, dict):
+            # 兼容字符串形态引用(如 "path/to/doc.md")
+            if isinstance(cit, str) and cit in valid_paths:
+                citations.append({
+                    "path": cit,
+                    "chunk_text": "",
+                    "score": 0.0,
+                    "relevance_reason": _relevance_reason_fallback({"score": 0.0}),
+                })
+            continue
         p = cit.get("path", "")
         if p in valid_paths:
             citations.append({
