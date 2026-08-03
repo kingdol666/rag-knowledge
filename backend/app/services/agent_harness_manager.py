@@ -37,6 +37,75 @@ _LOG_DIR.mkdir(parents=True, exist_ok=True)
 # ── MCP config path (project root .mcp.json) ──
 _MCP_CONFIG_PATH = PROJECT_ROOT.parent / ".mcp.json"
 
+
+def _repair_embedded_quotes(raw: str) -> str | None:
+    """宽松修复 JSON: 把字符串值内未转义的成对英文引号替换为中文引号。
+
+    LLM 输出常在 alignment_notes/q_text 等字段内嵌引用(如 开篇即\"先结论后论证\")
+    而忘记转义,导致 json.loads 失败。修复策略: 在 JSON 字符串值内部,把
+    "成对出现"的英文引号替换为中文引号 \u201c \u201d(成对 = 字符串值内
+    除边界外剩余的引号数量为偶数时,逐对替换)。
+    """
+    out = []
+    in_str = False
+    escape = False
+    i = 0
+    n = len(raw)
+    changed = False
+    while i < n:
+        ch = raw[i]
+        if in_str:
+            if escape:
+                out.append(ch)
+                escape = False
+            elif ch == "\\":
+                out.append(ch)
+                escape = True
+            elif ch == '"':
+                # 判断这是值边界还是内嵌引号: 向前看本字符串内是否还有未闭合引号
+                # 简单启发: 若下一个非空白字符不是 , } ] : 且当前位置之后
+                # 到行尾/逗号前还有偶数个引号,则视为内嵌引号对的开头或中间
+                j = i + 1
+                while j < n and raw[j] in " \t\n\r":
+                    j += 1
+                nxt = raw[j] if j < n else ""
+                if nxt in ",}]:" or nxt == "":
+                    out.append(ch)
+                    in_str = False
+                else:
+                    # 内嵌引号: 找它的配对(下一个未转义引号)
+                    k = j
+                    while k < n:
+                        if raw[k] == "\\":
+                            k += 2
+                            continue
+                        if raw[k] == '"':
+                            break
+                        k += 1
+                    if k < n:
+                        # 配对存在 → 替换为中文引号对
+                        out.append("\u201c")
+                        # 复制中间内容
+                        out.append(raw[j:k])
+                        out.append("\u201d")
+                        i = k
+                        changed = True
+                    else:
+                        # 无配对 → 视为值边界
+                        out.append(ch)
+                        in_str = False
+            else:
+                out.append(ch)
+        else:
+            if ch == '"':
+                in_str = True
+                out.append(ch)
+            else:
+                out.append(ch)
+        i += 1
+    return "".join(out) if changed else None
+
+
 # ── System prompt path ──
 _SYSTEM_PROMPT_PATH = Path(__file__).parent / "prompts" / "meditation_agent_system.txt"
 
@@ -1235,6 +1304,22 @@ class AgentHarnessManager:
         JSON object/array is found.
         """
         search_text = text
+        # 优先找 ```json 围栏块(即使有叙述前缀,如 "基于文档内容生成...")
+        fence = re.search(r'```(?:json)?\s*\n?(.*?)```', search_text, re.DOTALL)
+        if fence:
+            raw = fence.group(1).strip()
+            try:
+                return json.loads(raw)
+            except (json.JSONDecodeError, TypeError):
+                # 宽松修复: 中文引号内嵌(如 "回应"更原创"这一发现")
+                # 用状态机把字符串值内部未转义的 " 替换为 ' 后重试
+                repaired = _repair_embedded_quotes(raw)
+                if repaired is not None:
+                    try:
+                        return json.loads(repaired)
+                    except (json.JSONDecodeError, TypeError):
+                        pass
+
         if search_text.lstrip().startswith("```"):
             first_nl = search_text.find("\n")
             if first_nl > 0:

@@ -325,6 +325,16 @@ async def _soul_ask_inner(query: str, soul_kb_id: str, task_goal: str, task_type
     if not isinstance(parsed, dict):
         parsed = {}
     answer = parsed.get("answer_text") or synth.get("text", "")[:4000]
+    # 防御: LLM 偶发把 answer_text 再序列化一次(字符串内是 JSON 对象)
+    if isinstance(answer, str) and answer.lstrip().startswith(("{", "[")):
+        try:
+            inner = json.loads(answer)
+            if isinstance(inner, dict) and inner.get("answer_text"):
+                answer = inner["answer_text"]
+            elif isinstance(inner, dict) and inner.get("text"):
+                answer = inner["text"]
+        except Exception:
+            pass
     if not answer:
         return {"success": False, "error": "harness_unavailable", "detail": "合成无输出"}
 

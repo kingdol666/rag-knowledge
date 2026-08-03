@@ -396,6 +396,13 @@ async def approve_draft(
         },
     )
 
+    # === 审批后刷新 profile-summary(计划 3.3: 草稿审批后刷新路由依据) ===
+    try:
+        from app.services.soul_profile import generate_profile_summary
+        await generate_profile_summary(soul_kb_id)
+    except Exception as e:
+        logger.debug("profile refresh after approve failed: %s", e)
+
     return {
         "success": True,
         "approved": [draft_id],

@@ -235,7 +235,11 @@ async def generate_questions(doc_path: str, num: int = 6) -> list[dict]:
     parsed = result.get("parsed")
     raw_questions: list[dict] = []
     if isinstance(parsed, dict):
-        raw_questions = parsed.get("questions", [])
+        if isinstance(parsed.get("questions"), list):
+            raw_questions = parsed["questions"]
+        elif parsed.get("q_text"):
+            # 模型偶发输出单条 question dict(损坏/截断时扫描分支产物)
+            raw_questions = [parsed]
     elif isinstance(parsed, list):
         raw_questions = parsed
 
@@ -1243,7 +1247,9 @@ async def learn_incremental(soul_kb_id: str) -> dict:
                 total_calls += 0  # 已在 self_answer/eval_answer 中各计一次
 
             # 文档已学习(内容 hash 入 metadata,AC5 幂等)
-            _record_learned_doc(doc)
+            # 仅在有产出时标记,允许解析失败/零问题的文档下次重试
+            if total_questions > 0:
+                _record_learned_doc(doc)
 
         # AC10: 全部完成后统一 flush（记忆文件已在 distill 中原子写，此处为最终一致性）
         # 实际成本扣减
@@ -1577,16 +1583,19 @@ async def learn_docs(
                 total_cost += 0.01
 
             # 文档已学习(内容 hash 入 metadata,AC5 幂等)
-            try:
-                content = storage_reader.read_document_content(doc_path, max_chars=50000)
-                _record_learned_doc({
-                    "kb_path": next(
-                        (p for p in kb_scope if doc_path.startswith(p + "/")), ""),
-                    "doc_path": doc_path,
-                    "content_hash": _content_sha256(content),
-                })
-            except Exception:
-                pass
+            # 仅在产生学习产出时记录: 问题为空(好奇心引擎未命中)或全部跳过时
+            # 不标记 learned,允许下次重试(修复: 解析失败导致 0 问题也被标记)
+            if total_questions > 0:
+                try:
+                    content = storage_reader.read_document_content(doc_path, max_chars=50000)
+                    _record_learned_doc({
+                        "kb_path": next(
+                            (p for p in kb_scope if doc_path.startswith(p + "/")), ""),
+                        "doc_path": doc_path,
+                        "content_hash": _content_sha256(content),
+                    })
+                except Exception:
+                    pass
 
         deduct_cost(soul_kb_id, total_cost)
 
