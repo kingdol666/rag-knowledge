@@ -73,8 +73,9 @@ Map matched keywords to a single scenario using the classification table below. 
 | 图谱, graph, neo4j, entity, build graph | **Graph** | `Skill("knowledgebase-graph")` |
 | 初始化, 安装, 部署, 配置知识库, init, setup, install, deploy, bootstrap, getting started | **Init** | `Skill("knowledgebase-init")` (main agent — 不委托 Archival) |
 | 更新知识库, 升级, 检查更新, 拉取最新, 新版本, update, upgrade, check for updates, ragctl update | **Update** | `Skill("knowledgebase-update")` (main agent — 不委托 Archival) |
-| 人格问答, 人格化回答, SOUL 问答, 用某个人格回答, 用研究者人格, 用创意人格, 人格检索增强, soul_ask, persona Q&A | **SOUL-Ask** | 直接调用 MCP `soul_ask`(可显式 soul_kb_id 或自动路由;主 Agent 直接执行,不委托 Archival) |
-| SOUL 训练, 人格训练, 创建人格, 新建 SOUL, 人格学习, 人格反思, soul_init, soul_learn, soul_learn_all, soul_reflect, soul_review_drafts, soul_export | **SOUL-Manage** | 直接调用 MCP `soul_init`/`soul_learn`/`soul_learn_all`/`soul_reflect`/`soul_review_drafts`/`soul_export`(主 Agent 直接执行,不委托 Archival) |
+| 人格问答, 人格化回答, SOUL 问答, 用某个人格回答, 用研究者人格, 用创意人格, 人格检索增强, soul_ask, persona Q&A | **SOUL-Ask** | `Skill("soul")` §C(主 Agent 直接执行,不委托 Archival) |
+| SOUL 训练, 人格训练, 创建人格, 新建 SOUL, 人格学习, 人格反思, 自动训练, 好奇心训练, 人格列表, 人格配置, soul_init, soul_learn, soul_learn_all, soul_reflect, soul_review_drafts, soul_export, soul_delete | **SOUL-Manage** | `Skill("soul")`(主 Agent 直接执行,不委托 Archival) |
+| 检索后用XX人格回答, 查一下XX用人格总结, 人格增强检索, 以XX口吻回答知识库问题, persona-augmented RAG | **SOUL-RAG** | `Skill("soul-rag")`(主 Agent 直接执行,不委托 Archival) |
 
 > **注意**：`检查` 单独出现 → Verify（健康检查/一致性校验）。`检查更新` → Update（最长匹配优先）。
 > `总结` 单独出现需结合上下文判断：若语境是"总结经验/教训"→ Experience-Summarize；若语境是"总结知识库内容"→ List。无法确定时询问用户。
@@ -163,14 +164,13 @@ The dispatcher uses these tools for Pre-Flight checks:
 - kb_project_start — silently start unhealthy services
 - backend_status — check MinerU OCR engine availability
 
-**SOUL 人格问答/训练工具**(SOUL-Ask / SOUL-Manage 场景直接调用,无需委托 Archival):
-- `soul_ask(query, soul_kb_id="", task_goal="", task_type="")` — 人格注入问答;soul_kb_id 为空时自动路由到最匹配 SOUL
-- `soul_list` / `soul_router(query, task_goal, task_type)` — 查看 SOUL 列表 / 预览路由决策
-- `soul_init(soul_name, kb_scope, domain_labels, supported_task_types)` — 从 soul-template 创建新 SOUL
-- `soul_learn(soul_kb_id, doc_paths)` / `soul_learn_all` — 自主学习(异步,task_id 轮询)
-- `soul_review_drafts(soul_kb_id, action=list|approve|reject)` — 记忆草稿审批(批准后索引,60s 可检索)
-- `soul_reflect` / `soul_checkpoint` / `soul_rollback` / `soul_export` — 反思/检查点/回滚/训练数据导出
-- 说明: SOUL 能力由 kb-mcp 服务提供(16 个 soul_* MCP 工具),与 knowledgebase 子 Skill 平行;模板库为 `soul-template`(is_template=true,不出现在 soul_list/路由/learn_all)
+**SOUL 人格系统**(人格管理/训练/评估/问答 — 独立 skill 包,与知识库平行):
+- 人格管理+训练+问答 → `Skill("soul")`(16 个 soul_* MCP 工具;主 Agent 直接执行)
+- 检索+人格增强问答 → `Skill("soul-rag")`(kb_search → soul_ask 组合适配)
+- 模板库 `soul-template`(is_template=true,不出现在 soul_list/路由/learn_all);
+  人格问答核心工具 `soul_ask(query, soul_kb_id="", task_goal, task_type, context_override)`
+  — soul_kb_id 为空时自动路由到最匹配 SOUL;训练核心 `soul_learn`/`soul_learn_all`
+  (异步,task_id 轮询);审批 `soul_review_drafts`(批准后索引,60s 可检索)
 
 ## ⚠️ NEVER 清单
 
