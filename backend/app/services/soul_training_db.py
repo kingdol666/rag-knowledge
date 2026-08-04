@@ -141,6 +141,26 @@ def finish_run(run_id: str, status: str, report: dict | None = None) -> None:
         conn.commit()
 
 
+def set_metrics(run_id: str, *, questions: int | None = None,
+               memories: int | None = None, docs: int | None = None,
+               rounds: int | None = None, cost_usd: float | None = None,
+               reward: float | None = None) -> None:
+    """绝对赋值运行指标(finish 时用, 避免与 progress 累加重复)。"""
+    with _lock:
+        conn = _get_conn()
+        sets, args = [], []
+        for col, val in (("questions", questions), ("memories", memories),
+                         ("docs", docs), ("rounds", rounds),
+                         ("cost_usd", cost_usd), ("reward", reward)):
+            if val is not None:
+                sets.append(f"{col} = ?")
+                args.append(val)
+        if sets:
+            args.append(run_id)
+            conn.execute(f"UPDATE soul_training_runs SET {', '.join(sets)} WHERE id = ?", args)
+            conn.commit()
+
+
 def mark_paused(run_id: str) -> None:
     with _lock:
         conn = _get_conn()

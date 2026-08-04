@@ -16,9 +16,10 @@
         </div>
       </div>
       <div class="header-actions">
-        <span v-if="runningTasks" class="task-live">
+        <button v-if="runningTasks" class="task-live" @click="openTaskCenter()" title="查看运行中任务">
           <i class="live-dot"></i>{{ runningTasks }} 个任务运行中
-        </span>
+          <span class="task-live-arrow">▾</span>
+        </button>
         <button class="btn btn-ghost" @click="loadAll" :disabled="loadingList">
           <span class="btn-glyph">⟳</span> 刷新
         </button>
@@ -455,6 +456,30 @@
       </div>
     </a-modal>
 
+    <!-- ═══════════ 任务中心 Modal(全局运行中任务) ═══════════ -->
+    <a-modal v-model:open="taskCenterOpen" title="任务中心 — 运行中任务" :footer="null" width="820">
+      <div class="task-center">
+        <div v-if="!activeTasks.length" class="h-empty">当前无运行中任务</div>
+        <div v-for="t in activeTasks" :key="t.task_id" class="tc-item">
+          <div class="tc-head">
+            <i class="tc-pulse"></i>
+            <span class="tc-soul">{{ soulName(t.meta?.soul_kb_id) || t.meta?.soul_kb_id || '全局' }}</span>
+            <span class="tc-kind">{{ t.kind }}</span>
+            <span class="tc-elapsed">{{ Math.round(t.elapsed_seconds || 0) }}s</span>
+            <button v-if="t.status === 'running'" class="btn btn-ghost btn-xs" @click="pauseTaskById(t.task_id)">⏸ 暂停</button>
+            <button v-if="t.status === 'paused'" class="btn btn-copper btn-xs" @click="resumeTaskById(t.task_id)">▶ 继续</button>
+            <button class="btn btn-ghost btn-xs" @click="focusTask(t)">定位 ▶</button>
+          </div>
+          <div class="tc-phase" v-if="t.progress">
+            <span class="tc-phase-name">{{ phaseLabel(t.progress) }}</span>
+            <span class="tc-phase-detail">{{ phaseDetail(t.progress) }}</span>
+          </div>
+          <div class="tc-bar" v-if="t.progress"><i class="bar-fill" :style="{ width: taskPercent(t) + '%' }"></i></div>
+        </div>
+        <div class="tc-history-hint" @click="historyOpen = true; openHistory()">📚 查看训练历史(SQLite) →</div>
+      </div>
+    </a-modal>
+
     <!-- ═══════════ 训练历史 Modal(SQLite) ═══════════ -->
     <a-modal v-model:open="historyOpen" title="训练历史（SQLite 持久化）" :footer="null" width="860">
       <div class="history-layout">
@@ -862,10 +887,11 @@ async function loadScopeDocs(soul: Soul) {
 // 全局任务列表监控（顶栏运行中计数）
 async function pollTaskList() {
   try {
-    const res = await $fetch<any>('/api/soul/tasks?status=running')
-    const arr = res?.tasks || []
+    const res = await $fetch<any>('/api/soul/tasks')
+    const arr = (res?.tasks || []).filter((t: any) => t.status === 'running' || t.status === 'paused')
     runningTasks.value = arr.length
-    // 训练中的人格状态灯
+    activeTasks.value = arr
+    // 训练中的人格状态灯 + 训练控制台任务绑定
     for (const t of arr) {
       const kbId = t.meta?.soul_kb_id
       if (kbId) {
@@ -874,6 +900,64 @@ async function pollTaskList() {
       }
     }
   } catch { /* noop */ }
+}
+
+// ── 任务中心(全局运行中任务可视化) ──
+const activeTasks = ref<any[]>([])
+const taskCenterOpen = ref(false)
+function openTaskCenter() {
+  taskCenterOpen.value = true
+  pollTaskList()
+}
+function phaseLabel(p: any): string {
+  if (!p) return '执行中'
+  if (p.phase === 'learn') return `探索轮 ${p.round ?? 1}/${p.rounds ?? 1}`
+  if (p.phase === 'reward') return `评价得分 ${p.reward != null ? fmtNum(p.reward) : '…'}`
+  if (p.phase === 'scan') return '扫描文档'
+  if (p.phase === 'parse_files') return '文件解析'
+  if (p.phase === 'distill') return 'LLM 蒸馏'
+  if (p.phase === 'build') return '建库+文档'
+  if (p.phase === 'done') return '完成'
+  if (p.processed !== undefined) return `审批 ${p.processed}/${p.total}`
+  return '执行中'
+}
+function phaseDetail(p: any): string {
+  if (!p) return ''
+  if (p.phase === 'learn') return `问题 ${p.questions ?? 0} · 记忆 ${p.memories ?? 0} · 文档 ${p.docs_processed ?? 0}${p.soul_kb_id ? ' · ' + p.soul_kb_id : ''}`
+  if (p.phase === 'reward') return `认知草稿 ${p.drafts_created ?? 0}${p.msg ? ' · ' + p.msg : ''}`
+  if (p.phase === 'scan') return `${p.scanned}/${p.total} · 去重后 ${p.unique_docs}`
+  if (p.phase === 'parse_files' || p.phase === 'distill' || p.phase === 'build') return p.msg || ''
+  if (p.processed !== undefined) return `批准 ${p.approved ?? 0} / 驳回 ${p.rejected ?? 0}`
+  return ''
+}
+function taskPercent(t: any): number {
+  const p = t.progress || {}
+  if (p.phase === 'learn' && p.rounds > 1) return Math.min(99, Math.round((p.round / p.rounds) * 100))
+  if (p.phase === 'scan') return Math.min(90, Math.round((p.scanned / (p.total || 1)) * 90))
+  return 55 // 未知阶段 → 中间进度
+}
+async function pauseTaskById(id: string) {
+  try { await $fetch(`/api/soul/tasks/${id}/pause`, { method: 'POST' }); showToast('任务已暂停'); pollTaskList() } catch (e: any) { showToast(`暂停失败: ${e.message}`, 'err') }
+}
+async function resumeTaskById(id: string) {
+  try { await $fetch(`/api/soul/tasks/${id}/resume`, { method: 'POST' }); showToast('任务已继续'); pollTaskList() } catch (e: any) { showToast(`继续失败: ${e.message}`, 'err') }
+}
+function focusTask(t: any) {
+  // 定位到对应 SOUL 并打开其训练监控
+  const kbId = t.meta?.soul_kb_id
+  const soul = souls.value.find((x: any) => x.kb_id === kbId || x.name === kbId)
+  if (soul) {
+    selectSoul(soul)
+    taskCenterOpen.value = false
+    // 若正是自己的训练任务, 绑定监控
+    if (trainTaskId.value !== t.task_id && (t.kind || '').startsWith('soul_')) {
+      trainTaskId.value = t.task_id
+      trainTaskStatus.value = t.status === 'paused' ? 'paused' : 'running'
+      trainProgress.value = t.progress || null
+      pollTrainTask(t.task_id)
+    }
+    showToast(`已定位 ${soul.name} 的训练任务`)
+  }
 }
 
 // ── CRUD ──
@@ -1936,5 +2020,22 @@ select.inp[multiple] { min-height: 110px; }
 .fd-size { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--kb-fg-3); }
 .fd-rm { color: var(--kb-primary); cursor: pointer; font-size: 14px; }
 @media (max-width: 720px) { .history-layout { grid-template-columns: 1fr; } }
+.task-live { cursor: pointer; }
+.task-live:hover { border-color: var(--kb-primary); }
+.task-live-arrow { font-size: 10px; }
+.task-center { display: flex; flex-direction: column; gap: 10px; max-height: 480px; overflow-y: auto; }
+.tc-item { border: 1px solid var(--kb-border); border-radius: 6px; padding: 10px 12px; background: var(--kb-bg-elevated); }
+.tc-head { display: flex; align-items: center; gap: 10px; }
+.tc-pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--kb-primary); animation: breathe 1.2s infinite; flex-shrink: 0; }
+.tc-soul { font-size: 13px; font-weight: 650; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tc-kind { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--kb-fg-3); background: var(--kb-bg-subtle); border: 1px solid var(--kb-border); padding: 1px 7px; border-radius: 8px; }
+.tc-elapsed { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--kb-fg-3); }
+.tc-phase { display: flex; gap: 10px; align-items: baseline; margin-top: 7px; font-size: 12px; }
+.tc-phase-name { font-weight: 600; color: var(--kb-gold-deep); flex-shrink: 0; }
+.tc-phase-detail { color: var(--kb-fg-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tc-bar { height: 6px; border-radius: 3px; background: var(--kb-bg-subtle); border: 1px solid var(--kb-border); overflow: hidden; margin-top: 7px; }
+.tc-bar .bar-fill { display: block; height: 100%; background: linear-gradient(90deg, var(--kb-gold), var(--kb-primary)); border-radius: 3px; }
+.tc-history-hint { text-align: center; font-size: 12px; color: var(--kb-gold-deep); cursor: pointer; padding: 6px; border: 1px dashed var(--kb-border-strong); border-radius: 6px; }
+.tc-history-hint:hover { background: var(--kb-gold-soft); }
 
 </style>

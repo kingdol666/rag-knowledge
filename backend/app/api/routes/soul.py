@@ -29,6 +29,28 @@ def _err(status: int, code: str, detail: str = "") -> HTTPException:
 
 
 
+
+async def _finish_run_with_metrics(run_id: str, rep: dict) -> None:
+    """结束训练运行: 从最终 report 汇总指标写入 SQLite(runs 表)。"""
+    from app.services import soul_training_db
+    per_round = rep.get("per_round") or []
+    reward = rep.get("reward")
+    if reward is None and per_round:
+        rewards = [r.get("reward") for r in per_round if r.get("reward") is not None]
+        if rewards:
+            reward = rewards[-1]
+    soul_training_db.set_metrics(
+        run_id,
+        questions=rep.get("questions_generated"),
+        memories=rep.get("memories_created"),
+        docs=rep.get("docs_processed"),
+        rounds=rep.get("rounds_completed"),
+        cost_usd=rep.get("cost_estimate"),
+        reward=reward,
+    )
+    soul_training_db.finish_run(run_id, "done", rep)
+
+
 def backend_output_tmp() -> str:
     """tmp 目录(与 parse 路由同源): backend/tmp 或系统 temp。"""
     try:
@@ -374,7 +396,7 @@ async def learn(soul_kb_id: str, req: dict[str, Any], _: None = Depends(verify_t
             rep = await asyncio.shield(soul_learn.learn_docs(
                 soul_kb_id, doc_paths, limit=limit, rounds=rounds,
                 progress_cb=_cb))
-            soul_training_db.finish_run(run_id, "done", rep)
+            await _finish_run_with_metrics(run_id, rep)
             return rep
         task_id = soul_task_runner.submit_soul_task(
             _task, "soul_learn",
@@ -409,7 +431,7 @@ async def learn_all_global(req: dict[str, Any], _: None = Depends(verify_token))
             rep = await asyncio.shield(soul_learn.learn_all(
                 soul_kb_id="", max_docs=max_docs, dry_run=dry_run, rounds=rounds,
                 progress_cb=_cb))
-            soul_training_db.finish_run(run_id, "done", rep)
+            await _finish_run_with_metrics(run_id, rep)
             return rep
         task_id = soul_task_runner.submit_soul_task(
             _task, "soul_learn_all", {"soul_kb_id": "*", "max_docs": max_docs, "rounds": rounds})
@@ -444,7 +466,7 @@ async def learn_all(soul_kb_id: str, req: dict[str, Any], _: None = Depends(veri
             rep = await asyncio.shield(soul_learn.learn_all(
                 soul_kb_id=soul_kb_id or "", max_docs=max_docs, dry_run=dry_run, rounds=rounds,
                 progress_cb=_cb))
-            soul_training_db.finish_run(run_id, "done", rep)
+            await _finish_run_with_metrics(run_id, rep)
             return rep
         task_id = soul_task_runner.submit_soul_task(
             _task, "soul_learn_all",
@@ -617,7 +639,7 @@ async def train_rl(soul_kb_id: str, req: dict[str, Any], _: None = Depends(verif
 
             rep = await asyncio.shield(soul_reward.train_rl(
                 soul_kb_id, rounds=rounds, progress_cb=_cb))
-            soul_training_db.finish_run(run_id, "done", rep)
+            await _finish_run_with_metrics(run_id, rep)
             return rep
         task_id = soul_task_runner.submit_soul_task(
             _task, "soul_train_rl", {"soul_kb_id": soul_kb_id, "rounds": rounds})
@@ -749,8 +771,11 @@ async def resume_task(task_id: str, _: None = Depends(verify_token)):
 
 @router.get("/training/history")
 async def training_history(soul_kb_id: str = "", limit: int = Query(30)):
-    """训练历史(SQLite 持久化): 最近运行列表(含 reward/成本/轮次)。"""
+    """训练历史(SQLite 持久化): 最近运行列表(含 reward/成本/轮次)。
+    soul_kb_id 接受 UUID 或路径名(统一解析为路径名查询)。"""
     from app.services import soul_training_db
+    if soul_kb_id:
+        soul_kb_id = soul_config.resolve_soul_kb_path(soul_kb_id) or soul_kb_id
     runs = soul_training_db.list_runs(soul_kb_id=soul_kb_id or "", limit=limit)
     return {"success": True, "runs": runs, "count": len(runs)}
 
@@ -916,7 +941,7 @@ async def distill_files(
                 domain_labels=domain_labels, supported_task_types=supported_task_types,
                 harness=harness, personality_req=req_text,
                 source_material=material, progress_cb=_cb)
-            soul_training_db.finish_run(run_id, "done", rep)
+            await _finish_run_with_metrics(run_id, rep)
             return rep
         except Exception as e:
             soul_training_db.finish_run(run_id, "error", {"error": str(e)})
