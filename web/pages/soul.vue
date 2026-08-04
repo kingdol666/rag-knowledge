@@ -305,9 +305,9 @@
           <a-input v-model:value="form.soul_name" placeholder="如 soul-材料学" />
         </a-form-item>
         <a-form-item label="学习范围 kb_scope（公开库，可多选；空=仅问答）">
-          <a-checkbox v-model:value="form.allKb">全部知识库参与（默认，kb_scope=["*"]）</a-checkbox>
+          <a-checkbox v-model:checked="form.allKb">全部知识库参与（默认，kb_scope=["*"]）</a-checkbox>
           <a-select v-model:value="form.kb_scope" mode="multiple" placeholder="选择知识库" style="width:100%; margin-top:6px" :disabled="form.allKb">
-            <a-select-option v-for="kb in kbCatalog" :key="kb.kb_id" :value="kb.kb_id">{{ kb.name }}</a-select-option>
+            <a-select-option v-for="kb in kbCatalog" :key="kb.kbId" :value="kb.kbId">{{ kb.name }}</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item label="领域标签 domain_labels（路由匹配）">
@@ -336,7 +336,7 @@
         <a-form-item label="人格"><a-input :value="editing.name" disabled /></a-form-item>
         <a-form-item label="学习范围">
           <a-select v-model:value="editForm.kb_scope" mode="multiple" style="width:100%">
-            <a-select-option v-for="kb in kbCatalog" :key="kb.kb_id" :value="kb.kb_id">{{ kb.name }}</a-select-option>
+            <a-select-option v-for="kb in kbCatalog" :key="kb.kbId" :value="kb.kbId">{{ kb.name }}</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item label="领域标签"><a-select v-model:value="editForm.domain_labels" mode="tags" style="width:100%" /></a-form-item>
@@ -593,7 +593,7 @@ function harnessInstalled(name: string): boolean {
 function scopeDocs(soul: Soul): string[] {
   const out: string[] = []
   for (const kb of kbCatalog.value) {
-    if ((soul.kb_scope || []).includes(kb.kb_id) || (soul.kb_scope || []).includes(kb.name)) {
+    if ((soul.kb_scope || []).includes(kb.kbId) || (soul.kb_scope || []).includes(kb.name)) {
       out.push(kb.name)
     }
   }
@@ -754,12 +754,12 @@ async function loadScopeDocs(soul: Soul) {
   try {
     const scope = (soul.kb_scope || []).filter((s: string) => s !== '*')
     const kbs = scope.length
-      ? kbCatalog.value.filter((kb: any) => scope.includes(kb.kb_id) || scope.includes(kb.name))
+      ? kbCatalog.value.filter((kb: any) => scope.includes(kb.kbId) || scope.includes(kb.name))
       : kbCatalog.value
     const paths = new Set<string>()
     await Promise.all(kbs.map(async (kb: any) => {
       try {
-        const res = await $fetch<any>(`/api/kb/documents?kb_id=${encodeURIComponent(kb.kb_id)}`)
+        const res = await $fetch<any>(`/api/kb/documents?kb_id=${encodeURIComponent(kb.kbId)}`)
         for (const d of (res?.documents || [])) {
           if (d.path && (d.file_type === 'md' || d.path.endsWith('.md'))) paths.add(d.path)
         }
@@ -1034,8 +1034,8 @@ async function doPreSearch() {
     let kbId = ''
     const scope = (askSoul.value?.kb_scope || []).filter((s: string) => s !== '*')
     if (askSoul.value && scope.length === 1) {
-      const hit = kbCatalog.value.find((kb: any) => kb.kb_id === scope[0] || kb.name === scope[0])
-      kbId = hit?.kb_id || scope[0]
+      const hit = kbCatalog.value.find((kb: any) => kb.kbId === scope[0] || kb.name === scope[0])
+      kbId = hit?.kbId || scope[0]
     }
     const res = await $fetch<any>('/api/soul/pre-search', {
       method: 'POST',
@@ -1064,8 +1064,8 @@ async function doQdcvrAsk() {
     let kbId = ''
     const scope = (askSoul.value?.kb_scope || []).filter((s: string) => s !== '*')
     if (askSoul.value && scope.length === 1) {
-      const hit = kbCatalog.value.find((kb: any) => kb.kb_id === scope[0] || kb.name === scope[0])
-      kbId = hit?.kb_id || scope[0]
+      const hit = kbCatalog.value.find((kb: any) => kb.kbId === scope[0] || kb.name === scope[0])
+      kbId = hit?.kbId || scope[0]
     }
     const res = await $fetch<any>('/api/soul/qdcvr-ask', {
       method: 'POST',

@@ -3524,6 +3524,15 @@ async function cmdSoul(args) {
       console.log(`\n🗑 删除请求已提交: checkpoint=${res.checkpoint_saved || '—'} (完整删除需经 kb-mcp soul_delete 或 Web)`);
       break;
     }
+    case 'checkpoint': {
+      const kbId = rest[0];
+      if (!kbId) { console.log('用法: ragctl soul checkpoint <soul_kb_id>'); break; }
+      console.log(`\n📸 创建检查点中(${kbId})…`);
+      const res = await apiPost(`/api/v1/soul/${enc(kbId)}/checkpoint`, {});
+      console.log(`  检查点: ${res.checkpoint_id || ''} | 快照文件: ${res.snapshot_path || ''}`);
+      console.log(`  hash: ${res.config_hash || ''}`);
+      break;
+    }
     default:
       console.log(`\n🤖 SOUL 人格管理 — 用法:`);
       console.log('  ragctl soul list                                   列出全部人格');
@@ -3539,6 +3548,7 @@ async function cmdSoul(args) {
       console.log('  ragctl soul ask <query> [--soul kb] [--type t] [--goal g]  人格问答(自动路由)');
       console.log('  ragctl soul router <query> [--type t]              路由决策预览');
       console.log('  ragctl soul review <soul_kb_id> [--action approve] [--draft id]  记忆审批');
+      console.log('  ragctl soul checkpoint <soul_kb_id>                创建检查点快照');
       console.log('  ragctl soul reflect <soul_kb_id>                   人格反思');
       console.log('  ragctl soul export <soul_kb_id> [--min-score 4]    导出训练数据');
       console.log('  ragctl soul delete <soul_kb_id>                    删除人格');

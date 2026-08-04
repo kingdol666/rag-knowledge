@@ -192,7 +192,8 @@ soul_train_rl(soul_kb_id, rounds=2)   # 异步, task_id → kb_task_status 轮�
 #       ③ 低分维度(<3.5)生成认知草稿(cognition-drafts) ④ reward 写入进化曲线
 soul_review_drafts(soul_kb_id, draft_type="cognition", action="approve",
                    draft_ids=[...])   # 审批 → 合并入 soul-definition.md 对应章节
-soul_evaluate(soul_kb_id)             # 单独查四维评分(RL 奖励信号)
+soul_evaluate(soul_kb_id)             # RL 评价Agent四维评分(新工具, MCP重启后注册)
+# soul_eval(kb, question, answer, evidence) 为单条答案四维自评(旧工具)
 ```
 - **RL 心智模型**: 探索(learn 新知识)= 观测环境; 评价 Agent 四维打分
   (identity/values/thinking/language 0-5)= 奖励信号; 认知草稿(结构文档
