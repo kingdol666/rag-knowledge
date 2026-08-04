@@ -7,9 +7,11 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import uuid
+from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, UploadFile
 
 from app.api.deps.auth import verify_token
 from app.services import soul_config, soul_service, soul_router
@@ -24,6 +26,21 @@ router = APIRouter(prefix="/api/v1/soul", tags=["soul"])
 
 def _err(status: int, code: str, detail: str = "") -> HTTPException:
     return HTTPException(status_code=status, detail={"error": code, "detail": detail})
+
+
+
+def backend_output_tmp() -> str:
+    """tmp 目录(与 parse 路由同源): backend/tmp 或系统 temp。"""
+    try:
+        from app.services.mineru_service import _resolve_output_dir  # noqa
+    except Exception:
+        pass
+    repo_root = Path(__file__).resolve().parents[4]
+    tmp_dir = repo_root / "tmp"
+    tmp_dir.mkdir(parents=True, exist_ok=True)
+    return str(tmp_dir)
+
+
 
 
 @router.post("/qdcvr-ask")
@@ -829,3 +846,85 @@ async def _template_init_soul(name: str, kb_scope: list, domain_labels: list,
     except Exception as e:
         soul_training_db.finish_run(run_id, "error", {"error": str(e)})
         raise
+
+
+@router.post("/distill-files")
+async def distill_files(
+    req: Request,
+    files: list[UploadFile] = File(default=...),
+    _: None = Depends(verify_token),
+):
+    """补天蒸馏创建 SOUL — 批量上传自定义文档(前端/CLI 通用)。
+
+    支持类型: md/txt/markdown/csv · json(对话导出) · eml/mbox(邮件) ·
+    xlsx/xls(表格) · docx · pdf/png/jpg/jpeg/webp/bmp/pptx(MinerU OCR)。
+    文件保存到 tmp/soul-distill-<uuid>/ → 逐文件解析为文本(带文件名头)
+    → 汇总作为 source_material 进入蒸馏 prompt → 建库 + 4 文档 + 索引。
+
+    其他字段(name/kb_scope/domain_labels/harness/personality_req)以
+    multipart form 字段传入; async_mode 默认 True 返回 task_id。
+    """
+    form = await req.form()
+    name = (form.get("name") or form.get("soul_name") or "").strip()
+    if not name:
+        raise _err(400, "invalid_name", "name 必填")
+    if not name.startswith("soul-"):
+        name = f"soul-{name}"
+    personality_req = (form.get("personality_req") or "").strip()
+    kb_scope = (form.get("kb_scope") or "*").split(",")
+    kb_scope = [x.strip() for x in kb_scope if x.strip()]
+    domain_labels = (form.get("domain_labels") or "").split(",")
+    domain_labels = [x.strip() for x in domain_labels if x.strip()]
+    supported_task_types = (form.get("supported_task_types") or "").split(",")
+    supported_task_types = [x.strip() for x in supported_task_types if x.strip()]
+    harness = (form.get("harness") or "").strip()
+
+    if not files:
+        raise _err(400, "no_files", "至少上传 1 个文件")
+
+    # 保存到 tmp/soul-distill-<uuid>/
+    tmp_root = Path(backend_output_tmp()) / f"soul-distill-{uuid.uuid4().hex[:8]}"
+    tmp_root.mkdir(parents=True, exist_ok=True)
+    for f in files:
+        safe = Path(f.filename or "file").name
+        (tmp_root / safe).write_bytes(await f.read())
+
+    from app.services import soul_distill, soul_distill_files, soul_training_db
+
+    async def _task(tid: str):
+        gate_cb = await soul_task_runner.gated_progress_cb(tid)
+        run_id = soul_training_db.start_run(
+            name, "soul_distill", task_id=tid, mode="distill-files")
+
+        async def _cb(p):
+            await gate_cb(p)
+            soul_training_db.log_event(run_id, p.get("phase", "info"), p)
+
+        try:
+            await _cb({"phase": "parse_files", "msg": "解析上传文件…"})
+            parsed = await soul_distill_files.parse_uploaded_files(tmp_root, progress_cb=_cb)
+            material = parsed["text"]
+            if not material.strip():
+                raise ValueError(
+                    f"全部文件解析失败({len(parsed['skipped'])} 个被跳过), 无可用文本")
+            # 文件解析摘要并入需求描述
+            file_summary = "；".join(
+                f"{f['name']}({f['method']},{f['chars']}字)" for f in parsed["files"])
+            req_text = f"{personality_req}\n[已解析文件] {file_summary}".strip()
+            rep = await soul_distill.distill_and_create(
+                name=name, kb_scope=kb_scope or ["*"],
+                domain_labels=domain_labels, supported_task_types=supported_task_types,
+                harness=harness, personality_req=req_text,
+                source_material=material, progress_cb=_cb)
+            soul_training_db.finish_run(run_id, "done", rep)
+            return rep
+        except Exception as e:
+            soul_training_db.finish_run(run_id, "error", {"error": str(e)})
+            raise
+
+    task_id = soul_task_runner.submit_soul_task(
+        _task, "soul_distill_files",
+        {"soul_name": name, "files": len(files)})
+    return {"success": True, "task_id": task_id, "status": "running",
+            "mode": "distill-files", "files": len(files),
+            "tmp_dir": str(tmp_root)}

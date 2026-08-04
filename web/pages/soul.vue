@@ -331,7 +331,25 @@
           <a-textarea v-model:value="form.personality_req" :rows="2" placeholder="如：严谨的材料领域研究者，先结论后论证，必带引用；MBTI INTJ，沉稳克制" />
         </a-form-item>
         <a-form-item label="源材料（聊天记录 / 文档片段 / 人物描述）">
-          <a-textarea v-model:value="form.source_material" :rows="4" placeholder="粘贴该人物的真实发言、工作文档或描述片段；留空则使用模板人格" />
+          <a-textarea v-model:value="form.source_material" :rows="3" placeholder="粘贴该人物的真实发言、工作文档或描述片段；留空则使用模板人格" />
+        </a-form-item>
+        <a-form-item label="上传文档（可选 — 批量，支持 md/txt/json对话/eml邮件/xlsx表格/docx/pdf/图片/pptx）">
+          <div class="file-drop" @click="distillFileInput?.click()" @dragover.prevent @drop.prevent="onDistillFilesDrop">
+            <input ref="distillFileInput" type="file" multiple hidden
+                   accept=".md,.txt,.markdown,.csv,.json,.eml,.mbox,.xlsx,.xls,.docx,.pdf,.png,.jpg,.jpeg,.webp,.bmp,.pptx,.ppt"
+                   @change="onDistillFilesPick" />
+            <template v-if="!form.files.length">
+              <span class="fd-main">点击或拖拽文件到此区域</span>
+              <span class="fd-sub">支持 批量上传 · 自动解析为文本后参与补天蒸馏</span>
+            </template>
+            <template v-else>
+              <div v-for="(f, i) in form.files" :key="i" class="fd-item">
+                <span class="fd-name">{{ f.name }}</span>
+                <span class="fd-size">{{ (f.size / 1024).toFixed(0) }}KB</span>
+                <span class="fd-rm" @click.stop="form.files.splice(i, 1)">×</span>
+              </div>
+            </template>
+          </div>
         </a-form-item>
         <div class="distill-hint">填入后创建即走<b>补天蒸馏</b>：LLM 提取身份/价值观/思维/语言/专长 → 建库 + 4 人格文档（模板+蒸馏融合）+ 索引（异步，可追踪进度）</div>
         <a-form-item :label="`训练 harness（默认 ${defaultHarness || 'omp'}，可单独指定）`">
@@ -600,7 +618,7 @@ const trainOpen = ref(false)
 const askOpen = ref(false)
 const reviewOpen = ref(false)
 
-const form = ref({ soul_name: '', kb_scope: [] as string[], domain_labels: [] as string[], supported_task_types: [] as string[], harness: '', allKb: true, personality_req: '', source_material: '' })
+const form = ref({ soul_name: '', kb_scope: [] as string[], domain_labels: [] as string[], supported_task_types: [] as string[], harness: '', allKb: true, personality_req: '', source_material: '', files: [] as { name: string; size: number; file: File }[] })
 const editing = ref<Soul | null>(null)
 const editForm = ref({
   kb_scope: [] as string[], domain_labels: [] as string[], supported_task_types: [] as string[], route_weight: 1,
@@ -860,7 +878,7 @@ async function pollTaskList() {
 
 // ── CRUD ──
 function openCreate() {
-  form.value = { soul_name: '', kb_scope: [], domain_labels: [], supported_task_types: [], harness: '', allKb: true, personality_req: '', source_material: '' }
+  form.value = { soul_name: '', kb_scope: [], domain_labels: [], supported_task_types: [], harness: '', allKb: true, personality_req: '', source_material: '', files: [] }
   createOpen.value = true
 }
 async function doCreate() {
@@ -869,9 +887,35 @@ async function doCreate() {
   try {
     const kbName = form.value.soul_name.startsWith('soul-') ? form.value.soul_name : `soul-${form.value.soul_name}`
     const kbScope = form.value.allKb ? ['*'] : (form.value.kb_scope || [])
-    // 补天蒸馏模式: 有需求或源材料 → 走 /api/soul/distill(LLM 蒸馏 + 建库 + 索引, 异步)
-    const useDistill = !!(form.value.personality_req?.trim() || form.value.source_material?.trim())
+    // 补天蒸馏模式: 有需求/源材料/上传文件 → 走蒸馏(LLM + 建库 + 索引, 异步)
+    const useDistill = !!(form.value.personality_req?.trim() || form.value.source_material?.trim() || form.value.files.length)
     if (useDistill) {
+      if (form.value.files.length) {
+        // 批量文件蒸馏: FormData 上传 → 后端解析 + 蒸馏
+        const fd = new FormData()
+        fd.append('name', kbName)
+        fd.append('kb_scope', kbScope.join(','))
+        fd.append('domain_labels', (form.value.domain_labels || []).join(','))
+        fd.append('supported_task_types', (form.value.supported_task_types || []).join(','))
+        fd.append('harness', form.value.harness || '')
+        fd.append('personality_req', form.value.personality_req || '')
+        for (const f of form.value.files) fd.append('files', f.file, f.name)
+        const r = await $fetch<any>('/api/soul/distill-files', { method: 'POST', body: fd })
+        if (r?.task_id) {
+          trainTaskId.value = r.task_id
+          trainTaskStatus.value = 'running'
+          trainProgress.value = { phase: 'parse_files', msg: '文件解析中…' }
+          eventLog.value = []
+          pushLog('info', `提交补天蒸馏(${form.value.files.length} 文件) → ${kbName}`)
+          pollTrainTask(r.task_id)
+          showToast(`文件蒸馏已提交: ${kbName}`)
+          createOpen.value = false
+          await loadAll()
+          return
+        }
+        showToast(`蒸馏提交失败: ${JSON.stringify(r).slice(0, 120)}`, 'err')
+        return
+      }
       const r = await $fetch<any>('/api/soul/distill', {
         method: 'POST',
         body: {
@@ -927,6 +971,26 @@ async function doCreate() {
     showToast(`创建失败: ${e.message}`, 'err')
   } finally {
     creating.value = false
+  }
+}
+
+
+const distillFileInput = ref<any>(null)
+function onDistillFilesPick(e: any) {
+  const picked = [...(e.target?.files || [])]
+  for (const f of picked) {
+    if (!form.value.files.some(x => x.name === f.name && x.size === f.size)) {
+      form.value.files.push({ name: f.name, size: f.size, file: f })
+    }
+  }
+  e.target.value = ''
+}
+function onDistillFilesDrop(e: any) {
+  const dropped = [...(e.dataTransfer?.files || [])]
+  for (const f of dropped) {
+    if (!form.value.files.some(x => x.name === f.name && x.size === f.size)) {
+      form.value.files.push({ name: f.name, size: f.size, file: f })
+    }
   }
 }
 
@@ -1858,7 +1922,19 @@ select.inp[multiple] { min-height: 110px; }
 .hd-ev-phase { width: 64px; flex-shrink: 0; color: var(--kb-cyan); }
 .hd-ev-payload { color: var(--kb-fg-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .distill-hint { font-size: 11.5px; color: var(--kb-fg-3); background: var(--kb-bg-subtle); border: 1px dashed var(--kb-border-strong); border-radius: 6px; padding: 8px 10px; line-height: 1.6; }
-.distill-hint b { color: var(--kb-gold-deep); }
+ .distill-hint b { color: var(--kb-gold-deep); }
+.file-drop {
+  border: 1.5px dashed var(--kb-border-strong); border-radius: 6px;
+  padding: 12px; cursor: pointer; text-align: center;
+  background: var(--kb-bg-subtle); transition: border-color .15s;
+}
+.file-drop:hover { border-color: var(--kb-gold); }
+.fd-main { display: block; font-size: 13px; color: var(--kb-ink); }
+.fd-sub { display: block; font-size: 11px; color: var(--kb-fg-3); margin-top: 3px; }
+.fd-item { display: flex; align-items: center; gap: 10px; padding: 5px 8px; border-radius: 4px; background: var(--kb-bg-elevated); border: 1px solid var(--kb-border); margin-bottom: 5px; text-align: left; }
+.fd-name { font-size: 12px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fd-size { font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--kb-fg-3); }
+.fd-rm { color: var(--kb-primary); cursor: pointer; font-size: 14px; }
 @media (max-width: 720px) { .history-layout { grid-template-columns: 1fr; } }
 
 </style>

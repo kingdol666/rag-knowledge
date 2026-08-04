@@ -3517,6 +3517,39 @@ async function cmdSoul(args) {
       console.log(`\n📤 导出: ${res.record_count || 0} 条 → ${res.export_path || ''}`);
       break;
     }
+    case 'distill-files': {
+      // ragctl soul distill-files <name> <file1,file2,...> [--req R] [--scope k1,k2]
+      const name = rest[0];
+      const filesArg = rest[1];
+      if (!name || !filesArg) {
+        console.log('用法: ragctl soul distill-files <name> <file1,file2,...> [--req "需求"] [--scope k1,k2] [--labels a,b]');
+        console.log('  支持类型: md/txt/json(对话)/eml/mbox/xlsx/docx/pdf/图片/pptx — 批量逗号分隔');
+        break;
+      }
+      const fs = require('fs');
+      const path = require('path');
+      const paths = filesArg.split(',').map(x => x.trim()).filter(x => fs.existsSync(x));
+      if (!paths.length) { console.log('❌ 无有效文件路径'); break; }
+      console.log(`\n🎭 文件补天蒸馏中(${name}, ${paths.length} 个文件)…`);
+      const form = new FormData();
+      form.append('name', name);
+      form.append('kb_scope', flagVal('--scope') || '*');
+      form.append('domain_labels', flagVal('--labels') || '');
+      form.append('personality_req', flagVal('--req') || '');
+      for (const fp of paths) {
+        const buf = fs.readFileSync(fp);
+        form.append('files', new Blob([buf]), path.basename(fp));
+      }
+      const res = await fetch(`${backendUrl}/api/v1/soul/distill-files`, { method: 'POST', body: form });
+      const js = await res.json();
+      if (js.task_id) {
+        const result = await pollTask(js.task_id, `${name} 文件蒸馏`);
+        console.log('  蒸馏完成:', JSON.stringify(result).slice(0, 300));
+      } else {
+        console.log('  结果:', JSON.stringify(js).slice(0, 300));
+      }
+      break;
+    }
     case 'task': {
       // ragctl soul task <pause|resume|status> <task_id>
       const sub = rest[0];
@@ -3610,6 +3643,7 @@ async function cmdSoul(args) {
       console.log('  ragctl soul task <pause|resume|status> <task_id>      任务暂停/继续/状态');
       console.log('  ragctl soul training [soul_kb_id] [--run run_id]      训练历史(SQLite)');
       console.log('  ragctl soul distill-text <name> --req R --material M   文本补天蒸馏创建');
+      console.log('  ragctl soul distill-files <name> <f1,f2,...> [--req R]  文件批量蒸馏创建');
       console.log('  ragctl soul harness <soul_kb_id> <omp|claude> [--model M]    指定单人格训练引擎');
       console.log('  ragctl soul ask <query> [--soul kb] [--type t] [--goal g]  人格问答(自动路由)');
       console.log('  ragctl soul router <query> [--type t]              路由决策预览');
