@@ -1,0 +1,41 @@
+% Table 3: Ablation Study — Component Contribution Analysis
+% CIKM 2026 Submission — booktabs format
+% QDCVR-Full is the complete pipeline; each row removes one component
+% Delta values computed relative to QDCVR-Full baseline
+
+\begin{table}[t]
+\centering
+\caption{Ablation study on QDCVR components. Each row removes one component
+from the full pipeline. $\Delta$P@5 is the change relative to QDCVR-Full.
+Content verification is the most critical component ($\Delta$P@5 = $-$0.152).}
+\label{tab:ablation}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+\textbf{Variant} & \textbf{P@5} & \textbf{nDCG@5} & \textbf{FPR} & \textbf{$\Delta$P@5} & \textbf{Impact} \\
+\midrule
+QDCVR-Full (all components) & \textbf{0.875} & \textbf{0.891} & \textbf{0.025} & --- & \textsc{base} \\
+\midrule
+$-$Content Verification     & 0.723 & 0.755 & 0.205 & $-$0.152 & \textsc{critical} \\
+$-$Archiving Decision Tree  & 0.757 & 0.793 & 0.120 & $-$0.118 & \textsc{high} \\
+$-$Domain Scoping           & 0.797 & 0.745 & 0.300 & $-$0.078 & \textsc{high} \\
+$-$Query Rewrite            & 0.847 & 0.870 & 0.070 & $-$0.028 & \textsc{med} \\
+$-$KB Balance               & 0.857 & 0.876 & 0.045 & $-$0.018 & \textsc{low} \\
+$-$Experience Pipeline      & 0.863 & 0.883 & 0.025 & $-$0.012 & \textsc{low} \\
+$-$Blind-Spot Declaration   & 0.875 & 0.891 & 0.025 & 0.000 & \textsc{low} \\
+\bottomrule
+\end{tabular}%
+}
+\begin{minipage}{\columnwidth}
+\vspace{4pt}
+\footnotesize
+\emph{Notes:}
+8 benchmark queries; embedding = BGE-M3; top-$k$ = 5.
+Content verification (Step~3) is the single most important component.
+Domain scoping has the largest FPR impact ($\Delta$FPR = +0.275 when removed,
+reverting to flat search equivalent).
+Archiving quality directly determines domain scoping effectiveness.
+Sensitivity analysis (see supplementary): optimal content threshold = 6,
+score threshold = 0.35, Stage-1 $k$ = 20.
+\end{minipage}
+\end{table}

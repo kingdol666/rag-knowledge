@@ -1,0 +1,364 @@
+{
+  "scenario": "S2",
+  "title": "Cross-Domain FPR + Multi-Baseline Retrieval Test",
+  "timestamp": "2026-07-29T00:00:00Z",
+  "methodology": {
+    "search_method": "kb_search_vector (vector semantic search)",
+    "flat_mode": "kb_id='' (search across all KBs)",
+    "domain_mode": "kb_id=<correct_kb_uuid> (domain-filtered search)",
+    "top_k": 5,
+    "metric_fpr": "False Positive Rate = fraction of top-5 results from KBs other than the correct target KB",
+    "metric_dsa_strict": "Domain Selection Accuracy (strict) = fraction of queries where the correct KB has the plurality (most results) in top-5 flat results",
+    "metric_dsa_any": "Domain Selection Accuracy (any) = fraction of queries where at least one result from the correct KB appears in top-5 flat results",
+    "metric_mrr": "Mean Reciprocal Rank of first correct-KB result in flat search"
+  },
+  "queries": [
+    {
+      "id": "a",
+      "query": "reinforcement learning policy optimization gradient",
+      "correct_kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+      "correct_kb_name": "AI-ML-Research",
+      "distractor_kb_id": "4586cbec-a111-407a-883d-3b04532be556",
+      "distractor_kb_name": "Materials-ML-InverseDesign",
+      "flat_results": {
+        "kb_ids": [
+          "4586cbec-a111-407a-883d-3b04532be556",
+          "4586cbec-a111-407a-883d-3b04532be556",
+          "27bb748f-9fc5-4223-b0c3-8365dbc42dea",
+          "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+          "4586cbec-a111-407a-883d-3b04532be556"
+        ],
+        "kb_names": [
+          "Materials-ML-InverseDesign",
+          "Materials-ML-InverseDesign",
+          "Economics-DataScience",
+          "AI-ML-Research",
+          "Materials-ML-InverseDesign"
+        ],
+        "scores": [0.67116, 0.67055, 0.66961, 0.66429, 0.65374],
+        "correct_in_top5": 1,
+        "distractor_in_top5": 3,
+        "other_in_top5": 1,
+        "fpr": 0.8,
+        "reciprocal_rank": 0.25,
+        "dominant_kb": "Materials-ML-InverseDesign (3/5)"
+      },
+      "domain_results": {
+        "kb_ids": [
+          "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+          "578dc012-95a5-443b-aa08-1e493e3ec167",
+          "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+          "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+          "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b"
+        ],
+        "kb_names": [
+          "AI-ML-Research",
+          "RAG-Research",
+          "AI-ML-Research",
+          "AI-ML-Research",
+          "AI-ML-Research"
+        ],
+        "scores": [0.66429, 0.63258, 0.60455, 0.60262, 0.59771],
+        "correct_in_top5": 4,
+        "fpr": 0.2,
+        "note": "kb_id filter leaked 1 result from RAG-Research (578dc012) despite specifying 4c1b9eb6"
+      }
+    },
+    {
+      "id": "b",
+      "query": "thermal management cooling PCM heat transfer",
+      "correct_kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+      "correct_kb_name": "Energy-Batteries",
+      "distractor_kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+      "distractor_kb_name": "Materials-Science",
+      "flat_results": {
+        "kb_ids": [
+          "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+          "4586cbec-a111-407a-883d-3b04532be556",
+          "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+          "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+          "0a9d97c1-ecd2-4040-8690-253a0ac7ade8"
+        ],
+        "kb_names": [
+          "Energy-Batteries",
+          "Materials-ML-InverseDesign",
+          "Energy-Batteries",
+          "Energy-Batteries",
+          "Energy-Batteries"
+        ],
+        "scores": [0.69596, 0.63261, 0.63257, 0.62804, 0.62406],
+        "correct_in_top5": 4,
+        "distractor_in_top5": 0,
+        "other_in_top5": 1,
+        "fpr": 0.2,
+        "reciprocal_rank": 1.0,
+        "dominant_kb": "Energy-Batteries (4/5)",
+        "note": "Specified distractor Materials-Science did not appear; Materials-ML-InverseDesign appeared instead"
+      },
+      "domain_results": {
+        "kb_ids": [
+          "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+          "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+          "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+          "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+          "0a9d97c1-ecd2-4040-8690-253a0ac7ade8"
+        ],
+        "kb_names": [
+          "Energy-Batteries",
+          "Energy-Batteries",
+          "Energy-Batteries",
+          "Energy-Batteries",
+          "Energy-Batteries"
+        ],
+        "scores": [0.69596, 0.63257, 0.62804, 0.62406, 0.62280],
+        "correct_in_top5": 5,
+        "fpr": 0.0
+      }
+    },
+    {
+      "id": "c",
+      "query": "MXene supercapacitor energy storage electrode",
+      "correct_kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+      "correct_kb_name": "Materials-Science",
+      "distractor_kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+      "distractor_kb_name": "Energy-Batteries",
+      "flat_results": {
+        "kb_ids": [
+          "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+          "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+          "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+          "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+          "79c67037-481c-4213-b5b8-e684ecb6f6ba"
+        ],
+        "kb_names": [
+          "Materials-Science",
+          "Materials-Science",
+          "Materials-Science",
+          "Materials-Science",
+          "Materials-Science"
+        ],
+        "scores": [0.74200, 0.66473, 0.64383, 0.63936, 0.63587],
+        "correct_in_top5": 5,
+        "distractor_in_top5": 0,
+        "other_in_top5": 0,
+        "fpr": 0.0,
+        "reciprocal_rank": 1.0,
+        "dominant_kb": "Materials-Science (5/5)"
+      },
+      "domain_results": {
+        "kb_ids": [
+          "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+          "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+          "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+          "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+          "79c67037-481c-4213-b5b8-e684ecb6f6ba"
+        ],
+        "kb_names": [
+          "Materials-Science",
+          "Materials-Science",
+          "Materials-Science",
+          "Materials-Science",
+          "Materials-Science"
+        ],
+        "scores": [0.74200, 0.66473, 0.64383, 0.63936, 0.63587],
+        "correct_in_top5": 5,
+        "fpr": 0.0
+      }
+    },
+    {
+      "id": "d",
+      "query": "neural network medical imaging diagnosis classification",
+      "correct_kb_id": "61960453-755c-4a4b-aa03-6d9453556572",
+      "correct_kb_name": "Biomedical-Engineering",
+      "distractor_kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+      "distractor_kb_name": "AI-ML-Research",
+      "flat_results": {
+        "kb_ids": [
+          "4586cbec-a111-407a-883d-3b04532be556",
+          "4586cbec-a111-407a-883d-3b04532be556",
+          "4586cbec-a111-407a-883d-3b04532be556",
+          "4586cbec-a111-407a-883d-3b04532be556",
+          "8bbd62eb-1c68-41fe-a981-66e18432cbeb"
+        ],
+        "kb_names": [
+          "Materials-ML-InverseDesign",
+          "Materials-ML-InverseDesign",
+          "Materials-ML-InverseDesign",
+          "Materials-ML-InverseDesign",
+          "Chemistry-Catalysis"
+        ],
+        "scores": [0.56632, 0.55302, 0.54457, 0.54235, 0.54106],
+        "correct_in_top5": 0,
+        "distractor_in_top5": 0,
+        "other_in_top5": 5,
+        "fpr": 1.0,
+        "reciprocal_rank": 0.0,
+        "dominant_kb": "Materials-ML-InverseDesign (4/5)",
+        "note": "Biomedical-Engineering has no results in top-5; all results go to Materials-ML and Chemistry-Catalysis. The KB likely lacks strongly matching content for this query."
+      },
+      "domain_results": {
+        "kb_ids": [
+          "61960453-755c-4a4b-aa03-6d9453556572",
+          "61960453-755c-4a4b-aa03-6d9453556572",
+          "61960453-755c-4a4b-aa03-6d9453556572",
+          "61960453-755c-4a4b-aa03-6d9453556572",
+          "61960453-755c-4a4b-aa03-6d9453556572"
+        ],
+        "kb_names": [
+          "Biomedical-Engineering",
+          "Biomedical-Engineering",
+          "Biomedical-Engineering",
+          "Biomedical-Engineering",
+          "Biomedical-Engineering"
+        ],
+        "scores": [0.52997, 0.52813, 0.52116, 0.51487, 0.51354],
+        "correct_in_top5": 5,
+        "fpr": 0.0,
+        "note": "Domain-filtered search returns results but with low scores (0.51-0.53) indicating weak semantic alignment"
+      }
+    },
+    {
+      "id": "e",
+      "query": "VLA model humanoid robot manipulation",
+      "correct_kb_id": "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+      "correct_kb_name": "Embodied-AI",
+      "distractor_kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+      "distractor_kb_name": "AI-ML-Research",
+      "flat_results": {
+        "kb_ids": [
+          "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+          "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+          "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+          "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+          "4de920d8-b8c7-424e-a2fb-d73013f14bba"
+        ],
+        "kb_names": [
+          "Embodied-AI",
+          "Embodied-AI",
+          "Embodied-AI",
+          "Embodied-AI",
+          "Embodied-AI"
+        ],
+        "scores": [0.63586, 0.63306, 0.60977, 0.60520, 0.19150],
+        "correct_in_top5": 5,
+        "distractor_in_top5": 0,
+        "other_in_top5": 0,
+        "fpr": 0.0,
+        "reciprocal_rank": 1.0,
+        "dominant_kb": "Embodied-AI (5/5)",
+        "note": "Result 5 has very low score (0.1915) and short_content_warning; still from correct KB"
+      },
+      "domain_results": {
+        "kb_ids": [
+          "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+          "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+          "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+          "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+          "4de920d8-b8c7-424e-a2fb-d73013f14bba"
+        ],
+        "kb_names": [
+          "Embodied-AI",
+          "Embodied-AI",
+          "Embodied-AI",
+          "Embodied-AI",
+          "Embodied-AI"
+        ],
+        "scores": [0.63586, 0.63306, 0.60977, 0.60520, 0.19150],
+        "correct_in_top5": 5,
+        "fpr": 0.0
+      }
+    },
+    {
+      "id": "f",
+      "query": "electrocatalysis HER OER overpotential vanadate",
+      "correct_kb_id": "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+      "correct_kb_name": "Chemistry-Catalysis",
+      "distractor_kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+      "distractor_kb_name": "Materials-Science",
+      "flat_results": {
+        "kb_ids": [
+          "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+          "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+          "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+          "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+          "8bbd62eb-1c68-41fe-a981-66e18432cbeb"
+        ],
+        "kb_names": [
+          "Chemistry-Catalysis",
+          "Chemistry-Catalysis",
+          "Chemistry-Catalysis",
+          "Chemistry-Catalysis",
+          "Chemistry-Catalysis"
+        ],
+        "scores": [0.75332, 0.72908, 0.69681, 0.68918, 0.66739],
+        "correct_in_top5": 5,
+        "distractor_in_top5": 0,
+        "other_in_top5": 0,
+        "fpr": 0.0,
+        "reciprocal_rank": 1.0,
+        "dominant_kb": "Chemistry-Catalysis (5/5)"
+      },
+      "domain_results": {
+        "kb_ids": [
+          "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+          "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+          "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+          "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+          "8bbd62eb-1c68-41fe-a981-66e18432cbeb"
+        ],
+        "kb_names": [
+          "Chemistry-Catalysis",
+          "Chemistry-Catalysis",
+          "Chemistry-Catalysis",
+          "Chemistry-Catalysis",
+          "Chemistry-Catalysis"
+        ],
+        "scores": [0.75332, 0.72908, 0.69681, 0.68918, 0.66739],
+        "correct_in_top5": 5,
+        "fpr": 0.0
+      }
+    }
+  ],
+  "aggregate_metrics": {
+    "flat_fpr_mean": 0.333,
+    "flat_fpr_per_query": {
+      "a": 0.8,
+      "b": 0.2,
+      "c": 0.0,
+      "d": 1.0,
+      "e": 0.0,
+      "f": 0.0
+    },
+    "domain_fpr_mean": 0.033,
+    "domain_fpr_per_query": {
+      "a": 0.2,
+      "b": 0.0,
+      "c": 0.0,
+      "d": 0.0,
+      "e": 0.0,
+      "f": 0.0
+    },
+    "domain_selection_accuracy_strict": {
+      "value": 0.667,
+      "description": "4/6 queries where correct KB has plurality in top-5 flat results; failures: queries a (Materials-ML dominates), d (Materials-ML dominates)"
+    },
+    "domain_selection_accuracy_any": {
+      "value": 0.833,
+      "description": "5/6 queries where at least one correct-KB result appears in top-5 flat results; failure: query d (0 correct)"
+    },
+    "mean_reciprocal_rank": {
+      "value": 0.542,
+      "description": "MRR of first correct-KB result in flat search; queries: a=0.25, b=1.0, c=1.0, d=0.0, e=1.0, f=1.0"
+    },
+    "fpr_reduction_by_domain_filter": {
+      "value": 0.300,
+      "description": "Flat FPR (0.333) minus Domain FPR (0.033) = 0.300 reduction; domain filtering eliminates 90% of false positives"
+    },
+    "hardest_query": "d: 'neural network medical imaging diagnosis classification' — 0 correct in top-5 flat, FPR=1.0",
+    "easiest_queries": "c, e, f — 100% correct at rank 1 in flat search",
+    "notable_issue": "Query a domain filter leaked 1 result from RAG-Research (578dc012) despite specifying kb_id=4c1b9eb6. This indicates the kb_id filter may not be strict and allows cross-KB results."
+  },
+  "status": "success",
+  "total_searches": 12,
+  "total_queries": 6
+}

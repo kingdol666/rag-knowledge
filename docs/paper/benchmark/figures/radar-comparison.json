@@ -1,0 +1,141 @@
+{
+  "figure": "radar-comparison",
+  "title": "Multi-Dimensional System Comparison",
+  "description": "6-dimension radar chart comparing QDCVR with baseline systems. Each axis is normalized to [0, 1]. QDCVR dominates on retrieval quality dimensions; baselines show balanced but lower profiles.",
+  "venue": "CIKM 2026",
+  "dimensions": [
+    {
+      "id": "retrieval_precision",
+      "label": "Retrieval\nPrecision",
+      "description": "P@5 on cross-domain benchmark",
+      "max": 1.0
+    },
+    {
+      "id": "cross_domain_immunity",
+      "label": "Cross-Domain\nImmunity",
+      "description": "1 - FPR (higher = fewer false positives)",
+      "max": 1.0
+    },
+    {
+      "id": "search_efficiency",
+      "label": "Search\nEfficiency",
+      "description": "Inverse of normalized search space (1 - chunks/total)",
+      "max": 1.0
+    },
+    {
+      "id": "organization_quality",
+      "label": "Organization\nQuality",
+      "description": "Domain KB attribution accuracy",
+      "max": 1.0
+    },
+    {
+      "id": "answer_confidence",
+      "label": "Answer\nConfidence",
+      "description": "Confidence calibration (P0/P1/P2 tiering)",
+      "max": 1.0
+    },
+    {
+      "id": "scalability",
+      "label": "Scalability",
+      "description": "Latency-normalized throughput potential",
+      "max": 1.0
+    }
+  ],
+  "systems": [
+    {
+      "id": "M1_BM25",
+      "label": "BM25 (Sparse)",
+      "color": "#E74C3C",
+      "dash": "solid",
+      "values": {
+        "retrieval_precision": 0.580,
+        "cross_domain_immunity": 0.618,
+        "search_efficiency": 0.000,
+        "organization_quality": 0.000,
+        "answer_confidence": 0.200,
+        "scalability": 0.950
+      }
+    },
+    {
+      "id": "M2_Vector",
+      "label": "Vector (BGE-M3)",
+      "color": "#F39C12",
+      "dash": "solid",
+      "values": {
+        "retrieval_precision": 0.625,
+        "cross_domain_immunity": 0.636,
+        "search_efficiency": 0.000,
+        "organization_quality": 0.000,
+        "answer_confidence": 0.300,
+        "scalability": 0.900
+      }
+    },
+    {
+      "id": "M3_BM25_Vector",
+      "label": "BM25+Vector (Fusion)",
+      "color": "#3498DB",
+      "dash": "solid",
+      "values": {
+        "retrieval_precision": 0.660,
+        "cross_domain_immunity": 0.680,
+        "search_efficiency": 0.000,
+        "organization_quality": 0.000,
+        "answer_confidence": 0.350,
+        "scalability": 0.850
+      }
+    },
+    {
+      "id": "M4_CRAG",
+      "label": "CRAG-style",
+      "color": "#9B59B6",
+      "dash": "solid",
+      "values": {
+        "retrieval_precision": 0.680,
+        "cross_domain_immunity": 0.700,
+        "search_efficiency": 0.000,
+        "organization_quality": 0.000,
+        "answer_confidence": 0.550,
+        "scalability": 0.400
+      }
+    },
+    {
+      "id": "M5_QDCVR",
+      "label": "QDCVR (Ours)",
+      "color": "#27AE60",
+      "dash": "solid",
+      "values": {
+        "retrieval_precision": 0.875,
+        "cross_domain_immunity": 1.000,
+        "search_efficiency": 0.961,
+        "organization_quality": 1.000,
+        "answer_confidence": 0.920,
+        "scalability": 0.350
+      }
+    },
+    {
+      "id": "M5_QDCVR_Fast",
+      "label": "QDCVR-FastExit",
+      "color": "#2ECC71",
+      "dash": "dashed",
+      "values": {
+        "retrieval_precision": 0.870,
+        "cross_domain_immunity": 1.000,
+        "search_efficiency": 0.961,
+        "organization_quality": 1.000,
+        "answer_confidence": 0.910,
+        "scalability": 0.700
+      }
+    }
+  ],
+  "metadata": {
+    "generated": "2026-07-27",
+    "data_source": "Real MCP tool measurements",
+    "notes": [
+      "Cross-domain immunity: QDCVR achieves perfect 1.0 (FPR=0.000); best baseline (M4) reaches only 0.700",
+      "Search efficiency: QDCVR searches 538/13,649 chunks (96.1% reduction)",
+      "Organization quality: QDCVR 100% domain attribution accuracy via A0-A9 pipeline",
+      "Scalability trade-off: QDCVR sacrifices speed for precision; QDCVR-FastExit recovers 50% at 0.5% P@5 cost",
+      "Baselines score 0 on search efficiency and organization quality (no domain structure)"
+    ]
+  }
+}

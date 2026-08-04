@@ -1,0 +1,243 @@
+{
+  "experiment": "EXP-11",
+  "title": "balance_kbs Diversity Guard — Cross-Domain FPR vs. Shannon Entropy",
+  "description": "Tests whether balance_kbs flag prevents large-KB dominance in cross-domain retrieval. Each query runs with balance_kbs=false and balance_kbs=true at top_k=10. Shannon entropy H = -sum(p_i * log2(p_i)) measures KB distribution diversity.",
+  "timestamp": "2026-07-29",
+  "methodology": {
+    "tool": "kb_search_vector",
+    "top_k": 10,
+    "kb_id": "",
+    "balance_kbs_variants": [
+      "false",
+      "true"
+    ],
+    "shannon_entropy_formula": "H = -sum(p_i * log2(p_i)) where p_i = count_i / total_results",
+    "total_queries": 5,
+    "total_api_calls": 10
+  },
+  "kb_inventory": {
+    "高分子双向拉伸文献库:cd57e37c": {
+      "doc_count": 73,
+      "note": "Largest KB — primary dominance candidate"
+    },
+    "AI-ML-Research:4c1b9eb6": {
+      "doc_count": 17
+    },
+    "Materials-ML-InverseDesign:4586cbec": {
+      "doc_count": 13
+    },
+    "Embodied-AI:4de920d8": {
+      "doc_count": 9
+    },
+    "Materials-Science:79c67037": {
+      "doc_count": 8
+    },
+    "Biomedical-Engineering:61960453": {
+      "doc_count": 7
+    },
+    "Energy-Batteries:0a9d97c1": {
+      "doc_count": 6
+    },
+    "Chemistry-Catalysis:8bbd62eb": {
+      "doc_count": 6
+    },
+    "Economics-DataScience:27bb748f": {
+      "doc_count": 5
+    },
+    "E2E-Integration-Test:1eb3a7d9": {
+      "doc_count": 5
+    },
+    "Creative-Thinking-Innovation:f1046402": {
+      "doc_count": 4
+    },
+    "烹饪与家常菜:70e80319": {
+      "doc_count": 2
+    },
+    "FLAT-Benchmark-KB:8e167220": {
+      "doc_count": 0
+    }
+  },
+  "queries": {
+    "Q1_machine_learning_optimization": {
+      "query": "machine learning optimization methods",
+      "balance_kbs_false": {
+        "shannon_entropy": 2.7219,
+        "unique_kbs": 7,
+        "dominant_kb_fraction": 0.2,
+        "note": "Moderate diversity — AI-ML, Materials-ML, and Polymer KB each take 2 slots",
+        "distribution": {
+          "AI-ML-Research:4c1b9eb6": 2,
+          "Materials-ML-InverseDesign:4586cbec": 2,
+          "高分子双向拉伸:cd57e37c": 2,
+          "Energy-Batteries:0a9d97c1": 1,
+          "Materials-Science:79c67037": 1,
+          "Creative-Thinking:f1046402": 1,
+          "Biomedical-Engineering:61960453": 1
+        }
+      },
+      "balance_kbs_true": {
+        "shannon_entropy": 3.1219,
+        "unique_kbs": 9,
+        "dominant_kb_fraction": 0.2,
+        "note": "Maximum diversity achieved — 9 unique KBs, near-uniform across domains",
+        "distribution": {
+          "AI-ML-Research:4c1b9eb6": 2,
+          "RAG-Research:578dc012": 1,
+          "Embodied-AI:4de920d8": 1,
+          "Chemistry-Catalysis:8bbd62eb": 1,
+          "Energy-Batteries:0a9d97c1": 1,
+          "Biomedical-Engineering:61960453": 1,
+          "高分子双向拉伸:cd57e37c": 1,
+          "Materials-Science:79c67037": 1,
+          "烹饪与家常菜:70e80319": 1
+        }
+      },
+      "entropy_gain": 0.4,
+      "diversity_improved": true
+    },
+    "Q2_energy_storage_materials": {
+      "query": "energy storage materials design",
+      "balance_kbs_false": {
+        "shannon_entropy": 3.1219,
+        "unique_kbs": 9,
+        "dominant_kb_fraction": 0.2,
+        "note": "UNEXPECTED: balance_kbs=false already achieves max diversity for this query",
+        "distribution": {
+          "Materials-Science:79c67037": 1,
+          "高分子双向拉伸:cd57e37c": 1,
+          "Energy-Batteries:0a9d97c1": 1,
+          "Biomedical-Engineering:61960453": 1,
+          "Chemistry-Catalysis:8bbd62eb": 1,
+          "RAG-Research:578dc012": 1,
+          "Embodied-AI:4de920d8": 1,
+          "AI-ML-Research:4c1b9eb6": 2,
+          "烹饪与家常菜:70e80319": 1
+        }
+      },
+      "balance_kbs_true": {
+        "shannon_entropy": 0.9219,
+        "unique_kbs": 3,
+        "dominant_kb_fraction": 0.8,
+        "note": "COUNTERPRODUCTIVE: balance_kbs reduces diversity! Polymer KB dominates 8/10 slots because 'energy storage dielectric capacitors' is a major sub-topic in that KB, causing it to outscore all other KBs within their balanced allocations",
+        "distribution": {
+          "Materials-Science:79c67037": 1,
+          "高分子双向拉伸:cd57e37c": 8,
+          "Energy-Batteries:0a9d97c1": 1
+        }
+      },
+      "entropy_gain": -2.2,
+      "diversity_improved": false
+    },
+    "Q3_transformer_attention": {
+      "query": "neural network architecture transformer attention",
+      "balance_kbs_false": {
+        "shannon_entropy": 3.1219,
+        "unique_kbs": 9,
+        "dominant_kb_fraction": 0.2,
+        "note": "UNEXPECTED: balance_kbs=false achieves max diversity; Transformer paper and related content scattered across KBs",
+        "distribution": {
+          "AI-ML-Research:4c1b9eb6": 2,
+          "高分子双向拉伸:cd57e37c": 1,
+          "Materials-Science:79c67037": 1,
+          "RAG-Research:578dc012": 1,
+          "Embodied-AI:4de920d8": 1,
+          "Chemistry-Catalysis:8bbd62eb": 1,
+          "Biomedical-Engineering:61960453": 1,
+          "Energy-Batteries:0a9d97c1": 1,
+          "烹饪与家常菜:70e80319": 1
+        }
+      },
+      "balance_kbs_true": {
+        "shannon_entropy": 0.469,
+        "unique_kbs": 2,
+        "dominant_kb_fraction": 0.9,
+        "note": "COUNTERPRODUCTIVE: AI-ML KB monopolizes 9/10 slots. When each KB gets fixed allocation slots, the KB with genuinely matching content (Transformer paper) wins every slot — balance_kbs amplifies the 'rich get richer' effect for queries with clear domain alignment",
+        "distribution": {
+          "AI-ML-Research:4c1b9eb6": 9,
+          "Economics-DataScience:27bb748f": 1
+        }
+      },
+      "entropy_gain": -2.6529,
+      "diversity_improved": false
+    },
+    "Q4_catalyst_design": {
+      "query": "catalyst design optimization",
+      "balance_kbs_false": {
+        "shannon_entropy": 1.1568,
+        "unique_kbs": 3,
+        "dominant_kb_fraction": 0.7,
+        "note": "Chemistry-Catalysis dominates 7/10 — classic large-bias problem balance_kbs was designed for",
+        "distribution": {
+          "Chemistry-Catalysis:8bbd62eb": 7,
+          "Energy-Batteries:0a9d97c1": 2,
+          "Materials-ML-InverseDesign:4586cbec": 1
+        }
+      },
+      "balance_kbs_true": {
+        "shannon_entropy": 3.1219,
+        "unique_kbs": 9,
+        "dominant_kb_fraction": 0.2,
+        "note": "SUCCESS: Maximum diversity achieved. balance_kbs breaks Chemistry-Catalysis monopoly completely",
+        "distribution": {
+          "Energy-Batteries:0a9d97c1": 1,
+          "Chemistry-Catalysis:8bbd62eb": 1,
+          "Materials-Science:79c67037": 1,
+          "RAG-Research:578dc012": 1,
+          "Embodied-AI:4de920d8": 1,
+          "Biomedical-Engineering:61960453": 1,
+          "高分子双向拉伸:cd57e37c": 1,
+          "AI-ML-Research:4c1b9eb6": 2,
+          "烹饪与家常菜:70e80319": 1
+        }
+      },
+      "entropy_gain": 1.9651,
+      "diversity_improved": true
+    },
+    "Q5_polymer_film_characterization": {
+      "query": "polymer film properties characterization",
+      "balance_kbs_false": {
+        "shannon_entropy": 0.0,
+        "unique_kbs": 1,
+        "dominant_kb_fraction": 1.0,
+        "note": "Complete monopoly — all 10 results from the 73-doc polymer film KB. 0 entropy = zero diversity",
+        "distribution": {
+          "高分子双向拉伸:cd57e37c": 10
+        }
+      },
+      "balance_kbs_true": {
+        "shannon_entropy": 3.1219,
+        "unique_kbs": 9,
+        "dominant_kb_fraction": 0.2,
+        "note": "DRAMATIC SUCCESS: Entropy jumps from 0 to 3.12. balance_kbs breaks total monopoly, injecting 8 additional KBs and capping the dominant KB at just 1 result",
+        "distribution": {
+          "高分子双向拉伸:cd57e37c": 1,
+          "Chemistry-Catalysis:8bbd62eb": 1,
+          "Energy-Batteries:0a9d97c1": 1,
+          "Materials-Science:79c67037": 1,
+          "Biomedical-Engineering:61960453": 1,
+          "AI-ML-Research:4c1b9eb6": 2,
+          "Embodied-AI:4de920d8": 1,
+          "RAG-Research:578dc012": 1,
+          "烹饪与家常菜:70e80319": 1
+        }
+      },
+      "entropy_gain": 3.1219,
+      "diversity_improved": true
+    }
+  },
+  "summary": {
+    "total_queries": 5,
+    "diversity_improved": 3,
+    "diversity_degraded": 2,
+    "success_rate": 0.6,
+    "mean_entropy_gain": 0.3268,
+    "max_entropy_gain": 3.1219,
+    "min_entropy_gain": -2.6529,
+    "entropy_without_balance_mean": 2.0245,
+    "entropy_with_balance_mean": 2.1513,
+    "key_finding_1": "balance_kbs is HIGHLY effective when a single KB dominates due to size (Q5: 0→3.12 entropy, Q4: 1.16→3.12). It breaks monopolies completely.",
+    "key_finding_2": "balance_kbs is COUNTERPRODUCTIVE when the query already returns diverse results. In Q2 and Q3, it REDUCED diversity by letting the most-relevant KB fill all its balanced slots, amplifying rather than reducing bias (Q3: 3.12→0.47 entropy).",
+    "key_finding_3": "The root cause: balance_kbs caps per-KB result counts but does NOT penalize internal relevance scores. When each KB gets N slots and one KB has 10x more relevant chunks than any other, it wins all N of its slots with top-scoring content.",
+    "recommendation": "balance_kbs should include a per-KB score-normalization step before slot allocation, or apply a penalty proportional to KB size. A hybrid approach: use balance_kbs for KBs with >N docs (large-KB guard) but fall back to unconstrained retrieval for queries whose unconstrained results are already diverse (entropy > threshold)."
+  }
+}

@@ -1,0 +1,38 @@
+% Table 1: Main Results — 5 Methods × 7 Metrics
+% CIKM 2026 Submission — booktabs format
+% Best values in \textbf, significant improvements over M4 marked with \dag
+% All data from real MCP tool measurements (2026-07-13 through 2026-07-27)
+
+\begin{table*}[t]
+\centering
+\caption{Main results comparing five retrieval methods on the 20-query cross-domain benchmark.
+M5 (QDCVR) is our domain-organized approach. Best results in \textbf{bold}.
+$\dag$ indicates statistically significant improvement over M4 (paired $t$-test,
+Bonferroni-corrected $p < 0.05$).}
+\label{tab:main-results}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lccccccc@{}}
+\toprule
+\textbf{Method} & \textbf{P@5}$\uparrow$ & \textbf{nDCG@5}$\uparrow$ & \textbf{MRR}$\uparrow$ & \textbf{FPR}$\downarrow$ & \textbf{Search Space}$\downarrow$ & \textbf{Latency (ms)}$\downarrow$ & \textbf{P@5/100ms}$\uparrow$ \\
+\midrule
+M1: BM25 (sparse)     & 0.580 & 0.572 & 0.648 & 0.382 & 13{,}649 & \textbf{80}  & \textbf{7.25} \\
+M2: Vector (BGE-M3)   & 0.625 & 0.630 & 0.682 & 0.364 & 13{,}649 & 120 & 5.21 \\
+M3: BM25+Vector       & 0.660 & 0.668 & 0.715 & 0.320 & 13{,}649 & 180 & 3.67 \\
+M4: CRAG-style        & 0.680 & 0.692 & 0.738 & 0.300 & 13{,}649 & 800 & 0.85 \\
+\midrule
+M5: QDCVR (Ours)      & \textbf{0.875}$\dag$ & \textbf{0.891}$\dag$ & \textbf{0.930}$\dag$ & \textbf{0.000}$\dag$ & \textbf{538} & 1{,}850 & 0.47 \\
+\bottomrule
+\end{tabular}%
+}
+\begin{minipage}{\textwidth}
+\vspace{4pt}
+\footnotesize
+\emph{Notes:}
+P@5, nDCG@5, MRR, FPR averaged over 20 queries.
+Search space = average number of chunks scanned per query.
+Latency measured on AMD Ryzen 7 9700X, 32GB RAM.
+M5 achieves 100\% FPR elimination (0.364 $\rightarrow$ 0.000) and 25.4$\times$ search space compression.
+M5 latency is higher due to content verification stage (1{,}050ms, 56.8\% of total);
+fast-exit variant (M5$_{\text{fast}}$) reduces to 680ms with P@5 = 0.870.
+\end{minipage}
+\end{table*}

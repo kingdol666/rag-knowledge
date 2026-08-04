@@ -1,0 +1,174 @@
+{
+  "test_id": "T1-NEW-DOC",
+  "test_name": "Full Document Lifecycle Test in E2E-Integration-Test KB",
+  "kb_id": "1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c",
+  "kb_name": "E2E-Integration-Test",
+  "doc_name": "Fulltest-DL-Optimization-Guide.md",
+  "doc_id_created": "54f8a01f-20cc-4399-abb1-4617adc13271",
+  "timestamp": "2026-07-29T05:54:37Z",
+  "overall_result": "PASS",
+  "steps_passed": 10,
+  "steps_failed": 0,
+  "steps": [
+    {
+      "step": 1,
+      "name": "CREATE",
+      "action": "kb_doc_create",
+      "result": "PASS",
+      "details": "Document created successfully. Auto-index task triggered (task_id=e02543dced70). File size 675 bytes, status=completed.",
+      "evidence": {
+        "document_id": "54f8a01f-20cc-4399-abb1-4617adc13271",
+        "name": "Fulltest-DL-Optimization-Guide.md",
+        "path": "E2E-Integration-Test\\Fulltest-DL-Optimization-Guide.md",
+        "auto_index_triggered": true,
+        "auto_index_task_id": "e02543dced70"
+      }
+    },
+    {
+      "step": 2,
+      "name": "WAIT",
+      "action": "sleep 5s",
+      "result": "PASS",
+      "details": "Slept 5.17 seconds for auto-index to complete."
+    },
+    {
+      "step": 3,
+      "name": "SEARCH-DOMAIN",
+      "action": "kb_search_vector (scoped to KB)",
+      "result": "PASS",
+      "details": "New doc found in domain search. Appears as rank #1 (score 0.7009, Adam Optimizer section) and rank #3 (score 0.6023, Learning Rate Scheduling section). Top result is the new document.",
+      "evidence": {
+        "query": "Adam optimizer learning rate scheduling gradient clipping mixed precision",
+        "count": 3,
+        "top_hits": [
+          {"rank": 1, "doc_path": "E2E-Integration-Test/Fulltest-DL-Optimization-Guide.md", "chunk_index": 1, "score": 0.7008798718452454, "is_new_doc": true},
+          {"rank": 2, "doc_path": "E2E-Integration-Test/e2e1-ingest-test.md", "chunk_index": 2, "score": 0.610150158405304, "is_new_doc": false},
+          {"rank": 3, "doc_path": "E2E-Integration-Test/Fulltest-DL-Optimization-Guide.md", "chunk_index": 2, "score": 0.6022588014602661, "is_new_doc": true}
+        ],
+        "new_doc_found": true,
+        "new_doc_rank": 1
+      }
+    },
+    {
+      "step": 4,
+      "name": "SEARCH-FLAT",
+      "action": "kb_search_vector (cross-domain, kb_id empty)",
+      "result": "PASS",
+      "details": "Cross-domain search returns 5 relevant hits, all topically about Adam/optimization. New doc appears at rank #2 (score 0.7009). No pollution: every result is topically relevant to the Adam-optimizer query. Results from AI-ML-Research KB (NeuralNetworkOptimization-Adam.md, Adam experience doc) and E2E-Integration-Test KB are all semantically on-topic.",
+      "evidence": {
+        "query": "Adam optimizer learning rate scheduling gradient clipping mixed precision",
+        "count": 5,
+        "top_hits": [
+          {"rank": 1, "doc_path": "AI-ML-Research/NeuralNetworkOptimization-Adam.md", "score": 0.7112749814987183},
+          {"rank": 2, "doc_path": "E2E-Integration-Test/Fulltest-DL-Optimization-Guide.md", "score": 0.7008798718452454, "is_new_doc": true},
+          {"rank": 3, "doc_path": "AI-ML-Research/NeuralNetworkOptimization-Adam.md", "score": 0.6915079355239868},
+          {"rank": 4, "doc_path": "AI-ML-Research/NeuralNetworkOptimization-Adam.md", "score": 0.6811935901641846},
+          {"rank": 5, "doc_path": "AI-ML-Research/experience/exp-414b5773cf30.md", "score": 0.6772067546844482}
+        ],
+        "kbs_represented": ["AI-ML-Research", "E2E-Integration-Test"],
+        "pollution_detected": false,
+        "note": "All results are topically on-subject (Adam optimizer); expected cross-KB visibility, not pollution."
+      }
+    },
+    {
+      "step": 5,
+      "name": "TAGS",
+      "action": "kb_doc_update_tags",
+      "result": "PASS",
+      "details": "Tags applied successfully: ['deep-learning', 'optimization', 'adam', 'lr-scheduling', 'mixed-precision'].",
+      "evidence": {
+        "tags_set": ["deep-learning", "optimization", "adam", "lr-scheduling", "mixed-precision"]
+      }
+    },
+    {
+      "step": 6,
+      "name": "TAG-SEARCH",
+      "action": "kb_doc_get_by_tag (tag='adam')",
+      "result": "PASS",
+      "details": "New document appears in tag search for 'adam' as rank #1. Total 2 documents returned (new doc + pre-existing NeuralNetworkOptimization-Adam.md). Vector index metadata confirms 5 chunks indexed with bge-m3 embedding; graph index present.",
+      "evidence": {
+        "tag": "adam",
+        "count": 2,
+        "found_new_doc": true,
+        "new_doc": {
+          "id": "54f8a01f-20cc-4399-abb1-4617adc13271",
+          "name": "Fulltest-DL-Optimization-Guide.md",
+          "tags": ["deep-learning", "optimization", "adam", "lr-scheduling", "mixed-precision"],
+          "vector_index_total_chunks": 5,
+          "embedding_model": "bge-m3"
+        }
+      }
+    },
+    {
+      "step": 7,
+      "name": "EXPERIENCE-EXTRACT",
+      "action": "experience_extract (dry_run=true, heuristic)",
+      "result": "PASS",
+      "details": "Heuristic extraction produced 9 candidates from the KB. The new doc yielded 1 candidate: 'Deep Learning Optimization Best Practices - 核心要点' (category=best_practice, confidence=0.6, method=document_overview). dry_run=true so no drafts written.",
+      "evidence": {
+        "dry_run": true,
+        "total_candidates": 9,
+        "new_doc_candidate": {
+          "title": "Deep Learning Optimization Best Practices - 核心要点",
+          "scenario": "deep-learning-optimization-best-practices",
+          "category": "best_practice",
+          "severity": "normal",
+          "confidence": 0.6,
+          "extraction_method": "document_overview",
+          "source_doc": "E2E-Integration-Test/Fulltest-DL-Optimization-Guide.md",
+          "key_lessons": ["Adam Optimizer", "Learning Rate Scheduling", "Gradient Clipping", "Mixed Precision Training"]
+        }
+      }
+    },
+    {
+      "step": 8,
+      "name": "STATS",
+      "action": "kb_search_stats",
+      "result": "PASS",
+      "details": "Vector index for KB reports 81 total chunks. New doc contributed 5 chunks (confirmed in step 6 vector_index metadata), consistent with indexing success.",
+      "evidence": {
+        "collection": "kb_1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c",
+        "chunk_count": 81,
+        "new_doc_chunks": 5
+      }
+    },
+    {
+      "step": 9,
+      "name": "CLEANUP",
+      "action": "kb_doc_delete",
+      "result": "PASS",
+      "details": "Document deleted successfully. deletedId matches created id.",
+      "evidence": {
+        "deletedId": "54f8a01f-20cc-4399-abb1-4617adc13271",
+        "message": "File 'Fulltest-DL-Optimization-Guide.md' deleted successfully"
+      }
+    },
+    {
+      "step": 10,
+      "name": "VERIFY-DELETE",
+      "action": "kb_search_vector (post-delete verify)",
+      "result": "PASS",
+      "details": "After 5s wait, vector search returns 3 results from OTHER documents only. Deleted doc 'Fulltest-DL-Optimization-Guide.md' does NOT appear. Vector index cleanup succeeded. Remaining hits are from pre-existing docs (e2e1-ingest-test.md mentions Adam optimizer in methodology, article-mlops.md, article-python-performance.md).",
+      "evidence": {
+        "query": "Adam optimizer learning rate scheduling gradient clipping",
+        "count": 3,
+        "results": [
+          {"doc_path": "E2E-Integration-Test/e2e1-ingest-test.md", "score": 0.6073789000511169, "is_deleted_doc": false},
+          {"doc_path": "E2E-Integration-Test/article-mlops.md", "score": 0.5542296171188354, "is_deleted_doc": false},
+          {"doc_path": "E2E-Integration-Test/article-python-performance.md", "score": 0.5390930771827698, "is_deleted_doc": false}
+        ],
+        "deleted_doc_found": false,
+        "vector_index_cleaned": true
+      }
+    }
+  ],
+  "summary": {
+    "lifecycle_complete": true,
+    "create_to_delete_clean": true,
+    "indexing_working": true,
+    "tag_system_working": true,
+    "experience_extraction_working": true,
+    "delete_cleans_vector_index": true,
+    "notes": "Full document lifecycle (create -> auto-index -> domain search -> cross-domain search -> tag -> tag-search -> experience-extract -> stats -> delete -> verify-delete) completed cleanly. Auto-indexing produced 5 chunks with bge-m3 embeddings + graph node within ~17s. Cross-domain search correctly surfaced the new doc alongside topically-relevant AI-ML-Research docs (expected behavior, not pollution). Deletion cleanly removed both file and vector index chunks."
+  }
+}

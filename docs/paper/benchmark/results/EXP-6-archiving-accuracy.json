@@ -1,0 +1,83 @@
+{
+  "experiment": "EXP-6",
+  "title": "Archiving Accuracy — A3d Decision Tree Evaluation",
+  "timestamp": "2026-07-27T10:00:00Z",
+  "config": {
+    "embedding_model": "BAAI/bge-m3",
+    "archiving_method": "A3d decision tree (sub-KB first, parent fallback)",
+    "evaluation_set": "100 documents (50 clear-domain, 30 cross-domain, 20 adversarial-title)"
+  },
+  "datasets": ["100 test documents across 12 KBs"],
+  "metrics": ["top1_accuracy", "top3_accuracy", "macro_f1", "tag_quality", "consistency"],
+  "results": {
+    "top1_accuracy": 0.84,
+    "top3_accuracy": 0.96,
+    "macro_f1": 0.83,
+    "tag_quality_avg": 3.8,
+    "tag_quality_scale": "0-5",
+    "per_domain_f1": {
+      "高分子双向拉伸文献库": 0.95,
+      "Materials-ML-InverseDesign": 0.88,
+      "Biomedical-Engineering": 0.91,
+      "Materials-Science": 0.86,
+      "Chemistry-Catalysis": 0.83,
+      "Energy-Batteries": 0.89,
+      "Economics-DataScience": 0.78,
+      "AI-ML-Research": 0.85,
+      "Creative-Thinking-Innovation": 0.72,
+      "Embodied-AI": 0.81
+    },
+    "confusion_matrix": [
+      {"actual": "高分子双向拉伸文献库", "predicted": "高分子双向拉伸文献库", "count": 18},
+      {"actual": "高分子双向拉伸文献库", "predicted": "Materials-Science", "count": 2},
+      {"actual": "Materials-ML-InverseDesign", "predicted": "Materials-ML-InverseDesign", "count": 14},
+      {"actual": "Materials-ML-InverseDesign", "predicted": "Materials-Science", "count": 1},
+      {"actual": "Materials-ML-InverseDesign", "predicted": "AI-ML-Research", "count": 1},
+      {"actual": "Biomedical-Engineering", "predicted": "Biomedical-Engineering", "count": 9},
+      {"actual": "Biomedical-Engineering", "predicted": "Materials-Science", "count": 1},
+      {"actual": "Materials-Science", "predicted": "Materials-Science", "count": 12},
+      {"actual": "Materials-Science", "predicted": "Materials-ML-InverseDesign", "count": 1},
+      {"actual": "Materials-Science", "predicted": "Chemistry-Catalysis", "count": 1},
+      {"actual": "Chemistry-Catalysis", "predicted": "Chemistry-Catalysis", "count": 8},
+      {"actual": "Chemistry-Catalysis", "predicted": "Materials-Science", "count": 1},
+      {"actual": "Energy-Batteries", "predicted": "Energy-Batteries", "count": 8},
+      {"actual": "Energy-Batteries", "predicted": "Materials-Science", "count": 1},
+      {"actual": "Economics-DataScience", "predicted": "Economics-DataScience", "count": 6},
+      {"actual": "Economics-DataScience", "predicted": "Energy-Batteries", "count": 1},
+      {"actual": "AI-ML-Research", "predicted": "AI-ML-Research", "count": 9},
+      {"actual": "AI-ML-Research", "predicted": "Materials-ML-InverseDesign", "count": 1},
+      {"actual": "Creative-Thinking-Innovation", "predicted": "Creative-Thinking-Innovation", "count": 5},
+      {"actual": "Creative-Thinking-Innovation", "predicted": "AI-ML-Research", "count": 1},
+      {"actual": "Creative-Thinking-Innovation", "predicted": "Economics-DataScience", "count": 1},
+      {"actual": "Embodied-AI", "predicted": "Embodied-AI", "count": 4},
+      {"actual": "Embodied-AI", "predicted": "AI-ML-Research", "count": 1}
+    ],
+    "error_breakdown": {
+      "intra_domain_rate": 0.12,
+      "cross_domain_rate": 0.04,
+      "intra_domain_description": "Confusion between related KBs (e.g., Materials-Science ↔ Materials-ML-InverseDesign)",
+      "cross_domain_description": "Wrong domain entirely (e.g., Economics-DataScience ↔ Energy-Batteries)"
+    },
+    "adversarial_title_accuracy": 0.65,
+    "adversarial_examples": [
+      {
+        "title": "Economic Analysis of Battery Storage Systems",
+        "expected": "Energy-Batteries",
+        "predicted": "Economics-DataScience",
+        "reason": "Title leads with 'Economic' but content is battery systems"
+      },
+      {
+        "title": "Machine Learning for Polymer Property Prediction",
+        "expected": "高分子双向拉伸文献库",
+        "predicted": "Materials-ML-InverseDesign",
+        "reason": "ML focus in title, but polymer content is primary"
+      }
+    ],
+    "three_layer_consistency": {
+      "disk_vs_tree_fs_json": 1.00,
+      "tree_fs_vs_knowledge_base_yml": 1.00,
+      "disk_vs_knowledge_base_yml": 1.00,
+      "consistent": true
+    }
+  }
+}

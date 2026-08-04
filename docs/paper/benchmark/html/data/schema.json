@@ -1,0 +1,391 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "QDCVR Benchmark - All Results Schema",
+  "description": "Merged results from all 7 experiments for the HTML dashboard and paper tables.",
+  "type": "object",
+  "required": ["timestamp", "system", "overall_composite_score", "key_claims", "ranking_vs_baselines", "experiments"],
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp of when results were finalized"
+    },
+    "system": {
+      "type": "string",
+      "description": "System name and version, e.g. 'QDCVR Knowledge Platform v1.0'"
+    },
+    "overall_composite_score": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1,
+      "description": "Weighted composite score across all 7 dimensions"
+    },
+    "key_claims": {
+      "type": "object",
+      "description": "Key paper claims with verification status",
+      "properties": {
+        "search_space_reduction": {
+          "type": "object",
+          "properties": {
+            "ratio": {"type": "string"},
+            "verified": {"type": "boolean"},
+            "experiment": {"type": "string"}
+          }
+        },
+        "cross_domain_fpr_reduction": {
+          "type": "object",
+          "properties": {
+            "delta": {"type": "string"},
+            "p_value": {"type": "string"},
+            "verified": {"type": "boolean"},
+            "experiment": {"type": "string"}
+          }
+        },
+        "archiving_accuracy": {
+          "type": "object",
+          "properties": {
+            "top1": {"type": "number"},
+            "verified": {"type": "boolean"},
+            "experiment": {"type": "string"}
+          }
+        },
+        "experience_acceleration": {
+          "type": "object",
+          "properties": {
+            "reduction": {"type": "string"},
+            "verified": {"type": "boolean"},
+            "experiment": {"type": "string"}
+          }
+        },
+        "p5_beir_avg": {
+          "type": "number",
+          "description": "Macro-average P@5 across BEIR datasets"
+        }
+      }
+    },
+    "ranking_vs_baselines": {
+      "type": "array",
+      "description": "Methods ranked by composite score",
+      "items": {
+        "type": "object",
+        "required": ["rank", "system", "composite_score"],
+        "properties": {
+          "rank": {"type": "integer", "minimum": 1},
+          "system": {"type": "string"},
+          "composite_score": {"type": "number"}
+        }
+      }
+    },
+    "experiments": {
+      "type": "object",
+      "description": "Results for each of the 7 experiments",
+      "properties": {
+        "EXP-1": {"$ref": "#/definitions/exp1"},
+        "EXP-2": {"$ref": "#/definitions/exp2"},
+        "EXP-3": {"$ref": "#/definitions/exp3"},
+        "EXP-4": {"$ref": "#/definitions/exp4"},
+        "EXP-5": {"$ref": "#/definitions/exp5"},
+        "EXP-6": {"$ref": "#/definitions/exp6"},
+        "EXP-7": {"$ref": "#/definitions/exp7"}
+      }
+    }
+  },
+  "definitions": {
+    "base_experiment": {
+      "type": "object",
+      "required": ["experiment", "title", "timestamp", "config", "datasets"],
+      "properties": {
+        "experiment": {"type": "string"},
+        "title": {"type": "string"},
+        "timestamp": {"type": "string", "format": "date-time"},
+        "config": {
+          "type": "object",
+          "properties": {
+            "embedding_model": {"type": "string", "default": "BAAI/bge-m3"},
+            "top_k": {"type": "integer", "default": 5},
+            "score_threshold": {"type": "number", "default": 0.35},
+            "content_threshold": {"type": "integer", "default": 6},
+            "stage1_top_k": {"type": "integer", "default": 20}
+          }
+        },
+        "datasets": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "metrics": {
+          "type": "array",
+          "items": {"type": "string"},
+          "description": "List of metric IDs evaluated"
+        }
+      }
+    },
+    "per_method_values": {
+      "type": "object",
+      "description": "Metric name → value mapping for one method on one dataset",
+      "additionalProperties": {"type": "number"}
+    },
+    "statistical_test": {
+      "type": "object",
+      "required": ["metric", "delta", "p_value", "significant"],
+      "properties": {
+        "metric": {"type": "string"},
+        "delta": {"type": "number"},
+        "p_value": {"type": "number"},
+        "significant": {"type": "boolean"},
+        "cohens_d": {"type": "number"},
+        "ci_95": {
+          "type": "array",
+          "items": {"type": "number"},
+          "minItems": 2,
+          "maxItems": 2
+        }
+      }
+    },
+    "exp1": {
+      "allOf": [{"$ref": "#/definitions/base_experiment"}],
+      "properties": {
+        "results": {
+          "type": "object",
+          "description": "Per-dataset results",
+          "patternProperties": {
+            "^.*$": {
+              "type": "object",
+              "properties": {
+                "num_queries": {"type": "integer"},
+                "per_method": {
+                  "type": "object",
+                  "patternProperties": {
+                    "^.*$": {"$ref": "#/definitions/per_method_values"}
+                  }
+                },
+                "statistical_tests": {
+                  "type": "object",
+                  "patternProperties": {
+                    "^.*$": {"$ref": "#/definitions/statistical_test"}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "macro_avg": {"$ref": "#/definitions/per_method_values"},
+        "per_query_details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "qid": {"type": "string"},
+              "query": {"type": "string"},
+              "dataset": {"type": "string"},
+              "per_method": {
+                "type": "object",
+                "additionalProperties": {
+                  "type": "object",
+                  "properties": {
+                    "relevant_retrieved": {"type": "integer"},
+                    "total_retrieved": {"type": "integer"},
+                    "ranks": {"type": "array", "items": {"type": "integer"}}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "exp2": {
+      "allOf": [{"$ref": "#/definitions/base_experiment"}],
+      "properties": {
+        "results": {
+          "type": "object",
+          "properties": {
+            "per_method": {
+              "type": "object",
+              "patternProperties": {
+                "^.*$": {
+                  "type": "object",
+                  "properties": {
+                    "fpr": {"type": "number"},
+                    "fpr_std": {"type": "number"},
+                    "shannon_entropy": {"type": "number"},
+                    "ks_entropy": {"type": "number"}
+                  }
+                }
+              }
+            },
+            "statistical_tests": {
+              "type": "object",
+              "patternProperties": {
+                "^.*$": {"$ref": "#/definitions/statistical_test"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "exp3": {
+      "allOf": [{"$ref": "#/definitions/base_experiment"}],
+      "description": "Multi-baseline comparison and system-level comparison",
+      "properties": {
+        "retrieval_baselines": {
+          "type": "object",
+          "description": "Same structure as EXP-1 results"
+        },
+        "system_comparison": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "system": {"type": "string"},
+              "doc_mgmt": {"type": "string"},
+              "exp_mgmt": {"type": "string"},
+              "auto_archive": {"type": "string"},
+              "agent_tools": {"type": "string"},
+              "p5_beir": {"type": "number"},
+              "setup_time_min": {"type": "number"}
+            }
+          }
+        }
+      }
+    },
+    "exp4": {
+      "allOf": [{"$ref": "#/definitions/base_experiment"}],
+      "properties": {
+        "results": {
+          "type": "object",
+          "properties": {
+            "doc_only": {
+              "type": "object",
+              "properties": {
+                "avg_docs_read": {"type": "number"},
+                "avg_time_s": {"type": "number"},
+                "avg_answer_quality": {"type": "number"}
+              }
+            },
+            "exp_first": {
+              "type": "object",
+              "properties": {
+                "avg_docs_read": {"type": "number"},
+                "avg_time_s": {"type": "number"},
+                "avg_answer_quality": {"type": "number"},
+                "exp_hit_rate": {"type": "number"},
+                "exp_useful_rate": {"type": "number"}
+              }
+            },
+            "reduction": {
+              "type": "object",
+              "properties": {
+                "docs_read_pct": {"type": "number"},
+                "time_pct": {"type": "number"},
+                "quality_delta": {"type": "number"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "exp5": {
+      "allOf": [{"$ref": "#/definitions/base_experiment"}],
+      "properties": {
+        "results": {
+          "type": "object",
+          "properties": {
+            "top1_accuracy": {"type": "number"},
+            "top3_accuracy": {"type": "number"},
+            "macro_f1": {"type": "number"},
+            "per_domain_f1": {
+              "type": "object",
+              "additionalProperties": {"type": "number"}
+            },
+            "confusion_matrix": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "actual": {"type": "string"},
+                  "predicted": {"type": "string"},
+                  "count": {"type": "integer"}
+                }
+              }
+            },
+            "error_breakdown": {
+              "type": "object",
+              "properties": {
+                "intra_domain_rate": {"type": "number"},
+                "cross_domain_rate": {"type": "number"}
+              }
+            }
+          }
+        }
+      }
+    },
+    "exp6": {
+      "allOf": [{"$ref": "#/definitions/base_experiment"}],
+      "description": "Ablation study — per-variant metrics and sensitivity analysis",
+      "properties": {
+        "ablation": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "variant": {"type": "string"},
+              "removed_component": {"type": "string"},
+              "delta_p5": {"type": "number"},
+              "delta_fpr": {"type": "number"},
+              "delta_ndcg": {"type": "number"},
+              "impact": {"type": "string", "enum": ["CRITICAL", "HIGH", "MED", "LOW"]}
+            }
+          }
+        },
+        "sensitivity": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "parameter": {"type": "string"},
+              "values": {"type": "array", "items": {"type": "number"}},
+              "p5_at_value": {"type": "array", "items": {"type": "number"}},
+              "optimal": {"type": "number"}
+            }
+          }
+        }
+      }
+    },
+    "exp7": {
+      "allOf": [{"$ref": "#/definitions/base_experiment"}],
+      "description": "Efficiency and latency experiment",
+      "properties": {
+        "results": {
+          "type": "object",
+          "properties": {
+            "stage_breakdown": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "stage": {"type": "string"},
+                  "latency_ms": {"type": "number"},
+                  "pct_of_total": {"type": "number"}
+                }
+              }
+            },
+            "total_latency_ms": {"type": "number"},
+            "per_method_latency": {
+              "type": "object",
+              "patternProperties": {
+                "^.*$": {
+                  "type": "object",
+                  "properties": {
+                    "avg_latency_ms": {"type": "number"},
+                    "p5_score": {"type": "number"},
+                    "latency_normalized_p5": {"type": "number"}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

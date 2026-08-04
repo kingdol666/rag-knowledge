@@ -1,0 +1,135 @@
+{
+  "scenario": "S4",
+  "title": "Batch Operations + Tag Lifecycle Test",
+  "timestamp": "2026-07-29T05:19:49.000Z",
+  "completion_timestamp": "2026-07-29T05:24:00.000Z",
+  "status": "ALL_PASSED",
+  "kb_used": {
+    "id": "1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c",
+    "name": "E2E-Integration-Test"
+  },
+  "steps": {
+    "step1_create_docs": {
+      "description": "Create 3 test docs with tags [test-batch, ml-optimization, e2e-verify]",
+      "status": "PASSED",
+      "results": [
+        {
+          "doc_name": "test-batch-doc-1.md",
+          "doc_id": "b83e14a9-9a3b-4c81-86eb-17b33405332b",
+          "tags_assigned": ["test-batch", "ml-optimization", "e2e-verify"],
+          "success": true
+        },
+        {
+          "doc_name": "test-batch-doc-2.md",
+          "doc_id": "75252413-3d9c-4bf4-8ab5-3069b1ea5d28",
+          "tags_assigned": ["test-batch", "ml-optimization", "e2e-verify"],
+          "success": true
+        },
+        {
+          "doc_name": "test-batch-doc-3.md",
+          "doc_id": "3ee77f7e-105e-43d4-9792-82ce4a82a07f",
+          "tags_assigned": ["test-batch", "ml-optimization", "e2e-verify"],
+          "success": true
+        }
+      ],
+      "note": "Auto-indexing triggered on creation (vector+graph)"
+    },
+    "step2_tag_registry": {
+      "description": "List current tag registry via kb_tags_list",
+      "status": "PASSED",
+      "total_tags": 129,
+      "sample_tags": ["Toolformer", "Reflexion", "Transformer", "ReAct", "e2e-test", "ml-basics"],
+      "note": "Newly created tags not yet in global registry; only persisted after explicit tag update"
+    },
+    "step3_update_tags": {
+      "description": "Run kb_doc_update_tags to add/change tags on docs",
+      "status": "PASSED",
+      "results": [
+        {
+          "doc": "test-batch-doc-1.md",
+          "old_tags": ["test-batch", "ml-optimization", "e2e-verify"],
+          "new_tags": ["test-batch", "ml-optimization", "e2e-verify", "batch-scenario-4"],
+          "success": true
+        },
+        {
+          "doc": "test-batch-doc-2.md",
+          "old_tags": ["test-batch", "ml-optimization", "e2e-verify"],
+          "new_tags": ["test-batch", "ml-optimization", "e2e-verify", "distributed-training"],
+          "success": true
+        },
+        {
+          "doc": "test-batch-doc-3.md",
+          "old_tags": ["test-batch", "ml-optimization", "e2e-verify"],
+          "new_tags": ["test-batch", "ml-optimization", "e2e-verify", "hyperparameter-tuning"],
+          "success": true
+        }
+      ]
+    },
+    "step4_tag_retrieval": {
+      "description": "Verify tag-based retrieval with kb_doc_get_by_tag",
+      "status": "PASSED",
+      "results": [
+        {
+          "tag": "e2e-verify",
+          "count": 3,
+          "doc_names": ["test-batch-doc-3.md", "test-batch-doc-2.md", "test-batch-doc-1.md"],
+          "success": true
+        },
+        {
+          "tag": "test-batch",
+          "count": 3,
+          "doc_names": ["test-batch-doc-3.md", "test-batch-doc-2.md", "test-batch-doc-1.md"],
+          "success": true
+        },
+        {
+          "tag": "batch-scenario-4",
+          "count": 1,
+          "doc_names": ["test-batch-doc-1.md"],
+          "success": true
+        }
+      ],
+      "note": "Tag-based retrieval works after explicit tag assignment. Cross-KB search returns docs with kb_id and kb_name metadata."
+    },
+    "step5_orphan_check": {
+      "description": "Run kb_tags_cleanup(dry_run=true) to check for orphan tags",
+      "status": "PASSED",
+      "dry_run": true,
+      "total_tags": 133,
+      "referenced": 131,
+      "orphan_count": 2,
+      "orphan_tags": [
+        {"tag": "validation", "refs": 0, "reason": "unreferenced"},
+        {"tag": "metadata-preservation", "refs": 0, "reason": "unreferenced"}
+      ],
+      "note": "Our test tags (test-batch, ml-optimization, e2e-verify, etc.) are all referenced. Only 2 legacy orphan tags found."
+    },
+    "step6_batch_delete": {
+      "description": "Run kb_doc_batch_delete on the 3 test docs",
+      "status": "PASSED",
+      "total": 3,
+      "successful": 3,
+      "failed": 0,
+      "deleted_paths": [
+        "test-batch-doc-1.md",
+        "test-batch-doc-2.md",
+        "test-batch-doc-3.md"
+      ]
+    },
+    "step7_verify_removal": {
+      "description": "Verify docs removed via kb_get_documents",
+      "status": "PASSED",
+      "doc_count_before": 10,
+      "doc_count_after": 6,
+      "test_docs_remaining": 0,
+      "note": "All 3 test docs successfully removed. KB has 6 remaining documents (pre-existing + sibling scenario docs)."
+    }
+  },
+  "observations": {
+    "tag_lifecycle": "Tags assigned during doc_create are stored but NOT auto-registered in global tag registry. They only appear in kb_doc_get_by_tag after explicit kb_doc_update_tags call. Tag registry population appears lazy/eventual.",
+    "batch_delete_latency": "3 docs deleted in single batch call with zero failures.",
+    "orphan_detection": "kb_tags_cleanup correctly identifies unreferenced tags. dry_run mode safe for pre-deletion audit.",
+    "tag_retrieval": "Cross-KB by-tag search works correctly; returns full document metadata including kb_id, kb_path, kb_name.",
+    "vector_graph_consistency": "Vector index and graph index re-index happen asynchronously after tag updates. Some docs still show old collection names during re-indexing."
+  },
+  "errors": null
+}

@@ -1,0 +1,29 @@
+{
+  "experiment": "EXP-3",
+  "title": "Multi-Baseline Comprehensive Comparison",
+  "timestamp": "2026-07-29T04:00:14.126404+00:00",
+  "n_queries": 10,
+  "methods": {
+    "B1_Vector_Flat": {
+      "P@5": 0.64,
+      "MRR": 0.7,
+      "FPR": 0.4,
+      "Latency_ms": 84.3,
+      "Candidates": 5
+    },
+    "QDCVR_Domain": {
+      "P@5": 0.74,
+      "MRR": 0.8,
+      "FPR": 0.02,
+      "Latency_ms": 39.2,
+      "Candidates": 5
+    },
+    "QDCVR_TwoStage": {
+      "P@5": 0.0,
+      "MRR": 0,
+      "FPR": 0.0,
+      "Latency_ms": 538.5,
+      "Candidates": 0
+    }
+  }
+}

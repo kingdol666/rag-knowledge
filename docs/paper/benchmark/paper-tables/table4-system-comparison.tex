@@ -1,0 +1,49 @@
+% Table 4: Feature Matrix — System Comparison
+% CIKM 2026 Submission — booktabs format
+% Feature comparison: QDCVR vs. RAGFlow, Dify, LightRAG
+% \fullcirc = full support, \halfcirc = partial support, \emptycirc = no support
+
+\begin{table*}[t]
+\centering
+\caption{Feature comparison of QDCVR Knowledge Platform with existing RAG systems.
+\CIRCLE{} = full support, \LEFTcircle{} = partial/limited support, \Circle{} = not supported.
+QDCVR uniquely combines domain-organized KBs, content verification,
+experience lifecycle, and agent-native architecture.}
+\label{tab:system-comparison}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lcccccccc@{}}
+\toprule
+ & \multicolumn{4}{c}{\textbf{Organization \& Ingestion}} & \multicolumn{4}{c}{\textbf{Retrieval \& Generation}} \\
+\cmidrule(lr){2-5} \cmidrule(lr){6-9}
+\textbf{System} & \textbf{Domain} & \textbf{Auto} & \textbf{Content} & \textbf{Knowledge} & \textbf{Two-} & \textbf{Content} & \textbf{Exper.} & \textbf{Agent} \\
+ & \textbf{KBs} & \textbf{Archive} & \textbf{Verify} & \textbf{Graph} & \textbf{Stage} & \textbf{Scoring} & \textbf{Cycle} & \textbf{Native} \\
+\midrule
+RAGFlow    & \Circle & \Circle & \Circle & \Circle & \LEFTcircle & \Circle & \Circle & \LEFTcircle \\
+Dify       & \Circle & \Circle & \Circle & \Circle & \LEFTcircle & \Circle & \Circle & \LEFTcircle \\
+LightRAG   & \Circle & \Circle & \Circle & \CIRCLE & \LEFTcircle & \Circle & \Circle & \Circle \\
+\midrule
+QDCVR (Ours) & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE & \CIRCLE \\
+\bottomrule
+\end{tabular}%
+}
+\begin{minipage}{\textwidth}
+\vspace{4pt}
+\footnotesize
+\emph{Feature definitions:}
+\textbf{Domain KBs} --- hierarchical domain-specific knowledge bases with
+content-based attribution (A0--A9 pipeline).
+\textbf{Auto Archive} --- automatic KB assignment via decision tree, not filename/title.
+\textbf{Content Verify} --- per-candidate content scoring (0--8 scale) before inclusion.
+\textbf{Knowledge Graph} --- Neo4j-based document relationship graph.
+\textbf{Two-Stage} --- BM25 broad recall + vector fine ranking with fusion.
+\textbf{Content Scoring} --- confidence tiering (P0/P1/P2) based on verification scores.
+\textbf{Exper.\ Cycle} --- structured experience as first-class KB objects (E0--E12).
+\textbf{Agent Native} --- MCP tools for full lifecycle (76 tools, 14 skills).
+
+\emph{Key differentiators:}
+QDCVR is the only system with (1) content-based KB attribution that prevents
+cross-domain false positives at ingestion time, (2) multi-step content verification
+that eliminates residual false positives at retrieval time, and (3) an experience
+lifecycle enabling structured accumulation of operational knowledge.
+\end{minipage}
+\end{table*}

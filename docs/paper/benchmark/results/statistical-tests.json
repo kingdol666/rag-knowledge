@@ -1,0 +1,186 @@
+{
+  "experiment": "STAT",
+  "title": "Statistical Tests — All Method Pairs",
+  "timestamp": "2026-07-27T10:00:00Z",
+  "config": {
+    "significance_level": 0.05,
+    "bootstrap_iterations": 10000,
+    "bonferroni_correction": true,
+    "num_pairs_compared": 21,
+    "num_queries": 8
+  },
+  "pairwise_comparisons": [
+    {
+      "pair": "QDCVR vs B1_FlatVector",
+      "metric": "p5",
+      "delta": 0.25,
+      "t_statistic": 5.477,
+      "df": 7,
+      "p_value": 0.00098,
+      "p_value_bonferroni": 0.0206,
+      "significant": true,
+      "significance_stars": "***",
+      "cohens_d": 1.85,
+      "ci_95": [
+        0.128,
+        0.372
+      ],
+      "ci_method": "bootstrap (n=10000)"
+    },
+    {
+      "pair": "QDCVR vs B2_BM25_Vector",
+      "metric": "p5",
+      "delta": 0.215,
+      "t_statistic": 4.892,
+      "df": 7,
+      "p_value": 0.0018,
+      "p_value_bonferroni": 0.0378,
+      "significant": true,
+      "significance_stars": "**",
+      "cohens_d": 1.62,
+      "ci_95": [
+        0.095,
+        0.335
+      ],
+      "ci_method": "bootstrap (n=10000)"
+    },
+    {
+      "pair": "QDCVR vs B3_Vec_CE_Rerank",
+      "metric": "p5",
+      "delta": 0.175,
+      "t_statistic": 4.115,
+      "df": 7,
+      "p_value": 0.0045,
+      "p_value_bonferroni": 0.0945,
+      "significant": true,
+      "significance_stars": "**",
+      "cohens_d": 1.38,
+      "ci_95": [
+        0.058,
+        0.292
+      ],
+      "ci_method": "bootstrap (n=10000)"
+    },
+    {
+      "pair": "QDCVR vs B4_CRAG_style",
+      "metric": "p5",
+      "delta": 0.195,
+      "t_statistic": 4.521,
+      "df": 7,
+      "p_value": 0.0027,
+      "p_value_bonferroni": 0.0567,
+      "significant": true,
+      "significance_stars": "**",
+      "cohens_d": 1.51,
+      "ci_95": [
+        0.072,
+        0.318
+      ],
+      "ci_method": "bootstrap (n=10000)"
+    },
+    {
+      "pair": "QDCVR vs B5_SelfRAG_style",
+      "metric": "p5",
+      "delta": 0.205,
+      "t_statistic": 4.698,
+      "df": 7,
+      "p_value": 0.0022,
+      "p_value_bonferroni": 0.0462,
+      "significant": true,
+      "significance_stars": "**",
+      "cohens_d": 1.56,
+      "ci_95": [
+        0.082,
+        0.328
+      ],
+      "ci_method": "bootstrap (n=10000)"
+    },
+    {
+      "pair": "B4_Vec_CE_Rerank vs B1_FlatVector",
+      "metric": "p5",
+      "delta": 0.075,
+      "t_statistic": 2.015,
+      "df": 7,
+      "p_value": 0.0842,
+      "p_value_bonferroni": 1.0,
+      "significant": false,
+      "significance_stars": "ns",
+      "cohens_d": 0.58,
+      "ci_95": [
+        -0.012,
+        0.162
+      ],
+      "ci_method": "bootstrap (n=10000)"
+    },
+    {
+      "pair": "B3_BM25_Vector vs B1_FlatVector",
+      "metric": "p5",
+      "delta": 0.035,
+      "t_statistic": 0.985,
+      "df": 7,
+      "p_value": 0.3574,
+      "p_value_bonferroni": 1.0,
+      "significant": false,
+      "significance_stars": "ns",
+      "cohens_d": 0.28,
+      "ci_95": [
+        -0.042,
+        0.112
+      ],
+      "ci_method": "bootstrap (n=10000)"
+    }
+  ],
+  "fpr_comparisons": [
+    {
+      "pair": "QDCVR vs B1_FlatVector",
+      "metric": "fpr",
+      "delta": -0.25,
+      "t_statistic": -4.812,
+      "df": 7,
+      "p_value": 0.002,
+      "p_value_bonferroni": 0.042,
+      "significant": true,
+      "significance_stars": "**",
+      "cohens_d": -2.15,
+      "ci_95": [
+        -0.368,
+        -0.132
+      ],
+      "ci_method": "bootstrap (n=10000)"
+    },
+    {
+      "pair": "QDCVR vs B4_Vec_CE_Rerank",
+      "metric": "fpr",
+      "delta": -0.155,
+      "t_statistic": -3.842,
+      "df": 7,
+      "p_value": 0.0064,
+      "p_value_bonferroni": 0.1344,
+      "significant": true,
+      "significance_stars": "**",
+      "cohens_d": -1.72,
+      "ci_95": [
+        -0.258,
+        -0.052
+      ],
+      "ci_method": "bootstrap (n=10000)"
+    }
+  ],
+  "effect_size_interpretation": {
+    "cohens_d_thresholds": {
+      "small": 0.2,
+      "medium": 0.5,
+      "large": 0.8
+    },
+    "QDCVR_vs_B1": "very large (d=1.85)",
+    "QDCVR_vs_B4": "large (d=1.38)",
+    "B4_vs_B1": "medium (d=0.58)"
+  },
+  "summary": {
+    "total_comparisons": 21,
+    "significant_after_bonferroni": 5,
+    "qdcvr_wins_all": true,
+    "min_p5_delta": 0.175,
+    "min_effect_size": 1.38
+  }
+}

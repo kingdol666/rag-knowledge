@@ -1,0 +1,483 @@
+{
+  "scenario": "S2-Cross-Domain-FPR",
+  "date": "2026-07-29",
+  "description": "4 adversarial queries comparing Flat vs Domain search for cross-domain FPR",
+  "queries": [
+    {
+      "query": "reinforcement learning policy optimization gradient",
+      "correct_kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+      "correct_kb_name": "AI-ML-Research",
+      "flat_search": {
+        "results": [
+          {
+            "rank": 1,
+            "kb_id": "4586cbec-a111-407a-883d-3b04532be556",
+            "kb_name": "Materials-ML-InverseDesign",
+            "doc": "rl-diffusion-inverse-materials.md",
+            "score": 0.6712,
+            "correct": false
+          },
+          {
+            "rank": 2,
+            "kb_id": "4586cbec-a111-407a-883d-3b04532be556",
+            "kb_name": "Materials-ML-InverseDesign",
+            "doc": "liu-et-al-2025-generating-high-temperature-polymer-dielectrics...",
+            "score": 0.6705,
+            "correct": false
+          },
+          {
+            "rank": 3,
+            "kb_id": "27bb748f-9fc5-4223-b0c3-8365dbc42dea",
+            "kb_name": "Economics-DataScience",
+            "doc": "financial-risk.md",
+            "score": 0.6696,
+            "correct": false
+          },
+          {
+            "rank": 4,
+            "kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+            "kb_name": "AI-ML-Research",
+            "doc": "ReinforcementLearning-DQN-Atari.md",
+            "score": 0.6643,
+            "correct": true
+          },
+          {
+            "rank": 5,
+            "kb_id": "4586cbec-a111-407a-883d-3b04532be556",
+            "kb_name": "Materials-ML-InverseDesign",
+            "doc": "Reinforcement learning-based inverse design of.md",
+            "score": 0.6537,
+            "correct": false
+          }
+        ],
+        "unique_kbs": 3,
+        "false_positives": 4,
+        "fpr": 0.8
+      },
+      "domain_search": {
+        "results": [
+          {
+            "rank": 1,
+            "kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+            "kb_name": "AI-ML-Research",
+            "doc": "ReinforcementLearning-DQN-Atari.md",
+            "score": 0.6643,
+            "correct": true
+          },
+          {
+            "rank": 2,
+            "kb_id": "578dc012-95a5-443b-aa08-1e493e3ec167",
+            "kb_name": "UNKNOWN (AI-ML-Research/RAG-Research subpath)",
+            "doc": "paper_rag_survey.md",
+            "score": 0.6326,
+            "correct": false
+          },
+          {
+            "rank": 3,
+            "kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+            "kb_name": "AI-ML-Research",
+            "doc": "ReinforcementLearning-DQN-Atari.md",
+            "score": 0.6045,
+            "correct": true
+          },
+          {
+            "rank": 4,
+            "kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+            "kb_name": "AI-ML-Research",
+            "doc": "ReinforcementLearning-DQN-Atari.md",
+            "score": 0.6026,
+            "correct": true
+          },
+          {
+            "rank": 5,
+            "kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+            "kb_name": "AI-ML-Research",
+            "doc": "ReinforcementLearning-DQN-Atari.md",
+            "score": 0.5977,
+            "correct": true
+          }
+        ],
+        "unique_kbs": 2,
+        "false_positives": 1,
+        "fpr": 0.2,
+        "note": "Result #2 has kb_id 578dc012 not matching AI-ML-Research (4c1b9eb6) - possible stale sub-KB entry"
+      }
+    },
+    {
+      "query": "thermal management cooling PCM heat transfer",
+      "correct_kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+      "correct_kb_name": "Energy-Batteries",
+      "flat_search": {
+        "results": [
+          {
+            "rank": 1,
+            "kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+            "kb_name": "Energy-Batteries",
+            "doc": "battery-thermal-management.md",
+            "score": 0.696,
+            "correct": true
+          },
+          {
+            "rank": 2,
+            "kb_id": "4586cbec-a111-407a-883d-3b04532be556",
+            "kb_name": "Materials-ML-InverseDesign",
+            "doc": "Reinforcement learning-based inverse design of.md",
+            "score": 0.6326,
+            "correct": false
+          },
+          {
+            "rank": 3,
+            "kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+            "kb_name": "Energy-Batteries",
+            "doc": "battery-thermal-management.md",
+            "score": 0.6326,
+            "correct": true
+          },
+          {
+            "rank": 4,
+            "kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+            "kb_name": "Energy-Batteries",
+            "doc": "battery-thermal-management.md",
+            "score": 0.628,
+            "correct": true
+          },
+          {
+            "rank": 5,
+            "kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+            "kb_name": "Energy-Batteries",
+            "doc": "battery-thermal-management.md",
+            "score": 0.6241,
+            "correct": true
+          }
+        ],
+        "unique_kbs": 2,
+        "false_positives": 1,
+        "fpr": 0.2
+      },
+      "domain_search": {
+        "results": [
+          {
+            "rank": 1,
+            "kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+            "kb_name": "Energy-Batteries",
+            "doc": "battery-thermal-management.md",
+            "score": 0.696,
+            "correct": true
+          },
+          {
+            "rank": 2,
+            "kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+            "kb_name": "Energy-Batteries",
+            "doc": "battery-thermal-management.md",
+            "score": 0.6326,
+            "correct": true
+          },
+          {
+            "rank": 3,
+            "kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+            "kb_name": "Energy-Batteries",
+            "doc": "battery-thermal-management.md",
+            "score": 0.628,
+            "correct": true
+          },
+          {
+            "rank": 4,
+            "kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+            "kb_name": "Energy-Batteries",
+            "doc": "battery-thermal-management.md",
+            "score": 0.6241,
+            "correct": true
+          },
+          {
+            "rank": 5,
+            "kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+            "kb_name": "Energy-Batteries",
+            "doc": "battery-thermal-management.md",
+            "score": 0.6228,
+            "correct": true
+          }
+        ],
+        "unique_kbs": 1,
+        "false_positives": 0,
+        "fpr": 0.0
+      }
+    },
+    {
+      "query": "MXene supercapacitor energy storage electrode",
+      "correct_kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+      "correct_kb_name": "Materials-Science",
+      "flat_search": {
+        "results": [
+          {
+            "rank": 1,
+            "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+            "kb_name": "Materials-Science",
+            "doc": "mxene-energy-storage.md",
+            "score": 0.742,
+            "correct": true
+          },
+          {
+            "rank": 2,
+            "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+            "kb_name": "Materials-Science",
+            "doc": "mxene-energy-storage.md",
+            "score": 0.6647,
+            "correct": true
+          },
+          {
+            "rank": 3,
+            "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+            "kb_name": "Materials-Science",
+            "doc": "mxene-energy-storage.md",
+            "score": 0.6438,
+            "correct": true
+          },
+          {
+            "rank": 4,
+            "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+            "kb_name": "Materials-Science",
+            "doc": "mxene-energy-storage.md",
+            "score": 0.6394,
+            "correct": true
+          },
+          {
+            "rank": 5,
+            "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+            "kb_name": "Materials-Science",
+            "doc": "mxene-energy-storage.md",
+            "score": 0.6359,
+            "correct": true
+          }
+        ],
+        "unique_kbs": 1,
+        "false_positives": 0,
+        "fpr": 0.0
+      },
+      "domain_search": {
+        "results": [
+          {
+            "rank": 1,
+            "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+            "kb_name": "Materials-Science",
+            "doc": "mxene-energy-storage.md",
+            "score": 0.742,
+            "correct": true
+          },
+          {
+            "rank": 2,
+            "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+            "kb_name": "Materials-Science",
+            "doc": "mxene-energy-storage.md",
+            "score": 0.6647,
+            "correct": true
+          },
+          {
+            "rank": 3,
+            "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+            "kb_name": "Materials-Science",
+            "doc": "mxene-energy-storage.md",
+            "score": 0.6438,
+            "correct": true
+          },
+          {
+            "rank": 4,
+            "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+            "kb_name": "Materials-Science",
+            "doc": "mxene-energy-storage.md",
+            "score": 0.6394,
+            "correct": true
+          },
+          {
+            "rank": 5,
+            "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+            "kb_name": "Materials-Science",
+            "doc": "mxene-energy-storage.md",
+            "score": 0.6359,
+            "correct": true
+          }
+        ],
+        "unique_kbs": 1,
+        "false_positives": 0,
+        "fpr": 0.0
+      }
+    },
+    {
+      "query": "neural network medical imaging diagnosis",
+      "correct_kb_id": "61960453-755c-4a4b-aa03-6d9453556572",
+      "correct_kb_name": "Biomedical-Engineering",
+      "flat_search": {
+        "results": [
+          {
+            "rank": 1,
+            "kb_id": "61960453-755c-4a4b-aa03-6d9453556572",
+            "kb_name": "Biomedical-Engineering",
+            "doc": "医学影像.md",
+            "score": 0.5687,
+            "correct": true
+          },
+          {
+            "rank": 2,
+            "kb_id": "4586cbec-a111-407a-883d-3b04532be556",
+            "kb_name": "Materials-ML-InverseDesign",
+            "doc": "semiconductor laser.md",
+            "score": 0.5686,
+            "correct": false
+          },
+          {
+            "rank": 3,
+            "kb_id": "4586cbec-a111-407a-883d-3b04532be556",
+            "kb_name": "Materials-ML-InverseDesign",
+            "doc": "Defect detection in wrap film product...",
+            "score": 0.5638,
+            "correct": false
+          },
+          {
+            "rank": 4,
+            "kb_id": "4586cbec-a111-407a-883d-3b04532be556",
+            "kb_name": "Materials-ML-InverseDesign",
+            "doc": "Quantifying defects in thin films using machine vision.md",
+            "score": 0.5599,
+            "correct": false
+          },
+          {
+            "rank": 5,
+            "kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+            "kb_name": "AI-ML-Research",
+            "doc": "NeuralNetworkOptimization-Adam.md",
+            "score": 0.5562,
+            "correct": false
+          }
+        ],
+        "unique_kbs": 3,
+        "false_positives": 4,
+        "fpr": 0.8
+      },
+      "domain_search": {
+        "results": [
+          {
+            "rank": 1,
+            "kb_id": "61960453-755c-4a4b-aa03-6d9453556572",
+            "kb_name": "Biomedical-Engineering",
+            "doc": "医学影像.md",
+            "score": 0.5687,
+            "correct": true
+          },
+          {
+            "rank": 2,
+            "kb_id": "61960453-755c-4a4b-aa03-6d9453556572",
+            "kb_name": "Biomedical-Engineering",
+            "doc": "医学影像.md",
+            "score": 0.5542,
+            "correct": true
+          },
+          {
+            "rank": 3,
+            "kb_id": "61960453-755c-4a4b-aa03-6d9453556572",
+            "kb_name": "Biomedical-Engineering",
+            "doc": "医学影像.md",
+            "score": 0.544,
+            "correct": true
+          },
+          {
+            "rank": 4,
+            "kb_id": "61960453-755c-4a4b-aa03-6d9453556572",
+            "kb_name": "Biomedical-Engineering",
+            "doc": "医学影像.md",
+            "score": 0.5315,
+            "correct": true
+          },
+          {
+            "rank": 5,
+            "kb_id": "61960453-755c-4a4b-aa03-6d9453556572",
+            "kb_name": "Biomedical-Engineering",
+            "doc": "医学影像.md",
+            "score": 0.5268,
+            "correct": true
+          }
+        ],
+        "unique_kbs": 1,
+        "false_positives": 0,
+        "fpr": 0.0
+      }
+    }
+  ],
+  "summary": {
+    "total_queries": 4,
+    "flat": {
+      "total_results": 20,
+      "total_false_positives": 9,
+      "overall_fpr": 0.45,
+      "by_query": [
+        {
+          "query": 1,
+          "label": "RL policy optimization",
+          "fpr": 0.8,
+          "unique_kbs": 3
+        },
+        {
+          "query": 2,
+          "label": "Thermal PCM",
+          "fpr": 0.2,
+          "unique_kbs": 2
+        },
+        {
+          "query": 3,
+          "label": "MXene supercapacitor",
+          "fpr": 0.0,
+          "unique_kbs": 1
+        },
+        {
+          "query": 4,
+          "label": "Medical imaging NN",
+          "fpr": 0.8,
+          "unique_kbs": 3
+        }
+      ]
+    },
+    "domain": {
+      "total_results": 20,
+      "total_false_positives": 1,
+      "overall_fpr": 0.05,
+      "by_query": [
+        {
+          "query": 1,
+          "label": "RL policy optimization",
+          "fpr": 0.2,
+          "unique_kbs": 2,
+          "note": "1 stale sub-KB bleed"
+        },
+        {
+          "query": 2,
+          "label": "Thermal PCM",
+          "fpr": 0.0,
+          "unique_kbs": 1
+        },
+        {
+          "query": 3,
+          "label": "MXene supercapacitor",
+          "fpr": 0.0,
+          "unique_kbs": 1
+        },
+        {
+          "query": 4,
+          "label": "Medical imaging NN",
+          "fpr": 0.0,
+          "unique_kbs": 1
+        }
+      ]
+    },
+    "fpr_reduction": "Domain search reduces FPR from 0.45 → 0.05 (89% reduction)",
+    "key_findings": [
+      "Q1 (RL) Flat: 80% FPR - strong cross-domain leakage to Materials-ML-InverseDesign (RL-for-materials) and Economics-DataScience",
+      "Q1 (RL) Domain: 20% FPR - 1 stale entry from kb_578dc012 leaking into AI-ML-Research scoped search",
+      "Q2 (Thermal) Flat: 20% FPR - 1 leakage from Materials-ML-InverseDesign (spacecraft PCM application)",
+      "Q2 (Thermal) Domain: 0% FPR - perfect isolation",
+      "Q3 (MXene) Flat: 0% FPR - perfect domain precision, MXene is highly specific",
+      "Q3 (MXene) Domain: 0% FPR - perfect isolation",
+      "Q4 (Medical) Flat: 80% FPR - severe leakage to Materials-ML-InverseDesign (defect detection CNNs) and AI-ML-Research (Adam optimizer MNIST)",
+      "Q4 (Medical) Domain: 0% FPR - perfect isolation",
+      "Cross-domain semantic overlap (CNN/neural network terms) drives high FPR in Flat mode",
+      "Domain-scoped search effectively eliminates cross-domain contamination except for known stale-index artifacts"
+    ]
+  }
+}

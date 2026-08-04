@@ -1,0 +1,129 @@
+{
+  "scenario": "S1-Full-Ingest-Pipeline-Test",
+  "timestamp": "2026-07-29T05:23:30Z",
+  "results": {
+    "step1_list_kbs": {
+      "status": "PASS",
+      "details": "Listed 13 knowledge bases successfully",
+      "kb_count": 13,
+      "kb_names": [
+        "高分子双向拉伸文献库",
+        "AI-ML-Research",
+        "Energy-Batteries",
+        "Materials-Science",
+        "Biomedical-Engineering",
+        "Chemistry-Catalysis",
+        "Economics-DataScience",
+        "Materials-ML-InverseDesign",
+        "烹饪与家常菜",
+        "Creative-Thinking-Innovation",
+        "Embodied-AI",
+        "E2E-Integration-Test",
+        "FLAT-Benchmark-KB"
+      ]
+    },
+    "step2_create_test_doc": {
+      "status": "PASS",
+      "kb": "E2E-Integration-Test",
+      "kb_id": "1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c",
+      "doc_id": "d83c4eb8-5959-4c4f-9442-0d2d0bf19abb",
+      "doc_path": "E2E-Integration-Test/Deep Learning for Battery Thermal Management.md",
+      "doc_name": "Deep Learning for Battery Thermal Management.md",
+      "file_size": 434,
+      "auto_index_triggered": true,
+      "content_preview": "Deep Learning for Battery Thermal Management: A novel approach combining CNN and LSTM..."
+    },
+    "step3_index_document": {
+      "status": "PASS",
+      "details": "Explicit kb_index_document call succeeded",
+      "total_chunks": 1,
+      "embedding_model": "bge-m3",
+      "collection": "kb_1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c"
+    },
+    "step4_search_targeted": {
+      "status": "PASS",
+      "query": "battery thermal management deep learning CNN LSTM",
+      "kb_id": "1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c",
+      "top_result_doc": "E2E-Integration-Test/Deep Learning for Battery Thermal Management.md",
+      "top_result_score": 0.8222169280052185,
+      "total_results": 4,
+      "verification": "Target document found as top result with high relevance score"
+    },
+    "step5_cross_domain_pollution": {
+      "status": "PASS",
+      "query": "battery thermal management deep learning CNN LSTM",
+      "kb_id": "",
+      "top_result_doc": "E2E-Integration-Test/Deep Learning for Battery Thermal Management.md",
+      "top_result_score": 0.8222169280052185,
+      "cross_kb_appearances": [
+        {"kb": "Energy-Batteries", "doc": "GNN-Battery-SOC-Estimation-Benchmark-Test.md", "score": 0.7109},
+        {"kb": "Energy-Batteries", "doc": "battery-thermal-management.md", "score": 0.6487}
+      ],
+      "analysis": "No pollution detected. Top result is correct target doc. Cross-KB results are legitimately topically relevant (battery thermal management in Energy-Batteries KB), not noisy pollution.",
+      "total_results": 4
+    },
+    "step6_create_cross_kb_docs": {
+      "status": "PASS",
+      "docs_created": [
+        {
+          "kb": "Energy-Batteries",
+          "kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+          "doc_id": "ce13ea98-7be0-4bab-8169-00d9da17f208",
+          "doc_name": "Solid-State Electrolytes Progress Review.md",
+          "auto_index": true
+        },
+        {
+          "kb": "AI-ML-Research",
+          "kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+          "doc_id": "542fc06a-9ac3-45cb-bdb8-5b0eb7bd7d0f",
+          "doc_name": "Transformer Attention Mechanisms Survey.md",
+          "auto_index": true
+        }
+      ]
+    },
+    "step7_batch_index": {
+      "status": "PASS",
+      "kb": "E2E-Integration-Test",
+      "docs_submitted": 3,
+      "indexed": 3,
+      "skipped": 0,
+      "errors": 0,
+      "indexed_docs": [
+        "Deep Learning for Battery Thermal Management.md",
+        "test-batch-doc-1.md",
+        "test-batch-doc-2.md"
+      ]
+    },
+    "step8_verify_all_searchable": {
+      "status": "PASS",
+      "verifications": [
+        {
+          "doc": "Deep Learning for Battery Thermal Management.md",
+          "kb": "E2E-Integration-Test",
+          "search_query": "battery thermal management deep learning CNN LSTM",
+          "found": true,
+          "top_score": 0.8222,
+          "rank": 1
+        },
+        {
+          "doc": "Solid-State Electrolytes Progress Review.md",
+          "kb": "Energy-Batteries",
+          "search_query": "solid-state electrolytes",
+          "found": true,
+          "top_score": 0.6812,
+          "rank": 1
+        },
+        {
+          "doc": "Transformer Attention Mechanisms Survey.md",
+          "kb": "AI-ML-Research",
+          "search_query": "transformer attention mechanisms FlashAttention",
+          "found": true,
+          "top_score": 0.7267,
+          "rank": 1
+        }
+      ]
+    }
+  },
+  "overall_status": "PASS",
+  "summary": "All 8 steps passed. Full ingest pipeline works end-to-end: KB listing, document creation with auto-indexing, explicit indexing, targeted vector search, cross-domain vector search (no pollution), multi-KB document creation, batch indexing, and cross-KB searchability verification."
+}

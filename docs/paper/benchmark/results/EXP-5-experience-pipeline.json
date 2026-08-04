@@ -1,0 +1,108 @@
+{
+  "experiment": "EXP-5",
+  "title": "Experience Pipeline — Experience-First Retrieval Evaluation",
+  "timestamp": "2026-07-27T10:00:00Z",
+  "config": {
+    "embedding_model": "BAAI/bge-m3",
+    "top_k": 5,
+    "experience_lifecycle": "E0-E12",
+    "evaluation_queries": 20,
+    "existing_experiences": 14,
+    "experience_location": "AI-ML-Research sub-KB"
+  },
+  "datasets": ["20 operational queries", "14 existing experience records"],
+  "metrics": ["exp_hit_rate", "exp_useful_rate", "docs_read_reduction", "time_reduction", "quality_delta"],
+  "results": {
+    "doc_only": {
+      "avg_docs_read": 4.2,
+      "avg_time_s": 28.5,
+      "avg_answer_quality": 3.6,
+      "quality_scale": "0-5"
+    },
+    "exp_first": {
+      "avg_docs_read": 1.6,
+      "avg_time_s": 11.4,
+      "avg_answer_quality": 4.1,
+      "exp_hit_rate": 0.85,
+      "exp_useful_rate": 0.79,
+      "quality_scale": "0-5"
+    },
+    "reduction": {
+      "docs_read_pct": 62,
+      "time_pct": 60,
+      "quality_delta": 0.5,
+      "quality_improvement_pct": 13.9
+    },
+    "experience_stats": {
+      "total_experiences": 14,
+      "avg_rating": 3.8,
+      "avg_applied_count": 2.4,
+      "categories": {
+        "retrieval_strategy": 5,
+        "debugging": 3,
+        "configuration": 4,
+        "best_practice": 2
+      },
+      "credibility_tiers": {
+        "P0": 3,
+        "P1": 8,
+        "P2": 3
+      }
+    },
+    "auto_extraction_quality": {
+      "avg_score": 3.8,
+      "scale": "0-5",
+      "evaluated_by": "domain expert",
+      "extraction_accuracy": 0.82
+    },
+    "per_query_results": [
+      {
+        "qid": "EXP-Q01",
+        "query": "How to fix stale vector index after KB rename",
+        "exp_hit": true,
+        "docs_read": 1,
+        "time_s": 4.2,
+        "quality": 5
+      },
+      {
+        "qid": "EXP-Q02",
+        "query": "Best practice for multi-KB search",
+        "exp_hit": true,
+        "docs_read": 2,
+        "time_s": 8.1,
+        "quality": 4
+      },
+      {
+        "qid": "EXP-Q03",
+        "query": "Why does content verification timeout",
+        "exp_hit": true,
+        "docs_read": 1,
+        "time_s": 5.0,
+        "quality": 4
+      },
+      {
+        "qid": "EXP-Q04",
+        "query": "How to configure score threshold for small KB",
+        "exp_hit": false,
+        "docs_read": 4,
+        "time_s": 25.0,
+        "quality": 3
+      },
+      {
+        "qid": "EXP-Q05",
+        "query": "Experience decay configuration",
+        "exp_hit": true,
+        "docs_read": 0,
+        "time_s": 2.1,
+        "quality": 5
+      }
+    ]
+  },
+  "key_findings": [
+    "Experience-first retrieval reduces docs read by 62% and time by 60%",
+    "Experience hit rate is 85% for operational queries",
+    "Answer quality improves by 0.5 points (13.9%) when experience is available",
+    "Auto-extraction achieves 82% accuracy with 3.8/5 quality",
+    "All 14 experiences are in AI-ML-Research sub-KB, limiting coverage for other domains"
+  ]
+}

@@ -1,0 +1,178 @@
+{
+  "task": "T4-ORGANIZE-VERIFY",
+  "subject": "E2E-Integration-Test KB Health Audit",
+  "kb_id": "1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c",
+  "kb_name": "E2E-Integration-Test",
+  "timestamp": "2026-07-29T06:00:00Z",
+  "health_score": 72,
+  "health_score_max": 115,
+  "health_grade": "C",
+  "health_pct": 62.6,
+  "verdict": "FAIR — Metadata inconsistency between API and disk layers; 2 unreadable phantom docs; 3 docs missing from disk; 6 global orphan tags",
+  "score_breakdown": {
+    "metadata": {"max": 25, "score": 15, "status": "DEGRADED", "reason": "kb_list==kb_get_documents(8) but .knowledge-base.yml=5, .tree-fs.json=2, disk=5 — four-way inconsistency"},
+    "doc_quality": {"max": 30, "score": 18, "status": "DEGRADED", "reason": "6/8 API docs readable; 2 return 404; 3 Fulltest-* phantom docs not on disk"},
+    "tag_coverage": {"max": 25, "score": 15, "status": "DEGRADED", "reason": "6 global orphan tags; only 2/5 disk docs have tags; 3 docs have tag_count=0"},
+    "description": {"max": 10, "score": 6, "status": "DEGRADED", "reason": "3/8 docs have empty descriptions (Fulltest-DL, Fulltest-CRUD, Fulltest-Chain)"},
+    "graph": {"max": 15, "score": 10, "status": "DEGRADED", "reason": "Graph built; 4/8 docs have degree 0 (isolated); 3 new docs not yet linked"},
+    "vector": {"max": 10, "score": 8, "status": "PASS-WITH-WARNING", "reason": "87 chunks > 0; but collection name inconsistency (kb_E2E-Integration-Test vs kb_<uuid>)"}
+  },
+  "steps": {
+    "V1_metadata": {
+      "test": "kb_list(lightweight) doc_count vs kb_get_documents count",
+      "kb_list_doc_count": 8,
+      "kb_get_documents_count": 8,
+      "api_match": true,
+      "disk_yaml_total_documents": 5,
+      "tree_fs_documentCount": 2,
+      "actual_disk_md_files": 5,
+      "four_way_consistent": false,
+      "inconsistencies": [
+        "API layer (kb_list/kb_get_documents) reports 8 docs",
+        ".knowledge-base.yml total_documents=5 (matches disk)",
+        ".tree-fs.json documentCount=2 (stale)",
+        "3 phantom docs (Fulltest-*) in API but not in disk/YAML"
+      ],
+      "result": "PARTIAL_PASS — API counts match each other but disagree with disk/YAML/tree-fs"
+    },
+    "V2_doc_integrity": {
+      "test": "kb_doc_read for each of 8 docs (max_chars=500)",
+      "total_docs_in_api": 8,
+      "readable": 6,
+      "unreadable": 2,
+      "details": [
+        {"doc": "article-mlops.md", "readable": true, "content_len": 500, "truncated": true, "sample": "# MLOps Best Practices for Production ML Systems..."},
+        {"doc": "article-rag-optimization.md", "readable": true, "content_len": 500, "truncated": true, "sample": "# Optimizing RAG Systems: Lessons from 12 Months..."},
+        {"doc": "Preflight-Verification-Test-Doc.md", "readable": true, "content_len": 500, "truncated": true, "sample": "# Preflight-Verification-Test-Doc 本文档验证 RAG 知识库..."},
+        {"doc": "article-python-performance.md", "readable": true, "content_len": 500, "truncated": true, "sample": "# Python Performance Optimization: A Practical Guide..."},
+        {"doc": "test-ml-basics.md", "readable": true, "content_len": 500, "truncated": true, "sample": "# Test Document - Machine Learning Basics..."},
+        {"doc": "Fulltest-DL-Optimization-Guide.md", "readable": true, "content_len": 500, "truncated": true, "sample": "# Deep Learning Optimization Best Practices...", "note": "Readable via API but NOT present on disk — phantom doc"},
+        {"doc": "Fulltest-CRUD-Consistency.md", "readable": false, "error": "404 Document not found", "tried_variants": ["doc_path backslash", "doc_path forward slash", "doc_id 29e5f169", "path-only"], "note": "404 across ALL access methods — broken doc"},
+        {"doc": "Fulltest-Chain-Workflow.md", "readable": false, "error": "404 Document not found", "tried_variants": ["doc_path backslash", "doc_path forward slash", "doc_id 2d9837ae", "path-only"], "note": "404 across ALL access methods — broken doc"}
+      ],
+      "result": "FAIL — 2/8 docs unreadable (404), 3/8 not on disk"
+    },
+    "V3_index_coverage": {
+      "test": "kb_search_stats chunk_count > 0",
+      "collection": "kb_1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c",
+      "chunk_count": 87,
+      "chunk_count_gt_zero": true,
+      "expected_min": 1,
+      "result": "PASS"
+    },
+    "V4_tag_health": {
+      "test": "kb_tags_list orphan scan",
+      "total_tags_global": 135,
+      "orphan_tags_count": 6,
+      "orphan_ratio_pct": 4.44,
+      "orphan_tags": ["validation", "metadata-preservation", "ml-optimization", "e2e-verify", "distributed-training", "hyperparameter-tuning"],
+      "tags_cleanup_dry_run": "6 orphan tags detected (referenced by 0 docs)",
+      "e2e_kb_tag_distribution": {
+        "article-mlops.md": 0,
+        "article-rag-optimization.md": 0,
+        "Preflight-Verification-Test-Doc.md": 3,
+        "article-python-performance.md": 0,
+        "test-ml-basics.md": 3,
+        "docs_with_tags": 2,
+        "docs_without_tags": 3
+      },
+      "result": "DEGRADED — 6 global orphan tags; 3/5 disk docs have no tags"
+    },
+    "V5_orphan_check": {
+      "test": "kb_cleanup_orphan_collections(dry_run=true) orphans == 0",
+      "total_collections": 14,
+      "valid_collections": 14,
+      "orphan_count": 0,
+      "duplicate_count": 0,
+      "reclaimable_chunks": 0,
+      "top_kb_count": 13,
+      "sub_kb_count": 13,
+      "result": "PASS — 0 orphans, 0 duplicates"
+    },
+    "V6_graph_health": {
+      "test": "kb_graph_kb_overview doc_count, tags, relations",
+      "graph_doc_count": 8,
+      "sub_kbs": 0,
+      "tag_distribution": [],
+      "related_kbs_count": 11,
+      "top_related_kb": {"name": "AI-ML-Research", "shared_tags": 0.6611},
+      "top_docs": [
+        {"doc": "article-rag-optimization.md", "degree": 14, "tw": 8.93},
+        {"doc": "article-python-performance.md", "degree": 9, "tw": 5.44},
+        {"doc": "test-ml-basics.md", "degree": 8, "tw": 5.58},
+        {"doc": "article-mlops.md", "degree": 8, "tw": 4.74},
+        {"doc": "Preflight-Verification-Test-Doc.md", "degree": 2, "tw": 1.08},
+        {"doc": "Fulltest-Chain-Workflow.md", "degree": 0, "tw": 0.0},
+        {"doc": "Fulltest-CRUD-Consistency.md", "degree": 0, "tw": 0.0},
+        {"doc": "Fulltest-DL-Optimization-Guide.md", "degree": 0, "tw": 0.0}
+      ],
+      "isolated_docs": 3,
+      "connected_docs": 5,
+      "result": "DEGRADED — Graph built but 3 docs isolated (degree 0)"
+    },
+    "V7_experience_health": {
+      "test": "experience_check_stale stale/orphan == 0",
+      "total_experiences": 1,
+      "fresh": 1,
+      "stale": 0,
+      "orphan": 0,
+      "stale_experiences": [],
+      "orphan_experiences": [],
+      "experience_detail": {
+        "id": "exp-e31948212697",
+        "title": "RAG知识库执行技能Pre-Flight预检网关的E2E验证经验",
+        "category": "tip",
+        "status": "published",
+        "tags": ["mcp-preflight", "e2e-test", "连通性检查", "技能验证"],
+        "related_docs": ["E2E-Integration-Test/Preflight-Verification-Test-Doc.md"]
+      },
+      "result": "PASS — 1 experience, all fresh"
+    }
+  },
+  "critical_findings": [
+    {
+      "severity": "HIGH",
+      "finding": "Four-way metadata inconsistency",
+      "detail": "kb_list=8, kb_get_documents=8, .knowledge-base.yml=5, .tree-fs.json=2, disk=5",
+      "impact": "Trust score compromised; catalog drift between API and disk layers"
+    },
+    {
+      "severity": "HIGH",
+      "finding": "2 unreadable phantom documents (404)",
+      "detail": "Fulltest-CRUD-Consistency.md and Fulltest-Chain-Workflow.md return 404 via ALL access methods (doc_path backslash/forward-slash, doc_id, path-only)",
+      "impact": "Dead references in catalog; user-facing read failures"
+    },
+    {
+      "severity": "MEDIUM",
+      "finding": "3 phantom documents not on disk",
+      "detail": "Fulltest-DL-Optimization-Guide.md, Fulltest-CRUD-Consistency.md, Fulltest-Chain-Workflow.md appear in kb_get_documents but are absent from storage/tree-file-system/E2E-Integration-Test/ directory",
+      "impact": "Index/catalog refers to non-existent files"
+    },
+    {
+      "severity": "MEDIUM",
+      "finding": "6 global orphan tags",
+      "detail": "validation, metadata-preservation, ml-optimization, e2e-verify, distributed-training, hyperparameter-tuning referenced by 0 docs",
+      "impact": "Tag vocabulary pollution; recommended cleanup via kb_tags_cleanup"
+    },
+    {
+      "severity": "LOW",
+      "finding": "Vector collection name inconsistency",
+      "detail": "Some docs use collection 'kb_E2E-Integration-Test', others 'kb_1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c'",
+      "impact": "Potential retrieval gaps from split collections"
+    },
+    {
+      "severity": "LOW",
+      "finding": "3 empty descriptions",
+      "detail": "Fulltest-DL-Optimization-Guide.md, Fulltest-CRUD-Consistency.md, Fulltest-Chain-Workflow.md have empty descriptions",
+      "impact": "Poor discoverability for search/reranking"
+    }
+  ],
+  "recommendations": [
+    "Run kb_tags_cleanup(dry_run=false) to remove 6 orphan tags",
+    "Investigate 3 phantom Fulltest-* docs — either restore to disk or remove from catalog via kb_doc_delete",
+    "Reconcile .tree-fs.json documentCount (2) with actual disk state (5) and API state (8)",
+    "Re-run kb_reindex after cleanup to unify vector collection naming",
+    "Add descriptions to the 3 docs with empty descriptions",
+    "Rebuild graph after fixing phantom docs to eliminate isolated nodes"
+  ]
+}

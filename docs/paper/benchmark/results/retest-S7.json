@@ -1,0 +1,82 @@
+{
+  "scenario": "S7",
+  "title": "Five-Layer Consistency CRUD — Post Bug-1 Fix Retest",
+  "timestamp": "2026-07-29T05:41:45Z",
+  "fix_under_test": "BUG-1: Path separator normalization in _delete_doc_chunks",
+  "kb_id": "1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c",
+  "kb_name": "E2E-Integration-Test",
+  "steps": {
+    "step1_create": {
+      "description": "CREATE doc via kb_doc_create",
+      "status": "PASS",
+      "details": {
+        "doc_name": "FIX-VERIFY-CRUD-Test.md",
+        "doc_id": "e0851049-a04e-45c4-8a0f-43043f26fedb",
+        "content": "# Fix Verification\nThis doc tests delete cleanup after path normalization fix.",
+        "auto_index_triggered": true,
+        "index_task_id": "1b9736a67f74"
+      }
+    },
+    "step2_wait": {
+      "description": "Wait 5 seconds for auto-index",
+      "status": "PASS",
+      "duration_seconds": 5
+    },
+    "step3_search_pre_delete": {
+      "description": "kb_search_vector for 'fix verification delete cleanup' — doc MUST be found",
+      "status": "PASS",
+      "details": {
+        "found": true,
+        "score": 0.7228848934173584,
+        "rank": 1,
+        "total_results": 4,
+        "collection": "kb_1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c"
+      }
+    },
+    "step4_delete": {
+      "description": "DELETE doc via kb_doc_delete",
+      "status": "PASS",
+      "details": {
+        "deleted_id": "e0851049-a04e-45c4-8a0f-43043f26fedb",
+        "message": "File \"FIX-VERIFY-CRUD-Test.md\" deleted successfully"
+      }
+    },
+    "step5_wait": {
+      "description": "Wait 5 seconds for fire-and-forget cleanup",
+      "status": "PASS",
+      "duration_seconds": 5
+    },
+    "step6_search_post_delete": {
+      "description": "CRITICAL: kb_search_vector same query — doc MUST NOT appear (L4 cleanup)",
+      "status": "PASS",
+      "details": {
+        "found": false,
+        "total_results": 4,
+        "top_results": [
+          "CRUD-Stress-Test-S7.md (score 0.559)",
+          "exp-84defc5478cd.md (score 0.497)",
+          "exp-d692406dd111.md (score 0.168)",
+          "Preflight-Verification-Test-Doc.md (score 0.153)"
+        ],
+        "note": "FIX-VERIFY-CRUD-Test.md is ABSENT from results — BUG-1 fix confirmed working"
+      }
+    },
+    "step7_stats": {
+      "description": "kb_search_stats — verify chunk count excludes deleted doc",
+      "status": "PASS",
+      "details": {
+        "kb_id": "1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c",
+        "collection": "kb_1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c",
+        "chunk_count": 78,
+        "document_list_count": 6,
+        "deleted_doc_in_list": false,
+        "verification": "FIX-VERIFY-CRUD-Test.md absent from document list"
+      }
+    }
+  },
+  "overall": {
+    "verdict": "PASS",
+    "bug1_fix_confirmed": true,
+    "summary": "BUG-1 path normalization fix in _delete_doc_chunks works correctly. Full CRUD cycle: create → index → search-confirm → delete → cleanup → search-verify-absent. Deleted document chunks are properly removed from the vector index. L4 (vector index) cleanup is verified."
+  }
+}

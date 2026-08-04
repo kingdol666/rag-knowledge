@@ -1,0 +1,240 @@
+{
+  "test_id": "T5-EXPERIENCE",
+  "test_name": "Experience Pipeline Full Test",
+  "timestamp": "2026-07-29T00:00:00Z",
+  "target_kb": {
+    "kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+    "kb_name": "AI-ML-Research"
+  },
+
+  "step1_meditation_status": {
+    "success": true,
+    "scheduler": {
+      "enabled": false,
+      "interval_hours": 24,
+      "running_now": false,
+      "last_run": null,
+      "last_result": null,
+      "next_run_eta": null
+    },
+    "harnesses": {
+      "omp": {"installed": true, "version": "omp/17.1.5"},
+      "claude": {"installed": false, "version": "2.1.220 (Claude Code)", "api_key_configured": false}
+    },
+    "circuit_breaker": {
+      "omp": {"tripped": false, "until": null, "consecutive_failures": 0},
+      "claude": {"tripped": false, "until": null, "consecutive_failures": 0}
+    },
+    "ai_ml_research_config": {
+      "enabled": true,
+      "harness": "omp",
+      "model": "",
+      "auto_publish": true,
+      "interval_hours": 24,
+      "max_drafts_per_run": 3,
+      "max_budget_usd": 0.05,
+      "timeout_sec": 300,
+      "last_run_at": "2026-07-28T08:44:30.338834+00:00",
+      "last_run_status": "success",
+      "total_runs": 2,
+      "total_experiences_generated": 3,
+      "incremental_enabled": true
+    },
+    "total_kb_configs_returned": 26,
+    "analysis": "Scheduler is currently disabled globally. The omp harness is installed; claude harness is not. AI-ML-Research KB has meditation enabled with auto-publish=true, 2 prior successful runs generating 3 experiences. Circuit breakers not tripped."
+  },
+
+  "step2_experience_list": {
+    "success": true,
+    "count": 7,
+    "experiences": [
+      {"id": "exp-bc873004954d", "title": "Adam优化器调参经验", "scenario": "optimizer-tuning", "category": "optimization", "severity": "tip", "status": "published", "applied_count": 2, "rating_avg": 5.0, "review_count": 1, "decay_flag": "unvetted"},
+      {"id": "exp-a13b205491b4", "title": "Transformer纯注意力机制替代RNN的经验", "scenario": "seq2seq-models", "category": "best_practice", "severity": "important", "status": "published", "applied_count": 1, "rating_avg": 5.0, "review_count": 1},
+      {"id": "exp-dae96a009807", "title": "kb-mcp filesystem 工具集体 ConnectError 排查：web 服务单点故障", "scenario": "kb-mcp-filesystem-connect-error", "category": "troubleshooting", "severity": "critical", "status": "published", "applied_count": 1, "rating_avg": 5.0, "review_count": 1, "needs_sync": true},
+      {"id": "exp-87993d41a050", "title": "AI-ML-Research 索引碎片整理：去重 + kb_reindex 统一双 collection", "scenario": "kb-index-dedup-and-reindex", "category": "optimization", "severity": "important", "status": "published", "applied_count": 0, "rating_avg": 0.0, "review_count": 0, "decay_flag": "unvetted"},
+      {"id": "exp-414b5773cf30", "title": "Adam优化器的自适应学习率机制", "scenario": "deep-learning-optimizer-selection", "category": "best_practice", "severity": "normal", "status": "published", "vetted": true, "applied_count": 0, "rating_avg": 0.0, "review_count": 0},
+      {"id": "exp-33ccb762e328", "title": "Transformer的Multi-Head Self-Attention机制与并行化", "scenario": "sequence-transduction-architecture-design", "category": "best_practice", "severity": "normal", "status": "published", "vetted": true, "applied_count": 0, "rating_avg": 0.0, "review_count": 0},
+      {"id": "exp-b4a80026da28", "title": "ReAct模式：推理与行动协同增强LLM决策能力", "scenario": "llm-agent-reasoning-acting", "category": "best_practice", "severity": "normal", "status": "published", "vetted": true, "applied_count": 0, "rating_avg": 0.0, "review_count": 0}
+    ]
+  },
+
+  "step3_smart_search_1_dl_training_convergence": {
+    "query": "how to optimize deep learning training convergence",
+    "top_k": 5,
+    "success": true,
+    "count": 0,
+    "vector_recall": 3,
+    "keyword_recall": 0,
+    "tier_counts": {"P0": 0, "P1": 0, "P2": 0, "discarded": 3},
+    "query_type": "troubleshooting",
+    "rounds": 1,
+    "degraded": false,
+    "adaptive_threshold": 0.55,
+    "effective_threshold": 0.55,
+    "message": "召回3条但内容验证全部不过——无确认经验，不编造 (3 recalled but content verification rejected all - no confirmed experience, no fabrication)",
+    "relevance_assessment": "NO results returned - all 3 vector-recalled candidates failed content verification. The query about 'training convergence' is adjacent to existing Adam/optimizer experiences in AI-ML-Research, but the QDCVR content-verification gate correctly rejected them as not directly answering convergence optimization. This is honest non-fabrication behavior - the system refused to invent relevant results.",
+    "honesty_note": "PASS - system returned empty rather than fabricating. 3 discarded = high precision threshold working correctly."
+  },
+
+  "step4_smart_search_2_battery_thermal_management": {
+    "query": "battery thermal management cooling solution troubleshooting",
+    "top_k": 5,
+    "success": true,
+    "count": 1,
+    "vector_recall": 0,
+    "keyword_recall": 1,
+    "tier_counts": {"P0": 0, "P1": 0, "P2": 1, "discarded": 0},
+    "query_type": "troubleshooting",
+    "rounds": 3,
+    "degraded": true,
+    "adaptive_threshold": 0.55,
+    "effective_threshold": 0.231,
+    "message": "向量0+关键词1召回 → 内容验证通过1 → 返回1 (vector 0 + keyword 1 recalled -> 1 passed content verification -> returned 1)",
+    "returned_experience": {
+      "id": "exp-e31948212697",
+      "title": "RAG知识库执行技能Pre-Flight预检网关的E2E验证经验",
+      "kb_path": "E2E-Integration-Test",
+      "vector_score": 0.505,
+      "content_score": 3,
+      "tier": "P2",
+      "tier_reason": "weak (vector=0.51 content=3)"
+    },
+    "relevance_assessment": "FALSE POSITIVE / IRRELEVANT - The single returned result is about RAG Pre-Flight gateway E2E testing, which has NOTHING to do with battery thermal management. This is a spurious keyword match ('troubleshooting' query_type classification likely triggered keyword surface match on 'verification'/'cooling' loosely). The query is about Energy-Batteries domain but searched across all KBs (no kb_id filter). The result came from E2E-Integration-Test KB.",
+    "honesty_note": "FAIL on precision - returned an irrelevant result. However: it was correctly tiered as weak P2 (vector=0.51 content=3), so the tier system flagged low confidence. The degraded=true flag indicates the search relaxed thresholds over 3 rounds trying to find SOMETHING. This is a precision/recall tradeoff artifact - degraded search surfaces low-confidence matches rather than empty."
+  },
+
+  "step5_smart_search_3_vla_sim_to_real": {
+    "query": "VLA model training robot manipulation sim-to-real transfer",
+    "top_k": 5,
+    "success": true,
+    "count": 5,
+    "vector_recall": 0,
+    "keyword_recall": 5,
+    "tier_counts": {"P0": 0, "P1": 2, "P2": 3, "discarded": 0},
+    "query_type": "learning",
+    "rounds": 3,
+    "degraded": true,
+    "adaptive_threshold": 0.35,
+    "effective_threshold": 0.15,
+    "message": "向量0+关键词5召回 → 内容验证通过5 → 返回5 (vector 0 + keyword 5 recalled -> 5 passed -> returned 5)",
+    "returned_experiences": [
+      {"id": "exp-69677f288e8d", "title": "VLA模型三阶段训练范式经验", "kb_path": "Embodied-AI", "vector_score": 0.664, "content_score": 4, "tier": "P1", "tier_reason": "high-semantic-match"},
+      {"id": "exp-eb9542844f7c", "title": "Sim-to-Real迁移与VLA模型应用部署经验", "kb_path": "Embodied-AI", "vector_score": 0.583, "content_score": 4, "tier": "P1", "tier_reason": "vector=0.58 content=4"},
+      {"id": "exp-a13b205491b4", "title": "Transformer纯注意力机制替代RNN的经验", "kb_path": "AI-ML-Research", "vector_score": 0.501, "content_score": 3, "tier": "P2", "tier_reason": "weak (vector=0.50 content=3)"},
+      {"id": "exp-33ccb762e328", "title": "Transformer的Multi-Head Self-Attention机制与并行化", "kb_path": "AI-ML-Research", "vector_score": 0.501, "content_score": 3, "tier": "P2", "tier_reason": "weak (vector=0.50 content=3)"},
+      {"id": "exp-72aa2c70b1f9", "title": "具身智能数据集构建与增强经验", "kb_path": "Embodied-AI", "vector_score": 0.501, "content_score": 3, "tier": "P2", "tier_reason": "weak (vector=0.50 content=3)"}
+    ],
+    "relevance_assessment": "PARTIALLY RELEVANT - The 2 P1 results (both from Embodied-AI) are HIGHLY relevant: VLA三阶段训练范式 directly covers VLA training + sim-to-real, and Sim-to-Real迁移 directly addresses sim-to-real transfer. The 3 P2 results are WEAK: 2 are about Transformer architecture (peripheral, matched on generic 'model' keyword), 1 is about embodied dataset construction (tangentially relevant). Overall the top-2 results correctly answer the query; the rest are filler due to degraded threshold relaxation.",
+    "honesty_note": "PASS - top-2 P1 results are genuinely relevant and high-quality. The Embodied-AI KB has rich VLA experiences. degraded=true with effective_threshold dropped to 0.15 to fill top_k=5 with weaker matches."
+  },
+
+  "step6_dashboard": {
+    "success": true,
+    "kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+    "total_experiences": 7,
+    "by_tier": {"P0": 0, "P1": 3, "P2": 4},
+    "summary": {
+      "total": 7,
+      "by_category": {"best_practice": 4, "optimization": 2, "troubleshooting": 1},
+      "by_severity": {"important": 2, "tip": 1, "critical": 1, "normal": 3},
+      "total_applied": 4,
+      "avg_rating": 5.0,
+      "unrated_count": 4,
+      "reviewed_count": 3,
+      "top_experiences": [
+        {"id": "exp-bc873004954d", "title": "Adam优化器调参经验", "rating": 5.0, "credibility": 0.8},
+        {"id": "exp-dae96a009807", "title": "kb-mcp filesystem ConnectError排查", "rating": 5.0, "credibility": 0.75},
+        {"id": "exp-a13b205491b4", "title": "Transformer纯注意力机制替代RNN", "rating": 5.0, "credibility": 0.74},
+        {"id": "exp-414b5773cf30", "title": "Adam优化器的自适应学习率机制", "rating": 0.0, "credibility": 0.3},
+        {"id": "exp-33ccb762e328", "title": "Transformer Multi-Head Self-Attention", "rating": 0.0, "credibility": 0.3}
+      ]
+    },
+    "drafts_pending": 0,
+    "stale": 0,
+    "orphan": 0,
+    "needs_sync": 1,
+    "analysis": "7 experiences, 3 P1 (reviewed, rating 5.0, credibility 0.74-0.80), 4 P2 (unrated, credibility 0.30). 1 needs_sync (exp-dae96a009807 related_doc ReAct.md marked stale). 0 drafts pending, 0 stale, 0 orphan."
+  },
+
+  "step7_summary": {
+    "success": true,
+    "summary": {
+      "total": 7,
+      "by_category": {"best_practice": 4, "optimization": 2, "troubleshooting": 1},
+      "by_severity": {"important": 2, "tip": 1, "critical": 1, "normal": 3},
+      "total_applied": 4,
+      "avg_rating": 5.0,
+      "unrated_count": 4,
+      "reviewed_count": 3,
+      "top_experiences": [
+        {"id": "exp-bc873004954d", "rating": 5.0, "credibility": 0.8},
+        {"id": "exp-dae96a009807", "rating": 5.0, "credibility": 0.75},
+        {"id": "exp-a13b205491b4", "rating": 5.0, "credibility": 0.74},
+        {"id": "exp-414b5773cf30", "rating": 0.0, "credibility": 0.3},
+        {"id": "exp-33ccb762e328", "rating": 0.0, "credibility": 0.3}
+      ]
+    },
+    "consistency_check": "PASS - summary statistics match dashboard exactly (7 total, identical category/severity/rating breakdown)."
+  },
+
+  "step8_experience_read": {
+    "success": true,
+    "experience_id": "exp-bc873004954d",
+    "title": "Adam优化器调参经验",
+    "scenario": "optimizer-tuning",
+    "category": "optimization",
+    "severity": "tip",
+    "status": "published",
+    "problem": "SGD学习率难以调参，对稀疏梯度和不同参数尺度缺乏自适应能力",
+    "solution": "使用Adam优化器：利用梯度一阶矩(动量)和二阶矩(自适应学习率)的指数移动平均估计，配合偏差修正解决初始化偏差问题，实现每个参数独立的自适应学习率",
+    "key_lessons": [
+      "Adam自适应学习率对稀疏梯度和非平稳目标都表现良好",
+      "默认超参数(α=0.001, β1=0.9, β2=0.999)在大多数问题上效果优秀",
+      "AdaMax变体使用无穷范数在某些场景下更稳定"
+    ],
+    "tags": ["深度学习", "优化算法", "Adam"],
+    "related_docs": [],
+    "prerequisites": [],
+    "metrics": {},
+    "decay_flag": "unvetted",
+    "applied_count": 2,
+    "rating_avg": 5.0,
+    "review_count": 1,
+    "vector_index": {
+      "collection": "kb_AI-ML-Research",
+      "total_chunks": 5,
+      "embedding_model": "bge-m3",
+      "indexed_at": "2026-07-28T06:52:15.003199+00:00"
+    },
+    "apply_records": [
+      {"user": "e2e-test", "context": "使用了Adam优化器进行Transformer模型训练，确认默认超参数适用", "result": "success", "notes": "E2E自动测试验证", "applied_at": "2026-07-28T06:52:03.531977+00:00"},
+      {"user": "e2e-test-2", "context": "在LSTM模型微调中使用Adam优化器，效果良好", "result": "success", "notes": "第二次验证", "applied_at": "2026-07-28T06:52:07.301902+00:00"}
+    ],
+    "content_length_chars": 615,
+    "has_full_content": true,
+    "analysis": "Full markdown content retrieved. Experience has rich metadata, 2 application records (both e2e-test verifications), rating 5.0 from 1 review. decay_flag=unvetted indicates it has not gone through formal vetting but is still returned in queries. Frontmatter includes harness=manual, vetted=True, confidence=1.0."
+  },
+
+  "overall_assessment": {
+    "all_steps_succeeded": true,
+    "steps_completed": 8,
+    "steps_total": 8,
+    "tool_calls_made": 8,
+    "failures": [],
+    "key_findings": [
+      "Scheduler globally disabled but AI-ML-Research KB has meditation enabled with auto-publish; 2 prior runs generated 3 experiences (the 3 newest: Adam/Transformer/ReAct)",
+      "AI-ML-Research has 7 published experiences spanning optimization (2), best_practice (4), troubleshooting (1)",
+      "QDCVR content-verification gate is working: search 1 correctly returned EMPTY rather than fabricate (3/3 discarded) - high precision honesty",
+      "Degraded search mode can introduce false positives: search 2 (battery) returned an irrelevant E2E-testing experience as weak P2 - precision tradeoff when relaxing thresholds over rounds",
+      "Search 3 (VLA) performed best: top-2 P1 results from Embodied-AI are highly relevant to VLA training + sim-to-real; 3 weaker P2 fillers included",
+      "Dashboard/Summary data consistent; tier distribution: 0 P0, 3 P1 (reviewed, cred 0.74-0.80), 4 P2 (unrated, cred 0.30)",
+      "1 experience (exp-dae96a009807) flagged needs_sync due to stale related_doc",
+      "experience_read returns complete metadata + full markdown content + apply_records + vector_index info"
+    ],
+    "precision_recall_summary": {
+      "search_1_dl_convergence": {"precision": "N/A (empty)", "recall_attempted": "3 vector", "result": "empty-honest", "degraded": false},
+      "search_2_battery": {"precision": "LOW (irrelevant P2)", "recall_attempted": "1 keyword", "result": "false_positive", "degraded": true},
+      "search_3_vla": {"precision": "HIGH for top-2, LOW for fillers", "recall_attempted": "5 keyword", "result": "good_with_fillers", "degraded": true}
+    }
+  }
+}

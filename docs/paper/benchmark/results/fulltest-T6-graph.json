@@ -1,0 +1,208 @@
+{
+  "test_id": "T6-GRAPH",
+  "test_name": "Knowledge Graph Full Test",
+  "timestamp": "2026-07-29",
+  "summary": {
+    "steps_total": 7,
+    "steps_passed": 7,
+    "steps_failed": 0,
+    "overall_status": "PASS",
+    "note": "All 7 graph operations executed successfully against the in-memory graph engine (neo4j_available=false; graph uses embedded engine)."
+  },
+  "steps": {
+    "1_STATS": {
+      "tool": "kb_graph_stats",
+      "params": {},
+      "status": "PASS",
+      "result": {
+        "node_count": 180,
+        "edge_count": 2484,
+        "neo4j_available": false,
+        "doc_count": 154,
+        "kb_count": 26,
+        "tag_count": 0,
+        "schema_version": 4,
+        "relation_by_reason": {
+          "vector_similar": 2317
+        }
+      },
+      "notes": "Graph built entirely from vector_similarity edges; no tag-based edges (tag_count=0). Neo4j unavailable but embedded graph engine operational."
+    },
+    "2_BUILD": {
+      "tool": "kb_graph_build",
+      "params": {"kb_id": "", "force": false},
+      "status": "PASS",
+      "result": {
+        "success": true,
+        "total_top_kbs": 13,
+        "phase1_metadata": {"docs_processed": 3},
+        "phase2_vector_similarity": {
+          "enabled": true,
+          "total_edges": 1251,
+          "cross_kb_edges": 1140
+        },
+        "phase3_kb_relations": {
+          "total_kb_pairs": 170,
+          "by_shared_tag": 0,
+          "by_vector_similarity": 170
+        },
+        "per_kb_summary": [
+          {"kb_path": "高分子双向拉伸文献库", "docs_processed": 0, "docs_skipped": 73, "total_relations": 939},
+          {"kb_path": "AI-ML-Research", "docs_processed": 1, "docs_skipped": 17, "total_relations": 262},
+          {"kb_path": "Energy-Batteries", "docs_processed": 1, "docs_skipped": 6, "total_relations": 95},
+          {"kb_path": "Materials-Science", "docs_processed": 0, "docs_skipped": 7, "total_relations": 160},
+          {"kb_path": "Biomedical-Engineering", "docs_processed": 0, "docs_skipped": 7, "total_relations": 102},
+          {"kb_path": "Chemistry-Catalysis", "docs_processed": 0, "docs_skipped": 6, "total_relations": 88},
+          {"kb_path": "Economics-DataScience", "docs_processed": 0, "docs_skipped": 5, "total_relations": 83},
+          {"kb_path": "Materials-ML-InverseDesign", "docs_processed": 0, "docs_skipped": 13, "total_relations": 363},
+          {"kb_path": "烹饪与家常菜", "docs_processed": 0, "docs_skipped": 2, "total_relations": 11},
+          {"kb_path": "Creative-Thinking-Innovation", "docs_processed": 0, "docs_skipped": 4, "total_relations": 50},
+          {"kb_path": "Embodied-AI", "docs_processed": 0, "docs_skipped": 9, "total_relations": 118},
+          {"kb_path": "E2E-Integration-Test", "docs_processed": 1, "docs_skipped": 4, "total_relations": 37},
+          {"kb_path": "FLAT-Benchmark-KB", "docs_processed": 0, "docs_skipped": 1, "total_relations": 1}
+        ]
+      },
+      "notes": "Incremental build (force=false). Most docs skipped because already indexed. 3 new docs processed (1 in AI-ML-Research, 1 in Energy-Batteries, 1 in E2E-Integration-Test). Phase 2 computed 1251 doc-doc edges (1140 cross-KB), phase 3 established 170 KB-level relations."
+    },
+    "3_CROSS_KB": {
+      "tool": "kb_graph_cross_kb_documents",
+      "params": {"min_kbs": 2, "limit": 10},
+      "status": "PASS",
+      "result": {
+        "count_returned": 10,
+        "top5_bridge_docs": [
+          {
+            "rank": 1,
+            "path": "Materials-ML-InverseDesign/zhou-et-al-2025-de-novo-design-of-polymers-with-specified-properties-using-reinforcement-learning.md",
+            "link_count": 65,
+            "related_kbs_count": 17
+          },
+          {
+            "rank": 2,
+            "path": "Materials-ML-InverseDesign/10.1177_00037028251323634.md",
+            "link_count": 37,
+            "related_kbs_count": 12
+          },
+          {
+            "rank": 3,
+            "path": "Materials-ML-InverseDesign/liu-et-al-2025-generating-high-temperature-polymer-dielectrics-with-a-graph-convolution-and-reinforcement-learning.md",
+            "link_count": 36,
+            "related_kbs_count": 15
+          },
+          {
+            "rank": 4,
+            "path": "Materials-ML-InverseDesign/Reinforcement learning-based inverse design of.md",
+            "link_count": 36,
+            "related_kbs_count": 19
+          },
+          {
+            "rank": 5,
+            "path": "Materials-ML-InverseDesign/Novel machine learning-based prediction approach for nanoindentation.md",
+            "link_count": 34,
+            "related_kbs_count": 19
+          }
+        ]
+      },
+      "notes": "Materials-ML-InverseDesign KB dominates the bridge rankings — its ML/inverse-design papers bridge to many domain KBs (polymer biaxial stretching sub-KBs, energy, materials, chemistry). Rank by related_kbs_count: inverse-design papers reach 17-19 KBs each."
+    },
+    "4_CENTRAL": {
+      "tool": "kb_graph_central_documents",
+      "params": {"kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b", "top_n": 5},
+      "status": "PASS",
+      "result": {
+        "kb": "AI-ML-Research",
+        "central_docs": [
+          {"rank": 1, "name": "Transformer-Attention-Is-All-You-Need.md", "degree": 26, "betweenness_tw": 15.91},
+          {"rank": 2, "name": "global-rag-benchmark.md", "degree": 24, "betweenness_tw": 15.94},
+          {"rank": 3, "name": "ReinforcementLearning-DQN-Atari.md", "degree": 21, "betweenness_tw": 12.91},
+          {"rank": 4, "name": "ReAct.md", "degree": 19, "betweenness_tw": 11.62},
+          {"rank": 5, "name": "Reflexion.md", "degree": 18, "betweenness_tw": 11.32}
+        ]
+      },
+      "notes": "Centrality by degree. Transformer paper is the top hub (degree 26). Highest betweenness (tw) is global-rag-benchmark.md (15.94), the dominant bridge node in the KB."
+    },
+    "5_PATHS": {
+      "tool": "kb_graph_document_paths",
+      "params": {
+        "doc_a": "AI-ML-Research/ReinforcementLearning-DQN-Atari.md",
+        "doc_b": "Materials-Science/mxene-energy-storage.md",
+        "max_depth": 4
+      },
+      "status": "PASS",
+      "result": {
+        "path_count": 1,
+        "path_found": {
+          "hops": 3,
+          "doc_path": [
+            "AI-ML-Research/ReinforcementLearning-DQN-Atari.md",
+            "Embodied-AI/2025年具身智能机器人十大发展趋势.md",
+            "高分子双向拉伸文献库/03_PET_BOPET - 聚酯双向拉伸/BOPET-Piezoelectric-Sensors-MDPI-2024.md",
+            "Materials-Science/mxene-energy-storage.md"
+          ],
+          "reasons": ["vector_similar", "vector_similar", "vector_similar"]
+        }
+      },
+      "notes": "A 3-hop path connects DQN (AI/RL) to MXene energy storage (materials) via an Embodied-AI trends doc and a BOPET piezoelectric sensor paper — all edges are vector_similarity. Demonstrates cross-domain reach of the vector graph."
+    },
+    "6_RELATED": {
+      "tool": "kb_graph_document_related",
+      "params": {"doc_path": "AI-ML-Research/Transformer-Attention-Is-All-You-Need.md", "limit": 10},
+      "status": "PASS",
+      "result": {
+        "count_returned": 10,
+        "related_docs": [
+          {"name": "Transformer Attention Mechanisms Survey.md", "kb": "AI-ML-Research", "reason": "vector_similar", "weight": 0.7178},
+          {"name": "machine-learning-economics.md", "kb": "Economics-DataScience", "reason": "vector_similar", "weight": 0.6953},
+          {"name": "RAG-Retrieval-Augmented-Generation.md", "kb": "AI-ML-Research/RAG-Research", "reason": "vector_similar", "weight": 0.6582},
+          {"name": "paper_rag_survey.md", "kb": "AI-ML-Research/RAG-Research", "reason": "vector_similar", "weight": 0.6382},
+          {"name": "Toolformer.md", "kb": "AI-ML-Research", "reason": "vector_similar", "weight": 0.6368},
+          {"name": "RAG-Survey.md", "kb": "AI-ML-Research/RAG-Research", "reason": "vector_similar", "weight": 0.6337},
+          {"name": "Self-RAG.md", "kb": "AI-ML-Research/RAG-Research", "reason": "vector_similar", "weight": 0.6314},
+          {"name": "2405.07437-RAG-Evaluation-Survey.md", "kb": "AI-ML-Research/RAG-Research", "reason": "vector_similar", "weight": 0.6314},
+          {"name": "Neo4j-Advanced-RAG-Techniques.md", "kb": "AI-ML-Research/RAG-Research", "reason": "vector_similar", "weight": 0.6284},
+          {"name": "03_GraftPolymer-SoDip-ML-arXiv-2025.md", "kb": "高分子双向拉伸文献库/PLA_Biodegradable", "reason": "vector_similar", "weight": 0.6234}
+        ]
+      },
+      "notes": "Strongest neighbor is the Attention Mechanisms Survey (0.7178). Related docs span AI-ML-Research (own KB + RAG sub-KB), Economics-DataScience, and a polymer ML paper — all via vector similarity."
+    },
+    "7_SEARCH": {
+      "tool": "kb_graph_search",
+      "params": {"keyword": "polymer", "node_type": "all", "limit": 10},
+      "status": "PASS",
+      "result": {
+        "keyword": "polymer",
+        "counts": {"documents": 3, "kbs": 0, "tags": 0},
+        "documents": [
+          {
+            "name": "liu-et-al-2025-generating-high-temperature-polymer-dielectrics-with-a-graph-convolution-and-reinforcement-learning.md",
+            "kb": "Materials-ML-InverseDesign",
+            "description": "图卷积网络+强化学习框架(GCRL)生成高温聚合物介电材料。"
+          },
+          {
+            "name": "polymer-catalysts.md",
+            "kb": "Chemistry-Catalysis",
+            "description": "有机与金属有机聚合物(OMOP)催化剂综述。"
+          },
+          {
+            "name": "zhou-et-al-2025-de-novo-design-of-polymers-with-specified-properties-using-reinforcement-learning.md",
+            "kb": "Materials-ML-InverseDesign",
+            "description": "RLPolyG：基于强化学习的聚合物定向设计框架。"
+          }
+        ]
+      },
+      "notes": "Keyword 'polymer' matched 3 document nodes (by name/path). No KB or tag nodes matched (tag_count=0 in this graph). Matches are relevant — all 3 are polymer-focused papers across ML-inverse-design and catalysis."
+    }
+  },
+  "metrics": {
+    "graph_engine": "embedded (neo4j_available=false)",
+    "total_nodes": 180,
+    "total_edges": 2484,
+    "doc_nodes": 154,
+    "kb_nodes": 26,
+    "tag_nodes": 0,
+    "edge_types": {"vector_similar": 2317},
+    "cross_kb_edges": 1140,
+    "kb_pair_relations": 170,
+    "top_bridge_kb": "Materials-ML-InverseDesign"
+  }
+}

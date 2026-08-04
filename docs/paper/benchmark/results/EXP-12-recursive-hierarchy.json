@@ -1,0 +1,128 @@
+{
+  "experiment": "EXP-12",
+  "title": "Recursive Hierarchy Validation",
+  "timestamp": "2026-07-29T04:05:40.752Z",
+  "methodology": "Compare kb_list(lightweight=true) doc_count against fs_get_tree recursive document counts",
+  "kb_checks": [
+    {
+      "name": "高分子双向拉伸文献库",
+      "kb_id": "cd57e37c-fbd9-4a0a-9775-212cb68f81bc",
+      "kb_list_doc_count": 73,
+      "has_sub_kbs": true,
+      "sub_kb_count": 12,
+      "root_documentCount": 1,
+      "sub_kbs": [
+        {
+          "name": "04_PVA_BOPVA - 聚乙烯醇双向拉伸",
+          "documentCount": 8
+        },
+        {
+          "name": "03_PET_BOPET - 聚酯双向拉伸",
+          "documentCount": 6
+        },
+        {
+          "name": "02_Physics_Mechanism - 拉伸物理与机理",
+          "documentCount": 12
+        },
+        {
+          "name": "01_Reviews - 综述与评论",
+          "documentCount": 6
+        },
+        {
+          "name": "05_PP_BOPP - 聚丙烯双向拉伸",
+          "documentCount": 7
+        },
+        {
+          "name": "06_PLA_Biodegradable - 可生物降解聚合物拉伸",
+          "documentCount": 8
+        },
+        {
+          "name": "07_PA_Nylon - 聚酰胺双向拉伸",
+          "documentCount": 5
+        },
+        {
+          "name": "08_PE_UHMWPE - 聚乙烯双向拉伸",
+          "documentCount": 3
+        },
+        {
+          "name": "09_Equipment_Process - 设备与工艺",
+          "documentCount": 6
+        },
+        {
+          "name": "10_Characterization - 表征技术",
+          "documentCount": 4
+        },
+        {
+          "name": "10_Handbooks_Industry - 工业手册与指南",
+          "documentCount": 3
+        },
+        {
+          "name": "11_Other_Materials - 其他材料",
+          "documentCount": 5
+        }
+      ],
+      "sub_kb_document_sum": 73,
+      "recursive_expected": "73 (sub-KBs) + 1 (root) = 74 OR just 73",
+      "actual_match": "kb_list(73) == sub-KB sum(73)",
+      "root_discrepancy": "root has documentCount=1 but no .md files in children; kb_list does NOT add this to total",
+      "verdict": "PASS_WITH_NOTE — sub-KB recursive aggregation matches, but root's own documentCount=1 is unexplained"
+    },
+    {
+      "name": "AI-ML-Research",
+      "kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+      "kb_list_doc_count": 17,
+      "has_sub_kbs": true,
+      "sub_kb_count": 1,
+      "root_documentCount": 8,
+      "root_files": [
+        "NeuralNetworkOptimization-Adam.md",
+        "ReinforcementLearning-DQN-Atari.md",
+        "Transformer-Attention-Is-All-You-Need.md",
+        "XAI-SHAP.md",
+        "ReAct.md",
+        "Toolformer.md",
+        "Reflexion.md",
+        "global-rag-benchmark.md"
+      ],
+      "sub_kbs": [
+        {
+          "name": "RAG-Research",
+          "documentCount": 9
+        }
+      ],
+      "computed_total": "8 (root) + 9 (sub) = 17",
+      "actual_match": true,
+      "verdict": "PASS — kb_list doc_count=17 exactly equals root_docs(8) + sub_kb_docs(9)"
+    },
+    {
+      "name": "Embodied-AI",
+      "kb_id": "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+      "kb_list_doc_count": 9,
+      "has_sub_kbs": false,
+      "sub_kb_count": 0,
+      "root_documentCount": 9,
+      "root_files": [
+        "具身智能发展报告2025-信通院.md",
+        "2025年具身智能机器人十大发展趋势.md",
+        "VLA-Survey-Embodied-AI.md",
+        "Embodied-AI-Survey-Comprehensive.md",
+        "XR-1-具身VLA大模型.md",
+        "具身智能核心概念与技术框架.md",
+        "2405.14093-VLA-Survey.md",
+        "2407.06886-Embodied-AI-Survey.md",
+        "humanoid-embodied.md"
+      ],
+      "computed_total": "9 (root only, flat KB)",
+      "actual_match": true,
+      "verdict": "PASS — flat KB, doc_count=9 matches root documentCount=9"
+    }
+  ],
+  "summary": {
+    "total_kbs_checked": 3,
+    "passes": 2,
+    "passes_with_notes": 1,
+    "failures": 0,
+    "key_finding": "Recursive hierarchy counting in kb_list correctly aggregates sub-KB document counts for nested structures. AI-ML-Research(17) and Embodied-AI(9) match perfectly. For 高分子双向拉伸文献库, kb_list doc_count(73) equals the sum of its 12 sub-KB document counts(73), but the root itself reports documentCount=1 in fs_get_tree with no visible .md files—this may be a tree metadata artifact rather than a counting bug.",
+    "recommendation": "Investigate why 高分子双向拉伸文献库 root reports documentCount=1 in fs_get_tree when children contain only folders and no .md files."
+  }
+}

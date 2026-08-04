@@ -1,0 +1,535 @@
+{
+  "test": "T3-CROSS-DOMAIN",
+  "description": "Cross-Domain FPR Adversarial Test: 6 queries x 2 modes (Flat vs Domain-scoped vector search), top_k=5, score_threshold=0.0",
+  "fpr_formula": "FPR = count(kb_id != correct AND kb_id != '') / 5",
+  "n_queries": 6,
+  "per_query": {
+    "Q1": {
+      "query": "reinforcement learning policy gradient optimization neural network",
+      "correct_kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+      "correct_kb_name": "AI-ML-Research",
+      "flat": {
+        "kb_id": "",
+        "n_results": 5,
+        "results": [
+          {
+            "doc_path": "AI-ML-Research/ReinforcementLearning-DQN-Atari.md",
+            "kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+            "score": 0.6855000257492065
+          },
+          {
+            "doc_path": "Materials-ML-InverseDesign/rl-diffusion-inverse-materials.md",
+            "kb_id": "4586cbec-a111-407a-883d-3b04532be556",
+            "score": 0.6742501258850098
+          },
+          {
+            "doc_path": "Economics-DataScience/financial-risk.md",
+            "kb_id": "27bb748f-9fc5-4223-b0c3-8365dbc42dea",
+            "score": 0.6678283214569092
+          },
+          {
+            "doc_path": "Materials-ML-InverseDesign/liu-et-al-2025-generating-high-temperature-polymer-dielectrics-with-a-graph-convolution-and-reinforcement-learning.md",
+            "kb_id": "4586cbec-a111-407a-883d-3b04532be556",
+            "score": 0.6659331917762756
+          },
+          {
+            "doc_path": "Materials-ML-InverseDesign/Reinforcement learning-based inverse design of.md",
+            "kb_id": "4586cbec-a111-407a-883d-3b04532be556",
+            "score": 0.6603555083274841
+          }
+        ],
+        "unique_kbs": [
+          "27bb748f-9fc5-4223-b0c3-8365dbc42dea",
+          "4586cbec-a111-407a-883d-3b04532be556",
+          "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b"
+        ],
+        "num_unique_kbs": 3,
+        "false_positive_count": 4,
+        "false_positive_doc_paths": [
+          "Materials-ML-InverseDesign/rl-diffusion-inverse-materials.md",
+          "Economics-DataScience/financial-risk.md",
+          "Materials-ML-InverseDesign/liu-et-al-2025-generating-high-temperature-polymer-dielectrics-with-a-graph-convolution-and-reinforcement-learning.md",
+          "Materials-ML-InverseDesign/Reinforcement learning-based inverse design of.md"
+        ],
+        "FPR": 0.8
+      },
+      "domain": {
+        "kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+        "n_results": 5,
+        "results": [
+          {
+            "doc_path": "AI-ML-Research/ReinforcementLearning-DQN-Atari.md",
+            "kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+            "score": 0.6855000257492065
+          },
+          {
+            "doc_path": "AI-ML-Research/RAG-Research/paper_rag_survey.md",
+            "kb_id": "578dc012-95a5-443b-aa08-1e493e3ec167",
+            "score": 0.6558688282966614
+          },
+          {
+            "doc_path": "AI-ML-Research/ReinforcementLearning-DQN-Atari.md",
+            "kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+            "score": 0.6481757164001465
+          },
+          {
+            "doc_path": "AI-ML-Research/ReinforcementLearning-DQN-Atari.md",
+            "kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+            "score": 0.6476407051086426
+          },
+          {
+            "doc_path": "AI-ML-Research/ReinforcementLearning-DQN-Atari.md",
+            "kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+            "score": 0.6170161962509155
+          }
+        ],
+        "unique_kbs": [
+          "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+          "578dc012-95a5-443b-aa08-1e493e3ec167"
+        ],
+        "num_unique_kbs": 2,
+        "false_positive_count": 1,
+        "false_positive_doc_paths": [
+          "AI-ML-Research/RAG-Research/paper_rag_survey.md"
+        ],
+        "FPR": 0.2
+      }
+    },
+    "Q2": {
+      "query": "thermal management cooling phase change material heat transfer battery",
+      "correct_kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+      "correct_kb_name": "Energy-Batteries",
+      "flat": {
+        "kb_id": "",
+        "n_results": 5,
+        "results": [
+          {
+            "doc_path": "Energy-Batteries/battery-thermal-management.md",
+            "kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+            "score": 0.6641663312911987
+          },
+          {
+            "doc_path": "Materials-ML-InverseDesign/Reinforcement learning-based inverse design of.md",
+            "kb_id": "4586cbec-a111-407a-883d-3b04532be556",
+            "score": 0.6597434282302856
+          },
+          {
+            "doc_path": "Energy-Batteries/battery-thermal-management.md",
+            "kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+            "score": 0.6511051654815674
+          },
+          {
+            "doc_path": "Energy-Batteries/battery-thermal-management.md",
+            "kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+            "score": 0.649811863899231
+          },
+          {
+            "doc_path": "Energy-Batteries/battery-thermal-management.md",
+            "kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+            "score": 0.6495599746704102
+          }
+        ],
+        "unique_kbs": [
+          "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+          "4586cbec-a111-407a-883d-3b04532be556"
+        ],
+        "num_unique_kbs": 2,
+        "false_positive_count": 1,
+        "false_positive_doc_paths": [
+          "Materials-ML-InverseDesign/Reinforcement learning-based inverse design of.md"
+        ],
+        "FPR": 0.2
+      },
+      "domain": {
+        "kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+        "n_results": 5,
+        "results": [
+          {
+            "doc_path": "Energy-Batteries/battery-thermal-management.md",
+            "kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+            "score": 0.6641663312911987
+          },
+          {
+            "doc_path": "Energy-Batteries/battery-thermal-management.md",
+            "kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+            "score": 0.6511051654815674
+          },
+          {
+            "doc_path": "Energy-Batteries/battery-thermal-management.md",
+            "kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+            "score": 0.649811863899231
+          },
+          {
+            "doc_path": "Energy-Batteries/battery-thermal-management.md",
+            "kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+            "score": 0.6495599746704102
+          },
+          {
+            "doc_path": "Energy-Batteries/battery-thermal-management.md",
+            "kb_id": "0a9d97c1-ecd2-4040-8690-253a0ac7ade8",
+            "score": 0.6493818759918213
+          }
+        ],
+        "unique_kbs": [
+          "0a9d97c1-ecd2-4040-8690-253a0ac7ade8"
+        ],
+        "num_unique_kbs": 1,
+        "false_positive_count": 0,
+        "false_positive_doc_paths": [],
+        "FPR": 0.0
+      }
+    },
+    "Q3": {
+      "query": "MXene Ti3C2Tx supercapacitor electrode specific capacitance interlayer",
+      "correct_kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+      "correct_kb_name": "Materials-Science",
+      "flat": {
+        "kb_id": "",
+        "n_results": 5,
+        "results": [
+          {
+            "doc_path": "Materials-Science/mxene-energy-storage.md",
+            "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+            "score": 0.6515863537788391
+          },
+          {
+            "doc_path": "Materials-Science/mxene-energy-storage.md",
+            "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+            "score": 0.6341750621795654
+          },
+          {
+            "doc_path": "Materials-Science/mxene-energy-storage.md",
+            "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+            "score": 0.6324505805969238
+          },
+          {
+            "doc_path": "Materials-Science/mxene-energy-storage.md",
+            "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+            "score": 0.6266007423400879
+          },
+          {
+            "doc_path": "Materials-Science/mxene-energy-storage.md",
+            "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+            "score": 0.6247225999832153
+          }
+        ],
+        "unique_kbs": [
+          "79c67037-481c-4213-b5b8-e684ecb6f6ba"
+        ],
+        "num_unique_kbs": 1,
+        "false_positive_count": 0,
+        "false_positive_doc_paths": [],
+        "FPR": 0.0
+      },
+      "domain": {
+        "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+        "n_results": 5,
+        "results": [
+          {
+            "doc_path": "Materials-Science/mxene-energy-storage.md",
+            "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+            "score": 0.6515863537788391
+          },
+          {
+            "doc_path": "Materials-Science/mxene-energy-storage.md",
+            "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+            "score": 0.6341750621795654
+          },
+          {
+            "doc_path": "Materials-Science/mxene-energy-storage.md",
+            "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+            "score": 0.6324505805969238
+          },
+          {
+            "doc_path": "Materials-Science/mxene-energy-storage.md",
+            "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+            "score": 0.6266007423400879
+          },
+          {
+            "doc_path": "Materials-Science/mxene-energy-storage.md",
+            "kb_id": "79c67037-481c-4213-b5b8-e684ecb6f6ba",
+            "score": 0.6247225999832153
+          }
+        ],
+        "unique_kbs": [
+          "79c67037-481c-4213-b5b8-e684ecb6f6ba"
+        ],
+        "num_unique_kbs": 1,
+        "false_positive_count": 0,
+        "false_positive_doc_paths": [],
+        "FPR": 0.0
+      }
+    },
+    "Q4": {
+      "query": "convolutional neural network medical imaging diagnosis pneumonia chest X-ray",
+      "correct_kb_id": "61960453-755c-4a4b-aa03-6d9453556572",
+      "correct_kb_name": "Biomedical-Engineering",
+      "flat": {
+        "kb_id": "",
+        "n_results": 5,
+        "results": [
+          {
+            "doc_path": "Materials-ML-InverseDesign/Quantifying defects in thin films using machine vision.md",
+            "kb_id": "4586cbec-a111-407a-883d-3b04532be556",
+            "score": 0.5955786108970642
+          },
+          {
+            "doc_path": "Economics-DataScience/machine-learning-economics.md",
+            "kb_id": "27bb748f-9fc5-4223-b0c3-8365dbc42dea",
+            "score": 0.5771259665489197
+          },
+          {
+            "doc_path": "AI-ML-Research/NeuralNetworkOptimization-Adam.md",
+            "kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+            "score": 0.5679540634155273
+          },
+          {
+            "doc_path": "Materials-ML-InverseDesign/Defect detection in wrap film product using compact convolutional.md",
+            "kb_id": "4586cbec-a111-407a-883d-3b04532be556",
+            "score": 0.5663032531738281
+          },
+          {
+            "doc_path": "Materials-ML-InverseDesign/Quantifying defects in thin films using machine vision.md",
+            "kb_id": "4586cbec-a111-407a-883d-3b04532be556",
+            "score": 0.5660542845726013
+          }
+        ],
+        "unique_kbs": [
+          "27bb748f-9fc5-4223-b0c3-8365dbc42dea",
+          "4586cbec-a111-407a-883d-3b04532be556",
+          "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b"
+        ],
+        "num_unique_kbs": 3,
+        "false_positive_count": 5,
+        "false_positive_doc_paths": [
+          "Materials-ML-InverseDesign/Quantifying defects in thin films using machine vision.md",
+          "Economics-DataScience/machine-learning-economics.md",
+          "AI-ML-Research/NeuralNetworkOptimization-Adam.md",
+          "Materials-ML-InverseDesign/Defect detection in wrap film product using compact convolutional.md",
+          "Materials-ML-InverseDesign/Quantifying defects in thin films using machine vision.md"
+        ],
+        "FPR": 1.0
+      },
+      "domain": {
+        "kb_id": "61960453-755c-4a4b-aa03-6d9453556572",
+        "n_results": 5,
+        "results": [
+          {
+            "doc_path": "Biomedical-Engineering/医学影像.md",
+            "kb_id": "61960453-755c-4a4b-aa03-6d9453556572",
+            "score": 0.559048593044281
+          },
+          {
+            "doc_path": "Biomedical-Engineering/医学影像.md",
+            "kb_id": "61960453-755c-4a4b-aa03-6d9453556572",
+            "score": 0.5542088747024536
+          },
+          {
+            "doc_path": "Biomedical-Engineering/医学影像.md",
+            "kb_id": "61960453-755c-4a4b-aa03-6d9453556572",
+            "score": 0.5443099141120911
+          },
+          {
+            "doc_path": "Biomedical-Engineering/医学影像.md",
+            "kb_id": "61960453-755c-4a4b-aa03-6d9453556572",
+            "score": 0.5252150893211365
+          },
+          {
+            "doc_path": "Biomedical-Engineering/可穿戴器械.md",
+            "kb_id": "61960453-755c-4a4b-aa03-6d9453556572",
+            "score": 0.517542839050293
+          }
+        ],
+        "unique_kbs": [
+          "61960453-755c-4a4b-aa03-6d9453556572"
+        ],
+        "num_unique_kbs": 1,
+        "false_positive_count": 0,
+        "false_positive_doc_paths": [],
+        "FPR": 0.0
+      }
+    },
+    "Q5": {
+      "query": "electrocatalysis HER OER overpotential vanadate bifunctional catalyst",
+      "correct_kb_id": "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+      "correct_kb_name": "Chemistry-Catalysis",
+      "flat": {
+        "kb_id": "",
+        "n_results": 5,
+        "results": [
+          {
+            "doc_path": "Chemistry-Catalysis/electrocatalysis.md",
+            "kb_id": "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+            "score": 0.7761884331703186
+          },
+          {
+            "doc_path": "Chemistry-Catalysis/electrocatalysis.md",
+            "kb_id": "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+            "score": 0.7533159255981445
+          },
+          {
+            "doc_path": "Chemistry-Catalysis/electrocatalysis.md",
+            "kb_id": "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+            "score": 0.7288383841514587
+          },
+          {
+            "doc_path": "Chemistry-Catalysis/electrocatalysis.md",
+            "kb_id": "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+            "score": 0.707313597202301
+          },
+          {
+            "doc_path": "Chemistry-Catalysis/electrocatalysis.md",
+            "kb_id": "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+            "score": 0.6719695925712585
+          }
+        ],
+        "unique_kbs": [
+          "8bbd62eb-1c68-41fe-a981-66e18432cbeb"
+        ],
+        "num_unique_kbs": 1,
+        "false_positive_count": 0,
+        "false_positive_doc_paths": [],
+        "FPR": 0.0
+      },
+      "domain": {
+        "kb_id": "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+        "n_results": 5,
+        "results": [
+          {
+            "doc_path": "Chemistry-Catalysis/electrocatalysis.md",
+            "kb_id": "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+            "score": 0.7761884331703186
+          },
+          {
+            "doc_path": "Chemistry-Catalysis/electrocatalysis.md",
+            "kb_id": "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+            "score": 0.7533159255981445
+          },
+          {
+            "doc_path": "Chemistry-Catalysis/electrocatalysis.md",
+            "kb_id": "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+            "score": 0.7288383841514587
+          },
+          {
+            "doc_path": "Chemistry-Catalysis/electrocatalysis.md",
+            "kb_id": "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+            "score": 0.707313597202301
+          },
+          {
+            "doc_path": "Chemistry-Catalysis/electrocatalysis.md",
+            "kb_id": "8bbd62eb-1c68-41fe-a981-66e18432cbeb",
+            "score": 0.6719695925712585
+          }
+        ],
+        "unique_kbs": [
+          "8bbd62eb-1c68-41fe-a981-66e18432cbeb"
+        ],
+        "num_unique_kbs": 1,
+        "false_positive_count": 0,
+        "false_positive_doc_paths": [],
+        "FPR": 0.0
+      }
+    },
+    "Q6": {
+      "query": "humanoid robot vision-language-action model manipulation loco-manipulation",
+      "correct_kb_id": "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+      "correct_kb_name": "Embodied-AI",
+      "flat": {
+        "kb_id": "",
+        "n_results": 5,
+        "results": [
+          {
+            "doc_path": "Embodied-AI/2405.14093-VLA-Survey.md",
+            "kb_id": "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+            "score": 0.6681864857673645
+          },
+          {
+            "doc_path": "Embodied-AI/2405.14093-VLA-Survey.md",
+            "kb_id": "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+            "score": 0.6605443954467773
+          },
+          {
+            "doc_path": "Embodied-AI/2405.14093-VLA-Survey.md",
+            "kb_id": "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+            "score": 0.6545930504798889
+          },
+          {
+            "doc_path": "Embodied-AI/2405.14093-VLA-Survey.md",
+            "kb_id": "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+            "score": 0.6423997282981873
+          },
+          {
+            "doc_path": "Embodied-AI/2405.14093-VLA-Survey.md",
+            "kb_id": "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+            "score": 0.1938
+          }
+        ],
+        "unique_kbs": [
+          "4de920d8-b8c7-424e-a2fb-d73013f14bba"
+        ],
+        "num_unique_kbs": 1,
+        "false_positive_count": 0,
+        "false_positive_doc_paths": [],
+        "FPR": 0.0
+      },
+      "domain": {
+        "kb_id": "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+        "n_results": 5,
+        "results": [
+          {
+            "doc_path": "Embodied-AI/2405.14093-VLA-Survey.md",
+            "kb_id": "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+            "score": 0.6681864857673645
+          },
+          {
+            "doc_path": "Embodied-AI/2405.14093-VLA-Survey.md",
+            "kb_id": "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+            "score": 0.6605443954467773
+          },
+          {
+            "doc_path": "Embodied-AI/2405.14093-VLA-Survey.md",
+            "kb_id": "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+            "score": 0.6545930504798889
+          },
+          {
+            "doc_path": "Embodied-AI/2405.14093-VLA-Survey.md",
+            "kb_id": "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+            "score": 0.6423997282981873
+          },
+          {
+            "doc_path": "Embodied-AI/2405.14093-VLA-Survey.md",
+            "kb_id": "4de920d8-b8c7-424e-a2fb-d73013f14bba",
+            "score": 0.1938
+          }
+        ],
+        "unique_kbs": [
+          "4de920d8-b8c7-424e-a2fb-d73013f14bba"
+        ],
+        "num_unique_kbs": 1,
+        "false_positive_count": 0,
+        "false_positive_doc_paths": [],
+        "FPR": 0.0
+      }
+    }
+  },
+  "averages": {
+    "FPR_flat": 0.3333,
+    "FPR_domain": 0.0333,
+    "FPR_flat_per_query": [
+      0.8,
+      0.2,
+      0.0,
+      1.0,
+      0.0,
+      0.0
+    ],
+    "FPR_domain_per_query": [
+      0.2,
+      0.0,
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ]
+  }
+}

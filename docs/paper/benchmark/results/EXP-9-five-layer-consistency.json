@@ -1,0 +1,88 @@
+{
+  "experiment": "EXP-9",
+  "title": "Five-Layer Data Consistency Verification",
+  "description": "Verifies that CRUD operations maintain consistency across all 5 data layers: L1 Disk, L2 tree-fs.json, L3 knowledge-base.yml, L4 ChromaDB, L5 Neo4j",
+  "timestamp": "2026-07-29T04:00:30Z",
+  "test_kb": {
+    "id": "1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c",
+    "name": "E2E-Integration-Test",
+    "path": "E2E-Integration-Test"
+  },
+  "test_document": {
+    "id": "01848e0f-4f6e-4053-b118-c96b1a540f19",
+    "name": "EXP-9-Five-Layer-Test.md",
+    "path": "E2E-Integration-Test/EXP-9-Five-Layer-Test.md",
+    "file_type": "md",
+    "file_size": 650
+  },
+  "create_phase": {
+    "passed": true,
+    "layers": {
+      "L1_disk": {
+        "status": "PASS",
+        "evidence": "kb_doc_read returned full content (19 lines, 650 bytes); file stored on backend disk",
+        "verification_method": "xd://mcp__kb_mcp_kb_doc_read"
+      },
+      "L2_tree_fs": {
+        "status": "PASS",
+        "evidence": "fs_get_children for E2E-Integration-Test parent_id returned entry with id 01848e0f-4f6e-4053-b118-c96b1a540f19 and correct path",
+        "verification_method": "xd://mcp__kb_mcp_fs_get_children"
+      },
+      "L3_kb_yml": {
+        "status": "PASS",
+        "evidence": "kb_get_documents returned document with full metadata including vector_index (collection: kb_E2E-Integration-Test, 5 chunks, bge-m3) and graph_index (graph_doc_id, schema_version 4)",
+        "verification_method": "xd://mcp__kb_mcp_kb_get_documents"
+      },
+      "L4_chromadb": {
+        "status": "PASS",
+        "evidence": "kb_search_vector returned document content chunks with score 0.5997 (chunk_index 1) and 0.288 (chunk_index 0) from collection kb_E2E-Integration-Test",
+        "verification_method": "xd://mcp__kb_mcp_kb_search_vector"
+      },
+      "L5_neo4j": {
+        "status": "PASS",
+        "evidence": "kb_graph_document returned graph node with graph_doc_id 'doc::E2E-Integration-Test/EXP-9-Five-Layer-Test.md' and valid schema",
+        "verification_method": "xd://mcp__kb_mcp_kb_graph_document"
+      }
+    }
+  },
+  "delete_phase": {
+    "passed": false,
+    "overall_status": "4/5 layers fully cleaned, L5 has residual orphan node",
+    "deleted_id": "01848e0f-4f6e-4053-b118-c96b1a540f19",
+    "layers": {
+      "L1_disk": {
+        "status": "PASS",
+        "evidence": "kb_doc_read returned 404 'Document not found' (HTTP 404, statusCode 404)",
+        "verification_method": "xd://mcp__kb_mcp_kb_doc_read",
+        "detail": "Backend confirmed file no longer exists on disk"
+      },
+      "L2_tree_fs": {
+        "status": "PASS",
+        "evidence": "fs_get_children returned only 3 entries (article-python-performance.md, Preflight-Verification-Test-Doc.md, test-ml-basics.md); EXP-9-Five-Layer-Test.md absent",
+        "verification_method": "xd://mcp__kb_mcp_fs_get_children"
+      },
+      "L3_kb_yml": {
+        "status": "PASS",
+        "evidence": "kb_get_documents returned 5 documents (original count restored); EXP-9-Five-Layer-Test.md not present in document list",
+        "verification_method": "xd://mcp__kb_mcp_kb_get_documents"
+      },
+      "L4_chromadb": {
+        "status": "PASS",
+        "evidence": "kb_search_vector for 'EXP-9 Five Layer Consistency Test' returned zero results from E2E-Integration-Test KB; all 5 results are from other KBs",
+        "verification_method": "xd://mcp__kb_mcp_kb_search_vector"
+      },
+      "L5_neo4j": {
+        "status": "FAIL",
+        "evidence": "kb_graph_document still returns a graph node for 'E2E-Integration-Test/EXP-9-Five-Layer-Test.md' with empty content ({}) but persistent graph_doc_id 'doc::E2E-Integration-Test/EXP-9-Five-Layer-Test.md'. However, kb_graph_search by keyword 'EXP-9-Five-Layer' returns empty documents list.",
+        "verification_method": ["xd://mcp__kb_mcp_kb_graph_document", "xd://mcp__kb_mcp_kb_graph_search"],
+        "analysis": "The Neo4j graph node is not fully deleted during kb_doc_delete. An empty shell node persists, which constitutes an orphan in the graph. This is a 5-layer consistency gap: L1-L4 are properly cleaned, but L5 retains a residual node. The discrepancy between graph_document (finds it) and graph_search (doesn't find it) suggests the node may be in a partially indexed or soft-deleted state."
+      }
+    }
+  },
+  "summary": {
+    "create_consistency": "5/5 layers populated correctly",
+    "delete_consistency": "4/5 layers fully cleaned, 1 layer has residual data",
+    "key_finding": "Neo4j graph node deletion is incomplete: kb_doc_delete removes the node's content, tags, and relations but leaves an empty shell node behind. This violates strict 5-layer consistency. The kb_graph_delete_document tool should be invoked as part of kb_doc_delete to ensure complete cleanup.",
+    "recommendation": "Update kb_doc_delete to call kb_graph_delete_document (or equivalent Neo4j cleanup) as part of the atomic deletion pipeline."
+  }
+}

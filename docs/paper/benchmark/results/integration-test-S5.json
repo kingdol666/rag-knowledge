@@ -1,0 +1,292 @@
+{
+  "scenario": "S5 - Experience Meditation + Smart Search Test",
+  "timestamp": "2026-07-29T00:00:00.000000+00:00",
+  "status": "success",
+  "summary": {
+    "total_steps": 8,
+    "passed": 8,
+    "failed": 0
+  },
+  "step1_meditation_status": {
+    "success": true,
+    "scheduler": {
+      "enabled": false,
+      "interval_hours": 24,
+      "running_now": false,
+      "last_run": null,
+      "last_result": null,
+      "next_run_eta": null
+    },
+    "harnesses": {
+      "omp": { "installed": true, "version": "omp/17.1.5" },
+      "claude": { "installed": false, "version": "2.1.220 (Claude Code)", "api_key_configured": false }
+    },
+    "circuit_breaker": {
+      "omp": { "tripped": false, "consecutive_failures": 0 },
+      "claude": { "tripped": false, "consecutive_failures": 0 }
+    },
+    "total_kb_configs": 28,
+    "active_kb_configs": 2
+  },
+  "step2_meditation_config": {
+    "success": true,
+    "kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+    "kb_path": "AI-ML-Research",
+    "config": {
+      "enabled": true,
+      "harness": "omp",
+      "model": "",
+      "interval_hours": 24,
+      "min_cluster_count": 2,
+      "max_drafts_per_run": 3,
+      "auto_publish": true,
+      "max_budget_usd": 0.05,
+      "timeout_sec": 300,
+      "last_run_at": "2026-07-28T08:44:30.338834+00:00",
+      "last_run_status": "success",
+      "total_runs": 2,
+      "total_experiences_generated": 3,
+      "incremental_enabled": true
+    }
+  },
+  "step3_smart_search_deep_learning": {
+    "success": true,
+    "query": "how to optimize deep learning training",
+    "count": 1,
+    "tier_counts": { "P0": 0, "P1": 1, "P2": 0, "discarded": 2 },
+    "threshold": 0.55,
+    "effective_threshold": 0.55,
+    "adaptive_threshold": 0.55,
+    "query_type": "troubleshooting",
+    "degraded": false,
+    "rounds": 1,
+    "vector_recall": 3,
+    "keyword_recall": 0,
+    "hit_rate": 1.0,
+    "relevance_judgment": "relevant - Adam optimizer adaptive learning rate mechanism",
+    "results": [
+      {
+        "id": "exp-414b5773cf30",
+        "title": "Adam优化器的自适应学习率机制",
+        "kb_path": "AI-ML-Research",
+        "tier": "P1",
+        "tier_reason": "vector=0.64 content=5 rating=0.0",
+        "vector_score": 0.642,
+        "content_score": 5,
+        "category": "best_practice",
+        "severity": "normal",
+        "retrieval_paths": ["vector", "keyword"],
+        "relevance": "relevant"
+      }
+    ]
+  },
+  "step4_smart_search_battery_thermal": {
+    "success": true,
+    "query": "battery thermal management cooling solution",
+    "count": 1,
+    "tier_counts": { "P0": 0, "P1": 0, "P2": 1, "discarded": 0 },
+    "threshold": 0.15,
+    "effective_threshold": 0.15,
+    "adaptive_threshold": 0.35,
+    "query_type": "learning",
+    "degraded": true,
+    "rounds": 3,
+    "vector_recall": 0,
+    "keyword_recall": 1,
+    "hit_rate": 0.0,
+    "relevance_judgment": "irrelevant - E2E test about RAG skills pre-flight gateway, not battery thermal management",
+    "notes": "Degraded search: vector recall 0, keyword-only retrieval. Result is a false positive from E2E-Integration-Test KB with low vector_score=0.51, content_score=3. No battery/energy domain KBs have experiences (Energy-Batteries meditation disabled).",
+    "results": [
+      {
+        "id": "exp-e31948212697",
+        "title": "RAG知识库执行技能Pre-Flight预检网关的E2E验证经验",
+        "kb_path": "E2E-Integration-Test",
+        "tier": "P2",
+        "tier_reason": "weak (vector=0.51 content=3)",
+        "vector_score": 0.51,
+        "content_score": 3,
+        "category": "tip",
+        "severity": "normal",
+        "retrieval_paths": ["keyword"],
+        "relevance": "irrelevant"
+      }
+    ]
+  },
+  "step5_smart_search_vla_robot": {
+    "success": true,
+    "query": "VLA model training robot manipulation",
+    "count": 5,
+    "tier_counts": { "P0": 0, "P1": 1, "P2": 4, "discarded": 0 },
+    "threshold": 0.15,
+    "effective_threshold": 0.15,
+    "adaptive_threshold": 0.35,
+    "query_type": "learning",
+    "degraded": true,
+    "rounds": 3,
+    "vector_recall": 0,
+    "keyword_recall": 5,
+    "hit_rate": 1.0,
+    "relevance_judgment": "all relevant - VLA training paradigm, dataset construction, Sim2Real deployment from Embodied-AI; Transformer experiences from AI-ML-Research are tangentially relevant",
+    "notes": "Degraded search: vector recall 0, keyword-only retrieval. Primary relevant results from Embodied-AI KB (4), cross-KB results from AI-ML-Research (1). Embodied-AI meditation disabled so no auto-generated experiences.",
+    "results": [
+      {
+        "id": "exp-69677f288e8d",
+        "title": "VLA模型三阶段训练范式经验",
+        "kb_path": "Embodied-AI",
+        "tier": "P1",
+        "tier_reason": "vector=0.69 content=4 rating=0.0",
+        "vector_score": 0.69,
+        "content_score": 4,
+        "category": "workflow",
+        "severity": "important",
+        "retrieval_paths": ["vector", "keyword"],
+        "relevance": "highly relevant"
+      },
+      {
+        "id": "exp-a13b205491b4",
+        "title": "Transformer纯注意力机制替代RNN的经验",
+        "kb_path": "AI-ML-Research",
+        "tier": "P2",
+        "tier_reason": "weak (vector=0.51 content=3)",
+        "vector_score": 0.51,
+        "content_score": 3,
+        "category": "best_practice",
+        "severity": "important",
+        "rating_avg": 5.0,
+        "retrieval_paths": ["vector", "keyword"],
+        "relevance": "tangentially relevant (Transformer architecture underpins VLA)"
+      },
+      {
+        "id": "exp-33ccb762e328",
+        "title": "Transformer的Multi-Head Self-Attention机制与并行化",
+        "kb_path": "AI-ML-Research",
+        "tier": "P2",
+        "tier_reason": "weak (vector=0.51 content=3)",
+        "vector_score": 0.51,
+        "content_score": 3,
+        "retrieval_paths": ["vector", "keyword"],
+        "relevance": "tangentially relevant"
+      },
+      {
+        "id": "exp-72aa2c70b1f9",
+        "title": "具身智能数据集构建与增强经验",
+        "kb_path": "Embodied-AI",
+        "tier": "P2",
+        "tier_reason": "weak (vector=0.51 content=3)",
+        "vector_score": 0.51,
+        "content_score": 3,
+        "retrieval_paths": ["vector", "keyword"],
+        "relevance": "relevant"
+      },
+      {
+        "id": "exp-eb9542844f7c",
+        "title": "Sim-to-Real迁移与VLA模型应用部署经验",
+        "kb_path": "Embodied-AI",
+        "tier": "P2",
+        "tier_reason": "weak (vector=0.51 content=3)",
+        "vector_score": 0.51,
+        "content_score": 3,
+        "retrieval_paths": ["vector", "keyword"],
+        "relevance": "relevant"
+      }
+    ]
+  },
+  "step6_dashboard": {
+    "success": true,
+    "kb_id": "4c1b9eb6-b8d3-498a-b8fa-f96cb7cdfd3b",
+    "total_experiences": 7,
+    "by_tier": { "P0": 0, "P1": 3, "P2": 4 },
+    "by_category": {
+      "best_practice": 4,
+      "optimization": 2,
+      "troubleshooting": 1
+    },
+    "by_severity": {
+      "important": 2,
+      "tip": 1,
+      "critical": 1,
+      "normal": 3
+    },
+    "total_applied": 4,
+    "avg_rating": 5.0,
+    "unrated_count": 4,
+    "reviewed_count": 3,
+    "drafts_pending": 0,
+    "stale": 0,
+    "orphan": 0,
+    "needs_sync": 1,
+    "top_experiences": [
+      { "id": "exp-bc873004954d", "title": "Adam优化器调参经验", "rating": 5.0, "credibility": 0.8 },
+      { "id": "exp-dae96a009807", "title": "kb-mcp filesystem 工具集体 ConnectError 排查", "rating": 5.0, "credibility": 0.75 },
+      { "id": "exp-a13b205491b4", "title": "Transformer纯注意力机制替代RNN的经验", "rating": 5.0, "credibility": 0.74 },
+      { "id": "exp-414b5773cf30", "title": "Adam优化器的自适应学习率机制", "rating": 0.0, "credibility": 0.3 },
+      { "id": "exp-33ccb762e328", "title": "Transformer的Multi-Head Self-Attention机制与并行化", "rating": 0.0, "credibility": 0.3 }
+    ]
+  },
+  "step7_experience_list": {
+    "success": true,
+    "kb_path": "AI-ML-Research",
+    "count": 7,
+    "experiences": [
+      { "id": "exp-bc873004954d", "title": "Adam优化器调参经验", "scenario": "optimizer-tuning", "category": "optimization", "severity": "tip", "status": "published", "rating_avg": 5.0, "applied_count": 2 },
+      { "id": "exp-a13b205491b4", "title": "Transformer纯注意力机制替代RNN的经验", "scenario": "seq2seq-models", "category": "best_practice", "severity": "important", "status": "published", "rating_avg": 5.0, "applied_count": 1 },
+      { "id": "exp-dae96a009807", "title": "kb-mcp filesystem 工具集体 ConnectError 排查", "scenario": "kb-mcp-filesystem-connect-error", "category": "troubleshooting", "severity": "critical", "status": "published", "rating_avg": 5.0, "applied_count": 1 },
+      { "id": "exp-87993d41a050", "title": "AI-ML-Research 索引碎片整理", "scenario": "kb-index-dedup-and-reindex", "category": "optimization", "severity": "important", "status": "published", "rating_avg": 0.0, "applied_count": 0 },
+      { "id": "exp-414b5773cf30", "title": "Adam优化器的自适应学习率机制", "scenario": "deep-learning-optimizer-selection", "category": "best_practice", "severity": "normal", "status": "published", "rating_avg": 0.0, "applied_count": 0 },
+      { "id": "exp-33ccb762e328", "title": "Transformer的Multi-Head Self-Attention机制与并行化", "scenario": "sequence-transduction-architecture-design", "category": "best_practice", "severity": "normal", "status": "published", "rating_avg": 0.0, "applied_count": 0 },
+      { "id": "exp-b4a80026da28", "title": "ReAct模式：推理与行动协同增强LLM决策能力", "scenario": "llm-agent-reasoning-acting", "category": "best_practice", "severity": "normal", "status": "published", "rating_avg": 0.0, "applied_count": 0 }
+    ]
+  },
+  "step8_experience_read": {
+    "success": true,
+    "experience_id": "exp-bc873004954d",
+    "title": "Adam优化器调参经验",
+    "scenario": "optimizer-tuning",
+    "category": "optimization",
+    "severity": "tip",
+    "status": "published",
+    "rating_avg": 5.0,
+    "applied_count": 2,
+    "review_count": 1,
+    "has_apply_records": true,
+    "apply_history": [
+      { "user": "e2e-test", "context": "Adam优化器进行Transformer模型训练", "applied_at": "2026-07-28T06:52:03" },
+      { "user": "e2e-test-2", "context": "LSTM模型微调中使用Adam优化器", "applied_at": "2026-07-28T06:52:07" }
+    ],
+    "vector_index": {
+      "collection": "kb_AI-ML-Research",
+      "total_chunks": 5,
+      "embedding_model": "bge-m3"
+    },
+    "decay_flag": "unvetted",
+    "content_length_chars": 680
+  },
+  "cross_query_analysis": {
+    "query_vs_tier": {
+      "deep_learning_optimization": { "P0": 0, "P1": 1, "P2": 0, "discarded": 2, "degraded": false, "rounds": 1 },
+      "battery_thermal": { "P0": 0, "P1": 0, "P2": 1, "discarded": 0, "degraded": true, "rounds": 3 },
+      "vla_robot": { "P0": 0, "P1": 1, "P2": 4, "discarded": 0, "degraded": true, "rounds": 3 }
+    },
+    "overall_hit_rates": {
+      "deep_learning": 1.0,
+      "battery_thermal": 0.0,
+      "vla_robot": 1.0,
+      "macro_avg": 0.667,
+      "notes": "Battery query failed because Energy-Batteries meditation is disabled (no experiences generated), and cross-KB keyword match returned irrelevant E2E test result. VLA query degraded to keyword-only but recovered well via cross-KB matching."
+    },
+    "degradation_analysis": {
+      "deep_learning": "No degradation — vector recall 3, keyword 0, threshold 0.55",
+      "battery_thermal": "Degraded! Vector recall 0, keyword recall 1 (irrelevant), threshold dropped to 0.15",
+      "vla_robot": "Degraded! Vector recall 0, keyword recall 5, threshold dropped to 0.15. Despite degradation, keyword fallback produced high-quality cross-KB results."
+    },
+    "primary_findings": [
+      "Vector recall fails (returns 0) when no semantically close embeddings exist in indexed KBs — falls back to keyword search with lowered threshold",
+      "Keyword-only search can produce false positives when domain-specific KBs have no experiences (battery query returned E2E test metadata)",
+      "Cross-KB keyword matching works well for VLA query — Embodied-AI results ranked P1, AI-ML-Research cross-KB results ranked P2",
+      "Meditation auto-generation (3 experiences for AI-ML-Research) is working correctly with omp harness, auto_publish enabled",
+      "Only 2/28 KBs have meditation enabled — most KBs lack experience coverage",
+      "Content scoring (0-8) effectively distinguishes relevant from irrelevant: Adam P1 had content_score=5 vs battery false positive at content_score=3",
+      "Adam optimizer has 2 experiences (manual + auto-generated) with overlapping content — the meditation-generated one (exp-414b5773cf30) is more detailed"
+    ]
+  }
+}

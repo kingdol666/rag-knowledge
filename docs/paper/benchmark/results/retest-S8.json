@@ -1,0 +1,112 @@
+{
+  "scenario": "S8",
+  "name": "Chained Multi-Skill Re-Test",
+  "timestamp": "2026-07-29T05:41:20Z",
+  "environment": {
+    "backend": "localhost:8765",
+    "bug_fix": "BUG-1 path normalization in _delete_doc_chunks",
+    "orphan_cleanup_before": "23 chunks reclaimed"
+  },
+  "chain_steps": [
+    {
+      "step": 1,
+      "name": "INGEST",
+      "action": "kb_doc_create",
+      "kb_id": "8e167220-5416-4daa-a5c3-362f493040a8",
+      "doc_name": "CHAIN-VERIFY-Test",
+      "result": "success",
+      "doc_id": "a430fadd-8059-4e6e-9017-28d46e8c9125",
+      "auto_index_triggered": true,
+      "index_task_id": "d4ccf71557be"
+    },
+    {
+      "step": 2,
+      "name": "WAIT",
+      "action": "sleep 5s for auto-index",
+      "result": "completed"
+    },
+    {
+      "step": 3,
+      "name": "SEARCH (domain)",
+      "action": "kb_search_vector",
+      "query": "domain-organized retrieval cross-domain FPR reduction",
+      "kb_id": "8e167220",
+      "top_k": 3,
+      "result": "found",
+      "top_result": {
+        "doc_path": "FLAT-Benchmark-KB/CHAIN-VERIFY-Test.md",
+        "score": 0.716601550579071,
+        "matched": true
+      },
+      "all_results_count": 3
+    },
+    {
+      "step": 4,
+      "name": "SEARCH (cross-KB)",
+      "action": "kb_search_vector",
+      "query": "domain-organized retrieval cross-domain FPR reduction",
+      "kb_id": "",
+      "top_k": 3,
+      "result": "domain_isolated",
+      "top_result": {
+        "doc_path": "FLAT-Benchmark-KB/CHAIN-VERIFY-Test.md",
+        "score": 0.716601550579071
+      },
+      "cross_domain_contamination": false,
+      "all_results_from": "FLAT-Benchmark-KB only",
+      "all_results_count": 3
+    },
+    {
+      "step": 5,
+      "name": "VERIFY (stats)",
+      "action": "kb_search_stats",
+      "kb_id": "8e167220",
+      "chunk_count": 4,
+      "result": "chunk_count > 0 - PASS"
+    },
+    {
+      "step": 6,
+      "name": "CLEANUP",
+      "action": "kb_doc_delete",
+      "kb_id": "8e167220",
+      "doc_path": "CHAIN-VERIFY-Test.md",
+      "result": "success",
+      "deleted_id": "a430fadd-8059-4e6e-9017-28d46e8c9125"
+    },
+    {
+      "step": 7,
+      "name": "WAIT",
+      "action": "sleep 5s for vector cleanup",
+      "result": "completed"
+    },
+    {
+      "step": 8,
+      "name": "VERIFY-DELETE",
+      "action": "kb_search_vector",
+      "query": "domain-organized retrieval cross-domain FPR reduction",
+      "kb_id": "8e167220",
+      "top_k": 3,
+      "result": "not_found",
+      "deleted_doc_appeared": false,
+      "verification": "PASS - CHAIN-VERIFY-Test.md absent from results",
+      "remaining_results": [
+        "FLAT-Benchmark-KB/QDCVR Integration Test Document.md (chunk 0, score 0.6062)",
+        "FLAT-Benchmark-KB/QDCVR Integration Test Document.md (chunk 1, score 0.6002)",
+        "FLAT-Benchmark-KB/QDCVR Integration Test Document.md (chunk 2, score 0.5731)"
+      ]
+    }
+  ],
+  "summary": {
+    "total_steps": 8,
+    "passed": 8,
+    "failed": 0,
+    "key_findings": [
+      "BUG-1 fix (path normalization) resolved vector delete issue",
+      "Ingest -> auto-index -> search -> delete -> verify-delete chain works end-to-end",
+      "Domain isolation confirmed: cross-KB search returns only FLAT-Benchmark-KB results",
+      "CHAIN-VERIFY-Test correctly absent after delete + 5s wait",
+      "No orphan chunks observed post-delete (pre-fix would have left dangling vectors)"
+    ],
+    "overall_status": "PASS"
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "scenario": "S3-KB-Organize-Verify",
+  "description": "KB Organize + Verify Flow Test — full health audit of E2E-Integration-Test KB against V1-V9 checklist",
+  "timestamp": "2026-07-29T05:30:00.000Z",
+  "status": "PASS_WITH_FINDINGS",
+  "kb_under_test": {
+    "kb_id": "1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c",
+    "name": "E2E-Integration-Test",
+    "description": "E2E integration test KB for MLOps/RAG/Python articles"
+  },
+  "steps": {
+    "step1_kb_list": {
+      "status": "PASS",
+      "total_kbs": 13,
+      "e2e_kb_doc_count_catalog": 6
+    },
+    "step2_kb_get_documents": {
+      "status": "PASS",
+      "doc_count": 6,
+      "documents": [
+        {"name": "article-mlops.md", "size": 1269, "vector_chunks": 6, "tags": 0, "has_graph": true, "collection": "kb_1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c"},
+        {"name": "article-rag-optimization.md", "size": 1377, "vector_chunks": 6, "tags": 0, "has_graph": true, "collection": "kb_1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c"},
+        {"name": "Preflight-Verification-Test-Doc.md", "size": 883, "vector_chunks": 4, "tags": 3, "has_graph": true, "collection": "kb_1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c"},
+        {"name": "article-python-performance.md", "size": 1543, "vector_chunks": 7, "tags": 0, "has_graph": true, "collection": "kb_E2E-Integration-Test"},
+        {"name": "test-ml-basics.md", "size": 894, "vector_chunks": 6, "tags": 3, "has_graph": true, "collection": "kb_E2E-Integration-Test"},
+        {"name": "CRUD-Stress-Test-S7.md", "size": 46, "vector_chunks": 1, "tags": 0, "has_graph": false, "collection": "kb_1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c"}
+      ]
+    },
+    "step3_v1_metadata_consistency": {
+      "status": "PASS",
+      "kb_list_doc_count": 6,
+      "kb_get_documents_count": 6,
+      "match": true,
+      "notes": "Document counts match between catalog and document listing. Full three-way consistency (disk ↔ .tree-fs.json ↔ .knowledge-base.yml) not verifiable without direct filesystem access."
+    },
+    "step4_tag_health": {
+      "status": "PASS_WITH_FINDINGS",
+      "system_total_tags": 133,
+      "orphan_tags_system_wide": 6,
+      "orphan_tag_names": ["validation", "metadata-preservation", "ml-optimization", "e2e-verify", "distributed-training", "hyperparameter-tuning"],
+      "e2e_kb_tagged_docs": 2,
+      "e2e_kb_untagged_docs": 4,
+      "e2e_kb_tags": ["mcp-preflight", "连通性检查", "e2e-test", "ml-basics", "verification"],
+      "notes": "4 of 6 docs have zero tags. Only Preflight and test-ml-basics are tagged. 6 system-wide orphan tags detected (dry-run only)."
+    },
+    "step5_index_coverage": {
+      "status": "FAIL",
+      "kb_search_stats_chunks": 72,
+      "sum_of_doc_vector_chunks": 30,
+      "discrepancy": 42,
+      "collection_split": {
+        "kb_1eb3a7d9": {"docs": 4, "chunks": 17},
+        "kb_E2E-Integration-Test": {"docs": 2, "chunks": 13}
+      },
+      "issues": [
+        "Two different vector collection names used for same KB (kb_1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c vs kb_E2E-Integration-Test) — split collections",
+        "72 chunks reported but documented chunks sum to only 30 — 42 orphan/unaccounted chunks in kb_1eb3a7d9 collection",
+        "CRUD-Stress-Test-S7.md has no graph_index entry",
+        "article-python-performance.md and test-ml-basics.md indexed under wrong collection name (kb_E2E-Integration-Test)"
+      ]
+    },
+    "step6_graph_overview": {
+      "status": "PASS_WITH_FINDINGS",
+      "graph_doc_count": 5,
+      "actual_doc_count": 6,
+      "top_docs": [
+        {"name": "article-rag-optimization.md", "degree": 13, "total_weight": 8.32},
+        {"name": "test-ml-basics.md.md", "degree": 9, "total_weight": 6.23},
+        {"name": "article-python-performance.md", "degree": 9, "total_weight": 5.44},
+        {"name": "article-mlops.md", "degree": 8, "total_weight": 4.74},
+        {"name": "Preflight-Verification-Test-Doc.md", "degree": 2, "total_weight": 1.08}
+      ],
+      "issues": [
+        "Graph doc_count=5 but actual KB has 6 docs — CRUD-Stress-Test-S7.md missing from graph",
+        "test-ml-basics.md appears as test-ml-basics.md.md (double .md extension bug in graph node naming)"
+      ]
+    },
+    "step7_content_integrity": {
+      "status": "PASS",
+      "sample_docs_read": 2,
+      "docs": [
+        {"name": "article-mlops.md", "lines": 24, "content_valid": true, "topics": ["MLOps", "CI/CD", "model monitoring", "data drift"]},
+        {"name": "Preflight-Verification-Test-Doc.md", "lines": 19, "content_valid": true, "topics": ["Pre-Flight gateway", "kb_project_status", "Case A/B/C"]}
+      ],
+      "notes": "Both sampled documents have coherent, complete content matching their descriptions."
+    },
+    "step8_experience_health": {
+      "status": "PASS",
+      "total_experiences": 1,
+      "fresh": 1,
+      "stale": 0,
+      "orphan": 0,
+      "experience_detail": {
+        "id": "exp-e31948212697",
+        "title": "RAG知识库执行技能Pre-Flight预检网关的E2E验证经验",
+        "scenario": "Pre-Flight gateway E2E validation",
+        "category": "tip",
+        "result": "success",
+        "applied_count": 0,
+        "rating_avg": 0.0,
+        "related_docs": ["E2E-Integration-Test/Preflight-Verification-Test-Doc.md"]
+      }
+    }
+  },
+  "health_score": {
+    "total": 115,
+    "score": 87,
+    "percentage": 75.7,
+    "breakdown": {
+      "V1_metadata_consistency": {"max": 15, "score": 14, "notes": "Doc counts match catalog. Three-way FS consistency not verified."},
+      "V2_document_integrity": {"max": 15, "score": 15, "notes": "2/2 sampled docs readable, complete, coherent."},
+      "V3_parse_quality": {"max": 10, "score": 10, "notes": "All .md native — no parse pipeline issues."},
+      "V4_index_coverage": {"max": 15, "score": 5, "notes": "Split collections, 42 orphan chunks, 1 doc missing graph index."},
+      "V5_tag_coverage": {"max": 10, "score": 6, "notes": "Only 2/6 docs tagged. Four untagged docs."},
+      "V6_graph_coverage": {"max": 15, "score": 8, "notes": "1 doc missing from graph; double-extension naming bug."},
+      "V7_experience_health": {"max": 15, "score": 13, "notes": "1 experience, fresh, no staleness/orphans. Never applied, unrated."},
+      "V8_tag_hygiene": {"max": 10, "score": 7, "notes": "6 system-wide orphan tags. 2 potentially from E2E context."},
+      "V9_experience_linkage": {"max": 10, "score": 9, "notes": "1 experience linked to 1 doc. Single linkage, minimal coverage."}
+    }
+  },
+  "critical_findings": [
+    {
+      "severity": "HIGH",
+      "finding": "Split vector collections — 2 docs indexed under kb_E2E-Integration-Test while 4 under kb_1eb3a7d9 UUID. Unified collection needed for correct retrieval.",
+      "recommendation": "Reindex all 6 docs against the canonical kb_1eb3a7d9 collection with kb_reindex."
+    },
+    {
+      "severity": "HIGH",
+      "finding": "42 orphan vector chunks detected — 72 chunks in collection vs 30 accounted for by current docs.",
+      "recommendation": "Run kb_cleanup_orphan_collections followed by full kb_reindex."
+    },
+    {
+      "severity": "MEDIUM",
+      "finding": "CRUD-Stress-Test-S7.md has vector index but no graph index — partially indexed.",
+      "recommendation": "Run kb_index_document to fill the graph index gap."
+    },
+    {
+      "severity": "MEDIUM",
+      "finding": "Graph node test-ml-basics.md stored with double .md extension.",
+      "recommendation": "Investigate graph node naming — likely a path construction bug."
+    },
+    {
+      "severity": "LOW",
+      "finding": "4 of 6 docs untagged, reducing cross-KB discoverability.",
+      "recommendation": "Add relevant tags to article-mlops, article-rag-optimization, article-python-performance, and CRUD-Stress-Test-S7."
+    },
+    {
+      "severity": "LOW",
+      "finding": "6 system-wide orphan tags (validation, metadata-preservation, ml-optimization, e2e-verify, distributed-training, hyperparameter-tuning).",
+      "recommendation": "Run kb_tags_cleanup with dry_run=false after confirming tags are truly unused."
+    }
+  ],
+  "test_env": {
+    "kb_project_services": "assumed healthy (E2E-Integration-Test KB reachable, all tools responding)",
+    "kb_count_total": 13,
+    "system_tags_total": 133,
+    "orphan_collections_detected": true
+  }
+}

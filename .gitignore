@@ -86,6 +86,8 @@ docs/*
 !docs/paper/
 !docs/paper/benchmark/
 !docs/screenshots/
+docs/paper/benchmark/datasets/
+docs/paper/reference/
 
 # OMC session artifacts (local only)
 .omp/
@@ -96,3 +98,7 @@ med_config.json
 reports/
 backend/app/data/*.jsonl
 backend/app/data/router-log.jsonl
+
+# Python cache
+__pycache__/
+*.pyc

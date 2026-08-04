@@ -1,0 +1,46 @@
+% Table 2: Per-Query Cross-Domain FPR Comparison
+% CIKM 2026 Submission — booktabs format
+% FPR = fraction of top-5 results from incorrect domains
+% Flat = global search (kb_id=''), Domain = domain-scoped (kb_id set)
+
+\begin{table}[t]
+\centering
+\caption{Per-query false positive rate (FPR) for flat vs.\ domain-scoped retrieval.
+FPR = fraction of top-5 results from incorrect domains.
+Domain scoping eliminates all cross-domain false positives (FPR = 0.00 for all queries).
+Q3 is the worst case: flat retrieval returns \emph{zero} correct results.}
+\label{tab:crossdomain}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{@{}clcccc@{}}
+\toprule
+\textbf{ID} & \textbf{Query Domain} & \textbf{Flat FPR} & \textbf{Domain FPR} & \textbf{$\Delta$FPR} & \textbf{Compression} \\
+\midrule
+Q1  & Embodied-AI            & 0.80 & 0.00 & $-$0.80 & 46.9$\times$ \\
+Q2  & Materials-Science      & 0.60 & 0.00 & $-$0.60 & 19.1$\times$ \\
+Q3  & Biomedical-Eng.        & \textbf{1.00} & 0.00 & $-$1.00 & 17.8$\times$ \\
+Q4  & AI-ML-Research         & 0.20 & 0.00 & $-$0.20 & 23.9$\times$ \\
+Q5  & Materials-ML-Inv.      & 0.00 & 0.00 & 0.00    & 9.8$\times$ \\
+Q6  & Materials-ML-Inv.      & 0.00 & 0.00 & 0.00    & 9.8$\times$ \\
+Q7  & Energy-Batteries       & 0.40 & 0.00 & $-$0.40 & 24.9$\times$ \\
+Q8  & AI-ML-Research         & 0.60 & 0.00 & $-$0.60 & 23.9$\times$ \\
+Q9  & AI-ML-Research         & 0.20 & 0.00 & $-$0.20 & 23.9$\times$ \\
+Q10 & Economics-DataSci.     & 0.20 & 0.00 & $-$0.20 & 26.6$\times$ \\
+Q11 & Materials-ML-Inv.      & 0.20 & 0.00 & $-$0.20 & 9.8$\times$ \\
+\midrule
+\multicolumn{2}{@{}l}{\textbf{Average}} & \textbf{0.364} & \textbf{0.000} & \textbf{$-$0.364} & \textbf{25.4$\times$} \\
+\bottomrule
+\end{tabular}%
+}
+\begin{minipage}{\columnwidth}
+\vspace{4pt}
+\footnotesize
+\emph{Notes:}
+FPR measured on 11 queries with verified ground truth.
+Flat searches all 13{,}649 chunks; domain searches avg 538 chunks.
+9/11 queries (81.8\%) show cross-domain pollution under flat retrieval.
+Q3: ``efficient DL medical imaging'' matches industrial defect detection
+papers under flat retrieval --- zero biomedical results in top-5.
+Q5: RL polymer electrolyte correctly attributed to Materials-ML (not Energy)
+via content-based KB attribution, preventing misclassification.
+\end{minipage}
+\end{table}

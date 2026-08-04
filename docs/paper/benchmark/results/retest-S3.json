@@ -1,0 +1,144 @@
+{
+  "scenario": "S3",
+  "name": "KB Verify — Orphan Cleanup & Health Check",
+  "retest_date": "2026-07-29",
+  "backend": "localhost:8765 (restarted with BUG-1 fix)",
+  "kb_under_test": {
+    "id": "1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c",
+    "name": "E2E-Integration-Test"
+  },
+  "checks": [
+    {
+      "step": 1,
+      "name": "kb_search_stats",
+      "status": "PASS",
+      "details": {
+        "collection": "kb_1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c",
+        "chunk_count": 78,
+        "assessment": "Reasonable for 6 documents in E2E-Integration-Test KB"
+      }
+    },
+    {
+      "step": 2,
+      "name": "kb_cleanup_orphan_collections (dry_run)",
+      "status": "PASS",
+      "details": {
+        "total_collections": 14,
+        "orphan_count": 0,
+        "duplicate_count": 0,
+        "reclaimable_chunks": 0,
+        "assessment": "BUG-1 fix confirmed: 0 orphans remain. Previously 23 orphan chunks were reclaimed."
+      }
+    },
+    {
+      "step": 3,
+      "name": "kb_graph_kb_overview",
+      "status": "WARN",
+      "details": {
+        "doc_count": 5,
+        "actual_docs": 6,
+        "discrepancy": "Graph shows 5 docs but kb_get_documents returns 6. 'Deep Learning for Battery Thermal Management.md' not in graph overview (has 0 relations). Additionally, ghost node 'test-ml-basics.md.md' (double extension, degree 9) appears in overview but actual doc is 'test-ml-basics.md'.",
+        "top_docs": [
+          {"name": "article-rag-optimization.md", "degree": 13, "tw": 8.32},
+          {"name": "test-ml-basics.md.md [GHOST]", "degree": 9, "tw": 6.23},
+          {"name": "article-python-performance.md", "degree": 9, "tw": 5.44},
+          {"name": "article-mlops.md", "degree": 8, "tw": 4.74},
+          {"name": "Preflight-Verification-Test-Doc.md", "degree": 2, "tw": 1.08}
+        ],
+        "related_kbs_count": 10,
+        "graph_health": "DEGRADED — ghost node with double-extension present"
+      }
+    },
+    {
+      "step": 4,
+      "name": "kb_tags_list",
+      "status": "PASS",
+      "details": {
+        "total_tags": 133,
+        "test_specific_tags_found": ["e2e-test", "ml-basics", "verification", "mcp-preflight", "e2e-verify", "distributed-training", "hyperparameter-tuning", "ml-optimization", "metadata-preservation", "validation"],
+        "assessment": "No orphan tags detected. Tags with specific test prefixes are correctly associated with E2E-Integration-Test documents. Tags like 'distributed-training', 'hyperparameter-tuning', 'ml-optimization' may be from previous S1/S4 test docs that are now deleted but tags remain in global registry."
+      }
+    },
+    {
+      "step": 5,
+      "name": "kb_get_documents",
+      "status": "PASS",
+      "details": {
+        "doc_count": 6,
+        "documents": [
+          {"name": "article-mlops.md", "chunks": 6, "collection": "kb_1eb3a7d9-...", "tags": []},
+          {"name": "article-rag-optimization.md", "chunks": 6, "collection": "kb_1eb3a7d9-...", "tags": []},
+          {"name": "Preflight-Verification-Test-Doc.md", "chunks": 4, "collection": "kb_1eb3a7d9-...", "tags": ["mcp-preflight", "连通性检查", "e2e-test"]},
+          {"name": "article-python-performance.md", "chunks": 7, "collection": "kb_E2E-Integration-Test [NAME, not UUID]", "tags": []},
+          {"name": "test-ml-basics.md", "chunks": 6, "collection": "kb_E2E-Integration-Test [NAME, not UUID]", "tags": ["e2e-test", "ml-basics", "verification"]},
+          {"name": "Deep Learning for Battery Thermal Management.md", "chunks": 1, "collection": "kb_1eb3a7d9-...", "tags": []}
+        ]
+      }
+    },
+    {
+      "step": 6,
+      "name": "Stale test artifact check",
+      "status": "WARN",
+      "details": {
+        "stale_docs_found": [
+          {
+            "name": "Deep Learning for Battery Thermal Management.md",
+            "added": "2026-07-29T05:19:59.935Z",
+            "size": 434,
+            "chunks": 1,
+            "tags": [],
+            "description": "",
+            "graph_relations": 0,
+            "assessment": "Likely stale artifact from S1/S4 cross-KB move test. Minimal content, no tags/description, graph-isolated. Should be removed."
+          }
+        ],
+        "collection_inconsistencies": [
+          {
+            "docs_affected": ["test-ml-basics.md", "article-python-performance.md"],
+            "issue": "vector_index.collection = 'kb_E2E-Integration-Test' (by KB name) instead of UUID-based 'kb_1eb3a7d9-...' used by other docs",
+            "risk": "Could cause search misses if vector query targets the UUID-based collection name"
+          }
+        ]
+      }
+    }
+  ],
+  "issues": [
+    {
+      "id": "ISSUE-S3-1",
+      "severity": "MEDIUM",
+      "title": "Ghost graph node with double .md extension",
+      "description": "Graph contains node 'doc::E2E-Integration-Test/test-ml-basics.md.md' (degree 9) with no corresponding actual document. The real doc 'test-ml-basics.md' has its own graph node with 0 relations. The ghost node was likely created during a previous test where the doc was ingested with incorrect name, then re-ingested correctly without deleting the old graph node.",
+      "fix": "Call kb_graph_delete_document for ghost node path 'E2E-Integration-Test/test-ml-basics.md.md', then rebuild graph."
+    },
+    {
+      "id": "ISSUE-S3-2",
+      "severity": "LOW",
+      "title": "Mixed vector collection names for same KB",
+      "description": "test-ml-basics.md and article-python-performance.md use collection name 'kb_E2E-Integration-Test' (by KB name) while other 4 docs use 'kb_1eb3a7d9-5d05-4992-9ea1-d1198f94cc9c' (by UUID). Both collections point to same KB but have different names, reflecting path normalization inconsistency before BUG-1 fix.",
+      "fix": "Re-index affected docs or rebuild KB vector index to normalize collection names."
+    },
+    {
+      "id": "ISSUE-S3-3",
+      "severity": "LOW",
+      "title": "Stale test artifact — 'Deep Learning for Battery Thermal Management.md'",
+      "description": "Document added 2026-07-29 with 434 bytes, 1 chunk, no tags, no description, 0 graph relations. Appears to be a leftover from S1/S4 cross-KB move testing.",
+      "fix": "Delete document via kb_doc_delete, then cleanup orphan chunks if any."
+    },
+    {
+      "id": "ISSUE-S3-4",
+      "severity": "LOW",
+      "title": "Graph shows 26 KBs but only ~13-14 real KBs exist",
+      "description": "kb_graph_stats reports 26 KB nodes but actual knowledge bases count is ~13-14. Suggests stale KB-level graph nodes from deleted or renamed KBs.",
+      "fix": "Rebuild global graph to purge stale KB nodes."
+    }
+  ],
+  "health_summary": {
+    "overall": "DEGRADED",
+    "pass_count": 3,
+    "warn_count": 2,
+    "fail_count": 0,
+    "issue_count": 4,
+    "blockers": 0,
+    "assessment": "BUG-1 (path normalization in _delete_doc_chunks) is confirmed fixed: 0 orphans, cleanup working. However, 4 non-blocking issues remain: ghost graph node from double-extension ingestion (ISSUE-S3-1, MEDIUM), mixed vector collection names (ISSUE-S3-2), stale test artifact (ISSUE-S3-3), and graph KB node bloat (ISSUE-S3-4). These are cleanup items, not functional blockers."
+  }
+}
