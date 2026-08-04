@@ -18,7 +18,7 @@ description: >
 - KB 整理与重组 → `skill://knowledgebase-organize` — 子KB拆分/跨库归并后需重索引
 - KB 完整性校验 → `skill://knowledgebase-verify` — 三向一致性+索引覆盖率修复
 - 知识图谱 → `skill://knowledgebase-graph` — 图谱构建/文档路径/跨库发现
-- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+72工具地图）
+- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+91工具地图）
 - 批量操作 → `skill://knowledgebase-batch` — 批量入库/标签迁移/去重
 
 ## Sequential Workflow
@@ -32,7 +32,7 @@ description: >
 # QDCVR — 查询驱动 · 内容裁决 · 门控精炼检索
 ## ⭐ Execution Model · Pre-Flight · Architecture（作业首步，强制）
 
-**执行者：Archival agent** — 用 `task` 委托执行（**委托模板 + 三角色执行模型 + 组合任务边界**：必读 [execution-model.md](../knowledgebase/references/execution-model.md)）。**Pre-Flight**：未通过禁作业 — 一探双检 `kb_project_status` → 分支处置 → 冒烟测试，完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)。**心智模型**：操作前必读 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层模型 + 一致性不变量 + 72 工具地图）；MCP 优先原则（禁 terminal/HTTP 绕过）见 [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) 第五条。
+**执行者：Archival agent** — 用 `task` 委托执行（**委托模板 + 三角色执行模型 + 组合任务边界**：必读 [execution-model.md](../knowledgebase/references/execution-model.md)）。**Pre-Flight**：未通过禁作业 — 一探双检 `kb_project_status` → 分支处置 → 冒烟测试，完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)。**心智模型**：操作前必读 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层模型 + 一致性不变量 + 91 工具地图）；MCP 优先原则（禁 terminal/HTTP 绕过）见 [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) 第五条。
 
 - Archival 禁止：跳过 Step 0 查询改写、跳过内容验证、跳过盲点声明
 ---

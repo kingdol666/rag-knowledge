@@ -87,3 +87,10 @@ docs/
 
 # OMC session artifacts (local only)
 .omp/
+
+# Runtime-generated state (SOUL/meditation/router), not sources
+kb_list.json
+med_config.json
+reports/
+backend/app/data/*.jsonl
+backend/app/data/router-log.jsonl

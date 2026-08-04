@@ -1,7 +1,7 @@
-# RAG Knowledge Platform — 全流程 QA 测试报告
+﻿# RAG Knowledge Platform — 全流程 QA 测试报告
 
 > 测试日期: 2026-07-29 | 测试方式: 8 个 archival 子 Agent 并行端到端测试
-> 测试范围: 14 子 skill + 72 MCP 工具全链路 | 测试数据: 8 个隔离 `QA-` 测试 KB（测后全删）
+> 测试范围: 17 子 skill + 91 MCP 工具全链路 | 测试数据: 8 个隔离 `QA-` 测试 KB（测后全删）
 > 测试原则: 发现大逻辑 bug，小问题（文案/性能/样式）忽略
 
 ## 一、测试概览

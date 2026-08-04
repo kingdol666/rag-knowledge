@@ -2865,10 +2865,25 @@ async def soul_learn(soul_kb_id: str, doc_paths: list, limit: int = 5, rounds: i
         limit: 单次问题上限
         rounds: 固定轮数(默认 1;>1 时锁内循环多轮, 每轮独立预算基线+增量扫描)
     """
-    async def _work():
-        return await _client().soul_learn(soul_kb_id, doc_paths, limit, rounds)
+    async def _work(inner_task_id: str):
+        # 后端异步执行(async_mode=True 返回后端 task_id), 轮询其进度
+        # 并镜像到本层 task_registry, 使 kb_task_status 可追踪中间进度
+        r = await _client().soul_learn(soul_kb_id, doc_paths, limit, rounds, async_mode=True)
+        backend_tid = r.get("task_id") if r.get("success") else None
+        if not backend_tid:
+            return r
+        while True:
+            await asyncio.sleep(5)
+            view = await _client().soul_task_status(backend_tid)
+            st = view.get("status", "running")
+            if view.get("progress"):
+                task_registry.update_progress(inner_task_id, view["progress"])
+            if st == "done":
+                return view.get("result") or {}
+            if st == "error":
+                return {"success": False, "error": view.get("error", "backend_task_failed")}
     task_id = task_registry.submit(
-        _work(), "soul_learn", {"soul_kb_id": soul_kb_id, "doc_paths": len(doc_paths), "rounds": rounds})
+        _work, "soul_learn", {"soul_kb_id": soul_kb_id, "doc_paths": len(doc_paths), "rounds": rounds})
     return _running_payload(task_id, "soul_learn", {"soul_kb_id": soul_kb_id})
 
 
@@ -2901,28 +2916,26 @@ async def soul_review_drafts(soul_kb_id: str, draft_type: str = "memory",
         force: 低分审批强制标记
     """
     if action in ("approve", "reject") and draft_ids:
-        results = []
-        for did in draft_ids:
-            r = await _client().soul_review_drafts(
-                soul_kb_id, draft_type, action, did, force)
-            results.append(r)
-        # 汇总: 全部成功 → success; 部分成功 → 附失败明细
-        ok = [r for r in results if r.get("success")]
-        bad = [r for r in results if not r.get("success")]
-        if bad and not ok:
-            return _j({"success": False, "error": bad[0].get("error", "approve_failed"),
-                       "detail": bad[0].get("detail", ""), "results": results})
-        merged: dict = {"success": True, "results": results}
-        for key in ("approved", "indexed"):
-            vals = [r[key] for r in ok if isinstance(r.get(key), (bool, list))]
-            if vals and isinstance(vals[0], list):
-                merged[key] = [v for lst in vals for v in lst]
-            elif vals:
-                merged[key] = all(vals)
-        if bad:
-            merged["partial_failures"] = [
-                {"draft_id": r.get("draft_id", ""), "error": r.get("error")} for r in bad]
-        return _j(merged)
+        # 批量审批 → 后端异步任务(单条 ~20s 索引, 串行同步会超 MCP 30s)
+        async def _work(inner_task_id: str):
+            r = await _client().soul_review_drafts_batch(
+                soul_kb_id, draft_type, action, list(draft_ids), force, async_mode=True)
+            if not r.get("success") or not r.get("task_id"):
+                return r
+            while True:
+                await asyncio.sleep(3)
+                view = await _client().soul_task_status(r["task_id"])
+                st = view.get("status", "running")
+                if view.get("progress"):
+                    task_registry.update_progress(inner_task_id, view["progress"])
+                if st == "done":
+                    return view.get("result") or {}
+                if st == "error":
+                    return {"success": False, "error": view.get("error", "backend_review_failed")}
+        task_id = task_registry.submit(
+            _work, "soul_review",
+            {"soul_kb_id": soul_kb_id, "action": action, "draft_ids": len(draft_ids)})
+        return _running_payload(task_id, "soul_review", {"soul_kb_id": soul_kb_id, "action": action})
     draft_id = (draft_ids or [""])[0] if draft_ids else ""
     return _j(await _client().soul_review_drafts(
         soul_kb_id, draft_type, action, draft_id, force))
@@ -2947,12 +2960,25 @@ async def soul_learn_all(soul_kb_id: str = "", max_docs: int = 20,
         dry_run: 只估算不执行
         rounds: 固定轮数(每 SOUL 锁内循环轮次, 每轮学一批增量; 默认 1)
     """
-    async def _work():
-        return await _client().soul_learn_all(soul_kb_id, max_docs, dry_run, rounds)
+    async def _work(inner_task_id: str):
+        r = await _client().soul_learn_all(soul_kb_id, max_docs, dry_run, rounds, async_mode=True)
+        backend_tid = r.get("task_id") if r.get("success") else None
+        if not backend_tid:
+            return r
+        while True:
+            await asyncio.sleep(5)
+            view = await _client().soul_task_status(backend_tid)
+            st = view.get("status", "running")
+            if view.get("progress"):
+                task_registry.update_progress(inner_task_id, view["progress"])
+            if st == "done":
+                return view.get("result") or {}
+            if st == "error":
+                return {"success": False, "error": view.get("error", "backend_task_failed")}
     if dry_run:
         return _j(await _client().soul_learn_all(soul_kb_id, max_docs, True, rounds))
     task_id = task_registry.submit(
-        _work(), "soul_learn_all", {"soul_kb_id": soul_kb_id, "max_docs": max_docs, "rounds": rounds})
+        _work, "soul_learn_all", {"soul_kb_id": soul_kb_id, "max_docs": max_docs, "rounds": rounds})
     return _running_payload(task_id, "soul_learn_all", {"soul_kb_id": soul_kb_id or "*"})
 
 
@@ -2960,6 +2986,76 @@ async def soul_learn_all(soul_kb_id: str = "", max_docs: int = 20,
 async def soul_reflect(soul_kb_id: str) -> str:
     """反思: 认知草稿 vs 人格定义结构化 diff 报告(先自动 checkpoint)。"""
     return _j(await _client().soul_reflect(soul_kb_id))
+
+
+@mcp.tool()
+async def soul_train_rl(soul_kb_id: str, rounds: int = 1) -> str:
+    """RL 强化训练: 好奇心探索(learn) × 评价 Agent(reward) × 策略更新(认知草稿)。
+
+    每轮: 1) learn_incremental 学习 kb_scope 内增量文档
+    2) evaluate_persona 评价 Agent 四维打分(identity/values/thinking/language)
+    3) generate_cognition_drafts 低分维度 → cognition-drafts(待审批)
+    4) reward 写入 reports/reward-history.jsonl(进化曲线)
+
+    认知草稿经 soul_review_drafts(draft_type=cognition, action=approve) 审批后
+    合并入 soul-definition.md 对应章节 —— 评价驱动的结构文档优化闭环。
+
+    异步: 返回 task_id → kb_task_status 轮询(progress 含 phase: learn|reward,
+    reward 分数, drafts_created)。
+    """
+    async def _work(inner_task_id: str):
+        r = await _client().soul_train_rl(soul_kb_id, rounds, async_mode=True)
+        backend_tid = r.get("task_id") if r.get("success") else None
+        if not backend_tid:
+            return r
+        while True:
+            await asyncio.sleep(5)
+            view = await _client().soul_task_status(backend_tid)
+            st = view.get("status", "running")
+            if view.get("progress"):
+                task_registry.update_progress(inner_task_id, view["progress"])
+            if st == "done":
+                return view.get("result") or {}
+            if st == "error":
+                return {"success": False, "error": view.get("error", "backend_task_failed")}
+    task_id = task_registry.submit(
+        _work, "soul_train_rl", {"soul_kb_id": soul_kb_id, "rounds": rounds})
+    return _running_payload(task_id, "soul_train_rl", {"soul_kb_id": soul_kb_id, "rounds": rounds})
+
+
+@mcp.tool()
+async def soul_evaluate(soul_kb_id: str) -> str:
+    """评价 Agent 四维人格评分(RL 奖励信号): identity/values/thinking/language + overall。
+
+    独立调用可评估当前人格表现; train_rl 内部每轮调用。"""
+    return _j(await _client().soul_evaluate(soul_kb_id))
+
+
+@mcp.tool()
+async def soul_gen_cognition_drafts(soul_kb_id: str) -> str:
+    """生成认知草稿(策略更新建议): 即时评价后, 低分维度产出优化行 → cognition-drafts/。
+
+    审批: soul_review_drafts(soul_kb_id, draft_type=cognition, action=approve,
+    draft_ids=[...]) → 合并入 soul-definition.md 对应章节。
+
+    异步: 返回 task_id → kb_task_status 轮询(progress: {created, skipped})。
+    """
+    async def _work(inner_task_id: str):
+        r = await _client().soul_gen_cognition_drafts(soul_kb_id, async_mode=True)
+        backend_tid = r.get("task_id") if r.get("success") else None
+        if not backend_tid:
+            return r
+        while True:
+            await asyncio.sleep(3)
+            view = await _client().soul_task_status(backend_tid)
+            st = view.get("status", "running")
+            if st == "done":
+                return view.get("result") or {}
+            if st == "error":
+                return {"success": False, "error": view.get("error", "backend_task_failed")}
+    task_id = task_registry.submit(
+        _work, "soul_cognition", {"soul_kb_id": soul_kb_id})
+    return _running_payload(task_id, "soul_cognition", {"soul_kb_id": soul_kb_id})
 
 
 @mcp.tool()

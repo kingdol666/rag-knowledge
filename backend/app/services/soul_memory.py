@@ -220,8 +220,9 @@ async def approve_draft(
     draft_id: str,
     force: bool = False,
     operator: str = "system",
+    draft_type: str = "memory",
 ) -> dict[str, Any]:
-    """批准一条记忆草稿为正式记忆。
+    """批准一条草稿为正式记忆(cognition 草稿 → 合并入人格定义)。
 
     审批闸门：
     - ``groundedness < 3`` 且非 ``force`` → ``grounding_below_3``
@@ -234,11 +235,18 @@ async def approve_draft(
         draft_id: 草稿文件名（不含 .md）。
         force: 强制通过评分闸门。
         operator: 操作者标识。
+        draft_type: ``memory``(默认) 或 ``cognition``(RL 认知草稿,
+            审批后合并入 soul-definition.md 对应章节)。
 
     Returns:
         成功 ``{"success": True, "approved": [draft_id], "indexed": bool}``；
         拒绝 ``{"success": False, "error": str, "requires_force": bool}``。
     """
+    # cognition 草稿: 委托 RL 引擎合并入人格定义(章节内追加优化行)
+    if draft_type == "cognition":
+        from app.services.soul_reward import apply_cognition_draft
+        return await apply_cognition_draft(soul_kb_id, draft_id, operator=operator)
+
     _soul_dir = soul_kb_dir(soul_kb_id)
     mem_path = _soul_dir / "memories" / f"{draft_id}.md"
 
@@ -373,6 +381,25 @@ async def approve_draft(
                 logger.warning("BM25 incremental update failed for %s: %s", draft_id, e)
 
             indexed = True
+        else:
+            # 已注册(训练期或此前审批): 校验向量索引是否真实存在, 缺失则补索引
+            existing_vec = next(
+                (d.get("vector_index") for d in existing_docs
+                 if _norm_path(d.get("path", "")) == _norm_path(doc_rel_path)),
+                None,
+            )
+            if not (existing_vec and existing_vec.get("indexed_at")):
+                try:
+                    vec_result = vector_service.index_document(
+                        kb_id=kb_path, doc_path=doc_rel_path, content=body)
+                    if vec_result:
+                        storage_reader.update_document_vector_index(
+                            kb_path, doc_rel_path, vec_result)
+                        indexed = True
+                except Exception as e:
+                    logger.warning("re-index registered memory failed for %s: %s", draft_id, e)
+            else:
+                indexed = True
     except Exception as e:
         logger.warning("Registration/index failure for %s: %s", draft_id, e)
         return {
@@ -415,20 +442,22 @@ async def approve_draft(
 # ═══════════════════════════════════════════════════════════════════
 
 async def reject_draft(
-    soul_kb_id: str, draft_id: str
+    soul_kb_id: str, draft_id: str, draft_type: str = "memory"
 ) -> dict[str, Any]:
-    """拒绝一条记忆草稿（保留文件，status→rejected）。
+    """拒绝一条草稿（保留文件，status→rejected）。
 
     Args:
         soul_kb_id: SOUL 知识库 ID。
         draft_id: 草稿文件名（不含 .md）。
+        draft_type: ``memory``(默认) 或 ``cognition``(RL 认知草稿)。
 
     Returns:
         ``{"success": True, "rejected": draft_id}``
         或 ``{"success": False, "error": str}``。
     """
     _soul_dir = soul_kb_dir(soul_kb_id)
-    mem_path = _soul_dir / "memories" / f"{draft_id}.md"
+    scan_dir = _soul_dir / ("cognition-drafts" if draft_type == "cognition" else "memories")
+    mem_path = scan_dir / f"{draft_id}.md"
 
     if not mem_path.exists():
         return {"success": False, "error": f"Draft not found: {draft_id}"}

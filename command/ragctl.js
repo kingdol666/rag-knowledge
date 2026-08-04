@@ -3097,6 +3097,32 @@ async function cmdSoul(args) {
     return res.json();
   }
 
+  // 异步任务轮询: 提交后打印进度(训练/审批长任务), 完成后返回 result
+  async function pollTask(taskId, label) {
+    let lastLine = '';
+    for (;;) {
+      await new Promise(r => setTimeout(r, 10000));
+      let view;
+      try {
+        view = await apiGet(`/api/v1/soul/tasks/${taskId}`);
+      } catch { continue; }
+      const p = view.progress || {};
+      let line;
+      if (p.phase === 'learn') {
+        line = `  ⏳ ${label} 学习轮 ${p.round ?? 1}/${p.rounds ?? 1} ｜ 问题 ${p.questions ?? 0} ｜ 记忆 ${p.memories ?? 0} ｜ 文档 ${p.docs_processed ?? 0}`;
+      } else if (p.phase === 'reward') {
+        line = `  🎯 ${label} 第 ${p.round}/${p.rounds} 轮评价得分 ${p.reward?.toFixed?.(2) ?? p.reward} ｜ 认知草稿 ${p.drafts_created ?? 0}`;
+      } else if (p.processed !== undefined) {
+        line = `  ⏳ ${label} 审批 ${p.processed}/${p.total} (批准 ${p.approved ?? 0} / 驳回 ${p.rejected ?? 0})`;
+      } else {
+        line = `  ⏳ ${label} 执行中…(elapsed ${view.elapsed_seconds ?? '?'}s)`;
+      }
+      if (line !== lastLine) { console.log(line); lastLine = line; }
+      if (view.status === 'done') return view.result || {};
+      if (view.status === 'error') throw new Error(view.error || `${label} 失败`);
+    }
+  }
+
   const enc = encodeURIComponent;
 
   // 取 flag 值: 支持 `--flag value` 与 `--flag=value` 两种写法
@@ -3293,8 +3319,16 @@ async function cmdSoul(args) {
       if (!kbId || !docs) { console.log('用法: ragctl soul learn <soul_kb_id> --docs kb/doc1,kb/doc2 [--limit 6] [--rounds N]'); break; }
       const limit = parseInt(flagVal('--limit') || '6');
       const rounds = parseInt(flagVal('--rounds') || '1');
-      const res = await apiPost(`/api/v1/soul/${enc(kbId)}/learn`, { doc_paths: docs.split(',').map(s => s.trim()), limit, rounds });
-      console.log(`\n🧠 ${kbId} 训练已触发(rounds=${rounds}):`, JSON.stringify(res.report || res).slice(0, 300));
+      console.log(`\n🧠 ${kbId} 训练已提交(rounds=${rounds}, 异步执行)…`);
+      const res = await apiPost(`/api/v1/soul/${enc(kbId)}/learn`, {
+        doc_paths: docs.split(',').map(s => s.trim()), limit, rounds, async_mode: true,
+      });
+      if (res.task_id) {
+        const result = await pollTask(res.task_id, `${kbId} 训练`);
+        console.log('  训练完成:', JSON.stringify(result.report || result).slice(0, 400));
+      } else {
+        console.log('  结果:', JSON.stringify(res.report || res).slice(0, 300));
+      }
       break;
     }
     case 'learn-all': case 'train-all': {
@@ -3304,14 +3338,90 @@ async function cmdSoul(args) {
       const dry = flagOn('--dry-run');
       const rounds = parseInt(flagVal('--rounds') || '1');
       const path = kbId ? `/api/v1/soul/${enc(kbId)}/learn-all` : '/api/v1/soul/learn-all';
-      const res = await apiPost(path, { max_docs: 20, dry_run: dry, rounds });
-      console.log(`\n🌱 全库自举(${kbId || '全部人格'}${dry ? ' dry-run' : ''}, rounds=${rounds}):`);
-      const r = res.report || {};
-      if (r.estimated_llm_calls !== undefined) {
-        console.log(`  预估: ${r.estimated_llm_calls} LLM 调用 | 唯一文档: ${r.unique_docs} | 重复: ${r.duplicate_docs} | 跨人格重叠: ${r.cross_soul_overlap_pct}%`);
-        for (const p of r.per_soul_breakdown || []) console.log(`    • ${p.soul_kb_id.slice(0, 20)}: ${p.scope_docs} 文档`);
-      } else {
+      if (dry) {
+        const res = await apiPost(path, { max_docs: 20, dry_run: true, rounds });
+        console.log(`\n🌱 全库自举预估(${kbId || '全部人格'}, rounds=${rounds}):`);
+        const r = res.report || {};
+        if (r.estimated_llm_calls !== undefined) {
+          console.log(`  预估: ${r.estimated_llm_calls} LLM 调用 | 唯一文档: ${r.unique_docs} | 重复: ${r.duplicate_docs} | 跨人格重叠: ${r.cross_soul_overlap_pct}%`);
+          for (const p of r.per_soul_breakdown || []) console.log(`    • ${p.soul_kb_id.slice(0, 20)}: ${p.scope_docs} 文档`);
+        } else {
+          console.log(JSON.stringify(r, null, 2).slice(0, 400));
+        }
+        break;
+      }
+      console.log(`\n🌱 全库自举已提交(${kbId || '全部人格'}, rounds=${rounds}, 异步执行)…`);
+      const res = await apiPost(path, { max_docs: 20, dry_run: false, rounds, async_mode: true });
+      if (res.task_id) {
+        const result = await pollTask(res.task_id, '全库自举');
+        const r = result.report || result;
+        console.log(`  完成: ${r.total_docs ?? ''} 文档 / ${r.total_questions ?? ''} 问题 / ${r.total_memories ?? ''} 记忆`);
         console.log(JSON.stringify(r, null, 2).slice(0, 400));
+      } else {
+        console.log('  结果:', JSON.stringify(res.report || res).slice(0, 300));
+      }
+      break;
+    }
+    case 'train-rl': {
+      // ragctl soul train-rl <soul_kb_id> [--rounds N] — RL 强化训练(好奇心×评价×策略更新)
+      const kbId = rest[0];
+      if (!kbId) { console.log('用法: ragctl soul train-rl <soul_kb_id> [--rounds N]'); break; }
+      const rounds = parseInt(flagVal('--rounds') || '1');
+      console.log(`\n🤖 RL 强化训练已提交(${kbId}, rounds=${rounds}): 好奇心探索 → 评价Agent打分 → 认知草稿策略更新…`);
+      const res = await apiPost(`/api/v1/soul/${enc(kbId)}/train-rl`, { rounds, async_mode: true });
+      if (res.task_id) {
+        const result = await pollTask(res.task_id, `${kbId} RL`);
+        console.log('  RL 训练完成:');
+        for (const r of (result.per_round || [])) {
+          console.log(`    第 ${r.round} 轮: reward=${r.reward?.toFixed?.(2) ?? r.reward} (id=${r.scores?.identity} va=${r.scores?.values} th=${r.scores?.thinking} la=${r.scores?.language}) 认知草稿=${r.cognition_drafts_created?.length ?? 0} 学习: ${r.learn?.docs_processed ?? 0} 文档`);
+        }
+        console.log(`  进化曲线: ${result.reward_history_path || ''}`);
+        console.log('  下一步: ragctl soul review-cognition <soul_kb_id> 审批认知草稿 → 合并入人格定义');
+      } else {
+        console.log('  结果:', JSON.stringify(res).slice(0, 300));
+      }
+      break;
+    }
+    case 'evaluate': {
+      // ragctl soul evaluate <soul_kb_id> — 评价 Agent 四维打分(RL 奖励信号)
+      const kbId = rest[0];
+      if (!kbId) { console.log('用法: ragctl soul evaluate <soul_kb_id>'); break; }
+      console.log(`\n📊 评价 Agent 评分中(${kbId})…`);
+      const res = await apiPost(`/api/v1/soul/${enc(kbId)}/evaluate`, {});
+      console.log(`  overall: ${res.overall}`);
+      console.log(`  identity: ${res.identity} | values: ${res.values} | thinking: ${res.thinking} | language: ${res.language}`);
+      break;
+    }
+    case 'review-cognition': {
+      // ragctl soul review-cognition <soul_kb_id> [--action list|approve|reject] [--draft id] [--all]
+      const kbId = rest[0];
+      if (!kbId) { console.log('用法: ragctl soul review-cognition <soul_kb_id> [--action approve|reject] [--draft id] [--all 批量]'); break; }
+      const action = flagVal('--action') || 'list';
+      const draftId = flagVal('--draft');
+      const all = flagOn('--all');
+      if (action === 'list') {
+        const res = await apiPost(`/api/v1/soul/${enc(kbId)}/review-drafts`, { action: 'list', type: 'cognition' });
+        console.log(`\n🧬 ${kbId} 认知草稿(${res.drafts?.length || 0}) — RL 策略更新建议:`);
+        for (const d of (res.drafts || []).slice(0, 10)) {
+          console.log(`  • ${d.draft_id}  reward=${d.scores?.reward ?? '-'} | ${d.answer_text?.split('\n')[0]?.slice(0, 60)}`);
+        }
+      } else if (action === 'approve' && all && !draftId) {
+        const list = await apiPost(`/api/v1/soul/${enc(kbId)}/review-drafts`, { action: 'list', type: 'cognition' });
+        const ids = (list.drafts || []).map(d => d.draft_id);
+        if (!ids.length) { console.log('\n无待审批认知草稿'); break; }
+        console.log(`\n✅ 批量审批 ${ids.length} 条认知草稿(异步)…`);
+        const res = await apiPost(`/api/v1/soul/${enc(kbId)}/review-drafts`, {
+          action: 'approve', type: 'cognition', draft_ids: ids, async_mode: true,
+        });
+        if (res.task_id) {
+          const result = await pollTask(res.task_id, '认知审批');
+          console.log('  审批完成:', JSON.stringify(result.results || result).slice(0, 300));
+        }
+      } else {
+        const res = await apiPost(`/api/v1/soul/${enc(kbId)}/review-drafts`, {
+          action, type: 'cognition', draft_id: draftId, async_mode: false,
+        });
+        console.log(`\n✅ ${action}:`, JSON.stringify(res).slice(0, 250));
       }
       break;
     }
@@ -3421,7 +3531,10 @@ async function cmdSoul(args) {
       console.log('  ragctl soul status <soul_kb_id>                    人格学习指标');
       console.log('  ragctl soul init <name> [--scope k1,k2] [--labels a,b] [--harness omp|claude]  创建人格(后端兼容入口)');
       console.log('  ragctl soul learn <soul_kb_id> --docs=kb/f1,kb/f2 [--rounds N]  训练指定文档(固定轮数)');
-      console.log('  ragctl soul learn-all [soul_kb_id] [--dry-run] [--rounds N]   全库自举(增量, 固定轮数)');
+      console.log('  ragctl soul learn-all [soul_kb_id] [--dry-run] [--rounds N]   全库自举(增量, 固定轮数, 异步+进度)');
+      console.log('  ragctl soul train-rl <soul_kb_id> [--rounds N]   RL强化训练(好奇心×评价Agent×策略更新, 异步+进度)');
+      console.log('  ragctl soul evaluate <soul_kb_id>               评价Agent四维评分(RL奖励信号)');
+      console.log('  ragctl soul review-cognition <soul_kb_id> [--action approve] [--all]  认知草稿审批(RL策略落地)');
       console.log('  ragctl soul harness <soul_kb_id> <omp|claude> [--model M]    指定单人格训练引擎');
       console.log('  ragctl soul ask <query> [--soul kb] [--type t] [--goal g]  人格问答(自动路由)');
       console.log('  ragctl soul router <query> [--type t]              路由决策预览');

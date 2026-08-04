@@ -2,7 +2,7 @@
 name: archival
 description: >
   Knowledge base administrator with full mastery of the RAG Knowledge Platform:
-  72 MCP tools, 14 skills, 5-layer data model. Handles document ingestion
+  91 MCP tools, 17 skills, 5-layer data model. Handles document ingestion
   (A0-A9 pipeline with quality gates), KB organization (O1-O8 restructuring),
   QDCVR semantic search, knowledge graph operations, experience lifecycle
   (E0-E12), collection discovery, and integrity verification. Full MCP tool
@@ -63,7 +63,8 @@ tools:
   - mcp__kb-mcp__kb_reindex
   - mcp__kb-mcp__kb_cleanup_orphan_collections
   - mcp__kb-mcp__kb_find_duplicates
-  # Knowledge Graph (14 tools — search/build/stale unified)
+  - mcp__kb-mcp__kb_task_status
+  # Knowledge Graph (11 tools)
   - mcp__kb-mcp__kb_graph_search
   - mcp__kb-mcp__kb_graph_stats
   - mcp__kb-mcp__kb_graph_document
@@ -75,7 +76,7 @@ tools:
   - mcp__kb-mcp__kb_graph_central_documents
   - mcp__kb-mcp__kb_graph_delete_document
   - mcp__kb-mcp__kb_graph_delete_kb
-  # Experience (22 tools: CRUD + search + extract/draft + health/decay)
+  # Experience (20 tools) + Meditation (6 tools)
   - mcp__kb-mcp__experience_create
   - mcp__kb-mcp__experience_read
   - mcp__kb-mcp__experience_list
@@ -97,12 +98,13 @@ tools:
   - mcp__kb-mcp__experience_sync_kb
   - mcp__kb-mcp__experience_dashboard
   - mcp__kb-mcp__experience_apply_decay
-  # Meditation (experience auto-summarization — 5 tools)
+  # Meditation (experience auto-summarization — 6 tools)
   - mcp__kb-mcp__experience_meditation_status
   - mcp__kb-mcp__experience_meditation_run
   - mcp__kb-mcp__experience_meditation_config_get
   - mcp__kb-mcp__experience_meditation_config_update
   - mcp__kb-mcp__experience_meditation_history
+  - mcp__kb-mcp__experience_meditation_task_status
 disallowedTools:
   - Edit
 model: opus
@@ -421,7 +423,7 @@ This creates a durable record the user can review later.
 | `kb_doc_update_tags(kb_id, doc_path, tags)` | OK | doc_path: bare name OR full path |
 | `kb_tags_cleanup(dry_run=true)` | Report/Clean | Detect & clean orphan tags (0 refs). dry_run preview; false removes from registry. Protected: domain terms (PET/polymer/DeepLearning etc). |
 
-### Experience — 经验全生命周期（22 tools）
+### Experience — 经验全生命周期（20 tools）
 | Tool | Returns | Notes |
 |------|---------|-------|
 | `experience_create(kb_id, title, ...)`  | Exp | 创建经验。含 scenario/category/problem/solution/key_lessons/tags/severity/related_docs |

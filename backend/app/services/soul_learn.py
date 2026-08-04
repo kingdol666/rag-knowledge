@@ -1382,7 +1382,8 @@ async def _learn_incremental_once(soul_kb_id: str, round_idx: int = 1) -> dict:
     }
 
 
-async def learn_incremental(soul_kb_id: str, rounds: int = 1) -> dict:
+async def learn_incremental(soul_kb_id: str, rounds: int = 1,
+                            progress_cb=None) -> dict:
     """增量学习：获取 SOUL scope 内变更文档 → 生成问题 → 自答 → 评估 → 蒸馏。
 
     固定轮数训练(rounds > 1): 锁内循环多轮, 每轮独立预算基线 + 增量扫描,
@@ -1428,6 +1429,17 @@ async def learn_incremental(soul_kb_id: str, rounds: int = 1) -> dict:
             per_round.append(rep)
             for k in totals:
                 totals[k] = float(totals.get(k, 0)) + float(rep.get(k, 0))
+            if progress_cb:
+                progress_cb({
+                    "round": r,
+                    "rounds": rounds,
+                    "questions": int(rep.get("questions_generated", 0)),
+                    "memories": int(rep.get("memories_created", 0)),
+                    "docs_processed": int(rep.get("docs_processed", 0)),
+                    "skipped": int(rep.get("skipped", 0)),
+                    "gaps": int(rep.get("gaps_count", 0)),
+                    "cost_estimate": round(float(rep.get("cost_estimate", 0.0)), 6),
+                })
             # 本轮零增量(全部学完) → 提前结束, 不空转
             if rep.get("docs_processed", 0) == 0 and rep.get("questions_generated", 0) == 0:
                 break
@@ -1479,6 +1491,7 @@ async def learn_all(
     max_docs: int = 20,
     dry_run: bool = False,
     rounds: int = 1,
+    progress_cb=None,
 ) -> dict:
     """全量学习：遍历所有 SOUL KB（排除模板），全局内容去重，执行增量学习。
 
@@ -1537,7 +1550,8 @@ async def learn_all(
     content_hashes: dict[str, str] = {}  # doc_path → sha256
     duplicate_docs = 0
     unique_docs = 0
-    for d in all_docs:
+    total_scan = len(all_docs)
+    for i, d in enumerate(all_docs):
         dp = d["doc_path"]
         try:
             content = storage_reader.read_document_content(dp, max_chars=50000)
@@ -1549,6 +1563,9 @@ async def learn_all(
         else:
             content_hashes[dp] = h
             unique_docs += 1
+        if progress_cb and (i + 1) % 10 == 0:
+            progress_cb({"phase": "scan", "scanned": i + 1, "total": total_scan,
+                         "unique_docs": unique_docs, "duplicate_docs": duplicate_docs})
 
     # 跨 SOUL 重叠
     soul_doc_sets: dict[str, set[str]] = {}
@@ -1604,7 +1621,12 @@ async def learn_all(
             continue
         if cfg.is_template:
             continue
-        result = await learn_incremental(sid, rounds=rounds)
+        if progress_cb:
+            progress_cb({"phase": "learn", "soul_kb_id": sid, "round": 0, "rounds": rounds})
+            _cb = (lambda sid_: lambda p: progress_cb({"soul_kb_id": sid_, **p}))(sid)
+        else:
+            _cb = None
+        result = await learn_incremental(sid, rounds=rounds, progress_cb=_cb)
         if result.get("success"):
             soul_results.append({
                 "soul_kb_id": sid,
@@ -1641,6 +1663,7 @@ async def learn_docs(
     doc_paths: list[str],
     limit: int = 5,
     rounds: int = 1,
+    progress_cb=None,
 ) -> dict:
     """手动学习入口：指定文档列表，走完整 generate_questions → self_answer → eval_answer → distill 管道。
 
@@ -1686,6 +1709,17 @@ async def learn_docs(
             per_round.append(rep)
             for k in totals:
                 totals[k] = float(totals.get(k, 0)) + float(rep.get(k, 0))
+            if progress_cb:
+                progress_cb({
+                    "round": r,
+                    "rounds": rounds,
+                    "questions": int(rep.get("questions_generated", 0)),
+                    "memories": int(rep.get("memories_created", 0)),
+                    "docs_processed": int(rep.get("docs_processed", 0)),
+                    "skipped": int(rep.get("skipped", 0)),
+                    "gaps": int(rep.get("gaps_count", 0)),
+                    "cost_estimate": round(float(rep.get("cost_estimate", 0.0)), 6),
+                })
             # 本轮零产出(全部已学幂等跳过) → 提前结束
             if rep.get("docs_processed", 0) == 0 and rep.get("questions_generated", 0) == 0:
                 break

@@ -14,6 +14,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query, Request
 from app.api.deps.auth import verify_token
 from app.services import soul_config, soul_service, soul_router
 from app.services import soul_learn, soul_memory, soul_profile
+from app.services import soul_task_runner
 from app.services.agent_harness_manager import agent_harness
 
 logger = logging.getLogger(__name__)
@@ -318,7 +319,8 @@ async def status(soul_kb_id: str, summary_window: int = Query(30)):
 
 @router.post("/{soul_kb_id}/learn")
 async def learn(soul_kb_id: str, req: dict[str, Any], _: None = Depends(verify_token)):
-    """自主学习(同步执行;kb-mcp 层包裹为异步任务)。
+    """自主学习。async_mode=True 时后端异步执行并返回 task_id
+    (GET /api/v1/soul/tasks/{task_id} 轮询进度), 默认同步(兼容旧调用方)。
 
     训练协程用 asyncio.shield 保护: 客户端断开/超时不取消训练,
     长轮次训练(rounds>1)仍完整执行到最后一轮。
@@ -332,6 +334,15 @@ async def learn(soul_kb_id: str, req: dict[str, Any], _: None = Depends(verify_t
     rounds = int(req.get("rounds") or 1)
     if not doc_paths:
         raise _err(400, "missing_docs", "doc_paths 必填")
+    if req.get("async_mode"):
+        async def _task(tid: str):
+            return await asyncio.shield(soul_learn.learn_docs(
+                soul_kb_id, doc_paths, limit=limit, rounds=rounds,
+                progress_cb=lambda p: soul_task_runner.update_progress(tid, p)))
+        task_id = soul_task_runner.submit_soul_task(
+            _task, "soul_learn",
+            {"soul_kb_id": soul_kb_id, "doc_paths": len(doc_paths), "rounds": rounds})
+        return {"success": True, "task_id": task_id, "status": "running"}
     report = await asyncio.shield(soul_learn.learn_docs(soul_kb_id, doc_paths, limit=limit, rounds=rounds))
     return {"success": True, "task_id": None, "report": report}
 
@@ -342,6 +353,14 @@ async def learn_all_global(req: dict[str, Any], _: None = Depends(verify_token))
     max_docs = int(req.get("max_docs") or 20)
     dry_run = bool(req.get("dry_run"))
     rounds = int(req.get("rounds") or 1)
+    if req.get("async_mode"):
+        async def _task(tid: str):
+            return await asyncio.shield(soul_learn.learn_all(
+                soul_kb_id="", max_docs=max_docs, dry_run=dry_run, rounds=rounds,
+                progress_cb=lambda p: soul_task_runner.update_progress(tid, p)))
+        task_id = soul_task_runner.submit_soul_task(
+            _task, "soul_learn_all", {"soul_kb_id": "*", "max_docs": max_docs, "rounds": rounds})
+        return {"success": True, "task_id": task_id, "status": "running"}
     report = await asyncio.shield(soul_learn.learn_all(soul_kb_id="", max_docs=max_docs, dry_run=dry_run, rounds=rounds))
     return {"success": True, "task_id": None, "report": report}
 
@@ -351,8 +370,32 @@ async def learn_all(soul_kb_id: str, req: dict[str, Any], _: None = Depends(veri
     max_docs = int(req.get("max_docs") or 20)
     dry_run = bool(req.get("dry_run"))
     rounds = int(req.get("rounds") or 1)
+    if req.get("async_mode"):
+        async def _task(tid: str):
+            return await asyncio.shield(soul_learn.learn_all(
+                soul_kb_id=soul_kb_id or "", max_docs=max_docs, dry_run=dry_run, rounds=rounds,
+                progress_cb=lambda p: soul_task_runner.update_progress(tid, p)))
+        task_id = soul_task_runner.submit_soul_task(
+            _task, "soul_learn_all",
+            {"soul_kb_id": soul_kb_id or "", "max_docs": max_docs, "rounds": rounds})
+        return {"success": True, "task_id": task_id, "status": "running"}
     report = await asyncio.shield(soul_learn.learn_all(soul_kb_id=soul_kb_id or "", max_docs=max_docs, dry_run=dry_run, rounds=rounds))
     return {"success": True, "task_id": None, "report": report}
+
+
+@router.get("/tasks")
+async def list_tasks(status: str = ""):
+    """列出最近 SOUL 长任务(训练/审批), 可选 status 过滤。"""
+    return {"success": True, "tasks": soul_task_runner.list_soul_tasks(status)}
+
+
+@router.get("/tasks/{task_id}")
+async def task_status(task_id: str):
+    """SOUL 长任务进度: {status, progress, result, error, elapsed_seconds}。"""
+    rec = soul_task_runner.get_soul_task(task_id)
+    if not rec:
+        raise _err(404, "task_not_found")
+    return {"success": True, **soul_task_runner.public_task_view(rec)}
 
 
 @router.post("/{soul_kb_id}/eval")
@@ -380,16 +423,149 @@ async def review_drafts(soul_kb_id: str, req: dict[str, Any],
     draft_type = req.get("type") or "memory"
     if action == "list":
         return {"success": True, **await soul_memory.list_drafts(soul_kb_id, draft_type)}
+    draft_ids = req.get("draft_ids") or []
+    if isinstance(draft_ids, str):
+        draft_ids = [draft_ids]
+    if not draft_ids and req.get("draft_id"):
+        draft_ids = [req["draft_id"]]
+    force = bool(req.get("force"))
+    if action in ("approve", "reject") and len(draft_ids) > 1:
+        # 批量审批异步化: 单条审批含向量/图谱/BM25 索引 + profile 刷新(可达 ~20s/条),
+        # 批量串行同步会超时; async_mode=True(默认) 提交到 soul_task_runner 立即返回 task_id
+        if req.get("async_mode", True):
+            async def _task(tid: str):
+                ok: list[dict] = []
+                bad: list[dict] = []
+                for i, did in enumerate(draft_ids):
+                    if action == "approve":
+                        r = await soul_memory.approve_draft(
+                            soul_kb_id, did, force=force, draft_type=draft_type)
+                    else:
+                        r = await soul_memory.reject_draft(
+                            soul_kb_id, did, draft_type=draft_type)
+                    (ok if r.get("success") else bad).append({**r, "draft_id": did})
+                    soul_task_runner.update_progress(tid, {
+                        "processed": i + 1, "total": len(draft_ids),
+                        "approved": len(ok), "rejected": len(bad), "action": action,
+                    })
+                if bad and not ok:
+                    return {"success": False, "error": bad[0].get("error", "approve_failed"),
+                            "detail": bad[0].get("detail", ""), "results": ok + bad}
+                merged: dict = {"success": True, "results": ok + bad}
+                for key in ("approved", "indexed"):
+                    vals = [r[key] for r in ok if isinstance(r.get(key), (bool, list))]
+                    if vals and isinstance(vals[0], list):
+                        merged[key] = [v for lst in vals for v in lst]
+                    elif vals:
+                        merged[key] = all(vals)
+                if bad:
+                    merged["partial_failures"] = [
+                        {"draft_id": r.get("draft_id", ""), "error": r.get("error")} for r in bad]
+                return merged
+            task_id = soul_task_runner.submit_soul_task(
+                _task, "soul_review",
+                {"soul_kb_id": soul_kb_id, "action": action,
+                 "draft_ids": len(draft_ids), "draft_type": draft_type})
+            return {"success": True, "task_id": task_id, "status": "running",
+                    "total": len(draft_ids), "action": action}
+        # 同步批量(显式 async_mode=False)
+        results: list[dict] = []
+        for did in draft_ids:
+            if action == "approve":
+                results.append({**await soul_memory.approve_draft(
+                    soul_kb_id, did, force=force, draft_type=draft_type),
+                    "draft_id": did})
+            else:
+                results.append({**await soul_memory.reject_draft(
+                    soul_kb_id, did, draft_type=draft_type),
+                    "draft_id": did})
+        ok = [r for r in results if r.get("success")]
+        bad = [r for r in results if not r.get("success")]
+        if bad and not ok:
+            raise _err(400, bad[0].get("error", "approve_failed"), bad[0].get("detail", ""))
+        merged: dict = {"success": True, "results": results}
+        for key in ("approved", "indexed"):
+            vals = [r[key] for r in ok if isinstance(r.get(key), (bool, list))]
+            if vals and isinstance(vals[0], list):
+                merged[key] = [v for lst in vals for v in lst]
+            elif vals:
+                merged[key] = all(vals)
+        if bad:
+            merged["partial_failures"] = [
+                {"draft_id": r.get("draft_id", ""), "error": r.get("error")} for r in bad]
+        return merged
+    draft_id = (draft_ids or [""])[0] if draft_ids else ""
     if action == "approve":
         result = await soul_memory.approve_draft(
-            soul_kb_id, req.get("draft_id") or "", force=bool(req.get("force")))
+            soul_kb_id, draft_id, force=force, draft_type=draft_type)
         if not result.get("success"):
             raise _err(400, result.get("error", "approve_failed"), result.get("detail", ""))
         return {"success": True, **result}
     if action == "reject":
         return {"success": True, **await soul_memory.reject_draft(
-            soul_kb_id, req.get("draft_id") or "")}
+            soul_kb_id, draft_id, draft_type=draft_type)}
     raise _err(400, "invalid_action", "action ∈ list|approve|reject")
+
+
+@router.post("/{soul_kb_id}/train-rl")
+async def train_rl(soul_kb_id: str, req: dict[str, Any], _: None = Depends(verify_token)):
+    """RL 强化训练(好奇心探索 × 评价 Agent × 策略更新)。
+
+    async_mode=True(默认): 后端异步执行并返回 task_id, GET /api/v1/soul/tasks/{id}
+    轮询进度(progress: {phase: learn|reward, round, rounds, reward, drafts_created})。
+
+    每轮: 1) learn_incremental 好奇心学习 2) evaluate_persona 评价 Agent 四维打分
+    3) generate_cognition_drafts 低分维度 → 认知草稿(待审批, 审批后合并入
+    soul-definition.md 对应章节, 实现"评价驱动的结构优化")
+    """
+    if not soul_config.resolve_soul_kb_path(soul_kb_id):
+        raise _err(404, "kb_not_found")
+    if soul_config.is_template_kb(soul_kb_id):
+        raise _err(400, "is_template")
+    rounds = max(1, int(req.get("rounds") or 1))
+
+    from app.services import soul_reward
+
+    if req.get("async_mode", True):
+        async def _task(tid: str):
+            return await asyncio.shield(soul_reward.train_rl(
+                soul_kb_id, rounds=rounds,
+                progress_cb=lambda p: soul_task_runner.update_progress(tid, p)))
+        task_id = soul_task_runner.submit_soul_task(
+            _task, "soul_train_rl", {"soul_kb_id": soul_kb_id, "rounds": rounds})
+        return {"success": True, "task_id": task_id, "status": "running"}
+    report = await asyncio.shield(soul_reward.train_rl(soul_kb_id, rounds=rounds))
+    return {"success": True, "task_id": None, "report": report}
+
+
+@router.post("/{soul_kb_id}/evaluate")
+async def evaluate(soul_kb_id: str, _: None = Depends(verify_token)):
+    """评价 Agent 对人格当前表现的四维评分(RL 奖励信号, 可单独调用)。"""
+    if not soul_config.resolve_soul_kb_path(soul_kb_id):
+        raise _err(404, "kb_not_found")
+    from app.services import soul_reward
+    return {"success": True, **await soul_reward.evaluate_persona(soul_kb_id)}
+
+
+@router.post("/{soul_kb_id}/cognition-drafts")
+async def gen_cognition_drafts(soul_kb_id: str, req: dict[str, Any],
+                               _: None = Depends(verify_token)):
+    """生成认知草稿(策略更新建议): 基于一次即时评价, 低分维度产出优化行。"""
+    if not soul_config.resolve_soul_kb_path(soul_kb_id):
+        raise _err(404, "kb_not_found")
+    from app.services import soul_reward
+    evaluation = req.get("evaluation") or await soul_reward.evaluate_persona(soul_kb_id)
+    if req.get("async_mode", True):
+        async def _task(tid: str):
+            return await asyncio.shield(soul_reward.generate_cognition_drafts(
+                soul_kb_id, evaluation,
+            ))
+        task_id = soul_task_runner.submit_soul_task(
+            _task, "soul_cognition", {"soul_kb_id": soul_kb_id})
+        return {"success": True, "task_id": task_id, "status": "running",
+                "evaluation": evaluation}
+    return {"success": True, **await soul_reward.generate_cognition_drafts(
+        soul_kb_id, evaluation)}
 
 
 @router.post("/{soul_kb_id}/calibrate")
@@ -428,3 +604,27 @@ async def export_training(soul_kb_id: str, req: dict[str, Any],
         min_score=float(req["min_score"]) if "min_score" in req and req["min_score"] is not None else 4.0,
         limit=int(req.get("limit") or 1000))
     return {"success": True, **result}
+
+
+@router.get("/{soul_kb_id}/reward-history")
+async def reward_history(soul_kb_id: str, limit: int = Query(50)):
+    """RL 进化曲线: reports/reward-history.jsonl 逐轮 reward/四维得分。"""
+    if not soul_config.resolve_soul_kb_path(soul_kb_id):
+        raise _err(404, "kb_not_found")
+    from app.services.soul_reward import read_reward_history
+    records = read_reward_history(soul_kb_id, limit=limit)
+    return {"success": True, "records": records, "count": len(records)}
+
+
+@router.get("/{soul_kb_id}/persona-docs")
+async def persona_docs(soul_kb_id: str):
+    """人格定义文档(宪法层 4 文档)内容列表 — 供前端定义查看器渲染。
+
+    返回 {docs: [{name, content, updated_at}], evolution_lines: N}
+    每个文档为原始 markdown; evolution_lines 为该文档中 RL 认知草稿
+    追加行数(以 cognition-drafts 已批准草稿统计)。
+    """
+    if not soul_config.resolve_soul_kb_path(soul_kb_id):
+        raise _err(404, "kb_not_found")
+    from app.services import soul_reward
+    return {"success": True, **await soul_reward.read_persona_docs(soul_kb_id)}

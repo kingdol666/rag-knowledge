@@ -1,4 +1,4 @@
-# ⚙️ 执行模型与委托契约（共享参考）
+﻿# ⚙️ 执行模型与委托契约（共享参考）
 
 > 本文件是 14 个 knowledgebase skill 的**唯一权威源**：执行角色、委托模板、Pre-Flight、MCP 优先原则。
 > 各 skill 不再内联重复这些内容，统一引用本文件 + [mcp-preflight-check.md](mcp-preflight-check.md) + [kb-architecture.md](kb-architecture.md)。
@@ -96,7 +96,7 @@ MCP 工具已连接时，**所有 KB 操作必须通过 `mcp__kb-mcp__*` 工具�
 14 个 skill 作为同一插件打包发布（见 `.claude-plugin/plugin.json`），始终同目录共存。引用**共享参考**统一用相对路径：
 
 ```
-../knowledgebase/references/kb-architecture.md        ← 5 层数据模型 + 一致性不变量 + 72 工具地图
+../knowledgebase/references/kb-architecture.md        ← 5 层数据模型 + 一致性不变量 + 91 工具地图
 ../knowledgebase/references/execution-model.md         ← 本文件
 ../knowledgebase/references/mcp-preflight-check.md     ← Pre-Flight 完整流程
 ../knowledgebase/references/skill-trigger-contract.md  ← 触发契约 + 五条强制规则

@@ -3,6 +3,30 @@
 > 本文件是 soul skill §B 的权威细则:如何触发训练、如何开启自动循环、
 > 如何让"评价后继续训练"真正运转。
 
+## 0. ⭐ 异步任务契约(所有长任务统一模式)
+
+训练/批量审批是分钟级长作业, **一律异步执行 + task_id 轮询进度**, 任何入口
+都不同步阻塞等待: 触发即返回 `task_id`, 过一段时间查进度, 完成后取结果。
+
+```
+触发(MCP/web/ragctl) → 立即返回 {task_id, status: running}
+  └─ 后端 soul_task_runner 独立任务执行(参考 parse 的 task_registry 模式)
+轮询进度: kb_task_status(task_id)  /  GET /api/v1/soul/tasks/{task_id}
+  └─ running 时返回 progress:
+      训练: {round, rounds, questions, memories, docs_processed, skipped, gaps}
+      审批: {processed, total, approved, rejected}
+done    → result 含完整报告(souls[] / per_round / results[])
+error   → error 字段含失败原因
+```
+
+- 后端: POST /api/v1/soul/{kb}/learn 与 /learn-all 传 `async_mode: true`
+  → 立即返回 task_id; GET /api/v1/soul/tasks 列出全部任务
+- MCP: soul_learn / soul_learn_all / soul_review_drafts(批量) 已封装异步,
+  返回 task_id → kb_task_status 轮询(含 progress 镜像)
+- web: /api/soul/learn /train-all /review 默认 async_mode, 返回 task_id;
+  /api/soul/tasks/:taskId 代理进度; SOUL 页面训练/审批 modal 轮询展示进度
+- 同步兼容: 后端 async_mode 缺省 False, 旧调用方行为不变
+
 ## 1. 训练触发方式(三选一)
 
 ### 1a 手动单文档

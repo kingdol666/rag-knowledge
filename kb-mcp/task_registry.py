@@ -74,15 +74,20 @@ def submit(coro, kind: str, meta: dict | None = None) -> str:
     Must be called from within a running event loop (i.e. inside an async
     MCP tool). The coroutine's return value is stored on the record under
     ``result``; any exception is captured into ``error``.
+
+    ``coro`` may be a coroutine object (existing callers) or a callable
+    factory ``(task_id) -> coroutine`` — factories receive the task id so
+    the runner can report intermediate ``progress`` via :func:`update_progress`.
     """
     task_id = _new_id()
     record = {
         "task_id": task_id,
-        "kind": kind,          # parse_pdf | parse_pdf_batch | parse_pdf_to_kb
+        "kind": kind,          # parse_pdf | parse_pdf_batch | parse_pdf_to_kb | soul_*
         "status": "running",   # running | done | error
         "created_at": _now_iso(),
         "started_monotonic": time.monotonic(),
         "meta": meta or {},
+        "progress": None,
         "result": None,
         "error": None,
     }
@@ -90,7 +95,8 @@ def submit(coro, kind: str, meta: dict | None = None) -> str:
 
     async def _runner():
         try:
-            record["result"] = await coro
+            target = coro(task_id) if not asyncio.iscoroutine(coro) else coro
+            record["result"] = await target
             record["status"] = "done"
         except Exception as e:  # surface any failure to the caller, never raise
             record["error"] = f"{type(e).__name__}: {e}"
@@ -103,6 +109,13 @@ def submit(coro, kind: str, meta: dict | None = None) -> str:
     _handles[task_id] = asyncio.create_task(_runner())
     _reap_stale()
     return task_id
+
+
+def update_progress(task_id: str, progress: dict) -> None:
+    """Running-task progress report (visible via public_view)."""
+    rec = _records.get(task_id)
+    if rec and rec["status"] == "running":
+        rec["progress"] = progress
 
 
 def get(task_id: str) -> dict | None:
@@ -122,6 +135,8 @@ def public_view(rec: dict | None) -> dict | None:
     }
     if rec["status"] == "running":
         out["elapsed_seconds"] = round(time.monotonic() - rec["started_monotonic"], 1)
+    if rec.get("progress"):
+        out["progress"] = rec["progress"]
     if rec.get("finished_at"):
         out["finished_at"] = rec["finished_at"]
     if rec["status"] in ("done", "error"):

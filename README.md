@@ -10,15 +10,15 @@
 
 <p>
 <em>QDCVR Semantic Search · Neo4j Knowledge Graph · Experience Lifecycle (E0–E12)<br>
-74 MCP Tools · 14 Agent Skills · MinerU OCR · Cross-Platform</em>
+91 MCP Tools · 17 Agent Skills · MinerU OCR · Cross-Platform · SOUL Persona System</em>
 </p>
 
 <!-- Hero Badges -->
 <p>
 <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick_Start-3_commands-4338ca?style=for-the-badge&logo=rocket" /></a>
 <a href="#-table-of-contents"><img src="https://img.shields.io/badge/Platform-Win_%7C_Linux_%7C_macOS-334155?style=for-the-badge&logo=linux" /></a>
-<a href="#-74-mcp-tools"><img src="https://img.shields.io/badge/MCP_Tools-74-8b5cf6?style=for-the-badge&logo=code" /></a>
-<a href="#%EF%B8%8F-four-interfaces-one-backend"><img src="https://img.shields.io/badge/Skills-14-f97316?style=for-the-badge&logo=openai" /></a>
+<a href="#-91-mcp-tools"><img src="https://img.shields.io/badge/MCP_Tools-91-8b5cf6?style=for-the-badge&logo=code" /></a>
+<a href="#%EF%B8%8F-four-interfaces-one-backend"><img src="https://img.shields.io/badge/Skills-17-f97316?style=for-the-badge&logo=openai" /></a>
 </p>
 
 <p>
@@ -55,7 +55,7 @@
 <a href="#%EF%B8%8F-four-interfaces-one-backend">Usage</a> ·
 <a href="#-architecture">Architecture</a> ·
 <a href="#-configuration">Config</a> ·
-<a href="#%EF%B8%8F-74-mcp-tools">MCP Tools</a> ·
+<a href="#%EF%B8%8F-91-mcp-tools">MCP Tools</a> ·
 <a href="#-roadmap">Roadmap</a> ·
 <a href="#-contributing">Contributing</a>
 </p>
@@ -77,7 +77,7 @@ This platform solves that at the **retrieval layer**, not the generation layer. 
 |:---:|:---|:---|
 | 🔍 | Single search strategy (vector *or* keyword) | **Multi-strategy**: BM25 + vector + tag-semantic + graph expansion |
 | 🧠 | Trust vector similarity blindly | **Content-verified retrieval** — independent 0–8 adjudication |
-| 🤖 | Bolt-on AI, hard to integrate with agents | **Agent-native**: 74 MCP tools, 14 skills — any MCP client works |
+| 🤖 | Bolt-on AI, hard to integrate with agents | **Agent-native**: 91 MCP tools, 17 skills — any MCP client works |
 | 💡 | No structured knowledge reuse | **Experience library**: E0–E12 lifecycle with P0/P1/P2 credibility |
 | 🔧 | Complex multi-tool setup, scattered configs | **One command** `ragctl setup`, single `config.yml` source of truth |
 | 🪟 | Terminal windows everywhere | **Silent headless** — zero terminals in dev *and* prod |
@@ -101,8 +101,9 @@ This platform solves that at the **retrieval layer**, not the generation layer. 
 | 🔍 | **Multi-Strategy Search** | BM25 + vector two-stage recall · cross-KB enterprise search · `balance_kbs` diversity guard |
 | 📊 | **Knowledge Graph** | Neo4j-powered · 11 graph tools · entity/relation graphs · cross-KB document bridges |
 | 💡 | **Experience Library** | E0–E12 lifecycle · structured problem→solution→lessons · P0/P1/P2 credibility · decay |
-| 🔌 | **74 MCP Tools** | KB CRUD · search · graph · experience · parsing · tags · vector/index · lifecycle — all MCP-native |
-| 🎯 | **14 Agent Skills** | Natural-language commands · bilingual triggers (中/EN) · auto-dispatch to Archival agent |
+| 🔌 | **91 MCP Tools** | KB CRUD · search · graph · experience · SOUL persona · parsing · tags · vector/index · lifecycle — all MCP-native |
+| 🎯 | **17 Agent Skills** | Natural-language commands · bilingual triggers (中/EN) · auto-dispatch to Archival agent · SOUL persona management |
+| 🧠 | **SOUL Persona System** | Persona distillation (dot-skill) · curiosity-driven training · QDCVR persona-augmented Q&A · 17 dedicated MCP tools |
 | 🤫 | **Silent Headless** | Every launcher runs with **zero terminal windows** · dev and prod behave identically |
 
 </div>
@@ -226,7 +227,7 @@ ragctl up
 </details>
 
 > [!TIP]
-> **No Claude Code? No problem.** The Web UI is fully functional standalone. Use any MCP client to access 74 tools, or just browse/search at `http://localhost:6789`.
+> **No Claude Code? No problem.** The Web UI is fully functional standalone. Use any MCP client to access 91 tools, or just browse/search at `http://localhost:6789`.
 
 ### ✅ Verify Everything Works
 
@@ -511,7 +512,7 @@ server:
 
 ---
 
-## ⚡ 74 MCP Tools
+## ⚡ 91 MCP Tools
 
 All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
 
@@ -521,9 +522,10 @@ All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
 |:---------|:-----:|:---------|:-----:|
 | **Service Lifecycle** | 4 | **KB CRUD** | 5 |
 | **Document CRUD** | 9 | **Search** | 4 |
-| **Vector Index** | 5 | **File System** | 3 |
+| **Vector Index** | 6 | **File System** | 3 |
 | **Knowledge Graph** | 11 | **Experience (+Meditation)** | 26 |
 | **Tags** | 4 | **Parse** (non-blocking) | 3 |
+| **🧠 SOUL Persona** | **17** | **Total** | **91** |
 
 </div>
 
@@ -606,6 +608,24 @@ All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
 | `parse_doc()` | Async parse (returns task_id) |
 | `parse_doc_batch()` | Batch parse |
 | `parse_task_status()` | Poll parse result |
+| **🧠 SOUL Persona (17 tools)** | |
+| `soul_init()` | Create new SOUL persona KB |
+| `soul_list()` | List all personas |
+| `soul_status()` | Persona health + metrics |
+| `soul_delete()` | Delete persona |
+| `soul_config_update()` | Update persona config |
+| `soul_learn()` | Train persona on docs (fixed rounds) |
+| `soul_learn_all()` | Train all personas (budgeted) |
+| `soul_ask()` | Persona-augmented Q&A |
+| `soul_qdcvr_ask()` | QDCVR retrieval + persona synthesis |
+| `soul_router()` | Auto-route query to best persona |
+| `soul_eval()` | Evaluate answer quality |
+| `soul_calibrate()` | Calibrate persona consistency |
+| `soul_checkpoint()` | Save training checkpoint |
+| `soul_rollback()` | Rollback to checkpoint |
+| `soul_reflect()` | Generate drift analysis report |
+| `soul_review_drafts()` | Review pending memory drafts |
+| `soul_export()` | Export training data for LoRA |
 
 </details>
 
@@ -617,10 +637,10 @@ All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
 rag-knowledge/
 ├── backend/              ← FastAPI + MinerU OCR engine
 ├── web/                  ← Nuxt 3 + Ant Design Vue + Claude Chat
-├── kb-mcp/               ← MCP server — 74 tools
+├── kb-mcp/               ← MCP server — 91 tools
 ├── command/              ← ragctl CLI (Node.js)
 ├── src-tauri/            ← Tauri v2 desktop (Rust)
-├── .claude/              ← 14 agent skills + Archival agent
+├── .claude/              ← 17 agent skills + Archival agent
 ├── .claude-plugin/       ← Plugin + marketplace manifests
 ├── docs/                 ← Architecture, paper framework, benchmark
 │   └── paper/benchmark/  ← CIKM 2027 benchmark (18 experiments)

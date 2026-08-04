@@ -1019,20 +1019,62 @@ class KbClient:
         return await self._get_backend("/api/v1/soul/router/status")
 
     async def soul_learn(self, soul_kb_id: str, doc_paths: list, limit: int = 5,
-                         rounds: int = 1) -> dict:
+                         rounds: int = 1, async_mode: bool = False) -> dict:
         if (err := self._require_kb_id(soul_kb_id)): return err
+        body = {"doc_paths": doc_paths, "limit": limit, "rounds": rounds}
+        if async_mode:
+            body["async_mode"] = True
         return await self._post_backend_json(
-            f"/api/v1/soul/{soul_kb_id}/learn",
-            {"doc_paths": doc_paths, "limit": limit, "rounds": rounds},
+            f"/api/v1/soul/{soul_kb_id}/learn", body,
             timeout=MEDITATION_TIMEOUT)
 
     async def soul_learn_all(self, soul_kb_id: str = "", max_docs: int = 20,
-                             dry_run: bool = False, rounds: int = 1) -> dict:
+                             dry_run: bool = False, rounds: int = 1,
+                             async_mode: bool = False) -> dict:
         # 空 soul_kb_id → /api/v1/soul/learn-all(全库自举路由)
         url = (f"/api/v1/soul/{soul_kb_id}/learn-all" if soul_kb_id
                else "/api/v1/soul/learn-all")
-        return await self._post_backend_json(url, {"max_docs": max_docs, "dry_run": dry_run, "rounds": rounds},
-                                             timeout=MEDITATION_TIMEOUT)
+        body = {"max_docs": max_docs, "dry_run": dry_run, "rounds": rounds}
+        if async_mode:
+            body["async_mode"] = True
+        return await self._post_backend_json(url, body, timeout=MEDITATION_TIMEOUT)
+
+    async def soul_review_drafts_batch(self, soul_kb_id: str, draft_type: str = "memory",
+                                       action: str = "approve", draft_ids: list = None,
+                                       force: bool = False, async_mode: bool = True) -> dict:
+        """批量审批/驳回(单请求); async_mode=True 后端异步返回 task_id。"""
+        if (err := self._require_kb_id(soul_kb_id)): return err
+        return await self._post_backend_json(f"/api/v1/soul/{soul_kb_id}/review-drafts", {
+            "type": draft_type, "action": action, "draft_ids": draft_ids or [],
+            "force": force, "async_mode": async_mode,
+        }, timeout=SOUL_TIMEOUT)
+
+    async def soul_task_status(self, task_id: str) -> dict:
+        """后端 SOUL 长任务进度 (GET /api/v1/soul/tasks/{task_id})。"""
+        return await self._get_backend(f"/api/v1/soul/tasks/{task_id}")
+
+    async def soul_train_rl(self, soul_kb_id: str, rounds: int = 1,
+                            async_mode: bool = False) -> dict:
+        """RL 强化训练(好奇心×评价×策略更新); async_mode=True 返回后端 task_id。"""
+        if (err := self._require_kb_id(soul_kb_id)): return err
+        return await self._post_backend_json(
+            f"/api/v1/soul/{soul_kb_id}/train-rl",
+            {"rounds": rounds, "async_mode": async_mode},
+            timeout=SOUL_TIMEOUT)
+
+    async def soul_evaluate(self, soul_kb_id: str) -> dict:
+        """评价 Agent 四维人格评分(RL 奖励信号)。"""
+        if (err := self._require_kb_id(soul_kb_id)): return err
+        return await self._post_backend_json(
+            f"/api/v1/soul/{soul_kb_id}/evaluate", {}, timeout=SOUL_TIMEOUT)
+
+    async def soul_gen_cognition_drafts(self, soul_kb_id: str,
+                                        async_mode: bool = True) -> dict:
+        """生成认知草稿(策略更新建议); async_mode=True 返回后端 task_id。"""
+        if (err := self._require_kb_id(soul_kb_id)): return err
+        return await self._post_backend_json(
+            f"/api/v1/soul/{soul_kb_id}/cognition-drafts",
+            {"async_mode": async_mode}, timeout=SOUL_TIMEOUT)
 
     async def soul_eval(self, soul_kb_id: str, question: str, answer: str,
                         evidence_paths: list) -> dict:
