@@ -10,14 +10,14 @@
 
 <p>
 <em>QDCVR Semantic Search · Neo4j Knowledge Graph · Experience Lifecycle (E0–E12)<br>
-91 MCP Tools · 17 Agent Skills · MinerU OCR · Cross-Platform · SOUL Persona System</em>
+94 MCP Tools · 17 Agent Skills · MinerU OCR · Cross-Platform · SOUL Persona System</em>
 </p>
 
 <!-- Hero Badges -->
 <p>
 <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick_Start-3_commands-4338ca?style=for-the-badge&logo=rocket" /></a>
 <a href="#-table-of-contents"><img src="https://img.shields.io/badge/Platform-Win_%7C_Linux_%7C_macOS-334155?style=for-the-badge&logo=linux" /></a>
-<a href="#-91-mcp-tools"><img src="https://img.shields.io/badge/MCP_Tools-91-8b5cf6?style=for-the-badge&logo=code" /></a>
+<a href="#-94-mcp-tools"><img src="https://img.shields.io/badge/MCP_Tools-94-8b5cf6?style=for-the-badge&logo=code" /></a>
 <a href="#%EF%B8%8F-four-interfaces-one-backend"><img src="https://img.shields.io/badge/Skills-17-f97316?style=for-the-badge&logo=openai" /></a>
 </p>
 
@@ -55,7 +55,7 @@
 <a href="#%EF%B8%8F-four-interfaces-one-backend">Usage</a> ·
 <a href="#-architecture">Architecture</a> ·
 <a href="#-configuration">Config</a> ·
-<a href="#%EF%B8%8F-91-mcp-tools">MCP Tools</a> ·
+<a href="#%EF%B8%8F-94-mcp-tools">MCP Tools</a> ·
 <a href="#-roadmap">Roadmap</a> ·
 <a href="#-contributing">Contributing</a>
 </p>
@@ -77,7 +77,7 @@ This platform solves that at the **retrieval layer**, not the generation layer. 
 |:---:|:---|:---|
 | 🔍 | Single search strategy (vector *or* keyword) | **Multi-strategy**: BM25 + vector + tag-semantic + graph expansion |
 | 🧠 | Trust vector similarity blindly | **Content-verified retrieval** — independent 0–8 adjudication |
-| 🤖 | Bolt-on AI, hard to integrate with agents | **Agent-native**: 91 MCP tools, 17 skills — any MCP client works |
+| 🤖 | Bolt-on AI, hard to integrate with agents | **Agent-native**: 94 MCP tools, 17 skills — any MCP client works |
 | 💡 | No structured knowledge reuse | **Experience library**: E0–E12 lifecycle with P0/P1/P2 credibility |
 | 🔧 | Complex multi-tool setup, scattered configs | **One command** `ragctl setup`, single `config.yml` source of truth |
 | 🪟 | Terminal windows everywhere | **Silent headless** — zero terminals in dev *and* prod |
@@ -101,7 +101,7 @@ This platform solves that at the **retrieval layer**, not the generation layer. 
 | 🔍 | **Multi-Strategy Search** | BM25 + vector two-stage recall · cross-KB enterprise search · `balance_kbs` diversity guard |
 | 📊 | **Knowledge Graph** | Neo4j-powered · 11 graph tools · entity/relation graphs · cross-KB document bridges |
 | 💡 | **Experience Library** | E0–E12 lifecycle · structured problem→solution→lessons · P0/P1/P2 credibility · decay |
-| 🔌 | **91 MCP Tools** | KB CRUD · search · graph · experience · SOUL persona · parsing · tags · vector/index · lifecycle — all MCP-native |
+| 🔌 | **94 MCP Tools** | KB CRUD · search · graph · experience · SOUL persona · parsing · tags · vector/index · lifecycle — all MCP-native |
 | 🎯 | **17 Agent Skills** | Natural-language commands · bilingual triggers (中/EN) · auto-dispatch to Archival agent · SOUL persona management |
 | 🧠 | **SOUL Persona System** | Persona distillation (dot-skill) · curiosity-driven training · QDCVR persona-augmented Q&A · 17 dedicated MCP tools |
 | 🤫 | **Silent Headless** | Every launcher runs with **zero terminal windows** · dev and prod behave identically |
@@ -189,6 +189,127 @@ Full benchmark: [`docs/paper/benchmark/SYSTEM-BENCHMARK-PLAN.md`](./docs/paper/b
 
 ---
 
+## 🧬 SOUL Persona System — 人格层
+
+> **知识库管「有什么」；SOUL 管「谁来讲、怎么讲」。** The knowledge base holds facts; SOUL decides *who* explains them and *how* — a persona layer that learns, evolves, and answers with identity.
+
+<div align="center">
+
+<img src="./docs/screenshots/soul-studio.png" alt="SOUL Persona Studio" width="880" />
+
+<sub><b>SOUL Persona Studio</b> — persona rail · live training monitor · RL evolution curve · persona-definition viewer</sub>
+
+</div>
+
+### 🧠 双引擎心智模型 — Two Engines, One Persona
+
+Every persona is a **`soul-<name>` knowledge base** holding four constitutional documents
+(`soul-definition` · `values` · `thinking-style` · `memory-conventions`) plus a `soul-config.yml`.
+
+```mermaid
+flowchart LR
+    subgraph 先天[Innate — distilled once]
+        A[补天 dot-skill
+聊天记录/文档/描述] -->|ragctl soul distill| B[persona.md + work.md
++ meta.json]
+    end
+    B --> C[SOUL Persona soul-&lt;name&gt;
+4 宪法层文档 + config]
+    subgraph 后天[Acquired — lifelong]
+        D[好奇心训练
+四层问题→检索自答→四维自评→记忆草稿] --> E[RL 强化
+评价Agent打分→认知草稿→合并入定义]
+        E --> F[进化闭环
+reward 曲线 / profile 刷新 / 路由更准]
+    end
+    C --> D
+    F --> G[QDCVR 人格问答
+检索验证→人格合成→PAS 分]
+    G -. 回答反馈 .-> D
+```
+
+| 引擎 | 输入 | 产出 | 频率 |
+|---|---|---|---|
+| **补天蒸馏**（先天） | 聊天记录 / 文档 / 人物描述 | 初始人格种子（身份/风格/思维框架） | 一次性 |
+| **好奇心训练**（后天） | kb_scope 内文档 | 记忆草稿（事实/概念/跨文档/挑战四层问题） | 持续 |
+| **RL 强化**（进化） | 评价 Agent 四维评分 | 认知草稿 → 合并入人格定义文档 | 每轮训练 |
+
+### 🎓 先天种子：补天（dot-skill）蒸馏
+
+`/dot-skill` 把源材料（飞书/钉钉聊天记录、PDF、粘贴文本）蒸馏成
+`meta.json + persona.md + work.md`，一键转化为 SOUL 人格：
+
+```bash
+ragctl soul distill .claude/skills/dot-skill/skills/colleague/example_tianyi \
+  --name soul-天意 --scope Energy-Batteries --labels 靠谱,代码规范,热心 --harness omp
+```
+
+转换映射（适配本系统 schema）：`persona.md → soul-definition.md 追加段` · `work.md → thinking-style.md 追加段` · `meta.json tags → domain_labels`（路由标签）。
+
+### 🔬 后天进化：好奇心驱动的强化学习（RL）
+
+<div align="center">
+
+<img src="./docs/screenshots/soul-rl-training.gif" alt="RL training live monitor" width="720" />
+
+<sub><b>Live training monitor</b> — 提交 → 探索轮实时进度 → 评价得分 → 事件流（实测录制）</sub>
+
+</div>
+
+**好奇心协议**（每次 learn 内部）：
+
+```
+Step 1  文档读取（≤50k 字符）
+Step 2  生成四层问题: 事实 30% | 概念 30% | 跨文档 20% | 挑战 20%
+Step 3  每问自答: 两阶段检索(scope 限定) → 图谱邻居 → LLM 带引用合成
+Step 4  四维自评: 接地性/完整性/思维一致/信息增益 (0-5) + 10% 双判官
+Step 5  蒸馏: 接地性≥3 且无判官分歧 → 记忆草稿(pending)
+Step 6  记录 learned_hash(内容 SHA256) → 内容变更自动重学(增量幂等)
+```
+
+**RL 强化循环**（train-rl，每轮 = 探索 × 奖励 × 策略更新）：
+
+```
+┌─ 探索(Exploration)  learn_incremental — 学习 kb_scope 内增量文档
+├─ 奖励(Reward)       evaluate_persona — 评价 Agent 四维打分
+│                      identity / values / thinking / language (0-5)
+├─ 策略更新(Policy)   generate_cognition_drafts — 低分维度(<3.5)
+│                      → 认知草稿(对人格定义文档的受控优化建议)
+├─ 策略落地(Apply)    soul_review_drafts(draft_type=cognition) 审批
+│                      → 合并入 soul-definition.md 对应章节(仅追加,
+│                        checkpoint 保护, 幂等+行级去重)
+└─ 进化曲线(Log)      reports/reward-history.jsonl — 逐轮 reward
+```
+
+> **实测进化曲线**（soul-天意，真实数据）：`3.25 → 3.75 → 3.12 → 3.5 → 4.25`
+> 认知草稿合并后 identity 3→4、language 3→4、thinking 3→3.5；四维均 ≥3.5 后不再生成草稿（收敛态）。
+> 人格增强问答 **PAS 5.0（满分人格一致性）**，回答逐字体现进化后的语言风格（"引用统一编号""证据不足明说"）。
+
+### 🎭 三个入口，同一数据
+
+| 操作 | 🌐 Web Studio | 🖥️ ragctl | 🔌 MCP 工具 |
+|---|---|---|---|
+| 蒸馏创建 | —（建议 ragctl） | `soul distill <dir>` | `soul_init` + 文档覆盖 |
+| 训练（文档/全库/RL） | 训练控制台三模式 + 实时监控 | `soul learn` / `learn-all` / `train-rl` | `soul_learn` / `soul_learn_all` / `soul_train_rl` |
+| 评价 | RL 曲线 + reward 指标 | `soul evaluate` | `soul_evaluate` |
+| 审批（记忆/认知） | 审批 modal 双页签 + 异步进度 | `soul review` / `review-cognition` | `soul_review_drafts(draft_type)` |
+| 定时训练 | 配置 modal（间隔/轮数/预算） | `meditation config` | `experience_meditation_config_update` |
+| 问答 | 一键检索+人格回答 | `soul ask --qdcvr` | `soul_qdcvr_ask` / `soul_ask` |
+| 人格定义 | 查看器（4 文档 + RL 进化行标记） | — | `soul_status` |
+
+<div align="center">
+
+<img src="./docs/screenshots/soul-ask.png" alt="SOUL QDCVR ask" width="640" />
+
+<sub><b>一键检索+人格回答</b> — 证据注入 · 引用锚点 · PAS 人格一致性分</sub>
+
+</div>
+
+**长任务异步契约**（训练/批量审批都是分钟级作业，任何入口都不阻塞等待）：
+触发 → 立即返回 `task_id` → 轮询 `GET /api/v1/soul/tasks/{id}`（或 `kb_task_status`）→ `progress` 实时可见（轮次/问题/记忆/文档，审批 processed/total）。
+
+---
+
 ## 🚀 Quick Start
 
 > **Three commands from zero to a fully working platform.**
@@ -227,7 +348,7 @@ ragctl up
 </details>
 
 > [!TIP]
-> **No Claude Code? No problem.** The Web UI is fully functional standalone. Use any MCP client to access 91 tools, or just browse/search at `http://localhost:6789`.
+> **No Claude Code? No problem.** The Web UI is fully functional standalone. Use any MCP client to access 94 tools, or just browse/search at `http://localhost:6789`.
 
 ### ✅ Verify Everything Works
 
@@ -435,8 +556,19 @@ Open **http://localhost:6789** and explore:
 | 🔎 **KB Search** | `/knowledge-search` | QDCVR search with strategy selector |
 | 🌐 **Graph Explorer** | `/knowledge-graph` | D3.js force-directed Neo4j visualization |
 | 🤖 **Claude Chat** | `/claude-chat` | Agent SDK streaming with tools |
+| 🧬 **SOUL Persona** | `/soul` | Persona Studio: live training monitor · RL curve · persona-definition viewer · persona Q&A |
 | ⚙️ **Settings** | `/settings` | Runtime config editor with hot-reload |
 | ❓ **About** | `/about` / `/about-project` | Release notes + roadmap |
+
+<div align="center">
+
+**Interface gallery** — every page is a live view into the same backend:
+
+| Knowledge Base | QDCVR Search | Graph Explorer |
+|:---:|:---:|:---:|
+| <img src="./docs/screenshots/knowledge-base.png" width="280" /> | <img src="./docs/screenshots/knowledge-search.png" width="280" /> | <img src="./docs/screenshots/knowledge-graph.png" width="280" /> |
+
+</div>
 
 ---
 
@@ -512,7 +644,7 @@ server:
 
 ---
 
-## ⚡ 91 MCP Tools
+## ⚡ 94 MCP Tools
 
 All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
 
@@ -525,7 +657,7 @@ All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
 | **Vector Index** | 6 | **File System** | 3 |
 | **Knowledge Graph** | 11 | **Experience (+Meditation)** | 26 |
 | **Tags** | 4 | **Parse** (non-blocking) | 3 |
-| **🧠 SOUL Persona** | **17** | **Total** | **91** |
+| **🧠 SOUL Persona** | **20** | **Total** | **94** |
 
 </div>
 
@@ -608,7 +740,7 @@ All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
 | `parse_doc()` | Async parse (returns task_id) |
 | `parse_doc_batch()` | Batch parse |
 | `parse_task_status()` | Poll parse result |
-| **🧠 SOUL Persona (17 tools)** | |
+| **🧠 SOUL Persona (20 tools)** | |
 | `soul_init()` | Create new SOUL persona KB |
 | `soul_list()` | List all personas |
 | `soul_status()` | Persona health + metrics |
@@ -626,6 +758,9 @@ All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
 | `soul_reflect()` | Generate drift analysis report |
 | `soul_review_drafts()` | Review pending memory drafts |
 | `soul_export()` | Export training data for LoRA |
+| `soul_train_rl()` | RL 强化训练: 探索×评价Agent×认知草稿策略更新(异步) |
+| `soul_evaluate()` | 评价 Agent 四维人格评分(RL reward 信号) |
+| `soul_gen_cognition_drafts()` | 生成认知草稿(策略更新建议, 异步) |
 
 </details>
 
@@ -637,7 +772,7 @@ All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
 rag-knowledge/
 ├── backend/              ← FastAPI + MinerU OCR engine
 ├── web/                  ← Nuxt 3 + Ant Design Vue + Claude Chat
-├── kb-mcp/               ← MCP server — 91 tools
+├── kb-mcp/               ← MCP server — 94 tools
 ├── command/              ← ragctl CLI (Node.js)
 ├── src-tauri/            ← Tauri v2 desktop (Rust)
 ├── .claude/              ← 17 agent skills + Archival agent

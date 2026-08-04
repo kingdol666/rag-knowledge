@@ -10,14 +10,14 @@
 
 <p>
 <em>QDCVR 语义搜索 · Neo4j 知识图谱 · 经验全生命周期 (E0–E12)<br>
-74 个 MCP 工具 · 14 个 Agent 技能 · MinerU OCR · 跨平台</em>
+94 个 MCP 工具 · 17 个 Agent 技能 · MinerU OCR · 跨平台 · SOUL 人格系统</em>
 </p>
 
 <p>
 <a href="#-快速开始"><img src="https://img.shields.io/badge/快速开始-3条命令-4338ca?style=for-the-badge&logo=rocket" /></a>
 <a href="#-目录"><img src="https://img.shields.io/badge/平台-Win_%7C_Linux_%7C_macOS-334155?style=for-the-badge&logo=linux" /></a>
-<a href="#%EF%B8%8F-74-个-mcp-工具"><img src="https://img.shields.io/badge/MCP工具-74个-8b5cf6?style=for-the-badge&logo=code" /></a>
-<a href="#%EF%B8%8F-四种界面一个后端"><img src="https://img.shields.io/badge/技能-14个-f97316?style=for-the-badge&logo=openai" /></a>
+<a href="#%EF%B8%8F-94-个-mcp-工具"><img src="https://img.shields.io/badge/MCP工具-94个-8b5cf6?style=for-the-badge&logo=code" /></a>
+<a href="#%EF%B8%8F-四种界面一个后端"><img src="https://img.shields.io/badge/技能-17个-f97316?style=for-the-badge&logo=openai" /></a>
 </p>
 
 <p>
@@ -52,7 +52,7 @@
 <a href="#%EF%B8%8F-四种界面一个后端">使用</a> ·
 <a href="#-系统架构">架构</a> ·
 <a href="#-配置">配置</a> ·
-<a href="#%EF%B8%8F-74-个-mcp-工具">MCP 工具</a> ·
+<a href="#%EF%B8%8F-94-个-mcp-工具">MCP 工具</a> ·
 <a href="#-路线图">路线图</a> ·
 <a href="#-贡献指南">贡献</a>
 </p>
@@ -74,7 +74,7 @@
 |:---:|:---|:---|
 | 🔍 | 单一搜索策略（向量*或*关键词） | **多策略**：BM25 + 向量 + 标签语义 + 图谱扩展 |
 | 🧠 | 盲信向量相似度 | **内容验证检索** —— 独立的 0–8 内容裁决 |
-| 🤖 | AI 是后挂的，难集成 Agent | **Agent 原生**：74 个 MCP 工具，14 个技能，任意 MCP 客户端 |
+| 🤖 | AI 是后挂的，难集成 Agent | **Agent 原生**：94 个 MCP 工具，17 个技能，任意 MCP 客户端 |
 | 💡 | 无结构化知识复用 | **经验库**：E0–E12 全生命周期，P0/P1/P2 可信度分级 |
 | 🔧 | 多工具复杂安装，配置分散 | **一条命令** `ragctl setup`，单一 `config.yml` 真相源 |
 | 🪟 | 满屏终端窗口 | **静默无头** —— dev 和 prod 均零终端窗口 |
@@ -98,8 +98,9 @@
 | 🔍 | **多策略搜索** | BM25 + 向量两阶段召回 · 跨库企业搜索 · `balance_kbs` 多样性防护 |
 | 📊 | **知识图谱** | Neo4j 驱动 · 11 个图谱工具 · 实体/关系图 · 跨库文档桥接 |
 | 💡 | **经验库** | E0–E12 全生命周期 · 结构化问题→方案→教训 · P0/P1/P2 可信度 · 衰减 |
-| 🔌 | **74 个 MCP 工具** | 知识库 CRUD · 搜索 · 图谱 · 经验 · 解析 · 标签 · 向量索引 · 生命周期 |
-| 🎯 | **14 个 Agent 技能** | 自然语言命令 · 中英双语触发 · 自动分发到 Archival Agent |
+| 🔌 | **94 个 MCP 工具** | 知识库 CRUD · 搜索 · 图谱 · 经验 · SOUL 人格 · 解析 · 标签 · 向量索引 · 生命周期 |
+| 🎯 | **17 个 Agent 技能** | 自然语言命令 · 中英双语触发 · 自动分发到 Archival Agent · SOUL 人格管理 |
+| 🧠 | **SOUL 人格系统** | 补天蒸馏初始人格 · 好奇心驱动训练 · RL 强化进化 · QDCVR 人格增强问答 · 20 个专用 MCP 工具 |
 | 🤫 | **静默无头** | 所有启动器均 **零终端窗口** · dev 和 prod 行为一致 |
 
 </div>
@@ -184,6 +185,126 @@
 
 ---
 
+## 🧬 SOUL 人格系统 — 人格层
+
+> **知识库管「有什么」；SOUL 管「谁来讲、怎么讲」。** 知识库持有事实，SOUL 决定*由谁*讲解、*如何*讲解 —— 一个会学习、会进化、带身份回答的人格层。
+
+<div align="center">
+
+<img src="./docs/screenshots/soul-studio.png" alt="SOUL Persona Studio" width="880" />
+
+<sub><b>SOUL Persona Studio</b> — 人格清单 · 训练实时监控 · RL 进化曲线 · 人格定义查看器</sub>
+
+</div>
+
+### 🧠 双引擎心智模型
+
+每个人格 = 一个 **`soul-<name>` 知识库**，包含 4 份宪法层文档（`soul-definition` · `values` · `thinking-style` · `memory-conventions`）+ `soul-config.yml`。
+
+```mermaid
+flowchart LR
+    subgraph 先天[先天 — 一次性蒸馏]
+        A[补天 dot-skill
+聊天记录/文档/描述] -->|ragctl soul distill| B[persona.md + work.md
++ meta.json]
+    end
+    B --> C[SOUL 人格 soul-&lt;name&gt;
+4 宪法层文档 + config]
+    subgraph 后天[后天 — 终身进化]
+        D[好奇心训练
+四层问题→检索自答→四维自评→记忆草稿] --> E[RL 强化
+评价Agent打分→认知草稿→合并入定义]
+        E --> F[进化闭环
+reward 曲线 / profile 刷新 / 路由更准]
+    end
+    C --> D
+    F --> G[QDCVR 人格问答
+检索验证→人格合成→PAS 分]
+    G -. 回答反馈 .-> D
+```
+
+| 引擎 | 输入 | 产出 | 频率 |
+|---|---|---|---|
+| **补天蒸馏**（先天） | 聊天记录 / 文档 / 人物描述 | 初始人格种子（身份/风格/思维框架） | 一次性 |
+| **好奇心训练**（后天） | kb_scope 内文档 | 记忆草稿（事实/概念/跨文档/挑战四层问题） | 持续 |
+| **RL 强化**（进化） | 评价 Agent 四维评分 | 认知草稿 → 合并入人格定义文档 | 每轮训练 |
+
+### 🎓 先天种子：补天（dot-skill）蒸馏
+
+`/dot-skill` 把源材料（飞书/钉钉聊天记录、PDF、粘贴文本）蒸馏成
+`meta.json + persona.md + work.md`，一键转化为 SOUL 人格：
+
+```bash
+ragctl soul distill .claude/skills/dot-skill/skills/colleague/example_tianyi \
+  --name soul-天意 --scope Energy-Batteries --labels 靠谱,代码规范,热心 --harness omp
+```
+
+转换映射（适配本系统 schema）：`persona.md → soul-definition.md 追加段` · `work.md → thinking-style.md 追加段` · `meta.json tags → domain_labels`（路由标签）。
+
+### 🔬 后天进化：好奇心驱动的强化学习（RL）
+
+<div align="center">
+
+<img src="./docs/screenshots/soul-rl-training.gif" alt="RL 训练实时监控" width="720" />
+
+<sub><b>训练实时监控</b> — 提交 → 探索轮实时进度 → 评价得分 → 事件流（实测录制）</sub>
+
+</div>
+
+**好奇心协议**（每次 learn 内部）：
+
+```
+Step 1  文档读取（≤50k 字符）
+Step 2  生成四层问题: 事实 30% | 概念 30% | 跨文档 20% | 挑战 20%
+Step 3  每问自答: 两阶段检索(scope 限定) → 图谱邻居 → LLM 带引用合成
+Step 4  四维自评: 接地性/完整性/思维一致/信息增益 (0-5) + 10% 双判官
+Step 5  蒸馏: 接地性≥3 且无判官分歧 → 记忆草稿(pending)
+Step 6  记录 learned_hash(内容 SHA256) → 内容变更自动重学(增量幂等)
+```
+
+**RL 强化循环**（train-rl，每轮 = 探索 × 奖励 × 策略更新）：
+
+```
+┌─ 探索(Exploration)  learn_incremental — 学习 kb_scope 内增量文档
+├─ 奖励(Reward)       evaluate_persona — 评价 Agent 四维打分
+│                      identity / values / thinking / language (0-5)
+├─ 策略更新(Policy)   generate_cognition_drafts — 低分维度(<3.5)
+│                      → 认知草稿(对人格定义文档的受控优化建议)
+├─ 策略落地(Apply)    soul_review_drafts(draft_type=cognition) 审批
+│                      → 合并入 soul-definition.md 对应章节(仅追加,
+│                        checkpoint 保护, 幂等+行级去重)
+└─ 进化曲线(Log)      reports/reward-history.jsonl — 逐轮 reward
+```
+
+> **实测进化曲线**（soul-天意，真实数据）：`3.25 → 3.75 → 3.12 → 3.5 → 4.25`
+> 认知草稿合并后 identity 3→4、language 3→4、thinking 3→3.5；四维均 ≥3.5 后不再生成草稿（收敛态）。
+> 人格增强问答 **PAS 5.0（满分人格一致性）**，回答逐字体现进化后的语言风格（"引用统一编号""证据不足明说"）。
+
+### 🎭 三个入口，同一数据
+
+| 操作 | 🌐 Web Studio | 🖥️ ragctl | 🔌 MCP 工具 |
+|---|---|---|---|
+| 蒸馏创建 | —（建议 ragctl） | `soul distill <dir>` | `soul_init` + 文档覆盖 |
+| 训练（文档/全库/RL） | 训练控制台三模式 + 实时监控 | `soul learn` / `learn-all` / `train-rl` | `soul_learn` / `soul_learn_all` / `soul_train_rl` |
+| 评价 | RL 曲线 + reward 指标 | `soul evaluate` | `soul_evaluate` |
+| 审批（记忆/认知） | 审批 modal 双页签 + 异步进度 | `soul review` / `review-cognition` | `soul_review_drafts(draft_type)` |
+| 定时训练 | 配置 modal（间隔/轮数/预算） | `meditation config` | `experience_meditation_config_update` |
+| 问答 | 一键检索+人格回答 | `soul ask --qdcvr` | `soul_qdcvr_ask` / `soul_ask` |
+| 人格定义 | 查看器（4 文档 + RL 进化行标记） | — | `soul_status` |
+
+<div align="center">
+
+<img src="./docs/screenshots/soul-ask.png" alt="SOUL QDCVR 问答" width="640" />
+
+<sub><b>一键检索+人格回答</b> — 证据注入 · 引用锚点 · PAS 人格一致性分</sub>
+
+</div>
+
+**长任务异步契约**（训练/批量审批都是分钟级作业，任何入口都不阻塞等待）：
+触发 → 立即返回 `task_id` → 轮询 `GET /api/v1/soul/tasks/{id}`（或 `kb_task_status`）→ `progress` 实时可见（轮次/问题/记忆/文档，审批 processed/total）。
+
+---
+
 ## 🚀 快速开始
 
 > **三条命令，从零到完整可用的平台。**
@@ -221,7 +342,7 @@ ragctl up
 </details>
 
 > [!TIP]
-> **没有 Claude Code？没问题。** Web UI 完全独立运行。用任何 MCP 客户端即可访问 74 个工具，或直接在 `http://localhost:6789` 浏览和搜索。
+> **没有 Claude Code？没问题。** Web UI 完全独立运行。用任何 MCP 客户端即可访问 94 个工具，或直接在 `http://localhost:6789` 浏览和搜索。
 
 ### ✅ 验证一切正常
 
@@ -374,8 +495,19 @@ kb_graph_cross_kb_documents(min_kbs=2)
 | 🔎 **知识搜索** | `/knowledge-search` | QDCVR 搜索，策略选择 |
 | 🌐 **图谱探索** | `/knowledge-graph` | D3.js 力导向图可视化 |
 | 🤖 **Claude 对话** | `/claude-chat` | Agent SDK 流式交互 |
+| 🧬 **SOUL 人格** | `/soul` | Persona Studio：训练实时监控 · RL 曲线 · 人格定义查看器 · 人格问答 |
 | ⚙️ **系统设置** | `/settings` | 配置编辑器，热重载 |
 | ❓ **关于** | `/about` / `/about-project` | 发布说明 + 路线图 |
+
+<div align="center">
+
+**界面一览** —— 每个页面都是同一后端的实时视图：
+
+| 知识库 | QDCVR 搜索 | 图谱探索 |
+|:---:|:---:|:---:|
+| <img src="./docs/screenshots/knowledge-base.png" width="280" /> | <img src="./docs/screenshots/knowledge-search.png" width="280" /> | <img src="./docs/screenshots/knowledge-graph.png" width="280" /> |
+
+</div>
 
 ---
 
@@ -440,7 +572,7 @@ ragctl down --appmode prod      # 仅停止 prod，保留 Neo4j
 
 ---
 
-## ⚡ 74 个 MCP 工具
+## ⚡ 94 个 MCP 工具
 
 所有工具均可通过 `mcp__kb-mcp__*` 从任何 MCP 兼容 Agent 访问。
 
@@ -450,9 +582,10 @@ ragctl down --appmode prod      # 仅停止 prod，保留 Neo4j
 |:-----|:----:|:-----|:----:|
 | **服务生命周期** | 4 | **知识库 CRUD** | 5 |
 | **文档 CRUD** | 9 | **搜索** | 4 |
-| **向量索引** | 5 | **文件系统** | 3 |
+| **向量索引** | 6 | **文件系统** | 3 |
 | **知识图谱** | 11 | **经验（含冥想）** | 26 |
 | **标签** | 4 | **解析**（非阻塞） | 3 |
+| **🧠 SOUL 人格** | **20** | **合计** | **94** |
 </div>
 
 ---

@@ -81,9 +81,11 @@ kb-mcp/_*.txt
 .pytest_cache/
 
 # Docs — built/preview output, not sources
-docs/
+docs/*
 !docs/images/
+!docs/paper/
 !docs/paper/benchmark/
+!docs/screenshots/
 
 # OMC session artifacts (local only)
 .omp/
