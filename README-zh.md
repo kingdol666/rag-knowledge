@@ -371,6 +371,22 @@ curl http://localhost:8765/api/v1/health        # → {"status":"healthy"}
 | 🤖 **Agent** | Claude Code 会话 | 说"列出所有知识库" |
 
 ---
+### ⚡ 5 分钟上手 —— 从零到人格问答
+
+> 以下每一步都是**真实可点击**的路径（假设已完成 `ragctl setup && ragctl up`）。
+
+| # | 目标 | 🌐 Web UI (http://localhost:6789) | 🖥️ CLI / 🤖 Agent |
+|:---:|---|---|---|
+| **1** | **导入第一份文档** | `/file-system` → 上传 PDF → MinerU 自动解析 → 选择知识库 → 自动索引 | Agent: *"把 docs/xxx.pdf 导入 Energy-Batteries 知识库"* |
+| **2** | **内容验证检索** | `/knowledge-search` → 输入问题 → 两阶段召回 → 0–8 内容评分 → 带引用答案 | Agent: *"搜索：钠离子电池和锂离子电池的区别"* → QDCVR |
+| **3** | **沉淀经验复用** | —（经验为 Agent 原生） | Agent: *"记录这个排查经验"* → `knowledgebase-experience-summarize` |
+| **4** | **创建人格** | `/soul` → 创建人格（模板初始化：4 文档 + 索引 + profile） | `ragctl soul init soul-xxx --scope Energy-Batteries` |
+| **5** | **好奇心训练** | `/soul` → 训练控制台（文档 / 全库 / **RL**）→ 实时监控 | `ragctl soul learn-all soul-xxx --rounds 2` |
+| **6** | **人格+检索问答** | `/soul` → 问答 modal → "一键检索+人格回答" | `ragctl soul ask "问题" --soul soul-xxx --qdcvr` |
+
+> **3 条命令**打通全程：`ragctl up` → Web 导入 → `/soul` 提问。每一步都在界面可见 —— 解析队列、索引统计、训练进度、reward 曲线。
+
+---
 
 ## 🗺️ 四种安装方式
 
@@ -521,6 +537,46 @@ kb_graph_cross_kb_documents(min_kbs=2)
 
 ---
 
+## 🎯 用例速查 —— "我想…"
+
+| 我想… | 最快路径 |
+|---|---|
+| 📄 导入 PDF / 图片 / Office 文档 | Web `/file-system` 上传 → 自动解析 (MinerU) + 索引 · Agent: *"把 xxx 导入知识库"* |
+| 🔎 搜索我的知识 | Web `/knowledge-search`（两阶段）· Agent: *"搜索：…"* · MCP `kb_search_two_stage` |
+| 🕸️ 探索知识图谱 | Web `/knowledge-graph` · MCP `kb_graph_kb_overview` / `kb_graph_document_related` |
+| 💡 记录排查经验 | Agent: *"记录这个经验"* → `knowledgebase-experience-summarize` · MCP `experience_create` |
+| ⏰ 自动沉淀经验 | `ragctl meditation run` · config.yml `experience_auto.enabled: true` |
+| 🧬 创建人格 | Web `/soul` → 创建人格 · `ragctl soul init soul-xxx` · MCP `soul_init` |
+| 🎭 蒸馏人格（补天） | `ragctl soul distill <dot-skill产物目录> --scope kbs` |
+| 🏋️ 训练人格 | Web `/soul` 训练控制台 · `ragctl soul learn-all soul-xxx` · MCP `soul_learn_all` |
+| 🤖 RL 强化人格 | Web `/soul` → RL 强化 · `ragctl soul train-rl soul-xxx --rounds 2` · MCP `soul_train_rl` |
+| 💬 人格增强问答 | Web `/soul` 问答 modal · `ragctl soul ask "…" --soul soul-xxx --qdcvr` · MCP `soul_qdcvr_ask` |
+| 🕐 定时自动训练 | Web `/soul` 配置 modal · MCP `experience_meditation_config_update` |
+| 💾 备份全部数据 | `ragctl backup [dest]`（KB + ChromaDB + Neo4j） |
+| 🪵 实时看日志 | `ragctl logs backend --tail` |
+
+## ⌨️ CLI 参考 —— `ragctl`
+
+```text
+ragctl setup          # 一键部署: uv → Python → 依赖 → BGE-M3 → 配置
+ragctl up [-m dev|prod] [--no-neo4j] [--port-backend N] [--port-web N]
+ragctl status / down / start <svc> / stop <svc> / restart <svc> [-f]
+ragctl logs <backend|web> [--tail] [--lines N]
+ragctl model --source modelscope|hf-mirror|huggingface   # BGE-M3 (~2.2GB)
+ragctl mineru-model    # MinerU OCR 模型 (~5-7GB)
+ragctl clean [--all] [--dry-run]                          # 清理缓存
+ragctl backup [dest] / restore [src]                      # 跨平台备份/恢复
+ragctl meditation status|run|history|config [kb]          # 自动经验冥想
+ragctl version / update [--check] [--yes --restart]       # 版本管理
+ragctl soul list|status|distill|init|learn|learn-all|train-rl|evaluate|\
+         review|review-cognition|harness|ask|router|reflect|export|delete
+ragctl desktop / ui    # Tauri 桌面控制台
+```
+
+端口：**dev** 后端 `8765` / 前端 `6789` · **prod** 后端 `8001` / 前端 `3000`。
+
+---
+
 ## 🏗️ 系统架构
 
 ```
@@ -580,6 +636,33 @@ ragctl status                   # dev + prod 并排显示
 ragctl down --appmode prod      # 仅停止 prod，保留 Neo4j
 ```
 
+内置**限流**（`config.yml` 可调）：
+
+```yaml
+server:
+  rate_limit:
+    enabled: true
+    window_sec: 60
+    max_requests: 120       # 常规端点
+    heavy_max: 20            # 解析/OCR 类重端点
+```
+
+### config.yml —— 全字段说明
+
+| 段 | 关键字段 | 作用 |
+|---|---|---|
+| `server` | `cors_origins` · `auth.enabled` · `rate_limit` | CORS / 共享 token 认证 / 限流；`dev`+`prod` 端口组 |
+| `storage` | `tree_fs_root` | 知识库文档存放位置（默认 `./storage/tree-file-system`） |
+| `vector` | `chunk_size: 500` · `chunk_overlap: 50` · `top_k` · `score_threshold: 0.35` | 分块 + 向量召回阈值（经验检索 `experience_score_threshold: 0.55`） |
+| `embedding` | `model_name: BAAI/bge-m3` · `model_source: modelscope` | 嵌入模型 + 下载源（国内友好默认） |
+| `graph` | `uri: bolt://127.0.0.1:7687` · `password` · `pool` | Neo4j 连接 + 连接池调优 |
+| `search` | `two_stage.stage1_top_k: 20` · `stage2_top_k: 5` · 权重 | 两阶段召回中 BM25↔图谱融合权重 |
+| `experience_auto` | `enabled: false` · `interval_hours: 24` · `max_drafts_per_run` | 定时经验蒸馏（冥想） |
+| `soul` | `default_harness: omp` · `default_model` | SOUL 训练引擎默认（单人格可在 meditation 配置覆盖） |
+| `mineru` | `enabled` · `model_source: modelscope` | OCR 引擎 + VLM 模型源 |
+
+**覆盖顺序：** `config.yml` < `.env` < CLI 参数（`--port-backend`、`--appmode` …）。
+
 ---
 
 ## ⚡ 94 个 MCP 工具
@@ -629,6 +712,106 @@ ragctl down --appmode prod      # 仅停止 prod，保留 Neo4j
 - **先测试**再提交（前端：`npx vue-tsc --noEmit`，后端：`pytest`）
 - **文档化**新功能
 - **没有 AI 废代码** —— 每行代码都应有其目的
+
+---
+
+## ❓ 常见问题与排障
+
+<details>
+<summary><b>🔌 端口被占用 / 服务起不来</b></summary>
+
+```bash
+ragctl status                       # 查看各端口占用情况
+ragctl up --port-backend 9000 --port-web 6790   # 换到空闲端口
+```
+若是残留进程占用，`ragctl restart backend -f` 强制重启。
+
+</details>
+
+<details>
+<summary><b>⬇️ 模型下载慢 / 失败</b></summary>
+
+```bash
+ragctl model --source modelscope     # ⭐ 中国区（阿里云 CDN，默认）
+ragctl model --source hf-mirror      # HuggingFace 镜像
+ragctl model --source huggingface    # 直连（海外）
+```
+模型缓存位于 `models_cache/` —— `ragctl clean --model` 可清除（需重新下载）。
+
+</details>
+
+<details>
+<summary><b>🕸️ 图谱功能不可用</b></summary>
+
+图谱是可选的。启动 Neo4j（`docker compose up -d`）或跳过：
+
+```bash
+ragctl up --no-neo4j        # 其余功能正常；图谱工具返回降级响应
+```
+`.env` 的 `NEO4J_PASSWORD` 必须与 `docker-compose.yml` 一致。
+
+</details>
+
+<details>
+<summary><b>📄 PDF 解析失败 / 卡住</b></summary>
+
+MinerU 需先预下载模型（一次性）：`ragctl mineru-model`（约 5-7GB）。然后观察：
+
+```bash
+ragctl logs backend --tail
+```
+解析是**非阻塞**的：MCP 调用立即返回 `task_id` —— 轮询 `parse_task_status(task_id)` 而非等待。
+
+</details>
+
+<details>
+<summary><b>🧬 SOUL 训练秒回 "skipped"</b></summary>
+
+这是**增量幂等**，不是 bug：该文档内容哈希（`learned_hash`）已匹配，人格零成本跳过。换未学文档，或等新/变更文档进入知识库再训练。
+
+</details>
+
+<details>
+<summary><b>🔌 Agent 看不到 MCP 工具</b></summary>
+
+工具在 MCP server 启动时注册。安装/更新插件后**重启 MCP 客户端会话**（或 reload 插件）。用 `kb_project_status()` 或 `soul_list()` 验证。
+
+</details>
+
+<details>
+<summary><b>💸 训练预算 / 成本控制</b></summary>
+
+- 单人格上限：`soul_status(soul_kb_id).estimated_cost_usd`
+- 每轮预算：meditation 配置 `max_budget_usd`（默认 0.15）—— 每轮独立基线
+- 全库训练先 dry-run：`ragctl soul learn-all soul-xxx --dry-run`
+
+</details>
+
+<details>
+<summary><b>🔐 开启 API 认证</b></summary>
+
+```yaml
+# config.yml
+server:
+  auth:
+    enabled: true
+# .env
+KB_AUTH_TOKEN=<你的token>
+```
+此后所有写接口需要 token；GET 接口对 UI 保持开放。
+
+</details>
+
+<details>
+<summary><b>🧹 全新开始（保留文档）</b></summary>
+
+```bash
+ragctl clean            # MinerU 解析产物
+ragctl down             # 停止服务
+# 删除 storage/tree-file-system/* 重置知识库（先备份！）
+```
+
+</details>
 
 ---
 

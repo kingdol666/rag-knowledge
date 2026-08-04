@@ -376,6 +376,21 @@ curl http://localhost:8765/api/v1/health        # → {"status":"healthy"}
 | 🖥️ **CLI** | `ragctl status` | Check service health |
 | 🤖 **Agent** | Claude Code session | Say "list all knowledge bases" |
 
+### ⚡ 5-Minute Walkthrough — from zero to persona Q&A
+
+> Everything below is a **real, clickable path** on a freshly started platform.
+
+| # | Goal | 🌐 Web UI (http://localhost:6789) | 🖥️ CLI / 🤖 Agent |
+|:---:|---|---|---|
+| **1** | **Ingest your first document** | `/file-system` → upload a PDF → MinerU parses it → pick a KB → index (auto) | Agent: *"把 docs/xxx.pdf 导入 Energy-Batteries 知识库"* |
+| **2** | **Search with content verification** | `/knowledge-search` → type a question → two-stage recall → 0–8 content scoring → cited answer | Agent: *"搜索：钠离子电池和锂离子电池的区别"* → QDCVR |
+| **3** | **Reuse knowledge as experiences** | — (experiences are agent-native) | Agent: *"记录这个排查经验"* → `knowledgebase-experience-summarize` |
+| **4** | **Create a persona** | `/soul` → 创建人格 (template init: 4 docs + index + profile) | `ragctl soul init soul-xxx --scope Energy-Batteries` |
+| **5** | **Train it (curiosity-driven)** | `/soul` → training console (docs / full-KB / **RL**) → live monitor | `ragctl soul learn-all soul-xxx --rounds 2` |
+| **6** | **Ask with persona + retrieval** | `/soul` → Q&A modal → "一键检索+人格回答" | `ragctl soul ask "问题" --soul soul-xxx --qdcvr` |
+
+> **3 commands** do it all: `ragctl up` → import via Web → ask via `/soul`. Every step is observable in the UI — parsing queue, index stats, training progress, reward curve.
+
 ---
 
 ## 🗺️ Four Install Methods
@@ -582,6 +597,46 @@ Open **http://localhost:6789** and explore:
 
 ---
 
+## 🎯 Use-Case Cheat Sheet — “I want to…”
+
+| I want to… | Fastest path |
+|---|---|
+| 📄 Import PDF / images / Office docs | Web `/file-system` upload → auto parse (MinerU) + index · Agent: *"把 xxx 导入知识库"* |
+| 🔎 Search my knowledge | Web `/knowledge-search` (two-stage) · Agent: *"搜索：…"* · MCP `kb_search_two_stage` |
+| 🕸️ Explore the knowledge graph | Web `/knowledge-graph` · MCP `kb_graph_kb_overview` / `kb_graph_document_related` |
+| 💡 Save a troubleshooting experience | Agent: *"记录这个经验"* → `knowledgebase-experience-summarize` · MCP `experience_create` |
+| ⏰ Auto-distill experiences | `ragctl meditation run` · config.yml `experience_auto.enabled: true` |
+| 🧬 Create a persona | Web `/soul` → 创建人格 · `ragctl soul init soul-xxx` · MCP `soul_init` |
+| 🎭 Distill a persona (补天) | `ragctl soul distill <dot-skill产物目录> --scope kbs` |
+| 🏋️ Train a persona | Web `/soul` training console · `ragctl soul learn-all soul-xxx` · MCP `soul_learn_all` |
+| 🤖 RL-reinforce a persona | Web `/soul` → RL 强化 · `ragctl soul train-rl soul-xxx --rounds 2` · MCP `soul_train_rl` |
+| 💬 Persona-augmented Q&A | Web `/soul` Q&A modal · `ragctl soul ask "…" --soul soul-xxx --qdcvr` · MCP `soul_qdcvr_ask` |
+| 🕐 Scheduled auto-training | Web `/soul` config modal · MCP `experience_meditation_config_update` |
+| 💾 Back up everything | `ragctl backup [dest]` (KB + ChromaDB + Neo4j) |
+| 🪵 Watch logs live | `ragctl logs backend --tail` |
+
+## ⌨️ CLI Reference — `ragctl`
+
+```text
+ragctl setup          # 一键部署: uv → Python → 依赖 → BGE-M3 → 配置
+ragctl up [-m dev|prod] [--no-neo4j] [--port-backend N] [--port-web N]
+ragctl status / down / start <svc> / stop <svc> / restart <svc> [-f]
+ragctl logs <backend|web> [--tail] [--lines N]
+ragctl model --source modelscope|hf-mirror|huggingface   # BGE-M3 (~2.2GB)
+ragctl mineru-model    # MinerU OCR 模型 (~5-7GB)
+ragctl clean [--all] [--dry-run]                          # 清理缓存
+ragctl backup [dest] / restore [src]                      # 跨平台备份/恢复
+ragctl meditation status|run|history|config [kb]          # 自动经验冥想
+ragctl version / update [--check] [--yes --restart]       # 版本管理
+ragctl soul list|status|distill|init|learn|learn-all|train-rl|evaluate|\
+         review|review-cognition|harness|ask|router|reflect|export|delete
+ragctl desktop / ui    # Tauri 桌面控制台
+```
+
+Ports: **dev** Backend `8765` / Web `6789` · **prod** Backend `8001` / Web `3000`.
+
+---
+
 ## 🏗️ Architecture
 
 ```
@@ -652,258 +707,29 @@ server:
     heavy_max: 20            # parse/mineru endpoints
 ```
 
----
+Built-in **rate limiting** (configurable in `config.yml`):
 
-## ⚡ 94 MCP Tools
-
-All accessible via `mcp__kb-mcp__*` from any MCP-compatible agent:
-
-<div align="center">
-
-| Category | Tools | Category | Tools |
-|:---------|:-----:|:---------|:-----:|
-| **Service Lifecycle** | 4 | **KB CRUD** | 5 |
-| **Document CRUD** | 9 | **Search** | 4 |
-| **Vector Index** | 6 | **File System** | 3 |
-| **Knowledge Graph** | 11 | **Experience (+Meditation)** | 26 |
-| **Tags** | 4 | **Parse** (non-blocking) | 3 |
-| **🧠 SOUL Persona** | **20** | **Total** | **94** |
-
-</div>
-
-<details>
-<summary><b>📋 Full tool list → click to expand</b></summary>
-
-| Tool | Description |
-|------|-------------|
-| `kb_project_start()` | Silently launch all services |
-| `kb_project_status()` | Service health + ports + PIDs |
-| `kb_project_update()` | Safe update from GitHub |
-| `backend_status()` | Quick health check |
-| `kb_list()` | List all KBs |
-| `kb_create(name, desc)` | Create KB |
-| `kb_update(kb_id)` | Update KB metadata |
-| `kb_delete(kb_id)` | Delete KB + all documents |
-| `kb_get_documents()` | List documents per KB |
-| `kb_find_duplicates()` | Detect duplicate/near-duplicate docs |
-| `kb_doc_create()` | Create document |
-| `kb_doc_read()` | Read document content |
-| `kb_doc_update_meta()` | Update metadata |
-| `kb_doc_update_content()` | Replace content |
-| `kb_doc_delete()` | Delete document (with graph cleanup) |
-| `kb_doc_batch_delete()` | Batch delete |
-| `kb_doc_move()` | Move doc to different KB |
-| `kb_doc_save_parsed()` | Save OCR/parse result |
-| `kb_search(query)` | Metadata keyword search |
-| `kb_search_vector()` | BGE-M3 semantic search |
-| `kb_search_two_stage()` | BM25 → Vector rerank |
-| `kb_search_stats()` | Index statistics |
-| `fs_get_tree()` | Full file tree |
-| `fs_get_children()` | Folder contents |
-| `fs_upload_file()` | Upload + register |
-| `kb_graph_stats()` | Graph health + node counts |
-| `kb_graph_search()` | Search graph by keyword |
-| `kb_graph_kb_overview()` | KB-level overview |
-| `kb_graph_cross_kb_documents()` | Cross-KB bridge docs |
-| `kb_graph_document()` | Document-centric view |
-| `kb_graph_document_related()` | Related documents |
-| `kb_graph_document_paths()` | Shortest path discovery |
-| `kb_graph_central_documents()` | Centrality ranking |
-| `kb_graph_build()` | Build graph |
-| `kb_graph_delete_document()` | Cleanup (new) |
-| `kb_graph_delete_kb()` | Cleanup (new) |
-| `experience_create()` | Create experience |
-| `experience_read()` | Read experience |
-| `experience_list()` | List experiences |
-| `experience_update()` | Update experience |
-| `experience_delete()` | Delete experience |
-| `experience_apply()` | Mark as applied |
-| `experience_review()` | Rate + comment |
-| `experience_summary()` | Dashboard summary |
-| `experience_search_global()` | Cross-KB search |
-| `experience_search_smart()` | Multi-path (recommended) |
-| `experience_rerank()` | Semantic reranking |
-| `experience_extract()` | Auto-extract candidates |
-| `experience_drafts_list()` | Pending drafts |
-| `experience_draft_read()` | Read draft + evidence |
-| `experience_draft_approve()` | Approve draft |
-| `experience_draft_reject()` | Reject draft |
-| `experience_check_stale()` | Consistency check |
-| `experience_sync_kb()` | Mark KB for sync |
-| `experience_dashboard()` | Health dashboard |
-| `experience_apply_decay()` | Decay cycle |
-| `experience_meditation_status()` | Meditation scheduler |
-| `experience_meditation_run()` | Manual trigger |
-| `experience_meditation_config_get()` | Read meditation config |
-| `experience_meditation_config_update()` | Update meditation config |
-| `experience_meditation_history()` | Run history |
-| `experience_meditation_task_status()` | Poll meditation run |
-| `kb_tags_list()` | List tags |
-| `kb_doc_update_tags()` | Set tags on doc |
-| `kb_doc_get_by_tag()` | Find by tag |
-| `kb_tags_cleanup()` | Remove orphan tags |
-| `kb_index_document()` | Index single document |
-| `kb_batch_index()` | Index unindexed docs |
-| `kb_reindex()` | Rebuild entire index |
-| `kb_task_status()` | Poll any background task |
-| `kb_cleanup_orphan_collections()` | Clean ChromaDB |
-| `parse_doc()` | Async parse (returns task_id) |
-| `parse_doc_batch()` | Batch parse |
-| `parse_task_status()` | Poll parse result |
-| **🧠 SOUL Persona (20 tools)** | |
-| `soul_init()` | Create new SOUL persona KB |
-| `soul_list()` | List all personas |
-| `soul_status()` | Persona health + metrics |
-| `soul_delete()` | Delete persona |
-| `soul_config_update()` | Update persona config |
-| `soul_learn()` | Train persona on docs (fixed rounds) |
-| `soul_learn_all()` | Train all personas (budgeted) |
-| `soul_ask()` | Persona-augmented Q&A |
-| `soul_qdcvr_ask()` | QDCVR retrieval + persona synthesis |
-| `soul_router()` | Auto-route query to best persona |
-| `soul_eval()` | Evaluate answer quality |
-| `soul_calibrate()` | Calibrate persona consistency |
-| `soul_checkpoint()` | Save training checkpoint |
-| `soul_rollback()` | Rollback to checkpoint |
-| `soul_reflect()` | Generate drift analysis report |
-| `soul_review_drafts()` | Review pending memory drafts |
-| `soul_export()` | Export training data for LoRA |
-| `soul_train_rl()` | RL 强化训练: 探索×评价Agent×认知草稿策略更新(异步) |
-| `soul_evaluate()` | 评价 Agent 四维人格评分(RL reward 信号) |
-| `soul_gen_cognition_drafts()` | 生成认知草稿(策略更新建议, 异步) |
-
-</details>
-
----
-
-## 📁 Project Structure
-
-```
-rag-knowledge/
-├── backend/              ← FastAPI + MinerU OCR engine
-├── web/                  ← Nuxt 3 + Ant Design Vue + Claude Chat
-├── kb-mcp/               ← MCP server — 94 tools
-├── command/              ← ragctl CLI (Node.js)
-├── src-tauri/            ← Tauri v2 desktop (Rust)
-├── .claude/              ← 17 agent skills + Archival agent
-├── .claude-plugin/       ← Plugin + marketplace manifests
-├── docs/                 ← Architecture, paper framework, benchmark
-│   └── paper/benchmark/  ← CIKM 2027 benchmark (18 experiments)
-├── config.yml            ← Central configuration (single truth source)
-├── docker-compose.yml    ← Neo4j container
-├── ragctl / ragctl.bat   ← CLI entry points
-├── .mcp.json              ← MCP auto-connect
-├── .env.example           ← Environment template
-└── VERSION                ← Semantic version
+```yaml
+server:
+  rate_limit:
+    enabled: true
+    window_sec: 60
+    max_requests: 120       # general endpoints
+    heavy_max: 20            # parse/mineru endpoints
 ```
 
----
+### config.yml — every section explained
 
-## 🔧 Tech Stack
+| Section | Key fields | What it controls |
+|---|---|---|
+| `server` | `cors_origins` · `auth.enabled` · `rate_limit` | CORS / shared-token auth / rate limiting; `dev`+`prod` port groups |
+| `storage` | `tree_fs_root` | Where KB documents live (default `./storage/tree-file-system`) |
+| `vector` | `chunk_size: 500` · `chunk_overlap: 50` · `top_k` · `score_threshold: 0.35` | Chunking + vector recall thresholds (`experience_score_threshold: 0.55`) |
+| `embedding` | `model_name: BAAI/bge-m3` · `model_source: modelscope` | Embedding model + download source (China-friendly default) |
+| `graph` | `uri: bolt://127.0.0.1:7687` · `password` · `pool` | Neo4j connection + connection-pool tuning |
+| `search` | `two_stage.stage1_top_k: 20` · `stage2_top_k: 5` · weights | BM25↔graph fusion weights in two-stage recall |
+| `experience_auto` | `enabled: false` · `interval_hours: 24` · `max_drafts_per_run` | Scheduled experience distillation (meditation) |
+| `soul` | `default_harness: omp` · `default_model` | SOUL training engine defaults (per-persona override in meditation config) |
+| `mineru` | `enabled` · `model_source: modelscope` | OCR engine + VLM model source |
 
-<table>
-<tr>
-<td width="50%" valign="top">
-
-| Component | Technology |
-|-----------|------------|
-| **Backend** | Python 3.12 · FastAPI · Uvicorn |
-| **Frontend** | TypeScript · Nuxt 3 · Vue 3.5 |
-| **UI Library** | Ant Design Vue 4 |
-| **PDF Parsing** | MinerU OCR (≥ 3.4.2) |
-| **Vector DB** | ChromaDB + BGE-M3 (1024-dim) |
-
-</td>
-<td width="50%" valign="top">
-
-| Component | Technology |
-|-----------|------------|
-| **Knowledge Graph** | Neo4j 5.20 (Docker) |
-| **MCP Framework** | FastMCP (Python) |
-| **CLI** | Node.js · js-yaml |
-| **Desktop** | Rust · Tauri v2 |
-| **Agent SDK** | Claude Code · Oh My Pi · Codex |
-
-</td>
-</tr>
-</table>
-
----
-
-## 🗺️ Roadmap
-
-- [x] **v1.0** — Core QDCVR retrieval, KB CRUD, web UI, MCP tools
-- [x] **v2.0** — Knowledge graph, experience lifecycle, bilingual i18n
-- [x] **v2.1** — Meditation (auto-experience), MinerU OCR, multi-format parse
-- [x] **v2.2** — Tauri desktop app, CIKM benchmark (18 experiments)
-- [x] **v2.3** — Five-layer consistency, silent headless, graph cleanup on delete
-- [ ] **v2.4** — Multi-modal (image search), REST API key auth
-- [ ] **v2.5** — WebSocket real-time collaboration, team workspaces
-- [ ] **v3.0** — Distributed indexing (Ray), 100K+ doc scale
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Here's how:
-
-1. 🍴 **Fork** the repository
-2. 🌿 Create a **feature branch** (`git checkout -b feature/amazing`)
-3. 💻 **Write code** following existing patterns
-4. ✅ **Test** your changes (`pytest backend/tests/`)
-5. 📝 **Commit** with clear messages
-6. 🚀 **Push** and open a **Pull Request**
-
-**Guidelines:**
-- Keep it **atomic** — one PR, one feature/fix
-- **Test** before submitting (frontend: `npx vue-tsc --noEmit`, backend: `pytest`)
-- **Document** new features in README
-- **No AI slop** — every line should be intentional
-
----
-
-## 🌐 Community & Support
-
-<div align="center">
-
-| Resource | Link |
-|:---------|:-----|
-| 🐛 **Bug Report** | [GitHub Issues](https://github.com/kingdol666/rag-knowledge/issues) |
-| ⭐ **Star Us** | [GitHub](https://github.com/kingdol666/rag-knowledge) |
-| 📖 **Documentation** | [README-zh.md](./README-zh.md) (中文) |
-| 💬 **Discussions** | [GitHub Discussions](https://github.com/kingdol666/rag-knowledge/discussions) |
-| 📦 **Releases** | [GitHub Releases](https://github.com/kingdol666/rag-knowledge/releases) |
-
-</div>
-
----
-
-## 📄 License
-
-MIT © [kingdol](https://github.com/kingdol666)
-
----
-
-<div align="center">
-
-<sub>Built with</sub>
-<a href="https://fastapi.tiangolo.com/">FastAPI</a> ·
-<a href="https://nuxt.com/">Nuxt 3</a> ·
-<a href="https://neo4j.com/">Neo4j</a> ·
-<a href="https://www.chromadb.com/">ChromaDB</a> ·
-<a href="https://modelcontextprotocol.io/">MCP</a> ·
-<a href="https://mineru.net/">MinerU</a>
-
-<br>
-
-**⭐ Star us on GitHub — every star helps make this project better!** ⭐
-
-<a href="https://github.com/kingdol666/rag-knowledge/stargazers">
-<picture>
-<source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=kingdol666/rag-knowledge&type=Date&theme=dark" />
-<source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=kingdol666/rag-knowledge&type=Date" />
-<img alt="Star History Chart" src="https://api.star-history.com/svg?repos=kingdol666/rag-knowledge&type=Date" width="600" />
-</picture>
-</a>
-
-</div>
+**Override order:** `config.yml` < `.env` < CLI flags (`--port-backend`, `--appmode`, …).
