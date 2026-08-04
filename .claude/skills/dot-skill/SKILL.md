@@ -1471,6 +1471,11 @@ rm -rf skills/celebrity/{slug}
 
 ```
 # 蒸馏完成后(产物目录含 meta.json + persona.md + work.md):
+# 方式B(无产物目录, 直接文本蒸馏 — 前端/CLI 通用):
+ragctl soul distill-text soul-<名字> --req "人格需求描述" --material "源材料文本"
+# 或 POST /api/v1/soul/distill {name, personality_req, source_material}(异步 task_id)
+# 前端: SOUL 页面创建人格 → 补天蒸馏区(需求+源材料)
+
 ragctl soul distill <产物目录> --name soul-<名字> \
   --scope kb1,kb2 --labels 领域标签 --harness omp
 

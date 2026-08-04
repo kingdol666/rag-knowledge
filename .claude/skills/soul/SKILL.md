@@ -1,16 +1,16 @@
 ---
 name: soul
 description: >
-  SOUL 人格系统 — 人格生命周期管理(增删改查)、补天(dot-skill)蒸馏初始人格、
-  好奇心驱动的自动训练循环、固定轮数训练、训练评估闭环,以及按任务自动路由
-  到对应 SOUL 人格的检索增强问答(QDCVR 先检索后人格)。
-  与 knowledgebase skill 平行: knowledgebase 管"知识本身",soul 管"用哪个人格
-  来加工知识"。触发词: 人格, SOUL, 人格训练, 训练人格, 创建人格, 蒸馏人格,
-  补天, 删除人格, 人格列表, 人格问答, 用某个人格回答, 用研究者人格, 用创意人格,
-  人格检索增强, 一键检索, persona, soul, soul_ask, soul_qdcvr_ask, soul_init,
-  soul_learn, soul_learn_all, soul_reflect, soul_review_drafts, soul_export,
-  soul_delete, soul_status, soul_router, 自动训练, 好奇心训练, 人格进化,
-  固定轮数训练。
+  SOUL 人格系统 — 人格全生命周期管理(创建/删除/配置/列表)、补天(dot-skill)
+  蒸馏初始人格(含文本蒸馏)、好奇心驱动的训练与 RL 强化进化、任务控制(暂停/
+  继续/训练历史)、以及按任务自动路由到对应人格的检索增强问答(QDCVR 先检索
+  后人格)。人格 = soul-<name> 知识库(4 宪法层文档 + config), 记忆/认知草稿
+  审批闭环。与 knowledgebase skill 平行: knowledgebase 管"知识本身", soul
+  管"用哪个人格来加工知识"。触发词: 人格, SOUL, 创建/删除/训练/蒸馏人格,
+  补天, 人格问答, 用XX人格回答, 人格检索增强, 一键检索, RL强化, 人格进化,
+  暂停训练, 继续训练, 训练历史, persona, soul_ask, soul_qdcvr_ask, soul_init,
+  soul_learn, soul_train_rl, soul_review_drafts, soul_delete, soul_router,
+  自动训练, 好奇心训练, 固定轮数训练。
 ---
 
 # SOUL — 人格系统调度器(先天蒸馏 + 后天进化)
@@ -26,10 +26,13 @@ SOUL 人格系统是知识库之上的"人格加工层":
 > (soul-definition/values/thinking-style/memory-conventions)+ soul-config.yml
 > (kb_scope 学习范围/domain_labels 路由标签/is_template)。模板库 `soul-template`
 > 是唯一 is_template=true 的库,不出现在任何人格操作中。
-> 学习范围(kb_scope)决定人格"能学什么";路由标签(domain_labels)决定"什么
-> 问题派给谁";训练引擎(harness, 默认 omp)由配置驱动, 可单人格覆盖。
-> 详细机制见 [references/soul-architecture.md](references/soul-architecture.md),
-> 补天集成见 [references/soul-distill-integration.md](references/soul-distill-integration.md)。
+>
+> **MANDATORY — 按需加载参考**:
+> - 训练/RL/调度细节 → **必须先读** [references/soul-training.md](references/soul-training.md)(异步契约/预算/learned_hash)
+> - 补天蒸馏全协议 → **必须先读** [references/soul-distill-integration.md](references/soul-distill-integration.md)
+> - 架构/存储模型 → 需要时读 [references/soul-architecture.md](references/soul-architecture.md)
+> - 问答策略组合 → 需要时读 [references/soul-rag-strategy.md](references/soul-rag-strategy.md)
+> - **Do NOT Load**: 纯列表/状态查询(§A3)不读任何 reference; 记忆审批(§D1)不读 rag-strategy
 
 ---
 
@@ -354,16 +357,20 @@ ragctl soul ask "问题" --soul soul-<名字>          # 人格增强问答
 
 ## NEVER 清单
 
-| ❌ | ✅ |
-|---|---|
-| 用 kb_doc_create 建人格记忆 | 记忆只经 soul_learn→soul_review_drafts |
-| 直接改 soul-config.yml | 只经 soul_config_update |
-| 训练模板库 soul-template | is_template 拒绝 |
-| 对无 kb_scope 的人格训练 | 空 scope=只问答,learn 拒绝 |
-| 跳过审批直接当记忆用 | 审批后注册+索引才可检索 |
-| 忽略预算跑全库自举 | 先 dry_run 看成本 |
-| 把 SOUL 问答当普通检索 | 人格问答必须走 soul_ask(带人格注入) |
-| 把补天产物直接塞进记忆 | 补天 persona 只做初始化文档(宪法层), 知识进化走训练 |
+| ❌ | ✅ | 为什么 |
+|---|---|---|
+| 用 kb_doc_create 建人格记忆 | 记忆只经 soul_learn→soul_review_drafts | 绕过自评闸门=无质量门, 污染人格记忆库 |
+| 直接改 soul-config.yml | 只经 soul_config_update | 绕过校验/索引, 路由数据不一致 |
+| 训练模板库 soul-template | is_template 拒绝 | 模板是复制源, 训练会污染所有新人格 |
+| 对无 kb_scope 的人格训练 | 空 scope=只问答, learn 拒绝 | 无可学文档=空转烧预算 |
+| 跳过审批直接当记忆用 | 审批后注册+索引才可检索 | 未注册=向量/图谱检索不到, 白训练 |
+| 忽略预算跑全库自举 | 先 dry_run 看成本 | 全库自举成本 = Σ人格×0.15, 必须先预估 |
+| 把 SOUL 问答当普通检索 | 人格问答必须走 soul_ask(带人格注入) | 普通检索无人格注入, 回答失去身份一致性 |
+| 把补天产物直接塞进记忆 | 补天 persona 只做初始化文档(宪法层), 知识进化走训练 | persona 是"先天身份"非"后天知识", 混用破坏宪法层 |
+
+**失败回退**: 训练/审批任务不可见(可能 MCP 未重启) → 用 REST 等价入口
+`GET/POST http://localhost:8765/api/v1/soul/*`(与 MCP 同数据); 仍失败 →
+`kb_project_status()` 查服务健康。
 
 ## Tool Quick Reference
 
