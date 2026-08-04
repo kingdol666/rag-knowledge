@@ -3517,6 +3517,69 @@ async function cmdSoul(args) {
       console.log(`\n📤 导出: ${res.record_count || 0} 条 → ${res.export_path || ''}`);
       break;
     }
+    case 'task': {
+      // ragctl soul task <pause|resume|status> <task_id>
+      const sub = rest[0];
+      const taskId = rest[1];
+      if (!sub || !taskId) { console.log('用法: ragctl soul task <pause|resume|status> <task_id>'); break; }
+      if (sub === 'pause' || sub === 'resume') {
+        const res = await apiPost(`/api/v1/soul/tasks/${enc(taskId)}/${sub}`, {});
+        console.log(`\n⏯ 任务 ${sub}: ${res.status || res.detail || JSON.stringify(res)}`);
+      } else {
+        const res = await apiGet(`/api/v1/soul/tasks/${enc(taskId)}`);
+        console.log(`\n📊 任务 ${taskId}: status=${res.status}`);
+        if (res.progress) console.log('  progress:', JSON.stringify(res.progress).slice(0, 200));
+        if (res.result) console.log('  result:', JSON.stringify(res.result).slice(0, 300));
+      }
+      break;
+    }
+    case 'training': {
+      // ragctl soul training [soul_kb_id] [--limit N] [--run <run_id>]
+      const kbId = rest[0] || '';
+      const runId = flagVal('--run');
+      if (runId) {
+        const res = await apiGet(`/api/v1/soul/training/runs/${enc(runId)}`);
+        console.log(`\n📈 训练运行 ${runId}: status=${res.run?.status} kind=${res.run?.kind} reward=${res.run?.reward}`);
+        for (const e of (res.events || []).slice(0, 20)) {
+          const p = e.payload || {};
+          console.log(`  [${e.ts.slice(11, 19)}] ${e.phase}: ${JSON.stringify(p).slice(0, 120)}`);
+        }
+        break;
+      }
+      const limit = parseInt(flagVal('--limit') || '20');
+      const res = await apiGet(`/api/v1/soul/training/history?soul_kb_id=${enc(kbId)}&limit=${limit}`);
+      console.log(`\n📚 训练历史(${kbId || '全部'}): ${res.count} 条`);
+      for (const r of (res.runs || [])) {
+        const dur = r.finished_at ? `${(new Date(r.finished_at) - new Date(r.started_at)) / 1000}s` : '运行中';
+        console.log(`  • ${r.id.slice(0, 18)} ${r.kind} ${r.status} | Q${r.questions} M${r.memories} D${r.docs} $${r.cost_usd ?? 0}${r.reward != null ? ' reward=' + r.reward : ''} | ${dur}`);
+      }
+      break;
+    }
+    case 'distill-text': {
+      // ragctl soul distill-text <name> --req "人格需求" --material "源材料" [--scope k1,k2] [--labels a,b]
+      const name = rest[0];
+      const req = flagVal('--req');
+      const material = flagVal('--material');
+      if (!name || (!req && !material)) {
+        console.log('用法: ragctl soul distill-text <name> --req "人格需求" --material "聊天记录/描述" [--scope k1,k2] [--labels a,b] [--harness omp]');
+        break;
+      }
+      console.log(`\n🎭 补天蒸馏中(${name})… LLM 提取人格画像 → 建库+4文档+索引(异步)`);
+      const res = await apiPost('/api/v1/soul/distill', {
+        name, personality_req: req, source_material: material,
+        kb_scope: flagVal('--scope') ? flagVal('--scope').split(',').map(x => x.trim()) : ['*'],
+        domain_labels: flagVal('--labels') ? flagVal('--labels').split(',').map(x => x.trim()) : [],
+        harness: flagVal('--harness') || '',
+        async_mode: true,
+      });
+      if (res.task_id) {
+        const result = await pollTask(res.task_id, `${name} 蒸馏`);
+        console.log('  蒸馏完成:', JSON.stringify(result).slice(0, 300));
+      } else {
+        console.log('  结果:', JSON.stringify(res).slice(0, 300));
+      }
+      break;
+    }
     case 'delete': {
       const kbId = rest[0];
       if (!kbId) { console.log('用法: ragctl soul delete <soul_kb_id>'); break; }
@@ -3544,6 +3607,9 @@ async function cmdSoul(args) {
       console.log('  ragctl soul train-rl <soul_kb_id> [--rounds N]   RL强化训练(好奇心×评价Agent×策略更新, 异步+进度)');
       console.log('  ragctl soul evaluate <soul_kb_id>               评价Agent四维评分(RL奖励信号)');
       console.log('  ragctl soul review-cognition <soul_kb_id> [--action approve] [--all]  认知草稿审批(RL策略落地)');
+      console.log('  ragctl soul task <pause|resume|status> <task_id>      任务暂停/继续/状态');
+      console.log('  ragctl soul training [soul_kb_id] [--run run_id]      训练历史(SQLite)');
+      console.log('  ragctl soul distill-text <name> --req R --material M   文本补天蒸馏创建');
       console.log('  ragctl soul harness <soul_kb_id> <omp|claude> [--model M]    指定单人格训练引擎');
       console.log('  ragctl soul ask <query> [--soul kb] [--type t] [--goal g]  人格问答(自动路由)');
       console.log('  ragctl soul router <query> [--type t]              路由决策预览');

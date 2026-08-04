@@ -80,6 +80,16 @@ _KEYWORD_RULES: list[tuple[str, str]] = [
     (r"挑战|难点|局限|瓶颈|不足|缺陷|问题.*解决", "challenge"),
 ]
 
+async def _call_cb(cb, payload):
+    """调用 progress_cb(兼容同步/异步回调, 如暂停门 gated_progress_cb)。"""
+    if cb is None:
+        return
+    r = cb(payload)
+    if asyncio.iscoroutine(r):
+        await r
+
+
+
 
 def _now_iso() -> str:
     """当前 UTC ISO8601 时间戳。"""
@@ -1430,7 +1440,7 @@ async def learn_incremental(soul_kb_id: str, rounds: int = 1,
             for k in totals:
                 totals[k] = float(totals.get(k, 0)) + float(rep.get(k, 0))
             if progress_cb:
-                progress_cb({
+                await _call_cb(progress_cb, {
                     "round": r,
                     "rounds": rounds,
                     "questions": int(rep.get("questions_generated", 0)),
@@ -1564,7 +1574,7 @@ async def learn_all(
             content_hashes[dp] = h
             unique_docs += 1
         if progress_cb and (i + 1) % 10 == 0:
-            progress_cb({"phase": "scan", "scanned": i + 1, "total": total_scan,
+            await _call_cb(progress_cb, {"phase": "scan", "scanned": i + 1, "total": total_scan,
                          "unique_docs": unique_docs, "duplicate_docs": duplicate_docs})
 
     # 跨 SOUL 重叠
@@ -1622,7 +1632,7 @@ async def learn_all(
         if cfg.is_template:
             continue
         if progress_cb:
-            progress_cb({"phase": "learn", "soul_kb_id": sid, "round": 0, "rounds": rounds})
+            await _call_cb(progress_cb, {"phase": "learn", "soul_kb_id": sid, "round": 0, "rounds": rounds})
             _cb = (lambda sid_: lambda p: progress_cb({"soul_kb_id": sid_, **p}))(sid)
         else:
             _cb = None
@@ -1710,7 +1720,7 @@ async def learn_docs(
             for k in totals:
                 totals[k] = float(totals.get(k, 0)) + float(rep.get(k, 0))
             if progress_cb:
-                progress_cb({
+                await _call_cb(progress_cb, {
                     "round": r,
                     "rounds": rounds,
                     "questions": int(rep.get("questions_generated", 0)),

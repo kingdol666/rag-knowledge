@@ -210,6 +210,31 @@ soul_evaluate(soul_kb_id)             # RL 评价Agent四维评分(新工具, MC
   前端训练 modal "RL 强化(评价驱动)" 模式 + 审批 modal "认知草稿(RL)" 页签;
   ragctl: soul train-rl / evaluate / review-cognition --all
 
+### B5 ⭐ 任务控制与训练历史(SQLite)
+```
+ragctl soul task pause|resume|status <task_id>   # 暂停/继续/状态(轮次边界生效)
+ragctl soul training [soul_kb_id] [--run run_id] # 训练历史/单次事件流
+curl -X POST /api/v1/soul/tasks/{id}/pause       # API 等价
+```
+- 暂停: 当前 LLM 调用不中断, 在下一轮边界停住; 继续后从断点续跑
+- SQLite 持久化(storage/soul-training.db): 每次训练/蒸馏/审批运行
+  记录 runs(指标: 轮次/问题/记忆/文档/成本/reward) + events(阶段事件流)
+- 前端: 训练控制台 "📚 训练历史" 面板(列表+事件流+状态chip) + 训练中
+  "⏸ 暂停/▶ 继续" 按钮; 监控带实时进度
+- 查询: GET /api/v1/soul/training/history?[soul_kb_id] / training/runs/{run_id}
+
+### B6 ⭐ 文本补天蒸馏(前端/CLI/Agent 三入口)
+```
+ragctl soul distill-text <name> --req "人格需求" --material "源材料" [--scope k1,k2]
+POST /api/v1/soul/distill {name, personality_req, source_material, ...}  # 异步 task_id
+```
+- 与 ragctl soul distill(dot-skill 产物目录)互补: 本入口直接接受原始
+  源材料(聊天记录/文档/描述) + 人格需求, LLM 提取身份/价值观/思维/
+  语言/专长 → 建库 + 4 文档(模板+蒸馏融合) + bootstrap + 索引
+- 前端创建 modal 含 "补天蒸馏(可选)" 区: 填入需求+源材料即走蒸馏,
+  留空走模板初始化; 蒸馏进度经训练控制台实时追踪
+- 蒸馏运行同样写入 SQLite 训练历史(soul_distill)
+
 ---
 
 ## §C 人格问答(检索增强)

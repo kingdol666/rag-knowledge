@@ -43,21 +43,29 @@ def submit_soul_task(coro_factory: CoroFactory, kind: str,
     task_id = _new_id()
     record: dict[str, Any] = {
         "task_id": task_id,
-        "kind": kind,            # soul_learn | soul_learn_all | soul_review
-        "status": "running",     # running | done | error
+        "kind": kind,            # soul_learn | soul_learn_all | soul_review | soul_train_rl
+        "status": "running",     # running | paused | done | error
         "created_at": _now_iso(),
         "started_monotonic": time.monotonic(),
         "meta": meta or {},
         "progress": None,
         "result": None,
         "error": None,
+        # 暂停/继续门: 任务协程在每轮边界 await gate.wait(),
+        # pause 时 gate 未置位 → 协程停在轮次之间(LLM 调用不被打断)
+        "gate": asyncio.Event(),
     }
+    record["gate"].set()
     _records[task_id] = record
 
     async def _runner() -> None:
         try:
+            # 支持同步/异步 progress_cb: 每轮边界等待暂停门
             record["result"] = await coro_factory(task_id)
             record["status"] = "done"
+        except asyncio.CancelledError:
+            record["status"] = "error"
+            record["error"] = "cancelled"
         except Exception as e:  # 任何失败都落到 record, 不向调用方抛
             record["error"] = f"{type(e).__name__}: {e}"
             record["status"] = "error"
@@ -69,6 +77,53 @@ def submit_soul_task(coro_factory: CoroFactory, kind: str,
     _handles[task_id] = asyncio.create_task(_runner())
     _reap_stale()
     return task_id
+
+
+async def gated_progress_cb(task_id: str) -> Any:
+    """构造暂停门包装的 progress_cb(每轮边界检查暂停/继续)。
+
+    用法: progress_cb=gated_progress_cb(task_id) 传给 learn_*/train_rl;
+    内部: await gate → 若 paused 则 status=paused(通知前端) →
+    继续等待 resume → status=running → 调用 update_progress。
+    返回的包装函数同时兼容同步/异步调用方。
+    """
+    rec = _records.get(task_id)
+
+    async def _cb(progress: dict) -> None:
+        if rec is None:
+            return
+        # 暂停门: paused 时阻塞直到 resume
+        if not rec["gate"].is_set():
+            rec["status"] = "paused"
+            if rec.get("progress") != progress:
+                rec["progress"] = progress
+            await rec["gate"].wait()
+            if rec["status"] == "paused":
+                rec["status"] = "running"
+        update_progress(task_id, progress)
+
+    return _cb
+
+
+def pause_soul_task(task_id: str) -> bool:
+    """暂停运行中任务(在下一轮边界生效)。返回是否成功。"""
+    rec = _records.get(task_id)
+    if not rec or rec["status"] not in ("running", "paused"):
+        return False
+    if rec["status"] == "running":
+        rec["gate"].clear()
+        rec["status"] = "paused"
+    return True
+
+
+def resume_soul_task(task_id: str) -> bool:
+    """继续已暂停任务。返回是否成功。"""
+    rec = _records.get(task_id)
+    if not rec or rec["status"] != "paused":
+        return False
+    rec["gate"].set()
+    rec["status"] = "running"
+    return True
 
 
 def update_progress(task_id: str, progress: dict) -> None:

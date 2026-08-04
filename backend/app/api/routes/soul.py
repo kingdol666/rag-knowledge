@@ -335,10 +335,30 @@ async def learn(soul_kb_id: str, req: dict[str, Any], _: None = Depends(verify_t
     if not doc_paths:
         raise _err(400, "missing_docs", "doc_paths 必填")
     if req.get("async_mode"):
+        from app.services import soul_training_db
+
         async def _task(tid: str):
-            return await asyncio.shield(soul_learn.learn_docs(
+            gate_cb = await soul_task_runner.gated_progress_cb(tid)
+            run_id = soul_training_db.start_run(
+                soul_config.resolve_soul_kb_path(soul_kb_id) or soul_kb_id,
+                "soul_learn", task_id=tid, mode="docs")
+
+            async def _cb(p):
+                await gate_cb(p)
+                soul_training_db.log_event(run_id, p.get("phase", "info"), p)
+                soul_training_db.update_progress(
+                    run_id, questions=p.get("questions"),
+                    memories=p.get("memories"),
+                    docs=p.get("docs_processed"),
+                    rounds=p.get("round"),
+                    cost_usd=p.get("cost_estimate"),
+                    reward=p.get("reward"))
+
+            rep = await asyncio.shield(soul_learn.learn_docs(
                 soul_kb_id, doc_paths, limit=limit, rounds=rounds,
-                progress_cb=lambda p: soul_task_runner.update_progress(tid, p)))
+                progress_cb=_cb))
+            soul_training_db.finish_run(run_id, "done", rep)
+            return rep
         task_id = soul_task_runner.submit_soul_task(
             _task, "soul_learn",
             {"soul_kb_id": soul_kb_id, "doc_paths": len(doc_paths), "rounds": rounds})
@@ -354,10 +374,26 @@ async def learn_all_global(req: dict[str, Any], _: None = Depends(verify_token))
     dry_run = bool(req.get("dry_run"))
     rounds = int(req.get("rounds") or 1)
     if req.get("async_mode"):
+        from app.services import soul_training_db
+
         async def _task(tid: str):
-            return await asyncio.shield(soul_learn.learn_all(
+            gate_cb = await soul_task_runner.gated_progress_cb(tid)
+            run_id = soul_training_db.start_run("*", "soul_learn_all", task_id=tid, mode="all")
+
+            async def _cb(p):
+                await gate_cb(p)
+                soul_training_db.log_event(run_id, p.get("phase", "info"), p)
+                soul_training_db.update_progress(
+                    run_id, questions=p.get("questions"),
+                    memories=p.get("memories"), docs=p.get("docs_processed"),
+                    rounds=p.get("round"), cost_usd=p.get("cost_estimate"),
+                    reward=p.get("reward"))
+
+            rep = await asyncio.shield(soul_learn.learn_all(
                 soul_kb_id="", max_docs=max_docs, dry_run=dry_run, rounds=rounds,
-                progress_cb=lambda p: soul_task_runner.update_progress(tid, p)))
+                progress_cb=_cb))
+            soul_training_db.finish_run(run_id, "done", rep)
+            return rep
         task_id = soul_task_runner.submit_soul_task(
             _task, "soul_learn_all", {"soul_kb_id": "*", "max_docs": max_docs, "rounds": rounds})
         return {"success": True, "task_id": task_id, "status": "running"}
@@ -371,10 +407,28 @@ async def learn_all(soul_kb_id: str, req: dict[str, Any], _: None = Depends(veri
     dry_run = bool(req.get("dry_run"))
     rounds = int(req.get("rounds") or 1)
     if req.get("async_mode"):
+        from app.services import soul_training_db
+
         async def _task(tid: str):
-            return await asyncio.shield(soul_learn.learn_all(
+            gate_cb = await soul_task_runner.gated_progress_cb(tid)
+            run_id = soul_training_db.start_run(
+                soul_config.resolve_soul_kb_path(soul_kb_id) or soul_kb_id or "",
+                "soul_learn_all", task_id=tid, mode="all")
+
+            async def _cb(p):
+                await gate_cb(p)
+                soul_training_db.log_event(run_id, p.get("phase", "info"), p)
+                soul_training_db.update_progress(
+                    run_id, questions=p.get("questions"),
+                    memories=p.get("memories"), docs=p.get("docs_processed"),
+                    rounds=p.get("round"), cost_usd=p.get("cost_estimate"),
+                    reward=p.get("reward"))
+
+            rep = await asyncio.shield(soul_learn.learn_all(
                 soul_kb_id=soul_kb_id or "", max_docs=max_docs, dry_run=dry_run, rounds=rounds,
-                progress_cb=lambda p: soul_task_runner.update_progress(tid, p)))
+                progress_cb=_cb))
+            soul_training_db.finish_run(run_id, "done", rep)
+            return rep
         task_id = soul_task_runner.submit_soul_task(
             _task, "soul_learn_all",
             {"soul_kb_id": soul_kb_id or "", "max_docs": max_docs, "rounds": rounds})
@@ -527,10 +581,27 @@ async def train_rl(soul_kb_id: str, req: dict[str, Any], _: None = Depends(verif
     from app.services import soul_reward
 
     if req.get("async_mode", True):
+        from app.services import soul_training_db
+
         async def _task(tid: str):
-            return await asyncio.shield(soul_reward.train_rl(
-                soul_kb_id, rounds=rounds,
-                progress_cb=lambda p: soul_task_runner.update_progress(tid, p)))
+            gate_cb = await soul_task_runner.gated_progress_cb(tid)
+            run_id = soul_training_db.start_run(
+                soul_config.resolve_soul_kb_path(soul_kb_id) or soul_kb_id,
+                "soul_train_rl", task_id=tid, mode="rl")
+
+            async def _cb(p):
+                await gate_cb(p)
+                soul_training_db.log_event(run_id, p.get("phase", "info"), p)
+                soul_training_db.update_progress(
+                    run_id, questions=p.get("questions"),
+                    memories=p.get("memories"), docs=p.get("docs_processed"),
+                    rounds=p.get("round"), cost_usd=p.get("cost_estimate"),
+                    reward=p.get("reward"))
+
+            rep = await asyncio.shield(soul_reward.train_rl(
+                soul_kb_id, rounds=rounds, progress_cb=_cb))
+            soul_training_db.finish_run(run_id, "done", rep)
+            return rep
         task_id = soul_task_runner.submit_soul_task(
             _task, "soul_train_rl", {"soul_kb_id": soul_kb_id, "rounds": rounds})
         return {"success": True, "task_id": task_id, "status": "running"}
@@ -628,3 +699,133 @@ async def persona_docs(soul_kb_id: str):
         raise _err(404, "kb_not_found")
     from app.services import soul_reward
     return {"success": True, **await soul_reward.read_persona_docs(soul_kb_id)}
+
+
+# ═══════════════════════════════════════════════════════════════════════
+# §任务控制 + 训练历史 + 补天蒸馏(前端/CLI/Agent 三入口)
+# ═══════════════════════════════════════════════════════════════════════
+
+@router.post("/tasks/{task_id}/pause")
+async def pause_task(task_id: str, _: None = Depends(verify_token)):
+    """暂停运行中的 SOUL 长任务(训练/审批)。在下一轮边界生效,
+    当前 LLM 调用不中断。SQLite 训练历史同步标记 paused。"""
+    if not soul_task_runner.pause_soul_task(task_id):
+        raise _err(400, "task_not_pausable", "任务不存在或已结束")
+    from app.services import soul_training_db
+    run = soul_training_db.get_run_by_task(task_id)
+    if run:
+        soul_training_db.mark_paused(run["id"])
+    return {"success": True, "task_id": task_id, "status": "paused"}
+
+
+@router.post("/tasks/{task_id}/resume")
+async def resume_task(task_id: str, _: None = Depends(verify_token)):
+    """继续已暂停的任务。"""
+    if not soul_task_runner.resume_soul_task(task_id):
+        raise _err(400, "task_not_resumable", "任务不存在或未暂停")
+    from app.services import soul_training_db
+    run = soul_training_db.get_run_by_task(task_id)
+    if run:
+        soul_training_db.mark_resumed(run["id"])
+    return {"success": True, "task_id": task_id, "status": "running"}
+
+
+@router.get("/training/history")
+async def training_history(soul_kb_id: str = "", limit: int = Query(30)):
+    """训练历史(SQLite 持久化): 最近运行列表(含 reward/成本/轮次)。"""
+    from app.services import soul_training_db
+    runs = soul_training_db.list_runs(soul_kb_id=soul_kb_id or "", limit=limit)
+    return {"success": True, "runs": runs, "count": len(runs)}
+
+
+@router.get("/training/runs/{run_id}")
+async def training_run_detail(run_id: str):
+    """单次训练运行详情 + 阶段事件流(实时进度可视化数据源)。"""
+    from app.services import soul_training_db
+    run = soul_training_db.get_run(run_id)
+    if not run:
+        raise _err(404, "run_not_found")
+    events = soul_training_db.get_run_events(run_id)
+    return {"success": True, "run": run, "events": events}
+
+
+@router.post("/distill")
+async def distill_persona(req: dict[str, Any], _: None = Depends(verify_token)):
+    """补天蒸馏创建 SOUL(前端/CLI/Agent 通用入口)。
+
+    输入: {name, kb_scope?, domain_labels?, supported_task_types?, harness?,
+           personality_req? 人格需求描述, source_material? 源材料(聊天记录/文档/描述)}
+
+    流程: LLM 蒸馏(agent_harness, soul_distill prompt) → persona.md/work.md/
+    meta.json → 建库 + 4 文档(模板+蒸馏融合) + bootstrap + 索引。
+    personality_req/source_material 均缺省时退化为模板人格(soul_init 语义)。
+    async_mode=True(默认) 异步执行返回 task_id。
+    """
+    name = (req.get("name") or req.get("soul_name") or "").strip()
+    if not name:
+        raise _err(400, "invalid_name", "name 必填")
+    if not name.startswith("soul-"):
+        name = f"soul-{name}"
+    personality_req = (req.get("personality_req") or "").strip()
+    source_material = (req.get("source_material") or "").strip()
+    if not personality_req and not source_material:
+        # 无蒸馏输入 → 退化为模板初始化
+        from app.services import soul_config as _sc
+        scope = req.get("kb_scope") or ["*"]
+        labels = req.get("domain_labels") or []
+        types = req.get("supported_task_types") or []
+        harness = req.get("harness") or ""
+        if req.get("async_mode", True):
+            async def _task(tid: str):
+                return await asyncio.shield(_template_init_soul(
+                    name, scope, labels, types, harness, tid))
+            task_id = soul_task_runner.submit_soul_task(
+                _task, "soul_init", {"soul_name": name})
+            return {"success": True, "task_id": task_id, "status": "running",
+                    "mode": "template"}
+        return {"success": True, "mode": "template",
+                **await _template_init_soul(name, scope, labels, types, harness, "")}
+
+    from app.services import soul_distill
+    if req.get("async_mode", True):
+        async def _task(tid: str):
+            return await asyncio.shield(soul_distill.distill_and_create(
+                name=name,
+                kb_scope=req.get("kb_scope") or ["*"],
+                domain_labels=req.get("domain_labels") or [],
+                supported_task_types=req.get("supported_task_types") or [],
+                harness=req.get("harness") or "",
+                personality_req=personality_req,
+                source_material=source_material,
+                progress_cb=await soul_task_runner.gated_progress_cb(tid)))
+        task_id = soul_task_runner.submit_soul_task(
+            _task, "soul_distill", {"soul_name": name})
+        return {"success": True, "task_id": task_id, "status": "running",
+                "mode": "distill"}
+    return {"success": True, "mode": "distill",
+            **await soul_distill.distill_and_create(
+                name=name,
+                kb_scope=req.get("kb_scope") or ["*"],
+                domain_labels=req.get("domain_labels") or [],
+                supported_task_types=req.get("supported_task_types") or [],
+                harness=req.get("harness") or "",
+                personality_req=personality_req,
+                source_material=source_material)}
+
+
+async def _template_init_soul(name: str, kb_scope: list, domain_labels: list,
+                              supported_task_types: list, harness: str,
+                              task_id: str) -> dict:
+    """模板初始化(与前端 /api/soul/init 同语义, 供 distill 端点退化路径)。"""
+    from app.services import soul_training_db
+    run_id = soul_training_db.start_run(
+        name, "soul_init", task_id=task_id or None, mode="template")
+    try:
+        from app.services import soul_distill
+        rep = await soul_distill.create_from_template(
+            name, kb_scope, domain_labels, supported_task_types, harness)
+        soul_training_db.finish_run(run_id, "done", rep)
+        return rep
+    except Exception as e:
+        soul_training_db.finish_run(run_id, "error", {"error": str(e)})
+        raise

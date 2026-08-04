@@ -91,6 +91,9 @@
               <button class="btn btn-ghost btn-sm" @click="openEdit(selected)">配置</button>
               <button class="btn btn-ghost btn-sm" @click="doReflect(selected)">反思</button>
               <button class="btn btn-ghost btn-sm" @click="doCheckpoint(selected)">检查点</button>
+              <button v-if="selectedTaskStatus === 'paused'" class="btn btn-copper btn-sm" @click="resumeTask()">▶ 继续</button>
+              <button v-if="selectedTaskStatus === 'running'" class="btn btn-ghost btn-sm" @click="pauseTask()">⏸ 暂停</button>
+              <button class="btn btn-ghost btn-sm btn-danger" @click="confirmDelete(selected)">删除</button>
             </div>
           </section>
 
@@ -112,10 +115,17 @@
               <div class="console-head">
                 <h3>训练控制台</h3>
                 <span class="console-sub">好奇心探索 · 评价驱动</span>
+                <button class="btn btn-ghost btn-xs" style="margin-left:auto" @click="loadTrainingHistory(selected); openHistory()">📚 训练历史</button>
               </div>
 
               <!-- 未运行: 触发面板 -->
-              <div v-if="trainTaskStatus !== 'running'" class="train-launch">
+              <div v-if="trainTaskStatus === 'paused'" class="train-paused">
+                <div class="pause-banner">
+                  <b>⏸ 任务已暂停</b> — 当前轮完成后停在轮次边界，LLM 调用不中断
+                  <button class="btn btn-copper btn-sm" @click="resumeTask()">▶ 继续训练</button>
+                </div>
+              </div>
+              <div v-if="trainTaskStatus !== 'running' && trainTaskStatus !== 'paused'" class="train-launch">
                 <div class="mode-tabs">
                   <button class="mode-tab" :class="{ on: trainMode === 'docs' }" @click="trainMode = 'docs'">指定文档</button>
                   <button class="mode-tab" :class="{ on: trainMode === 'all' }" @click="trainMode = 'all'">全库自举</button>
@@ -316,6 +326,14 @@
         <a-form-item label="任务类型 supported_task_types">
           <a-select v-model:value="form.supported_task_types" mode="tags" placeholder="如 文献综述 / 技术选型" style="width:100%" />
         </a-form-item>
+        <a-divider style="margin:6px 0">补天蒸馏（可选 — 从源材料直接蒸馏初始人格）</a-divider>
+        <a-form-item label="人格需求描述（性格画像 / 角色定位 / 风格要求）">
+          <a-textarea v-model:value="form.personality_req" :rows="2" placeholder="如：严谨的材料领域研究者，先结论后论证，必带引用；MBTI INTJ，沉稳克制" />
+        </a-form-item>
+        <a-form-item label="源材料（聊天记录 / 文档片段 / 人物描述）">
+          <a-textarea v-model:value="form.source_material" :rows="4" placeholder="粘贴该人物的真实发言、工作文档或描述片段；留空则使用模板人格" />
+        </a-form-item>
+        <div class="distill-hint">填入后创建即走<b>补天蒸馏</b>：LLM 提取身份/价值观/思维/语言/专长 → 建库 + 4 人格文档（模板+蒸馏融合）+ 索引（异步，可追踪进度）</div>
         <a-form-item :label="`训练 harness（默认 ${defaultHarness || 'omp'}，可单独指定）`">
           <a-select v-model:value="form.harness" style="width:100%">
             <a-select-option value="">跟随全局默认 ({{ defaultHarness || 'omp' }})</a-select-option>
@@ -416,6 +434,57 @@
         <div class="modal-actions">
           <a-button @click="askOpen = false">关闭</a-button>
         </div>
+      </div>
+    </a-modal>
+
+    <!-- ═══════════ 训练历史 Modal(SQLite) ═══════════ -->
+    <a-modal v-model:open="historyOpen" title="训练历史（SQLite 持久化）" :footer="null" width="860">
+      <div class="history-layout">
+        <div class="history-list">
+          <div v-for="r in trainingHistory" :key="r.id" class="history-item" :class="{ on: historyRun?.id === r.id }" @click="openHistory(r)">
+            <div class="h-row1">
+              <span class="h-kind">{{ r.kind }}</span>
+              <span class="h-status" :class="r.status">{{ r.status }}</span>
+            </div>
+            <div class="h-row2">
+              <span class="h-time">{{ fmtTime(r.started_at) }}</span>
+              <span v-if="r.finished_at" class="h-dur">{{ Math.round((new Date(r.finished_at) - new Date(r.started_at)) / 1000) }}s</span>
+            </div>
+            <div class="h-row3">
+              <span>Q{{ r.questions ?? 0 }}</span><span>M{{ r.memories ?? 0 }}</span><span>D{{ r.docs ?? 0 }}</span>
+              <span v-if="r.reward != null">★{{ r.reward }}</span>
+              <span v-if="r.cost_usd">${{ r.cost_usd.toFixed(2) }}</span>
+            </div>
+          </div>
+          <div v-if="!trainingHistory.length" class="h-empty">暂无训练记录 — 训练任务会自动写入历史</div>
+        </div>
+        <div class="history-detail">
+          <template v-if="historyRun">
+            <div class="hd-head">
+              <span class="hd-title">{{ historyRun.kind }} · {{ historyRun.soul_kb_id }}</span>
+              <span class="hd-status" :class="historyRun.status">{{ historyRun.status }}</span>
+            </div>
+            <div class="hd-metrics">
+              <span>轮次 {{ historyRun.rounds ?? 0 }}</span><span>问题 {{ historyRun.questions ?? 0 }}</span>
+              <span>记忆 {{ historyRun.memories ?? 0 }}</span><span>文档 {{ historyRun.docs ?? 0 }}</span>
+              <span v-if="historyRun.reward != null">reward {{ historyRun.reward }}</span>
+              <span v-if="historyRun.cost_usd">${{ historyRun.cost_usd.toFixed(2) }}</span>
+            </div>
+            <div class="hd-events">
+              <div v-for="e in historyEvents" :key="e.id" class="hd-event">
+                <span class="hd-ev-time">{{ e.ts.slice(11, 19) }}</span>
+                <i class="log-dot" :class="e.phase === 'reward' ? 'reward' : (e.phase === 'learn' ? 'ok' : 'info')"></i>
+                <span class="hd-ev-phase">{{ e.phase }}</span>
+                <span class="hd-ev-payload">{{ JSON.stringify(e.payload).slice(0, 160) }}</span>
+              </div>
+              <div v-if="!historyEvents.length" class="h-empty">无阶段事件</div>
+            </div>
+          </template>
+          <div v-else class="h-empty">选择左侧一条运行查看详细事件流</div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <a-button @click="historyOpen = false">关闭</a-button>
       </div>
     </a-modal>
 
@@ -531,7 +600,7 @@ const trainOpen = ref(false)
 const askOpen = ref(false)
 const reviewOpen = ref(false)
 
-const form = ref({ soul_name: '', kb_scope: [] as string[], domain_labels: [] as string[], supported_task_types: [] as string[], harness: '', allKb: true })
+const form = ref({ soul_name: '', kb_scope: [] as string[], domain_labels: [] as string[], supported_task_types: [] as string[], harness: '', allKb: true, personality_req: '', source_material: '' })
 const editing = ref<Soul | null>(null)
 const editForm = ref({
   kb_scope: [] as string[], domain_labels: [] as string[], supported_task_types: [] as string[], route_weight: 1,
@@ -725,6 +794,7 @@ function selectSoul(soul: Soul) {
   loadRewardHistory(soul)
   loadPersonaDocs(soul)
   loadScopeDocs(soul)
+  loadTrainingHistory(soul)
 }
 
 async function loadRewardHistory(soul: Soul) {
@@ -790,7 +860,7 @@ async function pollTaskList() {
 
 // ── CRUD ──
 function openCreate() {
-  form.value = { soul_name: '', kb_scope: [], domain_labels: [], supported_task_types: [], harness: '', allKb: true }
+  form.value = { soul_name: '', kb_scope: [], domain_labels: [], supported_task_types: [], harness: '', allKb: true, personality_req: '', source_material: '' }
   createOpen.value = true
 }
 async function doCreate() {
@@ -799,6 +869,41 @@ async function doCreate() {
   try {
     const kbName = form.value.soul_name.startsWith('soul-') ? form.value.soul_name : `soul-${form.value.soul_name}`
     const kbScope = form.value.allKb ? ['*'] : (form.value.kb_scope || [])
+    // 补天蒸馏模式: 有需求或源材料 → 走 /api/soul/distill(LLM 蒸馏 + 建库 + 索引, 异步)
+    const useDistill = !!(form.value.personality_req?.trim() || form.value.source_material?.trim())
+    if (useDistill) {
+      const r = await $fetch<any>('/api/soul/distill', {
+        method: 'POST',
+        body: {
+          name: kbName,
+          kb_scope: kbScope,
+          domain_labels: form.value.domain_labels,
+          supported_task_types: form.value.supported_task_types,
+          harness: form.value.harness || '',
+          personality_req: form.value.personality_req || '',
+          source_material: form.value.source_material || '',
+          async_mode: true,
+        },
+      })
+      if (r?.task_id) {
+        // 蒸馏是异步长任务: 提交后由训练控制台追踪
+        trainTaskId.value = r.task_id
+        trainTaskStatus.value = 'running'
+        trainProgress.value = { phase: 'distill', msg: '补天蒸馏执行中…' }
+        eventLog.value = []
+        pushLog('info', `提交补天蒸馏 → ${kbName}`)
+        pollTrainTask(r.task_id)
+        showToast(`补天蒸馏已提交: ${kbName}`)
+        createOpen.value = false
+        await loadAll()
+        return
+      }
+      const docsOk = (r?.docs_created ?? 0)
+      showToast(docsOk >= 4 ? `人格 ${kbName} 蒸馏创建完成` : `蒸馏创建: ${JSON.stringify(r).slice(0, 120)}`, docsOk >= 4 ? 'ok' : 'err')
+      createOpen.value = false
+      await loadAll()
+      return
+    }
     const r = await $fetch<any>('/api/soul/init', {
       method: 'POST',
       body: {
@@ -822,6 +927,52 @@ async function doCreate() {
     showToast(`创建失败: ${e.message}`, 'err')
   } finally {
     creating.value = false
+  }
+}
+
+// ── 任务暂停/继续 ──
+const selectedTaskStatus = computed(() => trainTaskStatus.value)
+async function pauseTask() {
+  if (!trainTaskId.value) return
+  try {
+    const r = await $fetch<any>(`/api/soul/tasks/${trainTaskId.value}/pause`, { method: 'POST' })
+    trainTaskStatus.value = 'paused'
+    pushLog('info', '任务已暂停（当前轮完成后停在轮次边界）')
+    showToast('任务已暂停')
+  } catch (e: any) { showToast(`暂停失败: ${e.message}`, 'err') }
+}
+async function resumeTask() {
+  if (!trainTaskId.value) return
+  try {
+    const r = await $fetch<any>(`/api/soul/tasks/${trainTaskId.value}/resume`, { method: 'POST' })
+    trainTaskStatus.value = 'running'
+    pushLog('ok', '任务已继续')
+    showToast('任务已继续')
+  } catch (e: any) { showToast(`继续失败: ${e.message}`, 'err') }
+}
+
+// ── 训练历史(SQLite) ──
+const trainingHistory = ref<any[]>([])
+const historyOpen = ref(false)
+const historyEvents = ref<any[]>([])
+const historyRun = ref<any>(null)
+async function loadTrainingHistory(soul?: Soul) {
+  try {
+    const res = await $fetch<any>(`/api/soul/training/history?soul_kb_id=${encodeURIComponent(soul?.kb_id || selected.value?.kb_id || '')}&limit=20`)
+    trainingHistory.value = res?.runs || []
+  } catch { trainingHistory.value = [] }
+}
+async function openHistory(run?: any) {
+  historyOpen.value = true
+  if (run) {
+    historyRun.value = run
+    try {
+      const res = await $fetch<any>(`/api/soul/training/runs/${run.id}`)
+      historyEvents.value = res?.events || []
+    } catch { historyEvents.value = [] }
+  } else {
+    historyRun.value = null
+    historyEvents.value = []
   }
 }
 function openEdit(soul: Soul) {
@@ -1294,6 +1445,8 @@ onMounted(() => {
 .btn-copper { background: var(--kb-primary); color: #fff; border-color: var(--kb-primary); }
 .btn-copper:hover { background: var(--kb-primary-hover); border-color: var(--kb-primary-hover); }
 .btn-ghost { background: transparent; }
+.btn-danger { color: var(--kb-primary); border-color: #d99a86; }
+.btn-danger:hover { background: var(--kb-primary-soft); border-color: var(--kb-primary); }
 .btn-sm { padding: 5px 11px; font-size: 12.5px; }
 .btn-xs { padding: 3px 8px; font-size: 11.5px; }
 .btn-glyph { font-size: 13px; line-height: 1; }
@@ -1665,4 +1818,47 @@ select.inp[multiple] { min-height: 110px; }
 :global([data-theme='dark']) .btn-primary:hover { background: var(--kb-gold-bright); }
 :global([data-theme='dark']) .soul-toast.ok { background: #162312; border-color: #274916; color: #95de64; }
 :global([data-theme='dark']) .soul-toast.err { background: #2a1215; border-color: #58181c; color: #ff7875; }
+
+/* ── 暂停横幅 ── */
+.train-paused { padding: 16px; }
+.pause-banner {
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  padding: 14px 16px; border-radius: 6px;
+  background: var(--kb-gold-soft); border: 1px solid var(--kb-gold);
+  font-size: 13px; color: var(--kb-gold-deep);
+}
+/* ── 训练历史 ── */
+.history-layout { display: grid; grid-template-columns: 300px 1fr; gap: 14px; min-height: 380px; }
+.history-list { border: 1px solid var(--kb-border); border-radius: 6px; overflow-y: auto; max-height: 480px; }
+.history-item { padding: 9px 12px; border-bottom: 1px solid var(--kb-border); cursor: pointer; }
+.history-item:hover { background: var(--kb-bg-subtle); }
+.history-item.on { background: var(--kb-gold-soft); border-left: 2px solid var(--kb-gold); }
+.h-row1 { display: flex; justify-content: space-between; align-items: center; }
+.h-kind { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; }
+.h-status { font-size: 10px; padding: 1px 7px; border-radius: 8px; }
+.h-status.running { background: var(--kb-cyan-soft); color: var(--kb-cyan); }
+.h-status.paused { background: var(--kb-gold-soft); color: var(--kb-gold-deep); }
+.h-status.done { background: var(--kb-emerald-soft); color: var(--kb-emerald); }
+.h-status.error { background: var(--kb-primary-soft); color: var(--kb-primary); }
+.h-row2 { display: flex; gap: 10px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--kb-fg-3); margin-top: 3px; }
+.h-row3 { display: flex; gap: 8px; font-family: 'JetBrains Mono', monospace; font-size: 10.5px; margin-top: 4px; color: var(--kb-fg-2); }
+.h-empty { padding: 24px; text-align: center; font-size: 12px; color: var(--kb-fg-3); }
+.history-detail { border: 1px solid var(--kb-border); border-radius: 6px; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; overflow: hidden; }
+.hd-head { display: flex; justify-content: space-between; align-items: center; }
+.hd-title { font-size: 13px; font-weight: 650; }
+.hd-status { font-size: 10.5px; padding: 1px 8px; border-radius: 8px; }
+.hd-status.running { background: var(--kb-cyan-soft); color: var(--kb-cyan); }
+.hd-status.paused { background: var(--kb-gold-soft); color: var(--kb-gold-deep); }
+.hd-status.done { background: var(--kb-emerald-soft); color: var(--kb-emerald); }
+.hd-status.error { background: var(--kb-primary-soft); color: var(--kb-primary); }
+.hd-metrics { display: flex; gap: 14px; font-family: 'JetBrains Mono', monospace; font-size: 11.5px; color: var(--kb-fg-2); flex-wrap: wrap; padding: 8px 0; border-top: 1px dashed var(--kb-border); border-bottom: 1px dashed var(--kb-border); }
+.hd-events { overflow-y: auto; max-height: 340px; }
+.hd-event { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+.hd-ev-time { color: var(--kb-fg-3); flex-shrink: 0; }
+.hd-ev-phase { width: 64px; flex-shrink: 0; color: var(--kb-cyan); }
+.hd-ev-payload { color: var(--kb-fg-2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.distill-hint { font-size: 11.5px; color: var(--kb-fg-3); background: var(--kb-bg-subtle); border: 1px dashed var(--kb-border-strong); border-radius: 6px; padding: 8px 10px; line-height: 1.6; }
+.distill-hint b { color: var(--kb-gold-deep); }
+@media (max-width: 720px) { .history-layout { grid-template-columns: 1fr; } }
+
 </style>
