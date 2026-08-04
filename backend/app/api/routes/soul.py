@@ -740,6 +740,23 @@ async def persona_docs(soul_kb_id: str):
     return {"success": True, **await soul_reward.read_persona_docs(soul_kb_id)}
 
 
+
+@router.get("/{soul_kb_id}/folder")
+async def soul_folder(soul_kb_id: str):
+    """SOUL 文件夹架构总览 — 返回全部分区及其文件列表。
+
+    返回 ``{success, structure: {sections: [{key, name, description, entries: [...]}]}}``。
+    每个 entry: ``{name, type(md|json|yaml|jsonl|text), size, mtime, content?, meta?}``。
+    空目录也有 entries:[] + 用途描述。
+    """
+    if not soul_config.resolve_soul_kb_path(soul_kb_id):
+        raise _err(404, "kb_not_found")
+    from app.services import soul_folder as _sf
+    result = _sf.read_soul_folder(soul_kb_id)
+    if not result.get("success"):
+        raise _err(404, result.get("error", "unknown"))
+    return result
+
 # ═══════════════════════════════════════════════════════════════════════
 # §任务控制 + 训练历史 + 补天蒸馏(前端/CLI/Agent 三入口)
 # ═══════════════════════════════════════════════════════════════════════

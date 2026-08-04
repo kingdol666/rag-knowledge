@@ -958,12 +958,65 @@ async def reflect(soul_kb_id: str) -> dict[str, Any]:
                 for line_val in td["removed_lines"][:5]:
                     report_lines.append(f"  - `{line_val}`")
             report_lines.append("")
-
         if llm_annotation:
             report_lines.append("## LLM 注释")
             report_lines.append(f"\n{llm_annotation}\n")
 
         atomic_write_text(report_path, "\n".join(report_lines))
+
+        # 7b. 写入认知档案 cognition/reflection-YYYYMMDD.md（设计意图保护目录）
+        cognition_archive_dir = _soul_dir / "cognition"
+        cognition_archive_dir.mkdir(parents=True, exist_ok=True)
+        cognition_path = cognition_archive_dir / f"reflection-{today_str}.md"
+
+        cog_lines = [
+            f"# 认知反思档案 — {today_str}",
+            "",
+            f"**SOUL**: `{soul_kb_id}`",
+            f"**Drift Detected**: {drift_detected}",
+            f"**Recorded At**: {_now_iso()}",
+            "",
+            "> 本档案由 reflect 自动生成，存入 cognition/（设计意图保护目录），",
+            "> 与 reports/drift-*.md 并存。该目录受 rollback 保护，不会因回滚而丢失。",
+            "",
+            "## Drift 结论",
+            "",
+        ]
+        if drift_detected:
+            cog_lines.append(
+                "⚠️ 检测到认知漂移：当前 cognition-drafts 与 soul-definition 存在偏差。"
+            )
+        else:
+            cog_lines.append(
+                "✅ 未检测到认知漂移：cognition-drafts 与 soul-definition 一致。"
+            )
+        cog_lines.append("")
+
+        # 逐特质 diff 摘要
+        cog_lines.append("## 逐特质 Diff 摘要")
+        cog_lines.append("")
+        for trait in trait_sections:
+            td = traits_diff.get(trait, {})
+            cog_lines.append(f"### {trait}")
+            cog_lines.append(f"- 新增行: {td.get('added_count', 0)}")
+            cog_lines.append(f"- 移除行: {td.get('removed_count', 0)}")
+            cog_lines.append(f"- 变更行: {td.get('changed_count', 0)}")
+            if td.get("added_lines"):
+                cog_lines.append("- 新增示例:")
+                for line_val in td["added_lines"][:5]:
+                    cog_lines.append(f"  + `{line_val}`")
+            if td.get("removed_lines"):
+                cog_lines.append("- 移除示例:")
+                for line_val in td["removed_lines"][:5]:
+                    cog_lines.append(f"  - `{line_val}`")
+            cog_lines.append("")
+
+        if llm_annotation:
+            cog_lines.append("## LLM 注释")
+            cog_lines.append(f"\n{llm_annotation}\n")
+
+        atomic_write_text(cognition_path, "\n".join(cog_lines))
+
 
         # 8. 刷新 profile-summary
         try:

@@ -265,8 +265,14 @@
                   :class="{ on: activeDoc === d.name }"
                   @click="activeDoc = d.name"
                 >{{ docShortName(d.name) }}</button>
+                <button
+                  class="doc-tab folder-tab"
+                  :class="{ on: activeDoc === '__folder__' }"
+                  @click="activeDoc = '__folder__'"
+                >📂 文件夹架构</button>
               </div>
-              <div class="doc-body" v-if="activeDocContent">
+              <!-- 宪法文档内容 -->
+              <div class="doc-body" v-if="activeDoc !== '__folder__' && activeDocContent">
                 <div class="doc-meta">
                   <span class="doc-updated">更新 {{ fmtTime(activeDocMeta.updated_at) }}</span>
                   <span class="doc-char">{{ activeDocContent.length }} 字符</span>
@@ -282,11 +288,156 @@
                   </template>
                 </div>
               </div>
-              <div v-else class="doc-empty">加载中…</div>
+              <div class="doc-body" v-else-if="activeDoc !== '__folder__' && !activeDocContent">
+                <div class="doc-empty">加载中…</div>
+              </div>
+              <!-- 📂 文件夹浏览器 -->
+              <div class="folder-browser" v-if="activeDoc === '__folder__'">
+                <template v-if="folderLoading">
+                  <div class="doc-empty">加载文件夹结构…</div>
+                </template>
+                <template v-else-if="folderStructure && folderStructure.sections.length">
+                  <aside class="folder-sections">
+                    <button
+                      v-for="sec in folderStructure.sections"
+                      :key="sec.key"
+                      class="folder-section-btn"
+                      :class="{ on: activeFolderSection === sec.key }"
+                      @click="activeFolderSection = sec.key"
+                    >
+                      <span class="sec-icon">{{ sectionIcon(sec.key) }}</span>
+                      <span class="sec-name">{{ sec.name }}</span>
+                      <span class="sec-count">{{ sec.entries.length }}</span>
+                    </button>
+                  </aside>
+                  <div class="folder-content">
+                    <!-- 非空分区: 内容展示 -->
+                    <template v-if="activeSection && (activeSection.entries || activeSection.items).length">
+                      <div class="folder-content-head">
+                        <h4>{{ activeSection.name }}</h4>
+                        <span class="folder-content-desc">{{ activeSection.description }}</span>
+                        <span class="folder-item-count">{{ (activeSection.entries || activeSection.items).length }} 个条目</span>
+                      </div>
+                      <div class="folder-items">
+                        <template v-for="item in (activeSection.entries || activeSection.items || [])" :key="item.name">
+                          <!-- MD 文件渲染（含记忆卡片） -->
+                          <div v-if="item.type === 'md' && item.content" class="folder-item-md">
+                            <div class="item-head">
+                              <span class="item-name">{{ item.name }}</span>
+                              <span class="item-size">{{ fmtSize(item.size) }}</span>
+                            </div>
+                            <!-- 记忆文件 → 卡片视图 -->
+                            <template v-if="activeSection.key === 'memories' && parseMemoryFrontmatter(item.content)">
+                              <div class="mem-card">
+                                <div class="mem-card-q">{{ parseMemoryFrontmatter(item.content)!.frontmatter.question || '—' }}</div>
+                                <div class="mem-card-scores">
+                                  <span class="mem-score" v-for="(v,k) in scoreEntries(parseMemoryFrontmatter(item.content)!.frontmatter.scores)" :key="k">
+                                    <b>{{ scoreLabel(k) }}</b> {{ v }}
+                                  </span>
+                                </div>
+                                <div class="mem-card-meta">
+                                  <span class="mem-chip" :class="parseMemoryFrontmatter(item.content)!.frontmatter.status">{{ parseMemoryFrontmatter(item.content)!.frontmatter.status }}</span>
+                                  <span class="mem-chip" v-if="parseMemoryFrontmatter(item.content)!.frontmatter.evidence_paths">证据 {{ (parseMemoryFrontmatter(item.content)!.frontmatter.evidence_paths || []).length }} 条</span>
+                                  <span class="mem-chip" v-if="parseMemoryFrontmatter(item.content)!.frontmatter.stale">stale</span>
+                                </div>
+                                <details class="mem-card-body">
+                                  <summary>答案与证据</summary>
+                                  <div class="mem-answer">{{ parseMemoryFrontmatter(item.content)!.body }}</div>
+                                </details>
+                              </div>
+                            </template>
+                            <!-- 普通 MD → 行渲染（复用 doc-* 样式） -->
+                            <template v-else>
+                              <div class="folder-md-scroll">
+                                <template v-for="(line, i) in renderMdLines(item.content!)" :key="i">
+                                  <h4 v-if="isHeading(line)" class="doc-h">{{ line.replace(/^#+\s*/, '') }}</h4>
+                                  <div v-else-if="isBullet(line)" class="doc-bullet">
+                                    <span class="b-dot"></span><span>{{ line.replace(/^[-•*]\s*/, '') }}</span>
+                                  </div>
+                                  <p v-else-if="line.trim()" class="doc-p">{{ line }}</p>
+                                </template>
+                              </div>
+                            </template>
+                          </div>
+                          <!-- YAML → 键值表 -->
+                          <div v-else-if="item.type === 'yaml' && item.content" class="folder-item-kv">
+                            <div class="item-head">
+                              <span class="item-name">{{ item.name }}</span>
+                              <span class="item-size">{{ fmtSize(item.size) }}</span>
+                            </div>
+                            <table class="kv-table">
+                              <tbody>
+                                <tr v-for="kv in parseYamlKv(item.content)" :key="kv.key">
+                                  <td class="kv-key">{{ kv.key }}</td>
+                                  <td class="kv-val"><code>{{ kv.value }}</code></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          <!-- JSON → 对象表格 -->
+                          <div v-else-if="item.type === 'json' && item.content" class="folder-item-kv">
+                            <div class="item-head">
+                              <span class="item-name">{{ item.name }}</span>
+                              <span class="item-size">{{ fmtSize(item.size) }}</span>
+                            </div>
+                            <table class="kv-table">
+                              <tbody>
+                                <tr v-for="(v,k) in safeJsonParse(item.content)" :key="k">
+                                  <td class="kv-key">{{ k }}</td>
+                                  <td class="kv-val"><code>{{ fmtJsonVal(v) }}</code></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                          <!-- JSONL → 数组表格 -->
+                          <div v-else-if="item.type === 'jsonl' && item.content" class="folder-item-table">
+                            <div class="item-head">
+                              <span class="item-name">{{ item.name }}</span>
+                              <span class="item-size">{{ fmtSize(item.size) }} · {{ parseJsonl(item.content).length }} 条记录</span>
+                            </div>
+                            <div class="jsonl-table-wrap">
+                              <table class="jsonl-table">
+                                <thead>
+                                  <tr>
+                                    <th v-for="col in jsonlColumns([item])" :key="col">{{ col }}</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr v-for="(row, ri) in parseJsonl(item.content)" :key="ri">
+                                    <td v-for="col in jsonlColumns([item])" :key="col">
+                                      <code>{{ fmtJsonVal(row[col]) }}</code>
+                                    </td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                          <!-- 无内容条目 / text -->
+                          <div v-else class="folder-item-plain">
+                            <span class="item-name">{{ item.name }}</span>
+                            <span class="item-size">{{ fmtSize(item.size) }}</span>
+                          </div>
+                        </template>
+                      </div>
+                    </template>
+                    <!-- 空分区: 用途说明 -->
+                    <div v-else-if="activeSection" class="folder-empty-section">
+                      <div class="empty-section-icon">{{ sectionIcon(activeSection.key) }}</div>
+                      <p class="empty-section-title">{{ activeSection.name }}</p>
+                      <p class="empty-section-desc">{{ activeSection.description }}</p>
+                      <div class="empty-section-hint" v-if="sectionUsageHints[activeSection.key]">
+                        {{ sectionUsageHints[activeSection.key] }}
+                      </div>
+                    </div>
+                    <!-- 未选择 -->
+                    <div v-else class="doc-empty">从左侧选择一个分区查看内容</div>
+                  </div>
+                </template>
+                <div v-else class="doc-empty">该人格暂无文件夹数据</div>
+              </div>
             </section>
           </div>
         </template>
-
         <!-- 未选择 -->
         <div v-else class="studio-empty">
           <div class="empty-symbol" aria-hidden="true">
@@ -614,6 +765,24 @@ interface Soul {
   _training?: boolean
   _trainingMsg?: string
 }
+// ── 文件夹浏览器类型 ──
+interface FolderItem {
+  name: string
+  type: 'md' | 'json' | 'yaml' | 'jsonl' | 'text'
+  size: number
+  mtime?: string
+  content?: string
+  meta?: Record<string, any>
+}
+interface FolderSection {
+  key: string
+  name: string
+  description: string
+  items: FolderItem[]
+}
+interface FolderStructure {
+  sections: FolderSection[]
+}
 
 // ── 状态 ──
 const souls = ref<Soul[]>([])
@@ -675,6 +844,11 @@ const personaDocs = ref<{ name: string; content: string; updated_at?: string }[]
 const activeDoc = ref('soul-definition.md')
 const docEvolution = ref(0)
 const evolutionLines = ref<string[]>([])
+
+// 文件夹浏览器
+const folderStructure = ref<FolderStructure | null>(null)
+const activeFolderSection = ref('')
+const folderLoading = ref(false)
 
 // RL 进化曲线
 const rewardRecords = ref<any[]>([])
@@ -836,6 +1010,7 @@ function selectSoul(soul: Soul) {
   eventLog.value = []
   loadRewardHistory(soul)
   loadPersonaDocs(soul)
+  loadSoulFolder(soul)
   loadScopeDocs(soul)
   loadTrainingHistory(soul)
 }
@@ -860,6 +1035,185 @@ async function loadPersonaDocs(soul: Soul) {
     docEvolution.value = 0
     evolutionLines.value = []
   }
+}
+
+async function loadSoulFolder(soul: Soul) {
+  folderLoading.value = true
+  try {
+    const res = await $fetch<any>(`/api/soul/folder?soul_kb_id=${encodeURIComponent(soul.kb_id)}`)
+    if (res?.success && res?.structure) {
+      folderStructure.value = res.structure
+      // 默认选中第一个有内容的 section
+      const firstNonEmpty = res.structure.sections?.find((s: FolderSection) => (s.entries || s.items)?.length > 0)
+      activeFolderSection.value = firstNonEmpty?.key || (res.structure.sections?.[0]?.key || '')
+    } else {
+      folderStructure.value = null
+      activeFolderSection.value = ''
+    }
+  } catch {
+    folderStructure.value = null
+    activeFolderSection.value = ''
+  } finally {
+    folderLoading.value = false
+  }
+}
+
+// 当前选中分区
+const activeSection = computed(() => {
+  if (!folderStructure.value) return null
+  return folderStructure.value.sections.find(s => s.key === activeFolderSection.value) || null
+})
+
+// ── 分区空态用途说明 ──
+const sectionUsageHints: Record<string, string> = {
+  constitution: '人格宪法文档（4 核心文档），定义人格身份、思维风格、价值取向和记忆规约。RL 进化标记行会在此显示。',
+  config: 'SOUL 人格配置（YAML），控制 kb_scope、domain_labels、supported_task_types 和路由权重。',
+  memories: '训练记忆条目（MD + YAML frontmatter），每条记忆包含问题、四维评分（接地性/完整性/思维一致性/信息增益）、状态和证据路径。',
+  'cognition-drafts': 'RL 认知草稿（pending/approved），由反思阶段生成，经审批后合并入宪法层文档。',
+  cognition: '认知档案目录 — 设计意图保护目录，存储已审批认知的归档副本（rollback 保护）。',
+  training: '训练数据导出（export-*.jsonl），用于 LoRA/DPO 微调的数据集。',
+  questions: '学习记录：gaps.md（待学习缺口）+ learned-hashes.json（已学文档哈希去重）。',
+  reports: '报告目录：profile-summary.md（人格摘要）、drift-*.md（漂移报告）、reward-history.jsonl（奖励历史）。',
+  audit: '审计日志：approval-log.jsonl（审批记录）+ cost-log.jsonl（成本追踪）。',
+  calibration: '校准集（calibration.jsonl，≥20 条才可 calibrate），用于 soul_calibrate 漂移检测。',
+  checkpoints: '检查点快照（时间戳目录），用于 soul_rollback 回滚到历史状态。',
+}
+
+// ── JSONL 表格列提取 ──
+function jsonlColumns(items: FolderItem[]): string[] {
+  const keys = new Set<string>()
+  for (const item of items) {
+    if (!item.content) continue
+    try {
+      const lines = item.content.trim().split('\n')
+      for (const line of lines) {
+        const obj = JSON.parse(line)
+        Object.keys(obj).forEach(k => keys.add(k))
+      }
+    } catch { /* skip */ }
+  }
+  // 优先关键列
+  const priority = ['timestamp', 'operator', 'action', 'draft_id', 'status', 'question']
+  const ordered: string[] = priority.filter(k => keys.has(k))
+  for (const k of keys) { if (!ordered.includes(k)) ordered.push(k) }
+  return ordered.slice(0, 8)
+}
+
+// ── JSONL 解析为行数组 ──
+
+function parseJsonl(content: string): Record<string, any>[] {
+  try {
+    return content.trim().split('\n').filter(Boolean).map(line => JSON.parse(line))
+  } catch { return [] }
+}
+
+function parseMemoryFrontmatter(content: string): { frontmatter: Record<string, any>; body: string } | null {
+  const m = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/)
+  if (!m) return null
+  const fm: Record<string, any> = {}
+  let currentKey = ''
+  let currentObj: Record<string, any> | null = null
+  for (const line of m[1].split('\n')) {
+    // 一级键: key: value
+    const kv = line.match(/^(\w[\w_]*(?:\s*\[[\w\s,]*\])?):\s*(.*)$/)
+    if (kv) {
+      currentKey = kv[1].trim().replace(/\s*\[.*\]/, '')
+      currentObj = null
+      const val = kv[2].trim()
+      if (val === '' || val === 'null') {
+        // 可能是空值或嵌套对象的父键
+        fm[currentKey] = val === 'null' ? null : {}
+        if (fm[currentKey] !== null && typeof fm[currentKey] === 'object' && !Array.isArray(fm[currentKey])) {
+          currentObj = fm[currentKey] as Record<string, any>
+        }
+      } else if (val === 'true') fm[currentKey] = true
+      else if (val === 'false') fm[currentKey] = false
+      else if (/^-?\d+\.?\d*$/.test(val)) fm[currentKey] = Number(val)
+      else fm[currentKey] = val.replace(/^['"]|['"]$/g, '')
+    } else if (line.trim().startsWith('-') && currentKey) {
+      // 数组项: - value (当前键的数组或嵌套对象的数组)
+      const itemVal = line.trim().replace(/^-\s*/, '').replace(/^['"]|['"]$/g, '')
+      if (currentObj) {
+        if (!Array.isArray(currentObj[currentKey])) {
+          // 找到当前嵌套对象中的实际数组键
+          const listKey = Object.keys(currentObj).find(k => Array.isArray(currentObj[k])) || '_items'
+          if (!Array.isArray(currentObj[listKey])) currentObj[listKey] = []
+          currentObj[listKey].push(itemVal)
+        }
+      } else {
+        if (!Array.isArray(fm[currentKey])) fm[currentKey] = []
+        fm[currentKey].push(itemVal)
+      }
+    } else if (line.trim()) {
+      // 嵌套键:   subkey: value
+      const nkv = line.match(/^\s{2,}(\w[\w_]*):\s*(.*)$/)
+      if (nkv && currentObj) {
+        const nk = nkv[1]
+        const nv = nkv[2].trim()
+        if (nv === 'null') currentObj[nk] = null
+        else if (nv === 'true') currentObj[nk] = true
+        else if (nv === 'false') currentObj[nk] = false
+        else if (/^-?\d+\.?\d*$/.test(nv)) currentObj[nk] = Number(nv)
+        else currentObj[nk] = nv.replace(/^['"]|['"]$/g, '')
+        currentKey = nk
+      }
+    }
+  }
+  return { frontmatter: fm, body: m[2].trim() }
+}
+
+// ── YAML 解析为键值对 ──
+function parseYamlKv(content: string): { key: string; value: string }[] {
+  const pairs: { key: string; value: string }[] = []
+  for (const line of content.split('\n')) {
+    const m = line.match(/^(\w[\w_]*):\s*(.*)$/)
+    if (m) pairs.push({ key: m[1], value: m[2].trim() || '—' })
+  }
+  return pairs
+}
+
+// ── 格式化值展示 ──
+function fmtJsonVal(v: any): string {
+  if (v === null || v === undefined) return '—'
+  if (typeof v === 'object') return JSON.stringify(v)
+  return String(v)
+}
+
+// ── MD 渲染（复用 doc-short-name 等已有逻辑；新帮助函数用于文件夹内 md 显示） ──
+function renderMdLines(content: string): string[] {
+  return content.split('\n')
+}
+
+// ── 文件夹浏览器辅助函数 ──
+function sectionIcon(key: string): string {
+  const map: Record<string, string> = {
+    constitution: '📜', config: '⚙️', memories: '🧠', 'cognition-drafts': '🌱',
+    cognition: '🗄️', training: '🎯', questions: '📋', reports: '📊',
+    audit: '📝', calibration: '🎚️', checkpoints: '💾',
+  }
+  return map[key] || '📁'
+}
+
+function fmtSize(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  if (bytes < 1048576) return `${(bytes / 1024).toFixed(1)} KB`
+  return `${(bytes / 1048576).toFixed(1)} MB`
+}
+
+function scoreEntries(scores: Record<string, number> | null | undefined): [string, number][] {
+  if (!scores || typeof scores !== 'object') return []
+  return Object.entries(scores)
+}
+
+function scoreLabel(key: string): string {
+  const map: Record<string, string> = {
+    groundedness: '接地性', completeness: '完整性', coherence: '思维一致', info_gain: '信息增益',
+  }
+  return map[key] || key
+}
+
+function safeJsonParse(content: string): Record<string, any> {
+  try { return JSON.parse(content) } catch { return {} }
 }
 async function loadScopeDocs(soul: Soul) {
   loadingDocs.value = true
@@ -1898,6 +2252,195 @@ select.inp[multiple] { min-height: 110px; }
   font-family: 'JetBrains Mono', monospace;
 }
 .doc-empty { padding: 30px; text-align: center; font-size: 12.5px; color: var(--kb-fg-3); }
+
+/* ── 文件夹浏览器 ── */
+.folder-tab { color: var(--kb-gold-deep); }
+.folder-tab.on { color: var(--kb-primary); border-bottom-color: var(--kb-primary); }
+.folder-browser {
+  flex: 1; display: flex; min-height: 360px; max-height: 520px;
+}
+.folder-sections {
+  width: 172px; flex-shrink: 0;
+  border-right: 1px solid var(--kb-border);
+  overflow-y: auto;
+  background: var(--kb-bg-subtle);
+}
+.folder-section-btn {
+  display: flex; align-items: center; gap: 6px; width: 100%;
+  padding: 8px 10px; border: none; background: transparent;
+  font: inherit; font-size: 12px; cursor: pointer;
+  color: var(--kb-fg-2); text-align: left;
+  border-left: 2px solid transparent;
+  transition: background .15s, border-color .15s;
+}
+.folder-section-btn:hover { background: var(--kb-bg-elevated); }
+.folder-section-btn.on {
+  background: var(--kb-gold-soft);
+  border-left-color: var(--kb-gold);
+  color: var(--kb-fg); font-weight: 600;
+}
+.sec-icon { font-size: 13px; flex-shrink: 0; }
+.sec-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sec-count {
+  font-family: 'JetBrains Mono', monospace; font-size: 10.5px;
+  background: var(--kb-gold-soft); color: var(--kb-gold-deep);
+  padding: 0 6px; border-radius: 8px; flex-shrink: 0;
+}
+
+.folder-content {
+  flex: 1; min-width: 0; display: flex; flex-direction: column;
+  overflow-y: auto; padding: 10px 14px;
+}
+.folder-content-head {
+  display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;
+  padding-bottom: 8px; margin-bottom: 8px;
+  border-bottom: 1px solid var(--kb-border);
+}
+.folder-content-head h4 { margin: 0; font-size: 13px; font-weight: 650; color: var(--kb-fg); }
+.folder-content-desc { font-size: 11px; color: var(--kb-fg-3); }
+.folder-item-count {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--kb-fg-3); margin-left: auto;
+}
+
+.folder-items { display: flex; flex-direction: column; gap: 12px; }
+
+/* 条目头 */
+.item-head {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 4px;
+}
+.item-name { font-size: 12px; font-weight: 600; color: var(--kb-fg); flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.item-size {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+  color: var(--kb-fg-3); flex-shrink: 0;
+}
+
+/* 普通条目 */
+.folder-item-plain {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 8px; background: var(--kb-bg-subtle);
+  border-radius: 4px; border: 1px solid var(--kb-border);
+}
+
+/* MD 文件 */
+.folder-item-md {
+  border: 1px solid var(--kb-border); border-radius: 6px;
+  padding: 8px 10px; background: var(--kb-bg-subtle);
+}
+.folder-md-scroll {
+  max-height: 280px; overflow-y: auto;
+  font-size: 12px; line-height: 1.55;
+}
+.folder-md-scroll .doc-h { font-size: 12px; margin: 8px 0 4px; }
+.folder-md-scroll .doc-bullet, .folder-md-scroll .doc-p { font-size: 11.5px; }
+
+/* 键值表 (YAML / JSON) */
+.folder-item-kv {
+  border: 1px solid var(--kb-border); border-radius: 6px;
+  padding: 8px 10px; background: var(--kb-bg-subtle);
+}
+.kv-table {
+  width: 100%; border-collapse: collapse; font-size: 11.5px;
+  margin-top: 4px;
+}
+.kv-table td {
+  padding: 3px 6px; border-bottom: 1px solid var(--kb-border);
+  vertical-align: top;
+}
+.kv-key {
+  font-weight: 600; color: var(--kb-gold-deep);
+  white-space: nowrap; width: 1%; padding-right: 12px;
+}
+.kv-val {
+  color: var(--kb-fg-2); word-break: break-all;
+  font-family: 'JetBrains Mono', monospace; font-size: 10.5px;
+}
+.kv-val code {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--kb-bg-elevated); padding: 1px 5px;
+  border-radius: 3px; font-size: 10.5px;
+}
+
+/* JSONL 表格 */
+.folder-item-table {
+  border: 1px solid var(--kb-border); border-radius: 6px;
+  padding: 8px 10px; background: var(--kb-bg-subtle);
+}
+.jsonl-table-wrap {
+  max-height: 260px; overflow: auto; margin-top: 4px;
+}
+.jsonl-table {
+  width: 100%; border-collapse: collapse; font-size: 10.5px;
+  font-family: 'JetBrains Mono', monospace;
+}
+.jsonl-table th {
+  text-align: left; padding: 4px 6px;
+  background: var(--kb-bg-elevated); color: var(--kb-fg-3);
+  font-weight: 600; white-space: nowrap;
+  border-bottom: 2px solid var(--kb-border);
+  position: sticky; top: 0; z-index: 1;
+}
+.jsonl-table td {
+  padding: 2px 6px; border-bottom: 1px solid var(--kb-border);
+  color: var(--kb-fg-2); max-width: 180px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.jsonl-table td code {
+  font-family: 'JetBrains Mono', monospace; font-size: 10px;
+}
+
+/* 记忆卡片 */
+.mem-card {
+  border: 1px solid var(--kb-gold); border-radius: 6px;
+  padding: 10px 12px; background: var(--kb-gold-soft);
+  margin-top: 6px;
+}
+.mem-card-q {
+  font-size: 12.5px; font-weight: 600; color: var(--kb-fg);
+  margin-bottom: 7px; line-height: 1.5;
+}
+.mem-card-scores { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 7px; }
+.mem-score {
+  font-family: 'JetBrains Mono', monospace; font-size: 10.5px;
+  background: var(--kb-bg-elevated); padding: 2px 7px;
+  border-radius: 4px; border: 1px solid var(--kb-border);
+  color: var(--kb-fg-2);
+}
+.mem-score b { color: var(--kb-gold-deep); font-weight: 600; }
+.mem-card-meta { display: flex; gap: 5px; flex-wrap: wrap; margin-bottom: 6px; }
+.mem-chip {
+  font-family: 'JetBrains Mono', monospace; font-size: 9.5px;
+  padding: 1px 7px; border-radius: 8px;
+  background: var(--kb-bg-elevated); border: 1px solid var(--kb-border);
+  color: var(--kb-fg-3);
+}
+.mem-chip.approved { color: var(--kb-emerald); border-color: var(--kb-emerald); }
+.mem-chip.pending { color: var(--kb-gold-deep); border-color: var(--kb-gold); }
+.mem-chip.stale { color: var(--kb-primary); }
+.mem-card-body { margin-top: 4px; }
+.mem-card-body summary {
+  font-size: 11px; color: var(--kb-fg-3); cursor: pointer;
+}
+.mem-answer {
+  margin-top: 6px; font-size: 11.5px; line-height: 1.6;
+  color: var(--kb-fg-2); white-space: pre-wrap;
+}
+
+/* 空分区 */
+.folder-empty-section {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 6px;
+  text-align: center; padding: 30px 20px;
+}
+.empty-section-icon { font-size: 36px; opacity: .6; }
+.empty-section-title { margin: 0; font-size: 14px; font-weight: 600; color: var(--kb-fg); }
+.empty-section-desc { margin: 0; font-size: 11.5px; color: var(--kb-fg-3); max-width: 300px; line-height: 1.5; }
+.empty-section-hint {
+  margin-top: 8px; font-size: 11px; color: var(--kb-fg-3);
+  background: var(--kb-bg-subtle); border: 1px dashed var(--kb-border-strong);
+  border-radius: 6px; padding: 8px 12px; max-width: 380px; line-height: 1.6;
+}
 
 /* 空态 */
 .studio-empty {
