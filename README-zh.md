@@ -39,6 +39,16 @@
 
 </div>
 
+<div align="center">
+
+### 🎬 平台巡礼 —— 全功能演示（实测录制）
+
+<img src="./docs/screenshots/platform-tour.gif" alt="RAG Knowledge Platform 功能巡礼" width="860" />
+
+<sub>首页仪表盘 · 知识库管理 · QDCVR 检索 · 知识图谱 · SOUL Persona Studio · 人格增强问答 · Agent 对话</sub>
+
+</div>
+
 ---
 
 ## 📋 目录
