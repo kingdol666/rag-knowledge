@@ -288,13 +288,13 @@ async function handleSave() {
     })
     if (res?.success) {
       saveResult.value = { success: true }
-      message.success($t('meditation.saveSuccess'))
+      message.success(t('meditation.saveSuccess'))
     } else {
-      saveResult.value = { success: false, error: res?.error || $t('meditation.unknownError') }
+      saveResult.value = { success: false, error: res?.error || t('meditation.unknownError') }
     }
   } catch (err: any) {
-    saveResult.value = { success: false, error: err?.message || $t('meditation.saveFailed') }
-    message.error($t('meditation.saveFailed'))
+    saveResult.value = { success: false, error: err?.message || t('meditation.saveFailed') }
+    message.error(t('meditation.saveFailed'))
   } finally {
     saving.value = false
   }
@@ -316,15 +316,15 @@ async function handleRun() {
         success: true,
         run_id: report.drafts_created === 0 ? 'no-drafts' : `drafts:${report.drafts_created}`,
       }
-      message.success(report.summary || $t('meditation.triggerSuccess'))
+      message.success(report.summary || t('meditation.triggerSuccess'))
       setTimeout(() => loadConfig(), 2000)
     } else {
-      runResult.value = { success: false, error: res?.error || res?.report?.error || $t('meditation.unknownError') }
-      message.error($t('meditation.triggerFailed'))
+      runResult.value = { success: false, error: res?.error || res?.report?.error || t('meditation.unknownError') }
+      message.error(t('meditation.triggerFailed'))
     }
   } catch (err: any) {
-    runResult.value = { success: false, error: err?.message || $t('meditation.triggerFailed') }
-    message.error($t('meditation.triggerFailed'))
+    runResult.value = { success: false, error: err?.message || t('meditation.triggerFailed') }
+    message.error(t('meditation.triggerFailed'))
   } finally {
     running.value = false
   }

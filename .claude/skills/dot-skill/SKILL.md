@@ -1488,3 +1488,7 @@ ragctl soul ask "问题" --soul soul-<名字>          # 人格增强问答
 转换映射: persona.md → soul-definition.md 追加段, work.md → thinking-style.md
 追加段, meta.json tags/impression → domain_labels(路由标签)。
 完整协议见 `../soul/references/soul-distill-integration.md`。
+
+**补天调度**: 本仓库统一入口是 `../butian/SKILL.md` —— butian 调度 nuwa-skill
+(公开人物深研)与 dot-skill(本地材料)双引擎, 本 skill 产物已是种子契约
+(meta.json+persona.md+work.md), 无需转换直接落地。

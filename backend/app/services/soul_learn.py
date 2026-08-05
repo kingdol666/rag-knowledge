@@ -149,24 +149,39 @@ def _keyword_classify(q_text: str) -> str | None:
 # ═══════════════════════════════════════════════════════════════════════════
 
 
-def _build_questions_prompt_inline(doc_content: str, num: int) -> str:
+def _build_questions_prompt_inline(doc_content: str, num: int, mastery: dict | None = None, doc_path: str = "") -> str:
     """内联构建问题生成提示词（无独立 prompt 文件时使用）。
 
-    四层问题类型：fact / concept / cross_doc / challenge，
-    挑战型 bias ~20%。
+    v2(元认知好奇心): 注入该主题掌握画像 + 动态四层比例(近发展区),
+    已知记忆摘要防重复(认知伙伴原则)。无 mastery 时回退静态四层。
     """
+    mix = None
+    meta_block = ""
+    if mastery:
+        from app.services.soul_curiosity import (
+            DEFAULT_MIX, build_mastery_context, compute_question_mix,
+            mix_to_instruction,
+        )
+        mix = compute_question_mix(mastery, doc_path)
+        meta_block = build_mastery_context(mastery, doc_path)
+    mix_text = mix_to_instruction(mix) if mastery else (
+        "- fact（事实层）：是什么、定义、参数、数据、多少（约 30%）\n"
+        "- concept（概念层）：原理、机制、区别、为什么（约 30%）\n"
+        "- cross_doc（跨文档层）：对比、关系、与…相关、异同（约 20%）\n"
+        "- challenge（挑战层）：挑战、难点、局限、瓶颈（约 20%，请重点倾斜此类）"
+    )
     return f"""你是一位严谨的知识工程师。请阅读以下文档内容，生成 {num} 个高质量学习问题。
 
-问题类型要求（四层）：
-- fact（事实层）：是什么、定义、参数、数据、多少（约 30%）
-- concept（概念层）：原理、机制、区别、为什么（约 30%）
-- cross_doc（跨文档层）：对比、关系、与…相关、异同（约 20%）
-- challenge（挑战层）：挑战、难点、局限、瓶颈（约 20%，请重点倾斜此类）
+{meta_block}
+
+问题类型要求（四层，按以下比例分配）：
+{mix_text}
 
 要求：
 1. 问题必须基于文档内容，不可凭空编造
 2. 每个问题独立、具体、可验证
-3. 输出 JSON 数组，每项含 q_text 和 q_type 字段
+3. 难度略高于当前掌握水平(最近发展区), 优先覆盖未知与薄弱之处
+4. 输出 JSON 数组，每项含 q_text 和 q_type 字段
 
 <USER_CONTENT>
 {doc_content}
@@ -176,19 +191,25 @@ def _build_questions_prompt_inline(doc_content: str, num: int) -> str:
 {{"questions": [{{"q_text": "...", "q_type": "fact"}}, ...]}}"""
 
 
-async def generate_questions(doc_path: str, num: int = 6) -> list[dict]:
-    """为指定文档生成学习问题。
+async def generate_questions(doc_path: str, num: int = 6,
+                             mastery: dict | None = None) -> list[dict]:
+    """为指定文档生成学习问题(补天好奇心引擎 v2)。
 
     流程：
     1. 读取文档内容
     2. 若 prompts/soul_learn_questions_v1.txt 存在，用作 system prompt；否则内联构建
     3. 调用 complete() 生成问题（result_schema: {{"questions": [{{"q_text","q_type"}}]}}）
     4. 关键词分类器交叉校验 LLM 标签
-    5. 按 q_hash 去重
+    5. 按 q_hash 去重 + 新奇度过滤(与已批准记忆重复的问题丢弃)
+
+    v2 增强(论文 arXiv:2604.25648 元认知好奇心框架):
+    - mastery 画像 → 动态四层比例(近发展区 ZPD) + 元认知上下文注入
+    - 已知记忆摘要 → LLM 生成时避开重复 + 规则层 novelty_filter 兜底
 
     Args:
         doc_path: 文档相对路径。
         num: 生成问题数，默认 6。
+        mastery: 元认知掌握画像(可选, 缺省 = 静态四层, 兼容旧行为)。
 
     Returns:
         [{{q_text, q_type, q_hash}}, ...]
@@ -210,7 +231,7 @@ async def generate_questions(doc_path: str, num: int = 6) -> list[dict]:
             f"<USER_CONTENT>\n{content}\n</USER_CONTENT>"
         )
     else:
-        prompt = _build_questions_prompt_inline(content, num)
+        prompt = _build_questions_prompt_inline(content, num, mastery, doc_path)
 
     result_schema = {
         "type": "object",
@@ -279,6 +300,15 @@ async def generate_questions(doc_path: str, num: int = 6) -> list[dict]:
         if h in seen:
             continue
         seen.add(h)
+
+        # 新奇度过滤(认知伙伴原则): 与已批准记忆高度重叠的问题丢弃,
+        # 避免重复学习(论文: AI 不应成为认知捷径)
+        if mastery:
+            from app.services.soul_curiosity import novelty_filter
+            known = mastery.get("known_questions") or []
+            if known and not novelty_filter(q_text, known):
+                logger.debug("novelty_filter dropped: %s", q_text[:60])
+                continue
 
         out.append({"q_text": q_text, "q_type": q_type, "q_hash": h})
 
@@ -1181,7 +1211,8 @@ def _record_soul_learned(soul_kb_id: str, doc_path: str, content_hash: str) -> N
 
 
 def _get_incremental_docs(
-    soul_kb_id: str, kb_scope: list[str]
+    soul_kb_id: str, kb_scope: list[str],
+    mastery: dict | None = None,
 ) -> list[dict]:
     """获取增量文档：内容 SHA256 与该 SOUL 已学哈希不一致的文档。
 
@@ -1189,8 +1220,14 @@ def _get_incremental_docs(
     记录自己的已学文档(内容 SHA256 前 12 位);内容未变 → 跳过(幂等);
     内容变更 → 哈希不匹配 → 重新学习。不同 SOUL 互不影响。
 
+    v2 探索-利用平衡(元认知好奇心):
+    - 探索: 内容变更/未学文档(原逻辑)
+    - 利用: 已学但薄弱(记忆均分 <3.0 或有缺口)的文档追加进重学队列,
+      优先补强薄弱主题(论文: 针对个体画像定制干预)。重学文档标记
+      relearn=True, 供自适应问题生成使用重学 mix。
+
     Returns:
-        [{{doc_path, doc_name, kb_path, updated_at}}, ...]
+        [{{doc_path, doc_name, kb_path, updated_at, relearn?}}, ...]
     """
     learned = _soul_learned_hashes(soul_kb_id)
     docs: list[dict] = []
@@ -1218,6 +1255,16 @@ def _get_incremental_docs(
                 cur_hash = None
             recorded = learned.get(_norm_path(doc_path)) or ""
             if cur_hash is not None and recorded and cur_hash == recorded:
+                # v2: 已学但薄弱 → 重学队列(利用通道)
+                if mastery and _is_weak_topic(mastery, _norm_path(doc_path)):
+                    docs.append({
+                        "doc_path": _norm_path(doc_path),
+                        "doc_name": d.get("name", ""),
+                        "kb_path": kb_path,
+                        "updated_at": d.get("updated_at", ""),
+                        "content_hash": cur_hash,
+                        "relearn": True,
+                    })
                 continue
             docs.append({
                 "doc_path": _norm_path(doc_path),
@@ -1226,7 +1273,21 @@ def _get_incremental_docs(
                 "updated_at": d.get("updated_at", ""),
                 "content_hash": cur_hash,
             })
+    # 探索优先, 利用殿后(预算内先学新知识, 剩余额度补强薄弱点)
+    docs.sort(key=lambda x: (0 if not x.get("relearn") else 1, x.get("doc_path", "")))
     return docs
+
+
+def _is_weak_topic(mastery: dict, doc_path: str) -> bool:
+    """判断某文档主题是否薄弱(需重学): 有缺口 / 已学但零批准记忆(产出不足) /
+    均分 <3.0。重学 = 探索-利用平衡的利用通道(补强薄弱主题)。"""
+    from app.services.soul_curiosity import topic_mastery
+    t = topic_mastery(mastery, doc_path)
+    return bool(
+        t["gaps"] > 0
+        or (t["learned"] and t["approved_memories"] == 0)
+        or (t["learned"] and 0 < t["avg_score"] < 3.0)
+    )
 
 
 def _record_learned_doc(soul_kb_id: str, doc: dict) -> None:
@@ -1276,8 +1337,14 @@ async def _learn_incremental_once(soul_kb_id: str, round_idx: int = 1) -> dict:
     med_config = med_cfg.get("config", {})
     max_questions = int(med_config.get("max_questions_per_run", 10))
 
+    # ⭐ 元认知画像(补天好奇心 v2): 本轮自适应问题生成 + 薄弱重学的输入
+    from app.services.soul_curiosity import (
+        read_mastery_profile, update_mastery_profile,
+    )
+    mastery = read_mastery_profile(soul_kb_id)
+
     # 增量文档(先于预算检查: 无增量时零成本快速返回,AC5 幂等)
-    docs = _get_incremental_docs(soul_kb_id, kb_scope)
+    docs = _get_incremental_docs(soul_kb_id, kb_scope, mastery)
     if not docs:
         return {"success": True, "questions_generated": 0, "memories_created": 0,
                 "docs_processed": 0, "skipped": 0, "gaps_count": 0,
@@ -1314,8 +1381,8 @@ async def _learn_incremental_once(soul_kb_id: str, round_idx: int = 1) -> dict:
         doc_path = doc["doc_path"]
         total_docs += 1
 
-        # 生成问题
-        questions = await generate_questions(doc_path, num=min(max_questions, 6))
+        # 生成问题(元认知自适应: 掌握度 → 动态比例 + 缺口聚焦 + 防重复)
+        questions = await generate_questions(doc_path, num=min(max_questions, 6), mastery=mastery)
         if not questions:
             continue
         # 限制每文档问题数
@@ -1377,6 +1444,12 @@ async def _learn_incremental_once(soul_kb_id: str, round_idx: int = 1) -> dict:
     # AC10: 全部完成后统一 flush（记忆文件已在 distill 中原子写，此处为最终一致性）
     # 实际成本扣减
     deduct_cost(soul_kb_id, total_cost)
+
+    # ⭐ 元认知刷新: 本轮学习足迹 → mastery.json(下一轮/RL 的画像输入, 零 LLM 成本)
+    try:
+        update_mastery_profile(soul_kb_id)
+    except Exception as e:
+        logger.warning("update_mastery_profile failed for %s: %s", soul_kb_id, e)
 
     return {
         "success": True,
@@ -1859,7 +1932,10 @@ async def _learn_docs_once(
 
             total_docs += 1
 
-            questions = await generate_questions(doc_path, num=min(limit, 6))
+            # ⭐ v2 元认知自适应(与增量路径同源): 掌握画像 → 动态问题分布
+            from app.services.soul_curiosity import read_mastery_profile
+            mastery = read_mastery_profile(soul_kb_id)
+            questions = await generate_questions(doc_path, num=min(limit, 6), mastery=mastery)
             total_calls += 1
             questions = questions[:limit]
 
@@ -1930,6 +2006,13 @@ async def _learn_docs_once(
 
         deduct_cost(soul_kb_id, total_cost)
 
+        # ⭐ 元认知刷新: 手动学习路径同样更新画像(与增量路径同源)
+        try:
+            from app.services.soul_curiosity import update_mastery_profile
+            update_mastery_profile(soul_kb_id)
+        except Exception as e:
+            logger.warning("update_mastery_profile failed for %s: %s", soul_kb_id, e)
+
         return {
             "success": True,
             "round": round_idx,
@@ -1946,6 +2029,11 @@ async def _learn_docs_once(
     except Exception as e:
         logger.error("learn_docs failed: %s", e, exc_info=True)
         return {"success": False, "error": "internal", "detail": str(e)[:300]}
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# §5.11  learn_all 内部(单 SOUL 循环)
+# ═══════════════════════════════════════════════════════════════════════════
 
 
 # ═══════════════════════════════════════════════════════════════════════════

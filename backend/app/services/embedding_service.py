@@ -32,6 +32,8 @@ class EmbeddingService:
     # disable vector search until process restart (E2E BUG-1).
     _load_failures: int = 0
     _MAX_LOAD_FAILURES: int = 3
+    # 线程锁(可重入): 模型加载/encode 非线程安全(RL asyncio.to_thread 并发触发)
+    _model_lock = __import__("threading").RLock()
 
     @classmethod
     def is_available(cls) -> bool:
@@ -60,6 +62,13 @@ class EmbeddingService:
 
     @classmethod
     def get_model(cls):
+        # 线程锁: 模型加载与 encode 均非线程安全, 并发首调会导致
+        # torch meta tensor 崩溃/重复加载(RL 学习循环 asyncio.to_thread 并发触发)
+        with cls._model_lock:
+            return cls._get_model_locked()
+
+    @classmethod
+    def _get_model_locked(cls):
         if cls._model is None and cls._available:
             # 净化环境：必须在任何 huggingface_hub/requests 初始化前完成，否则系统
             # HTTPS_PROXY 会劫持请求。从模块顶层移入此处以消除 import 副作用。
@@ -108,20 +117,22 @@ class EmbeddingService:
     def embed(cls, texts: List[str]) -> List[List[float]]:
         if not texts:
             return []
-        try:
-            model = cls.get_model()
-        except Exception:
-            cls._available = False
-            return []
-        if model is None:
-            return []
-        embeddings = model.encode(
-            texts,
-            normalize_embeddings=config.embedding.get("normalize", True),
-            batch_size=config.embedding.get("batch_size", 32),
-            show_progress_bar=False,
-        )
-        return embeddings.tolist()
+        # 线程锁: bge-m3 推理非线程安全, 并发 encode 会损坏状态
+        with cls._model_lock:
+            try:
+                model = cls.get_model()
+            except Exception:
+                cls._available = False
+                return []
+            if model is None:
+                return []
+            embeddings = model.encode(
+                texts,
+                normalize_embeddings=config.embedding.get("normalize", True),
+                batch_size=config.embedding.get("batch_size", 32),
+                show_progress_bar=False,
+            )
+            return embeddings.tolist()
 
     @classmethod
     def embed_one(cls, text: str) -> List[float]:

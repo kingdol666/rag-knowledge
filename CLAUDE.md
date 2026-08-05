@@ -143,6 +143,7 @@ MCP Tools by category (91 tools total):
 - **Knowledge Graph (11 tools):** `kb_graph_search` (unified), `kb_graph_stats` (incl. `neo4j_available`), `kb_graph_document`, `kb_graph_document_related`, `kb_graph_kb_overview`, **`kb_graph_build`**(→task_id,non-blocking), `kb_graph_cross_kb_documents`, `kb_graph_document_paths`, `kb_graph_central_documents`, `kb_graph_delete_document`, `kb_graph_delete_kb
 - **Experience (26 tools):** Full lifecycle — create/read/list/**update**(auto-reindex)/delete/apply/review/summary | Search: search_global/**search_smart**(推荐入口)/**rerank** | Extract/Drafts: extract/drafts_list/draft_read/draft_approve/draft_reject | Health: **check_stale**(空kb_id=全库)/sync_kb/dashboard/apply_decay | Meditation (6, **meditation_run non-blocking**): **meditation_status**/meditation_run(→task_id,立即返回)/**meditation_task_status**(轮询结果)/meditation_config_get/meditation_config_update/meditation_history
 - **SOUL Persona (17 tools):** Persona lifecycle — **soul_init**(创建人格)/soul_list/soul_status/soul_delete/soul_config_update | Training — **soul_learn**(单人格,固定轮数)/**soul_learn_all**(全人格,预算控制)/soul_eval/soul_calibrate | Q&A — **soul_ask**(人格注入)/**soul_qdcvr_ask**(QDCVR集成)/soul_router(自动路由) | Memory — soul_review_drafts(审批草稿)/soul_reflect(漂移报告)/soul_checkpoint/soul_rollback/soul_export(LoRA导出)
+- **补天蒸馏 (butian skill):** 初始人格从哪来 — 调度 `nuwa-skill`(公开人物/主题深研) × `dot-skill`(同事/关系/本地材料) 双引擎, 产物统一为种子包(meta.json+persona.md+work.md+values.md), `ragctl soul distill [--values]` 落地(建库+4宪法文档+bootstrap+索引)。转换器: `.claude/skills/butian/scripts/nuwa_to_seed.py`。架构: `.claude/skills/butian/references/butian-architecture.md`
 
 **Architecture principle:** writes go through HTTP API (backend/web proxy), reads go through direct file access (`.tree-fs.json` + `.knowledge-base.yml`).
 
@@ -425,6 +426,8 @@ server:
 | 图谱, 知识图谱, 实体关系, graph, knowledge graph, neo4j, entity, build graph | `Skill("knowledgebase")` |
 | 初始化, 安装知识库, 部署知识库, 知识库安装, 配置知识库, init, setup, install, deploy, bootstrap, 知识库启动, 搭建知识库, getting started | `Skill("knowledgebase-init")` |
 | 更新知识库, 升级知识库, 检查更新, 拉取最新, 新版本, update KB, upgrade knowledge base, check for updates, ragctl update | `Skill("knowledgebase-update")` |
+| 蒸馏人格, 补天, 创建初始人格, 造SOUL, 蒸馏XX, XX的思维方式, 做个XX视角, nuwa, 女娲, 把XX做成人格, distill persona | `Skill("butian")`(双引擎蒸馏调度 → SOUL 落地) |
+| 人格, SOUL, persona, soul, 人格管理, 人格训练, 人格评估, 人格问答, 用XX人格回答, 人格列表, 暂停训练, 继续训练, 训练历史 | `Skill("soul")`(生命周期/训练/问答; 检索+人格 → `Skill("soul-rag")`) |
 
 > **⭐ 最长匹配优先**：`检查` 单独 → Verify；`检查更新` → Update（取最长匹配）。`总结经验` → Experience-Summarize；`总结知识库内容` → List。
 

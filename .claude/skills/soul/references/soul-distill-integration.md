@@ -6,22 +6,24 @@
 ## 1. 双引擎模型
 
 ```
-补天 dot-skill(一次性)                  SOUL 好奇心训练(终身)
+补天 butian 调度(一次性)                  SOUL 好奇心训练(终身)
 ─────────────────────                  ─────────────────────
-源材料(聊天记录/文档/描述)                kb_scope 内文档
-   │                                        │
-   ▼                                        ▼
-persona.md(身份/风格/口头禅)            四层问题(事实/概念/跨文档/挑战)
-work.md(职责/规范/流程)                 │
-meta.json(name/tags/impression)         检索自答 → 四维自评 → 蒸馏
-   │                                        │
+nuwa-skill(公开人物/主题深研)              kb_scope 内文档
+  [person]-perspective/SKILL.md           │
+  心智模型/决策启发式/表达DNA/智识谱系      四层问题(事实/概念/跨文档/挑战)
+  │ → nuwa_to_seed.py 转换                 │
+dot-skill(同事/关系/本地材料)             检索自答 → 四维自评 → 蒸馏
+  persona.md(身份/风格/口头禅)            │
+  work.md(职责/规范/流程)                │
+  meta.json(name/tags/impression)       │
+   │                                      │
    └──────────┬─────────────────────────────┘
               ▼
         SOUL 人格(soul-<name>)
         ├─ 宪法层(初始化时写入, 之后只读):
         │    soul-definition.md(模板+persona.md)
         │    thinking-style.md(模板+work.md)
-        │    values.md / memory-conventions.md(模板)
+        │    values.md(模板 [+nuwa 价值观]) / memory-conventions.md(模板)
         └─ 进化层(训练持续写入):
              memories/(审批后记忆) · questions/learned-hashes.json
              cognition/ · checkpoints/ · audit/cost-log.jsonl
@@ -39,6 +41,16 @@ meta.json(name/tags/impression)         检索自答 → 四维自评 → 蒸馏
 | `meta.json.impression` | `domain_labels` 补充 + KB description | 人格印象也参与路由打分 |
 | `meta.json.slug` / `--name` | `soul-<slug>` | 人格库名 |
 | (模板默认) | `values.md` / `memory-conventions.md` | 研究型价值观; 可后续按需定制 |
+
+**nuwa-skill 产物**(经 butian `nuwa_to_seed.py` 转换后同契约落地, 章节级映射见
+`../../nuwa-skill/references/soul-seed-mapping.md`):
+
+| nuwa SKILL.md 章节 | → 种子 → SOUL 文档 | 说明 |
+|---|---|---|
+| 身份卡 / 表达DNA / 角色扮演规则 / 诚实边界 | persona.md → `soul-definition.md` 追加段 | 身份+语言风格+边界 |
+| 回答工作流 / 核心心智模型 / 决策启发式 / 智识谱系 / 人物时间线 / 失败模式 | work.md → `thinking-style.md` 追加段 | 思维框架+工作方式 |
+| 价值观与反模式 | values.md → `values.md` 追加段 | 宪法层价值观, `ragctl soul distill --values` 创建时融合 |
+| frontmatter name/description | meta.json → `soul-<slug>` + domain_labels | 路由标签 = 人格名+模型名 |
 
 ## 3. 两种执行路径
 

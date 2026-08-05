@@ -1,8 +1,8 @@
 ---
 name: soul
 description: >
-  SOUL 人格系统 — 人格全生命周期管理(创建/删除/配置/列表)、补天(dot-skill)
-  蒸馏初始人格(含文本蒸馏)、好奇心驱动的训练与 RL 强化进化、任务控制(暂停/
+  SOUL 人格系统 — 人格全生命周期管理(创建/删除/配置/列表)、补天(nuwa-skill ×
+  dot-skill 双引擎)蒸馏初始人格(含文本蒸馏)、好奇心驱动的训练与 RL 强化进化、任务控制(暂停/
   继续/训练历史)、以及按任务自动路由到对应人格的检索增强问答(QDCVR 先检索
   后人格)。人格 = soul-<name> 知识库(4 宪法层文档 + config), 记忆/认知草稿
   审批闭环。与 knowledgebase skill 平行: knowledgebase 管"知识本身", soul
@@ -145,8 +145,11 @@ experience_meditation_config_update(soul_kb_id, {harness, model, enabled, interv
 > **⭐ 训练原理**:SOUL 的"好奇心"= 对 kb_scope 内文档自动生成四层问题
 > (事实/概念/跨文档/挑战),检索知识库自答,四维自评(接地性/完整性/
 > 思维一致/信息增益),≥3 分且无判官分歧才蒸馏为记忆草稿 → 人工审批 →
-> 注册索引 → 人格进化。**评价后继续训练**:per-SOUL learned_hash
-> (soul-<name>/questions/learned-hashes.json)记录已学文档,内容变更自动
+> 注册索引 → 人格进化。**补天好奇心引擎 v2**(默认启用, 参考 arXiv:2604.25648
+> 元认知好奇心框架): 每轮训练后刷新 questions/mastery.json 掌握画像,
+> 按主题掌握度动态调整问题比例(近发展区 ZPD), 探索-利用平衡(新文档优先 +
+> 薄弱主题重学), 已知记忆摘要注入防重复。**评价后继续训练**:per-SOUL
+> learned_hash (soul-<name>/questions/learned-hashes.json)记录已学文档,内容变更自动
 > 重新学习;新文档随时可学;**每个 SOUL 独立记录进度**,互不阻塞。
 > 完整协议见 [references/soul-training.md](references/soul-training.md)。
 
@@ -304,24 +307,30 @@ soul_qdcvr_ask(query, soul_kb_id="", task_goal, task_type, top_k=5, async_mode=T
 
 ## §E ⭐ 补天蒸馏集成(先天种子 → 后天进化)
 
-> **⭐ 双引擎模型**:补天(dot-skill)给"先天人格种子"(身份/风格/思维框架,
-> 一次性蒸馏);SOUL 好奇心训练给"后天知识进化"(KB 证据上持续学习, 终身)。
-> 两者正交互补。完整协议见
-> [references/soul-distill-integration.md](references/soul-distill-integration.md)。
+> **⭐ 双引擎模型**:补天(butian 调度: nuwa-skill 深研 × dot-skill 本地材料)
+> 给"先天人格种子"(身份/风格/思维框架, 一次性蒸馏);SOUL 好奇心训练给
+> "后天知识进化"(KB 证据上持续学习, 终身)。两者正交互补。完整协议见
+> [references/soul-distill-integration.md](references/soul-distill-integration.md),
+> 调度协议见 `../butian/SKILL.md`。
 
 ### E1 蒸馏初始人格(源材料 → 人格种子)
 ```
-# 1) 用补天 skill 蒸馏源材料(聊天记录/文档/描述):
-#    在 Claude Code 中: /dot-skill → 输入源材料 → 产出 skill 目录
-#    产物: <dir>/meta.json + persona.md + work.md
+# 路径 1: nuwa-skill(公开人物/主题/思维框架深研)
+#   Skill("butian") → Skill("nuwa-skill") → 产物 [person]-perspective/SKILL.md
+#   → butian 转换器 nuwa_to_seed.py → 种子包(meta/persona/work/values)
+# 路径 2: dot-skill(同事/熟人/关系/本地材料)
+#   Skill("butian") → Skill("dot-skill") → 产物目录(meta.json+persona.md+work.md)
+# 路径 3: 直接源材料(聊天记录/文档/描述)
+#   ragctl soul distill-text / distill-files(后端 LLM 蒸馏, 不经种子包)
 
 # 2) 一键转换为 SOUL 人格(ragctl):
-ragctl soul distill <dot-skill产出目录> --name soul-<名字> \
-  --scope kb1,kb2 --labels 标签1,标签2 --harness omp
-# 或 MCP 流程(主 agent 编排, 见 references/soul-distill-integration.md)
+ragctl soul distill <种子目录> --name soul-<名字> \
+  --scope kb1,kb2 --labels 标签1,标签2 --harness omp \
+  [--values <种子目录>/values.md]   # nuwa 产物: 价值观宪法层融合
 ```
 - 转换逻辑: persona.md → soul-definition.md 追加(保留模板结构,
   profile/language-style 解析正常);work.md → thinking-style.md 追加;
+  values.md(可选, nuwa 产物)→ values.md 追加(创建时宪法层融合);
   meta.json tags/impression → domain_labels(路由依据)
 - 自动完成: 建库 → 写 4 文档 → bootstrap(profile+meditation config)
   → 索引 → 可训练

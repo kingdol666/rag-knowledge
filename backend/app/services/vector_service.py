@@ -103,6 +103,16 @@ class VectorService:
     _collection_locks: dict = {}
     _locks_guard = threading.Lock()
 
+    # 全局 chroma 访问锁(RL 可重入): PersistentClient 非线程安全, asyncio
+    # to_thread 并发查询/写入会损坏内部 segment 状态(症状: 查询报
+    # "Error creating hnsw segment reader: Nothing found on disk", 重启后
+    # 恢复)。所有公开入口用 RLock 串行化, 彻底消除并发竞态。
+    _chroma_lock = threading.RLock()
+
+    def _chroma_locked(self, fn, *args, **kwargs):
+        with self._chroma_lock:
+            return fn(*args, **kwargs)
+
     def _collection_lock(self, kb_id: str):
         canonical = self._canonical_kb_id(kb_id)
         with self._locks_guard:
@@ -111,10 +121,11 @@ class VectorService:
             return self._collection_locks[canonical]
 
     def _get_or_create_collection(self, kb_id: str):
-        return self.client.get_or_create_collection(
-            name=self._collection_name(kb_id),
-            metadata={"hnsw:space": "cosine"},
-        )
+        with self._chroma_lock:
+            return self.client.get_or_create_collection(
+                name=self._collection_name(kb_id),
+                metadata={"hnsw:space": "cosine"},
+            )
 
     def _safe_get_collection(self, kb_id: str):
         """Get collection, auto-resolving UUID↔path naming inconsistency.
@@ -124,7 +135,8 @@ class VectorService:
         先试原形式；未命中则通过 storage_reader 解析另一形式再试（Bug 7 修复）。
         """
         try:
-            return self.client.get_collection(self._collection_name(kb_id))
+            with self._chroma_lock:
+                return self.client.get_collection(self._collection_name(kb_id))
         except Exception:
             pass
         # Resolve alternate form (UUID→path or path→UUID) via storage_reader
@@ -133,12 +145,14 @@ class VectorService:
             for kb in storage_reader.list_knowledge_bases():
                 if kb["kb_id"] == kb_id and kb.get("path"):
                     try:
-                        return self.client.get_collection(self._collection_name(kb["path"]))
+                        with self._chroma_lock:
+                            return self.client.get_collection(self._collection_name(kb["path"]))
                     except Exception:
                         pass
                 elif kb.get("path") == kb_id and kb.get("kb_id"):
                     try:
-                        return self.client.get_collection(self._collection_name(kb["kb_id"]))
+                        with self._chroma_lock:
+                            return self.client.get_collection(self._collection_name(kb["kb_id"]))
                     except Exception:
                         pass
         except Exception:
@@ -148,7 +162,8 @@ class VectorService:
     def _all_kb_collections(self) -> list:
         prefix = config.vector_collection_prefix
         try:
-            cols = self.client.list_collections()
+            with self._chroma_lock:
+                cols = self.client.list_collections()
             return [c for c in cols if c.name.startswith(prefix)]
         except Exception:
             return []
@@ -237,9 +252,8 @@ class VectorService:
             return {}
 
         embeddings = embedding_service.embed(chunks)
-        # Per-collection lock: serialize concurrent writes to this KB's
-        # collection so the auto-index + explicit-index race can't corrupt it.
-        with self._collection_lock(kb_id):
+        # 全局 chroma 锁(可重入): 串行化写入, 防并发损坏(替代 per-collection 锁)
+        with self._chroma_lock:
             collection = self._get_or_create_collection(kb_id)
             self._delete_doc_chunks(collection, doc_path)
             chunk_ids = [f"{doc_path}__chunk_{i}" for i in range(len(chunks))]
@@ -323,7 +337,9 @@ class VectorService:
                 }
                 if where_filter:
                     query_kwargs["where"] = where_filter
-                res = col.query(**query_kwargs)
+                # 全局 chroma 锁: 客户端非线程安全, 并发查询会损坏 segment 状态
+                with self._chroma_lock:
+                    res = col.query(**query_kwargs)
             except Exception as e:
                 logger.warning("Vector query failed in %s: %s", col.name, e)
                 continue
@@ -399,7 +415,8 @@ class VectorService:
                 }
                 if where_filter:
                     query_kwargs["where"] = where_filter
-                res = col.query(**query_kwargs)
+                with self._chroma_lock:
+                    res = col.query(**query_kwargs)
             except Exception as e:
                 logger.warning("Balanced query failed in %s: %s", col.name, e)
                 continue
@@ -516,10 +533,11 @@ class VectorService:
                 if col is None:
                     continue
                 try:
-                    res = col.query(
-                        query_embeddings=[query_embedding],
-                        n_results=top_k * 2,  # 多取一些，去重后截断
-                        include=["documents", "distances", "metadatas"],
+                    with self._chroma_lock:
+                        res = col.query(
+                            query_embeddings=[query_embedding],
+                            n_results=top_k * 2,  # 多取一些，去重后截断
+                            include=["documents", "distances", "metadatas"],
                     )
                 except Exception as e:
                     logger.warning("find_similar failed for %s in %s: %s",
@@ -597,14 +615,23 @@ class VectorService:
                 continue
             try:
                 # Match both normalized ('/') and raw Windows ('\\') forms so
-                # a chunk stored with either separator is returned.
-                where_filter = {"doc_path": {"$in": norm_paths + doc_paths}}
-                res = col.query(
-                    query_embeddings=[query_embedding],
-                    n_results=top_k_per_doc * len(doc_paths),
-                    where=where_filter,
-                    include=["documents", "distances", "metadatas"],
-                )
+                # a chunk stored with either separator is returned. 存量数据
+                # 以 Windows 反斜杠存储, 调用方可能传任一种形态 → 两种都生成。
+                path_variants: list[str] = []
+                for p in doc_paths:
+                    np = p.replace("\\", "/") if p else p
+                    for v in (np, np.replace("/", "\\")):
+                        if v and v not in path_variants:
+                            path_variants.append(v)
+                where_filter = {"doc_path": {"$in": path_variants}}
+                # 全局 chroma 锁: 客户端非线程安全(RL 并发检索/索引会损坏 segment)
+                with self._chroma_lock:
+                    res = col.query(
+                        query_embeddings=[query_embedding],
+                        n_results=top_k_per_doc * len(doc_paths),
+                        where=where_filter,
+                        include=["documents", "distances", "metadatas"],
+                    )
             except Exception as e:
                 logger.warning("search_in_documents failed in %s: %s", col.name, e)
                 continue
@@ -640,12 +667,45 @@ class VectorService:
             logger.info("Deleted vector chunks for %s in KB %s", doc_path, kb_id)
         # Split-brain sweep: legacy sub-KB docs may be indexed into the PARENT
         # collection (高分子 01-11 sub-KBs etc.), so the kb-resolved collection
-        # can miss them entirely. Sweep every KB collection by exact doc_path
-        # (chunk metadata carries the full path) to guarantee cascade cleanup.
-        for other in self._all_kb_collections():
+        # can miss them entirely. Sweep ONLY ancestor collections of this KB —
+        # 全库 sweep 会对无匹配 collection 执行 get(where) 查询, chromadb 1.5.9
+        # 的 get(where) 无匹配会确定性损坏客户端状态(后续所有向量查询
+        # 挂起/报 Nothing found on disk, 压测实证; 祖先集合覆盖 split-brain
+        # 场景且不会命中无匹配路径)。
+        for other in self._ancestor_collections(kb_id):
             if col is not None and other.name == col.name:
                 continue
             self._delete_doc_chunks(other, doc_path)
+
+    def _ancestor_collections(self, kb_id: str) -> list:
+        """解析 kb_id 的所有祖先 KB 的 collection(split-brain 的唯一落点)。
+
+        split-brain 成因: 子库文档在旧版索引入库时落入了父库 collection。
+        因此只按路径逐级截断找祖先(如 Materials-ML-InverseDesign 之于
+        Materials-ML-InverseDesign/ML-DefectDetection-Prediction), 避免对
+        无关 collection 执行 chroma get(where) 无匹配查询(触发客户端损坏)。
+        """
+        try:
+            from app.services.storage_reader_service import storage_reader
+            kbs = storage_reader.list_knowledge_bases()
+            my_path = next(
+                (kb.get("path") or "" for kb in kbs
+                 if kb.get("kb_id") == kb_id or kb.get("path") == kb_id), "")
+            if not my_path:
+                return []
+            ancestors: list = []
+            parts = my_path.split("/")
+            for i in range(1, len(parts)):
+                p = "/".join(parts[:i])
+                for kb in kbs:
+                    if kb.get("path") == p and kb.get("kb_id"):
+                        col = self._safe_get_collection(kb["kb_id"])
+                        if col is not None:
+                            ancestors.append(col)
+                        break
+            return ancestors
+        except Exception:
+            return []
 
     def delete_kb(self, kb_id: str, kb_path: str = "") -> None:
         """Delete a KB's vector collection(s), silently handling misses.
@@ -708,19 +768,27 @@ class VectorService:
         # Normalize to forward slashes for consistent matching
         norm_path = doc_path.replace("\\", "/")
         deleted_any = False
+        where_failed = False  # where 查询是否抛异常(仅异常时启用全量 fallback)
         for path_variant in [doc_path, norm_path, doc_path.replace("/", "\\")]:
             try:
-                existing = collection.get(where={"doc_path": path_variant})
-                if existing and existing.get("ids"):
-                    collection.delete(ids=existing["ids"])
-                    deleted_any = True
-                    logger.info("Deleted %d chunks for %s (variant=%s)", len(existing["ids"]), doc_path, path_variant[:50])
+                with self._chroma_lock:
+                    existing = collection.get(where={"doc_path": path_variant})
+                    if existing and existing.get("ids"):
+                        collection.delete(ids=existing["ids"])
+                        deleted_any = True
+                        logger.info("Deleted %d chunks for %s (variant=%s)", len(existing["ids"]), doc_path, path_variant[:50])
             except Exception as e:
+                where_failed = True
                 logger.debug("delete chunks variant %s failed: %s", path_variant[:50], e)
-        if not deleted_any:
+        # 全量 fallback 仅限 where 查询异常时(where 双形态已覆盖正常存储;
+        # 对 sweep 的每个 collection 都全量 get 会触发 chroma 大集合扫描的
+        # 段读取器状态损坏(压测实证: 54 collection 全量 get 后 "Nothing
+        # found on disk", 重启进程恢复)
+        if not deleted_any and where_failed:
             # Last resort: scan all chunks and match by substring
             try:
-                all_data = collection.get()
+                with self._chroma_lock:
+                    all_data = collection.get()
                 if all_data and all_data.get("ids"):
                     to_delete = []
                     for i, meta in enumerate(all_data.get("metadatas", [])):
@@ -728,7 +796,8 @@ class VectorService:
                         if stored == norm_path:
                             to_delete.append(all_data["ids"][i])
                     if to_delete:
-                        collection.delete(ids=to_delete)
+                        with self._chroma_lock:
+                            collection.delete(ids=to_delete)
                         logger.info("Fallback delete: removed %d chunks for %s", len(to_delete), doc_path)
             except Exception as e:
                 logger.warning("Fallback chunk scan failed for %s: %s", doc_path, e)
@@ -743,7 +812,8 @@ class VectorService:
         """
         prefix = path_prefix.replace("\\", "/").lower().rstrip("/") + "/"
         try:
-            all_data = collection.get()
+            with self._chroma_lock:
+                all_data = collection.get()
         except Exception as e:
             logger.warning("prefix sweep get failed for %s: %s", collection.name, e)
             return
@@ -756,7 +826,8 @@ class VectorService:
                 to_delete.append(all_data["ids"][i])
         if to_delete:
             try:
-                collection.delete(ids=to_delete)
+                with self._chroma_lock:
+                    collection.delete(ids=to_delete)
                 logger.info("Prefix sweep: removed %d chunks under %s from %s",
                             len(to_delete), path_prefix, collection.name)
             except Exception as e:

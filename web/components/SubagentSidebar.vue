@@ -267,6 +267,8 @@ import {
 interface Props {
   /** Header label engine; default 'claude'. Does not filter the store. */
   engine?: 'claude' | 'omp'
+  /** Clear completed subagent runs (wired by parent). */
+  clearFinished?: () => void
 }
 
 const props = withDefaults(defineProps<Props>(), {

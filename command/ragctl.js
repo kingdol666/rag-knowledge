@@ -3137,13 +3137,15 @@ async function cmdSoul(args) {
   switch (sub) {
     case 'distill': case 'distill-persona': {
       // ragctl soul distill <dot-skill产出目录> [--name soul-xxx] [--scope kb1,kb2]
-      //   [--labels a,b] [--harness omp|claude] [--types t1,t2]
-      // 补天(dot-skill)蒸馏产物 → SOUL 人格一键创建(先天种子)
+      //   [--labels a,b] [--harness omp|claude] [--types t1,t2] [--values v.md] [--mem m.md]
+      // 补天(dot-skill/nuwa 种子)蒸馏产物 → SOUL 人格一键创建(先天种子)
       const personaDir = rest.find(a => !a.startsWith('--'));
       if (!personaDir) {
-        console.log('用法: ragctl soul distill <dot-skill产出目录> [--name soul-xxx] [--scope kb1,kb2] [--labels a,b] [--harness omp|claude]');
-        console.log('  输入目录需含 meta.json + persona.md + work.md(dot-skill /dot-skill 蒸馏产物)');
-        console.log('  示例: ragctl soul distill .claude/skills/dot-skill/skills/colleague/example_jiaxiu --scope AI-ML-Research');
+        console.log('用法: ragctl soul distill <补天种子目录> [--name soul-xxx] [--scope kb1,kb2] [--labels a,b] [--harness omp|claude] [--values values.md] [--mem mem.md]');
+        console.log('  输入目录需含 meta.json + persona.md + work.md(dot-skill 原生 / nuwa-skill 经 butian nuwa_to_seed.py 转换)');
+        console.log('  --values: 可选, 价值观蒸馏文件(融合进 values.md 宪法层, 创建时一次定型)');
+        console.log('  --mem:     可选, 记忆约定蒸馏文件(融合进 memory-conventions.md)');
+        console.log('  示例: ragctl soul distill .claude/skills/nuwa-skill/examples/munger-perspective/soul-seed --scope AI-ML-Research --values soul-seed/values.md');
         break;
       }
       const fsD = require('fs');
@@ -3190,6 +3192,21 @@ async function cmdSoul(args) {
       const workText = fsD.existsSync(workPath) ? fsD.readFileSync(workPath, 'utf8') : '';
       if (!personaText && !workText) { err('persona.md 与 work.md 均为空 — 无法蒸馏'); break; }
 
+      // 可选宪法层增强(补天 nuwa 产物): --values 价值观 / --mem 记忆约定
+      let valuesText = tplValues, memText = tplMem;
+      const valuesPath = flagVal('--values');
+      const memPath = flagVal('--mem');
+      if (valuesPath) {
+        if (fsD.existsSync(valuesPath)) {
+          valuesText = `${tplValues}\n\n---\n\n# 补天蒸馏价值观: ${displayName}\n\n${fsD.readFileSync(valuesPath, 'utf8')}\n`;
+        } else { warn(`--values 文件不存在: ${valuesPath}(保持模板 values.md)`); }
+      }
+      if (memPath) {
+        if (fsD.existsSync(memPath)) {
+          memText = `${tplMem}\n\n---\n\n# 补天蒸馏记忆约定: ${displayName}\n\n${fsD.readFileSync(memPath, 'utf8')}\n`;
+        } else { warn(`--mem 文件不存在: ${memPath}(保持模板 memory-conventions.md)`); }
+      }
+
       // 融合: 模板结构(profile/language-style 解析依赖) + 补天人格原文(进化基础)
       const soulDef = `${tplDef}\n\n---\n\n# 补天蒸馏人格: ${displayName}\n\n${personaText || '(无 persona.md, 仅使用模板人格)'}\n`;
       const thinkStyle = `${tplThink}\n\n---\n\n# 补天蒸馏工作方式: ${displayName}\n\n${workText || '(无 work.md)'}\n`;
@@ -3213,8 +3230,8 @@ async function cmdSoul(args) {
       const docs = [
         ['soul-definition.md', soulDef],
         ['thinking-style.md', thinkStyle],
-        ['values.md', tplValues],
-        ['memory-conventions.md', tplMem],
+        ['values.md', valuesText],
+        ['memory-conventions.md', memText],
       ];
       for (const [docName, content] of docs) {
         const r = await fetch(`${webUrl}/api/kb/documents/create`, {

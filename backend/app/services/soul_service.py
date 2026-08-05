@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import re
 import time
 from datetime import datetime, timezone
 from pathlib import Path
@@ -449,15 +450,34 @@ async def _soul_ask_inner(query: str, soul_kb_id: str, task_goal: str, task_type
         parsed = {}
     answer = parsed.get("answer_text") or synth.get("text", "")[:4000]
     # 防御: LLM 偶发把 answer_text 再序列化一次(字符串内是 JSON 对象)
+    # 三级解包: 严格 JSON → Python 字面量(单引号) → 正则提取
     if isinstance(answer, str) and answer.lstrip().startswith(("{", "[")):
+        inner = None
+        # 非严格 JSON 容错: 键无引号({answer_text: ...}) → 补引号后重试
+        candidate = answer
+        if re.search(r"\{[\s\n]*[\w]+", answer) and not re.search(r'\{[\s\n]*["\']', answer):
+            # 所有无引号键补引号(含嵌套层级: {, 后跟键)
+            candidate = re.sub(r"([,{]\s*)([\w]+)(\s*:)", r'\1"\2"\3', answer)
         try:
-            inner = json.loads(answer)
-            if isinstance(inner, dict) and inner.get("answer_text"):
-                answer = inner["answer_text"]
-            elif isinstance(inner, dict) and inner.get("text"):
-                answer = inner["text"]
+            inner = json.loads(candidate)
         except Exception:
-            pass
+            try:
+                import ast
+                inner = ast.literal_eval(candidate)
+            except Exception:
+                inner = None
+        if isinstance(inner, dict) and inner.get("answer_text"):
+            answer = inner["answer_text"]
+        elif isinstance(inner, dict) and inner.get("text"):
+            answer = inner["text"]
+        elif isinstance(inner, list) and inner and isinstance(inner[0], dict):
+            # LLM 偶发输出数组形态(如 [{"answer_text": ...}])
+            answer = inner[0].get("answer_text") or inner[0].get("text") or answer
+        elif inner is None:
+            # 正则兜底: 提取 answer_text 的值(键可带或不带引号; 仅处理 \n/\" 简单转义)
+            m = re.search(r'["\']?answer_text["\']?\s*:\s*["\'](.+?)["\']\s*[,}\\]]', answer, re.S)
+            if m:
+                answer = m.group(1).replace("\\n", "\n").replace("\\\"", "\"")
     if not answer:
         return {"success": False, "error": "harness_unavailable", "detail": "合成无输出"}
 

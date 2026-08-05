@@ -624,7 +624,7 @@ const handleSearch = async () => {
 
     // Auto content verification
     if (autoVerifyContent.value && searchResults.value.length > 0) {
-      await runAutoVerification()
+      await verifyResults(q)
     }
   } catch (err: any) {
     message.error(err.message || 'Search failed')

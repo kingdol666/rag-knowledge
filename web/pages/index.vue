@@ -117,7 +117,7 @@ const { t, tm } = useI18n()
 const router = useRouter()
 const featuresRef = ref<HTMLElement>()
 
-const features = computed(() => tm('home.features'))
+const features = computed(() => tm('home.features') as unknown as Array<Record<string, any>>)
 
 function navigateToFileSystem() { router.push('/file-system') }
 function navigateTo(path: string) { router.push(path) }

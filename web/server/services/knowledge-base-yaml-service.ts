@@ -188,6 +188,9 @@ export class KnowledgeBaseYamlService {
       fileSize?: number
       metadata?: Record<string, any>
       tags?: string[]
+      /** 索引状态保留(delete-then-add 重建条目时由 backend 写回, 丢失会伪装成未索引) */
+      vector_index?: Record<string, any>
+      graph_index?: Record<string, any>
     }
   ): Promise<KnowledgeBaseYaml | null> {
     return this.withYamlWrite(knowledgeBaseId, async () => {
@@ -221,8 +224,8 @@ export class KnowledgeBaseYamlService {
       tags: fileInfo.tags ?? (existingIndex >= 0 ? data.documents[existingIndex].tags : undefined),
       // Preserve index metadata the same way: content updates / renames rebuild the entry,
       // and losing vector_index makes the doc look unindexed until the next writeback.
-      vector_index: (fileInfo as any).vector_index ?? (existingIndex >= 0 ? data.documents[existingIndex].vector_index : undefined),
-      graph_index: (fileInfo as any).graph_index ?? (existingIndex >= 0 ? (data.documents[existingIndex] as any).graph_index : undefined),
+      vector_index: fileInfo.vector_index ?? (existingIndex >= 0 ? data.documents[existingIndex].vector_index : undefined),
+      graph_index: fileInfo.graph_index ?? (existingIndex >= 0 ? data.documents[existingIndex].graph_index : undefined),
     }
 
     if (existingIndex >= 0) {

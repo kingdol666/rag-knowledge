@@ -65,6 +65,8 @@ experience_meditation_config_update(soul_kb_id, {
 
 ## 2. 好奇心训练协议(每次 learn 内部)
 
+### 2a. 基础链路(四层问题 + 质量闸门)
+
 ```
 Step 1  文档读取(≤50000 字符)
 Step 2  生成 6 个问题(四层):
@@ -81,6 +83,36 @@ Step 5  蒸馏: 接地性≥3 且无分歧 → 记忆草稿(pending)
         PAS≥4 且 info_gain≥3 → 同步共享经验池(sync_dedup_key 幂等)
 Step 6  有产出 → 记录 learned_hash(内容 SHA256 → 文档 metadata)
 ```
+
+### 2b. ⭐ 补天好奇心引擎 v2(元认知自适应 — 默认启用)
+
+算法框架: arXiv:2604.25648(Desvaux/Oudeyer 等, Curiosity and
+Metacognition)三原则 → 落地实现:
+
+| 论文原则 | v2 实现(backend/app/services/soul_curiosity.py) |
+|---|---|
+| 元认知监控与控制 | 每轮训练后刷新 `questions/mastery.json` 掌握画像(per-topic 记忆数/均分/gaps/学习足迹, 零 LLM 成本) |
+| 个体画像定制 | `compute_question_mix()`: 按主题掌握度动态调整四层比例(近发展区) |
+| 认知伙伴防捷径 | 已知记忆摘要注入 prompt + `novelty_filter()` jaccard 去重, 防止重复学习 |
+
+**自适应问题分布(近发展区 ZPD)**:
+
+```
+新主题(首学)     fact 35 | concept 30 | cross 20 | challenge 15   ← 打基础
+薄弱/有缺口      fact 20 | concept 30 | cross 30 | challenge 20   ← 补基关联
+中等掌握         fact 15 | concept 25 | cross 30 | challenge 30   ← 均衡深化
+强掌握(≥4.0)    fact 10 | concept 20 | cross 20 | challenge 50   ← 挑战边界
+```
+
+**探索-利用平衡(文档选择)**: 每轮增量扫描 = 新文档(探索)优先 +
+薄弱已学文档重学(利用, 有缺口/零记忆/均分<3 的主题), 预算内先探索后补强。
+
+**元认知输入**: 训练 prompt 注入该主题掌握画像(已批准记忆摘要 + 缺口数 +
+“难度略高于当前掌握”指令), 保证每轮好奇心都落在最近发展区。
+
+**观察画像**: 训练后 `soul_status` 或直接读
+`storage/tree-file-system/soul-<name>/questions/mastery.json`。
+
 
 ## 3. 评估后继续训练(持续进化闭环)
 

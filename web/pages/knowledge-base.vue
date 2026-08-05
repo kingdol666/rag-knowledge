@@ -641,7 +641,7 @@ const loadCatalog = async () => {
     catalog.value = await fetchCatalog()
     allTags.value = await fetchAllTags()
   } catch (err: any) {
-    antMessage.error(err?.message || 'Failed to load catalog')
+    message.error(err?.message || 'Failed to load catalog')
   }
 }
 
@@ -676,7 +676,7 @@ const selectKb = async (kb: KbCatalogEntry) => {
     subKbList.value = subKbs
     documents.value = docs
   } catch (err: any) {
-    antMessage.error(err?.message || 'Failed to load KB')
+    message.error(err?.message || 'Failed to load KB')
   } finally {
     loading.value = false
   }

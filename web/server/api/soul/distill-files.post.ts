@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
   for (const part of form) {
     if (part.filename) {
       // 文件字段
-      fd.append('files', new Blob([part.data], { type: part.type || 'application/octet-stream' }), part.filename)
+      fd.append('files', new Blob([new Uint8Array(part.data)], { type: part.type || 'application/octet-stream' }), part.filename)
     } else {
       fd.append(part.name || '', String(part.data))
     }
