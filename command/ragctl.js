@@ -2187,8 +2187,11 @@ async function _showModeStatus(mode) {
 
   const b = await probe(ports.backend, '/api/v1/health');
   const w = await probe(ports.web, '/api/kb/catalog');
-  const neo4jUp = await portInUse(7687);
-  const neo4jHttp = await portInUse(7474);
+  // Neo4j ports are config-driven (graph.bolt_port/http_port)
+  const neo4jBolt = readGraphBoltPort();
+  const neo4jHttp = readGraphHttpPort();
+  const neo4jUp = await portInUse(neo4jBolt);
+  const neo4jHttpUp = await portInUse(neo4jHttp);
 
   let mineru = 'n/a (backend down)';
   if (b.health === 'healthy') {
@@ -2207,7 +2210,7 @@ async function _showModeStatus(mode) {
   console.log(`  ${dot(b.listening)} Backend  :${String(ports.backend).padEnd(5)} ${hcol(b.health)}${b.pid ? '  pid=' + _c(C.GRAY, b.pid) : ''}`);
   console.log(`  ${dot(w.listening)} Web      :${String(ports.web).padEnd(5)} ${hcol(w.health)}${w.pid ? '  pid=' + _c(C.GRAY, w.pid) : ''}`);
   if (mode === 'dev') {
-    console.log(`  ${dot(neo4jUp)} Neo4j    :7687  ${neo4jUp ? _c(C.GREEN, 'listening') + (neo4jHttp ? ' ' + _c(C.GRAY,'(+http :7474)') : '') : _c(C.GRAY, 'stopped')}`);
+    console.log(`  ${dot(neo4jUp)} Neo4j    :${String(neo4jBolt).padEnd(5)} ${neo4jUp ? _c(C.GREEN, 'listening') + (neo4jHttpUp ? ' ' + _c(C.GRAY,`(+http :${neo4jHttp})`) : '') : _c(C.GRAY, 'stopped')}`);
     console.log(`  ${mineru.startsWith('up') ? _c(C.GREEN, '●') : _c(C.GRAY, '○')} MinerU          ${_c(mineru.startsWith('up') ? C.GREEN : C.GRAY, mineru)}`);
     console.log(`  ${mcpProcs.length > 0 ? _c(C.GREEN, '●') : _c(C.GRAY, '○')} kb-mcp  (stdio) ${mcpProcs.length > 0 ? _c(C.GREEN, mcpProcs.length + ' proc') : _c(C.GRAY, 'managed by Claude Code via .mcp.json')}`);
   }

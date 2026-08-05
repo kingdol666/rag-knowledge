@@ -338,24 +338,34 @@ class Neo4jManager:
 
     def _bootstrap_auth_if_needed(self) -> None:
         """Set the initial password before first launch (auth bootstraps on
-        an empty data dir only; idempotent on later starts)."""
+        an empty data dir only; idempotent on later starts). Retries once on
+        transient failure so a flaky subprocess env never leaves Neo4j in the
+        default-credentials state."""
         dist = self.distribution_dir
         data_inited = (self.data_dir / "databases" / "neo4j").exists()
         if data_inited:
             return
         admin = dist / "bin" / ("neo4j-admin.bat" if sys.platform == "win32" else "neo4j-admin")
-        try:
-            r = subprocess.run(
-                [str(admin), "dbms", "set-initial-password", self.password],
-                capture_output=True, text=True, timeout=120,
-                env=self._runtime_env(), **_run_silent_kwargs())
-            if r.returncode == 0:
-                logger.info("Neo4j initial password set (data dir fresh)")
-            else:
-                logger.warning("neo4j-admin set-initial-password rc=%s: %s",
-                               r.returncode, (r.stderr or r.stdout)[:300])
-        except Exception as e:
-            logger.warning("neo4j-admin bootstrap failed (may already be set): %s", e)
+        for attempt in (1, 2):
+            try:
+                r = subprocess.run(
+                    [str(admin), "dbms", "set-initial-password", self.password],
+                    capture_output=True, text=True, timeout=120,
+                    env=self._runtime_env(), **_run_silent_kwargs())
+                if r.returncode == 0:
+                    logger.info("Neo4j initial password set (data dir fresh, attempt %d)", attempt)
+                    return
+                logger.warning("neo4j-admin set-initial-password rc=%s (attempt %d): %s",
+                               r.returncode, attempt, (r.stderr or r.stdout)[:300])
+            except Exception as e:
+                logger.warning("neo4j-admin bootstrap failed (attempt %d): %s", attempt, e,
+                               exc_info=True)
+        # Both attempts failed → Neo4j will start with default creds
+        # (CredentialsExpired). Warn loudly so operators notice.
+        logger.error(
+            "Neo4j initial password could NOT be set — server will start with "
+            "default credentials. Fix auth after first start or clear %s and restart.",
+            self.data_dir)
 
     def _runtime_env(self) -> dict:
         env = os.environ.copy()
