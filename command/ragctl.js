@@ -723,12 +723,27 @@ async function cmdCheck() {
     addResult('warn', 'Git', '未找到 Git（版本管理需要）', '安装: https://git-scm.com/downloads');
   }
 
-  // Docker (optional)
-  try {
-    const dockerVer = execSync('docker --version', { encoding: 'utf8', timeout: 5000, stdio: ['pipe','pipe','pipe'] }).trim();
-    addResult('pass', 'Docker', dockerVer, null);
-  } catch {
-    addResult('warn', 'Docker', '未找到（Neo4j 图谱需要）', '安装 Docker Desktop: https://docker.com');
+  // Neo4j — local install (Docker-free) or legacy docker
+  if (readGraphMode() === 'local') {
+    const neoHome = path.join(BACKEND_DIR, '.neo4j');
+    const hasDist = fs.existsSync(neoHome) &&
+      fs.readdirSync(neoHome, { withFileTypes: true })
+        .some(d => d.isDirectory() && d.name.startsWith('neo4j-community-'));
+    const boltPort = readGraphBoltPort();
+    if (await portInUse(boltPort)) {
+      addResult('pass', 'Neo4j (local)', `运行中 :${boltPort}`, null);
+    } else if (hasDist) {
+      addResult('warn', 'Neo4j (local)', '已安装未运行', `启动: ragctl start neo4j`);
+    } else {
+      addResult('warn', 'Neo4j (local)', '未安装（图谱功能可选）', `安装+启动: ragctl start neo4j（自动下载到 backend/.neo4j）`);
+    }
+  } else {
+    try {
+      const dockerVer = execSync('docker --version', { encoding: 'utf8', timeout: 5000, stdio: ['pipe','pipe','pipe'] }).trim();
+      addResult('pass', 'Docker', dockerVer, null);
+    } catch {
+      addResult('warn', 'Docker', '未找到（graph.mode=docker 时需要）', '安装 Docker Desktop: https://docker.com 或改用 graph.mode: local');
+    }
   }
 
   // 3. Project files
@@ -1016,6 +1031,12 @@ async function cmdSetup() {
 
   // 5b. MinerU VLM model — pre-download so first parse is fast
   await cmdMineruModel();
+
+  // 5c. Neo4j (local, Docker-free) — install distribution + JRE and start
+  if (readGraphMode() === 'local') {
+    console.log(`\n${_c(C.BOLD, '── Neo4j (local, Docker-free) ──')}\n`);
+    await startNeo4j();
+  }
 
   // 6. Optional: global ragctl registration (best-effort)
   try { await cmdInstall(); } catch {}
