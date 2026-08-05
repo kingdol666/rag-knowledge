@@ -1893,9 +1893,11 @@ async function cmdStart(args) {
   }
   async function doStartNeo4j() {
     if (flags.noNeo4j) { warn('Neo4j 已跳过 (--no-neo4j)'); return true; }
-    if (fs.existsSync(composeFile) && !(await portInUse(7687))) {
+    // Neo4j startup is config-driven: local mode = ragctl-managed install;
+    // docker mode = compose. Port comes from config (graph.bolt_port).
+    if (!(await portInUse(readGraphBoltPort()))) {
       await startNeo4j();
-    } else if (await portInUse(7687)) {
+    } else {
       ok('Neo4j 已在运行');
     }
     return true; // Neo4j is optional — never fail the whole start for it
@@ -2069,8 +2071,8 @@ async function cmdUp(args) {
   let backendOk = true;
   let webOk = true;
 
-  // Neo4j (shared between modes) — optional
-  if (!flags.noNeo4j && fs.existsSync(composeFile) && !(await portInUse(7687))) {
+  // Neo4j (shared between modes) — config-driven ports/mode
+  if (!flags.noNeo4j && !(await portInUse(readGraphBoltPort()))) {
     await startNeo4j();
   } else if (flags.noNeo4j) {
     warn('Neo4j 已跳过 (--no-neo4j)');
