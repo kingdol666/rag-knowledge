@@ -550,6 +550,11 @@ class VectorService:
                     res["distances"][0],
                     res["metadatas"][0],
                 ):
+                    # BUGFIX: 损坏 collection 的 segment 可能返回 None metadata,
+                    # 直接 .get 会抛 'NoneType' object has no attribute 'get'
+                    # 导致整个 find_similar_docs 失败(全库图谱 phase2 崩溃)
+                    if meta is None:
+                        continue
                     matched_path = meta.get("doc_path", "")
                     score = 1.0 - dist
                     if score < score_threshold:

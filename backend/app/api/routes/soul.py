@@ -180,7 +180,11 @@ async def soul_init(req: dict[str, Any]):
 
 @router.post("/bootstrap")
 async def soul_bootstrap(req: dict[str, Any]):
-    """soul_init 后半段: soul-config.yml 原子写 + 初始 profile-summary + meditation config + 子目录。"""
+    """soul_init 后半段: soul-config.yml 原子写 + 初始 profile-summary + meditation config + 子目录。
+
+    async_mode=True 时 profile-summary 后台生成(LLM 耗时, 避免 HTTP/MCP 30s 超时),
+    同步仅完成 config/meditation 写入并返回 task_id(轮询 GET /api/v1/soul/tasks/{task_id})。
+    """
     soul_kb_id = (req.get("soul_kb_id") or "").strip()
     return await _bootstrap_impl(
         soul_kb_id,
@@ -189,12 +193,14 @@ async def soul_bootstrap(req: dict[str, Any]):
         supported_task_types=req.get("supported_task_types") or [],
         harness=req.get("harness") or "",
         model=req.get("model") or "",
+        async_mode=bool(req.get("async_mode")),
     )
 
 
 async def _bootstrap_impl(soul_kb_id: str, kb_scope: list[str],
                           domain_labels: list[str], supported_task_types: list[str],
-                          harness: str = "", model: str = "") -> dict:
+                          harness: str = "", model: str = "",
+                          async_mode: bool = False) -> dict:
     if not soul_kb_id:
         raise _err(400, "invalid_soul_name", "名称必须以 soul- 前缀开头")
     # UUID 或路径 → 相对路径(前缀校验含在解析内: 非 soul- 库返回 None)
@@ -219,12 +225,30 @@ async def _bootstrap_impl(soul_kb_id: str, kb_scope: list[str],
     soul_config.write_soul_config(soul_kb_id, cfg)
     soul_config.ensure_soul_dirs(soul_kb_id)
 
-    # 初始 profile summary(失败不阻塞)
-    try:
-        summary = await soul_profile.generate_profile_summary(soul_kb_id)
-    except Exception as e:
-        logger.warning("initial profile summary failed for %s: %s", soul_kb_id, e)
+    # 初始 profile summary(失败不阻塞; async_mode 时后台生成避免长超时)
+    if async_mode:
+        from app.services import soul_task_runner
+        import asyncio as _asyncio
+
+        async def _profile_task(tid: str):
+            try:
+                summary = await _asyncio.shield(
+                    soul_profile.generate_profile_summary(soul_kb_id))
+                return {"success": True, "profile_summary_generated": bool(summary)}
+            except Exception as e:
+                logger.warning("async initial profile summary failed for %s: %s", soul_kb_id, e)
+                return {"success": True, "profile_summary_generated": False}
+
+        profile_task_id = soul_task_runner.submit_soul_task(
+            _profile_task, "soul_bootstrap_profile", {"soul_kb_id": soul_kb_id})
         summary = ""
+    else:
+        profile_task_id = None
+        try:
+            summary = await soul_profile.generate_profile_summary(soul_kb_id)
+        except Exception as e:
+            logger.warning("initial profile summary failed for %s: %s", soul_kb_id, e)
+            summary = ""
 
     # meditation config: mode=soul, enabled=false, budget=0.15
     try:
@@ -252,6 +276,8 @@ async def _bootstrap_impl(soul_kb_id: str, kb_scope: list[str],
         "name": soul_kb_id,
         "soul_config_written": True,
         "profile_summary_generated": bool(summary),
+        "profile_pending": bool(profile_task_id),
+        "profile_task_id": profile_task_id or "",
         "meditation_config_created": meditation_created,
     }
 

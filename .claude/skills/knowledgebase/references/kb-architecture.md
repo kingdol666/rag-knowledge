@@ -1,4 +1,4 @@
-﻿# Knowledge Base Architecture — 系统数据模型与操作心智模型
+# Knowledge Base Architecture — 系统数据模型与操作心智模型
 
 > ⭐ **所有 KB 操作前必读**。本文解释 THIS 系统的知识库架构（非通用 KB 概念）。
 > Agent 必须理解这 5 层数据模型才能正确操作，否则会破坏一致性。
@@ -71,7 +71,7 @@
 - ⭐ **`experience_search_smart` 支持 kb_id 参数**限定单库搜索。
 - ⭐ **`kb_search_two_stage` 的 stage2_top_k 严格生效**。
 - ⭐ **垃圾 tag 门控**：纯数字/单字符/章节标题被拒绝（返回 400）。
-- **父 KB 的 `kb_search_two_stage` 返回子 KB 容器条目（content 为空）** → 正确做法：用 **`kb_search_vector(kb_id=<父KB>)`** 检索真实内容（子 KB 文档的向量 chunk 存储在**父 KB collection** 下，搜子 KB UUID 返回 0 结果）。`kb_graph_kb_overview(kb_id)` 仅用于查看子 KB 结构/文档数，**不能**作为搜索入口。
+- **父 KB 的 `kb_search_two_stage` 返回子 KB 容器条目（content 为空）** → 正确做法：用 **`kb_search_vector(kb_id=<父KB>)`** 检索真实内容。⚠️ 当前版本：子 KB 文档向量存储在**子 KB 自有 collection**（`kb_<子KB UUID>`）下，直接搜子 KB UUID 也可出结果（旧版"子KB向量存父 collection、搜子KB UUID 返回 0"的描述已过时）；父 KB 搜索聚合全部后代文档。`kb_graph_kb_overview(kb_id)` 仅用于查看子 KB 结构/文档数，**不能**作为搜索入口。
 - `kb_get_documents(lightweight=true)` 无 type 字段区分文档 vs 子KB容器 → 用 `file_type: knowledge-base` 或 `fs_get_tree(max_depth=2)` 区分
 - `kb_graph_kb_overview.related_kbs[].name` 和 `sub_kbs[].name` 返回 UUID → 用 `kb_list(lightweight=true)` 回查可读名
 

@@ -977,10 +977,12 @@ class KbClient:
     async def soul_bootstrap(self, soul_kb_id: str, kb_scope: list = None,
                              domain_labels: list = None,
                              supported_task_types: list = None,
-                             harness: str = "", model: str = "") -> dict:
+                             harness: str = "", model: str = "",
+                             async_mode: bool = False) -> dict:
         """后端侧初始化(soul-config.yml + profile + meditation config)。
 
         含初始 profile-summary 生成(harness 调用),可超过默认 30s → 用 INDEX_TIMEOUT。
+        async_mode=True: profile-summary 后台生成, 快速返回 task_id(轮询 /api/v1/soul/tasks/{id})。
         harness/model 空 → 全局默认(soul.default_harness / default_model)。
         """
         return await self._post_backend_json("/api/v1/soul/bootstrap", {
@@ -989,6 +991,7 @@ class KbClient:
             "supported_task_types": supported_task_types or [],
             "harness": harness or "",
             "model": model or "",
+            "async_mode": async_mode,
         }, timeout=INDEX_TIMEOUT)
 
     async def soul_config_update(self, soul_kb_id: str, kb_scope: list = None,

@@ -834,6 +834,38 @@ export class TreeFileSystemService {
       updatedAt: now
     }
 
+    // BUGFIX: description 更新同步到 yml 头 + 父库 KB 容器条目
+    // (kb_get_documents 读父库 yml documents; 子KB容器条目存于父库 yml,
+    //  不同步则容器条目显示旧描述)
+    if (request.description && folder.isKnowledgeBase) {
+      try {
+        const normP = (p: string) => (p || '').replace(/\\/g, '/')
+        // 1) 子库自身 yml 头描述
+        await this.yamlService.updateInfo(newPath, { description: request.description })
+        // 2) 父库 yml documents 中的容器条目描述
+        const parentFolder = folder.parentId
+          ? this.metadata.folders.find((f) => f.id === folder.parentId)
+          : undefined
+        if (parentFolder) {
+          const data = await this.yamlService.read(parentFolder.path)
+          const entry = (data?.documents || []).find(
+            (d) => d.file_type === 'knowledge-base' && normP(d.path) === normP(newPath)
+          )
+          if (entry) {
+            await this.yamlService.addDocument(parentFolder.path, {
+              name: entry.name,
+              description: request.description,
+              path: entry.path,
+              fileType: 'knowledge-base',
+            })
+          }
+        }
+      } catch (e) {
+        console.error('[updateFolder] yml description sync failed:', e)
+        // YAML may not exist yet; non-fatal
+      }
+    }
+
     this.metadata.folders[folderIndex] = updatedFolder
     await this.saveMetadata()
 

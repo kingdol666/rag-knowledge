@@ -263,8 +263,8 @@ async def kb_list(lightweight: bool = False) -> str:
                             "kbId": nid,
                             "path": n.get("path") or n.get("name", ""),
                             "name": n.get("name") or n.get("path", ""),
-                            "description": "",
-                            "documentCount": 0,
+                            "description": n.get("description") or n.get("desc") or "",
+                            "documentCount": n.get("documentCount") or n.get("doc_count") or n.get("document_count") or 0,
                             "parentId": parent_id,
                         })
                 _collect_kb_nodes(n.get("children", []))
@@ -2785,6 +2785,8 @@ async def soul_init(soul_name: str, template: str = "soul-template", kb_scope: l
         docs_created.append({"name": doc, "ok": bool(r.get("success", True))})
 
     # 3) 后端 bootstrap(soul-config + profile + meditation config)
+    #    BUGFIX: async_mode=True — profile-summary 由 LLM 生成可达 30s+, 后台执行
+    #    避免 MCP 30s 超时(原实现同步执行导致调用方收到超时错误但实际成功)
     #    默认 kb_scope=["*"]: 全部公开库均可参与学习/检索;
     #    需要"仅人格问答"(不学习任何公开库)时,创建后经 soul_config_update 显式设 kb_scope=[]
     boot = await client.soul_bootstrap(
@@ -2794,14 +2796,20 @@ async def soul_init(soul_name: str, template: str = "soul-template", kb_scope: l
         supported_task_types or [],
         harness or "",
         model or "",
+        async_mode=True,
     )
 
-    # 4) 索引 4 文档(AC25: 60s 内可检索)
-    for doc in _TEMPLATE_DOCS:
-        try:
-            await client.index_document(kb_id, doc)
-        except Exception as e:
-            print(f"[soul_init] index warning {doc}: {e}", file=sys.stderr)
+    # 4) 索引 4 文档(AC25: 60s 内可检索) — 后台任务, 避免首次 embedding 加载拖慢创建
+    async def _index_work(_inner: str):
+        for doc in _TEMPLATE_DOCS:
+            try:
+                await client.index_document(kb_id, doc)
+            except Exception as e:
+                print(f"[soul_init] index warning {doc}: {e}", file=sys.stderr)
+        return {"success": True, "indexed": _TEMPLATE_DOCS}
+
+    index_task_id = task_registry.submit(
+        _index_work, "soul_init_index", {"kb_id": kb_id})
 
     return _j({
         "success": True,
@@ -2809,7 +2817,11 @@ async def soul_init(soul_name: str, template: str = "soul-template", kb_scope: l
         "name": name,
         "docs_created": docs_created,
         "profile_summary_generated": bool(boot.get("profile_summary_generated")),
+        "profile_pending": bool(boot.get("profile_pending")),
+        "profile_task_id": boot.get("profile_task_id") or "",
         "meditation_config_created": bool(boot.get("meditation_config_created")),
+        "task_id": index_task_id,
+        "note": "indexing and profile summary run in background; poll kb_task_status(task_id) / profile_task_id",
     })
 
 

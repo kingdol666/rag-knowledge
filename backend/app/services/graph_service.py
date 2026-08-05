@@ -470,12 +470,21 @@ class GraphService:
             # ── 方案 A: 使用 ChromaDB 向量搜索 ──
             doc_paths = [d["path"] for d in all_docs]
 
-            # force=True 时先清除旧 vector_similar 边
+            # force=True 时清除旧 vector_similar 边 —— 仅限本次构建范围内的文档
+            # (BUGFIX: 原实现全局删除所有 vector_similar 边, force 重建单个 KB 会
+            #  清掉其他 KB 的相似边且不会重建, 导致全库 vector_similar 边骤降)
             if force:
                 try:
+                    gids = [_graph_doc_id(d["path"]) for d in all_docs]
                     with self.driver.session(database=config.graph_database) as session:
-                        session.run("MATCH ()-[r:RELATED_TO {reason: 'vector_similar'}]->() DELETE r").consume()
-                    logger.info("Cleared old vector_similar edges for force rebuild")
+                        if gids:
+                            session.run(
+                                "MATCH (d:Document) WHERE d.graph_doc_id IN $gids "
+                                "MATCH (o:Document) WHERE o.graph_doc_id IN $gids "
+                                "MATCH (d)-[r:RELATED_TO {reason: 'vector_similar'}]-(o) DELETE r",
+                                gids=gids,
+                            ).consume()
+                        logger.info("Cleared old vector_similar edges for %d docs (force rebuild)", len(gids))
                 except Exception as e:
                     logger.warning("Failed to clear old vector_similar edges: %s", e)
 
@@ -492,6 +501,9 @@ class GraphService:
                 for doc_path, similar_docs in similar_map.items():
                     gid = _graph_doc_id(doc_path)
                     for sim in similar_docs:
+                        # 防御: 损坏 collection 的查询结果可能含 None 条目
+                        if sim is None:
+                            continue
                         matched_path = sim.get("matched_doc_path", "")
                         score = sim.get("score", 0.0)
                         if not matched_path or score < config.vector_score_threshold:

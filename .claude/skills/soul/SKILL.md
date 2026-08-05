@@ -111,7 +111,12 @@ soul_init(soul_name="soul-<名字>", kb_scope=[<公开库列表>],
 - kb_scope 安全默认:**缺省/空 = ["*"] 全部公开库**(默认全库可参与训练);
   需要"仅人格问答"(不学习)时创建后经 soul_config_update 显式设 kb_scope=[]
 - harness 缺省 = 全局默认(config.yml soul.default_harness, 默认 omp)
-- 完成后必验证:返回 docs_created=4 且 profile_summary_generated=true
+- ⭐ **异步契约(已修复 30s 超时)**: soul_init 快速返回(≈2s), 返回含
+  `kb_id`(立即可用) + `docs_created` + `task_id`(索引后台) + `profile_pending`/`profile_task_id`(profile 后台生成)。
+  创建后必须:
+  1. 轮询 `kb_task_status(task_id)` 直到 done(确认 4 宪法文档向量索引完成)
+  2. 若 profile_pending=true: 轮询后端 `GET /api/v1/soul/tasks/{profile_task_id}` 或
+     稍后 `soul_status`/`soul_list` 确认 profile_summary 已生成(不阻塞后续操作)
 - **补天蒸馏入口见 §E**(从源材料生成初始人格,替代默认模板人格)
 
 ### A2 Delete — `soul_delete`
