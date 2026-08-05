@@ -249,14 +249,23 @@ class Neo4jManager:
         return self._installed_ok
 
     def _download_distribution(self) -> Optional[Path]:
-        url = self.mirror or f"https://dist.neo4j.org/neo4j-community-{self.version}-windows.zip"
-        dest = self.home / f"neo4j-community-{self.version}-windows.zip"
-        logger.info("Downloading Neo4j Community %s ...", self.version)
+        # Windows ships a zip; Linux/macOS ship a tar.gz — pick per platform.
+        if sys.platform == "win32":
+            archive_name = f"neo4j-community-{self.version}-windows.zip"
+            dest = self.home / archive_name
+            url = self.mirror or f"https://dist.neo4j.org/{archive_name}"
+            extract = _extract_zip
+            dist_dir = self.home / f"neo4j-community-{self.version}"
+        else:
+            archive_name = f"neo4j-community-{self.version}-unix.tar.gz"
+            dest = self.home / archive_name
+            url = self.mirror or f"https://dist.neo4j.org/{archive_name}"
+            extract = _extract_targz
+            dist_dir = self.home / f"neo4j-community-{self.version}"
+        logger.info("Downloading Neo4j Community %s (%s) ...", self.version, archive_name)
         _download_with_progress(url, dest)
         logger.info("Extracting Neo4j distribution ...")
-        _extract_zip(dest, self.home)
-        # Windows zips extract to a nested folder named after the archive
-        dist_dir = self.home / f"neo4j-community-{self.version}"
+        extract(dest, self.home)
         if not (dist_dir / "bin").exists():
             # fallback: first directory containing bin/
             for d in sorted(self.home.glob("neo4j-community-*")):
@@ -265,17 +274,36 @@ class Neo4jManager:
                     break
         if not (dist_dir / "bin").exists():
             raise RuntimeError("Neo4j distribution extraction produced no bin/ dir")
+        if sys.platform != "win32":
+            # Unix tarballs ship non-executable bin scripts — make them runnable
+            for bin_script in ("neo4j", "neo4j-admin", "cypher-shell"):
+                p = dist_dir / "bin" / bin_script
+                if p.exists():
+                    try:
+                        p.chmod(p.stat().st_mode | 0o755)
+                    except Exception:
+                        pass
         return dist_dir
 
     def _download_jre(self) -> None:
-        dest = self.home / "jre17-win64.zip"
+        # Adoptium (Temurin) JRE 17 — platform/arch aware:
+        #   windows → zip ; linux/macos → tar.gz ; x64/aarch64 handled by API
+        import platform
+
+        platform_map = {"win32": "windows", "linux": "linux", "darwin": "mac"}
+        arch_map = {"AMD64": "x64", "x86_64": "x64", "arm64": "aarch64", "aarch64": "aarch64"}
+        os_name = platform_map.get(sys.platform, "linux")
+        os_arch = arch_map.get(platform.machine(), "x64")
+        ext = "zip" if os_name == "windows" else "tar.gz"
+        archive_name = f"jre17-{os_name}-{os_arch}.{ext}"
+        dest = self.home / archive_name
         if not dest.exists():
-            url = ("https://api.adoptium.net/v3/binary/latest/17/ga/windows/x64/jre/"
-                   "hotspot/normal/eclipse")
-            logger.info("Downloading bundled JRE 17 (Temurin) ...")
+            url = ("https://api.adoptium.net/v3/binary/latest/17/ga/"
+                   f"{os_name}/{os_arch}/jre/hotspot/normal/eclipse")
+            logger.info("Downloading bundled JRE 17 (Temurin, %s/%s) ...", os_name, os_arch)
             _download_with_progress(url, dest)
         logger.info("Extracting bundled JRE ...")
-        _extract_zip(dest, self.home)
+        ( _extract_zip if ext == "zip" else _extract_targz )(dest, self.home)
 
     # ── Config + first-run auth ───────────────────────────────────────
     def _write_conf(self) -> Path:
@@ -470,6 +498,18 @@ def _extract_zip(archive: Path, target: Path) -> None:
     target.mkdir(parents=True, exist_ok=True)
     with zipfile.ZipFile(archive) as zf:
         zf.extractall(target)
+    logger.info("Extracted %s → %s", archive.name, target)
+
+
+def _extract_targz(archive: Path, target: Path) -> None:
+    import tarfile
+
+    target.mkdir(parents=True, exist_ok=True)
+    with tarfile.open(archive, "r:gz") as tf:
+        try:
+            tf.extractall(target, filter="data")  # safe extraction (py3.12+)
+        except TypeError:
+            tf.extractall(target)  # older Python: no filter arg
     logger.info("Extracted %s → %s", archive.name, target)
 
 

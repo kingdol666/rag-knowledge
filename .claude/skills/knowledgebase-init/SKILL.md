@@ -39,7 +39,11 @@ description: >
 **Step 7 — 配置**: 仅问缺失项，写入 config.yml + .env。
 **Step 8 — ragctl 注册**: 已注册则跳过。
 **Step 9 — MCP 注册**: 可选，默认跳过。
-**Step 10 — Neo4j**: 已运行则跳过。
+**Step 10 — Neo4j（本地安装，无需 Docker）**: 先 `ragctl check` 看端口 7687/配置 graph.mode；
+  - `graph.mode: local`（默认）→ `ragctl start neo4j`：自动下载发行版+JRE 到 `backend/.neo4j/`，
+    首启初始化密码（config.yml `graph.password`），配置驱动端口（`graph.bolt_port`/`http_port`）
+  - `graph.mode: docker`（旧）→ `docker compose up -d neo4j`
+  - 详细流程见 [neo4j-local.md](references/neo4j-local.md)
 **Step 11 — 服务启动**: 已 healthy 则跳过。
 **Step 12 — 全链验证**: health + MCP 预检 + torch GPU 匹配确认。
 ---
@@ -70,7 +74,7 @@ description: >
 | **6** 配置 | 仅问缺失项，写入 config.yml + .env | [configuration.md](references/configuration.md) §Phase 6 |
 | **7** ragctl 注册 | 已注册则跳过 | [configuration.md](references/configuration.md) §Phase 7 |
 | **8** MCP 注册 | 可选，默认跳过 | [configuration.md](references/configuration.md) §Phase 8 |
-| **9** Neo4j | 已运行则跳过 | `docker compose up -d neo4j` |
+| **9** Neo4j | 本地安装(无 Docker): 已运行则跳过, 未装则 ragctl start neo4j 自动下载安装 | [neo4j-local.md](references/neo4j-local.md) |
 | **10** 服务启动 | 已 healthy 则跳过 | `ragctl up` |
 | **11** 全链验证 | health + MCP 连通性预检（[mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)）+ torch match | 见下方"验证" |
 
