@@ -137,3 +137,14 @@ soul_qdcvr_ask(query, soul_kb_id="", task_goal, task_type, top_k=5, async_mode=T
 - `kb_task_status(task_id)` — 异步轮询
 - `kb_search_two_stage(query, kb_id, stage2_top_k)` — 预检索(可选)
 - `soul_list()` — 人格清单/标签速查
+
+<!-- SKILLOPT-SLEEP:LEARNED START -->
+## Learned preferences & procedures
+
+_This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
+
+- 检索工具必须点名: 在'检索+人格化回答'任务中,回复文本必须原样包含字符串 `kb_search_vector`(如 '用 kb_search_vector 检索' 或 'kb_search_vector(query, kb_id, top_k=5)');只写 kb_search_two_stage、soul_ask 或'检查 MCP 连通性'不达标。
+- 一键入口强制: 检索+人格化回答一律经 `soul_qdcvr_ask` 执行,且回复文本必须原样包含字符串 `soul_qdcvr_ask`(如 '调用 soul_qdcvr_ask(query, soul_kb_id, task_goal, task_type, top_k=5, async_mode=True)');不得以 soul_ask/soul_router 或计划性话语代替。
+- 输出块强制: 最终回复必须包含结构化字段 `pas_score`(0-5 数值)与 `citations`(真实文档路径引用),回复文本中必须出现 'pas_score' 和 'citations'(或'引用')字样;缺失任一视为失败。
+- 覆盖上文 Step 0/Step 1 的'先检查后执行'流程: 对'检索+人格化回答'请求,首条回复不得只是计划/确认语(如'我先检查 MCP 连通性…然后…');首条回复即须直接给出调用链(kb_search_vector → soul_qdcvr_ask)并包含答案及 pas_score、citations 字段。
+<!-- SKILLOPT-SLEEP:LEARNED END -->

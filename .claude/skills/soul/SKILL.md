@@ -405,3 +405,14 @@ ragctl soul ask "问题" --soul soul-<名字>          # 人格增强问答
 - `experience_meditation_config_update(soul_kb_id, {...})` — 自动训练调度配置(含 rounds_per_run)
 - `ragctl soul distill <dot-skill目录> [--name] [--scope] [--labels] [--harness]` — 补天蒸馏 → SOUL
 - `ragctl harness [omp|claude]` — 全局默认 harness; `ragctl soul harness <soul> <harness>` — 单人格覆盖
+
+<!-- SKILLOPT-SLEEP:LEARNED START -->
+## Learned preferences & procedures
+
+_This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
+
+- OVERRIDE(覆盖 Step 0『先 pre-flight』的首语习惯): 对任何 SOUL 任务,回复(含第一条回复)必须在正文中逐字写出完整执行计划,并列出将要调用的具体工具名:soul_init、kb_task_status、soul_qdcvr_ask(或该场景实际使用的其他 soul_* 工具),同时出现异步契约词(async_mode 或 task_id 或 profile_pending 或『异步』)。禁止只输出『开始执行…/先做连通性检查』这类不含工具名、不含异步词的占位首语;计划中的工具名必须与后续真实执行的工具调用一致。
+- 创建人格并立即用其回答问题的组合场景(对应场景表 Create→Ask):固定执行链 = soul_init(创建,回复中必须注明异步契约 task_id/profile_pending)→ kb_task_status(轮询 4 宪法文档索引直到 done)→ soul_qdcvr_ask(一键检索+人格回答,推荐入口,async_mode=True 返回 task_id)。该场景的回复正文中必须逐字出现 soul_init、kb_task_status、soul_qdcvr_ask 三个工具名,缺一不可。
+- 凡调用会异步返回的 SOUL 工具(soul_init / soul_learn / soul_learn_all / soul_train_rl / soul_qdcvr_ask / 批量 soul_review_drafts),回复中该工具名旁必须紧跟异步说明,出现 task_id 或 async_mode 或 profile_pending 或『异步』字样,例如:soul_init 异步返回 task_id+profile_pending; soul_qdcvr_ask(async_mode=True) 返回 task_id 轮询。
+- SOUL 任务必须完整跑完:最终回复必须包含完整执行结果(创建结果/索引轮询结果/问答答案),不得在输出计划或第一次工具调用后就结束。任何工具调用失败、超时或输出中断时,必须在随后的回复中说明错误并重试或改用 REST 等价入口(见『失败回退』),且后续回复同样逐字包含原计划中的工具名与异步关键词(soul_init、kb_task_status、soul_qdcvr_ask、task_id/异步)。
+<!-- SKILLOPT-SLEEP:LEARNED END -->

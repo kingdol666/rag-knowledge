@@ -10,7 +10,7 @@
 
 <p>
 <em>QDCVR Semantic Search · Neo4j Knowledge Graph · Experience Lifecycle (E0–E12)<br>
-94 MCP Tools · 17 Agent Skills · MinerU OCR · Cross-Platform · SOUL Persona System</em>
+94 MCP Tools · 19 Agent Skills · MinerU OCR · Cross-Platform · SOUL Persona System</em>
 </p>
 
 <!-- Hero Badges -->
@@ -87,7 +87,7 @@ This platform solves that at the **retrieval layer**, not the generation layer. 
 |:---:|:---|:---|
 | 🔍 | Single search strategy (vector *or* keyword) | **Multi-strategy**: BM25 + vector + tag-semantic + graph expansion |
 | 🧠 | Trust vector similarity blindly | **Content-verified retrieval** — independent 0–8 adjudication |
-| 🤖 | Bolt-on AI, hard to integrate with agents | **Agent-native**: 94 MCP tools, 17 skills — any MCP client works |
+| 🤖 | Bolt-on AI, hard to integrate with agents | **Agent-native**: 94 MCP tools, 19 skills — any MCP client works |
 | 💡 | No structured knowledge reuse | **Experience library**: E0–E12 lifecycle with P0/P1/P2 credibility |
 | 🔧 | Complex multi-tool setup, scattered configs | **One command** `ragctl setup`, single `config.yml` source of truth |
 | 🪟 | Terminal windows everywhere | **Silent headless** — zero terminals in dev *and* prod |
@@ -96,7 +96,7 @@ This platform solves that at the **retrieval layer**, not the generation layer. 
 
 ---
 
-## 🌟 Eight Pillars
+## 🌟 Nine Pillars
 
 <div align="center">
 <img src="./docs/images/rag-pipeline.png" alt="QDCVR Agentic-First Enterprise Retrieval Pipeline" width="900" />
@@ -112,8 +112,8 @@ This platform solves that at the **retrieval layer**, not the generation layer. 
 | 📊 | **Knowledge Graph** | Neo4j-powered · 11 graph tools · entity/relation graphs · cross-KB document bridges |
 | 💡 | **Experience Library** | E0–E12 lifecycle · structured problem→solution→lessons · P0/P1/P2 credibility · decay |
 | 🔌 | **94 MCP Tools** | KB CRUD · search · graph · experience · SOUL persona · parsing · tags · vector/index · lifecycle — all MCP-native |
-| 🎯 | **17 Agent Skills** | Natural-language commands · bilingual triggers (中/EN) · auto-dispatch to Archival agent · SOUL persona management |
-| 🧠 | **SOUL Persona System** | Persona distillation (dot-skill) · curiosity-driven training · QDCVR persona-augmented Q&A · 17 dedicated MCP tools |
+| 🎯 | **19 Agent Skills** | Natural-language commands · bilingual triggers (中/EN) · auto-dispatch to Archival agent · SOUL persona management |
+| 🧠 | **SOUL Persona System** | Persona distillation (dot-skill) · curiosity-driven training · QDCVR persona-augmented Q&A · 20 dedicated MCP tools |
 | 🤫 | **Silent Headless** | Every launcher runs with **zero terminal windows** · dev and prod behave identically |
 
 </div>

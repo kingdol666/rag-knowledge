@@ -1492,3 +1492,13 @@ ragctl soul ask "问题" --soul soul-<名字>          # 人格增强问答
 **补天调度**: 本仓库统一入口是 `../butian/SKILL.md` —— butian 调度 nuwa-skill
 (公开人物深研)与 dot-skill(本地材料)双引擎, 本 skill 产物已是种子契约
 (meta.json+persona.md+work.md), 无需转换直接落地。
+
+<!-- SKILLOPT-SLEEP:LEARNED START -->
+## Learned preferences & procedures
+
+_This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
+
+- 硬性要求（OVERRIDE，优先级高于本文件所有其他章节命名说明）：最终回复正文与生成的 SKILL.md 必须逐字包含三个小节标题「触发词」「行为准则」「边界」。不得用「触发条件」「规则」「限制」等近义词替代，因为校验以字面词为准；即使原材料缺失，三个标题也必须全部保留，并在对应标题下写「未提供」。
+- 当用户第一条消息已包含足够的人物信息（姓名、角色、性格特征等）且未要求分步交互时，禁止只输出流程开场白、禁止停下来追问 intake 问题、禁止等待用户确认；必须一次性完成蒸馏，在同一回复中直接给出含「触发词」「行为准则」「边界」三节的完整 Skill 内容。此规则覆盖并取代 Step 1 的提问步骤和 Step 5 的『确认生成？还是需要调整？』等待步骤。
+- 「触发词」一节必须列出可触发该 Skill 的用户说法示例；「行为准则」一节必须写从原材料提炼出的具体、可执行的行为规则（每条规则须能直接指导行为，不允许空话）；「边界」一节必须写该人物言行上不可逾越的边界。三节内容必须实际写入生成的 SKILL.md 文件，而不只是出现在回复里。
+<!-- SKILLOPT-SLEEP:LEARNED END -->

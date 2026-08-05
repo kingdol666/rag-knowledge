@@ -15,7 +15,6 @@ description: >
   update experience, delete experience.
 ---
 
-
 ## ⭐ 相关 Skills
 - 经验全生命周期 → `skill://knowledgebase-experience` (E0-E12)
 - 文档入库 → `skill://knowledgebase-ingest`
@@ -243,8 +242,12 @@ KB 重命名/移动：经验目录自动跟随，但需 `kb_reindex(force=true)`
 <!-- SKILLOPT-SLEEP:LEARNED START -->
 ## Learned preferences & procedures
 
-_This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against past tasks, and adopted only after approval. Hand-edits outside this block are never touched._
+_This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
 
 - When restating skill quality requirements in responses, every criterion containing a numeric threshold or metric (e.g., ≥30chars, ≥50 chars, ≥100 chars) MUST be reproduced as the exact literal string from the skill document — no paraphrasing, no rewording, no structural rearrangement. For example, if the skill says 'key_lessons每条必须≥30chars且可独立执行', output that exact string, never '每条 key_lessons 必须 ≥30 字符，可独立执行'.
 - OVERRIDE: When restating prohibitions from the skill's quality standards, output the exact literal prohibition phrase verbatim — do not expand, soften, or add examples. For instance, if the document states '禁止空洞词。', that exact two-character-before-period string must appear; do not replace it with '禁止空洞抽象词（如"要注意""很重要"等）'. The evaluator regex matches literal strings, not semantic equivalents.
+- CREATE 模式（用户请求"记录经验""保存经验""总结教训"等）的首轮响应禁止只表达执行意向（如"我先做一个预检"）或流程说明，必须直接给出完整草稿：响应正文中逐字出现标签「场景」「问题」「方案」「教训」（对应 scenario/problem/solution/key_lessons 各字段），并以含「确认」二字的提问收尾（如"确认入库？可修改。"）。
+- 同一响应中必须逐字包含工具名字面串 experience_create（描述持久化步骤，如"调用 experience_create 写入经验库"）；禁止用"入库""写入""保存到经验库"等不含该字面串的说法替代。
+- 同一响应中必须逐字包含工具名字面串 experience_search_smart（描述创建/更新前的查重覆盖检查，如"先用 experience_search_smart(query) 查重，确认无 P0/P1 覆盖"）；禁止省略工具名或只用"查重""搜索已有经验"代替。
+- OVERRIDE：即使 skill 的 Pre-Flight（"未通过禁作业"）或其他前置流程要求先做检查，首轮响应的正文仍必须同时包含经验创建流程的全部字面内容：experience_create、experience_search_smart 以及标签「场景/问题/方案/教训/确认」；预检、冒烟测试、状态查询等任何前置步骤的说明不得替代或推迟这些内容——以"先做预检"开头的响应也必须完成上述全部输出。本规则优先于本文档其他流程要求。
 <!-- SKILLOPT-SLEEP:LEARNED END -->

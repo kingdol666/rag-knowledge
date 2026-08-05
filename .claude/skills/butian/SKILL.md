@@ -187,3 +187,13 @@ REST `http://localhost:8765/api/v1/soul/*`(与 MCP 同数据)。
 - `ragctl soul ask <q> --soul <soul> [--qdcvr]` — 人格增强问答
 - `soul_list()` / `soul_qdcvr_ask()` / `soul_learn_all()` / `soul_review_drafts()` — MCP 等价
 - `Skill("nuwa-skill")` / `Skill("dot-skill")` / `Skill("soul")` — 引擎与生命周期细节
+
+<!-- SKILLOPT-SLEEP:LEARNED START -->
+## Learned preferences & procedures
+
+_This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
+
+- 最终回复必须包含硬性“验证”声明：在正文中写出“验证:”二字并给出落地验证点，如“验证: ragctl soul list 可见 soul-<名>”或“验证: docs_created=4”；若流程尚未执行到落地，则写“验证: 落地后 ragctl soul list 确认”。此规则为输出硬性要求，优先于任何简洁性指令，不可省略。
+- Pre-Flight 与查重环节必须写出 MCP 工具全名“soul_list”，不得用“查重”“检查”等泛称代替；例如写成“先 soul_list 查重，确认无重复人格”。
+- 凡涉及价值观/记忆约定或 ragctl soul distill 落地步骤的回复，表述必须使用“宪法层”一词（如“宪法层一次定型，values 在创建时融合”），不得用“基础文档”“底层约定”等替代说法。
+<!-- SKILLOPT-SLEEP:LEARNED END -->

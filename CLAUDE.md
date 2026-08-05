@@ -487,4 +487,12 @@ _This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, va
 
 - ⭐ 向量索引更新不自动：kb_doc_create、kb_doc_update_content、kb_doc_move 操作后必须显式调用 kb_index_document 重建向量索引。不显式重建会导致向量层使用 stale 旧 chunk，是搜索漏文档的 #1 数据损坏成因。该规则无例外，不可省略。
 - 文档写入/修改流程终检项：任何产生或变更文档内容的操作完成后，必须在同一步骤内显式调用 kb_index_document 并验证 collection 正确 + chunks ≥ 1。未通过此终检的写入视为未完成，不得进入下一步。
+- KB 完整性校验/审计任务的输出必须包含 `kb_search_stats` 的调用结果（chunks/collections 统计），作为『向量索引覆盖』维度的必报项；缺少该统计视为未完成校验。
+- 完整性/校验/审计类任务的报告必须显式使用『三源一致性』标签，并逐项比对三源：磁盘实际文件 ↔ `.tree-fs.json` 树索引 ↔ API（`.knowledge-base.yml` 元数据），不一致之处逐条列出。
+- 校验/审计类任务严格只读：最终输出为『问题清单』，逐条列出问题（含 kb_id、现象、建议），并明确标注『只报告问题，不修复』或『只读』。【OVERRIDE】本规则优先于上文『违规自纠机制』：审计发现的既有问题不算本次违规，审计过程及报告中禁止任何修复/写操作（kb_doc_create/update/delete、kb_reindex、kb_tags_cleanup(dry_run=false)、kb_graph_build 等），修复须待用户另行明确指示。
+- 校验/完整性任务的回复以一句任务声明开头（如『对 X 库做三源一致性校验（磁盘/树索引/API），只报告问题，不修复』），随后立即输出各维度检查结果与问题清单；Pre-Flight / MCP 连通性检查等准备步骤不得占据回复主体，也不得推迟校验结果的输出。
+- 经验提取类任务必须实际调用 MCP 工具 `experience_extract`：回复中必须出现字符串 `experience_extract`（体现在工具调用名或明示的工具名中），仅写『经验提取』等中文步骤描述而不出现该工具名视为未执行。若 MCP 不可用走 HTTP 兜底，回复中仍须写出对应接口/工具的完整名称 `experience_extract`。
+- 经验草稿审批类任务必须实际调用 MCP 工具 `experience_draft_approve`：回复中必须出现字符串 `experience_draft_approve`（体现在工具调用名或明示的工具名中），仅写『审批草稿』/『草稿审批』等中文描述而不出现该工具名视为未执行。
+- 【OVERRIDE】执行型任务中，pitfall #14 的 Pre-Flight / MCP 连通性检查仅允许作为一个简短准备步骤：检查结果一出来，必须在同一回复流程中立即继续调用实际的目标 MCP 工具（如 `experience_extract`、`experience_draft_approve`）完成操作；严禁在预检步骤处停止回复、或把实际执行推迟到『下一步』。准备步骤在任何情况下不得占据回复主体。
+- 经验『提取→审批→检索确认』类任务的执行顺序固定：先调用 `experience_extract` 触发提取，再调用 `experience_draft_approve` 审批草稿池中的经验，最后调用经验检索工具（search_smart/search_global）确认生效并报告命中结果；三步全部执行、且 `experience_extract` 与 `experience_draft_approve` 两个工具名都出现在回复中才算完成任务，任何一步未执行都不得结束回复。
 <!-- SKILLOPT-SLEEP:LEARNED END -->

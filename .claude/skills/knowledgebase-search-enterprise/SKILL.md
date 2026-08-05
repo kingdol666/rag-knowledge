@@ -4,7 +4,6 @@ description: >
   Enterprise multi-strategy retrieval. Auto-upgrades from knowledgebase-search when P0/P1 docs come from <2 KBs. Parallel 3-path recall (vector + tag semantic + BM25) with balance_kbs, cross-validation dedup, content ruling (0-8 scoring), graph expansion (only when P0<3), fused presentation with cross-KB blind-spot declaration. Triggered by: 全库搜索, 所有KB, 跨知识库, 跨库, cross-KB, all KBs, enterprise search, 全局搜索, 全面的, thorough search, comprehensive.
 ---
 
-
 ## ⭐ 相关 Skills
 - 单库检索 → `skill://knowledgebase-search` (QDCVR 两阶段)
 - 跨库桥接文档 → `skill://knowledgebase-graph` (Cross-KB Discovery)
@@ -181,3 +180,14 @@ A 向量 + B 标签 + C BM25（+ D 经验，如适用）→ 去重后 N 篇 → 
 - **经验可信度模型** — P0: vector≥0.65∧content≥6∧rating≥4∧review≥1, P1: ≥0.45∧≥4, P2: ≥0.35∧≥3 | disputed降P2, unvetted降P1 | 短内容<50chars降P2
 - `knowledgebase-search` skill — 前置 QDCVR 标准流程（本 skill 在其 Step 5 触发升级）
 - [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) — MCP 优先原则全库执行细则（第五条）
+
+<!-- SKILLOPT-SLEEP:LEARNED START -->
+## Learned preferences & procedures
+
+_This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
+
+- OVERRIDE 向量召回工具名：Path A MUST 调用 `mcp__kb-mcp__kb_search_vector(kb_id="", top_k=30, score_threshold=0.30, balance_kbs=True)`（不是 `kb_search_two_stage`）；且最终答案文本 MUST 包含字面 token `kb_search_vector`，例如 `## 搜索路径` 行写成：`A 向量(kb_search_vector) + B 标签 + C BM25 → 去重后 N 篇 → 内容裁决后 P0:x / P1:y`。最终答案缺少该 token 即为失败。
+- 最终答案 MUST 包含标题为 `## 盲区（跨库视角）` 的章节（标题同时含 `盲区` 与 `跨库` 两个字面词），逐条列出：全库未覆盖的子领域、某库可能有相关内容但本次未命中（建议手工复查）、争议/时效/需确认点。缺少 `盲区`/`跨库`/`cross-KB` 标签的答案为失败。
+- 最终答案 MUST 出现内容裁决字面词：`## 搜索路径` 行 MUST 含 `kb_doc_read` 与 `0-8 打分`（如 `内容裁决(0-8 打分, kb_doc_read 3000 chars)`），`## 置信度` 行 MUST 含 `内容验证`（如 `内容验证后 P0:3 篇`）。
+- OVERRIDE（必答 + MCP 优先）：全库/跨库检索的所有召回 MUST 走 `mcp__kb-mcp__*` 工具（kb_search_vector、kb_tags_list、kb_doc_get_by_tag、kb_doc_read 等），禁止用 Bash/terminal/HTTP 绕过；响应 MUST 在当轮给出完整五节格式的最终答案（`## 搜索路径`/`## 答案`/`## 来源`/`## 置信度`/`## 盲区（跨库视角）`），禁止以单个工具调用、探测命令或残缺回答结束回合。
+<!-- SKILLOPT-SLEEP:LEARNED END -->

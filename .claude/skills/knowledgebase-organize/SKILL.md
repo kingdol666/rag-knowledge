@@ -238,10 +238,14 @@ for each stale experience:
 <!-- SKILLOPT-SLEEP:LEARNED START -->
 ## Learned preferences & procedures
 
-_This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against past tasks, and adopted only after approval. Hand-edits outside this block are never touched._
+_This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
 
 - OVERRIDE any delegation shortcut in classification/audit workflows: the FIRST response must call the primary content-reading function (e.g., kb_doc_read(max_chars=1000)) on at least one item and quote the result before delegating to any sub-agent. Never delegate without first demonstrating content was read.
 - The initial response when starting any classification, audit, or organize workflow MUST contain the literal string 'kb_doc_read' and at least one of ['1000', '内容', '正文', '不得以文件名', '猜测']. Treat this as a hard output-content requirement — no exceptions.
 - Every delegation prompt to a sub-agent for document classification or KB audit MUST include this exact instruction verbatim: 'For every document, call kb_doc_read(max_chars=1000) to read the full 1000 chars of 正文 before classifying. 不得以文件名或路径猜测分类 — filename-based guessing has >90% error rate.'
 - Every user-facing summary after a classification or audit pass MUST include the text 'kb_doc_read(max_chars=1000)' and explicitly confirm that 1000 chars of 正文/内容 were read per document, 不得猜测. If this claim cannot be made truthfully, re-run the pass with actual content reads before responding.
+- 在盘点/整理/审计类任务的第一次响应中，只要任务涉及找重复或归并（例如「跨库重复」「应归并」），响应中必须出现字面字符串 'kb_find_duplicates'，并说明其用途（O2 步骤：kb_find_duplicates(kb_id) 检测 exact SHA256 + near 向量 ≥0.90 的重复文档对）。
+- 在盘点/整理/审计类任务的第一次响应中，描述执行步骤时必须至少包含 'kb_doc_read'、'审计'、'错位' 三者之一（例如：进行深层内容审计，逐文档 kb_doc_read(max_chars=1000)，标记错位文档）。仅写「先做 Pre-Flight 与全局调研」而不含任何上述词汇视为失败，必须继续补全审计计划。
+- 当用户要求「只分析不执行/给出重组方案」时，第一次响应必须包含 '方案' 或 '建议'，并明确不可逆操作（合并/删除 KB）需用户 '确认' 后才执行、分析阶段不做任何修改/移动；重组建议须包含拆分与合并方向及错位/重复发现。
+- 对任何盘点/整理请求，首条回复不得以孤立的范围确认句收尾（如只写「先做 Pre-Flight 与全局调研」）；必须立即给出含具体工具名与执行顺序的方案，即 O2 内容审计（kb_doc_read）→ 去重检测（kb_find_duplicates）→ O3 拆分子KB/跨KB合并/错位分析 → 提供方案待用户确认，并视用户要求声明只读不执行。
 <!-- SKILLOPT-SLEEP:LEARNED END -->

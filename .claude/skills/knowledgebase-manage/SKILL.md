@@ -135,7 +135,6 @@ kb_doc_read(kb_id, doc_path, max_chars=20000) → 展示当前内容
 
 > **三写原子一致性**：磁盘文件 + .tree-fs.json + .knowledge-base.yml 同步更新。任何一层失败整体回滚。
 
-
 ## 已知问题 + 错误恢复
 
 | 病症 | 检测 | 处置 |
@@ -164,6 +163,16 @@ kb_doc_read(kb_id, doc_path, max_chars=20000) → 展示当前内容
 | 更新内容后不验证 | 可能写入失败——HTTP 无回执确认 | `kb_doc_read` 确认内容一致 + `kb_index_document` 重建索引 |
 | 批量删用短路径 | 工具报错——`batch_delete` 仅接受全路径 | 用完整 `KB/doc.md` 相对路径（非裸文件名） |
 | 假设 move/delete 是同步的 | fire-and-forget 异步——返回成功≠已完成 | M5 回查 `kb_get_documents(target)` 确认 |
-| `kb_doc_update_content` 后不重索引 | 向量层仍用旧 chunk——搜索返回过时内容 | 必须显式 `kb_index_document`（不自动触发） |
+| `kb_doc_update_content` 后不重索引 | 向量层仍用旧 chunk——搜索返回过时内容 | 已自动重索引(auto-reindex <1s, 2026-08 版本); 保险起见仍可显式 `kb_index_document` |
 | move/delete 后不查经验 stale | 关联经验变 orphan——经验库逐步腐烂 | M4 `experience_check_stale(source)` + `(target)` 必查 |
 | 改名后图谱旧节点残留 | Neo4j 不自动跟随文件改名 | `kb_graph_delete_document(old_path)` + `kb_graph_build(kb_id, force=false)` |
+
+<!-- SKILLOPT-SLEEP:LEARNED START -->
+## Learned preferences & procedures
+
+_This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
+
+- OVERRIDE —— 禁止以"我先开始 survey / MCP 连通性检查 / 按 workflow 先…"这类不含具体工具名的占位句作为回复开头。首个回复必须直接给出本次操作的具体执行计划，明文写出将使用的工具名（如 kb_doc_delete、kb_doc_move）与验证步骤；句子中若没有具体工具名和验证关键词，先补齐再发送，禁止发"稍后再执行"式的敷衍开场。
+- 删除类操作（文档/KB 删除）的任何回复必须满足：① 明文出现字符串 'kb_doc_delete'（不得用'删除文档'等话术替代工具名）；② 出现 dry_run 或 dry-run 或 预览 或 确认 字样 —— 在回复中描述"先 dry_run 预览影响面并确认"这一步骤即可（M2 流程），不必因等待用户而中断输出。
+- 任何 move/delete/update 变更的回复，其验证部分必须出现 kb_search_stats 或 残留 或 chunk 字样（例如："用 kb_search_stats 检查向量残留 chunk"），并同时写明三层一致性检查（disk ↔ .tree-fs.json ↔ .knowledge-base.yml）；验证描述缺失则该回复视为未完成，不得发送。
+<!-- SKILLOPT-SLEEP:LEARNED END -->

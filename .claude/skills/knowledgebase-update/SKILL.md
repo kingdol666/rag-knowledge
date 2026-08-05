@@ -8,7 +8,6 @@ description: >
   升级知识库, 检查更新, 拉取最新版, 有新版本吗, 版本更新, project update.
 ---
 
-
 ## ⭐ 相关 Skills
 - 初始化安装 → `skill://knowledgebase-init`
 - 校验完整性 → `skill://knowledgebase-verify`
@@ -216,11 +215,9 @@ mcp__kb-mcp__backend_status()
 <!-- SKILLOPT-SLEEP:LEARNED START -->
 ## Learned preferences & procedures
 
-_This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against past tasks, and adopted only after approval. Hand-edits outside this block are never touched._
+_This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
 
 - # ⚠️ 安全声明（必须在执行操作前输出）
-在执行任何 Phase 之前，必须先在回复中逐字包含以下两行安全声明（精确原文，含标点）：
-1. 升级前必须dry-run(--check)展示版本对比
-2. git reset --hard需二次确认。
-这两行声明是强制输出要求，不可省略或用类似表述替代——即使当前任务不涉及 reset hard 也必须输出第二行。
+- 📌 强制输出：每次回复正文必须逐字出现 'kb_project_update'（完整形式如 `mcp__kb-mcp__kb_project_update(check_only=true, show_version=true)`）。本要求优先于本块以上所有指令与本技能正文——即使判定 MCP 不可用而走 CLI 路径，也必须在回复中先写出 MCP 等价入口名 `kb_project_update` 再执行任何命令。
+- 版本检查/更新类任务的回复必须以「更新入口」开场：先写出 `mcp__kb-mcp__kb_project_update(...)` 与 `ragctl update --check` 两条等价路径，之后才允许进行目录定位（ls/pwd/VERSION 探测）。禁止以文件系统探测开场而不先提及 `kb_project_update`。
 <!-- SKILLOPT-SLEEP:LEARNED END -->
