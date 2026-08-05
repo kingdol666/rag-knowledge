@@ -101,6 +101,26 @@ async def lifespan(app: FastAPI):
         except Exception:
             logger.exception("MinerU API startup failed (non-fatal)")
 
+    # ── Start local Neo4j if configured (Docker-free mode) ────────────
+    graph_cfg = config.graph
+    neo4j_manager = None
+    if graph_cfg.get("enabled", False) and graph_cfg.get("mode", "local") == "local":
+        if graph_cfg.get("auto_start", True):
+            try:
+                from app.utils.neo4j_manager import Neo4jManager
+
+                neo4j_manager = Neo4jManager(graph_cfg)
+                timeout = int(graph_cfg.get("startup_timeout", 120))
+                if neo4j_manager.ensure_running(timeout=timeout):
+                    app.state.neo4j_manager = neo4j_manager
+                    logger.info(
+                        "Neo4j (local) ready — bolt :%s, http :%s",
+                        neo4j_manager.bolt_port, neo4j_manager.http_port)
+                else:
+                    logger.error("Neo4j (local) failed to start — graph features degraded")
+            except Exception:
+                logger.exception("Neo4j (local) startup failed (non-fatal)")
+
     # ── Probe Neo4j (knowledge graph) if configured ──────────────────
     # Graph features degrade gracefully: if Neo4j is unreachable, search
     # still works (BM25 + vector); only graph expansion / entity queries 503.
@@ -113,7 +133,7 @@ async def lifespan(app: FastAPI):
             else:
                 logger.warning(
                     "Neo4j unavailable (%s) — graph features degraded. "
-                    "Start it with: docker compose up -d neo4j",
+                    "Local mode: check backend/.neo4j; Docker mode: docker compose up -d neo4j",
                     health.get("error", "unknown error"),
                 )
         except Exception:

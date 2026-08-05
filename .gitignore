@@ -102,3 +102,8 @@ backend/app/data/router-log.jsonl
 # Python cache
 __pycache__/
 *.pyc
+
+# Neo4j local distribution (downloaded on demand; keep out of git)
+backend/.neo4j/
+neo4j_data/
+neo4j_logs/

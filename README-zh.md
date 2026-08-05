@@ -10,14 +10,14 @@
 
 <p>
 <em>QDCVR 语义搜索 · Neo4j 知识图谱 · 经验全生命周期 (E0–E12)<br>
-94 个 MCP 工具 · 17 个 Agent 技能 · MinerU OCR · 跨平台 · SOUL 人格系统</em>
+94 个 MCP 工具 · 19 个 Agent 技能 · MinerU OCR · 跨平台 · SOUL 人格系统</em>
 </p>
 
 <p>
 <a href="#-快速开始"><img src="https://img.shields.io/badge/快速开始-3条命令-4338ca?style=for-the-badge&logo=rocket" /></a>
 <a href="#-目录"><img src="https://img.shields.io/badge/平台-Win_%7C_Linux_%7C_macOS-334155?style=for-the-badge&logo=linux" /></a>
 <a href="#%EF%B8%8F-94-个-mcp-工具"><img src="https://img.shields.io/badge/MCP工具-94个-8b5cf6?style=for-the-badge&logo=code" /></a>
-<a href="#%EF%B8%8F-四种界面一个后端"><img src="https://img.shields.io/badge/技能-17个-f97316?style=for-the-badge&logo=openai" /></a>
+<a href="#%EF%B8%8F-四种界面一个后端"><img src="https://img.shields.io/badge/技能-19个-f97316?style=for-the-badge&logo=openai" /></a>
 </p>
 
 <p>
@@ -55,7 +55,7 @@
 
 <p align="center">
 <a href="#-为什么会有这个项目">起源</a> ·
-<a href="#-八大支柱">特性</a> ·
+<a href="#-九大支柱">特性</a> ·
 <a href="#-快速开始">快速开始</a> ·
 <a href="#%EF%B8%8F-四种安装方式">安装</a> ·
 <a href="#-前置要求">前置要求</a> ·
@@ -84,7 +84,7 @@
 |:---:|:---|:---|
 | 🔍 | 单一搜索策略（向量*或*关键词） | **多策略**：BM25 + 向量 + 标签语义 + 图谱扩展 |
 | 🧠 | 盲信向量相似度 | **内容验证检索** —— 独立的 0–8 内容裁决 |
-| 🤖 | AI 是后挂的，难集成 Agent | **Agent 原生**：94 个 MCP 工具，17 个技能，任意 MCP 客户端 |
+| 🤖 | AI 是后挂的，难集成 Agent | **Agent 原生**：94 个 MCP 工具，19 个技能，任意 MCP 客户端 |
 | 💡 | 无结构化知识复用 | **经验库**：E0–E12 全生命周期，P0/P1/P2 可信度分级 |
 | 🔧 | 多工具复杂安装，配置分散 | **一条命令** `ragctl setup`，单一 `config.yml` 真相源 |
 | 🪟 | 满屏终端窗口 | **静默无头** —— dev 和 prod 均零终端窗口 |
@@ -93,7 +93,7 @@
 
 ---
 
-## 🌟 八大支柱
+## 🌟 九大支柱
 
 <div align="center">
 <img src="./docs/images/rag-pipeline.png" alt="QDCVR Agentic 优先企业检索流水线" width="900" />
@@ -109,7 +109,7 @@
 | 📊 | **知识图谱** | Neo4j 驱动 · 11 个图谱工具 · 实体/关系图 · 跨库文档桥接 |
 | 💡 | **经验库** | E0–E12 全生命周期 · 结构化问题→方案→教训 · P0/P1/P2 可信度 · 衰减 |
 | 🔌 | **94 个 MCP 工具** | 知识库 CRUD · 搜索 · 图谱 · 经验 · SOUL 人格 · 解析 · 标签 · 向量索引 · 生命周期 |
-| 🎯 | **17 个 Agent 技能** | 自然语言命令 · 中英双语触发 · 自动分发到 Archival Agent · SOUL 人格管理 |
+| 🎯 | **19 个 Agent 技能** | 自然语言命令 · 中英双语触发 · 自动分发到 Archival Agent · SOUL 人格管理 |
 | 🧠 | **SOUL 人格系统** | 补天蒸馏初始人格 · 好奇心驱动训练 · RL 强化进化 · QDCVR 人格增强问答 · 20 个专用 MCP 工具 |
 | 🤫 | **静默无头** | 所有启动器均 **零终端窗口** · dev 和 prod 行为一致 |
 
@@ -366,7 +366,7 @@ curl http://localhost:8765/api/v1/health        # → {"status":"healthy"}
 | 界面 | 地址 | 用途 |
 |------|:----:|------|
 | 🌐 **Web UI** | `http://localhost:6789` | 浏览 KB、搜索、图谱可视化 |
-| 📚 **API 文档** | `http://localhost:8765/docs` | Swagger UI，76 个端点 |
+| 📚 **API 文档** | `http://localhost:8765/docs` | Swagger UI，110+ 个端点 |
 | 🖥️ **CLI** | `ragctl status` | 服务健康检查 |
 | 🤖 **Agent** | Claude Code 会话 | 说"列出所有知识库" |
 
@@ -636,15 +636,15 @@ ragctl status                   # dev + prod 并排显示
 ragctl down --appmode prod      # 仅停止 prod，保留 Neo4j
 ```
 
-内置**限流**（`config.yml` 可调）：
+内置**限流**（`config.yml` 默认值，可调）：
 
 ```yaml
 server:
   rate_limit:
     enabled: true
     window_sec: 60
-    max_requests: 120       # 常规端点
-    heavy_max: 20            # 解析/OCR 类重端点
+    max_requests: 600       # 常规端点
+    heavy_max: 60            # 解析/OCR 类重端点
 ```
 
 ### config.yml —— 全字段说明
@@ -658,8 +658,10 @@ server:
 | `graph` | `uri: bolt://127.0.0.1:7687` · `password` · `pool` | Neo4j 连接 + 连接池调优 |
 | `search` | `two_stage.stage1_top_k: 20` · `stage2_top_k: 5` · 权重 | 两阶段召回中 BM25↔图谱融合权重 |
 | `experience_auto` | `enabled: false` · `interval_hours: 24` · `max_drafts_per_run` | 定时经验蒸馏（冥想） |
-| `soul` | `default_harness: omp` · `default_model` | SOUL 训练引擎默认（单人格可在 meditation 配置覆盖） |
-| `mineru` | `enabled` · `model_source: modelscope` | OCR 引擎 + VLM 模型源 |
+| `soul` ¹ | `default_harness: omp` · `default_model` | SOUL 训练引擎默认（单人格可在 meditation 配置覆盖） |
+| `mineru` ¹ | `enabled` · `model_source: modelscope` | OCR 引擎 + VLM 模型源 |
+
+> ¹ `soul` 与 `mineru` 段位于 **`backend/config.yml`**（仅后端使用）；上表其余段均在项目根 `config.yml`，由全部服务共享。
 
 **覆盖顺序：** `config.yml` < `.env` < CLI 参数（`--port-backend`、`--appmode` …）。
 
@@ -673,8 +675,8 @@ server:
 
 | 类别 | 数量 | 类别 | 数量 |
 |:-----|:----:|:-----|:----:|
-| **服务生命周期** | 4 | **知识库 CRUD** | 5 |
-| **文档 CRUD** | 9 | **搜索** | 4 |
+| **服务生命周期** | 4 | **知识库 CRUD** | 4 |
+| **文档 CRUD + 列表** | 9 | **搜索** | 4 |
 | **向量索引** | 6 | **文件系统** | 3 |
 | **知识图谱** | 11 | **经验（含冥想）** | 26 |
 | **标签** | 4 | **解析**（非阻塞） | 3 |
@@ -743,11 +745,15 @@ ragctl model --source huggingface    # 直连（海外）
 <details>
 <summary><b>🕸️ 图谱功能不可用</b></summary>
 
-图谱是可选的。启动 Neo4j（`docker compose up -d`）或跳过：
+图谱是可选的。Neo4j 现在默认**本地安装、无需 Docker**（config.yml `graph.mode: local`）——发行版+内置 JRE 在 `backend/.neo4j/`，backend 启动时自动拉起（与 MinerU 同款）：
 
 ```bash
+ragctl start neo4j    # 独立启动本地 Neo4j（backend 启动时也会自动拉起）
+ragctl stop neo4j     # 停止本地 Neo4j
 ragctl up --no-neo4j        # 其余功能正常；图谱工具返回降级响应
 ```
+
+端口/内存/镜像均配置驱动（config.yml → `graph.*`，环境变量可覆盖）。旧 Docker 模式：设 `graph.mode: docker` 并执行 `docker compose up -d neo4j`。
 `.env` 的 `NEO4J_PASSWORD` 必须与 `docker-compose.yml` 一致。
 
 </details>

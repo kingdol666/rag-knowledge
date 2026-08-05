@@ -18,7 +18,7 @@
 <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick_Start-3_commands-4338ca?style=for-the-badge&logo=rocket" /></a>
 <a href="#-table-of-contents"><img src="https://img.shields.io/badge/Platform-Win_%7C_Linux_%7C_macOS-334155?style=for-the-badge&logo=linux" /></a>
 <a href="#-94-mcp-tools"><img src="https://img.shields.io/badge/MCP_Tools-94-8b5cf6?style=for-the-badge&logo=code" /></a>
-<a href="#%EF%B8%8F-four-interfaces-one-backend"><img src="https://img.shields.io/badge/Skills-17-f97316?style=for-the-badge&logo=openai" /></a>
+<a href="#%EF%B8%8F-four-interfaces-one-backend"><img src="https://img.shields.io/badge/Skills-19-f97316?style=for-the-badge&logo=openai" /></a>
 </p>
 
 <p>
@@ -58,7 +58,7 @@
 
 <p align="center">
 <a href="#-why-this-exists">Why</a> ·
-<a href="#-eight-pillars">Features</a> ·
+<a href="#-nine-pillars">Features</a> ·
 <a href="#-quick-start">Quick Start</a> ·
 <a href="#%EF%B8%8F-four-install-methods">Install</a> ·
 <a href="#-prerequisites">Prerequisites</a> ·
@@ -372,7 +372,7 @@ curl http://localhost:8765/api/v1/health        # → {"status":"healthy"}
 | Interface | URL | What to do |
 |-----------|:---:|------------|
 | 🌐 **Web UI** | `http://localhost:6789` | Browse KBs, search, view graph |
-| 📚 **API Docs** | `http://localhost:8765/docs` | Explore 76 endpoints via Swagger |
+| 📚 **API Docs** | `http://localhost:8765/docs` | Explore 110+ endpoints via Swagger |
 | 🖥️ **CLI** | `ragctl status` | Check service health |
 | 🤖 **Agent** | Claude Code session | Say "list all knowledge bases" |
 
@@ -696,26 +696,15 @@ ragctl status                   # Shows both dev + prod
 ragctl down --appmode prod      # Stop only prod (Neo4j preserved)
 ```
 
-Built-in **rate limiting** (configurable in `config.yml`):
+Built-in **rate limiting** (defaults from `config.yml`, tunable):
 
 ```yaml
 server:
   rate_limit:
     enabled: true
     window_sec: 60
-    max_requests: 120       # general endpoints
-    heavy_max: 20            # parse/mineru endpoints
-```
-
-Built-in **rate limiting** (configurable in `config.yml`):
-
-```yaml
-server:
-  rate_limit:
-    enabled: true
-    window_sec: 60
-    max_requests: 120       # general endpoints
-    heavy_max: 20            # parse/mineru endpoints
+    max_requests: 600       # general endpoints
+    heavy_max: 60            # parse / mineru endpoints
 ```
 
 ### config.yml — every section explained
@@ -729,7 +718,191 @@ server:
 | `graph` | `uri: bolt://127.0.0.1:7687` · `password` · `pool` | Neo4j connection + connection-pool tuning |
 | `search` | `two_stage.stage1_top_k: 20` · `stage2_top_k: 5` · weights | BM25↔graph fusion weights in two-stage recall |
 | `experience_auto` | `enabled: false` · `interval_hours: 24` · `max_drafts_per_run` | Scheduled experience distillation (meditation) |
-| `soul` | `default_harness: omp` · `default_model` | SOUL training engine defaults (per-persona override in meditation config) |
-| `mineru` | `enabled` · `model_source: modelscope` | OCR engine + VLM model source |
+| `soul` ¹ | `default_harness: omp` · `default_model` | SOUL training engine defaults (per-persona override in meditation config) |
+| `mineru` ¹ | `enabled` · `model_source: modelscope` | OCR engine + VLM model source |
+
+> ¹ The `soul` and `mineru` sections live in **`backend/config.yml`** (backend-only); everything above is in the repo-root `config.yml` shared by all services.
 
 **Override order:** `config.yml` < `.env` < CLI flags (`--port-backend`, `--appmode`, …).
+
+---
+
+## ⚡ 94 MCP Tools
+
+All tools are accessible via `mcp__kb-mcp__*` from any MCP-compatible agent. Counts below form a disjoint partition (every tool counted once).
+
+<div align="center">
+
+| Category | Count | Category | Count |
+|:-----|:----:|:-----|:----:|
+| **Service lifecycle** | 4 | **KB CRUD** | 4 |
+| **Document CRUD + listing** | 9 | **Search** | 4 |
+| **Vector / index** | 6 | **File system** | 3 |
+| **Knowledge graph** | 11 | **Experience (incl. meditation)** | 26 |
+| **Tags** | 4 | **Parse** (non-blocking) | 3 |
+| **🧠 SOUL persona** | **20** | **Total** | **94** |
+
+</div>
+
+> Per-tool map and the disjoint-partition rationale live in the project's internal architecture guide (`docs/ARCHITECTURE.md`, not shipped with the public repo).
+
+---
+
+## 🗺️ Roadmap
+
+- [x] **v1.0** — Core QDCVR retrieval, KB CRUD, Web UI, MCP tools
+- [x] **v2.0** — Knowledge graph, experience lifecycle, bilingual i18n
+- [x] **v2.1** — Meditation (auto experience), MinerU OCR, multi-format parsing
+- [x] **v2.2** — Tauri desktop app, CIKM benchmark (18 experiments)
+- [x] **v2.3** — Five-layer consistency, silent headless, auto graph cleanup on delete
+- [ ] **v2.4** — Multi-modal (image search), REST API key auth
+- [ ] **v2.5** — WebSocket real-time collaboration, team workspaces
+- [ ] **v3.0** — Distributed indexing (Ray), 100k+ document scale
+
+---
+
+## 🤝 Contributing
+
+Contributions welcome!
+
+1. 🍴 **Fork** the repo
+2. 🌿 Create a **feature branch** (`git checkout -b feature/amazing`)
+3. 💻 **Code**, following existing style
+4. ✅ **Test** (`pytest backend/tests/`)
+5. 📝 **Commit** with a clear message
+6. 🚀 **Push** and open a **Pull Request**
+
+**Guidelines:**
+- Keep **atomic** — one PR per feature/fix
+- **Test before** committing (frontend: `npx vue-tsc --noEmit`, backend: `pytest`)
+- **Document** new features
+- **No AI slop** — every line should have a purpose
+
+---
+
+## ❓ FAQ & Troubleshooting
+
+<details>
+<summary><b>🔌 Port in use / service won't start</b></summary>
+
+```bash
+ragctl status                       # see port occupancy
+ragctl up --port-backend 9000 --port-web 6790   # move to free ports
+```
+For lingering processes, `ragctl restart backend -f` force-restarts.
+
+</details>
+
+<details>
+<summary><b>⬇️ Model download slow / failing</b></summary>
+
+```bash
+ragctl model --source modelscope     # ⭐ China (Alibaba CDN, default)
+ragctl model --source hf-mirror      # HuggingFace mirror
+ragctl model --source huggingface    # direct (overseas)
+```
+Model cache lives in `models_cache/` — `ragctl clean --model` clears it (re-download required).
+
+</details>
+
+<details>
+<summary><b>🕸️ Graph features unavailable</b></summary>
+
+Graph is optional. Neo4j now runs **local, Docker-free** by default
+(`graph.mode: local` in config.yml) — the distribution + bundled JRE live in
+`backend/.neo4j/` and the backend auto-starts it on launch (MinerU-style):
+
+```bash
+ragctl start neo4j    # standalone: start local Neo4j (backend auto-starts it too)
+ragctl stop neo4j     # stop local Neo4j
+ragctl up --no-neo4j  # everything else works; graph tools return degraded responses
+```
+
+Custom ports / heap / mirror are config-driven (`config.yml → graph.*`,
+env vars override). Legacy Docker mode: set `graph.mode: docker` and run
+`docker compose up -d neo4j`; `.env`'s `NEO4J_PASSWORD` must match `docker-compose.yml`.
+
+</details>
+
+<details>
+<summary><b>📄 PDF parse fails / hangs</b></summary>
+
+MinerU needs a one-time model pre-download: `ragctl mineru-model` (~5–7 GB). Then watch:
+
+```bash
+ragctl logs backend --tail
+```
+Parsing is **non-blocking**: an MCP call returns a `task_id` immediately — poll `parse_task_status(task_id)` instead of waiting.
+
+</details>
+
+<details>
+<summary><b>🧬 SOUL training returns "skipped" instantly</b></summary>
+
+This is **incremental idempotency**, not a bug: the document's content hash (`learned_hash`) already matches, so the persona skips it at zero cost. Point training at a new/unlearned document, or wait for new/changed docs to enter the KB.
+
+</details>
+
+<details>
+<summary><b>🔌 Agent can't see MCP tools</b></summary>
+
+Tools register when the MCP server starts. After installing/updating the plugin, **restart the MCP client session** (or reload plugins). Verify with `kb_project_status()` or `soul_list()`.
+
+</details>
+
+<details>
+<summary><b>💸 Training budget / cost control</b></summary>
+
+- Per-persona cap: `soul_status(soul_kb_id).estimated_cost_usd`
+- Per-round budget: meditation config `max_budget_usd` (default 0.15) — each round is an independent baseline
+- Dry-run a full-KB train first: `ragctl soul learn-all soul-xxx --dry-run`
+
+</details>
+
+<details>
+<summary><b>🔐 Enable API authentication</b></summary>
+
+```yaml
+# config.yml
+server:
+  auth:
+    enabled: true
+# .env
+KB_AUTH_TOKEN=<your-token>
+```
+All write endpoints now require the token; GET endpoints stay open for the UI.
+
+</details>
+
+<details>
+<summary><b>🧹 Start fresh (keep documents)</b></summary>
+
+```bash
+ragctl clean            # MinerU parse artifacts
+ragctl down             # stop services
+# delete storage/tree-file-system/* to reset KBs (back up first!)
+```
+
+</details>
+
+---
+
+## 🌐 Community & Support
+
+<div align="center">
+
+| Resource | Link |
+|:-----|:-----|
+| 🐛 **Report a Bug** | [GitHub Issues](https://github.com/kingdol666/rag-knowledge/issues) |
+| ⭐ **Star Us** | [GitHub](https://github.com/kingdol666/rag-knowledge) |
+| 🇨🇳 **中文文档** | [README-zh.md](./README-zh.md) |
+| 💬 **Discussions** | [GitHub Discussions](https://github.com/kingdol666/rag-knowledge/discussions) |
+| 📦 **Releases** | [GitHub Releases](https://github.com/kingdol666/rag-knowledge/releases) |
+
+</div>
+
+---
+
+## 📄 License
+
+MIT © [kingdol](https://github.com/kingdol666)

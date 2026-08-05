@@ -52,12 +52,25 @@ embedding:
   normalize: true
 
 # -- Knowledge Graph (Neo4j) --
+# mode: local = 本地安装自动启动(无需 Docker, 发行版+JRE 在 backend/.neo4j/)
+#       docker = 由 docker compose 管理(旧方式)
 graph:
   enabled: true
+  mode: "local"
+  auto_start: true          # backend 启动时自动拉起本地 Neo4j(MinerU 同款懒启动)
   uri: "bolt://127.0.0.1:7687"
+  bolt_port: 7687
+  http_port: 7474
   username: "neo4j"
   password: "${NEO4J_PASSWORD:-123456}"
   database: "neo4j"
+  home: "./backend/.neo4j"   # 本地发行版 + 内置 JRE(与 backend/.venv 同级)
+  data_dir: "./neo4j_data"   # 数据目录(与旧 docker 卷同名, 便于迁移)
+  log_dir: "./neo4j_logs"
+  version: "5.20.0"
+  heap: "1G"
+  pagecache: "1G"
+  mirror: ""                 # 下载镜像(留空=官方源 dist.neo4j.org / adoptium)
   pool:
     max_connection_pool_size: 50
     connection_acquisition_timeout: 30

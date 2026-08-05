@@ -1610,7 +1610,60 @@ async function stopWeb(port, mode = null) {
   return stopped;
 }
 
+// ── Neo4j: local (Docker-free, backend/.neo4j) or docker (legacy) ────────
+function readGraphMode() {
+  try {
+    const raw = fs.readFileSync(path.join(PROJECT_ROOT, 'config.yml'), 'utf-8');
+    const m = raw.match(/^graph:\s*$([\s\S]*?)^[a-z_]+:/m);
+    const block = m ? m[1] : '';
+    const mode = block.match(/^\s*mode:\s*["']?([a-z]+)/m);
+    if (mode) return mode[1] === 'docker' ? 'docker' : 'local';
+    const uri = raw.match(/graph:\s*[\s\S]*?uri:\s*["']bolt:\/\/[^:]+:(\d+)/);
+    return 'local'; // default
+  } catch { return 'local'; }
+}
+
+function readGraphBoltPort() {
+  try {
+    const raw = fs.readFileSync(path.join(PROJECT_ROOT, 'config.yml'), 'utf-8');
+    const p = raw.match(/bolt_port:\s*(\d+)/);
+    return p ? parseInt(p[1], 10) : 7687;
+  } catch { return 7687; }
+}
+
+function localNeo4jPython() {
+  const venvPy = path.join(BACKEND_DIR, '.venv', IS_WIN ? 'Scripts' : 'bin', IS_WIN ? 'python.exe' : 'python');
+  return fs.existsSync(venvPy) ? venvPy : 'python';
+}
+
 async function startNeo4j() {
+  const mode = readGraphMode();
+  const boltPort = readGraphBoltPort();
+
+  if (mode === 'local') {
+    // ── Local mode: spawn the Neo4j manager from the shared Python env ──
+    if (await portInUse(boltPort)) {
+      ok(`Neo4j (local) 已在运行 (bolt :${boltPort})`);
+      return { ok: true };
+    }
+    const py = localNeo4jPython();
+    const cli = path.join(BACKEND_DIR, 'app', 'utils', 'neo4j_cli.py');
+    info(`Neo4j (local) 启动中 (bolt :${boltPort}, home backend/.neo4j) ...`);
+    const r = await spawnAsync(py, [cli, 'start'], { cwd: PROJECT_ROOT, silent: true });
+    if (r.code !== 0) {
+      warn(`Neo4j (local) 启动失败 (exit ${r.code})`);
+      if (r.stderr) console.log(`  ${_c(C.GRAY, r.stderr.slice(0, 400))}`);
+      return { ok: false, reason: 'local-start-failed' };
+    }
+    for (let i = 0; i < 60; i++) {
+      if (await portInUse(boltPort)) { ok(`Neo4j (local) 已启动 (bolt :${boltPort})`); return { ok: true }; }
+      await sleep(1000);
+    }
+    warn('Neo4j (local) 已拉起但 bolt 端口尚未就绪（后台继续启动中）');
+    return { ok: true, pending: true };
+  }
+
+  // ── Docker mode (legacy) ──
   const composeFile = path.join(PROJECT_ROOT, 'docker-compose.yml');
   if (!fs.existsSync(composeFile)) { warn('docker-compose.yml 未找到'); return { ok: false, reason: 'no-compose' }; }
   if (!commandExists('docker')) {
@@ -1633,10 +1686,10 @@ async function startNeo4j() {
     }
     // Wait for bolt port
     for (let i = 0; i < 40; i++) {
-      if (await portInUse(7687)) { ok('Neo4j 已启动'); return { ok: true }; }
+      if (await portInUse(boltPort)) { ok('Neo4j 已启动'); return { ok: true }; }
       await sleep(1000);
     }
-    warn('Neo4j 已拉起但 bolt:7687 尚未就绪（后台继续启动中）');
+    warn('Neo4j 已拉起但 bolt 端口尚未就绪（后台继续启动中）');
     return { ok: true, pending: true };
   } catch (e) {
     warn(`Docker 调用异常 — 跳过 Neo4j: ${e.message}`);
@@ -1645,6 +1698,21 @@ async function startNeo4j() {
 }
 
 async function stopNeo4j() {
+  const mode = readGraphMode();
+  if (mode === 'local') {
+    // Local mode: kill whatever listens on the bolt port (process tree).
+    const boltPort = readGraphBoltPort();
+    const pid = findPidOnPort(boltPort);
+    if (pid) {
+      try {
+        killPid(parseInt(pid, 10), true);
+        await sleep(2000);
+      } catch (e) { /* ignore */ }
+    }
+    if (!(await portInUse(boltPort))) { ok('Neo4j (local) 已停止'); return true; }
+    warn('Neo4j (local) 端口仍占用，请手动结束进程');
+    return false;
+  }
   if (!commandExists('docker')) return false;
   try {
     await spawnAsync('docker', ['compose', 'down'], { cwd: PROJECT_ROOT, silent: true });
