@@ -57,7 +57,10 @@ def _load_config() -> dict:
             cfg[key] = True
         elif val == "false":
             cfg[key] = False
-        elif re.match(r"^-?\d+$", val):
+        # Only numeric *port* fields become int; plain-digit strings like a
+        # numeric password ("123456") must stay str — subprocess args with an
+        # int previously crashed with 'expected str, bytes or os.PathLike...'
+        elif re.match(r"^-?\d+$", val) and key in ("bolt_port", "http_port", "startup_timeout"):
             cfg[key] = int(val)
         else:
             cfg[key] = val
@@ -71,6 +74,13 @@ def main() -> int:
     if mode != "local":
         print(f"graph.mode={mode!r} — local CLI only handles mode=local")
         return 1
+
+    import logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(levelname)s %(name)s %(message)s",
+        stream=sys.stderr,
+    )
 
     from app.utils.neo4j_manager import Neo4jManager  # noqa: E402 (needs sys.path)
 

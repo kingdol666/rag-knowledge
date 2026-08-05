@@ -153,8 +153,10 @@ class Neo4jManager:
         self.log_dir = _resolve(cfg.get("log_dir") or DEFAULT_LOG_DIR)
         self.bolt_port = int(cfg.get("bolt_port") or 7687)
         self.http_port = int(cfg.get("http_port") or 7474)
-        self.username = cfg.get("username") or "neo4j"
-        self.password = cfg.get("password") or "123456"
+        self.username = str(cfg.get("username") or "neo4j")
+        # password must stay str — a numeric password parsed as int previously
+        # crashed subprocess args ('expected str, bytes or os.PathLike, not int')
+        self.password = str(cfg.get("password") or "123456")
         self.heap = cfg.get("heap") or "1G"
         self.pagecache = cfg.get("pagecache") or "1G"
         self.mirror = (cfg.get("mirror") or "").strip()
