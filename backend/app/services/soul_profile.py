@@ -120,15 +120,35 @@ async def build_persona_bundle(
     doc_names: list[str] = []
     seen_docs: set[str] = set()
 
-    results = search_result.get("results", [])
+    # BUGFIX: two_stage_search_service.search() 返回 {"stage2": {"results": [...]}},
+    # 且 results 为扁平 chunk 列表 [{"content", "doc_path", "score", ...}]（非
+    # 嵌套 {"chunks": [...]} 结构）。原代码: ①键路径读错(顶层 results) ②按嵌套结构
+    # 遍历 → persona_docs/doc_names 恒空（soul_qdcvr_ask/soul_ask 的 persona_bundle
+    # 恒为空, PAS 人格注入失效）
+    results = search_result.get("stage2", {}).get("results", [])
+    if not results:
+        # 兼容旧结构/降级: 直接键或顶层 results
+        results = search_result.get("results", []) or []
     for item in results:
         doc_path = item.get("doc_path", "")
-        chunks = item.get("chunks", [])
-        for ch in chunks:
+        chunks = item.get("chunks")
+        if isinstance(chunks, list) and chunks:
+            # 嵌套结构（兼容未来版本）
+            for ch in chunks:
+                persona_docs.append({
+                    "path": ch.get("path", doc_path),
+                    "chunk_text": ch.get("chunk_text", ""),
+                    "score": ch.get("score", 0.0),
+                })
+                if doc_path and doc_path not in seen_docs:
+                    seen_docs.add(doc_path)
+                    doc_names.append(doc_path)
+        else:
+            # 扁平 chunk 结构（当前版本实际返回）
             persona_docs.append({
-                "path": ch.get("path", doc_path),
-                "chunk_text": ch.get("chunk_text", ""),
-                "score": ch.get("score", 0.0),
+                "path": doc_path,
+                "chunk_text": item.get("content", ""),
+                "score": item.get("score", 0.0),
             })
             if doc_path and doc_path not in seen_docs:
                 seen_docs.add(doc_path)
