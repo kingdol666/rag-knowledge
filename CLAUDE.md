@@ -29,7 +29,7 @@ MinerU OCR Engine (ephemeral port)  ← PDF → Markdown conversion
 Claude Code / Agent
     │  MCP stdio (kb-mcp)
     ▼
-kb-mcp MCP Server              ← 91 tools: KB CRUD, file ops, parse, search, tags, vector, graph, experience, SOUL persona, project lifecycle
+kb-mcp MCP Server              ← 94 tools: KB CRUD, file ops, parse, search, tags, vector, graph, experience, SOUL persona, project lifecycle
     │  HTTP → web proxy / backend     +  direct file reads
     ▼
 Nuxt / Backend                 ← writes: parse + save pipeline
@@ -44,7 +44,7 @@ rag-knowledge/
 ├── start.bat / start.sh    # One-click launch scripts
 ├── backend/                # FastAPI + MinerU (Python 3.12)
 ├── web/                    # Nuxt 3 UI (TypeScript)
-├── kb-mcp/                 # [local] MCP server — provides 91 MCP tools for KB operations (KB CRUD · parse · search · vector · graph · tags · experience · SOUL persona · project lifecycle)
+├── kb-mcp/                 # [local] MCP server — provides 94 MCP tools for KB operations (KB CRUD · parse · search · vector · graph · tags · experience · SOUL persona · project lifecycle)
 ├── .claude/skills/         # OMC skills (knowledgebase dispatcher, ingest, search, manage, init, update, etc.)
 ├── .claude/agents/         # Archival agent definition (knowledge-admin.md)
 ├── docs/ARCHITECTURE.md    # Detailed architecture + MCP dev guide
@@ -118,7 +118,7 @@ Key properties:
 
 ```
 kb-mcp/
-├── server.py               # 91 MCP tools via FastMCP; parse tools are NON-BLOCKING
+├── server.py               # 94 MCP tools via FastMCP; parse tools are NON-BLOCKING
 ├── kb_client/
 │   └── client.py           # All HTTP logic (server.py has zero HTTP code)
 ├── config.py               # Reads URLs from shared config.yml; zero hardcoded paths
@@ -128,7 +128,7 @@ kb-mcp/
 └── .mcp.json (at root)     # Connects kb-mcp to Claude Code via stdio
 ```
 
-MCP Tools by category (91 tools total):
+MCP Tools by category (94 tools total):
 - **Health:** `backend_status`
 - **Project lifecycle (3):** `kb_project_status` (scope=runtime|setup), `kb_project_start`, `kb_project_update` (show_version=true for version check)
 - **KB CRUD:** `kb_list`, `kb_create`, `kb_update`, `kb_delete`
@@ -142,7 +142,7 @@ MCP Tools by category (91 tools total):
 - **Vector/Index (6):** `kb_index_document`, `kb_batch_index`, **`kb_reindex`**(→task_id,non-blocking), `kb_cleanup_orphan_collections`, `kb_find_duplicates`, **`kb_task_status`**(通用任务轮询)
 - **Knowledge Graph (11 tools):** `kb_graph_search` (unified), `kb_graph_stats` (incl. `neo4j_available`), `kb_graph_document`, `kb_graph_document_related`, `kb_graph_kb_overview`, **`kb_graph_build`**(→task_id,non-blocking), `kb_graph_cross_kb_documents`, `kb_graph_document_paths`, `kb_graph_central_documents`, `kb_graph_delete_document`, `kb_graph_delete_kb
 - **Experience (26 tools):** Full lifecycle — create/read/list/**update**(auto-reindex)/delete/apply/review/summary | Search: search_global/**search_smart**(推荐入口)/**rerank** | Extract/Drafts: extract/drafts_list/draft_read/draft_approve/draft_reject | Health: **check_stale**(空kb_id=全库)/sync_kb/dashboard/apply_decay | Meditation (6, **meditation_run non-blocking**): **meditation_status**/meditation_run(→task_id,立即返回)/**meditation_task_status**(轮询结果)/meditation_config_get/meditation_config_update/meditation_history
-- **SOUL Persona (17 tools):** Persona lifecycle — **soul_init**(创建人格)/soul_list/soul_status/soul_delete/soul_config_update | Training — **soul_learn**(单人格,固定轮数)/**soul_learn_all**(全人格,预算控制)/soul_eval/soul_calibrate | Q&A — **soul_ask**(人格注入)/**soul_qdcvr_ask**(QDCVR集成)/soul_router(自动路由) | Memory — soul_review_drafts(审批草稿)/soul_reflect(漂移报告)/soul_checkpoint/soul_rollback/soul_export(LoRA导出)
+- **SOUL Persona (20 tools):** Persona lifecycle — **soul_init**(创建人格)/soul_list/soul_status/soul_delete/soul_config_update | Training — **soul_learn**(单人格,固定轮数)/**soul_learn_all**(全人格,预算控制)/**soul_train_rl**(RL强化,奖励=四维评分)/**soul_evaluate**(四维人格评分)/soul_eval/soul_calibrate | Cognition — **soul_gen_cognition_drafts**(策略更新草稿)/soul_review_drafts(审批草稿)/soul_reflect(漂移报告)/soul_checkpoint/soul_rollback | Q&A — **soul_ask**(人格注入)/**soul_qdcvr_ask**(QDCVR集成)/soul_router(自动路由) | Export — soul_export(LoRA导出)
 - **补天蒸馏 (butian skill):** 初始人格从哪来 — 调度 `nuwa-skill`(公开人物/主题深研) × `dot-skill`(同事/关系/本地材料) 双引擎, 产物统一为种子包(meta.json+persona.md+work.md+values.md), `ragctl soul distill [--values]` 落地(建库+4宪法文档+bootstrap+索引)。转换器: `.claude/skills/butian/scripts/nuwa_to_seed.py`。架构: `.claude/skills/butian/references/butian-architecture.md`
 
 **Architecture principle:** writes go through HTTP API (backend/web proxy), reads go through direct file access (`.tree-fs.json` + `.knowledge-base.yml`).

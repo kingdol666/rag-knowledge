@@ -209,8 +209,6 @@ Nuxt server 作为浏览器与 FastAPI 后端之间的**代理层**。所有路�
 | **KB 搜索** | `/knowledge-search` | QDCVR 搜索界面，支持过滤、排序和来源显示 |
 | **知识图谱** | `/knowledge-graph` | Neo4j 交互式图谱可视化 |
 | **设置** | `/settings` | 环境配置编辑，支持热重载 |
-| **关于** | `/about` | 项目信息和版本说明 |
-| **关于项目** | `/about-project` | 技术架构和路线图 |
 
 ## ⚙️ 配置
 

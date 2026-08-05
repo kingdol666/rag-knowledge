@@ -21,9 +21,9 @@ Execute ragctl commands. Use the appropriate shell for the platform:
 | `restart` | Restart all services |
 | `logs` | Tail recent logs from all services |
 | `setup` | One-time dependency install + config |
-| `test` | Run full-stack validation tests |
-| `config` | Show current configuration |
-| `health` | Quick health check on all endpoints |
+| `check` | Comprehensive environment check (shows missing items + fix suggestions) |
+| `deps` | Install all dependencies with real-time progress |
+| `mineru-model` | Pre-download MinerU Pipeline + VLM models (OCR engine, ~5-7GB) |
 | `model` | Download BGE-M3 embedding model (~2.2GB). Supports `--source modelscope\|hf-mirror\|huggingface` |
 | `clean` | Clean caches — MinerU parse artifacts (default), logs, pycache, or model cache |
 | `install` | Register ragctl globally to `~/.local/bin` |

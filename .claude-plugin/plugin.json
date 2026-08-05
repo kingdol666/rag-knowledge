@@ -1,8 +1,8 @@
 {
   "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
   "name": "rag-knowledge",
-  "version": "2.4.0",
-  "description": "Enterprise-Grade Document Intelligence Knowledge Base — 17 skills (14 knowledgebase + soul 人格系统 + soul-rag 人格增强检索 + dot-skill 蒸馏引擎), 91 MCP tools (74 kb + 17 soul), PDF parsing (MinerU OCR), semantic search (BM25+vector), Neo4j knowledge graph, experience lifecycle management (E0-E12), SOUL persona system (distillation + training + Q&A), silent headless startup via ragctl. Cross-platform (Win/Linux/macOS). Triggered by: 知识库, KB, knowledge base, 文档, document, 搜索, search, 入库, ingest, 经验, experience, 图谱, graph, 整理, organize, 校验, verify, 初始化, 安装, 部署, setup, install, bootstrap, init, deploy, 更新, 升级, update, upgrade, 人格, SOUL, persona, soul, 补天, 蒸馏.",
+  "version": "2.3.0",
+  "description": "Enterprise-Grade Document Intelligence Knowledge Base — 19 skills (14 knowledgebase + soul 人格系统 + soul-rag 人格增强检索 + butian 补天蒸馏 + dot-skill 蒸馏引擎 + nuwa-skill), 94 MCP tools (74 kb + 20 soul), PDF parsing (MinerU OCR), semantic search (BM25+vector), Neo4j knowledge graph, experience lifecycle management (E0-E12), SOUL persona system (distillation + training + Q&A), silent headless startup via ragctl. Cross-platform (Win/Linux/macOS). Triggered by: 知识库, KB, knowledge base, 文档, document, 搜索, search, 入库, ingest, 经验, experience, 图谱, graph, 整理, organize, 校验, verify, 初始化, 安装, 部署, setup, install, bootstrap, init, deploy, 更新, 升级, update, upgrade, 人格, SOUL, persona, soul, 补天, 蒸馏.",
   "author": {
     "name": "kingdol",
     "email": "kingdol6080@gmail.com"
@@ -41,7 +41,10 @@
     "./.claude/skills/knowledgebase-update/",
     "./.claude/skills/knowledgebase-verify/",
     "./.claude/skills/soul/",
-    "./.claude/skills/soul-rag/"
+    "./.claude/skills/soul-rag/",
+    "./.claude/skills/butian/",
+    "./.claude/skills/dot-skill/",
+    "./.claude/skills/nuwa-skill/"
   ],
   "mcpServers": "./.mcp.json",
   "commands": "./commands/",

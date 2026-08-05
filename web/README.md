@@ -209,8 +209,6 @@ The Nuxt server acts as a **proxy layer** between the browser and the FastAPI ba
 | **KB Search** | `/knowledge-search` | QDCVR search interface with filtering, ranking, and source display |
 | **Knowledge Graph** | `/knowledge-graph` | Neo4j-powered interactive graph visualization |
 | **Settings** | `/settings` | Environment configuration with hot-reload |
-| **About** | `/about` | Project information and release notes |
-| **About Project** | `/about-project` | Technical architecture and roadmap |
 
 ## ⚙️ Configuration
 

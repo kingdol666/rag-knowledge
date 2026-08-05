@@ -366,7 +366,7 @@ curl http://localhost:8765/api/v1/health        # → {"status":"healthy"}
 | 界面 | 地址 | 用途 |
 |------|:----:|------|
 | 🌐 **Web UI** | `http://localhost:6789` | 浏览 KB、搜索、图谱可视化 |
-| 📚 **API 文档** | `http://localhost:8765/docs` | Swagger UI，110+ 个端点 |
+| 📚 **API 文档** | `http://localhost:8765/docs` | Swagger UI，112 个 API 端点 |
 | 🖥️ **CLI** | `ragctl status` | 服务健康检查 |
 | 🤖 **Agent** | Claude Code 会话 | 说"列出所有知识库" |
 
@@ -523,7 +523,6 @@ kb_graph_cross_kb_documents(min_kbs=2)
 | 🤖 **Claude 对话** | `/claude-chat` | Agent SDK 流式交互 |
 | 🧬 **SOUL 人格** | `/soul` | Persona Studio：训练实时监控 · RL 曲线 · 人格定义查看器 · 人格问答 |
 | ⚙️ **系统设置** | `/settings` | 配置编辑器，热重载 |
-| ❓ **关于** | `/about` / `/about-project` | 发布说明 + 路线图 |
 
 <div align="center">
 
@@ -690,7 +689,7 @@ server:
 - [x] **v1.0** — 核心 QDCVR 检索，知识库 CRUD，Web UI，MCP 工具
 - [x] **v2.0** — 知识图谱，经验生命周期，双语 i18n
 - [x] **v2.1** — 冥想（自动经验），MinerU OCR，多格式解析
-- [x] **v2.2** — Tauri 桌面应用，CIKM 基准测试（18 实验）
+- [x] **v2.2** — Tauri 桌面应用，CIKM 标准检索基准（5 方法 × 50 查询 × 157 文档）
 - [x] **v2.3** — 五层一致性，静默无头，删除时自动清理图谱
 - [ ] **v2.4** — 多模态（图片搜索），REST API 密钥认证
 - [ ] **v2.5** — WebSocket 实时协作，团队工作区

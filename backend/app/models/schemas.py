@@ -4,6 +4,8 @@ Pydantic models for API request/response.
 from typing import Optional
 from pydantic import BaseModel, Field
 
+from app.version import get_version
+
 
 class HealthResponse(BaseModel):
     status: str = Field(default="healthy", description="Service status")
@@ -45,5 +47,5 @@ class AgentExecuteResponse(BaseModel):
 class HealthResponseOld(BaseModel):
     """Backward-compatible health check for the frontend proxy."""
     status: str = Field(default="healthy")
-    version: str = Field(default="1.0.0")
+    version: str = Field(default_factory=get_version)
 

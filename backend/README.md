@@ -11,7 +11,7 @@
 
 <p align="center">
   <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick%20Start-3%20steps-blue?style=for-the-badge" /></a>
-  <a href="#-api-reference"><img src="https://img.shields.io/badge/API-64%20endpoints-009688?style=for-the-badge" /></a>
+  <a href="#-api-reference"><img src="https://img.shields.io/badge/API-112%20endpoints-009688?style=for-the-badge" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" /></a>
   <a href="#-cross-platform"><img src="https://img.shields.io/badge/platform-Win%20%7C%20Linux%20%7C%20macOS-lightgrey?style=for-the-badge" /></a>
   <a href="#-tech-stack"><img src="https://img.shields.io/badge/Python-3.12-blue?style=for-the-badge" /></a>
@@ -183,16 +183,95 @@ BACKEND_PORT=9000 APP_MODE=dev uv run python main.py
 | `DELETE` | `/api/v1/graph/document` | Delete document from graph |
 | `DELETE` | `/api/v1/graph/kb/{kb_id}` | Delete KB from graph |
 
-### Experience
+### Experience (23)
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| `GET` | `/api/v1/experience/{kb_id}` | List experiences |
-| `POST` | `/api/v1/experience/{kb_id}` | Create experience |
-| `GET` | `/api/v1/experience/{kb_id}/dashboard` | Health dashboard |
-| `POST` | `/api/v1/experience/{kb_id}/extract` | Extract from documents |
-| `POST` | `/api/v1/experience/{kb_id}/search` | Search experiences |
-| `POST` | `/api/v1/experience/global-search` | Cross-KB search |
+| `POST` | `/api/v1/experience/global-search` | Global Search Experiences |
+| `POST` | `/api/v1/experience/stale-global` | Check Stale Global |
+| `POST` | `/api/v1/experience/{kb_id}` | Create Experience |
+| `GET` | `/api/v1/experience/{kb_id}` | List Experiences |
+| `GET` | `/api/v1/experience/{kb_id}/dashboard` | Dashboard |
+| `POST` | `/api/v1/experience/{kb_id}/decay` | Apply Decay |
+| `GET` | `/api/v1/experience/{kb_id}/drafts` | List Drafts |
+| `GET` | `/api/v1/experience/{kb_id}/drafts/{draft_id}` | Read Draft |
+| `POST` | `/api/v1/experience/{kb_id}/drafts/{draft_id}/approve` | Approve Draft |
+| `POST` | `/api/v1/experience/{kb_id}/drafts/{draft_id}/reject` | Reject Draft |
+| `POST` | `/api/v1/experience/{kb_id}/extract` | Extract Experiences |
+| `POST` | `/api/v1/experience/{kb_id}/init` | Init Experience |
+| `POST` | `/api/v1/experience/{kb_id}/reindex` | Reindex Experiences |
+| `POST` | `/api/v1/experience/{kb_id}/search` | Search Experiences |
+| `GET` | `/api/v1/experience/{kb_id}/stale` | Check Stale |
+| `GET` | `/api/v1/experience/{kb_id}/summary` | Experience Summary |
+| `POST` | `/api/v1/experience/{kb_id}/sync` | Sync Kb |
+| `POST` | `/api/v1/experience/{kb_id}/vector-search` | Vector Search Experiences |
+| `GET` | `/api/v1/experience/{kb_id}/{exp_id}` | Read Experience |
+| `PUT` | `/api/v1/experience/{kb_id}/{exp_id}` | Update Experience |
+| `DELETE` | `/api/v1/experience/{kb_id}/{exp_id}` | Delete Experience |
+| `POST` | `/api/v1/experience/{kb_id}/{exp_id}/apply` | Apply Experience |
+| `POST` | `/api/v1/experience/{kb_id}/{exp_id}/review` | Review Experience |
+
+### Meditation (10)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/v1/meditation/config` | Meditation Config |
+| `PUT` | `/api/v1/meditation/config` | Meditation Config Update |
+| `POST` | `/api/v1/meditation/feedback` | Meditation Feedback |
+| `GET` | `/api/v1/meditation/harness-status` | Harness Status |
+| `GET` | `/api/v1/meditation/history` | Meditation History |
+| `GET` | `/api/v1/meditation/history/{run_id}` | Meditation Run Detail |
+| `GET` | `/api/v1/meditation/models` | Meditation Models |
+| `POST` | `/api/v1/meditation/run` | Meditation Run |
+| `GET` | `/api/v1/meditation/signals` | Meditation Signals |
+| `GET` | `/api/v1/meditation/status` | Meditation Status |
+
+### SOUL (35)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/v1/soul/ask` | Soul Ask |
+| `POST` | `/api/v1/soul/bootstrap` | Soul Bootstrap |
+| `POST` | `/api/v1/soul/distill` | Distill Persona |
+| `POST` | `/api/v1/soul/distill-files` | Distill Files |
+| `POST` | `/api/v1/soul/init` | Soul Init |
+| `POST` | `/api/v1/soul/learn-all` | Learn All Global |
+| `GET` | `/api/v1/soul/list` | Soul List |
+| `POST` | `/api/v1/soul/qdcvr-ask` | Soul Qdcvr Ask |
+| `POST` | `/api/v1/soul/router` | Router Route |
+| `GET` | `/api/v1/soul/router/status` | Router Status |
+| `GET` | `/api/v1/soul/settings` | Soul Settings |
+| `GET` | `/api/v1/soul/tasks` | List Tasks |
+| `GET` | `/api/v1/soul/tasks/{task_id}` | Task Status |
+| `POST` | `/api/v1/soul/tasks/{task_id}/pause` | Pause Task |
+| `POST` | `/api/v1/soul/tasks/{task_id}/resume` | Resume Task |
+| `GET` | `/api/v1/soul/training/history` | Training History |
+| `GET` | `/api/v1/soul/training/runs/{run_id}` | Training Run Detail |
+| `DELETE` | `/api/v1/soul/{soul_kb_id}` | Soul Delete |
+| `POST` | `/api/v1/soul/{soul_kb_id}/calibrate` | Calibrate |
+| `POST` | `/api/v1/soul/{soul_kb_id}/checkpoint` | Checkpoint |
+| `POST` | `/api/v1/soul/{soul_kb_id}/cognition-drafts` | Gen Cognition Drafts |
+| `PUT` | `/api/v1/soul/{soul_kb_id}/config` | Soul Config Update |
+| `POST` | `/api/v1/soul/{soul_kb_id}/eval` | Eval Answer |
+| `POST` | `/api/v1/soul/{soul_kb_id}/evaluate` | Evaluate |
+| `POST` | `/api/v1/soul/{soul_kb_id}/export` | Export Training |
+| `GET` | `/api/v1/soul/{soul_kb_id}/folder` | Soul Folder |
+| `POST` | `/api/v1/soul/{soul_kb_id}/learn` | Learn |
+| `POST` | `/api/v1/soul/{soul_kb_id}/learn-all` | Learn All |
+| `GET` | `/api/v1/soul/{soul_kb_id}/persona-docs` | Persona Docs |
+| `POST` | `/api/v1/soul/{soul_kb_id}/reflect` | Reflect |
+| `POST` | `/api/v1/soul/{soul_kb_id}/review-drafts` | Review Drafts |
+| `GET` | `/api/v1/soul/{soul_kb_id}/reward-history` | Reward History |
+| `POST` | `/api/v1/soul/{soul_kb_id}/rollback` | Rollback |
+| `GET` | `/api/v1/soul/{soul_kb_id}/status` | Status |
+| `POST` | `/api/v1/soul/{soul_kb_id}/train-rl` | Train Rl |
+
+### System (2)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `POST` | `/api/v1/system/clean` | Clean Caches |
+| `GET` | `/api/v1/system/clean/mineru-entries` | List Mineru Entries |
 
 ### Configuration
 

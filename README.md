@@ -372,7 +372,7 @@ curl http://localhost:8765/api/v1/health        # → {"status":"healthy"}
 | Interface | URL | What to do |
 |-----------|:---:|------------|
 | 🌐 **Web UI** | `http://localhost:6789` | Browse KBs, search, view graph |
-| 📚 **API Docs** | `http://localhost:8765/docs` | Explore 110+ endpoints via Swagger |
+| 📚 **API Docs** | `http://localhost:8765/docs` | Explore 112 API endpoints via Swagger |
 | 🖥️ **CLI** | `ragctl status` | Check service health |
 | 🤖 **Agent** | Claude Code session | Say "list all knowledge bases" |
 
@@ -583,7 +583,6 @@ Open **http://localhost:6789** and explore:
 | 🤖 **Claude Chat** | `/claude-chat` | Agent SDK streaming with tools |
 | 🧬 **SOUL Persona** | `/soul` | Persona Studio: live training monitor · RL curve · persona-definition viewer · persona Q&A |
 | ⚙️ **Settings** | `/settings` | Runtime config editor with hot-reload |
-| ❓ **About** | `/about` / `/about-project` | Release notes + roadmap |
 
 <div align="center">
 
@@ -753,7 +752,7 @@ All tools are accessible via `mcp__kb-mcp__*` from any MCP-compatible agent. Cou
 - [x] **v1.0** — Core QDCVR retrieval, KB CRUD, Web UI, MCP tools
 - [x] **v2.0** — Knowledge graph, experience lifecycle, bilingual i18n
 - [x] **v2.1** — Meditation (auto experience), MinerU OCR, multi-format parsing
-- [x] **v2.2** — Tauri desktop app, CIKM benchmark (18 experiments)
+- [x] **v2.2** — Tauri desktop app, CIKM-standard retrieval benchmark (5 methods × 50 queries × 157 docs)
 - [x] **v2.3** — Five-layer consistency, silent headless, auto graph cleanup on delete
 - [ ] **v2.4** — Multi-modal (image search), REST API key auth
 - [ ] **v2.5** — WebSocket real-time collaboration, team workspaces

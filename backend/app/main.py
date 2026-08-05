@@ -186,10 +186,12 @@ async def lifespan(app: FastAPI):
     logger.info("RAG Knowledge Backend stopped.")
 
 
+from app.version import get_version
+
 app = FastAPI(
     title="RAG Knowledge Backend",
     description="Backend API for RAG Knowledge Platform",
-    version="1.0.0",
+    version=get_version(),
     lifespan=lifespan,
     docs_url="/docs",
     redoc_url="/redoc",
@@ -226,7 +228,7 @@ app.include_router(system_router)
 async def root():
     return {
         "service": "RAG Knowledge Backend",
-        "version": "1.0.0",
+        "version": get_version(),
         "docs": "/docs",
         "health": "/api/v1/health",
     }

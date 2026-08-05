@@ -5,13 +5,13 @@
 </h1>
 
 <p align="center">
-  <strong>MCP Server · 74 Tools · KB Lifecycle · Search · Graph · Experience</strong><br/>
+  <strong>MCP Server · 94 Tools · KB Lifecycle · Search · Graph · Experience · SOUL Persona</strong><br/>
   <em>The MCP tool layer connecting Claude Code agents to the RAG Knowledge Platform</em>
 </p>
 
 <p align="center">
   <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick%20Start-3%20steps-blue?style=for-the-badge" /></a>
-  <a href="#-tools-74"><img src="https://img.shields.io/badge/MCP-74%20tools-blueviolet?style=for-the-badge" /></a>
+  <a href="#-tools-94"><img src="https://img.shields.io/badge/MCP-94%20tools-blueviolet?style=for-the-badge" /></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge" /></a>
   <a href="#-tech-stack"><img src="https://img.shields.io/badge/Python-3.12-blue?style=for-the-badge" /></a>
   <a href="#-tech-stack"><img src="https://img.shields.io/badge/FastMCP-latest-9cf?style=for-the-badge" /></a>
@@ -30,7 +30,7 @@
 - [🌟 Overview](#-overview)
 - [🏗️ Architecture](#️-architecture)
 - [🚀 Quick Start](#-quick-start)
-- [🔌 Tools (74)](#-tools-74)
+- [🔌 Tools (94)](#-tools-94)
 - [📡 Client Library](#-client-library)
 - [⚙️ Configuration](#️-configuration)
 - [📁 Project Structure](#-project-structure)
@@ -40,7 +40,7 @@
 
 ## 🌟 Overview
 
-`kb-mcp` is the MCP (Model Context Protocol) server that bridges Claude Code (or any MCP-compatible agent) to the RAG Knowledge Platform. It provides **74 tools** organized into 11 categories — enough to manage every aspect of a production knowledge base without leaving the agent conversation.
+`kb-mcp` is the MCP (Model Context Protocol) server that bridges Claude Code (or any MCP-compatible agent) to the RAG Knowledge Platform. It provides **94 tools** organized into 12 categories — enough to manage every aspect of a production knowledge base without leaving the agent conversation.
 
 **Key principles:**
 
@@ -60,7 +60,7 @@
                    │ MCP stdio (FastMCP)
 ┌──────────────────▼───────────────────────┐
 │              kb-mcp/server.py             │
-│         74 @mcp.tool() definitions       │
+│         94 @mcp.tool() definitions       │
 │         Zero HTTP code — delegates down   │
 └──────┬──────────────────────┬────────────┘
        │ kb_client (HTTP)     │ direct file I/O
@@ -99,58 +99,70 @@ uv run python server.py --http
 
 > **Normally you don't run kb-mcp manually.** Claude Code auto-launches it via `../.mcp.json` when you open the project. The first `uv run` auto-syncs deps if needed. For global usage, `claude plugin install rag-knowledge` registers it in `~/.claude.json` → `mcpServers`.
 
-## 🔌 Tools (74)
+## 🔌 Tools (94)
 
 All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by domain:
 
-### Service Lifecycle (4) — silent, headless management
+### Service Lifecycle (4)
 
 | Tool | Description |
 |------|-------------|
+| `backend_status()` | Get backend service health and MinerU OCR engine status. |
 | `kb_project_start()` | Silently start project services. HEADLESS on every OS and every mode — |
 | `kb_project_status()` | Full project service status. |
 | `kb_project_update()` | Check GitHub for a newer version of the project and optionally pull it. |
-| `backend_status()` | Get backend service health and MinerU OCR engine status. |
 
-### KB CRUD (5)
+### KB CRUD (4)
 
 | Tool | Description |
 |------|-------------|
-| `kb_list()` | List all knowledge bases with id, name, description, and document count. |
 | `kb_create()` | Create a new knowledge base. parent_id is an optional tree folder UUID for nesting (omit for root). Returns knowledgeBase with id (UUID) and path -- both work as kb_id in other tools. |
-| `kb_update()` | Update a knowledge base's name and/or description. kb_id accepts path or UUID. |
 | `kb_delete()` | Delete an entire knowledge base and all its contents (irreversible). kb_id accepts either the path string or the UUID returned by kb_create. |
-| `kb_find_duplicates()` | Find duplicate / near-duplicate documents via content hash + vector similarity. |
+| `kb_list()` | List all knowledge bases with id, name, description, and document count. |
+| `kb_update()` | Update a knowledge base's name and/or description. kb_id accepts path or UUID. |
 
-### Document CRUD (9)
+### Document CRUD + Listing (11)
 
 | Tool | Description |
 |------|-------------|
-| `kb_get_documents()` | List all documents inside a knowledge base. kb_id accepts path or UUID. |
-| `kb_doc_create()` | Create a new Markdown document in a KB. Auto-dedup on name collision. |
-| `kb_doc_read()` | Read the content of a document (Markdown body, paginated). |
-| `kb_doc_update_meta()` | Update a document's metadata (name, description). |
-| `kb_doc_update_content()` | Overwrite a document's content. |
-| `kb_doc_delete()` | Delete a single document. |
 | `kb_doc_batch_delete()` | Delete multiple documents at once. |
+| `kb_doc_create()` | Create a new Markdown document in a KB. Auto-dedup on name collision. |
+| `kb_doc_delete()` | Delete a single document. |
+| `kb_doc_get_by_tag()` | Find documents by tag across all KBs (or one KB if kb_id given). |
 | `kb_doc_move()` | Move a document to a different knowledge base. |
-| `kb_doc_save_parsed()` |  |
+| `kb_doc_read()` | Read the content of a document (Markdown body, paginated). |
+| `kb_doc_save_parsed()` | Save parsed markdown (FULL content + images) into a knowledge base. |
+| `kb_doc_update_content()` | Overwrite a document's content. |
+| `kb_doc_update_meta()` | Update a document's metadata (name, description). |
+| `kb_doc_update_tags()` | Update a document's tags. kb_id accepts UUID; doc_path accepts full path or bare filename. |
+| `kb_get_documents()` | List all documents inside a knowledge base. kb_id accepts path or UUID. |
 
 ### Search (4)
 
 | Tool | Description |
 |------|-------------|
 | `kb_search()` | Search KB metadata by keyword across ALL knowledge bases. Scans only document |
-| `kb_search_vector()` | Vector semantic search for document chunks. |
-| `kb_search_two_stage()` |  |
 | `kb_search_stats()` | Vector index statistics. View each knowledge base's index status in the vector database. |
+| `kb_search_two_stage()` | Two-stage precision search: first broad search to locate candidate documents, then vector fine-search for chunks. |
+| `kb_search_vector()` | Vector semantic search for document chunks. |
+
+### Vector / Index (6)
+
+| Tool | Description |
+|------|-------------|
+| `kb_batch_index()` | Batch index documents (vector + graph). |
+| `kb_cleanup_orphan_collections()` | Detect and clean up orphan/duplicate vector collections (vector index residue from deleted/renamed KBs). |
+| `kb_find_duplicates()` | Find duplicate / near-duplicate documents via content hash + vector similarity. |
+| `kb_index_document()` | Index a single document (vector + graph). Stores document content (or existing document) into the vector database and records vector_index in metadata. |
+| `kb_reindex()` | Rebuild vector index and knowledge graph. Empty kb_id rebuilds all. |
+| `kb_task_status()` | Check the status of ANY non-blocking background task (kb_reindex, kb_graph_build). |
 
 ### File System (3)
 
 | Tool | Description |
 |------|-------------|
-| `fs_get_tree()` | Get the full file system tree of knowledge bases and their contents. |
 | `fs_get_children()` | Get immediate children (folders + files) of a folder. |
+| `fs_get_tree()` | Get the full file system tree of knowledge bases and their contents. |
 | `fs_upload_file()` | Upload a local file into the file system tree. file_path is an absolute local disk path. parent_id is a tree folder UUID (empty = root). |
 
 ### Knowledge Graph (11)
@@ -183,7 +195,7 @@ All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by 
 | `experience_draft_read()` | E3: Read draft details (including extraction evidence, source document). |
 | `experience_draft_reject()` | E3: Reject draft -> move to rejected/ (retain reject reason for traceability). |
 | `experience_drafts_list()` | E3: List the experience draft pool (pending review candidates). |
-| `experience_extract()` |  |
+| `experience_extract()` | E0/E1: Auto-extract experience candidates from KB documents. |
 | `experience_list()` | List experiences in a knowledge base, supports filtering by scenario/category/tag. Results sorted by rating descending. |
 | `experience_read()` | Read full experience information (metadata + content body). |
 | `experience_rerank()` | Semantic reranking for experience search results -- multi-dimensional scoring. |
@@ -192,9 +204,9 @@ All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by 
 | `experience_search_smart()` | Intelligent multi-path experience retrieval -- the RECOMMENDED entry point for experience search. |
 | `experience_summary()` | Get experience statistics summary, including total count, distribution by category, distribution by severity, total applications, average rating, top 5 experiences. |
 | `experience_sync_kb()` | E6: Mark entire KB for sync (stale/orphan experiences marked needs_sync). |
-| `experience_update()` |  |
+| `experience_update()` | Update an experience record. Only pass fields to update; omitted fields stay unchanged. |
 
-### Meditation (6) — auto-insight scheduler
+### Meditation (6)
 
 | Tool | Description |
 |------|-------------|
@@ -205,16 +217,14 @@ All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by 
 | `experience_meditation_status()` | Get meditation status: scheduler, harness health, circuit breaker, per-KB configs. |
 | `experience_meditation_task_status()` | Check the status of a non-blocking meditation run. |
 
-### Tags & Cleanup (4)
+### Tags (2)
 
 | Tool | Description |
 |------|-------------|
-| `kb_tags_list()` | List all registered tags in the system. |
-| `kb_doc_update_tags()` | Update a document's tags. kb_id accepts UUID; doc_path accepts full path or bare filename. |
-| `kb_doc_get_by_tag()` | Find documents by tag across all KBs (or one KB if kb_id given). |
 | `kb_tags_cleanup()` | Detect and clean up orphan tags (tags referenced by 0 documents). |
+| `kb_tags_list()` | List all registered tags in the system. |
 
-### Parse (3) — non-blocking
+### Parse (3)
 
 | Tool | Description |
 |------|-------------|
@@ -222,21 +232,30 @@ All tools are accessible via `mcp__kb-mcp__*` from any MCP client. Organized by 
 | `parse_doc_batch()` | Batch: parse multiple documents (PDF / Image / Word / Excel) into Markdown. |
 | `parse_task_status()` | Check the status of a non-blocking parse task. |
 
-### Vector Index (4)
+### SOUL persona (20)
 
 | Tool | Description |
 |------|-------------|
-| `kb_index_document()` | Index a single document (vector + graph). Stores document content (or existing document) into the vector database and records vector_index in metadata. |
-| `kb_batch_index()` | Batch index documents (vector + graph). |
-| `kb_reindex()` | Rebuild vector index and knowledge graph. Empty kb_id rebuilds all. |
-| `kb_task_status()` | Check the status of ANY non-blocking background task (kb_reindex, kb_graph_build). |
-
-### Cleanup (1)
-
-| Tool | Description |
-|------|-------------|
-| `kb_cleanup_orphan_collections()` | Detect and clean up orphan/duplicate vector collections (vector index residue from deleted/renamed KBs). |
-
+| `soul_ask()` | 人格注入问答: 人格一致 + 知识增强 + 可溯源引用 + PAS 分。 |
+| `soul_calibrate()` | 校准: 对校准集重跑自评,输出漂移报告;提示词变更自动全量重跑。 |
+| `soul_checkpoint()` | 生成时间戳快照(5 人格文档 + soul-config SHA256 + memories/drafts 清单+hash)。 |
+| `soul_config_update()` | 更新 SOUL 配置(kb_scope/domain_labels/supported_task_types/route_weight)。 |
+| `soul_delete()` | 删除 SOUL: 先 checkpoint(快照保留)→ 删 KB(web 层)→ 清理路由缓存 + tombstone。 |
+| `soul_eval()` | 单条四维自评(接地性/完整性/思维一致/信息增益)。 |
+| `soul_evaluate()` | 评价 Agent 四维人格评分(RL 奖励信号): identity/values/thinking/language + overall。 |
+| `soul_export()` | 导出训练数据 JSONL(供 LoRA/DPO): question/evidence_paths/answer/scores/persona。 |
+| `soul_gen_cognition_drafts()` | 生成认知草稿(策略更新建议): 即时评价后, 低分维度产出优化行 → cognition-drafts/。 |
+| `soul_init()` | 创建新 SOUL: 模板复制 4 文档 + soul-config + 初始 profile + 索引。 |
+| `soul_learn()` | 自主学习: 提问→带引用自答→四维自评(双判官)→蒸馏(人格记忆+知识经验)。 |
+| `soul_learn_all()` | 全库自举: 遍历全部 SOUL × kb_scope 批量增量学习。 |
+| `soul_list()` | 列出全部 SOUL 库(排除模板)。 |
+| `soul_qdcvr_ask()` | QDCVR + SOUL 组合问答: 先按 knowledgebase-search skill 流程检索知识, |
+| `soul_reflect()` | 反思: 认知草稿 vs 人格定义结构化 diff 报告(先自动 checkpoint)。 |
+| `soul_review_drafts()` | 草稿审批闭环: list/approve/reject 人格记忆或认知草稿。 |
+| `soul_rollback()` | 回滚到检查点(memories/ + cognition-drafts/;宪法层永不回滚)。 |
+| `soul_router()` | 独立路由工具: 返回候选 SOUL 排序(可审计入口)。 |
+| `soul_status()` | SOUL 学习指标: 草稿/记忆/缺口/判官分歧/路由统计/成本。 |
+| `soul_train_rl()` | RL 强化训练: 好奇心探索(learn) × 评价 Agent(reward) × 策略更新(认知草稿)。 |
 ## 📡 Client Library
 
 The `kb_client/` package contains all HTTP logic, cleanly separated from the MCP tool definitions:
@@ -293,7 +312,7 @@ The `.mcp.json` at the monorepo root auto-configures kb-mcp for Claude Code:
 
 ```
 kb-mcp/
-├── server.py                # FastMCP server — 74 @mcp.tool() definitions (zero HTTP code)
+├── server.py                # FastMCP server — 94 @mcp.tool() definitions (zero HTTP code)
 ├── project_manager.py       # Service lifecycle + version/update (delegates to ragctl)
 ├── task_registry.py         # In-process async background task manager for parse jobs
 ├── config.py                # Reads URLs from shared config.yml (zero hardcoded paths)

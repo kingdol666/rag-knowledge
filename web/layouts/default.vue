@@ -76,7 +76,7 @@
           <!-- Left page footer -->
           <div class="page-left-footer">
             <div class="footer-ornament">⚘</div>
-            <span class="footer-text">RAG Knowledge Platform v2.0</span>
+            <span class="footer-text">RAG Knowledge Platform v{{ appVersion }}</span>
           </div>
 
           <!-- Page curl shadow (right edge of left page) -->
@@ -184,8 +184,13 @@ import {
   MenuOutlined,
 } from '@ant-design/icons-vue'
 
+import pkg from '../package.json'
+
 const route = useRoute()
 const router = useRouter()
+
+// Project version — single source: web/package.json (aligned with root VERSION)
+const appVersion = pkg.version
 
 // ── Navigation items ───────────────────────────────────────
 const navItems = computed(() => [

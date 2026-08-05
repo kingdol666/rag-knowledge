@@ -55,6 +55,12 @@ logger = logging.getLogger(__name__)
 _PROMPTS_DIR = Path(__file__).parent / "prompts"
 _STORAGE_ROOT = get_storage_root()
 
+# ── Harness 单次调用硬超时 ───────────────────────────────────────────────
+# omp 默认模型带 thinking 流，120s 会在思考中途被 --max-time 杀死，导致
+# generate_questions/self_answer/eval 全部失败并触发熔断器(连续 3 次 → 24h)。
+# 300s 覆盖 50k 字符文档 + 6 问题生成 + 双判官评估的完整思考时长。
+_HARNESS_TIMEOUT_SEC = 300
+
 # ── 模块级预算状态 ──────────────────────────────────────────────────────
 _budget_state: dict[str, dict[str, Any]] = {}
 _budget_lock = asyncio.Lock()
@@ -255,7 +261,7 @@ async def generate_questions(doc_path: str, num: int = 6,
         prompt=prompt,
         result_schema=result_schema,
         system_prompt_path=spath,
-        timeout_sec=120,
+        timeout_sec=_HARNESS_TIMEOUT_SEC,
         expected_output_tokens=1024,
     )
 
@@ -508,7 +514,7 @@ async def self_answer(
             "answer_text": str,
             "citations": [{"path": str, "chunk_text": str, "score": float}],
         },
-        timeout_sec=120,
+        timeout_sec=_HARNESS_TIMEOUT_SEC,
         expected_output_tokens=1024,
     )
 
@@ -691,7 +697,7 @@ async def eval_answer(
         prompt=eval_prompt,
         result_schema=result_schema,
         system_prompt_path=system_prompt_path,
-        timeout_sec=120,
+        timeout_sec=_HARNESS_TIMEOUT_SEC,
         expected_output_tokens=512,
     )
 
@@ -769,7 +775,7 @@ async def eval_answer(
                 prompt=eval_prompt,
                 result_schema=result_schema,
                 system_prompt_path=tmp_path,
-                timeout_sec=120,
+                timeout_sec=_HARNESS_TIMEOUT_SEC,
                 expected_output_tokens=512,
             )
             secondary_judge_skipped = False
