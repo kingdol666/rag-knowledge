@@ -381,13 +381,16 @@ async def kb_doc_read(kb_id: str = "", doc_path: str = "", path: str = "", doc_i
 
 
 @mcp.tool()
-async def kb_doc_create(kb_id: str, name: str, content: str, description: str = "") -> str:
+async def kb_doc_create(kb_id: str, name: str, content: str, description: str = "", tags: list = None) -> str:
     """Create a new Markdown document in a KB. Auto-dedup on name collision.
 
     **Atomic**: ONLY creates the document (file + .tree-fs.json + .knowledge-base.yml with file ID).
     Automatically triggers background indexing (vector + graph) after creation.
     Indexing is fire-and-forget: the create returns immediately while indexing runs in background.
-    Use kb_index_document to force re-index if needed."""
+    Use kb_index_document to force re-index if needed.
+
+    tags: 可选标签列表（A3b 标签质量门）——传入后自动调 kb_doc_update_tags 落库,
+    避免创建后二次调用（原实现无 tags 参数, 传入被静默丢弃）。"""
     if (err := _require_kb(kb_id)): return err
     result = await _client().kb_doc_create(kb_id, name, content, description)
     # Fire-and-forget auto-indexing
@@ -395,6 +398,16 @@ async def kb_doc_create(kb_id: str, name: str, content: str, description: str = 
         doc = result.get("document", {})
         doc_path = doc.get("path", "")
         if doc_path:
+            # 标签透传: create 后自动打标（web 层 create 不处理 tags）
+            if tags:
+                try:
+                    tag_r = await _client().kb_doc_update_tags(kb_id, doc_path, list(tags))
+                    if isinstance(tag_r, dict) and not tag_r.get("success", True):
+                        result["_tags_error"] = str(tag_r.get("error", "tag_update_failed"))
+                    else:
+                        result["_tags_applied"] = True
+                except Exception as e:
+                    result["_tags_error"] = str(e)[:200]
             task_id = task_registry.submit(
                 _auto_index_doc(kb_id, doc_path),
                 kind="auto-index",

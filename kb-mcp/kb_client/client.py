@@ -273,7 +273,8 @@ class KbClient:
 
 
     async def kb_doc_create(self, kb_id, name, content, description=""):
-        """Create a new Markdown document. Auto-dedup on name collision."""
+        """Create a new Markdown document. Auto-dedup on name collision.
+        Tags are applied via kb_doc_update_tags by the MCP layer when provided."""
         body = {"kbId": kb_id, "name": name, "content": content, "description": description}
         return await self._post_json("/api/kb/documents/create", body)
 

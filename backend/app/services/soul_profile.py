@@ -154,6 +154,29 @@ async def build_persona_bundle(
                 seen_docs.add(doc_path)
                 doc_names.append(doc_path)
 
+    # 兜底: 检索零命中时无条件注入 4 宪法文档（新人格未训练时宪法文档与领域 query
+    # 无词法重叠 → stage1 零候选 → bundle 空。人格注入主体虽走 load_profile 直读
+    # 宪法文档, 但 bundle 空会导致合成上下文缺人格文档 chunk）
+    if not persona_docs:
+        try:
+            kb_dir = soul_config.soul_kb_dir(soul_kb_id)
+            for doc_name in ("soul-definition.md", "values.md", "thinking-style.md", "memory-conventions.md"):
+                p = kb_dir / doc_name
+                if not p.exists():
+                    continue
+                text = p.read_text(encoding="utf-8", errors="replace")
+                if text.strip():
+                    persona_docs.append({
+                        "path": f"{resolved}/{doc_name}",
+                        "chunk_text": text[:2000],
+                        "score": 0.0,
+                    })
+                    if doc_name not in seen_docs:
+                        seen_docs.add(doc_name)
+                        doc_names.append(f"{resolved}/{doc_name}")
+        except Exception as e:
+            logger.warning("persona bundle fallback failed for %s: %s", soul_kb_id, e)
+
     # ── 记忆扫描 ──
     kb_dir = soul_config.soul_kb_dir(soul_kb_id)
     memories_dir = kb_dir / "memories"
