@@ -35,7 +35,10 @@ const os = require('os');
 const net = require('net');
 const http = require('http');
 const https = require('https');
-const yaml = require('js-yaml');
+// Zero-dependency YAML subset — ragctl must run on a fresh clone with NO
+// node_modules (js-yaml previously hard-crashed every command on empty
+// systems, including the install command itself).
+const yaml = require('./mini-yaml.js');
 const readline = require('readline');
 
 // ── Project Paths ──────────────────────────────────────────────────────
