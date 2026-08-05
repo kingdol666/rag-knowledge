@@ -479,29 +479,59 @@ def _jre_has_java(jre_dir: Path) -> bool:
     return (jre_dir / "bin" / ("java.exe" if sys.platform == "win32" else "java")).exists()
 
 
-def _download_with_progress(url: str, dest: Path, timeout: int = 1800) -> None:
-    """Stream download with progress logging (std-lib only)."""
-    if dest.exists() and dest.stat().st_size > 1_000_000:
+def _download_with_progress(url: str, dest: Path, timeout: int = 1800,
+                           min_bytes: int = 5_000_000, retries: int = 3) -> None:
+    """Stream download with progress logging, size + zip-header validation,
+    and bounded retries. A truncated download (e.g. proxy cut-off at 27 MB of
+    a 126 MB archive) previously sailed through as 'complete' and then failed
+    at extract time with BadZipFile — now any incomplete/invalid payload is
+    deleted and retried."""
+    if dest.exists() and dest.stat().st_size >= min_bytes and _looks_like_archive(dest):
         logger.info("Cached archive found: %s", dest)
         return
-    tmp = dest.with_suffix(dest.suffix + ".part")
-    req = urllib.request.Request(url, headers={"User-Agent": "rag-knowledge-neo4j-installer"})
-    with urllib.request.urlopen(req, timeout=timeout) as resp, open(tmp, "wb") as f:
-        total = int(resp.headers.get("Content-Length") or 0)
-        done = 0
-        last_log = time.time()
-        while True:
-            chunk = resp.read(1024 * 256)
-            if not chunk:
-                break
-            f.write(chunk)
-            done += len(chunk)
-            if total and time.time() - last_log > 5:
-                logger.info("  download %d/%d MB (%.0f%%)",
-                            done // 1048576, total // 1048576, 100.0 * done / total)
+    for attempt in range(1, retries + 1):
+        tmp = dest.with_suffix(dest.suffix + ".part")
+        if tmp.exists():
+            tmp.unlink(missing_ok=True)
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "rag-knowledge-neo4j-installer"})
+            with urllib.request.urlopen(req, timeout=timeout) as resp, open(tmp, "wb") as f:
+                total = int(resp.headers.get("Content-Length") or 0)
+                done = 0
                 last_log = time.time()
-    os.replace(tmp, dest)
-    logger.info("Download complete: %s (%.1f MB)", dest.name, dest.stat().st_size / 1048576)
+                while True:
+                    chunk = resp.read(1024 * 256)
+                    if not chunk:
+                        break
+                    f.write(chunk)
+                    done += len(chunk)
+                    if total and time.time() - last_log > 5:
+                        logger.info("  download %d/%d MB (%.0f%%)",
+                                    done // 1048576, total // 1048576, 100.0 * done / total)
+                        last_log = time.time()
+            size = tmp.stat().st_size
+            if size < min_bytes or (total and size < total):
+                raise RuntimeError(f"truncated download: {size} bytes (expected >= {max(total, min_bytes)})")
+            if not _looks_like_archive(tmp):
+                raise RuntimeError("payload is not a valid archive (bad magic header)")
+            os.replace(tmp, dest)
+            logger.info("Download complete: %s (%.1f MB)", dest.name, dest.stat().st_size / 1048576)
+            return
+        except Exception as e:
+            logger.warning("download attempt %d/%d failed: %s", attempt, retries, e)
+            if tmp.exists():
+                tmp.unlink(missing_ok=True)
+    raise RuntimeError(f"download failed after {retries} attempts: {url}")
+
+
+def _looks_like_archive(path: Path) -> bool:
+    """PK = zip ; 1F 8B = gzip (tar.gz) — cheap magic-header check."""
+    try:
+        with open(path, "rb") as f:
+            magic = f.read(4)
+        return magic[:2] == b"PK" or magic[:2] == b"\x1f\x8b"
+    except Exception:
+        return False
 
 
 def _extract_zip(archive: Path, target: Path) -> None:
