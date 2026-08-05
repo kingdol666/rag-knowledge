@@ -831,9 +831,11 @@ async function cmdCheck() {
     [8001, 'Backend API (prod)', '/api/v1/health'],
     [3000, 'Web UI (prod)', '/api/kb/catalog'],
   ];
+  // Neo4j ports are config-driven (graph.bolt_port / http_port) — honor
+  // custom ports instead of hard-coded 7687/7474.
   const sharedPorts = [
-    [7687, 'Neo4j Bolt', null],
-    [7474, 'Neo4j HTTP', null],
+    [readGraphBoltPort(), 'Neo4j Bolt', null],
+    [readGraphHttpPort(), 'Neo4j HTTP', null],
   ];
 
   for (const [port, name, healthPath] of portProbes) {
@@ -1653,6 +1655,14 @@ function readGraphBoltPort() {
     const p = raw.match(/bolt_port:\s*(\d+)/);
     return p ? parseInt(p[1], 10) : 7687;
   } catch { return 7687; }
+}
+
+function readGraphHttpPort() {
+  try {
+    const raw = fs.readFileSync(path.join(PROJECT_ROOT, 'config.yml'), 'utf-8');
+    const p = raw.match(/http_port:\s*(\d+)/);
+    return p ? parseInt(p[1], 10) : 7474;
+  } catch { return 7474; }
 }
 
 function localNeo4jPython() {
