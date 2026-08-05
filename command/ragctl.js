@@ -1151,7 +1151,20 @@ async function cmdModel(args = []) {
   function hasSnapshots(dir) {
     try {
       const snapshots = path.join(dir, 'snapshots');
-      return fs.existsSync(snapshots) && fs.readdirSync(snapshots).length > 0;
+      if (!fs.existsSync(snapshots)) return false;
+      // Real completeness check: at least one snapshot with a >1GB model bin.
+      // A leftover *.tmp from an interrupted download must NOT count as cached
+      // (that previously caused ragctl model to skip and left corrupted caches).
+      for (const snap of fs.readdirSync(snapshots)) {
+        const bin = path.join(snapshots, snap, 'pytorch_model.bin');
+        if (fs.existsSync(bin)) {
+          try {
+            const size = fs.statSync(bin).size;
+            if (size > 1024 * 1024 * 1024) return true;
+          } catch { /* ignore */ }
+        }
+      }
+      return false;
     } catch { return false; }
   }
   if (hasSnapshots(projectCache) || hasSnapshots(hfCache)) {
@@ -2065,6 +2078,12 @@ async function cmdUp(args) {
 
   header(`启动 RAG Knowledge Platform (mode=${mode})`);
   info(`端口: Backend=${ports.backend}, Web=${ports.web}`);
+
+  // Ensure the embedding model is cached BEFORE backend boots: backend lazily
+  // downloads on first embed() when the cache is missing, which races with a
+  // concurrent `ragctl model` and corrupts models_cache. cmdModel() is
+  // idempotent (completeness-checked) and returns fast on a valid cache.
+  await cmdModel();
 
   const composeFile = path.join(PROJECT_ROOT, 'docker-compose.yml');
   const timeoutSec = flags.timeout || null;
