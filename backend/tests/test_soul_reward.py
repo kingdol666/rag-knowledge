@@ -143,56 +143,66 @@ def _make_cognition_draft(tmp_path, trait, lines):
     return draft_id
 
 
-def test_apply_cognition_draft_merges_and_is_idempotent(tmp_path, monkeypatch):
+def test_apply_cognition_draft_delegates_to_global_optimize(tmp_path, monkeypatch):
+    """认知草稿审批 → 委托全局优化引擎(不再碎片追加)。
+
+    新行为: apply_cognition_draft 将草稿标记为 active,
+    然后委托 optimize_persona_global 做完整连贯重写。
+    """
     (tmp_path / "soul-definition.md").write_text(_TEMPLATE, encoding="utf-8")
     (tmp_path / "memories").mkdir(parents=True, exist_ok=True)
-    (tmp_path / "cognition").mkdir(parents=True, exist_ok=True)
-    (tmp_path / "training").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "cognition-drafts").mkdir(parents=True, exist_ok=True)
     monkeypatch.setattr(soul_reward, "soul_kb_dir", lambda sid: tmp_path)
-    monkeypatch.setattr(soul_reward, "_now_iso", lambda: "2026-08-04T00:00:00+00:00")
-    # checkpoint 依赖完整 soul 结构, 单测中跳过(仅验证合并+幂等逻辑)
-    async def _noop(*a, **k):
-        return {"success": True}
-    monkeypatch.setattr("app.services.soul_memory._create_checkpoint_locked", _noop)
-    # profile 刷新也跳过
-    async def _noop_profile(*a, **k):
-        return ""
-    monkeypatch.setattr("app.services.soul_profile.generate_profile_summary", _noop_profile)
+    monkeypatch.setattr(soul_reward, "_now_iso", lambda: "2026-08-06T00:00:00+00:00")
+
+    # mock 全局优化引擎: 验证委托关系 + 模拟草稿被标记 applied
+    delegated = {"called": False}
+
+    async def _mock_optimize(soul_kb_id, evaluation=None):
+        delegated["called"] = True
+        # 模拟真实行为: 把 active 草稿标记为 applied
+        from app.services.soul_memory import _read_memory_full, _fmt_frontmatter
+        drafts_dir = tmp_path / "cognition-drafts"
+        if drafts_dir.exists():
+            for cf in drafts_dir.glob("*.md"):
+                fm, body = _read_memory_full(cf) or ({}, "")
+                if fm and fm.get("status") == "active":
+                    fm["status"] = "applied"
+                    fm["applied_by"] = "global_optimize"
+                    cf.write_text(_fmt_frontmatter(fm) + "\n" + body + "\n",
+                                  encoding="utf-8")
+        return {"success": True, "optimized": True,
+                "optimized_docs": ["soul-definition.md"],
+                "cognitions_absorbed": 1}
+
+    monkeypatch.setattr(
+        "app.services.soul_rl_engine.optimize_persona_global", _mock_optimize)
 
     draft_id = _make_cognition_draft(tmp_path, "language", ["证据不足明说", "引用统一编号"])
     rep = asyncio.run(apply_cognition_draft("soul-x", draft_id))
-    assert rep["success"] and rep["lines_appended"] == 2
 
-    text = (tmp_path / "soul-definition.md").read_text(encoding="utf-8")
-    assert "证据不足明说" in text
-    assert "引用统一编号" in text
+    assert rep["success"]
+    assert delegated["called"] is True  # 验证委托给全局优化
+    assert rep["global_optimized"] is True
+    assert rep["cognitions_absorbed"] == 1
+    assert "soul-definition.md" in rep["optimized_docs"]
 
     # 幂等: 重复审批 → already_applied
     rep2 = asyncio.run(apply_cognition_draft("soul-x", draft_id))
     assert not rep2["success"] and rep2["error"] == "already_applied"
 
-    fm, _ = soul_reward._read_memory_full(tmp_path / "cognition-drafts" / f"{draft_id}.md")
-    assert fm["status"] == "approved"
 
+def test_append_to_section_dedup_at_caller_level():
+    """_append_to_section 章节追加辅助函数的行为验证。
 
-def test_apply_cognition_draft_dedup_lines(tmp_path, monkeypatch):
-    """已存在于定义中的行不重复追加。"""
-    (tmp_path / "soul-definition.md").write_text(_TEMPLATE, encoding="utf-8")
-    (tmp_path / "memories").mkdir(parents=True, exist_ok=True)
-    monkeypatch.setattr(soul_reward, "soul_kb_dir", lambda sid: tmp_path)
-    monkeypatch.setattr(soul_reward, "_now_iso", lambda: "2026-08-04T00:00:00+00:00")
-    async def _noop(*a, **k):
-        return {"success": True}
-    monkeypatch.setattr("app.services.soul_memory._create_checkpoint_locked", _noop)
-    monkeypatch.setattr("app.services.soul_profile.generate_profile_summary",
-                        lambda sid: asyncio.sleep(0) or "")
-
-    # language-style 已有"简洁有力" → 草稿含重复行应被去重
-    draft_id = _make_cognition_draft(tmp_path, "language", ["简洁有力", "新短语"])
-    rep = asyncio.run(apply_cognition_draft("soul-x", draft_id))
-    text = (tmp_path / "soul-definition.md").read_text(encoding="utf-8")
-    assert text.count("简洁有力") == 1  # 原有一行, 未重复追加
-    assert "新短语" in text
+    注意: 新架构中 apply_cognition_draft 委托给全局优化引擎(完整重写),
+    不再做碎片追加。_append_to_section 仍保留作为底层辅助函数。
+    """
+    text = _TEMPLATE
+    result = _append_to_section(text, "## language-style", ["新短语A", "新短语B"])
+    assert "新短语A" in result
+    assert "新短语B" in result
+    assert "简洁有力" in result  # 原有内容保留
 
 
 # ── evaluate_persona 失败容错 ───────────────────────────────────────────

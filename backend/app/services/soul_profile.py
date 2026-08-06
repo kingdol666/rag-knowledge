@@ -253,9 +253,32 @@ async def build_persona_bundle(
         except Exception:
             pass
 
+    # ── 认知草稿注入(训练产生的认知增量, 让训练成果真正参与回答) ──
+    # active 认知草稿是训练过程中 Critic 发现的优化建议,
+    # 在全局优化前作为"临时认知"注入回答, 让训练认知立即生效
+    cognition_summaries: list[str] = []
+    cog_dir = kb_dir / "cognition-drafts"
+    if cog_dir.exists():
+        for cf in sorted(cog_dir.glob("*.md"),
+                         key=lambda p: p.stat().st_mtime, reverse=True):
+            try:
+                raw = cf.read_text(encoding="utf-8")
+                frontmatter = _parse_yaml_frontmatter(raw)
+                if frontmatter is None or frontmatter.get("status") != "active":
+                    continue
+                body = _extract_body_after_frontmatter(raw)
+                trait = frontmatter.get("trait", "")
+                if body.strip():
+                    cognition_summaries.append(f"[{trait}] {body.strip()[:200]}")
+                if len(cognition_summaries) >= 8:
+                    break
+            except Exception:
+                continue
+
     return {
         "persona_docs": persona_docs,
         "memory_summaries": memory_summaries,
+        "cognition_summaries": cognition_summaries,
         "doc_names": doc_names,
     }
 

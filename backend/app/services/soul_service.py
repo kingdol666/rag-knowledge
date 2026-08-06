@@ -194,7 +194,8 @@ async def _retrieve_knowledge(soul_kb_id: str, query: str, kb_scope: list[str]) 
 
 def _build_synthesize_prompt(query: str, chunks: list[dict], persona: dict,
                              memory_summaries: list[str], soul_kb_id: str,
-                             context_override: str = "") -> str:
+                             context_override: str = "",
+                             cognition_summaries: list[str] | None = None) -> str:
     lines = [
         "## 任务",
         f"用户问题: {query}",
@@ -229,6 +230,13 @@ def _build_synthesize_prompt(query: str, chunks: list[dict], persona: dict,
         lines.append("> 回答时必须参考这些经验,特别是经验法则和知识要点。")
         lines.append("> 如果用户问题与训练经验相关,优先运用这些经验来组织回答。")
         lines.append("")
+    # 认知草稿(训练产生的认知增量, 让训练认知参与回答定义)
+    if cognition_summaries:
+        lines.append("## 🧠 认知增量(训练 Critic 发现的优化认知,内化为你的回答策略)")
+        for c in cognition_summaries[:8]:
+            lines.append(f"- {c[:250]}")
+        lines.append("")
+        lines.append("> 这些认知是你在训练中发现的回答优化策略,回答时请内化运用。")
 
     if context_override:
         lines.append("## 临时背景知识(仅本次回答有效)")
@@ -447,7 +455,8 @@ async def _soul_ask_inner(query: str, soul_kb_id: str, task_goal: str, task_type
     # 5. 合成
     synth_prompt = _build_synthesize_prompt(
         query, chunks, profile, bundle.get("memory_summaries", []), selected,
-        context_override)
+        context_override,
+        cognition_summaries=bundle.get("cognition_summaries", []))
     synth = await _complete_checked(
         synth_prompt, ctx, kb_config=kb_config,
         system_prompt_path=str(_PROMPTS_DIR / "soul_synthesize_v1.txt"),

@@ -164,7 +164,7 @@ async def train_rl_unified(
             await _cb(progress_cb, {"phase": "critic", "round": r, "rounds": rounds,
                                     "msg": "评价者: 六维评分中..."})
 
-        eval_rep = await _critic_unified(soul_kb_id, actor_stats)
+        eval_rep = await _critic_unified(soul_kb_id, actor_stats, n_samples=1)
         reward = float(eval_rep.get("overall", 0.0))
 
         # Critic 评分事件(含六维分数 + 收敛分析 — 前端可视化核心)
@@ -224,7 +224,29 @@ async def train_rl_unified(
             distill_rep = await distill_knowledge(soul_kb_id)
         else:
             distill_rep = {"distilled": False}
+        # ── Phase 6: GLOBAL OPTIMIZE — 全局人格优化(修复"越练越笨") ──
+        # 把积累的 active 认知草稿做完整的、连贯的全局重写:
+        # 替换旧内容(删除矛盾), 非碎片追加 → reward 单调提升
+        active_cogs = _active_cognition_drafts(_dir)
+        should_opt, opt_reason = _should_optimize_globally(
+            _dir, convergence_state, prev_rewards, active_cogs)
 
+        optimize_rep: dict[str, Any] = {"optimized": False}
+        if should_opt:
+            if progress_cb:
+                await _cb(progress_cb, {
+                    "phase": "optimize", "round": r, "rounds": rounds,
+                    "msg": f"全局优化: {opt_reason}, 重写人格定义...",
+                    "active_cognitions": len(active_cogs),
+                })
+            optimize_rep = await optimize_persona_global(soul_kb_id, eval_rep)
+            if progress_cb and optimize_rep.get("optimized"):
+                await _cb(progress_cb, {
+                    "phase": "optimize", "type": "optimize_done",
+                    "round": r, "rounds": rounds,
+                    "optimized_docs": optimize_rep.get("optimized_docs", []),
+                    "cognitions_absorbed": optimize_rep.get("cognitions_absorbed", 0),
+                })
         # ── Phase 4: REWARD ──────────────────────────────────────────
         round_elapsed = round(time.time() - round_start, 1)
         _append_jsonl(history_path, {
@@ -239,13 +261,16 @@ async def train_rl_unified(
             "memories_auto_approved": approve_rep.get("approved", 0),
             "converged": convergence_state["converged"],
             "cognition_auto_applied": updater_rep.get("auto_applied", 0),
-            "cognition_pending_review": updater_rep.get("pending", 0),
-            "learn": {
-                "ok": learn_ok, "error": learn_err,
-                "questions": actor_stats["questions"],
-                "memories": actor_stats["memories"],
-                "docs": actor_stats["docs_processed"],
-            },
+"cognition_pending_review": updater_rep.get("pending", 0),
+"global_optimized": optimize_rep.get("optimized", False),
+"cognitions_absorbed": optimize_rep.get("cognitions_absorbed", 0),
+"optimized_docs": optimize_rep.get("optimized_docs", []),
+"learn": {
+    "ok": learn_ok, "error": learn_err,
+    "questions": actor_stats["questions"],
+    "memories": actor_stats["memories"],
+    "docs": actor_stats["docs_processed"],
+},
         })
 
         per_round.append({
@@ -263,6 +288,11 @@ async def train_rl_unified(
                 "auto_applied": updater_rep.get("auto_applied", 0),
                 "pending": updater_rep.get("pending", 0),
             },
+            "global_optimize": {
+                "optimized": optimize_rep.get("optimized", False),
+                "docs": optimize_rep.get("optimized_docs", []),
+                "absorbed": optimize_rep.get("cognitions_absorbed", 0),
+            },
             "learn": {
                 "ok": learn_ok, "error": learn_err,
                 "questions_generated": actor_stats["questions"],
@@ -277,6 +307,7 @@ async def train_rl_unified(
                 "reward": reward, "converged": convergence_state["converged"],
                 "auto_applied": updater_rep.get("auto_applied", 0),
                 "memories_approved": approve_rep.get("approved", 0),
+                "global_optimized": optimize_rep.get("optimized", False),
                 "elapsed_sec": round_elapsed,
             })
 
@@ -285,10 +316,12 @@ async def train_rl_unified(
         "rounds_completed": len(per_round),
         "per_round": per_round,
         "convergence_state": convergence_state,
-        "reward_history_path": str(history_path),
         "hint": (
-            "RL 统一训练完成。收敛态: "
-            f"{'是(认知草稿已自动应用)' if convergence_state['converged'] else '否(认知草稿待审批)'}"
+            "RL 统一训练完成。"
+            + ("全局优化已应用(认知草稿已吸收重写)。" if any(
+                pr.get("global_optimize", {}).get("optimized") for pr in per_round)
+               else "")
+            + f" 收敛态: {'是' if convergence_state['converged'] else '否'}"
         ),
     }
 
@@ -609,9 +642,14 @@ async def _critic_once(
         timeout_sec=300,
     )
     text = (result.get("text") or "") if result.get("success") else ""
-
+    if not result.get("success"):
+        logger.warning("critic complete() failed: %s", result.get("error", "unknown"))
     parsed = _extract_json(text)
+
     if not parsed or not isinstance(parsed, dict):
+        logger.warning("critic _extract_json failed: success=%s text_len=%d preview=%s",
+                       result.get("success"), len(text),
+                       text[:200] if text else "(empty)")
         return {
             "success": True, "overall": 0.0,
             "identity": 0, "values": 0, "thinking": 0,
@@ -632,37 +670,40 @@ async def _critic_once(
     suggestions = parsed.get("suggestions") or {}
     if not isinstance(suggestions, dict):
         suggestions = {}
+    return {
+        "success": True,
+        **scores,
+        "overall": overall,
+        "suggestions": suggestions,
+    }
 async def _updater_phase(
     soul_kb_id: str,
     evaluation: dict[str, Any],
     convergence_state: dict[str, Any],
 ) -> dict[str, Any]:
-    """权重更新: Updater LLM 根据 Critic 评分直接更新人格文档。
+    """认知积累: Updater LLM 根据 Critic 评分生成认知草稿(只积累,不污染人格定义)。
 
-    核心改动(确保权重真正更新):
-    1. 移除"收敛态+4.2分"门槛 — 只要 Critic 评分 <3.5 就立即更新
-    2. 六维全部映射到目标文档(identity/values/thinking/language/knowledge/coherence)
-    3. 每个维度写入对应的宪法层文档章节(soul-definition.md / thinking-style.md)
-    4. 不存在的章节(领域知识经验/自我一致性)自动创建
+    核心设计变更(修复"越练越笨"):
+    - 不再直接写入人格定义文档(soul-definition.md / thinking-style.md)
+    - 只生成认知草稿(status=active), 作为"认知增量"积累
+    - 认知草稿在问答时被注入 prompt(让训练认知真正参与回答)
+    - 全局优化(optimize_persona_global)负责把积累的认知做完整的、连贯的重写
 
-    安全保障:
-    - 只做章节内追加优化行(不删改既有内容)
-    - 写前自动 checkpoint
-    - 行级去重(幂等)
-    - 审计日志
-    - 更新后重新索引向量库(问答时能检索到更新后的人格)
+    这样保证:
+    1. 人格定义文档始终保持完整、连贯(不被碎片追加污染)
+    2. 认知草稿可被 LLM 在合成回答时参考
+    3. 全局优化时才有"删除旧内容、替换新内容"的能力 → reward 单调提升
     """
     _dir = soul_kb_dir(soul_kb_id)
-    overall = float(evaluation.get("overall", 0))
 
-    # 检查是否有低分维度需要更新
+    # 检查是否有低分维度需要生成认知
     low_dims = [d for d in EVAL_DIMENSIONS
                 if float(evaluation.get(d, 5)) < REWARD_MIN]
     if not low_dims:
         return {"success": True, "auto_applied": 0, "pending": 0,
                 "drafts_created": []}
 
-    # ── Updater LLM: 独立第三角色, 生成权重优化行 ──
+    # ── Updater LLM: 独立第三角色, 生成认知优化行 ──
     updates = await _updater_llm(soul_kb_id, evaluation, convergence_state)
     # 降级: Updater 失败 → 回退 Critic suggestions
     if not updates:
@@ -673,8 +714,6 @@ async def _updater_phase(
             logger.info("updater LLM failed, fallback to critic suggestions")
 
     created: list[str] = []
-    applied = 0
-    pending = 0
 
     for trait, lines in updates.items():
         if not lines:
@@ -688,7 +727,7 @@ async def _updater_phase(
         fm = {
             "type": "cognition", "trait": trait,
             "scores": {"reward": score}, "source": "rl_unified",
-            "status": "applied",
+            "status": "active",
             "learned_at": _now_iso(),
             "convergence": convergence_state.get("converged", False),
         }
@@ -700,26 +739,22 @@ async def _updater_phase(
         atomic_write_text(draft_path, content)
         created.append(draft_id)
 
-        # ── 直接应用: 写入对应人格文档章节 ──
-        # 核心改动: 不再要求 converged+4.2, 只要 Critic 评分 <3.5 就立即更新
-        try:
-            applied_ok = await _apply_persona_update(
-                soul_kb_id, trait, lines)
-            if applied_ok:
-                applied += 1
-                fm["status"] = "applied"
-                fm["applied_at"] = _now_iso()
-                atomic_write_text(
-                    draft_path, _fmt_frontmatter(fm) + "\n" + body + "\n")
-            else:
-                pending += 1
-        except Exception as e:
-            logger.warning("apply persona update %s failed: %s", draft_id, e)
-            pending += 1
+        # 审计: 认知草稿已生成(不写入人格定义)
+        _append_jsonl(_dir / "audit" / "approval-log.jsonl", {
+            "timestamp": _now_iso(), "operator": "rl_updater",
+            "action": "cognition_created", "trait": trait,
+            "draft_id": draft_id, "reward": score,
+            "note": "认知积累(不写入人格定义, 由全局优化统一处理)",
+        })
+
+    active_count = len(_active_cognition_drafts(_dir))
+    logger.info("updater: %d cognition drafts created (active total=%d) for %s",
+                len(created), active_count, soul_kb_id)
 
     return {
-        "success": True, "auto_applied": applied,
-        "pending": pending, "drafts_created": created,
+        "success": True, "auto_applied": 0,
+        "pending": len(created), "drafts_created": created,
+        "active_cognition_count": active_count,
     }
 
 
@@ -894,6 +929,236 @@ async def _apply_persona_update(
     logger.info("persona update: %s/%s += %d lines (trait=%s)",
                 soul_kb_id, doc_name, len(fresh), trait)
     return True
+# ═══════════════════════════════════════════════════════════════════════════
+# 认知草稿读取 + 全局人格优化引擎(核心: 修复"越练越笨")
+# ═══════════════════════════════════════════════════════════════════════════
+
+# 全局优化触发条件
+OPTIMIZE_MIN_COGNITIONS = 3      # active 认知草稿 >= 此数 → 触发全局优化
+OPTIMIZE_REWARD_DROP = 0.3       # reward 连续下降 >= 此值 → 触发全局优化
+OPTIMIZE_ROUNDS_INTERVAL = 3     # 每 N 轮至少触发一次全局优化(有认知草稿时)
+
+
+def _active_cognition_drafts(soul_dir: Path) -> list[dict[str, Any]]:
+    """读取所有 status=active 的认知草稿(待全局优化处理的认知增量)。"""
+    cog_dir = soul_dir / "cognition-drafts"
+    if not cog_dir.exists():
+        return []
+    drafts: list[dict[str, Any]] = []
+    for f in sorted(cog_dir.glob("*.md"),
+                    key=lambda p: p.stat().st_mtime, reverse=True):
+        fm, body = _read_memory_full(f) or ({}, "")
+        if not fm or fm.get("status") != "active":
+            continue
+        drafts.append({
+            "id": f.stem, "trait": fm.get("trait", ""),
+            "reward": float(fm.get("scores", {}).get("reward", 0)),
+            "lines": [ln.strip() for ln in body.split("\n") if ln.strip()],
+            "learned_at": fm.get("learned_at", ""),
+        })
+    return drafts
+
+
+def _should_optimize_globally(
+    soul_dir: Path,
+    convergence_state: dict[str, Any],
+    recent_rewards: list[float],
+    active_cognitions: list[dict],
+) -> tuple[bool, str]:
+    """判断是否应该触发全局人格优化。
+
+    触发条件(满足任一):
+    1. active 认知草稿数 >= OPTIMIZE_MIN_COGNITIONS
+    2. reward 连续下降(最近两轮差值 < -OPTIMIZE_REWARD_DROP)
+    3. 收敛态 + 有 active 认知草稿(收敛时做一次"固化")
+    """
+    if len(active_cognitions) >= OPTIMIZE_MIN_COGNITIONS:
+        return True, f"cognition_accumulated({len(active_cognitions)})"
+
+    if len(recent_rewards) >= 3:
+        # 检测连续下降
+        last_two = recent_rewards[-2:]
+        if len(last_two) == 2 and (last_two[0] - last_two[1]) >= OPTIMIZE_REWARD_DROP:
+            if active_cognitions:
+                return True, f"reward_dropping({last_two[0]:.2f}->{last_two[1]:.2f})"
+
+    if convergence_state.get("converged") and active_cognitions:
+        return True, "converged_with_cognitions"
+
+    return False, ""
+
+
+async def optimize_persona_global(
+    soul_kb_id: str,
+    evaluation: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """全局人格优化引擎 — 把积累的认知做完整的、连贯的全局重写。
+
+    核心区别于旧的"碎片追加":
+    - 读取全部人格上下文(4宪法文档 + active认知草稿 + 记忆 + 知识综合)
+    - LLM 做一次完整的、连贯的重写(可以删除矛盾内容、重组结构)
+    - 重写结果直接替换人格文档(非追加)
+    - checkpoint 保护, 可回滚
+    - 重写后将已处理的认知草稿标记为 applied(消化吸收)
+
+    这样确保:
+    1. 人格定义始终完整连贯(消除矛盾堆砌)
+    2. reward 单调提升(每轮都在上一轮基础上优化)
+    3. 认知草稿被真正"消化"进人格(而非堆在文档末尾)
+    """
+    from app.services.soul_memory import _create_checkpoint_locked
+
+    _dir = soul_kb_dir(soul_kb_id)
+    active = _active_cognition_drafts(_dir)
+
+    if not active:
+        return {"success": True, "optimized": False, "reason": "no_active_cognitions"}
+
+    # ── 收集全部人格上下文 ──
+    context = _collect_persona_context(_dir)
+
+    # ── checkpoint(全局重写前的安全网) ──
+    try:
+        await _create_checkpoint_locked(soul_kb_id, _dir)
+    except Exception as e:
+        logger.warning("checkpoint before global optimize failed: %s", e)
+
+    # ── LLM 全局重写 ──
+    prompt_path = _PROMPTS_DIR / "soul_rl_global_optimize_v1.txt"
+    payload = json.dumps({
+        "soul_definition": context["soul_definition"],
+        "values": context["values"],
+        "thinking_style": context["thinking_style"],
+        "active_cognitions": active[:20],
+        "recent_memories": context["recent_memories"],
+        "knowledge_synthesis": context["knowledge_synthesis"],
+        "critic_scores": {d: float((evaluation or {}).get(d, 0))
+                          for d in EVAL_DIMENSIONS} if evaluation else {},
+    }, ensure_ascii=False, indent=1)[:16000]
+
+    result = await agent_harness.complete(
+        prompt=f"<USER_CONTENT>\n{payload}\n</USER_CONTENT>",
+        system_prompt_path=str(prompt_path),
+        expected_output_tokens=2500,
+        timeout_sec=300,
+    )
+    text = (result.get("text") or "") if result.get("success") else ""
+    parsed = _extract_json(text)
+
+    if not parsed or not isinstance(parsed, dict):
+        logger.warning("global optimize: LLM parse failed for %s", soul_kb_id)
+        return {"success": True, "optimized": False, "reason": "llm_parse_failed"}
+
+    # ── 应用全局重写(替换, 非追加) ──
+    optimized_docs: list[str] = []
+
+    for doc_field, doc_name in [
+        ("soul_definition", "soul-definition.md"),
+        ("thinking_style", "thinking-style.md"),
+        ("values", "values.md"),
+    ]:
+        new_content = parsed.get(doc_field)
+        if not new_content or not isinstance(new_content, str):
+            continue
+        new_content = new_content.strip()
+        if len(new_content) < 50:
+            continue
+
+        doc_path = _dir / doc_name
+        old_content = doc_path.read_text(encoding="utf-8") if doc_path.exists() else ""
+        if new_content == old_content.strip():
+            continue
+
+        atomic_write_text(doc_path, new_content)
+        optimized_docs.append(doc_name)
+
+        # 向量重索引
+        try:
+            from app.services.vector_service import vector_service
+            kb_path = resolve_soul_kb_path(soul_kb_id)
+            if kb_path:
+                vector_service.index_document(
+                    kb_id=kb_path, doc_path=f"{kb_path}/{doc_name}",
+                    content=new_content)
+        except Exception as e:
+            logger.warning("global optimize re-index failed for %s: %s", doc_name, e)
+
+    if not optimized_docs:
+        return {"success": True, "optimized": False, "reason": "no_changes"}
+
+    # ── 标记认知草稿为 applied(消化吸收) ──
+    applied_ids: list[str] = []
+    for cog in active:
+        draft_path = _dir / "cognition-drafts" / f"{cog['id']}.md"
+        if not draft_path.exists():
+            continue
+        fm, body = _read_memory_full(draft_path) or ({}, "")
+        if not fm:
+            continue
+        fm["status"] = "applied"
+        fm["applied_at"] = _now_iso()
+        fm["applied_by"] = "global_optimize"
+        atomic_write_text(draft_path, _fmt_frontmatter(fm) + "\n" + body + "\n")
+        applied_ids.append(cog["id"])
+
+    # 审计
+    _append_jsonl(_dir / "audit" / "approval-log.jsonl", {
+        "timestamp": _now_iso(), "operator": "global_optimize",
+        "action": "persona_global_rewrite",
+        "optimized_docs": optimized_docs,
+        "cognitions_absorbed": len(applied_ids),
+        "critic_scores": {d: float((evaluation or {}).get(d, 0))
+                          for d in EVAL_DIMENSIONS} if evaluation else {},
+    })
+
+    # 刷新 profile
+    try:
+        from app.services.soul_profile import generate_profile_summary
+        await generate_profile_summary(soul_kb_id)
+    except Exception as e:
+        logger.debug("profile refresh after global optimize failed: %s", e)
+
+    logger.info("global optimize: %s docs rewritten, %d cognitions absorbed for %s",
+                optimized_docs, len(applied_ids), soul_kb_id)
+
+    return {
+        "success": True, "optimized": True,
+        "optimized_docs": optimized_docs,
+        "cognitions_absorbed": len(applied_ids),
+        "applied_cognition_ids": applied_ids,
+    }
+
+
+def _collect_persona_context(soul_dir: Path) -> dict[str, Any]:
+    """收集全部人格上下文供全局优化使用。"""
+    def _read(name: str, limit: int = 4000) -> str:
+        p = soul_dir / name
+        return p.read_text(encoding="utf-8")[:limit] if p.exists() else ""
+
+    # recent memories (approved)
+    memories: list[dict] = []
+    mem_dir = soul_dir / "memories"
+    if mem_dir.exists():
+        for f in sorted(mem_dir.glob("*.md"),
+                        key=lambda p: p.stat().st_mtime, reverse=True):
+            fm, body = _read_memory_full(f) or ({}, "")
+            if fm and fm.get("status") == "approved":
+                memories.append({
+                    "question": fm.get("question", "")[:150],
+                    "answer": body[:300],
+                })
+                if len(memories) >= 8:
+                    break
+
+    synth = _read("knowledge-synthesis.md", 1500)
+
+    return {
+        "soul_definition": _read("soul-definition.md", 4000),
+        "values": _read("values.md", 2000),
+        "thinking_style": _read("thinking-style.md", 3000),
+        "recent_memories": memories,
+        "knowledge_synthesis": synth,
+    }
 
 
 # ═══════════════════════════════════════════════════════════════════════════

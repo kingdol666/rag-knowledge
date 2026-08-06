@@ -292,12 +292,12 @@ def _normalize_lines(raw: Any, max_lines: int = 6) -> list[str]:
 
 async def apply_cognition_draft(soul_kb_id: str, draft_id: str,
                                 operator: str = "system") -> dict[str, Any]:
-    """将已批准认知草稿合并进 soul-definition.md 对应章节。
+    """手动审批认知草稿 → 委托全局优化引擎做完整连贯重写。
 
-    安全规则:
-      - 只向对应中文章节(见 TRAIT_SECTIONS)末尾追加优化行
-      - 不删除/重写既有内容; 章节结构保持(profile/language-style 解析依赖)
-      - 写前创建检查点; 写后刷新 profile-summary
+    核心变更(修复"越练越笨"):
+    - 不再直接追加到 soul-definition.md(碎片追加导致矛盾堆砌)
+    - 将该草稿标记为 active, 然后触发全局优化
+    - 全局优化会把所有 active 草稿 + 记忆 + 知识综合做完整的、连贯的重写
     """
     _dir = soul_kb_dir(soul_kb_id)
     draft_path = _dir / "cognition-drafts" / f"{draft_id}.md"
@@ -307,74 +307,31 @@ async def apply_cognition_draft(soul_kb_id: str, draft_id: str,
     fm, body = _read_memory_full(draft_path) or ({}, "")
     if not fm or fm.get("type") != "cognition":
         return {"success": False, "error": "not_a_cognition_draft"}
-    if fm.get("status") == "approved":
+    if fm.get("status") in ("approved", "applied"):
         return {"success": False, "error": "already_applied",
                 "detail": f"draft {draft_id} 已审批合并, 幂等拒绝"}
 
-    trait = fm.get("trait", "")
-    section_title = TRAIT_SECTIONS.get(trait)
-    if not section_title:
-        return {"success": False, "error": f"unknown_trait: {trait}"}
-
-    lines = [ln.rstrip() for ln in body.split("\n") if ln.strip()]
-
-    # 合并前检查点(可回滚安全网)
-    try:
-        from app.services.soul_memory import _create_checkpoint_locked
-        await _create_checkpoint_locked(soul_kb_id, _dir)
-    except Exception as e:
-        logger.warning("checkpoint before cognition apply failed: %s", e)
-
-    def_path = _dir / "soul-definition.md"
-    if not def_path.exists():
-        return {"success": False, "error": "soul-definition missing"}
-
-    text = def_path.read_text(encoding="utf-8")
-    # 行级去重: 已存在于定义中的行不重复追加(重复训练/草稿幂等)
-    existing_lines = {ln.strip() for ln in text.split("\n") if ln.strip()}
-    fresh = [ln for ln in lines if ln not in existing_lines]
-    if not fresh:
-        # 全部行已存在 → 直接标记审批, 不重复写入
-        fm["status"] = "approved"
-        fm["approved_at"] = _now_iso()
-        fm["approved_by"] = operator
-        atomic_write_text(draft_path, _fmt_frontmatter(fm) + "\n" + body + "\n")
-        _append_jsonl(_dir / "audit" / "approval-log.jsonl", {
-            "timestamp": _now_iso(), "operator": operator, "action": "approve_cognition",
-            "draft_id": draft_id, "trait": trait, "dedup": True,
-            "draft_scores": fm.get("scores", {}),
-        })
-        return {"success": True, "approved": [draft_id], "trait": trait,
-                "lines_appended": 0, "dedup": True, "indexed": True}
-
-    new_text = _append_to_section(text, section_title, fresh)
-
-    # 原子写 + frontmatter 更新
-    atomic_write_text(def_path, new_text)
-
-    fm["status"] = "approved"
+    # 将该草稿标记为 active(让全局优化引擎发现并处理它)
+    fm["status"] = "active"
     fm["approved_at"] = _now_iso()
     fm["approved_by"] = operator
     atomic_write_text(draft_path, _fmt_frontmatter(fm) + "\n" + body + "\n")
 
-    # 审计
-    _append_jsonl(_dir / "audit" / "approval-log.jsonl", {
-        "timestamp": _now_iso(), "operator": operator, "action": "approve_cognition",
-        "draft_id": draft_id, "trait": trait, "draft_scores": fm.get("scores", {}),
-    })
-
-    # 刷新 profile(路由依据同步)
-    try:
-        from app.services.soul_profile import generate_profile_summary
-        await generate_profile_summary(soul_kb_id)
-    except Exception as e:
-        logger.debug("profile refresh after cognition apply failed: %s", e)
+    # 委托全局优化引擎(完整连贯重写, 消化所有 active 草稿)
+    from app.services.soul_rl_engine import optimize_persona_global
+    rep = await optimize_persona_global(soul_kb_id)
+    if not rep.get("success"):
+        return {"success": False, "error": "global_optimize_failed",
+                "detail": rep.get("reason", "")}
 
     return {
         "success": True,
         "approved": [draft_id],
-        "trait": trait,
-        "lines_appended": len(fresh),
+        "trait": fm.get("trait", ""),
+        "lines_appended": 0,
+        "global_optimized": rep.get("optimized", False),
+        "cognitions_absorbed": rep.get("cognitions_absorbed", 0),
+        "optimized_docs": rep.get("optimized_docs", []),
         "indexed": True,
     }
 
