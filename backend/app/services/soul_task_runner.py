@@ -60,25 +60,64 @@ def submit_soul_task(coro_factory: CoroFactory, kind: str,
     record["gate"].set()
     _records[task_id] = record
 
+    # 自动注册 task→soul 映射(WebSocket 广播按 soul_kb_id 路由)
+    soul_id = (meta or {}).get("soul_kb_id") or ""
+    if soul_id:
+        try:
+            from app.services.soul_training_ws import ws_manager
+            ws_manager.register_task(task_id, soul_id)
+        except Exception:
+            pass
+
     async def _runner() -> None:
         try:
             # 支持同步/异步 progress_cb: 每轮边界等待暂停门
             record["result"] = await coro_factory(task_id)
             record["status"] = "done"
+            _ws_broadcast(task_id, "done", {"result": record["result"],
+                                              "status": "done"})
         except asyncio.CancelledError:
             record["status"] = "error"
             record["error"] = "cancelled"
+            _ws_broadcast(task_id, "error", {"error": "cancelled",
+                                               "status": "error"})
         except Exception as e:  # 任何失败都落到 record, 不向调用方抛
             record["error"] = f"{type(e).__name__}: {e}"
             record["status"] = "error"
+            _ws_broadcast(task_id, "error", {"error": record["error"],
+                                               "status": "error"})
         finally:
             record["finished_at"] = _now_iso()
             _handles.pop(task_id, None)
+            # 解除 task → soul 映射(延迟, 让最后一批广播送达)
             _trim()
+            from app.services.soul_training_ws import ws_manager
+            ws_manager.unregister_task(task_id)
 
     _handles[task_id] = asyncio.create_task(_runner())
     _reap_stale()
     return task_id
+
+
+def pause_soul_task(task_id: str) -> bool:
+    """暂停运行中任务(在下一轮边界生效)。返回是否成功。"""
+    rec = _records.get(task_id)
+    if not rec or rec["status"] not in ("running", "paused"):
+        return False
+    if rec["status"] == "running":
+        rec["gate"].clear()
+        rec["status"] = "paused"
+    return True
+
+
+def resume_soul_task(task_id: str) -> bool:
+    """继续已暂停任务。返回是否成功。"""
+    rec = _records.get(task_id)
+    if not rec or rec["status"] != "paused":
+        return False
+    rec["gate"].set()
+    rec["status"] = "running"
+    return True
 
 
 async def gated_progress_cb(task_id: str) -> Any:
@@ -107,49 +146,58 @@ async def gated_progress_cb(task_id: str) -> Any:
     return _cb
 
 
-def pause_soul_task(task_id: str) -> bool:
-    """暂停运行中任务(在下一轮边界生效)。返回是否成功。"""
-    rec = _records.get(task_id)
-    if not rec or rec["status"] not in ("running", "paused"):
-        return False
-    if rec["status"] == "running":
-        rec["gate"].clear()
-        rec["status"] = "paused"
-    return True
-
-
-def resume_soul_task(task_id: str) -> bool:
-    """继续已暂停任务。返回是否成功。"""
-    rec = _records.get(task_id)
-    if not rec or rec["status"] != "paused":
-        return False
-    rec["gate"].set()
-    rec["status"] = "running"
-    return True
-
-
 def update_progress(task_id: str, progress: dict) -> None:
-    """任务协程内部进度上报(仅 running 状态可写)。"""
+    """任务协程内部进度上报(仅 running 状态可写)。
+
+    同时通过 WebSocket 实时推送到订阅了对应 SOUL 的前端客户端。
+    """
     rec = _records.get(task_id)
     if rec and rec["status"] == "running":
         rec["progress"] = progress
-
+        # WebSocket 实时广播
+        _ws_broadcast(task_id, "progress", {"progress": progress,
+                                              "status": rec["status"]})
 
 _MAX_EVENTS = 500  # 事件缓冲上限(超出丢弃最旧, 避免内存膨胀)
 
 def append_event(task_id: str, event: dict) -> None:
     """向任务的事件缓冲追加一条详细事件(前端实时可视化)。
 
-    每条 event 结构: {ts, phase, type, round, data}
-    - phase: actor|critic|updater|reward|info
-    - type: question|answer|eval|distill|score|draft|applied|info
-    - data: 阶段特定数据(问题文本/答案/评分/优化行等)
+    同时通过 WebSocket 实时推送到订阅了对应 SOUL 的前端客户端。
     """
     rec = _records.get(task_id)
     if rec and rec["status"] == "running":
         rec["events"].append(event)
         if len(rec["events"]) > _MAX_EVENTS:
             rec["events"] = rec["events"][-_MAX_EVENTS:]
+        # WebSocket 实时广播详细事件
+        _ws_broadcast(task_id, "event", {"event": event})
+
+
+def _ws_broadcast(task_id: str, event_type: str, data: dict) -> None:
+    """fire-and-forget WebSocket 广播(非阻塞, 失败不影响训练)。
+
+    直接从 task_soul_map 解析 soul_kb_id 并构造完整 payload 后调度广播。
+    不使用 broadcast_task_event(避免 unregister 后 broadcast_task_event 找不到映射)。
+    """
+    try:
+        loop = asyncio.get_running_loop()
+        from app.services.soul_training_ws import ws_manager
+        soul_kb_id = ws_manager._task_soul_map.get(task_id)
+        if not soul_kb_id:
+            return
+        payload = {
+            "type": event_type,
+            "ts": _now_iso(),
+            "soul_kb_id": soul_kb_id,
+            "task_id": task_id,
+            **data,
+        }
+        loop.create_task(ws_manager.broadcast(soul_kb_id, payload))
+    except RuntimeError:
+        pass  # 无 running loop, 跳过
+    except Exception:
+        pass  # 广播失败不影响训练
 
 
 def get_soul_task(task_id: str) -> dict | None:

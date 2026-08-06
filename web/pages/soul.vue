@@ -88,6 +88,7 @@
               <div class="console-head">
                 <h3>{{ t('soul.train.consoleTitle') }}</h3>
                 <span class="console-sub">{{ t('soul.train.consoleSub') }}</span>
+                <span class="ws-indicator" :class="{ on: wsConnected }" :title="wsConnected ? 'WebSocket 实时连接' : '未连接'"></span>
                 <button class="btn btn-ghost btn-xs" style="margin-left:auto" @click="loadTrainingHistory(selected); openHistory()">{{ t('soul.train.history') }}</button>
               </div>
 
@@ -782,9 +783,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, watch, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
-import SoulPersonaRail from '../components/SoulPersonaRail.vue'
+import { useSoulTraining } from '~/composables/useSoulTraining'
 import {
   RobotOutlined, PlusOutlined, ReloadOutlined, MoreOutlined, SettingOutlined,
   MessageOutlined, ExperimentOutlined, AuditOutlined, SyncOutlined,
@@ -895,6 +896,54 @@ let taskListTimer: any = null
 // 事件日志流（训练监控）
 const eventLog = ref<{ time: string; tone: string; text: string }[]>([])
 const logBody = ref<HTMLElement | null>(null)
+
+// ── WebSocket 实时训练推送 ──
+const wsTraining = useSoulTraining()
+const wsConnected = computed(() => wsTraining.connected.value)
+/** 从 WebSocket 消息渲染训练事件到 eventLog */
+function renderWsMessage(msg: typeof wsTraining.events.value[number]) {
+  if (msg.type === 'progress' && msg.progress) {
+    const p = msg.progress
+    if (p.phase === 'actor' && p.type === 'actor_done') {
+      pushLog('info', t('soul.actions.eventActorDone', { q: p.questions ?? 0, m: p.memories ?? 0 }))
+    } else if (p.phase === 'critic' && p.type === 'critic_score') {
+      pushLog('ok', t('soul.actions.eventCriticScore', { reward: p.reward != null ? fmtNum(p.reward) : '?' }))
+    } else if (p.phase === 'updater' && p.type === 'updater_done') {
+      pushLog('info', t('soul.actions.eventUpdaterDone', { applied: p.auto_applied ?? 0, drafts: p.drafts_count ?? 0 }))
+    } else if (p.phase === 'optimize' && p.type === 'optimize_done') {
+      pushLog('ok', t('soul.actions.eventOptimizeDone', { docs: (p.optimized_docs ?? []).join(', '), absorbed: p.cognitions_absorbed ?? 0 }))
+    } else if (p.phase === 'reward') {
+      pushLog('ok', t('soul.actions.eventRoundDone', { round: p.round, reward: p.reward != null ? fmtNum(p.reward) : '?' }))
+    }
+    // 更新训练进度
+    trainProgress.value = p
+    if (p.converged !== undefined) {
+      updateLatestScores(p)
+    }
+  } else if (msg.type === 'event' && msg.event) {
+    renderRlEvent(msg.event)
+  } else if (msg.type === 'done') {
+    trainTaskStatus.value = 'done'
+    training.value = false
+    const rep = msg.result
+    trainResult.value = rep ? JSON.stringify(rep, null, 2) : ''
+    pushLog('ok', t('soul.actions.eventTrainComplete'))
+    showToast(t('soul.actions.trainComplete'))
+    loadAll()
+    if (selected.value) { loadRewardHistory(selected.value); loadPersonaDocs(selected.value) }
+  } else if (msg.type === 'error') {
+    trainTaskStatus.value = 'error'
+    training.value = false
+    pushLog('err', t('soul.actions.eventTrainError', { error: msg.error || 'unknown' }))
+    showToast(t('soul.actions.trainFailed'), 'err')
+  }
+}
+/** watch WebSocket 事件流 */
+watch(() => wsTraining.events.value.length, (n, old) => {
+  if (n <= (old ?? 0)) return
+  const newMsgs = wsTraining.events.value.slice(old ?? 0)
+  for (const msg of newMsgs) renderWsMessage(msg)
+})
 
 // 人格定义查看器
 const personaDocs = ref<{ name: string; content: string; updated_at?: string }[]>([])
@@ -1781,6 +1830,10 @@ async function doTrain() {
     if (taskId) {
       trainTaskId.value = taskId
       pushLog('ok', t('soul.actions.eventTaskSubmitted', { id: taskId.slice(0, 8) }))
+      // 连接 WebSocket 实时推送(token 为空: 开发模式 auth disabled)
+      wsTraining.clearEvents()
+      wsTraining.connect(trainingSoul.value.kb_id)
+      // 保留轮询作为 fallback(WebSocket 不可用时仍能工作)
       pollTrainTask(taskId)
     } else {
       trainResult.value = JSON.stringify(res?.report || res, null, 2)
@@ -2175,6 +2228,13 @@ async function doExport(soul: Soul) {
 onMounted(() => {
   loadAll()
   taskListTimer = setInterval(pollTaskList, 8000)
+})
+
+onUnmounted(() => {
+  clearInterval(trainPollTimer)
+  clearInterval(reviewPollTimer)
+  clearInterval(taskListTimer)
+  wsTraining.disconnect()
 })
 </script>
 
@@ -2929,4 +2989,23 @@ select.inp[multiple] { min-height: 110px; }
 .tc-history-hint { text-align: center; font-size: 12px; color: var(--kb-gold-deep); cursor: pointer; padding: 6px; border: 1px dashed var(--kb-border-strong); border-radius: 6px; }
 .tc-history-hint:hover { background: var(--kb-gold-soft); }
 
+
+.ws-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #888;
+  margin-left: 6px;
+  transition: background 0.2s;
+  &.on {
+    background: #4ade80;
+    box-shadow: 0 0 6px #4ade80;
+    animation: ws-pulse 2s infinite;
+  }
+}
+@keyframes ws-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
 </style>

@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, Query, Request, UploadFile, WebSocket
 
 from app.api.deps.auth import verify_token
 from app.services import soul_config, soul_service, soul_router
@@ -686,6 +686,9 @@ async def train_rl(soul_kb_id: str, req: dict[str, Any], _: None = Depends(verif
             return rep
         task_id = soul_task_runner.submit_soul_task(
             _task, "soul_train_rl", {"soul_kb_id": soul_kb_id, "rounds": rounds})
+        # 注册 task→soul 映射(WebSocket 广播按 soul_kb_id 路由)
+        from app.services.soul_training_ws import ws_manager
+        ws_manager.register_task(task_id, soul_kb_id)
         return {"success": True, "task_id": task_id, "status": "running"}
     report = await asyncio.shield(soul_reward.train_rl(soul_kb_id, rounds=rounds))
     return {"success": True, "task_id": None, "report": report}
@@ -1016,3 +1019,53 @@ async def distill_files(
     return {"success": True, "task_id": task_id, "status": "running",
             "mode": "distill-files", "files": len(files),
             "tmp_dir": str(tmp_root)}
+
+
+
+# ── WebSocket: 训练实时推送 ──────────────────────────────────────────────
+
+@router.websocket("/ws/training/{soul_kb_id}")
+async def ws_training(websocket: WebSocket, soul_kb_id: str):
+    """SOUL 训练实时 WebSocket 端点。
+
+    连接: ws://backend:8765/api/v1/soul/ws/training/{soul_kb_id}?token=<token>
+    认证: query param token (与 verify_token 相同的 KB_AUTH_TOKEN)
+    订阅: 连接后自动订阅该 soul_kb_id 的所有训练事件
+
+    推送消息类型:
+      - {type: "progress", ...progress_data}   — 阶段进度更新
+      - {type: "event", event: {...}}           — 详细事件(actor/critic/updater/optimize)
+      - {type: "done", result: {...}}           — 训练完成
+      - {type: "error", error: "msg"}           — 训练失败
+      - {type: "status", status: "connected"}   — 连接确认
+    """
+    from app.services.soul_training_ws import ws_manager
+    from app.config import get_config
+    from fastapi import Query as QueryParam
+
+    # token 认证(WebSocket 不支持 header, 用 query param)
+    cfg = get_config()
+    if cfg.auth_enabled:
+        token = websocket.query_params.get("token", "")
+        expected = cfg.auth_token or ""
+        import hmac
+        if not (token and expected and hmac.compare_digest(token, expected)):
+            await websocket.close(code=4001, reason="Unauthorized")
+            return
+
+    # 校验 SOUL 存在
+    if not soul_config.resolve_soul_kb_path(soul_kb_id):
+        await websocket.close(code=4004, reason="SOUL not found")
+        return
+
+    await ws_manager.connect(soul_kb_id, websocket)
+    try:
+        await websocket.send_text('{"type":"status","status":"connected","soul_kb_id":"'
+                                  + soul_kb_id + '"}')
+        # 保持连接, 等待服务端推送或客户端消息
+        while True:
+            await websocket.receive_text()
+    except Exception:
+        pass
+    finally:
+        await ws_manager.disconnect(soul_kb_id, websocket)
