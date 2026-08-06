@@ -65,8 +65,8 @@ SOUL 人格系统是知识库之上的"人格加工层":
 | 删除人格, 移除人格, soul_delete, delete persona | **Delete** | §A2 `soul_delete` |
 | 人格列表, 所有人格, 查看人格, soul_list, list personas | **List** | §A3 `soul_list` + `soul_status` |
 | 人格配置, 修改人格, 调整学习范围, 改领域标签, 改引擎, soul_config_update | **Configure** | §A4 `soul_config_update` + meditation config |
-| 训练人格, 人格学习, 自动训练, 好奇心训练, 全库自举, 固定轮数, rounds | **Train** | §B `soul_learn`/`soul_learn_all`(rounds) |
-| 开启自动训练, 定时训练, 启用调度, 自动学习循环 | **AutoTrain** | §B3 调度器启用(rounds_per_run) |
+| 训练人格, 人格学习, 自动训练, 好奇心训练, 全库自举, 固定轮数, rounds, RL强化, 人格进化, train_rl | **Train** | §B0 `soul_train_rl`(rounds) 统一 RL |
+| 手动学习, 指定文档学习, soul_learn, learn_all | **LearnOnly** | §B1/B2 `soul_learn`/`soul_learn_all`(Actor 单跑) |
 | 审批记忆, 记忆草稿, 人格记忆, soul_review_drafts, approve memory | **Review** | §D1 `soul_review_drafts` |
 | 人格评估, 自评, 校准, soul_eval, soul_calibrate | **Evaluate** | §D2 `soul_eval`/`soul_calibrate` |
 | 人格反思, 漂移报告, soul_reflect, reflect | **Reflect** | §D3 `soul_reflect` |
@@ -145,81 +145,83 @@ experience_meditation_config_update(soul_kb_id, {harness, model, enabled, interv
 
 ---
 
-## §B 人格训练(好奇心驱动的自动学习)
+## §B 人格训练(统一 RL 三角色强化学习)
 
-> **⭐ 训练原理**:SOUL 的"好奇心"= 对 kb_scope 内文档自动生成四层问题
-> (事实/概念/跨文档/挑战),检索知识库自答,四维自评(接地性/完整性/
-> 思维一致/信息增益),≥3 分且无判官分歧才蒸馏为记忆草稿 → 人工审批 →
-> 注册索引 → 人格进化。**补天好奇心引擎 v2**(默认启用, 参考 arXiv:2604.25648
-> 元认知好奇心框架): 每轮训练后刷新 questions/mastery.json 掌握画像,
-> 按主题掌握度动态调整问题比例(近发展区 ZPD), 探索-利用平衡(新文档优先 +
-> 薄弱主题重学), 已知记忆摘要注入防重复。**评价后继续训练**:per-SOUL
-> learned_hash (soul-<name>/questions/learned-hashes.json)记录已学文档,内容变更自动
-> 重新学习;新文档随时可学;**每个 SOUL 独立记录进度**,互不阻塞。
+> **⭐ 训练原理(重构后)**:SOUL 训练采用**三角色 DRL 架构**(Actor × Critic × Updater),
+> 自动集成知识学习 + 自我进化, 一个统一 RL 循环。**RL 是唯一训练模式** ——
+> 旧的 learn/learn_all 已集成为 RL 的 Actor 阶段, 不再独立使用。
+>
+> **三角色心智模型(DRL → SOUL 映射)**:
+> - **Actor(执行者)** πθ: 并行批处理知识学习 — 好奇心问题 → 检索自答 → 蒸馏记忆。
+>   「权重」= memories/*.md(知识掌握度)。并行批处理提速 4-5x。
+> - **Critic(评价者)** Vφ: 六维评价 + 收敛检测(身份/价值观/思维/语言/知识掌握/
+>   自我一致性)。输出奖励信号 reward(中位数平滑)。
+> - **Updater(更新者)** ∇θ: 独立 LLM 根据 Critic 评分生成权重优化行。
+>   Critic 评分 <3.5 的维度**立即写入**对应人格文档章节(soul-definition.md /
+>   thinking-style.md), 包括领域知识经验和自我一致性章节(自动创建)。
+>   六维全部映射到目标文档, 权重真正更新, 确保 SOUL 越来越能回答高分内容。
+>
+> **训练效果**: SOUL 越来越像"自己"(人格一致性收敛) + 知识掌握越来越牢固
+> (记忆沉淀 + 薄弱主题 ZPD 重学 + mastery 画像持续刷新)。
 > 完整协议见 [references/soul-training.md](references/soul-training.md)。
 
-### B1 手动训练(单文档/多文档)
+### B0 ⭐ RL 统一训练(唯一训练入口 — 推荐)
+#   Phase 1 ACTOR:   并行批处理知识学习(好奇心问题→检索自答→蒸馏, 提速 4-5x)
+#   Phase 2 CRITIC:  六维评价(身份/价值观/思维/语言/知识掌握/自我一致性)
+#   Phase 3 UPDATER: 根据 Critic 评分更新人格文档权重(立即写入, 非 pending)
+#   Phase 4 APPROVE: 自动批准高质量记忆(groundedness≥3.5 → 索引 → 问答可检索)
+#   Phase 5 DISTILL: 跨记忆知识蒸馏(经验总结 → knowledge-synthesis.md)
+#   Phase 6 REWARD:  进化曲线记录
+```
+- **权重立即更新**: Critic 评分 <3.5 的维度立即写入人格文档(不等收敛), 六维全部映射
+- **收敛感知**: reward 连续 2 轮变化 <0.25 → 收敛态: Actor 减半问题数(聚焦深化)
+- **自动批准记忆**: groundedness≥3.5 且四维均分≥3.5 的训练记忆自动批准 + 索引(问答可检索)
+- **知识蒸馏**: 每轮跨记忆综合 → knowledge-synthesis.md(经验法则+知识要点, 非堆砌)
+- **并行提速**: Actor 阶段并行自答(harness 并行度可配 config.yml soul.train_concurrency, 默认 4)
+- **reward 稳定性**: Critic 默认 2 次采样中位数平滑(抗 LLM 方差)
+- **宪法层安全**: 只做"章节内追加优化行"(不删不改), 写前 checkpoint, 行级去重
+- **等价入口**: POST /api/v1/soul/{kb}/train-rl; ragctl: soul train-rl; MCP: soul_train_rl
+
+### B1 手动学习(Actor 阶段单跑 — 精确控制文档)
 ```
 soul_learn(soul_kb_id, doc_paths=[...], limit=6, rounds=1)   # 异步,返回 task_id
-# 轮询 kb_task_status(task_id) 直到 done; running 时 progress 含 {round, rounds,
-#   questions, memories, docs_processed, skipped} 实时进度
+# 仅执行 Actor 阶段(知识学习), 不触发 Critic/Updater。适合精确控制学哪些文档。
 ```
-- 文档必须在 kb_scope 内(`*` 范围 = 任意公开库文档);预算 0.15 USD/轮
-- rounds>1: 锁内循环多轮,每轮独立预算基线 + 增量扫描(已学文档自动跳过)
-- 后端/前端等价入口: POST /api/v1/soul/{kb}/learn (async_mode=true) → task_id;
-  GET /api/v1/soul/tasks/{task_id} 查进度;前端 SOUL 页面训练 modal 实时显示进度
+- 注: 这是 RL 的 Actor 子组件单独使用, 完整训练请用 soul_train_rl
 
-### B2 全库自举(一次训练全部未学文档, 支持固定轮数)
+### B2 全库学习(Actor 阶段批量 — 所有人格 × 增量文档)
 ```
 soul_learn_all(soul_kb_id="", max_docs=20, dry_run=False, rounds=1)
-# 建议先 dry_run=True 看预估成本/重叠率,再实际执行
-# 异步执行: 返回 task_id → kb_task_status 轮询(progress 逐 SOUL/逐轮更新)
+# 建议先 dry_run=True 看预估成本/重叠率
 ```
-- 空 soul_kb_id = 全部人格;每 SOUL 独立 learned_hash(跨人格不互相阻塞)
-- rounds=N: 每轮学一批增量文档(每轮 ≤30 次 LLM 调用),直到轮数用完或全部学完;
-  **每轮真实产出记忆草稿/成本扣费, 不是假训练**
+- 注: 这是 RL 的 Actor 子组件批量使用, 完整训练请用 soul_train_rl
 
-### B3 ⭐ 自动训练循环(无人值守, 支持固定轮数)
+### B3 ⭐ 自动训练循环(无人值守, 自动调用 RL)
 ```
 1. 为每个 SOUL 启用调度:
    experience_meditation_config_update(soul_kb_id, {
      "meditation_mode": "soul", "enabled": true,
-     "interval_hours": 24, "rounds_per_run": 2,     # 每轮定时训练执行 N 轮
+     "interval_hours": 24, "rounds_per_run": 2,     # 每轮定时训练执行 N 轮 RL
      "max_budget_usd": 0.15, "max_questions_per_run": 10})
-2. 调度器每 interval_hours 遍历 SOUL → learn_incremental(rounds=rounds_per_run):
-   只学"内容变更/未学过"的文档(per-SOUL learned_hash 增量),零新增时 0 成本
-3. 定期(每周)人工审批记忆草稿(soul_review_drafts)完成进化闭环
+2. 调度器每 interval_hours 遍历 SOUL → train_rl(rounds=rounds_per_run):
+   自动执行 Actor(增量学习)+Critic(评价)+Updater(策略更新)完整 RL 循环
+3. 收敛态时认知草稿自动应用; 发散态时定期人工审批(soul_review_drafts)
 ```
-- **评价后继续训练**:per-SOUL learned_hash 保证文档更新后自动重学;
-  新入库文档自动进入下轮训练
-- 预算保护:每轮 0.15 USD(每轮独立预算基线, 不会因历史消耗永久锁死);
-  熔断/信号量防失控
-- 前端: 配置 modal "启用定时自动训练 + 间隔 + 每轮固定轮数 + 预算 + 问题上限"
+- **重构变化**: 调度器现在调用 train_rl(统一三角色), 不再只调 learn_incremental
+- **收敛自动应用**: 收敛态 + overall≥4.2 时认知草稿自动合并入宪法层, 免人工
 
-### B4 ⭐ RL 强化训练(好奇心×评价 Agent×策略更新)
+### B4 ⭐ RL 进化曲线与认知草稿审批
 ```
-soul_train_rl(soul_kb_id, rounds=2)   # 异步, task_id → kb_task_status 轮询
-# 每轮: ① 好奇心探索 learn_incremental ② evaluate_persona 评价 Agent 四维打分
-#       ③ 低分维度(<3.5)生成认知草稿(cognition-drafts) ④ reward 写入进化曲线
+soul_review_drafts(soul_kb_id, draft_type="cognition", action="list")  # 查看待审批
 soul_review_drafts(soul_kb_id, draft_type="cognition", action="approve",
                    draft_ids=[...])   # 审批 → 合并入 soul-definition.md 对应章节
-soul_evaluate(soul_kb_id)             # RL 评价Agent四维评分(新工具, MCP重启后注册)
-# soul_eval(kb, question, answer, evidence) 为单条答案四维自评(旧工具)
+soul_evaluate(soul_kb_id)             # 独立调 Critic 六维评分
+# 收敛态自动应用的草稿无需审批, 发散态草稿需人工审批
 ```
-- **RL 心智模型**: 探索(learn 新知识)= 观测环境; 评价 Agent 四维打分
-  (identity/values/thinking/language 0-5)= 奖励信号; 认知草稿(结构文档
-  优化建议)= 策略更新; 审批合并入宪法层 = 策略落地; reward 记录于
-  reports/reward-history.jsonl = 进化曲线(模拟人类学习路径)
-- **reward 稳定性**: 训练内评价默认 2 次采样中位数平滑(抗 LLM 方差),
-  评测集固定为已批准记忆(避免草稿池变化导致评分漂移); 四维均 ≥3.5
-  时不再生成认知草稿(收敛态, 0 草稿 = 策略无需更新)
-- **宪法层安全**: 认知草稿只做"章节内追加优化行"(不删不改既有内容),
-  写前自动 checkpoint, 审批幂等(重复审批拒绝/行级去重), 审批/回滚
-  通道与记忆草稿相同; language-style 追加的短语直接参与 soul_ask 注入
-  与 PAS 匹配
-- 等价入口: POST /api/v1/soul/{kb}/train-rl | evaluate | cognition-drafts;
-  前端训练 modal "RL 强化(评价驱动)" 模式 + 审批 modal "认知草稿(RL)" 页签;
-  ragctl: soul train-rl / evaluate / review-cognition --all
+- **六维评价**: identity/values/thinking/language/knowledge/coherence(0-5)
+- **认知草稿审批**: 收敛态自动应用的草稿在 cognition-drafts/ 标记 auto_applied;
+  发散态草稿 pending, 经审批合并入宪法层
+- ragctl: soul evaluate / review-cognition --all
 
 ### B5 ⭐ 任务控制与训练历史(SQLite)
 ```
@@ -392,9 +394,9 @@ ragctl soul ask "问题" --soul soul-<名字>          # 人格增强问答
 - `soul_init(soul_name, kb_scope, domain_labels, supported_task_types, harness, model)` — 创建人格
 - `soul_config_update(soul_kb_id, ...)` — 修改配置(scope/标签/权重)
 - `soul_delete(soul_kb_id)` — 删除人格(先留快照)
-- `soul_learn(soul_kb_id, doc_paths, limit, rounds)` / `soul_learn_all(soul_kb_id, max_docs, dry_run, rounds)` — 训练(异步, 支持固定轮数)
-- `soul_train_rl(soul_kb_id, rounds)` — RL 强化训练(好奇心×评价 Agent×认知草稿策略更新, 异步)
-- `soul_evaluate(soul_kb_id)` — 评价 Agent 四维人格评分(RL 奖励信号)
+- `soul_train_rl(soul_kb_id, rounds)` — ⭐ RL 统一训练(三角色: Actor×Critic×Updater, 异步, 唯一训练入口)
+- `soul_learn(soul_kb_id, doc_paths, limit, rounds)` / `soul_learn_all(soul_kb_id, max_docs, dry_run, rounds)` — Actor 阶段单跑(知识学习, 异步)
+- `soul_evaluate(soul_kb_id)` — Critic 六维人格评分(RL 奖励信号)
 - `soul_eval(soul_kb_id, question, answer, evidence_paths)` / `soul_calibrate` — 评估
 - `soul_review_drafts(soul_kb_id, action, draft_ids, force, draft_type=memory|cognition)` — 记忆/认知草稿审批
 - `soul_reflect(soul_kb_id)` / `soul_checkpoint` / `soul_rollback` — 反思/回滚

@@ -332,7 +332,13 @@ class AgentHarnessManager:
         if self._initialized:
             return
         self._initialized = True
-        self._semaphore = asyncio.Semaphore(2)  # Global concurrency cap
+        # 训练并行度: 默认 4(配置可调), 支持并行批处理 Actor 管道
+        try:
+            from app.config import config
+            _concurrency = config.soul_train_concurrency
+        except Exception:
+            _concurrency = 4
+        self._semaphore = asyncio.Semaphore(_concurrency)
         self._job_handle = _create_kill_on_close_job()
         self._circuit_open: dict[str, float] = {}  # harness → tripped_until timestamp
         self._consecutive_failures: dict[str, int] = {}

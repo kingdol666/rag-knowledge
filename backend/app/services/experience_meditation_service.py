@@ -731,9 +731,11 @@ class ExperienceMeditationScheduler:
 
         logger.info("Soul meditation trigger for %s (mode=soul)", kb_id)
         try:
-            from app.services.soul_learn import learn_incremental
+            # 统一 RL 训练: Actor(知识学习) × Critic(六维评价) × Updater(权重更新)
+            # 自动集成知识学习 + 自我进化, 一个统一 RL 循环(替代旧的 learn_incremental)
+            from app.services.soul_reward import train_rl
             rounds = int(config.get("rounds_per_run", 1) or 1)
-            report = await learn_incremental(kb_id, rounds=rounds)
+            report = await train_rl(kb_id, rounds=rounds)
         except Exception as e:
             logger.exception("Soul meditation failed for %s", kb_id)
             try:

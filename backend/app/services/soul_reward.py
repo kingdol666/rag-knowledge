@@ -479,108 +479,29 @@ async def read_persona_docs(soul_kb_id: str) -> dict[str, Any]:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
-# §4  RL 主循环(train_rl) — 好奇心探索 × 评价 × 策略更新
+# ═══════════════════════════════════════════════════════════════════════════
+# §4  RL 主循环 — 统一三角色引擎(Actor × Critic × Updater)
 # ═══════════════════════════════════════════════════════════════════════════
 
 async def train_rl(soul_kb_id: str, rounds: int = 1,
                    progress_cb=None) -> dict[str, Any]:
-    """RL 训练主循环(单 SOUL)。
+    """RL 训练主循环 — 统一三角色引擎(Actor × Critic × Updater)。
 
-    每轮:
-      1. 好奇心探索: learn_incremental(rounds=1) — 学习新知识/更新认知
-      2. 奖励: evaluate_persona — 评价 Agent 四维评分
-      3. 策略更新: generate_cognition_drafts — 低分维度 → 认知草稿(待审批)
-      4. reward 记录 → reports/reward-history.jsonl(进化曲线)
+    重构后: 不再串行 learn→eval→cognition, 而是调用统一三角色引擎:
+      - Actor: 并行批处理知识学习(提速 4-5x)
+      - Critic: 六维评价 + 收敛检测(新增 knowledge/coherence 维度)
+      - Updater: 独立 LLM 生成权重优化行 + 收敛态自动应用
 
-    Returns: {rounds_completed, per_round: [{round, reward, drafts_created,
-    learn_report}], reward_history_path}
+    自动集成了旧架构的知识学习(learn_incremental) + 自我进化
+    (evaluate_persona + cognition_drafts), 统一为一个高效 RL 循环。
 
-    NOTE: 不在本函数预取 per-soul 锁 —— learn_incremental 内部自行持锁,
-    asyncio.Lock 不可重入, 外层再 acquire 同一实例会死锁至超时导致
-    learn 阶段被跳过(历史 bug)。evaluate/generate 为只读/原子写, 无锁需求。
+    Args:
+        soul_kb_id: SOUL 知识库 ID。
+        rounds: 训练轮数。
+        progress_cb: 进度回调(每阶段 phase: actor|critic|updater|reward)。
+
+    Returns: {rounds_completed, per_round, convergence_state,
+              reward_history_path, hint}
     """
-    from app.services.soul_learn import learn_incremental
-
-    rounds = max(1, int(rounds or 1))
-    _dir = soul_kb_dir(soul_kb_id)
-    history_path = _dir / "reports" / "reward-history.jsonl"
-    history_path.parent.mkdir(parents=True, exist_ok=True)
-
-    per_round: list[dict] = []
-
-    for r in range(1, rounds + 1):
-        # 1) 好奇心探索(增量学习; learn_incremental 内部持 per-soul 锁)
-        learn_rep = await learn_incremental(
-            soul_kb_id, rounds=1,
-            progress_cb=(lambda p: progress_cb({"phase": "learn", "round": r,
-                                                 "rounds": rounds, **p}))
-            if progress_cb else None,
-        )
-        learn_ok = bool(learn_rep.get("success"))
-        learn_err = learn_rep.get("error") if not learn_ok else None
-        if progress_cb:
-            progress_cb({
-                "phase": "learn", "round": r, "rounds": rounds,
-                "questions": learn_rep.get("questions_generated", 0),
-                "memories": learn_rep.get("memories_created", 0),
-                "docs_processed": learn_rep.get("docs_processed", 0),
-                "learn_error": learn_err,
-            })
-
-        # 2) 奖励(评价 Agent, 2 次采样均值平滑 LLM 方差) — learn 失败不阻塞评价/策略更新
-        eval_rep = await evaluate_persona(soul_kb_id, n_samples=2)
-        reward = float(eval_rep.get("overall", 0.0))
-
-        # 3) 策略更新(认知草稿)
-        cog_rep = await generate_cognition_drafts(soul_kb_id, eval_rep)
-        created = cog_rep.get("created", [])
-
-        # 4) reward 历史
-        _append_jsonl(history_path, {
-            "round": r, "timestamp": _now_iso(),
-            "reward": reward,
-            "identity": eval_rep.get("identity", 0),
-            "values": eval_rep.get("values", 0),
-            "thinking": eval_rep.get("thinking", 0),
-            "language": eval_rep.get("language", 0),
-            "drafts_created": created,
-            "learn": {
-                "ok": learn_ok,
-                "error": learn_err,
-                "questions": learn_rep.get("questions_generated", 0),
-                "memories": learn_rep.get("memories_created", 0),
-                "docs": learn_rep.get("docs_processed", 0),
-            },
-        })
-
-        per_round.append({
-            "round": r,
-            "reward": reward,
-            "scores": {
-                "identity": eval_rep.get("identity", 0),
-                "values": eval_rep.get("values", 0),
-                "thinking": eval_rep.get("thinking", 0),
-                "language": eval_rep.get("language", 0),
-            },
-            "cognition_drafts_created": created,
-            "learn": {
-                "ok": learn_ok,
-                "error": learn_err,
-                "questions_generated": learn_rep.get("questions_generated", 0),
-                "memories_created": learn_rep.get("memories_created", 0),
-                "docs_processed": learn_rep.get("docs_processed", 0),
-            },
-        })
-        if progress_cb:
-            progress_cb({
-                "phase": "reward", "round": r, "rounds": rounds,
-                "reward": reward, "drafts_created": len(created),
-            })
-
-    return {
-        "success": True,
-        "rounds_completed": len(per_round),
-        "per_round": per_round,
-        "reward_history_path": str(history_path),
-        "hint": "认知草稿需经 soul_review_drafts(draft_type=cognition) 审批后合并入人格定义",
-    }
+    from app.services.soul_rl_engine import train_rl_unified
+    return await train_rl_unified(soul_kb_id, rounds=rounds, progress_cb=progress_cb)

@@ -1,7 +1,12 @@
-# SOUL 训练协议 — 好奇心驱动的自动学习 + 评估后持续进化
+# SOUL 训练协议 — 统一 RL 三角色强化学习(Actor × Critic × Updater)
 
-> 本文件是 soul skill §B 的权威细则:如何触发训练、如何开启自动循环、
-> 如何让"评价后继续训练"真正运转。
+> 本文件是 soul skill §B 的权威细则:统一 RL 训练架构、收敛检测、
+> 自动应用机制、以及自动循环调度协议。
+>
+> **⭐ 重构要点(2026-08)**: 训练统一为唯一 RL 模式(soul_train_rl),
+> 自动集成知识学习(Actor)+ 六维评价(Critic)+ 权重更新(Updater)。
+> 旧的 learn/learn_all 降级为 RL 的 Actor 子组件, learn_incremental 升级为
+> 并行批处理(learn_incremental_parallel, 提速 4-5x)。
 
 ## 0. ⭐ 异步任务契约(所有长任务统一模式)
 
@@ -27,9 +32,16 @@ error   → error 字段含失败原因
   /api/soul/tasks/:taskId 代理进度; SOUL 页面训练/审批 modal 轮询展示进度
 - 同步兼容: 后端 async_mode 缺省 False, 旧调用方行为不变
 
-## 1. 训练触发方式(三选一)
+## 1. 训练触发方式(推荐: 统一 RL)
 
-### 1a 手动单文档
+### 1a ⭐ RL 统一训练(唯一推荐入口)
+```
+soul_train_rl(soul_kb_id="soul-musk", rounds=2)   # 异步, task_id → kb_task_status 轮询
+```
+每轮四阶段: Actor(并行知识学习)→ Critic(六维评价)→ Updater(权重更新)→ Reward(记录)。
+收敛态(连续 2 轮 reward 变化<0.25)时: Actor 减半问题数, Updater 认知草稿自动应用。
+
+### 1b 手动单文档(Actor 单跑)
 ```
 soul_learn(soul_kb_id="soul-催化", doc_paths=["Chemistry-Catalysis/photocatalysis.md"], limit=6)
 → task_id → kb_task_status 轮询
@@ -52,15 +64,17 @@ experience_meditation_config_update(soul_kb_id, {
   "enabled": true,
   "interval_hours": 24,        # 学习频率
   "max_budget_usd": 0.15,      # 每轮预算上限
-  "max_questions_per_run": 10  # 每轮问题上限
+  "max_questions_per_run": 10, # 每轮问题上限
+  "rounds_per_run": 2          # 每轮定时训练执行 N 轮 RL
 })
 ```
 前置条件(需管理员一次性配置):
 1. 后端 config.yml `experience_auto.enabled: true`(默认 false,防误启动)
 2. 调度器随后端启动(main.py lifespan 自动 start)
 
-开启后: 调度器每 interval_hours 遍历所有 enabled 的 SOUL → `learn_incremental`:
-- 只学 learned_hash 不匹配(未学/已变更)的文档 → 零新增时 0 成本
+开启后: 调度器每 interval_hours 遍历所有 enabled 的 SOUL → `train_rl`(统一三角色):
+- Actor 只学 learned_hash 不匹配(未学/已变更)的文档 → 零新增时 0 成本
+- Critic 六维评价 + 收敛检测; Updater 认知草稿(收敛态自动应用)
 - 预算/熔断/信号量全部生效
 
 ## 2. 好奇心训练协议(每次 learn 内部)

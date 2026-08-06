@@ -19,3 +19,6 @@ soul:
   default_harness: "omp"
   # 默认模型(空 = 引擎默认: OMP 用其内置默认,claude 用 sonnet)
   default_model: ""
+  # RL 训练并行度: 并行批处理 Actor 管道的 LLM 并发上限(默认 4)
+  # 后端承受力强可调高(6-8), 弱可调低(2)
+  train_concurrency: 4

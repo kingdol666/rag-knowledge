@@ -3015,18 +3015,27 @@ async def soul_reflect(soul_kb_id: str) -> str:
 
 @mcp.tool()
 async def soul_train_rl(soul_kb_id: str, rounds: int = 1) -> str:
-    """RL 强化训练: 好奇心探索(learn) × 评价 Agent(reward) × 策略更新(认知草稿)。
+    """RL 统一强化训练(三角色 DRL: Actor × Critic × Updater) — 唯一训练入口。
 
-    每轮: 1) learn_incremental 学习 kb_scope 内增量文档
-    2) evaluate_persona 评价 Agent 四维打分(identity/values/thinking/language)
-    3) generate_cognition_drafts 低分维度 → cognition-drafts(待审批)
-    4) reward 写入 reports/reward-history.jsonl(进化曲线)
+    重构后的统一训练: 自动集成知识学习 + 自我进化, 一个高效 RL 循环。
 
-    认知草稿经 soul_review_drafts(draft_type=cognition, action=approve) 审批后
-    合并入 soul-definition.md 对应章节 —— 评价驱动的结构文档优化闭环。
+    每轮四阶段:
+      Phase 1 ACTOR(执行者):   并行批处理知识学习 — 好奇心问题→检索自答→蒸馏记忆
+        (提速 4-5x, 收敛态自动减半问题数聚焦深化)
+      Phase 2 CRITIC(评价者):  六维评价 + 收敛检测 — 身份/价值观/思维/语言/知识掌握/
+        自我一致性(中位数平滑), 输出奖励信号 reward
+      Phase 3 UPDATER(更新者): 独立 LLM 生成权重优化行(梯度) → 认知草稿;
+        收敛态 + overall≥4.2 → 自动应用入宪法层(免人工审批); 否则待审批
+      Phase 4 REWARD:          进化曲线记录(reward-history.jsonl)
 
-    异步: 返回 task_id → kb_task_status 轮询(progress 含 phase: learn|reward,
-    reward 分数, drafts_created)。
+    DRL 映射: 文档权重 = 模型参数; 认知草稿 = 梯度; 收敛自动应用 = 学习率衰减小步更新。
+    "权重" = memories/*.md(知识掌握) + soul-definition.md 章节优化行(人格强化)。
+
+    训练效果: SOUL 越来越像"自己"(人格一致性收敛) + 知识掌握越来越牢固
+    (记忆沉淀 + 薄弱主题 ZPD 重学 + mastery 画像持续刷新)。
+
+    异步: 返回 task_id → kb_task_status 轮询(progress 含 phase: actor|critic|
+    updater|reward, reward 分数, converged 收敛态, auto_applied 自动应用数)。
     """
     async def _work(inner_task_id: str):
         r = await _client().soul_train_rl(soul_kb_id, rounds, async_mode=True)

@@ -51,6 +51,8 @@ def submit_soul_task(coro_factory: CoroFactory, kind: str,
         "progress": None,
         "result": None,
         "error": None,
+        # 详细事件缓冲(前端实时可视化每个模型的输出)
+        "events": [],
         # 暂停/继续门: 任务协程在每轮边界 await gate.wait(),
         # pause 时 gate 未置位 → 协程停在轮次之间(LLM 调用不被打断)
         "gate": asyncio.Event(),
@@ -133,6 +135,23 @@ def update_progress(task_id: str, progress: dict) -> None:
         rec["progress"] = progress
 
 
+_MAX_EVENTS = 500  # 事件缓冲上限(超出丢弃最旧, 避免内存膨胀)
+
+def append_event(task_id: str, event: dict) -> None:
+    """向任务的事件缓冲追加一条详细事件(前端实时可视化)。
+
+    每条 event 结构: {ts, phase, type, round, data}
+    - phase: actor|critic|updater|reward|info
+    - type: question|answer|eval|distill|score|draft|applied|info
+    - data: 阶段特定数据(问题文本/答案/评分/优化行等)
+    """
+    rec = _records.get(task_id)
+    if rec and rec["status"] == "running":
+        rec["events"].append(event)
+        if len(rec["events"]) > _MAX_EVENTS:
+            rec["events"] = rec["events"][-_MAX_EVENTS:]
+
+
 def get_soul_task(task_id: str) -> dict | None:
     return _records.get(task_id)
 
@@ -148,6 +167,8 @@ def public_task_view(rec: dict | None) -> dict | None:
         "created_at": rec["created_at"],
         "meta": rec.get("meta") or {},
     }
+    if rec.get("events"):
+        out["events"] = rec["events"]
     if rec["status"] == "running":
         out["elapsed_seconds"] = round(time.monotonic() - rec["started_monotonic"], 1)
     if rec.get("finished_at"):

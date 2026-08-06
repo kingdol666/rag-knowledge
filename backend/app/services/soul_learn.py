@@ -2038,6 +2038,296 @@ async def _learn_docs_once(
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+# §5.12  learn_incremental_parallel — 并行批处理 Actor 管道(统一 RL)
+# ═══════════════════════════════════════════════════════════════════════════
+
+
+async def learn_incremental_parallel(
+    soul_kb_id: str,
+    rounds: int = 1,
+    intensity: float = 1.0,
+    progress_cb=None,
+) -> dict:
+    """并行批处理增量学习(Actor 角色)。
+
+    核心优化: 将 generate_questions → self_answer → eval_answer → distill
+    的串行循环改为分阶段并行批处理:
+      Stage 1: 为每个文档串行生成问题(LLM 有上下文依赖, 不可并行)
+      Stage 2: 所有问题并行自答(asyncio.gather, 受 harness semaphore 限速)
+      Stage 3: 所有答案并行评估(asyncio.gather)
+      Stage 4: 批量蒸馏写入
+
+    speedup: 串行 N×3 LLM 调用 → ceil(N/并发)×2 + 问题生成轮 ≈ 4-5x
+
+    Args:
+        soul_kb_id: SOUL KB ID。
+        rounds: 训练轮数(默认 1, 统一 RL 主循环每轮调一次)。
+        intensity: 探索强度(0.0-1.0); 收敛态传 0.5 减半问题数聚焦深化。
+        progress_cb: 进度回调。
+    """
+    rounds = max(1, int(rounds or 1))
+
+    try:
+        lock = get_soul_lock(soul_kb_id)
+        await asyncio.wait_for(lock.acquire(), timeout=PER_SOUL_LOCK_TIMEOUT)
+    except asyncio.TimeoutError:
+        return {"success": False, "error": "lock_timeout",
+                "detail": "无法获取 SOUL 学习锁"}
+
+    try:
+        per_round: list[dict] = []
+        totals: dict[str, float | int] = {
+            "questions_generated": 0, "memories_created": 0,
+            "docs_processed": 0, "skipped": 0, "gaps_count": 0,
+            "judge_divergence_count": 0, "cost_estimate": 0.0, "calls": 0,
+        }
+        first_error: str | None = None
+
+        for r in range(1, rounds + 1):
+            rep = await _learn_incremental_parallel_once(
+                soul_kb_id, round_idx=r, intensity=intensity,
+                progress_cb=progress_cb)
+            if not rep.get("success"):
+                if first_error is None:
+                    first_error = rep.get("error", "unknown")
+                per_round.append({"round": r, **rep})
+                break
+            per_round.append(rep)
+            for k in totals:
+                totals[k] = float(totals.get(k, 0)) + float(rep.get(k, 0))
+            if progress_cb:
+                await _call_cb(progress_cb, {
+                    "round": r, "rounds": rounds,
+                    "questions": int(rep.get("questions_generated", 0)),
+                    "memories": int(rep.get("memories_created", 0)),
+                    "docs_processed": int(rep.get("docs_processed", 0)),
+                    "cost_estimate": round(float(rep.get("cost_estimate", 0.0)), 6),
+                })
+            if rep.get("docs_processed", 0) == 0 and rep.get("questions_generated", 0) == 0:
+                break
+
+        if first_error:
+            return {"success": False, "error": first_error,
+                    "rounds_completed": len(per_round), "per_round": per_round,
+                    "questions_generated": int(totals.get("questions_generated", 0)),
+                    "memories_created": int(totals.get("memories_created", 0)),
+                    "docs_processed": int(totals.get("docs_processed", 0)),
+                    "cost_estimate": round(totals.get("cost_estimate", 0.0), 6)}
+        return {
+            "success": True, "rounds_completed": len(per_round),
+            "per_round": per_round,
+            "questions_generated": int(totals.get("questions_generated", 0)),
+            "memories_created": int(totals.get("memories_created", 0)),
+            "docs_processed": int(totals.get("docs_processed", 0)),
+            "skipped": int(totals.get("skipped", 0)),
+            "gaps_count": int(totals.get("gaps_count", 0)),
+            "judge_divergence_count": int(totals.get("judge_divergence_count", 0)),
+            "cost_estimate": round(totals.get("cost_estimate", 0.0), 6),
+            "calls": int(totals.get("calls", 0)),
+        }
+    except Exception as e:
+        logger.error("learn_incremental_parallel failed: %s", e, exc_info=True)
+        return {"success": False, "error": "internal", "detail": str(e)[:300]}
+    finally:
+        lock.release()
+
+
+async def _learn_incremental_parallel_once(
+    soul_kb_id: str, round_idx: int = 1, intensity: float = 1.0,
+    progress_cb=None,
+) -> dict:
+    """单轮并行批处理学习(调用方必须已持有 per-soul 锁)。
+
+    管道: 问题生成(串行) → 并行自答 → 并行评估 → 蒸馏。
+    并行批的元素是单个问题, self_answer/eval_answer 独立无依赖 → 安全并行。
+    harness 内部 Semaphore 兜底限速, 不会压垮 LLM 后端。
+
+    progress_cb: 可选, 用于向前端实时推送每个问题的处理过程。
+    """
+    try:
+        cfg = read_soul_config(soul_kb_id)
+    except ValueError:
+        return {"success": False, "error": "kb_not_found", "detail": "非 SOUL 知识库"}
+    if cfg.is_template:
+        return {"success": False, "error": "is_template", "detail": "模板库不可学习"}
+
+    _begin_run_budget(soul_kb_id)
+    kb_scope = cfg.kb_scope
+    med_cfg = get_meditation_config(soul_kb_id)
+    med_config = med_cfg.get("config", {})
+    max_questions = max(1, int(med_config.get("max_questions_per_run", 10) * intensity))
+
+    from app.services.soul_curiosity import (
+        read_mastery_profile, update_mastery_profile,
+    )
+    mastery = read_mastery_profile(soul_kb_id)
+
+    docs = _get_incremental_docs(soul_kb_id, kb_scope, mastery)
+    if not docs:
+        return {"success": True, "questions_generated": 0, "memories_created": 0,
+                "docs_processed": 0, "skipped": 0, "gaps_count": 0,
+                "judge_divergence_count": 0, "cost_estimate": 0.0, "calls": 0}
+
+    est_per_call = 0.005
+    ok, remaining = check_budget(soul_kb_id, est_per_call * 10)
+    if not ok:
+        return {"success": False, "error": "budget_exceeded",
+                "detail": f"预算不足，剩余 ${remaining:.4f}"}
+
+    max_docs = min(len(docs), 10)
+    total_questions = 0
+    total_memories = 0
+    total_docs = 0
+    total_skipped = 0
+    total_gaps = 0
+    total_divergence = 0
+    total_calls = 0
+    total_cost = 0.0
+    calls_count = 0
+
+    for doc in docs[:max_docs]:
+        if calls_count >= _MAX_CALLS_PER_RUN:
+            total_skipped += 1
+            break
+        doc_path = doc["doc_path"]
+        total_docs += 1
+
+        # Stage 1: 生成问题(串行, 有 mastery 上下文依赖)
+        questions = await generate_questions(
+            doc_path, num=min(max_questions, 6), mastery=mastery)
+        if not questions:
+            continue
+        questions = questions[:max_questions]
+
+        # 事件: 问题生成完成
+        if progress_cb:
+            await _call_cb(progress_cb, {
+                "type": "questions", "doc_path": doc_path,
+                "count": len(questions),
+                "questions": [{"q_text": q.get("q_text", "")[:120],
+                               "q_type": q.get("q_type", "")}
+                              for q in questions],
+            })
+
+        # ── Stage 2: 并行自答 ──
+        # self_answer 之间无依赖(各自独立检索), harness Semaphore(2) 兜底限速
+        batch_size = min(len(questions), 4)  # 每批 4 个, 配合 semaphore=2
+        sa_results: list[dict | BaseException] = []
+        for i in range(0, len(questions), batch_size):
+            batch = questions[i:i + batch_size]
+            remaining_calls = _MAX_CALLS_PER_RUN - calls_count
+            if remaining_calls <= 0:
+                break
+            batch = batch[:remaining_calls]
+            batch_results = await asyncio.gather(
+                *(self_answer(q, soul_kb_id, kb_scope) for q in batch),
+                return_exceptions=True,
+            )
+            sa_results.extend(batch_results)
+            calls_count += len(batch)
+            total_calls += len(batch)
+            total_cost += 0.005 * len(batch)
+
+        # 事件: 自答结果
+        if progress_cb:
+            for q_item, sa_result in zip(questions, sa_results):
+                if isinstance(sa_result, BaseException) or not sa_result.get("retrieval_pass"):
+                    continue
+                await _call_cb(progress_cb, {
+                    "type": "answer",
+                    "q_text": q_item.get("q_text", "")[:120],
+                    "q_type": q_item.get("q_type", ""),
+                    "answer_preview": (sa_result.get("answer_text", "") or "")[:200],
+                    "evidence_count": len(sa_result.get("evidence_paths", [])),
+                })
+
+        # ── Stage 3: 并行评估 + Stage 4: 蒸馏(通过的自答才评估) ──
+        eval_tasks = []
+        eval_meta = []  # (q_item, sa_result) 对应关系
+        for q_item, sa_result in zip(questions, sa_results):
+            if isinstance(sa_result, BaseException):
+                total_gaps += 1
+                continue
+            if not sa_result.get("retrieval_pass"):
+                total_gaps += 1
+                continue
+            total_questions += 1
+            a_wrap = {
+                "answer_text": sa_result.get("answer_text", ""),
+                "citations": sa_result.get("citations", []),
+            }
+            evidence_paths = sa_result.get("evidence_paths", [])
+            eval_tasks.append(
+                eval_answer(q_item, a_wrap, evidence_paths, soul_kb_id))
+            eval_meta.append((q_item, a_wrap, evidence_paths))
+
+        if eval_tasks:
+            eval_batch_size = 4
+            for i in range(0, len(eval_tasks), eval_batch_size):
+                batch_tasks = eval_tasks[i:i + eval_batch_size]
+                batch_meta = eval_meta[i:i + eval_batch_size]
+                remaining_calls = _MAX_CALLS_PER_RUN - calls_count
+                if remaining_calls <= 0:
+                    break
+                batch_tasks = batch_tasks[:remaining_calls]
+                batch_meta = batch_meta[:remaining_calls]
+                batch_results = await asyncio.gather(
+                    *batch_tasks, return_exceptions=True)
+                calls_count += len(batch_tasks)
+                total_calls += len(batch_tasks)
+                total_cost += 0.005 * len(batch_tasks)
+
+                for (q_item, a_wrap, evidence_paths), eval_result in zip(
+                        batch_meta, batch_results):
+                    if isinstance(eval_result, BaseException):
+                        continue
+                    if eval_result.get("judge_divergence") is not None:
+                        total_divergence += 1
+                    dist_result = await distill(
+                        q=q_item, a=a_wrap, evidence_paths=evidence_paths,
+                        scores=eval_result.get("scores", {}),
+                        soul_kb_id=soul_kb_id,
+                        qh=q_item.get("q_hash", ""), doc_source=doc_path,
+                        prompt_version=eval_result.get(
+                            "eval_prompt_version", "soul_eval_v1"),
+                        judge_divergence=eval_result.get("judge_divergence"),
+                        pas_score=eval_result.get("pas_score"),
+                    )
+                    if dist_result.get("memory_path"):
+                        total_memories += 1
+
+                    # 事件: 评估+蒸馏结果(前端可视化每个问题的质量)
+                    if progress_cb:
+                        await _call_cb(progress_cb, {
+                            "type": "eval",
+                            "q_text": q_item.get("q_text", "")[:100],
+                            "scores": eval_result.get("scores", {}),
+                            "distilled": bool(dist_result.get("memory_path")),
+                            "judge_divergence": eval_result.get("judge_divergence"),
+                        })
+
+        if total_questions > 0:
+            _record_learned_doc(soul_kb_id, doc)
+
+    deduct_cost(soul_kb_id, total_cost)
+    try:
+        update_mastery_profile(soul_kb_id)
+    except Exception as e:
+        logger.warning("update_mastery_profile failed for %s: %s", soul_kb_id, e)
+
+    return {
+        "success": True, "round": round_idx,
+        "questions_generated": total_questions,
+        "memories_created": total_memories,
+        "docs_processed": total_docs,
+        "skipped": total_skipped,
+        "gaps_count": total_gaps,
+        "judge_divergence_count": total_divergence,
+        "cost_estimate": round(total_cost, 6),
+        "calls": total_calls,
+    }
+
+# ═══════════════════════════════════════════════════════════════════════════
 # §5.11  learn_all 内部(单 SOUL 循环)
 # ═══════════════════════════════════════════════════════════════════════════
 

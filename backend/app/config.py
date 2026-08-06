@@ -392,6 +392,18 @@ class Config:
         """全局默认模型(空=引擎默认)。"""
         return str(self.soul_config.get("default_model", "") or "").strip()
 
+    @property
+    def soul_train_concurrency(self) -> int:
+        """RL 训练并行度(harness semaphore 大小)。
+
+        并行批处理 Actor 管道的 LLM 并发上限。默认 4(配合 4-batch 并行自答/评估)。
+        LLM 后端承受力强可调高(如 6-8); 弱可调低(如 2)。
+        """
+        try:
+            return max(1, int(self.soul_config.get("train_concurrency", 4) or 4))
+        except (TypeError, ValueError):
+            return 4
+
 
 config = Config()
 

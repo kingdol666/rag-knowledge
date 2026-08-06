@@ -7,7 +7,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import uuid
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -628,14 +628,19 @@ async def review_drafts(soul_kb_id: str, req: dict[str, Any],
 
 @router.post("/{soul_kb_id}/train-rl")
 async def train_rl(soul_kb_id: str, req: dict[str, Any], _: None = Depends(verify_token)):
-    """RL 强化训练(好奇心探索 × 评价 Agent × 策略更新)。
+    """RL 统一强化训练(三角色: Actor × Critic × Updater)。
+
+    重构后的唯一训练入口: 自动集成知识学习 + 自我进化, 一个统一 RL 循环。
 
     async_mode=True(默认): 后端异步执行并返回 task_id, GET /api/v1/soul/tasks/{id}
-    轮询进度(progress: {phase: learn|reward, round, rounds, reward, drafts_created})。
+    轮询进度(progress: {phase: actor|critic|updater|reward, round, rounds,
+    reward, converged, auto_applied, elapsed_sec})。
 
-    每轮: 1) learn_incremental 好奇心学习 2) evaluate_persona 评价 Agent 四维打分
-    3) generate_cognition_drafts 低分维度 → 认知草稿(待审批, 审批后合并入
-    soul-definition.md 对应章节, 实现"评价驱动的结构优化")
+    每轮四阶段:
+      Phase 1 ACTOR:   并行批处理知识学习(好奇心问题→检索自答→蒸馏, 提速 4-5x)
+      Phase 2 CRITIC:  六维评价(身份/价值观/思维/语言/知识掌握/自我一致性) + 收敛检测
+      Phase 3 UPDATER: 独立 LLM 生成权重优化行; 收敛态 + 高分 → 自动应用(免审批)
+      Phase 4 REWARD:  进化曲线记录
     """
     if not soul_config.resolve_soul_kb_path(soul_kb_id):
         raise _err(404, "kb_not_found")
@@ -656,6 +661,15 @@ async def train_rl(soul_kb_id: str, req: dict[str, Any], _: None = Depends(verif
 
             async def _cb(p):
                 await gate_cb(p)
+                # 详细事件缓冲到任务记录(前端实时可视化)
+                soul_task_runner.append_event(tid, {
+                    "ts": datetime.now(timezone.utc).isoformat(timespec="seconds"),
+                    "phase": p.get("phase", "info"),
+                    "type": p.get("type", "info"),
+                    "round": p.get("round"),
+                    "data": {k: v for k, v in p.items()
+                             if k not in ("phase", "type", "round")},
+                })
                 soul_training_db.log_event(run_id, p.get("phase", "info"), p)
                 soul_training_db.update_progress(
                     run_id, questions=p.get("questions"),
@@ -676,11 +690,14 @@ async def train_rl(soul_kb_id: str, req: dict[str, Any], _: None = Depends(verif
 
 @router.post("/{soul_kb_id}/evaluate")
 async def evaluate(soul_kb_id: str, _: None = Depends(verify_token)):
-    """评价 Agent 对人格当前表现的四维评分(RL 奖励信号, 可单独调用)。"""
+    """Critic 六维人格评分(RL 奖励信号): identity/values/thinking/language/knowledge/coherence + overall。
+
+    独立调用可评估当前人格表现; train_rl 内部每轮调用。
+    """
     if not soul_config.resolve_soul_kb_path(soul_kb_id):
         raise _err(404, "kb_not_found")
-    from app.services import soul_reward
-    return {"success": True, **await soul_reward.evaluate_persona(soul_kb_id)}
+    from app.services.soul_rl_engine import _critic_unified
+    return {"success": True, **await _critic_unified(soul_kb_id, {}, n_samples=1)}
 
 
 @router.post("/{soul_kb_id}/cognition-drafts")

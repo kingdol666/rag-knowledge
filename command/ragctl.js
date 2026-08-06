@@ -3233,13 +3233,21 @@ async function cmdSoul(args) {
         view = await apiGet(`/api/v1/soul/tasks/${taskId}`);
       } catch { continue; }
       const p = view.progress || {};
-      let line;
-      if (p.phase === 'learn') {
-        line = `  ⏳ ${label} 学习轮 ${p.round ?? 1}/${p.rounds ?? 1} ｜ 问题 ${p.questions ?? 0} ｜ 记忆 ${p.memories ?? 0} ｜ 文档 ${p.docs_processed ?? 0}`;
-      } else if (p.phase === 'reward') {
-        line = `  🎯 ${label} 第 ${p.round}/${p.rounds} 轮评价得分 ${p.reward?.toFixed?.(2) ?? p.reward} ｜ 认知草稿 ${p.drafts_created ?? 0}`;
+      if (p.phase === 'actor' || p.phase === 'learn') {
+        line = `  🎯 ${label} Actor 执行者 R${p.round ?? 1}/${p.rounds ?? 1} ｜ 问题 ${p.questions ?? 0} ｜ 记忆 ${p.memories ?? 0} ｜ 文档 ${p.docs_processed ?? 0}`;
+      } else if (p.phase === 'critic' || p.phase === 'reward') {
+        const rw = p.reward?.toFixed?.(2) ?? p.reward ?? '…';
+        line = `  📊 ${label} Critic 评价者 R${p.round}/${p.rounds} ｜ reward ${rw}${p.identity != null ? ` ｜ 身份${p.identity} 价值观${p.values} 思维${p.thinking} 语言${p.language} 知识${p.knowledge ?? '?'} 一致${p.coherence ?? '?'}` : ''}`;
+      } else if (p.phase === 'updater') {
+        line = `  🔄 ${label} Updater 更新者 R${p.round}/${p.rounds} ｜ 权重更新 ${p.drafts_count ?? 0} ｜ 自动应用 ${p.auto_applied ?? 0}${p.converged ? ' ｜ ✅已收敛' : ''}`;
+      } else if (p.phase === 'approve') {
+        line = `  ✅ ${label} 自动批准记忆中…`;
+      } else if (p.phase === 'distill') {
+        line = `  📚 ${label} 知识蒸馏中…`;
       } else if (p.processed !== undefined) {
         line = `  ⏳ ${label} 审批 ${p.processed}/${p.total} (批准 ${p.approved ?? 0} / 驳回 ${p.rejected ?? 0})`;
+      } else if (p.msg) {
+        line = `  ⏳ ${label} ${p.msg} (elapsed ${view.elapsed_seconds ?? '?'}s)`;
       } else {
         line = `  ⏳ ${label} 执行中…(elapsed ${view.elapsed_seconds ?? '?'}s)`;
       }
@@ -3506,20 +3514,29 @@ async function cmdSoul(args) {
       break;
     }
     case 'train-rl': {
-      // ragctl soul train-rl <soul_kb_id> [--rounds N] — RL 强化训练(好奇心×评价×策略更新)
+      // ragctl soul train-rl <soul_kb_id> [--rounds N] — 统一 RL 三角色训练(唯一训练入口)
       const kbId = rest[0];
       if (!kbId) { console.log('用法: ragctl soul train-rl <soul_kb_id> [--rounds N]'); break; }
-      const rounds = parseInt(flagVal('--rounds') || '1');
-      console.log(`\n🤖 RL 强化训练已提交(${kbId}, rounds=${rounds}): 好奇心探索 → 评价Agent打分 → 认知草稿策略更新…`);
+      const rounds = parseInt(flagVal('--rounds') || '2');
+      console.log(`\n🤖 统一 RL 训练已提交(${kbId}, rounds=${rounds}):`);
+      console.log('  Phase 1 🎯 Actor 执行者: 并行学习知识库 → 生成问题 → 检索自答 → 蒸馏记忆');
+      console.log('  Phase 2 📊 Critic 评价者: 六维评分(身份/价值观/思维/语言/知识掌握/自我一致)');
+      console.log('  Phase 3 🔄 Updater 更新者: 根据评分更新人格文档权重(soul-definition/thinking-style)');
+      console.log('  Phase 4 ✅ 自动批准高质量记忆 + 📚 知识蒸馏(经验总结)\n');
       const res = await apiPost(`/api/v1/soul/${enc(kbId)}/train-rl`, { rounds, async_mode: true });
       if (res.task_id) {
         const result = await pollTask(res.task_id, `${kbId} RL`);
-        console.log('  RL 训练完成:');
+        console.log('\n  ═══ RL 训练完成 ═══');
         for (const r of (result.per_round || [])) {
-          console.log(`    第 ${r.round} 轮: reward=${r.reward?.toFixed?.(2) ?? r.reward} (id=${r.scores?.identity} va=${r.scores?.values} th=${r.scores?.thinking} la=${r.scores?.language}) 认知草稿=${r.cognition_drafts_created?.length ?? 0} 学习: ${r.learn?.docs_processed ?? 0} 文档`);
+          const s = r.scores || {};
+          console.log(`  第 ${r.round} 轮 (${r.elapsed_sec ?? '?'}s): reward=${r.reward?.toFixed?.(2) ?? r.reward}`);
+          console.log(`    身份=${s.identity} 价值观=${s.values} 思维=${s.thinking} 语言=${s.language} 知识=${s.knowledge ?? '?'} 一致=${s.coherence ?? '?'}`);
+          console.log(`    Actor: ${r.learn?.questions_generated ?? 0} 问题 / ${r.learn?.memories_created ?? 0} 记忆 / ${r.learn?.docs_processed ?? 0} 文档`);
+          console.log(`    Updater: ${r.cognition?.auto_applied ?? 0} 自动应用 / ${r.cognition?.pending ?? 0} 待审批${r.converged ? ' ｜ ✅已收敛' : ''}`);
         }
-        console.log(`  进化曲线: ${result.reward_history_path || ''}`);
-        console.log('  下一步: ragctl soul review-cognition <soul_kb_id> 审批认知草稿 → 合并入人格定义');
+        console.log(`\n  进化曲线: ${result.reward_history_path || ''}`);
+        console.log(`  收敛态: ${result.convergence_state?.converged ? '✅ 已收敛' : '🔄 训练中'}`);
+        console.log('  💡 人格文档已更新, 可用 ragctl soul ask 提问验证训练效果');
       } else {
         console.log('  结果:', JSON.stringify(res).slice(0, 300));
       }

@@ -199,25 +199,39 @@ def _build_synthesize_prompt(query: str, chunks: list[dict], persona: dict,
         "## 任务",
         f"用户问题: {query}",
         "",
-        "## 人格设定",
+        "## 人格设定(必须内化,回答风格与此一致)",
         f"persona_definition: {persona.get('soul_def', '')[:1500]}",
         f"persona_values: {persona.get('values', '')[:800]}",
         f"thinking_style: {persona.get('thinking_style', '')[:800]}",
         f"language_style: {'; '.join(soul_profile.language_style_phrases(soul_kb_id))}",
         "",
-        "## 知识片段(仅依据这些作答)",
+        "## 知识片段(仅依据这些作答,每条关键主张标注引用锚点 [path])",
     ]
     for i, c in enumerate(chunks[:16], 1):
         lines.append(f"[{i}] path={c['path']} score={c['score']:.3f}")
         lines.append(c["chunk_text"][:800])
         lines.append("")
+
+    # 训练记忆 + 知识综合(核心: 让训练成果真正参与回答)
+    has_knowledge_synth = any("[知识经验综合]" in m for m in memory_summaries)
+    has_memories = any("[知识经验综合]" not in m for m in memory_summaries)
+
     if memory_summaries:
-        lines.append("## 人格记忆(参考,可引用)")
+        if has_knowledge_synth:
+            lines.append("## 📚 训练知识经验(你通过训练积累的核心经验,必须利用)")
+        else:
+            lines.append("## 📚 训练记忆(你通过训练积累的回答经验)")
         for m in memory_summaries[:10]:
-            lines.append(f"- {m[:200]}")
+            # 知识综合放最前面(已在 list head), 记忆按相关性
+            lines.append(f"- {m[:300]}")
         lines.append("")
+        lines.append("> 重要: 上述训练经验是你通过反复学习知识库积累的智慧。")
+        lines.append("> 回答时必须参考这些经验,特别是经验法则和知识要点。")
+        lines.append("> 如果用户问题与训练经验相关,优先运用这些经验来组织回答。")
+        lines.append("")
+
     if context_override:
-        lines.append("## 临时背景知识(仅本次回答有效,不写入任何记忆)")
+        lines.append("## 临时背景知识(仅本次回答有效)")
         lines.append(context_override[:1000])
         lines.append("")
     return "\n".join(lines)

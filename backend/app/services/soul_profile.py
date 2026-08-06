@@ -177,51 +177,81 @@ async def build_persona_bundle(
         except Exception as e:
             logger.warning("persona bundle fallback failed for %s: %s", soul_kb_id, e)
 
-    # ── 记忆扫描 ──
+    # ── 记忆检索(语义相关性排序, 非简单 mtime) ──
+    # 修复: 原来按 learned_at 降序取最近记忆, 但用户问"高分子聚合"时
+    # 可能注入无关记忆。改为向量检索已批准记忆 → 按相关性取 top-N。
     kb_dir = soul_config.soul_kb_dir(soul_kb_id)
     memories_dir = kb_dir / "memories"
     memory_summaries: list[str] = []
 
     if memories_dir.exists():
-        # 扫描所有 .md 文件，解析 YAML frontmatter
-        mem_files = sorted(
-            memories_dir.glob("*.md"),
-            key=lambda p: p.stat().st_mtime,
-            reverse=True,
-        )
+        # 策略: 先向量检索 memories/ 下的文档(已批准记忆已索引为 KB 文档),
+        # 按相关性取 top; 若向量检索不足, 补充高质量记忆(按评分降序)
+        relevant_memories: list[dict[str, Any]] = []
 
-        parsed_memories: list[dict[str, Any]] = []
-        for mf in mem_files:
-            try:
-                raw = mf.read_text(encoding="utf-8")
-                frontmatter = _parse_yaml_frontmatter(raw)
-                if frontmatter is None:
+        # 向量检索: 在 SOUL KB 内搜索, 会命中 memories/ 路径的文档
+        try:
+            mem_search = two_stage_search_service.search(
+                query=query, kb_id=resolved, stage2_top_k=max_memories * 2,
+            )
+            mem_results = mem_search.get("stage2", {}).get("results", [])
+            for item in mem_results:
+                doc_path = item.get("doc_path", "")
+                if "/memories/" not in doc_path:
                     continue
-                if frontmatter.get("status") != "approved":
-                    continue
-                parsed_memories.append({
-                    "file": mf,
-                    "frontmatter": frontmatter,
-                    "body": raw,
+                relevant_memories.append({
+                    "score": item.get("score", 0.0),
+                    "content": item.get("content", "")[:300],
+                    "path": doc_path,
                 })
-            except Exception as e:
-                logger.warning("Failed to read memory file %s: %s", mf, e)
-                continue
+        except Exception as e:
+            logger.warning("memory vector search failed for %s: %s", soul_kb_id, e)
 
-        # 按 learned_at 降序排列
-        parsed_memories.sort(
-            key=lambda m: m.get("frontmatter", {}).get("learned_at") or "",
-            reverse=True,
-        )
+        # 如果向量检索不足, 回退到文件扫描(按评分降序)
+        if len(relevant_memories) < max_memories:
+            mem_files = sorted(
+                memories_dir.glob("*.md"),
+                key=lambda p: p.stat().st_mtime, reverse=True)
+            for mf in mem_files:
+                if len(relevant_memories) >= max_memories * 2:
+                    break
+                try:
+                    raw = mf.read_text(encoding="utf-8")
+                    frontmatter = _parse_yaml_frontmatter(raw)
+                    if frontmatter is None or frontmatter.get("status") != "approved":
+                        continue
+                    # 避免重复(向量检索已命中的)
+                    mem_name = mf.stem
+                    if any(mem_name in r.get("path", "") for r in relevant_memories):
+                        continue
+                    scores = frontmatter.get("scores", {})
+                    mean_score = sum(scores.values()) / max(len(scores), 1)
+                    body_text = _extract_body_after_frontmatter(raw)
+                    relevant_memories.append({
+                        "score": mean_score,
+                        "content": body_text[:300],
+                        "path": str(mf),
+                        "question": frontmatter.get("question", ""),
+                    })
+                except Exception:
+                    continue
 
-        # 取前 max_memories 条
-        for mem in parsed_memories[:max_memories]:
-            fm = mem["frontmatter"]
-            question = fm.get("question") or ""
-            body_text = _extract_body_after_frontmatter(mem["body"])
-            body_preview = body_text[:200].replace("\n", " ")
-            summary = f"Q: {question} → 要点: {body_preview}"
-            memory_summaries.append(summary)
+        # 按分数(向量相似度或评分均值)降序
+        relevant_memories.sort(key=lambda m: m.get("score", 0), reverse=True)
+
+        for mem in relevant_memories[:max_memories]:
+            content = mem.get("content", "").replace("\n", " ")[:250]
+            memory_summaries.append(content)
+
+    # ── 知识综合注入(训练蒸馏的结构化经验) ──
+    synth_path = kb_dir / "knowledge-synthesis.md"
+    if synth_path.exists():
+        try:
+            synth_text = synth_path.read_text(encoding="utf-8")
+            if synth_text.strip():
+                memory_summaries.insert(0, f"[知识经验综合]\n{synth_text[:800]}")
+        except Exception:
+            pass
 
     return {
         "persona_docs": persona_docs,

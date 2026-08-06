@@ -91,103 +91,107 @@
                 <button class="btn btn-ghost btn-xs" style="margin-left:auto" @click="loadTrainingHistory(selected); openHistory()">{{ t('soul.train.history') }}</button>
               </div>
 
-              <!-- 未运行: 触发面板 -->
+              <!-- ═══ 统一 RL 训练面板 ═══ -->
+
+              <!-- 暂停态 -->
               <div v-if="trainTaskStatus === 'paused'" class="train-paused">
                 <div class="pause-banner">
                   <b>{{ t('soul.train.pausedBanner') }}</b>
                   <button class="btn btn-copper btn-sm" @click="resumeTask()">{{ t('soul.train.resumeTraining') }}</button>
                 </div>
               </div>
-              <div v-if="trainTaskStatus !== 'running' && trainTaskStatus !== 'paused'" class="train-launch">
-                <div class="mode-tabs">
-                  <button class="mode-tab" :class="{ on: trainMode === 'docs' }" @click="trainMode = 'docs'">{{ t('soul.train.modeDocs') }}</button>
-                  <button class="mode-tab" :class="{ on: trainMode === 'all' }" @click="trainMode = 'all'">{{ t('soul.train.modeAll') }}</button>
-                  <button class="mode-tab mode-rl" :class="{ on: trainMode === 'rl' }" @click="trainMode = 'rl'">{{ t('soul.train.modeRl') }}</button>
+
+              <!-- 未运行: RL 启动面板(唯一训练模式) -->
+              <div v-if="trainTaskStatus !== 'running' && trainTaskStatus !== 'paused'" class="train-launch rl-launch">
+                <div class="rl-banner">
+                  <span class="rl-icon">🧠</span>
+                  <div class="rl-banner-text">
+                    <b>{{ t('soul.train.rlTitle') }}</b>
+                    <p>{{ t('soul.train.rlDesc') }}</p>
+                  </div>
                 </div>
-
-                <template v-if="trainMode === 'docs'">
+                <div class="rl-params">
                   <label class="field">
-                    <span class="field-label">{{ t('soul.train.fieldDocsLabel') }}</span>
-                    <select class="inp" v-model="trainForm.doc_paths" multiple size="5">
-                      <option v-for="d in docOptions" :key="d.path" :value="d.path">{{ d.path }}</option>
-                    </select>
+                    <span class="field-label">{{ t('soul.train.fieldRounds') }}</span>
+                    <input class="inp" type="number" v-model.number="trainForm.rounds" min="1" max="10" />
                   </label>
-                  <div class="field-row">
-                    <label class="field"><span class="field-label">{{ t('soul.train.fieldLimitQuestions') }}</span><input class="inp" type="number" v-model.number="trainForm.limit" min="1" max="10" /></label>
-                    <label class="field"><span class="field-label">{{ t('soul.train.fieldRounds') }}</span><input class="inp" type="number" v-model.number="trainForm.rounds" min="1" max="20" /></label>
-                  </div>
-                </template>
-
-                <template v-else-if="trainMode === 'all'">
-                  <div class="field-row">
-                    <label class="field"><span class="field-label">{{ t('soul.train.fieldRounds') }}</span><input class="inp" type="number" v-model.number="trainForm.rounds" min="1" max="20" /></label>
-                    <label class="field"><span class="field-label">{{ t('soul.train.fieldMaxDocsPerRound') }}</span><input class="inp" type="number" v-model.number="trainForm.maxDocs" min="1" max="50" /></label>
-                  </div>
-                  <label class="check"><input type="checkbox" v-model="trainForm.dry_run" /> {{ t('soul.train.dryRun') }}</label>
-                </template>
-
-                <template v-else>
-                  <p class="rl-desc">
-                    <b>{{ t('soul.train.rlDescTitle') }}</b> {{ t('soul.train.rlDesc') }}
-                  </p>
-                  <label class="field"><span class="field-label">{{ t('soul.train.fieldRlRounds') }}</span><input class="inp" type="number" v-model.number="trainForm.rounds" min="1" max="10" /></label>
-                </template>
-
+                </div>
                 <div class="launch-row">
-                  <button class="btn btn-copper" :disabled="training" @click="doTrain">
-                    {{ training ? t('soul.train.submitting') : (trainMode === 'rl' ? t('soul.train.launchBtnRl') : t('soul.train.launchBtn')) }}
+                  <button class="btn btn-copper btn-lg" :disabled="training" @click="doTrain">
+                    {{ training ? t('soul.train.submitting') : t('soul.train.launchBtn') }}
                   </button>
                   <span class="launch-hint">{{ t('soul.train.launchHint') }}</span>
                 </div>
               </div>
 
-              <!-- 运行中 / 已完成: 监控 -->
-              <div v-else class="train-monitor">
-                <!-- 阶段时间线 -->
-                <div class="phase-track" v-if="trainProgress">
-                  <div class="phase" :class="{ on: phaseIdx('learn') >= 1, done: phaseIdx('learn') === 2 }">
-                    <span class="phase-dot"></span><span class="phase-name">{{ t('soul.train.phaseExplore') }}</span>
-                    <span class="phase-note">{{ t('soul.train.phaseQuestions', { n: trainProgress.questions ?? 0 }) }}</span>
+              <!-- 运行中 / 已完成: 实时三角色监控 -->
+              <div v-else class="train-monitor rl-monitor">
+                <!-- 三角色进度时间线 -->
+                <div class="phase-track rl-phases" v-if="trainProgress">
+                  <div class="phase" :class="{ on: rlPhaseIdx('actor') >= 1, done: rlPhaseIdx('actor') === 2 }">
+                    <span class="phase-dot actor"></span>
+                    <span class="phase-name">{{ t('soul.train.phaseActor') }}</span>
+                    <span class="phase-note">{{ t('soul.train.phaseQuestions', { n: trainProgress.questions ?? 0 }) }} · {{ t('soul.train.phaseMemories', { n: trainProgress.memories ?? 0 }) }}</span>
                   </div>
-                  <div class="phase-conn" :class="{ on: phaseIdx('reward') >= 1 }"></div>
-                  <div class="phase" :class="{ on: phaseIdx('reward') >= 1, done: phaseIdx('reward') === 2 }">
-                    <span class="phase-dot"></span><span class="phase-name">{{ t('soul.train.phaseEval') }}</span>
+                  <div class="phase-conn" :class="{ on: rlPhaseIdx('critic') >= 1 }"></div>
+                  <div class="phase" :class="{ on: rlPhaseIdx('critic') >= 1, done: rlPhaseIdx('critic') === 2 }">
+                    <span class="phase-dot critic"></span>
+                    <span class="phase-name">{{ t('soul.train.phaseCritic') }}</span>
                     <span class="phase-note" v-if="trainProgress.reward !== undefined">reward {{ fmtNum(trainProgress.reward) }}</span>
                   </div>
-                  <div class="phase-conn" :class="{ on: trainTaskDone }"></div>
-                  <div class="phase" :class="{ on: (trainProgress.drafts_created ?? 0) > 0 || trainTaskDone }">
-                    <span class="phase-dot"></span><span class="phase-name">{{ t('soul.train.phaseStrategy') }}</span>
-                    <span class="phase-note">{{ t('soul.train.phaseDrafts', { n: trainProgress.drafts_created ?? 0 }) }}</span>
+                  <div class="phase-conn" :class="{ on: rlPhaseIdx('updater') >= 1 }"></div>
+                  <div class="phase" :class="{ on: rlPhaseIdx('updater') >= 1, done: rlPhaseIdx('updater') === 2 }">
+                    <span class="phase-dot updater"></span>
+                    <span class="phase-name">{{ t('soul.train.phaseUpdater') }}</span>
+                    <span class="phase-note">{{ t('soul.train.phaseDrafts', { n: (trainProgress.drafts_count ?? trainProgress.auto_applied ?? 0) }) }}</span>
                   </div>
                 </div>
 
+                <!-- 收敛状态指示器 -->
+                <div class="convergence-bar" v-if="trainProgress">
+                  <span class="conv-badge" :class="{ converged: trainProgress.converged }">
+                    {{ trainProgress.converged ? t('soul.train.converged') : t('soul.train.notConverged') }}
+                  </span>
+                  <span class="conv-round" v-if="trainProgress.round">R{{ trainProgress.round }}/{{ trainProgress.rounds }}</span>
+                  <span class="conv-auto" v-if="trainProgress.auto_applied">{{ t('soul.train.autoAppliedBadge') }} {{ trainProgress.auto_applied }}</span>
+                </div>
+
+                <!-- 进度条 -->
                 <div class="mon-line">
                   <span class="mon-label">{{ t('soul.train.progressLabel') }}</span>
                   <div class="bar"><i class="bar-fill" :style="{ width: trainPercent() + '%' }"></i></div>
                   <span class="mon-pct">{{ trainPercent() }}%</span>
                 </div>
-                <div class="mon-line" v-if="trainProgress">
-                  <span class="mon-label">{{ t('soul.train.statusLabel') }}</span>
-                  <span class="mon-text">
-                    <template v-if="trainProgress.phase === 'scan'">{{ t('soul.train.scanProgress', { scanned: trainProgress.scanned, total: trainProgress.total, unique: trainProgress.unique_docs }) }}</template>
-                    <template v-else-if="trainProgress.phase === 'learn'">{{ t('soul.train.learnProgress', { round: trainProgress.round, rounds: trainProgress.rounds, q: trainProgress.questions, m: trainProgress.memories, d: trainProgress.docs_processed }) }}<template v-if="trainProgress.learn_error"> · <span class="err">{{ t('soul.train.learnError', { error: trainProgress.learn_error }) }}</span></template></template>
-                    <template v-else-if="trainProgress.phase === 'reward'">{{ t('soul.train.rewardProgress', { round: trainProgress.round, rounds: trainProgress.rounds, reward: fmtNum(trainProgress.reward), drafts: trainProgress.drafts_created }) }}</template>
-                    <template v-else>{{ t('soul.train.executing') }}</template>
-                  </span>
-                </div>
 
-                <!-- 事件日志流 -->
-                <div class="event-log">
-                  <div class="log-head">{{ t('soul.train.eventStream') }}</div>
-                  <div class="log-body" ref="logBody">
-                    <div v-for="(ev, i) in eventLog" :key="i" class="log-line">
-                      <span class="log-time">{{ ev.time }}</span>
-                      <i class="log-dot" :class="ev.tone"></i>
-                      <span class="log-text">{{ ev.text }}</span>
+                <!-- 六维评分雷达(当 Critic 评分可用时) -->
+                <div class="rl-scores" v-if="latestScores">
+                  <div class="scores-head">{{ t('soul.train.criticPanel') }}</div>
+                  <div class="scores-grid">
+                    <div class="score-item" v-for="dim in scoreDims" :key="dim.key">
+                      <span class="score-label">{{ t('soul.train.' + dim.i18n) }}</span>
+                      <div class="score-bar-wrap">
+                        <div class="score-bar" :style="{ width: (latestScores[dim.key] / 5 * 100) + '%' }" :class="scoreClass(latestScores[dim.key])"></div>
+                      </div>
+                      <span class="score-val">{{ fmtNum(latestScores[dim.key]) }}</span>
                     </div>
                   </div>
                 </div>
 
+                <!-- 实时事件流(每个模型的输出) -->
+                <div class="event-log rl-events">
+                  <div class="log-head">{{ t('soul.train.eventStream') }}</div>
+                  <div class="log-body rl-log-body" ref="logBody">
+                    <div v-if="!eventLog.length" class="log-empty">{{ t('soul.train.noEvents') }}</div>
+                    <div v-for="(ev, i) in eventLog" :key="i" class="log-line rl-event" :class="'ev-' + ev.tone">
+                      <span class="log-time">{{ ev.time }}</span>
+                      <i class="log-dot" :class="ev.tone"></i>
+                      <span class="ev-icon">{{ evPhaseIcon(ev.tone) }}</span>
+                      <span class="log-text" v-html="ev.text"></span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- 训练结果 -->
                 <div class="train-result-box" v-if="trainResult">
                   <div class="result-head2">
                     <span>{{ t('soul.train.trainResult') }}</span>
@@ -1747,19 +1751,17 @@ function confirmDelete(soul: Soul) {
   })
 }
 
-// ── 训练 ──
+// ── 训练(统一 RL) ──
 function openTrain(soul: Soul) {
   trainingSoul.value = soul
-  trainMode.value = 'docs'
-  trainForm.value = { doc_paths: [], limit: 6, dry_run: false, rounds: 1, maxDocs: 10 }
+  trainMode.value = 'rl'
+  trainForm.value = { doc_paths: [], limit: 6, dry_run: false, rounds: 2, maxDocs: 10 }
   trainResult.value = ''
   preSearchChunks.value = []
-  trainOpen.value = true
-  loadScopeDocs(soul)
+  latestScores.value = null
 }
 async function doTrain() {
   if (!trainingSoul.value) return
-  if (trainMode.value === 'docs' && !trainForm.value.doc_paths.length) { message.warning(t('soul.train.selectDocs')); return }
   training.value = true
   trainResult.value = ''
   trainTaskId.value = ''
@@ -1767,38 +1769,14 @@ async function doTrain() {
   trainProgress.value = null
   trainError.value = ''
   eventLog.value = []
-  pushLog('info', t('soul.actions.eventTrainSubmit', { mode: trainMode.value === 'rl' ? t('soul.actions.eventTrainRl') : '', name: trainingSoul.value.name }))
+  latestScores.value = null
+  pushLog('info', t('soul.actions.eventTrainSubmit', { mode: ' RL 统一', name: trainingSoul.value.name }))
   clearInterval(trainPollTimer)
   try {
-    let res: any
-    if (trainMode.value === 'rl') {
-      res = await $fetch<any>('/api/soul/train-rl', {
-        method: 'POST',
-        body: { soul_kb_id: trainingSoul.value.kb_id, rounds: trainForm.value.rounds || 1 },
-      })
-    } else if (trainMode.value === 'docs') {
-      res = await $fetch<any>('/api/soul/learn', {
-        method: 'POST',
-        body: {
-          soul_kb_id: trainingSoul.value.kb_id, doc_paths: trainForm.value.doc_paths,
-          limit: trainForm.value.limit, rounds: trainForm.value.rounds || 1,
-        },
-      })
-    } else {
-      res = await $fetch<any>('/api/soul/train-all', {
-        method: 'POST',
-        body: {
-          soul_kb_id: trainingSoul.value.kb_id, max_docs: trainForm.value.maxDocs || 10,
-          dry_run: trainForm.value.dry_run, rounds: trainForm.value.rounds || 1,
-        },
-      })
-    }
-    if (trainForm.value.dry_run) {
-      trainResult.value = JSON.stringify(res?.report || res, null, 2)
-      training.value = false
-      trainTaskStatus.value = ''
-      return
-    }
+    const res: any = await $fetch<any>('/api/soul/train-rl', {
+      method: 'POST',
+      body: { soul_kb_id: trainingSoul.value.kb_id, rounds: trainForm.value.rounds || 1 },
+    })
     const taskId = res?.task_id
     if (taskId) {
       trainTaskId.value = taskId
@@ -1821,41 +1799,40 @@ async function doTrain() {
 }
 
 function pollTrainTask(taskId: string) {
-  let lastProgress = ''
+  let lastEventCount = 0
+  let lastProgressSig = ''
   clearInterval(trainPollTimer)
   trainPollTimer = setInterval(async () => {
     try {
       const st: any = await $fetch(`/api/soul/tasks/${taskId}`)
       trainTaskStatus.value = st.status
       const p = st.progress || null
-      // 进度变化 → 事件流
-      const sig = JSON.stringify(p)
-      if (p && sig !== lastProgress) {
-        lastProgress = sig
-        if (p.phase === 'learn') {
-          pushLog('info', t('soul.actions.eventExploreRound', { round: p.round ?? 1, rounds: p.rounds ?? 1, q: p.questions ?? 0, m: p.memories ?? 0, d: p.docs_processed ?? 0 }))
-        } else if (p.phase === 'reward') {
-          pushLog('reward', t('soul.actions.eventRewardScore', { reward: fmtNum(p.reward), n: p.drafts_created ?? 0 }))
-        } else if (p.phase === 'scan') {
-          pushLog('info', t('soul.actions.eventScanDocs', { scanned: p.scanned, total: p.total, unique: p.unique_docs }))
-        } else if (p.processed !== undefined) {
-          pushLog('info', t('soul.actions.eventApproval', { processed: p.processed, total: p.total, approved: p.approved ?? 0 }))
-        }
-      }
       trainProgress.value = p
       trainError.value = st.error || ''
+
+      // 详细事件流(从 task record 的 events buffer 渲染)
+      const events: any[] = st.events || []
+      if (events.length > lastEventCount) {
+        const newEvents = events.slice(lastEventCount)
+        lastEventCount = events.length
+        for (const ev of newEvents) {
+          renderRlEvent(ev)
+        }
+      }
+
+      // 进度变化摘要(补充事件流)
+      const sig = JSON.stringify(p)
+      if (p && sig !== lastProgressSig) {
+        lastProgressSig = sig
+        updateLatestScores(p)
+      }
+
       if (st.status === 'done') {
         clearInterval(trainPollTimer)
         const rep = st.result?.report || st.result
         trainResult.value = JSON.stringify(rep, null, 2)
         trainTaskStatus.value = 'done'
         training.value = false
-        const rounds = rep?.per_round || []
-        if (rounds.length) {
-          for (const r of rounds) {
-            pushLog('ok', t('soul.actions.eventRoundDone', { round: r.round, reward: fmtNum(r.reward), n: r.cognition_drafts_created?.length ?? 0 }))
-          }
-        }
         pushLog('ok', t('soul.actions.eventTrainComplete'))
         showToast(t('soul.actions.trainComplete'))
         await loadAll()
@@ -1869,16 +1846,125 @@ function pollTrainTask(taskId: string) {
         showToast(t('soul.actions.trainFailed'), 'err')
       }
     } catch { /* poll failure is non-fatal */ }
-  }, 4000)
+  }, 3000)
+}
+
+// ── RL 事件渲染 + 辅助函数 ──
+const latestScores = ref<any>(null)
+const scoreDims = [
+  { key: 'identity', i18n: 'dimIdentity' },
+  { key: 'values', i18n: 'dimValues' },
+  { key: 'thinking', i18n: 'dimThinking' },
+  { key: 'language', i18n: 'dimLanguage' },
+  { key: 'knowledge', i18n: 'dimKnowledge' },
+  { key: 'coherence', i18n: 'dimCoherence' },
+]
+
+function renderRlEvent(ev: any) {
+  const phase = ev.phase || 'info'
+  const type = ev.type || 'info'
+  const d = ev.data || {}
+  const round = ev.round ? `R${ev.round} ` : ''
+
+  if (type === 'actor_done') {
+    pushLog('actor', `<b>${round}🎯 ${t('soul.train.actorPanel')}</b><br>` +
+      `${t('soul.train.phaseQuestions', { n: d.questions ?? 0 })} · ` +
+      `${t('soul.train.phaseMemories', { n: d.memories ?? 0 })} · ` +
+      `文档 ${d.docs_processed ?? 0}` +
+      (d.learn_error ? ` <span class="err">${d.learn_error}</span>` : ''))
+  } else if (type === 'critic_score') {
+    const scores: any = {}
+    for (const dim of scoreDims) scores[dim.key] = d[dim.key] ?? 0
+    latestScores.value = { ...scores, overall: d.overall ?? 0 }
+    const dimsStr = scoreDims.map(dim => `${t('soul.train.' + dim.i18n)}: ${fmtNum(scores[dim.key])}`).join(' · ')
+    pushLog('critic', `<b>${round}📊 ${t('soul.train.criticPanel')}</b><br>` +
+      `reward <b>${fmtNum(d.overall ?? 0)}</b> · ${dimsStr}`)
+  } else if (type === 'updater_done') {
+    const auto = d.auto_applied ?? 0
+    const pending = d.pending ?? 0
+    const convBadge = d.converged ? ` · <span class="conv-tag">✅ ${t('soul.train.converged')}</span>` : ''
+    pushLog('updater', `<b>${round}🔄 ${t('soul.train.updaterPanel')}</b><br>` +
+      `${t('soul.train.phaseAutoApplied', { n: auto })} · ${t('soul.train.pendingBadge')} ${pending}${convBadge}`)
+  } else if (type === 'questions') {
+    const qList = (d.questions || []).map((q: any) => `  <i>· [${q.q_type}] ${escapeHtml(q.q_text)}</i>`).join('<br>')
+    pushLog('actor', `📄 <b>${t('soul.train.eventQuestion')}</b> (${d.count}): ${escapeHtml(d.doc_path || '')}<br>${qList}`)
+  } else if (type === 'answer') {
+    pushLog('actor', `💬 <b>${t('soul.train.eventAnswer')}</b> [${d.q_type}]: <i>${escapeHtml(d.answer_preview)}</i>` +
+      (d.evidence_count ? ` · ${t('soul.folder.hint.memories')} ${d.evidence_count}` : ''))
+  } else if (type === 'eval') {
+    const sc = d.scores || {}
+    const grounded = sc.groundedness ?? 0
+    const distilled = d.distilled ? ` · <b class="ok">✓ ${t('soul.train.eventDistilled')}</b>` : ''
+    pushLog('actor', `⚖️ <b>${t('soul.train.eventEval')}</b>: 接地性 ${fmtNum(grounded)} · ` +
+      `完整 ${fmtNum(sc.completeness ?? 0)} · 思维 ${fmtNum(sc.coherence ?? 0)} · 增益 ${fmtNum(sc.info_gain ?? 0)}${distilled}`)
+  } else if (d.msg) {
+    pushLog(phase, `<b>${round}${rlPhaseLabel(phase)}</b> ${escapeHtml(d.msg)}`)
+  }
+
+  // Phase 4.5 approve event
+  if (phase === 'approve' && d.msg) {
+    pushLog('ok', `<b>${round}✅ ${escapeHtml(d.msg)}</b>`)
+  }
+  // Phase 5 distill event
+  if (phase === 'distill' && d.msg) {
+    pushLog('ok', `<b>${round}📚 ${escapeHtml(d.msg)}</b>`)
+  }
+}
+
+function escapeHtml(s: string): string {
+  return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+}
+function rlPhaseLabel(phase: string): string {
+  if (phase === 'actor') return t('soul.train.phaseActor')
+  if (phase === 'critic') return t('soul.train.phaseCritic')
+  if (phase === 'updater') return t('soul.train.phaseUpdater')
+  return phase
+}
+function updateLatestScores(p: any) {
+  if (p && p.type === 'critic_score') {
+    latestScores.value = {
+      identity: p.identity, values: p.values, thinking: p.thinking,
+      language: p.language, knowledge: p.knowledge, coherence: p.coherence,
+      overall: p.overall,
+    }
+  }
+}
+function rlPhaseIdx(phase: string): number {
+  const p = trainProgress.value || {}
+  if (trainTaskDone.value) return 2
+  const cur = p.phase || ''
+  if (cur === phase) return 1
+  const order = ['actor', 'critic', 'updater', 'approve', 'distill', 'reward']
+  const ci = order.indexOf(cur)
+  const pi = order.indexOf(phase)
+  if (pi >= 0 && ci >= 0 && ci > pi) return 2
+  return 0
+}
+function evPhaseIcon(tone: string): string {
+  if (tone === 'actor') return '🎯'
+  if (tone === 'critic') return '📊'
+  if (tone === 'updater') return '🔄'
+  if (tone === 'reward') return '📈'
+  if (tone === 'ok') return '✅'
+  if (tone === 'err') return '❌'
+  return '•'
+}
+function scoreClass(v: number): string {
+  if (v >= 4) return 'good'
+  if (v >= 3) return 'ok'
+  return 'weak'
 }
 
 function trainPercent() {
   const p = trainProgress.value
   if (!p) return 0
-  if (p.phase === 'scan') return Math.min(90, Math.round((p.scanned / (p.total || 1)) * 90))
   const rounds = p.rounds || 1
-  if (rounds > 1 && p.round) return Math.min(99, Math.round((p.round / rounds) * 100))
-  return Math.min(95, (p.docs_processed || 0) * 10 + (p.questions || 0) * 3)
+  let base = 0
+  if (rounds > 1 && p.round) base = Math.round(((p.round - 1) / rounds) * 100)
+  // phase within round: actor=0-40%, critic=40-60%, updater=60-75%, approve=75-85%, distill=85-95%, reward=95-100%
+  const phaseMap: any = { actor: 0, critic: 0.4, updater: 0.6, approve: 0.75, distill: 0.85, reward: 0.95 }
+  const phFrac = phaseMap[p.phase] ?? 0
+  return Math.min(99, base + Math.round(phFrac * (100 / rounds)))
 }
 
 // ── 问答 ──
@@ -2407,7 +2493,55 @@ select.inp[multiple] { min-height: 110px; }
 .log-dot.ok { background: var(--kb-emerald); }
 .log-dot.reward { background: var(--kb-gold); }
 .log-dot.err { background: var(--kb-primary); }
+.log-dot.actor { background: var(--kb-cyan); }
+.log-dot.critic { background: var(--kb-gold); }
+.log-dot.updater { background: var(--kb-violet); }
 .log-text { color: var(--kb-fg-2); }
+
+/* ── 统一 RL 训练面板 ── */
+.rl-launch { gap: 16px; }
+.rl-banner { display: flex; gap: 12px; align-items: flex-start; background: var(--kb-bg-subtle); border-radius: 8px; padding: 14px; }
+.rl-icon { font-size: 28px; line-height: 1; }
+.rl-banner-text b { font-size: 13.5px; color: var(--kb-fg); }
+.rl-banner-text p { margin: 4px 0 0; font-size: 11.5px; line-height: 1.6; color: var(--kb-fg-2); }
+.rl-params { display: flex; gap: 12px; }
+.btn-lg { padding: 9px 24px !important; font-size: 14px !important; }
+.rl-phases .phase-dot.actor { background: var(--kb-cyan); }
+.rl-phases .phase-dot.critic { background: var(--kb-gold); }
+.rl-phases .phase-dot.updater { background: var(--kb-violet); }
+.convergence-bar { display: flex; gap: 10px; align-items: center; font-size: 11.5px; }
+.conv-badge { padding: 3px 9px; border-radius: 4px; font-weight: 600; font-size: 11px; }
+.conv-badge.converged { background: var(--kb-emerald); color: white; }
+.conv-badge:not(.converged) { background: var(--kb-bg-subtle); color: var(--kb-fg-3); }
+.conv-round { color: var(--kb-fg-3); font-family: 'JetBrains Mono', monospace; }
+.conv-auto { color: var(--kb-primary); font-weight: 600; }
+.conv-tag { color: var(--kb-emerald); }
+
+/* 六维评分 */
+.rl-scores { border: 1px solid var(--kb-border); border-radius: 6px; overflow: hidden; }
+.scores-head { font-size: 11px; letter-spacing: .05em; text-transform: uppercase; color: var(--kb-fg-3); padding: 7px 12px; border-bottom: 1px solid var(--kb-border); background: var(--kb-bg-subtle); }
+.scores-grid { padding: 10px 12px; display: flex; flex-direction: column; gap: 7px; }
+.score-item { display: flex; align-items: center; gap: 10px; }
+.score-label { width: 64px; font-size: 11.5px; color: var(--kb-fg-2); flex-shrink: 0; }
+.score-bar-wrap { flex: 1; height: 7px; background: var(--kb-bg-subtle); border-radius: 4px; overflow: hidden; }
+.score-bar { height: 100%; border-radius: 4px; transition: width .4s; }
+.score-bar.good { background: var(--kb-emerald); }
+.score-bar.ok { background: var(--kb-gold); }
+.score-bar.weak { background: var(--kb-primary); }
+.score-val { width: 30px; text-align: right; font-size: 11.5px; font-family: 'JetBrains Mono', monospace; color: var(--kb-fg); }
+
+/* 实时事件流 RL 样式 */
+.rl-log-body { max-height: 280px !important; }
+.rl-event .log-text { line-height: 1.5; }
+.rl-event .log-text :deep(b) { color: var(--kb-fg); }
+.rl-event .log-text :deep(i) { color: var(--kb-fg-3); }
+.rl-event .log-text :deep(.err) { color: var(--kb-primary); }
+.rl-event .log-text :deep(.ok) { color: var(--kb-emerald); }
+.rl-event.ev-actor { border-left: 3px solid var(--kb-cyan); padding-left: 9px; }
+.rl-event.ev-critic { border-left: 3px solid var(--kb-gold); padding-left: 9px; }
+.rl-event.ev-updater { border-left: 3px solid var(--kb-violet); padding-left: 9px; }
+.ev-icon { flex-shrink: 0; font-size: 12px; }
+.log-empty { padding: 20px; text-align: center; color: var(--kb-fg-3); font-size: 11.5px; }
 
 .train-result-box { border: 1px solid var(--kb-border); border-radius: 6px; overflow: hidden; }
 .result-head2 {
