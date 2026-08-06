@@ -18,8 +18,8 @@
   └─ 后端 soul_task_runner 独立任务执行(参考 parse 的 task_registry 模式)
 轮询进度: kb_task_status(task_id)  /  GET /api/v1/soul/tasks/{task_id}
   └─ running 时返回 progress:
-      训练: {round, rounds, questions, memories, docs_processed, skipped, gaps}
-      审批: {processed, total, approved, rejected}
+      训练: {round, rounds, phase: actor|critic|updater|approve|distill|optimize|reward,
+             questions, memories, reward, converged, global_optimized, cognitions_absorbed}
 done    → result 含完整报告(souls[] / per_round / results[])
 error   → error 字段含失败原因
 ```
@@ -38,8 +38,9 @@ error   → error 字段含失败原因
 ```
 soul_train_rl(soul_kb_id="soul-musk", rounds=2)   # 异步, task_id → kb_task_status 轮询
 ```
-每轮四阶段: Actor(并行知识学习)→ Critic(六维评价)→ Updater(权重更新)→ Reward(记录)。
-收敛态(连续 2 轮 reward 变化<0.25)时: Actor 减半问题数, Updater 认知草稿自动应用。
+每轮六阶段: Actor(并行知识学习)→Critic(六维评价)→Updater(认知草稿积累)→
+Approve(自动批准记忆)→Distill(知识蒸馏)→Global Optimize(全局人格优化, 非碎片追加)。
+收敛态(连续 2 轮 reward 变化<0.25)时: Actor 减半问题数, 全局优化在收敛时固化认知。
 
 ### 1b 手动单文档(Actor 单跑)
 ```

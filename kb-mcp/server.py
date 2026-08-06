@@ -3017,25 +3017,30 @@ async def soul_reflect(soul_kb_id: str) -> str:
 async def soul_train_rl(soul_kb_id: str, rounds: int = 1) -> str:
     """RL 统一强化训练(三角色 DRL: Actor × Critic × Updater) — 唯一训练入口。
 
-    重构后的统一训练: 自动集成知识学习 + 自我进化, 一个高效 RL 循环。
+    统一训练: 自动集成知识学习 + 自我进化 + 全局优化, 一个高效 RL 循环。
 
-    每轮四阶段:
+    每轮六阶段:
       Phase 1 ACTOR(执行者):   并行批处理知识学习 — 好奇心问题→检索自答→蒸馏记忆
         (提速 4-5x, 收敛态自动减半问题数聚焦深化)
       Phase 2 CRITIC(评价者):  六维评价 + 收敛检测 — 身份/价值观/思维/语言/知识掌握/
         自我一致性(中位数平滑), 输出奖励信号 reward
-      Phase 3 UPDATER(更新者): 独立 LLM 生成权重优化行(梯度) → 认知草稿;
-        收敛态 + overall≥4.2 → 自动应用入宪法层(免人工审批); 否则待审批
-      Phase 4 REWARD:          进化曲线记录(reward-history.jsonl)
+      Phase 3 UPDATER(更新者): 生成认知草稿(status=active) — 只积累不污染人格定义
+      Phase 4 APPROVE:         自动批准高质量记忆(groundedness≥3.5 → 索引 → 问答可检索)
+      Phase 5 DISTILL:         跨记忆知识蒸馏(经验总结 → knowledge-synthesis.md)
+      Phase 6 GLOBAL OPTIMIZE: 全局人格优化 — 当认知积累≥3/reward下降/收敛固化时,
+        读取全部上下文(4宪法文档+active认知+记忆+知识综合), LLM 做完整的、连贯的
+        全局重写(替换旧内容, 非碎片追加), 消化认知草稿为applied。checkpoint 保护。
+      Phase REWARD:            进化曲线记录(reward-history.jsonl)
 
-    DRL 映射: 文档权重 = 模型参数; 认知草稿 = 梯度; 收敛自动应用 = 学习率衰减小步更新。
-    "权重" = memories/*.md(知识掌握) + soul-definition.md 章节优化行(人格强化)。
+    三角色心智模型:
+    - Actor「权重」= memories/*.md(知识掌握度)
+    - Critic = 六维评分(奖励信号 + 收敛检测)
+    - Updater 认知草稿 = 梯度方向(全局优化时统一消化, 非碎片追加)
 
-    训练效果: SOUL 越来越像"自己"(人格一致性收敛) + 知识掌握越来越牢固
-    (记忆沉淀 + 薄弱主题 ZPD 重学 + mastery 画像持续刷新)。
-
-    异步: 返回 task_id → kb_task_status 轮询(progress 含 phase: actor|critic|
-    updater|reward, reward 分数, converged 收敛态, auto_applied 自动应用数)。
+    异步: 返回 task_id → kb_task_status 轮询(progress 含 phase:
+    actor|critic|updater|approve|distill|optimize|reward, reward 分数,
+    converged 收敛态, global_optimized 全局优化是否执行,
+    cognitions_absorbed 消化认知数)。
     """
     async def _work(inner_task_id: str):
         r = await _client().soul_train_rl(soul_kb_id, rounds, async_mode=True)

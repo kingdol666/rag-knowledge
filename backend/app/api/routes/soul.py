@@ -628,19 +628,22 @@ async def review_drafts(soul_kb_id: str, req: dict[str, Any],
 
 @router.post("/{soul_kb_id}/train-rl")
 async def train_rl(soul_kb_id: str, req: dict[str, Any], _: None = Depends(verify_token)):
-    """RL 统一强化训练(三角色: Actor × Critic × Updater)。
+    """RL 统一强化训练(三角色: Actor × Critic × Updater + 全局优化)。
 
-    重构后的唯一训练入口: 自动集成知识学习 + 自我进化, 一个统一 RL 循环。
+    唯一训练入口: 自动集成知识学习 + 自我进化 + 全局优化, 一个统一 RL 循环。
 
     async_mode=True(默认): 后端异步执行并返回 task_id, GET /api/v1/soul/tasks/{id}
-    轮询进度(progress: {phase: actor|critic|updater|reward, round, rounds,
-    reward, converged, auto_applied, elapsed_sec})。
+    轮询进度(progress 含 phase: actor|critic|updater|approve|distill|optimize|reward)。
 
-    每轮四阶段:
-      Phase 1 ACTOR:   并行批处理知识学习(好奇心问题→检索自答→蒸馏, 提速 4-5x)
-      Phase 2 CRITIC:  六维评价(身份/价值观/思维/语言/知识掌握/自我一致性) + 收敛检测
-      Phase 3 UPDATER: 独立 LLM 生成权重优化行; 收敛态 + 高分 → 自动应用(免审批)
-      Phase 4 REWARD:  进化曲线记录
+    每轮六阶段:
+      Phase 1 ACTOR:   并行批处理知识学习(好奇心问题→检索自答→蒸馏)
+      Phase 2 CRITIC:  六维评价 + 收敛检测
+      Phase 3 UPDATER: 生成认知草稿(status=active, 不污染人格定义)
+      Phase 4 APPROVE: 自动批准高质量记忆(groundedness≥3.5)
+      Phase 5 DISTILL: 跨记忆知识蒸馏(→ knowledge-synthesis.md)
+      Phase 6 OPTIMIZE: 全局人格优化(认知≥3/reward下降/收敛固化时触发,
+        全量上下文→LLM完整重写→替换旧文档, 非碎片追加)
+      Phase REWARD:    进化曲线记录
     """
     if not soul_config.resolve_soul_kb_path(soul_kb_id):
         raise _err(404, "kb_not_found")

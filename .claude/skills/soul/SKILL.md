@@ -156,30 +156,33 @@ experience_meditation_config_update(soul_kb_id, {harness, model, enabled, interv
 >   「权重」= memories/*.md(知识掌握度)。并行批处理提速 4-5x。
 > - **Critic(评价者)** Vφ: 六维评价 + 收敛检测(身份/价值观/思维/语言/知识掌握/
 >   自我一致性)。输出奖励信号 reward(中位数平滑)。
-> - **Updater(更新者)** ∇θ: 独立 LLM 根据 Critic 评分生成权重优化行。
->   Critic 评分 <3.5 的维度**立即写入**对应人格文档章节(soul-definition.md /
->   thinking-style.md), 包括领域知识经验和自我一致性章节(自动创建)。
->   六维全部映射到目标文档, 权重真正更新, 确保 SOUL 越来越能回答高分内容。
+> - **Updater(更新者)** ∇θ: 生成认知草稿(status=active) — **不直接写入人格定义**。
+>   认知草稿是"梯度方向", 在问答时注入 prompt(训练认知立即生效)。
+> - **全局优化引擎**: 当认知积累≥3条/reward下降/收敛固化时, 读取全部上下文
+>   (4宪法文档 + active认知 + 记忆 + 知识综合), LLM 做**完整的、连贯的全局重写**
+>   (替换旧内容, 非碎片追加), 消除矛盾、精炼结构 → reward 单调提升。
 >
 > **训练效果**: SOUL 越来越像"自己"(人格一致性收敛) + 知识掌握越来越牢固
 > (记忆沉淀 + 薄弱主题 ZPD 重学 + mastery 画像持续刷新)。
 > 完整协议见 [references/soul-training.md](references/soul-training.md)。
 
-### B0 ⭐ RL 统一训练(唯一训练入口 — 推荐)
 #   Phase 1 ACTOR:   并行批处理知识学习(好奇心问题→检索自答→蒸馏, 提速 4-5x)
 #   Phase 2 CRITIC:  六维评价(身份/价值观/思维/语言/知识掌握/自我一致性)
-#   Phase 3 UPDATER: 根据 Critic 评分更新人格文档权重(立即写入, 非 pending)
+#   Phase 3 UPDATER: 生成认知草稿(status=active, 不污染人格定义)
 #   Phase 4 APPROVE: 自动批准高质量记忆(groundedness≥3.5 → 索引 → 问答可检索)
 #   Phase 5 DISTILL: 跨记忆知识蒸馏(经验总结 → knowledge-synthesis.md)
-#   Phase 6 REWARD:  进化曲线记录
+#   Phase 6 OPTIMIZE: 全局人格优化(认知≥3/reward下降/收敛固化时触发,
+#     全量上下文→LLM完整重写→替换旧文档, 非碎片追加, checkpoint保护)
+#   Phase REWARD:   进化曲线记录
 ```
-- **权重立即更新**: Critic 评分 <3.5 的维度立即写入人格文档(不等收敛), 六维全部映射
+- **认知积累模式**: Updater 只生成 active 认知草稿, 不直接写入人格定义(避免碎片追加导致矛盾堆砌)
+- **全局优化**: 认知积累≥3条/reward连续下降/收敛固化时, 触发全局重写(替换旧内容, 消化active草稿)
+- **认知参与问答**: active 认知草稿在 soul_ask/soul_qdcvr_ask 时注入 prompt(训练认知立即生效)
 - **收敛感知**: reward 连续 2 轮变化 <0.25 → 收敛态: Actor 减半问题数(聚焦深化)
 - **自动批准记忆**: groundedness≥3.5 且四维均分≥3.5 的训练记忆自动批准 + 索引(问答可检索)
 - **知识蒸馏**: 每轮跨记忆综合 → knowledge-synthesis.md(经验法则+知识要点, 非堆砌)
 - **并行提速**: Actor 阶段并行自答(harness 并行度可配 config.yml soul.train_concurrency, 默认 4)
 - **reward 稳定性**: Critic 默认 2 次采样中位数平滑(抗 LLM 方差)
-- **宪法层安全**: 只做"章节内追加优化行"(不删不改), 写前 checkpoint, 行级去重
 - **等价入口**: POST /api/v1/soul/{kb}/train-rl; ragctl: soul train-rl; MCP: soul_train_rl
 
 ### B1 手动学习(Actor 阶段单跑 — 精确控制文档)
@@ -202,25 +205,23 @@ soul_learn_all(soul_kb_id="", max_docs=20, dry_run=False, rounds=1)
    experience_meditation_config_update(soul_kb_id, {
      "meditation_mode": "soul", "enabled": true,
      "interval_hours": 24, "rounds_per_run": 2,     # 每轮定时训练执行 N 轮 RL
-     "max_budget_usd": 0.15, "max_questions_per_run": 10})
 2. 调度器每 interval_hours 遍历 SOUL → train_rl(rounds=rounds_per_run):
-   自动执行 Actor(增量学习)+Critic(评价)+Updater(策略更新)完整 RL 循环
-3. 收敛态时认知草稿自动应用; 发散态时定期人工审批(soul_review_drafts)
+   自动执行 Actor+Critic+Updater+全局优化 完整 RL 循环
+3. 认知草稿积累≥3条自动触发全局优化; 也可人工 soul_review_drafts 审批
 ```
-- **重构变化**: 调度器现在调用 train_rl(统一三角色), 不再只调 learn_incremental
-- **收敛自动应用**: 收敛态 + overall≥4.2 时认知草稿自动合并入宪法层, 免人工
+- **调度器调用 train_rl**: 统一三角色, 不再只调 learn_incremental
+- **全局优化自动触发**: 认知≥3/reward下降/收敛固化时自动重写人格定义
 
 ### B4 ⭐ RL 进化曲线与认知草稿审批
 ```
 soul_review_drafts(soul_kb_id, draft_type="cognition", action="list")  # 查看待审批
-soul_review_drafts(soul_kb_id, draft_type="cognition", action="approve",
-                   draft_ids=[...])   # 审批 → 合并入 soul-definition.md 对应章节
+                   draft_ids=[...])   # 审批 → 触发全局优化重写人格定义
 soul_evaluate(soul_kb_id)             # 独立调 Critic 六维评分
-# 收敛态自动应用的草稿无需审批, 发散态草稿需人工审批
+# 训练中全局优化自动消化 active 草稿; 手动审批也触发全局优化
 ```
 - **六维评价**: identity/values/thinking/language/knowledge/coherence(0-5)
-- **认知草稿审批**: 收敛态自动应用的草稿在 cognition-drafts/ 标记 auto_applied;
-  发散态草稿 pending, 经审批合并入宪法层
+- **认知草稿状态**: active(待全局优化) → applied(已被全局优化消化); 手动 approve 也触发全局优化
+- **问答参与**: active 认知草稿在 soul_ask/soul_qdcvr_ask 时自动注入 prompt
 - ragctl: soul evaluate / review-cognition --all
 
 ### B5 ⭐ 任务控制与训练历史(SQLite)
