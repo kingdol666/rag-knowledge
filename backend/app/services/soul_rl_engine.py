@@ -971,12 +971,12 @@ def _should_optimize_globally(
     1. active 认知草稿数 >= OPTIMIZE_MIN_COGNITIONS
     2. reward 连续下降(最近两轮差值 < -OPTIMIZE_REWARD_DROP)
     3. 收敛态 + 有 active 认知草稿(收敛时做一次"固化")
+    4. 知识驱动: 有已批准记忆 ≥3 但定义无领域知识(模板定义需进化)
     """
     if len(active_cognitions) >= OPTIMIZE_MIN_COGNITIONS:
         return True, f"cognition_accumulated({len(active_cognitions)})"
 
     if len(recent_rewards) >= 3:
-        # 检测连续下降
         last_two = recent_rewards[-2:]
         if len(last_two) == 2 and (last_two[0] - last_two[1]) >= OPTIMIZE_REWARD_DROP:
             if active_cognitions:
@@ -984,6 +984,24 @@ def _should_optimize_globally(
 
     if convergence_state.get("converged") and active_cognitions:
         return True, "converged_with_cognitions"
+
+    # 知识驱动触发: 有记忆但定义是模板 → 需要从模板进化为领域专家
+    mem_dir = soul_dir / "memories"
+    if mem_dir.exists():
+        approved_count = sum(
+            1 for f in mem_dir.glob("*.md")
+            if f.stat().st_size > 100
+            and "status: approved" in f.read_text(encoding="utf-8", errors="replace")[:300]
+        )
+        if approved_count >= 3:
+            defn = soul_dir / "soul-definition.md"
+            if defn.exists():
+                def_text = defn.read_text(encoding="utf-8")[:500]
+                # 模板特征: 含"通用领域"或"研究型 AI 人格"且无领域知识章节
+                is_template = ("通用领域" in def_text or "研究型 AI 人格" in def_text)
+                has_domain_knowledge = "领域知识经验" in defn.read_text(encoding="utf-8")
+                if is_template and not has_domain_knowledge:
+                    return True, f"template_needs_evolution(memories={approved_count})"
 
     return False, ""
 
