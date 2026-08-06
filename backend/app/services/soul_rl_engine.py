@@ -1034,12 +1034,12 @@ async def optimize_persona_global(
         "knowledge_synthesis": context["knowledge_synthesis"],
         "critic_scores": {d: float((evaluation or {}).get(d, 0))
                           for d in EVAL_DIMENSIONS} if evaluation else {},
-    }, ensure_ascii=False, indent=1)[:16000]
+    }, ensure_ascii=False, indent=1)[:24000]
 
     result = await agent_harness.complete(
         prompt=f"<USER_CONTENT>\n{payload}\n</USER_CONTENT>",
         system_prompt_path=str(prompt_path),
-        expected_output_tokens=2500,
+        expected_output_tokens=4000,
         timeout_sec=300,
     )
     text = (result.get("text") or "") if result.get("success") else ""
@@ -1064,6 +1064,14 @@ async def optimize_persona_global(
         if len(new_content) < 50:
             continue
 
+        # 质量校验: soul-definition.md 必须保留核心章节
+        if doc_name == "soul-definition.md":
+            if "## 身份定位" not in new_content:
+                logger.warning("global optimize: soul-definition missing 身份定位, skip")
+                continue
+            if "## language-style" not in new_content:
+                logger.warning("global optimize: soul-definition missing language-style, skip")
+                continue
         doc_path = _dir / doc_name
         old_content = doc_path.read_text(encoding="utf-8") if doc_path.exists() else ""
         if new_content == old_content.strip():
@@ -1153,9 +1161,9 @@ def _collect_persona_context(soul_dir: Path) -> dict[str, Any]:
     synth = _read("knowledge-synthesis.md", 1500)
 
     return {
-        "soul_definition": _read("soul-definition.md", 4000),
-        "values": _read("values.md", 2000),
-        "thinking_style": _read("thinking-style.md", 3000),
+        "soul_definition": _read("soul-definition.md", 6000),
+        "values": _read("values.md", 3000),
+        "thinking_style": _read("thinking-style.md", 8000),
         "recent_memories": memories,
         "knowledge_synthesis": synth,
     }
