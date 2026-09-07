@@ -18,9 +18,9 @@ server:
     heavy_max: 60
   dev:
     host: "0.0.0.0"
-    backend_port: 8765
+    backend_port: 8770
     frontend_port: 6789
-    backend_url: "http://localhost:8765"
+    backend_url: "http://localhost:8770"
   prod:
     host: "0.0.0.0"
     backend_port: 8001
