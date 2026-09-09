@@ -1462,9 +1462,36 @@ function spawnService({ title, cwd, command, args, env, serviceName }) {
   return { pid: child.pid, logPath, bin };
 }
 
+let _mcpAuthToken = null;
+function getMcpAuthToken() {
+  // 2026-09-09: probes must carry the MCP service token — auth-protected
+  // endpoints (web /api/kb/catalog) return 401 without it and look "down".
+  if (_mcpAuthToken !== null) return _mcpAuthToken;
+  _mcpAuthToken = process.env.MCP_AUTH_TOKEN || '';
+  if (!_mcpAuthToken) {
+    try {
+      const fs = require('fs');
+      const path = require('path');
+      const envPath = path.join(__dirname, '..', '.env');
+      if (fs.existsSync(envPath)) {
+        for (const line of fs.readFileSync(envPath, 'utf8').split('\n')) {
+          const t = line.trim();
+          if (t.startsWith('MCP_AUTH_TOKEN=')) {
+            _mcpAuthToken = t.split('=').slice(1).join('=').trim();
+            break;
+          }
+        }
+      }
+    } catch { /* best effort */ }
+  }
+  return _mcpAuthToken;
+}
+
 function httpGet(url, timeout = 5000) {
   return new Promise((resolve) => {
-    const req = http.get(url, { timeout }, (res) => {
+    const token = getMcpAuthToken();
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    const req = http.get(url, { timeout, headers }, (res) => {
       let body = '';
       res.on('data', chunk => body += chunk);
       res.on('end', () => resolve({ code: res.statusCode, body }));
@@ -3195,15 +3222,20 @@ async function cmdHarness(args) {
 async function cmdSoul(args) {
   const [sub, ...rest] = args;
   const backendUrl = getBackendUrl();
+  // 2026-09-09: soul API requires auth — inject the MCP service token.
+  const authHeaders = () => {
+    const t = getMcpAuthToken();
+    return t ? { Authorization: `Bearer ${t}` } : {};
+  };
 
   async function apiGet(path) {
-    const res = await fetch(`${backendUrl}${path}`);
+    const res = await fetch(`${backendUrl}${path}`, { headers: authHeaders() });
     if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
     return res.json();
   }
   async function apiPost(path, body) {
     const res = await fetch(`${backendUrl}${path}`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json', ...authHeaders() },
       body: JSON.stringify(body),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
@@ -3211,7 +3243,7 @@ async function cmdSoul(args) {
   }
   async function apiPut(path, body) {
     const res = await fetch(`${backendUrl}${path}`, {
-      method: 'PUT', headers: { 'Content-Type': 'application/json' },
+      method: 'PUT', headers: { 'Content-Type': 'application/json', ...authHeaders() },
       body: JSON.stringify(body),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
@@ -3822,14 +3854,14 @@ async function cmdMeditation(args) {
   const backendUrl = getBackendUrl();
 
   async function apiGet(path) {
-    const res = await fetch(`${backendUrl}${path}`);
+    const res = await fetch(`${backendUrl}${path}`, { headers: authHeaders() });
     if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
     return res.json();
   }
 
   async function apiPost(path, body) {
     const res = await fetch(`${backendUrl}${path}`, {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json', ...authHeaders() },
       body: JSON.stringify(body),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
