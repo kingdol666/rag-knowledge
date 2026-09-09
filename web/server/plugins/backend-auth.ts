@@ -41,9 +41,14 @@ export default defineNitroPlugin(() => {
               (opts.headers && !(opts.headers instanceof Headers))
                 ? { ...opts.headers }
                 : {}
+            // 2026-09-09: do NOT clobber a caller-provided Authorization header —
+            // the auth proxy forwards the *user's* session token for /auth/tokens,
+            // and overwriting it with the MCP service token caused 401s there.
+            const hasAuth = Object.keys(existingHeaders).some(
+              (k) => k.toLowerCase() === 'authorization')
             opts.headers = {
               ...existingHeaders,
-              Authorization: `Bearer ${auth.token}`,
+              ...(hasAuth ? {} : { Authorization: `Bearer ${auth.token}` }),
             }
             args[1] = opts
           }

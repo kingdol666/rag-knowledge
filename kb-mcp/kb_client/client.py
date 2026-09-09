@@ -63,13 +63,17 @@ class KbClient:
     async def _ensure_client(self):
         if self._client is None or self._client.is_closed:
             # Read the auth token LIVE at (re)creation time instead of freezing
-            # the module global at import. When KB_AUTH_TOKEN lives only in
+            # the module global at import. When the token lives only in
             # .env (the documented setup), the import-time capture ran BEFORE
             # config._load_dotenv() populated os.environ, so the header was
             # never attached and every request 401'd once backend auth enabled.
             # Also rebuild when the token changes so a runtime .env reload is
             # picked up on the next request (cheap — clients are pooled).
-            token = os.environ.get("KB_AUTH_TOKEN", "").strip()
+            # 2026-09-09: MCP_AUTH_TOKEN (dedicated service token, auto-written
+            # to .env by backend startup) takes precedence over the legacy
+            # shared KB_AUTH_TOKEN.
+            token = (os.environ.get("MCP_AUTH_TOKEN")
+                     or os.environ.get("KB_AUTH_TOKEN") or "").strip()
             headers = {}
             if token:
                 headers["Authorization"] = f"Bearer {token}"

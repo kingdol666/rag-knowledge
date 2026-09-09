@@ -197,10 +197,19 @@ def port_listening(port: int, host: str = "127.0.0.1", timeout: float = 1.0) -> 
 
 def _http_ok(url: str, timeout: float = 3.0) -> tuple[bool, str]:
     """Probe an HTTP endpoint. Returns (ok, detail). trust_env=False avoids
-    HTTPS_PROXY hijacking localhost (per project convention)."""
+    HTTPS_PROXY hijacking localhost (per project convention).
+
+    2026-09-09: probes carry the MCP service token — auth-protected endpoints
+    (web /api/kb/catalog, backend /mineru/status) would otherwise return 401
+    and be misread as "service down", triggering pointless restarts."""
     try:
         import httpx
-        with httpx.Client(timeout=timeout, trust_env=False) as c:
+        headers = {}
+        tok = (os.environ.get("MCP_AUTH_TOKEN")
+               or os.environ.get("KB_AUTH_TOKEN") or "").strip()
+        if tok:
+            headers["Authorization"] = f"Bearer {tok}"
+        with httpx.Client(timeout=timeout, trust_env=False, headers=headers) as c:
             r = c.get(url)
             return (r.status_code == 200, f"HTTP {r.status_code}")
     except Exception as e:

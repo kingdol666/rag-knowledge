@@ -179,7 +179,7 @@ import { useRoute, useRouter } from 'vue-router'
 import {
   HomeOutlined, FolderOpenOutlined, DatabaseOutlined,
   SearchOutlined, ShareAltOutlined, RobotOutlined,
-  SettingOutlined, QuestionCircleOutlined,
+  SettingOutlined, QuestionCircleOutlined, KeyOutlined,
   ExpandOutlined, CompressOutlined, LeftOutlined, RightOutlined,
   MenuOutlined,
 } from '@ant-design/icons-vue'
@@ -202,6 +202,7 @@ const navItems = computed(() => [
   { path: '/soul',             label: 'SOUL Personas',   icon: RobotOutlined,        pageNum: '06', chapter: 'Persona' },
   { path: '/claude-chat',      label: 'Claude Chat',      icon: RobotOutlined,        pageNum: '07', chapter: 'Assistant' },
   { path: '/settings',         label: 'Settings',         icon: SettingOutlined,      pageNum: '08', chapter: 'Configuration' },
+  { path: '/tokens',           label: 'API Tokens',       icon: KeyOutlined,          pageNum: '09', chapter: 'Security' },
 ])
 
 // ── State ───────────────────────────────────────────────────

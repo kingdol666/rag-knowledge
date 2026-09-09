@@ -22,11 +22,16 @@ logger = logging.getLogger(__name__)
 
 
 async def verify_token(request: Request) -> None:
-    """FastAPI dependency: reject non-read requests without a valid shared token.
+    """FastAPI dependency: reject requests without a valid token (write routes).
 
-    No-op when auth is disabled (the default). Apply to write/dangerous routes
-    via ``dependencies=[Depends(verify_token)]``.
+    2026-09-09: the global AuthMiddleware already validates MCP/user/legacy
+    tokens for every /api/* request and injects ``request.state.auth_user`` —
+    when present this dependency simply passes through. The legacy shared-token
+    check below remains as a fallback for the auth-disabled maintenance mode.
     """
+    if getattr(request.state, "auth_user", None) is not None:
+        return  # identity established by AuthMiddleware
+
     cfg = get_config()
     if not cfg.auth_enabled:
         return  # auth disabled — allow all

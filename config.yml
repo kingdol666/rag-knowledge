@@ -10,7 +10,7 @@ server:
   cors_origins:
     - "*"
   auth:
-    enabled: false
+    enabled: true
   rate_limit:
     enabled: true
     window_sec: 60

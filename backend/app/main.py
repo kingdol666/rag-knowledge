@@ -10,6 +10,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import config
 from app.middleware.rate_limit import init_rate_limiter, rate_limit_middleware
+from app.middleware.auth_middleware import AuthMiddleware
+from app.api.routes.auth import router as auth_router
 from app.api.routes import (
     health_router,
     parse_router,
@@ -54,27 +56,18 @@ async def lifespan(app: FastAPI):
     logger.info("Server: %s:%s", config.server_host, config.server_port)
     logger.info("CORS origins: %s", config.cors_origins)
 
-    # ── Auth: auto-generate runtime token if enabled but none set ────────
-    if config.auth_enabled and not config.auth_token:
-        import secrets
-        from app.utils.paths import PROJECT_ROOT
-        token = secrets.token_hex(32)
-        runtime_path = PROJECT_ROOT.parent / "storage" / ".runtime-token"
-        try:
-            runtime_path.parent.mkdir(parents=True, exist_ok=True)
-            runtime_path.write_text(token, encoding="utf-8")
-            config.set_runtime_token(token)
-            logger.warning(
-                "Auth enabled but KB_AUTH_TOKEN unset — generated runtime token "
-                "written to %s. Set KB_AUTH_TOKEN in .env for stable cross-service auth.",
-                runtime_path,
-            )
-        except Exception:
-            logger.exception("Failed to write runtime token (auth will reject all writes)")
+    # ── Auth: bootstrap MCP service token + user/token DB at startup ─────
     if config.auth_enabled:
-        logger.info("Shared-token auth: ENABLED (write/dangerous endpoints protected)")
+        try:
+            from app.services.auth_service import get_mcp_token, _get_conn
+            _get_conn()  # ensure schema exists
+            mcp_tok = get_mcp_token()  # reads env MCP_AUTH_TOKEN; generates into .env once
+            logger.info("Token auth: ENABLED (MCP service token ready: %s...)",
+                        mcp_tok[:12])
+        except Exception:
+            logger.exception("Auth bootstrap failed (middleware will reject all requests)")
     else:
-        logger.info("Shared-token auth: disabled (default)")
+        logger.info("Token auth: disabled (maintenance mode)")
 
     # ── Start MinerU API if configured ────────────────────────────────
     mineru_cfg = config.mineru
@@ -211,8 +204,14 @@ app.add_middleware(
 init_rate_limiter(config._config.get("server", {}))
 app.middleware("http")(rate_limit_middleware)
 
+# ── Token auth (2026-09-09): intercepts all /api/* — user tokens, MCP
+#    service token, legacy shared token; whitelist = health + auth bootstrap.
+#    Registered BEFORE routes so it wraps every endpoint (except health/auth).
+app.add_middleware(AuthMiddleware)
+
 # Register routes
 app.include_router(health_router)
+app.include_router(auth_router)
 app.include_router(parse_router)
 app.include_router(mineru_router)
 app.include_router(search_router)

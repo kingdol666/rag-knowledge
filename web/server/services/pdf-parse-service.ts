@@ -1,4 +1,4 @@
-﻿﻿import { readFile } from 'fs/promises'
+﻿import { readFile } from 'fs/promises'
 import { existsSync } from 'fs'
 import type {
   ParsePDFVTResponse,
@@ -7,6 +7,7 @@ import type {
   MineruParseResult,
 } from '~/types/pdf-parse'
 import { getPdfParserApiUrl } from '~/server/utils/runtime-paths'
+import { getDynamicAuthConfig } from '~/server/utils/dynamic-config'
 // undici Agent with bodyTimeout disabled: MinerU OCR can be silent for
 // minutes between chunks; the default ~5min body timeout kills the stream.
 // Loaded via dynamic import() so this works in Nuxt's ESM nitro runtime
@@ -105,6 +106,20 @@ export class PDFParseService {
   }
 
   /**
+   * Auth headers for direct backend calls (2026-09-09): this service uses
+   * native fetch (not globalThis.$fetch), so the backend-auth Nitro plugin
+   * cannot inject the token — do it here. MCP service token first, then the
+   * legacy shared token.
+   */
+  private getAuthHeaders(): Record<string, string> {
+    try {
+      const token = getDynamicAuthConfig().token
+      if (token) return { Authorization: `Bearer ${token}` }
+    } catch { /* fall through — backend may have auth disabled */ }
+    return {}
+  }
+
+  /**
    * Parse a single PDF file using VT (Traditional) mode
    * Corresponds to: POST /api/v1/parse/file/vt
    */
@@ -126,6 +141,7 @@ export class PDFParseService {
     }
 
     const response = await fetch(`${this.getBaseUrl()}/api/v1/parse/file/vt`, {
+      headers: this.getAuthHeaders(),
       method: 'POST',
       body: formData,
     })
@@ -161,6 +177,7 @@ export class PDFParseService {
     }
 
     const response = await fetch(`${this.getBaseUrl()}/api/v1/batch/parse/file/vt`, {
+      headers: this.getAuthHeaders(),
       method: 'POST',
       body: formData,
     })
@@ -198,6 +215,7 @@ export class PDFParseService {
     }
 
     const response = await fetch(`${this.getBaseUrl()}/api/v1/batch/parse/file/vt/stream`, {
+      headers: this.getAuthHeaders(),
       method: 'POST',
       body: formData,
       // @ts-ignore - dispatcher is Node/undici specific

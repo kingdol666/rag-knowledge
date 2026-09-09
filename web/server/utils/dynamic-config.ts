@@ -250,7 +250,10 @@ export function getDynamicServerConfig(): Record<string, any> {
  */
 export function getDynamicAuthConfig(): { enabled: boolean; token: string } {
   const env = getEnvConfig()
-  const envToken = (env.KB_AUTH_TOKEN || process.env.KB_AUTH_TOKEN || '').trim()
+  // 2026-09-09: dedicated MCP service token (auto-generated into .env by the
+  // backend) takes precedence; it is what server-to-server calls should use.
+  const envToken = (env.MCP_AUTH_TOKEN || process.env.MCP_AUTH_TOKEN
+    || env.KB_AUTH_TOKEN || process.env.KB_AUTH_TOKEN || '').trim()
   const cfg = getRawConfig()
   const auth = cfg.server?.auth || {}
   const rawEnabled = String(auth.enabled ?? 'false').trim().toLowerCase()

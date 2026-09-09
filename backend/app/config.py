@@ -153,11 +153,14 @@ class Config:
 
     @property
     def auth_enabled(self) -> bool:
-        """Whether shared-token auth is enabled (server.auth.enabled, default false).
+        """Whether token auth is enabled (server.auth.enabled, default TRUE since 2026-09-09).
 
-        When false, all verify_token checks are skipped — zero-config local use.
+        With the user/token system (auth_service) this gates the global
+        AuthMiddleware: all /api/* requests need a valid token (user token,
+        MCP service token, or legacy shared token). Set false only for
+        maintenance — zero-config local use is no longer the default.
         """
-        return bool(self._server_cfg.get("auth", {}).get("enabled", False))
+        return bool(self._server_cfg.get("auth", {}).get("enabled", True))
 
     @property
     def auth_token(self) -> str:
