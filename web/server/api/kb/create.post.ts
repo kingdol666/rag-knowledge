@@ -19,13 +19,23 @@ export default defineEventHandler(async (event) => {
   const treeService = await getTreeFileSystemService()
   await treeService.reloadMetadata()
 
-  // createFolder handles: disk create + .tree-fs.json + .knowledge-base.yml (with KB ID)
-  const folder = await treeService.createFolder({
-    name: body.name.trim(),
-    description: body.description?.trim() || '',
-    parentId: body.parentId || null,
-    isKnowledgeBase: true,
-  })
-
-  return { success: true, knowledgeBase: folder }
+  try {
+    // createFolder handles: disk create + .tree-fs.json + .knowledge-base.yml (with KB ID)
+    const folder = await treeService.createFolder({
+      name: body.name.trim(),
+      description: body.description?.trim() || '',
+      parentId: body.parentId || null,
+      isKnowledgeBase: true,
+    })
+    return { success: true, knowledgeBase: folder }
+  } catch (err: any) {
+    if (err?.message?.startsWith('Duplicate node path already exists')) {
+      throw createError({
+        statusCode: 409,
+        statusMessage: `A knowledge base with this name already exists: ${body.name.trim()}. Duplicate names break vector-index attribution, choose another name.`,
+        data: { cause: err.message },
+      })
+    }
+    throw err
+  }
 })

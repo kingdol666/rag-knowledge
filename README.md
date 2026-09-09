@@ -67,6 +67,8 @@
 <a href="#-configuration">Config</a> ·
 <a href="#%EF%B8%8F-94-mcp-tools">MCP Tools</a> ·
 <a href="#-roadmap">Roadmap</a> ·
+<a href="#-integrate-from-any-system-plain-http--no-mcp-no-agent">HTTP API</a> ·
+<a href="#-verification-status">Verification</a> ·
 <a href="#-contributing">Contributing</a>
 </p>
 
@@ -364,7 +366,7 @@ ragctl up
 
 ```bash
 ragctl status                                   # dual-mode: dev + prod side-by-side
-curl http://localhost:8765/api/v1/health        # → {"status":"healthy"}
+curl http://localhost:8770/api/v1/health        # → {"status":"healthy"}
 ```
 
 ### 🔍 What You'll See
@@ -372,9 +374,51 @@ curl http://localhost:8765/api/v1/health        # → {"status":"healthy"}
 | Interface | URL | What to do |
 |-----------|:---:|------------|
 | 🌐 **Web UI** | `http://localhost:6789` | Browse KBs, search, view graph |
-| 📚 **API Docs** | `http://localhost:8765/docs` | Explore 112 API endpoints via Swagger |
+| 📚 **API Docs** | `http://localhost:8770/docs` | Explore 106 backend endpoints via Swagger (+122 web routes) |
 | 🖥️ **CLI** | `ragctl status` | Check service health |
 | 🤖 **Agent** | Claude Code session | Say "list all knowledge bases" |
+
+### 🔌 Integrate from Any System (plain HTTP — no MCP, no Agent)
+
+Every capability is reachable over REST. Your backend service, script or CI job does **not**
+need MCP or Claude Code — a plain HTTP call is enough.
+
+| Layer | Base | Covers | Docs |
+|---|---|---|---|
+| **Backend** | `http://localhost:8770` | parse · vector/two-stage search · graph · experience · SOUL (106 endpoints) | `/docs` & `/openapi.json` |
+| **Web** | `http://localhost:6789` | KB & document CRUD · file tree · tags · preview (122 routes) | [`docs/api-web.md`](./docs/api-web.md) |
+
+```bash
+# 1) create a knowledge base
+curl -X POST localhost:6789/api/kb/create -H 'Content-Type: application/json' \
+     -d '{"name":"Research-Notes","description":"Papers and notes"}'
+
+# 2) write a document (kbId / kb_id both accepted — snake_case aliases are normalized)
+curl -X POST localhost:6789/api/kb/documents/create -H 'Content-Type: application/json' \
+     -d '{"kb_id":"Research-Notes","name":"notes.md","content":"# Notes\n\nvector recall is fast, content verification decides."}'
+
+# 3) search it (two-stage: BM25 candidates → vector refinement)
+curl -X POST localhost:8770/api/v1/search/two-stage -H 'Content-Type: application/json' \
+     -d '{"query":"how to improve retrieval accuracy","top_k":5}'
+```
+
+> **Conventions** — camelCase is canonical (`kbId`); snake_case aliases (`kb_id`, `doc_path`) are
+> accepted for compatibility with the MCP tool layer. Duplicate KB names are rejected with `409`
+> (they would corrupt vector-index attribution). Auth is off for trusted networks
+> (rate limit 600 req/60s) — put an API gateway in front before exposing publicly.
+
+### ✅ Verification Status
+
+| Check | Scope | Result |
+|---|---|---|
+| Full-feature smoke test | 60 capabilities: KB/doc CRUD · parse · 5 search modes · graph · experience lifecycle · SOUL | **60 / 60 passed** (`tmp/test_full_smoke.py`) |
+| `backend` unit tests | 139 tests | **139 passed, 0 failed** |
+| `kb-mcp` tool tests | 57 MCP-tool E2E tests | **57 passed, 0 failed** |
+| Integration hardening | 9 defects found & fixed (P0–P3) | [`TEST-REPORT`](./docs/TEST-REPORT-integration-hardening-2026-09-09.md) |
+
+**Known limits** — persona Q&A synthesis takes ~7 min (reasoning model; `thinking=minimal` already applied);
+two rapid consecutive `ragctl restart backend` calls in a row can hang the embedding service
+(one clean restart recovers it).
 
 ### ⚡ 5-Minute Walkthrough — from zero to persona Q&A
 
@@ -632,7 +676,7 @@ ragctl soul list|status|distill|init|learn|learn-all|train-rl|evaluate|\
 ragctl desktop / ui    # Tauri 桌面控制台
 ```
 
-Ports: **dev** Backend `8765` / Web `6789` · **prod** Backend `8001` / Web `3000`.
+Ports: **dev** Backend `8770` / Web `6789` · **prod** Backend `8001` / Web `3000`.
 
 ---
 
@@ -648,7 +692,7 @@ Browser / Claude Code / MCP Client
                │ server-to-server (trust_env=False)
                ▼
 ┌──────────────────────────────┐
-│  FastAPI Backend + MinerU    │  8765 (dev) / 8001 (prod)
+│  FastAPI Backend + MinerU    │  8770 (dev) / 8001 (prod)
 └──────────────┬───────────────┘
                │ file I/O
                ▼
@@ -683,9 +727,9 @@ Browser / Claude Code / MCP Client
 | Variable | Default (dev / prod) | Purpose |
 |----------|----------------------|---------|
 | `APP_MODE` | `dev` | Selects config section |
-| `BACKEND_PORT` | `8765` / `8001` | FastAPI backend port |
+| `BACKEND_PORT` | `8770` / `8001` | FastAPI backend port |
 | `WEB_PORT` | `6789` / `3000` | Nuxt web port |
-| `BACKEND_URL` | `http://localhost:8765` | Full backend URL |
+| `BACKEND_URL` | `http://localhost:8770` | Full backend URL |
 | `TREE_STORAGE_PATH` | `./storage/tree-file-system` | KB data root |
 | `NEO4J_PASSWORD` | (docker-compose) | Graph DB authentication |
 

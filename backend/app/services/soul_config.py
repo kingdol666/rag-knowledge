@@ -40,7 +40,10 @@ ROUTER_TTL_SECONDS = 300
 ROUTER_MAX_CANDIDATES = 8
 SYNC_MAX_RETRIES = 3
 CHECKPOINT_MAX_COUNT = 30
-SYNTHESIS_TIMEOUT_SECONDS = 180
+# 人格问答 LLM 合成超时。必须 >= 学习路径的 _HARNESS_TIMEOUT_SEC(soul_learn.py)=300,
+# 否则 harness 单次调用(实测 180-300s)会在问答路径被切断 → soul_ask 稳定 408。
+# 2026-09-09 由 180 调至 600, 与 _HARNESS_TIMEOUT_SEC 同源约束, 见 docs/PLAN-integration-hardening.md
+SYNTHESIS_TIMEOUT_SECONDS = 600
 
 
 # ── SoulConfig 数据类 ──────────────────────────────────────────────────────

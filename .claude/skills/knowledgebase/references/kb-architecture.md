@@ -75,7 +75,7 @@
 - `kb_get_documents(lightweight=true)` 无 type 字段区分文档 vs 子KB容器 → 用 `file_type: knowledge-base` 或 `fs_get_tree(max_depth=2)` 区分
 - `kb_graph_kb_overview.related_kbs[].name` 和 `sub_kbs[].name` 返回 UUID → 用 `kb_list(lightweight=true)` 回查可读名
 
-## 91 个 MCP 工具地图（按操作类型）
+## 94 个 MCP 工具地图（按操作类型）
 
 | 类别 | 工具数 | 代表工具 | 何时用 |
 |------|--------|---------|--------|
@@ -93,7 +93,7 @@
 | **🧠 SOUL 人格** | **17** | `soul_init` `soul_learn` `soul_ask` `soul_qdcvr_ask` `soul_router` `soul_list` ... | 人格创建/训练/问答/评估/导出 |
 | **健康** | — | (merged into 项目) | 预检（`backend_status`） |
 
-> 合计 91 工具（KB 核心 74 + SOUL 人格 17）。`kb_doc_save_parsed` 横跨解析+写入（解析产物落盘入库），归入文档写避免重复计数。Meditation 6 个工具（status/run/task_status/config_get/config_update/history）是经验的自动归纳子系统。`kb_find_duplicates` 归入向量索引（基于向量相似度的重复检测）。SOUL 人格系统提供完整的人格蒸馏(补天)→训练→问答→评估→导出(LoRA)生命周期。
+> 合计 94 工具（KB 核心 77 + SOUL 人格 17；以 `grep -c '@mcp.tool' kb-mcp/server.py` 实测为准, 2026-09-09 校准）。`kb_doc_save_parsed` 横跨解析+写入（解析产物落盘入库），归入文档写避免重复计数。Meditation 6 个工具（status/run/task_status/config_get/config_update/history）是经验的自动归纳子系统。`kb_find_duplicates` 归入向量索引（基于向量相似度的重复检测）。SOUL 人格系统提供完整的人格蒸馏(补天)→训练→问答→评估→导出(LoRA)生命周期。
 
 > **写入路径原则**：写操作（create/update/delete/move）必须走 MCP 工具（HTTP→后端→原子更新三层）。读操作可以直接读文件，但推荐用 MCP 工具保证一致性。
 

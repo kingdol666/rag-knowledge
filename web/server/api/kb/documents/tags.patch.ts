@@ -1,13 +1,15 @@
-﻿import { defineEventHandler, readBody, createError } from 'h3'
+import { defineEventHandler, readBody, createError } from 'h3'
 import { getTreeFileSystemService } from '~/server/utils/tree-service'
 import { getKnowledgeBaseYamlService } from '~/server/services/knowledge-base-yaml-service'
 import { getTreeStorageAbsolutePath } from '~/server/utils/runtime-paths'
 import { getTagManagementService, TagManagementService } from '~/server/services/tag-management-service'
 import { getDynamicBackendUrl } from '~/server/utils/dynamic-config'
+import { coerceKbPayload } from '~/server/utils/kb-payload'
 
 /** PATCH /api/kb/documents/tags — update a document's tags. */
 export default defineEventHandler(async (event) => {
   const body = (await readBody(event)) || {}
+  coerceKbPayload(body)
 
   if (!body.kbId?.trim()) {
     throw createError({ statusCode: 400, statusMessage: 'kbId is required' })

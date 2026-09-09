@@ -102,10 +102,10 @@ uv sync
 
 # 2. 运行（开发模式 — 热重载）
 APP_MODE=dev uv run python main.py
-# → http://localhost:8765
+# → http://localhost:8770
 
 # 3. 验证
-curl http://localhost:8765/api/v1/health
+curl http://localhost:8770/api/v1/health
 ```
 
 ```bash
@@ -300,7 +300,7 @@ mineru:
 | 变量 | 默认值（dev / prod） | 用途 |
 |------|---------------------|------|
 | `APP_MODE` | `dev` | 选择根 config.yml 的 dev 或 prod 段 |
-| `BACKEND_PORT` | `8765` / `8001` | 覆盖后端监听端口 |
+| `BACKEND_PORT` | `8770` / `8001` | 覆盖后端监听端口 |
 | `HF_ENDPOINT` | `https://hf-mirror.com` | HuggingFace 模型下载镜像 |
 | `NEO4J_PASSWORD` | （来自 docker-compose） | Neo4j 认证 |
 

@@ -1140,14 +1140,28 @@ def deduct_cost(soul_kb_id: str, cost: float) -> None:
 
 
 def _resolve_any_kb_path(kb_id: str) -> str | None:
-    """把公开库的 UUID 或路径解析为 KB 相对路径(soul_learn 通用解析)。"""
+    """把公开库的 UUID 或路径解析为 KB 相对路径(soul_learn 通用解析)。
+
+    P0-2 修复(2026-09-09): UUID 匹配优先于路径匹配。旧实现单轮遍历,
+    "路径相等 OR UUID 相等"命中即返回——存量同名库时新库请求会被解析到
+    旧库路径,导致向量索引串号。现改为两轮: 先精确 UUID,再路径兜底。
+    """
     if not kb_id:
         return None
     norm = kb_id.replace("\\", "/").strip("/")
     try:
-        for kb in storage_reader.list_knowledge_bases():
+        kbs = storage_reader.list_knowledge_bases()
+        # Round 1: exact UUID match (authoritative)
+        for kb in kbs:
+            if kb.get("kb_id") == kb_id:
+                return kb["path"]
+        # Round 2: path fallback
+        for kb in kbs:
             kb_path = (kb.get("path") or "").replace("\\", "/").strip("/")
-            if kb_path == norm or kb.get("kb_id") == kb_id:
+            if kb_path == norm:
+                logger.warning(
+                    "_resolve_any_kb_path resolved '%s' by path fallback -> %s "
+                    "(not a UUID; ensure no duplicate KB names exist)", kb_id, kb["path"])
                 return kb["path"]
     except Exception:
         return None
@@ -1496,7 +1510,10 @@ async def learn_incremental(soul_kb_id: str, rounds: int = 1,
         lock = get_soul_lock(soul_kb_id)
         await asyncio.wait_for(lock.acquire(), timeout=PER_SOUL_LOCK_TIMEOUT)
     except asyncio.TimeoutError:
-        return {"success": False, "error": "lock_timeout", "detail": "无法获取 SOUL 学习锁"}
+        return {"success": False, "error": "lock_timeout",
+                "detail": "无法获取 SOUL 学习锁: 该人格已有学习/训练任务在执行"
+                          "(长任务可达 10-20 分钟)。请等待当前任务完成后再提交,勿并发调用。",
+                "retry_hint": "per-soul 互斥;等待当前任务结束后重新提交"}
 
     try:
         per_round: list[dict] = []
@@ -1777,7 +1794,10 @@ async def learn_docs(
         lock = get_soul_lock(soul_kb_id)
         await asyncio.wait_for(lock.acquire(), timeout=PER_SOUL_LOCK_TIMEOUT)
     except asyncio.TimeoutError:
-        return {"success": False, "error": "lock_timeout", "detail": "无法获取 SOUL 学习锁"}
+        return {"success": False, "error": "lock_timeout",
+                "detail": "无法获取 SOUL 学习锁: 该人格已有学习/训练任务在执行"
+                          "(长任务可达 10-20 分钟)。请等待当前任务完成后再提交,勿并发调用。",
+                "retry_hint": "per-soul 互斥;等待当前任务结束后重新提交"}
 
     try:
         per_round: list[dict] = []
@@ -2072,7 +2092,9 @@ async def learn_incremental_parallel(
         await asyncio.wait_for(lock.acquire(), timeout=PER_SOUL_LOCK_TIMEOUT)
     except asyncio.TimeoutError:
         return {"success": False, "error": "lock_timeout",
-                "detail": "无法获取 SOUL 学习锁"}
+                "detail": "无法获取 SOUL 学习锁: 该人格已有学习/训练任务在执行"
+                          "(长任务可达 10-20 分钟)。请等待当前任务完成后再提交,勿并发调用。",
+                "retry_hint": "per-soul 互斥;等待当前任务结束后重新提交"}
 
     try:
         per_round: list[dict] = []

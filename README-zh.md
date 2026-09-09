@@ -64,6 +64,8 @@
 <a href="#-配置">配置</a> ·
 <a href="#%EF%B8%8F-94-个-mcp-工具">MCP 工具</a> ·
 <a href="#-路线图">路线图</a> ·
+<a href="#-外部系统集成纯-http无需-mcp--agent">HTTP API</a> ·
+<a href="#-验证状态">验证状态</a> ·
 <a href="#-贡献指南">贡献</a>
 </p>
 
@@ -358,7 +360,7 @@ ragctl up
 
 ```bash
 ragctl status                                   # 双模式：dev + prod 并排显示
-curl http://localhost:8765/api/v1/health        # → {"status":"healthy"}
+curl http://localhost:8770/api/v1/health        # → {"status":"healthy"}
 ```
 
 ### 🔍 界面对照
@@ -366,11 +368,51 @@ curl http://localhost:8765/api/v1/health        # → {"status":"healthy"}
 | 界面 | 地址 | 用途 |
 |------|:----:|------|
 | 🌐 **Web UI** | `http://localhost:6789` | 浏览 KB、搜索、图谱可视化 |
-| 📚 **API 文档** | `http://localhost:8765/docs` | Swagger UI，112 个 API 端点 |
+| 📚 **API 文档** | `http://localhost:8770/docs` | Swagger UI，后端 106 个端点（另含 web 层 122 个路由） |
 | 🖥️ **CLI** | `ragctl status` | 服务健康检查 |
 | 🤖 **Agent** | Claude Code 会话 | 说"列出所有知识库" |
 
 ---
+### 🔌 外部系统集成（纯 HTTP，无需 MCP / Agent）
+
+所有能力都可通过 REST 调用。你的后端服务、脚本或 CI 作业**不需要 MCP、也不需要 Claude Code**，
+一次普通 HTTP 请求即可操作知识库。
+
+| 层 | 地址 | 覆盖范围 | 文档 |
+|---|---|---|---|
+| **后端** | `http://localhost:8770` | 解析 · 向量/两阶段检索 · 图谱 · 经验 · SOUL（106 个端点） | `/docs` 与 `/openapi.json` |
+| **Web** | `http://localhost:6789` | 知识库与文档 CRUD · 文件树 · 标签 · 预览（122 个路由） | [`docs/api-web.md`](./docs/api-web.md) |
+
+```bash
+# 1) 创建知识库
+curl -X POST localhost:6789/api/kb/create -H 'Content-Type: application/json' \
+     -d '{"name":"研究笔记","description":"论文与笔记"}'
+
+# 2) 写入文档（kbId 与 kb_id 均可，snake_case 别名会自动归一化）
+curl -X POST localhost:6789/api/kb/documents/create -H 'Content-Type: application/json' \
+     -d '{"kb_id":"研究笔记","name":"notes.md","content":"# 笔记\n\n向量负责快召回，内容裁决定去留。"}'
+
+# 3) 检索（两阶段：BM25 粗排 → 向量精排）
+curl -X POST localhost:8770/api/v1/search/two-stage -H 'Content-Type: application/json' \
+     -d '{"query":"如何提高检索准确率","top_k":5}'
+```
+
+> **约定** —— camelCase 为准（`kbId`），同时接受 snake_case 别名（`kb_id`、`doc_path`）以兼容 MCP 工具层；
+> 同名知识库会被 **409** 拒绝（重名会导致向量索引归属错乱）；内网默认无认证（限流 600 次/60 秒），
+> 对外暴露前请前置网关鉴权。
+
+### ✅ 验证状态
+
+| 检查项 | 范围 | 结果 |
+|---|---|---|
+| 全功能冒烟测试 | 60 项能力：库/文档 CRUD · 解析 · 5 种检索 · 图谱 · 经验全生命周期 · SOUL | **60 / 60 通过**（`tmp/test_full_smoke.py`） |
+| `backend` 单元测试 | 139 个 | **139 通过，0 失败** |
+| `kb-mcp` 工具测试 | 57 个 MCP 工具 E2E | **57 通过，0 失败** |
+| 集成能力整改 | 发现并修复 9 个缺陷（P0–P3） | [`测试报告`](./docs/TEST-REPORT-integration-hardening-2026-09-09.md) |
+
+**已知限制** —— 人格问答合成约需 7 分钟（reasoning 模型，已启用 `thinking=minimal`）；
+连续快速重启 backend 两次会导致 embedding 服务挂起（干净重启一次即可恢复）。
+
 ### ⚡ 5 分钟上手 —— 从零到人格问答
 
 > 以下每一步都是**真实可点击**的路径（假设已完成 `ragctl setup && ragctl up`）。
@@ -572,7 +614,7 @@ ragctl soul list|status|distill|init|learn|learn-all|train-rl|evaluate|\
 ragctl desktop / ui    # Tauri 桌面控制台
 ```
 
-端口：**dev** 后端 `8765` / 前端 `6789` · **prod** 后端 `8001` / 前端 `3000`。
+端口：**dev** 后端 `8770` / 前端 `6789` · **prod** 后端 `8001` / 前端 `3000`。
 
 ---
 
@@ -588,7 +630,7 @@ ragctl desktop / ui    # Tauri 桌面控制台
                │ 服务间通信 (trust_env=False)
                ▼
 ┌──────────────────────────────┐
-│  FastAPI 后端 + MinerU OCR   │  8765 (dev) / 8001 (prod)
+│  FastAPI 后端 + MinerU OCR   │  8770 (dev) / 8001 (prod)
 └──────────────┬───────────────┘
                │ 文件 I/O
                ▼
@@ -623,9 +665,9 @@ ragctl desktop / ui    # Tauri 桌面控制台
 | 变量 | 默认值（dev / prod） | 用途 |
 |------|---------------------|------|
 | `APP_MODE` | `dev` | 选择配置段 |
-| `BACKEND_PORT` | `8765` / `8001` | FastAPI 端口 |
+| `BACKEND_PORT` | `8770` / `8001` | FastAPI 端口 |
 | `WEB_PORT` | `6789` / `3000` | Nuxt 端口 |
-| `BACKEND_URL` | `http://localhost:8765` | 后端完整 URL |
+| `BACKEND_URL` | `http://localhost:8770` | 后端完整 URL |
 | `TREE_STORAGE_PATH` | `./storage/tree-file-system` | KB 数据根路径 |
 | `NEO4J_PASSWORD` | (docker-compose) | 图谱数据库认证 |
 

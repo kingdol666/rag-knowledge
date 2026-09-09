@@ -457,8 +457,11 @@ async def _soul_ask_inner(query: str, soul_kb_id: str, task_goal: str, task_type
         query, chunks, profile, bundle.get("memory_summaries", []), selected,
         context_override,
         cognition_summaries=bundle.get("cognition_summaries", []))
+    # P0-1 (2026-09-09): 合成是"按检索结果格式化作答"的任务, 检索/评估已在上游完成。
+    # 默认 reasoning 模型在此阶段深度思考, 实测单次 >600s(日志: thinking_delta 流持续到超时),
+    # 因此将 thinking 压到 minimal —— omp harness 会附带 --thinking minimal。
     synth = await _complete_checked(
-        synth_prompt, ctx, kb_config=kb_config,
+        synth_prompt, ctx, kb_config={**kb_config, "thinking": "minimal"},
         system_prompt_path=str(_PROMPTS_DIR / "soul_synthesize_v1.txt"),
         result_schema={"answer_text": str, "citations": [{"path": str, "chunk_text": str, "score": float, "relevance_reason": str}]},
         timeout_sec=soul_config.SYNTHESIS_TIMEOUT_SECONDS, expected_output_tokens=1024,

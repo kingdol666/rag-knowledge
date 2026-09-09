@@ -594,7 +594,8 @@ async def create_checkpoint(soul_kb_id: str) -> dict[str, Any]:
     try:
         await asyncio.wait_for(lock.acquire(), timeout=PER_SOUL_LOCK_TIMEOUT)
     except asyncio.TimeoutError:
-        return {"success": False, "error": "lock_timeout"}
+        return {"success": False, "error": "lock_timeout",
+                "detail": "无法获取 SOUL 锁: 该人格已有任务在执行,请等待完成后重试"}
 
     try:
         return await _create_checkpoint_locked(soul_kb_id, _soul_dir)
@@ -639,7 +640,8 @@ async def rollback_to_checkpoint(
     try:
         await asyncio.wait_for(lock.acquire(), timeout=PER_SOUL_LOCK_TIMEOUT)
     except asyncio.TimeoutError:
-        return {"success": False, "error": "lock_timeout"}
+        return {"success": False, "error": "lock_timeout",
+                "detail": "无法获取 SOUL 锁: 该人格已有任务在执行,请等待完成后重试"}
 
     try:
         manifest_raw = manifest_path.read_text(encoding="utf-8")
@@ -790,7 +792,8 @@ async def reflect(soul_kb_id: str) -> dict[str, Any]:
     try:
         await asyncio.wait_for(lock.acquire(), timeout=PER_SOUL_LOCK_TIMEOUT)
     except asyncio.TimeoutError:
-        return {"success": False, "error": "lock_timeout"}
+        return {"success": False, "error": "lock_timeout",
+                "detail": "无法获取 SOUL 锁: 该人格已有任务在执行,请等待完成后重试"}
 
     try:
         # 1. 创建检查点（已持有锁，调用内部版本）

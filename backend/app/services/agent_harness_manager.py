@@ -172,7 +172,11 @@ HARNESS_CONFIG: dict[str, dict] = {
             # Use model from KB config; empty = OMP uses its own default (e.g. deepseek-v4-pro)
         ] + ([
             "--model", cfg["model"]
-        ] if cfg.get("model") else []) + [
+        ] if cfg.get("model") else []) + ([
+            # P0-1 (2026-09-09): 可选思考级别控制(off/minimal/low/...), 用于合成类调用
+            # 压低 reasoning 深度。学习/评估路径不传该字段, 保持默认深度。
+            "--thinking", cfg["thinking"]
+        ] if cfg.get("thinking") else []) + [
             f"@{prompt_file}",
         ],
         # NOTE: --cwd is NOT used here because OMP mangles the path.

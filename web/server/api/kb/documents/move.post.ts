@@ -1,5 +1,6 @@
-﻿import { defineEventHandler, readBody, createError } from 'h3'
+import { defineEventHandler, readBody, createError } from 'h3'
 import { getTreeFileSystemService } from '~/server/utils/tree-service'
+import { coerceKbPayload } from '~/server/utils/kb-payload'
 
 /**
  * POST /api/kb/documents/move
@@ -13,6 +14,7 @@ import { getTreeFileSystemService } from '~/server/utils/tree-service'
  */
 export default defineEventHandler(async (event) => {
   const body = (await readBody(event)) || {}
+  coerceKbPayload(body)
 
   if (!body.docPath?.trim()) {
     throw createError({ statusCode: 400, statusMessage: 'docPath is required' })

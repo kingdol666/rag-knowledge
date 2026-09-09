@@ -1,6 +1,7 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import { getTreeFileSystemService } from '~/server/utils/tree-service'
 import { getDynamicBackendUrl } from '~/server/utils/dynamic-config'
+import { coerceKbPayload } from '~/server/utils/kb-payload'
 
 /**
  * DELETE /api/kb/delete
@@ -11,6 +12,7 @@ import { getDynamicBackendUrl } from '~/server/utils/dynamic-config'
  */
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
+  coerceKbPayload(body)
 
   if (!body.kbId?.trim()) {
     throw createError({ statusCode: 400, statusMessage: 'kbId is required' })

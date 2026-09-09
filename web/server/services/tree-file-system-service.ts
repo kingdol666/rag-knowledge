@@ -160,6 +160,15 @@ export class TreeFileSystemService {
     }
 
     folderPath = join(this.basePath, relativePath)
+
+    // Duplicate-name guard (P0-2): the tree metadata and downstream KB resolvers
+    // match by path and take the FIRST hit. Allowing two nodes with the same path
+    // makes documents created in the new KB get indexed into the OLD KB's vector
+    // collection (verified 2026-09-09). Reject duplicates instead.
+    if (this.metadata.folders.some(f => f.path === relativePath)) {
+      throw new Error(`Duplicate node path already exists: ${relativePath}`)
+    }
+
     await ensureDirectory(folderPath)
 
     // Compute kb_id: KB folder uses its own id; sub-folder inherits nearest ancestor KB id

@@ -22,7 +22,7 @@ HTTP_TIMEOUT = int(os.environ.get("MCP_HTTP_TIMEOUT", "30"))  # seconds — gene
 PARSE_TIMEOUT = int(os.environ.get("MCP_PARSE_TIMEOUT", "300"))  # seconds
 INDEX_TIMEOUT = int(os.environ.get("MCP_INDEX_TIMEOUT", "600"))  # seconds — large-doc CPU embedding
 MEDITATION_TIMEOUT = int(os.environ.get("MCP_MEDITATION_TIMEOUT", "1800"))  # seconds — meditation/learn_incremental (omp/claude) may run 10+ min on multi-doc soul runs
-SOUL_TIMEOUT = int(os.environ.get("MCP_SOUL_TIMEOUT", "240"))  # seconds — soul_ask sync synthesis
+SOUL_TIMEOUT = int(os.environ.get("MCP_SOUL_TIMEOUT", "720"))  # seconds — soul_ask sync synthesis; must cover backend SYNTHESIS_TIMEOUT_SECONDS=600 (P0-1, was 240 and cut off before the LLM finished)
 
 
 class KbClient:
@@ -514,9 +514,10 @@ class KbClient:
             kwargs["timeout"] = timeout
         return await self._request("POST", endpoint, base=self.backend_url, **kwargs)
 
-    async def _put_backend_json(self, endpoint, body):
+    async def _put_backend_json(self, endpoint, body, timeout=None):
         """PUT JSON to backend (base=self.backend_url)."""
-        return await self._request("PUT", endpoint, base=self.backend_url, json=body)
+        return await self._request("PUT", endpoint, base=self.backend_url,
+                                   json=body, timeout=timeout)
 
     async def _get_backend(self, endpoint, **params):
         """GET backend endpoint."""
@@ -1005,7 +1006,9 @@ class KbClient:
         if domain_labels is not None: body["domain_labels"] = domain_labels
         if supported_task_types is not None: body["supported_task_types"] = supported_task_types
         if route_weight is not None: body["route_weight"] = route_weight
-        return await self._put_backend_json(f"/api/v1/soul/{soul_kb_id}/config", body)
+        # P2 (2026-09-09): 后端会刷新 profile(实测 86s), 默认 30s 超时必然失败
+        return await self._put_backend_json(
+            f"/api/v1/soul/{soul_kb_id}/config", body, timeout=SOUL_TIMEOUT)
 
     async def soul_delete(self, soul_kb_id: str, purge_experiences: bool = False) -> dict:
         """删除前 checkpoint + 缓存清理(后端侧);web 层 KB 删除由 MCP 工具编排。"""
@@ -1015,9 +1018,10 @@ class KbClient:
             params={"purge_experiences": purge_experiences})
 
     async def soul_router(self, query: str, task_goal: str = "", task_type: str = "") -> dict:
+        # P2 (2026-09-09): 路由缓存失效后(如 config 变更)首次路由需重建, 实测可超 30s
         return await self._post_backend_json("/api/v1/soul/router", {
             "query": query, "task_goal": task_goal, "task_type": task_type,
-        })
+        }, timeout=SOUL_TIMEOUT)
 
     async def soul_router_status(self) -> dict:
         return await self._get_backend("/api/v1/soul/router/status")

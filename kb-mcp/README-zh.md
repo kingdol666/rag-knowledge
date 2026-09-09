@@ -72,7 +72,7 @@
        │            └──────────────────────┘
 ┌──────▼───────┐
 │   后端        │
-│   :8765/8001 │
+│   :8770/8001 │
 └──────────────┘
 ```
 
@@ -265,7 +265,7 @@ from kb_client import KbClient
 
 client = KbClient(
     web_url="http://localhost:6789",
-    backend_url="http://localhost:8765",
+    backend_url="http://localhost:8770",
 )
 
 # KB 操作

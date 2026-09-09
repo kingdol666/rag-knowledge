@@ -1,5 +1,6 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import { getTreeFileSystemService } from '~/server/utils/tree-service'
+import { coerceKbPayload } from '~/server/utils/kb-payload'
 
 /**
  * PUT /api/kb/update
@@ -9,6 +10,7 @@ import { getTreeFileSystemService } from '~/server/utils/tree-service'
  */
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
+  coerceKbPayload(body)
 
   if (!body.kbId?.trim()) {
     throw createError({ statusCode: 400, statusMessage: 'kbId is required' })

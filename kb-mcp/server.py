@@ -2897,6 +2897,8 @@ async def soul_learn(soul_kb_id: str, doc_paths: list, limit: int = 5, rounds: i
         backend_tid = r.get("task_id") if r.get("success") else None
         if not backend_tid:
             return r
+        # P1-3: 记录后端 task_id, 进程重启后仍可直连后端轮询
+        task_registry.update_meta(inner_task_id, {"backend_task_id": backend_tid})
         while True:
             await asyncio.sleep(5)
             view = await _client().soul_task_status(backend_tid)
@@ -2947,6 +2949,8 @@ async def soul_review_drafts(soul_kb_id: str, draft_type: str = "memory",
                 soul_kb_id, draft_type, action, list(draft_ids), force, async_mode=True)
             if not r.get("success") or not r.get("task_id"):
                 return r
+            # P1-3: 记录后端 task_id, 进程重启后仍可直连后端轮询
+            task_registry.update_meta(inner_task_id, {"backend_task_id": r["task_id"]})
             while True:
                 await asyncio.sleep(3)
                 view = await _client().soul_task_status(r["task_id"])
@@ -2990,6 +2994,8 @@ async def soul_learn_all(soul_kb_id: str = "", max_docs: int = 20,
         backend_tid = r.get("task_id") if r.get("success") else None
         if not backend_tid:
             return r
+        # P1-3: 记录后端 task_id, 进程重启后仍可直连后端轮询
+        task_registry.update_meta(inner_task_id, {"backend_task_id": backend_tid})
         while True:
             await asyncio.sleep(5)
             view = await _client().soul_task_status(backend_tid)
@@ -3047,6 +3053,8 @@ async def soul_train_rl(soul_kb_id: str, rounds: int = 1) -> str:
         backend_tid = r.get("task_id") if r.get("success") else None
         if not backend_tid:
             return r
+        # P1-3: 记录后端 task_id, 进程重启后仍可直连后端轮询
+        task_registry.update_meta(inner_task_id, {"backend_task_id": backend_tid})
         while True:
             await asyncio.sleep(5)
             view = await _client().soul_task_status(backend_tid)
@@ -3084,6 +3092,8 @@ async def soul_gen_cognition_drafts(soul_kb_id: str) -> str:
         backend_tid = r.get("task_id") if r.get("success") else None
         if not backend_tid:
             return r
+        # P1-3: 记录后端 task_id, 进程重启后仍可直连后端轮询
+        task_registry.update_meta(inner_task_id, {"backend_task_id": backend_tid})
         while True:
             await asyncio.sleep(3)
             view = await _client().soul_task_status(backend_tid)

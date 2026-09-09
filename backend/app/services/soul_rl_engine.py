@@ -311,18 +311,43 @@ async def train_rl_unified(
                 "elapsed_sec": round_elapsed,
             })
 
-    return {
-        "success": True,
-        "rounds_completed": len(per_round),
-        "per_round": per_round,
-        "convergence_state": convergence_state,
-        "hint": (
+    # P1-2 (2026-09-09): 训练"假成功"显性化。
+    # 任一轮 learn 失败(如 lock_timeout)或全程零记忆产出时, 结果标记 degraded,
+    # 并在 hint 中显著警告 —— 之前这种情况静默返回 success=True, 调用方误以为训练完成。
+    learn_failures = [pr for pr in per_round if not pr.get("learn", {}).get("ok")]
+    total_memories = sum(pr.get("learn", {}).get("memories_created", 0) for pr in per_round)
+    degraded = bool(learn_failures) or total_memories == 0
+
+    if degraded:
+        reasons = []
+        if learn_failures:
+            reasons.append(f"{len(learn_failures)}/{len(per_round)} 轮知识学习失败"
+                           f"({learn_failures[0].get('learn', {}).get('error', 'unknown')})")
+        if total_memories == 0:
+            reasons.append("全程零记忆产出")
+        hint = (
+            f"⚠️ 训练降级完成, 人格实际未更新: {'; '.join(reasons)}。"
+            "请解决根因(如等待在执行的训练任务结束)后重新训练。"
+            + (" 全局优化已应用。" if any(
+                pr.get("global_optimize", {}).get("optimized") for pr in per_round) else "")
+            + f" 收敛态: {'是' if convergence_state['converged'] else '否'}"
+        )
+    else:
+        hint = (
             "RL 统一训练完成。"
             + ("全局优化已应用(认知草稿已吸收重写)。" if any(
                 pr.get("global_optimize", {}).get("optimized") for pr in per_round)
                else "")
             + f" 收敛态: {'是' if convergence_state['converged'] else '否'}"
-        ),
+        )
+
+    return {
+        "success": True,
+        "degraded": degraded,
+        "rounds_completed": len(per_round),
+        "per_round": per_round,
+        "convergence_state": convergence_state,
+        "hint": hint,
     }
 
 

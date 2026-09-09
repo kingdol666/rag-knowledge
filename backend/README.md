@@ -102,10 +102,10 @@ uv sync
 
 # 2. Run (dev mode — hot reload)
 APP_MODE=dev uv run python main.py
-# → http://localhost:8765
+# → http://localhost:8770
 
 # 3. Verify
-curl http://localhost:8765/api/v1/health
+curl http://localhost:8770/api/v1/health
 ```
 
 ```bash
@@ -298,7 +298,7 @@ Ports and mode are read from the **root `config.yml`** (single source of truth).
 | Variable | Default (dev / prod) | Purpose |
 |----------|----------------------|---------|
 | `APP_MODE` | `dev` | Selects dev or prod section from root config.yml |
-| `BACKEND_PORT` | `8765` / `8001` | Override the backend listen port |
+| `BACKEND_PORT` | `8770` / `8001` | Override the backend listen port |
 | `HF_ENDPOINT` | `https://hf-mirror.com` | HuggingFace model download mirror |
 | `NEO4J_PASSWORD` | (from docker-compose) | Neo4j authentication |
 

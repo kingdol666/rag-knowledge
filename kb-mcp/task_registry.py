@@ -118,6 +118,14 @@ def update_progress(task_id: str, progress: dict) -> None:
         rec["progress"] = progress
 
 
+def update_meta(task_id: str, meta_patch: dict) -> None:
+    """Merge fields into a task's meta (P1-3: e.g. backend_task_id so callers
+    can poll the backend directly and survive MCP process restarts)."""
+    rec = _records.get(task_id)
+    if rec:
+        rec["meta"] = {**(rec.get("meta") or {}), **meta_patch}
+
+
 def get(task_id: str) -> dict | None:
     """Return the raw record for *task_id*, or ``None`` if unknown."""
     return _records.get(task_id)
@@ -133,6 +141,11 @@ def public_view(rec: dict | None) -> dict | None:
         "status": rec["status"],
         "created_at": rec["created_at"],
     }
+    # P1-3: expose the backend task id so callers can poll the backend
+    # directly (kb-mcp task ids are process-local and do not survive restarts)
+    backend_tid = (rec.get("meta") or {}).get("backend_task_id")
+    if backend_tid:
+        out["backend_task_id"] = backend_tid
     if rec["status"] == "running":
         out["elapsed_seconds"] = round(time.monotonic() - rec["started_monotonic"], 1)
     if rec.get("progress"):
