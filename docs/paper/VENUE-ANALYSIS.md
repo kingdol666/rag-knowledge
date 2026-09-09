@@ -1,6 +1,9 @@
 # 目标会议/期刊分析与推荐
 
-> **最后更新**: 2026-07-24 · **系统版本**: RAG Knowledge Platform v3.x
+> **最后更新**: 2026-09-09 · **系统版本**: RAG Knowledge Platform v3.x（+鉴权/整改后全绿）
+> **⏰ 截稿校准 (2026-09-09)**: CIKM 2026 已截稿。**CIKM 2027** 于 2027-10-25~29 悉尼举办，
+> 全文截稿预测 **2027-05-23 AoE**（abstract 约 5/16，冻结作者名单）。详见
+> [SUBMISSION-MASTER-PLAN.md](./SUBMISSION-MASTER-PLAN.md)。
 
 ---
 
