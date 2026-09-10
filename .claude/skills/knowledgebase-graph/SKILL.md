@@ -1,96 +1,96 @@
 ---
 name: knowledgebase-graph
 description: >
-  Knowledge graph build, query, and analysis for Neo4j-powered document relationship graph. Based on document metadata (tags, KB membership). Build per KB or globally, query (KB overview, document-centric, cross-KB discovery, keyword search, neighborhood exploration), cleanup (delete document/KB nodes). Triggered by: 图谱, 知识图谱, graph, knowledge graph, neo4j, 实体关系, entity, relationship, build graph, 构建图谱, cross-KB, 跨知识库, document path, 文档路径, central document, 核心文档.
+  Knowledge graph build, query, and analysis for Neo4j-powered document relationship graph. Based on document metadata (tags, KB membership). Build per KB or globally, query (KB overview, document-centric, cross-KB discovery, keyword search, neighborhood exploration), cleanup (delete document/KB nodes). Triggered by: graph, knowledge graph, graph, knowledge graph, neo4j, entity relationships, entity, relationship, build graph, build the graph, cross-KB, cross knowledge base, document path, document path, central document, core document.
 ---
 
 # Knowledge Graph — Build, Query, Analyze
 
-## ⭐ Execution Model · Pre-Flight · Architecture（作业首步，强制）
+## ⭐ Execution Model · Pre-Flight · Architecture (First Step of Any Job, Mandatory)
 
-**执行者：Archival agent** — 用 `task` 委托执行（**委托模板 + 三角色执行模型 + 组合任务边界**：必读 [execution-model.md](../knowledgebase/references/execution-model.md)）。**Pre-Flight**：未通过禁作业 — 一探双检 `kb_project_status` → 分支处置 → 冒烟测试，完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)。**心智模型**：操作前必读 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层模型 + 一致性不变量 + 91 工具地图）；MCP 优先原则（禁 terminal/HTTP 绕过）见 [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) 第五条。
+**Executor: Archival agent** — delegate via `task` (**delegation template + three-role execution model + combined-task boundaries**: must-read [execution-model.md](../knowledgebase/references/execution-model.md)). **Pre-Flight**: no work before it passes — one-probe double-check `kb_project_status` → branch handling → smoke test; full flow in [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md). **Mental model**: before operating, must-read [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer model + consistency invariants + 91-tool map); MCP-first principle (no terminal/HTTP bypass) in [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) Rule 5.
 
 Graph nodes: `Document`, `KnowledgeBase`, `Tag`. Edges: `BELONGS_TO`, `HAS_SUBKB`, `HAS_TAG`, `RELATED_TO`.
 
 ---
 
-## ⭐ 相关 Skills
-- 文档入库建索引 → `skill://knowledgebase-ingest` (A6 向量+图谱索引)
-- 批量重建图谱 → `skill://knowledgebase-batch` (B7 全库重建)
-- 跨库知识发现 → `skill://knowledgebase-search-enterprise`
-- 架构心智模型 → [kb-architecture.md](../knowledgebase/references/kb-architecture.md)
+## ⭐ Related Skills
+- Document ingest & indexing → `skill://knowledgebase-ingest` (A6 vector+graph indexing)
+- Batch graph rebuild → `skill://knowledgebase-batch` (B7 whole-library rebuild)
+- Cross-library knowledge discovery → `skill://knowledgebase-search-enterprise`
+- Architecture mental model → [kb-architecture.md](../knowledgebase/references/kb-architecture.md)
 
 ## Sequential Workflow
-**Step 1 — Check Neo4j**: kb_graph_stats() 确认 neo4j_available 为 true，否则 kb_project_start(neo4j=true) 拉起。
-**Step 2 — 选择查询类型**: 根据用户需求选择操作类型（概览/文档查询/跨库发现/关键词搜索/构建/清理）。
-**Step 3 — KB 概览查询**: kb_graph_kb_overview(kb_id) → doc_count、子KB、标签分布、top中心文档。
-**Step 4 — 文档中心查询**: kb_graph_document(doc_path) 获取全部关联 / kb_graph_document_related(doc_path) 仅相关文档。
-**Step 5 — 跨库桥接发现**: kb_graph_cross_kb_documents(min_kbs=2) → 桥接文档 → kb_graph_central_documents(kb_id) → 核心文档。
-**Step 6 — 文档路径查询**: kb_graph_document_paths(doc_a, doc_b, max_depth=4) → 两文档间最短关系路径。
-**Step 7 — 关键词搜索**: kb_graph_search(keyword, node_type="all") → 按名称/路径子串匹配节点。
-**Step 8 — Build 构建/重建**: kb_graph_build(kb_id, force=false) 增量 / force=true 全量重建 → kb_graph_stats() 验证。
-**Step 9 — Cleanup 清理**: kb_graph_delete_document(doc_path) 删文档节点 / kb_graph_delete_kb(kb_id) 删KB全图。
+**Step 1 — Check Neo4j**: kb_graph_stats() confirm neo4j_available is true, otherwise kb_project_start(neo4j=true) to bring it up.
+**Step 2 — Choose the query type**: select the operation type per the user request (overview/document query/cross-library discovery/keyword search/build/cleanup).
+**Step 3 — KB overview query**: kb_graph_kb_overview(kb_id) → doc_count, sub-KBs, tag distribution, top central documents.
+**Step 4 — Document-centric query**: kb_graph_document(doc_path) for all associations / kb_graph_document_related(doc_path) for related documents only.
+**Step 5 — Cross-library bridge discovery**: kb_graph_cross_kb_documents(min_kbs=2) → bridge documents → kb_graph_central_documents(kb_id) → central documents.
+**Step 6 — Document path query**: kb_graph_document_paths(doc_a, doc_b, max_depth=4) → shortest relationship path between two documents.
+**Step 7 — Keyword search**: kb_graph_search(keyword, node_type="all") → substring matching of nodes by name/path.
+**Step 8 — Build/rebuild**: kb_graph_build(kb_id, force=false) incremental / force=true full rebuild → kb_graph_stats() verify.
+**Step 9 — Cleanup**: kb_graph_delete_document(doc_path) delete a document node / kb_graph_delete_kb(kb_id) delete the entire KB graph.
 
 ---
 
-## 思维框架：先想清楚要查什么 ⭐
+## Mental Framework: First Be Clear About What to Query ⭐
 
 ```
-[用户需求] → [查询类型] → [选工具] → [构建/查询/清理]
+[User request] → [Query type] → [Pick tool] → [Build/Query/Clean]
 ```
 
-| 用户说 | 本质需求 | 选哪个流 |
+| User says | Underlying need | Which flow to pick |
 |--------|---------|---------|
-| "这个KB的图谱怎么样" | 概览 | KB Overview |
-| "这篇文档和什么相关" | 文档关系 | Document-Centric |
-| "有没有跨库桥梁文档" | 跨库发现 | Cross-KB Discovery |
-| "帮我查图谱节点" | 关键词 | Keyword Search |
-| "重建图谱" | 构建 | Build |
-| "删了文档，图谱不干净" | 清理 | Cleanup |
+| "What does this KB's graph look like" | Overview | KB Overview |
+| "What is this document related to" | Document relations | Document-Centric |
+| "Any cross-library bridge documents" | Cross-library discovery | Cross-KB Discovery |
+| "Help me search graph nodes" | Keywords | Keyword Search |
+| "Rebuild the graph" | Build | Build |
+| "Deleted a document; the graph is dirty" | Cleanup | Cleanup |
 
 ---
 
-## 查询决策树
+## Query Decision Tree
 
 ```
-用户想查什么？
+What does the user want to query?
     │
-    ├── "这个KB的整体概况"
+    ├── "Overview of this KB"
     │   → kb_graph_kb_overview(kb_id)
-    │      （doc_count, sub-KBs, tag distribution, top central docs）
+    │      (doc_count, sub-KBs, tag distribution, top central docs)
     │
-    ├── "这篇文档关联了什么"
-    │   → 全部信息: kb_graph_document(doc_path, limit=50)
-    │   → 仅相关文档: kb_graph_document_related(doc_path, limit=20)
+    ├── "What is this document linked to"
+    │   → All info: kb_graph_document(doc_path, limit=50)
+    │   → Related docs only: kb_graph_document_related(doc_path, limit=20)
     │
-    ├── "跨KB桥梁文档"
+    ├── "Cross-KB bridge documents"
     │   → kb_graph_cross_kb_documents(min_kbs=2, limit=50)
     │
-    ├── "核心文档/中心文档"
+    ├── "Central/core documents"
     │   → kb_graph_central_documents(kb_id, top_n=20)
     │
-    ├── "两篇文档之间的路径"
+    ├── "Path between two documents"
     │   → kb_graph_document_paths(doc_a, doc_b, max_depth=4)
     │
-    ├── "按标签查文档"
-    │   ⚠️ `kb_graph_documents_by_tag` 已移除（对 tag 返回空），请用 `kb_doc_get_by_tag`（图谱用 doc-doc `RELATED_TO{shared_tag}` 边建模，未建 tag→doc 直连）
-    │   → **推荐 `kb_doc_get_by_tag(tag)`**（走 YAML registry，可靠，跨 skill 通用）
+    ├── "Find documents by tag"
+    │   ⚠️ `kb_graph_documents_by_tag` has been removed (returns empty for tags); use `kb_doc_get_by_tag` instead (the graph models tags via doc-doc `RELATED_TO{shared_tag}` edges; no direct tag→doc edges are built)
+    │   → **Recommended: `kb_doc_get_by_tag(tag)`** (goes through the YAML registry; reliable; works across skills)
     │
-    ├── "关键词搜"
-    │   → kb_graph_search(keyword, node_type="all", limit=20)   # ⚠️ 参数是 keyword（非 query）
-    │     (node_type: all/document/kb/tag — all 合并三类结果)
+    ├── "Keyword search"
+    │   → kb_graph_search(keyword, node_type="all", limit=20)   # ⚠️ the parameter is keyword (not query)
+    │     (node_type: all/document/kb/tag — all merges the three result types)
     │
-    ├── "图谱健康/统计"
-    │   → kb_graph_stats()  # check neo4j_available field — Neo4j 是否可用
-    │   → kb_graph_stats() — 节点/边计数
+    ├── "Graph health/statistics"
+    │   → kb_graph_stats()  # check neo4j_available field — whether Neo4j is available
+    │   → kb_graph_stats() — node/edge counts
     │
-    ├── "重建图谱"
+    ├── "Rebuild the graph"
     │   → kb_graph_build(kb_id="", force=true)
-    │     (空 kb_id=全库；指定 kb_id=单KB)
+    │     (empty kb_id=whole library; specific kb_id=single KB)
     │
-    └── "清理图谱/删节点"
-        → kb_graph_delete_document(doc_path) — 单文档
-        → kb_graph_delete_kb(kb_id) — 整个 KB
+    └── "Clean the graph/delete nodes"
+        → kb_graph_delete_document(doc_path) — single document
+        → kb_graph_delete_kb(kb_id) — entire KB
 ```
 
 ---
@@ -98,18 +98,18 @@ Graph nodes: `Document`, `KnowledgeBase`, `Tag`. Edges: `BELONGS_TO`, `HAS_SUBKB
 ## Build
 
 ```
-kb_graph_build(kb_id="", force=false)    # 空 kb_id=全库；指定 kb_id=单KB（增量）
+kb_graph_build(kb_id="", force=false)    # empty kb_id=whole library; specific kb_id=single KB (incremental)
 ```
-- `force=false`: 跳过已索引文档（快）
-- `force=true`: 完全重建（schema变更/清理后使用）
+- `force=false`: skips already-indexed documents (fast)
+- `force=true`: full rebuild (use after schema changes/cleanup)
 
-### 构建后验证
-第一次 build 或 force rebuild 后，务必验证：
+### Post-Build Verification
+After the first build or a force rebuild, always verify:
 ```
-kb_graph_stats()       # 对比 node/edge 数是否合理
-kb_graph_kb_overview(kb_id)  # doc_count 是否匹配实际文档数
+kb_graph_stats()       # compare whether node/edge counts are reasonable
+kb_graph_kb_overview(kb_id)  # whether doc_count matches the actual document count
 ```
-如出现 `total_relations` 为 0 但 doc_count 正常 → 图谱实际已写入，stats 有 bug（用 `kb_graph_document()` 抽检确认）。
+If `total_relations` is 0 but doc_count is normal → the graph data was actually written; stats has a bug (use `kb_graph_document()` spot checks to confirm).
 
 ---
 
@@ -122,17 +122,17 @@ kb_graph_stats()  # check neo4j_available field     # Neo4j availability check
 ## KB Overview
 `kb_graph_kb_overview(kb_id)` — doc count, sub-KBs, tag distribution, related KBs, top central docs.
 
-> **已知显示限制**：`related_kbs[].name` 和 `sub_kbs[].name` 返回 **UUID** 而非可读名称。用 `kb_list(lightweight=true)` 回查 UUID→名称映射。
+> **Known display limitation**: `related_kbs[].name` and `sub_kbs[].name` return **UUIDs** instead of readable names. Use `kb_list(lightweight=true)` to look up the UUID→name mapping.
 
 ## Document-Centric Query
 | Task | Tool |
 |---|---|
 | Full graph of a doc | `kb_graph_document(doc_path, limit=50)` |
 | Related docs only | `kb_graph_document_related(doc_path, limit=20)` |
-| Docs by tag | ⚠️ `kb_doc_get_by_tag(tag)`（推荐，走 YAML）；`kb_graph_documents_by_tag` 已移除（对 tag 恒返回空），请用 `kb_doc_get_by_tag` |
+| Docs by tag | ⚠️ `kb_doc_get_by_tag(tag)` (recommended; goes through YAML); `kb_graph_documents_by_tag` has been removed (always returns empty for tags); use `kb_doc_get_by_tag` |
 | Neighborhood exploration | Use `kb_graph_document(doc_path)` — returns related documents including neighbors |
 
-> **路径格式**：`kb_graph_*` 工具用**正斜杠**路径（如 `Energy-Batteries/lithium-ion-design.md`）。`kb_get_documents` 在 Windows 返回**反斜杠**路径（如 `Energy-Batteries\lithium-ion-design.md`）。跨工具传参时统一转正斜杠。
+> **Path format**: `kb_graph_*` tools use **forward slash** paths (e.g. `Energy-Batteries/lithium-ion-design.md`). `kb_get_documents` returns **backslash** paths on Windows (e.g. `Energy-Batteries\lithium-ion-design.md`). Normalize to forward slashes when passing parameters across tools.
 
 ## Cross-KB Discovery
 ```
@@ -143,13 +143,13 @@ kb_graph_document_paths(doc_a, doc_b, max_depth=4)   # path between two docs
 
 ## Keyword Search
 ```
-kb_graph_search(keyword, node_type="all", limit=20)   # ⚠️ 参数是 keyword（非 query）
-# node_type: "all"（默认，合并 document+kb+tag 三类结果）/ "document" / "kb" / "tag"
+kb_graph_search(keyword, node_type="all", limit=20)   # ⚠️ the parameter is keyword (not query)
+# node_type: "all" (default; merges document+kb+tag results) / "document" / "kb" / "tag"
 # Returns: {documents:[...], kbs:[...], tags:[...], counts:{documents, kbs, tags}}
 ```
-- ⚠️ **参数名是 `keyword`**，不是 `query`（传错返回 Invalid args + schema 提示）。
-- `node_type="document"` 按 name/path 子串匹配有效。
-- ⚠️ **`node_type="tag"` 当前对所有标签返回空**（图谱用 doc-doc `RELATED_TO{shared_tag}` 边建模，未建 tag→doc 直连）。按标签查文档请用 `kb_doc_get_by_tag(tag)`（走 YAML registry，可靠）。
+- ⚠️ **The parameter name is `keyword`**, not `query` (wrong parameter returns Invalid args + a schema hint).
+- `node_type="document"` effectively matches by name/path substring.
+- ⚠️ **`node_type="tag"` currently returns empty for all tags** (the graph models tags via doc-doc `RELATED_TO{shared_tag}` edges; no direct tag→doc edges are built). To find documents by tag, use `kb_doc_get_by_tag(tag)` (goes through the YAML registry; reliable).
 - `node_type="all"` returns all three node types in one call (documents/kbs/tags arrays).
 
 ## Cleanup
@@ -165,15 +165,15 @@ Use after deleting documents or KBs to keep graph clean.
 
 ---
 
-## ⚠️ NEVER 清单
+## ⚠️ NEVER List
 
-| ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
+| ❌ Don't do this | Why | ✅ Do this instead |
 |-------------|------|-------------|
-| 不构建图谱就直接查 | 空结果误解 | 先 `kb_graph_stats()  # check neo4j_available field` 确认可用再查 |
-| `force=false` 当 full rebuild | 仅增量，新 schema 不改旧数据 | Schema 变更后必须 `force=true` |
-| 删文档不删图节点 | 孤立节点污染结果 | 删文档后必须 `kb_graph_delete_document()` |
-| 误读 `total_relations=0` | stats bug，实际有数据 | `kb_graph_document()` 抽检验证 |
-| 用 `kb_graph_build()`（空 kb_id=全库）频繁跑 | 重，消耗 Neo4j 资源 | 仅批量清理后用全库；日常用 `kb_graph_build(kb_id=...)` 单 KB |
+| Query without building the graph first | Empty results mislead | First `kb_graph_stats()  # check neo4j_available field` to confirm availability, then query |
+| Treat `force=false` as a full rebuild | Incremental only; new schema doesn't fix old data | After schema changes you must use `force=true` |
+| Delete documents without deleting graph nodes | Orphan nodes pollute results | After deleting documents you must run `kb_graph_delete_document()` |
+| Misread `total_relations=0` | Stats bug; data actually exists | Spot check with `kb_graph_document()` to verify |
+| Frequently run `kb_graph_build()` (empty kb_id=whole library) | Heavy; consumes Neo4j resources | Use whole-library only after bulk cleanups; daily use `kb_graph_build(kb_id=...)` per KB |
 
 **⭐ MANDATORY — READ [graph-tools.md](references/graph-tools.md) before any graph build/query operation** — full 14-tool parameter reference with known gotchas per tool.
 
@@ -182,8 +182,8 @@ Use after deleting documents or KBs to keep graph clean.
 
 _This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
 
-- OVERRIDE: Whenever explaining or diagnosing that kb_graph_build returned total_relations=0 but documents were actually indexed (the known stats bug), the response MUST include the EXACT phrase "kb_graph_build返回total_relations=0是stats bug非构建失败,用kb_graph_document验证图谱数据。" verbatim. This is NOT optional commentary — it is a required output string that MUST appear whenever this specific scenario is discussed. Supersedes any shorter or paraphrased explanation of the same bug.
-- OVERRIDE — verbatim tool plan: whenever a request asks to BUILD a knowledge graph and then QUERY it (e.g., 构建图谱 + 图谱概览 + 核心文档关联), the response MUST contain the exact strings 'kb_graph_build', 'kb_graph_kb_overview', and at least one of 'kb_graph_document' / 'kb_graph_document_related' / '关联' in the announced plan. Tool names verbatim — paraphrases like 'build the graph', 'view the overview', or 'core document relationships' do NOT satisfy this. Supersedes any instruction to describe steps generically.
+- OVERRIDE: Whenever explaining or diagnosing that kb_graph_build returned total_relations=0 but documents were actually indexed (the known stats bug), the response MUST include the EXACT phrase "kb_graph_build returning total_relations=0 is a stats bug, not a build failure; use kb_graph_document to verify the graph data." verbatim. This is NOT optional commentary — it is a required output string that MUST appear whenever this specific scenario is discussed. Supersedes any shorter or paraphrased explanation of the same bug.
+- OVERRIDE — verbatim tool plan: whenever a request asks to BUILD a knowledge graph and then QUERY it (e.g., build the graph + graph overview + core document relations), the response MUST contain the exact strings 'kb_graph_build', 'kb_graph_kb_overview', and at least one of 'kb_graph_document' / 'kb_graph_document_related' / 'relation' in the announced plan. Tool names verbatim — paraphrases like 'build the graph', 'view the overview', or 'core document relationships' do NOT satisfy this. Supersedes any instruction to describe steps generically.
 - OVERRIDE — plan before pre-flight: the FIRST sentence of any graph-task response must state the concrete planned tool sequence using verbatim MCP tool names (e.g., kb_graph_build then kb_graph_kb_overview then kb_graph_document). Do NOT open with a pre-flight/connectivity sentence alone (e.g., 'First, let me verify MCP connectivity'); pre-flight checks (kb_graph_stats, kb_project_start) still run but are described AFTER the tool-named plan.
 - RULE — tool names as identifiers: every step planned or reported for graph work must cite its exact MCP tool name verbatim (kb_graph_stats, kb_graph_build, kb_graph_kb_overview, kb_graph_document, kb_graph_document_related, kb_graph_search, …), never only a generic description of the action; tool names listed in this skill's Sequential Workflow / decision tree must be written exactly as they appear there.
 <!-- SKILLOPT-SLEEP:LEARNED END -->

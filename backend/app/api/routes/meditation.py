@@ -1,4 +1,4 @@
-"""Meditation API Routes — status, run, history, signals, config."""
+"""Meditation API Routes — status, run, history, signals, config, harness registry."""
 from __future__ import annotations
 
 import asyncio
@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException
 
 from app.services.experience_meditation_service import meditation_scheduler
 from app.services.agent_harness_manager import agent_harness
+from app.services import harness_registry as hreg
 from app.services.kb_meditation_config import get_meditation_config, update_meditation_config, get_all_kb_meditation_configs
 from app.services.meditation_db import list_signals, update_signal_feedback, list_runs, get_run, get_pending_signals
 from app.api.deps.auth import verify_token
@@ -16,6 +17,72 @@ from app.api.deps.auth import verify_token
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/v1/meditation", tags=["Meditation"])
+
+
+# ── Harness registry（单一事实源派生面） ────────────────────────────
+
+async def _validate_harness(harness: str) -> dict:
+    """执行前强校验（错误即事件，外部调用者可读）：
+    - 未知引擎    → 400 HARNESS_UNKNOWN
+    - 未安装      → 409 HARNESS_NOT_INSTALLED
+    - 缺凭据/配置 → 409 HARNESS_NOT_CONFIGURED（附缺失 env 清单）
+    - 可用        → 返回 probe
+    """
+    try:
+        probe = await hreg.assert_harness_usable(harness)
+    except hreg.UnknownHarnessError as e:
+        raise HTTPException(status_code=400, detail={
+            "code": "HARNESS_UNKNOWN", "message": str(e),
+            "hint": f"GET /api/v1/meditation/harnesses lists all supported harness ids",
+        })
+    except hreg.HarnessUnavailableError as e:
+        raise HTTPException(status_code=409, detail={
+            "code": "HARNESS_NOT_INSTALLED", "message": str(e),
+            "harness": harness,
+            "hint": "Install the engine CLI (see registry homepage) or set "
+                    "harness.commands.<id> in config.yml to its real binary path.",
+        })
+    issues = hreg.configuration_issues(harness, probe)
+    if issues:
+        raise HTTPException(status_code=409, detail={
+            "code": "HARNESS_NOT_CONFIGURED",
+            "message": f"Harness '{harness}' is installed but not configured",
+            "harness": harness, "issues": issues,
+            "hint": "Set the listed environment variables (or the engine's own "
+                    "stored credentials), then retry.",
+        })
+    return probe
+
+
+@router.get("/harnesses")
+async def harness_list():
+    """全部注册引擎（含能力面/模型目录/实时可用性）——前端下拉数据源。
+
+    default 为可用性感知解析：配置默认引擎已安装则用之，否则取第一个已发现引擎。
+    """
+    default = await hreg.resolve_default_harness()
+    items = await hreg.list_harnesses()
+    items.append({
+        "id": "heuristic",
+        "label": "Heuristic",
+        "description": "内置启发式回退（无 LLM）。结构化抽取，质量门控。",
+        "homepage": "",
+        "process_model": "inprocess",
+        "capabilities": {"steer": False, "supervise": True, "hitl": False,
+                         "terminal": False, "context_stats": False, "compact": False},
+        "requires_env": [],
+        "notes": "调度任务引擎不可用时的静默回退路径（手动触发不回退）。",
+        "models": [""],
+        "installed": True,
+        "version": "",
+        "resolved_command": "inprocess:heuristic",
+    })
+    return {
+        "success": True,
+        "default": default,
+        "count": len(items),
+        "harnesses": items,
+    }
 
 
 # ── Status ─────────────────────────────────────────────────────────
@@ -31,6 +98,7 @@ async def meditation_status():
         "success": True,
         "scheduler": scheduler_status,
         "harnesses": harness_status["harnesses"],
+        "default_harness": harness_status.get("default", hreg.DEFAULT_HARNESS),
         "circuit_breaker": harness_status["circuit_breaker"],
         "kb_configs": kb_configs,
     }
@@ -43,63 +111,72 @@ async def harness_status():
 
 
 @router.get("/models")
-async def meditation_models():
-    """Get available OMP models for meditation harness selection.
+async def meditation_models(harness: str = "omp"):
+    """Get model catalog for a harness.
 
-    Calls `omp models --json` to get the real list of configured models.
-    Falls back to a default list if OMP is not available.
+    omp: `omp models --json` 动态发现；其余引擎: 注册表静态目录。
+    未知引擎 400。
     """
-    import subprocess, json as _json
-    try:
-        result = subprocess.run(
-            ["omp", "models", "--json"],
-            capture_output=True, timeout=15,
-            text=True,
-        )
-        if result.returncode == 0 and result.stdout.strip():
-            data = _json.loads(result.stdout)
-            models = data.get("models", [])
-            # Simplify for frontend consumption
-            simplified = []
-            for m in models:
-                simplified.append({
-                    "id": m.get("selector", m.get("id", "")),
-                    "name": m.get("name", m.get("id", "")),
-                    "provider": m.get("provider", ""),
-                    "context_window": m.get("contextWindow", 0),
-                    "max_tokens": m.get("maxTokens", 0),
-                })
-            return {"success": True, "models": simplified, "source": "omp"}
-    except Exception as e:
-        logger.warning("Failed to get OMP models: %s", e)
+    if not hreg.is_known_harness(harness):
+        raise HTTPException(status_code=400, detail=f"Unknown harness: {harness}")
 
-    # Fallback: return known defaults
+    if harness == "omp":
+        import subprocess, json as _json
+        try:
+            result = subprocess.run(
+                ["omp", "models", "--json"],
+                capture_output=True, timeout=15,
+                text=True,
+            )
+            if result.returncode == 0 and result.stdout.strip():
+                data = _json.loads(result.stdout)
+                models = data.get("models", [])
+                simplified = []
+                for m in models:
+                    simplified.append({
+                        "id": m.get("selector", m.get("id", "")),
+                        "name": m.get("name", m.get("id", "")),
+                        "provider": m.get("provider", ""),
+                        "context_window": m.get("contextWindow", 0),
+                        "max_tokens": m.get("maxTokens", 0),
+                    })
+                return {"success": True, "models": simplified, "source": "omp"}
+        except Exception as e:
+            logger.warning("Failed to get OMP models: %s", e)
+
     return {
         "success": True,
-        "models": [
-            {"id": "", "name": "使用引擎默认模型", "provider": ""},
-        ],
-        "source": "fallback",
+        "models": [{"id": mid, "name": mid or "使用引擎默认模型", "provider": ""} for mid in hreg.harness_models(harness)],
+        "source": "static" if harness != "omp" else "fallback",
     }
 # ── Run ────────────────────────────────────────────────────────────
 
 @router.post("/run", dependencies=[Depends(verify_token)])
 async def meditation_run(body: dict = None):
-    """Manually trigger a meditation run. body: {kb_id?, trigger?}"""
+    """Manually trigger a meditation run.
+
+    body: {kb_id?, trigger?, harness?}
+    harness 显式指定时强校验（未知 400 / 未安装 409），本次运行覆盖 KB 配置。
+    """
     body = body or {}
     kb_id = body.get("kb_id", "")
     trigger = body.get("trigger", "manual")
+    harness_override = (body.get("harness") or "").strip()
+
+    if harness_override:
+        # 指定引擎作业：进跑前强校验，任务不进「起跑后失败」路径
+        await _validate_harness(harness_override)
 
     if kb_id:
         # KB-specific run
-        return await _run_kb_meditation(kb_id, trigger)
+        return await _run_kb_meditation(kb_id, trigger, harness_override=harness_override or None)
     else:
         # Global run (all enabled KBs)
         report = await meditation_scheduler.run_meditation_now()
         return {"success": not report.get("error"), "report": report}
 
 
-async def _run_kb_meditation(kb_id: str, trigger: str) -> dict:
+async def _run_kb_meditation(kb_id: str, trigger: str, harness_override: str | None = None) -> dict:
     """Run meditation for a specific KB using agent harness.
 
     Signal sourcing (cascading — always feeds the agent real content):
@@ -114,6 +191,10 @@ async def _run_kb_meditation(kb_id: str, trigger: str) -> dict:
 
     config = config_result["config"]
     kb_path = config_result["kb_path"]
+
+    # 本次运行的引擎覆盖（/run 入口已对显式 harness 做过 400/409 强校验）
+    if harness_override:
+        config["harness"] = harness_override
 
     # ── SOUL 模式: 手动触发 = 增量人格学习(与调度器同路径) ──
     if config.get("meditation_mode") == "soul":
@@ -307,4 +388,16 @@ async def meditation_config_update(body: dict):
         raise HTTPException(status_code=400, detail="kb_id required")
     if not updates:
         raise HTTPException(status_code=400, detail="config required")
+    # 引擎字段强校验：允许注册表 id / heuristic / 空串（空=跟随全局默认）
+    if "harness" in updates:
+        harness = str(updates.get("harness") or "").strip()
+        if harness and harness != "heuristic" and not hreg.is_known_harness(harness):
+            raise HTTPException(
+                status_code=400,
+                detail={
+                    "code": "HARNESS_UNKNOWN",
+                    "message": f"Unknown harness '{harness}'",
+                    "supported": hreg.HARNESS_IDS,
+                })
+        updates["harness"] = harness
     return update_meditation_config(kb_id, updates)

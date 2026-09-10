@@ -52,17 +52,60 @@
           </a-col>
           <a-col :span="12">
             <a-form-item :label="$t('meditation.harness')">
-              <a-select v-model:value="config.harness" :loading="harnessLoading">
-                <a-select-option value="omp">
-                  {{ $t('meditation.harnessOmp') }} {{ harnessStatus.omp ? '✅' : '❌' }}
-                </a-select-option>
-                <a-select-option value="claude">
-                  {{ $t('meditation.harnessClaude') }} {{ harnessStatus.claude ? '✅' : '⚠️' }}
-                </a-select-option>
-                <a-select-option value="heuristic">
-                  {{ $t('meditation.harnessHeuristic') }} {{ harnessStatus.heuristic ? '✅' : '' }}
+              <a-select
+                v-model:value="config.harness"
+                :loading="harnessLoading"
+                show-search
+                option-filter-prop="label"
+              >
+                <a-select-option
+                  v-for="h in harnessOptions"
+                  :key="h.id"
+                  :value="h.id"
+                  :label="h.label"
+                  :disabled="h.process_model !== 'inprocess' && !h.installed"
+                >
+                  <span
+                    :style="h.installed || h.process_model === 'inprocess'
+                      ? '' : 'color: var(--kb-fg-3, #999); text-decoration: line-through;'"
+                    :title="engineText(h, 'description') + (engineText(h, 'notes') ? ' · ' + engineText(h, 'notes') : '')"
+                  >
+                    <template v-if="h.installed || h.process_model === 'inprocess'">✅</template>
+                    <template v-else>❌</template>
+                    {{ engineText(h, 'label') }}
+                    <a-tag v-if="h.installed || h.process_model === 'inprocess'" color="green" style="margin-left:6px">
+                      {{ $t('meditation.harnessInstalled') }}
+                    </a-tag>
+                    <a-tag v-else color="red" style="margin-left:6px">
+                      {{ $t('meditation.harnessNotInstalled') }}
+                    </a-tag>
+                    <a-tag v-if="h.default" color="blue" style="margin-left:2px">{{ $t('meditation.harnessDefault') }}</a-tag>
+                  </span>
                 </a-select-option>
               </a-select>
+              <div v-if="activeHarnessInfo" class="form-hint" style="display:block;">
+                {{ engineText(activeHarnessInfo, 'description') }}
+                <template v-if="activeHarnessInfo.requires_env?.length">
+                  · {{ $t('meditation.harnessEnvHint') }}: {{ activeHarnessInfo.requires_env.join(' | ') }}
+                </template>
+                <template v-if="activeHarnessInfo.capabilities?.context_stats"> · {{ $t('meditation.harnessUsageStats') }}</template>
+              </div>
+              <a-alert
+                v-if="activeHarnessInfo && !activeHarnessInfo.installed && activeHarnessInfo.process_model !== 'inprocess'"
+                type="warning"
+                show-icon
+                style="margin-top:8px"
+                :message="$t('meditation.harnessNotInstalled')"
+                :description="engineText(activeHarnessInfo, 'notes') || engineText(activeHarnessInfo, 'description')"
+              />
+              <a-alert
+                v-else-if="activeHarnessInfo && activeHarnessInfo.installed && activeHarnessInfo.process_model !== 'inprocess' && missingEnv(activeHarnessInfo).length"
+                type="warning"
+                show-icon
+                style="margin-top:8px"
+                :message="$t('meditation.harnessNotConfigured')"
+                :description="missingEnv(activeHarnessInfo).join(' | ')"
+              />
             </a-form-item>
           </a-col>
         </a-row>
@@ -137,7 +180,7 @@
         <a-button
           type="primary"
           :loading="running"
-          :disabled="!activeKbId"
+          :disabled="!activeKbId || (activeHarnessInfo && !activeHarnessInfo.installed && activeHarnessInfo.process_model !== 'inprocess')"
           @click="handleRun"
         >
           <ThunderboltOutlined />
@@ -184,7 +227,7 @@ import { message } from 'ant-design-vue'
 import { ExperimentOutlined, ThunderboltOutlined, SaveOutlined } from '@ant-design/icons-vue'
 import type { MeditationConfig, MeditationRunStatus } from '~/types/knowledge-base-yaml'
 
-const { t } = useI18n()
+const { t, te } = useI18n()
 
 const props = defineProps<{
   activeKbId: string
@@ -216,25 +259,58 @@ const runStatus = ref<MeditationRunStatus>({
   total_experiences_generated: 0,
 })
 
-const harnessStatus = ref<Record<string, { installed: boolean; version?: string }>>({
-  omp: { installed: true },
-  claude: { installed: false },
-})
+interface HarnessOption {
+  id: string
+  label: string
+  description: string
+  process_model: string
+  capabilities: Record<string, boolean>
+  requires_env: string[]
+  notes: string
+  models: string[]
+  installed: boolean
+  version?: string
+  default?: boolean
+}
+// 注册表派生选项（后端 /harnesses 单一事实源）
+const harnessOptions = ref<HarnessOption[]>([])
+const activeHarnessInfo = computed(() =>
+  harnessOptions.value.find(h => h.id === config.value.harness) || null
+)
+// 引擎文案走 i18n（harness.engines.<id>.*），注册表值作回退 —— 中英双语
+function engineText(h: HarnessOption | null, field: 'label' | 'description' | 'notes'): string {
+  if (!h) return ''
+  const key = `harness.engines.${h.id}.${field}`
+  return te(key) ? t(key) : String((h as any)[field] || '')
+}
+function missingEnv(h: HarnessOption): string[] {
+  return (h.requires_env || []).filter((n: string) => !n.includes('|'))
+}
 
-// Real OMP models fetched from backend
-const ompModels = ref<Array<{ id: string; name: string; provider: string }>>([])
+// 当前引擎的模型目录（切引擎自动刷新）
 const modelsLoading = ref(false)
+const harnessModels = ref<Array<{ id: string; name: string; provider: string }>>([])
+async function loadHarnessModels(harness: string) {
+  if (!harness) return
+  modelsLoading.value = true
+  try {
+    const res = await $fetch<any>('/api/meditation/models', { params: { harness } })
+    if (res?.success && res.models) {
+      harnessModels.value = res.models
+    }
+  } catch {
+    harnessModels.value = []
+  }
+  modelsLoading.value = false
+}
 // Dynamic model list based on harness
 const availableModels = computed(() => {
   const defaultOption = { value: '', label: t('meditation.modelDefault') }
-  if (config.value.harness === 'omp' && ompModels.value.length > 0) {
-    const ompList = ompModels.value.map(m => ({
-      value: m.id,
-      label: `${m.name} (${m.provider})`,
-    }))
-    return [defaultOption, ...ompList]
-  }
-  // Claude: use its default unless specified
+  const fromHarness = harnessModels.value
+    .filter(m => m.id)
+    .map(m => ({ value: m.id, label: m.provider ? `${m.name} (${m.provider})` : m.name }))
+  if (fromHarness.length > 0) return [defaultOption, ...fromHarness]
+  // 引擎目录为空时的静态兜底（claude 常用模型）
   return [
     defaultOption,
     { value: 'claude-sonnet-4-20250514', label: 'Claude Sonnet 4' },
@@ -256,22 +332,20 @@ async function loadConfig() {
     if (res?.run_status) {
       runStatus.value = { ...runStatus.value, ...res.run_status }
     }
-    // Fetch harness status
-    const hRes = await $fetch<any>('/api/meditation/status')
-    if (hRes?.harnesses) {
-      harnessStatus.value = hRes.harnesses
+    // Fetch harness registry（单一事实源：全部引擎 + 可用性 + 能力面）
+    const hRes = await $fetch<any>('/api/meditation/harnesses')
+    if (hRes?.success && hRes.harnesses) {
+      harnessOptions.value = hRes.harnesses.map((h: any) => ({
+        ...h,
+        default: h.id === (hRes.default || 'omp'),
+      }))
+    }
+    // Fetch current harness model catalog
+    if (config.value.harness) {
+      await loadHarnessModels(config.value.harness)
     }
   } catch (err: any) {
     console.debug('Meditation config load skipped:', err?.message)
-  }
-  // Fetch OMP models in parallel
-  try {
-    const mRes = await $fetch<any>('/api/meditation/models')
-    if (mRes?.success && mRes.models) {
-      ompModels.value = mRes.models
-    }
-  } catch (err: any) {
-    console.debug('OMP models fetch skipped:', err?.message)
   }
   loading.value = false
 }
@@ -300,7 +374,7 @@ async function handleSave() {
   }
 }
 
-/** Trigger a meditation run */
+/** Trigger a meditation run（带上当前选中的引擎作为本次作业覆盖） */
 async function handleRun() {
   if (!props.activeKbId) return
   running.value = true
@@ -308,7 +382,7 @@ async function handleRun() {
   try {
     const res = await $fetch<any>('/api/meditation/run', {
       method: 'POST',
-      body: { kb_id: props.activeKbId, trigger: 'manual' },
+      body: { kb_id: props.activeKbId, trigger: 'manual', harness: config.value.harness || undefined },
     })
     if (res?.success) {
       const report = res.report || {}
@@ -332,6 +406,11 @@ async function handleRun() {
 
 watch(() => props.activeKbId, (newId) => {
   if (newId) loadConfig()
+})
+
+// 切引擎 → 刷新该引擎的模型目录
+watch(() => config.value.harness, (h) => {
+  if (h) loadHarnessModels(h)
 })
 
 onMounted(() => {

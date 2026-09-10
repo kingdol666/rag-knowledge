@@ -1,172 +1,172 @@
 ---
 name: knowledgebase-batch
 description: >
-  High-volume batch operations. B1→B7: bulk tag migration, bulk description updates, directory mass ingestion (file-type routing), mass document move, cross-KB dedup, export summary, graph rebuild. All batch ops follow survey→plan→confirm→execute→verify. Triggered by: 批量, 所有文档, 全部, 大规模, 批量操作, batch, bulk, mass, all documents, every KB, repetitive, 全量, 一次性处理, 统一修改.
+  High-volume batch operations. B1→B7: bulk tag migration, bulk description updates, directory mass ingestion (file-type routing), mass document move, cross-KB dedup, export summary, graph rebuild. All batch ops follow survey→plan→confirm→execute→verify. Triggered by: batch, all documents, everything, large-scale, batch operations, batch, bulk, mass, all documents, every KB, repetitive, full volume, one-shot processing, modify uniformly.
 ---
 
 # Knowledge Batch — High-Volume Operations
 
-## ⭐ Execution Model · Pre-Flight · Architecture（作业首步，强制）
+## ⭐ Execution Model · Pre-Flight · Architecture (First Step of Any Job, Mandatory)
 
-**执行者：Archival agent** — 用 `task` 委托执行（**委托模板 + 三角色执行模型 + 组合任务边界**：必读 [execution-model.md](../knowledgebase/references/execution-model.md)）。**Pre-Flight**：未通过禁作业 — 一探双检 `kb_project_status` → 分支处置 → 冒烟测试，完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)。**心智模型**：操作前必读 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层模型 + 一致性不变量 + 91 工具地图）；MCP 优先原则（禁 terminal/HTTP 绕过）见 [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) 第五条。
+**Executor: Archival agent** — delegate via `task` (**delegation template + three-role execution model + combined-task boundaries**: must-read [execution-model.md](../knowledgebase/references/execution-model.md)). **Pre-Flight**: no work before it passes — one-probe double-check `kb_project_status` → branch handling → smoke test; full flow in [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md). **Mental model**: before operating, must-read [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer model + consistency invariants + 91-tool map); MCP-first principle (no terminal/HTTP bypass) in [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) Rule 5.
 
 ---
 
 
-## ⭐ 相关 Skills
-- 单文档入库 → `skill://knowledgebase-ingest` (A0-A9 管线)
-- KB 管理 → `skill://knowledgebase-manage`
-- 整理重组 → `skill://knowledgebase-organize`
-- 校验验证 → `skill://knowledgebase-verify`
-- 图谱重建 → `skill://knowledgebase-graph`
-- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)
+## ⭐ Related Skills
+- Single-document ingest → `skill://knowledgebase-ingest` (A0-A9 pipeline)
+- KB management → `skill://knowledgebase-manage`
+- Organize & restructure → `skill://knowledgebase-organize`
+- Validation & verification → `skill://knowledgebase-verify`
+- Graph rebuild → `skill://knowledgebase-graph`
+- Architecture mental model → [kb-architecture.md](../knowledgebase/references/kb-architecture.md) of `skill://knowledgebase`
 
 ## Sequential Workflow
-**Step 1 — Pre-Flight 预检**: 执行 mcp-preflight-check 的一探双检，未就绪则静默 kb_project_start 拉起服务。
-**Step 2 — Survey 范围确认**: kb_list() + kb_get_documents() 确认操作范围，评估目标规模（文档数/KB数）。
-**Step 3 — 操作类型路由**: 根据用户需求匹配 B1-B7 批量操作类型，必要时多类型组合。
-**Step 4 — Plan 方案展示**: 向用户展示 dry_run 预览 + 分批策略（20个/批）+ 速率限制，等待确认。
-**Step 5 — B1 批量标签迁移**: kb_tags_list() → 构建标签映射 → kb_doc_update_tags() 30个/批 → kb_doc_get_by_tag() 验证。
-**Step 6 — B2 批量描述更新**: 识别弱描述 → kb_doc_read(2000 chars) → 四要素内容描述 → kb_doc_update_meta() 10-15个/批。
-**Step 7 — B3 目录批量入库**: parse_doc_batch(20个/批) → A0去重+A2-Q检查+A3b标签门控+A3c描述门控+A6索引+A7终检。
-**Step 8 — B4 批量文档迁移**: kb_doc_move() + kb_index_document(force=true) → kb_search_stats() 验证源/目标两端。
-**Step 9 — B5 跨KB去重**: kb_search_vector(score_threshold=0.85) 指纹判重 → 用户确认 → kb_doc_delete()。
-**Step 10 — B6 导出概览**: kb_list() + kb_get_documents() → 统计表（文档数/标签覆盖/索引覆盖/top文档）。
-**Step 11 — B7 图谱全量重建**: kb_graph_build(kb_id="", force=true) → kb_graph_stats() 验证节点/边数。
-**Step 12 — Execute 分批执行**: 每20个为一批，批次完成记录checkpoint，验证成功率。
-**Step 13 — Verify 终验**: 采样 20% + 统计前后对比（文档数/标签数/索引覆盖率）。
+**Step 1 — Pre-Flight check**: run the mcp-preflight-check one-probe double-check; if not ready, silently kb_project_start to bring services up.
+**Step 2 — Survey scope confirmation**: kb_list() + kb_get_documents() confirm the operation scope and estimate target scale (document count/KB count).
+**Step 3 — Operation-type routing**: match the user request to B1-B7 batch operation types; combine types if needed.
+**Step 4 — Plan presentation**: show the user a dry_run preview + batching strategy (20 per batch) + rate limits; wait for confirmation.
+**Step 5 — B1 bulk tag migration**: kb_tags_list() → build tag mapping → kb_doc_update_tags() 30 per batch → kb_doc_get_by_tag() verification.
+**Step 6 — B2 bulk description update**: identify weak descriptions → kb_doc_read(2000 chars) → four-element content descriptions → kb_doc_update_meta() 10-15 per batch.
+**Step 7 — B3 directory mass ingestion**: parse_doc_batch(20 per batch) → A0 dedup + A2-Q check + A3b tag gate + A3c description gate + A6 indexing + A7 final check.
+**Step 8 — B4 mass document move**: kb_doc_move() + kb_index_document(force=true) → kb_search_stats() verification on both source and target.
+**Step 9 — B5 cross-KB dedup**: kb_search_vector(score_threshold=0.85) fingerprint dedup → user confirmation → kb_doc_delete().
+**Step 10 — B6 export summary**: kb_list() + kb_get_documents() → statistics table (doc count/tag coverage/index coverage/top docs).
+**Step 11 — B7 full graph rebuild**: kb_graph_build(kb_id="", force=true) → kb_graph_stats() verify node/edge counts.
+**Step 12 — Execute in batches**: 20 per batch, record a checkpoint per completed batch, verify success rate.
+**Step 13 — Verify final check**: sample 20% + before/after statistics comparison (doc count/tag count/index coverage).
 
-## 思维框架：选哪个批量操作？ ⭐
+## Mental Framework: Which Batch Operation? ⭐
 
 ```
-用户要求"批量/全部/所有"
+User asks for "batch/all/everything"
     │
-    ├── 统一修改标签？ → B1 Bulk Tag Migration
-    ├── 统一补充描述？ → B2 Bulk Description Update
-    ├── 从目录批量入库？ → B3 Directory Mass Ingestion
-    ├── 批量移动文档到另一KB？ → B4 Mass Document Move
-    ├── 全库去重？ → B5 Cross-KB Dedup
-    ├── 导出全库概览？ → B6 Export Summary
-    └── 全库重建图谱？ → B7 Graph Rebuild
+    ├── Modify tags uniformly? → B1 Bulk Tag Migration
+    ├── Add descriptions uniformly? → B2 Bulk Description Update
+    ├── Mass ingest from a directory? → B3 Directory Mass Ingestion
+    ├── Batch move documents to another KB? → B4 Mass Document Move
+    ├── Dedup the whole library? → B5 Cross-KB Dedup
+    ├── Export a whole-library overview? → B6 Export Summary
+    └── Rebuild the graph for the whole library? → B7 Graph Rebuild
 ```
 
-### 批量操作前自检
+### Pre-Batch Self-Check
 
-| 问题 | 如果不查后果 |
+| Question | Consequence if skipped |
 |------|------------|
-| 目标范围多大？（10个文档还是1000个？） | 超时/资源耗尽 |
-| 是否可以 `dry_run` 预检？ | 不可逆变更无回退 |
-| 速率限制？工具能承受多少并发？ | 中途失败难恢复 |
-| 是否需要分批 + 断点续跑？ | 全部重来浪费时间 |
+| How big is the target scope? (10 docs or 1000?) | Timeouts / resource exhaustion |
+| Can you `dry_run` pre-check? | Irreversible changes with no rollback |
+| Rate limits? How much concurrency can the tools take? | Mid-run failures are hard to recover |
+| Need batching + resumable checkpoints? | Starting over wastes time |
 
 ---
 
 ## B1 — Bulk Tag Migration
 
-1. `kb_tags_list()` — 当前词表
-2. 构建标签映射：旧→新，合并重复，拆分泛化标签
-3. 对每个 KB：`kb_get_documents(kb_id)` → 筛选含目标标签的文档
-4. 对每个文档：`kb_doc_update_tags(kb_id, doc_path, new_tags)`
-5. 验证：`kb_doc_get_by_tag(new_tag)` — 确认文档数
+1. `kb_tags_list()` — current vocabulary
+2. Build the tag mapping: old→new, merge duplicates, split overly generic tags
+3. For each KB: `kb_get_documents(kb_id)` → filter documents containing the target tags
+4. For each document: `kb_doc_update_tags(kb_id, doc_path, new_tags)`
+5. Verify: `kb_doc_get_by_tag(new_tag)` — confirm document counts
 
-### 批量标签注意事项
-- 分批次执行（一次30个文档），防超时
-- 每批次后验证成功率，打日志
-- 发现报错文档单独标记，不等全部失败
+### Bulk Tag Cautions
+- Execute in batches (30 documents at a time) to prevent timeouts
+- Verify success rate after each batch and log it
+- Flag failing documents individually; don't wait for everything to fail
 
 ---
 
 ## B2 — Bulk Description Update
 
-1. `kb_get_documents(kb_id)` — 识别弱描述文档（空/文件名/泛泛）
-2. 对每个文档读 2000 chars：`kb_doc_read(kb_id, doc_path, max_chars=2000)`
-3. 按 [description-guide.md](../knowledgebase-ingest/references/description-guide.md) 生成内容型描述
-4. 对每个文档：`kb_doc_update_meta(kb_id, doc_path, description=new_desc)`
-5. 验证：随机采样 20% 文档，`kb_doc_read` 500 chars 确认描述与内容匹配
+1. `kb_get_documents(kb_id)` — identify weak-description documents (empty/filename/generic)
+2. For each document, read 2000 chars: `kb_doc_read(kb_id, doc_path, max_chars=2000)`
+3. Generate content-based descriptions per [description-guide.md](../knowledgebase-ingest/references/description-guide.md)
+4. For each document: `kb_doc_update_meta(kb_id, doc_path, description=new_desc)`
+5. Verify: randomly sample 20% of documents, `kb_doc_read` 500 chars to confirm the description matches content
 
-### 批量描述注意事项
-- 大库（>50文档）分批处理，每批10-15个
-- 委托子 Agent 并行生成描述（分KB执行）
-- 每次生成后用四要素（主体/方法/场景/数据）自检
+### Bulk Description Cautions
+- For large libraries (>50 documents), batch in groups of 10-15
+- Delegate sub-agents to generate descriptions in parallel (split by KB)
+- Self-check each generated description against the four elements (subject/method/scenario/data)
 
 ---
 
 ## B3 — Directory → KB Mass Ingestion
 
-> **⭐ 质量门控强制要求**：B3 批量入库**不得绕过** Ingest 的质量门控。每个文档必须经过 Ingest A0-A7 的等效检查。
-> 批量是"量"的优化（并行/分批），不是"质"的降级。详见 [knowledgebase-ingest](../knowledgebase-ingest/SKILL.md) A0-A7。
+> **⭐ Mandatory quality gates**: B3 batch ingestion **must not bypass** the Ingest quality gates. Every document must pass Ingest A0-A7-equivalent checks.
+> Batching is an optimization of "quantity" (parallel/batched), not a downgrade of "quality". See [knowledgebase-ingest](../knowledgebase-ingest/SKILL.md) A0-A7 for details.
 
-1. 调查目录：列出所有文件，按类型分类
-2. **A0 去重（每文件必做）**：`kb_search_vector(query=<文件名+前200chars特征>, score_threshold=0.85)` → ≥0.85 命中则跳过（已存在）
-3. 文件类型路由：
-   - PDF/DOCX/PPTX/images → `parse_doc_batch(file_paths=[...], use_ocr=true)`（非阻塞）
-   - MD/TXT/JSON/YAML/code → 直接读
+1. Survey the directory: list all files, classify by type
+2. **A0 dedup (mandatory per file)**: `kb_search_vector(query=<filename + first 200 chars signature>, score_threshold=0.85)` → a hit ≥0.85 means skip (already exists)
+3. File-type routing:
+   - PDF/DOCX/PPTX/images → `parse_doc_batch(file_paths=[...], use_ocr=true)` (non-blocking)
+   - MD/TXT/JSON/YAML/code → read directly
    - Binary → `fs_upload_file(file_path, parent_id)`
-4. 等待所有解析任务完成 → **A2-Q 解析质量检查**（乱码/空正文/二进制残留 → 拒绝入库）
-5. 存储：`kb_doc_save_parsed(parent_id, task_id, description)`（解析文档必须用 save_parsed，禁止 kb_doc_create）
-6. **A3b 标签质量门控**：每个文档标签过 [tag-quality-rules.md](../knowledgebase-ingest/references/tag-quality-rules.md) T1黑名单+T2归一化+T3正文回查
-7. **A3c 描述质量门控**：每个文档描述过四要素（主体/方法/场景/数据）+ 内容回查
-8. 每个新文档：`kb_index_document` + `kb_doc_update_tags`
-9. **A6-V 索引验证**：`kb_search_stats(kb_id)` 确认 collection 正确 + chunks ≥ 1
-10. 验证：`kb_search_stats(kb_id)` — 确认 chunk count；**A7 抽样终检**（随机 20% 文档 kb_doc_read 确认内容/标签/描述一致）
+4. Wait for all parsing tasks to complete → **A2-Q parse quality check** (garbled text/empty body/binary residue → reject ingestion)
+5. Store: `kb_doc_save_parsed(parent_id, task_id, description)` (parsed documents must use save_parsed; kb_doc_create is forbidden)
+6. **A3b tag quality gate**: every document's tags pass [tag-quality-rules.md](../knowledgebase-ingest/references/tag-quality-rules.md) T1 blocklist + T2 normalization + T3 content readback
+7. **A3c description quality gate**: every document's description passes the four elements (subject/method/scenario/data) + content readback
+8. For every new document: `kb_index_document` + `kb_doc_update_tags`
+9. **A6-V index verification**: `kb_search_stats(kb_id)` confirm the collection is correct + chunks ≥ 1
+10. Verify: `kb_search_stats(kb_id)` — confirm chunk count; **A7 sampling final check** (randomly kb_doc_read 20% of documents to confirm content/tags/descriptions are consistent)
 
-### 目录入库注意事项
-- 解析文件 >10个时务必用 `parse_doc_batch`（单 task_id 管理）
-- 分批提交解析（20个一批），避免 MCP 工具超时
-- 任务队列状态的轮询间隔 ≥5秒
-- **质量门控不可跳过**：B3 是 Ingest A0-A7 的批量包装，不是简化版。跳过 A0 去重 → 重复文档堆积；跳过 A3b → 标签污染；跳过 A6-V → 向量漏索引
+### Directory Ingestion Cautions
+- When parsing >10 files, always use `parse_doc_batch` (single task_id management)
+- Submit parsing in batches (20 per batch) to avoid MCP tool timeouts
+- Poll the task queue status at intervals ≥5 seconds
+- **Quality gates must not be skipped**: B3 is a batch wrapper around Ingest A0-A7, not a simplified version. Skipping A0 dedup → duplicate documents pile up; skipping A3b → tag pollution; skipping A6-V → vectors silently missing from the index
 
 ---
 
 ## B4 — Mass Document Move (KB→KB)
 
-1. `kb_get_documents(source_kb_id)` — 全文档列表
-2. 向用户确认
-3. 对每个文档：`kb_doc_move(doc_path, target_kb_id)` → `kb_index_document(target_kb_id, new_path)`
-4. `kb_search_stats(target_kb_id)` + `kb_get_documents(source_kb_id)` — 验证
+1. `kb_get_documents(source_kb_id)` — full document list
+2. Confirm with the user
+3. For each document: `kb_doc_move(doc_path, target_kb_id)` → `kb_index_document(target_kb_id, new_path)`
+4. `kb_search_stats(target_kb_id)` + `kb_get_documents(source_kb_id)` — verify
 
-### 批量移动注意事项
-- 源KB非空不删（迁移完毕后用户决定）
-- 移动后 `force=true` 重索引，确保 collection UUID 更新
+### Bulk Move Cautions
+- Do not delete a non-empty source KB (user decides after migration completes)
+- After moving, reindex with `force=true` to ensure the collection UUID updates
 
 ---
 
 ## B5 — Cross-KB Dedup
 
-> ⚠️ 注意：当 KB 数量大时复杂度为 O(n²)（每对 KB 比较）。优化策略：先按文档名哈希到桶中（同名的才比较），跨 KB 对超过 100 对时用 `kb_search_vector` 指纹判重替代逐对比较。
+> ⚠️ Note: complexity is O(n²) when the KB count is large (each pair of KBs compared). Optimization strategy: first hash documents by name into buckets (only compare same-named ones); when cross-KB pairs exceed 100, use `kb_search_vector` fingerprint dedup instead of pairwise comparison.
 
-1. `kb_list()` → 所有 KB
-2. 优化路径（推荐）：`kb_search_vector(query=doc_name + 前 200 chars 特征, score_threshold=0.85)` → 高分候选即为疑似重复
-3. 完整路径（小规模）：按文件名初筛同名文档 → 读 500 chars 内容对比 → >80% 重叠标记重复
-4. 标记重复 → 用户确认 → `kb_doc_delete(kb_id, doc_path)`
-5. 验证：搜索确认无重复标题残留
+1. `kb_list()` → all KBs
+2. Optimized path (recommended): `kb_search_vector(query=doc_name + first 200 chars signature, score_threshold=0.85)` → high-score candidates are suspected duplicates
+3. Full path (small scale): preliminary filename filter for same-named documents → read 500 chars and compare → >80% overlap marks a duplicate
+4. Mark duplicates → user confirmation → `kb_doc_delete(kb_id, doc_path)`
+5. Verify: search to confirm no duplicate titles remain
 
 ---
 
 ## B6 — Export Summary
 
-1. `kb_list()` + 每个 KB 的 `kb_get_documents`
-2. 输出表格：KB name | doc count | total size | tag coverage | vector/graph index coverage | top docs
+1. `kb_list()` + each KB's `kb_get_documents`
+2. Output table: KB name | doc count | total size | tag coverage | vector/graph index coverage | top docs
 
 ---
 
 ## B7 — Graph Rebuild
 
-1. `kb_list()` → 所有 KB ID
-2. `kb_graph_build(force=true)` — 批量重建（空 kb_id = 全库）
-3. 验证：`kb_graph_stats()` → 检查 node/edge 数合理
+1. `kb_list()` → all KB IDs
+2. `kb_graph_build(force=true)` — batch rebuild (empty kb_id = whole library)
+3. Verify: `kb_graph_stats()` → check node/edge counts are reasonable
 
 ---
 
-## ⚠️ NEVER 清单
+## ⚠️ NEVER List
 
-| ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
+| ❌ Don't do this | Why | ✅ Do this instead |
 |-------------|------|-------------|
-| 不 survey 直接跑 batch | 误伤范围超预期——批量是不可逆放大器 | 先 `kb_list`/`kb_get_documents` 确认范围，展示给用户 |
-| 跳过用户确认执行破坏性批量 | 100个文档一次性删/移——错误不可回退 | survey→plan→**confirm**→execute 四步，确认在前 |
-| 一次性尝试解析 100 个 PDF | MCP 30s 超时——任务堆积后全部失败 | 分批（20个/批）提交 `parse_doc_batch`，每批等完成 |
-| 批量操作后跳过验证 | 部分失败静默丢失——用户以为全成功 | 采样验证 20% + 统计对比（前N vs 后N） |
-| 标签映射目标不验证存在性 | `kb_doc_get_by_tag` 返回空——映射写到不存在的标签 | 事前 `kb_tags_list()` 确认目标标签在词表中 |
-| 目录批量入库忽略去重 | 大量重复文档——ChromaDB collection 膨胀 | 入库前先做 `kb_search_vector` 指纹去重（≥0.85 跳过） |
-| B3 批量入库跳过质量门控 | "批量"≠"降质"——垃圾标签/描述入库后难清理 | 每文档过 A0 去重 + A3b 标签 + A3c 描述门控 |
-| 不设断点/checkpoint | 中途失败全部重来——100个文件跑了80个失败重来 | 每20个为一批，批次完成后记录进度 |
+| Run a batch without surveying first | Blast radius exceeds expectations — batches are irreversible amplifiers | First `kb_list`/`kb_get_documents` to confirm scope and show the user |
+| Execute destructive batches without user confirmation | Deleting/moving 100 documents at once — errors can't be rolled back | survey→plan→**confirm**→execute four steps; confirmation comes first |
+| Attempt to parse 100 PDFs at once | MCP 30s timeout — tasks pile up and all fail | Submit `parse_doc_batch` in batches (20 per batch); wait for each batch to finish |
+| Skip verification after batch operations | Partial failures silently lost — user assumes full success | Sample 20% for verification + before/after statistics |
+| Not verifying that tag mapping targets exist | `kb_doc_get_by_tag` returns empty — the mapping points at nonexistent tags | Check with `kb_tags_list()` beforehand that target tags are in the vocabulary |
+| Ignore dedup in directory mass ingestion | Many duplicate documents — ChromaDB collection bloat | Fingerprint dedup with `kb_search_vector` before ingesting (skip if ≥0.85) |
+| B3 batch ingestion skips quality gates | "Batch" ≠ "lower quality" — junk tags/descriptions are hard to clean later | Per document pass A0 dedup + A3b tags + A3c description gates |
+| No checkpoints | Mid-run failure means starting over — 80 of 100 files done then all redone | 20 per batch; record progress after each batch completes |

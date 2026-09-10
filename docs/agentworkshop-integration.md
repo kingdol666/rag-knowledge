@@ -33,3 +33,33 @@
 
 - 限流:per-IP 滑动窗口 600 req/60s(heavy 60),插件侧已做 429 退避;web UI 与插件共享 127.0.0.1 配额。
 - 认证:当前 `server.auth.enabled: false`;生产启用后需将 `KB_AUTH_TOKEN` 同步给插件(kv `kb.token`)。
+
+## 认证（2026-09-10 更新）
+
+`server.auth.enabled: true` 已生效。三条接入通道（中间件 `auth_middleware`）：
+
+| 通道 | 凭据 | 适用 |
+|---|---|---|
+| MCP 服务 token | `Authorization: Bearer $MCP_AUTH_TOKEN`（.env 自动生成） | kb-mcp 工具通道、平台内部服务（全 access） |
+| 外部用户 API token | `POST /api/v1/auth/register` → `/auth/login` → `POST /api/v1/auth/tokens`（ scopes=[read,write]，ttl 可选）铸长期 token | **外部系统/插件直调 HTTP 的推荐方式** |
+| 无 token | — | 仅 health 等公开端点；其余返回 401 + 可读 hint |
+
+⚠️ **rag-bridge / diag-bridge 插件现状**：`callJson/jpost` 未携带 Authorization 头，
+在 auth.enabled=true 下会收到 401。需要插件侧升级：从 `kv["kb.token"]` 读取并在
+callJson 统一注入 `Authorization: Bearer <token>`（token 用上面外部用户通道铸造）。
+本仓库 `scripts/e2e_agentworkshop_api.py` 已按"带 token"的真实场景全量验证（21/21）。
+
+## 多 Harness 作业 API（2026-09-10 新增）
+
+| 端点 | 说明 |
+|---|---|
+| `GET /api/v1/meditation/harnesses` | 14+1 引擎注册表全景（能力/模型目录/实时可用性/`default`） |
+| `GET /api/v1/meditation/models?harness=<id>` | 按引擎的模型目录（omp 动态发现） |
+| `POST /api/v1/meditation/run` | body 支持 `harness` 字段指定本次作业引擎 |
+
+错误契约（外部调用者可读）：
+- 未知引擎 → `400 {"detail":{"code":"HARNESS_UNKNOWN","message":...,"hint":...}}`
+- 未安装   → `409 {"detail":{"code":"HARNESS_NOT_INSTALLED",...}}`
+- 已装未配凭据 → `409 {"detail":{"code":"HARNESS_NOT_CONFIGURED","issues":["GEMINI_API_KEY not set"],...}}`
+- 运行期失败 → 响应体带 `error_code`（HARNESS_TIMEOUT / HARNESS_AUTH_OR_CONFIG / ...）+ `hint`
+默认引擎可用性感知：配置默认（`soul.default_harness`，本机=omp）未安装时自动回落第一个已发现引擎。

@@ -1,312 +1,312 @@
 ---
 name: knowledgebase-ingest
 description: >
-  Document ingestion pipeline with quality gates A0→A9. Content-first workflow: dedup (content fingerprint), survey, parse with quality check, structured analysis, tag quality gate (blocklist+normalize+verify), description quality gate (4-elements+content-readback), KB-attribution decision tree (sub-KB first), store by file type, index+tag with post-index verification. No document splitting. Triggered by: 入库, 上传, 导入, 存储, 解析, 解析PDF, 保存到, store, upload, import, parse, save to KB, ingest, 入库文档, 上传文档, 存入知识库, 放文档, 添加文档, add doc, put document.
+  Document ingestion pipeline with quality gates A0→A9. Content-first workflow: dedup (content fingerprint), survey, parse with quality check, structured analysis, tag quality gate (blocklist+normalize+verify), description quality gate (4-elements+content-readback), KB-attribution decision tree (sub-KB first), store by file type, index+tag with post-index verification. No document splitting. Triggered by: ingest, upload, import, store, parse, parse PDF, save to, store, upload, import, parse, save to KB, ingest, ingest a document, upload a document, store into the knowledge base, put a document, add a document, add doc, put document.
 ---
 
-## ⭐ 相关 Skills
-- 解析文档 → `skill://knowledgebase` 的 parse_doc 工具
-- 入库后校验 → `skill://knowledgebase-verify` 的 V1-V9 流程
-- 入库后自动提取经验 → `skill://knowledgebase-experience` 的 E0/E1 自动提取
-- 批量入库 → `skill://knowledgebase-batch`
-- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)
+## ⭐ Related Skills
+- Parse documents → the parse_doc tools of `skill://knowledgebase`
+- Post-ingest validation → the V1-V9 flow of `skill://knowledgebase-verify`
+- Auto-extract experiences after ingest → E0/E1 auto-extraction of `skill://knowledgebase-experience`
+- Batch ingestion → `skill://knowledgebase-batch`
+- Architecture mental model → [kb-architecture.md](../knowledgebase/references/kb-architecture.md) of `skill://knowledgebase`
 
 ## Sequential Workflow
-**Step 1 — Pre-Flight**: MCP 连通性 + 服务状态预检。
-**Step 2 — 去重 (A0)**: 内容指纹检测，跳过重复文档。
-**Step 3 — Survey (A1)**: 浏览文档内容，确定 KB 归属。
-**Step 4 — Parse (A2)**: 调用 parse_doc 解析 PDF/Word/Excel/Image。
-**Step 5 — Save (A3)**: kb_doc_save_parsed 写入 KB。
-**Step 6 — Tag+Describe (A3b-c)**: 自动生成标签 + 内容型描述。
-**Step 7 — Index (A6)**: 向量索引 + 图谱索引。
-**Step 8 — Verify (A6-V)**: kb_search_vector 验证可检索。
-**Step 9 — Report (A9)**: 入库报告。
+**Step 1 — Pre-Flight**: MCP connectivity + service status pre-check.
+**Step 2 — Dedup (A0)**: content fingerprint detection; skip duplicate documents.
+**Step 3 — Survey (A1)**: browse the document content; determine KB ownership.
+**Step 4 — Parse (A2)**: call parse_doc to parse PDF/Word/Excel/Image.
+**Step 5 — Save (A3)**: kb_doc_save_parsed writes into the KB.
+**Step 6 — Tag+Describe (A3b-c)**: auto-generate tags + content-based descriptions.
+**Step 7 — Index (A6)**: vector index + graph index.
+**Step 8 — Verify (A6-V)**: kb_search_vector verifies retrievability.
+**Step 9 — Report (A9)**: ingestion report.
 
-# Knowledge Ingest — 内容驱动的规范入库流水线
+# Knowledge Ingest — Content-Driven Standard Ingestion Pipeline
 
-## ⭐ Execution Model · Pre-Flight · Architecture（作业首步，强制）
+## ⭐ Execution Model · Pre-Flight · Architecture (First Step of Any Job, Mandatory)
 
-**执行者：Archival agent** — 用 `task` 委托执行（**委托模板 + 三角色执行模型 + 组合任务边界**：必读 [execution-model.md](../knowledgebase/references/execution-model.md)）。**Pre-Flight**：未通过禁作业 — 一探双检 `kb_project_status` → 分支处置 → 冒烟测试，完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)。**心智模型**：操作前必读 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层模型 + 一致性不变量 + 91 工具地图）；MCP 优先原则（禁 terminal/HTTP 绕过）见 [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) 第五条。
+**Executor: Archival agent** — delegate via `task` (**delegation template + three-role execution model + combined-task boundaries**: must-read [execution-model.md](../knowledgebase/references/execution-model.md)). **Pre-Flight**: no work before it passes — one-probe double-check `kb_project_status` → branch handling → smoke test; full flow in [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md). **Mental model**: before operating, must-read [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer model + consistency invariants + 91-tool map); MCP-first principle (no terminal/HTTP bypass) in [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) Rule 5.
 
-- Archival 禁止：跳过步骤、绕过门控、用错存储工具
+- Archival is forbidden from: skipping steps, bypassing gates, using the wrong storage tool
 
-**Freedom Map**（每步自由度）：
-| 步骤 | 自由度 | 说明 |
+**Freedom Map** (freedom level per step):
+| Step | Freedom | Notes |
 |------|--------|------|
-| A0 去重 / A2-Q 解析质量 / A3b 标签 / A3c 描述 / A5 存储 / A6-V 索引验证 | 🔒 **强制**（低自由度） | 质量门控，必须严格执行，不可跳过或变通 |
-| A1 调研 / A3 内容分析 | 🎯 **执行**（中自由度） | 按流程读内容，分析结果用于后续决策 |
-| A3d KB归属 / A8 子KB评估 | 🧠 **判断**（高自由度） | 需基于内容的领域判断，决策树指导但不机械 |
+| A0 dedup / A2-Q parse quality / A3b tags / A3c description / A5 storage / A6-V index verification | 🔒 **Mandatory** (low freedom) | Quality gates; must execute strictly; no skipping or workarounds |
+| A1 survey / A3 content analysis | 🎯 **Execute** (medium freedom) | Read content per the flow; analysis results feed later decisions |
+| A3d KB attribution / A8 sub-KB evaluation | 🧠 **Judgment** (high freedom) | Requires domain judgment based on content; the decision tree guides but is not mechanical |
 
-**四条铁律**：
-1. **整篇存储**——单文档作为完整单元，绝不截断/摘要/拆分。
-2. **内容驱动**——所有决策（KB 归属、标签、描述）基于读过的真实正文，非文件名/猜测。
-3. **质量门控**——A2 解析质量 / A3b 标签 / A3c 描述 三道门，任一不过即返工，不放行。
-4. ⭐ **MCP 优先原则**——所有操作必须通过 MCP 工具执行（`mcp__kb-mcp__*`）。
-
----
-
-## 思维框架：入库前想清楚三件事 ⭐
-
-1. **这是什么文件？** — 解析型（PDF/Office/图片）还是直接型（MD/TXT/代码）？路由到不同工具链。
-2. **放哪个 KB？** — 根据内容领域，不是文件名。子KB优先，父KB第二，新建第三（A3d决策树）。
-3. **质量门控过了吗？** — 不乱码？标签归一化？描述四要素？不过就返工，不妥协入库。
+**Four iron rules**:
+1. **Store the whole document** — a single document is a complete unit; never truncate/summarize/split.
+2. **Content-driven** — all decisions (KB attribution, tags, descriptions) are based on the actual body text read, not filenames/guesses.
+3. **Quality gates** — A2 parse quality / A3b tags / A3c description: any gate failed means rework; do not let it through.
+4. ⭐ **MCP-first principle** — all operations must go through MCP tools (`mcp__kb-mcp__*`).
 
 ---
 
-## A0 — 去重（内容指纹，不只是文件名）⭐
+## Mental Framework: Three Things to Settle Before Ingesting ⭐
 
-**自动化工具（推荐）**：
-```
-# 单次调用，SHA256 精确哈希 + 向量相似度双重检测
-kb_find_duplicates(kb_id="<目标KB>", threshold=0.90)
-```
-- 返回 `{duplicate_groups: [{type: "exact"|"near", similarity, documents, recommendation}]}`
-- `exact`（SHA256 匹配）→ 直接跳过，报告"已存在 @ <path>"
-- `near`（向量相似度 ≥ threshold）→ 读两篇前 800 chars 对比 → 重复跳过，仅补标签/描述差异
+1. **What kind of file is this?** — Parsed-type (PDF/Office/images) or direct-type (MD/TXT/code)? Route to different tool chains.
+2. **Which KB does it go to?** — Based on content domain, not the filename. Sub-KB first, parent KB second, create-new third (A3d decision tree).
+3. **Did it pass the quality gates?** — Garbled text? Tags normalized? Four-element description? If not, rework — no compromise ingestion.
 
-**手动兜底（工具不可用时）**：
+---
+
+## A0 — Dedup (Content Fingerprint, Not Just Filename) ⭐
+
+**Automated tool (recommended)**:
 ```
-# 第一道：文件名 + 元数据
+# Single call: SHA256 exact hash + vector similarity dual detection
+kb_find_duplicates(kb_id="<target KB>", threshold=0.90)
+```
+- Returns `{duplicate_groups: [{type: "exact"|"near", similarity, documents, recommendation}]}`
+- `exact` (SHA256 match) → skip directly; report "already exists @ <path>"
+- `near` (vector similarity ≥ threshold) → read the first 800 chars of both and compare → if duplicate, skip; only supplement tag/description differences
+
+**Manual fallback (when the tool is unavailable)**:
+```
+# First pass: filename + metadata
 kb_search(query="<filename without ext>", top_k=5)
 
-# 第二道：内容指纹（防"改名重复入库"）
-kb_search_vector(query="<正文前 500 chars 改写为陈述句>", top_k=5, score_threshold=0.85)
+# Second pass: content fingerprint (guards against "rename and re-ingest")
+kb_search_vector(query="<first 500 chars of body rewritten as a declarative sentence>", top_k=5, score_threshold=0.85)
 ```
-- 文件名命中 + 文件大小相近(±10%) → 读 500 chars 二次确认 → **重复则跳过**
-- 向量命中 score ≥ 0.85 → 读两篇前 800 chars 对比 → 重复跳过，仅补标签/描述差异
-- **不重复** → 进入 A1。
+- Filename hit + similar file size (±10%) → read 500 chars for a second confirmation → **skip if duplicate**
+- Vector hit score ≥ 0.85 → read the first 800 chars of both and compare → if duplicate, skip; only supplement tag/description differences
+- **Not duplicate** → proceed to A1.
 
-## A1 — 调研（全库现状）
+## A1 — Survey (Whole-Library Current State)
 
 ```
-kb_list()                    # 所有 KB（含 UUID + description + doc_count）
-kb_tags_list()               # 标签词表（A3b 归一化用，≥90% 复用目标）
-fs_get_tree(max_depth=3)     # KB 层级结构（子KB 可见）
+kb_list()                    # all KBs (including UUID + description + doc_count)
+kb_tags_list()               # tag vocabulary (used by A3b normalization; ≥90% reuse target)
+fs_get_tree(max_depth=3)     # KB hierarchy structure (sub-KBs visible)
 ```
 
-## A2 — 获取内容 + 解析质量检测
+## A2 — Acquire Content + Parse Quality Detection
 
-### 获取路径选择
-| 类型 | 路径 | 工具 |
+### Path Selection
+| Type | Path | Tool |
 |---|---|---|
-| PDF/Word/Excel/PPTX/图片 | 解析路径 | `parse_doc` / `parse_doc_batch` |
-| MD/TXT/Code/JSON/YAML | 直接路径 | 直接读文件 |
-| 二进制(非文本) | 元数据路径 | `fs_upload_file`（不索引，仅存储）|
+| PDF/Word/Excel/PPTX/images | Parse path | `parse_doc` / `parse_doc_batch` |
+| MD/TXT/Code/JSON/YAML | Direct path | Read the file directly |
+| Binary (non-text) | Metadata path | `fs_upload_file` (not indexed; storage only)|
 
-### 解析路径
+### Parse Path
 ```
-parse_doc(file_path="<abs_path>", use_ocr=true)   # 非阻塞，返回 task_id
-# 轮询直到完成：
+parse_doc(file_path="<abs_path>", use_ocr=true)   # non-blocking; returns task_id
+# Poll until complete:
 parse_task_status(task_id) → {markdown, markdown_path, images_dir, image_count}
 ```
-≥3 文件用 `parse_doc_batch(file_paths=[...], use_ocr=true)`——单 task_id 统一管理。
+For ≥3 files use `parse_doc_batch(file_paths=[...], use_ocr=true)` — managed under a single task_id.
 
-### ⚠️ A2-Q 解析质量门控（拒绝垃圾入库）
-对解析产出的 markdown 前 1500 chars 检测，**任一命中即拒绝并报告**（不进入 A3）：
+### ⚠️ A2-Q Parse Quality Gate (Reject Junk Ingestion)
+Inspect the first 1500 chars of the parsed markdown; **any hit means reject and report** (do not proceed to A3):
 
-| 病症 | 检测 | 处置 |
+| Symptom | Detection | Handling |
 |---|---|---|
-| **OCR 垃圾** | 乱码率 >30%（非 ASCII/非中文占比异常）| 重新解析，换 OCR 模式 |
-| **二进制残留** | 正文含大量 `\x00`/base64 片段 | 源文件可能损坏，报告用户 |
-| **标题无正文** | 全文仅 `#` 标题 + ≤200 chars 正文 | 解析失败，重试或报告 |
-| **空白过多** | 连续 >50 空行或正文 <100 chars | 视为解析失败 |
-| **语言错配** | 中文 PDF 解析出全英文乱码 | 编码/OCR 问题，重试 |
+| **OCR garbage** | Garbled rate >30% (abnormal proportion of non-ASCII/non-Chinese) | Re-parse with a different OCR mode |
+| **Binary residue** | Body contains lots of `\x00`/base64 fragments | Source file may be corrupted; report to the user |
+| **Headings without body** | Whole text is only `#` headings + ≤200 chars body | Parse failed; retry or report |
+| **Excess whitespace** | >50 consecutive blank lines or body <100 chars | Treat as parse failure |
+| **Language mismatch** | Chinese PDF parses into all-English garbage | Encoding/OCR issue; retry |
 
-## A3 — 结构化内容分析
+## A3 — Structured Content Analysis
 
-读 3000 chars 采样，输出结构化结果（**这是后续所有决策的依据**）：
+Read a 3000-char sample and output a structured result (**this is the basis for all later decisions**):
 
 ```json
 {
-  "title": "真实标题（取自正文 H1，非文件名）",
-  "domain": "主领域（如 高分子材料 / AI / 能源）",
-  "sub_domain": "子领域（如 PET双向拉伸 / RAG / 锂电池）",
-  "methods": ["具体方法/模型/工艺"],
-  "materials": ["具体材料/设备/数据集"],
-  "scenario": "解决的问题/适用场景",
-  "key_findings": ["关键数据/结论"],
+  "title": "real title (taken from the body H1, not the filename)",
+  "domain": "main domain (e.g. polymer materials / AI / energy)",
+  "sub_domain": "sub-domain (e.g. PET biaxial stretching / RAG / lithium batteries)",
+  "methods": ["specific methods/models/processes"],
+  "materials": ["specific materials/equipment/datasets"],
+  "scenario": "problem solved / applicable scenario",
+  "key_findings": ["key data/conclusions"],
   "language": "zh|en|mixed",
-  "raw_tags": ["从内容提炼的 5-8 个候选领域词（未经 A3b 清洗）"],
-  "target_kb_decision": "见 A3d 决策树"
+  "raw_tags": ["5-8 candidate domain words extracted from content (before A3b cleaning)"],
+  "target_kb_decision": "see the A3d decision tree"
 }
 ```
 
-**≥3 文档 或 单文档 >50KB**：委托子 Agent 分析，传入内容采样 + KB 列表 + 标签词表，按 [description-guide.md D5](references/description-guide.md) 契约验收。
+**≥3 documents or a single document >50KB**: delegate sub-agents for analysis, passing content samples + KB list + tag vocabulary, and accept per the [description-guide.md D5](references/description-guide.md) contract.
 
-## A3b — 标签质量门控 ⭐
+## A3b — Tag Quality Gate ⭐
 
-对 A3 的 `raw_tags` 执行清洗，**严禁跳过**。完整规则见 [tag-quality-rules.md](references/tag-quality-rules.md)。
-
-```
-1. T1 黑名单过滤 → 丢弃章节标题("Abstract"/"1 Introduction"/"References")/测试标签(test-*)/描述性标签
-2. T2 归一化    → 大小写统一(pet→PET) + 中英同义合并(聚乙烯/PE 取词表已有者)
-3. T3 数量裁剪  → 保留 2-5 个：材料词 + 方法词 + 场景词 (+ 0-2 属性)
-4. 词表比对    → ≥90% 复用 kb_tags_list() 既有词；新词仅限全新概念
-5. 正文回查    → 每个标签在 ≥2000 chars 采样里真实出现
-```
-**不达标 → 返回 A3 重新提炼，不放行 A5。**
-
-## A3c — 描述质量门控 ⭐
-
-按 [description-guide.md](references/description-guide.md) 写描述，**强制四要素 + 内容回查**：
+Clean A3's `raw_tags`; **skipping is strictly forbidden**. Full rules in [tag-quality-rules.md](references/tag-quality-rules.md).
 
 ```
-描述 = [主体] + [方法/技术] + [场景/问题] + [关键数据/结论] + [语言]
+1. T1 blocklist filtering → discard section titles ("Abstract"/"1 Introduction"/"References")/test tags (test-*)/descriptive tags
+2. T2 normalization    → unify casing (pet→PET) + merge Chinese/English synonyms (polyethylene/PE: keep the one already in the vocabulary)
+3. T3 count trimming  → keep 2-5: material words + method words + scenario words (+ 0-2 attributes)
+4. Vocabulary comparison    → ≥90% reuse of existing words from kb_tags_list(); new words only for entirely new concepts
+5. Content readback    → every tag actually appears within the ≥2000 chars sample
 ```
-- **四要素至少含 2 个具体名词**（方法名/材料名/设备名/数据集）——禁止"一篇关于X的论文"式泛泛。
-- **写完必须回查**：`kb_doc_read(..., max_chars=800)` 核对描述里每个关键 claim 在正文真实出现。
-- **不匹配 → 重写描述**（不改正文迁就描述）。
+**Failing the bar → return to A3 to re-extract; do not release to A5.**
 
-✅ "基于 CNN-LSTM 的磨煤机堵管预警，DCS 历史数据训练，660MW 机组实测提前 315min 预警。中文。"
-❌ "磨煤机论文" / "Parsed from xxx.pdf" / "test" / "高分子研究"
+## A3c — Description Quality Gate ⭐
 
-## A3d — KB 归属决策树 ⭐（确保"放对位置"）
-
-按优先级判定 target KB（**这是入库质量的核心**）：
+Write descriptions per [description-guide.md](references/description-guide.md); **four elements + content readback are mandatory**:
 
 ```
-① 子KB 精确匹配？
-   读 A1 的 fs_get_tree，找 description 与本文档 sub_domain 高度契合的【子KB】
-   → 命中：target = 该子KB（✅ 最佳）
+Description = [Subject] + [Method/Technology] + [Scenario/Problem] + [Key data/Conclusion] + [Language]
+```
+- **At least 2 concrete nouns among the four elements** (method names/material names/equipment names/datasets) — generic phrases like "a paper about X" are forbidden.
+- **Must read back after writing**: `kb_doc_read(..., max_chars=800)` to verify every key claim in the description actually appears in the body.
+- **Mismatch → rewrite the description** (never change the body to fit the description).
 
-② 父KB 领域匹配 + 尚无合适子KB？
-   父KB 的 domain 与文档一致，但无精确子KB
-   → 命中：target = 父KB，记录"未来可能需建子KB"（A8 评估）
+✅ "Coal mill blockage early warning based on CNN-LSTM, trained on DCS historical data, 660MW unit field-tested with 315min advance warning. In Chinese."
+❌ "Coal mill paper" / "Parsed from xxx.pdf" / "test" / "polymer research"
 
-③ 完全无匹配？
-   → kb_create(name="<Domain>-<SubDomain>", description=按 D3 模板, parent_id="<父KB 或空>")
-   → 新建时 description 必须达标（A3c），不可"待补"
+## A3d — KB Attribution Decision Tree ⭐ (Ensures "Put It in the Right Place")
+
+Determine the target KB by priority (**this is the core of ingestion quality**):
+
+```
+① Sub-KB exact match?
+   Read A1's fs_get_tree; find a [sub-KB] whose description strongly matches this document's sub_domain
+   → Hit: target = that sub-KB (✅ best)
+
+② Parent KB domain match + no suitable sub-KB yet?
+   The parent KB's domain matches the document but there is no precise sub-KB
+   → Hit: target = parent KB; record "may need a sub-KB in the future" (A8 evaluation)
+
+③ No match at all?
+   → kb_create(name="<Domain>-<SubDomain>", description=per the D3 template, parent_id="<parent KB or empty>")
+   → The new KB's description must meet the bar (A3c); "to be filled later" is not allowed
 ```
 
-**误归判定检测**：判定后，将 target KB 的 description 与文档 `sub_domain + methods` 比对——领域明显冲突（如把 RAG 文档归到"高分子库"）→ 重新走决策树。
+**Mis-attribution detection**: after deciding, compare the target KB's description against the document's `sub_domain + methods` — an obvious domain conflict (e.g. putting an RAG document into the "polymer library") → rerun the decision tree.
 
-## A4 — 找/建 KB（执行 A3d 决策）
+## A4 — Find/Create KB (Execute the A3d Decision)
 
-- **匹配既有 KB**：用其 UUID。
-- **新建**：`kb_create(name, description, parent_id)`，description 按 [D3 KB 级模板](references/description-guide.md)。
-- **新建子KB**：`parent_id` 指向父 KB 的 `kb_id`。
+- **Match an existing KB**: use its UUID.
+- **Create new**: `kb_create(name, description, parent_id)`, with the description per the [D3 KB-level template](references/description-guide.md).
+- **Create a sub-KB**: point `parent_id` at the parent KB's `kb_id`.
 
-## A5 — 存储文档（按路径分流，整篇不截断）
+## A5 — Store the Document (Routed by Path; Whole Document, No Truncation)
 
-### 解析路径 — `kb_doc_save_parsed`（存完整内容 + 图片）⭐
+### Parse path — `kb_doc_save_parsed` (stores full content + images) ⭐
 ```
 save = kb_doc_save_parsed(
     parent_id=target_kb_id,
-    task_id="<A2 的 task_id>",     # 自动提取完整 markdown + images_dir
-    description=A3c 产出的合格描述
+    task_id="<task_id from A2>",     # auto-extracts full markdown + images_dir
+    description=the qualified description produced by A3c
 )
 ```
-⚠️ **参数是 `parent_id`，不是 `kb_id`**（与多数工具命名不同；传 `kb_id` 会被 schema 拒绝）。推荐 **`task_id` 模式**：传 A2 的 task_id 即自动提取完整 markdown + images_dir，无需手动拼 markdown_path。
-自动：完整 markdown 落盘 + 所有图片复制到 KB `images/` + 原子更新 `.tree-fs.json` + `.knowledge-base.yml`。
+⚠️ **The parameter is `parent_id`, not `kb_id`** (unlike most tools' naming; passing `kb_id` will be rejected by the schema). The **`task_id` mode is recommended**: passing A2's task_id automatically extracts the full markdown + images_dir without manually assembling markdown_path.
+Automatically: full markdown written to disk + all images copied into the KB `images/` + atomic update of `.tree-fs.json` + `.knowledge-base.yml`.
 
-**绝不用 `kb_doc_create` 存解析文档**——它截断内容且丢图片。
+**Never use `kb_doc_create` to store parsed documents** — it truncates content and drops images.
 
-### 直接路径 — `kb_doc_create`
+### Direct path — `kb_doc_create`
 ```
-kb_doc_create(kb_id=target_kb_id, name="doc.md", content=完整文件内容, description=A3c描述)
+kb_doc_create(kb_id=target_kb_id, name="doc.md", content=complete file content, description=A3c description)
 ```
 
-## A6 — 索引 + 图谱 + 打标 + 索引后验证 ⭐
+## A6 — Index + Graph + Tag + Post-Index Verification ⭐
 
-### A6a 索引（向量 + BM25）
+### A6a Index (Vector + BM25)
 ```
 idx = kb_index_document(kb_id=target_kb_id, doc_path=doc_path)
 ```
-返回 `{vector_index: {collection, total_chunks, graph_doc_id}, graph_stats}`。
+Returns `{vector_index: {collection, total_chunks, graph_doc_id}, graph_stats}`.
 
-### A6b 知识图谱构建（向量索引后立即执行）⭐
+### A6b Knowledge Graph Build (Immediately After Vector Indexing) ⭐
 ```
 kb_graph_build(kb_id=target_kb_id, force=true)
 ```
-> ⚠️ **已知问题**：`kb_graph_build` 返回的 `total_relations` 可能为 0（stats 统计 bug），**这不代表构建失败**。实际数据已写入 Neo4j。务必用 `kb_graph_document()` 抽检验证而非依赖返回值。
+> ⚠️ **Known issue**: `total_relations` returned by `kb_graph_build` may be 0 (a stats counting bug); **this does not mean the build failed**. The data has actually been written to Neo4j. Always verify with `kb_graph_document()` spot checks rather than relying on the return value.
 
-构建后验证：
+Post-build verification:
 ```
-kb_graph_document(doc_path=doc_path)  # 确认图谱中有该文档节点
-```
-
-### A6c 打标（A3b 清洗后的合格标签）
-```
-kb_doc_update_tags(kb_id=target_kb_id, doc_path=doc_path, tags=A3b 清洗后标签)
+kb_graph_document(doc_path=doc_path)  # confirm the document node exists in the graph
 ```
 
-### A6-V 索引后验证（必做）
+### A6c Tagging (Qualified Tags After A3b Cleaning)
 ```
-# 1. vector_index 已写入？
-确认 vector_index.collection 非空
-# 2. collection UUID 正确？
-应为 "kb_<target_kb_uuid>"——指向其他 UUID 说明落到孤儿 collection
-# 3. chunk 数合理？
+kb_doc_update_tags(kb_id=target_kb_id, doc_path=doc_path, tags=tags after A3b cleaning)
+```
+
+### A6-V Post-Index Verification (Mandatory)
+```
+# 1. Was vector_index written?
+Confirm vector_index.collection is non-empty
+# 2. Is the collection UUID correct?
+Should be "kb_<target_kb_uuid>" — pointing at another UUID means it landed in an orphan collection
+# 3. Is the chunk count reasonable?
 total_chunks ≥ 1
-# 4. 图谱构建成功？
-kb_graph_document(doc_path) 返回含实体
+# 4. Did the graph build succeed?
+kb_graph_document(doc_path) returns entities
 ```
 
-## A7 — 终检 Checklist（全部 ✅ 才算入库完成）
+## A7 — Final Checklist (All ✅ Required for Ingestion Completion)
 
-| # | 检查项 | 工具 | 达标 |
+| # | Check item | Tool | Pass criteria |
 |---|---|---|---|
-| C1 | 内容完整未截断 | `kb_doc_read(max_chars=500)` | 正文与 A3 采样一致 |
-| C2 | 描述达标 | 读 description | 含四要素、内容回查通过 |
-| C3 | 标签达标 | 读 tags | 2-5 个、无黑名单、无同义重复 |
-| C4 | KB 归属正确 | doc sub_domain vs KB description | 领域一致 |
-| C5 | 向量索引就绪 | vector_index 字段 | 非空、collection 正确 |
-| C6 | 图片完整（解析路径）| image_count 对比 | 与 parse 结果一致 |
-| C7 | 图谱索引就绪 | `kb_graph_document(doc_path)` | 图谱中查到该文档 |
-| C8 | 三层元数据一致 | `.tree-fs.json` ↔ `.knowledge-base.yml` ↔ 磁盘 | 三处都有该文档 |
+| C1 | Content complete, not truncated | `kb_doc_read(max_chars=500)` | Body matches the A3 sample |
+| C2 | Description meets the bar | Read description | Contains the four elements; content readback passed |
+| C3 | Tags meet the bar | Read tags | 2-5 tags; no blocklist; no synonym duplicates |
+| C4 | KB attribution correct | doc sub_domain vs KB description | Domain consistent |
+| C5 | Vector index ready | vector_index field | Non-empty; collection correct |
+| C6 | Images complete (parse path) | image_count comparison | Matches the parse result |
+| C7 | Graph index ready | `kb_graph_document(doc_path)` | Document found in the graph |
+| C8 | Three-layer metadata consistent | `.tree-fs.json` ↔ `.knowledge-base.yml` ↔ disk | Document present in all three |
 
-**任一 ✗ → 返工对应步骤，禁止"先入库后补"。**
+**Any ✗ → rework the corresponding step; "ingest first, fix later" is forbidden.**
 
-### A7-E — 经验提取（可选，入库后丰富经验库）
-入库终检通过后，如有余力可触发经验扫描：
+### A7-E — Experience Extraction (Optional; Enrich the Experience Library After Ingestion)
+After the ingestion final check passes, if capacity allows, trigger an experience scan:
 ```
-experience_extract(kb_id=target_kb_id, mode="prepare")  # ⚠️ prepare 模式不支持 dry_run，始终返回 LLM 任务包
-→ Agent LLM 精炼 → confidence≥0.8 直接 approved，<0.8 进草稿池
+experience_extract(kb_id=target_kb_id, mode="prepare")  # ⚠️ prepare mode does not support dry_run; always returns the LLM task package
+→ Agent LLM refinement → confidence≥0.8 approved directly, <0.8 goes to the draft pool
 ```
-非强制步骤，但推荐在 KB 完整性和时效性要求高的场景执行。
+An optional step, but recommended when KB completeness and freshness requirements are high.
 
-## A8 — 子KB 评估 + 孤儿清理
+## A8 — Sub-KB Evaluation + Orphan Cleanup
 
-- **子KB 自动创建**：父KB 达 `SUB_KB_AUTO_SPLIT_THRESHOLD`（**≥8 文档 且跨 ≥2 子域**）→ 按 [sub-kb-creation.md](references/sub-kb-creation.md) 拆分。阈值定义见该文件顶部权威源表。
-- **孤儿清理**（入库时顺便）：`doc_count=0` 且 description 空洞的 KB → 报告用户是否删除。**不擅自删除**。
+- **Automatic sub-KB creation**: parent KB reaches `SUB_KB_AUTO_SPLIT_THRESHOLD` (**≥8 documents spanning ≥2 sub-domains**) → split per [sub-kb-creation.md](references/sub-kb-creation.md). Threshold definitions are in the authoritative source table at the top of that file.
+- **Orphan cleanup** (opportunistically during ingestion): KBs with `doc_count=0` and empty descriptions → report to the user whether to delete. **Do not delete without permission**.
 
-## A9 — 入库报告
+## A9 — Ingestion Report
 ```
-✅ <filename> → <target KB 完整路径>
-   类型: PDF(解析) | 标题: <真实标题>
-   描述: <合格描述前 80 chars>...
-   标签: [tag1, tag2, tag3] (A3b 清洗后)
-   索引: vector=<collection> chunks=<n> | graph=<entities>e/<relations>r
-   去重: 未发现重复 / 已跳过(重复于 <path>)
-   终检: C1-C8 全 ✅
+✅ <filename> → <full path of target KB>
+   Type: PDF (parsed) | Title: <real title>
+   Description: <first 80 chars of the qualified description>...
+   Tags: [tag1, tag2, tag3] (after A3b cleaning)
+   Index: vector=<collection> chunks=<n> | graph=<entities>e/<relations>r
+   Dedup: no duplicates found / skipped (duplicate of <path>)
+   Final check: C1-C8 all ✅
 ```
 
 ---
 
-## ⚠️ NEVER 清单
+## ⚠️ NEVER List
 
-| ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
+| ❌ Don't do this | Why | ✅ Do this instead |
 |-------------|------|-------------|
-| 跳过 A0 去重 | 改名重复入库 | 文件名+指纹双通道去重 |
-| 不测 A2-Q 质量门控 | OCR 垃圾入库 | A2 后用门控逐项检查 |
-| `kb_doc_create` 存解析文档 | 截断内容丢图片 | 解析文档必须 `kb_doc_save_parsed` |
-| 标签不经过 A3b | 章节标题/黑标签入库 | 黑名单过滤+归一化+数量裁剪 |
-| 描述不过 A3c | 文件名当描述 | 四要素+内容回查 |
-| 索引后不验证 collection | 落到孤儿 collection | A6-V 验证 UUID+chunks |
-| 质量不过继续入库 | 垃圾进垃圾出 | 任一 C1-C8 ✗ 返工 |
-| "先入库后补" | 永远不补 | 终检 C1-C8 全 ✅ 才算完成 |
-| 入库后不触发经验提取 | 文档蕴含的经验因子流失 | A7-E 可选自动提取 |
+| Skip A0 dedup | Re-ingest under a renamed file | Dual-channel dedup: filename + fingerprint |
+| Skip the A2-Q quality gate | OCR garbage gets ingested | After A2, run the gate item by item |
+| `kb_doc_create` for parsed documents | Truncates content and drops images | Parsed documents must use `kb_doc_save_parsed` |
+| Tags without A3b | Section titles/bad tags get ingested | Blocklist filtering + normalization + count trimming |
+| Description without A3c | Filename used as description | Four elements + content readback |
+| No collection verification after indexing | Lands in an orphan collection | A6-V verifies UUID+chunks |
+| Continue ingesting despite failing quality | Garbage in, garbage out | Any C1-C8 ✗ means rework |
+| "Ingest first, fix later" | Never gets fixed | Final check C1-C8 all ✅ counts as complete |
+| No experience extraction triggered after ingestion | Experience factors in documents are lost | A7-E optional auto-extraction |
 
-## 工具速查
-- `parse_doc(file_path, use_ocr=true)` / `parse_doc_batch(file_paths, use_ocr=true)` — 非阻塞解析
-- `parse_task_status(task_id)` — 轮询解析结果
-- `kb_doc_save_parsed(parent_id, task_id, description)` — ⭐ 解析路径存完整内容+图片
-- `kb_doc_create(kb_id, name, content, description)` — 直接路径/内存文档
-- `kb_index_document(kb_id, doc_path)` — 向量+图谱+BM25 索引
-- `kb_doc_update_tags(kb_id, doc_path, tags)` — 打标（A3b 清洗后）
-- `kb_doc_read(kb_id, doc_path, max_chars)` — 读正文（A3/A3c/C1 用）
-- `kb_search_vector(query, top_k, score_threshold)` — A0 内容指纹判重
-- `kb_search(query, top_k)` — A0 文件名判重
-- `kb_create(name, description, parent_id)` — 建 KB/子KB
-- `kb_tags_list()` — A3b 词表比对
-- `fs_upload_file(file_path, parent_id, description)` — 二进制上传
+## Tool Quick Reference
+- `parse_doc(file_path, use_ocr=true)` / `parse_doc_batch(file_paths, use_ocr=true)` — non-blocking parsing
+- `parse_task_status(task_id)` — poll parsing results
+- `kb_doc_save_parsed(parent_id, task_id, description)` — ⭐ parse path; stores full content+images
+- `kb_doc_create(kb_id, name, content, description)` — direct path/in-memory documents
+- `kb_index_document(kb_id, doc_path)` — vector+graph+BM25 indexing
+- `kb_doc_update_tags(kb_id, doc_path, tags)` — tagging (after A3b cleaning)
+- `kb_doc_read(kb_id, doc_path, max_chars)` — read the body (used by A3/A3c/C1)
+- `kb_search_vector(query, top_k, score_threshold)` — A0 content fingerprint dedup
+- `kb_search(query, top_k)` — A0 filename dedup
+- `kb_create(name, description, parent_id)` — create KB/sub-KB
+- `kb_tags_list()` — A3b vocabulary comparison
+- `fs_upload_file(file_path, parent_id, description)` — binary upload

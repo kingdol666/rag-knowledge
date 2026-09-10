@@ -1,178 +1,178 @@
 ---
 name: knowledgebase-manage
 description: >
-  Document and KB administration. M1→M6 workflow: survey, confirm destructive ops, execute (move/rename/delete/merge/update), post-change reindex+experience linkage, verify, content update flow. All operations are atomic (disk + .tree-fs.json + .knowledge-base.yml). Triggered by: 移动, 改名, 重命名, 删除文档, 删除KB, 合并KB, move, rename, delete, merge, update content, 移动文档, 更新内容, 修改描述.
+  Document and KB administration. M1→M6 workflow: survey, confirm destructive ops, execute (move/rename/delete/merge/update), post-change reindex+experience linkage, verify, content update flow. All operations are atomic (disk + .tree-fs.json + .knowledge-base.yml). Triggered by: move, rename, rename a document, delete a document, delete a KB, merge KBs, move, rename, delete, merge, update content, move documents, update content, modify description.
 ---
 
-## ⭐ 相关 Skills
-- 文档入库 → `skill://knowledgebase-ingest`
-- 整理重组 → `skill://knowledgebase-organize`
-- 批量操作 → `skill://knowledgebase-batch`
-- 校验 → `skill://knowledgebase-verify`
-- 架构心智模型 → [kb-architecture.md](../knowledgebase/references/kb-architecture.md)
+## ⭐ Related Skills
+- Document ingest → `skill://knowledgebase-ingest`
+- Organize & restructure → `skill://knowledgebase-organize`
+- Batch operations → `skill://knowledgebase-batch`
+- Verify → `skill://knowledgebase-verify`
+- Architecture mental model → [kb-architecture.md](../knowledgebase/references/kb-architecture.md)
 
 ## Sequential Workflow
-**Step 1 — Survey 场景确认**: kb_list() + kb_get_documents() 确认操作目标（移动/改名/删除/合并/更新）和影响范围。
-**Step 2 — M2 破坏性操作确认**: 删除/合并/移动操作先 dry_run 预览 → 展示影响面 → 等待用户确认。
-**Step 3 — M3 文档移动 (kb_doc_move)**: kb_doc_move(doc_path, target_kb_id) → 移动后自动重索引 → kb_search_stats() 验证。
-**Step 4 — M3 文档改名 (kb_doc_update_meta)**: kb_doc_update_meta(kb_id, doc_path, name=new_name) → 更新元数据。
-**Step 5 — M3 文档删除 (kb_doc_delete)**: kb_doc_delete(kb_id, doc_path) → 清理向量索引+图谱节点+磁盘文件。
-**Step 6 — M3 KB合并 (kb_doc_move + kb_delete)**: 源KB所有文档移动到目标KB → kb_delete(source_kb_id) 清理空KB。
-**Step 7 — M4 后变更验证**: kb_reindex(kb_id) 重建索引 → kb_graph_build(kb_id, force=true) 重建图谱 → experience_check_stale(kb_id) 经验联动。
-**Step 8 — M5 终验**: 三层一致性检查(disk↔tree-fs↔knowledge-base.yml) + 搜索验证 + 20%内容抽查。
+**Step 1 — Survey scenario confirmation**: kb_list() + kb_get_documents() confirm the operation target (move/rename/delete/merge/update) and impact scope.
+**Step 2 — M2 destructive operation confirmation**: delete/merge/move operations first dry_run preview → show the impact → wait for user confirmation.
+**Step 3 — M3 document move (kb_doc_move)**: kb_doc_move(doc_path, target_kb_id) → auto reindex after move → kb_search_stats() verify.
+**Step 4 — M3 document rename (kb_doc_update_meta)**: kb_doc_update_meta(kb_id, doc_path, name=new_name) → update metadata.
+**Step 5 — M3 document delete (kb_doc_delete)**: kb_doc_delete(kb_id, doc_path) → clean up the vector index + graph node + disk file.
+**Step 6 — M3 KB merge (kb_doc_move + kb_delete)**: move all documents from the source KB to the target KB → kb_delete(source_kb_id) clean up the empty KB.
+**Step 7 — M4 post-change verification**: kb_reindex(kb_id) rebuild indexes → kb_graph_build(kb_id, force=true) rebuild the graph → experience_check_stale(kb_id) experience linkage.
+**Step 8 — M5 final verification**: three-layer consistency check (disk↔tree-fs↔knowledge-base.yml) + search verification + 20% content sampling.
 
 # Knowledge Manage — Document & KB Administration
 
-## ⭐ Execution Model · Pre-Flight · Architecture（作业首步，强制）
+## ⭐ Execution Model · Pre-Flight · Architecture (First Step of Any Job, Mandatory)
 
-**执行者：Archival agent** — 用 `task` 委托执行（**委托模板 + 三角色执行模型 + 组合任务边界**：必读 [execution-model.md](../knowledgebase/references/execution-model.md)）。**Pre-Flight**：未通过禁作业 — 一探双检 `kb_project_status` → 分支处置 → 冒烟测试，完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)。**心智模型**：操作前必读 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层模型 + 一致性不变量 + 91 工具地图）；MCP 优先原则（禁 terminal/HTTP 绕过）见 [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) 第五条。
+**Executor: Archival agent** — delegate via `task` (**delegation template + three-role execution model + combined-task boundaries**: must-read [execution-model.md](../knowledgebase/references/execution-model.md)). **Pre-Flight**: no work before it passes — one-probe double-check `kb_project_status` → branch handling → smoke test; full flow in [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md). **Mental model**: before operating, must-read [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer model + consistency invariants + 91-tool map); MCP-first principle (no terminal/HTTP bypass) in [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) Rule 5.
 
-## 思维框架
+## Mental Framework
 
-本 skill 管理知识库和文档的生命周期变更。核心原则：
+This skill manages lifecycle changes of knowledge bases and documents. Core principles:
 
-1. **调查先行** — 任何操作前先 survey 当前结构
-2. **破坏性操作必确认** — 删除/合并不可逆，必须先问用户
-3. **变更必重索引** — move/update/delete 后自动重建向量索引+清理图谱
-4. **经验联动** — 文档变更后检查关联经验是否 stale
-5. **验证闭环** — 每步操作后必须验证结果一致性
+1. **Survey first** — survey the current structure before any operation
+2. **Destructive operations require confirmation** — deletion/merge is irreversible; ask the user first
+3. **Every change must reindex** — after move/update/delete, automatically rebuild vector indexes + clean the graph
+4. **Experience linkage** — after document changes, check whether related experiences are stale
+5. **Verification closed loop** — every operation step must verify result consistency
 
-操作流程覆盖 6 个阶段（M1→M6），按场景选择路径：
+The operation flow covers 6 phases (M1→M6); choose the path per scenario:
 
 ```
-M1 调查 → M2 确认 → M3 执行 → M4 重索引+经验联动 → M5 验证 → M6 内容更新
+M1 Survey → M2 Confirm → M3 Execute → M4 Reindex+Experience Linkage → M5 Verify → M6 Content Update
 ```
 
-**Freedom Map**（每步自由度）：
-| 步骤 | 自由度 | 说明 |
+**Freedom Map** (freedom level per step):
+| Step | Freedom | Notes |
 |------|--------|------|
-| M1 调查 / M5 验证 | 🔒 **强制**（低自由度） | 必须走完整流程，不可跳步骤 |
-| M2 确认破坏性操作 / M4 重索引 | 🔒 **强制**（低自由度） | 不可逆操作必须用户确认；重索引不可省略 |
-| M3 执行（move/rename/delete/merge） | 🎯 **执行**（中自由度） | 按工具表操作，参数精确 |
-| M6 内容更新 | 🧠 **判断**（高自由度） | 新内容由用户决定，Agent 仅验证一致性 |
+| M1 Survey / M5 Verify | 🔒 **Mandatory** (low freedom) | Must follow the full flow; no skipped steps |
+| M2 Confirm destructive operations / M4 Reindex | 🔒 **Mandatory** (low freedom) | Irreversible operations require user confirmation; reindexing cannot be omitted |
+| M3 Execute (move/rename/delete/merge) | 🎯 **Execute** (medium freedom) | Operate per the tool table with precise parameters |
+| M6 Content update | 🧠 **Judgment** (high freedom) | New content is the user's decision; the Agent only verifies consistency |
 
 ---
 
-## 操作决策树：Move vs Merge vs Delete vs Update?
+## Operation Decision Tree: Move vs Merge vs Delete vs Update?
 
 ```
-用户要求"处理"一个文档/KB
+The user asks to "handle" a document/KB
     │
-    ├── 移动文档到另一KB？
-    │   → M3 Move + M4 Reindex（必须！）
+    ├── Move a document to another KB?
+    │   → M3 Move + M4 Reindex (mandatory!)
     │
-    ├── 合并两个KB？
+    ├── Merge two KBs?
     │   → Move ALL docs from A→B → kb_delete(A) → kb_graph_build(B)
-    │   → 先确认用户 A 的文档可以全部迁走
+    │   → First confirm with the user that all of A's documents can be migrated
     │
-    ├── 删除文档/KB？
-    │   → M2 确认不可逆 → M3 Delete → M4 图谱清理
-    │   → KB 非空时不能直接删：先迁移或清空
+    ├── Delete a document/KB?
+    │   → M2 confirm irreversibility → M3 Delete → M4 graph cleanup
+    │   → A non-empty KB cannot be deleted directly: migrate or empty it first
     │
-    ├── 改名/改描述？
-    │   → M3 Rename → M5 验证
+    ├── Rename/change description?
+    │   → M3 Rename → M5 Verify
     │
-    └── 更新内容？
-        → M6: 读旧内容 → 改 → 更新 → 验证 → 重建索引
+    └── Update content?
+        → M6: read old content → edit → update → verify → rebuild index
 ```
 
 ---
 
-## M1 — 调查
+## M1 — Survey
 
 `kb_list()` + `kb_get_documents(source_kb_id)`
 
-## M2 — 确认破坏性操作
+## M2 — Confirm Destructive Operations
 
-`kb_delete` / `kb_doc_delete` / 合并 → **必须询问用户**（skip in Module Mode）。
+`kb_delete` / `kb_doc_delete` / merge → **must ask the user** (skip in Module Mode).
 
-## M3 — 执行
+## M3 — Execute
 
-### KB 操作
-| 操作 | 工具 | 注意 |
+### KB Operations
+| Operation | Tool | Notes |
 |------|------|------|
-| 改名/改描述 | `kb_update(kb_id, name, description)` | 仅 KB 级元数据 |
-| 删除 KB | `kb_delete(kb_id)` | **不可逆**，必须先清空文档 |
+| Rename/change description | `kb_update(kb_id, name, description)` | KB-level metadata only |
+| Delete KB | `kb_delete(kb_id)` | **Irreversible**; must empty the documents first |
 
-### 文档操作
-| 操作 | 工具 | 注意 |
+### Document Operations
+| Operation | Tool | Notes |
 |------|------|------|
-| 移动 | `kb_doc_move(doc_path, target_kb_id)` | UUID 保留。⭐ `kb_doc_move` **自动触发重索引**（fire-and-forget），为保险起见 M4 显式执行一次 `kb_index_document` 确保完成 |
-| 改名/改描述 | `kb_doc_update_meta(kb_id, doc_path, name, description)` | UUID 保留 |
-| 更新内容 | `kb_doc_update_content(kb_id, doc_path, content)` | **不自动重索引** → 必须 M4 |
-| 删除 | `kb_doc_delete(kb_id, doc_path)` | 接受短名或全路径 |
-| 批量删除 | `kb_doc_batch_delete(kb_id, ["KB/doc1.md", ...])` | **必须用完整相对路径** |
-| 合并 A→B | Move ALL from A → `kb_delete(A)` | 先确认、先验证 A 已清空 |
+| Move | `kb_doc_move(doc_path, target_kb_id)` | UUID preserved. ⭐ `kb_doc_move` **triggers reindexing automatically** (fire-and-forget); as a safety net, M4 explicitly runs `kb_index_document` once to ensure completion |
+| Rename/change description | `kb_doc_update_meta(kb_id, doc_path, name, description)` | UUID preserved |
+| Update content | `kb_doc_update_content(kb_id, doc_path, content)` | **Does not auto-reindex** → M4 is mandatory |
+| Delete | `kb_doc_delete(kb_id, doc_path)` | Accepts short names or full paths |
+| Batch delete | `kb_doc_batch_delete(kb_id, ["KB/doc1.md", ...])` | **Must use full relative paths** |
+| Merge A→B | Move ALL from A → `kb_delete(A)` | Confirm first; verify A is empty first |
 
-## M4 — 变更后重索引 + 经验联动
+## M4 — Post-Change Reindex + Experience Linkage
 
-| 操作 | 必须执行的重索引 |
+| Operation | Required reindex |
 |------|-----------------|
-| 移动文档 | `kb_index_document(kb_id=target, doc_path=new_path)` |
-| 更新内容 | `kb_index_document(kb_id, doc_path)`（旧索引自动失效） |
-| 删除文档 | `kb_graph_delete_document(doc_path=old_path)` 清理图谱 |
-| 合并 KB | `kb_graph_build(target_kb_id, force=false)` |
+| Move document | `kb_index_document(kb_id=target, doc_path=new_path)` |
+| Update content | `kb_index_document(kb_id, doc_path)` (old index auto-invalidated) |
+| Delete document | `kb_graph_delete_document(doc_path=old_path)` to clean the graph |
+| Merge KB | `kb_graph_build(target_kb_id, force=false)` |
 
-### 经验联动（文档变更后必查）
-文档移动/删除/更新内容后，关联的经验可能 stale 或 orphan：
+### Experience Linkage (Mandatory Check After Document Changes)
+After document move/delete/content-update, related experiences may be stale or orphaned:
 ```
-experience_check_stale(kb_id=source_kb)   # 源 KB 经验检查
-experience_check_stale(kb_id=target_kb)   # 目标 KB 经验检查
+experience_check_stale(kb_id=source_kb)   # source KB experience check
+experience_check_stale(kb_id=target_kb)   # target KB experience check
 ```
-发现 stale 经验 → 后续 `experience_sync_kb` 修复。
-> 详见 [knowledgebase-experience](../knowledgebase-experience/SKILL.md) 经验联动流程。
+If stale experiences are found → fix later with `experience_sync_kb`.
+> See the experience linkage flow in [knowledgebase-experience](../knowledgebase-experience/SKILL.md) for details.
 
-## M5 — 验证 + 报告
+## M5 — Verify + Report
 
 `kb_get_documents(source)` + `kb_get_documents(target)` + `kb_list()` + `fs_get_tree()`
 
-## M6 — 更新内容流程
+## M6 — Content Update Flow
 
 ```
-kb_doc_read(kb_id, doc_path, max_chars=20000) → 展示当前内容
-用户提供新内容 → kb_doc_update_content → kb_doc_read 验证 → kb_index_document 重建索引
+kb_doc_read(kb_id, doc_path, max_chars=20000) → show current content
+User provides new content → kb_doc_update_content → kb_doc_read verify → kb_index_document rebuild index
 ```
 
-> **三写原子一致性**：磁盘文件 + .tree-fs.json + .knowledge-base.yml 同步更新。任何一层失败整体回滚。
+> **Three-write atomic consistency**: disk file + .tree-fs.json + .knowledge-base.yml updated in sync. Any layer's failure rolls back the whole operation.
 
-## 已知问题 + 错误恢复
+## Known Issues + Error Recovery
 
-| 病症 | 检测 | 处置 |
+| Symptom | Detection | Handling |
 |------|------|------|
-| **move 后旧路径仍有向量残留** | `kb_search_vector(query, kb_id=target)` 返回旧路径 chunk | `kb_reindex(kb_id=target, force=true)` 清理旧 collection |
-| **batch_delete 报 "Not found"** | 短名 vs 全路径混用 | 必须用完整相对路径 `"KB/doc.md"`（非裸文件名） |
-| **update_content 后搜索返回旧内容** | 向量层用旧 chunk | 必须显式 `kb_index_document` 重索引（不自动触发） |
-| **合并后 KB description 过时** | 父 KB 描述未含新迁入的子域 | M5 验证时顺带检查描述是否需更新 |
-| **经验 stale 未检测** | move/delete 后关联经验变 orphan | M4 `experience_check_stale` 必查（否则经验库逐步腐烂） |
-| **kb_doc_move 返回成功但文件未到** | fire-and-forget 异步未完成 | M5 回查 `kb_get_documents(target)` 确认 doc 已在目标 KB |
-| **图谱旧节点残留** | move 后 Neo4j 仍有旧路径 Document 节点 | `kb_graph_delete_document(doc_path=old_path)` 清理 |
+| **Old path vectors remain after move** | `kb_search_vector(query, kb_id=target)` returns old-path chunks | `kb_reindex(kb_id=target, force=true)` to clean the old collection |
+| **batch_delete reports "Not found"** | Short names vs full paths mixed | Must use full relative paths `"KB/doc.md"` (not bare filenames) |
+| **Search returns old content after update_content** | The vector layer uses old chunks | Must explicitly `kb_index_document` to reindex (not triggered automatically) |
+| **KB description outdated after merge** | Parent KB description doesn't include the newly migrated sub-domain | While verifying in M5, check whether the description needs updating |
+| **Experience stale undetected** | Related experiences become orphaned after move/delete | M4 `experience_check_stale` is mandatory (otherwise the experience library rots gradually) |
+| **kb_doc_move returns success but the file hasn't arrived** | Fire-and-forget async not finished | M5 re-check `kb_get_documents(target)` to confirm the doc is in the target KB |
+| **Old graph nodes remain** | Neo4j still has old-path Document nodes after move | `kb_graph_delete_document(doc_path=old_path)` to clean up |
 
-### 错误恢复策略
-- **工具调用失败** → 重试一次（5s 间隔）；仍失败 → 报告用户当前状态，不静默跳过
-- **批量操作部分失败** → 完成成功的，单独标记失败的，不因部分失败回滚成功的
-- **不可逆操作执行后发现错误** → 立即停止，评估损失范围，用 `kb_doc_read` 确认受影响文档，报告用户
+### Error Recovery Strategies
+- **Tool call failure** → retry once (5s interval); still failing → report the current state to the user; do not silently skip
+- **Partial failure in batch operations** → complete the successful ones, flag the failed ones individually; do not roll back successes because of partial failures
+- **Error discovered after an irreversible operation** → stop immediately, assess the damage scope, use `kb_doc_read` to confirm affected documents, report to the user
 ---
 
-## ⚠️ NEVER 清单
+## ⚠️ NEVER List
 
-| 不要这样做 | 原因 | 应该这样做 |
+| Don't do this | Why | Do this instead |
 |-----------|------|-----------|
-| 移动后不重索引 | 移了但搜不到——向量层用旧路径 chunk | 立刻 `kb_index_document(target, new_path)` + `kb_graph_delete_document(old_path)` |
-| 合并前不确认 | 不可逆——文档一旦迁走源 KB 为空 | M2 必须问用户，展示迁移计划 |
-| 删除非空 KB | 会丢文档——`kb_delete` 不检查是否有文档 | 先 `kb_get_documents` → 迁移或 `kb_doc_batch_delete` |
-| 更新内容后不验证 | 可能写入失败——HTTP 无回执确认 | `kb_doc_read` 确认内容一致 + `kb_index_document` 重建索引 |
-| 批量删用短路径 | 工具报错——`batch_delete` 仅接受全路径 | 用完整 `KB/doc.md` 相对路径（非裸文件名） |
-| 假设 move/delete 是同步的 | fire-and-forget 异步——返回成功≠已完成 | M5 回查 `kb_get_documents(target)` 确认 |
-| `kb_doc_update_content` 后不重索引 | 向量层仍用旧 chunk——搜索返回过时内容 | 已自动重索引(auto-reindex <1s, 2026-08 版本); 保险起见仍可显式 `kb_index_document` |
-| move/delete 后不查经验 stale | 关联经验变 orphan——经验库逐步腐烂 | M4 `experience_check_stale(source)` + `(target)` 必查 |
-| 改名后图谱旧节点残留 | Neo4j 不自动跟随文件改名 | `kb_graph_delete_document(old_path)` + `kb_graph_build(kb_id, force=false)` |
+| Not reindexing after move | Moved but not findable — the vector layer uses old-path chunks | Immediately `kb_index_document(target, new_path)` + `kb_graph_delete_document(old_path)` |
+| Merging without confirmation | Irreversible — once documents migrate, the source KB is empty | M2 must ask the user and show the migration plan |
+| Deleting a non-empty KB | Loses documents — `kb_delete` doesn't check for documents | First `kb_get_documents` → migrate or `kb_doc_batch_delete` |
+| Not verifying after content updates | The write may have failed — HTTP has no receipt confirmation | `kb_doc_read` to confirm content matches + `kb_index_document` to rebuild the index |
+| Short paths in batch deletes | Tool errors — `batch_delete` accepts only full paths | Use the full `KB/doc.md` relative path (not bare filenames) |
+| Assuming move/delete are synchronous | Fire-and-forget async — a success return ≠ completion | M5 re-check `kb_get_documents(target)` to confirm |
+| Not reindexing after `kb_doc_update_content` | The vector layer still uses old chunks — search returns outdated content | Auto-reindexed now (auto-reindex <1s, 2026-08 version); as a safety net you may still explicitly `kb_index_document` |
+| Not checking experience stale after move/delete | Related experiences become orphans — the experience library rots gradually | M4 `experience_check_stale(source)` + `(target)` are mandatory |
+| Old graph nodes remain after rename | Neo4j doesn't follow file renames automatically | `kb_graph_delete_document(old_path)` + `kb_graph_build(kb_id, force=false)` |
 
 <!-- SKILLOPT-SLEEP:LEARNED START -->
 ## Learned preferences & procedures
 
 _This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
 
-- OVERRIDE —— 禁止以"我先开始 survey / MCP 连通性检查 / 按 workflow 先…"这类不含具体工具名的占位句作为回复开头。首个回复必须直接给出本次操作的具体执行计划，明文写出将使用的工具名（如 kb_doc_delete、kb_doc_move）与验证步骤；句子中若没有具体工具名和验证关键词，先补齐再发送，禁止发"稍后再执行"式的敷衍开场。
-- 删除类操作（文档/KB 删除）的任何回复必须满足：① 明文出现字符串 'kb_doc_delete'（不得用'删除文档'等话术替代工具名）；② 出现 dry_run 或 dry-run 或 预览 或 确认 字样 —— 在回复中描述"先 dry_run 预览影响面并确认"这一步骤即可（M2 流程），不必因等待用户而中断输出。
-- 任何 move/delete/update 变更的回复，其验证部分必须出现 kb_search_stats 或 残留 或 chunk 字样（例如："用 kb_search_stats 检查向量残留 chunk"），并同时写明三层一致性检查（disk ↔ .tree-fs.json ↔ .knowledge-base.yml）；验证描述缺失则该回复视为未完成，不得发送。
+- OVERRIDE — responses must not open with placeholder sentences lacking concrete tool names, such as "let me start the survey / MCP connectivity check / per the workflow, first…". The first reply must directly give the concrete execution plan for this operation, explicitly naming the tools to be used (e.g. kb_doc_delete, kb_doc_move) and the verification steps; if the sentence lacks concrete tool names and verification keywords, complete it before sending — vague "will execute later" openers are forbidden.
+- Any reply about delete-type operations (document/KB deletion) must satisfy: ① the string 'kb_doc_delete' appears explicitly (phrases like 'delete the document' must not substitute for the tool name); ② the words dry_run or dry-run or preview or confirm appear — describing the step "first dry_run to preview the impact and confirm" in the reply is sufficient (the M2 flow); do not interrupt output waiting for the user.
+- Any reply about move/delete/update changes must include kb_search_stats or residue or chunk in its verification portion (e.g. "use kb_search_stats to check for residual vector chunks"), and must also state the three-layer consistency check (disk ↔ .tree-fs.json ↔ .knowledge-base.yml); a reply missing the verification description is considered incomplete and must not be sent.
 <!-- SKILLOPT-SLEEP:LEARNED END -->

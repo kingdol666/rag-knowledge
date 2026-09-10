@@ -1,11 +1,18 @@
-"""Agent Harness Manager — spawn Claude Code / OMP as subprocesses for LLM synthesis.
+"""Agent Harness Manager — 多 Harness 执行引擎统一作业通道（14 引擎）。
 
-Design mirrors MinerU manager:
-- Windows: Job Object KILL_ON_JOB_CLOSE (no orphans)
-- Linux: prctl(PR_SET_PDEATHSIG)
-- stdout/stderr → log file (never PIPE)
-- Hard timeout + budget cap
-- Global concurrency semaphore
+架构对齐 docs/multi-harness-architecture.md：
+- 单一契约: 所有引擎（mock/omp/claude/codex/dsh/gemini/copilot/cursor/crush/goose/
+  qwen/pi/hermes/opencode）经 harness_specs.OneShotEngineSpec 驱动同一个 _run_engine；
+  上层（meditation/soul）只依赖 complete()/synthesize_experiences()，零引擎分支。
+- 单一事实源: 引擎清单/能力/模型目录/探测全部派生自 harness_registry.HARNESS_REGISTRY。
+- 探测与拉起同源: resolve_command 同时服务 probe 与真实 spawn（配置覆盖链最后一环）。
+- 错误即事件: spawn 失败/非 0 退出/超时/解析失败结构化返回，绝不静默。
+
+进程治理（沿用既有设计）:
+- Windows: Job Object KILL_ON_JOB_CLOSE (no orphans) + taskkill /T /F
+- Linux: prctl(PR_SET_PDEATHSIG) / killpg
+- stdout/stderr → 独立 .out/.err 文件（绝不 PIPE，防大输出死锁）
+- Hard timeout + budget cap + global concurrency semaphore + circuit breaker
 """
 from __future__ import annotations
 
@@ -29,13 +36,16 @@ from typing import Any, Optional
 logger = logging.getLogger(__name__)
 
 from app.utils.paths import PROJECT_ROOT
+from app.services import harness_registry as hreg
+from app.services import harness_specs as hspec
+from app.services import harness_runner as hrun
 
 # ── Log directory ──
 _LOG_DIR = PROJECT_ROOT.parent / "backend" / "logs"
 _LOG_DIR.mkdir(parents=True, exist_ok=True)
 
-# ── MCP config path (project root .mcp.json) ──
-_MCP_CONFIG_PATH = PROJECT_ROOT.parent / ".mcp.json"
+# ── System prompt path ──
+_SYSTEM_PROMPT_PATH = Path(__file__).parent / "prompts" / "meditation_agent_system.txt"
 
 
 def _repair_embedded_quotes(raw: str) -> str | None:
@@ -106,9 +116,6 @@ def _repair_embedded_quotes(raw: str) -> str | None:
     return "".join(out) if changed else None
 
 
-# ── System prompt path ──
-_SYSTEM_PROMPT_PATH = Path(__file__).parent / "prompts" / "meditation_agent_system.txt"
-
 # ── Result JSON Schema (for claude --json-schema) ──
 RESULT_SCHEMA = {
     "type": "object",
@@ -157,50 +164,6 @@ RESULT_SCHEMA = {
         }
     },
     "required": ["meditation_result"]
-}
-
-# ── Harness command configurations ──
-HARNESS_CONFIG: dict[str, dict] = {
-    "omp": {
-        "exe": "omp",
-        "build_args": lambda cfg, prompt_file: [
-            "-p",
-            "--auto-approve",
-            "--no-session",
-            "--mode=json",
-            "--max-time", str(cfg.get("timeout_sec", 600)),
-            # Use model from KB config; empty = OMP uses its own default (e.g. deepseek-v4-pro)
-        ] + ([
-            "--model", cfg["model"]
-        ] if cfg.get("model") else []) + ([
-            # P0-1 (2026-09-09): 可选思考级别控制(off/minimal/low/...), 用于合成类调用
-            # 压低 reasoning 深度。学习/评估路径不传该字段, 保持默认深度。
-            "--thinking", cfg["thinking"]
-        ] if cfg.get("thinking") else []) + [
-            f"@{prompt_file}",
-        ],
-        # NOTE: --cwd is NOT used here because OMP mangles the path.
-        # Working directory is set via subprocess.Popen(cwd=...) instead.
-        "stdin_needed": False,
-    },
-    "claude": {
-        "exe": "claude",
-        "build_args": lambda cfg, prompt_file: [
-            "-p",
-            "--output-format", "json",
-            # Use model from KB config; fall back to sonnet
-            "--model", cfg.get("model") or "claude-sonnet-4-20250514",
-            "--max-budget-usd", str(cfg.get("max_budget_usd", 0.05)),
-            "--dangerously-skip-permissions",
-            "--no-session-persistence",
-            "--bare",
-            "--mcp-config", str(_MCP_CONFIG_PATH),
-            "--add-dir", str(PROJECT_ROOT.parent),
-            "--system-prompt-file", str(_SYSTEM_PROMPT_PATH),
-            "--json-schema", json.dumps(RESULT_SCHEMA),
-        ],
-        "stdin_needed": True,
-    },
 }
 
 
@@ -355,64 +318,39 @@ class AgentHarnessManager:
 
     # ── Health Check ───────────────────────────────────────────────────
 
+    @staticmethod
+    def known_harness(harness: str) -> bool:
+        """harness id 是否合法（注册表 14 引擎或内置 heuristic 回退）。"""
+        return harness == "heuristic" or hreg.is_known_harness(harness)
+
     async def probe_harness(self, harness: str) -> dict:
-        """Probe whether a harness is installed and ready. Cached after first call."""
-        if harness in self._harness_available:
-            return self._harness_available[harness]
+        """Probe whether a harness is installed and ready（探测与拉起同源，注册表缓存 30s）。
 
-        if harness not in HARNESS_CONFIG:
-            return {"installed": False, "error": f"Unknown harness: {harness}"}
-
-        cfg = HARNESS_CONFIG[harness]
-        exe = cfg["exe"]
-
-        # Check if executable is findable
-        try:
-            result = await asyncio.get_event_loop().run_in_executor(
-                None,
-                lambda: subprocess.run(
-                    [exe, "--version"],
-                    capture_output=True, timeout=15,
-                    **_run_silent_kwargs(),
-                )
-            )
-            installed = result.returncode == 0
-            version = result.stdout.decode("utf-8", errors="replace").strip()
-        except Exception as e:
-            installed = False
-            version = ""
-            logger.debug("Harness probe for %s failed: %s", harness, e)
-
-        # Additional checks per harness
-        extra = {}
-        if harness == "claude":
-            extra["api_key_configured"] = bool(os.environ.get("ANTHROPIC_API_KEY", ""))
-            if not extra["api_key_configured"]:
-                installed = False  # claude --bare mode requires API key
-
-        info = {
-            "installed": installed,
-            "version": version,
-            **extra,
-        }
-        self._harness_available[harness] = info
-        return info
+        未知引擎抛 UnknownHarnessError；heuristic 是进程内回退，恒可用。
+        """
+        return await hreg.probe_harness(harness)
 
     async def get_all_harness_status(self) -> dict:
         """Get status for all harnesses + circuit breaker state."""
-        status = {}
-        for name in HARNESS_CONFIG:
-            status[name] = await self.probe_harness(name)
+        status: dict[str, dict] = {}
+        names = [*hreg.HARNESS_IDS, "heuristic"]
+        for name in names:
+            try:
+                status[name] = await hreg.probe_harness(name)
+            except Exception as e:
+                logger.warning("probe %s failed: %s", name, e)
+                status[name] = {"installed": False, "error": str(e)}
 
         return {
             "harnesses": status,
+            "default": hreg.DEFAULT_HARNESS,
             "circuit_breaker": {
                 harp: {
                     "tripped": harp in self._circuit_open and self._circuit_open[harp] > time.time(),
                     "until": self._circuit_open.get(harp),
                     "consecutive_failures": self._consecutive_failures.get(harp, 0),
                 }
-                for harp in HARNESS_CONFIG
+                for harp in names
             }
         }
 
@@ -452,12 +390,18 @@ class AgentHarnessManager:
 
         Returns {"success": bool, "experiences": [...], "drafts": [...], "error": ...}
         """
-        harness = kb_config.get("harness", "omp")
+        harness = kb_config.get("harness", hreg.DEFAULT_HARNESS)
 
         # Heuristic is always available (no subprocess needed)
         if harness == "heuristic":
             logger.info("Using heuristic harness for KB %s", kb_path)
             return await self._heuristic_fallback(kb_path, kb_id, signals, kb_config, trigger)
+
+        # 未知引擎 —— 结构化报错（注册表强校验，无静默降级）
+        if not hreg.is_known_harness(harness):
+            return {"success": False,
+                    "error": f"Unknown harness '{harness}'. Supported: {', '.join(hreg.HARNESS_IDS)}",
+                    "harness": harness, "trigger": trigger}
 
         # Check circuit breaker
         breaker_msg = self._check_circuit(harness)
@@ -471,17 +415,15 @@ class AgentHarnessManager:
                         "harness": harness, "trigger": trigger}
             return await self._heuristic_fallback(kb_path, kb_id, signals, kb_config, trigger)
 
-        # Check harness availability
+        # Check harness availability（探测与拉起同源）
         probe = await self.probe_harness(harness)
         if not probe.get("installed", False):
             logger.info("Harness %s not available", harness)
             if trigger == "manual":
                 # Manual trigger: tell user the agent isn't ready, don't silently
                 # produce placeholder experiences.
-                missing = []
-                if not probe.get("installed"):
-                    missing.append(f"executable '{harness}' not found on PATH")
-                if harness == "claude" and not probe.get("api_key_configured"):
+                missing = [probe.get("error") or "probe failed"]
+                if harness == "claude" and not any(e.get("present") for e in probe.get("env", [])):
                     missing.append("ANTHROPIC_API_KEY not set")
                 return {"success": False,
                         "error": f"Agent harness '{harness}' is not available for real LLM synthesis. "
@@ -580,133 +522,36 @@ class AgentHarnessManager:
         signals: list[dict], kb_config: dict, trigger: str,
         task_prompt: str,
     ) -> dict:
-        """Spawn agent subprocess and wait for completion."""
+        """Run a meditation synthesis job through the unified engine channel."""
         from app.services.meditation_db import create_run, finish_run
+        from app.services import harness_runner as hrun
 
-        cfg = HARNESS_CONFIG[harness]
         run_id = create_run(kb_id, harness, trigger)
 
-        log_path = _LOG_DIR / f"meditation-agent-{run_id}.log"
+        # 调用方语义注入：meditation 需要 kb 工具面 + system prompt 文件 + 结果 schema
+        cfg = {**kb_config,
+               "result_schema": RESULT_SCHEMA,
+               "system_prompt_path": str(_SYSTEM_PROMPT_PATH),
+               "with_workspace_tools": True,
+               "goose_name": f"rag-kb-{(kb_id or 'kb')[:12]}"}
 
-        # Write task prompt to temp file (for omp @ref; claude uses stdin)
-        prompt_file = None
-        try:
-            prompt_file = Path(tempfile.mktemp(suffix=".txt"))
-            prompt_file.write_text(task_prompt, encoding="utf-8")
-        except Exception:
-            prompt_file = _LOG_DIR / f"meditation-prompt-{run_id}.txt"
-            prompt_file.write_text(task_prompt, encoding="utf-8")
+        engine = await hrun.run_engine(harness, task_prompt, cfg,
+                                       run_label=f"meditation-agent-{run_id}")
+        exit_code = engine.get("exit_code")
 
-        try:
-            cmd = [cfg["exe"]] + cfg["build_args"](kb_config, str(prompt_file))
-        except Exception as e:
-            finish_run(run_id, status="failed", error=f"cmd_build: {e}")
-            if prompt_file and prompt_file.exists():
-                prompt_file.unlink(missing_ok=True)
-            return {"success": False, "error": f"Failed to build command: {e}", "run_id": run_id}
-
-        # Resolve executable path on Windows
-        if sys.platform == "win32" and not cfg["exe"].endswith(".exe"):
-            # Check common locations
-            candidates = [
-                Path(os.path.expandvars(f"%USERPROFILE%\\.local\\bin\\{cfg['exe']}.exe")),
-                Path(os.path.expandvars(f"%USERPROFILE%\\.bun\\bin\\{cfg['exe']}.exe")),
-                Path(f"C:\\Users\\{os.environ.get('USERNAME', '')}\\.local\\bin\\{cfg['exe']}.exe"),
-                Path(f"C:\\Users\\{os.environ.get('USERNAME', '')}\\.bun\\bin\\{cfg['exe']}.exe"),
-            ]
-            for candidate in candidates:
-                if candidate.exists():
-                    cmd[0] = str(candidate)
-                    break
-
-        logger.info("[Meditation] kb=%s harness=%s run_id=%s cmd=%s",
-                    kb_path, harness, run_id, cmd[0])
-
-        # Open log file
-        try:
-            log_fp = open(str(log_path), "a", encoding="utf-8")
-        except Exception as e:
-            finish_run(run_id, status="failed", error=f"log_open: {e}")
-            if prompt_file and prompt_file.exists():
-                prompt_file.unlink(missing_ok=True)
-            return {"success": False, "error": f"Cannot open log: {e}", "run_id": run_id}
-
-        log_fp.write(f"=== Meditation Run {run_id} ===\n")
-        log_fp.write(f"KB: {kb_path}\nHarness: {harness}\nTrigger: {trigger}\n")
-        log_fp.write(f"Started: {datetime.now(timezone.utc).isoformat()}\n")
-        log_fp.write(f"Signals: {len(signals)}\n")
-        log_fp.write(f"Command: {' '.join(cmd)}\n\n")
-
-        # Build popen kwargs
-        popen_kwargs: dict = dict(
-            cwd=str(PROJECT_ROOT.parent),
-            stdout=log_fp,
-            stderr=subprocess.STDOUT,
-            env={**os.environ, "PYTHONUNBUFFERED": "1", "PYTHONUTF8": "1"},
-            close_fds=True,
-        )
-
-        if cfg["stdin_needed"]:
-            popen_kwargs["stdin"] = subprocess.PIPE
-        else:
-            popen_kwargs["stdin"] = subprocess.DEVNULL
-
-        if sys.platform == "win32":
-            popen_kwargs["creationflags"] = (
-                subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.CREATE_NO_WINDOW
-            )
-            si = subprocess.STARTUPINFO()
-            si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-            si.wShowWindow = 0
-            popen_kwargs["startupinfo"] = si
-        else:
-            popen_kwargs["start_new_session"] = True
-
-        # Spawn
-        try:
-            proc = subprocess.Popen(cmd, **popen_kwargs)
-        except FileNotFoundError:
-            log_fp.close()
-            finish_run(run_id, status="failed", error=f"executable not found: {cfg['exe']}")
+        if not engine.get("success"):
             self._record_failure(harness)
-            if prompt_file.exists():
-                prompt_file.unlink(missing_ok=True)
-            return {"success": False, "error": f"Executable not found: {cfg['exe']}", "run_id": run_id}
+            status = "timeout" if engine.get("error") == "timeout" else "failed"
+            finish_run(run_id, status=status, error=engine.get("error", "engine_failed"),
+                       exit_code=exit_code,
+                       agent_stdout_tail=hrun.engine_tail(engine))
+            return {"success": False, "error": engine.get("error", "engine_failed"),
+                    "error_code": engine.get("error_code"),
+                    "hint": engine.get("hint", ""),
+                    "detail": engine.get("detail", ""), "run_id": run_id, "harness": harness}
 
-        # Assign to job object
-        _assign_pid_to_job(self._job_handle, proc.pid)
-
-        # Write task prompt to stdin for claude
-        if cfg["stdin_needed"] and proc.stdin:
-            try:
-                proc.stdin.write(task_prompt.encode("utf-8"))
-                proc.stdin.close()
-            except Exception:
-                pass
-
-        # Wait with timeout
-        timeout = kb_config.get("timeout_sec", 600)
-        try:
-            await self._watch_process(proc, log_path, timeout)
-        except Exception as e:
-            logger.warning("Process watch error: %s", e)
-
-        # Clean up temp file
-        if prompt_file.exists():
-            prompt_file.unlink(missing_ok=True)
-
-        # Read log and parse result
-        log_fp.close()
-        exit_code = proc.poll()
-
-        if exit_code is None:
-            self._terminate_process(proc)
-            finish_run(run_id, status="timeout", error="timeout")
-            self._record_failure(harness)
-            return {"success": False, "error": "timeout", "run_id": run_id}
-
-        # Parse result from log
-        result = self._parse_result_log(log_path, harness)
+        # 提取 meditation_result：引擎结构化解析 → JSON 块提取（围栏/内嵌引号修复）
+        result = hrun.meditation_result_from_text(engine.get("text", ""))
 
         if result.get("success"):
             self._record_success(harness)
@@ -745,10 +590,11 @@ class AgentHarnessManager:
                 status="failed",
                 error=result.get("error", "parse_failed"),
                 exit_code=exit_code,
-                agent_stdout_tail=self._read_log_tail(log_path),
+                agent_stdout_tail=hrun.engine_tail(engine) or result.get("log_tail", ""),
             )
 
         result["run_id"] = run_id
+        result["harness"] = harness
         return result
 
     async def _watch_process(self, proc: subprocess.Popen, log_path: Path, timeout_sec: int) -> None:
@@ -1034,13 +880,14 @@ class AgentHarnessManager:
              "token_estimate": int, "cost_estimate": float,
              "estimated_seconds": float}
         """
-        cfg = kb_config or {}
-        harness = cfg.get("harness", "omp")
+        cfg = dict(kb_config or {})
+        harness = cfg.get("harness", hreg.DEFAULT_HARNESS)
         start = time.time()
 
-        if harness not in HARNESS_CONFIG:
+        if harness == "heuristic" or not hreg.is_known_harness(harness):
             return self._complete_error(
-                f"Unknown harness: {harness}", harness, start)
+                f"Unknown harness: {harness}. Supported: {', '.join(hreg.HARNESS_IDS)}",
+                harness, start)
 
         # Circuit breaker
         breaker_msg = self._check_circuit(harness)
@@ -1049,17 +896,18 @@ class AgentHarnessManager:
                 f"Harness '{harness}' circuit breaker tripped: {breaker_msg}",
                 harness, start)
 
-        # Probe availability
+        # Probe availability（探测与拉起同源）
         probe = await self.probe_harness(harness)
         if not probe.get("installed", False):
-            missing = [f"executable '{harness}' not found on PATH"]
-            if harness == "claude" and not probe.get("api_key_configured"):
+            missing = [probe.get("error") or "probe failed"]
+            if harness == "claude" and not any(e.get("present") for e in probe.get("env", [])):
                 missing.append("ANTHROPIC_API_KEY not set")
             return self._complete_error(
                 f"Harness '{harness}' unavailable: {'; '.join(missing)}",
                 harness, start, probe=probe)
 
-        # System prompt (omp branch: --system-prompt override; claude: --system-prompt-file)
+        # System prompt (claude: --system-prompt-file; omp: --system-prompt;
+        # 其余引擎: 以分隔符前置进 prompt —— 显式降级语义，不静默丢失)
         sys_text = ""
         if system_prompt_path:
             try:
@@ -1067,119 +915,44 @@ class AgentHarnessManager:
             except Exception:
                 sys_text = ""
 
+        cfg.setdefault("timeout_sec", timeout_sec)
+        if max_budget_usd:
+            cfg["max_budget_usd"] = max_budget_usd
+        cfg["no_tools"] = True              # 单次补全不需要工具面
+        cfg["with_workspace_tools"] = True  # claude 保持既有 mcp-config/add-dir 行为
+
         final_prompt = prompt
-        if harness == "omp" and sys_text:
+        if harness == "claude":
+            if system_prompt_path:
+                cfg["system_prompt_path"] = str(system_prompt_path)
+            if result_schema:
+                cfg["result_schema"] = result_schema
+        elif harness == "omp":
             # omp 默认注入 coding-assistant 系统提示词,会把单次补全跑成全 agent;
             # 用 --system-prompt 覆盖为调用方指定的角色(纯文本补全、快且可控)。
-            final_prompt = prompt
-
-        # Write prompt to temp file (omp @ref; claude reads from stdin)
-        prompt_file = None
-        try:
-            prompt_file = Path(tempfile.mktemp(suffix=".txt"))
-            prompt_file.write_text(final_prompt, encoding="utf-8")
-        except Exception as e:
-            return self._complete_error(f"prompt_write: {e}", harness, start)
-
-        # Build CLI args (bypass module-level globals RESULT_SCHEMA / _SYSTEM_PROMPT_PATH)
-        timeout = cfg.get("timeout_sec", timeout_sec)
-        budget = max_budget_usd or cfg.get("max_budget_usd", 0.05)
-        model = cfg.get("model", "")
-        if harness == "omp":
-            cmd = [HARNESS_CONFIG["omp"]["exe"], "-p", "--auto-approve",
-                   "--no-session", "--mode=json", "--no-tools", "--max-time", str(timeout)]
             if sys_text:
-                cmd += ["--system-prompt", sys_text]
-            if model:
-                cmd += ["--model", model]
-            cmd += [f"@{prompt_file}"]
-            stdin_needed = False
-        else:  # claude
-            cmd = [HARNESS_CONFIG["claude"]["exe"], "-p", "--output-format", "json",
-                   "--model", model or "claude-sonnet-4-20250514",
-                   "--max-budget-usd", str(budget),
-                   "--dangerously-skip-permissions", "--no-session-persistence",
-                   "--bare", "--mcp-config", str(_MCP_CONFIG_PATH),
-                   "--add-dir", str(PROJECT_ROOT.parent)]
-            if system_prompt_path:
-                cmd += ["--system-prompt-file", str(system_prompt_path)]
-            if result_schema:
-                cmd += ["--json-schema", json.dumps(result_schema)]
-            stdin_needed = True
+                cfg["system_prompt_text"] = sys_text
+        elif sys_text:
+            final_prompt = f"{sys_text}\n\n---\n\n{prompt}"
 
         run_id = f"soul-{int(time.time_ns()):x}"
-        log_path = _LOG_DIR / f"soul-complete-{run_id}.log"
         logger.info("[Soul-complete] harness=%s run_id=%s", harness, run_id)
 
-        try:
-            log_fp = open(str(log_path), "a", encoding="utf-8")
-        except Exception as e:
-            self._cleanup_prompt_file(prompt_file)
-            return self._complete_error(f"log_open: {e}", harness, start)
-
-        log_fp.write(f"=== Soul Complete {run_id} ===\n")
-        log_fp.write(f"Harness: {harness}\nCommand: {' '.join(cmd)}\n\n")
-
-        popen_kwargs: dict = dict(
-            cwd=str(PROJECT_ROOT.parent),
-            stdout=log_fp,
-            stderr=subprocess.STDOUT,
-            env={**os.environ, "PYTHONUNBUFFERED": "1", "PYTHONUTF8": "1"},
-            close_fds=True,
-        )
-        popen_kwargs["stdin"] = subprocess.PIPE if stdin_needed else subprocess.DEVNULL
-        if sys.platform == "win32":
-            popen_kwargs["creationflags"] = (
-                subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.CREATE_NO_WINDOW
-            )
-            si = subprocess.STARTUPINFO()
-            si.dwFlags |= subprocess.STARTF_USESHOWWINDOW
-            si.wShowWindow = 0
-            popen_kwargs["startupinfo"] = si
-        else:
-            popen_kwargs["start_new_session"] = True
-
-        try:
-            proc = subprocess.Popen(cmd, **popen_kwargs)
-        except FileNotFoundError:
-            log_fp.close()
-            self._cleanup_prompt_file(prompt_file)
+        engine = await hrun.run_engine(harness, final_prompt, cfg, run_label=run_id)
+        if not engine.get("success"):
             self._record_failure(harness)
             return self._complete_error(
-                f"Executable not found: {HARNESS_CONFIG[harness]['exe']}",
-                harness, start)
-
-        _assign_pid_to_job(self._job_handle, proc.pid)
-
-        if stdin_needed and proc.stdin:
-            try:
-                proc.stdin.write(final_prompt.encode("utf-8"))
-                proc.stdin.close()
-            except Exception:
-                pass
-
-        try:
-            await self._watch_process(proc, log_path, timeout)
-        except Exception as e:
-            logger.warning("Soul-complete watch error: %s", e)
-
-        self._cleanup_prompt_file(prompt_file)
-        log_fp.close()
-        exit_code = proc.poll()
-
-        if exit_code is None:
-            self._terminate_process(proc)
-            self._record_failure(harness)
-            return self._complete_error("timeout", harness, start)
-
-        text, parsed = self._parse_complete_log(log_path, harness, result_schema)
-        if not text and parsed is None:
-            self._record_failure(harness)
-            return self._complete_error(
-                "parse_failed", harness, start,
-                detail=self._read_log_tail(log_path))
+                engine.get("error", "engine_failed"), harness, start,
+                detail=engine.get("detail", ""))
 
         self._record_success(harness)
+        text = engine.get("text", "")
+        parsed = engine.get("parsed")
+        if parsed is None and (result_schema is not None or text.lstrip().startswith(("{", "["))):
+            block = self._extract_json_block(text)
+            if block is not None and not isinstance(block, str):
+                parsed = block
+
         token_estimate = max(1, (len(prompt) + len(text)) // 4)
         rate = self._TOKEN_COST_PER_1K.get(harness, 0.001)
         cost_estimate = round(token_estimate / 1000 * rate, 6)

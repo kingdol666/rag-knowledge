@@ -6,374 +6,375 @@ description: >
   (E0 prepare+LLM refine, E1 heuristic), quality gate (E2), draft pool (E3),
   experience-first retrieval (E4 with strict P0/P1/P2 credibility tiers),
   document linkage stale detection (E6), dashboard (E8), decay cycles (E11),
-  auto health check+cleanup (E12). Triggered by: 经验, 经验库, experience,
-  lesson, best practice, 实践, 案例, 故障经验, 运维经验, lesson learned,
-  提取经验, 从文档提炼, 总结经验, 经验看板, 经验同步.
+  auto health check+cleanup (E12). Triggered by: experience, experience library,
+  experience, lesson, best practice, practice, case study, incident experience,
+  ops experience, lesson learned,
+  extract experience, extract from documents, summarize experience, experience dashboard, experience sync.
 ---
 
-## ⭐ 相关 Skills
-- 文档入库后自动提取经验 → `skill://knowledgebase-ingest` 的 A7 八项终检
-- 文档优先检索 → `skill://knowledgebase-search` (QDCVR) / `skill://knowledgebase-search-enterprise` (跨库)
-- 批量操作经验 → `skill://knowledgebase-batch` 的 B6 导出步骤
-- 经验总结入库 → `skill://knowledgebase-experience-summarize` (完整 E0-E12 提取+审核流程)
-- KB 完整性校验 → `skill://knowledgebase-verify` 的 V8 经验健康检查
-- KB 整理重组 → `skill://knowledgebase-organize`
-- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)
+## ⭐ Related Skills
+- Auto-extract experiences after document ingest → `skill://knowledgebase-ingest` A7 eight-item final check
+- Document-first retrieval → `skill://knowledgebase-search` (QDCVR) / `skill://knowledgebase-search-enterprise` (cross-library)
+- Batch experience operations → `skill://knowledgebase-batch` B6 export step
+- Experience summarization & ingestion → `skill://knowledgebase-experience-summarize` (full E0-E12 extraction+review flow)
+- KB integrity validation → `skill://knowledgebase-verify` V8 experience health check
+- KB organize & restructure → `skill://knowledgebase-organize`
+- Architecture mental model → [kb-architecture.md](../knowledgebase/references/kb-architecture.md) of `skill://knowledgebase`
 
-## Sequential Workflow (按场景选择入口)
+## Sequential Workflow (Choose Entry by Scenario)
 
-**Step 1 — Pre-Flight 预检**: 执行 mcp-preflight-check 的一探双检流程，确认 MCP+backend+web 健康。
-**Step 2 — 场景路由**: 判断用户需求属于哪个入口（故障查询/新文档/管理/维护）。
-**Step 3 — 故障查询 (经验优先)**: experience_search_smart(query) → E4a 内容裁决 (0-6 评分) → 内容>=5 直接答 / 否则回退 kb_search_two_stage。
-**Step 4 — 新文档自动提取**: 入库后 → `experience_extract(kb_id, mode="prepare")` 获取文档+模板 → Agent LLM 精炼 → E2 质量门控 → 直接发布或进入草稿池。批量扫描时先 `experience_extract(kb_id, mode="heuristic", dry_run=True)` 筛选高置信候选。
-**Step 5 — 经验管理 (CRUD)**: experience_create/update/delete/apply/review → 自动索引 + 元数据写入。
-**Step 6 — 定期维护**: experience_check_stale → E6a stale 更新流程 → experience_apply_decay → experience_sync_kb。
-**Step 7 — 草稿审核 (E3)**: drafts_list → draft_read → draft_approve(edits=精炼字段) 或 draft_reject。
-**Step 8 — 看板监控 (E8)**: experience_dashboard(kb_id) → 全面统计 + 待处理数。
+**Step 1 — Pre-Flight check**: run the mcp-preflight-check one-probe double-check to confirm MCP+backend+web health.
+**Step 2 — Scenario routing**: determine which entry the user request belongs to (incident lookup/new documents/management/maintenance).
+**Step 3 — Incident lookup (experience first)**: experience_search_smart(query) → E4a content ruling (0-6 scoring) → content>=5 answer directly / otherwise fall back to kb_search_two_stage.
+**Step 4 — Auto-extract from new documents**: after ingest → `experience_extract(kb_id, mode="prepare")` to get documents+template → Agent LLM refinement → E2 quality gate → publish directly or enter the draft pool. For bulk scans, first `experience_extract(kb_id, mode="heuristic", dry_run=True)` to filter high-confidence candidates.
+**Step 5 — Experience management (CRUD)**: experience_create/update/delete/apply/review → auto-indexing + metadata writes.
+**Step 6 — Periodic maintenance**: experience_check_stale → E6a stale update flow → experience_apply_decay → experience_sync_kb.
+**Step 7 — Draft review (E3)**: drafts_list → draft_read → draft_approve(edits=refined fields) or draft_reject.
+**Step 8 — Dashboard monitoring (E8)**: experience_dashboard(kb_id) → full statistics + pending counts.
 
-# Experience — 全生命周期管理（E0-E12）
+# Experience — Full Lifecycle Management (E0-E12)
 
-## ⭐ Execution Model · Pre-Flight · Architecture（作业首步，强制）
+## ⭐ Execution Model · Pre-Flight · Architecture (First Step of Any Job, Mandatory)
 
-**执行者：Archival agent** — 用 `task` 委托执行（**委托模板 + 三角色执行模型 + 组合任务边界**：必读 [execution-model.md](../knowledgebase/references/execution-model.md)）。**Pre-Flight**：未通过禁作业 — 一探双检 `kb_project_status` → 分支处置 → 冒烟测试，完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)。**心智模型**：操作前必读 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层模型 + 一致性不变量 + 91 工具地图）；MCP 优先原则（禁 terminal/HTTP 绕过）见 [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) 第五条。
+**Executor: Archival agent** — delegate via `task` (**delegation template + three-role execution model + combined-task boundaries**: must-read [execution-model.md](../knowledgebase/references/execution-model.md)). **Pre-Flight**: no work before it passes — one-probe double-check `kb_project_status` → branch handling → smoke test; full flow in [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md). **Mental model**: before operating, must-read [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer model + consistency invariants + 91-tool map); MCP-first principle (no terminal/HTTP bypass) in [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) Rule 5.
 
-## 思维框架：什么时候用经验？什么时候用文档？[IMPORTANT]
+## Mental Framework: When to Use Experiences? When to Use Documents? [IMPORTANT]
 
 ```
-用户问了一个问题
-  ├── 运维/故障/操作型（"怎么XX""报错了"）→ 经验优先！E4 检索
-  ├── 理论/原理/综述型（"什么是XX"）→ 文档优先
-  └── "把XX总结为经验" → experience-summarize（经验总结入库）
+The user asked a question
+  ├── Ops/incident/operational ("how do I XX", "it errored") → experience first! E4 retrieval
+  ├── Theory/principle/overview ("what is XX") → document first
+  └── "Summarize XX as an experience" → experience-summarize (experience summarization & ingestion)
 ```
 
 ---
 
-## 核心理念
-- **文档**：全文、自由 markdown、供阅读学习
-- **经验**：单点、结构化 JSON、供检索应用、动态可信度
-- **联动**：文档更新 → 经验自动检测 stale → 触发重新提取
+## Core Concepts
+- **Document**: full text, free-form markdown, for reading and learning
+- **Experience**: single-point, structured JSON, for retrieval and application, dynamic credibility
+- **Linkage**: document updates → experiences auto-detected as stale → triggers re-extraction
 
 ---
 
-## E0/E1 — 自动提取（从文档挖掘经验）[IMPORTANT]
+## E0/E1 — Auto-Extraction (Mining Experiences from Documents) [IMPORTANT]
 
-### E0 提取任务包（LLM 高质量提炼）
+### E0 Extraction Task Package (LLM high-quality refinement)
 ```
 experience_extract(kb_id="<KB>", mode="prepare")
 → {documents: [{path, content}], existing_scenarios, extraction_template, hint}
 ```
-Agent 拿到任务包后用 LLM 按 `extraction_template` 提炼（去重 `existing_scenarios`），产出高质量候选。
+After receiving the task package, the Agent uses the LLM to distill per `extraction_template` (deduplicating against `existing_scenarios`), producing high-quality candidates.
 
-### E1 启发式提取（规则，无需 LLM）
+### E1 Heuristic Extraction (Rules, No LLM)
 ```
 experience_extract(kb_id="<KB>", mode="heuristic", dry_run=True)
 → {total_candidates, candidates: [{title, scenario, problem, solution, key_lessons, confidence, ...}]}
 ```
-基于文档结构（## 段落）+ 关键词（problem/solution/lesson）启发式提取。
+Heuristic extraction based on document structure (## sections) + keywords (problem/solution/lesson).
 
-> [WARNING] **危险操作警告**：`dry_run=False` 会将候选直接写入草稿池。实测 heuristic 提取产出大量低质候选（章节标题被误认为 key_lessons）。**强烈不推荐**直接 dry_run=False——详见下方 E2c 推荐策略。
+> [WARNING] **Dangerous operation warning**: `dry_run=False` writes candidates directly into the draft pool. In practice, heuristic extraction produces large amounts of low-quality candidates (section titles mistaken for key_lessons). Directly using dry_run=False is **strongly discouraged** — see the E2c recommended strategy below.
 
-**提取时机**：入库新文档后（Ingest A7 通过，参见 [knowledgebase-ingest](../knowledgebase-ingest/SKILL.md) 的 A7 八项终检）；批量学习某 KB；定期丰富经验库。
+**Extraction timing**: after ingesting new documents (Ingest A7 passed; see the A7 eight-item final check in [knowledgebase-ingest](../knowledgebase-ingest/SKILL.md)); bulk-learning a KB; periodically enriching the experience library.
 
-## E2 — 质量门控（强制，提取+创建均适用）[IMPORTANT]
+## E2 — Quality Gate (Mandatory; Applies to Both Extraction and Creation) [IMPORTANT]
 
-### E2a 启发式提取质量门控（E1 产出后强制执行）
+### E2a Heuristic Extraction Quality Gate (Mandatory After E1 Output)
 ```
-对 E1 heuristic 产出的每个 candidate，逐项检查：
-  1. key_lessons 黑名单检测：
-     - 匹配章节标题模式（罗马数字 I./II. + 关键词如 INTRODUCTION/OVERVIEW/METHOD/CONCLUSION）→ ✗ 拒
-     - 匹配数字编号模式（"1 Introduction"/"3.1 Method"/"4.2 Results"）→ ✗ 拒
-     - 长度 < 20 chars 或 > 500 chars → ✗ 拒
-     - 是"核心要点"/"总结"/"概述"等空洞词 → ✗ 拒
-  2. problem/solution 质量检测：
-     - problem 是原文 raw dump > 300 chars → ✗ 拒（须提炼为简洁问题陈述）
-     - solution 是原文 raw dump > 500 chars → ✗ 拒
-  3. tags 非空检测：tags=[ ] → ✗ 拒
-  4. confidence < 0.8 → 走草稿池（不直接发布），需 LLM 精炼
+For every candidate from E1 heuristic, check each item:
+  1. key_lessons blocklist detection:
+     - Matches section-title patterns (Roman numerals I./II. + keywords like INTRODUCTION/OVERVIEW/METHOD/CONCLUSION) → ✗ reject
+     - Matches numbered patterns ("1 Introduction"/"3.1 Method"/"4.2 Results") → ✗ reject
+     - Length < 20 chars or > 500 chars → ✗ reject
+     - Empty filler phrases like "key points"/"summary"/"overview" → ✗ reject
+  2. problem/solution quality detection:
+     - problem is a raw dump > 300 chars → ✗ reject (must be distilled into a concise problem statement)
+     - solution is a raw dump > 500 chars → ✗ reject
+  3. tags non-empty detection: tags=[ ] → ✗ reject
+  4. confidence < 0.8 → route to the draft pool (do not publish directly); requires LLM refinement
 ```
-**拒绝的候选不写入草稿池**——直接丢弃，避免污染草稿审核队列。
+**Rejected candidates are not written to the draft pool** — discard directly to avoid polluting the draft review queue.
 
-### E2b 手动创建质量门控
-- scenario 必须有领域前缀（如 `llm-hallucination`），禁止 `test`
-- solution ≥ 50 chars，含具体方法（非"修改了代码/调了参数"等泛泛）
-- key_lessons 每条 ≥ 30 chars，可独立执行（非"需要调试"/"检查一下"）
-- related_docs 必须指向真实文档
-- tags ≥ 2 个（必须含领域词 + 场景词）
-- 去重：同 KB 已有相似 scenario → 走草稿审核而非新建
+### E2b Manual Creation Quality Gate
+- scenario must have a domain prefix (e.g. `llm-hallucination`); `test` is forbidden
+- solution ≥ 50 chars, containing concrete methods (not vague phrases like "modified the code/adjusted parameters")
+- each key_lessons entry ≥ 30 chars and independently actionable (not "needs debugging"/"take a look")
+- related_docs must point to real documents
+- tags ≥ 2 (must include a domain word + a scenario word)
+- Dedup: a similar scenario already exists in the KB → route to draft review instead of creating new
 
-### E2c 推荐提取策略
-- **入库后自动提取**：用 `mode="prepare"` → LLM 精炼 → 直接发布（跳过草稿池）
-- **批量扫描**：先 `mode="heuristic"` + `dry_run=True` 扫描 → 只保留 confidence≥0.8 的候选 → `mode="prepare"` 精炼
-- **禁止**：heuristic + dry_run=False 直接写入草稿池（实测产生大量垃圾）
+### E2c Recommended Extraction Strategy
+- **Auto-extract after ingest**: use `mode="prepare"` → LLM refinement → publish directly (skip the draft pool)
+- **Bulk scanning**: first `mode="heuristic"` + `dry_run=True` scan → keep only confidence≥0.8 candidates → refine with `mode="prepare"`
+- **Forbidden**: heuristic + dry_run=False writing directly to the draft pool (empirically produces large amounts of junk)
 
-## E3 — 草稿池（候选审核）[IMPORTANT]
+## E3 — Draft Pool (Candidate Review) [IMPORTANT]
 ```
-experience_drafts_list(kb_id)                      → 列出待审核草稿
-experience_draft_read(kb_id, draft_id)             → 读取草稿详情（含来源文档证据）
-experience_draft_approve(kb_id, draft_id, edits={}) → 批准→正式经验
-experience_draft_reject(kb_id, draft_id, reason)    → 拒绝→rejected/（保留原因）
+experience_drafts_list(kb_id)                      → list drafts pending review
+experience_draft_read(kb_id, draft_id)             → read draft details (including source document evidence)
+experience_draft_approve(kb_id, draft_id, edits={}) → approve → becomes a formal experience
+experience_draft_reject(kb_id, draft_id, reason)    → reject → rejected/ (reason preserved)
 ```
-**审核流程**：`drafts_list` → 逐条 `draft_read` → LLM 精炼后 `draft_approve(edits=精炼字段)` 或 `draft_reject`。
+**Review flow**: `drafts_list` → `draft_read` one by one → after LLM refinement, `draft_approve(edits=refined fields)` or `draft_reject`.
 
-## E4 — 经验优先检索（内容裁决）[IMPORTANT]
+## E4 — Experience-First Retrieval (Content Ruling) [IMPORTANT]
 
-**核心原则：内容优先，宁可不给，不要错给**——无确认经验即诚实声明盲点。
+**Core principle: content first; better to give nothing than to give something wrong** — with no confirmed experience, honestly declare the blind spot.
 
-### E4a 检索流程（两步走）
+### E4a Retrieval Flow (Two Steps)
 
 ```
-Step 1 — 经验优先（向量召回 → 内容裁决）
-  experience_search_smart(query, top_k=8) — 推荐入口 (内部: 意图识别→自适应阈值→多轮降级→检索透明化)
-  experience_search_global(query, top_k=8, score_threshold=0.45, verify_content=True) — 底层入口（兼容）
-    → 内部: 向量召回 → 硬阈值 → 经验级去重 → 内容验证 → 可信度定级
+Step 1 — Experience first (vector recall → content ruling)
+  experience_search_smart(query, top_k=8) — recommended entry (internally: intent recognition→adaptive threshold→multi-round downgrade→retrieval transparency)
+  experience_search_global(query, top_k=8, score_threshold=0.45, verify_content=True) — low-level entry (compatible)
+    → internally: vector recall → hard threshold → experience-level dedup → content verification → credibility tiering
 
-Step 2 — 内容二次裁决（强制，不可跳过）⭐
-  对 Step 1 返回的每条 P0/P1 经验，必须 experience_read(kb_id, exp_id, max_chars=2000)
-  独立做 0-6 内容评分（向量分不左右决策）：
+Step 2 — Content second ruling (mandatory, non-skippable) ⭐
+  For every P0/P1 experience returned by Step 1, must experience_read(kb_id, exp_id, max_chars=2000)
+  and independently do 0-6 content scoring (vector score does not influence the decision):
 
-  | 维度 | 分 | 判据 |
+  | Dimension | Pts | Criteria |
   |------|-----|------|
-  | **场景匹配** (0-2) | 2=直接对应查询场景；1=相关领域可迁移；0=无关 |
-  | **方案可执行** (0-2) | 2=含具体步骤/配置/命令；1=方向性指导；0=泛泛描述 |
-  | **教训可引用** (0-2) | 2=可独立引用的具体经验；1=需结合原文理解；0=空洞 |
+  | **Scenario match** (0-2) | 2=directly matches the query scenario; 1=related domain, transferable; 0=irrelevant |
+  | **Solution executability** (0-2) | 2=contains concrete steps/configs/commands; 1=directional guidance; 0=generic description |
+  | **Lesson citability** (0-2) | 2=concrete experience citable independently; 1=needs the original text to understand; 0=empty |
 
-  内容评分 < 3 → 丢弃（向量分再高也没用）
-  内容评分 3-4 → P2 弱参考（标注置信度不足）
-  内容评分 ≥ 5 → 纳入答案
+  Content score < 3 → discard (no matter how high the vector score)
+  Content score 3-4 → P2 weak reference (flag insufficient confidence)
+  Content score ≥ 5 → include in the answer
 
-Step 3 — 内容 ≥ 5 则直接作答（跳过文档检索）
-  无 P0/P1 或内容 < 3 → 补充 kb_search_two_stage 文档检索
+Step 3 — If content ≥ 5, answer directly (skip document retrieval)
+  No P0/P1 or content < 3 → supplement with kb_search_two_stage document retrieval
 ```
 
-### E4b 检索结果呈现规范
+### E4b Retrieval Result Presentation Standard
 
 ```
-## 经验（优先检索）
-- [P0/P1/P2] <经验标题> @ <KB/exp_id>
-  - 场景：<scenario>
-  - 内容评分：<score>/6（场景X + 方案X + 教训X）
-  - 可信度：<rating> 分 · <applied> 次应用 · <review> 次评审
-  - 关联文档：<related_docs>
+## Experiences (retrieved first)
+- [P0/P1/P2] <experience title> @ <KB/exp_id>
+  - Scenario: <scenario>
+  - Content score: <score>/6 (scenario X + solution X + lesson X)
+  - Credibility: <rating> points · applied <applied> times · reviewed <review> times
+  - Related documents: <related_docs>
 
-（仅内容 ≥ 5 的经验纳入答案正文）
-（无内容 ≥ 3 的经验 → 诚实声明"无相关经验"→ 补充文档检索）
+(Only experiences with content ≥ 5 are included in the answer body)
+(No experiences with content ≥ 3 → honestly declare "no relevant experiences" → supplement with document retrieval)
 ```
 
-### E4c 检索透明化
-- `vector_recall` — 向量召回总数（硬阈值前）
-- `tier_counts` — {P0, P1, P2, discarded} 分级统计
-- `content_ruling` — 内容裁决摘要（"召回5→读4→合格2 P0:1 P1:1 P2:2"）
-- 每条经验含 `vector_score` + `content_score` + `tier` + `tier_reason`
+### E4c Retrieval Transparency
+- `vector_recall` — total vector recall count (before the hard threshold)
+- `tier_counts` — {P0, P1, P2, discarded} tier statistics
+- `content_ruling` — content ruling summary ("recall 5→read 4→qualify 2 P0:1 P1:1 P2:2")
+- Each experience carries `vector_score` + `content_score` + `tier` + `tier_reason`
 
-## E4d — 智能检索增强 [IMPORTANT]
+## E4d — Smart Search Enhancement [IMPORTANT]
 
-**推荐入口**: `experience_search_smart(query, top_k=8)` — 内部实现查询意图识别 + 自适应阈值（troubleshooting 0.55 / best_practice 0.45 / learning 0.35 / decision 0.50）+ 多轮降级 + 反例检测 + 透明化字段。
+**Recommended entry**: `experience_search_smart(query, top_k=8)` — internally implements query intent recognition + adaptive thresholds (troubleshooting 0.55 / best_practice 0.45 / learning 0.35 / decision 0.50) + multi-round downgrade + counter-example detection + transparency fields.
 
-详细机制（意图阈值表、3 轮降级逻辑、counter-example detection、rerank 权重、与 E4a 关系）见 [smart-search-and-cleanup.md](references/smart-search-and-cleanup.md) §E4d。
+For detailed mechanisms (intent threshold table, 3-round downgrade logic, counter-example detection, rerank weights, relationship to E4a), see [smart-search-and-cleanup.md](references/smart-search-and-cleanup.md) §E4d.
 
-> Agent 应优先使用 `experience_search_smart`；仅在需手动控制阈值时用 `experience_search_global`。
+> Agents should prefer `experience_search_smart`; use `experience_search_global` only when manually controlling thresholds.
 
-## E5 — 可信度分级
+## E5 — Credibility Tiering
 
-| 条件 | 层级 | 动作 |
+| Condition | Tier | Action |
 |---|---|---|
-| vector≥0.65 ∧ content≥6 ∧ rating≥4 ∧ review≥1 | **P0 Strong** | 直接引用，置顶 |
-| vector≥0.45 ∧ content≥4 | **P1 Reference** | 采用并标注 |
-| vector≥0.35 ∧ content≥3 | **P2 Weak** | 默认抑制（仅 P0/P1 不足时补）|
-| 内容验证不过 OR 向量<0.35 | **DISCARD** | 永不返回 |
-| disputed (review≥3 ∧ rating<2) | 降级→max P2 | 有争议降级 |
-| unvetted (0 review ∧ 0 applied) | 降级→max P1 | 未评审压制 |
+| vector≥0.65 ∧ content≥6 ∧ rating≥4 ∧ review≥1 | **P0 Strong** | Cite directly, place at top |
+| vector≥0.45 ∧ content≥4 | **P1 Reference** | Adopt with attribution |
+| vector≥0.35 ∧ content≥3 | **P2 Weak** | Suppressed by default (only added when P0/P1 insufficient)|
+| Content verification fails OR vector<0.35 | **DISCARD** | Never returned |
+| disputed (review≥3 ∧ rating<2) | downgrade→max P2 | Downgraded due to dispute |
+| unvetted (0 review ∧ 0 applied) | downgrade→max P1 | Unreviewed suppression |
 
-> 修饰符详情（disputed/unvetted）+ 短内容虚假命中防护（<50 chars 降级规则）见 [smart-search-and-cleanup.md](references/smart-search-and-cleanup.md) §E5。
+> Modifier details (disputed/unvetted) + short-content false-hit protection (<50 chars downgrade rule) in [smart-search-and-cleanup.md](references/smart-search-and-cleanup.md) §E5.
 
-## E6 — 文档联动 / stale 检测 + 自动更新 [IMPORTANT]
-
-```
-experience_check_stale(kb_id)          → 检查 KB 经验与文档一致性（空 kb_id = 全库检查）
-experience_sync_kb(kb_id)              → 整库标记 needs_sync
-```
-
-**检测逻辑**：
-- 文档 mtime > 经验 updated_at → **stale**（经验过时）
-- 文档不存在 → **orphan**（引用失效）
-
-### E6a 经验更新迭代流程（stale → re-extract → update）⭐
-
-当 `experience_check_stale` 发现 stale 经验时，按以下流程更新：
+## E6 — Document Linkage / Stale Detection + Auto-Update [IMPORTANT]
 
 ```
-Step 1: experience_read(kb_id, exp_id) → 读取当前经验内容
-Step 2: kb_doc_read(kb_id, related_doc_path, max_chars=5000) → 读取关联文档最新内容
-Step 3: LLM 对比 文档新内容 vs 经验旧内容，判断是否需要更新：
-        - 文档新增了哪些内容？
-        - 旧经验的 problem/solution/key_lessons 是否依然准确？
-        - 是否有新的可提取经验？
-Step 4a: 经验仍准确 → experience_update(kb_id, exp_id, updated_at=now) → 刷新时间戳
-Step 4b: 经验需更新 → LLM 提炼新的 problem/solution/key_lessons
-          → experience_update(kb_id, exp_id, **updated_fields) → 自动重建向量索引
-Step 4c: 文档已不包含原经验内容 → 标记 orphan → 按 E12 orphan 矩阵处理
-Step 5: experience_sync_kb(kb_id) → 清除 stale 标记
+experience_check_stale(kb_id)          → check KB experience-document consistency (empty kb_id = whole library)
+experience_sync_kb(kb_id)              → mark the entire KB needs_sync
 ```
 
-**更新优先级**：
-| 经验状态 | 动作 | 理由 |
+**Detection logic**:
+- Document mtime > experience updated_at → **stale** (experience outdated)
+- Document missing → **orphan** (reference broken)
+
+### E6a Experience Update Iteration Flow (stale → re-extract → update) ⭐
+
+When `experience_check_stale` finds stale experiences, update them per the following flow:
+
+```
+Step 1: experience_read(kb_id, exp_id) → read the current experience content
+Step 2: kb_doc_read(kb_id, related_doc_path, max_chars=5000) → read the latest content of the related document
+Step 3: LLM compares new document content vs old experience content to decide whether an update is needed:
+        - What new content did the document add?
+        - Are the old experience's problem/solution/key_lessons still accurate?
+        - Are there new extractable experiences?
+Step 4a: Experience still accurate → experience_update(kb_id, exp_id, updated_at=now) → refresh the timestamp
+Step 4b: Experience needs updating → LLM distills new problem/solution/key_lessons
+          → experience_update(kb_id, exp_id, **updated_fields) → vector index rebuilt automatically
+Step 4c: Document no longer contains the original experience → mark orphan → handle per the E12 orphan matrix
+Step 5: experience_sync_kb(kb_id) → clear the stale flag
+```
+
+**Update priority**:
+| Experience state | Action | Reason |
 |----------|------|------|
-| stale + P1/P0 + applied>0 | 优先更新 | 高价值经验，确保准确 |
-| stale + P2 + applied=0 | 延迟处理 | 低价值，静默标记 |
-| orphan + applied>0 | 保留内容，清 related_docs | 经验仍有用 |
-| orphan + applied=0 + rating=0 | 直接删除 | 零价值残留 |
+| stale + P1/P0 + applied>0 | Update with priority | High-value experience; ensure accuracy |
+| stale + P2 + applied=0 | Defer | Low value; mark silently |
+| orphan + applied>0 | Keep content, clear related_docs | Experience still useful |
+| orphan + applied=0 + rating=0 | Delete directly | Zero-value residue |
 
-**联动流程**：文档更新 → `check_stale` 发现 stale → Agent 读 related_docs 重新提取 → `update_experience` 更新 → `sync_kb` 验证。
+**Linkage flow**: document updated → `check_stale` finds stale → Agent reads related_docs and re-extracts → `update_experience` updates → `sync_kb` verifies.
 
-## E7 — 搜索路径
+## E7 — Search Paths
 ```
-故障型: experience_search_smart (推荐) → P0 直接答
-  优化: experience_search_smart → experience_rerank → 最终排序
-通用型: kb_search_two_stage → experience_search_global 补充
+Incident-type: experience_search_smart (recommended) → answer directly from P0
+  Optimized: experience_search_smart → experience_rerank → final ranking
+General: kb_search_two_stage → experience_search_global as supplement
 ```
 
-## E8 — 经验看板
+## E8 — Experience Dashboard
 ```
 experience_dashboard(kb_id) → {total, by_tier:{P0,P1,P2}, summary, drafts_pending, stale, orphan, needs_sync}
 ```
 
-## E8a — 冥想自动归纳（Meditation）
+## E8a — Meditation Auto-Induction (Meditation)
 
-经验子系统内置自动归纳调度器，从知识库文档中自动提取经验候选。
+The experience subsystem has a built-in auto-induction scheduler that automatically extracts experience candidates from knowledge base documents.
 
 ```
-experience_meditation_status()   → 调度器状态（enabled/interval/last_run/harnesses/circuit_breakers）
-experience_meditation_run(kb_id) → 手动触发一次冥想（**非阻塞**：立即返回 task_id，agent 后台运行数分钟）
-experience_meditation_task_status(task_id) → 轮询冥想任务结果（status: running→done，done 时含 experiences/summary）
-experience_meditation_config_get(kb_id)   → 读取某 KB 的冥想配置
-experience_meditation_config_update(kb_id, enabled, auto_publish, ...) → 更新冥想配置
-experience_meditation_history(kb_id, limit) → 查看冥想运行历史
+experience_meditation_status()   → scheduler status (enabled/interval/last_run/harnesses/circuit_breakers)
+experience_meditation_run(kb_id) → manually trigger one meditation (**non-blocking**: returns task_id immediately; agent runs for minutes in the background)
+experience_meditation_task_status(task_id) → poll meditation task results (status: running→done; when done includes experiences/summary)
+experience_meditation_config_get(kb_id)   → read a KB's meditation config
+experience_meditation_config_update(kb_id, enabled, auto_publish, ...) → update meditation config
+experience_meditation_history(kb_id, limit) → view meditation run history
 ```
 
-| 工具 | 用途 | 频率 |
+| Tool | Purpose | Frequency |
 |------|------|------|
-| `experience_meditation_status` | 巡检：调度器是否启用、harness 健康、熔断器状态 | 每次经验操作前 |
-| `experience_meditation_run` | 手动触发：对新入库文档快速提取经验 | 入库后按需 |
-| `experience_meditation_config_get/update` | 配置：开启/关闭自动归纳，设置 auto_publish | 按需 |
-| `experience_meditation_history` | 审计：查看历史运行记录、产出数量 | 巡检时 |
+| `experience_meditation_status` | Inspection: scheduler enabled, harness health, circuit-breaker state | Before every experience operation |
+| `experience_meditation_run` | Manual trigger: quickly extract experiences from newly ingested documents | On demand after ingest |
+| `experience_meditation_config_get/update` | Config: enable/disable auto-induction, set auto_publish | On demand |
+| `experience_meditation_history` | Audit: view historical runs and output counts | During inspections |
 
 
-## E9-E10 — 导出与批量操作
+## E9-E10 — Export and Batch Operations
 
-当前无专用导出工具。替代方案：
-- **导出**：`experience_list(kb_id)` 获取全部经验元数据 → Agent 格式化为 JSON/CSV/Markdown
-- **批量**：用 `knowledgebase-batch` skill 的 B6 步骤（导出摘要）或循环 `experience_read` 批量读取
+No dedicated export tool currently exists. Alternatives:
+- **Export**: `experience_list(kb_id)` to get all experience metadata → Agent formats as JSON/CSV/Markdown
+- **Batch**: use the `knowledgebase-batch` skill's B6 step (export summary) or loop `experience_read` for bulk reads
 
-## E11 — 衰减周期
+## E11 — Decay Cycles
 ```
-experience_apply_decay(kb_id) → 应用规则标记
+experience_apply_decay(kb_id) → applies rules and marks
 ```
-| 规则 | 条件 | 效果 |
+| Rule | Condition | Effect |
 |---|---|---|
-| stale_unverified | 创建>30天 ∧ 0应用 | 检索降级 |
-| disputed | ≥3评审 ∧ rating<2.0 | 降到 P2 |
-| unvetted | 0评审 ∧ 0应用 | 最高 P1 |
+| stale_unverified | created >30 days ∧ 0 applications | Retrieval downgrade |
+| disputed | ≥3 reviews ∧ rating<2.0 | Down to P2 |
+| unvetted | 0 reviews ∧ 0 applications | Max P1 |
 
-**定期跑**（如每周）保持经验新鲜度。
+**Run periodically** (e.g. weekly) to keep experiences fresh.
 
 ---
 
-## 基础 CRUD
+## Basic CRUD
 
 ### Create
 ```
 experience_create(kb_id, title, scenario, category, problem, solution, result,
                   key_lessons, tags, severity, related_docs, prerequisites, metrics)
 ```
-**创建后自动完成**：向量索引（6 chunks）+ 元数据写入 + 磁盘文件 三路一致。
+**Auto-completed after creation**: vector indexing (6 chunks) + metadata writes + disk file — all three consistent.
 
-**⚠️ 必须使用合法枚举值**（非法值返回 HTTP 422）：
-- `category` ∈ {`best_practice`, `troubleshooting`, `lesson_learned`, `optimization`, `tip`, `workflow`, `decision`}（❌ 不是 `bug`/`issue`）
-- `severity` ∈ {`critical`, `important`, `normal`, `tip`}（❌ 不是 `high`/`low`）
-- 注意 `tip` 同时是 category 和 severity 的合法值；`result` 默认 `success`
+**⚠️ Must use valid enum values** (invalid values return HTTP 422):
+- `category` ∈ {`best_practice`, `troubleshooting`, `lesson_learned`, `optimization`, `tip`, `workflow`, `decision`} (❌ not `bug`/`issue`)
+- `severity` ∈ {`critical`, `important`, `normal`, `tip`} (❌ not `high`/`low`)
+- Note `tip` is a valid value for both category and severity; `result` defaults to `success`
 
 ### Read / List / Update / Delete
 ```
-experience_read(kb_id, exp_id)                                    → 含 .md 正文
-experience_list(kb_id, scenario="", category="", tag="")          → 按评分排序
-experience_update(kb_id, exp_id, **fields)                        → 自动重建索引
-experience_delete(kb_id, exp_id)                                  → 永久删除
+experience_read(kb_id, exp_id)                                    → includes the .md body
+experience_list(kb_id, scenario="", category="", tag="")          → sorted by rating
+experience_update(kb_id, exp_id, **fields)                        → rebuilds the index automatically
+experience_delete(kb_id, exp_id)                                  → permanent deletion
 ```
 
-### Apply / Review（动态可信度）
+### Apply / Review (Dynamic Credibility)
 ```
 experience_apply(kb_id, exp_id, user, context, result, notes)     → applied_count+1
-experience_review(kb_id, exp_id, reviewer, rating, comment)       → 重算 rating_avg
+experience_review(kb_id, exp_id, reviewer, rating, comment)       → recalculates rating_avg
 ```
 
 ### Search
-| 方法 | 工具 |
+| Method | Tool |
 |---|---|
-| 智能检索（推荐入口） | `experience_search_smart(query, top_k)` |
-| 全局跨库 | `experience_search_global(query, top_k)` |
-| 元信息 | `experience_search_global(kb_id, query, top_k)` |
-| 向量语义 | `experience_search_global(kb_id, query, top_k)` |
-| 按场景 | `experience_list(kb_id, scenario="...")` |
-| 智能重排序 | `experience_rerank(query, experiences_json)` |
-| 统计 | `experience_summary(kb_id)` / `experience_dashboard(kb_id)` |
+| Smart retrieval (recommended entry) | `experience_search_smart(query, top_k)` |
+| Global cross-library | `experience_search_global(query, top_k)` |
+| Metadata | `experience_search_global(kb_id, query, top_k)` |
+| Vector semantic | `experience_search_global(kb_id, query, top_k)` |
+| By scenario | `experience_list(kb_id, scenario="...")` |
+| Smart reranking | `experience_rerank(query, experiences_json)` |
+| Statistics | `experience_summary(kb_id)` / `experience_dashboard(kb_id)` |
 
 ---
 
-## 推荐工作流
+## Recommended Workflows
 
-### 新文档入库 → 自动丰富经验
+### New Document Ingested → Auto-Enrich Experiences
 ```
-Ingest A7 通过 → experience_extract(kb_id, mode="heuristic", dry_run=True)
-  → 候选≥0.8 confidence: approve 入库
-  → 候选<0.8: 写草稿池，等审核
-```
-
-### 故障查询 → 经验优先答
-```
-experience_search_global(query) → P0 经验直接答（秒级）
-  → 不够才补 kb_search_two_stage
+Ingest A7 passed → experience_extract(kb_id, mode="heuristic", dry_run=True)
+  → candidates ≥0.8 confidence: approve into the library
+  → candidates <0.8: write to the draft pool, await review
 ```
 
-### 文档更新 → 经验联动
+### Incident Lookup → Experience-First Answer
 ```
-文档更新 → experience_check_stale(kb_id)
-  → stale 经验 → experience_extract 重新提取 → update_experience
-```
-
-### 定期维护
-```
-每周: experience_apply_decay(kb_id) 保持新鲜度
-每月: experience_dashboard(kb_id) 评估覆盖度，补充缺口
+experience_search_global(query) → answer directly from P0 experiences (seconds)
+  → only supplement kb_search_two_stage if insufficient
 ```
 
-## E12 — 经验自动体检与清理 [IMPORTANT]
+### Document Updated → Experience Linkage
+```
+Document updated → experience_check_stale(kb_id)
+  → stale experiences → experience_extract re-extraction → update_experience
+```
 
-**触发**：每次 `knowledgebase-verify` V8 步骤 / 每月定期 / 删除文档后联动。
+### Periodic Maintenance
+```
+Weekly: experience_apply_decay(kb_id) to keep experiences fresh
+Monthly: experience_dashboard(kb_id) to assess coverage and fill gaps
+```
 
-**流程**：`experience_check_stale()`（空 kb_id=全库）→ stale/orphan 检测 → 分类处理 → 测试污染清理。
+## E12 — Experience Auto Health Check and Cleanup [IMPORTANT]
 
-清理决策矩阵（orphan/stale/test污染/disputed 各条件对应动作）和详细检测流程见 [smart-search-and-cleanup.md](references/smart-search-and-cleanup.md) §E12。
+**Trigger**: every `knowledgebase-verify` V8 step / monthly scheduled / linked after document deletion.
 
-> ⚠️ 测试污染检测必须用 `experience_list`（非 summary，后者仅返回 top 5），获取 `created_at` 做 >7d 老化判断。
+**Flow**: `experience_check_stale()` (empty kb_id = whole library) → stale/orphan detection → categorized handling → test pollution cleanup.
+
+For the cleanup decision matrix (orphan/stale/test pollution/disputed conditions mapped to actions) and detailed detection flow, see [smart-search-and-cleanup.md](references/smart-search-and-cleanup.md) §E12.
+
+> ⚠️ Test pollution detection must use `experience_list` (not summary, which only returns top 5), getting `created_at` for the >7d aging judgment.
 
 ---
 
 ## References
 
-- 入库流程参考：[knowledgebase-ingest](../knowledgebase-ingest/SKILL.md) — Ingest A7 终检、文档解析提交流程
-- 图谱联动参考：[knowledgebase-graph](../knowledgebase-graph/SKILL.md) — 知识图谱与经验的关联检索
-- 校验流程参考：[knowledgebase-verify](../knowledgebase-verify/SKILL.md) — 全库完整性校验（触发 E12 自动体检）
-- 经验增强机制设计：E0-E12 完整生命周期（extract/drafts/stale/sync/dashboard/decay），分层架构（后端数据/MCP编排/Agent LLM）
+- Ingest flow reference: [knowledgebase-ingest](../knowledgebase-ingest/SKILL.md) — Ingest A7 final check, document parsing submission flow
+- Graph linkage reference: [knowledgebase-graph](../knowledgebase-graph/SKILL.md) — knowledge graph and experience-associated retrieval
+- Validation flow reference: [knowledgebase-verify](../knowledgebase-verify/SKILL.md) — whole-library integrity validation (triggers the E12 auto health check)
+- Experience enhancement mechanism design: E0-E12 full lifecycle (extract/drafts/stale/sync/dashboard/decay), layered architecture (backend data/MCP orchestration/Agent LLM)
 
-## ⚠️ NEVER 清单
+## ⚠️ NEVER List
 
-| ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
+| ❌ Don't do this | Why | ✅ Do this instead |
 |-------------|------|-------------|
-| 创建经验缺 problem/solution/lessons | 检索命中也没用 | 三者必须非空且具体 |
-| 跳过 E2 质量门控 | 低质经验污染库 | scenario/related_docs 必须验证 |
-| 维护时不跑 stale 检测 | 过时经验误导决策 | `check_stale` 至少每月一次 |
-| 用 summary/dashboard 的 avg_rating 判断库质量 | 未评审经验(review_count=0)不计入avg_rating但显示为unrated_count，需同时看两字段 | 关注 `reviewed_count`+`unrated_count`，而非只看 avg_rating |
-| 不变动时狂跑 `apply_decay` | 没必要 | 每周一次足够 |
-| 把"经验"当文档写（长文/大段落） | 经验是单点结构化 | 一个问题→一个方案→一个教训 |
-| 故障查询不先查经验 | 错失秒级答案 | 故障型：`experience_search_smart` 优先，`experience_search_global` 兜底，文档补充 |
-| 直接调 experience_search_global 做故障查询 | 丢失智能意图识别+多轮降级 | 用 `experience_search_smart` 作为推荐入口，`_global` 仅在手动控制时使用 |
+| Create experiences lacking problem/solution/lessons | Useless even if retrieval hits them | All three must be non-empty and specific |
+| Skip the E2 quality gate | Low-quality experiences pollute the library | scenario/related_docs must be verified |
+| Skip stale detection during maintenance | Outdated experiences mislead decisions | `check_stale` at least monthly |
+| Judge library quality by summary/dashboard avg_rating | Unreviewed experiences (review_count=0) don't count into avg_rating but show in unrated_count; check both fields | Watch `reviewed_count`+`unrated_count`, not just avg_rating |
+| Run `apply_decay` when nothing changed | Unnecessary | Once a week is enough |
+| Write "experiences" as documents (long prose) | Experiences are single-point and structured | One problem→one solution→one lesson |
+| Incident lookup without checking experiences first | Misses second-level answers | Incident-type: `experience_search_smart` first, `experience_search_global` as backstop, documents as supplement |
+| Directly call experience_search_global for incident lookups | Loses smart intent recognition + multi-round downgrades | Use `experience_search_smart` as the recommended entry; `_global` only for manual control |

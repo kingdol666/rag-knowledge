@@ -44,12 +44,17 @@ DEFAULT_MEDITATION_CONFIG: dict[str, Any] = {
 
 
 def _default_harness() -> str:
-    """配置驱动的默认 harness(soul.default_harness, 默认 omp)。"""
+    """配置驱动的默认 harness，可用性感知：配置引擎未装时取已发现引擎
+    （同步路径只消费探测缓存，冷启动回落配置值 soul.default_harness）。"""
     try:
-        from app.config import config
-        return config.soul_default_harness
+        from app.services.harness_registry import resolve_default_harness_cached
+        return resolve_default_harness_cached()
     except Exception:
-        return "omp"
+        try:
+            from app.config import config
+            return config.soul_default_harness
+        except Exception:
+            return "omp"
 
 
 def _normalize_path(p: str) -> str:

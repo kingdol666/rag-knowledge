@@ -43,6 +43,24 @@ async function ensureDirectory(dirPath: string): Promise<void> {
   }
 }
 
+// Validated backend fetch — the backend URL is env/config driven, so every
+// egress is checked to be http(s) and anchored to the configured host before
+// the request fires (SSRF guard; backend is a local loopback service).
+function resolveBackendUrl(raw?: string): string {
+  const url = new URL(raw || 'http://localhost:8765')
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+    throw new Error(`Blocked backend URL scheme: ${url.protocol}`)
+  }
+  return url.origin
+}
+async function backendFetch(backendUrl: string, path: string, init?: RequestInit): Promise<Response> {
+  const base = resolveBackendUrl(backendUrl)
+  if (!path.startsWith('/') || /[\u000d\u000a\u0000]/.test(path)) {
+    throw new Error(`Invalid backend path: ${path}`)
+  }
+  return fetch(`${base}${path}`, init)
+}
+
 export class TreeFileSystemService {
   private basePath: string
   private metadataPath: string
@@ -1007,14 +1025,14 @@ export class TreeFileSystemService {
       const kbId = folder.id || folder.path
       const config = getServerConfig()
       const backendUrl = process.env.BACKEND_URL || config.backend_url || 'http://localhost:8765'
-      fetch(`${backendUrl}/api/v1/search/kb/${encodeURIComponent(kbId)}`, {
+      backendFetch(backendUrl, `/api/v1/search/kb/${encodeURIComponent(kbId)}`, {
         method: 'DELETE',
       }).then(() => {
         console.log(`[deleteFolder] cleaned vector collection for KB: ${kbId}`)
       }).catch((e) => {
         console.warn(`[deleteFolder] vector collection cleanup failed (non-fatal):`, e)
       })
-      fetch(`${backendUrl}/api/v1/graph/kb/${encodeURIComponent(kbId)}`, {
+      backendFetch(backendUrl, `/api/v1/graph/kb/${encodeURIComponent(kbId)}`, {
         method: 'DELETE',
       }).then(() => {
         console.log(`[deleteFolder] cleaned graph data for KB: ${kbId}`)
@@ -1104,7 +1122,7 @@ export class TreeFileSystemService {
 
       // 1. Delete graph node (cross-KB shared entities are preserved)
       try {
-        await fetch(`${backendUrl}/api/v1/graph/document?doc_path=${encodeURIComponent(docPath)}`, {
+        await backendFetch(backendUrl, `/api/v1/graph/document?doc_path=${encodeURIComponent(docPath)}`, {
           method: 'DELETE',
         })
         console.log(`[deleteFile] cleaned graph node: ${docPath}`)
@@ -1113,7 +1131,7 @@ export class TreeFileSystemService {
       // 2. Delete vector chunks
       if (kbId) {
         try {
-          await fetch(`${backendUrl}/api/v1/search/document?kb_id=${encodeURIComponent(kbId)}&doc_path=${encodeURIComponent(docPath)}`, {
+          await backendFetch(backendUrl, `/api/v1/search/document?kb_id=${encodeURIComponent(kbId)}&doc_path=${encodeURIComponent(docPath)}`, {
             method: 'DELETE',
           })
           console.log(`[deleteFile] cleaned vector chunks: ${docPath}`)
@@ -1412,7 +1430,7 @@ export class TreeFileSystemService {
       // 1. Clean old-path graph nodes (cross-KB shared entities preserved)
       if (sourceKbId || oldDocPath) {
         try {
-          await fetch(`${backendUrl}/api/v1/graph/document?doc_path=${encodeURIComponent(oldDocPath)}`, {
+          await backendFetch(backendUrl, `/api/v1/graph/document?doc_path=${encodeURIComponent(oldDocPath)}`, {
             method: 'DELETE',
           })
           console.log(`[moveFile] cleaned old graph node: ${oldDocPath}`)
@@ -1422,7 +1440,7 @@ export class TreeFileSystemService {
       // 2. Clean old-path vector chunks
       if (sourceKbId) {
         try {
-          await fetch(`${backendUrl}/api/v1/search/document?kb_id=${encodeURIComponent(sourceKbId)}&doc_path=${encodeURIComponent(oldDocPath)}`, {
+          await backendFetch(backendUrl, `/api/v1/search/document?kb_id=${encodeURIComponent(sourceKbId)}&doc_path=${encodeURIComponent(oldDocPath)}`, {
             method: 'DELETE',
           })
           console.log(`[moveFile] cleaned old vector chunks: ${oldDocPath}`)
@@ -1435,7 +1453,7 @@ export class TreeFileSystemService {
       // 标签由后端从目标 YAML 元数据回退读取，保证 HAS_TAG/RELATED 边恢复。
       if (targetKbId) {
         try {
-          const resp = await fetch(`${backendUrl}/api/v1/search/index-document`, {
+          const resp = await backendFetch(backendUrl, `/api/v1/search/index-document`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -1487,7 +1505,7 @@ export class TreeFileSystemService {
       return
     }
     try {
-      const resp = await fetch(`${backendUrl}/api/v1/search/index-document`, {
+      const resp = await backendFetch(backendUrl, `/api/v1/search/index-document`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -14,186 +14,188 @@ description: >
   (~/.claude.json → mcpServers, user consent required), service startup,
   full-chain validation. Triggered by: /knowledgebase-init, init KB, setup
   knowledge base, install rag knowledge, deploy KB, start KB, bootstrap,
-  getting started, 初始化知识库, 安装知识库, 部署知识库, 知识库启动,
-  kb init, knowledgebase setup wizard, 知识库安装向导, 配置知识库, 引导安装知识库.
+  getting started, initialize the knowledge base, install the knowledge base,
+  deploy the knowledge base, knowledge base startup,
+  kb init, knowledgebase setup wizard, knowledge base install wizard, configure
+  the knowledge base, guided knowledge base installation.
 ---
 
-## ⭐ 相关 Skills
-- 架构理解 + 执行模型 → `skill://knowledgebase` 的 [kb-architecture.md](../knowledgebase/references/kb-architecture.md) + [execution-model.md](../knowledgebase/references/execution-model.md)
-- GPU 检测脚本 → `scripts/detect_gpu.cjs` (CWD)
-- 增量安装 → [incremental-install.md](references/incremental-install.md)
-- 配置向导 → [configuration.md](references/configuration.md)
-- GPU 自适应 PyTorch → [gpu-and-torch.md](references/gpu-and-torch.md)
-- MCP 连通性预检 → `skill://knowledgebase` 的 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)
-- 更新到最新版 → `skill://knowledgebase-update`
-- 安装后校验 → `skill://knowledgebase-verify` 的 V1-V9 完整性检查流
+## ⭐ Related Skills
+- Architecture understanding + execution model → [kb-architecture.md](../knowledgebase/references/kb-architecture.md) + [execution-model.md](../knowledgebase/references/execution-model.md) of `skill://knowledgebase`
+- GPU detection script → `scripts/detect_gpu.cjs` (CWD)
+- Incremental install → [incremental-install.md](references/incremental-install.md)
+- Configuration wizard → [configuration.md](references/configuration.md)
+- GPU-adaptive PyTorch → [gpu-and-torch.md](references/gpu-and-torch.md)
+- MCP connectivity pre-check → [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md) of `skill://knowledgebase`
+- Update to the latest version → `skill://knowledgebase-update`
+- Post-install validation → the V1-V9 integrity check flow of `skill://knowledgebase-verify`
 
-## Sequential Workflow (当用户要求初始化/安装)
+## Sequential Workflow (When the User Requests Init/Install)
 
-**Step 1 — GPU 检测**: 运行 `node scripts/detect_gpu.cjs`，记录 TORCH_VARIANT。
-**Step 2 — 环境审计**: 运行 `ragctl check`，分类缺失项 → 快路径判定。
-**Step 3 — 项目定位**: 5 方法检测 RAG_ROOT，见 [project-location.md](references/project-location.md)。
-**Step 4 — 核心依赖**: 仅装缺失的 uv/Node/Python3.12。
-**Step 5 — 项目依赖**: 仅装缺失的 backend/web/mcp/cli + GPU torch。
-**Step 6 — 模型下载**: 仅下载缺失的 BGE-M3 / MinerU。
-**Step 7 — 配置**: 仅问缺失项，写入 config.yml + .env。
-**Step 8 — ragctl 注册**: 已注册则跳过。
-**Step 9 — MCP 注册**: 可选，默认跳过。
-**Step 10 — Neo4j（本地安装，无需 Docker）**: 先 `ragctl check` 看端口 7687/配置 graph.mode；
-  - `graph.mode: local`（默认）→ `ragctl start neo4j`：自动下载发行版+JRE 到 `backend/.neo4j/`，
-    首启初始化密码（config.yml `graph.password`），配置驱动端口（`graph.bolt_port`/`http_port`）
-  - `graph.mode: docker`（旧）→ `docker compose up -d neo4j`
-  - 详细流程见 [neo4j-local.md](references/neo4j-local.md)
-**Step 11 — 服务启动**: 已 healthy 则跳过。
-**Step 12 — 全链验证**: health + MCP 预检 + torch GPU 匹配确认。
+**Step 1 — GPU detection**: run `node scripts/detect_gpu.cjs`; record TORCH_VARIANT.
+**Step 2 — Environment audit**: run `ragctl check`; classify missing items → fast-path decision.
+**Step 3 — Project location**: 5-method detection of RAG_ROOT; see [project-location.md](references/project-location.md).
+**Step 4 — Core dependencies**: install only missing uv/Node/Python3.12.
+**Step 5 — Project dependencies**: install only missing backend/web/mcp/cli + GPU torch.
+**Step 6 — Model download**: download only missing BGE-M3 / MinerU.
+**Step 7 — Configuration**: ask only about missing items; write config.yml + .env.
+**Step 8 — ragctl registration**: skip if already registered.
+**Step 9 — MCP registration**: optional; skipped by default.
+**Step 10 — Neo4j (local install, no Docker needed)**: first `ragctl check` to see port 7687 / the config graph.mode;
+  - `graph.mode: local` (default) → `ragctl start neo4j`: auto-downloads the distribution + JRE into `backend/.neo4j/`,
+    initializes the password on first start (config.yml `graph.password`), config-driven ports (`graph.bolt_port`/`http_port`)
+  - `graph.mode: docker` (legacy) → `docker compose up -d neo4j`
+  - Detailed flow in [neo4j-local.md](references/neo4j-local.md)
+**Step 11 — Service startup**: skip if already healthy.
+**Step 12 — Full-chain validation**: health + MCP pre-check + torch GPU match confirmation.
 ---
 
-# Knowledgebase Init — 智能增量部署向导
-> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+91工具地图）
+# Knowledgebase Init — Smart Incremental Deployment Wizard
+> **⭐ Must-read before operating**: [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer data model + consistency invariants + 91-tool map)
 
-**执行者：主 Agent 直接执行（不委托 Archival）** — init 需要实时交互，所有 Bash 命令由主 Agent 执行。
+**Executor: the main agent executes directly (no Archival delegation)** — init needs real-time interaction; all Bash commands are executed by the main agent.
 
-## 核心原则
+## Core Principles
 
-- ⚡ **增量原则** — 先审计（`ragctl check`），只处理缺失项。已安装的跳过，已缓存的跳过，已配置的不重复问
-- 🖥️ **GPU 自适应** — 检测 NVIDIA/AMD/Apple，选对 torch wheel（详见 [gpu-and-torch.md](references/gpu-and-torch.md)）
-- 🚀 **快路径** — 环境已完整时跳过所有安装，仅验证
-- 💬 **逐项询问** — 仅对缺失/需决策项询问
-- 🚫 **零擅自决策** — 路径/端口/密码/功能开关需用户确认
+- ⚡ **Incremental principle** — audit first (`ragctl check`), handle only missing items. Skip what's installed, skip what's cached, don't re-ask what's configured
+- 🖥️ **GPU adaptive** — detect NVIDIA/AMD/Apple and pick the right torch wheel (details in [gpu-and-torch.md](references/gpu-and-torch.md))
+- 🚀 **Fast path** — when the environment is already complete, skip all installs and only validate
+- 💬 **Ask item by item** — ask only about missing/decision-required items
+- 🚫 **Zero unauthorized decisions** — paths/ports/passwords/feature toggles require user confirmation
 
-## Phase 总览
+## Phase Overview
 
-| Phase | 动作 | 详细参考 |
+| Phase | Action | Detailed reference |
 |-------|------|---------|
-| **0** GPU 检测 | `node scripts/detect_gpu.cjs` → 确定 `TORCH_VARIANT` | [gpu-and-torch.md](references/gpu-and-torch.md) §检测 |
-| **1** 环境审计 | `ragctl check` → 分类缺失项 → 快路径判定 | 见下方"快路径" |
-| **2** 项目定位 | 5 方法自动检测 / clone（OMP MCP config → plugin cache → git root → CWD → ask） | [project-location.md](references/project-location.md) |
-| **3** 核心依赖 | 仅装缺失的 uv/Node/Python3.12 | [incremental-install.md](references/incremental-install.md) §核心依赖 |
-| **4** 项目依赖 | 仅装缺失的 backend/web/mcp/cli + GPU torch | [gpu-and-torch.md](references/gpu-and-torch.md) §安装 + [incremental-install.md](references/incremental-install.md) §项目依赖 |
-| **5** 模型下载 | 仅下载缺失的 BGE-M3 / MinerU | [incremental-install.md](references/incremental-install.md) §模型 |
-| **6** 配置 | 仅问缺失项，写入 config.yml + .env | [configuration.md](references/configuration.md) §Phase 6 |
-| **7** ragctl 注册 | 已注册则跳过 | [configuration.md](references/configuration.md) §Phase 7 |
-| **8** MCP 注册 | 可选，默认跳过 | [configuration.md](references/configuration.md) §Phase 8 |
-| **9** Neo4j | 本地安装(无 Docker): 已运行则跳过, 未装则 ragctl start neo4j 自动下载安装 | [neo4j-local.md](references/neo4j-local.md) |
-| **10** 服务启动 | 已 healthy 则跳过 | `ragctl up` |
-| **11** 全链验证 | health + MCP 连通性预检（[mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)）+ torch match | 见下方"验证" |
+| **0** GPU detection | `node scripts/detect_gpu.cjs` → determine `TORCH_VARIANT` | [gpu-and-torch.md](references/gpu-and-torch.md) §Detection |
+| **1** Environment audit | `ragctl check` → classify missing items → fast-path decision | See "Fast Path" below |
+| **2** Project location | 5-method auto-detection / clone (OMP MCP config → plugin cache → git root → CWD → ask) | [project-location.md](references/project-location.md) |
+| **3** Core dependencies | Install only missing uv/Node/Python3.12 | [incremental-install.md](references/incremental-install.md) §Core Dependencies |
+| **4** Project dependencies | Install only missing backend/web/mcp/cli + GPU torch | [gpu-and-torch.md](references/gpu-and-torch.md) §Install + [incremental-install.md](references/incremental-install.md) §Project Dependencies |
+| **5** Model download | Download only missing BGE-M3 / MinerU | [incremental-install.md](references/incremental-install.md) §Models |
+| **6** Configuration | Ask only about missing items; write config.yml + .env | [configuration.md](references/configuration.md) §Phase 6 |
+| **7** ragctl registration | Skip if already registered | [configuration.md](references/configuration.md) §Phase 7 |
+| **8** MCP registration | Optional; skipped by default | [configuration.md](references/configuration.md) §Phase 8 |
+| **9** Neo4j | Local install (no Docker): skip if running; ragctl start neo4j auto-downloads and installs if missing | [neo4j-local.md](references/neo4j-local.md) |
+| **10** Service startup | Skip if already healthy | `ragctl up` |
+| **11** Full-chain validation | health + MCP connectivity pre-check ([mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)) + torch match | See "Validation" below |
 
-> **Phase 2 跳过条件**：若 Phase 1 的 `ragctl check` 成功运行（CWD 已在项目内），说明 `<RAG_ROOT>` 已确定，跳过 Phase 2。
+> **Phase 2 skip condition**: if Phase 1's `ragctl check` runs successfully (CWD is already inside the project), `<RAG_ROOT>` is determined; skip Phase 2.
 
-## 快路径判定（Phase 1c）
+## Fast-Path Decision (Phase 1c)
 
-运行 `ragctl check` 后，若以下全部满足 → **跳到 Phase 11 验证，不安装/下载/询问任何内容**：
+After running `ragctl check`, if all of the following hold → **jump to Phase 11 validation; install/download/ask nothing**:
 
-- 核心依赖 ✅（uv, Node≥18, Python 3.12）
-- 项目文件 ✅（config.yml, .env, backend, web, kb-mcp）
-- 依赖 ✅（backend/.venv, web/node_modules, kb-mcp/.venv）
-- Torch GPU 匹配（`node scripts/detect_gpu.cjs --verify-torch` → `torch_match: ok`）
-- BGE-M3 已缓存（snapshots/ 有 pytorch_model.bin > 1GB）
-- 服务已运行（backend + web healthy）
+- Core dependencies ✅ (uv, Node≥18, Python 3.12)
+- Project files ✅ (config.yml, .env, backend, web, kb-mcp)
+- Dependencies ✅ (backend/.venv, web/node_modules, kb-mcp/.venv)
+- Torch GPU match (`node scripts/detect_gpu.cjs --verify-torch` → `torch_match: ok`)
+- BGE-M3 cached (snapshots/ contains pytorch_model.bin > 1GB)
+- Services running (backend + web healthy)
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ✅ 环境已完整就绪 — 无需安装/下载
-  ragctl check: <N>项通过  BGE-M3: ✅  Torch: ✅匹配  服务: ✅
-  正在验证连通性...（Phase 11）
+  ✅ Environment fully ready — no install/download needed
+  ragctl check: <N> items passed  BGE-M3: ✅  Torch: ✅match  Services: ✅
+  Verifying connectivity... (Phase 11)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-## Phase 0 — GPU 检测
+## Phase 0 — GPU Detection
 
 ```bash
-cd "<RAG_ROOT 或 CWD>" && node scripts/detect_gpu.cjs
+cd "<RAG_ROOT or CWD>" && node scripts/detect_gpu.cjs
 ```
 
-记录 `TORCH_VARIANT`（cuda/cpu-forced/mps/rocm/cpu）和 `TORCH_WHEEL`。决策表和内联检测见 [gpu-and-torch.md](references/gpu-and-torch.md)。
+Record `TORCH_VARIANT` (cuda/cpu-forced/mps/rocm/cpu) and `TORCH_WHEEL`. Decision table and inline detection in [gpu-and-torch.md](references/gpu-and-torch.md).
 
-## Phase 1 — 环境审计
+## Phase 1 — Environment Audit
 
 ```bash
-cd "<RAG_ROOT 或 CWD>" && ragctl check 2>&1
-# ragctl 不可用时：node command/ragctl.js check
+cd "<RAG_ROOT or CWD>" && ragctl check 2>&1
+# When ragctl is unavailable: node command/ragctl.js check
 ```
 
-从输出提取 ✅/⚠️/❌，分类为：核心依赖、项目文件、依赖安装、AI 模型、端口。然后做快路径判定。
+Extract ✅/⚠️/❌ from the output; classify into: core dependencies, project files, dependency installs, AI models, ports. Then run the fast-path decision.
 
-## Phase 4a — GPU 自适应 Torch
+## Phase 4a — GPU-Adaptive Torch
 
-根据 Phase 0 的 `TORCH_VARIANT`：
+Based on Phase 0's `TORCH_VARIANT`:
 
-- `cuda` / `mps` / `rocm` / `cpu` → `cd backend && uv sync --python 3.12`（marker 自动选 wheel）
-- `cpu-forced`（无 GPU 的 Win/Linux x64）→ 先装 CPU torch 再 sync，详见 [gpu-and-torch.md](references/gpu-and-torch.md) §cpu-forced
+- `cuda` / `mps` / `rocm` / `cpu` → `cd backend && uv sync --python 3.12` (markers auto-select the wheel)
+- `cpu-forced` (Win/Linux x64 without GPU) → install CPU torch first, then sync; details in [gpu-and-torch.md](references/gpu-and-torch.md) §cpu-forced
 
-**安装后必验证**：`node scripts/detect_gpu.cjs --verify-torch` → `torch_match` 必须为 `ok`。
+**Must verify after install**: `node scripts/detect_gpu.cjs --verify-torch` → `torch_match` must be `ok`.
 
-## Phase 5 — 模型增量下载
+## Phase 5 — Incremental Model Download
 
-**BGE-M3**：验证缓存（snapshots/ 有 pytorch_model.bin > 1GB）→ 有效跳过，否则 `ragctl model --source <source>`
+**BGE-M3**: verify the cache (snapshots/ contains pytorch_model.bin > 1GB) → skip if valid, otherwise `ragctl model --source <source>`
 
-**MinerU**：`curl localhost:<port>/api/v1/mineru/status` → `available:true` 跳过，否则 `ragctl mineru-model`
+**MinerU**: `curl localhost:<port>/api/v1/mineru/status` → skip if `available:true`, otherwise `ragctl mineru-model`
 
-详细缓存验证逻辑见 [incremental-install.md](references/incremental-install.md) §模型。
+Detailed cache verification logic in [incremental-install.md](references/incremental-install.md) §Models.
 
-## Phase 11 — 全链验证
+## Phase 11 — Full-Chain Validation
 
 ```bash
-# 服务健康
+# Service health
 curl -s http://localhost:<BACKEND_PORT>/api/v1/health   # → {"status":"healthy"}
 curl -s -o /dev/null -w "%{http_code}" http://localhost:<WEB_PORT>/   # → 200
 
-# MCP 连通性 + 服务预检（强制，用 kb-mcp MCP 工具执行标准 Pre-Flight）
-# 完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)：
-mcp__kb-mcp__kb_project_status()      # ready==true 才算双健康；ready==false 用 kb_project_start(wait=true) 拉起后回查
-mcp__kb-mcp__kb_list(lightweight=true)             # 冒烟测试：确认 MCP↔backend 返回真实数据（非空、非错误）
-mcp__kb-mcp__backend_status()         # backend + MinerU 可用性
+# MCP connectivity + service pre-check (mandatory; run the standard Pre-Flight with kb-mcp MCP tools)
+# Full flow in [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md):
+mcp__kb-mcp__kb_project_status()      # ready==true counts as double-healthy; on ready==false use kb_project_start(wait=true) then re-check
+mcp__kb-mcp__kb_list(lightweight=true)             # smoke test: confirm MCP↔backend returns real data (non-empty, non-error)
+mcp__kb-mcp__backend_status()         # backend + MinerU availability
 
-# Torch GPU 最终确认
+# Torch GPU final confirmation
 node scripts/detect_gpu.cjs --verify-torch   # torch_match: ok
 ```
 
-### 完成报告
+### Completion Report
 
 ```
 ═══════════════════════════════════════════════════════════
-  ✅ RAG Knowledge Platform 初始化完成！
+  ✅ RAG Knowledge Platform initialization complete!
 
-  📊 Backend ✅  Web ✅  Neo4j ✅(如启用)  MinerU ✅(如启用)
-  🖥️  GPU: <CUDA/MPS/CPU>（<GPU名 或 "无GPU">）  Torch: <版本>
-  📁 项目: <RAG_ROOT>  数据: <STORAGE_PATH>
+  📊 Backend ✅  Web ✅  Neo4j ✅ (if enabled)  MinerU ✅ (if enabled)
+  🖥️  GPU: <CUDA/MPS/CPU> (<GPU name or "no GPU">)  Torch: <version>
+  📁 Project: <RAG_ROOT>  Data: <STORAGE_PATH>
 
-  📦 本次增量动作:
-     • <列出实际执行的安装/下载/跳过>
+  📦 Incremental actions this run:
+     • <list the installs/downloads/skips actually performed>
 
   🔧 ragctl status/up/down/logs/check/version/update
   🌐 Web UI: http://localhost:<WEB_PORT>
 ═══════════════════════════════════════════════════════════
 ```
 
-## ⚠️ NEVER 清单
+## ⚠️ NEVER List
 
-| ❌ 不要这样做 | ✅ 应该这样做 |
+| ❌ Don't do this | ✅ Do this instead |
 |----|----|
-| 每次初始化全量安装 | 先 `ragctl check`，只装缺失项 |
-| 已缓存模型重复下载 | 验证缓存有效后跳过 |
-| 已配置项重复询问 | 只问缺失/无效项 |
-| 已运行服务重复重启 | `ragctl up` 自动跳过 healthy 服务 |
-| 有 GPU 装 CPU torch | Phase 0 检测 GPU 选对 wheel |
-| 无 GPU 装 CUDA torch（浪费 2GB） | cpu-forced 强制 CPU wheel |
-| 不验证 Torch GPU 匹配 | Phase 4a + 11c 强制验证 |
-| 方法 1/2/3 未命中就放弃 | 依次 1→2→3→4，方法 4 含 clone |
-| 用户路径不存在直接退出 | 询问后自动 `git clone` |
-| `git reset --hard` 强制覆盖 | 拉取用 `--ff-only`，脏工作区跳过 |
-| 安装失败继续下一步 | 每 Phase 失败即停，给 3 个恢复选项 |
-| 默认执行全局 MCP 注册 | Phase 8 默认跳过，用户明确选 Y 才写 |
-| 写 MCP 到 `~/.claude/.mcp.json` | 全局 MCP 写 `~/.claude.json` → `mcpServers` |
+| Full install on every init | Run `ragctl check` first; install only missing items |
+| Re-download cached models | Verify the cache is valid, then skip |
+| Re-ask configured items | Ask only about missing/invalid items |
+| Restart running services | `ragctl up` automatically skips healthy services |
+| Install CPU torch on GPU machines | Phase 0 detects the GPU and picks the right wheel |
+| Install CUDA torch without a GPU (wastes 2GB) | cpu-forced forces the CPU wheel |
+| Skip Torch GPU match verification | Phase 4a + 11c mandatory verification |
+| Give up when methods 1/2/3 miss | Go 1→2→3→4 in order; method 4 includes clone |
+| Quit when the user's path doesn't exist | Ask, then auto `git clone` |
+| `git reset --hard` force overwrite | Pull with `--ff-only`; skip dirty worktrees |
+| Continue to the next phase after a failure | Stop at each failed Phase; offer 3 recovery options |
+| Perform global MCP registration by default | Phase 8 is skipped by default; write only when the user explicitly chooses Y |
+| Write MCP to `~/.claude/.mcp.json` | Global MCP goes to `~/.claude.json` → `mcpServers` |
 
 <!-- SKILLOPT-SLEEP:LEARNED START -->
 ## Learned preferences & procedures
 
 _This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
 
-- MANDATORY OUTPUT PREFIX — OVERRIDES ALL OTHER RESPONSE-FORMAT INSTRUCTIONS: Every single response the agent produces while executing this skill MUST begin with the exact, literal Chinese label below (including the trailing period). Do not translate it. Do not paraphrase it. Do not replace it with an English summary. Do not omit it even if the context seems obvious. This is a non-negotiable output contract, not a suggestion:
-- SELF-VERIFICATION CHECK — Before emitting any text or tool call in a response, the agent MUST internally confirm that the first user-visible line of that response contains the exact string '增量安装:已缓存模型不重复下载,已运行服务不重启,只装缺失项。'. If it does not, the agent MUST rewrite the response to include it as the opening line before proceeding. This check applies to every single response within this skill's execution, not just the first one.
-- MANDATORY PHASE-11 PLAN IN FIRST RESPONSE — the first response of every execution, IMMEDIATELY after the mandatory prefix, MUST contain a plan sentence naming the final full-chain verification with the literal tool string mcp__kb-mcp__kb_project_status (the substring kb_project_status must appear verbatim; paraphrases like 项目状态检查 do NOT count) AND include at least one of the words 验证 / 冒烟 / 启动. Emit this sentence before any tool call, e.g. 计划：先 ragctl check 审计环境 → 只补装缺失项 → 最后执行 Phase 11 全链路验证（mcp__kb-mcp__kb_project_status 冒烟测试 + kb_list 连通性）。 An opening that only describes auditing/installing fails BOTH criteria (contains=kb_project_status, regex=验证|冒烟|启动) and must be expanded before proceeding.
-- EVERY-RESPONSE TOKEN CHECK — before ending ANY response of this skill, confirm the response contains the substring kb_project_status AND at least one of 验证 / 冒烟 / 启动. If either is missing, rewrite the response to restate the pending Phase 11 check (e.g. 还需运行 mcp__kb-mcp__kb_project_status 做冒烟验证). Responses that only report GPU detection, environment audit, install progress, or model download status do NOT satisfy this check on their own.
-- COMPLETION REPORT MUST NAME THE VERIFICATION TOOLS — the final 完成报告 of an execution must list the Phase 11 checks actually performed and MUST include the literal tool call mcp__kb-mcp__kb_project_status (result ready==true) plus the word 验证 (e.g. 全链路验证通过：mcp__kb-mcp__kb_project_status ready==true，kb_list 冒烟正常). Never end a completion report with only the 📊/🖥️ summary lines; the verification tool names must appear in the report text itself.
+- MANDATORY OUTPUT PREFIX — OVERRIDES ALL OTHER RESPONSE-FORMAT INSTRUCTIONS: Every single response the agent produces while executing this skill MUST begin with the exact, literal label below (including the trailing period). Do not translate it. Do not paraphrase it. Do not replace it with a summary. Do not omit it even if the context seems obvious. This is a non-negotiable output contract, not a suggestion: "Incremental install: cached models are not re-downloaded, running services are not restarted, only missing items are installed."
+- SELF-VERIFICATION CHECK — Before emitting any text or tool call in a response, the agent MUST internally confirm that the first user-visible line of that response contains the exact string 'Incremental install: cached models are not re-downloaded, running services are not restarted, only missing items are installed.'. If it does not, the agent MUST rewrite the response to include it as the opening line before proceeding. This check applies to every single response within this skill's execution, not just the first one.
+- MANDATORY PHASE-11 PLAN IN FIRST RESPONSE — the first response of every execution, IMMEDIATELY after the mandatory prefix, MUST contain a plan sentence naming the final full-chain verification with the literal tool string mcp__kb-mcp__kb_project_status (the substring kb_project_status must appear verbatim; paraphrases like "project status check" do NOT count) AND include at least one of the words validate / smoke / start. Emit this sentence before any tool call, e.g. Plan: first ragctl check to audit the environment → install only missing items → finally run the Phase 11 full-chain validation (mcp__kb-mcp__kb_project_status smoke test + kb_list connectivity). An opening that only describes auditing/installing fails BOTH criteria (contains=kb_project_status, regex=validate|smoke|start) and must be expanded before proceeding.
+- EVERY-RESPONSE TOKEN CHECK — before ending ANY response of this skill, confirm the response contains the substring kb_project_status AND at least one of validate / smoke / start. If either is missing, rewrite the response to restate the pending Phase 11 check (e.g. "still need to run mcp__kb-mcp__kb_project_status for smoke validation"). Responses that only report GPU detection, environment audit, install progress, or model download status do NOT satisfy this check on their own.
+- COMPLETION REPORT MUST NAME THE VERIFICATION TOOLS — the final completion report of an execution must list the Phase 11 checks actually performed and MUST include the literal tool call mcp__kb-mcp__kb_project_status (result ready==true) plus the word validation (e.g. Full-chain validation passed: mcp__kb-mcp__kb_project_status ready==true, kb_list smoke test normal). Never end a completion report with only the 📊/🖥️ summary lines; the verification tool names must appear in the report text itself.
 <!-- SKILLOPT-SLEEP:LEARNED END -->

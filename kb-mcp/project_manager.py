@@ -386,6 +386,10 @@ def start_service(name: str, mode: str | None = None) -> dict:
                         "note": f"already listening on port {target_port} — skipped"}
 
             log_path = LOG_PATHS[name]
+            # Path-traversal guard: logs live only inside the project tree.
+            resolved_log = log_path.resolve()
+            if not str(resolved_log).startswith(str(PROJECT_ROOT)):
+                raise ValueError(f"Log path escapes project root: {resolved_log}")
             log_path.parent.mkdir(parents=True, exist_ok=True)
             log = open(log_path, "w", encoding="utf-8", errors="replace")  # truncate on start
             try:

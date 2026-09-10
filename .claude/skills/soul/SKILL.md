@@ -1,136 +1,139 @@
 ---
 name: soul
 description: >
-  SOUL 人格系统 — 人格全生命周期管理(创建/删除/配置/列表)、补天(nuwa-skill ×
-  dot-skill 双引擎)蒸馏初始人格(含文本蒸馏)、好奇心驱动的训练与 RL 强化进化、任务控制(暂停/
-  继续/训练历史)、以及按任务自动路由到对应人格的检索增强问答(QDCVR 先检索
-  后人格)。人格 = soul-<name> 知识库(4 宪法层文档 + config), 记忆/认知草稿
-  审批闭环。与 knowledgebase skill 平行: knowledgebase 管"知识本身", soul
-  管"用哪个人格来加工知识"。触发词: 人格, SOUL, 创建/删除/训练/蒸馏人格,
-  补天, 人格问答, 用XX人格回答, 人格检索增强, 一键检索, RL强化, 人格进化,
-  暂停训练, 继续训练, 训练历史, persona, soul_ask, soul_qdcvr_ask, soul_init,
-  soul_learn, soul_train_rl, soul_review_drafts, soul_delete, soul_router,
-  自动训练, 好奇心训练, 固定轮数训练。
+  SOUL persona system — full persona lifecycle management (create/delete/configure/list),
+  Butian (nuwa-skill × dot-skill dual-engine) distillation of initial personas (including
+  text distillation), curiosity-driven training and RL reinforcement evolution, task control
+  (pause/resume/training history), and retrieval-augmented Q&A that auto-routes to the
+  matching persona per task (QDCVR retrieves first, then persona-processes). A persona = a
+  soul-<name> knowledge base (4 constitutional-layer documents + config), with a memory/
+  cognition draft approval loop. Parallel to the knowledgebase skill: knowledgebase manages
+  "knowledge itself", soul manages "which persona processes the knowledge". Triggers: persona,
+  SOUL, create/delete/train/distill a persona, butian, persona Q&A, answer with persona XX,
+  persona-augmented retrieval, one-click retrieval, RL reinforcement, persona evolution,
+  pause training, resume training, training history, persona, soul_ask, soul_qdcvr_ask,
+  soul_init, soul_learn, soul_train_rl, soul_review_drafts, soul_delete, soul_router,
+  auto training, curiosity training, fixed-round training.
 ---
 
-# SOUL — 人格系统调度器(先天蒸馏 + 后天进化)
+# SOUL — Persona System Dispatcher (Innate Distillation + Acquired Evolution)
 
-**执行者:主 Agent 直接执行(SOUL 操作是管理/问答编排,不委托 Archival)**
+**Executor: the main agent executes directly (SOUL operations are management/Q&A orchestration; no Archival delegation)**
 
-SOUL 人格系统是知识库之上的"人格加工层":
-- **知识库管"有什么"**(knowledgebase skill,72 个 kb_* 工具)
-- **SOUL 管"谁来讲、怎么讲"**(soul_* MCP 工具)
-- **补天(dot-skill)管"初始人格从哪来"**(源材料 → persona.md/work.md → SOUL 种子)
+The SOUL persona system is the "persona processing layer" above the knowledge base:
+- **The knowledge base manages "what there is"** (knowledgebase skill, 72 kb_* tools)
+- **SOUL manages "who explains it and how"** (soul_* MCP tools)
+- **Butian (dot-skill) manages "where initial personas come from"** (source material → persona.md/work.md → SOUL seed)
 
-> **⭐ SOUL 心智模型**:每个人格 = 一个 `soul-<name>` 知识库,含 4 个人格文档
-> (soul-definition/values/thinking-style/memory-conventions)+ soul-config.yml
-> (kb_scope 学习范围/domain_labels 路由标签/is_template)。模板库 `soul-template`
-> 是唯一 is_template=true 的库,不出现在任何人格操作中。
+> **⭐ SOUL mental model**: every persona = a `soul-<name>` knowledge base containing 4 persona documents
+> (soul-definition/values/thinking-style/memory-conventions) + soul-config.yml
+> (kb_scope learning scope/domain_labels routing labels/is_template). The template library `soul-template`
+> is the only is_template=true library and never appears in any persona operation.
 >
-> **MANDATORY — 按需加载参考**:
-> - 训练/RL/调度细节 → **必须先读** [references/soul-training.md](references/soul-training.md)(异步契约/预算/learned_hash)
-> - 补天蒸馏全协议 → **必须先读** [references/soul-distill-integration.md](references/soul-distill-integration.md)
-> - 架构/存储模型 → 需要时读 [references/soul-architecture.md](references/soul-architecture.md)
-> - 问答策略组合 → 需要时读 [references/soul-rag-strategy.md](references/soul-rag-strategy.md)
-> - **Do NOT Load**: 纯列表/状态查询(§A3)不读任何 reference; 记忆审批(§D1)不读 rag-strategy
+> **MANDATORY — load references on demand**:
+> - Training/RL/scheduling details → **must read first** [references/soul-training.md](references/soul-training.md) (async contract/budget/learned_hash)
+> - Full Butian distillation protocol → **must read first** [references/soul-distill-integration.md](references/soul-distill-integration.md)
+> - Architecture/storage model → read [references/soul-architecture.md](references/soul-architecture.md) when needed
+> - Q&A strategy combos → read [references/soul-rag-strategy.md](references/soul-rag-strategy.md) when needed
+> - **Do NOT Load**: pure list/status queries (§A3) read no references; memory approval (§D1) does not read rag-strategy
 
 ---
 
-## 思维框架:场景归类 ⭐
+## Mental Framework: Scenario Classification ⭐
 
 ```
-用户说了一句话
-  └── 包含 SOUL 关键词?
-       ├── 是 → 匹配下表场景
-       └── 否 → 若含知识库关键词 → 交给 Skill("knowledgebase")
-                否则 → "请说明: 管理人格 / 蒸馏人格 / 训练人格 / 用某个人格问答 / 查看人格状态?"
+The user says something
+  └── Contains SOUL keywords?
+       ├── Yes → match the scenario table below
+       └── No → if it contains knowledge base keywords → hand to Skill("knowledgebase")
+                otherwise → "Please clarify: manage personas / distill a persona / train a persona / Q&A with a persona / check persona status?"
 ```
 
-匹配后:
-  ├── 人格蒸馏(补天种子)→ 执行 §E
-  ├── 人格管理(增删改查)→ 执行 §A
-  ├── 人格训练(自动/手动/固定轮数)→ 执行 §B
-  ├── 人格问答(显式/自动路由/QDCVR 一键)→ 执行 §C
-  ├── 人格评估(自评/校准/反思)→ 执行 §D
-  └── 混合场景 → 按 管理 → 训练 → 评估 → 问答 顺序
+After matching:
+  ├── Persona distillation (Butian seed) → execute §E
+  ├── Persona management (CRUD) → execute §A
+  ├── Persona training (auto/manual/fixed rounds) → execute §B
+  ├── Persona Q&A (explicit/auto routing/QDCVR one-click) → execute §C
+  ├── Persona evaluation (self-rating/calibration/reflection) → execute §D
+  └── Mixed scenarios → in the order management → training → evaluation → Q&A
 
 ---
 
-## 场景分类表
+## Scenario Classification Table
 
-| Signal keywords | 场景 | 执行 |
+| Signal keywords | Scenario | Execute |
 |---|---|---|
-| 蒸馏人格, 补天, dot-skill, 初始人格, 用聊天记录创建人格 | **Distill** | §E `ragctl soul distill` / dot-skill |
-| 创建人格, 新建 SOUL, 新人格, 初始化人格, soul_init, create persona | **Create** | §A1 `soul_init` |
-| 删除人格, 移除人格, soul_delete, delete persona | **Delete** | §A2 `soul_delete` |
-| 人格列表, 所有人格, 查看人格, soul_list, list personas | **List** | §A3 `soul_list` + `soul_status` |
-| 人格配置, 修改人格, 调整学习范围, 改领域标签, 改引擎, soul_config_update | **Configure** | §A4 `soul_config_update` + meditation config |
-| 训练人格, 人格学习, 自动训练, 好奇心训练, 全库自举, 固定轮数, rounds, RL强化, 人格进化, train_rl | **Train** | §B0 `soul_train_rl`(rounds) 统一 RL |
-| 手动学习, 指定文档学习, soul_learn, learn_all | **LearnOnly** | §B1/B2 `soul_learn`/`soul_learn_all`(Actor 单跑) |
-| 审批记忆, 记忆草稿, 人格记忆, soul_review_drafts, approve memory | **Review** | §D1 `soul_review_drafts` |
-| 人格评估, 自评, 校准, soul_eval, soul_calibrate | **Evaluate** | §D2 `soul_eval`/`soul_calibrate` |
-| 人格反思, 漂移报告, soul_reflect, reflect | **Reflect** | §D3 `soul_reflect` |
-| 人格问答, 用XX人格回答, 人格检索增强, soul_ask | **Ask** | §C1/C2 `soul_ask` |
-| 一键检索+人格回答, QDCVR 人格问答, soul_qdcvr_ask | **QdcvrAsk** | §C4 `soul_qdcvr_ask` |
-| 先检索知识库再回答, 检索后用人格总结 | **RagAsk** | §C3 context_override 组合 |
-| 导出训练数据, 微调数据, soul_export, LoRA | **Export** | §D4 `soul_export` |
-| 检查点, 回滚人格, soul_checkpoint, soul_rollback | **Rollback** | §D5 `soul_checkpoint`/`soul_rollback` |
+| distill a persona, butian, dot-skill, initial persona, create a persona from chat logs | **Distill** | §E `ragctl soul distill` / dot-skill |
+| create persona, new SOUL, new persona, initialize persona, soul_init, create persona | **Create** | §A1 `soul_init` |
+| delete persona, remove persona, soul_delete, delete persona | **Delete** | §A2 `soul_delete` |
+| persona list, all personas, view personas, soul_list, list personas | **List** | §A3 `soul_list` + `soul_status` |
+| persona config, modify persona, adjust learning scope, change domain labels, change engine, soul_config_update | **Configure** | §A4 `soul_config_update` + meditation config |
+| train persona, persona learning, auto training, curiosity training, whole-library bootstrap, fixed rounds, rounds, RL reinforcement, persona evolution, train_rl | **Train** | §B0 `soul_train_rl` (rounds) unified RL |
+| manual learning, learn specified documents, soul_learn, learn_all | **LearnOnly** | §B1/B2 `soul_learn`/`soul_learn_all` (Actor only) |
+| approve memories, memory drafts, persona memories, soul_review_drafts, approve memory | **Review** | §D1 `soul_review_drafts` |
+| persona evaluation, self-rating, calibration, soul_eval, soul_calibrate | **Evaluate** | §D2 `soul_eval`/`soul_calibrate` |
+| persona reflection, drift report, soul_reflect, reflect | **Reflect** | §D3 `soul_reflect` |
+| persona Q&A, answer with persona XX, persona-augmented retrieval, soul_ask | **Ask** | §C1/C2 `soul_ask` |
+| one-click retrieval + persona answer, QDCVR persona Q&A, soul_qdcvr_ask | **QdcvrAsk** | §C4 `soul_qdcvr_ask` |
+| retrieve the KB first then answer, summarize with a persona after retrieval | **RagAsk** | §C3 context_override combo |
+| export training data, fine-tuning data, soul_export, LoRA | **Export** | §D4 `soul_export` |
+| checkpoints, roll back persona, soul_checkpoint, soul_rollback | **Rollback** | §D5 `soul_checkpoint`/`soul_rollback` |
 
 ---
 
 ## Sequential Workflow
 
-### Step 0 — Pre-Flight(强制)
+### Step 0 — Pre-Flight (Mandatory)
 
-SOUL 操作依赖 kb-mcp 服务(soul_* 工具)+ 后端(LLM 合成通道)。
-执行任何场景前,先调 `soul_list` 验证:
-- 工具可达 → MCP 连通
-- 返回列表(可能为空)→ 后端在线
-失败则提示"MCP/后端不可用",不得继续。
+SOUL operations depend on the kb-mcp service (soul_* tools) + backend (LLM synthesis channel).
+Before executing any scenario, call `soul_list` to verify:
+- Tool reachable → MCP connected
+- Returns a list (possibly empty) → backend online
+On failure, prompt "MCP/backend unavailable"; do not continue.
 
-### Step 1 — 场景匹配
-按上表最长关键词优先匹配。人格问答与知识库检索可能重叠:
-- 用户说"帮我查/搜XX" → **knowledgebase-search**(知识检索)
-- 用户说"用XX人格回答/以XX口吻回答/人格增强" → **soul Ask**(人格加工)
-- 用户说"检索后用人格回答" / "一键检索+人格回答" → **soul_qdcvr_ask**(QDCVR 集成)
-- 用户说"蒸馏一个人格/补天" → **§E 补天蒸馏**
+### Step 1 — Scenario Matching
+Match per the table above, longest keyword first. Persona Q&A and knowledge base retrieval can overlap:
+- User says "help me look up/search XX" → **knowledgebase-search** (knowledge retrieval)
+- User says "answer with persona XX / in XX's voice / persona-augmented" → **soul Ask** (persona processing)
+- User says "retrieve then answer as a persona" / "one-click retrieval + persona answer" → **soul_qdcvr_ask** (QDCVR integration)
+- User says "distill a persona / butian" → **§E Butian distillation**
 
-### Step 2 — 执行对应场景(见下)
+### Step 2 — Execute the Corresponding Scenario (below)
 
 ---
 
-## §A 人格管理(增删改查)
+## §A Persona Management (CRUD)
 
 ### A1 Create — `soul_init`
 ```
-soul_init(soul_name="soul-<名字>", kb_scope=[<公开库列表>],
-          domain_labels=[<中文领域标签>], supported_task_types=[<任务类型>],
-          harness="omp|claude(空=全局默认)", model="(空=引擎默认)")
+soul_init(soul_name="soul-<name>", kb_scope=[<public KB list>],
+          domain_labels=[<domain labels>], supported_task_types=[<task types>],
+          harness="omp|claude (empty=global default)", model="(empty=engine default)")
 ```
-- 名字规则:`soul-` 前缀 + 中英文/数字/连字符;拒绝 Windows 保留名
-- kb_scope 安全默认:**缺省/空 = ["*"] 全部公开库**(默认全库可参与训练);
-  需要"仅人格问答"(不学习)时创建后经 soul_config_update 显式设 kb_scope=[]
-- harness 缺省 = 全局默认(config.yml soul.default_harness, 默认 omp)
-- ⭐ **异步契约(已修复 30s 超时)**: soul_init 快速返回(≈2s), 返回含
-  `kb_id`(立即可用) + `docs_created` + `task_id`(索引后台) + `profile_pending`/`profile_task_id`(profile 后台生成)。
-  创建后必须:
-  1. 轮询 `kb_task_status(task_id)` 直到 done(确认 4 宪法文档向量索引完成)
-  2. 若 profile_pending=true: 轮询后端 `GET /api/v1/soul/tasks/{profile_task_id}` 或
-     稍后 `soul_status`/`soul_list` 确认 profile_summary 已生成(不阻塞后续操作)
-- **补天蒸馏入口见 §E**(从源材料生成初始人格,替代默认模板人格)
+- Naming rules: `soul-` prefix + letters/Chinese/digits/hyphens; Windows reserved names are rejected
+- kb_scope safety default: **missing/empty = ["*"] all public KBs** (all libraries participate in training by default);
+  for "Q&A only" (no learning), explicitly set kb_scope=[] via soul_config_update after creation
+- harness default = global default (config.yml soul.default_harness, default omp)
+- ⭐ **Async contract (30s timeout fixed)**: soul_init returns quickly (≈2s), returning
+  `kb_id` (immediately usable) + `docs_created` + `task_id` (indexing in background) + `profile_pending`/`profile_task_id` (profile generated in background).
+  After creation you must:
+  1. Poll `kb_task_status(task_id)` until done (confirms the 4 constitutional documents are vector-indexed)
+  2. If profile_pending=true: poll the backend `GET /api/v1/soul/tasks/{profile_task_id}` or
+     later confirm via `soul_status`/`soul_list` that profile_summary was generated (does not block later operations)
+- **Butian distillation entry in §E** (generate the initial persona from source material, replacing the default template persona)
 
 ### A2 Delete — `soul_delete`
 ```
-soul_delete(soul_kb_id)   # 先自动 checkpoint → 删库 → 清路由缓存
+soul_delete(soul_kb_id)   # auto-checkpoints first → deletes the KB → clears the routing cache
 ```
-- 删除前自动留快照(可审计);删除后 soul_list 不再出现
+- A snapshot is automatically kept before deletion (auditable); after deletion the persona no longer appears in soul_list
 
 ### A3 List — `soul_list` + `soul_status`
 ```
-soul_list()                # 所有人格(排除模板), 含 meditation 摘要(harness/定时/轮数)
-soul_status(soul_kb_id)    # 学习指标: 草稿/记忆/缺口/成本/掌握曲线
+soul_list()                # all personas (template excluded), including the meditation summary (harness/schedule/rounds)
+soul_status(soul_kb_id)    # learning metrics: drafts/memories/gaps/cost/mastery curve
 ```
-- 汇报: 人格名 + kb_scope + harness + 草稿/记忆数 + 预算消耗 + 定时状态
+- Report: persona name + kb_scope + harness + draft/memory counts + budget consumption + schedule status
 
 ### A4 Configure — `soul_config_update` + meditation config
 ```
@@ -138,284 +141,284 @@ soul_config_update(soul_kb_id, kb_scope/domain_labels/supported_task_types/route
 experience_meditation_config_update(soul_kb_id, {harness, model, enabled, interval_hours,
                                                  rounds_per_run, max_budget_usd, max_questions_per_run})
 ```
-- scope 缩小 → 旧范围记忆自动标记 stale(不删)
-- route_weight=0 → 该人格退出路由
-- **harness 是 per-SOUL 的**(meditation config 字段), 未指定时回退全局默认
-- 前端: 配置 modal 可视化管理; ragctl: `ragctl soul harness <soul> <omp|claude>`
+- Scope narrowing → memories from the old scope are automatically flagged stale (not deleted)
+- route_weight=0 → that persona exits routing
+- **harness is per-SOUL** (a meditation config field); falls back to the global default when unspecified
+- Frontend: config modal for visual management; ragctl: `ragctl soul harness <soul> <omp|claude>`
 
 ---
 
-## §B 人格训练(统一 RL 三角色强化学习)
+## §B Persona Training (Unified Three-Role RL)
 
-> **⭐ 训练原理(重构后)**:SOUL 训练采用**三角色 DRL 架构**(Actor × Critic × Updater),
-> 自动集成知识学习 + 自我进化, 一个统一 RL 循环。**RL 是唯一训练模式** ——
-> 旧的 learn/learn_all 已集成为 RL 的 Actor 阶段, 不再独立使用。
+> **⭐ Training principle (post-refactor)**: SOUL training uses a **three-role DRL architecture** (Actor × Critic × Updater),
+> automatically integrating knowledge learning + self-evolution in one unified RL loop. **RL is the only training mode** —
+> the old learn/learn_all have been integrated as RL's Actor phase and are no longer used independently.
 >
-> **三角色心智模型(DRL → SOUL 映射)**:
-> - **Actor(执行者)** πθ: 并行批处理知识学习 — 好奇心问题 → 检索自答 → 蒸馏记忆。
->   「权重」= memories/*.md(知识掌握度)。并行批处理提速 4-5x。
-> - **Critic(评价者)** Vφ: 六维评价 + 收敛检测(身份/价值观/思维/语言/知识掌握/
->   自我一致性)。输出奖励信号 reward(中位数平滑)。
-> - **Updater(更新者)** ∇θ: 生成认知草稿(status=active) — **不直接写入人格定义**。
->   认知草稿是"梯度方向", 在问答时注入 prompt(训练认知立即生效)。
-> - **全局优化引擎**: 当认知积累≥3条/reward下降/收敛固化时, 读取全部上下文
->   (4宪法文档 + active认知 + 记忆 + 知识综合), LLM 做**完整的、连贯的全局重写**
->   (替换旧内容, 非碎片追加), 消除矛盾、精炼结构 → reward 单调提升。
+> **Three-role mental model (DRL → SOUL mapping)**:
+> - **Actor** πθ: parallel batch knowledge learning — curiosity questions → retrieval self-answers → distilled memories.
+>   "Weights" = memories/*.md (knowledge mastery). Parallel batching speeds up 4-5x.
+> - **Critic** Vφ: six-dimension evaluation + convergence detection (identity/values/thinking/language/knowledge mastery/
+>   self-consistency). Outputs the reward signal (median-smoothed).
+> - **Updater** ∇θ: generates cognition drafts (status=active) — **does not write the persona definition directly**.
+>   Cognition drafts are the "gradient direction", injected into prompts at Q&A time (training cognition takes effect immediately).
+> - **Global optimization engine**: when cognition accumulates ≥3 / reward declines / convergence locks in, it reads the full context
+>   (4 constitutional documents + active cognition + memories + knowledge synthesis) and the LLM performs a **complete, coherent global rewrite**
+>   (replacing old content, not fragmentary appends), eliminating contradictions and refining structure → reward monotonically improves.
 >
-> **训练效果**: SOUL 越来越像"自己"(人格一致性收敛) + 知识掌握越来越牢固
-> (记忆沉淀 + 薄弱主题 ZPD 重学 + mastery 画像持续刷新)。
-> 完整协议见 [references/soul-training.md](references/soul-training.md)。
+> **Training effect**: the SOUL becomes more and more like "itself" (persona consistency converges) + knowledge mastery gets firmer
+> (memory consolidation + weak-topic ZPD relearning + continuously refreshed mastery profile).
+> Full protocol in [references/soul-training.md](references/soul-training.md).
 
-#   Phase 1 ACTOR:   并行批处理知识学习(好奇心问题→检索自答→蒸馏, 提速 4-5x)
-#   Phase 2 CRITIC:  六维评价(身份/价值观/思维/语言/知识掌握/自我一致性)
-#   Phase 3 UPDATER: 生成认知草稿(status=active, 不污染人格定义)
-#   Phase 4 APPROVE: 自动批准高质量记忆(groundedness≥3.5 → 索引 → 问答可检索)
-#   Phase 5 DISTILL: 跨记忆知识蒸馏(经验总结 → knowledge-synthesis.md)
-#   Phase 6 OPTIMIZE: 全局人格优化(认知≥3/reward下降/收敛固化时触发,
-#     全量上下文→LLM完整重写→替换旧文档, 非碎片追加, checkpoint保护)
-#   Phase REWARD:   进化曲线记录
+#   Phase 1 ACTOR:   parallel batch knowledge learning (curiosity questions → retrieval self-answers → distillation, 4-5x speedup)
+#   Phase 2 CRITIC:  six-dimension evaluation (identity/values/thinking/language/knowledge mastery/self-consistency)
+#   Phase 3 UPDATER: generate cognition drafts (status=active, does not pollute the persona definition)
+#   Phase 4 APPROVE: auto-approve high-quality memories (groundedness≥3.5 → index → searchable in Q&A)
+#   Phase 5 DISTILL: cross-memory knowledge distillation (experience summaries → knowledge-synthesis.md)
+#   Phase 6 OPTIMIZE: global persona optimization (triggered when cognition≥3/reward declines/convergence locks in;
+#     full context → LLM complete rewrite → replaces old documents, not fragmentary appends; checkpoint-protected)
+#   Phase REWARD:   evolution curve recording
 ```
-- **认知积累模式**: Updater 只生成 active 认知草稿, 不直接写入人格定义(避免碎片追加导致矛盾堆砌)
-- **全局优化**: 认知积累≥3条/reward连续下降/收敛固化时, 触发全局重写(替换旧内容, 消化active草稿)
-- **认知参与问答**: active 认知草稿在 soul_ask/soul_qdcvr_ask 时注入 prompt(训练认知立即生效)
-- **收敛感知**: reward 连续 2 轮变化 <0.25 → 收敛态: Actor 减半问题数(聚焦深化)
-- **自动批准记忆**: groundedness≥3.5 且四维均分≥3.5 的训练记忆自动批准 + 索引(问答可检索)
-- **知识蒸馏**: 每轮跨记忆综合 → knowledge-synthesis.md(经验法则+知识要点, 非堆砌)
-- **并行提速**: Actor 阶段并行自答(harness 并行度可配 config.yml soul.train_concurrency, 默认 4)
-- **reward 稳定性**: Critic 默认 2 次采样中位数平滑(抗 LLM 方差)
-- **等价入口**: POST /api/v1/soul/{kb}/train-rl; ragctl: soul train-rl; MCP: soul_train_rl
+- **Cognition accumulation mode**: the Updater only generates active cognition drafts; it doesn't write the persona definition directly (avoids fragmentary appends piling up contradictions)
+- **Global optimization**: triggered when cognition ≥3 / reward declines consecutively / convergence locks in (replaces old content and digests active drafts)
+- **Cognition participates in Q&A**: active cognition drafts are injected into prompts during soul_ask/soul_qdcvr_ask (training cognition takes effect immediately)
+- **Convergence awareness**: reward changing <0.25 for 2 consecutive rounds → converged state: the Actor halves its question count (focus on deepening)
+- **Auto-approved memories**: training memories with groundedness≥3.5 and all four dimensions ≥3.5 are auto-approved + indexed (searchable in Q&A)
+- **Knowledge distillation**: per-round cross-memory synthesis → knowledge-synthesis.md (heuristics + knowledge points, not pile-ups)
+- **Parallel speedup**: the Actor phase self-answers in parallel (harness parallelism configurable via config.yml soul.train_concurrency, default 4)
+- **Reward stability**: the Critic median-smooths 2 samples by default (resists LLM variance)
+- **Equivalent entry points**: POST /api/v1/soul/{kb}/train-rl; ragctl: soul train-rl; MCP: soul_train_rl
 
-### B1 手动学习(Actor 阶段单跑 — 精确控制文档)
+### B1 Manual Learning (Actor Phase Only — Precise Document Control)
 ```
-soul_learn(soul_kb_id, doc_paths=[...], limit=6, rounds=1)   # 异步,返回 task_id
-# 仅执行 Actor 阶段(知识学习), 不触发 Critic/Updater。适合精确控制学哪些文档。
+soul_learn(soul_kb_id, doc_paths=[...], limit=6, rounds=1)   # async; returns task_id
+# Runs only the Actor phase (knowledge learning); does not trigger Critic/Updater. For precise control of which documents are learned.
 ```
-- 注: 这是 RL 的 Actor 子组件单独使用, 完整训练请用 soul_train_rl
+- Note: this is RL's Actor sub-component used alone; for full training use soul_train_rl
 
-### B2 全库学习(Actor 阶段批量 — 所有人格 × 增量文档)
+### B2 Whole-Library Learning (Actor Phase Batch — All Personas × Incremental Documents)
 ```
 soul_learn_all(soul_kb_id="", max_docs=20, dry_run=False, rounds=1)
-# 建议先 dry_run=True 看预估成本/重叠率
+# Recommended: first dry_run=True to see estimated cost/overlap rate
 ```
-- 注: 这是 RL 的 Actor 子组件批量使用, 完整训练请用 soul_train_rl
+- Note: this is RL's Actor sub-component used in batch; for full training use soul_train_rl
 
-### B3 ⭐ 自动训练循环(无人值守, 自动调用 RL)
+### B3 ⭐ Auto-Training Loop (Unattended; Automatically Invokes RL)
 ```
-1. 为每个 SOUL 启用调度:
+1. Enable the schedule for each SOUL:
    experience_meditation_config_update(soul_kb_id, {
      "meditation_mode": "soul", "enabled": true,
-     "interval_hours": 24, "rounds_per_run": 2,     # 每轮定时训练执行 N 轮 RL
-2. 调度器每 interval_hours 遍历 SOUL → train_rl(rounds=rounds_per_run):
-   自动执行 Actor+Critic+Updater+全局优化 完整 RL 循环
-3. 认知草稿积累≥3条自动触发全局优化; 也可人工 soul_review_drafts 审批
+     "interval_hours": 24, "rounds_per_run": 2,     # each scheduled training run executes N RL rounds
+2. Every interval_hours the scheduler iterates SOULs → train_rl(rounds=rounds_per_run):
+   automatically executing the full RL loop of Actor+Critic+Updater+global optimization
+3. Cognition drafts accumulating ≥3 automatically trigger global optimization; manual soul_review_drafts approval also works
 ```
-- **调度器调用 train_rl**: 统一三角色, 不再只调 learn_incremental
-- **全局优化自动触发**: 认知≥3/reward下降/收敛固化时自动重写人格定义
+- **The scheduler calls train_rl**: unified three roles; no longer only learn_incremental
+- **Global optimization auto-triggers**: the persona definition is rewritten automatically when cognition≥3/reward declines/convergence locks in
 
-### B4 ⭐ RL 进化曲线与认知草稿审批
+### B4 ⭐ RL Evolution Curve and Cognition Draft Approval
 ```
-soul_review_drafts(soul_kb_id, draft_type="cognition", action="list")  # 查看待审批
-                   draft_ids=[...])   # 审批 → 触发全局优化重写人格定义
-soul_evaluate(soul_kb_id)             # 独立调 Critic 六维评分
-# 训练中全局优化自动消化 active 草稿; 手动审批也触发全局优化
+soul_review_drafts(soul_kb_id, draft_type="cognition", action="list")  # view pending approvals
+                   draft_ids=[...])   # approve → triggers global optimization rewriting the persona definition
+soul_evaluate(soul_kb_id)             # independently invoke the Critic's six-dimension scoring
+# During training, global optimization automatically digests active drafts; manual approval also triggers global optimization
 ```
-- **六维评价**: identity/values/thinking/language/knowledge/coherence(0-5)
-- **认知草稿状态**: active(待全局优化) → applied(已被全局优化消化); 手动 approve 也触发全局优化
-- **问答参与**: active 认知草稿在 soul_ask/soul_qdcvr_ask 时自动注入 prompt
+- **Six-dimension evaluation**: identity/values/thinking/language/knowledge/coherence (0-5)
+- **Cognition draft states**: active (awaiting global optimization) → applied (digested by global optimization); manual approve also triggers global optimization
+- **Q&A participation**: active cognition drafts are automatically injected into prompts during soul_ask/soul_qdcvr_ask
 - ragctl: soul evaluate / review-cognition --all
 
-### B5 ⭐ 任务控制与训练历史(SQLite)
+### B5 ⭐ Task Control and Training History (SQLite)
 ```
-ragctl soul task pause|resume|status <task_id>   # 暂停/继续/状态(轮次边界生效)
-ragctl soul training [soul_kb_id] [--run run_id] # 训练历史/单次事件流
-curl -X POST /api/v1/soul/tasks/{id}/pause       # API 等价
+ragctl soul task pause|resume|status <task_id>   # pause/resume/status (effective at round boundaries)
+ragctl soul training [soul_kb_id] [--run run_id] # training history / single-run event stream
+curl -X POST /api/v1/soul/tasks/{id}/pause       # API equivalent
 ```
-- 暂停: 当前 LLM 调用不中断, 在下一轮边界停住; 继续后从断点续跑
-- SQLite 持久化(storage/soul-training.db): 每次训练/蒸馏/审批运行
-  记录 runs(指标: 轮次/问题/记忆/文档/成本/reward) + events(阶段事件流)
-- 前端: 训练控制台 "📚 训练历史" 面板(列表+事件流+状态chip) + 训练中
-  "⏸ 暂停/▶ 继续" 按钮; 监控带实时进度
-- 查询: GET /api/v1/soul/training/history?[soul_kb_id] / training/runs/{run_id}
+- Pause: the current LLM call isn't interrupted; stops at the next round boundary; resumes from the breakpoint
+- SQLite persistence (storage/soul-training.db): every training/distillation/approval run
+  records runs (metrics: rounds/questions/memories/documents/cost/reward) + events (phase event stream)
+- Frontend: training console "📚 Training History" panel (list + event stream + status chips) + during training
+  "⏸ Pause/▶ Resume" buttons; monitoring with real-time progress
+- Queries: GET /api/v1/soul/training/history?[soul_kb_id] / training/runs/{run_id}
 
-### B6 ⭐ 文本补天蒸馏(前端/CLI/Agent 三入口)
+### B6 ⭐ Text Butian Distillation (Frontend/CLI/Agent — Three Entry Points)
 ```
-ragctl soul distill-text <name> --req "人格需求" --material "源材料" [--scope k1,k2]
-POST /api/v1/soul/distill {name, personality_req, source_material, ...}  # 异步 task_id
+ragctl soul distill-text <name> --req "persona requirement" --material "source material" [--scope k1,k2]
+POST /api/v1/soul/distill {name, personality_req, source_material, ...}  # async task_id
 ```
-- 与 ragctl soul distill(dot-skill 产物目录)互补: 本入口直接接受原始
-  源材料(聊天记录/文档/描述) + 人格需求, LLM 提取身份/价值观/思维/
-  语言/专长 → 建库 + 4 文档(模板+蒸馏融合) + bootstrap + 索引
-- 前端创建 modal 含 "补天蒸馏(可选)" 区: 填入需求+源材料即走蒸馏,
-  留空走模板初始化; 蒸馏进度经训练控制台实时追踪
-- 蒸馏运行同样写入 SQLite 训练历史(soul_distill)
+- Complements ragctl soul distill (dot-skill output directory): this entry directly accepts raw
+  source material (chat logs/documents/descriptions) + a persona requirement; the LLM extracts identity/values/thinking/
+  language/expertise → creates the KB + 4 documents (template+distillation fused) + bootstrap + index
+- The frontend creation modal includes a "Butian distillation (optional)" section: filling in requirement+source material runs distillation;
+  leaving them empty uses template initialization; distillation progress is tracked in real time via the training console
+- Distillation runs are also written to the SQLite training history (soul_distill)
 
 ---
 
-## §C 人格问答(检索增强)
+## §C Persona Q&A (Retrieval-Augmented)
 
-> **⭐ 增强原理**:soul_ask = 按人格注入(identity/values/thinking-style)+
-> kb_scope 内两阶段检索 + 人格记忆摘要 + LLM 合成 → 答案带结构化 citations
-> + PAS(人格一致性分)。检索范围 = 人格绑定的 kb_scope;人格记忆也被检索。
+> **⭐ Augmentation principle**: soul_ask = persona injection (identity/values/thinking-style)
+> + two-stage retrieval within kb_scope + persona memory summary + LLM synthesis → answer with structured citations
+> + PAS (persona alignment score). Retrieval scope = the persona's bound kb_scope; persona memories are also retrieved.
 
-### C1 显式指定人格
+### C1 Explicit Persona
 ```
 soul_ask(query, soul_kb_id="soul-<name>", task_goal, task_type, async_mode=True)
 ```
-- async_mode=True 返回 task_id → 轮询 kb_task_status
-- 返回: answer/citations[]/pas_score/selected_soul/route_*
+- async_mode=True returns a task_id → poll kb_task_status
+- Returns: answer/citations[]/pas_score/selected_soul/route_*
 
-### C2 自动路由(不指定人格)
+### C2 Auto Routing (No Persona Specified)
 ```
 soul_ask(query, task_goal, task_type, async_mode=True)
-# 空 soul_kb_id → soul_router 按 domain_labels + profile 摘要打分选最优人格
+# Empty soul_kb_id → soul_router scores domain_labels + profile summaries to pick the best persona
 ```
-- 路由决策可审计(router-log);显式指定可覆盖
-- 低置信度 → route_uncertain=true + 候选列表,不硬选
+- Routing decisions are auditable (router-log); explicit specification can override
+- Low confidence → route_uncertain=true + candidate list; no forced choice
 
-### C3 检索+人格增强组合(kb_search → soul_ask)
-当用户问"从知识库查XX,用YY人格回答"或需要"先检索后人格化":
-1. `kb_search_two_stage(query, kb_id=<目标库>, ...)` 定位知识
-2. `soul_ask(query, soul_kb_id="soul-<name>", context_override=<检索到的关键片段>)`
-   → context_override 注入检索结果作为临时背景,人格化加工
-完整策略见 [references/soul-rag-strategy.md](references/soul-rag-strategy.md),
-或直接用 `Skill("soul-rag")`。
+### C3 Retrieval + Persona Augmentation Combo (kb_search → soul_ask)
+When the user asks "look up XX in the knowledge base and answer as persona YY", or needs "retrieve first, then persona-ize":
+1. `kb_search_two_stage(query, kb_id=<target KB>, ...)` to locate knowledge
+2. `soul_ask(query, soul_kb_id="soul-<name>", context_override=<key retrieved snippets>)`
+   → context_override injects retrieved results as temporary background; persona-ized processing
+Full strategy in [references/soul-rag-strategy.md](references/soul-rag-strategy.md),
+or directly use `Skill("soul-rag")`.
 
-### C4 ⭐ QDCVR 一键集成(soul_qdcvr_ask — 推荐入口)
+### C4 ⭐ QDCVR One-Click Integration (soul_qdcvr_ask — Recommended Entry)
 ```
 soul_qdcvr_ask(query, soul_kb_id="", task_goal, task_type, top_k=5, async_mode=True)
 ```
-**先按 knowledgebase-search skill 流程检索, 再注入人格增强回答** —
-不是直接 soul_ask, 而是"检索 → 验证 → 人格合成"完整链路:
-- 检索侧(与 skill Step 2/2.5 对齐): 两阶段检索(BM25+向量+图谱)→ 硬阈值 0.35
-  → 文档级去重 → 短内容过滤(<50 chars 丢弃)→ top_k 片段
-- 合成侧: 证据注入 context_override → 人格合成(引用锚点校验 + PAS 评分)
-- 显式 soul_kb_id 时检索范围 = 该人格 kb_scope;自动路由时跨库
-- 返回 answer + citations + pas_score + route_* + **evidence_count**(注入证据数)
-- 无命中时人格诚实降级(声明知识库盲区, 不编造)
-- 前端: 问答 modal "一键检索+人格回答" 按钮; ragctl: `ragctl soul ask` 带 --qdcvr
+**First retrieves per the knowledgebase-search skill flow, then injects the persona for an augmented answer** —
+not a direct soul_ask, but the complete chain "retrieve → verify → persona synthesis":
+- Retrieval side (aligned with skill Steps 2/2.5): two-stage retrieval (BM25+vector+graph) → hard threshold 0.35
+  → document-level dedup → short-content filtering (<50 chars dropped) → top_k snippets
+- Synthesis side: evidence injected via context_override → persona synthesis (citation anchor validation + PAS scoring)
+- With explicit soul_kb_id, retrieval scope = that persona's kb_scope; auto-routing is cross-library
+- Returns answer + citations + pas_score + route_* + **evidence_count** (injected evidence count)
+- On no hits, the persona honestly downgrades (declares knowledge base blind spots; does not fabricate)
+- Frontend: Q&A modal "one-click retrieval + persona answer" button; ragctl: `ragctl soul ask` with --qdcvr
 
 ---
 
-## §D 人格评估与进化
+## §D Persona Evaluation and Evolution
 
-| 场景 | 工具 | 说明 |
+| Scenario | Tool | Notes |
 |---|---|---|
-| D1 记忆审批 | `soul_review_drafts` action=list/approve/reject | 批准 → 注册+索引,60s 可检索;低分需 force;**批量(≥2 条)自动异步: 返回 task_id → kb_task_status 轮询 progress {processed, total, approved, rejected}(单条含索引 ~20s, 批量串行会超 MCP 30s)**; `draft_type="cognition"` 审批 → 合并入人格定义(RL 策略落地) |
-| D2 自评/校准 | `soul_eval` / `soul_calibrate` | 四维评分;校准集重跑检测漂移 |
-| D3 反思 | `soul_reflect` | 认知草稿 vs 人格定义结构化 diff 漂移报告 |
-| D4 导出 | `soul_export(min_score)` | 高质量记忆 → JSONL 训练数据(LoRA/DPO) |
-| D5 回滚 | `soul_checkpoint` / `soul_rollback` | 快照/恢复记忆层;宪法层永不回滚 |
+| D1 Memory approval | `soul_review_drafts` action=list/approve/reject | Approve → register+index, searchable in 60s; low scores need force; **batch (≥2 items) is automatically async: returns task_id → poll progress {processed, total, approved, rejected} via kb_task_status (a single item takes ~20s including indexing; serial batching would exceed the MCP 30s)**; `draft_type="cognition"` approval → merged into the persona definition (RL strategy landing) |
+| D2 Self-rating/calibration | `soul_eval` / `soul_calibrate` | Four-dimension scoring; calibration-set reruns detect drift |
+| D3 Reflection | `soul_reflect` | Structured diff drift report: cognition drafts vs persona definition |
+| D4 Export | `soul_export(min_score)` | High-quality memories → JSONL training data (LoRA/DPO) |
+| D5 Rollback | `soul_checkpoint` / `soul_rollback` | Snapshot/restore the memory layer; the constitutional layer is never rolled back |
 
-审批黄金规则:
-- 接地性 ≥3 且四维均分 ≥3 → 正常批准
-- 低于 → 需 force=True 并记录理由(审计日志)
-- 批准后人格 profile 自动刷新 → 路由依据同步更新
-
----
-
-## §E ⭐ 补天蒸馏集成(先天种子 → 后天进化)
-
-> **⭐ 双引擎模型**:补天(butian 调度: nuwa-skill 深研 × dot-skill 本地材料)
-> 给"先天人格种子"(身份/风格/思维框架, 一次性蒸馏);SOUL 好奇心训练给
-> "后天知识进化"(KB 证据上持续学习, 终身)。两者正交互补。完整协议见
-> [references/soul-distill-integration.md](references/soul-distill-integration.md),
-> 调度协议见 `../butian/SKILL.md`。
-
-### E1 蒸馏初始人格(源材料 → 人格种子)
-```
-# 路径 1: nuwa-skill(公开人物/主题/思维框架深研)
-#   Skill("butian") → Skill("nuwa-skill") → 产物 [person]-perspective/SKILL.md
-#   → butian 转换器 nuwa_to_seed.py → 种子包(meta/persona/work/values)
-# 路径 2: dot-skill(同事/熟人/关系/本地材料)
-#   Skill("butian") → Skill("dot-skill") → 产物目录(meta.json+persona.md+work.md)
-# 路径 3: 直接源材料(聊天记录/文档/描述)
-#   ragctl soul distill-text / distill-files(后端 LLM 蒸馏, 不经种子包)
-
-# 2) 一键转换为 SOUL 人格(ragctl):
-ragctl soul distill <种子目录> --name soul-<名字> \
-  --scope kb1,kb2 --labels 标签1,标签2 --harness omp \
-  [--values <种子目录>/values.md]   # nuwa 产物: 价值观宪法层融合
-```
-- 转换逻辑: persona.md → soul-definition.md 追加(保留模板结构,
-  profile/language-style 解析正常);work.md → thinking-style.md 追加;
-  values.md(可选, nuwa 产物)→ values.md 追加(创建时宪法层融合);
-  meta.json tags/impression → domain_labels(路由依据)
-- 自动完成: 建库 → 写 4 文档 → bootstrap(profile+meditation config)
-  → 索引 → 可训练
-
-### E2 后天好奇心进化(种子成长)
-```
-ragctl soul learn-all soul-<名字> --rounds 2     # 固定 2 轮好奇心训练
-ragctl soul review soul-<名字> --action list      # 审查记忆草稿
-ragctl soul review soul-<名字> --action approve --draft <id>
-ragctl soul harness soul-<名字> omp               # 训练引擎
-ragctl soul ask "问题" --soul soul-<名字>          # 人格增强问答
-# 或前端 SOUL 页面: 训练(轮数)/审批/配置(定时)/问答(一键检索+人格回答)
-```
-- 进化闭环: 训练产出草稿 → 审批注册 → profile 刷新 → 路由更准 → 定时
-  训练持续学新文档 → reflect 防漂移 → checkpoint 可回滚
+Approval golden rules:
+- Groundedness ≥3 and all four dimensions ≥3 → approve normally
+- Below → requires force=True with a recorded reason (audit log)
+- After approval the persona profile auto-refreshes → routing basis updates in sync
 
 ---
 
-## Rules — 强制执行
+## §E ⭐ Butian Distillation Integration (Innate Seed → Acquired Evolution)
 
-1. **MCP 优先**: 一切 SOUL 操作走 `mcp__kb-mcp__soul_*` 工具,禁止 curl/python 直调
-2. **宪法层受控修改**: 自动流程不直接改 values.md / soul-definition.md / soul-config.yml 本体;
-   **唯一例外是 RL 强化通道** —— 认知草稿经 `soul_review_drafts(draft_type="cognition")` 审批后
-   自动合并入 soul-definition.md 对应章节(仅章节内追加优化行, 不删改既有内容, 写前 checkpoint)
-3. **预算敬畏**: 训练前检查 soul_status.estimated_cost_usd;每轮超 0.15 拒绝
-4. **模板隔离**: soul-template 永不参与训练/路由/问答
-5. **审批闭环**: 记忆/认知草稿必须经 soul_review_drafts 审批才生效(人格进化唯一通道)
-6. **路由可覆盖**: 自动路由结果不理想 → 显式 soul_kb_id 重试
-7. **与 knowledgebase 分工**: 知识操作(入库/搜索/管理)走 knowledgebase skill;
-   本 skill 只处理"人格层"。混合需求 → knowledgebase 执行后 soul 增强
-8. **三入口一致**: 前端(SOUL 页面)/ ragctl(soul 子命令)/ MCP(soul_* 工具)
-   走同一后端同一数据, 任何一处操作其他入口立即可见
+> **⭐ Dual-engine model**: Butian (butian dispatch: nuwa-skill deep research × dot-skill local materials)
+> provides the "innate persona seed" (identity/style/thinking framework, distilled once); SOUL curiosity training provides
+> "acquired knowledge evolution" (continuous learning on KB evidence, lifelong). The two are orthogonal and complementary. Full protocol in
+> [references/soul-distill-integration.md](references/soul-distill-integration.md);
+> dispatch protocol in `../butian/SKILL.md`.
 
-## NEVER 清单
+### E1 Distill the Initial Persona (Source Material → Persona Seed)
+```
+# Path 1: nuwa-skill (deep research on public figures/topics/thinking frameworks)
+#   Skill("butian") → Skill("nuwa-skill") → output [person]-perspective/SKILL.md
+#   → butian converter nuwa_to_seed.py → seed package (meta/persona/work/values)
+# Path 2: dot-skill (colleagues/acquaintances/relationships/local materials)
+#   Skill("butian") → Skill("dot-skill") → output directory (meta.json+persona.md+work.md)
+# Path 3: direct source material (chat logs/documents/descriptions)
+#   ragctl soul distill-text / distill-files (backend LLM distillation, bypassing the seed package)
 
-| ❌ | ✅ | 为什么 |
+# 2) One-click conversion into a SOUL persona (ragctl):
+ragctl soul distill <seed dir> --name soul-<name> \
+  --scope kb1,kb2 --labels label1,label2 --harness omp \
+  [--values <seed dir>/values.md]   # nuwa output: values constitutional layer fused
+```
+- Conversion logic: persona.md → soul-definition.md append (template structure preserved,
+  profile/language-style parse normally); work.md → thinking-style.md append;
+  values.md (optional, nuwa output) → values.md append (constitutional layer fused at creation);
+  meta.json tags/impression → domain_labels (routing basis)
+- Automatically completes: create KB → write 4 documents → bootstrap (profile+meditation config)
+  → index → trainable
+
+### E2 Acquired Curiosity Evolution (Seed Growth)
+```
+ragctl soul learn-all soul-<name> --rounds 2     # fixed 2 rounds of curiosity training
+ragctl soul review soul-<name> --action list      # review memory drafts
+ragctl soul review soul-<name> --action approve --draft <id>
+ragctl soul harness soul-<name> omp               # training engine
+ragctl soul ask "question" --soul soul-<name>          # persona-augmented Q&A
+# Or the frontend SOUL page: training (rounds)/approval/config (schedule)/Q&A (one-click retrieval + persona answer)
+```
+- Evolution loop: training produces drafts → approval registers → profile refresh → better routing → scheduled
+  training keeps learning new documents → reflect guards against drift → checkpoints allow rollback
+
+---
+
+## Rules — Mandatory Execution
+
+1. **MCP first**: all SOUL operations go through `mcp__kb-mcp__soul_*` tools; direct curl/python calls are forbidden
+2. **Constitutional layer controlled modification**: automated flows do not directly edit values.md / soul-definition.md / soul-config.yml themselves;
+   **the sole exception is the RL reinforcement channel** — after cognition drafts are approved via `soul_review_drafts(draft_type="cognition")`,
+   they are automatically merged into the corresponding sections of soul-definition.md (only appending/refining lines within sections, no deleting or rewriting existing content; checkpoint before write)
+3. **Budget reverence**: check soul_status.estimated_cost_usd before training; reject rounds over 0.15
+4. **Template isolation**: soul-template never participates in training/routing/Q&A
+5. **Approval loop**: memory/cognition drafts take effect only after soul_review_drafts approval (the only channel of persona evolution)
+6. **Routing is overridable**: if auto-routing is unsatisfactory → retry with an explicit soul_kb_id
+7. **Division of labor with knowledgebase**: knowledge operations (ingest/search/manage) go through the knowledgebase skill;
+   this skill handles only the "persona layer". Mixed needs → knowledgebase executes, then soul augments
+8. **Three entry points consistent**: frontend (SOUL page) / ragctl (soul subcommands) / MCP (soul_* tools)
+   use the same backend and the same data; an operation at any entry is immediately visible to the others
+
+## NEVER List
+
+| ❌ | ✅ | Why |
 |---|---|---|
-| 用 kb_doc_create 建人格记忆 | 记忆只经 soul_learn→soul_review_drafts | 绕过自评闸门=无质量门, 污染人格记忆库 |
-| 直接改 soul-config.yml | 只经 soul_config_update | 绕过校验/索引, 路由数据不一致 |
-| 训练模板库 soul-template | is_template 拒绝 | 模板是复制源, 训练会污染所有新人格 |
-| 对无 kb_scope 的人格训练 | 空 scope=只问答, learn 拒绝 | 无可学文档=空转烧预算 |
-| 跳过审批直接当记忆用 | 审批后注册+索引才可检索 | 未注册=向量/图谱检索不到, 白训练 |
-| 忽略预算跑全库自举 | 先 dry_run 看成本 | 全库自举成本 = Σ人格×0.15, 必须先预估 |
-| 把 SOUL 问答当普通检索 | 人格问答必须走 soul_ask(带人格注入) | 普通检索无人格注入, 回答失去身份一致性 |
-| 把补天产物直接塞进记忆 | 补天 persona 只做初始化文档(宪法层), 知识进化走训练 | persona 是"先天身份"非"后天知识", 混用破坏宪法层 |
+| Use kb_doc_create to build persona memories | Memories only via soul_learn→soul_review_drafts | Bypassing the self-rating gate = no quality gate; pollutes the persona memory library |
+| Directly edit soul-config.yml | Only via soul_config_update | Bypasses validation/indexing; routing data becomes inconsistent |
+| Train the template library soul-template | Rejected via is_template | The template is the copy source; training it pollutes all new personas |
+| Train personas with no kb_scope | Empty scope = Q&A only; learn refuses | No documents to learn = burning budget idling |
+| Use drafts as memories without approval | Registered + indexed only after approval, then searchable | Unregistered = vectors/graph can't find them; training wasted |
+| Run whole-library bootstrap ignoring budget | Check cost with dry_run first | Whole-library bootstrap cost = Σ personas × 0.15; must estimate first |
+| Treat SOUL Q&A as ordinary retrieval | Persona Q&A must go through soul_ask (with persona injection) | Ordinary retrieval has no persona injection; answers lose identity consistency |
+| Push butian outputs directly into memories | Butian persona is only an initialization document (constitutional layer); knowledge evolution goes through training | persona is "innate identity", not "acquired knowledge"; mixing them breaks the constitutional layer |
 
-**失败回退**: 训练/审批任务不可见(可能 MCP 未重启) → 用 REST 等价入口
-`GET/POST http://localhost:8765/api/v1/soul/*`(与 MCP 同数据); 仍失败 →
-`kb_project_status()` 查服务健康。
+**Failure fallback**: training/approval tasks invisible (possibly MCP not restarted) → use the REST equivalent entry
+`GET/POST http://localhost:8765/api/v1/soul/*` (same data as MCP); still failing →
+`kb_project_status()` to check service health.
 
 ## Tool Quick Reference
 
-- `soul_list()` / `soul_status(soul_kb_id)` — 查看人格与学习指标
-- `soul_init(soul_name, kb_scope, domain_labels, supported_task_types, harness, model)` — 创建人格
-- `soul_config_update(soul_kb_id, ...)` — 修改配置(scope/标签/权重)
-- `soul_delete(soul_kb_id)` — 删除人格(先留快照)
-- `soul_train_rl(soul_kb_id, rounds)` — ⭐ RL 统一训练(三角色: Actor×Critic×Updater, 异步, 唯一训练入口)
-- `soul_learn(soul_kb_id, doc_paths, limit, rounds)` / `soul_learn_all(soul_kb_id, max_docs, dry_run, rounds)` — Actor 阶段单跑(知识学习, 异步)
-- `soul_evaluate(soul_kb_id)` — Critic 六维人格评分(RL 奖励信号)
-- `soul_eval(soul_kb_id, question, answer, evidence_paths)` / `soul_calibrate` — 评估
-- `soul_review_drafts(soul_kb_id, action, draft_ids, force, draft_type=memory|cognition)` — 记忆/认知草稿审批
-- `soul_reflect(soul_kb_id)` / `soul_checkpoint` / `soul_rollback` — 反思/回滚
-- `soul_export(soul_kb_id, min_score)` — 训练数据导出
-- `soul_router(query, task_goal, task_type)` — 路由决策预览
-- `soul_ask(query, soul_kb_id, task_goal, task_type, context_override, async_mode)` — 人格问答
-- `soul_qdcvr_ask(query, soul_kb_id, task_goal, task_type, top_k, async_mode)` — QDCVR 一键检索+人格回答(推荐)
-- `experience_meditation_config_update(soul_kb_id, {...})` — 自动训练调度配置(含 rounds_per_run)
-- `ragctl soul distill <dot-skill目录> [--name] [--scope] [--labels] [--harness]` — 补天蒸馏 → SOUL
-- `ragctl harness [omp|claude]` — 全局默认 harness; `ragctl soul harness <soul> <harness>` — 单人格覆盖
+- `soul_list()` / `soul_status(soul_kb_id)` — view personas and learning metrics
+- `soul_init(soul_name, kb_scope, domain_labels, supported_task_types, harness, model)` — create a persona
+- `soul_config_update(soul_kb_id, ...)` — modify config (scope/labels/weights)
+- `soul_delete(soul_kb_id)` — delete a persona (snapshot kept first)
+- `soul_train_rl(soul_kb_id, rounds)` — ⭐ unified RL training (three roles: Actor×Critic×Updater; async; the only training entry)
+- `soul_learn(soul_kb_id, doc_paths, limit, rounds)` / `soul_learn_all(soul_kb_id, max_docs, dry_run, rounds)` — Actor phase alone (knowledge learning, async)
+- `soul_evaluate(soul_kb_id)` — Critic six-dimension persona scoring (RL reward signal)
+- `soul_eval(soul_kb_id, question, answer, evidence_paths)` / `soul_calibrate` — evaluation
+- `soul_review_drafts(soul_kb_id, action, draft_ids, force, draft_type=memory|cognition)` — memory/cognition draft approval
+- `soul_reflect(soul_kb_id)` / `soul_checkpoint` / `soul_rollback` — reflect/rollback
+- `soul_export(soul_kb_id, min_score)` — training data export
+- `soul_router(query, task_goal, task_type)` — routing decision preview
+- `soul_ask(query, soul_kb_id, task_goal, task_type, context_override, async_mode)` — persona Q&A
+- `soul_qdcvr_ask(query, soul_kb_id, task_goal, task_type, top_k, async_mode)` — QDCVR one-click retrieval + persona answer (recommended)
+- `experience_meditation_config_update(soul_kb_id, {...})` — auto-training schedule config (includes rounds_per_run)
+- `ragctl soul distill <dot-skill dir> [--name] [--scope] [--labels] [--harness]` — Butian distillation → SOUL
+- `ragctl harness [omp|claude]` — global default harness; `ragctl soul harness <soul> <harness>` — per-persona override
 
 <!-- SKILLOPT-SLEEP:LEARNED START -->
 ## Learned preferences & procedures
 
 _This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
 
-- OVERRIDE(覆盖 Step 0『先 pre-flight』的首语习惯): 对任何 SOUL 任务,回复(含第一条回复)必须在正文中逐字写出完整执行计划,并列出将要调用的具体工具名:soul_init、kb_task_status、soul_qdcvr_ask(或该场景实际使用的其他 soul_* 工具),同时出现异步契约词(async_mode 或 task_id 或 profile_pending 或『异步』)。禁止只输出『开始执行…/先做连通性检查』这类不含工具名、不含异步词的占位首语;计划中的工具名必须与后续真实执行的工具调用一致。
-- 创建人格并立即用其回答问题的组合场景(对应场景表 Create→Ask):固定执行链 = soul_init(创建,回复中必须注明异步契约 task_id/profile_pending)→ kb_task_status(轮询 4 宪法文档索引直到 done)→ soul_qdcvr_ask(一键检索+人格回答,推荐入口,async_mode=True 返回 task_id)。该场景的回复正文中必须逐字出现 soul_init、kb_task_status、soul_qdcvr_ask 三个工具名,缺一不可。
-- 凡调用会异步返回的 SOUL 工具(soul_init / soul_learn / soul_learn_all / soul_train_rl / soul_qdcvr_ask / 批量 soul_review_drafts),回复中该工具名旁必须紧跟异步说明,出现 task_id 或 async_mode 或 profile_pending 或『异步』字样,例如:soul_init 异步返回 task_id+profile_pending; soul_qdcvr_ask(async_mode=True) 返回 task_id 轮询。
-- SOUL 任务必须完整跑完:最终回复必须包含完整执行结果(创建结果/索引轮询结果/问答答案),不得在输出计划或第一次工具调用后就结束。任何工具调用失败、超时或输出中断时,必须在随后的回复中说明错误并重试或改用 REST 等价入口(见『失败回退』),且后续回复同样逐字包含原计划中的工具名与异步关键词(soul_init、kb_task_status、soul_qdcvr_ask、task_id/异步)。
+- OVERRIDE (overrides Step 0's "pre-flight first" opener habit): for any SOUL task, the reply (including the first reply) must write the complete execution plan in the body, verbatim, listing the concrete tool names to be called: soul_init, kb_task_status, soul_qdcvr_ask (or the other soul_* tools actually used in the scenario), while also containing an async-contract word (async_mode or task_id or profile_pending or "async"). Openers containing no tool names or async words, like "starting execution…/first a connectivity check", are forbidden; tool names in the plan must match the tool calls actually executed afterwards.
+- For the combined scenario of creating a persona and immediately answering with it (scenario table Create→Ask): the fixed execution chain = soul_init (create; the reply must note the async contract task_id/profile_pending) → kb_task_status (poll the 4 constitutional documents' indexing until done) → soul_qdcvr_ask (one-click retrieval + persona answer; recommended entry; async_mode=True returns task_id). The reply body for this scenario must contain the three tool names soul_init, kb_task_status, soul_qdcvr_ask verbatim — all three are required.
+- Whenever calling an asynchronously-returning SOUL tool (soul_init / soul_learn / soul_learn_all / soul_train_rl / soul_qdcvr_ask / batch soul_review_drafts), the reply must immediately follow the tool name with async wording containing task_id or async_mode or profile_pending or "async", e.g.: soul_init asynchronously returns task_id+profile_pending; soul_qdcvr_ask(async_mode=True) returns a task_id to poll.
+- SOUL tasks must run to completion: the final reply must include the full execution results (creation result/index polling result/Q&A answer); ending after outputting the plan or the first tool call is not allowed. If any tool call fails, times out, or output is interrupted, the following reply must explain the error and retry or switch to the REST equivalent entry (see "Failure fallback"), and subsequent replies must likewise contain the original plan's tool names and async keywords verbatim (soul_init, kb_task_status, soul_qdcvr_ask, task_id/async).
 <!-- SKILLOPT-SLEEP:LEARNED END -->

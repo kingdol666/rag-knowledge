@@ -79,6 +79,14 @@ def _write_json_atomic(path: Path, data: dict) -> None:
     Critical for ~/.claude.json which may be 80KB+ with many user settings —
     a partial write would wipe the user's entire Claude Code config.
     """
+    # Path-traversal guard: config targets are limited to the user home or the
+    # rag-knowledge repo tree.
+    resolved = Path(path).resolve()
+    allowed_roots = [Path.home().resolve(), KB_MCP_DIR.resolve(),
+                     Path(os.environ.get("RAG_PROJECT_ROOT", "")).resolve()
+                     if os.environ.get("RAG_PROJECT_ROOT") else None]
+    if not any(str(resolved).startswith(str(r)) for r in allowed_roots if r):
+        raise ValueError(f"Config path escapes allowed roots: {resolved}")
     tmp = path.with_suffix(path.suffix + ".tmp")
     with open(tmp, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)

@@ -380,15 +380,36 @@ class Config:
     def soul_config(self) -> dict:
         """SOUL 人格系统配置(soul 段)。
 
-        Keys: default_harness (omp|claude), default_model (空=引擎默认).
+        Keys: default_harness (注册表内任一引擎 id), default_model (空=引擎默认).
         """
         return self._config.get("soul", {})
 
     @property
     def soul_default_harness(self) -> str:
-        """全局默认 harness(配置驱动,默认 omp)。"""
+        """全局默认 harness(配置驱动,默认 omp)。非法值回落 omp。"""
         h = str(self.soul_config.get("default_harness", "omp") or "omp").strip().lower()
-        return h if h in ("omp", "claude") else "omp"
+        try:
+            from app.services.harness_registry import is_known_harness
+            return h if is_known_harness(h) else "omp"
+        except Exception:
+            return h if h in ("omp", "claude") else "omp"
+
+    # ── Harness（多执行引擎） ──────────────────────────────────────────
+
+    @property
+    def harness_config(self) -> dict:
+        """多引擎配置(harness 段)。
+
+        Keys:
+          commands: {<harness_id>: 可执行文件路径或命令名} —— 命令覆盖链最后一环
+                    (npm shim 损坏时指向包内真实 bin, 如 crush)。
+        """
+        return self._config.get("harness", {})
+
+    def harness_command(self, harness_id: str) -> str:
+        """引擎命令覆盖(config.yml harness.commands.<id>)。空串=走 PATH 探测。"""
+        raw = str((self.harness_config.get("commands") or {}).get(harness_id, "") or "")
+        return raw.strip()
 
     @property
     def soul_default_model(self) -> str:

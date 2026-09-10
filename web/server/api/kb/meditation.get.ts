@@ -44,7 +44,13 @@ export default defineEventHandler(async (event) => {
 
     // Read YAML directly
     const storageRoot = getTreeStorageAbsolutePath()
-    const yamlPath = path.join(storageRoot, kb.path, KNOWLEDGE_BASE_YAML_FILENAME)
+    // Path-traversal guard: kb.path must stay inside the storage root.
+    const resolvedYamlDir = path.resolve(storageRoot, kb.path)
+    if (!resolvedYamlDir.startsWith(path.resolve(storageRoot) + path.sep) &&
+        resolvedYamlDir !== path.resolve(storageRoot)) {
+      throw createError({ status: 400, message: 'Invalid KB path' })
+    }
+    const yamlPath = path.join(resolvedYamlDir, KNOWLEDGE_BASE_YAML_FILENAME)
     let savedConfig: any = {}
     try {
       const content = await fs.readFile(yamlPath, 'utf-8')

@@ -8,246 +8,248 @@ description: >
   Archival agent. Quality-gated (specific, actionable, independently citable).
   Follows KB architecture: experience.md ↔ .experience-index.yml ↔ ChromaDB
   vector index. Do NOT trigger for read-only experience queries (use
-  knowledgebase-experience E4 search instead). Triggered by: 记录经验,
-  总结经验, 提炼成经验, 保存教训, 记住流程, 创建经验, 更新经验, 删除经验,
-  经验跟随, 经验迁移, 冥想, 整理记忆, 归纳经验, 反思, meditation, reflect,
+  knowledgebase-experience E4 search instead). Triggered by: record experience,
+  summarize experience, distill into experience, save a lesson, remember the
+  workflow, create experience, update experience, delete experience,
+  experience follow-along, experience migration, meditation, tidy memories,
+  induce experience, reflect, meditation, reflect,
   save as experience, summarize as lesson, record workflow, create experience,
   update experience, delete experience.
 ---
 
-## ⭐ 相关 Skills
-- 经验全生命周期 → `skill://knowledgebase-experience` (E0-E12)
-- 文档入库 → `skill://knowledgebase-ingest`
-- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)
+## ⭐ Related Skills
+- Full experience lifecycle → `skill://knowledgebase-experience` (E0-E12)
+- Document ingest → `skill://knowledgebase-ingest`
+- Architecture mental model → [kb-architecture.md](../knowledgebase/references/kb-architecture.md) of `skill://knowledgebase`
 
 ## Sequential Workflow
-**Step 1 — 识别场景**: 判断用户是要"记录经验"/"总结教训"/"保存流程"。
-**Step 2 — 收集上下文**: 从当前会话提取关键事件 + 决策 + 结果。
-**Step 3 — 结构化草稿**: 按 scenario/problem/solution/key_lessons 模板组织。
-**Step 4 — 质量门控**: E2 四要素检查 + 去重。
-**Step 5 — 用户确认**: 展示草稿，等待确认/修改。
-**Step 6 — 持久化**: experience_create → 自动索引 → 完成。
-# Experience Summarize — 经验总结·冥想·CRUD·迁移
+**Step 1 — Identify the scenario**: determine whether the user wants to "record experience" / "summarize lessons" / "save a workflow".
+**Step 2 — Gather context**: extract key events + decisions + outcomes from the current session.
+**Step 3 — Structure the draft**: organize by the scenario/problem/solution/key_lessons template.
+**Step 4 — Quality gate**: E2 four-element check + dedup.
+**Step 5 — User confirmation**: present the draft; wait for confirmation/edits.
+**Step 6 — Persist**: experience_create → auto-index → done.
+# Experience Summarize — Experience Summaries · Meditation · CRUD · Migration
 
-## ⭐ Execution Model · Pre-Flight · Architecture（作业首步，强制）
+## ⭐ Execution Model · Pre-Flight · Architecture (First Step of Any Job, Mandatory)
 
-**执行者：Archival agent** — 用 `task` 委托执行（**委托模板 + 三角色执行模型 + 组合任务边界**：必读 [execution-model.md](../knowledgebase/references/execution-model.md)）。**Pre-Flight**：未通过禁作业 — 一探双检 `kb_project_status` → 分支处置 → 冒烟测试，完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)。**心智模型**：操作前必读 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层模型 + 一致性不变量 + 91 工具地图）；MCP 优先原则（禁 terminal/HTTP 绕过）见 [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) 第五条。
+**Executor: Archival agent** — delegate via `task` (**delegation template + three-role execution model + combined-task boundaries**: must-read [execution-model.md](../knowledgebase/references/execution-model.md)). **Pre-Flight**: no work before it passes — one-probe double-check `kb_project_status` → branch handling → smoke test; full flow in [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md). **Mental model**: before operating, must-read [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer model + consistency invariants + 91-tool map); MCP-first principle (no terminal/HTTP bypass) in [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) Rule 5.
 
 ---
 
-## 模式路由（Step 0：识别用户意图）
+## Mode Routing (Step 0: Identify User Intent)
 
 ```
-用户意图命中哪个模式？
+Which mode does the user intent match?
 
-① MEDITATION  — "冥想""整理记忆""归纳经验""reflect""定期总结"
-② CREATE      — "记录经验""总结一下""提炼成经验""保存教训""记住流程"
-③ UPDATE      — "更新经验""修改经验""补充教训"
-④ DELETE      — "删除经验""清掉经验"
-⑤ MIGRATE     — "经验跟随""经验迁移"（文档/KB移动后联动）
-⑥ CROSS-KB    — 跨库综合（涉及多KB的经验归纳）
+① MEDITATION  — "meditate", "tidy memories", "induce experience", "reflect", "periodic summaries"
+② CREATE      — "record experience", "summarize this", "distill into experience", "save a lesson", "remember the workflow"
+③ UPDATE      — "update experience", "modify experience", "add lessons"
+④ DELETE      — "delete experience", "remove the experience"
+⑤ MIGRATE     — "experience follow-along", "experience migration" (linked after document/KB moves)
+⑥ CROSS-KB    — cross-library synthesis (experience induction spanning multiple KBs)
 
-不确定？按最接近的 CREATE 处理，向用户确认。
+Not sure? Treat it as the closest match to CREATE and confirm with the user.
 ```
 
-跳转到对应模式。所有写入走 MCP 工具（experience_create/update/delete），禁止终端/HTTP 绕行。
+Jump to the corresponding mode. All writes go through MCP tools (experience_create/update/delete); terminal/HTTP bypass is forbidden.
 
-**reference 加载指南**（避免加载不需要的文件浪费上下文）：
-| 模式 | 必读 reference | 不需要加载 |
+**Reference loading guide** (avoid loading unneeded files and wasting context):
+| Mode | Required references | Do not load |
 |------|--------------|-----------|
 | MEDITATION | meditation.md, quality-standards.md | crud-and-migration.md, cross-kb-synthesis.md |
-| CREATE | quality-standards.md | meditation.md（仅手动总结不需要采集脚本）|
+| CREATE | quality-standards.md | meditation.md (manual summaries don't need the collection scripts)|
 | UPDATE / DELETE | crud-and-migration.md | meditation.md, cross-kb-synthesis.md |
 | MIGRATE | crud-and-migration.md | meditation.md, quality-standards.md |
 | CROSS-KB | cross-kb-synthesis.md, quality-standards.md | meditation.md |
 
 ---
 
-## 模式①：MEDITATION — 冥想记忆（OpenClaw 式自动归纳）
+## Mode ①: MEDITATION — Memory Meditation (OpenClaw-Style Auto-Induction)
 
-> 定期从高频问题 + KB 回答自动归纳经验。详见 [references/meditation.md](references/meditation.md)。
+> Periodically auto-induces experiences from high-frequency questions + KB answers. See [references/meditation.md](references/meditation.md) for details.
 
-### 四阶段流程
+### Four-Phase Flow
 
-> 💡 **双路径**: 优先走 MCP 冥想工具（`experience_meditation_*`），CLI 脚本作为离线采集备选。
+> 💡 **Dual path**: prefer the MCP meditation tools (`experience_meditation_*`); CLI scripts are the offline collection fallback.
 
-**阶段0 — 检查冥想调度器状态（MCP 优先）**
+**Phase 0 — Check the meditation scheduler status (MCP first)**
 
 ```
 experience_meditation_status(kb_id)   → {enabled, interval_hours, last_run, running_now, config: {...}}
-experience_meditation_config_get(kb_id)  → 读取 KB 级冥想配置
-experience_meditation_history(kb_id)     → 查看历史运行记录
+experience_meditation_config_get(kb_id)  → read KB-level meditation config
+experience_meditation_history(kb_id)     → view historical run records
 ```
 
-**阶段1 — 采集问题源**
+**Phase 1 — Collect question sources**
 
-MCP 路径（推荐）：
+MCP path (recommended):
 ```
-# 查看历史冥想运行记录（已有聚类信号）
-experience_meditation_history(kb_id) → 历史运行记录 + 信号聚类
-experience_meditation_run(kb_id, trigger="manual") → 手动触发一轮冥想（走 agent harness）
+# View historical meditation runs (already contains clustering signals)
+experience_meditation_history(kb_id) → historical run records + signal clusters
+experience_meditation_run(kb_id, trigger="manual") → manually trigger one meditation round (via agent harness)
 ```
 
-CLI 路径（离线备选）：
+CLI path (offline fallback):
 ```bash
 python scripts/meditation_source.py --days 7 --top 30
-python scripts/meditation_source.py --json --days 14  # JSON 模式
+python scripts/meditation_source.py --json --days 14  # JSON mode
 ```
 
-同时回顾当前会话的 KB 问答上下文（最精准）。
+Also review the current session's KB Q&A context (most precise).
 
-<!-- CLI 路径说明在上方已完整覆盖 -->
+<!-- The CLI path notes are fully covered above -->
 
-**阶段2 — KB 相关性确认 + 答案检索**
+**Phase 2 — KB relevance confirmation + answer retrieval**
 
 ```
-对每个候选问题簇：
-  1. kb_list(lightweight=true) 匹配 → 非 KB 问题丢弃
-  2. experience_search_smart(query) → 已有 P0/P1 覆盖则跳过
-  3. kb_search_two_stage(query, kb_id) → 提取 related_docs + 答案基础
+For each candidate question cluster:
+  1. kb_list(lightweight=true) matching → discard non-KB questions
+  2. experience_search_smart(query) → skip if existing P0/P1 already covers it
+  3. kb_search_two_stage(query, kb_id) → extract related_docs + answer basis
 ```
 
-**阶段3 — LLM 归纳 + 质量门控**
+**Phase 3 — LLM induction + quality gate**
 
-按 [references/quality-standards.md](references/quality-standards.md) 黄金标准提炼。任一字段不达标 → 丢弃（宁缺毋滥）。归纳信号阈值：至少 1 强信号或 2 中信号（见 meditation.md §信号判定）。
+Distill per the gold standard in [references/quality-standards.md](references/quality-standards.md). If any field falls short → discard (quality over quantity). Induction signal threshold: at least 1 strong signal or 2 medium signals (see meditation.md §Signal Judgment).
 
-**阶段4 — 入库 + 报告**
+**Phase 4 — Persist + report**
 
-新建或更新（已有相似走 update），输出冥想报告。
+Create or update (update if a similar experience exists), then output a meditation report.
 
 ---
 
-## 模式②：CREATE — 手动总结入库（核心流程）
+## Mode ②: CREATE — Manual Summary Ingestion (Core Flow)
 
-> 从对话/文档/实践提炼结构化经验。质量标准详见 [references/quality-standards.md](references/quality-standards.md)。
+> Distill structured experiences from conversations/documents/practice. Quality standards: [references/quality-standards.md](references/quality-standards.md).
 
-### Step 1 — 识别场景 + 目标 KB
+### Step 1 — Identify the scenario + target KB
 
-从对话提取：发生了什么？做了什么？学到了什么？识别操作上下文。
+Extract from the conversation: what happened? what was done? what was learned? Identify the operational context.
 
-`kb_list()` 遍历确定 `target_kb_id`：场景属于哪个 KB 的领域？找不到精确匹配选最接近的父 KB，tags 标领域。
+Iterate `kb_list()` to determine `target_kb_id`: which KB's domain does the scenario belong to? If no exact match exists, pick the closest parent KB and tag the domain.
 
-### Step 2 — 起草经验（质量是关键）
+### Step 2 — Draft the experience (quality is key)
 
-**黄金标准**：problem = 可复现场景；solution = 可执行步骤；key_lessons = 可独立引用。
-具体达标标准、坏/好示例、完整性检查清单见 [references/quality-standards.md](references/quality-standards.md)。
+**Gold standard**: problem = a reproducible scenario; solution = executable steps; key_lessons = independently citable.
+For concrete pass criteria, bad/good examples, and the completeness checklist, see [references/quality-standards.md](references/quality-standards.md).
 
 ```yaml
 kb_id:       "<target KB ID or path>"
-title:       "含场景词+方法词"
-scenario:    "kebab-case-含领域前缀"
+title:       "contains scenario words + method words"
+scenario:    "kebab-case with domain prefix"
 category:    "troubleshooting|best_practice|workflow|optimization|lesson_learned|decision|tip"
-problem:     "具体可复现场景（≥50 chars）"
-solution:    "可执行步骤/方法（≥100 chars）"
+problem:     "concrete reproducible scenario (≥50 chars)"
+solution:    "executable steps/method (≥100 chars)"
 result:      "success|partial|failed|inconclusive"
-key_lessons: ["可独立引用的教训1（≥30 chars）", "教训2", "教训3"]
-tags:        ["领域词", "方法词", "场景词"]
+key_lessons: ["independently citable lesson 1 (≥30 chars)", "lesson 2", "lesson 3"]
+tags:        ["domain word", "method word", "scenario word"]
 severity:    "critical|important|normal|tip"
-related_docs: ["KB/doc.md"]   # kb_doc_read 验证存在
+related_docs: ["KB/doc.md"]   # verify existence with kb_doc_read
 ```
 
-### Step 3 — 用户确认
+### Step 3 — User confirmation
 
-呈现草稿："确认入库？可修改。" 用户确认或编辑后进入 Step 4。
+Present the draft: "Confirm ingestion? You may edit it." After the user confirms or edits, go to Step 4.
 
-### Step 4 — 持久化
+### Step 4 — Persist
 
 ```python
 result = mcp__kb-mcp__experience_create(
     kb_id, title, scenario, category, problem, solution, result,
     key_lessons, tags, severity, related_docs
 )
-exp_id = result["experience"]["id"]  # 自动三层一致+向量索引
+exp_id = result["experience"]["id"]  # auto three-layer consistency + vector indexing
 ```
 
-### Step 5 — 验证
+### Step 5 — Verify
 
-`experience_read(kb_id, exp_id)` 确认字段正确 + `vector_index.total_chunks ≥ 1`。报告 exp_id。
+`experience_read(kb_id, exp_id)` confirm fields are correct + `vector_index.total_chunks ≥ 1`. Report the exp_id.
 
 ---
 
-## 模式③：UPDATE — 更新经验
+## Mode ③: UPDATE — Update an Experience
 
-> 详见 [references/crud-and-migration.md](references/crud-and-migration.md) §更新。
+> See [references/crud-and-migration.md](references/crud-and-migration.md) §Update.
 
 ```
-定位：experience_search_smart(query) 或 experience_list(kb_id, scenario=...)
-读取：experience_read(kb_id, exp_id) → 当前内容
-更新：experience_update(kb_id, exp_id, **需改字段)  # 只传需更新的，向量自动重索引
-验证：experience_read 确认 + vector_index.indexed_at 刷新
+Locate: experience_search_smart(query) or experience_list(kb_id, scenario=...)
+Read: experience_read(kb_id, exp_id) → current content
+Update: experience_update(kb_id, exp_id, **fields to change)  # pass only changed fields; vector re-indexes automatically
+Verify: experience_read confirmation + vector_index.indexed_at refreshed
 ```
 
-更新场景：冥想补充教训、文档更新经验过时（E6 stale）、修复 related_docs 链接。
+Update scenarios: meditation adding lessons, stale experiences after document updates (E6 stale), fixing related_docs links.
 
 ---
 
-## 模式④：DELETE — 删除经验
+## Mode ④: DELETE — Delete an Experience
 
-> 详见 [references/crud-and-migration.md](references/crud-and-migration.md) §删除。
+> See [references/crud-and-migration.md](references/crud-and-migration.md) §Delete.
 
 ```
-读取确认：experience_read(kb_id, exp_id) → 确认非误删
-删除：experience_delete(kb_id, exp_id)  # 不可逆
-验证：experience_list(kb_id) 数量减1
+Read to confirm: experience_read(kb_id, exp_id) → confirm it is not a mistake
+Delete: experience_delete(kb_id, exp_id)  # irreversible
+Verify: experience_list(kb_id) count decreases by 1
 ```
 
-删除决策：测试污染/孤儿零价值 → 删；有应用记录 → 先评估归档 `status="archived"`。
+Deletion decision: test pollution/orphan with zero value → delete; has application records → evaluate archiving first with `status="archived"`.
 
 ---
 
-## 模式⑤：MIGRATE — 经验跟随文档/KB 移动
+## Mode ⑤: MIGRATE — Experiences Follow Document/KB Moves
 
-> `kb_doc_move` 不会自动迁移经验。详见 [references/crud-and-migration.md](references/crud-and-migration.md) §跟随移动。
+> `kb_doc_move` does not automatically migrate experiences. See [references/crud-and-migration.md](references/crud-and-migration.md) §Follow-the-Move.
 
-**文档移动后强制执行**：
+**Mandatory after document moves**:
 
 ```
-1. experience_list(source_kb) → 筛 related_docs 含移动文档的经验
-2. 对每条受影响经验：
-   - 强绑定文档 → 经验迁移到 target_kb（read→create→delete→verify）
-   - 文档仅参考 → 更新 related_docs 路径（旧→新）
-3. 验证所有 related_docs 指向真实存在的文档
+1. experience_list(source_kb) → filter experiences whose related_docs include the moved document
+2. For each affected experience:
+   - Strongly bound document → migrate the experience to target_kb (read→create→delete→verify)
+   - Document only referenced → update the related_docs path (old→new)
+3. Verify all related_docs point to documents that really exist
 ```
 
-KB 重命名/移动：经验目录自动跟随，但需 `kb_reindex(force=true)` 重建向量 + 修复跨库引用路径。
+KB rename/move: the experience directory follows automatically, but you need `kb_reindex(force=true)` to rebuild vectors + fix cross-library reference paths.
 
 ---
 
-## 模式⑥：CROSS-KB — 跨库综合
+## Mode ⑥: CROSS-KB — Cross-Library Synthesis
 
-> 经验横跨多 KB 时的归属/去重/关联。详见 [references/cross-kb-synthesis.md](references/cross-kb-synthesis.md)。
+> Ownership/dedup/linkage when experiences span multiple KBs. See [references/cross-kb-synthesis.md](references/cross-kb-synthesis.md).
 
-归属决策：显式归属 > related_docs 多数归属 > 核心领域 > 通用 KB。
-跨库去重：`experience_search_global` 先查，避免重复；纯重复用"指针经验"轻量引用。
+Ownership decision: explicit ownership > related_docs majority ownership > core domain > general KB.
+Cross-library dedup: check with `experience_search_global` first to avoid duplicates; for pure duplicates use lightweight "pointer experiences".
 
 ---
 
-## ⚠️ NEVER 清单
+## ⚠️ NEVER List
 
-| ❌ 不要 | 原因 | ✅ 应该 |
+| ❌ Don't | Why | ✅ Do |
 |--------|------|---------|
-| 创建缺 problem/solution/lessons 的空经验 | 检索命中也没用 | 回退起草，过质量门控 |
-| 跳过质量标准（因为是自动/冥想） | 冥想≠批量产垃圾 | 同样过完整检查清单 |
-| 跳过用户确认直接入库（CREATE 模式） | 用户可能有修改 | Step 3→4 |
-| related_docs 写不存在路径 | 404 断链 | `kb_doc_read` 验证 |
-| scenario 不带领域前缀 | 全局冲突搜不到 | 如 `vla-deployment-sim2real` |
-| 文档移动后不修复经验链接 | 经验变孤儿 | MIGRATE 模式强制执行 |
-| 降低质量标准只为多产 | 低质膨胀 | 宁缺毋滥 |
-| 把对话原文当经验 | 无法复用 | 提炼成结构化抽象规律 |
-| 采集脚本写入任何数据 | 脚本只读 | 入库只走 MCP 工具 |
-| MEDITATION 产出不报告 | 用户不知情 | 阶段4 输出报告 |
-| 用 summary 的 avg_rating 判断库质量 | 未评审经验算0.0拉低均值，误导 | 看 `reviewed_count` + `unrated_count` 字段区分 |
-| 信任采集脚本的原始输出不经KB验证 | 聊天库含系统输出伪装为user | 每个候选经 `kb_list(lightweight=true)` 匹配 + 向量搜索验证 |
+| Create empty experiences lacking problem/solution/lessons | Useless even if retrieval hits them | Fall back to drafting; pass the quality gate |
+| Skip quality standards (because it's automatic/meditation) | Meditation ≠ mass-producing junk | Run the same full checklist |
+| Skip user confirmation and ingest directly (CREATE mode) | The user may want edits | Step 3→4 |
+| Write nonexistent paths into related_docs | 404 broken links | Verify with `kb_doc_read` |
+| scenario without a domain prefix | Global conflicts; can't be found | E.g. `vla-deployment-sim2real` |
+| Not fixing experience links after document moves | Experiences become orphans | MIGRATE mode is mandatory |
+| Lower quality standards just to produce more | Low-quality bloat | Quality over quantity |
+| Treat raw conversation transcripts as experiences | Not reusable | Distill into structured, abstract lessons |
+| Let collection scripts write any data | Scripts are read-only | Ingestion only via MCP tools |
+| MEDITATION produces no report | The user is unaware | Phase 4 outputs a report |
+| Judge library quality by summary's avg_rating | Unreviewed experiences count as 0.0 and drag down the mean, misleading | Look at `reviewed_count` + `unrated_count` fields to distinguish |
+| Trust raw collection script output without KB validation | Chat libraries contain system output masquerading as user | Validate every candidate via `kb_list(lightweight=true)` matching + vector search |
 
 <!-- SKILLOPT-SLEEP:LEARNED START -->
 ## Learned preferences & procedures
 
 _This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
 
-- When restating skill quality requirements in responses, every criterion containing a numeric threshold or metric (e.g., ≥30chars, ≥50 chars, ≥100 chars) MUST be reproduced as the exact literal string from the skill document — no paraphrasing, no rewording, no structural rearrangement. For example, if the skill says 'key_lessons每条必须≥30chars且可独立执行', output that exact string, never '每条 key_lessons 必须 ≥30 字符，可独立执行'.
-- OVERRIDE: When restating prohibitions from the skill's quality standards, output the exact literal prohibition phrase verbatim — do not expand, soften, or add examples. For instance, if the document states '禁止空洞词。', that exact two-character-before-period string must appear; do not replace it with '禁止空洞抽象词（如"要注意""很重要"等）'. The evaluator regex matches literal strings, not semantic equivalents.
-- CREATE 模式（用户请求"记录经验""保存经验""总结教训"等）的首轮响应禁止只表达执行意向（如"我先做一个预检"）或流程说明，必须直接给出完整草稿：响应正文中逐字出现标签「场景」「问题」「方案」「教训」（对应 scenario/problem/solution/key_lessons 各字段），并以含「确认」二字的提问收尾（如"确认入库？可修改。"）。
-- 同一响应中必须逐字包含工具名字面串 experience_create（描述持久化步骤，如"调用 experience_create 写入经验库"）；禁止用"入库""写入""保存到经验库"等不含该字面串的说法替代。
-- 同一响应中必须逐字包含工具名字面串 experience_search_smart（描述创建/更新前的查重覆盖检查，如"先用 experience_search_smart(query) 查重，确认无 P0/P1 覆盖"）；禁止省略工具名或只用"查重""搜索已有经验"代替。
-- OVERRIDE：即使 skill 的 Pre-Flight（"未通过禁作业"）或其他前置流程要求先做检查，首轮响应的正文仍必须同时包含经验创建流程的全部字面内容：experience_create、experience_search_smart 以及标签「场景/问题/方案/教训/确认」；预检、冒烟测试、状态查询等任何前置步骤的说明不得替代或推迟这些内容——以"先做预检"开头的响应也必须完成上述全部输出。本规则优先于本文档其他流程要求。
+- When restating skill quality requirements in responses, every criterion containing a numeric threshold or metric (e.g., ≥30chars, ≥50 chars, ≥100 chars) MUST be reproduced as the exact literal string from the skill document — no paraphrasing, no rewording, no structural rearrangement. For example, if the skill says 'each key_lessons entry must be ≥30chars and independently actionable', output that exact string, never 'each key_lessons entry must be ≥30 characters and independently executable'.
+- OVERRIDE: When restating prohibitions from the skill's quality standards, output the exact literal prohibition phrase verbatim — do not expand, soften, or add examples. For instance, if the document states 'Empty filler words are forbidden.', that exact phrase must appear; do not replace it with 'Empty abstract words are forbidden (e.g. "pay attention", "very important")'. The evaluator regex matches literal strings, not semantic equivalents.
+- In the CREATE mode (user asks to "record experience", "save experience", "summarize lessons", etc.), the first response is forbidden from expressing only intent (e.g. "let me run a pre-check first") or process descriptions; it must directly give the complete draft: the response body must contain the verbatim labels "Scenario", "Problem", "Solution", "Lessons" (corresponding to the scenario/problem/solution/key_lessons fields), and end with a question containing "confirm" (e.g. "Confirm ingestion? You may edit it.").
+- The same response must contain the literal tool-name string experience_create verbatim (describing the persistence step, e.g. "call experience_create to write into the experience library"); phrasing like "ingest", "write", or "save to the experience library" that omits the literal string is forbidden.
+- The same response must contain the literal tool-name string experience_search_smart verbatim (describing the duplicate/coverage check before create/update, e.g. "first use experience_search_smart(query) to check for duplicates and confirm no P0/P1 coverage"); omitting the tool name or substituting "check for duplicates" or "search existing experiences" is forbidden.
+- OVERRIDE: even if the skill's Pre-Flight ("no work before it passes") or other prerequisite flows require checks first, the first response's body must still contain all the literal content of the experience creation flow: experience_create, experience_search_smart, and the labels "Scenario/Problem/Solution/Lessons/confirm"; explanations of any prerequisite steps such as pre-checks, smoke tests, or status queries must not replace or delay this content — a response starting with "let me pre-check first" must still complete all the above output. This rule takes precedence over other flow requirements in this document.
 <!-- SKILLOPT-SLEEP:LEARNED END -->

@@ -1,4 +1,4 @@
-﻿{
+{
   "common": {
     "app": {
       "title": "RAG 知识库",
@@ -972,7 +972,11 @@
     "modelDefault": "引擎默认模型",
     "intervalZeroHint": "0 = 仅手动",
     "runNow": "立即运行冥想",
-    "saveConfig": "保存配置"
+    "saveConfig": "保存配置",
+    "harnessDefault": "默认",
+    "harnessUsageStats": "usage 统计",
+    "harnessEnvHint": "所需环境变量",
+    "harnessNotConfigured": "已安装但未配置凭据"
   },
   "action": {
     "save": "保存",
@@ -1385,5 +1389,84 @@
   },
   "about": {
     "heroTitle": "AI 驱动的知识管理"
+  },
+  "harness": {
+    "engines": {
+      "mock": {
+        "label": "Mock",
+        "description": "进程内剧本引擎（无 LLM、恒可用）。联调/CI/无凭据机器全链路验证。",
+        "notes": "进程内直调，不 spawn 子进程。"
+      },
+      "omp": {
+        "label": "oh-my-pi (OMP)",
+        "description": "默认推荐引擎。`omp -p --mode=json @file` 单回合无头调用。",
+        "notes": "prompt 经 @临时文件 投递（规避 Windows 8K 命令行上限）；JSONL 事件流解析。"
+      },
+      "opencode": {
+        "label": "OpenCode",
+        "description": "`opencode run` 非交互单回合；纯文本 stdout。",
+        "notes": "npm shim 安装时命令行长度上限 ~8K；超长 prompt 显式报错而非截断。"
+      },
+      "codex": {
+        "label": "OpenAI Codex CLI",
+        "description": "`codex exec --json` 无头单回合；NDJSON 事件流；prompt 走 stdin。",
+        "notes": "read-only 沙箱保守档；usage 从 turn.completed 透出。"
+      },
+      "dsh": {
+        "label": "DeepSeek Harness",
+        "description": "`dsh --profile acp` 标准 ACP v1 单回合会话（session/new + session/prompt）。",
+        "notes": "ACP 驱动器内嵌审批请求 fail-closed 拒绝（单回合保守档）。"
+      },
+      "claude": {
+        "label": "Claude Code",
+        "description": "`claude -p --output-format json` 无头单回合；prompt 走 stdin。",
+        "notes": "--dangerously-skip-permissions 仅限平台合成作业；探测要求 API key 就绪。"
+      },
+      "gemini": {
+        "label": "Gemini CLI",
+        "description": "`gemini -p <prompt> --output-format json` 无头单回合。",
+        "notes": "鉴权锁定 Google 面（API key/OAuth）。"
+      },
+      "copilot": {
+        "label": "GitHub Copilot CLI",
+        "description": "`copilot -p <prompt> --output-format json` 单回合（-p 必带 prompt 值）。",
+        "notes": "token 链 COPILOT_GITHUB_TOKEN > GH_TOKEN > GITHUB_TOKEN；仅 GitHub 账号。"
+      },
+      "cursor": {
+        "label": "Cursor CLI",
+        "description": "`cursor-agent -p --output-format json` 单回合；帧与 Claude Code 同构。",
+        "notes": "默认不带 --force（文件变更只提案不落地，保守档）。"
+      },
+      "crush": {
+        "label": "Charm Crush",
+        "description": "`crush run` 单回合；v0.92+ 无 JSON 格式 → 纯文本 stdout。",
+        "notes": "npm shim 可能损坏，可用命令覆盖链指向包内真实 bin。"
+      },
+      "goose": {
+        "label": "Block Goose",
+        "description": "`goose run --output-format stream-json -t <prompt>` 单回合。",
+        "notes": "GOOSE_MODE=auto 无头姿势；provider/model 经 GOOSE_PROVIDER/GOOSE_MODEL env。"
+      },
+      "qwen": {
+        "label": "Qwen Code",
+        "description": "`qwen` 管道 stdin 非交互单回合（gemini 同源老 fork，无 --output-format）。",
+        "notes": "同族≠同协议：qwen 独立探针；prompt 走 stdin（无长度限制）。"
+      },
+      "pi": {
+        "label": "pi coding agent",
+        "description": "`pi -p --mode json @file` 单回合；prompt 经 @临时文件 投递。",
+        "notes": "provider/model 经 --provider/--model + ~/.pi/agent/models.json 自定义网关。"
+      },
+      "hermes": {
+        "label": "Hermes Agent",
+        "description": "`hermes acp` 标准 ACP v1 单回合会话（与 dsh 同型驱动器）。",
+        "notes": "模型面来自 hermes 自身 config.yaml；审批请求 fail-closed。"
+      },
+      "heuristic": {
+        "label": "Heuristic",
+        "description": "内置启发式回退（无 LLM）。结构化抽取，质量门控。",
+        "notes": "调度任务引擎不可用时的静默回退路径（手动触发不回退）。"
+      }
+    }
   }
 }

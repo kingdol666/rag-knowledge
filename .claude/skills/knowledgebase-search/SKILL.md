@@ -6,265 +6,265 @@ description: >
   → Step2.5 document dedup+hard threshold → Step3 content verification (0-8 scoring)
   → fast exit if score≥6, otherwise Step4 tag+description expansion → Step5 confidence
   rating → Step6 synthesized answer with sources and blind-spots. Vector is fast,
-  content is accurate. Triggered by: search, find, query, ask, retrieve, 搜索, 检索,
-  查询, 问答, 帮我查, 问一下知识库, 搜.
+  content is accurate. Triggered by: search, find, query, ask, retrieve, search,
+  retrieval, query, Q&A, look it up for me, ask the knowledge base, search.
 ---
 
-## ⭐ 相关 Skills
-- 跨库企业级搜索（P0/P1 <2 KB 时触发）→ `skill://knowledgebase-search-enterprise` — 并行3路径召回 + 图谱扩展
-- 文档入库 → `skill://knowledgebase-ingest` — A0-A9 管线确保检索源质量
-- KB 管理 → `skill://knowledgebase-manage` — 文档移动/重命名/删除/合并
-- 经验优先检索 → `skill://knowledgebase-experience` 的 E4 经验优先检索（故障/运维型查询必走）
-- KB 整理与重组 → `skill://knowledgebase-organize` — 子KB拆分/跨库归并后需重索引
-- KB 完整性校验 → `skill://knowledgebase-verify` — 三向一致性+索引覆盖率修复
-- 知识图谱 → `skill://knowledgebase-graph` — 图谱构建/文档路径/跨库发现
-- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+91工具地图）
-- 批量操作 → `skill://knowledgebase-batch` — 批量入库/标签迁移/去重
+## ⭐ Related Skills
+- Cross-library enterprise search (triggered when P0/P1 <2 KBs) → `skill://knowledgebase-search-enterprise` — parallel 3-path recall + graph expansion
+- Document ingest → `skill://knowledgebase-ingest` — the A0-A9 pipeline ensures retrieval source quality
+- KB management → `skill://knowledgebase-manage` — document move/rename/delete/merge
+- Experience-first retrieval → E4 experience-first retrieval of `skill://knowledgebase-experience` (mandatory for incident/ops-type queries)
+- KB organize & restructure → `skill://knowledgebase-organize` — reindexing needed after sub-KB splits/cross-library merges
+- KB integrity validation → `skill://knowledgebase-verify` — three-way consistency + index coverage repair
+- Knowledge graph → `skill://knowledgebase-graph` — graph build/document paths/cross-library discovery
+- Architecture mental model → [kb-architecture.md](../knowledgebase/references/kb-architecture.md) of `skill://knowledgebase` (5-layer data model + 91-tool map)
+- Batch operations → `skill://knowledgebase-batch` — batch ingest/tag migration/dedup
 
 ## Sequential Workflow
-**Step 1 — 查询分析 (Step 0)**: 意图分类（事实型/方法型/对比型/故障型/导航型）→ 核心实体提取 → 查询改写为声明句+关键词（故障型先查经验库）。
-**Step 2 — 智能选库 (Step 1)**: `kb_list(lightweight=true)` → 读 KB description 语义匹配 → 选定 top 1-3 目标 KB；含子KB时用 `kb_search_vector` 搜父KB穿透。
-**Step 3 — 两阶段检索 (Step 2)**: `kb_search_two_stage(balance_kbs=True)` — Stage1 BM25+图谱候选 → Stage2 向量精细搜索 → 按场景调参。
-**Step 4 — 去重过滤 (Step 2.5)**: 硬阈值过滤(score<0.35丢弃) → 文档级去重(同文档留最高分) → 短内容降级 → top 5 进验证。
-**Step 5 — 内容验证 (Step 3)**: `kb_doc_read(3000 chars)` → 0-8 rubric 打分(主题相关/场景匹配/答案证据) → content-overrides-vector → ≥6快速退出/5扩展/≤4降级。
-**Step 6 — 扩展召回 (Step 4-5)**: 标签+描述扩展→再验证→P0 Strong/P1 Confirmed/P2 Supplement 置信度定级。
-**Step 7 — 综合回答 (Step 6)**: P0/P1 结构化输出 + 来源(按置信度)+ 盲点诚实声明 + 不足2个KB时升级到 enterprise 搜索。
-# QDCVR — 查询驱动 · 内容裁决 · 门控精炼检索
-## ⭐ Execution Model · Pre-Flight · Architecture（作业首步，强制）
+**Step 1 — Query analysis (Step 0)**: intent classification (factual/method/comparison/incident/navigational) → core entity extraction → rewrite the query as a declarative sentence + keywords (incident-type queries the experience library first).
+**Step 2 — Smart KB selection (Step 1)**: `kb_list(lightweight=true)` → semantic matching against KB descriptions → pick the top 1-3 target KBs; when sub-KBs exist, use `kb_search_vector` against the parent KB for pass-through.
+**Step 3 — Two-stage retrieval (Step 2)**: `kb_search_two_stage(balance_kbs=True)` — Stage1 BM25+graph candidates → Stage2 fine-grained vector search → tune parameters per scenario.
+**Step 4 — Dedup filtering (Step 2.5)**: hard-threshold filtering (score<0.35 dropped) → document-level dedup (keep the highest score per document) → short-content downgrade → top 5 proceed to verification.
+**Step 5 — Content verification (Step 3)**: `kb_doc_read(3000 chars)` → 0-8 rubric scoring (topic relevance/scenario match/answer evidence) → content-overrides-vector → ≥6 fast exit / 5 expand / ≤4 downgrade.
+**Step 6 — Expansion recall (Step 4-5)**: tag+description expansion→re-verify→P0 Strong/P1 Confirmed/P2 Supplement confidence tiering.
+**Step 7 — Synthesized answer (Step 6)**: P0/P1 structured output + sources (by confidence) + honest blind-spot declaration + upgrade to enterprise search when fewer than 2 KBs contribute.
+# QDCVR — Query-Driven · Content-Ruled · Gated Refined Retrieval
+## ⭐ Execution Model · Pre-Flight · Architecture (First Step of Any Job, Mandatory)
 
-**执行者：Archival agent** — 用 `task` 委托执行（**委托模板 + 三角色执行模型 + 组合任务边界**：必读 [execution-model.md](../knowledgebase/references/execution-model.md)）。**Pre-Flight**：未通过禁作业 — 一探双检 `kb_project_status` → 分支处置 → 冒烟测试，完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)。**心智模型**：操作前必读 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层模型 + 一致性不变量 + 91 工具地图）；MCP 优先原则（禁 terminal/HTTP 绕过）见 [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) 第五条。
+**Executor: Archival agent** — delegate via `task` (**delegation template + three-role execution model + combined-task boundaries**: must-read [execution-model.md](../knowledgebase/references/execution-model.md)). **Pre-Flight**: no work before it passes — one-probe double-check `kb_project_status` → branch handling → smoke test; full flow in [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md). **Mental model**: before operating, must-read [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer model + consistency invariants + 91-tool map); MCP-first principle (no terminal/HTTP bypass) in [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) Rule 5.
 
-- Archival 禁止：跳过 Step 0 查询改写、跳过内容验证、跳过盲点声明
+- Archival is forbidden from: skipping Step 0 query rewriting, skipping content verification, skipping blind-spot declaration
 ---
 
 
-**六条铁律**（包含 ⭐ MCP 优先原则）：
-1. **先理解再检索**——原始查询先改写为检索友好形态（Step 0），不直接喂给检索器。
-2. **先选库再召回**——跨库时先判定相关 KB（Step 1），避免跨域噪声和大库主导。
-3. **向量快召回，内容真裁决**——向量定候选，读正文 0-8 打分定去留，向量分不左右决策。
-4. **文档级去重 + 硬阈值**——同文档只留最高分 chunk，score < 阈值直接丢弃。
-5. **宁可不给，不要错给**——无确认命中即诚实声明盲点，不编造。
-6. ⭐ **MCP 优先原则**——所有 kb-mcp 操作必须通过 MCP 工具执行（`mcp__kb-mcp__*`），禁止用 `curl`/`python -c`/`wget` 等终端命令或直调 HTTP API 替代 MCP 工具。MCP 不可用时才可向用户报告让用户决策。
+**Six iron rules** (including the ⭐ MCP-first principle):
+1. **Understand before retrieving** — the raw query is first rewritten into a retrieval-friendly form (Step 0); never fed directly to the retriever.
+2. **Select libraries before recall** — when spanning libraries, first determine relevant KBs (Step 1) to avoid cross-domain noise and large-library dominance.
+3. **Fast vector recall, true content ruling** — vectors pick candidates; reading the body with 0-8 scoring decides inclusion; vector scores do not influence decisions.
+4. **Document-level dedup + hard threshold** — only the highest-scoring chunk per document is kept; score below the threshold is dropped directly.
+5. **Better to give nothing than to give something wrong** — with no confirmed hit, honestly declare the blind spot; never fabricate.
+6. ⭐ **MCP-first principle** — all kb-mcp operations must go through MCP tools (`mcp__kb-mcp__*`); replacing MCP tools with terminal commands like `curl`/`python -c`/`wget` or direct HTTP API calls is forbidden. Only when MCP is unavailable may you report to the user and let the user decide.
 
 
-**Freedom Map**（每步自由度）：
-| 步骤 | 自由度 | 说明 |
+**Freedom Map** (freedom level per step):
+| Step | Freedom | Notes |
 |------|--------|------|
-| Step 0 查询改写 / Step 2.5 去重+硬阈值 / Step 3 内容裁决 / Step 6 盲点声明 | 🔒 **强制**（低自由度） | 检索质量的核心门控，不可跳过或简化 |
-| Step 1 智能选库 / Step 2 参数调优 | 🎯 **执行**（中自由度） | 按 KB description 选库；按场景表调 stage1/stage2/threshold |
-| Step 0a 意图分类 / Step 3 快速退出判定 | 🧠 **判断**（高自由度） | 需基于查询语义判断类型和置信度；决策表指导但不机械 |
-| Step 4 标签扩展（降级路径） | 🎯 **执行**（中自由度） | 仅向量未命中时触发，不可每次都跑 |
+| Step 0 query rewrite / Step 2.5 dedup+hard threshold / Step 3 content ruling / Step 6 blind-spot declaration | 🔒 **Mandatory** (low freedom) | Core gates of retrieval quality; cannot be skipped or simplified |
+| Step 1 smart KB selection / Step 2 parameter tuning | 🎯 **Execute** (medium freedom) | Select libraries by KB description; tune stage1/stage2/threshold per the scenario table |
+| Step 0a intent classification / Step 3 fast-exit decision | 🧠 **Judgment** (high freedom) | Requires judging type and confidence from query semantics; the decision table guides but is not mechanical |
+| Step 4 tag expansion (downgrade path) | 🎯 **Execute** (medium freedom) | Triggered only when vectors miss; must not run every time |
 ---
 
-## 思维框架：检索前先弄明白三个问题 ⭐
+## Mental Framework: Settle Three Questions Before Retrieving ⭐
 
 ```
-用户"搜一下X"
+The user says "search for X"
   │
-  ├── 这是什么类型的查询？
-  │   事实型(what) / 方法型(how) / 对比型(A vs B) / 故障型(why broken) / 导航型(where)
+  ├── What type of query is this?
+  │   Factual (what) / method (how) / comparison (A vs B) / incident (why broken) / navigational (where)
   │
-  ├── 搜哪个KB？
-  │   明确说"搜XX库" → 直接该库
-  │   没说 → Step 1 智能选库
+  ├── Which KB to search?
+  │   Explicitly says "search KB XX" → that KB directly
+  │   Not said → Step 1 smart KB selection
   │
-  └── 能不能快速回答？
-      经验优先？ → 故障型先查经验库
-      文档直接命中？ → 快速退出
+  └── Can it be answered quickly?
+      Experience first? → incident-type queries the experience library first
+      Direct document hit? → fast exit
 ```
 
 ---
 
-## Step 0 — 查询分析与改写 ⭐（检索质量的第一道关）
+## Step 0 — Query Analysis and Rewriting ⭐ (The First Gate of Retrieval Quality)
 
-> 实测病灶：长自然语言查询直接检索，BM25 命中关键词但不懂语义（查"PET 薄膜"竟返回 PP 文献）。
+> Observed failure mode: long natural-language queries fed directly to retrieval; BM25 hits keywords but doesn't understand semantics (searching "PET film" returned PP literature).
 
-### 0a 意图分类
-| 类型 | 特征 | 检索侧重 |
+### 0a Intent Classification
+| Type | Features | Retrieval emphasis |
 |---|---|---|
-| **事实型** | "是什么""定义" | 向量精排 + 权威综述文档 |
-| **方法型** | "怎么做""如何""方法" | 向量 + 标签(方法词) |
-| **对比型** | "A vs B""区别" | 多实体并行召回 |
-| **故障/运维型** | "报错""失败""怎么解决" | **先查经验库**（experience-first），再查文档 |
-| **经验/案例型** | "有没有类似案例""以前怎么处理" | `experience_search_global` 优先，不足补文档 |
-| **导航型** | "哪里有""有没有" | kb_list(lightweight=true) + kb_get_documents(lightweight=true) 描述匹配 |
+| **Factual** | "what is", "definition" | Vector reranking + authoritative review documents |
+| **Method** | "how to", "methods" | Vector + tags (method words) |
+| **Comparison** | "A vs B", "difference" | Parallel multi-entity recall |
+| **Incident/ops** | "error", "failed", "how to fix" | **Experience library first** (experience-first), then documents |
+| **Experience/case** | "any similar cases", "how was it handled before" | `experience_search_global` first, documents as supplement |
+| **Navigational** | "where is", "is there" | kb_list(lightweight=true) + kb_get_documents(lightweight=true) description matching |
 
-### 0b 核心实体提取
-从查询里提取：**主体**(PET/RAG/锂电池) + **属性**(结晶度/幻觉/热管理) + **约束**(工艺参数/2024)。
+### 0b Core Entity Extraction
+Extract from the query: **subject** (PET/RAG/lithium batteries) + **attribute** (crystallinity/hallucination/thermal management) + **constraints** (process parameters/2024).
 
-### 0c 查询改写（生成检索友好 query）
-- 原始口语查询 → **声明句 + 关键词组合**
-- 例：`"PET薄膜双向拉伸工艺参数对结晶度的影响"`
-  → 改写1（向量用）: `"PET聚酯薄膜双向拉伸工艺中拉伸比/温度/速度对结晶度与晶态结构的影响"`
-  → 改写2（BM25用）: `"PET BOPET 双向拉伸 结晶度 拉伸比 工艺参数"`
-- 多概念查询 → **拆成子查询并行检索**（对比型必备）
+### 0c Query Rewriting (Generate Retrieval-Friendly Queries)
+- Raw colloquial query → **declarative sentence + keyword combination**
+- Example: `"The influence of PET film biaxial stretching process parameters on crystallinity"`
+  → Rewrite 1 (for vectors): `"The influence of stretch ratio/temperature/speed on crystallinity and crystal structure in PET polyester film biaxial stretching"`
+  → Rewrite 2 (for BM25): `"PET BOPET biaxial stretching crystallinity stretch ratio process parameters"`
+- Multi-concept queries → **split into sub-queries and retrieve in parallel** (mandatory for comparisons)
 
-**故障/运维型查询**：先 `experience_search_global(query, top_k=5)`，命中经验则优先用。
+**Incident/ops-type queries**: first `experience_search_global(query, top_k=5)`; if experiences hit, use them with priority.
 
-## Step 1 — 智能选库（跨库时必做）⭐
+## Step 1 — Smart KB Selection (Mandatory When Spanning Libraries) ⭐
 
-> 实测病灶：全库盲搜 → 大库（Materials-ML 11docs/1156chunks）主导结果，跨域噪声涌入。
+> Observed failure mode: blind whole-library search → large libraries (Materials-ML 11docs/1156chunks) dominate results and cross-domain noise floods in.
 
 ```
-catalog = kb_list(lightweight=true)    # 仅 [{kb_id, name, description, doc_count}]，context 友好
+catalog = kb_list(lightweight=true)    # only [{kb_id, name, description, doc_count}]; context-friendly
 ```
-- 用模型判断力读每个 KB 的 description，选 **top 1-3 真正相关** 的 KB。
-- **优先在选中的 1-3 个 KB 内检索**（`kb_id=<选中KB>`）；仅当选中 <2 KB 或无命中时才全库 `kb_id=""`。
-- 故障型查询：经验库优先，文档库作补充。
+- Use model judgment to read each KB's description and pick the **top 1-3 genuinely relevant** KBs.
+- **Retrieve preferentially within the selected 1-3 KBs** (`kb_id=<selected KB>`); only when <2 KBs are selected or there are no hits, search the whole library with `kb_id=""`.
+- Incident-type queries: experience library first; document libraries as supplement.
 
-**判据**：KB description 的领域与查询实体一致才入选。例：查 RAG → 只选 `AI-ML-Research`。
+**Criterion**: a KB is selected only if its description's domain matches the query entities. Example: querying RAG → select only `AI-ML-Research`.
 
-### Step 1b — 层次化KB穿透（父KB含子KB时必做）⭐
+### Step 1b — Hierarchical KB Pass-Through (Mandatory When a Parent KB Contains Sub-KBs) ⭐
 
-> ⚠️ **实测真相**（2026-07-22 端到端测试验证）：父KB的 `kb_search_two_stage` 返回子KB容器条目（content 一律为空）。**子KB文档的向量 chunk 实际存储在父KB collection 下**（搜子KB UUID 返回 0 结果，`kb_search_stats(子KB)` 显示 chunk_count=0）。
+> ⚠️ **Empirical truth** (verified by the 2026-07-22 end-to-end test): the parent KB's `kb_search_two_stage` returns sub-KB container entries (content always empty). **Sub-KB documents' vector chunks are actually stored under the parent KB's collection** (searching the sub-KB UUID returns 0 results; `kb_search_stats(sub-KB)` shows chunk_count=0).
 
-**正确穿透策略**——用纯向量搜父KB（不是 two_stage，不是搜子KB）：
+**Correct pass-through strategy** — pure vector search against the parent KB (not two_stage, not searching sub-KBs):
 ```
-# 父KB的 two_stage 返回空容器，但 kb_search_vector 能取到真实内容
-results = kb_search_vector(query=..., kb_id=<父KB_id>, score_threshold=0.35, top_k=10)
-# 结果的 doc_path 会带子KB路径前缀（如 "高分子...\\03_PET_BOPET\\xxx.md"），
-# content 字段有真实正文 —— 这就是穿透成功
-```
-
-**辅助：了解子KB结构**（不用于搜索，仅用于了解组织）：
-```
-overview = kb_graph_kb_overview(kb_id=<父KB>)  → sub_kbs 结构 + 文档数
-# ⚠️ sub_kbs[].name 返回 UUID，用 kb_list(lightweight=true) 回查可读名
-# ⚠️ 不要对 sub_kb_id 做 kb_search_two_stage / kb_search_vector —— 返回 0
+# The parent KB's two_stage returns empty containers, but kb_search_vector gets real content
+results = kb_search_vector(query=..., kb_id=<parent KB id>, score_threshold=0.35, top_k=10)
+# The result's doc_path carries the sub-KB path prefix (e.g. "Polymers...\\03_PET_BOPET\\xxx.md"),
+# and the content field has real body text — that's a successful pass-through
 ```
 
-> ❌ **错误做法**（旧文档误导）：获取子KB UUID 后在各子KB内分别搜索 → 全部返回 0，误判"无相关内容"。
+**Auxiliary: understand sub-KB structure** (not for searching, only for understanding organization):
+```
+overview = kb_graph_kb_overview(kb_id=<parent KB>)  → sub_kbs structure + doc counts
+# ⚠️ sub_kbs[].name returns UUIDs; use kb_list(lightweight=true) to look up readable names
+# ⚠️ Do NOT run kb_search_two_stage / kb_search_vector against a sub_kb_id — returns 0
+```
 
-## Step 2 — 向量召回（两阶段，平衡多库）
+> ❌ **Wrong approach** (misled by old docs): getting sub-KB UUIDs and searching each sub-KB separately → all return 0, misjudged as "no relevant content".
+
+## Step 2 — Vector Recall (Two-Stage, Balancing Multiple Libraries)
 
 ```
 kb_search_two_stage(
-    query=Step0改写后的query,
-    kb_id=Step1选中的KB 或 ""(全库),
-    stage1_top_k=20,          # BM25 候选文档
-    stage2_top_k=5,           # 每文档返回 chunk 数
+    query=the query rewritten in Step0,
+    kb_id=KBs selected in Step1 or "" (whole library),
+    stage1_top_k=20,          # BM25 candidate documents
+    stage2_top_k=5,           # chunks returned per document
     enable_graph_expansion=true,
-    score_threshold=0.35,     # 向量硬阈值（<=0 用后端默认 0.35）
-    balance_kbs=True          # ⭐ 跨库时必开，防大库主导
+    score_threshold=0.35,     # vector hard threshold (<=0 uses the backend default 0.35)
+    balance_kbs=True          # ⭐ mandatory when spanning libraries; prevents large-library dominance
 )
 ```
 
-### 调参指引
-| 场景 | stage1_top_k | stage2_top_k | score_threshold |
+### Tuning Guide
+| Scenario | stage1_top_k | stage2_top_k | score_threshold |
 |------|-------------|-------------|-----------------|
-| 标准 | 20 | 5 | 0.35 |
-| 大库(>10文档) | 30 | 5 | 0.35 |
-| 小库(<5文档) | 10 | 3 | 0.30 |
-| 精度优先 | 20 | 3 | 0.45 |
-| 召回优先 | 30 | 10 | 0.30 |
+| Standard | 20 | 5 | 0.35 |
+| Large library (>10 docs) | 30 | 5 | 0.35 |
+| Small library (<5 docs) | 10 | 3 | 0.30 |
+| Precision-first | 20 | 3 | 0.45 |
+| Recall-first | 30 | 10 | 0.30 |
 
-### 空结果处理
-- 返回 0 条 → 降低 score_threshold 到 0.30 重试
-- 依然 0 → 放弃向量，走 Step 4 标签扩展
+### Empty-Result Handling
+- 0 results returned → lower score_threshold to 0.30 and retry
+- Still 0 → abandon vectors; go to Step 4 tag expansion
 
-## Step 2.5 — 文档级去重 + 硬阈值过滤 ⭐（精炼结果集）
+## Step 2.5 — Document-Level Dedup + Hard-Threshold Filtering ⭐ (Refine the Result Set)
 
-> ⭐ `kb_search_vector` 和 `kb_search_two_stage` 均已在 MCP 层自动归一化路径（反斜杠→正斜杠）并按 (doc_path, chunk_index) 去重。Agent 仍需执行文档级去重（同一文档只留最高分 chunk）。
+> ⭐ Both `kb_search_vector` and `kb_search_two_stage` already auto-normalize paths (backslash→forward slash) and dedup by (doc_path, chunk_index) at the MCP layer. The Agent still performs document-level dedup (keep only the highest-scoring chunk per document).
 
-对 `stage2.results` 执行：
+Apply to `stage2.results`:
 
 ```
-1. 硬阈值过滤：丢弃 score < 0.35 的片段
-2. 文档级去重：同一 doc_path（归一化正斜杠后）只保留 score 最高的 1 个 chunk
-3. 短内容降级：chunk 正文 <50 chars → 直接丢弃；50-200 chars → 标记 ⚠️，打分时降一级
-4. 排序：按 score 降序，取 top 5 进入 Step 3
+1. Hard-threshold filtering: drop chunks with score < 0.35
+2. Document-level dedup: per doc_path (after forward-slash normalization), keep only the 1 highest-scoring chunk
+3. Short-content downgrade: chunk body <50 chars → drop directly; 50-200 chars → mark ⚠️, demote one level when scoring
+4. Sort: by score descending; top 5 proceed to Step 3
 ```
-**例外**：对比型查询（A vs B）保留 A 和 B 各自最高分 chunk。
+**Exception**: comparison queries (A vs B) keep the highest-scoring chunk for both A and B.
 
-## Step 3 — 内容验证（核心裁决，独立于向量分）
+## Step 3 — Content Verification (Core Ruling, Independent of Vector Scores)
 
-对 top 5 去重后的候选进行内容验证（Step 2.5 已精简至 5 个候选）：
+Content-verify the top 5 deduped candidates (already trimmed to 5 in Step 2.5):
 ```
 kb_doc_read(kb_id, doc_path, max_chars=3000)
 ```
-**0-8 打分（可操作判据）**：
+**0-8 scoring (actionable criteria)**:
 
-| 维度 | 分 | 判据 |
+| Dimension | Pts | Criteria |
 |---|---|---|
-| **主题相关** (0-3) | 3=正文直接围绕查询主体；2=涉及主体；1=边缘相关；0=无关 |
-| **场景/问题匹配** (0-3) | 3=直接解决查询的问题；2=相关方法可迁移；1=泛泛涉及；0=答非所问 |
-| **答案证据** (0-2) | 2=正文含可直接引用的具体数据/步骤/结论；1=有方向性信息；0=空泛 |
+| **Topic relevance** (0-3) | 3=body directly about the query subject; 2=touches the subject; 1=marginally related; 0=irrelevant |
+| **Scenario/problem match** (0-3) | 3=directly solves the query's problem; 2=related methods transferable; 1=generic coverage; 0=answer misses the question |
+| **Answer evidence** (0-2) | 2=body contains directly quotable data/steps/conclusions; 1=directional information; 0=empty |
 
-**内容分 > 向量分。** 向量 0.9 但内容 ≤3 → 丢弃。向量 0.5 但内容 ≥6 → 采用。
+**Content score > vector score.** Vector 0.9 but content ≤3 → discard. Vector 0.5 but content ≥6 → adopt.
 
-### Step 3 快速退出
-| 最高内容分 | 动作 |
+### Step 3 Fast Exit
+| Highest content score | Action |
 |---|---|
-| **≥6** | ✅ 直接进 Step 6 作答（跳过 Step 4-5）|
-| **5** | ⚠️ 可用但需补充 → 继续 Step 4 扩展召回 |
-| **≤4** | ❌ 当前召回未命中 → 继续 Step 4 扩展召回 |
+| **≥6** | ✅ go directly to Step 6 to answer (skip Steps 4-5)|
+| **5** | ⚠️ usable but needs supplementation → continue to Step 4 expansion recall |
+| **≤4** | ❌ current recall missed → continue to Step 4 expansion recall |
 
-### Step 3 内容分边界决策
-- 分数刚好 4 或 5，不确定？ → 重读 500 chars 确认，不回退到 Step 2
-- 多文档分数相近且 >5？ → 取最高分 2-3 篇综合回答，不要全部引用
-- 内容分高但文档看起来过时（2020 年前）？ → 降一级标注时效性
+### Step 3 Content-Score Boundary Decisions
+- Score exactly 4 or 5 and unsure? → re-read 500 chars to confirm; do not fall back to Step 2
+- Multiple documents with similar scores >5? → take the highest-scoring 2-3 and synthesize an answer; do not cite all
+- High content score but the document looks outdated (pre-2020)? → demote one level and flag timeliness
 
-## Step 4 — 标签 + 描述扩展（向量未命中时）
+## Step 4 — Tag + Description Expansion (When Vectors Miss)
 
 ```
 kb_tags_list()
-kb_doc_get_by_tag(tag="<语义匹配的标签>", kb_id=Step1选中库 或 "")
-kb_get_documents(lightweight=true, kb_id)   # 新发现 KB 的文档描述清单
-kb_search_vector(Step0改写query, kb_id="", top_k=10, score_threshold=0.30)
+kb_doc_get_by_tag(tag="<semantically matching tag>", kb_id=KB selected in Step1 or "")
+kb_get_documents(lightweight=true, kb_id)   # document description list for newly discovered KBs
+kb_search_vector(Step0 rewritten query, kb_id="", top_k=10, score_threshold=0.30)
 ```
 
-## Step 5 — 扩展内容验证 + 置信度定级
+## Step 5 — Expanded Content Verification + Confidence Tiering
 
-对 Step 4 新候选同样 `kb_doc_read` + 0-8 打分，保留 ≥5，丢 ≤4。
+For Step 4's new candidates, likewise run `kb_doc_read` + 0-8 scoring; keep ≥5, drop ≤4.
 
-**最终置信度**：
-| 来源 + 内容分 | 层级 |
+**Final confidence**:
+| Source + content score | Tier |
 |---|---|
-| 向量/标签召回 + 内容 ≥6 | **P0 Strong** — 直接引用作答 |
-| 向量/标签召回 + 内容 =5 | **P1 Confirmed** — 采用并标注 |
-| 仅描述匹配 + 内容 =5 | **P2 Supplement** — 补充用，标注弱 |
-| 内容 ≤4 | **丢弃** |
+| Vector/tag recall + content ≥6 | **P0 Strong** — cite directly in the answer |
+| Vector/tag recall + content =5 | **P1 Confirmed** — adopt with attribution |
+| Description-only match + content =5 | **P2 Supplement** — supplementary use, flagged weak |
+| Content ≤4 | **Discard** |
 
-**短内容（<200 chars）降一级**；**跨库盲点**：确认的 P0/P1 来自 <2 个 KB → 升级到 `Skill("knowledgebase-search-enterprise")`。
+**Short content (<200 chars) demoted one level**; **cross-library blind spot**: confirmed P0/P1 from <2 KBs → escalate to `Skill("knowledgebase-search-enterprise")`.
 
-## Step 6 — 综合回答（强制规范）
+## Step 6 — Synthesized Answer (Mandatory Standard)
 
 ```
-## 答案
-<基于 P0/P1 文档的综合回答，引用具体数据/结论>
+## Answer
+<A synthesized answer based on P0/P1 documents, citing specific data/conclusions>
 
-## 来源（按置信度排序）
-- [P0] <文档名> @ <KB/路径> — <为什么相关 一句话>
-- [P1] <文档名> @ <KB/路径> — <补充了什么>
+## Sources (sorted by confidence)
+- [P0] <document name> @ <KB/path> — <why relevant, one sentence>
+- [P1] <document name> @ <KB/path> — <what it adds>
 
-## 置信度
-高/中/低 — <理由，如"3篇 P0 文档一致支持"或"仅 1 篇 P1，需进一步验证">
+## Confidence
+High/medium/low — <reason, e.g. "3 P0 documents consistently support" or "only 1 P1; needs further verification">
 
-## 盲点（诚实声明）
-- <查询涉及但知识库未覆盖的部分>
-- <有争议/时效性/需用户确认的点>
+## Blind Spots (Honest Declaration)
+- <parts the query touches that the knowledge base doesn't cover>
+- <contested/timeliness/points needing user confirmation>
 ```
 
 ---
 
-## ⚠️ NEVER 清单
+## ⚠️ NEVER List
 
-| ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
+| ❌ Don't do this | Why | ✅ Do this instead |
 |-------------|------|-------------|
-| 原始口语查询直接喂检索器 | BM25 语义盲 | Step 0 改写为声明句+关键词 |
-| 跳过 Step 1 全库盲搜 | 跨域噪声涌入 | 先选库，限制在 1-3 个 KB |
-| 内容验证靠猜（不读文档） | 向量分不反映真实内容 | `kb_doc_read` 3000 chars 再打分 |
-| score<0.35 保留不截断 | 跨域低分污染 | Step 2.5 硬阈值截断 |
-| 内容分≤4 还纳入答案 | 宁可不给不要错给 | 丢弃→Step 4 扩展 |
-| Step 6 不声明盲点 | 用户以为知识库全覆盖 | 诚实声明覆盖盲区 |
+| Feed raw colloquial queries to the retriever | BM25 is semantically blind | Step 0 rewrite into declarative sentence + keywords |
+| Skip Step 1 and blindly search the whole library | Cross-domain noise floods in | Select libraries first; restrict to 1-3 KBs |
+| Content verification by guessing (not reading documents) | Vector scores don't reflect real content | `kb_doc_read` 3000 chars then score |
+| Keeping score<0.35 without truncating | Cross-domain low-score pollution | Step 2.5 hard-threshold truncation |
+| Including content scores ≤4 in the answer | Better to give nothing than something wrong | Discard → Step 4 expansion |
+| Step 6 without blind-spot declaration | The user assumes the knowledge base covers everything | Honestly declare coverage blind spots |
 
-## 规则速查
-1. **Step 0 必做**——原始口语查询不直接检索
-2. **Step 1 跨库必做**——选库降噪
-3. **balance_kbs=True**（跨库）——防大库主导
-4. **Step 2.5 必做**——文档级去重 + 硬阈值
-5. **内容分 > 向量分**——读 3000 chars 独立打分
-6. **命中即退**——内容 ≥6 直接答
-7. **标签是扩展器**——仅向量未命中时用
-8. **经验优先**——故障/运维型先查 experience
-9. **诚实盲点**——无确认命中就声明
+## Quick Rule Reference
+1. **Step 0 mandatory** — raw colloquial queries are not retrieved directly
+2. **Step 1 mandatory when spanning libraries** — library selection reduces noise
+3. **balance_kbs=True** (cross-library) — prevents large-library dominance
+4. **Step 2.5 mandatory** — document-level dedup + hard threshold
+5. **Content score > vector score** — read 3000 chars and score independently
+6. **Exit on hit** — content ≥6 answers directly
+7. **Tags are expanders** — used only when vectors miss
+8. **Experience first** — incident/ops-type queries check experiences first
+9. **Honest blind spots** — declare when there's no confirmed hit

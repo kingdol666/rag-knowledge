@@ -4,56 +4,57 @@ description: >
   Check the installed RAG Knowledge Platform version against the latest GitHub
   release / default-branch VERSION, and pull updates when available. Safe by
   default (dirty worktree refused, dry-run first). Triggered by: /knowledgebase-update,
-  update KB, upgrade knowledge base, check for updates, ragctl update, 更新知识库,
-  升级知识库, 检查更新, 拉取最新版, 有新版本吗, 版本更新, project update.
+  update KB, upgrade knowledge base, check for updates, ragctl update, update the
+  knowledge base, upgrade the knowledge base, check for updates, pull the latest
+  version, is there a new version, version update, project update.
 ---
 
-## ⭐ 相关 Skills
-- 初始化安装 → `skill://knowledgebase-init`
-- 校验完整性 → `skill://knowledgebase-verify`
-- 架构心智模型 + 执行模型 → `skill://knowledgebase` 的 [kb-architecture.md](../knowledgebase/references/kb-architecture.md) + [execution-model.md](../knowledgebase/references/execution-model.md)
+## ⭐ Related Skills
+- Initial installation → `skill://knowledgebase-init`
+- Validate integrity → `skill://knowledgebase-verify`
+- Architecture mental model + execution model → [kb-architecture.md](../knowledgebase/references/kb-architecture.md) + [execution-model.md](../knowledgebase/references/execution-model.md) of `skill://knowledgebase`
 
 ## Sequential Workflow
-**Step 1 — 版本检查**: ragctl version --json → 对比本地VERSION vs GitHub最新release。
-**Step 2 — 安全预检**: git status --porcelain 确认无脏工作区 → git fetch origin --dry-run。
-**Step 3 — 更新预览**: ragctl update --check-only → 展示将要变更的文件列表和版本差异。
-**Step 4 — 执行更新**: 用户确认后 ragctl update → git pull --ff-only → 更新后端依赖(uv sync) → 更新前端依赖(npm ci) → 更新MCP依赖。
-**Step 5 — 依赖验证**: ragctl check → 确认核心依赖/项目文件/AI模型/服务健康全部通过。
-**Step 6 — 模型检查**: 验证BGE-M3缓存(>1GB) + MinerU模型可用(backend_status确认)。
-**Step 7 — 服务重启**: ragctl restart → 等待 backend+web 双健康(health endpoint 200)。
-**Step 8 — 全链验证**: kb_project_status 确认 ready==true → kb_list(lightweight=true) 冒烟测试 → 功能回归。
-# Knowledgebase Update — 版本检查与安全升级
-> **⭐ 操作前必读**：[kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层数据模型+一致性不变量+91工具地图）
+**Step 1 — Version check**: ragctl version --json → compare local VERSION vs the latest GitHub release.
+**Step 2 — Safety pre-check**: git status --porcelain confirms no dirty worktree → git fetch origin --dry-run.
+**Step 3 — Update preview**: ragctl update --check-only → show the list of files to change and the version diff.
+**Step 4 — Execute update**: after user confirmation, ragctl update → git pull --ff-only → update backend dependencies (uv sync) → update frontend dependencies (npm ci) → update MCP dependencies.
+**Step 5 — Dependency validation**: ragctl check → confirm core dependencies/project files/AI models/service health all pass.
+**Step 6 — Model check**: verify the BGE-M3 cache (>1GB) + MinerU model availability (confirmed via backend_status).
+**Step 7 — Service restart**: ragctl restart → wait for backend+web double health (health endpoint 200).
+**Step 8 — Full-chain validation**: kb_project_status confirms ready==true → kb_list(lightweight=true) smoke test → functional regression.
+# Knowledgebase Update — Version Check and Safe Upgrade
+> **⭐ Must-read before operating**: [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer data model + consistency invariants + 91-tool map)
 >
-> **关于跨技能引用**：本 skill 引用的 `kb-architecture.md` 和 `mcp-preflight-check.md` 位于 `knowledgebase/references/`（共享引用，非本地副本）。这是**刻意的 DRY 设计**——14 个技能作为同一插件打包发布（见 `.claude-plugin/plugin.json`），始终同目录共存，故共享引用路径稳定。如需将 update 独立分发，需将这两个文件复制到本地 `references/`。
+> **On cross-skill references**: the `kb-architecture.md` and `mcp-preflight-check.md` referenced by this skill live in `knowledgebase/references/` (shared references, not local copies). This is an **intentional DRY design** — the 14 skills ship as one plugin (see `.claude-plugin/plugin.json`) and always coexist in the same directory, so the shared reference paths are stable. To distribute update standalone, copy these two files into a local `references/`.
 
-**执行者：此技能由主 Agent 直接执行（不委托 Archival）**
-- update 是运维/安装类操作，需要直接跑 CLI / 展示版本对比
-- 所有 Bash 命令由主 Agent 执行；可用 MCP `kb_project_update` 作为等价入口
-- 不涉及文档 CRUD，无需 Archival
+**Executor: this skill is executed directly by the main agent (no Archival delegation)**
+- update is an ops/install-class operation requiring direct CLI runs / version comparison display
+- All Bash commands are executed by the main agent; the MCP `kb_project_update` is an equivalent entry point
+- No document CRUD involved; Archival is unnecessary
 
-> **⭐ Pre-Flight 提示**：本 skill 可走 MCP（`kb_project_update`）或 `ragctl` CLI 两条等价路径。
-> - 走 MCP 路径前**必须**按 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md) 完成 MCP 连通性 + 服务预检（拉更新前验一次；pull 后重跑一次确认服务恢复）。
-> - 走 `ragctl` CLI 路径不受 MCP 连通性约束（CLI 直跑），但 pull 后仍应用 `ragctl status` 验证服务恢复。
-> - MCP 不可用时默认走 `ragctl` CLI，无需用户额外确认。
+> **⭐ Pre-Flight note**: this skill has two equivalent paths — MCP (`kb_project_update`) or the `ragctl` CLI.
+> - Before the MCP path, you **must** complete the MCP connectivity + service pre-check per [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md) (verify once before pulling updates; rerun once after pull to confirm services recovered).
+> - The `ragctl` CLI path is not subject to MCP connectivity constraints (CLI runs directly), but after pull you should still use `ragctl status` to verify service recovery.
+> - When MCP is unavailable, default to the `ragctl` CLI; no extra user confirmation needed.
 
-## 核心原则
+## Core Principles
 
-- 🔎 **先查后更** — 默认先 dry-run（`--check`），展示本地 vs 远程，用户确认后再 pull
-- 🛡️ **脏工作区保护** — 有未提交改动时拒绝自动 pull（除非用户明确要求 `--force`）
-- 📦 **版本源唯一** — 以仓库根 `VERSION` 文件为准；GitHub latest release 优先，其次 default branch `VERSION`，再退回 SHA 对比
-- 🔁 **全平台** — 统一走 `ragctl update`（Windows / Linux / macOS 同一命令）
-- ✅ **更新后验证** — pull 后读新 VERSION，可选 `ragctl check` / `kb_project_status`
+- 🔎 **Check before updating** — dry-run (`--check`) by default; show local vs remote; pull only after user confirmation
+- 🛡️ **Dirty-worktree protection** — refuse auto-pull when there are uncommitted changes (unless the user explicitly asks for `--force`)
+- 📦 **Single version source** — the repo-root `VERSION` file is authoritative; GitHub latest release first, then the default branch `VERSION`, falling back to SHA comparison
+- 🔁 **All platforms** — uniformly via `ragctl update` (Windows / Linux / macOS use the same command)
+- ✅ **Post-update validation** — after pull, read the new VERSION; optionally `ragctl check` / `kb_project_status`
 
 ---
 
-## Phase 0 — 定位项目根
+## Phase 0 — Locate the Project Root
 
 ```
-1. 若当前目录（或父目录）存在 VERSION + command/ragctl.js → RAG_ROOT = 该目录
-2. 否则读环境变量 RAG_PROJECT_ROOT
-3. 否则读 ~/.claude.json → mcpServers → kb-mcp → env.RAG_PROJECT_ROOT
-4. 仍找不到 → 提示用户先跑 knowledgebase-init，或 cd 到安装目录
+1. If the current directory (or a parent) contains VERSION + command/ragctl.js → RAG_ROOT = that directory
+2. Otherwise read the environment variable RAG_PROJECT_ROOT
+3. Otherwise read ~/.claude.json → mcpServers → kb-mcp → env.RAG_PROJECT_ROOT
+4. Still not found → prompt the user to run knowledgebase-init first, or cd to the install directory
 ```
 
 ```
@@ -62,109 +63,109 @@ Bash: cd "<RAG_ROOT>" && node command/ragctl.js version --local
 
 ---
 
-## Phase 1 — 版本对比（强制 dry-run）
+## Phase 1 — Version Comparison (Mandatory Dry-Run)
 
-**优先 MCP（已连接时）：**
+**MCP preferred (when connected):**
 ```
 mcp__kb-mcp__kb_project_update(show_version=true)
-# 或
+# Or
 mcp__kb-mcp__kb_project_update(check_only=true)
 ```
 
-**CLI 兜底：**
+**CLI fallback:**
 ```
 Bash: cd "<RAG_ROOT>" && node command/ragctl.js update --check --json
-# 人类可读:
+# Human-readable:
 Bash: cd "<RAG_ROOT>" && node command/ragctl.js version
 Bash: cd "<RAG_ROOT>" && node command/ragctl.js update --check
 ```
 
-向用户展示：
+Show the user:
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  📦 版本对比
-  本地:  v<local>  (<branch> @ <sha>)  [dirty?]
-  远程:  v<remote> (<tag>) @ <remote_sha>
-  来源:  release | branch-version | branch-sha
-  状态:  已是最新 / 可更新 / 本地超前 / 未知
+  📦 Version comparison
+  Local:  v<local>  (<branch> @ <sha>)  [dirty?]
+  Remote:  v<remote> (<tag>) @ <remote_sha>
+  Source:  release | branch-version | branch-sha
+  Status:  up to date / updatable / local ahead / unknown
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-### 分支决策
+### Branch Decisions
 
-| 状态 | 动作 |
+| Status | Action |
 |------|------|
-| 已是最新 | 报告完成，**停止**（除非用户坚持 `--force`） |
-| 可更新 | 进入 Phase 2 询问是否拉取 |
-| 本地超前 | 说明本地版本号更高（开发分支），默认不降级 |
-| 网络失败 | 给出手动命令：`git pull` |
+| Up to date | Report completion, **stop** (unless the user insists on `--force`) |
+| Updatable | Enter Phase 2 and ask whether to pull |
+| Local ahead | The local version number is higher (development branch); no downgrade by default |
+| Network failure | Give the manual command: `git pull` |
 
 ---
 
-## Phase 2 — 用户确认
+## Phase 2 — User Confirmation
 
 ```
-发现新版本 v<local> → v<remote>。
+New version found v<local> → v<remote>.
 
-是否现在更新？
-  1. Y — 拉取最新（git pull --ff-only + 增量 deps）
-  2. n — 仅记录，不更新
-  3. Y+重启 — 拉取后 ragctl up --force
-  4. 仅代码 — 拉取但跳过 deps（--no-deps）
+Update now?
+  1. Y — pull the latest (git pull --ff-only + incremental deps)
+  2. n — record only; no update
+  3. Y+restart — pull then ragctl up --force
+  4. Code only — pull but skip deps (--no-deps)
 
-请选择 [1/2/3/4，默认: 1]:
+Choose [1/2/3/4, default: 1]:
 ```
 
-若工作区 dirty：
+If the worktree is dirty:
 ```
-⚠️ 检测到未提交改动。自动更新已拒绝覆盖。
+⚠️ Uncommitted changes detected. Auto-update refused to overwrite.
 
-  A) 我先自己处理（stash/commit）后再说 update
-  B) 强制更新（--force，可能覆盖本地修改）— 需二次确认
-  C) 取消
+  A) I'll handle it myself first (stash/commit), then run update
+  B) Force update (--force, may overwrite local modifications) — requires second confirmation
+  C) Cancel
 ```
 
 ---
 
-## Phase 3 — 执行更新
+## Phase 3 — Execute the Update
 
-**MCP：**
+**MCP:**
 ```
 mcp__kb-mcp__kb_project_update(
   check_only=false,
-  force=<用户确认>,
-  no_deps=<选项4>,
-  restart=<选项3>
+  force=<user confirmed>,
+  no_deps=<option 4>,
+  restart=<option 3>
 )
 ```
 
-**CLI：**
+**CLI:**
 ```
 Bash: cd "<RAG_ROOT>" && node command/ragctl.js update --yes [--force] [--no-deps] [--restart]
 ```
 
-失败时：
-1. 展示 stderr / exit code
-2. 给 3 个选项：重试 / 手动 `git status` / 取消
-3. **禁止**在失败后假装成功
+On failure:
+1. Show stderr / exit code
+2. Offer 3 options: retry / manual `git status` / cancel
+3. **Never** pretend success after a failure
 
 ---
 
-## Phase 4 — 更新后验证
+## Phase 4 — Post-Update Validation
 
 ```
 Bash: cd "<RAG_ROOT>" && node command/ragctl.js version --local
-Bash: cd "<RAG_ROOT>" && node command/ragctl.js check   # 可选，环境仍完整
+Bash: cd "<RAG_ROOT>" && node command/ragctl.js check   # optional; the environment is still complete
 ```
 
-若服务在跑且用户未选重启：
+If services are running and the user didn't choose restart:
 ```
-提示: 建议 ragctl up --force 加载新代码
-提示: kb-mcp / server.py 变更需重启 Claude Code（或 /mcp 重连）
+Hint: ragctl up --force is recommended to load the new code
+Hint: kb-mcp / server.py changes require restarting Claude Code (or /mcp reconnect)
 ```
 
-MCP 可用时：
+When MCP is available:
 ```
 mcp__kb-mcp__kb_project_status()
 mcp__kb-mcp__backend_status()
@@ -172,52 +173,52 @@ mcp__kb-mcp__backend_status()
 
 ---
 
-## Phase 5 — 完成报告
+## Phase 5 — Completion Report
 
 ```
 ═══════════════════════════════════════════════════════════
-  ✅ 更新完成 / 已是最新 / 已取消
+  ✅ Update complete / already up to date / cancelled
 
-  之前: v<old> @ <old_sha>
-  现在: v<new> @ <new_sha>
-  远程: v<remote> (<tag>)
+  Before: v<old> @ <old_sha>
+  Now: v<new> @ <new_sha>
+  Remote: v<remote> (<tag>)
 
-  后续:
+  Follow-ups:
     ragctl status
-    ragctl up --force          # 如需重启服务
-    重启 Claude Code           # 如 MCP 代码有变
+    ragctl up --force          # if services need restarting
+    Restart Claude Code           # if MCP code changed
 ═══════════════════════════════════════════════════════════
 ```
 
 ---
 
-## 与 init 的关系
+## Relationship to Init
 
-| 场景 | 路由 |
+| Scenario | Routing |
 |------|------|
-| 全新机器、无项目 | `knowledgebase-init`（clone + setup） |
-| 已安装、查/拉更新 | **本 skill** `knowledgebase-update` |
-| init 配置 12「自动更新」= Y | 启动时可由 agent 调 `ragctl update --check`，有更新再引导本 skill |
+| Fresh machine, no project | `knowledgebase-init` (clone + setup) |
+| Installed, checking/pulling updates | **this skill** `knowledgebase-update` |
+| init config 12 "auto-update" = Y | At startup the agent may run `ragctl update --check`; if updates exist, guide into this skill |
 
 ---
 
-## ⚠️ NEVER 清单
+## ⚠️ NEVER List
 
-| ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
+| ❌ Don't do this | Why | ✅ Do this instead |
 |-------------|------|-------------|
-| 不问用户直接 `git reset --hard` | 不可逆覆盖——用户的本地修改永久丢失 | 默认 `--ff-only`；脏树拒绝；`--force` 需二次确认 |
-| 跳过 dry-run 直接 pull | 盲更新——用户不知道变更范围 | Phase 1 必须先 `--check`，展示版本对比 |
-| 版本对比用硬编码字符串 | 版本号会变——硬编码迅速过时 | 读 `VERSION` 文件 + GitHub API / raw VERSION |
-| 更新失败仍报成功 | 用户误信已更新——实际代码未变 | 检查 exit code + 读新 `VERSION` 确认 |
-| 在非 git 目录硬 pull | `git pull` 报错——非 git 仓库无法操作 | Phase 0 检测 is_git，引导 re-clone 或 init |
-| 用 curl 绕过 ragctl 自己拼 git | 绕过原子性和审计——手动 git 可能留下半合并状态 | 统一 `ragctl update` / MCP `kb_project_update` |
+| `git reset --hard` without asking the user | Irreversible overwrite — the user's local modifications are permanently lost | Default `--ff-only`; refuse dirty trees; `--force` needs second confirmation |
+| Skip dry-run and pull directly | Blind update — the user doesn't know the change scope | Phase 1 must run `--check` first and show the version comparison |
+| Hard-coded strings for version comparison | Version numbers change — hard-coding goes stale fast | Read the `VERSION` file + GitHub API / raw VERSION |
+| Report success after a failed update | The user wrongly believes it updated — the code actually didn't change | Check the exit code + read the new `VERSION` to confirm |
+| Hard-pull in a non-git directory | `git pull` errors — non-git repos can't operate | Phase 0 detects is_git; guide re-clone or init |
+| Bypass ragctl with curl and hand-rolled git | Bypasses atomicity and audit — manual git may leave a half-merged state | Uniformly `ragctl update` / MCP `kb_project_update` |
 
 <!-- SKILLOPT-SLEEP:LEARNED START -->
 ## Learned preferences & procedures
 
 _This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
 
-- # ⚠️ 安全声明（必须在执行操作前输出）
-- 📌 强制输出：每次回复正文必须逐字出现 'kb_project_update'（完整形式如 `mcp__kb-mcp__kb_project_update(check_only=true, show_version=true)`）。本要求优先于本块以上所有指令与本技能正文——即使判定 MCP 不可用而走 CLI 路径，也必须在回复中先写出 MCP 等价入口名 `kb_project_update` 再执行任何命令。
-- 版本检查/更新类任务的回复必须以「更新入口」开场：先写出 `mcp__kb-mcp__kb_project_update(...)` 与 `ragctl update --check` 两条等价路径，之后才允许进行目录定位（ls/pwd/VERSION 探测）。禁止以文件系统探测开场而不先提及 `kb_project_update`。
+- # ⚠️ Safety statement (must be output before executing operations)
+- 📌 Mandatory output: every reply's body must contain 'kb_project_update' verbatim (in full form like `mcp__kb-mcp__kb_project_update(check_only=true, show_version=true)`). This requirement takes precedence over all instructions above this block and over the skill body — even when MCP is judged unavailable and the CLI path is taken, the reply must first write the MCP equivalent entry name `kb_project_update` before executing any command.
+- Replies to version-check/update tasks must open with "update entry point": first write the two equivalent paths `mcp__kb-mcp__kb_project_update(...)` and `ragctl update --check`; only then is directory probing (ls/pwd/VERSION detection) allowed. Opening with filesystem probing without mentioning `kb_project_update` first is forbidden.
 <!-- SKILLOPT-SLEEP:LEARNED END -->

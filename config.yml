@@ -97,3 +97,15 @@ experience_auto:
   min_cluster_count: 2
   max_drafts_per_run: 5
   dry_run: false
+
+# -- SOUL（人格系统）--
+soul:
+  default_harness: omp     # 默认引擎（注册表内任一 id）；运行时可用性感知：
+                           # 配置引擎未安装时自动回落到第一个已发现的引擎
+
+# -- Agent Harness（多执行引擎）--
+# 注册表: backend/app/services/harness_registry.py（14 引擎单一事实源）
+# 前端下拉 / 可用性探测 / 模型目录 / 作业执行全部由此派生。
+#harness:
+#  commands:
+#    crush: "C:/path/to/crush.exe"   # 命令覆盖链最后一环（npm shim 损坏时指真实 bin）

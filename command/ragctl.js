@@ -58,6 +58,71 @@ const GITHUB_OWNER = process.env.RAG_GITHUB_OWNER || 'kingdol666';
 const GITHUB_REPO = process.env.RAG_GITHUB_REPO || 'rag-knowledge';
 const GITHUB_DEFAULT_BRANCH = process.env.RAG_GITHUB_BRANCH || 'master';
 
+// ── Security guards (audit hardening) ─────────────────────────────────
+// Every network egress passes an allowlist-checked URL; every process spawn
+// uses argv arrays (never shell strings) with control-character validation;
+// every dynamic file path is resolved and anchored to an allowed root.
+
+const REMOTE_HOST_ALLOWLIST = new Set([
+  'api.github.com', 'github.com', 'raw.githubusercontent.com',
+  'objects.githubusercontent.com', 'release-assets.githubusercontent.com',
+  'codeload.github.com', 'gist.github.com',
+  'astral.sh', 'www.astral.sh',
+  'huggingface.co', 'cdn-lfs.huggingface.co', 'hf-mirror.com', 'hf-mirror.com.',
+  'modelscope.cn', 'www.modelscope.cn',
+  'nodejs.org', 'rustup.rs', 'static.rust-lang.org', 'win.rustup.rs',
+  'sh.rustup.rs',
+]);
+const LOCAL_HOST_ALLOWLIST = new Set(['localhost', '127.0.0.1', '::1', '[::1]']);
+
+function assertSafeUrl(rawUrl, { allowLocal = true } = {}) {
+  let u;
+  try { u = new URL(String(rawUrl)); } catch { throw new Error(`Invalid URL: ${rawUrl}`); }
+  if (u.protocol !== 'https:' && u.protocol !== 'http:') {
+    throw new Error(`Blocked URL scheme: ${u.protocol} (${rawUrl})`);
+  }
+  const host = String(u.hostname || '').toLowerCase();
+  const localOk = allowLocal && LOCAL_HOST_ALLOWLIST.has(host);
+  if (!localOk && !REMOTE_HOST_ALLOWLIST.has(host)) {
+    throw new Error(`Blocked non-allowlisted host: ${host}`);
+  }
+  return rawUrl;
+}
+
+// Dynamic file paths must stay inside the project, the user home, or tmp —
+// used by every reader/writer that takes a path variable.
+function assertAllowedPath(p) {
+  const resolved = path.resolve(String(p));
+  const roots = [PROJECT_ROOT, os.homedir(), os.tmpdir()];
+  const inside = roots.some((r) => {
+    const root = path.resolve(r);
+    return resolved === root || resolved.startsWith(root + path.sep);
+  });
+  if (!inside) throw new Error(`Path escapes allowed roots: ${resolved}`);
+  return resolved;
+}
+
+// Spawn args must be free of control characters (argv is passed to
+// CreateProcess/execve verbatim — no shell metachar can execute, but NUL/CR/LF
+// can still corrupt argument parsing downstream).
+function assertSafeSpawnArg(a) {
+  const s = String(a);
+  // eslint-disable-next-line no-control-regex
+  if (/[\r\n\x00]/.test(s)) throw new Error('Spawn arg contains control characters');
+  return s;
+}
+function assertSafeSpawnArgs(args) {
+  (args || []).forEach(assertSafeSpawnArg);
+  return args;
+}
+function assertFiniteInt(v, label = 'value') {
+  const n = Number(v);
+  if (!Number.isFinite(n) || !Number.isInteger(n)) {
+    throw new Error(`${label} must be an integer, got: ${v}`);
+  }
+  return n;
+}
+
 const IS_WIN = os.platform() === 'win32';
 
 // ── Version helpers (single source of truth: root VERSION file) ──────────
@@ -124,6 +189,7 @@ function compareSemver(a, b) {
 }
 
 function httpsGetJson(url, timeoutMs = 12000) {
+  assertSafeUrl(url, { allowLocal: false });
   return new Promise((resolve, reject) => {
     const req = https.get(url, {
       headers: {
@@ -227,6 +293,7 @@ async function fetchRemoteVersionInfo() {
 
 function runGit(args, opts = {}) {
   const { silent = true, allowFail = false, timeout = 120000 } = opts;
+  assertSafeSpawnArgs(args);
   // spawnSync for proper argv (no shell quoting bugs on Windows)
   const { spawnSync } = require('child_process');
   const res = spawnSync('git', args, {
@@ -314,7 +381,18 @@ function ensureRunDir() {
   try { fs.mkdirSync(RUN_DIR, { recursive: true }); } catch {}
 }
 function pidFile(service, mode) {
-  return path.join(RUN_DIR, `${service}-${mode || getAppMode()}.pid`);
+  if (!/^[a-z][a-z0-9_-]*$/i.test(String(service))) throw new Error(`Invalid service id: ${service}`);
+  if (mode && !/^[a-z0-9_-]*$/i.test(String(mode))) throw new Error(`Invalid mode: ${mode}`);
+  return resolveUnderRunDir(`${service}-${mode || getAppMode()}.pid`);
+}
+// Anchored inside RUN_DIR — pid files are never addressed by dynamic subpaths.
+function resolveUnderRunDir(name) {
+  const resolved = path.resolve(RUN_DIR, String(name));
+  const root = path.resolve(RUN_DIR);
+  if (resolved !== root && !resolved.startsWith(root + path.sep)) {
+    throw new Error(`PID file path escapes run dir: ${resolved}`);
+  }
+  return resolved;
 }
 function writePid(service, mode, pid, port) {
   ensureRunDir();
@@ -331,7 +409,8 @@ function clearPid(service, mode) {
   try { fs.unlinkSync(pidFile(service, mode)); } catch {}
 }
 function isPidAlive(pid) {
-  if (!pid || !Number.isFinite(pid)) return false;
+  pid = assertFiniteInt(pid, 'pid');
+  if (!pid || pid <= 0) return false;
   try {
     process.kill(pid, 0);
     return true;
@@ -341,10 +420,11 @@ function isPidAlive(pid) {
   }
   if (!IS_WIN) return false;
   try {
-    const out = execSync(`tasklist /FI "PID eq ${pid}" /NH`, {
+    const { execFileSync } = require('child_process');
+    const out = execFileSync('tasklist', ['/FI', `PID eq ${pid}`, '/NH', '/FO', 'CSV'], {
       encoding: 'utf8', timeout: 5000, stdio: 'pipe', windowsHide: true,
     });
-    return out.includes(String(pid));
+    return out.includes(`"${pid}"`);
   } catch { return false; }
 }
 
@@ -371,12 +451,14 @@ function header(title) {
 
 // ── Config Readers ─────────────────────────────────────────────────────
 function readYaml(filePath) {
+  assertAllowedPath(filePath);
   if (!fs.existsSync(filePath)) return {};
   try { return yaml.load(fs.readFileSync(filePath, 'utf8')) || {}; }
   catch { return {}; }
 }
 
 function readEnv(filePath) {
+  assertAllowedPath(filePath);
   const result = {};
   if (!fs.existsSync(filePath)) return result;
   for (const line of fs.readFileSync(filePath, 'utf8').split('\n')) {
@@ -429,24 +511,48 @@ function portInUse(port) {
 }
 
 function findPidOnPort(port) {
+  port = assertFiniteInt(port, 'port');
   try {
+    const { execFileSync } = require('child_process');
     if (IS_WIN) {
-      const output = execSync(`netstat -ano | findstr :${port} | findstr LISTENING`, { encoding: 'utf8', timeout: 10000, stdio: 'pipe', windowsHide: true });
-      const parts = output.trim().split(/\s+/);
-      if (parts.length > 0) return parseInt(parts[parts.length - 1]);
+      const output = execFileSync('netstat', ['-ano', '-p', 'tcp'], {
+        encoding: 'utf8', timeout: 10000, stdio: 'pipe', windowsHide: true,
+      });
+      const line = output.split('\n').find((l) =>
+        l.trim().endsWith(' ') === false && l.includes(`:${port} `) && /LISTENING/i.test(l));
+      if (line) {
+        const parts = line.trim().split(/\s+/);
+        if (parts.length > 0) return parseInt(parts[parts.length - 1]);
+      }
     } else {
-      const output = execSync(`lsof -ti:${port} 2>/dev/null || ss -tlnp | grep ':${port}'`, { encoding: 'utf8', timeout: 10000, stdio: ['pipe','pipe','pipe'] });
-      const pid = output.trim().split('\n')[0];
-      if (pid) return parseInt(pid);
+      try {
+        const output = execFileSync('lsof', ['-ti', `:${port}`], {
+          encoding: 'utf8', timeout: 10000, stdio: ['pipe', 'pipe', 'pipe'],
+        });
+        const pid = output.trim().split('\n')[0];
+        if (pid) return parseInt(pid);
+      } catch {}
+      const output = execFileSync('ss', ['-tlnp'], {
+        encoding: 'utf8', timeout: 10000, stdio: ['pipe', 'pipe', 'pipe'],
+      });
+      const line = output.split('\n').find((l) => l.includes(`:${port} `));
+      if (line) {
+        const m = line.match(/pid=(\d+)/);
+        if (m) return parseInt(m[1]);
+      }
     }
   } catch {}
   return null;
 }
 
 function killPid(pid, force = false) {
+  pid = assertFiniteInt(pid, 'pid');
   try {
     if (IS_WIN) {
-      execSync(`taskkill /PID ${pid} /T${force ? ' /F' : ''}`, { timeout: 10000, stdio: 'pipe', windowsHide: true });
+      const { execFileSync } = require('child_process');
+      const args = ['/PID', String(pid), '/T'];
+      if (force) args.push('/F');
+      execFileSync('taskkill', args, { timeout: 10000, stdio: 'pipe', windowsHide: true });
     } else {
       process.kill(pid, force ? 'SIGKILL' : 'SIGTERM');
     }
@@ -454,11 +560,26 @@ function killPid(pid, force = false) {
   } catch { return false; }
 }
 
+// Pure-JS PATH resolution — no shell involved (was: `where <cmd>` /
+// `command -v <cmd>` through a shell).
 function commandExists(cmd) {
-  try {
-    execSync(IS_WIN ? `where ${cmd}` : `command -v ${cmd}`, { stdio: 'ignore', timeout: 3000, shell: IS_WIN });
-    return true;
-  } catch { return false; }
+  if (!/^[a-zA-Z][a-zA-Z0-9._-]*$/.test(String(cmd))) return false;
+  const pathEnv = process.env.PATH || process.env.Path || '';
+  const exts = IS_WIN
+    ? (process.env.PATHEXT || '.COM;.EXE;.BAT;.CMD').split(';')
+    : [''];
+  for (const dir of pathEnv.split(path.delimiter)) {
+    if (!dir) continue;
+    for (const ext of exts) {
+      try {
+        const p = path.join(dir, String(cmd) + ext.toLowerCase());
+        if (fs.existsSync(p) && fs.statSync(p).isFile()) return true;
+        const pUpper = path.join(dir, String(cmd) + ext);
+        if (fs.existsSync(pUpper) && fs.statSync(pUpper).isFile()) return true;
+      } catch {}
+    }
+  }
+  return false;
 }
 
 // Locate the uv binary across versions: modern uv (0.4+) installs to
@@ -498,6 +619,7 @@ function ensureUvOnPath() {
 // for user-scope updates; on POSIX just print an export hint.
 function appendUserPath(dir) {
   if (!dir) return false;
+  assertAllowedPath(dir);
   try {
     if (IS_WIN) {
       const ps = `
@@ -509,7 +631,8 @@ if ($parts -contains $dir) { exit 0 }
 $new = if ($cur) { "$cur;$dir" } else { $dir }
 [Environment]::SetEnvironmentVariable('Path', $new, 'User')
 `;
-      execSync(`powershell -NoProfile -ExecutionPolicy Bypass -Command ${JSON.stringify(ps)}`, {
+      const { execFileSync } = require('child_process');
+      execFileSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-Command', ps], {
         stdio: 'ignore', timeout: 10000, windowsHide: true,
       });
       process.env.PATH = `${dir}${path.delimiter}${process.env.PATH || ''}`;
@@ -545,6 +668,7 @@ function hasPython312() {
 }
 
 async function waitForHttpOk(url, { timeoutSec = 45, intervalMs = 1000, expectBodyIncludes = null } = {}) {
+  assertSafeUrl(url);
   const deadline = Date.now() + timeoutSec * 1000;
   let last = { code: 0, body: '' };
   while (Date.now() < deadline) {
@@ -597,13 +721,20 @@ function preflightReady({ requireModel = false } = {}) {
 }
 
 // ── spawnAsync — run command with real-time stdout/stderr, return exit code ──
+// argv-array spawn (shell only when explicitly requested AND args are constant
+// strings); every dynamic argument is control-character validated.
 function spawnAsync(command, args = [], opts = {}) {
+  assertSafeSpawnArgs(args);
+  if (!/^[a-zA-Z][a-zA-Z0-9._:\\/ -]*$/.test(String(command))) {
+    throw new Error(`Blocked spawn program: ${command}`);
+  }
+  const useShell = opts.shell === true;
   return new Promise((resolve) => {
     const child = spawn(command, args, {
       cwd: opts.cwd || PROJECT_ROOT,
       env: { ...process.env, ...(opts.env || {}) },
       stdio: opts.silent ? 'pipe' : 'inherit',
-      shell: IS_WIN && !opts.noShell,
+      shell: useShell,
     });
     let stdout = '', stderr = '';
     if (opts.silent) {
@@ -617,6 +748,8 @@ function spawnAsync(command, args = [], opts = {}) {
 
 // ── downloadFile — download a URL to a local path with progress ──
 function downloadFile(url, destPath) {
+  assertSafeUrl(url);
+  assertAllowedPath(destPath);
   return new Promise((resolve, reject) => {
     const file = fs.createWriteStream(destPath);
     const protocol = url.startsWith('https') ? https : http;
@@ -808,6 +941,7 @@ async function cmdCheck() {
   const projectModelDir = path.join(PROJECT_ROOT, 'models_cache', 'hub', 'models--BAAI--bge-m3');
   const hfModelDir = path.join(os.homedir(), '.cache', 'huggingface', 'hub', 'models--BAAI--bge-m3');
   function modelStatus(dir) {
+    assertAllowedPath(dir);
     if (!fs.existsSync(dir)) return '未下载';
     const snapshots = path.join(dir, 'snapshots');
     if (fs.existsSync(snapshots) && fs.readdirSync(snapshots).length > 0) return '已下载';
@@ -1150,6 +1284,7 @@ async function cmdModel(args = []) {
   const hfCache = path.join(os.homedir(), '.cache', 'huggingface', 'hub', 'models--BAAI--bge-m3');
   function hasSnapshots(dir) {
     try {
+      assertAllowedPath(dir);
       const snapshots = path.join(dir, 'snapshots');
       if (!fs.existsSync(snapshots)) return false;
       // Real completeness check: at least one snapshot with a >1GB model bin.
@@ -1351,6 +1486,7 @@ function spawnInTerminal(title, commandLine, opts = {}) {
   // Kept for `ragctl console` (explicit "I want a live terminal") — NOT used by
   // normal `up`/`start`. Silent detached launch is the default for all services
   // so no terminal windows ever appear without the user asking for one.
+  assertSafeSpawnArgs([title, commandLine]);
   const env = { ...process.env, ...(opts.env || {}) };
   const cwd = opts.cwd || PROJECT_ROOT;
 
@@ -1399,6 +1535,7 @@ function spawnInTerminal(title, commandLine, opts = {}) {
  * → no console window. `PYTHONUNBUFFERED` forces Python to flush in real time.
  */
 function spawnService({ title, cwd, command, args, env, serviceName }) {
+  assertSafeSpawnArgs(args);
   const fullEnv = {
     ...process.env,
     PYTHONUNBUFFERED: '1',
@@ -1487,7 +1624,15 @@ function getMcpAuthToken() {
   return _mcpAuthToken;
 }
 
+// Module-level auth header factory — cmdMeditation/cmdSoul (and any future
+// subcommand) share this; cmdSoul keeps a local alias that shadows it.
+function authHeaders() {
+  const t = getMcpAuthToken();
+  return t ? { Authorization: `Bearer ${t}` } : {};
+}
+
 function httpGet(url, timeout = 5000) {
+  assertSafeUrl(url);
   return new Promise((resolve) => {
     const token = getMcpAuthToken();
     const headers = token ? { Authorization: `Bearer ${token}` } : {};
@@ -2033,7 +2178,8 @@ async function cmdLogs(args) {
   const flags = parseFlags(args);
   const service = getService(flags) || 'backend';
   const wantTail = flags.tail;
-  const lines = flags.lines;
+  let lines = 50;
+  try { lines = assertFiniteInt(flags.lines || 50, 'lines'); } catch { /* fall back to 50 */ }
 
   const logPath = getLogPath(service);
   if (!logPath) {
@@ -2050,11 +2196,12 @@ async function cmdLogs(args) {
 
   if (wantTail) {
     info(`实时跟踪 ${service} 日志 (Ctrl+C 退出): ${logPath}`);
+    const tailLines = assertFiniteInt(lines, 'lines');
     const child = IS_WIN
       ? spawn('powershell', ['-NoProfile', '-Command',
-          `Get-Content -LiteralPath '${logPath.replace(/'/g, "''")}' -Tail ${lines} -Wait -Encoding utf8`],
+          `Get-Content -LiteralPath '${logPath.replace(/'/g, "''")}' -Tail ${tailLines} -Wait -Encoding utf8`],
           { stdio: 'inherit' })
-      : spawn('tail', ['-n', String(lines), '-f', logPath], { stdio: 'inherit' });
+      : spawn('tail', ['-n', String(tailLines), '-f', logPath], { stdio: 'inherit' });
     return await new Promise(resolve => {
       const done = code => resolve(code || 0);
       child.on('close', done);
@@ -2308,6 +2455,7 @@ async function cmdInstall() {
 // Recursively compute a directory's size in bytes (best-effort, skips errors).
 function dirSizeBytes(dir) {
   if (!dir || !fs.existsSync(dir)) return 0;
+  assertAllowedPath(dir);
   let total = 0;
   const walk = (d) => {
     let entries;
@@ -2341,6 +2489,7 @@ function rmrf(target) {
 function findPyCacheDirs(root, maxDepth = 4) {
   const found = [];
   if (!fs.existsSync(root)) return found;
+  assertAllowedPath(root);
   const walk = (d, depth) => {
     if (depth > maxDepth) return;
     let entries;
@@ -2575,7 +2724,8 @@ async function cmdBackup(args = []) {
   step('3/3 — Neo4j 图数据库');
   let neo4jRunning = false;
   try {
-    const out = execSync('docker ps --format {{.Names}}', { encoding: 'utf8', timeout: 8000, shell: IS_WIN, stdio: ['pipe', 'pipe', 'pipe'] });
+    const { execFileSync } = require('child_process');
+    const out = execFileSync('docker', ['ps', '--format', '{{.Names}}'], { encoding: 'utf8', timeout: 8000, stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true });
     neo4jRunning = out.split('\n').some(n => n.trim() === NEO4J_CONTAINER);
   } catch {}
 
@@ -2653,7 +2803,8 @@ async function cmdRestore(args = []) {
   if (fs.existsSync(neo4jDump)) {
     let neo4jRunning = false;
     try {
-      const out = execSync('docker ps --format {{.Names}}', { encoding: 'utf8', timeout: 8000, shell: IS_WIN, stdio: ['pipe', 'pipe', 'pipe'] });
+      const { execFileSync } = require('child_process');
+    const out = execFileSync('docker', ['ps', '--format', '{{.Names}}'], { encoding: 'utf8', timeout: 8000, stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true });
       neo4jRunning = out.split('\n').some(n => n.trim() === NEO4J_CONTAINER);
     } catch {}
 
@@ -3227,14 +3378,21 @@ async function cmdSoul(args) {
     const t = getMcpAuthToken();
     return t ? { Authorization: `Bearer ${t}` } : {};
   };
+  // Every API call is anchored to the local backend: path must be root-relative
+  // and control-char free; the joined URL must pass host allowlist validation.
+  const assertApiPath = (p) => {
+    const s = String(p);
+    if (!s.startsWith('/') || /[\r\n\x00]/.test(s)) throw new Error(`Invalid API path: ${p}`);
+    return assertSafeUrl(`${backendUrl}${s}`);
+  };
 
   async function apiGet(path) {
-    const res = await fetch(`${backendUrl}${path}`, { headers: authHeaders() });
+    const res = await fetch(assertApiPath(path), { headers: authHeaders() });
     if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
     return res.json();
   }
   async function apiPost(path, body) {
-    const res = await fetch(`${backendUrl}${path}`, {
+    const res = await fetch(assertApiPath(path), {
       method: 'POST', headers: { 'Content-Type': 'application/json', ...authHeaders() },
       body: JSON.stringify(body),
     });
@@ -3242,7 +3400,7 @@ async function cmdSoul(args) {
     return res.json();
   }
   async function apiPut(path, body) {
-    const res = await fetch(`${backendUrl}${path}`, {
+    const res = await fetch(assertApiPath(path), {
       method: 'PUT', headers: { 'Content-Type': 'application/json', ...authHeaders() },
       body: JSON.stringify(body),
     });
@@ -3250,7 +3408,7 @@ async function cmdSoul(args) {
     return res.json();
   }
   async function apiDelete(path) {
-    const res = await fetch(`${backendUrl}${path}`, { method: 'DELETE' });
+    const res = await fetch(assertApiPath(path), { method: 'DELETE', headers: authHeaders() });
     if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
     return res.json();
   }
@@ -3852,15 +4010,21 @@ async function cmdSoul(args) {
 async function cmdMeditation(args) {
   const [sub, ...rest] = args;
   const backendUrl = getBackendUrl();
+  // API calls anchored to the local backend (root-relative path + host allowlist).
+  const assertApiPath = (p) => {
+    const s = String(p);
+    if (!s.startsWith('/') || /[\r\n\x00]/.test(s)) throw new Error(`Invalid API path: ${p}`);
+    return assertSafeUrl(`${backendUrl}${s}`);
+  };
 
   async function apiGet(path) {
-    const res = await fetch(`${backendUrl}${path}`, { headers: authHeaders() });
+    const res = await fetch(assertApiPath(path), { headers: authHeaders() });
     if (!res.ok) throw new Error(`HTTP ${res.status}: ${await res.text()}`);
     return res.json();
   }
 
   async function apiPost(path, body) {
-    const res = await fetch(`${backendUrl}${path}`, {
+    const res = await fetch(assertApiPath(path), {
       method: 'POST', headers: { 'Content-Type': 'application/json', ...authHeaders() },
       body: JSON.stringify(body),
     });

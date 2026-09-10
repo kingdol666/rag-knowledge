@@ -1,94 +1,94 @@
 ---
 name: knowledgebase-verify
 description: >
-  Knowledge base integrity and quality validation. V1→V9: three-way metadata consistency (disk↔.tree-fs.json↔.knowledge-base.yml), document integrity, parse quality, index coverage+repair, scorecard (max 115), report, tag health (orphan+trash detection), experience health (stale+orphan+test pollution), auto-fix (repeat collections, orphan tags, missing indexes). Read-only by default; repair requires explicit instruction. Triggered by: 校验, 核对, 完整性, 健康检查, 验证, 检查, 一致性, verify, validate, integrity, health check, quality audit, check KB, 检测问题, 审计知识库.
+  Knowledge base integrity and quality validation. V1→V9: three-way metadata consistency (disk↔.tree-fs.json↔.knowledge-base.yml), document integrity, parse quality, index coverage+repair, scorecard (max 115), report, tag health (orphan+trash detection), experience health (stale+orphan+test pollution), auto-fix (repeat collections, orphan tags, missing indexes). Read-only by default; repair requires explicit instruction. Triggered by: validate, cross-check, integrity, health check, verify, check, consistency, verify, validate, integrity, health check, quality audit, check KB, detect issues, audit the knowledge base.
 ---
 
-## ⭐ 相关 Skills
-- KB 整理清洗 → `skill://knowledgebase-organize` (O1-O8 全流程)
-- 文档/KB 管理 → `skill://knowledgebase-manage` (移动/删除/合并)
-- 批量操作 → `skill://knowledgebase-batch` (B1-B7 批量流程)
-- 经验健康检查 → `skill://knowledgebase-experience` 的 V8 经验健康
-- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)
-- 更新到最新版 → `skill://knowledgebase-update`
+## ⭐ Related Skills
+- KB organize & cleanup → `skill://knowledgebase-organize` (O1-O8 full flow)
+- Document/KB management → `skill://knowledgebase-manage` (move/delete/merge)
+- Batch operations → `skill://knowledgebase-batch` (B1-B7 batch flows)
+- Experience health check → V8 experience health of `skill://knowledgebase-experience`
+- Architecture mental model → [kb-architecture.md](../knowledgebase/references/kb-architecture.md) of `skill://knowledgebase`
+- Update to the latest version → `skill://knowledgebase-update`
 
-## Sequential Workflow (当用户要求校验/检查)
+## Sequential Workflow (When the User Requests Validation/Checking)
 
-**Step 1 — 确定校验范围**: 快速检查(V1+V5 10%抽样) / 常规健康(V1→V9) / 深度审计(V1→V9 全量)。
-**Step 2 — V1 三层元数据一致性**: kb_list() vs fs_get_tree() vs kb_get_documents() 交叉验证。
-**Step 3 — V2 文档完整性**: 按采样策略 doc_read 检查文档是否可读。
-**Step 4 — V3 解析质量**: 检查 PDF/DOCX 来源文档的 OCR/Markdown 质量。
-**Step 5 — V4 索引覆盖+修复**: 检查向量索引和图谱索引覆盖率。
-**Step 6 — V5 评分卡**: 按 115 分制计算综合健康分。
-**Step 7 — V6 报告**: 输出总分 + 关键发现 + 首要建议。
-**Step 8 — V7 标签健康**: 检测孤 tag 和垃圾模式。
-**Step 9 — V8 经验健康**: 检测 stale/orphan/test 污染经验。
-**Step 10 — V9 自动修复 (需用户确认)**: 修复检测到的问题。
+**Step 1 — Determine the validation scope**: quick check (V1+V5 10% sampling) / regular health (V1→V9) / deep audit (V1→V9 full).
+**Step 2 — V1 three-layer metadata consistency**: kb_list() vs fs_get_tree() vs kb_get_documents() cross-validation.
+**Step 3 — V2 document integrity**: per the sampling strategy, doc_read to check documents are readable.
+**Step 4 — V3 parse quality**: check OCR/Markdown quality of PDF/DOCX-sourced documents.
+**Step 5 — V4 index coverage+repair**: check vector index and graph index coverage.
+**Step 6 — V5 scorecard**: compute the composite health score on the 115-point scale.
+**Step 7 — V6 report**: output the total score + key findings + top recommendation.
+**Step 8 — V7 tag health**: detect orphan tags and junk patterns.
+**Step 9 — V8 experience health**: detect stale/orphan/test-polluted experiences.
+**Step 10 — V9 auto-fix (requires user confirmation)**: fix detected issues.
 
 # Knowledge Verify — Integrity & Quality
 
-## ⭐ Execution Model · Pre-Flight · Architecture（作业首步，强制）
+## ⭐ Execution Model · Pre-Flight · Architecture (First Step of Any Job, Mandatory)
 
-**执行者：Archival agent** — 用 `task` 委托执行（**委托模板 + 三角色执行模型 + 组合任务边界**：必读 [execution-model.md](../knowledgebase/references/execution-model.md)）。**Pre-Flight**：未通过禁作业 — 一探双检 `kb_project_status` → 分支处置 → 冒烟测试，完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)。**心智模型**：操作前必读 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层模型 + 一致性不变量 + 91 工具地图）；MCP 优先原则（禁 terminal/HTTP 绕过）见 [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) 第五条。
+**Executor: Archival agent** — delegate via `task` (**delegation template + three-role execution model + combined-task boundaries**: must-read [execution-model.md](../knowledgebase/references/execution-model.md)). **Pre-Flight**: no work before it passes — one-probe double-check `kb_project_status` → branch handling → smoke test; full flow in [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md). **Mental model**: before operating, must-read [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer model + consistency invariants + 91-tool map); MCP-first principle (no terminal/HTTP bypass) in [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) Rule 5.
 
 - **Read-only by default.** V4/V7/V9 repair requires explicit user instruction.
 
-## 思维框架：先判断校验重点 ⭐
+## Mental Framework: First Judge the Validation Focus ⭐
 
 ```
-用户说"校验/检查"
+The user says "validate/check"
     │
-    ├── 怀疑元数据不一致 → V1 Three-Way Metadata
-    ├── 文档打开报错/404 → V2 Document Integrity
-    ├── 解析 PDF 后内容乱码 → V3 Parse Quality
-    ├── 搜不到文档 → V4 Index Coverage
-    ├── "彻底审计" → V1→V9 全流程
-    └── 指定了某个 KB → 只跑该 KB 的完整流
+    ├── Suspects metadata inconsistency → V1 Three-Way Metadata
+    ├── Document fails to open/404 → V2 Document Integrity
+    ├── Garbled content after parsing a PDF → V3 Parse Quality
+    ├── Document can't be found in search → V4 Index Coverage
+    ├── "Thorough audit" → V1→V9 full flow
+    └── A specific KB specified → run that KB's complete flow only
 ```
 
-### 校验策略选择
+### Validation Strategy Selection
 
-| 场景 | 广度 | 深度 | 耗时 |
+| Scenario | Breadth | Depth | Time |
 |------|------|------|------|
-| 快速检查 | V1 + V5 仅统计 | 抽样 10% | ~10s |
-| 常规健康检查 | V1→V9 | 正常采样 | ~60s |
-| 深度审计 | V1→V9 全量 | 每个文档 | ~5min+ |
-| 修复后验证 | V4 索引 + V5 评分 | 对比前后 | ~30s |
+| Quick check | V1 + V5 stats only | 10% sampling | ~10s |
+| Regular health check | V1→V9 | Normal sampling | ~60s |
+| Deep audit | V1→V9 full | Every document | ~5min+ |
+| Post-fix verification | V4 index + V5 score | Before/after comparison | ~30s |
 
 
-**Freedom Map**（每步自由度）：
-| 步骤 | 自由度 | 说明 |
+**Freedom Map** (freedom level per step):
+| Step | Freedom | Notes |
 |------|--------|------|
-| V1-V4 检测 / V5 评分 / V7 标签健康 | 🔒 **强制**（低自由度） | 检测流程必须完整，不可跳步骤；评分按公式不可主观 |
-| V6 报告 / V8 经验健康 | 🎯 **执行**（中自由度） | 按模板输出，发现项按实际排列优先级 |
-| V9 自动修复 | 🧠 **判断**（高自由度） | 需用户明确指令才执行；可逆修复可批量，不可逆需逐项确认 |
-| 采样策略 | 🎯 **执行**（中自由度） | 按库大小选采样比例，不可全量（>100文档时）也不可偷懒（<10%） |
+| V1-V4 detection / V5 scoring / V7 tag health | 🔒 **Mandatory** (low freedom) | Detection flows must be complete; no skipped steps; scoring follows formulas, not subjectivity |
+| V6 report / V8 experience health | 🎯 **Execute** (medium freedom) | Output per the template; prioritize findings by actual impact |
+| V9 auto-fix | 🧠 **Judgment** (high freedom) | Requires explicit user instruction to execute; reversible fixes can be batched; irreversible ones need per-item confirmation |
+| Sampling strategy | 🎯 **Execute** (medium freedom) | Pick the sampling ratio by library size; no full scans (>100 docs) and no laziness (<10%) |
 ---
 
 ## V1 — Three-Way Metadata Integrity
 
-验证 `kb_list()` 与 `kb_get_documents()` 的文档计数一致性，以及 `fs_get_tree()` 的路径交叉引用（注意：MCP工具无法直接访问原始 `.tree-fs.json`/`.knowledge-base.yml` 文件，UUID 一致性检查已通过工具内部的原子操作保证）。
+Verify `kb_list()` and `kb_get_documents()` document-count consistency, plus `fs_get_tree()` path cross-references (note: MCP tools cannot directly access the raw `.tree-fs.json`/`.knowledge-base.yml` files; UUID-level consistency is guaranteed by the tools' internal atomic operations).
 
 1. `mcp__kb-mcp__kb_list()` vs `mcp__kb-mcp__fs_get_tree()` — flag KBs with no tree node, orphan nodes, doc count mismatches.
 2. For each KB: `mcp__kb-mcp__kb_get_documents(kb_id)` — check each doc has a matching file on disk via path cross-reference.
-3. ⚠️ UUID级一致性由MCP工具原子操作保证（每次 CRUD 同步更新三层），V1 验证基于路径交叉引用而非UUID直接对比。
+3. ⚠️ UUID-level consistency is guaranteed by MCP tools' atomic operations (every CRUD updates all three layers in sync); V1 validation is based on path cross-references rather than direct UUID comparison.
 4. Flag: phantom entries (metadata but no disk file), orphan files (disk but no metadata).
 
-> **已知正常现象**（非不一致）：`kb_get_documents()` 返回的条目数可能比 `kb_list(lightweight=true)` 的 `doc_count` 多——多出的条目是**子KB容器**（`file_type: knowledge-base`，非真实文档）。用 `fs_get_tree(max_depth=2)` 区分父子层级。
+> **Known normal behavior** (not an inconsistency): the entry count returned by `kb_get_documents()` may exceed the `doc_count` from `kb_list(lightweight=true)` — the extra entries are **sub-KB containers** (`file_type: knowledge-base`, not real documents). Use `fs_get_tree(max_depth=2)` to distinguish parent/child levels.
 
 ## V2 — Document Integrity
 
 `mcp__kb-mcp__kb_get_documents(kb_id)` → sample `mcp__kb-mcp__kb_doc_read` using the sampling strategy below.
 Flag: broken 404s, empty descriptions, untagged docs.
 
-### 采样策略
+### Sampling Strategy
 
-| 库大小 | 采样比例 | 最低样本 |
+| Library size | Sampling ratio | Minimum samples |
 |--------|---------|---------|
-| 1-10 | 100% | 全部 |
-| 11-50 | 50% | 至少10 |
-| 51-100 | 25% | 至少25 |
-| >100 | 15% | 至少50 |
+| 1-10 | 100% | all |
+| 11-50 | 50% | at least 10 |
+| 51-100 | 25% | at least 25 |
+| >100 | 15% | at least 50 |
 
 ---
 
@@ -114,89 +114,89 @@ Use `mcp__kb-mcp__backend_status()` for MinerU health (authoritative).
 
 Metadata Consistency (25) | Document Quality (30) | Tag Coverage (25) | Description Quality (10) | Graph Health (15) | Vector Coverage (10)
 
-| 维度 | 满分 | 评分方法 |
+| Dimension | Max | Scoring method |
 |------|------|---------|
-| 元数据一致性 | 25 | 匹配的条目数 / 总条目数 × 25 |
-| 文档质量 | 30 | 抽检合格率 × 30 |
-| 标签覆盖 | 25 | 有标签文档 / 总文档 × 25 |
-| 描述质量 | 10 | 内容型描述比例 × 10 |
-| 图谱健康 | 15 | 图谱覆盖率 × 15 |
-| 向量覆盖 | 10 | 向量索引覆盖率 × 10 |
+| Metadata consistency | 25 | matched entries / total entries × 25 |
+| Document quality | 30 | sampled pass rate × 30 |
+| Tag coverage | 25 | tagged documents / total documents × 25 |
+| Description quality | 10 | content-based description ratio × 10 |
+| Graph health | 15 | graph coverage × 15 |
+| Vector coverage | 10 | vector index coverage × 10 |
 
 ## V6 — Report
 
 Score + key findings + single most impactful recommendation.
 
-### 报告模板
+### Report Template
 ```
-## 校验报告：<KB名称>
-总分: XX/115
+## Validation Report: <KB name>
+Total score: XX/115
 
-| 维度 | 得分 | 状态 |
+| Dimension | Score | Status |
 |------|------|------|
-| 元数据一致性 | XX/25 | ✅/⚠️/❌ |
-| 文档质量 | XX/30 | ✅/⚠️/❌ |
-| 标签覆盖 | XX/25 | ✅/⚠️/❌ |
-| 描述质量 | XX/10 | ✅/⚠️/❌ |
-| 图谱健康 | XX/15 | ✅/⚠️/❌ |
-| 向量覆盖 | XX/10 | ✅/⚠️/❌ |
+| Metadata consistency | XX/25 | ✅/⚠️/❌ |
+| Document quality | XX/30 | ✅/⚠️/❌ |
+| Tag coverage | XX/25 | ✅/⚠️/❌ |
+| Description quality | XX/10 | ✅/⚠️/❌ |
+| Graph health | XX/15 | ✅/⚠️/❌ |
+| Vector coverage | XX/10 | ✅/⚠️/❌ |
 
-### 关键发现
-- <发现1>
-- <发现2>
+### Key Findings
+- <finding 1>
+- <finding 2>
 
-### 首要建议
-<一条最具性价比的修复建议>
+### Top Recommendation
+<the single most cost-effective fix>
 ```
 
 ## V7 — Tag Health
 
-检测 0 引用孤 tag 和章节标题/测试标签等垃圾模式。
+Detect 0-reference orphan tags and junk patterns like section titles/test tags.
 
-**推荐方法**：`kb_tags_cleanup(dry_run=true)` — 单次 O(M) 扫描全库，即时返回 orphan 分类结果。
-- 2026-07-30 优化后：从 O(N×M) N 次 HTTP 探测改为单次 `/api/kb/tags/analysis` 调用，151 tags 实测 <100ms
-- 返回 `{orphan_tags: [{tag, refs, reason}], referenced, orphan}`
-- reason 分两类：`unreferenced`（0 文档引用）+ `garbage_pattern`（章节标题/测试残留/特殊字符，由 web 层 `isGarbageTag` 识别）
-- 领域核心词保护：PET/PVA/DL/RAG/polymer/具身智能 等由 MCP 层 protected_patterns 保护，即使 0 引用也不清理
-- `dry_run=false` 执行清理（委托 web `removeOrphanTags`，不可逆，建议先 preview）
+**Recommended method**: `kb_tags_cleanup(dry_run=true)` — a single O(M) scan of the whole library, returning the orphan classification immediately.
+- After the 2026-07-30 optimization: changed from O(N×M) with N HTTP probes to a single `/api/kb/tags/analysis` call; measured <100ms for 151 tags
+- Returns `{orphan_tags: [{tag, refs, reason}], referenced, orphan}`
+- reason has two classes: `unreferenced` (0 document references) + `garbage_pattern` (section titles/test residue/special characters, identified by the web layer's `isGarbageTag`)
+- Domain core-word protection: PET/PVA/DL/RAG/polymer/embodied intelligence, etc., are protected by MCP-layer protected_patterns and are not cleaned even with 0 references
+- `dry_run=false` executes the cleanup (delegates to web `removeOrphanTags`; irreversible; preview first recommended)
 
 ## V8 — Experience Health
 
-`mcp__kb-mcp__experience_check_stale()` (空 kb_id = 全库检查)
-`mcp__kb-mcp__experience_dashboard(kb_id)` — 对每个有经验的 KB
+`mcp__kb-mcp__experience_check_stale()` (empty kb_id = whole-library check)
+`mcp__kb-mcp__experience_dashboard(kb_id)` — for every KB with experiences
 
-- orphan 经验：关联文档已删除 → 建议 `mcp__kb-mcp__experience_delete` 或更新 `related_docs`
-- stale 经验：文档已更新但经验未同步 → 建议 `mcp__kb-mcp__experience_sync_kb`
-- 测试污染：rating=0, applied=0, age>7d → 建议清理
-- 低质经验：rating<2, review≥3 (disputed) → 建议审查
+- Orphan experiences: related documents deleted → recommend `mcp__kb-mcp__experience_delete` or updating `related_docs`
+- Stale experiences: documents updated but experiences not synced → recommend `mcp__kb-mcp__experience_sync_kb`
+- Test pollution: rating=0, applied=0, age>7d → recommend cleanup
+- Low-quality experiences: rating<2, review≥3 (disputed) → recommend review
 
 ## V9 — Auto-Fix
 
-当 V1-V8 检测到问题后，可执行的自动修复路径：
+After V1-V8 detect issues, the executable auto-fix paths:
 
-| 检测到的问题 | 自动修复路径 |
+| Detected issue | Auto-fix path |
 |------------|------------|
-| 重复 Collection | `mcp__kb-mcp__kb_cleanup_orphan_collections(dry_run=false)` |
-| 孤 tag | `mcp__kb-mcp__kb_tags_cleanup(dry_run=false)` |
-| 文档缺向量索引 | `mcp__kb-mcp__kb_index_document(kb_id, doc_path)` |
-| 文档缺图谱索引 | `mcp__kb-mcp__kb_graph_build(kb_id, force=false)` |
-| 元数据不一致 | `mcp__kb-mcp__kb_reindex(kb_id, force=true)` 重建 |
-| orphan 经验 | `mcp__kb-mcp__experience_delete(kb_id, exp_id)` 或 `mcp__kb-mcp__experience_update(related_docs=[])` |
-| test 经验污染 | `mcp__kb-mcp__experience_delete(kb_id, exp_id)`（确认后） |
+| Duplicate collection | `mcp__kb-mcp__kb_cleanup_orphan_collections(dry_run=false)` |
+| Orphan tags | `mcp__kb-mcp__kb_tags_cleanup(dry_run=false)` |
+| Document missing vector index | `mcp__kb-mcp__kb_index_document(kb_id, doc_path)` |
+| Document missing graph index | `mcp__kb-mcp__kb_graph_build(kb_id, force=false)` |
+| Metadata inconsistency | `mcp__kb-mcp__kb_reindex(kb_id, force=true)` rebuild |
+| Orphan experience | `mcp__kb-mcp__experience_delete(kb_id, exp_id)` or `mcp__kb-mcp__experience_update(related_docs=[])` |
+| Test experience pollution | `mcp__kb-mcp__experience_delete(kb_id, exp_id)` (after confirmation) |
 
-**Auto-fix 原则**：只修复可自动检测+可自动修复的问题；破坏性操作（删文档/删KB/合并KB）需用户确认。
+**Auto-fix principle**: only fix issues that are auto-detectable + auto-fixable; destructive operations (delete documents/delete KBs/merge KBs) require user confirmation.
 
 ---
 
-## ⚠️ NEVER 清单
+## ⚠️ NEVER List
 
-| ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
+| ❌ Don't do this | Why | ✅ Do this instead |
 |-------------|------|-------------|
-| 无用户指令就执行 V4/V7/V9 修复 | 读-only 被破坏——校验变成操作 | 先报告结果，等用户说"修"再动 |
-| 只用 `kb_list` 判断 KB 健康 | 缺失文档级检查——KB 级正常≠文档级正常 | 必须配合 `kb_get_documents` + 磁盘校验 |
-| 大批量 doc_read 无进度汇报 | 用户以为卡死——>50 文档时耗时不可忽略 | 报告进度"x/N 已检查" |
-| Neo4j 挂了就不做其他检查 | V1-V4 V6 不依赖 Neo4j | 跳过 V5 Graph Health，其他照常 |
-| 评分报告不写修复建议 | 用户看了不知道先修哪个 | V6 必须含"首要建议"（性价比最高的修复） |
-| 信任 `kb_list(lightweight=true)` 的 `doc_count` 为真实文档数 | 含子KB容器条目——实际文档数偏少 | 用 `file_type: knowledge-base` 过滤或 `fs_get_tree` 确认 |
-| 在非解析文档上跑 V3 Parse Quality | MD/TXT 直建文档无 OCR 痕迹——白检 | V3 仅对 `.pdf`/`.docx`/`.pptx` 来源文档执行 |
-| 采样低于下限就出报告 | 统计不显著——小样本掩盖系统性问题 | 严格按采样表下限（至少10/25/50） |
+| Run V4/V7/V9 repairs without user instruction | Read-only violated — validation becomes operation | Report results first; act only when the user says "fix" |
+| Judge KB health with `kb_list` alone | Missing document-level checks — KB-level OK ≠ document-level OK | Must pair `kb_get_documents` + disk verification |
+| Large doc_read batches without progress reporting | The user thinks it hung — >50 docs takes non-trivial time | Report progress "x/N checked" |
+| Skip all other checks when Neo4j is down | V1-V4, V6 don't depend on Neo4j | Skip V5 Graph Health; proceed with the rest |
+| Score reports without fix recommendations | The user doesn't know what to fix first | V6 must contain a "top recommendation" (most cost-effective fix) |
+| Trust `kb_list(lightweight=true)`'s `doc_count` as the real document count | Includes sub-KB container entries — actual document count is lower | Filter by `file_type: knowledge-base` or confirm with `fs_get_tree` |
+| Run V3 Parse Quality on non-parsed documents | MD/TXT direct-created documents have no OCR traces — pointless | V3 runs only on `.pdf`/`.docx`/`.pptx`-sourced documents |
+| Emit a report with sampling below the minimum | Statistically insignificant — small samples mask systemic issues | Strictly follow the sampling table minimums (at least 10/25/50) |

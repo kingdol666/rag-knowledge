@@ -1,4 +1,4 @@
-﻿{
+{
   "common": {
     "app": {
       "title": "RAG Knowledge Base",
@@ -972,7 +972,11 @@
     "modelDefault": "Engine default model",
     "intervalZeroHint": "0 = manual only",
     "runNow": "Run Meditation Now",
-    "saveConfig": "Save Config"
+    "saveConfig": "Save Config",
+    "harnessDefault": "default",
+    "harnessUsageStats": "usage stats",
+    "harnessEnvHint": "required env vars",
+    "harnessNotConfigured": "installed but credentials not configured"
   },
   "action": {
     "save": "Save",
@@ -1385,5 +1389,84 @@
   },
   "about": {
     "heroTitle": "AI-POWERED KNOWLEDGE MANAGEMENT"
+  },
+  "harness": {
+    "engines": {
+      "mock": {
+        "label": "Mock",
+        "description": "In-process scripted engine (no LLM, always available). Full-chain verification for dev/CI.",
+        "notes": "Runs in-process, never spawns a child process."
+      },
+      "omp": {
+        "label": "oh-my-pi (OMP)",
+        "description": "Default recommended engine. One-shot headless call via `omp -p --mode=json @file`.",
+        "notes": "Prompt delivered via @temp-file (bypasses the Windows 8K command-line limit); JSONL event stream."
+      },
+      "opencode": {
+        "label": "OpenCode",
+        "description": "Non-interactive one-shot via `opencode run`; plain-text stdout.",
+        "notes": "npm-shim installs cap the command line at ~8K; oversized prompts fail explicitly instead of being truncated."
+      },
+      "codex": {
+        "label": "OpenAI Codex CLI",
+        "description": "Headless one-shot via `codex exec --json`; NDJSON event stream; prompt via stdin.",
+        "notes": "Conservative read-only sandbox; usage surfaced from turn.completed."
+      },
+      "dsh": {
+        "label": "DeepSeek Harness",
+        "description": "Standard ACP v1 one-shot session via `dsh --profile acp`.",
+        "notes": "Embedded approval requests are fail-closed denied (single-turn conservative mode)."
+      },
+      "claude": {
+        "label": "Claude Code",
+        "description": "Headless one-shot via `claude -p --output-format json`; prompt via stdin.",
+        "notes": "--dangerously-skip-permissions is limited to platform synthesis jobs; probe requires the API key."
+      },
+      "gemini": {
+        "label": "Gemini CLI",
+        "description": "Headless one-shot via `gemini -p <prompt> --output-format json`.",
+        "notes": "Auth locked to the Google surface (API key / OAuth)."
+      },
+      "copilot": {
+        "label": "GitHub Copilot CLI",
+        "description": "One-shot via `copilot -p <prompt> --output-format json`.",
+        "notes": "Token chain COPILOT_GITHUB_TOKEN > GH_TOKEN > GITHUB_TOKEN; GitHub account only."
+      },
+      "cursor": {
+        "label": "Cursor CLI",
+        "description": "One-shot via `cursor-agent -p --output-format json`; frames mirror Claude Code.",
+        "notes": "No --force by default (file changes proposed, not applied — conservative mode)."
+      },
+      "crush": {
+        "label": "Charm Crush",
+        "description": "One-shot via `crush run`; v0.92+ outputs plain text.",
+        "notes": "npm shim may be broken; point harness.commands.<id> at the real binary."
+      },
+      "goose": {
+        "label": "Block Goose",
+        "description": "One-shot via `goose run --output-format stream-json -t <prompt>`.",
+        "notes": "GOOSE_MODE=auto headless posture; provider/model via GOOSE_PROVIDER/GOOSE_MODEL env."
+      },
+      "qwen": {
+        "label": "Qwen Code",
+        "description": "Headless one-shot via piped stdin (older gemini fork, no --output-format).",
+        "notes": "Same-family is not same-protocol: qwen probed independently; prompt via stdin (no length limit)."
+      },
+      "pi": {
+        "label": "pi coding agent",
+        "description": "One-shot via `pi -p --mode json @file`; prompt delivered via temp file.",
+        "notes": "Provider/model via --provider/--model plus ~/.pi/agent/models.json custom gateways."
+      },
+      "hermes": {
+        "label": "Hermes Agent",
+        "description": "Standard ACP v1 one-shot session via `hermes acp` (same driver as dsh).",
+        "notes": "Model surface from hermes config.yaml; approval requests fail-closed."
+      },
+      "heuristic": {
+        "label": "Heuristic",
+        "description": "Built-in heuristic fallback (no LLM). Structured extraction with quality gating.",
+        "notes": "Silent fallback for scheduled jobs when engines are unavailable (manual triggers never fall back)."
+      }
+    }
   }
 }

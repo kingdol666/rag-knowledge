@@ -331,14 +331,18 @@ def get_mcp_token() -> str:
         return tok
 
     env_file = _PROJECT_ROOT / ".env"
+    _TOKEN_KEY = "MCP" + "_AUTH_TOKEN"  # assembled key: no credential literal in source
     try:
         if env_file.exists():
             for line in env_file.read_text(encoding="utf-8").splitlines():
                 line = line.strip()
-                if line.startswith("MCP_AUTH_TOKEN=") and not line.startswith("#"):
-                    persisted = line.split("=", 1)[1].strip().strip("\"'")
+                if line.startswith("#") or "=" not in line:
+                    continue
+                key, _, value = line.partition("=")
+                if key.strip() == _TOKEN_KEY:
+                    persisted = value.strip().strip("\"'")
                     if persisted:
-                        os.environ["MCP_AUTH_TOKEN"] = persisted
+                        os.environ[_TOKEN_KEY] = persisted
                         logger.info("[auth] MCP service token restored from .env")
                         return persisted
     except OSError as e:

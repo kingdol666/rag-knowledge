@@ -1139,7 +1139,13 @@ async def export_training_data(
     training_dir = _soul_dir / "training"
     training_dir.mkdir(parents=True, exist_ok=True)
     min_label = str(min_score).replace(".", "_")
-    export_path = training_dir / f"export-{today_str}-{min_label}.jsonl"
+    # 路径锚定：文件名片段只允许数字/下划线，且解析后必须落在 training/ 内
+    import re as _re
+    if not _re.fullmatch(r"[0-9_]+", min_label):
+        min_label = "default"
+    export_path = (training_dir / f"export-{today_str}-{min_label}.jsonl").resolve()
+    if not str(export_path).startswith(str(training_dir.resolve())):
+        return {"success": False, "error": "export path escaped training dir"}
 
     with open(export_path, "w", encoding="utf-8", newline="\n") as f:
         for rec in records:

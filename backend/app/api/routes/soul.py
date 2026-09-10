@@ -150,14 +150,28 @@ async def soul_list():
 
 @router.get("/settings")
 async def soul_settings():
-    """SOUL 系统级设置: 默认 harness/model + 各 harness 可用性。"""
+    """SOUL 系统级设置: 默认 harness/model + 各 harness 可用性 + 注册表清单。"""
     from app.config import config as _cfg
+    from app.services import harness_registry as _hreg
     harness_status = await agent_harness.get_all_harness_status()
+
+    # 注册表派生清单（前端下拉数据源；含实时可用性）
+    harness_list = []
+    for item in await _hreg.list_harnesses():
+        harness_list.append({
+            "id": item["id"], "label": item["label"],
+            "description": item["description"], "installed": item["installed"],
+            "models": item["models"],
+        })
+    harness_list.append({"id": "heuristic", "label": "Heuristic",
+                         "description": "内置启发式回退（无 LLM）", "installed": True, "models": [""]})
+
     return {
         "success": True,
-        "default_harness": _cfg.soul_default_harness,
+        "default_harness": await _hreg.resolve_default_harness(),
         "default_model": _cfg.soul_default_model,
         "harnesses": harness_status.get("harnesses", {}),
+        "harness_list": harness_list,
     }
 
 

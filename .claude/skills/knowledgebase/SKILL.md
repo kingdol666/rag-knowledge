@@ -1,52 +1,52 @@
 ---
 name: knowledgebase
 description: >
-  Knowledge base management — primary entry point and dispatcher. Routes user requests to the correct sub-skill based on scenario matching (ingest, search, manage, organize, verify, list, batch, experience, graph). NEVER handles KB operations directly. Triggered by: 知识库, KB, 文档管理, 入库, 上传, 解析, 搜索, 检索, 查看, 整理, 校验, 经验, 图谱, 批量, store, upload, parse, search, find, query, list, show, verify, audit, organize, experience, graph, batch, and any knowledge base operation phrase.
+  Knowledge base management — primary entry point and dispatcher. Routes user requests to the correct sub-skill based on scenario matching (ingest, search, manage, organize, verify, list, batch, experience, graph). NEVER handles KB operations directly. Triggered by: knowledge base, KB, document management, ingest, upload, parse, search, retrieval, view, organize, verify, experience, graph, batch, store, upload, parse, search, find, query, list, show, verify, audit, organize, experience, graph, batch, and any knowledge base operation phrase.
 ---
 
 # Knowledge Base — Dispatcher
 
-**执行者：调度器匹配场景 → 委托 Archival 子 Agent 执行**
-- 当用户输入命中 KB 关键词触发本 skill 后，调度器必须委托 Archival agent
-- 调度器唯一职能：读取输入 → 匹配场景 → 用 `task` 工具委托 Archival
-- 调度器严禁自行执行任何 KB 操作
+**Executor: dispatcher matches the scenario → delegates to the Archival sub-agent for execution**
+- Once user input hits a KB keyword and triggers this skill, the dispatcher MUST delegate to the Archival agent
+- The dispatcher's sole function: read input → match scenario → delegate to Archival via the `task` tool
+- The dispatcher is strictly forbidden from executing any KB operation itself
 
-> **⭐ KB 架构心智模型**：本系统的知识库是 5 层数据模型（磁盘 .md ↔ .tree-fs.json ↔ .knowledge-base.yml ↔ ChromaDB 向量 ↔ Neo4j 图谱），72 个 MCP 工具按操作类型分类。委托 Archival 前，Archival **必须先读** [kb-architecture.md](references/kb-architecture.md) 建立正确的心智模型——理解 5 层一致性规则、哪些操作需手动 `kb_index_document`（仅有 `kb_doc_save_parsed`）、层级 KB 的坑、路径格式约定、以及**修复后的不变量**（update_content/delete/move 均已自动索引）。
+> **⭐ KB architecture mental model**: This system's knowledge base is a 5-layer data model (disk .md ↔ .tree-fs.json ↔ .knowledge-base.yml ↔ ChromaDB vectors ↔ Neo4j graph), with 72 MCP tools classified by operation type. Before delegating, Archival **must first read** [kb-architecture.md](references/kb-architecture.md) to establish the correct mental model — understanding the 5-layer consistency rules, which operations require manual `kb_index_document` (only `kb_doc_save_parsed`), the pitfalls of hierarchical KBs, path format conventions, and the **post-fix invariants** (update_content/delete/move are all auto-indexed).
 
-## 使命（强制规则）
+## Mission (Mandatory Rules)
 
-严格路由器——唯一职责：**读输入 → 匹配场景 → 委托 Archival**。
+Strict router — sole responsibility: **read input → match scenario → delegate to Archival**.
 
-禁止自行执行任何知识库操作（增删改查索引图谱经验全部禁止）。
-禁止绕过触发条件、猜测场景、跳过步骤。
+Executing any knowledge base operation itself is forbidden (add/delete/modify/query/index/graph/experience — all forbidden).
+Bypassing trigger conditions, guessing scenarios, or skipping steps is forbidden.
 
 ---
 
-## 思维框架：场景归类 ⭐
+## Mental Framework: Scenario Classification ⭐
 
 ```
-用户说了一句话
-  └── 包含 KB 关键词？
-       ├── 是 → 匹配下表的信号关键词
-       └── 否 → "我没能清晰理解您的需求。请说明您是要：入库文档、搜索知识、管理知识库、还是整理知识库？"
+The user says something
+  └── Contains KB keywords?
+       ├── Yes → match the signal keywords in the table below
+       └── No → "I couldn't clearly understand your request. Please clarify whether you want to: ingest documents, search knowledge, manage the knowledge base, or organize the knowledge base?"
 
-匹配到后：
-  ├── 明确单一场景 → 路由对应子 Skill
-  ├── Init 场景 → 主 Agent 直接执行 `Skill("knowledgebase-init")`，不经过 Archival
-  ├── 多场景混合 → 按 Organize → Verify → Ingest → Manage → List/Search 顺序路由
-  └── 模糊回退 → 如下表
+After a match:
+  ├── Clear single scenario → route to the corresponding sub-skill
+  ├── Init scenario → the main agent executes `Skill("knowledgebase-init")` directly, without going through Archival
+  ├── Multiple mixed scenarios → route in Organize → Verify → Ingest → Manage → List/Search order
+  └── Fuzzy fallback → see table below
 ```
 
 ---
 
 ## Sequential Workflow
-**Step 1 — 检测KB关键词**: 扫描用户输入，匹配 frontmatter 的 trigger 关键词列表。使用 kb_list(lightweight=true) 确认 KB catalog 可达。无匹配则输出模糊回退消息，等待澄清。
-**Step 2 — 最长匹配场景分类**: 按最长关键词优先规则，将命中的关键词映射到单一场景（Ingest/Search/Manage/Organize/Verify/List/Batch/Experience/Graph/Init/Update）。
-**Step 3 — 单场景路由**: 路由到对应的 skill://knowledgebase-<scenario>，读取子Skill内容获取详细步骤。Init/Update 场景由主Agent直接执行，不委托Archival。
-**Step 4 — 多场景混合路由**: 按 Organize → Verify → Ingest → Manage → List/Search 优先级顺序依次路由，每个场景分别委托Archival执行。
-**Step 5 — Archival 委托**: 用 `task` 工具委托 Archival agent 执行（见下方委托模板），Archival 负责自主确认场景并严格执行子 Skill 的全部步骤。
-**Step 6 — 组合任务协议**: >=2个场景时：先确认路由顺序 → 步间委托显式附带前序关键产出（KB id/文档路径/已变更项）→ 每步完成即汇报 → 失败隔离。
-**Step 7 — 模糊回退处理**: 无法明确分类时按模糊回退规则：查/问/搜→Search, 存/上传→Ingest, 看/列→List, 整理→Organize, 校验→Verify。仍不确定则输出澄清问题。
+**Step 1 — Detect KB keywords**: scan user input against the trigger keyword list in the frontmatter. Use kb_list(lightweight=true) to confirm the KB catalog is reachable. If nothing matches, output the fuzzy fallback message and wait for clarification.
+**Step 2 — Longest-match scenario classification**: using the longest-keyword-first rule, map matched keywords to a single scenario (Ingest/Search/Manage/Organize/Verify/List/Batch/Experience/Graph/Init/Update).
+**Step 3 — Single-scenario routing**: route to the corresponding skill://knowledgebase-<scenario> and read the sub-skill content for detailed steps. Init/Update scenarios are executed directly by the main agent, not delegated to Archival.
+**Step 4 — Multi-scenario routing**: route in priority order Organize → Verify → Ingest → Manage → List/Search, delegating each scenario separately to Archival for execution.
+**Step 5 — Archival delegation**: use the `task` tool to delegate execution to the Archival agent (see the delegation template below); Archival is responsible for autonomously confirming the scenario and strictly executing all steps of the sub-skill.
+**Step 6 — Combined-task protocol**: with >=2 scenarios: confirm the routing order first → each subsequent delegation explicitly carries the previous step's key outputs (KB id/document paths/changed items) → report as soon as each step completes → isolate failures.
+**Step 7 — Fuzzy fallback handling**: when classification is unclear, apply fuzzy fallback rules: look up/ask/search → Search, save/upload → Ingest, view/list → List, organize → Organize, verify/audit → Verify. If still uncertain, output a clarification question.
 
 ## Sequential Processing Steps
 
@@ -56,29 +56,29 @@ Scan user input for any trigger keyword from the frontmatter trigger list. If no
 ### Step 2: Classify the Scenario
 Map matched keywords to a single scenario using the classification table below. Each row maps a set of signal keywords to one scenario and its corresponding sub-skill.
 
-**⭐ 最长匹配优先规则（Longest-Match-First）**：当多个关键词同时命中时，**最长的关键词优先**。例如"检查更新"同时命中"检查"(Verify) 和"检查更新"(Update)，取更长的"检查更新" → Update。此规则消解所有前缀歧义。
+**⭐ Longest-Match-First rule**: when multiple keywords match simultaneously, **the longest keyword wins**. For example, "check for updates" matches both "check" (Verify) and "check for updates" (Update); take the longer "check for updates" → Update. This rule resolves all prefix ambiguity.
 
 | Signal keywords | Scenario | Route to |
 |---|---|---|
-| 入库, 上传, 导入, 解析, 存储, 保存到, 放文档, 添加文档, store, upload, parse, ingest, save to KB, add doc, put document | **Ingest** | `Skill("knowledgebase-ingest")` |
-| 移动, 改名, 删除, 合并, move, rename, delete, merge | **Manage** | `Skill("knowledgebase-manage")` |
-| 整理, 清洗, 重组, 盘点, 大扫除, 全面梳理, 归并, 归类, organize, restructure, cleanup, reorganize | **Organize** | `Skill("knowledgebase-organize")` |
-| 搜索, 查询, 检索, 哪里, 办法, 怎么解决, search, find, query, RAG, how to, explain, what is | **Search** | `Skill("knowledgebase-search")` |
-| 全库搜索, 跨库, 跨知识库, cross-KB, enterprise | **Search-Enterprise** | `Skill("knowledgebase-search-enterprise")` |
-| 查看, 列出, 浏览, 内容, list, show, overview, tree | **List** | `Skill("knowledgebase-list")` |
-| 校验, 核对, 完整性, 检查, 检测, 检测问题, 审计知识库, audit, verify, validate, integrity, health check | **Verify** | `Skill("knowledgebase-verify")` |
-| 批量, 全量, batch, bulk, mass | **Batch** | `Skill("knowledgebase-batch")` |
-| 经验, 经验库, experience, lesson, best practice | **Experience** | `Skill("knowledgebase-experience")` |
-| 记录经验, 总结经验, summarize as experience | **Experience-Summarize** | `Skill("knowledgebase-experience-summarize")` |
-| 图谱, graph, neo4j, entity, build graph | **Graph** | `Skill("knowledgebase-graph")` |
-| 初始化, 安装, 部署, 配置知识库, init, setup, install, deploy, bootstrap, getting started | **Init** | `Skill("knowledgebase-init")` (main agent — 不委托 Archival) |
-| 更新知识库, 升级, 检查更新, 拉取最新, 新版本, update, upgrade, check for updates, ragctl update | **Update** | `Skill("knowledgebase-update")` (main agent — 不委托 Archival) |
-| 人格问答, 人格化回答, SOUL 问答, 用某个人格回答, 用研究者人格, 用创意人格, 人格检索增强, soul_ask, persona Q&A | **SOUL-Ask** | `Skill("soul")` §C(主 Agent 直接执行,不委托 Archival) |
-| SOUL 训练, 人格训练, 创建人格, 新建 SOUL, 人格学习, 人格反思, 自动训练, 好奇心训练, 人格列表, 人格配置, soul_init, soul_learn, soul_learn_all, soul_reflect, soul_review_drafts, soul_export, soul_delete | **SOUL-Manage** | `Skill("soul")`(主 Agent 直接执行,不委托 Archival) |
-| 检索后用XX人格回答, 查一下XX用人格总结, 人格增强检索, 以XX口吻回答知识库问题, persona-augmented RAG | **SOUL-RAG** | `Skill("soul-rag")`(主 Agent 直接执行,不委托 Archival) |
+| ingest, upload, import, parse, store, save to, put document, add document, store, upload, parse, ingest, save to KB, add doc, put document | **Ingest** | `Skill("knowledgebase-ingest")` |
+| move, rename, delete, merge, move, rename, delete, merge | **Manage** | `Skill("knowledgebase-manage")` |
+| organize, clean up, restructure, inventory, deep clean, full review, consolidate, categorize, organize, restructure, cleanup, reorganize | **Organize** | `Skill("knowledgebase-organize")` |
+| search, query, retrieve, where, solution, how to fix, search, find, query, RAG, how to, explain, what is | **Search** | `Skill("knowledgebase-search")` |
+| search all KBs, cross-KB, cross knowledge base, cross-KB, enterprise | **Search-Enterprise** | `Skill("knowledgebase-search-enterprise")` |
+| view, list, browse, content, list, show, overview, tree | **List** | `Skill("knowledgebase-list")` |
+| verify, cross-check, integrity, check, detect, detect issues, audit knowledge base, audit, verify, validate, integrity, health check | **Verify** | `Skill("knowledgebase-verify")` |
+| batch, full volume, batch, bulk, mass | **Batch** | `Skill("knowledgebase-batch")` |
+| experience, experience library, experience, lesson, best practice | **Experience** | `Skill("knowledgebase-experience")` |
+| record experience, summarize experience, summarize as experience | **Experience-Summarize** | `Skill("knowledgebase-experience-summarize")` |
+| graph, graph, neo4j, entity, build graph | **Graph** | `Skill("knowledgebase-graph")` |
+| initialize, install, deploy, configure knowledge base, init, setup, install, deploy, bootstrap, getting started | **Init** | `Skill("knowledgebase-init")` (main agent — do NOT delegate to Archival) |
+| update knowledge base, upgrade, check for updates, pull latest, new version, update, upgrade, check for updates, ragctl update | **Update** | `Skill("knowledgebase-update")` (main agent — do NOT delegate to Archival) |
+| persona Q&A, personalized answer, SOUL Q&A, answer with a persona, use the research persona, use the creative persona, persona-augmented retrieval, soul_ask, persona Q&A | **SOUL-Ask** | `Skill("soul")` §C (main agent executes directly, no Archival delegation) |
+| SOUL training, persona training, create persona, new SOUL, persona learning, persona reflection, auto training, curiosity training, persona list, persona config, soul_init, soul_learn, soul_learn_all, soul_reflect, soul_review_drafts, soul_export, soul_delete | **SOUL-Manage** | `Skill("soul")` (main agent executes directly, no Archival delegation) |
+| answer with persona XX after retrieval, look up XX and summarize with a persona, persona-augmented retrieval, answer knowledge base questions in persona XX's voice, persona-augmented RAG | **SOUL-RAG** | `Skill("soul-rag")` (main agent executes directly, no Archival delegation) |
 
-> **注意**：`检查` 单独出现 → Verify（健康检查/一致性校验）。`检查更新` → Update（最长匹配优先）。
-> `总结` 单独出现需结合上下文判断：若语境是"总结经验/教训"→ Experience-Summarize；若语境是"总结知识库内容"→ List。无法确定时询问用户。
+> **Note**: `check` alone → Verify (health check / consistency validation). `check for updates` → Update (longest match first).
+> `summarize` alone requires context: if the context is "summarize experience/lessons" → Experience-Summarize; if "summarize knowledge base content" → List. Ask the user when unsure.
 
 ### Step 3: Route to Sub-Skill
 Based on classification outcome:
@@ -89,69 +89,69 @@ Based on classification outcome:
 ### Step 4: Delegate to Archival Agent via Task Tool
 Each sub-skill's SKILL.md must detect the scenario and delegate execution to the Archival sub-agent. The dispatcher's job ends at routing. The Archival agent is responsible for executing all KB operations via MCP tools.
 
-> **⭐ Archival 委托模板**：用 `task` 工具委托——标准 `task(tasks=[{"agent":"archival","task":"[场景: <标签>] ⭐必读 kb-architecture.md\n用户需求：<原始需求>","effort":"med"}])` 模板 + 三角色执行模型 + 组合任务边界，统一见 [execution-model.md](references/execution-model.md)。委托核心：`task` 字段必含 **场景标签 + 架构必读引用 + 用户原始需求**；OMP/Claude Code 通用。
+> **⭐ Archival delegation template**: delegate with the `task` tool — the standard `task(tasks=[{"agent":"archival","task":"[Scenario: <label>] ⭐MUST-READ kb-architecture.md\nUser request: <original request>","effort":"med"}])` template + the three-role execution model + combined-task boundaries, unified in [execution-model.md](references/execution-model.md). Delegation core: the `task` field must contain **scenario label + mandatory architecture read reference + the user's original request**; works for both OMP and Claude Code.
 
 ---
 
-## Rules — 强制执行，不可绕过
+## Rules — Mandatory, Non-Bypassable
 
-> **触发契约完整版**：[skill-trigger-contract.md](references/skill-trigger-contract.md)（摘自 CLAUDE.md，含五条强制规则和 MCP 优先原则）。
+> **Full trigger contract**: [skill-trigger-contract.md](references/skill-trigger-contract.md) (excerpted from CLAUDE.md, containing the five mandatory rules and the MCP-first principle).
 
-### ⭐ 规则 1：触发不可绕过
-用户请求含上表任意关键词 → 必须路由到 knowledgebase 技能。禁止用主观经验或通用知识直接执行。完整触发关键词表 + 例外条款见 [skill-trigger-contract.md 第一条](references/skill-trigger-contract.md)。
+### ⭐ Rule 1: Triggers Are Non-Bypassable
+If the user request contains any keyword from the table above → it MUST be routed to the knowledgebase skill. Executing directly from subjective experience or general knowledge is forbidden. For the full trigger keyword table + exception clauses, see [skill-trigger-contract.md, Rule 1](references/skill-trigger-contract.md).
 
-### ⭐ 规则 2：不可自行操作
-调度器**唯一职责**：路由到 `skill://knowledgebase-<scenario>`。禁止自行调用 MCP 工具或搜索/修改知识库。子 Skill 执行时的 MCP 优先原则详见 [skill-trigger-contract.md 第五条](references/skill-trigger-contract.md)。
+### ⭐ Rule 2: No Direct Operation
+The dispatcher's **sole responsibility** is routing to `skill://knowledgebase-<scenario>`. Calling MCP tools or searching/modifying the knowledge base itself is forbidden. For the MCP-first principle during sub-skill execution, see [skill-trigger-contract.md, Rule 5](references/skill-trigger-contract.md).
 
-### ⭐ 规则 3：路由后必须委托 Archival
-- 子 skill 的 SKILL.md 中检测到场景后，**必须委托 Archival 子 Agent 执行**
-- 委托方式：使用 `task` 工具，`tasks=[{"agent": "archival", "task": "[场景: <标签>] <用户需求>"}]`（详见 Step 4 模板）
-- Archival 负责自主确认场景并严格执行子 skill 的全部步骤
-- **严禁**在 skill 内自行调用 MCP 工具，所有工具操作只能由 Archival agent 执行
+### ⭐ Rule 3: After Routing, Must Delegate to Archival
+- Once a sub-skill's SKILL.md detects the scenario, it **MUST delegate to the Archival sub-agent** for execution
+- Delegation method: use the `task` tool, `tasks=[{"agent": "archival", "task": "[Scenario: <label>] <user request>"}]` (see the Step 4 template for details)
+- Archival is responsible for autonomously confirming the scenario and strictly executing all steps of the sub-skill
+- **Strictly forbidden** to call MCP tools within the skill itself; all tool operations must be performed by the Archival agent
 
-### ⭐ 规则 4：多场景混合
-- 按 `Organize → Verify → Ingest → Manage → List/Search` 顺序执行
-- 每个场景分别路由
+### ⭐ Rule 4: Multiple Mixed Scenarios
+- Execute in `Organize → Verify → Ingest → Manage → List/Search` order
+- Route each scenario separately
 
-### ⭐ 规则 5：模糊回退
-- "查/问/搜/search" → Search
-- "存/上传/store" → Ingest
-- "看/列/show" → List
-- "整理/清洗/盘点/大扫除/organize" → Organize
-- "校验/审计/检查（非更新）/verify" → Verify
-- "初始化/安装/部署/setup" → Init (main agent, 不委托 Archival)
-- "更新/升级/检查更新/update" → Update (main agent, 不委托 Archival)
-- 否则输出："我没能清晰理解您的需求。请说明您是要：入库文档、搜索知识、管理知识库、还是整理知识库？"——等待澄清，不做修改操作
+### ⭐ Rule 5: Fuzzy Fallback
+- "look up/ask/search" → Search
+- "save/upload/store" → Ingest
+- "view/list/show" → List
+- "organize/clean up/inventory/deep clean/organize" → Organize
+- "verify/audit/check (non-update)/verify" → Verify
+- "initialize/install/deploy/setup" → Init (main agent, no Archival delegation)
+- "update/upgrade/check for updates/update" → Update (main agent, no Archival delegation)
+- Otherwise output: "I couldn't clearly understand your request. Please clarify whether you want to: ingest documents, search knowledge, manage the knowledge base, or organize the knowledge base?" — wait for clarification; do not perform modification operations
 
-### ⭐ 规则 6：最长匹配优先（消解前缀歧义）
-- 当输入同时命中多个关键词时，**字符数最长的关键词所属场景优先**
-- 典型案例：`检查更新` 同时命中"检查"(Verify) + "检查更新"(Update) → 取更长 → **Update**
-- 典型案例：`更新知识库` 同时命中"更新"(Update) + "知识库"(通用) → 取更长 → **Update**
-- 此规则防止短前缀关键词劫持更精确的长关键词
+### ⭐ Rule 6: Longest Match First (Resolves Prefix Ambiguity)
+- When input matches multiple keywords simultaneously, **the scenario of the longest keyword takes priority**
+- Typical case: `check for updates` matches both "check" (Verify) + "check for updates" (Update) → take the longer → **Update**
+- Typical case: `update knowledge base` matches both "update" (Update) + "knowledge base" (generic) → take the longer → **Update**
+- This rule prevents short prefix keywords from hijacking more precise longer keywords
 
-### ⭐ 规则 7：Pre-Flight 不可省略（MCP 连通性 + 服务预检）
-- 任何子 Skill（ingest/search/manage/organize/verify/list/batch/experience/graph/search-enterprise）开始作业前，**必须先跑 Pre-Flight**：用 `mcp__kb-mcp__kb_project_status` 一探双检（MCP 已连接 + backend/web 双健康），未就绪则静默 `kb_project_start` 拉起，再冒烟测试确认连通，详见 [mcp-preflight-check.md](references/mcp-preflight-check.md)。
->- MCP 未连接到本会话时（报 "No such tool"），子 Skill **禁止**硬跑 KB 操作，须通知用户重启 Claude Code（init/update 生命周期 skill 走 `ragctl` CLI 不受此约束）。
+### ⭐ Rule 7: Pre-Flight Is Non-Omissible (MCP connectivity + service pre-check)
+- Before any sub-skill (ingest/search/manage/organize/verify/list/batch/experience/graph/search-enterprise) starts work, it **MUST first run Pre-Flight**: use `mcp__kb-mcp__kb_project_status` for the one-probe double-check (MCP connected + backend/web both healthy); if not ready, silently `kb_project_start` to bring services up, then run a smoke test to confirm connectivity. See [mcp-preflight-check.md](references/mcp-preflight-check.md) for details.
+>- If MCP is not connected to this session (reports "No such tool"), the sub-skill **must not** force KB operations; notify the user to restart Claude Code (init/update lifecycle skills use the `ragctl` CLI and are not subject to this constraint).
 
 ---
 
-## 多场景路由示例
+## Multi-Scenario Routing Examples
 
-| 用户说 | 命中场景 | 路由顺序 |
+| User says | Matched scenarios | Routing order |
 |--------|---------|---------|
-| "整理所有知识库，找到有问题的地方" | Organize | `Skill("knowledgebase-organize")` |
-| "校验+整理" | Organize + Verify | `Organize → Verify` |
-| "入库这篇PDF，然后搜一下XX" | Ingest + Search | `Ingest → Search` |
-| "把所有文档移库，再批量改标签" | Manage + Batch | `Manage → Batch` |
-| "看看有什么KB，检查一下健康度" | List + Verify | `List → Verify` |
+| "Organize all knowledge bases and find the problem areas" | Organize | `Skill("knowledgebase-organize")` |
+| "Verify + organize" | Organize + Verify | `Organize → Verify` |
+| "Ingest this PDF, then search for XX" | Ingest + Search | `Ingest → Search` |
+| "Move all documents to another KB, then batch-update tags" | Manage + Batch | `Manage → Batch` |
+| "Show me what KBs exist and check their health" | List + Verify | `List → Verify` |
 
-> 多场景时每个子 Skill 走完整流程。前一个完成后通知用户结果，再进下一个。
+> For multi-scenario tasks, each sub-skill runs its full workflow. After one finishes, report the result to the user before moving to the next.
 
-## ⭐ 多场景组合执行协议（组合任务必读）
+## ⭐ Multi-Scenario Combined Execution Protocol (MUST-READ for combined tasks)
 
-> **诊断来源**（SkillOpt-Sleep harvest 36 个真实任务）：单 skill（init/update/architecture）`[success]`，组合任务（experience+summarize / organize+batch / search+enterprise+list）大面积 `[fail]`。根因非单 skill 质量，而是 **skill 间 handoff 无协议**——Archival 连续委托时上下文断裂、前序产出未结构化传递。
+> **Diagnosis source** (SkillOpt-Sleep harvest of 36 real tasks): single skills (init/update/architecture) were `[success]`, while combined tasks (experience+summarize / organize+batch / search+enterprise+list) largely `[fail]`. The root cause is not individual skill quality but the **lack of a handoff protocol between skills** — during consecutive Archival delegations, context breaks and prior outputs are not passed in a structured way.
 
-组合任务（≥2 场景）必须遵守 4 阶段契约（路由前确认 → 步间委托带上下文 → 步后即汇报 → 失败隔离）+ Archival 独立上下文边界 + **组合规模上限 ≤ 3 skill**（4+ 组合历史 100% fail），完整表格与产出契约见 [execution-model.md](references/execution-model.md#组合任务2-场景委托边界)。
+Combined tasks (>=2 scenarios) must follow the 4-phase contract (confirm before routing → delegations carry context → report after each step → isolate failures) + the Archival independent-context boundary + **combined scale cap <= 3 skills** (4+ combos historically failed 100%). For the full table and output contract, see [execution-model.md](references/execution-model.md#combined-tasks-2-scenarios-delegation-boundaries).
 
 
 ---
@@ -164,33 +164,33 @@ The dispatcher uses these tools for Pre-Flight checks:
 - kb_project_start — silently start unhealthy services
 - backend_status — check MinerU OCR engine availability
 
-**SOUL 人格系统**(人格管理/训练/评估/问答 — 独立 skill 包,与知识库平行):
-- 人格管理+训练+问答 → `Skill("soul")`(16 个 soul_* MCP 工具;主 Agent 直接执行)
-- 检索+人格增强问答 → `Skill("soul-rag")`(kb_search → soul_ask 组合适配)
-- 模板库 `soul-template`(is_template=true,不出现在 soul_list/路由/learn_all);
-  人格问答核心工具 `soul_ask(query, soul_kb_id="", task_goal, task_type, context_override)`
-  — soul_kb_id 为空时自动路由到最匹配 SOUL;训练核心 `soul_learn`/`soul_learn_all`
-  (异步,task_id 轮询);审批 `soul_review_drafts`(批准后索引,60s 可检索)
+**SOUL persona system** (persona management/training/evaluation/Q&A — an independent skill package, parallel to the knowledge base):
+- Persona management + training + Q&A → `Skill("soul")` (16 soul_* MCP tools; main agent executes directly)
+- Retrieval + persona-augmented Q&A → `Skill("soul-rag")` (kb_search → soul_ask combined adapter)
+- Template library `soul-template` (is_template=true; does not appear in soul_list/routing/learn_all);
+  core persona Q&A tool `soul_ask(query, soul_kb_id="", task_goal, task_type, context_override)`
+  — when soul_kb_id is empty, auto-routes to the best-matching SOUL; training core `soul_learn`/`soul_learn_all`
+  (async, poll task_id); approval `soul_review_drafts` (indexed after approval, searchable within 60s)
 
-## ⚠️ NEVER 清单
+## ⚠️ NEVER List
 
-| ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
+| ❌ Don't do this | Why | ✅ Do this instead |
 |-------------|------|-------------|
-| 猜测场景而不匹配关键词 | 路由到错误子Skill | 严格匹配关键词表 |
-| 自行执行 KB 操作 | 破坏触发契约 | 路由到子Skill + 委托 Archival |
-| 跳过 Archival 直接处理 | 绕过质量门控 | 子Skill 内必须委托 Archival |
-| 对模糊请求做修改操作 | 不可逆 | 输出模糊回退消息，等澄清 |
-| 认为"看起来不像KB操作"就不路由 | 漏触发 | 不确定时默认走 knowledgebase |
-| 组合任务静默连续执行不汇报 | 用户不知进度，出错难定位 | 每步完成即汇报，确认后再进下一步 |
-| 后续 Archival 委托不带前序产出 | 上下文断裂→重复劳动/遗漏依赖 | prompt 显式附带前序摘要（KB id/路径/已变更项）|
+| Guess the scenario instead of matching keywords | Routes to the wrong sub-skill | Strictly match the keyword table |
+| Execute KB operations yourself | Breaks the trigger contract | Route to the sub-skill + delegate to Archival |
+| Skip Archival and handle directly | Bypasses quality gates | Delegate to Archival within the sub-skill |
+| Perform modification operations on fuzzy requests | Irreversible | Output the fuzzy fallback message and wait for clarification |
+| Assume "doesn't look like a KB operation" so no routing | Missed trigger | When unsure, default to knowledgebase |
+| Run combined tasks silently without reporting | User has no progress visibility; errors are hard to locate | Report as soon as each step completes; confirm before the next step |
+| Later Archival delegations omit prior outputs | Context breaks → duplicated work / missed dependencies | Explicitly attach a summary of prior outputs in the prompt (KB id/paths/changed items)|
 
 <!-- SKILLOPT-SLEEP:LEARNED START -->
 ## Learned preferences & procedures
 
 _This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
 
-- **🔒 OVERRIDE — 搜索强制验证规则**：All KB search, query, RAG, or retrieval operations MUST invoke `kb_search_vector` as the primary search mechanism. After retrieving results, ALWAYS verify content integrity via `kb_doc_read` and explicitly label the verification step with '内容核验', 'content verification', 'verify', or '核对' in the response. The literal string `kb_search_vector` MUST appear in the response whenever a search is performed. This rule supersedes any instruction that allows answering from cached or assumed knowledge without tool-side verification.
-- **🔒 OVERRIDE — 变更前 dry_run 强制规则**：Any KB mutation operation (delete, merge, reindex, move, rename, batch, cleanup of collections/chunks/documents) MUST first execute with `dry_run=true` and present the preview to the user. The literal string `dry_run` MUST appear in the response before any destructive action is taken. Never skip directly to force/delete without the dry-run preview, even when the user's wording implies urgency.
-- **🔒 OVERRIDE — 文件锁/并发安全强制规则**：Before any operation that mutates shared state (KB files, ChromaDB collections, Neo4j graphs, server startup), explicitly check for and mention file locks using O_EXCL, mutex, semaphore, or equivalent locking. The response MUST match the pattern `[Ll]ock|O_EXCL|文件锁|锁|mutex|semaphore`. Never start a process that holds file handles or writes to shared storage without first addressing locking.
-- **🔒 OVERRIDE — 端口预检强制规则**：Before starting any server, binding a port, or launching a process that listens on a socket, ALWAYS perform a port pre-check (createServer bind test, port availability check, or `端口预检`). The response MUST match the pattern `createServer|bind|端口预检|port.*check|预检`. Never assume a port is free; always verify and report the pre-check result explicitly before binding.
+- **🔒 OVERRIDE — Search mandatory verification rule**: All KB search, query, RAG, or retrieval operations MUST invoke `kb_search_vector` as the primary search mechanism. After retrieving results, ALWAYS verify content integrity via `kb_doc_read` and explicitly label the verification step with 'content verification', 'content verification', 'verify', or 'cross-check' in the response. The literal string `kb_search_vector` MUST appear in the response whenever a search is performed. This rule supersedes any instruction that allows answering from cached or assumed knowledge without tool-side verification.
+- **🔒 OVERRIDE — dry_run before changes rule**: Any KB mutation operation (delete, merge, reindex, move, rename, batch, cleanup of collections/chunks/documents) MUST first execute with `dry_run=true` and present the preview to the user. The literal string `dry_run` MUST appear in the response before any destructive action is taken. Never skip directly to force/delete without the dry-run preview, even when the user's wording implies urgency.
+- **🔒 OVERRIDE — File lock / concurrency safety rule**: Before any operation that mutates shared state (KB files, ChromaDB collections, Neo4j graphs, server startup), explicitly check for and mention file locks using O_EXCL, mutex, semaphore, or equivalent locking. The response MUST match the pattern `[Ll]ock|O_EXCL|file lock|lock|mutex|semaphore`. Never start a process that holds file handles or writes to shared storage without first addressing locking.
+- **🔒 OVERRIDE — Port pre-check rule**: Before starting any server, binding a port, or launching a process that listens on a socket, ALWAYS perform a port pre-check (createServer bind test, port availability check, or port pre-check). The response MUST match the pattern `createServer|bind|port pre-check|port.*check|pre-check`. Never assume a port is free; always verify and report the pre-check result explicitly before binding.
 <!-- SKILLOPT-SLEEP:LEARNED END -->

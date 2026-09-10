@@ -555,10 +555,17 @@
           </a-form-item>
         </template>
         <a-form-item :label="t('soul.create.harnessLabel', { default: defaultHarness || 'omp' })">
-          <a-select v-model:value="form.harness" style="width:100%">
+          <a-select v-model:value="form.harness" style="width:100%" show-search option-filter-prop="label">
             <a-select-option value="">{{ t('soul.create.harnessDefault', { default: defaultHarness || 'omp' }) }}</a-select-option>
-            <a-select-option value="omp">{{ t('soul.create.harnessOmp', { status: harnessInstalled('omp') ? t('soul.create.harnessAvailable') : t('soul.create.harnessNotInstalled') }) }}</a-select-option>
-            <a-select-option value="claude">{{ t('soul.create.harnessClaude', { status: harnessInstalled('claude') ? t('soul.create.harnessAvailable') : t('soul.create.harnessClaudeNeedKey') }) }}</a-select-option>
+            <a-select-option v-for="h in harnessList" :key="h.id" :value="h.id" :label="h.label" :disabled="!h.installed">
+              <span :style="h.installed ? '' : 'color: var(--kb-fg-3, #999); text-decoration: line-through;'">
+                <template v-if="h.installed">✅</template>
+                <template v-else>❌</template>
+                {{ h.label }}
+              </span>
+              <a-tag :color="h.installed ? 'green' : 'red'" style="margin-left:6px">{{ h.installed ? t('soul.create.harnessAvailable') : t('soul.create.harnessNotInstalled') }}</a-tag>
+              <a-tag v-if="h.id === defaultHarness" color="blue" style="margin-left:2px">default</a-tag>
+            </a-select-option>
           </a-select>
         </a-form-item>
         <div class="modal-actions">
@@ -582,9 +589,16 @@
         <a-form-item  :label="t('soul.config.routeWeightLabel')"><a-slider v-model:value="editForm.route_weight" :min="0" :max="2" :step="0.1" /></a-form-item>
         <a-divider style="margin:8px 0">{{ t('soul.config.engineDivider') }}</a-divider>
         <a-form-item label="harness">
-          <a-select v-model:value="editForm.harness" style="width:100%">
-            <a-select-option value="omp">omp</a-select-option>
-            <a-select-option value="claude">claude</a-select-option>
+          <a-select v-model:value="editForm.harness" style="width:100%" show-search option-filter-prop="label">
+            <a-select-option v-for="h in harnessList" :key="h.id" :value="h.id" :label="h.label" :disabled="!h.installed">
+              <span :style="h.installed ? '' : 'color: var(--kb-fg-3, #999); text-decoration: line-through;'">
+                <template v-if="h.installed">✅</template>
+                <template v-else>❌</template>
+                {{ h.label }}
+              </span>
+              <a-tag v-if="!h.installed" color="red" style="margin-left:6px">{{ t('soul.create.harnessNotInstalled') }}</a-tag>
+              <a-tag v-if="h.id === defaultHarness" color="blue" style="margin-left:2px">default</a-tag>
+            </a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item  :label="t('soul.config.modelLabel')"><a-input v-model:value="editForm.model"  :placeholder="t('soul.config.modelPlaceholder')" /></a-form-item>
@@ -857,6 +871,10 @@ const runningTasks = ref(0)
 // 系统级设置
 const soulSettings = ref<any>(null)
 const defaultHarness = computed(() => soulSettings.value?.default_harness || 'omp')
+// 注册表派生引擎清单（/soul/settings 的 harness_list，含实时可用性）
+const harnessList = computed<Array<{ id: string; label: string; description: string; installed: boolean; models: string[] }>>(
+  () => soulSettings.value?.harness_list || []
+)
 const docOptions = ref<{ path: string }[]>([])
 const loadingDocs = ref(false)
 const preSearchChunks = ref<any[]>([])

@@ -488,6 +488,37 @@ def _download_with_progress(url: str, dest: Path, timeout: int = 1800,
     a 126 MB archive) previously sailed through as 'complete' and then failed
     at extract time with BadZipFile — now any incomplete/invalid payload is
     deleted and retried."""
+    # SSRF guard: installers may only come from official dist hosts or the
+    # configured mirror host (config.yml graph.mirror).
+    from urllib.parse import urlparse
+    parsed = urlparse(url)
+    if parsed.scheme not in ("https", "http"):
+        raise ValueError(f"Blocked download scheme: {parsed.scheme} ({url})")
+    allowed_hosts = {"dist.neo4j.com", "dist2.neo4j.com", "neo4j.com",
+                     "adoptium.net", "github.com", "objects.githubusercontent.com",
+                     "release-assets.githubusercontent.com"}
+    try:
+        from app.config import config as _cfg
+        mirror = str((_cfg.graph or {}).get("mirror", "") or "")
+    except Exception:
+        mirror = ""
+    if mirror:
+        mhost = (urlparse(mirror if "//" in mirror else f"https://{mirror}").hostname or "").lower()
+        if mhost:
+            allowed_hosts.add(mhost)
+    if (parsed.hostname or "").lower() not in allowed_hosts:
+        raise ValueError(f"Blocked download host: {parsed.hostname} ({url})")
+    # Path-traversal guard: destination must stay inside the project root.
+    try:
+        from app.utils.paths import PROJECT_ROOT as _PR
+        resolved_dest = Path(dest).resolve()
+        install_root = Path(_PR).resolve()
+        if not str(resolved_dest).startswith(str(install_root)):
+            raise ValueError(f"Download destination escapes project root: {resolved_dest}")
+    except ValueError:
+        raise
+    except Exception:
+        pass
     if dest.exists() and dest.stat().st_size >= min_bytes and _looks_like_archive(dest):
         logger.info("Cached archive found: %s", dest)
         return

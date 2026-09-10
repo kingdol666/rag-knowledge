@@ -235,6 +235,10 @@ class MineruApiManager:
         really running on. Empty until ``start()`` has resolved a port."""
         if self.port is None:
             return ""
+        # SSRF guard: mineru-api is a local loopback service by contract —
+        # reject any host configuration that points elsewhere.
+        if self.host not in ("127.0.0.1", "localhost", "::1"):
+            raise ValueError(f"mineru-api host must be loopback, got: {self.host}")
         return f"http://{self.host}:{self.port}"
 
     def _ensure_atexit(self) -> None:

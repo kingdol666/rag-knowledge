@@ -1,193 +1,193 @@
 ---
 name: knowledgebase-search-enterprise
 description: >
-  Enterprise multi-strategy retrieval. Auto-upgrades from knowledgebase-search when P0/P1 docs come from <2 KBs. Parallel 3-path recall (vector + tag semantic + BM25) with balance_kbs, cross-validation dedup, content ruling (0-8 scoring), graph expansion (only when P0<3), fused presentation with cross-KB blind-spot declaration. Triggered by: 全库搜索, 所有KB, 跨知识库, 跨库, cross-KB, all KBs, enterprise search, 全局搜索, 全面的, thorough search, comprehensive.
+  Enterprise multi-strategy retrieval. Auto-upgrades from knowledgebase-search when P0/P1 docs come from <2 KBs. Parallel 3-path recall (vector + tag semantic + BM25) with balance_kbs, cross-validation dedup, content ruling (0-8 scoring), graph expansion (only when P0<3), fused presentation with cross-KB blind-spot declaration. Triggered by: search the whole library, all KBs, cross knowledge base, cross-library, cross-KB, all KBs, enterprise search, global search, comprehensive, thorough search, comprehensive.
 ---
 
-## ⭐ 相关 Skills
-- 单库检索 → `skill://knowledgebase-search` (QDCVR 两阶段)
-- 跨库桥接文档 → `skill://knowledgebase-graph` (Cross-KB Discovery)
-- 架构心智模型 → `skill://knowledgebase` 的 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)
+## ⭐ Related Skills
+- Single-library retrieval → `skill://knowledgebase-search` (QDCVR two-stage)
+- Cross-library bridge documents → `skill://knowledgebase-graph` (Cross-KB Discovery)
+- Architecture mental model → [kb-architecture.md](../knowledgebase/references/kb-architecture.md) of `skill://knowledgebase`
 
 ## Sequential Workflow
-**Step 1 — 查询分析+改写**: 提取核心概念，生成多角度查询变体。
-**Step 2 — 并行3路径召回**: 向量语义 + 标签语义 + BM25 关键词 三路并行。
-**Step 3 — 跨验证去重**: 多路径结果交叉验证 + 文档级去重。
-**Step 4 — 内容裁决**: 0-8 rubric 打分 → 独立于向量的内容验证。
-**Step 5 — 融合呈现**: 按 KB 分组 + 跨库盲点声明。
-# Enterprise Multi-Strategy Retrieval — 企业级多策略精炼检索
+**Step 1 — Query analysis+rewrite**: extract core concepts; generate multi-angle query variants.
+**Step 2 — Parallel 3-path recall**: vector semantic + tag semantic + BM25 keyword, three paths in parallel.
+**Step 3 — Cross-validation dedup**: cross-validate multi-path results + document-level dedup.
+**Step 4 — Content ruling**: 0-8 rubric scoring → content verification independent of vectors.
+**Step 5 — Fused presentation**: grouped by KB + cross-library blind-spot declaration.
+# Enterprise Multi-Strategy Retrieval — Enterprise-Grade Multi-Strategy Refined Retrieval
 
-## ⭐ Execution Model · Pre-Flight · Architecture（作业首步，强制）
+## ⭐ Execution Model · Pre-Flight · Architecture (First Step of Any Job, Mandatory)
 
-**执行者：Archival agent** — 用 `task` 委托执行（**委托模板 + 三角色执行模型 + 组合任务边界**：必读 [execution-model.md](../knowledgebase/references/execution-model.md)）。**Pre-Flight**：未通过禁作业 — 一探双检 `kb_project_status` → 分支处置 → 冒烟测试，完整流程见 [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)。**心智模型**：操作前必读 [kb-architecture.md](../knowledgebase/references/kb-architecture.md)（5层模型 + 一致性不变量 + 91 工具地图）；MCP 优先原则（禁 terminal/HTTP 绕过）见 [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) 第五条。
+**Executor: Archival agent** — delegate via `task` (**delegation template + three-role execution model + combined-task boundaries**: must-read [execution-model.md](../knowledgebase/references/execution-model.md)). **Pre-Flight**: no work before it passes — one-probe double-check `kb_project_status` → branch handling → smoke test; full flow in [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md). **Mental model**: before operating, must-read [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer model + consistency invariants + 91-tool map); MCP-first principle (no terminal/HTTP bypass) in [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) Rule 5.
 
-- Archival 禁止：跳过企业级多策略检索流程、跳过内容裁决
-
----
-
-> **升级触发**：knowledgebase-search Step 5 发现确认 P0/P1 来自 <2 个 KB（跨库盲点），或用户明确要求全库/跨库/全面检索。
+- Archival is forbidden from: skipping the enterprise multi-strategy retrieval flow, skipping content ruling
 
 ---
 
-## 思维框架：什么时候用 Enterprise？
-
-```
-用户查询
-  ├── 标准 KB 搜索（指定了某个 KB）→ knowledgebase-search ✅
-  ├── 全库搜索（不指定 KB）+ 普通查询 → knowledgebase-search ✅（Step 1 自动选库）
-  └── 全库搜索 + 查询命中 <2 个 KB → knowledgebase-search-enterprise ⬆️
-      或：用户强调"全库/跨库/全面/所有 KB" → 直接升级
-```
-
-> Enterprise 比标准 QDCVR 重 3 倍（3 路并行召回），不要默认使用。先跑 QDCVR，不满足再升级。
+> **Upgrade trigger**: knowledgebase-search Step 5 finds confirmed P0/P1 coming from <2 KBs (cross-library blind spot), or the user explicitly requests whole-library/cross-library/comprehensive retrieval.
 
 ---
 
-## 执行流程
-
-### Phase 0 — 查询改写（继承 QDCVR Step 0）
+## Mental Framework: When to Use Enterprise?
 
 ```
-原始查询 → 意图分类 + 核心实体提取 → 生成检索友好 query
-- 向量/BM25 用：声明句 + 关键词组合
-- 标签路径用：领域概念词
-- 多概念查询 → 拆子查询并行（对比型必备）
+User query
+  ├── Standard KB search (a specific KB specified) → knowledgebase-search ✅
+  ├── Whole-library search (no KB specified) + ordinary query → knowledgebase-search ✅ (Step 1 auto-selects libraries)
+  └── Whole-library search + the query hits <2 KBs → knowledgebase-search-enterprise ⬆️
+      Or: the user emphasizes "whole library/cross-library/comprehensive/all KBs" → upgrade directly
 ```
-故障/运维型：先 `mcp__kb-mcp__experience_search_global(query, top_k=5)`。
 
-### Phase 1 — 并行 3 路召回（全部 balance_kbs=True 防大库主导）
+> Enterprise is 3x heavier than standard QDCVR (3 parallel recall paths); do not use it by default. Run QDCVR first; upgrade only when it falls short.
 
-> ⚠️ 注意：路径 A 和 C 共用 `kb_search_two_stage` 引擎（仅 stage2_top_k 参数不同），并非完全独立。路径 B（标签）是唯一真正独立的召回路径。A+C 双路共识置信度低于 A+B 或 B+C。
+---
+
+## Execution Flow
+
+### Phase 0 — Query Rewriting (Inherits QDCVR Step 0)
 
 ```
-# Path A — 向量+BM25 两阶段精排
+Raw query → intent classification + core entity extraction → generate a retrieval-friendly query
+- For vector/BM25: declarative sentence + keyword combination
+- For the tag path: domain concept words
+- Multi-concept queries → split into sub-queries in parallel (mandatory for comparisons)
+```
+Incident/ops-type: first `mcp__kb-mcp__experience_search_global(query, top_k=5)`.
+
+### Phase 1 — Parallel 3-Path Recall (All with balance_kbs=True to Prevent Large-Library Dominance)
+
+> ⚠️ Note: paths A and C share the `kb_search_two_stage` engine (only the stage2_top_k parameter differs); they are not fully independent. Path B (tags) is the only truly independent recall path. A+C dual-path consensus confidence is lower than A+B or B+C.
+
+```
+# Path A — Vector+BM25 two-stage refined ranking
 mcp__kb-mcp__kb_search_two_stage(
-    Phase0改写query, kb_id="",
+    Phase0 rewritten query, kb_id="",
     stage1_top_k=30, stage2_top_k=10,
-    score_threshold=0.30,         # 企业级放宽召回，Phase 3 再严筛
-    balance_kbs=True              # ⭐ 必开
+    score_threshold=0.30,         # enterprise-level relaxed recall; Phase 3 screens strictly again
+    balance_kbs=True              # ⭐ mandatory
 )
 
-# Path B — 标签（语义概念匹配）
+# Path B — Tags (semantic concept matching)
 mcp__kb-mcp__kb_tags_list()
-→ 对查询核心实体，语义匹配 top 3-5 标签
-→ mcp__kb-mcp__kb_doc_get_by_tag(tag, kb_id="") 每标签取文档
+→ for the query's core entities, semantically match the top 3-5 tags
+→ mcp__kb-mcp__kb_doc_get_by_tag(tag, kb_id="") fetch documents per tag
 
-# Path C — BM25 关键词（纯关键词，stage2 关闭）
+# Path C — BM25 keywords (pure keywords; stage2 off)
 mcp__kb-mcp__kb_search_two_stage(
-    Phase0改写query, kb_id="",
-    stage1_top_k=25, stage2_top_k=0,   # 仅用 stage1 候选
+    Phase0 rewritten query, kb_id="",
+    stage1_top_k=25, stage2_top_k=0,   # stage1 candidates only
     balance_kbs=True
 )
 ```
-**可选 Path D — 经验库**（故障/运维型）：`mcp__kb-mcp__experience_search_global(query, top_k=5)` + `mcp__kb-mcp__experience_search_global(kb_id, query, top_k=5)`。
+**Optional Path D — Experience library** (incident/ops-type): `mcp__kb-mcp__experience_search_global(query, top_k=5)` + `mcp__kb-mcp__experience_search_global(kb_id, query, top_k=5)`.
 
-#### 路径失败处理
-- Path A 向量返回 0 条 → 降低 score_threshold 到 0.25 重试
-- Path B 标签无匹配 → 用 `mcp__kb-mcp__kb_search` 关键词检索标签描述
-- Path C BM25 无结果 → 分词后核心词检索
+#### Path Failure Handling
+- Path A vector returns 0 → lower score_threshold to 0.25 and retry
+- Path B no tag matches → use `mcp__kb-mcp__kb_search` to keyword-search tag descriptions
+- Path C BM25 no results → tokenize and search core words
 
-### Phase 2 — 交叉验证 + 文档级去重
+### Phase 2 — Cross-Validation + Document-Level Dedup
 
-合并所有路径结果，**按 doc_path 去重**（同文档只留最高分 chunk，记录命中路径数）：
+Merge all paths' results, **dedup by doc_path** (keep only the highest-scoring chunk per document; record the number of hitting paths):
 
-| 命中路径模式 | 候选置信度 |
+| Hit-path pattern | Candidate confidence |
 |---|---|
-| A + B + C 三路 | **P0 候选**（多路共识）|
-| A + B 或 B + C 两路 | **P0 候选**（语义+关键词双重确认）|
-| A + C 两路（向量+BM25）| **P1 候选** |
-| 仅单路 | **P1/P2 候选**（需 Phase 3 内容验证）|
+| A + B + C three paths | **P0 candidate** (multi-path consensus)|
+| A + B or B + C two paths | **P0 candidate** (semantic+keyword double confirmation)|
+| A + C two paths (vector+BM25)| **P1 candidate** |
+| Single path only | **P1/P2 candidate** (needs Phase 3 content verification)|
 
-**硬阈值预过滤**：任一 chunk 向量 score < 0.30 → 丢弃（除非是标签路径命中且描述强相关）。
-**短内容降级**：chunk <50 chars 直接丢弃；50-200 chars 标记 ⚠️，候选置信度降一级。
+**Hard-threshold pre-filtering**: any chunk with vector score < 0.30 → discard (unless it's a tag-path hit with a strongly related description).
+**Short-content downgrade**: chunk <50 chars discarded directly; 50-200 chars marked ⚠️, candidate confidence demoted one level.
 
-### Phase 3 — 内容裁决（独立打分，定最终去留）
+### Phase 3 — Content Ruling (Independent Scoring, Final Inclusion Decision)
 
-对每个去重后候选（≤12 篇）：
+For each deduped candidate (≤12 documents):
 ```
 mcp__kb-mcp__kb_doc_read(kb_id, doc_path, max_chars=3000)
 ```
-**0-8 打分**（同 QDCVR Step 3）：
+**0-8 scoring** (same as QDCVR Step 3):
 
-| 维度 | 分 | 判据 |
+| Dimension | Pts | Criteria |
 |---|---|---|
-| 主题相关 (0-3) | 3=正文围绕主体 / 2=涉及 / 1=边缘 / 0=无关 |
-| 场景匹配 (0-3) | 3=直接解决问题 / 2=可迁移 / 1=泛泛 / 0=答非所问 |
-| 答案证据 (0-2) | 2=具体数据步骤结论 / 1=方向性 / 0=空泛 |
+| Topic relevance (0-3) | 3=body about the subject / 2=touches it / 1=marginal / 0=irrelevant |
+| Scenario match (0-3) | 3=directly solves the problem / 2=transferable / 1=generic / 0=misses the question |
+| Answer evidence (0-2) | 2=concrete data/steps/conclusions / 1=directional / 0=empty |
 
-| 内容分 | 终判 |
+| Content score | Final verdict |
 |---|---|
-| 6-8 | **P0** — 纳入答案 |
-| 5 | **P1** — 补充用 |
-| ≤4 | **丢弃** |
+| 6-8 | **P0** — included in the answer |
+| 5 | **P1** — supplementary use |
+| ≤4 | **Discard** |
 
-**内容分 > 一切**。三路命中但内容 ≤4 → 丢（多路可能共同跑偏）。
+**Content score beats everything**. Three-path hit but content ≤4 → discard (multiple paths can be jointly wrong).
 
-### Phase 4 — 图谱扩展（P0 <3 或需跨库桥梁时）
-
-```
-mcp__kb-mcp__kb_graph_document_related(doc_path)     # 已确认 P0 的相关文档
-mcp__kb-mcp__kb_graph_central_documents(kb_id)       # hub/综述文档
-mcp__kb-mcp__kb_graph_cross_kb_documents(min_kbs=2)  # 跨库桥梁文档
-```
-新文档进入 Phase 3 内容裁决。**仅在 P0 不足或查询显式跨库时启用**，避免图谱噪声。
-
-### Phase 5 — 融合呈现（强制规范）
+### Phase 4 — Graph Expansion (When P0 <3 or Cross-Library Bridges Are Needed)
 
 ```
-## 搜索路径
-A 向量 + B 标签 + C BM25（+ D 经验，如适用）→ 去重后 N 篇 → 内容裁决后 P0:x / P1:y
+mcp__kb-mcp__kb_graph_document_related(doc_path)     # related documents of confirmed P0s
+mcp__kb-mcp__kb_graph_central_documents(kb_id)       # hub/review documents
+mcp__kb-mcp__kb_graph_cross_kb_documents(min_kbs=2)  # cross-library bridge documents
+```
+New documents enter Phase 3 content ruling. **Enable only when P0 is insufficient or the query is explicitly cross-library** to avoid graph noise.
 
-## 答案
-<基于 P0 文档综合，引用具体数据/结论；P1 作为补充>
+### Phase 5 — Fused Presentation (Mandatory Standard)
 
-## 来源（按置信度+路径共识排序）
-- [P0] [A+B+C] <文档名> @ <KB/路径> — <相关理由>
-- [P0] [A+B]   <文档名> @ <KB/路径> — <相关理由>
-- [P1] [A]     <文档名> @ <KB/路径> — <补充什么>
+```
+## Search Paths
+A vector + B tags + C BM25 (+ D experiences, if applicable) → N documents after dedup → P0:x / P1:y after content ruling
 
-## 置信度
-高/中/低 — <理由，如"3 篇 P0 跨 2 库一致"或"仅单路命中 1 篇">
+## Answer
+<Synthesized from P0 documents, citing specific data/conclusions; P1 as supplement>
 
-## 盲点（跨库视角）
-- <涉及但全库未覆盖的子领域>
-- <某库可能有相关内容但本次未命中（建议手工复查）>
-- <争议/时效/需确认点>
+## Sources (sorted by confidence + path consensus)
+- [P0] [A+B+C] <document name> @ <KB/path> — <why relevant>
+- [P0] [A+B]   <document name> @ <KB/path> — <why relevant>
+- [P1] [A]     <document name> @ <KB/path> — <what it adds>
+
+## Confidence
+High/medium/low — <reason, e.g. "3 P0 documents across 2 libraries consistent" or "only single-path hit, 1 document">
+
+## Blind Spots (Cross-Library Perspective)
+- <sub-domains touched but not covered by the whole library>
+- <a library may have related content but it wasn't hit this time (manual recheck recommended)>
+- <contested/timeliness/points needing confirmation>
 ```
 
 ---
 
-## ⚠️ NEVER 清单
+## ⚠️ NEVER List
 
-| ❌ 不要这样做 | 原因 | ✅ 应该这样做 |
+| ❌ Don't do this | Why | ✅ Do this instead |
 |-------------|------|-------------|
-| 直接跑 enterprise 不做 QDCVR 先行 | 3 倍开销 | 默认 QDCVR，不够才升级 |
-| balance_kbs=False 全库搜索 | 大库主导结果 | 全程 `balance_kbs=True` |
-| Phase 3 跳过 doc_read | 内容分靠猜 | 读 3000 chars 正文打分 |
-| 三路共同命中也跳过验证 | 共同跑偏是可能的 | 内容 ≤4 即使三路也丢 |
-| 图谱扩展无节制 | 引入大量噪声 | 仅 P0 <3 或显式跨库时启用 |
+| Run enterprise directly without QDCVR first | 3x cost | Default to QDCVR; upgrade only when insufficient |
+| balance_kbs=False for whole-library search | Large libraries dominate results | `balance_kbs=True` throughout |
+| Phase 3 skips doc_read | Content scores by guessing | Read 3000 chars of body then score |
+| Skip verification even with three-path hits | Joint drift is possible | Content ≤4 is discarded even with three paths |
+| Unrestrained graph expansion | Introduces large amounts of noise | Enable only when P0 <3 or explicitly cross-library |
 
-## 规则速查
-1. **Phase 0 必做**——原始查询不直接进三路召回
-2. **balance_kbs=True 全程**——防大库主导
-3. **Phase 2 文档级去重**——消灭冗余
-4. **硬阈值 0.30 预过滤**——跨域低分截断
-5. **Phase 3 内容分定去留**——内容 ≤4 即便三路共识也丢
-6. **图谱扩展有节制**——仅 P0 不足或显式跨库时启用
-7. **诚实盲点**——跨库视角的盲点尤其要声明
+## Quick Rule Reference
+1. **Phase 0 mandatory** — raw queries don't go directly into three-path recall
+2. **balance_kbs=True throughout** — prevents large-library dominance
+3. **Phase 2 document-level dedup** — eliminates redundancy
+4. **Hard threshold 0.30 pre-filtering** — truncates cross-domain low scores
+5. **Phase 3 content score decides inclusion** — content ≤4 is discarded even with three-path consensus
+6. **Restrained graph expansion** — only when P0 is insufficient or explicitly cross-library
+7. **Honest blind spots** — cross-library-perspective blind spots especially must be declared
 
-## 参考文件
-- **经验可信度模型** — P0: vector≥0.65∧content≥6∧rating≥4∧review≥1, P1: ≥0.45∧≥4, P2: ≥0.35∧≥3 | disputed降P2, unvetted降P1 | 短内容<50chars降P2
-- `knowledgebase-search` skill — 前置 QDCVR 标准流程（本 skill 在其 Step 5 触发升级）
-- [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) — MCP 优先原则全库执行细则（第五条）
+## Reference Files
+- **Experience credibility model** — P0: vector≥0.65∧content≥6∧rating≥4∧review≥1, P1: ≥0.45∧≥4, P2: ≥0.35∧≥3 | disputed demotes to P2, unvetted demotes to P1 | short content <50 chars demotes to P2
+- `knowledgebase-search` skill — the prerequisite QDCVR standard flow (this skill triggers the upgrade at its Step 5)
+- [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) — library-wide execution rules for the MCP-first principle (Rule 5)
 
 <!-- SKILLOPT-SLEEP:LEARNED START -->
 ## Learned preferences & procedures
 
 _This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
 
-- OVERRIDE 向量召回工具名：Path A MUST 调用 `mcp__kb-mcp__kb_search_vector(kb_id="", top_k=30, score_threshold=0.30, balance_kbs=True)`（不是 `kb_search_two_stage`）；且最终答案文本 MUST 包含字面 token `kb_search_vector`，例如 `## 搜索路径` 行写成：`A 向量(kb_search_vector) + B 标签 + C BM25 → 去重后 N 篇 → 内容裁决后 P0:x / P1:y`。最终答案缺少该 token 即为失败。
-- 最终答案 MUST 包含标题为 `## 盲区（跨库视角）` 的章节（标题同时含 `盲区` 与 `跨库` 两个字面词），逐条列出：全库未覆盖的子领域、某库可能有相关内容但本次未命中（建议手工复查）、争议/时效/需确认点。缺少 `盲区`/`跨库`/`cross-KB` 标签的答案为失败。
-- 最终答案 MUST 出现内容裁决字面词：`## 搜索路径` 行 MUST 含 `kb_doc_read` 与 `0-8 打分`（如 `内容裁决(0-8 打分, kb_doc_read 3000 chars)`），`## 置信度` 行 MUST 含 `内容验证`（如 `内容验证后 P0:3 篇`）。
-- OVERRIDE（必答 + MCP 优先）：全库/跨库检索的所有召回 MUST 走 `mcp__kb-mcp__*` 工具（kb_search_vector、kb_tags_list、kb_doc_get_by_tag、kb_doc_read 等），禁止用 Bash/terminal/HTTP 绕过；响应 MUST 在当轮给出完整五节格式的最终答案（`## 搜索路径`/`## 答案`/`## 来源`/`## 置信度`/`## 盲区（跨库视角）`），禁止以单个工具调用、探测命令或残缺回答结束回合。
+- OVERRIDE vector recall tool name: Path A MUST call `mcp__kb-mcp__kb_search_vector(kb_id="", top_k=30, score_threshold=0.30, balance_kbs=True)` (not `kb_search_two_stage`); and the final answer text MUST contain the literal token `kb_search_vector`, e.g. the `## Search Paths` line written as: `A vector (kb_search_vector) + B tags + C BM25 → N documents after dedup → P0:x / P1:y after content ruling`. A final answer missing that token is a failure.
+- The final answer MUST contain a section titled `## Blind Spots (Cross-Library Perspective)` (the title containing both literal words `Blind Spots` and `Cross-Library`), itemizing: sub-domains not covered by the whole library, a library that may have relevant content but was not hit this time (manual recheck recommended), and contested/timeliness/points needing confirmation. An answer missing the `Blind Spots`/`Cross-Library`/`cross-KB` labels is a failure.
+- The final answer MUST contain content-ruling literal words: the `## Search Paths` line MUST contain `kb_doc_read` and `0-8 scoring` (e.g. `content ruling (0-8 scoring, kb_doc_read 3000 chars)`), and the `## Confidence` line MUST contain `content verification` (e.g. `after content verification P0:3 documents`).
+- OVERRIDE (must-answer + MCP first): all recall for whole-library/cross-library retrieval MUST go through `mcp__kb-mcp__*` tools (kb_search_vector, kb_tags_list, kb_doc_get_by_tag, kb_doc_read, etc.); Bash/terminal/HTTP bypass is forbidden; the response MUST give the complete five-section final answer format in the same turn (`## Search Paths`/`## Answer`/`## Sources`/`## Confidence`/`## Blind Spots (Cross-Library Perspective)`); ending the turn with a single tool call, probe command, or partial answer is forbidden.
 <!-- SKILLOPT-SLEEP:LEARNED END -->
