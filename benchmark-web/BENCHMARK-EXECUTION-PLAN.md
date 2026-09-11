@@ -454,3 +454,45 @@ routing 0.52→0.02。机理：stage1 全局 BM25 top-20 候选被大库淹没�
 - 回归：后端 255 passed（+19 splitter、+9 stage1 quota 单测）；kb-mcp smoke 94 工具 PASSED；
   web 生产构建通过；Track-1 双轮逐位可复现（hotpotqa two_stage P@5 0.719/MRR 0.858，
   2wiki 0.546/0.729；hotpotqa 显著性转为 p=0.0192、2wiki p=0.0039 —— 两数据集均显著）。
+
+## 十、内容级基准赛道：真实内容问答检索 + 入库归类（2026-09-11 新增）
+
+**动机**：Track1 度量的是文档级排序精度（P@5/MRR vs 金文档），不直接回答用户的
+两个核心攻关点——①给定问题能否把**含答案的内容**检索回来；②文献入库后系统能否
+**凭内容归入正确的文档库**。本节新增两个内容级赛道与 Track1 互补。
+
+### Track C · 内容问答检索（content-grounded QA）
+
+- **指标**：AnswerRecall@k（top-k 命中 chunk 正文含金答案串，SQuAD 归一化子串匹配）、
+  AnswerMRR（首个含答案 chunk 排名倒数）、EvHit@5（金文档进 top-5，仅有 golden_titles 的集）、
+  KBRoute@1（top-1 命中所库==金库）。
+- **数据集**：
+  - `contentqa`（自建 CorpusClozeQA）：`build_content_qa.py` 从已入库 golden 页确定性抽取
+    cloze 问答（金答案=年份/实体 span，逐字存在于入库正文，答案保证在库）；仅收已入库齐的 KB。
+  - `hotpotqa / triviaqa / nq` 冻结子集：真实用户问题 + golden_answers，答案可能不在库（如实反映开放域）。
+- **方法**：two_stage（前端同款生产检索，服务端默认参数）+ vector_flat（全库稠密锚点）。
+- **运行**：`run_content_qa.py`（--round 1/2 双轮，--compare 逐位复现比对）。
+
+### Track R · 入库归类（ingest → organize）
+
+- **协议**：冻结语料已知域的 golden 页副本写入收件库 `KB-Inbox-Organize`（web 生产入库 API），
+  仅用生产检索 API 做两种归类：`retrieval_vote`（文档内容作 query 跨库 two-stage，过滤收件库
+  自身命中，top-3 多数投票）与 `perkb_scan`（对每域库向量检索 top-1，余弦 argmax）。
+- **保真下界**：round-trip——文档自身首句检索应取回原文档（Hit@1/Hit@5）。
+- **金标口径**：语料划分协议的冻结域标签（kb_assignments 标题关键词分类器；已知 `gene` 误中
+  "Generation" 类协议噪声，报告按"复现冻结库组织"口径解读）。
+- **运行**：`run_ingest_routing.py`（--per-kb 15 正式；--skip-ingest 复用已建收件库跑第二轮）。
+
+### 一键编排与报告
+
+- `run_content_all.sh`：构建 → Track C 双轮 → 复现比对 → Track R 双轮 → `make_content_html.py`
+  生成自包含 `results/CONTENTQA-REPORT.html`（内嵌图/表/混淆矩阵/复现徽章）。
+- **前置条件**：语料入库完成后运行（GPU 嵌入与入库 batch-index 互斥，混跑会使延迟失真且
+  单查询可达 100s+；实测 two_stage 与入库并发时 8 条冒烟 6 条 120s 超时）。
+
+### 状态（2026-09-11）
+
+- 语料入库续跑中：People 尾量 + Politics-History/Science-Tech/Sports/Transport（≈4.8K 页），
+  GPU 嵌入瓶颈 ~6 文档/分钟（web create 同步触发索引 + 超时重试造成同文档 3-4 次重复索引，
+  delete+index 幂等无害但耗时）；完成后跑正式双轮。
+- 管道已验证：QA 集 64 条冒烟质量达标（span 干净/年实均衡/域归属正确）；runner/报告生成器就绪。
