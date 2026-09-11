@@ -9,6 +9,10 @@ from app.version import get_version
 
 class HealthResponse(BaseModel):
     status: str = Field(default="healthy", description="Service status")
+    # 向量子系统就绪度(None = 未探测):ready = chroma 就绪且嵌入模型可用。
+    # 2026-09-11:backend 重启后 chroma hnsw 段损坏 + 嵌入加载失败曾被上层
+    # 误判为"服务健康",检索静默降级 BM25 —— 健康面必须如实暴露子状态。
+    vector: Optional[dict] = Field(default=None, description="Vector subsystem readiness")
 
 
 class ParseResponse(BaseModel):
