@@ -87,13 +87,11 @@ def run(method: str, samples: list[dict], kb_map: dict[str, str],
             payload = {"query": s["query"], "kb_id": "", "top_k": 5,
                        "score_threshold": 0.0, "balance_kbs": False}
             path = "/api/v1/search/vector"
-        elif method == "two_stage":
-            payload = {"query": s["query"], "kb_id": "", "stage1_top_k": 20,
+        elif method in ("two_stage", "two_stage_bal"):
+            payload = {"query": s["query"], "kb_id": "", "stage1_top_k": STAGE1_TOP_K,
                        "stage2_top_k": 5, "score_threshold": 0.0}
-            path = "/api/v1/search/two-stage"
-        elif method == "two_stage_bal":
-            payload = {"query": s["query"], "kb_id": "", "stage1_top_k": 20,
-                       "stage2_top_k": 5, "score_threshold": 0.0, "balance_kbs": True}
+            if method == "two_stage_bal":
+                payload["balance_kbs"] = True
             path = "/api/v1/search/two-stage"
         else:
             raise ValueError(method)
@@ -115,11 +113,19 @@ def run(method: str, samples: list[dict], kb_map: dict[str, str],
     return out, lats
 
 
+STAGE1_TOP_K = 20
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--methods", default="two_stage,vector_flat,two_stage_bal")
+    ap.add_argument("--stage1-top-k", type=int, default=20,
+                    help="stage1 BM25 candidate budget (20=default; raise to resist "
+                         "corpus-scale dominance when a large wiki corpus is indexed)")
     args = ap.parse_args()
+    global STAGE1_TOP_K
+    STAGE1_TOP_K = args.stage1_top_k
 
     token = os.environ.get("RAG_BENCH_TOKEN", "")
     if not token:

@@ -64,10 +64,11 @@ def _backend_base() -> str:
 
 def request(url: str, data: dict, token: str, timeout: int = 300) -> dict:
     """POST with retry — long ingest runs must survive transient timeouts
-    (batch-index of 50 pages can exceed short timeouts under load)."""
+    (batch-index of 50 pages can exceed short timeouts under load) and
+    transient 401/502 (web verify fail-closed while backend is busy embedding)."""
     url = validated_url(url)
     last_err: Exception | None = None
-    for attempt in range(1, 4):
+    for attempt in range(1, 6):
         try:
             req = urllib.request.Request(
                 url, data=json.dumps(data).encode(),
@@ -75,10 +76,18 @@ def request(url: str, data: dict, token: str, timeout: int = 300) -> dict:
                 method="POST")
             with urllib.request.urlopen(req, timeout=timeout) as resp:
                 return json.loads(resp.read())
+        except urllib.error.HTTPError as e:
+            if e.code in (401, 409, 429) or e.code >= 500:
+                last_err = e
+                wait = 10 * attempt
+                print(f"    request retry {attempt}/5 (HTTP {e.code}) after {wait}s")
+                time.sleep(wait)
+                continue
+            raise
         except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as e:
             last_err = e
             wait = 5 * attempt
-            print(f"    request retry {attempt}/3 after {wait}s: {e}")
+            print(f"    request retry {attempt}/5 after {wait}s: {e}")
             time.sleep(wait)
     raise last_err  # type: ignore[misc]
 

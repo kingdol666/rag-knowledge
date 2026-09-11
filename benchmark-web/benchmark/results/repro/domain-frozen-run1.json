@@ -1,0 +1,48 @@
+{
+  "dataset": "domain-queries",
+  "n_queries": 50,
+  "backend": "http://127.0.0.1:8771",
+  "kb_map_size": 31,
+  "timestamp": "2026-09-11T10:25:15.570546+00:00",
+  "methods": {
+    "two_stage": {
+      "p1": 0,
+      "p5": 0.0,
+      "mrr": 0.0,
+      "ndcg5": 0.0,
+      "routing": 0.02,
+      "fpr": 0.988,
+      "latency_ms": 433.3
+    },
+    "vector_flat": {
+      "p1": 0.5,
+      "p5": 0.388,
+      "mrr": 0.5557,
+      "ndcg5": 0.5596,
+      "routing": 0.6,
+      "fpr": 0.588,
+      "latency_ms": 377.2
+    },
+    "two_stage_bal": {
+      "p1": 0,
+      "p5": 0.0,
+      "mrr": 0.0,
+      "ndcg5": 0.0,
+      "routing": 0.06,
+      "fpr": 0.964,
+      "latency_ms": 228.5
+    }
+  },
+  "significance": {
+    "two_stage_vs_vector_flat": {
+      "t": -8.8612,
+      "p": 0.0,
+      "cohens_d": -1.7722
+    },
+    "two_stage_vs_two_stage_bal": {
+      "t": 0.0,
+      "p": 1.0,
+      "cohens_d": 0.0
+    }
+  }
+}

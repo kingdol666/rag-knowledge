@@ -23,7 +23,9 @@ export async function verifyToken(token: string): Promise<VerifyResult> {
     const res = await $fetch<any>(`${getDynamicBackendUrl()}/api/v1/auth/verify`, {
       method: 'POST',
       body: { token },
-      timeout: 8000,
+      // 25s: backend 在批量嵌入(CPU 打满)时 verify 响应会变慢,
+      // 8s 会让 web 层在入库/重负载期间 fail-closed 出 401 风暴
+      timeout: 25000,
     })
     const ok = !!res?.valid
     const user = ok ? res.user : undefined
