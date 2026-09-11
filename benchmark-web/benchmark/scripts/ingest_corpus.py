@@ -77,8 +77,12 @@ def request(url: str, data: dict, token: str, timeout: int = 300) -> dict:
             with urllib.request.urlopen(req, timeout=timeout) as resp:
                 return json.loads(resp.read())
         except urllib.error.HTTPError as e:
-            if e.code in (401, 409, 429) or e.code >= 500:
+            if e.code == 409:
+                raise  # 名称冲突=确定性去重语义, 重试只是烧时间
+            if e.code in (401, 429) or e.code >= 500:
                 last_err = e
+                if attempt >= 2:
+                    raise  # 阵发期快速失败, 靠多轮续跑收敛
                 wait = 10 * attempt
                 print(f"    request retry {attempt}/5 (HTTP {e.code}) after {wait}s")
                 time.sleep(wait)
@@ -86,6 +90,8 @@ def request(url: str, data: dict, token: str, timeout: int = 300) -> dict:
             raise
         except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as e:
             last_err = e
+            if attempt >= 2:
+                raise  # 黑洞/阵发期快速失败, 靠多轮续跑收敛
             wait = 5 * attempt
             print(f"    request retry {attempt}/5 after {wait}s: {e}")
             time.sleep(wait)
@@ -195,10 +201,11 @@ def main() -> int:
             safe_title = re.sub(r'[\\/:*?"<>|]', "_", title).strip().rstrip(".") or "untitled"
             doc_name = f"{safe_title}.md"
             try:
+                # 单文档创建实测 5-16s; >90s 必是阵发期黑洞, 快速失败交给下一轮
                 request(f"{web}/api/kb/documents/create",
                         {"kbId": kb_id, "name": doc_name,
                          "content": page["content"], "description": f"wiki18 页面: {title}"},
-                        token)
+                        token, timeout=90)
                 cp.write(json.dumps({"title": title}, ensure_ascii=False) + "\n")
                 pending_paths.append(doc_name)
                 created += 1
