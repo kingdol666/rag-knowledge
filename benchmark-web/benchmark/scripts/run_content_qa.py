@@ -75,15 +75,10 @@ def validate_base_url(base: str) -> str:
 BASE = validate_base_url(BACKEND)
 
 
-def api_post(path: str, data: dict, timeout: int = 120) -> dict:
-    url = f"{BASE}{path}"
-    req = urllib.request.Request(
-        url, data=json.dumps(data).encode(),
-        headers={"Content-Type": "application/json",
-                 "Authorization": f"Bearer {TOKEN}"},
-        method="POST")
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return json.loads(resp.read())
+def api_post(path: str, data: dict, timeout: int = 600, tries: int = 5) -> dict:
+    """带退避重试 — 后端嵌入打满时 verify 会瞬时 401、查询可能超时."""
+    url = validate_base_url(BASE + path)  # 逐请求 SSRF 边界: 仅 http(s)/回环
+    last: Exception | None = None
 
 
 _PUNC_RE = re.compile(r"[{}]".format(re.escape(string.punctuation)))
