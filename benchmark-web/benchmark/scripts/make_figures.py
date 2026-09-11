@@ -111,14 +111,14 @@ grouped(ax, "fpr", "FPR (cross-KB false recall)")
 ax.set_title("Cross-domain false-pull rate (lower is better)")
 save(fig, "fig2_fpr")
 
-# ── Fig 3: domain corpus-scale collapse + recovery ───────────────────
-fig, axes = plt.subplots(1, 2, figsize=(9.2, 3.3))
-configs = ["Small-corpus\n(prior config)", "Frozen mega-corpus\nk=20 (default)",
-           "Frozen mega-corpus\nk=150 (mitigated)"]
-ts_p5 = [0.424, dom20["two_stage"]["p5"], dom150["two_stage"]["p5"]]
-ts_mrr = [0.5317, dom20["two_stage"]["mrr"], dom150["two_stage"]["mrr"]]
-flat_p5 = [0.388, dom20["vector_flat"]["p5"], dom150["vector_flat"]["p5"]]
-xs = np.arange(3)
+# ── Fig 3: domain corpus-scale collapse + fix ────────────────────────
+fig, axes = plt.subplots(1, 2, figsize=(9.8, 3.4))
+domfix = short(load("domain-fixed-run1.json"))
+configs = ["Small corpus\n(prior config)", "Mega-corpus\nbroken stage1 (k=20)",
+           "Mega-corpus\nbudget knob (k=150)", "Mega-corpus\nFIXED stage1\n(pool×8 + KB quota)"]
+ts_p5 = [0.424, dom20["two_stage"]["p5"], dom150["two_stage"]["p5"], domfix["two_stage"]["p5"]]
+flat_p5 = [0.388, dom20["vector_flat"]["p5"], dom150["vector_flat"]["p5"], domfix["vector_flat"]["p5"]]
+xs = np.arange(4)
 for i, (vals, label, color) in enumerate([
         (ts_p5, "Two-Stage (S0)", "#0072B2"), (flat_p5, "Flat Vector", "#D55E00")]):
     bars = axes[0].bar(xs + (i - 0.5) * 0.34, vals, 0.34, label=label,
@@ -127,21 +127,21 @@ for i, (vals, label, color) in enumerate([
         axes[0].text(b.get_x() + b.get_width() / 2, v + 0.006, f"{v:.3f}",
                      ha="center", va="bottom", fontsize=6.5)
 axes[0].set_xticks(xs)
-axes[0].set_xticklabels(configs, fontsize=7.5)
+axes[0].set_xticklabels(configs, fontsize=7)
 axes[0].set_ylabel("P@5")
-axes[0].set_title("(a) Domain-50: corpus-scale dominance\nand stage1 recall-knob recovery")
+axes[0].set_title("(a) Domain-50: corpus-scale dominance\nand stage1 defense recovery")
 axes[0].legend(fontsize=7.5)
 axes[0].grid(axis="y", alpha=0.25)
 
-routing = [0.52, dom20["two_stage"]["routing"], dom150["two_stage"]["routing"]]
-fpr = [0.596, dom20["two_stage"]["fpr"], dom150["two_stage"]["fpr"]]
+routing = [0.52, dom20["two_stage"]["routing"], dom150["two_stage"]["routing"], domfix["two_stage"]["routing"]]
+fpr = [0.596, dom20["two_stage"]["fpr"], dom150["two_stage"]["fpr"], domfix["two_stage"]["fpr"]]
 axes[1].plot(xs, routing, "o-", color="#0072B2", label="KB routing acc")
 axes[1].plot(xs, fpr, "s--", color="#D55E00", label="FPR")
 for i, (r, f) in enumerate(zip(routing, fpr)):
     axes[1].annotate(f"{r:.2f}", (xs[i], r), textcoords="offset points", xytext=(0, 7), fontsize=7)
     axes[1].annotate(f"{f:.2f}", (xs[i], f), textcoords="offset points", xytext=(0, 7), fontsize=7)
 axes[1].set_xticks(xs)
-axes[1].set_xticklabels(configs, fontsize=7.5)
+axes[1].set_xticklabels(configs, fontsize=7)
 axes[1].set_ylim(0, 1.15)
 axes[1].set_title("(b) Routing accuracy vs FPR")
 axes[1].legend(fontsize=7.5)

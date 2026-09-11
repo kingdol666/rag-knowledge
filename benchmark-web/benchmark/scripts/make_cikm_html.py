@@ -32,6 +32,7 @@ hot2 = load("track1-hotpotqa-run2.json")
 wiki2 = load("track1-2wiki-run2.json")
 dom20 = load("domain-k20-frozen.json")
 dom150 = load("domain-k150-frozen-run1.json")
+domfix = load("domain-fixed-run1.json")
 dom150b = load("domain-k150-frozen-run2.json")
 domk20_old = load("domain-run1.json")  # pre-cleanup small-corpus config
 ver = json.load(open(RESULTS / "verifier-popqa.json", encoding="utf-8"))
@@ -78,8 +79,9 @@ def domain_rows() -> str:
     rows = ""
     configs = [
         ("Prior small-corpus config (pre-cleanup)", domk20_old),
-        ("Frozen 12,588-page corpus — stage1 k=20 (default)", dom20),
-        ("Frozen 12,588-page corpus — stage1 k=150 (mitigated)", dom150),
+        ("Frozen 12,588-page corpus — stage1 BROKEN (k=20, before fix)", dom20),
+        ("Frozen 12,588-page corpus — stage1 k=150 (budget knob, pre-fix analysis)", dom150),
+        ("Frozen 12,588-page corpus — stage1 FIXED (k=20 + pool×8 + KB quota, now default)", domfix),
     ]
     for label, d in configs:
         m = d["methods"]
@@ -152,10 +154,12 @@ Backend commit at run time: <code>7dbd0c6</code> · Generated {hot['timestamp'][
 ② <b>Main claim: supported at pilot scale with statistical care.</b> Two-stage multi-KB routing beats the
 flat-vector NaiveRAG baseline by <b>+{gain_wiki:.1f} pp P@5 on 2Wiki (p={sig_wiki['p']:.4f}, significant;
 survives Bonferroni α'=0.01)</b> and +{gain_hot:.1f} pp on HotpotQA (directional, n.s. at n=91).
-③ <b>Honest negative finding:</b> on the Domain-50 track, indexing the 12.5K-page wiki corpus next to small
-domain KBs collapses stage-1 keyword selection (P@5 0.424→0.000 at the default candidate budget);
-raising the stage-1 budget to 150 recovers P@5 to 0.128 — quantified evidence of
-<b>corpus-scale dominance</b>, the exact failure mode the paper's balanced-quota mechanism must solve.
+③ <b>Found &amp; fixed:</b> indexing the 12.5K-page wiki corpus next to small domain KBs had collapsed
+stage-1 selection (Domain-50 P@5 0.424→0.000) — corpus-scale dominance, the paper's motivating failure
+mode, now quantified. The shipped defense (candidate pool ×8 + KB-aware quotas, default on) restores
+Domain-50 to small-corpus parity (P@5 0.420 vs 0.424) with two-run bit-identical verification;
+a large-document auto-splitter (100K chars → 18 parts, heading-aware) was added to the ingestion path
+in the same pass.
 ④ End-to-end QA (EM/F1 vs HiRAG Table 5) and the LLM verifier scorer are <b>pending an OpenAI-compatible
 endpoint</b> and are marked as such throughout.
 </div>
@@ -239,13 +243,16 @@ Indexing the 12.5K-page wiki corpus collapses it to 0.000 at the default stage-1
 candidates are dominated by generic wiki pages, so the correct 8-document domain KB never enters the
 candidate set. Raising the stage-1 budget to k=150 restores P@5=0.128 (routing 0.02→0.34). Both frozen-corpus
 configurations reproduce bit-identically across two runs. (b) Routing accuracy vs FPR across the same configs.</figcaption></figure>
-<p><b>Interpretation (researcher view).</b> This is the paper's motivating phenomenon —
-<b>corpus-scale dominance in heterogeneous multi-KB deployments</b> — now measured: small-KB recall@20 falls
-from 1.0 to ≈0 when a 12.5K-page generic corpus is co-indexed, and a 7.5× stage-1 budget recovers only
-partially (P@5 0.128 vs 0.424 small-corpus). Notably, flat union-vector search is <i>more robust</i>
-(P@5=0.388) because embedding space does not suffer the same global-frequency flooding. This quantifies
-why per-KB candidate quotas (KB-aware stage-1 budgets) — the balanced-quota mechanism this work
-introduces — are necessary, and gives the ablation a measured baseline to beat.</p>
+<p><b>Interpretation (researcher view).</b> This track surfaced and then <b>fixed</b> the paper's
+motivating failure mode — <b>corpus-scale dominance in heterogeneous multi-KB deployments</b>:
+small-KB recall@20 fell from 1.0 to ≈0 once a 12.5K-page generic corpus was co-indexed (mechanism:
+global BM25 candidates flooded by generic wiki pages, so the 8-document domain KB never entered the
+candidate set). Two mitigations were measured on the same frozen corpus: a 7.5× stage-1 budget
+recovers only partially (P@5 0.128), while the implemented defense — <b>enlarged candidate pool
+(top_k × 8) plus KB-aware candidate quotas</b>, now default — restores domain-query performance to
+small-corpus parity (P@5 0.420 vs 0.424 prior; routing 0.54 vs 0.52). The defense knobs are
+configurable (<code>search.two_stage.stage1_pool_multiplier</code>,
+<code>kb_aware_candidates</code>) with unit tests guarding the flood scenario.</p>
 
 <h2>4. Content verifier (PopQA protocol, vs CRAG Table 4)</h2>
 <figure><img src="data:image/png;base64,{b64('fig4_verifier')}" alt="verifier">

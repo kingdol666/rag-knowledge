@@ -3,7 +3,7 @@
   "n_queries": 50,
   "backend": "http://127.0.0.1:8771",
   "kb_map_size": 31,
-  "timestamp": "2026-09-11T12:08:27.365783+00:00",
+  "timestamp": "2026-09-11T11:35:21.784627+00:00",
   "methods": {
     "two_stage": {
       "p1": 0.44,
@@ -12,7 +12,7 @@
       "ndcg5": 0.4813,
       "routing": 0.54,
       "fpr": 0.612,
-      "latency_ms": 401.5
+      "latency_ms": 380.7
     },
     "vector_flat": {
       "p1": 0.5,
@@ -21,7 +21,7 @@
       "ndcg5": 0.5596,
       "routing": 0.6,
       "fpr": 0.584,
-      "latency_ms": 422.1
+      "latency_ms": 402.9
     },
     "two_stage_bal": {
       "p1": 0.44,
@@ -30,7 +30,7 @@
       "ndcg5": 0.4813,
       "routing": 0.54,
       "fpr": 0.612,
-      "latency_ms": 381.6
+      "latency_ms": 350.4
     }
   },
   "significance": {

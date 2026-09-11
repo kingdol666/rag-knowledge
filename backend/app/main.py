@@ -22,6 +22,7 @@ from app.api.routes import (
     config_router,
     system_router,
     soul_router,
+    documents_router,
 )
 
 # ── Logging: console + rotating file ───────────────────────────────
@@ -221,6 +222,7 @@ app.include_router(config_router)
 app.include_router(meditation_router)
 app.include_router(soul_router)
 app.include_router(system_router)
+app.include_router(documents_router)
 
 
 @app.get("/")

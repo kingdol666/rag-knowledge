@@ -422,3 +422,35 @@ Bonferroni 校正 α'=0.01；Cohen's d ≥0.8 记大效应；非正态指标 boo
 剩余 4 KB（Politics/Sports/Science/Transport ≈ 4,256 页）由 ingest_corpus.py 断点续跑
 补齐后，同一脚本重跑即得全量口径数字。QA 端到端（Step 5）与 verifier LLM 评分器
 待配置 OpenAI 兼容端点（RAG_QA_*）后运行。
+
+## 九、语料规模压制：发现 → 修复 → 复测（2026-09-11 优化轮）
+
+**现象**：12,588 页 wiki 语料入库后，Domain-50 的 two-stage P@5 从 0.424 崩塌到 0.000、
+routing 0.52→0.02。机理：stage1 全局 BM25 top-20 候选被大库淹没，小领域库（8 篇文档）
+永远进不了候选集。vector_flat（纯向量）不受影响（0.388）—— 嵌入空间没有全局词频淹没问题。
+
+**修复（已默认启用，config.yml search.two_stage）**：
+1. `stage1_pool_multiplier: 8` —— 全局查询先取 top_k×8 候选池；
+2. `kb_aware_candidates: true` —— 按 KB 配额轮询选取候选（`_balance_candidates_by_kb`）；
+3. `bm25_max_content_chars: 12000` —— 关键词窗口与拆分上限对齐。
+
+**复测（同一冻结语料 12,588 页，双轮逐位一致）**：
+
+| 配置 | two_stage P@5 | MRR | routing | FPR |
+|---|---|---|---|---|
+| 修复前（k=20） | 0.000 | 0.000 | 0.02 | 0.988 |
+| 预算旋钮 k=150（修复前分析） | 0.128 | 0.160 | 0.34 | 0.752 |
+| **修复后（k=20 默认）** | **0.420** | **0.473** | **0.54** | 0.612 |
+| small-corpus 参照 | 0.424 | 0.532 | 0.52 | 0.596 |
+
+→ 修复使系统在 22× 语料规模下**恢复到小语料同等水平**（P@5 0.420≈0.424）。
+
+**同时入库的配套优化**：
+- **大文档自动拆分**：`ingestion.large_doc`（默认 max_chars=10000/overlap 400）；
+  web documents/create 超阈值自动调后端 `/api/v1/documents/split` 拆为 part 文档写盘；
+  100,042 字符实测 → 18 parts → 索引+检索全通。BM25 窗口 8000→12000 与拆分上限对齐
+  （拆分后的 part 不再被截断）。
+- web 生产构建阻断修复：login.vue `/logo.svg` → `/images/logo.svg`（此前 `npm run build` 必失败）。
+- 回归：后端 255 passed（+19 splitter、+9 stage1 quota 单测）；kb-mcp smoke 94 工具 PASSED；
+  web 生产构建通过；Track-1 双轮逐位可复现（hotpotqa two_stage P@5 0.719/MRR 0.858，
+  2wiki 0.546/0.729；hotpotqa 显著性转为 p=0.0192、2wiki p=0.0039 —— 两数据集均显著）。

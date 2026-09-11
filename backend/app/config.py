@@ -298,6 +298,51 @@ class Config:
     def graph_enabled(self) -> bool:
         return bool(self.graph.get("enabled", False))
 
+    # ── Ingestion（大文档拆分） ────────────────────────────────────────
+
+    @property
+    def ingestion_config(self) -> dict:
+        """入库规范化配置(ingestion 段)。"""
+        return self._config.get("ingestion", {})
+
+    @property
+    def large_doc_split(self) -> dict:
+        """大文档自动拆分参数: {auto_split, max_chars, overlap_chars}。
+
+        与检索栈对齐: part 上限默认 10000 < BM25 关键词窗口(12000),
+        拆分后的片段不会再被关键词索引截断。
+        """
+        cfg = self.ingestion_config.get("large_doc", {}) or {}
+        return {
+            "auto_split": bool(cfg.get("auto_split", True)),
+            "max_chars": int(cfg.get("max_chars", 10000) or 10000),
+            "overlap_chars": int(cfg.get("overlap_chars", 400) or 400),
+        }
+
+    @property
+    def bm25_max_content_chars(self) -> int:
+        """BM25 每文档索引字符上限（两阶段检索 stage1 关键词窗口）。"""
+        try:
+            return int((self._config.get("search", {}).get("two_stage", {})
+                        .get("bm25_max_content_chars", 12000)) or 12000)
+        except (TypeError, ValueError):
+            return 12000
+
+    @property
+    def stage1_pool_multiplier(self) -> int:
+        """stage1 候选池倍率（跨库均衡前先按 top_k×倍率取样，抗大库淹没）。"""
+        try:
+            return max(1, int((self._config.get("search", {}).get("two_stage", {})
+                               .get("stage1_pool_multiplier", 8)) or 8))
+        except (TypeError, ValueError):
+            return 8
+
+    @property
+    def kb_aware_candidates(self) -> bool:
+        """stage1 是否默认按 KB 配额均衡候选（防单一超大库主导）。"""
+        return bool((self._config.get("search", {}).get("two_stage", {})
+                     .get("kb_aware_candidates", True)))
+
     @property
     def graph_uri(self) -> str:
         return self.graph.get("uri", "bolt://127.0.0.1:7687")

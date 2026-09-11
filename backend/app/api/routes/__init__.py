@@ -9,6 +9,7 @@ from app.api.routes.config import router as config_router
 from app.api.routes.system import router as system_router
 from app.api.routes.meditation import router as meditation_router
 from app.api.routes.soul import router as soul_router
+from app.api.routes.documents import router as documents_router
 
 __all__ = [
     "health_router",
@@ -19,4 +20,6 @@ __all__ = [
     "config_router",
     "meditation_router",
     "soul_router",
+    "documents_router",
+    "system_router",
 ]

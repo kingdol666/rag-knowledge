@@ -89,6 +89,19 @@ search:
     stage1_graph_weight: 0.5
     graph_neighbor_depth: 1
     min_candidates: 3
+    # 抗「语料规模压制」：全局查询先取 top_k×倍率 的候选池，再按 KB 配额均衡，
+    # 防止超大库占满候选集（小领域库实测曾被压制到 P@5=0）
+    stage1_pool_multiplier: 8      # 候选池倍率（1=关闭池化，退回旧行为）
+    kb_aware_candidates: true      # 默认按 KB 配额均衡 stage1 候选
+    bm25_max_content_chars: 12000  # 关键词索引每文档窗口（与拆分上限对齐）
+
+# -- Ingestion（入库规范化） --
+ingestion:
+  large_doc:
+    auto_split: true       # 超大文档自动拆分为多个 part 文档后入库
+    max_chars: 10000       # 每个 part 上限（< bm25_max_content_chars，避免截断）
+    overlap_chars: 400     # 超长段落窗口切分时的重叠字符
+
 
 experience_auto:
   enabled: false

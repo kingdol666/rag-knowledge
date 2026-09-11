@@ -1,7 +1,7 @@
 <template>
   <div class="login-wrap">
     <div class="login-card">
-      <img src="/logo.svg" alt="logo" class="logo" onerror="this.style.display='none'" />
+      <img src="/images/logo.svg" alt="logo" class="logo" onerror="this.style.display='none'" />
       <h1>{{ mode === 'login' ? '登录 RAG Knowledge' : '注册新用户' }}</h1>
       <p class="sub">{{ mode === 'login' ? '使用用户名与密码登录知识库平台' : '首个注册用户自动获得管理员角色' }}</p>
 

@@ -11,7 +11,7 @@ from typing import Any
 from app.config import config
 from app.services.keyword_index_service import (
     keyword_index_service,
-    _BM25_MAX_CONTENT_CHARS,
+    bm25_max_content_chars,
 )
 from app.services.vector_service import vector_service
 
@@ -50,7 +50,8 @@ class TwoStageSearchService:
                     full = storage_reader.root / doc_path
                     if full.is_dir():
                         continue
-                    content = storage_reader.read_document_content(doc_path, max_chars=_BM25_MAX_CONTENT_CHARS)
+                    content = storage_reader.read_document_content(
+                        doc_path, max_chars=bm25_max_content_chars())
                     all_docs.append({
                         "path": doc_path,
                         "name": doc.get("name", ""),
@@ -221,7 +222,18 @@ class TwoStageSearchService:
 
         # BM25 关键词检索 — K1 fix: pass kb_ids to BM25 for scoped scoring
         # (correct IDF within KB scope, not post-filter that drops all results)
-        kw_results = keyword_index_service.search(query, top_k=top_k, kb_ids=resolved_kb_ids)
+        #
+        # 抗「语料规模压制」(2026-09-11 实测修复)：全局查询先按 top_k×倍率 取样
+        # 候选池，再由下方 KB 配额均衡。否则超大库（1.2 万页 wiki）会占满全局
+        # top_k，小领域库永远进不了候选集 —— Domain-50 P@5 实测 0.424→0.000。
+        pool_k = top_k
+        if not kb_id:
+            try:
+                from app.config import config as _cfg
+                pool_k = max(top_k, top_k * max(1, _cfg.stage1_pool_multiplier))
+            except Exception:
+                pool_k = top_k
+        kw_results = keyword_index_service.search(query, top_k=pool_k, kb_ids=resolved_kb_ids)
         for r in kw_results:
             candidates[r["doc_path"]] = {
                 "doc_path": r["doc_path"], "score": r["score"] * kw_weight,
@@ -269,7 +281,16 @@ class TwoStageSearchService:
         ranked = sorted(candidates.values(), key=lambda x: x["score"], reverse=True)
 
         # 跨库均衡：对 BM25 候选按 KB 分组轮询，防大KB主导 stage1
-        if balance_kbs and not kb_id and len(ranked) > top_k:
+        # 跨库均衡：默认开启（kb_aware_candidates）—— 对未限定 KB 的查询按
+        # KB 配额轮询选取，防止单一超大库主导候选集；balance_kbs 为显式开关，
+        # 语义相同（保留供消融对比）。
+        kb_aware = True
+        try:
+            from app.config import config as _cfg
+            kb_aware = _cfg.kb_aware_candidates
+        except Exception:
+            pass
+        if (balance_kbs or kb_aware) and not kb_id and len(ranked) > top_k:
             ranked = self._balance_candidates_by_kb(ranked, top_k)
 
         return ranked[:top_k]

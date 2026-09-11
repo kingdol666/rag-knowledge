@@ -15,10 +15,20 @@ import jieba
 
 logger = logging.getLogger(__name__)
 
-# BM25 索引使用的最大正文字符数
-# 从 2000 提升到 8000：2000 字符只覆盖摘要+引言，
-# 8000 可以覆盖到方法部分，大幅提升跨库 BM25 检索准确率
+# BM25 索引使用的最大正文字符数（默认值；可被 config.yml
+# search.two_stage.bm25_max_content_chars 覆盖）。
+# 8000 → 12000：与大文档拆分上限(10000)对齐 —— 拆分后的 part 不会再被
+# 关键词窗口截断，stage1 召回覆盖整段内容。
 _BM25_MAX_CONTENT_CHARS = 8000
+
+
+def bm25_max_content_chars() -> int:
+    """当前生效的 BM25 内容窗口（配置驱动，惰性读取，异常回落默认）。"""
+    try:
+        from app.config import config as _cfg
+        return max(1000, int(_cfg.bm25_max_content_chars))
+    except Exception:
+        return _BM25_MAX_CONTENT_CHARS
 
 
 class KeywordIndexService:
@@ -29,14 +39,15 @@ class KeywordIndexService:
         self._avg_len: float = 0.0
         self._doc_count: int = 0
         self._built: bool = False
+
     @staticmethod
     def _doc_text(doc: dict[str, Any]) -> str:
-        """Concatenate searchable text (name + description + first
-        _BM25_MAX_CONTENT_CHARS of content). Shared by build/add_document."""
+        """Concatenate searchable text (name + description + leading content
+        window, see bm25_max_content_chars). Shared by build/add_document."""
         return " ".join([
             doc.get("name", ""),
             doc.get("description", ""),
-            doc.get("content", "")[:_BM25_MAX_CONTENT_CHARS],
+            doc.get("content", "")[:bm25_max_content_chars()],
         ])
 
 
