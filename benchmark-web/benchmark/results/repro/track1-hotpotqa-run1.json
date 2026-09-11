@@ -1,0 +1,86 @@
+{
+  "dataset": "hotpotqa",
+  "n_queries": 91,
+  "top_k": 5,
+  "n_excluded_no_corpus": 9,
+  "backend": "http://127.0.0.1:8771",
+  "timestamp": "2026-09-11T02:44:55.124077+00:00",
+  "methods": {
+    "vector_flat": {
+      "p1": 0.7033,
+      "p3": 0.619,
+      "p5": 0.5407,
+      "r5": 0.8022,
+      "ndcg5": 0.7591,
+      "mrr": 0.7482,
+      "fpr": 0.0286,
+      "latency_ms": 467.6
+    },
+    "vector_domain": {
+      "p1": 0.7033,
+      "p3": 0.6154,
+      "p5": 0.5341,
+      "r5": 0.8022,
+      "ndcg5": 0.7597,
+      "mrr": 0.7482,
+      "fpr": 0.0,
+      "latency_ms": 433.3
+    },
+    "two_stage": {
+      "p1": 0.7473,
+      "p3": 0.685,
+      "p5": 0.622,
+      "r5": 0.8022,
+      "ndcg5": 0.7708,
+      "mrr": 0.7701,
+      "fpr": 0.0242,
+      "latency_ms": 433.6
+    },
+    "two_stage_nb": {
+      "p1": 0.7473,
+      "p3": 0.6777,
+      "p5": 0.6132,
+      "r5": 0.8022,
+      "ndcg5": 0.7708,
+      "mrr": 0.7701,
+      "fpr": 0.0,
+      "latency_ms": 367.7
+    },
+    "two_stage_bal": {
+      "p1": 0.7473,
+      "p3": 0.6777,
+      "p5": 0.6132,
+      "r5": 0.8022,
+      "ndcg5": 0.7708,
+      "mrr": 0.7701,
+      "fpr": 0.0,
+      "latency_ms": 357.2
+    }
+  },
+  "significance": {
+    "two_stage_vs_vector_flat": {
+      "t": 0.4608,
+      "p": 0.644949,
+      "cohens_d": 0.0297,
+      "n": 91
+    },
+    "two_stage_vs_vector_domain": {
+      "t": 0.4379,
+      "p": 0.661452,
+      "cohens_d": 0.0282,
+      "n": 91
+    },
+    "two_stage_vs_two_stage_nb": {
+      "t": 0.0,
+      "p": 1.0,
+      "cohens_d": 0.0,
+      "n": 91
+    },
+    "two_stage_vs_two_stage_bal": {
+      "t": 0.0,
+      "p": 1.0,
+      "cohens_d": 0.0,
+      "n": 91
+    }
+  }
+}

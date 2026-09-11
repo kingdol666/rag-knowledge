@@ -158,7 +158,15 @@ for r in all_results:
         print(f"  {r['qid']}: top-3 domains = {domains}")
 
 # ── Save ──
-with open("results/aggregate.json","w") as f:
+def _results_dir():
+    """Anchor results output next to this script (no CWD-relative traversal)."""
+    from pathlib import Path
+    d = Path(__file__).resolve().parent / "results"
+    (d / "raw").mkdir(parents=True, exist_ok=True)
+    return d
+
+RESULTS_DIR = _results_dir()
+with open(RESULTS_DIR / "aggregate.json","w") as f:
     json.dump({
         "method": "BM25",
         "total_queries": len(all_results),
@@ -169,7 +177,7 @@ with open("results/aggregate.json","w") as f:
         "mrr": mrr,
     }, f, indent=2)
 
-with open("results/raw/all_queries.json","w") as f:
+with open(RESULTS_DIR / "raw" / "all_queries.json","w") as f:
     json.dump(all_results, f, indent=2)
 
 print(f"\nResults saved to results/")

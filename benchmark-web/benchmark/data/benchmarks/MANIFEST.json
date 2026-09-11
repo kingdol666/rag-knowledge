@@ -1,0 +1,62 @@
+{
+  "seed": 42,
+  "source": "RUC-NLPIR/FlashRAG_datasets",
+  "files": {
+    "popqa.jsonl": {
+      "sha256": "bfee2fe651f49d60a2f152cd6a70ab08d3e692c7266d9632da7be17a8773ca2b",
+      "rows": 2000
+    },
+    "qrels_popqa.tsv": {
+      "sha256": "b9d8c21b608f06788f00620073b38aca61f4ee253ec194f15b87889f051e981d",
+      "rows": 2000
+    },
+    "nq.jsonl": {
+      "sha256": "571cf94f041d83ba4febf9c515cdde9e5fcb8000e258184032c0c83b01674450",
+      "rows": 1000
+    },
+    "qrels_nq.tsv": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rows": 0
+    },
+    "triviaqa.jsonl": {
+      "sha256": "a74c6e477ee9b44aa61b9c75a9530a3c3c2c518596746799a825c24c104e4c29",
+      "rows": 1000
+    },
+    "qrels_triviaqa.tsv": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rows": 0
+    },
+    "hotpotqa.jsonl": {
+      "sha256": "5b38f4763b3054fb1d9377f11f4b4301e7e115148b83b7fadf897b749a5550fe",
+      "rows": 1000
+    },
+    "qrels_hotpotqa.tsv": {
+      "sha256": "cf253c31137b92c127ab0364d472a468d24f59e593f08a6701b26d9bfcf4e1e6",
+      "rows": 2436
+    },
+    "2wiki.jsonl": {
+      "sha256": "86703964bc26b4412a6985ff19dd449f1f53bbec564b336a7aad0adf96f05c47",
+      "rows": 1000
+    },
+    "qrels_2wiki.tsv": {
+      "sha256": "1fd689d77c0524eac1f71596508c90dd8c75046fb4a21129d38005ef69c4ca3b",
+      "rows": 2423
+    },
+    "musique.jsonl": {
+      "sha256": "922d4dd131a9121a6a511dcd467a5bc0a6306e1591a3b27ea202ea79aa97f7df",
+      "rows": 500
+    },
+    "qrels_musique.tsv": {
+      "sha256": "a761011e2475e43e91e5a1d3d13cc0a73ae8718c3b45943f9a5fa0d47e77f2ec",
+      "rows": 1324
+    },
+    "bamboogle.jsonl": {
+      "sha256": "cdf88b104dad25e593195d17fc5bc0a82e9ecf0963fd99aa2ab093dca6ed4046",
+      "rows": 125
+    },
+    "qrels_bamboogle.tsv": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "rows": 0
+    }
+  }
+}

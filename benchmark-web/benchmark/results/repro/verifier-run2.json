@@ -1,0 +1,24 @@
+{
+  "dataset": "popqa",
+  "n_queries": 200,
+  "top_k": 8,
+  "protocol": "PopQA golden-title proxy labels; >=6 Correct / 3-5 Ambiguous / <=2 Incorrect",
+  "timestamp": "2026-09-11T03:08:38.738117+00:00",
+  "scorers": {
+    "heuristic": {
+      "n_chunks": 1600,
+      "acc_3class_pct": 34.8,
+      "acc_binary_pct": 77.4,
+      "fpr_pct": 23.1,
+      "correct_precision": 0.564,
+      "correct_recall": 0.388,
+      "correct_f1": 0.46
+    }
+  },
+  "crag_table4_anchors": {
+    "CRAG T5-based (Table 4)": 84.3,
+    "ChatGPT-few-shot": 64.7,
+    "ChatGPT-CoT": 62.4,
+    "ChatGPT zero-shot": 58.0
+  }
+}

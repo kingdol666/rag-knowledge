@@ -110,3 +110,9 @@ neo4j_logs/
 
 # WorkBuddy workspace memory (session-local; never commit)
 .workbuddy/
+
+# Benchmark: 大体积可重建资产不入库（确定性脚本可逐字节重建）
+benchmark-web/benchmark/data/
+benchmark-web/backend/
+benchmark-web/benchmark/results/checkpoint-*.jsonl
+benchmark-web/benchmark/results/index-retry-*.txt

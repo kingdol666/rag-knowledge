@@ -1,0 +1,86 @@
+{
+  "dataset": "2wiki",
+  "n_queries": 86,
+  "top_k": 5,
+  "n_excluded_no_corpus": 14,
+  "backend": "http://127.0.0.1:8771",
+  "timestamp": "2026-09-11T02:53:33.582048+00:00",
+  "methods": {
+    "vector_flat": {
+      "p1": 0.5698,
+      "p3": 0.469,
+      "p5": 0.3767,
+      "r5": 0.6395,
+      "ndcg5": 0.5945,
+      "mrr": 0.5922,
+      "fpr": 0.0605,
+      "latency_ms": 451.7
+    },
+    "vector_domain": {
+      "p1": 0.5698,
+      "p3": 0.469,
+      "p5": 0.3721,
+      "r5": 0.6279,
+      "ndcg5": 0.591,
+      "mrr": 0.5899,
+      "fpr": 0.0,
+      "latency_ms": 427.4
+    },
+    "two_stage": {
+      "p1": 0.6628,
+      "p3": 0.5698,
+      "p5": 0.4884,
+      "r5": 0.7209,
+      "ndcg5": 0.6846,
+      "mrr": 0.6855,
+      "fpr": 0.0488,
+      "latency_ms": 400.6
+    },
+    "two_stage_nb": {
+      "p1": 0.6628,
+      "p3": 0.5543,
+      "p5": 0.4698,
+      "r5": 0.7093,
+      "ndcg5": 0.6765,
+      "mrr": 0.6797,
+      "fpr": 0.0,
+      "latency_ms": 360.1
+    },
+    "two_stage_bal": {
+      "p1": 0.6628,
+      "p3": 0.5543,
+      "p5": 0.4698,
+      "r5": 0.7093,
+      "ndcg5": 0.6765,
+      "mrr": 0.6797,
+      "fpr": 0.0,
+      "latency_ms": 360.7
+    }
+  },
+  "significance": {
+    "two_stage_vs_vector_flat": {
+      "t": 2.7504,
+      "p": 0.005953,
+      "cohens_d": 0.1981,
+      "n": 86
+    },
+    "two_stage_vs_vector_domain": {
+      "t": 2.797,
+      "p": 0.005158,
+      "cohens_d": 0.2048,
+      "n": 86
+    },
+    "two_stage_vs_two_stage_nb": {
+      "t": 0.9542,
+      "p": 0.339998,
+      "cohens_d": 0.0183,
+      "n": 86
+    },
+    "two_stage_vs_two_stage_bal": {
+      "t": 0.9542,
+      "p": 0.339998,
+      "cohens_d": 0.0183,
+      "n": 86
+    }
+  }
+}

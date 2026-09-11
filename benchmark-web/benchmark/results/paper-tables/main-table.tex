@@ -1,0 +1,19 @@
+\begin{table}[ht]
+\centering\caption{Main retrieval results}\label{tab:main}
+\begin{tabular}{llcccc}
+\toprule
+Dataset & Method & P@5 & nDCG@5 & MRR & FPR \\
+\midrule
+hotpotqa & vector_flat & 0.5407 & 0.7591 & 0.7482 & 0.0286 \\
+hotpotqa & vector_domain & 0.5341 & 0.7597 & 0.7482 & 0.0 \\
+hotpotqa & two_stage & 0.622 & 0.7708 & 0.7701 & 0.0242 \\
+hotpotqa & two_stage_nb & 0.6132 & 0.7708 & 0.7701 & 0.0 \\
+hotpotqa & two_stage_bal & 0.6132 & 0.7708 & 0.7701 & 0.0 \\
+2wiki & vector_flat & 0.3767 & 0.5945 & 0.5922 & 0.0605 \\
+2wiki & vector_domain & 0.3721 & 0.591 & 0.5899 & 0.0 \\
+2wiki & two_stage & 0.4884 & 0.6846 & 0.6855 & 0.0488 \\
+2wiki & two_stage_nb & 0.4698 & 0.6765 & 0.6797 & 0.0 \\
+2wiki & two_stage_bal & 0.4698 & 0.6765 & 0.6797 & 0.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
