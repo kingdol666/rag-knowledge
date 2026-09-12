@@ -4,9 +4,9 @@
   "n_kbs": 2,
   "run_success_rate": 1.0,
   "kb_coverage": 0.5,
-  "total_experiences": 5,
-  "judge_score_mean": 3.0,
-  "grounded_ratio": 0.2,
+  "total_experiences": 8,
+  "judge_score_mean": 4.375,
+  "grounded_ratio": 0.625,
   "env": {
    "backend": "http://localhost:8771",
    "web": "http://localhost:6790",
@@ -25,17 +25,17 @@
    },
    "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
   },
-  "generated": "2026-09-12T17:19:16.680710+00:00"
+  "generated": "2026-09-12T18:49:24.151734+00:00"
  },
  "per_kb": {
   "KB-Demo-EN": {
    "run_success": true,
    "run_error": null,
-   "n_drafts": 3,
-   "n_approved": 3,
-   "n_experiences": 5,
-   "judge_score_mean": 3.0,
-   "grounded_ratio": 0.2
+   "n_drafts": 0,
+   "n_approved": 0,
+   "n_experiences": 8,
+   "judge_score_mean": 4.375,
+   "grounded_ratio": 0.625
   },
   "KB-Demo-ZH": {
    "run_success": true,
@@ -54,33 +54,51 @@
     "Wind project siting first: wind speed dominates yield via cube law before turbine selection",
     "Coffee Processing - 核心要点",
     "Solar Power - 核心要点",
-    "Wind Energy Basics - 核心要点"
+    "Wind Energy Basics - 核心要点",
+    "EV charging standard by region and 800V fast charging",
+    "Solar PV vs CSP selection: cost vs after-sunset supply",
+    "Hot-climate crops: choose C4 maize or sugarcane over C3"
    ],
    "judged": [
     {
      "score": 3.0,
      "grounded": false,
-     "issues": "Entry contains only metadata (no body or evidence), so no facts can be verified, and its coffee-processing domain does not match the KB's operational-knowledge source material."
+     "issues": "Provides no content body, evidence, or concrete parameter values, so the title's claimed 'parameter control' is unverifiable and the entry is a metadata-only stub of a coffee-domain topic unrelated to this KB's operational domain."
     },
     {
      "score": 6.0,
      "grounded": true,
-     "issues": "Title claims are physically valid (P∝v³, Betz limit), but the entry has no body or evidence, limiting reuse to a bare assertion."
+     "issues": "Physics claim (cube-law yield dependence, Betz limit) is textbook-valid, but the entry is metadata-only — no body, source document, or citation — so its grounding in this KB is unverifiable and there is almost no reusable content."
     },
     {
      "score": 2.0,
      "grounded": false,
-     "issues": "Entry has only title/scenario/category with a placeholder title ('核心要点') and no problem/solution/lesson body, so it states no verifiable facts and carries nothing retrievable."
+     "issues": "Entry contains only title/scenario/category with no body content or verifiable facts, so nothing is grounded or retrievable."
     },
     {
      "score": 2.0,
      "grounded": false,
-     "issues": "Entry is a bare stub with only title/scenario/category — no problem, solution, lessons, or evidence, so nothing is verifiable or reusable."
+     "issues": "Metadata-only stub (title/scenario/category) with no body, problem, solution, or lessons, so it asserts no verifiable facts and offers nothing reusable for retrieval."
     },
     {
-     "score": 2.0,
-     "grounded": false,
-     "issues": "Entry is an empty stub—only a title/scenario/category with no body content, evidence, or verifiable facts, so nothing is grounded or reusable."
+     "score": 3.0,
+     "grounded": true,
+     "issues": "Title-only stub with no content body (no problem/solution/lessons), and the scenario slug merely repeats the title derived from a demo corpus doc (KB-Demo-EN/wind-energy.md), so there is nothing reusable to retrieve."
+    },
+    {
+     "score": 4.0,
+     "grounded": true,
+     "issues": "Only metadata is present with no content body to verify, and category 'decision' mismatches a factual reference topic, limiting both grounding and reuse."
+    },
+    {
+     "score": 7.0,
+     "grounded": true,
+     "issues": "Metadata-only entry: title reflects the genuine PV-cheapness vs CSP-thermal-storage-after-sunset tradeoff, but no problem/solution/lessons body, evidence, or source document exists, so substance and reuse value are thin."
+    },
+    {
+     "score": 8.0,
+     "grounded": true,
+     "issues": "Factually sound (C4 crops like maize/sugarcane do outperform C3 in hot, high-light climates via reduced photorespiration), but the entry exposes only metadata with no body/evidence/context, limiting its reuse value."
     }
    ]
   },

@@ -4,9 +4,9 @@
   "n_kbs": 2,
   "run_success_rate": 1.0,
   "kb_coverage": 0.5,
-  "total_experiences": 8,
-  "judge_score_mean": 5.375,
-  "grounded_ratio": 0.75,
+  "total_experiences": 10,
+  "judge_score_mean": 3.5,
+  "grounded_ratio": 0.375,
   "env": {
    "backend": "http://localhost:8771",
    "web": "http://localhost:6790",
@@ -25,7 +25,7 @@
    },
    "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
   },
-  "generated": "2026-09-12T17:32:39.071473+00:00"
+  "generated": "2026-09-12T18:57:02.123225+00:00"
  },
  "per_kb": {
   "KB-Demo-EN": {
@@ -33,9 +33,9 @@
    "run_error": null,
    "n_drafts": 0,
    "n_approved": 0,
-   "n_experiences": 8,
-   "judge_score_mean": 5.375,
-   "grounded_ratio": 0.75
+   "n_experiences": 10,
+   "judge_score_mean": 3.5,
+   "grounded_ratio": 0.375
   },
   "KB-Demo-ZH": {
    "run_success": true,
@@ -61,44 +61,44 @@
    ],
    "judged": [
     {
-     "score": 9.0,
-     "grounded": true,
-     "issues": "Every parameter (12-72h fermentation, 2-4 week sun drying, ~11% moisture, 205-215°C medium roast, yellow/red/black honey grades) is verbatim-supported by KB-Demo-EN/coffee-processing.md with correct related_docs, but the English-titled entry carries Chinese-only key_lessons, an inconsistent-language defect in an EN corpus."
-    },
-    {
-     "score": 6.0,
-     "grounded": true,
-     "issues": "Physics claim (cube law, Betz limit) is real, but the entry has only metadata with no content body or evidence, limiting reusability."
-    },
-    {
      "score": 5.0,
      "grounded": true,
-     "issues": "Grounded in a real doc (KB-Demo-EN/coffee-processing.md) but problem and solution are the same truncated opening paragraph verbatim, key_lessons and tags are empty, and category 'best_practice' mislabels descriptive background as an actionable practice from a benchmark-demo KB."
-    },
-    {
-     "score": 2.0,
-     "grounded": false,
-     "issues": "Entry contains only a title/scenario/category with no substantive content or verifiable facts, so it is not grounded and offers almost nothing reusable."
-    },
-    {
-     "score": 5.0,
-     "grounded": true,
-     "issues": "It traces to the real KB-Demo-EN/wind-energy.md doc but is a raw truncated excerpt with empty key_lessons and empty tags, largely duplicating the existing exp-5881a8fcbb84 experience from the same source."
-    },
-    {
-     "score": 4.0,
-     "grounded": true,
-     "issues": "Metadata-only entry with no content body (problem/solution/lessons), so nothing factual is verifiable and it is largely unusable for retrieval."
-    },
-    {
-     "score": 4.0,
-     "grounded": false,
-     "issues": "Only metadata is present — no problem/solution/lessons body — so factual grounding cannot be verified and retrieval value is limited to tags."
+     "issues": "Metadata is factually plausible (washed/natural/honey are real processing methods) and structurally complete, but the entry has no content body, parameters, or lessons, so it is barely reusable for retrieval."
     },
     {
      "score": 8.0,
      "grounded": true,
-     "issues": "Core claim is factually sound (C4 maize/sugarcane outperform C3 in hot, high-light climates) and metadata is coherent, but the entry is a metadata-only stub with no justification, caveats, or supporting detail to guide retrieval-time use."
+     "issues": "Title, scenario, category and tags are coherent and the cube-law/Betz premise is physically correct, but the entry carries no body, numbers, or procedural detail, so it is retrievable yet thin as standalone operational guidance."
+    },
+    {
+     "score": 2.0,
+     "grounded": false,
+     "issues": "Entry has no content body or verifiable facts — only a title, a bare domain token as scenario, and a category, making it non-reusable for retrieval."
+    },
+    {
+     "score": 1.0,
+     "grounded": false,
+     "issues": "Empty shell — no content body, problem, solution, or lessons; the title looks like a captured section heading from a solar-power document, making it neither verifiable nor reusable."
+    },
+    {
+     "score": 1.0,
+     "grounded": false,
+     "issues": "Entry contains no body, lessons, or factual content beyond a bare topic label, and category 'best_practice' contradicts a generic reference/title entry."
+    },
+    {
+     "score": 3.0,
+     "grounded": false,
+     "issues": "Entry has title/scenario/category/tags but no content body, so no factual claims can be verified and there is little to retrieve in future tasks."
+    },
+    {
+     "score": 3.0,
+     "grounded": false,
+     "issues": "Metadata-only entry: no problem/solution/lessons or source evidence to substantiate the PV-vs-CSP claim, and the 'pv-efficiency' tag is misaligned with a cost-vs-after-sunset-supply decision."
+    },
+    {
+     "score": 5.0,
+     "grounded": true,
+     "issues": "Metadata-only stub with no content body, evidence, or source: the C4-over-C3 claim is textbook-true but carries no distilled operational procedure, applicability conditions, or verification, so reuse value is minimal."
     }
    ]
   },
