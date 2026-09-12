@@ -1,0 +1,9 @@
+# rag-knowledge CIKM benchmark — Python 依赖
+# 基准脚本只用 Python 3.11+ 标准库(urllib/json/hashlib/statistics)。
+# 运行环境前置(非 pip 装产物):
+#   - rag-knowledge backend + web 已启动(见仓库 start.sh / ragctl)
+#   - kb-mcp: uv>=0.4 (脚本通过 `uv run --directory kb-mcp python server.py` 拉起)
+#   - BAAI/bge-m3 嵌入模型由 backend 首次运行自动下载(models_cache/)
+#   - Agent 通道: omp CLI 已安装并含 .omp/mcp.json 配置
+# 可选(仅本地分析/绘图复现用):
+#   matplotlib>=3.8

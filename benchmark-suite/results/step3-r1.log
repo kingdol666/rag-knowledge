@@ -1,0 +1,40 @@
+== KB-Demo-EN ==
+  drafts=3 approved=3
+  experiences: 5
+  judge[0] score=3.0 grounded=False
+  judge[1] score=6.0 grounded=True
+  judge[2] score=2.0 grounded=False
+  judge[3] score=2.0 grounded=False
+  judge[4] score=2.0 grounded=False
+== KB-Demo-ZH ==
+  drafts=0 approved=0
+  experiences: 0
+-> D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\module_c_experience_r1.json
+{
+ "round": "1",
+ "n_kbs": 2,
+ "run_success_rate": 1.0,
+ "kb_coverage": 0.5,
+ "total_experiences": 5,
+ "judge_score_mean": 3.0,
+ "grounded_ratio": 0.2,
+ "env": {
+  "backend": "http://localhost:8771",
+  "web": "http://localhost:6790",
+  "embedding": "BAAI/bge-m3 (local GPU, normalize)",
+  "vector_store": "ChromaDB (persistent)",
+  "keyword_index": "jieba BM25",
+  "randomness": "deterministic pipeline (no RNG); agent channel = mean of runs",
+  "retrieval_defaults": {
+   "vector_top_k": 10,
+   "two_stage": {
+    "stage1_top_k": 40,
+    "stage2_top_k": 10
+   },
+   "qdcvr_threshold": 0.35,
+   "verification_reads": 3
+  },
+  "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
+ },
+ "generated": "2026-09-12T17:19:16.680710+00:00"
+}

@@ -1,0 +1,5 @@
+# benchmark-suite 依赖
+# 主体脚本仅需 Python 3.11+ 标准库。
+# 可选依赖:
+matplotlib>=3.8   # 仅 data/make_pdf.py 生成演示 PDF 用（仓库已附带生成好的 PDF）
+# omp CLI       # 仅模块 C 冥想与子 Agent 评价用（系统外部安装）
