@@ -1,0 +1,1973 @@
+{
+ "meta": {
+  "generated": "2026-09-12T03:21:39.544426+00:00",
+  "web": "http://localhost:6790",
+  "backend": "http://localhost:8771",
+  "inbox_kb": "KB-Inbox-Organize",
+  "per_kb": 15,
+  "protocol": "inbox-copy routing; gold=frozen kb_assignments labels"
+ },
+ "ingest": {
+  "planned": 195,
+  "created": 195,
+  "skipped_existing": 0,
+  "failed": 0
+ },
+ "summary": {
+  "n_docs": 195,
+  "routing_vote_acc@1": 0.7846,
+  "routing_vote_acc@top3": 0.7846,
+  "routing_scan_acc@1": 0.8923,
+  "roundtrip_hit@1": 0.7897,
+  "roundtrip_hit@5": 0.8205
+ },
+ "per_domain": {
+  "KB-Bio-Medicine": {
+   "n": 15,
+   "vote_acc1": 1.0,
+   "scan_top_pred": "KB-Bio-Medicine"
+  },
+  "KB-Economy-Law": {
+   "n": 15,
+   "vote_acc1": 0.5333333333333333,
+   "scan_top_pred": "KB-Economy-Law"
+  },
+  "KB-Film-TV": {
+   "n": 15,
+   "vote_acc1": 0.6,
+   "scan_top_pred": "KB-Film-TV"
+  },
+  "KB-Geography": {
+   "n": 15,
+   "vote_acc1": 1.0,
+   "scan_top_pred": "KB-Geography"
+  },
+  "KB-Literature-Arts": {
+   "n": 15,
+   "vote_acc1": 0.9333333333333333,
+   "scan_top_pred": "KB-Literature-Arts"
+  },
+  "KB-Military": {
+   "n": 15,
+   "vote_acc1": 1.0,
+   "scan_top_pred": "KB-Military"
+  },
+  "KB-Music": {
+   "n": 15,
+   "vote_acc1": 1.0,
+   "scan_top_pred": "KB-Music"
+  },
+  "KB-Other": {
+   "n": 15,
+   "vote_acc1": 1.0,
+   "scan_top_pred": "KB-Other"
+  },
+  "KB-People": {
+   "n": 15,
+   "vote_acc1": 0.8666666666666667,
+   "scan_top_pred": "KB-People"
+  },
+  "KB-Politics-History": {
+   "n": 15,
+   "vote_acc1": 0.5333333333333333,
+   "scan_top_pred": "KB-Politics-History"
+  },
+  "KB-Science-Tech": {
+   "n": 15,
+   "vote_acc1": 0.5333333333333333,
+   "scan_top_pred": "KB-Science-Tech"
+  },
+  "KB-Sports": {
+   "n": 15,
+   "vote_acc1": 0.5333333333333333,
+   "scan_top_pred": "KB-Sports"
+  },
+  "KB-Transport": {
+   "n": 15,
+   "vote_acc1": 0.6666666666666666,
+   "scan_top_pred": "KB-Transport"
+  }
+ },
+ "confusion_vote": {
+  "KB-Bio-Medicine": {
+   "KB-Bio-Medicine": 15
+  },
+  "KB-Economy-Law": {
+   "KB-Economy-Law": 8,
+   "KB-Bio-Medicine": 1,
+   "KB-Music": 1,
+   "KB-Geography": 1,
+   "KB-Politics-History": 1,
+   "KB-Military": 2,
+   "KB-Other": 1
+  },
+  "KB-Film-TV": {
+   "KB-Film-TV": 9,
+   "KB-People": 4,
+   "KB-Other": 2
+  },
+  "KB-Geography": {
+   "KB-Geography": 15
+  },
+  "KB-Literature-Arts": {
+   "KB-Literature-Arts": 14,
+   "KB-Other": 1
+  },
+  "KB-Military": {
+   "KB-Military": 15
+  },
+  "KB-Music": {
+   "KB-Music": 15
+  },
+  "KB-Other": {
+   "KB-Other": 15
+  },
+  "KB-People": {
+   "KB-People": 13,
+   "KB-Literature-Arts": 2
+  },
+  "KB-Politics-History": {
+   "KB-Other": 4,
+   "KB-Politics-History": 8,
+   "KB-People": 2,
+   "KB-Film-TV": 1
+  },
+  "KB-Science-Tech": {
+   "KB-Music": 1,
+   "KB-Science-Tech": 8,
+   "KB-Bio-Medicine": 1,
+   "KB-People": 1,
+   "KB-Literature-Arts": 1,
+   "KB-Film-TV": 1,
+   "KB-Economy-Law": 1,
+   "KB-Transport": 1
+  },
+  "KB-Sports": {
+   "KB-Sports": 8,
+   "KB-People": 2,
+   "KB-Military": 1,
+   "KB-Transport": 1,
+   "KB-Science-Tech": 2,
+   "KB-Film-TV": 1
+  },
+  "KB-Transport": {
+   "KB-Transport": 10,
+   "KB-Politics-History": 1,
+   "KB-Science-Tech": 2,
+   "KB-People": 2
+  }
+ },
+ "confusion_scan": {
+  "KB-Bio-Medicine": {
+   "KB-Bio-Medicine": 15
+  },
+  "KB-Economy-Law": {
+   "KB-Economy-Law": 14,
+   "KB-Other": 1
+  },
+  "KB-Film-TV": {
+   "KB-Film-TV": 12,
+   "KB-People": 2,
+   "KB-Other": 1
+  },
+  "KB-Geography": {
+   "KB-Geography": 15
+  },
+  "KB-Literature-Arts": {
+   "KB-Literature-Arts": 15
+  },
+  "KB-Military": {
+   "KB-Military": 15
+  },
+  "KB-Music": {
+   "KB-Music": 15
+  },
+  "KB-Other": {
+   "KB-Other": 15
+  },
+  "KB-People": {
+   "KB-People": 13,
+   "KB-Bio-Medicine": 1,
+   "KB-Literature-Arts": 1
+  },
+  "KB-Politics-History": {
+   "KB-Other": 3,
+   "KB-Politics-History": 8,
+   "KB-People": 3,
+   "KB-Film-TV": 1
+  },
+  "KB-Science-Tech": {
+   "KB-Music": 1,
+   "KB-Science-Tech": 11,
+   "KB-Bio-Medicine": 1,
+   "KB-People": 1,
+   "KB-Other": 1
+  },
+  "KB-Sports": {
+   "KB-Sports": 14,
+   "KB-Film-TV": 1
+  },
+  "KB-Transport": {
+   "KB-Transport": 12,
+   "KB-Politics-History": 1,
+   "KB-People": 2
+  }
+ },
+ "records": [
+  {
+   "title": "Charles Eugene, 2nd Duke of Arenberg",
+   "gold_kb": "KB-Bio-Medicine",
+   "pred_vote1": "KB-Bio-Medicine",
+   "pred_vote3": "KB-Bio-Medicine",
+   "pred_scan": "KB-Bio-Medicine",
+   "scan_margin": 0.9441,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Crazy Sexy Cancer",
+   "gold_kb": "KB-Bio-Medicine",
+   "pred_vote1": "KB-Bio-Medicine",
+   "pred_vote3": "KB-Bio-Medicine",
+   "pred_scan": "KB-Bio-Medicine",
+   "scan_margin": 0.9686,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Dominick and Eugene",
+   "gold_kb": "KB-Bio-Medicine",
+   "pred_vote1": "KB-Bio-Medicine",
+   "pred_vote3": "KB-Bio-Medicine",
+   "pred_scan": "KB-Bio-Medicine",
+   "scan_margin": 0.9595,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Eugene Fubini",
+   "gold_kb": "KB-Bio-Medicine",
+   "pred_vote1": "KB-Bio-Medicine",
+   "pred_vote3": "KB-Bio-Medicine",
+   "pred_scan": "KB-Bio-Medicine",
+   "scan_margin": 0.9371,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Eugene V. Debs",
+   "gold_kb": "KB-Bio-Medicine",
+   "pred_vote1": "KB-Bio-Medicine",
+   "pred_vote3": "KB-Bio-Medicine",
+   "pred_scan": "KB-Bio-Medicine",
+   "scan_margin": 0.9371,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Gene Autry",
+   "gold_kb": "KB-Bio-Medicine",
+   "pred_vote1": "KB-Bio-Medicine",
+   "pred_vote3": "KB-Bio-Medicine",
+   "pred_scan": "KB-Bio-Medicine",
+   "scan_margin": 0.8885,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Gene Ball",
+   "gold_kb": "KB-Bio-Medicine",
+   "pred_vote1": "KB-Bio-Medicine",
+   "pred_vote3": "KB-Bio-Medicine",
+   "pred_scan": "KB-Bio-Medicine",
+   "scan_margin": 0.8953,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Gene Hackman",
+   "gold_kb": "KB-Bio-Medicine",
+   "pred_vote1": "KB-Bio-Medicine",
+   "pred_vote3": "KB-Bio-Medicine",
+   "pred_scan": "KB-Bio-Medicine",
+   "scan_margin": 0.9181,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Gene Watson",
+   "gold_kb": "KB-Bio-Medicine",
+   "pred_vote1": "KB-Bio-Medicine",
+   "pred_vote3": "KB-Bio-Medicine",
+   "pred_scan": "KB-Bio-Medicine",
+   "scan_margin": 0.9541,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Genesis: The Creation and the Flood",
+   "gold_kb": "KB-Bio-Medicine",
+   "pred_vote1": "KB-Bio-Medicine",
+   "pred_vote3": "KB-Bio-Medicine",
+   "pred_scan": "KB-Bio-Medicine",
+   "scan_margin": 0.9676,
+   "roundtrip_rank": 2
+  },
+  {
+   "title": "Shoot-Out at Medicine Bend",
+   "gold_kb": "KB-Bio-Medicine",
+   "pred_vote1": "KB-Bio-Medicine",
+   "pred_vote3": "KB-Bio-Medicine",
+   "pred_scan": "KB-Bio-Medicine",
+   "scan_margin": 0.9667,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Star Trek: The Next Generation",
+   "gold_kb": "KB-Bio-Medicine",
+   "pred_vote1": "KB-Bio-Medicine",
+   "pred_vote3": "KB-Bio-Medicine",
+   "pred_scan": "KB-Bio-Medicine",
+   "scan_margin": 0.8598,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "Superman & Batman: Generations",
+   "gold_kb": "KB-Bio-Medicine",
+   "pred_vote1": "KB-Bio-Medicine",
+   "pred_vote3": "KB-Bio-Medicine",
+   "pred_scan": "KB-Bio-Medicine",
+   "scan_margin": 0.9309,
+   "roundtrip_rank": 2
+  },
+  {
+   "title": "The General (Muchamore novel)",
+   "gold_kb": "KB-Bio-Medicine",
+   "pred_vote1": "KB-Bio-Medicine",
+   "pred_vote3": "KB-Bio-Medicine",
+   "pred_scan": "KB-Bio-Medicine",
+   "scan_margin": 0.9608,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "The Younger Generation",
+   "gold_kb": "KB-Bio-Medicine",
+   "pred_vote1": "KB-Bio-Medicine",
+   "pred_vote3": "KB-Bio-Medicine",
+   "pred_scan": "KB-Bio-Medicine",
+   "scan_margin": 0.9734,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "University of Kansas",
+   "gold_kb": "KB-Economy-Law",
+   "pred_vote1": "KB-Economy-Law",
+   "pred_vote3": "KB-Economy-Law",
+   "pred_scan": "KB-Economy-Law",
+   "scan_margin": 0.8494,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "University of Los Andes (Colombia)",
+   "gold_kb": "KB-Economy-Law",
+   "pred_vote1": "KB-Bio-Medicine",
+   "pred_vote3": "KB-Bio-Medicine",
+   "pred_scan": "KB-Economy-Law",
+   "scan_margin": 0.9109,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "University of Miami",
+   "gold_kb": "KB-Economy-Law",
+   "pred_vote1": "KB-Economy-Law",
+   "pred_vote3": "KB-Economy-Law",
+   "pred_scan": "KB-Economy-Law",
+   "scan_margin": 0.9572,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "University of Providence",
+   "gold_kb": "KB-Economy-Law",
+   "pred_vote1": "KB-Economy-Law",
+   "pred_vote3": "KB-Economy-Law",
+   "pred_scan": "KB-Economy-Law",
+   "scan_margin": 0.933,
+   "roundtrip_rank": 5
+  },
+  {
+   "title": "University of Southern Queensland",
+   "gold_kb": "KB-Economy-Law",
+   "pred_vote1": "KB-Economy-Law",
+   "pred_vote3": "KB-Economy-Law",
+   "pred_scan": "KB-Economy-Law",
+   "scan_margin": 0.9106,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "University of St. Thomas (Minnesota)",
+   "gold_kb": "KB-Economy-Law",
+   "pred_vote1": "KB-Economy-Law",
+   "pred_vote3": "KB-Economy-Law",
+   "pred_scan": "KB-Economy-Law",
+   "scan_margin": 0.9639,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "University of Washington",
+   "gold_kb": "KB-Economy-Law",
+   "pred_vote1": "KB-Economy-Law",
+   "pred_vote3": "KB-Economy-Law",
+   "pred_scan": "KB-Economy-Law",
+   "scan_margin": 0.819,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "University of the District of Columbia",
+   "gold_kb": "KB-Economy-Law",
+   "pred_vote1": "KB-Economy-Law",
+   "pred_vote3": "KB-Economy-Law",
+   "pred_scan": "KB-Economy-Law",
+   "scan_margin": 0.8958,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Valparaiso University",
+   "gold_kb": "KB-Economy-Law",
+   "pred_vote1": "KB-Economy-Law",
+   "pred_vote3": "KB-Economy-Law",
+   "pred_scan": "KB-Economy-Law",
+   "scan_margin": 0.9548,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Watercliffe Meadow Community Primary School",
+   "gold_kb": "KB-Economy-Law",
+   "pred_vote1": "KB-Music",
+   "pred_vote3": "KB-Music",
+   "pred_scan": "KB-Economy-Law",
+   "scan_margin": 0.588,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Waverley College",
+   "gold_kb": "KB-Economy-Law",
+   "pred_vote1": "KB-Geography",
+   "pred_vote3": "KB-Geography",
+   "pred_scan": "KB-Economy-Law",
+   "scan_margin": 0.5893,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Whitehorse Manor Junior School",
+   "gold_kb": "KB-Economy-Law",
+   "pred_vote1": "KB-Politics-History",
+   "pred_vote3": "KB-Politics-History",
+   "pred_scan": "KB-Economy-Law",
+   "scan_margin": 0.5933,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "William St Lawrence, 12th Baron Howth",
+   "gold_kb": "KB-Economy-Law",
+   "pred_vote1": "KB-Military",
+   "pred_vote3": "KB-Military",
+   "pred_scan": "KB-Economy-Law",
+   "scan_margin": 0.8206,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Yalkae, a Joker in High School",
+   "gold_kb": "KB-Economy-Law",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.6692,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Yonsei University",
+   "gold_kb": "KB-Economy-Law",
+   "pred_vote1": "KB-Military",
+   "pred_vote3": "KB-Military",
+   "pred_scan": "KB-Economy-Law",
+   "scan_margin": 0.6313,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "White House (film)",
+   "gold_kb": "KB-Film-TV",
+   "pred_vote1": "KB-Film-TV",
+   "pred_vote3": "KB-Film-TV",
+   "pred_scan": "KB-Film-TV",
+   "scan_margin": 0.9784,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Wild Things (film)",
+   "gold_kb": "KB-Film-TV",
+   "pred_vote1": "KB-Film-TV",
+   "pred_vote3": "KB-Film-TV",
+   "pred_scan": "KB-Film-TV",
+   "scan_margin": 0.9479,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "William Clemens (film director)",
+   "gold_kb": "KB-Film-TV",
+   "pred_vote1": "KB-Film-TV",
+   "pred_vote3": "KB-Film-TV",
+   "pred_scan": "KB-Film-TV",
+   "scan_margin": 0.9578,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Wisdom (film)",
+   "gold_kb": "KB-Film-TV",
+   "pred_vote1": "KB-Film-TV",
+   "pred_vote3": "KB-Film-TV",
+   "pred_scan": "KB-Film-TV",
+   "scan_margin": 0.8414,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Wise Blood (film)",
+   "gold_kb": "KB-Film-TV",
+   "pred_vote1": "KB-Film-TV",
+   "pred_vote3": "KB-Film-TV",
+   "pred_scan": "KB-Film-TV",
+   "scan_margin": 0.8311,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Witness (1985 film)",
+   "gold_kb": "KB-Film-TV",
+   "pred_vote1": "KB-Film-TV",
+   "pred_vote3": "KB-Film-TV",
+   "pred_scan": "KB-Film-TV",
+   "scan_margin": 0.9142,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Wonderful World (2009 film)",
+   "gold_kb": "KB-Film-TV",
+   "pred_vote1": "KB-Film-TV",
+   "pred_vote3": "KB-Film-TV",
+   "pred_scan": "KB-Film-TV",
+   "scan_margin": 0.9243,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "World Film Company",
+   "gold_kb": "KB-Film-TV",
+   "pred_vote1": "KB-Film-TV",
+   "pred_vote3": "KB-Film-TV",
+   "pred_scan": "KB-Film-TV",
+   "scan_margin": 0.9634,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "World Series",
+   "gold_kb": "KB-Film-TV",
+   "pred_vote1": "KB-Film-TV",
+   "pred_vote3": "KB-Film-TV",
+   "pred_scan": "KB-Film-TV",
+   "scan_margin": 0.9434,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Yaadein (1964 film)",
+   "gold_kb": "KB-Film-TV",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.675,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Yahudi Ki Ladki (1933 film)",
+   "gold_kb": "KB-Film-TV",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-Film-TV",
+   "scan_margin": 0.5678,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Yakuza (series)",
+   "gold_kb": "KB-Film-TV",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.7243,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "Yellow (2014 film)",
+   "gold_kb": "KB-Film-TV",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-Film-TV",
+   "scan_margin": 0.6216,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Young Adult (film)",
+   "gold_kb": "KB-Film-TV",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Economy-Law",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.6852,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Zipper (film)",
+   "gold_kb": "KB-Film-TV",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-Film-TV",
+   "scan_margin": 0.6264,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Summer Sports: Paradise Island",
+   "gold_kb": "KB-Geography",
+   "pred_vote1": "KB-Geography",
+   "pred_vote3": "KB-Geography",
+   "pred_scan": "KB-Geography",
+   "scan_margin": 0.9462,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "The City Heiress",
+   "gold_kb": "KB-Geography",
+   "pred_vote1": "KB-Geography",
+   "pred_vote3": "KB-Geography",
+   "pred_scan": "KB-Geography",
+   "scan_margin": 0.9361,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "The Collection at RiverPark",
+   "gold_kb": "KB-Geography",
+   "pred_vote1": "KB-Geography",
+   "pred_vote3": "KB-Geography",
+   "pred_scan": "KB-Geography",
+   "scan_margin": 0.9445,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "The Driver",
+   "gold_kb": "KB-Geography",
+   "pred_vote1": "KB-Geography",
+   "pred_vote3": "KB-Geography",
+   "pred_scan": "KB-Geography",
+   "scan_margin": 0.9193,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "The Hero of Color City",
+   "gold_kb": "KB-Geography",
+   "pred_vote1": "KB-Geography",
+   "pred_vote3": "KB-Geography",
+   "pred_scan": "KB-Geography",
+   "scan_margin": 0.8812,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "The Island (play)",
+   "gold_kb": "KB-Geography",
+   "pred_vote1": "KB-Geography",
+   "pred_vote3": "KB-Geography",
+   "pred_scan": "KB-Geography",
+   "scan_margin": 0.9249,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "The River Wild",
+   "gold_kb": "KB-Geography",
+   "pred_vote1": "KB-Geography",
+   "pred_vote3": "KB-Geography",
+   "pred_scan": "KB-Geography",
+   "scan_margin": 0.9673,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Thuli River",
+   "gold_kb": "KB-Geography",
+   "pred_vote1": "KB-Geography",
+   "pred_vote3": "KB-Geography",
+   "pred_scan": "KB-Geography",
+   "scan_margin": 0.9437,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Timothy Shriver",
+   "gold_kb": "KB-Geography",
+   "pred_vote1": "KB-Geography",
+   "pred_vote3": "KB-Geography",
+   "pred_scan": "KB-Geography",
+   "scan_margin": 0.9584,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "United Baptist Church (Newport, Rhode Island)",
+   "gold_kb": "KB-Geography",
+   "pred_vote1": "KB-Geography",
+   "pred_vote3": "KB-Geography",
+   "pred_scan": "KB-Geography",
+   "scan_margin": 0.9615,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Vatican City",
+   "gold_kb": "KB-Geography",
+   "pred_vote1": "KB-Geography",
+   "pred_vote3": "KB-Geography",
+   "pred_scan": "KB-Geography",
+   "scan_margin": 0.9637,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Wake Forest University",
+   "gold_kb": "KB-Geography",
+   "pred_vote1": "KB-Geography",
+   "pred_vote3": "KB-Geography",
+   "pred_scan": "KB-Geography",
+   "scan_margin": 0.8889,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Waterton Lake",
+   "gold_kb": "KB-Geography",
+   "pred_vote1": "KB-Geography",
+   "pred_vote3": "KB-Geography",
+   "pred_scan": "KB-Geography",
+   "scan_margin": 0.9026,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Yalu River",
+   "gold_kb": "KB-Geography",
+   "pred_vote1": "KB-Geography",
+   "pred_vote3": "KB-Geography",
+   "pred_scan": "KB-Geography",
+   "scan_margin": 0.9671,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Yuma County Library District",
+   "gold_kb": "KB-Geography",
+   "pred_vote1": "KB-Geography",
+   "pred_vote3": "KB-Geography",
+   "pred_scan": "KB-Geography",
+   "scan_margin": 0.9111,
+   "roundtrip_rank": 12
+  },
+  {
+   "title": "The Rescue (Conrad novel)",
+   "gold_kb": "KB-Literature-Arts",
+   "pred_vote1": "KB-Literature-Arts",
+   "pred_vote3": "KB-Literature-Arts",
+   "pred_scan": "KB-Literature-Arts",
+   "scan_margin": 0.969,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "The Sacrifice (Higson novel)",
+   "gold_kb": "KB-Literature-Arts",
+   "pred_vote1": "KB-Literature-Arts",
+   "pred_vote3": "KB-Literature-Arts",
+   "pred_scan": "KB-Literature-Arts",
+   "scan_margin": 0.8713,
+   "roundtrip_rank": 2
+  },
+  {
+   "title": "The Traveler (novel)",
+   "gold_kb": "KB-Literature-Arts",
+   "pred_vote1": "KB-Literature-Arts",
+   "pred_vote3": "KB-Literature-Arts",
+   "pred_scan": "KB-Literature-Arts",
+   "scan_margin": 0.8135,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "The Wave (novel)",
+   "gold_kb": "KB-Literature-Arts",
+   "pred_vote1": "KB-Literature-Arts",
+   "pred_vote3": "KB-Literature-Arts",
+   "pred_scan": "KB-Literature-Arts",
+   "scan_margin": 0.9413,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "The Writer",
+   "gold_kb": "KB-Literature-Arts",
+   "pred_vote1": "KB-Literature-Arts",
+   "pred_vote3": "KB-Literature-Arts",
+   "pred_scan": "KB-Literature-Arts",
+   "scan_margin": 0.9778,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Therapy (Lodge novel)",
+   "gold_kb": "KB-Literature-Arts",
+   "pred_vote1": "KB-Literature-Arts",
+   "pred_vote3": "KB-Literature-Arts",
+   "pred_scan": "KB-Literature-Arts",
+   "scan_margin": 0.9131,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "This Is It (novel)",
+   "gold_kb": "KB-Literature-Arts",
+   "pred_vote1": "KB-Literature-Arts",
+   "pred_vote3": "KB-Literature-Arts",
+   "pred_scan": "KB-Literature-Arts",
+   "scan_margin": 0.9749,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Timeless (Carriger novel)",
+   "gold_kb": "KB-Literature-Arts",
+   "pred_vote1": "KB-Literature-Arts",
+   "pred_vote3": "KB-Literature-Arts",
+   "pred_scan": "KB-Literature-Arts",
+   "scan_margin": 0.9586,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Timeline (novel)",
+   "gold_kb": "KB-Literature-Arts",
+   "pred_vote1": "KB-Literature-Arts",
+   "pred_vote3": "KB-Literature-Arts",
+   "pred_scan": "KB-Literature-Arts",
+   "scan_margin": 0.8398,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Tricks (novel)",
+   "gold_kb": "KB-Literature-Arts",
+   "pred_vote1": "KB-Literature-Arts",
+   "pred_vote3": "KB-Literature-Arts",
+   "pred_scan": "KB-Literature-Arts",
+   "scan_margin": 0.9052,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Washington, D.C. (novel)",
+   "gold_kb": "KB-Literature-Arts",
+   "pred_vote1": "KB-Literature-Arts",
+   "pred_vote3": "KB-Literature-Arts",
+   "pred_scan": "KB-Literature-Arts",
+   "scan_margin": 0.9754,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Weight Loss (novel)",
+   "gold_kb": "KB-Literature-Arts",
+   "pred_vote1": "KB-Literature-Arts",
+   "pred_vote3": "KB-Literature-Arts",
+   "pred_scan": "KB-Literature-Arts",
+   "scan_margin": 0.9698,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Whatever (novel)",
+   "gold_kb": "KB-Literature-Arts",
+   "pred_vote1": "KB-Literature-Arts",
+   "pred_vote3": "KB-Literature-Arts",
+   "pred_scan": "KB-Literature-Arts",
+   "scan_margin": 0.9249,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "White Noise (novel)",
+   "gold_kb": "KB-Literature-Arts",
+   "pred_vote1": "KB-Literature-Arts",
+   "pred_vote3": "KB-Literature-Arts",
+   "pred_scan": "KB-Literature-Arts",
+   "scan_margin": 0.902,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Zone 5 Military Museum, Danang",
+   "gold_kb": "KB-Literature-Arts",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Military",
+   "pred_scan": "KB-Literature-Arts",
+   "scan_margin": 0.5717,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Castle Air Force Base",
+   "gold_kb": "KB-Military",
+   "pred_vote1": "KB-Military",
+   "pred_vote3": "KB-Military",
+   "pred_scan": "KB-Military",
+   "scan_margin": 0.8807,
+   "roundtrip_rank": 3
+  },
+  {
+   "title": "Charles Egerton (Indian Army officer)",
+   "gold_kb": "KB-Military",
+   "pred_vote1": "KB-Military",
+   "pred_vote3": "KB-Military",
+   "pred_scan": "KB-Military",
+   "scan_margin": 0.9391,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Ghana Navy",
+   "gold_kb": "KB-Military",
+   "pred_vote1": "KB-Military",
+   "pred_vote3": "KB-Military",
+   "pred_scan": "KB-Military",
+   "scan_margin": 0.9192,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Hickam Air Force Base",
+   "gold_kb": "KB-Military",
+   "pred_vote1": "KB-Military",
+   "pred_vote3": "KB-Military",
+   "pred_scan": "KB-Military",
+   "scan_margin": 0.9339,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Imperial Japanese Army",
+   "gold_kb": "KB-Military",
+   "pred_vote1": "KB-Military",
+   "pred_vote3": "KB-Military",
+   "pred_scan": "KB-Military",
+   "scan_margin": 0.9313,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Military Frontier",
+   "gold_kb": "KB-Military",
+   "pred_vote1": "KB-Military",
+   "pred_vote3": "KB-Military",
+   "pred_scan": "KB-Military",
+   "scan_margin": 0.9714,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Military history of the United States",
+   "gold_kb": "KB-Military",
+   "pred_vote1": "KB-Military",
+   "pred_vote3": "KB-Military",
+   "pred_scan": "KB-Military",
+   "scan_margin": 0.871,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Patrol Squadron 4 (United States Navy)",
+   "gold_kb": "KB-Military",
+   "pred_vote1": "KB-Military",
+   "pred_vote3": "KB-Military",
+   "pred_scan": "KB-Military",
+   "scan_margin": 0.905,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Second VA-174 (U.S. Navy)",
+   "gold_kb": "KB-Military",
+   "pred_vote1": "KB-Military",
+   "pred_vote3": "KB-Military",
+   "pred_scan": "KB-Military",
+   "scan_margin": 0.9234,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Seven Nation Army",
+   "gold_kb": "KB-Military",
+   "pred_vote1": "KB-Military",
+   "pred_vote3": "KB-Military",
+   "pred_scan": "KB-Military",
+   "scan_margin": 0.8825,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Twelfth United States Army Group",
+   "gold_kb": "KB-Military",
+   "pred_vote1": "KB-Military",
+   "pred_vote3": "KB-Military",
+   "pred_scan": "KB-Military",
+   "scan_margin": 0.931,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Twenty-First Army (Japan)",
+   "gold_kb": "KB-Military",
+   "pred_vote1": "KB-Military",
+   "pred_vote3": "KB-Military",
+   "pred_scan": "KB-Military",
+   "scan_margin": 0.9502,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "United States Air Force",
+   "gold_kb": "KB-Military",
+   "pred_vote1": "KB-Military",
+   "pred_vote3": "KB-Military",
+   "pred_scan": "KB-Military",
+   "scan_margin": 0.8964,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "United States Army",
+   "gold_kb": "KB-Military",
+   "pred_vote1": "KB-Military",
+   "pred_vote3": "KB-Military",
+   "pred_scan": "KB-Military",
+   "scan_margin": 0.8793,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "United States Navy SEALs",
+   "gold_kb": "KB-Military",
+   "pred_vote1": "KB-Military",
+   "pred_vote3": "KB-Military",
+   "pred_scan": "KB-Military",
+   "scan_margin": 0.9232,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "To Love (Faye Wong album)",
+   "gold_kb": "KB-Music",
+   "pred_vote1": "KB-Music",
+   "pred_vote3": "KB-Music",
+   "pred_scan": "KB-Music",
+   "scan_margin": 0.9315,
+   "roundtrip_rank": 40
+  },
+  {
+   "title": "To Mother (song)",
+   "gold_kb": "KB-Music",
+   "pred_vote1": "KB-Music",
+   "pred_vote3": "KB-Music",
+   "pred_scan": "KB-Music",
+   "scan_margin": 0.9494,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Tribute (Yanni album)",
+   "gold_kb": "KB-Music",
+   "pred_vote1": "KB-Music",
+   "pred_vote3": "KB-Music",
+   "pred_scan": "KB-Music",
+   "scan_margin": 0.9618,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Turn Me On (Mark Dinning song)",
+   "gold_kb": "KB-Music",
+   "pred_vote1": "KB-Music",
+   "pred_vote3": "KB-Music",
+   "pred_scan": "KB-Music",
+   "scan_margin": 0.9602,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "U.K. (band)",
+   "gold_kb": "KB-Music",
+   "pred_vote1": "KB-Music",
+   "pred_vote3": "KB-Music",
+   "pred_scan": "KB-Music",
+   "scan_margin": 0.9519,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Upside Down (Diana Ross song)",
+   "gold_kb": "KB-Music",
+   "pred_vote1": "KB-Music",
+   "pred_vote3": "KB-Music",
+   "pred_scan": "KB-Music",
+   "scan_margin": 0.9178,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "V (Anna Abreu album)",
+   "gold_kb": "KB-Music",
+   "pred_vote1": "KB-Music",
+   "pred_vote3": "KB-Music",
+   "pred_scan": "KB-Music",
+   "scan_margin": 0.9638,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "VS (song)",
+   "gold_kb": "KB-Music",
+   "pred_vote1": "KB-Music",
+   "pred_vote3": "KB-Music",
+   "pred_scan": "KB-Music",
+   "scan_margin": 0.9409,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Vogue (Ayumi Hamasaki song)",
+   "gold_kb": "KB-Music",
+   "pred_vote1": "KB-Music",
+   "pred_vote3": "KB-Music",
+   "pred_scan": "KB-Music",
+   "scan_margin": 0.8084,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Walk Away (Kelly Clarkson song)",
+   "gold_kb": "KB-Music",
+   "pred_vote1": "KB-Music",
+   "pred_vote3": "KB-Music",
+   "pred_scan": "KB-Music",
+   "scan_margin": 0.9626,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "White Squall (song)",
+   "gold_kb": "KB-Music",
+   "pred_vote1": "KB-Music",
+   "pred_vote3": "KB-Music",
+   "pred_scan": "KB-Music",
+   "scan_margin": 0.9747,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Winner (band)",
+   "gold_kb": "KB-Music",
+   "pred_vote1": "KB-Music",
+   "pred_vote3": "KB-Music",
+   "pred_scan": "KB-Music",
+   "scan_margin": 0.9125,
+   "roundtrip_rank": 9
+  },
+  {
+   "title": "Without You (Peabo Bryson and Regina Belle song)",
+   "gold_kb": "KB-Music",
+   "pred_vote1": "KB-Music",
+   "pred_vote3": "KB-Music",
+   "pred_scan": "KB-Music",
+   "scan_margin": 0.9256,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Write This Down (band)",
+   "gold_kb": "KB-Music",
+   "pred_vote1": "KB-Music",
+   "pred_vote3": "KB-Music",
+   "pred_scan": "KB-Music",
+   "scan_margin": 0.9324,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "X (Chris Brown song)",
+   "gold_kb": "KB-Music",
+   "pred_vote1": "KB-Music",
+   "pred_vote3": "KB-Music",
+   "pred_scan": "KB-Music",
+   "scan_margin": 0.8789,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Yolande, Duchess of Lorraine",
+   "gold_kb": "KB-Other",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.9356,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Yoo Seung-ho",
+   "gold_kb": "KB-Other",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.9622,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Yoshi (video game)",
+   "gold_kb": "KB-Other",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.8954,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "You're Next",
+   "gold_kb": "KB-Other",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.7902,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Yuen Woo-ping",
+   "gold_kb": "KB-Other",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.8444,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Yuma, Colorado",
+   "gold_kb": "KB-Other",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.969,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Ze'ev Jabotinsky",
+   "gold_kb": "KB-Other",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.957,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Zhang Yang (director)",
+   "gold_kb": "KB-Other",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.9462,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Zhuozi (Jin)",
+   "gold_kb": "KB-Other",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.9591,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Zita of Bourbon-Parma",
+   "gold_kb": "KB-Other",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.9716,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "¡Cuatro!",
+   "gold_kb": "KB-Other",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.9692,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Ælfgar, Earl of Mercia",
+   "gold_kb": "KB-Other",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.8868,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Æthelred I of Northumbria",
+   "gold_kb": "KB-Other",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.957,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Æthelweard (historian)",
+   "gold_kb": "KB-Other",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.9046,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Þorsteinn Bachmann",
+   "gold_kb": "KB-Other",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.9791,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "You Shook Me All Night Long",
+   "gold_kb": "KB-People",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.958,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Young Doctors in Love",
+   "gold_kb": "KB-People",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.948,
+   "roundtrip_rank": 24
+  },
+  {
+   "title": "Your Face",
+   "gold_kb": "KB-People",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.9515,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Yuri Kleschev",
+   "gold_kb": "KB-People",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.9576,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Yuri Koroviansky",
+   "gold_kb": "KB-People",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.959,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Zach Bogosian",
+   "gold_kb": "KB-People",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.8686,
+   "roundtrip_rank": 3
+  },
+  {
+   "title": "Zahi Hawass",
+   "gold_kb": "KB-People",
+   "pred_vote1": "KB-Literature-Arts",
+   "pred_vote3": "KB-Literature-Arts",
+   "pred_scan": "KB-Bio-Medicine",
+   "scan_margin": 0.5896,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "Zazie Beetz",
+   "gold_kb": "KB-People",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.95,
+   "roundtrip_rank": 41
+  },
+  {
+   "title": "Zecharias Frankel",
+   "gold_kb": "KB-People",
+   "pred_vote1": "KB-Literature-Arts",
+   "pred_vote3": "KB-Literature-Arts",
+   "pred_scan": "KB-Literature-Arts",
+   "scan_margin": 0.6079,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "Zeenat Mahal",
+   "gold_kb": "KB-People",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.95,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Zhang Tianxi",
+   "gold_kb": "KB-People",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.9539,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Zhengyou Zhang",
+   "gold_kb": "KB-People",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.9647,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Zofia Czartoryska",
+   "gold_kb": "KB-People",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.951,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Zoltan Korda",
+   "gold_kb": "KB-People",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.9316,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Zombi Kampung Pisang",
+   "gold_kb": "KB-People",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.9497,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "T. R. M. Howard",
+   "gold_kb": "KB-Politics-History",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.6654,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "Terry Swartzberg",
+   "gold_kb": "KB-Politics-History",
+   "pred_vote1": "KB-Politics-History",
+   "pred_vote3": "KB-Politics-History",
+   "pred_scan": "KB-Politics-History",
+   "scan_margin": 0.9724,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "The Code of Conduct and the Vietnam Prisoners of War",
+   "gold_kb": "KB-Politics-History",
+   "pred_vote1": "KB-Politics-History",
+   "pred_vote3": "KB-Politics-History",
+   "pred_scan": "KB-Politics-History",
+   "scan_margin": 0.9399,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "The Fog of War",
+   "gold_kb": "KB-Politics-History",
+   "pred_vote1": "KB-Politics-History",
+   "pred_vote3": "KB-Politics-History",
+   "pred_scan": "KB-Politics-History",
+   "scan_margin": 0.8889,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "The Great Warrior Skanderbeg",
+   "gold_kb": "KB-Politics-History",
+   "pred_vote1": "KB-Politics-History",
+   "pred_vote3": "KB-Politics-History",
+   "pred_scan": "KB-Politics-History",
+   "scan_margin": 0.9686,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Unnatural Selection (Star Trek: The Next Generation)",
+   "gold_kb": "KB-Politics-History",
+   "pred_vote1": "KB-Politics-History",
+   "pred_vote3": "KB-Politics-History",
+   "pred_scan": "KB-Politics-History",
+   "scan_margin": 0.9233,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "War Is the Answer",
+   "gold_kb": "KB-Politics-History",
+   "pred_vote1": "KB-Politics-History",
+   "pred_vote3": "KB-Politics-History",
+   "pred_scan": "KB-Politics-History",
+   "scan_margin": 0.8917,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "War on Terror",
+   "gold_kb": "KB-Politics-History",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.6499,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "Ward Bond",
+   "gold_kb": "KB-Politics-History",
+   "pred_vote1": "KB-Politics-History",
+   "pred_vote3": "KB-Politics-History",
+   "pred_scan": "KB-Politics-History",
+   "scan_margin": 0.9372,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Warrior (arcade game)",
+   "gold_kb": "KB-Politics-History",
+   "pred_vote1": "KB-Politics-History",
+   "pred_vote3": "KB-Politics-History",
+   "pred_scan": "KB-Politics-History",
+   "scan_margin": 0.9698,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Warsaw Pact",
+   "gold_kb": "KB-Politics-History",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.6715,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "Weekend War",
+   "gold_kb": "KB-Politics-History",
+   "pred_vote1": "KB-Film-TV",
+   "pred_vote3": "KB-Film-TV",
+   "pred_scan": "KB-Film-TV",
+   "scan_margin": 0.6589,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "William K. Howard",
+   "gold_kb": "KB-Politics-History",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.5973,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "William Stanley (Battle of Bosworth)",
+   "gold_kb": "KB-Politics-History",
+   "pred_vote1": "KB-Other",
+   "pred_vote3": "KB-Other",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.7247,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "World War I",
+   "gold_kb": "KB-Politics-History",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.6665,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "Mazzy Star",
+   "gold_kb": "KB-Science-Tech",
+   "pred_vote1": "KB-Music",
+   "pred_vote3": "KB-Music",
+   "pred_scan": "KB-Music",
+   "scan_margin": 0.6051,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "Ministro Pistarini International Airport",
+   "gold_kb": "KB-Science-Tech",
+   "pred_vote1": "KB-Science-Tech",
+   "pred_vote3": "KB-Science-Tech",
+   "pred_scan": "KB-Science-Tech",
+   "scan_margin": 0.9464,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Mostar Round-Trip",
+   "gold_kb": "KB-Science-Tech",
+   "pred_vote1": "KB-Science-Tech",
+   "pred_vote3": "KB-Science-Tech",
+   "pred_scan": "KB-Science-Tech",
+   "scan_margin": 0.8998,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Pentastar: In the Style of Demons",
+   "gold_kb": "KB-Science-Tech",
+   "pred_vote1": "KB-Science-Tech",
+   "pred_vote3": "KB-Science-Tech",
+   "pred_scan": "KB-Science-Tech",
+   "scan_margin": 0.956,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Star Crystal",
+   "gold_kb": "KB-Science-Tech",
+   "pred_vote1": "KB-Science-Tech",
+   "pred_vote3": "KB-Science-Tech",
+   "pred_scan": "KB-Science-Tech",
+   "scan_margin": 0.9511,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Starship Command",
+   "gold_kb": "KB-Science-Tech",
+   "pred_vote1": "KB-Science-Tech",
+   "pred_vote3": "KB-Science-Tech",
+   "pred_scan": "KB-Science-Tech",
+   "scan_margin": 0.9649,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Sulfur mustard",
+   "gold_kb": "KB-Science-Tech",
+   "pred_vote1": "KB-Bio-Medicine",
+   "pred_vote3": "KB-Bio-Medicine",
+   "pred_scan": "KB-Bio-Medicine",
+   "scan_margin": 0.6385,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "TRS-80 Color Computer",
+   "gold_kb": "KB-Science-Tech",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.6382,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "The Blackout All-Stars",
+   "gold_kb": "KB-Science-Tech",
+   "pred_vote1": "KB-Science-Tech",
+   "pred_vote3": "KB-Science-Tech",
+   "pred_scan": "KB-Science-Tech",
+   "scan_margin": 0.9711,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "The Fault in Our Stars",
+   "gold_kb": "KB-Science-Tech",
+   "pred_vote1": "KB-Literature-Arts",
+   "pred_vote3": "KB-Literature-Arts",
+   "pred_scan": "KB-Science-Tech",
+   "scan_margin": 0.5571,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "The Planets",
+   "gold_kb": "KB-Science-Tech",
+   "pred_vote1": "KB-Film-TV",
+   "pred_vote3": "KB-Film-TV",
+   "pred_scan": "KB-Other",
+   "scan_margin": 0.5792,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "Today I Started Loving You Again",
+   "gold_kb": "KB-Science-Tech",
+   "pred_vote1": "KB-Science-Tech",
+   "pred_vote3": "KB-Science-Tech",
+   "pred_scan": "KB-Science-Tech",
+   "scan_margin": 0.9689,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Ulysses (spacecraft)",
+   "gold_kb": "KB-Science-Tech",
+   "pred_vote1": "KB-Economy-Law",
+   "pred_vote3": "KB-Economy-Law",
+   "pred_scan": "KB-Science-Tech",
+   "scan_margin": 0.6983,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "Unexpected (Star Trek: Enterprise)",
+   "gold_kb": "KB-Science-Tech",
+   "pred_vote1": "KB-Science-Tech",
+   "pred_vote3": "KB-Science-Tech",
+   "pred_scan": "KB-Science-Tech",
+   "scan_margin": 0.912,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "World Wonder Ring Stardom",
+   "gold_kb": "KB-Science-Tech",
+   "pred_vote1": "KB-Transport",
+   "pred_vote3": "KB-Transport",
+   "pred_scan": "KB-Science-Tech",
+   "scan_margin": 0.7397,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "Rabat Ajax Football Ground",
+   "gold_kb": "KB-Sports",
+   "pred_vote1": "KB-Sports",
+   "pred_vote3": "KB-Sports",
+   "pred_scan": "KB-Sports",
+   "scan_margin": 0.9224,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Rotherham County F.C.",
+   "gold_kb": "KB-Sports",
+   "pred_vote1": "KB-Sports",
+   "pred_vote3": "KB-Sports",
+   "pred_scan": "KB-Sports",
+   "scan_margin": 0.9691,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Sean Francis (footballer)",
+   "gold_kb": "KB-Sports",
+   "pred_vote1": "KB-Sports",
+   "pred_vote3": "KB-Sports",
+   "pred_scan": "KB-Sports",
+   "scan_margin": 0.8998,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Shamrock Rovers F.C.",
+   "gold_kb": "KB-Sports",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-Sports",
+   "scan_margin": 0.665,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "Shaolin Soccer",
+   "gold_kb": "KB-Sports",
+   "pred_vote1": "KB-Sports",
+   "pred_vote3": "KB-Sports",
+   "pred_scan": "KB-Sports",
+   "scan_margin": 0.964,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Southern Miss Golden Eagles football",
+   "gold_kb": "KB-Sports",
+   "pred_vote1": "KB-Military",
+   "pred_vote3": "KB-Military",
+   "pred_scan": "KB-Sports",
+   "scan_margin": 0.6534,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "St Kilda Football Club",
+   "gold_kb": "KB-Sports",
+   "pred_vote1": "KB-Transport",
+   "pred_vote3": "KB-Transport",
+   "pred_scan": "KB-Sports",
+   "scan_margin": 0.6527,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "Stoke City F.C.",
+   "gold_kb": "KB-Sports",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-Sports",
+   "scan_margin": 0.6593,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "Summer Olympic Games",
+   "gold_kb": "KB-Sports",
+   "pred_vote1": "KB-Science-Tech",
+   "pred_vote3": "KB-Science-Tech",
+   "pred_scan": "KB-Sports",
+   "scan_margin": 0.7529,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "The Computer Wore Tennis Shoes",
+   "gold_kb": "KB-Sports",
+   "pred_vote1": "KB-Sports",
+   "pred_vote3": "KB-Sports",
+   "pred_scan": "KB-Sports",
+   "scan_margin": 0.874,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "The Mickey Mouse Club",
+   "gold_kb": "KB-Sports",
+   "pred_vote1": "KB-Film-TV",
+   "pred_vote3": "KB-Film-TV",
+   "pred_scan": "KB-Film-TV",
+   "scan_margin": 0.6351,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "The Minikahda Club",
+   "gold_kb": "KB-Sports",
+   "pred_vote1": "KB-Sports",
+   "pred_vote3": "KB-Sports",
+   "pred_scan": "KB-Sports",
+   "scan_margin": 0.8599,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Welling United F.C.",
+   "gold_kb": "KB-Sports",
+   "pred_vote1": "KB-Sports",
+   "pred_vote3": "KB-Sports",
+   "pred_scan": "KB-Sports",
+   "scan_margin": 0.911,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Western Hockey League",
+   "gold_kb": "KB-Sports",
+   "pred_vote1": "KB-Science-Tech",
+   "pred_vote3": "KB-Film-TV",
+   "pred_scan": "KB-Sports",
+   "scan_margin": 0.7283,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "Yugoslavia at the Olympics",
+   "gold_kb": "KB-Sports",
+   "pred_vote1": "KB-Sports",
+   "pred_vote3": "KB-Sports",
+   "pred_scan": "KB-Sports",
+   "scan_margin": 0.9467,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Darwin Airline",
+   "gold_kb": "KB-Transport",
+   "pred_vote1": "KB-Transport",
+   "pred_vote3": "KB-Transport",
+   "pred_scan": "KB-Transport",
+   "scan_margin": 0.8931,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Eric Marcus Municipal Airport",
+   "gold_kb": "KB-Transport",
+   "pred_vote1": "KB-Transport",
+   "pred_vote3": "KB-Transport",
+   "pred_scan": "KB-Transport",
+   "scan_margin": 0.9428,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Essendon Airport",
+   "gold_kb": "KB-Transport",
+   "pred_vote1": "KB-Transport",
+   "pred_vote3": "KB-Transport",
+   "pred_scan": "KB-Transport",
+   "scan_margin": 0.9096,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Gatwick Airport",
+   "gold_kb": "KB-Transport",
+   "pred_vote1": "KB-Politics-History",
+   "pred_vote3": "KB-Politics-History",
+   "pred_scan": "KB-Politics-History",
+   "scan_margin": 0.7643,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "Heartworn Highways",
+   "gold_kb": "KB-Transport",
+   "pred_vote1": "KB-Transport",
+   "pred_vote3": "KB-Transport",
+   "pred_scan": "KB-Transport",
+   "scan_margin": 0.8442,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Heathrow Airport",
+   "gold_kb": "KB-Transport",
+   "pred_vote1": "KB-Science-Tech",
+   "pred_vote3": "KB-Science-Tech",
+   "pred_scan": "KB-Transport",
+   "scan_margin": 0.719,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "Hornby Railways",
+   "gold_kb": "KB-Transport",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.738,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "Indonesia–Timor Leste Commission of Truth and Friendship",
+   "gold_kb": "KB-Transport",
+   "pred_vote1": "KB-Transport",
+   "pred_vote3": "KB-Transport",
+   "pred_scan": "KB-Transport",
+   "scan_margin": 0.9591,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Lugano Airport",
+   "gold_kb": "KB-Transport",
+   "pred_vote1": "KB-Transport",
+   "pred_vote3": "KB-Transport",
+   "pred_scan": "KB-Transport",
+   "scan_margin": 0.937,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "McClellan–Palomar Airport",
+   "gold_kb": "KB-Transport",
+   "pred_vote1": "KB-Transport",
+   "pred_vote3": "KB-Transport",
+   "pred_scan": "KB-Transport",
+   "scan_margin": 0.933,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Newcastle Airport (New South Wales)",
+   "gold_kb": "KB-Transport",
+   "pred_vote1": "KB-Transport",
+   "pred_vote3": "KB-Transport",
+   "pred_scan": "KB-Transport",
+   "scan_margin": 0.9349,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Pago Pago International Airport",
+   "gold_kb": "KB-Transport",
+   "pred_vote1": "KB-Transport",
+   "pred_vote3": "KB-Transport",
+   "pred_scan": "KB-Transport",
+   "scan_margin": 0.8654,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Scandinavian Airlines",
+   "gold_kb": "KB-Transport",
+   "pred_vote1": "KB-People",
+   "pred_vote3": "KB-People",
+   "pred_scan": "KB-People",
+   "scan_margin": 0.7192,
+   "roundtrip_rank": null
+  },
+  {
+   "title": "The Worship of Venus",
+   "gold_kb": "KB-Transport",
+   "pred_vote1": "KB-Transport",
+   "pred_vote3": "KB-Transport",
+   "pred_scan": "KB-Transport",
+   "scan_margin": 0.9776,
+   "roundtrip_rank": 1
+  },
+  {
+   "title": "Toronto Pearson International Airport",
+   "gold_kb": "KB-Transport",
+   "pred_vote1": "KB-Science-Tech",
+   "pred_vote3": "KB-Science-Tech",
+   "pred_scan": "KB-Transport",
+   "scan_margin": 0.6694,
+   "roundtrip_rank": null
+  }
+ ]
+}

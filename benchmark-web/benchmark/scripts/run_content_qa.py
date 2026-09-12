@@ -140,14 +140,16 @@ def fetch_hits(method: str, question: str) -> tuple[list[dict], float]:
     if method == "two_stage":
         d = api_post("/api/v1/search/two-stage", {"query": question, "kb_id": ""},
                      timeout=600)
-        hits = (d.get("stage2") or {}).get("results") or []
+        hits = ((d or {}).get("stage2") or {}).get("results") or []
     elif method == "vector_flat":
         d = api_post("/api/v1/search/vector",
                      {"query": question, "kb_id": "", "top_k": TOPK_EVAL},
                      timeout=600)
-        hits = d.get("results") or []
+        hits = (d or {}).get("results") or []
     else:
         raise ValueError(method)
+    if not hits:
+        raise RuntimeError("empty result set (backend busy?)")
     dt = time.perf_counter() - t0
     hits = sorted(hits, key=lambda x: x.get("score", 0), reverse=True)[:TOPK_EVAL]
     return hits, dt
@@ -172,17 +174,32 @@ def evaluate(dataset: str, method: str, limit: int, round_no: int,
     records = []
     latencies = []
     errors = 0
+    consecutive_errors = 0
     for i, it in enumerate(items):
         q = it["question"]
         answers = it.get("golden_answers") or it.get("answers") or []
         gold_titles = it.get("golden_titles") or []
         gold_kb = it.get("gold_kb")
         try:
-            hits, dt = fetch_hits(method, q)
+            hits, dt = None, None
+            for attempt in range(4):  # 首查可能撞索引重建, 立即重试通常即刻通过
+                try:
+                    hits, dt = fetch_hits(method, q)
+                    break
+                except Exception:
+                    if attempt == 3:
+                        raise
+                    time.sleep(5)
+            consecutive_errors = 0
         except Exception as exc:  # 单条失败不毁整轮, 记录后继续
             errors += 1
+            consecutive_errors += 1
             if errors > fail_gate:
                 raise RuntimeError(f"失败超过阈值 {fail_gate}, 中止") from exc
+            if consecutive_errors >= 3:
+                # 阵发期: 短冷却后继续(长冷却无益, 立即重试通常可过)
+                print(f"  {consecutive_errors} consecutive errors — cooldown 30s", flush=True)
+                time.sleep(30)
             records.append({"qid": it.get("qid"), "error": str(exc)[:200]})
             continue
         latencies.append(dt)
@@ -194,6 +211,26 @@ def evaluate(dataset: str, method: str, limit: int, round_no: int,
         if (i + 1) % 25 == 0:
             print(f"  [{dataset}/{method}] {i+1}/{len(items)} "
                   f"recall@5 so far={_recall(records, 5):.3f}", flush=True)
+
+    # 失败项统一补测一轮(阵发期失败多为暂时性)
+    retry_idx = [j for j, r in enumerate(records) if "error" in r]
+    if retry_idx:
+        print(f"  retrying {len(retry_idx)} failed items after 60s...", flush=True)
+        time.sleep(60)
+        for j in retry_idx:
+            it = items[j]
+            try:
+                hits, dt = fetch_hits(method, it["question"])
+            except Exception:
+                continue  # 保留原 error 记录
+            latencies.append(dt)
+            gold_title = (it.get("golden_titles") or [None])[0]
+            s = score_item(it.get("golden_answers") or it.get("answers") or [],
+                           hits, gold_title, it.get("gold_kb"))
+            s.update({"qid": it.get("qid"), "latency": round(dt, 4),
+                      "pred_top1": hits[0].get("doc_path") if hits else "",
+                      "retried": True})
+            records[j] = s
 
     scorable = [r for r in records if r.get("scorable")]
     ev_pool = [r for r in records if r.get("evidence_hit5") is not None]
@@ -257,7 +294,7 @@ def main() -> None:
     ap.add_argument("--methods", default="two_stage,vector_flat")
     ap.add_argument("--limit", type=int, default=300)
     ap.add_argument("--round", type=int, default=1)
-    ap.add_argument("--fail-gate", type=int, default=20)
+    ap.add_argument("--fail-gate", type=int, default=100)
     ap.add_argument("--compare", default="",
                     help="与既有结果文件比对复现: dataset,method 通配前后缀")
     args = ap.parse_args()

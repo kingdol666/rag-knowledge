@@ -1,0 +1,4148 @@
+{
+ "meta": {
+  "backend": "http://localhost:8771",
+  "generated": "2026-09-12T02:20:01.229513+00:00",
+  "protocol": "content-grounded answer-in-retrieved-chunks (SQuAD norm)",
+  "topk_eval": 10
+ },
+ "summary": {
+  "dataset": "contentqa",
+  "method": "vector_flat",
+  "round": 1,
+  "limit": 0,
+  "n": 412,
+  "n_scorable": 412,
+  "n_errors": 0,
+  "answer_recall@1": 0.779126213592233,
+  "answer_recall@3": 0.8300970873786407,
+  "answer_recall@5": 0.8495145631067961,
+  "answer_recall@10": 0.866504854368932,
+  "answer_mrr": 0.8059061488673139,
+  "evidence_hit@5": null,
+  "kb_route@1": 0.8640776699029126,
+  "latency_mean_s": 0.4375,
+  "latency_p95_s": 0.4747
+ },
+ "records": [
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Bio-Medicine-0001",
+   "latency": 0.4993,
+   "pred_top1": "KB-Bio-Medicine/A Generation.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Bio-Medicine-0002",
+   "latency": 0.4777,
+   "pred_top1": "KB-Bio-Medicine/Answers in Genesis.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Bio-Medicine-0003",
+   "latency": 0.438,
+   "pred_top1": "KB-Bio-Medicine/Charles Eugene, 2nd Duke of Arenberg.md"
+  },
+  {
+   "hit_rank": 3,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Bio-Medicine-0004",
+   "latency": 0.4475,
+   "pred_top1": "KB-Bio-Medicine/Crazy Sexy Cancer.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Bio-Medicine-0005",
+   "latency": 0.4398,
+   "pred_top1": "KB-Bio-Medicine/Dominick and Eugene.md"
+  },
+  {
+   "hit_rank": 3,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Bio-Medicine-0006",
+   "latency": 0.4572,
+   "pred_top1": "KB-People/Elizabeth Cross.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Bio-Medicine-0007",
+   "latency": 0.4667,
+   "pred_top1": "KB-Bio-Medicine/Eugene V. Debs.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Bio-Medicine-0008",
+   "latency": 0.4747,
+   "pred_top1": "KB-Bio-Medicine/Gene Autry.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Bio-Medicine-0009",
+   "latency": 0.4788,
+   "pred_top1": "KB-Bio-Medicine/Gene Ball.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Bio-Medicine-0010",
+   "latency": 0.4849,
+   "pred_top1": "KB-Bio-Medicine/Gene Hackman.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Bio-Medicine-0011",
+   "latency": 0.459,
+   "pred_top1": "KB-Bio-Medicine/Gene Watson.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Bio-Medicine-0012",
+   "latency": 0.4533,
+   "pred_top1": "KB-Bio-Medicine/Shoot-Out at Medicine Bend.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Bio-Medicine-0013",
+   "latency": 0.4574,
+   "pred_top1": "KB-Bio-Medicine/Star Trek: The Next Generation.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Bio-Medicine-0014",
+   "latency": 0.4402,
+   "pred_top1": "KB-Bio-Medicine/Superman & Batman: Generations.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Bio-Medicine-0015",
+   "latency": 0.4608,
+   "pred_top1": "KB-Bio-Medicine/The General (Muchamore novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Bio-Medicine-0016",
+   "latency": 0.4373,
+   "pred_top1": "KB-Bio-Medicine/The Younger Generation.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0001",
+   "latency": 0.4379,
+   "pred_top1": "KB-Economy-Law/Agnes of Courtenay.md"
+  },
+  {
+   "hit_rank": 4,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0002",
+   "latency": 0.4486,
+   "pred_top1": "KB-Economy-Law/George Mason High School.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0003",
+   "latency": 0.4505,
+   "pred_top1": "KB-Economy-Law/All Souls College, Oxford.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0004",
+   "latency": 0.4598,
+   "pred_top1": "KB-Economy-Law/Auburn University.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0005",
+   "latency": 0.4491,
+   "pred_top1": "KB-Economy-Law/Automotive industry.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0006",
+   "latency": 0.4434,
+   "pred_top1": "KB-Economy-Law/Bank of America Home Loans.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0007",
+   "latency": 0.4353,
+   "pred_top1": "KB-Economy-Law/Bank of Korea.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0008",
+   "latency": 0.459,
+   "pred_top1": "KB-Economy-Law/Belmont Abbey College.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0009",
+   "latency": 0.4766,
+   "pred_top1": "KB-Economy-Law/Berenberg Bank.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0010",
+   "latency": 0.4863,
+   "pred_top1": "KB-Economy-Law/Bogislaw IV, Duke of Pomerania.md"
+  },
+  {
+   "hit_rank": 4,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0011",
+   "latency": 0.4607,
+   "pred_top1": "KB-Sports/2002 NCAA Division I Women's Basketball Tournament.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0012",
+   "latency": 0.4693,
+   "pred_top1": "KB-Economy-Law/Boston College.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0013",
+   "latency": 0.4595,
+   "pred_top1": "KB-Economy-Law/Brooklyn College.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0014",
+   "latency": 0.4496,
+   "pred_top1": "KB-Economy-Law/Brown University.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0015",
+   "latency": 0.4646,
+   "pred_top1": "KB-Economy-Law/California Lutheran University.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0016",
+   "latency": 0.4901,
+   "pred_top1": "KB-Economy-Law/Catholic University in Erbil.md"
+  },
+  {
+   "hit_rank": 3,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0017",
+   "latency": 0.4849,
+   "pred_top1": "KB-Economy-Law/Central Philippine University.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0018",
+   "latency": 0.4541,
+   "pred_top1": "KB-Transport/Metropolitan School District of Wayne Township.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0019",
+   "latency": 0.4484,
+   "pred_top1": "KB-Economy-Law/Chiltern Shakespeare Company.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0020",
+   "latency": 0.5004,
+   "pred_top1": "KB-Economy-Law/Christopher Fairbank.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0021",
+   "latency": 0.4636,
+   "pred_top1": "KB-Economy-Law/Cineplex Odeon Corporation.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0022",
+   "latency": 0.4536,
+   "pred_top1": "KB-Economy-Law/Cleveland State University.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0023",
+   "latency": 0.428,
+   "pred_top1": "KB-Economy-Law/Dan Law Field at Rip Griffin Park.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0024",
+   "latency": 0.4375,
+   "pred_top1": "KB-Economy-Law/Flinders University.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0025",
+   "latency": 0.4357,
+   "pred_top1": "KB-Economy-Law/Florida Atlantic University.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0026",
+   "latency": 0.4189,
+   "pred_top1": "KB-Economy-Law/Florida International University College of Law.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0027",
+   "latency": 0.4222,
+   "pred_top1": "KB-Economy-Law/Frederick Brewing Company.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0028",
+   "latency": 0.3959,
+   "pred_top1": "KB-Economy-Law/Hall of Languages, Syracuse University.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0029",
+   "latency": 0.4364,
+   "pred_top1": "KB-Economy-Law/Italian nationality law.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0030",
+   "latency": 0.4069,
+   "pred_top1": "KB-Economy-Law/Johns Hopkins University.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0031",
+   "latency": 0.424,
+   "pred_top1": "KB-Economy-Law/Las Vegas Outlaws (XFL).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0032",
+   "latency": 0.4194,
+   "pred_top1": "KB-Economy-Law/Law of the Border.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0033",
+   "latency": 0.4501,
+   "pred_top1": "KB-Science-Tech/Mike Steel (mathematician).md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0034",
+   "latency": 0.4415,
+   "pred_top1": "KB-Other/Superior, Wisconsin.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0035",
+   "latency": 0.4344,
+   "pred_top1": "KB-Economy-Law/Lawrence Lasker.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0036",
+   "latency": 0.4306,
+   "pred_top1": "KB-Economy-Law/Lawton, Oklahoma.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0037",
+   "latency": 0.4609,
+   "pred_top1": "KB-Economy-Law/LeMoyne–Owen College.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0038",
+   "latency": 0.4352,
+   "pred_top1": "KB-Economy-Law/Lourdes Catholic School.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0039",
+   "latency": 0.4441,
+   "pred_top1": "KB-Economy-Law/Maury Laws.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Economy-Law-0040",
+   "latency": 0.4624,
+   "pred_top1": "KB-Economy-Law/Mehran University of Engineering and Technology.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0001",
+   "latency": 0.4704,
+   "pred_top1": "KB-Film-TV/10 Years (2011 film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0002",
+   "latency": 0.5169,
+   "pred_top1": "KB-Film-TV/1977 (film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0003",
+   "latency": 0.4389,
+   "pred_top1": "KB-Film-TV/2002 (film).md"
+  },
+  {
+   "hit_rank": 3,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0004",
+   "latency": 0.4552,
+   "pred_top1": "KB-Film-TV/1988 American Racing Series season.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0005",
+   "latency": 0.4308,
+   "pred_top1": "KB-Film-TV/2016 World Series.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0006",
+   "latency": 0.4664,
+   "pred_top1": "KB-Film-TV/23 (film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0007",
+   "latency": 0.4708,
+   "pred_top1": "KB-Film-TV/9 (2005 film).md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0008",
+   "latency": 0.4242,
+   "pred_top1": "KB-Music/Michael Lockwood (guitarist).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0009",
+   "latency": 0.4327,
+   "pred_top1": "KB-Film-TV/A Moment in Time (film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0010",
+   "latency": 0.479,
+   "pred_top1": "KB-Film-TV/A Night to Remember (1958 film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0011",
+   "latency": 0.4436,
+   "pred_top1": "KB-Film-TV/A Series of Unfortunate Events (TV series).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0012",
+   "latency": 0.4374,
+   "pred_top1": "KB-Film-TV/Aakrosh (2010 film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0013",
+   "latency": 0.4249,
+   "pred_top1": "KB-Film-TV/Accident (2009 film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0014",
+   "latency": 0.4333,
+   "pred_top1": "KB-Film-TV/Adventure Time (short film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0015",
+   "latency": 0.4198,
+   "pred_top1": "KB-Film-TV/Airport (1970 film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0016",
+   "latency": 0.4198,
+   "pred_top1": "KB-Film-TV/Aladdin (2019 film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0017",
+   "latency": 0.4258,
+   "pred_top1": "KB-Film-TV/Alexander (2004 film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0018",
+   "latency": 0.4362,
+   "pred_top1": "KB-Film-TV/Algiers (film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0019",
+   "latency": 0.4185,
+   "pred_top1": "KB-Film-TV/Alias (season 3).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0020",
+   "latency": 0.4166,
+   "pred_top1": "KB-Film-TV/Alice (2005 film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0021",
+   "latency": 0.4156,
+   "pred_top1": "KB-Film-TV/Always (1989 film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0022",
+   "latency": 0.4262,
+   "pred_top1": "KB-Film-TV/America (2009 film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0023",
+   "latency": 0.4297,
+   "pred_top1": "KB-Film-TV/Amy (1981 film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0024",
+   "latency": 0.4251,
+   "pred_top1": "KB-Film-TV/Angel (1960 TV series).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0025",
+   "latency": 0.4261,
+   "pred_top1": "KB-Film-TV/Angel (1982 Irish film).md"
+  },
+  {
+   "hit_rank": 2,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0026",
+   "latency": 0.3982,
+   "pred_top1": "KB-Film-TV/Inside Out (2015 film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0027",
+   "latency": 0.4065,
+   "pred_top1": "KB-Film-TV/Another Me (film).md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0028",
+   "latency": 0.451,
+   "pred_top1": "KB-Science-Tech/The Seattle Star.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0029",
+   "latency": 0.4675,
+   "pred_top1": "KB-Film-TV/April Fool's Day (2008 film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0030",
+   "latency": 0.4263,
+   "pred_top1": "KB-Film-TV/Argo (2012 film).md"
+  },
+  {
+   "hit_rank": 5,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0031",
+   "latency": 0.4251,
+   "pred_top1": "KB-Film-TV/McVicar (film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0032",
+   "latency": 0.4515,
+   "pred_top1": "KB-Film-TV/Around the World in 80 Days (2004 film).md"
+  },
+  {
+   "hit_rank": 5,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0033",
+   "latency": 0.4359,
+   "pred_top1": "KB-Other/Assassination of James A. Garfield.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0034",
+   "latency": 0.4306,
+   "pred_top1": "KB-Film-TV/Awake (film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0035",
+   "latency": 0.4341,
+   "pred_top1": "KB-Film-TV/Baadshah (1999 film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0036",
+   "latency": 0.4152,
+   "pred_top1": "KB-Film-TV/Back in the Day (2014 film).md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0037",
+   "latency": 0.4362,
+   "pred_top1": "KB-People/Cleveland Indians.md"
+  },
+  {
+   "hit_rank": 2,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0038",
+   "latency": 0.4576,
+   "pred_top1": "KB-Film-TV/Hyenas (2011 film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0039",
+   "latency": 0.457,
+   "pred_top1": "KB-Film-TV/Best Friends (1982 film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Film-TV-0040",
+   "latency": 0.4444,
+   "pred_top1": "KB-Film-TV/Big City (1937 film).md"
+  },
+  {
+   "hit_rank": 4,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0001",
+   "latency": 0.4225,
+   "pred_top1": "KB-Geography/Air Marshall Islands.md"
+  },
+  {
+   "hit_rank": 4,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0002",
+   "latency": 0.4352,
+   "pred_top1": "KB-Other/Bryan, Texas.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0003",
+   "latency": 0.427,
+   "pred_top1": "KB-Geography/Ascension Island.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0004",
+   "latency": 0.4278,
+   "pred_top1": "KB-Geography/Atlantic City, New Jersey.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0005",
+   "latency": 0.4219,
+   "pred_top1": "KB-Geography/Baldwin, Nassau County, New York.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0006",
+   "latency": 0.4265,
+   "pred_top1": "KB-Other/Canyon, Texas.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0007",
+   "latency": 0.426,
+   "pred_top1": "KB-People/Charles Carroll of Carrollton.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0008",
+   "latency": 0.4028,
+   "pred_top1": "KB-Geography/Christian Rivers.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0009",
+   "latency": 0.4202,
+   "pred_top1": "KB-Geography/City of Brussels.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0010",
+   "latency": 0.4305,
+   "pred_top1": "KB-Geography/Dal Lake.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0011",
+   "latency": 0.4517,
+   "pred_top1": "KB-Geography/Desert Diamond West Valley Phoenix Grand Prix.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0012",
+   "latency": 0.4371,
+   "pred_top1": "KB-Geography/Forest Acres, South Carolina.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0013",
+   "latency": 0.4235,
+   "pred_top1": "KB-Geography/Genesee River.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0014",
+   "latency": 0.4265,
+   "pred_top1": "KB-Geography/Glacier Park International Airport.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0015",
+   "latency": 0.4358,
+   "pred_top1": "KB-Geography/Golestan Province.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0016",
+   "latency": 0.4229,
+   "pred_top1": "KB-Geography/Hamilton station (NJ Transit).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0017",
+   "latency": 0.4604,
+   "pred_top1": "KB-Geography/I-35W Mississippi River bridge.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0018",
+   "latency": 0.4587,
+   "pred_top1": "KB-Geography/Inn (river).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0019",
+   "latency": 0.4481,
+   "pred_top1": "KB-Geography/Island (short story collection).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0020",
+   "latency": 0.424,
+   "pred_top1": "KB-Geography/John Anderson (racing driver).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0021",
+   "latency": 0.4451,
+   "pred_top1": "KB-Geography/John E. Blakeley.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0022",
+   "latency": 0.4457,
+   "pred_top1": "KB-Geography/Kabul Province.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0023",
+   "latency": 0.4573,
+   "pred_top1": "KB-Geography/Kansas City crime family.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0024",
+   "latency": 0.45,
+   "pred_top1": "KB-Geography/Kealakekua Bay.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0025",
+   "latency": 0.4469,
+   "pred_top1": "KB-Geography/Kerman Province.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0026",
+   "latency": 0.4558,
+   "pred_top1": "KB-Geography/Larnaca Salt Lake.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0027",
+   "latency": 0.4427,
+   "pred_top1": "KB-Geography/Legend of the Mountain.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0028",
+   "latency": 0.4419,
+   "pred_top1": "KB-Geography/Les Collines-de-l'Outaouais Regional County Municipality.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0029",
+   "latency": 0.4604,
+   "pred_top1": "KB-Geography/Little River, Kansas.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0030",
+   "latency": 0.4433,
+   "pred_top1": "KB-Geography/Long Lake, New York.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0031",
+   "latency": 0.4372,
+   "pred_top1": "KB-Science-Tech/Star lore.md"
+  },
+  {
+   "hit_rank": 8,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0032",
+   "latency": 0.4219,
+   "pred_top1": "KB-Geography/Buncombe County, North Carolina.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0033",
+   "latency": 0.439,
+   "pred_top1": "KB-Geography/Mamuju (city).md"
+  },
+  {
+   "hit_rank": 3,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0034",
+   "latency": 0.4464,
+   "pred_top1": "KB-Geography/Randolph County, Illinois.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0035",
+   "latency": 0.4286,
+   "pred_top1": "KB-Geography/MediaCityUK tram stop.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0036",
+   "latency": 0.4407,
+   "pred_top1": "KB-Geography/Minnie Driver.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0037",
+   "latency": 0.4552,
+   "pred_top1": "KB-Geography/Mississippi River.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0038",
+   "latency": 0.4525,
+   "pred_top1": "KB-Geography/Nan Province.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0039",
+   "latency": 0.4707,
+   "pred_top1": "KB-Geography/Naval Air Station Cecil Field.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Geography-0040",
+   "latency": 0.4691,
+   "pred_top1": "KB-Geography/Nelson River.md"
+  },
+  {
+   "hit_rank": 3,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0001",
+   "latency": 0.4276,
+   "pred_top1": "KB-Literature-Arts/1876 (novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0002",
+   "latency": 0.4504,
+   "pred_top1": "KB-Literature-Arts/A Matter of Time (Cook novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0003",
+   "latency": 0.4949,
+   "pred_top1": "KB-Literature-Arts/A World of Difference (novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0004",
+   "latency": 0.4862,
+   "pred_top1": "KB-Literature-Arts/Adam (novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0005",
+   "latency": 0.4534,
+   "pred_top1": "KB-Literature-Arts/After Dark (Murakami novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0006",
+   "latency": 0.4604,
+   "pred_top1": "KB-Literature-Arts/Against the Odds (novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0007",
+   "latency": 0.4765,
+   "pred_top1": "KB-Literature-Arts/Anno Museum.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0008",
+   "latency": 0.4986,
+   "pred_top1": "KB-Literature-Arts/Archipelago Museum.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0009",
+   "latency": 0.5246,
+   "pred_top1": "KB-Literature-Arts/Ark (novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0010",
+   "latency": 0.5096,
+   "pred_top1": "KB-Literature-Arts/Bridge to Terabithia (novel).md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0011",
+   "latency": 0.459,
+   "pred_top1": "KB-Literature-Arts/Chosen (Cast novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0012",
+   "latency": 0.4682,
+   "pred_top1": "KB-Literature-Arts/Christine (novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0013",
+   "latency": 0.4401,
+   "pred_top1": "KB-Literature-Arts/David Allan (painter).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0014",
+   "latency": 0.4528,
+   "pred_top1": "KB-Literature-Arts/Dies irae (visual novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0015",
+   "latency": 0.4485,
+   "pred_top1": "KB-Literature-Arts/Fire (Rodgers novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0016",
+   "latency": 0.4497,
+   "pred_top1": "KB-Literature-Arts/Gothic architecture.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0017",
+   "latency": 0.4198,
+   "pred_top1": "KB-Literature-Arts/Harvest (Crace novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0018",
+   "latency": 0.4383,
+   "pred_top1": "KB-Literature-Arts/Hood Museum of Art.md"
+  },
+  {
+   "hit_rank": 2,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0019",
+   "latency": 0.4267,
+   "pred_top1": "KB-Literature-Arts/Charity (novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0020",
+   "latency": 0.4438,
+   "pred_top1": "KB-Literature-Arts/Ink (novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0021",
+   "latency": 0.4177,
+   "pred_top1": "KB-Literature-Arts/Jewel (novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0022",
+   "latency": 0.421,
+   "pred_top1": "KB-Literature-Arts/L'architecte textile.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0023",
+   "latency": 0.4507,
+   "pred_top1": "KB-Literature-Arts/Midnight (Koontz novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0024",
+   "latency": 0.4052,
+   "pred_top1": "KB-Literature-Arts/NTNU University Museum.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0025",
+   "latency": 0.4439,
+   "pred_top1": "KB-Literature-Arts/Now I Know (novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0026",
+   "latency": 0.4427,
+   "pred_top1": "KB-Literature-Arts/Penobscot Marine Museum.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0027",
+   "latency": 0.4397,
+   "pred_top1": "KB-Literature-Arts/Perfect (Hopkins novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0028",
+   "latency": 0.4339,
+   "pred_top1": "KB-Literature-Arts/Q (novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0029",
+   "latency": 0.4515,
+   "pred_top1": "KB-Literature-Arts/Saint Paul School of Theology.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0030",
+   "latency": 0.4529,
+   "pred_top1": "KB-Literature-Arts/Showdown (Flynn novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0031",
+   "latency": 0.4537,
+   "pred_top1": "KB-Literature-Arts/Smash (novel).md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0032",
+   "latency": 0.4324,
+   "pred_top1": "KB-Other/Richard L. Bare.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0033",
+   "latency": 0.4216,
+   "pred_top1": "KB-Literature-Arts/Strangers (Dozois novel).md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0034",
+   "latency": 0.4277,
+   "pred_top1": "KB-Geography/Kimboza Forest.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0035",
+   "latency": 0.4173,
+   "pred_top1": "KB-Literature-Arts/Taman Prasasti Museum.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0036",
+   "latency": 0.4386,
+   "pred_top1": "KB-Literature-Arts/The Amazon (novella).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0037",
+   "latency": 0.9773,
+   "pred_top1": "KB-Literature-Arts/The Enemy (Higson novel).md"
+  },
+  {
+   "hit_rank": 3,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0038",
+   "latency": 0.4246,
+   "pred_top1": "KB-People/The Secret of Kells.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0039",
+   "latency": 0.4112,
+   "pred_top1": "KB-Literature-Arts/The Information (novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Literature-Arts-0040",
+   "latency": 0.4329,
+   "pred_top1": "KB-Literature-Arts/The Magicians (Grossman novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Military-0001",
+   "latency": 0.4326,
+   "pred_top1": "KB-Military/50th Military Airlift Squadron.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Military-0002",
+   "latency": 0.45,
+   "pred_top1": "KB-Military/Army of Shadows.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Military-0003",
+   "latency": 0.44,
+   "pred_top1": "KB-Military/Bonus Army.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Military-0004",
+   "latency": 0.4263,
+   "pred_top1": "KB-Geography/King Abdullah Economic City.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Military-0005",
+   "latency": 0.4256,
+   "pred_top1": "KB-Military/Charles Egerton (Indian Army officer).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Military-0006",
+   "latency": 0.4321,
+   "pred_top1": "KB-Military/Imperial Japanese Army.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Military-0007",
+   "latency": 0.4236,
+   "pred_top1": "KB-Military/Military Frontier.md"
+  },
+  {
+   "hit_rank": 3,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Military-0008",
+   "latency": 0.4277,
+   "pred_top1": "KB-Military/Military history of the United States.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Military-0009",
+   "latency": 0.4572,
+   "pred_top1": "KB-Military/Second VA-174 (U.S. Navy).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Military-0010",
+   "latency": 0.4341,
+   "pred_top1": "KB-Military/Twelfth United States Army Group.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Military-0011",
+   "latency": 0.4074,
+   "pred_top1": "KB-Military/51st Division (Imperial Japanese Army).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Military-0012",
+   "latency": 0.4454,
+   "pred_top1": "KB-Military/United States Air Force.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Military-0013",
+   "latency": 0.4227,
+   "pred_top1": "KB-Military/United States Army.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Military-0014",
+   "latency": 0.425,
+   "pred_top1": "KB-Military/United States Navy SEALs.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0001",
+   "latency": 0.4309,
+   "pred_top1": "KB-Music/A Little More Love (Vince Gill song).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0002",
+   "latency": 0.4152,
+   "pred_top1": "KB-Music/A Song Is Born.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0003",
+   "latency": 0.4406,
+   "pred_top1": "KB-Music/A String of Pearls (song).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0004",
+   "latency": 0.4484,
+   "pred_top1": "KB-Music/About Time (The Stranglers album).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0005",
+   "latency": 0.4346,
+   "pred_top1": "KB-Music/Adult contemporary music.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0006",
+   "latency": 0.4363,
+   "pred_top1": "KB-Music/African Guitar Summit.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0007",
+   "latency": 0.4363,
+   "pred_top1": "KB-Music/Aim (musician).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0008",
+   "latency": 0.4557,
+   "pred_top1": "KB-Music/America (Simon & Garfunkel song).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0009",
+   "latency": 0.4325,
+   "pred_top1": "KB-Music/Arrival (ABBA album).md"
+  },
+  {
+   "hit_rank": 3,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0010",
+   "latency": 0.4535,
+   "pred_top1": "KB-Music/Firework (song).md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0011",
+   "latency": 0.4196,
+   "pred_top1": "KB-People/John Adams.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0012",
+   "latency": 0.4409,
+   "pred_top1": "KB-Music/Baby (Justin Bieber song).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0013",
+   "latency": 0.4304,
+   "pred_top1": "KB-Music/Believe (Cher song).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0014",
+   "latency": 0.432,
+   "pred_top1": "KB-Music/Believe (Dima Bilan song).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0015",
+   "latency": 0.4074,
+   "pred_top1": "KB-Music/Black (Bangladeshi band).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0016",
+   "latency": 0.4236,
+   "pred_top1": "KB-Music/Blake (band).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0017",
+   "latency": 0.4428,
+   "pred_top1": "KB-Music/Blue County (music group).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0018",
+   "latency": 0.4094,
+   "pred_top1": "KB-Music/Blue Ridge Music Center.md"
+  },
+  {
+   "hit_rank": 2,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0019",
+   "latency": 0.441,
+   "pred_top1": "KB-Music/Bond (band).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0020",
+   "latency": 0.417,
+   "pred_top1": "KB-Music/Bring It On_ The Musical.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0021",
+   "latency": 0.4359,
+   "pred_top1": "KB-Music/Can't Let Go (Mariah Carey song).md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0022",
+   "latency": 0.4224,
+   "pred_top1": "KB-Film-TV/Clockwise (film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0023",
+   "latency": 0.4417,
+   "pred_top1": "KB-Music/Carla Bruni discography.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0024",
+   "latency": 0.4427,
+   "pred_top1": "KB-Music/Chicago (musical).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0025",
+   "latency": 0.4184,
+   "pred_top1": "KB-Music/Colony House (band).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0026",
+   "latency": 0.4274,
+   "pred_top1": "KB-Music/Criteria (band).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0027",
+   "latency": 0.4213,
+   "pred_top1": "KB-Music/Draw the Line (Aerosmith album).md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0028",
+   "latency": 0.4228,
+   "pred_top1": "KB-People/Peter Buck.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0029",
+   "latency": 0.414,
+   "pred_top1": "KB-Music/Echo (Tom Petty and the Heartbreakers album).md"
+  },
+  {
+   "hit_rank": 8,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0030",
+   "latency": 0.4236,
+   "pred_top1": "KB-Film-TV/Hairspray (2007 film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0031",
+   "latency": 0.4321,
+   "pred_top1": "KB-Music/Empty Orchestra.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0032",
+   "latency": 0.438,
+   "pred_top1": "KB-Music/Estrojam's Decibelle Music and Culture Festival.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0033",
+   "latency": 0.4433,
+   "pred_top1": "KB-Music/Everything (Mr. Children album).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0034",
+   "latency": 0.4442,
+   "pred_top1": "KB-Music/Firework (song).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0035",
+   "latency": 0.4296,
+   "pred_top1": "KB-Music/First Love (Utada Hikaru album).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0036",
+   "latency": 0.4193,
+   "pred_top1": "KB-Music/Five Finger Death Punch discography.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0037",
+   "latency": 0.4485,
+   "pred_top1": "KB-Music/Hurricane (Bridgit Mendler song).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0038",
+   "latency": 0.4108,
+   "pred_top1": "KB-Music/Friends (Justin Bieber and BloodPop song).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0039",
+   "latency": 0.4409,
+   "pred_top1": "KB-Music/Go (Moby song).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Music-0040",
+   "latency": 0.4376,
+   "pred_top1": "KB-Music/God (John Lennon song).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0001",
+   "latency": 0.4156,
+   "pred_top1": "KB-Other/'Abd al-Rahman ibn 'Awf.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0002",
+   "latency": 0.4464,
+   "pred_top1": "KB-Other/'Adud al-Dawla.md"
+  },
+  {
+   "hit_rank": 2,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0003",
+   "latency": 0.4295,
+   "pred_top1": "KB-Music/Paradise, Hawaiian Style (song).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0004",
+   "latency": 0.4283,
+   "pred_top1": "KB-Other/1 New York Plaza.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0005",
+   "latency": 0.4642,
+   "pred_top1": "KB-Other/100,000 Cobbers.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0006",
+   "latency": 0.4437,
+   "pred_top1": "KB-Other/12 to the Moon.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0007",
+   "latency": 0.4228,
+   "pred_top1": "KB-Other/15 Penn Plaza.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0008",
+   "latency": 0.4101,
+   "pred_top1": "KB-Other/1894–95 FA Cup.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0009",
+   "latency": 0.4059,
+   "pred_top1": "KB-Other/1935 Detroit Tigers season.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0010",
+   "latency": 0.4456,
+   "pred_top1": "KB-Other/1954 Indianapolis 500.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0011",
+   "latency": 0.4201,
+   "pred_top1": "KB-Other/1957 Indianapolis 500.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0012",
+   "latency": 0.4303,
+   "pred_top1": "KB-Other/1967_ The Last Good Year.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0013",
+   "latency": 0.4337,
+   "pred_top1": "KB-Other/1973 oil crisis.md"
+  },
+  {
+   "hit_rank": 3,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0014",
+   "latency": 0.4035,
+   "pred_top1": "KB-Sports/2015–16 Vermont Catamounts women's basketball team.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0015",
+   "latency": 0.4389,
+   "pred_top1": "KB-Other/1984 South Asian Games.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0016",
+   "latency": 0.4051,
+   "pred_top1": "KB-Other/1st Combat Communications Squadron.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0017",
+   "latency": 0.4378,
+   "pred_top1": "KB-Other/200 West Street.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0018",
+   "latency": 0.4325,
+   "pred_top1": "KB-Other/2007 NBA draft.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0019",
+   "latency": 0.4247,
+   "pred_top1": "KB-Other/2007 New England Patriots season.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0020",
+   "latency": 0.4369,
+   "pred_top1": "KB-Other/2010_ The Year We Make Contact.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0021",
+   "latency": 0.4329,
+   "pred_top1": "KB-Film-TV/Snooker season 2011_2012.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0022",
+   "latency": 0.4317,
+   "pred_top1": "KB-People/Magnus Carlsen.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0023",
+   "latency": 0.4328,
+   "pred_top1": "KB-Other/2013 Minnesota Vikings season.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0024",
+   "latency": 0.4413,
+   "pred_top1": "KB-Transport/2014 Racquetball World Championships.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0025",
+   "latency": 0.4205,
+   "pred_top1": "KB-Sports/2017–18 Villanova Wildcats women's basketball team.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0026",
+   "latency": 0.4174,
+   "pred_top1": "KB-Other/24 Hour Psycho.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0027",
+   "latency": 0.4129,
+   "pred_top1": "KB-Other/45 Minutes from Hollywood.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0028",
+   "latency": 0.4528,
+   "pred_top1": "KB-Other/4th of August Regime.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0029",
+   "latency": 0.4286,
+   "pred_top1": "KB-Other/500 Years Later.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0030",
+   "latency": 0.4342,
+   "pred_top1": "KB-Other/8 (play).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0031",
+   "latency": 0.4268,
+   "pred_top1": "KB-Other/9 DeKalb Avenue.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0032",
+   "latency": 0.428,
+   "pred_top1": "KB-Other/A Beautiful Mind (soundtrack).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0033",
+   "latency": 0.4114,
+   "pred_top1": "KB-Other/A Daughter of the Gods.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0034",
+   "latency": 0.4435,
+   "pred_top1": "KB-Other/A Day of Fury.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0035",
+   "latency": 0.4327,
+   "pred_top1": "KB-Other/A Distinguished Member of the Humane Society.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0036",
+   "latency": 0.4309,
+   "pred_top1": "KB-Other/A Little Time.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0037",
+   "latency": 0.4288,
+   "pred_top1": "KB-Other/A Matter of Honor.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0038",
+   "latency": 0.4125,
+   "pred_top1": "KB-People/Mickey Mouse.md"
+  },
+  {
+   "hit_rank": 3,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0039",
+   "latency": 0.4402,
+   "pred_top1": "KB-Other/Love, Love, Love (Glee).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Other-0040",
+   "latency": 0.4288,
+   "pred_top1": "KB-Other/A Social Celebrity.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0001",
+   "latency": 0.4465,
+   "pred_top1": "KB-People/AMC Theatres.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0002",
+   "latency": 0.4356,
+   "pred_top1": "KB-People/AMU Literary Festival.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0003",
+   "latency": 0.4291,
+   "pred_top1": "KB-People/Aaron Spelling.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0004",
+   "latency": 0.4089,
+   "pred_top1": "KB-People/Aati Kya Khandala.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0005",
+   "latency": 0.4442,
+   "pred_top1": "KB-People/Abbot of Shaolin.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0006",
+   "latency": 0.4156,
+   "pred_top1": "KB-People/Abraham Lavender.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0007",
+   "latency": 0.4254,
+   "pred_top1": "KB-People/Accolade Wines.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0008",
+   "latency": 0.4422,
+   "pred_top1": "KB-People/Act of Violence.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0009",
+   "latency": 0.4398,
+   "pred_top1": "KB-People/Acura Legend.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0010",
+   "latency": 0.407,
+   "pred_top1": "KB-People/Ada Foah.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0011",
+   "latency": 0.4103,
+   "pred_top1": "KB-People/Adam Fox.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0012",
+   "latency": 0.4238,
+   "pred_top1": "KB-People/Adam Kazimierz Czartoryski.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0013",
+   "latency": 0.4359,
+   "pred_top1": "KB-People/Adelaide Entertainment Centre.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0014",
+   "latency": 0.4254,
+   "pred_top1": "KB-People/Aemilia Tertia.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0015",
+   "latency": 0.422,
+   "pred_top1": "KB-People/Agesilaus II.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0016",
+   "latency": 0.4241,
+   "pred_top1": "KB-People/Agnes of Rochlitz.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0017",
+   "latency": 0.4402,
+   "pred_top1": "KB-People/Ahmad Tajuddin Halim Shah II of Kedah.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0018",
+   "latency": 0.4058,
+   "pred_top1": "KB-People/Alain Delon.md"
+  },
+  {
+   "hit_rank": 3,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0019",
+   "latency": 0.448,
+   "pred_top1": "KB-Film-TV/The Congress (2013 film).md"
+  },
+  {
+   "hit_rank": 5,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0020",
+   "latency": 0.4415,
+   "pred_top1": "KB-Other/Dennis O'Rourke.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0021",
+   "latency": 0.4091,
+   "pred_top1": "KB-People/Albanians in Montenegro.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0022",
+   "latency": 0.4158,
+   "pred_top1": "KB-People/Albert Capellani.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0023",
+   "latency": 0.4208,
+   "pred_top1": "KB-People/Albert Cox.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0024",
+   "latency": 0.4263,
+   "pred_top1": "KB-People/Albert Einstein.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0025",
+   "latency": 0.4452,
+   "pred_top1": "KB-People/Jim Halsey.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0026",
+   "latency": 0.4454,
+   "pred_top1": "KB-People/Albert Woolson.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0027",
+   "latency": 0.4313,
+   "pred_top1": "KB-People/Alberto Cavalcanti.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0028",
+   "latency": 0.4093,
+   "pred_top1": "KB-People/Alberto De Martino.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0029",
+   "latency": 0.4189,
+   "pred_top1": "KB-People/Alek Keshishian.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0030",
+   "latency": 0.4045,
+   "pred_top1": "KB-People/Aleksei Gan.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0031",
+   "latency": 0.4102,
+   "pred_top1": "KB-People/Alessandro Zezzos.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0032",
+   "latency": 0.4183,
+   "pred_top1": "KB-People/Alex DeBrincat.md"
+  },
+  {
+   "hit_rank": 2,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0033",
+   "latency": 0.4106,
+   "pred_top1": "KB-Sports/1995–96 Manchester United F.C. season.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0034",
+   "latency": 0.4268,
+   "pred_top1": "KB-People/Alex Kramer.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0035",
+   "latency": 0.4759,
+   "pred_top1": "KB-People/Alex Rodriguez.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0036",
+   "latency": 0.4312,
+   "pred_top1": "KB-People/Alexander Glazunov.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0037",
+   "latency": 0.4676,
+   "pred_top1": "KB-People/Alexander Mackendrick.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0038",
+   "latency": 0.4698,
+   "pred_top1": "KB-Film-TV/Van Diemen's Land (film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0039",
+   "latency": 0.4515,
+   "pred_top1": "KB-People/Alexandra Hasluck.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-People-0040",
+   "latency": 0.5456,
+   "pred_top1": "KB-People/Alexey Brodovitch.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0001",
+   "latency": 0.4753,
+   "pred_top1": "KB-Politics-History/2002 United States House of Representatives elections.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0002",
+   "latency": 0.4636,
+   "pred_top1": "KB-Politics-History/A. T. Stewart Era Buildings.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0003",
+   "latency": 0.4392,
+   "pred_top1": "KB-Other/The Seasons (Haydn).md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0004",
+   "latency": 0.4573,
+   "pred_top1": "KB-Military/M1895 Lee Navy.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0005",
+   "latency": 0.4414,
+   "pred_top1": "KB-Politics-History/Aron Warner.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0006",
+   "latency": 0.4288,
+   "pred_top1": "KB-Film-TV/The Challenge (1970 film).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0007",
+   "latency": 0.4636,
+   "pred_top1": "KB-Politics-History/Augusta Fitzalan-Howard, Duchess of Norfolk.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0008",
+   "latency": 0.4251,
+   "pred_top1": "KB-People/Late Middle Ages.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0009",
+   "latency": 0.4229,
+   "pred_top1": "KB-Politics-History/Battle of Vitoria.md"
+  },
+  {
+   "hit_rank": 10,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0010",
+   "latency": 0.4041,
+   "pred_top1": "KB-Military/20th Arkansas Infantry Regiment.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0011",
+   "latency": 0.4283,
+   "pred_top1": "KB-Politics-History/Battle of Guadeloupe (1779).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0012",
+   "latency": 0.4282,
+   "pred_top1": "KB-Politics-History/Battle of Happo.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0013",
+   "latency": 0.4289,
+   "pred_top1": "KB-Politics-History/Battle of Nanchang.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0014",
+   "latency": 0.4273,
+   "pred_top1": "KB-People/James Madison.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0015",
+   "latency": 0.4306,
+   "pred_top1": "KB-Politics-History/Battle of Palembang.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0016",
+   "latency": 0.4218,
+   "pred_top1": "KB-Military/8th Regiment Kentucky Volunteer Cavalry.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0017",
+   "latency": 0.4405,
+   "pred_top1": "KB-Military/6th Maryland Regiment.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0018",
+   "latency": 0.4189,
+   "pred_top1": "KB-Politics-History/Bolesław IV of Warsaw.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0019",
+   "latency": 0.4361,
+   "pred_top1": "KB-Military/Bruce Matthews (Canadian Army officer).md"
+  },
+  {
+   "hit_rank": 4,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0020",
+   "latency": 0.4136,
+   "pred_top1": "KB-Politics-History/Carolingian dynasty.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0021",
+   "latency": 0.4267,
+   "pred_top1": "KB-Politics-History/Charles Gonthier, Prince of Schwarzburg-Sondershausen.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0022",
+   "latency": 0.4521,
+   "pred_top1": "KB-Politics-History/Charles Howard, 1st Earl of Carlisle.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0023",
+   "latency": 0.4478,
+   "pred_top1": "KB-Politics-History/Counter-Revolutionary Violence_ Bloodbaths in Fact & Propaganda.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0024",
+   "latency": 0.4489,
+   "pred_top1": "KB-Politics-History/Dai (Sixteen Kingdoms).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0025",
+   "latency": 0.4674,
+   "pred_top1": "KB-Politics-History/David Joyce (politician).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0026",
+   "latency": 0.4305,
+   "pred_top1": "KB-Politics-History/Digby Tatham-Warter.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0027",
+   "latency": 0.4308,
+   "pred_top1": "KB-Politics-History/Directorate of Military Intelligence (United Kingdom).md"
+  },
+  {
+   "hit_rank": 6,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0028",
+   "latency": 0.4076,
+   "pred_top1": "KB-Bio-Medicine/John Breckinridge (U.S. Attorney General).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0029",
+   "latency": 0.4337,
+   "pred_top1": "KB-Politics-History/Edward Burns.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0030",
+   "latency": 0.4542,
+   "pred_top1": "KB-Politics-History/Edward Cromwell, 3rd Baron Cromwell.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0031",
+   "latency": 0.4242,
+   "pred_top1": "KB-Politics-History/Edward Dmytryk.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0032",
+   "latency": 0.4312,
+   "pred_top1": "KB-Politics-History/Edward Howard, 2nd Earl of Carlisle.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0033",
+   "latency": 0.4399,
+   "pred_top1": "KB-Politics-History/Edward LeSaint.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0034",
+   "latency": 0.4243,
+   "pred_top1": "KB-Politics-History/Edward Randolph.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0035",
+   "latency": 0.4062,
+   "pred_top1": "KB-Politics-History/Edward Sedgwick.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0036",
+   "latency": 0.4039,
+   "pred_top1": "KB-Politics-History/Edward Wingfield, 2nd Viscount Powerscourt.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0037",
+   "latency": 0.4074,
+   "pred_top1": "KB-Politics-History/Edward, King of Portugal.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0038",
+   "latency": 0.4229,
+   "pred_top1": "KB-Politics-History/Elizabeth von Till Warren.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0039",
+   "latency": 0.4067,
+   "pred_top1": "KB-Politics-History/Empire (Card novel).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Politics-History-0040",
+   "latency": 0.4381,
+   "pred_top1": "KB-Politics-History/Empress He (Tang dynasty).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Science-Tech-0001",
+   "latency": 0.4339,
+   "pred_top1": "KB-Science-Tech/Cavendish Professor of Physics.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Science-Tech-0002",
+   "latency": 0.4093,
+   "pred_top1": "KB-Science-Tech/1992–93 Minnesota North Stars season.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Science-Tech-0003",
+   "latency": 0.4421,
+   "pred_top1": "KB-Literature-Arts/David Stafford (writer).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Science-Tech-0004",
+   "latency": 0.4533,
+   "pred_top1": "KB-Science-Tech/Falling Stars (video game).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Science-Tech-0005",
+   "latency": 0.4418,
+   "pred_top1": "KB-Science-Tech/Institute of Chemistry of Ireland.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Science-Tech-0006",
+   "latency": 0.4281,
+   "pred_top1": "KB-Science-Tech/Just Got Started Lovin' You.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Science-Tech-0007",
+   "latency": 0.4201,
+   "pred_top1": "KB-Science-Tech/Ministro Pistarini International Airport.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Science-Tech-0008",
+   "latency": 0.4101,
+   "pred_top1": "KB-Science-Tech/Mostar Round-Trip.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Science-Tech-0009",
+   "latency": 0.4366,
+   "pred_top1": "KB-Science-Tech/Pentastar_ In the Style of Demons.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Science-Tech-0010",
+   "latency": 0.4382,
+   "pred_top1": "KB-Military/Military technology.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Science-Tech-0011",
+   "latency": 0.4384,
+   "pred_top1": "KB-Science-Tech/Encore Computer.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Science-Tech-0012",
+   "latency": 0.4198,
+   "pred_top1": "KB-Music/Song cycles (Waterhouse).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Science-Tech-0013",
+   "latency": 0.4147,
+   "pred_top1": "KB-Science-Tech/Today I Started Loving You Again.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Science-Tech-0014",
+   "latency": 0.4081,
+   "pred_top1": "KB-Science-Tech/Unexpected (Star Trek_ Enterprise).md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0001",
+   "latency": 0.4119,
+   "pred_top1": "KB-Transport/1988 IAAF World Women's Road Race Championships.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0002",
+   "latency": 0.4304,
+   "pred_top1": "KB-Sports/1997 Conference USA Baseball Tournament.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0003",
+   "latency": 0.424,
+   "pred_top1": "KB-People/Buckingham Palace.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0004",
+   "latency": 0.415,
+   "pred_top1": "KB-Sports/2018 Major League Baseball season.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0005",
+   "latency": 0.3995,
+   "pred_top1": "KB-Science-Tech/Kunlun Red Star.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0006",
+   "latency": 0.426,
+   "pred_top1": "KB-Sports/BBC African Footballer of the Year.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0007",
+   "latency": 0.4274,
+   "pred_top1": "KB-Transport/2013 Minor Counties Championship.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0008",
+   "latency": 0.4158,
+   "pred_top1": "KB-Sports/Bonus (basketball).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0009",
+   "latency": 0.4046,
+   "pred_top1": "KB-Sports/Bury F.C.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0010",
+   "latency": 0.4163,
+   "pred_top1": "KB-Sports/Denmark men's national ice hockey team.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0011",
+   "latency": 0.4109,
+   "pred_top1": "KB-Geography/New York City.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0012",
+   "latency": 0.4053,
+   "pred_top1": "KB-Sports/First division (baseball).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0013",
+   "latency": 0.4181,
+   "pred_top1": "KB-Sports/Hanworth Villa F.C.md"
+  },
+  {
+   "hit_rank": 2,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0014",
+   "latency": 0.4261,
+   "pred_top1": "KB-People/Kansas Jayhawks.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0015",
+   "latency": 0.4079,
+   "pred_top1": "KB-Sports/Major League Baseball Most Valuable Player Award.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0016",
+   "latency": 0.4602,
+   "pred_top1": "KB-Sports/Trafford F.C.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0017",
+   "latency": 0.4337,
+   "pred_top1": "KB-Sports/Mark Lawrence (ice hockey).md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0018",
+   "latency": 0.4314,
+   "pred_top1": "KB-Sports/Bury F.C.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0019",
+   "latency": 0.416,
+   "pred_top1": "KB-Sports/2011 Houston Cougars football team.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0020",
+   "latency": 0.4268,
+   "pred_top1": "KB-Sports/Modern Baseball.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0021",
+   "latency": 0.4033,
+   "pred_top1": "KB-Sports/2018 Pac-12 Conference football season.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0022",
+   "latency": 0.403,
+   "pred_top1": "KB-Sports/2015–16 TCU Horned Frogs women's basketball team.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0023",
+   "latency": 0.4021,
+   "pred_top1": "KB-Sports/Ontario Hockey League.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0024",
+   "latency": 0.4743,
+   "pred_top1": "KB-Music/Pete Murray (Australian singer-songwriter).md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0025",
+   "latency": 0.4367,
+   "pred_top1": "KB-Sports/Rabat Ajax Football Ground.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0026",
+   "latency": 0.4262,
+   "pred_top1": "KB-Sports/Rotherham County F.C.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0027",
+   "latency": 0.4149,
+   "pred_top1": "KB-Sports/Tramore Athletic F.C.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0028",
+   "latency": 0.411,
+   "pred_top1": "KB-Sports/Port Melbourne Football Club.md"
+  },
+  {
+   "hit_rank": 2,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0029",
+   "latency": 0.4358,
+   "pred_top1": "KB-Sports/Gymnastics at the 1904 Summer Olympics.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0030",
+   "latency": 0.4393,
+   "pred_top1": "KB-Film-TV/Prom (film).md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0031",
+   "latency": 0.4245,
+   "pred_top1": "KB-People/Houston Astros.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0032",
+   "latency": 0.457,
+   "pred_top1": "KB-Sports/The Minikahda Club.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Sports-0033",
+   "latency": 0.4313,
+   "pred_top1": "KB-Sports/Welling United F.C.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Transport-0001",
+   "latency": 0.4248,
+   "pred_top1": "KB-Transport/A Ship Comes In.md"
+  },
+  {
+   "hit_rank": 9,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Transport-0002",
+   "latency": 0.4225,
+   "pred_top1": "KB-People/Bangor Air National Guard Base.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Transport-0003",
+   "latency": 0.4393,
+   "pred_top1": "KB-Transport/Bodie and Benton Railway and Commercial Company.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Transport-0004",
+   "latency": 0.4071,
+   "pred_top1": "KB-Transport/Chattanooga Metropolitan Airport.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Transport-0005",
+   "latency": 0.4267,
+   "pred_top1": "KB-Transport/Chicago Rockford International Airport.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Transport-0006",
+   "latency": 0.4059,
+   "pred_top1": "KB-Transport/Chicago & Northwestern Railway Co. v. Crane.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Transport-0007",
+   "latency": 0.4121,
+   "pred_top1": "KB-Transport/Essendon Airport.md"
+  },
+  {
+   "hit_rank": 3,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Transport-0008",
+   "latency": 0.4013,
+   "pred_top1": "KB-Transport/Nottingham Airport.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Transport-0009",
+   "latency": 0.4243,
+   "pred_top1": "KB-Transport/Heartworn Highways.md"
+  },
+  {
+   "hit_rank": 9,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Transport-0010",
+   "latency": 0.4384,
+   "pred_top1": "KB-Transport/Noi Bai International Airport.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Transport-0011",
+   "latency": 0.4472,
+   "pred_top1": "KB-Transport/Indonesia–Timor Leste Commission of Truth and Friendship.md"
+  },
+  {
+   "hit_rank": null,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Transport-0012",
+   "latency": 0.4387,
+   "pred_top1": "KB-Transport/Lugano Airport.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Transport-0013",
+   "latency": 0.4392,
+   "pred_top1": "KB-Transport/McClellan–Palomar Airport.md"
+  },
+  {
+   "hit_rank": 9,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": false,
+   "n_hits": 10,
+   "qid": "cqa-KB-Transport-0014",
+   "latency": 0.4118,
+   "pred_top1": "KB-People/SAS Braathens.md"
+  },
+  {
+   "hit_rank": 1,
+   "scorable": true,
+   "evidence_hit5": null,
+   "kb_route1": true,
+   "n_hits": 10,
+   "qid": "cqa-KB-Transport-0015",
+   "latency": 0.4303,
+   "pred_top1": "KB-Transport/The Worship of Venus.md"
+  }
+ ]
+}

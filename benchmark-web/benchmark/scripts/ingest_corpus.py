@@ -127,21 +127,27 @@ def batch_index_with_recovery(backend: str, kb_name: str, kb_id: str,
 
 
 def ensure_kb(name: str, description: str, token: str) -> str:
-    """创建 KB（幂等），返回 kb uuid。"""
+    """创建 KB（幂等），返回 kb uuid。阵发期 401 短重试。"""
     web = _web_base()
-    try:
-        r = request(f"{web}/api/kb/create", {"name": name, "description": description}, token)
-        return r["knowledgeBase"]["id"]
-    except urllib.error.HTTPError as e:
-        if e.code == 409:  # 已存在 → 从 catalog 取 uuid
-            catalog = get_json(f"{web}/api/kb/catalog", token)
-            kbs = (catalog if isinstance(catalog, list)
-                   else catalog.get("knowledgeBases") or catalog.get("kbs") or [])
-            for kb in kbs:
-                if kb.get("name") == name or kb.get("path") == name:
-                    return kb.get("kbId") or kb.get("id") or kb.get("kb_id")
-            raise RuntimeError(f"KB {name} 返回 409 但 catalog 中找不到")
-        raise
+    r = None
+    for attempt in range(3):
+        try:
+            r = request(f"{web}/api/kb/create", {"name": name, "description": description}, token)
+            break
+        except urllib.error.HTTPError as e:
+            if e.code == 409:  # 已存在 → 从 catalog 取 uuid
+                catalog = get_json(f"{web}/api/kb/catalog", token)
+                kbs = (catalog if isinstance(catalog, list)
+                       else catalog.get("knowledgeBases") or catalog.get("kbs") or [])
+                for kb in kbs:
+                    if kb.get("name") == name or kb.get("path") == name:
+                        return kb.get("kbId") or kb.get("id") or kb.get("kb_id")
+                raise RuntimeError(f"KB {name} 返回 409 但 catalog 中找不到")
+            if e.code == 401 and attempt < 2:
+                time.sleep(15)
+                continue
+            raise
+    return r["knowledgeBase"]["id"]
 
 
 def load_checkpoint(kb_name: str) -> tuple[set[str], object]:
@@ -187,6 +193,7 @@ def main() -> int:
         done, cp = load_checkpoint(kb_name)
         pending_paths: list[str] = []
         created = skipped = failed = 0
+        consecutive_fails = 0
         t0 = time.perf_counter()
         web = _web_base()
         backend = _backend_base()
@@ -209,17 +216,25 @@ def main() -> int:
                 cp.write(json.dumps({"title": title}, ensure_ascii=False) + "\n")
                 pending_paths.append(doc_name)
                 created += 1
+                consecutive_fails = 0
             except urllib.error.HTTPError as e:
                 if e.code == 409:  # 名称冲突 = 自动去重语义, 视为已存在
                     cp.write(json.dumps({"title": title, "dup": True}, ensure_ascii=False) + "\n")
                     skipped += 1
+                    consecutive_fails = 0
                 else:
                     failed += 1
+                    consecutive_fails += 1
                     detail = e.read().decode(errors="replace")[:150]
                     print(f"  [{i}] create failed {doc_name}: HTTP {e.code} {detail}")
             except Exception as e:
                 failed += 1
+                consecutive_fails += 1
                 print(f"  [{i}] create failed {doc_name}: {e}")
+            if consecutive_fails >= 8:
+                # 阵发期熔断: 弃当前 KB, 等下一静默窗口再续跑(检查点已保存进度)
+                print(f"  {kb_name}: 连续 {consecutive_fails} 次创建失败 — 疑似阵发期, 弃当前 KB", flush=True)
+                break
 
             if len(pending_paths) >= BATCH_SIZE:
                 batch_index_with_recovery(backend, kb_name, kb_id, pending_paths, token)

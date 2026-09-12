@@ -17,9 +17,9 @@ python build_content_qa.py --per-kb "$PER_KB"
 
 echo "== 2/5 Track C 双轮 =="
 for r in 1 2; do
-  python run_content_qa.py --datasets contentqa --methods two_stage,vector_flat \
+  python run_content_qa_driver.py --datasets contentqa --methods two_stage,vector_flat \
     --limit 0 --round "$r"
-  python run_content_qa.py --datasets hotpotqa,triviaqa,nq --methods two_stage,vector_flat \
+  python run_content_qa_driver.py --datasets hotpotqa,triviaqa,nq --methods two_stage,vector_flat \
     --limit "$LIMIT" --round "$r"
 done
 
