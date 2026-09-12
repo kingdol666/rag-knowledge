@@ -74,14 +74,20 @@ def staged_retrieval(mc: McpClient, question: str) -> dict:
              if len(t) >= 2]
     t_verify = time.perf_counter()
     verified: dict[str, int] = {}
+    reads = []  # QDCVR 留痕: 每次内容验证的读取量与判定
     for doc_path in stage2[:3]:
         try:
             d = mc.call("kb_doc_read", {"doc_path": doc_path, "max_chars": 3000},
                         timeout=120)
             content = str(d.get("content") or d.get("raw") or "")
-            verified[doc_path] = sum(1 for t in terms if t in content.lower())
-        except Exception:  # noqa: BLE001
+            score = sum(1 for t in terms if t in content.lower())
+            verified[doc_path] = score
+            reads.append({"doc": doc_basename(doc_path), "chars_read": len(content),
+                          "score": score, "passed": score > 0})
+        except Exception as e:  # noqa: BLE001
             verified[doc_path] = 0
+            reads.append({"doc": doc_basename(doc_path), "chars_read": 0,
+                          "score": 0, "passed": False, "error": str(e)[:80]})
         calls += 1
     t_verify = time.perf_counter() - t_verify
 
@@ -95,10 +101,11 @@ def staged_retrieval(mc: McpClient, question: str) -> dict:
         if k not in seen:
             seen.add(k)
             uniq.append(d)
+    rerank_changed = [d.lower() for d in uniq[:3]] != [d.lower() for d in stage2[:3]]
     return {"docs": uniq, "stage1": stage1, "stage2": stage2,
             "latency_total": time.perf_counter() - t0,
             "latency_search": t_search, "latency_verify": t_verify,
-            "calls": calls}
+            "calls": calls, "reads": reads, "rerank_changed": rerank_changed}
 
 
 def vector_baseline(mc: McpClient, question: str) -> dict:
@@ -124,6 +131,9 @@ def main() -> int:
             m_st["search_s"] = round(st["latency_search"], 3)
             m_st["verify_s"] = round(st["latency_verify"], 3)
             m_st["calls"] = st["calls"]
+            m_st["chars_read"] = sum(r["chars_read"] for r in st["reads"])
+            m_st["verification_passed"] = sum(1 for r in st["reads"] if r.get("passed"))
+            m_st["rerank_changed"] = st["rerank_changed"]
             # 逐级命中: 金标最早出现在哪个阶段
             def has(docs):
                 return any(norm_t(doc_basename(d)) in golden for d in docs)
@@ -152,6 +162,12 @@ def main() -> int:
             for r in rs:
                 stages[r["first_stage"]] = stages.get(r["first_stage"], 0) + 1
             out["first_stage_dist"] = stages
+        out["qdcvr_chars_read_per_query"] = mean(
+            [r.get("chars_read", 0) for r in rs])
+        out["qdcvr_verify_pass_rate"] = mean(
+            [r.get("verification_passed", 0) / 3 for r in rs])
+        out["qdcvr_rerank_changed_rate"] = mean(
+            [1 if r.get("rerank_changed") else 0 for r in rs])
         return out
 
     by_lang = {}
