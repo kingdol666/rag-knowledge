@@ -1,9 +1,14 @@
 {
  "summary": {
   "round": "2",
-  "n_docs": 184,
+  "n_md_docs": 15,
+  "n_pdf_docs": 1,
+  "parse_success": 1.0,
+  "pdf_parse_chars": 1444,
+  "ingest_success_rate": 1.0,
   "membership_accuracy": 1.0,
   "storage_completeness": 1.0,
+  "self_retrieval_hit1": 0.9375,
   "env": {
    "backend": "http://localhost:8771",
    "web": "http://localhost:6790",
@@ -22,6 +27,6 @@
    },
    "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
   },
-  "generated": "2026-09-13T14:29:09.638044+00:00"
+  "generated": "2026-09-12T18:39:42.684406+00:00"
  }
 }

@@ -1,7 +1,7 @@
 {
  "summary": {
-  "round": "2",
-  "n_kbs": 2,
+  "round": "1",
+  "n_kbs": 1,
   "run_success_rate": 1.0,
   "kb_coverage": 0.0,
   "total_experiences": 0,
@@ -25,19 +25,10 @@
    },
    "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
   },
-  "generated": "2026-09-13T14:56:41.402378+00:00"
+  "generated": "2026-09-12T18:59:09.254553+00:00"
  },
  "per_kb": {
-  "KB-Demo-EN": {
-   "run_success": true,
-   "run_error": null,
-   "n_drafts": 0,
-   "n_approved": 0,
-   "n_experiences": 0,
-   "judge_score_mean": null,
-   "grounded_ratio": null
-  },
-  "KB-Demo-ZH": {
+  "KB-Std-EN": {
    "run_success": true,
    "run_error": null,
    "n_drafts": 0,
@@ -48,11 +39,7 @@
   }
  },
  "samples": {
-  "KB-Demo-EN": {
-   "titles": [],
-   "judged": []
-  },
-  "KB-Demo-ZH": {
+  "KB-Std-EN": {
    "titles": [],
    "judged": []
   }

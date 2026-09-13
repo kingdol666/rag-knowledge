@@ -1,0 +1,1696 @@
+{
+ "baseline": "results\\archive-20260913-214859",
+ "candidate": "results",
+ "files": [
+  {
+   "file": "module_a_ingestion_r1.json",
+   "status": "PASS",
+   "counts": {
+    "same": 21,
+    "tolerant": 0,
+    "diff": 0,
+    "skip": 1
+   },
+   "sections": {
+    "aggregate": 0,
+    "detail": 0,
+    "other": 0
+   },
+   "diffs": []
+  },
+  {
+   "file": "module_a_ingestion_r2.json",
+   "status": "PASS",
+   "counts": {
+    "same": 21,
+    "tolerant": 0,
+    "diff": 0,
+    "skip": 1
+   },
+   "sections": {
+    "aggregate": 0,
+    "detail": 0,
+    "other": 0
+   },
+   "diffs": []
+  },
+  {
+   "file": "module_a_std2_r1.json",
+   "status": "PASS",
+   "counts": {
+    "same": 16,
+    "tolerant": 0,
+    "diff": 0,
+    "skip": 1
+   },
+   "sections": {
+    "aggregate": 0,
+    "detail": 0,
+    "other": 0
+   },
+   "diffs": []
+  },
+  {
+   "file": "module_a_std2_r2.json",
+   "status": "PASS",
+   "counts": {
+    "same": 16,
+    "tolerant": 0,
+    "diff": 0,
+    "skip": 1
+   },
+   "sections": {
+    "aggregate": 0,
+    "detail": 0,
+    "other": 0
+   },
+   "diffs": []
+  },
+  {
+   "file": "module_a_std_r1.json",
+   "status": "PASS",
+   "counts": {
+    "same": 17,
+    "tolerant": 0,
+    "diff": 0,
+    "skip": 1
+   },
+   "sections": {
+    "aggregate": 0,
+    "detail": 0,
+    "other": 0
+   },
+   "diffs": []
+  },
+  {
+   "file": "module_b_retrieval_r1.json",
+   "status": "FAIL",
+   "counts": {
+    "same": 562,
+    "tolerant": 0,
+    "diff": 43,
+    "skip": 89
+   },
+   "sections": {
+    "aggregate": 22,
+    "detail": 21,
+    "other": 0
+   },
+   "diffs": [
+    {
+     "path": "rows.staged.1.rerank_changed",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "False → True"
+    },
+    {
+     "path": "rows.staged.10.calls",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "5 → 4 (Δ1.0000)"
+    },
+    {
+     "path": "rows.staged.10.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "2443 → 784 (Δ1659.0000)"
+    },
+    {
+     "path": "rows.staged.11.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "2995 → 4599 (Δ1604.0000)"
+    },
+    {
+     "path": "rows.staged.13.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "1942 → 3926 (Δ1984.0000)"
+    },
+    {
+     "path": "rows.staged.19.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "5343 → 7198 (Δ1855.0000)"
+    },
+    {
+     "path": "rows.staged.19.hit@3",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "1 → 0 (Δ1.0000)"
+    },
+    {
+     "path": "rows.staged.19.mrr",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.3333333333333333 → 0.25 (Δ0.0833)"
+    },
+    {
+     "path": "rows.staged.19.recall@3",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.5 → 0.0 (Δ0.5000)"
+    },
+    {
+     "path": "rows.staged.19.rerank_changed",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "False → True"
+    },
+    {
+     "path": "rows.staged.2.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "7192 → 5301 (Δ1891.0000)"
+    },
+    {
+     "path": "rows.staged.2.rerank_changed",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "True → False"
+    },
+    {
+     "path": "rows.staged.8.calls",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "4 → 5 (Δ1.0000)"
+    },
+    {
+     "path": "rows.staged.8.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "1408 → 3866 (Δ2458.0000)"
+    },
+    {
+     "path": "rows.staged.9.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "4813 → 6459 (Δ1646.0000)"
+    },
+    {
+     "path": "rows.vector.17.hit@3",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0 → 1 (Δ1.0000)"
+    },
+    {
+     "path": "rows.vector.17.mrr",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.2 → 0.5 (Δ0.3000)"
+    },
+    {
+     "path": "rows.vector.17.precision@5",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.2 → 0.4 (Δ0.2000)"
+    },
+    {
+     "path": "rows.vector.17.recall@3",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.0 → 1.0 (Δ1.0000)"
+    },
+    {
+     "path": "rows.vector.17.recall@5",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.5 → 1.0 (Δ0.5000)"
+    },
+    {
+     "path": "rows.vector.19.mrr",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.0 → 0.1111111111111111 (Δ0.1111)"
+    },
+    {
+     "path": "summary.by_lang.en.staged.hit@3",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "1.0 → 0.9 (Δ0.1000)"
+    },
+    {
+     "path": "summary.by_lang.en.staged.mrr",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8333 → 0.825 (Δ0.0083)"
+    },
+    {
+     "path": "summary.by_lang.en.staged.qdcvr_chars_read_per_query",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "5582.1 → 5578.5 (Δ3.6000)"
+    },
+    {
+     "path": "summary.by_lang.en.staged.qdcvr_rerank_changed_rate",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.3 → 0.4 (Δ0.1000)"
+    },
+    {
+     "path": "summary.by_lang.en.staged.recall@3",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.95 → 0.9 (Δ0.0500)"
+    },
+    {
+     "path": "summary.by_lang.en.vector.hit@3",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8 → 0.9 (Δ0.1000)"
+    },
+    {
+     "path": "summary.by_lang.en.vector.mrr",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.82 → 0.8611 (Δ0.0411)"
+    },
+    {
+     "path": "summary.by_lang.en.vector.precision@5",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.18 → 0.2 (Δ0.0200)"
+    },
+    {
+     "path": "summary.by_lang.en.vector.recall@3",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8 → 0.9 (Δ0.1000)"
+    },
+    {
+     "path": "summary.by_lang.en.vector.recall@5",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.85 → 0.9 (Δ0.0500)"
+    },
+    {
+     "path": "summary.by_lang.ja.staged.qdcvr_chars_read_per_query",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "932.75 → 1428.75 (Δ496.0000)"
+    },
+    {
+     "path": "summary.by_lang.zh.staged.qdcvr_chars_read_per_query",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "2204.5 → 2879.3333 (Δ674.8333)"
+    },
+    {
+     "path": "summary.overall.staged.hit@3",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.95 → 0.9 (Δ0.0500)"
+    },
+    {
+     "path": "summary.overall.staged.mrr",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8667 → 0.8625 (Δ0.0042)"
+    },
+    {
+     "path": "summary.overall.staged.qdcvr_chars_read_per_query",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "3638.95 → 3938.8 (Δ299.8500)"
+    },
+    {
+     "path": "summary.overall.staged.qdcvr_rerank_changed_rate",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.15 → 0.2 (Δ0.0500)"
+    },
+    {
+     "path": "summary.overall.staged.recall@3",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.9083 → 0.8833 (Δ0.0250)"
+    },
+    {
+     "path": "summary.overall.vector.hit@3",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.9 → 0.95 (Δ0.0500)"
+    },
+    {
+     "path": "summary.overall.vector.mrr",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.91 → 0.9306 (Δ0.0206)"
+    },
+    {
+     "path": "summary.overall.vector.precision@5",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.19 → 0.2 (Δ0.0100)"
+    },
+    {
+     "path": "summary.overall.vector.recall@3",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8667 → 0.9167 (Δ0.0500)"
+    },
+    {
+     "path": "summary.overall.vector.recall@5",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8917 → 0.9167 (Δ0.0250)"
+    }
+   ]
+  },
+  {
+   "file": "module_b_retrieval_r2.json",
+   "status": "FAIL",
+   "counts": {
+    "same": 562,
+    "tolerant": 0,
+    "diff": 43,
+    "skip": 89
+   },
+   "sections": {
+    "aggregate": 22,
+    "detail": 21,
+    "other": 0
+   },
+   "diffs": [
+    {
+     "path": "rows.staged.1.rerank_changed",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "False → True"
+    },
+    {
+     "path": "rows.staged.10.calls",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "5 → 4 (Δ1.0000)"
+    },
+    {
+     "path": "rows.staged.10.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "2443 → 784 (Δ1659.0000)"
+    },
+    {
+     "path": "rows.staged.11.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "2995 → 4599 (Δ1604.0000)"
+    },
+    {
+     "path": "rows.staged.13.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "1942 → 3926 (Δ1984.0000)"
+    },
+    {
+     "path": "rows.staged.19.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "5343 → 7198 (Δ1855.0000)"
+    },
+    {
+     "path": "rows.staged.19.hit@3",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "1 → 0 (Δ1.0000)"
+    },
+    {
+     "path": "rows.staged.19.mrr",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.3333333333333333 → 0.25 (Δ0.0833)"
+    },
+    {
+     "path": "rows.staged.19.recall@3",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.5 → 0.0 (Δ0.5000)"
+    },
+    {
+     "path": "rows.staged.19.rerank_changed",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "False → True"
+    },
+    {
+     "path": "rows.staged.2.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "7192 → 5301 (Δ1891.0000)"
+    },
+    {
+     "path": "rows.staged.2.rerank_changed",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "True → False"
+    },
+    {
+     "path": "rows.staged.8.calls",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "4 → 5 (Δ1.0000)"
+    },
+    {
+     "path": "rows.staged.8.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "1408 → 3866 (Δ2458.0000)"
+    },
+    {
+     "path": "rows.staged.9.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "4813 → 6459 (Δ1646.0000)"
+    },
+    {
+     "path": "rows.vector.17.hit@3",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0 → 1 (Δ1.0000)"
+    },
+    {
+     "path": "rows.vector.17.mrr",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.2 → 0.5 (Δ0.3000)"
+    },
+    {
+     "path": "rows.vector.17.precision@5",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.2 → 0.4 (Δ0.2000)"
+    },
+    {
+     "path": "rows.vector.17.recall@3",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.0 → 1.0 (Δ1.0000)"
+    },
+    {
+     "path": "rows.vector.17.recall@5",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.5 → 1.0 (Δ0.5000)"
+    },
+    {
+     "path": "rows.vector.19.mrr",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.0 → 0.1111111111111111 (Δ0.1111)"
+    },
+    {
+     "path": "summary.by_lang.en.staged.hit@3",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "1.0 → 0.9 (Δ0.1000)"
+    },
+    {
+     "path": "summary.by_lang.en.staged.mrr",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8333 → 0.825 (Δ0.0083)"
+    },
+    {
+     "path": "summary.by_lang.en.staged.qdcvr_chars_read_per_query",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "5582.1 → 5578.5 (Δ3.6000)"
+    },
+    {
+     "path": "summary.by_lang.en.staged.qdcvr_rerank_changed_rate",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.3 → 0.4 (Δ0.1000)"
+    },
+    {
+     "path": "summary.by_lang.en.staged.recall@3",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.95 → 0.9 (Δ0.0500)"
+    },
+    {
+     "path": "summary.by_lang.en.vector.hit@3",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8 → 0.9 (Δ0.1000)"
+    },
+    {
+     "path": "summary.by_lang.en.vector.mrr",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.82 → 0.8611 (Δ0.0411)"
+    },
+    {
+     "path": "summary.by_lang.en.vector.precision@5",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.18 → 0.2 (Δ0.0200)"
+    },
+    {
+     "path": "summary.by_lang.en.vector.recall@3",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8 → 0.9 (Δ0.1000)"
+    },
+    {
+     "path": "summary.by_lang.en.vector.recall@5",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.85 → 0.9 (Δ0.0500)"
+    },
+    {
+     "path": "summary.by_lang.ja.staged.qdcvr_chars_read_per_query",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "932.75 → 1428.75 (Δ496.0000)"
+    },
+    {
+     "path": "summary.by_lang.zh.staged.qdcvr_chars_read_per_query",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "2204.5 → 2879.3333 (Δ674.8333)"
+    },
+    {
+     "path": "summary.overall.staged.hit@3",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.95 → 0.9 (Δ0.0500)"
+    },
+    {
+     "path": "summary.overall.staged.mrr",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8667 → 0.8625 (Δ0.0042)"
+    },
+    {
+     "path": "summary.overall.staged.qdcvr_chars_read_per_query",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "3638.95 → 3938.8 (Δ299.8500)"
+    },
+    {
+     "path": "summary.overall.staged.qdcvr_rerank_changed_rate",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.15 → 0.2 (Δ0.0500)"
+    },
+    {
+     "path": "summary.overall.staged.recall@3",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.9083 → 0.8833 (Δ0.0250)"
+    },
+    {
+     "path": "summary.overall.vector.hit@3",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.9 → 0.95 (Δ0.0500)"
+    },
+    {
+     "path": "summary.overall.vector.mrr",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.91 → 0.9306 (Δ0.0206)"
+    },
+    {
+     "path": "summary.overall.vector.precision@5",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.19 → 0.2 (Δ0.0100)"
+    },
+    {
+     "path": "summary.overall.vector.recall@3",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8667 → 0.9167 (Δ0.0500)"
+    },
+    {
+     "path": "summary.overall.vector.recall@5",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8917 → 0.9167 (Δ0.0250)"
+    }
+   ]
+  },
+  {
+   "file": "module_b_retrieval_std_r1.json",
+   "status": "PASS",
+   "counts": {
+    "same": 881,
+    "tolerant": 0,
+    "diff": 0,
+    "skip": 135
+   },
+   "sections": {
+    "aggregate": 0,
+    "detail": 0,
+    "other": 0
+   },
+   "diffs": []
+  },
+  {
+   "file": "module_b_std2_r1.json",
+   "status": "FAIL",
+   "counts": {
+    "same": 2792,
+    "tolerant": 0,
+    "diff": 41,
+    "skip": 193
+   },
+   "sections": {
+    "aggregate": 12,
+    "detail": 29,
+    "other": 0
+   },
+   "diffs": [
+    {
+     "path": "rows.scifact.bm25.19.ndcg@10",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.8315546295836225 → 0.8772153153380493 (Δ0.0457)"
+    },
+    {
+     "path": "rows.scifact.bm25.19.precision@5",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.2 → 0.4 (Δ0.2000)"
+    },
+    {
+     "path": "rows.scifact.bm25.19.recall@5",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.5 → 1.0 (Δ0.5000)"
+    },
+    {
+     "path": "rows.scifact.bm25.4.mrr",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.058823529411764705 → 0.07692307692307693 (Δ0.0181)"
+    },
+    {
+     "path": "rows.scifact.bm25.5.ndcg@10",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.8278123145308894 → 0.8385465274895063 (Δ0.0107)"
+    },
+    {
+     "path": "rows.scifact.bm25.6.ndcg@10",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.7920874914199381 → 0.8278123145308894 (Δ0.0357)"
+    },
+    {
+     "path": "rows.scifact.bm25.7.ndcg@10",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.8072467605676945 → 0.8385465274895063 (Δ0.0313)"
+    },
+    {
+     "path": "rows.scifact.bm25.9.hit@10",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0 → 1 (Δ1.0000)"
+    },
+    {
+     "path": "rows.scifact.bm25.9.mrr",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.09090909090909091 → 0.1 (Δ0.0091)"
+    },
+    {
+     "path": "rows.scifact.bm25.9.ndcg@10",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.0 → 0.2890648263178879 (Δ0.2891)"
+    },
+    {
+     "path": "rows.scifact.bm25.9.recall@10",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.0 → 1.0 (Δ1.0000)"
+    },
+    {
+     "path": "rows.scifact.dense.22.mrr",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.3333333333333333 → 0.5 (Δ0.1667)"
+    },
+    {
+     "path": "rows.scifact.dense.22.ndcg@10",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.5 → 0.6309297535714575 (Δ0.1309)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.10.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "4194 → 3758 (Δ436.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.11.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "5187 → 4803 (Δ384.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.14.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "4331 → 4489 (Δ158.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.15.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "4299 → 6123 (Δ1824.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.17.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "3514 → 3828 (Δ314.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.19.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "4083 → 4116 (Δ33.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.21.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "5348 → 4943 (Δ405.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.24.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "3272 → 3245 (Δ27.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.25.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "3272 → 3245 (Δ27.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.27.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "2932 → 2588 (Δ344.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.29.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "7551 → 5888 (Δ1663.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.4.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "4074 → 4240 (Δ166.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.4.claim_evidence",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.4 → 0.3 (Δ0.1000)"
+    },
+    {
+     "path": "rows.scifact.twostage.22.claim_evidence",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.0769 → 0.1538 (Δ0.0769)"
+    },
+    {
+     "path": "rows.scifact.twostage.23.claim_evidence",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.0769 → 0.1538 (Δ0.0769)"
+    },
+    {
+     "path": "rows.squad.bm25.5.answer@5",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0 → 1 (Δ1.0000)"
+    },
+    {
+     "path": "summary.scifact.bm25.hit@10",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8333 → 0.8667 (Δ0.0334)"
+    },
+    {
+     "path": "summary.scifact.bm25.mrr",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8383 → 0.8392 (Δ0.0009)"
+    },
+    {
+     "path": "summary.scifact.bm25.ndcg@10",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8086 → 0.8224 (Δ0.0138)"
+    },
+    {
+     "path": "summary.scifact.bm25.precision@5",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.1867 → 0.1933 (Δ0.0066)"
+    },
+    {
+     "path": "summary.scifact.bm25.recall@10",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8333 → 0.8667 (Δ0.0334)"
+    },
+    {
+     "path": "summary.scifact.bm25.recall@5",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.7833 → 0.8 (Δ0.0167)"
+    },
+    {
+     "path": "summary.scifact.dense.mrr",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8056 → 0.8111 (Δ0.0055)"
+    },
+    {
+     "path": "summary.scifact.dense.ndcg@10",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8298 → 0.8341 (Δ0.0043)"
+    },
+    {
+     "path": "summary.scifact.qdcvr.chars_read",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "4291.9 → 4265.6 (Δ26.3000)"
+    },
+    {
+     "path": "summary.scifact.qdcvr.claim_evidence",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.5159 → 0.5126 (Δ0.0033)"
+    },
+    {
+     "path": "summary.scifact.twostage.claim_evidence",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.4876 → 0.4928 (Δ0.0052)"
+    },
+    {
+     "path": "summary.squad.bm25.answer@5",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.9375 → 1.0 (Δ0.0625)"
+    }
+   ]
+  },
+  {
+   "file": "module_b_std2_r2.json",
+   "status": "FAIL",
+   "counts": {
+    "same": 2792,
+    "tolerant": 0,
+    "diff": 41,
+    "skip": 193
+   },
+   "sections": {
+    "aggregate": 12,
+    "detail": 29,
+    "other": 0
+   },
+   "diffs": [
+    {
+     "path": "rows.scifact.bm25.19.ndcg@10",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.8315546295836225 → 0.8772153153380493 (Δ0.0457)"
+    },
+    {
+     "path": "rows.scifact.bm25.19.precision@5",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.2 → 0.4 (Δ0.2000)"
+    },
+    {
+     "path": "rows.scifact.bm25.19.recall@5",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.5 → 1.0 (Δ0.5000)"
+    },
+    {
+     "path": "rows.scifact.bm25.4.mrr",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.058823529411764705 → 0.07692307692307693 (Δ0.0181)"
+    },
+    {
+     "path": "rows.scifact.bm25.5.ndcg@10",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.8278123145308894 → 0.8385465274895063 (Δ0.0107)"
+    },
+    {
+     "path": "rows.scifact.bm25.6.ndcg@10",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.7920874914199381 → 0.8278123145308894 (Δ0.0357)"
+    },
+    {
+     "path": "rows.scifact.bm25.7.ndcg@10",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.8072467605676945 → 0.8385465274895063 (Δ0.0313)"
+    },
+    {
+     "path": "rows.scifact.bm25.9.hit@10",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0 → 1 (Δ1.0000)"
+    },
+    {
+     "path": "rows.scifact.bm25.9.mrr",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.09090909090909091 → 0.1 (Δ0.0091)"
+    },
+    {
+     "path": "rows.scifact.bm25.9.ndcg@10",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.0 → 0.2890648263178879 (Δ0.2891)"
+    },
+    {
+     "path": "rows.scifact.bm25.9.recall@10",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.0 → 1.0 (Δ1.0000)"
+    },
+    {
+     "path": "rows.scifact.dense.22.mrr",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.3333333333333333 → 0.5 (Δ0.1667)"
+    },
+    {
+     "path": "rows.scifact.dense.22.ndcg@10",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.5 → 0.6309297535714575 (Δ0.1309)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.10.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "4194 → 3758 (Δ436.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.11.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "5187 → 4803 (Δ384.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.14.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "4331 → 4489 (Δ158.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.15.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "4299 → 6123 (Δ1824.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.17.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "3514 → 3828 (Δ314.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.19.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "4083 → 4116 (Δ33.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.21.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "5348 → 4943 (Δ405.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.24.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "3272 → 3245 (Δ27.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.25.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "3272 → 3245 (Δ27.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.27.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "2932 → 2588 (Δ344.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.29.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "7551 → 5888 (Δ1663.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.4.chars_read",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "4074 → 4240 (Δ166.0000)"
+    },
+    {
+     "path": "rows.scifact.qdcvr.4.claim_evidence",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.4 → 0.3 (Δ0.1000)"
+    },
+    {
+     "path": "rows.scifact.twostage.22.claim_evidence",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.0769 → 0.1538 (Δ0.0769)"
+    },
+    {
+     "path": "rows.scifact.twostage.23.claim_evidence",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0.0769 → 0.1538 (Δ0.0769)"
+    },
+    {
+     "path": "rows.squad.bm25.5.answer@5",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "0 → 1 (Δ1.0000)"
+    },
+    {
+     "path": "summary.scifact.bm25.hit@10",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8333 → 0.8667 (Δ0.0334)"
+    },
+    {
+     "path": "summary.scifact.bm25.mrr",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8383 → 0.8392 (Δ0.0009)"
+    },
+    {
+     "path": "summary.scifact.bm25.ndcg@10",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8086 → 0.8224 (Δ0.0138)"
+    },
+    {
+     "path": "summary.scifact.bm25.precision@5",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.1867 → 0.1933 (Δ0.0066)"
+    },
+    {
+     "path": "summary.scifact.bm25.recall@10",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8333 → 0.8667 (Δ0.0334)"
+    },
+    {
+     "path": "summary.scifact.bm25.recall@5",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.7833 → 0.8 (Δ0.0167)"
+    },
+    {
+     "path": "summary.scifact.dense.mrr",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8056 → 0.8111 (Δ0.0055)"
+    },
+    {
+     "path": "summary.scifact.dense.ndcg@10",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.8298 → 0.8341 (Δ0.0043)"
+    },
+    {
+     "path": "summary.scifact.qdcvr.chars_read",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "4291.9 → 4265.6 (Δ26.3000)"
+    },
+    {
+     "path": "summary.scifact.qdcvr.claim_evidence",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.5159 → 0.5126 (Δ0.0033)"
+    },
+    {
+     "path": "summary.scifact.twostage.claim_evidence",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.4876 → 0.4928 (Δ0.0052)"
+    },
+    {
+     "path": "summary.squad.bm25.answer@5",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.9375 → 1.0 (Δ0.0625)"
+    }
+   ]
+  },
+  {
+   "file": "module_c_experience_r1.json",
+   "status": "FAIL",
+   "counts": {
+    "same": 26,
+    "tolerant": 0,
+    "diff": 39,
+    "skip": 1
+   },
+   "sections": {
+    "aggregate": 7,
+    "detail": 32,
+    "other": 0
+   },
+   "diffs": [
+    {
+     "path": "per_kb.KB-Demo-EN.grounded_ratio",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.625 → None"
+    },
+    {
+     "path": "per_kb.KB-Demo-EN.judge_score_mean",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "4.375 → None"
+    },
+    {
+     "path": "per_kb.KB-Demo-EN.n_experiences",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "8 → 0 (Δ8.0000)"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.0.grounded",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.0.issues",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.0.score",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.1.grounded",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.1.issues",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.1.score",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.2.grounded",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.2.issues",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.2.score",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.3.grounded",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.3.issues",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.3.score",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.4.grounded",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.4.issues",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.4.score",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.5.grounded",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.5.issues",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.5.score",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.6.grounded",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.6.issues",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.6.score",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.7.grounded",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.7.issues",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.7.score",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.titles.0",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.titles.1",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.titles.2",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.titles.3",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.titles.4",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.titles.5",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.titles.6",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.titles.7",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "summary.grounded_ratio",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.625 → None"
+    },
+    {
+     "path": "summary.judge_score_mean",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "4.375 → None"
+    },
+    {
+     "path": "summary.kb_coverage",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.5 → 0.0 (Δ0.5000)"
+    },
+    {
+     "path": "summary.total_experiences",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "8 → 0 (Δ8.0000)"
+    }
+   ]
+  },
+  {
+   "file": "module_c_experience_r2.json",
+   "status": "FAIL",
+   "counts": {
+    "same": 26,
+    "tolerant": 0,
+    "diff": 39,
+    "skip": 1
+   },
+   "sections": {
+    "aggregate": 7,
+    "detail": 32,
+    "other": 0
+   },
+   "diffs": [
+    {
+     "path": "per_kb.KB-Demo-EN.grounded_ratio",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.375 → None"
+    },
+    {
+     "path": "per_kb.KB-Demo-EN.judge_score_mean",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "3.5 → None"
+    },
+    {
+     "path": "per_kb.KB-Demo-EN.n_experiences",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "10 → 0 (Δ10.0000)"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.0.grounded",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.0.issues",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.0.score",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.1.grounded",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.1.issues",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.1.score",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.2.grounded",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.2.issues",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.2.score",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.3.grounded",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.3.issues",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.3.score",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.4.grounded",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.4.issues",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.4.score",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.5.grounded",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.5.issues",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.5.score",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.6.grounded",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.6.issues",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.6.score",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.7.grounded",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.7.issues",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.judged.7.score",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.titles.0",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.titles.1",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.titles.2",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.titles.3",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.titles.4",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.titles.5",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.titles.6",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "samples.KB-Demo-EN.titles.7",
+     "verdict": "diff",
+     "section": "detail",
+     "detail": "missing: candidate"
+    },
+    {
+     "path": "summary.grounded_ratio",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.375 → None"
+    },
+    {
+     "path": "summary.judge_score_mean",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "3.5 → None"
+    },
+    {
+     "path": "summary.kb_coverage",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "0.5 → 0.0 (Δ0.5000)"
+    },
+    {
+     "path": "summary.total_experiences",
+     "verdict": "diff",
+     "section": "aggregate",
+     "detail": "10 → 0 (Δ10.0000)"
+    }
+   ]
+  },
+  {
+   "file": "module_c_experience_std_r1.json",
+   "status": "PASS",
+   "counts": {
+    "same": 26,
+    "tolerant": 0,
+    "diff": 0,
+    "skip": 1
+   },
+   "sections": {
+    "aggregate": 0,
+    "detail": 0,
+    "other": 0
+   },
+   "diffs": []
+  }
+ ]
+}
