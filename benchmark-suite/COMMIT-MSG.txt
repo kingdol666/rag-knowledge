@@ -1,0 +1,14 @@
+feat(benchmark-suite): 论文实验套件 E1-E12 — 审稿要求全链路真实执行
+
+按 EXPERIMENT-DESIGN.md 落地并真实运行:
+- E1 同查询集消融(SciFact30 x 9变体双轮): 内容验证 +0.012 nDCG; 深池阈值扫描(发现部署top-10已被后端0.35预过滤); r1==r2
+- E2 配对统计: 每对比 bootstrap CI + Wilcoxon + Holm; HotpotQA 上 qdcvr vs bm25 +0.241 (p=2e-05)
+- E8 多域公开基准(TODO-12): HotpotQA dev-distractor 50题拆9主题KB, 454+文档, 4方法; 38%金标跨库
+- E3 状态重置+6轮冥想(TODO-5/F17): 10→0不稳定主因为LLM判定方差而非状态污染, 按finding报告
+- E4 双基线同判(TODO-6): 流水线经验5.25 > 原始文档4.0 > 一次性摘要3.0 (同一judge)
+- E5 五路leave-one-out(TODO-4): keyword主承重路, 各路单独/移除均有量化数据
+- E6 衰减敏感性+观察窗口声明(TODO-3); E7 盲区双向率(TODO-2); E12 动机案例(TODO-1)
+- E10/E11 身份基建: run-id目录 + git_commit/config_hash/seed 写入所有结果
+- 诚实负结果如实报告: hotpot 多跳低词汇重叠场景内容验证重排显著低于纯两阶段(dense最强)
+- 修复: batch-index 字段 doc_paths(此前422异常被吞致文档未索引), kb_doc_read 需 KB 前缀路径
+- 产出: EXPERIMENTS-RESULTS.md + experiments-report.html(206KB) + run-* 不可变结果目录

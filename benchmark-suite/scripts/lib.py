@@ -20,7 +20,18 @@ SUITE = Path(__file__).resolve().parent.parent          # benchmark-suite/
 REPO = SUITE.parent                                     # 仓库根
 RESULTS = SUITE / "results"
 RESULTS.mkdir(exist_ok=True)
+RUN_ID = ""  # 惰性初始化, 见 set_run()
+
 DATA = SUITE / "data"
+
+
+def set_run(rid: str = "") -> Path:
+    """设置本轮 run 标识并返回不可变输出目录 results/run-*/."""
+    global RUN_ID
+    RUN_ID = rid or run_id()
+    out = RESULTS / RUN_ID
+    out.mkdir(parents=True, exist_ok=True)
+    return out
 
 BACKEND = os.environ.get("RAG_BENCH_URL", "http://localhost:8771").rstrip("/")
 WEB = os.environ.get("RAG_BENCH_WEB_URL", "http://localhost:6790").rstrip("/")
@@ -263,15 +274,51 @@ def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+def run_id() -> str:
+    """UTC 时间戳 run 标识 — 结果目录与结果文件共用."""
+    from datetime import datetime, timezone
+    return datetime.now(timezone.utc).strftime("run-%Y%m%dT%H%M%SZ")
+
+
+def git_commit() -> str:
+    """当前 HEAD commit（不可用时空串）."""
+    import subprocess
+    try:
+        return subprocess.run(["git", "rev-parse", "--short", "HEAD"],
+                              capture_output=True, text=True, timeout=10,
+                              cwd=str(SUITE.parent)).stdout.strip()
+    except Exception:  # noqa: BLE001
+        return ""
+
+
+def config_hash() -> str:
+    """检索相关配置的稳定哈希（backend config.yml + 关键参数）."""
+    import hashlib
+    h = hashlib.sha256()
+    cfg = SUITE.parent / "backend" / "config.yml"
+    if cfg.exists():
+        h.update(cfg.read_bytes())
+    h.update(json.dumps(env_fingerprint_params(), sort_keys=True).encode())
+    return h.hexdigest()[:16]
+
+
+def env_fingerprint_params() -> dict:
+    return {"vector_top_k": 10,
+            "stage1_top_k": 40, "stage2_top_k": 10,
+            "qdcvr_threshold": THRESH, "verification_reads": 3,
+            "exp_threshold_default": 0.45}
+
+
 def env_fingerprint() -> dict:
-    """环境指纹: 固定随机性说明+模型/库参数(写入每个结果 JSON)。"""
+    """环境指纹: 随机性说明+模型/库参数+运行身份(写入每个结果 JSON)。"""
     return {
+        "run_id": RUN_ID, "git_commit": git_commit(), "config_hash": config_hash(),
+        "seed": 0,
         "backend": BACKEND, "web": WEB,
         "embedding": "BAAI/bge-m3 (local GPU, normalize)",
         "vector_store": "ChromaDB (persistent)",
         "keyword_index": "jieba BM25",
         "randomness": "deterministic pipeline (no RNG); agent channel = mean of runs",
-        "retrieval_defaults": {"vector_top_k": 10, "two_stage": {"stage1_top_k": 40, "stage2_top_k": 10},
-                                "qdcvr_threshold": THRESH, "verification_reads": 3},
+        "retrieval_defaults": env_fingerprint_params(),
         "mcp_command": "uv run --directory kb-mcp python server.py (stdio)",
     }

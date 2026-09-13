@@ -1,0 +1,198 @@
+{
+ "experiment": "E2 paired statistics (TODO-7/F13/F14)",
+ "protocol": {
+  "bootstrap_B": 2000,
+  "seed": 0,
+  "primary_test": "Wilcoxon signed-rank (distribution-free; n<=50)",
+  "multiplicity": "Holm-Bonferroni across all comparisons",
+  "normality": "Shapiro-Wilk on paired differences"
+ },
+ "comparisons": [
+  {
+   "file": "results\\run-20260913T170529Z\\hotpot_main_1.json",
+   "comparison": "qdcvr vs bm25",
+   "metric": "ndcg@10",
+   "n": 50,
+   "mean_diff": 0.2412,
+   "ci95_boot": [
+    0.1596,
+    0.3238
+   ],
+   "wilcoxon_p": 0.0,
+   "paired_t_p": 0.0,
+   "cohen_d": 0.816,
+   "shapiro_p": 0.0476,
+   "normal_at_0.05": false,
+   "wilcoxon_p_holm": 2e-05,
+   "significant_holm_0.05": true
+  },
+  {
+   "file": "results\\run-20260913T170529Z\\hotpot_main_1.json",
+   "comparison": "qdcvr vs bm25",
+   "metric": "recall@5",
+   "n": 50,
+   "mean_diff": 0.36,
+   "ci95_boot": [
+    0.28,
+    0.44
+   ],
+   "wilcoxon_p": 0.0,
+   "paired_t_p": 0.0,
+   "cohen_d": 1.257,
+   "shapiro_p": 0.0,
+   "normal_at_0.05": false,
+   "wilcoxon_p_holm": 0.0,
+   "significant_holm_0.05": true
+  },
+  {
+   "file": "results\\run-20260913T170529Z\\hotpot_main_1.json",
+   "comparison": "qdcvr vs bm25",
+   "metric": "precision@5",
+   "n": 50,
+   "mean_diff": 0.144,
+   "ci95_boot": [
+    0.112,
+    0.176
+   ],
+   "wilcoxon_p": 0.0,
+   "paired_t_p": 0.0,
+   "cohen_d": 1.257,
+   "shapiro_p": 0.0,
+   "normal_at_0.05": false,
+   "wilcoxon_p_holm": 0.0,
+   "significant_holm_0.05": true
+  },
+  {
+   "file": "results\\run-20260913T170529Z\\hotpot_main_1.json",
+   "comparison": "qdcvr vs two_stage",
+   "metric": "ndcg@10",
+   "n": 50,
+   "mean_diff": -0.0613,
+   "ci95_boot": [
+    -0.0975,
+    -0.0229
+   ],
+   "wilcoxon_p": 0.0034,
+   "paired_t_p": 0.00225,
+   "cohen_d": -0.456,
+   "shapiro_p": 0.0,
+   "normal_at_0.05": false,
+   "wilcoxon_p_holm": 0.01765,
+   "significant_holm_0.05": true
+  },
+  {
+   "file": "results\\run-20260913T170529Z\\hotpot_main_1.json",
+   "comparison": "qdcvr vs two_stage",
+   "metric": "recall@5",
+   "n": 50,
+   "mean_diff": 0.0,
+   "ci95_boot": [
+    0.0,
+    0.0
+   ],
+   "wilcoxon_p": 1.0,
+   "paired_t_p": NaN,
+   "cohen_d": 0.0,
+   "shapiro_p": 1.0,
+   "normal_at_0.05": true,
+   "wilcoxon_p_holm": 1.0,
+   "significant_holm_0.05": false
+  },
+  {
+   "file": "results\\run-20260913T170529Z\\hotpot_main_1.json",
+   "comparison": "qdcvr vs two_stage",
+   "metric": "precision@5",
+   "n": 50,
+   "mean_diff": 0.0,
+   "ci95_boot": [
+    0.0,
+    0.0
+   ],
+   "wilcoxon_p": 1.0,
+   "paired_t_p": NaN,
+   "cohen_d": 0.0,
+   "shapiro_p": 1.0,
+   "normal_at_0.05": true,
+   "wilcoxon_p_holm": 1.0,
+   "significant_holm_0.05": false
+  },
+  {
+   "file": "results\\run-20260913T170529Z\\hotpot_main_1.json",
+   "comparison": "qdcvr vs dense",
+   "metric": "ndcg@10",
+   "n": 50,
+   "mean_diff": -0.0878,
+   "ci95_boot": [
+    -0.1404,
+    -0.0331
+   ],
+   "wilcoxon_p": 0.00294,
+   "paired_t_p": 0.00275,
+   "cohen_d": -0.446,
+   "shapiro_p": 0.0,
+   "normal_at_0.05": false,
+   "wilcoxon_p_holm": 0.01765,
+   "significant_holm_0.05": true
+  },
+  {
+   "file": "results\\run-20260913T170529Z\\hotpot_main_1.json",
+   "comparison": "qdcvr vs dense",
+   "metric": "recall@5",
+   "n": 50,
+   "mean_diff": -0.04,
+   "ci95_boot": [
+    -0.09,
+    0.0
+   ],
+   "wilcoxon_p": 0.10247,
+   "paired_t_p": 0.103,
+   "cohen_d": -0.235,
+   "shapiro_p": 0.0,
+   "normal_at_0.05": false,
+   "wilcoxon_p_holm": 0.40988,
+   "significant_holm_0.05": false
+  },
+  {
+   "file": "results\\run-20260913T170529Z\\hotpot_main_1.json",
+   "comparison": "qdcvr vs dense",
+   "metric": "precision@5",
+   "n": 50,
+   "mean_diff": -0.016,
+   "ci95_boot": [
+    -0.036,
+    0.0
+   ],
+   "wilcoxon_p": 0.10247,
+   "paired_t_p": 0.103,
+   "cohen_d": -0.235,
+   "shapiro_p": 0.0,
+   "normal_at_0.05": false,
+   "wilcoxon_p_holm": 0.40988,
+   "significant_holm_0.05": false
+  }
+ ],
+ "meta": {
+  "generated": "2026-09-13T17:10:38.381970+00:00",
+  "env": {
+   "run_id": "run-20260913T171038Z",
+   "git_commit": "7220098",
+   "config_hash": "49279bd832721704",
+   "seed": 0,
+   "backend": "http://localhost:8771",
+   "web": "http://localhost:6790",
+   "embedding": "BAAI/bge-m3 (local GPU, normalize)",
+   "vector_store": "ChromaDB (persistent)",
+   "keyword_index": "jieba BM25",
+   "randomness": "deterministic pipeline (no RNG); agent channel = mean of runs",
+   "retrieval_defaults": {
+    "vector_top_k": 10,
+    "stage1_top_k": 40,
+    "stage2_top_k": 10,
+    "qdcvr_threshold": 0.35,
+    "verification_reads": 3,
+    "exp_threshold_default": 0.45
+   },
+   "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
+  }
+ }
+}
