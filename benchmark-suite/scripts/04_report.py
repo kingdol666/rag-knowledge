@@ -50,6 +50,8 @@ def main() -> None:
     c1 = (load(RESULTS / "module_c_experience_r1.json") or {}).get("summary")
     c1d = load(RESULTS / "module_c_experience_r1.json")
     a_std = (load(RESULTS / "module_a_std_r1.json") or {}).get("summary")
+    a_s2 = (load(RESULTS / "module_a_std2_r1.json") or {}).get("summary")
+    b_s2 = load(RESULTS / "module_b_std2_r1.json")
     b_std = load(RESULTS / "module_b_retrieval_std_r1.json")
     c_std = (load(RESULTS / "module_c_experience_std_r1.json") or {}).get("summary")
     # previous session (cross-session reproducibility)
@@ -149,6 +151,16 @@ def main() -> None:
                 f"<td>{f(v.get('judge_score_mean'), 1)}</td>"
                 f"<td>{f(v.get('grounded_ratio'))}</td></tr>")
 
+    std2 = {}
+    if b_s2:
+        sfv, sqv = b_s2["summary"]["scifact"], b_s2["summary"]["squad"]
+        std2 = {"sf_labels": ["Hit@3", "nDCG@10", "Recall@5", "P@5"],
+                "sf_staged": [sfv["staged"].get(k) for k in ("hit@3", "ndcg@10", "recall@5", "precision@5")],
+                "sf_vector": [sfv["vector"].get(k) for k in ("hit@3", "ndcg@10", "recall@5", "precision@5")],
+                "sq_staged_hit3": sqv["staged"].get("hit@3"),
+                "sq_vector_hit3": sqv["vector"].get("hit@3"),
+                "ingest_member": a_s2.get("membership_accuracy"),
+                "ingest_compl": a_s2.get("storage_completeness")}
     chartjs = CHART.read_text(encoding="utf-8") if CHART.exists() else "/* chart.js missing */"
     generated = datetime.now().strftime("%Y-%m-%d %H:%M")
     data_json = json.dumps(data, ensure_ascii=False)
@@ -263,6 +275,21 @@ The Precision@5 difference between methods reflects how content-verification re-
 the top-5 for multi-part documents; scale effects are covered by the large-corpus experiments
 referenced in docs/BENCHMARK.md.</p>
 
+<h2>Standard-Corpus Track II · BEIR SciFact &amp; SQuAD v1.1</h2>
+<div class="card"><canvas id="chartStd2" height="120"></canvas></div>
+<p class="caption"><b>Figure 5b. Standard retrieval benchmark (BEIR SciFact) and standard QA
+benchmark (SQuAD v1.1 dev subset).</b> 148 SciFact articles (30 benchmark queries with official
+qrels relevance judgments; multi-document relevance sets) and 8 SQuAD articles (16 questions with
+gold answers) were ingested through the same production pipeline and queried through the same MCP
+tool layer. <b>SciFact (left group):</b> Hit@3 0.83 (content-based) vs
+0.90 (vector), nDCG@10 0.81 vs
+0.83 — on this small name-mentioning subset the dense baseline retains a
+small edge because the QDCVR Step-2.5 hard threshold can drop low-scored gold documents; the
+threshold is a tunable precision/recall trade-off. <b>SQuAD (right group):</b> both methods reach
+Hit@3 = nDCG@10 = 1.0. Ingestion metrics on the standard corpora match the in-house corpus
+(membership 1.0, completeness 1.0), confirming the pipeline generalizes to standard benchmark
+corpora. Reproducibility: deterministic — double-run bit-identical.</p>
+
 <h2>Engineering Note · Two-Stage Retrieval as Acceleration (not a contribution)</h2>
 <div class="card"><canvas id="chartLat" height="90"></canvas></div>
 <p class="caption"><b>Figure 6. Latency of a single two-stage tool call vs. one-shot dense
@@ -288,6 +315,7 @@ end-to-end runtime ≈ 40 minutes.</li>
 </ul>
 <script>
 const D = {json.dumps(data, ensure_ascii=False)};
+const STD2 = {json.dumps(std2, ensure_ascii=False)};
 const QD = D.qdcvr;
 const langs = Object.keys(D.B);
 const lab = l => ({{en:'English',zh:'Chinese',ja:'Japanese',cross:'Cross-KB'}})[l]||l;
@@ -313,6 +341,12 @@ new Chart(document.getElementById('chartQDCVR'), {{type:'bar',
  datasets:[{{label:'QDCVR content verification (per query)', backgroundColor:['#7aa7cc','#5a8ab5','#2c5f8a'],
   data:[QD.reads, QD.pass_rate, QD.rerank_rate]}}]}},
  options:{{indexAxis:'y', plugins:{{legend:{{display:false}}}}}}}});
+
+new Chart(document.getElementById('chartStd2'), {{type:'bar',
+ data:{{labels:STD2.sf_labels, datasets:[
+  {{label:'Content-based (QDCVR)', data:STD2.sf_staged, backgroundColor:'#2c5f8a'}},
+  {{label:'Vector baseline', data:STD2.sf_vector, backgroundColor:'#b58a5a'}}]}},
+ options:{{scales:{{y:{{beginAtZero:true,max:1.05}}}}}}}});
 
 new Chart(document.getElementById('chartB2'), {{type:'bar',
  data:{{labels:langs.map(lab), datasets:[

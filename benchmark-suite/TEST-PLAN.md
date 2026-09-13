@@ -49,6 +49,39 @@ wind-energy.md 供检索）走生产入库 API → 1 个 PDF 经 **MCP parse_doc
 正确率 / 存储完整率 / 自检索 Hit@1，内嵌环境指纹）。
 **预期**：所有指标 ≥ 0.95；双轮数值逐位一致。
 
+### 2b. 标准语料库扩展入库（BEIR SciFact + SQuAD v1.1，约 12 分钟）
+
+```bash
+python scripts/20_standard_download.py     # 下载标准测试集并确定性子集化(约 1-2 分钟)
+python scripts/21_std2_ingest.py 1         # 入库 KB-SciFact / KB-SQuAD + 模块A指标
+```
+
+**标准测试集来源（与其他文献使用的基准一致）**：
+- **BEIR SciFact**（检索基准标准集，带 qrels 相关性判定）：30 条标准查询、
+  28 篇金标文献 + 120 篇干扰文献（sha256 稳定序采样）→ 共 148 个 md
+- **SQuAD v1.1 dev**（抽取式问答标准集）：8 篇文章 + 16 条标准问题（含标准答案）
+
+做了什么：下载官方原版数据 → 确定性子集化（每篇文献写为一个 md，文件名内嵌语料库
+文档 id）→ 走与演示语料完全相同的**生产入库 API + force 重索引** → 输出模块 A 同款
+指标（归属正确率 / 存储完整率 / 自检索）。
+产出：`results/module_a_std2_r{1,2}.json`；语料指纹 `data/standard2/manifest-*.json`。
+**预期**：归属正确率与存储完整率 ≥ 0.99（标准文献为叙述型文本，不触发拆分）。
+
+### 2c. 标准语料库检索评测（QDCVR vs 向量 baseline，约 6 分钟）
+
+```bash
+python scripts/22_std2_retrieval.py 1
+python scripts/22_std2_retrieval.py 2       # 复现校验(逐位一致)
+```
+
+- **BEIR SciFact**（30 标准查询，官方 qrels 多相关文档金标）：
+  **命中率 Hit@k · 召回率 Recall@k · nDCG@10 · Precision@5 · MRR** —
+  内容检索 Hit@3 0.83 / nDCG@10 0.81 vs 向量 baseline 0.90 / 0.83（Step2.5 阈值
+  的精度/召回权衡，作为可调参数在报告讨论）
+- **SQuAD**（16 标准问题，文章级金标 + 标准答案）：双方法 Hit@3 = nDCG@10 = 1.0；
+  **answer_hit** = 标准答案文本出现在检索文档正文
+- 产出：`results/module_b_std2_r{1,2}.json`
+
 ## 3. Step 2 · 模块 B：基于内容的检索 vs 向量 baseline（约 10 分钟）
 
 ```bash

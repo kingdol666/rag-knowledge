@@ -112,7 +112,13 @@ def vector_baseline(mc: McpClient, question: str) -> dict:
     t0 = time.perf_counter()
     r = mc.call("kb_search_vector", {"query": question, "kb_id": "", "top_k": 10},
                 timeout=420)
-    docs = [str(x.get("doc_path", "")) for x in (r.get("results") or [])]
+    seen, docs = set(), []
+    for x in (r.get("results") or []):
+        dp = str(x.get("doc_path", ""))
+        k = dp.lower()
+        if k not in seen:
+            seen.add(k)
+            docs.append(dp)  # chunk 级结果按文档去重(保留首次出现)
     return {"docs": docs, "latency": time.perf_counter() - t0}
 
 

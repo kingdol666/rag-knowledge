@@ -39,7 +39,7 @@
  code{background:#eef1f5;padding:1px 5px;border-radius:4px}
 </style></head><body>
 <h1>rag-knowledge Benchmark: Content-Based Retrieval, Document Ingestion, and the Experience Loop</h1>
-<p class="meta">Generated 2026-09-13 03:20 · All measurements go through the production MCP tool layer
+<p class="meta">Generated 2026-09-13 10:25 · All measurements go through the production MCP tool layer
 (kb-mcp, stdio JSON-RPC) exactly as agent consumers do. Deterministic modules are double-run;
 metrics must match bit-for-bit (latency excluded). Environment: embedding BAAI/bge-m3 (local GPU),
 vector store ChromaDB, keyword index jieba BM25, vector baseline top-10, QDCVR threshold 0.35,
@@ -80,13 +80,13 @@ over similarity ranking alone — the paper's central claim. Reproducibility (wi
 <table><thead><tr><th rowspan="2">Language</th><th colspan="6">Content-based (QDCVR)</th><th colspan="6">Vector baseline</th></tr>
 <tr><th>Hit@1</th><th>Hit@3</th><th>Hit@5</th><th>R@5</th><th>P@5</th><th>MRR</th>
 <th>Hit@1</th><th>Hit@3</th><th>Hit@5</th><th>R@5</th><th>P@5</th><th>MRR</th></tr></thead>
-<tbody><tr><td>English (n=10)</td><td>0.900</td><td>1.000</td><td>1.000</td><td>1.000</td><td>0.240</td><td>0.950</td><td>0.800</td><td>0.800</td><td>0.800</td><td>0.800</td><td>0.300</td><td>0.817</td></tr><tr><td>Chinese (n=6)</td><td>1.000</td><td>1.000</td><td>1.000</td><td>0.944</td><td>0.233</td><td>1.000</td><td>1.000</td><td>1.000</td><td>1.000</td><td>0.944</td><td>0.233</td><td>1.000</td></tr><tr><td>Japanese (n=4)</td><td>0.750</td><td>0.750</td><td>0.750</td><td>0.750</td><td>0.150</td><td>0.750</td><td>1.000</td><td>1.000</td><td>1.000</td><td>1.000</td><td>0.200</td><td>1.000</td></tr><tr style='font-weight:700;background:#eaf2f8'><td>Overall</td><td>0.900</td><td>0.950</td><td>0.950</td><td>0.933</td><td>0.220</td><td>0.925</td><td>0.900</td><td>0.900</td><td>0.900</td><td>0.883</td><td>0.260</td><td>0.908</td></tr></tbody></table>
+<tbody><tr><td>English (n=10)</td><td>0.700</td><td>1.000</td><td>1.000</td><td>0.950</td><td>0.220</td><td>0.833</td><td>0.800</td><td>0.800</td><td>0.900</td><td>0.850</td><td>0.180</td><td>0.820</td></tr><tr><td>Chinese (n=6)</td><td>1.000</td><td>1.000</td><td>1.000</td><td>0.944</td><td>0.233</td><td>1.000</td><td>1.000</td><td>1.000</td><td>1.000</td><td>0.889</td><td>0.200</td><td>1.000</td></tr><tr><td>Japanese (n=4)</td><td>0.750</td><td>0.750</td><td>0.750</td><td>0.750</td><td>0.150</td><td>0.750</td><td>1.000</td><td>1.000</td><td>1.000</td><td>1.000</td><td>0.200</td><td>1.000</td></tr><tr style='font-weight:700;background:#eaf2f8'><td>Overall</td><td>0.800</td><td>0.950</td><td>0.950</td><td>0.908</td><td>0.210</td><td>0.867</td><td>0.900</td><td>0.900</td><td>0.950</td><td>0.892</td><td>0.190</td><td>0.910</td></tr></tbody></table>
 <div class="card"><canvas id="chartQDCVR" height="90"></canvas></div>
 <p class="caption"><b>Figure 2b. QDCVR protocol execution evidence.</b> This panel proves the
 measured pipeline executes genuine <b>content-based</b> retrieval rather than bare vector search.
-Per query, the staged method reads on average <b>3238.35 characters</b> of document content
+Per query, the staged method reads on average <b>3638.95 characters</b> of document content
 via <code>kb_doc_read</code> (standard track: 4227.8438 characters); the term-overlap
-content-relevance verification passes on 0.500 of read documents; and content
+content-relevance verification passes on 0.517 of read documents; and content
 verification <b>re-orders the result list for 0.150 of queries</b> — for these
 queries the final answer set differs from what similarity ranking alone would produce. Together
 with Figures 2-3 this demonstrates the content-verification layer is a live, effective component
@@ -128,6 +128,21 @@ The Precision@5 difference between methods reflects how content-verification re-
 the top-5 for multi-part documents; scale effects are covered by the large-corpus experiments
 referenced in docs/BENCHMARK.md.</p>
 
+<h2>Standard-Corpus Track II · BEIR SciFact &amp; SQuAD v1.1</h2>
+<div class="card"><canvas id="chartStd2" height="120"></canvas></div>
+<p class="caption"><b>Figure 5b. Standard retrieval benchmark (BEIR SciFact) and standard QA
+benchmark (SQuAD v1.1 dev subset).</b> 148 SciFact articles (30 benchmark queries with official
+qrels relevance judgments; multi-document relevance sets) and 8 SQuAD articles (16 questions with
+gold answers) were ingested through the same production pipeline and queried through the same MCP
+tool layer. <b>SciFact (left group):</b> Hit@3 0.83 (content-based) vs
+0.90 (vector), nDCG@10 0.81 vs
+0.83 — on this small name-mentioning subset the dense baseline retains a
+small edge because the QDCVR Step-2.5 hard threshold can drop low-scored gold documents; the
+threshold is a tunable precision/recall trade-off. <b>SQuAD (right group):</b> both methods reach
+Hit@3 = nDCG@10 = 1.0. Ingestion metrics on the standard corpora match the in-house corpus
+(membership 1.0, completeness 1.0), confirming the pipeline generalizes to standard benchmark
+corpora. Reproducibility: deterministic — double-run bit-identical.</p>
+
 <h2>Engineering Note · Two-Stage Retrieval as Acceleration (not a contribution)</h2>
 <div class="card"><canvas id="chartLat" height="90"></canvas></div>
 <p class="caption"><b>Figure 6. Latency of a single two-stage tool call vs. one-shot dense
@@ -152,7 +167,8 @@ stage1=40/stage2=10, QDCVR threshold 0.35, verification reads 3, no RNG anywhere
 end-to-end runtime ≈ 40 minutes.</li>
 </ul>
 <script>
-const D = {"A": {"parse_success": 1.0, "ingest_success_rate": 1.0, "membership_accuracy": 1.0, "storage_completeness": 1.0, "self_retrieval_hit1": 0.9375}, "B": {"en": {"staged_hit1": 0.9, "staged_hit3": 1.0, "staged_hit5": 1.0, "staged_r5": 1.0, "staged_p5": 0.24, "staged_mrr": 0.95, "vector_hit1": 0.8, "vector_hit3": 0.8, "vector_hit5": 0.8, "vector_r5": 0.8, "vector_p5": 0.3, "vector_mrr": 0.8167, "staged_latency": 1.69, "vector_latency": 0.0897, "stages": {"stage1": 10}, "n": 10, "qdcvr_reads": 4780.9, "qdcvr_pass": 0.9667, "qdcvr_rerank": 0.3}, "zh": {"staged_hit1": 1.0, "staged_hit3": 1.0, "staged_hit5": 1.0, "staged_r5": 0.9444, "staged_p5": 0.2333, "staged_mrr": 1.0, "vector_hit1": 1.0, "vector_hit3": 1.0, "vector_hit5": 1.0, "vector_r5": 0.9444, "vector_p5": 0.2333, "vector_mrr": 1.0, "staged_latency": 1.5763, "vector_latency": 0.0937, "stages": {"stage1": 6}, "n": 6, "qdcvr_reads": 2204.5, "qdcvr_pass": 0.0556, "qdcvr_rerank": 0.0}, "ja": {"staged_hit1": 0.75, "staged_hit3": 0.75, "staged_hit5": 0.75, "staged_r5": 0.75, "staged_p5": 0.15, "staged_mrr": 0.75, "vector_hit1": 1.0, "vector_hit3": 1.0, "vector_hit5": 1.0, "vector_r5": 1.0, "vector_p5": 0.2, "vector_mrr": 1.0, "staged_latency": 1.295, "vector_latency": 0.0877, "stages": {"stage1": 3, "miss": 1}, "n": 4, "qdcvr_reads": 932.75, "qdcvr_pass": 0.0, "qdcvr_rerank": 0.0}}, "qdcvr": {"reads": 3238.35, "pass_rate": 0.5, "rerank_rate": 0.15, "std_reads": 4227.8438}, "overall": {"staged": {"hit@1": 0.9, "hit@3": 0.95, "hit@5": 0.95, "recall@3": 0.9333, "recall@5": 0.9333, "precision@5": 0.22, "mrr": 0.925, "latency_s_mean": 1.5769, "first_stage_dist": {"stage1": 19, "miss": 1}, "qdcvr_chars_read_per_query": 3238.35, "qdcvr_verify_pass_rate": 0.5, "qdcvr_rerank_changed_rate": 0.15}, "vector": {"hit@1": 0.9, "hit@3": 0.9, "hit@5": 0.9, "recall@3": 0.8667, "recall@5": 0.8833, "precision@5": 0.26, "mrr": 0.9083, "latency_s_mean": 0.0905, "qdcvr_chars_read_per_query": 0.0, "qdcvr_verify_pass_rate": 0.0, "qdcvr_rerank_changed_rate": 0.0}}, "C": {"run_success_rate": 1.0, "kb_coverage": 0.5, "total_experiences": 8, "judge_score_mean": 4.375, "grounded_ratio": 0.625}, "C_per_kb": {"KB-Demo-EN": {"run_success": true, "run_error": null, "n_drafts": 0, "n_approved": 0, "n_experiences": 8, "judge_score_mean": 4.375, "grounded_ratio": 0.625}, "KB-Demo-ZH": {"run_success": true, "run_error": null, "n_drafts": 0, "n_approved": 0, "n_experiences": 0, "judge_score_mean": null, "grounded_ratio": null}}, "std": {"staged_hit3": 1.0, "staged_r5": 1.0, "vector_hit3": 1.0, "vector_r5": 1.0, "ingest_membership": 1.0, "ingest_completeness": 1.0, "experiences": 0}};
+const D = {"A": {"parse_success": 1.0, "ingest_success_rate": 1.0, "membership_accuracy": 1.0, "storage_completeness": 1.0, "self_retrieval_hit1": 0.9375}, "B": {"en": {"staged_hit1": 0.7, "staged_hit3": 1.0, "staged_hit5": 1.0, "staged_r5": 0.95, "staged_p5": 0.22, "staged_mrr": 0.8333, "vector_hit1": 0.8, "vector_hit3": 0.8, "vector_hit5": 0.9, "vector_r5": 0.85, "vector_p5": 0.18, "vector_mrr": 0.82, "staged_latency": 1.846, "vector_latency": 0.124, "stages": {"stage1": 10}, "n": 10, "qdcvr_reads": 5582.1, "qdcvr_pass": 1.0, "qdcvr_rerank": 0.3}, "zh": {"staged_hit1": 1.0, "staged_hit3": 1.0, "staged_hit5": 1.0, "staged_r5": 0.9444, "staged_p5": 0.2333, "staged_mrr": 1.0, "vector_hit1": 1.0, "vector_hit3": 1.0, "vector_hit5": 1.0, "vector_r5": 0.8889, "vector_p5": 0.2, "vector_mrr": 1.0, "staged_latency": 1.673, "vector_latency": 0.1227, "stages": {"stage1": 6}, "n": 6, "qdcvr_reads": 2204.5, "qdcvr_pass": 0.0556, "qdcvr_rerank": 0.0}, "ja": {"staged_hit1": 0.75, "staged_hit3": 0.75, "staged_hit5": 0.75, "staged_r5": 0.75, "staged_p5": 0.15, "staged_mrr": 0.75, "vector_hit1": 1.0, "vector_hit3": 1.0, "vector_hit5": 1.0, "vector_r5": 1.0, "vector_p5": 0.2, "vector_mrr": 1.0, "staged_latency": 1.37, "vector_latency": 0.1293, "stages": {"stage1": 3, "miss": 1}, "n": 4, "qdcvr_reads": 932.75, "qdcvr_pass": 0.0, "qdcvr_rerank": 0.0}}, "qdcvr": {"reads": 3638.95, "pass_rate": 0.5167, "rerank_rate": 0.15, "std_reads": 4227.8438}, "overall": {"staged": {"hit@1": 0.8, "hit@3": 0.95, "hit@5": 0.95, "recall@3": 0.9083, "recall@5": 0.9083, "precision@5": 0.21, "mrr": 0.8667, "latency_s_mean": 1.6989, "first_stage_dist": {"stage1": 19, "miss": 1}, "qdcvr_chars_read_per_query": 3638.95, "qdcvr_verify_pass_rate": 0.5167, "qdcvr_rerank_changed_rate": 0.15}, "vector": {"hit@1": 0.9, "hit@3": 0.9, "hit@5": 0.95, "recall@3": 0.8667, "recall@5": 0.8917, "precision@5": 0.19, "mrr": 0.91, "latency_s_mean": 0.1246, "qdcvr_chars_read_per_query": 0.0, "qdcvr_verify_pass_rate": 0.0, "qdcvr_rerank_changed_rate": 0.0}}, "C": {"run_success_rate": 1.0, "kb_coverage": 0.5, "total_experiences": 8, "judge_score_mean": 4.375, "grounded_ratio": 0.625}, "C_per_kb": {"KB-Demo-EN": {"run_success": true, "run_error": null, "n_drafts": 0, "n_approved": 0, "n_experiences": 8, "judge_score_mean": 4.375, "grounded_ratio": 0.625}, "KB-Demo-ZH": {"run_success": true, "run_error": null, "n_drafts": 0, "n_approved": 0, "n_experiences": 0, "judge_score_mean": null, "grounded_ratio": null}}, "std": {"staged_hit3": 1.0, "staged_r5": 1.0, "vector_hit3": 1.0, "vector_r5": 1.0, "ingest_membership": 1.0, "ingest_completeness": 1.0, "experiences": 0}};
+const STD2 = {"sf_labels": ["Hit@3", "nDCG@10", "Recall@5", "P@5"], "sf_staged": [0.8333, 0.8087, 0.8333, 0.2133], "sf_vector": [0.9, 0.8298, 0.9, 0.2267], "sq_staged_hit3": 1.0, "sq_vector_hit3": 1.0, "ingest_member": 1.0, "ingest_compl": 1.0};
 const QD = D.qdcvr;
 const langs = Object.keys(D.B);
 const lab = l => ({en:'English',zh:'Chinese',ja:'Japanese',cross:'Cross-KB'})[l]||l;
@@ -178,6 +194,12 @@ new Chart(document.getElementById('chartQDCVR'), {type:'bar',
  datasets:[{label:'QDCVR content verification (per query)', backgroundColor:['#7aa7cc','#5a8ab5','#2c5f8a'],
   data:[QD.reads, QD.pass_rate, QD.rerank_rate]}]},
  options:{indexAxis:'y', plugins:{legend:{display:false}}}});
+
+new Chart(document.getElementById('chartStd2'), {type:'bar',
+ data:{labels:STD2.sf_labels, datasets:[
+  {label:'Content-based (QDCVR)', data:STD2.sf_staged, backgroundColor:'#2c5f8a'},
+  {label:'Vector baseline', data:STD2.sf_vector, backgroundColor:'#b58a5a'}]},
+ options:{scales:{y:{beginAtZero:true,max:1.05}}}});
 
 new Chart(document.getElementById('chartB2'), {type:'bar',
  data:{labels:langs.map(lab), datasets:[
