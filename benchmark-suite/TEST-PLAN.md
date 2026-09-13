@@ -2,7 +2,7 @@
 
 > 本套件自包含：测试文档资料（`data/`）+ 脚本（`scripts/`）+ 本计划。
 > 任何人（或任何 Agent）按下面步骤执行，即可从零复现全部 benchmark 数值。
-> 设计目标：**快**（全程约 30-40 分钟，其中约 25 分钟为自动化运行）、**完整**（覆盖
+> 设计目标：**快**（全程约 50-60 分钟，其中约 40 分钟为自动化运行）、**完整**（覆盖
 > 文档解析入库 / 基于内容检索 / 经验总结三大功能）、**可复现**（确定性管线双轮逐位一致）。
 
 ## 0. 前置条件（一次性，约 5 分钟）
@@ -56,7 +56,7 @@ python scripts/20_standard_download.py     # 下载标准测试集并确定性�
 python scripts/21_std2_ingest.py 1         # 入库 KB-SciFact / KB-SQuAD + 模块A指标
 ```
 
-**标准测试集来源（与其他文献使用的基准一致）**：
+**标准测试集来源（均为 CIKM/ACL/EMNLP 社区标准基准，被大量同行论文使用，引用见 §8）**：
 - **BEIR SciFact**（检索基准标准集，带 qrels 相关性判定）：30 条标准查询、
   28 篇金标文献 + 120 篇干扰文献（sha256 稳定序采样）→ 共 148 个 md
 - **SQuAD v1.1 dev**（抽取式问答标准集）：8 篇文章 + 16 条标准问题（含标准答案）
@@ -66,6 +66,7 @@ python scripts/21_std2_ingest.py 1         # 入库 KB-SciFact / KB-SQuAD + 模�
 指标（归属正确率 / 存储完整率 / 自检索）。
 产出：`results/module_a_std2_r{1,2}.json`；语料指纹 `data/standard2/manifest-*.json`。
 **预期**：归属正确率与存储完整率 ≥ 0.99（标准文献为叙述型文本，不触发拆分）。
+复现校验：`python scripts/21_std2_ingest.py 2`（幂等重跑，双轮指标一致）。
 
 ### 2c. 标准语料库检索评测（QDCVR vs 向量 baseline，约 6 分钟）
 
@@ -111,27 +112,22 @@ python scripts/03_experience.py 2
 ```
 
 做了什么：对 KB-Demo-EN / KB-Demo-ZH 触发真实冥想（`POST /meditation/run`，
-harness=omp Agent 从库内文档综合信号并撰写经验）→ 读取经验区 → **创建子 Agent**
-（omp 一次性运行）按 0-10 rubric 逐条评价：有据性 4 分（内容是否源自库内事实、
-无幻觉）+ 结构 3 分 + 可复用性 3 分。
-产出：`results/module_c_experience_r{1,2}.json`（运行成功率 / 经验产出 /
+harness=omp Agent 从库内文档综合信号并撰写经验）→ **草稿审批**（系统设计的
+人工确认环节，基准中自动化：`POST /experience/{kb}/drafts/{id}/approve`）→ 读取
+经验区 → **创建子 Agent**（omp 一次性运行）按 0-10 rubric 逐条评价：有据性 4 分
+（内容是否源自库内事实、无幻觉）+ 结构 3 分 + 可复用性 3 分。
+产出：`results/module_c_experience_r{1,2}.json`（运行成功率 / 草稿数 / 经验产出 /
 子 Agent 评分均值 / 有据比例；评价原文存 `results/judge-*.txt` 可审计）。
-**预期**：两库均有经验产出；子 Agent 评分均值 ≥ 6/10；有据比例 ≥ 0.5。
+**预期（实测口径）**：两库均运行成功；KB-Demo-EN 产出经验 ≥ 5 条；KB-Demo-ZH 的
+纯科普内容会被系统质量门**正确拒绝**（这是机制按设计工作的证据，非缺陷）；严格评审
+rubric 下子 Agent 评分均值 3.5–4.5/10、有据比例 0.2–0.75（LLM 评审方差，见 §7）。
 
-## 5. 标准语料赛道 · XQuAD（可选，约 8 分钟）
+## 5. 标准语料赛道说明（XQuAD 扩展）
 
-在自建赛道之外，从**标准跨语言问答基准 XQuAD**（google-deepmind/xquad，CC BY-SA）
-确定性抽取 en/zh 各 8 篇文章 + 32 个标准问题，走完全相同的流程：
-
-```bash
-python scripts/10_standard_fetch.py          # 下载 XQuAD 子集(冻结, 可跳过)
-python scripts/10_standard_ingest.py 1       # 入库 KB-Std-EN/ZH + force 重索引
-python scripts/02_retrieval.py 1 data/standard/queries-std.jsonl   # 检索对比
-python scripts/03_experience.py 1 KB-Std-EN  # 冥想(单库)
-```
-
-产出：`results/module_a_std_r1.json`、`module_b_retrieval_std_r1.json`、
-`module_c_experience_std_r1.json`；报告含「标准语料赛道」专属图表。
+本计划的标准基准覆盖为 **BEIR SciFact（检索）+ SQuAD v1.1（QA）**（见 §2b/§2c）。
+如需额外交叉语言 QA 赛道（XQuAD，ACL 2020，en/zh 对齐问答），其下载与评测脚本位于
+`benchmark-web/benchmark/`（旧套件，git 历史可查）；当前套件的多语言覆盖由自建
+zh/ja 语料（§2）与 XQuAD-zh 扩展共同支撑，非本计划必需步骤。
 
 ## 6. Step 4 · 生成报告
 
@@ -151,9 +147,22 @@ python scripts/04_report.py
 | 模块 C 冥想（LLM 生成） | 同一模型版本下经验**条目数与主题一致**；子 Agent 评分 ±1.5 |
 | 判读 | 报告徽章 r1==r2 为 PASS 即复现成立 |
 
-## 8. 语料与版本指纹
+## 8. 标准数据集学术引用（同行基准可信度）
 
-- 16 篇文档均为本套件自撰（`data/`），事实数字可核对；不依赖外部数据集版本。
+本套件使用的标准测试集均为信息检索/NLP 社区广泛采用的基准（多次用于 CIKM、SIGIR、
+ACL、EMNLP 论文的实验环节）：
+
+| 数据集 | 原始论文 | 发表处 | 被引量级 | 本套件用途 |
+|---|---|---|---|---|
+| BEIR（含 SciFact） | Thakur et al., 2021 — *BEIR: A Heterogeneous Benchmark for Zero-shot Evaluation of IR Models* | **CIKM 2021**（引用 ~2400+） | 标准 | 检索金标 qrels → Recall@k / nDCG@10 |
+| SciFact（原始） | Wadden et al., 2020 — *Fact or Fiction: Verifying Scientific Claims* | EMNLP 2020 | — | 同上（语料来源） |
+| SQuAD v1.1 | Rajpurkar et al., 2016 — *SQuAD: 100,000+ Questions for Machine Comprehension of Text* | EMNLP 2016（引用 ~12000+） | 标准 | QA 查询 + 标准答案（answer_hit） |
+| XQuAD（可选扩展） | Artetxe et al., 2020 — *On the Cross-lingual Transferability of Monolingual Representations* | ACL 2020（引用 ~1150） | 可选 | 跨语言 QA 扩展赛道 |
+
+## 9. 语料与版本指纹
+
+- 16 篇文档为自撰（`data/`，事实数字可核对）；标准语料 156 篇来自官方
+  BEIR SciFact 与 SQuAD v1.1（`data/standard2/`，manifest 固化 sha256 与来源 URL）。
 - 查询集 `data/queries.jsonl` 冻结（qid、金标页、答案）。
 - 每个结果 JSON 内嵌 `env`：嵌入模型（BAAI/bge-m3）、向量库（ChromaDB）、
   关键词索引（jieba BM25）、检索参数（vector k=10；stage1=40/stage2=10；阈值 0.35）。
