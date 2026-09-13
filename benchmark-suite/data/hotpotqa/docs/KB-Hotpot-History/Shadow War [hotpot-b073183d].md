@@ -1,0 +1,3 @@
+# Shadow War
+
+The Shadow Wars are a fictional series of wars involving the Shadows in the television science fiction series "Babylon 5". There have actually been many Shadow Wars since ancient times in the galaxy. Roughly every thousand years, the Shadows begin a new Shadow War to promote chaos in the universe in accordance with their ideology of growth through conflict. During the first two seasons, "The Shadow War" typically refers to the previous Shadow War in the cycle, a thousand years earlier. At this point the one that takes place within the series itself is referred to as "the Coming Shadow War", as it is anticipated but not yet begun. This last war is mainly referred to as "the Shadow War" in the fourth and fifth seasons.

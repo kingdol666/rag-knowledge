@@ -1,0 +1,3 @@
+# Juan Romero de Figueroa
+
+Juan Romero de Figueroa (Gibraltar, 16 September 1646 - id. 7 July 1720) was a Spanish Roman Catholic priest, in charge of the Parish Church of St. Mary the Crowned ("Santa Maria la Coronada y San Bernardo") during the last years of Gibraltar's Spanish period and first ones of the British period, until his death. He remained at his post even after the territory's capture by an Anglo-Dutch fleet in 1704 on behalf of the Archduke Charles, pretender to the Spanish throne in the War of the Spanish Succession, when most of its population abandoned Gibraltar (only about 60 out of 4,000 remained).

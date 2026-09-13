@@ -1,0 +1,3 @@
+# John Street (Toronto)
+
+John Street is a street in Downtown Toronto. It runs from Stephanie Street and Grange Park in the north to the Metro Toronto Convention Centre on Front Street in the south. It is home to a number of Toronto's cultural institutions, including buildings for the CBC, CTV, Toronto International Film Festival. The "National Post" has described it as "Running directly through the entertainment district, its spine connects many great cultural institutions, popular retail outlets, restaurants and soon-to-be-built condos." The City of Toronto has dubbed the street a "Cultural Corridor" and a report calls it "the centrepiece of the Entertainment District."

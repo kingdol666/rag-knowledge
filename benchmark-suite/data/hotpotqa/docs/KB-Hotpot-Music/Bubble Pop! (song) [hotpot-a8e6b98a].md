@@ -1,0 +1,3 @@
+# Bubble Pop! (song)
+
+"Bubble Pop!" is a song recorded by South Korean singer Hyuna for her first extended play "Bubble Pop!" (2011). It was released as the title track from the EP by Cube Entertainment and Universal Music on July 5, 2011. The lyrics were written by Shinsadong Tiger and Choi Kyusung, who also composed the music. In order to promote the song and EP, Hyuna appeared on several South Korean music programs, including "Music Bank", "Show! Music Core" and "Inkigayo". A music video for the song was released on July 4 and has surpassed the 100 million views on YouTube, making her the first female Korean solo artist to do it.

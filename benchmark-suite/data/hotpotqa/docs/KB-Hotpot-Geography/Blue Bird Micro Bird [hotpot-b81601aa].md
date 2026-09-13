@@ -1,0 +1,3 @@
+# Blue Bird Micro Bird
+
+The Blue Bird Micro Bird is a bus body produced in the United States and Canada by Blue Bird Corporation. First introduced in 1975, the Micro Bird body is combined with a cutaway van chassis, with passenger capacity ranging from 10 to 30 passengers. While most examples are produced as a school bus, the Micro Bird has been sold in various configurations, including commercial-use minibuses and as a MFSAB (Multi-Function School Activity Buses). MFSABs are alternatives to 15-passenger vans; examples have come into use by child care centers and other organizations (including school systems) due to updated safety regulations.

@@ -1,0 +1,67 @@
+% Hand-drawn: end-to-end system architecture. Three services, five storage
+% layers, one agent surface.
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[
+  font=\scriptsize,
+  svc/.style={draw, rounded corners=2pt, align=center, fill=black!6,
+              minimum height=10mm, inner sep=4pt},
+  layer/.style={draw, rounded corners=1pt, align=center, fill=white,
+                minimum height=6.4mm, inner sep=3pt, font=\scriptsize},
+  agent/.style={draw, dashed, rounded corners=2pt, align=center, fill=black!3,
+                minimum height=9mm, inner sep=4pt},
+  ar/.style={-{Stealth[length=1.6mm]}, semithick},
+  lbl/.style={font=\scriptsize\itshape, inner sep=2pt},
+]
+
+% ── clients ──────────────────────────────────────────────────────
+\node[agent, minimum width=26mm] (human) at (0,0)  {Human\\ (web UI)};
+\node[agent, minimum width=26mm] (llm)   at (0,-1.9) {LLM agent\\(MCP client)};
+
+% ── service tier ─────────────────────────────────────────────────
+\node[svc, minimum width=32mm] (web)  at (4.4,0)    {Nuxt web layer\\ \texttt{:6789}\\ \scriptsize(proxy + KB CRUD)};
+\node[svc, minimum width=32mm] (api)  at (9.0,-0.95) {FastAPI backend\\ \texttt{:8771}\\ \scriptsize(parse/search/graph/soul)};
+\node[svc, minimum width=30mm] (mcp)  at (4.4,-1.9) {kb-mcp server\\ \scriptsize 94 MCP tools (stdio)};
+\node[svc, minimum width=30mm] (mineru) at (13.6,-0.95) {MinerU OCR\\ \scriptsize(ephemeral port)};
+
+% ── storage layers ───────────────────────────────────────────────
+\node[layer, minimum width=17mm] (l1) at (2.4,-4.0)  {L1 disk\\ \scriptsize files};
+\node[layer, minimum width=17mm] (l2) at (5.0,-4.0)  {L2 tree\\ \scriptsize\texttt{.tree-fs.json}};
+\node[layer, minimum width=17mm] (l3) at (7.6,-4.0)  {L3 catalogue\\ \scriptsize\texttt{.kb.yml}};
+\node[layer, minimum width=17mm] (l4) at (10.2,-4.0) {L4 vectors\\ \scriptsize ChromaDB};
+\node[layer, minimum width=17mm] (l5) at (12.8,-4.0) {L5 graph\\ \scriptsize Neo4j};
+
+% ── edges ────────────────────────────────────────────────────────
+\draw[ar] (human) -- (web);
+\draw[ar] (llm)   -- (mcp);
+\draw[ar] (web)   -- node[lbl,above]{HTTP} (api);
+\draw[ar] (mcp)   -- node[lbl,above]{HTTP} (api);
+\draw[ar] (api)   -- (mineru);
+\draw[ar] (web)   -- (l3);
+
+% write path: API writes all five layers atomically
+\draw[ar, very thick] (api.south) -- node[lbl,right,pos=0.35]{single write path} (l4.north);
+\draw[ar, very thick] (api.south west) to[out=-150,in=90] (l2.north);
+\draw[ar, very thick] (api.south east) to[out=-30,in=90] (l5.north);
+
+% read path: retrieval reads indices directly, bypassing the API
+\draw[ar, densely dotted, thick] (mcp.north east) to[out=20,in=200]
+   node[lbl,below,pos=0.5]{direct reads (no API round-trip)} (l4.west);
+
+% ── annotation ───────────────────────────────────────────────────
+\node[lbl, anchor=west] at (0.1,-5.35)
+  {Solid = control flow;\; very thick = the single atomic write path (all five
+   layers, one logical transaction);\; dotted = the read path used by retrieval,
+   which bypasses the service tier entirely.};
+\end{tikzpicture}
+\caption{System architecture. Three services partition responsibility --- the web
+layer owns knowledge-base and document CRUD, the FastAPI backend owns parsing,
+retrieval, graph and experience computation, and an ephemeral MinerU process does
+OCR. Every mutation travels one write path that updates all five storage layers
+inside a single logical transaction (\S\ref{sec:sys-layers}); retrieval reads
+those layers directly, so search adds no load to the service tier. The same
+capability set is published twice: as REST endpoints for the human UI, and as 94
+MCP tools for agents, so a procedure validated in one surface is executable in
+the other.}
+\label{fig:arch}
+\end{figure*}

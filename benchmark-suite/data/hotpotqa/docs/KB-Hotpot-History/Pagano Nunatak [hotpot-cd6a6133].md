@@ -1,0 +1,3 @@
+# Pagano Nunatak
+
+Pagano Nunatak ( ) is a notable rock nunatak with a pointed summit (1,830 m) which stands in relative isolation, 8 nautical miles (15 km) east of Hart Hills and 80 nautical miles (150 km) north-northeast of Ford Massif, Thiel Mountains. The nunatak was examined and sketched by Edward Thiel in the course of an airlifted seismic traverse along meridian 88W in the 1959-60 season. Named by Advisory Committee on Antarctic Names (US-ACAN) after Chief Warrant Officer Gerald Pagano (d.1981), USA, assistant for plans and operations on the staff of the Commander, U.S. Naval Support Force, Antarctica, 1960–65; staff member, Center for Polar Archives, National Archives, 1972-81.

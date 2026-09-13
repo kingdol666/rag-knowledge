@@ -1,0 +1,3 @@
+# Lake Fehér (Szeged)
+
+Lake Fehér is a lake of Hungary. It is named Fehér (White), because it is white. It is a part of Kiskunság National Park, and it is situated just north of the town of Szeged. It covers an area of 14 square kilometres. Lake Fehér is Hungary's largest saltwater lake. It is carefully protected because it is home to 280 species of bird and because of its ancient flora. The area is an important stop in the migration of European birds, and serves as a resting and feeding place for them. During the migration season, crowds of cranes, wild geese, and teal varieties are visible on Lake Fehér.

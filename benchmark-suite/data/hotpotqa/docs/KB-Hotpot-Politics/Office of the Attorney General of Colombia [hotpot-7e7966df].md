@@ -1,0 +1,3 @@
+# Office of the Attorney General of Colombia
+
+The Office of the Attorney General of Colombia (Spanish: "Fiscalía General de la Nación" ; literally "General Prosecutorial Office of the Nation") is the Colombian institution part of the Colombian judicial branch of Government with administrative autonomy designed to prosecute offenders, investigate crimes, review judicial processes and accuse penal law infractions against judges and courts of justice. The Office of the Attorney General was created by the Colombian Constitution of 1991 and began operating on July 1, 1992. The current Attorney General is Néstor Humberto Martínez.

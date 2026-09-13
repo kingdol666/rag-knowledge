@@ -1,0 +1,3 @@
+# Once Upon a Time (season 5)
+
+The fifth season of the American ABC fantasy-drama "Once Upon a Time" was ordered on May 7, 2015. It began airing on September 27, 2015, and ended on May 15, 2016. On June 9, 2015, the promotion of Rebecca Mader and Sean Maguire to series regulars was announced for the fifth season, portraying their characters Zelena / Wicked Witch of the West and Robin Hood, respectively, while a few days later, Michael Socha was confirmed to not be returning as a series regular as Will Scarlet / Knave of Hearts. The fifth season also saw the series reach its 100th episode, which aired on March 6, 2016 as the mid-season premiere.

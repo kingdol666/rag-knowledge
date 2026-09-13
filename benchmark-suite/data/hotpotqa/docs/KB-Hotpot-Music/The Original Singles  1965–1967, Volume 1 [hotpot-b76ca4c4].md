@@ -1,0 +1,3 @@
+# The Original Singles: 1965–1967, Volume 1
+
+The Original Singles: 1965–1967, Volume 1 is a compilation album by American rock 'n' roll band The Byrds. Originally released in 1980, it offered, for the first time, all of the mono single versions of the Byrds' singles released between 1965 and early 1967. The tracks on the album are laid out chronologically by release date of the single, and features the A-side first, then the B-side. For example, the Byrds' first single was "Mr. Tambourine Man" with "I Knew I'd Want You" on the B-side. The next single was "All I Really Want to Do" with "I'll Feel a Whole Lot Better" on the B-side, and so forth.

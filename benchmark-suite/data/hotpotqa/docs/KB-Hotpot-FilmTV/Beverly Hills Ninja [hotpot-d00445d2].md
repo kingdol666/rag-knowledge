@@ -1,0 +1,3 @@
+# Beverly Hills Ninja
+
+Beverly Hills Ninja is a 1997 American martial arts comedy film directed by Dennis Dugan, written by Mark Feldberg and Mitch Klebanoff. The film stars Chris Farley, Nicollette Sheridan, Robin Shou, Nathaniel Parker and Chris Rock. The main plot revolves around Haru (portrayed by Farley), a white orphan boy who is found by a clan of ninjas as an infant in an abandoned treasure chest and is raised by them. Haru never quite conforms to their culture and never acquires the skills of a ninja, but is nonetheless good-natured and persevering in his personal ambitions. His first mission brings him to Beverly Hills to investigate a murder mystery. It was the last film featuring Farley to be released in his lifetime.

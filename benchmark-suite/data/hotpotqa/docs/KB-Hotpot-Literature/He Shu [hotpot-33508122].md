@@ -1,0 +1,3 @@
+# He Shu
+
+He Shu (Chinese: 何蜀; born 1948 in Chongqing) is a magazine editor and historian of the Chinese Cultural Revolution. Barred from entering high school in 1964 because of his father’s ”rightism”, he ended up becoming a temporary contract laborer. In 1972, permanently employed as a worker in the Chongqing Steel Plant. In 1981, transferred to the Chongqing People’s Broadcasting Station where he became an editorial assistant in the cultural and historical programs department. In May 1989, helped launch the Chongqing magazine "Red Crag Spring and Autumn Annals" （《红岩春秋》）of which he is (in 2009) deputy editor-in-chief.

@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering
+\small
+\caption{Module~A — ingestion integrity. \emph{Membership} = document lands in
+the intended KB; \emph{storage completeness} = all five storage layers agree
+after write; \emph{self-retrieval Hit@1} = the freshly ingested document is
+returned first for a query built from its own text. In-house corpus: 15 Markdown +
+1 PDF; standard corpus: 184 documents.}
+\label{tab:ingestion}
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Metric & In-house & Standard \\
+\midrule
+Parse success              & 1.000 & -- \\
+Ingest success rate        & 1.000 & -- \\
+Membership accuracy        & 1.000 & 1.000 \\
+Storage completeness       & 1.000 & 1.000 \\
+Self-retrieval Hit@1       & 0.938 & -- \\
+\bottomrule
+\end{tabular}
+\end{table}

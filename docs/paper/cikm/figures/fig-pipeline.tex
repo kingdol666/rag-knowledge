@@ -1,0 +1,63 @@
+% Hand-drawn (not data-generated): the QDCVR pipeline and where the two
+% mechanisms under evaluation sit inside it.
+\begin{figure*}[t]
+\centering
+\begin{tikzpicture}[
+  font=\small,
+  stage/.style={draw, rounded corners=2pt, minimum height=9mm, minimum width=17mm,
+                align=center, fill=black!4, inner sep=3pt},
+  core/.style={draw, rounded corners=2pt, minimum height=9mm, minimum width=17mm,
+               align=center, fill=black!18, line width=0.9pt, inner sep=3pt},
+  store/.style={draw, dashed, rounded corners=2pt, minimum height=7mm,
+                align=center, fill=white, inner sep=3pt, font=\scriptsize},
+  ar/.style={-{Stealth[length=1.8mm]}, thick},
+]
+
+% ── main pipeline ────────────────────────────────────────────────
+\node[stage] (q)   at (0,0)    {Query};
+\node[stage] (s0)  at (2.0,0)  {S0\\intent};
+\node[core]  (s1)  at (4.2,0)  {\textbf{S1}\\domain\\scoping};
+\node[stage] (s2)  at (6.4,0)  {S2\\two-stage\\recall};
+\node[stage] (s3)  at (8.6,0)  {S3\\dedup\\+ $\tau$};
+\node[core]  (s4)  at (10.8,0) {\textbf{S4}\\content\\adj.};
+\node[stage] (s5)  at (13.0,0) {S5\\tiering};
+\node[stage] (s6)  at (15.2,0) {S6\\answer\\+ blind spot};
+
+\foreach \a/\b in {q/s0, s0/s1, s1/s2, s2/s3, s3/s4, s4/s5, s5/s6}
+  \draw[ar] (\a) -- (\b);
+
+% ── stores ───────────────────────────────────────────────────────
+\node[store] (kb)  at (4.2,-2.1)  {knowledge bases\\ (13, hierarchical)};
+\node[store] (idx) at (8.6,-2.1)  {BM25 + ChromaDB\\ (13{,}709 chunks)};
+\node[store] (exp) at (11.5,-2.1) {experience store\\ ($P_0/P_1/P_2$)};
+
+\draw[ar, dashed] (s1) -- (kb);
+\draw[ar, dashed] (s2) -- (idx);
+\draw[ar, dashed] (s4) -- (exp);
+\draw[ar, dashed] (exp) -- (s5);
+
+% ── read path annotation ─────────────────────────────────────────
+\draw[ar, dotted, thick] (s4.south east) to[out=-35, in=70] node[right, font=\scriptsize, pos=0.55]
+   {\texttt{kb\_doc\_read}\ (direct, no API)} (idx.south east);
+\node[font=\scriptsize, align=left, anchor=west] at (0.1,-3.2)
+  {Solid = control flow;\quad dashed = store access;\quad dotted = content read
+   (Stage~4 adjudicates on \emph{text}, not on embeddings).};
+
+% ── highlight the two mechanisms ─────────────────────────────────
+\node[draw, rounded corners=3pt, fit=(s1), inner sep=2.4mm, line width=1.1pt, black] {};
+\node[draw, rounded corners=3pt, fit=(s4), inner sep=2.4mm, line width=1.1pt, black] {};
+
+% ── agent surface ────────────────────────────────────────────────
+\node[store, minimum width=52mm] (mcp) at (12.6,-3.2)
+  {94 MCP tools + 14 agent skills (agent-native surface)};
+\draw[ar, dashed] (s6.south) to[out=-90, in=25] (mcp.north east);
+
+\end{tikzpicture}
+\caption{The \sys{} pipeline. Two stages carry the method's claims:
+\textbf{S1 domain scoping} bounds the search to a small set of knowledge bases
+before any document is compared, and \textbf{S4 content adjudication} reads
+candidate text and scores it $0$--$8$, with authority to override the recall
+order (Eq.~\ref{eq:override}). Every stage is reachable through the same MCP
+tool surface the agents use.}
+\label{fig:pipeline}
+\end{figure*}

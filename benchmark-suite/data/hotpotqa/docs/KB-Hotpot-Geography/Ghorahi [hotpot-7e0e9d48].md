@@ -1,0 +1,3 @@
+# Ghorahi
+
+Ghorahi (Nepali: घोराही उपमहानगरपालिका) is the largest sub-metropolitan and seventh largest city of Nepal. The city (formerly Tribhuvannagar) lies in Province no 5 in Mid-Western part of Nepal .It is the largest city of Dang Deukhuri District of southwest Nepal. Located in the Inner Terai region, it lies 413 kilometres (257 mi) south-west of Nepal's capital Kathmandu and is one of the "Counter Magnets" being developed as an alternative centre of growth to help ease the migration and population explosion in the Kathmandu metropolitan area.It is the largest city of Rapti Region and is surrounded by the Sivalik in the south and Mahabharat range of Hills in the north.

@@ -1,0 +1,3 @@
+# Attorney General of Bangladesh
+
+The Attorney General of Bangladesh (Bengali: মহাব্যবহারদেশক, Mahābyabahāradēśaka ) is the Bangladeshi government's chief legal adviser, and its primary lawyer in the Supreme Court of Bangladesh. The Attorney General is usually a highly respected Senior Advocate, and is appointed by the ruling government. The current Attorney General is Mahbubey Alam. The Attorney General is the ex-officio chairman of the Bangladesh Bar Council and accordingly he performs the duties assigned to that post and empowered to participate in any reference to Supreme Court made by the President under article 106 of the Constitution and can express his own opinion.

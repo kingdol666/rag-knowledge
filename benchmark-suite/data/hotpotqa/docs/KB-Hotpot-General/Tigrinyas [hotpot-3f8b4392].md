@@ -1,0 +1,3 @@
+# Tigrinyas
+
+The Tigrinyas (also referred to as Biher Tigrinya, Kebessa, and Biher-Tigrinya) are an ethnic group inhabiting central Eritrea, an area spanning the Southern and Central, as well as the Northern Red Sea and Anseba Regions - mostly part of the Eritrean highlands (hence the name Kebessa meaning 'highland' in the local language). Ethnolinguistically, Tigrinyas are related to the Tigrayans of Ethiopia, both of whom speak Tigrinya, an Ethiopian Semitic language belonging to the Afroasiatic family. Most are followers of the Eritrean Orthodox Tewahedo Church. They make up roughly 55% of Eritrea's population numbering 3.4 million people. They are not to be confused with the Tigre people who speak Tigre, a closely related Afroasiatic language.

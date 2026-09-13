@@ -1,0 +1,3 @@
+# West Africa
+
+West Africa, also called Western Africa and the West of Africa, is the westernmost subregion of Africa. West Africa has been defined as including 18 countries: Benin, Burkina Faso, the island nation of Cape Verde, Gambia, Ghana, Guinea, Guinea-Bissau, Ivory Coast, Liberia, Mali, Mauritania, Niger, Nigeria, the island of Saint Helena, Senegal, Sierra Leone, São Tomé and Príncipe and Togo. The population of West Africa is estimated at about /1e6 round 0 million people as of . Islam is the predominant religion of 70% of the population, with smaller amounts practicing Christianity and Traditional African religions.

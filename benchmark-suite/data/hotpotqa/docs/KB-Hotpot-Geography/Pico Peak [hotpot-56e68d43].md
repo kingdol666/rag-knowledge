@@ -1,0 +1,3 @@
+# Pico Peak
+
+Pico Peak is a mountain located in Rutland County, Vermont, United States. It is the northernmost summit of the Coolidge Range in the Green Mountains, and the second highest in the Coolidge Range after Killington Peak. Pico Peak is flanked to the south by Ramshead Peak, and to the north faces Deer Leap Mountain across Sherburne Pass. The peak's name may stem from the Abenaki for "the pass/opening" or indeed from the Spanish or Portuguese word for "peak", "Pico". Seen from Sherburne Pass the summit resembles a cone. "Pico Peak" appears on the 1869 Beers Atlas of Rutland County, Walling's 1860 Map of the State of Vermont and Chace's 1854 Map of Rutland County (albeit reversed with Killington Peak).

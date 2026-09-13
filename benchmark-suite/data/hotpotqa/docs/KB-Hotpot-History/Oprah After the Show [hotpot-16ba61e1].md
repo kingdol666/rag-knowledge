@@ -1,0 +1,3 @@
+# Oprah After the Show
+
+Oprah After the Show is a program on the Oxygen cable network from 2003 to 2006, and was an extra half-hour that allowed the audience to ask questions of the guests for that day's earlier episode of "The Oprah Winfrey Show" which aired in syndication, and for Oprah Winfrey to introduce extended segments. The program was created mainly as a make good by Winfrey, who had offered her program's archive to Oxygen upon taking an ownership interest in the network, but later changed her mind about airing her older episodes and decided to offer another contribution to the network beyond same-day repeat airings of her show, which were likely disallowed by her syndication contract with King World.

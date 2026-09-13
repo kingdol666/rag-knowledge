@@ -1,0 +1,3 @@
+# Pharyngula (blog)
+
+Pharyngula, a blog founded and written by PZ Myers, is hosted on ScienceBlogs (2005–2011, in full, and 2011–present, in part) and on FreeThoughtBlogs (2011–present). In 2006 the science journal "Nature" listed it as the top-ranked blog written by a scientist based on popularity. The blog addresses a range of topics, including Myers' academic specialty, biology. It has become particularly well-known for Myers' writing style (characterized by sarcasm) and for his criticism of intelligent design and creationism. In 2009, Hemant Mehta ranked "Pharyngula" the most popular atheist blog, based on subscriber levels and other factors.

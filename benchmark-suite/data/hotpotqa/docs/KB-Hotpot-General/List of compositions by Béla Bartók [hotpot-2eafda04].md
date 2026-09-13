@@ -1,0 +1,3 @@
+# List of compositions by Béla Bartók
+
+This aspires to be a complete list of compositions by Béla Bartók. The catalogue numbering by András Szőllősy (Sz.), László Somfai (BB.) and Denijs Dille (DD.) are provided, as well as Bartók's own opus numbers. Note that Bartók started three times anew with opus numbers, here indicated with "(list 1)", "(list 2)" and "(list 3)" respectively. The pieces from the third listing are by far best known; opus lists 1 and 2 are early works. The year of composition and instrumentation (including voice) are included. See the main article on Béla Bartók for more details.

@@ -1,0 +1,3 @@
+# Root After and Another
+
+Root After and Another (styled as "√after and another") is a Japanese adult visual novel by Makura which was released on October 26, 2007 for the PC as a DVD in limited and regular first editions. "Root After and Another" is Makura's second game and is the sequel to their first game "". The gameplay in "Root After and Another" follows a plot line which offers pre-determined scenarios with courses of interaction, and focuses on the appeal of the six female main characters with playable routes. The game's scenario was ranked 17th and the music was ranked 25th in Getchu.com's 2007 ranking.

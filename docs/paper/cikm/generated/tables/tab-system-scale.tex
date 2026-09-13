@@ -1,0 +1,35 @@
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Platform scale. Structural counts are properties of the running
+deployment; corpus counts are reported \emph{per snapshot} because the two
+benchmark snapshots differ (an earlier draft merged them, which is not sound).
+All numbers are read from the deployment or from recorded artefacts, never
+estimated from the source tree.}
+\label{tab:scale}
+\begin{tabular}{@{}lrr@{}}
+\toprule
+ & \multicolumn{2}{c}{Snapshot} \\
+\cmidrule(lr){2-3}
+Component & 2026-07-29 & 2026-09-13 \\
+\midrule
+Knowledge bases                  & 13 & 12 \\
+Documents (in-house corpus)      & 154 & 184 \\
+Vector chunks                    & 13{,}709 & -- \\
+Graph nodes / edges              & 179 / 2{,}502 & -- \\
+\midrule
+\multicolumn{3}{@{}l}{\emph{Structural (snapshot-independent)}} \\
+MCP tools exposed to agents      & \multicolumn{2}{c}{94} \\
+Agent skills (knowledge-base family) & \multicolumn{2}{c}{14} \\
+Backend HTTP endpoints (\texttt{/api/v1}) & \multicolumn{2}{c}{114} \\
+Web-layer routes (Nuxt proxy)    & \multicolumn{2}{c}{124} \\
+Embedding model                  & \multicolumn{2}{c}{BGE-M3 (1024-d)} \\
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}
+\parbox{\columnwidth}{\scriptsize The 2026-09-13 ingestion run covered
+184 documents with membership accuracy and storage completeness
+$1.000$; it did not re-measure chunk or graph counts, hence ``--''.}
+\end{table}

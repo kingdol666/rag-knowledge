@@ -434,15 +434,20 @@ A partial check is available in the traceable data: the in-house run records whi
 stage produced each query's candidates, and all 20 queries were served from the
 scoped stage rather than falling back to an unscoped search.
 
-We state the missing evaluation explicitly: the committed harness measures
-neither routing selection precision against the gold document's true base, nor
-accuracy under alternative routing policies (always-search-all, catalogue
-scoring, an oracle ceiling), nor degradation as the base count grows; an early
-routing-accuracy figure traces to the withdrawn artefact family and is no
-longer claimed. The multi-domain benchmark (\S\ref{sec:multidomain}) exercises
-retrieval \emph{across} nine bases but not the routing decision itself;
-measuring that layer against an oracle is the clearest agenda item in
-\S\ref{sec:conclusion}.
+We close part of this gap with an oracle experiment on the multi-domain
+benchmark (\S\ref{sec:multidomain}): restricting retrieval to the single gold
+knowledge base (a perfect single-base router, deterministic rule) or even to
+the \emph{best} per-gold-base search yields \emph{lower} quality than the
+deployed always-search-all mode (two-stage nDCG@10 $0.772$ restricted vs
+$0.841$ global; best-restricted $0.795$). At this corpus scale (454 documents)
+cross-base distraction does not crowd out gold documents, and single-base
+restriction is structurally fatal for the $38\%$ of queries whose gold spans
+two bases (their Recall@2 is capped at $0.5$ under any single-base router).
+The measured conclusion mirrors our caution about routing claims: at this
+scale the scoping mechanism has no gain to deliver even under an oracle, and
+its value --- if any --- must be sought at corpus scales where cross-base
+distraction dominates. An early routing-accuracy figure in our records traces
+to the withdrawn artefact family and is no longer claimed.
 
 \subsection{Stage 2: Two-Stage Recall}\label{sec:recall}
 Recall is a BM25 stage followed by vector refinement and graph-neighbour
@@ -924,6 +929,22 @@ adjudication repairs rank-1 errors when query and evidence share vocabulary,
 does not improve --- and can significantly hurt --- full ranking when they do
 not.
 
+Two further analyses sharpen the boundary. \emph{(i) Overlap strata:} splitting
+the fifty queries at the median of query-to-gold-title lexical overlap,
+adjudication is worse in \emph{both} strata (low overlap $n{=}27$: Hit@1
+$-0.185$; high overlap $n{=}23$: $-0.217$), so an overlap-conditioned router
+between adjudicated and plain staged retrieval cannot recover the loss on this
+benchmark --- the beneficial regime (the \texttt{sf-002} pattern) is not
+recoverable by query-level overlap alone. \emph{(ii) Routing oracle:}
+restricting retrieval to the gold base --- even taking the best per-gold-base
+result --- \emph{lowers} two-stage nDCG@10 from $0.841$ to at most $0.795$,
+because single-base restriction is structurally fatal for cross-base gold
+queries and cross-base distraction does not crowd out gold documents at this
+scale. Both results, producers \texttt{65\_stratified.py} and
+\texttt{64\_routing\_oracle.py}, strengthen the paper's restraint: neither
+adjudication nor scoping earns a claim on this benchmark, and the mechanisms'
+value --- if any --- must be sought in larger-corpus or higher-overlap regimes.
+
 \paragraph{In-house corpus and answerability.}
 On the in-house bilingual corpus (Table~\ref{tab:inhouse}) the picture is
 narrower: \sys{} raises Recall@5 ($0.908$ vs $0.892$) and P@5 ($0.210$ vs
@@ -986,23 +1007,38 @@ capped at $P_1$). We report the instability as a finding rather than selecting
 a favourable round.
 
 \paragraph{Baseline comparison for experience synthesis.}
-We compare three materials under an \emph{identical} judge prompt (grounded
-4 / structure 3 / reusable 3; same judge model, four frozen operational
-queries): (i) \emph{no synthesis} --- the raw top-$3$ documents the two-stage
-tool retrieves for the query; (ii) \emph{one-shot LLM summary} --- the seven
-source documents summarised into ``lessons'' by a single prompt, with no
-scenario/tags/lifecycle metadata; (iii) \emph{ours} --- the top-$3$
+We compare three materials under an \emph{identical} judge prompt
+(grounded 4 / structure 3 / reusable 3; same judge model, eight frozen
+operational queries): (i) \emph{no synthesis} --- the raw top-$3$ documents
+the two-stage tool retrieves for the query; (ii) \emph{one-shot LLM summary}
+--- the seven source documents summarised into ``lessons'' by a single prompt,
+with no scenario/tags/lifecycle metadata; (iii) \emph{ours} --- the top-$3$
 pipeline-created experiences retrieved from the experience store. Pipeline
-experiences score \textbf{5.25}/10 on average, ahead of raw documents at
-\textbf{4.00} and one-shot summaries at \textbf{3.00}: distillation into
-structured, scenario-tagged entries is more reusable than either raw text or an
-unstructured summary, while absolute scores stay moderate (the judge rewards
-verifiable specifics in the payload). One incident reported for completeness:
-in a first sample the summariser received empty inputs from a harness path bug
-and \emph{refused to invent lessons} --- the honest-refusal behaviour the
-platform designs for, in an unexpected place. Producer:
-\texttt{40\_experience\_suite.py} + \texttt{42\_e4\_fix.py}; transcripts
-archived.
+experiences score \textbf{6.00}/10 on average, ahead of one-shot summaries at
+\textbf{3.75} and raw documents at \textbf{3.62}: distillation into
+structured, scenario-tagged entries is more reusable than either baseline,
+and the ordering is stable under a re-worded judge prompt
+($5.25$ / $4.00$ / $2.75$). One incident reported for completeness: in a
+first sample the summariser received empty inputs from a harness path bug and
+\emph{refused to invent lessons} --- the honest-refusal behaviour the platform
+designs for, in an unexpected place. Producer:
+\texttt{40\_experience\_suite.py}, \texttt{42\_e4\_fix.py},
+\texttt{66\_judge\_agreement.py}; transcripts archived.
+
+\paragraph{Judge reliability.}
+Because every quality score in \S\ref{sec:exp-analysis} comes from an LLM
+judge, we measure the judge itself: the same 24 judge calls (8 queries
+$\times$ 3 materials) were scored twice, by the original prompt and by an
+independently worded prompt with the same rubric. Agreement is
+\emph{moderate}: exact-score agreement $25\%$, within-one-point $62.5\%$,
+mean absolute difference $1.13$, Pearson $r{=}0.716$, and Cohen's
+$\kappa{=}0.40$ on the binarised ``usable'' decision (score $\ge 5$). We
+report this as an \emph{LLM--LLM} agreement over identical materials --- it is
+not the human inter-annotator study a full validation would require --- but it
+bounds how finely the reader should trust any single judge score: treatment
+effects larger than $\sim$1 point (the ours-vs-baseline gaps above are
+$2.3$--$2.4$) survive judge noise; sub-point differences do not. Producer:
+\texttt{66\_judge\_agreement.py}.
 
 \subsection{RQ6: End-to-End Verification of the Agent Surface}\label{sec:e2e}
 We exercised the externally reachable surface with an independently written
@@ -1088,17 +1124,19 @@ ceiling it looks worse on a metric that counts repeated relevant parts as
 precision. We flag the adverse headline number explicitly rather than hide it.
 
 \paragraph{Threats to validity.}
-\emph{Construct}: the $0$--$8$ rubric is an LLM judgement; we mitigate with
-temperature $0$ and a fixed judge prompt but report no human inter-annotator
-agreement, which a full study would require. \emph{Internal}: the component
-study now uses the same thirty SciFact queries as Table~\ref{tab:scifact}.
-\emph{External}: the in-house corpus is domain-specific and self-authored; the
-HotpotQA partition (\S\ref{sec:multidomain}) removes the single-domain
-restriction and uses an official gold standard, but the partition itself is
-author-chosen. \emph{Author-evaluation bias}: every benchmark here was
-designed, run and scored by the system's authors on a deployment they operate.
-We mitigate with public gold standards and unfavourable results; independent
-evaluation remains the only complete remedy.
+\emph{Construct}: the $0$--$8$ rubric and the experience judge are LLM
+judgements; we mitigate with temperature $0$, frozen prompts, and a measured
+dual-judge agreement study (\S\ref{sec:exp-analysis}: $\kappa{=}0.40$, mean
+$|\Delta|{=}1.13$), which is a proxy for --- not a substitute for --- human
+inter-annotator agreement. \emph{Internal}: the component study uses the same
+thirty SciFact queries as Table~\ref{tab:scifact}. \emph{External}: the
+in-house corpus is domain-specific and self-authored; the HotpotQA partition
+(\S\ref{sec:multidomain}) removes the single-domain restriction and uses an
+official gold standard, but the partition itself is author-chosen.
+\emph{Author-evaluation bias}: every benchmark here was designed, run and
+scored by the system's authors on a deployment they operate. We mitigate with
+public gold standards and unfavourable results; independent evaluation remains
+the only complete remedy.
 
 \paragraph{Future work.}
 The experience-synthesis instability is generative, not architectural: when the
@@ -1109,10 +1147,10 @@ contains bad output. The Stage-3 threshold should be learned per corpus and the
 stage-2 pool deepened: the ablation shows the pool size, not the threshold
 value, loses gold documents on SciFact. Adjudication should condition its
 intervention on query--evidence lexical overlap, which our two public
-benchmarks bracket. And the routing layer still has no measured accuracy or
-oracle ceiling (\S\ref{sec:routing}); measuring it, together with a human
-inter-annotator agreement study for the judge rubric, is the highest-value next
-step.
+benchmarks bracket. The oracle experiment shows scoping has no gain to deliver
+at 454-document scale, so its value must be tested at corpus sizes where
+cross-base distraction dominates; and a human inter-annotator agreement study
+for the judge rubric remains the missing validation.
 
 \paragraph{Conclusion.}
 We described \sys{}, a deployed agent-native knowledge platform, and evaluated

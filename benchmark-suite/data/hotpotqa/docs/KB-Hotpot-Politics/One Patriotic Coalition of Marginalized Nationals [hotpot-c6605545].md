@@ -1,0 +1,3 @@
+# One Patriotic Coalition of Marginalized Nationals
+
+The One Patriotic Coalition of Marginalized Nationals (abbreviated as 1-Pacman, and a namesake of Manny Pacquiao) is a political party-list based in the Philippines advocating for the marginalized and displaced sector in the country. In the 2016 national elections, 1-Pacman is one of the contenders in the party-list election. Leading the nominees who will vyied for a seat are Mikee Romero, who is the team owner of GlobalPort Batang Pier in the Philippine Basketball Association (PBA) and Erick Pineda, who served as the business manager of Filipino boxing champion Manny Pacquiao.

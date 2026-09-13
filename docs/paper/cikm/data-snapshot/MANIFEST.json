@@ -1,0 +1,51 @@
+{
+  "snapshot_id": "2026-09-13-a",
+  "frozen_at": "2026-09-13",
+  "note": "Immutable copies of the benchmark artefacts cited by this paper. make_assets.py reads ONLY from here. Every cited artefact names its producing script; provenance_audit.py fails the build if one loses it.",
+  "files": [
+    {
+      "name": "module_a_ingestion_r1.json",
+      "source": "benchmark-suite/results/module_a_ingestion_r1.json",
+      "note": "Module A ingestion (in-house) — producer: 01_ingestion.py",
+      "sha256": "b346e2ac4fc62ceec1ec4854d1e26befe347a973fb90b2208f9e0a8d56cdd23a",
+      "bytes": 894
+    },
+    {
+      "name": "module_a_std2_r1.json",
+      "source": "benchmark-suite/results/module_a_std2_r1.json",
+      "note": "Module A ingestion (standard corpus) — producer: 21_std2_ingest.py",
+      "sha256": "03ea6c772e8efd2cecd80e71e5354626083d9014f2a38f2196703ad8761023e5",
+      "bytes": 754
+    },
+    {
+      "name": "module_b_retrieval_r2.json",
+      "source": "benchmark-suite/results/module_b_retrieval_r2.json",
+      "note": "Module B in-house retrieval, 20 queries — producer: 02_retrieval.py",
+      "sha256": "9e39cb4afd26d6f02963d44e751300a0ea640d3b1fbc5bcd21d3888636beb9e6",
+      "bytes": 17202
+    },
+    {
+      "name": "module_b_std2_r2.json",
+      "source": "benchmark-suite/results/module_b_std2_r2.json",
+      "note": "Module B BEIR SciFact + SQuAD, 4 methods — producer: 22_std2_retrieval.py",
+      "sha256": "079d34a9f34c25f228abb6baa4ba594e8185f82d4d67caed4e8503aa7c03cc1d",
+      "bytes": 71683
+    },
+    {
+      "name": "module_c_experience_r2.json",
+      "source": "benchmark-suite/results/archive-20260913-214859/module_c_experience_r2.json",
+      "note": "Module C experience, ARCHIVED copy (live file was overwritten) — producer: 03_experience.py",
+      "sha256": "1586fd2fa9cdd260828ccaa3b060f04ca9c2274366dc754c7f9c611d73b35321",
+      "bytes": 3981
+    }
+  ],
+  "withheld": [
+    {
+      "name": "cikm_summary.json",
+      "source": "benchmark-web/backend/results/cikm/cikm_summary.json",
+      "note": "WITHHELD — former main results table, FPR figure and ablation. NO PRODUCER.",
+      "sha256": "3332a9ac787222c82bb882dea076c8ed47b532cb3758990856dfe53cc6f98cdd",
+      "bytes": 3044
+    }
+  ]
+}

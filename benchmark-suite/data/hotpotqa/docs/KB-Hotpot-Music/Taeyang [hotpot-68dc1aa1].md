@@ -1,0 +1,3 @@
+# Taeyang
+
+Dong Young-bae (; born 18 May 1988), better known by his stage name Taeyang (meaning "sun" in Korean) and SOL (when performing in Japan), is a South Korean singer, songwriter and dancer. After appearing in Jinusean's music video "A-yo," Taeyang began training under YG Entertainment at the age of 12. Six years later, he made his debut in 2006 as a member of the South Korean boy band Big Bang. While the quintet's debut was met with lukewarm receptions, their follow-ups cemented their popularity, becoming one of the best-selling digital group of all-time in Asia and one of the best-selling boy bands in the world.

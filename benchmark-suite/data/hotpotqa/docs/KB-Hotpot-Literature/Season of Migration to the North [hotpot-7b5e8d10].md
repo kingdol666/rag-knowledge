@@ -1,0 +1,3 @@
+# Season of Migration to the North
+
+Season of Migration to the North (Arabic: موسم الهجرة إلى الشمال‎ ‎ Mawsim al-Hiǧra ilā ash-Shamāl ) is a classic post-colonial Sudanese novel by the novelist Tayeb Salih. Originally published in Arabic in 1966, it has since been translated into more than twenty languages. Salih was fluent in both English and Arabic, but chose to pen this novel in Arabic. The English translation was published in 1969 as part of the influential Heinemann African Writers Series. The novel is a counter narrative to "Heart of Darkness". It was described by Edward Said as one of the six great novels in Arabic literature. In 2001 it was selected by a panel of Arab writers and critics as the most important Arab novel of the twentieth century.

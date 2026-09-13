@@ -22,6 +22,10 @@
 | E10 | TODO-10/F16 结果被覆盖、无 run 身份 | **不可变 run 目录 + 身份指纹**：所有新实验写 `results/run-<UTC时间戳>/`，每份结果内嵌 git commit、配置哈希、seed | `scripts/lib.py` 扩展 | 全部新结果文件 |
 | E11 | TODO-8/F-baseline 超参未记录 | **部署指纹**：BGE-M3 revision、ChromaDB HNSW 参数、BM25 k1/b、jieba 版本写入结果 meta | `scripts/32_deployment_fingerprint.py` | `deployment.json` |
 | E12 | TODO-1 动机案例不可复现 | **真实案例挖掘**：从冻结检索产物中选"向量 top-1 ≠ 金标且内容验证纠正"的查询，给出精确分数 | `scripts/33_mine_motivating.py` | `motivating_case.json` |
+| E13 | 评审 W1/Q1 路由无测量 | **路由 oracle**：HotpotQA 九库上 always-search-all vs oracle-routing（限定金标库内检索），测路由可带来的上限增益 | `scripts/64_routing_oracle.py` | `routing_oracle.json` |
+| E14 | 评审 Q2 词汇重叠边界 | **重叠分层分析**：按查询-金标文档词汇覆盖率分层（高/低），逐层比较 qdcvr vs two_stage——检验"按重叠触发裁决"能否消除负效应 | `scripts/65_stratified.py` | `stratified_adjudication.json` |
+| E15 | 评审 W3 无 judge 一致性 | **双 judge 一致性**：同一材料两路独立 judge（不同 judge 实例/措辞扰动），报告逐条完全一致率、Cohen's κ、平均分差；**如实标注为 LLM–LLM 一致性，非人工 κ** | `scripts/66_judge_agreement.py` | `judge_agreement.json` |
+| E4+ | 评审 W4 规模偏小 | 经验基线查询 4→8（同设计扩展），并复跑 hotpot 评测 r2 验证逐位复现 | `42_e4_fix.py` 扩展 | `e4_baselines_fixed.json` |
 
 不在本轮范围（需人工/多会话，设计文档注明）：TODO-11（3 人 × 40–60 查询 κ 一致性）；
 TODO-10 的匿名 artifacts 外链（Zenodo）；F1 赛道选择（论文编辑问题）。

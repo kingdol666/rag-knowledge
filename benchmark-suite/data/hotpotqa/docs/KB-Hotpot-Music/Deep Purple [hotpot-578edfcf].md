@@ -1,0 +1,3 @@
+# Deep Purple
+
+Deep Purple are an English rock band formed in Hertford in 1968. The band is considered to be among the pioneers of heavy metal and modern hard rock, although their musical approach changed over the years. Originally formed as a progressive rock band, the band shifted to a heavier sound in 1970. Deep Purple, together with Led Zeppelin and Black Sabbath, have been referred to as the "unholy trinity of British hard rock and heavy metal in the early to mid-seventies". They were listed in the 1975 "Guinness Book of World Records" as "the globe's loudest band" for a 1972 concert at London's Rainbow Theatre, and have sold over 100 million albums worldwide.

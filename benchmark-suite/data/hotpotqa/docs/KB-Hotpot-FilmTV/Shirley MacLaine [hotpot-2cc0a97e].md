@@ -1,0 +1,3 @@
+# Shirley MacLaine
+
+Shirley MacLaine (born Shirley MacLean Beaty; April 24, 1934) is an American film, television and theater actress, singer, dancer, activist and author. An Academy Award winner, MacLaine received the 40th AFI Life Achievement Award from the American Film Institute in 2012, and received the Kennedy Center Honors for her lifetime contributions to American culture through the performing arts in 2013. She is known for her New Age beliefs, and has an interest in spirituality and reincarnation. She has written a series of autobiographical works that describe these beliefs, document her world travels, and describe her Hollywood career.

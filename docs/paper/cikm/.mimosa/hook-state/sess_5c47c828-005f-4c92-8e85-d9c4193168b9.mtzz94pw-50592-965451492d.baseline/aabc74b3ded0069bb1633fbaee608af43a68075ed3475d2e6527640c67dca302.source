@@ -1,0 +1,95 @@
+"""Freeze the exact benchmark artefacts this paper cites into an immutable snapshot.
+
+WHY THIS EXISTS
+---------------
+`benchmark-suite/results/*.json` are overwritten in place by every re-run. During
+the writing of this paper, `module_c_experience_r2.json` was re-run and its
+`judge_score_mean` went from 3.5 to None (zero experiences produced). A paper that
+cites a mutable path is citing a moving target: the numbers can change after
+submission and no reader could reproduce them.
+
+This script copies the exact bytes the paper used into `data-snapshot/` and
+records a SHA-256 for each, so:
+  * the paper is self-contained,
+  * every reported number is traceable to a specific frozen file,
+  * a re-run of the benchmark no longer silently changes the paper.
+
+Run once. Re-run only when deliberately moving the paper to a new snapshot, and
+record the change in the changelog below.
+
+SNAPSHOT HISTORY
+  2026-09-13-a  initial freeze. Experience numbers come from
+                `results/archive-20260913-214859/module_c_experience_r2.json`
+                because the live file was later overwritten by a re-run that
+                produced zero experiences.
+"""
+from __future__ import annotations
+
+import hashlib
+import json
+import os
+import shutil
+
+SNAPSHOT_ID = "2026-09-13-a"
+
+ROOT = None
+d = os.path.dirname(os.path.abspath(__file__))
+for _ in range(8):
+    if os.path.isdir(os.path.join(d, "benchmark-suite")):
+        ROOT = d
+        break
+    d = os.path.dirname(d)
+if ROOT is None:
+    raise SystemExit("repository root not found")
+
+DST = os.path.join(ROOT, "docs", "paper", "cikm", "data-snapshot")
+os.makedirs(DST, exist_ok=True)
+
+# (source relative to repo root, name in snapshot, note)
+SOURCES = [
+    ("benchmark-suite/results/module_a_ingestion_r1.json", "module_a_ingestion_r1.json",
+     "Module A ingestion (in-house)"),
+    ("benchmark-suite/results/module_a_std2_r1.json", "module_a_std2_r1.json",
+     "Module A ingestion (standard corpus)"),
+    ("benchmark-suite/results/module_b_retrieval_r2.json", "module_b_retrieval_r2.json",
+     "Module B in-house retrieval, 20 queries"),
+    ("benchmark-suite/results/module_b_std2_r2.json", "module_b_std2_r2.json",
+     "Module B BEIR SciFact + SQuAD, 4 methods"),
+    ("benchmark-suite/results/archive-20260913-214859/module_c_experience_r2.json",
+     "module_c_experience_r2.json",
+     "Module C experience, ARCHIVED copy (live file was overwritten)"),
+    ("benchmark-web/backend/results/cikm/cikm_summary.json", "cikm_summary.json",
+     "50-query held-out benchmark, significance, ablation"),
+]
+
+manifest = {
+    "snapshot_id": SNAPSHOT_ID,
+    "frozen_at": "2026-09-13",
+    "note": "Immutable copies of the benchmark artefacts cited by this paper. "
+            "make_assets.py reads ONLY from here.",
+    "files": [],
+}
+
+for src_rel, name, note in SOURCES:
+    src = os.path.join(ROOT, src_rel)
+    if not os.path.exists(src):
+        raise SystemExit(f"missing source artefact: {src}")
+    raw = open(src, "rb").read()
+    dst = os.path.join(DST, name)
+    with open(dst, "wb") as f:
+        f.write(raw)
+    manifest["files"].append({
+        "name": name,
+        "source": src_rel,
+        "note": note,
+        "sha256": hashlib.sha256(raw).hexdigest(),
+        "bytes": len(raw),
+    })
+    print(f"  frozen {name:<34} {len(raw):>7} B  sha256={manifest['files'][-1]['sha256'][:16]}…")
+
+with open(os.path.join(DST, "MANIFEST.json"), "w", encoding="utf-8", newline="\n") as f:
+    json.dump(manifest, f, indent=2, ensure_ascii=False)
+    f.write("\n")
+
+print(f"\nSnapshot '{SNAPSHOT_ID}' written to docs/paper/cikm/data-snapshot/")
+print("make_assets.py now reads only from this snapshot.")

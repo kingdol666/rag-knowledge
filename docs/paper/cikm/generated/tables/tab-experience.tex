@@ -1,0 +1,32 @@
+\begin{table}[t]
+\centering
+\footnotesize
+\caption{Module~C --- experience synthesis. Entries are produced by the meditation
+loop and scored by an LLM judge on a 0--10 scale for reusability, with a separate
+groundedness check against source documents. The low grounded ratio is a
+\emph{negative} result and is analysed in \S\ref{sec:exp-analysis}. Every
+statistic here is computed from the frozen snapshot (8 judged
+entries), not transcribed.}
+\label{tab:experience}
+\begin{tabular}{@{}lr@{}}
+\toprule
+Metric & Value \\
+\midrule
+Knowledge bases in the run            & 2 \\
+Meditation run success rate           & 1.00 \\
+KB coverage                           & 0.50 \\
+Experiences synthesised               & 10 \\
+Judge score, mean (0--10)             & 3.5 \\
+Grounded ratio                        & 0.375 \\
+\midrule
+Judge score, \emph{median}          & 3.0 \\
+Best entry                            & 8.0 \\
+Worst entry                           & 1.0 \\
+\bottomrule
+\end{tabular}
+
+\par\smallskip
+\parbox{\columnwidth}{\scriptsize Mean and median are both reported because the
+eight judged entries are bimodal; the mean (3.5)
+overstates the typical entry, whose median is 3.0.}
+\end{table}
