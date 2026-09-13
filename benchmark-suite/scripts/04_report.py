@@ -153,14 +153,24 @@ def main() -> None:
 
     std2 = {}
     if b_s2:
-        sfv, sqv = b_s2["summary"]["scifact"], b_s2["summary"]["squad"]
-        std2 = {"sf_labels": ["Hit@3", "nDCG@10", "Recall@5", "P@5"],
-                "sf_staged": [sfv["staged"].get(k) for k in ("hit@3", "ndcg@10", "recall@5", "precision@5")],
-                "sf_vector": [sfv["vector"].get(k) for k in ("hit@3", "ndcg@10", "recall@5", "precision@5")],
-                "sq_staged_hit3": sqv["staged"].get("hit@3"),
-                "sq_vector_hit3": sqv["vector"].get("hit@3"),
-                "ingest_member": a_s2.get("membership_accuracy"),
-                "ingest_compl": a_s2.get("storage_completeness")}
+        sf, sq = b_s2["summary"]["scifact"], b_s2["summary"]["squad"]
+        methods = ["bm25", "twostage", "dense", "qdcvr"]
+        ir_keys = ("hit@1", "hit@3", "hit@5", "recall@5", "ndcg@10",
+                   "precision@5", "mrr")
+        std2 = {
+            "labels": ["Hit@1", "Hit@3", "Hit@5", "Recall@5", "nDCG@10", "P@5", "MRR"],
+            "sf": {m: [sf[m].get(k) for k in ir_keys] for m in methods},
+            "sq_hit3": {m: sq[m].get("hit@3") for m in methods},
+            "sq_answer": {m: [sq[m].get("answer@1"), sq[m].get("answer@3"),
+                              sq[m].get("answer@5")] for m in methods},
+            "sf_support1": {m: sf[m].get("support@1") for m in methods},
+            "sf_evidence": {m: sf[m].get("claim_evidence") for m in methods},
+            "qdcvr_reads": sf["qdcvr"].get("chars_read"),
+            "qdcvr_verify": sf["qdcvr"].get("verify_pass"),
+            "ingest_member": a_s2.get("membership_accuracy"),
+            "ingest_compl": a_s2.get("storage_completeness")}
+    sf_q = std2.get("sf", {}).get("qdcvr", [])
+    sf_d = std2.get("sf", {}).get("dense", [])
     chartjs = CHART.read_text(encoding="utf-8") if CHART.exists() else "/* chart.js missing */"
     generated = datetime.now().strftime("%Y-%m-%d %H:%M")
     data_json = json.dumps(data, ensure_ascii=False)
@@ -275,20 +285,42 @@ The Precision@5 difference between methods reflects how content-verification re-
 the top-5 for multi-part documents; scale effects are covered by the large-corpus experiments
 referenced in docs/BENCHMARK.md.</p>
 
-<h2>Standard-Corpus Track II · BEIR SciFact &amp; SQuAD v1.1</h2>
+<h2>Standard-Corpus Track II · BEIR SciFact &amp; SQuAD v1.1 — Four-Method Comparison</h2>
 <div class="card"><canvas id="chartStd2" height="120"></canvas></div>
-<p class="caption"><b>Figure 5b. Standard retrieval benchmark (BEIR SciFact) and standard QA
-benchmark (SQuAD v1.1 dev subset).</b> 148 SciFact articles (30 benchmark queries with official
-qrels relevance judgments; multi-document relevance sets) and 8 SQuAD articles (16 questions with
-gold answers) were ingested through the same production pipeline and queried through the same MCP
-tool layer. <b>SciFact (left group):</b> Hit@3 0.83 (content-based) vs
-0.90 (vector), nDCG@10 0.81 vs
-0.83 — on this small name-mentioning subset the dense baseline retains a
-small edge because the QDCVR Step-2.5 hard threshold can drop low-scored gold documents; the
-threshold is a tunable precision/recall trade-off. <b>SQuAD (right group):</b> both methods reach
-Hit@3 = nDCG@10 = 1.0. Ingestion metrics on the standard corpora match the in-house corpus
-(membership 1.0, completeness 1.0), confirming the pipeline generalizes to standard benchmark
-corpora. Reproducibility: deterministic — double-run bit-identical.</p>
+<p class="caption"><b>Figure 5b. Standard retrieval benchmark (BEIR SciFact): four retrieval
+methods, identical queries, identical MCP tool layer.</b> 148 SciFact articles (30 benchmark
+queries with official qrels relevance judgments; multi-document relevance sets) were ingested
+through the production pipeline. Four ranked lists are extracted per query: <b>BM25</b>
+(sparse, stage-1 candidates; the classic baseline of Robertson &amp; Zaragoza 2009 and of the
+BEIR paper itself), <b>Two-stage hybrid</b> (BM25 recall → vector re-rank + threshold, no
+content adjudication), <b>Dense</b> (one-shot <code>kb_search_vector</code>, BAAI/bge-m3;
+Chen et al. 2024), and <b>QDCVR (ours, full protocol)</b> = two-stage → threshold →
+<code>kb_doc_read</code> content verification re-ranking. QDCVR: Hit@1 {f(sf_q[0])},
+Hit@3 {f(sf_q[1])}, Recall@5 {f(sf_q[3])}, nDCG@10 {f(sf_q[4])} vs dense
+Hit@1 {f(sf_d[0])}, Hit@3 {f(sf_d[1])}, nDCG@10 {f(sf_d[4])}; on this small
+name-mentioning subset the dense baseline retains a small top-rank edge because the QDCVR
+Step-2.5 hard threshold can drop low-scored gold documents — the threshold is a tunable
+precision/recall trade-off, and QDCVR dominates the hybrid stage-2 ranking it is built on
+when verification promotes a relevant document. Ingestion metrics on the standard corpora
+match the in-house corpus (membership {f(std2.get('ingest_member'))}, completeness
+{f(std2.get('ingest_compl'))}).</p>
+<div class="card"><canvas id="chartStd2Ans" height="110"></canvas></div>
+<p class="caption"><b>Figure 5c. Answer-level judgment — does the retrieved content actually
+answer the question?</b> Ranking metrics alone do not prove answerability, so for every method
+and every query we read the full content of the top-k retrieved documents
+(<code>kb_doc_read</code>, shared read cache, symmetric across methods) and check the content
+against the gold answer. <b>SQuAD (left group):</b> <i>answer@k</i> = the gold answer string
+occurs in the concatenated top-k document content (answer@1/3/5 shown). <b>SciFact (right
+group):</b> <i>support@1</i> = the top-1 document's content covers ≥ 50% of the claim's
+content words (stopwords removed); <i>claim evidence</i> = mean coverage. A retrieval is only
+counted as useful when the <b>content itself</b> carries the answer — this is the operational
+definition of "content-based accuracy" for this benchmark. Reproducibility: deterministic —
+double-run bit-identical (latency excluded).</p>
+<table><thead><tr><th rowspan="2">Method</th><th colspan="7">SciFact (30 queries, qrels)</th>
+<th colspan="4">SQuAD v1.1 (16 questions)</th></tr>
+<tr><th>Hit@1</th><th>Hit@3</th><th>Hit@5</th><th>R@5</th><th>nDCG@10</th><th>P@5</th><th>MRR</th>
+<th>Hit@3</th><th>ans@1</th><th>ans@3</th><th>ans@5</th></tr></thead>
+<tbody id="std2table"></tbody></table>
 
 <h2>Engineering Note · Two-Stage Retrieval as Acceleration (not a contribution)</h2>
 <div class="card"><canvas id="chartLat" height="90"></canvas></div>
@@ -342,10 +374,31 @@ new Chart(document.getElementById('chartQDCVR'), {{type:'bar',
   data:[QD.reads, QD.pass_rate, QD.rerank_rate]}}]}},
  options:{{indexAxis:'y', plugins:{{legend:{{display:false}}}}}}}});
 
+const METHOD_COLORS = {{bm25:'#c9a86a', twostage:'#b58a5a', dense:'#7aa7cc', qdcvr:'#2c5f8a'}};
+const METHOD_NAMES = {{bm25:'BM25 (sparse)', twostage:'Two-stage hybrid', dense:'Dense (bge-m3)', qdcvr:'QDCVR (ours, full)'}};
+const MKEYS = ['bm25','twostage','dense','qdcvr'];
+const tbl = document.getElementById('std2table');
+if (tbl) {{
+ for (const m of MKEYS) {{
+  const tr = document.createElement('tr');
+  const sf = STD2.sf[m]||[], sqh = STD2.sq_hit3[m], sqa = STD2.sq_answer[m]||[];
+  tr.innerHTML = `<td><b>${{METHOD_NAMES[m]}}</b></td>` +
+   sf.map(v=>`<td>${{v??'—'}}</td>`).join('') +
+   `<td>${{sqh??'—'}}</td>` + sqa.map(v=>`<td>${{v??'—'}}</td>`).join('');
+  tbl.appendChild(tr);
+ }}
+}}
+
 new Chart(document.getElementById('chartStd2'), {{type:'bar',
- data:{{labels:STD2.sf_labels, datasets:[
-  {{label:'Content-based (QDCVR)', data:STD2.sf_staged, backgroundColor:'#2c5f8a'}},
-  {{label:'Vector baseline', data:STD2.sf_vector, backgroundColor:'#b58a5a'}}]}},
+ data:{{labels:STD2.labels, datasets:MKEYS.map(m=>(
+  {{label:METHOD_NAMES[m], data:STD2.sf[m], backgroundColor:METHOD_COLORS[m]}}))}},
+ options:{{scales:{{y:{{beginAtZero:true,max:1.05}}}}}}}});
+
+new Chart(document.getElementById('chartStd2Ans'), {{type:'bar',
+ data:{{labels:['SQuAD answer@1','SQuAD answer@3','SQuAD answer@5','SciFact support@1','SciFact claim evidence'],
+ datasets:MKEYS.map(m=>({{label:METHOD_NAMES[m], backgroundColor:METHOD_COLORS[m],
+  data:[STD2.sq_answer[m][0], STD2.sq_answer[m][1], STD2.sq_answer[m][2],
+        STD2.sf_support1[m], STD2.sf_evidence[m]]}}))}},
  options:{{scales:{{y:{{beginAtZero:true,max:1.05}}}}}}}});
 
 new Chart(document.getElementById('chartB2'), {{type:'bar',

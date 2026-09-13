@@ -68,20 +68,34 @@ python scripts/21_std2_ingest.py 1         # 入库 KB-SciFact / KB-SQuAD + 模�
 **预期**：归属正确率与存储完整率 ≥ 0.99（标准文献为叙述型文本，不触发拆分）。
 复现校验：`python scripts/21_std2_ingest.py 2`（幂等重跑，双轮指标一致）。
 
-### 2c. 标准语料库检索评测（QDCVR vs 向量 baseline，约 6 分钟）
+### 2c. 标准语料库检索评测 — 四方法对比 + 答案级判定（约 8 分钟）
 
 ```bash
 python scripts/22_std2_retrieval.py 1
 python scripts/22_std2_retrieval.py 2       # 复现校验(逐位一致)
 ```
 
+同一查询、同一 MCP 工具层，每查询抽出 **4 种检索方法** 的排序结果：
+
+| 方法 | 来源 | 说明 |
+|------|------|------|
+| `bm25` | `kb_search_two_stage` stage1 候选 | 稀疏 BM25（Robertson & Zaragoza 2009；BEIR 基线同款） |
+| `twostage` | stage2 精排 + Step2.5 | 混合检索，无内容验证 |
+| `dense` | `kb_search_vector` top-10 | 稠密向量 BAAI/bge-m3（Chen et al. 2024） |
+| `qdcvr` | 全规程 | 两阶段 → Step2.5 → `kb_doc_read`×3 内容验证重排 |
+
 - **BEIR SciFact**（30 标准查询，官方 qrels 多相关文档金标）：
-  **命中率 Hit@k · 召回率 Recall@k · nDCG@10 · Precision@5 · MRR** —
-  内容检索 Hit@3 0.83 / nDCG@10 0.81 vs 向量 baseline 0.90 / 0.83（Step2.5 阈值
-  的精度/召回权衡，作为可调参数在报告讨论）
-- **SQuAD**（16 标准问题，文章级金标 + 标准答案）：双方法 Hit@3 = nDCG@10 = 1.0；
-  **answer_hit** = 标准答案文本出现在检索文档正文
-- 产出：`results/module_b_std2_r{1,2}.json`
+  **命中率 Hit@k · 召回率 Recall@k · nDCG@10 · Precision@5 · MRR**。
+  实测：QDCVR Hit@1 0.77（四方法最高）· nDCG@10 0.81；dense Hit@3 0.90 领先
+  （Step2.5 硬阈值会丢弃低分金标，属可调精度/召回权衡，报告中讨论）
+- **SQuAD**（16 标准问题，文章级金标 + 标准答案）：qdcvr/twostage/dense
+  Hit@3 = nDCG@10 = 1.0
+- **答案级判定（检索内容能否真实回答问题，对四方法对称执行）**：
+  - SQuAD `answer@k` = 金标答案串出现在 **top-k 检索文档正文**（`kb_doc_read` 全文，共享读取缓存）。
+    实测：qdcvr answer@1 0.94 / answer@3 1.0，bm25 answer@1 仅 0.875
+  - SciFact `claim_evidence` = top-1 文档正文对 claim 内容词（去停用词）覆盖率；
+    `support@1` = 覆盖率 ≥ 0.5 的查询占比。实测：qdcvr 0.516/0.60，均高于 twostage/dense
+- 产出：`results/module_b_std2_r{1,2}.json`；烟测 `BENCH_LIMIT=3 python scripts/22_std2_retrieval.py smoke`
 
 ## 3. Step 2 · 模块 B：基于内容的检索 vs 向量 baseline（约 10 分钟）
 
