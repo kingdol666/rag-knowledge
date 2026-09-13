@@ -1,0 +1,1146 @@
+% =====================================================================
+%  CIKM submission --- anonymous review copy.
+%  Build:  latexmk -pdf main.tex      (or: pdflatex -> bibtex -> pdflatex x2)
+%  All numbers in tables/figures are generated from recorded benchmark
+%  artefacts by make_assets.py; nothing is hand-transcribed.
+% =====================================================================
+\documentclass[sigconf, review, anonymous]{acmart}
+
+% --- review-time boilerplate suppression -----------------------------
+\settopmatter{printacmref=false}
+\settopmatter{printfolios=true}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+\acmConference[Anonymous submission]{}{}{}
+\acmISBN{}
+\acmDOI{}
+
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{subcaption}
+% acmart already defines \Bbbk; amssymb would clash. Release it first.
+\let\Bbbk\relax
+\usepackage{amsmath,amssymb}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{balance}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.17}
+\usetikzlibrary{arrows.meta,positioning,fit,shapes.geometric,calc}
+
+% compact lists
+\setlist[itemize]{leftmargin=1.1em,topsep=2pt,itemsep=1pt,parsep=0pt}
+\setlist[enumerate]{leftmargin=1.4em,topsep=2pt,itemsep=1pt,parsep=0pt}
+
+\newcommand{\sys}{\textsc{Qdcvr}}
+\newcommand{\kbtool}[1]{\texttt{#1}}
+\newcommand{\sig}[1]{$^{#1}$}
+
+% ---------------------------------------------------------------------
+% RED REVIEW MARKERS
+% \need{...}      : inline gap the authors must fill before submission
+% \needblock{...} : block-level gap (a table/figure/baseline that is missing)
+% All red text is a to-do, never a claim. Remove every marker before
+% submitting: a submitted PDF must contain no red text.
+% ---------------------------------------------------------------------
+\newcommand{\need}[1]{\textcolor{red}{\textbf{[\,#1\,]}}}
+% \needblock renders as colour-shifted body text (not a box) so it participates
+% in normal paragraph breaking — a minipage here produced 168pt overfull lines
+% when placed directly after a \paragraph heading.
+\newcommand{\needblock}[1]{%
+  \par\medskip\noindent
+  {\color{red}\small\textbf{[\,TO BE SUPPLIED\,]}\;#1}%
+  \par\medskip}
+
+% Allow TeX a little extra stretch so long technical compounds do not produce
+% overfull lines in the narrow sigconf columns.
+\setlength{\emergencystretch}{2.2em}
+\tolerance=1200
+
+\begin{document}
+
+\title{Content-Adjudicated, Domain-Scoped Retrieval for\\ Agent-Native Knowledge Bases}
+
+\author{Anonymous Author(s)}
+\affiliation{%
+  \institution{Anonymous Institution}
+  \country{}
+}
+\email{anonymous@example.org}
+
+\begin{abstract}
+Retrieval-augmented generation (RAG) pipelines for heterogeneous, multi-domain
+corpora suffer two failure modes that dense similarity alone cannot remove:
+documents that are \emph{semantically adjacent but operationally irrelevant}
+obtain high cosine scores, and large knowledge bases monopolise the top-$k$ of
+a cross-base search. We present \sys{}, a deployed knowledge-base platform in
+which retrieval is \emph{content-adjudicated} and \emph{domain-scoped}:
+candidates are recalled by a BM25\,$\rightarrow$\,vector cascade, then
+re-ranked by reading their actual text against an interpretable $0$--$8$ rubric
+under an explicit content-overrides-vector rule; a routing layer selects a
+small set of bases before searching; and an \emph{experience lifecycle}
+distils operational lessons into credibility-tiered, decaying entries exposed
+to LLM agents through 94 Model Context Protocol tools. We evaluate four
+retrieval methods through one tool layer on BEIR SciFact (30 official queries),
+a 20-query bilingual in-house corpus (13 bases), and a new multi-domain
+benchmark that partitions the official supporting documents of 50 HotpotQA
+questions into nine topic bases ($38\%$ of queries have gold in two bases).
+The result is a bounded claim: adjudication repairs real rank-one errors and
+takes the best answer@1 on the multi-domain set, but is significantly
+\emph{worse} than its own recall stage on full ranking there ($-0.061$ nDCG@10,
+$p{=}0.018$) and does not improve ranking on the clean single-domain corpus ---
+at an order of magnitude higher latency, a rank-one repair instrument, not a
+ranking improvement. We also report an unstable experience-synthesis result (entries in
+2 of 6 state-reset rounds; judged $7$--$9/10$ when produced, vs a
+heuristic-extraction mean of $3.5/10$), and a provenance audit that led us to
+withhold one internal benchmark whose producing script could not be recovered.
+\end{abstract}
+
+\begin{CCSXML}
+<ccs2012>
+<concept>
+<concept_id>10002951.10003317.10003347</concept_id>
+<concept_desc>Information systems~Retrieval models and ranking</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10002951.10003260.10003261</concept_id>
+<concept_desc>Information systems~Question answering</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
+<concept>
+<concept_id>10010147.10010178.10010179</concept_id>
+<concept_desc>Computing methodologies~Knowledge representation and reasoning</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Information systems~Retrieval models and ranking}
+\ccsdesc[300]{Information systems~Question answering}
+\ccsdesc[300]{Computing methodologies~Knowledge representation and reasoning}
+
+\keywords{Retrieval-Augmented Generation; Content Verification; Knowledge
+Management; Agent Systems; Model Context Protocol; Multi-Domain Retrieval}
+
+\maketitle
+
+% =====================================================================
+\section{Introduction}\label{sec:intro}
+
+Retrieval-augmented generation (RAG) has become the default way to ground large
+language models in private knowledge \cite{lewis2020rag,gao2024ragsurvey}.
+Almost all deployed pipelines share one architectural assumption: the document
+that should be returned is the document whose embedding is closest to the query
+embedding. That assumption is convenient and cheap, and it is the source of two
+failure modes we observed repeatedly while operating a production knowledge
+platform over a heterogeneous, multi-domain corpus.
+
+\noindent\textbf{Similarity is not usefulness.} Two documents can be close in
+embedding space while only one of them answers the question, and the failure is
+not hypothetical. Query \texttt{sf-002} of the BEIR SciFact benchmark asserts
+that \emph{``4-PBA treatment decreases endoplasmic reticulum stress in response
+to general endoplasmic reticulum stress markers''}; its gold document is
+PubMed id 32587939. Dense retrieval ranks a same-domain neighbour first and
+relegates the gold document to rank two (Hit@1 $0$, MRR $0.5$) --- both
+documents live in the same ``ER stress'' region of the space, but only one
+carries the claim's evidence. This case is mined from the frozen benchmark
+artefact, not constructed: it is one of three such queries in the run
+(\texttt{sf-002}, \texttt{sf-017}, \texttt{sf-027}), and when the adjudication
+stage \emph{reads} the two candidates it inverts the order and returns the gold
+document first (Hit@1 $1.0$, MRR $1.0$) --- the concrete operation of
+``content overrides vector'' (\S\ref{sec:adjudication}). A vector score is a
+joint statement about the query and the document; it is not a statement that
+the document \emph{contains} the answer.
+
+\noindent\textbf{Big bases crowd out small ones.} In a multi-base deployment the
+largest base dominates the candidate pool, and small but directly relevant bases
+are pushed out. To measure the regime rather than assert it, we built a
+multi-domain benchmark from a public corpus: 50 HotpotQA questions whose official
+supporting documents we partitioned into nine topic knowledge bases
+(\S\ref{sec:multidomain}); $38\%$ of those queries have gold documents in two
+different bases, so cross-base coverage is a property of the gold standard
+itself, not of our test design. Both failure modes are measurable, and both bear
+on the two mechanisms this paper evaluates (\S\ref{sec:eval}).
+
+Existing mitigations attack these problems from the wrong end. Cross-encoder
+re-rankers improve ordering but are opaque and add a model to the serving path.
+Self-reflective methods such as FLARE \cite{jiang2023flare} and Self-RAG
+\cite{asai2023selfrag} ask the generator to judge its own retrieval, making the
+judgement inseparable from generation, hard to audit, and expensive. Corrective
+RAG \cite{yan2024crag} adds a retrieval evaluator, but it is a learned scorer
+emitting a scalar, so the operator still cannot see \emph{which} aspect of a
+document failed. None makes the retrieval decision itself \emph{legible} to the
+person who must explain why a document was returned.
+
+This paper describes \sys{}, a deployed knowledge-base platform built on a
+different principle: \emph{recall cheaply, then adjudicate on content}. Candidates
+are recalled by a two-stage cascade, and are then \emph{read} and scored against
+an explicit three-dimension rubric, with the rule that a content score overrides
+a high vector score. Two further decisions complete the design. Queries are
+\emph{domain-scoped} --- routed to a bounded set of knowledge bases before any
+document is compared --- and operational knowledge is modelled as a first-class
+\emph{experience lifecycle} rather than folded into the document store.
+
+\paragraph{What is new here.}
+Each ingredient has a precedent, and we are precise about what does not carry a
+citation. Domain routing has been studied for query \emph{complexity}
+\cite{jeong2024adaptiverag} and for entity \emph{graphs}
+\cite{edge2024graphrag,huang2025hirag}; we route at \emph{knowledge-base}
+granularity, the axis that matters when a corpus is partitioned by domain.
+Content-based verification has precedent in learned re-rankers
+\cite{nogueira2019rerank} and evaluator models \cite{yan2024crag}; we make it an
+explicit, named-dimension, auditable stage whose verdict can override the recall
+order. Experience management is standard in knowledge-management practice; we
+add a credibility model in which trust is \emph{earned} through use and decays
+with time. The contribution is the combination, the auditability of each
+decision, and an honest account of where the combination stops helping.
+
+\paragraph{Contributions.}
+\begin{itemize}
+  \item \textbf{C1 (domain scoping).} A knowledge-base routing layer that
+  selects a bounded working set before retrieval. On the in-house corpus the
+  scoped configuration is more precise (P@5 $0.210$ vs $0.190$; Recall@5
+  $0.908$ vs $0.892$) at $13\times$ the latency, trailing on Hit@1 and MRR. We
+  do not report a false-positive-rate improvement: the benchmark that measured
+  one had no traceable producer and is withheld (\S\ref{sec:provenance});
+  isolating the routing layer's own contribution is open, not a result.
+  \item \textbf{C2 (content adjudication).} A separable pipeline stage with an
+  interpretable $0$--$8$ rubric and a \emph{content-overrides-vector} rule,
+  with the regime boundary measured. On clean single-domain SciFact it does not
+  improve ranking (dense wins Hit@3/Recall@5/nDCG@10; adjudication only Hit@1,
+  at an order of magnitude in latency); on multi-domain HotpotQA-in-9-bases it
+  is \emph{significantly worse} than its own recall stage on full ranking
+  ($-0.061$ nDCG@10, $p{=}0.018$) yet best-in-class on top-rank answerability
+  (answer@1 $0.580$ vs $0.480$--$0.520$): a rank-one repair mechanism for
+  vocabulary-sharing queries, not a ranking improvement.
+  \item \textbf{C3 (experience lifecycle).} An end-to-end lifecycle for
+  operational knowledge --- extraction, credibility tiering, temporal decay,
+  agent-facing retrieval --- in which no freshly generated entry can present
+  itself as authoritative; we report synthesis quality and its run-to-run
+  instability honestly, including two baselines under an identical judge.
+  \item \textbf{C4 (agent-native surface).} The platform exposed as 94 Model
+  Context Protocol tools \cite{anthropic2024mcp}, verified end-to-end: 73 of 73
+  externally driven API checks pass against the live deployment.
+\end{itemize}
+
+The remainder of the paper positions the work, describes the architecture and
+method, presents the experience lifecycle and agent surface, evaluates, and
+discusses limitations.
+
+% =====================================================================
+\section{Related Work}\label{sec:related}
+
+\paragraph{Dense and hybrid retrieval.}
+Dense passage retrieval \cite{karpukhin2020dpr} and contrastive retrievers
+\cite{izacard2022contriever} optimise the quality of the recalled set. BM25
+remains a strong sparse baseline \cite{robertson2009bm25}, and hybrid fusion is
+standard practice; BEIR \cite{thakur2021beir} showed that no single retriever
+dominates across domains. \sys{} adopts the hybrid cascade as its recall stage
+and does not claim it as a contribution: in our measurements it is an
+acceleration device (\S\ref{sec:recall}).
+
+\paragraph{Reranking and verification.}
+Cross-encoder re-rankers \cite{nogueira2019rerank} and retrieve-rerank-generate
+pipelines \cite{glass2022re2g} improve ordering with a learned scorer.
+Self-RAG \cite{asai2023selfrag} and FLARE \cite{jiang2023flare} interleave
+generation with retrieval critique, and CRAG \cite{yan2024crag} adds a retrieval
+evaluator that triggers corrective actions. These approaches judge relevance
+with a model whose verdict is a scalar or a token, and the judgement is entangled
+with the generator. \sys{} differs in that adjudication is a \emph{separate,
+auditable stage} whose output is a small set of named rubric dimensions, and whose
+verdict can override the recall ordering by construction.
+
+\paragraph{Knowledge organisation and graph RAG.}
+GraphRAG \cite{edge2024graphrag} and HiRAG \cite{huang2025hirag} build entity or
+hierarchical knowledge structures to answer global, corpus-level questions.
+Adaptive-RAG \cite{jeong2024adaptiverag} routes queries by predicted complexity.
+Our routing layer is complementary but operates over \emph{knowledge-base}
+granularity rather than query complexity or entity structure: we route to a set
+of bases, then retrieve inside them. We are careful not to overstate this: the
+general problem of deciding \emph{which collections to search} long predates
+embedding-based platforms, and we do not claim novelty over that literature.
+What is specific to the present setting is the coupling of base-granularity
+routing with per-base content adjudication, and the auditable way the routing
+decision is recorded. We also flag the evaluation gap honestly: we report no
+routing baselines (always-search-all, catalogue-scoring, or an oracle router)
+and no routing accuracy ceiling, so the routing layer's isolated contribution is
+an open question rather than a measured result (\S\ref{sec:conclusion}).
+
+\paragraph{Enterprise and agentic knowledge bases.}
+AgenticRAG \cite{suresh2026agenticrag} moves grounding burden off a fixed
+retrieval stack and onto an agentic harness over enterprise knowledge bases;
+AutoKB \cite{sahay2025autokb} automates construction of structured domain
+knowledge bases; DeepRead \cite{li2026deepread} exploits document structure to
+improve agentic search. All three address the same industrial setting. They differ
+in \emph{where the judgement lives}: they improve the agent's behaviour over a
+retrieval result, whereas we make the retrieval stage itself adjudicate content and
+expose that judgement for audit. An agentic harness on top of an adjudicating
+retriever is the natural combination, and we have not evaluated it.
+
+\paragraph{Agent tool-use for knowledge management.}
+ReAct \cite{yao2022react} and Toolformer \cite{schick2023toolformer} established
+tool-augmented LLM behaviour; the Model Context Protocol \cite{anthropic2024mcp}
+standardises the interface. Work such as MCP-Pyserini \cite{ge2026mcppyserini}
+exposes IR resources as tools. \sys{} takes the same direction at platform scale:
+the knowledge base is not a service the agent calls once, but a tool surface the
+agent operates, including ingestion, curation and experience management.
+
+\paragraph{Experience and operational knowledge.}
+Knowledge-management systems store documents; they rarely store
+\emph{lessons}. Experience-factory and post-mortem literature treats operational
+knowledge as a first-class artefact, but we are not aware of a deployed RAG
+platform that models experience with explicit credibility tiers and temporal
+decay and then exposes it to an agent. \S\ref{sec:experience} describes our
+attempt and \S\ref{sec:exp-analysis} reports where it currently falls short.
+
+% =====================================================================
+\section{System Architecture}\label{sec:system}
+
+\sys{} is a deployed, cross-platform knowledge platform. This section describes
+how it is built and, more importantly, \emph{why} it is built that way: three
+architectural commitments constrain everything in \S\ref{sec:method} and
+\S\ref{sec:experience}. Figure~\ref{fig:arch} shows the topology and
+Table~\ref{tab:scale} the scale.
+
+\input{figures/fig-architecture.tex}
+
+\subsection{Three services, one capability set}\label{sec:sys-services}
+The platform is split so that each service owns a single kind of work.
+A \textbf{web layer} (Nuxt, \texttt{:6789}) owns the knowledge-base and document
+lifecycle --- creating bases, writing and moving documents, tags, previews ---
+and acts as the browser's only network peer, so no client ever talks to the
+compute tier directly and no CORS or backend-URL leakage is possible.
+A \textbf{compute backend} (FastAPI, \texttt{:8771}) owns retrieval, vector
+indexing, graph construction, experience management and persona training.
+A third process, \textbf{MinerU}, does OCR and layout analysis for PDFs and runs
+on an ephemeral port it picks itself, so a deployment can never silently attach to
+a stale engine instance.
+
+The split is not merely organisational. Because the capability set is published
+\emph{twice} --- as REST endpoints for the human UI and as 94 Model Context
+Protocol tools for agents --- a procedure validated in one surface is directly
+executable in the other. We consider this the property that makes the platform
+\emph{agent-native} rather than agent-accessible: there is no privileged path that
+only a human can take.
+
+\subsection{Five storage layers, one write path}\label{sec:sys-layers}
+A knowledge base is materialised simultaneously as (L1) files on disk, (L2) a tree
+index, (L3) a per-base YAML catalogue, (L4) a vector collection, and (L5) a
+property graph. Each layer exists because a different stage needs a different
+access shape: the catalogue answers metadata questions without touching vectors;
+the graph answers relational questions the vector index cannot; the tree index
+answers structural questions cheaply.
+
+This redundancy is also the platform's main consistency hazard, and the design
+answer is a single rule: \emph{every mutation travels one write path} that applies
+to all five layers inside one logical transaction, after which the ingestion
+module verifies that all five agree. Table~\ref{tab:ingestion} reports the result
+--- membership accuracy and storage completeness both $1.000$ across two corpora.
+The rule is what makes the rest of the system safe to build on: an agent that
+creates a document cannot leave the index and the catalogue disagreeing, so it can
+retry a failed step without repairing state.
+
+\subsection{Write--read asymmetry}\label{sec:sys-asymmetry}
+Writes go through the service tier so that consistency is enforced in one place.
+Reads used by retrieval \emph{bypass the service tier entirely} and read the
+on-disk indices directly. The asymmetry is deliberate and has a direct
+consequence for the method: it makes the cheap stages of retrieval essentially
+free, which is what allows an expensive adjudication stage to exist at all. The
+measured cost of that stage is reported in \S\ref{sec:honest}: content
+verification raises per-query latency from $0.126$\,s to $1.69$\,s on the
+in-house corpus.
+
+\subsection{Hierarchical knowledge bases}\label{sec:sys-hierarchy}
+Knowledge bases nest arbitrarily. A parent base acts as a container: its children
+carry the documents and are addressable both individually and in aggregate, and
+document counts roll up recursively. The hierarchy is the unit the routing layer
+operates on (\S\ref{sec:routing}), and it is validated in evaluation: recursive
+counting was correct on all three nesting shapes tested (12 children with 73
+documents, 1 child with 17, and a flat base with 9).
+
+\subsection{Design principles}\label{sec:sys-principles}
+Three commitments recur below. \emph{Legibility over accuracy}: when choosing
+between a better opaque decision and a slightly worse explainable one, choose
+explainable --- hence named rubric dimensions rather than a score.
+\emph{Earned trust}: no artefact is authoritative on creation; credibility
+accrues from use and decays with time. \emph{Honest absence}: when evidence is
+thin, the system says so rather than presenting a weak result as strong.
+
+\input{generated/tables/tab-system-scale.tex}
+
+% =====================================================================
+\section{\sys{}: Content-Adjudicated Retrieval}\label{sec:method}
+
+\sys{} stands for \emph{Query-Driven Content-Verified Retrieval}. The pipeline
+has seven stages (Figure~\ref{fig:pipeline} summarised in
+Algorithm~\ref{alg:pipeline}); we describe the stages that carry the method's
+claims and treat the rest briefly.
+
+\input{figures/fig-pipeline.tex}
+
+\begin{algorithm}[t]
+\small
+\caption{\sys{} retrieval}\label{alg:pipeline}
+\begin{algorithmic}[1]
+\Require query $q$, candidate bases $\mathcal{K}$, budget $k$
+\State $q' \leftarrow \textsc{Rewrite}(q)$ \Comment{Stage 0: intent + rewrite}
+\State $\mathcal{K}^{*} \leftarrow \textsc{Route}(q', \mathcal{K}),\; |\mathcal{K}^{*}| \le 3$
+       \Comment{Stage 1: domain scoping}
+\State $C \leftarrow \textsc{TwoStageRecall}(q', \mathcal{K}^{*})$ \Comment{Stage 2}
+\State $C \leftarrow \textsc{Dedup}(C);\; C \leftarrow \{c \in C : s(c) \ge \tau\}$
+       \Comment{Stage 3}
+\ForAll{$c \in C$}
+  \State $r(c) \leftarrow \textsc{Adjudicate}(\textsc{Read}(c))$
+         \Comment{Stage 4: 0--8 rubric, temperature 0}
+\EndFor
+\State $T \leftarrow \textsc{Tier}(C, r)$; \textbf{content overrides vector}
+       \Comment{Stage 5}
+\State \Return $\textsc{Synthesise}(T)$ with blind-spot report
+       \Comment{Stage 6}
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Stage 0: Intent and Query Rewriting}\label{sec:intent}
+The incoming query is classified into one of five intents (factual, procedural,
+troubleshooting, comparative, navigational) and rewritten from colloquial
+surface form into a declarative statement plus keyword set. Intent changes the
+retrieval bias: troubleshooting queries consult the experience store before the
+document store, whereas factual queries go straight to the vector index. We
+describe this stage qualitatively and deliberately attach no number to it: an
+earlier draft quoted a rewriting gain from the internal benchmark family that
+was withdrawn in \S\ref{sec:provenance}, and no re-measurement exists on the
+committed harness. The stage is part of the deployed system, but its isolated
+effect is unmeasured here.
+
+\subsection{Stage 1: Domain Scoping}\label{sec:routing}
+The routing layer selects a bounded working set of knowledge bases before any
+document is retrieved. Each base carries a name, a description and a document
+catalogue; the router scores the rewritten query against those descriptors and
+keeps at most three bases:
+\begin{equation}
+\mathcal{K}^{*} = \operatorname*{top\text{-}3}_{K_i \in \mathcal{K}}\;
+   \mathrm{Sim}\bigl(q',\, \mathrm{desc}(K_i)\bigr).
+\end{equation}
+The effect is not merely a smaller search space. Because a query is evaluated
+against \emph{domain descriptions} rather than document embeddings alone, a
+query whose vocabulary is generic (``heat management'', ``fast charging'') is
+pinned to the domain the user actually meant, and the semantic neighbourhoods of
+unrelated domains never enter the candidate pool. That is the intended mechanism;
+the quantitative claim that it reduces false positives came from the benchmark we
+withdrew in \S\ref{sec:provenance}, so we state the mechanism and not a number.
+A partial check is available in the traceable data: the in-house run records which
+stage produced each query's candidates, and all 20 queries were served from the
+scoped stage rather than falling back to an unscoped search.
+
+We state the missing evaluation explicitly: the committed harness measures
+neither routing selection precision against the gold document's true base, nor
+accuracy under alternative routing policies (always-search-all, catalogue
+scoring, an oracle ceiling), nor degradation as the base count grows; an early
+routing-accuracy figure traces to the withdrawn artefact family and is no
+longer claimed. The multi-domain benchmark (\S\ref{sec:multidomain}) exercises
+retrieval \emph{across} nine bases but not the routing decision itself;
+measuring that layer against an oracle is the clearest agenda item in
+\S\ref{sec:conclusion}.
+
+\subsection{Stage 2: Two-Stage Recall}\label{sec:recall}
+Recall is a BM25 stage followed by vector refinement and graph-neighbour
+expansion. BM25 supplies a sparse candidate set; the vector stage re-ranks inside
+that set, so the expensive dense comparison runs over tens rather than thousands
+of chunks. On the in-house corpus this cuts the candidate space from $13{,}709$
+chunks to a per-base pool while preserving recall.
+
+We deliberately do \emph{not} claim two-stage retrieval as a contribution. It is
+an engineering accelerator, and our own standard-benchmark results show it can
+\emph{lose} to one-shot dense retrieval on clean corpora
+(Table~\ref{tab:scifact}: Hit@3 $0.833$ vs $0.900$). Reporting it as a
+contribution would be a mistake; we report it as infrastructure.
+
+\subsection{Stage 3: Deduplication and Thresholding}
+Candidates are deduplicated by content fingerprint and filtered by a similarity
+threshold $\tau$ (default $0.35$). The threshold is a precision/recall dial, and
+it is the component most likely to hurt recall: on SciFact it can drop a gold
+document whose similarity sits just below $\tau$. We analyse this failure
+explicitly in \S\ref{sec:honest}.
+
+\subsection{Stage 4: Content Adjudication}\label{sec:adjudication}
+This is the stage that distinguishes \sys{} from a re-ranking pipeline.
+Each surviving candidate is \emph{read} --- the top of its text is loaded through
+the same document tool an agent would use --- and scored on three named
+dimensions:
+
+\begin{table}[t]
+\centering
+\small
+\caption{The content-adjudication rubric. Scores are produced at temperature $0$
+from the document text, not from its embedding.}
+\label{tab:rubric}
+\begin{tabular}{@{}llp{4.6cm}@{}}
+\toprule
+Dimension & Range & Criterion \\
+\midrule
+Topic relevance & 0--3 & 3 = directly about the query subject \\
+Scenario match & 0--3 & 3 = addresses the query's actual problem \\
+Answer evidence & 0--2 & 2 = carries citable data, steps or conclusions \\
+\midrule
+Total & 0--8 & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The decision rule makes the adjudication authoritative:
+\begin{equation}
+\mathrm{decision}(d) =
+\begin{cases}
+\text{accept }(P_0) & c(d) \ge 6\\
+\text{supplement }(P_1) & c(d) = 5\\
+\text{discard} & c(d) \le 4
+\end{cases}
+\label{eq:override}
+\end{equation}
+independently of the vector similarity $s(d)$,
+where $c(d)$ is the content score and $s(d)$ the vector similarity. A document
+with $s(d)=0.95$ and $c(d)=3$ is discarded. This is the operational content of
+``vectors are fast, content is accurate''.
+
+Three properties follow. The verdict is \emph{interpretable} (which dimension
+failed), \emph{auditable} (the read text and scores are recorded, so a result
+can be justified after the fact), and \emph{separable} (adjudication can be
+disabled --- exactly what the ablation does). The cost is latency: the
+adjudicator reads on average $3{,}639$ characters per query in-house and
+$4{,}292$ on SciFact, which \S\ref{sec:honest} treats as a first-class result.
+
+\subsection{Stage 5--6: Tiering and Blind-Spot Declaration}\label{sec:blindspot}
+Surviving documents are tiered $P_0/P_1/P_2$; short chunks (under $50$
+characters) are demoted regardless of score, because such chunks receive
+inflated similarity from embedding artefacts. When the confirmed set draws on
+fewer than two knowledge bases, the system states that coverage is limited
+instead of presenting a thin result as complete. This ``rather say nothing than
+say it wrong'' behaviour is a design commitment we consider part of the method,
+not a UI detail: a retrieval system that cannot express absence forces its user
+to treat every result as equally confident, which is precisely the failure the
+adjudication stage exists to remove.
+
+Two error directions are measurable. First, the rule is \emph{advisory by
+construction}: it appends a coverage disclaimer and never removes a result, so
+withholding-a-legitimate-result cannot occur in the measured pipeline (every
+benchmark query returned results for every method). Second, the
+\emph{missed-declaration} direction is measurable on the multi-domain benchmark
+(\S\ref{sec:multidomain}), where $38\%$ of queries need cross-base coverage:
+taking ``the top-$5$ represents fewer gold bases than the gold set spans'' as
+``should carry the disclaimer'', the missed rate is $26.3\%$ for two-stage,
+dense and adjudicated, $63.2\%$ for BM25 --- the sparse path most needs the
+declaration, as the rule's motivation predicts. The false-alarm direction
+(declaring when coverage is complete) is decided by the answer-synthesis stage,
+which the harness bypasses; we state that gap rather than infer a number.
+
+% =====================================================================
+\section{Experience Lifecycle}\label{sec:experience}
+
+Documents record what was known; operational knowledge records what \emph{worked}.
+The second is what agents need when a task fails, and it is what most knowledge
+platforms do not model. \sys{} treats experience as a first-class artefact with
+its own lifecycle, storage, credibility model and retrieval path.
+
+\subsection{Lifecycle}\label{sec:lifecycle}
+Experiences move through eleven stages: \emph{signal capture}, \emph{candidate
+extraction}, \emph{draft synthesis}, \emph{review/approval},
+\emph{publication}, \emph{vector indexing}, \emph{retrieval}, \emph{application
+feedback}, \emph{review scoring}, \emph{credibility decay}, and \emph{health
+monitoring}. Extraction runs in a deterministic heuristic mode or, via a
+registry of 15 agent engines, an LLM --- falling back silently to heuristics
+when none is usable.
+
+\subsection{Credibility Tiers}\label{sec:tiers}
+A published experience is not equally trustworthy for every purpose, so
+experience is tiered by combined evidence ($\mathrm{vec}$ = vector similarity,
+$c$ = content score):
+\begin{equation}
+\mathrm{Tier}(e)=
+\begin{cases}
+P_0 & \mathrm{vec}\!\ge\!.65 \;\wedge\; c\!\ge\!6 \;\wedge\; \mathrm{rating}\!\ge\!4 \;\wedge\; \mathrm{rev.}\!\ge\!1\\
+P_1 & \mathrm{vec}\!\ge\!.45 \;\wedge\; c\!\ge\!4\\
+P_2 & \mathrm{vec}\!\ge\!.35 \;\wedge\; c\!\ge\!3\\
+\mathrm{discard} & \text{otherwise}
+\end{cases}
+\end{equation}
+with modifiers that \emph{downgrade} rather than upgrade: an entry disputed by
+three or more reviews with mean rating below $2.0$ is capped at $P_2$, and an
+entry with no reviews and no recorded applications is capped at $P_1$ no matter
+how high its similarity. Automatically extracted entries start unvetted, which
+caps them at $P_1$ until independent evidence arrives. The design intent is that
+trust must be earned through use; a freshly generated experience can never
+present itself as authoritative.
+
+\subsection{Temporal Decay}
+Operational knowledge expires. Entries that are unverified and unapplied for
+more than 30 days are demoted, and a scheduled decay pass re-evaluates the store.
+Decay is deliberately conservative --- it demotes, it never deletes --- so that a
+stale-but-historically-useful entry remains retrievable at a lower tier.
+
+We evaluate the rule as a sensitivity analysis and state its observational
+limits. The deployment is younger than the window: every measured entry carries
+a same-day timestamp, so a longitudinal validation of the 30-day threshold is
+not yet possible and is not presented. Sweeping the demotion window over
+$7/14/30/90$ days, the demoted set is empty at every window --- no entry is
+older than seven days, so no rule of this family fires, correctly --- and the
+rule's precision against a ``genuinely stale'' ground truth is undefined within
+the observation window. Because decay demotes but never deletes, a
+wrongly-tuned threshold degrades retrieval order gracefully rather than
+destroying entries: the failure mode we can afford while the threshold remains
+unvalidated.
+
+\subsection{Multi-Path Retrieval}
+Experience is recalled along five parallel paths --- vector similarity, keyword
+match, scenario match, tag match, and quality-feedback match --- which are fused
+and deduplicated. The rationale is that operational queries often name a
+\emph{symptom} rather than a topic: a user searching for ``why did the run
+fail'' shares no vocabulary with an entry titled ``pulse self-heating window
+violation'', but shares its scenario and tags.
+
+We evaluate the fusion on a purpose-built set: eight operational experiences
+seeded through the platform's own write path (scenario, tags, problem,
+solution, key lessons) and twelve frozen queries --- half \emph{symptom-style},
+sharing no vocabulary with the target entry's title (``parsing job hangs
+forever and the file never appears'' $\to$ ``PDF parse stuck\ldots''), half
+\emph{vocabulary-style}, sharing solution words. Because the deployed endpoint
+exposes no per-path switches, the fusion is re-implemented at harness level
+from the service's published scoring rule (keyword/scenario/tag matches scored
+by $\min(0.42 + 0.06\,\mathrm{hits} + 0.15\,\mathrm{cov},\,0.72)$ over their
+fields; per-query vector scores from the experience vector index; quality as a
+tier/rating bonus); a top-3 agreement check against the live endpoint matches
+$1$ of $6$ spot checks, so the numbers characterise the fusion design, not the
+shipped endpoint's end-to-end behaviour.
+
+\emph{Results.} The full five-path fusion is perfect on the twelve queries
+(Hit@1 $=$ MRR $= 1.000$), and it is the only perfect configuration.
+Leave-one-out: removing quality-feedback costs most (Hit@1 $0.833$), removing
+keyword or scenario costs $0.083$ each, removing vector or tag none. Single
+paths are all imperfect and fail on \emph{disjoint} queries --- vector-only
+$0.833$ fails symptom-style queries with no lexical overlap, keyword-only
+$0.917$ fails paraphrases, tag-only $0.417$, scenario-only $0.750$,
+quality-only $0.167$ --- which is the complementarity the five-path design
+assumes, and quality signals are what break ties among plausible entries.
+
+% =====================================================================
+\section{Agent-Native Interface}\label{sec:agent}
+
+The platform is designed to be operated by an agent rather than browsed by a
+human. Concretely, it exposes \textbf{94 Model Context Protocol tools} covering
+knowledge-base CRUD, document ingestion, parsing, tagging, search, vector
+indexing, graph construction, experience management and persona training, plus 14
+agent skills that describe \emph{procedures} over those tools (ingest a document,
+audit a base, distil an experience, search across bases).
+
+Two design choices make the surface usable rather than merely large. First,
+write operations are atomic and singular: creating a document does not silently
+also index it or tag it, so an agent can retry a failed step without creating
+inconsistent state. Second, the tool layer is the \emph{same} layer the human UI
+uses, so a procedure validated in the UI is directly executable by an agent and
+vice versa. We report the end-to-end validation of this surface in
+\S\ref{sec:e2e}.
+
+% =====================================================================
+\section{Evaluation}\label{sec:eval}
+
+\subsection{Research Questions}
+\begin{itemize}
+  \item \textbf{RQ1} Does domain-scoped routing reduce cross-domain false positives?
+  \item \textbf{RQ2} Does content adjudication change ranking, and where does it pay?
+  \item \textbf{RQ3} Do the individual components contribute, and how much?
+  \item \textbf{RQ4} Does the pipeline degrade on public, non-self-authored benchmarks?
+  \item \textbf{RQ5} What quality does automatic experience synthesis actually reach?
+  \item \textbf{RQ6} Is the agent-facing surface correct end-to-end?
+\end{itemize}
+
+\subsection{Setup}
+\paragraph{Corpora.} Three corpora are used, each pinned to one dated snapshot of
+the deployment (Table~\ref{tab:scale} reports the two snapshots separately; they
+are \emph{not} interchangeable and no count is mixed across them).
+\emph{In-house, snapshot 2026-07-29}: 13 knowledge bases across eight domains
+(polymer materials, energy and batteries, biomedicine, catalysis, AI/ML, embodied
+AI, economics, food science), 154 documents and 13{,}709 chunks, embedded with
+BGE-M3 (1024-d) \cite{chen2024bgem3}, indexed in ChromaDB with a jieba BM25
+keyword index. A later ingestion run (snapshot 2026-09-13) covered 184 documents
+but did not re-measure chunk or graph counts, so the two are never combined.
+\emph{Public retrieval}: the BEIR SciFact collection \cite{thakur2021beir} ---
+148 articles ingested through the production pipeline, evaluated on 30 official
+queries against the official relevance judgements --- plus a 16-question SQuAD
+v1.1 set. \emph{Multi-domain public}: 50 HotpotQA dev questions
+\cite{yang2018hotpotqa} whose official supporting and distractor documents are
+partitioned into nine topic knowledge bases by a deterministic keyword rule
+(454 documents; $38\%$ of queries have gold in two bases); this benchmark
+replaces a withdrawn internal 50-query set (\S\ref{sec:provenance}) and is used
+for the multi-domain comparison.
+
+\paragraph{Methods.} All methods read through the same tool layer and the same
+index; only the ranking stage differs. \emph{BM25} is the sparse stage-1 ranking,
+\emph{Two-stage} adds vector refinement and thresholding without adjudication,
+\emph{Dense} is one-shot vector retrieval, and \emph{\sys{}} adds content
+adjudication and (where noted) domain scoping. \emph{Hybrid-RRF} is reciprocal
+rank fusion of the sparse and dense lists.
+
+\paragraph{Protocol.} Deterministic channels are free of randomness; repeats
+are bit-identical apart from latency. LLM-driven channels run at temperature
+$0$ and are reported as means with a $\pm1.5$ run-to-run tolerance on judge
+means.
+
+\paragraph{Implementation and hyper-parameters.} All configurations share one
+index and one tool layer. Embeddings are BGE-M3 (1024-d, L2-normalised)
+\cite{chen2024bgem3}; chunks are $500$ characters with $50$ overlap; the vector
+store is ChromaDB (persistent, default HNSW); the keyword index is jieba BM25
+over a $12{,}000$-character window per document. Retrieval defaults are vector
+top-$k=10$, two-stage stage-1 $k=40$ and stage-2 $k=10$, similarity threshold
+$\tau=0.35$, and three content-verification reads per candidate. Fusion weights in
+the two-stage cascade are $0.5$ keyword and $0.5$ graph-neighbour, with
+neighbour depth $1$ and a minimum of three candidates before the stage-2 filter
+applies. The platform default for stage-1/2 is $20/5$; the benchmark runs use
+$40/10$ and the difference is recorded in the frozen snapshot manifest.
+Library and model revisions: BGE-M3 loaded locally from HuggingFace snapshot
+\texttt{5617a9f61b028005a4858fdac845db406aefb181} via sentence-transformers
+$5.6.1$ (transformers $4.51.3$, torch $2.10.0$); ChromaDB $1.5.9$ persistent
+HNSW with the library-default parameters $M{=}16$, ef\_construction${=}100$,
+ef\_search${=}100$ and only \texttt{hnsw:space}${=}$\texttt{cosine} set
+explicitly; jieba $0.42.1$ for tokenisation, with the BM25 stage using
+$k_1{=}1.5$, $b{=}0.75$ (Robertson--Spark-Jones weighting as implemented in the
+keyword index service).
+
+\paragraph{Statistics.} The protocol is committed and executed
+(\texttt{31\_stats.py}); every comparison below names its numbers. For the
+deterministic retrieval channels, repeats are bit-identical apart from latency,
+so we report double-runs within a session (bit-identical, r1${}={}$r2) and
+cross-reset runs for session-level variance rather than five nominal repeats of
+an exactly reproducible pipeline. For pairwise comparisons we use the
+\emph{Wilcoxon signed-rank test} as the primary statistic --- distribution-free,
+appropriate at $n{=}30$--$50$ where normality cannot be assumed --- report the
+Shapiro--Wilk test on the paired differences to justify that choice, give a
+\emph{per-comparison} $95\%$ confidence interval from paired bootstrap
+resampling ($B{=}2000$, seed $0$, percentile method), and apply
+\emph{Holm--Bonferroni} correction across the full family of comparisons. On
+the multi-domain benchmark the corrected results are significant: the
+adjudicated configuration beats BM25 by $+0.241$ nDCG@10
+($p_{\mathrm{Holm}}{=}2\times10^{-5}$) and is \emph{beaten} by its own two-stage
+recall stage ($-0.061$, $p{=}0.018$) and by dense ($-0.088$, $p{=}0.018$). On
+SciFact ($n{=}30$) no component-level difference survives correction (all
+$|\Delta| \le 0.023$), and we report those as descriptive contributions with
+intervals rather than claims. The LLM channel (experience synthesis) is
+inherently variable; we report six state-reset runs and analyse the variance as
+a finding (\S\ref{sec:exp-analysis}).
+
+\subsection{RQ1--RQ2: Main Results (traceable evidence only)}\label{sec:main}
+We report only results whose producing script is committed and whose artefact is
+frozen (\S\ref{sec:provenance}). Two benchmarks meet that bar: the public BEIR
+SciFact evaluation (Table~\ref{tab:scifact}) and the in-house bilingual corpus
+(Table~\ref{tab:inhouse}).
+
+On the \textbf{public benchmark} (30 official queries, official qrels, four
+methods through one tool layer) the result is mixed and we report it as such:
+dense retrieval has the best Hit@3 ($0.900$ vs $0.833$), Recall@5 ($0.900$ vs
+$0.833$) and nDCG@10 ($0.834$ vs $0.809$); BM25 has the best MRR ($0.839$); the
+content-verified configuration wins only Hit@1 ($0.767$ vs $0.733$). The
+two-stage hybrid, which is that configuration's own recall stage, is the weakest
+method on the same queries.
+
+On the \textbf{in-house corpus} (20 queries over 13 knowledge bases) the
+content-verified configuration leads on Recall@5 ($0.908$ vs $0.892$) and P@5
+($0.210$ vs $0.190$) and trails on Hit@1 ($0.800$ vs $0.900$) and MRR ($0.867$ vs
+$0.910$), at $1.69$\,s against $0.126$\,s. The effect is language-dependent: on
+Chinese queries it matches dense at Hit@1 $1.000$, whereas on English it is behind
+($0.700$ vs $0.800$).
+
+\paragraph{What these two results jointly support.}
+Content verification \emph{re-orders the top of the list} rather than improving
+ranking overall: it raises Hit@1 on the public benchmark and Recall@5/P@5
+in-house, and lowers Hit@1 in-house, MRR in both, and nDCG on the public set.
+The mechanism that would explain the inconsistency --- that adjudication helps
+in proportion to cross-domain distractors --- is untested on these two
+effectively single-domain benchmarks; \S\ref{sec:multidomain} tests it on a
+multi-domain public benchmark and reports a mixed answer.
+
+\subsection{Withheld results and the provenance audit}\label{sec:provenance}
+An earlier draft led with a 50-query internal benchmark (false-positive rate
+falling from $0.635$ to $0.348$, best P@1 $0.457$, significant advantage over a
+hybrid baseline). \textbf{We have removed it.} A provenance audit found that its
+artefacts --- \texttt{cikm\_summary.json}, \texttt{figure1\_comparison.json},
+\texttt{table1\_main.tex}, \texttt{table3\_ablation.tex} and the
+\texttt{results/v4/} statistics --- have \emph{no producing script anywhere in
+the repository} (an exhaustive search over 417 code files found no writer); the
+only benchmark runner present is a standalone BM25 script over $\sim$30
+synthetic abstracts with no vector index, no adjudication and no LLM. Four
+audit facts compound the problem: the family's ablation ran on \textbf{eight}
+queries, not the fifty its caption implied; its significance was a paired
+$t$-test on Recall@5 with four \emph{negative} $t$-statistics, i.e.\ a deficit
+presented as an advantage; its false-positive rate was defined over returned
+documents only, so abstention scored zero by construction; and one table
+statistic was a hard-coded literal mislabelling a mean as a median.
+
+The corrective is procedural, and is the paper's most transferable lesson:
+\textbf{every table must name its producing script, and the script must write
+the artefact by a committed path.} \texttt{provenance\_audit.py} now fails if
+any cited artefact loses its producer, and the frozen snapshot records a
+SHA-256 per file. The withheld benchmark stays withdrawn permanently; in its
+place we built a new multi-domain public benchmark with committed producers and
+an official gold standard (\S\ref{sec:multidomain}).
+
+\subsection{RQ3: Component Study}\label{sec:ablation}
+The component study is run on the \emph{same} thirty SciFact queries and the
+same official qrels as the main table --- the query-set mismatch that made an
+earlier component study unreportable has been removed. Every variant shares one
+candidate pool per query: a single two-stage call whose stage-2 list supplies
+the deployed configuration, and a deeper stage-2 call ($k{=}40$) that supplies
+the threshold sweep. Table~\ref{tab:ablation} reports the committed harness
+output (\texttt{30\_ablation.py}; within-session double-run is bit-identical).
+
+\begin{table}[t]
+\centering\small
+\caption{Component ablation on BEIR SciFact (30 queries, official qrels), same
+query set as Table~\ref{tab:scifact}. Deployed variants use stage-2 $k{=}10$;
+``deep'' variants re-rank a $k{=}40$ pool, because the deployed top-10 is
+already pre-filtered by the Stage-3 threshold (lowest returned score $0.379$),
+which makes a threshold sweep on the shallow pool a no-op --- a finding in
+itself.}
+\label{tab:ablation}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Variant & Hit@1 & nDCG@10 & P@5 & MRR \\
+\midrule
+\sys{} full (deployed, $\tau{=}.35$)  & \textbf{0.767} & 0.809 & 0.213 & 0.800 \\
+\; verification $k{=}1$               & 0.733 & 0.796 & 0.213 & 0.783 \\
+\; verification $k{=}5$               & \textbf{0.767} & 0.809 & 0.213 & 0.800 \\
+\; no verification (= Two-stage)      & 0.733 & 0.796 & 0.213 & 0.783 \\
+\; no document dedup                  & \textbf{0.767} & 0.809 & 0.213 & 0.800 \\
+\midrule
+deep pool $k{=}40$, $\tau{=}0.20$     & \textbf{0.767} & \textbf{0.832} & 0.213 & 0.810 \\
+deep pool $k{=}40$, $\tau{=}0.35$     & \textbf{0.767} & \textbf{0.832} & 0.213 & 0.810 \\
+deep pool $k{=}40$, $\tau{=}0.50$     & \textbf{0.767} & 0.821 & 0.213 & 0.806 \\
+deep pool $k{=}40$, $\tau$ off        & \textbf{0.767} & \textbf{0.832} & 0.213 & 0.810 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Three readings. (i) \emph{Content verification is load-bearing}: removing it
+costs $0.012$ nDCG@10 and $0.017$ MRR, and shrinking it to one read reproduces
+the no-verification numbers --- the second and third reads do the work.
+(ii) \emph{Stage-3 thresholding is measurably harmful here, as
+\S\ref{sec:honest} argues}: re-ranking the deeper $k{=}40$ pool at the same
+threshold recovers $+0.023$ nDCG@10 over the deployed configuration (gold
+documents the shallow pool never returned), while $\tau{=}0.50$ costs $0.011$
+--- the deployed pool size, not the threshold value, loses gold documents.
+(iii) Document dedup shows no incremental effect on this corpus, and no
+component difference survives the multiplicity correction of
+\S\ref{sec:eval}-Statistics ($|\Delta|\le0.023$): the table is a descriptive
+decomposition, intervals in the artefact. The $2\times2$
+scoping$\times$adjudication factorial remains open: the adjudication axis is
+tested on the multi-domain benchmark (\S\ref{sec:multidomain}), the routing
+axis is not (\S\ref{sec:routing}).
+
+\subsection{RQ4: Public Benchmark and the Honest Reading}\label{sec:honest}
+SciFact is the evaluation least favourable to us and therefore the most
+informative (Table~\ref{tab:scifact}). We state the conclusion plainly:
+\textbf{content adjudication does not improve
+ranking on a clean, single-domain benchmark}. SciFact is a homogeneous scientific
+claim-verification corpus in which the gold document usually names the query
+entity, so vector similarity is already a good proxy for usefulness and there are
+few cross-domain distractors for adjudication to remove. The threshold in
+Stage~3 can additionally drop a gold document whose similarity falls just below
+$\tau$, which is where part of the Hit@3 gap comes from.
+
+The distractor hypothesis --- that adjudication helps in proportion to the
+number of cross-domain distractors present --- was the paper's central
+explanatory claim, and the false-positive figures that originally supported it
+came from the withdrawn artefact family (\S\ref{sec:provenance}). We have now
+tested it on a multi-domain public benchmark built for the purpose
+(\S\ref{sec:multidomain}), and the answer is mixed rather than favourable: on
+vocabulary-sharing queries adjudication still repairs rank-1 errors (the
+\texttt{sf-002} pattern, and the highest answer@1 of all methods on the
+multi-domain set); on multi-hop questions with almost no lexical overlap, the
+same word-matching verification \emph{mis}-ranks, and the adjudicated
+configuration is significantly worse than its own recall stage ($-0.061$ nDCG@10,
+$p{=}0.018$). Verification promotes documents whose \emph{text} matches the
+question's terms; when neither candidate's text matches, the heuristic has no
+signal and its re-ordering is noise. The cost side is unchanged and measured:
+adjudication read on average
+$4{,}292$ characters per query on SciFact with a low verification pass rate,
+i.e.\ it spent latency re-reading documents dense retrieval had already ranked
+well. Per-method coverage on the multi-domain set is reported as gold recall
+(Recall@2/Recall@5, Table~\ref{tab:hotpot}) together with the blind-spot
+analysis of \S\ref{sec:blindspot}, replacing a false-positive rate that
+abstention could game.
+
+\input{generated/tables/tab-scifact.tex}
+% fig-scifact removed (duplicated Table scifact numbers; page budget)
+
+\subsubsection{A multi-domain public benchmark: partitioning HotpotQA into
+knowledge bases}\label{sec:multidomain}
+Our earlier drafts' deepest weakness was that every multi-domain result rested
+on author-built data. We close that gap with a benchmark built from public data
+and official annotations: 50 questions sampled deterministically (evenly spaced
+over the id-sorted dev set) from the HotpotQA dev-distractor split
+\cite{yang2018hotpotqa}, whose official supporting \emph{and distractor}
+documents we ingest through the production pipeline and partition into nine
+topic knowledge bases by a deterministic keyword-overlap rule (454 documents;
+mapping frozen in the run manifest). Because a question's two gold documents
+usually sit in different topics, $38\%$ of queries have gold in \emph{two}
+bases --- cross-base coverage is a property of the official gold standard, not
+of our partition. All four methods run through one tool layer with global
+balanced pools; no routing is applied, so this benchmark isolates the
+\emph{adjudication} axis of the factorial.
+
+\begin{table}[t]
+\centering\small
+\caption{Multi-domain public benchmark: 50 HotpotQA dev questions, 454
+supporting+distractor documents in 9 topic KBs, official supporting documents
+as gold, answer-level check = gold answer string occurs in the read content of
+the top-$k$ documents. Producer: \texttt{60\_hotpot\_build.py},
+\texttt{61\_hotpot\_eval.py}.}
+\label{tab:hotpot}
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+Method & Hit@5 & R@2 & nDCG@10 & P@5 & MRR & ans@1 \\
+\midrule
+BM25       & 0.860 & 0.470 & 0.538 & 0.200 & 0.776 & 0.520 \\
+Two-stage  & 0.960 & 0.720 & 0.841 & 0.344 & 0.930 & 0.500 \\
+Dense      & \textbf{1.000} & \textbf{0.740} & \textbf{0.867} & \textbf{0.360} & \textbf{0.937} & 0.480 \\
+\sys{}     & 0.960 & 0.620 & 0.779 & 0.344 & 0.820 & \textbf{0.580} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Table~\ref{tab:hotpot} is the paper's most informative table: all methods are
+unsaturated \emph{and} the corpus is multi-domain public data. With
+Holm-corrected Wilcoxon tests over paired per-query nDCG@10: every staged
+configuration beats BM25 by a wide margin (adjudicated $+0.241$,
+$p_{\mathrm{Holm}}{=}2\times10^{-5}$); dense is strongest overall ($0.867$);
+and --- the honest headline --- the adjudicated configuration is
+\emph{significantly worse} than its own recall stage ($0.779$ vs $0.841$,
+$p{=}0.018$) and than dense ($-0.088$, $p{=}0.018$). HotpotQA questions are
+multi-hop and share little surface vocabulary with either candidate, so
+word-matching verification often promotes the wrong document. The one place
+adjudication wins is top-rank answerability (answer@1 $0.580$ vs
+$0.480$--$0.520$), consistent with its purpose of fixing exactly-below-rank-1
+errors. With \S\ref{sec:honest} this yields the paper's bounded conclusion:
+adjudication repairs rank-1 errors when query and evidence share vocabulary,
+does not improve --- and can significantly hurt --- full ranking when they do
+not.
+
+\paragraph{In-house corpus and answerability.}
+On the in-house bilingual corpus (Table~\ref{tab:inhouse}) the picture is
+narrower: \sys{} raises Recall@5 ($0.908$ vs $0.892$) and P@5 ($0.210$ vs
+$0.190$) over dense, but loses Hit@1 ($0.800$ vs $0.900$) and MRR ($0.867$ vs
+$0.910$), at $1.69$\,s against $0.126$\,s. The per-language split shows the
+effect is language-dependent: on Chinese queries \sys{} is at Hit@1 $1.000$
+matching dense, whereas on English it is behind ($0.700$ vs $0.800$).
+
+Ranking metrics do not establish that the retrieved text \emph{answers} the
+question, so we additionally read the full content of the top-$k$ documents for
+every method and check it against the gold answer. On SQuAD v1.1 ($n{=}16$) all
+four methods are effectively saturated on ranking (Hit@3 $1.000$, nDCG@10
+$1.000$) and answer@1 is $0.938$ for every method --- another honest null result:
+on a small, well-matched corpus the adjudication stage has nothing to add.
+
+% fig:inhouse removed (duplicated Table inhouse numbers; page budget)
+
+\input{generated/tables/tab-inhouse.tex}
+
+\subsection{RQ5: Experience Synthesis}\label{sec:exp-analysis}
+The lifecycle (\S\ref{sec:experience}) executes reliably: meditation runs
+succeed, tiers and the decay pass behave as specified, multi-path retrieval
+returns results. The \emph{quality} of automatically synthesised experience,
+however, is poor --- a negative result we report with its baselines and its
+run-to-run instability.
+
+Table~\ref{tab:experience} shows the measured outcome: 10 experiences were
+produced for one base and none for the other (KB coverage $0.50$), the mean judge
+score is $\mathbf{3.5/10}$, and only $37.5\%$ of entries were judged grounded in
+their source documents. The judge's justifications identify the failure
+precisely: of eight sampled entries, the two that scored well ($5.0$, $8.0$)
+were structurally sound but carried ``no content body, parameters, or lessons'';
+the remaining six scored $1.0$--$2.0$ (``empty shell'', ``no verifiable facts
+--- only a title, a bare domain token as scenario, and a category'').
+
+The architectural cause is identifiable: the synthesis stage produces
+\emph{well-structured metadata with empty payloads}. The lifecycle treats these
+as unvetted and caps them at $P_1$, so the failure degrades safely rather than
+injecting noise into the authoritative tier --- the behaviour the credibility
+model was designed for. But a lifecycle that quarantines low-quality output is
+not a system that produces good experience, and we do not claim the latter.
+
+\input{generated/tables/tab-experience.tex}
+
+\paragraph{Multi-run stability under state reset.}
+An earlier freeze reported a different outcome on re-execution (ten judged
+entries, then zero); an audit hypothesised state contamination. We made the
+reset part of the benchmark --- every round first deletes all published
+experiences and rejects all drafts, verifying zero counts --- and re-ran six
+rounds in two three-round samples. Instability \emph{persists under reset},
+refuting contamination: the English base produced $0, 3, 0, 3, 0, 0$ entries
+across the six rounds, the Chinese base zero each time. Two facts sit inside
+the variance. When the agent \emph{does} produce, entries are good --- one
+round's three entries scored $9.0$, $8.0$, $7.0$ under the same strict judge
+that gave the heuristic table above $3.5$ --- and the Chinese base's zero is
+the quality gate correctly refusing encyclopedic content. The variance is the
+generative agent's per-run produce/skip judgement, not platform state; the
+credibility model contains the consequence either way (unvetted entries are
+capped at $P_1$). We report the instability as a finding rather than selecting
+a favourable round.
+
+\paragraph{Baseline comparison for experience synthesis.}
+We compare three materials under an \emph{identical} judge prompt (grounded
+4 / structure 3 / reusable 3; same judge model, four frozen operational
+queries): (i) \emph{no synthesis} --- the raw top-$3$ documents the two-stage
+tool retrieves for the query; (ii) \emph{one-shot LLM summary} --- the seven
+source documents summarised into ``lessons'' by a single prompt, with no
+scenario/tags/lifecycle metadata; (iii) \emph{ours} --- the top-$3$
+pipeline-created experiences retrieved from the experience store. Pipeline
+experiences score \textbf{5.25}/10 on average, ahead of raw documents at
+\textbf{4.00} and one-shot summaries at \textbf{3.00}: distillation into
+structured, scenario-tagged entries is more reusable than either raw text or an
+unstructured summary, while absolute scores stay moderate (the judge rewards
+verifiable specifics in the payload). One incident reported for completeness:
+in a first sample the summariser received empty inputs from a harness path bug
+and \emph{refused to invent lessons} --- the honest-refusal behaviour the
+platform designs for, in an unexpected place. Producer:
+\texttt{40\_experience\_suite.py} + \texttt{42\_e4\_fix.py}; transcripts
+archived.
+
+\subsection{RQ6: End-to-End Verification of the Agent Surface}\label{sec:e2e}
+We exercised the externally reachable surface with an independently written
+client that never imports application code: 73 checks across nine groups
+(authentication; knowledge-base and document lifecycle; content-based retrieval;
+graph construction and query; the full experience lifecycle including drafts,
+decay and extraction; persona training and evaluation; the engine registry;
+cleanup). \textbf{All 73/73 pass} against the live deployment. Two findings are
+worth recording. First, an earlier run showed four failures that were harness
+artefacts --- the supervising process restarted the backend mid-run --- a
+reminder that end-to-end claims are only as good as the harness asserting them.
+Second, the exercise surfaced two genuine contract defects that we fixed: read
+endpoints accepted only one of two documented parameter spellings, and two
+engine-registry entries declared environment-variable requirements that the
+engines' own documentation contradicts, which had made two working engines
+unselectable.
+
+\input{generated/tables/tab-ingestion.tex}
+
+\subsection{Reproducibility of the reported numbers}
+Every number in this paper is generated from frozen artefacts rather than
+transcribed. The exact bytes used are archived with a manifest of SHA-256
+digests, and the table/figure generator verifies each digest on every run, so a
+reported number cannot silently change. Three further safeguards were added
+after an audit found results being overwritten in place. First, every benchmark
+run now writes to an immutable, timestamped directory
+(\texttt{results/run-<UTC>}); nothing is ever overwritten. Second, every result
+file embeds its own identity: the git commit of the producing tree, a hash of
+the retrieval configuration, an explicit random seed (zero --- the retrieval
+pipeline is deterministic), and the run id. Third, every table and figure in
+this paper names its producing script in the caption, and
+\texttt{provenance\_audit.py} fails the build if any cited artefact loses its
+producer. The artefact packages the committed scripts, the query sets and
+relevance judgements, per-query per-method scores, the judge prompts and
+transcripts, and the digest manifest.
+
+% =====================================================================
+\section{Discussion and Limitations}\label{sec:conclusion}
+
+\paragraph{What we would claim, and what we would not.}
+The defensible claim is narrower than when we began, and the narrowing is the
+paper's most honest contribution. Three statements rest on reproducible
+evidence: ingestion is lossless (membership and completeness $1.000$ across two
+corpora and five storage layers); content adjudication \emph{re-orders} the top
+of a list rather than improving ranking overall; and the agent surface is
+correct end-to-end (73/73 checks). The claim we \emph{refine} rather than make
+is the motivating one --- that scoping plus adjudication substantially reduces
+false positives in heterogeneous corpora. The original evidence was withdrawn
+(\S\ref{sec:provenance}); the replacement multi-domain benchmark bounds the
+adjudication half (full-ranking benefit absent where queries and evidence do
+not share vocabulary, top-rank repair real where they do,
+\S\ref{sec:multidomain}); the scoping half remains architecturally motivated
+but unmeasured; the cost side is measured throughout.
+
+\paragraph{A provenance failure, reported as a finding.}
+Our own internal benchmark --- the one we had led with --- could not be traced
+to any producing script in a 417-file search, ran its component study on eight
+queries while its caption implied fifty, and reported a paired test whose four
+$t$-statistics were all negative under a column that read as an advantage
+(\S\ref{sec:provenance}). We now run \texttt{provenance\_audit.py} as a gate,
+and recommend it to anyone reporting system measurements: \emph{if you cannot
+name the script that wrote a table, you do not have the table.}
+
+\paragraph{Latency.}
+Content adjudication costs about $13\times$ in latency on the in-house corpus
+($1.69$\,s vs $0.126$\,s). It is viable because reads bypass the service tier
+and run locally, and because adjudication applies only to a small candidate
+set; it would not be viable in a latency-critical single-domain setting, where
+on the evidence of \S\ref{sec:honest} we do not recommend it.
+
+\paragraph{Evaluation scale.}
+The public-benchmark evaluations are moderate: 30 SciFact queries, 50
+multi-domain HotpotQA queries and 16 SQuAD questions --- the last at ceiling,
+reported for completeness. The HotpotQA partition shows the approach scales to
+a multi-base public corpus; a full-BEIR evaluation is the obvious next step,
+and we do not claim it here. A 32-question XQuAD subset was also collected through
+committed scripts, and we report it rather than omitting it: both methods
+saturate ranking (Hit@5 $1.000$, MRR $1.000$) and the only separating metric is
+Precision@5, where the adjudicated configuration scores $0.275$ against dense
+$0.831$ --- a top-$5$ \emph{composition} effect, not a retrieval failure: the
+adjudicated pipeline returns fewer redundant parts of the same document, so at
+ceiling it looks worse on a metric that counts repeated relevant parts as
+precision. We flag the adverse headline number explicitly rather than hide it.
+
+\paragraph{Threats to validity.}
+\emph{Construct}: the $0$--$8$ rubric is an LLM judgement; we mitigate with
+temperature $0$ and a fixed judge prompt but report no human inter-annotator
+agreement, which a full study would require. \emph{Internal}: the component
+study now uses the same thirty SciFact queries as Table~\ref{tab:scifact}.
+\emph{External}: the in-house corpus is domain-specific and self-authored; the
+HotpotQA partition (\S\ref{sec:multidomain}) removes the single-domain
+restriction and uses an official gold standard, but the partition itself is
+author-chosen. \emph{Author-evaluation bias}: every benchmark here was
+designed, run and scored by the system's authors on a deployment they operate.
+We mitigate with public gold standards and unfavourable results; independent
+evaluation remains the only complete remedy.
+
+\paragraph{Future work.}
+The experience-synthesis instability is generative, not architectural: when the
+agent chose to distil, its entries scored $7$--$9/10$ under the strict judge, so
+the repair path is to stabilise the produce/skip decision itself (e.g.\ a fixed
+decision rubric over corpus type) while keeping the payload-quality gate that
+contains bad output. The Stage-3 threshold should be learned per corpus and the
+stage-2 pool deepened: the ablation shows the pool size, not the threshold
+value, loses gold documents on SciFact. Adjudication should condition its
+intervention on query--evidence lexical overlap, which our two public
+benchmarks bracket. And the routing layer still has no measured accuracy or
+oracle ceiling (\S\ref{sec:routing}); measuring it, together with a human
+inter-annotator agreement study for the judge rubric, is the highest-value next
+step.
+
+\paragraph{Conclusion.}
+We described \sys{}, a deployed agent-native knowledge platform, and evaluated
+its two central retrieval mechanisms on public benchmarks (BEIR SciFact with
+official qrels, and a new multi-domain benchmark partitioning HotpotQA's
+official supporting documents into nine topic knowledge bases), a bilingual
+in-house corpus, and a state-resetting six-round experience protocol. Content
+adjudication is a rank-one repair instrument for queries that share vocabulary
+with their evidence --- it fixes real top-rank errors on SciFact and achieves
+the best answer@1 on the multi-domain benchmark --- while significantly hurting
+full ranking on multi-hop questions with little lexical overlap; ingestion is
+lossless; the lifecycle contains unstable generation safely but does not make
+it reliable; and the routing layer remains unmeasured. Negative results of this
+kind tell the next system where the mechanism stops working.
+
+% =====================================================================
+\section*{GenAI Usage Disclosure}
+Generative AI tools were used in three ways, per the ACM Authorship Policy.
+\emph{Writing}: language editing only; all claims, positioning and structure
+are the authors'. \emph{Code}: parts of the system and benchmark harness; the
+code ships with the artefact and is the authors' responsibility. \emph{Data}:
+no result was produced or modified by a generative model; every number is read
+from a recorded artefact by deterministic scripts. One component \emph{uses}
+an LLM as an instrument: the experience-quality judge in
+\S\ref{sec:exp-analysis}, whose prompt and scores are archived.
+
+\balance
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}
