@@ -100,13 +100,17 @@ re-ranked by reading their actual text against an interpretable $0$--$8$ rubric
 under an explicit content-overrides-vector rule; a routing layer selects a
 small set of bases before searching; and an \emph{experience lifecycle}
 distils operational lessons into credibility-tiered, decaying entries exposed
-to LLM agents through 94 Model Context Protocol tools. We evaluate four
-retrieval methods through one tool layer on BEIR SciFact (30 official queries),
+to LLM agents through 94 Model Context Protocol tools. We evaluate four suite
+retrieval channels through one tool layer on BEIR SciFact (30 official queries),
 a 20-query trilingual in-house demo corpus (three bases, 16 documents), and a
 new multi-domain
 benchmark that partitions the official supporting documents of 50 HotpotQA
 questions into nine topic bases ($38\%$ of queries have gold in two bases).
-The result is a bounded claim: adjudication repairs real rank-one errors and
+In a reproduced eight-system matrix (DeepRead-style; one shared answering
+agent, one independent grader), a reranked dense baseline ranks best on
+abstracts and \sys{} sits mid-pack, while faithful abstention is rewarded by
+answer grading. The result is a bounded claim: adjudication repairs real rank-one
+errors and
 takes the best answer@1 on the multi-domain set, but is significantly
 \emph{worse} than its own recall stage on full ranking there ($-0.061$ nDCG@10,
 $p{=}0.018$) and does not improve ranking on the clean single-domain corpus ---
@@ -175,23 +179,19 @@ the document \emph{contains} the answer.
 
 \noindent\textbf{Big bases crowd out small ones.} In a multi-base deployment the
 largest base dominates the candidate pool, and small but directly relevant bases
-are pushed out. To measure the regime rather than assert it, we built a
-multi-domain benchmark from a public corpus: 50 HotpotQA questions whose official
-supporting documents we partitioned into nine topic knowledge bases
-(\S\ref{sec:multidomain}); $38\%$ of those queries have gold documents in two
-different bases, so cross-base coverage is a property of the gold standard
-itself, not of our test design. Both failure modes are measurable, and both bear
-on the two mechanisms this paper evaluates (\S\ref{sec:eval}).
+are pushed out. We measured this regime on a public corpus: 50 HotpotQA
+questions whose official supporting documents are partitioned into nine topic
+knowledge bases (\S\ref{sec:multidomain}); $38\%$ of queries have gold in two
+of them. Both failure modes are measurable, and both bear on the two
+mechanisms this paper evaluates (\S\ref{sec:eval}).
 
-Existing mitigations attack these problems from the wrong end. Cross-encoder
-re-rankers improve ordering but are opaque and add a model to the serving path.
-Self-reflective methods such as FLARE \cite{jiang2023flare} and Self-RAG
-\cite{asai2023selfrag} ask the generator to judge its own retrieval, making the
-judgement inseparable from generation, hard to audit, and expensive. Corrective
-RAG \cite{yan2024crag} adds a retrieval evaluator, but it is a learned scorer
-emitting a scalar, so the operator still cannot see \emph{which} aspect of a
-document failed. None makes the retrieval decision itself \emph{legible} to the
-person who must explain why a document was returned.
+Existing mitigations attack these problems from the wrong end: cross-encoder
+re-rankers are opaque and add a model to the serving path; FLARE
+\cite{jiang2023flare}, Self-RAG \cite{asai2023selfrag} and CRAG
+\cite{yan2024crag} entangle the relevance judgement with generation or reduce
+it to a scalar, so the operator still cannot see \emph{which} aspect of a
+document failed. None makes the retrieval decision itself \emph{legible} to
+the person who must explain why a document was returned.
 
 This paper describes \sys{}, a deployed knowledge-base platform built on a
 different principle: \emph{recall cheaply, then adjudicate on content}. Candidates
@@ -270,13 +270,11 @@ GraphRAG \cite{edge2024graphrag} and HiRAG \cite{huang2025hirag} build entity or
 hierarchical knowledge structures to answer global, corpus-level questions.
 Adaptive-RAG \cite{jeong2024adaptiverag} routes queries by predicted complexity.
 Our routing layer is complementary but operates over \emph{knowledge-base}
-granularity rather than query complexity or entity structure: we route to a set
-of bases, then retrieve inside them. We are careful not to overstate this: the
-general problem of deciding \emph{which collections to search} long predates
-embedding-based platforms, and we do not claim novelty over that literature.
-What is specific to the present setting is the coupling of base-granularity
-routing with per-base content adjudication, and the auditable way the routing
-decision is recorded. We also flag the evaluation gap honestly: an oracle
+granularity: we route to a set of bases, then retrieve inside them. The general
+problem of deciding \emph{which collections to search} long predates
+embedding-based platforms; what is specific here is the coupling of
+base-granularity routing with per-base content adjudication, and the auditable
+way the routing decision is recorded. We also flag the evaluation gap honestly: an oracle
 router on our multi-domain partition retrieves \emph{less} than searching all
 bases ($0.772$--$0.795$ vs $0.841$ nDCG@10) --- at this corpus scale routing
 has no gain to deliver --- so the routing layer's isolated contribution remains
@@ -581,12 +579,10 @@ P_2 & \mathrm{vec}\!\ge\!.35 \;\wedge\; c\!\ge\!3\\
 \end{cases}
 \end{equation}
 with modifiers that \emph{downgrade} rather than upgrade: an entry disputed by
-three or more reviews with mean rating below $2.0$ is capped at $P_2$, and an
-entry with no reviews and no recorded applications is capped at $P_1$ no matter
-how high its similarity. Automatically extracted entries start unvetted, which
-caps them at $P_1$ until independent evidence arrives. The design intent is that
-trust must be earned through use; a freshly generated experience can never
-present itself as authoritative.
+three or more reviews with mean rating below $2.0$ is capped at $P_2$; an entry
+with no reviews and no applications is capped at $P_1$; automatically extracted
+entries start unvetted at $P_1$. Trust must be earned through use; a freshly
+generated experience can never present itself as authoritative.
 
 \subsection{Temporal Decay}
 Operational knowledge expires. Entries that are unverified and unapplied for
@@ -594,22 +590,18 @@ more than 30 days are demoted, and a scheduled decay pass re-evaluates the store
 Decay is deliberately conservative --- it demotes, it never deletes --- so that a
 stale-but-historically-useful entry remains retrievable at a lower tier.
 
-We evaluate the rule as a sensitivity analysis and state its limits: the
-deployment is younger than the window (every measured entry carries a same-day
-timestamp), so no longitudinal validation of the 30-day threshold is presented.
-Sweeping $7/14/30/90$ days, the demoted set is empty at every window ---
-correctly, since no entry is seven days old --- and the rule's precision against
-a ``genuinely stale'' ground truth is undefined in-window. Because decay demotes
-but never deletes, a mistuned threshold degrades order gracefully instead of
-destroying entries.
+We evaluate the rule as a sensitivity analysis: the deployment is younger
+than the window (all entries carry same-day timestamps), so no longitudinal
+validation of the 30-day threshold is presented. Sweeping $7/14/30/90$ days,
+the demoted set is empty at every window -- correctly, since no entry is seven
+days old. Because decay demotes but never deletes, a mistuned threshold
+degrades order gracefully instead of destroying entries.
 
 \subsection{Multi-Path Retrieval}
-Experience is recalled along five parallel paths --- vector similarity, keyword
-match, scenario match, tag match, and quality-feedback match --- which are fused
-and deduplicated. The rationale is that operational queries often name a
-\emph{symptom} rather than a topic: a user searching for ``why did the run
-fail'' shares no vocabulary with an entry titled ``pulse self-heating window
-violation'', but shares its scenario and tags.
+Experience is recalled along five parallel paths --- vector similarity,
+keyword match, scenario match, tag match, and quality-feedback match --- fused
+and deduplicated: operational queries often name a \emph{symptom} rather than
+a topic, sharing scenario and tags instead of entry vocabulary.
 
 We evaluate the fusion on a purpose-built set: eight operational experiences
 seeded through the platform's own write path and twelve frozen queries --- half
@@ -637,18 +629,15 @@ assumes, and quality signals are what break ties among plausible entries.
 \section{Agent-Native Interface}\label{sec:agent}
 
 The platform is designed to be operated by an agent rather than browsed by a
-human. Concretely, it exposes \textbf{94 Model Context Protocol tools} covering
+human: it exposes \textbf{94 Model Context Protocol tools} covering
 knowledge-base CRUD, document ingestion, parsing, tagging, search, vector
-indexing, graph construction, experience management and persona training, plus 14
-agent skills that describe \emph{procedures} over those tools (ingest a document,
-audit a base, distil an experience, search across bases).
-
-Two design choices make the surface usable rather than merely large. First,
-write operations are atomic and singular: creating a document does not silently
-also index it or tag it, so an agent can retry a failed step without creating
-inconsistent state. Second, the tool layer is the \emph{same} layer the human UI
-uses, so a procedure validated in the UI is directly executable by an agent and
-vice versa. We report the end-to-end validation of this surface in
+indexing, graph construction, experience management and persona training, plus
+14 agent skills describing \emph{procedures} over those tools. Two design
+choices make the surface usable rather than merely large: write operations are
+atomic and singular (creating a document does not silently index or tag it, so
+an agent can retry a failed step without inconsistent state), and the tool
+layer is the \emph{same} layer the human UI uses -- a procedure validated in
+the UI is directly executable by an agent. End-to-end validation:
 \S\ref{sec:e2e}.
 
 % =====================================================================
@@ -675,8 +664,7 @@ holding 16 documents (15 Markdown in English, Chinese and Japanese plus one PDF
 parsed through the production MinerU path), embedded with BGE-M3 (1024-d)
 \cite{chen2024bgem3} and indexed in ChromaDB with a jieba BM25 keyword index;
 the 20 bilingual questions of the in-house benchmark have their gold pages
-inside these documents. An earlier, larger deployment is not resident and is
-not the source of any number here.
+inside these documents.
 \emph{Public retrieval}: the BEIR SciFact collection \cite{thakur2021beir} ---
 148 articles ingested through the production pipeline, evaluated on 30 official
 queries against the official relevance judgements --- plus a 16-question SQuAD
@@ -782,8 +770,11 @@ identical questions, one shared answering agent, one independent grader. Three
 readings. (i) \emph{Ranking}: the reranked dense baseline is strongest
 (Hit@1 $0.900$, nDCG@10 $0.921$) --- on an abstract corpus a cross-encoder's
 reordering is hard to beat --- while \sys{} sits mid-pack (Hit@1 $0.700$,
-nDCG@10 $0.784$), consistent with the component study below: adjudication
-re-orders the top of the list rather than improving overall ranking.
+nDCG@10 $0.784$; the matrix runs \sys{} scoped to the corpus base, whereas the
+suite-channel protocol with a global balanced pool reaches Hit@1 $0.767$,
+Table~\ref{tab:scifact}), consistent with the component study below:
+adjudication re-orders the top of the list rather than improving overall
+ranking.
 (ii) \emph{Agentic behaviour is not free money}: Search-o1 reaches Hit@1
 $0.800$ with two chunks per turn, but the DeepRead locate-then-read agent --
 the strongest system in its own paper on long structured documents -- is
@@ -792,10 +783,9 @@ so its extra turns buy context the corpus does not contain. We report this as
 a corpus-boundary finding, not a refutation. (iii) \emph{Grades compress}:
 answer-faithfulness grading narrows the spread ($7.70$--$8.93$) because a
 correctly supported ``insufficient'' verdict earns most of its points; the
-middle-agent ranking (Rank/Wins columns of Table~\ref{tab:deepread}) separates
-the systems more plainly and, notably, ranks DeepRead first on $7$ of $30$
-questions --- faithful abstention is rewarded by answer graders even when
-retrieval misses.
+middle-agent ranking (Rank/Wins columns) separates the systems more plainly
+and, notably, ranks DeepRead first on $7$ of $30$ questions --- faithful
+abstention is rewarded even when retrieval misses.
 
 We report only results whose producing script is committed and whose artefact is
 frozen (\S\ref{sec:provenance}). Two further benchmarks meet that bar: the public BEIR
@@ -821,12 +811,8 @@ Chinese queries it matches dense at Hit@1 $1.000$, whereas on English it is behi
 
 \paragraph{What these two results jointly support.}
 Content verification \emph{re-orders the top of the list} rather than improving
-ranking overall: it raises Hit@1 on the public benchmark and P@5 in-house,
-while losing Hit@1/Recall@5/MRR in-house and nDCG on the public set. The
-mechanism that would explain the inconsistency --- that adjudication helps
-in proportion to cross-domain distractors --- is untested on these two
-effectively single-domain benchmarks; \S\ref{sec:multidomain} tests it and
-reports a mixed answer.
+ranking overall; whether adjudication helps in proportion to cross-domain
+distractors is tested on the multi-domain benchmark (\S\ref{sec:multidomain}).
 
 \subsubsection{Withheld results and the provenance audit}\label{sec:provenance}
 An earlier draft led with a 50-query internal benchmark (false-positive rate
@@ -940,8 +926,8 @@ game.
 
 \subsubsection{A multi-domain public benchmark: partitioning HotpotQA into
 knowledge bases}\label{sec:multidomain}
-Our earlier drafts' deepest weakness was that every multi-domain result rested
-on author-built data. We close that gap with a benchmark built from public data
+Every earlier multi-domain result rested on author-built data. We close that
+gap with a benchmark built from public data
 and official annotations: 50 questions sampled deterministically (evenly spaced
 over the id-sorted dev set) from the HotpotQA dev-distractor split
 \cite{yang2018hotpotqa}, whose official supporting \emph{and distractor}
@@ -1096,8 +1082,7 @@ across eight groups} against the live deployment; the script writes a JSON
 artefact carrying its own git and configuration fingerprint. The exercise also
 surfaced two genuine contract defects that we fixed: read endpoints accepted
 only one of two documented parameter spellings, and two engine-registry
-entries declared environment-variable requirements that the engines' own
-documentation contradicts.
+entries declared contradictory environment requirements.
 
 \subsubsection{Organise functions (E17)}\label{sec:ops}
 Retrieval and experience are half the platform; a planted-truth probe
@@ -1112,15 +1097,12 @@ touches a used tag; graph build succeeds; and the catalog reports no ghost
 entries.
 
 \subsubsection{Reproducibility of the reported numbers}
-Every number in this paper is generated from frozen artefacts rather than
-transcribed: the exact bytes are archived with a SHA-256 manifest that the
-table generator verifies on every run. Every benchmark run writes to an
-immutable, timestamped directory; every result file embeds its git commit,
-configuration hash, random seed and run id; and every table names its
-producing script, with \texttt{provenance\_audit.py} failing the build if any
-cited artefact loses it. The released artefact packages the committed scripts,
-query sets, relevance judgements, per-query per-method scores, judge prompts
-and transcripts, and the digest manifest.
+Every number is generated from frozen artefacts, never transcribed: the bytes
+are archived with a SHA-256 manifest that the table generator verifies on
+every run; each run writes to an immutable timestamped directory and embeds
+its git commit, configuration hash, seed and run id; every table names its
+producing script, and \texttt{provenance\_audit.py} fails the build if a
+cited artefact loses it.
 
 % =====================================================================
 \section{Discussion and Limitations}\label{sec:conclusion}
