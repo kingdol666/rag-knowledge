@@ -58,8 +58,8 @@
 \newlabel{sec:sys-hierarchy}{{3.4}{3}{Hierarchical knowledge bases}{subsection.3.4}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Design principles}{3}{subsection.3.5}\protected@file@percent }
 \newlabel{sec:sys-principles}{{3.5}{3}{Design principles}{subsection.3.5}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Platform scale. Structural counts are properties of the running deployment; corpus counts are reported \emph  {per snapshot} because the two benchmark snapshots differ (an earlier draft merged them, which is not sound). All numbers are read from the deployment or from recorded artefacts, never estimated from the source tree.}}{4}{table.caption.14}\protected@file@percent }
-\newlabel{tab:scale}{{1}{4}{Platform scale. Structural counts are properties of the running deployment; corpus counts are reported \emph {per snapshot} because the two benchmark snapshots differ (an earlier draft merged them, which is not sound). All numbers are read from the deployment or from recorded artefacts, never estimated from the source tree}{table.caption.14}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Platform scale. Corpus counts are per snapshot (the two benchmark snapshots differ; an earlier draft merged them, which is not sound); all numbers are read from the deployment or recorded artefacts.}}{4}{table.caption.14}\protected@file@percent }
+\newlabel{tab:scale}{{1}{4}{Platform scale. Corpus counts are per snapshot (the two benchmark snapshots differ; an earlier draft merged them, which is not sound); all numbers are read from the deployment or recorded artefacts}{table.caption.14}{}}
 \@writefile{loa}{\contentsline {algorithm}{\numberline {1}{\ignorespaces \textsc  {Qdcvr}{} retrieval}}{4}{algorithm.1}\protected@file@percent }
 \newlabel{alg:pipeline}{{1}{4}{\sys {} retrieval}{algorithm.1}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {4}\textsc  {Qdcvr}{}: Content-Adjudicated Retrieval}{4}{section.4}\protected@file@percent }
@@ -75,8 +75,6 @@
 \newlabel{sec:adjudication}{{4.5}{4}{Stage 4: Content Adjudication}{subsection.4.5}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces The \textsc  {Qdcvr}{} pipeline. Two stages carry the method's claims: \textbf  {S1 domain scoping} bounds the search to a small set of knowledge bases before any document is compared, and \textbf  {S4 content adjudication} reads candidate text and scores it $0$--$8$, with authority to override the recall order (Eq.\nonbreakingspace \ref {eq:override}). Every stage is reachable through the same MCP tool surface the agents use.}}{5}{figure.caption.15}\protected@file@percent }
 \newlabel{fig:pipeline}{{2}{5}{The \sys {} pipeline. Two stages carry the method's claims: \textbf {S1 domain scoping} bounds the search to a small set of knowledge bases before any document is compared, and \textbf {S4 content adjudication} reads candidate text and scores it $0$--$8$, with authority to override the recall order (Eq.~\ref {eq:override}). Every stage is reachable through the same MCP tool surface the agents use}{figure.caption.15}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces The content-adjudication rubric. Scores are produced at temperature $0$ from the document text, not from its embedding.}}{5}{table.caption.16}\protected@file@percent }
-\newlabel{tab:rubric}{{2}{5}{The content-adjudication rubric. Scores are produced at temperature $0$ from the document text, not from its embedding}{table.caption.16}{}}
 \newlabel{eq:override}{{2}{5}{Stage 4: Content Adjudication}{equation.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.6}Stage 5--6: Tiering and Blind-Spot Declaration}{5}{subsection.4.6}\protected@file@percent }
 \newlabel{sec:blindspot}{{4.6}{5}{Stage 5--6: Tiering and Blind-Spot Declaration}{subsection.4.6}{}}
@@ -84,11 +82,11 @@
 \newlabel{sec:experience}{{5}{5}{Experience Lifecycle}{section.5}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Lifecycle}{5}{subsection.5.1}\protected@file@percent }
 \newlabel{sec:lifecycle}{{5.1}{5}{Lifecycle}{subsection.5.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Credibility Tiers}{5}{subsection.5.2}\protected@file@percent }
+\newlabel{sec:tiers}{{5.2}{5}{Credibility Tiers}{subsection.5.2}{}}
 \citation{chen2024bgem3}
 \citation{thakur2021beir}
 \citation{yang2018hotpotqa}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Credibility Tiers}{6}{subsection.5.2}\protected@file@percent }
-\newlabel{sec:tiers}{{5.2}{6}{Credibility Tiers}{subsection.5.2}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Temporal Decay}{6}{subsection.5.3}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Multi-Path Retrieval}{6}{subsection.5.4}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {6}Agent-Native Interface}{6}{section.6}\protected@file@percent }
@@ -97,61 +95,56 @@
 \newlabel{sec:eval}{{7}{6}{Evaluation}{section.7}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.1}Research Questions}{6}{subsection.7.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Setup}{6}{subsection.7.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Corpora.}{6}{section*.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Corpora.}{6}{section*.16}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Methods.}{6}{section*.17}\protected@file@percent }
 \citation{chen2024bgem3}
-\@writefile{toc}{\contentsline {paragraph}{Methods.}{7}{section*.18}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Protocol.}{7}{section*.19}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Implementation and hyper-parameters.}{7}{section*.20}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Statistics.}{7}{section*.21}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Protocol.}{7}{section*.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Implementation and hyper-parameters.}{7}{section*.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Statistics.}{7}{section*.20}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.3}RQ1--RQ2: Main Results (traceable evidence only)}{7}{subsection.7.3}\protected@file@percent }
 \newlabel{sec:main}{{7.3}{7}{RQ1--RQ2: Main Results (traceable evidence only)}{subsection.7.3}{}}
-\@writefile{toc}{\contentsline {paragraph}{What these two results jointly support.}{7}{section*.22}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{What these two results jointly support.}{7}{section*.21}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Withheld results and the provenance audit}{7}{subsection.7.4}\protected@file@percent }
 \newlabel{sec:provenance}{{7.4}{7}{Withheld results and the provenance audit}{subsection.7.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.5}RQ3: Component Study}{7}{subsection.7.5}\protected@file@percent }
+\newlabel{sec:ablation}{{7.5}{7}{RQ3: Component Study}{subsection.7.5}{}}
 \citation{yang2018hotpotqa}
-\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Component ablation on BEIR SciFact (30 queries, official qrels), same query set as Table\nonbreakingspace \ref {tab:scifact}. Deployed variants use stage-2 $k{=}10$; ``deep'' variants re-rank a $k{=}40$ pool, because the deployed top-10 is already pre-filtered by the Stage-3 threshold (lowest returned score $0.379$), which makes a threshold sweep on the shallow pool a no-op --- a finding in itself.}}{8}{table.caption.23}\protected@file@percent }
-\newlabel{tab:ablation}{{3}{8}{Component ablation on BEIR SciFact (30 queries, official qrels), same query set as Table~\ref {tab:scifact}. Deployed variants use stage-2 $k{=}10$; ``deep'' variants re-rank a $k{=}40$ pool, because the deployed top-10 is already pre-filtered by the Stage-3 threshold (lowest returned score $0.379$), which makes a threshold sweep on the shallow pool a no-op --- a finding in itself}{table.caption.23}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.5}RQ3: Component Study}{8}{subsection.7.5}\protected@file@percent }
-\newlabel{sec:ablation}{{7.5}{8}{RQ3: Component Study}{subsection.7.5}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces BEIR SciFact (30 official benchmark queries, 148 articles ingested through the production pipeline). All four methods read from the same MCP tool layer and the same index; only the ranking stage differs. Best per column in \textbf  {bold}; latency is mean wall-clock seconds per query.}}{8}{table.caption.24}\protected@file@percent }
-\newlabel{tab:scifact}{{4}{8}{BEIR SciFact (30 official benchmark queries, 148 articles ingested through the production pipeline). All four methods read from the same MCP tool layer and the same index; only the ranking stage differs. Best per column in \textbf {bold}; latency is mean wall-clock seconds per query}{table.caption.24}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Component ablation on BEIR SciFact (30 queries, official qrels), same query set as Table\nonbreakingspace \ref {tab:scifact}. Deployed variants use stage-2 $k{=}10$; ``deep'' variants re-rank a $k{=}40$ pool, because the deployed top-10 is already pre-filtered by the Stage-3 threshold (lowest returned score $0.379$), which makes a threshold sweep on the shallow pool a no-op --- a finding in itself.}}{8}{table.caption.22}\protected@file@percent }
+\newlabel{tab:ablation}{{2}{8}{Component ablation on BEIR SciFact (30 queries, official qrels), same query set as Table~\ref {tab:scifact}. Deployed variants use stage-2 $k{=}10$; ``deep'' variants re-rank a $k{=}40$ pool, because the deployed top-10 is already pre-filtered by the Stage-3 threshold (lowest returned score $0.379$), which makes a threshold sweep on the shallow pool a no-op --- a finding in itself}{table.caption.22}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.6}RQ4: Public Benchmark and the Honest Reading}{8}{subsection.7.6}\protected@file@percent }
 \newlabel{sec:honest}{{7.6}{8}{RQ4: Public Benchmark and the Honest Reading}{subsection.7.6}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces BEIR SciFact (30 official benchmark queries, 148 articles ingested through the production pipeline). All four methods read from the same MCP tool layer and the same index; only the ranking stage differs. Best per column in \textbf  {bold}; latency is mean wall-clock seconds per query.}}{8}{table.caption.23}\protected@file@percent }
+\newlabel{tab:scifact}{{3}{8}{BEIR SciFact (30 official benchmark queries, 148 articles ingested through the production pipeline). All four methods read from the same MCP tool layer and the same index; only the ranking stage differs. Best per column in \textbf {bold}; latency is mean wall-clock seconds per query}{table.caption.23}{}}
 \newlabel{sec:multidomain}{{7.6.1}{8}{A multi-domain public benchmark: partitioning HotpotQA into knowledge bases}{subsubsection.7.6.1}{}}
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {7.6.1}A multi-domain public benchmark: partitioning HotpotQA into knowledge bases}{8}{subsubsection.7.6.1}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Multi-domain public benchmark: 50 HotpotQA dev questions, 454 supporting+distractor documents in 9 topic KBs, official supporting documents as gold, answer-level check = gold answer string occurs in the read content of the top-$k$ documents. Producer: \texttt  {60\_hotpot\_build.py}, \texttt  {61\_hotpot\_eval.py}.}}{9}{table.caption.25}\protected@file@percent }
-\newlabel{tab:hotpot}{{5}{9}{Multi-domain public benchmark: 50 HotpotQA dev questions, 454 supporting+distractor documents in 9 topic KBs, official supporting documents as gold, answer-level check = gold answer string occurs in the read content of the top-$k$ documents. Producer: \texttt {60\_hotpot\_build.py}, \texttt {61\_hotpot\_eval.py}}{table.caption.25}{}}
-\@writefile{toc}{\contentsline {paragraph}{In-house corpus and answerability.}{9}{section*.26}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces In-house corpus (20 queries over 13 KBs). \textsc  {Qdcvr}{} here means two-stage recall followed by \texttt  {kb\_doc\_read} content adjudication; \emph  {Dense} is one-shot vector retrieval over the same index.}}{9}{table.caption.27}\protected@file@percent }
-\newlabel{tab:inhouse}{{6}{9}{In-house corpus (20 queries over 13 KBs). \sys {} here means two-stage recall followed by \texttt {kb\_doc\_read} content adjudication; \emph {Dense} is one-shot vector retrieval over the same index}{table.caption.27}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Multi-domain public benchmark: 50 HotpotQA dev questions, 454 supporting+distractor documents in 9 topic KBs, official supporting documents as gold, answer-level check = gold answer string occurs in the read content of the top-$k$ documents. Producer: \texttt  {60\_hotpot\_build.py}, \texttt  {61\_hotpot\_eval.py}.}}{9}{table.caption.24}\protected@file@percent }
+\newlabel{tab:hotpot}{{4}{9}{Multi-domain public benchmark: 50 HotpotQA dev questions, 454 supporting+distractor documents in 9 topic KBs, official supporting documents as gold, answer-level check = gold answer string occurs in the read content of the top-$k$ documents. Producer: \texttt {60\_hotpot\_build.py}, \texttt {61\_hotpot\_eval.py}}{table.caption.24}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces In-house corpus (20 queries over 13 KBs). \textsc  {Qdcvr}{} here means two-stage recall followed by \texttt  {kb\_doc\_read} content adjudication; \emph  {Dense} is one-shot vector retrieval over the same index.}}{9}{table.caption.26}\protected@file@percent }
+\newlabel{tab:inhouse}{{5}{9}{In-house corpus (20 queries over 13 KBs). \sys {} here means two-stage recall followed by \texttt {kb\_doc\_read} content adjudication; \emph {Dense} is one-shot vector retrieval over the same index}{table.caption.26}{}}
+\@writefile{toc}{\contentsline {paragraph}{In-house corpus and answerability.}{9}{section*.25}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.7}RQ5: Experience Synthesis}{9}{subsection.7.7}\protected@file@percent }
 \newlabel{sec:exp-analysis}{{7.7}{9}{RQ5: Experience Synthesis}{subsection.7.7}{}}
-\@writefile{toc}{\contentsline {paragraph}{Multi-run stability under state reset.}{9}{section*.29}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Module\nonbreakingspace C --- experience synthesis. Entries are produced by the meditation loop and scored by an LLM judge on a 0--10 scale for reusability, with a separate groundedness check against source documents. The low grounded ratio is a \emph  {negative} result and is analysed in \S  \ref {sec:exp-analysis}. Every statistic here is computed from the frozen snapshot (8 judged entries), not transcribed.}}{10}{table.caption.28}\protected@file@percent }
-\newlabel{tab:experience}{{7}{10}{Module~C --- experience synthesis. Entries are produced by the meditation loop and scored by an LLM judge on a 0--10 scale for reusability, with a separate groundedness check against source documents. The low grounded ratio is a \emph {negative} result and is analysed in \S \ref {sec:exp-analysis}. Every statistic here is computed from the frozen snapshot (8 judged entries), not transcribed}{table.caption.28}{}}
-\@writefile{toc}{\contentsline {paragraph}{Baseline comparison for experience synthesis.}{10}{section*.30}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Judge reliability.}{10}{section*.31}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Module\nonbreakingspace A — ingestion integrity. \emph  {Membership} = document lands in the intended KB; \emph  {storage completeness} = all five storage layers agree after write; \emph  {self-retrieval Hit@1} = the freshly ingested document is returned first for a query built from its own text. In-house corpus: 15 Markdown + 1 PDF; standard corpus: 184 documents.}}{10}{table.caption.32}\protected@file@percent }
-\newlabel{tab:ingestion}{{8}{10}{Module~A — ingestion integrity. \emph {Membership} = document lands in the intended KB; \emph {storage completeness} = all five storage layers agree after write; \emph {self-retrieval Hit@1} = the freshly ingested document is returned first for a query built from its own text. In-house corpus: 15 Markdown + 1 PDF; standard corpus: 184 documents}{table.caption.32}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Module\nonbreakingspace C --- experience synthesis. Entries are produced by the meditation loop and scored by an LLM judge on a 0--10 scale for reusability, with a separate groundedness check against source documents. The low grounded ratio is a \emph  {negative} result and is analysed in \S  \ref {sec:exp-analysis}. Every statistic here is computed from the frozen snapshot (8 judged entries), not transcribed.}}{9}{table.caption.27}\protected@file@percent }
+\newlabel{tab:experience}{{6}{9}{Module~C --- experience synthesis. Entries are produced by the meditation loop and scored by an LLM judge on a 0--10 scale for reusability, with a separate groundedness check against source documents. The low grounded ratio is a \emph {negative} result and is analysed in \S \ref {sec:exp-analysis}. Every statistic here is computed from the frozen snapshot (8 judged entries), not transcribed}{table.caption.27}{}}
+\@writefile{toc}{\contentsline {paragraph}{Multi-run stability under state reset.}{9}{section*.28}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Baseline comparison for experience synthesis.}{9}{section*.29}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Module\nonbreakingspace A — ingestion integrity. \emph  {Membership} = document lands in the intended KB; \emph  {storage completeness} = all five storage layers agree after write; \emph  {self-retrieval Hit@1} = the freshly ingested document is returned first for a query built from its own text. In-house corpus: 15 Markdown + 1 PDF; standard corpus: 184 documents.}}{10}{table.caption.30}\protected@file@percent }
+\newlabel{tab:ingestion}{{7}{10}{Module~A — ingestion integrity. \emph {Membership} = document lands in the intended KB; \emph {storage completeness} = all five storage layers agree after write; \emph {self-retrieval Hit@1} = the freshly ingested document is returned first for a query built from its own text. In-house corpus: 15 Markdown + 1 PDF; standard corpus: 184 documents}{table.caption.30}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.8}RQ6: End-to-End Verification of the Agent Surface}{10}{subsection.7.8}\protected@file@percent }
 \newlabel{sec:e2e}{{7.8}{10}{RQ6: End-to-End Verification of the Agent Surface}{subsection.7.8}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.9}Reproducibility of the reported numbers}{10}{subsection.7.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Discussion and Limitations}{10}{section.8}\protected@file@percent }
+\newlabel{sec:conclusion}{{8}{10}{Discussion and Limitations}{section.8}{}}
+\@writefile{toc}{\contentsline {paragraph}{What we would claim, and what we would not.}{10}{section*.31}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{A provenance failure, reported as a finding.}{10}{section*.32}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Latency.}{10}{section*.33}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Evaluation scale.}{10}{section*.34}\protected@file@percent }
 \bibstyle{ACM-Reference-Format}
 \bibdata{refs}
 \bibcite{anthropic2024mcp}{{1}{2024}{{Anthropic}}{{}}}
 \bibcite{asai2023selfrag}{{2}{2023}{{Asai et~al\mbox  {.}}}{{}}}
 \bibcite{chen2024bgem3}{{3}{2024}{{Chen et~al\mbox  {.}}}{{}}}
 \bibcite{edge2024graphrag}{{4}{2024}{{Edge et~al\mbox  {.}}}{{}}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Discussion and Limitations}{11}{section.8}\protected@file@percent }
-\newlabel{sec:conclusion}{{8}{11}{Discussion and Limitations}{section.8}{}}
-\@writefile{toc}{\contentsline {paragraph}{What we would claim, and what we would not.}{11}{section*.33}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{A provenance failure, reported as a finding.}{11}{section*.34}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Latency.}{11}{section*.35}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Evaluation scale.}{11}{section*.36}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Threats to validity.}{11}{section*.37}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Future work.}{11}{section*.38}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Conclusion.}{11}{section*.39}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{References}{11}{section*.42}\protected@file@percent }
 \bibcite{gao2024ragsurvey}{{5}{2024}{{Gao et~al\mbox  {.}}}{{}}}
 \bibcite{ge2026mcppyserini}{{6}{2026}{{Ge and Guo}}{{}}}
 \bibcite{glass2022re2g}{{7}{2022}{{Glass et~al\mbox  {.}}}{{}}}
@@ -168,6 +161,10 @@
 \bibcite{schick2023toolformer}{{18}{2023}{{Schick et~al\mbox  {.}}}{{}}}
 \bibcite{suresh2026agenticrag}{{19}{2026}{{Suresh et~al\mbox  {.}}}{{}}}
 \bibcite{thakur2021beir}{{20}{2021}{{Thakur et~al\mbox  {.}}}{{}}}
+\@writefile{toc}{\contentsline {paragraph}{Threats to validity.}{11}{section*.35}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Future work.}{11}{section*.36}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Conclusion.}{11}{section*.37}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{References}{11}{section*.40}\protected@file@percent }
 \bibcite{yan2024crag}{{21}{2024}{{Yan et~al\mbox  {.}}}{{}}}
 \bibcite{yang2018hotpotqa}{{22}{2018}{{Yang et~al\mbox  {.}}}{{}}}
 \bibcite{yao2022react}{{23}{2023}{{Yao et~al\mbox  {.}}}{{}}}

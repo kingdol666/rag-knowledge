@@ -96,7 +96,6 @@ ranking improvement. We also report an unstable experience-synthesis result (ent
 heuristic-extraction mean of $3.5/10$), and a provenance audit that led us to
 withhold one internal benchmark whose producing script could not be recovered.
 \end{abstract}
-
 \begin{CCSXML}
 <ccs2012>
 <concept>
@@ -409,11 +408,9 @@ troubleshooting, comparative, navigational) and rewritten from colloquial
 surface form into a declarative statement plus keyword set. Intent changes the
 retrieval bias: troubleshooting queries consult the experience store before the
 document store, whereas factual queries go straight to the vector index. We
-describe this stage qualitatively and deliberately attach no number to it: an
-earlier draft quoted a rewriting gain from the internal benchmark family that
-was withdrawn in \S\ref{sec:provenance}, and no re-measurement exists on the
-committed harness. The stage is part of the deployed system, but its isolated
-effect is unmeasured here.
+attach no number to this stage: an earlier draft quoted a rewriting gain from
+the withdrawn benchmark family (\S\ref{sec:provenance}), and no re-measurement
+exists on the committed harness.
 
 \subsection{Stage 1: Domain Scoping}\label{sec:routing}
 The routing layer selects a bounded working set of knowledge bases before any
@@ -437,18 +434,16 @@ scoped stage rather than falling back to an unscoped search.
 
 We close part of this gap with an oracle experiment on the multi-domain
 benchmark (\S\ref{sec:multidomain}): restricting retrieval to the single gold
-knowledge base (a perfect single-base router, deterministic rule) or even to
-the \emph{best} per-gold-base search yields \emph{lower} quality than the
-deployed always-search-all mode (two-stage nDCG@10 $0.772$ restricted vs
-$0.841$ global; best-restricted $0.795$). At this corpus scale (454 documents)
-cross-base distraction does not crowd out gold documents, and single-base
-restriction is structurally fatal for the $38\%$ of queries whose gold spans
-two bases (their Recall@2 is capped at $0.5$ under any single-base router).
-The measured conclusion mirrors our caution about routing claims: at this
-scale the scoping mechanism has no gain to deliver even under an oracle, and
-its value --- if any --- must be sought at corpus scales where cross-base
+knowledge base (a perfect single-base router) or even taking the \emph{best}
+per-gold-base result yields \emph{lower} quality than the deployed
+always-search-all mode (two-stage nDCG@10 $0.772$ restricted vs $0.841$ global;
+best-restricted $0.795$). At 454 documents, cross-base distraction does not
+crowd out gold documents, and single-base restriction is structurally fatal for
+the $38\%$ of queries whose gold spans two bases (Recall@2 capped at $0.5$
+under any single-base router). So at this scale scoping has no gain to deliver
+even under an oracle; its value, if any, must be sought where cross-base
 distraction dominates. An early routing-accuracy figure in our records traces
-to the withdrawn artefact family and is no longer claimed.
+to the withdrawn family and is no longer claimed.
 
 \subsection{Stage 2: Two-Stage Recall}\label{sec:recall}
 Recall is a BM25 stage followed by vector refinement and graph-neighbour
@@ -473,27 +468,12 @@ explicitly in \S\ref{sec:honest}.
 \subsection{Stage 4: Content Adjudication}\label{sec:adjudication}
 This is the stage that distinguishes \sys{} from a re-ranking pipeline.
 Each surviving candidate is \emph{read} --- the top of its text is loaded through
-the same document tool an agent would use --- and scored on three named
-dimensions:
-
-\begin{table}[t]
-\centering
-\small
-\caption{The content-adjudication rubric. Scores are produced at temperature $0$
-from the document text, not from its embedding.}
-\label{tab:rubric}
-\begin{tabular}{@{}llp{4.6cm}@{}}
-\toprule
-Dimension & Range & Criterion \\
-\midrule
-Topic relevance & 0--3 & 3 = directly about the query subject \\
-Scenario match & 0--3 & 3 = addresses the query's actual problem \\
-Answer evidence & 0--2 & 2 = carries citable data, steps or conclusions \\
-\midrule
-Total & 0--8 & \\
-\bottomrule
-\end{tabular}
-\end{table}
+the same document tool an agent would use --- and scored at temperature $0$ on
+three named dimensions totalling $0$--$8$: \emph{topic relevance} ($0$--$3$;
+$3$ = directly about the query subject), \emph{scenario match} ($0$--$3$;
+$3$ = addresses the query's actual problem), and \emph{answer evidence}
+($0$--$2$; $2$ = carries citable data, steps or conclusions). Scores come from
+the document text, not from its embedding.
 
 The decision rule makes the adjudication authoritative:
 \begin{equation}
@@ -513,13 +493,11 @@ with $s(d)=0.95$ and $c(d)=3$ is discarded. This is the operational content of
 Three properties follow. The verdict is \emph{interpretable} (which dimension
 failed), \emph{auditable} (the read text and scores are recorded, so a result
 can be justified after the fact), and \emph{separable} (adjudication can be
-disabled --- exactly what the ablation does). The benchmark harness implements
-the production retrieval procedure up to this stage --- candidate recall,
-thresholding, adjudication and re-ranking, reading the same document tool an
-agent uses --- and exercises three verification reads per query (the skill
-recommends up to five; the depth is ablated in \S\ref{sec:ablation}). The
-downstream stages (tag-based query expansion and answer synthesis) are not
-exercised by the harness, so claims here are about the retrieval core. The cost is latency: the
+disabled --- exactly what the ablation does). The harness implements the
+production procedure through re-ranking (recall, thresholding, adjudication via
+the same document tool an agent uses; three verification reads per query, depth
+ablated). Tag expansion and answer synthesis are not exercised, so our claims
+concern the retrieval core. The cost is latency: the
 adjudicator reads on average $3{,}939$ characters per query in-house and
 $4{,}266$ on SciFact, which \S\ref{sec:honest} treats as a first-class result.
 
@@ -776,17 +754,17 @@ An earlier draft led with a 50-query internal benchmark (false-positive rate
 falling from $0.635$ to $0.348$, best P@1 $0.457$, significant advantage over a
 hybrid baseline). \textbf{We have removed it.} A provenance audit found that its
 artefacts --- \texttt{cikm\_summary.json}, \texttt{figure1\_comparison.json},
-\texttt{table1\_main.tex}, \texttt{table3\_ablation.tex} and the
-\texttt{results/v4/} statistics --- have \emph{no producing script anywhere in
-the repository} (an exhaustive search over 417 code files found no writer); the
-only benchmark runner present is a standalone BM25 script over $\sim$30
-synthetic abstracts with no vector index, no adjudication and no LLM. Four
-audit facts compound the problem: the family's ablation ran on \textbf{eight}
-queries, not the fifty its caption implied; its significance was a paired
-$t$-test on Recall@5 with four \emph{negative} $t$-statistics, i.e.\ a deficit
-presented as an advantage; its false-positive rate was defined over returned
-documents only, so abstention scored zero by construction; and one table
-statistic was a hard-coded literal mislabelling a mean as a median.
+\texttt{table1\_main.tex}, \texttt{table3\_ablation.tex}, \texttt{results/v4/}
+--- have \emph{no producing script anywhere in the repository} (an exhaustive
+search over 417 code files found no writer); the only runner present is a
+standalone BM25 script over $\sim$30 synthetic abstracts with no vector index,
+no adjudication and no LLM. Four audit facts compound this: the family's
+ablation ran on \textbf{eight} queries, not the fifty its caption implied; its
+significance was a paired $t$-test on Recall@5 whose four $t$-statistics were
+\emph{negative}, a deficit presented as an advantage; the false-positive rate
+was defined over returned documents only, so abstention scored zero by
+construction; and one statistic was a hard-coded literal mislabelling a mean as
+a median.
 
 The corrective is procedural, and is the paper's most transferable lesson:
 \textbf{every table must name its producing script, and the script must write
@@ -872,14 +850,16 @@ same word-matching verification \emph{mis}-ranks, and the adjudicated
 configuration is significantly worse than its own recall stage ($-0.061$ nDCG@10,
 $p{=}0.018$). Verification promotes documents whose \emph{text} matches the
 question's terms; when neither candidate's text matches, the heuristic has no
-signal and its re-ordering is noise. The cost side is unchanged and measured:
-adjudication read on average
-$4{,}266$ characters per query on SciFact with a low verification pass rate,
-i.e.\ it spent latency re-reading documents dense retrieval had already ranked
-well. Per-method coverage on the multi-domain set is reported as gold recall
-(Recall@2/Recall@5, Table~\ref{tab:hotpot}) together with the blind-spot
-analysis of \S\ref{sec:blindspot}, replacing a false-positive rate that
-abstention could game.
+signal and its re-ordering is noise. This is not recoverable by a query-level
+trigger: splitting the fifty queries at the median query-to-gold-title overlap,
+adjudication is worse in \emph{both} strata (low $n{=}27$: Hit@1 $-0.185$; high
+$n{=}23$: $-0.217$). The cost side is unchanged and measured: adjudication read
+on average $4{,}266$ characters per query on SciFact with a low verification
+pass rate, i.e.\ it spent latency re-reading documents dense retrieval had
+already ranked well. Per-method coverage on the multi-domain set is reported as
+gold recall (Recall@2/Recall@5, Table~\ref{tab:hotpot}) together with the
+blind-spot analysis of \S\ref{sec:blindspot}, replacing a false-positive rate
+that abstention could game.
 
 \input{generated/tables/tab-scifact.tex}
 % fig-scifact removed (duplicated Table scifact numbers; page budget)
@@ -936,22 +916,6 @@ errors. With \S\ref{sec:honest} this yields the paper's bounded conclusion:
 adjudication repairs rank-1 errors when query and evidence share vocabulary,
 does not improve --- and can significantly hurt --- full ranking when they do
 not.
-
-Two further analyses sharpen the boundary. \emph{(i) Overlap strata:} splitting
-the fifty queries at the median of query-to-gold-title lexical overlap,
-adjudication is worse in \emph{both} strata (low overlap $n{=}27$: Hit@1
-$-0.185$; high overlap $n{=}23$: $-0.217$), so an overlap-conditioned router
-between adjudicated and plain staged retrieval cannot recover the loss on this
-benchmark --- the beneficial regime (the \texttt{sf-002} pattern) is not
-recoverable by query-level overlap alone. \emph{(ii) Routing oracle:}
-restricting retrieval to the gold base --- even taking the best per-gold-base
-result --- \emph{lowers} two-stage nDCG@10 from $0.841$ to at most $0.795$,
-because single-base restriction is structurally fatal for cross-base gold
-queries and cross-base distraction does not crowd out gold documents at this
-scale. Both results, producers \texttt{65\_stratified.py} and
-\texttt{64\_routing\_oracle.py}, strengthen the paper's restraint: neither
-adjudication nor scoping earns a claim on this benchmark, and the mechanisms'
-value --- if any --- must be sought in larger-corpus or higher-overlap regimes.
 
 \paragraph{In-house corpus and answerability.}
 On the in-house bilingual corpus (Table~\ref{tab:inhouse}) the picture is
@@ -1029,24 +993,14 @@ and the ordering is stable under a re-worded judge prompt
 ($5.25$ / $4.00$ / $2.75$). One incident reported for completeness: in a
 first sample the summariser received empty inputs from a harness path bug and
 \emph{refused to invent lessons} --- the honest-refusal behaviour the platform
-designs for, in an unexpected place. Producer:
-\texttt{40\_experience\_suite.py}, \texttt{42\_e4\_fix.py},
+designs for, in an unexpected place. \emph{Judge reliability:} the same 24
+judge calls scored twice (original and independently worded prompt, one rubric)
+agree moderately --- exact $25\%$, within one point $62.5\%$, mean
+$|\Delta|{=}1.13$, $r{=}0.716$, $\kappa{=}0.40$ on the binarised ``usable''
+decision --- so effects above $\sim$1 point survive (our gaps are $2.3$--$2.4$)
+while sub-point differences do not; this is an LLM--LLM agreement, not a human
+study. Producer: \texttt{40\_experience\_suite.py}, \texttt{42\_e4\_fix.py},
 \texttt{66\_judge\_agreement.py}; transcripts archived.
-
-\paragraph{Judge reliability.}
-Because every quality score in \S\ref{sec:exp-analysis} comes from an LLM
-judge, we measure the judge itself: the same 24 judge calls (8 queries
-$\times$ 3 materials) were scored twice, by the original prompt and by an
-independently worded prompt with the same rubric. Agreement is
-\emph{moderate}: exact-score agreement $25\%$, within-one-point $62.5\%$,
-mean absolute difference $1.13$, Pearson $r{=}0.716$, and Cohen's
-$\kappa{=}0.40$ on the binarised ``usable'' decision (score $\ge 5$). We
-report this as an \emph{LLM--LLM} agreement over identical materials --- it is
-not the human inter-annotator study a full validation would require --- but it
-bounds how finely the reader should trust any single judge score: treatment
-effects larger than $\sim$1 point (the ours-vs-baseline gaps above are
-$2.3$--$2.4$) survive judge noise; sub-point differences do not. Producer:
-\texttt{66\_judge\_agreement.py}.
 
 \subsection{RQ6: End-to-End Verification of the Agent Surface}\label{sec:e2e}
 We exercised the externally reachable surface with an independently written
@@ -1118,11 +1072,10 @@ set; it would not be viable in a latency-critical single-domain setting, where
 on the evidence of \S\ref{sec:honest} we do not recommend it.
 
 \paragraph{Evaluation scale.}
-The public-benchmark evaluations are moderate: 30 SciFact queries, 50
-multi-domain HotpotQA queries and 16 SQuAD questions --- the last at ceiling,
-reported for completeness. The HotpotQA partition shows the approach scales to
-a multi-base public corpus; a full-BEIR evaluation is the obvious next step,
-and we do not claim it here. A 32-question XQuAD subset was also collected through
+The public evaluations are moderate: 30 SciFact queries, 50 multi-domain
+HotpotQA queries, 16 SQuAD questions (at ceiling, reported for completeness).
+The HotpotQA partition shows the approach scales to a multi-base public corpus;
+a full-BEIR evaluation is the obvious next step, and we do not claim it here. A 32-question XQuAD subset was also collected through
 committed scripts, and we report it rather than omitting it: both methods
 saturate ranking (Hit@5 $1.000$, MRR $1.000$) and the only separating metric is
 Precision@5, where the adjudicated configuration scores $0.275$ against dense
@@ -1171,8 +1124,9 @@ with their evidence --- it fixes real top-rank errors on SciFact and achieves
 the best answer@1 on the multi-domain benchmark --- while significantly hurting
 full ranking on multi-hop questions with little lexical overlap; ingestion is
 lossless; the lifecycle contains unstable generation safely but does not make
-it reliable; and the routing layer remains unmeasured. Negative results of this
-kind tell the next system where the mechanism stops working.
+it reliable; and scoping shows no gain even under an oracle at this scale.
+Negative results of this kind tell the next system where the mechanism stops
+working.
 
 % =====================================================================
 \section*{GenAI Usage Disclosure}
