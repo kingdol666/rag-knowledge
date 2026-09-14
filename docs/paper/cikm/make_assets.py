@@ -322,11 +322,32 @@ def _dr_mean(method, key):
     return sum(vals) / len(vals) if vals else None
 
 
-dr_cols = ["hit@1", "hit@5", "recall@5", "ndcg@10", "mrr"]
-best = {c: max(_dr_mean(m, c) or 0 for m in DR_ORDER) for c in dr_cols}
+SF_SUM = load("module_b_std2_r2.json")["summary"]["scifact"]
+
+DR_ORDER = ["dense_rag", "dense_rag_rerank", "itrg_refresh", "itrg_refine",
+            "raptor", "search_o1", "deepread", "qdcvr"]
+DR_LABEL = {
+    "dense_rag": "Dense RAG (chunk 800/400, top-10)",
+    "dense_rag_rerank": "Dense RAG + reranker (30$\\to$10)",
+    "itrg_refresh": "ITRG (refresh, 4 rounds $\\times$ top-6)",
+    "itrg_refine": "ITRG (refine, 4 rounds $\\times$ top-6)",
+    "raptor": "RAPTOR (collapsed tree, top-10)",
+    "search_o1": "Search-o1 (agentic, 2 chunks/turn, cap 8)",
+    "deepread": "DeepRead (locate-then-read, cap 8)",
+    "qdcvr": "\sys{} (two-stage + content adjudication)",
+}
+
+
+def _dr_mean(method, key):
+    rows = DR["retrieval_rows"].get(method) or []
+    vals = [r[key] for r in rows if isinstance(r.get(key), (int, float))]
+    return sum(vals) / len(vals) if vals else None
+
+
+DR_COLS = ["hit@1", "hit@3", "hit@5", "recall@5", "ndcg@10", "mrr"]
+best = {c: max(_dr_mean(m, c) or 0 for m in DR_ORDER) for c in DR_COLS}
 best_judge = max((DR["summary"]["judge"].get(m) or {}).get("mean_score") or 0
                  for m in DR_ORDER)
-best_mrp = min(API["summary"][m]["mean_middle_rank_pos"] for m in DR_ORDER)
 dr_rows = []
 for m in DR_ORDER:
     agg = DR["summary"]["retrieval"][m]
@@ -334,7 +355,7 @@ for m in DR_ORDER:
     mrp = API["summary"][m]["mean_middle_rank_pos"]
     wins = API["summary"][m]["middle_agent_wins"]
     cells = []
-    for c in dr_cols:
+    for c in DR_COLS:
         v = agg[c]
         cell = f"{v:.3f}"
         if abs(v - best[c]) < 1e-9:
@@ -343,46 +364,52 @@ for m in DR_ORDER:
     jcell = f"{j:.2f}"
     if j is not None and abs(j - best_judge) < 1e-9:
         jcell = "\\textbf{" + jcell + "}"
-    mcell = f"{mrp:.2f}"
-    if abs(mrp - best_mrp) < 1e-9:
-        mcell = "\\textbf{" + mcell + "}"
     dr_rows.append(f"{DR_LABEL[m]} & " + " & ".join(cells)
-                   + f" & {jcell} & {mcell} & {wins} \\\\")
-dr_replay_same = json.dumps(DR["summary"]["retrieval"], sort_keys=True) == \
-    json.dumps(DR_REPLAY["summary"]["retrieval"], sort_keys=True)
+                   + f" & {jcell} & {mrp:.2f} & {wins} \\\\")
+dr_replay_same = json.dumps(DR["summary"]["retrieval"], sort_keys=True) ==     json.dumps(DR_REPLAY["summary"]["retrieval"], sort_keys=True)
+
+# Suite-channel reference rows (BM25 / Two-stage, from Module B std2):
+# these channels were answered with the same agent but carry no middle-agent
+# ranking, so their Judge/Rank/Wins cells are dashes.
+suite_rows = []
+for key, label in (("bm25", "BM25 (sparse stage-1)"),
+                   ("twostage", "Two-stage (recall stage of \sys{})")):
+    m = SF_SUM[key]
+    suite_rows.append(
+        f"{label} & {m['hit@1']:.3f} & {m['hit@3']:.3f} & {m['hit@5']:.3f} & "
+        f"{m['recall@5']:.3f} & {m['ndcg@10']:.3f} & {m['mrr']:.3f} & "
+        f"--- & --- & --- \\\\")
+all_rows = suite_rows + dr_rows
+
 w("tables/tab-deepread.tex", r"""\begin{table*}[t]
 \centering
 \footnotesize
-\setlength{\tabcolsep}{3.6pt}
-\caption{Main comparison on the BEIR SciFact corpus (148 documents ingested
-through the production pipeline; 30 official queries, official relevance
-judgements). All eight systems retrieve over the \emph{same} corpus and answer
-the \emph{same} frozen questions; answers are produced by one shared agent
-under a uniform 4{,}000-character evidence budget, then graded 0--10 by an
-independent agent that receives the gold document (Judge). A middle agent then
-ranks the eight anonymised answers per question given the gold evidence: Mean
-rank = average position (1 = best of 8); Wins = first places. The right three
-columns come from an HTTP-driven rerun that is byte-identical to the offline
-run (480/480 consistency checks). Setting reproduced from
-\citet{li2026deepread} on a claim-verification corpus.}
+\setlength{\tabcolsep}{3.2pt}
+\caption{Main comparison on BEIR SciFact (148 documents through the production
+pipeline; 30 official queries and qrels). Rows 1--2: suite channels; rows
+3--10: reproduced DeepRead-style systems, answered through one shared agent
+(4{,}000-char evidence budget) and graded 0--10 by an independent agent given
+the gold document; Rank/Wins come from a middle agent ranking the eight
+anonymised answers (HTTP rerun, byte-identical offline, 480/480 checks).
+Setting reproduced from \citet{li2026deepread}.}
 \label{tab:deepread}
-\begin{tabular}{@{}lccccc ccc@{}}
+\begin{tabular}{@{}lccccccccc@{}}
 \toprule
-& H@1 & H@5 & R@5 & nDCG@10 & MRR & Judge & Rank & Wins \\
+& H@1 & H@3 & H@5 & R@5 & nDCG@10 & MRR & Judge & Rank & Wins \\
 \midrule
-""" + "\n".join(dr_rows) + r"""
+""" + "\n".join(all_rows) + r"""
 \bottomrule
 \end{tabular}
 
 \vspace{2pt}
-\parbox{\textwidth}{\scriptsize H@$k$ = Hit@$k$; R@5 = Recall@5; nDCG@10 =
-normalised discounted cumulative gain at 10 (official qrels). Judge grades are
-LLM-as-judge with the gold evidence injected; a multi-grader robustness check
-was not possible in our environment (single agent channel) and is stated as a
-limitation. Deviations from the original settings are registered in the
-reproduction notes (reranker surrogate, turn cap 8, 4 chars/token).}
+\parbox{\textwidth}{\scriptsize H@$k$ = Hit@$k$; R@5 = Recall@5; nDCG@10 over
+official qrels. Judge = LLM-as-judge with the gold evidence injected;
+multi-grader robustness was not possible here (single agent channel).
+Deviations from the original settings are in the reproduction notes.}
 \end{table*}
 """)
+print(f"  E16 replay summary identical: {dr_replay_same}")
+
 print(f"  E16 replay summary identical: {dr_replay_same}")
 
 # Behaviour table: per-system retrieval cost and behaviour, means over the
