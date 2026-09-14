@@ -43,6 +43,7 @@ def main() -> int:
     case, casep = load("motivating_case.json")
     drm, drmp = load("deepread_matrix.json")
     ops, opsp = load("platform_ops_eval.json")
+    apim, apimp = load("api_matrix.json")
     env = env_fingerprint()
 
     md: list[str] = []
@@ -68,6 +69,7 @@ def main() -> int:
         ("E4 双基线同判 (no-synthesis / LLM-summary / ours)", suite1, f"`{s1p}`"),
         ("E12 动机案例挖掘 (TODO-1)", case, f"`{casep}`"),
         ("E16 DeepRead 基线矩阵 (30 查询 × 8 方法, omp RPC 作答+第三方判分)", drm, f"`{drmp}`"),
+        ("E16b API 全流程 (HTTP 选算法问答 + 中间 Agent 排名)", apim, f"`{apimp}`"),
         ("E17 平台整理功能评价 (去重/标签/图谱/目录)", ops, f"`{opsp}`"),
     ]
     for name, ok, p in rows_status:
@@ -244,6 +246,31 @@ def main() -> int:
         n_qa = len(drm.get("qa") or [])
         md.append(f"问答记录: {n_qa} 条(每查询×方法), 全文见同 run 目录 "
                   "`deepread_qa_transcripts.md`。")
+        md.append("")
+
+    # E16b API flow test
+    if apim:
+        s = apim["summary"]
+        cons = apim["meta"].get("consistency_vs_e16_cache") or {}
+        md.append("## E16b · API 全流程 — HTTP 选择检索算法问答 + 中间 Agent 排名")
+        md.append("")
+        md.append(f"- 服务: `{apim['meta']['api']}`（仅绑定本机）· 查询 "
+                  f"{apim['meta']['queries']} 条 × {len(apim['meta']['methods'])} 方法 · "
+                  f"与 E16 缓存一致性核对 {cons.get('checked', 0)} 项 / "
+                  f"不一致 {cons.get('mismatches', 0)} → "
+                  f"{'✅ 逐字一致' if cons.get('ok') else '❌'}。")
+        md.append("")
+        md.append("| 方法 | Hit@1 | R@5 | nDCG@10 | 第三方判分 | 中间Agent均位 | 首位次数 |")
+        md.append("|---|---|---|---|---|---|---|")
+        for m, v in s.items():
+            md.append(f"| {m} | {fmt(v.get('hit@1'))} | {fmt(v.get('recall@5'))} | "
+                      f"{fmt(v.get('ndcg@10'))} | {fmt(v.get('mean_judge'), 2)} | "
+                      f"{fmt(v.get('mean_middle_rank_pos'), 2)} | "
+                      f"{v.get('middle_agent_wins', 0)} |")
+        md.append("")
+        md.append("中间 Agent(独立 omp 进程)对每条查询的 8 份匿名答案(A-H)按金标"
+                  "证据排名打分; 首位次数=排名第一的查询数。并排问答全文见同 run "
+                  "目录 `api_side_by_side.md`。")
         md.append("")
 
     # E17 platform ops eval

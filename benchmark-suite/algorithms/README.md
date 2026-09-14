@@ -55,6 +55,33 @@ python run_matrix.py --stage report          # → results/run-*/deepread_matrix
   复用; 独立调用走 `omp -p --mode=json`, 与平台 harness 同款)。模型以本机
   omp 配置为准(实测 provider=ustc, deepseek-flash)。
 
+## API 模式 — 通过 HTTP 选择检索算法问答(127.0.0.1:8790)
+
+```bash
+cd benchmark-suite/algorithms
+python api_server.py &           # 仅绑定 127.0.0.1; 启动时加载 148 篇金标全文
+curl -s http://127.0.0.1:8790/health
+curl -s -X POST http://127.0.0.1:8790/ask \
+     -H "Content-Type: application/json" \
+     -d '{"method":"qdcvr","qid":"sf-003","judge":true}'
+curl -s -X POST http://127.0.0.1:8790/compare \
+     -H "Content-Type: application/json" \
+     -d '{"qid":"sf-003","rank":true}'   # 8 方法同题并答 + 中间 Agent 匿名排名
+# 全流程测试(同问题×8方法, 指标+判分+中间Agent排名, 并与 E16 缓存逐字核对):
+cd .. && python scripts/27_api_flow_test.py      # BENCH_LIMIT=2 冒烟
+```
+
+| 路由 | 作用 |
+|---|---|
+| `GET /health` | 存活 + 方法清单 + 语料/查询规模 |
+| `GET /methods` | 8 算法注册表与论文对应 |
+| `GET /questions` | 30 条冻结查询 |
+| `POST /ask` | `{method, qid|question, judge}` → 指标 + 回答 + 判分 |
+| `POST /compare` | `{qid, methods?, rank}` → 同题多算法并答 + 中间 Agent 排名 |
+
+`/ask`、`/compare` 与 run_matrix 共用同一缓存与同一冻结 prompt ⇒ 任何通过 API
+取得的结果与离线矩阵逐字一致(由 27 号脚本的 consistency 断言验证)。
+
 ## E17 平台整理功能评价(去重/标签/图谱)
 
 `../scripts/26_platform_ops_eval.py`: 一次性 KB 植入 9 篇文档与 2 组重复

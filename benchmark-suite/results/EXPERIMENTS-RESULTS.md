@@ -1,7 +1,7 @@
 # EXPERIMENTS-RESULTS — 论文实验真实运行结果
 
-> 由 `scripts/70_build_report.py` 自动汇整 · 2026-09-14T19:49:08.018054+00:00
-> 运行身份: git `2747376` · config `49279bd832721704` · seed 0 · 全部数字来自 `results/run-*/` 下的真实运行 JSON
+> 由 `scripts/70_build_report.py` 自动汇整 · 2026-09-14T20:09:10.775440+00:00
+> 运行身份: git `be7e153` · config `49279bd832721704` · seed 0 · 全部数字来自 `results/run-*/` 下的真实运行 JSON
 
 ## 0. 执行清单与产物
 
@@ -15,7 +15,8 @@
 | E6 衰减敏感性 (7/14/30/90d) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260914T054035Z\experience_suite_1.json` |
 | E4 双基线同判 (no-synthesis / LLM-summary / ours) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260914T054035Z\experience_suite_1.json` |
 | E12 动机案例挖掘 (TODO-1) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260913T161241Z\motivating_case.json` |
-| E16 DeepRead 基线矩阵 (30 查询 × 8 方法, omp RPC 作答+第三方判分) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260914T194057Z\deepread_matrix.json` |
+| E16 DeepRead 基线矩阵 (30 查询 × 8 方法, omp RPC 作答+第三方判分) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260914T194908Z\deepread_matrix.json` |
+| E16b API 全流程 (HTTP 选算法问答 + 中间 Agent 排名) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260914T200811Z\api_matrix.json` |
 | E17 平台整理功能评价 (去重/标签/图谱/目录) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260914T171821Z\platform_ops_eval.json` |
 
 ## E1 · 消融实验 — 与主表同查询集（SciFact 30 查询, 官方 qrels）
@@ -149,6 +150,23 @@ harness 复现与线上 API 的 top-3 判定一致度：{'hit3_match_api': 1, 'n
 | deepread | 0.567 | 0.733 | 0.694 | 0.635 | 0.639 | 0.443 | 8.13 | 30 |
 
 问答记录: 240 条(每查询×方法), 全文见同 run 目录 `deepread_qa_transcripts.md`。
+
+## E16b · API 全流程 — HTTP 选择检索算法问答 + 中间 Agent 排名
+
+- 服务: `http://127.0.0.1:8790`（仅绑定本机）· 查询 30 条 × 8 方法 · 与 E16 缓存一致性核对 480 项 / 不一致 0 → ✅ 逐字一致。
+
+| 方法 | Hit@1 | R@5 | nDCG@10 | 第三方判分 | 中间Agent均位 | 首位次数 |
+|---|---|---|---|---|---|---|
+| qdcvr | 0.700 | 0.833 | 0.784 | 7.70 | 5.63 | 3 |
+| dense_rag | 0.733 | 0.900 | 0.834 | 8.93 | 4.63 | 2 |
+| dense_rag_rerank | 0.900 | 0.933 | 0.921 | 8.67 | 3.77 | 5 |
+| raptor | 0.733 | 0.856 | 0.817 | 8.37 | 4.20 | 4 |
+| itrg_refresh | 0.833 | 0.933 | 0.896 | 8.30 | 4.53 | 3 |
+| itrg_refine | 0.733 | 0.900 | 0.845 | 8.53 | 4.17 | 3 |
+| search_o1 | 0.800 | 0.844 | 0.811 | 8.70 | 4.60 | 3 |
+| deepread | 0.567 | 0.694 | 0.635 | 8.13 | 4.47 | 7 |
+
+中间 Agent(独立 omp 进程)对每条查询的 8 份匿名答案(A-H)按金标证据排名打分; 首位次数=排名第一的查询数。并排问答全文见同 run 目录 `api_side_by_side.md`。
 
 ## E17 · 平台整理功能评价（去重 / 标签 / 图谱 / 目录完整性）
 

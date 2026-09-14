@@ -236,3 +236,21 @@ cd .. && RAG_BENCH_WEB_URL=http://localhost:6789 python scripts/26_platform_ops_
   LLM 通道(重排序、假设句、agentic 轨迹、作答、判分)按 §7 的 LLM 容差判读。
 - 产物: `deepread_matrix.json`(汇总+逐查询行)、`deepread_qa_transcripts.md`
   (完整问答记录)、`platform_ops_eval.json`(E17)。
+### 10b. E16b · API 模式 — 通过 HTTP 选择检索算法问答（集成在流程内）
+
+```bash
+cd benchmark-suite/algorithms
+python api_server.py &                # 仅绑定 127.0.0.1:8790; 启动加载 148 金标全文
+# 存活/注册表/冻结查询:
+curl -s http://127.0.0.1:8790/health
+# 单方法问答(检索指标 + 统一作答 + 第三方判分):
+curl -s -X POST http://127.0.0.1:8790/ask -H "Content-Type: application/json"      -d '{"method":"qdcvr","qid":"sf-003","judge":true}'
+# 同一问题 8 算法并答 + 中间 Agent 匿名排名打分:
+curl -s -X POST http://127.0.0.1:8790/compare -H "Content-Type: application/json"      -d '{"qid":"sf-003","rank":true}'
+# 全流程测试(30 查询 × 8 方法, 指标+判分+中间Agent排名, 并与 E16 缓存逐字核对):
+cd .. && python scripts/27_api_flow_test.py   # BENCH_LIMIT=2 冒烟
+# → results/run-*/api_matrix.json + api_side_by_side.md
+```
+
+API 与离线矩阵共用同一缓存与冻结 prompt ⇒ 结果逐字一致(27 号脚本内置
+consistency 断言, checked/mismatches 落盘 api_matrix.json)。

@@ -208,23 +208,44 @@ class OmpOneshot(OmpBase):
 
 
 def extract_json(text: str):
-    """从回复中取第一个 JSON 对象/数组(容忍 ```json 围栏)。"""
+    """从回复中取第一个 JSON 值(容忍 ```json 围栏)。
+
+    同时尝试 '{' 与 '[' 两种括号, 取出现更早且括号平衡解析成功者 —
+    旧实现先扫 '{' 会把数组里的第一个元素当整体返回, 导致 rank 类
+    数组输出被判失败。字符串内的括号/引号已做转义感知。
+    """
     fence = re.search(r"```(?:json)?\s*(.+?)```", text, re.S)
     body = fence.group(1) if fence else text
-    for start_ch, end_ch in (("{", "}"), ("[", "]")):
-        start = body.find(start_ch)
+    candidates = []
+    for open_ch, close_ch in (("{", "}"), ("[", "]")):
+        start = body.find(open_ch)
         if start < 0:
             continue
         depth = 0
+        in_str = False
+        esc = False
         for i in range(start, len(body)):
-            if body[i] == start_ch:
-                depth += 1
-            elif body[i] == end_ch:
-                depth -= 1
-                if depth == 0:
-                    try:
-                        return json.loads(body[start:i + 1])
-                    except json.JSONDecodeError:
+            ch = body[i]
+            if in_str:
+                if esc:
+                    esc = False
+                elif ch == "\\":
+                    esc = True
+                elif ch == '"':
+                    in_str = False
+            else:
+                if ch == '"':
+                    in_str = True
+                elif ch == open_ch:
+                    depth += 1
+                elif ch == close_ch:
+                    depth -= 1
+                    if depth == 0:
+                        candidates.append((start, i + 1))
                         break
-        break
+    for start, end in sorted(candidates):
+        try:
+            return json.loads(body[start:end])
+        except json.JSONDecodeError:
+            continue
     return None

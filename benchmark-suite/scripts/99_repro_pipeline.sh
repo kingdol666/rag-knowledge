@@ -76,6 +76,12 @@ say "E16 DeepRead baseline matrix (30 queries x 8 methods, omp RPC agent)"
 say "E17 platform ops eval (dedup/tags/graph)"
 RAG_BENCH_WEB_URL=http://localhost:6789 python scripts/26_platform_ops_eval.py 2>&1 | tail -4
 
+say "E16b API flow test (8 methods x 30 queries via HTTP, middle-agent ranking)"
+( cd algorithms && python api_server.py > api_server.log 2>&1 & )
+sleep 40
+curl -s -m 10 http://127.0.0.1:8790/health | head -c 120; echo ""
+python scripts/27_api_flow_test.py 2>&1 | tail -6
+
 say "reports"
 python scripts/04_report.py 2>&1 | tail -2
 python scripts/70_build_report.py 2>&1 | tail -2
