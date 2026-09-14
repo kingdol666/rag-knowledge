@@ -233,7 +233,9 @@ Method & Hit@1 & Hit@3 & R@5 & nDCG@10 & MRR & P@5 & Lat. \\
 BL = MB["summary"]["by_lang"]
 # Nine columns do not fit a sigconf column: split into two stacked blocks.
 lang_rows = []
-for code, label, n in (("en", "English", BL["en"]["n"]), ("zh", "Chinese", BL["zh"]["n"])):
+for code, label, n in (("en", "English", BL["en"]["n"]),
+                       ("zh", "Chinese", BL["zh"]["n"]),
+                       ("ja", "Japanese", BL["ja"]["n"])):
     s, v = BL[code]["staged"], BL[code]["vector"]
     lang_rows.append(
         f"{label} ($n{{=}}{n}$) & {s['hit@1']:.3f} & {s['hit@5']:.3f} & {s['recall@5']:.3f} "
@@ -249,9 +251,11 @@ w("tables/tab-inhouse.tex", r"""\begin{table}[t]
 \centering
 \footnotesize
 \setlength{\tabcolsep}{3.2pt}
-\caption{In-house corpus (20 queries over 13 KBs). \sys{} here means two-stage
-recall followed by \texttt{kb\_doc\_read} content adjudication; \emph{Dense} is
-one-shot vector retrieval over the same index.}
+\caption{In-house demo corpus (20 queries over three knowledge bases holding 16
+documents: 15 Markdown in English, Chinese and Japanese plus one PDF parsed
+through the production MinerU path). \sys{} here means two-stage recall followed
+by \texttt{kb\_doc\_read} content adjudication; \emph{Dense} is one-shot vector
+retrieval over the same index.}
 \label{tab:inhouse}
 \begin{tabular}{@{}lcccccccc@{}}
 \toprule

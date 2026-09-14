@@ -1,0 +1,54 @@
+{
+ "experiment": "E17 system scale (measured, not hard-coded)",
+ "measured": {
+  "mcp_tools": 94,
+  "knowledgebase_skills": 14,
+  "skills_total": 20,
+  "agent_engines": 14,
+  "backend_openapi_paths": 114,
+  "backend_openapi_operations": 121,
+  "backend_api_v1_paths": 113,
+  "web_route_files": 124,
+  "embedding": "BGE-M3 (1024-d, L2-normalised)",
+  "live_knowledge_bases": 3,
+  "live_documents": 15
+ },
+ "live_kbs": [
+  {
+   "name": "KB-Demo-EN",
+   "docs": 7
+  },
+  {
+   "name": "KB-Demo-ZH",
+   "docs": 4
+  },
+  {
+   "name": "KB-Demo-JA",
+   "docs": 4
+  }
+ ],
+ "meta": {
+  "generated": "2026-09-14T04:01:12.217653+00:00",
+  "env": {
+   "run_id": "run-20260914T040112Z",
+   "git_commit": "1f2092a",
+   "config_hash": "49279bd832721704",
+   "seed": 0,
+   "backend": "http://localhost:8771",
+   "web": "http://localhost:6790",
+   "embedding": "BAAI/bge-m3 (local GPU, normalize)",
+   "vector_store": "ChromaDB (persistent)",
+   "keyword_index": "jieba BM25",
+   "randomness": "deterministic pipeline (no RNG); agent channel = mean of runs",
+   "retrieval_defaults": {
+    "vector_top_k": 10,
+    "stage1_top_k": 40,
+    "stage2_top_k": 10,
+    "qdcvr_threshold": 0.35,
+    "verification_reads": 3,
+    "exp_threshold_default": 0.45
+   },
+   "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
+  }
+ }
+}

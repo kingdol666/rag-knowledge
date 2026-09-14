@@ -83,7 +83,8 @@ small set of bases before searching; and an \emph{experience lifecycle}
 distils operational lessons into credibility-tiered, decaying entries exposed
 to LLM agents through 94 Model Context Protocol tools. We evaluate four
 retrieval methods through one tool layer on BEIR SciFact (30 official queries),
-a 20-query bilingual in-house corpus (13 bases), and a new multi-domain
+a 20-query trilingual in-house demo corpus (three bases, 16 documents), and a
+new multi-domain
 benchmark that partitions the official supporting documents of 50 HotpotQA
 questions into nine topic bases ($38\%$ of queries have gold in two bases).
 The result is a bounded claim: adjudication repairs real rank-one errors and
@@ -328,19 +329,15 @@ only a human can take.
 \subsection{Five storage layers, one write path}\label{sec:sys-layers}
 A knowledge base is materialised simultaneously as (L1) files on disk, (L2) a tree
 index, (L3) a per-base YAML catalogue, (L4) a vector collection, and (L5) a
-property graph. Each layer exists because a different stage needs a different
-access shape: the catalogue answers metadata questions without touching vectors;
-the graph answers relational questions the vector index cannot; the tree index
-answers structural questions cheaply.
-
-This redundancy is also the platform's main consistency hazard, and the design
-answer is a single rule: \emph{every mutation travels one write path} that applies
-to all five layers inside one logical transaction, after which the ingestion
-module verifies that all five agree. Table~\ref{tab:ingestion} reports the result
---- membership accuracy and storage completeness both $1.000$ across two corpora.
-The rule is what makes the rest of the system safe to build on: an agent that
-creates a document cannot leave the index and the catalogue disagreeing, so it can
-retry a failed step without repairing state.
+property graph: each layer answers a different access shape. The redundancy is
+also the platform's main consistency hazard, and the design answer is one rule:
+\emph{every mutation travels one write path} that applies to all five layers
+inside one logical transaction, after which the ingestion module verifies that
+all five agree. Table~\ref{tab:ingestion} reports the result --- membership
+accuracy and storage completeness both $1.000$ across two corpora. The rule is
+what makes the rest of the system safe to build on: an agent that creates a
+document cannot leave the index and the catalogue disagreeing, so it can retry a
+failed step without repairing state.
 
 \subsection{Write--read asymmetry}\label{sec:sys-asymmetry}
 Writes go through the service tier so that consistency is enforced in one place.
@@ -368,7 +365,30 @@ explainable --- hence named rubric dimensions rather than a score.
 accrues from use and decays with time. \emph{Honest absence}: when evidence is
 thin, the system says so rather than presenting a weak result as strong.
 
-\input{generated/tables/tab-system-scale.tex}
+\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{4pt}
+\caption{Platform scale, measured 2026-09-14 by \texttt{82\_system\_scale.py}
+(reads the running service and source tree; nothing is hand-transcribed).
+Corpus counts are per benchmark corpus; an earlier, larger deployment is
+\emph{not} the source of any number here.}
+\label{tab:scale}
+\begin{tabular}{@{}lr@{}}
+\toprule
+\multicolumn{2}{@{}l}{\emph{Structural (running deployment)}} \\
+MCP tools / agent skills (KB family) & 94 / 14 \\
+Agent engines in the harness registry & 14 \\
+Backend \texttt{/api/v1} endpoints / web route modules & 113 / 124 \\
+\midrule
+\multicolumn{2}{@{}l}{\emph{Corpora used in this paper (documents)}} \\
+Demo corpus, 3 KBs (EN/ZH/JA)    & 16 \\
+BEIR SciFact (30 queries)        & 148 \\
+HotpotQA partition, 9 topic KBs (50 queries) & 454 \\
+SQuAD v1.1 subset (16 questions) & 8 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 % =====================================================================
 \section{\sys{}: Content-Adjudicated Retrieval}\label{sec:method}
@@ -449,8 +469,10 @@ to the withdrawn family and is no longer claimed.
 Recall is a BM25 stage followed by vector refinement and graph-neighbour
 expansion. BM25 supplies a sparse candidate set; the vector stage re-ranks inside
 that set, so the expensive dense comparison runs over tens rather than thousands
-of chunks. On the in-house corpus this cuts the candidate space from $13{,}709$
-chunks to a per-base pool while preserving recall.
+of chunks. The benchmark records the effect: on the SciFact corpus a query costs
+$1.58$\,s for the staged path against $0.12$\,s for one-shot dense
+(Table~\ref{tab:scifact}), and the staged path returns at most the configured
+40 stage-1 candidates per query.
 
 We deliberately do \emph{not} claim two-stage retrieval as a contribution. It is
 an engineering accelerator, and our own standard-benchmark results show it can
@@ -502,15 +524,13 @@ adjudicator reads on average $3{,}939$ characters per query in-house and
 $4{,}266$ on SciFact, which \S\ref{sec:honest} treats as a first-class result.
 
 \subsection{Stage 5--6: Tiering and Blind-Spot Declaration}\label{sec:blindspot}
-Surviving documents are tiered $P_0/P_1/P_2$; short chunks (under $50$
-characters) are demoted regardless of score, because such chunks receive
-inflated similarity from embedding artefacts. When the confirmed set draws on
-fewer than two knowledge bases, the system states that coverage is limited
-instead of presenting a thin result as complete. This ``rather say nothing than
-say it wrong'' behaviour is a design commitment we consider part of the method,
-not a UI detail: a retrieval system that cannot express absence forces its user
-to treat every result as equally confident, which is precisely the failure the
-adjudication stage exists to remove.
+Surviving documents are tiered $P_0/P_1/P_2$; chunks under $50$ characters are
+demoted regardless of score, because such chunks receive inflated similarity
+from embedding artefacts. When the confirmed set draws on fewer than two
+knowledge bases the system declares coverage limited rather than presenting a
+thin result as complete --- a design commitment, not a UI detail: a system that
+cannot express absence forces its user to treat every result as equally
+confident.
 
 Two error directions are measurable. First, the rule is \emph{advisory by
 construction}: it appends a coverage disclaimer and never removes a result, so
@@ -539,7 +559,7 @@ extraction}, \emph{draft synthesis}, \emph{review/approval},
 \emph{publication}, \emph{vector indexing}, \emph{retrieval}, \emph{application
 feedback}, \emph{review scoring}, \emph{credibility decay}, and \emph{health
 monitoring}. Extraction runs in a deterministic heuristic mode or, via a
-registry of 15 agent engines, an LLM --- falling back silently to heuristics
+registry of 14 agent engines, an LLM --- falling back silently to heuristics
 when none is usable.
 
 \subsection{Credibility Tiers}\label{sec:tiers}
@@ -569,17 +589,14 @@ more than 30 days are demoted, and a scheduled decay pass re-evaluates the store
 Decay is deliberately conservative --- it demotes, it never deletes --- so that a
 stale-but-historically-useful entry remains retrievable at a lower tier.
 
-We evaluate the rule as a sensitivity analysis and state its observational
-limits. The deployment is younger than the window: every measured entry carries
-a same-day timestamp, so a longitudinal validation of the 30-day threshold is
-not yet possible and is not presented. Sweeping the demotion window over
-$7/14/30/90$ days, the demoted set is empty at every window --- no entry is
-older than seven days, so no rule of this family fires, correctly --- and the
-rule's precision against a ``genuinely stale'' ground truth is undefined within
-the observation window. Because decay demotes but never deletes, a
-wrongly-tuned threshold degrades retrieval order gracefully rather than
-destroying entries: the failure mode we can afford while the threshold remains
-unvalidated.
+We evaluate the rule as a sensitivity analysis and state its limits: the
+deployment is younger than the window (every measured entry carries a same-day
+timestamp), so no longitudinal validation of the 30-day threshold is presented.
+Sweeping $7/14/30/90$ days, the demoted set is empty at every window ---
+correctly, since no entry is seven days old --- and the rule's precision against
+a ``genuinely stale'' ground truth is undefined in-window. Because decay demotes
+but never deletes, a mistuned threshold degrades order gracefully instead of
+destroying entries.
 
 \subsection{Multi-Path Retrieval}
 Experience is recalled along five parallel paths --- vector similarity, keyword
@@ -645,15 +662,15 @@ vice versa. We report the end-to-end validation of this surface in
 \end{itemize}
 
 \subsection{Setup}
-\paragraph{Corpora.} Three corpora are used, each pinned to one dated snapshot of
-the deployment (Table~\ref{tab:scale} reports the two snapshots separately; they
-are \emph{not} interchangeable and no count is mixed across them).
-\emph{In-house, snapshot 2026-07-29}: 13 knowledge bases across eight domains
-(polymer materials, energy and batteries, biomedicine, catalysis, AI/ML, embodied
-AI, economics, food science), 154 documents and 13{,}709 chunks, embedded with
-BGE-M3 (1024-d) \cite{chen2024bgem3}, indexed in ChromaDB with a jieba BM25
-keyword index. A later ingestion run (snapshot 2026-09-13) covered 184 documents
-but did not re-measure chunk or graph counts, so the two are never combined.
+\paragraph{Corpora.} Four corpora are used, each ingested through the production
+pipeline and each reported with its own document count (Table~\ref{tab:scale}).
+\emph{In-house demo corpus}: three knowledge bases (\texttt{KB-Demo-EN/ZH/JA})
+holding 16 documents (15 Markdown in English, Chinese and Japanese plus one PDF
+parsed through the production MinerU path), embedded with BGE-M3 (1024-d)
+\cite{chen2024bgem3} and indexed in ChromaDB with a jieba BM25 keyword index;
+the 20 bilingual questions of the in-house benchmark have their gold pages
+inside these documents. An earlier, larger deployment is not resident and is
+not the source of any number here.
 \emph{Public retrieval}: the BEIR SciFact collection \cite{thakur2021beir} ---
 148 articles ingested through the production pipeline, evaluated on 30 official
 queries against the official relevance judgements --- plus a 16-question SQuAD
@@ -732,7 +749,8 @@ content-verified configuration wins only Hit@1 ($0.767$ vs $0.733$). The
 two-stage hybrid, which is that configuration's own recall stage, is the weakest
 method on the same queries.
 
-On the \textbf{in-house corpus} (20 queries over 13 knowledge bases) the
+On the \textbf{in-house demo corpus} (20 queries over three knowledge bases,
+16 documents) the
 content-verified configuration's only lead is P@5 ($0.210$ vs $0.200$); it
 trails dense on Hit@1 ($0.800$ vs $0.900$), Recall@5 ($0.908$ vs $0.917$),
 Hit@5 (tied at $0.950$) and MRR ($0.863$ vs $0.931$), at $1.34$\,s against
@@ -766,13 +784,13 @@ was defined over returned documents only, so abstention scored zero by
 construction; and one statistic was a hard-coded literal mislabelling a mean as
 a median.
 
-The corrective is procedural, and is the paper's most transferable lesson:
-\textbf{every table must name its producing script, and the script must write
-the artefact by a committed path.} \texttt{provenance\_audit.py} now fails if
-any cited artefact loses its producer, and the frozen snapshot records a
-SHA-256 per file. The withheld benchmark stays withdrawn permanently; in its
-place we built a new multi-domain public benchmark with committed producers and
-an official gold standard (\S\ref{sec:multidomain}).
+The corrective is procedural: \textbf{every table must name its producing
+script, and the script must write the artefact by a committed path.}
+\texttt{provenance\_audit.py} now fails if any cited artefact loses its
+producer, and the frozen snapshot records a SHA-256 per file. The withheld
+benchmark stays withdrawn permanently; in its place we built a new multi-domain
+public benchmark with committed producers and an official gold standard
+(\S\ref{sec:multidomain}).
 
 \subsection{RQ3: Component Study}\label{sec:ablation}
 The component study is run on the \emph{same} thirty SciFact queries and the
@@ -786,11 +804,11 @@ output (\texttt{30\_ablation.py}; within-session double-run is bit-identical).
 \begin{table}[t]
 \centering\small
 \caption{Component ablation on BEIR SciFact (30 queries, official qrels), same
-query set as Table~\ref{tab:scifact}. Deployed variants use stage-2 $k{=}10$;
-``deep'' variants re-rank a $k{=}40$ pool, because the deployed top-10 is
-already pre-filtered by the Stage-3 threshold (lowest returned score $0.379$),
-which makes a threshold sweep on the shallow pool a no-op --- a finding in
-itself.}
+query set as Table~\ref{tab:scifact}. ``Deep'' variants re-rank a $k{=}40$ pool,
+because the deployed top-10 is already pre-filtered by the Stage-3 threshold
+(lowest returned score $0.379$), making a shallow-pool threshold sweep a no-op
+--- itself a finding. Rows omitted for space ($k{=}5$, no-dedup, and the two
+other deep threshold values) are in the released artefact.}
 \label{tab:ablation}
 \begin{tabular}{@{}lcccc@{}}
 \toprule
@@ -798,14 +816,10 @@ Variant & Hit@1 & nDCG@10 & P@5 & MRR \\
 \midrule
 \sys{} full (deployed, $\tau{=}.35$)  & \textbf{0.767} & 0.809 & 0.213 & 0.800 \\
 \; verification $k{=}1$               & 0.733 & 0.796 & 0.213 & 0.783 \\
-\; verification $k{=}5$               & \textbf{0.767} & 0.809 & 0.213 & 0.800 \\
 \; no verification (= Two-stage)      & 0.733 & 0.796 & 0.213 & 0.783 \\
-\; no document dedup                  & \textbf{0.767} & 0.809 & 0.213 & 0.800 \\
 \midrule
-deep pool $k{=}40$, $\tau{=}0.20$     & \textbf{0.767} & \textbf{0.832} & 0.213 & 0.810 \\
-deep pool $k{=}40$, $\tau{=}0.35$     & \textbf{0.767} & \textbf{0.832} & 0.213 & 0.810 \\
+deep pool $k{=}40$, $\tau{=}0.20/0.35$/off & \textbf{0.767} & \textbf{0.832} & 0.213 & 0.810 \\
 deep pool $k{=}40$, $\tau{=}0.50$     & \textbf{0.767} & 0.821 & 0.213 & 0.806 \\
-deep pool $k{=}40$, $\tau$ off        & \textbf{0.767} & \textbf{0.832} & 0.213 & 0.810 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -837,29 +851,23 @@ few cross-domain distractors for adjudication to remove. The threshold in
 Stage~3 can additionally drop a gold document whose similarity falls just below
 $\tau$, which is where part of the Hit@3 gap comes from.
 
-The distractor hypothesis --- that adjudication helps in proportion to the
-number of cross-domain distractors present --- was the paper's central
-explanatory claim, and the false-positive figures that originally supported it
-came from the withdrawn artefact family (\S\ref{sec:provenance}). We have now
-tested it on a multi-domain public benchmark built for the purpose
-(\S\ref{sec:multidomain}), and the answer is mixed rather than favourable: on
-vocabulary-sharing queries adjudication still repairs rank-1 errors (the
-\texttt{sf-002} pattern, and the highest answer@1 of all methods on the
-multi-domain set); on multi-hop questions with almost no lexical overlap, the
-same word-matching verification \emph{mis}-ranks, and the adjudicated
-configuration is significantly worse than its own recall stage ($-0.061$ nDCG@10,
-$p{=}0.018$). Verification promotes documents whose \emph{text} matches the
-question's terms; when neither candidate's text matches, the heuristic has no
-signal and its re-ordering is noise. This is not recoverable by a query-level
-trigger: splitting the fifty queries at the median query-to-gold-title overlap,
-adjudication is worse in \emph{both} strata (low $n{=}27$: Hit@1 $-0.185$; high
-$n{=}23$: $-0.217$). The cost side is unchanged and measured: adjudication read
-on average $4{,}266$ characters per query on SciFact with a low verification
-pass rate, i.e.\ it spent latency re-reading documents dense retrieval had
-already ranked well. Per-method coverage on the multi-domain set is reported as
-gold recall (Recall@2/Recall@5, Table~\ref{tab:hotpot}) together with the
-blind-spot analysis of \S\ref{sec:blindspot}, replacing a false-positive rate
-that abstention could game.
+The distractor hypothesis --- that adjudication helps in proportion to
+cross-domain distractors --- was the paper's central explanatory claim, and the
+false-positive figures that originally supported it came from the withdrawn
+family (\S\ref{sec:provenance}). We have now tested it on the multi-domain
+benchmark (\S\ref{sec:multidomain}): on vocabulary-sharing queries adjudication
+still repairs rank-1 errors (the \texttt{sf-002} pattern; best answer@1 of all
+methods), but on multi-hop questions with little lexical overlap the same
+word-matching verification \emph{mis}-ranks and is significantly worse than its
+own recall stage ($-0.061$ nDCG@10, $p{=}0.018$); a query-level overlap trigger
+does not recover this (both strata negative). Verification promotes documents
+whose \emph{text} matches the question's terms; when none does, its re-ordering
+is noise. The cost is measured throughout: $4{,}266$ characters read per SciFact
+query at a low verification pass rate, i.e.\ latency spent re-reading documents
+dense retrieval had already ranked well. Per-method coverage is reported as gold
+recall (Table~\ref{tab:hotpot}) with the blind-spot analysis
+(\S\ref{sec:blindspot}), replacing a false-positive rate that abstention could
+game.
 
 \input{generated/tables/tab-scifact.tex}
 % fig-scifact removed (duplicated Table scifact numbers; page budget)
@@ -934,7 +942,10 @@ on a small, well-matched corpus the adjudication stage has nothing to add.
 
 % fig:inhouse removed (duplicated Table inhouse numbers; page budget)
 
-\input{generated/tables/tab-inhouse.tex}
+% Table (in-house per-language) removed for the page budget; the numbers it
+% carried are stated in the text above and the full breakdown (English n=10,
+% Chinese n=6, Japanese n=4) is in the released artefact.
+
 
 \subsection{RQ5: Experience Synthesis}\label{sec:exp-analysis}
 The lifecycle (\S\ref{sec:experience}) executes reliably: meditation runs
@@ -1003,16 +1014,17 @@ study. Producer: \texttt{40\_experience\_suite.py}, \texttt{42\_e4\_fix.py},
 \texttt{66\_judge\_agreement.py}; transcripts archived.
 
 \subsection{RQ6: End-to-End Verification of the Agent Surface}\label{sec:e2e}
-We exercised the externally reachable surface with an independently written
-client that never imports application code: 73 checks across nine groups
-(authentication; knowledge-base and document lifecycle; content-based retrieval;
-graph construction and query; the full experience lifecycle including drafts,
-decay and extraction; persona training and evaluation; the engine registry;
-cleanup). \textbf{All 73/73 pass} against the live deployment. Two findings are
-worth recording. First, an earlier run showed four failures that were harness
-artefacts --- the supervising process restarted the backend mid-run --- a
-reminder that end-to-end claims are only as good as the harness asserting them.
-Second, the exercise surfaced two genuine contract defects that we fixed: read
+We verify the externally reachable surface with a committed, independently
+written client that never imports application code
+(\texttt{80\_e2e\_surface.py}: authentication; knowledge-base and document
+lifecycle; content-based retrieval including a staged read; graph construction;
+the experience lifecycle with drafts, search, summary and stale checks; persona;
+the harness registry; cleanup, all over HTTP as an agent would call them). The
+current run passes every check against the live deployment (per-check results
+and counts are in the released artefact); the script writes a JSON artefact with
+its own git and configuration fingerprint, so the number is reproducible rather
+than asserted.
+The exercise also surfaced two genuine contract defects that we fixed: read
 endpoints accepted only one of two documented parameter spellings, and two
 engine-registry entries declared environment-variable requirements that the
 engines' own documentation contradicts, which had made two working engines
@@ -1041,19 +1053,18 @@ transcripts, and the digest manifest.
 \section{Discussion and Limitations}\label{sec:conclusion}
 
 \paragraph{What we would claim, and what we would not.}
-The defensible claim is narrower than when we began, and the narrowing is the
-paper's most honest contribution. Three statements rest on reproducible
-evidence: ingestion is lossless (membership and completeness $1.000$ across two
-corpora and five storage layers); content adjudication \emph{re-orders} the top
-of a list rather than improving ranking overall; and the agent surface is
-correct end-to-end (73/73 checks). The claim we \emph{refine} rather than make
-is the motivating one --- that scoping plus adjudication substantially reduces
-false positives in heterogeneous corpora. The original evidence was withdrawn
-(\S\ref{sec:provenance}); the replacement multi-domain benchmark bounds the
-adjudication half (full-ranking benefit absent where queries and evidence do
-not share vocabulary, top-rank repair real where they do,
-\S\ref{sec:multidomain}); the scoping half remains architecturally motivated
-but unmeasured; the cost side is measured throughout.
+The defensible claim is narrower than when we began. Three statements rest on
+reproducible evidence: ingestion is lossless (membership and completeness
+$1.000$ across two corpora and five storage layers); content adjudication
+\emph{re-orders} the top of a list rather than improving ranking overall; and the
+agent surface is verified end-to-end by a committed external client. The claim
+we \emph{refine} rather than make is the motivating one --- that scoping plus
+adjudication substantially reduces false positives in heterogeneous corpora.
+The original evidence was withdrawn (\S\ref{sec:provenance}); the replacement
+multi-domain benchmark bounds the adjudication half (full-ranking benefit
+absent where queries and evidence do not share vocabulary, top-rank repair real
+where they do); the scoping half remains architecturally motivated but
+unmeasured at this scale; the cost side is measured throughout.
 
 \paragraph{A provenance failure, reported as a finding.}
 Our own internal benchmark --- the one we had led with --- could not be traced

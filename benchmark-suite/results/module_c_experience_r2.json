@@ -3,11 +3,15 @@
   "round": "2",
   "n_kbs": 2,
   "run_success_rate": 1.0,
-  "kb_coverage": 0.0,
-  "total_experiences": 0,
-  "judge_score_mean": null,
-  "grounded_ratio": null,
+  "kb_coverage": 0.5,
+  "total_experiences": 3,
+  "judge_score_mean": 5.6667,
+  "grounded_ratio": 0.6667,
   "env": {
+   "run_id": "",
+   "git_commit": "1f2092a",
+   "config_hash": "49279bd832721704",
+   "seed": 0,
    "backend": "http://localhost:8771",
    "web": "http://localhost:6790",
    "embedding": "BAAI/bge-m3 (local GPU, normalize)",
@@ -16,16 +20,15 @@
    "randomness": "deterministic pipeline (no RNG); agent channel = mean of runs",
    "retrieval_defaults": {
     "vector_top_k": 10,
-    "two_stage": {
-     "stage1_top_k": 40,
-     "stage2_top_k": 10
-    },
+    "stage1_top_k": 40,
+    "stage2_top_k": 10,
     "qdcvr_threshold": 0.35,
-    "verification_reads": 3
+    "verification_reads": 3,
+    "exp_threshold_default": 0.45
    },
    "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
   },
-  "generated": "2026-09-13T14:56:41.402378+00:00"
+  "generated": "2026-09-14T04:39:25.970044+00:00"
  },
  "per_kb": {
   "KB-Demo-EN": {
@@ -33,9 +36,9 @@
    "run_error": null,
    "n_drafts": 0,
    "n_approved": 0,
-   "n_experiences": 0,
-   "judge_score_mean": null,
-   "grounded_ratio": null
+   "n_experiences": 3,
+   "judge_score_mean": 5.6667,
+   "grounded_ratio": 0.6667
   },
   "KB-Demo-ZH": {
    "run_success": true,
@@ -49,8 +52,28 @@
  },
  "samples": {
   "KB-Demo-EN": {
-   "titles": [],
-   "judged": []
+   "titles": [
+    "Wind siting first: speed dominates yield by cube law",
+    "Solar tech choice: PV for lowest cost, CSP for night supply",
+    "Coffee processing method choice: washed vs natural vs honey"
+   ],
+   "judged": [
+    {
+     "score": 8.0,
+     "grounded": true,
+     "issues": "Title/scenario/category/tags are coherent and the cube-law and Betz-limit claims match the stored KB-Demo-EN record (P1), but the reviewed object itself carries no problem/solution/lessons body and is unvetted (0 reviews, rating 0), which limits standalone reuse."
+    },
+    {
+     "score": 6.0,
+     "grounded": true,
+     "issues": "Title states a broadly accurate PV-vs-CSP tradeoff but the entry has no body evidence, and tags are redundant (tag \"decision\" duplicates category, \"solar\" duplicates title)."
+    },
+    {
+     "score": 3.0,
+     "grounded": false,
+     "issues": "Entry is off-domain (coffee processing) with no content body or evidence, so it is unverifiable against the knowledge base and useless for retrieval despite coherent metadata."
+    }
+   ]
   },
   "KB-Demo-ZH": {
    "titles": [],

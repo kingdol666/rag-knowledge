@@ -1,0 +1,1282 @@
+{
+ "experiment": "E3-E7 experience suite",
+ "round": "1",
+ "E3_meditation_runs": [
+  {
+   "round": 1,
+   "per_kb": {
+    "KB-Demo-EN": {
+     "run_success": true,
+     "reset": {
+      "deleted": 0,
+      "remaining": 0
+     },
+     "n_drafts": 0,
+     "n_approved": 0,
+     "n_experiences": 0,
+     "judge_scores": [],
+     "grounded": []
+    },
+    "KB-Demo-ZH": {
+     "run_success": true,
+     "reset": {
+      "deleted": 0,
+      "remaining": 0
+     },
+     "n_drafts": 0,
+     "n_approved": 0,
+     "n_experiences": 0,
+     "judge_scores": [],
+     "grounded": []
+    }
+   }
+  },
+  {
+   "round": 2,
+   "per_kb": {
+    "KB-Demo-EN": {
+     "run_success": true,
+     "reset": {
+      "deleted": 0,
+      "remaining": 0
+     },
+     "n_drafts": 3,
+     "n_approved": 3,
+     "n_experiences": 3,
+     "judge_scores": [
+      9.0,
+      8.0,
+      7.0
+     ],
+     "grounded": [
+      true,
+      true,
+      true
+     ]
+    },
+    "KB-Demo-ZH": {
+     "run_success": true,
+     "reset": {
+      "deleted": 0,
+      "remaining": 0
+     },
+     "n_drafts": 0,
+     "n_approved": 0,
+     "n_experiences": 0,
+     "judge_scores": [],
+     "grounded": []
+    }
+   }
+  },
+  {
+   "round": 3,
+   "per_kb": {
+    "KB-Demo-EN": {
+     "run_success": true,
+     "reset": {
+      "deleted": 3,
+      "remaining": 0
+     },
+     "n_drafts": 0,
+     "n_approved": 0,
+     "n_experiences": 0,
+     "judge_scores": [],
+     "grounded": []
+    },
+    "KB-Demo-ZH": {
+     "run_success": true,
+     "reset": {
+      "deleted": 0,
+      "remaining": 0
+     },
+     "n_drafts": 0,
+     "n_approved": 0,
+     "n_experiences": 0,
+     "judge_scores": [],
+     "grounded": []
+    }
+   }
+  }
+ ],
+ "E5_path_ablation": {
+  "variants": {
+   "full": [
+    {
+     "qid": "x-01",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-02",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-03",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-04",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-05",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-06",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-07",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-08",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-01",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-02",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-03",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-04",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    }
+   ],
+   "-vector": [
+    {
+     "qid": "x-01",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-02",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-03",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-04",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-05",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-06",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-07",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-08",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-01",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-02",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-03",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-04",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    }
+   ],
+   "-keyword": [
+    {
+     "qid": "x-01",
+     "recall@1": 0.0,
+     "recall@3": 0.0,
+     "hit@1": 0,
+     "hit@3": 0,
+     "mrr": 0.14285714285714285
+    },
+    {
+     "qid": "x-02",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-03",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-04",
+     "recall@1": 0.0,
+     "recall@3": 1.0,
+     "hit@1": 0,
+     "hit@3": 1,
+     "mrr": 0.3333333333333333
+    },
+    {
+     "qid": "x-05",
+     "recall@1": 0.0,
+     "recall@3": 1.0,
+     "hit@1": 0,
+     "hit@3": 1,
+     "mrr": 0.5
+    },
+    {
+     "qid": "x-06",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-07",
+     "recall@1": 0.0,
+     "recall@3": 1.0,
+     "hit@1": 0,
+     "hit@3": 1,
+     "mrr": 0.5
+    },
+    {
+     "qid": "x-08",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-01",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-02",
+     "recall@1": 0.0,
+     "recall@3": 1.0,
+     "hit@1": 0,
+     "hit@3": 1,
+     "mrr": 0.5
+    },
+    {
+     "qid": "v-03",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-04",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    }
+   ],
+   "-scenario": [
+    {
+     "qid": "x-01",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-02",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-03",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-04",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-05",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-06",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-07",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-08",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-01",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-02",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-03",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-04",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    }
+   ],
+   "-tag": [
+    {
+     "qid": "x-01",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-02",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-03",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-04",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-05",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-06",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-07",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-08",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-01",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-02",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-03",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-04",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    }
+   ],
+   "-quality": [
+    {
+     "qid": "x-01",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-02",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-03",
+     "recall@1": 0.0,
+     "recall@3": 0.0,
+     "hit@1": 0,
+     "hit@3": 0,
+     "mrr": 0.16666666666666666
+    },
+    {
+     "qid": "x-04",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-05",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-06",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-07",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-08",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-01",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-02",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-03",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-04",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    }
+   ],
+   "only_vector": [
+    {
+     "qid": "x-01",
+     "recall@1": 0.0,
+     "recall@3": 0.0,
+     "hit@1": 0,
+     "hit@3": 0,
+     "mrr": 0.14285714285714285
+    },
+    {
+     "qid": "x-02",
+     "recall@1": 0.0,
+     "recall@3": 1.0,
+     "hit@1": 0,
+     "hit@3": 1,
+     "mrr": 0.5
+    },
+    {
+     "qid": "x-03",
+     "recall@1": 0.0,
+     "recall@3": 1.0,
+     "hit@1": 0,
+     "hit@3": 1,
+     "mrr": 0.3333333333333333
+    },
+    {
+     "qid": "x-04",
+     "recall@1": 0.0,
+     "recall@3": 0.0,
+     "hit@1": 0,
+     "hit@3": 0,
+     "mrr": 0.25
+    },
+    {
+     "qid": "x-05",
+     "recall@1": 0.0,
+     "recall@3": 0.0,
+     "hit@1": 0,
+     "hit@3": 0,
+     "mrr": 0.2
+    },
+    {
+     "qid": "x-06",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-07",
+     "recall@1": 0.0,
+     "recall@3": 0.0,
+     "hit@1": 0,
+     "hit@3": 0,
+     "mrr": 0.125
+    },
+    {
+     "qid": "x-08",
+     "recall@1": 0.0,
+     "recall@3": 0.0,
+     "hit@1": 0,
+     "hit@3": 0,
+     "mrr": 0.16666666666666666
+    },
+    {
+     "qid": "v-01",
+     "recall@1": 0.0,
+     "recall@3": 1.0,
+     "hit@1": 0,
+     "hit@3": 1,
+     "mrr": 0.5
+    },
+    {
+     "qid": "v-02",
+     "recall@1": 0.0,
+     "recall@3": 0.0,
+     "hit@1": 0,
+     "hit@3": 0,
+     "mrr": 0.2
+    },
+    {
+     "qid": "v-03",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-04",
+     "recall@1": 0.0,
+     "recall@3": 0.0,
+     "hit@1": 0,
+     "hit@3": 0,
+     "mrr": 0.14285714285714285
+    }
+   ],
+   "only_keyword": [
+    {
+     "qid": "x-01",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-02",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-03",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-04",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-05",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-06",
+     "recall@1": 0.0,
+     "recall@3": 1.0,
+     "hit@1": 0,
+     "hit@3": 1,
+     "mrr": 0.5
+    },
+    {
+     "qid": "x-07",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-08",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-01",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-02",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-03",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-04",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    }
+   ],
+   "only_scenario": [
+    {
+     "qid": "x-01",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-02",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-03",
+     "recall@1": 0.0,
+     "recall@3": 1.0,
+     "hit@1": 0,
+     "hit@3": 1,
+     "mrr": 0.3333333333333333
+    },
+    {
+     "qid": "x-04",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-05",
+     "recall@1": 0.0,
+     "recall@3": 1.0,
+     "hit@1": 0,
+     "hit@3": 1,
+     "mrr": 0.5
+    },
+    {
+     "qid": "x-06",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-07",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-08",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-01",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-02",
+     "recall@1": 0.0,
+     "recall@3": 1.0,
+     "hit@1": 0,
+     "hit@3": 1,
+     "mrr": 0.3333333333333333
+    },
+    {
+     "qid": "v-03",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-04",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    }
+   ],
+   "only_tag": [
+    {
+     "qid": "x-01",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-02",
+     "recall@1": 0.0,
+     "recall@3": 1.0,
+     "hit@1": 0,
+     "hit@3": 1,
+     "mrr": 0.3333333333333333
+    },
+    {
+     "qid": "x-03",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-04",
+     "recall@1": 0.0,
+     "recall@3": 0.0,
+     "hit@1": 0,
+     "hit@3": 0,
+     "mrr": 0.2
+    },
+    {
+     "qid": "x-05",
+     "recall@1": 0.0,
+     "recall@3": 0.0,
+     "hit@1": 0,
+     "hit@3": 0,
+     "mrr": 0.2
+    },
+    {
+     "qid": "x-06",
+     "recall@1": 0.0,
+     "recall@3": 1.0,
+     "hit@1": 0,
+     "hit@3": 1,
+     "mrr": 0.5
+    },
+    {
+     "qid": "x-07",
+     "recall@1": 0.0,
+     "recall@3": 1.0,
+     "hit@1": 0,
+     "hit@3": 1,
+     "mrr": 0.3333333333333333
+    },
+    {
+     "qid": "x-08",
+     "recall@1": 0.0,
+     "recall@3": 0.0,
+     "hit@1": 0,
+     "hit@3": 0,
+     "mrr": 0.125
+    },
+    {
+     "qid": "v-01",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-02",
+     "recall@1": 0.0,
+     "recall@3": 1.0,
+     "hit@1": 0,
+     "hit@3": 1,
+     "mrr": 0.5
+    },
+    {
+     "qid": "v-03",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "v-04",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    }
+   ],
+   "only_quality": [
+    {
+     "qid": "x-01",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    },
+    {
+     "qid": "x-02",
+     "recall@1": 0.0,
+     "recall@3": 1.0,
+     "hit@1": 0,
+     "hit@3": 1,
+     "mrr": 0.5
+    },
+    {
+     "qid": "x-03",
+     "recall@1": 0.0,
+     "recall@3": 1.0,
+     "hit@1": 0,
+     "hit@3": 1,
+     "mrr": 0.3333333333333333
+    },
+    {
+     "qid": "x-04",
+     "recall@1": 0.0,
+     "recall@3": 0.0,
+     "hit@1": 0,
+     "hit@3": 0,
+     "mrr": 0.25
+    },
+    {
+     "qid": "x-05",
+     "recall@1": 0.0,
+     "recall@3": 0.0,
+     "hit@1": 0,
+     "hit@3": 0,
+     "mrr": 0.2
+    },
+    {
+     "qid": "x-06",
+     "recall@1": 0.0,
+     "recall@3": 0.0,
+     "hit@1": 0,
+     "hit@3": 0,
+     "mrr": 0.16666666666666666
+    },
+    {
+     "qid": "x-07",
+     "recall@1": 0.0,
+     "recall@3": 0.0,
+     "hit@1": 0,
+     "hit@3": 0,
+     "mrr": 0.14285714285714285
+    },
+    {
+     "qid": "x-08",
+     "recall@1": 0.0,
+     "recall@3": 0.0,
+     "hit@1": 0,
+     "hit@3": 0,
+     "mrr": 0.125
+    },
+    {
+     "qid": "v-01",
+     "recall@1": 0.0,
+     "recall@3": 1.0,
+     "hit@1": 0,
+     "hit@3": 1,
+     "mrr": 0.5
+    },
+    {
+     "qid": "v-02",
+     "recall@1": 0.0,
+     "recall@3": 0.0,
+     "hit@1": 0,
+     "hit@3": 0,
+     "mrr": 0.2
+    },
+    {
+     "qid": "v-03",
+     "recall@1": 0.0,
+     "recall@3": 0.0,
+     "hit@1": 0,
+     "hit@3": 0,
+     "mrr": 0.16666666666666666
+    },
+    {
+     "qid": "v-04",
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
+    }
+   ]
+  },
+  "align_with_api": {
+   "hit3_match_api": 1,
+   "n": 6
+  }
+ },
+ "E6_decay": {
+  "n_experiences": 8,
+  "windows": {
+   "7d": {
+    "demoted": 0,
+    "demoted_share": 0.0,
+    "demoted_titles": []
+   },
+   "14d": {
+    "demoted": 0,
+    "demoted_share": 0.0,
+    "demoted_titles": []
+   },
+   "30d": {
+    "demoted": 0,
+    "demoted_share": 0.0,
+    "demoted_titles": []
+   },
+   "90d": {
+    "demoted": 0,
+    "demoted_share": 0.0,
+    "demoted_titles": []
+   }
+  },
+  "note": "Observation window: deployment is younger than 30 days; entries carry same-day timestamps, so the window sweep characterises the RULE, not a longitudinal validation (per REVIEW-TODO TODO-3).",
+  "system_check_stale": {}
+ },
+ "E4_baselines": {
+  "n_queries_judged": 4,
+  "llm_summary_material": [
+   "Process perishable input immediately — coffee cherries must be depulped and fermented within hours of picking or they spoil.",
+   "Choose the process by risk appetite — washed highlights acidity and floral notes, natural gives fruity wine-like flavours but risks off-flavours when drying is uneven, and honey sits between the two by retention of mucilage.",
+   "Treat cost curves as expiring data — battery packs fell from ~$1,100/kWh in 2010 to under $140/kWh in 2023, so price assumptions must be re-verified each procurement cycle rather than reused.",
+   "Design for regional standards fragmentation — CCS dominates Europe and North America, GB/T China, CHAdeMO Japan, so no single charging spec is globally deployable.",
+   "Know the ceiling before optimising — the Betz limit caps any wind turbine at 59.3% efficiency, and real machines only reach 45–50%.",
+   "Site selection dominates every other wind decision — available power grows with the cube of wind speed (doubling average speed ≈ 8× yield), and turbines only run between ~3 m/s cut-in and ~25 m/s cut-out.",
+   "Schedule hard cutovers with全网 coordination — ARPANET's TCP/IP flag day on 1 Jan 1983 replaced NCP in one step, and DNS in 1983 replaced a single hosts file to make naming scale.",
+   "Compare against the correct baseline — field photosynthesis converts only ~3% of light into biomass, against ~10% solar-to-fuel in a 2022 artificial device, so efficiency claims are meaningless without the reference system."
+  ],
+  "judged": {
+   "no_synthesis": {
+    "scores": [
+     4.0,
+     5.0,
+     1.0,
+     6.0
+    ],
+    "mean": 4.0
+   },
+   "ours_experience": {
+    "scores": [
+     5.0,
+     4.0,
+     5.0,
+     7.0
+    ],
+    "mean": 5.25
+   },
+   "llm_summary": {
+    "scores": [
+     3.0,
+     3.0,
+     5.0,
+     1.0
+    ],
+    "mean": 3.0
+   },
+   "note": "identical JUDGE_PROMPT; llm-summary material regenerated with KB-prefixed doc paths (previous sample degenerated to empty input, the summariser correctly refused)"
+  },
+  "superseded_by": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\results\\run-20260913T173832Z\\e4_baselines_fixed.json"
+ },
+ "meta": {
+  "generated": "2026-09-13T16:50:13.623154+00:00",
+  "env": {
+   "run_id": "run-20260913T162402Z",
+   "git_commit": "7220098",
+   "config_hash": "49279bd832721704",
+   "seed": 0,
+   "backend": "http://localhost:8771",
+   "web": "http://localhost:6790",
+   "embedding": "BAAI/bge-m3 (local GPU, normalize)",
+   "vector_store": "ChromaDB (persistent)",
+   "keyword_index": "jieba BM25",
+   "randomness": "deterministic pipeline (no RNG); agent channel = mean of runs",
+   "retrieval_defaults": {
+    "vector_top_k": 10,
+    "stage1_top_k": 40,
+    "stage2_top_k": 10,
+    "qdcvr_threshold": 0.35,
+    "verification_reads": 3,
+    "exp_threshold_default": 0.45
+   },
+   "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
+  }
+ }
+}

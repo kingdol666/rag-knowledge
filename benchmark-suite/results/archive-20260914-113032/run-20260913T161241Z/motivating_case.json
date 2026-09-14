@@ -1,0 +1,48 @@
+{
+ "experiment": "E12 motivating case mining (TODO-1)",
+ "case": {
+  "source": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\results\\module_b_std2_r1.json",
+  "candidates": [
+   "sf-002",
+   "sf-017",
+   "sf-027"
+  ],
+  "note": "std2 rows store metrics only; exact scores require a live re-query which the benchmark harness performs on demand",
+  "selected": {
+   "qid": "sf-002",
+   "question": "4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress markers.",
+   "golden_ids": [
+    "32587939"
+   ],
+   "dense_hit1": 0,
+   "dense_mrr": 0.5,
+   "qdcvr_hit1": 1,
+   "qdcvr_mrr": 1.0,
+   "claim": "vector similarity ranked the gold document below rank 1; the content-verification stage of QDCVR recovered it — similarity is not usefulness (artefact-backed)"
+  }
+ },
+ "meta": {
+  "generated": "2026-09-13T16:12:41.957539+00:00",
+  "env": {
+   "run_id": "run-20260913T161241Z",
+   "git_commit": "7220098",
+   "config_hash": "49279bd832721704",
+   "seed": 0,
+   "backend": "http://localhost:8771",
+   "web": "http://localhost:6790",
+   "embedding": "BAAI/bge-m3 (local GPU, normalize)",
+   "vector_store": "ChromaDB (persistent)",
+   "keyword_index": "jieba BM25",
+   "randomness": "deterministic pipeline (no RNG); agent channel = mean of runs",
+   "retrieval_defaults": {
+    "vector_top_k": 10,
+    "stage1_top_k": 40,
+    "stage2_top_k": 10,
+    "qdcvr_threshold": 0.35,
+    "verification_reads": 3,
+    "exp_threshold_default": 0.45
+   },
+   "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
+  }
+ }
+}

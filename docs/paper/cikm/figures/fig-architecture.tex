@@ -2,6 +2,7 @@
 % layers, one agent surface.
 \begin{figure*}[t]
 \centering
+\resizebox{0.82\textwidth}{!}{%
 \begin{tikzpicture}[
   font=\scriptsize,
   svc/.style={draw, rounded corners=2pt, align=center, fill=black!6,
@@ -53,7 +54,7 @@
   {Solid = control flow;\; very thick = the single atomic write path (all five
    layers, one logical transaction);\; dotted = the read path used by retrieval,
    which bypasses the service tier entirely.};
-\end{tikzpicture}
+\end{tikzpicture}}
 \caption{System architecture. Three services partition responsibility --- the web
 layer owns knowledge-base and document CRUD, the FastAPI backend owns parsing,
 retrieval, graph and experience computation, and an ephemeral MinerU process does

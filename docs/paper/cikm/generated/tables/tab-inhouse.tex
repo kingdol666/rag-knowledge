@@ -2,9 +2,11 @@
 \centering
 \footnotesize
 \setlength{\tabcolsep}{3.2pt}
-\caption{In-house corpus (20 queries over 13 KBs). \sys{} here means two-stage
-recall followed by \texttt{kb\_doc\_read} content adjudication; \emph{Dense} is
-one-shot vector retrieval over the same index.}
+\caption{In-house demo corpus (20 queries over three knowledge bases holding 16
+documents: 15 Markdown in English, Chinese and Japanese plus one PDF parsed
+through the production MinerU path). \sys{} here means two-stage recall followed
+by \texttt{kb\_doc\_read} content adjudication; \emph{Dense} is one-shot vector
+retrieval over the same index.}
 \label{tab:inhouse}
 \begin{tabular}{@{}lcccccccc@{}}
 \toprule
@@ -14,6 +16,7 @@ Split & H@1 & H@5 & R@5 & P@5 & H@1 & H@5 & R@5 & P@5 \\
 \midrule
 English ($n{=}10$) & 0.700 & 1.000 & 0.950 & 22.0 & 0.800 & 0.900 & 0.900 & 20.0 \\
 Chinese ($n{=}6$) & 1.000 & 1.000 & 0.944 & 23.3 & 1.000 & 1.000 & 0.889 & 20.0 \\
+Japanese ($n{=}4$) & 0.750 & 0.750 & 0.750 & 15.0 & 1.000 & 1.000 & 1.000 & 20.0 \\
 \midrule Overall & 0.800 & 0.950 & 0.908 & 21.0 & 0.900 & 0.950 & 0.917 & 20.0 \\
 \bottomrule
 \end{tabular}

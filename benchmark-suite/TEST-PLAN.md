@@ -107,7 +107,7 @@ python scripts/02_retrieval.py 1
 python scripts/02_retrieval.py 2       # 复现校验
 ```
 
-做了什么：19 个查询（en 8 / zh 5 / ja 4 / 跨库 3，含金标页与答案，见
+做了什么：20 个查询（en 8 / zh 5 / ja 4 / 跨库 3，含金标页与答案，见
 `data/queries.jsonl`），全部经 **kb-mcp MCP stdio 真链路**（与 Agent 同款工具层）：
 
 - **内容检索**（QDCVR 规程确定性展开）：`kb_list` → `kb_search_two_stage`

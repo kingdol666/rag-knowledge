@@ -1,0 +1,60 @@
+{
+ "summary": {
+  "round": "2",
+  "n_kbs": 2,
+  "run_success_rate": 1.0,
+  "kb_coverage": 0.0,
+  "total_experiences": 0,
+  "judge_score_mean": null,
+  "grounded_ratio": null,
+  "env": {
+   "backend": "http://localhost:8771",
+   "web": "http://localhost:6790",
+   "embedding": "BAAI/bge-m3 (local GPU, normalize)",
+   "vector_store": "ChromaDB (persistent)",
+   "keyword_index": "jieba BM25",
+   "randomness": "deterministic pipeline (no RNG); agent channel = mean of runs",
+   "retrieval_defaults": {
+    "vector_top_k": 10,
+    "two_stage": {
+     "stage1_top_k": 40,
+     "stage2_top_k": 10
+    },
+    "qdcvr_threshold": 0.35,
+    "verification_reads": 3
+   },
+   "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
+  },
+  "generated": "2026-09-13T14:56:41.402378+00:00"
+ },
+ "per_kb": {
+  "KB-Demo-EN": {
+   "run_success": true,
+   "run_error": null,
+   "n_drafts": 0,
+   "n_approved": 0,
+   "n_experiences": 0,
+   "judge_score_mean": null,
+   "grounded_ratio": null
+  },
+  "KB-Demo-ZH": {
+   "run_success": true,
+   "run_error": null,
+   "n_drafts": 0,
+   "n_approved": 0,
+   "n_experiences": 0,
+   "judge_score_mean": null,
+   "grounded_ratio": null
+  }
+ },
+ "samples": {
+  "KB-Demo-EN": {
+   "titles": [],
+   "judged": []
+  },
+  "KB-Demo-ZH": {
+   "titles": [],
+   "judged": []
+  }
+ }
+}

@@ -5,6 +5,10 @@
   "membership_accuracy": 1.0,
   "storage_completeness": 1.0,
   "env": {
+   "run_id": "",
+   "git_commit": "1f2092a",
+   "config_hash": "49279bd832721704",
+   "seed": 0,
    "backend": "http://localhost:8771",
    "web": "http://localhost:6790",
    "embedding": "BAAI/bge-m3 (local GPU, normalize)",
@@ -13,15 +17,14 @@
    "randomness": "deterministic pipeline (no RNG); agent channel = mean of runs",
    "retrieval_defaults": {
     "vector_top_k": 10,
-    "two_stage": {
-     "stage1_top_k": 40,
-     "stage2_top_k": 10
-    },
+    "stage1_top_k": 40,
+    "stage2_top_k": 10,
     "qdcvr_threshold": 0.35,
-    "verification_reads": 3
+    "verification_reads": 3,
+    "exp_threshold_default": 0.45
    },
    "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
   },
-  "generated": "2026-09-13T14:25:57.381563+00:00"
+  "generated": "2026-09-14T04:05:56.637305+00:00"
  }
 }
