@@ -292,5 +292,175 @@ P@5 = Precision@5 in percent.}
 # provenance_audit.py, then re-emit the assets here.
 # ──────────────────────────────────────────────────────────────────────
 
+# ──────────────────────────────────────────────────────────────────────
+# E16 — DeepRead-style baseline matrix (30 SciFact queries x 8 systems).
+# Producer: benchmark-suite/algorithms/run_matrix.py (+ api_server.py for
+# E16b). The qdcvr rows come from the production MCP tool chain.
+# ──────────────────────────────────────────────────────────────────────
+DR = load("deepread_matrix.json")
+DR_REPLAY = load("deepread_matrix_replay.json")
+API = load("api_matrix.json")
+OPSJ = load("platform_ops_eval.json")
+
+DR_ORDER = ["dense_rag", "dense_rag_rerank", "itrg_refresh", "itrg_refine",
+            "raptor", "search_o1", "deepread", "qdcvr"]
+DR_LABEL = {
+    "dense_rag": "Dense RAG (chunk 800/400, top-10)",
+    "dense_rag_rerank": "Dense RAG + reranker (30$\\to$10)",
+    "itrg_refresh": "ITRG (refresh, 4 rounds $\\times$ top-6)",
+    "itrg_refine": "ITRG (refine, 4 rounds $\\times$ top-6)",
+    "raptor": "RAPTOR (collapsed tree, top-10)",
+    "search_o1": "Search-o1 (agentic, 2 chunks/turn, cap 8)",
+    "deepread": "DeepRead (locate-then-read, cap 8)",
+    "qdcvr": "\\sys{} (two-stage + content adjudication)",
+}
+
+
+def _dr_mean(method, key):
+    rows = DR["retrieval_rows"].get(method) or []
+    vals = [r[key] for r in rows if isinstance(r.get(key), (int, float))]
+    return sum(vals) / len(vals) if vals else None
+
+
+dr_cols = ["hit@1", "hit@5", "recall@5", "ndcg@10", "mrr"]
+best = {c: max(_dr_mean(m, c) or 0 for m in DR_ORDER) for c in dr_cols}
+best_judge = max((DR["summary"]["judge"].get(m) or {}).get("mean_score") or 0
+                 for m in DR_ORDER)
+best_mrp = min(API["summary"][m]["mean_middle_rank_pos"] for m in DR_ORDER)
+dr_rows = []
+for m in DR_ORDER:
+    agg = DR["summary"]["retrieval"][m]
+    j = (DR["summary"]["judge"].get(m) or {}).get("mean_score")
+    mrp = API["summary"][m]["mean_middle_rank_pos"]
+    wins = API["summary"][m]["middle_agent_wins"]
+    cells = []
+    for c in dr_cols:
+        v = agg[c]
+        cell = f"{v:.3f}"
+        if abs(v - best[c]) < 1e-9:
+            cell = "\\textbf{" + cell + "}"
+        cells.append(cell)
+    jcell = f"{j:.2f}"
+    if j is not None and abs(j - best_judge) < 1e-9:
+        jcell = "\\textbf{" + jcell + "}"
+    mcell = f"{mrp:.2f}"
+    if abs(mrp - best_mrp) < 1e-9:
+        mcell = "\\textbf{" + mcell + "}"
+    dr_rows.append(f"{DR_LABEL[m]} & " + " & ".join(cells)
+                   + f" & {jcell} & {mcell} & {wins} \\\\")
+dr_replay_same = json.dumps(DR["summary"]["retrieval"], sort_keys=True) == \
+    json.dumps(DR_REPLAY["summary"]["retrieval"], sort_keys=True)
+w("tables/tab-deepread.tex", r"""\begin{table*}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3.6pt}
+\caption{Main comparison on the BEIR SciFact corpus (148 documents ingested
+through the production pipeline; 30 official queries, official relevance
+judgements). All eight systems retrieve over the \emph{same} corpus and answer
+the \emph{same} frozen questions; answers are produced by one shared agent
+under a uniform 4{,}000-character evidence budget, then graded 0--10 by an
+independent agent that receives the gold document (Judge). A middle agent then
+ranks the eight anonymised answers per question given the gold evidence: Mean
+rank = average position (1 = best of 8); Wins = first places. The right three
+columns come from an HTTP-driven rerun that is byte-identical to the offline
+run (480/480 consistency checks). Setting reproduced from
+\citet{li2026deepread} on a claim-verification corpus.}
+\label{tab:deepread}
+\begin{tabular}{@{}lccccc ccc@{}}
+\toprule
+& H@1 & H@5 & R@5 & nDCG@10 & MRR & Judge & Rank & Wins \\
+\midrule
+""" + "\n".join(dr_rows) + r"""
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}
+\parbox{\textwidth}{\scriptsize H@$k$ = Hit@$k$; R@5 = Recall@5; nDCG@10 =
+normalised discounted cumulative gain at 10 (official qrels). Judge grades are
+LLM-as-judge with the gold evidence injected; a multi-grader robustness check
+was not possible in our environment (single agent channel) and is stated as a
+limitation. Deviations from the original settings are registered in the
+reproduction notes (reranker surrogate, turn cap 8, 4 chars/token).}
+\end{table*}
+""")
+print(f"  E16 replay summary identical: {dr_replay_same}")
+
+# Behaviour table: per-system retrieval cost and behaviour, means over the
+# 30 queries, computed from the per-query rows.
+beh_rows = []
+for m in DR_ORDER:
+    rows = DR["retrieval_rows"].get(m) or []
+
+    def _mean_key(key, _rows=rows):
+        vals = [r[key] for r in _rows if isinstance(r.get(key), (int, float))]
+        return sum(vals) / len(vals) if vals else None
+
+    lat = _mean_key("latency_s") or 0
+    calls = _mean_key("llm_calls") or 0
+    chunks = _mean_key("chunks") or 0
+    cov = _mean_key("evidence_coverage") or 0
+    turns = _mean_key("turns")
+    tcell = f"{turns:.1f}" if turns is not None else "---"
+    beh_rows.append(f"{DR_LABEL[m]} & {lat:.1f} & {tcell} & {calls:.1f} & "
+                    f"{chunks:.1f} & {100*cov:.0f}\\% \\\\")
+w("tables/tab-behavior.tex", r"""\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3.6pt}
+\caption{Fine-grained retrieval behaviour, means over the 30 SciFact queries:
+wall-clock retrieval latency (s), agent turns (agentic systems only),
+retrieval-side agent calls, evidence excerpts gathered, and claim-word coverage
+of the gathered evidence.}
+\label{tab:behavior}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+& Lat.(s) & Turns & Calls & Excerpts & Cov. \\
+\midrule
+""" + "\n".join(beh_rows) + r"""
+\bottomrule
+\end{tabular}
+\end{table}
+""")
+
+# E16b — API flow consistency is folded into the main table (Rank/Wins
+# columns) and reported in the text; the standalone tab-e16b float was merged
+# to save page budget. The consistency facts are emitted as macros instead.
+cons = API["meta"]["consistency_vs_e16_cache"]
+w("macros/e16b.tex",
+  "\\newcommand{\\apiconsist}{" + f"{cons['checked']}/{cons['checked']}" + "}\n"
+  "\\newcommand{\\apimismatch}{" + str(cons['mismatches']) + "}\n")
+print(f"  E16b consistency: {cons}")
+
+# E17 — platform organise functions, planted-truth fixture.
+d_dedup = OPSJ["dedup"]
+d_tags = OPSJ["tags"]
+d_clean = OPSJ["cleanup_dry_run"]
+d_graph = OPSJ["graph"]
+d_cat = OPSJ["catalog"]
+w("tables/tab-ops.tex", r"""\begin{table}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3.6pt}
+\caption{Organise-function probe (E17): a purpose-built knowledge base seeded
+with nine documents and two planted duplicate groups; every function is
+exercised through its production tool. The two exact-duplicate documents are
+dropped silently by the creation chain (7 of 9 persist, no error signalled) --
+reported as a finding, not an assumption.}
+\label{tab:ops}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Probe & Result \\
+\midrule
+Documents persisted / planted & """ + f"{d_cat['doc_count']} / {OPSJ['meta']['planted_docs']}" + r""" \\
+Duplicate groups detected / planted & """ + f"{d_dedup['groups_detected']} / {d_dedup['planted_groups']}" + r""" \\
+Distinct tags generated & """ + f"{d_tags['distinct_tags']}" + r""" \\
+Tags grounded in document content & """ + f"{d_tags['content_grounded_tags']} ({100*d_tags['grounded_ratio']:.1f}\\%)" + r""" \\
+Cleanup dry-run: used tags touched & """ + f"{d_clean['used_tags_in_clean_list']} (integrity {'OK' if d_clean['integrity_ok'] else 'FAIL'})" + r""" \\
+Graph build / search probe hits & """ + f"{'ok' if d_graph['build_ok'] else 'FAIL'} / {d_graph['search_probe_hits']}" + r""" \\
+\bottomrule
+\end{tabular}
+\end{table}
+""")
+
 print("\nAll LaTeX artefacts regenerated from the frozen, provenance-verified snapshot.")
 print("Withheld (no producer): tab-cikm, tab-ablation, fig-fpr, fig-latency — see PROVENANCE.md")

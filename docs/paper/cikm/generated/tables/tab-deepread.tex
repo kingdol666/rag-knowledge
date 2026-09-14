@@ -1,0 +1,39 @@
+\begin{table*}[t]
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3.6pt}
+\caption{Main comparison on the BEIR SciFact corpus (148 documents ingested
+through the production pipeline; 30 official queries, official relevance
+judgements). All eight systems retrieve over the \emph{same} corpus and answer
+the \emph{same} frozen questions; answers are produced by one shared agent
+under a uniform 4{,}000-character evidence budget, then graded 0--10 by an
+independent agent that receives the gold document (Judge). A middle agent then
+ranks the eight anonymised answers per question given the gold evidence: Mean
+rank = average position (1 = best of 8); Wins = first places. The right three
+columns come from an HTTP-driven rerun that is byte-identical to the offline
+run (480/480 consistency checks). Setting reproduced from
+\citet{li2026deepread} on a claim-verification corpus.}
+\label{tab:deepread}
+\begin{tabular}{@{}lccccc ccc@{}}
+\toprule
+& H@1 & H@5 & R@5 & nDCG@10 & MRR & Judge & Rank & Wins \\
+\midrule
+Dense RAG (chunk 800/400, top-10) & 0.733 & 0.900 & 0.900 & 0.834 & 0.811 & \textbf{8.93} & 4.63 & 2 \\
+Dense RAG + reranker (30$\to$10) & \textbf{0.900} & 0.933 & 0.933 & 0.921 & 0.917 & 8.67 & \textbf{3.77} & 5 \\
+ITRG (refresh, 4 rounds $\times$ top-6) & 0.833 & 0.933 & 0.933 & 0.896 & 0.883 & 8.30 & 4.53 & 3 \\
+ITRG (refine, 4 rounds $\times$ top-6) & 0.733 & 0.900 & 0.900 & 0.845 & 0.816 & 8.53 & 4.17 & 3 \\
+RAPTOR (collapsed tree, top-10) & 0.733 & 0.867 & 0.856 & 0.817 & 0.800 & 8.37 & 4.20 & 4 \\
+Search-o1 (agentic, 2 chunks/turn, cap 8) & 0.800 & 0.900 & 0.844 & 0.811 & 0.839 & 8.70 & 4.60 & 3 \\
+DeepRead (locate-then-read, cap 8) & 0.567 & 0.733 & 0.694 & 0.635 & 0.639 & 8.13 & 4.47 & 7 \\
+\sys{} (two-stage + content adjudication) & 0.700 & 0.833 & 0.833 & 0.784 & 0.767 & 7.70 & 5.63 & 3 \\
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}
+\parbox{\textwidth}{\scriptsize H@$k$ = Hit@$k$; R@5 = Recall@5; nDCG@10 =
+normalised discounted cumulative gain at 10 (official qrels). Judge grades are
+LLM-as-judge with the gold evidence injected; a multi-grader robustness check
+was not possible in our environment (single agent channel) and is stated as a
+limitation. Deviations from the original settings are registered in the
+reproduction notes (reranker surrogate, turn cap 8, 4 chars/token).}
+\end{table*}

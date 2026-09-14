@@ -30,7 +30,7 @@ import json
 import os
 import shutil
 
-SNAPSHOT_ID = "2026-09-13-a"
+SNAPSHOT_ID = "2026-09-15-a"
 
 ROOT = None
 d = os.path.dirname(os.path.abspath(__file__))
@@ -58,6 +58,18 @@ SOURCES = [
     ("benchmark-suite/results/archive-20260913-214859/module_c_experience_r2.json",
      "module_c_experience_r2.json",
      "Module C experience, ARCHIVED copy (live file was overwritten) — producer: 03_experience.py"),
+    ("benchmark-suite/results/run-20260914T194057Z/deepread_matrix.json",
+     "deepread_matrix.json",
+     "E16 DeepRead baseline matrix, 30 queries x 8 methods — producer: algorithms/run_matrix.py"),
+    ("benchmark-suite/results/run-20260914T200811Z/api_matrix.json",
+     "api_matrix.json",
+     "E16b API flow, 30 queries x 8 methods + middle-agent ranking — producer: scripts/27_api_flow_test.py + algorithms/api_server.py"),
+    ("benchmark-suite/results/run-20260914T171821Z/platform_ops_eval.json",
+     "platform_ops_eval.json",
+     "E17 platform organise functions (dedup/tags/graph/catalog) — producer: scripts/26_platform_ops_eval.py"),
+    ("benchmark-suite/results/run-20260914T194908Z/deepread_matrix.json",
+     "deepread_matrix_replay.json",
+     "E16 cache-replay rerun (reproducibility evidence, summary must match deepread_matrix.json)"),
 ]
 
 # Frozen for the provenance record but NO LONGER CITED: the paper's main results

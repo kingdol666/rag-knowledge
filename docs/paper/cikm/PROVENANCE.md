@@ -133,3 +133,17 @@ The central claim — that domain scoping plus content adjudication reduces fals
 positives in heterogeneous corpora — is **not** among them, and `TODO-18` records
 the single experiment (a $2\times2$ scoping × adjudication factorial on a
 public multi-domain corpus) that would decide it.
+
+## 2026-09-15-a snapshot update (Stage D / E16-E17)
+
+Added to the frozen snapshot, each with a committed producer:
+
+| Artefact | Producer |
+|---|---|
+| `deepread_matrix.json` | `benchmark-suite/algorithms/run_matrix.py` (E16: 8-system matrix, 30 SciFact queries, retrieval metrics + omp-RPC answers + independent judge) |
+| `api_matrix.json` | `benchmark-suite/scripts/27_api_flow_test.py` + `algorithms/api_server.py` (E16b: HTTP-driven rerun, 480/480 byte-identical consistency checks, middle-agent anonymised ranking) |
+| `platform_ops_eval.json` | `benchmark-suite/scripts/26_platform_ops_eval.py` (E17: organise functions, planted-truth probe) |
+| `deepread_matrix_replay.json` | cache-replay rerun of run_matrix (summary layer identical to `deepread_matrix.json`) |
+
+Deviations from the reproduced paper's settings are enumerated in
+`benchmark-suite/algorithms/REPRODUCTION-NOTES.md`.

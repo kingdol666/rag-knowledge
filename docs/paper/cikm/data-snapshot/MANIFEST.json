@@ -1,5 +1,5 @@
 {
-  "snapshot_id": "2026-09-13-a",
+  "snapshot_id": "2026-09-15-a",
   "frozen_at": "2026-09-13",
   "note": "Immutable copies of the benchmark artefacts cited by this paper. make_assets.py reads ONLY from here. Every cited artefact names its producing script; provenance_audit.py fails the build if one loses it.",
   "files": [
@@ -7,29 +7,29 @@
       "name": "module_a_ingestion_r1.json",
       "source": "benchmark-suite/results/module_a_ingestion_r1.json",
       "note": "Module A ingestion (in-house) — producer: 01_ingestion.py",
-      "sha256": "b346e2ac4fc62ceec1ec4854d1e26befe347a973fb90b2208f9e0a8d56cdd23a",
-      "bytes": 894
+      "sha256": "b2de7ec4105928d7321ec3a78127d227c9c1650bb0fb54a876201219afc63907",
+      "bytes": 1002
     },
     {
       "name": "module_a_std2_r1.json",
       "source": "benchmark-suite/results/module_a_std2_r1.json",
       "note": "Module A ingestion (standard corpus) — producer: 21_std2_ingest.py",
-      "sha256": "03ea6c772e8efd2cecd80e71e5354626083d9014f2a38f2196703ad8761023e5",
-      "bytes": 754
+      "sha256": "201c3c3cb6fe8a53363f9a8d45df4f4a78f8b9145e6cb056a7b13f9a4121386c",
+      "bytes": 862
     },
     {
       "name": "module_b_retrieval_r2.json",
       "source": "benchmark-suite/results/module_b_retrieval_r2.json",
       "note": "Module B in-house retrieval, 20 queries — producer: 02_retrieval.py",
-      "sha256": "9e39cb4afd26d6f02963d44e751300a0ea640d3b1fbc5bcd21d3888636beb9e6",
-      "bytes": 17202
+      "sha256": "5b7b0abd19224386866c558380a674dcf7fa3cdb50540c489877857b71963b84",
+      "bytes": 17311
     },
     {
       "name": "module_b_std2_r2.json",
       "source": "benchmark-suite/results/module_b_std2_r2.json",
       "note": "Module B BEIR SciFact + SQuAD, 4 methods — producer: 22_std2_retrieval.py",
-      "sha256": "079d34a9f34c25f228abb6baa4ba594e8185f82d4d67caed4e8503aa7c03cc1d",
-      "bytes": 71683
+      "sha256": "bcfc48f708f1c45728fd5935347e553cb2bd41fdd6744eaef88523e3df7bd090",
+      "bytes": 71803
     },
     {
       "name": "module_c_experience_r2.json",
@@ -37,6 +37,34 @@
       "note": "Module C experience, ARCHIVED copy (live file was overwritten) — producer: 03_experience.py",
       "sha256": "1586fd2fa9cdd260828ccaa3b060f04ca9c2274366dc754c7f9c611d73b35321",
       "bytes": 3981
+    },
+    {
+      "name": "deepread_matrix.json",
+      "source": "benchmark-suite/results/run-20260914T194057Z/deepread_matrix.json",
+      "note": "E16 DeepRead baseline matrix, 30 queries x 8 methods — producer: algorithms/run_matrix.py",
+      "sha256": "ac05521f1b937ad6ec88d1e359c5a4ca4b6bf0576eb7f8ebefe66efa38adaf41",
+      "bytes": 749546
+    },
+    {
+      "name": "api_matrix.json",
+      "source": "benchmark-suite/results/run-20260914T200811Z/api_matrix.json",
+      "note": "E16b API flow, 30 queries x 8 methods + middle-agent ranking — producer: scripts/27_api_flow_test.py + algorithms/api_server.py",
+      "sha256": "387ace796a1889c880e4a6009c9b1a5b331cfb1761804548acdfedbdbeb43c4b",
+      "bytes": 348481
+    },
+    {
+      "name": "platform_ops_eval.json",
+      "source": "benchmark-suite/results/run-20260914T171821Z/platform_ops_eval.json",
+      "note": "E17 platform organise functions (dedup/tags/graph/catalog) — producer: scripts/26_platform_ops_eval.py",
+      "sha256": "6f75dc8f55b74e494f650845bf6e6a568b6f067ba7a3ba9e46dcf72d10a0c68a",
+      "bytes": 1534
+    },
+    {
+      "name": "deepread_matrix_replay.json",
+      "source": "benchmark-suite/results/run-20260914T194908Z/deepread_matrix.json",
+      "note": "E16 cache-replay rerun (reproducibility evidence, summary must match deepread_matrix.json)",
+      "sha256": "c0bd8efb8783c3ac3bf2a1968f9efa23c43f6f74e9ae5343add76f754f51f5eb",
+      "bytes": 749546
     }
   ],
   "withheld": [
