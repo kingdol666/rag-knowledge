@@ -106,6 +106,28 @@ API 校验计数归零后再触发。3 轮独立运行 + 逐轮条数/评审分�
 → 欠抑制率 = 未声明但金标确实跨库的比例；金标单库查询（SciFact 全部）→
 过抑制率 = 单库有结果却被声明覆盖受限的比例。
 
+## 4b. Stage D · E16 DeepRead 基线矩阵 + E17 整理功能评价
+
+### E16 DeepRead 基线矩阵（arXiv:2602.05014 Table 1 全对比算法）
+- 语料/查询: KB-SciFact 148 篇 + BEIR SciFact 30 条(与 §4.1 同源同冻结)。
+- 方法: qdcvr(真 skill 链路) / dense_rag / dense_rag_rerank / raptor /
+  itrg_refresh / itrg_refine / search_o1 / deepread — 复现实现位于
+  `algorithms/`, 偏差逐条登记于 `algorithms/REPRODUCTION-NOTES.md`。
+- 检索层指标: Hit@k/Recall@k/nDCG@10/P@5/MRR(qrels)。
+- 回答层: 每方法证据(统一 4000 字符预算) → omp RPC Agent 统一作答 →
+  第三方 omp Agent(fresh 进程, 注入金标) 0-10 判分。
+- 记录: 全部提问/证据来源/回答/判分逐条落盘 deepread_qa_transcripts.md。
+- 产物: `results/run-*/deepread_matrix.json` + transcripts + E17 JSON。
+
+### E17 平台整理功能评价（文档入库/经验总结之外的第三功能: 整理）
+- 一次性 KB 植入 9 篇文档(6 独立主题 + 2 组重复真值)。
+- 度量: 入库丢失率(create vs catalog)、kb_find_duplicates 组召回、
+  标签内容精确率、tags_cleanup dry-run 完整性、图谱 build/search、
+  catalog 无幽灵条目。
+- 入库/经验总结两功能分别由 §2 模块 A 与 §4.3 E3-E6 覆盖, E17 补齐整理。
+- 产物: `results/run-*/platform_ops_eval.json`。
+
+
 ## 5. 执行顺序（Agent 作业单）
 
 ```
@@ -116,7 +138,8 @@ API 校验计数归零后再触发。3 轮独立运行 + 逐轮条数/评审分�
 3. E8 HotpotQA：下载 → 拆库 → 入库 → 4 方法评测 → E7 盲区
 4. E3 Experience 重置 + 3 轮 → E4 基线 → E5 五路消融 → E6 衰减
 5. E12 动机案例挖掘
-6. 汇整：EXPERIMENTS.md + experiments-report.html（冻结到 run 目录）
+6. Stage D：E16 DeepRead 基线矩阵（algorithms/run_matrix.py 六阶段）→ E17 整理功能（26_platform_ops_eval.py）
+7. 汇整：EXPERIMENTS.md + experiments-report.html（冻结到 run 目录）
 ```
 
 ## 6. 复现保证

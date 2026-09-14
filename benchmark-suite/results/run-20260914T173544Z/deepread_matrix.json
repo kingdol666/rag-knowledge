@@ -1,0 +1,1287 @@
+{
+ "meta": {
+  "generated": "2026-09-14T17:35:44.067712+00:00",
+  "env": {
+   "run_id": "",
+   "git_commit": "2747376",
+   "config_hash": "49279bd832721704",
+   "seed": 0,
+   "backend": "http://localhost:8771",
+   "web": "http://localhost:6790",
+   "embedding": "BAAI/bge-m3 (local GPU, normalize)",
+   "vector_store": "ChromaDB (persistent)",
+   "keyword_index": "jieba BM25",
+   "randomness": "deterministic pipeline (no RNG); agent channel = mean of runs",
+   "retrieval_defaults": {
+    "vector_top_k": 10,
+    "stage1_top_k": 40,
+    "stage2_top_k": 10,
+    "qdcvr_threshold": 0.35,
+    "verification_reads": 3,
+    "exp_threshold_default": 0.45
+   },
+   "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
+  },
+  "paper": "DeepRead: Document Structure-Aware Reasoning to Enhance Agentic Search (arXiv:2602.05014)",
+  "corpus": "BEIR SciFact subset, 148 docs (KB-SciFact, frozen)",
+  "queries": 2,
+  "evidence_budget_chars": 4000,
+  "agentic_turn_cap": 8,
+  "agent_channel": "omp RPC (deepseek-flash via omp --mode=rpc / -p --mode=json)",
+  "judge": "independent omp agent, fresh process, gold evidence injected",
+  "methods": {
+   "qdcvr": "this system: knowledgebase-search skill (two-stage + 0.35 threshold + kb_doc_read content verification rerank)",
+   "dense_rag": "DeepRead Table 1 'Dense RAG' (chunk 800/400, dense top-10)",
+   "dense_rag_rerank": "DeepRead Table 1 'Dense RAG w/ Reranker' (30 cands → rerank → 10; LLM listwise surrogate)",
+   "raptor": "DeepRead Table 1 'RAPTOR' (Collapsed Tree, ≤800 tok/node, 5 layers, cluster top-5, top-10)",
+   "itrg_refresh": "DeepRead Table 1 'ITRG (refresh)' (4 rounds × top-6)",
+   "itrg_refine": "DeepRead Table 1 'ITRG (refine)' (4 rounds × top-6)",
+   "search_o1": "DeepRead Table 1 'Search-o1' (flat struct chunks o0, 2 chunks/call, cap 8 turns)",
+   "deepread": "DeepRead Table 1 'DeepRead' (TOC + Retrieve ω=(1,1) + ReadSection, cap 8 turns)"
+  }
+ },
+ "summary": {
+  "retrieval": {
+   "qdcvr": {
+    "hit@1": 0.5,
+    "hit@3": 0.5,
+    "hit@5": 0.5,
+    "hit@10": 0.5,
+    "recall@5": 0.5,
+    "ndcg@10": 0.5,
+    "precision@5": 0.1,
+    "mrr": 0.5,
+    "evidence_coverage": 0.3667,
+    "n": 2,
+    "mean_latency_s": 3.21,
+    "sum_llm_calls": 0
+   },
+   "dense_rag": {
+    "hit@1": 0.0,
+    "hit@3": 0.5,
+    "hit@5": 0.5,
+    "hit@10": 0.5,
+    "recall@5": 0.5,
+    "ndcg@10": 0.3155,
+    "precision@5": 0.1,
+    "mrr": 0.25,
+    "evidence_coverage": 0.3333,
+    "n": 2,
+    "mean_latency_s": 0.72,
+    "sum_llm_calls": 0
+   },
+   "dense_rag_rerank": {
+    "hit@1": 0.5,
+    "hit@3": 0.5,
+    "hit@5": 0.5,
+    "hit@10": 0.5,
+    "recall@5": 0.5,
+    "ndcg@10": 0.5,
+    "precision@5": 0.1,
+    "mrr": 0.5,
+    "evidence_coverage": 0.2778,
+    "n": 2,
+    "mean_latency_s": 66.8,
+    "sum_llm_calls": 2
+   },
+   "raptor": {
+    "hit@1": 0.0,
+    "hit@3": 0.5,
+    "hit@5": 0.5,
+    "hit@10": 0.5,
+    "recall@5": 0.5,
+    "ndcg@10": 0.3155,
+    "precision@5": 0.1,
+    "mrr": 0.25,
+    "evidence_coverage": 0.3333,
+    "n": 2,
+    "mean_latency_s": 0.52,
+    "sum_llm_calls": 0
+   },
+   "itrg_refresh": {
+    "hit@1": 0.5,
+    "hit@3": 1.0,
+    "hit@5": 1.0,
+    "hit@10": 1.0,
+    "recall@5": 1.0,
+    "ndcg@10": 0.8155,
+    "precision@5": 0.2,
+    "mrr": 0.75,
+    "evidence_coverage": 0.2778,
+    "n": 2,
+    "mean_latency_s": 19.91,
+    "sum_llm_calls": 6
+   },
+   "itrg_refine": {
+    "hit@1": 0.0,
+    "hit@3": 0.5,
+    "hit@5": 0.5,
+    "hit@10": 1.0,
+    "recall@5": 0.5,
+    "ndcg@10": 0.4821,
+    "precision@5": 0.1,
+    "mrr": 0.3214,
+    "evidence_coverage": 0.3889,
+    "n": 2,
+    "mean_latency_s": 1.33,
+    "sum_llm_calls": 6
+   },
+   "search_o1": {
+    "hit@1": 1.0,
+    "hit@3": 1.0,
+    "hit@5": 1.0,
+    "hit@10": 1.0,
+    "recall@5": 1.0,
+    "ndcg@10": 1.0,
+    "precision@5": 0.2,
+    "mrr": 1.0,
+    "evidence_coverage": 0.2222,
+    "n": 2,
+    "mean_latency_s": 258.59,
+    "sum_llm_calls": 8
+   },
+   "deepread": {
+    "hit@1": 0.5,
+    "hit@3": 0.5,
+    "hit@5": 0.5,
+    "hit@10": 0.5,
+    "recall@5": 0.5,
+    "ndcg@10": 0.5,
+    "precision@5": 0.1,
+    "mrr": 0.5,
+    "evidence_coverage": 0.0,
+    "n": 2,
+    "mean_latency_s": 172.51,
+    "sum_llm_calls": 5
+   }
+  },
+  "judge": {
+   "qdcvr": {
+    "mean_score": 4.5,
+    "verdict_ok_rate": 0.5,
+    "n_scored": 2,
+    "n": 2
+   },
+   "dense_rag": {
+    "mean_score": 8.0,
+    "verdict_ok_rate": 1.0,
+    "n_scored": 2,
+    "n": 2
+   },
+   "dense_rag_rerank": {
+    "mean_score": 7.0,
+    "verdict_ok_rate": 0.5,
+    "n_scored": 1,
+    "n": 2
+   },
+   "raptor": {
+    "mean_score": 8.0,
+    "verdict_ok_rate": 1.0,
+    "n_scored": 2,
+    "n": 2
+   },
+   "itrg_refresh": {
+    "mean_score": 8.5,
+    "verdict_ok_rate": 1.0,
+    "n_scored": 2,
+    "n": 2
+   },
+   "itrg_refine": {
+    "mean_score": 8.0,
+    "verdict_ok_rate": 1.0,
+    "n_scored": 2,
+    "n": 2
+   },
+   "search_o1": {
+    "mean_score": 9.0,
+    "verdict_ok_rate": 1.0,
+    "n_scored": 2,
+    "n": 2
+   },
+   "deepread": {
+    "mean_score": 9.5,
+    "verdict_ok_rate": 1.0,
+    "n_scored": 2,
+    "n": 2
+   }
+  },
+  "verdicts": {
+   "qdcvr": {
+    "insufficient": 2
+   },
+   "dense_rag": {
+    "insufficient": 2
+   },
+   "dense_rag_rerank": {
+    "insufficient": 2
+   },
+   "raptor": {
+    "insufficient": 2
+   },
+   "itrg_refresh": {
+    "insufficient": 2
+   },
+   "itrg_refine": {
+    "insufficient": 2
+   },
+   "search_o1": {
+    "insufficient": 2
+   },
+   "deepread": {
+    "insufficient": 2
+   }
+  }
+ },
+ "retrieval_rows": {
+  "qdcvr": [
+   {
+    "qid": "sf-001",
+    "recall@1": 0.0,
+    "hit@1": 0,
+    "recall@3": 0.0,
+    "hit@3": 0,
+    "recall@5": 0.0,
+    "hit@5": 0,
+    "recall@10": 0.0,
+    "hit@10": 0,
+    "ndcg@10": 0.0,
+    "precision@5": 0.0,
+    "mrr": 0.0,
+    "evidence_coverage": 0.4,
+    "latency_s": 4.24,
+    "llm_calls": 0,
+    "chunks": 2,
+    "turns": null
+   },
+   {
+    "qid": "sf-002",
+    "recall@1": 1.0,
+    "hit@1": 1,
+    "recall@3": 1.0,
+    "hit@3": 1,
+    "recall@5": 1.0,
+    "hit@5": 1,
+    "recall@10": 1.0,
+    "hit@10": 1,
+    "ndcg@10": 1.0,
+    "precision@5": 0.2,
+    "mrr": 1.0,
+    "evidence_coverage": 0.3333,
+    "latency_s": 2.19,
+    "llm_calls": 0,
+    "chunks": 2,
+    "turns": null
+   }
+  ],
+  "dense_rag": [
+   {
+    "qid": "sf-001",
+    "recall@1": 0.0,
+    "hit@1": 0,
+    "recall@3": 0.0,
+    "hit@3": 0,
+    "recall@5": 0.0,
+    "hit@5": 0,
+    "recall@10": 0.0,
+    "hit@10": 0,
+    "ndcg@10": 0.0,
+    "precision@5": 0.0,
+    "mrr": 0.0,
+    "evidence_coverage": 0.0,
+    "latency_s": 1.16,
+    "llm_calls": 0,
+    "chunks": 10,
+    "turns": null
+   },
+   {
+    "qid": "sf-002",
+    "recall@1": 0.0,
+    "hit@1": 0,
+    "recall@3": 1.0,
+    "hit@3": 1,
+    "recall@5": 1.0,
+    "hit@5": 1,
+    "recall@10": 1.0,
+    "hit@10": 1,
+    "ndcg@10": 0.6309297535714575,
+    "precision@5": 0.2,
+    "mrr": 0.5,
+    "evidence_coverage": 0.6667,
+    "latency_s": 0.29,
+    "llm_calls": 0,
+    "chunks": 10,
+    "turns": null
+   }
+  ],
+  "dense_rag_rerank": [
+   {
+    "qid": "sf-001",
+    "recall@1": 0.0,
+    "hit@1": 0,
+    "recall@3": 0.0,
+    "hit@3": 0,
+    "recall@5": 0.0,
+    "hit@5": 0,
+    "recall@10": 0.0,
+    "hit@10": 0,
+    "ndcg@10": 0.0,
+    "precision@5": 0.0,
+    "mrr": 0.0,
+    "evidence_coverage": 0.0,
+    "latency_s": 60.24,
+    "llm_calls": 1,
+    "chunks": 10,
+    "turns": null
+   },
+   {
+    "qid": "sf-002",
+    "recall@1": 1.0,
+    "hit@1": 1,
+    "recall@3": 1.0,
+    "hit@3": 1,
+    "recall@5": 1.0,
+    "hit@5": 1,
+    "recall@10": 1.0,
+    "hit@10": 1,
+    "ndcg@10": 1.0,
+    "precision@5": 0.2,
+    "mrr": 1.0,
+    "evidence_coverage": 0.5556,
+    "latency_s": 73.36,
+    "llm_calls": 1,
+    "chunks": 10,
+    "turns": null
+   }
+  ],
+  "raptor": [
+   {
+    "qid": "sf-001",
+    "recall@1": 0.0,
+    "hit@1": 0,
+    "recall@3": 0.0,
+    "hit@3": 0,
+    "recall@5": 0.0,
+    "hit@5": 0,
+    "recall@10": 0.0,
+    "hit@10": 0,
+    "ndcg@10": 0.0,
+    "precision@5": 0.0,
+    "mrr": 0.0,
+    "evidence_coverage": 0.0,
+    "latency_s": 0.29,
+    "llm_calls": 0,
+    "chunks": 10,
+    "turns": null
+   },
+   {
+    "qid": "sf-002",
+    "recall@1": 0.0,
+    "hit@1": 0,
+    "recall@3": 1.0,
+    "hit@3": 1,
+    "recall@5": 1.0,
+    "hit@5": 1,
+    "recall@10": 1.0,
+    "hit@10": 1,
+    "ndcg@10": 0.6309297535714575,
+    "precision@5": 0.2,
+    "mrr": 0.5,
+    "evidence_coverage": 0.6667,
+    "latency_s": 0.75,
+    "llm_calls": 0,
+    "chunks": 10,
+    "turns": null
+   }
+  ],
+  "itrg_refresh": [
+   {
+    "qid": "sf-001",
+    "recall@1": 1.0,
+    "hit@1": 1,
+    "recall@3": 1.0,
+    "hit@3": 1,
+    "recall@5": 1.0,
+    "hit@5": 1,
+    "recall@10": 1.0,
+    "hit@10": 1,
+    "ndcg@10": 1.0,
+    "precision@5": 0.2,
+    "mrr": 1.0,
+    "evidence_coverage": 0.0,
+    "latency_s": 28.03,
+    "llm_calls": 3,
+    "chunks": 6,
+    "turns": null
+   },
+   {
+    "qid": "sf-002",
+    "recall@1": 0.0,
+    "hit@1": 0,
+    "recall@3": 1.0,
+    "hit@3": 1,
+    "recall@5": 1.0,
+    "hit@5": 1,
+    "recall@10": 1.0,
+    "hit@10": 1,
+    "ndcg@10": 0.6309297535714575,
+    "precision@5": 0.2,
+    "mrr": 0.5,
+    "evidence_coverage": 0.5556,
+    "latency_s": 11.79,
+    "llm_calls": 3,
+    "chunks": 6,
+    "turns": null
+   }
+  ],
+  "itrg_refine": [
+   {
+    "qid": "sf-001",
+    "recall@1": 0.0,
+    "hit@1": 0,
+    "recall@3": 0.0,
+    "hit@3": 0,
+    "recall@5": 0.0,
+    "hit@5": 0,
+    "recall@10": 1.0,
+    "hit@10": 1,
+    "ndcg@10": 0.3333333333333333,
+    "precision@5": 0.0,
+    "mrr": 0.14285714285714285,
+    "evidence_coverage": 0.0,
+    "latency_s": 1.45,
+    "llm_calls": 3,
+    "chunks": 10,
+    "turns": null
+   },
+   {
+    "qid": "sf-002",
+    "recall@1": 0.0,
+    "hit@1": 0,
+    "recall@3": 1.0,
+    "hit@3": 1,
+    "recall@5": 1.0,
+    "hit@5": 1,
+    "recall@10": 1.0,
+    "hit@10": 1,
+    "ndcg@10": 0.6309297535714575,
+    "precision@5": 0.2,
+    "mrr": 0.5,
+    "evidence_coverage": 0.7778,
+    "latency_s": 1.21,
+    "llm_calls": 3,
+    "chunks": 7,
+    "turns": null
+   }
+  ],
+  "search_o1": [
+   {
+    "qid": "sf-001",
+    "recall@1": 1.0,
+    "hit@1": 1,
+    "recall@3": 1.0,
+    "hit@3": 1,
+    "recall@5": 1.0,
+    "hit@5": 1,
+    "recall@10": 1.0,
+    "hit@10": 1,
+    "ndcg@10": 1.0,
+    "precision@5": 0.2,
+    "mrr": 1.0,
+    "evidence_coverage": 0.0,
+    "latency_s": 351.31,
+    "llm_calls": 4,
+    "chunks": 2,
+    "turns": 4
+   },
+   {
+    "qid": "sf-002",
+    "recall@1": 1.0,
+    "hit@1": 1,
+    "recall@3": 1.0,
+    "hit@3": 1,
+    "recall@5": 1.0,
+    "hit@5": 1,
+    "recall@10": 1.0,
+    "hit@10": 1,
+    "ndcg@10": 1.0,
+    "precision@5": 0.2,
+    "mrr": 1.0,
+    "evidence_coverage": 0.4444,
+    "latency_s": 165.87,
+    "llm_calls": 4,
+    "chunks": 4,
+    "turns": 4
+   }
+  ],
+  "deepread": [
+   {
+    "qid": "sf-001",
+    "recall@1": 1.0,
+    "hit@1": 1,
+    "recall@3": 1.0,
+    "hit@3": 1,
+    "recall@5": 1.0,
+    "hit@5": 1,
+    "recall@10": 1.0,
+    "hit@10": 1,
+    "ndcg@10": 1.0,
+    "precision@5": 0.2,
+    "mrr": 1.0,
+    "evidence_coverage": 0.0,
+    "latency_s": 194.63,
+    "llm_calls": 3,
+    "chunks": 1,
+    "turns": 3
+   },
+   {
+    "qid": "sf-002",
+    "recall@1": 0.0,
+    "hit@1": 0,
+    "recall@3": 0.0,
+    "hit@3": 0,
+    "recall@5": 0.0,
+    "hit@5": 0,
+    "recall@10": 0.0,
+    "hit@10": 0,
+    "ndcg@10": 0.0,
+    "precision@5": 0.0,
+    "mrr": 0.0,
+    "evidence_coverage": 0.0,
+    "latency_s": 150.39,
+    "llm_calls": 2,
+    "chunks": 0,
+    "turns": 2
+   }
+  ]
+ },
+ "judge_rows": {
+  "qdcvr": [
+   {
+    "qid": "sf-001",
+    "score": 2.0,
+    "verdict_ok": false,
+    "issues": "Answer declared insufficiency while citing unrelated documents (mortality trends, MHC recombination) rather than engaging the gold nanotech review, so the verdict contradicts the expected support for the claim and shows no grounding in the gold evidence."
+   },
+   {
+    "qid": "sf-002",
+    "score": 7.0,
+    "verdict_ok": true,
+    "issues": "Correctly identifies absence of 4-PBA data in the gold evidence, but fabricates a second excerpt ('VAP-dependent endosome-ER contacts') not present anywhere in the ground-truth document."
+   }
+  ],
+  "dense_rag": [
+   {
+    "qid": "sf-001",
+    "score": 7.0,
+    "verdict_ok": true,
+    "issues": "Verdict 'insufficient' aligns with gold evidence (which never mentions 0-dimensional biomaterials or inductive properties), but the answer describes unrelated retrieved excerpts (NOS/peroxynitrite, mGluR6, iPSC reprogramming) not present in the gold document."
+   },
+   {
+    "qid": "sf-002",
+    "score": 9.0,
+    "verdict_ok": true,
+    "issues": "Verdict 'insufficient' aligns with gold evidence (WFS1/AC8 abstract never mentions 4-PBA or general ER stress marker measurements), but the answer grounds its reasoning in retrieved excerpts rather than explicitly noting the gold document itself lacks any 4-PBA data."
+   }
+  ],
+  "dense_rag_rerank": [
+   {
+    "qid": "sf-001",
+    "score": null,
+    "verdict_ok": null,
+    "issues": ""
+   },
+   {
+    "qid": "sf-002",
+    "score": 7.0,
+    "verdict_ok": true,
+    "issues": "Verdict 'insufficient' is defensible since gold evidence never mentions 4-PBA or general ER stress markers, but the answer references 'VAP-dependent endosome-ER contacts' absent from the gold text."
+   }
+  ],
+  "raptor": [
+   {
+    "qid": "sf-001",
+    "score": 7.0,
+    "verdict_ok": true,
+    "issues": "Verdict 'insufficient' is defensible since the gold evidence discusses nanotechnologies for stem-cell tracking/differentiation and never addresses 0-dimensional biomaterials or inductive properties, but the answer's cited retrieved excerpts (peroxynitrite, mGluR6, iPSC) cannot be verified against the gold evidence."
+   },
+   {
+    "qid": "sf-002",
+    "score": 9.0,
+    "verdict_ok": true,
+    "issues": "Verdict 'insufficient' is correct since the gold WFS1/AC8 document never mentions 4-PBA or general ER stress marker measurements after such treatment, and the answer's descriptions of the cited excerpts are accurate with no fabrication."
+   }
+  ],
+  "itrg_refresh": [
+   {
+    "qid": "sf-001",
+    "score": 9.0,
+    "verdict_ok": true,
+    "issues": "Gold evidence covers stem-cell nanotechnology only and never mentions dimensionality or inductive properties, so the 'insufficient' verdict is correct and un-fabricated; minor completeness limit is that the scaffolds/differentiation mention was not explicitly weighed."
+   },
+   {
+    "qid": "sf-002",
+    "score": 8.0,
+    "verdict_ok": true,
+    "issues": "Insufficient verdict is defensible since the gold evidence (WFS1/AC8 paper) never mentions 4-PBA or ER-stress-marker measurements; grounding and clarity are sound, only the insufficient-vs-unsupported nuance is arguable."
+   }
+  ],
+  "itrg_refine": [
+   {
+    "qid": "sf-001",
+    "score": 7.0,
+    "verdict_ok": true,
+    "issues": "Verdict 'insufficient' aligns with gold evidence (which never mentions 0-dimensional biomaterials or inductive properties), but the answer describes unrelated retrieved excerpts (NOS/peroxynitrite, mGluR6, iPSC reprogramming) not present in the gold document."
+   },
+   {
+    "qid": "sf-002",
+    "score": 9.0,
+    "verdict_ok": true,
+    "issues": "Verdict 'insufficient' is correct since the gold WFS1/AC8 document never mentions 4-PBA or general ER stress marker measurements after such treatment, and the answer's descriptions of the cited excerpts are accurate with no fabrication."
+   }
+  ],
+  "search_o1": [
+   {
+    "qid": "sf-001",
+    "score": 9.0,
+    "verdict_ok": true,
+    "issues": "The gold abstract indeed never addresses 0-dimensional biomaterials or their inductive properties, so 'insufficient' is correct; only a weak indirect inference (nanoparticles used for delivery/tracking vs scaffolds for differentiation) was left unexplored."
+   },
+   {
+    "qid": "sf-002",
+    "score": 9.0,
+    "verdict_ok": true,
+    "issues": "Correctly identifies the gold evidence (WFS1/AC8) never mentions 4-PBA or ER-stress-marker quantification, so 'insufficient' is the right verdict; minor deduction for referencing source [4961038] (PI3K/MEK lung cancer) which is not verifiable from the gold evidence."
+   }
+  ],
+  "deepread": [
+   {
+    "qid": "sf-001",
+    "score": 10.0,
+    "verdict_ok": true,
+    "issues": "None; the answer correctly identifies that the gold evidence discusses nanotechnologies for stem cells without addressing 0-dimensional biomaterials or inductive properties, so 'insufficient' is the right verdict and all cited content is faithful to the evidence."
+   },
+   {
+    "qid": "sf-002",
+    "score": 9.0,
+    "verdict_ok": true,
+    "issues": "Gold document (WFS1/AC8) never mentions 4-PBA, so declaring the claim unconfirmable is defensible, and the answer fabricates nothing while correctly noting only adjacent ER-stress content exists."
+   }
+  ]
+ },
+ "answer_rows": {
+  "qdcvr": [
+   {
+    "qid": "sf-001",
+    "verdict": "insufficient",
+    "answer": "Neither retrieved excerpt addresses biomaterials or their inductive properties: the first concerns mortality trends amenable to medical care in eastern Europe, and the second concerns meiotic recombination hotspots in the mouse MHC Ebeta gene. With no evidence on 0-dimensional biomaterials or inductive capacity, the claim cannot be supported or refuted from the supplied corpus.",
+    "evidence_chars": 3180
+   },
+   {
+    "qid": "sf-002",
+    "verdict": "insufficient",
+    "answer": "The two provided excerpts discuss ER stress biology (WFS1/AC8 complex formation and VAP-dependent endosome-ER contacts) but neither mentions 4-PBA (4-phenylbutyrate) treatment nor reports effects on general ER stress markers. No data on 4-PBA administration or marker changes (e.g., CHOP, BiP/GRP78, ATF4, XBP1) is present, so the claim cannot be evaluated from this evidence.",
+    "evidence_chars": 2468
+   }
+  ],
+  "dense_rag": [
+   {
+    "qid": "sf-001",
+    "verdict": "insufficient",
+    "answer": "The retrieved excerpts concern nitric oxide synthase/ peroxynitrite cytotoxicity, mGluR6 knockout visual transmission, and small-molecule enhancement of induced pluripotent stem cell reprogramming. None addresses biomaterial dimensionality (0-dimensional vs. other) or the inductive properties of biomaterials, so the claim cannot be evaluated from this evidence.",
+    "evidence_chars": 2914
+   },
+   {
+    "qid": "sf-002",
+    "verdict": "insufficient",
+    "answer": "None of the three retrieved excerpts mention 4-PBA (sodium phenylbutyrate) or any chaperone/chemical treatment, and none measure general ER stress markers under such treatment; they concern VAP-dependent endosome-ER PI4P regulation, WFS1/AC8 ER stress signaling in beta cells, and G-quadruplex compounds in HR-deficient cells. The claim about 4-PBA decreasing ER stress is therefore not evaluable from the provided evidence.",
+    "evidence_chars": 3748
+   }
+  ],
+  "dense_rag_rerank": [
+   {
+    "qid": "sf-001",
+    "verdict": "insufficient",
+    "answer": "None of the three retrieved excerpts address 0-dimensional biomaterials or their inductive properties. The evidence concerns embryonic BMP/ADMP morphogenetic self-regulation, small-molecule enhancement of iPSC reprogramming, and Myc-driven protein synthesis in cancer, none of which bear on the dimensionality of biomaterials. The claim therefore cannot be assessed from the provided corpus.",
+    "evidence_chars": 3267
+   },
+   {
+    "qid": "sf-002",
+    "verdict": "insufficient",
+    "answer": "None of the retrieved excerpts mention 4-PBA (4-phenylbutyric acid) or any treatment intervention; they describe WFS1/AC8 regulation of insulin secretion under ER stress and VAP-dependent endosome-ER contacts. The excerpts also report no general ER stress marker measurements (e.g., BiP/GRP78, CHOP, ATF4, XBP1) with or without treatment. Therefore the claim cannot be evaluated from the provided evidence.",
+    "evidence_chars": 3748
+   }
+  ],
+  "raptor": [
+   {
+    "qid": "sf-001",
+    "verdict": "insufficient",
+    "answer": "The claim concerns the inductive properties of 0-dimensional biomaterials, but none of the three retrieved excerpts address biomaterials, dimensionality, or tissue-inductive behavior. The passages cover peroxynitrite-mediated cytotoxicity in L-Arg-depleted cells, loss of ON visual responses in mGluR6 knockout mice, and small-molecule enhancement of iPSC reprogramming, none of which bear on the claim. No evidence in the corpus is relevant, so the claim can be neither supported nor refuted.",
+    "evidence_chars": 2914
+   },
+   {
+    "qid": "sf-002",
+    "verdict": "insufficient",
+    "answer": "None of the three retrieved excerpts mention 4-PBA (4-phenylbutyric acid) or any treatment with it, nor do they report measurements of general ER stress markers before and after such treatment. The excerpts concern ER-endosome contact/PI4P regulation (600437), WFS1-AC8 interactions under ER stress (32587939), and G-quadruplex compounds in BRCA-deficient cells (16472469), none of which provide evidence for or against the claim.",
+    "evidence_chars": 3748
+   }
+  ],
+  "itrg_refresh": [
+   {
+    "qid": "sf-001",
+    "verdict": "insufficient",
+    "answer": "None of the three retrieved excerpts addresses dimensionality of biomaterials or inductive properties. They concern nanotechnology for stem cell tracking/differentiation, prostaglandin E2 regulation of bone homeostasis, and outer membrane biogenesis in E. coli, so the claim cannot be evaluated from this evidence.",
+    "evidence_chars": 2971
+   },
+   {
+    "qid": "sf-002",
+    "verdict": "insufficient",
+    "answer": "None of the three retrieved excerpts mention 4-PBA (4-phenylbutyric acid) or any treatment with it, nor do they report measurements of general ER stress markers before and after such treatment. The excerpts concern ER-endosome contact/PI4P regulation (600437), WFS1-AC8 interactions under ER stress (32587939), and G-quadruplex compounds in BRCA-deficient cells (16472469), none of which provide evidence for or against the claim.",
+    "evidence_chars": 3748
+   }
+  ],
+  "itrg_refine": [
+   {
+    "qid": "sf-001",
+    "verdict": "insufficient",
+    "answer": "The retrieved excerpts concern nitric oxide synthase/ peroxynitrite cytotoxicity, mGluR6 knockout visual transmission, and small-molecule enhancement of induced pluripotent stem cell reprogramming. None addresses biomaterial dimensionality (0-dimensional vs. other) or the inductive properties of biomaterials, so the claim cannot be evaluated from this evidence.",
+    "evidence_chars": 2914
+   },
+   {
+    "qid": "sf-002",
+    "verdict": "insufficient",
+    "answer": "None of the three retrieved excerpts mention 4-PBA (4-phenylbutyric acid) or any treatment with it, nor do they report measurements of general ER stress markers before and after such treatment. The excerpts concern ER-endosome contact/PI4P regulation (600437), WFS1-AC8 interactions under ER stress (32587939), and G-quadruplex compounds in BRCA-deficient cells (16472469), none of which provide evidence for or against the claim.",
+    "evidence_chars": 3748
+   }
+  ],
+  "search_o1": [
+   {
+    "qid": "sf-001",
+    "verdict": "insufficient",
+    "answer": "Neither retrieved excerpt addresses 0-dimensional biomaterials or their inductive properties. Source 31715818 reviews nanotechnology platforms for stem cell labeling, delivery, and scaffold-based differentiation, and source 21676556 concerns midbody accumulation in stem cells; both relate to stem cell manipulation but neither defines dimensionality of biomaterials nor evaluates induction (e.g., osteogenic/chondrogenic differentiation) capability. The claim is therefore neither supported nor refuted by the provided evidence.",
+    "evidence_chars": 1934
+   },
+   {
+    "qid": "sf-002",
+    "verdict": "insufficient",
+    "answer": "Neither retrieved excerpt evaluates 4-PBA (4-phenylbutyric acid) or reports any general ER stress marker measurements following its treatment. Source [32587939] concerns WFS1/AC8 complex formation and insulin secretion during ER stress, and source [4961038] concerns PI3K/MEK inhibitors in K-Ras and PIK3CA mutant lung cancers; neither mentions 4-PBA or ER stress marker quantification. Therefore the claim cannot be assessed from the provided evidence.",
+    "evidence_chars": 2689
+   }
+  ],
+  "deepread": [
+   {
+    "qid": "sf-001",
+    "verdict": "insufficient",
+    "answer": "The retrieved excerpt describes nanotechnologies (magnetic nanoparticles, quantum dots, carbon nanotubes, polyplexes, and nanometer-scale scaffolds) used for stem cell labeling, tracking, gene/protein delivery, differentiation, and transplantation, but it never uses the term '0-dimensional biomaterials' nor evaluates inductive versus non-inductive properties. No statement in the evidence either supports or contradicts the claim that 0-dimensional biomaterials lack inductive properties; dimensionality-based inductive capability is not addressed at all.",
+    "evidence_chars": 651
+   },
+   {
+    "qid": "sf-002",
+    "verdict": "insufficient",
+    "answer": "No evidence was retrieved from the corpus that mentions 4-PBA (sodium 4-phenylbutyrate) or its effect on endoplasmic reticulum stress markers; targeted searches across all knowledge bases for 4-PBA/phenylbutyrate, chemical chaperone, and ER stress terms returned no relevant passages. The corpus contains only adjacent ER-related content (e.g., WFS1/ER stress role in beta-cell function), which does not address 4-PBA treatment. Therefore the claim cannot be confirmed or refuted with the available evidence.",
+    "evidence_chars": 0
+   }
+  ]
+ },
+ "qa": [
+  {
+   "qid": "sf-001",
+   "method": "qdcvr",
+   "claim": "0-dimensional biomaterials lack inductive properties.",
+   "golden_ids": [
+    "31715818"
+   ],
+   "evidence_sources": [
+    "10086360",
+    "19961177"
+   ],
+   "answer": {
+    "verdict": "insufficient",
+    "answer": "Neither retrieved excerpt addresses biomaterials or their inductive properties: the first concerns mortality trends amenable to medical care in eastern Europe, and the second concerns meiotic recombination hotspots in the mouse MHC Ebeta gene. With no evidence on 0-dimensional biomaterials or inductive capacity, the claim cannot be supported or refuted from the supplied corpus.",
+    "evidence_used": [
+     "19961177",
+     "10086360"
+    ]
+   },
+   "judge": {
+    "score": 2,
+    "verdict_ok": false,
+    "issues": "Answer declared insufficiency while citing unrelated documents (mortality trends, MHC recombination) rather than engaging the gold nanotech review, so the verdict contradicts the expected support for the claim and shows no grounding in the gold evidence."
+   },
+   "trace": {
+    "fallback_global": false,
+    "chars_read": 4372,
+    "verify_pass": 3
+   }
+  },
+  {
+   "qid": "sf-001",
+   "method": "dense_rag",
+   "claim": "0-dimensional biomaterials lack inductive properties.",
+   "golden_ids": [
+    "31715818"
+   ],
+   "evidence_sources": [
+    "17081238",
+    "23100962",
+    "8185080"
+   ],
+   "answer": {
+    "verdict": "insufficient",
+    "answer": "The retrieved excerpts concern nitric oxide synthase/ peroxynitrite cytotoxicity, mGluR6 knockout visual transmission, and small-molecule enhancement of induced pluripotent stem cell reprogramming. None addresses biomaterial dimensionality (0-dimensional vs. other) or the inductive properties of biomaterials, so the claim cannot be evaluated from this evidence.",
+    "evidence_used": []
+   },
+   "judge": {
+    "score": 7,
+    "verdict_ok": true,
+    "issues": "Verdict 'insufficient' aligns with gold evidence (which never mentions 0-dimensional biomaterials or inductive properties), but the answer describes unrelated retrieved excerpts (NOS/peroxynitrite, mGluR6, iPSC reprogramming) not present in the gold document."
+   },
+   "trace": {
+    "rerank_fallback": false
+   }
+  },
+  {
+   "qid": "sf-001",
+   "method": "dense_rag_rerank",
+   "claim": "0-dimensional biomaterials lack inductive properties.",
+   "golden_ids": [
+    "31715818"
+   ],
+   "evidence_sources": [
+    "18987782",
+    "6076903",
+    "8185080"
+   ],
+   "answer": {
+    "verdict": "insufficient",
+    "answer": "None of the three retrieved excerpts address 0-dimensional biomaterials or their inductive properties. The evidence concerns embryonic BMP/ADMP morphogenetic self-regulation, small-molecule enhancement of iPSC reprogramming, and Myc-driven protein synthesis in cancer, none of which bear on the dimensionality of biomaterials. The claim therefore cannot be assessed from the provided corpus.",
+    "evidence_used": []
+   },
+   "judge": {},
+   "trace": {
+    "rerank_fallback": false
+   }
+  },
+  {
+   "qid": "sf-001",
+   "method": "raptor",
+   "claim": "0-dimensional biomaterials lack inductive properties.",
+   "golden_ids": [
+    "31715818"
+   ],
+   "evidence_sources": [
+    "17081238",
+    "23100962",
+    "8185080"
+   ],
+   "answer": {
+    "verdict": "insufficient",
+    "answer": "The claim concerns the inductive properties of 0-dimensional biomaterials, but none of the three retrieved excerpts address biomaterials, dimensionality, or tissue-inductive behavior. The passages cover peroxynitrite-mediated cytotoxicity in L-Arg-depleted cells, loss of ON visual responses in mGluR6 knockout mice, and small-molecule enhancement of iPSC reprogramming, none of which bear on the claim. No evidence in the corpus is relevant, so the claim can be neither supported nor refuted.",
+    "evidence_used": []
+   },
+   "judge": {
+    "score": 7,
+    "verdict_ok": true,
+    "issues": "Verdict 'insufficient' is defensible since the gold evidence discusses nanotechnologies for stem-cell tracking/differentiation and never addresses 0-dimensional biomaterials or inductive properties, but the answer's cited retrieved excerpts (peroxynitrite, mGluR6, iPSC) cannot be verified against the gold evidence."
+   },
+   "trace": {
+    "nodes_hit": 10
+   }
+  },
+  {
+   "qid": "sf-001",
+   "method": "itrg_refresh",
+   "claim": "0-dimensional biomaterials lack inductive properties.",
+   "golden_ids": [
+    "31715818"
+   ],
+   "evidence_sources": [
+    "31715818",
+    "58006489",
+    "6836086"
+   ],
+   "answer": {
+    "verdict": "insufficient",
+    "answer": "None of the three retrieved excerpts addresses dimensionality of biomaterials or inductive properties. They concern nanotechnology for stem cell tracking/differentiation, prostaglandin E2 regulation of bone homeostasis, and outer membrane biogenesis in E. coli, so the claim cannot be evaluated from this evidence.",
+    "evidence_used": [
+     "31715818",
+     "58006489",
+     "6836086"
+    ]
+   },
+   "judge": {
+    "score": 9,
+    "verdict_ok": true,
+    "issues": "Gold evidence covers stem-cell nanotechnology only and never mentions dimensionality or inductive properties, so the 'insufficient' verdict is correct and un-fabricated; minor completeness limit is that the scaffolds/differentiation mention was not explicitly weighed."
+   },
+   "trace": {
+    "variant": "refresh",
+    "hypotheses": [
+     "The claim is refuted — 0-dimensional biomaterials such as nanoparticles and quantum dots (e.g., black phosphorus or cerium oxide nanodots) can actively induce osteogenesis, angiogenesis, and immunomodulation, so they do possess inductive properties; however, the retrieved evidence (NOS superoxide/pe",
+     "The claim is refuted — 0-dimensional biomaterials such as nanoparticles and quantum dots (e.g., black phosphorus or cerium oxide nanodots) can actively induce osteogenesis, angiogenesis, and immunomodulation, so they do possess inductive properties; however, the retrieved evidence (NOS superoxide/pe",
+     "The claim is refuted — 0-dimensional biomaterials such as nanoparticles and quantum dots (e.g., black phosphorus or cerium oxide nanodots) can actively induce osteogenesis, angiogenesis, and immunomodulation, so they do possess inductive properties; however, the retrieved evidence (NOS superoxide/pe"
+    ],
+    "queries": [
+     "0-dimensional biomaterials lack inductive properties.",
+     "0-dimensional biomaterials lack inductive properties. The claim is refuted — 0-dimensional biomaterials such as nanoparticles and quantum dots (e.g., black phosphorus or cerium oxide nanodots) can actively induce osteogenesis, angiogenesis, and immunomodulation, so they do possess inductive properti",
+     "0-dimensional biomaterials lack inductive properties. The claim is refuted — 0-dimensional biomaterials such as nanoparticles and quantum dots (e.g., black phosphorus or cerium oxide nanodots) can actively induce osteogenesis, angiogenesis, and immunomodulation, so they do possess inductive properti",
+     "0-dimensional biomaterials lack inductive properties. The claim is refuted — 0-dimensional biomaterials such as nanoparticles and quantum dots (e.g., black phosphorus or cerium oxide nanodots) can actively induce osteogenesis, angiogenesis, and immunomodulation, so they do possess inductive properti"
+    ]
+   }
+  },
+  {
+   "qid": "sf-001",
+   "method": "itrg_refine",
+   "claim": "0-dimensional biomaterials lack inductive properties.",
+   "golden_ids": [
+    "31715818"
+   ],
+   "evidence_sources": [
+    "17081238",
+    "23100962",
+    "8185080"
+   ],
+   "answer": {
+    "verdict": "insufficient",
+    "answer": "The retrieved excerpts concern nitric oxide synthase/ peroxynitrite cytotoxicity, mGluR6 knockout visual transmission, and small-molecule enhancement of induced pluripotent stem cell reprogramming. None addresses biomaterial dimensionality (0-dimensional vs. other) or the inductive properties of biomaterials, so the claim cannot be evaluated from this evidence.",
+    "evidence_used": []
+   },
+   "judge": {
+    "score": 7,
+    "verdict_ok": true,
+    "issues": "Verdict 'insufficient' aligns with gold evidence (which never mentions 0-dimensional biomaterials or inductive properties), but the answer describes unrelated retrieved excerpts (NOS/peroxynitrite, mGluR6, iPSC reprogramming) not present in the gold document."
+   },
+   "trace": {
+    "variant": "refine",
+    "hypotheses": [
+     "The claim is refuted — 0-dimensional biomaterials such as nanoparticles and quantum dots (e.g., black phosphorus or cerium oxide nanodots) can actively induce osteogenesis, angiogenesis, and immunomodulation, so they do possess inductive properties; however, the retrieved evidence (NOS superoxide/pe",
+     "The claim is refuted — 0-dimensional biomaterials such as nanoparticles and quantum dots (e.g., black phosphorus or cerium oxide nanodots) can actively induce osteogenesis, angiogenesis, and immunomodulation, so they do possess inductive properties; however, the retrieved evidence (NOS superoxide/pe",
+     "The claim is refuted — 0-dimensional biomaterials such as nanoparticles and quantum dots (e.g., black phosphorus or cerium oxide nanodots) can actively induce osteogenesis, angiogenesis, and immunomodulation, so they do possess inductive properties; however, the retrieved evidence (NOS superoxide/pe"
+    ],
+    "queries": [
+     "0-dimensional biomaterials lack inductive properties.",
+     "0-dimensional biomaterials lack inductive properties. The claim is refuted — 0-dimensional biomaterials such as nanoparticles and quantum dots (e.g., black phosphorus or cerium oxide nanodots) can actively induce osteogenesis, angiogenesis, and immunomodulation, so they do possess inductive properti",
+     "0-dimensional biomaterials lack inductive properties. The claim is refuted — 0-dimensional biomaterials such as nanoparticles and quantum dots (e.g., black phosphorus or cerium oxide nanodots) can actively induce osteogenesis, angiogenesis, and immunomodulation, so they do possess inductive properti",
+     "0-dimensional biomaterials lack inductive properties. The claim is refuted — 0-dimensional biomaterials such as nanoparticles and quantum dots (e.g., black phosphorus or cerium oxide nanodots) can actively induce osteogenesis, angiogenesis, and immunomodulation, so they do possess inductive properti"
+    ]
+   }
+  },
+  {
+   "qid": "sf-001",
+   "method": "search_o1",
+   "claim": "0-dimensional biomaterials lack inductive properties.",
+   "golden_ids": [
+    "31715818"
+   ],
+   "evidence_sources": [
+    "21676556",
+    "31715818"
+   ],
+   "answer": {
+    "verdict": "insufficient",
+    "answer": "Neither retrieved excerpt addresses 0-dimensional biomaterials or their inductive properties. Source 31715818 reviews nanotechnology platforms for stem cell labeling, delivery, and scaffold-based differentiation, and source 21676556 concerns midbody accumulation in stem cells; both relate to stem cell manipulation but neither defines dimensionality of biomaterials nor evaluates induction (e.g., osteogenic/chondrogenic differentiation) capability. The claim is therefore neither supported nor refuted by the provided evidence.",
+    "evidence_used": [
+     "31715818",
+     "21676556"
+    ]
+   },
+   "judge": {
+    "score": 9,
+    "verdict_ok": true,
+    "issues": "The gold abstract indeed never addresses 0-dimensional biomaterials or their inductive properties, so 'insufficient' is correct; only a weak indirect inference (nanoparticles used for delivery/tracking vs scaffolds for differentiation) was left unexplored."
+   },
+   "trace": {
+    "turns": 4,
+    "commands": [
+     "search:0-dimensional biomaterials inductive properties dimensionality nanoparticles sca",
+     "search:biomaterial inductive capacity tissue engineering 0D nanoparticle inductive sign",
+     "search:mesenchymal stem cell biomaterial scaffold bone inductive differentiation materi",
+     "final"
+    ],
+    "own_final_answer": "NOT ENOUGH INFO — the corpus contains no document that supports or contradicts the claim."
+   }
+  },
+  {
+   "qid": "sf-001",
+   "method": "deepread",
+   "claim": "0-dimensional biomaterials lack inductive properties.",
+   "golden_ids": [
+    "31715818"
+   ],
+   "evidence_sources": [
+    "31715818"
+   ],
+   "answer": {
+    "verdict": "insufficient",
+    "answer": "The retrieved excerpt describes nanotechnologies (magnetic nanoparticles, quantum dots, carbon nanotubes, polyplexes, and nanometer-scale scaffolds) used for stem cell labeling, tracking, gene/protein delivery, differentiation, and transplantation, but it never uses the term '0-dimensional biomaterials' nor evaluates inductive versus non-inductive properties. No statement in the evidence either supports or contradicts the claim that 0-dimensional biomaterials lack inductive properties; dimensionality-based inductive capability is not addressed at all.",
+    "evidence_used": [
+     "31715818"
+    ]
+   },
+   "judge": {
+    "score": 10,
+    "verdict_ok": true,
+    "issues": "None; the answer correctly identifies that the gold evidence discusses nanotechnologies for stem cells without addressing 0-dimensional biomaterials or inductive properties, so 'insufficient' is the right verdict and all cited content is faithful to the evidence."
+   },
+   "trace": {
+    "turns": 3,
+    "commands": [
+     "retrieve:0-dimensional biomaterials inductive properties tissue regeneration dimensionali",
+     "read:31715818 | 0 | 0 | 1",
+     "final"
+    ]
+   }
+  },
+  {
+   "qid": "sf-002",
+   "method": "qdcvr",
+   "claim": "4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress markers.",
+   "golden_ids": [
+    "32587939"
+   ],
+   "evidence_sources": [
+    "32587939",
+    "600437"
+   ],
+   "answer": {
+    "verdict": "insufficient",
+    "answer": "The two provided excerpts discuss ER stress biology (WFS1/AC8 complex formation and VAP-dependent endosome-ER contacts) but neither mentions 4-PBA (4-phenylbutyrate) treatment nor reports effects on general ER stress markers. No data on 4-PBA administration or marker changes (e.g., CHOP, BiP/GRP78, ATF4, XBP1) is present, so the claim cannot be evaluated from this evidence.",
+    "evidence_used": []
+   },
+   "judge": {
+    "score": 7,
+    "verdict_ok": true,
+    "issues": "Correctly identifies absence of 4-PBA data in the gold evidence, but fabricates a second excerpt ('VAP-dependent endosome-ER contacts') not present anywhere in the ground-truth document."
+   },
+   "trace": {
+    "fallback_global": false,
+    "chars_read": 3713,
+    "verify_pass": 3
+   }
+  },
+  {
+   "qid": "sf-002",
+   "method": "dense_rag",
+   "claim": "4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress markers.",
+   "golden_ids": [
+    "32587939"
+   ],
+   "evidence_sources": [
+    "16472469",
+    "32587939",
+    "600437"
+   ],
+   "answer": {
+    "verdict": "insufficient",
+    "answer": "None of the three retrieved excerpts mention 4-PBA (sodium phenylbutyrate) or any chaperone/chemical treatment, and none measure general ER stress markers under such treatment; they concern VAP-dependent endosome-ER PI4P regulation, WFS1/AC8 ER stress signaling in beta cells, and G-quadruplex compounds in HR-deficient cells. The claim about 4-PBA decreasing ER stress is therefore not evaluable from the provided evidence.",
+    "evidence_used": [
+     "600437",
+     "32587939",
+     "16472469"
+    ]
+   },
+   "judge": {
+    "score": 9,
+    "verdict_ok": true,
+    "issues": "Verdict 'insufficient' aligns with gold evidence (WFS1/AC8 abstract never mentions 4-PBA or general ER stress marker measurements), but the answer grounds its reasoning in retrieved excerpts rather than explicitly noting the gold document itself lacks any 4-PBA data."
+   },
+   "trace": {
+    "rerank_fallback": false
+   }
+  },
+  {
+   "qid": "sf-002",
+   "method": "dense_rag_rerank",
+   "claim": "4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress markers.",
+   "golden_ids": [
+    "32587939"
+   ],
+   "evidence_sources": [
+    "32587939",
+    "600437"
+   ],
+   "answer": {
+    "verdict": "insufficient",
+    "answer": "None of the retrieved excerpts mention 4-PBA (4-phenylbutyric acid) or any treatment intervention; they describe WFS1/AC8 regulation of insulin secretion under ER stress and VAP-dependent endosome-ER contacts. The excerpts also report no general ER stress marker measurements (e.g., BiP/GRP78, CHOP, ATF4, XBP1) with or without treatment. Therefore the claim cannot be evaluated from the provided evidence.",
+    "evidence_used": []
+   },
+   "judge": {
+    "score": 7,
+    "verdict_ok": true,
+    "issues": "Verdict 'insufficient' is defensible since gold evidence never mentions 4-PBA or general ER stress markers, but the answer references 'VAP-dependent endosome-ER contacts' absent from the gold text."
+   },
+   "trace": {
+    "rerank_fallback": false
+   }
+  },
+  {
+   "qid": "sf-002",
+   "method": "raptor",
+   "claim": "4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress markers.",
+   "golden_ids": [
+    "32587939"
+   ],
+   "evidence_sources": [
+    "16472469",
+    "32587939",
+    "600437"
+   ],
+   "answer": {
+    "verdict": "insufficient",
+    "answer": "None of the three retrieved excerpts mention 4-PBA (4-phenylbutyric acid) or any treatment with it, nor do they report measurements of general ER stress markers before and after such treatment. The excerpts concern ER-endosome contact/PI4P regulation (600437), WFS1-AC8 interactions under ER stress (32587939), and G-quadruplex compounds in BRCA-deficient cells (16472469), none of which provide evidence for or against the claim.",
+    "evidence_used": [
+     "600437",
+     "32587939",
+     "16472469"
+    ]
+   },
+   "judge": {
+    "score": 9,
+    "verdict_ok": true,
+    "issues": "Verdict 'insufficient' is correct since the gold WFS1/AC8 document never mentions 4-PBA or general ER stress marker measurements after such treatment, and the answer's descriptions of the cited excerpts are accurate with no fabrication."
+   },
+   "trace": {
+    "nodes_hit": 10
+   }
+  },
+  {
+   "qid": "sf-002",
+   "method": "itrg_refresh",
+   "claim": "4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress markers.",
+   "golden_ids": [
+    "32587939"
+   ],
+   "evidence_sources": [
+    "16472469",
+    "32587939",
+    "600437"
+   ],
+   "answer": {
+    "verdict": "insufficient",
+    "answer": "None of the three retrieved excerpts mention 4-PBA (4-phenylbutyric acid) or any treatment with it, nor do they report measurements of general ER stress markers before and after such treatment. The excerpts concern ER-endosome contact/PI4P regulation (600437), WFS1-AC8 interactions under ER stress (32587939), and G-quadruplex compounds in BRCA-deficient cells (16472469), none of which provide evidence for or against the claim.",
+    "evidence_used": [
+     "600437",
+     "32587939",
+     "16472469"
+    ]
+   },
+   "judge": {
+    "score": 8,
+    "verdict_ok": true,
+    "issues": "Insufficient verdict is defensible since the gold evidence (WFS1/AC8 paper) never mentions 4-PBA or ER-stress-marker measurements; grounding and clarity are sound, only the insufficient-vs-unsupported nuance is arguable."
+   },
+   "trace": {
+    "variant": "refresh",
+    "hypotheses": [
+     "4-PBA (4-phenylbutyric acid) acts as a chemical chaperone that alleviates endoplasmic reticulum stress, as indicated by reduced expression of general ER stress markers such as GRP78/BiP, CHOP, and ATF4, although the retrieved evidence (on VAP-dependent endosome–ER contacts and PI4P) does not address",
+     "4-PBA (4-phenylbutyric acid) acts as a chemical chaperone that alleviates endoplasmic reticulum stress, as indicated by reduced expression of general ER stress markers such as GRP78/BiP, CHOP, and ATF4, although the retrieved evidence (on VAP-dependent endosome–ER contacts and PI4P) does not address",
+     "4-PBA (4-phenylbutyric acid) acts as a chemical chaperone that alleviates endoplasmic reticulum stress, as indicated by reduced expression of general ER stress markers such as GRP78/BiP, CHOP, and ATF4, although the retrieved evidence (on VAP-dependent endosome–ER contacts and PI4P) does not address"
+    ],
+    "queries": [
+     "4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress markers.",
+     "4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress markers. 4-PBA (4-phenylbutyric acid) acts as a chemical chaperone that alleviates endoplasmic reticulum stress, as indicated by reduced expression of general ER stress markers such as GRP78/Bi",
+     "4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress markers. 4-PBA (4-phenylbutyric acid) acts as a chemical chaperone that alleviates endoplasmic reticulum stress, as indicated by reduced expression of general ER stress markers such as GRP78/Bi",
+     "4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress markers. 4-PBA (4-phenylbutyric acid) acts as a chemical chaperone that alleviates endoplasmic reticulum stress, as indicated by reduced expression of general ER stress markers such as GRP78/Bi"
+    ]
+   }
+  },
+  {
+   "qid": "sf-002",
+   "method": "itrg_refine",
+   "claim": "4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress markers.",
+   "golden_ids": [
+    "32587939"
+   ],
+   "evidence_sources": [
+    "16472469",
+    "32587939",
+    "600437"
+   ],
+   "answer": {
+    "verdict": "insufficient",
+    "answer": "None of the three retrieved excerpts mention 4-PBA (4-phenylbutyric acid) or any treatment with it, nor do they report measurements of general ER stress markers before and after such treatment. The excerpts concern ER-endosome contact/PI4P regulation (600437), WFS1-AC8 interactions under ER stress (32587939), and G-quadruplex compounds in BRCA-deficient cells (16472469), none of which provide evidence for or against the claim.",
+    "evidence_used": [
+     "600437",
+     "32587939",
+     "16472469"
+    ]
+   },
+   "judge": {
+    "score": 9,
+    "verdict_ok": true,
+    "issues": "Verdict 'insufficient' is correct since the gold WFS1/AC8 document never mentions 4-PBA or general ER stress marker measurements after such treatment, and the answer's descriptions of the cited excerpts are accurate with no fabrication."
+   },
+   "trace": {
+    "variant": "refine",
+    "hypotheses": [
+     "4-PBA (4-phenylbutyric acid) acts as a chemical chaperone that alleviates endoplasmic reticulum stress, as indicated by reduced expression of general ER stress markers such as GRP78/BiP, CHOP, and ATF4, although the retrieved evidence (on VAP-dependent endosome–ER contacts and PI4P) does not address",
+     "4-PBA (4-phenylbutyric acid) acts as a chemical chaperone that alleviates endoplasmic reticulum stress, as indicated by reduced expression of general ER stress markers such as GRP78/BiP, CHOP, and ATF4, although the retrieved evidence (on VAP-dependent endosome–ER contacts and PI4P) does not address",
+     "4-PBA (4-phenylbutyric acid) acts as a chemical chaperone that alleviates endoplasmic reticulum stress, as indicated by reduced expression of general ER stress markers such as GRP78/BiP, CHOP, and ATF4, although the retrieved evidence (on VAP-dependent endosome–ER contacts and PI4P) does not address"
+    ],
+    "queries": [
+     "4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress markers.",
+     "4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress markers. 4-PBA (4-phenylbutyric acid) acts as a chemical chaperone that alleviates endoplasmic reticulum stress, as indicated by reduced expression of general ER stress markers such as GRP78/Bi",
+     "4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress markers. 4-PBA (4-phenylbutyric acid) acts as a chemical chaperone that alleviates endoplasmic reticulum stress, as indicated by reduced expression of general ER stress markers such as GRP78/Bi",
+     "4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress markers. 4-PBA (4-phenylbutyric acid) acts as a chemical chaperone that alleviates endoplasmic reticulum stress, as indicated by reduced expression of general ER stress markers such as GRP78/Bi"
+    ]
+   }
+  },
+  {
+   "qid": "sf-002",
+   "method": "search_o1",
+   "claim": "4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress markers.",
+   "golden_ids": [
+    "32587939"
+   ],
+   "evidence_sources": [
+    "32587939",
+    "4961038"
+   ],
+   "answer": {
+    "verdict": "insufficient",
+    "answer": "Neither retrieved excerpt evaluates 4-PBA (4-phenylbutyric acid) or reports any general ER stress marker measurements following its treatment. Source [32587939] concerns WFS1/AC8 complex formation and insulin secretion during ER stress, and source [4961038] concerns PI3K/MEK inhibitors in K-Ras and PIK3CA mutant lung cancers; neither mentions 4-PBA or ER stress marker quantification. Therefore the claim cannot be assessed from the provided evidence.",
+    "evidence_used": []
+   },
+   "judge": {
+    "score": 9,
+    "verdict_ok": true,
+    "issues": "Correctly identifies the gold evidence (WFS1/AC8) never mentions 4-PBA or ER-stress-marker quantification, so 'insufficient' is the right verdict; minor deduction for referencing source [4961038] (PI3K/MEK lung cancer) which is not verifiable from the gold evidence."
+   },
+   "trace": {
+    "turns": 4,
+    "commands": [
+     "search:4-PBA decreases endoplasmic reticulum stress general ER stress markers",
+     "search:4-PBA phenylbutyrate treatment reduces ER stress markers GRP78 CHOP in vivo",
+     "search:4-PBA chemical chaperone reduces ER stress in obesity diabetes UPR",
+     "final"
+    ],
+    "own_final_answer": "NOT ENOUGH INFORMATION — the corpus contains no evidence on 4-PBA. Across all 148 SciFact documents there is no mention of 4-PBA / 4-phenylbutyrate / sodium phenylbutyrate: an exact-keyword search for \"4-PBA\" returns 0 candidates, and BM25 + vector searches for \"phenylbutyrate\", \"chemical chaperone\", and \"unfolded protein response / ER stress markers (GRP78/CHOP/BiP)\" surface no paper reporting a 4-PBA intervention. The only ER-stress-focused document — Wolfram syndrome 1 / adenylyl cyclase 8 [32587939] — only states that ER stress and mutant WFS1 inhibit WFS1–AC8 complex formation, lowering c"
+   }
+  },
+  {
+   "qid": "sf-002",
+   "method": "deepread",
+   "claim": "4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress markers.",
+   "golden_ids": [
+    "32587939"
+   ],
+   "evidence_sources": [],
+   "answer": {
+    "verdict": "insufficient",
+    "answer": "No evidence was retrieved from the corpus that mentions 4-PBA (sodium 4-phenylbutyrate) or its effect on endoplasmic reticulum stress markers; targeted searches across all knowledge bases for 4-PBA/phenylbutyrate, chemical chaperone, and ER stress terms returned no relevant passages. The corpus contains only adjacent ER-related content (e.g., WFS1/ER stress role in beta-cell function), which does not address 4-PBA treatment. Therefore the claim cannot be confirmed or refuted with the available evidence.",
+    "evidence_used": []
+   },
+   "judge": {
+    "score": 9,
+    "verdict_ok": true,
+    "issues": "Gold document (WFS1/AC8) never mentions 4-PBA, so declaring the claim unconfirmable is defensible, and the answer fabricates nothing while correctly noting only adjacent ER-stress content exists."
+   },
+   "trace": {
+    "turns": 2,
+    "commands": [
+     "retrieve:4-PBA sodium phenylbutyrate treatment decreases endoplasmic reticulum stress ER ",
+     "final"
+    ]
+   }
+  }
+ ]
+}

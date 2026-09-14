@@ -14,6 +14,22 @@
 \acmISBN{}
 \acmDOI{}
 
+% --- margin line numbers -------------------------------------------------
+% The `review' class option above makes acmart print a per-line counter down
+% BOTH margins and hard-codes its colour to red (acmart.cls \ACM@mk@linecount,
+% \ACM@linecountL/R).  That is a review convenience supplied by the template,
+% not a CIKM requirement, and a red-numbered page must never ship as the
+% camera-ready.  Default off: define \reviewlinestrue before \begin{document}
+% only if a venue explicitly requests a line-numbered copy.
+\newif\ifreviewlines
+\reviewlinesfalse
+\makeatletter
+\ifreviewlines\else
+  \def\ACM@linecountL{}%
+  \def\ACM@linecountR{}%
+\fi
+\makeatother
+
 \usepackage{booktabs}
 \usepackage{graphicx}
 \usepackage{subcaption}

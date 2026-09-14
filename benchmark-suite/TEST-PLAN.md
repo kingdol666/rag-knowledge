@@ -10,7 +10,7 @@
 ```bash
 # 仓库根目录
 cd <repo-root>
-# 后端 :8771 与前端 :6790 已启动（可用 ragctl start / start.bat）
+# 后端 :8771 与前端 :6789 已启动（可用 ragctl start / start.bat；以实际监听端口为准）
 curl -s http://localhost:8771/health          # 期望 {"status":"healthy"}
 # 鉴权 token 在 .env 的 MCP_AUTH_TOKEN；环境变量可省略（脚本自动读取）
 # 依赖：Python 3.11+（标准库）、uv（拉起 kb-mcp）、omp（仅模块 C 的冥想与评价 Agent）
@@ -22,7 +22,7 @@ curl -s http://localhost:8771/health          # 期望 {"status":"healthy"}
 ```bash
 export RAG_BENCH_TOKEN=$(grep MCP_AUTH_TOKEN .env | cut -d= -f2)
 export RAG_BENCH_URL=http://localhost:8771
-export RAG_BENCH_WEB_URL=http://localhost:6790
+export RAG_BENCH_WEB_URL=http://localhost:6789  # 以实际 web 端口为准（netstat 校验）
 ```
 
 ## 1. Step 0 · 清空知识库（约 2 分钟）
@@ -201,3 +201,38 @@ ACL、EMNLP 论文的实验环节）：
 - 每个结果 JSON 内嵌 `env`：嵌入模型（BAAI/bge-m3）、向量库（ChromaDB）、
   关键词索引（jieba BM25）、检索参数（vector k=10；stage1=40/stage2=10；阈值 0.35）。
 - 系统版本：仓库分支 feat/soul-persona-system；kb-mcp 通过 `uv run` 按仓库锁定环境启动。
+
+## 10. Stage D · DeepRead 论文基线矩阵 + 平台整理功能评价（E16/E17）
+
+> 目标: 在**同一语料**(KB-SciFact 148 篇)、**同一查询**(BEIR SciFact 30 条)
+> 下, 将 QDCVR 真检索 skill 与 DeepRead 论文 (arXiv:2602.05014) Table 1 的
+> 全部对比算法同台对比; 检索层指标 + 统一 omp Agent 作答 + 第三方 omp Agent
+> 判分, 全部问答逐条落盘。算法忠实度与偏差见
+> `algorithms/REPRODUCTION-NOTES.md`。
+
+```bash
+cd benchmark-suite/algorithms
+
+# 冒烟(2 查询, 验证全链路)
+BENCH_LIMIT=2 python run_matrix.py --stage ingest
+BENCH_LIMIT=2 python run_matrix.py --stage raptor
+BENCH_LIMIT=2 python run_matrix.py --stage retrieve --stage answer                                      --stage judge --stage report
+
+# 全量(30 查询 × 8 方法; 各阶段幂等, LLM 调用按内容哈希缓存可断点续跑)
+python run_matrix.py --stage retrieve --stage answer --stage judge --stage report
+# → results/run-*/deepread_matrix.json + deepread_qa_transcripts.md
+
+# E17 平台整理功能(去重/标签/图谱/目录完整性; 植入真值的确定性 KB)
+cd .. && RAG_BENCH_WEB_URL=http://localhost:6789 python scripts/26_platform_ops_eval.py
+# → results/run-*/platform_ops_eval.json
+```
+
+要点:
+- **Agent 通道 = omp RPC 协议**: agentic 方法(search_o1/deepread)用
+  `omp --mode=rpc` 常驻会话多回合; 独立调用(重排/ITRG 假设/作答/判分)用
+  `omp -p --mode=json`(与平台 harness 同款)。判分 Agent 与作答 Agent 无共享
+  上下文(fresh 进程), 判分注入金标文档。
+- 复跑容差: 检索层(dense/raptor 检索/qdcvr/两阶段)确定性 → 逐位一致;
+  LLM 通道(重排序、假设句、agentic 轨迹、作答、判分)按 §7 的 LLM 容差判读。
+- 产物: `deepread_matrix.json`(汇总+逐查询行)、`deepread_qa_transcripts.md`
+  (完整问答记录)、`platform_ops_eval.json`(E17)。

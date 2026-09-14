@@ -1,7 +1,7 @@
 # EXPERIMENTS-RESULTS — 论文实验真实运行结果
 
-> 由 `scripts/70_build_report.py` 自动汇整 · 2026-09-14T08:35:34.658768+00:00
-> 运行身份: git `ff1d4e6` · config `49279bd832721704` · seed 0 · 全部数字来自 `results/run-*/` 下的真实运行 JSON
+> 由 `scripts/70_build_report.py` 自动汇整 · 2026-09-14T19:49:08.018054+00:00
+> 运行身份: git `2747376` · config `49279bd832721704` · seed 0 · 全部数字来自 `results/run-*/` 下的真实运行 JSON
 
 ## 0. 执行清单与产物
 
@@ -15,6 +15,8 @@
 | E6 衰减敏感性 (7/14/30/90d) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260914T054035Z\experience_suite_1.json` |
 | E4 双基线同判 (no-synthesis / LLM-summary / ours) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260914T054035Z\experience_suite_1.json` |
 | E12 动机案例挖掘 (TODO-1) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260913T161241Z\motivating_case.json` |
+| E16 DeepRead 基线矩阵 (30 查询 × 8 方法, omp RPC 作答+第三方判分) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260914T194057Z\deepread_matrix.json` |
+| E17 平台整理功能评价 (去重/标签/图谱/目录) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260914T171821Z\platform_ops_eval.json` |
 
 ## E1 · 消融实验 — 与主表同查询集（SciFact 30 查询, 官方 qrels）
 
@@ -130,6 +132,31 @@ harness 复现与线上 API 的 top-3 判定一致度：{'hit3_match_api': 1, 'n
 - Dense：hit@1=0, MRR=0.5 — 金标未进 top-1（相似度排序失当）
 - QDCVR：hit@1=1, MRR=1.0 — 内容验证重排把金标提到第 1 位
 - 论文 §1 案例可直接引用本案例（来源见 JSON）。
+
+## E16 · DeepRead 论文基线矩阵 — 同语料同查询 × 8 方法（arXiv:2602.05014 复现）
+
+语料 BEIR SciFact subset, 148 docs (KB-SciFact, frozen) · 查询 30 条 · 证据预算 4000 字符 · Agent 通道: omp RPC (deepseek-flash via omp --mode=rpc / -p --mode=json) · 判分: independent omp agent, fresh process, gold evidence injected。算法设置与偏差见 `algorithms/REPRODUCTION-NOTES.md`。
+
+| 方法 | Hit@1 | Hit@5 | R@5 | nDCG@10 | MRR | 证据覆盖 | 判分(0-10) | 判分n |
+|---|---|---|---|---|---|---|---|---|
+| qdcvr | 0.700 | 0.833 | 0.833 | 0.784 | 0.767 | 0.595 | 7.70 | 30 |
+| dense_rag | 0.733 | 0.900 | 0.900 | 0.834 | 0.811 | 0.668 | 8.93 | 30 |
+| dense_rag_rerank | 0.900 | 0.933 | 0.933 | 0.921 | 0.917 | 0.648 | 8.67 | 30 |
+| raptor | 0.733 | 0.867 | 0.856 | 0.817 | 0.800 | 0.640 | 8.37 | 30 |
+| itrg_refresh | 0.833 | 0.933 | 0.933 | 0.896 | 0.883 | 0.598 | 8.30 | 30 |
+| itrg_refine | 0.733 | 0.900 | 0.900 | 0.845 | 0.816 | 0.637 | 8.53 | 30 |
+| search_o1 | 0.800 | 0.900 | 0.844 | 0.811 | 0.839 | 0.528 | 8.70 | 30 |
+| deepread | 0.567 | 0.733 | 0.694 | 0.635 | 0.639 | 0.443 | 8.13 | 30 |
+
+问答记录: 240 条(每查询×方法), 全文见同 run 目录 `deepread_qa_transcripts.md`。
+
+## E17 · 平台整理功能评价（去重 / 标签 / 图谱 / 目录完整性）
+
+- 植入: 9 篇文档, 2 组重复真值; 入库保留 7/9（精确重复内容在创建链被静默去重 — 如实报告）。
+- 去重: kb_find_duplicates 检出组 1/2, 组召回 0.50; 样本对 [['ops-kv-cache.md', 'ops-kv-cache-variant.md']]。
+- 标签: 190 个标签, 内容可落地 2.6%（小文档上标签抽取噪声大 — finding）。
+- 清理完整性: dry-run 0 个孤儿标签, 在用标签误入清理清单 0 个 → OK。
+- 图谱: build_ok=True, 搜索探针命中 0（7 文档小库上图谐薄弱 — finding）。
 
 ## 复现
 

@@ -65,6 +65,17 @@ python scripts/42_e4_fix.py 2>&1 | tail -4
 say "E15 judge agreement (8 queries)"
 python scripts/66_judge_agreement.py 1 2>&1 | tail -6
 
+say "E16 DeepRead baseline matrix (30 queries x 8 methods, omp RPC agent)"
+( cd algorithms && python run_matrix.py --stage ingest 2>&1 | tail -3 )
+( cd algorithms && python run_matrix.py --stage raptor 2>&1 | tail -3 )
+( cd algorithms && python run_matrix.py --stage retrieve 2>&1 | tail -3 )
+( cd algorithms && python run_matrix.py --stage answer 2>&1 | tail -3 )
+( cd algorithms && python run_matrix.py --stage judge 2>&1 | tail -3 )
+( cd algorithms && python run_matrix.py --stage report 2>&1 | tail -6 )
+
+say "E17 platform ops eval (dedup/tags/graph)"
+RAG_BENCH_WEB_URL=http://localhost:6789 python scripts/26_platform_ops_eval.py 2>&1 | tail -4
+
 say "reports"
 python scripts/04_report.py 2>&1 | tail -2
 python scripts/70_build_report.py 2>&1 | tail -2

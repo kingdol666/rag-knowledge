@@ -41,6 +41,8 @@ def main() -> int:
     suite1, s1p = load("experience_suite_1.json")
     suite2, s2p = load("experience_suite_2.json")
     case, casep = load("motivating_case.json")
+    drm, drmp = load("deepread_matrix.json")
+    ops, opsp = load("platform_ops_eval.json")
     env = env_fingerprint()
 
     md: list[str] = []
@@ -65,6 +67,8 @@ def main() -> int:
         ("E6 衰减敏感性 (7/14/30/90d)", suite1, f"`{s1p}`"),
         ("E4 双基线同判 (no-synthesis / LLM-summary / ours)", suite1, f"`{s1p}`"),
         ("E12 动机案例挖掘 (TODO-1)", case, f"`{casep}`"),
+        ("E16 DeepRead 基线矩阵 (30 查询 × 8 方法, omp RPC 作答+第三方判分)", drm, f"`{drmp}`"),
+        ("E17 平台整理功能评价 (去重/标签/图谱/目录)", ops, f"`{opsp}`"),
     ]
     for name, ok, p in rows_status:
         md.append(f"| {name} | {'✅' if ok else '❌'} | {p} |")
@@ -212,6 +216,58 @@ def main() -> int:
         md.append(f"- QDCVR：hit@1={c['qdcvr_hit1']}, MRR={c['qdcvr_mrr']} — "
                   "内容验证重排把金标提到第 1 位")
         md.append("- 论文 §1 案例可直接引用本案例（来源见 JSON）。")
+        md.append("")
+
+    # E16 DeepRead baseline matrix
+    if drm:
+        s = drm["summary"]
+        jm = s.get("judge") or {}
+        md.append("## E16 · DeepRead 论文基线矩阵 — 同语料同查询 × 8 方法"
+                  "（arXiv:2602.05014 复现）")
+        md.append("")
+        md.append(f"语料 {drm['meta']['corpus']} · 查询 {drm['meta']['queries']} 条 · "
+                  f"证据预算 {drm['meta']['evidence_budget_chars']} 字符 · "
+                  f"Agent 通道: {drm['meta']['agent_channel']} · "
+                  f"判分: {drm['meta']['judge']}。算法设置与偏差见 "
+                  "`algorithms/REPRODUCTION-NOTES.md`。")
+        md.append("")
+        md.append("| 方法 | Hit@1 | Hit@5 | R@5 | nDCG@10 | MRR | 证据覆盖 | "
+                  "判分(0-10) | 判分n |")
+        md.append("|---|---|---|---|---|---|---|---|---|")
+        for m, rows in (drm["summary"].get("retrieval") or {}).items():
+            j = jm.get(m) or {}
+            md.append(f"| {m} | {fmt(rows.get('hit@1'))} | {fmt(rows.get('hit@5'))} | "
+                      f"{fmt(rows.get('recall@5'))} | {fmt(rows.get('ndcg@10'))} | "
+                      f"{fmt(rows.get('mrr'))} | {fmt(rows.get('evidence_coverage'))} | "
+                      f"{fmt(j.get('mean_score'), 2)} | {j.get('n_scored', 0)} |")
+        md.append("")
+        n_qa = len(drm.get("qa") or [])
+        md.append(f"问答记录: {n_qa} 条(每查询×方法), 全文见同 run 目录 "
+                  "`deepread_qa_transcripts.md`。")
+        md.append("")
+
+    # E17 platform ops eval
+    if ops:
+        d = ops.get("dedup") or {}
+        tg = ops.get("tags") or {}
+        g = ops.get("graph") or {}
+        c = ops.get("catalog") or {}
+        md.append("## E17 · 平台整理功能评价（去重 / 标签 / 图谱 / 目录完整性）")
+        md.append("")
+        md.append(f"- 植入: {ops['meta']['planted_docs']} 篇文档, "
+                  f"{ops['meta']['planted_dup_groups']} 组重复真值; "
+                  f"入库保留 {c.get('doc_count')}/{ops['meta']['planted_docs']}"
+                  "（精确重复内容在创建链被静默去重 — 如实报告）。")
+        md.append(f"- 去重: kb_find_duplicates 检出组 {d.get('groups_detected')}/2, "
+                  f"组召回 {fmt(d.get('recall_groups'), 2)}; 样本对 "
+                  f"{d.get('sample_pairs') or d.get('valid_pairs') or '—'}。")
+        md.append(f"- 标签: {tg.get('distinct_tags')} 个标签, 内容可落地 "
+                  f"{tg.get('grounded_ratio', 0):.1%}（小文档上标签抽取噪声大 — finding）。")
+        md.append(f"- 清理完整性: dry-run {ops.get('cleanup_dry_run', {}).get('would_clean')} 个孤儿标签, "
+                  f"在用标签误入清理清单 {ops.get('cleanup_dry_run', {}).get('used_tags_in_clean_list')} 个 → "
+                  f"{'OK' if ops.get('cleanup_dry_run', {}).get('integrity_ok') else 'FAIL'}。")
+        md.append(f"- 图谱: build_ok={g.get('build_ok')}, 搜索探针命中 {g.get('search_probe_hits')}"
+                  f"（7 文档小库上图谐薄弱 — finding）。")
         md.append("")
 
     md.append("## 复现")
