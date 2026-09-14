@@ -201,8 +201,9 @@ decision, and an honest account of where the combination stops helping.
 \begin{itemize}
   \item \textbf{C1 (domain scoping).} A knowledge-base routing layer that
   selects a bounded working set before retrieval. On the in-house corpus the
-  scoped configuration is more precise (P@5 $0.210$ vs $0.190$; Recall@5
-  $0.908$ vs $0.892$) at $13\times$ the latency, trailing on Hit@1 and MRR. We
+  scoped configuration's only lead is precision (P@5 $0.210$ vs $0.200$); it
+  trails dense on Hit@1 ($0.800$ vs $0.900$), Recall@5 ($0.908$ vs $0.917$) and
+  MRR ($0.863$ vs $0.931$), at $20\times$ the latency. We
   do not report a false-positive-rate improvement: the benchmark that measured
   one had no traceable producer and is withheld (\S\ref{sec:provenance});
   isolating the routing layer's own contribution is open, not a result.
@@ -349,7 +350,7 @@ on-disk indices directly. The asymmetry is deliberate and has a direct
 consequence for the method: it makes the cheap stages of retrieval essentially
 free, which is what allows an expensive adjudication stage to exist at all. The
 measured cost of that stage is reported in \S\ref{sec:honest}: content
-verification raises per-query latency from $0.126$\,s to $1.69$\,s on the
+verification raises per-query latency from $0.066$\,s to $1.34$\,s on the
 in-house corpus.
 
 \subsection{Hierarchical knowledge bases}\label{sec:sys-hierarchy}
@@ -512,9 +513,15 @@ with $s(d)=0.95$ and $c(d)=3$ is discarded. This is the operational content of
 Three properties follow. The verdict is \emph{interpretable} (which dimension
 failed), \emph{auditable} (the read text and scores are recorded, so a result
 can be justified after the fact), and \emph{separable} (adjudication can be
-disabled --- exactly what the ablation does). The cost is latency: the
-adjudicator reads on average $3{,}639$ characters per query in-house and
-$4{,}292$ on SciFact, which \S\ref{sec:honest} treats as a first-class result.
+disabled --- exactly what the ablation does). The benchmark harness implements
+the production retrieval procedure up to this stage --- candidate recall,
+thresholding, adjudication and re-ranking, reading the same document tool an
+agent uses --- and exercises three verification reads per query (the skill
+recommends up to five; the depth is ablated in \S\ref{sec:ablation}). The
+downstream stages (tag-based query expansion and answer synthesis) are not
+exercised by the harness, so claims here are about the retrieval core. The cost is latency: the
+adjudicator reads on average $3{,}939$ characters per query in-house and
+$4{,}266$ on SciFact, which \S\ref{sec:honest} treats as a first-class result.
 
 \subsection{Stage 5--6: Tiering and Blind-Spot Declaration}\label{sec:blindspot}
 Surviving documents are tiered $P_0/P_1/P_2$; short chunks (under $50$
@@ -748,16 +755,17 @@ two-stage hybrid, which is that configuration's own recall stage, is the weakest
 method on the same queries.
 
 On the \textbf{in-house corpus} (20 queries over 13 knowledge bases) the
-content-verified configuration leads on Recall@5 ($0.908$ vs $0.892$) and P@5
-($0.210$ vs $0.190$) and trails on Hit@1 ($0.800$ vs $0.900$) and MRR ($0.867$ vs
-$0.910$), at $1.69$\,s against $0.126$\,s. The effect is language-dependent: on
+content-verified configuration's only lead is P@5 ($0.210$ vs $0.200$); it
+trails dense on Hit@1 ($0.800$ vs $0.900$), Recall@5 ($0.908$ vs $0.917$),
+Hit@5 (tied at $0.950$) and MRR ($0.863$ vs $0.931$), at $1.34$\,s against
+$0.066$\,s. The effect is language-dependent: on
 Chinese queries it matches dense at Hit@1 $1.000$, whereas on English it is behind
 ($0.700$ vs $0.800$).
 
 \paragraph{What these two results jointly support.}
 Content verification \emph{re-orders the top of the list} rather than improving
-ranking overall: it raises Hit@1 on the public benchmark and Recall@5/P@5
-in-house, and lowers Hit@1 in-house, MRR in both, and nDCG on the public set.
+ranking overall: it raises Hit@1 on the public benchmark and P@5 in-house,
+while losing Hit@1/Recall@5/MRR in-house and nDCG on the public set.
 The mechanism that would explain the inconsistency --- that adjudication helps
 in proportion to cross-domain distractors --- is untested on these two
 effectively single-domain benchmarks; \S\ref{sec:multidomain} tests it on a
@@ -866,7 +874,7 @@ $p{=}0.018$). Verification promotes documents whose \emph{text} matches the
 question's terms; when neither candidate's text matches, the heuristic has no
 signal and its re-ordering is noise. The cost side is unchanged and measured:
 adjudication read on average
-$4{,}292$ characters per query on SciFact with a low verification pass rate,
+$4{,}266$ characters per query on SciFact with a low verification pass rate,
 i.e.\ it spent latency re-reading documents dense retrieval had already ranked
 well. Per-method coverage on the multi-domain set is reported as gold recall
 (Recall@2/Recall@5, Table~\ref{tab:hotpot}) together with the blind-spot
@@ -947,9 +955,9 @@ value --- if any --- must be sought in larger-corpus or higher-overlap regimes.
 
 \paragraph{In-house corpus and answerability.}
 On the in-house bilingual corpus (Table~\ref{tab:inhouse}) the picture is
-narrower: \sys{} raises Recall@5 ($0.908$ vs $0.892$) and P@5 ($0.210$ vs
-$0.190$) over dense, but loses Hit@1 ($0.800$ vs $0.900$) and MRR ($0.867$ vs
-$0.910$), at $1.69$\,s against $0.126$\,s. The per-language split shows the
+narrower: \sys{} leads only on P@5 ($0.210$ vs $0.200$) and loses Hit@1
+($0.800$ vs $0.900$), Recall@5 ($0.908$ vs $0.917$) and MRR ($0.863$ vs
+$0.931$), at $1.34$\,s against $0.066$\,s. The per-language split shows the
 effect is language-dependent: on Chinese queries \sys{} is at Hit@1 $1.000$
 matching dense, whereas on English it is behind ($0.700$ vs $0.800$).
 
@@ -1103,8 +1111,8 @@ and recommend it to anyone reporting system measurements: \emph{if you cannot
 name the script that wrote a table, you do not have the table.}
 
 \paragraph{Latency.}
-Content adjudication costs about $13\times$ in latency on the in-house corpus
-($1.69$\,s vs $0.126$\,s). It is viable because reads bypass the service tier
+Content adjudication costs about $20\times$ in latency on the in-house corpus
+($1.34$\,s vs $0.066$\,s). It is viable because reads bypass the service tier
 and run locally, and because adjudication applies only to a small candidate
 set; it would not be viable in a latency-critical single-domain setting, where
 on the evidence of \S\ref{sec:honest} we do not recommend it.
