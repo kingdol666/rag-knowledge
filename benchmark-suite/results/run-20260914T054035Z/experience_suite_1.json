@@ -1,6 +1,6 @@
 {
  "experiment": "E3-E7 experience suite",
- "round": "2",
+ "round": "1",
  "E3_meditation_runs": [
   {
    "round": 1,
@@ -8,22 +8,14 @@
     "KB-Demo-EN": {
      "run_success": true,
      "reset": {
-      "deleted": 0,
+      "deleted": 3,
       "remaining": 0
      },
      "n_drafts": 0,
      "n_approved": 0,
-     "n_experiences": 3,
-     "judge_scores": [
-      8.0,
-      8.0,
-      8.0
-     ],
-     "grounded": [
-      true,
-      true,
-      true
-     ]
+     "n_experiences": 0,
+     "judge_scores": [],
+     "grounded": []
     },
     "KB-Demo-ZH": {
      "run_success": true,
@@ -45,7 +37,7 @@
     "KB-Demo-EN": {
      "run_success": true,
      "reset": {
-      "deleted": 3,
+      "deleted": 0,
       "remaining": 0
      },
      "n_drafts": 0,
@@ -79,9 +71,17 @@
      },
      "n_drafts": 0,
      "n_approved": 0,
-     "n_experiences": 0,
-     "judge_scores": [],
-     "grounded": []
+     "n_experiences": 3,
+     "judge_scores": [
+      8.0,
+      9.0,
+      9.0
+     ],
+     "grounded": [
+      true,
+      true,
+      true
+     ]
     },
     "KB-Demo-ZH": {
      "run_success": true,
@@ -1255,10 +1255,10 @@
   "superseded_by": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\results\\run-20260914T063254Z\\e4_baselines_fixed.json"
  },
  "meta": {
-  "generated": "2026-09-13T17:36:43.660740+00:00",
+  "generated": "2026-09-14T06:32:53.972928+00:00",
   "env": {
-   "run_id": "run-20260913T170630Z",
-   "git_commit": "7220098",
+   "run_id": "run-20260914T054035Z",
+   "git_commit": "ff1d4e6",
    "config_hash": "49279bd832721704",
    "seed": 0,
    "backend": "http://localhost:8771",

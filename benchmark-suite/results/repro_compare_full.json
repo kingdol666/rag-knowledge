@@ -1,0 +1,842 @@
+{
+ "archive": "results\\archive-20260914-113032",
+ "new": "results",
+ "deterministic_failures": 0,
+ "files": [
+  {
+   "file": "module_a_ingestion_r1.json",
+   "class": "det",
+   "verdict": "IDENTICAL",
+   "n_diffs": 0,
+   "diffs": []
+  },
+  {
+   "file": "module_a_ingestion_r2.json",
+   "class": "det",
+   "verdict": "IDENTICAL",
+   "n_diffs": 0,
+   "diffs": []
+  },
+  {
+   "file": "module_a_std2_r1.json",
+   "class": "det",
+   "verdict": "IDENTICAL",
+   "n_diffs": 0,
+   "diffs": []
+  },
+  {
+   "file": "module_a_std2_r2.json",
+   "class": "det",
+   "verdict": "IDENTICAL",
+   "n_diffs": 0,
+   "diffs": []
+  },
+  {
+   "file": "module_a_std_r1.json",
+   "class": "det",
+   "verdict": "IDENTICAL",
+   "n_diffs": 0,
+   "diffs": []
+  },
+  {
+   "file": "module_b_retrieval_r1.json",
+   "class": "det",
+   "verdict": "IDENTICAL",
+   "n_diffs": 0,
+   "diffs": []
+  },
+  {
+   "file": "module_b_retrieval_r2.json",
+   "class": "det",
+   "verdict": "IDENTICAL",
+   "n_diffs": 0,
+   "diffs": []
+  },
+  {
+   "file": "module_b_retrieval_std_r1.json",
+   "class": "det",
+   "verdict": "IDENTICAL",
+   "n_diffs": 0,
+   "diffs": []
+  },
+  {
+   "file": "module_b_std2_r1.json",
+   "class": "det",
+   "verdict": "IDENTICAL",
+   "n_diffs": 0,
+   "diffs": []
+  },
+  {
+   "file": "module_b_std2_r2.json",
+   "class": "det",
+   "verdict": "IDENTICAL",
+   "n_diffs": 0,
+   "diffs": []
+  },
+  {
+   "file": "module_c_experience_r1.json",
+   "class": "llm",
+   "verdict": "VARIANCE",
+   "n_diffs": 21,
+   "diffs": [
+    [
+     "per_kb.KB-Demo-EN.grounded_ratio",
+     null,
+     0.6667
+    ],
+    [
+     "per_kb.KB-Demo-EN.judge_score_mean",
+     null,
+     5.0
+    ],
+    [
+     "per_kb.KB-Demo-EN.n_approved",
+     0,
+     3
+    ],
+    [
+     "per_kb.KB-Demo-EN.n_drafts",
+     0,
+     3
+    ],
+    [
+     "per_kb.KB-Demo-EN.n_experiences",
+     0,
+     3
+    ],
+    [
+     "samples.KB-Demo-EN.judged.0.grounded",
+     "<absent>",
+     true
+    ],
+    [
+     "samples.KB-Demo-EN.judged.0.issues",
+     "<absent>",
+     "Cube-law wind physics claim is real, but the entry carries only metadata with no body, steps, or evidence, limiting future reuse."
+    ],
+    [
+     "samples.KB-Demo-EN.judged.0.score",
+     "<absent>",
+     7.0
+    ],
+    [
+     "samples.KB-Demo-EN.judged.1.grounded",
+     "<absent>",
+     false
+    ],
+    [
+     "samples.KB-Demo-EN.judged.1.issues",
+     "<absent>",
+     "Metadata-only stub with no content body, source, or evidence — the PV/CSP claim is plausible common knowledge but unverifiable as written, leaving nothing reusable beyond tag matching."
+    ],
+    [
+     "samples.KB-Demo-EN.judged.1.score",
+     "<absent>",
+     4.0
+    ],
+    [
+     "samples.KB-Demo-EN.judged.2.grounded",
+     "<absent>",
+     true
+    ],
+    [
+     "samples.KB-Demo-EN.judged.2.issues",
+     "<absent>",
+     "Only metadata is present — no problem/solution/lessons body — so nothing substantive is retrievable or reusable despite the real washed/natural/honey methods."
+    ],
+    [
+     "samples.KB-Demo-EN.judged.2.score",
+     "<absent>",
+     4.0
+    ],
+    [
+     "samples.KB-Demo-EN.titles.0",
+     "<absent>",
+     "Wind siting first: speed dominates yield by cube law"
+    ],
+    [
+     "samples.KB-Demo-EN.titles.1",
+     "<absent>",
+     "Solar tech choice: PV for lowest cost, CSP for night supply"
+    ],
+    [
+     "samples.KB-Demo-EN.titles.2",
+     "<absent>",
+     "Coffee processing method choice: washed vs natural vs honey"
+    ],
+    [
+     "summary.grounded_ratio",
+     null,
+     0.6667
+    ],
+    [
+     "summary.judge_score_mean",
+     null,
+     5.0
+    ],
+    [
+     "summary.kb_coverage",
+     0.0,
+     0.5
+    ],
+    [
+     "summary.total_experiences",
+     0,
+     3
+    ]
+   ]
+  },
+  {
+   "file": "module_c_experience_r2.json",
+   "class": "llm",
+   "verdict": "VARIANCE",
+   "n_diffs": 19,
+   "diffs": [
+    [
+     "per_kb.KB-Demo-EN.grounded_ratio",
+     null,
+     0.6667
+    ],
+    [
+     "per_kb.KB-Demo-EN.judge_score_mean",
+     null,
+     5.6667
+    ],
+    [
+     "per_kb.KB-Demo-EN.n_experiences",
+     0,
+     3
+    ],
+    [
+     "samples.KB-Demo-EN.judged.0.grounded",
+     "<absent>",
+     true
+    ],
+    [
+     "samples.KB-Demo-EN.judged.0.issues",
+     "<absent>",
+     "Title/scenario/category/tags are coherent and the cube-law and Betz-limit claims match the stored KB-Demo-EN record (P1), but the reviewed object itself carries no problem/solution/lessons body and is unvetted (0 reviews, rating 0), which limits standalone reuse."
+    ],
+    [
+     "samples.KB-Demo-EN.judged.0.score",
+     "<absent>",
+     8.0
+    ],
+    [
+     "samples.KB-Demo-EN.judged.1.grounded",
+     "<absent>",
+     true
+    ],
+    [
+     "samples.KB-Demo-EN.judged.1.issues",
+     "<absent>",
+     "Title states a broadly accurate PV-vs-CSP tradeoff but the entry has no body evidence, and tags are redundant (tag \"decision\" duplicates category, \"solar\" duplicates title)."
+    ],
+    [
+     "samples.KB-Demo-EN.judged.1.score",
+     "<absent>",
+     6.0
+    ],
+    [
+     "samples.KB-Demo-EN.judged.2.grounded",
+     "<absent>",
+     false
+    ],
+    [
+     "samples.KB-Demo-EN.judged.2.issues",
+     "<absent>",
+     "Entry is off-domain (coffee processing) with no content body or evidence, so it is unverifiable against the knowledge base and useless for retrieval despite coherent metadata."
+    ],
+    [
+     "samples.KB-Demo-EN.judged.2.score",
+     "<absent>",
+     3.0
+    ],
+    [
+     "samples.KB-Demo-EN.titles.0",
+     "<absent>",
+     "Wind siting first: speed dominates yield by cube law"
+    ],
+    [
+     "samples.KB-Demo-EN.titles.1",
+     "<absent>",
+     "Solar tech choice: PV for lowest cost, CSP for night supply"
+    ],
+    [
+     "samples.KB-Demo-EN.titles.2",
+     "<absent>",
+     "Coffee processing method choice: washed vs natural vs honey"
+    ],
+    [
+     "summary.grounded_ratio",
+     null,
+     0.6667
+    ],
+    [
+     "summary.judge_score_mean",
+     null,
+     5.6667
+    ],
+    [
+     "summary.kb_coverage",
+     0.0,
+     0.5
+    ],
+    [
+     "summary.total_experiences",
+     0,
+     3
+    ]
+   ]
+  },
+  {
+   "file": "module_c_experience_std_r1.json",
+   "class": "llm",
+   "verdict": "IDENTICAL",
+   "n_diffs": 0,
+   "diffs": []
+  },
+  {
+   "file": "ablation_scifact_2.json",
+   "class": "det",
+   "verdict": "IDENTICAL",
+   "n_diffs": 0,
+   "diffs": []
+  },
+  {
+   "file": "hotpot_main_2.json",
+   "class": "det",
+   "verdict": "IDENTICAL",
+   "n_diffs": 0,
+   "diffs": []
+  },
+  {
+   "file": "routing_oracle_1.json",
+   "class": "det",
+   "verdict": "IDENTICAL",
+   "n_diffs": 0,
+   "diffs": []
+  },
+  {
+   "file": "stratified_adjudication.json",
+   "class": "det",
+   "verdict": "IDENTICAL",
+   "n_diffs": 0,
+   "diffs": []
+  },
+  {
+   "file": "experience_suite_2.json",
+   "class": "llm",
+   "verdict": "VARIANCE",
+   "n_diffs": 38,
+   "diffs": [
+    [
+     "E3_meditation_runs.0.per_kb.KB-Demo-EN.grounded.0",
+     true,
+     "<absent>"
+    ],
+    [
+     "E3_meditation_runs.0.per_kb.KB-Demo-EN.grounded.1",
+     true,
+     "<absent>"
+    ],
+    [
+     "E3_meditation_runs.0.per_kb.KB-Demo-EN.grounded.2",
+     true,
+     "<absent>"
+    ],
+    [
+     "E3_meditation_runs.0.per_kb.KB-Demo-EN.judge_scores.0",
+     8.0,
+     "<absent>"
+    ],
+    [
+     "E3_meditation_runs.0.per_kb.KB-Demo-EN.judge_scores.1",
+     8.0,
+     "<absent>"
+    ],
+    [
+     "E3_meditation_runs.0.per_kb.KB-Demo-EN.judge_scores.2",
+     8.0,
+     "<absent>"
+    ],
+    [
+     "E3_meditation_runs.0.per_kb.KB-Demo-EN.n_experiences",
+     3,
+     0
+    ],
+    [
+     "E3_meditation_runs.0.per_kb.KB-Demo-EN.reset.deleted",
+     0,
+     3
+    ],
+    [
+     "E3_meditation_runs.1.per_kb.KB-Demo-EN.reset.deleted",
+     3,
+     0
+    ],
+    [
+     "E3_meditation_runs.2.per_kb.KB-Demo-EN.grounded.0",
+     "<absent>",
+     true
+    ],
+    [
+     "E3_meditation_runs.2.per_kb.KB-Demo-EN.grounded.1",
+     "<absent>",
+     true
+    ],
+    [
+     "E3_meditation_runs.2.per_kb.KB-Demo-EN.grounded.2",
+     "<absent>",
+     true
+    ],
+    [
+     "E3_meditation_runs.2.per_kb.KB-Demo-EN.judge_scores.0",
+     "<absent>",
+     8.0
+    ],
+    [
+     "E3_meditation_runs.2.per_kb.KB-Demo-EN.judge_scores.1",
+     "<absent>",
+     9.0
+    ],
+    [
+     "E3_meditation_runs.2.per_kb.KB-Demo-EN.judge_scores.2",
+     "<absent>",
+     9.0
+    ],
+    [
+     "E3_meditation_runs.2.per_kb.KB-Demo-EN.n_experiences",
+     0,
+     3
+    ],
+    [
+     "E4_baselines.judged.llm_summary.mean",
+     3.0,
+     2.25
+    ],
+    [
+     "E4_baselines.judged.llm_summary.scores.0",
+     3.0,
+     2.0
+    ],
+    [
+     "E4_baselines.judged.llm_summary.scores.2",
+     5.0,
+     4.0
+    ],
+    [
+     "E4_baselines.judged.llm_summary.scores.3",
+     1.0,
+     0
+    ],
+    [
+     "E4_baselines.judged.no_synthesis.mean",
+     4.0,
+     2.5
+    ],
+    [
+     "E4_baselines.judged.no_synthesis.scores.0",
+     4.0,
+     2.0
+    ],
+    [
+     "E4_baselines.judged.no_synthesis.scores.1",
+     5.0,
+     3.0
+    ],
+    [
+     "E4_baselines.judged.no_synthesis.scores.3",
+     6.0,
+     4.0
+    ],
+    [
+     "E4_baselines.judged.ours_experience.scores.0",
+     5.0,
+     6.0
+    ],
+    [
+     "E4_baselines.judged.ours_experience.scores.1",
+     4.0,
+     5.0
+    ],
+    [
+     "E4_baselines.judged.ours_experience.scores.2",
+     5.0,
+     6.0
+    ],
+    [
+     "E4_baselines.judged.ours_experience.scores.3",
+     7.0,
+     4.0
+    ],
+    [
+     "E4_baselines.llm_summary_material.0",
+     "Process perishable input immediately — coffee cherries must be depulped and fermented within hours of picking or they spoil.",
+     "因引力作用在所有时间和尺度上都起作用，需根据质量等级处理黑洞——恒星质量黑洞（3–100 M☉）和超大质量黑洞（10⁵–10⁹ M☉，例如 Sgr A* 为 430 万 M☉）——并且请记住，霍金蒸发（10⁶⁷ 年）在操作上可以忽略不计。"
+    ],
+    [
+     "E4_baselines.llm_summary_material.1",
+     "Choose the process by risk appetite — washed highlights acidity and floral notes, natural gives fruity wine-like flavours but risks off-flavours when drying is uneven, and honey sits between the two by retention of mucilage.",
+     "采摘后数小时内加工咖啡樱桃，并根据目标选择方法：水洗处理（12–72 小时发酵）可提升酸度和花香，日晒处理（2–4 周干燥）可带来果香，但有产生异味风险；在脱壳前干燥至约 11% 的含水量，并在 205–215 °C 下进行中度烘焙。"
+    ],
+    [
+     "E4_baselines.llm_summary_material.2",
+     "Treat cost curves as expiring data — battery packs fell from ~$1,100/kWh in 2010 to under $140/kWh in 2023, so price assumptions must be re-verified each procurement cycle rather than reused.",
+     "根据区域标准规划电动汽车充电——欧洲/北美采用 CCS，中国采用 GB/T，日本采用 CHAdeMO——并在需要约 15 分钟增加 200 公里续航时，优先选择 800 V 架构；请注意，电池成本已从 2010 年的每 kWh $1,100 降至 2023 年的 $140 以下。"
+    ],
+    [
+     "E4_baselines.llm_summary_material.3",
+     "Design for regional standards fragmentation — CCS dominates Europe and North America, GB/T China, CHAdeMO Japan, so no single charging spec is globally deployable.",
+     "请精确注明网络历史时间节点，避免混淆互联网与万维网：ARPANET 的首条消息于 1969 年 10 月 29 日发送，TCP/IP 于 1983 年 1 月 1 日采用，DNS 于 1983 年创建，万维网由 CERN 于 1989/1991 年发布，商业限制于 1995 年解除。"
+    ],
+    [
+     "E4_baselines.llm_summary_material.4",
+     "Know the ceiling before optimising — the Betz limit caps any wind turbine at 59.3% efficiency, and real machines only reach 45–50%.",
+     "将自然光合作用视为低效率（田间生物质转化率约 1–3%，全球固碳量约 120 Gt C/年），在炎热气候下选择 C4 作物（玉米、甘蔗），对于人工系统，引用约 10% 的太阳能转燃料效率基准（2022 年乙烯装置），而非约 1% 的自然基准。"
+    ],
+    [
+     "E4_baselines.llm_summary_material.5",
+     "Site selection dominates every other wind decision — available power grows with the cube of wind speed (doubling average speed ≈ 8× yield), and turbines only run between ~3 m/s cut-in and ~25 m/s cut-out.",
+     "在大多数国家/地区，太阳能光伏（PV）是最便宜的新建电力来源（2021 年约为 $0.048/kWh，自 2010 年以来下降了 80% 以上，商业效率为 20–23%），但当需要日落后输送电力时，请指定带熔盐储热的聚光太阳能发电（CSP），而非光伏（PV）。"
+    ],
+    [
+     "E4_baselines.llm_summary_material.6",
+     "Schedule hard cutovers with全网 coordination — ARPANET's TCP/IP flag day on 1 Jan 1983 replaced NCP in one step, and DNS in 1983 replaced a single hosts file to make naming scale.",
+     "在风电项目中，选址决策高于一切，因为能量产出会随风速的立方而增长；在贝兹极限（59.3% 最大值，实际达到 45–50%）内设计涡轮机，并规划约 3 m/s 的启动风速和约 25 m/s 的停机保护风速。"
+    ],
+    [
+     "E4_baselines.llm_summary_material.7",
+     "Compare against the correct baseline — field photosynthesis converts only ~3% of light into biomass, against ~10% solar-to-fuel in a 2022 artificial device, so efficiency claims are meaningless without the reference system.",
+     "<absent>"
+    ],
+    [
+     "E4_baselines.superseded_by",
+     "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\results\\run-20260913T173832Z\\e4_baselines_fixed.json",
+     "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\results\\run-20260914T063254Z\\e4_baselines_fixed.json"
+    ],
+    [
+     "round",
+     "2",
+     "1"
+    ]
+   ]
+  },
+  {
+   "file": "judge_agreement_1.json",
+   "class": "llm",
+   "verdict": "VARIANCE",
+   "n_diffs": 93,
+   "diffs": [
+    [
+     "agreement.cohens_kappa_usable_ge5",
+     0.4,
+     0.33
+    ],
+    [
+     "agreement.exact_agreement",
+     0.25,
+     0.2174
+    ],
+    [
+     "agreement.mean_abs_delta",
+     1.125,
+     1.326
+    ],
+    [
+     "agreement.n_scored_pairs",
+     24,
+     23
+    ],
+    [
+     "agreement.pearson_r",
+     0.716,
+     0.545
+    ],
+    [
+     "agreement.within_1",
+     0.625,
+     0.6087
+    ],
+    [
+     "by_material.llm_summary.mean_a",
+     3.75,
+     3.38
+    ],
+    [
+     "by_material.llm_summary.mean_b",
+     4.0,
+     3.0
+    ],
+    [
+     "by_material.llm_summary.scores_a.0",
+     4.0,
+     5.0
+    ],
+    [
+     "by_material.llm_summary.scores_a.2",
+     5.0,
+     1.0
+    ],
+    [
+     "by_material.llm_summary.scores_a.4",
+     5.0,
+     3.0
+    ],
+    [
+     "by_material.llm_summary.scores_a.6",
+     2.0,
+     4.0
+    ],
+    [
+     "by_material.llm_summary.scores_b.0",
+     2.0,
+     3.0
+    ],
+    [
+     "by_material.llm_summary.scores_b.1",
+     5.0,
+     4.0
+    ],
+    [
+     "by_material.llm_summary.scores_b.3",
+     4.0,
+     3.0
+    ],
+    [
+     "by_material.llm_summary.scores_b.4",
+     4.0,
+     3.0
+    ],
+    [
+     "by_material.llm_summary.scores_b.5",
+     6.0,
+     3.0
+    ],
+    [
+     "by_material.llm_summary.scores_b.6",
+     4.0,
+     3.0
+    ],
+    [
+     "by_material.llm_summary.scores_b.7",
+     4.0,
+     2.0
+    ],
+    [
+     "by_material.no_synthesis.mean_a",
+     3.62,
+     3.12
+    ],
+    [
+     "by_material.no_synthesis.mean_b",
+     2.75,
+     2.44
+    ],
+    [
+     "by_material.no_synthesis.scores_a.0",
+     4.0,
+     3.0
+    ],
+    [
+     "by_material.no_synthesis.scores_a.1",
+     4.0,
+     3.0
+    ],
+    [
+     "by_material.no_synthesis.scores_a.4",
+     4.0,
+     3.0
+    ],
+    [
+     "by_material.no_synthesis.scores_a.5",
+     3.0,
+     4.0
+    ],
+    [
+     "by_material.no_synthesis.scores_a.6",
+     5.0,
+     4.0
+    ],
+    [
+     "by_material.no_synthesis.scores_a.7",
+     5.0,
+     4.0
+    ],
+    [
+     "by_material.no_synthesis.scores_b.0",
+     2.0,
+     3.5
+    ],
+    [
+     "by_material.no_synthesis.scores_b.3",
+     3.0,
+     1.0
+    ],
+    [
+     "by_material.no_synthesis.scores_b.4",
+     3.0,
+     4.0
+    ],
+    [
+     "by_material.no_synthesis.scores_b.5",
+     3.0,
+     1.0
+    ],
+    [
+     "by_material.no_synthesis.scores_b.6",
+     3.0,
+     5.0
+    ],
+    [
+     "by_material.no_synthesis.scores_b.7",
+     5.0,
+     2.0
+    ],
+    [
+     "by_material.ours_experience.mean_a",
+     6.0,
+     5.5
+    ],
+    [
+     "by_material.ours_experience.mean_b",
+     5.25,
+     5.14
+    ],
+    [
+     "by_material.ours_experience.scores_a.0",
+     5.0,
+     3.0
+    ],
+    [
+     "by_material.ours_experience.scores_a.2",
+     5.0,
+     7.0
+    ],
+    [
+     "by_material.ours_experience.scores_a.3",
+     4.0,
+     5.0
+    ],
+    [
+     "by_material.ours_experience.scores_a.5",
+     7.0,
+     6.0
+    ],
+    [
+     "by_material.ours_experience.scores_a.6",
+     9.0,
+     5.0
+    ]
+   ]
+  },
+  {
+   "file": "e4_baselines_fixed.json",
+   "class": "llm",
+   "verdict": "VARIANCE",
+   "n_diffs": 20,
+   "diffs": [
+    [
+     "judged.llm_summary.mean",
+     3.0,
+     2.25
+    ],
+    [
+     "judged.llm_summary.scores.0",
+     3.0,
+     2.0
+    ],
+    [
+     "judged.llm_summary.scores.2",
+     5.0,
+     4.0
+    ],
+    [
+     "judged.llm_summary.scores.3",
+     1.0,
+     0
+    ],
+    [
+     "judged.no_synthesis.mean",
+     4.0,
+     2.5
+    ],
+    [
+     "judged.no_synthesis.scores.0",
+     4.0,
+     2.0
+    ],
+    [
+     "judged.no_synthesis.scores.1",
+     5.0,
+     3.0
+    ],
+    [
+     "judged.no_synthesis.scores.3",
+     6.0,
+     4.0
+    ],
+    [
+     "judged.ours_experience.scores.0",
+     5.0,
+     6.0
+    ],
+    [
+     "judged.ours_experience.scores.1",
+     4.0,
+     5.0
+    ],
+    [
+     "judged.ours_experience.scores.2",
+     5.0,
+     6.0
+    ],
+    [
+     "judged.ours_experience.scores.3",
+     7.0,
+     4.0
+    ],
+    [
+     "llm_summary_material.0",
+     "Process perishable input immediately — coffee cherries must be depulped and fermented within hours of picking or they spoil.",
+     "因引力作用在所有时间和尺度上都起作用，需根据质量等级处理黑洞——恒星质量黑洞（3–100 M☉）和超大质量黑洞（10⁵–10⁹ M☉，例如 Sgr A* 为 430 万 M☉）——并且请记住，霍金蒸发（10⁶⁷ 年）在操作上可以忽略不计。"
+    ],
+    [
+     "llm_summary_material.1",
+     "Choose the process by risk appetite — washed highlights acidity and floral notes, natural gives fruity wine-like flavours but risks off-flavours when drying is uneven, and honey sits between the two by retention of mucilage.",
+     "采摘后数小时内加工咖啡樱桃，并根据目标选择方法：水洗处理（12–72 小时发酵）可提升酸度和花香，日晒处理（2–4 周干燥）可带来果香，但有产生异味风险；在脱壳前干燥至约 11% 的含水量，并在 205–215 °C 下进行中度烘焙。"
+    ],
+    [
+     "llm_summary_material.2",
+     "Treat cost curves as expiring data — battery packs fell from ~$1,100/kWh in 2010 to under $140/kWh in 2023, so price assumptions must be re-verified each procurement cycle rather than reused.",
+     "根据区域标准规划电动汽车充电——欧洲/北美采用 CCS，中国采用 GB/T，日本采用 CHAdeMO——并在需要约 15 分钟增加 200 公里续航时，优先选择 800 V 架构；请注意，电池成本已从 2010 年的每 kWh $1,100 降至 2023 年的 $140 以下。"
+    ],
+    [
+     "llm_summary_material.3",
+     "Design for regional standards fragmentation — CCS dominates Europe and North America, GB/T China, CHAdeMO Japan, so no single charging spec is globally deployable.",
+     "请精确注明网络历史时间节点，避免混淆互联网与万维网：ARPANET 的首条消息于 1969 年 10 月 29 日发送，TCP/IP 于 1983 年 1 月 1 日采用，DNS 于 1983 年创建，万维网由 CERN 于 1989/1991 年发布，商业限制于 1995 年解除。"
+    ],
+    [
+     "llm_summary_material.4",
+     "Know the ceiling before optimising — the Betz limit caps any wind turbine at 59.3% efficiency, and real machines only reach 45–50%.",
+     "将自然光合作用视为低效率（田间生物质转化率约 1–3%，全球固碳量约 120 Gt C/年），在炎热气候下选择 C4 作物（玉米、甘蔗），对于人工系统，引用约 10% 的太阳能转燃料效率基准（2022 年乙烯装置），而非约 1% 的自然基准。"
+    ],
+    [
+     "llm_summary_material.5",
+     "Site selection dominates every other wind decision — available power grows with the cube of wind speed (doubling average speed ≈ 8× yield), and turbines only run between ~3 m/s cut-in and ~25 m/s cut-out.",
+     "在大多数国家/地区，太阳能光伏（PV）是最便宜的新建电力来源（2021 年约为 $0.048/kWh，自 2010 年以来下降了 80% 以上，商业效率为 20–23%），但当需要日落后输送电力时，请指定带熔盐储热的聚光太阳能发电（CSP），而非光伏（PV）。"
+    ],
+    [
+     "llm_summary_material.6",
+     "Schedule hard cutovers with全网 coordination — ARPANET's TCP/IP flag day on 1 Jan 1983 replaced NCP in one step, and DNS in 1983 replaced a single hosts file to make naming scale.",
+     "在风电项目中，选址决策高于一切，因为能量产出会随风速的立方而增长；在贝兹极限（59.3% 最大值，实际达到 45–50%）内设计涡轮机，并规划约 3 m/s 的启动风速和约 25 m/s 的停机保护风速。"
+    ],
+    [
+     "llm_summary_material.7",
+     "Compare against the correct baseline — field photosynthesis converts only ~3% of light into biomass, against ~10% solar-to-fuel in a 2022 artificial device, so efficiency claims are meaningless without the reference system.",
+     "<absent>"
+    ]
+   ]
+  }
+ ]
+}

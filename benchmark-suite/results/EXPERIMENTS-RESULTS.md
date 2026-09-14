@@ -1,19 +1,19 @@
 # EXPERIMENTS-RESULTS — 论文实验真实运行结果
 
-> 由 `scripts/70_build_report.py` 自动汇整 · 2026-09-13T17:44:45.555992+00:00
-> 运行身份: git `7220098` · config `49279bd832721704` · seed 0 · 全部数字来自 `results/run-*/` 下的真实运行 JSON
+> 由 `scripts/70_build_report.py` 自动汇整 · 2026-09-14T08:35:34.658768+00:00
+> 运行身份: git `ff1d4e6` · config `49279bd832721704` · seed 0 · 全部数字来自 `results/run-*/` 下的真实运行 JSON
 
 ## 0. 执行清单与产物
 
 | 实验 | 状态 | 产物 |
 |---|---|---|
-| E1 同查询集消融 (SciFact×30, 9 变体, 双轮) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260913T160016Z\ablation_scifact_1.json` / `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260913T160103Z\ablation_scifact_2.json` |
+| E1 同查询集消融 (SciFact×30, 9 变体, 双轮) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260914T043926Z\ablation_scifact_1.json` / `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260914T044012Z\ablation_scifact_2.json` |
 | E2 配对统计 (bootstrap CI + Wilcoxon + Holm) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260913T171038Z\stats_significance.json` |
-| E8 多域公开基准 (HotpotQA×50, 9 主题 KB, 4 方法) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260913T170529Z\hotpot_main_1.json` |
-| E3 冥想状态重置 ×3 轮 (两轮样本) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260913T162402Z\experience_suite_1.json` / `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260913T170630Z\experience_suite_2.json` |
-| E5 五路 leave-one-out (12 经验查询) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260913T162402Z\experience_suite_1.json` |
-| E6 衰减敏感性 (7/14/30/90d) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260913T162402Z\experience_suite_1.json` |
-| E4 双基线同判 (no-synthesis / LLM-summary / ours) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260913T162402Z\experience_suite_1.json` |
+| E8 多域公开基准 (HotpotQA×50, 9 主题 KB, 4 方法) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260914T053501Z\hotpot_main_1.json` |
+| E3 冥想状态重置 ×3 轮 (两轮样本) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260914T054035Z\experience_suite_1.json` / `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260913T170630Z\experience_suite_2.json` |
+| E5 五路 leave-one-out (12 经验查询) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260914T054035Z\experience_suite_1.json` |
+| E6 衰减敏感性 (7/14/30/90d) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260914T054035Z\experience_suite_1.json` |
+| E4 双基线同判 (no-synthesis / LLM-summary / ours) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260914T054035Z\experience_suite_1.json` |
 | E12 动机案例挖掘 (TODO-1) | ✅ | `D:\codes\ClaudeGPT\rag_project\rag-knowledge\benchmark-suite\results\run-20260913T161241Z\motivating_case.json` |
 
 ## E1 · 消融实验 — 与主表同查询集（SciFact 30 查询, 官方 qrels）
@@ -71,9 +71,9 @@ E7 盲区（代理指标）：金标跨库查询中 top-5 未覆盖全部金标�
 |---|---|---|---|---|---|---|---|
 | 样本1 | 1 | KB-Demo-EN | ✓ | 0 | 0 | 0 | — |
 | 样本1 | 1 | KB-Demo-ZH | ✓ | 0 | 0 | 0 | — |
-| 样本1 | 2 | KB-Demo-EN | ✓ | 3 | 3 | 3 | [9.0, 8.0, 7.0] |
+| 样本1 | 2 | KB-Demo-EN | ✓ | 0 | 0 | 0 | — |
 | 样本1 | 2 | KB-Demo-ZH | ✓ | 0 | 0 | 0 | — |
-| 样本1 | 3 | KB-Demo-EN | ✓ | 0 | 0 | 0 | — |
+| 样本1 | 3 | KB-Demo-EN | ✓ | 0 | 0 | 3 | [8.0, 9.0, 9.0] |
 | 样本1 | 3 | KB-Demo-ZH | ✓ | 0 | 0 | 0 | — |
 | 样本2 | 1 | KB-Demo-EN | ✓ | 0 | 0 | 3 | [8.0, 8.0, 8.0] |
 | 样本2 | 1 | KB-Demo-ZH | ✓ | 0 | 0 | 0 | — |
@@ -119,9 +119,9 @@ harness 复现与线上 API 的 top-3 判定一致度：{'hit3_match_api': 1, 'n
 
 | 材料 | 逐查询分 | 均值 |
 |---|---|---|
-| no_synthesis | [4.0, 5.0, 1.0, 6.0] | 4.00 |
-| ours_experience | [5.0, 4.0, 5.0, 7.0] | 5.25 |
-| llm_summary | [3.0, 3.0, 5.0, 1.0] | 3.00 |
+| no_synthesis | [2.0, 3.0, 1.0, 4.0] | 2.50 |
+| ours_experience | [6.0, 5.0, 6.0, 4.0] | 5.25 |
+| llm_summary | [2.0, 3.0, 4.0, 0] | 2.25 |
 
 ## E12 · 动机案例（TODO-1: 产物可复现的开篇案例）
 

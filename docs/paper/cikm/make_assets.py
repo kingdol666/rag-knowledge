@@ -8,7 +8,7 @@ Inputs (all produced by earlier benchmark runs, none hand-typed):
   benchmark-suite/results/module_b_retrieval_std_r1.json  Module B (XQuAD subset, 32 queries)
   benchmark-suite/results/module_c_experience_r2.json     Module C (experience, judged)
   benchmark-web/backend/results/cikm/cikm_summary.json    CIKM 50-query benchmark
-  .ui-audit/e2e-platform.json                             E2E API verification (73 checks)
+  benchmark-suite/scripts/80_e2e_surface.py               E2E surface verification (26 checks, committed producer)
 
 Outputs: generated/tables/*.tex and generated/figures/*.tex
 """

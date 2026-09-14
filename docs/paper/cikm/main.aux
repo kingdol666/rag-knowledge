@@ -113,18 +113,18 @@
 \newlabel{tab:ablation}{{2}{8}{Component ablation on BEIR SciFact (30 queries, official qrels), same query set as Table~\ref {tab:scifact}. ``Deep'' variants re-rank a $k{=}40$ pool, because the deployed top-10 is already pre-filtered by the Stage-3 threshold (lowest returned score $0.379$), making a shallow-pool threshold sweep a no-op --- itself a finding. Rows omitted for space ($k{=}5$, no-dedup, and the two other deep threshold values) are in the released artefact}{table.caption.22}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.6}RQ4: Public Benchmark and the Honest Reading}{8}{subsection.7.6}\protected@file@percent }
 \newlabel{sec:honest}{{7.6}{8}{RQ4: Public Benchmark and the Honest Reading}{subsection.7.6}{}}
-\newlabel{sec:multidomain}{{7.6.1}{8}{A multi-domain public benchmark: partitioning HotpotQA into knowledge bases}{subsubsection.7.6.1}{}}
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.6.1}A multi-domain public benchmark: partitioning HotpotQA into knowledge bases}{8}{subsubsection.7.6.1}\protected@file@percent }
 \@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces BEIR SciFact (30 official benchmark queries, 148 articles ingested through the production pipeline). All four methods read from the same MCP tool layer and the same index; only the ranking stage differs. Best per column in \textbf  {bold}; latency is mean wall-clock seconds per query.}}{8}{table.caption.23}\protected@file@percent }
 \newlabel{tab:scifact}{{3}{8}{BEIR SciFact (30 official benchmark queries, 148 articles ingested through the production pipeline). All four methods read from the same MCP tool layer and the same index; only the ranking stage differs. Best per column in \textbf {bold}; latency is mean wall-clock seconds per query}{table.caption.23}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Multi-domain public benchmark: 50 HotpotQA dev questions, 454 supporting+distractor documents in 9 topic KBs, official supporting documents as gold, answer-level check = gold answer string occurs in the read content of the top-$k$ documents. Producer: \texttt  {60\_hotpot\_build.py}, \texttt  {61\_hotpot\_eval.py}.}}{8}{table.caption.24}\protected@file@percent }
 \newlabel{tab:hotpot}{{4}{8}{Multi-domain public benchmark: 50 HotpotQA dev questions, 454 supporting+distractor documents in 9 topic KBs, official supporting documents as gold, answer-level check = gold answer string occurs in the read content of the top-$k$ documents. Producer: \texttt {60\_hotpot\_build.py}, \texttt {61\_hotpot\_eval.py}}{table.caption.24}{}}
-\@writefile{toc}{\contentsline {paragraph}{In-house corpus and answerability.}{8}{section*.25}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Module\nonbreakingspace C --- experience synthesis. Entries are produced by the meditation loop and scored by an LLM judge on a 0--10 scale for reusability, with a separate groundedness check against source documents. The low grounded ratio is a \emph  {negative} result and is analysed in \S  \ref {sec:exp-analysis}. Every statistic here is computed from the frozen snapshot (8 judged entries), not transcribed.}}{9}{table.caption.26}\protected@file@percent }
-\newlabel{tab:experience}{{5}{9}{Module~C --- experience synthesis. Entries are produced by the meditation loop and scored by an LLM judge on a 0--10 scale for reusability, with a separate groundedness check against source documents. The low grounded ratio is a \emph {negative} result and is analysed in \S \ref {sec:exp-analysis}. Every statistic here is computed from the frozen snapshot (8 judged entries), not transcribed}{table.caption.26}{}}
+\newlabel{sec:multidomain}{{7.6.1}{8}{A multi-domain public benchmark: partitioning HotpotQA into knowledge bases}{subsubsection.7.6.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {7.6.1}A multi-domain public benchmark: partitioning HotpotQA into knowledge bases}{8}{subsubsection.7.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{In-house corpus and answerability.}{9}{section*.25}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.7}RQ5: Experience Synthesis}{9}{subsection.7.7}\protected@file@percent }
 \newlabel{sec:exp-analysis}{{7.7}{9}{RQ5: Experience Synthesis}{subsection.7.7}{}}
 \@writefile{toc}{\contentsline {paragraph}{Multi-run stability under state reset.}{9}{section*.27}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Module\nonbreakingspace C --- experience synthesis. Entries are produced by the meditation loop and scored by an LLM judge on a 0--10 scale for reusability, with a separate groundedness check against source documents. The low grounded ratio is a \emph  {negative} result and is analysed in \S  \ref {sec:exp-analysis}. Every statistic here is computed from the frozen snapshot (8 judged entries), not transcribed.}}{9}{table.caption.26}\protected@file@percent }
+\newlabel{tab:experience}{{5}{9}{Module~C --- experience synthesis. Entries are produced by the meditation loop and scored by an LLM judge on a 0--10 scale for reusability, with a separate groundedness check against source documents. The low grounded ratio is a \emph {negative} result and is analysed in \S \ref {sec:exp-analysis}. Every statistic here is computed from the frozen snapshot (8 judged entries), not transcribed}{table.caption.26}{}}
 \@writefile{toc}{\contentsline {paragraph}{Baseline comparison for experience synthesis.}{9}{section*.28}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {7.8}RQ6: End-to-End Verification of the Agent Surface}{9}{subsection.7.8}\protected@file@percent }
 \newlabel{sec:e2e}{{7.8}{9}{RQ6: End-to-End Verification of the Agent Surface}{subsection.7.8}{}}
@@ -138,7 +138,6 @@
 \@writefile{toc}{\contentsline {paragraph}{Latency.}{10}{section*.32}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Evaluation scale.}{10}{section*.33}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Threats to validity.}{10}{section*.34}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Future work.}{10}{section*.35}\protected@file@percent }
 \bibstyle{ACM-Reference-Format}
 \bibdata{refs}
 \bibcite{anthropic2024mcp}{{1}{2024}{{Anthropic}}{{}}}
@@ -171,6 +170,7 @@
 \newlabel{tocindent3}{18.198pt}
 \newlabel{tocindent4}{0pt}
 \newlabel{tocindent5}{0pt}
+\@writefile{toc}{\contentsline {paragraph}{Future work.}{11}{section*.35}\protected@file@percent }
 \@writefile{toc}{\contentsline {paragraph}{Conclusion.}{11}{section*.36}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{References}{11}{section*.39}\protected@file@percent }
 \newlabel{TotPages}{{11}{11}{}{page.11}{}}

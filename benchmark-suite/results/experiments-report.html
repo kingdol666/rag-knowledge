@@ -33,8 +33,8 @@ padding:10px 14px;margin-top:8px}
 .meta{color:#667;font-size:.84em}
 </style></head><body>
 <h1>Paper Experiment Suite — real runs, frozen artefacts</h1>
-<p class="meta">git 7220098 · config 49279bd832721704 · seed 0
-· generated 2026-09-13T17:44:45.557494+00:00 · every number comes from results/run-*/ JSON artefacts</p>
+<p class="meta">git ff1d4e6 · config 49279bd832721704 · seed 0
+· generated 2026-09-14T08:35:34.660268+00:00 · every number comes from results/run-*/ JSON artefacts</p>
 
 <h2>E1 · Ablation — same query set (SciFact, 30 queries)</h2>
 <table><thead><tr><th>Variant</th><th>Hit@1</th><th>Hit@3</th><th>R@5</th><th>nDCG@10</th><th>P@5</th><th>MRR</th></tr></thead><tbody><tr><td>qdcvr_full</td><td>0.767</td><td>0.833</td><td>0.833</td><td>0.809</td><td>0.213</td><td>0.800</td></tr><tr><td>verify_k1</td><td>0.733</td><td>0.833</td><td>0.833</td><td>0.796</td><td>0.213</td><td>0.783</td></tr><tr><td>verify_k5</td><td>0.767</td><td>0.833</td><td>0.833</td><td>0.809</td><td>0.213</td><td>0.800</td></tr><tr><td>no_verify</td><td>0.733</td><td>0.833</td><td>0.833</td><td>0.796</td><td>0.213</td><td>0.783</td></tr><tr><td>no_dedup</td><td>0.767</td><td>0.833</td><td>0.833</td><td>0.809</td><td>0.213</td><td>0.800</td></tr><tr><td>deep_t_0.20</td><td>0.767</td><td>0.833</td><td>0.833</td><td>0.832</td><td>0.213</td><td>0.810</td></tr><tr><td>deep_t_0.35</td><td>0.767</td><td>0.833</td><td>0.833</td><td>0.832</td><td>0.213</td><td>0.810</td></tr><tr><td>deep_t_0.50</td><td>0.767</td><td>0.833</td><td>0.833</td><td>0.821</td><td>0.213</td><td>0.806</td></tr><tr><td>deep_t_off</td><td>0.767</td><td>0.833</td><td>0.833</td><td>0.832</td><td>0.213</td><td>0.810</td></tr></tbody></table>
@@ -49,6 +49,6 @@ padding:10px 14px;margin-top:8px}
 <table><thead><tr><th>Window</th><th>Demoted</th><th>Share</th></tr></thead><tbody><tr><td>7d</td><td>0</td><td>0.0</td></tr><tr><td>14d</td><td>0</td><td>0.0</td></tr><tr><td>30d</td><td>0</td><td>0.0</td></tr><tr><td>90d</td><td>0</td><td>0.0</td></tr></tbody></table>
 <p class="caption">Observation window < 30 days: this characterises the rule, not a longitudinal validation (TODO-3).</p>
 <h2>E4 · Experience baselines under an identical judge prompt</h2>
-<table><thead><tr><th>Material</th><th>Per-query scores</th><th>Mean</th></tr></thead><tbody><tr><td>no_synthesis</td><td>[4.0, 5.0, 1.0, 6.0]</td><td>4.00</td></tr><tr><td>ours_experience</td><td>[5.0, 4.0, 5.0, 7.0]</td><td>5.25</td></tr><tr><td>llm_summary</td><td>[3.0, 3.0, 5.0, 1.0]</td><td>3.00</td></tr></tbody></table>
+<table><thead><tr><th>Material</th><th>Per-query scores</th><th>Mean</th></tr></thead><tbody><tr><td>no_synthesis</td><td>[2.0, 3.0, 1.0, 4.0]</td><td>2.50</td></tr><tr><td>ours_experience</td><td>[6.0, 5.0, 6.0, 4.0]</td><td>5.25</td></tr><tr><td>llm_summary</td><td>[2.0, 3.0, 4.0, 0]</td><td>2.25</td></tr></tbody></table>
 <p class="caption">no-synthesis = raw document retrieval; llm-summary = one-shot summarisation; ours = pipeline experiences (same judge).</p>
 </body></html>

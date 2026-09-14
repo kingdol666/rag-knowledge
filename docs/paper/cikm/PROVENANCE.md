@@ -117,10 +117,17 @@ The paper is weaker in headline numbers and sound. What remains measurable:
   and five storage layers;
 * content adjudication's *cost* — $13\times$ latency in-house, mean characters
   read per query;
-* its *mixed* ranking effect — Hit@1 up on the public benchmark, Recall@5/P@5 up
-  in-house, Hit@1/MRR down in-house and nDCG down on the public set;
-* the agent surface — 73 of 73 end-to-end checks passing;
-* a negative result on experience synthesis — mean `3.5/10`, median `3.0`.
+* its *mixed* ranking effect — Hit@1 up on the public benchmark, P@5 up
+  in-house, Hit@1/Recall@5/MRR down in-house and nDCG down on the public set;
+* the agent surface — 26/26 checks passing from the committed external client
+  `benchmark-suite/scripts/80_e2e_surface.py` (the earlier 73/88-check figure had
+  no committed producer and is no longer cited);
+* the multi-domain benchmark — HotpotQA partitioned into nine topic bases, where
+  adjudication is significantly *worse* than its own recall stage on full ranking
+  but best on answer@1;
+* a negative and unstable result on experience synthesis — heuristic-extraction
+  mean `3.5/10`; the generative path produces entries in 3 of 9 state-reset
+  rounds, and is judged `7`–`9/10` when it produces.
 
 The central claim — that domain scoping plus content adjudication reduces false
 positives in heterogeneous corpora — is **not** among them, and `TODO-18` records

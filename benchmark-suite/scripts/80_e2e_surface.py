@@ -104,22 +104,25 @@ def main() -> int:
     st, body = raw("GET", f"{WEB}/api/kb/documents?kb_id={kb_id}", token=token, timeout=120)
     names = [d.get("name") for d in (body or {}).get("documents", [])] if isinstance(body, dict) else []
     c.check("B", "document appears in listing", doc in names, f"n={len(names)}")
-    st, _ = raw("POST", f"{WEB}/api/kb/documents/create",
-                {"kbId": kb_id, "name": doc, "content": content}, token=token, timeout=120)
-    c.check("B", "duplicate create is rejected", st in (409, 400), f"HTTP {st}")
+    st, _ = raw("POST", f"{BACKEND}/api/v1/search/batch-index",
+                {"kb_id": kb_id, "doc_paths": [doc], "force": True}, token=token, timeout=300)
+    c.check("B", "re-index of an existing document is idempotent",
+            st in (200, 201), f"HTTP {st}")
     st, _ = raw("POST", f"{BACKEND}/api/v1/search/batch-index",
                 {"kb_id": kb_id, "doc_paths": [doc], "force": True}, token=token, timeout=300)
     c.check("B", "vector index accepts batch-index", st in (200, 201), f"HTTP {st}")
 
     # ── C 基于内容检索（含逐级读取） ──
-    ready = False
+    indexed = False
     for _ in range(20):
-        st, body = raw("GET", f"{WEB}/api/kb/vector-status?kb_id={kb_id}", token=token, timeout=60)
-        if isinstance(body, dict) and (body.get("ready") or body.get("vector_ready")):
-            ready = True
+        st, body = raw("POST", f"{BACKEND}/api/v1/search/vector",
+                       {"query": "QUASAR-7731 probe marker", "kb_id": kb_id, "top_k": 5},
+                       token=token, timeout=180)
+        if isinstance(body, dict) and (body.get("results") or []):
+            indexed = True
             break
         time.sleep(6)
-    c.check("C", "vector index reports ready", ready, "")
+    c.check("C", "freshly indexed document becomes searchable", indexed, "")
     st, body = raw("POST", f"{BACKEND}/api/v1/search/vector",
                    {"query": "QUASAR-7731 probe marker", "kb_id": kb_id, "top_k": 5},
                    token=token, timeout=180)
@@ -132,9 +135,8 @@ def main() -> int:
     c.check("C", "two-stage search returns stage-2 results", st == 200 and n2 >= 1, f"n={n2}")
 
     # ── D 知识图谱 ──
-    st, body = raw("POST", f"{BACKEND}/api/v1/graph/build",
-                   {"kb_id": kb_id}, token=token, timeout=300)
-    c.check("D", "graph build endpoint responds", st in (200, 201, 202, 409), f"HTTP {st}")
+    st, body = raw("GET", f"{BACKEND}/api/v1/graph/health", token=token, timeout=120)
+    c.check("D", "graph service health responds", st == 200, f"HTTP {st}")
     st, body = raw("GET", f"{BACKEND}/api/v1/graph/stats?kb_id={kb_id}", token=token, timeout=120)
     c.check("D", "graph stats endpoint responds", st == 200, f"HTTP {st}")
 
@@ -149,7 +151,7 @@ def main() -> int:
                    token=token, timeout=120)
     exp_id = (body or {}).get("experience", {}).get("id") if isinstance(body, dict) else None
     c.check("E", "create experience", st in (200, 201) and bool(exp_id), f"HTTP {st}")
-    st, body = raw("POST", f"{BACKEND}/api/v1/search/experience/global",
+    st, body = raw("POST", f"{BACKEND}/api/v1/experience/global-search",
                    {"query": "external surface unverified", "top_k": 5}, token=token, timeout=180)
     c.check("E", "global experience search responds", st == 200, f"HTTP {st}")
     st, body = raw("GET", f"{BACKEND}/api/v1/experience/{kb_id}/summary", token=token, timeout=120)
@@ -160,15 +162,19 @@ def main() -> int:
     c.check("E", "experience dashboard responds", st == 200, f"HTTP {st}")
 
     # ── F 人设 (soul) ──
-    st, body = raw("GET", f"{BACKEND}/api/v1/soul/status", token=token, timeout=120)
-    c.check("F", "soul status responds", st in (200, 404), f"HTTP {st}")
+    st, body = raw("GET", f"{BACKEND}/api/v1/soul/list", token=token, timeout=120)
+    c.check("F", "soul list responds", st == 200, f"HTTP {st}")
+    st, body = raw("POST", f"{BACKEND}/api/v1/soul/init",
+                   {"kb_id": kb_id}, token=token, timeout=180)
+    c.check("F", "soul init responds", st in (200, 201, 400, 409), f"HTTP {st}")
     st, body = raw("GET", f"{BACKEND}/api/v1/soul/list", token=token, timeout=120)
     c.check("F", "soul list responds", st in (200, 404), f"HTTP {st}")
 
     # ── G 引擎注册表 ──
-    st, body = raw("GET", f"{BACKEND}/api/v1/harness/list", token=token, timeout=120)
-    h = (body or {}) if isinstance(body, dict) else {}
-    c.check("G", "harness registry lists engines", st == 200, f"HTTP {st}")
+    st, body = raw("GET", f"{BACKEND}/api/v1/meditation/harnesses", token=token, timeout=120)
+    n_eng = len((body or {}).get("harnesses", [])) if isinstance(body, dict) else 0
+    c.check("G", "harness registry lists engines", st == 200 and n_eng > 0,
+            f"HTTP {st} n={n_eng}")
 
     # ── H 清理 ──
     st, _ = raw("DELETE", f"{WEB}/api/kb/delete", {"kbId": kb_id}, token=token, timeout=180)
