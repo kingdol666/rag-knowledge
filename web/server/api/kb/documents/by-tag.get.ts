@@ -1,7 +1,8 @@
-﻿﻿import { defineEventHandler, getQuery, createError } from 'h3'
+import { defineEventHandler, getQuery, createError } from 'h3'
 import { getTreeFileSystemService } from '~/server/utils/tree-service'
 import { getKnowledgeBaseYamlService } from '~/server/services/knowledge-base-yaml-service'
 import { getTreeStorageAbsolutePath } from '~/server/utils/runtime-paths'
+import { coerceKbQuery } from '~/server/utils/kb-payload'
 
 /** GET /api/kb/documents/by-tag?tag=xxx&kb_id=uuid — find documents by tag.
  *
@@ -12,7 +13,7 @@ import { getTreeStorageAbsolutePath } from '~/server/utils/runtime-paths'
  * Fix: tag matching is now case-insensitive to avoid misses on case mismatch.
  */
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event)
+  const query = coerceKbQuery(getQuery(event))
   const tag = (query.tag as string || '').trim()
   if (!tag) {
     throw createError({ statusCode: 400, statusMessage: 'tag is required' })

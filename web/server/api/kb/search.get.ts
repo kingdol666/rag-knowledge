@@ -1,9 +1,10 @@
-﻿import { defineEventHandler, getQuery, createError } from 'h3'
+import { defineEventHandler, getQuery, createError } from 'h3'
 import { getKbSearchService } from '~/server/services/kb-search-service'
+import { coerceKbQuery } from '~/server/utils/kb-payload'
 
 /** GET /api/kb/search?query=xxx&top_k=10 — cross-KB keyword search. */
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event)
+  const query = coerceKbQuery(getQuery(event))
   const q = (query.query as string || '').trim()
   const topK = Number(query.top_k) || 10
 

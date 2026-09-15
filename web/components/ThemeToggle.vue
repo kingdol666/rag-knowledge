@@ -71,7 +71,10 @@ watch(theme, (t) => {
   transform: rotate(15deg);
 }
 .theme-toggle-btn:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 3px var(--kb-primary-glow);
+  /* Keep a visible keyboard ring — do not remove the outline without a
+     replacement that meets the same contrast. */
+  outline: 2px solid var(--kb-gold-bright);
+  outline-offset: 2px;
 }
+.theme-toggle-btn:active { transform: scale(0.92); }
 </style>

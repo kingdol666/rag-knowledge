@@ -16,7 +16,10 @@ const KB_FIELD_ALIASES: Record<string, string> = {
   doc_id: 'docId',
   target_kb_id: 'targetKbId',
   parent_id: 'parentId',
+  parent_kb_id: 'parentKbId',
   source_path: 'sourcePath',
+  top_k: 'topK',
+  max_chars: 'maxChars',
 }
 
 export function coerceKbPayload<T extends Record<string, any>>(body: T): T {
@@ -27,4 +30,28 @@ export function coerceKbPayload<T extends Record<string, any>>(body: T): T {
     }
   }
   return body
+}
+
+/**
+ * Same alias contract as `coerceKbPayload`, but for **query strings**, and
+ * bidirectional.
+ *
+ * The read endpoints historically read only the snake_case spellings
+ * (`?kb_id=`), while every other layer documents camelCase as canonical — and
+ * `meditation.get.ts` read only camelCase. An external integrator following the
+ * documented contract therefore got a bare
+ * `400 doc_id, path, or kb_id+doc_path is required` from `GET /api/kb/document`.
+ *
+ * Normalising here makes both spellings work on every read endpoint, so the
+ * documented contract and the MCP layer's snake_case names both hold.
+ */
+export function coerceKbQuery<T extends Record<string, any>>(query: T): T {
+  if (!query || typeof query !== 'object') return query
+  for (const [snake, camel] of Object.entries(KB_FIELD_ALIASES)) {
+    const snakeVal = (query as any)[snake]
+    const camelVal = (query as any)[camel]
+    if (camelVal !== undefined && snakeVal === undefined) (query as any)[snake] = camelVal
+    if (snakeVal !== undefined && camelVal === undefined) (query as any)[camel] = snakeVal
+  }
+  return query
 }

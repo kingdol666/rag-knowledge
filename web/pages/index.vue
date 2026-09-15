@@ -202,11 +202,11 @@ function scrollToFeatures() {
 .page-inner {
   position: relative; z-index: 1;
   max-width: 960px; margin: 0 auto;
-  padding: 60px 28px 80px;
+  padding: clamp(28px, 5cqi, 60px) clamp(16px, 3cqi, 28px) clamp(40px, 6cqi, 80px);
 }
 
 /* —— Hero —— */
-.hero { text-align: center; margin-bottom: 80px; animation: kb-fade-up 0.6s var(--kb-ease) both; }
+.hero { text-align: center; margin-bottom: clamp(38px, 7cqi, 80px); animation: kb-fade-up 0.6s var(--kb-ease) both; }
 .hero-badge {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 6px 16px; border-radius: var(--kb-radius-pill);
@@ -215,13 +215,15 @@ function scrollToFeatures() {
   color: var(--kb-gold-deep);
   background: linear-gradient(135deg, var(--kb-gold-soft), rgba(212, 175, 106, 0.15));
   border: 1px solid rgba(184, 148, 90, 0.4);
-  margin-bottom: 28px;
+  margin-bottom: clamp(16px, 3cqi, 28px);
   box-shadow: 0 1px 3px rgba(184, 148, 90, 0.15);
 }
-.hero-title { margin: 0 0 18px; line-height: 1.12; }
+.hero-title { margin: 0 0 18px; line-height: 1.14; }
 .title-line { display: block; }
+/* cqi keeps the display type scaled to the reading column, so the same hero
+   is balanced in the book page and on a phone — never overflowing either. */
 .text-gradient {
-  font-size: clamp(42px, 8.5vw, 68px);
+  font-size: clamp(25px, 7.5cqi, 68px);
   font-weight: 700;
   font-family: var(--kb-font-display);
   background: linear-gradient(135deg,
@@ -240,7 +242,7 @@ function scrollToFeatures() {
   text-shadow: 0 2px 4px rgba(184, 148, 90, 0.08);
 }
 .text-serif {
-  font-size: clamp(26px, 5vw, 40px);
+  font-size: clamp(18px, 4.6cqi, 40px);
   font-family: var(--kb-font-serif);
   color: var(--kb-fg-2);
   font-weight: 500;
@@ -248,12 +250,12 @@ function scrollToFeatures() {
   letter-spacing: 0.01em;
 }
 .hero-sub {
-  font-size: clamp(15px, 2vw, 17px);
   color: var(--kb-fg-3);
-  max-width: 540px; margin: 0 auto 36px;
+  max-width: 540px; margin: 0 auto clamp(22px, 4cqi, 36px);
   line-height: 1.75;
   font-family: var(--kb-font-serif);
-  font-size: clamp(16px, 2vw, 18.5px);
+  font-size: clamp(14.5px, 2.2cqi, 18.5px);
+  text-wrap: pretty;
 }
 .hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
 .btn-primary {
@@ -293,13 +295,18 @@ function scrollToFeatures() {
 
 /* —— Stats —— */
 .hero-stats {
-  display: flex; align-items: center; justify-content: center; gap: 0;
-  margin-top: 44px; padding: 22px 36px;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center; justify-content: center; gap: 0;
+  margin-top: clamp(26px, 4cqi, 44px);
+  padding: clamp(14px, 2.4cqi, 22px) clamp(12px, 3cqi, 36px);
   background:
     linear-gradient(135deg, var(--kb-bg-elevated) 0%, rgba(212, 175, 106, 0.06) 100%);
   border: 1px solid rgba(184, 148, 90, 0.3);
   border-radius: var(--kb-radius-lg);
-  width: fit-content; margin-left: auto; margin-right: auto;
+  width: fit-content;
+  max-width: 100%;
+  margin-left: auto; margin-right: auto;
   box-shadow:
     var(--kb-shadow-md),
     inset 0 1px 0 rgba(255, 250, 235, 0.5);
@@ -324,32 +331,35 @@ function scrollToFeatures() {
   border-left: none; border-top: none;
   border-radius: 0 0 var(--kb-radius-lg) 0;
 }
-.stat-item { display: flex; flex-direction: column; align-items: center; padding: 0 26px; }
+.stat-item { display: flex; flex-direction: column; align-items: center; padding: 0 clamp(6px, 1.6cqi, 26px); min-width: 0; }
 .stat-val {
-  font-size: 28px; font-weight: 700;
+  font-size: clamp(20px, 3.4cqi, 28px); font-weight: 700;
   font-family: var(--kb-font-serif);
   color: var(--kb-gold-deep);
   line-height: 1.2;
   text-shadow: 0 1px 2px rgba(184, 148, 90, 0.15);
 }
 .stat-lbl {
-  font-size: 11px; color: var(--kb-fg-3);
+  font-size: clamp(10px, 1.4cqi, 11px); color: var(--kb-fg-3);
   font-weight: 600; letter-spacing: 0.06em;
   text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
 }
-.stat-divider { width: 1px; height: 38px; background: linear-gradient(180deg, transparent, var(--kb-gold), transparent); opacity: 0.4; }
+.stat-divider { width: 1px; height: clamp(28px, 5cqi, 38px); background: linear-gradient(180deg, transparent, var(--kb-gold), transparent); opacity: 0.4; }
 
 /* —— Feature Matrix —— */
-.features { margin-bottom: 60px; }
+.features { margin-bottom: clamp(30px, 6cqi, 60px); }
 .section-title {
-  font-size: 26px; font-weight: 600;
-  text-align: center; margin: 0 0 36px;
+  font-size: clamp(19px, 3.4cqi, 26px); font-weight: 600;
+  text-align: center; margin: 0 0 clamp(20px, 4cqi, 36px);
   color: var(--kb-fg); letter-spacing: -0.3px;
   font-family: var(--kb-font-serif);
   font-style: italic;
   position: relative;
   display: inline-block;
   left: 50%; transform: translateX(-50%);
+  max-width: 100%;
 }
 .section-title::before,
 .section-title::after {
@@ -358,13 +368,14 @@ function scrollToFeatures() {
   font-size: 0.6em;
   font-style: normal;
   vertical-align: middle;
-  margin: 0 14px;
+  margin: 0 clamp(6px, 1.4cqi, 14px);
   opacity: 0.7;
 }
+/* Grid columns follow the reading column, not the window. */
 .feature-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+  gap: clamp(10px, 1.6cqi, 16px);
 }
 .feature-card {
   padding: 26px 24px;
@@ -412,8 +423,8 @@ function scrollToFeatures() {
 /* —— Quick Links —— */
 .quick-links {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+  gap: clamp(8px, 1.4cqi, 12px);
 }
 .ql-card {
   display: flex; align-items: center; gap: 12px;
@@ -455,12 +466,21 @@ function scrollToFeatures() {
 .ql-arrow { color: var(--kb-fg-mute); font-size: 12px; transition: transform var(--kb-dur-fast) var(--kb-ease), color var(--kb-dur-fast); }
 .ql-card:hover .ql-arrow { transform: translateX(3px); color: var(--kb-gold-deep); }
 
-@media (max-width: 640px) {
-  .page-inner { padding: 40px 16px 60px; }
-  .hero-stats { width: 100%; flex-direction: column; gap: 8px; }
+/* The book's content column is far narrower than the window, so the hero
+   responds to the container. Only true phone widths need extra care. */
+@container (max-width: 560px) {
+  .page-inner { padding-left: 14px; padding-right: 14px; }
+  .hero-stats { width: 100%; gap: 2px; padding-inline: 8px; }
+  .stat-item { padding-inline: 2px; flex: 1 1 0; }
   .stat-divider { display: none; }
-  .feature-grid { grid-template-columns: 1fr; }
-  .quick-links { grid-template-columns: 1fr; }
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .hero-actions .ant-btn { width: 100%; justify-content: center; }
+  .feature-card { padding: 18px 16px; }
+  .ql-card { padding: 14px 16px; }
+}
+@container (max-width: 380px) {
+  .hero-badge { font-size: 10px; padding: 5px 12px; letter-spacing: 0.05em; }
+  .stat-lbl { font-size: 9.5px; letter-spacing: 0.02em; }
 }
 </style>
 

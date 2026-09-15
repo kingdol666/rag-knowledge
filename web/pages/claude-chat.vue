@@ -3514,19 +3514,39 @@ async function deleteHistory(sid: string) {
   display: flex; align-items: center; justify-content: center; gap: 6px;
 }
 
-/* ═══ Mobile responsive ═══ */
-@media (max-width: 768px) {
+/* ═══ Narrow-column adaptation ═══
+   Container queries, not viewport media queries: the chat lives inside the
+   book's reading column, which is far narrower than the window (a 1180px
+   window leaves ~800px of column). Responding to the real width keeps the
+   toolbar and input bar usable at every window size. */
+@container (max-width: 900px) {
   .claude-chat-page {
     padding: var(--kb-space-sm);
   }
-  .chat-header { flex-direction: column; gap: var(--kb-space-sm); }
-  .chat-header h2 { font-size: 17px; }
-  .header-actions { width: 100%; justify-content: flex-end; }
+  /* Header stacks: the title gets a full line, the action rail sits below.
+     Without this the 7-button rail (flex-shrink:0 + overflow-x:auto) eats the
+     title's width and the heading collapses into a vertical ribbon. */
+  .chat-page-header .header-content {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+  .chat-page-header .header-left { align-items: flex-start; gap: 12px; }
+  .chat-page-header .header-text { min-width: 0; flex: 1; }
+  .chat-page-header .header-text h1 { font-size: 21px; }
+  .chat-page-header .header-actions {
+    width: 100%;
+    flex-shrink: 1;
+    justify-content: flex-start;
+    padding-bottom: 4px;
+  }
   .toolbar { flex-direction: column; align-items: stretch; gap: var(--kb-space-xs); }
-  .toolbar .workspace-selector { min-width: 0; flex-direction: column; }
-  .toolbar :deep(.ant-select) { width: 100% !important; }
+  .toolbar .workspace-selector { min-width: 0; width: 100%; flex-direction: column; align-items: stretch; }
+  .toolbar :deep(.ant-select) { width: 100% !important; min-width: 0 !important; }
   .toolbar > .ant-input,
   .toolbar :deep(.ant-select) { max-width: 100%; }
+  .toolbar > .ant-input { min-width: 0 !important; width: 100% !important; }
+  .engine-selector { width: 100%; }
   .messages { padding: var(--kb-space-sm); border-radius: var(--kb-radius); margin: var(--kb-space-sm) 0; }
   .msg { padding: var(--kb-space-sm); }
 
@@ -3543,14 +3563,25 @@ async function deleteHistory(sid: string) {
   .msg-text { font-size: 13.5px; }
   .msg-text :deep(pre) { font-size: 11px; max-height: 200px; }
 
-  /* Full-screen tool panel on mobile */
+  /* Full-screen tool panel when the column is narrow */
   :deep(.ant-drawer-content-wrapper) { width: 100% !important; }
 }
 
-/* Tablet adaptation */
-@media (min-width: 769px) and (max-width: 1024px) {
+/* Medium columns: keep the workspace selector on one line but let it shrink */
+@container (min-width: 901px) and (max-width: 1150px) {
   .claude-chat-page { max-width: 100%; padding: var(--kb-space); }
-  .toolbar .workspace-selector { min-width: 200px; }
+  .toolbar .workspace-selector { min-width: 160px; }
+  .chat-page-header .header-actions { flex-wrap: wrap; overflow-x: visible; }
+}
+
+/* Very narrow columns: every control owns its own row */
+@container (max-width: 430px) {
+  .claude-chat-page { padding: 10px; }
+  .toolbar { padding: 8px 10px; }
+  .input-bar { padding: 8px 10px; gap: 6px; }
+  .input-bar > * { min-width: 0 !important; }
+  .chat-page-header .header-text h1 { font-size: 18px; }
+  .chat-page-header .header-icon { width: 40px; height: 40px; font-size: 20px; border-radius: 11px; }
 }
 
 /* ═════════════════════════════════════════════════════

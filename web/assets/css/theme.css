@@ -1355,3 +1355,346 @@ body {
   pointer-events: none; z-index: 1;
 }
 .kb-glass:hover::after { opacity: 1; }
+
+/* ============================================================
+ * v7 — ADAPTIVE LAYOUT · TOUCH ERGONOMICS · MOTION SYSTEM
+ * ------------------------------------------------------------
+ * One coherent layer so every page adapts to any viewport:
+ *   §1 fluid tokens & breakpoints      §6 adaptive AntD surfaces
+ *   §2 base touch ergonomics           §7 adaptive content grids
+ *   §3 focus & press feedback          §8 sticky action bars
+ *   §4 hover only where it exists      §9 motion utilities
+ *   §5 overflow guards                §10 reduced motion / a11y
+ * ============================================================ */
+
+/* ── §1 Fluid tokens & breakpoints ─────────────────────────── */
+:root {
+  /* Breakpoint contract (kept in sync with layouts/default.vue):
+     xs <480 · sm <640 · md <840 (drawer nav) · lg <1180 · xl ≥1180 */
+  --kb-bp-xs: 480px;
+  --kb-bp-sm: 640px;
+  --kb-bp-md: 840px;
+  --kb-bp-lg: 1180px;
+
+  /* Fluid type — expressed in cqi so a page reads correctly both inside the
+     narrow book page and in a full-bleed container. */
+  --kb-fs-display: clamp(30px, 7cqi, 68px);
+  --kb-fs-h1: clamp(21px, 4.2cqi, 26px);
+  --kb-fs-h2: clamp(17px, 3cqi, 19px);
+  --kb-fs-h3: clamp(14.5px, 2.4cqi, 16px);
+  --kb-fs-body: clamp(13px, 1.9cqi, 14px);
+  --kb-fs-sm: clamp(12px, 1.7cqi, 13px);
+  --kb-fs-xs: clamp(10.5px, 1.5cqi, 11.5px);
+
+  /* Fluid rhythm */
+  --kb-gutter: clamp(12px, 2.4cqi, 26px);
+  --kb-gutter-lg: clamp(16px, 3.4cqi, 36px);
+  --kb-control-h: 40px;
+  --kb-tap: 44px;                 /* minimum comfortable touch target */
+}
+
+/* Safe-area aware page insets (notched phones / home indicator) */
+:root {
+  --kb-safe-top: env(safe-area-inset-top, 0px);
+  --kb-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --kb-safe-left: env(safe-area-inset-left, 0px);
+  --kb-safe-right: env(safe-area-inset-right, 0px);
+}
+
+/* ── §2 Base touch ergonomics ──────────────────────────────── */
+html {
+  /* Stop iOS from inflating type in landscape, and stop double-tap zoom
+     from firing on rapid button presses. */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  height: 100%;
+}
+body {
+  min-height: 100%;
+  /* Prevent rubber-band scroll chaining out of the book shell. */
+  overscroll-behavior: none;
+}
+* { -webkit-tap-highlight-color: transparent; }
+
+button, a, [role="button"], .ant-btn, .toc-item, label, summary {
+  touch-action: manipulation;
+}
+/* Momentum scrolling + contained overscroll for every scroll region. */
+.ant-table-body, .ant-table-content, .ant-drawer-body, .ant-modal-body,
+.kb-scroll, [class*="panel-body"], [class*="list-body"], [class*="doc-list"] {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+/* Images & media never exceed their container. */
+img, video, canvas, svg, iframe { max-width: 100%; }
+img, video { height: auto; }
+
+/* Long unbroken strings (paths, hashes, URLs) wrap instead of forcing
+   horizontal overflow on narrow screens. */
+.kb-break, .mono-path, [class*="path"], [class*="hash"], [class*="breadcrumb"] {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* ── §3 Focus & press feedback ─────────────────────────────── */
+:where(a, button, input, select, textarea, [tabindex], [role="button"]):focus-visible {
+  outline: 2px solid var(--kb-gold-bright);
+  outline-offset: 2px;
+  border-radius: var(--kb-radius-sm);
+}
+/* Kill the default UA ring only when the custom one applies. */
+:where(a, button, [role="button"]):focus:not(:focus-visible) { outline: none; }
+
+/* Physical press feedback — every clickable surface dips slightly. */
+.ant-btn:active:not(:disabled),
+button:active:not(:disabled),
+[role="button"]:active {
+  transform: translateY(1px) scale(0.985);
+  transition-duration: 90ms;
+}
+
+/* ── §4 Hover only where a real pointer exists ─────────────── */
+/* Touch devices latch :hover after a tap, which makes cards look stuck.
+   Everything that "lifts" is therefore gated behind (hover: hover). */
+@media (hover: none) {
+  .feature-card:hover, .ql-card:hover, .kb-card:hover, .doc-card:hover,
+  .sub-kb-card:hover, .result-card:hover, .cross-kb-card:hover,
+  .child-card:hover, .doc-item:hover, .kb-item:hover, .ant-card-hoverable:hover,
+  .ant-btn:hover, .btn-primary:hover, .btn-secondary:hover {
+    transform: none !important;
+  }
+  .ant-btn-primary:hover, .ant-btn-default:hover { box-shadow: none; }
+  /* Suppress hover-only affordances that can't be dismissed on touch. */
+  .feature-card:hover::before, .doc-card:hover::before { opacity: 0; }
+}
+
+/* ── §5 Overflow guards ────────────────────────────────────── */
+/* Grid/flex children default to min-width:auto, which is the #1 cause of
+   clipped panels inside narrow containers. */
+[class$="-page"], [class*="-layout"], [class*="-grid"],
+[class*="panel"], [class*="content"], [class*="card"] { min-width: 0; }
+[class$="-page"] { max-width: 100%; }
+
+/* Tables and code always scroll rather than break the layout. */
+.ant-table-wrapper, .ant-table-content, pre, code, .kb-code-block {
+  max-width: 100%;
+}
+.ant-table-content, pre, .kb-code-block { overflow-x: auto; }
+
+/* ── §6 Adaptive Ant Design surfaces ───────────────────────── */
+/* Modals: breathing room on small screens, full-bleed on phones. */
+@media (max-width: 640px) {
+  .ant-modal {
+    max-width: calc(100vw - 20px) !important;
+    margin: 10px auto !important;
+    top: 16px !important;
+    padding-bottom: 16px;
+  }
+  .ant-modal-body { max-height: calc(100dvh - 190px); overflow-y: auto; }
+  .ant-modal-footer { display: flex; gap: 8px; }
+  .ant-modal-footer .ant-btn { flex: 1; margin-inline-start: 0 !important; }
+
+  /* Drawers become near-full-width so content isn't cramped. */
+  .ant-drawer-content-wrapper { max-width: 100vw !important; }
+  .ant-drawer-content { border-radius: 0 !important; }
+  .ant-drawer-header { padding: 14px 16px; }
+  .ant-drawer-body { padding: 16px; }
+
+  /* Descriptions / forms stack instead of squeezing. */
+  .ant-descriptions-view table { table-layout: auto !important; }
+  .ant-form-item-label { padding-bottom: 2px; }
+
+  /* Pagination trims to essentials. */
+  .ant-pagination-options { display: none !important; }
+
+  /* Message / notification toasts span the width. */
+  .ant-message { padding: 0 10px; }
+  .ant-message-notice-content { width: 100%; }
+
+  /* iOS zooms the page when a focused field is <16px — keep fields legible. */
+  .ant-input, .ant-input-affix-wrapper input, .ant-select-selection-search-input,
+  input, select, textarea { font-size: 16px !important; }
+  .ant-select-selection-item, .ant-select-selection-placeholder { font-size: 14px !important; }
+}
+
+/* Tooltips get out of the way on touch (they can't be hovered away). */
+@media (hover: none) {
+  .ant-tooltip { display: none !important; }
+}
+
+/* ── §7 Adaptive content grids ─────────────────────────────── */
+/* Auto-fitting grid whose column count follows the CONTAINER, so a 3-up
+   card row gracefully becomes 2-up then 1-up without media queries. */
+.kb-grid-auto {
+  display: grid;
+  gap: var(--kb-gutter);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--kb-grid-min, 260px)), 1fr));
+}
+.kb-grid-auto > * { min-width: 0; }
+
+/* Horizontal chip/filter rails: swipeable on touch, wrapped on desktop. */
+.kb-chip-rail {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 2px;
+  scroll-snap-type: x proximity;
+}
+.kb-chip-rail::-webkit-scrollbar { display: none; }
+.kb-chip-rail > * { scroll-snap-align: start; flex-shrink: 0; }
+@media (min-width: 841px) {
+  .kb-chip-rail { flex-wrap: wrap; overflow-x: visible; }
+}
+
+/* ── §8 Sticky action bars ─────────────────────────────────── */
+.kb-action-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 10px var(--kb-gutter) calc(10px + var(--kb-safe-bottom));
+  background: var(--kb-glass-bg-strong);
+  backdrop-filter: blur(12px) saturate(1.05);
+  -webkit-backdrop-filter: blur(12px) saturate(1.05);
+  border-top: 1px solid var(--kb-border);
+}
+@media (max-width: 640px) {
+  .kb-action-bar > .ant-btn { flex: 1 1 auto; min-height: var(--kb-tap); }
+}
+
+/* ── §9 Motion utilities ───────────────────────────────────── */
+@keyframes kb-rise {
+  from { opacity: 0; transform: translateY(14px) scale(0.995); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes kb-slide-in-right {
+  from { opacity: 0; transform: translateX(18px); }
+  to   { opacity: 1; transform: none; }
+}
+/* Staggered entrance driven by --i, applied to direct children. */
+.kb-stagger > * {
+  animation: kb-rise 0.42s var(--kb-ease-out) both;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+/* Interactive lift — only on devices that can actually hover. */
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .kb-lift { transition: transform var(--kb-dur) var(--kb-ease-out), box-shadow var(--kb-dur) var(--kb-ease-out); }
+  .kb-lift:hover { transform: translateY(-3px); box-shadow: var(--kb-shadow-lg); }
+}
+/* Skeleton shimmer for loading surfaces. */
+.kb-skeleton {
+  background: linear-gradient(90deg,
+    var(--kb-bg-subtle) 25%, var(--kb-bg-elevated) 37%, var(--kb-bg-subtle) 63%);
+  background-size: 400% 100%;
+  animation: kb-shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--kb-radius-sm);
+}
+
+/* ── §10 Accessibility / preference escapes ────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  .kb-stagger > *, .kb-lift { animation: none !important; transition: none !important; }
+  .kb-lift:hover { transform: none; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .kb-glass, .kb-action-bar {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: var(--kb-bg-elevated) !important;
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════
+ * §11 Touch-target floor & fluid metadata type
+ * ──────────────────────────────────────────────────────────────
+ * Measured problem this section fixes, from a live audit of all
+ * nine pages at six viewports:
+ *
+ *   1. --kb-tap (44px) was declared in §1 but referenced by exactly
+ *      one rule, so 16 interactive controls rendered below the
+ *      ergonomic floor — the worst being 18x18 and 22x11.
+ *   2. Sidebar, running heads, footers and page furniture used
+ *      hard-coded 9.5–12px, so type did not scale with the page.
+ *
+ * Strategy: grow the HIT AREA with a transparent ::after overlay
+ * rather than inflating the visual box. The glyph stays 18px, the
+ * reachable area becomes 44px — which is what the guideline is
+ * actually about. Gated to coarse pointers so mouse-dense desktop
+ * layouts keep their tight metrics.
+ * ══════════════════════════════════════════════════════════════ */
+
+/* Small square affordances: theme toggle, row menus, remove chips.
+   `position: relative` is required for the overlay to anchor. */
+.mini-btn,
+.theme-toggle-btn,
+.list-item-remove,
+.mobile-menu-btn,
+.drawer-close,
+.ant-btn.ant-btn-text.ant-btn-sm,
+.ant-btn.ant-btn-default.ant-btn-sm {
+  position: relative;
+}
+
+@media (pointer: coarse) {
+  .mini-btn::after,
+  .theme-toggle-btn::after,
+  .list-item-remove::after,
+  .mobile-menu-btn::after,
+  .drawer-close::after,
+  .ant-btn.ant-btn-sm::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: max(100%, var(--kb-tap));
+    height: max(100%, var(--kb-tap));
+    transform: translate(-50%, -50%);
+    /* purely a hit area — never paints, never intercepts layout */
+    background: transparent;
+    border-radius: inherit;
+  }
+  /* The overlay must not swallow clicks meant for the icon itself. */
+  .mini-btn > *, .theme-toggle-btn > *, .list-item-remove > *,
+  .mobile-menu-btn > *, .drawer-close > *, .ant-btn.ant-btn-sm > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Language switcher and the compact action pills get real padding.
+     Both axes matter: min-height alone left this control 38px WIDE. */
+  .lang-switcher-btn,
+  .qa-pill,
+  .btn.btn-ghost,
+  .btn.btn-primary {
+    min-height: var(--kb-tap);
+    min-width: var(--kb-tap);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Ant Design's number-input steppers are 22x11 — unusable on touch. */
+  .ant-input-number-handler-wrap { width: 30px; }
+  .ant-input-number-handler { height: 50% !important; min-height: 22px; }
+
+  /* "全部知识库" style link buttons in table rows. */
+  .ant-btn.ant-btn-link { min-height: 32px; padding-inline: 6px; }
+}
+
+/* Fluid metadata type — replaces the 9.5–11.5px hard-coded cluster so
+   captions stay legible on a phone and gain a little presence on a
+   large display instead of staying pinned at 10px forever. */
+:root {
+  --kb-fs-micro: clamp(11px, 1.55cqi, 13px);
+}
+
+.toc-number, .toc-page-num, .footer-text, .page-number, .page-decor,
+.running-title, .running-chapter, .running-dot, .spine-label,
+.doc-size, .kb-item-stat, .sub-kb-card-stat, .stat-card-label, .stat-lbl,
+.meta-label, .node-badge, .queue-idx, .h-status, .hd-status, .status-pill,
+.metric-label, .score-label, .result-path, .node-count-info {
+  font-size: var(--kb-fs-micro, 11.5px);
+}

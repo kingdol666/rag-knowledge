@@ -1,10 +1,11 @@
-﻿import { defineEventHandler, getQuery, createError } from 'h3'
+import { defineEventHandler, getQuery, createError } from 'h3'
 import { getKbSearchService } from '~/server/services/kb-search-service'
 import { getTreeFileSystemService } from '~/server/utils/tree-service'
+import { coerceKbQuery } from '~/server/utils/kb-payload'
 
 /** GET /api/kb/documents?kb_id=xxx — full document list of one KB. */
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event)
+  const query = coerceKbQuery(getQuery(event))
   const kbId = (query.kb_id as string || '').trim()
 
   if (!kbId) {

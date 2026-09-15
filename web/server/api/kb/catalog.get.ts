@@ -1,5 +1,6 @@
-﻿import { defineEventHandler, getQuery } from 'h3'
+import { defineEventHandler, getQuery } from 'h3'
 import { getKbSearchService } from '~/server/services/kb-search-service'
+import { coerceKbQuery } from '~/server/utils/kb-payload'
 
 /**
  * GET /api/kb/catalog — list knowledge bases.
@@ -7,7 +8,7 @@ import { getKbSearchService } from '~/server/services/kb-search-service'
  * With `kb_id`: returns sub-KBs under that parent.
  */
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event)
+  const query = coerceKbQuery(getQuery(event))
   const parentKbId = (query.kb_id as string || '').trim()
 
   const service = getKbSearchService()

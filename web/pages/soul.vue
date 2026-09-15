@@ -2280,6 +2280,22 @@ onUnmounted(() => {
   padding-bottom: 16px;
   border-bottom: 1px solid var(--kb-border);
 }
+/* Stack the studio header when the reading column is narrow, so the title
+   never collapses into a vertical ribbon beside the action buttons. */
+@container (max-width: 620px) {
+  .studio-header { flex-direction: column; align-items: stretch; gap: 12px; }
+  .studio-header .header-left { gap: 11px; }
+  .studio-header .page-title { font-size: 18px; }
+  .studio-header .page-subtitle { font-size: 12px; }
+  .studio-header .header-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+  }
+  .studio-header .header-actions > * { flex: 1 1 auto; min-width: 0; }
+  .studio-header .btn { justify-content: center; }
+}
 .header-left { display: flex; align-items: center; gap: 14px; }
 .header-mark {
   width: 42px; height: 42px; border-radius: 8px;

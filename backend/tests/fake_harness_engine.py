@@ -13,6 +13,7 @@
 from __future__ import annotations
 
 import json
+import os
 import sys
 
 try:
@@ -65,7 +66,20 @@ def read_prompt_argfile(argv: list[str]) -> str:
 
 
 def run_acp(engine_id: str) -> None:
-    """最小 ACP server：应答 initialize / session/new / session/prompt。"""
+    """最小 ACP server：应答 initialize / session/new / session/prompt。
+
+    额外做两件真实 agent 会做的事，用来给驱动器上强度：
+      * 用规范里的 `agent_message_chunk` 推送文本（不是臆造的 agent_message_text）
+      * 发一次 `session/request_permission`，并把客户端的应答原样记到
+        `$FAKE_HARNESS_PERM_LOG`（若设置），供单测断言「拒绝」语义正确
+    """
+    perm_log = os.environ.get("FAKE_HARNESS_PERM_LOG", "")
+    pending_perm: list[str] = []
+
+    def send(obj):
+        sys.stdout.write(json.dumps(obj) + "\n")
+        sys.stdout.flush()
+
     for line in sys.stdin:
         line = line.strip()
         if not line:
@@ -74,29 +88,57 @@ def run_acp(engine_id: str) -> None:
             msg = json.loads(line)
         except json.JSONDecodeError:
             continue
-        if not isinstance(msg, dict) or "id" not in msg or "method" not in msg:
+        if not isinstance(msg, dict):
+            continue
+
+        # 客户端对权限请求的应答（没有 method，id 是 perm-1）
+        if "method" not in msg and msg.get("id") == "perm-1":
+            if perm_log:
+                with open(perm_log, "w", encoding="utf-8") as f:
+                    f.write(json.dumps(msg.get("result") or msg.get("error") or {},
+                                       ensure_ascii=False))
+            continue
+
+        if "id" not in msg or "method" not in msg:
             continue
         mid, method = msg["id"], msg["method"]
 
-        def send(obj):
-            sys.stdout.write(json.dumps(obj) + "\n")
-            sys.stdout.flush()
-
         if method == "initialize":
-            send({"jsonrpc": "2.0", "id": mid, "result": {"protocolVersion": 1}})
+            send({"jsonrpc": "2.0", "id": mid,
+                  "result": {"protocolVersion": 1,
+                             "agentCapabilities": {},
+                             "agentInfo": {"name": "fake-acp-agent", "version": "1.0"}}})
         elif method == "session/new":
+            # cwd 必须是绝对路径（ACP v1 session-setup 契约）
+            if not os.path.isabs((msg.get("params") or {}).get("cwd") or ""):
+                send({"jsonrpc": "2.0", "id": mid,
+                      "error": {"code": -32602, "message": "cwd must be absolute"}})
+                continue
             send({"jsonrpc": "2.0", "id": mid, "result": {"sessionId": "fake-sess"}})
         elif method == "session/prompt":
             blocks = (msg.get("params") or {}).get("prompt") or []
             text = "".join(b.get("text", "") for b in blocks if isinstance(b, dict))
+            # ACP v1 的标准判别值是 agent_message_chunk（不是 agent_message_text）。
+            # 桩必须说协议里真实存在的值，否则单测会替一个有 bug 的解析器背书。
             send({"jsonrpc": "2.0", "method": "session/update", "params": {
                 "sessionId": "fake-sess",
-                "update": {"sessionUpdate": "agent_message_text",
+                "update": {"sessionUpdate": "agent_message_chunk",
                            "content": {"type": "text", "text": marker(engine_id, text)}}}})
+            # 一次权限请求：客户端必须从 options 里选 reject_* 而不是一律 cancelled
+            send({"jsonrpc": "2.0", "id": "perm-1", "method": "session/request_permission",
+                  "params": {"sessionId": "fake-sess",
+                             "toolCall": {"toolCallId": "tc-1", "title": "write file"},
+                             "options": [
+                                 {"optionId": "allow-1", "name": "Allow once", "kind": "allow_once"},
+                                 {"optionId": "reject-1", "name": "Reject once", "kind": "reject_once"},
+                             ]}})
+            pending_perm.append("perm-1")
+            # 回合正常结束；客户端对 perm-1 的应答会在下一轮循环里被记录
             send({"jsonrpc": "2.0", "id": mid, "result": {"stopReason": "end_turn"}})
         else:
+            # 未实现的服务端方法 → 标准 method-not-found（不是 permission 应答形状）
             send({"jsonrpc": "2.0", "id": mid,
-                  "result": {"outcome": {"outcome": "cancelled"}}})
+                  "error": {"code": -32601, "message": f"not implemented: {method}"}})
 
 
 def main() -> None:

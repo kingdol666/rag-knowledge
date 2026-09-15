@@ -1,6 +1,7 @@
 import { defineEventHandler, getQuery, createError } from 'h3'
 import { getTreeFileSystemService } from '~/server/utils/tree-service'
 import { getKbSearchService } from '~/server/services/kb-search-service'
+import { coerceKbQuery } from '~/server/utils/kb-payload'
 
 /**
  * GET /api/kb/document
@@ -11,9 +12,12 @@ import { getKbSearchService } from '~/server/services/kb-search-service'
  * - doc_id: document UUID (from .tree-fs.json / .knowledge-base.yml)
  * - path: full relative path (e.g. "kb_name/doc.md")
  * - kb_id + doc_path: KB identifier + document path (bare filename or relative)
+ *
+ * Query parameters accept both spellings (`kb_id` / `kbId`, `doc_path` /
+ * `docPath`) — see coerceKbQuery.
  */
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event)
+  const query = coerceKbQuery(getQuery(event))
   let path = (query.path as string || '').trim()
   const kbId = (query.kb_id as string || '').trim()
   const docPath = (query.doc_path as string || '').trim()

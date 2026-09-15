@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="file-system-page">
     <!-- Animated background -->
     <div class="ambient-bg">
@@ -2534,14 +2534,14 @@ const navigateToNode = (node: TreeNode) => {
     font-size: 20px;
   }
 
-  .action-btn span {
-    display: none;
+  /* Keep the labels: the header actions now stack into their own full-width
+     row on narrow screens, so icon-only buttons would read as empty bars.
+     Only the tightest phones drop text. */
+  .action-btn {
+    padding: 0 12px;
+    font-size: 13px;
   }
-
-  .mini-create-btn span {
-    display: none;
 }
-  }
 
 :global([data-theme='dark']) .node-badge.file-badge {
   color: var(--kb-cyan);

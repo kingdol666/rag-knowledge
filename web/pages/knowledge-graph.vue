@@ -855,15 +855,29 @@ const updateCanvasSize = () => {
 }
 
 // ——— Lifecycle ———
+// The book's reading column changes width independently of the window
+// (drawer nav, container queries, compact-desktop breakpoint), so a window
+// resize listener alone leaves the SVG sized for a stale width — which is
+// what pushed the canvas past the page edge. Observe the container itself.
+let canvasObserver: ResizeObserver | null = null
+
 onMounted(async () => {
   updateCanvasSize()
   window.addEventListener('resize', updateCanvasSize)
+  if (typeof ResizeObserver !== 'undefined') {
+    canvasObserver = new ResizeObserver(() => updateCanvasSize())
+    for (const el of [svgContainerRef.value, docSvgContainerRef.value]) {
+      if (el) canvasObserver.observe(el)
+    }
+  }
   await loadGraph()
 })
 onUnmounted(() => {
   stopSimulation()
   stopDocCenterSimulation()
   window.removeEventListener('resize', updateCanvasSize)
+  canvasObserver?.disconnect()
+  canvasObserver = null
 })
 </script>
 
@@ -911,10 +925,18 @@ onUnmounted(() => {
 .graph-layout { display: grid; grid-template-columns: 1fr 340px; gap: 20px; }
 
 /* Canvas */
-.graph-canvas-wrapper { position: relative; background: linear-gradient(135deg, var(--kb-bg-elevated), var(--kb-bg-subtle)); border: 1px solid var(--kb-border); border-radius: var(--kb-radius-lg); box-shadow: var(--kb-shadow-md); overflow: hidden; min-height: 600px; }
-.svg-container { position: relative; width: 100%; height: 600px; cursor: grab; }
+.graph-canvas-wrapper { position: relative; background: linear-gradient(135deg, var(--kb-bg-elevated), var(--kb-bg-subtle)); border: 1px solid var(--kb-border); border-radius: var(--kb-radius-lg); box-shadow: var(--kb-shadow-md); overflow: hidden; min-height: clamp(300px, 52cqi, 600px); }
+.svg-container {
+  position: relative;
+  width: 100%;
+  /* Fluid canvas height: readable on a phone, generous on a wide page. */
+  height: clamp(300px, 52cqi, 600px);
+  cursor: grab;
+  /* Belt and braces: a transient size mismatch can never widen the layout. */
+  overflow: hidden;
+}
 .svg-container:active { cursor: grabbing; }
-.svg-container svg { display: block; }
+.svg-container svg { display: block; max-width: 100%; }
 
 /* Toolbar */
 .graph-toolbar { position: absolute; top: 14px; right: 14px; z-index: 10; display: flex; align-items: center; gap: 4px; padding: 6px 10px; background: rgba(255,255,255,0.92); backdrop-filter: blur(10px); border: 1px solid var(--kb-border); border-radius: 11px; box-shadow: var(--kb-shadow-sm); }
@@ -935,6 +957,21 @@ onUnmounted(() => {
 
 /* Node Count */
 .node-count-info { position: absolute; top: 14px; left: 14px; z-index: 10; padding: 4px 12px; background: rgba(255,255,255,0.92); backdrop-filter: blur(10px); border: 1px solid var(--kb-border); border-radius: 999px; font-size: 11px; color: var(--kb-fg-3); font-weight: 600; }
+
+/* Narrow canvas: the count pill and the zoom toolbar collide. Move the pill
+   onto its own row below the toolbar and let long labels truncate. */
+@container (max-width: 620px) {
+  .node-count-info {
+    top: 60px;
+    left: 10px;
+    right: 10px;
+    max-width: max-content;
+    font-size: 10.5px;
+    padding: 3px 10px;
+  }
+  .graph-toolbar { top: 10px; right: 10px; left: 10px; justify-content: flex-end; padding: 5px 8px; }
+  .graph-legend { font-size: 10.5px; padding: 6px 10px; gap: 8px; }
+}
 
 /* SVG Nodes/Edges */
 .graph-edge { transition: stroke-opacity 0.2s, stroke-width 0.2s; }

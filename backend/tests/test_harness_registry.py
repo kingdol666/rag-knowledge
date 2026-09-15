@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -112,10 +113,25 @@ class TestResolveAndWrap:
         assert hreg.resolve_command("goose") == str(real_bin)
 
     def test_resolve_command_override_broken_falls_back(self, monkeypatch):
-        """覆盖项无法解析时告警并回退 PATH 探测（不硬失败）。"""
+        """覆盖项无法解析时告警并回退 PATH 探测（不硬失败）。
+
+        PATH 探测被固定, 否则断言会依赖开发机是否恰好装了该引擎 —— 装了就会
+        解析到真实路径, 未装才返回 None。这里钉死 PATHEXT 探测结果, 使断言
+        只检验「回退发生了」这一契约本身。
+        """
         from app.config import config
         monkeypatch.setitem(config._config, "harness",
                             {"commands": {"hermes": "Z:/no/such/bin.exe"}})
+        monkeypatch.setattr(hreg.shutil, "which",
+                            lambda name: "C:/bin/hermes.EXE" if name == "hermes" else None)
+        assert hreg.resolve_command("hermes") == "C:/bin/hermes.EXE"
+
+    def test_resolve_command_override_broken_and_absent_returns_none(self, monkeypatch):
+        """覆盖项坏 + PATH 也没有 → 返回 None（不抛异常）。"""
+        from app.config import config
+        monkeypatch.setitem(config._config, "harness",
+                            {"commands": {"hermes": "Z:/no/such/bin.exe"}})
+        monkeypatch.setattr(hreg.shutil, "which", lambda name: None)
         assert hreg.resolve_command("hermes") is None
 
     def test_wrap_windows_cmd_literal(self, monkeypatch):
@@ -147,16 +163,63 @@ class TestResolveAndWrap:
         info = run(hreg.probe_harness("hermes", force=True))
         assert info["installed"] is False
 
-    def test_probe_claude_requires_key(self, monkeypatch):
+    def test_probe_claude_unusable_without_key_or_login(self, monkeypatch):
+        """claude 无 API key 且无本地登录态 → 不可用。"""
         monkeypatch.setattr(hreg, "resolve_command", lambda hid: "C:/bin/claude.EXE")
         monkeypatch.setattr(hreg.os, "environ", {})
-        # version probe succeeds but key missing → not installed
+        monkeypatch.setattr(hreg, "_credential_store_present", lambda hid: False)
+
         class R:
             returncode = 0
             stdout = b"1.0.0"
+            stderr = b""
         monkeypatch.setattr(hreg.subprocess, "run", lambda *a, **k: R())
         info = run(hreg.probe_harness("claude", force=True))
         assert info["installed"] is False
+        assert hreg.configuration_issues("claude"), "expected a readable configuration issue"
+
+    def test_probe_claude_usable_with_local_login(self, monkeypatch):
+        """claude 无 API key 但有 OAuth 登录态 → 可用（订阅号用户不应被误判）。"""
+        monkeypatch.setattr(hreg, "resolve_command", lambda hid: "C:/bin/claude.EXE")
+        monkeypatch.setattr(hreg.os, "environ", {})
+        monkeypatch.setattr(hreg, "_credential_store_present", lambda hid: hid == "claude")
+
+        class R:
+            returncode = 0
+            stdout = b"2.1.267 (Claude Code)"
+            stderr = b""
+        monkeypatch.setattr(hreg.subprocess, "run", lambda *a, **k: R())
+        info = run(hreg.probe_harness("claude", force=True))
+        assert info["installed"] is True
+        assert info["credentials"]["store_ready"] is True
+        assert hreg.configuration_issues("claude") == []
+
+    def test_probe_reads_version_from_stderr(self, monkeypatch):
+        """部分 CLI（实测 pi）把 --version 写到 stderr —— 必须同样识别。"""
+        monkeypatch.setattr(hreg, "resolve_command", lambda hid: "C:/bin/pi.CMD")
+
+        class R:
+            returncode = 0
+            stdout = b""
+            stderr = b"0.73.1\n"
+        monkeypatch.setattr(hreg.subprocess, "run", lambda *a, **k: R())
+        info = run(hreg.probe_harness("pi", force=True))
+        assert info["installed"] is True
+        assert info["version"] == "0.73.1"
+        assert info["version_stream"] == "stderr"
+
+    def test_probe_tolerates_nonzero_exit_with_version_output(self, monkeypatch):
+        """部分 CLI 用非 0 退出码报告版本 —— 有可读输出即视为已安装。"""
+        monkeypatch.setattr(hreg, "resolve_command", lambda hid: "C:/bin/goose.EXE")
+
+        class R:
+            returncode = 1
+            stdout = b"1.50.0"
+            stderr = b""
+        monkeypatch.setattr(hreg.subprocess, "run", lambda *a, **k: R())
+        info = run(hreg.probe_harness("goose", force=True))
+        assert info["installed"] is True
+        assert info["version"] == "1.50.0"
 
     def test_assert_usable_three_states(self, monkeypatch):
         # 未知 → 400 语义
@@ -566,6 +629,46 @@ class TestFakeCliAdapters:
             kb_config={"harness": "mock", "timeout_sec": 30},
             trigger="manual"))
         assert res["success"] and res["drafts"]
+
+    # ── ACP 协议契约回归 ─────────────────────────────────────────────
+    # 背景：驱动器曾按 `sessionUpdate == "agent_message_text"` 聚合文本。该判别值
+    # 在 ACP v1 规范、各语言 SDK schema 和真实 dsh 二进制里**都不存在**
+    # （真实值是 agent_message_chunk），所以 dsh/hermes 在生产里永远拿到空回复；
+    # 而桩文件当年写的也是同一个错值，单测因此全绿。下面两条把契约钉死。
+
+    @pytest.mark.parametrize("hid", ["dsh", "hermes"])
+    def test_acp_text_uses_spec_discriminator(self, hid):
+        """真实 ACP 判别值 agent_message_chunk 必须被聚合为回复文本。"""
+        cfg = {"timeout_sec": 60}
+        res = run(hrun.run_engine(hid, FAKE_PROMPT, cfg, run_label=f"acp-{hid}"))
+        assert res["success"], f"{hid}: {res.get('error')} / {res.get('detail', '')[:300]}"
+        assert res["text"].strip(), f"{hid}: ACP text update was not accumulated"
+        assert f"FAKE-{hid.upper()}-OK" in res["text"], res["text"][:200]
+
+    @pytest.mark.parametrize("hid", ["dsh", "hermes"])
+    def test_acp_permission_is_denied_via_offered_option(self, hid, tmp_path):
+        """拒绝审批应回 selected+reject optionId，而不是无条件 cancelled。
+
+        规范：`cancelled` 是「本回合被取消」的专属应答；普通拒绝必须从 agent 给出的
+        options 里挑一个 reject_*，否则合规 agent 会把回合判为取消并中止。
+        """
+        log = tmp_path / f"perm-{hid}.json"
+        old = os.environ.get("FAKE_HARNESS_PERM_LOG")
+        os.environ["FAKE_HARNESS_PERM_LOG"] = str(log)
+        try:
+            res = run(hrun.run_engine(hid, FAKE_PROMPT, {"timeout_sec": 60},
+                                      run_label=f"perm-{hid}"))
+        finally:
+            if old is None:
+                os.environ.pop("FAKE_HARNESS_PERM_LOG", None)
+            else:
+                os.environ["FAKE_HARNESS_PERM_LOG"] = old
+
+        assert res["success"], f"{hid}: {res.get('error')}"
+        assert log.exists(), f"{hid}: the driver never answered the permission request"
+        outcome = json.loads(log.read_text(encoding="utf-8")).get("outcome", {})
+        assert outcome.get("outcome") == "selected", outcome
+        assert outcome.get("optionId") == "reject-1", outcome
 
 
 # ── API 路由层（三态校验 + 注册表面） ─────────────────────────────────
