@@ -40,6 +40,7 @@ say "R5 E16b API 全流程 (HTTP 选算法问答 + 中间 Agent 排名)"
 sleep 40
 python scripts/27_api_flow_test.py 2>&1 | tail -4
 
-say "R6 轨道报告"
+say "R6 轨道报告 + 全量问答日志"
 python scripts/71_track_reports.py retrieval 2>&1 | tail -3
-say "DONE — results/RETRIEVAL-BENCHMARK.md + retrieval-benchmark.html"
+python scripts/28_qa_log.py 2>&1 | tail -2
+say "DONE — results/RETRIEVAL-BENCHMARK.md + retrieval-benchmark.html + RETRIEVAL-QA-LOG.{log,md}"

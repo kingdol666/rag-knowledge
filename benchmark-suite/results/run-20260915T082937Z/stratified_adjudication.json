@@ -1,0 +1,48 @@
+{
+ "experiment": "E14 overlap-stratified adjudication (review Q2)",
+ "datasets": {
+  "hotpotqa": {
+   "low_overlap": {
+    "n": 27,
+    "median_cov": 0.2857,
+    "two_stage_hit1": 0.0,
+    "qdcvr_hit1": 0.0,
+    "two_stage_ndcg": 0.0,
+    "qdcvr_ndcg": 0.0,
+    "delta_hit1": 0.0,
+    "delta_ndcg": 0.0
+   },
+   "high_overlap": {
+    "n": 23,
+    "median_cov": 0.2857,
+    "two_stage_hit1": 0.0,
+    "qdcvr_hit1": 0.0,
+    "two_stage_ndcg": 0.0,
+    "qdcvr_ndcg": 0.0,
+    "delta_hit1": 0.0,
+    "delta_ndcg": 0.0
+   },
+   "overlap_conditioned_mix": {
+    "hit@1": 0.0,
+    "ndcg@10": 0.0,
+    "note": "route to qdcvr when query-gold-title overlap > median, else two_stage (oracle router on the boundary variable)"
+   }
+  },
+  "scifact": {
+   "low_overlap": {
+    "n": 30,
+    "median_cov": 0.0,
+    "two_stage_hit1": 0.7333,
+    "qdcvr_hit1": 0.7667,
+    "two_stage_ndcg": 0.7964,
+    "qdcvr_ndcg": 0.8087,
+    "delta_hit1": 0.0334,
+    "delta_ndcg": 0.0123
+   }
+  }
+ },
+ "meta": {
+  "generated": "2026-09-15T08:29:37.059565+00:00",
+  "note": "overlap = share of query content words (stopwords removed) present in gold document title(s); strata split at the median. Pure analysis of frozen per-query artefacts."
+ }
+}
