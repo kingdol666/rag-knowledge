@@ -72,6 +72,29 @@ tests/screenshots/
 # Tool metadata
 .catpaw/
 
+# Agent-tool session artifacts (hook state, finding ledgers, local indexes) — never sources.
+# Reports worth keeping are copied into docs/audit/.
+.mimosa/
+.codegraph/
+.crush/
+.omo/
+.zcode/
+.sys-test-fixtures/
+.audit/
+
+# LaTeX build fragments — regenerate with latexmk/bibtex; keep .tex / .bbl / .pdf
+*.aux
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.toc
+*.spl
+*.blg
+*.bcf
+*.run.xml
+docs/paper/**/*.out
+docs/paper/**/*.log
+
 # Claude 对话历史 SQLite（运行时数据）
 storage/claude-chat.db
 storage/claude-chat.db-wal
@@ -86,6 +109,7 @@ docs/*
 !docs/paper/
 !docs/paper/benchmark/
 !docs/screenshots/
+!docs/audit/
 docs/paper/benchmark/datasets/
 docs/paper/reference/
 
@@ -115,4 +139,12 @@ neo4j_logs/
 benchmark-web/benchmark/data/
 benchmark-web/backend/
 benchmark-web/benchmark/results/checkpoint-*.jsonl
+benchmark-web/benchmark/results/**/ingest-checkpoint-*.json
 benchmark-web/benchmark/results/index-retry-*.txt
+
+# UI audit workspace (Playwright audit + interaction test suite, local artifacts)
+.ui-audit/
+web/.nuxt-buildcheck/
+
+# End-to-end API/harness test workspace (external-API E2E suite, local artifacts)
+.e2e/
