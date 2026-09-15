@@ -1,0 +1,1 @@
+{"text": "Sub-KB documents are stored in L4 under the **parent** KB's collection (`kb_<parent-uuid>`, with `vector_index.collection` always pointing at the parent `kb_id`), so searching the sub-KB's own UUID returns 0 results and you must search the parent collection instead.", "cached_at": 1789489176.5342145}

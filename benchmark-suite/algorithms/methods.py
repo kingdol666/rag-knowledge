@@ -57,14 +57,17 @@ def pack(chunks: list[dict], budget: int = BUDGET) -> tuple[str, list[dict]]:
 class Ctx:
     """方法共享上下文: MCP 客户端 / omp 工厂 / 分块文本 / 文档结构。"""
 
-    def __init__(self, mc, rpc_factory, oneshot):
+    def __init__(self, mc, rpc_factory, oneshot, kb_names=None,
+                 corpus_docs=None):
         self.mc = mc
         self.new_rpc = rpc_factory
         self.oneshot = oneshot
         self.texts = {kb: load_texts(kb)
-                      for kb in (KB_FIXED, KB_STRUCT, KB_PARA, KB_RAPTOR)}
+                      for kb in (kb_names or (KB_FIXED, KB_STRUCT,
+                                              KB_PARA, KB_RAPTOR))}
         self.tree: dict = {}
-        self.corpus = {d["cid"]: d for d in load_corpus()}
+        docs = load_corpus() if corpus_docs is None else corpus_docs
+        self.corpus = {d["cid"]: d for d in docs}
         self.structure = {cid: parse_structure(d)
                           for cid, d in self.corpus.items()}
 
@@ -83,7 +86,7 @@ class Ctx:
 
 # ── 1. QDCVR(真 skill 链路) ──────────────────────────────────────────────────
 
-def qdcvr(ctx: Ctx, claim: str) -> dict:
+def qdcvr(ctx: Ctx, claim: str, allow_global_fallback: bool = True) -> dict:
     t0 = time.perf_counter()
     res = ctx.mc.call("kb_search_two_stage",
                       {"query": claim, "kb_id": KB_SCIFACT,
@@ -92,7 +95,9 @@ def qdcvr(ctx: Ctx, claim: str) -> dict:
     stage1 = [str(c.get("doc_path", ""))
               for c in (res.get("stage1") or {}).get("candidates") or []]
     fallback = False
-    if not stage1:  # KB 限定 BM25 索引脏化兜底(套件已知陷阱④)
+    if not stage1 and allow_global_fallback:
+        # KB 限定 BM25 索引脏化兜底(套件已知陷阱④) — 多 KB 共存的用户场景
+        # 禁用该兜底(全局检索会混入其他库的文档, 破坏单库归因)
         res = ctx.mc.call("kb_search_two_stage",
                           {"query": claim, "kb_id": "",
                            "stage1_top_k": 40, "stage2_top_k": 10,
@@ -101,7 +106,9 @@ def qdcvr(ctx: Ctx, claim: str) -> dict:
                   for c in (res.get("stage1") or {}).get("candidates") or []]
         fallback = True
     ranked = step25((res.get("stage2") or {}).get("results") or [])
-    terms = [t.lower() for t in re.findall(r"[a-z]{3,}", claim)]
+    # 英文词 ≥3 字母; CJK 双字起算(中文文档 claim 的 Step-3 验证同样生效)
+    terms = [t.lower() for t in
+             re.findall(r"[a-z]{3,}|[\u4e00-\u9fff]{2,}", claim)]
     verified: dict[str, int] = {}
     chars = 0
     for dp in [str(r.get("doc_path", "")) for r in ranked[:3]]:

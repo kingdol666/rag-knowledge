@@ -161,21 +161,21 @@ def items_fixed(corpus, kb_prefix=KB_FIXED):
     return out
 
 
-def items_struct(corpus) -> list[dict]:
+def items_struct(corpus, kb_prefix=KB_STRUCT) -> list[dict]:
     out = []
     for d in corpus:
         for j, ch in enumerate(chunk_structure(d["text"])):
-            out.append({"path": f"{KB_STRUCT}/{d['cid']}__s{j:02d}.md",
+            out.append({"path": f"{kb_prefix}/{d['cid']}__s{j:02d}.md",
                         "content": ch, "meta": f"src={d['cid']} struct-o0"})
     return out
 
 
-def items_para(corpus) -> list[dict]:
+def items_para(corpus, kb_prefix=KB_PARA) -> list[dict]:
     out = []
     for d in corpus:
         for sec in parse_structure(d):
             for p in sec.paras:
-                out.append({"path": f"{KB_PARA}/{d['cid']}__p{sec.sec:02d}{p.para:03d}.md",
+                out.append({"path": f"{kb_prefix}/{d['cid']}__p{sec.sec:02d}{p.para:03d}.md",
                             "content": p.text,
                             "meta": f"src={p.doc} coords={p.coords}"})
     return out

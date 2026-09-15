@@ -69,3 +69,37 @@ Agent 判分。任何与本论文设置不一致之处都在此显式登记; 未
 ## 复现命令
 
 见 `README.md`(一键) 与 `../TEST-PLAN.md` §Stage D(含端到端冒烟)。
+
+## 真实场景泛化(E19, 2026-09-16): 用户上传文档 × 同一算法矩阵
+
+`user_scenario.py` + `../scripts/29_real_scenario_test.py` 把八算法矩阵从冻结
+SciFact 语料移植到**任意用户上传文档**, 与 E16 完全解耦:
+
+- **生产 KB**: `kb_doc_create`(平台真实用户路径: tree-fs + 后台向量/图索引,
+  大文档自动按 "(part N of M)" 拆分) → `qdcvr` 直接在该库上两阶段+内容裁决。
+- **基线 KB**: 各论文自己的分块方案(suite 侧复现) `UserDemo-{Chunks800,Struct,
+  Paras,Raptor}` — `index_kb.items_*/build_kb` 与 `raptor.build_tree` 已参数化
+  (默认值不变, E16 行为逐位保留)。
+- **问题**: omp Agent 从文档内容生成(附逐字金标引文+期望答案, 全程留痕);
+  **作答**: 同一 omp Harness 同一模型同一开放 QA prompt; **评审**: 独立 omp
+  Agent 注入金标引文; **中间 Agent** 对匿名答案排名。评测命中按**文档级**
+  归一(part 后缀剥离后与源文档比对)。
+
+### 泛化过程中发现并修复的平台缺陷(P1 级)
+
+`/api/v1/search/index-document` 的增量 BM25 更新把调用方原始 `kb_id`(常为
+KB **名**)存入倒排, 而检索侧 `resolve_kb_ids_with_children()` 归一化为
+**UUID** → 新建库(后端启动后经 kb_doc_create 上传)的 KB 限定两阶段检索
+stage1 恒为 0(静默)。全量重建路径存的是规范 UUID, 故 KB-SciFact 等老库
+不受影响 — 该缺陷只咬"后端启动后新上传"的真实用户。已修复: 增量更新改存
+`owner_kb_id`(UUID) + 路径统一正斜杠(修复与 ChromaDB 元数据不对齐)。
+验证: KB-UserDemo 限定检索 stage1 0→13, 中文题 qdcvr hit@1 0→1。
+
+### 首轮实测要点(2 文档: 英文架构指南 15.3KB + 中文投稿规划 6.9KB)
+
+- 生产 KB 上传+后台索引可查: 7.2s; 四基线索引全探针通过。
+- **真实困难案例**: "HARD DISCARD 阈值"英文题 — 生产库将 ARCHITECTURE 拆成
+  15 个 part(≈1KB/片, 上下文稀释), 且中文文档的 QDCVR 描述块与问题语义
+  更近, BM25 与向量双双把竞争文档排前; qdcvr 的内容裁决只能在召回候选内
+  重排(recall-bounded), 无法无中生有。suite 侧 dense_rag(整文档 3200 字符
+  块)答对该题 — 生产分块粒度 vs suite 分块粒度是真实差异轴, 如实入报告。

@@ -204,6 +204,10 @@ async def index_document(req: IndexDocumentRequest) -> dict[str, Any]:
             resolved_doc_path = f"{kb_path}/{req.doc_path.lstrip('/').lstrip('\\')}"
             logger.info("index_document: resolved %r -> %r", req.doc_path, resolved_doc_path)
 
+    # 统一正斜杠：增量 BM25/向量元数据/磁盘读取共用此值，Windows 反斜杠
+    # 会让 two_stage 候选路径与 ChromaDB 元数据(正斜杠)无法对齐(stage2 内容为空)
+    resolved_doc_path = resolved_doc_path.replace("\\", "/")
+
     if not content:
         content = storage_reader.read_document_content(resolved_doc_path)
         if not content:
@@ -290,12 +294,15 @@ async def index_document(req: IndexDocumentRequest) -> dict[str, Any]:
     if vector_index or graph_stats:
         # Incremental BM25 update — avoids forcing a full rebuild (which
         # re-reads every doc from disk) on the next two-stage search.
+        # kb_id 必须用规范 UUID(owner_kb_id)：检索侧 resolve_kb_ids_with_children
+        # 把名字归一化为 UUID，若此处存调用方原始值(常为 KB 名)，KB 限定的
+        # stage1 会静默返回 0 候选(实测: kb_doc_create 自动索引路径踩中)。
         two_stage_search_service.add_document({
             "path": resolved_doc_path,
             "name": req.doc_name or "",
             "description": req.description or "",
             "content": content,
-            "kb_id": req.kb_id,
+            "kb_id": owner_kb_id or req.kb_id,
         })
 
     return {"success": True, "vector_index": vector_index,

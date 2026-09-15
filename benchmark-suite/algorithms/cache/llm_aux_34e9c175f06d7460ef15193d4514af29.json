@@ -1,0 +1,1 @@
+{"text": "The FastAPI backend (behind the Nuxt 3 web layer) owns the on-disk KB store — writes go through Nuxt/Backend while kb-mcp reads `.tree-fs.json`/`.knowledge-base.yml` directly — and the browser reaches FastAPI only indirectly via `fetch` to the Nuxt 3 proxy layer, which forwards server-to-server (`trust_env=False`).", "cached_at": 1789489234.922777}

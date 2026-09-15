@@ -33,22 +33,31 @@ def _summarize(oneshot: OmpOneshot, text: str) -> str:
     return out or text[:1200]
 
 
-def build_tree(mc, oneshot: OmpOneshot, force: bool = False) -> dict:
-    if not force and TREE_PATH.exists():
-        tree = json.loads(TREE_PATH.read_text(encoding="utf-8"))
+def build_tree(mc, oneshot: OmpOneshot, force: bool = False, *,
+               kb: str = "", tree_path: Path | None = None,
+               corpus_docs: list[dict] | None = None) -> dict:
+    """默认构建冻结 SciFact 树; kb/tree_path/corpus_docs 用于用户文档画像。
+
+    kb: 树节点 KB 名(叶子与摘要同库, doc_path 首段必须等于 kb — 后端按首段路由)。
+    corpus_docs: [{cid, title, text}] — 缺省时用冻结 SciFact 语料。
+    """
+    kb = kb or KB_RAPTOR
+    tree_path = tree_path or TREE_PATH
+    if not force and tree_path.exists():
+        tree = json.loads(tree_path.read_text(encoding="utf-8"))
         probe = mc.call("kb_search_vector",
-                        {"query": "probe study", "kb_id": KB_RAPTOR, "top_k": 1},
+                        {"query": "probe study", "kb_id": kb, "top_k": 1},
                         timeout=180)
         if probe.get("results") and len(tree.get("nodes", {})) > 10:
             tree["reused"] = True
             return tree
 
     t0 = time.perf_counter()
-    corpus = load_corpus()
-    # 叶子路径必须带 DR-Raptor 前缀(后端按 doc_path 首段解析所属 KB,
-    # 复用 DR-Chunks800 前缀会把写入路由到别的集合 — 已实测发生)
-    leaves = items_fixed(corpus, kb_prefix=KB_RAPTOR)
-    leaf_metrics = build_kb(mc, KB_RAPTOR, leaves, force=True)
+    corpus = load_corpus() if corpus_docs is None else corpus_docs
+    # 叶子路径前缀必须与 kb 同名(后端按 doc_path 首段解析所属 KB,
+    # 复用其他 KB 前缀会把写入路由到别的集合 — 已实测发生)
+    leaves = items_fixed(corpus, kb_prefix=kb)
+    leaf_metrics = build_kb(mc, kb, leaves, force=True)
 
     nodes: dict[str, dict] = {}
     for it in leaves:
@@ -69,7 +78,7 @@ def build_tree(mc, oneshot: OmpOneshot, force: bool = False) -> dict:
             try:
                 r = mc.call("kb_search_vector",
                             {"query": nodes[seed]["text"][:2000],
-                             "kb_id": KB_RAPTOR, "top_k": LEAF_K + 1},
+                             "kb_id": kb, "top_k": LEAF_K + 1},
                             timeout=180)
             except Exception:  # noqa: BLE001
                 r = {}
@@ -92,7 +101,7 @@ def build_tree(mc, oneshot: OmpOneshot, force: bool = False) -> dict:
             src_cids = sorted({c for p in group for c in nodes[p]["src_cids"]})
             summary = _summarize(oneshot, text)
             summarize_calls += 1
-            path = f"{KB_RAPTOR}/L{level}_{i:03d}.md"
+            path = f"{kb}/L{level}_{i:03d}.md"
             nodes[path] = {"level": level, "text": summary,
                            "src_cids": src_cids, "children": group}
             new_nodes.append(path)
@@ -101,7 +110,7 @@ def build_tree(mc, oneshot: OmpOneshot, force: bool = False) -> dict:
             for attempt in (1, 2):
                 try:
                     mc.call("kb_index_document",
-                            {"kb_id": KB_RAPTOR, "doc_path": p,
+                            {"kb_id": kb, "doc_path": p,
                              "doc_name": Path(p).name,
                              "description": f"raptor L{level}",
                              "content": nodes[p]["text"]}, timeout=180)
@@ -121,8 +130,8 @@ def build_tree(mc, oneshot: OmpOneshot, force: bool = False) -> dict:
     if len(level_sizes) <= 1 and len(current) > 1:
         raise RuntimeError("RAPTOR clustering merged nothing — similarity "
                            "search over the node KB returned no neighbors")
-    TREE_PATH.write_text(json.dumps(tree, ensure_ascii=False), encoding="utf-8")
-    dump_texts(KB_RAPTOR, [{"path": p, "content": n["text"],
+    tree_path.write_text(json.dumps(tree, ensure_ascii=False), encoding="utf-8")
+    dump_texts(kb, [{"path": p, "content": n["text"],
                             "meta": f"L{n['level']} src={','.join(n['src_cids'][:8])}"}
                            for p, n in nodes.items()])
     return tree
