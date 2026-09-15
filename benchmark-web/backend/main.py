@@ -18,6 +18,7 @@ Provenance tags on every algorithm: ``REAL-CODE`` (open-source library),
 """
 from __future__ import annotations
 
+import asyncio
 import time
 import uuid
 from pathlib import Path
@@ -28,6 +29,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field
 
+import answer as answer_mod
+import llm
 import loaders
 import metrics as ir_metrics
 from algorithms import (
@@ -93,6 +96,30 @@ class SearchRequest(BaseModel):
 
 class CompareRequest(SearchRequest):
     """Same as /api/search but always returns the cross-method comparison block."""
+
+    answer: bool = Field(
+        False,
+        description="also generate an answer per method, from that method's own "
+                    "evidence, under one shared prompt and budget (one model call "
+                    "per method — slow)")
+
+    verify: bool = Field(
+        False,
+        description="with answer=true, run an independent second call that grades "
+                    "each answer's grounding against the evidence it was given")
+
+
+class AnswerRequest(SearchRequest):
+    """Retrieve with one algorithm, then generate a grounded answer."""
+
+    method: str = Field("hybrid", description="algorithm id (see /api/algorithms)")
+    budget_chars: int = Field(
+        answer_mod.DEFAULT_BUDGET_CHARS, ge=500, le=20000,
+        description="total evidence characters handed to the answer agent")
+    verify: bool = Field(
+        False, description="run an independent second call that grades grounding")
+    timeout_s: float = Field(300.0, ge=30, le=900,
+                             description="per model call timeout")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -203,7 +230,7 @@ async def index() -> dict[str, Any]:
                        "GET /api/documents/{doc_id}", "DELETE /api/documents/{doc_id}",
                        "DELETE /api/documents"],
             "retrieval": ["POST /api/search", "POST /api/compare",
-                          "POST /api/reindex"],
+                      "POST /api/answer", "POST /api/ask", "POST /api/reindex"],
         },
         "algorithms": [a.id for a in ALGORITHMS.values()],
         "aliases": ALIASES,
@@ -212,7 +239,8 @@ async def index() -> dict[str, Any]:
 
 @app.get("/api/health", tags=["meta"])
 async def health() -> dict[str, Any]:
-    """Liveness plus corpus/index readiness."""
+    """Liveness plus corpus/index readiness and answer-channel availability."""
+    llm_ok, llm_detail = llm.available()
     return {
         "status": "healthy",
         "docs": len(store.documents),
@@ -220,6 +248,9 @@ async def health() -> dict[str, Any]:
         "chunks": len(store.chunks),
         "domains": store.domains(),
         "index": store.stats(),
+        "answering": {"available": llm_ok, "detail": llm_detail,
+                      "model": "omp (one-shot, no tools, no session)",
+                      "evidence_budget_chars": answer_mod.DEFAULT_BUDGET_CHARS},
         "algorithms": {a.id: f"[{a.implementation}] {a.component}"
                        for a in ALGORITHMS.values()},
     }
@@ -469,6 +500,10 @@ async def compare(request: CompareRequest) -> dict[str, Any]:
     Supply ``relevant`` (ground-truth document ids) to get real P@k / R@k /
     nDCG@10 / MRR for every method; otherwise only latency, score distribution
     and inter-method overlap are reported.
+
+    With ``answer=true`` each method's *own* evidence is also handed to one
+    shared answer agent under one prompt and one budget, so the replies can be
+    compared the same way the retrieval can.
     """
     if not store.chunks and not any(resolve_id(m).startswith("qdcvr")
                                     for m in (request.methods or list(DEFAULT_SELECTION))):
@@ -479,6 +514,24 @@ async def compare(request: CompareRequest) -> dict[str, Any]:
         )
     started = time.perf_counter()
     runs, resolved = _run_all(request)
+
+    answers: dict[str, Any] = {}
+    if request.answer:
+        ok, detail = llm.available()
+        if not ok:
+            answers = {"_error": detail}
+        else:
+            for run in runs:
+                generated = await asyncio.to_thread(
+                    answer_mod.answer_question, request.query, run.hits, run.method,
+                    answer_mod.DEFAULT_BUDGET_CHARS, 300.0)
+                payload = generated.to_dict()
+                if request.verify and run.hits and not generated.error:
+                    payload["verification"] = await asyncio.to_thread(
+                        answer_mod.verify_grounding, request.query, run.hits,
+                        generated.answer, answer_mod.DEFAULT_BUDGET_CHARS, 300.0)
+                answers[run.method] = payload
+
     return {
         "query": request.query,
         "methods": resolved,
@@ -486,8 +539,72 @@ async def compare(request: CompareRequest) -> dict[str, Any]:
         "top_k": request.top_k,
         "results": {r.method: r.to_dict(request.preview_chars) for r in runs},
         "comparison": _comparison(runs, request.relevant),
+        "answers": answers or None,
         "elapsed_ms": round((time.perf_counter() - started) * 1000, 1),
     }
+
+
+@app.post("/api/answer", tags=["retrieval"])
+async def answer(request: AnswerRequest) -> dict[str, Any]:
+    """Retrieve with one algorithm, then generate a grounded answer.
+
+    The reply is produced from **that method's evidence only**, by a stateless
+    agent with no tools — so it cannot fall back on prior knowledge. Citations
+    are checked against the evidence actually supplied; ids the agent invented
+    are dropped and reported in ``unknown_citations``.
+    """
+    if not store.chunks:
+        return JSONResponse(
+            status_code=409,
+            content={"detail": "corpus is empty — upload or add documents first",
+                     "hint": "POST /api/documents/upload"},
+        )
+
+    ok, detail = llm.available()
+    if not ok:
+        return JSONResponse(status_code=503, content={
+            "detail": f"answer generation is unavailable: {detail}",
+            "hint": "retrieval still works — POST /api/search",
+        })
+
+    # Reuse the search path so a question answered here retrieves exactly what
+    # the same request would retrieve through /api/search.
+    search_request = SearchRequest(
+        query=request.query, methods=[request.method], top_k=request.top_k,
+        domain=request.domain, domains=request.domains, params=request.params,
+        preview_chars=request.preview_chars, relevant=request.relevant)
+    started = time.perf_counter()
+    runs, resolved = _run_all(search_request)
+    run = runs[0]
+
+    if run.error:
+        return JSONResponse(status_code=422, content={
+            "detail": f"algorithm '{run.method}' could not run: {run.error}",
+            "method": run.method,
+        })
+
+    generated = await asyncio.to_thread(
+        answer_mod.answer_question, request.query, run.hits, run.method,
+        request.budget_chars, request.timeout_s)
+    payload: dict[str, Any] = {
+        "query": request.query,
+        "method": run.method,
+        "label": run.label,
+        "params": run.params,
+        "domains": _scoped_domains(request),
+        "retrieval": {
+            "count": len(run.hits),
+            "latency_ms": run.latency_ms,
+            "results": [h.to_dict(request.preview_chars) for h in run.hits],
+        },
+        "answer": generated.to_dict(),
+        "elapsed_ms": round((time.perf_counter() - started) * 1000, 1),
+    }
+    if request.verify and run.hits and not generated.error:
+        payload["verification"] = await asyncio.to_thread(
+            answer_mod.verify_grounding, request.query, run.hits,
+            generated.answer, request.budget_chars, request.timeout_s)
+    return payload
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -519,6 +636,12 @@ async def legacy_add_batch(payload: list[DocumentIn]) -> dict[str, Any]:
 @app.post("/api/documents/add", status_code=201, tags=["compat"], include_in_schema=False)
 async def legacy_add_document(payload: DocumentIn) -> dict[str, Any]:
     return await add_document(payload)
+
+
+@app.post("/api/ask", tags=["compat"], include_in_schema=False)
+async def legacy_ask(request: AnswerRequest) -> dict[str, Any]:
+    """Alias of /api/answer — the endpoint name people reach for first."""
+    return await answer(request)
 
 
 @app.exception_handler(ParamError)

@@ -27,10 +27,175 @@
 
       <!-- Tabs -->
       <div class="tabs">
+        <button class="tab" :class="{active: tab === 'ask'}" @click="tab = 'ask'">💬 Ask</button>
         <button class="tab" :class="{active: tab === 'benchmark'}" @click="tab = 'benchmark'">🔍 Benchmark</button>
         <button class="tab" :class="{active: tab === 'corpus'}" @click="tab = 'corpus'">📄 Corpus ({{ health.documents ?? 0 }})</button>
         <button class="tab" :class="{active: tab === 'api'}" @click="tab = 'api'">🔌 API</button>
       </div>
+
+      <!-- ══ ASK ══ -->
+      <template v-if="tab === 'ask'">
+        <div class="section">
+          <h2>Ask your documents</h2>
+          <textarea v-model="askQuestion" rows="2"
+                    placeholder="Ask something answerable from the documents you uploaded…"
+                    @keydown.enter.exact.prevent="runAsk"></textarea>
+
+          <div class="row" style="margin-top:10px">
+            <label class="muted" style="min-width:78px">Algorithm</label>
+            <select v-model="askMethod" style="padding:7px 12px;border:1.5px solid var(--border);border-radius:6px;font-size:0.82rem">
+              <option v-for="a in algorithms" :key="a.id" :value="a.id">{{ a.label }} [{{ a.implementation }}]</option>
+            </select>
+            <label class="muted" style="min-width:56px">Top-K</label>
+            <input v-model.number="topK" type="number" min="1" max="100" style="width:84px" />
+            <label class="muted" style="min-width:64px">Domain</label>
+            <select v-model="domainFilter" style="padding:7px 12px;border:1.5px solid var(--border);border-radius:6px;font-size:0.82rem">
+              <option value="">All domains</option>
+              <option v-for="d in domains.local" :key="d" :value="d">{{ d }}</option>
+            </select>
+            <div class="spacer"></div>
+            <button class="btn btn-primary" :disabled="askLoading || !askQuestion.trim()" @click="runAsk(false)">
+              {{ askLoading ? 'Thinking…' : 'Ask' }}
+            </button>
+            <button class="btn btn-outline" :disabled="askLoading || !askQuestion.trim()" @click="runAsk(true)">
+              Ask + verify
+            </button>
+          </div>
+
+          <div class="row" style="margin-top:12px">
+            <span class="muted">Try:</span>
+            <button v-for="q in askSamples" :key="q" class="btn btn-outline btn-sm" @click="askQuestion = q">{{ q }}</button>
+          </div>
+
+          <div v-if="!answering.available" class="alert alert-warn" style="margin-top:12px">
+            <strong>Answer generation is unavailable.</strong> {{ answering.detail }}
+            Retrieval still works — use the Benchmark tab.
+          </div>
+          <div v-else class="param-help" style="margin-top:8px">
+            Answers come only from the evidence the chosen algorithm retrieves — the model runs with
+            no tools and no session, so it cannot fall back on outside knowledge. Every reply cites
+            the sources it used.
+          </div>
+        </div>
+
+        <!-- parameters for the chosen algorithm -->
+        <div class="section" v-if="askAlgorithm">
+          <h2>Parameters for {{ askAlgorithm.label }}</h2>
+          <div v-if="anyInvalid" class="alert alert-warn">
+            A parameter is outside the accepted range. Leave the field to have it clamped.
+          </div>
+          <div class="param-group">
+            <div class="param-group-head">
+              <span class="param-group-name">{{ askAlgorithm.label }}</span>
+              <span class="badge badge-family">{{ askAlgorithm.family }}</span>
+              <span class="badge" :class="'badge-' + askAlgorithm.implementation.toLowerCase().replace('_','-')">{{ askAlgorithm.implementation }}</span>
+              <span class="spacer"></span>
+              <button v-if="changedCount(askAlgorithm)" class="btn btn-outline btn-sm" @click="resetParams(askAlgorithm.id)">
+                reset {{ changedCount(askAlgorithm) }} change(s)
+              </button>
+            </div>
+            <div class="param-group-desc">{{ askAlgorithm.component }} — {{ askAlgorithm.paper }}</div>
+            <div class="param-grid">
+              <div v-for="p in askAlgorithm.params" :key="p.name" class="param-field"
+                   :class="{ 'param-changed': isChanged(askAlgorithm, p), 'param-invalid': isInvalid(askAlgorithm, p) }">
+                <label :for="'ask-' + askAlgorithm.id + '-' + p.name">{{ p.name }}</label>
+                <select v-if="p.choices" :id="'ask-' + askAlgorithm.id + '-' + p.name"
+                        :value="paramValue(askAlgorithm, p)" @change="setParam(askAlgorithm, p, $event.target.value)">
+                  <option v-for="c in p.choices" :key="c" :value="c">{{ c }}</option>
+                </select>
+                <input v-else-if="p.type === 'bool'" type="checkbox" style="width:auto"
+                       :id="'ask-' + askAlgorithm.id + '-' + p.name" :checked="!!paramValue(askAlgorithm, p)"
+                       @change="setParam(askAlgorithm, p, $event.target.checked)" />
+                <input v-else-if="p.type === 'int' || p.type === 'float'" type="number"
+                       :id="'ask-' + askAlgorithm.id + '-' + p.name"
+                       :min="p.minimum ?? undefined" :max="p.maximum ?? undefined"
+                       :step="p.type === 'int' ? 1 : 0.05"
+                       :value="paramValue(askAlgorithm, p)"
+                       @input="setParam(askAlgorithm, p, $event.target.value)"
+                       @change="clampParam(askAlgorithm, p)" />
+                <input v-else type="text" :id="'ask-' + askAlgorithm.id + '-' + p.name"
+                       :value="paramValue(askAlgorithm, p)" @input="setParam(askAlgorithm, p, $event.target.value)" />
+                <div class="param-help">
+                  {{ p.description }}
+                  <span v-if="p.minimum !== null || p.maximum !== null" class="mono">
+                    [{{ p.minimum ?? '−∞' }} … {{ p.maximum ?? '∞' }}]
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div v-if="askError" class="alert alert-error">{{ askError }}</div>
+
+        <!-- the answer -->
+        <div v-if="askResult" class="section">
+          <h2>Answer</h2>
+          <div class="answer-card" :class="verdictClass">
+            <div class="row">
+              <span class="verdict-badge" :class="verdictClass">{{ askResult.answer.verdict }}</span>
+              <span class="badge badge-family">{{ askResult.label }}</span>
+              <span class="result-card-stat">{{ askResult.retrieval.count }} sources · {{ askResult.retrieval.latency_ms }} ms retrieval · {{ askResult.answer.latency_s }}s generation</span>
+              <span class="spacer"></span>
+              <span class="result-card-stat mono">{{ askResult.answer.evidence_chars }} chars of evidence</span>
+            </div>
+            <p class="answer-text">{{ askResult.answer.answer }}</p>
+
+            <div v-if="askResult.answer.error" class="alert alert-warn" style="margin-top:10px">
+              {{ askResult.answer.error }}
+            </div>
+            <div v-if="askResult.answer.unknown_citations?.length" class="alert alert-warn" style="margin-top:10px">
+              The model cited source(s) that were not in the evidence: {{ askResult.answer.unknown_citations.join(', ') }}
+              — these were dropped.
+            </div>
+
+            <div v-if="askResult.verification" class="verify-box">
+              <strong>Independent grounding check</strong>
+              <span v-if="askResult.verification.error" class="muted"> — {{ askResult.verification.error }}</span>
+              <template v-else>
+                <span class="metric-pill" :class="{good: askResult.verification.grounded}">
+                  score {{ askResult.verification.score }}/10
+                </span>
+                <span class="metric-pill" :class="{good: askResult.verification.grounded}">
+                  {{ askResult.verification.grounded ? 'grounded' : 'not grounded' }}
+                </span>
+                <div v-if="askResult.verification.issues" class="param-help">{{ askResult.verification.issues }}</div>
+                <ul v-if="askResult.verification.unsupported_claims?.length" class="claim-list">
+                  <li v-for="c in askResult.verification.unsupported_claims" :key="c">{{ c }}</li>
+                </ul>
+              </template>
+            </div>
+          </div>
+
+          <h3 class="subhead">Sources cited</h3>
+          <div v-if="!askResult.answer.citations.length" class="muted">No sources cited.</div>
+          <div v-for="c in askResult.answer.citations" :key="c.source_id" class="result-row">
+            <div class="result-rank rank-qdcvr">{{ c.source_id }}</div>
+            <div class="result-content">
+              <div><strong>{{ c.title }}</strong> <span class="doc-meta">{{ c.domain }}</span></div>
+              <div class="result-snippet">{{ c.snippet }}</div>
+              <div class="metric-strip">
+                <span class="metric-pill">retrieval rank {{ c.rank }}</span>
+                <span class="metric-pill">score {{ c.score }}</span>
+                <span class="metric-pill">{{ c.doc_id }}</span>
+              </div>
+            </div>
+          </div>
+
+          <h3 class="subhead">All retrieved passages ({{ askResult.retrieval.results.length }})</h3>
+          <div v-for="r in askResult.retrieval.results" :key="r.chunk_id" class="result-row">
+            <div class="result-rank rank-other">{{ r.rank }}</div>
+            <div class="result-content">
+              <div><strong>{{ r.title }}</strong> <span class="doc-meta">{{ r.domain }}</span></div>
+              <div class="result-snippet">{{ r.content_preview }}</div>
+              <div class="metric-strip">
+                <span class="metric-pill">score {{ r.score }}</span>
+                <span class="metric-pill">{{ r.source }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
 
       <!-- ══ BENCHMARK ══ -->
       <template v-if="tab === 'benchmark'">
@@ -343,11 +508,12 @@ import { ref, reactive, computed, onMounted, nextTick } from 'vue';
 
 const API = useRuntimeConfig().public.apiBase || 'http://127.0.0.1:8800';
 
-const tab = ref('benchmark');
+const tab = ref('ask');
 const fatal = ref('');
 const connected = ref(false);
 const health = reactive({ documents: null, chunks: null });
 const service = reactive({ platform_api: '', embedding_model: '' });
+const answering = reactive({ available: false, detail: '' });
 
 const algorithms = ref([]);
 const accepted = ref([]);
@@ -358,6 +524,18 @@ const groundTruth = ref('');
 const topK = ref(5);
 const domainFilter = ref('');
 const domains = reactive({ local: [] });
+
+// Ask tab
+const askQuestion = ref('');
+const askMethod = ref('hybrid');
+const askResult = ref(null);
+const askLoading = ref(false);
+const askError = ref('');
+const askSamples = ref([
+  'Summarise what these documents say.',
+  'What method does the document propose?',
+  'What values or settings are reported?',
+]);
 
 const paramOverrides = reactive({});     // { algId: { paramName: value } }
 const results = ref(null);
@@ -385,6 +563,15 @@ const sampleQueries = [
 const selectedAlgorithms = computed(() =>
   algorithms.value.filter(a => selected.value.includes(a.id)));
 
+const askAlgorithm = computed(() =>
+  algorithms.value.find(a => a.id === askMethod.value) || null);
+
+const verdictClass = computed(() => {
+  const verdict = askResult.value?.answer?.verdict;
+  if (verdict === 'answered') return 'verdict-ok';
+  return 'verdict-insufficient';
+});
+
 const avgLatency = computed(() => {
   if (!results.value) return '--';
   const lats = Object.values(results.value).map(r => r.latency_ms).filter(Boolean);
@@ -407,10 +594,13 @@ const endpoints = [
   { method: 'DELETE', path: '/api/documents', purpose: 'Clear the corpus' },
   { method: 'POST', path: '/api/search', purpose: 'Run algorithms with per-algorithm parameters' },
   { method: 'POST', path: '/api/compare', purpose: 'Compare algorithms (+ real IR metrics with ground truth)' },
+  { method: 'POST', path: '/api/answer', purpose: 'Retrieve with one algorithm, then generate a grounded answer with citations' },
+  { method: 'POST', path: '/api/ask', purpose: 'Alias of /api/answer' },
   { method: 'POST', path: '/api/reindex', purpose: 'Rebuild the dense index' },
 ];
 
-const curlExample = computed(() => `curl -s -X POST ${API}/api/compare \\
+const curlExample = computed(() => `# Retrieve with per-algorithm parameters
+curl -s -X POST ${API}/api/compare \\
   -H "Content-Type: application/json" \\
   -d '{
     "query": "battery thermal management",
@@ -422,6 +612,17 @@ const curlExample = computed(() => `curl -s -X POST ${API}/api/compare \\
       "crag":   { "upper_threshold": 0.7, "expand_trigger": 0.4 }
     },
     "relevant": ["battery-thermal"]
+  }'
+
+# Ask a question and get a grounded answer with citations
+curl -s -X POST ${API}/api/answer \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "query": "What is the Zephyr-7 calibration constant?",
+    "method": "hybrid",
+    "params": { "hybrid": { "alpha": 0.3 } },
+    "top_k": 5,
+    "verify": true
   }'`);
 
 function isProject (id) { return id.startsWith('qdcvr'); }
@@ -478,8 +679,12 @@ function clampParam (algorithm, param) {
   if (param.type === 'int') next = Math.round(next);
   if (next !== value) setParam(algorithm, param, next);
 }
-const anyInvalid = computed(() =>
-  selectedAlgorithms.value.some(a => a.params.some(p => isInvalid(a, p))));
+const anyInvalid = computed(() => {
+  const targets = tab.value === 'ask'
+    ? (askAlgorithm.value ? [askAlgorithm.value] : [])
+    : selectedAlgorithms.value;
+  return targets.some(a => a.params.some(p => isInvalid(a, p)));
+});
 
 /** Only the deviations from the published defaults are sent; the response echoes the full set. */
 function buildParams () {
@@ -519,6 +724,10 @@ async function loadHealth () {
     connected.value = true;
     health.documents = data.documents;
     health.chunks = data.chunks;
+    if (data.answering) {
+      answering.available = !!data.answering.available;
+      answering.detail = data.answering.detail || '';
+    }
     fatal.value = '';
   } catch (e) {
     connected.value = false;
@@ -533,6 +742,10 @@ async function loadAlgorithms () {
   if (!selected.value.length) {
     selected.value = (data.default_selection || []).filter(
       id => data.algorithms.some(a => a.id === id));
+  }
+  if (!data.algorithms.some(a => a.id === askMethod.value)) {
+    askMethod.value = data.default_selection?.includes('hybrid')
+      ? 'hybrid' : (data.algorithms[0]?.id || '');
   }
 }
 
@@ -579,6 +792,27 @@ async function runSearch () {
     await loadHealth();
   } catch (e) { error.value = e.message; }
   finally { loading.value = false; }
+}
+
+/** Ask a question: retrieve with the chosen algorithm, then generate a grounded answer. */
+async function runAsk (verify) {
+  if (!askQuestion.value.trim() || !askMethod.value) return;
+  askLoading.value = true; askError.value = ''; askResult.value = null;
+  try {
+    const overrides = paramOverrides[askMethod.value] || {};
+    askResult.value = await api('/api/answer', {
+      method: 'POST',
+      body: JSON.stringify({
+        query: askQuestion.value,
+        method: askMethod.value,
+        top_k: topK.value,
+        domain: domainFilter.value || null,
+        params: Object.keys(overrides).length ? { [askMethod.value]: { ...overrides } } : {},
+        verify: !!verify,
+      }),
+    });
+  } catch (e) { askError.value = e.message; }
+  finally { askLoading.value = false; }
 }
 
 async function runCompare () {

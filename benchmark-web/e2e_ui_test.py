@@ -70,15 +70,20 @@ SEED = [
 ]
 
 UPLOAD = [
-    ("quantum-notes.md",
-     b"# Quantum error correction\n\nSurface codes encode a logical qubit across a "
-     b"lattice of physical qubits and correct errors by measuring stabilisers "
-     b"without collapsing the encoded state.\n"),
+    ("zephyr7-calibration.md",
+     b"# Zephyr-7 field calibration report\n\nThe Zephyr-7 ionisation chamber was "
+     b"calibrated at the Kvistad facility during the 2024 winter campaign. Its "
+     b"calibration constant is 42.7 mV per kilocount, traceable to standard "
+     b"KV-2024-11.\n"),
     ("perovskite.txt",
      b"Perovskite solar cells use a hybrid organic-inorganic lead halide absorber. "
      b"Power conversion efficiency rose from 3.8 percent in 2009 past 25 percent, "
      b"limited by moisture instability.\n"),
 ]
+
+#: A value invented for this test — a model cannot know it, so finding it in the
+#: answer proves the reply came from the uploaded file.
+PLANTED_TOKEN = "42.7"
 
 
 def main() -> int:
@@ -116,11 +121,9 @@ def main() -> int:
         page.goto(args.ui, wait_until="networkidle", timeout=90_000)
         check("page loads", page.title() != "", page.title())
 
-        page.wait_for_selector(".method-checkbox label", timeout=60_000)
-        method_labels = page.locator(".method-checkbox label")
-        count = method_labels.count()
-        check("algorithm registry reached the browser", count >= 8,
-              f"{count} algorithms rendered")
+        page.wait_for_selector(".tabs", timeout=60_000)
+        default_tab = page.locator(".tab.active").first.inner_text().strip()
+        check("the dashboard opens on the Ask tab", "Ask" in default_tab, default_tab)
 
         page.wait_for_function(
             "() => document.querySelectorAll('.kpi-value')[0]?.textContent?.trim() !== '--'",
@@ -131,6 +134,13 @@ def main() -> int:
 
         status_text = page.locator(".kpi-card.qdcvr .kpi-value").inner_text()
         check("backend status reads Up", "Up" in status_text, status_text.strip())
+
+        page.click("button.tab:has-text('Benchmark')")
+        page.wait_for_selector(".method-checkbox label", timeout=60_000)
+        method_labels = page.locator(".method-checkbox label")
+        count = method_labels.count()
+        check("algorithm registry reached the browser", count >= 8,
+              f"{count} algorithms rendered")
 
         # ── 2. parameter panel ──────────────────────────────────────────────
         print("\n[2] Per-algorithm parameter panel")
@@ -184,6 +194,36 @@ def main() -> int:
         rows = page.locator(".doc-row")
         check("uploaded files appear in the corpus list", rows.count() >= len(UPLOAD),
               f"{rows.count()} rows")
+
+        page.click("button.tab:has-text('Benchmark')")
+        page.wait_for_selector(".method-checkbox label", timeout=30_000)
+
+        # ── 3b. ask a question and get a grounded answer ────────────────────
+        print("\n[3b] Ask the uploaded documents (answer generation)")
+        page.click("button.tab:has-text('Ask')")
+        page.wait_for_selector("textarea", timeout=30_000)
+        answering = page.locator(".alert-warn:has-text('Answer generation is unavailable')").count()
+        if answering:
+            check("answer channel available in the UI", False,
+                  "the UI reports the model channel as unavailable")
+        else:
+            check("answer channel available in the UI", True,
+                  page.locator("select").first.input_value())
+            page.fill("textarea", "What is the Zephyr-7 calibration constant?")
+            page.click("button.btn-primary:has-text('Ask')")
+            page.wait_for_selector(".answer-card", timeout=600_000)
+            answer_text = page.locator(".answer-text").inner_text().strip()
+            print(f"      answer: {answer_text[:200]}")
+            check("an answer is rendered", bool(answer_text), f"{len(answer_text)} chars")
+            check("the answer comes from the uploaded file (contains the planted value)",
+                  PLANTED_TOKEN in answer_text, f"looked for {PLANTED_TOKEN!r}")
+            verdict = page.locator(".verdict-badge").first.inner_text().strip().lower()
+            check("the verdict badge reads 'answered'", verdict == "answered", verdict)
+            citations = page.locator(".answer-card ~ .result-row, .subhead + .result-row")
+            check("cited sources are listed", page.locator(".result-row").count() >= 1,
+                  f"{page.locator('.result-row').count()} source rows")
+            check("no fabricated-citation warning is shown",
+                  page.locator(".alert-warn:has-text('not in the evidence')").count() == 0)
 
         page.click("button.tab:has-text('Benchmark')")
         page.wait_for_selector(".method-checkbox label", timeout=30_000)
@@ -268,7 +308,9 @@ def main() -> int:
               "params" in curl and "bm25" in curl)
 
         if args.screenshot:
-            page.click("button.tab:has-text('Benchmark')")
+            # Capture the Ask tab: the answer card is the headline feature.
+            page.click("button.tab:has-text('Ask')")
+            page.wait_for_selector(".answer-card", timeout=60_000)
             page.wait_for_timeout(600)
             page.screenshot(path=args.screenshot, full_page=True)
             print(f"\n  screenshot -> {args.screenshot}")

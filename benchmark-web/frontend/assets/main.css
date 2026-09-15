@@ -123,6 +123,18 @@ footer { text-align: center; padding: 16px; color: var(--text-secondary); font-s
 .metric-pill.good { background: #d1fae5; color: #047857; }
 .muted { color: var(--text-secondary); font-size: 0.78rem; }
 .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+/* ── answer card ───────────────────────────────────────────────────────── */
+.answer-card { border: 1px solid var(--border); border-left: 4px solid var(--primary); border-radius: 8px; padding: 16px 18px; background: #fbfcfe; }
+.answer-card.verdict-ok { border-left-color: var(--qdcvr); background: #f6fefb; }
+.answer-card.verdict-insufficient { border-left-color: var(--high); background: #fffdf5; }
+.answer-text { font-size: 0.92rem; line-height: 1.65; margin-top: 12px; white-space: pre-wrap; color: #1e293b; }
+.verdict-badge { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+.verdict-badge.verdict-ok { background: #d1fae5; color: #047857; }
+.verdict-badge.verdict-insufficient { background: #fef3c7; color: #b45309; }
+.subhead { font-size: 0.88rem; font-weight: 600; color: var(--primary-dark); margin: 18px 0 8px; }
+.verify-box { margin-top: 12px; padding: 10px 12px; border-radius: 8px; background: #f1f5f9; border: 1px solid var(--border); font-size: 0.78rem; }
+.claim-list { margin: 6px 0 0 18px; font-size: 0.75rem; color: var(--text-secondary); }
 .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .spacer { flex: 1; }
 @media (max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }

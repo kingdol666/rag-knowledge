@@ -189,19 +189,36 @@ SCORE_FLOOR = Param("score_threshold", "float", 0.0,
 # ─────────────────────────────────────────────────────────────────────────────
 def run_bm25(query: str, params: dict[str, Any], store: DocumentStore,
              domains: list[str] | None = None) -> list[Hit]:
-    """BM25 Okapi sparse retrieval (``rank_bm25``)."""
+    """BM25 Okapi sparse retrieval (``rank_bm25``).
+
+    Okapi's Robertson IDF is ``log((N - n + 0.5) / (n + 0.5))``, which is exactly
+    **zero** when a term occurs in half the corpus — and negative beyond that.
+    On a small corpus that is not a corner case: with two documents, every term
+    that appears in one of them scores zero, so a naive ``score > 0`` filter
+    returns nothing at all. A user who uploads a single file would get no
+    results from BM25.
+
+    So when nothing scores above zero we still return the ranked list, with the
+    honest score of 0 and a ``lexical_match: false`` marker, rather than an empty
+    result. The ranking is what BM25 computed; nothing is invented.
+    """
     scored = store.bm25_scores(query, k1=params["k1"], b=params["b"], domains=domains)
-    hits: list[Hit] = []
-    for chunk, score in scored:
-        if len(hits) >= params["top_k"]:
-            break
-        if score <= 0:
-            break  # sorted, so every later chunk also scores 0
-        hits.append(Hit(len(hits) + 1, chunk.id, chunk.doc_id, chunk.title, chunk.domain,
-                        chunk.content, score,
-                        "BM25 [REAL-CODE: rank_bm25]",
-                        {"k1": params["k1"], "b": params["b"]}))
-    return hits
+    if not scored:
+        return []
+
+    top_k = params["top_k"]
+    positive = [(chunk, score) for chunk, score in scored if score > 0][:top_k]
+    if positive:
+        chosen, matched = positive, True
+    else:
+        chosen, matched = scored[:top_k], False
+
+    return [
+        Hit(index + 1, chunk.id, chunk.doc_id, chunk.title, chunk.domain,
+            chunk.content, score, "BM25 [REAL-CODE: rank_bm25]",
+            {"k1": params["k1"], "b": params["b"], "lexical_match": matched})
+        for index, (chunk, score) in enumerate(chosen)
+    ]
 
 
 def run_dense(query: str, params: dict[str, Any], store: DocumentStore,
