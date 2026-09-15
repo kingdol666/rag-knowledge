@@ -215,14 +215,37 @@ async def run_engine(harness: str, prompt: str, cfg: dict, run_label: str,
     spec = hspec.get_spec(harness)
     timeout = int(cfg.get("timeout_sec", spec.timeout_default))
 
+    # 引擎级失败签名 → 机器可读 error_code。顺序即优先级：具体成因先判，
+    # 泛化的认证关键词最后兜底（否则会把预算耗尽误判成认证问题）。
+    # 注意：detail 常常是整段 JSON 事件流，里面含有 cache_read_input_tokens、
+    # maxOutputTokens 之类的**字段名**，用裸关键词扫会把正常输出误判成
+    # "auth" —— 所以认证扫描用词边界匹配，并跳过这些结构性字段名。
+    _BUDGET_MARKERS = (
+        "budget_exhausted", "error_max_budget_usd", "max_budget_usd",
+        "budget exceeded", "exceeded the maximum budget",
+    )
+    _STRUCTURAL_FALSE_POSITIVES = (
+        "cache_read_input_tokens", "cache_creation_input_tokens",
+        "input_tokens", "output_tokens", "maxoutputtokens", "thinkingtokens",
+        "token_budget", "tokenusage", "total_tokens",
+    )
     _AUTH_KEYWORDS = ("auth", "api key", "apikey", "api_key", "login", "unauthorized",
                       "token", "credential", "sign in", "not found.*key", "401", "forbidden")
+
+    def _detail_is_auth_related(text: str) -> bool:
+        low = (text or "").lower()
+        if any(m in low for m in _STRUCTURAL_FALSE_POSITIVES):
+            # 去掉结构性字段名后再扫，避免 token 计数误判
+            for m in _STRUCTURAL_FALSE_POSITIVES:
+                low = low.replace(m, " ")
+        return any(k in low for k in _AUTH_KEYWORDS)
 
     def _fail(error: str, detail: str = "", exit_code: int | None = None,
               code: str | None = None, hint: str = "") -> dict:
         # 错误即事件：失败附带机器可读 error_code，凭据类失败附可读 hint
         error_code = code
         if error_code is None:
+            detail_low = (detail or "").lower()
             if error == "timeout":
                 error_code = "HARNESS_TIMEOUT"
             elif error.startswith("executable not found"):
@@ -233,10 +256,11 @@ async def run_engine(harness: str, prompt: str, cfg: dict, run_label: str,
                 error_code = "HARNESS_SPAWN_FAILED"
             elif error == "parse_failed" or error.startswith("acp_parse"):
                 error_code = "HARNESS_NO_OUTPUT"
+            elif any(m in detail_low for m in _BUDGET_MARKERS):
+                error_code = "HARNESS_BUDGET_EXHAUSTED"
             elif error.startswith("exit_"):
                 error_code = "HARNESS_EXIT_NONZERO"
-                detail_full = detail or ""
-                if any(k in detail_full.lower() for k in _AUTH_KEYWORDS):
+                if _detail_is_auth_related(detail):
                     error_code = "HARNESS_AUTH_OR_CONFIG"
             else:
                 error_code = "HARNESS_ENGINE_FAILED"
@@ -244,6 +268,10 @@ async def run_engine(harness: str, prompt: str, cfg: dict, run_label: str,
             hint = ("Engine reported an authentication/configuration problem. "
                     "Set its required env vars (GET /api/v1/meditation/harnesses → "
                     "requires_env) or complete the engine's own login, then retry.")
+        if not hint and error_code == "HARNESS_BUDGET_EXHAUSTED":
+            hint = ("Engine hit its per-job cost cap before finishing. Raise "
+                    "meditation/harness max_budget_usd for this KB (or lower the "
+                    "job size) and retry — the work was not completed.")
         return {"success": False, "text": "", "parsed": None, "usage": None,
                 "exit_code": exit_code, "error": error, "error_code": error_code,
                 "hint": hint, "detail": (detail or "")[:2000],
@@ -390,12 +418,54 @@ async def run_engine(harness: str, prompt: str, cfg: dict, run_label: str,
         detail = engine_tail({"err_path": err_log, "out_path": out_log})
         return _fail("parse_failed" if exit_code == 0 else f"exit_{exit_code}",
                      detail, exit_code=exit_code)
+    # 有些引擎会以退出码 0 + 一行错误收场（goose 是 exit 1；实测 claude 走
+    # 自定义网关时是 exit 0 + "API Error: 400 ..."）。解析器会把这一行当正文，
+    # 上层于是看到 success=True 的假成功 —— 两种都要报失败（错误即事件）。
+    if _looks_like_engine_error(text):
+        return _fail(f"exit_{exit_code}" if exit_code else "engine_error",
+                     f"{text}\n\n{engine_tail({'err_path': err_log, 'out_path': out_log})}",
+                     exit_code=exit_code)
 
     return {"success": True, "text": text, "parsed": None, "usage": usage,
             "exit_code": exit_code, "error": None, "error_code": None, "hint": "",
             "detail": detail_note,
             "out_path": out_log, "err_path": err_log,
             "elapsed": round(time.time() - start, 2)}
+
+
+# 引擎以「一行错误」收场时的识别特征。
+# 前缀命中是**强信号**：模型回复不会以这些标记开头，因此不做长度限制。
+_ENGINE_ERROR_PREFIXES = (
+    "error:", "error ", "[error]", "fatal:", "exception:", "api error:",
+    "failed to authenticate", "authentication failed", "unauthorized",
+    "not configured", "command not found", "no such file",
+)
+# 子串命中是弱信号（正常内容也可能讨论限流/配额），只对短输出生效。
+_ENGINE_ERROR_PHRASES = (
+    "no provider configured", "provider not configured", "run 'goose configure'",
+    "api key is not set", "api key not set", "please configure",
+    "authentication failed", "invalid api key", "permission denied",
+    "key not allowed to access model", "invalid model name",
+    "insufficient_quota", "context_length_exceeded",
+)
+
+
+def _looks_like_engine_error(text: str) -> bool:
+    """判断输出是否只是一条引擎级错误消息（而不是真的答案）。
+
+    前缀命中 → 直接判错（模型回答不会以 "API Error:" / "Failed to
+    authenticate." 开头）；子串命中 → 仅当输出很短时才判错，避免把
+    「讲 API 限流的正常答案」误伤成失败。
+    """
+    body = text.strip()
+    if not body:
+        return False
+    low = body.lower()
+    if low.startswith(_ENGINE_ERROR_PREFIXES):
+        return True
+    if len(body) > 600:
+        return False
+    return any(p in low for p in _ENGINE_ERROR_PHRASES)
 
 
 def _cleanup_prompt_file(prompt_file: Path | None) -> None:

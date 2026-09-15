@@ -115,7 +115,11 @@ def _parse_omp(content: str) -> tuple[str, Optional[dict]]:
 
 
 def _parse_claude(content: str) -> tuple[str, Optional[dict]]:
-    """claude -p --output-format json：单个 JSON 对象，result 字段为最终消息。"""
+    """claude -p --output-format json：单个 JSON 对象，result 字段为最终消息。
+
+    注意：传了 --json-schema 时结构化结果落在 `structured_output`（官方文档），
+    `result` 是否仍填充为 UNKNOWN → 两者都读。
+    """
     objs = [o for o in _iter_json_lines(content) if isinstance(o, dict)]
     # 兼容多行拼接的单个 JSON：整体尝试一次
     if not objs:
@@ -127,8 +131,11 @@ def _parse_claude(content: str) -> tuple[str, Optional[dict]]:
     for obj in reversed(objs):
         if obj.get("type") == "error":
             continue
-        result = obj.get("result")
         usage = obj.get("usage") or None
+        structured = obj.get("structured_output")
+        if isinstance(structured, (dict, list)):
+            return json.dumps(structured, ensure_ascii=False), usage
+        result = obj.get("result")
         if isinstance(result, str) and result.strip():
             return result.strip(), usage
         if isinstance(result, (dict, list)):
@@ -162,42 +169,102 @@ def _parse_codex(content: str) -> tuple[str, Optional[dict]]:
 
 
 def _parse_gemini_json(content: str) -> tuple[str, Optional[dict]]:
-    """gemini/qwen --output-format json：单对象 {response, stats}；兼容 stream-json 帧。"""
+    """gemini --output-format json：单对象 {response, stats, error?}。
+
+    `stats` 是延迟/token 指标，不是答案 —— 早期版本把它当文本兜底，
+    失败时会返回一串指标 JSON 冒充回复。改为：response → error → stream-json 帧。
+    """
     try:
         obj = json.loads(content)
         if isinstance(obj, dict):
             resp = obj.get("response")
             if isinstance(resp, str) and resp.strip():
                 return resp.strip(), obj.get("stats")
-            if isinstance(resp, (dict, list)):
+            if isinstance(resp, (dict, list)) and resp:
                 return json.dumps(resp, ensure_ascii=False), obj.get("stats")
+            err = obj.get("error")
+            if err:
+                detail = err.get("message") if isinstance(err, dict) else str(err)
+                return f"[gemini error] {detail}", obj.get("stats")
     except json.JSONDecodeError:
         pass
-    # stream-json 帧（init/message/result）
+    # stream-json 帧（init/message/result/error）
     text = ""
+    err = ""
     for ev in _iter_json_lines(content):
         if not isinstance(ev, dict):
             continue
-        if ev.get("type") == "result" and isinstance(ev.get("response"), str):
+        if ev.get("type") == "error":
+            e = ev.get("error") or ev.get("message")
+            err = e if isinstance(e, str) else json.dumps(e, ensure_ascii=False)
+        elif ev.get("type") == "result" and isinstance(ev.get("response"), str):
             text = ev["response"]
         elif ev.get("type") == "message":
             c = ev.get("content")
             if isinstance(c, str) and c.strip():
                 text = c
+    if not text and err:
+        text = f"[gemini error] {err}"
     return text.strip(), None
 
 
 def _parse_copilot(content: str) -> tuple[str, Optional[dict]]:
-    """copilot -p --output-format json：尽力结构化（response/text/result 字段），纯文本兜底。"""
+    """copilot -p --output-format json.
+
+    官方文档只说 `json` 是 JSONL（每行一个对象），逐行 schema 未公开。
+    **实测形状（1.0.83）**：事件把负载放在 `data` 里，而不是顶层 ——
+      {"type":"assistant.message","data":{"content":"2","phase":"final_answer"}}
+      {"type":"assistant.message_delta","data":{"deltaContent":"2"}}
+      {"type":"result","usage":{...}}
+    早期实现只在顶层找 response/text/content，因此永远取不到答案，最终把
+    整段事件流当纯文本返回（或直接 parse_failed）。现在两条路径都认。
+    """
+    text = ""
+    deltas: list[str] = []
+    usage: Optional[dict] = None
+    for ev in _iter_json_lines(content):
+        if not isinstance(ev, dict):
+            continue
+        etype = ev.get("type", "")
+        data = ev.get("data") if isinstance(ev.get("data"), dict) else {}
+
+        if etype == "assistant.message":
+            # 终稿优先；final_answer 阶段之外的中间消息不覆盖已有终稿
+            c = data.get("content")
+            c = c if isinstance(c, str) else _blocks_text(c)
+            if isinstance(c, str) and c.strip():
+                if data.get("phase") == "final_answer" or not text:
+                    text = c
+        elif etype == "assistant.message_delta":
+            d = data.get("deltaContent")
+            if isinstance(d, str) and d:
+                deltas.append(d)
+        elif etype == "result":
+            usage = ev.get("usage") or data.get("usage") or usage
+        # 未知事件忽略（schema 漂移防护）
+
+    if not text and deltas:
+        text = "".join(deltas)
+
+    if text.strip():
+        return text.strip(), usage
+
+    # 兼容其它形状：顶层候选键（倒序，取最后一条有效文本）
     for obj in reversed([o for o in _iter_json_lines(content) if isinstance(o, dict)]):
-        for key in ("response", "text", "result", "message"):
+        for key in ("response", "text", "result", "message", "content", "delta"):
             v = obj.get(key)
             if isinstance(v, str) and v.strip():
-                return v.strip(), None
+                return v.strip(), obj.get("usage") or usage
             t = _blocks_text(v)
             if t.strip():
-                return t.strip(), None
-    return _plain_text(content), None
+                return t.strip(), obj.get("usage") or usage
+
+    # 纯文本兜底：只保留非 JSON 行（避免把事件流原文当答案）
+    plain = "\n".join(
+        ln for ln in content.splitlines()
+        if ln.strip() and not ln.strip().startswith(("{", "[", "}"))
+    ).strip()
+    return plain, usage
 
 
 def _parse_cursor(content: str) -> tuple[str, Optional[dict]]:
@@ -214,13 +281,48 @@ def _parse_cursor(content: str) -> tuple[str, Optional[dict]]:
 
 
 def _parse_goose(content: str) -> tuple[str, Optional[dict]]:
-    """goose --output-format stream-json：JSONL 事件，assistant message 聚合；纯文本兜底。"""
+    """goose --output-format stream-json.
+
+    官方事件面只有四种 snake_case type：message / notification / error / complete
+    （无 turn.completed、无 usage 事件）。因此：
+      - 回复文本 ← type=="message" 的 message.content（assistant 角色）
+      - token 统计 ← 终态 type=="complete" 的顶层 *_tokens / cost_usd
+      - 失败信号 ← type=="error"（此时不会有 complete 跟随）
+    后端也支持 --output-format json（单个对象 {messages, metadata}）→ 一并兼容。
+    纯文本兜底仅用于非 JSON 输出。
+    """
     text = ""
-    usage = None
+    usage: Optional[dict] = None
+    saw_json = False
+    err = ""
     for ev in _iter_json_lines(content):
         if not isinstance(ev, dict):
             continue
+        saw_json = True
         etype = str(ev.get("type") or ev.get("event") or "")
+        if etype == "error":
+            e = ev.get("error")
+            err = e if isinstance(e, str) else json.dumps(e, ensure_ascii=False)
+            continue
+        if etype == "complete":
+            usage = {k: v for k, v in ev.items()
+                     if k.endswith("_tokens") or k in ("cost_usd", "total_cost_usd", "status")}
+            continue
+        # --output-format json: {"messages":[...], "metadata":{...}}
+        if etype == "" and isinstance(ev.get("messages"), list):
+            for m in reversed(ev["messages"]):
+                if isinstance(m, dict) and m.get("role") == "assistant":
+                    t = _blocks_text(m.get("content"))
+                    if t.strip():
+                        text = t
+                        break
+            meta = ev.get("metadata") or {}
+            if isinstance(meta, dict) and meta:
+                usage = meta
+            continue
+        if etype not in ("message", "notification"):
+            # 已知事件之外一律不猜（schema 漂移防护）
+            continue
         msg = ev.get("message") if isinstance(ev.get("message"), dict) else None
         role = (msg or {}).get("role") or ev.get("role")
         if role == "assistant":
@@ -228,39 +330,83 @@ def _parse_goose(content: str) -> tuple[str, Optional[dict]]:
             t = _blocks_text(blocks)
             if t.strip():
                 text = t
-        if etype in ("turn.completed", "usage") and isinstance(ev.get("usage"), dict):
-            usage = ev["usage"]
-    if not text:
-        # goose 某些版本 stream-json 里最终回复是 {"type":"text","text":...} 形态
-        for ev in _iter_json_lines(content):
-            if isinstance(ev, dict) and ev.get("type") == "text" and isinstance(ev.get("text"), str):
-                if ev["text"].strip():
-                    text = ev["text"]
+    if not text and not saw_json:
+        text = _plain_text(content)
+    if not text and err:
+        text = f"[goose error] {err}"
     return text.strip(), usage
 
 
 def _parse_pi(content: str) -> tuple[str, Optional[dict]]:
-    """pi --mode json：JSONL（message_end 携带完整 assistant 消息；message_update 增量）。"""
+    """pi --mode json：JSONL。
+
+    首行是会话头 {"type":"session",...}；终稿在 message_end.message（assistant）。
+    JSON 模式下 message_update 是 **仅增量** 事件 —— 没有 message 字段，
+    增量位于 assistantMessageEvent.delta（文档 docs/json.md）。早期兜底读
+    ev["delta"]/ev["text"] 永远取不到值 → 现在两种形状都认。
+    """
     text = ""
     chunks: list[str] = []
+    usage = None
     for ev in _iter_json_lines(content):
         if not isinstance(ev, dict):
             continue
         etype = ev.get("type", "")
+        if etype == "session":
+            continue
         if etype == "message_end":
             msg = ev.get("message") or {}
             if isinstance(msg, dict) and msg.get("role") == "assistant":
                 t = _blocks_text(msg.get("content"))
                 if t.strip():
                     text = t
+                if isinstance(msg.get("usage"), dict):
+                    usage = msg["usage"]
         elif etype == "message_update":
-            delta = ev.get("delta") or ev.get("text") or ""
-            if isinstance(delta, str):
+            sub = ev.get("assistantMessageEvent") or {}
+            delta = sub.get("delta") if isinstance(sub, dict) else None
+            if not isinstance(delta, str):
+                delta = ev.get("delta") or ev.get("text") or ""
+            if isinstance(delta, str) and delta:
                 chunks.append(delta)
+            if isinstance(ev.get("usage"), dict):
+                usage = ev["usage"]
     if text:
-        return text.strip(), None
-    joined = "".join(chunks).strip()
-    return joined, None
+        return text.strip(), usage
+    return "".join(chunks).strip(), usage
+
+
+def _parse_qwen(content: str) -> tuple[str, Optional[dict]]:
+    """qwen 无 --output-format 时是纯文本；0.23+ 支持 --output-format json。
+
+    新版 `json` = 单个 JSON **数组**，最后一个元素是
+    {"type":"result","subtype":"success","result":"<最终文本>"}；
+    `stream-json` = JSONL。旧版（本机 0.0.6）没有该旗标 → 纯文本。
+    探针为准：三种形状都容忍。
+    """
+    stripped = content.strip()
+    if stripped.startswith("[") or stripped.startswith("{"):
+        try:
+            obj = json.loads(stripped)
+        except json.JSONDecodeError:
+            obj = None
+        if isinstance(obj, list):
+            for ev in reversed(obj):
+                if isinstance(ev, dict):
+                    r = ev.get("result") or ev.get("response")
+                    if isinstance(r, str) and r.strip():
+                        return r.strip(), ev.get("stats") or ev.get("usage")
+            return "", None
+        if isinstance(obj, dict):
+            r = obj.get("result") or obj.get("response")
+            if isinstance(r, str) and r.strip():
+                return r.strip(), obj.get("stats") or obj.get("usage")
+    for ev in reversed([o for o in _iter_json_lines(content) if isinstance(o, dict)]):
+        if ev.get("type") in ("result", "message"):
+            r = ev.get("result") or ev.get("response") or ev.get("content")
+            if isinstance(r, str) and r.strip():
+                return r.strip(), ev.get("stats") or ev.get("usage")
+    return _plain_text(content), None
 
 
 def _plain_text(content: str) -> str:
@@ -294,12 +440,24 @@ _spec("omp", delivery="argfile", build_args=_omp_args, parse_output=_parse_omp)
 # claude: stdin 投递 + --output-format json（既有行为全量保留）
 def _claude_args(cfg: dict) -> list[str]:
     from app.utils.paths import PROJECT_ROOT
-    args = ["-p", "--output-format", "json",
-            "--model", cfg.get("model") or "claude-sonnet-4-20250514",
-            "--max-budget-usd", str(cfg.get("max_budget_usd", 0.05)),
-            "--dangerously-skip-permissions",
-            "--no-session-persistence",
-            "--bare"]
+    args = ["-p", "--output-format", "json"]
+    # 只在调用方显式选了模型时才传 --model：内置的默认值会随 Anthropic 的
+    # 下线节奏过期（旧默认 claude-sonnet-4-20250514 已进入 EOL 通告），
+    # 不传则用引擎自身当前配置的默认模型，永不臆造失效模型名。
+    if cfg.get("model"):
+        args += ["--model", str(cfg["model"])]
+    # 兜底上限（调用方未指定时）。0.05 对平台自身的作业太紧：本平台会注入
+    # KB/persona 上下文，一次真实合成在 opus 档实测已花 ~0.17 USD，于是
+    # 每个作业都以 terminal_reason=budget_exhausted 收场（虽然是"诚实的
+    # 失败"，但对用户毫无用处）。0.50 只是**上限**而非消费，正常作业远低于它。
+    args += ["--max-budget-usd", str(cfg.get("max_budget_usd") or 0.50),
+             "--dangerously-skip-permissions",
+             "--no-session-persistence"]
+    # `--bare` 明确要求 ANTHROPIC_API_KEY，会绕过本地 OAuth 登录态。
+    # 只有真的提供了 key 时才走 bare 档，否则保留用户的订阅登录（否则
+    # 已安装且已登录的 Claude Code 会被本平台判为不可用）。
+    if os.environ.get("ANTHROPIC_API_KEY", "").strip():
+        args.append("--bare")
     if cfg.get("with_workspace_tools"):
         args += ["--mcp-config", str(Path(PROJECT_ROOT.parent) / ".mcp.json"),
                  "--add-dir", str(PROJECT_ROOT.parent)]
@@ -352,20 +510,26 @@ _spec("gemini", delivery="arg", build_args=_gemini_args, parse_output=_parse_gem
       prompt_limit_chars=7500)
 
 
-# qwen: 老版 gemini fork —— 无 --output-format；stdin 是一级输入通道
-# （-p 语义为"追加到 stdin 输入"，管道 stdin + 无 -p 即非交互）→ 纯文本 stdout
+# qwen: stdin 是一级输入通道（官方 headless 文档：echo "..." | qwen）。
+# 注意：`-p <text>` 在新版本是 **取值** 的（且 stdin 会前置拼接），旧版 0.0.6 行为不同
+# —— 为兼容已装版本与本机探针结果，仍走 stdin；解析器容忍纯文本 / json 数组 /
+# stream-json 三种形状（见 _parse_qwen）。
 def _qwen_args(cfg: dict) -> list[str]:
     if cfg.get("model"):
         return ["-m", str(cfg["model"])]
     return []
 _spec("qwen", delivery="stdin", build_args=_qwen_args,
-      parse_output=lambda c: (_plain_text(c), None))
+      parse_output=_parse_qwen)
 
 
 # copilot: -p <text> 必须紧跟 prompt 值（本机实测 -p 空置时吞掉后续旗标报
-# "prompt not quoted"）；--output-format json 可用；npm shim → 7.5K 护栏
+# "prompt not quoted"）；--output-format json 是 **JSONL**（每行一个对象，schema 未公开）；
+# 工具调用需显式授权旗标，否则 headless 下被 gate 住 → 与其它引擎的保守档对齐，
+# 默认只读（不传 --allow-all-tools），由调用方按需开启。
 def _copilot_args(cfg: dict) -> list[str]:
     args = ["--output-format", "json", "--no-ask-user"]
+    if cfg.get("allow_all_tools"):
+        args = ["--allow-all-tools"] + args
     if cfg.get("model"):
         args += ["--model", str(cfg["model"])]
     args += ["-p"]
@@ -375,10 +539,11 @@ _spec("copilot", delivery="arg", build_args=_copilot_args, parse_output=_parse_c
 
 
 # cursor: cursor-agent -p --output-format json（native exe，32K 上限内 arg 投递）
+# 官方参数表只列 `--model`（无 `-m` 短名）→ 用长名，避免新版本拒收。
 def _cursor_args(cfg: dict) -> list[str]:
     args = ["-p", "--output-format", "json"]
     if cfg.get("model"):
-        args += ["-m", str(cfg["model"])]
+        args += ["--model", str(cfg["model"])]
     return args
 _spec("cursor", delivery="arg", build_args=_cursor_args, parse_output=_parse_cursor,
       prompt_limit_chars=30000)
@@ -492,13 +657,39 @@ async def run_acp_oneshot(harness_id: str, cfg: dict, prompt: str,
         env=env,
     )
 
-    state = {"text": "", "stop_reason": "", "unknown_events": 0}
+    state = {"text": "", "stop_reason": "", "unknown_events": 0,
+             "permissions_denied": 0, "protocol_version": None}
     pending_requests: dict[Any, asyncio.Future] = {}
     prompt_req_holder: dict[str, Any] = {"id": None}
     prompt_done: asyncio.Future = asyncio.get_event_loop().create_future()
+    cancelled = {"flag": False}
 
     def _send(obj: dict) -> None:
         proc.stdin.write((json.dumps(obj, ensure_ascii=False) + "\n").encode("utf-8"))
+
+    def _deny_permission(req_id: Any, params: dict) -> None:
+        """ACP 拒绝语义：必须从 agent 给出的 options 里挑一个 reject_* 选项。
+
+        规范（prompt-turn / tool-calls）：`cancelled` 是「本回合被取消」的专属应答；
+        普通拒绝应回 `{"outcome":{"outcome":"selected","optionId":"<reject option>"}}`。
+        之前一律回 cancelled —— 合法但语义错误：合规 agent 会认为回合被取消而中止，
+        且 reject_always 语义被静默丢弃。cancelled 仅在我们真的发过 session/cancel 时使用。
+        """
+        options = params.get("options") or []
+        chosen = None
+        for kind in ("reject_once", "reject_always"):
+            chosen = next((o for o in options
+                           if isinstance(o, dict) and o.get("kind") == kind), None)
+            if chosen:
+                break
+        if chosen and chosen.get("optionId") and not cancelled["flag"]:
+            _send({"jsonrpc": "2.0", "id": req_id,
+                   "result": {"outcome": {"outcome": "selected",
+                                          "optionId": chosen["optionId"]}}})
+        else:
+            _send({"jsonrpc": "2.0", "id": req_id,
+                   "result": {"outcome": {"outcome": "cancelled"}}})
+        state["permissions_denied"] += 1
 
     async def _read_loop() -> None:
         while True:
@@ -515,10 +706,22 @@ async def run_acp_oneshot(harness_id: str, cfg: dict, prompt: str,
                 continue
             if not isinstance(msg, dict):
                 continue
-            # 服务端请求 → fail-closed 应答（超时/取消一律拒绝语义）
+            # 服务端请求 → 按 ACP 语义应答
             if "id" in msg and "method" in msg:
-                _send({"jsonrpc": "2.0", "id": msg["id"],
-                       "result": {"outcome": {"outcome": "cancelled"}}})
+                method = msg.get("method", "")
+                params = msg.get("params") or {}
+                if method == "session/request_permission":
+                    _deny_permission(msg["id"], params)
+                elif method == "session/update":
+                    # agent 把 update 当请求发（非标准）—— 不应答，避免污染协议流
+                    state["unknown_events"] += 1
+                else:
+                    # 未实现的服务端方法：回标准 JSON-RPC method-not-found，
+                    # 而不是复用 permission 的应答形状。
+                    _send({"jsonrpc": "2.0", "id": msg["id"],
+                           "error": {"code": -32601,
+                                     "message": f"client does not implement {method}"}})
+                    state["unknown_events"] += 1
                 continue
             # 响应
             if "id" in msg and ("result" in msg or "error" in msg):
@@ -537,11 +740,22 @@ async def run_acp_oneshot(harness_id: str, cfg: dict, prompt: str,
             params = msg.get("params") or {}
             if method == "session/update":
                 upd = params.get("update") or {}
-                if upd.get("sessionUpdate") == "agent_message_text":
+                kind = upd.get("sessionUpdate")
+                # ACP v1 标准判别值是 agent_message_chunk（v2 草案为 agent_message）。
+                # 历史实现误用 agent_message_text —— 该值在规范与各 SDK schema 中
+                # 均不存在，导致真实 agent 的回复永远聚合为空。三种都接受以兼容。
+                if kind in ("agent_message_chunk", "agent_message", "agent_message_text"):
                     c = upd.get("content") or {}
                     t = c.get("text") if isinstance(c, dict) else ""
+                    if not t and isinstance(upd.get("text"), str):
+                        t = upd["text"]
                     if isinstance(t, str):
                         state["text"] += t
+                elif kind == "usage_update":
+                    u = upd.get("usage")
+                    if isinstance(u, dict):
+                        state["usage"] = u
+                # 其他 update（agent_thought_chunk / tool_call / plan / …）忽略
             else:
                 state["unknown_events"] += 1
 
@@ -555,11 +769,15 @@ async def run_acp_oneshot(harness_id: str, cfg: dict, prompt: str,
     timeout = int(cfg.get("timeout_sec", 600))
     next_id = 1
     try:
-        await asyncio.wait_for(_request("initialize", {
+        init_res = await asyncio.wait_for(_request("initialize", {
             "protocolVersion": 1,
             "clientCapabilities": {},
+            "clientInfo": {"name": "rag-knowledge", "title": "RAG Knowledge Platform",
+                           "version": "1.0"},
         }, next_id, 30), timeout=30)
         next_id += 1
+        if isinstance(init_res, dict):
+            state["protocol_version"] = init_res.get("protocolVersion")
 
         sess = await asyncio.wait_for(_request("session/new", {
             "cwd": str(PROJECT_ROOT.parent),

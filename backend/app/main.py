@@ -242,3 +242,24 @@ async def health_root():
     noisy 404 (the real health endpoint is ``/api/v1/health``). Hidden from
     /docs to avoid clutter — it's just an alias."""
     return {"status": "healthy"}
+
+
+# ── Publish a contract that matches what the middleware actually enforces ──
+# Without this the schema declares no auth at all: /docs shows no Authorize
+# button and generated SDKs cannot attach the bearer token.
+from app.api.openapi import install_openapi  # noqa: E402
+
+install_openapi(
+    app,
+    title="RAG Knowledge Backend",
+    version=get_version(),
+    description=(
+        "Backend API for the RAG Knowledge Platform.\n\n"
+        "Covers document parsing (MinerU), KB content retrieval (vector + "
+        "BM25→vector two-stage), the Neo4j knowledge graph, the experience "
+        "lifecycle, scheduled agent jobs (meditation) over a multi-harness "
+        "engine registry, and SOUL personas.\n\n"
+        "**Authentication** — every `/api/*` route requires a bearer token; "
+        "health and the auth-bootstrap endpoints are public."
+    ),
+)

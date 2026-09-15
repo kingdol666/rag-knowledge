@@ -90,7 +90,7 @@ HARNESS_REGISTRY: dict[str, dict[str, Any]] = {
     "omp": {
         "label": "oh-my-pi (OMP)",
         "description": "默认推荐引擎。`omp -p --mode=json @file` 单回合无头调用。",
-        "homepage": "https://github.com/acidsugarx/oh-my-pi",
+        "homepage": "https://github.com/can1357/oh-my-pi",
         "process_model": "oneshot",
         "capabilities": _caps(context_stats=True),
         "requires_env": [],
@@ -120,8 +120,16 @@ HARNESS_REGISTRY: dict[str, dict[str, Any]] = {
         "homepage": "https://github.com/deepseek-ai/DeepSeek-Harness",
         "process_model": "oneshot",
         "capabilities": _caps(),
-        "requires_env": ["DEEPSEEK_API_KEY"],
-        "notes": "ACP 驱动器内嵌审批请求 fail-closed 拒绝（单回合保守档）；steer 恒 deferred。",
+        # 2026-09-13 修正：官方 dsh-acp README 明确 authenticate 为
+        # "Immediate success; the server requires no authentication." ——
+        # 凭据属于**模型 provider 路由**（ACP profile 里的 provider/model），
+        # 不是 DEEPSEEK_API_KEY 环境变量。原先把它列为 requires_env 会让
+        # 未设该变量的机器在 POST /meditation/run 时被 409 拦下，
+        # 尽管 dsh 实际可用（本机实测能正常返回结果）。
+        "requires_env": [],
+        "notes": "ACP 驱动器内嵌审批请求 fail-closed 拒绝（单回合保守档）；steer 恒 deferred。"
+                 "模型/provider 由 ACP profile 配置（非环境变量）。"
+                 "另有更简单的官方一次性入口 `dsh --profile headless \"<task>\"` 可供后续评估。",
     },
     "claude": {
         "label": "Claude Code",
@@ -130,7 +138,10 @@ HARNESS_REGISTRY: dict[str, dict[str, Any]] = {
         "process_model": "oneshot",
         "capabilities": _caps(context_stats=True),
         "requires_env": ["ANTHROPIC_API_KEY"],
-        "notes": "--dangerously-skip-permissions 仅限本平台合成作业；探测要求 API key 就绪。",
+        "notes": "--dangerously-skip-permissions 仅限本平台合成作业。"
+                 "凭据面：ANTHROPIC_API_KEY **或** 本地 `claude` 登录态（OAuth 订阅）任一即可 —— "
+                 "`--bare` 只在提供了 key 时才传，否则保留订阅登录。"
+                 "未指定模型时用引擎自身默认（硬编码模型名会随官方下线过期）。",
     },
     "gemini": {
         "label": "Gemini CLI",
@@ -139,7 +150,12 @@ HARNESS_REGISTRY: dict[str, dict[str, Any]] = {
         "process_model": "oneshot",
         "capabilities": _caps(context_stats=True),
         "requires_env": ["GEMINI_API_KEY"],
-        "notes": "本机实测 -p 必带 prompt 参数（stdin 管道不被接受）；npm shim 安装时 prompt 上限 ~7.5K，超长显式报错。鉴权锁定 Google 面（API key/OAuth）。",
+        "notes": "实测 -p **必须自带取值**（`echo x | gemini -p` 报 not enough arguments）；"
+                 "stdin 管道是官方另一条 headless 入口，但不能填充 -p。"
+                 "7.5K 是**本集成**对 .cmd 投递的 cmd.exe 护栏（非官方限制），超长显式报错。"
+                 "鉴权锁 Google 面（API key / OAuth / Vertex）。"
+                 "⚠️ 官方公告：2026-06-18 起免费层与 Google One 用户的 Gemini CLI 已由 "
+                 "Antigravity CLI（`agy -p … --output-format json`，字段同为 response）接替。",
     },
     "copilot": {
         "label": "GitHub Copilot CLI",
@@ -148,7 +164,10 @@ HARNESS_REGISTRY: dict[str, dict[str, Any]] = {
         "process_model": "oneshot",
         "capabilities": _caps(),
         "requires_env": ["COPILOT_GITHUB_TOKEN", "GH_TOKEN", "GITHUB_TOKEN"],
-        "notes": "token 链 COPILOT_GITHUB_TOKEN > GH_TOKEN > GITHUB_TOKEN；npm shim 安装时 prompt 上限 ~7.5K。",
+        "notes": "token 链 COPILOT_GITHUB_TOKEN > GH_TOKEN > GITHUB_TOKEN（官方文档明示此优先级）；"
+                 "也支持 `copilot login` OAuth，但 classic ghp_ PAT 不可用（需 fine-grained v2 + Copilot Requests 权限）。"
+                 "`--output-format json` 输出是 **JSONL 逐行对象**，终稿在 `assistant.message.data.content`，"
+                 "usage 在 `result.usage`。",
     },
     "cursor": {
         "label": "Cursor CLI",
@@ -157,7 +176,11 @@ HARNESS_REGISTRY: dict[str, dict[str, Any]] = {
         "process_model": "oneshot",
         "capabilities": _caps(context_stats=True),
         "requires_env": ["CURSOR_API_KEY"],
-        "notes": "默认不带 --force（文件变更只提案不落地，保守档）。",
+        "notes": "官方文档以 `agent` 为主名，`cursor-agent` 是安装脚本同时创建的 **legacy 别名**"
+                 "（Windows 上 `agent` 易冲突，故保留别名）；另有隐藏的 `agent acp`（ACP server）。"
+                 "模型只用长名 `--model`（官方参数表无 `-m`）。"
+                 "默认不带 --force（文件变更只提案不落地，保守档）。"
+                 "凭据：CURSOR_API_KEY / --api-key / `agent login` OAuth 任一。",
     },
     "crush": {
         "label": "Charm Crush",
@@ -166,16 +189,24 @@ HARNESS_REGISTRY: dict[str, dict[str, Any]] = {
         "process_model": "oneshot",
         "capabilities": _caps(),
         "requires_env": [],
-        "notes": "npm shim 可能损坏，可用命令覆盖链指向包内真实 bin；无程序化审批。",
+        "notes": "官方 flag 集（quiet/verbose/model/small-model/reasoning-effort/session/continue）"
+                 "确认无 JSON 输出 → 纯文本 stdout，日志/spinner 走 stderr。"
+                 "prompt 可走 argv 或管道 stdin；无程序化审批。"
+                 "（历史备注「npm shim 可能损坏」的真实成因多为 `ignore-scripts=true` "
+                 "阻断了 postinstall 二进制下载，可用命令覆盖链指向包内真实 bin。）",
     },
     "goose": {
         "label": "Block Goose",
         "description": "`goose run --output-format stream-json -t <prompt>` 单回合。",
-        "homepage": "https://blockgoose.io",
+        # 2026-09-13：goose 已迁至 Agentic AI Foundation，站点改为 goose-docs.ai。
+        "homepage": "https://github.com/aaif-goose/goose",
         "process_model": "oneshot",
         "capabilities": _caps(context_stats=True),
         "requires_env": ["OPENAI_API_KEY"],
-        "notes": "GOOSE_MODE=auto 无头姿势；provider/model 经 GOOSE_PROVIDER/GOOSE_MODEL env。",
+        "notes": "`-t <prompt>` 投递（裸位置参数会被拒，exit 2）；"
+                 "GOOSE_MODE 默认已是 auto；provider/model 经 GOOSE_PROVIDER/GOOSE_MODEL 或 --provider/--model。"
+                 "stream-json 事件 schema 官方未公开，解析器按 message/notification/error/complete 保守兼容。"
+                 "未配置 provider 时 exit 1 + 一行 error（已按引擎级错误处理，不再假成功）。",
     },
     "qwen": {
         "label": "Qwen Code",
@@ -201,13 +232,72 @@ HARNESS_REGISTRY: dict[str, dict[str, Any]] = {
         "homepage": "https://github.com/NousResearch/hermes-agent",
         "process_model": "oneshot",
         "capabilities": _caps(),
-        "requires_env": ["GLM_API_KEY"],
-        "notes": "模型面来自 hermes 自身 config.yaml；审批请求 fail-closed。",
+        # 官方 ACP 文档明确：provider 解析走 Hermes 自己的运行时解析器，
+        # ACP 继承当前已配置的 provider 与凭据。GLM_API_KEY 只是 ~40 个可选
+        # provider key 之一 —— 把它列为 requires_env 会让所有用其它 provider
+        # 的用户的 hermes 被永久判定为「未配置」。
+        "requires_env": [],
+        "notes": "模型面来自 hermes 自身 config.yaml（`hermes model` 配置）；"
+                 "需先装 ACP extra：`uv pip install -e '.[acp]'`；"
+                 "stdout 专用于 JSON-RPC，日志走 stderr；审批请求 fail-closed。",
     },
 }
 
 # 注册表顺序即前端下拉顺序（mock 恒可用排最前便于联调）
 HARNESS_IDS: list[str] = list(HARNESS_REGISTRY.keys())
+
+# ── 自有凭据库（OAuth / 本地登录）探测面 ─────────────────────────────
+# 多数引擎并不经环境变量取凭据，而是把 OAuth/登录态存在自己的配置目录里。
+# 只查 env 会把「已安装且已登录」的引擎误判为不可用（claude 订阅号、
+# codex ChatGPT 登录、gemini/omp/pi 等都是这种）。这里的路径只做「存在性」
+# 判断，表示引擎自带凭据，不读取任何 secret 内容。
+# 路径支持 ~ 展开；目录存在即视为已登录。
+_CREDENTIAL_PATHS: dict[str, list[str]] = {
+    "claude": ["~/.claude/.credentials.json", "~/.claude.json"],
+    "codex": ["~/.codex/auth.json"],
+    "gemini": ["~/.gemini/oauth_creds.json", "~/.gemini/settings.json"],
+    "qwen": ["~/.qwen/oauth_creds.json", "~/.qwen/settings.json"],
+    "omp": ["~/.omp"],
+    "pi": ["~/.pi"],
+    "opencode": ["~/.local/share/opencode/auth.json"],
+    "goose": ["~/.config/goose/config.yaml", "~/.config/goose/secrets.yaml"],
+    "crush": ["~/.config/crush/crush.json", "~/.crush"],
+    "copilot": ["~/.config/github-copilot/hosts.json"],
+    "cursor": ["~/.cursor/cli-config.json"],
+    "dsh": ["~/.dsh/config.yml", "~/.dsh/config.yaml"],
+    "hermes": ["~/.hermes/config.yaml"],
+}
+
+
+def _credential_store_present(harness_id: str) -> bool:
+    """引擎自有凭据库是否就绪（OAuth / 本地登录态）。"""
+    for raw in _CREDENTIAL_PATHS.get(harness_id, []):
+        try:
+            p = Path(os.path.expanduser(raw))
+            if p.exists():
+                return True
+        except Exception:  # noqa: BLE001 — 探测不得因路径异常而失败
+            continue
+    return False
+
+
+def harness_credentials(harness_id: str) -> dict[str, Any]:
+    """凭据面全景（供 probe / UI / 诊断使用）。
+
+    env_ready: requires_env 任一就绪（无声明 → True）
+    store_ready: 引擎自有凭据库存在（OAuth / 登录态）
+    ready: env_ready or store_ready —— 「这个引擎现在真的能用吗」
+    """
+    env_status = _env_status(harness_id)
+    env_ready = (not env_status) or any(e["present"] for e in env_status)
+    store_ready = _credential_store_present(harness_id)
+    return {
+        "env_ready": env_ready,
+        "store_ready": store_ready,
+        "ready": bool(env_ready or store_ready),
+        "env": env_status,
+    }
+
 
 # 引擎要求的 CLI 命令名（mock 为进程内，无命令）
 def harness_command_name(harness_id: str) -> Optional[str]:
@@ -396,7 +486,8 @@ async def _probe_impl(harness_id: str) -> dict:
     }
 
     if harness_id == "mock":
-        return {**base, "installed": True, "resolved_command": "inprocess:mock", "inprocess": True}
+        return {**base, "installed": True, "resolved_command": "inprocess:mock",
+                "inprocess": True, "credentials": harness_credentials(harness_id)}
 
     resolved = resolve_command(harness_id)
     if not resolved:
@@ -405,6 +496,7 @@ async def _probe_impl(harness_id: str) -> dict:
 
     version = ""
     installed = False
+    version_stream = ""
     try:
         argv = wrap_windows_cmd([resolved, "--version"])
         result = await asyncio.get_event_loop().run_in_executor(
@@ -414,18 +506,29 @@ async def _probe_impl(harness_id: str) -> dict:
                 **_run_silent_kwargs(),
             ),
         )
-        installed = result.returncode == 0
-        version = (result.stdout or b"").decode("utf-8", errors="replace").strip().splitlines()
-        version = version[0][:120] if version else ""
+        # 多数引擎走 stdout，但有的（实测 pi 0.73.1）把版本写到 stderr。
+        # 只读 stdout 会把可用引擎误判为「未安装 / 版本未知」。
+        out_txt = (result.stdout or b"").decode("utf-8", errors="replace").strip()
+        err_txt = (result.stderr or b"").decode("utf-8", errors="replace").strip()
+        version_stream = "stdout" if out_txt else ("stderr" if err_txt else "")
+        first = (out_txt or err_txt).splitlines()
+        version = first[0][:120] if first else ""
+        # 退出码 0 即已安装；非 0 但只要 --version 有可读输出，同样说明
+        # 可执行文件真实存在且能跑（部分 CLI 用非 0 退出码报告版本）。
+        installed = result.returncode == 0 or bool(version)
     except Exception as e:
         logger.debug("Harness probe %s failed: %s", harness_id, e)
         installed = False
 
-    # claude bare 模式需要 API key（沿用既有探测语义）
-    if harness_id == "claude" and not any(e["present"] for e in env_status):
+    # claude：`--bare` 需要 API key，但没有 key 也可以用本地 OAuth 登录态
+    # （adapter 仅在 key 存在时才传 --bare）。因此只有「env 与自有凭据库
+    # 双双缺失」才算不可用 —— 否则会把已登录的 Claude Code 误判为未安装。
+    if harness_id == "claude" and not harness_credentials("claude")["ready"]:
         installed = False
 
-    return {**base, "installed": installed, "version": version, "resolved_command": resolved}
+    return {**base, "installed": installed, "version": version,
+            "resolved_command": resolved, "version_stream": version_stream,
+            "credentials": harness_credentials(harness_id)}
 
 
 def _run_silent_kwargs() -> dict:
@@ -447,17 +550,25 @@ def configuration_issues(harness_id: str, probe: dict | None = None) -> list[str
     返回可读问题列表（空列表 = 配置就绪）。规则：
     - requires_env 为空的引擎（omp/codex 等自带存储凭据）视为就绪；
     - requires_env 列出"或"语义的（如 copilot 三 token 任一即可）任一命中即就绪；
+    - 引擎自有凭据库存在（OAuth / 本地登录态）时同样视为就绪 —— 不能因为
+      用户用的是订阅登录而不是 API key 就判定引擎不可用（claude 订阅号、
+      codex ChatGPT 登录、gemini/qwen OAuth 都是这种）；
     - 其余引擎要求全部 env 就绪。
     """
     entry = HARNESS_REGISTRY[harness_id]
-    env_status = _env_status(harness_id)
+    creds = harness_credentials(harness_id)
+    env_status = creds["env"]
     if not env_status:
+        return []
+    # 自有凭据库命中 → 无问题（引擎会用自己的登录态）
+    if creds["store_ready"]:
         return []
     issues: list[str] = []
     if harness_id == "claude":
-        # claude bare 模式必须 API key（沿用既有探测硬规则）
-        if not any(e["present"] for e in env_status):
-            issues.append("ANTHROPIC_API_KEY not set (required by claude bare mode)")
+        # 既无 API key 也无本地登录态 → 明确不可用
+        issues.append(
+            "ANTHROPIC_API_KEY not set and no local Claude Code login found "
+            "(run `claude` once to authenticate, or export the key)")
         return issues
     # 多 token 链（任一即可）：COPILOT_GITHUB_TOKEN/GH_TOKEN/GITHUB_TOKEN
     chains: list[list[str]] = [
