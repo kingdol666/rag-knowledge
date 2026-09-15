@@ -1,1 +1,1 @@
-{"text": "{\"answer\": \"规划中为验证 RQ2（content-overrides-vector）设计了专门实验：构造「向量高分但内容不符」的对抗样本，即向量相似度得分高而实际内容不相关的样本。对应产出为 Table 2 主表的 FPR（误召回率）列以及散点分析图 Fig.6。该实验的 Baseline 与 RQ1 相同（BM25 / B", "cached_at": 1789489558.7185175}
+{"text": "{\"answer\": \"规划中为验证 RQ2（content-overrides-vector）设计的实验是：构造“向量高分但内容不符”的对抗样本（adversarial samples）；对应图表为 Table 2 主表中的 FPR 列，以及散点图 Fig.6；基线沿用 RQ1 的同一组（BM25 / BGE-M3 向量 / BM25+Vec / Vec+CE-Rerank / RAG-Fusion / CRAG 式评估器 / Self-RAG 式自评）。\", \"evidence_used\": [\"SUBMISSION-MASTER-PLAN\"]}", "cached_at": 1789491122.8897946}
