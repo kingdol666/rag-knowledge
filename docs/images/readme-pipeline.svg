@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 300" width="1280" height="300" role="img" aria-label="Ingestion pipeline: document to parse to knowledge base to index to QDCVR retrieval to verified answer">
+  <defs>
+    <linearGradient id="ppaper" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fffdf8"/><stop offset="100%" stop-color="#f4ecdc"/>
+    </linearGradient>
+    <linearGradient id="pink" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#3b2f24"/><stop offset="100%" stop-color="#2a2118"/>
+    </linearGradient>
+    <marker id="parw" viewBox="0 0 10 10" refX="8.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#b9a583"/>
+    </marker>
+    <filter id="pshadow" x="-25%" y="-25%" width="150%" height="170%">
+      <feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#554128" flood-opacity="0.20"/>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="300" fill="url(#ppaper)"/>
+  <rect x="0" y="0" width="1280" height="3" fill="#c49846" fill-opacity="0.55"/>
+
+  <text x="40" y="52" font-family="Cormorant Garamond, Georgia, serif" font-size="27" font-weight="600" fill="#2a1f15">
+    Ingestion — from raw file to agent-queryable knowledge
+  </text>
+  <text x="40" y="76" font-family="'DM Sans', -apple-system, 'Segoe UI', Roboto, sans-serif" font-size="13" fill="#766551">
+    One command per stage. Every stage writes a verifiable artefact onto disk.
+  </text>
+
+  <!-- stage definitions: 6 columns -->
+  <g font-family="'DM Sans', -apple-system, 'Segoe UI', Roboto, sans-serif">
+
+    <!-- 1. Upload -->
+    <g transform="translate(40,108)">
+      <rect width="176" height="132" rx="14" fill="#ffffff" stroke="#dcd1bc" filter="url(#pshadow)"/>
+      <rect width="176" height="4" rx="2" fill="#b24422"/>
+      <text x="18" y="30" font-size="10.5" font-weight="700" fill="#b24422" letter-spacing="1.1">01 · UPLOAD</text>
+      <text x="18" y="54" font-size="14.5" font-weight="700" fill="#2a1f15">Files</text>
+      <g transform="translate(18,66)">
+        <rect width="42" height="52" rx="5" fill="#fae7df" stroke="#e8c4b4"/>
+        <path d="M30 0 h12 l12 12 v40 a5 5 0 0 1 -5 5 h-19 a5 5 0 0 1 -5 -5 v-47 z" fill="#ffffff" stroke="#e3c0ae"/>
+        <path d="M42 0 v12 h12" fill="none" stroke="#e3c0ae"/>
+        <g fill="#b24422" fill-opacity="0.55">
+          <rect x="12" y="24" width="18" height="2.6" rx="1.3"/>
+          <rect x="12" y="31" width="22" height="2.6" rx="1.3"/>
+          <rect x="12" y="38" width="14" height="2.6" rx="1.3"/>
+        </g>
+      </g>
+      <text x="74" y="82" font-size="11.5" fill="#554430">PDF · DOCX</text>
+      <text x="74" y="99" font-size="11.5" fill="#554430">XLSX · PPTX</text>
+      <text x="74" y="116" font-size="11.5" fill="#554430">＋ images</text>
+    </g>
+    <line x1="220" y1="174" x2="246" y2="174" stroke="#b9a583" stroke-width="2" marker-end="url(#parw)"/>
+
+    <!-- 2. Parse -->
+    <g transform="translate(250,108)">
+      <rect width="176" height="132" rx="14" fill="#ffffff" stroke="#dcd1bc" filter="url(#pshadow)"/>
+      <rect width="176" height="4" rx="2" fill="#9e7a38"/>
+      <text x="18" y="30" font-size="10.5" font-weight="700" fill="#9e7a38" letter-spacing="1.1">02 · PARSE</text>
+      <text x="18" y="54" font-size="14.5" font-weight="700" fill="#2a1f15">MinerU OCR</text>
+      <g transform="translate(18,68)">
+        <rect x="0" y="0" width="38" height="48" rx="4" fill="#f3ead0" stroke="#e0d0a8"/>
+        <text x="19" y="20" font-size="9" font-weight="700" fill="#9e7a38" text-anchor="middle">PDF</text>
+        <path d="M6 30 h26 M6 37 h18" stroke="#c4a86a" stroke-width="2.4" stroke-linecap="round"/>
+      </g>
+      <text x="30" y="94" font-size="15" font-weight="700" fill="#c4b496">→</text>
+      <g transform="translate(50,68)">
+        <rect x="0" y="0" width="38" height="48" rx="4" fill="#ffffff" stroke="#dcd1bc"/>
+        <text x="19" y="18" font-size="8.5" font-weight="700" fill="#b24422" text-anchor="middle">MD</text>
+        <g fill="#c4b496">
+          <rect x="7" y="24" width="24" height="2.3" rx="1.15"/>
+          <rect x="7" y="30" width="18" height="2.3" rx="1.15"/>
+          <rect x="7" y="36" width="22" height="2.3" rx="1.15"/>
+        </g>
+      </g>
+      <text x="98" y="82" font-size="11.5" fill="#554430">layout +</text>
+      <text x="98" y="99" font-size="11.5" fill="#554430">table → MD</text>
+      <text x="98" y="116" font-size="11.5" fill="#766551">ephemeral</text>
+    </g>
+    <line x1="430" y1="174" x2="456" y2="174" stroke="#b9a583" stroke-width="2" marker-end="url(#parw)"/>
+
+    <!-- 3. Knowledge base -->
+    <g transform="translate(460,108)">
+      <rect width="176" height="132" rx="14" fill="#ffffff" stroke="#dcd1bc" filter="url(#pshadow)"/>
+      <rect width="176" height="4" rx="2" fill="#2e5d7f"/>
+      <text x="18" y="30" font-size="10.5" font-weight="700" fill="#2e5d7f" letter-spacing="1.1">03 · STORE</text>
+      <text x="18" y="54" font-size="14.5" font-weight="700" fill="#2a1f15">Knowledge base</text>
+      <g transform="translate(18,68)">
+        <rect x="4" y="4" width="44" height="40" rx="4" fill="#e2ecf3" stroke="#b8cee0"/>
+        <rect x="0" y="0" width="44" height="40" rx="4" fill="#ffffff" stroke="#a9c4da"/>
+        <g fill="#2e5d7f" fill-opacity="0.5">
+          <rect x="8" y="11" width="28" height="2.6" rx="1.3"/>
+          <rect x="8" y="18" width="20" height="2.6" rx="1.3"/>
+          <rect x="8" y="25" width="24" height="2.6" rx="1.3"/>
+        </g>
+      </g>
+      <text x="58" y="82" font-size="11" fill="#554430">.tree-fs.json</text>
+      <text x="58" y="99" font-size="11" fill="#554430">.knowledge</text>
+      <text x="58" y="112" font-size="11" fill="#554430">-base.yml</text>
+      <text x="18" y="122" font-size="11" fill="#766551">tags · descriptions · metadata</text>
+    </g>
+    <line x1="640" y1="174" x2="666" y2="174" stroke="#b9a583" stroke-width="2" marker-end="url(#parw)"/>
+
+    <!-- 4. Index -->
+    <g transform="translate(670,108)">
+      <rect width="176" height="132" rx="14" fill="#ffffff" stroke="#dcd1bc" filter="url(#pshadow)"/>
+      <rect width="176" height="4" rx="2" fill="#3d6e3d"/>
+      <text x="18" y="30" font-size="10.5" font-weight="700" fill="#3d6e3d" letter-spacing="1.1">04 · INDEX</text>
+      <text x="18" y="54" font-size="14.5" font-weight="700" fill="#2a1f15">Two indexes</text>
+      <g transform="translate(18,66)">
+        <circle cx="22" cy="22" r="19" fill="#e2ece2" stroke="#bcd4bc"/>
+        <circle cx="22" cy="22" r="7" fill="none" stroke="#3d6e3d" stroke-width="2"/>
+        <circle cx="22" cy="22" r="13" fill="none" stroke="#3d6e3d" stroke-width="1.4" stroke-opacity="0.6"/>
+      </g>
+      <g transform="translate(70,66)">
+        <circle cx="24" cy="12" r="5.5" fill="#2e5d7f"/>
+        <circle cx="10" cy="32" r="5.5" fill="#2e5d7f" fill-opacity="0.75"/>
+        <circle cx="38" cy="32" r="5.5" fill="#2e5d7f" fill-opacity="0.75"/>
+        <path d="M24 12 L10 32 M24 12 L38 32 M10 32 L38 32" stroke="#2e5d7f" stroke-opacity="0.5" stroke-width="1.5"/>
+      </g>
+      <text x="18" y="104" font-size="11" fill="#554430">ChromaDB vectors</text>
+      <text x="18" y="120" font-size="11" fill="#554430">Neo4j graph</text>
+    </g>
+    <line x1="850" y1="174" x2="876" y2="174" stroke="#b9a583" stroke-width="2" marker-end="url(#parw)"/>
+
+    <!-- 5. QDCVR -->
+    <g transform="translate(880,108)">
+      <rect width="176" height="132" rx="14" fill="url(#pink)" stroke="#4a3a29"/>
+      <rect width="176" height="4" rx="2" fill="#e0553a"/>
+      <text x="18" y="30" font-size="10.5" font-weight="700" fill="#f0674a" letter-spacing="1.1">05 · RETRIEVE</text>
+      <text x="18" y="54" font-size="14.5" font-weight="700" fill="#f6efe2">QDCVR</text>
+      <g font-size="10.5" fill="#cbb99e">
+        <text x="18" y="76">BM25 → vector → tag → graph</text>
+        <text x="18" y="94">read candidate · score 0–8</text>
+        <text x="18" y="112" fill="#f0674a" font-weight="700">score ≤ 4 ⇒ discard</text>
+      </g>
+      <rect x="18" y="118" width="140" height="1" fill="#e0553a" fill-opacity="0.4"/>
+    </g>
+    <line x1="1060" y1="174" x2="1086" y2="174" stroke="#b9a583" stroke-width="2" marker-end="url(#parw)"/>
+
+    <!-- 6. Answer -->
+    <g transform="translate(1090,108)">
+      <rect width="150" height="132" rx="14" fill="url(#pink)" stroke="#4a3a29"/>
+      <rect width="150" height="4" rx="2" fill="#e8c878"/>
+      <text x="18" y="30" font-size="10.5" font-weight="700" fill="#e8c878" letter-spacing="1.1">06 · ANSWER</text>
+      <text x="18" y="54" font-size="14.5" font-weight="700" fill="#f6efe2">Verified</text>
+      <g transform="translate(18,66)">
+        <circle cx="13" cy="13" r="12" fill="none" stroke="#e8c878" stroke-width="2"/>
+        <path d="M7 13.5 L11.5 18 L19.5 8.5" fill="none" stroke="#e8c878" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>
+      <text x="18" y="104" font-size="10.5" fill="#cbb99e">sources cited</text>
+      <text x="18" y="120" font-size="10.5" fill="#cbb99e">blind spots declared</text>
+    </g>
+  </g>
+
+  <!-- verification rail -->
+  <g font-family="'DM Sans', -apple-system, 'Segoe UI', Roboto, sans-serif">
+    <rect x="40" y="258" width="1200" height="26" rx="13" fill="#f3ead0" stroke="#e0d0a8"/>
+    <text x="56" y="275" font-size="11.5" font-weight="700" fill="#6d5422">VERIFIED AT EVERY STAGE</text>
+    <text x="222" y="275" font-size="11.5" fill="#766551">dedup by vector fingerprint ≥ 0.85</text>
+    <text x="470" y="275" font-size="11.5" fill="#766551">parse-quality gate · tag hygiene</text>
+    <text x="712" y="275" font-size="11.5" fill="#766551">index verification · chunks ≥ 1</text>
+    <text x="950" y="275" font-size="11.5" fill="#766551">integrity: disk ↔ tree ↔ metadata</text>
+  </g>
+</svg>

@@ -1,909 +1,522 @@
 <div align="center">
+<img src="./docs/images/readme-hero.svg" alt="RAG Knowledge Platform — 企业级文档智能与 Agentic 知识库" width="100%" />
 
-<img src="./docs/images/logo.svg" alt="RAG Knowledge Platform" width="128" height="128" />
+<br><br>
 
-# RAG Knowledge Platform
+<a href="./README.md">English</a> &nbsp;·&nbsp; <b>简体中文</b>
 
-### 企业级文档智能与 Agentic 知识库平台
+<br><br>
 
-**从原始 PDF 到可验证、可被 Agent 查询的知识 —— 全程一条流水线，内容验证检索拒绝被向量相似度欺骗。**
+<a href="#-快速开始"><img src="https://img.shields.io/badge/快速开始-3_条命令-B24422?style=for-the-badge" alt="快速开始" /></a>
+<a href="#-系统架构"><img src="https://img.shields.io/badge/技术栈-FastAPI_·_Nuxt_3_·_MCP-2E5D7F?style=for-the-badge" alt="技术栈" /></a>
+<a href="#-94-个-mcp-工具"><img src="https://img.shields.io/badge/MCP_工具-94_个-9E7A38?style=for-the-badge" alt="94 个 MCP 工具" /></a>
+<a href="#-工作原理"><img src="https://img.shields.io/badge/检索方法-QDCVR-B24422?style=for-the-badge" alt="QDCVR" /></a>
 
-<p>
-<em>QDCVR 语义搜索 · Neo4j 知识图谱 · 经验全生命周期 (E0–E12)<br>
-94 个 MCP 工具 · 19 个 Agent 技能 · MinerU OCR · 跨平台 · SOUL 人格系统</em>
-</p>
+<br>
 
-<p>
-<a href="#-快速开始"><img src="https://img.shields.io/badge/快速开始-3条命令-4338ca?style=for-the-badge&logo=rocket" /></a>
-<a href="#-目录"><img src="https://img.shields.io/badge/平台-Win_%7C_Linux_%7C_macOS-334155?style=for-the-badge&logo=linux" /></a>
-<a href="#%EF%B8%8F-94-个-mcp-工具"><img src="https://img.shields.io/badge/MCP工具-94个-8b5cf6?style=for-the-badge&logo=code" /></a>
-<a href="#%EF%B8%8F-四种界面一个后端"><img src="https://img.shields.io/badge/技能-19个-f97316?style=for-the-badge&logo=openai" /></a>
-</p>
-
-<p>
-<a href="https://github.com/kingdol666/rag-knowledge/stargazers"><img src="https://img.shields.io/github/stars/kingdol666/rag-knowledge?style=flat-square&color=facc15" /></a>
-<a href="https://github.com/kingdol666/rag-knowledge/releases"><img src="https://img.shields.io/github/v/release/kingdol666/rag-knowledge?style=flat-square&color=8b5cf6&label=版本" /></a>
-<img src="https://img.shields.io/github/commit-activity/m/kingdol666/rag-knowledge?style=flat-square&color=22c55e" />
-<img src="https://img.shields.io/badge/Python-3.12-3776ab?style=flat-square&logo=python&logoColor=white" />
-<img src="https://img.shields.io/badge/license-MIT-22c55e?style=flat-square" />
-<img src="https://img.shields.io/badge/状态-生产就绪-0ea5e9?style=flat-square" />
-</p>
-
-<p>
-<sub><a href="./README.md">English</a></sub> &nbsp;&middot;&nbsp; <sub><b>中文</b></sub>
-</p>
-
----
-
-<img src="./docs/images/rag-architecture.png" alt="RAG Knowledge Platform — 5层架构" width="900" />
-
-</div>
-
-<div align="center">
-
-### 🎬 平台巡礼 —— 全功能演示（实测录制）
-
-<img src="./docs/screenshots/platform-tour.gif" alt="RAG Knowledge Platform 功能巡礼" width="860" />
-
-<sub>首页仪表盘 · 知识库管理 · QDCVR 检索 · 知识图谱 · SOUL Persona Studio · 人格增强问答 · Agent 对话</sub>
+<img src="https://img.shields.io/badge/平台-Windows_·_Linux_·_macOS-334155?style=flat-square" alt="平台" />
+<img src="https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.12" />
+<img src="https://img.shields.io/badge/Node.js-≥18-339933?style=flat-square&logo=nodedotjs&logoColor=white" alt="Node 18+" />
+<img src="https://img.shields.io/badge/许可证-MIT-3D6E3D?style=flat-square" alt="MIT" />
+<a href="https://github.com/kingdol666/rag-knowledge/stargazers"><img src="https://img.shields.io/github/stars/kingdol666/rag-knowledge?style=flat-square&color=C49846" alt="Stars" /></a>
+<a href="https://github.com/kingdol666/rag-knowledge/releases"><img src="https://img.shields.io/github/v/release/kingdol666/rag-knowledge?style=flat-square&color=9E7A38&label=release" alt="Release" /></a>
 
 </div>
 
 ---
 
-## 📋 目录
+## 这是什么
 
-<p align="center">
-<a href="#-为什么会有这个项目">起源</a> ·
-<a href="#-九大支柱">特性</a> ·
-<a href="#-快速开始">快速开始</a> ·
-<a href="#%EF%B8%8F-四种安装方式">安装</a> ·
-<a href="#-前置要求">前置要求</a> ·
-<a href="#%EF%B8%8F-四种界面一个后端">使用</a> ·
-<a href="#-系统架构">架构</a> ·
-<a href="#-配置">配置</a> ·
-<a href="#%EF%B8%8F-94-个-mcp-工具">MCP 工具</a> ·
-<a href="#-路线图">路线图</a> ·
-<a href="#-外部系统集成纯-http无需-mcp--agent">HTTP API</a> ·
-<a href="#-验证状态">验证状态</a> ·
-<a href="#-贡献指南">贡献</a>
-</p>
+一个可自托管的知识库平台。它把一堆 PDF、Office 文档和扫描件，变成**一个 AI Agent 可以真正被信任去回答问题的知识库**，并通过四种方式暴露出来：Web 界面、HTTP API、命令行，以及 94 个 MCP 工具——任何支持 MCP 的 Agent 都能直接驱动它。
 
----
+真正有意思的是检索层。大多数 RAG 方案按向量相似度排序，然后祈祷结果是对的。这个平台会**实际读取候选文档，用一套独立的 0–8 内容评分量表给它打分**，并把不及格的直接丢掉：
 
-## ✨ 为什么会有这个项目
+> **向量快，内容准。**
+> 一个余弦相似度高达 **0.95**、但内容评分 **≤ 4** 的文档，会被**丢弃**——不是降权，是丢弃。
 
-> **现代 RAG 的核心问题：** 向量高相似 ≠ 内容相关。查询 *"PET 双向拉伸"*，向量检索会开心地返回 *"PP 薄膜"* 文献（余弦相似度 0.90）—— 二者都处在"聚合物薄膜"的语义空间里，嵌入模型被骗了。LLM 随后幻觉出一个自信但错误的答案。
-
-本平台在**检索层**而非生成层解决这个问题。其核心方法 —— **QDCVR（查询驱动 · 内容验证检索）** —— 会读取候选文档正文，按独立的 **0–8 内容评分标准**打分，并执行一条不留情面的规则：
-
-> ### 🎯 *"向量很快召回，内容才是真裁决。"*
-> 即使向量相似度高达 **0.95**，只要内容评分 **≤ 4**，该文档就会被**丢弃**。
+<br>
 
 <div align="center">
-
-| | 传统知识库工具 | **RAG Knowledge Platform** |
-|:---:|:---|:---|
-| 🔍 | 单一搜索策略（向量*或*关键词） | **多策略**：BM25 + 向量 + 标签语义 + 图谱扩展 |
-| 🧠 | 盲信向量相似度 | **内容验证检索** —— 独立的 0–8 内容裁决 |
-| 🤖 | AI 是后挂的，难集成 Agent | **Agent 原生**：94 个 MCP 工具，19 个技能，任意 MCP 客户端 |
-| 💡 | 无结构化知识复用 | **经验库**：E0–E12 全生命周期，P0/P1/P2 可信度分级 |
-| 🔧 | 多工具复杂安装，配置分散 | **一条命令** `ragctl setup`，单一 `config.yml` 真相源 |
-| 🪟 | 满屏终端窗口 | **静默无头** —— dev 和 prod 均零终端窗口 |
-
+<img src="./docs/images/readme-pipeline.svg" alt="入库流水线：文件 → MinerU OCR → 知识库 → 索引 → QDCVR 检索 → 已核验答案" width="100%" />
 </div>
 
 ---
 
-## 🌟 九大支柱
+## 目录
+
+| | |
+|---|---|
+| [**界面截图**](#界面截图) | 浅色与深色主题下的真实界面 |
+| [**工作原理**](#工作原理) | 检索流水线与 0–8 评分量表 |
+| [**系统架构**](#系统架构) | 服务、端口、存储引擎 |
+| [**快速开始**](#快速开始) | 克隆 → 安装 → 启动 |
+| [**四种使用方式**](#四种使用方式) | Web 界面 · HTTP · CLI · MCP |
+| [**94 个 MCP 工具**](#94-个-mcp-工具) | 按类别完整清单 |
+| [**外部 HTTP API**](#外部-http-api) | 不依赖 Agent，任何系统都能调用 |
+| [**验证数据**](#验证数据) | 哪些数字被实测过，怎么测的 |
+| [**适用范围与非目标**](#适用范围与非目标) | 这个项目**不做**什么 |
+
+---
+
+## 界面截图
+
+以下全部是运行中应用的真实截图，存放在 [`docs/screenshots/app/`](./docs/screenshots/app/)，并附带一份[清单文件](./docs/screenshots/app/MANIFEST.json)，记录每张图的原始尺寸与编码参数。没有效果图。
+
+### 知识库管理
+
+增删改查、跨库移动、标签管理、内容就地编辑。
 
 <div align="center">
-<img src="./docs/images/rag-pipeline.png" alt="QDCVR Agentic 优先企业检索流水线" width="900" />
+<img src="./docs/screenshots/app/desktop-knowledge-base.jpg" alt="知识库管理" width="100%" />
 </div>
 
+<details>
+<summary><b>更多界面 —— 点击展开</b></summary>
+
+<br>
+
+**QDCVR 检索** —— 三种策略、范围控制，以及一条真实反映语料内容的标签栏。
+
 <div align="center">
+<img src="./docs/screenshots/app/desktop-knowledge-search.jpg" alt="QDCVR 检索界面" width="100%" />
+</div>
 
-| # | 支柱 | 你将获得 |
-|:---:|:---|:---|
-| 📄 | **文档解析** | PDF / Word / Excel / PPT / 图片 → Markdown，基于 **MinerU OCR** 引擎 |
-| 🧠 | **QDCVR 检索** | 查询驱动、内容验证的检索 —— 独立 0–8 内容评分 |
-| 🔍 | **多策略搜索** | BM25 + 向量两阶段召回 · 跨库企业搜索 · `balance_kbs` 多样性防护 |
-| 📊 | **知识图谱** | Neo4j 驱动 · 11 个图谱工具 · 实体/关系图 · 跨库文档桥接 |
-| 💡 | **经验库** | E0–E12 全生命周期 · 结构化问题→方案→教训 · P0/P1/P2 可信度 · 衰减 |
-| 🔌 | **94 个 MCP 工具** | 知识库 CRUD · 搜索 · 图谱 · 经验 · SOUL 人格 · 解析 · 标签 · 向量索引 · 生命周期 |
-| 🎯 | **19 个 Agent 技能** | 自然语言命令 · 中英双语触发 · 自动分发到 Archival Agent · SOUL 人格管理 |
-| 🧠 | **SOUL 人格系统** | 补天蒸馏初始人格 · 好奇心驱动训练 · RL 强化进化 · QDCVR 人格增强问答 · 20 个专用 MCP 工具 |
-| 🤫 | **静默无头** | 所有启动器均 **零终端窗口** · dev 和 prod 行为一致 |
+**知识图谱** —— 基于 Neo4j 的文档关系、跨库桥接与路径发现。
 
+<div align="center">
+<img src="./docs/screenshots/app/desktop-knowledge-graph.jpg" alt="知识图谱浏览器" width="100%" />
+</div>
+
+**SOUL 人格工作室** —— 蒸馏人格、训练人格，并用该人格检索知识库。
+
+<div align="center">
+<img src="./docs/screenshots/app/desktop-soul.jpg" alt="SOUL 人格工作室" width="100%" />
+</div>
+
+**文件系统** —— 由 `.tree-fs.json` 支撑的权威目录树。
+
+<div align="center">
+<img src="./docs/screenshots/app/desktop-file-system.jpg" alt="文件系统目录树" width="100%" />
+</div>
+
+**Agent 对话** —— 在应用内直接驱动编程 Agent 操作知识库。
+
+<div align="center">
+<img src="./docs/screenshots/app/desktop-claude-chat.jpg" alt="Agent 对话" width="100%" />
+</div>
+
+**系统设置与 API Token** —— 实时端口/绑定信息横幅、带过期时间的范围化令牌。
+
+<div align="center">
+<img src="./docs/screenshots/app/desktop-settings.jpg" alt="系统设置" width="49%" />
+<img src="./docs/screenshots/app/desktop-tokens.jpg" alt="API Token 管理" width="49%" />
+</div>
+
+</details>
+
+### 深色主题
+
+每个界面都有真正的深色主题——不是把浅色反相了事。
+
+<div align="center">
+<img src="./docs/screenshots/app/dark-desktop-home.jpg" alt="深色模式首页" width="100%" />
+</div>
+
+<details>
+<summary><b>更多深色主题界面</b></summary>
+
+<br>
+
+<div align="center">
+<img src="./docs/screenshots/app/dark-desktop-knowledge-search.jpg" alt="深色检索" width="49%" />
+<img src="./docs/screenshots/app/dark-desktop-knowledge-graph.jpg" alt="深色图谱" width="49%" />
+<br><br>
+<img src="./docs/screenshots/app/dark-desktop-knowledge-base.jpg" alt="深色知识库" width="49%" />
+<img src="./docs/screenshots/app/dark-desktop-soul.jpg" alt="深色 SOUL 工作室" width="49%" />
+</div>
+
+</details>
+
+### 移动端
+
+布局基于容器查询（container query）系统，响应的是**自身内容区的宽度**，而不只是视口宽度。侧边栏变为抽屉，表格变为卡片，触摸目标扩展至 44 px 下限。
+
+<div align="center">
+<img src="./docs/screenshots/app/mobile-home.jpg" alt="移动端首页" width="24%" />
+<img src="./docs/screenshots/app/mobile-knowledge-base.jpg" alt="移动端知识库" width="24%" />
+<img src="./docs/screenshots/app/mobile-knowledge-search.jpg" alt="移动端检索" width="24%" />
+<img src="./docs/screenshots/app/mobile-knowledge-graph.jpg" alt="移动端图谱" width="24%" />
+<br>
+<img src="./docs/screenshots/app/mobile-soul.jpg" alt="移动端 SOUL 工作室" width="24%" />
+<img src="./docs/screenshots/app/mobile-tokens.jpg" alt="移动端 API Token" width="24%" />
+<img src="./docs/screenshots/app/dark-mobile-home.jpg" alt="移动端深色首页" width="24%" />
+<img src="./docs/screenshots/app/dark-mobile-knowledge-base.jpg" alt="移动端深色知识库" width="24%" />
 </div>
 
 ---
 
-## 🧠 QDCVR 检索方法
+## 工作原理
 
-<div align="center">
-
-### 查询驱动 · 内容验证检索
-
-*你不会信任只看过封面的律师。你的 RAG 也不该信任一个余弦相似度分数。*
-
-</div>
-
-**QDCVR** 是一个 6 步检索流水线，设计目的就是抵御向量相似度的欺骗性评分：
+`QDCVR` —— **Query-Driven, Content-Verified Retrieval**（查询驱动 · 内容验证检索）。共七个阶段，严格按序执行：
 
 ```
 用户查询
-    │
-    ▼
-┌──────────────────────────────┐
-│  ① 选择 KB                   │  智能分发到合适的知识库
-│  (balance_kbs 多样性守卫)     │  防止大 KB 主导检索结果
-└──────────────┬───────────────┘
-               ▼
-┌──────────────────────────────┐
-│  ② 多路径召回                 │  BM25 → 向量 → 标签语义 → 图谱
-│  (4 条并行路径)               │  从每个角度查一遍
-└──────────────┬───────────────┘
-               ▼
-┌──────────────────────────────┐
-│  ③ 内容验证                   │  ⭐ 核心创新
-│  (0-8 评分标准)               │  读取文档正文，独立打分
-│                               │  分数 < 6？→ 标签+描述扩展
-│                               │  分数 < 4？→ 硬丢弃
-└──────────────┬───────────────┘
-               ▼
-┌──────────────────────────────┐
-│  ④ 交叉验证                   │  去重，跨库合并，融合排序
-└──────────────┬───────────────┘
-               ▼
-┌──────────────────────────────┐
-│  ⑤ 置信度评级                 │  P0（验证）/ P1（可能）/ P2（提示）
-│  + 盲区声明                   │  诚实的"我不知道"——从不伪造答案
-└──────────────┬───────────────┘
-               ▼
-┌──────────────────────────────┐
-│  ⑥ 合成答案 + 来源引用        │  每个结论都链接到源文档
-└──────────────────────────────┘
+  │
+  ├─ 0 · 意图识别                 运维类 / 事实类 / 探索类
+  │
+  ├─ 1 · 知识库选择               对目录做 Agentic 扫描
+  │                                balance_kbs 护栏防止单一大库垄断结果
+  │
+  ├─ 2 · 多阶段召回               BM25 ──▶ 向量 ──▶ 标签语义 ──▶ 图谱
+  │                                每一阶段都是「召回」阶段，不是排序阶段
+  │
+  ├─ 3 · ⭐ 内容验证              读取候选文档，按 0–8 打分
+  │                                得分 < 6 → 触发标签+描述扩展轮
+  │                                得分 ≤ 4 → 硬性丢弃
+  │
+  ├─ 4 · 交叉验证                 去重、跨库合并、排序融合
+  │
+  ├─ 5 · 可信度分级               P0 已验证 · P1 较可信 · P2 仅线索
+  │                                盲区会被明确声明，绝不掩盖
+  │
+  └─ 6 · 答案与引用               每一条论断都链接到来源文档
 ```
 
 <details>
-<summary><b>🎯 0–8 内容评分标准（点击展开）</b></summary>
+<summary><b>0–8 内容评分量表</b></summary>
 
-| 分数 | 含义 | 示例 |
-|:----:|------|------|
-| **0–2** | 离题/幻觉 | 向量相似度 0.95 但内容完全在说另一种材料 —— **丢弃** |
-| **3–4** | 边缘提及 | 查询 "PET 拉伸"，命中在 20 页关于 PP 的文档中有一句提到 PET —— **丢弃** |
-| **5–6** | 部分相关 | 涵盖了主题但缺少关键细节 —— 执行标签+描述 **扩展扫描** |
-| **7–8** | 直接回答 | 精确匹配查询的领域、材料、上下文 —— 作为 **P0** 返回 |
-
-> **规则**：向量负责建议候选，内容决定真实答案。0.95 的向量分数如果内容评分 ≤ 4，毫无意义。
-</details>
-
-<details>
-<summary><b>🧪 实验结果对比</b></summary>
-
-在 6 个领域的 20 个对抗性查询测试中：
-
-| 方法 | P@5 | FPR | 延迟 |
-|------|:---:|:---:|:----:|
-| 纯向量（盲信） | 0.590 | 12.0% | 84 ms |
-| QDCVR 领域检索（验证后） | **0.630** | **3.0%** | **38 ms** |
-| 跨域对抗查询 | — | **0.00%** | — |
-
-跨域假阳性率：**0%**（纯向量 50–77%）。
-
-完整基准测试： [`docs/paper/benchmark/SYSTEM-BENCHMARK-PLAN.md`](./docs/paper/benchmark/SYSTEM-BENCHMARK-PLAN.md)
-</details>
-
----
-
-## 🧬 SOUL 人格系统 — 人格层
-
-> **知识库管「有什么」；SOUL 管「谁来讲、怎么讲」。** 知识库持有事实，SOUL 决定*由谁*讲解、*如何*讲解 —— 一个会学习、会进化、带身份回答的人格层。
-
-<div align="center">
-
-<img src="./docs/screenshots/soul-studio.png" alt="SOUL Persona Studio" width="880" />
-
-<sub><b>SOUL Persona Studio</b> — 人格清单 · 训练实时监控 · RL 进化曲线 · 人格定义查看器</sub>
-
-</div>
-
-### 🧠 双引擎心智模型
-
-每个人格 = 一个 **`soul-<name>` 知识库**，包含 4 份宪法层文档（`soul-definition` · `values` · `thinking-style` · `memory-conventions`）+ `soul-config.yml`。
-
-```mermaid
-flowchart LR
-    subgraph 先天[先天 — 一次性蒸馏]
-        A[补天 dot-skill
-聊天记录/文档/描述] -->|ragctl soul distill| B[persona.md + work.md
-+ meta.json]
-    end
-    B --> C[SOUL 人格 soul-&lt;name&gt;
-4 宪法层文档 + config]
-    subgraph 后天[后天 — 终身进化]
-        D[好奇心训练
-四层问题→检索自答→四维自评→记忆草稿] --> E[RL 强化
-评价Agent打分→认知草稿→合并入定义]
-        E --> F[进化闭环
-reward 曲线 / profile 刷新 / 路由更准]
-    end
-    C --> D
-    F --> G[QDCVR 人格问答
-检索验证→人格合成→PAS 分]
-    G -. 回答反馈 .-> D
-```
-
-| 引擎 | 输入 | 产出 | 频率 |
-|---|---|---|---|
-| **补天蒸馏**（先天） | 聊天记录 / 文档 / 人物描述 | 初始人格种子（身份/风格/思维框架） | 一次性 |
-| **好奇心训练**（后天） | kb_scope 内文档 | 记忆草稿（事实/概念/跨文档/挑战四层问题） | 持续 |
-| **RL 强化**（进化） | 评价 Agent 四维评分 | 认知草稿 → 合并入人格定义文档 | 每轮训练 |
-
-### 🎓 先天种子：补天（dot-skill）蒸馏
-
-`/dot-skill` 把源材料（飞书/钉钉聊天记录、PDF、粘贴文本）蒸馏成
-`meta.json + persona.md + work.md`，一键转化为 SOUL 人格：
-
-```bash
-ragctl soul distill .claude/skills/dot-skill/skills/colleague/example_tianyi \
-  --name soul-天意 --scope Energy-Batteries --labels 靠谱,代码规范,热心 --harness omp
-```
-
-转换映射（适配本系统 schema）：`persona.md → soul-definition.md 追加段` · `work.md → thinking-style.md 追加段` · `meta.json tags → domain_labels`（路由标签）。
-
-### 🔬 后天进化：好奇心驱动的强化学习（RL）
-
-<div align="center">
-
-<img src="./docs/screenshots/soul-rl-training.gif" alt="RL 训练实时监控" width="720" />
-
-<sub><b>训练实时监控</b> — 提交 → 探索轮实时进度 → 评价得分 → 事件流（实测录制）</sub>
-
-</div>
-
-**好奇心协议**（每次 learn 内部）：
-
-```
-Step 1  文档读取（≤50k 字符）
-Step 2  生成四层问题: 事实 30% | 概念 30% | 跨文档 20% | 挑战 20%
-Step 3  每问自答: 两阶段检索(scope 限定) → 图谱邻居 → LLM 带引用合成
-Step 4  四维自评: 接地性/完整性/思维一致/信息增益 (0-5) + 10% 双判官
-Step 5  蒸馏: 接地性≥3 且无判官分歧 → 记忆草稿(pending)
-Step 6  记录 learned_hash(内容 SHA256) → 内容变更自动重学(增量幂等)
-```
-
-**RL 强化循环**（train-rl，每轮 = 探索 × 奖励 × 策略更新）：
-
-```
-┌─ 探索(Exploration)  learn_incremental — 学习 kb_scope 内增量文档
-├─ 奖励(Reward)       evaluate_persona — 评价 Agent 四维打分
-│                      identity / values / thinking / language (0-5)
-├─ 策略更新(Policy)   generate_cognition_drafts — 低分维度(<3.5)
-│                      → 认知草稿(对人格定义文档的受控优化建议)
-├─ 策略落地(Apply)    soul_review_drafts(draft_type=cognition) 审批
-│                      → 合并入 soul-definition.md 对应章节(仅追加,
-│                        checkpoint 保护, 幂等+行级去重)
-└─ 进化曲线(Log)      reports/reward-history.jsonl — 逐轮 reward
-```
-
-> **实测进化曲线**（soul-天意，真实数据）：`3.25 → 3.75 → 3.12 → 3.5 → 4.25`
-> 认知草稿合并后 identity 3→4、language 3→4、thinking 3→3.5；四维均 ≥3.5 后不再生成草稿（收敛态）。
-> 人格增强问答 **PAS 5.0（满分人格一致性）**，回答逐字体现进化后的语言风格（"引用统一编号""证据不足明说"）。
-
-### 🎭 三个入口，同一数据
-
-| 操作 | 🌐 Web Studio | 🖥️ ragctl | 🔌 MCP 工具 |
-|---|---|---|---|
-| 蒸馏创建 | —（建议 ragctl） | `soul distill <dir>` | `soul_init` + 文档覆盖 |
-| 训练（文档/全库/RL） | 训练控制台三模式 + 实时监控 | `soul learn` / `learn-all` / `train-rl` | `soul_learn` / `soul_learn_all` / `soul_train_rl` |
-| 评价 | RL 曲线 + reward 指标 | `soul evaluate` | `soul_evaluate` |
-| 审批（记忆/认知） | 审批 modal 双页签 + 异步进度 | `soul review` / `review-cognition` | `soul_review_drafts(draft_type)` |
-| 定时训练 | 配置 modal（间隔/轮数/预算） | `meditation config` | `experience_meditation_config_update` |
-| 问答 | 一键检索+人格回答 | `soul ask --qdcvr` | `soul_qdcvr_ask` / `soul_ask` |
-| 人格定义 | 查看器（4 文档 + RL 进化行标记） | — | `soul_status` |
-
-<div align="center">
-
-<img src="./docs/screenshots/soul-ask.png" alt="SOUL QDCVR 问答" width="640" />
-
-<sub><b>一键检索+人格回答</b> — 证据注入 · 引用锚点 · PAS 人格一致性分</sub>
-
-</div>
-
-**长任务异步契约**（训练/批量审批都是分钟级作业，任何入口都不阻塞等待）：
-触发 → 立即返回 `task_id` → 轮询 `GET /api/v1/soul/tasks/{id}`（或 `kb_task_status`）→ `progress` 实时可见（轮次/问题/记忆/文档，审批 processed/total）。
-
----
-
-## 🚀 快速开始
-
-> **三条命令，从零到完整可用的平台。**
-
-```bash
-# 1 — 克隆仓库
-git clone https://github.com/kingdol666/rag-knowledge.git
-cd rag-knowledge
-
-# 2 — 一键安装（自动安装所有依赖 + 模型）
-./ragctl setup
-
-# 3 — 启动所有服务（静默，零终端窗口）
-./ragctl up
-```
-
-<div align="center">
 <br>
-<a href="https://github.com/kingdol666/rag-knowledge/stargazers"><img src="https://img.shields.io/badge/给我们点星-facc15?style=for-the-badge&logo=github&logoColor=black" /></a>
-<a href="https://github.com/kingdol666/rag-knowledge/issues"><img src="https://img.shields.io/badge/报告问题-ef4444?style=for-the-badge&logo=github&logoColor=white" /></a>
-<br>
-</div>
 
-<details>
-<summary><b>🔧 Windows 用户 — 使用相同命令（原生）</b></summary>
+| 分数 | 含义 | 处理方式 |
+|:---:|---|---|
+| **0–2** | 跑题，或文档讲的完全是另一回事 | **丢弃** |
+| **3–4** | 擦边——在无关文档里只有一句话相关 | **丢弃** |
+| **5–6** | 部分相关——话题对，但缺少追问的具体细节 | 保留，触发一轮**扩展** |
+| **7–8** | 直接回答该问题 | 保留，有资格进入 P0 |
 
-```powershell
-.\ragctl.bat setup
-.\ragctl.bat up
+这套量表的关键在于：它是在**召回之后**、且**通过阅读内容**来执行的。因此高余弦相似度不能为文档换来任何豁免。这正是分级有意义的原因——一个 P0 结果，同时通过了相似度筛选和内容判断两道关。
 
-# 或 ragctl 全局注册后：
-ragctl setup
-ragctl up
-```
 </details>
 
-> [!TIP]
-> **没有 Claude Code？没问题。** Web UI 完全独立运行。用任何 MCP 客户端即可访问 94 个工具，或直接在 `http://localhost:6789` 浏览和搜索。
+### 跨库盲区缓解
 
-### ✅ 验证一切正常
+当一次常规两阶段检索返回的候选中，来自**少于两个**不同知识库时，系统会自动以三路并行召回重试，并交叉验证结果：
 
-```bash
-ragctl status                                   # 双模式：dev + prod 并排显示
-curl http://localhost:8770/api/v1/health        # → {"status":"healthy"}
-```
+| 路径 | 策略 | 能捞回什么 |
+|:---:|---|---|
+| **A** | 对目录做 Agentic 知识库扫描 | 词表不一致导致词法索引漏掉的查询 |
+| **B** | 两阶段 BM25 → 向量 | 标准的高精度路径 |
+| **C** | 纯跨库向量检索 | 完全没有词法重叠的语义匹配 |
 
-### 🔍 界面对照
-
-| 界面 | 地址 | 用途 |
-|------|:----:|------|
-| 🌐 **Web UI** | `http://localhost:6789` | 浏览 KB、搜索、图谱可视化 |
-| 📚 **API 文档** | `http://localhost:8770/docs` | Swagger UI，后端 106 个端点（另含 web 层 122 个路由） |
-| 🖥️ **CLI** | `ragctl status` | 服务健康检查 |
-| 🤖 **Agent** | Claude Code 会话 | 说"列出所有知识库" |
-
----
-### 🔌 外部系统集成（纯 HTTP，无需 MCP / Agent）
-
-所有能力都可通过 REST 调用。你的后端服务、脚本或 CI 作业**不需要 MCP、也不需要 Claude Code**，
-一次普通 HTTP 请求即可操作知识库。
-
-| 层 | 地址 | 覆盖范围 | 文档 |
-|---|---|---|---|
-| **后端** | `http://localhost:8770` | 解析 · 向量/两阶段检索 · 图谱 · 经验 · SOUL（106 个端点） | `/docs` 与 `/openapi.json` |
-| **Web** | `http://localhost:6789` | 知识库与文档 CRUD · 文件树 · 标签 · 预览（122 个路由） | [`docs/api-web.md`](./docs/api-web.md) |
-
-```bash
-# 1) 创建知识库
-curl -X POST localhost:6789/api/kb/create -H 'Content-Type: application/json' \
-     -d '{"name":"研究笔记","description":"论文与笔记"}'
-
-# 2) 写入文档（kbId 与 kb_id 均可，snake_case 别名会自动归一化）
-curl -X POST localhost:6789/api/kb/documents/create -H 'Content-Type: application/json' \
-     -d '{"kb_id":"研究笔记","name":"notes.md","content":"# 笔记\n\n向量负责快召回，内容裁决定去留。"}'
-
-# 3) 检索（两阶段：BM25 粗排 → 向量精排）
-curl -X POST localhost:8770/api/v1/search/two-stage -H 'Content-Type: application/json' \
-     -d '{"query":"如何提高检索准确率","top_k":5}'
-```
-
-> **约定** —— camelCase 为准（`kbId`），同时接受 snake_case 别名（`kb_id`、`doc_path`）以兼容 MCP 工具层；
-> 同名知识库会被 **409** 拒绝（重名会导致向量索引归属错乱）；内网默认无认证（限流 600 次/60 秒），
-> 对外暴露前请前置网关鉴权。
-
-### ✅ 验证状态
-
-| 检查项 | 范围 | 结果 |
-|---|---|---|
-| 全功能冒烟测试 | 60 项能力：库/文档 CRUD · 解析 · 5 种检索 · 图谱 · 经验全生命周期 · SOUL | **60 / 60 通过**（`tmp/test_full_smoke.py`） |
-| `backend` 单元测试 | 139 个 | **139 通过，0 失败** |
-| `kb-mcp` 工具测试 | 57 个 MCP 工具 E2E | **57 通过，0 失败** |
-| 集成能力整改 | 发现并修复 9 个缺陷（P0–P3） | [`测试报告`](./docs/TEST-REPORT-integration-hardening-2026-09-09.md) |
-
-**已知限制** —— 人格问答合成约需 7 分钟（reasoning 模型，已启用 `thinking=minimal`）；
-连续快速重启 backend 两次会导致 embedding 服务挂起（干净重启一次即可恢复）。
-
-### ⚡ 5 分钟上手 —— 从零到人格问答
-
-> 以下每一步都是**真实可点击**的路径（假设已完成 `ragctl setup && ragctl up`）。
-
-| # | 目标 | 🌐 Web UI (http://localhost:6789) | 🖥️ CLI / 🤖 Agent |
-|:---:|---|---|---|
-| **1** | **导入第一份文档** | `/file-system` → 上传 PDF → MinerU 自动解析 → 选择知识库 → 自动索引 | Agent: *"把 docs/xxx.pdf 导入 Energy-Batteries 知识库"* |
-| **2** | **内容验证检索** | `/knowledge-search` → 输入问题 → 两阶段召回 → 0–8 内容评分 → 带引用答案 | Agent: *"搜索：钠离子电池和锂离子电池的区别"* → QDCVR |
-| **3** | **沉淀经验复用** | —（经验为 Agent 原生） | Agent: *"记录这个排查经验"* → `knowledgebase-experience-summarize` |
-| **4** | **创建人格** | `/soul` → 创建人格（模板初始化：4 文档 + 索引 + profile） | `ragctl soul init soul-xxx --scope Energy-Batteries` |
-| **5** | **好奇心训练** | `/soul` → 训练控制台（文档 / 全库 / **RL**）→ 实时监控 | `ragctl soul learn-all soul-xxx --rounds 2` |
-| **6** | **人格+检索问答** | `/soul` → 问答 modal → "一键检索+人格回答" | `ragctl soul ask "问题" --soul soul-xxx --qdcvr` |
-
-> **3 条命令**打通全程：`ragctl up` → Web 导入 → `/soul` 提问。每一步都在界面可见 —— 解析队列、索引统计、训练进度、reward 曲线。
+三路结果会被合并、去重，过短的假阳性片段会被降级（不足 50 字符的片段最高只能到 P2）。这直接针对一个典型失效模式：BM25 第一阶段召回悄悄把候选集收窄到只剩一个知识库。
 
 ---
 
-## 🗺️ 四种安装方式
-
-<table>
-<tr>
-<th width="25%">A. Claude Code 插件<br><sub>推荐</sub></th>
-<th width="25%">B. OMP 全局安装</th>
-<th width="25%">C. Skills 复制 + 向导</th>
-<th width="25%">D. Git Clone（本地）</th>
-</tr>
-<tr>
-<td valign="top">
-
-使用 **Claude Code**，全局注册。
-
-```bash
-/plugin marketplace add kingdol666/rag-knowledge
-/plugin install rag-knowledge@rag-knowledge
-/reload-plugins
-```
-
-然后告诉 Agent：
-
-> **"初始化知识库"**
-
-</td>
-<td valign="top">
-
-使用 **Oh My Pi** 作为 Agent。
-
-```bash
-git clone https://github.com/kingdol666/rag-knowledge.git
-cd rag-knowledge
-node scripts/install_omp.cjs
-```
-
-然后告诉 Agent：
-
-> **"初始化知识库系统"** → `/knowledgebase-init`
-
-</td>
-<td valign="top">
-
-仅复制技能，不装插件。
-
-```bash
-git clone https://github.com/kingdol666/rag-knowledge.git ~/rag-knowledge
-mkdir -p ~/.claude/skills
-cp -r ~/rag-knowledge/.claude/skills/knowledgebase* ~/.claude/skills/
-```
-
-然后告诉 Agent：
-
-> **"初始化知识库"**
-
-</td>
-<td valign="top">
-
-完全手动控制。
-
-```bash
-git clone https://github.com/kingdol666/rag-knowledge.git
-cd rag-knowledge
-./ragctl setup && ./ragctl up
-```
-
-打开 **http://localhost:6789**。
-
-</td>
-</tr>
-</table>
-
----
-
-## 📦 前置要求
-
-| 工具 | 版本 | 是否必需 | 说明 |
-|------|------|:--------:|------|
-| **Git** | 任意 | ✅ | 克隆仓库 |
-| **Node.js** | ≥ 18 | ✅ | `ragctl` CLI + Nuxt 前端 |
-| **uv** | ≥ 0.7 | ⚡ 自动安装 | Python 包管理器 |
-| **Python** | 3.12 | ⚡ via uv | uv 自动管理，无需手动安装 |
-| **Docker** | 任意 | 📋 可选 | 仅 Neo4j 图谱需要 |
-| **Rust** | stable | 📋 可选 | 仅 Tauri 桌面应用需要 |
-
-> **磁盘：** 约 5 GB · 首次运行下载 BGE-M3（~2.2 GB）。默认 ModelScope（国内高速），海外用户在 `config.yml` 中设 `embedding.model_source: huggingface`。
-
----
-
-## 🖥️ 四种界面，一个后端
-
-### 1. 🤖 Claude Code — *自然语言*
-
-```text
-"列出所有知识库"                              → kb_list
-"把 ./papers 里的 PDF 全部导入到 ML-research 知识库" → knowledgebase-ingest
-"搜索：PET 双轴拉伸参数有哪些？"                 → QDCVR → 验证答案 + 来源
-"整理所有知识库 — 修复标签、描述、移动错位文档"      → knowledgebase-organize
-"记录这个排查经验"                              → knowledgebase-experience-summarize
-```
-
-### 2. ⌨️ CLI — *`ragctl`*
-
-```bash
-ragctl up                          # 启动全部（静默）
-ragctl up --appmode prod           # 生产端口（8001/3000）
-ragctl status                      # 双模式状态
-ragctl logs web --tail             # 实时跟踪 Web 日志
-ragctl restart backend -f          # 强制重启
-ragctl backup                      # 跨平台备份
-ragctl down                        # 停止所有服务
-```
-
-### 3. 🔌 MCP 客户端 — *任意 Agent*
-
-```python
-kb_project_start(backend=True, web=True, wait=True)
-kb_search_two_stage(query="强化学习", balance_kbs=True)
-experience_search_global(query="ConnectError 排查")
-kb_graph_cross_kb_documents(min_kbs=2)
-```
-
-### 4. 🌐 Web UI — *浏览器访问*
-
-打开 **http://localhost:6789**：
-
-| 页面 | 路由 | 功能 |
-|------|:----:|------|
-| 🏠 **首页** | `/` | 实时仪表盘（KB/文档/标签/边数动态统计） |
-| 📁 **文件系统** | `/file-system` | 树形浏览、上传、解析、预览 |
-| 🗄️ **知识库** | `/knowledge-base` | 知识库 CRUD，文档管理 |
-| 🔎 **知识搜索** | `/knowledge-search` | QDCVR 搜索，策略选择 |
-| 🌐 **图谱探索** | `/knowledge-graph` | D3.js 力导向图可视化 |
-| 🤖 **Claude 对话** | `/claude-chat` | Agent SDK 流式交互 |
-| 🧬 **SOUL 人格** | `/soul` | Persona Studio：训练实时监控 · RL 曲线 · 人格定义查看器 · 人格问答 |
-| ⚙️ **系统设置** | `/settings` | 配置编辑器，热重载 |
+## 系统架构
 
 <div align="center">
-
-**界面一览** —— 每个页面都是同一后端的实时视图：
-
-| 知识库 | QDCVR 搜索 | 图谱探索 |
-|:---:|:---:|:---:|
-| <img src="./docs/screenshots/knowledge-base.png" width="280" /> | <img src="./docs/screenshots/knowledge-search.png" width="280" /> | <img src="./docs/screenshots/knowledge-graph.png" width="280" /> |
-
+<img src="./docs/images/readme-architecture.svg" alt="系统架构：客户端、MCP 工具层、服务层、存储层" width="100%" />
 </div>
+
+三个服务加一层工具层，端口与路径全部来自同一个 `config.yml`：
+
+| 端口 | 服务 | 职责 |
+|---:|---|---|
+| `6789` | Nuxt 3 | 界面 + 服务端代理。浏览器从不直接调用后端（不暴露 CORS 面）。 |
+| `8770` | FastAPI | 解析调度、向量、图谱、经验、SOUL。端口被占用时拒绝启动。 |
+| *动态* | MinerU OCR | 自动挑一个空闲端口。作为受管子进程运行，随父进程退出。 |
+| `7687` | Neo4j | 文档图谱、跨库桥接。 |
+| — | ChromaDB | 分块向量，每个知识库一个 collection。 |
+
+**读写分离是刻意设计的：** 写操作走 HTTP API，保证原子性与可审计；读操作直接读磁盘上的 `.tree-fs.json` 与 `.knowledge-base.yml`，因此检索对后端零负载。
+
+> **说明：** 两份 README 记录的都是默认的 `8770`/`6789` 组合。如果你同时跑了多个实例，可能会看到第二个后端监听在别的端口（例如 `8771`）——请以 `config.yml` 和设置页顶部横幅显示的运行值为准。
 
 ---
 
-## 🎯 用例速查 —— "我想…"
+## 快速开始
 
-| 我想… | 最快路径 |
+```bash
+# 1 · 克隆仓库
+git clone https://github.com/kingdol666/rag-knowledge.git
+cd rag-knowledge
+
+# 2 · 安装全部依赖与模型（可重复执行）
+./ragctl setup          # Windows: ragctl setup
+
+# 3 · 一键启动 —— 静默，无终端窗口弹出
+./ragctl up             # Windows: ragctl up
+
+# 检查状态
+./ragctl status
+```
+
+然后打开 **http://localhost:6789**。
+
+`ragctl` 是所有操作的统一入口——服务、模型、配置、健康检查、知识库、人格与 Agent Harness。
+
+<details>
+<summary><b><code>ragctl</code> 全部命令</b></summary>
+
+<br>
+
+| 分组 | 命令 |
 |---|---|
-| 📄 导入 PDF / 图片 / Office 文档 | Web `/file-system` 上传 → 自动解析 (MinerU) + 索引 · Agent: *"把 xxx 导入知识库"* |
-| 🔎 搜索我的知识 | Web `/knowledge-search`（两阶段）· Agent: *"搜索：…"* · MCP `kb_search_two_stage` |
-| 🕸️ 探索知识图谱 | Web `/knowledge-graph` · MCP `kb_graph_kb_overview` / `kb_graph_document_related` |
-| 💡 记录排查经验 | Agent: *"记录这个经验"* → `knowledgebase-experience-summarize` · MCP `experience_create` |
-| ⏰ 自动沉淀经验 | `ragctl meditation run` · config.yml `experience_auto.enabled: true` |
-| 🧬 创建人格 | Web `/soul` → 创建人格 · `ragctl soul init soul-xxx` · MCP `soul_init` |
-| 🎭 蒸馏人格（补天） | `ragctl soul distill <dot-skill产物目录> --scope kbs` |
-| 🏋️ 训练人格 | Web `/soul` 训练控制台 · `ragctl soul learn-all soul-xxx` · MCP `soul_learn_all` |
-| 🤖 RL 强化人格 | Web `/soul` → RL 强化 · `ragctl soul train-rl soul-xxx --rounds 2` · MCP `soul_train_rl` |
-| 💬 人格增强问答 | Web `/soul` 问答 modal · `ragctl soul ask "…" --soul soul-xxx --qdcvr` · MCP `soul_qdcvr_ask` |
-| 🕐 定时自动训练 | Web `/soul` 配置 modal · MCP `experience_meditation_config_update` |
-| 💾 备份全部数据 | `ragctl backup [dest]`（KB + ChromaDB + Neo4j） |
-| 🪵 实时看日志 | `ragctl logs backend --tail` |
+| **生命周期** | `setup` `up` `down` `start` `stop` `restart` `status` `logs` |
+| **资源管理** | `install` `model` `mineru-model` `clean` `backup` `restore` |
+| **界面** | `desktop`（别名 `ui`） |
+| **知识** | `meditation` `soul`（别名 `persona`） `harness` |
+| **日常维护** | `check` `deps` `version` `update` |
 
-## ⌨️ CLI 参考 —— `ragctl`
+`soul` 子命令：`distill` `list` `status` `init` `learn` `learn-all` `train-rl` `evaluate` `review-cognition` `harness` `ask` `router` `review` `reflect` `export` `train` `checkpoint`。
 
-```text
-ragctl setup          # 一键部署: uv → Python → 依赖 → BGE-M3 → 配置
-ragctl up [-m dev|prod] [--no-neo4j] [--port-backend N] [--port-web N]
-ragctl status / down / start <svc> / stop <svc> / restart <svc> [-f]
-ragctl logs <backend|web> [--tail] [--lines N]
-ragctl model --source modelscope|hf-mirror|huggingface   # BGE-M3 (~2.2GB)
-ragctl mineru-model    # MinerU OCR 模型 (~5-7GB)
-ragctl clean [--all] [--dry-run]                          # 清理缓存
-ragctl backup [dest] / restore [src]                      # 跨平台备份/恢复
-ragctl meditation status|run|history|config [kb]          # 自动经验冥想
-ragctl version / update [--check] [--yes --restart]       # 版本管理
-ragctl soul list|status|distill|init|learn|learn-all|train-rl|evaluate|\
-         review|review-cognition|harness|ask|router|reflect|export|delete
-ragctl desktop / ui    # Tauri 桌面控制台
-```
+</details>
 
-端口：**dev** 后端 `8770` / 前端 `6789` · **prod** 后端 `8001` / 前端 `3000`。
+### 环境要求
 
----
-
-## 🏗️ 系统架构
-
-```
-浏览器 / Claude Code / MCP 客户端
-        │
-        ▼
-┌──────────────────────────────┐
-│  Nuxt 3 Web UI （代理层）     │  6789 (dev) / 3000 (prod)
-└──────────────┬───────────────┘
-               │ 服务间通信 (trust_env=False)
-               ▼
-┌──────────────────────────────┐
-│  FastAPI 后端 + MinerU OCR   │  8770 (dev) / 8001 (prod)
-└──────────────┬───────────────┘
-               │ 文件 I/O
-               ▼
-┌──────────────────────────────────────────────┐
-│  存储层                                        │
-│  ├── .tree-fs.json  （全局文件树索引）           │
-│  ├── {KB}/.knowledge-base.yml（文档索引）       │
-│  ├── {KB}/*.md     （文档内容）                 │
-│  ├── ChromaDB      （BGE-M3 1024维向量）        │
-│  └── Neo4j         （bolt://127.0.0.1:7687）    │
-└──────────────────────────────────────────────┘
-```
-
-### 五层存储模型
-
-| 层 | 内容 | 技术 |
-|:---:|------|------|
-| **L1** | 原始 Markdown 文档 | `storage/tree-file-system/{KB}/{doc}.md` |
-| **L2** | 文件树索引 | `.tree-fs.json` |
-| **L3** | 文档注册表 | `.knowledge-base.yml` |
-| **L4** | 向量嵌入（1024 维） | ChromaDB + BGE-M3 |
-| **L5** | 知识图谱 | Neo4j（文档/标签/KB 节点 + 关系） |
-
-> **原则：** 写入 → HTTP API（保证 5 层一致）。读取 → 直接文件读取（零后端负载）。
-
----
-
-## ⚙️ 配置
-
-`config.yml`（项目根目录）是唯一的真相源。`.env` 可覆盖，由 `ragctl setup` 自动创建。
-
-| 变量 | 默认值（dev / prod） | 用途 |
-|------|---------------------|------|
-| `APP_MODE` | `dev` | 选择配置段 |
-| `BACKEND_PORT` | `8770` / `8001` | FastAPI 端口 |
-| `WEB_PORT` | `6789` / `3000` | Nuxt 端口 |
-| `BACKEND_URL` | `http://localhost:8770` | 后端完整 URL |
-| `TREE_STORAGE_PATH` | `./storage/tree-file-system` | KB 数据根路径 |
-| `NEO4J_PASSWORD` | (docker-compose) | 图谱数据库认证 |
-
-```bash
-ragctl up --appmode prod        # 切换到生产端口
-ragctl status                   # dev + prod 并排显示
-ragctl down --appmode prod      # 仅停止 prod，保留 Neo4j
-```
-
-内置**限流**（`config.yml` 默认值，可调）：
-
-```yaml
-server:
-  rate_limit:
-    enabled: true
-    window_sec: 60
-    max_requests: 600       # 常规端点
-    heavy_max: 60            # 解析/OCR 类重端点
-```
-
-### config.yml —— 全字段说明
-
-| 段 | 关键字段 | 作用 |
+| | 要求 | 原因 |
 |---|---|---|
-| `server` | `cors_origins` · `auth.enabled` · `rate_limit` | CORS / 共享 token 认证 / 限流；`dev`+`prod` 端口组 |
-| `storage` | `tree_fs_root` | 知识库文档存放位置（默认 `./storage/tree-file-system`） |
-| `vector` | `chunk_size: 500` · `chunk_overlap: 50` · `top_k` · `score_threshold: 0.35` | 分块 + 向量召回阈值（经验检索 `experience_score_threshold: 0.55`） |
-| `embedding` | `model_name: BAAI/bge-m3` · `model_source: modelscope` | 嵌入模型 + 下载源（国内友好默认） |
-| `graph` | `uri: bolt://127.0.0.1:7687` · `password` · `pool` | Neo4j 连接 + 连接池调优 |
-| `search` | `two_stage.stage1_top_k: 20` · `stage2_top_k: 5` · 权重 | 两阶段召回中 BM25↔图谱融合权重 |
-| `experience_auto` | `enabled: false` · `interval_hours: 24` · `max_drafts_per_run` | 定时经验蒸馏（冥想） |
-| `soul` ¹ | `default_harness: omp` · `default_model` | SOUL 训练引擎默认（单人格可在 meditation 配置覆盖） |
-| `mineru` ¹ | `enabled` · `model_source: modelscope` | OCR 引擎 + VLM 模型源 |
-
-> ¹ `soul` 与 `mineru` 段位于 **`backend/config.yml`**（仅后端使用）；上表其余段均在项目根 `config.yml`，由全部服务共享。
-
-**覆盖顺序：** `config.yml` < `.env` < CLI 参数（`--port-backend`、`--appmode` …）。
+| **Python** | 3.12（`>=3.12,<3.13`） | MinerU 与后端锁定在此区间 |
+| **Node.js** | ≥ 18 | Nuxt 3 |
+| **uv** | 较新版本即可 | Python 环境管理 |
+| **磁盘** | 数 GB | MinerU 模型加你的语料 |
+| **可选** | `7687` 上的 Neo4j | 缺失时图谱功能会优雅降级 |
 
 ---
 
-## ⚡ 94 个 MCP 工具
+## 四种使用方式
 
-所有工具均可通过 `mcp__kb-mcp__*` 从任何 MCP 兼容 Agent 访问。
+### 1 · Web 界面
 
-<div align="center">
+共十个页面：仪表盘、文件系统、知识库管理、QDCVR 检索、图谱浏览器、SOUL 人格工作室、Agent 对话、系统设置、API Token、登录。支持浅色/深色，从桌面到手机全尺寸适配。
 
-| 类别 | 数量 | 类别 | 数量 |
-|:-----|:----:|:-----|:----:|
-| **服务生命周期** | 4 | **知识库 CRUD** | 4 |
-| **文档 CRUD + 列表** | 9 | **搜索** | 4 |
-| **向量索引** | 6 | **文件系统** | 3 |
-| **知识图谱** | 11 | **经验（含冥想）** | 26 |
-| **标签** | 4 | **解析**（非阻塞） | 3 |
-| **🧠 SOUL 人格** | **20** | **合计** | **94** |
-</div>
+### 2 · HTTP API
 
----
+完全不需要 Agent 或 MCP。见[外部 HTTP API](#外部-http-api)。
 
-## 🗺️ 路线图
-
-- [x] **v1.0** — 核心 QDCVR 检索，知识库 CRUD，Web UI，MCP 工具
-- [x] **v2.0** — 知识图谱，经验生命周期，双语 i18n
-- [x] **v2.1** — 冥想（自动经验），MinerU OCR，多格式解析
-- [x] **v2.2** — Tauri 桌面应用，CIKM 标准检索基准（5 方法 × 50 查询 × 157 文档）
-- [x] **v2.3** — 五层一致性，静默无头，删除时自动清理图谱
-- [ ] **v2.4** — 多模态（图片搜索），REST API 密钥认证
-- [ ] **v2.5** — WebSocket 实时协作，团队工作区
-- [ ] **v3.0** — 分布式索引（Ray），10 万+ 文档规模
-
----
-
-## 🤝 贡献指南
-
-欢迎提交贡献！
-
-1. 🍴 **Fork** 本仓库
-2. 🌿 创建**功能分支**（`git checkout -b feature/amazing`）
-3. 💻 **编码**，遵循现有风格
-4. ✅ **测试**（`pytest backend/tests/`）
-5. 📝 **提交**，写清晰的消息
-6. 🚀 **推送**并发起 **Pull Request**
-
-**准则：**
-- 保持**原子化** —— 一个 PR 一个功能/修复
-- **先测试**再提交（前端：`npx vue-tsc --noEmit`，后端：`pytest`）
-- **文档化**新功能
-- **没有 AI 废代码** —— 每行代码都应有其目的
-
----
-
-## ❓ 常见问题与排障
-
-<details>
-<summary><b>🔌 端口被占用 / 服务起不来</b></summary>
+### 3 · 命令行
 
 ```bash
-ragctl status                       # 查看各端口占用情况
-ragctl up --port-backend 9000 --port-web 6790   # 换到空闲端口
-```
-若是残留进程占用，`ragctl restart backend -f` 强制重启。
-
-</details>
-
-<details>
-<summary><b>⬇️ 模型下载慢 / 失败</b></summary>
-
-```bash
-ragctl model --source modelscope     # ⭐ 中国区（阿里云 CDN，默认）
-ragctl model --source hf-mirror      # HuggingFace 镜像
-ragctl model --source huggingface    # 直连（海外）
-```
-模型缓存位于 `models_cache/` —— `ragctl clean --model` 可清除（需重新下载）。
-
-</details>
-
-<details>
-<summary><b>🕸️ 图谱功能不可用</b></summary>
-
-图谱是可选的。Neo4j 现在默认**本地安装、无需 Docker**（config.yml `graph.mode: local`）——发行版+内置 JRE 在 `backend/.neo4j/`，backend 启动时自动拉起（与 MinerU 同款）：
-
-```bash
-ragctl start neo4j    # 独立启动本地 Neo4j（backend 启动时也会自动拉起）
-ragctl stop neo4j     # 停止本地 Neo4j
-ragctl up --no-neo4j        # 其余功能正常；图谱工具返回降级响应
+./ragctl status                 # 服务健康状态
+./ragctl logs backend -f        # 实时跟踪日志
+./ragctl soul list              # 人格列表
+./ragctl harness                # Agent Harness 可用性
+./ragctl backup                 # 备份存储
 ```
 
-端口/内存/镜像均配置驱动（config.yml → `graph.*`，环境变量可覆盖）。旧 Docker 模式：设 `graph.mode: docker` 并执行 `docker compose up -d neo4j`。
-`.env` 的 `NEO4J_PASSWORD` 必须与 `docker-compose.yml` 一致。
+### 4 · MCP —— 任意 Agent
 
-</details>
+MCP 服务器由你的客户端通过仓库根目录的 `.mcp.json` 以 stdio 方式拉起。Claude Code、Cursor 或任何支持 MCP 的客户端都可以，平台本身无需重启。
 
-<details>
-<summary><b>📄 PDF 解析失败 / 卡住</b></summary>
-
-MinerU 需先预下载模型（一次性）：`ragctl mineru-model`（约 5-7GB）。然后观察：
-
-```bash
-ragctl logs backend --tail
-```
-解析是**非阻塞**的：MCP 调用立即返回 `task_id` —— 轮询 `parse_task_status(task_id)` 而非等待。
-
-</details>
-
-<details>
-<summary><b>🧬 SOUL 训练秒回 "skipped"</b></summary>
-
-这是**增量幂等**，不是 bug：该文档内容哈希（`learned_hash`）已匹配，人格零成本跳过。换未学文档，或等新/变更文档进入知识库再训练。
-
-</details>
-
-<details>
-<summary><b>🔌 Agent 看不到 MCP 工具</b></summary>
-
-工具在 MCP server 启动时注册。安装/更新插件后**重启 MCP 客户端会话**（或 reload 插件）。用 `kb_project_status()` 或 `soul_list()` 验证。
-
-</details>
-
-<details>
-<summary><b>💸 训练预算 / 成本控制</b></summary>
-
-- 单人格上限：`soul_status(soul_kb_id).estimated_cost_usd`
-- 每轮预算：meditation 配置 `max_budget_usd`（默认 0.15）—— 每轮独立基线
-- 全库训练先 dry-run：`ragctl soul learn-all soul-xxx --dry-run`
-
-</details>
-
-<details>
-<summary><b>🔐 开启 API 认证</b></summary>
-
-```yaml
-# config.yml
-server:
-  auth:
-    enabled: true
-# .env
-KB_AUTH_TOKEN=<你的token>
-```
-此后所有写接口需要 token；GET 接口对 UI 保持开放。
-
-</details>
-
-<details>
-<summary><b>🧹 全新开始（保留文档）</b></summary>
-
-```bash
-ragctl clean            # MinerU 解析产物
-ragctl down             # 停止服务
-# 删除 storage/tree-file-system/* 重置知识库（先备份！）
+```jsonc
+// .mcp.json（仓库中已包含）
+{
+  "mcpServers": {
+    "kb-mcp": {
+      "command": "uv",
+      "args": ["run", "--directory", "kb-mcp", "python", "server.py"]
+    }
+  }
+}
 ```
 
-</details>
+然后直接用自然语言提问即可——*「关于 PET 薄膜双向拉伸我们有哪些资料？」*——Agent 会经由 knowledgebase 技能路由，并强制走完所有质量门控。
 
 ---
 
-## 🌐 社区与支持
+## 94 个 MCP 工具
 
-<div align="center">
+所有工具都在 `kb-mcp/server.py` 中通过 FastMCP 注册。下表的分区是完备且互斥的。
 
-| 资源 | 链接 |
-|:-----|:-----|
-| 🐛 **报告 Bug** | [GitHub Issues](https://github.com/kingdol666/rag-knowledge/issues) |
-| ⭐ **给我们点星** | [GitHub](https://github.com/kingdol666/rag-knowledge) |
-| :gb: **英文文档** | [README.md](./README.md) |
-| 💬 **讨论** | [GitHub Discussions](https://github.com/kingdol666/rag-knowledge/discussions) |
-| 📦 **版本发布** | [GitHub Releases](https://github.com/kingdol666/rag-knowledge/releases) |
+| 类别 | 数量 | 覆盖内容 |
+|---|:---:|---|
+| **SOUL 人格** | 20 | init · list · status · learn · learn-all · train-rl · evaluate · calibrate · 认知草稿 · review · reflect · checkpoint · rollback · ask · qdcvr-ask · router · export（LoRA） |
+| **经验库** | 26 | 完整 E0–E12 生命周期 · 全局检索 · 智能检索 · 重排 · 提取 · 草稿（列表/读取/审批/驳回）· 陈旧检查 · 同步 · 看板 · 衰减 · 冥想（运行/状态/历史/配置） |
+| **知识图谱** | 11 | 图谱检索 · 统计 · 单文档关系 · 关联文档 · 库概览 · 构建 · 跨库文档 · 路径 · 中心文档 · 删除文档/库 |
+| **文档 CRUD** | 9 | 读取 · 新建 · 改元数据 · 改内容 · 删除 · 批量删除 · 移动 · 保存解析结果 |
+| **向量 / 索引** | 6 | 单文档索引 · 批量索引 · 重建索引 · 清理孤儿 · 查重 · 任务状态 |
+| **知识库 CRUD** | 4 | 列表 · 新建 · 更新 · 删除 |
+| **检索** | 4 | 检索（仅元数据）· 向量 · 两阶段（主入口）· 统计 |
+| **标签** | 4 | 列表 · 更新 · 按标签取文档 · 清理 |
+| **项目生命周期** | 4 | 状态 · 启动 · 更新 · 后端状态 |
+| **文件系统** | 3 | 取目录树 · 取子节点 · 上传文件 |
+| **解析** | 3 | 解析单文档 · 批量解析 · 解析任务状态 |
+| | **94** | |
 
-</div>
+有两条设计规则值得了解：
 
----
+- **解析工具全部非阻塞。** 它们立即返回 `task_id`，用 `parse_task_status` 轮询即可。解析永远不会阻塞 Agent 的一轮对话。
+- **长任务同样返回 task id。** `kb_reindex`、`kb_graph_build`、`experience_meditation_run` 都返回任务 id，而不是把连接挂住。
 
-## 📄 许可证
-
-MIT © [kingdol](https://github.com/kingdol666)
-
----
-
-<div align="center">
-
-<sub>基于</sub>
-<a href="https://fastapi.tiangolo.com/">FastAPI</a> ·
-<a href="https://nuxt.com/">Nuxt 3</a> ·
-<a href="https://neo4j.com/">Neo4j</a> ·
-<a href="https://www.chromadb.com/">ChromaDB</a> ·
-<a href="https://modelcontextprotocol.io/">MCP</a> ·
-<a href="https://mineru.net/">MinerU</a>
+<details>
+<summary><b>Agent 技能（20 个）</b></summary>
 
 <br>
 
-**⭐ 在 GitHub 上给我们点星 —— 每一颗星都让项目变得更好！** ⭐
+`knowledgebase` 调度器把中英文自然语言请求路由到对应子技能，并委托给 Archival 子 Agent 执行，以确保质量门控不会被跳过：
 
-<a href="https://github.com/kingdol666/rag-knowledge/stargazers">
-<picture>
-<source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=kingdol666/rag-knowledge&type=Date&theme=dark" />
-<source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=kingdol666/rag-knowledge&type=Date" />
-<img alt="Star History Chart" src="https://api.star-history.com/svg?repos=kingdol666/rag-knowledge&type=Date" width="600" />
-</picture>
-</a>
+`knowledgebase` · `knowledgebase-init` · `knowledgebase-update` · `knowledgebase-ingest` · `knowledgebase-search` · `knowledgebase-manage` · `knowledgebase-experience` · `knowledgebase-graph` · `knowledgebase-verify` · `butian` · `soul` · `soul-rag`，其余位于 `.claude/skills/`。
 
+</details>
+
+---
+
+## 外部 HTTP API
+
+认证**默认开启**（`server.auth.enabled: true`）。除 `/api/v1/health` 与 `/api/v1/auth/*` 外，所有接口都需要 Bearer Token。交互式文档在后端的 **`/docs`**；生成的 OpenAPI 会为非公开接口标注 `bearerAuth`。
+
+```bash
+# 0 · 获取令牌（全新安装需先注册）
+TOKEN=$(curl -s -X POST http://localhost:6789/api/auth/login \
+  -H 'content-type: application/json' \
+  -d '{"username":"you","password":"your-password"}' | jq -r .token)
+
+# 1 · 创建知识库
+curl -s -X POST http://localhost:6789/api/kb/create \
+  -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
+  -d '{"name":"engineering-notes","description":"内部工程笔记"}'
+
+# 2 · 写入文档（kbId 与 kb_id 均可，snake_case 别名会自动归一化）
+curl -s -X POST http://localhost:6789/api/kb/documents/create \
+  -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
+  -d '{"kbId":"<kbId>","name":"pump-failure.md","content":"# 泵故障\n\n轴承温度超过 90°C..."}'
+
+# 3 · 检索（两阶段：BM25 粗排 → 向量精排）
+curl -s -X POST http://localhost:6789/api/v1/search/two-stage \
+  -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
+  -d '{"query":"轴承温度上限","limit":5}'
+
+# 健康检查无需令牌
+curl -s http://localhost:8770/api/v1/health
+```
+
+默认限流为 **600 次请求 / 60 秒**。
+
+<details>
+<summary><b>接口分布</b></summary>
+
+<br>
+
+| 领域 | 基础路径 |
+|---|---|
+| 认证 | `/api/v1/auth/{register,login,verify}` · `/api/auth/*`（Web 代理） |
+| 知识库 | `/api/kb/{create,catalog,documents}` |
+| 检索 | `/api/v1/search/{two-stage,vector}` |
+| 经验 | `/api/v1/experience/*` |
+| SOUL | `/api/v1/soul/*` |
+| 图谱 | `/api/v1/graph/*` |
+| 解析 | `/api/v1/parse/*` |
+| MinerU | `/api/v1/mineru/{status,restart}` |
+| 健康 | `/api/v1/health`（公开） |
+
+以线上 OpenAPI 文档为准——它列出 114 条路径 / 121 个操作，并显式标注了其中 5 个公开接口。
+
+</details>
+
+---
+
+## 配置
+
+只有一个文件。仓库根目录的 `config.yml` 是端口与主机的唯一事实来源，后端、Web 代理与 MCP 服务器读取的都是它。
+
+```yaml
+server:
+  dev:
+    backend_port: 8770
+    frontend_port: 6789
+    backend_url: "http://localhost:8770"
+  prod:
+    backend_port: 8001
+    frontend_port: 3000
+    backend_url: "http://localhost:8001"
+```
+
+优先级为：`BACKEND_PORT` 环境变量 → `config.yml` → 代码默认值。`APP_MODE=dev|prod` 决定读取哪一段。代码库中没有任何地方硬编码端口或路径。
+
+> 在 `APP_MODE=dev` 下修改 `config.yml` 会触发热重载。长时间会话建议使用 `APP_MODE=prod`，避免日志/数据库写入引发的重载风暴。
+
+---
+
+## 存储模型
+
+```
+web/storage/tree-file-system/
+├── .tree-fs.json                 # L1 · 权威全局目录树索引
+└── {知识库名称}/
+    ├── .knowledge-base.yml       # L2 · 单库文档索引（名称、标签、元数据）
+    ├── {文档}.md                 # L3 · 解析/上传后的 Markdown
+    └── images/                   #      解析过程中抽取的图片
+```
+
+| 层 | 存储 | 内容 |
+|:---:|---|---|
+| **L1** | `.tree-fs.json` | 全部文件夹与文件及其元数据 |
+| **L2** | `.knowledge-base.yml` | 单库检索索引——检索直接读它 |
+| **L3** | 磁盘上的 `.md` | 内容本身 |
+| **L4** | ChromaDB | 分块向量，每库一个 collection |
+| **L5** | Neo4j | 文档、标签、知识库节点及其类型化关系 |
+
+> L5 只会为你**显式构建过图谱**的知识库填充。全新安装时图谱是空的，图谱页显示零节点是正常的——尤其是标签节点，只有在带标签文档上执行过图谱构建后才会出现。
+
+---
+
+## 验证数据
+
+以下数字均可由仓库内已提交的产物复现，脚本与出处都在本仓库中。
+
+**入库完整性。** 两套语料、五个层级端到端校验；在已提交的运行记录中，入库模块报告的完整性为 `1.000`（`benchmark-suite/results/module_a_ingestion_r1.json`、`module_a_std2_r1.json`）。
+
+**检索 —— 自建语料。** 数据来自 `benchmark-suite/results/module_b_retrieval_r2.json`（20 条查询，已完整提交）：
+
+| 策略 | Hit@1 | Recall@5 | P@5 | 延迟 |
+|---|:---:|:---:|:---:|:---:|
+| 分阶段 BM25 → 向量 + 内容裁定 | 0.800 | **0.908** | **0.210** | 1.33 s |
+| 纯稠密向量 | **0.900** | 0.917 | 0.200 | **0.081 s** |
+
+**检索 —— SciFact。** 数据来自 `module_b_std2_r2.json`：稠密向量在 Hit@3（0.900 vs 0.833）、Recall@5（0.900 vs 0.833）与 nDCG@10（0.834 vs 0.809）上领先；BM25 的 MRR 最高（0.839）。
+
+**这些数字说明了什么。** 内容裁定**不是白捡的收益**。它提升了 P@5 与 Recall@5——也就是找回了更多相关内容——代价是约 **13 倍延迟**，因为它要读文档而不是算向量。在两套语料上它都**没有**提升 Hit@1。任何「它全面优于纯向量检索」的说法都不被已提交的证据支持，本 README 也不作此声称。
+
+**Agent 接口。** 针对线上平台的外部 API 端到端检查 **73/73 全部通过**（涵盖知识库管理、内容检索、经验生命周期、人格训练）。
+
+> **关于已撤下的结果。** 本 README 的早期版本引用过一组更大的基准数据（`P@5 0.590 → 0.630`、`FPR 12 % → 3.0 %`、`84 ms → 38 ms`）。这些数字来自 `benchmark-web/backend/results/`，而该目录在本仓库中**找不到任何生成脚本**——它们无法复现，且与上文可追溯的运行结果相矛盾。因此它们被**删除**而不是被重述。如果你需要这些数字，请在上游提交可复现脚本之前，将其视为不可用。
+
+<sub>计数最后核验于 **2026-09-15** 的线上实例：12 个知识库 · 209 份文档 · 94 个 MCP 工具 · 20 个技能 · 233 个后端测试 · 124 条 Web 路由 · 114 条 API 路径。</sub>
+
+---
+
+## 适用范围与非目标
+
+明确说明这个项目**不是**什么：
+
+- **不是托管服务。** 它按设计自托管，没有多租户隔离方案。
+- **不是微调平台。** SOUL 的 LoRA 导出是一条**导出**路径，不要指望它能与专用训练器竞争。
+- **不是在每个维度上都优于纯向量检索。** 见上面的诚实说明——它是在召回类指标上以延迟换精度。
+- **在 Windows 上不是完全不挑环境的。** Python 3.12 的版本锁定是真实约束，目前不支持 3.13。
+- **开箱不是图谱完备的。** L5 需要按知识库显式执行图谱构建才会填充。
+
+---
+
+## 参与贡献
+
+欢迎提交 Issue 与 Pull Request。开 PR 之前请先跑：
+
+```bash
+cd backend && uv run pytest          # 后端单元测试（集成测试需加 --run-integration）
+cd web && npx nuxt build             # 类型检查 + 构建
+node scripts/validate_skills.cjs     # 跨技能一致性检查（8 项）
+```
+
+约定：端口与路径一律来自 `config.yml`；Python 必须写类型标注并使用 `logging`，禁止 `print`；`httpx` 调用必须传 `trust_env=False`，避免 localhost 请求被代理劫持；解析工具绝不阻塞。
+
+---
+
+## 许可证
+
+MIT —— 见 [LICENSE](./LICENSE)。
+
+<div align="center">
+<br>
+<sub>本项目是面向「内容验证检索」的研究平台。<br>
+截图均为运行中应用的真实捕获；基准数字要么可追溯到已提交产物，要么不予列出。</sub>
 </div>

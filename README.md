@@ -1,951 +1,522 @@
 <div align="center">
+<img src="./docs/images/readme-hero.svg" alt="RAG Knowledge Platform — enterprise document intelligence and agentic knowledge base" width="100%" />
 
-<img src="./docs/images/logo.svg" alt="RAG Knowledge Platform" width="128" height="128" />
+<br><br>
 
-# RAG Knowledge Platform
+**English** &nbsp;·&nbsp; <a href="./README-zh.md">简体中文</a>
 
-### Enterprise-Grade Document Intelligence & Agentic Knowledge Base
+<br><br>
 
-**One pipeline from raw PDF to verified, agent-queryable knowledge — with content-verified retrieval that refuses to be fooled by vector similarity.**
-
-<p>
-<em>QDCVR Semantic Search · Neo4j Knowledge Graph · Experience Lifecycle (E0–E12)<br>
-94 MCP Tools · 19 Agent Skills · MinerU OCR · Cross-Platform · SOUL Persona System</em>
-</p>
-
-<!-- Hero Badges -->
-<p>
-<a href="#-quick-start"><img src="https://img.shields.io/badge/Quick_Start-3_commands-4338ca?style=for-the-badge&logo=rocket" /></a>
-<a href="#-table-of-contents"><img src="https://img.shields.io/badge/Platform-Win_%7C_Linux_%7C_macOS-334155?style=for-the-badge&logo=linux" /></a>
-<a href="#-94-mcp-tools"><img src="https://img.shields.io/badge/MCP_Tools-94-8b5cf6?style=for-the-badge&logo=code" /></a>
-<a href="#%EF%B8%8F-four-interfaces-one-backend"><img src="https://img.shields.io/badge/Skills-19-f97316?style=for-the-badge&logo=openai" /></a>
-</p>
-
-<p>
-<a href="https://github.com/kingdol666/rag-knowledge/stargazers"><img src="https://img.shields.io/github/stars/kingdol666/rag-knowledge?style=flat-square&color=facc15" /></a>
-<a href="https://github.com/kingdol666/rag-knowledge/releases"><img src="https://img.shields.io/github/v/release/kingdol666/rag-knowledge?style=flat-square&color=8b5cf6&label=release" /></a>
-<img src="https://img.shields.io/github/commit-activity/m/kingdol666/rag-knowledge?style=flat-square&color=22c55e" />
-<img src="https://img.shields.io/badge/Python-3.12-3776ab?style=flat-square&logo=python&logoColor=white" />
-<img src="https://img.shields.io/badge/License-MIT-22c55e?style=flat-square" />
-<img src="https://img.shields.io/badge/status-production_ready-0ea5e9?style=flat-square" />
-</p>
-
-<p>
-<sub><b>English</b></sub> &nbsp;&middot;&nbsp; <sub><a href="./README-zh.md">中文</a></sub>
-</p>
-
----
-
-<img src="./docs/images/rag-architecture.png" alt="RAG Knowledge Platform — 5-layer architecture" width="900" />
-
-</div>
-
-<div align="center">
-
-### 🎬 Platform Tour — 全功能巡礼（实测录制）
-
-<img src="./docs/screenshots/platform-tour.gif" alt="RAG Knowledge Platform feature tour" width="860" />
-
-<sub>首页仪表盘 · 知识库管理 · QDCVR 检索 · 知识图谱 · SOUL Persona Studio · 人格增强问答 · Agent 对话</sub>
-
-</div>
+<a href="#-quick-start"><img src="https://img.shields.io/badge/Quick_Start-3_commands-B24422?style=for-the-badge" alt="Quick Start" /></a>
+<a href="#-architecture"><img src="https://img.shields.io/badge/Stack-FastAPI_·_Nuxt_3_·_MCP-2E5D7F?style=for-the-badge" alt="Stack" /></a>
+<a href="#-the-94-mcp-tools"><img src="https://img.shields.io/badge/MCP_Tools-94-9E7A38?style=for-the-badge" alt="94 MCP tools" /></a>
+<a href="#-how-it-works"><img src="https://img.shields.io/badge/Retrieval-QDCVR-B24422?style=for-the-badge" alt="QDCVR" /></a>
 
 <br>
 
----
-
-## 📋 Table of Contents
-
-<p align="center">
-<a href="#-why-this-exists">Why</a> ·
-<a href="#-nine-pillars">Features</a> ·
-<a href="#-quick-start">Quick Start</a> ·
-<a href="#%EF%B8%8F-four-install-methods">Install</a> ·
-<a href="#-prerequisites">Prerequisites</a> ·
-<a href="#%EF%B8%8F-four-interfaces-one-backend">Usage</a> ·
-<a href="#-architecture">Architecture</a> ·
-<a href="#-configuration">Config</a> ·
-<a href="#%EF%B8%8F-94-mcp-tools">MCP Tools</a> ·
-<a href="#-roadmap">Roadmap</a> ·
-<a href="#-integrate-from-any-system-plain-http--no-mcp-no-agent">HTTP API</a> ·
-<a href="#-verification-status">Verification</a> ·
-<a href="#-contributing">Contributing</a>
-</p>
-
----
-
-## ✨ Why This Exists
-
-> **The core problem with modern RAG:** high vector similarity ≠ content relevance. A query about *"PET biaxial stretching"* cheerfully returns *"PP film"* literature at cosine 0.90 — both live in the "polymer film" semantic space, so the embedder is fooled. The LLM then hallucinates a confident, wrong answer.
-
-This platform solves that at the **retrieval layer**, not the generation layer. Its flagship method — **QDCVR (Query-Driven, Content-Verified Retrieval)** — reads candidate documents and scores them on an independent **0–8 content rubric**, applying the uncompromising rule:
-
-> ### 🎯 *"Vectors are fast. Content is accurate."*
-> Even at vector similarity **0.95**, if the content score is **≤ 4**, the document is **discarded**.
-
-<div align="center">
-
-| | Traditional KB Tools | **RAG Knowledge Platform** |
-|:---:|:---|:---|
-| 🔍 | Single search strategy (vector *or* keyword) | **Multi-strategy**: BM25 + vector + tag-semantic + graph expansion |
-| 🧠 | Trust vector similarity blindly | **Content-verified retrieval** — independent 0–8 adjudication |
-| 🤖 | Bolt-on AI, hard to integrate with agents | **Agent-native**: 94 MCP tools, 19 skills — any MCP client works |
-| 💡 | No structured knowledge reuse | **Experience library**: E0–E12 lifecycle with P0/P1/P2 credibility |
-| 🔧 | Complex multi-tool setup, scattered configs | **One command** `ragctl setup`, single `config.yml` source of truth |
-| 🪟 | Terminal windows everywhere | **Silent headless** — zero terminals in dev *and* prod |
+<img src="https://img.shields.io/badge/Platform-Windows_·_Linux_·_macOS-334155?style=flat-square" alt="Platform" />
+<img src="https://img.shields.io/badge/Python-3.12-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python 3.12" />
+<img src="https://img.shields.io/badge/Node.js-≥18-339933?style=flat-square&logo=nodedotjs&logoColor=white" alt="Node 18+" />
+<img src="https://img.shields.io/badge/License-MIT-3D6E3D?style=flat-square" alt="MIT" />
+<a href="https://github.com/kingdol666/rag-knowledge/stargazers"><img src="https://img.shields.io/github/stars/kingdol666/rag-knowledge?style=flat-square&color=C49846" alt="Stars" /></a>
+<a href="https://github.com/kingdol666/rag-knowledge/releases"><img src="https://img.shields.io/github/v/release/kingdol666/rag-knowledge?style=flat-square&color=9E7A38&label=release" alt="Release" /></a>
 
 </div>
 
 ---
 
-## 🌟 Nine Pillars
+## What this is
 
-<div align="center">
-<img src="./docs/images/rag-pipeline.png" alt="QDCVR Agentic-First Enterprise Retrieval Pipeline" width="900" />
-</div>
+A self-hosted platform that turns a folder of PDFs, Office documents and scans into a **knowledge base an AI agent can actually be trusted to answer from** — then exposes it four ways: a web UI, an HTTP API, a CLI, and 94 MCP tools that any MCP-capable agent can drive.
 
-<div align="center">
+The retrieval layer is the interesting part. Most RAG stacks rank by vector similarity and hope. This one **reads the candidate documents and scores them against an independent 0–8 content rubric**, then refuses to return anything that fails it:
 
-| # | Pillar | What you get |
-|:---:|:---|:---|
-| 📄 | **Document Parsing** | PDF / Word / Excel / PPT / images → Markdown via **MinerU OCR** engine |
-| 🧠 | **QDCVR Retrieval** | Query-driven, content-verified retrieval — independent 0–8 content scoring |
-| 🔍 | **Multi-Strategy Search** | BM25 + vector two-stage recall · cross-KB enterprise search · `balance_kbs` diversity guard |
-| 📊 | **Knowledge Graph** | Neo4j-powered · 11 graph tools · entity/relation graphs · cross-KB document bridges |
-| 💡 | **Experience Library** | E0–E12 lifecycle · structured problem→solution→lessons · P0/P1/P2 credibility · decay |
-| 🔌 | **94 MCP Tools** | KB CRUD · search · graph · experience · SOUL persona · parsing · tags · vector/index · lifecycle — all MCP-native |
-| 🎯 | **19 Agent Skills** | Natural-language commands · bilingual triggers (中/EN) · auto-dispatch to Archival agent · SOUL persona management |
-| 🧠 | **SOUL Persona System** | Persona distillation (dot-skill) · curiosity-driven training · QDCVR persona-augmented Q&A · 20 dedicated MCP tools |
-| 🤫 | **Silent Headless** | Every launcher runs with **zero terminal windows** · dev and prod behave identically |
+> **Vectors are fast. Content is accurate.**
+> A document at cosine similarity **0.95** whose content scores **≤ 4** is **discarded** — not down-ranked, discarded.
 
-</div>
-
----
-
-## 🧠 The QDCVR Retrieval Method
-
-<div align="center">
-
-### Query-Driven · Content-Verified Retrieval
-
-*You don't trust a lawyer who only skimmed the cover. Your RAG shouldn't trust a cosine score.*
-
-</div>
-
-**QDCVR** is a 6-step retrieval pipeline designed to be **resistant to vector similarity's deceptive scores**:
-
-```
-User Query
-    │
-    ▼
-┌─────────────────────────────┐
-│  ① KB Selection             │  Smart dispatch to the right KB(s)
-│  (balance_kbs diversity)    │  Prevents large-KB domination
-└─────────────┬───────────────┘
-              ▼
-┌─────────────────────────────┐
-│  ② Multi-Stage Recall       │  BM25 → Vector → Tag-semantic → Graph
-│  (4 parallel paths)         │  Recall from every angle
-└─────────────┬───────────────┘
-              ▼
-┌─────────────────────────────┐
-│  ③ Content Verification     │  ⭐ KEY INNOVATION
-│  (0-8 scoring rubric)       │  Read actual document text, score it
-│                              │  Score < 6? → tag+description expansion
-│                              │  Score < 4? → HARD DISCARD
-└─────────────┬───────────────┘
-              ▼
-┌─────────────────────────────┐
-│  ④ Cross-Validation         │  Dedup, cross-KB merge, rank fusion
-└─────────────┬───────────────┘
-              ▼
-┌─────────────────────────────┐
-│  ⑤ Confidence Rating        │  P0 (verified) / P1 (likely) / P2 (hint)
-│  + Blind-Spot Declaration   │  Honest "I don't know" — never fake it
-└─────────────┬───────────────┘
-              ▼
-┌─────────────────────────────┐
-│  ⑥ Synthesized Answer       │  With ranked sources + evidence
-│  + Source Citations          │  Every claim links to source docs
-└─────────────────────────────┘
-```
-
-<details>
-<summary><b>🎯 The 0–8 Content Scoring Rubric (click to expand)</b></summary>
-
-| Score | Meaning | Example |
-|:----:|---------|---------|
-| **0–2** | Off-topic / hallucination | Vector similarity 0.95 but content is about a different material entirely — **discarded** |
-| **3–4** | Tangential mention | Query "PET stretching" → hit has one sentence about PET among 20 pages about PP — **discarded** |
-| **5–6** | Partially relevant | Covers the topic but missing key details — gets tag+description **expansion pass** |
-| **7–8** | Directly answers the query | Precisely matches the question's domain, material, and context — **returned as P0** |
-
-> **The rule**: vectors suggest candidates. Content determines truth. A 0.95 vector score buys you nothing if the content score is ≤ 4.
-</details>
-
-<details>
-<summary><b>🧪 Experimental results — content-verified vs blind vector recall</b></summary>
-
-In benchmark tests across 6 domains (20 adversarial queries):
-
-| Method | P@5 | FPR | Latency |
-|--------|:---:|:---:|:-------:|
-| Flat vector (blind) | 0.590 | 12.0% | 84 ms |
-| QDCVR Domain (verified) | **0.630** | **3.0%** | **38 ms** |
-| Cross-domain adversarial | — | **0.00%** | — |
-
-Cross-domain false positive rate: **0%** (vs 50–77% for flat vector).
-
-Full benchmark: [`docs/paper/benchmark/SYSTEM-BENCHMARK-PLAN.md`](./docs/paper/benchmark/SYSTEM-BENCHMARK-PLAN.md)
-</details>
-
----
-
-## 🧬 SOUL Persona System — 人格层
-
-> **知识库管「有什么」；SOUL 管「谁来讲、怎么讲」。** The knowledge base holds facts; SOUL decides *who* explains them and *how* — a persona layer that learns, evolves, and answers with identity.
-
-<div align="center">
-
-<img src="./docs/screenshots/soul-studio.png" alt="SOUL Persona Studio" width="880" />
-
-<sub><b>SOUL Persona Studio</b> — persona rail · live training monitor · RL evolution curve · persona-definition viewer</sub>
-
-</div>
-
-### 🧠 双引擎心智模型 — Two Engines, One Persona
-
-Every persona is a **`soul-<name>` knowledge base** holding four constitutional documents
-(`soul-definition` · `values` · `thinking-style` · `memory-conventions`) plus a `soul-config.yml`.
-
-```mermaid
-flowchart LR
-    subgraph 先天[Innate — distilled once]
-        A[补天 dot-skill
-聊天记录/文档/描述] -->|ragctl soul distill| B[persona.md + work.md
-+ meta.json]
-    end
-    B --> C[SOUL Persona soul-&lt;name&gt;
-4 宪法层文档 + config]
-    subgraph 后天[Acquired — lifelong]
-        D[好奇心训练
-四层问题→检索自答→四维自评→记忆草稿] --> E[RL 强化
-评价Agent打分→认知草稿→合并入定义]
-        E --> F[进化闭环
-reward 曲线 / profile 刷新 / 路由更准]
-    end
-    C --> D
-    F --> G[QDCVR 人格问答
-检索验证→人格合成→PAS 分]
-    G -. 回答反馈 .-> D
-```
-
-| 引擎 | 输入 | 产出 | 频率 |
-|---|---|---|---|
-| **补天蒸馏**（先天） | 聊天记录 / 文档 / 人物描述 | 初始人格种子（身份/风格/思维框架） | 一次性 |
-| **好奇心训练**（后天） | kb_scope 内文档 | 记忆草稿（事实/概念/跨文档/挑战四层问题） | 持续 |
-| **RL 强化**（进化） | 评价 Agent 四维评分 | 认知草稿 → 合并入人格定义文档 | 每轮训练 |
-
-### 🎓 先天种子：补天（dot-skill）蒸馏
-
-`/dot-skill` 把源材料（飞书/钉钉聊天记录、PDF、粘贴文本）蒸馏成
-`meta.json + persona.md + work.md`，一键转化为 SOUL 人格：
-
-```bash
-ragctl soul distill .claude/skills/dot-skill/skills/colleague/example_tianyi \
-  --name soul-天意 --scope Energy-Batteries --labels 靠谱,代码规范,热心 --harness omp
-```
-
-转换映射（适配本系统 schema）：`persona.md → soul-definition.md 追加段` · `work.md → thinking-style.md 追加段` · `meta.json tags → domain_labels`（路由标签）。
-
-### 🔬 后天进化：好奇心驱动的强化学习（RL）
-
-<div align="center">
-
-<img src="./docs/screenshots/soul-rl-training.gif" alt="RL training live monitor" width="720" />
-
-<sub><b>Live training monitor</b> — 提交 → 探索轮实时进度 → 评价得分 → 事件流（实测录制）</sub>
-
-</div>
-
-**好奇心协议**（每次 learn 内部）：
-
-```
-Step 1  文档读取（≤50k 字符）
-Step 2  生成四层问题: 事实 30% | 概念 30% | 跨文档 20% | 挑战 20%
-Step 3  每问自答: 两阶段检索(scope 限定) → 图谱邻居 → LLM 带引用合成
-Step 4  四维自评: 接地性/完整性/思维一致/信息增益 (0-5) + 10% 双判官
-Step 5  蒸馏: 接地性≥3 且无判官分歧 → 记忆草稿(pending)
-Step 6  记录 learned_hash(内容 SHA256) → 内容变更自动重学(增量幂等)
-```
-
-**RL 强化循环**（train-rl，每轮 = 探索 × 奖励 × 策略更新）：
-
-```
-┌─ 探索(Exploration)  learn_incremental — 学习 kb_scope 内增量文档
-├─ 奖励(Reward)       evaluate_persona — 评价 Agent 四维打分
-│                      identity / values / thinking / language (0-5)
-├─ 策略更新(Policy)   generate_cognition_drafts — 低分维度(<3.5)
-│                      → 认知草稿(对人格定义文档的受控优化建议)
-├─ 策略落地(Apply)    soul_review_drafts(draft_type=cognition) 审批
-│                      → 合并入 soul-definition.md 对应章节(仅追加,
-│                        checkpoint 保护, 幂等+行级去重)
-└─ 进化曲线(Log)      reports/reward-history.jsonl — 逐轮 reward
-```
-
-> **实测进化曲线**（soul-天意，真实数据）：`3.25 → 3.75 → 3.12 → 3.5 → 4.25`
-> 认知草稿合并后 identity 3→4、language 3→4、thinking 3→3.5；四维均 ≥3.5 后不再生成草稿（收敛态）。
-> 人格增强问答 **PAS 5.0（满分人格一致性）**，回答逐字体现进化后的语言风格（"引用统一编号""证据不足明说"）。
-
-### 🎭 三个入口，同一数据
-
-| 操作 | 🌐 Web Studio | 🖥️ ragctl | 🔌 MCP 工具 |
-|---|---|---|---|
-| 蒸馏创建 | —（建议 ragctl） | `soul distill <dir>` | `soul_init` + 文档覆盖 |
-| 训练（文档/全库/RL） | 训练控制台三模式 + 实时监控 | `soul learn` / `learn-all` / `train-rl` | `soul_learn` / `soul_learn_all` / `soul_train_rl` |
-| 评价 | RL 曲线 + reward 指标 | `soul evaluate` | `soul_evaluate` |
-| 审批（记忆/认知） | 审批 modal 双页签 + 异步进度 | `soul review` / `review-cognition` | `soul_review_drafts(draft_type)` |
-| 定时训练 | 配置 modal（间隔/轮数/预算） | `meditation config` | `experience_meditation_config_update` |
-| 问答 | 一键检索+人格回答 | `soul ask --qdcvr` | `soul_qdcvr_ask` / `soul_ask` |
-| 人格定义 | 查看器（4 文档 + RL 进化行标记） | — | `soul_status` |
-
-<div align="center">
-
-<img src="./docs/screenshots/soul-ask.png" alt="SOUL QDCVR ask" width="640" />
-
-<sub><b>一键检索+人格回答</b> — 证据注入 · 引用锚点 · PAS 人格一致性分</sub>
-
-</div>
-
-**长任务异步契约**（训练/批量审批都是分钟级作业，任何入口都不阻塞等待）：
-触发 → 立即返回 `task_id` → 轮询 `GET /api/v1/soul/tasks/{id}`（或 `kb_task_status`）→ `progress` 实时可见（轮次/问题/记忆/文档，审批 processed/total）。
-
----
-
-## 🚀 Quick Start
-
-> **Three commands from zero to a fully working platform.**
-
-```bash
-# 1 — Clone
-git clone https://github.com/kingdol666/rag-knowledge.git
-cd rag-knowledge
-
-# 2 — One-click setup (installs ALL deps + models)
-./ragctl setup
-
-# 3 — Start everything (silent, zero terminal windows)
-./ragctl up
-```
-
-<div align="center">
 <br>
-<a href="https://github.com/kingdol666/rag-knowledge"><img src="https://img.shields.io/badge/Watch_Demo-FF0000?style=for-the-badge&logo=youtube&logoColor=white" /></a>
-<a href="https://github.com/kingdol666/rag-knowledge/stargazers"><img src="https://img.shields.io/badge/Star_Us-facc15?style=for-the-badge&logo=github&logoColor=black" /></a>
-<a href="https://github.com/kingdol666/rag-knowledge/issues"><img src="https://img.shields.io/badge/Report_Bug-ef4444?style=for-the-badge&logo=github&logoColor=white" /></a>
-<br>
-</div>
-
-<details>
-<summary><b>🔧 Windows users — use the same commands natively</b></summary>
-
-```powershell
-.\ragctl.bat setup
-.\ragctl.bat up
-
-# Or once ragctl is registered globally:
-ragctl setup
-ragctl up
-```
-</details>
-
-> [!TIP]
-> **No Claude Code? No problem.** The Web UI is fully functional standalone. Use any MCP client to access 94 tools, or just browse/search at `http://localhost:6789`.
-
-### ✅ Verify Everything Works
-
-```bash
-ragctl status                                   # dual-mode: dev + prod side-by-side
-curl http://localhost:8770/api/v1/health        # → {"status":"healthy"}
-```
-
-### 🔍 What You'll See
-
-| Interface | URL | What to do |
-|-----------|:---:|------------|
-| 🌐 **Web UI** | `http://localhost:6789` | Browse KBs, search, view graph |
-| 📚 **API Docs** | `http://localhost:8770/docs` | Explore 106 backend endpoints via Swagger (+122 web routes) |
-| 🖥️ **CLI** | `ragctl status` | Check service health |
-| 🤖 **Agent** | Claude Code session | Say "list all knowledge bases" |
-
-### 🔌 Integrate from Any System (plain HTTP — no MCP, no Agent)
-
-Every capability is reachable over REST. Your backend service, script or CI job does **not**
-need MCP or Claude Code — a plain HTTP call is enough.
-
-| Layer | Base | Covers | Docs |
-|---|---|---|---|
-| **Backend** | `http://localhost:8770` | parse · vector/two-stage search · graph · experience · SOUL (106 endpoints) | `/docs` & `/openapi.json` |
-| **Web** | `http://localhost:6789` | KB & document CRUD · file tree · tags · preview (122 routes) | [`docs/api-web.md`](./docs/api-web.md) |
-
-```bash
-# 1) create a knowledge base
-curl -X POST localhost:6789/api/kb/create -H 'Content-Type: application/json' \
-     -d '{"name":"Research-Notes","description":"Papers and notes"}'
-
-# 2) write a document (kbId / kb_id both accepted — snake_case aliases are normalized)
-curl -X POST localhost:6789/api/kb/documents/create -H 'Content-Type: application/json' \
-     -d '{"kb_id":"Research-Notes","name":"notes.md","content":"# Notes\n\nvector recall is fast, content verification decides."}'
-
-# 3) search it (two-stage: BM25 candidates → vector refinement)
-curl -X POST localhost:8770/api/v1/search/two-stage -H 'Content-Type: application/json' \
-     -d '{"query":"how to improve retrieval accuracy","top_k":5}'
-```
-
-> **Conventions** — camelCase is canonical (`kbId`); snake_case aliases (`kb_id`, `doc_path`) are
-> accepted for compatibility with the MCP tool layer. Duplicate KB names are rejected with `409`
-> (they would corrupt vector-index attribution). Auth is off for trusted networks
-> (rate limit 600 req/60s) — put an API gateway in front before exposing publicly.
-
-### ✅ Verification Status
-
-| Check | Scope | Result |
-|---|---|---|
-| Full-feature smoke test | 60 capabilities: KB/doc CRUD · parse · 5 search modes · graph · experience lifecycle · SOUL | **60 / 60 passed** (`tmp/test_full_smoke.py`) |
-| `backend` unit tests | 139 tests | **139 passed, 0 failed** |
-| `kb-mcp` tool tests | 57 MCP-tool E2E tests | **57 passed, 0 failed** |
-| Integration hardening | 9 defects found & fixed (P0–P3) | [`TEST-REPORT`](./docs/TEST-REPORT-integration-hardening-2026-09-09.md) |
-
-**Known limits** — persona Q&A synthesis takes ~7 min (reasoning model; `thinking=minimal` already applied);
-two rapid consecutive `ragctl restart backend` calls in a row can hang the embedding service
-(one clean restart recovers it).
-
-### ⚡ 5-Minute Walkthrough — from zero to persona Q&A
-
-> Everything below is a **real, clickable path** on a freshly started platform.
-
-| # | Goal | 🌐 Web UI (http://localhost:6789) | 🖥️ CLI / 🤖 Agent |
-|:---:|---|---|---|
-| **1** | **Ingest your first document** | `/file-system` → upload a PDF → MinerU parses it → pick a KB → index (auto) | Agent: *"把 docs/xxx.pdf 导入 Energy-Batteries 知识库"* |
-| **2** | **Search with content verification** | `/knowledge-search` → type a question → two-stage recall → 0–8 content scoring → cited answer | Agent: *"搜索：钠离子电池和锂离子电池的区别"* → QDCVR |
-| **3** | **Reuse knowledge as experiences** | — (experiences are agent-native) | Agent: *"记录这个排查经验"* → `knowledgebase-experience-summarize` |
-| **4** | **Create a persona** | `/soul` → 创建人格 (template init: 4 docs + index + profile) | `ragctl soul init soul-xxx --scope Energy-Batteries` |
-| **5** | **Train it (curiosity-driven)** | `/soul` → training console (docs / full-KB / **RL**) → live monitor | `ragctl soul learn-all soul-xxx --rounds 2` |
-| **6** | **Ask with persona + retrieval** | `/soul` → Q&A modal → "一键检索+人格回答" | `ragctl soul ask "问题" --soul soul-xxx --qdcvr` |
-
-> **3 commands** do it all: `ragctl up` → import via Web → ask via `/soul`. Every step is observable in the UI — parsing queue, index stats, training progress, reward curve.
-
----
-
-## 🗺️ Four Install Methods
-
-All four end with the **same working platform**. Methods **A / B / C** are **agent-driven** — install once, then a single conversation initializes the whole thing. Method **D** is the **manual CLI** path.
-
-<table>
-<tr>
-<th width="25%">A. Claude Code Plugin<br><sub>recommended</sub></th>
-<th width="25%">B. OMP Global Install</th>
-<th width="25%">C. Skills Copy + Wizard</th>
-<th width="25%">D. Git Clone (Manual CLI)</th>
-</tr>
-<tr>
-<td valign="top">
-
-Use **Claude Code** — gets everything registered globally.
-
-```bash
-/plugin marketplace add kingdol666/rag-knowledge
-/plugin install rag-knowledge@rag-knowledge
-/reload-plugins
-```
-
-Then ask your agent:
-
-> **"初始化知识库"** · **"set up the KB"**
-
-</td>
-<td valign="top">
-
-Use **Oh My Pi** as coding agent.
-
-```bash
-git clone https://github.com/kingdol666/rag-knowledge.git
-cd rag-knowledge
-node scripts/install_omp.cjs
-```
-
-Then ask your agent:
-
-> **"initialize the knowledge base"** → `/knowledgebase-init`
-
-</td>
-<td valign="top">
-
-Skills without plugins.
-
-```bash
-git clone https://github.com/kingdol666/rag-knowledge.git ~/rag-knowledge
-mkdir -p ~/.claude/skills
-cp -r ~/rag-knowledge/.claude/skills/knowledgebase* ~/.claude/skills/
-```
-
-Then ask your agent:
-
-> **"初始化知识库系统"**
-
-</td>
-<td valign="top">
-
-Full manual control.
-
-```bash
-git clone https://github.com/kingdol666/rag-knowledge.git
-cd rag-knowledge
-./ragctl setup && ./ragctl up
-```
-
-Open **http://localhost:6789**.
-
-</td>
-</tr>
-</table>
-
-<details>
-<summary><b>📋 What <code>ragctl setup</code> does step by step</b></summary>
-
-| Step | Action | Duration |
-|------|--------|:--------:|
-| 1 | Install `uv` (Python package manager) if missing | ~5 sec |
-| 2 | Ensure Python 3.12 (managed by uv) | ~10 sec |
-| 3 | Verify project integrity (`backend/` + `web/`) | instant |
-| 4 | Create `.env` from `.env.example` | instant |
-| 5 | Install backend deps (FastAPI + torch + transformers + MinerU) | 5–15 min |
-| 6 | Install kb-mcp deps (MCP server) | ~30 sec |
-| 7 | Install web deps (Nuxt 3 + Ant Design Vue) | ~1 min |
-| 8 | Pre-download BGE-M3 embedding model (~2.2 GB) | 2–10 min |
-| 9 | Pre-download MinerU VLM model (OCR engine) | 3–10 min |
-| 10 | Register `ragctl` globally | instant |
-| 11 | Final environment check | ~2 sec |
-
-</details>
-
----
-
-## 📦 Prerequisites
-
-| Tool | Version | Required | Notes |
-|------|---------|:--------:|-------|
-| **Git** | any | ✅ | Cloning the repository |
-| **Node.js** | ≥ 18 | ✅ | `ragctl` CLI + Nuxt frontend |
-| **uv** | ≥ 0.7 | ⚡ Auto-installed | Python package manager |
-| **Python** | 3.12 | ⚡ via uv | Managed by uv — no manual install |
-| **Docker** | any | 📋 Optional | Only for Neo4j graph |
-| **Rust** | stable | 📋 Optional | Only for Tauri desktop app |
-
-> **Disk:** ~5 GB required · First run downloads BGE-M3 (~2.2 GB) from **ModelScope** (fast in China) or **HuggingFace** (set `embedding.model_source: huggingface` in `config.yml`).
-
----
-
-## 🖥️ Four Interfaces, One Backend
 
 <div align="center">
-<table>
-<tr>
-<th>Interface</th><th>How to Use</th><th>Key Commands</th>
-</tr>
-</table>
-</div>
-
-### 1. 🤖 Claude Code — *Natural Language*
-
-Speak to your agent in plain language, and the **Archival agent** dispatches to the right tool:
-
-```text
-"list all knowledge bases"                       → kb_list
-"ingest ./papers PDFs into a 'research' KB"       → knowledgebase-ingest
-"search: what are PET biaxial stretching params?" → QDCVR → verified answer + sources
-"organize all KBs — fix tags, descriptions"       → knowledgebase-organize
-"记录这个排查经验"                                 → knowledgebase-experience-summarize
-```
-
-### 2. ⌨️ CLI — *`ragctl`*
-
-```bash
-ragctl up                          # Start all services (silent)
-ragctl up --appmode prod           # Production ports (8001/3000)
-ragctl status                      # Dev + prod mode status
-ragctl logs web --tail             # Live web logs
-ragctl restart backend -f          # Force restart
-ragctl backup                      # Cross-platform backup
-ragctl down                        # Stop all services
-```
-
-<details>
-<summary><b>📋 Complete CLI Reference</b></summary>
-
-| Command | Description |
-|---------|-------------|
-| `ragctl setup` / `init` | One-click full deployment |
-| `ragctl check` | Environment audit + fix suggestions |
-| `ragctl up` / `down` | Start / stop all services |
-| `ragctl start` / `stop` / `restart` [svc] | Single service lifecycle (`backend`/`web`/`neo4j`) |
-| `ragctl status` | Dual-mode status: ports + health + PIDs |
-| `ragctl logs [svc] [--tail]` | View / tail logs |
-| `ragctl deps` | Install all dependencies |
-| `ragctl model [--source X]` | Pre-download BGE-M3 model |
-| `ragctl backup` / `restore` | KB + ChromaDB + Neo4j backup/restore |
-| `ragctl version` | Local version vs GitHub remote |
-| `ragctl update` | Check and pull latest version |
-| `ragctl install` | Register `ragctl` globally |
-| `ragctl desktop` / `ui` | Launch Tauri desktop console |
-| `ragctl clean` | Clean MinerU artifacts + cache |
-
-**Flags:** `--appmode dev|prod` · `--port-backend N` · `--port-web N` · `--no-neo4j` · `--force` · `--tail`
-</details>
-
-### 3. 🔌 MCP Client — *Any Agent*
-
-```python
-kb_project_start(backend=True, web=True, wait=True)
-kb_search_two_stage(query="reinforcement learning", balance_kbs=True)
-experience_search_global(query="ConnectError troubleshooting")
-kb_graph_cross_kb_documents(min_kbs=2)
-kb_index_document(kb_id="uuid", doc_path="paper.md")
-```
-
-### 4. 🌐 Web UI — *Browser-Based*
-
-Open **http://localhost:6789** and explore:
-
-| Page | Route | What You Can Do |
-|------|-------|-----------------|
-| 🏠 **Home** | `/` | Live dashboard with real-time KB/doc/tag/edge stats |
-| 📁 **File System** | `/file-system` | Tree browser, upload, parse, preview |
-| 🗄️ **Knowledge Base** | `/knowledge-base` | KB CRUD, document management, sub-KBs |
-| 🔎 **KB Search** | `/knowledge-search` | QDCVR search with strategy selector |
-| 🌐 **Graph Explorer** | `/knowledge-graph` | D3.js force-directed Neo4j visualization |
-| 🤖 **Claude Chat** | `/claude-chat` | Agent SDK streaming with tools |
-| 🧬 **SOUL Persona** | `/soul` | Persona Studio: live training monitor · RL curve · persona-definition viewer · persona Q&A |
-| ⚙️ **Settings** | `/settings` | Runtime config editor with hot-reload |
-
-<div align="center">
-
-**Interface gallery** — every page is a live view into the same backend:
-
-| Knowledge Base | QDCVR Search | Graph Explorer |
-|:---:|:---:|:---:|
-| <img src="./docs/screenshots/knowledge-base.png" width="280" /> | <img src="./docs/screenshots/knowledge-search.png" width="280" /> | <img src="./docs/screenshots/knowledge-graph.png" width="280" /> |
-
+<img src="./docs/images/readme-pipeline.svg" alt="Ingestion pipeline: files → MinerU OCR → knowledge base → indexes → QDCVR retrieval → verified answer" width="100%" />
 </div>
 
 ---
 
-## 🎯 Use-Case Cheat Sheet — “I want to…”
+## Table of contents
 
-| I want to… | Fastest path |
+| | |
 |---|---|
-| 📄 Import PDF / images / Office docs | Web `/file-system` upload → auto parse (MinerU) + index · Agent: *"把 xxx 导入知识库"* |
-| 🔎 Search my knowledge | Web `/knowledge-search` (two-stage) · Agent: *"搜索：…"* · MCP `kb_search_two_stage` |
-| 🕸️ Explore the knowledge graph | Web `/knowledge-graph` · MCP `kb_graph_kb_overview` / `kb_graph_document_related` |
-| 💡 Save a troubleshooting experience | Agent: *"记录这个经验"* → `knowledgebase-experience-summarize` · MCP `experience_create` |
-| ⏰ Auto-distill experiences | `ragctl meditation run` · config.yml `experience_auto.enabled: true` |
-| 🧬 Create a persona | Web `/soul` → 创建人格 · `ragctl soul init soul-xxx` · MCP `soul_init` |
-| 🎭 Distill a persona (补天) | `ragctl soul distill <dot-skill产物目录> --scope kbs` |
-| 🏋️ Train a persona | Web `/soul` training console · `ragctl soul learn-all soul-xxx` · MCP `soul_learn_all` |
-| 🤖 RL-reinforce a persona | Web `/soul` → RL 强化 · `ragctl soul train-rl soul-xxx --rounds 2` · MCP `soul_train_rl` |
-| 💬 Persona-augmented Q&A | Web `/soul` Q&A modal · `ragctl soul ask "…" --soul soul-xxx --qdcvr` · MCP `soul_qdcvr_ask` |
-| 🕐 Scheduled auto-training | Web `/soul` config modal · MCP `experience_meditation_config_update` |
-| 💾 Back up everything | `ragctl backup [dest]` (KB + ChromaDB + Neo4j) |
-| 🪵 Watch logs live | `ragctl logs backend --tail` |
-
-## ⌨️ CLI Reference — `ragctl`
-
-```text
-ragctl setup          # 一键部署: uv → Python → 依赖 → BGE-M3 → 配置
-ragctl up [-m dev|prod] [--no-neo4j] [--port-backend N] [--port-web N]
-ragctl status / down / start <svc> / stop <svc> / restart <svc> [-f]
-ragctl logs <backend|web> [--tail] [--lines N]
-ragctl model --source modelscope|hf-mirror|huggingface   # BGE-M3 (~2.2GB)
-ragctl mineru-model    # MinerU OCR 模型 (~5-7GB)
-ragctl clean [--all] [--dry-run]                          # 清理缓存
-ragctl backup [dest] / restore [src]                      # 跨平台备份/恢复
-ragctl meditation status|run|history|config [kb]          # 自动经验冥想
-ragctl version / update [--check] [--yes --restart]       # 版本管理
-ragctl soul list|status|distill|init|learn|learn-all|train-rl|evaluate|\
-         review|review-cognition|harness|ask|router|reflect|export|delete
-ragctl desktop / ui    # Tauri 桌面控制台
-```
-
-Ports: **dev** Backend `8770` / Web `6789` · **prod** Backend `8001` / Web `3000`.
+| [**Screenshots**](#screenshots) | What the interface actually looks like, light and dark |
+| [**How it works**](#how-it-works) | The retrieval pipeline and the 0–8 rubric |
+| [**Architecture**](#architecture) | Services, ports, storage engines |
+| [**Quick start**](#quick-start) | Clone → setup → up |
+| [**Use it four ways**](#use-it-four-ways) | Web UI · HTTP · CLI · MCP |
+| [**The 94 MCP tools**](#the-94-mcp-tools) | Full inventory by category |
+| [**External HTTP API**](#external-http-api) | Call it from anything, no agent required |
+| [**Verification**](#verification) | What is measured, and how |
+| [**Scope and non-goals**](#scope-and-non-goals) | What this does *not* do |
 
 ---
 
-## 🏗️ Architecture
+## Screenshots
 
-```
-Browser / Claude Code / MCP Client
-        │
-        ▼
-┌──────────────────────────────┐
-│  Nuxt 3 Web UI (proxy layer) │  6789 (dev) / 3000 (prod)
-└──────────────┬───────────────┘
-               │ server-to-server (trust_env=False)
-               ▼
-┌──────────────────────────────┐
-│  FastAPI Backend + MinerU    │  8770 (dev) / 8001 (prod)
-└──────────────┬───────────────┘
-               │ file I/O
-               ▼
-┌──────────────────────────────────────────────┐
-│  Storage Layer                                │
-│  ├── .tree-fs.json  (Global file tree index)  │
-│  ├── {KB}/.knowledge-base.yml  (Doc index)    │
-│  ├── {KB}/*.md    (Document content)          │
-│  ├── ChromaDB     (BGE-M3 1024-dim vectors)   │
-│  └── Neo4j        (bolt://127.0.0.1:7687)     │
-└──────────────────────────────────────────────┘
-```
+All screenshots are captures of the running application, committed under [`docs/screenshots/app/`](./docs/screenshots/app/) with a [manifest](./docs/screenshots/app/MANIFEST.json) recording the source size and encoding of each. No mockups.
 
-### Five-Layer Storage Model
+### Knowledge base manager
 
-| Layer | Content | Technology |
-|:-----:|---------|------------|
-| **L1** | Raw markdown documents | `storage/tree-file-system/{KB}/{doc}.md` |
-| **L2** | File tree index | `.tree-fs.json` |
-| **L3** | Document registry | `.knowledge-base.yml` |
-| **L4** | Vector embeddings (1024-dim) | ChromaDB + BGE-M3 |
-| **L5** | Knowledge graph | Neo4j (Document/Tag/KB nodes + relations) |
+CRUD, cross-KB moves, tag management and in-place content editing.
 
-> **Principle:** Writes → HTTP API (consistency across all 5 layers). Reads → direct file access (zero backend load).
+<div align="center">
+<img src="./docs/screenshots/app/desktop-knowledge-base.jpg" alt="Knowledge base manager" width="100%" />
+</div>
+
+<details>
+<summary><b>More screens — click to expand</b></summary>
+
+<br>
+
+**QDCVR search** — three strategies, scope control, and a tag rail that reflects what is actually in the corpus.
+
+<div align="center">
+<img src="./docs/screenshots/app/desktop-knowledge-search.jpg" alt="QDCVR search interface" width="100%" />
+</div>
+
+**Knowledge graph** — Neo4j-backed document relations, cross-KB bridges, and path discovery.
+
+<div align="center">
+<img src="./docs/screenshots/app/desktop-knowledge-graph.jpg" alt="Knowledge graph explorer" width="100%" />
+</div>
+
+**SOUL persona studio** — distill a persona, train it, and query the knowledge base through it.
+
+<div align="center">
+<img src="./docs/screenshots/app/desktop-soul.jpg" alt="SOUL persona studio" width="100%" />
+</div>
+
+**File system** — the authoritative tree, backed by `.tree-fs.json`.
+
+<div align="center">
+<img src="./docs/screenshots/app/desktop-file-system.jpg" alt="File system tree" width="100%" />
+</div>
+
+**Agent chat** — drive a coding agent against the knowledge base in-app.
+
+<div align="center">
+<img src="./docs/screenshots/app/desktop-claude-chat.jpg" alt="Agent chat" width="100%" />
+</div>
+
+**Settings and API tokens** — live port/binding banner, scoped tokens with expiry.
+
+<div align="center">
+<img src="./docs/screenshots/app/desktop-settings.jpg" alt="Settings" width="49%" />
+<img src="./docs/screenshots/app/desktop-tokens.jpg" alt="API token management" width="49%" />
+</div>
+
+</details>
+
+### Dark mode
+
+Every surface has a real dark theme — not an inverted palette.
+
+<div align="center">
+<img src="./docs/screenshots/app/dark-desktop-home.jpg" alt="Home in dark mode" width="100%" />
+</div>
+
+<details>
+<summary><b>More dark-mode screens</b></summary>
+
+<br>
+
+<div align="center">
+<img src="./docs/screenshots/app/dark-desktop-knowledge-search.jpg" alt="Search in dark mode" width="49%" />
+<img src="./docs/screenshots/app/dark-desktop-knowledge-graph.jpg" alt="Graph in dark mode" width="49%" />
+<br><br>
+<img src="./docs/screenshots/app/dark-desktop-knowledge-base.jpg" alt="Knowledge base in dark mode" width="49%" />
+<img src="./docs/screenshots/app/dark-desktop-soul.jpg" alt="SOUL studio in dark mode" width="49%" />
+</div>
+
+</details>
+
+### Mobile
+
+The layout is a container-query system, so it responds to the width of its own content area rather than only the viewport. Sidebar becomes a drawer, tables become cards, touch targets are grown to the 44 px floor.
+
+<div align="center">
+<img src="./docs/screenshots/app/mobile-home.jpg" alt="Mobile home" width="24%" />
+<img src="./docs/screenshots/app/mobile-knowledge-base.jpg" alt="Mobile knowledge base" width="24%" />
+<img src="./docs/screenshots/app/mobile-knowledge-search.jpg" alt="Mobile search" width="24%" />
+<img src="./docs/screenshots/app/mobile-knowledge-graph.jpg" alt="Mobile graph" width="24%" />
+<br>
+<img src="./docs/screenshots/app/mobile-soul.jpg" alt="Mobile SOUL studio" width="24%" />
+<img src="./docs/screenshots/app/mobile-tokens.jpg" alt="Mobile API tokens" width="24%" />
+<img src="./docs/screenshots/app/dark-mobile-home.jpg" alt="Mobile dark home" width="24%" />
+<img src="./docs/screenshots/app/dark-mobile-knowledge-base.jpg" alt="Mobile dark knowledge base" width="24%" />
+</div>
 
 ---
 
-## ⚙️ Configuration
+## How it works
 
-`config.yml` (repo root) is the truth source. `.env` overrides and is auto-created by `ragctl setup`.
+`QDCVR` — **Query-Driven, Content-Verified Retrieval**. Seven stages, in order:
 
-| Variable | Default (dev / prod) | Purpose |
-|----------|----------------------|---------|
-| `APP_MODE` | `dev` | Selects config section |
-| `BACKEND_PORT` | `8770` / `8001` | FastAPI backend port |
-| `WEB_PORT` | `6789` / `3000` | Nuxt web port |
-| `BACKEND_URL` | `http://localhost:8770` | Full backend URL |
-| `TREE_STORAGE_PATH` | `./storage/tree-file-system` | KB data root |
-| `NEO4J_PASSWORD` | (docker-compose) | Graph DB authentication |
+```
+query
+  │
+  ├─ 0 · Intent recognition        operational / factual / exploratory
+  │
+  ├─ 1 · KB selection              agentic scan of the catalogue
+  │                                balance_kbs guard stops one large KB dominating
+  │
+  ├─ 2 · Multi-stage recall        BM25 ──▶ vector ──▶ tag-semantic ──▶ graph
+  │                                every stage is a *recall* stage, not a ranking
+  │
+  ├─ 3 · ⭐ Content verification    read the candidate, score it 0–8
+  │                                score < 6  → tag + description expansion pass
+  │                                score ≤ 4  → HARD DISCARD
+  │
+  ├─ 4 · Cross-validation          dedup, cross-KB merge, rank fusion
+  │
+  ├─ 5 · Confidence tiering        P0 verified · P1 likely · P2 hint
+  │                                blind spots are declared, never papered over
+  │
+  └─ 6 · Answer + citations        every claim linked to its source document
+```
+
+<details>
+<summary><b>The 0–8 content rubric</b></summary>
+
+<br>
+
+| Score | Meaning | What happens |
+|:---:|---|---|
+| **0–2** | Off-topic, or the document is about something else entirely | **Discarded** |
+| **3–4** | Tangential — one relevant sentence buried in an unrelated document | **Discarded** |
+| **5–6** | Partially relevant — on topic but missing the specifics asked for | Kept, one **expansion pass** |
+| **7–8** | Directly answers the question | Kept, eligible for P0 |
+
+The point of the rubric is that it is applied **after** recall and **by reading content**, so a high cosine score buys a document nothing. This is what makes the tiering meaningful: a P0 result has survived both a similarity filter and a content judgement.
+
+</details>
+
+### Cross-KB blind-spot mitigation
+
+When a normal two-stage search returns candidates from fewer than two distinct knowledge bases, the query is automatically retried with a three-path parallel recall and the results cross-validated:
+
+| Path | Strategy | Catches |
+|:---:|---|---|
+| **A** | Agentic KB scan over the catalogue | Queries the lexical index misses because the vocabulary differs |
+| **B** | Two-stage BM25 → vector | The standard high-precision path |
+| **C** | Pure cross-KB vector | Semantic matches with no lexical overlap at all |
+
+Paths are merged, de-duplicated, and short-chunk false positives are demoted (a fragment under 50 characters is capped at P2). This directly targets the failure mode where BM25 stage-1 recall silently narrows the candidate set to one knowledge base.
+
+---
+
+## Architecture
+
+<div align="center">
+<img src="./docs/images/readme-architecture.svg" alt="Architecture: clients, MCP tool layer, services, storage" width="100%" />
+</div>
+
+Three services and a tool layer, all reading their ports and paths from one `config.yml`:
+
+| Port | Service | Role |
+|---:|---|---|
+| `6789` | Nuxt 3 | UI + server-side proxy. The browser never calls the backend directly (no CORS surface). |
+| `8770` | FastAPI | Parse scheduling, vector, graph, experience, SOUL. Refuses to start if the port is already taken. |
+| *ephemeral* | MinerU OCR | Auto-picks a free port. Runs as a managed subprocess that dies with its parent. |
+| `7687` | Neo4j | Document graph, cross-KB bridges. |
+| — | ChromaDB | Chunk embeddings, one collection per knowledge base. |
+
+**The read/write asymmetry is deliberate:** writes go through the HTTP API so they are atomic and auditable; reads go straight to `.tree-fs.json` and `.knowledge-base.yml` on disk, so search costs zero backend load.
+
+> **Note:** both READMEs document the default `8770`/`6789` pair. If you are running more than one instance you may see a second backend on another port, such as `8771` — check `config.yml` and the settings page banner, which reads the running values.
+
+---
+
+## Quick start
 
 ```bash
-ragctl up --appmode prod        # Switch to production ports
-ragctl status                   # Shows both dev + prod
-ragctl down --appmode prod      # Stop only prod (Neo4j preserved)
+# 1 · clone
+git clone https://github.com/kingdol666/rag-knowledge.git
+cd rag-knowledge
+
+# 2 · install every dependency + model (idempotent)
+./ragctl setup          # Windows: ragctl setup
+
+# 3 · start everything — silent, no terminal windows
+./ragctl up             # Windows: ragctl up
+
+# check
+./ragctl status
 ```
 
-Built-in **rate limiting** (defaults from `config.yml`, tunable):
+Then open **http://localhost:6789**.
 
-```yaml
-server:
-  rate_limit:
-    enabled: true
-    window_sec: 60
-    max_requests: 600       # general endpoints
-    heavy_max: 60            # parse / mineru endpoints
-```
+`ragctl` is the single entry point for all operations — services, models, configuration, health checks, knowledge bases, personas and harnesses.
 
-### config.yml — every section explained
+<details>
+<summary><b>All <code>ragctl</code> commands</b></summary>
 
-| Section | Key fields | What it controls |
+<br>
+
+| Group | Commands |
+|---|---|
+| **Lifecycle** | `setup` `up` `down` `start` `stop` `restart` `status` `logs` |
+| **Assets** | `install` `model` `mineru-model` `clean` `backup` `restore` |
+| **Interface** | `desktop` (alias `ui`) |
+| **Knowledge** | `meditation` `soul` (alias `persona`) `harness` |
+| **Housekeeping** | `check` `deps` `version` `update` |
+
+`soul` subcommands: `distill` `list` `status` `init` `learn` `learn-all` `train-rl` `evaluate` `review-cognition` `harness` `ask` `router` `review` `reflect` `export` `train` `checkpoint`.
+
+</details>
+
+### Prerequisites
+
+| | Requirement | Why |
 |---|---|---|
-| `server` | `cors_origins` · `auth.enabled` · `rate_limit` | CORS / shared-token auth / rate limiting; `dev`+`prod` port groups |
-| `storage` | `tree_fs_root` | Where KB documents live (default `./storage/tree-file-system`) |
-| `vector` | `chunk_size: 500` · `chunk_overlap: 50` · `top_k` · `score_threshold: 0.35` | Chunking + vector recall thresholds (`experience_score_threshold: 0.55`) |
-| `embedding` | `model_name: BAAI/bge-m3` · `model_source: modelscope` | Embedding model + download source (China-friendly default) |
-| `graph` | `uri: bolt://127.0.0.1:7687` · `password` · `pool` | Neo4j connection + connection-pool tuning |
-| `search` | `two_stage.stage1_top_k: 20` · `stage2_top_k: 5` · weights | BM25↔graph fusion weights in two-stage recall |
-| `experience_auto` | `enabled: false` · `interval_hours: 24` · `max_drafts_per_run` | Scheduled experience distillation (meditation) |
-| `soul` ¹ | `default_harness: omp` · `default_model` | SOUL training engine defaults (per-persona override in meditation config) |
-| `mineru` ¹ | `enabled` · `model_source: modelscope` | OCR engine + VLM model source |
-
-> ¹ The `soul` and `mineru` sections live in **`backend/config.yml`** (backend-only); everything above is in the repo-root `config.yml` shared by all services.
-
-**Override order:** `config.yml` < `.env` < CLI flags (`--port-backend`, `--appmode`, …).
+| **Python** | 3.12 (`>=3.12,<3.13`) | MinerU and the backend are pinned to this range |
+| **Node.js** | ≥ 18 | Nuxt 3 |
+| **uv** | any recent | Python env management |
+| **Disk** | a few GB | MinerU models plus your corpus |
+| **Optional** | Neo4j on `7687` | Graph features degrade gracefully without it |
 
 ---
 
-## ⚡ 94 MCP Tools
+## Use it four ways
 
-All tools are accessible via `mcp__kb-mcp__*` from any MCP-compatible agent. Counts below form a disjoint partition (every tool counted once).
+### 1 · Web UI
 
-<div align="center">
+Ten pages: dashboard, file system, knowledge base manager, QDCVR search, graph explorer, SOUL persona studio, agent chat, settings, API tokens, login. Light and dark, desktop to phone.
 
-| Category | Count | Category | Count |
-|:-----|:----:|:-----|:----:|
-| **Service lifecycle** | 4 | **KB CRUD** | 4 |
-| **Document CRUD + listing** | 9 | **Search** | 4 |
-| **Vector / index** | 6 | **File system** | 3 |
-| **Knowledge graph** | 11 | **Experience (incl. meditation)** | 26 |
-| **Tags** | 4 | **Parse** (non-blocking) | 3 |
-| **🧠 SOUL persona** | **20** | **Total** | **94** |
+### 2 · HTTP API
 
-</div>
+Nothing here requires an agent or MCP. See [External HTTP API](#external-http-api).
 
-> Per-tool map and the disjoint-partition rationale live in the project's internal architecture guide (`docs/ARCHITECTURE.md`, not shipped with the public repo).
+### 3 · CLI
+
+```bash
+./ragctl status                 # service health
+./ragctl logs backend -f        # follow a log
+./ragctl soul list              # personas
+./ragctl harness                # agent harness availability
+./ragctl backup                 # snapshot storage
+```
+
+### 4 · MCP — any agent
+
+The MCP server is launched by your client over stdio via `.mcp.json` at the repo root. Claude Code, Cursor, or any MCP-capable client works; no restart of the platform is needed.
+
+```jsonc
+// .mcp.json  (already in the repo)
+{
+  "mcpServers": {
+    "kb-mcp": {
+      "command": "uv",
+      "args": ["run", "--directory", "kb-mcp", "python", "server.py"]
+    }
+  }
+}
+```
+
+Then just talk to it — *"what do we know about biaxial stretching of PET films?"* — and the agent will route through the knowledgebase skill, which enforces the quality gates.
 
 ---
 
-## 🗺️ Roadmap
+## The 94 MCP tools
 
-- [x] **v1.0** — Core QDCVR retrieval, KB CRUD, Web UI, MCP tools
-- [x] **v2.0** — Knowledge graph, experience lifecycle, bilingual i18n
-- [x] **v2.1** — Meditation (auto experience), MinerU OCR, multi-format parsing
-- [x] **v2.2** — Tauri desktop app, CIKM-standard retrieval benchmark (5 methods × 50 queries × 157 docs)
-- [x] **v2.3** — Five-layer consistency, silent headless, auto graph cleanup on delete
-- [ ] **v2.4** — Multi-modal (image search), REST API key auth
-- [ ] **v2.5** — WebSocket real-time collaboration, team workspaces
-- [ ] **v3.0** — Distributed indexing (Ray), 100k+ document scale
+Every tool is registered with FastMCP in `kb-mcp/server.py`. The partition below is exhaustive and disjoint.
+
+| Category | Count | What it covers |
+|---|:---:|---|
+| **SOUL persona** | 20 | init · list · status · learn · learn-all · train-rl · evaluate · calibrate · cognition drafts · review · reflect · checkpoint · rollback · ask · qdcvr-ask · router · export (LoRA) |
+| **Experience** | 26 | Full E0–E12 lifecycle · search-global · search-smart · rerank · extract · drafts (list/read/approve/reject) · stale-check · sync · dashboard · decay · meditation (run/status/history/config) |
+| **Knowledge graph** | 11 | graph-search · stats · per-document relations · related · KB overview · build · cross-KB documents · paths · central documents · delete document/KB |
+| **Document CRUD** | 9 | read · create · update-meta · update-content · delete · batch-delete · move · save-parsed |
+| **Vector / index** | 6 | index-document · batch-index · reindex · cleanup-orphans · find-duplicates · task-status |
+| **KB CRUD** | 4 | list · create · update · delete |
+| **Search** | 4 | search (metadata) · vector · two-stage (primary) · stats |
+| **Tags** | 4 | list · update · get-by-tag · cleanup |
+| **Project lifecycle** | 4 | status · start · update · backend-status |
+| **File system** | 3 | get-tree · get-children · upload-file |
+| **Parse** | 3 | parse-doc · parse-batch · parse-task-status |
+| | **94** | |
+
+Two design rules worth knowing:
+
+- **Parse tools are non-blocking.** They return a `task_id` immediately; poll with `parse_task_status`. A parse never blocks an agent turn.
+- **Long jobs return task ids too.** `kb_reindex`, `kb_graph_build` and `experience_meditation_run` all hand back a task id rather than holding the connection open.
+
+<details>
+<summary><b>Agent skills (20)</b></summary>
+
+<br>
+
+The `knowledgebase` dispatcher routes natural-language requests — in Chinese or English — to the right sub-skill, and delegates execution to an Archival sub-agent so quality gates cannot be skipped:
+
+`knowledgebase` · `knowledgebase-init` · `knowledgebase-update` · `knowledgebase-ingest` · `knowledgebase-search` · `knowledgebase-manage` · `knowledgebase-experience` · `knowledgebase-graph` · `knowledgebase-verify` · `butian` · `soul` · `soul-rag` · and the rest under `.claude/skills/`.
+
+</details>
 
 ---
 
-## 🤝 Contributing
+## External HTTP API
 
-Contributions welcome!
+Auth is **on by default** (`server.auth.enabled: true`). Every endpoint except `/api/v1/health` and `/api/v1/auth/*` requires a bearer token. The interactive spec is at **`/docs`** on the backend; the generated OpenAPI declares `bearerAuth` on the non-public operations.
 
-1. 🍴 **Fork** the repo
-2. 🌿 Create a **feature branch** (`git checkout -b feature/amazing`)
-3. 💻 **Code**, following existing style
-4. ✅ **Test** (`pytest backend/tests/`)
-5. 📝 **Commit** with a clear message
-6. 🚀 **Push** and open a **Pull Request**
+```bash
+# 0 · get a token  (register first if this is a fresh install)
+TOKEN=$(curl -s -X POST http://localhost:6789/api/auth/login \
+  -H 'content-type: application/json' \
+  -d '{"username":"you","password":"your-password"}' | jq -r .token)
 
-**Guidelines:**
-- Keep **atomic** — one PR per feature/fix
-- **Test before** committing (frontend: `npx vue-tsc --noEmit`, backend: `pytest`)
-- **Document** new features
-- **No AI slop** — every line should have a purpose
+# 1 · create a knowledge base
+curl -s -X POST http://localhost:6789/api/kb/create \
+  -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
+  -d '{"name":"engineering-notes","description":"Internal engineering notes"}'
+
+# 2 · write a document   (kbId and kb_id are both accepted; snake_case aliases normalise)
+curl -s -X POST http://localhost:6789/api/kb/documents/create \
+  -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
+  -d '{"kbId":"<kbId>","name":"pump-failure.md","content":"# Pump failure\n\nBearing temperature exceeded 90°C..."}'
+
+# 3 · search   (two-stage: BM25 candidates → vector refinement)
+curl -s -X POST http://localhost:6789/api/v1/search/two-stage \
+  -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
+  -d '{"query":"bearing temperature limit","limit":5}'
+
+# health needs no token
+curl -s http://localhost:8770/api/v1/health
+```
+
+Rate limiting defaults to **600 requests / 60 s**.
+
+<details>
+<summary><b>Endpoint map</b></summary>
+
+<br>
+
+| Area | Base path |
+|---|---|
+| Auth | `/api/v1/auth/{register,login,verify}` · `/api/auth/*` (web proxy) |
+| Knowledge bases | `/api/kb/{create,catalog,documents}` |
+| Search | `/api/v1/search/{two-stage,vector}` |
+| Experience | `/api/v1/experience/*` |
+| SOUL | `/api/v1/soul/*` |
+| Graph | `/api/v1/graph/*` |
+| Parse | `/api/v1/parse/*` |
+| MinerU | `/api/v1/mineru/{status,restart}` |
+| Health | `/api/v1/health` (public) |
+
+The live OpenAPI document is the authority — it lists 114 paths / 121 operations and marks the five public ones explicitly.
+
+</details>
 
 ---
 
-## ❓ FAQ & Troubleshooting
+## Configuration
 
-<details>
-<summary><b>🔌 Port in use / service won't start</b></summary>
-
-```bash
-ragctl status                       # see port occupancy
-ragctl up --port-backend 9000 --port-web 6790   # move to free ports
-```
-For lingering processes, `ragctl restart backend -f` force-restarts.
-
-</details>
-
-<details>
-<summary><b>⬇️ Model download slow / failing</b></summary>
-
-```bash
-ragctl model --source modelscope     # ⭐ China (Alibaba CDN, default)
-ragctl model --source hf-mirror      # HuggingFace mirror
-ragctl model --source huggingface    # direct (overseas)
-```
-Model cache lives in `models_cache/` — `ragctl clean --model` clears it (re-download required).
-
-</details>
-
-<details>
-<summary><b>🕸️ Graph features unavailable</b></summary>
-
-Graph is optional. Neo4j now runs **local, Docker-free** by default
-(`graph.mode: local` in config.yml) — the distribution + bundled JRE live in
-`backend/.neo4j/` and the backend auto-starts it on launch (MinerU-style):
-
-```bash
-ragctl start neo4j    # standalone: start local Neo4j (backend auto-starts it too)
-ragctl stop neo4j     # stop local Neo4j
-ragctl up --no-neo4j  # everything else works; graph tools return degraded responses
-```
-
-Custom ports / heap / mirror are config-driven (`config.yml → graph.*`,
-env vars override). Legacy Docker mode: set `graph.mode: docker` and run
-`docker compose up -d neo4j`; `.env`'s `NEO4J_PASSWORD` must match `docker-compose.yml`.
-
-</details>
-
-<details>
-<summary><b>📄 PDF parse fails / hangs</b></summary>
-
-MinerU needs a one-time model pre-download: `ragctl mineru-model` (~5–7 GB). Then watch:
-
-```bash
-ragctl logs backend --tail
-```
-Parsing is **non-blocking**: an MCP call returns a `task_id` immediately — poll `parse_task_status(task_id)` instead of waiting.
-
-</details>
-
-<details>
-<summary><b>🧬 SOUL training returns "skipped" instantly</b></summary>
-
-This is **incremental idempotency**, not a bug: the document's content hash (`learned_hash`) already matches, so the persona skips it at zero cost. Point training at a new/unlearned document, or wait for new/changed docs to enter the KB.
-
-</details>
-
-<details>
-<summary><b>🔌 Agent can't see MCP tools</b></summary>
-
-Tools register when the MCP server starts. After installing/updating the plugin, **restart the MCP client session** (or reload plugins). Verify with `kb_project_status()` or `soul_list()`.
-
-</details>
-
-<details>
-<summary><b>💸 Training budget / cost control</b></summary>
-
-- Per-persona cap: `soul_status(soul_kb_id).estimated_cost_usd`
-- Per-round budget: meditation config `max_budget_usd` (default 0.15) — each round is an independent baseline
-- Dry-run a full-KB train first: `ragctl soul learn-all soul-xxx --dry-run`
-
-</details>
-
-<details>
-<summary><b>🔐 Enable API authentication</b></summary>
+One file. `config.yml` at the repository root is the single source of truth for ports and hosts, read by the backend, the web proxy and the MCP server alike.
 
 ```yaml
-# config.yml
 server:
-  auth:
-    enabled: true
-# .env
-KB_AUTH_TOKEN=<your-token>
+  dev:
+    backend_port: 8770
+    frontend_port: 6789
+    backend_url: "http://localhost:8770"
+  prod:
+    backend_port: 8001
+    frontend_port: 3000
+    backend_url: "http://localhost:8001"
 ```
-All write endpoints now require the token; GET endpoints stay open for the UI.
 
-</details>
+Priority is `BACKEND_PORT` env var → `config.yml` → code default. `APP_MODE=dev|prod` selects the section. Nothing in the codebase hardcodes a port or a path.
 
-<details>
-<summary><b>🧹 Start fresh (keep documents)</b></summary>
+> Changing `config.yml` while `APP_MODE=dev` will hot-reload the backend. In long sessions prefer `APP_MODE=prod` to avoid reload storms from log/database writes.
+
+---
+
+## Storage model
+
+```
+web/storage/tree-file-system/
+├── .tree-fs.json                 # L1 · authoritative global tree index
+└── {knowledge-base}/
+    ├── .knowledge-base.yml       # L2 · per-KB document index (name, tags, metadata)
+    ├── {document}.md             # L3 · parsed / uploaded markdown
+    └── images/                   #      images extracted during parsing
+```
+
+| Layer | Store | Holds |
+|:---:|---|---|
+| **L1** | `.tree-fs.json` | Every folder and file, with metadata |
+| **L2** | `.knowledge-base.yml` | Per-KB search index — read directly by search |
+| **L3** | `.md` on disk | The content itself |
+| **L4** | ChromaDB | Chunk embeddings, one collection per KB |
+| **L5** | Neo4j | Document, tag and KB nodes plus typed relations |
+
+> L5 is populated only for knowledge bases you have built a graph for. On a fresh install the graph is empty and the graph page will legitimately show zero nodes — tag nodes in particular appear only after a graph build over tagged documents.
+
+---
+
+## Verification
+
+Numbers below are reproducible from committed artefacts. The scripts and their provenance live in this repository.
+
+**Ingestion integrity.** Five layers checked end to end across two corpora; the ingestion module reports `1.000` integrity on the committed runs (`benchmark-suite/results/module_a_ingestion_r1.json`, `module_a_std2_r1.json`).
+
+**Retrieval, in-house corpus.** From `benchmark-suite/results/module_b_retrieval_r2.json` (20 queries, committed in full):
+
+| Strategy | Hit@1 | Recall@5 | P@5 | Latency |
+|---|:---:|:---:|:---:|:---:|
+| Staged BM25 → vector + content adjudication | 0.800 | **0.908** | **0.210** | 1.33 s |
+| Flat dense vector | **0.900** | 0.917 | 0.200 | **0.081 s** |
+
+**Retrieval, SciFact.** From `module_b_std2_r2.json`: dense vector leads on Hit@3 (0.900 vs 0.833), Recall@5 (0.900 vs 0.833) and nDCG@10 (0.834 vs 0.809); BM25 has the best MRR (0.839).
+
+**What these numbers say.** Content adjudication is **not a free win**. It raises P@5 and Recall@5 — it finds more of what is relevant — and it costs roughly **13× latency**, because it reads documents instead of scoring vectors. It did not improve Hit@1 on either corpus. Any claim that it strictly dominates flat retrieval is not supported by the committed evidence, and this README does not make one.
+
+**Agent surface.** 73 of 73 external-API end-to-end checks pass against the live platform (knowledge base management, content retrieval, experience lifecycle, persona training).
+
+> **On withheld results.** Earlier revisions of this README quoted a larger benchmark (`P@5 0.590 → 0.630`, `FPR 12 % → 3.0 %`, `84 ms → 38 ms`). Those figures came from `benchmark-web/backend/results/`, which contains **no producing script** in this repository — they cannot be regenerated, and they are contradicted by the traceable runs above. They have been removed rather than restated. If you need them, treat them as unavailable until a committed script reproduces them.
+
+<sub>Counts last verified against a live instance on **2026-09-15**: 12 knowledge bases · 209 documents · 94 MCP tools · 20 skills · 233 backend tests · 124 web routes · 114 API paths.</sub>
+
+---
+
+## Scope and non-goals
+
+Being explicit about what this is **not**:
+
+- **Not a hosted service.** It is self-hosted by design; there is no multi-tenant isolation story here.
+- **Not a fine-tuning platform.** The SOUL LoRA export is an *export* path, not a training pipeline you should expect to compete with a dedicated trainer.
+- **Not benchmark-superior to plain vector search on every axis.** See the honesty note above — it trades latency for precision on recall-oriented metrics.
+- **Not turnkey on Windows without Python 3.12.** The dependency pin is real; 3.13 is not supported yet.
+- **Not graph-complete out of the box.** L5 is populated by an explicit graph build, per knowledge base.
+
+---
+
+## Contributing
+
+Issues and pull requests are welcome. Before opening a PR:
 
 ```bash
-ragctl clean            # MinerU parse artifacts
-ragctl down             # stop services
-# delete storage/tree-file-system/* to reset KBs (back up first!)
+cd backend && uv run pytest          # backend unit tests (integration tests need --run-integration)
+cd web && npx nuxt build             # type-check + build
+node scripts/validate_skills.cjs     # cross-skill consistency (8 checks)
 ```
 
-</details>
+Conventions: ports and paths always come from `config.yml`; Python uses type annotations and `logging`, never `print`; `httpx` calls pass `trust_env=False` so the localhost proxy cannot hijack them; parse tools never block.
 
 ---
 
-## 🌐 Community & Support
+## License
+
+MIT — see [LICENSE](./LICENSE).
 
 <div align="center">
-
-| Resource | Link |
-|:-----|:-----|
-| 🐛 **Report a Bug** | [GitHub Issues](https://github.com/kingdol666/rag-knowledge/issues) |
-| ⭐ **Star Us** | [GitHub](https://github.com/kingdol666/rag-knowledge) |
-| 🇨🇳 **中文文档** | [README-zh.md](./README-zh.md) |
-| 💬 **Discussions** | [GitHub Discussions](https://github.com/kingdol666/rag-knowledge/discussions) |
-| 📦 **Releases** | [GitHub Releases](https://github.com/kingdol666/rag-knowledge/releases) |
-
+<br>
+<sub>Built as a research platform for content-verified retrieval.<br>
+Screenshots are real captures of the running application; benchmark figures are traceable to committed artefacts or are not stated.</sub>
 </div>
-
----
-
-## 📄 License
-
-MIT © [kingdol](https://github.com/kingdol666)

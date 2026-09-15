@@ -1,0 +1,427 @@
+{
+  "note": "src PNG captures (3200x2000) are not committed: each is byte-for-byte the same image as its out JPG at ~24x the size. bytes_in/bytes_out below record the compression applied. Re-capture with the Playwright script in .ui-audit/capture_app.py.",
+  "max_width": 1600,
+  "quality": 84,
+  "images": [
+    {
+      "name": "desktop-home",
+      "src": "desktop-home.png",
+      "out": "desktop-home.jpg",
+      "orig": [
+        3200,
+        2000
+      ],
+      "final": [
+        1600,
+        1000
+      ],
+      "bytes_in": 5591810,
+      "bytes_out": 118568
+    },
+    {
+      "name": "desktop-knowledge-base",
+      "src": "desktop-knowledge-base.png",
+      "out": "desktop-knowledge-base.jpg",
+      "orig": [
+        3200,
+        2000
+      ],
+      "final": [
+        1600,
+        1000
+      ],
+      "bytes_in": 3125410,
+      "bytes_out": 155159
+    },
+    {
+      "name": "desktop-knowledge-search",
+      "src": "desktop-knowledge-search.png",
+      "out": "desktop-knowledge-search.jpg",
+      "orig": [
+        3200,
+        2000
+      ],
+      "final": [
+        1600,
+        1000
+      ],
+      "bytes_in": 3044378,
+      "bytes_out": 154533
+    },
+    {
+      "name": "desktop-knowledge-graph",
+      "src": "desktop-knowledge-graph.png",
+      "out": "desktop-knowledge-graph.jpg",
+      "orig": [
+        3200,
+        2000
+      ],
+      "final": [
+        1600,
+        1000
+      ],
+      "bytes_in": 4149555,
+      "bytes_out": 181011
+    },
+    {
+      "name": "desktop-soul",
+      "src": "desktop-soul.png",
+      "out": "desktop-soul.jpg",
+      "orig": [
+        3200,
+        2000
+      ],
+      "final": [
+        1600,
+        1000
+      ],
+      "bytes_in": 3299006,
+      "bytes_out": 98156
+    },
+    {
+      "name": "desktop-settings",
+      "src": "desktop-settings.png",
+      "out": "desktop-settings.jpg",
+      "orig": [
+        3200,
+        2000
+      ],
+      "final": [
+        1600,
+        1000
+      ],
+      "bytes_in": 3191066,
+      "bytes_out": 147263
+    },
+    {
+      "name": "desktop-claude-chat",
+      "src": "desktop-claude-chat.png",
+      "out": "desktop-claude-chat.jpg",
+      "orig": [
+        3200,
+        2000
+      ],
+      "final": [
+        1600,
+        1000
+      ],
+      "bytes_in": 3836368,
+      "bytes_out": 118106
+    },
+    {
+      "name": "desktop-tokens",
+      "src": "desktop-tokens.png",
+      "out": "desktop-tokens.jpg",
+      "orig": [
+        3200,
+        2000
+      ],
+      "final": [
+        1600,
+        1000
+      ],
+      "bytes_in": 2962080,
+      "bytes_out": 165682
+    },
+    {
+      "name": "desktop-file-system",
+      "src": "desktop-file-system.png",
+      "out": "desktop-file-system.jpg",
+      "orig": [
+        3200,
+        2000
+      ],
+      "final": [
+        1600,
+        1000
+      ],
+      "bytes_in": 2512961,
+      "bytes_out": 110035
+    },
+    {
+      "name": "laptop-home",
+      "src": "laptop-home.png",
+      "out": "laptop-home.jpg",
+      "orig": [
+        2560,
+        1600
+      ],
+      "final": [
+        1600,
+        1000
+      ],
+      "bytes_in": 3595886,
+      "bytes_out": 117895
+    },
+    {
+      "name": "laptop-knowledge-base",
+      "src": "laptop-knowledge-base.png",
+      "out": "laptop-knowledge-base.jpg",
+      "orig": [
+        2560,
+        1600
+      ],
+      "final": [
+        1600,
+        1000
+      ],
+      "bytes_in": 2245414,
+      "bytes_out": 137485
+    },
+    {
+      "name": "laptop-knowledge-search",
+      "src": "laptop-knowledge-search.png",
+      "out": "laptop-knowledge-search.jpg",
+      "orig": [
+        2560,
+        1600
+      ],
+      "final": [
+        1600,
+        1000
+      ],
+      "bytes_in": 2213712,
+      "bytes_out": 146742
+    },
+    {
+      "name": "laptop-knowledge-graph",
+      "src": "laptop-knowledge-graph.png",
+      "out": "laptop-knowledge-graph.jpg",
+      "orig": [
+        2560,
+        1600
+      ],
+      "final": [
+        1600,
+        1000
+      ],
+      "bytes_in": 3004203,
+      "bytes_out": 158821
+    },
+    {
+      "name": "laptop-soul",
+      "src": "laptop-soul.png",
+      "out": "laptop-soul.jpg",
+      "orig": [
+        2560,
+        1600
+      ],
+      "final": [
+        1600,
+        1000
+      ],
+      "bytes_in": 2154611,
+      "bytes_out": 113140
+    },
+    {
+      "name": "mobile-home",
+      "src": "mobile-home.png",
+      "out": "mobile-home.jpg",
+      "orig": [
+        780,
+        1688
+      ],
+      "final": [
+        780,
+        1688
+      ],
+      "bytes_in": 1155955,
+      "bytes_out": 91293
+    },
+    {
+      "name": "mobile-knowledge-base",
+      "src": "mobile-knowledge-base.png",
+      "out": "mobile-knowledge-base.jpg",
+      "orig": [
+        780,
+        1688
+      ],
+      "final": [
+        780,
+        1688
+      ],
+      "bytes_in": 478233,
+      "bytes_out": 113563
+    },
+    {
+      "name": "mobile-knowledge-search",
+      "src": "mobile-knowledge-search.png",
+      "out": "mobile-knowledge-search.jpg",
+      "orig": [
+        780,
+        1688
+      ],
+      "final": [
+        780,
+        1688
+      ],
+      "bytes_in": 467051,
+      "bytes_out": 114702
+    },
+    {
+      "name": "mobile-knowledge-graph",
+      "src": "mobile-knowledge-graph.png",
+      "out": "mobile-knowledge-graph.jpg",
+      "orig": [
+        780,
+        1688
+      ],
+      "final": [
+        780,
+        1688
+      ],
+      "bytes_in": 855202,
+      "bytes_out": 95076
+    },
+    {
+      "name": "mobile-soul",
+      "src": "mobile-soul.png",
+      "out": "mobile-soul.jpg",
+      "orig": [
+        780,
+        1688
+      ],
+      "final": [
+        780,
+        1688
+      ],
+      "bytes_in": 539557,
+      "bytes_out": 87988
+    },
+    {
+      "name": "mobile-tokens",
+      "src": "mobile-tokens.png",
+      "out": "mobile-tokens.jpg",
+      "orig": [
+        780,
+        1688
+      ],
+      "final": [
+        780,
+        1688
+      ],
+      "bytes_in": 462007,
+      "bytes_out": 109241
+    },
+    {
+      "name": "dark-desktop-home",
+      "src": "dark-desktop-home.png",
+      "out": "dark-desktop-home.jpg",
+      "orig": [
+        3200,
+        2000
+      ],
+      "final": [
+        1600,
+        1000
+      ],
+      "bytes_in": 5408175,
+      "bytes_out": 111817
+    },
+    {
+      "name": "dark-desktop-knowledge-base",
+      "src": "dark-desktop-knowledge-base.png",
+      "out": "dark-desktop-knowledge-base.jpg",
+      "orig": [
+        3200,
+        2000
+      ],
+      "final": [
+        1600,
+        1000
+      ],
+      "bytes_in": 2734429,
+      "bytes_out": 137548
+    },
+    {
+      "name": "dark-desktop-knowledge-search",
+      "src": "dark-desktop-knowledge-search.png",
+      "out": "dark-desktop-knowledge-search.jpg",
+      "orig": [
+        3200,
+        2000
+      ],
+      "final": [
+        1600,
+        1000
+      ],
+      "bytes_in": 2753830,
+      "bytes_out": 135812
+    },
+    {
+      "name": "dark-desktop-knowledge-graph",
+      "src": "dark-desktop-knowledge-graph.png",
+      "out": "dark-desktop-knowledge-graph.jpg",
+      "orig": [
+        3200,
+        2000
+      ],
+      "final": [
+        1600,
+        1000
+      ],
+      "bytes_in": 3841880,
+      "bytes_out": 175359
+    },
+    {
+      "name": "dark-desktop-soul",
+      "src": "dark-desktop-soul.png",
+      "out": "dark-desktop-soul.jpg",
+      "orig": [
+        3200,
+        2000
+      ],
+      "final": [
+        1600,
+        1000
+      ],
+      "bytes_in": 2981478,
+      "bytes_out": 88119
+    },
+    {
+      "name": "dark-desktop-settings",
+      "src": "dark-desktop-settings.png",
+      "out": "dark-desktop-settings.jpg",
+      "orig": [
+        3200,
+        2000
+      ],
+      "final": [
+        1600,
+        1000
+      ],
+      "bytes_in": 2883967,
+      "bytes_out": 134618
+    },
+    {
+      "name": "dark-mobile-home",
+      "src": "dark-mobile-home.png",
+      "out": "dark-mobile-home.jpg",
+      "orig": [
+        780,
+        1688
+      ],
+      "final": [
+        780,
+        1688
+      ],
+      "bytes_in": 1129901,
+      "bytes_out": 92652
+    },
+    {
+      "name": "dark-mobile-knowledge-base",
+      "src": "dark-mobile-knowledge-base.png",
+      "out": "dark-mobile-knowledge-base.jpg",
+      "orig": [
+        780,
+        1688
+      ],
+      "final": [
+        780,
+        1688
+      ],
+      "bytes_in": 446604,
+      "bytes_out": 102654
+    }
+  ]
+}
