@@ -1,0 +1,41 @@
+<html><head><meta charset='utf-8'><style>body{font-family:serif;margin:2.5em}table{border-collapse:collapse;margin:1em 0}td,th{border:1px solid #999;padding:4px 10px}th{background:#eee}h3{margin-top:1.4em}</style></head><body>
+<h1>Track F — 平台自身功能基准</h1><p>本轨回答「平台自己支持的功能到底好不好」: 解析入库、经验生命周期、整理功能、Agent 面、规模——全部经生产接口实测。</p>
+<h3>Module A 文档解析与入库</h3><table><tr><th>语料</th><th>解析</th><th>入库</th><th>成员归属</th><th>存储完整</th><th>自检索H@1</th></tr>
+<tr><td>in-house</td><td>—</td><td>1.000</td><td>1.000</td><td>1.000</td><td>0.938</td></tr>
+<tr><td>standard</td><td>—</td><td>—</td><td>1.000</td><td>1.000</td><td>—</td></tr>
+</table>
+<h3>E3-E7 经验生命周期</h3><table><tr><th>样本</th><th>轮</th><th>KB</th><th>run</th><th>drafts</th><th>approved</th><th>exps</th><th>judge</th></tr>
+<tr><td>样本1</td><td>1</td><td>KB-Demo-EN</td><td>✓</td><td>0</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>样本1</td><td>1</td><td>KB-Demo-ZH</td><td>✓</td><td>0</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>样本1</td><td>2</td><td>KB-Demo-EN</td><td>✓</td><td>0</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>样本1</td><td>2</td><td>KB-Demo-ZH</td><td>✓</td><td>0</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>样本1</td><td>3</td><td>KB-Demo-EN</td><td>✓</td><td>0</td><td>0</td><td>3</td><td>[8.0, 9.0, 9.0]</td></tr>
+<tr><td>样本1</td><td>3</td><td>KB-Demo-ZH</td><td>✓</td><td>0</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>样本2</td><td>1</td><td>KB-Demo-EN</td><td>✓</td><td>0</td><td>0</td><td>3</td><td>[8.0, 8.0, 8.0]</td></tr>
+<tr><td>样本2</td><td>1</td><td>KB-Demo-ZH</td><td>✓</td><td>0</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>样本2</td><td>2</td><td>KB-Demo-EN</td><td>✓</td><td>0</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>样本2</td><td>2</td><td>KB-Demo-ZH</td><td>✓</td><td>0</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>样本2</td><td>3</td><td>KB-Demo-EN</td><td>✓</td><td>0</td><td>0</td><td>0</td><td>—</td></tr>
+<tr><td>样本2</td><td>3</td><td>KB-Demo-ZH</td><td>✓</td><td>0</td><td>0</td><td>0</td><td>—</td></tr>
+</table>
+<h3>E17 整理功能</h3><table><tr><th>探针</th><th>结果</th></tr>
+<tr><td>入库保留/植入</td><td>7/9</td></tr>
+<tr><td>重复组检出/植入</td><td>1/2</td></tr>
+<tr><td>标签数 / 内容可落地</td><td>190 / 5 (2.6%)</td></tr>
+<tr><td>cleanup 误伤在用标签</td><td>0</td></tr>
+<tr><td>图谱 build / 探针命中</td><td>True / 0</td></tr>
+</table>
+<h3>Agent 面端到端验证</h3><table><tr><th>项</th><th>值</th></tr>
+<tr><td>A</td><td>4</td></tr>
+<tr><td>B</td><td>5</td></tr>
+<tr><td>C</td><td>3</td></tr>
+<tr><td>D</td><td>2</td></tr>
+<tr><td>E</td><td>6</td></tr>
+<tr><td>F</td><td>3</td></tr>
+<tr><td>G</td><td>1</td></tr>
+<tr><td>H</td><td>2</td></tr>
+</table>
+<h3>平台规模</h3><table><tr><th>项</th><th>值</th></tr>
+<tr><td>experiment</td><td>E17 system scale (measured, not hard-coded)</td></tr>
+</table>
+</body></html>

@@ -202,6 +202,26 @@ ACL、EMNLP 论文的实验环节）：
   关键词索引（jieba BM25）、检索参数（vector k=10；stage1=40/stage2=10；阈值 0.35）。
 - 系统版本：仓库分支 feat/soul-persona-system；kb-mcp 通过 `uv run` 按仓库锁定环境启动。
 
+## 双轨测试流水线（推荐入口）
+
+测试已拆分为两条**完全独立**的流水线，各自产出 MD + HTML 报告：
+
+| 轨道 | 脚本 | 回答的问题 | 报告产物 |
+|---|---|---|---|
+| **Track R 检索对比** | `pipelines/retrieval_track.sh` | \sys{} 的检索 vs BM25/Dense/Rerank/RAPTOR/ITRG/Search-o1/DeepRead 排序与答案质量如何 | `results/RETRIEVAL-BENCHMARK.md` + `retrieval-benchmark.html` |
+| **Track F 平台功能** | `pipelines/functions_track.sh` | 平台自身功能（解析入库/经验生命周期/整理/Agent 面/规模）实测表现 | `results/FUNCTIONS-BENCHMARK.md` + `functions-benchmark.html` |
+
+```bash
+bash pipelines/retrieval_track.sh    # 检索对比轨（含 E16 八系统矩阵 + API 流程）
+bash pipelines/functions_track.sh    # 平台功能轨（A/C/E15/E17/端到端/规模）
+# 两条轨道可独立运行、独立复现、互不依赖（仅共享语料入库与后端实例）
+```
+
+轨道划分原则：Track R 的每一项都**有外部算法对照**；Track F 的每一项都是
+**平台独特能力**的功能测试（无外部对照，测自身质量与正确性）。§10 的
+E16/E16b 归入 Track R，E17 归入 Track F。
+
+
 ## 10. Stage D · DeepRead 论文基线矩阵 + 平台整理功能评价（E16/E17）
 
 > 目标: 在**同一语料**(KB-SciFact 148 篇)、**同一查询**(BEIR SciFact 30 条)

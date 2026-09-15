@@ -1,0 +1,51 @@
+<html><head><meta charset='utf-8'><style>body{font-family:serif;margin:2.5em}table{border-collapse:collapse;margin:1em 0}td,th{border:1px solid #999;padding:4px 10px}th{background:#eee}h3{margin-top:1.4em}</style></head><body>
+<h1>Track R — 检索算法对比基准</h1><p>本轨回答「\sys{} 的检索与其他算法比怎么样」: 全部方法经同一MCP 工具层/同一语料/同一冻结查询, 由共享 Agent 作答、独立 Agent 判分。产出 JSON 均内嵌 git/config/seed 指纹。</p>
+<h3>E16 八系统主对比</h3><p>同一语料同一问题; 统一证据预算 4000 字符, 共享作答 Agent + 独立判分 Agent + 中间 Agent 匿名排名。</p><table><tr><th>方法</th><th>H@1</th><th>H@5</th><th>R@5</th><th>nDCG@10</th><th>MRR</th><th>判分</th><th>均位</th><th>首位</th></tr>
+<tr><td>qdcvr</td><td>0.700</td><td>0.833</td><td>0.833</td><td>0.784</td><td>0.767</td><td>7.70</td><td>5.63</td><td>3</td></tr>
+<tr><td>dense_rag</td><td>0.733</td><td>0.900</td><td>0.900</td><td>0.834</td><td>0.811</td><td>8.93</td><td>4.63</td><td>2</td></tr>
+<tr><td>dense_rag_rerank</td><td>0.900</td><td>0.933</td><td>0.933</td><td>0.921</td><td>0.917</td><td>8.67</td><td>3.77</td><td>5</td></tr>
+<tr><td>raptor</td><td>0.733</td><td>0.867</td><td>0.856</td><td>0.817</td><td>0.800</td><td>8.37</td><td>4.20</td><td>4</td></tr>
+<tr><td>itrg_refresh</td><td>0.833</td><td>0.933</td><td>0.933</td><td>0.896</td><td>0.883</td><td>8.30</td><td>4.53</td><td>3</td></tr>
+<tr><td>itrg_refine</td><td>0.733</td><td>0.900</td><td>0.900</td><td>0.845</td><td>0.816</td><td>8.53</td><td>4.17</td><td>3</td></tr>
+<tr><td>search_o1</td><td>0.800</td><td>0.900</td><td>0.844</td><td>0.811</td><td>0.839</td><td>8.70</td><td>4.60</td><td>3</td></tr>
+<tr><td>deepread</td><td>0.567</td><td>0.733</td><td>0.694</td><td>0.635</td><td>0.639</td><td>8.13</td><td>4.47</td><td>7</td></tr>
+</table>
+<h3>E16b API 一致性</h3><table><tr><th>方法</th><th>判分</th><th>中间Agent均位</th><th>首位</th></tr>
+<tr><td>qdcvr</td><td>7.70</td><td>5.63</td><td>3</td></tr>
+<tr><td>dense_rag</td><td>8.93</td><td>4.63</td><td>2</td></tr>
+<tr><td>dense_rag_rerank</td><td>8.67</td><td>3.77</td><td>5</td></tr>
+<tr><td>raptor</td><td>8.37</td><td>4.20</td><td>4</td></tr>
+<tr><td>itrg_refresh</td><td>8.30</td><td>4.53</td><td>3</td></tr>
+<tr><td>itrg_refine</td><td>8.53</td><td>4.17</td><td>3</td></tr>
+<tr><td>search_o1</td><td>8.70</td><td>4.60</td><td>3</td></tr>
+<tr><td>deepread</td><td>8.13</td><td>4.47</td><td>7</td></tr>
+</table>
+<h3>Module B 四通道对比 (SciFact)</h3><table><tr><th>通道</th><th>H@1</th><th>H@3</th><th>R@5</th><th>nDCG@10</th><th>MRR</th><th>supp@1</th></tr>
+<tr><td>bm25</td><td>0.833</td><td>0.833</td><td>0.800</td><td>0.822</td><td>0.839</td><td>0.67</td></tr>
+<tr><td>twostage</td><td>0.733</td><td>0.833</td><td>0.833</td><td>0.796</td><td>0.783</td><td>0.57</td></tr>
+<tr><td>dense</td><td>0.733</td><td>0.900</td><td>0.900</td><td>0.834</td><td>0.811</td><td>0.57</td></tr>
+<tr><td>qdcvr</td><td>0.767</td><td>0.833</td><td>0.833</td><td>0.809</td><td>0.800</td><td>0.60</td></tr>
+</table>
+<h3>Module B 双语内部语料</h3><table><tr><th>通道</th><th>H@1</th><th>H@5</th><th>R@5</th><th>P@5</th><th>MRR</th></tr>
+<tr><td>staged</td><td>0.800</td><td>0.950</td><td>0.908</td><td>0.210</td><td>0.863</td></tr>
+<tr><td>vector</td><td>0.900</td><td>0.950</td><td>0.917</td><td>0.200</td><td>0.931</td></tr>
+</table>
+<h3>E1 组件消融</h3><table><tr><th>变体</th><th>H@1</th><th>nDCG@10</th><th>P@5</th><th>MRR</th></tr>
+<tr><td>qdcvr_full</td><td>0.767</td><td>0.809</td><td>0.213</td><td>0.800</td></tr>
+<tr><td>verify_k1</td><td>0.733</td><td>0.796</td><td>0.213</td><td>0.783</td></tr>
+<tr><td>verify_k5</td><td>0.767</td><td>0.809</td><td>0.213</td><td>0.800</td></tr>
+<tr><td>no_verify</td><td>0.733</td><td>0.796</td><td>0.213</td><td>0.783</td></tr>
+<tr><td>no_dedup</td><td>0.767</td><td>0.809</td><td>0.213</td><td>0.800</td></tr>
+<tr><td>deep_t_0.20</td><td>0.767</td><td>0.832</td><td>0.213</td><td>0.810</td></tr>
+<tr><td>deep_t_0.35</td><td>0.767</td><td>0.832</td><td>0.213</td><td>0.810</td></tr>
+<tr><td>deep_t_0.50</td><td>0.767</td><td>0.821</td><td>0.213</td><td>0.806</td></tr>
+<tr><td>deep_t_off</td><td>0.767</td><td>0.832</td><td>0.213</td><td>0.810</td></tr>
+</table>
+<h3>E8 多域公开基准</h3><table><tr><th>方法</th><th>Hit@5</th><th>nDCG@10</th><th>ans@1</th></tr>
+<tr><td>bm25</td><td>0.860</td><td>0.538</td><td>0.520</td></tr>
+<tr><td>two_stage</td><td>0.960</td><td>0.841</td><td>0.500</td></tr>
+<tr><td>dense</td><td>1.000</td><td>0.867</td><td>0.480</td></tr>
+<tr><td>qdcvr</td><td>0.960</td><td>0.779</td><td>0.580</td></tr>
+</table>
+<h3>E12 动机案例</h3>
+</body></html>
