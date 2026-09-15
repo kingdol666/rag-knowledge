@@ -273,6 +273,23 @@ def norm_cid(cid: str) -> str:
     return c.lower()
 
 
+def parse_answer_fallback(raw: str) -> dict | None:
+    """严格 JSON 解析失败后的字段级回退。
+
+    中文回答常含未转义 ASCII 引号(如 构造"向量高分但内容不符"的样本),
+    balanced-parse 会整体失败但字段内容完好 — 用非贪婪字段捕获恢复。
+    """
+    m = re.search(r'"answer"\s*:\s*"(.*?)"\s*,\s*"evidence_used"', raw, re.S)
+    if not m:
+        return None
+    ev: list[str] = []
+    m2 = re.search(r'"evidence_used"\s*:\s*\[(.*?)\]', raw, re.S)
+    if m2:
+        ev = [e.strip().strip("\"'") for e in m2.group(1).split(",")
+              if e.strip()]
+    return {"answer": m.group(1).strip(), "evidence_used": ev}
+
+
 def doc_hits(doc_rank: list[str], gold_cid: str) -> dict:
     rank = [norm_cid(c) for c in doc_rank]
     g = norm_cid(gold_cid)

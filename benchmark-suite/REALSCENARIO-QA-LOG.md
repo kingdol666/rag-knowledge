@@ -217,16 +217,16 @@ JUDGE : {"score": 10, "verdict_ok": true, "issues": "Matches gold exactly (CIKM 
 --- method=dense_rag
 doc_rank: ['SUBMISSION-MASTER-PLAN']
 retrieval: {'gold': 'SUBMISSION-MASTER-PLAN', 'rank_position': 1, 'hit@1': 1, 'hit@3': 1, 'n_docs_returned': 1} trace={"rerank_fallback": false}
-evidence: sources=['SUBMISSION-MASTER-PLAN'] chars=2852 lat=29.8s llm_calls=0
-ANSWER: {}
-JUDGE : {"score": 0, "verdict_ok": false, "issues": "Answer is truncated to an empty fragment (`{\"answer\": \"本论文总`), containing no facts — no meeting, deadline, or city — so nothing matches the gold evidence."}
+evidence: sources=['SUBMISSION-MASTER-PLAN'] chars=2852 lat=21.35s llm_calls=0
+ANSWER: {"answer": "本论文总规划的主投会议是 **CIKM 2027**。其预测截稿日期为 2027-05-23，举办城市为悉尼。规划中另将 SIGIR 2027 AP Track 列为加速备选（2027-01 预测），KBS 期刊保底。", "evidence_used": ["SUBMISSION-MASTER-PLAN"]}
+JUDGE : {"score": 10, "verdict_ok": true, "issues": "Answer exactly matches gold evidence: CIKM 2027, deadline 2027-05-23, Sydney, plus correctly noted SIGIR AP Track backup and KBS fallback."}
 
 --- method=dense_rag_rerank
 doc_rank: ['SUBMISSION-MASTER-PLAN']
 retrieval: {'gold': 'SUBMISSION-MASTER-PLAN', 'rank_position': 1, 'hit@1': 1, 'hit@3': 1, 'n_docs_returned': 1} trace={"rerank_fallback": false}
-evidence: sources=['SUBMISSION-MASTER-PLAN'] chars=2852 lat=7.47s llm_calls=1
-ANSWER: {}
-JUDGE : {"score": 0, "verdict_ok": false, "issues": "Answer is truncated to an empty fragment (`{\"answer\": \"本论文总`), containing no facts — no meeting, deadline, or city — so nothing matches the gold evidence."}
+evidence: sources=['SUBMISSION-MASTER-PLAN'] chars=2852 lat=19.92s llm_calls=1
+ANSWER: {"answer": "本论文的总规划中，主投会议为 CIKM 2027，预测截稿日期为 2027-05-23，举办城市为悉尼。此外，SIGIR 2027 AP Track 为加速备选（2027-01 预测），KBS 期刊保底。", "evidence_used": ["SUBMISSION-MASTER-PLAN"]}
+JUDGE : {"score": 10, "verdict_ok": true, "issues": "Answer matches gold evidence exactly: CIKM 2027 main venue, 2027-05-23 predicted deadline, Sydney; backup options correctly noted with no fabrication."}
 
 --- method=raptor
 doc_rank: ['SUBMISSION-MASTER-PLAN']
@@ -237,10 +237,10 @@ JUDGE : {"score": 10, "verdict_ok": true, "issues": "All facts (CIKM 2027, 2027-
 
 --- method=itrg_refresh
 doc_rank: ['SUBMISSION-MASTER-PLAN']
-retrieval: {'gold': 'SUBMISSION-MASTER-PLAN', 'rank_position': 1, 'hit@1': 1, 'hit@3': 1, 'n_docs_returned': 1} trace={"variant": "refresh", "hypotheses": ["本论文总规划中的主投会议是 CIKM 2027，其预测截稿日期为 2027-05-23，举办城市为悉尼（Sydney）。", "本论文总规划中的主投会议是 CIKM 2027，其预测截稿日期为 2027-05-23，举办城市为悉尼（Sydney）。", "本论文总规划中的主投会议是 CIKM 2027，其预测截稿日期为 2027-05-23，举办城市为悉尼（Sydney）。"], "queries": ["本论文的总规划中，主投会议是哪一个，其预测截稿日期和举办城市是什么？", "本论文的总规划中，主投会议是哪一个，其预测截稿日期和举办城市是什么？ 本论文总规划中的主投会议是 CIKM 2027，其预测截稿日期为 2027-05-23，举办城市为悉尼（Sydney）。", "本论文的总规划中，主投会议是哪一个，其
-evidence: sources=['SUBMISSION-MASTER-PLAN'] chars=2852 lat=5.62s llm_calls=3
-ANSWER: {}
-JUDGE : {"score": 0, "verdict_ok": false, "issues": "Answer is truncated to an empty fragment (`{\"answer\": \"本论文总`), containing no facts — no meeting, deadline, or city — so nothing matches the gold evidence."}
+retrieval: {'gold': 'SUBMISSION-MASTER-PLAN', 'rank_position': 1, 'hit@1': 1, 'hit@3': 1, 'n_docs_returned': 1} trace={"variant": "refresh", "hypotheses": ["主投会议是 CIKM 2027，预测截稿日期为 2027-05-23，举办城市为悉尼。", "主投会议是 CIKM 2027，预测截稿日期为 2027-05-23，举办城市为悉尼。", "本论文的总规划中主投会议是 **CIKM 2027**，预测截稿日期为 2027-05-23，举办城市为悉尼（SIGIR 2027 AP Track 为加速备选，KBS 期刊保底）。"], "queries": ["本论文的总规划中，主投会议是哪一个，其预测截稿日期和举办城市是什么？", "本论文的总规划中，主投会议是哪一个，其预测截稿日期和举办城市是什么？ 主投会议是 CIKM 2027，预测截稿日期为 2027-05-23，举办城市为悉尼。", "本论文的总规划中，主投会议是哪一个，其预测截稿日期和举办城市是什么？ 主投会议
+evidence: sources=['SUBMISSION-MASTER-PLAN'] chars=2852 lat=36.31s llm_calls=3
+ANSWER: {"answer": "本论文总规划的主投会议是 CIKM 2027，预测截稿日期为 2027-05-23，举办城市为悉尼。此外规划中还列出 SIGIR 2027 AP Track 作为加速备选（2027-01 预测），KBS 期刊作为保底。", "evidence_used": ["SUBMISSION-MASTER-PLAN"]}
+JUDGE : {"score": 10, "verdict_ok": true, "issues": "Answer fully matches gold evidence: CIKM 2027 as main target, 2027-05-23 predicted deadline, Sydney, plus correct SIGIR 2027 AP and KBS fallback details; no fabrication."}
 
 --- method=itrg_refine
 doc_rank: ['SUBMISSION-MASTER-PLAN']
@@ -323,10 +323,10 @@ JUDGE : {"score": 9, "verdict_ok": true, "issues": "Core facts match gold (3 ann
 
 --- method=deepread
 doc_rank: ['SUBMISSION-MASTER-PLAN']
-retrieval: {'gold': 'SUBMISSION-MASTER-PLAN', 'rank_position': 1, 'hit@1': 1, 'hit@3': 1, 'n_docs_returned': 1} trace={"turns": 2, "commands": ["retrieve:Dataset C 检索集 标注规范 标注者 Cohen's κ 门槛", "final"]}
-evidence: sources=['SUBMISSION-MASTER-PLAN'] chars=1297 lat=29.53s llm_calls=2
-ANSWER: {}
-JUDGE : {"score": 1, "verdict_ok": false, "issues": "Answer is truncated and never states the required Cohen's κ ≥ 0.7 threshold; only the 3-annotator count is partially echoed."}
+retrieval: {'gold': 'SUBMISSION-MASTER-PLAN', 'rank_position': 1, 'hit@1': 1, 'hit@3': 1, 'n_docs_returned': 1} trace={"turns": 3, "commands": ["retrieve:Dataset C 检索集 标注规范 标注者 Cohen's κ 门槛", "read:SUBMISSION-MASTER-PLAN | 6 | 0 | 2", "final"]}
+evidence: sources=['SUBMISSION-MASTER-PLAN'] chars=1297 lat=35.96s llm_calls=3
+ANSWER: {"answer": "Dataset C（检索集）标注规范要求每查询的相关文档列表由 3 名标注者独立标注，Cohen's κ 的最低门槛为 ≥ 0.7，并对分歧进行仲裁。该规范同时要求额外标注“应拒答”样本（黄金盲点集）作为 FPR 与 blind-spot 指标的 ground truth。", "evidence_used": ["SUBMISSION-MASTER-PLAN"]}
+JUDGE : {"score": 9, "verdict_ok": true, "issues": "Core facts (3 annotators independent, Cohen's κ ≥ 0.7, arbitration) match gold evidence exactly; the added '应拒答' sample annotation clause is not in the quoted gold evidence and is therefore unverified."}
 
 MIDDLE-AGENT RANKING: [{"alias": "H", "method": "search_o1", "score": 10.0}, {"alias": "G", "method": "raptor", "score": 10.0}, {"alias": "B", "method": "dense_rag", "score": 4.0}, {"alias": "D", "method": "itrg_refine", "score": 4.0}, {"alias": "E", "method": "itrg_refresh", "score": 4.0}, {"alias": "F", "method": "qdcvr", "score": 4.0}, {"alias": "C", "method": "dense_rag_rerank", "score": 3.0}, {"alias": "A", "method": "deepread", "score": 3.0}]
 QUESTION WINNERS: judge_best={'method': 'raptor', 'score': 9.0} rank_best=search_o1
@@ -341,14 +341,14 @@ GOLD QUOTE: RQ2 content-overrides-vector | 构造"向量高分内容不符"对�
 doc_rank: ['SUBMISSION-MASTER-PLAN']
 retrieval: {'gold': 'SUBMISSION-MASTER-PLAN', 'rank_position': 1, 'hit@1': 1, 'hit@3': 1, 'n_docs_returned': 1} trace={"fallback_global": false, "chars_read": 2997, "verify_pass": 1}
 evidence: sources=['SUBMISSION-MASTER-PLAN'] chars=2122 lat=18.61s llm_calls=0
-ANSWER: {}
+ANSWER: {"answer": "所给证据不足：片段仅包含《论文投稿总规划（Master Plan）》的现状盘点（系统链路、质量资产、论文资产、唯一硬缺口）与目标会议/时间线表格，并在附录页数限制处被截断（\"需写 GenAI U…\"）。文中未出现 RQ2（content-overrides-vector）的实验设计描述，也未列出任何对应图表编号或名称，因此无法回答该问题。", "evidence_used": ["SUBMISSION-MASTER-PLAN"]}
 JUDGE : {"score": 1, "verdict_ok": false, "issues": "Refused to answer though gold evidence specifies the RQ2 experiment (adversarial 'high-vector-score content mismatch' samples) and its figures (Table 2 FPR column + Fig.6 scatter plot); no fabrication but fully misses the required facts."}
 
 --- method=dense_rag
 doc_rank: ['SUBMISSION-MASTER-PLAN', 'ARCHITECTURE']
 retrieval: {'gold': 'SUBMISSION-MASTER-PLAN', 'rank_position': 1, 'hit@1': 1, 'hit@3': 1, 'n_docs_returned': 2} trace={"rerank_fallback": false}
 evidence: sources=['SUBMISSION-MASTER-PLAN'] chars=2852 lat=52.76s llm_calls=0
-ANSWER: {}
+ANSWER: {"answer": "规划中为验证 RQ2（content-overrides-vector）设计的是构造\"向量高分但内容不符\"的对抗样本实验，基线沿用与 RQ1 相同的 BM25 / BGE-M3 向量 / BM25+Vec / Vec+CE-Rerank / RAG-Fusion / CRAG 式评估器 / Self-RAG 式自评。对应图表为 Table 2 的 FPR（误召回率）列，以及散点分析图 Fig.6；该数据属 T3 阶段交付物（Table 2/3/4/5 + Fig 6 数据齐）。", "evidence_used": ["SUBMISSION-MASTER-PLAN"]}
 JUDGE : {"score": 8, "verdict_ok": true, "issues": "Core mapping correct (adversarial 'vector-high-score but mismatched-content' samples → Table 2 FPR column + Fig.6 scatter), but extra unquoted claims (RQ1-shared baseline list, 'T3 阶段交付物', Table 2/3/4/5 data completeness) are not verifiable against the provided gold evidence."}
 
 --- method=dense_rag_rerank
@@ -361,22 +361,22 @@ JUDGE : {"score": 9, "verdict_ok": true, "issues": "Core claim (adversarial 'vec
 --- method=raptor
 doc_rank: ['SUBMISSION-MASTER-PLAN', 'ARCHITECTURE']
 retrieval: {'gold': 'SUBMISSION-MASTER-PLAN', 'rank_position': 1, 'hit@1': 1, 'hit@3': 1, 'n_docs_returned': 2} trace={"nodes_hit": 10}
-evidence: sources=['SUBMISSION-MASTER-PLAN'] chars=3052 lat=51.91s llm_calls=0
-ANSWER: {}
-JUDGE : {"score": 9, "verdict_ok": true, "issues": "Core match (adversarial high-vector/mismatched-content samples, Table 2 FPR column + Fig.6 scatter) is correct and grounded; the trailing unverified baseline claim is truncated and not in the gold evidence."}
+evidence: sources=['SUBMISSION-MASTER-PLAN'] chars=3052 lat=12.38s llm_calls=0
+ANSWER: {"answer": "规划中为验证 RQ2（content-overrides-vector）设计的实验是：构造“向量高分但内容不符”的对抗样本（adversarial samples）；对应图表为 Table 2 主表中的 FPR 列，以及散点图 Fig.6；基线沿用 RQ1 的同一组（BM25 / BGE-M3 向量 / BM25+Vec / Vec+CE-Rerank / RAG-Fusion / CRAG 式评估器 / Self-RAG 式自评）。", "evidence_used": ["SUBMISSION-MASTER-PLAN"]}
+JUDGE : {"score": 8, "verdict_ok": true, "issues": "Core experiment (adversarial 'high-vector-score, content-mismatched' samples) and charts (Table 2 FPR column + scatter Fig.6) match the gold evidence exactly, but the appended RQ1 baseline list is not in the gold evidence and is unverifiable."}
 
 --- method=itrg_refresh
 doc_rank: ['SUBMISSION-MASTER-PLAN']
 retrieval: {'gold': 'SUBMISSION-MASTER-PLAN', 'rank_position': 1, 'hit@1': 1, 'hit@3': 1, 'n_docs_returned': 1} trace={"variant": "refresh", "hypotheses": ["为验证 RQ2（content-overrides-vector），规划中设计了**内容验证开关（Stage 3 内容验证 on/off）的消融实验**，在 C 检索集（40+ 查询，含意图干扰型/盲点型）上对比向量误召回，以 FPR（误召回率）、P@5/R@5/nDCG@5 与盲点正确声明率为指标，对应 **Section 6 Evaluation 的主表（Table 2）与消融表（Table 3）**，并辅以**散点分析图**呈现内容验证对向量分数的修正效果。", "为验证 RQ2（content-overrides-vector），规划中设计了**内容验证开关（Stage 3 内容验证 on/off）的消融实验**，在 C 检索集（40+ 查询，含意图干扰型/盲点型）上对比向量误召回，以 FPR（误召回率）
 evidence: sources=['SUBMISSION-MASTER-PLAN'] chars=2852 lat=8.61s llm_calls=3
-ANSWER: {}
+ANSWER: {"answer": "规划中为验证 RQ2（content-overrides-vector）设计的是构造\"向量高分但内容不符\"的对抗样本实验，基线沿用与 RQ1 相同的 BM25 / BGE-M3 向量 / BM25+Vec / Vec+CE-Rerank / RAG-Fusion / CRAG 式评估器 / Self-RAG 式自评。对应图表为 Table 2 的 FPR（误召回率）列，以及散点分析图 Fig.6；该数据属 T3 阶段交付物（Table 2/3/4/5 + Fig 6 数据齐）。", "evidence_used": ["SUBMISSION-MASTER-PLAN"]}
 JUDGE : {"score": 8, "verdict_ok": true, "issues": "Core mapping correct (adversarial 'vector-high-score but mismatched-content' samples → Table 2 FPR column + Fig.6 scatter), but extra unquoted claims (RQ1-shared baseline list, 'T3 阶段交付物', Table 2/3/4/5 data completeness) are not verifiable against the provided gold evidence."}
 
 --- method=itrg_refine
 doc_rank: ['SUBMISSION-MASTER-PLAN', 'ARCHITECTURE']
 retrieval: {'gold': 'SUBMISSION-MASTER-PLAN', 'rank_position': 1, 'hit@1': 1, 'hit@3': 1, 'n_docs_returned': 2} trace={"variant": "refine", "hypotheses": ["为验证 RQ2（content-overrides-vector），规划中设计了**内容验证开关（Stage 3 内容验证 on/off）的消融实验**，在 C 检索集（40+ 查询，含意图干扰型/盲点型）上对比向量误召回，以 FPR（误召回率）、P@5/R@5/nDCG@5 与盲点正确声明率为指标，对应 **Section 6 Evaluation 的主表（Table 2）与消融表（Table 3）**，并辅以**散点分析图**呈现内容验证对向量分数的修正效果。", "为验证 RQ2（content-overrides-vector），规划中设计了**内容验证开关（Stage 3 内容验证 on/off）的消融实验**，在 C 检索集（40+ 查询，含意图干扰型/盲点型）上对比向量误召回，以 FPR（误召回率）、
 evidence: sources=['SUBMISSION-MASTER-PLAN'] chars=2852 lat=1.17s llm_calls=3
-ANSWER: {}
+ANSWER: {"answer": "规划中为验证 RQ2（content-overrides-vector）设计的是构造\"向量高分但内容不符\"的对抗样本实验，基线沿用与 RQ1 相同的 BM25 / BGE-M3 向量 / BM25+Vec / Vec+CE-Rerank / RAG-Fusion / CRAG 式评估器 / Self-RAG 式自评。对应图表为 Table 2 的 FPR（误召回率）列，以及散点分析图 Fig.6；该数据属 T3 阶段交付物（Table 2/3/4/5 + Fig 6 数据齐）。", "evidence_used": ["SUBMISSION-MASTER-PLAN"]}
 JUDGE : {"score": 8, "verdict_ok": true, "issues": "Core mapping correct (adversarial 'vector-high-score but mismatched-content' samples → Table 2 FPR column + Fig.6 scatter), but extra unquoted claims (RQ1-shared baseline list, 'T3 阶段交付物', Table 2/3/4/5 data completeness) are not verifiable against the provided gold evidence."}
 
 --- method=search_o1

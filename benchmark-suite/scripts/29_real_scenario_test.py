@@ -62,6 +62,10 @@ def retrieve(method: str, ctx, question: str) -> dict:
     return METHODS[method]["fn"](ctx, question)
 
 
+def oneshot_factory(stage: str) -> OmpOneshot:
+    return OmpOneshot(stage=stage, timeout=420)
+
+
 def run_question(q: dict, ctx_get, oneshot_factory) -> dict:
     rows = {}
     for method in SCEN_METHODS:
@@ -230,13 +234,92 @@ def write_report(meta: dict, results: dict, path: Path, json_path: Path,
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
+def repair_run(run_name: str) -> int:
+    """修复既有运行的空回答行, 产物写 real_scenario_repaired.json(原目录不可变).
+
+    两类根因两种修法:
+      a) 中文未转义引号导致严格 JSON 解析失败但内容完好 → 字段级回退解析恢复;
+      b) provider 截断(如 '{"answer": "本论文总')→ 该 (问题, 方法) 单元整体
+         重生成(检索→作答→评审), DR_NO_LLM_CACHE=1 绕开被截断内容污染的缓存。
+    """
+    import os
+    run_dir = SUITE / "results" / run_name
+    src = run_dir / "real_scenario.json"
+    if not src.exists():
+        print(f"repair: run not found: {src}")
+        return 2
+    data = json.loads(src.read_text(encoding="utf-8"))
+    meta, results = data["meta"], data["results"]
+    docs = us.load_user_docs(DOCS)
+    us.activate_profile(PREFIX, PROD_KB)
+    ctx_get = us.make_ctx_factory(McpClient, docs, PREFIX)
+    os.environ["DR_NO_LLM_CACHE"] = "1"
+    repairs = {"parser_fallback": [], "regenerated": []}
+    for q in meta["questions"]:
+        rows = results[q["qid"]]["rows"]
+        for m, row in rows.items():
+            if str((row.get("answer") or {}).get("answer") or "").strip():
+                continue
+            fb = us.parse_answer_fallback(row.get("answer_raw") or "")
+            if fb:
+                row["answer"] = fb
+                repairs["parser_fallback"].append(f"{q['qid']}:{m}")
+                continue
+            ctx = ctx_get()
+            t0 = time.perf_counter()
+            ev = retrieve(m, ctx, q["question"])
+            ans = us.answer_question(oneshot_factory, q["question"], ev)
+            jd = us.judge_answer(oneshot_factory, q["question"],
+                                 q["gold_quote"], ans)
+            score = None
+            if isinstance(jd.get("parsed"), dict):
+                try:
+                    score = float(jd["parsed"].get("score"))
+                except (TypeError, ValueError):
+                    score = None
+            row.update({
+                "doc_rank": ev.get("doc_rank") or [],
+                "metrics": us.doc_hits(ev.get("doc_rank") or [], q["doc"]),
+                "trace": ev.get("trace", {}),
+                "latency": round(time.perf_counter() - t0, 2),
+                "llm_calls": ev.get("llm_calls", 0),
+                "evidence_chars": ans["evidence_chars"],
+                "evidence_sources": ans["sources"],
+                "answer": ans.get("parsed"),
+                "answer_raw": ans.get("raw", "")[:1200],
+                "judge": jd.get("parsed"),
+                "judge_score": score})
+            repairs["regenerated"].append(f"{q['qid']}:{m}")
+            print(f"    [repair] regenerated {q['qid']}:{m} "
+                  f"judge={score}", flush=True)
+        scored = {mm: rr["judge_score"] for mm, rr in rows.items()
+                  if rr.get("judge_score") is not None}
+        best = max(scored, key=scored.get) if scored else None
+        results[q["qid"]]["judge_best"] = {"method": best,
+                                           "score": scored.get(best)}
+    out = run_dir / "real_scenario_repaired.json"
+    data["meta"]["repair"] = repairs
+    out.write_text(json.dumps(data, ensure_ascii=False, indent=1),
+                   encoding="utf-8")
+    write_log(meta, results, SUITE / "REALSCENARIO-QA-LOG.log")
+    write_log(meta, results, SUITE / "REALSCENARIO-QA-LOG.md")
+    print(f"[repair] fallback={repairs['parser_fallback']}")
+    print(f"[repair] regenerated={repairs['regenerated']}")
+    print(f"[repair] -> {out}")
+    return 0
+
+
 def main() -> int:
     global SCEN_METHODS
     ap = argparse.ArgumentParser()
     ap.add_argument("--smoke", action="store_true")
     ap.add_argument("--methods", default="")
     ap.add_argument("--per-doc", type=int, default=3)
+    ap.add_argument("--repair", default="", metavar="RUN_NAME",
+                    help="修复某次运行的空回答行后退出, 不跑新矩阵")
     args = ap.parse_args()
+    if args.repair:
+        return repair_run(args.repair)
     methods_want = (["qdcvr", "dense_rag"] if args.smoke
                     else ([m.strip() for m in args.methods.split(",")]
                           if args.methods else SCEN_METHODS))
@@ -275,9 +358,6 @@ def main() -> int:
 
     old_globals = us.activate_profile(PREFIX, PROD_KB)
     ctx_get = us.make_ctx_factory(McpClient, docs, PREFIX)
-
-    def oneshot_factory(stage: str) -> OmpOneshot:
-        return OmpOneshot(stage=stage, timeout=420)
 
     results: dict[str, dict] = {}
     workers = 1 if args.smoke else 3

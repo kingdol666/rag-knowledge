@@ -1,0 +1,72 @@
+{
+ "generated_at": "2026-09-15T16:57:16Z",
+ "run": "real-scenario-20260916-001507",
+ "data_source": "real_scenario_repaired.json",
+ "repair": {
+  "parser_fallback": [
+   "U6:qdcvr",
+   "U6:dense_rag",
+   "U6:itrg_refresh",
+   "U6:itrg_refine"
+  ],
+  "regenerated": [
+   "U4:dense_rag",
+   "U4:dense_rag_rerank",
+   "U4:itrg_refresh",
+   "U5:deepread",
+   "U6:raptor"
+  ]
+ },
+ "checks": [
+  {
+   "check": "same-documents (fingerprint)",
+   "status": "PASS",
+   "ok": true,
+   "detail": "recomputed sha=66b0f9f5ffc63e6f vs run sha=66b0f9f5ffc63e6f",
+   "fatal": true
+  },
+  {
+   "check": "same-questions (one list, all methods)",
+   "status": "PASS",
+   "ok": true,
+   "detail": "6 unique questions × 8 methods by construction; rows complete=True",
+   "fatal": true
+  },
+  {
+   "check": "answer-completeness (non-empty answers)",
+   "status": "PASS",
+   "ok": true,
+   "detail": "every (question, method) pair produced a non-empty answer",
+   "fatal": true
+  },
+  {
+   "check": "judge-coverage",
+   "status": "PASS",
+   "ok": true,
+   "detail": "48/48 judged",
+   "fatal": true
+  },
+  {
+   "check": "qa-log-records (all Q&A persisted)",
+   "status": "PASS",
+   "ok": true,
+   "detail": "log blocks: 6 question headers / 48 method answers (expected 6/48)",
+   "fatal": true
+  },
+  {
+   "check": "metrics-recompute (hit@1 reproducible from doc_rank)",
+   "status": "PASS",
+   "ok": true,
+   "detail": "stored hit@1 equals doc_rank-derived position for all rows",
+   "fatal": true
+  },
+  {
+   "check": "production-kb-live",
+   "status": "PASS",
+   "ok": true,
+   "detail": "KB-UserDemo in catalog: True",
+   "fatal": false
+  }
+ ],
+ "all_fatal_pass": true
+}
