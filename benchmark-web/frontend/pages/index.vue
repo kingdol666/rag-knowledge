@@ -2,344 +2,685 @@
   <div>
     <header>
       <h1>QDCVR Knowledge Platform — Benchmark Dashboard</h1>
-      <p>Real-time Retrieval Comparison: 6 Methods · Cross-Domain Evaluation · CIKM 2027</p>
-      <div style="margin-top:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-        <span class="method-tag tag-bm25">BM25</span>
-        <span class="method-tag tag-vector">Vector (BGE-M3)</span>
-        <span class="method-tag tag-hybrid">BM25+Vector</span>
-        <span class="method-tag tag-crag">CRAG-style</span>
-        <span class="method-tag tag-selfrag">Self-RAG-style</span>
-        <span class="method-tag tag-qdcvr">QDCVR (Ours) ★</span>
+      <p>Upload your own documents, then compare RAG retrieval algorithms with per-algorithm parameters</p>
+      <div class="row" style="justify-content:center;margin-top:12px">
+        <span class="badge badge-project">Project · QDCVR</span>
+        <span class="badge badge-real-code">Real-code · BM25 / FAISS / Cross-Encoder</span>
+        <span class="badge badge-real-algo">Real-algo · CRAG / Self-RAG</span>
       </div>
     </header>
 
     <div class="container">
-      <!-- KPI Row -->
+      <!-- KPI row -->
       <div class="kpi-grid">
-        <div class="kpi-card"><div class="kpi-value">{{ docCount }}</div><div class="kpi-label">Documents Indexed</div></div>
-        <div class="kpi-card qdcvr"><div class="kpi-value">{{ totalQueries }}</div><div class="kpi-label">Queries Executed</div></div>
-        <div class="kpi-card"><div class="kpi-value">{{ avgLatency }}ms</div><div class="kpi-label">Avg Latency</div></div>
-        <div class="kpi-card qdcvr"><div class="kpi-value">{{ qdcvrWinRate }}%</div><div class="kpi-label">QDCVR Win Rate</div></div>
-        <div class="kpi-card"><div class="kpi-value">{{ connected ? '✓' : '✗' }}</div><div class="kpi-label">Backend Status</div></div>
+        <div class="kpi-card"><div class="kpi-value">{{ health.documents ?? '--' }}</div><div class="kpi-label">Documents indexed</div></div>
+        <div class="kpi-card"><div class="kpi-value">{{ health.chunks ?? '--' }}</div><div class="kpi-label">Chunks</div></div>
+        <div class="kpi-card"><div class="kpi-value">{{ algorithms.length || '--' }}</div><div class="kpi-label">Algorithms</div></div>
+        <div class="kpi-card"><div class="kpi-value">{{ avgLatency }}</div><div class="kpi-label">Avg latency (ms)</div></div>
+        <div class="kpi-card qdcvr">
+          <div class="kpi-value"><span class="status-dot" :class="connected ? 'status-ok' : 'status-err'"></span>{{ connected ? 'Up' : 'Down' }}</div>
+          <div class="kpi-label">Backend</div>
+        </div>
       </div>
 
-      <!-- Query Input -->
-      <div class="section">
-        <h2>🔍 Benchmark Query</h2>
-        <div class="grid-2">
-          <div>
-            <textarea v-model="currentQuery" rows="2" placeholder="Enter your query... (e.g., 'reinforcement learning policy optimization DQN Atari')" @keydown.enter.prevent="runSearch"></textarea>
+      <div v-if="fatal" class="alert alert-error"><strong>Backend unreachable.</strong> {{ fatal }}</div>
+
+      <!-- Tabs -->
+      <div class="tabs">
+        <button class="tab" :class="{active: tab === 'benchmark'}" @click="tab = 'benchmark'">🔍 Benchmark</button>
+        <button class="tab" :class="{active: tab === 'corpus'}" @click="tab = 'corpus'">📄 Corpus ({{ health.documents ?? 0 }})</button>
+        <button class="tab" :class="{active: tab === 'api'}" @click="tab = 'api'">🔌 API</button>
+      </div>
+
+      <!-- ══ BENCHMARK ══ -->
+      <template v-if="tab === 'benchmark'">
+        <div class="section">
+          <h2>Query</h2>
+          <textarea v-model="query" rows="2" placeholder="Ask something about your documents…" @keydown.enter.exact.prevent="runSearch"></textarea>
+
+          <div class="row" style="margin-top:10px">
+            <label class="muted" style="min-width:64px">Top-K</label>
+            <input v-model.number="topK" type="number" min="1" max="100" style="width:90px" />
+            <label class="muted" style="min-width:64px">Domain</label>
+            <select v-model="domainFilter" style="padding:7px 12px;border:1.5px solid var(--border);border-radius:6px;font-size:0.82rem">
+              <option value="">All domains</option>
+              <option v-for="d in domains.local" :key="d" :value="d">{{ d }}</option>
+            </select>
+            <div class="spacer"></div>
+            <button class="btn btn-primary" :disabled="loading || !query.trim()" @click="runSearch">
+              {{ loading ? 'Running…' : 'Run search' }}
+            </button>
+            <button class="btn btn-outline" :disabled="loading || !query.trim()" @click="runCompare">Compare + metrics</button>
           </div>
-          <div>
-            <div class="method-checkbox" style="margin-bottom:10px">
-              <label v-for="m in methods" :key="m.id" :class="{checked: m.selected}" @click="m.selected=!m.selected">
-                {{ m.label }}
-              </label>
-            </div>
-            <div style="display:flex;gap:8px">
-              <button class="btn btn-primary" @click="runSearch" :disabled="loading">
-                {{ loading ? 'Running...' : 'Run Benchmark' }}
+
+          <div class="row" style="margin-top:10px">
+            <label class="muted" style="min-width:64px">Ground truth</label>
+            <input v-model="groundTruth" placeholder="comma-separated document ids that should be retrieved (optional)" />
+          </div>
+          <div class="param-help" style="margin-top:4px">
+            Supply ground truth to get real P@k / R@k / nDCG@10 / MRR. Without it the API reports only
+            latency, score distribution and inter-method overlap — it never invents a precision figure.
+          </div>
+
+          <div class="row" style="margin-top:12px">
+            <span class="muted">Quick queries:</span>
+            <button v-for="q in sampleQueries" :key="q" class="btn btn-outline btn-sm" @click="query = q">{{ q }}</button>
+          </div>
+        </div>
+
+        <!-- method selection -->
+        <div class="section">
+          <h2>Algorithms</h2>
+          <div v-if="!algorithms.length" class="muted">Loading algorithm registry…</div>
+          <div class="method-checkbox">
+            <!-- The label carries no click handler: the native checkbox drives the
+                 state via @change. Handling clicks on both would toggle twice and
+                 leave the selection unchanged. -->
+            <label v-for="a in algorithms" :key="a.id" :class="{checked: selected.includes(a.id)}">
+              <input type="checkbox" :checked="selected.includes(a.id)" @change="toggleMethod(a.id)" />
+              {{ a.label }}
+              <span class="badge" :class="'badge-' + a.implementation.toLowerCase().replace('_','-')">{{ a.implementation }}</span>
+            </label>
+          </div>
+          <div class="param-actions">
+            <button class="btn btn-outline btn-sm" @click="selectAll">Select all</button>
+            <button class="btn btn-outline btn-sm" @click="selected = []">Clear</button>
+            <button class="btn btn-outline btn-sm" @click="resetAllParams">Reset all parameters</button>
+          </div>
+        </div>
+
+        <!-- per-algorithm parameters -->
+        <div class="section" v-if="selectedAlgorithms.length">
+          <h2>Algorithm parameters <span class="muted">— each algorithm takes its own set</span></h2>
+          <div v-if="anyInvalid" class="alert alert-warn">
+            One or more parameters are outside the range the algorithm accepts. Leave the field to
+            have it clamped, or the API will reject that method with a named error.
+          </div>
+          <div v-for="a in selectedAlgorithms" :key="a.id" class="param-group">
+            <div class="param-group-head">
+              <span class="param-group-name">{{ a.label }}</span>
+              <span class="badge badge-family">{{ a.family }}</span>
+              <span class="badge" :class="'badge-' + a.implementation.toLowerCase().replace('_','-')">{{ a.implementation }}</span>
+              <span class="spacer"></span>
+              <button v-if="changedCount(a) " class="btn btn-outline btn-sm" @click="resetParams(a.id)">
+                reset {{ changedCount(a) }} change(s)
               </button>
-              <select v-model="domainFilter" style="padding:8px 12px;border:1.5px solid var(--border);border-radius:6px;font-size:0.85rem">
-                <option value="">All KBs (Flat)</option>
-                <option value="AI-ML-Research">AI-ML-Research</option>
-                <option value="Energy-Batteries">Energy-Batteries</option>
-                <option value="Materials-Science">Materials-Science</option>
-                <option value="Biomedical-Engineering">Biomedical-Engineering</option>
-                <option value="Materials-ML-InverseDesign">Materials-ML-InverseDesign</option>
-                <option value="Embodied-AI">Embodied-AI</option>
-                <option value="Chemistry-Catalysis">Chemistry-Catalysis</option>
-                <option value="Economics-DataScience">Economics-DataScience</option>
-              </select>
             </div>
-          </div>
-        </div>
-      </div>
+            <div class="param-group-desc">{{ a.component }} — {{ a.paper }}</div>
+            <div class="param-grid">
+              <div v-for="p in a.params" :key="p.name" class="param-field"
+                   :class="{ 'param-changed': isChanged(a, p), 'param-invalid': isInvalid(a, p) }">
+                <label :for="a.id + '-' + p.name">{{ p.name }}</label>
 
-      <!-- Sample Queries -->
-      <div style="margin-bottom:16px;display:flex;gap:8px;flex-wrap:wrap">
-        <span style="font-size:0.8rem;color:var(--text-secondary)">Quick queries:</span>
-        <button v-for="q in sampleQueries" :key="q" class="btn btn-outline btn-sm" @click="currentQuery=q;runSearch()">{{ q.substring(0,50) }}...</button>
-      </div>
+                <select v-if="p.choices" :id="a.id + '-' + p.name"
+                        :value="paramValue(a, p)" @change="setParam(a, p, $event.target.value)">
+                  <option v-for="c in p.choices" :key="c" :value="c">{{ c }}</option>
+                </select>
 
-      <!-- Loading -->
-      <div v-if="loading" class="section loading">
-        <div class="spinner"></div>
-        <p style="margin-top:12px">Running benchmark across {{ selectedMethods.length }} methods...</p>
-      </div>
+                <input v-else-if="p.type === 'bool'" type="checkbox" style="width:auto"
+                       :id="a.id + '-' + p.name" :checked="!!paramValue(a, p)"
+                       @change="setParam(a, p, $event.target.checked)" />
 
-      <!-- Results Comparison Table -->
-      <div v-if="lastResults" class="section">
-        <h2>📊 Results Comparison</h2>
-        <table class="comparison-table">
-          <thead>
-            <tr>
-              <th>Method</th>
-              <th>P@1</th><th>P@3</th><th>P@5</th>
-              <th>FPR↓</th><th>Latency(ms)↓</th>
-              <th>Avg Score</th><th>Docs Scanned</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="row in comparisonRows" :key="row.method" :class="{highlight:row.isQDCVR}">
-              <td style="text-align:left;font-weight:600">{{ row.label }}</td>
-              <td :class="{best:row.bestP1}">{{ row.p1.toFixed(2) }}</td>
-              <td :class="{best:row.bestP3}">{{ row.p3.toFixed(2) }}</td>
-              <td :class="{best:row.bestP5}">{{ row.p5.toFixed(2) }}</td>
-              <td :class="{best:row.bestFPR}">{{ row.fpr.toFixed(1) }}%</td>
-              <td :class="{best:row.bestLatency}">{{ row.latency }}</td>
-              <td>{{ row.avgScore.toFixed(3) }}</td>
-              <td>{{ row.docsScanned }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+                <input v-else-if="p.type === 'int' || p.type === 'float'" type="number"
+                       :id="a.id + '-' + p.name"
+                       :min="p.minimum ?? undefined" :max="p.maximum ?? undefined"
+                       :step="p.type === 'int' ? 1 : 0.05"
+                       :value="paramValue(a, p)"
+                       @input="setParam(a, p, $event.target.value)"
+                       @change="clampParam(a, p)" />
 
-      <!-- Top Results per Method -->
-      <div v-if="lastResults" class="section">
-        <h2>📋 Top-3 Results per Method</h2>
-        <div class="grid-2">
-          <div v-for="(methodResults, methodName) in lastResults.results" :key="methodName" class="card">
-            <h3 style="margin-bottom:8px;display:flex;align-items:center;gap:6px">
-              <span :class="'method-tag tag-'+methodName.toLowerCase().replace('+','')">{{ methodName.toUpperCase() }}</span>
-              <span style="font-size:0.75rem;color:var(--text-secondary)">{{ lastResults.latencies[methodName] }}ms</span>
-            </h3>
-            <div v-for="r in methodResults.slice(0,3)" :key="r.rank" class="result-row">
-              <div :class="['result-rank', methodName==='qdcvr'?'rank-qdcvr':'rank-other']">{{ r.rank }}</div>
-              <div class="result-content">{{ r.content_preview || '(no preview)' }}</div>
-              <div class="result-score">{{ (r.score*100).toFixed(0) }}%</div>
-            </div>
-            <div v-if="!methodResults.length" style="color:var(--text-secondary);font-size:0.8rem">No results</div>
-          </div>
-        </div>
-      </div>
+                <input v-else type="text" :id="a.id + '-' + p.name"
+                       :value="paramValue(a, p)" @input="setParam(a, p, $event.target.value)" />
 
-      <!-- Charts -->
-      <div v-if="lastResults" class="section">
-        <h2>📈 Latency Comparison</h2>
-        <div class="chart-container">
-          <canvas id="chartLatency"></canvas>
-        </div>
-      </div>
-
-      <!-- Document Management -->
-      <div class="section">
-        <h2>📄 Document Management</h2>
-        <div style="display:flex;gap:12px;align-items:flex-start">
-          <div style="flex:1">
-            <textarea v-model="newDocContent" rows="4" placeholder="Paste document content here..."></textarea>
-            <div style="display:flex;gap:8px;margin-top:8px">
-              <input v-model="newDocTitle" placeholder="Title" style="flex:1" />
-              <input v-model="newDocDomain" placeholder="Domain" style="flex:1" />
-              <button class="btn btn-success" @click="addDocument">Add Document</button>
-            </div>
-          </div>
-          <div style="width:300px">
-            <p style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:6px">Loaded Documents ({{ docCount }})</p>
-            <div style="max-height:200px;overflow-y:auto;font-size:0.75rem">
-              <div v-for="d in documents" :key="d.id" style="padding:4px 0;border-bottom:1px solid var(--border)">
-                {{ d.title || d.id }} <span style="color:var(--text-secondary)">{{ d.domain }}</span>
+                <div class="param-help">
+                  {{ p.description }}
+                  <span v-if="p.minimum !== null || p.maximum !== null" class="mono">
+                    [{{ p.minimum ?? '−∞' }} … {{ p.maximum ?? '∞' }}]
+                  </span>
+                  <span class="mono"> default {{ p.default === '' ? '(empty)' : p.default }}</span>
+                </div>
+                <div v-if="isInvalid(a, p)" class="param-error">
+                  out of range {{ rangeText(p) }} — will be clamped on commit
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+
+        <div v-if="error" class="alert alert-error">{{ error }}</div>
+
+        <!-- comparison -->
+        <div v-if="comparison" class="section">
+          <h2>Comparison</h2>
+          <div class="alert" :class="comparison.metrics_available ? 'alert-ok' : 'alert-info'">
+            {{ comparison.metrics_note }}
+          </div>
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th style="text-align:left">Method</th>
+                <th>Hits</th><th>Latency (ms)</th><th>Mean score</th><th>Max</th><th>Spread</th>
+                <template v-if="comparison.metrics_available">
+                  <th>P@5</th><th>R@5</th><th>nDCG@10</th><th>MRR</th>
+                </template>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row, id) in comparison.per_method" :key="id">
+                <td style="text-align:left;font-weight:600">
+                  {{ row.label }}
+                  <span v-if="row.error" class="badge" style="background:#fef2f2;color:#991b1b">error</span>
+                  <span v-else-if="id === comparison.fastest_method" class="badge badge-project">fastest</span>
+                </td>
+                <td>{{ row.count }}</td>
+                <td :class="{best: id === comparison.fastest_method}">{{ row.latency_ms }}</td>
+                <td>{{ row.mean_score }}</td>
+                <td>{{ row.max_score }}</td>
+                <td>{{ row.spread }}</td>
+                <template v-if="comparison.metrics_available">
+                  <td>{{ row.metrics?.['precision@5'] ?? '—' }}</td>
+                  <td>{{ row.metrics?.['recall@5'] ?? '—' }}</td>
+                  <td>{{ row.metrics?.['ndcg@10'] ?? '—' }}</td>
+                  <td>{{ row.metrics?.['mrr'] ?? '—' }}</td>
+                </template>
+              </tr>
+            </tbody>
+          </table>
+
+          <div v-if="Object.keys(comparison.overlap).length" style="margin-top:14px">
+            <div class="muted" style="margin-bottom:6px">Inter-method overlap (Jaccard) — how much two methods actually agree</div>
+            <div class="metric-strip">
+              <span v-for="(v, pair) in comparison.overlap" :key="pair" class="metric-pill">{{ pair }}: {{ v }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- chart -->
+        <div v-if="comparison" class="section">
+          <h2>Latency</h2>
+          <div class="chart-container"><canvas ref="chartCanvas"></canvas></div>
+        </div>
+
+        <!-- per-method results -->
+        <div v-if="lastRun" class="section">
+          <h2>Results per algorithm</h2>
+          <div v-for="(payload, id) in lastRun" :key="id" class="result-card">
+            <div class="result-card-head">
+              <span class="badge badge-family">{{ id }}</span>
+              <strong>{{ payload.label }}</strong>
+              <span class="result-card-stat">{{ payload.count }} hits · {{ payload.latency_ms }} ms</span>
+              <span class="spacer"></span>
+              <span class="result-card-stat mono">{{ compactParams(payload.params) }}</span>
+            </div>
+            <div v-if="payload.error" class="alert alert-warn" style="margin:0">{{ payload.error }}</div>
+            <div v-for="r in payload.results" :key="r.chunk_id" class="result-row">
+              <div class="result-rank" :class="isProject(id) ? 'rank-qdcvr' : 'rank-other'">{{ r.rank }}</div>
+              <div class="result-content">
+                <div><strong>{{ r.title }}</strong> <span class="doc-meta">{{ r.domain }}</span></div>
+                <div class="result-snippet">{{ r.content_preview }}</div>
+                <div class="metric-strip">
+                  <span class="metric-pill">score {{ r.score }}</span>
+                  <span v-if="r.k1 !== undefined" class="metric-pill">k1 {{ r.k1 }}</span>
+                  <span v-if="r.b !== undefined" class="metric-pill">b {{ r.b }}</span>
+                  <span v-if="r.alpha !== undefined" class="metric-pill">α {{ r.alpha }}</span>
+                  <span v-if="r.crag_confidence !== undefined" class="metric-pill">conf {{ r.crag_confidence }}</span>
+                  <span v-if="r.reflection_tokens" class="metric-pill">
+                    ISREL {{ r.reflection_tokens.ISREL }} · ISSUP {{ r.reflection_tokens.ISSUP }} · ISUSE {{ r.reflection_tokens.ISUSE }}
+                  </span>
+                  <span class="metric-pill">{{ r.source }}</span>
+                </div>
+              </div>
+            </div>
+            <div v-if="!payload.results.length && !payload.error" class="muted">No results.</div>
+          </div>
+        </div>
+      </template>
+
+      <!-- ══ CORPUS ══ -->
+      <template v-if="tab === 'corpus'">
+        <div class="section">
+          <h2>Upload documents</h2>
+          <div class="dropzone" :class="{dragging}" @click="fileInput?.click()"
+               @dragover.prevent="dragging = true" @dragleave.prevent="dragging = false"
+               @drop.prevent="onDrop">
+            <div class="dropzone-title">{{ uploading ? 'Uploading…' : 'Drop files here, or click to choose' }}</div>
+            <div class="dropzone-hint">
+              {{ accepted.join(' · ') }}
+            </div>
+            <input ref="fileInput" type="file" multiple style="display:none" @change="onPick" />
+          </div>
+
+          <div class="row" style="margin-top:10px">
+            <label class="muted" style="min-width:64px">Domain</label>
+            <input v-model="uploadDomain" placeholder="optional label applied to every uploaded file" style="max-width:380px" />
+          </div>
+
+          <div v-if="uploadReport" style="margin-top:14px">
+            <div class="alert" :class="uploadReport.failed ? 'alert-warn' : 'alert-ok'">
+              {{ uploadReport.uploaded }} file(s) indexed, {{ uploadReport.failed }} failed.
+            </div>
+            <div v-for="f in uploadReport.files" :key="f.filename" class="doc-row">
+              <span :class="f.ok ? 'status-dot status-ok' : 'status-dot status-err'"></span>
+              <span class="doc-title">{{ f.filename }}</span>
+              <span class="doc-meta" v-if="f.ok">{{ f.kind }} · {{ f.chunks }} chunks · {{ f.characters }} chars</span>
+              <span class="doc-meta" v-else style="color:var(--critical)">{{ f.error }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Paste text</h2>
+          <textarea v-model="newDoc.content" rows="4" placeholder="Paste document content…"></textarea>
+          <div class="row" style="margin-top:8px">
+            <input v-model="newDoc.title" placeholder="Title" style="flex:1" />
+            <input v-model="newDoc.domain" placeholder="Domain" style="flex:1" />
+            <button class="btn btn-success" :disabled="!newDoc.content.trim()" @click="addDocument">Add document</button>
+          </div>
+        </div>
+
+        <div class="section">
+          <h2>Corpus ({{ documents.length }} documents, {{ health.chunks ?? 0 }} chunks)</h2>
+          <div class="row" style="margin-bottom:10px">
+            <button class="btn btn-outline btn-sm" @click="loadDocuments">Refresh</button>
+            <button class="btn btn-outline btn-sm" @click="reindex">Rebuild index</button>
+            <div class="spacer"></div>
+            <button class="btn btn-outline btn-sm" @click="clearCorpus">Clear corpus</button>
+          </div>
+          <div v-if="!documents.length" class="muted">Corpus is empty — upload files above to get started.</div>
+          <div v-for="d in documents" :key="d.id" class="doc-row">
+            <span class="doc-title" :title="d.id">{{ d.title }}</span>
+            <span class="doc-meta">{{ d.domain || '—' }}</span>
+            <span class="doc-meta">{{ d.kind }}</span>
+            <span class="doc-meta">{{ d.chunks }} chunks</span>
+            <span class="doc-meta">{{ d.characters }} chars</span>
+            <button class="icon-btn" title="Delete" @click="deleteDocument(d.id)">✕</button>
+          </div>
+        </div>
+      </template>
+
+      <!-- ══ API ══ -->
+      <template v-if="tab === 'api'">
+        <div class="section">
+          <h2>Service</h2>
+          <div class="doc-row"><span class="doc-title">Base URL</span><span class="doc-meta mono">http://127.0.0.1:8800</span></div>
+          <div class="doc-row"><span class="doc-title">Interactive docs (OpenAPI)</span>
+            <a class="doc-meta" href="http://127.0.0.1:8800/docs" target="_blank" rel="noreferrer">/docs ↗</a></div>
+          <div class="doc-row"><span class="doc-title">Platform API used by the QDCVR baselines</span>
+            <span class="doc-meta mono">{{ service.platform_api || '—' }}</span></div>
+          <div class="doc-row"><span class="doc-title">Embedding model</span>
+            <span class="doc-meta mono">{{ service.embedding_model || '—' }}</span></div>
+        </div>
+
+        <div class="section">
+          <h2>Endpoints</h2>
+          <table class="comparison-table">
+            <thead><tr><th style="text-align:left">Method</th><th style="text-align:left">Path</th><th style="text-align:left">Purpose</th></tr></thead>
+            <tbody>
+              <tr v-for="e in endpoints" :key="e.method + e.path">
+                <td style="text-align:left"><span class="badge badge-family">{{ e.method }}</span></td>
+                <td style="text-align:left" class="mono">{{ e.path }}</td>
+                <td style="text-align:left">{{ e.purpose }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="section">
+          <h2>Run a search with per-algorithm parameters (curl)</h2>
+          <div class="result-snippet mono" style="white-space:pre-wrap">{{ curlExample }}</div>
+        </div>
+      </template>
     </div>
 
     <footer>
-      QDCVR Benchmark Dashboard · CIKM 2027 Submission · Backend: FastAPI + sentence-transformers + ChromaDB
+      QDCVR Benchmark Dashboard · CIKM 2027 · FastAPI + sentence-transformers + FAISS + rank_bm25 + ChromaDB
     </footer>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, nextTick } from 'vue';
-import { Chart, registerables } from 'chart.js';
-Chart.register(...registerables);
+import { ref, reactive, computed, onMounted, nextTick } from 'vue';
 
-// State
-const currentQuery = ref('reinforcement learning policy optimization deep Q-network');
-const domainFilter = ref('');
-const loading = ref(false);
-const lastResults = ref(null);
+const API = useRuntimeConfig().public.apiBase || 'http://127.0.0.1:8800';
+
+const tab = ref('benchmark');
+const fatal = ref('');
 const connected = ref(false);
-const docCount = ref(0);
-const totalQueries = ref(0);
-const documents = ref([]);
-const newDocContent = ref('');
-const newDocTitle = ref('');
-const newDocDomain = ref('');
+const health = reactive({ documents: null, chunks: null });
+const service = reactive({ platform_api: '', embedding_model: '' });
 
-const methods = ref([
-  { id: 'bm25', label: 'BM25', selected: true },
-  { id: 'vector', label: 'Vector', selected: true },
-  { id: 'hybrid', label: 'BM25+Vec', selected: true },
-  { id: 'crag', label: 'CRAG', selected: true },
-  { id: 'selfrag', label: 'Self-RAG', selected: true },
-  { id: 'qdcvr', label: 'QDCVR ★', selected: true },
-]);
+const algorithms = ref([]);
+const accepted = ref([]);
+const selected = ref([]);
+
+const query = ref('battery thermal management phase change material');
+const groundTruth = ref('');
+const topK = ref(5);
+const domainFilter = ref('');
+const domains = reactive({ local: [] });
+
+const paramOverrides = reactive({});     // { algId: { paramName: value } }
+const results = ref(null);
+const comparison = ref(null);
+const loading = ref(false);
+const error = ref('');
+
+const documents = ref([]);
+const dragging = ref(false);
+const uploading = ref(false);
+const uploadReport = ref(null);
+const uploadDomain = ref('');
+const fileInput = ref(null);
+const chartCanvas = ref(null);
+const newDoc = reactive({ content: '', title: '', domain: '' });
 
 const sampleQueries = [
-  'thermal management cooling optimization battery PCM',
-  'humanoid robot loco-manipulation chain of action reasoning',
-  'efficient deep learning medical imaging lightweight CNN',
-  'denoising diffusion crystal generation T-step MDP',
-  'graph neural network battery SOC estimation',
-  'GlobalRAG corpus-level reasoning aggregation tasks',
+  'battery thermal management phase change material',
+  'chest x-ray pneumonia detection',
+  'graph neural network state of charge',
+  'drug delivery hydrogel insulin',
+  'cross-encoder reranking passage',
 ];
 
-const selectedMethods = computed(() => methods.value.filter(m => m.selected).map(m => m.id));
-const qdcvrWinRate = computed(() => {
-  if (!lastResults.value) return '--';
-  const scores = Object.entries(lastResults.value.results).map(([m, r]) => ({
-    method: m,
-    score: r.length ? r.reduce((s, x) => s + x.score, 0) / r.length : 0,
-  }));
-  scores.sort((a, b) => b.score - a.score);
-  return scores[0]?.method === 'qdcvr' ? '100' : '0';
-});
+const selectedAlgorithms = computed(() =>
+  algorithms.value.filter(a => selected.value.includes(a.id)));
+
 const avgLatency = computed(() => {
-  if (!lastResults.value) return '--';
-  const lats = Object.values(lastResults.value.latencies);
+  if (!results.value) return '--';
+  const lats = Object.values(results.value).map(r => r.latency_ms).filter(Boolean);
   return lats.length ? Math.round(lats.reduce((a, b) => a + b, 0) / lats.length) : '--';
 });
 
-const comparisonRows = computed(() => {
-  if (!lastResults.value) return [];
-  const rows = [];
-  const res = lastResults.value.results;
-  
-  // Find best values
-  let bestP1 = 0, bestP3 = 0, bestP5 = 0, bestFPR = Infinity, bestLatency = Infinity;
-  for (const [m, r] of Object.entries(res)) {
-    if (r.length >= 1 && r[0].score > bestP1) bestP1 = r[0].score;
-    if (r.length >= 3 && r.slice(0,3).reduce((s,x)=>s+x.score,0)/3 > bestP3) bestP3 = r.slice(0,3).reduce((s,x)=>s+x.score,0)/3;
-    if (r.length) {
-      const avg = r.reduce((s,x)=>s+x.score,0)/r.length;
-      if (avg > bestP5) bestP5 = avg;
-    }
-    const lat = lastResults.value.latencies[m] || 9999;
-    if (lat < bestLatency) bestLatency = lat;
-  }
+const lastRun = computed(() => results.value);
 
-  for (const [m, r] of Object.entries(res)) {
-    const lat = lastResults.value.latencies[m] || 0;
-    const avgScore = r.length ? r.reduce((s, x) => s + x.score, 0) / r.length : 0;
-    const p1 = r.length >= 1 ? r[0].score : 0;
-    const p3 = r.length >= 3 ? r.slice(0, 3).reduce((s, x) => s + x.score, 0) / 3 : 0;
-    rows.push({
-      method: m,
-      label: {bm25:'BM25',vector:'Vector',hybrid:'BM25+Vec',crag:'CRAG',selfrag:'Self-RAG',qdcvr:'★ QDCVR'}[m] || m,
-      isQDCVR: m === 'qdcvr',
-      p1, p3, p5: avgScore,
-      fpr: Math.round((1 - avgScore) * 100),
-      latency: Math.round(lat),
-      avgScore,
-      docsScanned: m === 'qdcvr' ? '~538' : '13,649',
-      bestP1: p1 >= bestP1 * 0.95,
-      bestP3: p3 >= bestP3 * 0.95,
-      bestP5: avgScore >= bestP5 * 0.95,
-      bestLatency: lat <= bestLatency * 1.1,
-      bestFPR: (1 - avgScore) * 100 <= 5,
-    });
-  }
-  return rows;
-});
+const endpoints = [
+  { method: 'GET', path: '/', purpose: 'Self-describing API index' },
+  { method: 'GET', path: '/api/health', purpose: 'Liveness + corpus and index readiness' },
+  { method: 'GET', path: '/api/algorithms', purpose: 'Algorithm registry including every parameter schema' },
+  { method: 'GET', path: '/api/domains', purpose: 'Local domains + platform knowledge bases' },
+  { method: 'POST', path: '/api/documents', purpose: 'Add or replace one document' },
+  { method: 'POST', path: '/api/documents/batch', purpose: 'Add many documents' },
+  { method: 'POST', path: '/api/documents/upload', purpose: 'Upload files (multipart) — pdf, docx, md, txt, csv, json, html' },
+  { method: 'GET', path: '/api/documents', purpose: 'List the corpus' },
+  { method: 'GET', path: '/api/documents/{id}', purpose: 'Read one document and its chunks' },
+  { method: 'DELETE', path: '/api/documents/{id}', purpose: 'Delete one document' },
+  { method: 'DELETE', path: '/api/documents', purpose: 'Clear the corpus' },
+  { method: 'POST', path: '/api/search', purpose: 'Run algorithms with per-algorithm parameters' },
+  { method: 'POST', path: '/api/compare', purpose: 'Compare algorithms (+ real IR metrics with ground truth)' },
+  { method: 'POST', path: '/api/reindex', purpose: 'Rebuild the dense index' },
+];
 
-// API calls
-async function checkHealth() {
-  try {
-    const resp = await fetch('/api/health');
-    const data = await resp.json();
-    connected.value = data.status === 'healthy';
-    docCount.value = data.doc_count || 0;
-  } catch { connected.value = false; }
+const curlExample = computed(() => `curl -s -X POST ${API}/api/compare \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "query": "battery thermal management",
+    "methods": ["bm25", "dense", "hybrid", "crag"],
+    "top_k": 5,
+    "params": {
+      "bm25":   { "k1": 1.2, "b": 0.6 },
+      "hybrid": { "alpha": 0.3, "norm": "minmax" },
+      "crag":   { "upper_threshold": 0.7, "expand_trigger": 0.4 }
+    },
+    "relevant": ["battery-thermal"]
+  }'`);
+
+function isProject (id) { return id.startsWith('qdcvr'); }
+function compactParams (params) {
+  if (!params) return '';
+  return Object.entries(params)
+    .filter(([k]) => k !== 'kb_id' || params[k])
+    .map(([k, v]) => `${k}=${v === '' ? '""' : v}`).join('  ');
 }
 
-async function loadDocuments() {
-  try {
-    const resp = await fetch('/api/documents/list');
-    const data = await resp.json();
-    documents.value = data.documents || [];
-    docCount.value = documents.value.length;
-  } catch {}
+// ── parameter handling ────────────────────────────────────────────────────
+function paramValue (algorithm, param) {
+  const override = paramOverrides[algorithm.id]?.[param.name];
+  return override === undefined ? param.default : override;
+}
+function isChanged (algorithm, param) {
+  return paramOverrides[algorithm.id]?.[param.name] !== undefined;
+}
+function changedCount (algorithm) {
+  return Object.keys(paramOverrides[algorithm.id] || {}).length;
+}
+function setParam (algorithm, param, raw) {
+  if (!paramOverrides[algorithm.id]) paramOverrides[algorithm.id] = {};
+  let value = raw;
+  if (param.type === 'int') value = raw === '' ? '' : parseInt(raw, 10);
+  else if (param.type === 'float') value = raw === '' ? '' : parseFloat(raw);
+  else if (param.type === 'bool') value = !!raw;
+  if (value === '' || Number.isNaN(value)) delete paramOverrides[algorithm.id][param.name];
+  else paramOverrides[algorithm.id][param.name] = value;
+}
+function resetParams (id) { delete paramOverrides[id]; }
+function resetAllParams () { Object.keys(paramOverrides).forEach(k => delete paramOverrides[k]); }
+
+function rangeText (param) {
+  return `within [${param.minimum ?? '−∞'} … ${param.maximum ?? '∞'}]`;
+}
+function isNum (param) { return param.type === 'int' || param.type === 'float'; }
+function isInvalid (algorithm, param) {
+  if (!isNum(param)) return false;
+  const value = paramValue(algorithm, param);
+  if (typeof value !== 'number' || Number.isNaN(value)) return false;
+  if (param.minimum != null && value < param.minimum) return true;
+  if (param.maximum != null && value > param.maximum) return true;
+  return false;
+}
+/** Snap a committed value into the declared range, so a run is never sent out of bounds. */
+function clampParam (algorithm, param) {
+  if (!isNum(param)) return;
+  const value = paramValue(algorithm, param);
+  if (typeof value !== 'number' || Number.isNaN(value)) return;
+  let next = value;
+  if (param.minimum != null) next = Math.max(next, param.minimum);
+  if (param.maximum != null) next = Math.min(next, param.maximum);
+  if (param.type === 'int') next = Math.round(next);
+  if (next !== value) setParam(algorithm, param, next);
+}
+const anyInvalid = computed(() =>
+  selectedAlgorithms.value.some(a => a.params.some(p => isInvalid(a, p))));
+
+/** Only the deviations from the published defaults are sent; the response echoes the full set. */
+function buildParams () {
+  const out = {};
+  for (const [id, values] of Object.entries(paramOverrides)) {
+    if (Object.keys(values).length) out[id] = { ...values };
+  }
+  return out;
 }
 
-async function runSearch() {
-  if (!currentQuery.value.trim()) return;
-  loading.value = true;
+function toggleMethod (id) {
+  const index = selected.value.indexOf(id);
+  if (index >= 0) selected.value.splice(index, 1);
+  else selected.value.push(id);
+}
+function selectAll () { selected.value = algorithms.value.map(a => a.id); }
+
+// ── API calls ─────────────────────────────────────────────────────────────
+async function api (path, options = {}) {
+  const response = await fetch(API + path, {
+    headers: { 'Content-Type': 'application/json' },
+    ...options,
+  });
+  const text = await response.text();
+  let body;
+  try { body = JSON.parse(text); } catch { body = text; }
+  if (!response.ok) {
+    const detail = (body && body.detail) || body;
+    throw new Error(typeof detail === 'string' ? detail : JSON.stringify(detail));
+  }
+  return body;
+}
+
+async function loadHealth () {
   try {
-    const resp = await fetch('/api/search', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        query: currentQuery.value,
-        methods: selectedMethods.value,
-        top_k: 5,
-        domain: domainFilter.value || null,
-      }),
-    });
-    lastResults.value = await resp.json();
-    totalQueries.value++;
-    await nextTick();
-    renderChart();
+    const data = await api('/api/health');
+    connected.value = true;
+    health.documents = data.documents;
+    health.chunks = data.chunks;
+    fatal.value = '';
   } catch (e) {
-    console.error('Search failed:', e);
-  } finally {
-    loading.value = false;
+    connected.value = false;
+    fatal.value = e.message;
   }
 }
 
-async function addDocument() {
-  if (!newDocContent.value.trim()) return;
-  try {
-    await fetch('/api/documents/add', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        id: 'doc_' + Date.now(),
-        content: newDocContent.value,
-        title: newDocTitle.value || 'Untitled',
-        domain: newDocDomain.value || '',
-      }),
-    });
-    newDocContent.value = '';
-    newDocTitle.value = '';
-    newDocDomain.value = '';
-    await loadDocuments();
-  } catch (e) { console.error(e); }
+async function loadAlgorithms () {
+  const data = await api('/api/algorithms');
+  algorithms.value = data.algorithms;
+  accepted.value = ['pdf', 'docx', 'md', 'txt', 'csv', 'json', 'html'];
+  if (!selected.value.length) {
+    selected.value = (data.default_selection || []).filter(
+      id => data.algorithms.some(a => a.id === id));
+  }
 }
 
-let latencyChart = null;
-function renderChart() {
-  if (!lastResults.value) return;
-  const ctx = document.getElementById('chartLatency');
-  if (!ctx) return;
-  if (latencyChart) latencyChart.destroy();
-  
-  const methods = Object.keys(lastResults.value.latencies);
-  const lats = Object.values(lastResults.value.latencies);
-  const colors = methods.map(m => m === 'qdcvr' ? '#10b981' : '#6366f1');
-  
-  latencyChart = new Chart(ctx, {
+async function loadService () {
+  const data = await api('/');
+  service.platform_api = data.config?.platform_api || '';
+  service.embedding_model = data.config?.embedding_model || '';
+}
+
+async function loadDomains () {
+  try {
+    const data = await api('/api/domains');
+    domains.local = data.local || [];
+  } catch { /* domain list is advisory */ }
+}
+
+async function loadDocuments () {
+  try {
+    const data = await api('/api/documents?limit=500');
+    documents.value = data.documents || [];
+    health.documents = data.total;
+    health.chunks = data.chunks;
+  } catch (e) { fatal.value = e.message; }
+}
+
+function requestBody () {
+  const relevant = groundTruth.value.split(',').map(s => s.trim()).filter(Boolean);
+  return {
+    query: query.value,
+    methods: selected.value,
+    top_k: topK.value,
+    domain: domainFilter.value || null,
+    params: buildParams(),
+    ...(relevant.length ? { relevant } : {}),
+  };
+}
+
+async function runSearch () {
+  if (!query.value.trim() || !selected.value.length) return;
+  loading.value = true; error.value = ''; comparison.value = null;
+  try {
+    const data = await api('/api/search', { method: 'POST', body: JSON.stringify(requestBody()) });
+    results.value = data.results;
+    await loadHealth();
+  } catch (e) { error.value = e.message; }
+  finally { loading.value = false; }
+}
+
+async function runCompare () {
+  if (!query.value.trim() || !selected.value.length) return;
+  loading.value = true; error.value = '';
+  try {
+    const data = await api('/api/compare', { method: 'POST', body: JSON.stringify(requestBody()) });
+    results.value = data.results;
+    comparison.value = data.comparison;
+    await nextTick();
+    renderChart(data.comparison);
+  } catch (e) { error.value = e.message; }
+  finally { loading.value = false; }
+}
+
+// ── uploads ───────────────────────────────────────────────────────────────
+function onPick (event) { uploadFiles(event.target.files); event.target.value = ''; }
+function onDrop (event) { dragging.value = false; uploadFiles(event.dataTransfer.files); }
+
+async function uploadFiles (fileList) {
+  const files = Array.from(fileList || []);
+  if (!files.length) return;
+  uploading.value = true; error.value = '';
+  try {
+    const form = new FormData();
+    for (const file of files) form.append('files', file, file.name);
+    const suffix = uploadDomain.value ? `?domain=${encodeURIComponent(uploadDomain.value)}` : '';
+    const response = await fetch(`${API}/api/documents/upload${suffix}`, { method: 'POST', body: form });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.detail || `HTTP ${response.status}`);
+    uploadReport.value = data;
+    await Promise.all([loadDocuments(), loadHealth(), loadDomains()]);
+  } catch (e) { error.value = `Upload failed: ${e.message}`; }
+  finally { uploading.value = false; }
+}
+
+async function addDocument () {
+  if (!newDoc.content.trim()) return;
+  try {
+    await api('/api/documents', {
+      method: 'POST',
+      body: JSON.stringify({ content: newDoc.content, title: newDoc.title || 'Untitled', domain: newDoc.domain }),
+    });
+    newDoc.content = ''; newDoc.title = ''; newDoc.domain = '';
+    await Promise.all([loadDocuments(), loadHealth(), loadDomains()]);
+  } catch (e) { error.value = e.message; }
+}
+
+async function deleteDocument (id) {
+  try {
+    await api(`/api/documents/${encodeURIComponent(id)}`, { method: 'DELETE' });
+    await Promise.all([loadDocuments(), loadHealth()]);
+  } catch (e) { error.value = e.message; }
+}
+
+async function clearCorpus () {
+  if (!confirm('Delete every document in the corpus?')) return;
+  try {
+    await api('/api/documents', { method: 'DELETE' });
+    uploadReport.value = null;
+    await Promise.all([loadDocuments(), loadHealth(), loadDomains()]);
+  } catch (e) { error.value = e.message; }
+}
+
+async function reindex () {
+  try {
+    const data = await api('/api/reindex', { method: 'POST' });
+    await loadHealth();
+    alert(`Index rebuilt in ${data.elapsed_ms} ms — ${data.chunks} chunks.`);
+  } catch (e) { error.value = e.message; }
+}
+
+// ── chart ─────────────────────────────────────────────────────────────────
+let chart = null;
+async function renderChart (comp) {
+  if (!comp || !chartCanvas.value) return;
+  const { Chart, registerables } = await import('chart.js');
+  Chart.register(...registerables);
+  if (chart) chart.destroy();
+  const ids = Object.keys(comp.per_method);
+  chart = new Chart(chartCanvas.value, {
     type: 'bar',
     data: {
-      labels: methods.map(m => ({bm25:'BM25',vector:'Vector',hybrid:'BM25+Vec',crag:'CRAG',selfrag:'Self-RAG',qdcvr:'QDCVR'}[m] || m)),
-      datasets: [{ label: 'Latency (ms)', data: lats, backgroundColor: colors, borderRadius: 6 }],
+      labels: ids.map(id => comp.per_method[id].label),
+      datasets: [{
+        label: 'Latency (ms)',
+        data: ids.map(id => comp.per_method[id].latency_ms),
+        backgroundColor: ids.map(id => id.startsWith('qdcvr') ? '#10b981' : '#6366f1'),
+        borderRadius: 6,
+      }],
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
+      responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
-      scales: { y: { title: { display: true, text: 'ms' } } },
+      scales: { y: { title: { display: true, text: 'ms' }, beginAtZero: true } },
     },
   });
 }
 
 onMounted(async () => {
-  await checkHealth();
-  await loadDocuments();
-  // Auto-run sample query
-  await runSearch();
+  try {
+    await Promise.all([loadHealth(), loadAlgorithms(), loadService(), loadDocuments(), loadDomains()]);
+  } catch (e) { fatal.value = e.message; }
 });
 </script>
