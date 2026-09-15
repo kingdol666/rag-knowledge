@@ -40,12 +40,21 @@ BENCH_LIMIT=2 python run_matrix.py --stage raptor      # 首次建树 ~15 分钟
 BENCH_LIMIT=2 python run_matrix.py --stage retrieve --stage answer \
                                      --stage judge --stage report
 
+# 0b) 复现自检: 静态(语料/查询/算法/缓存) + 在线(8 方法各作答) + 与论文
+#     数据快照逐字段比对。只读、无新 LLM 调用; 退出码 0 = 全通过。
+python api_server.py &                     # verify 需要 API 在跑
+python verify_reproduction.py --qid sf-001 --limit 5
+
 # 1) 全量(30 查询 × 8 方法): 检索层即时完成, LLM 阶段按缓存断点续跑
 python run_matrix.py --stage retrieve
 python run_matrix.py --stage answer
 python run_matrix.py --stage judge
 python run_matrix.py --stage report          # → results/run-*/deepread_matrix.json
 ```
+
+最近一次复现核验结果(2026-09-15): 8 算法全部可调用, 40 次 `/ask` 无空回答,
+检索层指标与 `docs/paper/cikm/data-snapshot/deepread_matrix.json` **360/360 字段一致**。
+详见 [REPRODUCTION-VERIFICATION.md](REPRODUCTION-VERIFICATION.md)。
 
 - 并发: `DR_WORKERS=3`(默认 3)。
 - 断点续跑: 每次omp 调用与每 (方法, 查询) 的证据/作答/判分都以内容哈希落盘
