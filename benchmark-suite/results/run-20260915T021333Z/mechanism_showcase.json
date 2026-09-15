@@ -1,0 +1,918 @@
+{
+ "scenarios": [
+  {
+   "sid": "sf-002",
+   "class": "S1 rank-one repair",
+   "question": "4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress markers.",
+   "golden_ids": [
+    "32587939"
+   ],
+   "dense_gold_rank": 2,
+   "qdcvr_gold_rank": 1,
+   "methods": {
+    "qdcvr": {
+     "doc_rank": [
+      "32587939",
+      "600437",
+      "16472469",
+      "58006489",
+      "2931832",
+      "41911192",
+      "19851614"
+     ],
+     "answer": {
+      "verdict": "insufficient",
+      "answer": "The two provided excerpts discuss ER stress biology (WFS1/AC8 complex formation and VAP-dependent endosome-ER contacts) but neither mentions 4-PBA (4-phenylbutyrate) treatment nor reports effects on general ER stress markers. No data on 4-PBA administration or marker changes (e.g., CHOP, BiP/GRP78, ATF4, XBP1) is present, so the claim cannot be evaluated from this evidence.",
+      "evidence_used": []
+     },
+     "sources": [
+      "32587939",
+      "600437"
+     ],
+     "metrics": {
+      "recall@1": 1.0,
+      "hit@1": 1,
+      "recall@3": 1.0,
+      "hit@3": 1,
+      "recall@5": 1.0,
+      "hit@5": 1,
+      "recall@10": 1.0,
+      "hit@10": 1,
+      "ndcg@10": 1.0,
+      "precision@5": 0.2,
+      "mrr": 1.0
+     },
+     "judge": {
+      "score": 7,
+      "verdict_ok": true,
+      "issues": "Correctly identifies absence of 4-PBA data in the gold evidence, but fabricates a second excerpt ('VAP-dependent endosome-ER contacts') not present anywhere in the ground-truth document."
+     },
+     "cited_gold": true
+    },
+    "dense_rag": {
+     "doc_rank": [
+      "600437",
+      "32587939",
+      "16472469",
+      "58006489",
+      "7898952",
+      "13964633",
+      "22963769",
+      "2931832"
+     ],
+     "answer": {
+      "verdict": "insufficient",
+      "answer": "None of the three retrieved excerpts mention 4-PBA (sodium phenylbutyrate) or any chaperone/chemical treatment, and none measure general ER stress markers under such treatment; they concern VAP-dependent endosome-ER PI4P regulation, WFS1/AC8 ER stress signaling in beta cells, and G-quadruplex compounds in HR-deficient cells. The claim about 4-PBA decreasing ER stress is therefore not evaluable from the provided evidence.",
+      "evidence_used": [
+       "600437",
+       "32587939",
+       "16472469"
+      ]
+     },
+     "sources": [
+      "16472469",
+      "32587939",
+      "600437"
+     ],
+     "metrics": {
+      "recall@1": 0.0,
+      "hit@1": 0,
+      "recall@3": 1.0,
+      "hit@3": 1,
+      "recall@5": 1.0,
+      "hit@5": 1,
+      "recall@10": 1.0,
+      "hit@10": 1,
+      "ndcg@10": 0.6309297535714575,
+      "precision@5": 0.2,
+      "mrr": 0.5
+     },
+     "judge": {
+      "score": 9,
+      "verdict_ok": true,
+      "issues": "Verdict 'insufficient' aligns with gold evidence (WFS1/AC8 abstract never mentions 4-PBA or general ER stress marker measurements), but the answer grounds its reasoning in retrieved excerpts rather than explicitly noting the gold document itself lacks any 4-PBA data."
+     },
+     "cited_gold": true
+    },
+    "dense_rag_rerank": {
+     "doc_rank": [
+      "32587939",
+      "600437",
+      "19851614",
+      "36838958",
+      "41911192",
+      "9899292",
+      "24624992",
+      "3113630"
+     ],
+     "answer": {
+      "verdict": "insufficient",
+      "answer": "None of the retrieved excerpts mention 4-PBA (4-phenylbutyric acid) or any treatment intervention; they describe WFS1/AC8 regulation of insulin secretion under ER stress and VAP-dependent endosome-ER contacts. The excerpts also report no general ER stress marker measurements (e.g., BiP/GRP78, CHOP, ATF4, XBP1) with or without treatment. Therefore the claim cannot be evaluated from the provided evidence.",
+      "evidence_used": []
+     },
+     "sources": [
+      "32587939",
+      "600437"
+     ],
+     "metrics": {
+      "recall@1": 1.0,
+      "hit@1": 1,
+      "recall@3": 1.0,
+      "hit@3": 1,
+      "recall@5": 1.0,
+      "hit@5": 1,
+      "recall@10": 1.0,
+      "hit@10": 1,
+      "ndcg@10": 1.0,
+      "precision@5": 0.2,
+      "mrr": 1.0
+     },
+     "judge": {
+      "score": 7,
+      "verdict_ok": true,
+      "issues": "Verdict 'insufficient' is defensible since gold evidence never mentions 4-PBA or general ER stress markers, but the answer references 'VAP-dependent endosome-ER contacts' absent from the gold text."
+     },
+     "cited_gold": true
+    }
+   },
+   "abstention": null
+  },
+  {
+   "sid": "sf-017",
+   "class": "S1 rank-one repair",
+   "question": "Reduced levels of lipolysis leads to higher P38 phosphorylation in adipose tissue.",
+   "golden_ids": [
+    "32408470"
+   ],
+   "dense_gold_rank": 2,
+   "qdcvr_gold_rank": 1,
+   "methods": {
+    "qdcvr": {
+     "doc_rank": [
+      "32408470",
+      "3113630",
+      "8519911",
+      "43880096",
+      "9899292"
+     ],
+     "answer": {
+      "verdict": "insufficient",
+      "answer": "The retrieved evidence (32408470) describes the opposite causal direction: nicotine-driven AMPKα2 activation degrades MKP1, which aberrantly activates p38 MAPK and JNK, and this p38 activation leads to IRS1 degradation and loss of insulin-mediated inhibition of lipolysis, i.e., increased lipolysis. No excerpt tests whether reduced lipolysis raises p38 phosphorylation, and source 3113630 concerns HDAC4/ATM in neurons and is irrelevant. The claim's stated direction is therefore neither demonstrated nor directly refuted by the provided evidence.",
+      "evidence_used": [
+       "32408470"
+      ]
+     },
+     "sources": [
+      "3113630",
+      "32408470"
+     ],
+     "metrics": {
+      "recall@1": 1.0,
+      "hit@1": 1,
+      "recall@3": 1.0,
+      "hit@3": 1,
+      "recall@5": 1.0,
+      "hit@5": 1,
+      "recall@10": 1.0,
+      "hit@10": 1,
+      "ndcg@10": 1.0,
+      "precision@5": 0.2,
+      "mrr": 1.0
+     },
+     "judge": {
+      "score": 8,
+      "verdict_ok": true,
+      "issues": "Verdict 'insufficient' is defensible since the gold evidence describes p38 activation → increased lipolysis (opposite/orthogonal direction), though it could have noted this counters the claim's causality rather than being strictly untested."
+     },
+     "cited_gold": true
+    },
+    "dense_rag": {
+     "doc_rank": [
+      "8519911",
+      "32408470",
+      "21250322",
+      "3113630",
+      "43880096",
+      "9899292",
+      "11742219"
+     ],
+     "answer": {
+      "verdict": "refuted",
+      "answer": "The only relevant evidence describes the opposite causal direction: in adipocytes, nicotine-driven AMPKα2 activation degrades MKP1, causing aberrant p38 MAPK activation that inhibits insulin signaling and thereby increases lipolysis, not the reverse. No evidence supports reduced lipolysis raising p38 phosphorylation in adipose tissue; the cited aging/p38 islet study concerns neither lipolysis nor adipose tissue.",
+      "evidence_used": [
+       "32408470"
+      ]
+     },
+     "sources": [
+      "32408470",
+      "8519911"
+     ],
+     "metrics": {
+      "recall@1": 0.0,
+      "hit@1": 0,
+      "recall@3": 1.0,
+      "hit@3": 1,
+      "recall@5": 1.0,
+      "hit@5": 1,
+      "recall@10": 1.0,
+      "hit@10": 1,
+      "ndcg@10": 0.6309297535714575,
+      "precision@5": 0.2,
+      "mrr": 0.5
+     },
+     "judge": {
+      "score": 9,
+      "verdict_ok": true,
+      "issues": "Verdict and mechanism direction (p38 activation -> increased lipolysis) are correct and faithful to gold; the aside about the 'aging/p38 islet study' is not verifiable from the gold evidence."
+     },
+     "cited_gold": true
+    },
+    "dense_rag_rerank": {
+     "doc_rank": [
+      "32408470",
+      "9899292",
+      "8519911",
+      "25050364"
+     ],
+     "answer": {
+      "verdict": "insufficient",
+      "answer": "The evidence describes the reverse relationship: nicotine-driven MKP1 degradation causes aberrant p38 MAPK activation, which increases IRS1 serine 307 phosphorylation, impairs insulin-mediated inhibition of lipolysis, and thereby increases lipolysis. Nothing in the excerpt tests whether reduced lipolysis raises p38 phosphorylation in adipose tissue; if anything, the reported chain places p38 activation upstream of elevated lipolysis, not downstream of suppressed lipolysis. The claim's directionality is therefore unsupported by this source.",
+      "evidence_used": [
+       "32408470"
+      ]
+     },
+     "sources": [
+      "32408470"
+     ],
+     "metrics": {
+      "recall@1": 1.0,
+      "hit@1": 1,
+      "recall@3": 1.0,
+      "hit@3": 1,
+      "recall@5": 1.0,
+      "hit@5": 1,
+      "recall@10": 1.0,
+      "hit@10": 1,
+      "ndcg@10": 1.0,
+      "precision@5": 0.2,
+      "mrr": 1.0
+     },
+     "judge": {
+      "score": 8,
+      "verdict_ok": true,
+      "issues": "Correctly rejects the claim and identifies the reversed directionality, though the evidence actually contradicts rather than merely 'insufficiently' supports it."
+     },
+     "cited_gold": true
+    }
+   },
+   "abstention": null
+  },
+  {
+   "sid": "sf-027",
+   "class": "S1 rank-one repair",
+   "question": "Removal of H3K9me3 improves reprogramming efficiency in human somatic cell nuclear transfer experiments.",
+   "golden_ids": [
+    "4547102"
+   ],
+   "dense_gold_rank": 3,
+   "qdcvr_gold_rank": 2,
+   "methods": {
+    "qdcvr": {
+     "doc_rank": [
+      "8185080",
+      "4547102",
+      "6441369",
+      "16287725",
+      "13964633",
+      "2931832",
+      "28230867"
+     ],
+     "answer": {
+      "answer": "NOT_IN_EVIDENCE",
+      "sources": [],
+      "confidence": "high"
+     },
+     "sources": [
+      "4547102",
+      "8185080"
+     ],
+     "metrics": {
+      "recall@1": 0.0,
+      "hit@1": 0,
+      "recall@3": 1.0,
+      "hit@3": 1,
+      "recall@5": 1.0,
+      "hit@5": 1,
+      "recall@10": 1.0,
+      "hit@10": 1,
+      "ndcg@10": 0.6309297535714575,
+      "precision@5": 0.2,
+      "mrr": 0.5
+     },
+     "judge": {
+      "score": 5,
+      "verdict_ok": true,
+      "issues": "Correct that the human-SCNT claim is absent (gold evidence is bovine), but the answer ignores the closely matching bovine KDM4E/H3K9me3 reprogramming data and reports no sources or partial-support nuance."
+     },
+     "cited_gold": true
+    },
+    "dense_rag": {
+     "doc_rank": [
+      "8185080",
+      "11532659",
+      "4547102",
+      "6441369",
+      "16287725",
+      "29788648",
+      "18987782"
+     ],
+     "answer": {
+      "answer": "NOT_IN_EVIDENCE",
+      "sources": [],
+      "confidence": "high"
+     },
+     "sources": [
+      "11532659",
+      "4547102",
+      "8185080"
+     ],
+     "metrics": {
+      "recall@1": 0.0,
+      "hit@1": 0,
+      "recall@3": 1.0,
+      "hit@3": 1,
+      "recall@5": 1.0,
+      "hit@5": 1,
+      "recall@10": 1.0,
+      "hit@10": 1,
+      "ndcg@10": 0.5,
+      "precision@5": 0.2,
+      "mrr": 0.3333333333333333
+     },
+     "judge": {
+      "score": 5,
+      "verdict_ok": true,
+      "issues": "Correct that the human-SCNT claim is absent (gold evidence is bovine), but the answer ignores the closely matching bovine KDM4E/H3K9me3 reprogramming data and reports no sources or partial-support nuance."
+     },
+     "cited_gold": true
+    },
+    "dense_rag_rerank": {
+     "doc_rank": [
+      "4547102",
+      "8185080",
+      "16287725",
+      "6441369",
+      "11532659"
+     ],
+     "answer": {
+      "answer": "NOT_IN_EVIDENCE",
+      "sources": [],
+      "confidence": "high"
+     },
+     "sources": [
+      "4547102"
+     ],
+     "metrics": {
+      "recall@1": 1.0,
+      "hit@1": 1,
+      "recall@3": 1.0,
+      "hit@3": 1,
+      "recall@5": 1.0,
+      "hit@5": 1,
+      "recall@10": 1.0,
+      "hit@10": 1,
+      "ndcg@10": 1.0,
+      "precision@5": 0.2,
+      "mrr": 1.0
+     },
+     "judge": {
+      "score": 5,
+      "verdict_ok": true,
+      "issues": "Correct that the human-SCNT claim is absent (gold evidence is bovine), but the answer ignores the closely matching bovine KDM4E/H3K9me3 reprogramming data and reports no sources or partial-support nuance."
+     },
+     "cited_gold": true
+    }
+   },
+   "abstention": null
+  },
+  {
+   "sid": "s2-01",
+   "class": "S2 honest abstention",
+   "question": "Which COVID-19 vaccine candidate shows the highest efficacy against the Omicron variant?",
+   "golden_ids": [],
+   "no_evidence": true,
+   "methods": {
+    "qdcvr": {
+     "doc_rank": [
+      "5372773",
+      "4961038",
+      "30543439",
+      "16287725",
+      "3531388",
+      "99829811",
+      "12903921",
+      "16472469"
+     ],
+     "answer": {
+      "verdict": "insufficient",
+      "answer": "The claim asks which COVID-19 vaccine candidate has the highest efficacy against the Omicron variant, but neither retrieved excerpt addresses COVID-19, SARS-CoV-2, vaccines, or the Omicron variant. Source [5372773] concerns human cytomegalovirus IL-10 homologues and monocyte phagocytosis, and [4961038] concerns PI3K/MEK inhibitors in murine K-Ras and PIK3CA lung cancer models. No evidence in the corpus supports or refutes the claim.",
+      "evidence_used": [
+       "5372773",
+       "4961038"
+      ]
+     },
+     "sources": [
+      "4961038",
+      "5372773"
+     ],
+     "judge": {
+      "score": 10,
+      "abstained": true,
+      "fabricated": false,
+      "issues": "Correctly declares insufficient evidence, accurately characterizes both retrieved excerpts as unrelated, and invents no facts, numbers, or citations."
+     }
+    },
+    "dense_rag": {
+     "doc_rank": [
+      "8185080",
+      "3272084",
+      "27022864",
+      "5372773",
+      "12358173",
+      "6212802",
+      "4961038",
+      "19957813"
+     ],
+     "answer": {
+      "verdict": "insufficient",
+      "answer": "The retrieved evidence is unrelated to the claim: the excerpts concern small-molecule enhancement of induced pluripotent stem cell reprogramming, Danish antibiotic prescribing patterns for acute respiratory tract infections, and hypoxic modification of the NMDA receptor in rat brain. No COVID-19 vaccine candidate, efficacy data, or Omicron variant information appears in any excerpt, so no efficacy ranking can be established. The claim cannot be assessed from this evidence.",
+      "evidence_used": []
+     },
+     "sources": [
+      "27022864",
+      "3272084",
+      "8185080"
+     ],
+     "judge": {
+      "score": 10,
+      "abstained": true,
+      "fabricated": false,
+      "issues": "Correctly declares insufficient evidence, cites the actual unrelated excerpts, and invents no facts, numbers, or citations."
+     }
+    },
+    "dense_rag_rerank": {
+     "doc_rank": [
+      "3272084",
+      "5372773",
+      "13923140",
+      "7621534",
+      "3531388",
+      "99829811",
+      "12903921",
+      "12358173"
+     ],
+     "answer": {
+      "verdict": "insufficient",
+      "answer": "The retrieved evidence is entirely about antibiotic prescribing patterns for acute respiratory tract infections in Danish general practice (penicillin V, macrolides, amoxicillin), and contains no information about COVID-19 vaccine candidates or efficacy against the Omicron variant. The claim therefore cannot be evaluated from this corpus.",
+      "evidence_used": [
+       "3272084"
+      ]
+     },
+     "sources": [
+      "3272084"
+     ],
+     "judge": {
+      "score": 10,
+      "abstained": true,
+      "fabricated": false,
+      "issues": "Correctly identified the corpus as off-topic (Danish antibiotic prescribing) and returned insufficient without inventing any vaccine, efficacy figure, or unsupported citation."
+     }
+    }
+   },
+   "abstention": {
+    "qdcvr": {
+     "answer": "The claim asks which COVID-19 vaccine candidate has the highest efficacy against",
+     "judge_score": 10,
+     "judge_fabricated": false
+    },
+    "dense_rag": {
+     "answer": "The retrieved evidence is unrelated to the claim: the excerpts concern small-mol",
+     "judge_score": 10,
+     "judge_fabricated": false
+    },
+    "dense_rag_rerank": {
+     "answer": "The retrieved evidence is entirely about antibiotic prescribing patterns for acu",
+     "judge_score": 10,
+     "judge_fabricated": false
+    }
+   }
+  },
+  {
+   "sid": "s2-02",
+   "class": "S2 honest abstention",
+   "question": "What is the recommended maintenance interval for lithium-ion grid-scale battery storage systems?",
+   "golden_ids": [],
+   "no_evidence": true,
+   "methods": {
+    "qdcvr": {
+     "doc_rank": [
+      "9291596",
+      "19644821",
+      "9745001",
+      "35828148",
+      "17447653",
+      "12903921"
+     ],
+     "answer": {
+      "verdict": "insufficient",
+      "answer": "The retrieved evidence is unrelated to the claim: it concerns DNA interstrand cross-link repair and cell-cycle arrest, and Lin28b-driven liver cancer in murine models. Neither source addresses lithium-ion grid-scale battery storage systems or maintenance intervals. No recommendation on battery maintenance frequency can be derived from these excerpts.",
+      "evidence_used": [
+       "9291596",
+       "19644821"
+      ]
+     },
+     "sources": [
+      "19644821",
+      "9291596"
+     ],
+     "judge": {
+      "score": 9,
+      "abstained": true,
+      "fabricated": false,
+      "issues": "Correctly identifies retrieved evidence as unrelated to battery storage, abstains cleanly with no invented maintenance intervals or figures."
+     }
+    },
+    "dense_rag": {
+     "doc_rank": [
+      "9745001",
+      "13636631",
+      "9291596",
+      "19644821",
+      "5633957",
+      "37296667",
+      "99829811",
+      "40164383",
+      "13923140"
+     ],
+     "answer": {
+      "verdict": "insufficient",
+      "answer": "None of the retrieved excerpts address lithium-ion grid-scale battery storage systems or their maintenance schedules; they concern radioiodine therapy for goitre, cytokine control of memory T-cell development, and psoralen-induced DNA interstrand cross-link responses. No maintenance interval for lithium-ion grid-scale storage can be derived from this evidence.",
+      "evidence_used": []
+     },
+     "sources": [
+      "13636631",
+      "9291596",
+      "9745001"
+     ],
+     "judge": {
+      "score": 10,
+      "abstained": true,
+      "fabricated": false,
+      "issues": "Correctly recognizes the corpus lacks any relevant evidence, abstains with 'insufficient', and fabricates no facts, numbers, or citations."
+     }
+    },
+    "dense_rag_rerank": {
+     "doc_rank": [
+      "94109411",
+      "17447653",
+      "7260461",
+      "9745001",
+      "9291596",
+      "13636631",
+      "19644821"
+     ],
+     "answer": {
+      "verdict": "insufficient",
+      "answer": "The retrieved evidence is entirely off-topic: it concerns Au/Zn/Au ohmic contacts for p-type InP and the BLAST+ bioinformatics search tool, neither of which addresses lithium-ion grid-scale battery storage. No excerpt states or implies any maintenance interval for battery storage systems, so the claim cannot be assessed from the provided corpus.",
+      "evidence_used": []
+     },
+     "sources": [
+      "17447653",
+      "94109411"
+     ],
+     "judge": {
+      "score": 10,
+      "abstained": true,
+      "fabricated": false,
+      "issues": "Correctly identifies off-topic corpus and abstains without inventing any maintenance interval, clear and specific."
+     }
+    }
+   },
+   "abstention": {
+    "qdcvr": {
+     "answer": "The retrieved evidence is unrelated to the claim: it concerns DNA interstrand cr",
+     "judge_score": 9,
+     "judge_fabricated": false
+    },
+    "dense_rag": {
+     "answer": "None of the retrieved excerpts address lithium-ion grid-scale battery storage sy",
+     "judge_score": 10,
+     "judge_fabricated": false
+    },
+    "dense_rag_rerank": {
+     "answer": "The retrieved evidence is entirely off-topic: it concerns Au/Zn/Au ohmic contact",
+     "judge_score": 10,
+     "judge_fabricated": false
+    }
+   }
+  },
+  {
+   "sid": "s2-03",
+   "class": "S2 honest abstention",
+   "question": "How did 2023 inflation affect the market share of electric vehicle manufacturers?",
+   "golden_ids": [],
+   "no_evidence": true,
+   "methods": {
+    "qdcvr": {
+     "doc_rank": [
+      "32969964"
+     ],
+     "answer": {
+      "verdict": "insufficient",
+      "answer": "The retrieved evidence [32969964] concerns the effect of clinical guidelines on medical practice and contains no information about 2023 inflation, electric vehicle manufacturers, or market share. Because the sole source is topically unrelated to the claim's subject, the claim cannot be assessed from the provided evidence.",
+      "evidence_used": [
+       "32969964"
+      ]
+     },
+     "sources": [
+      "32969964"
+     ],
+     "judge": {
+      "score": 10,
+      "abstained": true,
+      "fabricated": false,
+      "issues": "Correctly declares insufficiency, cites only the actual retrieved unrelated source, and fabricates no specifics."
+     }
+    },
+    "dense_rag": {
+     "doc_rank": [
+      "3952288",
+      "32969964"
+     ],
+     "answer": {
+      "verdict": "insufficient",
+      "answer": "The retrieved evidence is unrelated to the claim: source 3952288 concerns RANK signals and Aire-expressing thymic medullary epithelial cells in self-tolerance, and source 32969964 concerns the effect of clinical guidelines on medical practice. Neither excerpt contains any data on 2023 inflation, electric vehicle manufacturers, or market share.",
+      "evidence_used": [
+       "3952288",
+       "32969964"
+      ]
+     },
+     "sources": [
+      "32969964",
+      "3952288"
+     ],
+     "judge": {
+      "score": 10,
+      "abstained": true,
+      "fabricated": false,
+      "issues": "Correctly declares insufficient evidence and explains the retrieved sources are unrelated, citing only identifiers actually present with no invented facts."
+     }
+    },
+    "dense_rag_rerank": {
+     "doc_rank": [
+      "32969964",
+      "3952288"
+     ],
+     "answer": {
+      "verdict": "insufficient",
+      "answer": "The retrieved evidence is entirely unrelated to the claim: one excerpt concerns the effect of clinical guidelines on medical practice [32969964] and the other concerns RANK signals and Aire-expressing thymic epithelial cells [3952288]. Neither discusses 2023 inflation, electric vehicle manufacturers, or market share. No factual assessment of the claim can be made from these sources.",
+      "evidence_used": []
+     },
+     "sources": [
+      "32969964",
+      "3952288"
+     ],
+     "judge": {
+      "score": 10,
+      "abstained": true,
+      "fabricated": false,
+      "issues": "Correctly declares insufficient and explains that retrieved excerpts are irrelevant to 2023 inflation and EV market share, inventing no facts or numbers."
+     }
+    }
+   },
+   "abstention": {
+    "qdcvr": {
+     "answer": "The retrieved evidence [32969964] concerns the effect of clinical guidelines on ",
+     "judge_score": 10,
+     "judge_fabricated": false
+    },
+    "dense_rag": {
+     "answer": "The retrieved evidence is unrelated to the claim: source 3952288 concerns RANK s",
+     "judge_score": 10,
+     "judge_fabricated": false
+    },
+    "dense_rag_rerank": {
+     "answer": "The retrieved evidence is entirely unrelated to the claim: one excerpt concerns ",
+     "judge_score": 10,
+     "judge_fabricated": false
+    }
+   }
+  },
+  {
+   "sid": "s2-04",
+   "class": "S2 honest abstention",
+   "question": "Which protein is the primary structural component of spider silk and how is it harvested industrially?",
+   "golden_ids": [],
+   "no_evidence": true,
+   "methods": {
+    "qdcvr": {
+     "doc_rank": [
+      "18987782",
+      "6836086",
+      "36904081",
+      "40044800",
+      "14893425",
+      "19799455",
+      "21250322"
+     ],
+     "answer": {
+      "verdict": "insufficient",
+      "answer": "The evidence excerpts do not address spider silk. Source [18987782] concerns Myc oncogenic activity and ribosomal protein haploinsufficiency in mice, and source [6836086] concerns outer membrane protein biogenesis in Escherichia coli. Neither identifies a silk structural protein (e.g., spidroin) nor describes any industrial harvesting method, so the claim cannot be assessed from this corpus.",
+      "evidence_used": []
+     },
+     "sources": [
+      "18987782",
+      "6836086"
+     ],
+     "judge": {
+      "score": 8,
+      "abstained": true,
+      "fabricated": false,
+      "issues": "Correctly abstains with no spidroin/silk facts invented, though it cites two source IDs ([18987782], [6836086]) whose existence was not independently verified; treating them as quoted irrelevant evidence is acceptable."
+     }
+    },
+    "dense_rag": {
+     "doc_rank": [
+      "6836086",
+      "36904081",
+      "18987782",
+      "40044800",
+      "14893425",
+      "28230867",
+      "4423220",
+      "10300888",
+      "14332945"
+     ],
+     "answer": {
+      "verdict": "insufficient",
+      "answer": "The retrieved evidence is entirely unrelated to the claim: it concerns outer membrane protein assembly in E. coli, the yeast ribosomal protein L32 gene, and Myc-driven translation in cancer, with no mention of spider silk, silk proteins (spidroins/fibroin), or any harvesting process. Therefore the claim's identity of the primary structural silk protein and its industrial harvesting method cannot be assessed from this corpus. No factual support or refutation is available here.",
+      "evidence_used": []
+     },
+     "sources": [
+      "18987782",
+      "36904081",
+      "6836086"
+     ],
+     "judge": {
+      "score": 10,
+      "abstained": true,
+      "fabricated": false,
+      "issues": "Correctly recognises the corpus lacks evidence on spider silk proteins and harvest methods, abstains, and invents no specifics."
+     }
+    },
+    "dense_rag_rerank": {
+     "doc_rank": [
+      "10300888",
+      "19799455",
+      "4423220",
+      "6836086",
+      "20725212",
+      "12486491"
+     ],
+     "answer": {
+      "verdict": "insufficient",
+      "answer": "The retrieved evidence does not address spider silk at all: source 10300888 concerns the domestication and divergence of industrial Saccharomyces cerevisiae beer yeasts, and source 19799455 concerns the ascorbic-acid transporter Slc23a1 and perinatal survival in mice. Neither excerpt identifies a silk protein (e.g., spidroin) nor describes any industrial harvesting method, so the claim cannot be evaluated from this corpus. No supported or refuted determination is possible.",
+      "evidence_used": [
+       "10300888",
+       "19799455"
+      ]
+     },
+     "sources": [
+      "10300888",
+      "19799455"
+     ],
+     "judge": {
+      "score": 10,
+      "abstained": true,
+      "fabricated": false,
+      "issues": "Correctly declares insufficient evidence, identifies both retrieved sources as off-topic, and invents no facts, numbers, or citations."
+     }
+    }
+   },
+   "abstention": {
+    "qdcvr": {
+     "answer": "The evidence excerpts do not address spider silk. Source [18987782] concerns Myc",
+     "judge_score": 8,
+     "judge_fabricated": false
+    },
+    "dense_rag": {
+     "answer": "The retrieved evidence is entirely unrelated to the claim: it concerns outer mem",
+     "judge_score": 10,
+     "judge_fabricated": false
+    },
+    "dense_rag_rerank": {
+     "answer": "The retrieved evidence does not address spider silk at all: source 10300888 conc",
+     "judge_score": 10,
+     "judge_fabricated": false
+    }
+   }
+  },
+  {
+   "sid": "s2-05",
+   "class": "S2 honest abstention",
+   "question": "What was the box-office revenue of the highest-grossing film of 2019?",
+   "golden_ids": [],
+   "no_evidence": true,
+   "methods": {
+    "qdcvr": {
+     "doc_rank": [],
+     "answer": {
+      "verdict": "insufficient",
+      "answer": "The corpus contains no evidence about the box-office revenue of any 2019 film. Retrieval returned only unrelated film/TV articles (e.g. 2009 Pokémon films noting US$50.2 million in Japan) and nothing about worldwide grosses, so the claim cannot be assessed.",
+      "evidence_used": []
+     },
+     "sources": [],
+     "judge": {
+      "score": 9,
+      "abstained": true,
+      "fabricated": false,
+      "issues": "Correctly declares insufficient with empty evidence and no invented answer; only minor clutter from quoting an unverifiable retrieval snippet (US$50.2 million) that was explicitly not used as the answer."
+     }
+    },
+    "dense_rag": {
+     "doc_rank": [],
+     "answer": {
+      "verdict": "insufficient",
+      "answer": "The corpus contains no evidence about the box-office revenue of any 2019 film. Retrieval returned only unrelated film/TV articles (e.g. 2009 Pokémon films noting US$50.2 million in Japan) and nothing about worldwide grosses, so the claim cannot be assessed.",
+      "evidence_used": []
+     },
+     "sources": [],
+     "judge": {
+      "score": 9,
+      "abstained": true,
+      "fabricated": false,
+      "issues": "Correctly declares insufficient with empty evidence and no invented answer; only minor clutter from quoting an unverifiable retrieval snippet (US$50.2 million) that was explicitly not used as the answer."
+     }
+    },
+    "dense_rag_rerank": {
+     "doc_rank": [],
+     "answer": {
+      "verdict": "insufficient",
+      "answer": "The corpus contains no evidence about the box-office revenue of any 2019 film. Retrieval returned only unrelated film/TV articles (e.g. 2009 Pokémon films noting US$50.2 million in Japan) and nothing about worldwide grosses, so the claim cannot be assessed.",
+      "evidence_used": []
+     },
+     "sources": [],
+     "judge": {
+      "score": 9,
+      "abstained": true,
+      "fabricated": false,
+      "issues": "Correctly declares insufficient with empty evidence and no invented answer; only minor clutter from quoting an unverifiable retrieval snippet (US$50.2 million) that was explicitly not used as the answer."
+     }
+    }
+   },
+   "abstention": {
+    "qdcvr": {
+     "answer": "The corpus contains no evidence about the box-office revenue of any 2019 film. R",
+     "judge_score": 9,
+     "judge_fabricated": false
+    },
+    "dense_rag": {
+     "answer": "The corpus contains no evidence about the box-office revenue of any 2019 film. R",
+     "judge_score": 9,
+     "judge_fabricated": false
+    },
+    "dense_rag_rerank": {
+     "answer": "The corpus contains no evidence about the box-office revenue of any 2019 film. R",
+     "judge_score": 9,
+     "judge_fabricated": false
+    }
+   }
+  }
+ ],
+ "aggregate": {
+  "qdcvr": {
+   "S1_mean_judge": 6.667,
+   "S2_mean_judge": 9.2,
+   "S2_not_in_evidence_rate": 0.0,
+   "S2_fabrication_count": 0
+  },
+  "dense_rag": {
+   "S1_mean_judge": 7.667,
+   "S2_mean_judge": 9.8,
+   "S2_not_in_evidence_rate": 0.0,
+   "S2_fabrication_count": 0
+  },
+  "dense_rag_rerank": {
+   "S1_mean_judge": 6.667,
+   "S2_mean_judge": 9.8,
+   "S2_not_in_evidence_rate": 0.0,
+   "S2_fabrication_count": 0
+  }
+ },
+ "methods": [
+  "qdcvr",
+  "dense_rag",
+  "dense_rag_rerank"
+ ],
+ "generated": "2026-09-15T02:13:33Z"
+}
