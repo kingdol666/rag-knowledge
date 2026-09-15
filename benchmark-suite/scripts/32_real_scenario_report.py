@@ -573,10 +573,132 @@ options:{{scales:{{y:{{max:100}}}}}}}});
     path.write_text(html, encoding="utf-8")
 
 
+# ── 跨次运行复现性对比 ───────────────────────────────────────────────────────
+
+def compare_runs_data(name_a: str, name_b: str) -> dict:
+    """两次真实场景运行逐 (问题, 方法) 对比: 检索位置/评审分/回答文本.
+
+    容忍度对齐套件 §7: judge ±1.5 视为一致(LLM 判分方差), 检索位置与
+    hit@1 逐位对比, 回答文本按规范化后全等。
+    """
+    pa, da = load_run(name_a)
+    pb, db = load_run(name_b)
+    ja, jb = da["meta"]["questions"], db["meta"]["questions"]
+    qids = [q["qid"] for q in ja
+            if any(q2["qid"] == q["qid"] for q2 in jb)]
+    methods = [m for m in da["meta"]["methods"]
+               if m in db["meta"]["methods"]]
+    rows, per_method = [], {}
+    n_pos_match = n_h1_match = n_ans_same = 0
+    deltas = []
+    for q in ja:
+        if q["qid"] not in qids:
+            continue
+        for m in methods:
+            ra = da["results"][q["qid"]]["rows"].get(m)
+            rb = db["results"][q["qid"]]["rows"].get(m)
+            if not ra or not rb:
+                continue
+            pos_a = position_of(ra.get("doc_rank") or [], q["doc"])
+            pos_b = position_of(rb.get("doc_rank") or [], q["doc"])
+            ja_s = ra.get("judge_score")
+            jb_s = rb.get("judge_score")
+            ans_a = " ".join(str((ra.get("answer") or {}).get("answer")
+                                 or "").split())
+            ans_b = " ".join(str((rb.get("answer") or {}).get("answer")
+                                 or "").split())
+            d = (None if (ja_s is None or jb_s is None)
+                 else round(abs(ja_s - jb_s), 2))
+            if d is not None:
+                deltas.append(d)
+            ok_pos = pos_a == pos_b
+            ok_h1 = (pos_a == 1) == (pos_b == 1)
+            same_ans = ans_a == ans_b
+            n_pos_match += ok_pos
+            n_h1_match += ok_h1
+            n_ans_same += same_ans
+            rows.append({"qid": q["qid"], "method": m,
+                         "pos_a": pos_a, "pos_b": pos_b,
+                         "judge_a": ja_s, "judge_b": jb_s,
+                         "abs_judge_delta": d,
+                         "answer_identical": same_ans})
+            pm = per_method.setdefault(m, {"n": 0, "pos_match": 0,
+                                           "judge_within": 0,
+                                           "ans_same": 0})
+            pm["n"] += 1
+            pm["pos_match"] += ok_pos
+            pm["ans_same"] += same_ans
+            if d is not None and d <= 1.5:
+                pm["judge_within"] += 1
+    total = len(rows)
+    out = {
+        "run_a": pa.parent.name, "run_b": pb.parent.name,
+        "compared_cells": total,
+        "retrieval": {
+            "position_exact_match": n_pos_match,
+            "position_match_rate": round(n_pos_match / total, 4)
+            if total else None,
+            "hit1_agreement": round(n_h1_match / total, 4)
+            if total else None},
+        "judge": {
+            "mean_abs_delta": round(sum(deltas) / len(deltas), 3)
+            if deltas else None,
+            "max_abs_delta": max(deltas) if deltas else None,
+            "within_1p5": sum(1 for d in deltas if d <= 1.5),
+            "within_1p5_rate": round(sum(1 for d in deltas if d <= 1.5)
+                                     / len(deltas), 4) if deltas else None},
+        "answers": {"identical_text": n_ans_same,
+                    "identical_rate": round(n_ans_same / total, 4)
+                    if total else None},
+        "per_method": per_method,
+        "rows": rows}
+    return out
+
+
+def write_comparison_md(out: dict, path: Path) -> None:
+    lines = [
+        "# E19 复现性对比 — 两次真实场景运行",
+        "",
+        f"- A: `{out['run_a']}` vs B: `{out['run_b']}` · "
+        f"对比单元 {out['compared_cells']} 个 (问题 × 方法)",
+        f"- 检索位置逐位一致: {out['retrieval']['position_exact_match']}"
+        f"/{out['compared_cells']} "
+        f"({out['retrieval']['position_match_rate'] * 100:.1f}%) · "
+        f"hit@1 判定一致率 {out['retrieval']['hit1_agreement'] * 100:.1f}%",
+        f"- 评审分: 平均|Δ| {out['judge']['mean_abs_delta']} · "
+        f"最大 {out['judge']['max_abs_delta']} · ±1.5 内 "
+        f"{out['judge']['within_1p5_rate'] * 100:.1f}%",
+        f"- 回答文本全等: {out['answers']['identical_text']}"
+        f"/{out['compared_cells']} "
+        f"({out['answers']['identical_rate'] * 100:.1f}%)",
+        "",
+        "| 方法 | 单元 | 位置一致 | judge ±1.5 内 | 回答全等 |",
+        "|---|---|---|---|---|"]
+    for m, v in out["per_method"].items():
+        lines.append(f"| `{m}` | {v['n']} | {v['pos_match']} "
+                     f"| {v['judge_within']} | {v['ans_same']} |")
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--run", default="")
+    ap.add_argument("--compare", default="", metavar="RUN_A,RUN_B",
+                    help="对比两次真实场景运行的复现性后退出")
     args = ap.parse_args()
+    if args.compare:
+        name_a, name_b = args.compare.split(",", 1)
+        out = compare_runs_data(name_a.strip(), name_b.strip())
+        (SUITE / "REALSCENARIO-COMPARISON.json").write_text(
+            json.dumps(out, ensure_ascii=False, indent=1), encoding="utf-8")
+        write_comparison_md(out, SUITE / "REALSCENARIO-COMPARISON.md")
+        print(f"[compare] cells={out['compared_cells']} "
+              f"pos_match={out['retrieval']['position_match_rate'] * 100:.1f}% "
+              f"hit1_agree={out['retrieval']['hit1_agreement'] * 100:.1f}% "
+              f"judge_mean|d|={out['judge']['mean_abs_delta']} "
+              f"within1.5={out['judge']['within_1p5_rate'] * 100:.1f}% "
+              f"ans_identical={out['answers']['identical_rate'] * 100:.1f}%")
+        return 0
     run_path, data = load_run(args.run or None)
     meta, results = data["meta"], data["results"]
     run_name = run_path.parent.name

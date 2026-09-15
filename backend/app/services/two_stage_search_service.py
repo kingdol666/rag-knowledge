@@ -53,7 +53,10 @@ class TwoStageSearchService:
                     content = storage_reader.read_document_content(
                         doc_path, max_chars=bm25_max_content_chars())
                     all_docs.append({
-                        "path": doc_path,
+                        # 统一正斜杠: tree-fs YAML 在 Windows 下可能存反斜杠,
+                        # 而 ChromaDB 元数据是正斜杠 — 不归一会让 stage2 的
+                        # doc_path $in 过滤全部失配, stage2 静默为空(已实测)
+                        "path": doc_path.replace("\\", "/"),
                         "name": doc.get("name", ""),
                         "description": doc.get("description", ""),
                         "content": content,
@@ -235,8 +238,9 @@ class TwoStageSearchService:
                 pool_k = top_k
         kw_results = keyword_index_service.search(query, top_k=pool_k, kb_ids=resolved_kb_ids)
         for r in kw_results:
-            candidates[r["doc_path"]] = {
-                "doc_path": r["doc_path"], "score": r["score"] * kw_weight,
+            candidates[r["doc_path"].replace("\\", "/")] = {
+                "doc_path": r["doc_path"].replace("\\", "/"),
+                "score": r["score"] * kw_weight,
                 "name": r.get("name", ""), "source": "keyword",
             }
 

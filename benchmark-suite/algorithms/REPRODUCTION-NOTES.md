@@ -103,3 +103,30 @@ stage1 恒为 0(静默)。全量重建路径存的是规范 UUID, 故 KB-SciFact
   更近, BM25 与向量双双把竞争文档排前; qdcvr 的内容裁决只能在召回候选内
   重排(recall-bounded), 无法无中生有。suite 侧 dense_rag(整文档 3200 字符
   块)答对该题 — 生产分块粒度 vs suite 分块粒度是真实差异轴, 如实入报告。
+
+### 复现审计(2026-09-16): 全轨重跑 + 逐项对比
+
+F/R 两轨按 pipeline 重跑并与历史 run 逐项对比(compare_runs.py), 结论:
+- **E16 矩阵**: 重跑 240/240 证据/作答/判分全部缓存回放, 与权威 run
+  20260914T194057Z **9837 字段逐位一致(0 diff)** — 检索层+作答层+评审层全可复现。
+- **功能轨(F)**: 经验套件 884/887 一致(唯一差异是 E3 首轮 reset.deleted 3→0,
+  为运行前遗留状态不同, 两轮均收敛 remaining=0); ops/e2e/scale/E4/判分一致性
+  五对产物聚合层 0 差异, 差异全部落在溯源字段/环境清单/LLM 评审逐条方差。
+- **检索轨(R)活检阶段**: R1 SciFact qdcvr hit@1 0.7667 与历史一致; R1b 曾因
+  并发执行污染下滑 0.25, 串行重跑恢复至会话方差内(陷阱⑭ Δ≤0.05-0.1)。
+- **R3(HotpotQA) 修复链**: retrieval_track.sh 缺 RAG_BENCH_WEB_URL 导出(已修)
+  + 遗留实验 KB 挤占 balance 候选池 + 重复构建累积 497 个 "(1)" 副本(含反斜杠
+  路径) → stage2 doc_path $in 全失配 → two_stage/qdcvr 静默归零。平台修复:
+  two_stage_search_service 在 BM25 构建与候选产出统一正斜杠。
+- **新陷阱速查**: ㉕compare_runs 只匹配 module_*.json, 对新产物是空对比假
+  PASS(已修: 回退到双方共有顶层 JSON, 溯源字段跳过); ㉖两轨并发共享单后端
+  不安全(web 拒连+互致 KB 污染), pipeline 注释"完全独立"仅指逻辑独立;
+  ㉗文档删除不失效内存 BM25, 批量删改后须重启; ㉘hotpot 重建须空库起步,
+  反复构建产生 (N) 改名副本 + 静默去重叠加。
+- **遗留待修(平台 P1, E8 通道)**: tree-fs 创建层对同名冲突自动改名 "(N)" 后,
+  向量元数据仍记**改名前**请求名(BM25/YAML 世界 = "(1).md", ChromaDB 世界 =
+  "X.md") → 全局 two_stage 的 stage2 `doc_path $in` 对该库**永久静默失配**
+  (61 号脚本的 two_stage/qdcvr 通道 0, 而 dense/KB 限定/oracle 正常)。
+  kb_get_documents 与磁盘清单亦不同步(YAML 与 tree-fs 双世界)。修法方向:
+  改名同步向量元数据, 或 create 前做含不可见注册项的查重; 修复前 E8 的
+  全局两阶段协议不可在干净重建语料上复现(09-14 历史数字产生于失配发生前)。

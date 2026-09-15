@@ -1,0 +1,29 @@
+{
+ "baseline": "results\\run-20260915T033842Z",
+ "candidate": "results\\run-20260915T172534Z",
+ "files": [
+  {
+   "file": "experience_suite_1.json",
+   "status": "FAIL",
+   "counts": {
+    "same": 884,
+    "tolerant": 0,
+    "diff": 1,
+    "skip": 3
+   },
+   "sections": {
+    "aggregate": 0,
+    "detail": 0,
+    "other": 1
+   },
+   "diffs": [
+    {
+     "path": "E3_meditation_runs.0.per_kb.KB-Demo-EN.reset.deleted",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "3 → 0 (Δ3.0000)"
+    }
+   ]
+  }
+ ]
+}

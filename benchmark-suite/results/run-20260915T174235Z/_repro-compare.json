@@ -1,0 +1,143 @@
+{
+ "baseline": "results\\run-20260915T042632Z",
+ "candidate": "results\\run-20260915T174235Z",
+ "files": [
+  {
+   "file": "e4_baselines_fixed.json",
+   "status": "FAIL",
+   "counts": {
+    "same": 20,
+    "tolerant": 6,
+    "diff": 14,
+    "skip": 3
+   },
+   "sections": {
+    "aggregate": 0,
+    "detail": 0,
+    "other": 20
+   },
+   "diffs": [
+    {
+     "path": "judged.llm_summary.mean",
+     "verdict": "tolerant",
+     "section": "other",
+     "detail": "3.5 → 3.0 (Δ0.500)"
+    },
+    {
+     "path": "judged.llm_summary.scores.0",
+     "verdict": "tolerant",
+     "section": "other",
+     "detail": "3.0 → 4.0 (Δ1.000)"
+    },
+    {
+     "path": "judged.llm_summary.scores.1",
+     "verdict": "tolerant",
+     "section": "other",
+     "detail": "4.0 → 3.0 (Δ1.000)"
+    },
+    {
+     "path": "judged.llm_summary.scores.2",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "3.0 → 1.0 (Δ2.0000)"
+    },
+    {
+     "path": "judged.no_synthesis.mean",
+     "verdict": "tolerant",
+     "section": "other",
+     "detail": "3.75 → 4.5 (Δ0.750)"
+    },
+    {
+     "path": "judged.no_synthesis.scores.0",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "1.0 → 3.0 (Δ2.0000)"
+    },
+    {
+     "path": "judged.no_synthesis.scores.1",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "3.0 → 5.0 (Δ2.0000)"
+    },
+    {
+     "path": "judged.no_synthesis.scores.2",
+     "verdict": "tolerant",
+     "section": "other",
+     "detail": "5.0 → 4.0 (Δ1.000)"
+    },
+    {
+     "path": "judged.ours_experience.mean",
+     "verdict": "tolerant",
+     "section": "other",
+     "detail": "6.5 → 5.5 (Δ1.000)"
+    },
+    {
+     "path": "judged.ours_experience.scores.1",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "None → 5.0"
+    },
+    {
+     "path": "judged.ours_experience.scores.2",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "7.0 → 5.0 (Δ2.0000)"
+    },
+    {
+     "path": "judged.ours_experience.scores.3",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "None → 6.0"
+    },
+    {
+     "path": "llm_summary_material.0",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "'Process perishable inputs the same day they arrive: coffee cherries must be depulped and fermented within hours of picking or they spoil.' → \"Black holes: classify by mass — stellar-mass (3–100 M☉) vs supermassive (10⁵–10¹⁰ M☉) — and remember Hawking radiation means they evaporate, though solar-mass lifetimes (~10⁶⁷ yr) exceed the universe's age.\""
+    },
+    {
+     "path": "llm_summary_material.1",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "'Fix the site before optimizing the machine, because wind yield scales with the cube of wind speed and siting outweighs every downstream design choice.' → 'Coffee: process cherries within hours — washed (ferment 12–72 h, bright/floral), natural (dry 2–4 weeks, fruity but off-flavour risk if uneven), honey (partial mucilage, graded yellow/red/black) — then dry to ~11% moisture and medium-roast at 205–215 °C just after first crack.'"
+    },
+    {
+     "path": "llm_summary_material.2",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "'Respect hard theoretical ceilings before chasing incremental gains: the Betz limit caps any turbine at 59.3%, with real machines at 45–50%.' → 'EVs: modern era dates to the 2008 Tesla Roadster; expect ~250 Wh/kg lithium-ion, battery costs down from ~$1,100/kWh (2010) to under $140/kWh (2023), and match charging standard to region (CCS, GB/T, CHAdeMO), with 800 V architectures adding 200 km in ~15 min.'"
+    },
+    {
+     "path": "llm_summary_material.3",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "'Match hardware to regional standards instead of assuming uniformity: EV charging splits into CCS (Europe/North America), GB/T (China), and CHAdeMO (Japan).' → \"Internet: trace milestones — ARPANET's first message (29 Oct 1969), TCP/IP flag day (1 Jan 1983), DNS (1983), the Web (1989–91), commercial opening (1995), search/Wikipedia/iPhone (1998/2001/2007) — and note backbone fibre now exceeds 100 Tb/s per pair.\""
+    },
+    {
+     "path": "llm_summary_material.4",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "'Add storage to any intermittent source so output survives past daylight: CSP with molten-salt storage delivers after sunset, where plain PV cannot.' → 'Photosynthesis: two stages — light reactions (thylakoids split water, yield ATP/NADPH) then Calvin cycle (RuBisCO fixes CO₂) — with field efficiency only ~3% and global fixation ~120 Gt C/yr; C4 plants win in hot climates.'"
+    },
+    {
+     "path": "llm_summary_material.5",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "'Expect learning curves to collapse cost: utility solar fell over 80% from 2010 to 2021, and Li-ion packs dropped from ~$1,100 to under $140 per kWh by 2023.' → 'Solar: PV efficiency runs 20–23% commercial (33%+ lab tandem), utility-scale LCOE ~$0.048/kWh (2021, down >80% since 2010), China makes ~80% of panels, and CSP with molten-salt storage uniquely delivers power after sunset.'"
+    },
+    {
+     "path": "llm_summary_material.6",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "'Keep operating parameters inside the safe envelope: turbines produce from ~3 m/s but shut down near 25 m/s, and green coffee must dry to ~11% moisture before hulling.' → 'Wind: siting dominates because power scales with the cube of wind speed; the Betz limit caps efficiency at 59.3% (modern turbines hit 45–50%), turbines cut in near 3 m/s and shut down near 25 m/s, and offshore capacity factors exceed 50%.'"
+    },
+    {
+     "path": "llm_summary_material.7",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "missing: candidate"
+    }
+   ]
+  }
+ ]
+}

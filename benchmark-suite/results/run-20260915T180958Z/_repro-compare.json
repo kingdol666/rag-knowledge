@@ -1,0 +1,113 @@
+{
+ "baseline": "results\\run-20260915T063009Z",
+ "candidate": "results\\run-20260915T180958Z",
+ "files": [
+  {
+   "file": "system_scale.json",
+   "status": "FAIL",
+   "counts": {
+    "same": 50,
+    "tolerant": 0,
+    "diff": 15,
+    "skip": 3
+   },
+   "sections": {
+    "aggregate": 0,
+    "detail": 0,
+    "other": 15
+   },
+   "diffs": [
+    {
+     "path": "live_kbs.0.docs",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "8 → 7 (Δ1.0000)"
+    },
+    {
+     "path": "live_kbs.13.docs",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "missing: baseline"
+    },
+    {
+     "path": "live_kbs.13.name",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "missing: baseline"
+    },
+    {
+     "path": "live_kbs.14.docs",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "missing: baseline"
+    },
+    {
+     "path": "live_kbs.14.name",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "missing: baseline"
+    },
+    {
+     "path": "live_kbs.15.docs",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "missing: baseline"
+    },
+    {
+     "path": "live_kbs.15.name",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "missing: baseline"
+    },
+    {
+     "path": "live_kbs.16.docs",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "missing: baseline"
+    },
+    {
+     "path": "live_kbs.16.name",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "missing: baseline"
+    },
+    {
+     "path": "live_kbs.17.docs",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "missing: baseline"
+    },
+    {
+     "path": "live_kbs.17.name",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "missing: baseline"
+    },
+    {
+     "path": "live_kbs.18.docs",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "missing: baseline"
+    },
+    {
+     "path": "live_kbs.18.name",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "missing: baseline"
+    },
+    {
+     "path": "measured.live_documents",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "216 → 238 (Δ22.0000)"
+    },
+    {
+     "path": "measured.live_knowledge_bases",
+     "verdict": "diff",
+     "section": "other",
+     "detail": "13 → 19 (Δ6.0000)"
+    }
+   ]
+  }
+ ]
+}

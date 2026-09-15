@@ -9,6 +9,9 @@
 set -u
 cd "$(dirname "$0")/.." || exit 1
 export PYTHONUTF8=1
+# R3 的 60_hotpot_build 走 web 层建库/建文档; web 实际端口 6789(6790 是死代理,
+# 陷阱⑲) — 不导出时 R3 全通道静默归零(URLError 被吞, 已实测发生)
+export RAG_BENCH_WEB_URL=http://localhost:6789
 say() { echo "=== $(date +%H:%M:%S) $* ==="; }
 
 say "R0 标准语料入库 (SciFact/SQuAD, 已存在则跳过式覆盖)"

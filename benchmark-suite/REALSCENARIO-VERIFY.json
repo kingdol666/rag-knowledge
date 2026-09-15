@@ -1,6 +1,6 @@
 {
- "generated_at": "2026-09-15T16:57:16Z",
- "run": "real-scenario-20260916-001507",
+ "generated_at": "2026-09-15T21:02:40Z",
+ "run": "real-scenario-20260916-045222",
  "data_source": "real_scenario_repaired.json",
  "repair": {
   "parser_fallback": [
@@ -9,13 +9,7 @@
    "U6:itrg_refresh",
    "U6:itrg_refine"
   ],
-  "regenerated": [
-   "U4:dense_rag",
-   "U4:dense_rag_rerank",
-   "U4:itrg_refresh",
-   "U5:deepread",
-   "U6:raptor"
-  ]
+  "regenerated": []
  },
  "checks": [
   {

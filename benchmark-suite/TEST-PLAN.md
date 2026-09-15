@@ -274,3 +274,22 @@ cd .. && python scripts/27_api_flow_test.py   # BENCH_LIMIT=2 冒烟
 
 API 与离线矩阵共用同一缓存与冻结 prompt ⇒ 结果逐字一致(27 号脚本内置
 consistency 断言, checked/mismatches 落盘 api_matrix.json)。
+
+## 7. 双轨复现纪律（2026-09-16 复现审计沉淀）
+
+functions_track 与 retrieval_track 共享同一个后端/web 实例, **必须串行执行**
+（并发实测后果: R0/R3 的 web 调用吃连接拒绝、F1 重入库给 KB-Demo 制造
+"(1)" 改名副本使 R1b 数字下滑 0.25）。逐条纪律:
+
+1. 先 F 后 R（或反之）, 上一轨 `exit=0` 再起下一轨。
+2. R3 依赖 `RAG_BENCH_WEB_URL=http://localhost:6789`（已在 retrieval_track.sh
+   内置导出）; web(6789) 在重负载下会间歇拒绝连接, 拒绝窗口过后重跑即可。
+3. R3 前清理目录: 实验残留 KB（KB-Ops-Eval-*/KB-Exp-Ops/KB-UserDemo/UserDemo-*）
+   会挤占全局 balance 的 stage1 候选池（per-KB 配额）, 使 HotpotQA 的
+   two_stage/qdcvr 通道静默归零; 重复构建会让 Hotpot 库累积 "(1)" 改名副本
+   —— 60 号脚本要求 9 个 KB-Hotpot-* 库为空态起步。
+4. 复现判定用 `scripts/compare_runs.py <baseline> <candidate>`: module_* 缺失时
+   自动回退比较双方共有顶层 JSON; 计时/时间戳/git_commit/run_id 不参与判定,
+   LLM 判分容差 ±1.5, 其余逐位。
+5. 文档删除不会失效后端内存 BM25 索引（只有 batch-index 与进程重启会触发
+   重建）— 大批删改后重启后端再测检索。

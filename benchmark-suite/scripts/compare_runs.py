@@ -16,7 +16,8 @@ import json
 import sys
 from pathlib import Path
 
-SKIP_KEY = ("latency", "generated", "timestamp")
+SKIP_KEY = ("latency", "generated", "timestamp",
+            "git_commit", "run_id")  # 计时/时间戳/运行溯源字段不参与复现判定
 LLM_TOL = 1.5
 FLOAT_EPS = 1e-9
 
@@ -117,6 +118,22 @@ def main() -> int:
     base, cand = Path(sys.argv[1]), Path(sys.argv[2])
     files = sorted({p.name for p in cand.glob("module_*.json")} |
                    {p.name for p in base.glob("module_*.json")})
+    if not files:
+        # 无 module_* 产物时回退: 比较双方共有的顶层 JSON(E16/E19/E17 等新产物),
+        # 排除对比报告自身。否则空文件集会给出空洞的 REPRODUCIBLE(曾发生)。
+        ignore = {"_repro-compare.json"}
+        names_c = {p.name for p in cand.glob("*.json")} - ignore
+        names_b = {p.name for p in base.glob("*.json")} - ignore
+        files = sorted(names_c & names_b)
+        only_b = sorted(names_b - names_c)
+        only_c = sorted(names_c - names_b)
+        for rel in only_b:
+            print(f"[MISS_CANDIDATE] {rel}")
+        for rel in only_c:
+            print(f"[MISS_BASELINE]  {rel}")
+        if not files:
+            print("no comparable JSON artifacts on both sides")
+            return 1
     results, n_fail = [], 0
     for rel in files:
         r = compare_file(rel, base, cand)

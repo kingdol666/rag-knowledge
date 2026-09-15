@@ -1,0 +1,200 @@
+{
+ "experiment": "E16 externally-driven end-to-end surface verification",
+ "counts": {
+  "total": 26,
+  "pass": 26,
+  "fail": 0
+ },
+ "groups": {
+  "A": 4,
+  "B": 5,
+  "C": 3,
+  "D": 2,
+  "E": 6,
+  "F": 3,
+  "G": 1,
+  "H": 2
+ },
+ "results": [
+  {
+   "group": "A",
+   "name": "backend health is public",
+   "status": "PASS",
+   "detail": "HTTP 200"
+  },
+  {
+   "group": "A",
+   "name": "protected endpoint rejects missing token",
+   "status": "PASS",
+   "detail": "HTTP 401"
+  },
+  {
+   "group": "A",
+   "name": "protected endpoint accepts valid token",
+   "status": "PASS",
+   "detail": "HTTP 404"
+  },
+  {
+   "group": "A",
+   "name": "web proxy catalog reachable",
+   "status": "PASS",
+   "detail": "HTTP 200"
+  },
+  {
+   "group": "B",
+   "name": "create knowledge base",
+   "status": "PASS",
+   "detail": "HTTP 200"
+  },
+  {
+   "group": "B",
+   "name": "create document",
+   "status": "PASS",
+   "detail": "HTTP 200"
+  },
+  {
+   "group": "B",
+   "name": "document appears in listing",
+   "status": "PASS",
+   "detail": "n=1"
+  },
+  {
+   "group": "B",
+   "name": "re-index of an existing document is idempotent",
+   "status": "PASS",
+   "detail": "HTTP 200"
+  },
+  {
+   "group": "B",
+   "name": "vector index accepts batch-index",
+   "status": "PASS",
+   "detail": "HTTP 200"
+  },
+  {
+   "group": "C",
+   "name": "freshly indexed document becomes searchable",
+   "status": "PASS",
+   "detail": ""
+  },
+  {
+   "group": "C",
+   "name": "vector search returns the document",
+   "status": "PASS",
+   "detail": "n=1"
+  },
+  {
+   "group": "C",
+   "name": "two-stage search returns stage-2 results",
+   "status": "PASS",
+   "detail": "n=1"
+  },
+  {
+   "group": "D",
+   "name": "graph service health responds",
+   "status": "PASS",
+   "detail": "HTTP 200"
+  },
+  {
+   "group": "D",
+   "name": "graph stats endpoint responds",
+   "status": "PASS",
+   "detail": "HTTP 200"
+  },
+  {
+   "group": "E",
+   "name": "experience store init",
+   "status": "PASS",
+   "detail": "HTTP 200"
+  },
+  {
+   "group": "E",
+   "name": "create experience",
+   "status": "PASS",
+   "detail": "HTTP 200"
+  },
+  {
+   "group": "E",
+   "name": "global experience search responds",
+   "status": "PASS",
+   "detail": "HTTP 200"
+  },
+  {
+   "group": "E",
+   "name": "experience summary responds",
+   "status": "PASS",
+   "detail": "HTTP 200"
+  },
+  {
+   "group": "E",
+   "name": "stale check responds",
+   "status": "PASS",
+   "detail": "HTTP 200"
+  },
+  {
+   "group": "E",
+   "name": "experience dashboard responds",
+   "status": "PASS",
+   "detail": "HTTP 200"
+  },
+  {
+   "group": "F",
+   "name": "soul list responds",
+   "status": "PASS",
+   "detail": "HTTP 200"
+  },
+  {
+   "group": "F",
+   "name": "soul init responds",
+   "status": "PASS",
+   "detail": "HTTP 400"
+  },
+  {
+   "group": "F",
+   "name": "soul list responds",
+   "status": "PASS",
+   "detail": "HTTP 200"
+  },
+  {
+   "group": "G",
+   "name": "harness registry lists engines",
+   "status": "PASS",
+   "detail": "HTTP 200 n=15"
+  },
+  {
+   "group": "H",
+   "name": "cleanup deletes the e2e base",
+   "status": "PASS",
+   "detail": "HTTP 200"
+  },
+  {
+   "group": "H",
+   "name": "e2e base is gone from the catalog",
+   "status": "PASS",
+   "detail": "n=19"
+  }
+ ],
+ "meta": {
+  "generated": "2026-09-15T18:09:57.741016+00:00",
+  "env": {
+   "run_id": "run-20260915T180901Z",
+   "git_commit": "dd2b579",
+   "config_hash": "49279bd832721704",
+   "seed": 0,
+   "backend": "http://localhost:8771",
+   "web": "http://localhost:6789",
+   "embedding": "BAAI/bge-m3 (local GPU, normalize)",
+   "vector_store": "ChromaDB (persistent)",
+   "keyword_index": "jieba BM25",
+   "randomness": "deterministic pipeline (no RNG); agent channel = mean of runs",
+   "retrieval_defaults": {
+    "vector_top_k": 10,
+    "stage1_top_k": 40,
+    "stage2_top_k": 10,
+    "qdcvr_threshold": 0.35,
+    "verification_reads": 3,
+    "exp_threshold_default": 0.45
+   },
+   "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
+  }
+ }
+}

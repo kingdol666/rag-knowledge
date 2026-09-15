@@ -1,0 +1,118 @@
+{
+ "experiment": "E17 system scale (measured, not hard-coded)",
+ "measured": {
+  "mcp_tools": 94,
+  "knowledgebase_skills": 14,
+  "skills_total": 20,
+  "agent_engines": 14,
+  "backend_openapi_paths": 114,
+  "backend_openapi_operations": 121,
+  "backend_api_v1_paths": 113,
+  "web_route_files": 124,
+  "embedding": "BGE-M3 (1024-d, L2-normalised)",
+  "live_knowledge_bases": 19,
+  "live_documents": 238
+ },
+ "live_kbs": [
+  {
+   "name": "KB-Demo-EN",
+   "docs": 7
+  },
+  {
+   "name": "KB-Demo-ZH",
+   "docs": 4
+  },
+  {
+   "name": "KB-Demo-JA",
+   "docs": 4
+  },
+  {
+   "name": "KB-SciFact",
+   "docs": 148
+  },
+  {
+   "name": "KB-SQuAD",
+   "docs": 31
+  },
+  {
+   "name": "DR-Chunks800",
+   "docs": 0
+  },
+  {
+   "name": "DR-Struct",
+   "docs": 0
+  },
+  {
+   "name": "DR-Raptor",
+   "docs": 0
+  },
+  {
+   "name": "KB-Ops-Eval-171718",
+   "docs": 7
+  },
+  {
+   "name": "KB-Ops-Eval-171813",
+   "docs": 7
+  },
+  {
+   "name": "DR-Paras",
+   "docs": 0
+  },
+  {
+   "name": "KB-Exp-Ops",
+   "docs": 0
+  },
+  {
+   "name": "KB-Ops-Eval-062843",
+   "docs": 7
+  },
+  {
+   "name": "UserDemo-Chunks800",
+   "docs": 0
+  },
+  {
+   "name": "UserDemo-Struct",
+   "docs": 0
+  },
+  {
+   "name": "UserDemo-Paras",
+   "docs": 0
+  },
+  {
+   "name": "KB-UserDemo",
+   "docs": 16
+  },
+  {
+   "name": "UserDemo-Raptor",
+   "docs": 0
+  },
+  {
+   "name": "KB-Ops-Eval-180853",
+   "docs": 7
+  }
+ ],
+ "meta": {
+  "generated": "2026-09-15T18:09:58.324693+00:00",
+  "env": {
+   "run_id": "run-20260915T180958Z",
+   "git_commit": "dd2b579",
+   "config_hash": "49279bd832721704",
+   "seed": 0,
+   "backend": "http://localhost:8771",
+   "web": "http://localhost:6789",
+   "embedding": "BAAI/bge-m3 (local GPU, normalize)",
+   "vector_store": "ChromaDB (persistent)",
+   "keyword_index": "jieba BM25",
+   "randomness": "deterministic pipeline (no RNG); agent channel = mean of runs",
+   "retrieval_defaults": {
+    "vector_top_k": 10,
+    "stage1_top_k": 40,
+    "stage2_top_k": 10,
+    "qdcvr_threshold": 0.35,
+    "verification_reads": 3,
+    "exp_threshold_default": 0.45
+   },
+   "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
+  }
+ }
+}
