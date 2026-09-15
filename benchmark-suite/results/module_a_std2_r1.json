@@ -6,11 +6,11 @@
   "storage_completeness": 1.0,
   "env": {
    "run_id": "",
-   "git_commit": "1f2092a",
+   "git_commit": "f57dbbc",
    "config_hash": "49279bd832721704",
    "seed": 0,
    "backend": "http://localhost:8771",
-   "web": "http://localhost:6790",
+   "web": "http://localhost:6789",
    "embedding": "BAAI/bge-m3 (local GPU, normalize)",
    "vector_store": "ChromaDB (persistent)",
    "keyword_index": "jieba BM25",
@@ -25,6 +25,6 @@
    },
    "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
   },
-  "generated": "2026-09-14T04:05:56.637305+00:00"
+  "generated": "2026-09-15T03:17:53.854965+00:00"
  }
 }

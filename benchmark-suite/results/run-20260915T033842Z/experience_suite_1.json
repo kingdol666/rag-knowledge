@@ -71,17 +71,9 @@
      },
      "n_drafts": 0,
      "n_approved": 0,
-     "n_experiences": 3,
-     "judge_scores": [
-      8.0,
-      9.0,
-      9.0
-     ],
-     "grounded": [
-      true,
-      true,
-      true
-     ]
+     "n_experiences": 0,
+     "judge_scores": [],
+     "grounded": []
     },
     "KB-Demo-ZH": {
      "run_success": true,
@@ -307,11 +299,11 @@
     },
     {
      "qid": "x-02",
-     "recall@1": 0.0,
+     "recall@1": 1.0,
      "recall@3": 1.0,
-     "hit@1": 0,
+     "hit@1": 1,
      "hit@3": 1,
-     "mrr": 0.5
+     "mrr": 1.0
     },
     {
      "qid": "x-03",
@@ -609,11 +601,11 @@
     },
     {
      "qid": "x-03",
-     "recall@1": 1.0,
+     "recall@1": 0.0,
      "recall@3": 1.0,
-     "hit@1": 1,
+     "hit@1": 0,
      "hit@3": 1,
-     "mrr": 1.0
+     "mrr": 0.5
     },
     {
      "qid": "x-04",
@@ -699,11 +691,11 @@
     },
     {
      "qid": "x-02",
-     "recall@1": 0.0,
-     "recall@3": 0.0,
-     "hit@1": 0,
-     "hit@3": 0,
-     "mrr": 0.2
+     "recall@1": 1.0,
+     "recall@3": 1.0,
+     "hit@1": 1,
+     "hit@3": 1,
+     "mrr": 1.0
     },
     {
      "qid": "x-03",
@@ -1180,7 +1172,7 @@
    ]
   },
   "align_with_api": {
-   "hit3_match_api": 1,
+   "hit3_match_api": 6,
    "n": 6
   }
  },
@@ -1256,14 +1248,14 @@
   "superseded_by": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\results\\run-20260915T042632Z\\e4_baselines_fixed.json"
  },
  "meta": {
-  "generated": "2026-09-14T06:32:53.972928+00:00",
+  "generated": "2026-09-15T04:26:32.322221+00:00",
   "env": {
-   "run_id": "run-20260914T054035Z",
-   "git_commit": "ff1d4e6",
+   "run_id": "run-20260915T033842Z",
+   "git_commit": "f57dbbc",
    "config_hash": "49279bd832721704",
    "seed": 0,
    "backend": "http://localhost:8771",
-   "web": "http://localhost:6790",
+   "web": "http://localhost:6789",
    "embedding": "BAAI/bge-m3 (local GPU, normalize)",
    "vector_store": "ChromaDB (persistent)",
    "keyword_index": "jieba BM25",

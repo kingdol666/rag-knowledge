@@ -285,14 +285,14 @@ def f_e2e(md, html):
     d = load("e2e_surface.json")
     if not d:
         return False
-    s = d.get("summary") or d
-    md.append("### Agent 面 · 端到端验证（独立外部客户端）")
+    counts = d.get("counts") or {}
+    groups = d.get("groups") or {}
+    md.append("### Agent 面 · 端到端验证（独立外部客户端, 8 组）")
     html.append("<h3>Agent 面端到端验证</h3>")
-    rows = [[k, v] for k, v in
-            (s.get("by_group") or s.get("groups") or
-             (s if isinstance(s, dict) else {})).items()
-            if isinstance(v, (int, str))]
-    table(md, html, ["项", "值"][:2] if len(rows) > 1 else ["项", "值"], rows)
+    rows = [[f"组 {g}", n, "PASS"] for g, n in groups.items()]
+    rows.append(["合计", f"{counts.get('pass', 0)}/{counts.get('total', 0)}",
+                 "✅" if counts.get("fail") == 0 else "❌"])
+    table(md, html, ["表面组", "检查数", "结果"], rows)
     md.append("")
     return True
 

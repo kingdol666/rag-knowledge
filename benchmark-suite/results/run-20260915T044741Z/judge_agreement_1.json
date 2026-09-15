@@ -1,0 +1,306 @@
+{
+ "experiment": "E15 dual-judge agreement + E4 extension to 8 queries",
+ "round": "1",
+ "agreement": {
+  "n_materials": 24,
+  "n_scored_pairs": 21,
+  "exact_agreement": 0.4762,
+  "within_1": 0.7619,
+  "mean_abs_delta": 0.905,
+  "pearson_r": 0.725,
+  "cohens_kappa_usable_ge5": 0.6,
+  "honest_label": "LLM-LLM agreement (two independent judge prompts over identical materials), NOT human inter-annotator kappa; a 3-annotator human study remains future work"
+ },
+ "by_material": {
+  "no_synthesis": {
+   "scores_a": [
+    2.0,
+    5.0,
+    0.0,
+    5.0,
+    4.0,
+    3.0,
+    4.0,
+    5.0
+   ],
+   "scores_b": [
+    1.0,
+    3.0,
+    0.0,
+    4.0,
+    null,
+    4.0,
+    1.0,
+    5.0
+   ],
+   "mean_a": 3.5,
+   "mean_b": 2.57
+  },
+  "ours_experience": {
+   "scores_a": [
+    null,
+    8.0,
+    3.0,
+    6.0,
+    6.0,
+    7.0,
+    7.0,
+    5.0
+   ],
+   "scores_b": [
+    6.0,
+    5.0,
+    6.0,
+    null,
+    6.0,
+    7.0,
+    6.0,
+    5.0
+   ],
+   "mean_a": 6.0,
+   "mean_b": 5.86
+  },
+  "llm_summary": {
+   "scores_a": [
+    3.0,
+    3.0,
+    4.0,
+    4.0,
+    4.0,
+    4.0,
+    4.0,
+    5.0
+   ],
+   "scores_b": [
+    3.0,
+    3.0,
+    4.0,
+    3.0,
+    4.0,
+    3.0,
+    4.0,
+    3.0
+   ],
+   "mean_a": 3.88,
+   "mean_b": 3.38
+  }
+ },
+ "records": [
+  {
+   "qid": "x-01",
+   "material": "no_synthesis",
+   "score_a": 2.0,
+   "score_b": 1.0,
+   "grounded_a": true,
+   "grounded_b": false
+  },
+  {
+   "qid": "x-01",
+   "material": "ours_experience",
+   "score_a": null,
+   "score_b": 6.0,
+   "grounded_a": null,
+   "grounded_b": false
+  },
+  {
+   "qid": "x-01",
+   "material": "llm_summary",
+   "score_a": 3.0,
+   "score_b": 3.0,
+   "grounded_a": true,
+   "grounded_b": true
+  },
+  {
+   "qid": "x-02",
+   "material": "no_synthesis",
+   "score_a": 5.0,
+   "score_b": 3.0,
+   "grounded_a": true,
+   "grounded_b": true
+  },
+  {
+   "qid": "x-02",
+   "material": "ours_experience",
+   "score_a": 8.0,
+   "score_b": 5.0,
+   "grounded_a": true,
+   "grounded_b": false
+  },
+  {
+   "qid": "x-02",
+   "material": "llm_summary",
+   "score_a": 3.0,
+   "score_b": 3.0,
+   "grounded_a": true,
+   "grounded_b": true
+  },
+  {
+   "qid": "x-03",
+   "material": "no_synthesis",
+   "score_a": 0.0,
+   "score_b": 0.0,
+   "grounded_a": false,
+   "grounded_b": false
+  },
+  {
+   "qid": "x-03",
+   "material": "ours_experience",
+   "score_a": 3.0,
+   "score_b": 6.0,
+   "grounded_a": false,
+   "grounded_b": false
+  },
+  {
+   "qid": "x-03",
+   "material": "llm_summary",
+   "score_a": 4.0,
+   "score_b": 4.0,
+   "grounded_a": true,
+   "grounded_b": true
+  },
+  {
+   "qid": "x-04",
+   "material": "no_synthesis",
+   "score_a": 5.0,
+   "score_b": 4.0,
+   "grounded_a": true,
+   "grounded_b": true
+  },
+  {
+   "qid": "x-04",
+   "material": "ours_experience",
+   "score_a": 6.0,
+   "score_b": null,
+   "grounded_a": false,
+   "grounded_b": null
+  },
+  {
+   "qid": "x-04",
+   "material": "llm_summary",
+   "score_a": 4.0,
+   "score_b": 3.0,
+   "grounded_a": true,
+   "grounded_b": true
+  },
+  {
+   "qid": "x-05",
+   "material": "no_synthesis",
+   "score_a": 4.0,
+   "score_b": null,
+   "grounded_a": true,
+   "grounded_b": null
+  },
+  {
+   "qid": "x-05",
+   "material": "ours_experience",
+   "score_a": 6.0,
+   "score_b": 6.0,
+   "grounded_a": true,
+   "grounded_b": false
+  },
+  {
+   "qid": "x-05",
+   "material": "llm_summary",
+   "score_a": 4.0,
+   "score_b": 4.0,
+   "grounded_a": true,
+   "grounded_b": true
+  },
+  {
+   "qid": "x-06",
+   "material": "no_synthesis",
+   "score_a": 3.0,
+   "score_b": 4.0,
+   "grounded_a": true,
+   "grounded_b": true
+  },
+  {
+   "qid": "x-06",
+   "material": "ours_experience",
+   "score_a": 7.0,
+   "score_b": 7.0,
+   "grounded_a": true,
+   "grounded_b": true
+  },
+  {
+   "qid": "x-06",
+   "material": "llm_summary",
+   "score_a": 4.0,
+   "score_b": 3.0,
+   "grounded_a": true,
+   "grounded_b": true
+  },
+  {
+   "qid": "x-07",
+   "material": "no_synthesis",
+   "score_a": 4.0,
+   "score_b": 1.0,
+   "grounded_a": true,
+   "grounded_b": true
+  },
+  {
+   "qid": "x-07",
+   "material": "ours_experience",
+   "score_a": 7.0,
+   "score_b": 6.0,
+   "grounded_a": true,
+   "grounded_b": false
+  },
+  {
+   "qid": "x-07",
+   "material": "llm_summary",
+   "score_a": 4.0,
+   "score_b": 4.0,
+   "grounded_a": true,
+   "grounded_b": true
+  },
+  {
+   "qid": "x-08",
+   "material": "no_synthesis",
+   "score_a": 5.0,
+   "score_b": 5.0,
+   "grounded_a": true,
+   "grounded_b": true
+  },
+  {
+   "qid": "x-08",
+   "material": "ours_experience",
+   "score_a": 5.0,
+   "score_b": 5.0,
+   "grounded_a": false,
+   "grounded_b": false
+  },
+  {
+   "qid": "x-08",
+   "material": "llm_summary",
+   "score_a": 5.0,
+   "score_b": 3.0,
+   "grounded_a": true,
+   "grounded_b": true
+  }
+ ],
+ "meta": {
+  "generated": "2026-09-15T06:28:40.236626+00:00",
+  "env": {
+   "run_id": "run-20260915T044741Z",
+   "git_commit": "f57dbbc",
+   "config_hash": "49279bd832721704",
+   "seed": 0,
+   "backend": "http://localhost:8771",
+   "web": "http://localhost:6789",
+   "embedding": "BAAI/bge-m3 (local GPU, normalize)",
+   "vector_store": "ChromaDB (persistent)",
+   "keyword_index": "jieba BM25",
+   "randomness": "deterministic pipeline (no RNG); agent channel = mean of runs",
+   "retrieval_defaults": {
+    "vector_top_k": 10,
+    "stage1_top_k": 40,
+    "stage2_top_k": 10,
+    "qdcvr_threshold": 0.35,
+    "verification_reads": 3,
+    "exp_threshold_default": 0.45
+   },
+   "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
+  }
+ }
+}

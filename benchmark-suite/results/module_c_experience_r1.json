@@ -5,15 +5,15 @@
   "run_success_rate": 1.0,
   "kb_coverage": 0.5,
   "total_experiences": 3,
-  "judge_score_mean": 5.0,
+  "judge_score_mean": 4.6667,
   "grounded_ratio": 0.6667,
   "env": {
    "run_id": "",
-   "git_commit": "1f2092a",
+   "git_commit": "f57dbbc",
    "config_hash": "49279bd832721704",
    "seed": 0,
    "backend": "http://localhost:8771",
-   "web": "http://localhost:6790",
+   "web": "http://localhost:6789",
    "embedding": "BAAI/bge-m3 (local GPU, normalize)",
    "vector_store": "ChromaDB (persistent)",
    "keyword_index": "jieba BM25",
@@ -28,16 +28,16 @@
    },
    "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
   },
-  "generated": "2026-09-14T04:24:56.721670+00:00"
+  "generated": "2026-09-15T03:38:42.827291+00:00"
  },
  "per_kb": {
   "KB-Demo-EN": {
    "run_success": true,
    "run_error": null,
-   "n_drafts": 3,
-   "n_approved": 3,
+   "n_drafts": 0,
+   "n_approved": 0,
    "n_experiences": 3,
-   "judge_score_mean": 5.0,
+   "judge_score_mean": 4.6667,
    "grounded_ratio": 0.6667
   },
   "KB-Demo-ZH": {
@@ -53,25 +53,25 @@
  "samples": {
   "KB-Demo-EN": {
    "titles": [
+    "Coffee processing method choice: washed vs natural vs honey",
     "Wind siting first: speed dominates yield by cube law",
-    "Solar tech choice: PV for lowest cost, CSP for night supply",
-    "Coffee processing method choice: washed vs natural vs honey"
+    "Solar tech choice: PV for lowest cost, CSP for night supply"
    ],
    "judged": [
     {
-     "score": 7.0,
-     "grounded": true,
-     "issues": "Cube-law wind physics claim is real, but the entry carries only metadata with no body, steps, or evidence, limiting future reuse."
-    },
-    {
-     "score": 4.0,
+     "score": 3.0,
      "grounded": false,
-     "issues": "Metadata-only stub with no content body, source, or evidence — the PV/CSP claim is plausible common knowledge but unverifiable as written, leaving nothing reusable beyond tag matching."
+     "issues": "Entry is metadata-only (title/scenario/category/tags) with no problem/solution/lessons body, so no facts are verifiable and nothing reusable is captured."
     },
     {
-     "score": 4.0,
+     "score": 5.0,
      "grounded": true,
-     "issues": "Only metadata is present — no problem/solution/lessons body — so nothing substantive is retrievable or reusable despite the real washed/natural/honey methods."
+     "issues": "Cube-law claim is physically valid, but the entry is metadata-only with no content body, evidence, or actionable detail, limiting reusability."
+    },
+    {
+     "score": 6.0,
+     "grounded": true,
+     "issues": "Metadata-only entry (no body/evidence) with a plausible but unsubstantiated claim; structure is coherent and tags aid retrieval, but reusability is limited without specifics on LCOE/capacity factors."
     }
    ]
   },
