@@ -1,0 +1,85 @@
+{
+ "meta": {
+  "generated": "2026-09-12T14:26:21.013965+00:00",
+  "chain": "omp CLI(+.omp/mcp.json→kb-mcp) + QDCVR skill prompt",
+  "model": "omp profile (见 .omp/config; 固定版本)"
+ },
+ "summary": {
+  "n_runs": 6,
+  "lang": "en",
+  "runs_per_query": 2,
+  "hit@1_mean": 1,
+  "hit@1_std": 0.0,
+  "hit_any_mean": 1,
+  "hit_any_std": 0.0,
+  "note": "Agent 链路含 LLM 非确定性 — 以 mean±std 报告, transcript 可审计"
+ },
+ "rows": [
+  {
+   "qid": "dev_10",
+   "run": 1,
+   "hit@1": 1,
+   "hit_any": 1,
+   "n_cited": 2,
+   "n_tool_calls": 0,
+   "latency_s": 113.5,
+   "ok": true,
+   "transcript": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-web\\benchmark\\results\\benchmark\\agent-transcripts\\en-dev_10-r1-221833.txt"
+  },
+  {
+   "qid": "dev_10",
+   "run": 2,
+   "hit@1": 1,
+   "hit_any": 1,
+   "n_cited": 1,
+   "n_tool_calls": 0,
+   "latency_s": 49.7,
+   "ok": true,
+   "transcript": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-web\\benchmark\\results\\benchmark\\agent-transcripts\\en-dev_10-r2-222026.txt"
+  },
+  {
+   "qid": "dev_100",
+   "run": 1,
+   "hit@1": 1,
+   "hit_any": 1,
+   "n_cited": 1,
+   "n_tool_calls": 0,
+   "latency_s": 65.2,
+   "ok": true,
+   "transcript": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-web\\benchmark\\results\\benchmark\\agent-transcripts\\en-dev_100-r1-222116.txt"
+  },
+  {
+   "qid": "dev_100",
+   "run": 2,
+   "hit@1": 1,
+   "hit_any": 1,
+   "n_cited": 1,
+   "n_tool_calls": 3,
+   "latency_s": 111.3,
+   "ok": true,
+   "transcript": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-web\\benchmark\\results\\benchmark\\agent-transcripts\\en-dev_100-r2-222221.txt"
+  },
+  {
+   "qid": "dev_1003",
+   "run": 1,
+   "hit@1": 1,
+   "hit_any": 1,
+   "n_cited": 2,
+   "n_tool_calls": 0,
+   "latency_s": 55.2,
+   "ok": true,
+   "transcript": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-web\\benchmark\\results\\benchmark\\agent-transcripts\\en-dev_1003-r1-222412.txt"
+  },
+  {
+   "qid": "dev_1003",
+   "run": 2,
+   "hit@1": 1,
+   "hit_any": 1,
+   "n_cited": 2,
+   "n_tool_calls": 0,
+   "latency_s": 72.9,
+   "ok": true,
+   "transcript": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-web\\benchmark\\results\\benchmark\\agent-transcripts\\en-dev_1003-r2-222508.txt"
+  }
+ ]
+}

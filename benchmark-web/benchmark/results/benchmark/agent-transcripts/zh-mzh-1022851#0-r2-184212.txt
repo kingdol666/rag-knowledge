@@ -1,0 +1,38 @@
+=== stdout ===
+## 答案
+
+联合国安理会**5 个常任理事国（P5）**：**中国、法国、俄罗斯、英国、美国**。
+
+## 检索过程（QDCVR）
+
+| 步骤 | 操作 | 结果 |
+|---|---|---|
+| Step 1 | `kb_list(lightweight=true)` | 56 个库；benchmark 主题库 18 个（KB-Politics-History / KB-People / KB-Other 等） |
+| Step 2 | `kb_search_two_stage("联合国安理会常任理事国", balance_kbs=true)` | Stage-2 最高分 0.3499，内容为菲律宾 Suluan 岛/选举——**全部 < 0.35，判定为盲区** |
+| Step 2b | 英文改写 `"United Nations Security Council permanent members..."` | 仍为噪声（艺术家、选举），最高 0.407 但内容不符 |
+| Step 2c | `kb_search_vector(kb_id="")` 纯向量跨库 | 命中真实内容：0.582 / 0.566 / 0.525 |
+| Step 3 | `kb_doc_read` 逐篇内容核验 | 通过（内容覆盖向量分） |
+
+**关键发现**：中文查询在 BM25 阶段（stage1）关键词映射失败（中文分词未命中 wiki18 英文/中文混合语料），但纯向量跨库路径召回正确；中文文档 `联合国 (part 1 of 2).md` 以 0.525 分进入 P0。
+
+## 内容核验（content-overrides-vector）
+
+1. **`KB-CrossLang-ZH/联合国 (part 1 of 2).md`** — 直接枚举，P0：
+   > 安理会由15个会员国组成，其中包括**5个常任理事国（中国、美国、英国、法国、俄罗斯）**……五个常任理事国对于安理会决议具有否决权
+   
+   另两处独立佐证同文：裁军会议"五个主要核大国中国、法国、俄罗斯、英国、美国"；"安理会常任理事国**英国、苏联、法国、美国、中国**五大常任理事国是1945年联合国成立之初时设立的"（苏联席位现由俄罗斯承继）。
+
+2. **`KB-People/United Nations Security Council veto power (part 1 of 3).md`** — 1944 年创始会议已定 P5 席位：
+   > It had already been decided at the UN's founding conference in 1944, that **United Kingdom, China, the Soviet Union, the United States** and, "in due course" **France**...
+
+3. **`KB-People/Great power.md`** — 佐证"五国 + 否决权"与 1971 年席位变更：
+   > These five nations are the only states to have permanent seats with veto power on the UN Security Council... in 1971, [the ROC] lost its permanent seat at the UN Security Council to the **People's Republic of China**.
+
+（辅助佐证：`KB-Bio-Medicine/United Nations General Assembly Resolution 377.md` 提及 "permanent members of the Security Council—the so-called 'P5'" 及否决机制，但未逐一列名，未计入最终引用。）
+
+**盲点声明**：P5 名单无专门条目文章；`KB-CrossLang-ZH` 中的《联合国》为中文 wiki 译文，其余为英文 wiki18 语料。三篇文档对列举名单一致，无冲突。
+
+FINAL_DOCS: KB-CrossLang-ZH/联合国 (part 1 of 2).md; KB-People/United Nations Security Council veto power (part 1 of 3).md; KB-People/Great power.md
+
+=== stderr ===
+Working...

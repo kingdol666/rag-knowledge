@@ -1,0 +1,34 @@
+=== stdout ===
+检索完成。结论如下。
+
+## 答案
+
+知识库中**没有**可验证的文档记载印度的具体人口数字。
+
+## 检索与验证过程（QDCVR）
+
+- **Step 0 查询改写**：事实型查询，主体=印度(India)，属性=人口。改写为 `"India population"` / `"印度 人口"`。
+- **Step 1 选库**：国家人口 → 优先 `KB-Geography`、`KB-CrossLang-EN`（含 "Demographics of Angola/Armenia" 等国家人口条目）、`KB-CrossLang-ZH`（含国家/人口列表）。
+- **Step 2 召回**：
+  - `KB-Geography` 向量召回 top 结果全为美国县郡（匹配 "American Indian" 种族词），非印度国家。
+  - 元数据 `kb_search("India")` 命中仅 "Indian (1996 film)"、"Indiana…"，无 "India" 条目。
+  - `KB-CrossLang-ZH` 向量召回 `各国家和地区人口列表.md`（提及"印度"为例）。
+- **Step 3 内容裁决**：`kb_doc_read` 验证 `各国家和地区人口列表.md` —— 全文仅 18 行，"列表"节为空（Wikipedia 表格在抽取时丢失），只把"印度"作为加粗国家示例提及，**无任何人口数字**。
+
+## 来源（已验证）
+
+- [P2 补充] `KB-CrossLang-ZH/各国家和地区人口列表.md` — 国家人口列表页，但正文表格为空，不含印度人口数。
+
+## 置信度
+
+**低** — 语料（wiki18 benchmark）经查证**不存在** `India` / `印度` / `Demographics of India` 任何条目（`kb_assignments.json` 无 "India" 键，EN/ZH 跨语料无 "India"/"印度" 标题，`findstr "\"title\": \"India"` 零命中）；唯一相关列表文档的表格内容在抽取时丢失。
+
+## 盲点（诚实声明）
+
+- 查询"印度人口"在本知识库无确认命中，**无法给出数字**（宁可不给，不要错给）。
+- `各国家和地区人口列表.md` 的 Wikipedia 人口排序表格未随 Markdown 抽取保留，导致列表为空。
+
+FINAL_DOCS: KB-CrossLang-ZH/各国家和地区人口列表.md
+
+=== stderr ===
+Working...

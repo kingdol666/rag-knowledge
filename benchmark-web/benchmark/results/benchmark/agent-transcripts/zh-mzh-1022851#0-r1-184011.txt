@@ -1,0 +1,42 @@
+=== stdout ===
+## QDCVR 检索过程
+
+**Step 1 — KB 扫描**：56 个 KB。该问题属政治/国际组织领域，高相关候选：`KB-CrossLang-ZH`、`KB-People`、`KB-Politics-History`。
+
+**Step 2 — 检索**
+- 中文 `kb_search_two_stage("联合国安理会常任理事国 有哪些")` → **失败**：命中大量美国/波黑选举类噪声文档，向量分 ≤0.36，内容与问题无关（content-overrides-vector 判失败）。
+- 英文 `kb_search_two_stage("permanent members of the United Nations Security Council")` → 同样失败：命中 "Douglas Gordon"、"Military ordinariate" 等无关内容，最高分 0.396 但语义不匹配。
+- **staged search 改用** `kb_search_vector(kb_id="")` 跨库纯语义检索 → **成功**，top 分显著高且语义精准。
+
+**Step 2.5 — 阈值/去重**：仅保留 score ≥ 0.35 且去重后的文档，取 top：`KB-CrossLang-ZH/联合国` (0.622)、`KB-People/Great power.md` (0.653/0.609/0.591)、`KB-CrossLang-ZH/第二次世界大战` (0.622)。
+
+**Step 3 — 内容核验（kb_doc_read）**
+1. `KB-CrossLang-ZH/联合国 (part 1 of 2).md` — ✅ 原文：“安理会由15个会员国组成，其中包括5个常任理事国（**中国、美国、英国、法国、俄罗斯**）……对于安理会决议具有否决权”；另载 1945 年创始五大常任理事国为“中国、法国、苏联、英国和美国”。
+2. `KB-People/Great power.md` — ✅ 原文：“**China, France, Russia, the United Kingdom and the United States** ... These five nations are the only states to have permanent seats with veto power on the UN Security Council”；并载 1971 年中国席位由中华人民共和国取代中华民国、1991 年苏联解体后由俄罗斯联邦继承。
+
+两份文档均经正文核验、直接回答“常任理事国有哪些”，核验通过，无需继续 staged search。
+
+## 答案（内容核验版）
+
+联合国安理会 **5 个常任理事国**：
+
+| 现席位 | 历史变更 |
+|---|---|
+| 中国 | 1971 年由**中华人民共和国**取代中华民国席位 |
+| 法国 | 创始常任理事国 |
+| 俄罗斯 | 1991 年苏联解体后由**俄罗斯联邦**继承苏联席位 |
+| 英国 | 创始常任理事国 |
+| 美国 | 创始常任理事国 |
+
+- 安理会共 15 个成员：5 个常任 + 10 个非常任（任期两年，按地域分配由大会选出）。
+- 五常对安理会决议拥有**否决权**（可阻止决议通过，但不能阻止讨论）。
+- 1945 年联合国成立时的创始五常为：中国、法国、**苏联**、英国、美国（后中、俄席位如上更替）。
+
+**引用来源**（均经 `kb_doc_read` 正文核验）：
+- `KB-CrossLang-ZH/联合国 (part 1 of 2).md` — 明列“5个常任理事国（中国、美国、英国、法国、俄罗斯）”
+- `KB-People/Great power.md` — 明列五国为唯一拥有安理会常任否决权席位者
+
+FINAL_DOCS: KB-CrossLang-ZH/联合国 (part 1 of 2).md; KB-People/Great power.md
+
+=== stderr ===
+Working...

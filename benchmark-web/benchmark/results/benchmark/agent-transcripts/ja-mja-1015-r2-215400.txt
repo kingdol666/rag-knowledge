@@ -1,0 +1,16 @@
+=== stdout ===
+スイス連邦の首都は**ベルン（Bern）**です。
+
+QDCVR 検索・検証経緯:
+- **Step1** `kb_list`: 56 KB 中、質問（首都・地理・日本語）に該当しうるのは `KB-CrossLang-JA`、`KB-Geography` 等。
+- **Step2** `kb_search_two_stage(query="スイス連邦の首都 ベルン Switzerland capital Bern", balance_kbs=true)`: 首位候補は `KB-CrossLang-JA/首都.md`（stage1 keyword score 14.87、chunk score 0.678/0.644）。
+- **Step3** `kb_doc_read` 検証（content-overrides-vector）— 本文に該当文を確認:
+
+> 「スイス連邦では、行政府と国会はベルンにあり、同市がスイスの首都とみなされている。ただし、最高裁判所にあたるはローザンヌにある。」
+
+  内容が質問に直接一致。副次候補 `KB-Geography/Schwyz railway station.md` は「シュヴィーツ州（canton）の州都」であり、スイス連邦の首都とは無関係のため除外。
+
+FINAL_DOCS: KB-CrossLang-JA/首都.md
+
+=== stderr ===
+Working...

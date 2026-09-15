@@ -1,0 +1,20 @@
+=== stdout ===
+## 答案
+
+The fight song is **"I'm a Jayhawk"**.
+
+The university is the **University of Kansas (KU)**. The verified document confirms the entity matches the question's description: main campus in Lawrence ("The main campus in Lawrence, is on Mount Oread") and branch campuses in the Kansas City metropolitan area ("Two branch campuses are in the Kansas City metropolitan area: the university's medical school and hospital in Kansas City, the Edwards Campus in Overland Park"). Its songs section lists "I'm a Jayhawk" first among the school's songs, and "I'm a Jayhawk" is KU's fight song.
+
+## 来源
+- [P0] `University of Kansas.md` @ KB-Economy-Law — 文档直接围绕 University of Kansas，正文同时给出 Lawrence 主校区 + 堪萨斯城都会区分校，并列有 "I'm a Jayhawk" 等校歌。
+
+## 置信度
+高 — 单一 P0 文档的实体描述与问题完全吻合（Lawrence 主校区 + KC 都会区分校），歌名 "I'm a Jayhawk" 直接出现在正文歌曲列表中。
+
+## 盲点
+- 文档将 "I'm a Jayhawk" 与 "Fighting Jayhawk"、"Kansas Song" 等一并列为常用歌曲，未在文中显式标注 "fight song" 标签；"I'm a Jayhawk" 作为正式战歌的定性基于常识补全，但歌名本身有文档直接证据。
+
+FINAL_DOCS: KB-Economy-Law/University of Kansas.md
+
+=== stderr ===
+Working...

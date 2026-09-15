@@ -1,0 +1,28 @@
+=== stdout ===
+## 答案
+
+Black Seminoles（即与塞米诺尔人相关的"黑人印第安人"）的后代主要定居于：
+
+- **俄克拉何马州**（主要）——塞米诺尔族（Seminole Nation of Oklahoma）周围的乡村社区，如 **Wewoka**、**Little River**；两个 Freedmen 带（Caesar Bruner Band、Dosar Barkus Band）在族议会各有席位。
+- **佛罗里达州**——约 50 名具 1/4 塞米诺尔血统的后代继续在塞米诺尔部落保留地生活。
+- **得克萨斯州**——Brackettville（Fort Clark 一带，塞米诺尔侦察兵后代的精神中心）。
+- **巴哈马**——Andros 岛（Red Bays 村，自认巴哈马人的后代）。
+- **墨西哥北部**——Coahuila 的 **Nacimiento de los Negros**（Nacimiento），即"mascogos"，到 1940 年代约 400–500 人，1990 年代后大多迁入得克萨斯。
+
+## 来源（按置信度排序）
+
+- [P0] `Black Seminoles.md` @ `KB-People/Black Seminoles.md` — 开篇明义："Today, Black Seminole descendants live primarily in rural communities around the Seminole Nation of Oklahoma… Other centers are in Florida, Texas, the Bahamas, and northern Mexico"，正文逐项佐证各定居点。
+
+## 置信度
+
+高 — 单篇 P0 文档直接、逐项覆盖问题，内容验证 8/8（主题相关 3/3、场景匹配 3/3、答案证据 2/2）。
+
+## 盲点
+
+- 本会话 MCP 工具未连接（`mcp__kb-mcp__backend_status` 返回 Unknown tool，backend 8765/8770 未监听），按平台"读走直接文件访问"原则以磁盘 `.md` 直读兜底，未走 `kb_search_two_stage`/`kb_doc_read` 的向量+BM25 正式链路。
+- 各定居点的精确现状人口数（除墨西哥 mascogos 1940 年代 400–500 人外）文档未给出最新数字。
+
+FINAL_DOCS: KB-People/Black Seminoles.md
+
+=== stderr ===
+Working...

@@ -1,0 +1,27 @@
+=== stdout ===
+## 答案
+
+**AMC Theatres**（AMC 影院，American Multi-Cinema 的缩写）。
+
+Cineplex Odeon Theatres 现在在美国由 AMC Theatres 运营，而 AMC Theatres 于 2012 年 5 月被总部位于大连的中国企业集团**大连万达集团**收购（作价 26 亿美元，交易于 2012 年 9 月 4 日完成），万达由此成为全球最大影院连锁。
+
+## 来源（内容验证已读正文确认）
+
+- **[P0] Cineplex Odeon Corporation.md** @ KB-Economy-Law — 原文直接给出："The Cineplex Odeon Theatres are now operated by Cineplex Entertainment in Canada and **as AMC Theatres in the United States**."
+- **[P0] AMC Theatres.md** @ KB-People — 原文确认："**was acquired by Dalian Wanda Group**, a Chinese conglomerate headquartered in Dalian, in May 2012… Wanda Group paid $2.6 billion…"
+
+两篇 P0 文档一致支撑答案，内容分均 ≥6。
+
+## 置信度
+
+高 — 两篇文档直接、明确地分别覆盖问题的两个要件（"现由 AMC Theatres 运营" + "万达集团多数持股"），正文逐字可引。
+
+## 盲点
+
+- "多数持股"（majority-owned）一词：AMC Theatres 文档表述为万达集团 "acquired"（收购）AMC，未逐字使用 "majority-owned"，但收购交易（2.6B 美元收购 5,048 块银幕/347 家影院）即对应万达控股这一事实，语义等价。
+- Cineplex Odeon 品牌在**加拿大**由 Cineplex Entertainment（现 Cineplex Entertainment LP）运营，而非 AMC；问题问的是"美国电影连锁"这一分支，故答案限定为 AMC Theatres。
+
+FINAL_DOCS: KB-Economy-Law/Cineplex Odeon Corporation.md; KB-People/AMC Theatres.md
+
+=== stderr ===
+Working...

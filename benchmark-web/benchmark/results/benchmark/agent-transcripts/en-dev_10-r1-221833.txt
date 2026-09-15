@@ -1,0 +1,31 @@
+=== stdout ===
+## Answer
+
+**"I'm a Jayhawk"** — the fight song of the University of Kansas.
+
+## Verification (content-overrides-vector)
+
+**University of Kansas** article (`KB-Economy-Law/University of Kansas.md`) confirms the university identity and lists the song:
+
+- Identity match: *"The main campus in Lawrence, is on Mount Oread, the highest elevation in Lawrence. Two branch campuses are in the Kansas City metropolitan area: the university's medical school and hospital in Kansas City, the Edwards Campus in Overland Park…"* → exactly the Lawrence main campus + Kansas City metro branch campuses described in the question.
+- Song list: *"Notable among a number of songs commonly played and sung at various events such as commencement and convocation, and athletic games are: **'I'm a Jayhawk'**, 'Fighting Jayhawk', 'Kansas Song', 'Sunflower Song', 'Crimson and the Blue', 'Red and Blue', the 'Rock Chalk, Jayhawk' chant, 'Home on the Range' and 'Stand Up and Cheer.'"* → "I'm a Jayhawk" is listed first; "Rock Chalk, Jayhawk" is explicitly a *chant*, not a song.
+
+A duplicate split copy exists at `KB-Inbox-Organize/University of Kansas (part 1 of 2).md` (same content).
+
+## Sources (by confidence)
+
+- **[P0]** `University of Kansas.md` @ KB-Economy-Law — verifies the university (Lawrence main campus + KC metro branch campuses) and lists "I'm a Jayhawk" as the leading school song.
+- **[P1]** `University of Kansas (part 1 of 2).md` @ KB-Inbox-Organize — identical split copy corroborating the same song list.
+
+## Confidence
+
+Medium-High. The university identity is unambiguously verified. The KB article lists "I'm a Jayhawk" as the primary school song but does **not** use the exact phrase "fight song"; the "fight song" designation is standard knowledge corroborated by the KB's own ordering (and "Rock Chalk, Jayhawk" being labeled a chant, not the fight song).
+
+## Blind spot
+
+No dedicated "I'm a Jayhawk" or "Fighting Jayhawk" article exists in the KB; the fight-song label is inferred from the primary-song position plus external knowledge, not from an explicit "fight song" sentence in the corpus.
+
+FINAL_DOCS: KB-Economy-Law/University of Kansas.md; KB-Inbox-Organize/University of Kansas (part 1 of 2).md
+
+=== stderr ===
+Working...

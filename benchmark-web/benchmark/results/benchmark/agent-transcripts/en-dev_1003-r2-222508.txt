@@ -1,0 +1,19 @@
+=== stdout ===
+## Answer
+
+**AMC Theatres** (American Multi-Cinema).
+
+Content-verified against two KB documents:
+
+1. **`KB-People/AMC Theatres.md`** — lead states AMC Theatres is "an American movie theater chain," and the history section confirms: "AMC was acquired by **Dalian Wanda Group, a Chinese conglomerate headquartered in Dalian**, in May 2012. Wanda Group paid $2.6 billion… The acquisition made Wanda the world's largest cinema chain."
+
+2. **`KB-Economy-Law/Cineplex Odeon Corporation.md`** — lead states directly: "The **Cineplex Odeon Theatres are now operated by Cineplex Entertainment in Canada and as AMC Theatres in the United States**."
+
+Both content checks pass (content-overrides-vector): the "Cineplex Odeon → AMC Theatres (US)" link and the "AMC = American chain majority-owned by Dalian Wanda Group" link are each confirmed verbatim.
+
+Note: kb-mcp MCP tools were not available in this session, so retrieval used direct file access (`.tree-fs.json` / `.knowledge-base.yml` / document `.md` reads) — the platform's documented read path.
+
+FINAL_DOCS: KB-Economy-Law\Cineplex Odeon Corporation.md; KB-People\AMC Theatres.md
+
+=== stderr ===
+Working...

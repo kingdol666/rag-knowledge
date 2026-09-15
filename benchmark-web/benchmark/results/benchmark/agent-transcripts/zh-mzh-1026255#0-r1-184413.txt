@@ -1,0 +1,35 @@
+=== stdout ===
+## QDCVR 检索结果
+
+**问题**：印度人口有多少？
+
+**Step 1 — kb_list**：56 个 KB。相关候选为 `KB-CrossLang-ZH`（中文维基库）、`KB-CrossLang-EN`、`KB-People`、`KB-Geography`、`KB-Other`。
+
+**Step 2/2.5 — kb_search_two_stage(balance_kbs=true)**：stage2 向量分全部 < 0.35（0.344 / 0.339 / 0.328 / 0.317 …），内容为美国选举、场地自行车赛——**全部丢弃**。
+精化检索（staged search）：`kb_search` 元数据 + `kb_search_vector` 跨库。GB 级语料中确认**不存在 "India.md / Demographics of India.md" 国家条目**（glob 全树 + `.tree-fs.json` 校验，仅有 `Partition of India.md`、`History of India.md`、`Archaeology in India.md` 等）。
+
+**Step 3 — kb_doc_read 内容核验**（content-overrides-vector）：
+
+| 文档 | 核实内容 |
+|---|---|
+| `KB-CrossLang-ZH/中國 (part 3 of 4).md` | “**2023年4月，中國人口總數被印度超越，滑落至世界第二**” |
+| `KB-CrossLang-ZH/中华人民共和国各省级行政区人口列表.md` | “中华人民共和国是世界上**人口第二多**的国家…大陆地区人口有 **14.11 亿人**（2020 七普）” |
+| `KB-CrossLang-ZH/各国家和地区人口列表.md` | 按人口排序的各国/地区列表（印度作为粗体国名示例），但**表格数据在本库存储中被剥离，无具体数值** |
+| `KB-People/Partition of India.md` | 历史数值：“undivided India in 1947 was approx 390 million… 330 million people in India” |
+
+**Step 4 — 判定**：库内**没有**直接给出印度当前人口具体数字的文档，只有位次/相对关系与 1947 年历史值。
+
+## 答案
+
+知识库中**未检索到印度当前人口的确切数字**；可核实的相关事实为：
+
+- 印度已于 **2023 年 4 月超越中国，成为世界第一人口大国**（中国降至第二）——`KB-CrossLang-ZH/中國 (part 3 of 4).md`。
+- 中国（世界上人口第二多）2020 年七普大陆人口为 **14.11 亿**，据此可推印度当前人口**高于约 14.11 亿**——`KB-CrossLang-ZH/中华人民共和国各省级行政区人口列表.md`。
+- 历史参照：1947 年分治后印度人口约 **3.3 亿**——`KB-People/Partition of India.md`。
+
+精确数值（约 14 亿+）KB 内无来源支撑，属**盲区**。
+
+FINAL_DOCS: KB-CrossLang-ZH/中國 (part 3 of 4).md; KB-CrossLang-ZH/中华人民共和国各省级行政区人口列表.md; KB-CrossLang-ZH/各国家和地区人口列表.md; KB-People/Partition of India.md
+
+=== stderr ===
+Working...

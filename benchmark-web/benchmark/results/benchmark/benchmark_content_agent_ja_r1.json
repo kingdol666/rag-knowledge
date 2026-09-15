@@ -1,0 +1,85 @@
+{
+ "meta": {
+  "generated": "2026-09-12T14:18:33.128575+00:00",
+  "chain": "omp CLI(+.omp/mcp.json→kb-mcp) + QDCVR skill prompt",
+  "model": "omp profile (见 .omp/config; 固定版本)"
+ },
+ "summary": {
+  "n_runs": 6,
+  "lang": "ja",
+  "runs_per_query": 2,
+  "hit@1_mean": 0,
+  "hit@1_std": 0.0,
+  "hit_any_mean": 0,
+  "hit_any_std": 0.0,
+  "note": "Agent 链路含 LLM 非确定性 — 以 mean±std 报告, transcript 可审计"
+ },
+ "rows": [
+  {
+   "qid": "mja-1015",
+   "run": 1,
+   "hit@1": 0,
+   "hit_any": 0,
+   "n_cited": 1,
+   "n_tool_calls": 0,
+   "latency_s": 52.6,
+   "ok": true,
+   "transcript": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-web\\benchmark\\results\\benchmark\\agent-transcripts\\ja-mja-1015-r1-215308.txt"
+  },
+  {
+   "qid": "mja-1015",
+   "run": 2,
+   "hit@1": 0,
+   "hit_any": 0,
+   "n_cited": 1,
+   "n_tool_calls": 4,
+   "latency_s": 40.1,
+   "ok": true,
+   "transcript": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-web\\benchmark\\results\\benchmark\\agent-transcripts\\ja-mja-1015-r2-215400.txt"
+  },
+  {
+   "qid": "mja-1054",
+   "run": 1,
+   "hit@1": 0,
+   "hit_any": 0,
+   "n_cited": 2,
+   "n_tool_calls": 1,
+   "latency_s": 343.5,
+   "ok": true,
+   "transcript": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-web\\benchmark\\results\\benchmark\\agent-transcripts\\ja-mja-1054-r1-215440.txt"
+  },
+  {
+   "qid": "mja-1054",
+   "run": 2,
+   "hit@1": 0,
+   "hit_any": 0,
+   "n_cited": 2,
+   "n_tool_calls": 3,
+   "latency_s": 322.2,
+   "ok": true,
+   "transcript": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-web\\benchmark\\results\\benchmark\\agent-transcripts\\ja-mja-1054-r2-220024.txt"
+  },
+  {
+   "qid": "mja-1059",
+   "run": 1,
+   "hit@1": 0,
+   "hit_any": 0,
+   "n_cited": 0,
+   "n_tool_calls": 4,
+   "latency_s": 408.0,
+   "ok": true,
+   "transcript": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-web\\benchmark\\results\\benchmark\\agent-transcripts\\ja-mja-1059-r1-220546.txt"
+  },
+  {
+   "qid": "mja-1059",
+   "run": 2,
+   "hit@1": 0,
+   "hit_any": 0,
+   "n_cited": 1,
+   "n_tool_calls": 3,
+   "latency_s": 358.7,
+   "ok": true,
+   "transcript": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-web\\benchmark\\results\\benchmark\\agent-transcripts\\ja-mja-1059-r2-221234.txt"
+  }
+ ]
+}

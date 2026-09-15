@@ -1,0 +1,85 @@
+{
+ "meta": {
+  "generated": "2026-09-12T13:53:07.868669+00:00",
+  "chain": "omp CLI(+.omp/mcp.json→kb-mcp) + QDCVR skill prompt",
+  "model": "omp profile (见 .omp/config; 固定版本)"
+ },
+ "summary": {
+  "n_runs": 6,
+  "lang": "zh",
+  "runs_per_query": 2,
+  "hit@1_mean": 0.3333,
+  "hit@1_std": 0.4714,
+  "hit_any_mean": 0.3333,
+  "hit_any_std": 0.4714,
+  "note": "Agent 链路含 LLM 非确定性 — 以 mean±std 报告, transcript 可审计"
+ },
+ "rows": [
+  {
+   "qid": "mzh-1022851#0",
+   "run": 1,
+   "hit@1": 0,
+   "hit_any": 0,
+   "n_cited": 2,
+   "n_tool_calls": 0,
+   "latency_s": 64.6,
+   "ok": true,
+   "transcript": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-web\\benchmark\\results\\benchmark\\agent-transcripts\\zh-mzh-1022851#0-r1-213800.txt"
+  },
+  {
+   "qid": "mzh-1022851#0",
+   "run": 2,
+   "hit@1": 0,
+   "hit_any": 0,
+   "n_cited": 3,
+   "n_tool_calls": 0,
+   "latency_s": 66.1,
+   "ok": true,
+   "transcript": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-web\\benchmark\\results\\benchmark\\agent-transcripts\\zh-mzh-1022851#0-r2-213905.txt"
+  },
+  {
+   "qid": "mzh-1026255#0",
+   "run": 1,
+   "hit@1": 0,
+   "hit_any": 0,
+   "n_cited": 3,
+   "n_tool_calls": 0,
+   "latency_s": 339.7,
+   "ok": true,
+   "transcript": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-web\\benchmark\\results\\benchmark\\agent-transcripts\\zh-mzh-1026255#0-r1-214012.txt"
+  },
+  {
+   "qid": "mzh-1026255#0",
+   "run": 2,
+   "hit@1": 0,
+   "hit_any": 0,
+   "n_cited": 1,
+   "n_tool_calls": 2,
+   "latency_s": 356.8,
+   "ok": true,
+   "transcript": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-web\\benchmark\\results\\benchmark\\agent-transcripts\\zh-mzh-1026255#0-r2-214552.txt"
+  },
+  {
+   "qid": "mzh-1059425#0",
+   "run": 1,
+   "hit@1": 1,
+   "hit_any": 1,
+   "n_cited": 1,
+   "n_tool_calls": 0,
+   "latency_s": 30.1,
+   "ok": true,
+   "transcript": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-web\\benchmark\\results\\benchmark\\agent-transcripts\\zh-mzh-1059425#0-r1-215149.txt"
+  },
+  {
+   "qid": "mzh-1059425#0",
+   "run": 2,
+   "hit@1": 1,
+   "hit_any": 1,
+   "n_cited": 1,
+   "n_tool_calls": 0,
+   "latency_s": 48.3,
+   "ok": true,
+   "transcript": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-web\\benchmark\\results\\benchmark\\agent-transcripts\\zh-mzh-1059425#0-r2-215219.txt"
+  }
+ ]
+}

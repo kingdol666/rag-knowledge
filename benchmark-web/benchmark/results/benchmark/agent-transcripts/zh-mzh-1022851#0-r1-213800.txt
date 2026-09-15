@@ -1,0 +1,29 @@
+=== stdout ===
+## 答案
+
+联合国安理会常任理事国共有 **5 个**（"五常"，P5），分别是：
+
+1. **中国**（China）
+2. **法国**（France）
+3. **俄罗斯**（Russia，联合国成立时为苏联 Soviet Union，苏联解体后由俄罗斯继承席位）
+4. **英国**（United Kingdom）
+5. **美国**（United States）
+
+## 来源（按置信度排序）
+
+- **[P0]** `United Nations Security Council veto power`（part 1 of 3）@ KB-People — 正文原文明确列出："It had already been decided at the UN's founding conference in 1944, that **United Kingdom, China, the Soviet Union, the United States and, 'in due course' [France]**"，并另处记载"the **UK, US, USSR, and France** all favoured the principle of unanimity"，五席齐全。
+- 佐证：`Foreign relations of the Republic of Macedonia.md` @ KB-Politics-History — 提及"four of the five permanent UN Security Council members (the UK, the United States, Russia, and the People's Republic of China)"，交叉印证常任理事国组成（缺法国因该国不在此语境，属例证）。
+
+## 置信度
+
+高 — P0 文档正文逐字列出五常名单，与通用常识一致；内容分 8/8（主题相关 3 + 场景匹配 3 + 答案证据 2），超过快速退出阈值 6。
+
+## 盲点
+
+- 语料库中该页面为"否决权（veto power）"专题，五常名单出现在历史沿革段落，未以"常任理事国列表"形式独立成段；但名单本身完整、可直接引用。
+- 文档以 1944 年建制时的表述"the Soviet Union（苏联）"指代俄国席位，未显式写"Russia 继承苏联席位"——此继承关系为常识补注，非文档原文。
+
+FINAL_DOCS: KB-People/United Nations Security Council veto power (part 1 of 3).md; KB-Politics-History/Foreign relations of the Republic of Macedonia.md
+
+=== stderr ===
+Working...
