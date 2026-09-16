@@ -1,51 +1,106 @@
-<html><head><meta charset='utf-8'><style>body{font-family:serif;margin:2.5em}table{border-collapse:collapse;margin:1em 0}td,th{border:1px solid #999;padding:4px 10px}th{background:#eee}h3{margin-top:1.4em}</style></head><body>
-<h1>Track R — 检索算法对比基准</h1><p>本轨回答「\sys{} 的检索与其他算法比怎么样」: 全部方法经同一MCP 工具层/同一语料/同一冻结查询, 由共享 Agent 作答、独立 Agent 判分。产出 JSON 均内嵌 git/config/seed 指纹。</p>
-<h3>E16 八系统主对比</h3><p>同一语料同一问题; 统一证据预算 4000 字符, 共享作答 Agent + 独立判分 Agent + 中间 Agent 匿名排名。</p><table><tr><th>方法</th><th>H@1</th><th>H@5</th><th>R@5</th><th>nDCG@10</th><th>MRR</th><th>判分</th><th>均位</th><th>首位</th></tr>
-<tr><td>qdcvr</td><td>0.700</td><td>0.833</td><td>0.833</td><td>0.784</td><td>0.767</td><td>7.70</td><td>5.63</td><td>3</td></tr>
-<tr><td>dense_rag</td><td>0.733</td><td>0.900</td><td>0.900</td><td>0.834</td><td>0.811</td><td>8.93</td><td>4.63</td><td>2</td></tr>
-<tr><td>dense_rag_rerank</td><td>0.900</td><td>0.933</td><td>0.933</td><td>0.921</td><td>0.917</td><td>8.67</td><td>3.77</td><td>5</td></tr>
-<tr><td>raptor</td><td>0.733</td><td>0.867</td><td>0.856</td><td>0.817</td><td>0.800</td><td>8.37</td><td>4.20</td><td>4</td></tr>
-<tr><td>itrg_refresh</td><td>0.833</td><td>0.933</td><td>0.933</td><td>0.896</td><td>0.883</td><td>8.30</td><td>4.53</td><td>3</td></tr>
-<tr><td>itrg_refine</td><td>0.733</td><td>0.900</td><td>0.900</td><td>0.845</td><td>0.816</td><td>8.53</td><td>4.17</td><td>3</td></tr>
-<tr><td>search_o1</td><td>0.800</td><td>0.900</td><td>0.844</td><td>0.811</td><td>0.839</td><td>8.70</td><td>4.60</td><td>3</td></tr>
-<tr><td>deepread</td><td>0.567</td><td>0.733</td><td>0.694</td><td>0.635</td><td>0.639</td><td>8.13</td><td>4.47</td><td>7</td></tr>
-</table>
-<h3>E16b API 一致性</h3><table><tr><th>方法</th><th>判分</th><th>中间Agent均位</th><th>首位</th></tr>
-<tr><td>qdcvr</td><td>7.70</td><td>5.63</td><td>3</td></tr>
-<tr><td>dense_rag</td><td>8.93</td><td>4.63</td><td>2</td></tr>
-<tr><td>dense_rag_rerank</td><td>8.67</td><td>3.77</td><td>5</td></tr>
-<tr><td>raptor</td><td>8.37</td><td>4.20</td><td>4</td></tr>
-<tr><td>itrg_refresh</td><td>8.30</td><td>4.53</td><td>3</td></tr>
-<tr><td>itrg_refine</td><td>8.53</td><td>4.17</td><td>3</td></tr>
-<tr><td>search_o1</td><td>8.70</td><td>4.60</td><td>3</td></tr>
-<tr><td>deepread</td><td>8.13</td><td>4.47</td><td>7</td></tr>
-</table>
-<h3>Module B 四通道对比 (SciFact)</h3><table><tr><th>通道</th><th>H@1</th><th>H@3</th><th>R@5</th><th>nDCG@10</th><th>MRR</th><th>supp@1</th></tr>
-<tr><td>bm25</td><td>0.833</td><td>0.833</td><td>0.750</td><td>0.804</td><td>0.835</td><td>0.67</td></tr>
-<tr><td>twostage</td><td>0.733</td><td>0.833</td><td>0.867</td><td>0.809</td><td>0.790</td><td>0.57</td></tr>
-<tr><td>dense</td><td>0.433</td><td>0.733</td><td>0.789</td><td>0.642</td><td>0.613</td><td>0.37</td></tr>
-<tr><td>qdcvr</td><td>0.767</td><td>0.833</td><td>0.867</td><td>0.822</td><td>0.807</td><td>0.60</td></tr>
-</table>
-<h3>Module B 双语内部语料</h3><table><tr><th>通道</th><th>H@1</th><th>H@5</th><th>R@5</th><th>P@5</th><th>MRR</th></tr>
-<tr><td>staged</td><td>0.750</td><td>0.900</td><td>0.883</td><td>0.200</td><td>0.832</td></tr>
-<tr><td>vector</td><td>0.900</td><td>0.900</td><td>0.867</td><td>0.180</td><td>0.907</td></tr>
-</table>
-<h3>E1 组件消融</h3><table><tr><th>变体</th><th>H@1</th><th>nDCG@10</th><th>P@5</th><th>MRR</th></tr>
-<tr><td>qdcvr_full</td><td>0.767</td><td>0.809</td><td>0.213</td><td>0.800</td></tr>
-<tr><td>verify_k1</td><td>0.733</td><td>0.796</td><td>0.213</td><td>0.783</td></tr>
-<tr><td>verify_k5</td><td>0.767</td><td>0.809</td><td>0.213</td><td>0.800</td></tr>
-<tr><td>no_verify</td><td>0.733</td><td>0.796</td><td>0.213</td><td>0.783</td></tr>
-<tr><td>no_dedup</td><td>0.767</td><td>0.809</td><td>0.213</td><td>0.800</td></tr>
-<tr><td>deep_t_0.20</td><td>0.767</td><td>0.832</td><td>0.213</td><td>0.810</td></tr>
-<tr><td>deep_t_0.35</td><td>0.767</td><td>0.832</td><td>0.213</td><td>0.810</td></tr>
-<tr><td>deep_t_0.50</td><td>0.767</td><td>0.821</td><td>0.213</td><td>0.806</td></tr>
-<tr><td>deep_t_off</td><td>0.767</td><td>0.832</td><td>0.213</td><td>0.810</td></tr>
-</table>
-<h3>E8 多域公开基准</h3><table><tr><th>方法</th><th>Hit@5</th><th>nDCG@10</th><th>ans@1</th></tr>
-<tr><td>bm25</td><td>0.860</td><td>0.538</td><td>0.520</td></tr>
-<tr><td>two_stage</td><td>0.480</td><td>0.375</td><td>0.280</td></tr>
-<tr><td>dense</td><td>0.480</td><td>0.378</td><td>0.300</td></tr>
-<tr><td>qdcvr</td><td>0.480</td><td>0.358</td><td>0.280</td></tr>
-</table>
-<h3>E12 动机案例</h3>
+<html><head><meta charset='utf-8'><title>Track R — Retrieval Benchmark</title><style>
+body{font-family:Georgia,'Times New Roman',serif;font-size:15px;line-height:1.55;
+color:#111;max-width:56em;margin:2.2em auto;padding:0 1.2em;background:#fff}
+h1{font-size:1.7em;text-align:center;margin:0 0 .2em}
+p.sub{text-align:center;font-variant:small-caps;letter-spacing:.06em;color:#444;
+margin:0 0 .4em}
+p.gen{text-align:center;font-size:.82em;color:#666;margin:0 0 1.6em}
+h2{font-size:1.12em;border-bottom:1px solid #999;padding-bottom:.25em;margin:1.8em 0 .7em}
+p{margin:.6em 0;text-align:justify}
+table{border-collapse:collapse;margin:.4em auto 1.2em}
+thead tr{border-top:2px solid #000;border-bottom:1px solid #000}
+tbody tr:last-child{border-bottom:2px solid #000}
+th{font-weight:600;padding:.28em .8em;text-align:left}
+td{padding:.24em .8em}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+th:not(:first-child){text-align:right}
+td.best{font-weight:700}
+div.caption{font-size:.86em;color:#333;text-align:center;margin:1.2em auto .3em;
+max-width:46em}
+p.note{font-size:.84em;color:#555;margin:.5em 0 1.2em}
+code{font-family:Consolas,Menlo,monospace;font-size:.9em;background:#f4f4f4;
+padding:0 .25em}
+</style></head><body>
+
+<h1>Track R — Retrieval Benchmark</h1>
+<p class='sub'>Content-Adjudicated Retrieval vs. Reproduced Baselines</p>
+<p class='gen'>Generated 2026-09-16T12:38:48.937176+00:00 · git <code>d86cfc0</code> · config <code>fe17f60fb7e09075</code></p>
+<p>This track answers one question: how does the system&#x27;s retrieval compare against reproduced baselines (BM25, Dense, Dense+Rerank, RAPTOR, ITRG, Search-o1, DeepRead)? All methods share one corpus, one frozen query set, one MCP tool layer, one answering agent, and one independent judge. Every number below is read from execution artifacts under results/.</p>
+<h2>1.&nbsp; Environment and Reproducibility</h2>
+<div class="caption">Table 1: Measured environment. Deterministic channels are expected to reproduce bit-for-bit; LLM channels follow the tolerance table in TEST-PLAN §7.</div>
+<table><thead><tr><th>Item</th><th>Value</th></tr></thead><tbody>
+<tr><td>Git commit</td><td><code>d86cfc0</code></td></tr>
+<tr><td>Config hash</td><td><code>fe17f60fb7e09075</code></td></tr>
+<tr><td>Seed / randomness</td><td>0 — deterministic pipeline (no RNG); agent channel = mean of runs</td></tr>
+<tr><td>Embedding</td><td>BAAI/bge-m3 (local GPU, normalize)</td></tr>
+<tr><td>Vector store</td><td>ChromaDB (persistent)</td></tr>
+<tr><td>Keyword index</td><td>jieba BM25</td></tr>
+<tr><td>MCP transport</td><td>uv run --directory kb-mcp python server.py (stdio)</td></tr>
+<tr><td>Retrieval defaults</td><td>vector k=10, stage-1 k=40, stage-2 k=10, QDCVR threshold 0.35, verification reads 3</td></tr>
+</tbody></table>
+<p>All eight systems run on the same corpus (BEIR SciFact, 148 documents), the same 30 frozen claims with official qrels, and the same MCP tool layer. Evidence is capped at a uniform 4,000-character budget; a shared agent answers from the evidence, an independent fresh-process agent grades against injected gold evidence (0–10), and a middle agent ranks anonymised answers.</p>
+<div class="caption">Table 2: Eight-system comparison on BEIR SciFact (30 queries, official qrels). Judge = independent agent 0–10 with gold evidence; Rank/Wins = middle-agent anonymous ranking.</div>
+<table>
+<thead><tr><th>Method</th><th>Hit@1</th><th>Hit@5</th><th>Recall@5</th><th>nDCG@10</th><th>MRR</th><th>Judge</th><th>Rank</th><th>Wins</th></tr></thead><tbody>
+<tr><td>qdcvr</td><td class="num">0.700</td><td class="num">0.833</td><td class="num">0.833</td><td class="num">0.784</td><td class="num">0.767</td><td class="num">7.70</td><td class="num">5.63</td><td class="num">3</td></tr>
+<tr><td>dense_rag</td><td class="num">0.733</td><td class="num">0.900</td><td class="num">0.900</td><td class="num">0.834</td><td class="num">0.811</td><td class="num best">8.93</td><td class="num">4.63</td><td class="num">2</td></tr>
+<tr><td>dense_rag_rerank</td><td class="num best">0.900</td><td class="num best">0.933</td><td class="num best">0.933</td><td class="num best">0.921</td><td class="num best">0.917</td><td class="num">8.67</td><td class="num best">3.77</td><td class="num">5</td></tr>
+<tr><td>raptor</td><td class="num">0.733</td><td class="num">0.867</td><td class="num">0.856</td><td class="num">0.817</td><td class="num">0.800</td><td class="num">8.37</td><td class="num">4.20</td><td class="num">4</td></tr>
+<tr><td>itrg_refresh</td><td class="num">0.833</td><td class="num best">0.933</td><td class="num best">0.933</td><td class="num">0.896</td><td class="num">0.883</td><td class="num">8.30</td><td class="num">4.53</td><td class="num">3</td></tr>
+<tr><td>itrg_refine</td><td class="num">0.733</td><td class="num">0.900</td><td class="num">0.900</td><td class="num">0.845</td><td class="num">0.816</td><td class="num">8.53</td><td class="num">4.17</td><td class="num">3</td></tr>
+<tr><td>search_o1</td><td class="num">0.800</td><td class="num">0.900</td><td class="num">0.844</td><td class="num">0.811</td><td class="num">0.839</td><td class="num">8.70</td><td class="num">4.60</td><td class="num">3</td></tr>
+<tr><td>deepread</td><td class="num">0.567</td><td class="num">0.733</td><td class="num">0.694</td><td class="num">0.635</td><td class="num">0.639</td><td class="num">8.13</td><td class="num">4.47</td><td class="num best">7</td></tr>
+</tbody></table>
+<p class="note">API-mode re-execution agreed with the offline matrix on 480/480 checked values (0 mismatches).</p>
+<p>Four retrieval channels over the production MCP path on BEIR SciFact: BM25 (stage-1 candidates), Two-stage hybrid (no content verification), Dense (BAAI/bge-m3, top-10), and QDCVR (full content-adjudicated pipeline). supp@1 = share of claims whose top-1 document covers ≥ 0.5 of claim content words.</p>
+<div class="caption">Table 3: Four-channel retrieval on BEIR SciFact (production MCP path).</div>
+<table>
+<thead><tr><th>Channel</th><th>Hit@1</th><th>Hit@3</th><th>Recall@5</th><th>nDCG@10</th><th>MRR</th><th>Supp@1</th></tr></thead><tbody>
+<tr><td>bm25</td><td class="num best">0.833</td><td class="num best">0.833</td><td class="num">0.750</td><td class="num">0.804</td><td class="num best">0.835</td><td class="num best">0.67</td></tr>
+<tr><td>twostage</td><td class="num">0.733</td><td class="num best">0.833</td><td class="num best">0.867</td><td class="num">0.809</td><td class="num">0.790</td><td class="num">0.57</td></tr>
+<tr><td>dense</td><td class="num">0.433</td><td class="num">0.733</td><td class="num">0.789</td><td class="num">0.642</td><td class="num">0.613</td><td class="num">0.37</td></tr>
+<tr><td>qdcvr</td><td class="num">0.767</td><td class="num best">0.833</td><td class="num best">0.867</td><td class="num best">0.822</td><td class="num">0.807</td><td class="num">0.60</td></tr>
+</tbody></table>
+<p>Bilingual in-house corpus: 20 frozen queries (EN/ZH/JA plus cross-KB) against three knowledge bases holding 16 documents, exercising domain-scoped routing.</p>
+<div class="caption">Table 4: Content-adjudicated two-stage retrieval vs. dense baseline on the bilingual in-house corpus.</div>
+<table>
+<thead><tr><th>Channel</th><th>Hit@1</th><th>Hit@5</th><th>Recall@5</th><th>P@5</th><th>MRR</th></tr></thead><tbody>
+<tr><td>staged</td><td class="num">0.750</td><td class="num best">0.900</td><td class="num best">0.883</td><td class="num best">0.200</td><td class="num">0.832</td></tr>
+<tr><td>vector</td><td class="num best">0.900</td><td class="num best">0.900</td><td class="num">0.867</td><td class="num">0.180</td><td class="num best">0.907</td></tr>
+</tbody></table>
+<p>Component ablation of the QDCVR pipeline on the same query set; deterministic channels reproduce bit-for-bit across rounds.</p>
+<div class="caption">Table 5: Component ablation (BEIR SciFact, 30 queries).</div>
+<table>
+<thead><tr><th>Variant</th><th>Hit@1</th><th>nDCG@10</th><th>P@5</th><th>MRR</th></tr></thead><tbody>
+<tr><td>qdcvr_full</td><td class="num best">0.767</td><td class="num">0.809</td><td class="num best">0.213</td><td class="num">0.800</td></tr>
+<tr><td>verify_k1</td><td class="num">0.733</td><td class="num">0.796</td><td class="num best">0.213</td><td class="num">0.783</td></tr>
+<tr><td>verify_k5</td><td class="num best">0.767</td><td class="num">0.809</td><td class="num best">0.213</td><td class="num">0.800</td></tr>
+<tr><td>no_verify</td><td class="num">0.733</td><td class="num">0.796</td><td class="num best">0.213</td><td class="num">0.783</td></tr>
+<tr><td>no_dedup</td><td class="num best">0.767</td><td class="num">0.809</td><td class="num best">0.213</td><td class="num">0.800</td></tr>
+<tr><td>deep_t_0.20</td><td class="num best">0.767</td><td class="num best">0.832</td><td class="num best">0.213</td><td class="num best">0.810</td></tr>
+<tr><td>deep_t_0.35</td><td class="num best">0.767</td><td class="num best">0.832</td><td class="num best">0.213</td><td class="num best">0.810</td></tr>
+<tr><td>deep_t_0.50</td><td class="num best">0.767</td><td class="num">0.821</td><td class="num best">0.213</td><td class="num">0.806</td></tr>
+<tr><td>deep_t_off</td><td class="num best">0.767</td><td class="num best">0.832</td><td class="num best">0.213</td><td class="num best">0.810</td></tr>
+</tbody></table>
+<p class="note">Significance (E2): 48 paired comparisons, 0 significant after Holm correction at α = 0.05 (bootstrap 95% CIs reported per comparison).</p>
+<p>Multi-domain public benchmark: 50 HotpotQA dev questions whose supporting and distractor documents are partitioned into nine topic knowledge bases, forcing cross-base routing.</p>
+<div class="caption">Table 6: Multi-domain HotpotQA results (50 queries, 9 topic KBs).</div>
+<table>
+<thead><tr><th>Method</th><th>Hit@5</th><th>nDCG@10</th><th>Answer@1</th></tr></thead><tbody>
+<tr><td>bm25</td><td class="num best">0.860</td><td class="num best">0.538</td><td class="num best">0.520</td></tr>
+<tr><td>two_stage</td><td class="num">0.480</td><td class="num">0.375</td><td class="num">0.280</td></tr>
+<tr><td>dense</td><td class="num">0.480</td><td class="num">0.378</td><td class="num">0.300</td></tr>
+<tr><td>qdcvr</td><td class="num">0.480</td><td class="num">0.358</td><td class="num">0.280</td></tr>
+</tbody></table>
+<div class="caption">Table 7: Routing oracle on HotpotQA: upper bounds of perfect domain scoping.</div>
+<table>
+<thead><tr><th>Policy</th><th>Channel</th><th>Hit@2</th><th>Recall@2</th><th>nDCG@10</th><th>n</th></tr></thead><tbody>
+<tr><td>Always search all KBs</td><td class="num">two_stage</td><td class="num">0.460</td><td class="num">0.320</td><td class="num">0.367</td><td class="num">50</td></tr>
+<tr><td>Always search all KBs</td><td class="num">dense</td><td class="num">0.460</td><td class="num">0.330</td><td class="num">0.378</td><td class="num">50</td></tr>
+<tr><td>Oracle: single gold KB</td><td class="num">two_stage</td><td class="num">0.920</td><td class="num">0.610</td><td class="num">0.744</td><td class="num">50</td></tr>
+<tr><td>Oracle: single gold KB</td><td class="num">dense</td><td class="num">0.380</td><td class="num">0.250</td><td class="num">0.303</td><td class="num">50</td></tr>
+<tr><td>Oracle: best KB per query</td><td class="num">two_stage</td><td class="num best">0.940</td><td class="num best">0.620</td><td class="num best">0.763</td><td class="num">50</td></tr>
+<tr><td>Oracle: best KB per query</td><td class="num">dense</td><td class="num">0.460</td><td class="num">0.290</td><td class="num">0.352</td><td class="num">50</td></tr>
+</tbody></table>
+<p>Motivating case (rank-one repair): for claim <code>sf-002</code> (“4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress mar”), dense retrieval scores Hit@1 = 0, MRR = 0.5, while QDCVR scores Hit@1 = 1, MRR = 1.0 — content adjudication promotes the gold document to rank one.</p>
 </body></html>

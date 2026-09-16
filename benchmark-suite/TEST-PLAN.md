@@ -211,6 +211,10 @@ ACL、EMNLP 论文的实验环节）：
 | **Track R 检索对比** | `pipelines/retrieval_track.sh` | \sys{} 的检索 vs BM25/Dense/Rerank/RAPTOR/ITRG/Search-o1/DeepRead 排序与答案质量如何 | `results/RETRIEVAL-BENCHMARK.md` + `retrieval-benchmark.html` |
 | **Track F 平台功能** | `pipelines/functions_track.sh` | 平台自身功能（解析入库/经验生命周期/整理/Agent 面/规模）实测表现 | `results/FUNCTIONS-BENCHMARK.md` + `functions-benchmark.html` |
 
+> 两份报告均为**英文 CIKM 测评风格**（编号章节、环境与可复现性表、表题在上的
+> 三线表、每列最优值加粗、方法学注记），由 `scripts/71_track_reports.py` 从
+> `results/` 真实执行产物生成——不手写任何数字。
+
 ```bash
 bash pipelines/retrieval_track.sh    # 检索对比轨（含 E16 八系统矩阵 + API 流程）
 bash pipelines/functions_track.sh    # 平台功能轨（A/C/E15/E17/端到端/规模）

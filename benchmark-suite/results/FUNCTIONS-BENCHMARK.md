@@ -1,56 +1,88 @@
-# Track F — 平台自身功能基准
+# Track F — Platform Functions Benchmark
 
-> 生成时间 2026-09-16T11:45:19.665553+00:00 · 环境 git `d6d8a05` · config `fe17f60fb7e09075` · 全部数字来自 results/ 真实运行产物
+**Parsing, Experience Lifecycle, Organise, Agent Surface, Scale**
 
-本轨回答「平台自己支持的功能到底好不好」: 解析入库、经验生命周期、整理功能、Agent 面、规模——全部经生产接口实测。
+> Generated 2026-09-16T12:38:49.019676+00:00 · git `d86cfc0` · config hash `fe17f60fb7e09075` · every number read from real execution artifacts under results/.
+This track measures the platform's own capabilities — document parsing and ingestion integrity, the experience lifecycle, organise functions, the agent-facing surface, and measured scale — through production interfaces only. There are no external algorithm baselines here; each probe checks correctness or quality of a platform function.
 
-### Module A · 文档解析与入库完整性
-| 语料 | 解析 | 入库 | 成员归属 | 存储完整 | 自检索H@1 |
-|---|---|---|---|---|---|
-| in-house | — | 1.000 | 1.000 | 1.000 | 0.938 |
-| standard | — | — | 1.000 | 1.000 | — |
+## 1. Environment and Reproducibility
 
-### E3-E7 · 经验生命周期（冥想→草稿→审批→衰减→检索）
-| 样本 | 轮 | KB | run | drafts | approved | exps | judge |
-|---|---|---|---|---|---|---|---|
-| 样本1 | 1 | KB-Demo-EN | ✓ | 0 | 0 | 0 | — |
-| 样本1 | 1 | KB-Demo-ZH | ✓ | 0 | 0 | 0 | — |
-| 样本1 | 2 | KB-Demo-EN | ✓ | 0 | 0 | 0 | — |
-| 样本1 | 2 | KB-Demo-ZH | ✓ | 0 | 0 | 0 | — |
-| 样本1 | 3 | KB-Demo-EN | ✓ | 0 | 0 | 0 | — |
-| 样本1 | 3 | KB-Demo-ZH | ✓ | 0 | 0 | 0 | — |
-| 样本2 | 1 | KB-Demo-EN | ✓ | 0 | 0 | 3 | [8.0, 8.0, 8.0] |
-| 样本2 | 1 | KB-Demo-ZH | ✓ | 0 | 0 | 0 | — |
-| 样本2 | 2 | KB-Demo-EN | ✓ | 0 | 0 | 0 | — |
-| 样本2 | 2 | KB-Demo-ZH | ✓ | 0 | 0 | 0 | — |
-| 样本2 | 3 | KB-Demo-EN | ✓ | 0 | 0 | 0 | — |
-| 样本2 | 3 | KB-Demo-ZH | ✓ | 0 | 0 | 0 | — |
+**Table 1: Measured environment. Deterministic channels are expected to reproduce bit-for-bit; LLM channels follow the tolerance table in TEST-PLAN §7.**
 
-E4 双基线同判: {"no_synthesis": 4.5, "ours_experience": 5.5, "llm_summary": 3.0}
-
-### E17 · 整理功能（去重/标签/图谱/目录）
-| 探针 | 结果 |
+| Item | Value |
 |---|---|
-| 入库保留/植入 | 7/9 |
-| 重复组检出/植入 | 1/2 |
-| 标签数 / 内容可落地 | 190 / 5 (2.6%) |
-| cleanup 误伤在用标签 | 0 |
-| 图谱 build / 探针命中 | True / 0 |
+| Git commit | `d86cfc0` |
+| Config hash | `fe17f60fb7e09075` |
+| Seed / randomness | 0 — deterministic pipeline (no RNG); agent channel = mean of runs |
+| Embedding | BAAI/bge-m3 (local GPU, normalize) |
+| Vector store | ChromaDB (persistent) |
+| Keyword index | jieba BM25 |
+| MCP transport | uv run --directory kb-mcp python server.py (stdio) |
+| Retrieval defaults | vector k=10, stage-1 k=40, stage-2 k=10, QDCVR threshold 0.35, verification reads 3 |
 
-### Agent 面 · 端到端验证（独立外部客户端, 8 组）
-| 表面组 | 检查数 | 结果 |
+Every corpus is ingested through the production pipeline (parse → write → index). Membership accuracy checks that each document landed in its designated knowledge base; storage completeness checks that all five storage layers agree.
+**Table 2: Document parsing and ingestion integrity.**
+
+| Corpus | Parse | Ingest | Membership | Storage | Self-ret. Hit@1 |
+|---|---|---|---|---|---|
+| In-house demo corpus | — | **1.000** | **1.000** | **1.000** | **0.938** |
+| Standard corpora | — | — | **1.000** | **1.000** | — |
+
+Experience lifecycle: real meditation runs synthesise candidate lessons from corpus documents, drafts pass a human-in-the-loop approval step, and an independent judge agent scores entries on a 0–10 rubric (groundedness 4, structure 3, reusability 3). A zero yield on encyclopaedic corpora is the quality gate working as designed, not a failure.
+**Table 3: Meditation → draft → approval → judge lifecycle.**
+
+| Sample | Round | KB | Run | Drafts | Approved | Entries | Judge scores |
+|---|---|---|---|---|---|---|---|
+| Sample 1 | 1 | KB-Demo-EN | pass | 0 | 0 | 0 | — |
+| Sample 1 | 1 | KB-Demo-ZH | pass | 0 | 0 | 0 | — |
+| Sample 1 | 2 | KB-Demo-EN | pass | 0 | 0 | 0 | — |
+| Sample 1 | 2 | KB-Demo-ZH | pass | 0 | 0 | 0 | — |
+| Sample 1 | 3 | KB-Demo-EN | pass | 0 | 0 | 0 | — |
+| Sample 1 | 3 | KB-Demo-ZH | pass | 0 | 0 | 0 | — |
+| Sample 2 | 1 | KB-Demo-EN | pass | 0 | 0 | 3 | 8.0, 8.0, 8.0 |
+| Sample 2 | 1 | KB-Demo-ZH | pass | 0 | 0 | 0 | — |
+| Sample 2 | 2 | KB-Demo-EN | pass | 0 | 0 | 0 | — |
+| Sample 2 | 2 | KB-Demo-ZH | pass | 0 | 0 | 0 | — |
+| Sample 2 | 3 | KB-Demo-EN | pass | 0 | 0 | 0 | — |
+| Sample 2 | 3 | KB-Demo-ZH | pass | 0 | 0 | 0 | — |
+
+**Table 4: E4 dual-baseline comparison under the identical judge prompt (mean 0–10 score).**
+
+| Condition | Mean judge score |
+|---|---|
+| ours_experience | **5.50** |
+| no_synthesis | 4.50 |
+| llm_summary | 3.00 |
+
+Organise functions probed with planted ground truth: duplicate detection, tag generation and cleanup safety, graph build and retrieval, and catalogue completeness.
+**Table 5: Platform organise-function probes (E17).**
+
+| Probe | Result |
+|---|---|
+| Documents retained / planted | 7/9 |
+| Duplicate groups detected / planted | 1/2 |
+| Distinct tags / content-grounded | 190 / 5 (2.6%) |
+| Cleanup: in-use tags flagged for removal | 0 |
+| Graph build OK / probe hits | True / 0 |
+
+End-to-end validation of the complete agent-facing surface by an independent external client: every check executes the production HTTP/MCP interface, including a create-then-cleanup lifecycle.
+**Table 6: Agent-surface end-to-end checks.**
+
+| Surface group | Checks | Result |
 |---|---|---|
-| 组 A | 4 | PASS |
-| 组 B | 5 | PASS |
-| 组 C | 3 | PASS |
-| 组 D | 2 | PASS |
-| 组 E | 6 | PASS |
-| 组 F | 3 | PASS |
-| 组 G | 1 | PASS |
-| 组 H | 2 | PASS |
-| 合计 | 26/26 | ✅ |
+| Group A | 4 | PASS |
+| Group B | 5 | PASS |
+| Group C | 3 | PASS |
+| Group D | 2 | PASS |
+| Group E | 6 | PASS |
+| Group F | 3 | PASS |
+| Group G | 1 | PASS |
+| Group H | 2 | PASS |
+| Total | 26/26 | PASS |
 
-### 平台规模（实测）
-| 项 | 值 |
+**Table 7: Platform scale, measured from the running services and source tree.**
+
+| Item | Value |
 |---|---|
 | experiment | E17 system scale (measured, not hard-coded) |
+

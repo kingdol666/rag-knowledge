@@ -1,76 +1,93 @@
-# Track R — 检索算法对比基准
+# Track R — Retrieval Benchmark
 
-> 生成时间 2026-09-16T00:50:46.432527+00:00 · 环境 git `ed7835a` · config `49279bd832721704` · 全部数字来自 results/ 真实运行产物
+**Content-Adjudicated Retrieval vs. Reproduced Baselines**
 
-本轨回答「\sys{} 的检索与其他算法比怎么样」: 全部方法经同一MCP 工具层/同一语料/同一冻结查询, 由共享 Agent 作答、独立 Agent 判分。产出 JSON 均内嵌 git/config/seed 指纹。
+> Generated 2026-09-16T12:38:48.937176+00:00 · git `d86cfc0` · config hash `fe17f60fb7e09075` · every number read from real execution artifacts under results/.
+This track answers one question: how does the system's retrieval compare against reproduced baselines (BM25, Dense, Dense+Rerank, RAPTOR, ITRG, Search-o1, DeepRead)? All methods share one corpus, one frozen query set, one MCP tool layer, one answering agent, and one independent judge. Every number below is read from execution artifacts under results/.
 
-### E16 · 八系统主对比（BEIR SciFact 30 查询, 官方 qrels）
-| 方法 | H@1 | H@5 | R@5 | nDCG@10 | MRR | 判分 | 均位 | 首位 |
+## 1. Environment and Reproducibility
+
+**Table 1: Measured environment. Deterministic channels are expected to reproduce bit-for-bit; LLM channels follow the tolerance table in TEST-PLAN §7.**
+
+| Item | Value |
+|---|---|
+| Git commit | `d86cfc0` |
+| Config hash | `fe17f60fb7e09075` |
+| Seed / randomness | 0 — deterministic pipeline (no RNG); agent channel = mean of runs |
+| Embedding | BAAI/bge-m3 (local GPU, normalize) |
+| Vector store | ChromaDB (persistent) |
+| Keyword index | jieba BM25 |
+| MCP transport | uv run --directory kb-mcp python server.py (stdio) |
+| Retrieval defaults | vector k=10, stage-1 k=40, stage-2 k=10, QDCVR threshold 0.35, verification reads 3 |
+
+All eight systems run on the same corpus (BEIR SciFact, 148 documents), the same 30 frozen claims with official qrels, and the same MCP tool layer. Evidence is capped at a uniform 4,000-character budget; a shared agent answers from the evidence, an independent fresh-process agent grades against injected gold evidence (0–10), and a middle agent ranks anonymised answers.
+**Table 2: Eight-system comparison on BEIR SciFact (30 queries, official qrels). Judge = independent agent 0–10 with gold evidence; Rank/Wins = middle-agent anonymous ranking.**
+
+| Method | Hit@1 | Hit@5 | Recall@5 | nDCG@10 | MRR | Judge | Rank | Wins |
 |---|---|---|---|---|---|---|---|---|
 | qdcvr | 0.700 | 0.833 | 0.833 | 0.784 | 0.767 | 7.70 | 5.63 | 3 |
-| dense_rag | 0.733 | 0.900 | 0.900 | 0.834 | 0.811 | 8.93 | 4.63 | 2 |
-| dense_rag_rerank | 0.900 | 0.933 | 0.933 | 0.921 | 0.917 | 8.67 | 3.77 | 5 |
+| dense_rag | 0.733 | 0.900 | 0.900 | 0.834 | 0.811 | **8.93** | 4.63 | 2 |
+| dense_rag_rerank | **0.900** | **0.933** | **0.933** | **0.921** | **0.917** | 8.67 | **3.77** | 5 |
 | raptor | 0.733 | 0.867 | 0.856 | 0.817 | 0.800 | 8.37 | 4.20 | 4 |
-| itrg_refresh | 0.833 | 0.933 | 0.933 | 0.896 | 0.883 | 8.30 | 4.53 | 3 |
+| itrg_refresh | 0.833 | **0.933** | **0.933** | 0.896 | 0.883 | 8.30 | 4.53 | 3 |
 | itrg_refine | 0.733 | 0.900 | 0.900 | 0.845 | 0.816 | 8.53 | 4.17 | 3 |
 | search_o1 | 0.800 | 0.900 | 0.844 | 0.811 | 0.839 | 8.70 | 4.60 | 3 |
-| deepread | 0.567 | 0.733 | 0.694 | 0.635 | 0.639 | 8.13 | 4.47 | 7 |
+| deepread | 0.567 | 0.733 | 0.694 | 0.635 | 0.639 | 8.13 | 4.47 | **7** |
 
-判分 = 独立 Agent 注入金标后 0-10 评分; 均位/首位 = 中间 Agent 对匿名答案的排名(E16b, 一致性 480/480)。
+*API-mode re-execution agreed with the offline matrix on 480/480 checked values (0 mismatches).*
+Four retrieval channels over the production MCP path on BEIR SciFact: BM25 (stage-1 candidates), Two-stage hybrid (no content verification), Dense (BAAI/bge-m3, top-10), and QDCVR (full content-adjudicated pipeline). supp@1 = share of claims whose top-1 document covers ≥ 0.5 of claim content words.
+**Table 3: Four-channel retrieval on BEIR SciFact (production MCP path).**
 
-### E16b · API 全流程一致性
-| 方法 | 判分 | 中间Agent均位 | 首位 |
-|---|---|---|---|
-| qdcvr | 7.70 | 5.63 | 3 |
-| dense_rag | 8.93 | 4.63 | 2 |
-| dense_rag_rerank | 8.67 | 3.77 | 5 |
-| raptor | 8.37 | 4.20 | 4 |
-| itrg_refresh | 8.30 | 4.53 | 3 |
-| itrg_refine | 8.53 | 4.17 | 3 |
-| search_o1 | 8.70 | 4.60 | 3 |
-| deepread | 8.13 | 4.47 | 7 |
-
-HTTP 重跑与离线矩阵一致性: 480 项核对, 0 不一致。
-
-### Module B · 四通道对比（BEIR SciFact, 生产 MCP 链路）
-| 通道 | H@1 | H@3 | R@5 | nDCG@10 | MRR | supp@1 |
+| Channel | Hit@1 | Hit@3 | Recall@5 | nDCG@10 | MRR | Supp@1 |
 |---|---|---|---|---|---|---|
-| bm25 | 0.833 | 0.833 | 0.750 | 0.804 | 0.835 | 0.67 |
-| twostage | 0.733 | 0.833 | 0.867 | 0.809 | 0.790 | 0.57 |
+| bm25 | **0.833** | **0.833** | 0.750 | 0.804 | **0.835** | **0.67** |
+| twostage | 0.733 | **0.833** | **0.867** | 0.809 | 0.790 | 0.57 |
 | dense | 0.433 | 0.733 | 0.789 | 0.642 | 0.613 | 0.37 |
-| qdcvr | 0.767 | 0.833 | 0.867 | 0.822 | 0.807 | 0.60 |
+| qdcvr | 0.767 | **0.833** | **0.867** | **0.822** | 0.807 | 0.60 |
 
-### Module B · 双语内部语料（20 查询, 三库 16 文档）
-| 通道 | H@1 | H@5 | R@5 | P@5 | MRR |
+Bilingual in-house corpus: 20 frozen queries (EN/ZH/JA plus cross-KB) against three knowledge bases holding 16 documents, exercising domain-scoped routing.
+**Table 4: Content-adjudicated two-stage retrieval vs. dense baseline on the bilingual in-house corpus.**
+
+| Channel | Hit@1 | Hit@5 | Recall@5 | P@5 | MRR |
 |---|---|---|---|---|---|
-| staged | 0.750 | 0.900 | 0.883 | 0.200 | 0.832 |
-| vector | 0.900 | 0.900 | 0.867 | 0.180 | 0.907 |
+| staged | 0.750 | **0.900** | **0.883** | **0.200** | 0.832 |
+| vector | **0.900** | **0.900** | 0.867 | 0.180 | **0.907** |
 
-### E1 · 组件消融（同查询集, 双轮逐位一致）
-| 变体 | H@1 | nDCG@10 | P@5 | MRR |
+Component ablation of the QDCVR pipeline on the same query set; deterministic channels reproduce bit-for-bit across rounds.
+**Table 5: Component ablation (BEIR SciFact, 30 queries).**
+
+| Variant | Hit@1 | nDCG@10 | P@5 | MRR |
 |---|---|---|---|---|
-| qdcvr_full | 0.767 | 0.809 | 0.213 | 0.800 |
-| verify_k1 | 0.733 | 0.796 | 0.213 | 0.783 |
-| verify_k5 | 0.767 | 0.809 | 0.213 | 0.800 |
-| no_verify | 0.733 | 0.796 | 0.213 | 0.783 |
-| no_dedup | 0.767 | 0.809 | 0.213 | 0.800 |
-| deep_t_0.20 | 0.767 | 0.832 | 0.213 | 0.810 |
-| deep_t_0.35 | 0.767 | 0.832 | 0.213 | 0.810 |
-| deep_t_0.50 | 0.767 | 0.821 | 0.213 | 0.806 |
-| deep_t_off | 0.767 | 0.832 | 0.213 | 0.810 |
+| qdcvr_full | **0.767** | 0.809 | **0.213** | 0.800 |
+| verify_k1 | 0.733 | 0.796 | **0.213** | 0.783 |
+| verify_k5 | **0.767** | 0.809 | **0.213** | 0.800 |
+| no_verify | 0.733 | 0.796 | **0.213** | 0.783 |
+| no_dedup | **0.767** | 0.809 | **0.213** | 0.800 |
+| deep_t_0.20 | **0.767** | **0.832** | **0.213** | **0.810** |
+| deep_t_0.35 | **0.767** | **0.832** | **0.213** | **0.810** |
+| deep_t_0.50 | **0.767** | 0.821 | **0.213** | 0.806 |
+| deep_t_off | **0.767** | **0.832** | **0.213** | **0.810** |
 
-E2 显著性: 48 组对比, Holm 校正后显著 0 组（多域基准上的 +0.241/-0.061/-0.088 见报告正文）。
+*Significance (E2): 48 paired comparisons, 0 significant after Holm correction at α = 0.05 (bootstrap 95% CIs reported per comparison).*
+Multi-domain public benchmark: 50 HotpotQA dev questions whose supporting and distractor documents are partitioned into nine topic knowledge bases, forcing cross-base routing.
+**Table 6: Multi-domain HotpotQA results (50 queries, 9 topic KBs).**
 
-### E8 · 多域公开基准（HotpotQA 50 题, 9 主题库, 454 文档）
-| 方法 | Hit@5 | nDCG@10 | ans@1 |
+| Method | Hit@5 | nDCG@10 | Answer@1 |
 |---|---|---|---|
-| bm25 | 0.860 | 0.538 | 0.520 |
+| bm25 | **0.860** | **0.538** | **0.520** |
 | two_stage | 0.480 | 0.375 | 0.280 |
 | dense | 0.480 | 0.378 | 0.300 |
 | qdcvr | 0.480 | 0.358 | 0.280 |
 
-E13 路由 oracle: {"always_all": {"two_stage": {"hit@2": 0.46, "recall@2": 0.32, "ndcg@10": 0.367, "n": 50}, "dense": {"hit@2": 0.46, "recall@2": 0.33, "ndcg@10": 0.378, "n": 50}, "cross_kb_only": {"hit@2": 0.6316, "recall@2": 0.4211, "nd
+**Table 7: Routing oracle on HotpotQA: upper bounds of perfect domain scoping.**
 
-### E12 · 动机案例（rank-one 修复的实例化）
-- 查询 `sf-002`: 4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress mar
-- Dense hit@1=0, MRR=0.5; QDCVR hit@1=1, MRR=1.0 — 内容验证把金标提到第 1 位。
+| Policy | Channel | Hit@2 | Recall@2 | nDCG@10 | n |
+|---|---|---|---|---|---|
+| Always search all KBs | two_stage | 0.460 | 0.320 | 0.367 | 50 |
+| Always search all KBs | dense | 0.460 | 0.330 | 0.378 | 50 |
+| Oracle: single gold KB | two_stage | 0.920 | 0.610 | 0.744 | 50 |
+| Oracle: single gold KB | dense | 0.380 | 0.250 | 0.303 | 50 |
+| Oracle: best KB per query | two_stage | **0.940** | **0.620** | **0.763** | 50 |
+| Oracle: best KB per query | dense | 0.460 | 0.290 | 0.352 | 50 |
+
+Motivating case (rank-one repair): for claim `sf-002` (“4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress mar”), dense retrieval scores Hit@1 = 0, MRR = 0.5, while QDCVR scores Hit@1 = 1, MRR = 1.0 — content adjudication promotes the gold document to rank one.
