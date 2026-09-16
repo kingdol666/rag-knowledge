@@ -147,3 +147,25 @@ Added to the frozen snapshot, each with a committed producer:
 
 Deviations from the reproduced paper's settings are enumerated in
 `benchmark-suite/algorithms/REPRODUCTION-NOTES.md`.
+
+---
+
+## Snapshot 2026-09-16-a (post-freeze re-execution audit)
+
+2026-09-16 的全轨重跑复现审计（F/R 两轨按 committed pipeline 重跑 + 逐项机器
+对比）之后，快照升级为 `2026-09-16-a`：
+
+* 2026-09-15-a 的全部引用字节**原样再冻结**（module_b_retrieval_r2 的 live
+  文件在后续重跑中漂移至 0.75/0.90，论文引用的冻结值 0.80/0.90 以快照字节
+  为准 —— 这正是本快照机制存在的理由）。
+* 新增引用产物：
+  - `hotpot_main_2.json`（run-20260914T053707Z）— tab-multidomain 之源，
+    producer: `60_hotpot_build.py` + `61_hotpot_eval.py`；
+  - `real_scenario_run1.json` / `real_scenario_run2.json`（E19 真实场景两次
+    全量运行，producer: `29_real_scenario_test.py`）；
+  - `real_scenario_comparison.json`（47/48 检索位置一致、judge mean |Δ|=0.417，
+    producer: `32_real_scenario_report.py --compare`）。
+* 审计结论（论文 §Reproducibility "Post-freeze re-execution audit" 段）：
+  E16 矩阵 9,837/9,837 字段逐位一致；功能轨聚合层 0 差异；E19 两次运行
+  97.9% 检索位置一致。E8 绝对值依赖向量库构建时状态（chromadb 段损坏缺陷，
+  触发器与规避已文档化），排序结论在每次健康重跑中复现。

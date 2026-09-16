@@ -22,6 +22,12 @@ SNAPSHOT HISTORY
                 `results/archive-20260913-214859/module_c_experience_r2.json`
                 because the live file was later overwritten by a re-run that
                 produced zero experiences.
+  2026-09-15-a  added E16 matrix/API/ops artifacts and the E16 replay.
+  2026-09-16-a  re-pinned all 2026-09-15-a bytes from the snapshot itself
+                (module_b_retrieval_r2 live file drifted after later re-runs
+                while the paper cites the frozen values), and added the E8
+                HotpotQA frozen artifact plus the two E19 real-scenario runs
+                and their machine comparison (reproducibility-audit sources).
 """
 from __future__ import annotations
 
@@ -30,7 +36,7 @@ import json
 import os
 import shutil
 
-SNAPSHOT_ID = "2026-09-15-a"
+SNAPSHOT_ID = "2026-09-16-a"
 
 ROOT = None
 d = os.path.dirname(os.path.abspath(__file__))
@@ -46,30 +52,48 @@ DST = os.path.join(ROOT, "docs", "paper", "cikm", "data-snapshot")
 os.makedirs(DST, exist_ok=True)
 
 # (source relative to repo root, name in snapshot, note)
+# 2026-09-16-a: 沿用 2026-09-15-a 冻结字节(data-snapshot 内已冻结的文件从
+# 快照本身复读, 不从易变的 results/ 顶层重取 — module_b_r2 在 09-16 的重跑中
+# 漂移至 0.75/0.90, 而论文引用的是冻结值 0.80/0.90, 这正是快照存在的理由),
+# 新增: E8 HotpotQA 冻结产物(run-20260914T053707Z, tab-multidomain 之源)与
+# E19 真实场景两次运行 + 机器对比(复现审计段落之源)。
+SNAPSHOT_DIR_REL = "docs/paper/cikm/data-snapshot"
 SOURCES = [
-    ("benchmark-suite/results/module_a_ingestion_r1.json", "module_a_ingestion_r1.json",
-     "Module A ingestion (in-house) — producer: 01_ingestion.py"),
-    ("benchmark-suite/results/module_a_std2_r1.json", "module_a_std2_r1.json",
-     "Module A ingestion (standard corpus) — producer: 21_std2_ingest.py"),
-    ("benchmark-suite/results/module_b_retrieval_r2.json", "module_b_retrieval_r2.json",
-     "Module B in-house retrieval, 20 queries — producer: 02_retrieval.py"),
-    ("benchmark-suite/results/module_b_std2_r2.json", "module_b_std2_r2.json",
-     "Module B BEIR SciFact + SQuAD, 4 methods — producer: 22_std2_retrieval.py"),
-    ("benchmark-suite/results/archive-20260913-214859/module_c_experience_r2.json",
+    ("docs/paper/cikm/data-snapshot/module_a_ingestion_r1.json", "module_a_ingestion_r1.json",
+     "Module A ingestion (in-house) — producer: 01_ingestion.py (bytes pinned 2026-09-15-a)"),
+    ("docs/paper/cikm/data-snapshot/module_a_std2_r1.json", "module_a_std2_r1.json",
+     "Module A ingestion (standard corpus) — producer: 21_std2_ingest.py (bytes pinned 2026-09-15-a)"),
+    ("docs/paper/cikm/data-snapshot/module_b_retrieval_r2.json", "module_b_retrieval_r2.json",
+     "Module B in-house retrieval, 20 queries — producer: 02_retrieval.py (bytes pinned 2026-09-15-a)"),
+    ("docs/paper/cikm/data-snapshot/module_b_std2_r2.json", "module_b_std2_r2.json",
+     "Module B BEIR SciFact + SQuAD, 4 methods — producer: 22_std2_retrieval.py (bytes pinned 2026-09-15-a)"),
+    ("docs/paper/cikm/data-snapshot/module_c_experience_r2.json",
      "module_c_experience_r2.json",
      "Module C experience, ARCHIVED copy (live file was overwritten) — producer: 03_experience.py"),
-    ("benchmark-suite/results/run-20260914T194057Z/deepread_matrix.json",
+    ("docs/paper/cikm/data-snapshot/deepread_matrix.json",
      "deepread_matrix.json",
-     "E16 DeepRead baseline matrix, 30 queries x 8 methods — producer: algorithms/run_matrix.py"),
-    ("benchmark-suite/results/run-20260914T200811Z/api_matrix.json",
+     "E16 DeepRead baseline matrix, 30 queries x 8 methods — producer: algorithms/run_matrix.py (bytes pinned 2026-09-15-a)"),
+    ("docs/paper/cikm/data-snapshot/api_matrix.json",
      "api_matrix.json",
-     "E16b API flow, 30 queries x 8 methods + middle-agent ranking — producer: scripts/27_api_flow_test.py + algorithms/api_server.py"),
-    ("benchmark-suite/results/run-20260914T171821Z/platform_ops_eval.json",
+     "E16b API flow, 30 queries x 8 methods + middle-agent ranking — producer: scripts/27_api_flow_test.py + algorithms/api_server.py (bytes pinned 2026-09-15-a)"),
+    ("docs/paper/cikm/data-snapshot/platform_ops_eval.json",
      "platform_ops_eval.json",
-     "E17 platform organise functions (dedup/tags/graph/catalog) — producer: scripts/26_platform_ops_eval.py"),
-    ("benchmark-suite/results/run-20260914T194908Z/deepread_matrix.json",
+     "E17 platform organise functions (dedup/tags/graph/catalog) — producer: scripts/26_platform_ops_eval.py (bytes pinned 2026-09-15-a)"),
+    ("docs/paper/cikm/data-snapshot/deepread_matrix_replay.json",
      "deepread_matrix_replay.json",
      "E16 cache-replay rerun (reproducibility evidence, summary must match deepread_matrix.json)"),
+    ("benchmark-suite/results/run-20260914T053707Z/hotpot_main_2.json",
+     "hotpot_main_2.json",
+     "E8 multi-domain HotpotQA, 50 questions x 9 topic KBs x 4 methods — producer: scripts/60_hotpot_build.py + scripts/61_hotpot_eval.py (frozen run 2026-09-14T053707Z; post-freeze vector-store state sensitivity documented in the paper's reproducibility audit)"),
+    ("benchmark-suite/results/real-scenario-20260916-001507/real_scenario_repaired.json",
+     "real_scenario_run1.json",
+     "E19 real-scenario run 1 (two user documents x 9 systems; parser-fallback repaired copy) — producer: scripts/29_real_scenario_test.py"),
+    ("benchmark-suite/results/real-scenario-20260916-045222/real_scenario_repaired.json",
+     "real_scenario_run2.json",
+     "E19 real-scenario run 2 (independent full re-run for the reproducibility audit) — producer: scripts/29_real_scenario_test.py"),
+    ("benchmark-suite/REALSCENARIO-COMPARISON.json",
+     "real_scenario_comparison.json",
+     "E19 run1-vs-run2 machine comparison: 47/48 retrieval positions, judge mean |d|=0.417 — producer: scripts/32_real_scenario_report.py --compare"),
 ]
 
 # Frozen for the provenance record but NO LONGER CITED: the paper's main results
@@ -84,7 +108,7 @@ WITHHELD = [
 
 manifest = {
     "snapshot_id": SNAPSHOT_ID,
-    "frozen_at": "2026-09-13",
+    "frozen_at": "2026-09-16",
     "note": "Immutable copies of the benchmark artefacts cited by this paper. "
             "make_assets.py reads ONLY from here. Every cited artefact names its "
             "producing script; provenance_audit.py fails the build if one loses it.",

@@ -3,14 +3,12 @@
 \footnotesize
 \setlength{\tabcolsep}{3.2pt}
 \caption{Main comparison on BEIR SciFact (148 documents through the production
-pipeline; 30 official queries and qrels). Rows 1--2 are the suite channels
-(Module B); rows 3--10 are the reproduced DeepRead-style systems, answered
-through one shared agent under a uniform 4{,}000-character evidence budget and
-graded 0--10 by an independent agent given the gold document (Judge). The right
-two columns come from an HTTP-driven rerun that is byte-identical to the
-offline run (480/480 checks); a middle agent ranks the eight anonymised
-answers per question, 1 = best of 8. Setting reproduced from
-\citet{li2026deepread}.}
+pipeline; 30 official queries and qrels). Rows 1--2: suite channels; rows
+3--10: reproduced DeepRead-style systems, answered through one shared agent
+(4{,}000-char evidence budget) and graded 0--10 by an independent agent given
+the gold document; Rank/Wins come from a middle agent ranking the eight
+anonymised answers (HTTP rerun, byte-identical offline, 480/480 checks).
+Setting reproduced from \citet{li2026deepread}.}
 \label{tab:deepread}
 \begin{tabular}{@{}lccccccccc@{}}
 \toprule
@@ -30,10 +28,8 @@ DeepRead (locate-then-read, cap 8) & 0.567 & 0.733 & 0.733 & 0.694 & 0.635 & 0.6
 \end{tabular}
 
 \vspace{2pt}
-\parbox{\textwidth}{\scriptsize H@$k$ = Hit@$k$; R@5 = Recall@5; nDCG@10 =
-normalised discounted cumulative gain at 10 (official qrels). Judge grades are
-LLM-as-judge with the gold evidence injected; a multi-grader robustness check
-was not possible in our environment (single agent channel) and is stated as a
-limitation. Deviations from the original settings are registered in the
-reproduction notes (reranker surrogate, turn cap 8, 4 chars/token).}
+\parbox{\textwidth}{\scriptsize H@$k$ = Hit@$k$; R@5 = Recall@5; nDCG@10 over
+official qrels. Judge = LLM-as-judge with the gold evidence injected;
+multi-grader robustness was not possible here (single agent channel).
+Deviations from the original settings are in the reproduction notes.}
 \end{table*}

@@ -1,70 +1,98 @@
 {
-  "snapshot_id": "2026-09-15-a",
-  "frozen_at": "2026-09-13",
+  "snapshot_id": "2026-09-16-a",
+  "frozen_at": "2026-09-16",
   "note": "Immutable copies of the benchmark artefacts cited by this paper. make_assets.py reads ONLY from here. Every cited artefact names its producing script; provenance_audit.py fails the build if one loses it.",
   "files": [
     {
       "name": "module_a_ingestion_r1.json",
-      "source": "benchmark-suite/results/module_a_ingestion_r1.json",
-      "note": "Module A ingestion (in-house) — producer: 01_ingestion.py",
+      "source": "docs/paper/cikm/data-snapshot/module_a_ingestion_r1.json",
+      "note": "Module A ingestion (in-house) — producer: 01_ingestion.py (bytes pinned 2026-09-15-a)",
       "sha256": "b2de7ec4105928d7321ec3a78127d227c9c1650bb0fb54a876201219afc63907",
       "bytes": 1002
     },
     {
       "name": "module_a_std2_r1.json",
-      "source": "benchmark-suite/results/module_a_std2_r1.json",
-      "note": "Module A ingestion (standard corpus) — producer: 21_std2_ingest.py",
+      "source": "docs/paper/cikm/data-snapshot/module_a_std2_r1.json",
+      "note": "Module A ingestion (standard corpus) — producer: 21_std2_ingest.py (bytes pinned 2026-09-15-a)",
       "sha256": "201c3c3cb6fe8a53363f9a8d45df4f4a78f8b9145e6cb056a7b13f9a4121386c",
       "bytes": 862
     },
     {
       "name": "module_b_retrieval_r2.json",
-      "source": "benchmark-suite/results/module_b_retrieval_r2.json",
-      "note": "Module B in-house retrieval, 20 queries — producer: 02_retrieval.py",
+      "source": "docs/paper/cikm/data-snapshot/module_b_retrieval_r2.json",
+      "note": "Module B in-house retrieval, 20 queries — producer: 02_retrieval.py (bytes pinned 2026-09-15-a)",
       "sha256": "5b7b0abd19224386866c558380a674dcf7fa3cdb50540c489877857b71963b84",
       "bytes": 17311
     },
     {
       "name": "module_b_std2_r2.json",
-      "source": "benchmark-suite/results/module_b_std2_r2.json",
-      "note": "Module B BEIR SciFact + SQuAD, 4 methods — producer: 22_std2_retrieval.py",
+      "source": "docs/paper/cikm/data-snapshot/module_b_std2_r2.json",
+      "note": "Module B BEIR SciFact + SQuAD, 4 methods — producer: 22_std2_retrieval.py (bytes pinned 2026-09-15-a)",
       "sha256": "bcfc48f708f1c45728fd5935347e553cb2bd41fdd6744eaef88523e3df7bd090",
       "bytes": 71803
     },
     {
       "name": "module_c_experience_r2.json",
-      "source": "benchmark-suite/results/archive-20260913-214859/module_c_experience_r2.json",
+      "source": "docs/paper/cikm/data-snapshot/module_c_experience_r2.json",
       "note": "Module C experience, ARCHIVED copy (live file was overwritten) — producer: 03_experience.py",
       "sha256": "1586fd2fa9cdd260828ccaa3b060f04ca9c2274366dc754c7f9c611d73b35321",
       "bytes": 3981
     },
     {
       "name": "deepread_matrix.json",
-      "source": "benchmark-suite/results/run-20260914T194057Z/deepread_matrix.json",
-      "note": "E16 DeepRead baseline matrix, 30 queries x 8 methods — producer: algorithms/run_matrix.py",
+      "source": "docs/paper/cikm/data-snapshot/deepread_matrix.json",
+      "note": "E16 DeepRead baseline matrix, 30 queries x 8 methods — producer: algorithms/run_matrix.py (bytes pinned 2026-09-15-a)",
       "sha256": "ac05521f1b937ad6ec88d1e359c5a4ca4b6bf0576eb7f8ebefe66efa38adaf41",
       "bytes": 749546
     },
     {
       "name": "api_matrix.json",
-      "source": "benchmark-suite/results/run-20260914T200811Z/api_matrix.json",
-      "note": "E16b API flow, 30 queries x 8 methods + middle-agent ranking — producer: scripts/27_api_flow_test.py + algorithms/api_server.py",
+      "source": "docs/paper/cikm/data-snapshot/api_matrix.json",
+      "note": "E16b API flow, 30 queries x 8 methods + middle-agent ranking — producer: scripts/27_api_flow_test.py + algorithms/api_server.py (bytes pinned 2026-09-15-a)",
       "sha256": "387ace796a1889c880e4a6009c9b1a5b331cfb1761804548acdfedbdbeb43c4b",
       "bytes": 348481
     },
     {
       "name": "platform_ops_eval.json",
-      "source": "benchmark-suite/results/run-20260914T171821Z/platform_ops_eval.json",
-      "note": "E17 platform organise functions (dedup/tags/graph/catalog) — producer: scripts/26_platform_ops_eval.py",
+      "source": "docs/paper/cikm/data-snapshot/platform_ops_eval.json",
+      "note": "E17 platform organise functions (dedup/tags/graph/catalog) — producer: scripts/26_platform_ops_eval.py (bytes pinned 2026-09-15-a)",
       "sha256": "6f75dc8f55b74e494f650845bf6e6a568b6f067ba7a3ba9e46dcf72d10a0c68a",
       "bytes": 1534
     },
     {
       "name": "deepread_matrix_replay.json",
-      "source": "benchmark-suite/results/run-20260914T194908Z/deepread_matrix.json",
+      "source": "docs/paper/cikm/data-snapshot/deepread_matrix_replay.json",
       "note": "E16 cache-replay rerun (reproducibility evidence, summary must match deepread_matrix.json)",
       "sha256": "c0bd8efb8783c3ac3bf2a1968f9efa23c43f6f74e9ae5343add76f754f51f5eb",
       "bytes": 749546
+    },
+    {
+      "name": "hotpot_main_2.json",
+      "source": "benchmark-suite/results/run-20260914T053707Z/hotpot_main_2.json",
+      "note": "E8 multi-domain HotpotQA, 50 questions x 9 topic KBs x 4 methods — producer: scripts/60_hotpot_build.py + scripts/61_hotpot_eval.py (frozen run 2026-09-14T053707Z; post-freeze vector-store state sensitivity documented in the paper's reproducibility audit)",
+      "sha256": "b8593e8541114ba18bb67af5c9673b13eeb7f3ee3a076de5cf852b2bf7803ff2",
+      "bytes": 93760
+    },
+    {
+      "name": "real_scenario_run1.json",
+      "source": "benchmark-suite/results/real-scenario-20260916-001507/real_scenario_repaired.json",
+      "note": "E19 real-scenario run 1 (two user documents x 9 systems; parser-fallback repaired copy) — producer: scripts/29_real_scenario_test.py",
+      "sha256": "c0b342a6eafac39b7da24932b9e99536044b1e846b1c0ee68b16383ebddc1066",
+      "bytes": 117863
+    },
+    {
+      "name": "real_scenario_run2.json",
+      "source": "benchmark-suite/results/real-scenario-20260916-045222/real_scenario_repaired.json",
+      "note": "E19 real-scenario run 2 (independent full re-run for the reproducibility audit) — producer: scripts/29_real_scenario_test.py",
+      "sha256": "be3ae045c05fa37a16adb2f41f0b21e10a6d6872f459d18866c85e2635e8c628",
+      "bytes": 116925
+    },
+    {
+      "name": "real_scenario_comparison.json",
+      "source": "benchmark-suite/REALSCENARIO-COMPARISON.json",
+      "note": "E19 run1-vs-run2 machine comparison: 47/48 retrieval positions, judge mean |d|=0.417 — producer: scripts/32_real_scenario_report.py --compare",
+      "sha256": "45e3feb571f91b80119cedf846ad70192ce5dacab3269d8fdf086a459d5e4a45",
+      "bytes": 10129
     }
   ],
   "withheld": [
