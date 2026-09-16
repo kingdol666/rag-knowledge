@@ -217,6 +217,12 @@ bash pipelines/functions_track.sh    # 平台功能轨（A/C/E15/E17/端到端/�
 # 两条轨道可独立运行、独立复现、互不依赖（仅共享语料入库与后端实例）
 ```
 
+> 两条轨开头都会自动执行 `scripts/00_preflight.py`（健康检查 / token / omp /
+> Track R 额外断言 KB-Hotpot-* 九库空态 + 实验残留 KB 探测）——**fail-loud，
+> 不自动删除任何数据**；预检不通过时按输出里的处置指引处理后重跑。
+> 也可以单独跑：`python scripts/00_preflight.py [R]`。
+> 注意：两轨共享同一个后端/web 实例，**必须串行执行**（见 §7 双轨复现纪律）。
+
 轨道划分原则：Track R 的每一项都**有外部算法对照**；Track F 的每一项都是
 **平台独特能力**的功能测试（无外部对照，测自身质量与正确性）。§10 的
 E16/E16b 归入 Track R，E17 归入 Track F。

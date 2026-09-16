@@ -14,6 +14,10 @@ export PYTHONUTF8=1
 export RAG_BENCH_WEB_URL=http://localhost:6789
 say() { echo "=== $(date +%H:%M:%S) $* ==="; }
 
+say "R- 预检 (健康/token/omp/Hotpot 九库空态; fail-loud, 不删数据)"
+python scripts/00_preflight.py R || { echo "预检未通过 — 中止 (处置指引见上)"; exit 1; }
+
+
 say "R0 标准语料入库 (SciFact/SQuAD, 已存在则跳过式覆盖)"
 python scripts/21_std2_ingest.py 2 2>&1 | tail -2
 

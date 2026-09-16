@@ -18,6 +18,7 @@ import argparse
 import json
 import sys
 import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
@@ -36,14 +37,27 @@ METRIC_KEYS = ["recall@1", "hit@1", "recall@5", "hit@5", "recall@10",
                "hit@10", "ndcg@10", "precision@5", "mrr"]
 
 
+def _guard(url: str) -> None:
+    """预检请求目标: 仅允许本机 API 基址(SSRF 加固, 请求前显式校验)。"""
+    parts = urllib.parse.urlsplit(url)
+    if parts.scheme not in ("http", "https"):
+        raise ValueError(f"blocked scheme: {parts.scheme!r} ({url})")
+    if (parts.hostname or "").lower() not in {"127.0.0.1", "localhost", "::1"}:
+        raise ValueError(f"blocked non-loopback host: {parts.hostname!r} ({url})")
+
+
 def _get(path: str) -> dict:
-    with urllib.request.urlopen(API + path, timeout=60) as r:  # noqa: S310
+    url = API + path
+    _guard(url)
+    with urllib.request.urlopen(url, timeout=60) as r:  # noqa: S310
         return json.loads(r.read().decode("utf-8"))
 
 
 def _post(path: str, payload: dict, timeout: int = 900) -> dict:
+    url = API + path
+    _guard(url)
     req = urllib.request.Request(
-        API + path,
+        url,
         data=json.dumps(payload).encode("utf-8"),
         headers={"Content-Type": "application/json"},
         method="POST",

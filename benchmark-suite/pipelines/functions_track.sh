@@ -12,6 +12,10 @@ export RAG_BENCH_WEB_URL=http://localhost:6789
 LOG=results/track-F.log
 say() { echo "=== $(date +%H:%M:%S) $* ==="; }
 
+say "F0 预检 (健康/token/omp; fail-loud, 不删数据)"
+python scripts/00_preflight.py || { echo "预检未通过 — 中止 (处置指引见上)"; exit 1; }
+
+
 say "F1 Module A 解析与入库完整性 (in-house + 标准语料)"
 python scripts/01_ingestion.py 2>&1 | tail -3
 python scripts/21_std2_ingest.py 2>&1 | tail -2

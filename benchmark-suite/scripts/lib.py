@@ -34,7 +34,9 @@ def set_run(rid: str = "") -> Path:
     return out
 
 BACKEND = os.environ.get("RAG_BENCH_URL", "http://localhost:8771").rstrip("/")
-WEB = os.environ.get("RAG_BENCH_WEB_URL", "http://localhost:6790").rstrip("/")
+# 默认 6789(dev 实际端口)。旧默认 6790 是死代理(陷阱⑲), 曾让单独手跑脚本时
+# web 层调用静默失败 — 仍可用 RAG_BENCH_WEB_URL 覆盖。
+WEB = os.environ.get("RAG_BENCH_WEB_URL", "http://localhost:6789").rstrip("/")
 LOCAL = {"localhost", "127.0.0.1", "::1"}
 
 

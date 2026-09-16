@@ -313,7 +313,7 @@ def f_scale(md, html):
 TRACKS = {
     "retrieval": {
         "title": "Track R — 检索算法对比基准",
-        "intro": ("本轨回答「\sys{} 的检索与其他算法比怎么样」: 全部方法经同一"
+        "intro": ("本轨回答「本系统的检索与其他算法比怎么样」: 全部方法经同一"
                   "MCP 工具层/同一语料/同一冻结查询, 由共享 Agent 作答、独立 Agent"
                   " 判分。产出 JSON 均内嵌 git/config/seed 指纹。"),
         "sections": [
