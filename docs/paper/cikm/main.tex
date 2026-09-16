@@ -403,7 +403,7 @@ SQuAD v1.1 subset (16 questions) & 8 \\
 \section{\sys{}: Content-Adjudicated Retrieval}\label{sec:method}
 
 \sys{} stands for \emph{Query-Driven Content-Verified Retrieval}. The pipeline
-has seven stages (Figure~\ref{fig:pipeline} summarised in
+has seven stages (Fig.~\ref{fig:pipeline} summarised in
 Algorithm~\ref{alg:pipeline}); we describe the stages that carry the method's
 claims and treat the rest briefly.
 
@@ -791,7 +791,7 @@ evidence channel: verification reads fill only $60\%$ of the shared
 --- at answer time, spending the budget on ten dense excerpts beats spending
 it on three re-read documents. This is a property of the deployed evidence
 policy, not of adjudication itself, and it is the gap the real-document
-scenario of \S\ref{sec:behavior} revisits.
+scenario of \S\ref{sec:behaviour} revisits.
 
 \begin{figure*}[t]
 \centering
@@ -840,7 +840,7 @@ and the frozen snapshot records a SHA-256 per file. The rule generalises:
 table.} The withdrawn benchmark stays withdrawn; the multi-domain benchmark
 replaced it (\S\ref{sec:multidomain}).
 
-\subsection{Fine-Grained Behaviour, Ablation, and Reproducibility}\label{sec:behavior}
+\subsection{Fine-Grained Behaviour, Ablation, and Reproducibility}\label{sec:behaviour}
 
 \paragraph{Retrieval behaviour.} The cost structure separates the systems by
 how they spend their budget (per-query means from the matrix artefact;
@@ -872,7 +872,7 @@ query set as Table~\ref{tab:deepread}. ``Deep'' variants re-rank a $k{=}40$ pool
 because the deployed top-10 is already pre-filtered by the Stage-3 threshold
 (lowest returned score $0.379$), making a shallow-pool threshold sweep a no-op
 --- itself a finding. Rows omitted for space ($k{=}5$, no-dedup, and the two
-other deep threshold values) are in the artifact. Producer:
+other deep threshold values) are in the artefact. Producer:
 \texttt{30\_ablation.py}.}
 \label{tab:ablation}
 \begin{tabular}{@{}lcccc@{}}
@@ -1113,16 +1113,16 @@ loses it.
 
 \paragraph{Post-freeze re-execution audit.}
 After this manuscript was frozen we re-executed both benchmark tracks from the
-committed pipelines and machine-compared every artifact against the frozen
+committed pipelines and machine-compared every artefact against the frozen
 bytes (grades within the $\pm1.5$ LLM tolerance; latency, timestamps and run
 provenance excluded): the eight-system matrix reproduces \textbf{9{,}837 of
 9{,}837 fields byte-identically}, the platform-functions track is
-aggregate-identical on all five artifact pairs, and two fresh real-document
+aggregate-identical on all five artefact pairs, and two fresh real-document
 runs agree on \textbf{47 of 48} gold-document positions (97.9\%). The audit also
 fixed four pipeline defects and reports one boundary finding as-is: the
 multi-domain benchmark's \emph{absolute} numbers depend on the vector store's
 build-time state, while the \emph{ordering} reproduced in every healthy run ---
-so \S\ref{sec:multidomain} holds on either set of numbers. Full log: artifact.
+so \S\ref{sec:multidomain} holds on either set of numbers. Full log: artefact.
 
 % =====================================================================
 \section{Discussion and Limitations}\label{sec:conclusion}
@@ -1145,7 +1145,7 @@ settings. The public evaluations are moderate (30 SciFact, 50 HotpotQA, 16
 SQuAD queries; full-BEIR is the obvious next step). A 32-question XQuAD subset
 also saturates on ranking, its only separating metric being Precision@5
 ($0.275$ vs $0.831$) --- a top-$5$ \emph{composition} effect, detailed in the
-artifact.
+artefact.
 
 \paragraph{Threats to validity.}
 \emph{Construct}: the $0$--$8$ rubric and the experience judge are LLM
@@ -1189,7 +1189,7 @@ working.
 \section*{GenAI Usage Disclosure}
 Generative AI tools were used per the ACM Authorship Policy. \emph{Writing}:
 language editing only. \emph{Code}: parts of the system and benchmark harness,
-shipped with the artifact under the authors' responsibility.
+shipped with the artefact under the authors' responsibility.
 \emph{Data}: no result was produced or modified by a generative model; every
 number is read from a recorded artefact by deterministic scripts. One LLM is
 used as an instrument: the experience judge (\S\ref{sec:exp-analysis}).
