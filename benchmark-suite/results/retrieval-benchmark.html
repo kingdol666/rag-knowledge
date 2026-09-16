@@ -21,14 +21,14 @@
 <tr><td>deepread</td><td>8.13</td><td>4.47</td><td>7</td></tr>
 </table>
 <h3>Module B 四通道对比 (SciFact)</h3><table><tr><th>通道</th><th>H@1</th><th>H@3</th><th>R@5</th><th>nDCG@10</th><th>MRR</th><th>supp@1</th></tr>
-<tr><td>bm25</td><td>0.833</td><td>0.833</td><td>0.772</td><td>0.807</td><td>0.837</td><td>0.67</td></tr>
-<tr><td>twostage</td><td>0.733</td><td>0.833</td><td>0.867</td><td>0.811</td><td>0.792</td><td>0.57</td></tr>
-<tr><td>dense</td><td>0.000</td><td>0.533</td><td>0.667</td><td>0.381</td><td>0.282</td><td>0.00</td></tr>
-<tr><td>qdcvr</td><td>0.767</td><td>0.833</td><td>0.867</td><td>0.823</td><td>0.808</td><td>0.60</td></tr>
+<tr><td>bm25</td><td>0.833</td><td>0.833</td><td>0.750</td><td>0.804</td><td>0.835</td><td>0.67</td></tr>
+<tr><td>twostage</td><td>0.733</td><td>0.833</td><td>0.867</td><td>0.809</td><td>0.790</td><td>0.57</td></tr>
+<tr><td>dense</td><td>0.433</td><td>0.733</td><td>0.789</td><td>0.642</td><td>0.613</td><td>0.37</td></tr>
+<tr><td>qdcvr</td><td>0.767</td><td>0.833</td><td>0.867</td><td>0.822</td><td>0.807</td><td>0.60</td></tr>
 </table>
 <h3>Module B 双语内部语料</h3><table><tr><th>通道</th><th>H@1</th><th>H@5</th><th>R@5</th><th>P@5</th><th>MRR</th></tr>
-<tr><td>staged</td><td>0.800</td><td>0.950</td><td>0.908</td><td>0.240</td><td>0.875</td></tr>
-<tr><td>vector</td><td>1.000</td><td>1.000</td><td>0.942</td><td>0.240</td><td>1.000</td></tr>
+<tr><td>staged</td><td>0.750</td><td>0.900</td><td>0.883</td><td>0.200</td><td>0.832</td></tr>
+<tr><td>vector</td><td>0.900</td><td>0.900</td><td>0.867</td><td>0.180</td><td>0.907</td></tr>
 </table>
 <h3>E1 组件消融</h3><table><tr><th>变体</th><th>H@1</th><th>nDCG@10</th><th>P@5</th><th>MRR</th></tr>
 <tr><td>qdcvr_full</td><td>0.767</td><td>0.809</td><td>0.213</td><td>0.800</td></tr>
@@ -42,10 +42,10 @@
 <tr><td>deep_t_off</td><td>0.767</td><td>0.832</td><td>0.213</td><td>0.810</td></tr>
 </table>
 <h3>E8 多域公开基准</h3><table><tr><th>方法</th><th>Hit@5</th><th>nDCG@10</th><th>ans@1</th></tr>
-<tr><td>bm25</td><td>0.000</td><td>0.000</td><td>0.040</td></tr>
-<tr><td>two_stage</td><td>0.000</td><td>0.000</td><td>0.020</td></tr>
-<tr><td>dense</td><td>0.660</td><td>0.483</td><td>0.380</td></tr>
-<tr><td>qdcvr</td><td>0.000</td><td>0.000</td><td>0.020</td></tr>
+<tr><td>bm25</td><td>0.860</td><td>0.538</td><td>0.520</td></tr>
+<tr><td>two_stage</td><td>0.480</td><td>0.375</td><td>0.280</td></tr>
+<tr><td>dense</td><td>0.480</td><td>0.378</td><td>0.300</td></tr>
+<tr><td>qdcvr</td><td>0.480</td><td>0.358</td><td>0.280</td></tr>
 </table>
 <h3>E12 动机案例</h3>
 </body></html>

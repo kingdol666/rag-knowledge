@@ -2,6 +2,7 @@
 % mechanisms under evaluation sit inside it.
 \begin{figure*}[t]
 \centering
+\resizebox{0.82\textwidth}{!}{%
 \begin{tikzpicture}[
   font=\small,
   stage/.style={draw, rounded corners=2pt, minimum height=9mm, minimum width=17mm,
@@ -52,7 +53,7 @@
   {94 MCP tools + 14 agent skills (agent-native surface)};
 \draw[ar, dashed] (s6.south) to[out=-90, in=25] (mcp.north east);
 
-\end{tikzpicture}
+\end{tikzpicture}}
 \caption{The \sys{} pipeline. Two stages carry the method's claims:
 \textbf{S1 domain scoping} bounds the search to a small set of knowledge bases
 before any document is compared, and \textbf{S4 content adjudication} reads

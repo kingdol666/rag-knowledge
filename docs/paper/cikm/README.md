@@ -23,10 +23,11 @@ boxes, no undefined references.
 | # | File | Why |
 |---|---|---|
 | 1 | [`PROVENANCE.md`](PROVENANCE.md) | **Start here.** What was withdrawn and why. |
-| 2 | [`EDITORIAL-DECISION.md`](EDITORIAL-DECISION.md) | Panel verdict, 8 validated CRITICAL findings, roadmap, author response |
-| 3 | [`REVIEW-TODO.md`](REVIEW-TODO.md) | Every outstanding item with its acceptance criterion (TODO-1 … TODO-21) |
-| 4 | [`REVIEWER-AUDIT.md`](REVIEWER-AUDIT.md) | Author-side audit: format compliance, reference integrity, numeric consistency |
-| 5 | `main.pdf` | The paper |
+| 2 | [`CITATION-VERIFICATION.md`](CITATION-VERIFICATION.md) | Every reference checked against an authoritative source; 4 author-level errors found and fixed |
+| 3 | [`EDITORIAL-DECISION.md`](EDITORIAL-DECISION.md) | Panel verdict, 8 validated CRITICAL findings, roadmap, author response |
+| 4 | [`REVIEW-TODO.md`](REVIEW-TODO.md) | Every outstanding item with its acceptance criterion (TODO-1 … TODO-21) |
+| 5 | [`REVIEWER-AUDIT.md`](REVIEWER-AUDIT.md) | Author-side audit: format compliance, reference integrity, numeric consistency |
+| 6 | `main.pdf` | The paper |
 
 ## What changed in this revision
 
@@ -63,14 +64,19 @@ to make no claim it cannot support.
 
 ## Compliance
 
+Measured on the current build (2026-09-16, TeX Live 2025; verify after any edit):
+
 | Requirement | Limit | Actual |
 |---|---|---|
-| Content + appendix | ≤10 pp | ~9.5 |
-| References | ≤2 pp | ~1.5 |
-| Template | ACM sigconf | ✅ |
+| Content (incl. figures, tables, appendix) | ≤10 pp | **10 pp** ✅ |
+| References | ≤2 pp | **1 p** ✅ |
+| Total | — | 11 pp, 0 errors, 0 overfull boxes, 0 undefined refs |
+| Template | ACM sigconf | ✅ (acmarth `sigconf, review, anonymous`) |
 | Anonymity | double-blind | ✅ |
 | GenAI disclosure | before refs | ✅ |
-| Red markers | must be 0 at submission | **19 — remove before submitting** |
+| Red markers (`\need{}`) | must be 0 | **0** ✅ |
+| Citation integrity | all real, resolvable, cited | ✅ [`CITATION-VERIFICATION.md`](CITATION-VERIFICATION.md) |
+| Provenance gate | every cited artefact traceable | ✅ `provenance_audit.py` exits 0 |
 
 ## The one experiment that matters most
 

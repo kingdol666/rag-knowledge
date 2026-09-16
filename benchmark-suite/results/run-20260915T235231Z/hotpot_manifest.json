@@ -1,0 +1,57 @@
+{
+ "experiment": "E8 multi-domain public benchmark (TODO-12)",
+ "source": "HotpotQA dev-distractor (yang et al. 2018), parquet via hf-mirror",
+ "n_questions": 50,
+ "n_docs": 497,
+ "n_created": 497,
+ "n_exists": 0,
+ "n_failed": 0,
+ "cross_kb_gold": "17/50",
+ "topic_rule": "keyword-overlap argmax over title+text; fallback General",
+ "kbs": {
+  "KB-Hotpot-Geography": "e3391c51-c42b-4a53-b98d-66d6df5a5b48",
+  "KB-Hotpot-History": "3222b843-cf7a-48ba-a671-d5508e7fddc6",
+  "KB-Hotpot-Politics": "99aedcc0-e1bd-4ef0-b21f-96448302937d",
+  "KB-Hotpot-Music": "8436e141-f5ac-498a-9404-e9f19911c021",
+  "KB-Hotpot-FilmTV": "42a83416-296e-4996-aef1-402830f791f1",
+  "KB-Hotpot-Literature": "f24f9eb3-bb2c-49b6-98d9-f5f2f9a92d3c",
+  "KB-Hotpot-Science": "41e1473f-5217-4eeb-be91-028d8ba51216",
+  "KB-Hotpot-Sports": "68bb5c63-e145-4211-9cc3-91f491b3b517",
+  "KB-Hotpot-General": "40d5e403-6be6-4a81-bf06-30e190c25dca"
+ },
+ "doc_per_kb": {
+  "KB-Hotpot-Geography": 83,
+  "KB-Hotpot-History": 72,
+  "KB-Hotpot-Politics": 21,
+  "KB-Hotpot-Music": 103,
+  "KB-Hotpot-FilmTV": 78,
+  "KB-Hotpot-Literature": 18,
+  "KB-Hotpot-Science": 12,
+  "KB-Hotpot-Sports": 67,
+  "KB-Hotpot-General": 43
+ },
+ "meta": {
+  "generated": "2026-09-16T00:46:31.935486+00:00",
+  "env": {
+   "run_id": "run-20260915T235231Z",
+   "git_commit": "ed7835a",
+   "config_hash": "49279bd832721704",
+   "seed": 0,
+   "backend": "http://localhost:8771",
+   "web": "http://localhost:6789",
+   "embedding": "BAAI/bge-m3 (local GPU, normalize)",
+   "vector_store": "ChromaDB (persistent)",
+   "keyword_index": "jieba BM25",
+   "randomness": "deterministic pipeline (no RNG); agent channel = mean of runs",
+   "retrieval_defaults": {
+    "vector_top_k": 10,
+    "stage1_top_k": 40,
+    "stage2_top_k": 10,
+    "qdcvr_threshold": 0.35,
+    "verification_reads": 3,
+    "exp_threshold_default": 0.45
+   },
+   "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
+  }
+ }
+}

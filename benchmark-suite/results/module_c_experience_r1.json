@@ -3,13 +3,13 @@
   "round": "1",
   "n_kbs": 2,
   "run_success_rate": 1.0,
-  "kb_coverage": 0.5,
-  "total_experiences": 3,
-  "judge_score_mean": 4.6667,
-  "grounded_ratio": 0.6667,
+  "kb_coverage": 0.0,
+  "total_experiences": 0,
+  "judge_score_mean": null,
+  "grounded_ratio": null,
   "env": {
    "run_id": "",
-   "git_commit": "f57dbbc",
+   "git_commit": "dd2b579",
    "config_hash": "49279bd832721704",
    "seed": 0,
    "backend": "http://localhost:8771",
@@ -28,7 +28,7 @@
    },
    "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
   },
-  "generated": "2026-09-15T03:38:42.827291+00:00"
+  "generated": "2026-09-15T17:25:34.179930+00:00"
  },
  "per_kb": {
   "KB-Demo-EN": {
@@ -36,9 +36,9 @@
    "run_error": null,
    "n_drafts": 0,
    "n_approved": 0,
-   "n_experiences": 3,
-   "judge_score_mean": 4.6667,
-   "grounded_ratio": 0.6667
+   "n_experiences": 0,
+   "judge_score_mean": null,
+   "grounded_ratio": null
   },
   "KB-Demo-ZH": {
    "run_success": true,
@@ -52,28 +52,8 @@
  },
  "samples": {
   "KB-Demo-EN": {
-   "titles": [
-    "Coffee processing method choice: washed vs natural vs honey",
-    "Wind siting first: speed dominates yield by cube law",
-    "Solar tech choice: PV for lowest cost, CSP for night supply"
-   ],
-   "judged": [
-    {
-     "score": 3.0,
-     "grounded": false,
-     "issues": "Entry is metadata-only (title/scenario/category/tags) with no problem/solution/lessons body, so no facts are verifiable and nothing reusable is captured."
-    },
-    {
-     "score": 5.0,
-     "grounded": true,
-     "issues": "Cube-law claim is physically valid, but the entry is metadata-only with no content body, evidence, or actionable detail, limiting reusability."
-    },
-    {
-     "score": 6.0,
-     "grounded": true,
-     "issues": "Metadata-only entry (no body/evidence) with a plausible but unsubstantiated claim; structure is coherent and tags aid retrieval, but reusability is limited without specifics on LCOE/capacity factors."
-    }
-   ]
+   "titles": [],
+   "judged": []
   },
   "KB-Demo-ZH": {
    "titles": [],

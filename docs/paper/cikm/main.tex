@@ -49,6 +49,13 @@
 \setlist[itemize]{leftmargin=1.1em,topsep=2pt,itemsep=1pt,parsep=0pt}
 \setlist[enumerate]{leftmargin=1.4em,topsep=2pt,itemsep=1pt,parsep=0pt}
 
+% tight float separation (CIKM: content must fit 10 pages incl. figures/tables)
+\setlength{\textfloatsep}{6pt plus 2pt minus 2pt}
+\setlength{\floatsep}{6pt plus 2pt minus 2pt}
+\setlength{\intextsep}{6pt plus 2pt minus 2pt}
+\setlength{\abovecaptionskip}{4pt}
+\setlength{\belowcaptionskip}{2pt}
+
 \newcommand{\sys}{\textsc{Qdcvr}}
 \newcommand{\kbtool}[1]{\texttt{#1}}
 \newcommand{\sig}[1]{$^{#1}$}
@@ -244,7 +251,9 @@ Dense passage retrieval \cite{karpukhin2020dpr} and contrastive retrievers
 \cite{izacard2022contriever} optimise the quality of the recalled set. BM25
 remains a strong sparse baseline \cite{robertson2009bm25}, and hybrid fusion is
 standard practice; BEIR \cite{thakur2021beir} showed that no single retriever
-dominates across domains. \sys{} adopts the hybrid cascade as its recall stage
+dominates across domains, and BRIGHT \cite{su2025bright} extends that stress
+test to reasoning-intensive queries where surface similarity is uninformative.
+\sys{} adopts the hybrid cascade as its recall stage
 and does not claim it as a contribution: in our measurements it is an
 acceleration device (\S\ref{sec:recall}).
 
@@ -259,7 +268,9 @@ auditable stage} whose output is a small set of named rubric dimensions, and
 whose verdict can override the recall ordering by construction.
 
 \paragraph{Knowledge organisation and graph RAG.}
-GraphRAG \cite{edge2024graphrag} and HiRAG \cite{huang2025hirag} build entity or
+Annotating text against an entity catalogue is an early form of this idea
+\cite{tagme2010ferragina}; GraphRAG \cite{edge2024graphrag} and HiRAG
+\cite{huang2025hirag} build entity or
 hierarchical knowledge structures to answer global, corpus-level questions.
 Adaptive-RAG \cite{jeong2024adaptiverag} routes queries by predicted complexity.
 Our routing layer is complementary but operates over \emph{knowledge-base}
@@ -399,7 +410,7 @@ claims and treat the rest briefly.
 \input{figures/fig-pipeline.tex}
 
 \begin{algorithm}[t]
-\small
+\footnotesize
 \caption{\sys{} retrieval}\label{alg:pipeline}
 \begin{algorithmic}[1]
 \Require query $q$, candidate bases $\mathcal{K}$, budget $k$
@@ -594,10 +605,10 @@ days old. Because decay demotes but never deletes, a mistuned threshold
 degrades order gracefully instead of destroying entries.
 
 \subsection{Multi-Path Retrieval}
-Experience is recalled along five parallel paths --- vector similarity,
-keyword match, scenario match, tag match, and quality-feedback match --- fused
-and deduplicated: operational queries often name a \emph{symptom} rather than
-a topic, sharing scenario and tags instead of entry vocabulary.
+Experience is recalled along five parallel paths --- vector, keyword,
+scenario, tag and quality-feedback --- fused and deduplicated: operational
+queries often name a \emph{symptom} rather than a topic, sharing scenario and
+tags instead of entry vocabulary.
 
 We evaluate the fusion on a purpose-built set: eight operational experiences
 seeded through the platform's own write path and twelve frozen queries --- half
@@ -667,14 +678,13 @@ for the multi-domain comparison.
 \paragraph{Metrics and functional coverage.} Ranking uses the standard
 retrieval battery -- Hit@$k$, Recall@$k$, nDCG@10, Precision@5, MRR over
 official qrels -- plus claim-word coverage. Beyond retrieval the benchmark
-exercises every platform function through its production interface: parsing
-and ingestion (Module~A: parse, ingest, membership and storage completeness
-all $1.000$ across two corpora; self-retrieval Hit@1 $0.938$),
-the full experience lifecycle (\S\ref{sec:exp-analysis}), the organise
-functions -- duplicate detection, tag generation and cleanup, graph build and
-search (E17, \S\ref{sec:ops}) -- and the complete agent-facing HTTP surface
-(26/26 checks across eight groups, \S\ref{sec:e2e}) over the platform's
-94-tool MCP layer.
+exercises every platform function through its production interface: parsing and
+ingestion (Module~A: parse, ingest, membership and storage completeness all
+$1.000$ across two corpora; self-retrieval Hit@1 $0.938$), the full experience
+lifecycle (\S\ref{sec:exp-analysis}), the organise functions -- duplicate
+detection, tag generation and cleanup, graph build and search (E17,
+\S\ref{sec:ops}) -- and the complete agent-facing HTTP surface (26/26 checks
+across eight groups, \S\ref{sec:e2e}) over the 94-tool MCP layer.
 
 \subsection{Compared Systems and \sys{} Settings}\label{sec:systems}
 
@@ -785,8 +795,8 @@ scenario of \S\ref{sec:behavior} revisits.
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.49\textwidth]{generated/figures/fig-judge.pdf}\hfill
-\includegraphics[width=0.49\textwidth]{generated/figures/fig-latency.pdf}
+\includegraphics[width=0.455\textwidth]{generated/figures/fig-judge.pdf}\hfill
+\includegraphics[width=0.455\textwidth]{generated/figures/fig-latency.pdf}
 \caption{Left: per-question judge scores (eight systems $\times$ 30 SciFact
 questions; mean bars; $\times$ = verdict not ok) --- grades compress, and the
 proposed system's mean is lowest. Right: retrieval latency (log) vs nDCG@10;
@@ -1084,48 +1094,35 @@ environment requirements).
 
 \subsubsection{Organise functions (E17)}\label{sec:ops}
 Retrieval and experience are half the platform; a planted-truth probe
-(\texttt{26\_platform\_ops\_eval.py}) exercises the \emph{organise}
-functions on a purpose-built nine-document base seeded with two duplicate
-groups. Findings, reported rather than smoothed over: the creation chain
-silently drops exact-duplicate documents (nine planted, seven persist, no
-error signalled), so the duplicate detector sees only the near-duplicate pair
-and identifies one of two groups; tag generation is noisy on small documents
-(190 tags, $2.6\%$ grounded in document content); cleanup dry-run never
-touches a used tag; graph build succeeds; and the catalog reports no ghost
-entries.
+(\texttt{26\_platform\_ops\_eval.py}) exercises the \emph{organise} functions on
+a purpose-built nine-document base seeded with two duplicate groups. Findings,
+reported rather than smoothed over: the creation chain silently drops
+exact-duplicate documents (nine planted, seven persist, no error signalled), so
+the duplicate detector sees only the near-duplicate pair and identifies one of
+two groups; tag generation is noisy on small documents ($2.6\%$ of 190 tags
+grounded in document content); cleanup dry-run never touches a used tag; graph
+build succeeds; and the catalog reports no ghost entries.
 
 \subsubsection{Reproducibility of the reported numbers}
 Every number is generated from frozen artefacts, never transcribed: the bytes
-are archived with a SHA-256 manifest that the table generator verifies on
-every run; each run writes to an immutable timestamped directory and embeds
-its git commit, configuration hash, seed and run id; every table names its
-producing script, and \texttt{provenance\_audit.py} fails the build if a
-cited artefact loses it.
+are archived with a SHA-256 manifest that the table generator verifies on every
+run; each run writes to an immutable timestamped directory embedding its git
+commit, configuration hash, seed and run id; every table names its producing
+script, and \texttt{provenance\_audit.py} fails the build if a cited artefact
+loses it.
 
 \paragraph{Post-freeze re-execution audit.}
-After this manuscript was frozen we re-executed both benchmark tracks from
-the committed pipelines and machine-compared every artifact against the
-frozen bytes (grades within the $\pm1.5$ LLM tolerance; latency, timestamps
-and run provenance excluded). The eight-system matrix reproduces
-\textbf{9{,}837 of 9{,}837 fields byte-identically}; the platform-functions
-track is aggregate-identical on all five artifact pairs. Two fresh runs of a
-new \emph{real-document} scenario --- six agent-generated questions over two
-user-uploaded documents (English and Chinese, fingerprint-identical on both
-sides, ingested through the production upload path), answered by all eight
-systems --- agree on \textbf{47 of 48} gold-document positions (97.9\%),
-judge mean $|\Delta|{=}0.417$; all divergences sit in the two live agentic
-systems, and the same scenario confirms the adverse answer-time finding of
-\S\ref{sec:behavior} on out-of-benchmark documents (production chain judge
-mean $3.0$ vs $5.0$--$9.2$ for the baselines, with every gold document in
-its top-3 and no fabrication). The audit also surfaced and fixed four
-pipeline/platform defects, and reported one boundary finding as-is: the
-multi-domain benchmark's \emph{absolute} numbers depend on the vector
-store's build-time state (a chromadb segment-corruption defect, trigger and
-workaround documented), while the \emph{ordering} --- dense above the
-two-stage family above BM25 on full ranking, and adjudication below its own
-recall stage --- reproduced in every healthy run, so the qualitative
-conclusions of \S\ref{sec:multidomain} stand on either the frozen or the
-re-executed numbers.
+After this manuscript was frozen we re-executed both benchmark tracks from the
+committed pipelines and machine-compared every artifact against the frozen
+bytes (grades within the $\pm1.5$ LLM tolerance; latency, timestamps and run
+provenance excluded): the eight-system matrix reproduces \textbf{9{,}837 of
+9{,}837 fields byte-identically}, the platform-functions track is
+aggregate-identical on all five artifact pairs, and two fresh real-document
+runs agree on \textbf{47 of 48} gold-document positions (97.9\%). The audit also
+fixed four pipeline defects and reports one boundary finding as-is: the
+multi-domain benchmark's \emph{absolute} numbers depend on the vector store's
+build-time state, while the \emph{ordering} reproduced in every healthy run ---
+so \S\ref{sec:multidomain} holds on either set of numbers. Full log: artifact.
 
 % =====================================================================
 \section{Discussion and Limitations}\label{sec:conclusion}
@@ -1145,27 +1142,25 @@ Content adjudication costs about $16\times$ in latency on the in-house corpus
 ($1.33$\,s vs $0.081$\,s); reads bypass the service tier and apply only to a
 small candidate set --- not recommended in latency-critical single-domain
 settings. The public evaluations are moderate (30 SciFact, 50 HotpotQA, 16
-SQuAD queries; full-BEIR is the obvious next step). A 32-question XQuAD
-subset also saturates on ranking; the
-only separating metric is Precision@5 (adjudicated
-$0.275$ vs dense $0.831$) --- a top-$5$ \emph{composition} effect detailed in
-the artifact, not a retrieval failure.
+SQuAD queries; full-BEIR is the obvious next step). A 32-question XQuAD subset
+also saturates on ranking, its only separating metric being Precision@5
+($0.275$ vs $0.831$) --- a top-$5$ \emph{composition} effect, detailed in the
+artifact.
 
 \paragraph{Threats to validity.}
 \emph{Construct}: the $0$--$8$ rubric and the experience judge are LLM
-judgements; we mitigate with temperature $0$, frozen prompts and a measured
-dual-judge agreement study (\S\ref{sec:exp-analysis}: $\kappa{=}0.22$--$0.40$,
-mean $|\Delta|{=}1.13$--$1.42$) -- a proxy for human agreement.
+judgements; we mitigate with temperature $0$, frozen prompts and a dual-judge
+agreement study (\S\ref{sec:exp-analysis}: $\kappa{=}0.22$--$0.40$, mean
+$|\Delta|{=}1.13$--$1.42$) -- a proxy for human agreement.
 \emph{Internal}: the component study shares the thirty SciFact queries of
-Table~\ref{tab:deepread}. \emph{External}: the in-house corpus is
-self-authored; the HotpotQA partition removes the single-domain restriction
-but is author-chosen. \emph{Author-evaluation bias}: every benchmark was
-designed, run and scored by the system's authors on a deployment they operate;
-we mitigate with public gold standards and unfavourable results.
-\emph{Coverage}: the benchmarks measure the retrieval core and exercise the
-remaining surface for correctness, not quality -- graph retrieval, tag
-navigation, persona behaviour and the human web UI are verified only as
-reachable endpoints.
+Table~\ref{tab:deepread}. \emph{External}: the in-house corpus is self-authored;
+the HotpotQA partition lifts the single-domain restriction but is
+author-chosen. \emph{Author-evaluation bias}: all benchmarks were designed, run
+and scored by the system's authors; we mitigate with public gold standards and
+unfavourable results. \emph{Coverage}: the benchmarks measure the retrieval core
+and exercise the rest for correctness, not quality -- graph retrieval, tag
+navigation, persona behaviour and the web UI are verified only as reachable
+endpoints.
 
 \paragraph{Future work.}
 The experience-synthesis instability is generative, not architectural: when
@@ -1198,6 +1193,9 @@ shipped with the artifact under the authors' responsibility.
 \emph{Data}: no result was produced or modified by a generative model; every
 number is read from a recorded artefact by deterministic scripts. One LLM is
 used as an instrument: the experience judge (\S\ref{sec:exp-analysis}).
+Automating research end-to-end is an active area \cite{lu2026aiscientist}; the
+boundary here is narrower --- research questions, study design and
+interpretation are the authors'.
 
 \balance
 \bibliographystyle{ACM-Reference-Format}

@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{26}
+\begin{thebibliography}{29}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -112,6 +112,18 @@
 \newblock
 
 
+\bibitem[Ferragina and Scaiella(2010)]%
+        {tagme2010ferragina}
+\bibfield{author}{\bibinfo{person}{Paolo Ferragina} {and} \bibinfo{person}{Ugo
+  Scaiella}.} \bibinfo{year}{2010}\natexlab{}.
+\newblock \showarticletitle{{TAGME}: On-the-Fly Annotation of Short Text
+  Fragments (by Wikipedia Entities)}. In \bibinfo{booktitle}{\emph{Proceedings
+  of the 19th ACM International Conference on Information and Knowledge
+  Management (CIKM)}}. \bibinfo{pages}{1625--1628}.
+\newblock
+\href{https://doi.org/10.1145/1871437.1871689}{doi:\nolinkurl{10.1145/1871437.1871689}}
+
+
 \bibitem[Gao et~al\mbox{.}(2024)]%
         {gao2024ragsurvey}
 \bibfield{author}{\bibinfo{person}{Yunfan Gao}, \bibinfo{person}{Yun Xiong},
@@ -126,14 +138,17 @@
 \newblock
 
 
-\bibitem[Ge and Guo(2026)]%
+\bibitem[Ge et~al\mbox{.}(2026)]%
         {ge2026mcppyserini}
-\bibfield{author}{\bibinfo{person}{Yijun Ge} {and} \bibinfo{person}{Zibo Guo}.}
+\bibfield{author}{\bibinfo{person}{Yijun Ge}, \bibinfo{person}{Zibo Guo},
+  \bibinfo{person}{Sahel Sharifymoghaddam}, {and} \bibinfo{person}{Jimmy Lin}.}
   \bibinfo{year}{2026}\natexlab{}.
 \newblock \showarticletitle{{MCP} Servers for {Pyserini} and {RankLLM}:
   Enabling Agentic Retrieval-Augmented Generation}. In
-  \bibinfo{booktitle}{\emph{Proceedings of SIGIR}}.
+  \bibinfo{booktitle}{\emph{Proceedings of the 49th International ACM SIGIR
+  Conference on Research and Development in Information Retrieval (SIGIR)}}.
 \newblock
+\href{https://doi.org/10.1145/3805712.3808376}{doi:\nolinkurl{10.1145/3805712.3808376}}
 
 
 \bibitem[Glass et~al\mbox{.}(2022)]%
@@ -143,8 +158,12 @@
   \bibinfo{person}{Ankita Naik}, \bibinfo{person}{Pengshan Cai}, {and}
   \bibinfo{person}{Alfio Gliozzo}.} \bibinfo{year}{2022}\natexlab{}.
 \newblock \showarticletitle{{Re2G}: Retrieve, Rerank, Generate}. In
-  \bibinfo{booktitle}{\emph{Proceedings of NAACL}}.
+  \bibinfo{booktitle}{\emph{Proceedings of the 2022 Conference of the North
+  American Chapter of the Association for Computational Linguistics (NAACL)}}.
+  \bibinfo{pages}{2701--2715}.
 \newblock
+\href{https://doi.org/10.18653/v1/2022.naacl-main.194}{doi:\nolinkurl{10.18653/v1/2022.naacl-main.194}}
+\showeprint[arXiv]{2207.06300}
 
 
 \bibitem[Huang et~al\mbox{.}(2025)]%
@@ -167,9 +186,11 @@
   \bibinfo{person}{Piotr Bojanowski}, \bibinfo{person}{Armand Joulin}, {and}
   \bibinfo{person}{Edouard Grave}.} \bibinfo{year}{2022}\natexlab{}.
 \newblock \showarticletitle{Unsupervised Dense Information Retrieval with
-  Contrastive Learning}. In \bibinfo{booktitle}{\emph{Transactions on Machine
-  Learning Research (TMLR)}}.
+  Contrastive Learning}.
+\newblock \bibinfo{journal}{\emph{Transactions on Machine Learning Research
+  (TMLR)}} (\bibinfo{year}{2022}).
 \newblock
+\showeprint[arXiv]{2112.09118}
 
 
 \bibitem[Jeong et~al\mbox{.}(2024)]%
@@ -179,7 +200,9 @@
   \bibinfo{person}{Jong~C. Park}.} \bibinfo{year}{2024}\natexlab{}.
 \newblock \showarticletitle{Adaptive-{RAG}: Learning to Adapt
   Retrieval-Augmented Large Language Models through Question Complexity}. In
-  \bibinfo{booktitle}{\emph{Proceedings of NAACL}}.
+  \bibinfo{booktitle}{\emph{Proceedings of the 2024 Conference of the North
+  American Chapter of the Association for Computational Linguistics (NAACL)}}.
+  \bibinfo{pages}{7036--7050}.
 \newblock
 
 
@@ -204,8 +227,12 @@
   \bibinfo{person}{Danqi Chen}, {and} \bibinfo{person}{Wen-tau Yih}.}
   \bibinfo{year}{2020}\natexlab{}.
 \newblock \showarticletitle{Dense Passage Retrieval for Open-Domain Question
-  Answering}. In \bibinfo{booktitle}{\emph{Proceedings of EMNLP}}.
+  Answering}. In \bibinfo{booktitle}{\emph{Proceedings of the 2020 Conference
+  on Empirical Methods in Natural Language Processing (EMNLP)}}.
+  \bibinfo{pages}{6769--6781}.
 \newblock
+\href{https://doi.org/10.18653/v1/2020.emnlp-main.550}{doi:\nolinkurl{10.18653/v1/2020.emnlp-main.550}}
+\showeprint[arXiv]{2004.04906}
 
 
 \bibitem[Lewis et~al\mbox{.}(2020)]%
@@ -221,6 +248,7 @@
   Knowledge-Intensive {NLP} Tasks}. In \bibinfo{booktitle}{\emph{Advances in
   Neural Information Processing Systems (NeurIPS)}}.
 \newblock
+\showeprint[arXiv]{2005.11401}
 
 
 \bibitem[Li et~al\mbox{.}(2026)]%
@@ -230,8 +258,23 @@
   \bibinfo{person}{Ping Luo}.} \bibinfo{year}{2026}\natexlab{}.
 \newblock \showarticletitle{{DeepRead}: Document Structure-Aware Reasoning to
   Enhance Agentic Search}.
-\newblock \bibinfo{journal}{\emph{arXiv preprint}} (\bibinfo{year}{2026}).
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2602.05014}}
+  (\bibinfo{year}{2026}).
 \newblock
+
+
+\bibitem[Lu et~al\mbox{.}(2026)]%
+        {lu2026aiscientist}
+\bibfield{author}{\bibinfo{person}{Chris Lu}, \bibinfo{person}{Cong Lu},
+  \bibinfo{person}{Robert~Tjarko Lange}, \bibinfo{person}{Yutaro Yamada},
+  \bibinfo{person}{Shengran Hu}, \bibinfo{person}{Jakob Foerster},
+  \bibinfo{person}{David Ha}, {and} \bibinfo{person}{Jeff Clune}.}
+  \bibinfo{year}{2026}\natexlab{}.
+\newblock \showarticletitle{Towards End-to-End Automation of {AI} Research}.
+\newblock \bibinfo{journal}{\emph{Nature}} \bibinfo{volume}{651},
+  \bibinfo{number}{8107} (\bibinfo{year}{2026}), \bibinfo{pages}{914--919}.
+\newblock
+\href{https://doi.org/10.1038/s41586-026-10265-5}{doi:\nolinkurl{10.1038/s41586-026-10265-5}}
 
 
 \bibitem[Nogueira and Cho(2019)]%
@@ -239,7 +282,8 @@
 \bibfield{author}{\bibinfo{person}{Rodrigo Nogueira} {and}
   \bibinfo{person}{Kyunghyun Cho}.} \bibinfo{year}{2019}\natexlab{}.
 \newblock \showarticletitle{Passage Re-ranking with {BERT}}.
-\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:1901.04085}}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:1901.04085}}
+  (\bibinfo{year}{2019}).
 \newblock
 
 
@@ -253,6 +297,7 @@
   Retrieval}} \bibinfo{volume}{3}, \bibinfo{number}{4} (\bibinfo{year}{2009}),
   \bibinfo{pages}{333--389}.
 \newblock
+\href{https://doi.org/10.1561/1500000019}{doi:\nolinkurl{10.1561/1500000019}}
 
 
 \bibitem[Sahay et~al\mbox{.}(2025)]%
@@ -278,6 +323,28 @@
   Use Tools}. In \bibinfo{booktitle}{\emph{Advances in Neural Information
   Processing Systems (NeurIPS)}}.
 \newblock
+\showeprint[arXiv]{2302.04761}
+
+
+\bibitem[Su et~al\mbox{.}(2025)]%
+        {su2025bright}
+\bibfield{author}{\bibinfo{person}{Hongjin Su}, \bibinfo{person}{Howard Yen},
+  \bibinfo{person}{Mengzhou Xia}, \bibinfo{person}{Weijia Shi},
+  \bibinfo{person}{Niklas Muennighoff}, \bibinfo{person}{Han-yu Wang},
+  \bibinfo{person}{Haisu Liu}, \bibinfo{person}{Quan Shi},
+  \bibinfo{person}{Zachary~S. Siegel}, \bibinfo{person}{Michael Tang},
+  \bibinfo{person}{Ruoxi Sun}, \bibinfo{person}{Jinsung Yoon},
+  \bibinfo{person}{Sercan~O. Arik}, \bibinfo{person}{Danqi Chen}, {and}
+  \bibinfo{person}{Tao Yu}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{{BRIGHT}: A Realistic and Challenging Benchmark for
+  Reasoning-Intensive Retrieval}. In \bibinfo{booktitle}{\emph{The Thirteenth
+  International Conference on Learning Representations (ICLR)}}.
+\newblock
+\showeprint[arXiv]{2407.12883}
+\urldef\tempurl%
+\url{https://openreview.net/forum?id=ykuc5q381b}
+\showURL{%
+\tempurl}
 
 
 \bibitem[Sun et~al\mbox{.}(2023)]%
@@ -302,7 +369,8 @@
   \bibinfo{person}{Sahil Bhatnagar}.} \bibinfo{year}{2026}\natexlab{}.
 \newblock \showarticletitle{{AgenticRAG}: Agentic Retrieval for Enterprise
   Knowledge Bases}.
-\newblock \bibinfo{journal}{\emph{arXiv preprint}} (\bibinfo{year}{2026}).
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2605.05538}}
+  (\bibinfo{year}{2026}).
 \newblock
 
 
@@ -317,6 +385,7 @@
   \bibinfo{booktitle}{\emph{Advances in Neural Information Processing Systems
   (NeurIPS) Datasets and Benchmarks Track}}.
 \newblock
+\showeprint[arXiv]{2104.08663}
 
 
 \bibitem[Yan et~al\mbox{.}(2024)]%
@@ -324,23 +393,25 @@
 \bibfield{author}{\bibinfo{person}{Shi-Qi Yan}, \bibinfo{person}{Jia-Chen Gu},
   \bibinfo{person}{Yun Zhu}, {and} \bibinfo{person}{Zhen-Hua Ling}.}
   \bibinfo{year}{2024}\natexlab{}.
-\newblock \showarticletitle{Corrective Retrieval Augmented Generation}. In
-  \bibinfo{booktitle}{\emph{arXiv preprint arXiv:2401.15884}}.
+\newblock \showarticletitle{Corrective Retrieval Augmented Generation}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2401.15884}}
+  (\bibinfo{year}{2024}).
 \newblock
 
 
 \bibitem[Yang et~al\mbox{.}(2018)]%
         {yang2018hotpotqa}
 \bibfield{author}{\bibinfo{person}{Zhilin Yang}, \bibinfo{person}{Peng Qi},
-  \bibinfo{person}{Saizheng Zhang}, \bibinfo{person}{Yinghai Chen},
-  \bibinfo{person}{Waleed Wang}, \bibinfo{person}{Mohit Bajaj},
-  \bibinfo{person}{Ruslan Salakhutdinov}, {and} \bibinfo{person}{William~W.
-  Cohen}.} \bibinfo{year}{2018}\natexlab{}.
+  \bibinfo{person}{Saizheng Zhang}, \bibinfo{person}{Yoshua Bengio},
+  \bibinfo{person}{William~W. Cohen}, \bibinfo{person}{Ruslan Salakhutdinov},
+  {and} \bibinfo{person}{Christopher~D. Manning}.}
+  \bibinfo{year}{2018}\natexlab{}.
 \newblock \showarticletitle{{HotpotQA}: A Dataset for Diverse, Explainable
   Multi-hop Question Answering}. In \bibinfo{booktitle}{\emph{Proceedings of
   the 2018 Conference on Empirical Methods in Natural Language Processing
   (EMNLP)}}. \bibinfo{pages}{2369--2380}.
 \newblock
+\href{https://doi.org/10.18653/v1/D18-1259}{doi:\nolinkurl{10.18653/v1/D18-1259}}
 
 
 \bibitem[Yao et~al\mbox{.}(2023)]%
@@ -353,6 +424,7 @@
   Language Models}. In \bibinfo{booktitle}{\emph{International Conference on
   Learning Representations (ICLR)}}.
 \newblock
+\showeprint[arXiv]{2210.03629}
 
 
 \end{thebibliography}

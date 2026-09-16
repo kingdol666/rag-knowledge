@@ -158,3 +158,9 @@ web/.nuxt-buildcheck/
 
 # End-to-end API/harness test workspace (external-API E2E suite, local artifacts)
 .e2e/
+
+# Benchmark index caches (regenerable; not evidence)
+benchmark-suite/algorithms/cache/
+
+# Rendered page previews (derived from main.pdf)
+docs/paper/cikm/preview/

@@ -1,0 +1,62 @@
+Content-Adjudicated, Domain-Scoped Retrieval for
+             Agent-Native Knowledge Bases
+
+Anonymous Author(s)
+
+Abstract                                                                    failure is not hypothetical. Query sf-002 of the BEIR SciFact bench-
+                                                                            mark asserts that "4-PBA treatment decreases endoplasmic reticulum
+Retrieval-augmented generation (RAG) pipelines for heterogeneous,           stress in response to general endoplasmic reticulum stress markers";
+multi-domain corpora suffer two failure modes dense similarity              its gold document is PubMed id 32587939. Dense retrieval ranks a
+alone cannot remove: semantically adjacent but operationally irrele-        same-domain neighbour first and relegates the gold document to
+vant documents obtain high cosine scores, and large bases monopo-           rank two (Hit@1 0, MRR 0.5) -- both documents live in the same
+lise the top- of a cross-base search. We present Qdcvr, a deployed          "ER stress" region of the space, but only one carries the claim's
+knowledge-base platform whose retrieval is content-adjudicated and          evidence. This case is mined from the frozen benchmark artefact,
+domain-scoped: candidates are recalled by a BM25  vector cascade,           not constructed: it is one of three such queries in the run (sf-002,
+then re-ranked by reading their actual text against an interpretable        sf-017, sf-027), and when the adjudication stage reads the two
+0­8 rubric under an explicit content-overrides-vector rule; an ex-          candidates it inverts the order and returns the gold document first
+perience lifecycle distils operational lessons into credibility-tiered,     (Hit@1 1.0, MRR 1.0) -- the concrete operation of "content overrides
+decaying entries exposed to agents through 94 MCP tools. We eval-           vector" (§4.5). A vector score is a joint statement about the query
+uate four suite retrieval channels through one tool layer on BEIR           and the document; it is not a statement that the document contains
+SciFact, a trilingual in-house corpus, a reproduced eight-system            the answer.
+matrix (DeepRead-style; one shared answering agent, one indepen-            Big bases crowd out small ones. In a multi-base deployment the
+dent grader), and a 50-question HotpotQA benchmark partitioned              largest base dominates the candidate pool, and small but directly
+into nine topic bases. The result is a bounded claim: adjudication          relevant bases are pushed out. We measured this regime on a public
+repairs rank-one errors and reaches the highest top-rank answer-            corpus: 50 HotpotQA questions whose official supporting docu-
+ability on the multi-domain set (0.580 vs 0.480­0.520; McNemar              ments are partitioned into nine topic knowledge bases (§7.4.3); 38%
+=0.34, not significant), but is significantly worse than its own re-        of queries have gold in two of them. Both failure modes are mea-
+call stage on full ranking there (-0.061 nDCG@10, =0.018) and               surable, and both bear on the two mechanisms this paper evaluates
+does not improve ranking on the clean single-domain corpus -- a             (§7).
+rank-one repair instrument, not a ranking improvement. We also
+report unstable experience synthesis, a provenance audit that with-            Existing mitigations attack these problems from the wrong end:
+held one internal benchmark whose producing script could not be             cross-encoder re-rankers are opaque and add a model to the serv-
+recovered, and a post-freeze re-execution audit that reproduces the         ing path; FLARE [11], Self-RAG [2] and CRAG [21] entangle the
+eight-system matrix byte-for-byte.                                          relevance judgement with generation or reduce it to a scalar, so the
+                                                                            operator still cannot see which aspect of a document failed. None
+CCS Concepts                                                                makes the retrieval decision itself legible to the person who must
+                                                                            explain why a document was returned.
+· Information systems  Retrieval models and ranking; Ques-
+tion answering; · Computing methodologies  Knowledge rep-                      Qdcvr is a deployed knowledge-base platform built on a different
+resentation and reasoning.                                                  principle: recall cheaply, then adjudicate on content. Candidates are
+                                                                            recalled by a two-stage cascade, then read and scored against an
+Keywords                                                                    explicit three-dimension rubric; a content score overrides a high
+                                                                            vector score. Queries are domain-scoped (routed to a bounded set of
+Retrieval-Augmented Generation; Content Verification; Knowl-                bases before comparison), and operational knowledge is a first-class
+edge Management; Agent Systems; Model Context Protocol; Multi-              experience lifecycle.
+Domain Retrieval
+                                                                               What is new here. Each ingredient has a precedent. Domain rout-
+1 Introduction                                                              ing has been studied for query complexity [10] and for entity graphs
+                                                                            [4, 8]; we route at knowledge-base granularity. Content verification
+Retrieval-augmented generation (RAG) has become the default way             has precedent in learned re-rankers [15] and evaluator models [21];
+to ground large language models in private knowledge [5, 13]. Al-           we make it an explicit, auditable stage whose verdict can override
+most all deployed pipelines share one architectural assumption:             the recall order. The contribution is the auditable combination and
+the document that should be returned is the document whose em-              an honest account of where it stops helping.
+bedding is closest to the query embedding. That assumption is
+convenient and cheap, and it is the source of two failure modes                Contributions.
+we observed repeatedly while operating a production knowledge
+platform over a heterogeneous, multi-domain corpus.                         · C1 (domain-scoped architecture). A knowledge-base routing
+Similarity is not usefulness. Two documents can be close in em-                layer that selects a bounded working set before retrieval. We de-
+bedding space while only one of them answers the question, and the             scribe it as an architectural component, not a validated accuracy
+                                                                               contribution: at this corpus scale an oracle restriction to the gold
+
+                                                                         1
+

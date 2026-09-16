@@ -573,4 +573,7 @@ Graph build / search probe hits & """ + f"{'ok' if d_graph['build_ok'] else 'FAI
 """)
 
 print("\nAll LaTeX artefacts regenerated from the frozen, provenance-verified snapshot.")
-print("Withheld (no producer): tab-cikm, tab-ablation, fig-fpr, fig-latency — see PROVENANCE.md")
+print("Withheld (no producer, NOT cited by the paper): tab-cikm, tab-ablation, "
+      "fig-fpr — see PROVENANCE.md. The paper's latency panel is "
+      "generated/figures/fig-latency.pdf, produced above from "
+      "data-snapshot/deepread_matrix.json (producer: run_matrix.py).")
