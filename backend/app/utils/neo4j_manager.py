@@ -513,7 +513,9 @@ def _download_with_progress(url: str, dest: Path, timeout: int = 1800,
         from app.utils.paths import PROJECT_ROOT as _PR
         resolved_dest = Path(dest).resolve()
         install_root = Path(_PR).resolve()
-        if not str(resolved_dest).startswith(str(install_root)):
+        # is_relative_to (not str.startswith): prefix matching can be fooled by
+        # a sibling directory whose name extends the parent's.
+        if not resolved_dest.is_relative_to(install_root):
             raise ValueError(f"Download destination escapes project root: {resolved_dest}")
     except ValueError:
         raise

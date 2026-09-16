@@ -15,6 +15,8 @@ from __future__ import annotations
 import json
 import os
 import sys
+import tempfile
+from pathlib import Path
 
 try:
     sys.stdout.reconfigure(encoding="utf-8")
@@ -94,9 +96,15 @@ def run_acp(engine_id: str) -> None:
         # 客户端对权限请求的应答（没有 method，id 是 perm-1）
         if "method" not in msg and msg.get("id") == "perm-1":
             if perm_log:
-                with open(perm_log, "w", encoding="utf-8") as f:
-                    f.write(json.dumps(msg.get("result") or msg.get("error") or {},
-                                       ensure_ascii=False))
+                # FAKE_HARNESS_PERM_LOG 只作开关；文件由 tempfile 在系统临时
+                # 目录生成，路径不来自任何外部输入（杜绝任意路径写）。
+                with tempfile.NamedTemporaryFile(
+                    mode="w", encoding="utf-8",
+                    prefix="fake-harness-perm-", suffix=".json",
+                    delete=False,
+                ) as f:
+                    json.dump(msg.get("result") or msg.get("error") or {},
+                              f, ensure_ascii=False)
             continue
 
         if "id" not in msg or "method" not in msg:

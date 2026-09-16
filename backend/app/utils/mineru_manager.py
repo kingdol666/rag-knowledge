@@ -212,10 +212,19 @@ else:  # non-Windows fallbacks (project is Windows-targeted, but stay import-saf
 class MineruApiManager:
     """Manages the mineru-api lifecycle, launching it as a subprocess."""
 
+    _LOOPBACK_HOSTS = frozenset({"127.0.0.1", "localhost", "::1", "::"})
+
     def __init__(self, host: str = "127.0.0.1", port: Optional[int] = None):
         """``port=None`` (default) → pick a free ephemeral port at start time
         (avoids common dev/service ports). A fixed ``port`` is used as-is.
         """
+        # Validate ONCE at construction: mineru-api is a local loopback service
+        # by contract, so a non-loopback host must never reach the spawn command
+        # or any request URL built from it (SSRF hardening at the entry point).
+        if host not in self._LOOPBACK_HOSTS:
+            raise ValueError(
+                f"mineru-api host must be loopback (127.0.0.1/localhost/::1), got: {host}"
+            )
         self.host = host
         self._requested_port = port  # None = auto-pick on start()
         self.port: Optional[int] = port  # the REAL port mineru-api runs on
@@ -235,9 +244,9 @@ class MineruApiManager:
         really running on. Empty until ``start()`` has resolved a port."""
         if self.port is None:
             return ""
-        # SSRF guard: mineru-api is a local loopback service by contract —
-        # reject any host configuration that points elsewhere.
-        if self.host not in ("127.0.0.1", "localhost", "::1"):
+        # Loopback is already enforced in __init__; this re-check keeps the
+        # URL builder safe even if the attribute were reassigned later.
+        if self.host not in self._LOOPBACK_HOSTS:
             raise ValueError(f"mineru-api host must be loopback, got: {self.host}")
         return f"http://{self.host}:{self.port}"
 

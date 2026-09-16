@@ -84,6 +84,18 @@ def _redact_env(env_data: dict[str, str]) -> dict[str, str]:
     return {k: ("••••••" if v and _is_secret_env_key(k) else v) for k, v in env_data.items()}
 
 
+def _is_redaction_mask(val: str) -> bool:
+    """True when a value is the GET-endpoint redaction mask echoed back by the UI.
+
+    The Settings page round-trips every env field on save, including secrets it
+    only ever saw masked. Writing the mask back would destroy the real secret
+    in .env (and poison os.environ with non-ASCII bullets, which crashes
+    ``secrets.compare_digest`` in the auth middleware). Such values mean
+    "unchanged" and must be dropped before persisting/applying.
+    """
+    return bool(val) and set(val) == {"•"}
+
+
 def _yaml_scalar(val: Any) -> str:
     """Render a YAML scalar value with proper quoting."""
     if isinstance(val, bool):
@@ -129,13 +141,14 @@ def _build_yaml(data: dict) -> str:
         "search": "# -- Two-Stage Search --",
     }
 
-    for section in SHARED_SECTIONS:
-        if section in data:
-            comment = section_comments.get(section, "")
-            if comment:
-                lines.append(comment)
-            _dump_dict({section: data[section]})
-            lines.append("")
+    # Write every section present in data (managed + carried-over unknown
+    # sections such as ``ingestion`` / ``soul``).
+    for section in data:
+        comment = section_comments.get(section, "")
+        if comment:
+            lines.append(comment)
+        _dump_dict({section: data[section]})
+        lines.append("")
 
     return "\n".join(lines)
 
@@ -162,10 +175,9 @@ def _build_backend_yaml(data: dict) -> str:
             else:
                 lines.append(f"{prefix}{key}: {_yaml_scalar(val)}")
 
-    for section in BACKEND_SECTIONS:
-        if section in data:
-            _dump_dict({section: data[section]})
-            lines.append("")
+    for section in data:
+        _dump_dict({section: data[section]})
+        lines.append("")
 
     return "\n".join(lines)
 
@@ -279,6 +291,12 @@ async def update_config(req: ConfigUpdateRequest) -> dict[str, Any]:
             existing_sec = existing_shared.get(section, {})
             new_sec = req.config.get(section, {})
             shared_data[section] = _deep_merge(existing_sec, new_sec)
+        # Carry over sections the settings schema doesn't manage (e.g.
+        # ``ingestion``, ``soul``) — dropping them silently destroyed config
+        # on every settings-page save.
+        for section, val in existing_shared.items():
+            if section not in shared_data:
+                shared_data[section] = val
 
         if SHARED_CONFIG_PATH:
             yaml_content = _build_yaml(shared_data)
@@ -291,6 +309,9 @@ async def update_config(req: ConfigUpdateRequest) -> dict[str, Any]:
             existing_sec = existing_backend.get(section, {})
             new_sec = req.config.get(section, {})
             backend_data[section] = _deep_merge(existing_sec, new_sec)
+        for section, val in existing_backend.items():
+            if section not in backend_data:
+                backend_data[section] = val
 
         yaml_content = _build_backend_yaml(backend_data)
         atomic_write_text(CONFIG_PATH, yaml_content)
@@ -298,12 +319,19 @@ async def update_config(req: ConfigUpdateRequest) -> dict[str, Any]:
 
         # 3. Write .env file
         if req.env:
+            # Drop redaction masks first: the UI echoes every env field back,
+            # with secrets still masked from GET /config. Persisting or applying
+            # those would destroy the real values.
+            incoming_env = {
+                key: val for key, val in req.env.items()
+                if not _is_redaction_mask(val)
+            }
             # Read existing .env to preserve unknown vars
             existing_env = _read_env_file(ENV_PATH)
             # Merge: update known vars, keep unknown ones
             merged_env: dict[str, str] = {}
             # First, write all keys from the request
-            for key, val in req.env.items():
+            for key, val in incoming_env.items():
                 merged_env[key] = val
             # Then, preserve existing keys not in the request
             for key, val in existing_env.items():
@@ -315,7 +343,7 @@ async def update_config(req: ConfigUpdateRequest) -> dict[str, Any]:
             logger.info(".env written to %s", ENV_PATH)
 
             # Apply env vars to current process
-            for key, val in req.env.items():
+            for key, val in incoming_env.items():
                 if val:
                     os.environ[key] = val
                 elif key in os.environ and key != "APP_MODE":

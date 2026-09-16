@@ -1144,7 +1144,9 @@ async def export_training_data(
     if not _re.fullmatch(r"[0-9_]+", min_label):
         min_label = "default"
     export_path = (training_dir / f"export-{today_str}-{min_label}.jsonl").resolve()
-    if not str(export_path).startswith(str(training_dir.resolve())):
+    # is_relative_to (not str.startswith): prefix matching can be fooled by a
+    # sibling directory whose name extends the parent's ("train" vs "training").
+    if not export_path.is_relative_to(training_dir.resolve()):
         return {"success": False, "error": "export path escaped training dir"}
 
     with open(export_path, "w", encoding="utf-8", newline="\n") as f:

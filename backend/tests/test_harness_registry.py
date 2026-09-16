@@ -652,9 +652,13 @@ class TestFakeCliAdapters:
         规范：`cancelled` 是「本回合被取消」的专属应答；普通拒绝必须从 agent 给出的
         options 里挑一个 reject_*，否则合规 agent 会把回合判为取消并中止。
         """
-        log = tmp_path / f"perm-{hid}.json"
+        import glob
+        import tempfile
+        pattern = str(Path(tempfile.gettempdir()) / "fake-harness-perm-*.json")
+        for stale in glob.glob(pattern):
+            Path(stale).unlink(missing_ok=True)
         old = os.environ.get("FAKE_HARNESS_PERM_LOG")
-        os.environ["FAKE_HARNESS_PERM_LOG"] = str(log)
+        os.environ["FAKE_HARNESS_PERM_LOG"] = "1"   # 仅作开关；路径由夹具自管
         try:
             res = run(hrun.run_engine(hid, FAKE_PROMPT, {"timeout_sec": 60},
                                       run_label=f"perm-{hid}"))
@@ -665,8 +669,9 @@ class TestFakeCliAdapters:
                 os.environ["FAKE_HARNESS_PERM_LOG"] = old
 
         assert res["success"], f"{hid}: {res.get('error')}"
-        assert log.exists(), f"{hid}: the driver never answered the permission request"
-        outcome = json.loads(log.read_text(encoding="utf-8")).get("outcome", {})
+        hits = sorted(glob.glob(pattern))
+        assert hits, f"{hid}: the driver never answered the permission request"
+        outcome = json.loads(Path(hits[-1]).read_text(encoding="utf-8")).get("outcome", {})
         assert outcome.get("outcome") == "selected", outcome
         assert outcome.get("optionId") == "reject-1", outcome
 
