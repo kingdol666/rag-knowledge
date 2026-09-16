@@ -80,8 +80,15 @@ def http_post(url: str, payload: dict, timeout: int = 120, tries: int = 3) -> di
                 raise ValueError(f"null/empty body (len={len(raw)})")
             return parsed
         except urllib.error.HTTPError as e:
-            if e.code in (401, 409, 429) or e.code >= 500:
+            if e.code in (409, 429) or e.code >= 500:
                 last = e          # 瞬态(409 交调用方判重时会再抛)
+            elif e.code == 401:
+                # web 层 verifyToken 有 60s 负缓存 + fail-closed: 后端重启预热期
+                # 一次校验失败会把该 token 毒化整整 60s, 短重试全落在窗口内
+                # (已实测)。401 按 15s 间隔重试, 活过毒化窗口。
+                last = e
+                time.sleep(15)
+                continue
             else:
                 raise
         except Exception as e:  # noqa: BLE001
@@ -110,7 +117,7 @@ def http_get(url: str, timeout: int = 60, tries: int = 6) -> dict:
                 raise
         except Exception as e:  # noqa: BLE001
             last = e
-        time.sleep(min(20, 3 * (attempt + 1)))
+        time.sleep(15)  # 6×15s 可活过 web 层 60s verify 负缓存毒化窗口
     raise last  # type: ignore[misc]
 
 
@@ -131,8 +138,12 @@ def http_delete(url: str, payload: dict, timeout: int = 300, tries: int = 3) -> 
                 raise ValueError(f"null/empty body (len={len(raw)})")
             return parsed
         except urllib.error.HTTPError as e:
-            if e.code in (401, 409, 429) or e.code >= 500:
-                last = e
+            if e.code in (409, 429) or e.code >= 500:
+                last = e          # 瞬态(409 交调用方判重时会再抛)
+            elif e.code == 401:
+                last = e          # web 层 60s verify 负缓存毒化窗口 — 15s 间隔活过它
+                time.sleep(15)
+                continue
             else:
                 raise
         except Exception as e:  # noqa: BLE001

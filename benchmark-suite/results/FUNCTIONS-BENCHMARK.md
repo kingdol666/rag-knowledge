@@ -2,7 +2,7 @@
 
 **Parsing, Experience Lifecycle, Organise, Agent Surface, Scale**
 
-> Generated 2026-09-16T12:38:49.019676+00:00 · git `d86cfc0` · config hash `fe17f60fb7e09075` · every number read from real execution artifacts under results/.
+> Generated 2026-09-16T20:41:48.264971+00:00 · git `db8e25a` · config hash `fe17f60fb7e09075` · every number read from real execution artifacts under results/.
 This track measures the platform's own capabilities — document parsing and ingestion integrity, the experience lifecycle, organise functions, the agent-facing surface, and measured scale — through production interfaces only. There are no external algorithm baselines here; each probe checks correctness or quality of a platform function.
 
 ## 1. Environment and Reproducibility
@@ -11,7 +11,7 @@ This track measures the platform's own capabilities — document parsing and ing
 
 | Item | Value |
 |---|---|
-| Git commit | `d86cfc0` |
+| Git commit | `db8e25a` |
 | Config hash | `fe17f60fb7e09075` |
 | Seed / randomness | 0 — deterministic pipeline (no RNG); agent channel = mean of runs |
 | Embedding | BAAI/bge-m3 (local GPU, normalize) |
@@ -50,9 +50,9 @@ Experience lifecycle: real meditation runs synthesise candidate lessons from cor
 
 | Condition | Mean judge score |
 |---|---|
-| ours_experience | **5.50** |
-| no_synthesis | 4.50 |
-| llm_summary | 3.00 |
+| llm_summary | **3.50** |
+| no_synthesis | 2.75 |
+| ours_experience | 1.50 |
 
 Organise functions probed with planted ground truth: duplicate detection, tag generation and cleanup safety, graph build and retrieval, and catalogue completeness.
 **Table 5: Platform organise-function probes (E17).**

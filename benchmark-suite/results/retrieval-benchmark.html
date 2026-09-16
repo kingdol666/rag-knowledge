@@ -24,12 +24,12 @@ padding:0 .25em}
 
 <h1>Track R — Retrieval Benchmark</h1>
 <p class='sub'>Content-Adjudicated Retrieval vs. Reproduced Baselines</p>
-<p class='gen'>Generated 2026-09-16T12:38:48.937176+00:00 · git <code>d86cfc0</code> · config <code>fe17f60fb7e09075</code></p>
+<p class='gen'>Generated 2026-09-16T22:04:11.494894+00:00 · git <code>db8e25a</code> · config <code>fe17f60fb7e09075</code></p>
 <p>This track answers one question: how does the system&#x27;s retrieval compare against reproduced baselines (BM25, Dense, Dense+Rerank, RAPTOR, ITRG, Search-o1, DeepRead)? All methods share one corpus, one frozen query set, one MCP tool layer, one answering agent, and one independent judge. Every number below is read from execution artifacts under results/.</p>
 <h2>1.&nbsp; Environment and Reproducibility</h2>
 <div class="caption">Table 1: Measured environment. Deterministic channels are expected to reproduce bit-for-bit; LLM channels follow the tolerance table in TEST-PLAN §7.</div>
 <table><thead><tr><th>Item</th><th>Value</th></tr></thead><tbody>
-<tr><td>Git commit</td><td><code>d86cfc0</code></td></tr>
+<tr><td>Git commit</td><td><code>db8e25a</code></td></tr>
 <tr><td>Config hash</td><td><code>fe17f60fb7e09075</code></td></tr>
 <tr><td>Seed / randomness</td><td>0 — deterministic pipeline (no RNG); agent channel = mean of runs</td></tr>
 <tr><td>Embedding</td><td>BAAI/bge-m3 (local GPU, normalize)</td></tr>
@@ -42,31 +42,31 @@ padding:0 .25em}
 <div class="caption">Table 2: Eight-system comparison on BEIR SciFact (30 queries, official qrels). Judge = independent agent 0–10 with gold evidence; Rank/Wins = middle-agent anonymous ranking.</div>
 <table>
 <thead><tr><th>Method</th><th>Hit@1</th><th>Hit@5</th><th>Recall@5</th><th>nDCG@10</th><th>MRR</th><th>Judge</th><th>Rank</th><th>Wins</th></tr></thead><tbody>
-<tr><td>qdcvr</td><td class="num">0.700</td><td class="num">0.833</td><td class="num">0.833</td><td class="num">0.784</td><td class="num">0.767</td><td class="num">7.70</td><td class="num">5.63</td><td class="num">3</td></tr>
-<tr><td>dense_rag</td><td class="num">0.733</td><td class="num">0.900</td><td class="num">0.900</td><td class="num">0.834</td><td class="num">0.811</td><td class="num best">8.93</td><td class="num">4.63</td><td class="num">2</td></tr>
-<tr><td>dense_rag_rerank</td><td class="num best">0.900</td><td class="num best">0.933</td><td class="num best">0.933</td><td class="num best">0.921</td><td class="num best">0.917</td><td class="num">8.67</td><td class="num best">3.77</td><td class="num">5</td></tr>
-<tr><td>raptor</td><td class="num">0.733</td><td class="num">0.867</td><td class="num">0.856</td><td class="num">0.817</td><td class="num">0.800</td><td class="num">8.37</td><td class="num">4.20</td><td class="num">4</td></tr>
-<tr><td>itrg_refresh</td><td class="num">0.833</td><td class="num best">0.933</td><td class="num best">0.933</td><td class="num">0.896</td><td class="num">0.883</td><td class="num">8.30</td><td class="num">4.53</td><td class="num">3</td></tr>
-<tr><td>itrg_refine</td><td class="num">0.733</td><td class="num">0.900</td><td class="num">0.900</td><td class="num">0.845</td><td class="num">0.816</td><td class="num">8.53</td><td class="num">4.17</td><td class="num">3</td></tr>
-<tr><td>search_o1</td><td class="num">0.800</td><td class="num">0.900</td><td class="num">0.844</td><td class="num">0.811</td><td class="num">0.839</td><td class="num">8.70</td><td class="num">4.60</td><td class="num">3</td></tr>
-<tr><td>deepread</td><td class="num">0.567</td><td class="num">0.733</td><td class="num">0.694</td><td class="num">0.635</td><td class="num">0.639</td><td class="num">8.13</td><td class="num">4.47</td><td class="num best">7</td></tr>
+<tr><td>qdcvr</td><td class="num">0.700</td><td class="num">0.833</td><td class="num">0.833</td><td class="num">0.784</td><td class="num">0.767</td><td class="num">7.70</td><td class="num">—</td><td class="num best">0</td></tr>
+<tr><td>dense_rag</td><td class="num">0.733</td><td class="num">0.900</td><td class="num">0.900</td><td class="num">0.834</td><td class="num">0.811</td><td class="num best">8.93</td><td class="num">—</td><td class="num best">0</td></tr>
+<tr><td>dense_rag_rerank</td><td class="num best">0.900</td><td class="num best">0.933</td><td class="num best">0.933</td><td class="num best">0.921</td><td class="num best">0.917</td><td class="num">8.67</td><td class="num">—</td><td class="num best">0</td></tr>
+<tr><td>raptor</td><td class="num">0.733</td><td class="num">0.867</td><td class="num">0.856</td><td class="num">0.817</td><td class="num">0.800</td><td class="num">8.37</td><td class="num">—</td><td class="num best">0</td></tr>
+<tr><td>itrg_refresh</td><td class="num">0.833</td><td class="num best">0.933</td><td class="num best">0.933</td><td class="num">0.896</td><td class="num">0.883</td><td class="num">8.30</td><td class="num">—</td><td class="num best">0</td></tr>
+<tr><td>itrg_refine</td><td class="num">0.733</td><td class="num">0.900</td><td class="num">0.900</td><td class="num">0.845</td><td class="num">0.816</td><td class="num">8.53</td><td class="num">—</td><td class="num best">0</td></tr>
+<tr><td>search_o1</td><td class="num">0.800</td><td class="num">0.900</td><td class="num">0.844</td><td class="num">0.811</td><td class="num">0.839</td><td class="num">8.70</td><td class="num">—</td><td class="num best">0</td></tr>
+<tr><td>deepread</td><td class="num">0.567</td><td class="num">0.733</td><td class="num">0.694</td><td class="num">0.635</td><td class="num">0.639</td><td class="num">8.13</td><td class="num">—</td><td class="num best">0</td></tr>
 </tbody></table>
 <p class="note">API-mode re-execution agreed with the offline matrix on 480/480 checked values (0 mismatches).</p>
 <p>Four retrieval channels over the production MCP path on BEIR SciFact: BM25 (stage-1 candidates), Two-stage hybrid (no content verification), Dense (BAAI/bge-m3, top-10), and QDCVR (full content-adjudicated pipeline). supp@1 = share of claims whose top-1 document covers ≥ 0.5 of claim content words.</p>
 <div class="caption">Table 3: Four-channel retrieval on BEIR SciFact (production MCP path).</div>
 <table>
 <thead><tr><th>Channel</th><th>Hit@1</th><th>Hit@3</th><th>Recall@5</th><th>nDCG@10</th><th>MRR</th><th>Supp@1</th></tr></thead><tbody>
-<tr><td>bm25</td><td class="num best">0.833</td><td class="num best">0.833</td><td class="num">0.750</td><td class="num">0.804</td><td class="num best">0.835</td><td class="num best">0.67</td></tr>
-<tr><td>twostage</td><td class="num">0.733</td><td class="num best">0.833</td><td class="num best">0.867</td><td class="num">0.809</td><td class="num">0.790</td><td class="num">0.57</td></tr>
-<tr><td>dense</td><td class="num">0.433</td><td class="num">0.733</td><td class="num">0.789</td><td class="num">0.642</td><td class="num">0.613</td><td class="num">0.37</td></tr>
-<tr><td>qdcvr</td><td class="num">0.767</td><td class="num best">0.833</td><td class="num best">0.867</td><td class="num best">0.822</td><td class="num">0.807</td><td class="num">0.60</td></tr>
+<tr><td>bm25</td><td class="num best">0.833</td><td class="num">0.833</td><td class="num">0.800</td><td class="num">0.808</td><td class="num best">0.838</td><td class="num best">0.67</td></tr>
+<tr><td>twostage</td><td class="num">0.733</td><td class="num">0.833</td><td class="num">0.867</td><td class="num">0.811</td><td class="num">0.792</td><td class="num">0.57</td></tr>
+<tr><td>dense</td><td class="num">0.733</td><td class="num best">0.900</td><td class="num best">0.900</td><td class="num best">0.834</td><td class="num">0.811</td><td class="num">0.57</td></tr>
+<tr><td>qdcvr</td><td class="num">0.767</td><td class="num">0.833</td><td class="num">0.867</td><td class="num">0.823</td><td class="num">0.808</td><td class="num">0.60</td></tr>
 </tbody></table>
 <p>Bilingual in-house corpus: 20 frozen queries (EN/ZH/JA plus cross-KB) against three knowledge bases holding 16 documents, exercising domain-scoped routing.</p>
 <div class="caption">Table 4: Content-adjudicated two-stage retrieval vs. dense baseline on the bilingual in-house corpus.</div>
 <table>
 <thead><tr><th>Channel</th><th>Hit@1</th><th>Hit@5</th><th>Recall@5</th><th>P@5</th><th>MRR</th></tr></thead><tbody>
-<tr><td>staged</td><td class="num">0.750</td><td class="num best">0.900</td><td class="num best">0.883</td><td class="num best">0.200</td><td class="num">0.832</td></tr>
-<tr><td>vector</td><td class="num best">0.900</td><td class="num best">0.900</td><td class="num">0.867</td><td class="num">0.180</td><td class="num best">0.907</td></tr>
+<tr><td>staged</td><td class="num">0.800</td><td class="num best">0.950</td><td class="num">0.908</td><td class="num best">0.210</td><td class="num">0.860</td></tr>
+<tr><td>vector</td><td class="num best">0.900</td><td class="num best">0.950</td><td class="num best">0.917</td><td class="num">0.200</td><td class="num best">0.925</td></tr>
 </tbody></table>
 <p>Component ablation of the QDCVR pipeline on the same query set; deterministic channels reproduce bit-for-bit across rounds.</p>
 <div class="caption">Table 5: Component ablation (BEIR SciFact, 30 queries).</div>
@@ -87,20 +87,20 @@ padding:0 .25em}
 <div class="caption">Table 6: Multi-domain HotpotQA results (50 queries, 9 topic KBs).</div>
 <table>
 <thead><tr><th>Method</th><th>Hit@5</th><th>nDCG@10</th><th>Answer@1</th></tr></thead><tbody>
-<tr><td>bm25</td><td class="num best">0.860</td><td class="num best">0.538</td><td class="num best">0.520</td></tr>
-<tr><td>two_stage</td><td class="num">0.480</td><td class="num">0.375</td><td class="num">0.280</td></tr>
-<tr><td>dense</td><td class="num">0.480</td><td class="num">0.378</td><td class="num">0.300</td></tr>
-<tr><td>qdcvr</td><td class="num">0.480</td><td class="num">0.358</td><td class="num">0.280</td></tr>
+<tr><td>bm25</td><td class="num">0.860</td><td class="num">0.530</td><td class="num">0.520</td></tr>
+<tr><td>two_stage</td><td class="num">0.960</td><td class="num">0.825</td><td class="num">0.500</td></tr>
+<tr><td>dense</td><td class="num best">1.000</td><td class="num best">0.859</td><td class="num">0.480</td></tr>
+<tr><td>qdcvr</td><td class="num">0.960</td><td class="num">0.759</td><td class="num best">0.560</td></tr>
 </tbody></table>
 <div class="caption">Table 7: Routing oracle on HotpotQA: upper bounds of perfect domain scoping.</div>
 <table>
 <thead><tr><th>Policy</th><th>Channel</th><th>Hit@2</th><th>Recall@2</th><th>nDCG@10</th><th>n</th></tr></thead><tbody>
-<tr><td>Always search all KBs</td><td class="num">two_stage</td><td class="num">0.460</td><td class="num">0.320</td><td class="num">0.367</td><td class="num">50</td></tr>
-<tr><td>Always search all KBs</td><td class="num">dense</td><td class="num">0.460</td><td class="num">0.330</td><td class="num">0.378</td><td class="num">50</td></tr>
-<tr><td>Oracle: single gold KB</td><td class="num">two_stage</td><td class="num">0.920</td><td class="num">0.610</td><td class="num">0.744</td><td class="num">50</td></tr>
-<tr><td>Oracle: single gold KB</td><td class="num">dense</td><td class="num">0.380</td><td class="num">0.250</td><td class="num">0.303</td><td class="num">50</td></tr>
-<tr><td>Oracle: best KB per query</td><td class="num">two_stage</td><td class="num best">0.940</td><td class="num best">0.620</td><td class="num best">0.763</td><td class="num">50</td></tr>
-<tr><td>Oracle: best KB per query</td><td class="num">dense</td><td class="num">0.460</td><td class="num">0.290</td><td class="num">0.352</td><td class="num">50</td></tr>
+<tr><td>Always search all KBs</td><td class="num">two_stage</td><td class="num">0.960</td><td class="num">0.700</td><td class="num">0.825</td><td class="num">50</td></tr>
+<tr><td>Always search all KBs</td><td class="num">dense</td><td class="num best">0.980</td><td class="num best">0.730</td><td class="num best">0.859</td><td class="num">50</td></tr>
+<tr><td>Oracle: single gold KB</td><td class="num">two_stage</td><td class="num">0.940</td><td class="num">0.670</td><td class="num">0.772</td><td class="num">50</td></tr>
+<tr><td>Oracle: single gold KB</td><td class="num">dense</td><td class="num">0.940</td><td class="num">0.670</td><td class="num">0.761</td><td class="num">50</td></tr>
+<tr><td>Oracle: best KB per query</td><td class="num">two_stage</td><td class="num best">0.980</td><td class="num">0.690</td><td class="num">0.795</td><td class="num">50</td></tr>
+<tr><td>Oracle: best KB per query</td><td class="num">dense</td><td class="num best">0.980</td><td class="num">0.690</td><td class="num">0.784</td><td class="num">50</td></tr>
 </tbody></table>
 <p>Motivating case (rank-one repair): for claim <code>sf-002</code> (“4-PBA treatment decreases endoplasmic reticulum stress in response to general endoplasmic reticulum stress mar”), dense retrieval scores Hit@1 = 0, MRR = 0.5, while QDCVR scores Hit@1 = 1, MRR = 1.0 — content adjudication promotes the gold document to rank one.</p>
 </body></html>

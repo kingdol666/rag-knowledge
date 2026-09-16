@@ -1,16 +1,16 @@
 {
  "summary": {
   "round": "2",
-  "n_docs": 184,
+  "n_docs": 182,
   "membership_accuracy": 1.0,
   "storage_completeness": 1.0,
   "env": {
    "run_id": "",
-   "git_commit": "1f2092a",
-   "config_hash": "49279bd832721704",
+   "git_commit": "db8e25a",
+   "config_hash": "fe17f60fb7e09075",
    "seed": 0,
    "backend": "http://localhost:8771",
-   "web": "http://localhost:6790",
+   "web": "http://localhost:6789",
    "embedding": "BAAI/bge-m3 (local GPU, normalize)",
    "vector_store": "ChromaDB (persistent)",
    "keyword_index": "jieba BM25",
@@ -25,6 +25,6 @@
    },
    "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
   },
-  "generated": "2026-09-14T04:07:39.286471+00:00"
+  "generated": "2026-09-16T16:29:01.353829+00:00"
  }
 }

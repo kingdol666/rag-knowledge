@@ -115,9 +115,16 @@ def main() -> int:
     else:
         problems.append(f"web {WEB} 未就绪 (HTTP {code}) — 检查端口(6790 是死代理陷阱⑲)")
 
-    # 3. token
+    # 3. token — 且做一次带 token 的 web 层认证往返: 后端重启预热期的
+    #    一次校验失败会把 verifyToken 负缓存毒化 60s(fail-closed), 这里主动
+    #    打通并刷新缓存, 避免轨道启动即 401。
     if _token():
         print("  [OK] MCP_AUTH_TOKEN 可解析")
+        try:
+            kbs_probe = _kb_catalog()
+            print(f"  [OK] web 层认证往返通过 (catalog {len(kbs_probe)} KBs)")
+        except Exception as e:  # noqa: BLE001
+            problems.append(f"web 层认证往返失败: {e} — 等待 20s 后重跑预检")
     else:
         problems.append("MCP_AUTH_TOKEN 缺失(环境变量或仓库 .env)")
 

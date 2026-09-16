@@ -43,6 +43,18 @@ class Checks:
 
 def raw(method: str, url: str, body=None, token: str | None = None,
         timeout: int = 60):
+    """极简 HTTP（不走代理），返回 (status, parsed_or_text)。
+    连接级失败(状态 0 = 后端事件循环被重操作短暂阻塞)自动重试一次。"""
+    code, payload = _raw_once(method, url, body, token, timeout)
+    if code == 0:
+        import time as _t
+        _t.sleep(15)  # 后端阻塞窗(如图谱构建)通常 ≤2 分钟, 先重试一次
+        code, payload = _raw_once(method, url, body, token, timeout)
+    return code, payload
+
+
+def _raw_once(method: str, url: str, body=None, token: str | None = None,
+              timeout: int = 60):
     """极简 HTTP（不走代理），返回 (status, parsed_or_text)。"""
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     data = json.dumps(body).encode() if body is not None else None

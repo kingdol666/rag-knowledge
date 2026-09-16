@@ -24,12 +24,12 @@ padding:0 .25em}
 
 <h1>Track F — Platform Functions Benchmark</h1>
 <p class='sub'>Parsing, Experience Lifecycle, Organise, Agent Surface, Scale</p>
-<p class='gen'>Generated 2026-09-16T12:38:49.019676+00:00 · git <code>d86cfc0</code> · config <code>fe17f60fb7e09075</code></p>
+<p class='gen'>Generated 2026-09-16T20:41:48.264971+00:00 · git <code>db8e25a</code> · config <code>fe17f60fb7e09075</code></p>
 <p>This track measures the platform&#x27;s own capabilities — document parsing and ingestion integrity, the experience lifecycle, organise functions, the agent-facing surface, and measured scale — through production interfaces only. There are no external algorithm baselines here; each probe checks correctness or quality of a platform function.</p>
 <h2>1.&nbsp; Environment and Reproducibility</h2>
 <div class="caption">Table 1: Measured environment. Deterministic channels are expected to reproduce bit-for-bit; LLM channels follow the tolerance table in TEST-PLAN §7.</div>
 <table><thead><tr><th>Item</th><th>Value</th></tr></thead><tbody>
-<tr><td>Git commit</td><td><code>d86cfc0</code></td></tr>
+<tr><td>Git commit</td><td><code>db8e25a</code></td></tr>
 <tr><td>Config hash</td><td><code>fe17f60fb7e09075</code></td></tr>
 <tr><td>Seed / randomness</td><td>0 — deterministic pipeline (no RNG); agent channel = mean of runs</td></tr>
 <tr><td>Embedding</td><td>BAAI/bge-m3 (local GPU, normalize)</td></tr>
@@ -65,9 +65,9 @@ padding:0 .25em}
 <div class="caption">Table 4: E4 dual-baseline comparison under the identical judge prompt (mean 0–10 score).</div>
 <table>
 <thead><tr><th>Condition</th><th>Mean judge score</th></tr></thead><tbody>
-<tr><td>ours_experience</td><td class="num best">5.50</td></tr>
-<tr><td>no_synthesis</td><td class="num">4.50</td></tr>
-<tr><td>llm_summary</td><td class="num">3.00</td></tr>
+<tr><td>llm_summary</td><td class="num best">3.50</td></tr>
+<tr><td>no_synthesis</td><td class="num">2.75</td></tr>
+<tr><td>ours_experience</td><td class="num">1.50</td></tr>
 </tbody></table>
 <p>Organise functions probed with planted ground truth: duplicate detection, tag generation and cleanup safety, graph build and retrieval, and catalogue completeness.</p>
 <div class="caption">Table 5: Platform organise-function probes (E17).</div>

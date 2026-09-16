@@ -14,8 +14,14 @@ export PYTHONUTF8=1
 export RAG_BENCH_WEB_URL=http://localhost:6789
 say() { echo "=== $(date +%H:%M:%S) $* ==="; }
 
-say "R- 预检 (健康/token/omp/Hotpot 九库空态; fail-loud, 不删数据)"
-python scripts/00_preflight.py R || { echo "预检未通过 — 中止 (处置指引见上)"; exit 1; }
+say "R- 预检 (健康/token/omp/Hotpot 九库空态; fail-loud, 不删数据) — 自动重试"
+PF=1
+for attempt in 1 2 3; do
+  if python scripts/00_preflight.py R; then PF=0; break; fi
+  say "预检第 ${attempt} 次未通过 — 30s 后重试"
+  sleep 30
+done
+[ "$PF" = "0" ] || { echo "预检 3 次未通过 — 中止"; exit 1; }
 
 
 say "R0 标准语料入库 (SciFact/SQuAD, 已存在则跳过式覆盖)"

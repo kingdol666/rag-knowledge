@@ -12,8 +12,14 @@ export RAG_BENCH_WEB_URL=http://localhost:6789
 LOG=results/track-F.log
 say() { echo "=== $(date +%H:%M:%S) $* ==="; }
 
-say "F0 预检 (健康/token/omp; fail-loud, 不删数据)"
-python scripts/00_preflight.py || { echo "预检未通过 — 中止 (处置指引见上)"; exit 1; }
+say "F0 预检 (健康/token/omp; fail-loud, 不删数据) — 重置后级联删除会短暂阻塞后端, 自动重试"
+PF=1
+for attempt in 1 2 3; do
+  if python scripts/00_preflight.py; then PF=0; break; fi
+  say "预检第 ${attempt} 次未通过 — 30s 后重试"
+  sleep 30
+done
+[ "$PF" = "0" ] || { echo "预检 3 次未通过 — 中止"; exit 1; }
 
 
 say "F1 Module A 解析与入库完整性 (in-house + 标准语料)"
@@ -28,6 +34,9 @@ python scripts/66_judge_agreement.py 2>&1 | tail -3
 
 say "F3 E17 整理功能 (去重/标签/图谱/目录)"
 python scripts/26_platform_ops_eval.py 2>&1 | tail -4
+
+# E17 的图谱构建会同步阻塞后端事件循环约 1-2 分钟 —— 稳定后再跑 F4
+sleep 30
 
 say "F4 Agent 面端到端 (8 组 26 项, 独立外部客户端)"
 python scripts/80_e2e_surface.py 2>&1 | tail -3

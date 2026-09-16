@@ -3,16 +3,16 @@
   "round": "1",
   "n_md_docs": 15,
   "n_pdf_docs": 1,
-  "parse_success": 1.0,
-  "pdf_parse_chars": 1444,
-  "ingest_success_rate": 1.0,
+  "parse_success": 0.0,
+  "pdf_parse_chars": 0,
+  "ingest_success_rate": 0.9375,
   "membership_accuracy": 1.0,
   "storage_completeness": 1.0,
-  "self_retrieval_hit1": 0.9375,
+  "self_retrieval_hit1": 1.0,
   "env": {
    "run_id": "",
-   "git_commit": "dd2b579",
-   "config_hash": "49279bd832721704",
+   "git_commit": "db8e25a",
+   "config_hash": "fe17f60fb7e09075",
    "seed": 0,
    "backend": "http://localhost:8771",
    "web": "http://localhost:6789",
@@ -30,6 +30,6 @@
    },
    "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
   },
-  "generated": "2026-09-15T17:15:04.233306+00:00"
+  "generated": "2026-09-16T19:43:25.341334+00:00"
  }
 }

@@ -8,11 +8,11 @@
   },
   "env": {
    "run_id": "",
-   "git_commit": "dd2b579",
-   "config_hash": "49279bd832721704",
+   "git_commit": "db8e25a",
+   "config_hash": "fe17f60fb7e09075",
    "seed": 0,
    "backend": "http://localhost:8771",
-   "web": "http://localhost:6790",
+   "web": "http://localhost:6789",
    "embedding": "BAAI/bge-m3 (local GPU, normalize)",
    "vector_store": "ChromaDB (persistent)",
    "keyword_index": "jieba BM25",
@@ -27,36 +27,36 @@
    },
    "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
   },
-  "generated": "2026-09-15T18:19:08.283844+00:00"
+  "generated": "2026-09-16T20:48:33.540027+00:00"
  },
  "summary": {
   "overall": {
    "staged": {
-    "hit@1": 0.75,
+    "hit@1": 0.8,
     "hit@3": 0.9,
-    "hit@5": 0.9,
+    "hit@5": 0.95,
     "recall@3": 0.8833,
-    "recall@5": 0.8833,
-    "precision@5": 0.2,
-    "mrr": 0.8321,
-    "latency_s_mean": 1.376,
+    "recall@5": 0.9083,
+    "precision@5": 0.21,
+    "mrr": 0.86,
+    "latency_s_mean": 1.363,
     "first_stage_dist": {
      "stage1": 19,
      "miss": 1
     },
-    "qdcvr_chars_read_per_query": 3774.6,
+    "qdcvr_chars_read_per_query": 3889.55,
     "qdcvr_verify_pass_rate": 0.5167,
-    "qdcvr_rerank_changed_rate": 0.15
+    "qdcvr_rerank_changed_rate": 0.2
    },
    "vector": {
     "hit@1": 0.9,
-    "hit@3": 0.9,
-    "hit@5": 0.9,
-    "recall@3": 0.8667,
-    "recall@5": 0.8667,
-    "precision@5": 0.18,
-    "mrr": 0.9071,
-    "latency_s_mean": 0.147,
+    "hit@3": 0.95,
+    "hit@5": 0.95,
+    "recall@3": 0.9167,
+    "recall@5": 0.9167,
+    "precision@5": 0.2,
+    "mrr": 0.925,
+    "latency_s_mean": 0.1071,
     "qdcvr_chars_read_per_query": 0.0,
     "qdcvr_verify_pass_rate": 0.0,
     "qdcvr_rerank_changed_rate": 0.0
@@ -67,28 +67,28 @@
     "staged": {
      "hit@1": 0.7,
      "hit@3": 0.9,
+     "hit@5": 1.0,
+     "recall@3": 0.9,
+     "recall@5": 0.95,
+     "precision@5": 0.22,
+     "mrr": 0.82,
+     "latency_s_mean": 1.4973,
+     "first_stage_dist": {
+      "stage1": 10
+     },
+     "qdcvr_chars_read_per_query": 5480.0,
+     "qdcvr_verify_pass_rate": 1.0,
+     "qdcvr_rerank_changed_rate": 0.4
+    },
+    "vector": {
+     "hit@1": 0.8,
+     "hit@3": 0.9,
      "hit@5": 0.9,
      "recall@3": 0.9,
      "recall@5": 0.9,
      "precision@5": 0.2,
-     "mrr": 0.8143,
-     "latency_s_mean": 1.4875,
-     "first_stage_dist": {
-      "stage1": 10
-     },
-     "qdcvr_chars_read_per_query": 5570.9,
-     "qdcvr_verify_pass_rate": 1.0,
-     "qdcvr_rerank_changed_rate": 0.3
-    },
-    "vector": {
-     "hit@1": 0.8,
-     "hit@3": 0.8,
-     "hit@5": 0.8,
-     "recall@3": 0.8,
-     "recall@5": 0.8,
-     "precision@5": 0.16,
-     "mrr": 0.8143,
-     "latency_s_mean": 0.1533,
+     "mrr": 0.85,
+     "latency_s_mean": 0.1111,
      "qdcvr_chars_read_per_query": 0.0,
      "qdcvr_verify_pass_rate": 0.0,
      "qdcvr_rerank_changed_rate": 0.0
@@ -97,18 +97,18 @@
    },
    "zh": {
     "staged": {
-     "hit@1": 0.8333,
+     "hit@1": 1.0,
      "hit@3": 1.0,
      "hit@5": 1.0,
      "recall@3": 0.9444,
      "recall@5": 0.9444,
      "precision@5": 0.2333,
-     "mrr": 0.9167,
-     "latency_s_mean": 1.3738,
+     "mrr": 1.0,
+     "latency_s_mean": 1.3118,
      "first_stage_dist": {
       "stage1": 6
      },
-     "qdcvr_chars_read_per_query": 2344.6667,
+     "qdcvr_chars_read_per_query": 2879.3333,
      "qdcvr_verify_pass_rate": 0.0556,
      "qdcvr_rerank_changed_rate": 0.0
     },
@@ -120,7 +120,7 @@
      "recall@5": 0.8889,
      "precision@5": 0.2,
      "mrr": 1.0,
-     "latency_s_mean": 0.1392,
+     "latency_s_mean": 0.1043,
      "qdcvr_chars_read_per_query": 0.0,
      "qdcvr_verify_pass_rate": 0.0,
      "qdcvr_rerank_changed_rate": 0.0
@@ -136,7 +136,7 @@
      "recall@5": 0.75,
      "precision@5": 0.15,
      "mrr": 0.75,
-     "latency_s_mean": 1.1008,
+     "latency_s_mean": 1.1038,
      "first_stage_dist": {
       "stage1": 3,
       "miss": 1
@@ -153,7 +153,7 @@
      "recall@5": 1.0,
      "precision@5": 0.2,
      "mrr": 1.0,
-     "latency_s_mean": 0.1432,
+     "latency_s_mean": 0.1013,
      "qdcvr_chars_read_per_query": 0.0,
      "qdcvr_verify_pass_rate": 0.0,
      "qdcvr_rerank_changed_rate": 0.0
@@ -175,9 +175,9 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 1.506,
-    "search_s": 0.185,
-    "verify_s": 0.789,
+    "latency_s": 1.563,
+    "search_s": 0.167,
+    "verify_s": 0.84,
     "calls": 5,
     "chars_read": 3707,
     "verification_passed": 3,
@@ -195,13 +195,13 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 1.508,
-    "search_s": 0.186,
-    "verify_s": 0.783,
+    "latency_s": 1.522,
+    "search_s": 0.149,
+    "verify_s": 0.826,
     "calls": 5,
     "chars_read": 5462,
     "verification_passed": 3,
-    "rerank_changed": false,
+    "rerank_changed": true,
     "first_stage": "stage1"
    },
    {
@@ -215,13 +215,13 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 1.481,
-    "search_s": 0.169,
-    "verify_s": 0.787,
+    "latency_s": 1.503,
+    "search_s": 0.14,
+    "verify_s": 0.819,
     "calls": 5,
-    "chars_read": 7192,
+    "chars_read": 5301,
     "verification_passed": 3,
-    "rerank_changed": true,
+    "rerank_changed": false,
     "first_stage": "stage1"
    },
    {
@@ -235,9 +235,9 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 1.488,
-    "search_s": 0.163,
-    "verify_s": 0.792,
+    "latency_s": 1.481,
+    "search_s": 0.118,
+    "verify_s": 0.81,
     "calls": 5,
     "chars_read": 7109,
     "verification_passed": 3,
@@ -255,9 +255,9 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 0.5,
-    "latency_s": 1.495,
-    "search_s": 0.168,
-    "verify_s": 0.786,
+    "latency_s": 1.472,
+    "search_s": 0.121,
+    "verify_s": 0.818,
     "calls": 5,
     "chars_read": 7145,
     "verification_passed": 3,
@@ -275,9 +275,9 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 1.504,
-    "search_s": 0.173,
-    "verify_s": 0.796,
+    "latency_s": 1.523,
+    "search_s": 0.14,
+    "verify_s": 0.834,
     "calls": 5,
     "chars_read": 7107,
     "verification_passed": 3,
@@ -295,9 +295,9 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 1.445,
-    "search_s": 0.118,
-    "verify_s": 0.794,
+    "latency_s": 1.441,
+    "search_s": 0.117,
+    "verify_s": 0.798,
     "calls": 5,
     "chars_read": 5295,
     "verification_passed": 3,
@@ -315,11 +315,11 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 1.505,
-    "search_s": 0.185,
-    "verify_s": 0.789,
+    "latency_s": 1.503,
+    "search_s": 0.138,
+    "verify_s": 0.836,
     "calls": 5,
-    "chars_read": 5559,
+    "chars_read": 3754,
     "verification_passed": 3,
     "rerank_changed": false,
     "first_stage": "stage1"
@@ -335,11 +335,11 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 1.477,
-    "search_s": 0.153,
-    "verify_s": 0.786,
+    "latency_s": 1.445,
+    "search_s": 0.107,
+    "verify_s": 0.801,
     "calls": 5,
-    "chars_read": 4202,
+    "chars_read": 3866,
     "verification_passed": 0,
     "rerank_changed": false,
     "first_stage": "stage1"
@@ -355,11 +355,11 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 1.426,
-    "search_s": 0.091,
-    "verify_s": 0.806,
+    "latency_s": 1.439,
+    "search_s": 0.101,
+    "verify_s": 0.798,
     "calls": 5,
-    "chars_read": 4027,
+    "chars_read": 6459,
     "verification_passed": 1,
     "rerank_changed": false,
     "first_stage": "stage1"
@@ -375,9 +375,9 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 1.224,
-    "search_s": 0.16,
-    "verify_s": 0.535,
+    "latency_s": 1.18,
+    "search_s": 0.119,
+    "verify_s": 0.533,
     "calls": 4,
     "chars_read": 784,
     "verification_passed": 0,
@@ -395,11 +395,11 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 1.486,
-    "search_s": 0.154,
-    "verify_s": 0.817,
+    "latency_s": 1.436,
+    "search_s": 0.102,
+    "verify_s": 0.795,
     "calls": 5,
-    "chars_read": 490,
+    "chars_read": 4599,
     "verification_passed": 0,
     "rerank_changed": false,
     "first_stage": "stage1"
@@ -415,9 +415,9 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 1.155,
-    "search_s": 0.085,
-    "verify_s": 0.532,
+    "latency_s": 1.19,
+    "search_s": 0.115,
+    "verify_s": 0.534,
     "calls": 4,
     "chars_read": 784,
     "verification_passed": 0,
@@ -435,9 +435,9 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 1.416,
+    "latency_s": 1.466,
     "search_s": 0.108,
-    "verify_s": 0.781,
+    "verify_s": 0.834,
     "calls": 5,
     "chars_read": 3926,
     "verification_passed": 0,
@@ -455,9 +455,9 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 1.481,
-    "search_s": 0.16,
-    "verify_s": 0.796,
+    "latency_s": 1.463,
+    "search_s": 0.105,
+    "verify_s": 0.807,
     "calls": 5,
     "chars_read": 1318,
     "verification_passed": 0,
@@ -475,9 +475,9 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 0.964,
-    "search_s": 0.166,
-    "verify_s": 0.265,
+    "latency_s": 0.939,
+    "search_s": 0.113,
+    "verify_s": 0.275,
     "calls": 3,
     "chars_read": 471,
     "verification_passed": 0,
@@ -495,7 +495,7 @@
     "hit@5": 0,
     "precision@5": 0.0,
     "mrr": 0.0,
-    "latency_s": 0.542,
+    "latency_s": 0.547,
     "search_s": 0.006,
     "verify_s": 0.0,
     "calls": 2,
@@ -515,9 +515,9 @@
     "hit@5": 1,
     "precision@5": 0.4,
     "mrr": 0.5,
-    "latency_s": 1.435,
-    "search_s": 0.105,
-    "verify_s": 0.793,
+    "latency_s": 1.458,
+    "search_s": 0.128,
+    "verify_s": 0.798,
     "calls": 5,
     "chars_read": 3707,
     "verification_passed": 3,
@@ -527,19 +527,19 @@
    {
     "qid": "q-x-02",
     "lang": "zh",
-    "recall@1": 0.0,
-    "hit@1": 0,
+    "recall@1": 0.3333333333333333,
+    "hit@1": 1,
     "recall@3": 0.6666666666666666,
     "hit@3": 1,
     "recall@5": 0.6666666666666666,
     "hit@5": 1,
     "precision@5": 0.4,
-    "mrr": 0.5,
-    "latency_s": 1.475,
-    "search_s": 0.155,
-    "verify_s": 0.787,
-    "calls": 5,
-    "chars_read": 3781,
+    "mrr": 1.0,
+    "latency_s": 1.181,
+    "search_s": 0.095,
+    "verify_s": 0.549,
+    "calls": 4,
+    "chars_read": 784,
     "verification_passed": 0,
     "rerank_changed": false,
     "first_stage": "stage1"
@@ -551,17 +551,17 @@
     "hit@1": 0,
     "recall@3": 0.0,
     "hit@3": 0,
-    "recall@5": 0.0,
-    "hit@5": 0,
-    "precision@5": 0.0,
-    "mrr": 0.14285714285714285,
-    "latency_s": 1.508,
-    "search_s": 0.185,
-    "verify_s": 0.786,
+    "recall@5": 0.5,
+    "hit@5": 1,
+    "precision@5": 0.2,
+    "mrr": 0.2,
+    "latency_s": 1.507,
+    "search_s": 0.148,
+    "verify_s": 0.81,
     "calls": 5,
-    "chars_read": 3426,
+    "chars_read": 6213,
     "verification_passed": 3,
-    "rerank_changed": false,
+    "rerank_changed": true,
     "first_stage": "stage1"
    }
   ],
@@ -577,7 +577,7 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 0.161
+    "latency_s": 0.117
    },
    {
     "qid": "q-en-02",
@@ -590,7 +590,7 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 0.154
+    "latency_s": 0.108
    },
    {
     "qid": "q-en-03",
@@ -603,7 +603,7 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 0.162
+    "latency_s": 0.128
    },
    {
     "qid": "q-en-04",
@@ -616,7 +616,7 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 0.155
+    "latency_s": 0.103
    },
    {
     "qid": "q-en-05",
@@ -629,7 +629,7 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 0.158
+    "latency_s": 0.118
    },
    {
     "qid": "q-en-06",
@@ -642,7 +642,7 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 0.166
+    "latency_s": 0.108
    },
    {
     "qid": "q-en-07",
@@ -655,7 +655,7 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 0.09
+    "latency_s": 0.105
    },
    {
     "qid": "q-en-08",
@@ -668,7 +668,7 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 0.162
+    "latency_s": 0.115
    },
    {
     "qid": "q-zh-01",
@@ -681,7 +681,7 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 0.161
+    "latency_s": 0.097
    },
    {
     "qid": "q-zh-02",
@@ -694,7 +694,7 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 0.093
+    "latency_s": 0.106
    },
    {
     "qid": "q-zh-03",
@@ -707,7 +707,7 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 0.168
+    "latency_s": 0.109
    },
    {
     "qid": "q-zh-04",
@@ -720,7 +720,7 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 0.158
+    "latency_s": 0.094
    },
    {
     "qid": "q-zh-05",
@@ -733,7 +733,7 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 0.093
+    "latency_s": 0.117
    },
    {
     "qid": "q-ja-01",
@@ -746,7 +746,7 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 0.154
+    "latency_s": 0.098
    },
    {
     "qid": "q-ja-02",
@@ -759,7 +759,7 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 0.163
+    "latency_s": 0.097
    },
    {
     "qid": "q-ja-03",
@@ -772,7 +772,7 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 0.164
+    "latency_s": 0.111
    },
    {
     "qid": "q-ja-04",
@@ -785,20 +785,20 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 0.092
+    "latency_s": 0.099
    },
    {
     "qid": "q-x-01",
     "lang": "en",
     "recall@1": 0.0,
     "hit@1": 0,
-    "recall@3": 0.0,
-    "hit@3": 0,
-    "recall@5": 0.0,
-    "hit@5": 0,
-    "precision@5": 0.0,
-    "mrr": 0.14285714285714285,
-    "latency_s": 0.166
+    "recall@3": 1.0,
+    "hit@3": 1,
+    "recall@5": 1.0,
+    "hit@5": 1,
+    "precision@5": 0.4,
+    "mrr": 0.5,
+    "latency_s": 0.1
    },
    {
     "qid": "q-x-02",
@@ -811,7 +811,7 @@
     "hit@5": 1,
     "precision@5": 0.2,
     "mrr": 1.0,
-    "latency_s": 0.162
+    "latency_s": 0.103
    },
    {
     "qid": "q-x-03",
@@ -824,7 +824,7 @@
     "hit@5": 0,
     "precision@5": 0.0,
     "mrr": 0.0,
-    "latency_s": 0.159
+    "latency_s": 0.109
    }
   ]
  }
