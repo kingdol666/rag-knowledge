@@ -169,3 +169,25 @@ Deviations from the reproduced paper's settings are enumerated in
   E16 矩阵 9,837/9,837 字段逐位一致；功能轨聚合层 0 差异；E19 两次运行
   97.9% 检索位置一致。E8 绝对值依赖向量库构建时状态（chromadb 段损坏缺陷，
   触发器与规避已文档化），排序结论在每次健康重跑中复现。
+
+---
+
+## Snapshot 2026-09-17-a (回答质量主线改版 + E4 全量运行记录)
+
+回答质量（answer-quality）叙事改版所需，快照升级为 `2026-09-17-a`：
+
+* 2026-09-16-a 的全部引用字节**原样再冻结**（SOURCES 从 data-snapshot 自读）。
+* 新增引用产物 —— **全部 7 次** E4 双基线运行（producer:
+  `40_experience_suite.py` + `42_e4_fix.py`，每 run 目录一份
+  `e4_baselines_fixed.json`）：
+  - `e4_run_20260913T173832Z` … `e4_run_20260916T200240Z`（7 份）。
+  - 论文据此以完整运行史报告经验材料对比（Table `tab:e4`）：管线材料
+    6/7 次排第一，均值 ours 4.89 vs one-shot 3.07 vs raw 3.39；唯一落败
+    的 R7（1.50）即论文披露的 produce/skip 不稳定性——**不做轮次挑选**。
+* 新增派生表 `tab:ansqual`（producer: `make_assets.py`，读冻结
+  `deepread_matrix.json` 的 per-question judge/retrieval/verdict 行）：
+  按自身 rank-1 命中与否条件化的 judge 均值 + 弃答行为 ——
+  qdcvr 8.48/5.89、dense 9.18/8.25，qdcvr 弃答率 40%、弃答均分 5.33。
+* `make_assets.py` 同时新增宏 `macros/e4.tex`、`macros/ansqual.tex`，
+  论文内联数字（8.48/9.18、6/7、4.89/3.07/3.39 等）全部由宏注入，
+  无手抄。

@@ -7,10 +7,9 @@ pipeline; 30 official queries and qrels). Rows 1--3: suite channels; rows
 4--11: reproduced DeepRead-style systems, answered through one shared agent
 (4{,}000-char evidence budget) and graded 0--10 by an independent agent given
 the gold document; Rank/Wins come from a middle agent ranking the eight
-anonymised answers (HTTP rerun, byte-identical offline, 480/480 checks).
-Producers: \texttt{22\_std2\_retrieval.py} (suite rows),
-\texttt{run\_matrix.py} + \texttt{27\_api\_flow\_test.py} (systems).
-Setting reproduced from \citet{li2026deepread}.}
+anonymised answers. Producers: \texttt{22\_std2\_retrieval.py},
+\texttt{run\_matrix.py} + \texttt{27\_api\_flow\_test.py}. Setting reproduced
+from \citet{li2026deepread}.}
 \label{tab:deepread}
 \begin{tabular}{@{}lccccccccc@{}}
 \toprule

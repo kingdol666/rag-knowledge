@@ -1,0 +1,67 @@
+{
+ "experiment": "E4 baseline rerun (fixed doc read paths)",
+ "llm_summary_material": [
+  "Black holes span >8 orders of magnitude: stellar-mass ones run 3–100 M☉ from collapsed stars, while supermassive ones reach billions at galactic centres (Sagittarius A* ≈ 4.3 M☉×10⁶).",
+  "Event Horizon Telescope imaging confirmed theory: M87's shadow (April 2019, ~6.5 billion M☉) then Sgr A* (2022) — direct interferometry beats inference from indirect signatures.",
+  "Hawking radiation is physically real but operationally irrelevant: a solar-mass hole evaporates in ~10⁶⁷ years, far exceeding the universe's age.",
+  "Process coffee cherries within hours of picking: washed = mechanical depulp plus 12–72 h mucilage ferment, highlighting acidity and floral notes (Colombia, most of Central America).",
+  "Natural (dry) processing sun-dries whole cherries 2–4 weeks for wine-like Ethiopian/Brazilian cup, but uneven drying causes off-flavours; honey grades (yellow/red/black) map to retained mucilage.",
+  "Finish drying to ~11% moisture then hull, size/density grade and rest; medium roast is reached at ~205–215 °C just after first crack.",
+  "EV practice: Li-ion at ~250 Wh/kg and 800 V architectures (Ioniq 5, Taycan) add 200 km in ~15 min DC fast charging, while pack cost fell from ~$1,100/kWh (2010) to <$140 (2023) and solid-state targets ~2027 production.",
+  "Internet milestones anchored the open web: TCP/IP \"flag day\" 1 Jan 1983, DNS (Mockapetris) same year, WWW at CERN 1989 / public 1991, commercial restrictions lifted 1995 → 5.4 billion users by 2023."
+ ],
+ "judged": {
+  "no_synthesis": {
+   "scores": [
+    5.0,
+    5.0,
+    3.0,
+    4.0
+   ],
+   "mean": 4.25
+  },
+  "ours_experience": {
+   "scores": [
+    4.0,
+    6.0,
+    3.0,
+    5.0
+   ],
+   "mean": 4.5
+  },
+  "llm_summary": {
+   "scores": [
+    2.0,
+    3.0,
+    3.0,
+    2.0
+   ],
+   "mean": 2.5
+  },
+  "note": "identical JUDGE_PROMPT; llm-summary material regenerated with KB-prefixed doc paths (previous sample degenerated to empty input, the summariser correctly refused)"
+ },
+ "meta": {
+  "generated": "2026-09-16T18:31:15.683709+00:00",
+  "env": {
+   "run_id": "run-20260916T182055Z",
+   "git_commit": "db8e25a",
+   "config_hash": "fe17f60fb7e09075",
+   "seed": 0,
+   "backend": "http://localhost:8771",
+   "web": "http://localhost:6789",
+   "embedding": "BAAI/bge-m3 (local GPU, normalize)",
+   "vector_store": "ChromaDB (persistent)",
+   "keyword_index": "jieba BM25",
+   "randomness": "deterministic pipeline (no RNG); agent channel = mean of runs",
+   "retrieval_defaults": {
+    "vector_top_k": 10,
+    "stage1_top_k": 40,
+    "stage2_top_k": 10,
+    "qdcvr_threshold": 0.35,
+    "verification_reads": 3,
+    "exp_threshold_default": 0.45
+   },
+   "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
+  }
+ }
+}

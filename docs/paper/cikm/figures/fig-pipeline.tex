@@ -1,57 +1,55 @@
 % Hand-drawn (not data-generated): the QDCVR pipeline and where the two
-% mechanisms under evaluation sit inside it.
+% mechanisms under evaluation sit inside it. Natural width ~ textwidth.
 \begin{figure*}[t]
 \centering
-\resizebox{0.82\textwidth}{!}{%
+\resizebox{0.85\textwidth}{!}{%
 \begin{tikzpicture}[
   font=\small,
-  stage/.style={draw, rounded corners=2pt, minimum height=9mm, minimum width=17mm,
+  stage/.style={draw, rounded corners=2pt, minimum height=11mm, minimum width=21mm,
                 align=center, fill=black!4, inner sep=3pt},
-  core/.style={draw, rounded corners=2pt, minimum height=9mm, minimum width=17mm,
-               align=center, fill=black!18, line width=0.9pt, inner sep=3pt},
-  store/.style={draw, dashed, rounded corners=2pt, minimum height=7mm,
-                align=center, fill=white, inner sep=3pt, font=\scriptsize},
-  ar/.style={-{Stealth[length=1.8mm]}, thick},
+  core/.style={draw, rounded corners=2pt, minimum height=11mm, minimum width=21mm,
+               align=center, fill=black!16, line width=1.0pt, inner sep=3pt},
+  store/.style={draw, dashed, rounded corners=2pt, minimum height=8.5mm,
+                align=center, fill=white, inner sep=4pt, font=\footnotesize},
+  ar/.style={-{Stealth[length=2mm]}, thick},
 ]
 
 % ── main pipeline ────────────────────────────────────────────────
-\node[stage] (q)   at (0,0)    {Query};
-\node[stage] (s0)  at (2.0,0)  {S0\\intent};
-\node[core]  (s1)  at (4.2,0)  {\textbf{S1}\\domain\\scoping};
-\node[stage] (s2)  at (6.4,0)  {S2\\two-stage\\recall};
-\node[stage] (s3)  at (8.6,0)  {S3\\dedup\\+ $\tau$};
-\node[core]  (s4)  at (10.8,0) {\textbf{S4}\\content\\adj.};
-\node[stage] (s5)  at (13.0,0) {S5\\tiering};
-\node[stage] (s6)  at (15.2,0) {S6\\answer\\+ blind spot};
+\node[stage] (q)   at (0,0)     {Query};
+\node[stage] (s0)  at (2.35,0)  {S0\\ intent +\\ rewrite};
+\node[core]  (s1)  at (4.9,0)   {\textbf{S1}\\ domain\\ scoping};
+\node[stage] (s2)  at (7.45,0)  {S2\\ two-stage\\ recall};
+\node[stage] (s3)  at (10.0,0)  {S3\\ dedup\\ + $\tau$};
+\node[core]  (s4)  at (12.55,0) {\textbf{S4}\\ content\\ adjudication};
+\node[stage] (s5)  at (15.1,0)  {S5\\ tiering};
+\node[stage] (s6)  at (17.65,0) {S6\\ answer +\\ blind spot};
 
 \foreach \a/\b in {q/s0, s0/s1, s1/s2, s2/s3, s3/s4, s4/s5, s5/s6}
   \draw[ar] (\a) -- (\b);
 
 % ── stores ───────────────────────────────────────────────────────
-\node[store] (kb)  at (4.2,-2.1)  {knowledge bases\\ (hierarchical)};
-\node[store] (idx) at (8.6,-2.1)  {BM25 + ChromaDB\\ (full-corpus chunks)};
-\node[store] (exp) at (11.5,-2.1) {experience store\\ ($P_0/P_1/P_2$)};
+\node[store] (kb)  at (4.9,-1.9)  {knowledge bases (hierarchical)};
+\node[store] (idx) at (10.0,-1.9) {BM25 + ChromaDB index (full-corpus chunks)};
+\node[store] (exp) at (15.1,-1.9) {experience store ($P_0/P_1/P_2$)};
 
 \draw[ar, dashed] (s1) -- (kb);
 \draw[ar, dashed] (s2) -- (idx);
-\draw[ar, dashed] (s4) -- (exp);
+\draw[ar, dashed] (s4.south) to[out=-100,in=140] (idx.north east);
 \draw[ar, dashed] (exp) -- (s5);
 
 % ── read path annotation ─────────────────────────────────────────
-\draw[ar, dotted, thick] (s4.south east) to[out=-35, in=70] node[right, font=\footnotesize, pos=0.55]
-   {\texttt{kb\_doc\_read}\ (direct, no API)} (idx.south east);
-\node[font=\footnotesize, align=left, anchor=west] at (0.1,-3.2)
-  {Solid = control flow;\quad dashed = store access;\quad dotted = content read
-   (Stage~4 adjudicates on \emph{text}, not on embeddings).};
+\draw[ar, dotted, thick] (s4.south west) to[out=-115,in=35]
+   node[above, font=\footnotesize, pos=0.35]
+   {\texttt{kb\_doc\_read}} (idx.west);
 
 % ── highlight the two mechanisms ─────────────────────────────────
-\node[draw, rounded corners=3pt, fit=(s1), inner sep=2.4mm, line width=1.1pt, black] {};
-\node[draw, rounded corners=3pt, fit=(s4), inner sep=2.4mm, line width=1.1pt, black] {};
+\node[draw, rounded corners=3pt, fit=(s1), inner sep=2.2mm, line width=1.2pt] {};
+\node[draw, rounded corners=3pt, fit=(s4), inner sep=2.2mm, line width=1.2pt] {};
 
 % ── agent surface ────────────────────────────────────────────────
-\node[store, minimum width=52mm] (mcp) at (12.6,-3.2)
-  {94 MCP tools + 14 agent skills (agent-native surface)};
-\draw[ar, dashed] (s6.south) to[out=-90, in=25] (mcp.north east);
+\node[store, minimum width=118mm] (mcp) at (8.8,-3.6)
+  {every stage reachable through the agent-native surface: 94 MCP tools + 14 agent skills (adjudication reads \emph{text}, not embeddings)};
+\draw[ar, dashed] (s6.south) to[out=-90,in=20] (mcp.north east);
 
 \end{tikzpicture}}
 \caption{The \sys{} pipeline. Two stages carry the method's claims:

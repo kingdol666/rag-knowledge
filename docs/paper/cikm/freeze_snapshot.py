@@ -28,6 +28,13 @@ SNAPSHOT HISTORY
                 while the paper cites the frozen values), and added the E8
                 HotpotQA frozen artifact plus the two E19 real-scenario runs
                 and their machine comparison (reproducibility-audit sources).
+  2026-09-17-a  re-pinned 2026-09-16-a bytes from the snapshot itself, and
+                added ALL SEVEN recorded E4 dual-baseline runs
+                (e4_baselines_fixed.json, producer 40_experience_suite.py +
+                42_e4_fix.py) so the experience-synthesis comparison can be
+                reported over its complete run history — including the one
+                round in which the pipeline arm lost — rather than a
+                hand-picked subset.
 """
 from __future__ import annotations
 
@@ -36,7 +43,7 @@ import json
 import os
 import shutil
 
-SNAPSHOT_ID = "2026-09-16-a"
+SNAPSHOT_ID = "2026-09-17-a"
 
 ROOT = None
 d = os.path.dirname(os.path.abspath(__file__))
@@ -52,11 +59,9 @@ DST = os.path.join(ROOT, "docs", "paper", "cikm", "data-snapshot")
 os.makedirs(DST, exist_ok=True)
 
 # (source relative to repo root, name in snapshot, note)
-# 2026-09-16-a: 沿用 2026-09-15-a 冻结字节(data-snapshot 内已冻结的文件从
-# 快照本身复读, 不从易变的 results/ 顶层重取 — module_b_r2 在 09-16 的重跑中
-# 漂移至 0.75/0.90, 而论文引用的是冻结值 0.80/0.90, 这正是快照存在的理由),
-# 新增: E8 HotpotQA 冻结产物(run-20260914T053707Z, tab-multidomain 之源)与
-# E19 真实场景两次运行 + 机器对比(复现审计段落之源)。
+# 2026-09-17-a: 沿用 2026-09-16-a 冻结字节(data-snapshot 内已冻结的文件从
+# 快照本身复读), 新增: 全部 7 次 E4 双基线运行记录(完整运行史, 含管线臂
+# 落败的一次), 供论文按完整记录报告经验合成对比。
 SNAPSHOT_DIR_REL = "docs/paper/cikm/data-snapshot"
 SOURCES = [
     ("docs/paper/cikm/data-snapshot/module_a_ingestion_r1.json", "module_a_ingestion_r1.json",
@@ -98,6 +103,27 @@ SOURCES = [
      "real_scenario_comparison.json",
      "E19 run1-vs-run2 machine comparison: 47/48 retrieval positions, judge mean |d|=0.417 — producer: scripts/32_real_scenario_report.py --compare"),
 ]
+
+# E4 dual-baseline runs: every recorded execution of the experience-synthesis
+# comparison (producer: 40_experience_suite.py, repaired by 42_e4_fix.py).
+# All seven runs enter the snapshot so the paper reports the COMPLETE history,
+# including the round where the pipeline arm lost (produce/skip instability).
+E4_RUNS = [
+    "20260913T173832Z",
+    "20260914T063254Z",
+    "20260915T042632Z",
+    "20260915T174235Z",
+    "20260916T180506Z",
+    "20260916T182055Z",
+    "20260916T200240Z",
+]
+for _ts in E4_RUNS:
+    SOURCES.append((
+        f"benchmark-suite/results/run-{_ts}/e4_baselines_fixed.json",
+        f"e4_run_{_ts}.json",
+        "E4 dual-baseline experience-synthesis comparison run — producer: "
+        "scripts/40_experience_suite.py + scripts/42_e4_fix.py",
+    ))
 
 # Frozen for the provenance record but NO LONGER CITED: the paper's main results
 # table, FPR figure and ablation table used to come from cikm_summary.json. That

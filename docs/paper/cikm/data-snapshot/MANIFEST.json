@@ -1,5 +1,5 @@
 {
-  "snapshot_id": "2026-09-16-a",
+  "snapshot_id": "2026-09-17-a",
   "frozen_at": "2026-09-16",
   "note": "Immutable copies of the benchmark artefacts cited by this paper. make_assets.py reads ONLY from here. Every cited artefact names its producing script; provenance_audit.py fails the build if one loses it.",
   "files": [
@@ -100,6 +100,55 @@
       "note": "E19 run1-vs-run2 machine comparison: 47/48 retrieval positions, judge mean |d|=0.417 — producer: scripts/32_real_scenario_report.py --compare",
       "sha256": "45e3feb571f91b80119cedf846ad70192ce5dacab3269d8fdf086a459d5e4a45",
       "bytes": 10129
+    },
+    {
+      "name": "e4_run_20260913T173832Z.json",
+      "source": "benchmark-suite/results/run-20260913T173832Z/e4_baselines_fixed.json",
+      "note": "E4 dual-baseline experience-synthesis comparison run — producer: scripts/40_experience_suite.py + scripts/42_e4_fix.py",
+      "sha256": "278d2018d5b0c69c554f1976e7baad8fb9a38fdaffe1987e67a845e359845bf3",
+      "bytes": 2904
+    },
+    {
+      "name": "e4_run_20260914T063254Z.json",
+      "source": "benchmark-suite/results/run-20260914T063254Z/e4_baselines_fixed.json",
+      "note": "E4 dual-baseline experience-synthesis comparison run — producer: scripts/40_experience_suite.py + scripts/42_e4_fix.py",
+      "sha256": "81b30d7797c5a8175df2e7d3f862f6ea353ece8d50784f798acbcad398f98073",
+      "bytes": 3464
+    },
+    {
+      "name": "e4_run_20260915T042632Z.json",
+      "source": "benchmark-suite/results/run-20260915T042632Z/e4_baselines_fixed.json",
+      "note": "E4 dual-baseline experience-synthesis comparison run — producer: scripts/40_experience_suite.py + scripts/42_e4_fix.py",
+      "sha256": "df7b7163757447c1296b7a463c12d85e6de3aea686b3fa47bfd12c96974f07e1",
+      "bytes": 2688
+    },
+    {
+      "name": "e4_run_20260915T174235Z.json",
+      "source": "benchmark-suite/results/run-20260915T174235Z/e4_baselines_fixed.json",
+      "note": "E4 dual-baseline experience-synthesis comparison run — producer: scripts/40_experience_suite.py + scripts/42_e4_fix.py",
+      "sha256": "a666f25239ce2e5f8f0e486c60b41e1e26da7c9072e1434a4e070d0022b35d1e",
+      "bytes": 3160
+    },
+    {
+      "name": "e4_run_20260916T180506Z.json",
+      "source": "benchmark-suite/results/run-20260916T180506Z/e4_baselines_fixed.json",
+      "note": "E4 dual-baseline experience-synthesis comparison run — producer: scripts/40_experience_suite.py + scripts/42_e4_fix.py",
+      "sha256": "ed3d0c22e7e7b64f7ae6007c777ddcaca12210c6c2a3d6a30d3e8790a8b6d4f3",
+      "bytes": 2737
+    },
+    {
+      "name": "e4_run_20260916T182055Z.json",
+      "source": "benchmark-suite/results/run-20260916T182055Z/e4_baselines_fixed.json",
+      "note": "E4 dual-baseline experience-synthesis comparison run — producer: scripts/40_experience_suite.py + scripts/42_e4_fix.py",
+      "sha256": "25c2d04780cd1b1fdf882873d5b0e3bde13986767e7b5afb8d6682a6eb445178",
+      "bytes": 2902
+    },
+    {
+      "name": "e4_run_20260916T200240Z.json",
+      "source": "benchmark-suite/results/run-20260916T200240Z/e4_baselines_fixed.json",
+      "note": "E4 dual-baseline experience-synthesis comparison run — producer: scripts/40_experience_suite.py + scripts/42_e4_fix.py",
+      "sha256": "8145f38ec4fc04aa030eb290badbd367341a98d91ccd9fc7e4cd8ba6f8cc0935",
+      "bytes": 3120
     }
   ],
   "withheld": [

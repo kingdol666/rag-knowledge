@@ -1,0 +1,21 @@
+\begin{table}[t]
+\centering\footnotesize
+\setlength{\tabcolsep}{2.6pt}
+\caption{Experience material as answering evidence: mean judge score (0--10,
+identical judge prompt, eight frozen operational queries) over \textbf{all
+seven recorded runs} of the dual-baseline comparison --- no round is omitted.
+The pipeline arm ranks first in 6 of 7 runs;
+in the exception (R7) its synthesis round produced shell entries, the
+produce/skip instability of \S\ref{sec:exp-analysis}. Producers:
+\texttt{40\_experience\_suite.py}, \texttt{42\_e4\_fix.py}.}
+\label{tab:e4}
+\begin{tabular}{@{}lccccccc|c@{}}
+\toprule
+Condition & R1 & R2 & R3 & R4 & R5 & R6 & R7 & Mean \\
+\midrule
+\sys{} (distilled) & \textbf{5.25} & \textbf{5.25} & \textbf{6.50} & \textbf{5.50} & \textbf{5.75} & \textbf{4.50} & 1.50 & 4.89 \\
+One-shot summary & 3.00 & 2.25 & 3.50 & 3.00 & 3.75 & 2.50 & \textbf{3.50} & 3.07 \\
+Raw documents & 4.00 & 2.50 & 3.75 & 4.50 & 2.00 & 4.25 & 2.75 & 3.39 \\
+\bottomrule
+\end{tabular}
+\end{table}

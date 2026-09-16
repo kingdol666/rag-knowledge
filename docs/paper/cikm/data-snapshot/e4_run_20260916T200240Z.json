@@ -1,0 +1,67 @@
+{
+ "experiment": "E4 baseline rerun (fixed doc read paths)",
+ "llm_summary_material": [
+  "**Black holes** — Treat Hawking-radiation evaporation as operationally irrelevant: a solar-mass hole needs ~10⁶⁷ years to evaporate, far beyond any planning horizon.",
+  "**Coffee processing** — Process cherries within hours of picking and choose the method deliberately: washed (12–72 h fermentation) for acidity/floral clarity, natural (2–4 weeks drying) for fruity profiles but only with even drying, honey as the in-between graded by residual mucilage.",
+  "**EV charging** — Match deployment to the region's plug standard (CCS in EU/NA, GB/T in China, CHAdeMO in Japan) and note that the headline \"200 km in ~15 min\" applies only to 800 V architectures.",
+  "**Battery economics** — Model EV costs at current cell prices (<$140/kWh in 2023, down from ~$1,100/kWh in 2010), not historical figures, and plan for solid-state as a 2027+ option rather than a present one.",
+  "**Protocol migration** — Schedule a hard cutover date: internet growth hinged on flag day (TCP/IP, 1 Jan 1983) and on replacing ad-hoc mechanisms (hosts file → DNS) with a scalable system.",
+  "**Photosynthesis benchmarks** — Compare efficiencies only under matched conditions: field crops convert ~3% of light, C4 plants (maize, sugarcane) win in hot climates, and artificial solar-to-fuel reached ~10% in 2022.",
+  "**Solar siting** — PV at ~$0.048/kWh is the cheapest new-build option in most markets, but specify CSP with molten-salt storage when electricity must be delivered after sunset.",
+  "**Wind siting** — Tier-one decision is location, because yield scales with the *cube* of wind speed; validate estimates against the Betz limit (59.3%), real-world efficiency (45–50%), and cut-in/cut-out speeds (3/25 m/s)."
+ ],
+ "judged": {
+  "no_synthesis": {
+   "scores": [
+    4.0,
+    4.0,
+    3.0,
+    0
+   ],
+   "mean": 2.75
+  },
+  "ours_experience": {
+   "scores": [
+    0,
+    0,
+    0,
+    6.0
+   ],
+   "mean": 1.5
+  },
+  "llm_summary": {
+   "scores": [
+    5.0,
+    3.0,
+    4.0,
+    2.0
+   ],
+   "mean": 3.5
+  },
+  "note": "identical JUDGE_PROMPT; llm-summary material regenerated with KB-prefixed doc paths (previous sample degenerated to empty input, the summariser correctly refused)"
+ },
+ "meta": {
+  "generated": "2026-09-16T20:05:45.655758+00:00",
+  "env": {
+   "run_id": "run-20260916T200240Z",
+   "git_commit": "db8e25a",
+   "config_hash": "fe17f60fb7e09075",
+   "seed": 0,
+   "backend": "http://localhost:8771",
+   "web": "http://localhost:6789",
+   "embedding": "BAAI/bge-m3 (local GPU, normalize)",
+   "vector_store": "ChromaDB (persistent)",
+   "keyword_index": "jieba BM25",
+   "randomness": "deterministic pipeline (no RNG); agent channel = mean of runs",
+   "retrieval_defaults": {
+    "vector_top_k": 10,
+    "stage1_top_k": 40,
+    "stage2_top_k": 10,
+    "qdcvr_threshold": 0.35,
+    "verification_reads": 3,
+    "exp_threshold_default": 0.45
+   },
+   "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
+  }
+ }
+}

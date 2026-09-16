@@ -1,0 +1,67 @@
+{
+ "experiment": "E4 baseline rerun (fixed doc read paths)",
+ "llm_summary_material": [
+  "Process coffee cherries within hours of picking, and ferment washed beans 12–72 hours before washing to avoid spoilage and off-flavours.",
+  "Dry green coffee to about 11% moisture before hulling and grading, and target 205–215 °C for a medium roast just after first crack.",
+  "Site wind projects first: available power scales with the cube of wind speed, so doubling average wind speed raises yield about eightfold.",
+  "Accept that no turbine beats the 59.3% Betz limit — modern machines run 45–50%, with capacity factors of 35–45% onshore and >50% at the best offshore sites.",
+  "Treat utility-scale solar as the default cheapest new generation (~$0.048/kWh in 2021) and use CSP with molten-salt storage when power is needed after sunset.",
+  "Match EV charging infrastructure to the region's standard — CCS in Europe/North America, GB/T in China, CHAdeMO in Japan — and budget for 800 V architectures that add 200 km in ~15 minutes on DC fast charge.",
+  "Assume battery economics keep improving from ~$1,100/kWh (2010) to under $140/kWh (2023), with solid-state cells only at limited production around 2027 rather than broadly available.",
+  "Do not plan around black hole evaporation: a solar-mass hole takes ~10^67 years, so work instead from direct observation (EHT imaged M87 in 2019 and Sagittarius A* in 2022)."
+ ],
+ "judged": {
+  "no_synthesis": {
+   "scores": [
+    3.0,
+    3.0,
+    2.0,
+    0
+   ],
+   "mean": 2.0
+  },
+  "ours_experience": {
+   "scores": [
+    5.0,
+    6.0,
+    6.0,
+    6.0
+   ],
+   "mean": 5.75
+  },
+  "llm_summary": {
+   "scores": [
+    3.0,
+    4.0,
+    4.0,
+    4.0
+   ],
+   "mean": 3.75
+  },
+  "note": "identical JUDGE_PROMPT; llm-summary material regenerated with KB-prefixed doc paths (previous sample degenerated to empty input, the summariser correctly refused)"
+ },
+ "meta": {
+  "generated": "2026-09-16T18:12:39.195709+00:00",
+  "env": {
+   "run_id": "run-20260916T180506Z",
+   "git_commit": "db8e25a",
+   "config_hash": "fe17f60fb7e09075",
+   "seed": 0,
+   "backend": "http://localhost:8771",
+   "web": "http://localhost:6789",
+   "embedding": "BAAI/bge-m3 (local GPU, normalize)",
+   "vector_store": "ChromaDB (persistent)",
+   "keyword_index": "jieba BM25",
+   "randomness": "deterministic pipeline (no RNG); agent channel = mean of runs",
+   "retrieval_defaults": {
+    "vector_top_k": 10,
+    "stage1_top_k": 40,
+    "stage2_top_k": 10,
+    "qdcvr_threshold": 0.35,
+    "verification_reads": 3,
+    "exp_threshold_default": 0.45
+   },
+   "mcp_command": "uv run --directory kb-mcp python server.py (stdio)"
+  }
+ }
+}

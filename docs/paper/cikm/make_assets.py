@@ -391,10 +391,9 @@ pipeline; 30 official queries and qrels). Rows 1--3: suite channels; rows
 4--11: reproduced DeepRead-style systems, answered through one shared agent
 (4{,}000-char evidence budget) and graded 0--10 by an independent agent given
 the gold document; Rank/Wins come from a middle agent ranking the eight
-anonymised answers (HTTP rerun, byte-identical offline, 480/480 checks).
-Producers: \texttt{22\_std2\_retrieval.py} (suite rows),
-\texttt{run\_matrix.py} + \texttt{27\_api\_flow\_test.py} (systems).
-Setting reproduced from \citet{li2026deepread}.}
+anonymised answers. Producers: \texttt{22\_std2\_retrieval.py},
+\texttt{run\_matrix.py} + \texttt{27\_api\_flow\_test.py}. Setting reproduced
+from \citet{li2026deepread}.}
 \label{tab:deepread}
 \begin{tabular}{@{}lccccccccc@{}}
 \toprule
@@ -440,7 +439,7 @@ FIG_COL = {m: ("#c0392b" if m == "qdcvr" else "#2c5f8a") for m in FIG_M}
 # Fig. A — per-question judge-score strip (8 systems x 30 questions):
 # shows grade compression, the proposed system's last-place mean, and the
 # verdict-not-ok crosses that reward DeepRead's faithful abstention.
-fig, ax = plt.subplots(figsize=(3.35, 1.38))
+fig, ax = plt.subplots(figsize=(3.35, 1.40))
 for i, m in enumerate(FIG_M):
     rows = DR["judge_rows"].get(m) or []
     pts = [(r["score"], bool(r.get("verdict_ok")))
@@ -452,17 +451,21 @@ for i, m in enumerate(FIG_M):
                    linewidths=0.9)
     if pts:
         mean = sum(p[0] for p in pts) / len(pts)
-        ax.hlines(mean, i - 0.3, i + 0.3, color=FIG_COL[m], lw=1.6, zorder=4)
+        ax.hlines(mean, i - 0.3, i + 0.3, color=FIG_COL[m], lw=1.8, zorder=4)
+        ax.annotate(f"{mean:.1f}", (i, mean), textcoords="offset points",
+                    xytext=(13, -2), fontsize=5.4, color=FIG_COL[m],
+                    ha="center", va="top", zorder=5)
 ax.set_xticks(range(len(FIG_M)))
 ax.set_xticklabels([FIG_LBL[m] for m in FIG_M], rotation=38, ha="right",
-                   fontsize=6.5)
-ax.set_ylabel("judge score (0--10)")
+                   fontsize=6.8)
+ax.set_ylabel("judge score (0--10)", fontsize=7)
 ax.set_ylim(-0.5, 10.5)
+ax.tick_params(axis="y", labelsize=6.5)
 handles = [plt.Line2D([], [], marker="o", ls="", ms=3.5, color="#2c5f8a",
                       label="verdict ok"),
            plt.Line2D([], [], marker="x", ls="", ms=4.5, color="#e07b39",
                       label="verdict not ok"),
-           plt.Line2D([], [], color="#2c5f8a", lw=1.6, label="mean")]
+           plt.Line2D([], [], color="#2c5f8a", lw=1.8, label="mean")]
 ax.legend(handles=handles, fontsize=5.8, loc="lower left", frameon=False,
           ncol=3, handletextpad=0.3, columnspacing=0.8)
 fig.tight_layout(pad=0.4)
@@ -471,7 +474,9 @@ plt.close(fig)
 
 # Fig. B — retrieval latency vs ranking quality (one point per system):
 # the paper's cost argument in one image; marker size encodes judge mean.
-fig, ax = plt.subplots(figsize=(3.35, 1.38))
+# Label offsets are per-system so no two labels collide (ITRG-r and Dense+rr
+# share almost the same latency).
+fig, ax = plt.subplots(figsize=(3.35, 1.40))
 for m in FIG_M:
     r = DR["summary"]["retrieval"].get(m) or {}
     j = DR["summary"]["judge"].get(m) or {}
@@ -480,15 +485,18 @@ for m in FIG_M:
         continue
     ax.scatter(lat, nd, s=10 + 26 * max(0.0, (jm - 7.0)) / 1.93,
                color=FIG_COL[m], zorder=3, alpha=0.9)
-    off = {"dense_rag": (0, 7), "search_o1": (4, -9),
-           "deepread": (4, -9)}.get(m, (4, 3))
+    off = {"dense_rag": (0, 7), "search_o1": (-2, 7), "deepread": (6, -8),
+           "dense_rag_rerank": (-14, 5), "itrg_refresh": (8, -8),
+           "itrg_refine": (6, 4), "raptor": (7, -1), "qdcvr": (8, -1),
+           }.get(m, (5, 3))
     ax.annotate(FIG_LBL[m], (lat, nd), textcoords="offset points", xytext=off,
-                fontsize=6,
+                fontsize=6.2,
                 ha="center" if m == "dense_rag" else "left")
 ax.set_xscale("log")
-ax.set_xlabel("mean retrieval latency per query (s, log scale)")
-ax.set_ylabel("nDCG@10")
-ax.set_xlim(0.2, 200)
+ax.set_xlabel("mean retrieval latency per query (s, log scale)", fontsize=7)
+ax.set_ylabel("nDCG@10", fontsize=7)
+ax.set_xlim(0.2, 300)
+ax.tick_params(labelsize=6.5)
 fig.tight_layout(pad=0.4)
 fig.savefig(os.path.join(FIGDIR, "fig-latency.pdf"))
 plt.close(fig)
@@ -571,6 +579,154 @@ Graph build / search probe hits & """ + f"{'ok' if d_graph['build_ok'] else 'FAI
 \end{tabular}
 \end{table}
 """)
+
+# ══════════════════════════════════════════════════════════════════════
+# E4 — experience-synthesis dual-baseline comparison, COMPLETE run history.
+# Producer: benchmark-suite/scripts/40_experience_suite.py (+42_e4_fix.py).
+# All seven recorded runs are in the frozen snapshot; the table shows every
+# run, including the one in which the pipeline arm lost (produce/skip
+# instability) — the paper may not cherry-pick favourable rounds.
+# ══════════════════════════════════════════════════════════════════════
+E4_TS = ["20260913T173832Z", "20260914T063254Z", "20260915T042632Z",
+         "20260915T174235Z", "20260916T180506Z", "20260916T182055Z",
+         "20260916T200240Z"]
+E4_CONDS = [("ours_experience", "\\sys{} (distilled experiences)"),
+            ("llm_summary", "One-shot LLM summary"),
+            ("no_synthesis", "Raw documents (no synthesis)")]
+E4_SHORT = {"ours_experience": "\\sys{} (distilled)", "llm_summary": "One-shot summary",
+            "no_synthesis": "Raw documents"}
+e4_scores = {c: [] for c, _ in E4_CONDS}
+e4_cells = {c: [] for c, _ in E4_CONDS}
+e4_firsts = 0
+for ts in E4_TS:
+    run = load(f"e4_run_{ts}.json")
+    judged = run["judged"]
+    vals = {}
+    for c, _ in E4_CONDS:
+        v = judged[c].get("mean")
+        vals[c] = v
+        e4_scores[c].append(v)
+        e4_cells[c].append(f"{v:.2f}")
+    if vals["ours_experience"] == max(vals.values()):
+        e4_firsts += 1
+e4_means = {c: sum(v) / len(v) for c, v in e4_scores.items()}
+e4_rows = []
+for c, label in E4_CONDS:
+    cells = e4_cells[c]
+    # bold the per-run winner
+    for j, ts in enumerate(E4_TS):
+        run_vals = [e4_scores[cc][j] for cc, _ in E4_CONDS]
+        if e4_scores[c][j] == max(run_vals):
+            cells[j] = "\\textbf{" + cells[j] + "}"
+    e4_rows.append(E4_SHORT[c] + " & " + " & ".join(cells)
+                   + f" & {e4_means[c]:.2f} \\\\")
+w("tables/tab-e4.tex", r"""\begin{table}[t]
+\centering\footnotesize
+\setlength{\tabcolsep}{2.6pt}
+\caption{Experience material as answering evidence: mean judge score (0--10,
+identical judge prompt, eight frozen operational queries) over \textbf{all
+seven recorded runs} of the dual-baseline comparison --- no round is omitted.
+The pipeline arm ranks first in """ + f"{e4_firsts} of {len(E4_TS)}" + r""" runs;
+in the exception (R7) its synthesis round produced shell entries, the
+produce/skip instability of \S\ref{sec:exp-analysis}. Producers:
+\texttt{40\_experience\_suite.py}, \texttt{42\_e4\_fix.py}.}
+\label{tab:e4}
+\begin{tabular}{@{}lccccccc|c@{}}
+\toprule
+Condition & R1 & R2 & R3 & R4 & R5 & R6 & R7 & Mean \\
+\midrule
+""" + "\n".join(e4_rows) + r"""
+\bottomrule
+\end{tabular}
+\end{table}
+""")
+w("macros/e4.tex",
+  "\\newcommand{\\eFourRuns}{" + str(len(E4_TS)) + "}\n"
+  "\\newcommand{\\eFourFirsts}{" + str(e4_firsts) + "}\n"
+  "\\newcommand{\\eFourOursMean}{" + f"{e4_means['ours_experience']:.2f}" + "}\n"
+  "\\newcommand{\\eFourLlmMean}{" + f"{e4_means['llm_summary']:.2f}" + "}\n"
+  "\\newcommand{\\eFourRawMean}{" + f"{e4_means['no_synthesis']:.2f}" + "}\n")
+print(f"  E4 history: ours first in {e4_firsts}/{len(E4_TS)} runs, "
+      f"means ours={e4_means['ours_experience']:.2f} "
+      f"llm={e4_means['llm_summary']:.2f} raw={e4_means['no_synthesis']:.2f}")
+
+# ══════════════════════════════════════════════════════════════════════
+# Answer-quality attribution table (E16 frozen bytes): judge score
+# conditioned on whether the system's own retrieval ranked the gold
+# document first, plus abstention behaviour. This is the table that
+# separates "the retrieval mechanism failed" from "the evidence-assembly
+# policy failed" -- the two have different fixes.
+# ══════════════════════════════════════════════════════════════════════
+def _cond_judge(m):
+    hit1 = {r["qid"]: r["hit@1"] for r in DR["retrieval_rows"].get(m, [])}
+    jud = {r["qid"]: r["score"] for r in DR["judge_rows"].get(m, [])
+           if isinstance(r.get("score"), (int, float))}
+    verd = {r["qid"]: r["verdict"] for r in DR["answer_rows"].get(m, [])}
+    j_hit = [jud[q] for q in jud if hit1.get(q) == 1]
+    j_miss = [jud[q] for q in jud if hit1.get(q) == 0]
+    abst = [q for q in verd if verd[q] == "insufficient"]
+    j_abs = [jud[q] for q in abst if q in jud]
+    return (sum(j_hit) / len(j_hit) if j_hit else None,
+            sum(j_miss) / len(j_miss) if j_miss else None,
+            len(j_miss),
+            100.0 * len(abst) / len(verd) if verd else None,
+            sum(j_abs) / len(j_abs) if j_abs else None)
+
+ansq = {m: _cond_judge(m) for m in DR_ORDER}
+_q = ansq["qdcvr"]; _d = ansq["dense_rag"]
+AQ_SHORT = {"dense_rag": "Dense RAG", "dense_rag_rerank": "Dense RAG + rerank",
+            "itrg_refresh": "ITRG (refresh)", "itrg_refine": "ITRG (refine)",
+            "raptor": "RAPTOR", "search_o1": "Search-o1",
+            "deepread": "DeepRead",
+            "qdcvr": "\\sys{} (ours)"}
+best_jh2 = max(v[0] for v in ansq.values() if v[0] is not None)
+best_jm2 = max(v[1] for v in ansq.values() if v[1] is not None)
+best_ja2 = max(v[4] for v in ansq.values() if v[4] is not None)
+aq_rows = []
+for m in DR_ORDER:
+    jh, jm, nm, ab, ja = ansq[m]
+    def _c2(v, best, fmt="{:.2f}"):
+        s = fmt.format(v) if v is not None else "---"
+        return "\\textbf{" + s + "}" if (v is not None and best is not None
+                                         and abs(v - best) < 1e-9) else s
+    aq_rows.append(f"{AQ_SHORT[m]} & {_c2(jh, best_jh2)} & {_c2(jm, best_jm2)} & "
+                   f"{nm} & {ab:.0f}\\% & {_c2(ja, best_ja2)} \\\\")
+w("tables/tab-ansqual.tex", r"""\begin{table}[t]
+\centering\footnotesize
+\setlength{\tabcolsep}{3.0pt}
+\caption{Where the answer-quality gap lives (same 30 questions and judge
+scores as Table~\ref{tab:deepread}): the judge mean conditioned on whether
+the system's \emph{own} retrieval ranked a gold document first, the number
+of rank-one misses, the share of answers that declare insufficient
+evidence, and the judge mean on those abstentions.}
+\label{tab:ansqual}
+\begin{tabular}{@{}lccccc@{}}
+\toprule
+ & \multicolumn{2}{c}{Judge mean} & & Abstain & Judge mean \\
+\cmidrule(lr){2-3}
+System & gold@1 & no gold@1 & $n_{\text{miss}}$ & answers & on abstain \\
+\midrule
+""" + "\n".join(aq_rows) + r"""
+\bottomrule
+\end{tabular}
+
+\vspace{2pt}
+\parbox{\columnwidth}{\scriptsize Producer: \texttt{make\_assets.py} from the
+frozen \texttt{deepread\_matrix.json} (per-question judge, retrieval and
+verdict rows).}
+\end{table}
+""")
+w("macros/ansqual.tex",
+  "\\newcommand{\\qdcvrJhit}{" + f"{_q[0]:.2f}" + "}\n"
+  "\\newcommand{\\qdcvrJmiss}{" + f"{_q[1]:.2f}" + "}\n"
+  "\\newcommand{\\denseJhit}{" + f"{_d[0]:.2f}" + "}\n"
+  "\\newcommand{\\denseJmiss}{" + f"{_d[1]:.2f}" + "}\n"
+  "\\newcommand{\\qdcvrAbstain}{" + f"{_q[3]:.0f}" + "}\n"
+  "\\newcommand{\\qdcvrJabs}{" + f"{_q[4]:.2f}" + "}\n"
+  "\\newcommand{\\denseJabs}{" + f"{_d[4]:.2f}" + "}\n")
+print(f"  Answer-quality: qdcvr J|hit={_q[0]:.2f} J|miss={_q[1]:.2f} "
+      f"abstain={_q[3]:.1f}% J|abstain={_q[4]:.2f}; "
+      f"dense J|hit={_d[0]:.2f} J|miss={_d[1]:.2f} J|abstain={_d[4]:.2f}")
 
 print("\nAll LaTeX artefacts regenerated from the frozen, provenance-verified snapshot.")
 print("Withheld (no producer, NOT cited by the paper): tab-cikm, tab-ablation, "
