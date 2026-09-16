@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{23}
+\begin{thebibliography}{26}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -55,6 +55,32 @@
 \newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2310.11511}}
   (\bibinfo{year}{2023}).
 \newblock
+
+
+\bibitem[Callan(2000)]%
+        {callan2000distributed}
+\bibfield{author}{\bibinfo{person}{Jamie Callan}.}
+  \bibinfo{year}{2000}\natexlab{}.
+\newblock \showarticletitle{Distributed Information Retrieval}.
+\newblock In \bibinfo{booktitle}{\emph{Advances in Information Retrieval:
+  Recent Research from the Center for Intelligent Information Retrieval}},
+  \bibfield{editor}{\bibinfo{person}{W.~Bruce Croft}} (Ed.).
+  \bibinfo{publisher}{Kluwer Academic Publishers}, \bibinfo{pages}{127--150}.
+\newblock
+\href{https://doi.org/10.1007/978-1-4757-6514-7_5}{doi:\nolinkurl{10.1007/978-1-4757-6514-7_5}}
+
+
+\bibitem[Callan et~al\mbox{.}(1995)]%
+        {callan1995distributed}
+\bibfield{author}{\bibinfo{person}{Jamie~P. Callan}, \bibinfo{person}{Zhihong
+  Lu}, {and} \bibinfo{person}{W.~Bruce Croft}.}
+  \bibinfo{year}{1995}\natexlab{}.
+\newblock \showarticletitle{Searching Distributed Collections with Inference
+  Networks}. In \bibinfo{booktitle}{\emph{Proceedings of the 18th Annual
+  International ACM SIGIR Conference on Research and Development in Information
+  Retrieval (SIGIR)}}. \bibinfo{pages}{21--28}.
+\newblock
+\href{https://doi.org/10.1145/215206.215320}{doi:\nolinkurl{10.1145/215206.215320}}
 
 
 \bibitem[Chen et~al\mbox{.}(2024)]%
@@ -252,6 +278,21 @@
   Use Tools}. In \bibinfo{booktitle}{\emph{Advances in Neural Information
   Processing Systems (NeurIPS)}}.
 \newblock
+
+
+\bibitem[Sun et~al\mbox{.}(2023)]%
+        {sun2023rankgpt}
+\bibfield{author}{\bibinfo{person}{Wei Sun}, \bibinfo{person}{Lingyuan Yan},
+  \bibinfo{person}{Xinyu Ma}, \bibinfo{person}{Thibaud Wang},
+  \bibinfo{person}{Pengjie Ren}, \bibinfo{person}{Zhumin Chen},
+  \bibinfo{person}{Dongyin Kan}, {and} \bibinfo{person}{Maarten de Rijke}.}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \showarticletitle{Is {ChatGPT} Good at Search? {Investigating} Large
+  Language Models as Re-Rankers}. In \bibinfo{booktitle}{\emph{Proceedings of
+  the 2023 Conference on Empirical Methods in Natural Language Processing
+  (EMNLP)}}. \bibinfo{pages}{14918--14937}.
+\newblock
+\href{https://doi.org/10.18653/v1/2023.emnlp-main.919}{doi:\nolinkurl{10.18653/v1/2023.emnlp-main.919}}
 
 
 \bibitem[Suresh et~al\mbox{.}(2026)]%

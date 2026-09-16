@@ -134,7 +134,43 @@ def main() -> int:
             print(f"  {c['comparison']:26s} {c['metric']:12s} d={c['mean_diff']:+.4f} "
                   f"CI{c['ci95_boot']} p_w={c['wilcoxon_p']} "
                   f"p_holm={c['wilcoxon_p_holm']} sig={c['significant_holm_0.05']}")
+    mcn = mcnemar_answerability()
+    if mcn:
+        print(f"  McNemar answer@1 (E8 HotpotQA, n=50): "
+              f"{json.dumps(mcn['comparisons'], ensure_ascii=False)}")
     return 0
+
+
+def mcnemar_answerability() -> dict | None:
+    """E8 HotpotQA answer@1 — exact McNemar over paired per-question outcomes.
+
+    Paper §7.4.3 cites these values (vs recall stage 7/3 discordant, p=0.34).
+    """
+    import json as _json
+    from math import comb
+    f = Path(__file__).resolve().parent.parent.parent / "docs" / "paper" / \
+        "cikm" / "data-snapshot" / "hotpot_main_2.json"
+    if not f.exists():
+        return None
+    rows = _json.loads(f.read_text(encoding="utf-8")).get("rows") or {}
+    if not all(ch in rows for ch in ("qdcvr", "two_stage", "dense", "bm25")):
+        return None
+    ans = {ch: {r["qid"]: int(r.get("answer@1") or 0) for r in rows[ch]}
+           for ch in ("qdcvr", "two_stage", "dense", "bm25")}
+    out = {}
+    for other in ("two_stage", "dense", "bm25"):
+        n01 = sum(1 for k in ans["qdcvr"]
+                  if ans["qdcvr"][k] and not ans[other].get(k, 0))
+        n10 = sum(1 for k in ans["qdcvr"]
+                  if ans[other].get(k, 0) and not ans["qdcvr"][k])
+        n = n01 + n10
+        p = (min(1.0, sum(comb(n, i) for i in range(min(n01, n10) + 1))
+                 / 2 ** n * 2) if n else 1.0)
+        out[f"qdcvr_vs_{other}"] = {
+            "discordant_qdcvr_only": n01, "discordant_other_only": n10,
+            "exact_mcnemar_p": round(p, 3)}
+    return {"experiment": "E8 answer@1 exact McNemar (paired, n=50)",
+            "artifact": str(f), "comparisons": out}
 
 
 if __name__ == "__main__":

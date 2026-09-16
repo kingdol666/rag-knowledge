@@ -74,6 +74,13 @@
       "bytes": 93760
     },
     {
+      "name": "routing_oracle_1.json",
+      "source": "benchmark-suite/results/run-20260914T053909Z/routing_oracle_1.json",
+      "note": "E13 routing oracle on the same 9-KB partition (always-all vs gold-KB-restricted vs best-restricted) — producer: scripts/64_routing_oracle.py (frozen run 2026-09-14T053909Z; cited in §2 and §4.2)",
+      "sha256": "0859c68790b7d4057b234718cbf7f75547bd93af0c142837e23b08d163f58c81",
+      "bytes": 51417
+    },
+    {
       "name": "real_scenario_run1.json",
       "source": "benchmark-suite/results/real-scenario-20260916-001507/real_scenario_repaired.json",
       "note": "E19 real-scenario run 1 (two user documents x 9 systems; parser-fallback repaired copy) — producer: scripts/29_real_scenario_test.py",
