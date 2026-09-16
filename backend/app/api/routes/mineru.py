@@ -1,6 +1,6 @@
 """
-MinerU engine admin routes — inspect the running mineru-api (which now lands on
-an auto-picked free port) and restart it on demand.
+MinerU engine admin routes — inspect the dual-mode engine (remote endpoint /
+local subprocess with automatic fallback) and restart/re-probe it on demand.
 """
 import logging
 from typing import Any
@@ -20,7 +20,12 @@ def _status_payload() -> dict[str, Any]:
     if mgr is None:
         return {"running": False, "available": False,
                 "message": "MinerU manager not initialized"}
-    proc = mgr._process  # noqa: SLF001 — read-only introspection
+    # Dual-mode facade exposes a rich status(); legacy single managers fall
+    # back to the old field-by-field payload.
+    status_fn = getattr(mgr, "status", None)
+    if callable(status_fn):
+        return status_fn()
+    proc = getattr(mgr, "_process", None)  # noqa: SLF001 — read-only introspection
     return {
         "available": True,
         "running": mgr.is_running,
@@ -33,14 +38,17 @@ def _status_payload() -> dict[str, Any]:
 
 @router.get("/status")
 async def mineru_status() -> dict[str, Any]:
-    """Report the current MinerU engine state (auto-picked port + health)."""
+    """Report the current MinerU engine state: configured mode, effective
+    engine (remote/local), remote endpoint availability, and local subprocess
+    health. Legacy keys (running/available/api_url) are preserved."""
     return _status_payload()
 
 
 @router.post("/restart", dependencies=[Depends(verify_token)])
 async def mineru_restart() -> dict[str, Any]:
-    """Stop mineru-api and start it again (lands on a fresh free port in
-    auto-port mode). Returns the post-restart status."""
+    """Restart the serving engine: local → subprocess restart (fresh free port
+    in auto-port mode); remote → re-probe the endpoint. Returns the
+    post-restart status."""
     mgr = _get_mineru_manager()
     if mgr is None:
         return {"success": False, "error": "MinerU manager not initialized",
@@ -52,3 +60,18 @@ async def mineru_restart() -> dict[str, Any]:
         return {"success": False, "error": f"{type(exc).__name__}: {exc}",
                 "status": _status_payload()}
     return {"success": ok, "status": _status_payload()}
+
+
+@router.post("/probe", dependencies=[Depends(verify_token)])
+async def mineru_probe() -> dict[str, Any]:
+    """Force re-probe the remote endpoint (bypasses the negative cache) and
+    return the fresh dual-mode status. Useful right after fixing remote.base_url
+    or bringing a self-hosted mineru-api back up."""
+    mgr = _get_mineru_manager()
+    if mgr is None:
+        return {"success": False, "error": "MinerU manager not initialized",
+                "status": _status_payload()}
+    remote = getattr(mgr, "remote", None)
+    if remote is not None:
+        remote.probe(force=True)
+    return {"success": True, "status": _status_payload()}

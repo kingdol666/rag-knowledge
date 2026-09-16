@@ -126,13 +126,28 @@ CONFIG_SCHEMA: dict[str, Any] = {
     "mineru": {
         "label": "MinerU OCR 引擎",
         "icon": "FileTextOutlined",
-        "description": "PDF/DOCX 文档 OCR 解析引擎配置。端口自动分配。",
+        "description": "PDF/DOCX 文档 OCR 解析引擎。双模式：远程 API（默认，不可用时自动回退本地）或本地部署。",
         "fields": {
-            "enabled": {"label": "启用 MinerU", "type": "boolean", "description": "开启后自动拉起 MinerU OCR 引擎。", "default": True},
-            "host": {"label": "MinerU 主机地址", "type": "string", "description": "MinerU API 绑定地址。", "default": "127.0.0.1"},
-            "start_on_boot": {"label": "随后端启动", "type": "boolean", "description": "是否在后端启动时自动拉起。", "default": True},
-            "startup_timeout": {"label": "启动超时 (秒)", "type": "int", "description": "等待 MinerU 就绪最大时间。", "default": 60, "min": 10, "max": 300},
-            "model_source": {"label": "模型源", "type": "select", "options": ["modelscope", "huggingface"], "description": "modelscope 国内更快。", "default": "modelscope"},
+            "enabled": {"label": "启用 MinerU", "type": "boolean", "description": "开启后启用 MinerU OCR 解析引擎。", "default": True},
+            "mode": {"label": "引擎模式", "type": "select", "options": ["remote", "local"], "description": "remote=远程 API 优先（不可用自动回退本地）；local=始终使用本地引擎。热生效：保存后 POST /api/v1/config/reload。", "default": "remote"},
+            "remote": {
+                "label": "远程引擎", "type": "group",
+                "description": "mineru-api 兼容 HTTP 端点（mode=remote 时生效）。",
+                "fields": {
+                    "base_url": {"label": "远程 API 地址", "type": "string", "description": "如 http://127.0.0.1:8764。留空=直接回退本地引擎。", "default": ""},
+                    "timeout": {"label": "远程任务超时 (秒)", "type": "int", "description": "远程解析任务轮询总超时。", "default": 1800, "min": 60, "max": 7200},
+                },
+            },
+            "local": {
+                "label": "本地引擎", "type": "group",
+                "description": "本地 mineru-api 子进程（mode=local 或远程回退时生效）。",
+                "fields": {
+                    "host": {"label": "本地 MinerU 主机地址", "type": "string", "description": "本地 mineru-api 绑定地址。", "default": "127.0.0.1"},
+                    "start_on_boot": {"label": "本地引擎随后端启动", "type": "boolean", "description": "backend 启动时预热本地引擎（remote 模式下仅远程不可用时预热）。", "default": False},
+                    "startup_timeout": {"label": "本地启动超时 (秒)", "type": "int", "description": "等待本地 MinerU 就绪最大时间。", "default": 60, "min": 10, "max": 300},
+                    "model_source": {"label": "本地模型源", "type": "select", "options": ["modelscope", "huggingface"], "description": "modelscope 国内更快。", "default": "modelscope"},
+                },
+            },
         },
     },
     "experience_auto": {
@@ -159,6 +174,7 @@ ENV_SCHEMA: dict[str, Any] = {
         "WEB_PORT": {"label": "前端端口覆盖", "type": "int", "description": "覆盖 config.yml 前端端口。留空使用 config.yml 值。", "default": "", "env_only": True, "optional": True},
         "TREE_STORAGE_PATH": {"label": "存储路径覆盖", "type": "string", "description": "覆盖 config.yml storage.tree_fs_root。留空使用 config.yml 值。", "default": "", "env_only": True, "optional": True},
         "NEO4J_PASSWORD": {"label": "Neo4j 密码", "type": "password", "description": "Neo4j 密码。优先级高于 config.yml graph.password。", "default": "", "env_only": True, "optional": True},
+        "MINERU_API_TOKEN": {"label": "MinerU 远程 API Token", "type": "password", "description": "远程 MinerU API 的 Bearer token（config.yml mineru.remote.token 引用此变量）。自建免鉴权端点可留空。", "default": "", "env_only": True, "optional": True},
         "NO_RELOAD": {"label": "禁用热重载", "type": "select", "options": ["", "0", "1"], "description": "设为 1 即使 APP_MODE=dev 也不热重载。", "default": "", "env_only": True, "optional": True},
         "PYTHONUTF8": {"label": "强制 UTF-8", "type": "select", "options": ["", "0", "1"], "description": "设为 1 强制 Python UTF-8，解决 Windows GBK 问题。", "default": "", "env_only": True, "optional": True},
     },

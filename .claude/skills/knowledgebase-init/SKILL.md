@@ -25,6 +25,7 @@ description: >
 - GPU detection script → `scripts/detect_gpu.cjs` (CWD)
 - Incremental install → [incremental-install.md](references/incremental-install.md)
 - Configuration wizard → [configuration.md](references/configuration.md)
+- MinerU deployment mode (remote API / local) → [mineru-mode.md](references/mineru-mode.md)
 - GPU-adaptive PyTorch → [gpu-and-torch.md](references/gpu-and-torch.md)
 - MCP connectivity pre-check → [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md) of `skill://knowledgebase`
 - Update to the latest version → `skill://knowledgebase-update`
@@ -39,6 +40,10 @@ description: >
 **Step 5 — Project dependencies**: install only missing backend/web/mcp/cli + GPU torch.
 **Step 6 — Model download**: download only missing BGE-M3 / MinerU.
 **Step 7 — Configuration**: ask only about missing items; write config.yml + .env.
+**Step 7b — MinerU deployment mode**: unless `backend/config.yml` already has a valid `mineru.mode`,
+ask the user once: **remote API (default)** → collect base_url (+ optional token, only into `.env`
+`MINERU_API_TOKEN`), verify `{base_url}/health`; **local** → incrementally install mineru + download
+models (`ragctl mineru-model`) and verify availability. Full flow in [mineru-mode.md](references/mineru-mode.md).
 **Step 8 — ragctl registration**: skip if already registered.
 **Step 9 — MCP registration**: optional; skipped by default.
 **Step 10 — Neo4j (local install, no Docker needed)**: first `ragctl check` to see port 7687 / the config graph.mode;
@@ -74,6 +79,7 @@ description: >
 | **4** Project dependencies | Install only missing backend/web/mcp/cli + GPU torch | [gpu-and-torch.md](references/gpu-and-torch.md) §Install + [incremental-install.md](references/incremental-install.md) §Project Dependencies |
 | **5** Model download | Download only missing BGE-M3 / MinerU | [incremental-install.md](references/incremental-install.md) §Models |
 | **6** Configuration | Ask only about missing items; write config.yml + .env | [configuration.md](references/configuration.md) §Phase 6 |
+| **6b** MinerU deployment mode | Ask remote (default; collect base_url + token) or local (install mineru + models); verify health | [mineru-mode.md](references/mineru-mode.md) |
 | **7** ragctl registration | Skip if already registered | [configuration.md](references/configuration.md) §Phase 7 |
 | **8** MCP registration | Optional; skipped by default | [configuration.md](references/configuration.md) §Phase 8 |
 | **9** Neo4j | Local install (no Docker): skip if running; ragctl start neo4j auto-downloads and installs if missing | [neo4j-local.md](references/neo4j-local.md) |
@@ -134,6 +140,26 @@ Based on Phase 0's `TORCH_VARIANT`:
 **MinerU**: `curl localhost:<port>/api/v1/mineru/status` → skip if `available:true`, otherwise `ragctl mineru-model`
 
 Detailed cache verification logic in [incremental-install.md](references/incremental-install.md) §Models.
+
+## Phase 6b — MinerU Deployment Mode (remote API default / local)
+
+**Skip condition**: `backend/config.yml` already has `mineru.mode` set AND (mode=local OR remote.base_url non-empty) → only re-verify health, don't re-ask.
+
+Otherwise **ask the user once**:
+
+1. **Remote API (default/recommended)** — parsing goes to a mineru-api-compatible HTTP endpoint
+   (zero local GPU/memory load); the engine automatically falls back to the local engine when the
+   endpoint is unreachable.
+   - Collect `base_url` (http/https) + optional token → token goes ONLY into `.env` as
+     `MINERU_API_TOKEN` (never into config.yml / source / logs).
+   - Write `mineru.mode: "remote"` + `remote.base_url` into backend/config.yml.
+   - Verify immediately: `curl -m 5 "<base_url>/health"` → 200; on failure offer retry / switch to local.
+2. **Local deployment** — fully offline: install mineru (`uv sync`) + download models
+   (`ragctl mineru-model`, ~2GB, skipped when the modelscope cache already holds model.safetensors >1GB),
+   then verify `local.installed:true` (+ `local.running:true` after `/api/v1/mineru/restart`).
+
+Full decision flow, config schema, and ops quick reference in [mineru-mode.md](references/mineru-mode.md).
+Mode switches hot-apply via `POST /api/v1/config/reload` — no backend restart needed.
 
 ## Phase 11 — Full-Chain Validation
 

@@ -70,30 +70,61 @@ async def lifespan(app: FastAPI):
     else:
         logger.info("Token auth: disabled (maintenance mode)")
 
-    # ── Start MinerU API if configured ────────────────────────────────
+    # ── Start MinerU engine if configured ─────────────────────────────
+    # Dual-mode (config-driven): mode=remote probes the configured remote
+    # mineru-api endpoint and only pre-warms the local subprocess when the
+    # remote is down AND local.start_on_boot is true; mode=local starts the
+    # local subprocess as before. The engine itself lazily starts local on
+    # first use, so a cold fallback is always available.
     mineru_cfg = config.mineru
     mineru_manager = None
     if mineru_cfg.get("enabled", False):
         try:
-            from app.utils.mineru_manager import MineruApiManager
+            from app.utils.mineru_engine import MineruEngine
 
-            mineru_manager = MineruApiManager(
-                host=mineru_cfg.get("host", "127.0.0.1"),
-                # Port is NOT read from config — a free ephemeral port is picked
-                # at runtime (avoids common dev/service ports). The resolved
-                # port is exposed via mineru_manager.port / .api_url.
-                port=None,
-            )
-            timeout = int(mineru_cfg.get("startup_timeout", 60))
-            if mineru_manager.start(timeout=timeout):
-                app.state.mineru_manager = mineru_manager
-                logger.info(
-                    "MinerU API started at %s", mineru_manager.api_url
-                )
-            else:
-                logger.error("MinerU API failed to start")
+            mineru_manager = MineruEngine()
+            app.state.mineru_manager = mineru_manager
+
+            if mineru_manager.mode == "remote":
+                if mineru_manager.remote_usable():
+                    logger.info(
+                        "MinerU mode=remote — endpoint ready at %s",
+                        mineru_manager.remote.base_url,
+                    )
+                else:
+                    reason = (
+                        "base_url not configured" if not mineru_manager.remote.configured
+                        else f"endpoint unreachable ({mineru_manager.remote.base_url})"
+                    )
+                    logger.warning(
+                        "MinerU mode=remote but %s — parses will fall back to "
+                        "the local engine (started lazily on first use)", reason,
+                    )
+                    start_on_boot = bool(
+                        config.mineru_local.get("start_on_boot", True))
+                    if start_on_boot:
+                        timeout = int(config.mineru_local.get("startup_timeout", 60))
+                        if mineru_manager.local.start(timeout=timeout):
+                            logger.info(
+                                "MinerU local engine pre-warmed at %s (fallback ready)",
+                                mineru_manager.local.api_url,
+                            )
+                        else:
+                            logger.error("MinerU local engine failed to pre-warm")
+            else:  # mode == local — legacy behavior: start at boot
+                start_on_boot = bool(
+                    config.mineru_local.get("start_on_boot", True))
+                if start_on_boot:
+                    timeout = int(config.mineru_local.get("startup_timeout", 60))
+                    if mineru_manager.local.start(timeout=timeout):
+                        logger.info(
+                            "MinerU local engine started at %s",
+                            mineru_manager.local.api_url,
+                        )
+                    else:
+                        logger.error("MinerU local engine failed to start")
         except Exception:
-            logger.exception("MinerU API startup failed (non-fatal)")
+            logger.exception("MinerU engine startup failed (non-fatal)")
 
     # ── Start local Neo4j if configured (Docker-free mode) ────────────
     graph_cfg = config.graph

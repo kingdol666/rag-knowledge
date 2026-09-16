@@ -6,6 +6,7 @@ and structured metadata return.
 from __future__ import annotations
 
 import base64
+import inspect
 import logging
 import re
 import shutil
@@ -37,8 +38,34 @@ class MineruParseService:
     callers (routes / tests) can mock the dependency.
     """
 
-    def __init__(self, manager: "MineruApiManager") -> None:
+    def __init__(self, manager) -> None:
+        # manager is the duck-typed engine: the dual-mode MineruEngine facade
+        # (preferred) or a bare MineruApiManager / RemoteMineruClient (tests).
         self._manager = manager
+
+    def _bind_engine(self):
+        """Bind ONE engine for this parse session (submit + poll + result must
+        hit the same engine — a task_id from one is meaningless to the other).
+
+        The dual-mode facade (:class:`~app.utils.mineru_engine.MineruEngine`)
+        resolves remote-first with automatic local fallback; any other engine
+        (bare MineruApiManager / RemoteMineruClient / test doubles) is used
+        as-is. Type-checked rather than duck-typed so mock auto-attributes
+        can't be mistaken for a resolver.
+        """
+        from app.utils.mineru_engine import MineruEngine
+
+        if isinstance(self._manager, MineruEngine):
+            return self._manager.resolve_engine_async()
+        return self._manager
+
+    def _bind_engine_sync(self):
+        """Sync variant of :meth:`_bind_engine` for the legacy parse path."""
+        from app.utils.mineru_engine import MineruEngine
+
+        if isinstance(self._manager, MineruEngine):
+            return self._manager.resolve_engine()
+        return self._manager
 
     # ── Public API ──────────────────────────────────────────────────────
 
@@ -79,12 +106,17 @@ class MineruParseService:
 
         stem = Path(filename).stem
 
+        # 0. Bind one engine for this whole session (remote-first w/ fallback).
+        engine = self._bind_engine()
+        if inspect.isawaitable(engine):
+            engine = await engine
+
         # 1. Persist uploaded file ──────────────────────────────────────
         source_file = self._save_upload(file_content, filename, output_path)
 
         # 2. Push async task ────────────────────────────────────────────
         try:
-            submission = await self._manager.submit_task(
+            submission = await engine.submit_task(
                 str(source_file),
                 backend=backend,
                 parse_method="ocr" if use_ocr else "auto",
@@ -114,7 +146,7 @@ class MineruParseService:
 
         # 3. Wait (async poll) for terminal state ───────────────────────
         try:
-            result_payload = await self._manager.wait_for_task(
+            result_payload = await engine.wait_for_task(
                 task_id,
                 poll_interval=poll_interval,
                 timeout=poll_timeout,
@@ -204,12 +236,15 @@ class MineruParseService:
 
         stem = Path(filename).stem
 
+        # 0. Bind one engine for this session (sync path).
+        engine = self._bind_engine_sync()
+
         # 1. Persist uploaded file ──────────────────────────────────────
         source_file = self._save_upload(file_content, filename, output_path)
 
         # 2. Call MinerU API ────────────────────────────────────────────
         try:
-            raw = self._manager.parse_file(str(source_file), return_md=True)
+            raw = engine.parse_file(str(source_file), return_md=True)
         except Exception as exc:
             logger.exception("MinerU API call failed")
             return MineruParseResult(

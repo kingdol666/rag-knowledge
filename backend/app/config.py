@@ -195,6 +195,67 @@ class Config:
     def mineru(self) -> dict:
         return self._config.get("mineru", {})
 
+    @property
+    def mineru_mode(self) -> str:
+        """MinerU engine mode: ``"remote"`` (default) or ``"local"``.
+
+        ``remote``  → talk to a mineru-api-compatible HTTP endpoint
+                      (``mineru.remote.base_url``); when that endpoint is not
+                      reachable the engine automatically falls back to the
+                      locally-managed mineru-api subprocess.
+        ``local``   → always use the locally-managed mineru-api subprocess
+                      (never touches the remote endpoint).
+
+        Any unknown/empty value resolves to ``"remote"`` (with an empty
+        base_url that is behaviorally identical to legacy local-only setups,
+        because the fallback kicks in immediately).
+        """
+        raw = str(self.mineru.get("mode", "remote") or "remote").strip().lower()
+        return raw if raw in ("remote", "local") else "remote"
+
+    @property
+    def mineru_remote(self) -> dict:
+        """Remote engine settings (``mineru.remote`` section)."""
+        return self.mineru.get("remote", {}) or {}
+
+    @property
+    def mineru_remote_base_url(self) -> str:
+        """Base URL of the remote mineru-api-compatible endpoint (no trailing slash)."""
+        raw = str(self.mineru_remote.get("base_url", "") or "").strip().rstrip("/")
+        return raw
+
+    @property
+    def mineru_remote_token(self) -> str:
+        """Bearer token for the remote endpoint (env-expanded at load time).
+
+        Configure via the ``MINERU_API_TOKEN`` env var in .env; the shipped
+        config.yml references ``${MINERU_API_TOKEN:-}`` so no secret ever
+        lives in config.yml itself.
+        """
+        return str(self.mineru_remote.get("token", "") or "").strip()
+
+    @property
+    def mineru_remote_timeout(self) -> float:
+        """Hard ceiling (seconds) for a remote parse task (poll loop)."""
+        try:
+            return float(self.mineru_remote.get("timeout", 1800) or 1800)
+        except (TypeError, ValueError):
+            return 1800.0
+
+    @property
+    def mineru_local(self) -> dict:
+        """Local engine settings — ``mineru.local`` sub-dict merged with the
+        legacy flat keys (``host``/``start_on_boot``/``startup_timeout``/
+        ``model_source``) for backward compatibility with pre-dual-mode
+        config.yml files. Nested values win over flat ones.
+        """
+        merged: dict = {}
+        for legacy in ("host", "start_on_boot", "startup_timeout", "model_source"):
+            if legacy in self.mineru:
+                merged[legacy] = self.mineru[legacy]
+        merged.update(self.mineru.get("local", {}) or {})
+        return merged
+
     # ── Storage ───────────────────────────────────────────────────────
 
     @property
