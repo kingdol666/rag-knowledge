@@ -130,33 +130,54 @@ def main() -> int:
 
     # 5. track-specific KB state
     if track.upper().startswith("R"):
+        catalog_ok = True
         try:
             kbs = _kb_catalog()
         except Exception as e:  # noqa: BLE001
             problems.append(f"知识库目录读取失败(web 层): {e}")
             kbs = []
-        counts = _storage_doc_counts()
-        hotpot = [k for k in kbs if str(k.get("name", "")).startswith(HOTPOT_PREFIX)]
-        nonempty = [f"{name}({counts.get(name, 0)}篇)"
-                    for name in (str(k.get("name")) for k in hotpot)
-                    if counts.get(name, 0) > 0]
-        if hotpot and not any(counts.get(str(k.get("name")), 0) for k in hotpot):
-            print(f"  [OK] KB-Hotpot-* 空态 ({len(hotpot)} 个库)")
-        elif nonempty:
-            problems.append(
-                "KB-Hotpot-* 非空: " + ", ".join(nonempty)
-                + " → 先 python scripts/00_reset_env.py 或手工清空九库再跑 R3"
-                  " (TEST-PLAN §7.3: 非空起步会静默归零/累积副本)")
-        else:
-            warnings.append("未发现 KB-Hotpot-* 库 — R3 会由 60_hotpot_build 新建(正常, 首跑耗时较长)")
-        leftover = [k["name"] for k in kbs
-                    if any(str(k.get("name", "")).startswith(p)
-                           for p in LEFTOVER_PREFIXES)]
-        if leftover:
-            warnings.append("实验残留 KB 在库: " + ", ".join(leftover)
-                            + " → 会挤占全局 balance 候选池, 建议 00_reset_env.py 后重跑")
-        else:
-            print("  [OK] 无实验残留 KB")
+            catalog_ok = False
+        if catalog_ok:
+            counts = _storage_doc_counts()
+            hotpot = [k for k in kbs
+                      if str(k.get("name", "")).startswith(HOTPOT_PREFIX)]
+            nonempty = [f"{name}({counts.get(name, 0)}篇)"
+                        for name in (str(k.get("name")) for k in hotpot)
+                        if counts.get(name, 0) > 0]
+            if hotpot and not any(counts.get(str(k.get("name")), 0)
+                                  for k in hotpot):
+                print(f"  [OK] KB-Hotpot-* 空态 ({len(hotpot)} 个库)")
+            elif nonempty:
+                problems.append(
+                    "KB-Hotpot-* 非空: " + ", ".join(nonempty)
+                    + " → 先 python scripts/00_reset_env.py 或手工清空九库再跑 R3"
+                      " (TEST-PLAN §7.3: 非空起步会静默归零/累积副本)")
+            else:
+                warnings.append(
+                    "未发现 KB-Hotpot-* 库 — R3 会由 60_hotpot_build 新建"
+                    "(正常, 首跑耗时较长)")
+            leftover = [k["name"] for k in kbs
+                        if any(str(k.get("name", "")).startswith(p)
+                               for p in LEFTOVER_PREFIXES)]
+            if leftover:
+                warnings.append("实验残留 KB 在库: " + ", ".join(leftover)
+                                + " → 会挤占全局 balance 候选池, 建议 00_reset_env.py 后重跑")
+            else:
+                print("  [OK] 无实验残留 KB")
+            # E16 基线分块库: 缺失/为空会导致 dense/RAPTOR 类基线静默取 0 命中。
+            # retrieval_track 的 R4 现已自动跑幂等 ingest/raptor 阶段(指纹缓存),
+            # 这里只做状态通报, 不阻断。
+            dr = {name: counts.get(name, 0)
+                  for name in ("DR-Chunks800", "DR-Struct",
+                               "DR-Paras", "DR-Raptor")}
+            empty_dr = [n for n, c in dr.items() if c == 0]
+            if not dr or len(empty_dr) == len(dr):
+                print("  [INFO] DR-* 基线分块库未驻留 — R4 将自动重建"
+                      "(幂等, 首次约 1-2 分钟)")
+            elif empty_dr:
+                warnings.append("DR-* 部分为空: " + ", ".join(empty_dr)
+                                + " → R4 会自动重建, 若 rebuild 失败请检查"
+                                  " algorithms/cache/")
 
     for w in warnings:
         print(f"  [WARN] {w}")

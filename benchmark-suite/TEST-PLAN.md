@@ -238,7 +238,16 @@ E16/E16b 归入 Track R，E17 归入 Track F。
 > 下, 将 QDCVR 真检索 skill 与 DeepRead 论文 (arXiv:2602.05014) Table 1 的
 > 全部对比算法同台对比; 检索层指标 + 统一 omp Agent 作答 + 第三方 omp Agent
 > 判分, 全部问答逐条落盘。算法忠实度与偏差见
-> `algorithms/REPRODUCTION-NOTES.md`。
+> `algorithms/REPRODUCTION-NOTES.md`（6 项显式登记偏差: 嵌入模型/重排器代理/
+> 聚类算法/假设生成模型/轮上限 8/结构来源; 未登记 = 忠实实现）。
+>
+> **回答内容质量评价（三层, 对全部 8 方法对称）**:
+> 1. **统一作答** — 每方法的检索证据截断到同一 4000 字符预算, 交由同一
+>    omp Agent 产出 `{verdict, answer, evidence_used}` JSON（隔离检索差异归因）;
+> 2. **独立判分** — fresh 进程的第三方 omp Agent, 注入金标文档, 按 0–10 rubric
+>    打分: 判定正确性 0–4 + 有据性(无幻觉) 0–4 + 清晰完整 0–2, 判分理由逐条落盘;
+> 3. **匿名排名** — 中间 Agent 对去标识后的答案做排名(均位/首位), 排除
+>    方法名先验偏差。判分稳定性另由 E15 措辞扰动一致性实验(66 号脚本)守护。
 
 ```bash
 cd benchmark-suite/algorithms

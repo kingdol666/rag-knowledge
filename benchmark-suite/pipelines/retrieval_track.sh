@@ -37,6 +37,11 @@ python scripts/64_routing_oracle.py 2>&1 | tail -2
 python scripts/65_stratified.py 2>&1 | tail -2
 
 say "R4 E16 八系统矩阵 (含 DeepRead 复现, omp RPC 作答+独立判分)"
+# R4 前置: 基线分块 KB(DR-*)可能被此前的 00_reset_env 清空 —— 先跑幂等的
+# ingest/raptor 阶段(有内容指纹缓存, 语料未变时秒级跳过), 否则 dense/RAPTOR
+# 类基线会从空索引静默取回 0 命中, 数字作废。
+( cd algorithms && python run_matrix.py --stage ingest 2>&1 | tail -2 )
+( cd algorithms && python run_matrix.py --stage raptor 2>&1 | tail -2 )
 ( cd algorithms && python run_matrix.py --stage retrieve 2>&1 | tail -2 )
 ( cd algorithms && python run_matrix.py --stage answer  2>&1 | tail -2 )
 ( cd algorithms && python run_matrix.py --stage judge   2>&1 | tail -2 )
