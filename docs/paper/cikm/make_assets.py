@@ -407,7 +407,9 @@ from \citet{li2026deepread}.}
 \parbox{\textwidth}{\scriptsize H@$k$ = Hit@$k$; R@5 = Recall@5; nDCG@10 over
 official qrels. Judge = LLM-as-judge with the gold evidence injected;
 multi-grader robustness was not possible here (single agent channel).
-Deviations from the original settings are in the reproduction notes.}
+Deviations from the original settings are in the reproduction notes.
+The two \sys{} rows differ in pool scope: matrix row = corpus-base scope;
+suite-channel row = global balanced pool (Hit@1 $0.767$).}
 \end{table*}
 """)
 print(f"  E16 replay summary identical: {dr_replay_same}")
@@ -624,7 +626,9 @@ w("tables/tab-e4.tex", r"""\begin{table}[t]
 \centering\footnotesize
 \setlength{\tabcolsep}{2.6pt}
 \caption{Experience material as answering evidence: mean judge score (0--10,
-identical judge prompt, eight frozen operational queries) over \textbf{all
+identical judge prompt; four frozen operational queries (\texttt{x-01},
+\texttt{x-02}, \texttt{x-04}, \texttt{x-08}) sampled from the eight-query
+operational set) over \textbf{all
 seven recorded runs} of the dual-baseline comparison --- no round is omitted.
 The pipeline arm ranks first in """ + f"{e4_firsts} of {len(E4_TS)}" + r""" runs;
 in the exception (R7) its synthesis round produced shell entries, the
