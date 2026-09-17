@@ -302,10 +302,10 @@ operates, including ingestion, curation and experience management.
 
 \paragraph{Experience and operational knowledge.}
 Knowledge-management systems store documents; they rarely store
-\emph{lessons}. We are not aware of a deployed RAG
-platform that models experience with explicit credibility tiers and temporal
-decay and then exposes it to an agent; \S\ref{sec:experience} describes our
-attempt and \S\ref{sec:exp-analysis} where it falls short.
+\emph{lessons}. We are not aware of a deployed RAG platform that models
+experience with explicit credibility tiers and temporal decay and exposes it
+to an agent (\S\ref{sec:experience} describes our attempt,
+\S\ref{sec:exp-analysis} where it falls short).
 
 % =====================================================================
 \section{System Architecture}\label{sec:system}
@@ -441,10 +441,9 @@ claims and treat the rest briefly.
 
 \subsection{Stage 0: Intent and Query Rewriting}\label{sec:intent}
 The incoming query is classified into one of five intents (factual, procedural,
-troubleshooting, comparative, navigational) and rewritten from colloquial
-surface form into a declarative statement plus keyword set. Intent changes the
-retrieval bias: troubleshooting queries consult the experience store before the
-document store, whereas factual queries go straight to the vector index. We
+troubleshooting, comparative, navigational) and rewritten into a declarative
+statement plus keyword set; intent biases retrieval (troubleshooting queries
+consult the experience store first, factual queries the vector index). We
 attach no number to this stage: an earlier draft quoted a rewriting gain from
 the withdrawn benchmark family (\S\ref{sec:provenance}), and no re-measurement
 exists on the committed harness.
@@ -605,24 +604,16 @@ validation of the 30-day threshold is presented.
 Experience is recalled along five parallel paths --- vector, keyword,
 scenario, tag and quality-feedback --- fused and deduplicated: operational
 queries often name a \emph{symptom} rather than a topic, sharing scenario and
-tags instead of entry vocabulary. We evaluate the fusion on a purpose-built
-set: eight operational experiences seeded through the platform's own write
-path and twelve frozen queries --- eight \emph{symptom-style}, sharing no
-vocabulary with the target entry's title, four \emph{vocabulary-style},
-sharing solution words. Because the deployed endpoint exposes no per-path
-switches, the fusion is re-implemented at harness level from the service's
-published scoring rule; a top-3 agreement check against the live endpoint
-matches $1$ of $6$ spot checks, so the numbers characterise the fusion
-design, not the shipped endpoint's end-to-end behaviour.
-
-\emph{Results.} The full five-path fusion is perfect on the twelve queries
-(Hit@1 $=$ MRR $= 1.000$), and it is the only perfect configuration.
-Leave-one-out: removing quality-feedback costs most (Hit@1 $0.833$), removing
-keyword or scenario costs $0.083$ each, removing vector or tag none. Single
-paths are all imperfect and fail on \emph{disjoint} queries (vector-only
-$0.833$ fails the symptom-style queries with no lexical overlap; keyword-only
-$0.917$ fails paraphrases; tag-only $0.417$; scenario-only $0.750$;
-quality-only $0.167$) --- the complementarity the five-path design assumes.
+tags instead of entry vocabulary. On a purpose-built set of eight operational
+experiences and twelve frozen queries (eight symptom-style, four
+vocabulary-style), the full five-path fusion is the only perfect
+configuration (Hit@1 $=$ MRR $= 1.000$); leave-one-out removal of
+quality-feedback costs most (Hit@1 $0.833$), and the single paths fail on
+\emph{disjoint} queries --- vector-only fails the symptom-style queries with
+no lexical overlap, keyword-only fails paraphrases --- the complementarity
+the five-path design assumes. The complete leave-one-out and single-path
+numbers, and the harness-level fusion protocol, are given in
+Appendix~C of the supplementary material.
 
 % =====================================================================
 \section{Agent-Native Interface}\label{sec:agent}
@@ -675,12 +666,11 @@ replaces a withdrawn internal 50-query set (\S\ref{sec:provenance}).
 \paragraph{Metrics and functional coverage.} Ranking uses the standard
 retrieval battery -- Hit@$k$, Recall@$k$, nDCG@10, Precision@5, MRR over
 official qrels -- plus claim-word coverage. Beyond retrieval the benchmark
-exercises every platform function through its production interface: parsing and
-ingestion (Module~A: parse, ingest, membership and storage completeness all
-$1.000$ across two corpora; self-retrieval Hit@1 $0.938$), the full experience
-lifecycle (\S\ref{sec:exp-analysis}), the organise functions
-(E17, \S\ref{sec:ops}) -- and the complete agent-facing HTTP surface (26/26 checks
-across eight groups, \S\ref{sec:e2e}) over the 94-tool MCP layer.
+exercises every platform function through its production interface: ingestion
+integrity (membership and storage completeness $1.000$ across two corpora;
+self-retrieval Hit@1 $0.938$), the experience lifecycle
+(\S\ref{sec:exp-analysis}), the organise functions (\S\ref{sec:ops}), and the
+complete agent-facing HTTP surface (26/26 checks, \S\ref{sec:e2e}).
 
 \subsection{Compared Systems and the Answer-Quality Protocol}\label{sec:systems}
 
@@ -709,28 +699,27 @@ independent agent (fresh process, no shared context) grades each answer 0--10
 after receiving the gold document; a third, \emph{middle agent} ranks all
 eight anonymised answers per question. Prompts and channels are frozen, so
 HTTP-driven and offline runs are byte-identical (\apiconsist{} checks,
-Table~\ref{tab:deepread}, right columns).
+Table~\ref{tab:deepread}, right columns). The complete
+transcripts --- every answer of every system on every question, with its
+judge score and the judge's justification, published verbatim --- are in
+Appendix~A of the supplementary material.
 
 \paragraph{Suite channels.} All suite channels read through the same tool
 layer and index; only ranking differs: \emph{BM25} (sparse stage-1),
-\emph{Two-stage} (+ vector refinement and thresholding, no adjudication),
-\emph{Dense} (one-shot vector), and \emph{\sys{}} (+ content adjudication
-and, where noted, domain scoping). Deterministic channels are free of
-randomness (repeats bit-identical apart from latency); LLM channels run at
-temperature $0$, reported as means with a $\pm1.5$ run-to-run tolerance on
-judge means.
+\emph{Two-stage} (no adjudication), \emph{Dense} (one-shot vector), and
+\emph{\sys{}} (+ content adjudication and, where noted, domain scoping).
+Deterministic channels are free of randomness (repeats bit-identical apart
+from latency); LLM channels run at temperature $0$, reported as means with a
+$\pm1.5$ run-to-run tolerance on judge means.
 
 \paragraph{Implementation and hyper-parameters.} All configurations share one
-index and one tool layer. Embeddings are BGE-M3 (1024-d, L2-normalised)
-\cite{chen2024bgem3} from HuggingFace snapshot
-\texttt{5617a9f6} via sentence-transformers $5.6.1$; chunks are $500$ characters
-with $50$ overlap; the vector store is ChromaDB $1.5.9$ (persistent HNSW,
-library-default $M{=}16$, efConstruction${=}100$, cosine); the keyword index is
-jieba $0.42.1$ BM25 ($k_1{=}1.5$, $b{=}0.75$) over a $12{,}000$-character
-window. Retrieval defaults are vector top-$k=10$, two-stage $k{=}40/10$,
-threshold $\tau=0.35$, three verification reads; fusion is $0.5$ keyword and
-$0.5$ graph-neighbour (depth $1$). The platform default for stage-1/2 is
-$20/5$; the benchmark uses $40/10$, recorded in the frozen snapshot manifest.
+index and one tool layer: BGE-M3 (1024-d, L2-normalised) \cite{chen2024bgem3}
+embeddings, $500$-character chunks with $50$ overlap, a ChromaDB persistent
+HNSW vector store, and a jieba BM25 keyword index; retrieval defaults are
+vector top-$k=10$, two-stage $k{=}40/10$, threshold $\tau=0.35$, three
+verification reads. The full version --- library versions, HNSW parameters,
+BM25 settings and the benchmark-vs-platform default reconciliation --- is in
+Appendix~A of the supplementary material.
 
 \paragraph{Statistics.} The protocol is committed and executed
 (\texttt{31\_stats.py}); every comparison names its numbers. Pairwise
@@ -770,10 +759,10 @@ weakest here (Hit@1 $0.567$): abstracts carry no hierarchy for it to exploit,
 so its extra turns buy context the corpus does not contain. We report this as
 a corpus-boundary finding, not a refutation. (iii) \emph{Grades compress}:
 answer-faithfulness grading narrows the spread ($7.70$--$8.93$;
-per-question distribution in Fig.~\ref{fig:results}, left) because a correctly
-supported ``insufficient'' verdict earns most of its points; the middle-agent
-ranking (Rank/Wins columns) separates the systems more plainly and, notably,
-ranks DeepRead first on $7$ of $30$ questions --- faithful abstention is
+Fig.~\ref{fig:results}, left) because a correctly supported
+``insufficient'' verdict earns most of its points; the middle-agent
+ranking (Rank/Wins columns) separates the systems more plainly and ranks
+DeepRead first on $7$ of $30$ questions --- faithful abstention is
 rewarded even when retrieval misses.
 
 \begin{figure*}[t]
@@ -912,14 +901,12 @@ below $\tau$ -- part of the Hit@3 gap.
 The distractor hypothesis --- that adjudication helps in proportion to
 cross-domain distractors --- was the paper's central explanatory claim; the
 figures that originally supported it came from the withdrawn family
-(\S\ref{sec:provenance}). The multi-domain benchmark now tests it directly:
-adjudication still repairs rank-1 errors on vocabulary-sharing queries (best
-answer@1 of all methods; McNemar n.s., \S\ref{sec:multidomain}), but on
-multi-hop questions with little lexical overlap it \emph{mis}-ranks and is
-significantly worse than its own recall stage ($-0.061$ nDCG@10, $p{=}0.018$);
-an overlap trigger does not recover this. Verification promotes documents
-whose \emph{text} matches the question's terms; when none does, its
-re-ordering is noise. Per-method coverage is reported as gold recall
+(\S\ref{sec:provenance}). The multi-domain benchmark now tests it directly
+(\S\ref{sec:multidomain}): adjudication repairs rank-1 errors on
+vocabulary-sharing queries but \emph{mis}-ranks multi-hop questions whose
+vocabulary it shares with neither candidate --- verification promotes
+documents whose \emph{text} matches the question's terms, and when none does,
+its re-ordering is noise. Per-method coverage is reported as gold recall
 (Table~\ref{tab:hotpot}) with the blind-spot analysis (\S\ref{sec:blindspot}),
 replacing a false-positive rate that abstention could game.
 
@@ -1011,14 +998,13 @@ entries were judged grounded --- the two best were structurally sound but
 carried ``no content body, parameters, or lessons''; the rest were ``empty
 shells''. The architectural cause is identifiable: the synthesis stage
 produces \emph{well-structured metadata with empty payloads}, which the
-lifecycle caps at $P_1$ --- the failure degrades safely rather than injecting
-noise into the authoritative tier. But a lifecycle that quarantines
-low-quality output is not a system that produces good experience, and we do
-not claim the latter.
+lifecycle caps at $P_1$ --- the failure degrades safely, but a lifecycle that
+quarantines low-quality output is not a system that produces good experience,
+and we do not claim the latter.
 
 \paragraph{Multi-run stability under state reset.}
-An earlier freeze reported a different outcome; an audit hypothesised state
-contamination. We made the reset part of the benchmark --- every round
+An audit hypothesised state contamination for an earlier freeze's different
+outcome. We made the reset part of the benchmark --- every round
 deletes all published experiences and rejects all drafts, verifying zero
 counts --- and have run nine rounds in three samples. Instability \emph{persists
 under reset}, refuting contamination: the English base produced
@@ -1056,23 +1042,21 @@ materials; the open problem is making it distil reliably.
 \emph{Judge reliability:} across three independent runs of 24 calls scored
 twice under two prompts sharing one rubric, agreement is moderate (exact
 $22$--$25\%$, within one point $54$--$63\%$, $\kappa{=}0.22$--$0.40$ on the
-binarised ``usable'' decision), so effects above $\sim$1.4 points survive;
-this is an LLM--LLM agreement, not a human study. Producers:
-\texttt{40\_experience\_suite.py},
-\texttt{42\_e4\_fix.py}, \texttt{66\_judge\_agreement.py}; transcripts
-archived.
+binarised ``usable'' decision), so effects above $\sim$1.4 points survive
+(LLM--LLM agreement, not a human study). Producers:
+\texttt{40\_experience\_suite.py}, \texttt{42\_e4\_fix.py},
+\texttt{66\_judge\_agreement.py}.
 
 \subsubsection{RQ6: End-to-End Verification of the Agent Surface}\label{sec:e2e}
 We verify the externally reachable surface with a committed, independently
 written client that never imports application code
-(\texttt{80\_e2e\_surface.py}): authentication; knowledge-base and document
-lifecycle; content-based retrieval including a staged read; graph service; the
-experience lifecycle; persona; the engine registry; cleanup --- all over HTTP
-as an agent would call them. The current run passes \textbf{26 of 26 checks
-across eight groups} against the live deployment and writes a JSON artefact
-carrying its own git and configuration fingerprint; it also surfaced two
-contract defects, both fixed. This 26-check committed client is the paper's
-frozen verification gate; the platform's external-API suite has since grown to
+(\texttt{80\_e2e\_surface.py}): authentication; knowledge-base, document,
+retrieval, graph, experience, persona, engine-registry and cleanup flows ---
+all over HTTP as an agent would call them. The current run passes \textbf{26
+of 26 checks across eight groups} against the live deployment and writes a
+JSON artefact carrying its own git and configuration fingerprint; it also
+surfaced two contract defects, both fixed. This 26-check client is the
+paper's frozen verification gate; the external-API suite has since grown to
 73 checks, a later expansion that does not replace it.
 
 \subsubsection{Organise functions (E17)}\label{sec:ops}
@@ -1084,9 +1068,8 @@ persist, no error signalled), so the duplicate detector sees only the
 near-duplicate pair and identifies one of two groups; tag generation is noisy
 on small documents ($2.6\%$ of 190 tags grounded in document content);
 cleanup dry-run never touches a used tag; graph build succeeds; the catalog
-mirrors exactly the seven persisted documents with no spurious entries (its
-completeness flag is false precisely because the dropped duplicates leave
-seven of the nine expected documents).
+mirrors exactly the seven persisted documents with no spurious entries (false
+completeness flag: the dropped duplicates leave seven of nine).
 
 \subsubsection{Reproducibility of the reported numbers}
 Every number is generated from frozen artefacts, never transcribed: the bytes
@@ -1094,8 +1077,8 @@ are archived with a SHA-256 manifest that the table generator verifies on every
 run; each run writes to an immutable timestamped directory embedding its git
 commit, configuration hash, seed and run id; every table names its producing
 script (enforced by \texttt{provenance\_audit.py}).
-After this manuscript was frozen we re-executed both benchmark
-tracks from the committed pipelines and machine-compared every artefact
+Post-freeze, we re-executed both benchmark tracks from the committed
+pipelines and machine-compared every artefact
 against the frozen bytes (grades within the $\pm1.5$ LLM tolerance; latency,
 timestamps and run provenance excluded): the eight-system matrix reproduces
 \textbf{9{,}837 of 9{,}837 fields byte-identically}, the platform-functions
@@ -1104,15 +1087,13 @@ real-document runs agree on \textbf{47 of 48} gold-document positions
 (97.9\%). The audit also fixed four pipeline defects and reports one boundary
 finding as-is: the multi-domain benchmark's \emph{absolute} numbers depend on
 the vector store's build-time state, while the \emph{ordering} reproduced in
-every healthy run --- so \S\ref{sec:multidomain} holds on either set of
-numbers. Full log: artefact.
+every healthy run. Full log: artefact.
 
 % =====================================================================
 \section{Discussion and Limitations}\label{sec:conclusion}
 
 \paragraph{What we would claim, and what we would not.}
-The defensible claims are narrower than when we began. Ingestion is lossless.
-Content adjudication
+Ingestion is lossless. Content adjudication
 \emph{re-orders} the top of a list rather than improving ranking overall ---
 but the re-ordering is exactly what answerability needs: it is the best
 rank-one answer producer on the multi-domain benchmark, and when its evidence
@@ -1127,60 +1108,53 @@ unmeasured at this scale.
 \paragraph{Latency and evaluation scale.}
 Content adjudication costs about $16\times$ in latency on the in-house corpus
 ($1.33$\,s vs $0.081$\,s); reads bypass the service tier and apply only to a
-small candidate set --- not recommended in latency-critical single-domain
-settings. The public evaluations are moderate (30 SciFact, 50 HotpotQA, 16
-SQuAD queries; full-BEIR is the obvious next step).
+small candidate set --- not recommended in latency-critical settings. The
+public evaluations are moderate (30 SciFact, 50 HotpotQA, 16 SQuAD queries).
 
 \paragraph{Threats to validity.}
 \emph{Construct}: the $0$--$8$ rubric and the experience judge are LLM
 judgements; we mitigate with temperature $0$, frozen prompts and a dual-judge
-agreement study (\S\ref{sec:exp-analysis}: $\kappa{=}0.22$--$0.40$) -- a proxy
-for human agreement.
+agreement study ($\kappa{=}0.22$--$0.40$; \S\ref{sec:exp-analysis}).
 \emph{Internal}: the component study shares the thirty SciFact queries of
 Table~\ref{tab:deepread}. \emph{External}: the in-house corpus is self-authored;
-the HotpotQA partition lifts the single-domain restriction but is
-author-chosen. \emph{Author-evaluation bias}: all benchmarks were designed, run
-and scored by the system's authors; we mitigate with public gold standards and
-unfavourable results. \emph{Coverage}: the benchmarks measure the retrieval
-core; the rest of the platform is exercised for correctness, not quality.
+the HotpotQA partition is author-chosen. \emph{Author-evaluation bias}: all
+benchmarks were designed, run and scored by the system's authors; we mitigate
+with public gold standards and unfavourable results. \emph{Coverage}: the
+benchmarks measure the retrieval core; the rest of the platform is exercised
+for correctness, not quality.
 
 \paragraph{Future work.}
-The evidence-assembly policy is the highest-leverage repair: \sys{}'s
-verification reads keep two excerpts where dense keeps ten, and
-Table~\ref{tab:ansqual} shows the answer-quality cost of that choice. The
+The evidence-assembly policy is the highest-leverage repair --- \sys{} keeps
+two excerpts where dense keeps ten (Table~\ref{tab:ansqual}). The
 experience-synthesis instability is generative, not architectural: the repair
-path is to stabilise the produce/skip decision. The Stage-3 threshold should be learned
-per corpus and the stage-2 pool deepened: the pool size, not the threshold
-value, loses gold documents. Adjudication should condition on query--evidence
-lexical overlap; scoping must be tested at corpus sizes where cross-base
-distraction dominates; and a human inter-annotator study for the judge rubric
-remains the missing validation.
+path is to stabilise the produce/skip decision. The Stage-3 threshold should
+be learned per corpus and the stage-2 pool deepened. Adjudication should
+condition on query--evidence lexical overlap; scoping must be tested at corpus
+sizes where cross-base distraction dominates; and a human inter-annotator
+study for the judge rubric remains the missing validation.
 
 \paragraph{Conclusion.}
 We described \sys{}, a deployed agent-native knowledge platform, and evaluated
-its two central retrieval mechanisms and its answer quality on public
-benchmarks --- BEIR SciFact with a reproduced eight-system matrix, a new
-multi-domain HotpotQA partition, a bilingual in-house corpus, and a
-state-resetting multi-round experience protocol. The picture is bounded:
-content adjudication is a rank-one repair instrument for queries that share
-vocabulary with their evidence, and its answers are competitive \emph{whenever
-its evidence channel lets them be} --- the measured gap lives in excerpt
-assembly, not in the mechanism; distilled experience, when the lifecycle
-produces it, beats raw retrieval and one-shot summarisation as answering
-material; ingestion is lossless; the lifecycle contains unstable generation
-safely; and scoping shows no gain even under an oracle at this scale.
-Negative results of this kind tell the next system where the mechanism stops
-working.
+its retrieval mechanisms and answer quality on public benchmarks --- an
+eight-system SciFact matrix, a multi-domain HotpotQA partition, a bilingual
+in-house corpus, and a state-resetting experience protocol. The picture is
+bounded: content adjudication is a rank-one repair instrument for queries that
+share vocabulary with their evidence, and its answers are competitive
+\emph{whenever its evidence channel lets them be} --- the measured gap lives
+in excerpt assembly, not in the mechanism; distilled experience, when the
+lifecycle produces it, beats raw retrieval and one-shot summarisation as
+answering material; and scoping shows no gain even under an oracle at this
+scale.
 
 % =====================================================================
 \section*{GenAI Usage Disclosure}
-Generative AI tools were used per the ACM Authorship Policy. \emph{Writing}:
-language editing only. \emph{Code}: parts of the system and benchmark harness,
-shipped with the artefact under the authors' responsibility.
-\emph{Data}: no result was produced or modified by a generative model; every
-number is read from a recorded artefact by deterministic scripts. One LLM is
-used as an instrument: the experience judge (\S\ref{sec:exp-analysis}).
-Research questions, study design and interpretation are the authors'.
+Generative AI tools were used per the ACM Authorship Policy:
+\emph{writing} --- language editing only; \emph{code} --- parts of the system
+and benchmark harness, shipped with the artefact under the authors'
+responsibility; \emph{data} --- no result was produced or modified by a
+generative model, every number being read from a recorded artefact by
+deterministic scripts; one LLM serves as the experience judge
+(\S\ref{sec:exp-analysis}).
 
 \balance
 \bibliographystyle{ACM-Reference-Format}

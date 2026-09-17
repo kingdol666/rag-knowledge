@@ -406,8 +406,7 @@ from \citet{li2026deepread}.}
 \vspace{2pt}
 \parbox{\textwidth}{\scriptsize H@$k$ = Hit@$k$; R@5 = Recall@5; nDCG@10 over
 official qrels. Judge = LLM-as-judge with the gold evidence injected;
-multi-grader robustness was not possible here (single agent channel).
-Deviations from the original settings are in the reproduction notes.
+deviations from the original settings are in the reproduction notes.
 The two \sys{} rows differ in pool scope: matrix row = corpus-base scope;
 suite-channel row = global balanced pool (Hit@1 $0.767$).}
 \end{table*}
