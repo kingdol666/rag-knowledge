@@ -246,6 +246,27 @@ def build_piece(seg: dict, seconds: float, cap: Path | None) -> Path:
         name = vis.split(":", 1)[1]
         src = clip_path(name)
         have = dur(src)
+        mode = seg.get("clip_mode", "auto")
+        want_tl = (mode == "timelapse") or (
+            mode == "auto" and have > seconds * 1.6)
+        if want_tl and have > seconds:
+            # A long arc (the agent turn: question -> skill -> tool calls ->
+            # answer) is time-compressed, not truncated, so the whole story
+            # stays on screen instead of being cut off mid-way.
+            factor = have / seconds
+            vf = (f"[0:v]setpts=PTS/{factor:.4f},fps={FPS},"
+                  f"scale={W}:{H}:force_original_aspect_ratio=decrease,"
+                  f"pad={W}:{H}:(ow-iw)/2:(oh-ih)/2:color=#f4f1ea[v0];"
+                  f"[v0][1:v]overlay=0:0:format=auto[v]")
+            cmd = ["ffmpeg", "-y", "-v", "error", "-i", str(src), "-i", str(cap),
+                   "-filter_complex", vf, "-map", "[v]",
+                   "-t", f"{seconds:.3f}", "-r", str(FPS),
+                   "-c:v", "libx264", "-preset", "medium", "-crf", "19",
+                   "-pix_fmt", "yuv420p", str(dest)]
+            run(cmd)
+            print(f"  [piece] {seg['id']:<16} clip {name:<9} "
+                  f"{have:5.1f}s -> {seconds:5.1f}s ({factor:.1f}x timelapse)")
+            return dest
         spare = max(0.0, have - seconds)
         # skip a little of the page-load at the head, keep the interaction whole
         ss = min(1.6, spare * 0.35)

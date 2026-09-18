@@ -1,0 +1,55 @@
+{
+ "segments": [
+  {
+   "id": "s1_opening",
+   "visual": "title",
+   "narration_s": 14.38,
+   "piece_s": 14.8
+  },
+  {
+   "id": "s2_organization",
+   "visual": "clip:org",
+   "narration_s": 31.73,
+   "piece_s": 32.15
+  },
+  {
+   "id": "s3a_retrieval",
+   "visual": "clip:search",
+   "narration_s": 21.38,
+   "piece_s": 32
+  },
+  {
+   "id": "s3b_gate",
+   "visual": "card:answer",
+   "narration_s": 26.38,
+   "piece_s": 26.8
+  },
+  {
+   "id": "s4a_trap",
+   "visual": "clip:notfound",
+   "narration_s": 17.47,
+   "piece_s": 20
+  },
+  {
+   "id": "s4b_notfound",
+   "visual": "card:notfound",
+   "narration_s": 21.62,
+   "piece_s": 22.04
+  },
+  {
+   "id": "s5_evidence",
+   "visual": "clip:chat",
+   "narration_s": 25.99,
+   "piece_s": 32
+  },
+  {
+   "id": "s6_close",
+   "visual": "title_end",
+   "narration_s": 12.94,
+   "piece_s": 13.36
+  }
+ ],
+ "total_s": 193.15,
+ "voice": "en-US-AndrewMultilingualNeural",
+ "rate": "+18%"
+}

@@ -23,7 +23,7 @@ PAUSE_AFTER_MS = 420          # silence appended to each segment
 
 SEGMENTS = [
     dict(
-        id="s1_opening", visual="title", min_seconds=15,
+        id="s1_opening", visual="title", min_seconds=13,
         text=(
             "Every organization sits on a pile of documents, and nobody can tell "
             "whether a retrieved passage actually answers the question. "
@@ -32,7 +32,8 @@ SEGMENTS = [
         ),
     ),
     dict(
-        id="s2_organization", visual="clip:org", min_seconds=32,
+        id="s2_organization", visual="clip:org", min_seconds=30,
+        clip_mode="trim",
         text=(
             "This is the live deployment. Fifty real research papers, three point "
             "eight million characters, filed into five category bases: computer "
@@ -40,12 +41,13 @@ SEGMENTS = [
             "Nothing here was filed by filename. A classifier read each paper and "
             "decided. Three assignments deliberately overrode the filename: a paper "
             "labelled neuroscience is really a spiking neural-network algorithm, and "
-            "it went to computer science. Long papers are split into parts that keep "
-            "their section headers, and tags propagate from a paper to every part."
+            "it went to computer science. Long papers split into parts that keep their "
+            "section headers, and tags propagate to every part."
         ),
     ),
     dict(
-        id="s3a_retrieval", visual="clip:search", min_seconds=22,
+        id="s3a_retrieval", visual="clip:search", min_seconds=32,
+        clip_mode="trim",
         text=(
             "Now the retrieval. We ask: what defines NISQ technology, and what is "
             "its central limitation? Phase one recalls candidates from all five "
@@ -56,19 +58,20 @@ SEGMENTS = [
         ),
     ),
     dict(
-        id="s3b_gate", visual="card:answer", min_seconds=26,
+        id="s3b_gate", visual="card:answer", min_seconds=22,
         text=(
             "The content gate then reads that part. It scores the candidate on a "
             "zero to eight rubric covering topic, scenario and evidence. Seven out "
             "of eight: a fast exit, and the search stops. What comes back is not a "
-            "paragraph of prose. It is five sections, with the search path it took, "
-            "the answer, its sources, a confidence level, and the blind spots it "
-            "could not read. The citation names the base, the document, the part and "
-            "the section, so you can open the cited fragment and check every claim."
+            "paragraph of prose. It is five sections: the search path it took, the answer, "
+            "its sources, a confidence level, and the blind spots it could not read. "
+            "The citation names base, document, part and section, so you can open the "
+            "fragment and check every claim."
         ),
     ),
     dict(
-        id="s4a_trap", visual="clip:notfound", min_seconds=18,
+        id="s4a_trap", visual="clip:notfound", min_seconds=20,
+        clip_mode="trim",
         text=(
             "But a gate is only useful if it can say no. Here we ask about a paper "
             "that does not exist, Spectral Tuning for Low-Resource Odor Recognition. "
@@ -78,31 +81,34 @@ SEGMENTS = [
         ),
     ),
     dict(
-        id="s4b_notfound", visual="card:notfound", min_seconds=24,
+        id="s4b_notfound", visual="card:notfound", min_seconds=20,
         text=(
-            "The gate reads the text and scores it one out of eight. The librarian "
-            "pass then scans the shelves and confirms the paper is not there. What "
-            "the system returns is a not-found report: what it searched, the near "
-            "miss it found, why that near miss does not answer the question, and what "
-            "to do next. Three out-of-corpus probes scored one, one and zero out of "
-            "eight, and all three returned not-found. Saying I don't know is a "
-            "recorded output, not a failure."
+            "The gate reads it and scores one out of eight; the librarian pass scans the "
+            "shelves and confirms the paper is not there. What comes back is a "
+            "not-found report: what was searched, the near miss that was found, why it "
+            "does not answer the question, and what to do next. Three probes scored "
+            "one, one and zero out of eight, and all returned not-found. Saying I "
+            "don't know is a recorded output, not a failure."
         ),
     ),
     dict(
-        id="s5_evidence", visual="clip:graph", min_seconds=25,
+        id="s5_evidence", visual="clip:chat", min_seconds=32,
+        clip_mode="timelapse",
         text=(
-            "The platform is agent-native as well: forty-one MCP tools expose the "
-            "same operations to any AI agent. In the benchmark, the protocol placed "
-            "the gold document first in all ten questions, at one point six seconds "
-            "mean vector recall. A dense baseline was faster, but it cannot trace its "
-            "answers to a source at all. And every decision, the classification, the "
-            "gate score, the fallback and the not-found, is persisted as an artifact "
-            "you can replay."
+            "QDCVR is also the layer an AI agent retrieves through. Here is the same "
+            "question asked in the Claude chat console with knowledge-base mode on. "
+            "The agent invokes the retrieval skill by name, and then runs the protocol "
+            "itself: vector searches across every base with cross-base balancing, then "
+            "document reads for the content gate. The gate scores the candidate eight "
+            "out of eight and exits without ever calling the fallback. The answer comes "
+            "back in the five sections the protocol defines, citing the source paper, "
+            "and it names the cross-domain hits it discarded along the way, so you can "
+            "watch the gate work instead of trusting a score. Same protocol, same "
+            "recorded trace, whether a person or an agent asks."
         ),
     ),
     dict(
-        id="s6_close", visual="title_end", min_seconds=15,
+        id="s6_close", visual="title_end", min_seconds=12,
         text=(
             "At the booth: bring a PDF, watch it classified, ask a question, inspect "
             "the score and the citation, and then try to make it lie. QDCVR. Content "
@@ -118,7 +124,7 @@ CAPTIONS = {
     "s3b_gate": "0\u20138 content gate \u2192 five-section answer with base \u00b7 doc \u00b7 part \u00b7 section",
     "s4a_trap": "A query for a paper that does not exist",
     "s4b_notfound": "Gate 1/8 \u2192 not-found report, not a fabricated answer",
-    "s5_evidence": "41 MCP tools \u00b7 gold ranked first 10/10 \u00b7 every decision persisted",
+    "s5_evidence": "The agent runs the retrieval skill itself \u00b7 gate 8/8 \u00b7 cited answer",
     "s6_close": "Content decides where documents live. Reading decides what answers.",
 }
 

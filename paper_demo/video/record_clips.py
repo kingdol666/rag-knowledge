@@ -159,15 +159,18 @@ def clip_graph(page, b: Beat) -> None:
 
 
 BEATS = {"org": clip_org, "search": clip_search,
-         "notfound": clip_notfound, "graph": clip_graph}
+         "notfound": clip_notfound}
 
 
 def main() -> int:
     from playwright.sync_api import sync_playwright
 
     only = sys.argv[1:] or list(BEATS)
-    if REC.exists():
-        shutil.rmtree(REC)
+    # Only clear this script's own output. A blanket rmtree(REC) also deleted
+    # rec/chat (recorded separately) -- never do that again.
+    for d in (CLIPS, SHOTS):
+        if d.exists():
+            shutil.rmtree(d)
     CLIPS.mkdir(parents=True, exist_ok=True)
     SHOTS.mkdir(parents=True, exist_ok=True)
 

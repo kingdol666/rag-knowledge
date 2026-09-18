@@ -1688,9 +1688,19 @@ async function sendRaw(prompt: string, atts?: Attachment[]): Promise<void> {
   scrollToBottom('smooth')
   abortController.value = new AbortController()
   try {
+    // NOTE: this is a raw fetch (the SSE body is consumed as a stream), so the
+    // $fetch-based auth interceptor in plugins/auth-interceptor.client.ts does
+    // NOT apply. Without an explicit Authorization header the web auth
+    // middleware rejects the call with 401 whenever server.auth.enabled is true.
+    const authToken = import.meta.client
+      ? (localStorage.getItem('kb_auth_token') || '')
+      : ''
     const resp = await fetch('/api/claude/chat', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+      },
       body: JSON.stringify({
         prompt,
         cwd: cwd.value.trim() || undefined,

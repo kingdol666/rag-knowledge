@@ -1,0 +1,433 @@
+❦
+RAG Knowledge
+❦
+CONTENTS
+01
+Home
+01
+02
+File System
+02
+03
+Knowledge Base
+03
+04
+KB Search
+04
+05
+Graph Explorer
+05
+06
+SOUL Personas
+06
+07
+Claude Chat
+07
+08
+Settings
+08
+09
+API Tokens
+09
+⚘
+RAG Knowledge Platform v2.3.0
+RAG·KB
+CLAUDE CHAT
+·
+Assistant
+EN
+Claude Code Chat
+
+Full Claude Code client · Multi-turn · Tools/Thinking/Plan/Q&A rendering · / commands
+
+🤖 Claude Code
+Running
+Sub Agents
+Terminal
+New Chat
+Environment
+History
+Clear
+Bypass
+🤖 Auto
+active session e508cc39-d42…
+claude-opus-4-8[1m]
+🔌 plugin:rag-knowledge:kb-mcp · pending
+🔌 context7 · pending
+🔌 fetch · pending
+🔌 time · pending
+🔌 sequential-thinking · pending
+🔌 memory · pending
+🔌 agentmemory · pending
+🔌 pencil · pending
+🔌 kb-mcp · pending
+
+What defines NISQ technology and what is its central limitation?
+
+🔍 KB-enhanced: searching all KBs
+
+System · init
+Claude
+
+I'll search the knowledge base for information about NISQ technology.
+
+ Skill
+Input
+Done · Skill
+37 chars
+Launching skill: knowledgebase-search
+
+Base directory for this skill: D:\codes\ClaudeGPT\rag_project\rag-knowledge.claude\skills\knowledgebase-search
+
+⭐ Related Skills
+Document ingest → `skill://knowledgebase-ingest` — the A0-A9 pipeline ensures retrieval source quality
+KB management → `skill://knowledgebase-manage` — document move/rename/delete/merge
+Experience-first retrieval → E4 experience-first retrieval of `skill://knowledgebase-experience` (mandatory for incident/ops-type queries)
+KB organize & restructure → `skill://knowledgebase-organize` — reindexing needed after sub-KB splits/cross-library merges
+KB integrity validation → `skill://knowledgebase-verify` — three-way consistency + index coverage repair
+Knowledge graph → `skill://knowledgebase-graph` — graph build/document paths/cross-library discovery
+Architecture mental model → [kb-architecture.md](../knowledgebase/references/kb-architecture.md) of `skill://knowledgebase` (5-layer data model + 91-tool map)
+Batch operations → `skill://knowledgebase-batch` — batch ingest/tag migration/dedup
+Sequential Workflow
+
+Phase 0 — Query prep: intent classification (factual/method/comparison/incident/navigational) → core entity extraction → rewrite as declarative sentence + keywords. Incident/ops → experience library first.
+Phase 1 — Vector first (fast lane): kb_search_vector on the whole library (or the KB the user named) with balance_kbs=True → hard-threshold + document-level dedup → content-match gate: kb_doc_read + 0-8 rubric judges whether the content can truly answer the question (long docs: chunk text + continuation reads, never head-only) → best score ≥6: fast exit to answer.
+Phase 2 — Librarian deep fallback (gate failed): traverse all KBs level by level — kb_list(lightweight) reads every KB summary, fs_get_tree/kb_get_documents walks the directory tree — librarian judgment ranks the most likely shelves → targeted multi-path recall there (two-stage BM25+graph / tags / doc descriptions) → re-verify with the same 0-8 rubric → P0/P1/P2 tiering.
+Phase 3 — Answer or honest report: P0/P1 structured answer with sources; if both paths fail → honestly declare the blind spot (what was tried, what is missing, suggested next steps). Never fabricate.
+
+QDCVR v2 — Query-Driven · Content-Ruled · Vector-First with Librarian Fallback
+⭐ Execution Model · Pre-Flight · Architecture (First Step of Any Job, Mandatory)
+
+Executor: Archival agent — delegate via task (delegation template + three-role execution model + combined-task boundaries: must-read execution-model.md). Pre-Flight: no work before it passes — one-probe double-check kb_project_status → branch handling → smoke test; full flow in mcp-preflight-check.md. Mental model: before operating, must-read kb-architecture.md (5-layer model + consistency invariants + 91-tool map); MCP-first principle (no terminal/HTTP bypass) in skill-trigger-contract.md Rule 5.
+
+Archival is forbidden from: skipping Phase 0 query rewriting, skipping the content-match gate, skipping the librarian fallback when the vector path fails, skipping blind-spot declaration
+The One Picture (algorithm contract)
+query
+  │
+  ├─ Phase 0 · Query prep            rewrite before retrieving; never feed raw queries
+  │
+  ├─ Phase 1 · VECTOR FIRST (fast)   kb_search_vector → dedup+threshold → READ content
+  │     │                            0-8 rubric: can it truly answer?
+  │     ├─ best ≥ 6 ────────────────►✅ answer (fast exit)
+  │     └─ best ≤ 5 ────────────────►▼ vector path did not truly match
+  │
+  ├─ Phase 2 · LIBRARIAN FALLBACK    walk every shelf: KB summaries + directory tree
+  │     │                            → judge most-likely KBs → targeted recall there
+  │     │                            (BM25+graph two-stage / tags / descriptions)
+  │     └─ re-verify 0-8 ───────────►✅ hits → answer · ✖ nothing → ▼
+  │
+  └─ Phase 3 · HONEST REPORT         如实奉告: declare the blind spot, never fabricate
+
+Why this order: vectors are fast and semantic — they earn the first at-bat. But a high cosine score is only a candidate, not an answer: the content gate reads the body and decides. When the gate says "not truly matching", brute-forcing more vectors is waste — switch to the librarian strategy: browse the catalog, read every KB's summary, walk the shelves, and pull from the most likely section. Only after both paths fail is "no answer" the truth.
+
+Six iron rules (including the ⭐ MCP-first principle):
+
+**Vector first** — Phase 1 always starts with `kb_search_vector`; do not pre-run BM25 or KB selection ceremonies. Whole-library default with `balance_kbs=True` prevents large-library dominance.
+**Understand before retrieving** — Phase 0 rewrites the raw query; never fed directly to the retriever.
+**Content gate owns the verdict** — vector 0.95 with content ≤4 is *discarded*, not down-ranked. Vector scores never overrule the 0-8 rubric.
+**Gate failure triggers the librarian, not surrender** — best score ≤5 means the vector path cannot truly answer; Phase 2 MUST run before any "no result" conclusion.
+**Better to give nothing than to give something wrong** — when both paths fail, honestly declare the blind spot; never fabricate.
+⭐ **MCP-first principle** — all kb-mcp operations must go through MCP tools (`mcp__kb-mcp__*`); replacing MCP tools with terminal commands like `curl`/`python -c`/`wget` or direct HTTP API calls is forbidden. Only when MCP is unavailable may you report to the user and let the user decide.
+
+Freedom Map (freedom level per phase):
+
+Phase	Freedom	Notes
+Phase 0 rewrite / content gate / Phase 2 fallback trigger / Phase 3 blind-spot declaration	🔒 Mandatory (low freedom)	Core gates; cannot be skipped or simplified
+Phase 1 parameter tuning / Phase 2 shelf-ranking depth	🎯 Execute (medium freedom)	Tune top_k/threshold per the scenario tables; decide how deep to walk the tree
+Gate fast-exit decision / librarian "most likely shelf" judgment	🧠 Judgment (high freedom)	Judge from query semantics; the decision tables guide but are not mechanical
+Phase 0 — Query Prep (The First Gate of Retrieval Quality)
+
+Observed failure mode: long natural-language queries fed directly to retrieval; the retriever hits keywords but doesn't understand semantics (searching "PET film" returned PP literature).
+
+0a Intent Classification
+Type	Features	Retrieval emphasis
+Factual	"what is", "definition"	Vector first; authoritative review documents
+Method	"how to", "methods"	Vector first; tags as fallback path
+Comparison	"A vs B", "difference"	Parallel multi-entity recall (keep best chunk per entity)
+Incident/ops	"error", "failed", "how to fix"	Experience library first (experience_search_global), then documents
+Experience/case	"any similar cases", "how was it handled before"	experience_search_global first, documents as supplement
+Navigational	"where is", "is there"	kb_list(lightweight=true) + kb_get_documents(lightweight=true) description matching
+0b Core Entity Extraction
+
+Extract: subject (PET/RAG/lithium batteries) + attribute (crystallinity/hallucination/thermal management) + constraints (process parameters/2024).
+
+0c Query Rewriting
+Raw colloquial query → **declarative sentence + keyword combination**
+Example: `"The influence of PET film biaxial stretching process parameters on crystallinity"` → Rewrite (vector): `"The influence of stretch ratio/temperature/speed on crystallinity and crystal structure in PET polyester film biaxial stretching"`
+Multi-concept queries → **split into sub-queries and retrieve in parallel** (mandatory for comparisons)
+Phase 1 — Vector First + Content-Match Gate (Fast Lane) ⭐
+1a Vector Recall (primary, whole-library by default)
+kb_search_vector(
+    query=the Phase 0 rewritten query,
+    kb_id=<the KB the user named> or "" (whole library),
+    top_k=10,
+    score_threshold=0.35,
+    balance_kbs=True        # ⭐ mandatory for whole-library search; prevents large-library dominance
+)
+
+Hierarchical KB pass-through (parent KB containing sub-KBs): kb_search_vector against the parent KB is the correct entry — sub-KB documents' vector chunks live under the parent's collection (searching a sub-KB UUID returns 0; kb_search_two_stage on a parent returns empty container entries). A result whose doc_path carries a sub-KB prefix and non-empty content is a successful pass-through. kb_graph_kb_overview(kb_id) is for viewing structure only, never a search entry.
+
+Empty handling: 0 results → retry once with score_threshold=0.30; still 0 → go directly to Phase 2.
+
+1b Filter (before reading)
+1. Hard threshold: drop chunks with score < 0.35 (0.30 on the retry pass)
+2. Document-level dedup: per normalized doc_path keep only the highest-scoring chunk
+3. Short content: <50 chars drop; 50-200 chars mark ⚠️ and demote one level when scoring
+4. Sort desc; top 3-5 documents proceed to the gate
+
+Exception: comparison queries keep the best chunk for both entities.
+
+1c Content-Match Gate ⭐ (does the content TRULY answer the question?)
+
+For each surviving candidate:
+
+kb_doc_read(kb_id, doc_path, max_chars=3000)     # read 1: head window → returns totalLines + truncated
+
+0-8 scoring (actionable criteria):
+
+Dimension	Pts	Criteria
+Topic relevance (0-3)	3=body directly about the query subject; 2=touches the subject; 1=marginally related; 0=irrelevant	
+Scenario/problem match (0-3)	3=directly solves the query's problem; 2=related methods transferable; 1=generic coverage; 0=answer misses the question	
+Answer evidence (0-2)	2=body contains directly quotable data/steps/conclusions; 1=directional information; 0=empty	
+
+Content score > vector score. Vector 0.9 but content ≤3 → discard. Vector 0.5 but content ≥6 → adopt.
+
+Long-document provisions ⭐ (head-read blind spot)
+
+A head window of 3000 chars covers only the front of a long document — evidence living deeper would be under-scored and wrongly discarded. Three mandatory rules:
+
+**The retrieved chunk is admissible evidence.** The vector hit already contains ~500 chars of real body text from the matching position. Score the *evidence* dimension on **chunk text ∪ read windows**, never on the head window alone. A document whose head misses but whose chunk directly answers the question is a HIT, not a discard.
+**Continuation reads when truncated.** If `truncated=true` and neither head nor chunk settles the verdict, read deeper — `kb_doc_read` paginates by line: `offset` = line offset, `limit` = lines, response carries `totalLines`. Probe at `offset=totalLines/3` then `2*totalLines/3` (`limit=100`, `max_chars=3000`); **at most 2 continuation reads**, then score on the best window seen. Document-part files (≤10k chars) may be read in full (`max_chars=12000`).
+**Part files are self-describing.** Documents >12k chars were split at ingest into `(part k of N)` siblings, each carrying a context header (source title + part i/N + section path). Use the header for topic scoring; use the vector hit's own part for evidence — never read part 1 assuming it represents the whole.
+1d Gate Decision
+Best content score	Verdict	Action
+≥6	✅ vector path truly answers	Fast exit → Phase 3 answer (skip Phase 2)
+5	⚠️ on-topic but incomplete	Keep as P1 backstop; run Phase 2 to find better
+≤4	❌ vector path missed	Run Phase 2; these candidates are discarded
+
+Boundary decisions: unsure at exactly 4-5 → re-read 500 chars to confirm; multiple docs >5 → take the best 2-3, do not cite all; good score but outdated doc → demote one tier and flag timeliness.
+
+Phase 2 — Librarian Deep Fallback (when the gate fails) ⭐
+
+The librarian does not summon books by shouting keywords louder. He walks the stacks: reads the catalog, scans every shelf's summary, and pulls from the section most likely to hold the answer. This phase absorbs the former knowledgebase-search-enterprise skill (multi-path recall + cross-validation + graph expansion).
+
+2a Walk the Stacks (read every KB summary + traverse directories)
+catalog = kb_list(lightweight=true)     # EVERY KB: {kb_id, name, description, doc_count}
+tree    = fs_get_tree(max_depth=2)      # KB hierarchy (raise depth only if needed)
+
+For the 1-3 most promising KBs, drill into their shelves:
+
+kb_get_documents(lightweight=true, kb_id)   # every doc's name + description
+
+Part-aware grouping ⭐: split documents appear as (part k of N) siblings (e.g. ARCHITECTURE (part 7 of 15).md). Group siblings by their stem — they are ONE logical book, not N documents. Judge relevance by stem + description; when a vector hit names a specific part, that part is where the evidence lives. Counting/dedup/citation all operate on the logical (stem) level; cite the concrete part when quoting.
+
+2b Librarian Judgment (which shelf is most likely?)
+
+Match Phase 0 entities against KB descriptions + document names + directory names:
+
+Score each KB: subject match (does the KB's domain cover the subject?) × attribute match (does any doc name/description mention the attribute?) × constraint match (year/scope qualifiers).
+Rank and keep the **top 2-3 KBs** (plus their most promising sub-directories).
+This judgment replaces the old "smart KB selection" front gate: it runs only when vectors missed, and it is informed by having read *every* summary, not just the top hit.
+2c Targeted Multi-Path Recall (in the judged shelves only)
+# Path A — BM25 + graph two-stage (lexical precision inside the likely KBs)
+kb_search_two_stage(query, kb_id=<likely KB>, stage1_top_k=20, stage2_top_k=5,
+                    enable_graph_expansion=true, score_threshold=0.30, balance_kbs=True)
+
+# Path B — Tags (semantic concepts vectors missed)
+kb_tags_list() → match 3-5 tags to the query entities
+→ kb_doc_get_by_tag(tag, kb_id=<likely KB> or "")
+
+# Path C — Descriptions + navigation (doc names/descriptions from 2a re-read closely)
+kb_get_documents(lightweight=true, kb_id) → shortlist by description match
+
+# Path D — Experience library (incident/ops queries)
+experience_search_global(query, top_k=5)
+
+Path tuning: large KB (>10 docs) stage1_top_k=30; recall-first stage2_top_k=10, threshold 0.30; precision-first stage2_top_k=3, threshold 0.45.
+
+Cross-validation + dedup: merge paths, dedup by doc_path (keep best chunk; record hit-path count — multi-path consensus raises the candidate tier, but never the final verdict), hard-threshold 0.30 pre-filter, short-content downgrade.
+
+Restrained graph expansion (only when P0 <3 or explicitly cross-library):
+
+kb_graph_document_related(doc_path) / kb_graph_central_documents(kb_id) / kb_graph_cross_kb_documents(min_kbs=2)
+2d Re-Verify (same gate, same rubric)
+
+Every new candidate goes through kb_doc_read + the same 0-8 rubric.
+
+Final confidence:
+
+Source + content score	Tier
+Any recall path + content ≥6	P0 Strong — cite directly
+Any recall path + content =5	P1 Confirmed — adopt with attribution
+Description-only match + content =5	P2 Supplement — flagged weak
+Content ≤4	Discard — even with three-path consensus
+
+Short content (<200 chars) demotes one tier. A Phase 1 P1 backstop beats a Phase 2 P2; if Phase 2 produced nothing better, answer from the backstop and say so.
+
+Phase 3 — Answer or Honest Report (Mandatory Standards)
+On hit — synthesized answer (five sections, all mandatory)
+## Search Paths
+Phase 1 vector (kb_search_vector, balance_kbs) → dedup → content gate (kb_doc_read, 0-8 scoring);
+Phase 2 librarian fallback (kb_list summaries + two_stage/tags) → re-verify
+→ N documents after dedup → after content verification P0:x / P1:y
+
+## Answer
+<Synthesized from P0 documents, citing specific data/conclusions; P1 as supplement>
+
+## Sources (sorted by confidence + path consensus)
+- [P0] <document name> @ <KB/path> — <why relevant, one sentence> (split docs: cite the concrete `(part k of N)` hit)
+- [P1] <document name> @ <KB/path> — <what it adds>
+
+## Confidence
+High/medium/low — <reason, e.g. "2 P0 documents across 2 KBs consistent" or "only 1 P1 backstop; deeper verification recommended">
+
+## Blind Spots (Cross-Library Perspective)
+- <sub-domains the query touches but the whole library does not cover>
+- <a library that may hold related content but was not hit this time — manual recheck recommended>
+- <contested/timeliness/points needing user confirmation>
+On total failure — honest report (如实奉告, first-class outcome)
+
+When Phase 1 gate ≤4/5-only AND Phase 2 re-verify yields no P0/P1:
+
+## Answer (No Confirmed Hit)
+<One sentence: the knowledge base cannot currently answer this question.>
+
+## What Was Tried
+- Phase 1 vector: kb_search_vector(<rewritten query>, threshold 0.35→0.30) → N candidates, best content score x/8 (<what was found instead>)
+- Phase 2 librarian: read M KB summaries, walked <KBs/dirs>, recalled via two_stage/tags → no candidate scored ≥5
+
+## Blind Spots
+- <the specific sub-topic the library lacks>
+- <nearest-but-insufficient documents, and why they fail>
+
+## Suggestions
+- <ingest source X / broaden the query to Y / ask the user for the missing material>
+
+Never dress a ≤4 candidate as an answer. Never fabricate data, citations, or confidence.
+
+⚠️ NEVER List
+❌ Don't do this	Why	✅ Do this instead
+Start with BM25/two-stage or KB-selection ceremonies	Vectors are the fast semantic lane; ceremonies add latency, not recall	Phase 1 kb_search_vector first, balance_kbs=True
+Trust a high vector score without reading	Cosine ≠ answerable	Content gate: kb_doc_read 3000 chars + 0-8 rubric
+Declare "no result" after Phase 1 alone	Vector miss ≠ corpus miss	Gate failure → Phase 2 librarian fallback is mandatory
+Walk the stacks by guessing KBs	Summary-reading is the librarian's whole edge	Read EVERY KB description in kb_list(lightweight) before judging
+Keep score <0.35 chunks	Cross-domain low-score pollution	Hard-threshold truncation both phases
+Score a long doc by its head window alone	Evidence past char 3000 would be falsely discarded	Chunk text ∪ continuation reads (offset/totalLines) before verdict
+Treat (part k of N) siblings as separate books	Part 1 doesn't represent the whole; counting inflates	Group by stem; read the HIT part; cite the concrete part
+Include content ≤4 in the answer	Better to give nothing than something wrong	Discard → fallback → if nothing, honest report
+Answer without the five sections / blind-spot declaration	The user assumes the KB covers everything	Mandatory output standards above
+Quick Rule Reference
+**Vector first** — `kb_search_vector` opens every search; whole-library default with balance_kbs
+**Phase 0 mandatory** — raw colloquial queries are not retrieved directly
+**Content gate owns the verdict** — read 3000 chars, score 0-8 independently; ≥6 fast exit
+**Gate ≤5 → librarian fallback mandatory** — read all KB summaries → walk directories → targeted multi-path recall → re-verify
+**Document-level dedup + hard threshold** — both phases, every path; `(part k of N)` siblings count as one logical document
+**Content score > vector score > path consensus** — three-path hits with content ≤4 still die; evidence = chunk text ∪ all read windows
+**Experience first** — incident/ops-type queries check experiences first
+**Honest blind spots** — both paths failed → 如实奉告 with what-was-tried evidence; never fabricate
+Learned preferences & procedures
+
+This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched.
+
+The Phase 1 vector recall tool is `mcp__kb-mcp__kb_search_vector(kb_id="", top_k=10, score_threshold=0.35, balance_kbs=True)`; the final answer's `## Search Paths` line MUST contain the literal token `kb_search_vector`. A final answer missing that token is a failure.
+The final answer MUST contain a section titled `## Blind Spots (Cross-Library Perspective)` (title containing both literal words `Blind Spots` and `Cross-Library`), itemizing: sub-domains not covered, a library that may have relevant content but was not hit (manual recheck recommended), and contested/timeliness/points needing confirmation. Missing the `Blind Spots`/`Cross-Library` labels is a failure.
+The `## Search Paths` line MUST contain `kb_doc_read` and `0-8 scoring`; the `## Confidence` line MUST contain `content verification` (e.g. `after content verification P0:3 documents`). Missing these literals is a failure.
+MUST-answer + MCP first: all recall for whole-library/cross-library retrieval MUST go through `mcp__kb-mcp__*` tools (kb_search_vector, kb_list, kb_doc_read, kb_search_two_stage, kb_tags_list, kb_doc_get_by_tag, ...); Bash/terminal/HTTP bypass is forbidden; the response MUST give the complete five-section final answer in the same turn (`## Search Paths`/`## Answer`/`## Sources`/`## Confidence`/`## Blind Spots (Cross-Library Perspective)`); ending the turn with a single tool call, probe command, or partial answer is forbidden.
+
+ARGUMENTS: What defines NISQ technology and what is its central limitation?
+
+Claude
+
+I'll follow the QDCVR pipeline. Let me start with the mandatory Pre-Flight check.
+
+ ToolSearch
+select:mcp__kb-mcp__kb_project_status,mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_doc_read,mcp__kb-mcp__kb_list
+Input
+Done · ToolSearch
+268 chars
+[{"type":"tool_reference","tool_name":"mcp__kb-mcp__kb_project_status"},{"type":"tool_reference","tool_name":"mcp__kb-mcp__kb_search_vector"},{"type":"tool_reference","tool_name":"mcp__kb-mcp__kb_doc_read"},{"type":"tool_reference","tool_name":"mcp__kb-mcp__kb_list"}]
+ _kb-mcp › kb_project_status
+Input
+Done · _kb-mcp › kb_project_status
+988 chars
+{"result":"{\"success\": true, \"ready\": true, \"app_mode\": \"dev\", \"project_root\": \"D:\\\\codes\\\\ClaudeGPT\\\\rag_project\\\\rag-knowledge\", \"services\": {\"backend\": {\"port\": 8771, \"port_listening\": true, \"http_ok\": true, \"detail\": \"HTTP 200\", \"pid\": 50148, \"url\": \"http://localhost:8771\", \"log_path\": \"D:\\\\codes\\\\ClaudeGPT\\\\rag_project\\\\rag-knowledge\\\\backend\\\\logs\\\\desktop-stdout.log\"}, \"web\": {\"port\": 6789, \"port_listening\": true, \"http_ok\": true, \"detail\": \"HTTP 200\", \"pid\": 56612, \"url\": \"http://localhost:6789\", \"log_path\": \"D:\\\\codes\\\\ClaudeGPT\\\\rag_project\\\\rag-knowledge\\\\web\\\\logs\\\\desktop-stdout.log\"}, \"neo4j\": {\"bolt_port\": 7687, \"bolt_listening\": true, \"http_port\": 7474, \"http_listening\": true, \"log_path\": \"(docker-managed)\"}, \"mineru\": {\"available\": true, \"detail\": \"HTTP 200\"}}, \"summary\": \"backend UP(:8771) · web UP(:6789) · neo4j UP(:7687) · mineru up\"}"}
+Claude
+
+Pre-Flight passed (backend UP :8771, web UP :6789, neo4j UP, mineru up). Now Phase 0 — Query Prep.
+
+0a Intent classification: Factual (definition + limitation).
+0b Core entities: subject = NISQ (Noisy Intermediate-Scale Quantum) technology; attributes = defining characteristics, central limitation.
+0c Query rewrite: "NISQ noisy intermediate-scale quantum technology definition characteristics central limitation quantum computing near-term" — keyword set: NISQ, noisy intermediate-scale quantum, qubit count, noise, error correction, quantum advantage.
+
+Phase 1 — Vector first.
+
+ _kb-mcp › kb_search_vector
+NISQ noisy intermediate-scale quantum technology definition characteristics central limitation qubit count noise error c
+Input
+Done · _kb-mcp › kb_search_vector
+7895 chars
+{"result":"{\"success\": true, \"results\": [{\"content\": \"Noisy Intermediate-Scale Quantum (NISQ) technology will be available in the near future. Quantum computers with 50-100 qubits may be able to perform tasks which surpass the capabilities of today's classical digital computers, but noise in quantum gates will limit the size of quantum circuits that can be executed reliably. NISQ devices will be useful tools for exploring many-body quantum physics, and may have other useful applications, but the 100-qubit quantum computer will not change the world\", \"score\": 0.7598472237586975, \"doc_path\": \"Corpus-Paras/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond__p01004.md\", \"kb_id\": \"838bfeed-33aa-40bb-9d99-0953e49f7824\", \"chunk_index\": 0, \"collection\": \"kb_838bfeed-33aa-40bb-9d99-0953e49f7824\"}, {\"content\": \"## 4.1 The 50-qubit barrier\\n\\nEven with fault-tolerant quantum computing still a rather distant dream, we are now entering a pivotal new era in quantum technology. For this talk, I needed a name to describe this impending new era, so I made up a word: NISQ. This stands for Noisy Intermediate-Scale Quantum. Here “intermediate scale\\\" refers to the size of quantum computers which will be available in the next few years, with a number of qubits ranging from 50 to a few hundred.1 50 qubits is a signif\", \"score\": 0.7547662258148193, \"doc_path\": \"Corpus-Struct/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond__s05.md\", \"kb_id\": \"22f3f58e-6ec0-40cb-a4b0-17b17d10cde9\", \"chunk_index\": 4, \"collection\": \"kb_22f3f58e-6ec0-40cb-a4b0-17b17d10cde9\"}, {\"content\": \"## 4.1 The 50-qubit barrier\\n\\n\\nEven with fault-tolerant quantum computing still a rather distant dream, we are now entering a pivotal new era in quantum technology. For this talk, I needed a name to describe this impending new era, so I made up a word: NISQ. This stands for Noisy Intermediate-Scale Quantum. Here “intermediate scale\\\" refers to the size of quantum computers which will be available in the next few years, with a number of qubits ranging from 50 to a few hundred.1 50 qubits is a signi\", \"score\": 0.7529779672622681, \"doc_path\": \"Corpus-Chunks800/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond__k07.md\", \"kb_id\": \"9ac4b04f-b535-49e5-8488-76ce9d1d49ab\", \"chunk_index\": 7, \"collection\": \"kb_9ac4b04f-b535-49e5-8488-76ce9d1d49ab\"}, {\"content\": \"## 4.1 The 50-qubit barrier\\n\\n\\nEven with fault-tolerant quantum computing still a rather distant dream, we are now entering a pivotal new era in quantum technology. For this talk, I needed a name to describe this impending new era, so I made up a word: NISQ. This stands for Noisy Intermediate-Scale Quantum. Here “intermediate scale\\\" refers to the size of quantum computers which will be available in the next few years, with a number of qubits ranging from 50 to a few hundred.1 50 qubits is a signi\", \"s
+...(truncated)
+Claude
+
+Phase 1a results — "Quantum Computing in the NISQ Era and Beyond" (Preskill, arXiv:1801.00862) surfaces across 4 KBs at score ~0.75-0.76. Strong signal. Now Phase 1b filter + 1c content-match gate.
+
+ _kb-mcp › kb_doc_read
+Input
+ _kb-mcp › kb_doc_read
+Input
+Done · _kb-mcp › kb_doc_read
+6305 chars
+{"result":"{\"success\": true, \"path\": \"Natural and Earth Sciences/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (1) (part 1 of 3).md\", \"content\": \"# quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (1).md（第 1/3 部分）\\n章节: Quantum Computing in the NISQ era and beyond\\n# Quantum Computing in the NISQ era and beyond\\n\\n\\nJohn Preskill\\n\\nInstitute for Quantum Information and Matter and Walter Burke Institute for Theoretical Physics,\\n\\nCalifornia Institute of Technology, Pasadena CA 91125, USA\\n\\n30 July 2018\\n\\nNoisy Intermediate-Scale Quantum (NISQ) technology will be available in the near future. Quantum computers with 50-100 qubits may be able to perform tasks which surpass the capabilities of today's classical digital computers, but noise in quantum gates will limit the size of quantum circuits that can be executed reliably. NISQ devices will be useful tools for exploring many-body quantum physics, and may have other useful applications, but the 100-qubit quantum computer will not change the world right away — we should regard it as a significant step toward the more powerful quantum technologies of the future. Quantum technologists should continue to strive for more accurate quantum gates and, eventually, fully fault-tolerant quantum computing.\\n\\n## 1 Introduction\\n\\n\\nNow is an opportune time for a fruitful discussion among researchers, entrepreneurs, managers, and investors who share an interest in quantum computing. There has been a recent surge of investment by both large public companies and startup companies, a trend that has surprised many quantumists working in academia. While we have long recognized the commercial potential of quantum technology, this ramping up of industrial activity has happened sooner and more suddenly than most of us expected.\\n\\nIn this article I assess the current status and future potential of quantum computing. Because quantum computing technology is so different from the information technology we use now, we have only a very limited ability to glimpse its future applications, or to project when these applications will come to fruition. While this uncertainty fuels optimism, our optimism should be tempered with caution. We may feel confident that quantum technology will have a substantial impact on society in the decades ahead, but we cannot be nearly so confident about the commercial potential of quantum technology in the near term, say the next five to ten years. That is the main message I hope to convey. With that said, I'm sure that vigorous discussion among all the interested parties can help light the way toward future progress.\\n\\n## 2 Opportunities at the entanglement frontier\\n\\n\\nI am a theoretical physicist with a background in particle physics and cosmology, but for more than 20 years much of my research effort has been directed toward quantum information science. I'm drawn to this field because I feel we are
+...(truncated)
+Done · _kb-mcp › kb_doc_read
+646 chars
+{"result":"{\"success\": false, \"error\": \"{\\n  \\\"error\\\": true,\\n  \\\"url\\\": \\\"http://localhost:6789/api/kb/document?max_chars=6000&offset=0&limit=200&kb_id=22f3f58e-6ec0-40cb-a4b0-17b17d10cde9&doc_path=Corpus-Struct%2Fquantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond__s05.md\\\",\\n  \\\"statusCode\\\": 400,\\n  \\\"statusMessage\\\": \\\"doc_id, path, or kb_id+doc_path is required\\\",\\n  \\\"message\\\": \\\"doc_id, path, or kb_id+doc_path is required\\\",\\n  \\\"stack\\\": [\\n    \\\"doc_id, path, or kb_id+doc_path is required\\\",\\n    \\\"at createError (D:/codes/Claude\", \"status\": 400}"}
+Claude
+
+Head window scores well. Per long-document provisions, the defining section (§4.1 "The 50-qubit barrier") lives past the head — let me do continuation reads.
+
+ _kb-mcp › kb_doc_read
+Input
+ _kb-mcp › kb_doc_read
+Input
+Done · _kb-mcp › kb_doc_read
+6302 chars
+{"result":"{\"success\": true, \"path\": \"Natural and Earth Sciences/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (1) (part 1 of 3).md\", \"content\": \"\\nWe should also bear in mind that, because of the imperfect performance of NISQ technology, it may be hard to validate that a quantum computer is really giving the right answer. That's particularly true for the quantum simulation problems physicists are excited about. So it's important for researchers to continue seeking better methods for verifying the output of a quantum computer.\\n\\n## 6.1 Quantum optimizers\\n\\n\\nI have already emphasized that we don't expect quantum computers to be able to solve efficiently worst-case instances of NP-hard problems like combinatorial optimization problems; still, it's conceivable (though not guaranteed) that quantum devices will be able to find better approximate solutions or find such approximate solutions faster. For example, we might formulate m constraints on n bits, and seek an n-bit string which solves as many of the m constraints as possible. We may say we have solved this optimization problem exactly if we can find the maximal number k of constraints that can be satisfied simultaneously, and that we have an approximate solution if we can guarantee that the maximal number of satisfiable constraints is at least $k ^ { \\\\prime }$ for some $k ^ { \\\\prime } < k ;$ the approximation ratio $k ^ { \\\\prime } / k$ is a measure of the quality of our approximate solution\\n\\nFor some optimization problems, even finding an approximation solution is NP-hard if the approximation ratio is sufficiently close to one [23], and in those cases we don't expect a quantum computer to be able to find the approximate solution efficiently for hard instances of the problem. But for many problems there is a big gap between the approximation achieved by the best classical algorithm we currently know and the barrier of NP-hardness. So it would not be shocking to discover that quantum computers have an advantage over classical ones for the task of finding approximate solutions, an advantage that some users might find quite valuable.\\n\\nWhether that quantum advantage really exists is currently an open question, but we will soon have the opportunity to explore the question experimentally using quantum hardware. Of course, even if there is such a quantum advantage for approximate optimization, NISQ technology might be inadequate for demonstrating the advantage; still, it will be fun to try it and see how well it works.\\n\\nThe emerging paradigm for solving optimization problems using near-term quantum technology is a kind of hybrid quantum-classical algorithm. In this scheme, we use a quantum processor to prepare an n-qubit state, then measure all the qubits and process the measurement outcomes using a classical optimizer; this classical optimizer instructs the quantum processor to alter slightly how the n-qubit state is prepared. This c
+...(truncated)
+Done · _kb-mcp › kb_doc_read
+669 chars
+{"result":"{\"success\": false, \"error\": \"{\\n  \\\"error\\\": true,\\n  \\\"url\\\": \\\"http://localhost:6789/api/kb/document?max_chars=6000&offset=0&limit=200&path=Corpus-Chunks800%2Fquantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond__k07.md\\\",\\n  \\\"statusCode\\\": 404,\\n  \\\"statusMessage\\\": \\\"Document not found\\\",\\n  \\\"message\\\": \\\"Document not found\\\",\\n  \\\"stack\\\": [\\n    \\\"Document not found\\\",\\n    \\\"at createError (D:/codes/ClaudeGPT/rag_project/rag-knowledge/web/node_modules/h3/dist/index.mjs:71:15)\\\",\\n    \\\"at Object.handler (D:\\\\\\\\codes\\\\\\\\ClaudeGPT\\\\\", \"status\": 404}"}
+Claude
+
+I have strong evidence on the limitation (§6.2: "imperfect gates in NISQ systems will severely limit their computational power"). Let me read the §4.1 definitional passage directly — that's the definitive locus.
+
+ _kb-mcp › kb_doc_read
+Input
+ _kb-mcp › kb_doc_read
+Input
+Done · _kb-mcp › kb_doc_read
+6291 chars
+{"result":"{\"success\": true, \"path\": \"Natural and Earth Sciences/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (1) (part 1 of 3).md\", \"content\": \"\\nEventually we expect to be able to protect quantum systems and scale up quantum computers using the principle of quantum error correction [10]. The essential idea of quantum error correction is that if we want to protect a quantum system from damage then we should encode it in a very highly entangled state; like that 100-page book I described earlier, this entangled state has the property that the environment, interacting with parts of the system one at a time, is unable to glimpse the encoded information and therefore can't damage it. Furthermore, we've understood in principle how to process quantum information which is encoded in a highly entangled state. Unfortunately, there is a significant overhead cost for doing quantum error correction — writing the protected quantum information into a highly entangled book requires many additional physical qubits so reliable quantum computers using quantum error correction are not likely to be available very soon.\\n\\n## 4 The NISQ era unfolds\\n\\n## 4.1 The 50-qubit barrier\\n\\n\\nEven with fault-tolerant quantum computing still a rather distant dream, we are now entering a pivotal new era in quantum technology. For this talk, I needed a name to describe this impending new era, so I made up a word: NISQ. This stands for Noisy Intermediate-Scale Quantum. Here “intermediate scale\\\" refers to the size of quantum computers which will be available in the next few years, with a number of qubits ranging from 50 to a few hundred.1 50 qubits is a significant milestone, because that's beyond what can be simulated by brute force using the most powerful existing digital supercomputers.2 “Noisy\\\" emphasizes that we'll have imperfect control over those qubits; the noise will place serious limitations on what quantum devices can achieve in the near term.\\n\\nPhysicists are excited about this NISQ technology, which gives us new tools for exploring the physics of many entangled particles. It might also have useful applications of interest to the business community, but we're not sure about that. We shouldn't expect NISQ is to change the world by itself; instead it should be regarded as a step toward more powerful quantum technologies we'll develop in the future. I do think that quantum computers will have transformative effects on society eventually, but these may still be decades away. We're just not sure how long it's going to take.\\n\\n## 4.2 Qubit “quality”\\n\\n\\nI've emphasized the number of qubits as a measure of how difficult it is to do the simulation of a quantum computer on a classical device, but the number of qubits isn't the only thing we care about. We also care about the quality of the qubits, and in particular the accuracy with which we can perform quantum gates — well-controlled entangling operations acting 
+...(truncated)
+Done · _kb-mcp › kb_doc_read
+646 chars
+{"result":"{\"success\": false, \"error\": \"{\\n  \\\"error\\\": true,\\n  \\\"url\\\": \\\"http://localhost:6789/api/kb/document?max_chars=6000&offset=0&limit=200&kb_id=838bfeed-33aa-40bb-9d99-0953e49f7824&doc_path=Corpus-Paras%2Fquantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond__p01004.md\\\",\\n  \\\"statusCode\\\": 400,\\n  \\\"statusMessage\\\": \\\"doc_id, path, or kb_id+doc_path is required\\\",\\n  \\\"message\\\": \\\"doc_id, path, or kb_id+doc_path is required\\\",\\n  \\\"stack\\\": [\\n    \\\"doc_id, path, or kb_id+doc_path is required\\\",\\n    \\\"at createError (D:/codes/Clau\", \"status\": 400}"}
+Claude
+
+I now have the definitive §4.1 definitional passage and §4.2 limitation passage. Let me confirm cross-KB coverage before finalizing.
+
+ _kb-mcp › kb_list
+Input
+Done · _kb-mcp › kb_list
+1683 chars
+{"result":"{\"success\": true, \"count\": 8, \"catalog\": [{\"kb_id\": \"6ddd6f77-dd09-4726-96af-4b8b706e7b43\", \"name\": \"Computer Science and AI\", \"description\": \"\", \"doc_count\": 72, \"path\": \"Computer Science and AI\", \"parent_id\": null}, {\"kb_id\": \"b8cbfbbd-ba08-4cbd-8983-8dba2cf362c6\", \"name\": \"Natural and Earth Sciences\", \"description\": \"\", \"doc_count\": 43, \"path\": \"Natural and Earth Sciences\", \"parent_id\": null}, {\"kb_id\": \"78517db7-5ff8-4921-8fa2-24c88d39dc27\", \"name\": \"Life Sciences and Medicine\", \"description\": \"\", \"doc_count\": 32, \"path\": \"Life Sciences and Medicine\", \"parent_id\": null}, {\"kb_id\": \"13f17828-8dbe-430c-a533-be5ed9f7bc51\", \"name\": \"Engineering and Energy\", \"description\": \"\", \"doc_count\": 6, \"path\": \"Engineering and Energy\", \"parent_id\": null}, {\"kb_id\": \"8a315d4c-21bb-4c92-b978-4e9eacec7aa3\", \"name\": \"Economics and Society\", \"description\": \"\", \"doc_count\": 12, \"path\": \"Economics and Society\", \"parent_id\": null}, {\"kb_id\": \"9ac4b04f-b535-49e5-8488-76ce9d1d49ab\", \"name\": \"Corpus-Chunks800\", \"description\": \"DeepRead baseline reproduction index\", \"doc_count\": 0, \"path\": \"Corpus-Chunks800\", \"parent_id\": null}, {\"kb_id\": \"22f3f58e-6ec0-40cb-a4b0-17b17d10cde9\", \"name\": \"Corpus-Struct\", \"description\": \"DeepRead baseline reproduction index\", \"doc_count\": 0, \"path\": \"Corpus-Struct\", \"parent_id\": null}, {\"kb_id\": \"838bfeed-33aa-40bb-9d99-0953e49f7824\", \"name\": \"Corpus-Paras\", \"description\": \"DeepRead baseline reproduction index\", \"doc_count\": 0, \"path\": \"Corpus-Paras\", \"parent_id\": null}]}"}
+Claude
+31
+KBs:
+Select KBs (default: search all)
+All KBs will be searched
+Queue
+Stop
+07
+— ✦ —
