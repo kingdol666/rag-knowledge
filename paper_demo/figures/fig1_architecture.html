@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Figure 1 — System architecture</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:2300px; height:1100px; overflow:hidden; background:#FFFFFF; }
+  body { font-family:Arial, Helvetica, sans-serif; color:#26313F;
+         -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+  #fig { position:relative; width:2300px; height:1100px; background:#FFFFFF; }
+
+  /* layer containers */
+  .band { position:absolute; z-index:1; background:#F8FAFC;
+          border:1.5px solid #DEE6EF; border-radius:14px; }
+  svg.wires { position:absolute; left:0; top:0; z-index:2; }
+
+  /* component boxes */
+  .bx { position:absolute; z-index:3; background:#EEF2F7; border:2px solid #3A5A7A;
+        border-radius:12px; display:flex; align-items:center; justify-content:center;
+        text-align:center; font-size:32px; line-height:1.2; color:#26313F;
+        padding:5px 14px; }
+  .bx b { color:#22303E; }
+
+  /* band label chips */
+  .chip { position:absolute; z-index:4; background:#3A5A7A; color:#FFFFFF;
+          font-weight:700; font-size:30px; line-height:1.25; border-radius:8px;
+          padding:8px 16px; letter-spacing:.2px; white-space:nowrap; }
+  .chip.blk { font-size:28px; line-height:1.25; padding:7px 14px; white-space:normal; }
+
+  /* orange example-path annotation chips */
+  .ann { position:absolute; z-index:5; background:#fdf1ec; border:2px solid #b4441f;
+         color:#8f3315; font-weight:600; font-size:28px; line-height:1.3;
+         border-radius:8px; padding:6px 16px; white-space:nowrap; }
+
+  /* italic wire labels */
+  .lbl { position:absolute; z-index:5; font-size:28px; font-style:italic;
+         color:#525E6C; white-space:nowrap; }
+
+  /* query chip (start of the orange trace) */
+  .qchip { position:absolute; z-index:4; left:60px; top:14px; height:52px;
+           line-height:49px; background:#b4441f; color:#FFFFFF; font-weight:700;
+           font-size:30px; padding:0 20px; border-radius:10px; white-space:nowrap; }
+
+  /* legend + footnote */
+  .leg { position:absolute; z-index:4; left:92px; top:1044px; display:flex;
+         align-items:center; gap:52px; font-size:28px; color:#33404E; }
+  .leg .item { display:flex; align-items:center; gap:14px; }
+  .foot { position:absolute; z-index:4; right:92px; top:1048px; font-size:28px;
+          font-style:italic; color:#66717F; }
+</style>
+</head>
+<body>
+<div id="fig">
+
+  <!-- ===================== band containers ===================== -->
+  <div class="band" style="left:60px; top:84px;  width:2180px; height:144px;"></div>
+  <div class="band" style="left:60px; top:262px;  width:2180px; height:406px;"></div>
+  <div class="band" style="left:60px; top:696px;  width:2180px; height:164px;"></div>
+  <div class="band" style="left:60px; top:892px; width:2180px; height:138px;"></div>
+
+  <!-- ===================== wires (SVG overlay) ===================== -->
+  <svg class="wires" width="2300" height="1100" viewBox="0 0 2300 1100" fill="none">
+    <defs>
+      <marker id="mG" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="13"
+              refX="12.5" refY="6" orient="auto-start-reverse">
+        <path d="M0,0 L13,6 L0,12 Z" fill="#55606E"/>
+      </marker>
+      <marker id="mO" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="14"
+              refX="14.5" refY="6.5" orient="auto-start-reverse">
+        <path d="M0,0 L15,6.5 L0,13 Z" fill="#b4441f"/>
+      </marker>
+      <marker id="mD" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="12"
+              refX="11.5" refY="5.5" orient="auto-start-reverse">
+        <path d="M0,0 L12,5.5 L0,11 Z" fill="#7A8494"/>
+      </marker>
+    </defs>
+
+    <!-- gray structural wires -->
+    <g stroke="#55606E" stroke-width="2.5">
+      <!-- Band1 <-> Band2 (bidirectional) -->
+      <path d="M650,228 L650,262"   marker-start="url(#mG)" marker-end="url(#mG)"/>
+      <path d="M1103,228 L1103,262" marker-start="url(#mG)" marker-end="url(#mG)"/>
+      <path d="M1610,228 L1610,262" marker-start="url(#mG)" marker-end="url(#mG)"/>
+      <!-- Band2 pipeline (left to right); last arrow starts at Phase 2 box edge -->
+      <path d="M468,514 L508,514"   marker-end="url(#mG)"/>
+      <path d="M878,514 L918,514"   marker-end="url(#mG)"/>
+      <path d="M1288,514 L1328,514" marker-end="url(#mG)"/>
+      <path d="M1698,514 L1838,514" marker-end="url(#mG)"/>
+      <!-- Band2 -> Band3 -->
+      <path d="M693,668 L693,764"   marker-end="url(#mG)"/>
+      <path d="M1513,668 L1513,764" marker-end="url(#mG)"/>
+      <!-- Band3 <-> Band4 (bidirectional) -->
+      <path d="M400,852 L400,960"  marker-start="url(#mG)" marker-end="url(#mG)"/>
+      <path d="M1150,852 L1150,960" marker-start="url(#mG)" marker-end="url(#mG)"/>
+      <path d="M1950,852 L1950,960" marker-start="url(#mG)" marker-end="url(#mG)"/>
+    </g>
+
+    <!-- dashed gate-fail bypass: Content Gate -> (skip Phase 2) -> Phase 3 -->
+    <path d="M1103,600 L1103,618 L1900,618 L1900,600" stroke="#7A8494" stroke-width="2.2"
+          stroke-dasharray="9 6" marker-end="url(#mD)"/>
+
+    <!-- orange example-query trace -->
+    <g stroke="#b4441f" stroke-width="3.5">
+      <path d="M430,66 L430,152"    marker-end="url(#mO)"/>
+      <path d="M430,216 L430,428"   marker-end="url(#mO)"/>
+      <path d="M468,514 L508,514"   marker-end="url(#mO)"/>
+      <path d="M878,514 L918,514"   marker-end="url(#mO)"/>
+      <path d="M1103,428 L1103,380 L2025,380 L2025,428" marker-end="url(#mO)"/>
+      <path d="M2025,600 L2025,764" marker-end="url(#mO)"/>
+      <path d="M2025,852 L2025,960" marker-end="url(#mO)"/>
+    </g>
+  </svg>
+
+  <!-- ===================== band label chips ===================== -->
+  <div class="chip" style="left:92px; top:92px;">Client Layer</div>
+  <div class="chip blk" style="left:92px; top:266px;">Agent &amp; Protocol<br>Layer &mdash; QDCVR skill<br>+ kb-mcp server<br>(40+ kb_* tools)</div>
+  <div class="chip" style="left:92px; top:704px;">Service Layer (FastAPI :8771)</div>
+  <div class="chip" style="left:92px; top:900px;">Storage Layer</div>
+
+  <!-- ===================== Band 1 : Client Layer ===================== -->
+  <div class="bx" style="left:92px;   top:152px; width:678px; height:64px;">Web Console (Nuxt :6789)</div>
+  <div class="bx" style="left:810px;  top:152px; width:678px; height:64px;">ragctl CLI</div>
+  <div class="bx" style="left:1528px; top:152px; width:678px; height:64px;">MCP Agent Harnesses</div>
+
+  <!-- ===================== Band 2 : Agent &amp; Protocol pipeline ===================== -->
+  <div class="bx" style="left:92px;   top:428px; width:376px; height:172px;"><span><b>Phase 0</b> &mdash;<br>Query Rewrite</span></div>
+  <div class="bx" style="left:508px;  top:428px; width:370px; height:172px;"><span><b>Phase 1</b> &mdash;<br>Vector-First Recall<br>(BGE-M3,<br>cross-KB balanced)</span></div>
+  <div class="bx" style="left:918px;  top:428px; width:370px; height:172px;"><span><b>Content Gate</b> &mdash;<br>read text, score<br>0&ndash;8 rubric<br>(pass &ge; 6)</span></div>
+  <div class="bx" style="left:1328px; top:428px; width:370px; height:172px;"><span><b>Phase 2</b> &mdash;<br>Librarian Fallback<br>(shelf scan +<br>targeted re-search)</span></div>
+  <div class="bx" style="left:1838px; top:428px; width:374px; height:172px;"><span><b>Phase 3</b> &mdash;<br>Five-Section<br>Cited Answer /<br>Honest Not-Found</span></div>
+
+  <!-- wire labels: recovered (solid Phase 2 -> Phase 3) and gate-fail semantics (dashed) -->
+  <div class="lbl" style="left:1762px; top:467px; transform:translateX(-50%);">recovered</div>
+  <div class="lbl" style="left:1500px; top:624px; transform:translateX(-50%);">no candidate passes &rarr; not-found</div>
+
+  <!-- orange trace annotations -->
+  <div class="ann" style="left:693px;  top:356px; transform:translateX(-50%);">1.5 s vector recall</div>
+  <div class="ann" style="left:1103px; top:356px; transform:translateX(-50%);">gate 7/8 fast-exit</div>
+  <div class="ann" style="left:2025px; top:356px; transform:translateX(-50%);">cited five-section answer</div>
+
+  <!-- ===================== Band 3 : Service Layer ===================== -->
+  <div class="bx" style="left:92px;   top:764px; width:394px; height:88px;"><span>Document Intake +<br>MinerU Parsing</span></div>
+  <div class="bx" style="left:522px;  top:764px; width:394px; height:88px;"><span>Content<br>Classification</span></div>
+  <div class="bx" style="left:952px;  top:764px; width:394px; height:88px;"><span>Tag Propagation</span></div>
+  <div class="bx" style="left:1382px; top:764px; width:394px; height:88px;"><span>Retrieval Engines</span></div>
+  <div class="bx" style="left:1812px; top:764px; width:394px; height:88px;"><span>Experience Lifecycle</span></div>
+
+  <!-- ===================== Band 4 : Storage Layer ===================== -->
+  <div class="bx" style="left:92px;   top:960px; width:652px; height:60px;">ChromaDB + BGE-M3 vectors</div>
+  <div class="bx" style="left:824px;  top:960px; width:652px; height:60px;">Neo4j knowledge graph</div>
+  <div class="bx" style="left:1556px; top:960px; width:652px; height:60px;">YAML tree-fs + audit artifacts</div>
+
+  <!-- ===================== query chip ===================== -->
+  <div class="qchip">query: &ldquo;What limits NISQ devices?&rdquo;</div>
+
+  <!-- ===================== legend + footnote ===================== -->
+  <div class="leg">
+    <div class="item">
+      <svg width="52" height="14"><line x1="1" y1="7" x2="42" y2="7" stroke="#55606E" stroke-width="2.5"/><path d="M42,2 L52,7 L42,12 Z" fill="#55606E"/></svg>
+      <span>invoke/return</span>
+    </div>
+    <div class="item">
+      <svg width="52" height="14"><line x1="1" y1="7" x2="41" y2="7" stroke="#b4441f" stroke-width="3.5"/><path d="M41,1.5 L52,7 L41,12.5 Z" fill="#b4441f"/></svg>
+      <span>example query trace</span>
+    </div>
+    <div class="item">
+      <svg width="52" height="14"><line x1="1" y1="7" x2="43" y2="7" stroke="#7A8494" stroke-width="2.2" stroke-dasharray="7 6"/><path d="M43,2 L52,7 L43,12 Z" fill="#7A8494"/></svg>
+      <span>gate fail path</span>
+    </div>
+  </div>
+  <div class="foot">All timings from a 10-question benchmark on 50 real papers (repo artifacts).</div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,116 @@
+% sec2_system.tex — Section 2: The \sys{} Platform (CIKM demo paper).
+% Fragment only: \sys{}, \ref, and \cite keys are resolved in main.tex.
+% Numbers trace to benchmark-suite/results/ (30000-character-chunk run).
+
+\section{The \sys{} Platform}
+\label{sec:system}
+
+\sys{} is a single-host platform (Figure~\ref{fig:arch}) comprising a web console, a
+CLI, an MCP server for AI agents, a FastAPI backend, and storage layers: ChromaDB
+with BGE-M3 embeddings~\cite{chroma,bge-m3}, a Neo4j graph~\cite{neo4j}, and a
+YAML-backed file tree that doubles as the audit log.
+
+\subsection{Knowledge-Base Lifecycle}
+\label{sec:lifecycle}
+
+Documents enter through the web console, the CLI, or an MCP tool. PDFs are parsed to
+structured Markdown with section headings retained~\cite{mineru}; long documents are
+split at a configurable ceiling (30k characters in the benchmark run) into parts
+labelled \texttt{(part k of N)}, each prefixed with the section path it came from.
+That header is what makes a part independently meaningful: a retrieved fragment can
+be cited as ``part 2 of 3, \S4.1'' and read back at an offset rather than presented
+as anonymous text. On the benchmark corpus, all 50 papers parsed successfully
+(8.3--50.3\,s each) into 165 indexed documents --- 9 whole papers and 156 parts ---
+covering 3.8\,M characters, and a per-document retrieval probe verified all 50 after
+indexing. Each write persists metadata to the YAML tree, so every trace in
+Section~\ref{sec:demo} replays from persisted records rather than a live session log.
+
+\subsection{Content-Based Organization}
+\label{sec:organization}
+
+Organization is decided by reading the document, not its filename. A classifier reads
+the parsed title and body and assigns each document to one of five category bases ---
+computer science and AI (18 papers), natural and Earth sciences (15), life sciences
+and medicine (10), economics and society (5), and engineering and energy (2). The
+bases act as shelves: they bound recall and give Phase~2 (\S\ref{sec:retrieval}) a
+coarse index to scan. Every decision is persisted as an artifact with its rationale,
+and re-classification is explicit and logged, never a silent move. Filenames lie, and
+the classifier may overrule them: 3 of the 50 assignments deliberately overrode the
+filename prior --- one filed as ``neuroscience'' describes a spiking-neural-network
+learning algorithm and went to the AI base, one filed under ``agriculture'' studies
+Neolithic population genetics, and one filed as ``immunology'' is an
+evolutionary-game-dynamics analysis of tumours under therapy. Tags propagate from a
+document to all of its parts: 165 of 165 documents were tagged with zero failures in
+48\,s, and the relation graph reports 27 distinct tags over 321 relations.
+Figure~\ref{fig:ui}(1,\,3) shows both surfaces.
+
+\subsection{Query-Driven, Content-Verified Retrieval}
+\label{sec:retrieval}
+
+Phase~0 rewrites the query for retrieval. Phase~1 recalls vector candidates per
+category base with BGE-M3 embeddings and merges the per-base lists with explicit
+cross-base balancing~\cite{bge-m3,dpr}. The content gate then \emph{reads} the top
+candidates' actual text, scoring each against an interpretable rubric:
+\begin{equation}
+\begin{split}
+s(e \mid q) &= s_{\text{topic}} + s_{\text{scenario}} + s_{\text{evidence}},\\
+&\text{with } s_{\text{topic}}, s_{\text{scenario}} \in [0,3],\;
+ s_{\text{evidence}} \in [0,2],
+\end{split}
+\end{equation}
+where a candidate passes iff $s \ge 6$: topic scores subject relevance, scenario
+aspect coverage, and evidence the presence of concrete facts. The three sub-scores
+come from a rubric-prompted LLM judge whose prompt and per-level anchors ship with
+the repository. Unlike retrieve-then-generate pipelines~\cite{rag-lewis}, the gate
+does not trust the ranker: passing candidates exit early, and failing ones are
+demoted with their scores attached rather than silently dropped. Two long-document
+window artifacts are handled explicitly --- a head window that stops at the abstract
+triggers a continuation read, while a references page that ranks first goes to
+Phase~2.
+
+If nothing passes, Phase~2 runs a librarian fallback: scan the shelves by document
+list, then re-search the most promising ones. Phase~3 emits a five-section cited
+answer (direct answer, key evidence, context, caveats, references) whose citations
+name base, document, part, and section path --- or, when the shelves genuinely lack
+the information, the failure contract fires: a not-found report naming what was
+searched, what was found, why it does not answer the question, and what to do next.
+An absence becomes a finding instead of a silent hallucination.
+
+On the benchmark's 10 questions, final gate scores were 6--8/8 (two at 8, six at 7,
+two at 6) after two librarian rescues, and vector recall placed the gold document
+first in 10/10 cases at a mean of 1.57\,s plus 0.81\,s of candidate reads. Low
+\emph{initial} scores are the gate working as designed: they separate wheat from
+reference lists. All gate scores reported here were issued by the executing LLM agent
+itself --- single-judge self-adjudication against the published rubric. We report
+them as recorded protocol traces, not independent evaluations.
+
+\subsection{Agent-Native Surface and Deployment}
+\label{sec:agents}
+
+The \texttt{kb-mcp} server exposes 41 \texttt{kb\_*} MCP tools~\cite{mcp} (94 in
+total) covering base CRUD, offset-addressed document reads and writes, tags, search,
+graph queries, and an experience lifecycle that distils resolved question--answer
+logs into reusable retrieval entries, so any MCP-capable agent operates the platform
+as a first-class citizen. A packaged skill encodes the protocol of
+\S\ref{sec:retrieval} so agents reproduce it step by step instead of improvising a
+RAG loop; the benchmark's Track~A is exactly that skill, executed end to end.
+Deployment is one command (\texttt{ragctl}); embeddings and PDF parsing run locally,
+while answer generation uses whatever LLM the deployer configures. The ${\sim}20$\,s
+cold start excludes one-time model downloads.
+
+\subsection{Engineering Challenges}
+\label{sec:challenges}
+
+Three choices were forced by failures hit in operation. \emph{(i)~Chunk windows:}
+fixed-size windows scored top positions on abstracts and reference lists; the part
+split with section headers, continuation reads, and librarian routing removed both,
+each still represented in the benchmark traces. \emph{(ii)~Cross-base duplication:} a
+two-stage sparse--dense hybrid degraded once the same texts were chunked into
+parallel reproduction bases --- whole-corpus scope returned fragmented results (7/10)
+and per-base scope was worse (3--4/10) on our 10-question check --- so the protocol
+contracts vector-first recall with cross-base balancing. Repairing the hybrid under
+duplication remains future work, and we note it openly rather than presenting the
+workaround as a design preference. \emph{(iii)~Auditability:} every gate score,
+fallback, classification decision, and not-found report is persisted as an artifact,
+which is what makes the traces in Section~\ref{sec:demo} replayable rather than
+anecdotal.

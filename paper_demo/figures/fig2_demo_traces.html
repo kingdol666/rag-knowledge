@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Figure 2 — Two traces, one contract</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:2300px; height:1120px; overflow:hidden; background:#FFFFFF; }
+  body {
+    font-family:-apple-system,"Segoe UI","Helvetica Neue",Arial,sans-serif;
+    color:#33404D;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  .mono { font-family:Consolas,Menlo,"Cascadia Mono","Courier New",monospace; }
+  .canvas { width:2300px; height:1120px; display:flex; flex-direction:column; background:#FFFFFF; }
+
+  /* ---------- header strip ---------- */
+  header {
+    height:62px; flex:none;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .title-chip {
+    display:inline-block; padding:4px 32px; border-radius:999px; line-height:1.15;
+    background:#EEF2F7; border:1px solid #D7DDE4;
+    font-size:40px; font-weight:600; color:#2E4A66; letter-spacing:.2px;
+  }
+
+  /* ---------- panels ---------- */
+  .panels { flex:1; display:flex; min-height:0; }
+  .panel { flex:1; min-width:0; display:flex; flex-direction:column; }
+  .panel.left  { padding:14px 48px 14px 52px; }
+  .panel.right { padding:14px 44px 14px 40px; border-left:1px solid #D7DDE4;
+                 justify-content:space-between; }
+
+  .trace-title {
+    flex:none; display:flex; align-items:center; gap:16px;
+    font-size:40px; font-weight:700; color:#22303E; letter-spacing:.1px;
+  }
+  .trace-title .dot { width:16px; height:16px; border-radius:50%; flex:none; }
+
+  /* ---------- rows / timeline ---------- */
+  .rows { --rg:18px; position:relative; display:flex; flex-direction:column; gap:var(--rg); }
+  .row {
+    position:relative; display:grid;
+    grid-template-columns:170px 1fr; column-gap:24px;
+    align-items:center;
+  }
+  /* per-row line segments: extend half a gap each way so rows join seamlessly,
+     trimmed to the chip center on the first and last row */
+  .row::before {
+    content:""; position:absolute; left:74px;
+    top:calc(var(--rg) / -2); bottom:calc(var(--rg) / -2);
+    width:3px; background:#DCE3EA;
+  }
+  .row:first-child::before { top:50%; }
+  .row:last-child::before  { bottom:50%; }
+  .chip { position:relative; }
+  .panel.left .rows { --rg:26px; flex:1; justify-content:center; margin:6px 0; }
+  .panel.right .rows { --rg:14px; }
+  .chip {
+    flex:none; width:150px; height:42px; border-radius:21px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:28px; font-weight:700; letter-spacing:.5px;
+  }
+  .chip.p0, .chip.p1 { background:#EEF2F7; color:#3A5A7A; border:1px solid #C2CFDC; }
+  .chip.gate         { background:#FFFFFF; color:#3A5A7A; border:2px solid #3A5A7A; }
+  .chip.p2           { background:#3A7A78; color:#FFFFFF; }
+  .chip.p3           { background:#2E4A66; color:#FFFFFF; }
+
+  .desc { font-size:32px; line-height:1.3; min-width:0; }
+  .desc .k { font-weight:600; color:#2E4A66; }
+  .desc .sub { display:block; }
+
+  .mono-inline {
+    font-family:Consolas,Menlo,"Cascadia Mono","Courier New",monospace;
+    font-size:28px; color:#3A5A7A;
+  }
+  .path-box {
+    display:inline-block; margin-top:6px; padding:5px 12px;
+    background:#F5F7FA; border:1px solid #DCE3EA; border-radius:8px;
+    font-family:Consolas,Menlo,"Cascadia Mono","Courier New",monospace;
+    font-size:28px; line-height:1.3; color:#2E4A66; max-width:100%;
+  }
+  .hl {
+    font-family:Consolas,Menlo,"Cascadia Mono","Courier New",monospace;
+    font-size:28px; color:#5F4A12; background:#FBF3D9;
+    padding:1px 8px; border-radius:6px; white-space:nowrap;
+  }
+  .neg { font-weight:700; color:#B04A3A; }
+
+  /* ---------- score bars ---------- */
+  .gate-line { display:flex; align-items:center; gap:24px; }
+  .bar {
+    position:relative; flex:none; width:320px; height:18px;
+    background:#E3E8EE; border-radius:9px; overflow:hidden;
+  }
+  .bar .fill { position:absolute; left:0; top:0; height:100%; border-radius:9px; }
+  .bar .ticks {
+    position:absolute; inset:0; border-radius:9px;
+    background-image:repeating-linear-gradient(to right,
+      transparent 0, transparent 39px,
+      rgba(255,255,255,.95) 39px, rgba(255,255,255,.95) 40px);
+  }
+  .bar-label { font-size:32px; color:#3A4753; min-width:0; }
+  .bar-label b { font-size:34px; }
+
+  /* ---------- divider between right-panel traces / notes ---------- */
+  .subdivide { flex:none; height:1px; background:#E3E8EE; margin:4px 0; }
+  .note { flex:none; font-size:28px; line-height:1.3; color:#7A8694; }
+  .panel.left .note { margin-top:0; }
+</style>
+</head>
+<body>
+<div class="canvas">
+
+  <header>
+    <span class="title-chip">Two traces, one contract: every step recorded</span>
+  </header>
+
+  <div class="panels">
+
+    <!-- ==================== LEFT PANEL ==================== -->
+    <section class="panel left">
+      <div class="trace-title">
+        <span class="dot" style="background:#3E7C4F"></span>
+        Fast path (gate passes)
+      </div>
+
+      <div class="rows">
+        <div class="row">
+          <span class="chip p0">Phase 0</span>
+          <div class="desc">
+            <span class="k">query:</span>
+            <span class="sub">&ldquo;What defines NISQ technology and what is its central limitation?&rdquo;</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <span class="chip p1">Phase 1</span>
+          <div class="desc">
+            vector recall over 5 category bases &mdash; 2.0&nbsp;s
+            <span class="sub">top-1: NISQ paper, <span class="mono-inline">part 15/27</span>, similarity 0.71</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <span class="chip gate">GATE</span>
+          <div class="desc gate-line">
+            <span class="bar">
+              <span class="fill" style="width:100%;background:#3E7C4F"></span>
+              <span class="ticks"></span>
+            </span>
+            <span class="bar-label"><b style="color:#3E7C4F">8/8</b> &middot; topic 3 + scenario 3 + evidence&nbsp;2&nbsp;&mdash;&nbsp;fast&nbsp;exit</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <span class="chip p3">Phase 3</span>
+          <div class="desc">
+            five-section answer with citation:
+            <span class="sub"><span class="path-box">quantum-physics/1801.00862 &middot; part 15/27<br>&sect;6.4 Noise-resilient quantum circuits</span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="note">Answer cites base &rarr; document &rarr; part &rarr; section path.</div>
+    </section>
+
+    <!-- ==================== RIGHT PANEL ==================== -->
+    <section class="panel right">
+
+      <div class="trace-title">
+        <span class="dot" style="background:#E8833A"></span>
+        (A) Rescue path (gate fails, librarian recovers)
+      </div>
+
+      <div class="rows">
+        <div class="row">
+          <span class="chip p1">Phase 1</span>
+          <div class="desc">top chunk: references page, similarity 0.75</div>
+        </div>
+
+        <div class="row">
+          <span class="chip gate">GATE</span>
+          <div class="desc gate-line">
+            <span class="bar">
+              <span class="fill" style="width:50%;background:#E8833A"></span>
+              <span class="ticks"></span>
+            </span>
+            <span class="bar-label"><b style="color:#E8833A">4/8</b> &middot; references page &mdash; no&nbsp;answer&nbsp;text</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <span class="chip p2">Phase 2</span>
+          <div class="desc">librarian rescans base summaries &rarr; re-search &rarr; discussion section located</div>
+        </div>
+
+        <div class="row">
+          <span class="chip gate">GATE</span>
+          <div class="desc gate-line">
+            <span class="bar">
+              <span class="fill" style="width:100%;background:#3E7C4F"></span>
+              <span class="ticks"></span>
+            </span>
+            <span class="bar-label"><b style="color:#3E7C4F">8/8</b> &mdash; recovered</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="subdivide"></div>
+
+      <div class="trace-title">
+        <span class="dot" style="background:#B04A3A"></span>
+        (B) Honest not-found (fabrication refused)
+      </div>
+
+      <div class="rows">
+        <div class="row">
+          <span class="chip p0">Phase 0</span>
+          <div class="desc">
+            <span class="k">query:</span>
+            <span class="sub">&ldquo;What did 'Spectral Tuning for Low-Resource Odor Recognition' report about training epochs?&rdquo;</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <span class="chip p1">Phase 1</span>
+          <div class="desc">candidate contains literal string <span class="hl">"Number of epochs: 2, 3, 4"</span> <span style="white-space:nowrap">&mdash; but it is BERT's pre-training recipe</span></div>
+        </div>
+
+        <div class="row">
+          <span class="chip gate">GATE</span>
+          <div class="desc gate-line">
+            <span class="bar">
+              <span class="fill" style="width:12.5%;background:#B04A3A"></span>
+              <span class="ticks"></span>
+            </span>
+            <span class="bar-label"><b style="color:#B04A3A">1/8</b> &middot; wrong source</span>
+          </div>
+        </div>
+
+        <div class="row">
+          <span class="chip p3">Phase 3</span>
+          <div class="desc"><span class="neg">NOT-FOUND report:</span> names the search scope (5 bases &middot; 50 papers &middot; 1,321 parts), quotes the near-miss, refuses to cite it</div>
+        </div>
+      </div>
+
+      <div class="note">Score bars show the actual rubric verdicts recorded in the benchmark artifacts.</div>
+    </section>
+
+  </div>
+</div>
+</body>
+</html>

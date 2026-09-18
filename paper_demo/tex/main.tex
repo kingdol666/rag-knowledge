@@ -1,0 +1,95 @@
+% =====================================================================
+%  CIKM Demo submission --- QDCVR platform demonstration paper.
+%  Build: pdflatex -> bibtex -> pdflatex x2   (TeX Live 2025)
+%  Body budget: <= 4 pages incl. appendices/acknowledgments;
+%  GenAI disclosure + references may overflow (CIKM demo practice).
+%  Authors are PLACEHOLDERS: the demo track is single-blind, so real names
+%  and affiliations must replace them before submission.
+% =====================================================================
+\documentclass[sigconf]{acmart}
+
+\settopmatter{printacmref=false}
+\settopmatter{printfolios=true}
+\renewcommand\footnotetextcopyrightpermission[1]{}
+% TODO(camera-ready): fill real venue fields (2027 city/dates) to remove the trailing ", ." in the running head
+\acmConference[CIKM '27]{Proceedings of the 36th ACM International Conference on Information and Knowledge Management}{November 2027}{Conference Venue}
+\acmISBN{}
+\acmDOI{}
+
+\usepackage{booktabs}
+\usepackage{balance}
+
+% Allow TeX extra stretch so long technical compounds and repository paths do not
+% produce overfull lines in the narrow sigconf columns.
+\setlength{\emergencystretch}{2.5em}
+\tolerance=1500
+\hbadness=2000
+
+% Two full-width figures must share page 2 with body text. Without these the
+% page becomes an all-float page and the remaining third is left blank.
+\renewcommand{\topfraction}{0.92}
+\renewcommand{\bottomfraction}{0.5}
+\renewcommand{\textfraction}{0.06}
+\renewcommand{\floatpagefraction}{0.92}
+
+\newcommand{\sys}{\textsc{Qdcvr}}
+
+\begin{document}
+
+\title{QDCVR: A Deployable Knowledge-Base Management Platform\\ with Content-Based Organization and Content-Verified Retrieval}
+
+\author{Author Name}
+\affiliation{\institution{Affiliation} \city{City} \country{Country}}
+\email{author@example.com}
+
+% sec0_abstract.tex contains its own abstract environment (acmart requires it before \maketitle)
+\input{sec0_abstract}
+
+\maketitle
+
+\input{sec1_intro}
+
+% Figures are declared early so LaTeX floats them onto pages 2-3 as body
+% figures. Both count against the 4-page body budget.
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.84\textwidth]{../figures/fig1_architecture.png}
+\caption{Architecture of \sys{}. Clients (web console, CLI, MCP agent
+harnesses) reach an agent-side protocol layer served by the \texttt{kb-mcp}
+server, which fronts FastAPI services for parsing, content classification, tag
+propagation, retrieval and the experience lifecycle, over ChromaDB with BGE-M3
+vectors, a Neo4j graph, and a YAML file tree that doubles as the audit log. The
+orange trace follows one real benchmark query: query rewrite, 1.5\,s vector
+recall across the category bases, a content gate that scores the candidate text
+7/8 and exits early, and a five-section cited answer. Storage is written through
+a single path and read directly by retrieval, so search adds no load to the
+service tier. The same capability set is published twice, as REST endpoints for
+the console and as 41 \texttt{kb\_*} MCP tools for agents.}
+\label{fig:arch}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.84\textwidth]{../figures/fig2_ui_composite.png}
+\caption{The deployed console, captured live. Panel~(1) lists the five
+content-classified category bases with their indexed-document counts, beside
+three reproduction indices that were built by chunking rather than by reading;
+panel~(2) is a complete retrieval session, in which the NISQ question returns
+the gold paper first at $0.62$ fused BM25\,+\,vector similarity with the owning
+base, document and part printed on the hit card; panel~(3) shows the part and
+tag model, where a long paper becomes \texttt{(part k of N)} cards that inherit
+their document's tags; panel~(4) is the relation graph over 165 documents, 321
+relations and 27 tags. No interface element is mocked, and every count
+shown here matches the benchmark artifacts.}
+\label{fig:ui}
+\end{figure*}
+
+\input{sec2_system}
+\input{sec3_demo}
+
+\input{sec4_backmatter}
+
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+
+\end{document}

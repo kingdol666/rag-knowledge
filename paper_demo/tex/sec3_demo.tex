@@ -1,0 +1,130 @@
+% sec3_demo.tex — Section 3: Demonstration (CIKM demo paper).
+% Fragment only: \sys{}, Figure~\ref{fig:ui} and Table~\ref{tab:tracks} resolve in main.tex.
+% Every number traces to benchmark-suite/results/ artifacts (30000-char-chunk run).
+
+\section{Demonstration}
+\label{sec:demo}
+
+\paragraph{Demo setup.}
+The live instance holds 5 category bases populated with 50 real papers --- 3.8\,M
+characters that index to 165 documents (9 whole papers and 156 parts) --- plus three
+reproduction indices used for comparison. Attendees interact through the web console
+(Figure~\ref{fig:ui}) or through any MCP-capable agent harness driving the same 41
+\texttt{kb\_*} tools; both surfaces execute the same protocol. Attendees may bring
+their own PDFs and watch them parsed, classified, and tagged on the spot; the
+published numbers come from the fixed 50-paper corpus. All three scenarios run
+against this one instance with no state reset between them. A demonstration video is
+available at \url{https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4}.
+
+\begin{table*}[t]
+\centering
+\small
+\begin{tabular}{@{}p{0.185\textwidth} p{0.145\textwidth} r r p{0.315\textwidth}@{}}
+\toprule
+Track & Answer contract & Retrieval (s)$\downarrow$ & End-to-end (s)$\downarrow$
+      & Gold coverage \\
+\midrule
+B --- bare agent & free-form & -- & 78.8 (35.5--165.3)
+  & 10/10 papers named in its file list \\
+C --- dense baseline & none & \textbf{0.59} & \textbf{12.2} (5.8--28.6)
+  & 8/10 answered, 2 abstain; provenance not logged \\
+\textbf{A --- \sys{} protocol (ours)} & gate + not-found contract
+  & 1.57 (+0.81 reads) & 2.9$^{b}$ & 10/10 gold ranked first; 9/10 all-keyword \\
+\bottomrule
+\multicolumn{5}{@{}p{0.97\textwidth}@{}}{\footnotesize $^{a}$ Latencies are means
+with min--max in parentheses over the questions each track answered ($n{=}10$ for B
+and C). ``--'' marks a stage the track does not have. Bold marks the best measured
+value in a column. Gold coverage is per-track and \emph{not} mutually comparable:
+B's record is the file list its agent read, C's retrieved chunks carried no document
+path so its answers can only be checked by reading the text, and A's is a
+programmatic check of a logged ranking plus a keyword-substring check on its
+five-section answers ($\geq$1 gold keyword 10/10; all gold keywords 9/10).}\\
+\multicolumn{5}{@{}p{0.97\textwidth}@{}}{\footnotesize $^{b}$ 4-question spot run
+(BQ02/04/08/10), scripted retrieval segment only (Phase~0 rewrite, Phase~1 vector
+recall, gate reads). Answer composition for Track~A is agent-side and not timed
+in-track, so this figure is not comparable to the $n{=}10$ means of B and C.}\\
+\end{tabular}
+\caption{Three answering tracks over the same 50-paper corpus and the same 10
+content questions. Track~C is the fastest and Track~B the most detailed; Track~A is
+the only one whose answer contract, ranking, and failure mode are all recorded
+per query.}
+\label{tab:tracks}
+\end{table*}
+
+\paragraph{Scenario 1: from upload to answerable.}
+The attendee drops a PDF into the console upload panel. \sys{} parses it into
+structured Markdown, splits the long document into parts that each carry their
+section-path header, reads the text, and files it into the recommended category base
+with tags propagated to every part. No dialog asks the attendee to pick a folder,
+define a schema, or author a routing rule. Figure~\ref{fig:ui}(1) shows the resulting
+shelves --- five content-classified bases sized 72, 43, 32, 12 and 6 indexed
+documents --- alongside three reproduction indices built by chunking rather than by
+reading; panel~(3) shows what the split produces, part cards named \texttt{(part k of
+N)} with their inherited tags attached. Point proven: the administrator builds no
+folder tree and writes no rules, and re-filing is a logged operation rather than a
+silent move.
+
+\paragraph{Scenario 2: gate-adjudicated answering.}
+The attendee asks, ``What defines NISQ technology and what is its central
+limitation?'' Figure~\ref{fig:ui}(2) is the live result. Phase~1 recalls candidates
+from all five bases and fuses BM25 with vector similarity; the NISQ paper ranks first
+at $0.62$ fused similarity, and the hit card names the owning base (\emph{natural and
+Earth sciences}), the document, and the part --- \texttt{part 1 of 3} --- so the
+attendee can open the exact fragment. The content gate then reads that part, finds the
+defining sentence (``NISQ stands for Noisy Intermediate-Scale Quantum'') plus the
+no-error-correction limitation, and scores it 7/8, a fast exit that ends the search.
+The five-section answer's citation names base, document, part, and section path. Point
+proven: the answer carries a readable score and a resolvable citation, not a bare
+similarity value.
+
+\paragraph{Scenario 3: the gate discriminates, and failure is honest.}
+Two crafted queries stress the protocol in opposite directions. (a)~\emph{Rescue.} For
+the tumor-therapy question the initial top chunk is the paper's references page; the
+gate reads it and scores 5/8. The librarian fallback rescans the shelves, re-searches,
+and locates the discussion section, which scores 6/8 --- the rescue visible in the
+trace as named steps rather than a silent retry. Two of the ten benchmark questions
+take this path. (b)~\emph{Honest not-found.} The attendee asks about work that does
+not exist in the corpus: ``What did the paper `Spectral Tuning for Low-Resource Odor
+Recognition' report about training epochs?'' The trap is real --- the top candidate is
+the BERT paper, which genuinely contains training-epoch strings, and a
+similarity-ranked pipeline would quote them. The gate reads the text, scores it 1/8,
+and the librarian shelf scan confirms no such paper is present. The system returns a
+not-found report naming the search scope it covered, the near-miss it found, why the
+near-miss does not answer the question, and what to do next --- quoting the near-miss
+rather than citing it. Three such probes ran (a fabricated benchmark, a fabricated
+paper title, and an out-of-domain veterinary question); all three scored 1/8, 1/8 and
+0/8 and all three returned not-found reports. A logs audit found no previously
+captured not-found instance, so the probes are author-designed; at the booth,
+attendees are invited to pose their own. Point proven: ``I don't know'' is a
+protocol-level, per-query recorded output.
+
+\paragraph{Performance highlights.}
+\label{sec:perf}
+Table~\ref{tab:tracks} compares three answering tracks on the same corpus and
+questions. Track~A places the gold document first in all 10 questions at 1.57\,s mean
+vector recall plus 0.81\,s of candidate reads, and every question ends either in a
+gate-passed answer or in an explicit not-found report. Its final gate scores are
+6--8/8, with two questions rescued by the librarian after initial scores of 5/8 ---
+the fallback is exercised, not decorative. A keyword check of its five-section
+answers finds at least one gold keyword in 10/10 and every gold keyword in 9/10; the
+single miss is a chunk-window artifact in the scripted regression harness, and the
+continuation clause resolves the same question on the same corpus.
+
+The other tracks are strong on different axes, and we report that plainly. Track~C,
+the dense baseline, is by far the fastest at 12.2\,s end-to-end, of which retrieval is
+0.59\,s; it answered 8 of 10 questions and abstained honestly on 2, where
+800-character fixed chunking had split the answer sentence away from the retrieved
+window. But its retrieved chunks carry no document path, so its answers cannot be
+traced to a source at all --- a real recording defect of the reproduction harness.
+Track~B, the bare agent, reads whole files and produces the most detailed answers, at
+78.8\,s mean (35.5--165.3\,s) and with the largest run-to-run spread; its provenance
+is a file list with no paragraph-level citation. The contract column, not the keyword
+column, is what separates the tracks: Track~A's residual misses surface as not-found
+reports, Track~C's as abstentions or fluent prose, and Track~B's as unlogged runs.
+
+\paragraph{Generalizability.}
+Adapting \sys{} to a new domain means ingesting a new document set and naming the
+category bases; lifecycle, protocol, and audit artifacts are unchanged, because
+nothing in the pipeline is keyed to a domain vocabulary. All quality numbers here are
+spot-check scale ($n{=}10$ questions) with per-question traces published as
+repository artifacts, and we claim nothing beyond that scale.

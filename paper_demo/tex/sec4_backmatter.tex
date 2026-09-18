@@ -1,0 +1,37 @@
+% sec4_backmatter.tex — Conclusion + back-matter sections for the CIKM demo paper.
+% Fragment only: relies on \sys{} and \url{} defined in main.tex.
+
+\section{Conclusion}
+\sys{} is a deployable knowledge-base management platform that organizes documents
+by content and verifies every retrieval by reading it. Each query runs one protocol
+--- vector-first recall, an interpretable $0$--$8$ content gate, a librarian
+fallback, and an honest not-found contract --- and leaves an auditable trace from
+candidates to verdict. At the booth: bring a PDF, watch it classified, ask a
+question, inspect the score and the citation, and see a genuine not-found. Code and
+run artifacts: \url{https://github.com/kingdol666/rag-knowledge}; demo video:
+\url{https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4}.
+
+\section*{Acknowledgments}
+[Funding and acknowledgment text to be finalized by the authors.]
+
+\section*{Data Availability}
+All benchmark artifacts are JSON files under the repository's
+\texttt{benchmark-suite} results directory: the per-paper parse survey and
+ingestion report, the classification decisions with their rationales, the
+10-question retrieval regression, per-question gate scores and five-section
+answers, the three answering tracks, the three out-of-corpus probe reports, and the
+timing logs. The 50-paper corpus is fetched by a reproducible script from the arXiv
+identifiers listed in a manifest; every number in this paper traces to one of these
+artifacts.
+
+\section*{GenAI Usage Disclosure}
+Generative AI tools were used for language editing and for drafting the layout of
+Figures~1 and~2. They generated no scientific content, ran no experiment, and
+produced no reported number. All results come from the system's benchmark pipeline
+on real data; the reported gate scores and not-found reports are recorded protocol
+traces produced by the platform's own agent, as stated where they appear. All
+AI-assisted drafts were reviewed and verified by the authors, who take full
+responsibility for the work.
+
+\section*{Competing Interests}
+The authors declare no competing interests.

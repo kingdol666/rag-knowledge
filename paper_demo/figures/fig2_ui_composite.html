@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    width: 2000px; padding: 26px 26px 20px;
+    background: #ffffff;
+    font-family: "Helvetica Neue", Helvetica, Arial, "Noto Sans", sans-serif;
+    color: #1c1c1e; -webkit-font-smoothing: antialiased;
+  }
+  .head { display: flex; align-items: baseline; gap: 16px;
+           border-bottom: 2.5px solid #b4441f; padding-bottom: 9px;
+           margin-bottom: 18px; }
+  .head h1 { font-size: 30px; font-weight: 700; letter-spacing: -.2px; }
+  .head .sub { font-size: 17px; color: #5c5c66; }
+  .head .k { margin-left: auto; font-size: 15px; color: #8a8a94;
+              font-variant-numeric: tabular-nums; }
+
+  .grid { columns: 2; column-gap: 18px; }
+  .panel { position: relative; background: #fff;
+            border: 1.4px solid #d8d5cd; border-radius: 9px;
+            overflow: hidden; display: block;
+            break-inside: avoid; margin: 0 0 18px; }
+  .panel img { width: 100%; display: block; }
+  .badge {
+    position: absolute; top: 9px; left: 9px; z-index: 3;
+    width: 33px; height: 33px; border-radius: 50%;
+    background: #b4441f; color: #fff;
+    font-size: 18px; font-weight: 700; line-height: 33px; text-align: center;
+    box-shadow: 0 1px 4px rgba(0,0,0,.30);
+    border: 2px solid #fff;
+  }
+  figcaption { padding: 10px 13px 11px; border-top: 1.4px solid #e6e3dc;
+                background: #fbfaf7; font-size: 16px; line-height: 1.35; }
+  figcaption b { display: block; font-size: 17px; margin-bottom: 2px;
+                  color: #17171a; }
+  figcaption span { color: #5c5c66; }
+
+  .foot { margin-top: 15px; display: flex; gap: 10px; align-items: center;
+           font-size: 15px; color: #6a6a74;
+           border-top: 1.4px solid #e6e3dc; padding-top: 11px; }
+  .chip { border: 1.2px solid #cfccc4; border-radius: 999px;
+           padding: 3px 12px; font-size: 14px; color: #3d3d44;
+           background: #fbfaf7; }
+  .chip.acc { border-color: #d9a08c; color: #8f3315; background: #fdf3ef; }
+</style></head>
+<body>
+  <div class="head">
+    <h1>One console, three contracts</h1>
+    <span class="sub">live captures of the running deployment</span>
+    <span class="k">50 papers &middot; 5 category bases &middot; 165 indexed documents</span>
+  </div>
+  <div class="grid">
+      <figure class="panel" data-n="1">
+        <div class="badge">1</div>
+        <img src="crops/org.png" alt="Category bases built from content">
+        <figcaption><b>Category bases built from content</b>
+          <span>five content-classified bases plus three frozen baseline indices, each with its own document count</span></figcaption>
+      </figure>
+      <figure class="panel" data-n="2">
+        <div class="badge">2</div>
+        <img src="crops/ret.png" alt="Content-verified retrieval, live">
+        <figcaption><b>Content-verified retrieval, live</b>
+          <span>real query; the gold NISQ paper returns first with fused score and owning base</span></figcaption>
+      </figure>
+      <figure class="panel" data-n="3">
+        <div class="badge">3</div>
+        <img src="crops/doc.png" alt="Parts carry headers; tags propagate">
+        <figcaption><b>Parts carry headers; tags propagate</b>
+          <span>long papers become (part k of N) and inherit base tags</span></figcaption>
+      </figure>
+      <figure class="panel" data-n="4">
+        <div class="badge">4</div>
+        <img src="crops/graph.png" alt="Cross-base relation graph">
+        <figcaption><b>Cross-base relation graph</b>
+          <span>165 documents, 321 relations, 27 shared tags over 8 bases</span></figcaption>
+      </figure>
+  </div>
+  <div class="foot">
+    <span class="chip acc">content decides placement</span>
+    <span class="chip">evidence is read, not scored</span>
+    <span class="chip">parts carry section headers</span>
+    <span class="chip">failure is reported, never fabricated</span>
+    <span style="margin-left:auto">Screenshots taken from the deployed instance;
+      no interface element is mocked.</span>
+  </div>
+</body></html>

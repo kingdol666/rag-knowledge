@@ -1,0 +1,47 @@
+{
+ "base": "http://127.0.0.1:6789",
+ "user": "paperdemo",
+ "pages": {
+  "knowledge-search": {
+   "url": "http://127.0.0.1:6789/knowledge-search",
+   "viewport": "knowledge-search__viewport.png",
+   "full": "knowledge-search__full.png",
+   "page": {
+    "w": 1680,
+    "h": 1050,
+    "title": "RAG Knowledge Base — Intelligent Document Management"
+   }
+  },
+  "knowledge-base": {
+   "url": "http://127.0.0.1:6789/knowledge-base",
+   "viewport": "knowledge-base__viewport.png",
+   "full": "knowledge-base__full.png",
+   "page": {
+    "w": 1680,
+    "h": 1050,
+    "title": "RAG Knowledge Base — Intelligent Document Management"
+   }
+  },
+  "knowledge-graph": {
+   "url": "http://127.0.0.1:6789/knowledge-graph",
+   "viewport": "knowledge-graph__viewport.png",
+   "full": "knowledge-graph__full.png",
+   "page": {
+    "w": 1680,
+    "h": 1050,
+    "title": "RAG Knowledge Base — Intelligent Document Management"
+   }
+  },
+  "settings": {
+   "url": "http://127.0.0.1:6789/settings",
+   "viewport": "settings__viewport.png",
+   "full": "settings__full.png",
+   "page": {
+    "w": 1680,
+    "h": 1050,
+    "title": "RAG Knowledge Base — Intelligent Document Management"
+   }
+  }
+ },
+ "js_errors": []
+}
