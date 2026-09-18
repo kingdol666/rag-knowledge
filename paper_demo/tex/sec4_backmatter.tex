@@ -7,22 +7,32 @@ by content and verifies every retrieval by reading it. Each query runs one proto
 --- vector-first recall, an interpretable $0$--$8$ content gate, a librarian
 fallback, and an honest not-found contract --- and leaves an auditable trace from
 candidates to verdict. At the booth: bring a PDF, watch it classified, ask a
-question, inspect the score and the citation, and see a genuine not-found. Code and
-run artifacts: \url{https://github.com/kingdol666/rag-knowledge}; demo video:
-\url{https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4}.
+question, inspect the score and the citation, and see a genuine not-found.
+
+The three tracks in Figure~\ref{fig:threeway} agree from different directions: the
+dense baseline was fastest and the only one that failed to answer, the bare agent
+answered best without being able to say where its answer came from, and the protocol
+answered with a score and a citation --- or said so in a report when it could not.
+What the faster systems lacked was a component whose job is to check the evidence; as
+corpora outgrow hand inspection, that component becomes the only thing between a
+knowledge base and fluent fabrication. The extensions follow the same contract:
+broaden the gate from one judge to an ensemble with per-dimension agreement,
+calibrate the pass threshold from the recorded traces, and let not-found reports
+accumulate into a map of what the corpus does not cover.
+
+Code and run artifacts: \url{https://github.com/kingdol666/rag-knowledge}; demo
+video: \url{https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4}.
 
 \section*{Acknowledgments}
 [Funding and acknowledgment text to be finalized by the authors.]
 
 \section*{Data Availability}
-All benchmark artifacts are JSON files under the repository's
-\texttt{benchmark-suite} results directory: the per-paper parse survey and
-ingestion report, the classification decisions with their rationales, the
-10-question retrieval regression, per-question gate scores and five-section
-answers, the three answering tracks, the three out-of-corpus probe reports, and the
-timing logs. The 50-paper corpus is fetched by a reproducible script from the arXiv
-identifiers listed in a manifest; every number in this paper traces to one of these
-artifacts.
+Every number here traces to a JSON artifact in the repository's
+\texttt{benchmark-suite} results directory: the parse survey and ingestion report,
+the classification decisions with their rationales, the 10-question regression,
+per-question gate scores and five-section answers, the three answering tracks, the
+three out-of-corpus probes, and the timing logs. The corpus is fetched by a
+reproducible script from arXiv identifiers in a manifest.
 
 \section*{GenAI Usage Disclosure}
 Generative AI tools were used for language editing and for drafting the layout of
@@ -34,4 +44,4 @@ AI-assisted drafts were reviewed and verified by the authors, who take full
 responsibility for the work.
 
 \section*{Competing Interests}
-The authors declare no competing interests.
+None declared.

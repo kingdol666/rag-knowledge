@@ -22,7 +22,7 @@ CROPS.mkdir(exist_ok=True)
 # same aspect ratio (CELL_ASPECT) so the two-column grid has no ragged rows and
 # no stretched whitespace. Boxes are positioned to keep the panel's operative
 # content (the real query, the real counts, the real hit cards).
-CELL_ASPECT = 2.42
+CELL_ASPECT = 2.0
 
 PANELS = [
     dict(key="org", src="knowledge-search__viewport.png", box=(940, 905, 2400, 1642),
@@ -84,7 +84,7 @@ def build_html(sizes: dict) -> Path:
 <style>
   * {{ box-sizing: border-box; margin: 0; padding: 0; }}
   body {{
-    width: 2000px; padding: 26px 26px 20px;
+    width: 2000px; padding: 24px 24px 18px;
     background: #ffffff;
     font-family: "Helvetica Neue", Helvetica, Arial, "Noto Sans", sans-serif;
     color: #1c1c1e; -webkit-font-smoothing: antialiased;

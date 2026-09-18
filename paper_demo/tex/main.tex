@@ -53,7 +53,7 @@
 % figures. Both count against the 4-page body budget.
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.84\textwidth]{../figures/fig1_architecture.png}
+\includegraphics[width=0.50\textwidth]{../figures/fig1_architecture.png}
 \caption{Architecture of \sys{}. Clients (web console, CLI, MCP agent
 harnesses) reach an agent-side protocol layer served by the \texttt{kb-mcp}
 server, which fronts FastAPI services for parsing, content classification, tag
@@ -68,23 +68,24 @@ the console and as 41 \texttt{kb\_*} MCP tools for agents.}
 \label{fig:arch}
 \end{figure*}
 
+\input{sec2_system}
+
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.84\textwidth]{../figures/fig2_ui_composite.png}
-\caption{The deployed console, captured live. Panel~(1) lists the five
-content-classified category bases with their indexed-document counts, beside
-three reproduction indices that were built by chunking rather than by reading;
-panel~(2) is a complete retrieval session, in which the NISQ question returns
-the gold paper first at $0.62$ fused BM25\,+\,vector similarity with the owning
-base, document and part printed on the hit card; panel~(3) shows the part and
-tag model, where a long paper becomes \texttt{(part k of N)} cards that inherit
-their document's tags; panel~(4) is the relation graph over 165 documents, 321
-relations and 27 tags. No interface element is mocked, and every count
-shown here matches the benchmark artifacts.}
-\label{fig:ui}
+\includegraphics[width=0.74\textwidth]{../figures/fig3_threeway.png}
+\caption{One question, three answering tracks, recorded answers quoted verbatim.
+Track~A is the \sys{} protocol, Track~B a bare agent with no index that reads
+whole files, Track~C a dense baseline over 800-character fixed chunks. Track~A
+answers with a 7/8 gate score, a citation naming base, document, part and
+section, and a declared blind spot; Track~B answers most completely --- it
+prints the scaled dot-product form --- but its provenance stops at the file
+name; Track~C \emph{abstains}, because its two retrieved chunks came from the
+parsing-results section and the fixed window had cut the method section away
+from the answer sentence. The fastest track is the one that failed, and the
+cheapest correct answer is the one that cannot be traced.}
+\label{fig:threeway}
 \end{figure*}
 
-\input{sec2_system}
 \input{sec3_demo}
 
 \input{sec4_backmatter}

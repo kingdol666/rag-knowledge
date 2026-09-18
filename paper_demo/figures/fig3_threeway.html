@@ -1,0 +1,117 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{width:2000px;background:#fff;color:#17171a;
+    font-family:"Segoe UI",Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .head{border-bottom:2.6px solid #b4441f;padding-bottom:12px;margin-bottom:16px}
+  .head h1{font-size:31px;font-weight:700;letter-spacing:-.2px}
+  .head .q{font-size:20px;color:#5c5c66;margin-top:8px;line-height:1.36}
+  .head .q b{color:#17171a}
+  .head .note{font-size:16px;color:#5c5c66;margin-top:9px}
+  .grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px}
+  .col{border:1.4px solid #d8d5cd;border-radius:9px;overflow:hidden;
+    background:#fff;display:flex;flex-direction:column}
+  .col.acc{border-color:#b4441f;box-shadow:0 0 0 2px #f6e2da inset}
+  header{padding:13px 15px 12px;border-top:5px solid;background:#fbfaf7}
+  .hrow{display:flex;gap:11px;align-items:center}
+  .kbadge{width:30px;height:30px;border-radius:7px;color:#fff;font-weight:800;
+    font-size:17px;line-height:30px;text-align:center;flex:0 0 auto}
+  .tname{font-size:20px;font-weight:700}
+  .star{color:#b4441f}
+  .ttag{font-size:14px;color:#5c5c66;margin-top:1px}
+  .metrics{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px}
+  .m{display:flex;flex-direction:column}
+  .mk{font-size:11.5px;letter-spacing:.8px;text-transform:uppercase;color:#8a8a94}
+  .mv{font-size:16px;font-weight:600;margin-top:1px}
+  .verdict{margin-top:10px;display:inline-block;border:1.8px solid;
+    border-radius:999px;padding:4px 13px;font-size:16px;font-weight:700}
+  .vmark{margin-right:6px}
+  .vnote{font-size:13.5px;color:#5c5c66;margin-top:6px;line-height:1.3}
+  .body{padding:6px 15px 14px}
+  .row{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid #eeebe4}
+  .row:last-child{border-bottom:none}
+  .rk{flex:0 0 74px;font-size:13.5px;font-weight:700;color:#b4441f;
+    padding-top:2px}
+  .rv{font-size:15.5px;line-height:1.44;color:#2b2b31}
+  .agg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;margin-top:15px}
+  .acol{border:1.4px dashed #cfccc4;border-radius:9px;padding:11px 14px;
+    background:#fbfaf7}
+  .acol.acc{border-color:#b4441f;border-style:solid;background:#fdf1ec}
+  .aname{font-size:14px;font-weight:700;color:#5c5c66;margin-bottom:7px;
+    text-transform:uppercase;letter-spacing:.7px}
+  .ar{display:flex;font-size:15px;line-height:1.55}
+  .ak{flex:0 0 168px;color:#5c5c66}
+  .av{font-weight:600}
+  .foot{margin-top:15px;border-top:1.4px solid #e6e3dc;padding-top:10px;
+    display:flex;font-size:14.5px;color:#5c5c66}
+  .foot .r{margin-left:auto}
+</style></head><body>
+  <div class="head">
+    <h1>One question, three answering tracks &mdash; recorded answers, quoted verbatim</h1>
+    <div class="q"><b>Q.</b> How does the Transformer compute attention, and why does it replace recurrence and convolution?
+      &nbsp;<span style="color:#8a8a94">(BQ01, gold: <i>Attention Is All You Need</i>)</span></div>
+    <div class="note">Track&nbsp;A is the QDCVR protocol; Track&nbsp;B a bare agent with no
+      index that reads whole files; Track&nbsp;C a dense baseline over 800-character fixed
+      chunks. Answer text is reproduced from
+      <span style="font-family:Consolas,monospace">benchmark-suite/results/</span> with
+      elisions marked &ldquo;&hellip;&rdquo;.</div>
+  </div>
+  <div class="grid">
+      <section class="col acc">
+        <header style="border-top-color:#b4441f">
+          <div class="hrow">
+            <div class="kbadge" style="background:#b4441f">A</div>
+            <div>
+              <div class="tname">QDCVR protocol <span class="star">&#9733;</span></div>
+              <div class="ttag">this system</div>
+            </div>
+          </div>
+          <div class="metrics"><div class="m"><span class="mk">content gate</span><span class="mv">7/8 · fast exit</span></div><div class="m"><span class="mk">retrieval</span><span class="mv">2.4 s</span></div><div class="m"><span class="mk">contract</span><span class="mv">gate + not-found</span></div></div>
+          <div class="verdict" style="border-color:#1d6b45;color:#1d6b45">
+            <span class="vmark">✓</span>answered
+          </div>
+          <div class="vnote">cited to base · document · part · section</div>
+        </header>
+        <div class="body"><div class="row"><div class="rk">Answer</div><div class="rv">The Transformer computes attention with multi-head attention: the model “uses multi-head attention in three different ways” — in “encoder-decoder attention” layers the queries come from the previous decoder layer while the memory keys and values come from the encoder outputs; the decoder contains self-attention layers where queries, keys and values all come from the previous decoder layer, with masking so that positions cannot attend to subsequent positions … attention replaces recurrence because it draws global dependencies between any two positions in a single step rather than through O(n) sequential recurrent operations.</div></div><div class="row"><div class="rk">Citation</div><div class="rv">[P0] artificial-intelligence__1706.03762 (part 2/2, sec 7 Conclusion; part 1/2, sec 3.2.3 Applications of Attention) @ 计算机与人工智能</div></div><div class="row"><div class="rk">Blind spots</div><div class="rv">The precise attention(Q,K,V) formula and dₖ scaling were not in the chunk/head excerpts read; quote them only after re-opening sec 3.2.1.</div></div></div>
+      </section>
+      <section class="col">
+        <header style="border-top-color:#8a8a94">
+          <div class="hrow">
+            <div class="kbadge" style="background:#8a8a94">B</div>
+            <div>
+              <div class="tname">Bare agent</div>
+              <div class="ttag">no index, reads whole files</div>
+            </div>
+          </div>
+          <div class="metrics"><div class="m"><span class="mk">end-to-end</span><span class="mv">48.8 s</span></div><div class="m"><span class="mk">tool calls</span><span class="mv">1</span></div><div class="m"><span class="mk">contract</span><span class="mv">free-form</span></div></div>
+          <div class="verdict" style="border-color:#1d6b45;color:#1d6b45">
+            <span class="vmark">✓</span>answered
+          </div>
+          <div class="vnote">most detailed, but provenance is a file list only</div>
+        </header>
+        <div class="body"><div class="row"><div class="rk">Answer</div><div class="rv">The Transformer computes attention by mapping a query and a set of key-value pairs to an output … in its “Scaled Dot-Product Attention” this is computed on packed matrices as softmax(QKᵀ / sqrt(dₖ))V, with h parallel heads (Multi-Head Attention) … It replaces recurrence and convolution because recurrent layers require O(n) sequential operations … while self-attention connects all positions with a constant number of sequentially executed operations and a maximum path length of O(1).</div></div><div class="row"><div class="rk">Citation</div><div class="rv">files_used: artificial-intelligence__1706.03762__attention-is-all-you-need.md — file level, no paragraph or section reference</div></div><div class="row"><div class="rk">Cost</div><div class="rv">48.8 s wall clock, one model call; the agent read the whole document itself.</div></div></div>
+      </section>
+      <section class="col">
+        <header style="border-top-color:#8a8a94">
+          <div class="hrow">
+            <div class="kbadge" style="background:#8a8a94">C</div>
+            <div>
+              <div class="tname">Dense baseline</div>
+              <div class="ttag">800-char fixed chunks, top-2</div>
+            </div>
+          </div>
+          <div class="metrics"><div class="m"><span class="mk">retrieval</span><span class="mv">0.8 s</span></div><div class="m"><span class="mk">answer</span><span class="mv">11.8 s</span></div><div class="m"><span class="mk">contract</span><span class="mv">none</span></div></div>
+          <div class="verdict" style="border-color:#9b2c1c;color:#9b2c1c">
+            <span class="vmark">✗</span>abstained
+          </div>
+          <div class="vnote">the evidence pack never contained the answer</div>
+        </header>
+        <div class="body"><div class="row"><div class="rk">Answer</div><div class="rv">“The provided evidence is insufficient to answer this question. The excerpts only discuss English constituency parsing results — comparing the Transformer’s performance on WSJ/Penn Treebank against RNN sequence-to-sequence models and other parsers — without describing how attention is computed or explaining why recurrence and convolution are replaced.”</div></div><div class="row"><div class="rk">Why</div><div class="rv">2 chunks / 2,854 characters were retrieved, from the parsing-results section: the 800-character fixed window cut the method section away from the answer sentence. The abstention is honest — but nothing in the record shows which document those chunks came from.</div></div><div class="row"><div class="rk">Provenance</div><div class="rv">evidence_docs is empty for all ten questions in this track, so the answer cannot be traced to a source at all.</div></div></div>
+      </section></div>
+  <div class="agg"><div class="acol acc"><div class="aname">A · QDCVR protocol</div><div class="ar"><span class="ak">questions answered</span><span class="av">10 / 10</span></div><div class="ar"><span class="ak">gold ranked first</span><span class="av">10 / 10</span></div><div class="ar"><span class="ak">gate scores</span><span class="av">6-8 / 8</span></div><div class="ar"><span class="ak">librarian rescues</span><span class="av">2 / 10</span></div><div class="ar"><span class="ak">mean latency</span><span class="av">2.4 s retrieval</span></div><div class="ar"><span class="ak">provenance</span><span class="av">base > doc > part > section</span></div><div class="ar"><span class="ak">judge score</span><span class="av">self-adjudicated</span></div></div><div class="acol"><div class="aname">B · Bare agent</div><div class="ar"><span class="ak">questions answered</span><span class="av">10 / 10</span></div><div class="ar"><span class="ak">gold cited</span><span class="av">10 / 10 (file level)</span></div><div class="ar"><span class="ak">gate scores</span><span class="av">n/a</span></div><div class="ar"><span class="ak">librarian rescues</span><span class="av">n/a</span></div><div class="ar"><span class="ak">mean latency</span><span class="av">78.8 s (35.5-165.3)</span></div><div class="ar"><span class="ak">provenance</span><span class="av">file name only</span></div><div class="ar"><span class="ak">judge score</span><span class="av">n/a</span></div></div><div class="acol"><div class="aname">C · Dense baseline</div><div class="ar"><span class="ak">questions answered</span><span class="av">8 / 10 (2 abstain)</span></div><div class="ar"><span class="ak">gold cited</span><span class="av">not recorded</span></div><div class="ar"><span class="ak">gate scores</span><span class="av">n/a</span></div><div class="ar"><span class="ak">librarian rescues</span><span class="av">n/a</span></div><div class="ar"><span class="ak">mean latency</span><span class="av">12.2 s (5.8-28.6)</span></div><div class="ar"><span class="ak">provenance</span><span class="av">none (evidence_docs empty)</span></div><div class="ar"><span class="ak">judge score</span><span class="av">n/a</span></div></div></div>
+  <div class="foot">
+    <span>The fast track is not the accurate one: the fastest system abstained, and the
+      cheapest correct answer carried no citation.</span>
+    <span class="r">10-question spot check &middot; per-question traces in the repository</span>
+  </div>
+</body></html>

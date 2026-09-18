@@ -3,66 +3,55 @@
 
 \section{Introduction}
 
-Consider a research group, or an enterprise team, holding 50 PDFs: evaluation
-reports, survey papers, hardware manuals. A knowledge administrator must decide
-which category base each document belongs to, which tags apply to it, and, when
-someone asks ``what does X conclude?'', how the system proves it fetched the right
-text. Filename conventions and hand-built folder trees answer none of this
-reliably: a folder records where a file was saved, never what the file says.
-Retrieval-augmented generation (RAG) promises answers over such stores, but inherits
-their disorganization.
+Consider a research group holding 50 PDFs: evaluation reports, survey papers,
+hardware manuals. An administrator must decide which category each document belongs
+to, which tags apply, and, when someone asks ``what does X conclude?'', how the
+system proves it fetched the right text. Filename conventions and hand-built folder
+trees answer none of this: a folder records where a file was saved, never what the
+file says. Retrieval-augmented generation (RAG) promises answers over such stores
+but inherits their disorganization.
 
-RAG frameworks and integrated platforms chunk corpora into flat bags of passages
-and, by default, feed the top-scored candidates to the generator without an
-explicit, recorded pass/fail adjudication of whether the candidate text actually
-answers the query~\cite{rag-lewis,dpr,langchain,llamaindex}, a gap magnified by the
-documented hallucination risk of ungrounded generation~\cite{siren}. Structured and
-hierarchical variants enrich the representation with entity graphs or summary
-trees~\cite{graphrag,lightrag,raptor}---organizing internal retrieval
-structures---yet the ranker still self-certifies by similarity: no per-candidate
-rubric score is recorded before generation. Agentic and corrective methods
-self-assess evidence and trigger re-retrieval~\cite{selfrag,flare,crag}, and
-selective QA formalizes when to abstain~\cite{kamath}; none packages verification as
-an auditable, per-query protocol artifact with an explicit failure contract. And
-none tackles the upstream administrative problem of organizing the knowledge bases
-themselves by content rather than by filename or hand-built folders.
+RAG frameworks and integrated platforms chunk corpora into flat bags of passages and,
+by default, feed the top-scored candidates to the generator without a recorded
+pass/fail adjudication of whether the candidate text answers the
+query~\cite{rag-lewis,dpr,langchain,llamaindex} --- a gap magnified by the documented
+hallucination risk of ungrounded generation~\cite{siren}. Structured variants add
+entity graphs or summary trees~\cite{graphrag,lightrag,raptor} yet the ranker still
+self-certifies by similarity. Agentic and corrective methods self-assess evidence and
+trigger re-retrieval~\cite{selfrag,flare,crag}, and selective QA formalizes when to
+abstain~\cite{kamath}; none packages verification as an auditable per-query artifact
+with a failure contract, and none organizes the bases themselves by content.
 
-We present \sys{}, a deployable knowledge-base management platform whose
-organization and retrieval are driven by document content rather than filenames,
-fixed taxonomies, or bare vector similarity. Ingestion parses each document into
-structured text~\cite{mineru}, classifies it into a category base by reading that
-text, and propagates tags to every part. Retrieval runs through the Query-Driven
-Content-Verified Retrieval (QDCVR) protocol with an explicit honest-failure
-contract, ending either in cited evidence or in an honest not-found. The full stack
-runs on a single host, starts with one command, and reaches query-ready from cold in
-${\sim}20$\,s. The demonstration targets researchers and engineers building or
-evaluating knowledge-base and RAG systems, and developers of agent tooling.
+We present \sys{}, a deployable knowledge-base management platform whose organization
+and retrieval are driven by document content rather than filenames, fixed taxonomies,
+or bare vector similarity. Ingestion parses each document into structured
+text~\cite{mineru}, classifies it into a category base by reading that text, and
+propagates tags to every part. Retrieval runs through the Query-Driven
+Content-Verified Retrieval (QDCVR) protocol with an explicit honest-failure contract,
+ending either in cited evidence or in an honest not-found. The full stack runs on one
+host, starts with one command, and reaches query-ready from cold in ${\sim}20$\,s.
+The demonstration targets researchers and engineers building or evaluating
+knowledge-base and RAG systems.
 
 \begin{itemize}
   \item \textbf{Content-based organization.} A classifier reads the parsed text and
   assigns each document to a category base; 3 of 50 assignments deliberately
   overrode misleading filename labels, each with its rationale persisted. Tags
-  propagate from a document to all of its parts (165 indexed documents tagged, zero
-  failures). The mechanism applies established text classification; the contribution
-  is the auditable knowledge-base-organization layer built on it.
-  \item \textbf{Content-verified retrieval.} The QDCVR protocol recalls vector-first,
-  then applies an interpretable content gate scored on a $0$--$8$ rubric (topic
+  propagate to all parts (165 documents tagged, zero failures).
+  \item \textbf{Content-verified retrieval.} The protocol recalls vector-first, then
+  applies an interpretable content gate scored on a $0$--$8$ rubric (topic
   $0$--$3$, scenario $0$--$3$, evidence $0$--$2$; pass at $\geq 6$), falls back to a
   librarian search over the base shelves, and returns an honest not-found when
   nothing passes.
   \item \textbf{Agent-native and deployable.} A \texttt{kb-mcp} server exposes 41
-  \texttt{kb\_*} MCP tools~\cite{mcp} (94 tools in total), so AI agents ingest,
-  query, and administer the same platform as human users. Services (FastAPI backend,
-  web console, ChromaDB~\cite{chroma}, Neo4j~\cite{neo4j}) share one host;
-  \texttt{ragctl} brings the platform up from cold in ${\sim}20$\,s.
-  \item \textbf{Evidence.} On an end-to-end benchmark of 50 real papers, a
-  10-question spot check answers 9/10 with final gate scores of 6--8/8, both
-  fallback rescues succeed, and top-1 gold-document recall is 10/10 at $1.6$\,s mean
-  vector recall. A three-track comparison pits \sys{} against a bare agent and a
-  dense-retrieval baseline, and three out-of-corpus probes exercise the not-found
-  contract.
+  \texttt{kb\_*} MCP tools~\cite{mcp} (94 in total), so AI agents operate the same
+  platform as human users; \texttt{ragctl} brings the stack up from cold in
+  ${\sim}20$\,s.
+  \item \textbf{Evidence.} On 50 real papers a 10-question spot check answers 9/10
+  with final gate scores of 6--8/8, both fallback rescues succeeding, and top-1
+  gold-document recall of 10/10 at $1.6$\,s mean vector recall. Three out-of-corpus
+  probes exercise the not-found contract.
 \end{itemize}
 
-Section~\ref{sec:demo} then walks through three live demo scenarios: content-based
-ingestion of a mixed corpus, gate-adjudicated answering with inspectable traces, and
-a genuine not-found demonstration.
+Section~\ref{sec:demo} walks through three live scenarios: content-based ingestion,
+gate-adjudicated answering with inspectable traces, and a genuine not-found.
