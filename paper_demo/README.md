@@ -27,9 +27,17 @@ python build_fig2.py               # 裁切 4 个面板 → HTML 拼版 → 渲�
 | 产物 | 说明 |
 |---|---|
 | `fig1_architecture.png` | 图 1：全宽架构图，一条真实 query 走完全流程（HTML 渲染） |
-| `fig2_ui_composite.png` | 图 2：**真实系统截图** 4 面板拼版（①②③④ 编号，图注逐一解释） |
+| `fig3_threeway.png` | 图 2：**同一问题三轨回答对照** —— Track A/B/C 的逐字真实回答 + 10 题聚合指标 |
+| `fig2_ui_composite.png` | 控制台截图 4 面板拼版。**未收入论文**（4 页预算不足），保留在仓库与视频中 |
 | `shots/` | 原始截图（`*__viewport.png` 视口图、`*__full.png` 全页图） |
-| `crops/` | 拼版用的局部裁切（统一 2.42:1，保证栅格无锯齿行） |
+| `crops/` | 拼版用的局部裁切（统一 2.0:1，保证栅格无锯齿行） |
+
+### 为什么图 2 是"三轨对照"而不是 UI 截图
+
+4 页放不下 3 张全宽图：一张全宽图 ≈ 2 栏正文，三张就吃掉 1.5 页。实测后保留
+架构图（图 1）+ 证据图（图 2），把 UI 拼版移出论文——界面在 3 分钟演示视频里
+完整展示。若你更想留 UI 图，`main.tex` 里换一个 `figure*` 块即可（见
+[`CIKM-COMPLIANCE-AUDIT.md`](CIKM-COMPLIANCE-AUDIT.md) §4），但需再砍约 250 词。
 
 ## 编译与终检
 
@@ -44,13 +52,16 @@ python ../verify_refs.py           # 参考文献 arXiv 核验
 
 | 项 | 结果 |
 |---|---|
-| 正文页数 | **4 页**（p1 引言 → p4 结论）✅；p5 = 致谢/数据可用性/GenAI 披露/参考文献 |
-| 版面 | Fig 1 跨栏置于 p2 页首、Fig 2 跨栏置于 p3 页首，两页正文填满无空白 |
+| 正文页数 | **4 页**（p1 引言 → p4 结论 + 致谢 + 数据可用性）✅；p5 = GenAI 披露 + 参考文献（均不计页） |
+| 版面 | 图 1 跨栏置 p2 页首，图 2 跨栏置 p4（§3 论证处），无空白浮动页 |
 | Overfull hbox / vbox | **0 / 0** |
 | LaTeX 错误 / 未定义引用 | **0 / 0** |
 | 乱码 / 豆腐块 | **0** |
-| 正文字数 | 4,070 words |
 | 参考文献 | 15 条，arXiv/官方源逐条核验（`verify_refs.py`） |
+| 仓库 URL | `github.com/kingdol666/rag-knowledge`（**已修正**：旧稿写的 `kingdol/...` 是 404） |
+| 演示视频 URL | GitHub 公开仓库 blob 链接（推送后生效） |
+
+合规与排版审计见 [`CIKM-COMPLIANCE-AUDIT.md`](CIKM-COMPLIANCE-AUDIT.md)。
 
 ## 数据来源铁律
 
