@@ -66,24 +66,27 @@ attached.
 % met, and \S2.2 is set on p.2 --- so this tops p.3, one figure per page.
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.78\textwidth]{../figures/fig2_architecture.png}
-\caption{Architecture of \sys{}. Clients (web console, CLI, MCP agent
-harnesses) reach the \texttt{kb-mcp} protocol layer, which fronts FastAPI
-services for parsing, content classification, tag propagation, retrieval and
-the experience lifecycle over ChromaDB with BGE-M3 vectors, a Neo4j graph, and
-a YAML audit tree. The orange trace follows one real benchmark query; the
-dashed path is the gate-fail contract; trace timings come from the
-10-question benchmark run (repository artifacts).}
-\Description{Four-band architecture diagram. Client layer: web console, ragctl
-CLI, and MCP agent harnesses. Agent and protocol layer: the five-stage QDCVR
-pipeline (query rewrite, vector-first recall, content gate, librarian fallback,
-cited answer) wired to a live benchmark query ("What limits NISQ devices?") with
-an orange trace and a dashed gate-fail path to an honest not-found. Service
-layer: FastAPI services for document intake and MinerU parsing, content
-classification into five category KBs, tag propagation with quality gates,
-retrieval engines (vector, BM25, graph), and the experience lifecycle. Storage
-layer: ChromaDB with BGE-M3 vectors, a Neo4j knowledge graph, and a YAML
-tree-fs audit trail.}
+\includegraphics[width=0.78\textwidth]{../figures/fig2_architecture_v2.png}
+\caption{Architecture of \sys{}. Offline (left), MinerU parses each PDF into
+section-addressed Markdown parts, a classifier files the document into one of
+five category bases by reading it, and tags propagate to every part; evidence
+lands in ChromaDB, Neo4j, and a YAML audit tree. Online (right), the web
+console, the \texttt{ragctl} CLI, and MCP agents drive the same
+\texttt{kb-mcp} protocol layer --- query rewrite, vector-first recall, a 0--8
+content gate, librarian fallback --- ending in a cited five-section answer or a
+not-found report; a lifecycle stage distils resolved Q\&A logs into reusable
+entries.}
+\Description{Two pastel zones joined by an arrow. Left, offline ingestion: an
+intake stage parsing PDFs with MinerU into section-addressed Markdown parts, a
+content-classification stage filing documents into five category bases by
+reading them, a tag-propagation stage tagging all 165 parts, and three storage
+chips (ChromaDB with BGE-M3 vectors, a Neo4j graph with 860 typed relations, a
+YAML tree-fs audit trail). Right, online answering: three client entries (web
+console, ragctl CLI, MCP agents with 41 kb\_* tools) feeding a teal kb-mcp
+protocol bar, a five-phase pipeline (query rewrite, vector-first recall, 0--8
+content gate, librarian fallback, five-section answer), two outcome cards
+(cited five-section answer vs.\ not-found report), and an experience-lifecycle
+stage distilling resolved Q\&A logs.}
 \label{fig:arch}
 \end{figure*}
 

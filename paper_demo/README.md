@@ -35,8 +35,10 @@ python build_fig2.py               # 裁切 4 个面板 → HTML 拼版 → 渲�
 
 | 产物 | 说明 |
 |---|---|
-| `fig1_rag_vs_kb_gpt.png` | 图 1（p2，**现用**）：常规 dense RAG vs. QDCVR 协议同库同题对照 + 底部基准条。由 gpt-image-2.5 生成（prompt 见 `../garden-gpt-image-2/prompt/cikm-fig1-rag-vs-qdcvr.md`，文字逐串核对与工件一致） |
-| `fig1_rag_vs_kb.png` / `fig1_rag_vs_kb_html_backup.png` | 图 1 的 HTML 渲染旧版（已被 gpt 版替换，保留可回退） |
+| `fig1_protocols.png` | 图 1（p2，**现用**）：同一问题喂给两个栈——dense RAG 的无溯源回答 vs. QDCVR 的引用回答+诚实 not-found（DeepRead/PolyUQuest 粉彩分区风，去 benchmark 条）。源 `fig1_protocols.html` |
+| `fig2_architecture_v2.png` | 图 2（p3，**现用**）：Offline ingestion / Online answering 双括号架构。源 `fig2_architecture_v2.html` |
+| `fig3_answers.png` | 图 3（p4，**现用**）：BQ01 三栈逐字回答并列 + 陷阱问题 NOT_FOUND 报告（纯"问题与回答"，无分数/时延条）。源 `fig3_answers.html` |
+| `fig1_rag_vs_kb*.png` / `fig3_benchmark.png` 等 | 历史版本（HTML 渲染旧版、gpt-image 试验版），保留可回退 |
 | `fig2_architecture.png` | 图 2（p3）：四层架构 + 一条真实 query 全流程 + gate-fail 路径 |
 | `fig3_benchmark.png` | 图 3（p4）：Track A/B/C 逐字真实回答 + 时延条（口径已标注） |
 | `fig1_architecture.png` / `fig2_ui_composite.png` / `fig2_demo_traces.png` / `fig3_threeway.png` | 历史版本与视频素材，未收入论文 |

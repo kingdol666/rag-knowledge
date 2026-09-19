@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Figure 2 — QDCVR architecture</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:2300px; height:1010px; overflow:hidden; background:#FFFFFF;
+               font-family:"Segoe UI", Arial, Helvetica, sans-serif; color:#1a2332;
+               -webkit-font-smoothing:antialiased; }
+  #fig { position:relative; width:2300px; height:1010px; background:#FFFFFF; }
+
+  .q { position:absolute; right:56px; top:12px; background:#FFFDF6;
+       border:2px solid #E3CE9A; border-radius:999px; padding:9px 26px;
+       font-size:23px; font-weight:700; color:#4A3D1E; }
+  .q span { color:#A08436; font-style:italic; font-weight:600; }
+
+  .zone { position:absolute; top:56px; height:772px; border-radius:24px; }
+  .zl { left:56px;  width:1060px; background:#FDF3F3; border:2px solid #F0CED1; }
+  .zr { left:1184px; width:1060px; background:#F0F7EE; border:2px solid #CBE0C6; }
+  .bracket { font-size:25px; font-weight:800; letter-spacing:.5px; margin-bottom:10px; }
+  .bl { color:#A04A52; } .br { color:#4E7A44; }
+  .cap { font-size:20px; font-style:italic; margin:-8px 0 14px 6px; }
+  .zl .cap { color:#B08A8E; } .zr .cap { color:#8AA37F; }
+
+  .zin { position:absolute; left:36px; right:36px; top:44px; bottom:36px; }
+  .stage { background:#fff; border-radius:14px; padding:14px 20px; margin-bottom:0; }
+  .zl .stage { border:1.5px solid #E8CBCD; }
+  .zr .stage { border:1.5px solid #CFE2C9; }
+  .stage .t { font-size:25px; font-weight:800; }
+  .stage .d { font-size:20px; color:#68737F; margin-top:5px; line-height:1.32; }
+  .varrow { text-align:center; padding:4px 0; }
+
+  .store { display:flex; gap:14px; margin-top:0; }
+  .chip { display:inline-block; background:#fff; border-radius:10px; padding:9px 14px;
+          font-size:20px; font-weight:700; text-align:center; line-height:1.25; }
+  .zl .chip { border:1.5px solid #E8CBCD; color:#7A4A50; }
+  .store .chip { flex:1; font-weight:600; }
+  .store .chip span { display:block; font-weight:400; font-size:18px; }
+
+  .entry { display:flex; gap:14px; margin-bottom:0; }
+  .entry .chip { flex:1; }
+  .zr .chip { border:1.5px solid #CFE2C9; color:#44623C; }
+
+  .tealbar { background:#0F766E; color:#fff; border-radius:12px; text-align:center;
+             font-size:23px; font-weight:800; padding:12px 0; margin-bottom:0; }
+  .ph { display:flex; gap:0; }
+  .ph .p { flex:1; background:#fff; border:2px solid #0F766E; border-radius:12px;
+           padding:10px 6px; text-align:center; }
+  .ph .p.red { border-color:#B4441F; }
+  .ph .pn { display:inline-flex; width:34px; height:34px; border-radius:50%;
+            background:#0F766E; color:#fff; font-size:19px; font-weight:800;
+            align-items:center; justify-content:center; margin-bottom:6px; }
+  .ph .p.red .pn { background:#B4441F; }
+  .ph .pt { font-size:21px; font-weight:800; color:#0B4F4A; line-height:1.15; }
+  .ph .p.red .pt { color:#8F3315; }
+  .pa { width:32px; display:flex; align-items:center; justify-content:center; flex:none; }
+
+  .out { display:flex; gap:14px; }
+  .out div { flex:1; border-radius:12px; padding:10px 14px; font-size:20px;
+             font-weight:600; line-height:1.32; }
+  .out .ok { background:#E4F4EF; border:2px solid #0F766E; color:#0B4F4A; }
+  .out .nf { background:#fff; border:2px dashed #0F766E; color:#0B4F4A; }
+
+  .leg { position:absolute; left:80px; top:952px; display:flex; gap:44px;
+         font-size:21px; color:#425061; align-items:center; }
+  .leg .i { display:flex; align-items:center; gap:12px; }
+</style>
+</head>
+<body>
+<div id="fig">
+  <div class="q">live query <span>(BQ02, paraphrased)</span> — “What limits NISQ devices?”</div>
+
+  <!-- ═══ OFFLINE ═══ -->
+  <div class="zone zl">
+    <div class="zin">
+      <div class="bracket bl">OFFLINE INGESTION &mdash; once per document</div>
+      <div class="cap">the administrator writes no rules — the pipeline reads and files</div>
+      <div class="stage">
+        <div class="t">Intake</div>
+        <div class="d">PDF dropped in console / CLI / MCP → <b>MinerU</b> parse to structured
+        Markdown, split at the 30k ceiling into parts that keep their section path —
+        citable as “part 2 of 3, §4.1”</div>
+      </div>
+      <div class="varrow"><svg width="26" height="30" viewBox="0 0 26 30"><line x1="13" y1="2" x2="13" y2="20" stroke="#A04A52" stroke-width="3"/><polygon points="5,20 21,20 13,30" fill="#A04A52"/></svg></div>
+      <div class="stage">
+        <div class="t">Content classification</div>
+        <div class="d">an LLM classifier <b>reads title and body</b> and files the document into
+        one of five category bases — 2 of 50 assignments overrode the filename</div>
+      </div>
+      <div class="varrow"><svg width="26" height="30" viewBox="0 0 26 30"><line x1="13" y1="2" x2="13" y2="20" stroke="#A04A52" stroke-width="3"/><polygon points="5,20 21,20 13,30" fill="#A04A52"/></svg></div>
+      <div class="stage">
+        <div class="t">Tag propagation</div>
+        <div class="d">tags flow to every part — <b>165 / 165 tagged</b>; every decision
+        persisted with its rationale</div>
+      </div>
+      <div class="varrow"><svg width="26" height="30" viewBox="0 0 26 30"><line x1="13" y1="2" x2="13" y2="20" stroke="#A04A52" stroke-width="3"/><polygon points="5,20 21,20 13,30" fill="#A04A52"/></svg></div>
+      <div class="store">
+        <span class="chip">ChromaDB<span>BGE-M3 vectors</span></span>
+        <span class="chip">Neo4j graph<span>860 typed relations</span></span>
+        <span class="chip">YAML tree-fs<span>audit artifacts</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ ONLINE ═══ -->
+  <div class="zone zr">
+    <div class="zin">
+      <div class="bracket br">ONLINE ANSWERING &mdash; once per query</div>
+      <div class="cap">three ways in — one protocol, human and agent surfaces alike</div>
+      <div class="entry">
+        <span class="chip">Web console</span>
+        <span class="chip">ragctl CLI</span>
+        <span class="chip">MCP agents · 41 kb_* tools</span>
+      </div>
+      <div class="varrow"><svg width="26" height="30" viewBox="0 0 26 30"><line x1="13" y1="2" x2="13" y2="20" stroke="#4E7A44" stroke-width="3"/><polygon points="5,20 21,20 13,30" fill="#4E7A44"/></svg></div>
+      <div class="tealbar">kb-mcp protocol layer — the same 41 tools behind every surface</div>
+      <div class="varrow"><svg width="26" height="30" viewBox="0 0 26 30"><line x1="13" y1="2" x2="13" y2="20" stroke="#4E7A44" stroke-width="3"/><polygon points="5,20 21,20 13,30" fill="#4E7A44"/></svg></div>
+      <div class="ph">
+        <div class="p"><span class="pn">0</span><div class="pt">Query<br>rewrite</div></div>
+        <div class="pa"><svg width="28" height="22" viewBox="0 0 28 22"><line x1="2" y1="11" x2="20" y2="11" stroke="#0F766E" stroke-width="3"/><polygon points="18,3 27,11 18,19" fill="#0F766E"/></svg></div>
+        <div class="p"><span class="pn">1</span><div class="pt">Vector-first<br>recall</div></div>
+        <div class="pa"><svg width="28" height="22" viewBox="0 0 28 22"><line x1="2" y1="11" x2="20" y2="11" stroke="#0F766E" stroke-width="3"/><polygon points="18,3 27,11 18,19" fill="#0F766E"/></svg></div>
+        <div class="p red"><span class="pn">✓</span><div class="pt">0–8 content<br>gate</div></div>
+        <div class="pa"><svg width="28" height="22" viewBox="0 0 28 22"><line x1="2" y1="11" x2="20" y2="11" stroke="#0F766E" stroke-width="3"/><polygon points="18,3 27,11 18,19" fill="#0F766E"/></svg></div>
+        <div class="p"><span class="pn">2</span><div class="pt">Librarian<br>fallback</div></div>
+        <div class="pa"><svg width="28" height="22" viewBox="0 0 28 22"><line x1="2" y1="11" x2="20" y2="11" stroke="#0F766E" stroke-width="3"/><polygon points="18,3 27,11 18,19" fill="#0F766E"/></svg></div>
+        <div class="p"><span class="pn">3</span><div class="pt">Five-section<br>answer</div></div>
+      </div>
+      <div class="varrow"><svg width="26" height="30" viewBox="0 0 26 30"><line x1="13" y1="2" x2="13" y2="20" stroke="#4E7A44" stroke-width="3"/><polygon points="5,20 21,20 13,30" fill="#4E7A44"/></svg></div>
+      <div class="out">
+        <div class="ok">✓ pass ≥ 6 → <b>cited five-section answer</b> — base / doc / part / § + declared blind spots</div>
+        <div class="nf">✗ nothing passes → <b>NOT_FOUND report</b> — scope, near miss, why it does not answer</div>
+      </div>
+      <div class="varrow"><svg width="26" height="30" viewBox="0 0 26 30"><line x1="13" y1="2" x2="13" y2="20" stroke="#4E7A44" stroke-width="3"/><polygon points="5,20 21,20 13,30" fill="#4E7A44"/></svg></div>
+      <div class="stage">
+        <div class="t">Experience lifecycle</div>
+        <div class="d">resolved question–answer logs distilled into reusable entries; every stage of
+        every query persists as an auditable trace artifact</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ bridge ═══ -->
+  <div style="position:absolute; left:1010px; top:856px; width:280px; text-align:center;">
+    <div style="font-size:19px; color:#68737F; font-style:italic; margin-bottom:2px;">search reads storage directly</div>
+    <svg width="280" height="24" viewBox="0 0 280 24">
+      <line x1="4" y1="12" x2="262" y2="12" stroke="#5B6878" stroke-width="3"/>
+      <polygon points="260,3 276,12 260,21" fill="#5B6878"/>
+    </svg>
+  </div>
+
+  <div class="leg">
+    <div class="i"><svg width="46" height="14"><line x1="1" y1="7" x2="38" y2="7" stroke="#5B6878" stroke-width="3"/><polygon points="36,1 46,7 36,13" fill="#5B6878"/></svg> data / control flow</div>
+    <div class="i"><svg width="20" height="20"><rect x="2" y="2" width="16" height="16" rx="4" fill="#FDF3F3" stroke="#F0CED1" stroke-width="2"/></svg> offline — documents</div>
+    <div class="i"><svg width="20" height="20"><rect x="2" y="2" width="16" height="16" rx="4" fill="#F0F7EE" stroke="#CBE0C6" stroke-width="2"/></svg> online — queries</div>
+    <div class="i"><svg width="20" height="20"><rect x="2" y="2" width="16" height="16" rx="4" fill="#0F766E"/></svg> protocol layer</div>
+    <div class="i" style="font-style:italic; color:#66717F;">numbers: 2026-09-18 benchmark (repo artifacts)</div>
+  </div>
+</div>
+</body>
+</html>

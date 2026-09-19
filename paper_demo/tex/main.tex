@@ -83,23 +83,27 @@
 % sits right after the section whose typesetting starts on its target page.
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.62\textwidth]{../figures/fig1_rag_vs_kb_gpt.png}\caption{Conventional dense RAG (left) vs.\ the \sys{} protocol (right) on the
-same 50-paper corpus and 10 questions: routed category bases, vector-first
-recall, an interpretable content gate with librarian fallback, and five-section
-cited answers. The bottom strip compares on-target answers, abstentions (the
-protocol's two gate-fails were rescued by its librarian), scope-labeled latency
-(dense end-to-end; KB retrieval plus reads), and citation granularity; all
-numbers are Section~\ref{sec:eval}'s benchmark run.}
-\Description{Side-by-side teaser. Left: a three-step dense-RAG stack (fixed
-800-character chunking, single dense retrieval pass, 4,000-character evidence
-pack to the LLM) with pain chips noting two honest abstentions, missing
-section provenance, and no retry. Right: the QDCVR protocol with content-routed
-category KBs, query rewrite, vector-first recall, a 0--8 content gate, a
-librarian fallback, and a five-section cited answer with gain chips noting
-10/10 gold documents hit and zero abstentions. A dark bottom strip compares
-the stacks on answered questions (8/10 vs 10/10), unanswered questions, latency
-(dense end-to-end 12.2 s vs KB retrieval-plus-reads 2.4 s), and citation
-granularity (chunk without path vs base/doc/part/section).}
+\includegraphics[width=0.70\textwidth]{../figures/fig1_protocols.png}\caption{Two retrieval stacks answering the same question. A conventional dense
+RAG stack (left) splits documents into fixed chunks, ranks fragments, and stuffs
+the top hits into one LLM call, so its answer carries no section provenance and
+a missed passage is never retried. The \sys{} protocol (right) routes the query
+by content, recalls vector-first across the category bases, has a 0--8 gate read
+the candidate text, and falls back to a librarian before answering --- emitting
+either a five-section answer citing base/doc/part/\S with declared blind spots,
+or an honest not-found report.}
+\Description{Two pastel panels fed by the same question card ("What defines
+NISQ technology and what is its central limitation?"). Left, a grey panel
+"Conventional dense RAG": three steps (fixed 800-character chunking, single
+dense retrieval pass, 4,000-character evidence pack to the LLM) ending in an
+answer card with empty provenance fields (source, section, evidence check) and
+three failure chips (answer split across chunks, no source paths, no retry).
+Right, a teal panel "QDCVR protocol - this system": three steps (content-routed
+category KBs, vector-first recall, a 0-8 content gate reading the text) ending
+in an answer card quoting the NISQ definition with a citation chip
+(quantum-physics__1801.00862, part 2/3, section 6.4), a gate 7/8 fast-exit
+chip, a declared blind-spot line, and a dashed not-found report card. A
+verdict strip contrasts "an answer you cannot trace" with "an answer you can
+verify - or an honest not-found".}
 \label{fig:teaser}
 \end{figure*}
 
@@ -109,24 +113,25 @@ granularity (chunk without path vs base/doc/part/section).}
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.72\textwidth]{../figures/fig3_benchmark.png}
-\caption{Three answering tracks on the same corpus and questions: Track~A, the
-\sys{} protocol; Track~B, a bare agent with whole-file tools and no index;
-Track~C, a dense baseline over 800-character fixed chunks; the cards report
-each track's outcome verbatim. Bottom strips: per-track mean latencies with
-explicit scopes (A excludes answer generation) and BQ01's three verbatim fates;
-all numbers are Section~\ref{sec:eval}'s benchmark run (repository artifacts).}
-\Description{Three side-by-side track cards over a shared 50-paper corpus and
-10 questions. Track A (KB protocol): 10/10 gold documents with per-part source
-paths, zero unanswered (two gate-fails rescued by the librarian), verbatim
-base/doc/part/section citations with declared blind spots, ~2.4 s retrieval and
-reads. Track B (bare agent): 10/10 gold documents but provenance stops at file
-names, no section-level trace, 78.8 s average. Track C (dense RAG baseline):
-content matches but the harness logs no source paths, 2/10 abstained after the
-evidence window missed the passage, 12.2 s average. Below, a latency bar strip
-compares 2.4 s, 12.2 s, and 78.8 s with scope labels; a final strip traces
-question BQ01 verbatim: Track A answers with part citations, Track B prints the
-formula without a link to a section, Track C abstains.}
+\includegraphics[width=0.72\textwidth]{../figures/fig3_answers.png}
+\caption{One benchmark question answered by three retrieval stacks. The \sys{}
+protocol (left) answers with section-level citations and declares its unread
+blind spots; a bare agent (middle) produces the most complete prose, but its
+provenance stops at a self-reported file name; a dense RAG baseline (right)
+abstains because fixed 800-character chunking left the answer out of its
+evidence window. Below, an out-of-corpus trap question ends in a not-found
+report that names its near miss instead of fabricating.}
+\Description{A question card at the top asks how the Transformer computes
+attention and why it replaces recurrence and convolution. Three answer panels
+follow. Left, the QDCVR protocol answers with section citations (parts 1/2 and
+2/2, sections 3.2.3 and 7), a gate score of 7/8, and a declared blind spot for
+the unread attention formula. Middle, a bare agent prints the full scaled
+dot-product equation with only a self-reported file name as provenance. Right,
+a dense RAG baseline abstains, saying the provided evidence only discusses
+constituency parsing, because the method section was chunked away. A bottom row
+poses a trap question about a non-existent odor-recognition paper; the QDCVR
+not-found report names the BERT near miss (gate 1/8), the shelf scan over 5
+bases and 165 documents, and a quote refusing to fabricate.}
 \label{fig:threeway}
 \end{figure*}
 

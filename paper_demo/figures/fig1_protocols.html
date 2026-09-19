@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Figure 1 — Two retrieval stacks, two contracts</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:2300px; height:1240px; overflow:hidden; background:#FFFFFF;
+               font-family:"Segoe UI", Arial, Helvetica, sans-serif; color:#1a2332;
+               -webkit-font-smoothing:antialiased; }
+  #fig { position:relative; width:2300px; height:1240px; background:#FFFFFF; }
+
+  /* ── question bubble ─────────────────────────────── */
+  .q { position:absolute; left:650px; top:36px; width:1000px; height:118px;
+       background:#FFFDF6; border:2px solid #E3CE9A; border-radius:58px;
+       display:flex; align-items:center; gap:24px; padding:0 40px; }
+  .q .ava { width:64px; height:64px; border-radius:50%; background:#F2E3BC;
+            display:flex; align-items:center; justify-content:center; flex:none; }
+  .q .lbl { font-size:22px; color:#A08436; font-weight:700; letter-spacing:.6px; }
+  .q .txt { font-size:31px; font-weight:700; color:#4A3D1E; line-height:1.25; }
+
+  .arrow-l { position:absolute; left:520px; top:158px; }
+  .arrow-r { position:absolute; left:1720px; top:158px; }
+
+  /* ── panels ──────────────────────────────────────── */
+  .panel { position:absolute; top:212px; height:700px; border-radius:22px; }
+  .pl { left:70px;  width:1050px; background:#F2F5F9; border:2px solid #C9D5E2; }
+  .pr { left:1180px; width:1050px; background:#EAF6F1; border:2.5px solid #8FCEC0; }
+  .zone { position:absolute; top:-24px; left:36px; font-size:25px; font-weight:800;
+          padding:6px 22px; border-radius:999px; letter-spacing:.3px; }
+  .pl .zone { background:#5B6B7E; color:#fff; }
+  .pr .zone { background:#0F766E; color:#fff; }
+  .sub { position:absolute; top:-18px; right:36px; font-size:21px; font-style:italic;
+         color:#7A8694; background:#fff; padding:2px 12px; border-radius:999px; }
+
+  /* pipeline steps */
+  .steps { position:absolute; left:40px; right:40px; top:64px; display:flex;
+           align-items:stretch; gap:0; }
+  .step { flex:1; background:#fff; border:1.5px solid #D4DCE5; border-radius:14px;
+          padding:16px 18px; text-align:center; }
+  .pr .step { border-color:#BCE0D6; }
+  .step .n { display:inline-flex; width:40px; height:40px; border-radius:50%;
+             align-items:center; justify-content:center; color:#fff; font-size:22px;
+             font-weight:800; margin-bottom:8px; }
+  .pl .n { background:#7C8B9D; } .pr .n { background:#0F766E; }
+  .step .t { font-size:26px; font-weight:800; line-height:1.22; }
+  .step .d { font-size:20px; color:#68737F; margin-top:6px; line-height:1.3; }
+  .harrow { width:44px; display:flex; align-items:center; justify-content:center; flex:none; }
+
+  /* answer cards */
+  .ans { position:absolute; left:40px; right:40px; top:388px; border-radius:16px;
+         padding:20px 26px; }
+  .pl .ans { background:#fff; border:1.5px solid #D4DCE5; }
+  .pr .ans { background:#fff; border:2.5px solid #0F766E; }
+  .ans .ah { font-size:21px; font-weight:800; letter-spacing:1px; margin-bottom:10px; }
+  .pl .ah { color:#7C8B9D; } .pr .ah { color:#0F766E; }
+  .ans .body { font-size:25px; line-height:1.4; color:#2A3441; }
+  .miss { display:flex; gap:14px; margin-top:14px; }
+  .miss div { flex:1; font-size:20px; color:#5B6672; background:#F2F5F9;
+              border:1px dashed #C4CFDA; border-radius:9px; padding:8px 12px;
+              text-align:center; }
+  .cite { display:inline-block; margin-top:12px; background:#E4F4EF; color:#0B5E4F;
+          border:1.5px solid #9AD6C9; font-size:21px; font-weight:700;
+          border-radius:9px; padding:7px 14px; }
+  .gate { display:inline-block; margin-top:12px; margin-left:10px; background:#FFF3E8;
+          color:#8F3315; border:1.5px solid #EDC3A6; font-size:21px; font-weight:700;
+          border-radius:9px; padding:7px 14px; }
+  .bs { margin-top:10px; font-size:20px; color:#7D5544; background:#FDF4EE;
+        border-left:4px solid #E8A87C; padding:6px 12px; border-radius:0 8px 8px 0; }
+
+  /* not-found mini card on the right */
+  .nf { position:absolute; left:40px; right:40px; top:636px; background:#fff;
+        border:1.5px dashed #0F766E; border-radius:12px; padding:10px 18px;
+        font-size:21px; color:#0B4F4A; display:flex; gap:14px; align-items:center; }
+  .nf b { color:#0F766E; }
+
+  /* left failure chips */
+  .fails { position:absolute; left:40px; right:40px; top:636px; display:flex;
+           gap:12px; }
+  .fails div { flex:1; background:#FDEEEA; border:1.5px solid #F0C8BB; color:#93361C;
+               font-size:20px; font-weight:600; border-radius:10px; padding:9px 12px;
+               text-align:center; }
+
+  /* verdict strip */
+  .verdict { position:absolute; left:70px; right:70px; top:962px; height:96px;
+             display:flex; align-items:center; }
+  .verdict .half { flex:1; display:flex; align-items:center; justify-content:center;
+                   gap:16px; font-size:28px; font-weight:700; }
+  .verdict .g { color:#5B6B7E; } .verdict .t { color:#0B5E4F; }
+  .verdict .mark { width:46px; height:46px; border-radius:50%; display:flex;
+                   align-items:center; justify-content:center; font-size:26px;
+                   font-weight:900; color:#fff; flex:none; }
+  .verdict .g .mark { background:#8A99AA; } .verdict .t .mark { background:#0F766E; }
+  .divider { position:absolute; left:50%; top:972px; height:76px; width:1.5px;
+             background:#E2E7ED; }
+  .foot { position:absolute; left:70px; right:70px; top:1082px; text-align:center;
+          font-size:21px; font-style:italic; color:#98A2AE; }
+</style>
+</head>
+<body>
+<div id="fig">
+
+  <div class="q">
+    <div class="ava"><svg width="40" height="40" viewBox="0 0 40 40"><circle cx="20" cy="13" r="8" fill="#B08D3E"/><path d="M6 36c0-8 6.5-13 14-13s14 5 14 13" fill="#B08D3E"/></svg></div>
+    <div>
+      <div class="lbl">ONE QUESTION, ASKED OF BOTH STACKS</div>
+      <div class="txt">&ldquo;What defines NISQ technology and what is its central limitation?&rdquo;</div>
+    </div>
+  </div>
+
+  <svg class="arrow-l" width="120" height="56" viewBox="0 0 120 56">
+    <path d="M116,6 C70,10 30,22 8,48" fill="none" stroke="#8A99AA" stroke-width="3"/>
+    <polygon points="4,54 10,40 20,50" fill="#8A99AA"/>
+  </svg>
+  <svg class="arrow-r" width="120" height="56" viewBox="0 0 120 56">
+    <path d="M4,6 C50,10 90,22 112,48" fill="none" stroke="#0F766E" stroke-width="3"/>
+    <polygon points="116,54 110,40 100,50" fill="#0F766E"/>
+  </svg>
+
+  <!-- ══ LEFT: conventional dense RAG ══ -->
+  <div class="panel pl">
+    <div class="zone">Conventional dense RAG</div>
+    <div class="sub">chunks → rank → stuff the prompt</div>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><div class="t">Split into 800-char chunks</div><div class="d">one rule for every document</div></div>
+      <div class="harrow"><svg width="36" height="24" viewBox="0 0 36 24"><line x1="2" y1="12" x2="26" y2="12" stroke="#8A99AA" stroke-width="3"/><polygon points="24,5 34,12 24,19" fill="#8A99AA"/></svg></div>
+      <div class="step"><span class="n">2</span><div class="t">Embed &amp; rank top-k</div><div class="d">single dense index</div></div>
+      <div class="harrow"><svg width="36" height="24" viewBox="0 0 36 24"><line x1="2" y1="12" x2="26" y2="12" stroke="#8A99AA" stroke-width="3"/><polygon points="24,5 34,12 24,19" fill="#8A99AA"/></svg></div>
+      <div class="step"><span class="n">3</span><div class="t">Stuff 4,000-char window</div><div class="d">one LLM call, no verification</div></div>
+    </div>
+    <div class="ans">
+      <div class="ah">THE ANSWER YOU GET</div>
+      <div class="body">&ldquo;…stitched retrieved fragments, with no record of where each sentence came from…&rdquo;</div>
+      <div class="miss">
+        <div>source: —</div><div>section: —</div><div>evidence check: none</div>
+      </div>
+    </div>
+    <div class="fails">
+      <div>✗ answer split across chunks</div>
+      <div>✗ chunks carry no path</div>
+      <div>✗ no retry on a missed passage</div>
+    </div>
+  </div>
+
+  <!-- ══ RIGHT: QDCVR protocol ══ -->
+  <div class="panel pr">
+    <div class="zone">QDCVR protocol — this system</div>
+    <div class="sub">route → recall → read → cite</div>
+    <div class="steps">
+      <div class="step"><span class="n">1</span><div class="t">Route by content</div><div class="d">5 category KBs</div></div>
+      <div class="harrow"><svg width="36" height="24" viewBox="0 0 36 24"><line x1="2" y1="12" x2="26" y2="12" stroke="#0F766E" stroke-width="3"/><polygon points="24,5 34,12 24,19" fill="#0F766E"/></svg></div>
+      <div class="step"><span class="n">2</span><div class="t">Vector-first recall</div><div class="d">cross-KB balanced</div></div>
+      <div class="harrow"><svg width="36" height="24" viewBox="0 0 36 24"><line x1="2" y1="12" x2="26" y2="12" stroke="#0F766E" stroke-width="3"/><polygon points="24,5 34,12 24,19" fill="#0F766E"/></svg></div>
+      <div class="step"><span class="n">3</span><div class="t">Gate reads the text</div><div class="d">0–8 rubric · pass ≥ 6</div></div>
+    </div>
+    <div class="ans">
+      <div class="ah">THE ANSWER YOU GET</div>
+      <div class="body">&ldquo;NISQ = Noisy Intermediate-Scale Quantum; its central limitation is that these devices run without quantum error correction.&rdquo;</div>
+      <div><span class="cite">cite: quantum-physics__1801.00862 · part 2/3 · §6.4</span><span class="gate">gate 7/8 — fast exit</span></div>
+      <div class="bs">declared blind spot: the exact qubit-count sentence (§1) was not re-read</div>
+    </div>
+    <div class="nf">…and when nothing passes: <b>NOT_FOUND report</b> — names the search scope and why the nearest match is not an answer.</div>
+  </div>
+
+  <!-- ══ verdict strip ══ -->
+  <div class="verdict">
+    <div class="half g"><span class="mark">✗</span>an answer you cannot trace</div>
+    <div class="divider"></div>
+    <div class="half t"><span class="mark">✓</span>an answer you can verify — or an honest not-found</div>
+  </div>
+  <div class="divider"></div>
+  <div class="foot">Same question, same corpus: 50 real papers · 5 content-classified bases · 165 indexed documents. Both stacks use the same answering LLM.</div>
+</div>
+
+</body>
+</html>

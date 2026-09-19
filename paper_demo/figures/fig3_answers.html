@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Figure 3 — One question, three retrieval stacks</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:2300px; height:1330px; overflow:hidden; background:#FFFFFF;
+               font-family:"Segoe UI", Arial, Helvetica, sans-serif; color:#1a2332;
+               -webkit-font-smoothing:antialiased; }
+  #fig { position:relative; width:2300px; height:1330px; background:#FFFFFF; }
+
+  .q { position:absolute; left:330px; top:30px; width:1640px; background:#FFFDF6;
+       border:2px solid #E3CE9A; border-radius:20px; padding:14px 30px; }
+  .q .lbl { font-size:21px; color:#A08436; font-weight:700; letter-spacing:.6px; }
+  .q .txt { font-size:29px; font-weight:700; color:#4A3D1E; margin-top:4px; }
+
+  .col { position:absolute; top:172px; height:620px; border-radius:20px; }
+  .ca { left:56px;  width:714px; background:#EAF6F1; border:2.5px solid #0F766E; }
+  .cb { left:793px; width:714px; background:#F2F5F9; border:2px solid #C9D5E2; }
+  .cc { left:1530px; width:714px; background:#FDF3F0; border:2px solid #EBC4B8; }
+  .head { position:absolute; top:-24px; left:30px; font-size:24px; font-weight:800;
+          padding:6px 20px; border-radius:999px; color:#fff; }
+  .ca .head { background:#0F766E; } .cb .head { background:#5B6B7E; } .cc .head { background:#B4715A; }
+  .tag { position:absolute; top:-16px; right:30px; font-size:19px; font-style:italic;
+         color:#7A8694; background:#fff; padding:2px 12px; border-radius:999px; }
+
+  .lab { position:absolute; left:34px; right:34px; font-size:20px; font-weight:800;
+         letter-spacing:1px; margin-bottom:0; }
+  .ca .lab { color:#0F766E; } .cb .lab { color:#5B6B7E; } .cc .lab { color:#A05540; }
+  .ans { position:absolute; left:34px; right:34px; background:#fff; border-radius:14px;
+         padding:16px 20px; font-size:23px; line-height:1.42; color:#2A3441; }
+  .ca .ans { border:2px solid #9AD6C9; }
+  .cb .ans { border:1.5px solid #D4DCE5; }
+  .cc .ans { border:1.5px solid #EBC4B8; }
+  .meta { position:absolute; left:34px; right:34px; border-radius:12px; padding:10px 16px;
+          font-size:20px; line-height:1.4; }
+  .ca .meta { background:#E4F4EF; border:1.5px solid #9AD6C9; color:#0B4F4A; }
+  .cb .meta { background:#EDF1F6; border:1.5px dashed #B9C5D2; color:#4A5866; }
+  .cc .meta { background:#FBEDE8; border:1.5px dashed #E0B4A4; color:#7D4030; }
+  .meta b { font-weight:800; }
+  .verdict { position:absolute; left:34px; right:34px; bottom:20px; border-radius:12px;
+             padding:11px 16px; font-size:22px; font-weight:700; }
+  .ca .verdict { background:#DFF2EB; color:#0B5E4F; border:1.5px solid #9AD6C9; }
+  .cb .verdict { background:#EDF1F6; color:#41526B; border:1.5px solid #C9D5E2; }
+  .cc .verdict { background:#FBEDE8; color:#8F3315; border:1.5px solid #EBC4B8; }
+
+  /* trap row */
+  .tq { position:absolute; left:330px; top:852px; width:1640px; background:#FFFDF6;
+        border:2px solid #E3CE9A; border-radius:20px; padding:12px 30px; }
+  .tq .lbl { font-size:20px; color:#A08436; font-weight:700; letter-spacing:.6px; }
+  .tq .txt { font-size:26px; font-weight:700; color:#4A3D1E; margin-top:3px; }
+  .rep { position:absolute; left:56px; right:56px; top:990px; background:#fff;
+         border:2.5px solid #0F766E; border-radius:18px; padding:18px 26px; }
+  .rep .rh { font-size:20px; font-weight:800; letter-spacing:1px; color:#0F766E;
+             margin-bottom:8px; }
+  .rep .grid { display:flex; gap:26px; }
+  .rep .cell { flex:1; font-size:20px; line-height:1.4; color:#2A3441;
+               border-left:4px solid #9AD6C9; padding-left:14px; }
+  .rep .cell b { display:block; font-size:20px; color:#0B4F4A; margin-bottom:3px; }
+  .rep .verdict { position:static; margin-top:12px; background:#DFF2EB; color:#0B5E4F;
+                  border:1.5px solid #9AD6C9; border-radius:10px; padding:8px 16px;
+                  font-size:21px; font-weight:700; display:inline-block; }
+</style>
+</head>
+<body>
+<div id="fig">
+
+  <div class="q">
+    <div class="lbl">ONE BENCHMARK QUESTION — PUT TO THREE RETRIEVAL STACKS</div>
+    <div class="txt">&ldquo;How does the Transformer compute attention, and why does it replace recurrence and convolution?&rdquo;</div>
+  </div>
+
+  <!-- A -->
+  <div class="col ca">
+    <div class="head">QDCVR protocol</div><div class="tag">this system</div>
+    <div class="lab" style="top:64px;">THE ANSWER, WITH ITS CITATION</div>
+    <div class="ans" style="top:100px; height:238px;">Multi-head attention is used &ldquo;in three
+      different ways&rdquo; (<b>§3.2.3</b>), and the architecture is &ldquo;based entirely on
+      attention&rdquo; (<b>§7</b>) — each claim carries the part and section it came from.</div>
+    <div class="meta" style="top:356px;"><b>cite:</b> attention-is-all-you-need ·
+      part 1/2 &amp; 2/2 · §3.2.3, §7 · gate 7/8 fast exit</div>
+    <div class="meta" style="top:448px;"><b>declared blind spot:</b> the exact
+      attention(Q,K,V) formula was not read — flagged instead of guessed</div>
+    <div class="verdict">✓ every claim re-checkable at base / doc / part / §</div>
+  </div>
+
+  <!-- B -->
+  <div class="col cb">
+    <div class="head">Bare agent</div><div class="tag">no index · file tools only</div>
+    <div class="lab" style="top:64px;">THE ANSWER, AND WHAT IT LACKS</div>
+    <div class="ans" style="top:100px; height:238px;">Prints the full scaled dot-product equation —
+      the most complete prose of the three — but nothing records <b>where</b> in the
+      15-page paper each statement came from.</div>
+    <div class="meta" style="top:356px;"><b>cite:</b> attention-is-all-you-need.md
+      <b>(file name only — self-reported)</b></div>
+    <div class="meta" style="top:448px;"><b>no gate:</b> fluent fabrication would look
+      identical — there is nothing to audit after the fact</div>
+    <div class="verdict">✗ fluent, but unverifiable beyond the file name</div>
+  </div>
+
+  <!-- C -->
+  <div class="col cc">
+    <div class="head">Dense RAG baseline</div><div class="tag">800-char chunks · reproduction</div>
+    <div class="lab" style="top:64px;">THE ANSWER IT GIVES — AN ABSTENTION</div>
+    <div class="ans" style="top:100px; height:238px;">&ldquo;The provided evidence is insufficient…
+    the excerpts only discuss English constituency parsing results.&rdquo; — the method
+    section was chunked away from the 4,000-character window.</div>
+    <div class="meta" style="top:356px;"><b>✗ cause:</b> the answer-bearing section did not
+      rank into the top-2 retrieved chunks</div>
+    <div class="meta" style="top:448px;"><b>✗ chunks carry no source path</b> — even its hits
+      cannot be traced to a section</div>
+    <div class="verdict">✗ abstains — the answer was split away by fixed chunking</div>
+  </div>
+
+  <!-- trap row -->
+  <div class="tq">
+    <div class="lbl">AND WHEN THE PAPER DOES NOT EXIST — A TRAP QUESTION</div>
+    <div class="txt">&ldquo;What did &lsquo;Spectral Tuning for Low-Resource Odor Recognition&rsquo; report about training epochs?&rdquo;</div>
+  </div>
+  <div class="rep">
+    <div class="rh">QDCVR ANSWER — NOT_FOUND REPORT (RECORDED VERBATIM)</div>
+    <div class="grid">
+      <div class="cell"><b>Verdict</b>NOT_FOUND — the paper is not in the corpus.</div>
+      <div class="cell"><b>Near miss, named</b>The BERT pre-training paper (gate 1/8) — its
+        training-epoch strings belong to that paper's own recipe.</div>
+      <div class="cell"><b>Librarian shelf scan</b>5 category bases · 50 papers ·
+        165 indexed documents — no odor-recognition paper present.</div>
+      <div class="cell"><b>Report excerpt</b>&ldquo;I could not verify this paper in the knowledge
+        base… Quoting the near-miss would have been a fabrication.&rdquo;</div>
+    </div>
+    <div class="verdict">✓ &ldquo;I don't know&rdquo; is a protocol-level, per-query recorded output</div>
+  </div>
+</div>
+</body>
+</html>
