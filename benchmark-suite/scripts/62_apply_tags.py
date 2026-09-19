@@ -61,6 +61,10 @@ def main() -> int:
             if (ok + fail) % 100 == 0:
                 print(f"[progress] ok={ok} fail={fail}", flush=True)
     mc.close()
+    (SUITE / "results" / "tags_report.json").write_text(
+        json.dumps({"ok": ok, "fail": fail,
+                    "seconds": round(time.perf_counter() - t0, 1)},
+                   ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"[done] tagged ok={ok} fail={fail} in {time.perf_counter()-t0:.0f}s")
     return 0 if fail == 0 else 1
 

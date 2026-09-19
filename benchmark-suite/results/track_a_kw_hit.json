@@ -1,8 +1,8 @@
 {
  "rule": "hit = >=1 gold keyword substring occurs in the five-section answer",
  "n": 10,
- "any_hit": 10,
- "all_hit": 9,
+ "any_hit": 9,
+ "all_hit": 8,
  "rows": [
   {
    "qid": "BQ01",
@@ -26,11 +26,10 @@
   {
    "qid": "BQ03",
    "kw_any": [
-    "multimedqa",
-    "67.6"
+    "multimedqa"
    ],
    "n_gold": 2,
-   "kw_all": true
+   "kw_all": false
   },
   {
    "qid": "BQ04",
@@ -52,11 +51,9 @@
   },
   {
    "qid": "BQ06",
-   "kw_any": [
-    "precipitation efficiency"
-   ],
+   "kw_any": [],
    "n_gold": 1,
-   "kw_all": true
+   "kw_all": false
   },
   {
    "qid": "BQ07",
@@ -88,10 +85,11 @@
   {
    "qid": "BQ10",
    "kw_any": [
+    "immune evasion",
     "chemotherapy"
    ],
    "n_gold": 2,
-   "kw_all": false
+   "kw_all": true
   }
  ]
 }

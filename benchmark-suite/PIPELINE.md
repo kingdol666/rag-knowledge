@@ -129,8 +129,11 @@ python scripts/71_repro_smoke.py
   `LitQA-*`/`Corpus-*` 旧库 → 复现项目自有分块方案建
   `Corpus-Chunks800/Struct/Paras`（Paras 约 11k chunks，最慢 ~35 min）。
 - 71：dense 检索冒烟（**必须先 activate_profile 重绑 methods 模块 KB 常量**，
-  否则静默检索不存在的库）。
-- 通过判据：`exported=50`、三库 probe 全过、smoke `chunks>0`。
+  否则静默检索不存在的库）**+ 向量库全覆盖校验（2026-09-19 新增 ⭐）**：
+  本地用同一分块函数重算期望 chunk 清单 → 与库内清单总数/逐篇双向对账 →
+  Corpus-Chunks800 逐篇尾块探针（尾块最易丢失，50/50 可检索才允许放行）。
+- 通过判据：`exported=50`、三库 probe 全过、smoke `chunks>0`、
+  `repro_coverage.json` 全部 pass（missing=0 且 cid 对账一致且尾块探针 50/50）。
 
 ## Stage 5b — 重启后端（必做 ⭐）
 
@@ -185,10 +188,19 @@ python scripts/77_tracks_bc.py
 ## Stage 8 — 报告
 
 ```bash
-python scripts/74_threeway_report.py     # results/threeway_qa.md（如需与 dense 对照）
 python scripts/78_replication_report.py  # results/skill_threeway_replication.md
+python scripts/81_visual_report.py       # results/benchmark_visual_report.html
 ```
+- 78 = **唯一全文记录 MD**：管线执行统计 + 覆盖率 + 检索回归 + 三轨逐题
+  （问题原文 + 每个系统回答**原文全文，不删节不截断**；Track A 五段式 /
+  B 原始 JSON 回答 / C 统一 prompt 回答）。
+- 81 = benchmark **可视化报告**（自包含 HTML：管线漏斗卡片、覆盖率、
+  检索回归、三轨逐题时延条形图、逐题三系统原文折叠面板；
+  色彩语言 teal=平台/gray=baseline/橙红=警示）。
+- `74_threeway_qa.json` 通道（two_stage 版 Track A）已废弃，仅存档。
 报告只做汇整，**不做任何评价性改写**；回答一律原文引用。
+**语言红线：提问一律英文，三轨回答一律英文**（B/C 由 prompt 硬约束，
+A 由执行 agent 以英文撰写）。
 
 ## Stage 9 — 结果分析评价（Agent 判断件 ⭐）
 
@@ -212,6 +224,9 @@ Agent 通读 Stage 6/7/8 的全部 JSON 与 MD，写 `results/ANALYSIS.md`，必
    脚本级 JSON 允许被新一轮覆盖但 git 可追溯。
 4. **失败即停**：任一 Stage 退出码非 0 停止流水线并报告，禁止带病继续。
 5. **不挑轮次**：LLM 通道结果有方差，报告完整运行史，禁止重跑挑好结果。
+6. **语言红线（2026-09-19）**：10 题与三轨全部回答一律英文；作答 prompt
+   内置英文硬约束（BARE_PROMPT / SCEN_ANSWER_PROMPT），Track A 由执行
+   agent 以英文撰写五段式回答。
 
 ## 故障速查（实测沉淀）
 

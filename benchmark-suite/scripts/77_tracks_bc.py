@@ -32,9 +32,10 @@ research-paper files (plain markdown). Nobody built any index for you.
 
 Answer the QUESTION using ONLY the files in your current working directory.
 Workflow: list the files, grep/read the relevant passages, read enough context,
-then answer. Reply with ONLY a JSON object (no other text):
-{{"answer": "<2-5 sentence factual answer; say the files do not contain the
-answer if they do not>", "files_used": ["<filename>", ...]}}
+then answer. IMPORTANT: write the final answer in ENGLISH. Reply with ONLY a
+JSON object (no other text):
+{{"answer": "<2-5 sentence factual answer in ENGLISH; say the files do not
+contain the answer if they do not>", "files_used": ["<filename>", ...]}}
 
 QUESTION: {q}"""
 

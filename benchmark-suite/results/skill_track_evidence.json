@@ -6,8 +6,8 @@
   "raw_question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
   "rewritten_query": "scaled dot-product attention and multi-head attention replace recurrence and convolution in the Transformer sequence transduction architecture",
   "timings": {
-   "phase1_vector_search": 2.08,
-   "phase1_doc_reads": 0.8
+   "phase1_vector_search": 2.07,
+   "phase1_doc_reads": 0.85
   },
   "hits": [
    {
@@ -40,8 +40,8 @@
   "raw_question": "What defines NISQ technology and what is its central limitation?",
   "rewritten_query": "NISQ noisy intermediate-scale quantum technology devices characteristics and limitations without quantum error correction",
   "timings": {
-   "phase1_vector_search": 1.46,
-   "phase1_doc_reads": 0.79
+   "phase1_vector_search": 1.71,
+   "phase1_doc_reads": 0.83
   },
   "hits": [
    {
@@ -74,8 +74,8 @@
   "raw_question": "What is MultiMedQA and how did Flan-PaLM perform on the MedQA benchmark?",
   "rewritten_query": "MultiMedQA benchmark seven medical QA datasets and Flan-PaLM MedQA 67.6 percent clinical knowledge evaluation",
   "timings": {
-   "phase1_vector_search": 1.71,
-   "phase1_doc_reads": 0.79
+   "phase1_vector_search": 1.55,
+   "phase1_doc_reads": 0.84
   },
   "hits": [
    {
@@ -108,8 +108,8 @@
   "raw_question": "Which three independent ontologies subdivide the Gene Ontology?",
   "rewritten_query": "Gene Ontology three independent ontologies molecular function biological process cellular component",
   "timings": {
-   "phase1_vector_search": 1.68,
-   "phase1_doc_reads": 0.79
+   "phase1_vector_search": 1.63,
+   "phase1_doc_reads": 0.83
   },
   "hits": [
    {
@@ -142,8 +142,8 @@
   "raw_question": "Why does historical European economic growth contradict Unified Growth Theory?",
   "rewritten_query": "Unified Growth Theory contradicted by historical economic growth evidence Western Eastern Europe",
   "timings": {
-   "phase1_vector_search": 1.69,
-   "phase1_doc_reads": 0.77
+   "phase1_vector_search": 1.63,
+   "phase1_doc_reads": 0.83
   },
   "hits": [
    {
@@ -176,8 +176,8 @@
   "raw_question": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
   "rewritten_query": "precipitation efficiency physical factor controlling response of precipitation extremes to climate warming",
   "timings": {
-   "phase1_vector_search": 1.69,
-   "phase1_doc_reads": 0.79
+   "phase1_vector_search": 1.48,
+   "phase1_doc_reads": 0.82
   },
   "hits": [
    {
@@ -201,28 +201,7 @@
     "head_excerpt": "# power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md.md（第 1/2 部分）\n章节: Mapping Disruption Sources in the Power Grid and Implications for Resilience\n# Mapping Disruption Sources in the Power Grid and Implications for Resilience\n\n\nMaureen S. Golan\n\nCAEE, Cockrell School of Engineering\n\nThe University of Texas at Austin\n\nAustin, USA\n\nmgolan@utexas.edu\n\nJavad Mohammadi\n\nCAEE, Cockrell School of Engineering\n\nThe University of Texas at Austin\n\nAustin, USA\n\njavadm@utexas.edu\n\nAbstract—Developing models and metrics that can address resilience against disruptions is vital to ensure power grid reliability and that adequate recovery and adaptation mechanisms are in place. In this paper, we propose a novel disruption mapping approach and apply it to the publicly available U.S. Department of Energy DOE-417 Electric Emergency and Disturbance Report to holistically analyze the origin of anomalous events and their propagation through the cyber, physical and human domains. We show that capturing the disruption process onset has implications for quantifying, mitigating, and repo",
     "head_chars": 3000
    }
-  ],
-  "phase2": {
-   "kb": "自然科学与地球科学",
-   "timings": {
-    "targeted_search": 0.96,
-    "continuation_reads": 0.53
-   },
-   "hits": [
-    {
-     "doc_path": "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 1 of 3).md",
-     "vector_score": 0.6981220245361328,
-     "head_excerpt": "# climate-science__1503.07557__precipitation-extremes-under-climate-change.md.md（第 1/3 部分）\n章节: Precipitation extremes under climate change\n# Precipitation extremes under climate change\n\n\nPaul A. O'Gorman\n\nReceived: date / Accepted: date\n\nAbstract The response of precipitation extremes to climate change is considered using results from theory, modeling, and observations, with a focus on the physical factors that control the response. Observations and simulations with climate models show that precipitation extremes intensify in response to a warming climate. However, the sensitivity of precipitation extremes to warming remains uncertain when convection is important, and it may be higher in the tropics than the extratropics. Several physical contributions govern the response of precipitation extremes. The thermodynamic contribution is robust and well understood, but theoretical understanding of the microphysical and dynamical contributions is still being developed. Orographic precipitation extremes and snowfall extremes respond differently from other precipitation extremes and require particular attention. Outstanding research challenges include the influence of mesoscale convective organization, the dependence on the duration considered, and the need to better constrain the sensitivity of tropical precipitation extremes to warming.\n\nKeywords Extremes · Global warming · Rainfall · Snowfall · Convection · Orographic Precipitation · Climate models\n\n## 1 Introduction\n\n\nThe response",
-     "head_chars": 6000
-    },
-    {
-     "doc_path": "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 2 of 3).md",
-     "vector_score": 0.6976597309112549,
-     "head_excerpt": "# climate-science__1503.07557__precipitation-extremes-under-climate-change.md.md（第 2/3 部分）\n章节: Precipitation extremes under climate change > 6 Snowfall extremes\n## 6 Snowfall extremes\n\n\nChanges in snowfall extremes have received relatively little research attention, party because of the difficulties in producing long-term records of snowfall. Observational studies of daily snowfall extremes have been regional in nature and have found large interdecadal variability with, for example, no long term trend for Canada [94] but more frequent extremes snowstorms in recent decades in the eastern two-thirds of the United\n\nStates [44]. Studies using different metrics have reached different conclusions as to whether there are more heavy snowfall events in anomalously warm or cold years or seasons in the United States [15,44]\n\nPhysically, snowfall extremes are expected to be affected by climate warming through both increases in saturation vapor pressures and changes in the frequency of occurrence of temperatures below the rain-snow transition temperature. A simple asymptotic theory of snowfall extremes has been developed based on the temperature dependencies of precipitation extremes and the rain-snow transition [59]. According to the simple theory, snowfall extremes tend to occur near an optimal temperature of roughly $\\mathrm { - 2 ^ { \\circ } C }$ when snowfall is measured by liquid water equivalent. The optimal temperature arises because saturation vapor pressures increase with temper",
-     "head_chars": 6000
-    }
-   ]
-  }
+  ]
  },
  {
   "qid": "BQ07",
@@ -231,8 +210,8 @@
   "raw_question": "What is MameLoshnLM and what parameter scale does it have?",
   "rewritten_query": "MameLoshnLM first open-source Yiddish language model 8B parameters evaluation benchmark",
   "timings": {
-   "phase1_vector_search": 1.7,
-   "phase1_doc_reads": 0.78
+   "phase1_vector_search": 1.6,
+   "phase1_doc_reads": 0.81
   },
   "hits": [
    {
@@ -265,26 +244,26 @@
   "raw_question": "How does oxygen redox contribute to the capacity of battery cathodes?",
   "rewritten_query": "oxygen redox lattice oxygen extra capacity Li-rich battery cathodes overview",
   "timings": {
-   "phase1_vector_search": 1.69,
-   "phase1_doc_reads": 0.79
+   "phase1_vector_search": 1.46,
+   "phase1_doc_reads": 0.83
   },
   "hits": [
    {
-    "doc_path": "自然科学与地球科学/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 2 of 2).md",
+    "doc_path": "工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 2 of 2).md",
     "vector_score": 0.7073422074317932,
     "chunk_text": "## 5 Summary\n\n\nThe review of the anionic, or oxygen, redox in transition metal oxide revealed the wide occurrence of this redox mechanism in the common cathode materials for rechargeable Li and Na ion batteries. However, the extent of this redox mechanism varies based on the crystal structure and the type of transition metal. Initially, oxygen redox was discovered to significantly contribute toward the overall battery capacity in Li-excess disordered spineltype cathodes. Here, the high O redox c",
     "head_excerpt": "# materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md.md（第 2/2 部分）\n章节: Oxygen redox in battery cathodes: A brief overview > 4 Oxygen Redox in 3d and 4d Ilmenitetype NaxTMO₃\n## 4 Oxygen Redox in 3d and 4d Ilmenitetype NaxTMO₃\n\n\nHere, we review the O redox mechanism in ilmenite-type oxides with the general formula ${ \\mathrm { N a T M O } } _ { 3 } .$ Interestingly, O redox in this class of materials is not caused by Na over-coordinating oxygen but rather by O being under-coordinated. First, let's examine the ilmenite structure, named after the mineral ilmenite ${ \\mathrm { F e T i O } } _ { 3 } .$ Ilmenite's crystal structure, shown in Fig. 3a, is classified as rhombohedral, specifically in the space group\n\nR3 (No. 148) according to the International Tables for Crystallography. Ilmenite has a conventional hexagonal cell with three formula units per cell, in which metal ions are arranged in a close-packed oxygen lattice, with oxygen atoms forming a distorted octahedral coordination around each cation. Here, similar to Li or Na excess structures, O ions are coordi",
     "head_chars": 3000
    },
    {
-    "doc_path": "自然科学与地球科学/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md",
+    "doc_path": "工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md",
     "vector_score": 0.6979713439941406,
     "chunk_text": "# materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md.md（第 1/2 部分）\n章节: Oxygen redox in battery cathodes: A brief overview",
     "head_excerpt": "# materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md.md（第 1/2 部分）\n章节: Oxygen redox in battery cathodes: A brief overview\n# Oxygen redox in battery cathodes: A brief overview\n\n\nM. Hussein N. Assadi 1, Dorian A. H. Hanaor 2,3\n\n1. RIKEN Center for Emergent Matter Science (CEMS), 2-1 Hirosawa, Wako, Saitama 351-0198,\n\nJapan\n\n2. Faculty of Science and Engineering, Southern Cross University, Military Road, East Lismore, NSW\n\n2480, Australia\n\n3. Institute of Materials Science and Technology, Technische Universität Berlin, 10623 Berlin,\n\nGermany\n\n## Abstract:\n\n\nThe participation of oxygen or other anionic species in redox activities in cathode materials for lithium and sodium-ion battery systems is known to play a role in governing the useful capacity of these batteries. Directly probing anionic redox mechanisms is not possible, rather the computational analysis by density functional theory poses the main approach towards gleaning insights into anionic redox activity and harnessing these effects to maximize capacity in future electrode materials. Here we showcase mate",
     "head_chars": 3000
    },
    {
-    "doc_path": "自然科学与地球科学/materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 3 of 3).md",
+    "doc_path": "工程与能源/materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 3 of 3).md",
     "vector_score": 0.6662012338638306,
     "chunk_text": "} M n y O _ { 3 } } ( 0 . 2 \\leq y \\leq 0 . 8 )$ cathode materials for rechargeable lithium-ion batteries: their understanding, Chem. Mater. 25, 1121 (2013).",
     "head_excerpt": "# materials__2211.04977__design-of-battery-materials-via-defects-and.md.md（第 3/3 部分）\n章节: Design of battery materials via defects and doping > References\n## References\n\n\n[1] P. Hohenberg and W. Kohn, Inhomogeneous electron gas, Phys. Rev. 136, B864 (1964).\n\n[2] W. Kohn and L. J. Sham, Self-consistent equations including exchange and correlation effects, Phys. Rev. 140, A1133 (1965).\n\n[3] C. G. Van de Walle and J. Neugebauer, First-principles calculations for defects and impurities: Applications to III-nitrides, J. Appl. Phys. 95, 3851 (2004).\n\n[4] C. Freysoldt, B. Grabowski, T. Hickel, J. Neugebauer, G. Kresse, A. Janotti, and C. G. Van de Walle, First-principles calculations for point defects in solids, Rev. Mod. Phys. 86, 253 (2014).\n\n[5] K. Hoang and M. D. Johannes, Defect physics in complex energy materials, J. Phys.: Condens. Matter 30, 293001 (2018).\n\n[6] R. P. Messmer and G. D. Watkins, Calculations of defects in the diamond lattice, in Radiation Damage and Defects in Semiconductors (Institute of Physics, London, 1973), Vol. 16, p. 255.\n\n[7] S. G. Louie, M. Schlüter, J. R. Chel",
@@ -299,8 +278,8 @@
   "raw_question": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?",
   "rewritten_query": "visual SLAM degradation from dynamic objects multilayer perceptron dynamic feature filtering robust localization",
   "timings": {
-   "phase1_vector_search": 1.79,
-   "phase1_doc_reads": 0.78
+   "phase1_vector_search": 1.68,
+   "phase1_doc_reads": 0.82
   },
   "hits": [
    {
@@ -333,8 +312,8 @@
   "raw_question": "What strategies for tumor control emerge under immune evasion and chemotherapy resistance?",
   "rewritten_query": "tumor elimination control strategies immune evasion chemotherapy resistance evolutionary dynamics",
   "timings": {
-   "phase1_vector_search": 1.69,
-   "phase1_doc_reads": 0.79
+   "phase1_vector_search": 1.64,
+   "phase1_doc_reads": 0.83
   },
   "hits": [
    {
@@ -358,27 +337,6 @@
     "head_excerpt": "# immunology__2604.01385__strategies-for-tumor-elimination-and-control.md.md（第 3/3 部分）\n章节: Strategies for tumor elimination and control under immune evasion and chemotherapy resistance > 3.3 Bifurcation Diagrams for Chemo-resistance and Immuno-resistance\n## 3.3 Bifurcation Diagrams for Chemo-resistance and Immuno-resistance\n\n\nAlthough immune control may occasionally suppress tumor growth, immune dynamics alone are generally insufficient to fully eliminate the tumor. Thus, we consider the case where both chemotherapy and immunotherapy are applied. We find that chemotherapy significantly enlarges the parameter region corresponding to tumor control or tumor-free equilibria. It reduces tumor burden and directly targets resistant subpopulations, while immunotherapy enhances immunemediated tumor suppression. However, unlike the previous scenario in which there is a knifeedge situation between $T _ { \\mathrm { 1 - o n l y } }$ and $T _ { 2 } \\cdot$ -only equilibria, coexistence of both types is supported over a range of parameter values.\n\nUsing the baseline parameter values listed in Table ",
     "head_chars": 3000
    }
-  ],
-  "phase2": {
-   "kb": "生命科学与医学",
-   "timings": {
-    "targeted_search": 0.34,
-    "continuation_reads": 0.53
-   },
-   "hits": [
-    {
-     "doc_path": "生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 1 of 3).md",
-     "vector_score": 0.7310068011283875,
-     "head_excerpt": "# immunology__2604.01385__strategies-for-tumor-elimination-and-control.md.md（第 1/3 部分）\n章节: Strategies for tumor elimination and control under immune evasion and chemotherapy resistance\n# Strategies for tumor elimination and control under immune evasion and chemotherapy resistance\n\n\nNazanin Mokari & Bryce Morsky\n\nDepartment of Mathematics, Florida State University, Tallahassee, FL, USA\n\nApril 3, 2026\n\n## Abstract\n\n\nThe evolutionary and ecological dynamics of tumors under immune responses and therapeutic interventions pose major challenges to long-term treatment success. Although treatment may initially achieve short-term disease control, resistant cancer cell subpopulations often arise, leading to relapse with more aggressive and treatment-resistant forms of the disease. Here, we develop and analyze mathematical models describing the interactions among effector cells, chemo-resistant tumor cells, and immuno-resistant tumor cells under distinct immune-evasion strategies. The models incorporate competition and cooperation between resistant and sensitive tumor subpopulations. We identify threshold conditions governing tumor persistence, elimination, and phenotype dominance under varying therapeutic intensities. These findings provide a theoretical framework for designing targeted and combination therapies and offer insights into strategies for mitigating the treatment resistance.\n\nKeywords: adaptive therapy, cancer modeling, chemotherapy, immunotherapy\n\n## 1 Introduction\n\n\nCancer",
-     "head_chars": 6000
-    },
-    {
-     "doc_path": "生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 2 of 3).md",
-     "vector_score": 0.715657114982605,
-     "head_excerpt": "# immunology__2604.01385__strategies-for-tumor-elimination-and-control.md.md（第 2/3 部分）\n章节: Strategies for tumor elimination and control under immune evasion and chemotherapy resistance > 3.1 Equilibrium and Stability Analysis\n## 3.1 Equilibrium and Stability Analysis\n\n\nWe begin by deriving the conditions for equilibria of the system and their stability without specifying the immune-evasion mechanism employed by $T _ { 1 }$ . Throughout, we will discuss the implications of whether or not $T _ { 2 }$ is chemo-resistant. There are essentially four possible equilibria: a tumor-free equilibrium $\\mathcal { E } _ { 0 } = ( 0 , 0 , \\sigma / ( \\delta + \\omega \\chi )$ , a $T _ { 1 } \\mathrm { - o n l y }$ equilibrium $\\mathcal { E } _ { 1 } = ( \\bar { T } _ { 1 } ^ { * } , 0 , E ^ { * } )$ , a T2-only equilibrium $\\mathcal { E } _ { 2 } = ( 0 , T _ { 2 } ^ { * } , E ^ { * } )$ , and a coexistence equilibrium $\\mathcal { E } _ { 3 } = ( T _ { 1 } ^ { * } , T _ { 2 } ^ { * } , E ^ { * } )$ with $T _ { 1 } ^ { * } , T _ { 2 } ^ { * } > 0$ . The total population at equilibrium is $T ^ { * } = T _ { 1 } ^ { * } + T _ { 2 } ^ { * }$ , and we represent the coexistence equilibria as $T _ { 1 } ^ { * } = r T ^ { * }$ and $T _ { 2 } ^ { * } = ( 1 - r ) T ^ { * }$ , where $r \\in ( 0 , 1 )$ is the portion of the tumor that is $T _ { 1 }$\n\nTumor-free equilibrium:The Jacobian evaluated at ${ \\mathcal { E } } _ { 0 }$ is\n\n$$\nJ ( \\mathcal { E } _ { 0 } ) = \\left( \\begin{array} { c c c } { \\alpha _ { ",
-     "head_chars": 6000
-    }
-   ]
-  }
+  ]
  }
 ]

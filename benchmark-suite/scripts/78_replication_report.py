@@ -12,6 +12,60 @@ SUITE = Path(__file__).resolve().parent.parent
 RESULTS = SUITE / "results"
 
 
+def _load(path: Path):
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return None
+
+
+def _pipeline_section(w) -> None:
+    """管线执行统计 + RAG 向量库全覆盖 + 检索回归 (全部取自落盘工件, 缺失写 unmeasured)."""
+    survey = _load(RESULTS / "ingest_survey.json")
+    ingest = _load(RESULTS / "ingest_report.json")
+    tags = _load(RESULTS / "tags_report.json")
+    repro = _load(RESULTS / "repro_ingest.json")
+    cov = _load(RESULTS / "repro_coverage.json")
+    bench = _load(RESULTS / "bench10_qa.json")
+
+    w("## Pipeline execution & corpus coverage")
+    w("")
+    w("| Stage | Result |")
+    w("|---|---|")
+    if survey:
+        w(f"| Papers parsed into staging (MinerU → Papers-Inbox) | {survey.get('n', 'unmeasured')}/{len(survey.get('papers', [])) or 'unmeasured'} |")
+    else:
+        w("| Papers parsed into staging | unmeasured |")
+    if ingest:
+        w(f"| Routed into 5 category KBs (probe-verified) | {ingest.get('verified', 'unmeasured')}/{ingest.get('total', 'unmeasured')} |")
+        graph = ingest.get("graph") or {}
+        w(f"| Category knowledge graphs built | {sum(1 for v in graph.values() if v)}/{len(graph)} |")
+    if tags:
+        w(f"| Content tags applied to document parts | ok={tags.get('ok', 'unmeasured')} fail={tags.get('fail', 'unmeasured')} |")
+    if repro:
+        baselines = repro.get("baselines") or {}
+        for name in ("Corpus-Chunks800", "Corpus-Struct", "Corpus-Paras"):
+            if name in baselines:
+                w(f"| RAG index `{name}` chunks indexed | {baselines[name]} |")
+    if cov:
+        for kb, st in (cov.get("kbs") or {}).items():
+            w(f"| Coverage `{kb}` | chunks expected {st.get('expected_chunks')} = "
+              f"indexed_ok {st.get('build_indexed_ok')} (errors {st.get('build_errors')}) · "
+              f"per-doc retrieval probes {st.get('probe_hit')}/{st.get('probe_total')} · "
+              f"{'PASS' if st.get('pass') else 'FAIL'} |")
+    else:
+        w("| Vector-store coverage check | unmeasured |")
+    if bench:
+        w(f"| 10-question retrieval regression (`kb_search_vector`) | {bench.get('passed')}/{bench.get('total')} = {bench.get('pass_rate')} |")
+    else:
+        w("| 10-question retrieval regression | unmeasured |")
+    w("")
+    w("All questions are asked in **English**; every answer below is produced in "
+      "**English** (answer prompts enforce it; the Track A five-section answers "
+      "are written in English by the executing agent).")
+    w("")
+
+
 def main() -> int:
     ev = json.loads((RESULTS / "skill_track_evidence.json").read_text("utf-8"))
     ans = json.loads((RESULTS / "skill_track_answers.json").read_text("utf-8"))
@@ -32,6 +86,7 @@ def main() -> int:
     w("| B · Bare agent | no index — same omp engine with file tools over `data/corpus_md/` (50 md files) | the agent's own final JSON answer, recorded verbatim |")
     w("| C · Dense baseline (reproduction) | `methods.dense` over Corpus-Chunks800 → 4000-char evidence pack | unified SCEN_ANSWER_PROMPT on the same omp engine |")
     w("")
+    _pipeline_section(w)
 
     # ── Track A ──
     w("## Track A — QDCVR v2 skill flow (platform KB retrieval)")
