@@ -1,0 +1,37 @@
+{
+  "reviewer": "R1-CIKM-demo-reviewer",
+  "recommendation": "minor_revision",
+  "overall": "独立评审（基于 2026-09-19 构建的 main.pdf 与 pages/page-1..5.png）。这是一篇系统真实可用、可演示、证据纪律罕见的 demo 论文：我抽查了 15 处数字，全部与仓库工件精确吻合——(1) bench10_qa.json：total=10/passed=9，唯一失误 BQ06，doc_hit 10/10；(2) skill_track_evidence.json：向量召回均值 1.566s、读证据 0.813s、合计 2.379s，与正文 1.57s/0.81s/2.38s 及摘要 1.6s 一致，且 10 题的 top-1 命中文档逐一核对均为 gold 论文；(3) skill_track_answers.json：终态 gate 6–8/8，BQ06 与 BQ10 的 decision 字段明记 'gate 5 at Phase 1' 即两次 librarian 救回；(4) track_bc.json：B 轨均值 78.78s（35.5–165.3s），C 轨检索 0.59s、生成 11.64s、总 12.24s（5.8–28.6s），BQ01/BQ04 两例弃答；(5) honest_failure_probe.json：三探针 1/8、1/8、0/8 全部 NOT_FOUND，P2 即正文所述 BERT 陷阱，书架普查 72+43+32+12+6=165；(6) graph_stats.json：tag_count=165、typed relations 860=730 shared-tag+130 vector-similar；(7) ingest_report.json：50/50 parse-verified、per-KB 论文数 18/15/10/5/2、字符合计 3,798,446≈3.8M、≤30k 字符者恰 9 篇即 '9 whole papers'；(8) kb-mcp/server.py 实测 94 个 @mcp.tool()，41 个 kb_* 属实；(9) paper_demo/video/qdcvr-demo.mp4（24.7MB）真实存在。系统创新点（内容派生的组织、读文本的门控、一等公民的失败契约、agent 原生 MCP 表面）表述清晰，且对 gate 分数由执行 LLM 自评如实披露。唯一阻断性缺陷是页数：§5 Conclusion、Acknowledgments、Data Availability 连同 §4 末段约 0.7 栏溢出到第 5 页，超出『正文 ≤ 4 页（仅 GenAI 披露与 references 可溢出）』的规定，作者在 main.tex 第 4-5 行自设的预算也未达成；修掉页数（纯压缩即可）与一处图内口径标签后即可投稿。",
+  "issues": [
+    {
+      "severity": "major",
+      "location": "全文页数；第 5 页左栏（pages/page-5.png）；sec4_backmatter.tex 的 Conclusion/Acknowledgments/Data Availability；main.tex 第 4-5 行自声明的预算",
+      "comment": "页数不合规：第 5 页左栏约 0.7 栏为正文——§4 honesty checks 的末句、§5 Conclusion 全节、Acknowledgments、Data Availability 全节——而按 CIKM Demo 规则正文（含致谢/附录）必须收在 4 页内，仅 GenAI 披露与 references 允许溢出。main.tex 注释自设 'Body budget: <= 4 pages incl. appendices/acknowledgments'，当前构建未达成；以现稿提交会在形式审查被拒。",
+      "suggestion": "无需触碰任何科学内容，压缩约 0.7 栏即可：(1) Data Availability 的工件逐项清单收为一句概括 + 仓库目录指针；(2) 删除占位 Acknowledgments 节（camera-ready 再回填）；(3) '41 kb_* tools (94 in total)' 在摘要、§1 贡献点、§2.3、§3 各出现一次，保留两处；(4) §2.4 三条 contract 与 §1 贡献列表有部分重述，各收 2-3 行。完成后让 Conclusion 收进第 4 页，GenAI 披露与 references 留在第 5 页（合规）。"
+    },
+    {
+      "severity": "minor",
+      "location": "figures/fig1_rag_vs_kb.png 底部横条 'Retrieval + evidence latency: 12.2 s vs ~2.3 s'（page-2.png 图 1）",
+      "comment": "口径标签错误：12.2s 是 Track C 的端到端均值（检索仅 0.59s、生成 11.6s，见表 1 与 §4 正文），却与 Track A 的检索+读证据耗时（2.38s）放在同一 'Retrieval + evidence latency' 标签下对比。图 3 图例（'scopes differ: A = retrieval + evidence reads; B, C = end-to-end'）与表 1 的口径声明都是对的，唯独图 1 与其冲突；对一篇以测量契约精确性为卖点的论文，这会被审稿人当作口径不严的证据。",
+      "suggestion": "图 1 横条分别标注口径：'12.2 s end-to-end (retrieval 0.59 s)' 与 '~2.3 s retrieval + reads'，或把行名改为 'Latency (scopes as in Table 1)'，与图 3、表 1 统一。"
+    },
+    {
+      "severity": "minor",
+      "location": "sec4_eval.tex Results 段（page-4.png 右栏）：'BQ01's scaled-dot-product and BQ03's headline figure appear only in their declared blind-spot sentences'",
+      "comment": "措辞与工件不完全对应：skill_track_answers.json 中 BQ01 的 'scaled dot-product' 字样实际出现在 Confidence 段（声明该公式未读、置于盲点相邻的置信文本），BQ03 的 '67.6' 确在 Blind Spots 段；两者均确不在 Answer 段，故 7/10 与 9/10 的口径成立，但 'blind-spot sentences' 一词对 BQ01 过窄。",
+      "suggestion": "改为 '...appear only in the confidence/blind-spot declarations, never in the Answer section'，与表 1 注 'counting whole answers incl. blind-spot mentions: 10/10, 9/10' 完全互洽。"
+    },
+    {
+      "severity": "minor",
+      "location": "main.tex 第 14-15 行；渲染页 2-5 页眉 'CIKM '27, November 2027, Conference Venue'",
+      "comment": "\\acmConference 场地区字段为占位符，页眉渲染出 'Conference Venue' 与作者自认的尾随标点问题。与作者占位符同类，属提交前必填项而非实质缺陷，但形式审查可能触发不必要的问题。",
+      "suggestion": "投稿前与作者信息一并填入真实届次/城市/日期；列入 camera-ready 检查清单。"
+    },
+    {
+      "severity": "minor",
+      "location": "sec2_system.tex §2.4 小节标题 'Execution Flow, Design Choices, and Innovation'（page-3.png）",
+      "comment": "以 'Innovation' 自命小节在写作上略显自证；该节内容（三条 contract 与启发式的对照）本身有说服力，标题反而削弱说服力。",
+      "suggestion": "改为 'Execution Flow and Design Rationale'，让三条 contract 的论证自己说话。"
+    }
+  ]
+}

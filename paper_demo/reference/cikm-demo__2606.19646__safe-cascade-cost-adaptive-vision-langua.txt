@@ -1,0 +1,427 @@
+=== cikm-demo__2606.19646__safe-cascade-cost-adaptive-vision-langua.pdf | pages=5 ===
+----- page 1 -----
+SAFE-Cascade: Cost-Adaptive Vision-Language Routing for Chart
+Question Answering
+Ayush Dwivedi
+Qixin Wang
+Ashvi Soni
+Ruoteng Wang
+Ayush.Dwivedi@walmart.com
+Qixin.Wang@walmart.com
+Ashvi.Soni@walmart.com
+Ruoteng.Wang@walmart.com
+Walmart
+USA
+Han Li
+Animesh Mahapatra
+Neeraj Agrawal
+Han.Li@walmart.com
+Animesh.Mahapatra@walmart.com
+Neeraj.Agrawal@walmart.com
+Walmart
+USA
+Xintao Wu
+xintaowu@uark.edu
+University of Arkansas
+USA
+Abstract
+Vision-language models (VLMs) are powerful for chart question
+answering, but invoking a VLM for every query can be unneces-
+sarily expensive when many questions are answerable from OCR
+text and lightweight language reasoning. We demonstrate SAFE-
+Cascade, an interactive system for cost-adaptive chart question
+answering. Given a chart image and a natural-language question,
+SAFE-Cascade first extracts chart text with OCR, obtains a provi-
+sional answer from a text-only language model, and then uses a
+learned router to decide whether to accept the text answer or esca-
+late to a VLM. The demo exposes this decision process to users: OCR
+evidence, text-only answer, routing probability, escalation decision,
+final answer, estimated cost, and estimated latency are shown side
+by side. SAFE-Cascade is designed as a transparent interface for
+understanding when visual grounding is actually needed. Users can
+upload or select charts, ask questions, inspect the evidence used
+by each pathway, compare text-only and VLM answers, and ad-
+just the escalation threshold to explore the accuracy–cost frontier.
+The system is implemented with Azure Document Intelligence for
+OCR, gpt-5-mini as the text-only model, gemini-2.5-flash-image as
+the VLM, and a Random Forest router trained on inference-time
+features. On a held-out ChartQA test split of 375 examples from
+a 2,500-example experiment, SAFE-Cascade achieves 69.1% uni-
+fied accuracy with 73.1% VLM invocation, compared with 67.7%
+accuracy and 100% VLM invocation for the full-VLM baseline. The
+observed +1.4 percentage-point difference is statistically uncertain,
+so we interpret SAFE-Cascade as matching full-VLM performance
+while reducing VLM calls by 26.9% and estimated cost by 9.3%. The
+demonstration shows how selective modality routing can make
+multimodal knowledge systems more transparent, tunable, and
+cost-aware.
+Permission to make digital or hard copies of all or part of this work for personal or
+classroom use is granted without fee provided that copies are not made or distributed
+for profit or commercial advantage and that copies bear this notice and the full citation
+on the first page. Copyrights for components of this work owned by others than ACM
+must be honored. Abstracting with credit is permitted. To copy otherwise, or republish,
+to post on servers or to redistribute to lists, requires prior specific permission and/or a
+fee. Request permissions from permissions@acm.org.
+CIKM ’26, Rome, Italy
+© 2026 ACM.
+ACM ISBN 978-x-xxxx-xxxx-x/YYYY/MM
+https://doi.org/10.1145/3690000.3690000
+CCS Concepts
+• Information systems →Question answering; Information
+retrieval; • Computing methodologies →Computer vision; Ma-
+chine learning; • Human-centered computing →Interactive sys-
+tems and tools.
+Keywords
+Chart question answering, vision-language models, cost-aware in-
+ference, model routing, selective prediction, document AI
+ACM Reference Format:
+Ayush Dwivedi, Qixin Wang, Ashvi Soni, Ruoteng Wang, Han Li, Ani-
+mesh Mahapatra, Neeraj Agrawal, and Xintao Wu. 2026. SAFE-Cascade:
+Cost-Adaptive Vision-Language Routing for Chart Question Answering. In
+Proceedings of the 35th ACM International Conference on Information and
+Knowledge Management (CIKM ’26), November 7–11, 2026, Rome, Italy. ACM,
+New York, NY, USA, 5 pages. https://doi.org/10.1145/3690000.3690000
+Demo video: https://youtu.be/ak55IiZ6rHk
+1
+Introduction
+Charts are central to knowledge communication in reports, dash-
+boards, scientific papers, financial documents, and enterprise deci-
+sion workflows. Answering questions over charts requires reading
+labels, extracting values, comparing visual marks, and sometimes
+performing numeric reasoning. Modern VLMs can solve many chart
+questions directly from images, but using a VLM for every query
+is not always necessary. Some questions can be answered from
+OCR-extracted text, while others require true visual grounding.
+SAFE-Cascade demonstrates a selective alternative. Instead of
+treating full VLM inference as the default, the system asks: does
+this query actually need visual inference? The system first tries a
+low-cost OCR-plus-text pathway. A learned router then decides
+whether to stop with the text answer or escalate to a VLM. The key
+novelty is not merely a better chart QA model; it is an inspectable
+modality-routing system that makes the cost, evidence, and escala-
+tion decision visible to users.
+This demo targets three audiences: researchers studying cost-
+aware inference, document AI practitioners building OCR/VLM
+arXiv:2606.19646v1  [cs.IR]  17 Jun 2026
+
+----- page 2 -----
+CIKM ’26, November 7–11, 2026, Rome, Italy
+Ayush Dwivedi, Qixin Wang, Ashvi Soni, Ruoteng Wang, Han Li, Animesh Mahapatra, Neeraj Agrawal, and Xintao Wu
+Figure 1: SAFE-Cascade system architecture and processing workflow. The system exposes the same stages to users:
+chart/question input, OCR evidence, text-only answer, router decision, and final answer with estimated cost/latency.
+systems, and application developers deploying multimodal ques-
+tion answering under budget or throughput constraints. During
+the demo, attendees interact with chart examples, observe routing
+decisions, adjust the threshold, and see how cost, VLM usage, and
+missed-escalation risk change.
+Our demonstration makes four contributions:
+• Cost-adaptive chart QA system. SAFE-Cascade routes
+between OCR-plus-text reasoning and VLM reasoning.
+• Transparent routing interface. Users see OCR evidence,
+provisional answers, routing probability, final answer, and
+estimated cost/latency.
+• Interactive operating frontier. A threshold slider lets
+users explore accuracy–cost trade-offs in real time.
+• Held-out ChartQA validation. On ChartQA-2500, SAFE-
+Cascade matches full-VLM accuracy within statistical uncer-
+tainty while reducing VLM invocation.
+2
+Positioning and Related Work
+ChartQA evaluates visual and logical reasoning over charts [1], re-
+quiring models to combine OCR, visual perception, and numeric rea-
+soning. Document AI systems such as LayoutLMv3 and OCR-free
+models such as Donut improve document understanding through
+stronger multimodal representations [2, 3]. SAFE-Cascade addresses
+a different systems question: when should a multimodal system
+invoke visual inference at all?
+The system is also related to selective prediction, where a model
+abstains under uncertainty [4], and to cost-aware LLM routing sys-
+tems such as FrugalGPT and RouteLLM [5, 6]. SAFE-Cascade differs
+by performing modality routing rather than only model routing. It
+chooses whether to invoke a vision-language pathway and exposes
+that decision to the user through an interactive interface.
+3
+System Design
+SAFE-Cascade is a post-text routing system. Figure 1 summarizes
+the processing workflow and the corresponding demo panels. Given
+a chart image and a question, the system executes four stages:
+(1) OCR extraction. Azure Document Intelligence extracts
+chart text, layout snippets, tokens, and confidence metadata.
+(2) Text-only answering. A text LLM receives the question
+and OCR text and produces a provisional answer.
+(3) Learned routing. A Random Forest router estimates whether
+the text answer is reliable or whether VLM escalation is
+needed.
+(4) Optional VLM escalation. If escalated, the VLM receives
+the chart image and question; otherwise, the text answer
+becomes final.
+The router uses only inference-time features: OCR length and
+density, question length, numeric/chart/comparison flags, question-
+OCR overlap, text-answer length, unknown/empty-answer indica-
+tors, numeric answer indicators, whether the answer appears in
+OCR, and estimated text-model latency. It outputs an escalation
+probability 𝑝esc. If 𝑝esc ≥𝜃, the system escalates to the VLM; other-
+wise, it accepts the text-only answer. The main configuration uses
+𝜃= 0.3, selected on the validation split.
+
+----- page 3 -----
+SAFE-Cascade: Cost-Adaptive Vision-Language Routing for Chart Question Answering
+CIKM ’26, November 7–11, 2026, Rome, Italy
+3.1
+Routing Objective
+SAFE-Cascade can be viewed as a cost-aware routing policy over
+two inference paths. For each chart-question pair, the system chooses
+either (𝑎= STOP_TEXT), returning the OCR-plus-text answer, or
+(𝑎= ESCALATE_VLM), invoking the vision-language model. The
+practical objective is to preserve answer quality while minimizing
+unnecessary VLM calls. In deployment terms, the router should
+stop when the text answer is likely sufficient, escalate when visual
+grounding is likely to improve correctness, and avoid escalation for
+cases where the VLM is unlikely to help. This differs from conven-
+tional selective prediction: SAFE-Cascade does not merely abstain,
+but acquires a stronger modality when the cheap pathway appears
+unreliable. The threshold (𝜃) therefore acts as an operating knob
+that allows users to trade accuracy against VLM usage, cost, and
+latency.
+3.2
+Demo Interface
+The interface is designed to make routing inspectable rather than
+hidden. As shown in Figure 1, it includes five panels:
+• Input panel: upload/select a chart and enter a question.
+• OCR evidence panel: display extracted text and relevant
+OCR snippets.
+• Text-answer panel: show the provisional OCR-plus-text
+answer.
+• Router panel: show escalation probability, threshold, deci-
+sion, and feature summary.
+• Output panel: show final answer, optional VLM answer,
+estimated cost, and estimated latency.
+The main interactive control is a threshold slider. Lower thresholds
+call the VLM more often and reduce missed escalations; higher
+thresholds reduce VLM calls but risk accepting incorrect text an-
+swers. This lets attendees see the cost–accuracy frontier directly.
+3.3
+Implementation
+SAFE-Cascade is implemented as a modular service. OCR outputs
+are cached. Text-only answers are generated with gpt-5-mini. VLM
+answers are generated with gemini-2.5-flash-image. The router
+is a Random Forest classifier trained on split-controlled ChartQA
+examples. The system logs every intermediate artifact: OCR output,
+text prediction, router probability, VLM prediction, final answer,
+estimated cost, and estimated latency.
+The demo is implemented as a lightweight Streamlit web ap-
+plication with cached OCR, text-model, VLM, and router outputs
+for reproducible conference presentation. The implementation em-
+phasizes transparency and reproducibility. Latency values reported
+below are estimates from typical API response profiles, not mea-
+sured end-to-end production timings.
+4
+Evaluation
+We evaluate SAFE-Cascade on 2,500 examples sampled from the
+ChartQA benchmark [1], a chart question-answering dataset de-
+signed to test visual and logical reasoning over charts.1 We use a
+70/15/15 split: 1,750 examples for router training, 375 examples for
+validation based threshold selection, and 375 held out examples for
+1https://github.com/vis-nlp/ChartQA
+final evaluation. OCR coverage and model runs are computed over
+all 2,500 examples. All final accuracy, routing, cost, and error met-
+rics are reported on the held-out test split. We use unified accuracy:
+an answer is correct if it satisfies normalized exact match, numeric
+tolerance, or ANLS similarity. Costs are estimated from configured
+model-call pricing.
+4.1
+Main Results
+Table 1 reports held-out test performance. SAFE-Cascade achieves
+69.1% accuracy, compared with 67.7% for full VLM. Because the con-
+fidence intervals overlap, we do not claim a statistically significant
+improvement over full VLM. Instead, we interpret SAFE-Cascade
+as matching full-VLM performance while reducing VLM calls by
+26.9% and estimated cost by 9.3%. The oracle is non-deployable and
+is included only as an upper bound.
+Beyond matching the full-VLM baseline, the results show that
+learned routing is essential. The text-only path reaches only 25.3%
+accuracy, and a strong heuristic cascade improves to 37.3%, while
+SAFE-Cascade reaches 69.1% on the same held-out test split. Thus,
+the main gain does not come merely from adding OCR or using
+simple visual-trigger rules; it comes from learning when the text
+pathway is likely insufficient. The remaining 2.6 point gap to the
+non-deployable oracle indicates that routing is not saturated, but
+the deployable router already captures most of the attainable benefit
+while reducing VLM calls.
+Table 1: Main results on held-out test split (𝑁= 375).
+Method
+Acc. (%)
+95% CI
+VLM (%)
+Cost / 1k
+Text-only
+25.3
+[20.8, 29.9]
+0.0
+$1.23
+Heuristic cascade
+37.3
+[32.3, 42.4]
+30.1
+$1.47
+SAFE-Cascade (𝜃= 0.3)
+69.1
+[64.0, 74.1]
+73.1
+$1.81
+Full VLM
+67.7
+[62.7, 72.3]
+100.0
+$2.00
+Oracle upper bound
+71.7
+[66.9, 76.3]
+46.4
+N/A
+4.2
+Routing Quality
+Table 2 summarizes the router’s action-level behavior. The router
+achieves 81.3% escalation precision, 87.4% escalation recall, and
+84.2% escalation F1. The most important failure mode is missed
+escalation, where the system accepts an incorrect text answer even
+though the VLM would have been correct.
+Table 2: Routing behavior on held-out test split (𝑁= 375).
+Routing outcome
+Count
+Pct. (%)
+Correctly stopped
+60
+16.0
+Correctly escalated
+152
+40.5
+Missed escalation
+22
+5.9
+Unnecessary escalation
+35
+9.3
+Hard cases
+106
+28.3
+
+----- page 4 -----
+CIKM ’26, November 7–11, 2026, Rome, Italy
+Ayush Dwivedi, Qixin Wang, Ashvi Soni, Ruoteng Wang, Han Li, Animesh Mahapatra, Neeraj Agrawal, and Xintao Wu
+Figure 2: Interactive operating frontier. SAFE-Cascade exposes the escalation threshold 𝜃as a demo control. Lower thresholds
+preserve accuracy by invoking the VLM more often; higher thresholds reduce VLM usage but increase missed escalations. The
+selected configuration 𝜃= 0.3 achieves 69.1% accuracy with 73.1% VLM invocation.
+4.3
+Threshold Operating Frontier
+The threshold sweep is the key practical insight of the demo. As
+shown in Table 3 and Figure 2, lower thresholds preserve accuracy
+by calling the VLM more often; higher thresholds reduce VLM
+usage but quickly increase missed escalations. The live threshold
+slider turns this table into an interactive experience.
+Table 3: Escalation threshold trade-off parameters.
+𝜃
+Acc. (%)
+95% CI
+VLM (%)
+Missed Esc. (%)
+0.3
+69.1
+[64.0, 74.1]
+73.1
+5.3
+0.4
+64.3
+[59.2, 69.6]
+57.1
+10.7
+0.5
+62.1
+[57.1, 67.7]
+43.2
+14.9
+0.6
+54.7
+[49.3, 59.7]
+23.2
+22.9
+0.7
+52.0
+[46.7, 57.1]
+10.4
+27.2
+5
+Demo Experience and Practical Insights
+SAFE-Cascade is intended to demonstrate more than a backend
+optimization. The interface makes multimodal inference observ-
+able. Attendees can see when OCR-plus-text reasoning is enough,
+when VLM escalation is necessary, why a query was escalated, how
+threshold changes affect VLM calls, and how cost and accuracy
+trade off.
+The 3-minute video and live demo follow three scenarios. First, in
+a text-solvable case, the answer appears in OCR text; SAFE-Cascade
+returns the text-only answer and avoids a VLM call. Second, in a
+VLM-needed case, the text answer is incomplete or unreliable; the
+router assigns a high escalation probability and calls the VLM.
+Third, in a borderline case, attendees adjust the threshold slider and
+observe how the decision changes. For reliable review, the demo
+runs from cached OCR, model, VLM, and router outputs while
+preserving the same evidence and routing decisions as a live run.
+This scenario-driven design makes the demo relevant to CIKM’s
+intersection of information retrieval, knowledge management, and
+applied AI systems. In practical deployments, the routing decision
+is not just an implementation detail: it determines cost, latency,
+user trust, and resource allocation.
+6
+Conclusion and Future Work
+We presented SAFE-Cascade, an interactive system for cost-adaptive
+vision-language chart question answering. SAFE-Cascade treats
+visual context dynamically, routes between OCR-plus-text reason-
+ing and VLM reasoning, exposes the routing decision to users, and
+provides a threshold-controlled interface for exploring the cost–
+accuracy frontier. On a held-out ChartQA test split, it matches
+full-VLM performance within statistical uncertainty while reducing
+VLM calls by 26.9% and estimated cost by 9.3%.
+Several limitations remain. SAFE-Cascade is currently validated
+only on ChartQA; cross-domain validation on DocVQA, Infograph-
+icVQA, and enterprise document datasets is future work. Latency
+values are estimates rather than measured end-to-end timings. The
+current router is post-text and sequential, so future work should
+explore pre-routing and speculative parallel execution. Costs are
+estimated from configured pricing rather than production billing.
+The oracle is non-deployable and serves only as an upper bound.
+Numeric answer normalization may affect some chart QA examples.
+Overall, SAFE-Cascade shows how selective modality routing
+can make multimodal knowledge systems more transparent, tun-
+able, and cost-aware.
+
+----- page 5 -----
+SAFE-Cascade: Cost-Adaptive Vision-Language Routing for Chart Question Answering
+CIKM ’26, November 7–11, 2026, Rome, Italy
+GenAI Usage Disclosure
+The authors used generative AI tools to assist with language edit-
+ing, summarization of experimental notes, and drafting support.
+All system design, implementation, experimental evaluation, in-
+terpretation, and final claims were reviewed and verified by the
+authors.
+References
+[1] Ahmed Masry, Do Xuan Long, Jia Qing Tan, Shafiq Joty, and Enamul Hoque. 2022.
+ChartQA: A Benchmark for Question Answering about Charts with Visual and
+Logical Reasoning. In Findings of the Association for Computational Linguistics:
+ACL 2022, 2263–2279. DOI: 10.18653/v1/2022.findings-acl.177.
+[2] Yupan Huang, Tengchao Lv, Lei Cui, Yutong Lu, and Furu Wei. 2022. LayoutLMv3:
+Pre-training for Document AI with Unified Text and Image Masking. In Proceed-
+ings of ACM Multimedia.
+[3] Geewook Kim, Teakgyu Hong, Moonbin Yim, Jeongyeon Nam, Jinyoung Park,
+Jinyeong Yim, Wonseok Hwang, Sangdoo Yun, Dongyoon Han, and Seunghyun
+Park. 2022. OCR-free Document Understanding Transformer. In Proceedings of
+ECCV.
+[4] Yonatan Geifman and Ran El-Yaniv. 2019. SelectiveNet: A Deep Neural Network
+with an Integrated Reject Option. In Proceedings of ICML.
+[5] Lingjiao Chen, Matei Zaharia, and James Zou. 2023. FrugalGPT: How to Use
+Large Language Models While Reducing Cost and Improving Performance.
+arXiv:2305.05176.
+[6] Isaac Ong, Amjad Almahairi, Vincent Wu, Wei-Lin Chiang, Tianhao Wu, Joseph
+E. Gonzalez, M. Waleed Kadous, and Ion Stoica. 2024. RouteLLM: Learning to
+Route LLMs with Preference Data. arXiv:2406.18665.
+[7] Ashish Vaswani et al. 2017. Attention Is All You Need. In Proceedings of NeurIPS.

@@ -5,22 +5,22 @@
 
 \begin{abstract}
 Institutional document stores are indexed by filename and folder conventions, and
-retrieval stacks chunk them into flat bags of passages, so nobody can tell whether
-a retrieved passage actually answers a query. We present \sys{}, a deployable
+retrieval stacks chunk them into flat passage bags, so nobody can tell whether
+a retrieved passage answers a query. We present \sys{}, a deployable
 knowledge-base management platform that organizes documents by their content and
 verifies every retrieval by reading it. Ingestion parses documents into structured
-text and files each one into a category base by reading its content rather than its
-filename; long papers are split into parts that keep their section headers, and tags
-propagate from a document to all of its parts. Retrieval runs one query-driven
-protocol: vector-first recall, an interpretable $0$--$8$ content gate that scores the
-candidate text actually read, a librarian fallback over the base shelves, and an
+text, files each into a category base by reading its content rather than its
+filename, splits long papers into parts that keep their section headers, and
+propagates tags to every part. Retrieval runs one query-driven
+protocol: vector-first recall, an interpretable $0$--$8$ content gate scoring the
+candidate text actually read, a librarian fallback, and an
 explicit not-found contract when no evidence passes. The platform is exposed to AI
-agents through 41 \texttt{kb\_*} Model Context Protocol tools. On 50 real papers
-organized into 5 category bases (165 indexed documents over 3.8\,M characters, all
-50 parse-verified), a 10-question spot check answers 9/10 with final gate scores of
-6--8/8, both fallback rescues succeeding and top-1 gold-document recall of 10/10 at
-$1.6$\,s mean vector recall; three out-of-corpus probes return not-found reports
-instead of fabricated answers. The demonstration lets attendees ingest, organize,
+agents through 41 \texttt{kb\_*} Model Context Protocol tools. On 50 real papers in 5 category
+bases (165 indexed documents, 3.8\,M characters, all parse-verified), a
+scripted 10-question regression passes 9/10 and the live run answers 10/10 on
+target (gates 6--8/8, two librarian rescues, top-1 gold recall 10/10, $1.6$\,s
+mean vector-recall time); three out-of-corpus probes return not-found reports
+instead of fabricated answers. Attendees can ingest, organize,
 query, and inspect every trace live. Demo video:
 \url{https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4}.
 \end{abstract}

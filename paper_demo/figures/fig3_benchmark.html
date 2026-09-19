@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Figure 3 — Three answering tracks on the same benchmark</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:2200px; height:1412px; overflow:hidden; background:#FFFFFF;
+               font-family:Arial, Helvetica, sans-serif; color:#1a2332;
+               -webkit-font-smoothing:antialiased; }
+  #fig { position:relative; width:2200px; height:1412px; background:#FFFFFF; }
+
+  .title { position:absolute; left:0; top:30px; width:2200px; text-align:center;
+           font-size:55px; font-weight:800; letter-spacing:-0.4px; }
+  .title .hl { color:#0f766e; }
+  .subtitle { position:absolute; left:0; top:100px; width:2200px; text-align:center;
+              font-size:30px; color:#5c6b7c; }
+
+  /* ── track cards ─────────────────────────────────────── */
+  .card { position:absolute; top:158px; height:742px; width:668px; border-radius:20px;
+          background:#ffffff; box-shadow:0 4px 18px rgba(15,23,42,.08); overflow:hidden; }
+  #cardA { left:56px;  border:3px solid #0f766e; }
+  #cardB { left:766px; border:2px solid #c3cede; }
+  #cardC { left:1476px; border:2px solid #e4b6ac; }
+
+  .c-head { height:88px; display:flex; align-items:center; justify-content:center; gap:12px; padding:0 12px; white-space:nowrap; }
+  #cardA .c-head { background:linear-gradient(90deg,#0f766e,#0d9488); }
+  #cardB .c-head { background:#eef2f7; }
+  #cardC .c-head { background:#fbf1ee; }
+  .c-head .t { font-size:29px; font-weight:800; white-space:nowrap; }
+  #cardA .t { color:#ffffff; }
+  #cardB .t { color:#475569; }
+  #cardC .t { color:#8f3315; }
+  .c-head .badge { font-size:24px; font-weight:700; padding:5px 14px; border-radius:999px; white-space:nowrap; }
+  #cardA .badge { background:rgba(255,255,255,.18); color:#d1fae5; border:1px solid rgba(255,255,255,.5); }
+  #cardB .badge { background:#dbe3ee; color:#33465e; }
+  #cardC .badge { background:#f3d9d2; color:#8f3315; }
+
+  .c-sub { padding:14px 28px 4px; font-size:25px; color:#5c6b7c; line-height:1.35; }
+
+  .metrics { padding:10px 28px 0; }
+  .m-row { display:flex; align-items:center; gap:16px; padding:9px 0;
+           border-bottom:1.5px dashed #e3e9f0; }
+  .m-row:last-child { border-bottom:none; }
+  .m-ic { width:44px; height:44px; border-radius:11px; flex:none; display:flex;
+          align-items:center; justify-content:center; }
+  .ok  { background:#d9f2ea; }
+  .bad { background:#fdeceb; }
+  .neu { background:#eef2f7; }
+  .m-txt .m-k { font-size:25px; color:#7c8a99; }
+  .m-txt .m-v { font-size:27px; font-weight:800; line-height:1.22; }
+  .v-good { color:#0b5e4f; } .v-warn { color:#9b2c1c; } .v-mid { color:#475569; }
+
+  .verdict { position:absolute; left:28px; right:28px; bottom:18px; border-radius:12px;
+             padding:12px 18px; font-size:25px; font-weight:700; line-height:1.3; }
+  #cardA .verdict { background:#eaf7f2; color:#0b5e4f; border:1.5px solid #9ad6c5; }
+  #cardB .verdict { background:#f1f5f9; color:#33465e; border:1.5px solid #cbd5e1; }
+  #cardC .verdict { background:#fdf0ed; color:#8f3315; border:1.5px solid #f0cdc3; }
+
+  /* ── latency strip ───────────────────────────────────── */
+  .lat { position:absolute; left:56px; right:56px; top:926px; height:232px;
+         background:#101826; border-radius:18px; padding:20px 40px; }
+  .lat .l-title { font-size:30px; font-weight:800; color:#ffffff; margin-bottom:12px; }
+  .lat .l-title small { font-weight:400; color:#8fa1b8; font-size:25px; margin-left:14px; }
+  .l-row { display:flex; align-items:center; gap:18px; margin-bottom:9px; }
+  .l-row .l-name { width:660px; font-size:27px; color:#c9d6e4; text-align:right; flex:none; }
+  .l-row .l-track { flex:1; height:20px; background:#243147; border-radius:11px; position:relative; }
+  .l-row .l-fill { position:absolute; left:0; top:0; bottom:0; border-radius:11px; transform-origin:left; }
+  .l-row .l-val { width:160px; font-size:30px; font-weight:800; color:#ffffff; flex:none; }
+  .fillA { background:linear-gradient(90deg,#0d9488,#5eead4); }
+  .fillC { background:#8195ad; }
+  .fillB { background:#b4441f; }
+  body.static .l-fill { animation:none !important; }
+
+  /* ── BQ01 verbatim strip ─────────────────────────────── */
+  .bq { position:absolute; left:56px; right:56px; top:1170px; height:224px;
+        background:#f8fafc; border:1.5px solid #dbe3ee; border-radius:16px; padding:12px 30px; }
+  .bq .q { font-size:27px; font-weight:800; color:#33465e; margin-bottom:8px; }
+  .bq .cols { display:flex; gap:26px; }
+  .bq .col { flex:1; font-size:24px; line-height:1.32; color:#425061;
+             border-left:4px solid #cbd5e1; padding-left:16px; }
+  .bq .col.a { border-color:#0f766e; }
+  .bq .col.b { border-color:#94a3b8; }
+  .bq .col.c { border-color:#c2542e; }
+  .bq .col b { display:block; font-size:25px; margin-bottom:4px; }
+  .bq .col.a b { color:#0b5e4f; } .bq .col.b b { color:#54677d; } .bq .col.c b { color:#9b2c1c; }
+
+  /* ── animation ───────────────────────────────────────── */
+  .grow { animation:grow 1s ease-out both; transform-origin:left; }
+  @keyframes grow { from { transform:scaleX(0); } to { transform:scaleX(1); } }
+  .pulse { animation:pulse 1.7s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity:.75; } 50% { opacity:1; } }
+  body.static .grow, body.static .pulse { animation:none !important; }
+</style>
+</head>
+<body>
+<div id="fig">
+  <div class="title">One benchmark, <span class="hl">three answering tracks</span></div>
+  <div class="subtitle">50 real papers ingested per track &middot; 10 content-grounded questions &middot; every answer recorded verbatim &middot; gold documents known in advance</div>
+
+  <!-- ═══════════ Track A ═══════════ -->
+  <div class="card" id="cardA">
+    <div class="c-head"><span class="t">Track A &mdash; KB protocol</span><span class="badge">this system</span></div>
+    <div class="c-sub">QDCVR skill flow: query rewrite &rarr; vector recall over 5 routed category KBs &rarr; 0&ndash;8 content gate &rarr; librarian fallback &rarr; five-section answer</div>
+    <div class="metrics">
+      <div class="m-row">
+        <span class="m-ic ok"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 12.5 9.5 18 20 6.5" fill="none" stroke="#0b5e4f" stroke-width="3"/></svg></span>
+        <span class="m-txt"><div class="m-k">Gold documents retrieved</div><div class="m-v v-good">10 / 10 &mdash; with per-part source paths</div></span>
+      </div>
+      <div class="m-row">
+        <span class="m-ic ok"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 12.5 9.5 18 20 6.5" fill="none" stroke="#0b5e4f" stroke-width="3"/></svg></span>
+        <span class="m-txt"><div class="m-k">Unanswered questions</div><div class="m-v v-good">0 &mdash; the 2 gate-fails (of 10) rescued by the librarian</div></span>
+      </div>
+      <div class="m-row">
+        <span class="m-ic ok"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 12.5 9.5 18 20 6.5" fill="none" stroke="#0b5e4f" stroke-width="3"/></svg></span>
+        <span class="m-txt"><div class="m-k">Citations &amp; honesty</div><div class="m-v v-good">verbatim base/doc/part/section + declared blind spots</div></span>
+      </div>
+      <div class="m-row">
+        <span class="m-ic neu"><svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="#475569" stroke-width="2.6"/><path d="M12 7v5.4l3.6 2.2" fill="none" stroke="#475569" stroke-width="2.6"/></svg></span>
+        <span class="m-txt"><div class="m-k">Retrieval + evidence reading</div><div class="m-v v-mid">~2.4 s per question</div></span>
+      </div>
+    </div>
+    <div class="verdict">Gate scores 6&ndash;8 on all ten; every claim traceable to a section.</div>
+  </div>
+
+  <!-- ═══════════ Track B ═══════════ -->
+  <div class="card" id="cardB">
+    <div class="c-head"><span class="t">Track B &mdash; Bare agent</span><span class="badge">no index</span></div>
+    <div class="c-sub">Same LLM engine, file tools only: lists 50 markdown papers, greps and reads passages by itself &mdash; one fresh agent per question</div>
+    <div class="metrics">
+      <div class="m-row">
+        <span class="m-ic ok"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 12.5 9.5 18 20 6.5" fill="none" stroke="#0b5e4f" stroke-width="3"/></svg></span>
+        <span class="m-txt"><div class="m-k">Gold documents retrieved</div><div class="m-v v-good">10 / 10 &mdash; provenance stops at file names</div></span>
+      </div>
+      <div class="m-row">
+        <span class="m-ic ok"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 12.5 9.5 18 20 6.5" fill="none" stroke="#0b5e4f" stroke-width="3"/></svg></span>
+        <span class="m-txt"><div class="m-k">Unanswered questions</div><div class="m-v v-good">0 &mdash; reads whole files until satisfied</div></span>
+      </div>
+      <div class="m-row">
+        <span class="m-ic neu"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10" fill="none" stroke="#475569" stroke-width="2.6"/></svg></span>
+        <span class="m-txt"><div class="m-k">Citations &amp; honesty</div><div class="m-v v-mid">file names only; no section-level trace, no blind-spot check</div></span>
+      </div>
+      <div class="m-row">
+        <span class="m-ic bad"><svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="#9b2c1c" stroke-width="2.6"/><path d="M12 7v5.4" stroke="#9b2c1c" stroke-width="2.8"/><circle cx="12" cy="16.4" r="1.5" fill="#9b2c1c"/></svg></span>
+        <span class="m-txt"><div class="m-k">Cost of thoroughness</div><div class="m-v v-warn">78.8 s average per question</div></span>
+      </div>
+    </div>
+    <div class="verdict">Most complete prose &mdash; but provenance ends at the file name.</div>
+  </div>
+
+  <!-- ═══════════ Track C ═══════════ -->
+  <div class="card" id="cardC">
+    <div class="c-head"><span class="t">Track C &mdash; Dense RAG baseline</span><span class="badge">reproduction</span></div>
+    <div class="c-sub">Fixed 800-character chunks, single dense index, top chunks packed into a 4,000-character evidence window for one LLM call</div>
+    <div class="metrics">
+      <div class="m-row">
+        <span class="m-ic neu"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M5 12.5 10 17.5 19 7" fill="none" stroke="#64748b" stroke-width="3" stroke-dasharray="4 3.4"/></svg></span>
+        <span class="m-txt"><div class="m-k">Gold documents retrieved</div><div class="m-v v-mid">content matches; our harness logs no source paths</div></span>
+      </div>
+      <div class="m-row">
+        <span class="m-ic bad"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" stroke="#9b2c1c" stroke-width="3"/></svg></span>
+        <span class="m-txt"><div class="m-k">Unanswered questions</div><div class="m-v v-warn">2 / 10 abstained &mdash; evidence window missed the passage</div></span>
+      </div>
+      <div class="m-row">
+        <span class="m-ic bad"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" stroke="#9b2c1c" stroke-width="3"/></svg></span>
+        <span class="m-txt"><div class="m-k">Citations &amp; honesty</div><div class="m-v v-warn">none recorded &mdash; fixed windows cut methods from answers</div></span>
+      </div>
+      <div class="m-row">
+        <span class="m-ic ok"><svg width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="none" stroke="#475569" stroke-width="2.6"/><path d="M12 7v5.4l3.6 2.2" fill="none" stroke="#475569" stroke-width="2.6"/></svg></span>
+        <span class="m-txt"><div class="m-k">Retrieval + answering</div><div class="m-v v-mid">12.2 s average &mdash; fast when it works</div></span>
+      </div>
+    </div>
+    <div class="verdict pulse">Fastest track &mdash; and the one that could not answer twice.</div>
+  </div>
+
+  <!-- ═══════════ latency strip ═══════════ -->
+  <div class="lat">
+    <div class="l-title">LATENCY PER QUESTION <small>scopes differ: A = retrieval + evidence reads; B, C = end-to-end &mdash; lower is better</small></div>
+    <div class="l-row">
+      <span class="l-name">Track A &middot; KB protocol (retrieval + reads)</span>
+      <span class="l-track"><span class="l-fill fillA grow" style="width:4%"></span></span>
+      <span class="l-val">2.4 s</span>
+    </div>
+    <div class="l-row">
+      <span class="l-name">Track C &middot; dense baseline (retrieval + answer)</span>
+      <span class="l-track"><span class="l-fill fillC grow" style="width:15.5%"></span></span>
+      <span class="l-val">12.2 s</span>
+    </div>
+    <div class="l-row">
+      <span class="l-name">Track B &middot; bare agent (file search + read)</span>
+      <span class="l-track"><span class="l-fill fillB grow" style="width:100%"></span></span>
+      <span class="l-val">78.8 s</span>
+    </div>
+  </div>
+
+  <!-- ═══════════ one question, three fates ═══════════ -->
+  <div class="bq">
+    <div class="q">ONE QUESTION, THREE FATES &mdash; BQ01: &ldquo;How does the Transformer compute attention, and why does it replace recurrence and convolution?&rdquo;</div>
+    <div class="cols">
+      <div class="col a"><b>Track A answers, citing parts 1/2 &amp; 2/2</b>multi-head attention &ldquo;in three different ways&rdquo; (§3.2.3), &ldquo;based entirely on attention&rdquo; (§7); formula flagged as unread blind spot.</div>
+      <div class="col b"><b>Track B answers, file cited</b>prints the full scaled dot-product form &mdash; most complete prose &mdash; but nothing links the claim back to a section.</div>
+      <div class="col c"><b>Track C abstains</b>&ldquo;The provided evidence is insufficient&hellip; the excerpts only discuss English constituency parsing results&rdquo; &mdash; the method section was chunked away.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  if (location.hash.includes('static')) document.body.classList.add('static');
+</script>
+</body>
+</html>

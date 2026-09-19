@@ -1,0 +1,49 @@
+{
+  "reviewer": "R3-meta-reviewer-AC",
+  "recommendation": "minor_revision",
+  "overall": "这是一篇完成度和诚实度都明显高于 demo track 平均线但正文超页的稿件。三项数字抽查全部通过：(1) 165 索引文档 / tag_count=165 / 860 条类型化关系（730 shared-tag + 130 vector-similar）与 graph_stats.json 逐项一致；(2) Table 1 的 Track B 78.8 s（35.5–165.3）与 Track C 12.2 s（5.8–28.6）、C 答 8/10 弃答 2 与 track_bc.json 精确吻合，Figure 3 中 BQ01 的 Track C 弃答引文与原始 JSON 逐字一致；(3) 三个 corpus 外探针 gate 分 1/8、1/8、0/8 全部 NOT_FOUND，含 Scenario 3(b) 的 Spectral-Tuning/BERT 陷阱（P2），与 honest_failure_probe.json 完全一致；另核对 3.8M 字符（3,798,446）、Track A 1.57 s + 0.81 s = 2.38 s、NISQ 0.709≈0.71、两次 phase-2 rescue（BQ06/BQ10）、回归 9/10 亦均属实。页数判定：正文（Abstract→Conclusion）实际结束于第 5 页左栏上部（Honesty checks 尾段约 7 行加整段 Conclusion 溢出，约合 1/3 栏），超出 CIKM demo 正文 ≤4 页的硬性限制，属投稿前必须修复的合规问题。普通读者可以清楚读懂系统是什么、与常规 RAG 的差异（读文本的 0–8 gate + 诚实 not-found 合约 + 可审计 trace）以及为何可信；demo 叙事（attendee 上传 PDF→自动归类打标、NISQ 提问→hit card+7/8 gate+引文、虚构论文→not-found 报告）具体可信。修复超页并处理下述图表可读性问题后可达接收线，故给 minor_revision。",
+  "issues": [
+    {
+      "severity": "critical",
+      "location": "pages 4-5; sec4_eval.tex (Honesty checks 尾段) + sec4_backmatter.tex (Conclusion)",
+      "comment": "正文（Abstract 至 Conclusion 结束）溢出到第 5 页：第 5 页左栏含 Honesty checks 段落尾部、5 Conclusion 全段，之后才是允许溢出的 Acknowledgments / Data Availability / GenAI 披露 / Competing Interests / References。按 CIKM demo 规则正文 ≤4 页，当前状态不可直接投稿（作者自己的 main.tex 注释也写明 body budget ≤4 页）。溢出量约 1/3 栏（~20 行）。",
+      "suggestion": "在不损失内容的前提下回收约 1/3 栏：将 Fig 1 从 0.66 降至 ~0.58\\textwidth、Fig 3 从 0.72 降至 ~0.66（并为 issue#3 的字号修复让出空间）；压缩 Honesty checks 尾段与 §2.4 的 (iii) 论述；Table 1 说明文字中 'counting whole answers incl. blind-spot mentions' 一句可并入正文已有表述。目标：Conclusion 结束于第 4 页末。"
+    },
+    {
+      "severity": "major",
+      "location": "figures/fig1_rag_vs_kb.png (最重), fig2_architecture.png, fig3_benchmark.png; main.tex includegraphics 宽度 0.66/0.76/0.72\\textwidth",
+      "comment": "三张图为 4400–4800px 宽的 HTML 渲染画布，缩至最终版面后卡片/方框内的说明文字仅约 3–4pt（Fig 1 的灰字说明、Fig 2 五个阶段框的描述文字、Fig 3 卡片正文），低于印刷可读下限（~6–7pt）；纸质或 100% 缩放下不可读，只能依赖标题行和大数字。源文件分辨率（≥860 DPI）无像素问题，纯是字号-画幅比例问题。",
+      "suggestion": "以最终物理宽度为准重新导出：加大基础字号使最小文字 ≥6pt（Fig 1 需删减每卡说明至一句话或合并面板）；若画幅不允许，宁可降低信息密度——demo 评审更看重 10 秒内读懂对比结论，已有 caption 承载细节。"
+    },
+    {
+      "severity": "minor",
+      "location": "figures/fig3_benchmark.png 底缘",
+      "comment": "图底部脚注行 'All numbers: 2026-09-18 benchmark run, identical corpora (benchmark-suite/results/ ...)' 被画布底边截断（字形下半被切），印刷后为一行残缺小字。",
+      "suggestion": "重新导出时增加底部 padding，或将该行上移；同时可顺带修复 issue#2。"
+    },
+    {
+      "severity": "minor",
+      "location": "sec4_eval.tex Results 段: 'Track C is the fastest end-to-end track at 12.2 s (0.59 s of it retrieval)'",
+      "comment": "按 track_bc.json 逐题 latency_retrieval（0.8 + 0.6×9）求均值为 0.62 s，与文中 0.59 s 不符；其余 Track C 数字（12.2 s 均值、5.8–28.6 s 区间、8/10+2 弃答）均精确吻合，仅此一处对不上。",
+      "suggestion": "复核该数字的口径（是否取自有意的子集或另一 artifact），改为 0.62 s 或在 Data Availability 指明来源。"
+    },
+    {
+      "severity": "minor",
+      "location": "正文 §2.1/§3 vs Fig 1/Fig 2 图内用词",
+      "comment": "正文统一用 'category base(s)'，图内混用 'routed category KBs / category KBs / knowledge-base protocol'，另引入 'shelves' 比喻（§2.1 一处交代）；同一实体四套称呼，普通读者需要自行对齐。",
+      "suggestion": "在 §2 或 Fig 1 caption 中一句话钉死同义关系（如 'category bases (shelves; KBs in figures)'），并在图内文字中统一为其中之一。"
+    },
+    {
+      "severity": "minor",
+      "location": "sec2_system.tex §2.2 vs fig2_architecture.png 阶段编号",
+      "comment": "正文给 Phase 0（rewrite）、Phase 1（recall）、Phase 2（librarian）、Phase 3（answer）编号，content gate 不占编号；Fig 2 中 gate 以 ✓ 标记、其余为 0/1/2/3，对应关系正确但首次阅读需要推断。公式 (1) 亦未与任何 phase 绑定。",
+      "suggestion": "为 gate 补一个编号（如 Phase 1.5 或 1b），或在 §2.2 首句明说 'the unnumbered gate step'；与图内 ✓ 呼应。"
+    },
+    {
+      "severity": "minor",
+      "location": "main.tex \\acmConference 字段（running head 显示 'CIKM 27, November 2027, Conference Venue'）",
+      "comment": "会议元数据为占位符（作者已留 TODO 注释），与作者占位符同类，属 camera-ready 前必填项，不作为评审障碍；仅提示勿在终稿遗漏，且当前字段拼接会在部分页眉产生多余逗号。",
+      "suggestion": "录用后按 CIKM '26 官方字段填写真实会议名/日期/地点并重编译，检查页眉。"
+    }
+  ]
+}

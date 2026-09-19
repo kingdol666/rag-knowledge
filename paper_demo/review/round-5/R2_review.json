@@ -1,0 +1,21 @@
+{
+  "reviewer": "R2-FIG-rendering-reviewer",
+  "recommendation": "minor_revision",
+  "figure_page_check": {
+    "fig1": "p2 OK top, figure*, 0.68 textwidth centered",
+    "fig2": "p3 OK top, figure*, 0.76 textwidth",
+    "fig3": "p4 OK top, figure*, 0.70 textwidth; no float-orphaned pages; all exhibits referenced in text"
+  },
+  "legibility": "Fails strict 100% print test: fig1 smallest 20px CSS = 2.9pt (strip scope lines, fine-print), fig2 22px = 3.7pt (client/storage box labels), fig3 21px = 3.4pt (badges), 22px = 3.5pt (BQ01 strip). Only titles and latency numerals comfortably readable.",
+  "number_consistency": "Cross-checked against JSONs: all latencies, 10/10 & 8/10(2) with exactly BQ01/BQ04 abstaining, gate finals 6-8/8 with BQ06->7/BQ10->6 rescues, probes 1/8,1/8,0/8 NOT_FOUND, two-harness 9/10s correctly scoped, 0.71=0.709, 860=730+130, 165=9+156, 3.8M, 18/15/10/5/2 all reconcile. Claimed '20k characters here' on p1 is NOT present in sources (sec2_system.tex says 30k) - reviewer misread, REJECTED. Not verifiable from artifacts: 72/43/32/12/6 shelf counts, 41/94 tools, ~20s cold start.",
+  "overall": "Exhibit assignment and reading flow exactly right; caption and honest-encoding discipline exemplary; virtually every traced number reconciles to the decimal. Two required fixes: figure smallest-text below print-legibility floor (raise font tiers / include wider), and figure-1 chip '165 parts' contradicts the body's '9 whole + 156 parts'.",
+  "issues": [
+    {"id": "R2-1", "location": "All figures: include widths and smallest font tiers", "severity": "major", "comment": "Smallest text renders at 2.9-3.7pt, below any ~6pt legibility floor; figures centered below full textwidth waste margins.", "suggestion": "Include at (near) full textwidth and/or raise smallest CSS font tier to >=30px at current canvases; or cull smallest-tier text into captions."},
+    {"id": "R2-2", "location": "p1 body '20k characters here'", "severity": "major", "comment": "Claims body says 20k vs artifacts' 30,000.", "suggestion": "REJECTED after verification: sec2_system.tex:18 reads '(30k characters here)'; no '20k' exists in any tex source. Reviewer misread."},
+    {"id": "R2-3", "location": "Fig 1 right panel step 1: '30,000 chars => 165 parts'", "severity": "minor", "comment": "165 counts indexed documents (9 whole + 156 parts), not all parts.", "suggestion": "Reword to '165 docs' or '165 indexed docs (9 whole + 156 parts)'."},
+    {"id": "R2-4", "location": "Fig 2 'Vector-First Recall' box, last line 'dedup'", "severity": "minor", "comment": "Last text line collides with the box bottom border.", "suggestion": "Increase box bottom padding/height or shorten text; re-shoot."},
+    {"id": "R2-5", "location": "Fig 1 and Fig 3 captions", "severity": "minor", "comment": "Bottom strips unnarrated: fig1 BENCHMARK RUN strip, fig3 latency strip and BQ01 three-fates strip.", "suggestion": "Add one narrating sentence per strip."},
+    {"id": "R2-6", "location": "Table 1 caption parenthetical + cell legend", "severity": "minor", "comment": "'(blind-spot mentions included: 9/10)' reads as if the Answer-section value were 9/10; '-' and 'n/a' cells undefined.", "suggestion": "Reword '(7/10; 9/10 once blind-spot mentions count)' and add a cell legend."},
+    {"id": "R2-7", "location": "Page 4 Acknowledgments placeholder", "severity": "minor", "comment": "Bracketed placeholder visible to reviewers.", "suggestion": "Remove or finalize before submission (author-side)."}
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "reviewer": "R2-RAG-domain-expert",
+  "recommendation": "minor_revision",
+  "overall": "As an IR/RAG reviewer I re-derived every headline number from the repository artifacts and essentially all of them reproduce exactly: the scripted regression passes 9/10 with BQ06 the sole miss (bench10_qa.json); the live run yields 10/10 any-keyword, 9/10 all-keyword whole-answer (all_hit=9, sole miss BQ10) and 7/10 all-keyword in the Answer section (track_a_kw_hit.json + skill_track_answers.json, with BQ01/BQ03 keywords confined to blind-spot sentences as claimed); final gate scores 6-8/8 with two 5/8->6 librarian rescues on BQ06/BQ10 and the NISQ fast exit at 0.709 similarity / part 2 of 3 / 7-8 (skill_track_evidence.json, skill_track_answers.json); Track A 1.57 s mean vector recall + 0.81 s reads = 2.38 s recomputed from per-question timings; Track B 78.8 s mean (35.5-165.3) and Track C 12.2 s mean (5.8-28.6, 0.59 s retrieval, 2 honest abstentions on BQ01/BQ04, no document-path provenance) recomputed from track_bc.json; probes 1/8, 1/8, 0/8 all NOT_FOUND with the BERT near-miss trap exactly as narrated (honest_failure_probe.json); and ingest/graph stats confirmed (50/50 verified, category split 18/15/10/5/2, 165 docs = 9 whole papers (exactly the 9 papers <=30k chars) + 156 parts, 3,798,446 ~= 3.8 M chars, shelves 72/43/32/12/6, 730+130 = 860 typed relations with the structural-edge caveat accurate in graph_stats.json). Latency scopes (A = retrieval+reads; B/C = end-to-end) are labeled correctly in Table 1, Figure 3 and the body text, the scripted-regression vs live-run distinction is maintained throughout, and the honest-mechanism reporting (self-assessed gate scores, n=10/n=3 spot scale) is exemplary. The one genuine scope slip is the Figure 1 banner, whose 'Retrieval + evidence latency' header juxtaposes dense 12.2 s (actually end-to-end incl. generation) with KB ~2.3 s (retrieval+reads) without per-bar annotations - under a true retrieval-only comparison the dense recall (0.59 s) is faster, so the header changes the reading. The remaining comments are caption/wording precision; with these small fixes this is a solid, honest, artifact-backed demo.",
+  "issues": [
+    {
+      "severity": "minor",
+      "location": "Figure 1 (fig1_rag_vs_kb.png), bottom 'MEASURED ON THE BENCHMARK RUN' banner, 'Retrieval + evidence latency' row",
+      "comment": "The row header says 'Retrieval + evidence latency' but the two values are different scopes: dense 12.2 s is Track C's end-to-end latency (retrieval 0.59 s + ~11.6 s generation, per track_bc.json), while KB ~2.3 s is Track A's retrieval+reads only. Table 1, Figure 3 ('scopes differ: A = retrieval + evidence reads; B, C = end-to-end') and the body text all label scopes correctly, but this teaser header invites a same-scope reading that flatters the proposed system; retrieval-only, the dense recall is actually faster (0.59 s vs 2.38 s).",
+      "suggestion": "Annotate each end of the bar with its scope ('dense: end-to-end', 'KB: retrieval + reads') exactly as the Figure 3 latency panel already does, or retitle the row, e.g. 'Latency (KB: retrieval+reads; dense: end-to-end)'."
+    },
+    {
+      "severity": "minor",
+      "location": "Table 1 caption (sec4_eval.tex): 'two Track A answers declare blind spots (BQ01, BQ03)'",
+      "comment": "All ten five-section answers carry a Blind Spots section (BQ04's reads 'None material for this question'), and the Figure 3 caption says Track A answers all ten 'with ... declared blind spots'. What is actually special about BQ01/BQ03 is that their gold keywords (scaled dot-product; the 67.6% figure) appear only inside the blind-spot text, not the Answer section. As written the caption is factually off and mildly contradicts Figure 3.",
+      "suggestion": "Reword to, e.g., 'two Track A answers relegate a gold keyword/figure to their blind-spot section (BQ01, BQ03)'."
+    },
+    {
+      "severity": "minor",
+      "location": "Table 1 caption + Section 4 Results: two distinct '9/10' quantities",
+      "comment": "The scripted regression passes 9/10 (miss = BQ06, bench10_qa.json) while the live run's whole-answer all-keyword count is also 9/10 (miss = BQ10, track_a_kw_hit.json all_hit=9). Both numbers are correct and the caption disambiguates the second ('counting whole answers incl. blind-spot mentions: 10/10, 9/10'), but a reader skimming Table 1 against the Results text can conflate a scripted-harness metric with a live-run metric - precisely the two-measurement distinction the paper otherwise handles well.",
+      "suggestion": "Tag each figure with its measurement, e.g. 'scripted regression: 9/10 (BQ06)' vs 'live run, all keywords in whole answer: 9/10 (BQ10)'."
+    },
+    {
+      "severity": "minor",
+      "location": "Figure 1 banner, 'Unanswered questions: 2 abstentions | 0 - fallback solved both'",
+      "comment": "The compressed phrasing places 'fallback solved both' immediately after the dense baseline's 2 abstentions. The librarian fallback solved Track A's own two gate-fails (BQ06, BQ10), which are different questions from Track C's two abstentions (BQ01, BQ04); as laid out it can be misread as the fallback recovering exactly the questions the baseline dropped.",
+      "suggestion": "Use Figure 3's unambiguous wording ('librarian fallback solved both gate-fails') or split into two annotated values."
+    },
+    {
+      "severity": "minor",
+      "location": "Figure 3 latency panel, Track A bar label '2.3 s'",
+      "comment": "Table 1 and skill_track_evidence.json give 2.38 s (1.57 + 0.81); the bar shows 2.3 s, which is truncation rather than rounding (2.4 s). Values are otherwise consistent across abstract (1.6 s), Figure 2 (1.5 s recall), Table 1 and artifacts.",
+      "suggestion": "Show 2.4 s (or '~2.3 s' as Figure 1 does) for consistency with the table."
+    },
+    {
+      "severity": "minor",
+      "location": "Section 1/2 ('41 kb_* MCP tools (94 in total)', '~20 s cold start'), Figure 1 ('2,000 chars => 2,713 parts'), Section 2.3 ('7/10 whole-corpus, 3-4/10 per-base' hybrid degradation)",
+      "comment": "These reported numbers are not covered by the eight named result files I audited (they presumably live in repo inventory, smoke logs, or the archived 10,000-char runs), yet the Data Availability section claims 'every reported number traces to a repository artifact'. The claims are plausible and none is contradicted by the artifacts, but the trace is not demonstrable from the cited files.",
+      "suggestion": "Add explicit file pointers in Data Availability for the MCP tool inventory, the cold-start timing log, the 2,000-char chunking report, and the archived hybrid-degradation run."
+    }
+  ]
+}

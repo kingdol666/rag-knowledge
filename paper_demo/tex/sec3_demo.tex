@@ -6,79 +6,50 @@
 \label{sec:demo}
 
 \paragraph{Demo setup.}
-The live instance holds 5 category bases populated with 50 real papers --- 3.8\,M
-characters that index to 165 documents (9 whole papers and 156 parts) --- plus three
-reproduction indices used for comparison. Attendees interact through the web console
-or through any MCP-capable agent harness driving the same 41
-\texttt{kb\_*} tools; both surfaces execute the same protocol. Attendees may bring
-their own PDFs and watch them parsed, classified, and tagged on the spot; the
-published numbers come from the fixed 50-paper corpus. All three scenarios run
-against this one instance with no state reset between them. A demonstration video is
-available at \url{https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4}.
+The demo targets IR practitioners and research-data administrators evaluating
+alternatives to folder trees, and agent builders wanting auditable retrieval
+tools. The live instance holds the 5
+category bases with the 50 real papers
+(3.8\,M characters) plus three reproduction indices used for comparison (one
+underlies Track~C).
+Attendees interact through the web console or any MCP-capable agent harness
+driving the same 41 \texttt{kb\_*} tools --- one protocol, two surfaces. Attendees may bring their own PDFs and watch them parsed, classified,
+and tagged on the spot; all scenarios run on one instance, no state reset.
 
 \paragraph{Scenario 1: from upload to answerable.}
 The attendee drops a PDF into the console upload panel. \sys{} parses it into
-structured Markdown, splits the long document into parts that each carry their
-section-path header, reads the text, and files it into the recommended category base
-with tags propagated to every part. No dialog asks the attendee to pick a folder,
-define a schema, or author a routing rule. The console lists five content-classified bases of 72, 43, 32, 12 and 6 indexed
-documents beside three reproduction indices built by chunking rather than by
-reading; a second panel shows the part and tag model. Point proven: the administrator writes no
-rules, and re-filing is a logged operation rather than a silent move.
+structured Markdown, splits it into parts that each carry their
+section-path header, and files it into the recommended category base, tags
+propagated to every part --- no dialog asks the attendee to pick a folder,
+schema, or routing rule. The console lists the five
+content-classified bases (72, 43, 32, 12, 6 indexed documents) beside the
+chunk-built reproduction indices. Point
+proven: the administrator writes no rules, and re-filing is logged, not
+silent.
 
 \paragraph{Scenario 2: gate-adjudicated answering.}
 The attendee asks, ``What defines NISQ technology and what is its central
-limitation?'' The live console shows Phase~1 fusing BM25 with
-vector similarity across all five bases, the NISQ paper ranks first at $0.62$ fused
-similarity, and the hit card names the owning base, the document and the part
-(\texttt{part 1 of 3}) so the attendee can open the exact fragment. The gate reads
-that part, finds the defining sentence plus the no-error-correction limitation, and
-scores it 7/8 --- a fast exit that ends the search. The five-section answer's
-citation names base, document, part and section path. Point proven: the answer
-carries a readable score and a resolvable citation, not a bare similarity value.
+limitation?'' The console shows Phase~1 recalling from all five bases, the NISQ
+paper ranking first at $0.71$ similarity, and
+the hit card naming the owning base, document, and part (\texttt{part 2 of 3}).
+The gate reads that part, finds the defining sentence plus the
+no-error-correction limitation, and scores it 7/8 (an execution-LLM
+self-assessment, Section~\ref{sec:eval}) --- a fast exit. Point
+proven: the answer carries a readable score and a resolvable citation, not
+a bare similarity value.
 
 \paragraph{Scenario 3: the gate discriminates, and failure is honest.}
-(a)~\emph{Rescue.} For the tumor-therapy question the initial top chunk is the
-paper's references page; the gate scores it 5/8, the librarian fallback re-searches
-and locates the discussion section at 6/8, and the rescue appears in the trace as
-named steps rather than a silent retry. Two of the ten questions take this path.
+(a)~\emph{Rescue.} For the tumor-therapy question the initial top chunk is a
+header-only part fragment; the gate scores it 5/8, the librarian fallback
+re-searches and locates the abstract and equilibrium-analysis sections at 6/8
+--- named steps in the trace, not a silent retry. Two of the ten
+questions take this path.
 (b)~\emph{Honest not-found.} The attendee asks about a paper that does not exist:
 ``What did `Spectral Tuning for Low-Resource Odor Recognition' report about training
 epochs?'' The trap is real --- the top candidate is the BERT paper, which genuinely
-contains training-epoch strings, and a similarity-ranked pipeline would quote them.
-The gate scores it 1/8 and the shelf scan confirms the paper is absent, so the system
-returns a not-found report naming its search scope, the near miss, why that near miss
-does not answer the question, and what to do next. Three such probes ran; all scored
-1/8, 1/8 and 0/8 and all returned not-found. A logs audit found no previously
-captured not-found instance, so the probes are author-designed and attendees are
-invited to pose their own. Point proven: ``I don't know'' is a protocol-level,
-per-query recorded output.
-
-\paragraph{Performance highlights.}
-\label{sec:perf}
-Figure~\ref{fig:threeway} reports the three tracks on the same corpus and
-questions, with the 10-question aggregates beneath each column. Track~A places the gold document first in all 10 questions
-at 1.57\,s mean vector recall plus 0.81\,s of candidate reads; its final gate scores
-are 6--8/8, with two questions rescued by the librarian after initial scores of 5/8,
-so the fallback is exercised rather than decorative. A keyword check of its
-five-section answers finds at least one gold keyword in 10/10 and every gold keyword
-in 9/10; the single miss is a chunk-window artifact in the scripted regression
-harness, and the continuation clause resolves the same question on the same corpus.
-
-The other tracks are strong on different axes, and we report that plainly. Track~C is
-the fastest at 12.2\,s end-to-end (0.59\,s of it retrieval): it answered 8 of 10 and
-abstained honestly on 2, where 800-character fixed chunking had split the answer
-sentence away from the retrieved window --- but its chunks carry no document path, so
-its answers cannot be traced to a source at all. Track~B reads whole files and
-produces the most detailed answers at 78.8\,s mean (35.5--165.3\,s), the widest
-run-to-run spread, and a provenance that stops at the file name. The contract column,
-not the keyword column, separates them: Track~A's residual misses surface as
-not-found reports, Track~C's as abstentions or fluent prose, and Track~B's as
-unlogged runs.
-
-\paragraph{Generalizability.}
-Adapting \sys{} to a new domain means ingesting a new document set and naming the
-category bases; lifecycle, protocol and audit artifacts are unchanged, because
-nothing in the pipeline is keyed to a domain vocabulary. All quality numbers are
-spot-check scale ($n{=}10$) with per-question traces published as repository
-artifacts, and we claim nothing beyond that scale.
+contains training-epoch strings a similarity-ranked pipeline would quote.
+The gate scores it 1/8 and the shelf scan confirms the paper is absent, so the
+system returns a not-found report naming its search scope, the near miss, and why
+it does not answer. Three such probes ran (1/8, 1/8, 0/8); attendees are
+invited to pose their own. Point proven:
+``I don't know'' is a protocol-level, per-query recorded output.

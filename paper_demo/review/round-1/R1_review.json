@@ -1,0 +1,67 @@
+{
+  "reviewer": "R1-CIKM-demo-reviewer",
+  "recommendation": "major_revision",
+  "overall": "这是一篇完成度较高的 demo 投稿：系统真实可部署（单命令冷启动、web/CLI/MCP 三入口同一协议）、三个演示场景具体可操作、对 self-judging 局限与 spot-check 规模的披露坦诚，图表基本自足且与仓库工件高度对应。数字抽查 8 处：五类分布 18/15/10/5/2 与 50/50 parse-verified、3.8M 字符（对 ingest_report.json 逐篇求和为 3,798,446）、Track B 78.8s（35.5-165.3s）与 Track C 12.2s（5.8-28.6s）/8-of-10 含 2 次弃答/0.59s 检索、最终 gate 6-8/8 及 BQ06/BQ10 两次 5/8→6/8 rescue、NISQ 相似度 0.71（工件 0.709）与 part 1 of 3、关键词行 10/10 与 9/10（track_a_kw_hit.json any=10/all=9）均与工件一致；另有一些数字（165 篇索引文档的 9+156 拆分、860 关系、probe 分数 1/8,1/8,0/8、41/94 工具数）不在所提供的核对工件内、无法验证。主要问题有四：其一，正文（Section 4 + Table 1 + Section 5）排到第 5 页，超出 demo track 正文 4 页上限约大半页，有 desk-reject 风险；其二，摘要/引言的 'answers 9/10' 与 Table 1 的 '10/10 on target' 来自两次不同运行而未加区分，Results 的解释句又混淆了两个不同的 miss（回归 harness 的 BQ06 与五段式回答的 BQ10）；其三，Table 1 延迟行口径混用（A 为 retrieval+reads，B/C 为端到端），导致 'Track C is the fastest' 与自家表格表面矛盾；其四，ingest_report.json 中 41/50 篇 tag_ok=false 与正文 'tag zero failures' 存在表面冲突，另有一处段落逐字重复。以上均可通过文本与版面修改解决、无需新实验，故给 major revision。",
+  "issues": [
+    {
+      "severity": "critical",
+      "location": "Pages 4-5（Section 4 Evaluation、Table 1、Section 5 Conclusion 均落在第 5 页）",
+      "comment": "页数违规：CIKM demo track 要求正文 ≤ 4 页（仅 GenAI 披露与 references 允许溢出），而 Table 1、整个 Section 4 与 Section 5 都排在第 5 页，正文约超出 0.6-0.75 页，属会被 desk-reject 的合规问题。main.tex 第 4-5 行自述预算 'Body budget: <= 4 pages incl. appendices/acknowledgments'，成稿也未达到该自定预算。",
+      "suggestion": "压缩 §2.4/§2.5 的论述性文字与 §3 场景描写；缩小 Figure 1（0.62→更小）或与 Figure 2 合并为一张对比+架构图；Table 1 精简次要行（Provenance granularity、Latency range 可移入仓库 artifact 并在 caption 中指路）；目标是从标题到 Conclusion 在第 4 页内结束，第 5-6 页仅保留 GenAI 披露与 references。"
+    },
+    {
+      "severity": "major",
+      "location": "Abstract 与 §1 Evidence bullet（p1）vs Table 1 / §4 Results（p5）",
+      "comment": "同一系统同一 10 题在摘要中为 'answers 9/10'，在 Table 1 中为 'Answered on target 10/10 (0)'。核对工件确认这是两次不同运行：bench10_qa.json 为脚本化回归（passed 9/10，miss 是 BQ06 且 kw_hit 为空数组），skill_track_answers.json 为 live 五段式运行（10 题全部作答，即 Table 1 的 10/10）；而 Results 中 'the single miss is a chunk-window artifact in the scripted regression harness' 一句紧跟 'nine name every one'，实际把两个不同的 9/10 混为一谈——all-keyword 的 miss 在 track_a_kw_hit.json 中是 BQ10（且其成因是答案写作 'immune-evasion' 带连字符、substring 检查未命中 'immune evasion'），并非 regression harness。对一篇以可审计数字为卖点的论文，这种出处混淆会被审稿人重点质疑。",
+      "suggestion": "在摘要/引言明确 9/10 来自 scripted regression harness（或摘要直接引用 live run 的 10/10，把 9/10 留给 §4 并标注运行来源）；改写 Results 括号内的解释，逐条列出：回归 harness 未命中 BQ06（chunk-window，后经 continuation read 解决）、五段式回答的 BQ10 all-keyword 未命中（连字符 tokenize 伪象），并考虑在 kw 检查中做连字符归一化后更新 track_a_kw_hit.json。"
+    },
+    {
+      "severity": "major",
+      "location": "Table 1 'Mean latency per question' 行、§4 Results 'Track C is the fastest at 12.2 s end-to-end'、Figure 3 caption 末句（p4-p5）",
+      "comment": "延迟口径混用且图文表互相矛盾：fig3 脚注写明 'Track A latency = retrieval + evidence reads'（2.3s 不含答案生成），B 78.8s 与 C 12.2s 为端到端；于是 Table 1 中 A=2.38s 是全表最快，与正文 'Track C is the fastest' 及 Fig 3 caption 'The fastest track is the one that failed' 表面冲突。论文全篇未给出 Track A 的端到端延迟。另外 fig1 scoreboard 把 C 的 12.2s 标在 'Retrieval + evidence latency' 名下，与 fig3 的 'retrieval + answer' 口径不一致。",
+      "suggestion": "在 Table 1 该行加注 'A: retrieval+gate only (excl. answer generation)'，或补测并报告 Track A 端到端均值；'fastest' 的比较只在端到端口径下作出并加限定语；统一 fig1/fig3 对 12.2s 的口径标签。"
+    },
+    {
+      "severity": "major",
+      "location": "§2.1（p3）'Tags propagate from a document to all of its parts (165 of 165 tagged, zero failures, 48 s)' vs benchmark-suite/results/ingest_report.json",
+      "comment": "工件核对发现 ingest_report.json 的 50 条 routed 记录中 41 条 tag_ok=false、仅 9 条为 true，与正文 'zero failures' 表面直接冲突。工件未给出 tag_ok 字段语义（从数据看也不是 'tags[0]==field' 这类简单校验），无法判断是措辞失实还是字段另有所指；若 tag_ok 确为打标校验失败标记，则 'zero failures' 构成事实错误。",
+      "suggestion": "在论文 Data Availability 或工件旁的 README 中精确定义 tag_ok；若其表示某种质量/一致性标记而非失败，请在正文将该括号注改为可对账的表述（如给出校验通过数与该标记的计数），否则修正 'zero failures' 的说法。"
+    },
+    {
+      "severity": "major",
+      "location": "§3 末段 'Generalizability.'（p4 右下，sec3_demo.tex L64-67）与 §4 末段 'Generalizability.'（p5 右上，sec4_eval.tex L81-84）",
+      "comment": "同一段 'Adapting Qdcvr to a new domain means ingesting a new document set ... keyed to a domain vocabulary.' 在第 4 页与第 5 页逐字重复出现两次，属明显的编辑/合并事故，损害写作质量。",
+      "suggestion": "删除其中一处（建议保留 §4 版本），§3 结尾如需承接可改为一句前向引用（'Generalizability is discussed in §4'）。"
+    },
+    {
+      "severity": "minor",
+      "location": "§3 Scenario 3(a)（p4） vs skill_track_answers.json BQ10",
+      "comment": "正文称 tumor-therapy 问题 'the initial top chunk is the paper's references page'，而工件 BQ10 的 trace 记录为 'the part 1 chunk was header-only and strategy conclusions live in later sections'。叙事细节与录得的协议 trace 不符——对一篇强调 trace 可复放、逐一可查的论文，这类细节失配尤其显眼。",
+      "suggestion": "按 BQ10 trace 将该细节改为 'header-only part 1'；references-page 的失败例子若来自其他运行/问题，请注明出处或移到 §2.5 的一般性描述中。"
+    },
+    {
+      "severity": "minor",
+      "location": "Data Availability（p5）及全文数字溯源",
+      "comment": "以下论文数字不在本次提供的 5 个核对工件（bench10_qa.json、track_bc.json、track_a_kw_hit.json、ingest_report.json、skill_track_answers.json）中，无法核验：165 篇索引文档的 9 whole + 156 parts 拆分、860 typed relations（730+130）、48 s 传播耗时、三个 out-of-corpus probe 的 1/8,1/8,0/8、41 kb_* / 94 工具数、五库 72/43/32/12/6 的文档分布。Data Availability 承诺 'Every number here traces to a JSON artifact'。",
+      "suggestion": "在 results/ 目录补齐 probes 与 relation-graph/工具清单工件，并在 Data Availability 中给出'数字→文件名'对照表，使承诺可被审计。"
+    },
+    {
+      "severity": "minor",
+      "location": "Figure 1（p2）与 §2.2 / §2.5(ii)（p3）",
+      "comment": "图文口径不清：fig1 出现正文从未解释的数字（2,000-char chunking ⇒ 2,713 parts）与 'tri-channel recall（Vector + BM25 + graph）'，而 §2.2 正文只描述 vector-first recall + cross-base balancing，§2.5(ii) 又说 two-stage sparse–dense hybrid 已被移除且修复是 future work，读者无法判断 BM25/graph 通道在基准配置中是否启用。另 fig1 底部 fine print 与 fig2 服务/存储层小字在 0.62-0.74\\textwidth 排版下印刷可读性差。",
+      "suggestion": "在 §2.2 用一句话说明 tri-channel 构成并明确基准运行中各通道是否启用（与 §2.5(ii) 对齐）；在 caption 或正文解释 2,713；适当放大图内字号或将 fine print 信息上移到 caption。"
+    },
+    {
+      "severity": "minor",
+      "location": "Title block（p1）、Acknowledgments（p5）、running head（p2-p6）",
+      "comment": "投稿稿残留多处占位符：作者栏 'Author Name / Affiliation / author@example.com'、致谢 '[Funding and acknowledgment text to be finalized by the authors.]'、页眉 'CIKM '27, November 2027, Conference Venue'。demo track 为 single-blind，正式投稿需真实作者信息；占位符致谢在评审稿中亦显草率。",
+      "suggestion": "提交前替换作者块与致谢文本，按 main.tex 中 TODO 填写真实的会议名称/城市/日期字段，避免页眉出现 ', .' 类残缺。"
+    },
+    {
+      "severity": "minor",
+      "location": "§5 Conclusion 第一段（p5 右栏；sec4_backmatter.tex L10）",
+      "comment": "标点排版错误：'see a genuine not-found.The three tracks' 句号后缺空格，渲染页同样可见。",
+      "suggestion": "将 'not-found.The' 改为 'not-found. The'。"
+    }
+  ]
+}

@@ -5,46 +5,48 @@
 \section{The \sys{} Platform}
 \label{sec:system}
 
-\sys{} is a single-host platform (Figure~\ref{fig:arch}) comprising a web console, a
-CLI, an MCP server for AI agents, a FastAPI backend, and storage layers: ChromaDB
+\sys{} is a single-host platform (Figure~\ref{fig:arch}): a web console, a
+CLI, an MCP server, a FastAPI backend, and storage --- ChromaDB
 with BGE-M3 embeddings~\cite{chroma,bge-m3}, a Neo4j graph~\cite{neo4j}, and a
-YAML-backed file tree that doubles as the audit log.
+YAML-backed file tree doubling as the audit log.
 
 \subsection{Lifecycle and Content-Based Organization}
 \label{sec:lifecycle}
 
-Documents enter through the web console, the CLI, or an MCP tool. PDFs are parsed to
+Documents enter through the web console, the CLI, or an MCP tool; PDFs are parsed to
 structured Markdown with section headings retained~\cite{mineru}; long documents are
-split at a configurable ceiling (30k characters here) into parts labelled
-\texttt{(part k of N)}, each prefixed with the section path it came from. That header
-is what makes a part independently meaningful: a fragment can be cited as ``part 2 of
-3, \S4.1'' and read back at an offset rather than presented as anonymous text. On the
-benchmark corpus all 50 papers parsed successfully into 165 indexed documents --- 9
-whole papers and 156 parts --- covering 3.8\,M characters, and a per-document probe
+split at a configurable ceiling (30k characters here) into \texttt{(part k of N)}
+fragments, each prefixed with its section path, so a citation can name ``part 2
+of 3, \S4.1'' and be read at an offset. All 50 benchmark
+papers parsed into 165 indexed documents --- 9 whole
+papers and 156 parts --- covering 3.8\,M characters; a per-document probe
 verified all 50 after indexing.
 
-Organization is decided by reading the document, not its filename. A classifier reads
-the parsed title and body and assigns each document to one of five category bases ---
-computer science and AI (18 papers), natural and Earth sciences (15), life sciences
-and medicine (10), economics and society (5), and engineering and energy (2). The
-bases act as shelves: they bound recall and give the librarian pass
-(\S\ref{sec:retrieval}) a coarse index to scan. Every decision is persisted with its
-rationale, and re-classification is explicit and logged. Filenames lie, and the
-classifier may overrule them: 3 of the 50 assignments overrode the filename prior ---
-one filed as ``neuroscience'' describes a spiking-neural-network algorithm, one filed
-under ``agriculture'' studies Neolithic population genetics, and one filed as
-``immunology'' is an evolutionary-game-dynamics analysis of tumours. Tags propagate
-from a document to all of its parts: 165 of 165 documents were tagged with zero
-failures in 48\,s, and the relation graph reports 27 tags over 321 relations.
-Both surfaces are shown in the demonstration video.
+Organization is decided by reading the document, not its filename: a classifier
+reads the parsed title and body and assigns each document to one of five category
+bases --- computer science and AI (18 papers), natural and Earth sciences (15),
+life sciences and medicine (10), economics and society (5), and engineering and
+energy (2). The bases bound recall and seed the librarian's coarse index
+(\S\ref{sec:retrieval}); every decision is persisted
+with its rationale. Filenames lie: 2 of the 50 assignments moved a paper across
+category boundaries --- a ``neuroscience'' file describing a spiking-neural-network
+algorithm, an ``agriculture'' file studying Neolithic population genetics --- and
+a third relabelled its subfield; the rest were not independently
+adjudicated, and every rationale is inspectable. Tags propagate to
+every part (165 of 165; \texttt{tag\_count=165} in \texttt{graph\_stats.json}), whose
+snapshot also reports 860 typed relations (730 shared-tag, 130
+vector-similarity; the total edge count additionally includes structural
+edges).
 
 \subsection{Query-Driven, Content-Verified Retrieval}
 \label{sec:retrieval}
 
 Phase~0 rewrites the query for retrieval. Phase~1 recalls vector candidates per
-category base with BGE-M3 embeddings and merges the per-base lists with explicit
-cross-base balancing~\cite{bge-m3,dpr}. The content gate then \emph{reads} the top
-candidates' actual text, scoring each against an interpretable rubric:
+category base with BGE-M3 embeddings~\cite{bge-m3,dpr}, merging per-base
+lists with explicit cross-base balancing; BM25 and graph
+channels also ship~\cite{bm25} (Figure~\ref{fig:arch}), though the benchmark
+contracts vector-first recall only. The content gate
+then \emph{reads} the top candidates' text against an interpretable rubric:
 \begin{equation}
 \begin{split}
 s(e \mid q) &= s_{\text{topic}} + s_{\text{scenario}} + s_{\text{evidence}},\\
@@ -52,79 +54,68 @@ s(e \mid q) &= s_{\text{topic}} + s_{\text{scenario}} + s_{\text{evidence}},\\
  s_{\text{evidence}} \in [0,2],
 \end{split}
 \end{equation}
-where a candidate passes iff $s \ge 6$: topic scores subject relevance, scenario
-aspect coverage, and evidence the presence of concrete facts. The sub-scores come from a rubric-prompted LLM judge whose prompt and per-level
-anchors ship with the repository. Unlike retrieve-then-generate
-pipelines~\cite{rag-lewis}, the gate does not trust the ranker: passing candidates
-exit early, failing ones are demoted with their scores attached. Two long-document
-window artifacts are handled explicitly --- a head window that stops at the abstract
-triggers a continuation read, a references page that ranks first goes to the librarian.
+where a candidate passes iff $s \ge 6$: topic for subject relevance, scenario
+for aspect coverage, evidence for concrete facts --- rubric-prompted LLM
+scoring. Unlike retrieve-then-generate pipelines~\cite{rag-lewis}, the gate
+does not trust the ranker: passes exit early, fails are demoted with scores
+attached.
 
-If nothing passes, Phase~2 runs a librarian fallback: scan the shelves by document
-list, then re-search the most promising ones. Phase~3 emits a five-section cited
-answer (direct answer, key evidence, context, caveats, references) whose citations
-name base, document, part, and section path --- or, when the shelves genuinely lack
-the information, the failure contract fires: a not-found report naming what was
-searched, what was found, why it does not answer the question, and what to do next.
-An absence becomes a finding instead of a silent hallucination.
+% Full system architecture: layers, the five-stage protocol pipeline, the live
+% query trace and the gate-fail path. The block sits mid-\S2.2 ON PURPOSE: a
+% figure* is only eligible from the page AFTER the one being typeset when it is
+% met, and \S2.2 is set on p.2 --- so this tops p.3, one figure per page.
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.78\textwidth]{../figures/fig2_architecture.png}
+\caption{Architecture of \sys{}. Clients (web console, CLI, MCP agent
+harnesses) reach the \texttt{kb-mcp} protocol layer, which fronts FastAPI
+services for parsing, content classification, tag propagation, retrieval and
+the experience lifecycle over ChromaDB with BGE-M3 vectors, a Neo4j graph, and
+a YAML audit tree. The orange trace follows one real benchmark query; the
+dashed path is the gate-fail contract; trace timings come from the
+10-question benchmark run (repository artifacts).}
+\Description{Four-band architecture diagram. Client layer: web console, ragctl
+CLI, and MCP agent harnesses. Agent and protocol layer: the five-stage QDCVR
+pipeline (query rewrite, vector-first recall, content gate, librarian fallback,
+cited answer) wired to a live benchmark query ("What limits NISQ devices?") with
+an orange trace and a dashed gate-fail path to an honest not-found. Service
+layer: FastAPI services for document intake and MinerU parsing, content
+classification into five category KBs, tag propagation with quality gates,
+retrieval engines (vector, BM25, graph), and the experience lifecycle. Storage
+layer: ChromaDB with BGE-M3 vectors, a Neo4j knowledge graph, and a YAML
+tree-fs audit trail.}
+\label{fig:arch}
+\end{figure*}
 
-On the benchmark's 10 questions, final gate scores were 6--8/8 (two at 8, six at 7,
-two at 6) after two librarian rescues, and vector recall placed the gold document
-first in 10/10 cases at a mean of 1.57\,s plus 0.81\,s of candidate reads. Low
-\emph{initial} scores are the gate working as designed. All gate scores reported here
-were issued by the executing LLM agent itself --- single-judge self-adjudication
-against the published rubric --- and are reported as recorded protocol traces, not
-independent evaluations.
+If nothing passes, Phase~2 runs a librarian fallback (shelf scan, then
+targeted re-search). Phase~3 emits a five-section cited answer (search paths,
+answer, sources, confidence, blind spots) citing base, document, part, and
+section path --- or the failure contract fires: a not-found report naming what
+was searched and why it does not answer.
 
-\subsection{Agent-Native Surface and Deployment}
+\subsection{Agent-Native Surface, Design Choices, and Lessons}
 \label{sec:agents}
 
 The \texttt{kb-mcp} server exposes 41 \texttt{kb\_*} MCP tools~\cite{mcp} (94 in
-total) covering base CRUD, offset-addressed document reads and writes, tags, search, graph
-queries, and an experience lifecycle that distils resolved question--answer logs into
-reusable retrieval entries. A packaged skill encodes the protocol of
-\S\ref{sec:retrieval} so agents reproduce it step by step instead of improvising a
-RAG loop; the benchmark's Track~A is that skill, executed end to end. Deployment is
-one command (\texttt{ragctl}); embeddings and parsing run locally, and answer
-generation uses whatever LLM the deployer configures (${\sim}20$\,s cold start,
-excluding model downloads).
+total) covering CRUD, offset-addressed reads, tags, search, graph
+queries, and an experience lifecycle that distils resolved Q\&A logs
+into reusable entries. A packaged skill encodes the \S\ref{sec:retrieval}
+protocol so agents reproduce it step by step instead of improvising a RAG loop;
+the benchmark's Track~A is that skill. Deployment is one command
+(\texttt{ragctl}); embeddings and parsing run locally; answer generation uses
+any configured LLM (${\sim}20$\,s cold start).
 
-\subsection{Execution Flow, Design Choices, and Innovation}
-\label{sec:flow}
-
-One question traverses the stack in a fixed, recorded order: the query is issued and
-rewritten; recall is vector-first, per category base, merged with cross-base
-balancing; the gate reads the top candidates' real text and scores each on the 0--8
-rubric, a candidate at $\geq 6$ exiting immediately; if nothing passes, the librarian
-scans the shelves and re-searches; the answer is assembled as five cited sections or
-as a not-found report; and every stage appends to one per-query trace, persisted as
-an artifact rather than logged to a console. Every console session is such a record.
-
-Three decisions distinguish \sys{} from a conventional retrieve-then-generate stack,
-and each is a \emph{contract} rather than a heuristic. \emph{(i)~Reading replaces
-scoring.} A similarity score is a property of the embedding space; whether a passage
-answers the question is a property of the passage. The gate therefore reads and
-scores the candidate text on an interpretable rubric, recorded per candidate.
-\emph{(ii)~Organization is derived, not declared.} Category bases are induced from
-content, so building a knowledge base becomes an auditable classification decision
---- and because the bases bound recall, this shapes retrieval rather than merely
-decorating it. \emph{(iii)~Failure is a first-class output.} A conventional stack has
-no representation for ``the corpus does not contain this'', so the generator is the
-only component that can express doubt, in prose no reviewer can audit. Here the
-absence is produced by the retrieval layer, named in a report, and stored. Both kinds
-of system can say ``I don't know''; only one records what it searched and what it
-refused to cite, which is what makes the traces in Section~\ref{sec:demo} replayable.
-
-\subsection{Engineering Challenges}
-\label{sec:challenges}
-
-Three choices were forced by failures hit in operation. \emph{(i)~Chunk windows:}
-fixed-size windows scored top positions on abstracts and reference lists; the part
-split with section headers, continuation reads, and librarian routing removed both.
-\emph{(ii)~Cross-base duplication:} a two-stage sparse--dense hybrid degraded once the
-same texts were chunked into parallel reproduction bases --- whole-corpus scope
-returned fragmented results (7/10) and per-base scope was worse (3--4/10) on our
-10-question check --- so the protocol contracts vector-first recall with cross-base
-balancing; repairing the hybrid under duplication remains future work, noted openly.
-\emph{(iii)~Auditability:} every gate score, fallback, classification decision and
-not-found report is persisted, which makes the traces replayable rather than anecdotal.
+Every stage appends to one per-query trace --- an artifact, not a
+console log. Three operational failures shaped the design, and each
+answer is a \emph{contract} rather than a heuristic. \emph{(i)~Chunk windows:}
+fixed-size windows scored abstracts and reference lists highest; the part
+split, continuation reads, and librarian routing removed both failure modes. \emph{(ii)~Cross-base duplication:} a sparse--dense hybrid degraded
+once the same texts were chunked into parallel reproduction bases (7/10
+whole-corpus, 3--4/10 per-base on our 10-question check), so \S\ref{sec:retrieval} contracts
+vector-first recall; repair under duplication remains future work. \emph{(iii)~Auditability:} every gate score,
+fallback, classification decision and not-found report is persisted, making
+traces replayable rather than anecdotal. Three \emph{design choices} follow:
+whether a passage answers the question is a property of the passage rather than
+of the embedding space, so reading replaces scoring; bases are induced from
+content, not declared; and failure is a first-class retrieval output, not
+generator prose.

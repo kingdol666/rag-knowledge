@@ -56,8 +56,7 @@ TRACKS = [
              "than through O(n) sequential recurrent operations."),
             ("Citation",
              "[P0] artificial-intelligence__1706.03762 (part 2/2, sec 7 Conclusion; "
-             "part 1/2, sec 3.2.3 Applications of Attention) @ \u8ba1\u7b97\u673a\u4e0e"
-             "\u4eba\u5de5\u667a\u80fd"),
+             "part 1/2, sec 3.2.3 Applications of Attention) @ Computer Science and AI"),
             ("Blind spots",
              "The precise attention(Q,K,V) formula and d\u2096 scaling were not in the "
              "chunk/head excerpts read; quote them only after re-opening sec 3.2.1."),
@@ -227,7 +226,7 @@ def html_doc() -> str:
       index that reads whole files; Track&nbsp;C a dense baseline over 800-character fixed
       chunks. Answer text is reproduced from
       <span style="font-family:Consolas,monospace">benchmark-suite/results/</span> with
-      elisions marked &ldquo;&hellip;&rdquo;.</div>
+      elisions marked &ldquo;&hellip;&rdquo;. Base names are shown as currently configured.</div>
   </div>
   <div class="grid">{cols}</div>
   <div class="agg">{agg_cols}</div>

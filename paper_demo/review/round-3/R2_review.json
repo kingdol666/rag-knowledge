@@ -1,0 +1,43 @@
+{
+  "reviewer": "R2-RAG-domain-expert",
+  "recommendation": "minor_revision",
+  "overall": "As R2 I independently re-derived every headline number from the benchmark-suite/results artifacts and found the paper exceptionally well traced: scripted regression 9/10 (BQ06 miss, bench10_qa.json passed=9); live skill run 10/10 on target with final gate scores {7,7,7,8,7,7,8,6,7,6}=6-8/8 and exactly two librarian rescues at initial 5/8 (BQ06, BQ10, skill_track_answers.json); top-1 gold-doc recall 10/10 (verified against hits[0] doc paths); Track A latency 1.566 s vector recall + 0.813 s reads = 2.379 s, matching the quoted 1.57+0.81=2.38 s and abstract's 1.6 s; Track B 78.78 s mean (35.5-165.3 s) and Track C 12.24 s mean (5.8-28.6 s) with 11.64 s of 12.24 s generation and 0.595 s retrieval, all matching Table 1 and Sec. 4; Track C abstentions are exactly BQ01/BQ04; three not-found probes at 1/8, 1/8, 0/8 with the BERT near-miss trap (P2) as claimed; graph stats 730+130=860 typed relations and tag_count=165; ingest 50/50 verified, 3,798,446 chars, per-base papers 18/15/10/5/2 and indexed docs 72/43/32/12/6; both filename-override examples (spiking-neural-network 'neuroscience' file, Neolithic-genetics 'agriculture' file) trace to ingest_report.json routed entries. The two measurements (scripted keyword regression vs live skill run) are clearly distinguished in abstract, intro, Sec. 4 and the Table 1 caption, and the latency caliber split (A = retrieval+reads; B/C = end-to-end) is stated correctly in Table 1, Fig. 3 and Sec. 4, with the Conclusion's 'lowest end-to-end latency' properly qualified. Two consistency defects remain, both fixable in camera-ready: the Fig. 1 teaser banner juxtaposes 12.2 s (Track C end-to-end) and ~2.3 s (Track A retrieval+reads) under the single label 'Retrieval + evidence latency' without the scope annotation used elsewhere (a cross-caliber visual comparison that mislabels Track C's number), and ingest_report.json records tag_ok=false on 41/50 routed papers (kb_doc_update_tags returned success=false) while the paper claims '165 of 165 tagged, zero failures' citing the graph snapshot. With those reconciled, this is a solid, honest, demo-track-ready paper.",
+  "issues": [
+    {
+      "severity": "major",
+      "location": "Figure 1 (fig1_rag_vs_kb.png), bottom 'MEASURED ON THE BENCHMARK RUN' banner, 'Retrieval + evidence latency' panel; paper page 2",
+      "comment": "The banner places 12.2 s and ~2.3 s side by side under the single heading 'Retrieval + evidence latency'. Per track_bc.json, 12.2 s is Track C's end-to-end mean of which only 0.595 s is retrieval and 11.64 s is generation; 2.3 s is Track A's retrieval+reads only (2.379 s). The label is factually wrong for the 12.2 s number, and unlike Figure 3 (which carries the explicit 'scopes differ: A = retrieval + evidence reads; B, C = end-to-end' note), Figure 1 has no caliber annotation, so the teaser invites a cross-caliber '~5x faster than dense RAG' reading that the body text itself carefully avoids. The in-figure footnote only covers the dense baseline's abstentions and missing source paths.",
+      "suggestion": "Replicate Figure 3's scope annotation in the Figure 1 banner, e.g. relabel the panel 'Latency per question (scopes differ: KB protocol = retrieval + evidence reads; dense baseline = end-to-end)' or split it into two labeled bars, and add one sentence to the Fig. 1 caption pointing to the caliber definition in Sec. 4."
+    },
+    {
+      "severity": "major",
+      "location": "Sec. 1 bullet 'Content-based organization' ('165 documents tagged, zero failures') and Sec. 2.1 ('165 of 165 tagged (tag_count=165 in the graph snapshot, run logs record the pass)') vs benchmark-suite/results/ingest_report.json",
+      "comment": "ingest_report.json records tag_ok=false for 41 of 50 routed papers; scripts/61_ingest_phase2_classify.py line 100 shows tag_ok is the success flag of the kb_doc_update_tags call at classification time, so the ingestion artifact in the paper's own Data Availability list records 41 tag-update failures, which appears to contradict 'zero failures'. The final-state claim itself checks out (graph_stats.json tag_count=165, schema_version 4), but the paper's citation ('run logs record the pass') does not explain how 41 failed tag updates became 165/165 tagged (e.g., a later propagation/repair pass), leaving an artifact-vs-claim gap.",
+      "suggestion": "Add one sentence in Sec. 2.1 reconciling the two artifacts (e.g., 'the ingest-phase tag call failed for 41/50 papers and a subsequent propagation pass set tags on all 165 parts; tag_ok in ingest_report.json reflects the initial call'), or soften 'zero failures' to state where the eventual pass is recorded. Ensure Data Availability names the artifact that actually evidences the 165/165 pass."
+    },
+    {
+      "severity": "minor",
+      "location": "Table 1, row 'Answer names all gold keywords (in the Answer section): 7/10' and Sec. 4 Results",
+      "comment": "The cited artifact track_a_kw_hit.json reports whole-answer counting only (any_hit=10, all_hit=9); the 7/10 Answer-section-only figure is not present in any results artifact. I verified it is derivable from skill_track_answers.json (BQ01, BQ03, BQ10 fail Answer-section-only), and the Table 1 caption transparently discloses both countings, but the number itself has no direct artifact.",
+      "suggestion": "Publish the per-section keyword computation (e.g., add an answer_section column to track_a_kw_hit.json or a small derived JSON) so the 7/10 traces to a named artifact like every other number."
+    },
+    {
+      "severity": "minor",
+      "location": "Whole paper layout; main.tex header comment 'Body budget: <= 4 pages incl. appendices/acknowledgments'",
+      "comment": "Body content (the Honesty checks paragraph, Sec. 5 Conclusion, and Acknowledgments) extends onto page 5, exceeding the authors' own stated 4-page body budget recorded in main.tex. Whether this violates the CIKM'26 demo CFP depends on that CFP's exact rule (e.g., 4 pages + references), which I cannot verify from the submission itself.",
+      "suggestion": "Check the CIKM 2026 demo track page policy; if 4 pages of body apply, trim Sec. 2.4 or move Data Availability/Competing Interests into the references overflow page so Conclusion lands within the body budget."
+    },
+    {
+      "severity": "minor",
+      "location": "Figure 2, live-query banner 'What limits NISQ devices?' (paper page 2)",
+      "comment": "The figure presents a paraphrase as the live query; the recorded BQ02 question in bench10_qa.json/skill_track_evidence.json is 'What defines NISQ technology and what is its central limitation?'. The trace numbers shown (1.5 s vector recall, 0.71 similarity in Sec. 3 Scenario 2, gate 7/8) do match the BQ02 artifact, so only the question wording differs.",
+      "suggestion": "Use the verbatim BQ02 question in the figure banner, or note in the caption that the query text is abbreviated."
+    },
+    {
+      "severity": "minor",
+      "location": "Sec. 5 Conclusion: 'the bare agent answered best but could not cite a source'",
+      "comment": "Table 1 reports Track A and Track B both at 10/10 on-target, so 'answered best' is not supported by the scorecard; the claim rests on answer detail/prose (visible in track_bc.json) rather than any reported metric.",
+      "suggestion": "Qualify as 'produced the most detailed answers' (matching Figure 3's 'most complete prose') instead of 'answered best'."
+    }
+  ]
+}

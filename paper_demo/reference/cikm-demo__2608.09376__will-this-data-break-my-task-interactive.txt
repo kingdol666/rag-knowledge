@@ -1,0 +1,561 @@
+=== cikm-demo__2608.09376__will-this-data-break-my-task-interactive.pdf | pages=5 ===
+----- page 1 -----
+“Will This Data Break My Task?”
+Interactive Synthesis of Task-Aware Data Unit Tests
+Hao Chen
+BIFOLD & TU Berlin
+hao.chen@tu-berlin.de
+Arnab Phani
+BIFOLD & TU Berlin
+arnab.phani@tu-berlin.de
+Sebastian Schelter
+BIFOLD & TU Berlin
+schelter@tu-berlin.de
+ABSTRACT
+Data is a central resource for modern enterprises and institutions,
+and data errors propagating through data pipelines lead to serious
+impact in production. Therefore, data validation is essential for
+ensuring the reliability of downstream applications. This led to
+the development of data unit tests, executable programs that test
+data before moving it around through large data pipelines. How-
+ever, existing frameworks derive data unit tests from observed data
+alone, ignoring the semantics of the code that consumes the data
+downstream.
+To this end, we present PrismaDV, a compound AI system that
+synthesizes task-aware data unit tests for tabular data by jointly
+analyzing data and downstream task code. PrismaDV decomposes
+the test generation into multiple LLM-powered steps: data profiling,
+detection of column accesses, data flow analysis in the task code,
+and the inference of implicit data assumptions. It subsequently
+synthesizes code for the data unit test, and maintains an internal
+“data-code assumption graph” that links generated data constraints
+back to the task’s source code.
+We demonstrate PrismaDV through an interactive web-based in-
+terface where attendees run the system on five real-world datasets
+with 60 downstream tasks, synthesize, inspect and refine both nat-
+ural language assumptions about the data and executable data con-
+straints. The interface allows attendees to navigate the data-code
+assumption graph, compare task-aware data unit tests against task-
+agnostic baselines on erroneous data batches, and interactively edit
+assumptions and data constraints. Furthermore, attendees can ob-
+serve how a custom prompt optimizer adapts the system to specific
+datasets over time.
+1
+INTRODUCTION
+Data is a central resource for modern enterprises and institutions,
+and data issues, such as missing or incorrect information, can seri-
+ously impact their operations. Data errors propagating through data
+pipelines cause serious impact in production, such as outages of mo-
+bile apps [1] or the loss of medical records [15]. Furthermore, data
+errors often lead to the silent performance degradation of deployed
+ML models [8–10]. A reason for this is that many organizations
+have adopted a “collect first, analyze later” workflow, relying on the
+schema-on-read interpretation of data in downstream applications.
+Therefore, corrupted data often propagates unnoticed and causes
+havoc in production.
+Shortcomings of current data unit testing frameworks. As
+a consequence, data unit testing frameworks such as TensorFlow
+Data Validation [10] (TFDV), Amazon’s Deequ [12], and Great Ex-
+pectations [5] have become widely used for tabular data in industry
+in recent years. These frameworks enable engineers to define data
+unit tests via declarative data constraints that will be evaluated
+against unseen data batches. Major cloud providers offer data unit
+testing as part of their data infrastructure, e.g., via AWS Glue Data
+Quality [13], Databricks Pipeline Expectations [4], or Google Data-
+plex [6]. Despite their popularity, existing frameworks suffer from
+severe shortcomings. Authoring and maintaining data unit tests re-
+mains tedious and error-prone, especially for tables with hundreds
+of columns. Frameworks such as Deequ and TFDV alleviate this
+burden by automatically suggesting constraints from sample data,
+but the resulting data unit tests still require manual post-editing by
+a data engineer with domain knowledge. This is because heuristi-
+cally suggested constraints are often either too strict or too general;
+overly strict tests produce false alarms, leading to alert fatigue [14],
+while overly general tests miss domain-specific data errors.
+The case for task-aware data unit test generation. A major
+limitation of current approaches is that they rely on observed data
+only and ignore the characteristics of the downstream tasks that con-
+sume the data [2, 3]. This leads to several missed opportunities.
+First, certain downstream tasks might only access parts of the data
+(especially for large denormalized datasets common in enterprise
+data lakes), which means that data unit tests for these tasks should
+focus on the accessed columns only. Second, the code of down-
+stream tasks is often written by experienced data engineers, with
+implicit domain knowledge about the data “baked in”, which may
+be helpful to extract into a data unit test. Therefore, the data unit
+tests should be specialized to the downstream tasks for which they
+are deployed. However, this specialization is inherently difficult as
+it requires an “understanding” of downstream task code. In practice,
+production data pipelines support a diverse set of downstream tasks,
+ranging from recurring BI/ETL processing to web applications, or
+feature engineering and ML training or inference, and these tasks
+often encode different semantics and assumptions about the same
+data [11].
+Synthesis of task-aware data unit tests with PrismaDV. To
+this end, we demonstrate PrismaDV, a task-aware data validation
+system that interactively synthesizes specialized data unit tests
+for individual downstream tasks by jointly analyzing data and task
+code (Section 2). PrismaDV is a compound AI system [17], which de-
+composes task-aware data unit test generation into multiple steps:
+data profiling, detection of accessed columns, dataflow analysis
+in the task code, and the inference of implicit data assumptions
+(e.g., expected value ranges, non-null columns or conditional de-
+pendencies) in natural language, followed by the generation of
+data constraint code for the data unit test. The system leverages
+the code understanding and code synthesis capabilities of LLMs,
+and maintains a “data-code assumption graph” that traces each
+synthesized data constraint back to the inferred data assumption
+arXiv:2608.09376v1  [cs.DB]  10 Aug 2026
+
+----- page 2 -----
+Hao Chen, Arnab Phani, and Sebastian Schelter
+…
+email
+status
+revenue
+discount
+…
+…
+CLEARED
+100
+40
+…
+…
+CLEARED
+250
+12
+…
+…
+IN_PROGRESS
+0
+0
+…
+…
+CANCELED
+1000
+99
+…
+…
+IN_PROGRESS
+165
+67
+Sample Data
+Profiling & 
+Discovery
+Assumption 
+Inference
+Constraint 
+Generation
+Post-
+processing
+Source Code of Task T
+Offline Synthesis of a Task-aware Data Unit Test
+Check() 
+ .areComplete("email", "discount") 
+   .where("status == ‘CLEARED’") 
+ .matchesPattern("email",  
+  ‘[a-Z0-9]+@[a-Z0-9]+\.[a-Z]’)
+Data Unit Test in  
+AWS Deequ Syntax
+“email” must contain 
+valid email addresses
+“email” must not be 
+NULL for rows where 
+“status” is ‘CLEARED’
+“discount” must not be 
+NULL for rows where 
+“status” is ‘CLEARED’
+L4
+L6
+email
+discount
+status
+Inferred Data-Code Assumption Graph
+1: import polars as pl 
+2: yesterday = date.today() - timedelta(days=1) 
+3: df = load(f"s3://data-lake/bookings/{yesterday}/") 
+4: completed = df.filter(pl.col("status") == “CLEARED") 
+5: for booking in completed.iter_rows(named=True):     
+6:   confirmation_mail(booking["email"], booking["discount"])
+Deployment
+New Data Batches
+Test
+Execute  
+Task T
+pass
+fail
+Raise 
+Alert
+awslabs/deequ
+Figure 1: Overview of PrismaDV. Given the source code of a downstream task and a data sample, the PrismaDV system synthesizes
+executable data unit tests in Deequ or Great Expectations syntax. For that, it performs data profiling and data flow analysis,
+assumption inference via the data-code assumption graph, constraint code generation, and post-processing. The system infers
+implicit data assumptions in natural language, linked to specific code lines. At deployment time, the generated data unit test is
+evaluated on each new data batch; passing batches are forwarded to the downstream task, while failing batches trigger an alert.
+that justifies it and to the corresponding lines in the task source
+code. This decomposition enables PrismaDV to generate targeted,
+task-specific data unit tests while providing full provenance from
+the data unit test back to the validated data and downstream code.
+Demonstration details. We demonstrate PrismaDV with an inter-
+active web interface, together with a collection of five real-world
+datasets accompanied by 60 downstream tasks (Section 3). Atten-
+dees run the full test generation pipeline end-to-end, inspect and re-
+fine intermediate outputs through the data-code assumption graph,
+and compare the generated task-aware tests against task-agnostic
+baselines. We additionally demonstrate how PrismaDV adapts to
+specific datasets over time via a custom prompt optimizer based on
+collected task outcomes. We provide the source code, datasets, and
+the web-based interface at https://github.com/deem-data/prismadv-
+demo.
+2
+SYSTEM OVERVIEW
+We introduce task-aware data validation and the PrismaDV system
+(Figure 1), see our full paper [2] for further details and experiments.
+Task-aware data unit tests. Consider a downstream task 𝑇, that
+consumes tabular data over time in batches, (e.g., a Python pro-
+gram computing a daily report over the latest customer orders in
+an e-commerce platform). The task’s source code accesses certain
+parts of the data and contains implicit assumptions about the data,
+such as expected value ranges, non-null columns, or inter-column
+dependencies. The goal of task-aware data unit test generation is to
+automatically synthesize a data unit test (in the form of executable
+data constraints) from 𝑇and a data sample. Each constraint imple-
+ments a boolean function to validate a certain assumption about
+the data (e.g., by comparing an aggregate statistic computed over
+the data to a fixed threshold). These constraints will be evaluated
+against each new unseen data batch before it is forwarded to 𝑇; if
+all constraints pass, the batch is considered safe for 𝑇to consume,
+if the test fails, the data batch is quarantined and engineers are
+alerted to manually intervene and fix the data.
+Architecture and implementation of PrismaDV. PrismaDV is a
+compound AI system that decomposes task-aware data unit test
+generation into a multi-step pipeline, as shown in Figure 1. Given
+task code 𝑇and a data sample, the system performs data profiling,
+column access detection, data flow detection, assumption inference,
+and constraint code generation, where each LLM-powered step pro-
+gressively builds on the outputs of the previous ones. The results are
+organized in the “data-code assumption graph” that maintains the
+full provenance from generated data constraints back to the source
+code of the task. The LLM-powered components are implemented
+via DSPy [7].
+Step 1: Data profiling & Column access detection. PrismaDV first com-
+putes a lightweight data profile over the data sample, which is used
+as context for the subsequent stages. Next, PrismaDV determines
+the columns that are actually accessed by the downstream task. The
+column access detection module receives the task code, a textual
+description of the task, and the available dataset columns and their
+profiles, and prompts an LLM to identify which columns the task
+operates on. The module returns the subset of columns that the
+code reads, filters, transforms, or otherwise depends on. This design
+is motivated by prior work [3], which shows that an LLM reliably
+detects accessed columns even for non-trivial cases such as SQL
+SELECT * queries with EXCLUDE clauses, where purely static or
+string-matching analysis falls short.
+Step 2: Construction of the data-code assumption graph. Next, assump-
+tion extraction is performed in parallel over accessed columns. For
+each column, PrismaDV first analyzes the data flow in the code
+and annotates the corresponding line numbers that operate on the
+column or data derived from it. Finally, the LLM infers a list of
+assumption objects, each containing: (i) a natural-language descrip-
+tion of the implicit data assumption, (ii) the involved column, and
+(iii) the source lines in 𝑇that motivated the inference.
+Step 3: Constraint code synthesis. The final generation stage synthe-
+sizes executable constraints from the inferred assumptions, tar-
+geting two validation frameworks: Great Expectations and Deequ.
+The LLM receives each assumption together with the task code, the
+
+----- page 3 -----
+“Will This Data Break My Task?” Interactive Synthesis of Task-Aware Data Unit Tests
+Per-stage LLM
+cost breakdown
+6
+Constraint panel with
+validation status and
+assumption backtracking
+5
+Data-code assumption graph
+with navigable provenance links
+3
+Dataset overview
+with column-level
+statistics
+1
+Task code editor with highlighted
+data assumptions
+2
+Assumption panel with source line
+references
+4
+Figure 2: PrismaDV web interface. 1 Dataset overview with data table preview, column statistics (count, null rate, unique values,
+value distribution), and overall data quality metrics. 2 Task code editor with syntax highlighting and data flow annotations;
+yellow-highlighted lines indicate where the task accesses or transforms columns. 3 Data-code assumption graph showing
+the bipartite connections between the task code, accessed columns, and inferred assumptions; clicking a node navigates to
+the corresponding artifact. 4 Assumption panel listing each assumption with its natural-language description, source line
+references, and derived constraints. 5 Constraint panel showing generated data constraints in Great Expectations and Deequ
+syntax, with their validation status. 6 Per-stage LLM cost breakdown with per-run token usage across column detection, data
+flow analysis, assumption extraction, and constraint generation.
+downstream task description, the accessed columns, and a summary
+of the available API functions in Deequ and Great Expectations.
+PrismaDV then synthesizes data constraint code; together with the
+preceding steps, this produces the complete data-code assumption
+graph, connecting accessed columns via code lines to assumptions,
+which are the basis for executable data constraints, as illustrated in
+Figure 1.
+Step 4: Postprocessing. Finally, PrismaDV filters out constraints that
+cannot be successfully parsed by Deequ or Great Expectations, as
+well as constraints that do not pass on the data sample at hand.
+Detection quality. To exemplify the benefits of PrismaDV, we
+summarize an experiment from [2] on a custom benchmark with
+five datasets, 60 downstream tasks, and 125 data batches to test, ob-
+tained by injecting synthetic errors spanning structural, integrity,
+numerical, textual, and format corruptions into clean data sam-
+ples. Each method has to predict whether a data batch is safe to
+forward to a downstream task or causes a crash or erroneous out-
+put. Table 1 shows that PrismaDV substantially outperforms both
+task-agnostic baselines (deequ, tensorflow-dv) and LLM-based
+prompting and agentic baselines [16], improving the F1 score by
+more than 20 points over the strongest competitor.
+Optimizing PrismaDV from execution feedback. As data unit
+tests run in production, engineers collect task and test outcomes
+over time, and can use a custom prompt optimizer in PrismaDV to
+refine the prompts for its LLM-based modules. This reduces the
+need for manual tuning and improves the quality of the data unit
+tests over time. In these collected outcomes, passing data constraints
+provide little signal, therefore the optimizer of PrismaDV focuses
+on constraint failures that coincide with task success, which indi-
+cate false alarms. It backtraces these cases through the data-code
+assumption graph to identify problematic assumptions and code
+patterns, and uses them as context for prompt optimization. See
+our full paper [2] for details.
+Table 1: Detection quality for potentially erroneous data
+batches for downstream tasks. Best F1 score in bold, sec-
+ond best underlined. PrismaDV outperforms all baselines by
+a large margin of more than 20 points.
+Method
+Precision
+Recall
+F1
+deequ
+65.8%
+14.4%
+24.2%
+tensorflow-dv
+65.1%
+42.7%
+50.3%
+zero-shot [gemini-2.5-pro]
+65.0%
+22.8%
+31.0%
+zero-shot [gpt-5]
+80.3%
+8.7%
+31.9%
+few-shot [gemini-2.5-pro]
+69.9%
+26.8%
+43.0%
+few-shot [gpt-5]
+75.8%
+21.4%
+47.2%
+swe-agent [gpt-5]
+78.6%
+20.3%
+47.2%
+PrismaDV [gemini-2.5-pro]
+76.1%
+73.0%
+73.9%
+PrismaDV [gpt-5]
+70.5%
+86.6%
+77.4%
+
+----- page 4 -----
+Hao Chen, Arnab Phani, and Sebastian Schelter
+3
+DEMONSTRATION DETAILS
+We demonstrate PrismaDV through an interactive web interface,
+shown in Figure 2, which provides access to all intermediate outputs
+and supports interactive refinement of assumptions and constraints.
+Overview. We organize the demonstration in three stages.
+(1) First, attendees run the fully automated test generation pipeline
+on a live LLM backend, where PrismaDV synthesizes task-aware
+data unit tests end-to-end. They explore the generated tests
+through the data-code assumption graph and compare the re-
+sults against task-agnostic baselines (Section 3.1).
+(2) Second, attendees interactively refine the generated assump-
+tions and constraints through the web interface, re-generate
+the resulting tests and observe how changes propagate through
+the data-code assumption graph (Section 3.2).
+(3) Third, we demonstrate how PrismaDV adapts its prompts over
+time using task and test outcomes from deployed data unit tests.
+Here, attendees run our custom prompt optimizer and inspect
+the resulting changes as a side-by-side diff (Section 3.3).
+3.1
+Synthesis of Task-Aware Data Unit Tests
+We first walk attendees through the fully automated pipeline, where
+PrismaDV takes a dataset and task code as input and progressively
+constructs the data-code assumption graph, and produces an exe-
+cutable data unit test.
+Data and Tasks. We provide five datasets spanning diverse dis-
+tributions of numerical, categorical, and textual columns, together
+with 60 executable tasks, all taken from a benchmark proposed
+in [2]; the tasks were created via an LLM-assisted, human-in-the-
+loop pipeline and carefully manually reviewed and post-edited to
+ensure correctness and consistency. The tasks span a broad range of
+downstream application types, from simple aggregation queries to
+web applications to ML feature engineering, with implicit data as-
+sumptions of varying complexity embedded in the code. Attendees
+can also upload their own datasets and task code. After selecting a
+task, attendees review the data statistics and task code, and config-
+ure their preferred language model.
+Generation. Next, attendees trigger the test generation pipeline,
+which first runs column access detection to identify which columns
+the task code depends on. Attendees then choose to validate all
+accessed columns or a selected subset. The system proceeds with
+data flow analysis to locate the specific code lines operating on
+each column, followed by assumption inference and constraint gen-
+eration. The system runs against a live LLM backend, to showcase
+actual generation latencies and API costs.
+Exploration. Attendees inspect the generated artifacts through the
+data-code assumption graph ( 3 in Figure 2). Clicking on an assump-
+tion navigates the code editor ( 2 ) to the relevant source lines; hov-
+ering reveals the assumption text in the assumption panel ( 4 ). Each
+assumption links to its derived constraints, and each constraint can
+be backtracked to its underlying assumptions and accessed columns
+in the constraint panel ( 5 ). A per-stage cost breakdown ( 6 ) shows
+the LLM usage across column detection, assumption extraction, and
+constraint generation. The system automatically validates each con-
+straint against the current dataset, reporting pass/fail status and
+flagging violating rows.
+3.2
+Interactive Refinement
+While the automated pipeline produces a high-quality initial set
+of assumptions and constraints, domain experts can continue to
+polish it by incorporating business rules not expressed in the code,
+or adjusting constraints to specific deployment contexts. The in-
+teractive refinement capabilities of PrismaDV allow them to use
+the generated tests as a starting point and efficiently arrive at a
+customized, production-ready test. Crucially, our system simplifies
+this process: attendees need to review and refine assumptions only
+for the columns a task actually accesses, rather than the full schema.
+Refinement is moreover optional, as the automated pipeline already
+produces a working data unit test, so experts only need to intervene
+on the data constraints they disagree with.
+Refining assumptions. Attendees review the generated assump-
+tions in the assumption panel ( 4 ) and can remove any assumption
+which they find incorrect or irrelevant; the corresponding con-
+straints are automatically deleted. If an assumption is close to the
+intended requirement but not accurate, attendees can edit its text
+and trigger the constraint generation module to produce updated
+constraints based on the revised assumption. Attendees can also
+add entirely new assumptions that the system missed and trigger
+inference to generate the corresponding data constraints. When an
+assumption already has linked constraints, PrismaDV runs a gap
+analysis to determine whether the existing constraints sufficiently
+cover the assumption and only generates the missing constraints.
+For instance, an attendee may notice that the system inferred “sta-
+tus must be one of CLEARED, IN_PROGRESS, CANCELLED” but
+the actual domain includes a fourth value “PENDING”. Editing
+the natural language assumption triggers re-generation, and the
+updated constraint will then include all four values.
+Refining constraints. In the constraint panel ( 5 ), attendees can
+directly edit or delete individual constraints. After editing a con-
+straint, they can validate its syntax against the target framework
+and test whether it passes or fails on the current data sample. At-
+tendees can also add new constraints and link them to an existing
+assumption. The interface provides immediate visual feedback as
+assumptions are modified and constraints are regenerated, allowing
+attendees to observe how changes propagate through the data-code
+assumption graph.
+3.3
+Domain Adaptation
+Finally, we showcase how the custom prompt optimizer in PrismaDV
+improves its module prompts and the resulting data unit tests, based
+on historical task and test outcomes.
+Demonstration workflow. We provide pre-collected execution
+histories for each dataset, containing pass/fail outcomes across
+multiple data batches and downstream tasks. Attendees trigger the
+optimization and inspect the resulting prompt changes as a side-
+by-side diff, showing how the optimizer adapted the instructions to
+reduce false alarms and improve constraint quality for the specific
+dataset. They can then re-run the generation pipeline with the
+optimized prompts and compare the updated constraints against
+the previous version.
+
+----- page 5 -----
+“Will This Data Break My Task?” Interactive Synthesis of Task-Aware Data Unit Tests
+REFERENCES
+[1] Brian Barrett. 2020. How a Facebook Bug Took Down Spotify, TikTok, and Other
+Major iOS Apps. https://www.wired.com/story/facebook-sdk-ios-apps-spotify-
+tiktok-crash/. [Online; accessed August 10, 2026].
+[2] Hao Chen, Arnab Phani, and Sebastian Schelter. 2026. PrismaDV: Automated
+Task-Aware Data Unit Test Generation. arXiv preprint arXiv:2604.21765 (2026).
+https://doi.org/10.48550/arXiv.2604.21765
+[3] Hao Chen and Sebastian Schelter. 2025. Towards Automated Task-Aware Data
+Validation. In Proceedings of the Workshop on Data Management for End-to-End
+Machine Learning (Berlin, Germany) (DEEM ’25). Association for Computing
+Machinery, New York, NY, USA, Article 3, 5 pages.
+https://doi.org/10.1145/
+3735654.3735939
+[4] Databricks. 2025. Manage data quality with pipeline expectations. https://docs.
+databricks.com/aws/en/ldp/expectations. [Online; accessed August 10, 2026].
+[5] Great Expectations. 2024. Great Expectations. https://greatexpectations.io/.
+[Online; accessed August 10, 2026].
+[6] Google. 2023. Deliver trusted insights with Dataplex data profiling and automatic
+data quality. https://cloud.google.com/blog/products/data-analytics/dataplex-
+data-profiling-and-automatic-data-quality-are-ga. [Online; accessed August 10,
+2026].
+[7] Omar Khattab, Arnav Singhvi, Paridhi Maheshwari, Zhiyuan Zhang, Keshav San-
+thanam, Sri Vardhamanan, Saiful Haq, Ashutosh Sharma, Thomas T. Joshi, Hanna
+Moazam, Heather Miller, Matei Zaharia, and Christopher Potts. 2023. DSPy: Com-
+piling Declarative Language Model Calls into Self-Improving Pipelines. arXiv
+preprint arXiv:2310.03714 (2023). https://doi.org/10.48550/arXiv.2310.03714
+[8] Yuval Moskovitch and H. V. Jagadish. 2022. Reliability at multiple stages in
+a data analysis pipeline. Commun. ACM 65, 11 (Oct. 2022), 118–128.
+https:
+//doi.org/10.1145/3500923
+[9] David Nigenda, Zohar Karnin, Muhammad Bilal Zafar, Raghu Ramesha, Alan
+Tan, Michele Donini, and Krishnaram Kenthapadi. 2022. Amazon SageMaker
+Model Monitor: A System for Real-Time Insights into Deployed Machine Learn-
+ing Models. In Proceedings of the 28th ACM SIGKDD Conference on Knowl-
+edge Discovery and Data Mining (Washington DC, USA) (KDD ’22). Associ-
+ation for Computing Machinery, New York, NY, USA, 3671–3681.
+https:
+//doi.org/10.1145/3534678.3539145
+[10] Neoklis Polyzotis, Martin Zinkevich, Sudip Roy, Eric Breck, and Steven
+Whang. 2019. Data Validation for Machine Learning. In Proceedings of Ma-
+chine Learning and Systems, A. Talwalkar, V. Smith, and M. Zaharia (Eds.),
+Vol. 1. 334–347.
+https://proceedings.mlsys.org/paper_files/paper/2019/file/
+928f1160e52192e3e0017fb63ab65391-Paper.pdf
+[11] El Kindi Rezig. 2021. Data Cleaning in the Era of Data Science: Challenges and
+Opportunities. In Proceedings of the 11th Conference on Innovative Data Systems
+Research (CIDR). https://vldb.org/cidrdb/papers/2021/cidr2021_abstract09.pdf
+Extended Abstract.
+[12] Sebastian Schelter, Dustin Lange, Philipp Schmidt, Meltem Celikel, Felix Biess-
+mann, and Andreas Grafberger. 2018. Automating large-scale data quality veri-
+fication. Proc. VLDB Endow. 11, 12 (Aug. 2018), 1781–1794. https://doi.org/10.
+14778/3229863.3229867
+[13] Amazon Web Services. 2025. AWS Glue Data Quality. https://docs.aws.amazon.
+com/glue/latest/dg/glue-data-quality.html. [Online; accessed August 10, 2026].
+[14] Shreya Shankar, Labib Fawaz, Karl Gyllstrom, and Aditya Parameswaran. 2023.
+Automatic and Precise Data Validation for Machine Learning. In Proceedings of the
+32nd ACM International Conference on Information and Knowledge Management
+(Birmingham, United Kingdom) (CIKM ’23). Association for Computing Machin-
+ery, New York, NY, USA, 2198–2207. https://doi.org/10.1145/3583780.3614786
+[15] James Vincent. 2020. Excel spreadsheet error blamed for UK’s 16,000 missing
+coronavirus cases. https://www.theverge.com/2020/10/5/21502141/uk-missing-
+coronavirus-cases-excel-spreadsheet-error. [Online; accessed August 10, 2026].
+[16] John Yang, Carlos Jimenez, Alexander Wettig, Kilian Lieret, Shunyu Yao, Karthik
+Narasimhan, and Ofir Press. 2024. SWE-agent: Agent-Computer Interfaces
+Enable Automated Software Engineering. In Advances in Neural Information
+Processing Systems, A. Globerson, L. Mackey, D. Belgrave, A. Fan, U. Paquet,
+J. Tomczak, and C. Zhang (Eds.), Vol. 37. Curran Associates, Inc., 50528–50652.
+https://doi.org/10.52202/079017-1601
+[17] Matei Zaharia, Omar Khattab, Lingjiao Chen, Jared Quincy Davis, Heather Miller,
+Chris Potts, James Zou, Michael Carbin, Jonathan Frankle, Naveen Rao, and
+Ali Ghodsi. 2024. The Shift from Models to Compound AI Systems. https:
+//bair.berkeley.edu/blog/2024/02/18/compound-ai-systems/.

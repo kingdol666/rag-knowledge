@@ -1,0 +1,401 @@
+=== cikm-demo__2508.18689__appagent-pro-a-proactive-gui-agent-syste.pdf | pages=5 ===
+----- page 1 -----
+AppAgent-Pro: A Proactive GUI Agent System for Multidomain
+Information Integration and User Assistance
+Yuyang Zhao∗
+zhaoyuyang@mail.ustc.edu.cn
+University of Science and Technology of China
+Hefei, Anhui, China
+Wentao Shi∗
+shiwentao123@mail.ustc.edu.cn
+University of Science and Technology of China
+Hefei, Anhui, China
+Fuli Feng†
+fulifeng93@gmail.com
+University of Science and Technology of China
+Hefei, Anhui, China
+Xiangnan He
+xiangnanhe@gmail.com
+University of Science and Technology of China
+Hefei, Anhui, China
+Abstract
+Large language model (LLM)-based agents have demonstrated re-
+markable capabilities in addressing complex tasks, thereby en-
+abling more advanced information retrieval and supporting deeper,
+more sophisticated human information-seeking behaviors. How-
+ever, most existing agents operate in a purely reactive manner,
+responding passively to user instructions, which significantly con-
+strains their effectiveness and efficiency as general-purpose plat-
+forms for information acquisition. To overcome this limitation,
+this paper proposes AppAgent-Pro, a proactive GUI agent system
+that actively integrates multi-domain information based on user
+instructions. This approach enables the system to proactively antic-
+ipate users’ underlying needs and conduct in-depth multi-domain
+information mining, thereby facilitating the acquisition of more
+comprehensive and intelligent information. AppAgent-Pro has the
+potential to fundamentally redefine information acquisition in daily
+life, leading to a profound impact on human society. Our code
+is available at https://github.com/LaoKuiZe/AppAgent-Pro. The
+demonstration video could be found at link1.
+CCS Concepts
+• Computing methodologies →Intelligent agents.
+Keywords
+Proactive GUI agent, Multimodal Agent, Intelligent Assistant
+ACM Reference Format:
+Yuyang Zhao, Wentao Shi, Fuli Feng, and Xiangnan He. 2025. AppAgent-Pro:
+A Proactive GUI Agent System for Multidomain Information Integration
+and User Assistance. In Proceedings of the 34th ACM International Conference
+∗Both authors contributed equally to this research.
+†Corresponding author.
+1https://www.dropbox.com/scl/fi/hvzqo5vnusg66srydzixo/AppAgent-Pro-demo-
+video.mp4?rlkey=o2nlfqgq6ihl125mcqg7bpgqu&st=d29vrzii&dl=0
+Permission to make digital or hard copies of all or part of this work for personal or
+classroom use is granted without fee provided that copies are not made or distributed
+for profit or commercial advantage and that copies bear this notice and the full citation
+on the first page. Copyrights for components of this work owned by others than the
+author(s) must be honored. Abstracting with credit is permitted. To copy otherwise, or
+republish, to post on servers or to redistribute to lists, requires prior specific permission
+and/or a fee. Request permissions from permissions@acm.org.
+CIKM ’25, Seoul, Republic of Korea
+© 2025 Copyright held by the owner/author(s). Publication rights licensed to ACM.
+ACM ISBN 979-8-4007-2040-6/2025/11
+https://doi.org/10.1145/3746252.3761473
+on Information and Knowledge Management (CIKM ’25), November 10–14,
+2025, Seoul, Republic of Korea. ACM, New York, NY, USA, 5 pages. https:
+//doi.org/10.1145/3746252.3761473
+1
+Introduction
+The rapid advancement of large language models (LLMs), exempli-
+fied by GPT-4 [1] and Claude [3], has showcased significant progress
+in language understanding and multi-step reasoning. These capa-
+bilities have catalyzed the emergence of autonomous LLM-based
+agents, such as MetaGPT [5], AutoGPT [16], and HuggingGPT [12].
+These LLM-based agents demonstrate remarkable proficiency in
+addressing complex, multi-step tasks, which mark a paradigm
+shift in human-information interaction by solving complex in-
+formation retrieval tasks. For instance, systems include Gemini
+Deep Research [4], OpenAI Deep Research [11], and Grok3’s Deep-
+erSearch [15] are capable of autonomously discovering, analyzing,
+and integrating heterogeneous web data into coherent technical
+reports or structured literature reviews, thereby significantly im-
+proving the efficiency and depth of knowledge acquisition.
+However, the majority of existing LLM-based agents—particularly
+those operating within graphical user interface (GUI) environ-
+ments—adhere to a predominantly reactive design paradigm [6, 8,
+9, 13, 14]. Typically, these reactive agents execute user instructions
+without the capacity for autonomous planning based on environ-
+mental feedback and rely heavily on further human intervention to
+complete tasks. Furthermore, they only retrieve information based
+on explicit user inputs, failing to infer latent user intentions [2, 7].
+As a result, such reactive systems demand excessive manual in-
+volvement and impose significant cognitive burdens on users, di-
+minishing system efficiency and degrading the overall interactive
+experience [10, 18]. In the era of information abundance, the reac-
+tive agents are fundamentally insufficient for realizing the potential
+of GUI agents as universal platforms capable of integrating and
+reasoning across heterogeneous information domains.
+To overcome the limitations of such reactive agent paradigms, we
+introduce AppAgent-Pro, a proactive GUI agent system that actively
+integrates multi-domain information based on user instructions.
+AppAgent-Pro expands upon the AppAgent [17] framework, en-
+abling the system to proactively anticipate users’ underlying needs
+and conduct in-depth multi-domain information mining. Specifi-
+cally, upon receiving a user instruction, AppAgent-Pro not only re-
+sponds directly but also proactively infers the user’s potential latent
+arXiv:2508.18689v2  [cs.AI]  27 Aug 2025
+
+----- page 2 -----
+CIKM ’25, November 10–14, 2025, Seoul, Republic of Korea
+Yuyang et al.
+Figure 1: The architectural workflow of AppAgent-Pro, structured around a three-stage pipeline: Comprehension, Execution,
+and Integration. The workflow demonstrates how the system interprets and responds to open-ended user queries by proactively
+acquiring relevant knowledge, understanding user intent, performing appropriate actions, and integrating the results into
+coherent outputs.
+needs and determines whether it is necessary to retrieve supplemen-
+tary information from mobile platform applications to enhance the
+response. When accessing app-based content, AppAgent-Pro sup-
+ports the deep execution mode, enabling the agent to autonomously
+conduct searches, identify relevant information, and perform con-
+tent analysis. Based on the initial retrieval results, the agent can
+refine its estimation of the user’s interests and iteratively initi-
+ate follow-up searches until all pertinent information has been
+comprehensively aggregated. Moreover, AppAgent-Pro utilizes the
+personal interaction histories to adapt the task execution, ensuring
+more contextually relevant responses. The main contributions of
+the paper are summarized as follows:
+• We introduce a novel proactive GUI agent system, AppAgent-Pro,
+to automatically anticipate users’ underlying needs and integrate
+multidomain information.
+• We propose the deep execution mode to conduct in-depth infor-
+mation mining.
+• We develop a GUI agent platform to provide users with personal-
+ized and in-depth information.
+The remainder of this paper is organized as follows. Section
+2 presents the system architecture and operational workflow of
+AppAgent-Pro, detailing its proactive information integration pipeline.
+Section 3 outlines the demonstration plan, illustrating the system’s
+behavior in diverse real-world scenarios. Finally, Section 4 con-
+cludes the paper by summarizing the key contributions and dis-
+cussing future directions.
+2
+System Overview
+AppAgent-Pro is an agent system that enables proactive, multi-
+modal, mobile-assistant end-to-end pipeline operations without
+user intervention, as shown in Figure 1. The entire AppAgent-Pro
+work process consists of three processes: Comprehension, Execu-
+tion, and Integration.
+2.1
+Comprehension
+In the comprehension stage, the system analyzes the user’s instruc-
+tions to identify their core requirements and latent needs, thereby
+determining whether proactive assistance is required. Concretely,
+upon receiving a user’s query, such as "How to keep a cat" (as il-
+lustrated in Figure 1), the cognitive agent initiates a sophisticated
+analysis process leveraging GPT-4o. This process extends beyond
+basic query analysis and response, incorporating an assessment
+of the query’s complexity to determine whether richer and more
+comprehensive information can be provided by leveraging exter-
+nal application-based knowledge sources, such as YouTube and
+Amazon. The core of its proactive capability lies in predicting the
+user’s subsequent needs and potential interactions if they were to
+use these applications themselves. For instance, in the cat-keeping
+scenario (Figure 1), the cognitive agent doesn’t merely acknowl-
+edge the destination. Instead, it formulates specific, value-added
+sub-tasks for each relevant application, demonstrating an under-
+standing of how those apps can serve the user’s broader, unstated
+goals. The agent might determine that for YouTube, an effective
+sub-task is to "Search for ’Beginner’s guide to keeping a cat’ or
+’How to care for a cat’". Simultaneously, for Amazon, it might gen-
+erate sub-tasks like "Search for and list essential products such as
+cat food and grooming tools." These generated sub-tasks are not
+simplistic repetitions or direct keyword matches of the user’s query.
+Instead, they represent a deeper level of inference, reflecting an
+analysis of likely user behaviors within those specific app contexts
+
+----- page 3 -----
+AppAgent-Pro: A Proactive GUI Agent System for Multidomain Information Integration and User Assistance
+CIKM ’25, November 10–14, 2025, Seoul, Republic of Korea
+Figure 2: A comparative illustration of the shallow and deep execution modes in AppAgent-Pro. The shallow execution mode
+focuses on immediate interactions with limited reasoning, while the deep execution mode leverages intent-driven planning
+and iterative refinement to provide accurate feedback to users.
+and an understanding of how each app’s unique functionalities can
+proactively address the nuanced facets of the user’s overarching
+request. This proactive task formulation allows the agent to gather
+targeted, relevant information that the user would likely seek out
+through manual app navigation.
+2.2
+Execution
+In the execution stage, the cognitive agent autonomously interacts
+with applications to extract relevant information and continuously
+adapts based on their feedback, which is categorized into two ex-
+ecution modes: shallow execution and deep execution, as shown
+in Figure 2. In shallow execution mode, the agent selects target
+applications based on the user’s primary query and directly issues
+a search intent. It then scans the application’s surface-level page
+titles to retrieve and rank relevant results. This mode prioritizes
+responsiveness and execution speed, enabling rapid delivery of
+preliminary results with minimal interaction overhead.
+In contrast, the deep execution mode engages in a more proactive
+and thorough information-seeking process. The agent expands the
+initial user query into several sub-queries designed to anticipate
+potential user needs. For each sub-query, AppAgent-Pro selects
+relevant applications, initiates search actions, and explores deeper-
+level result pages. It evaluates a predefined number of result pages
+per sub-query and determines whether the aggregated informa-
+tion suffices. If the collected content is deemed insufficient, the
+agent dynamically generates additional sub-queries and recursively
+repeats the exploration process. Once adequate information is gath-
+ered, the agent compiles and returns the final results. Compared to
+the shallow mode, deep execution provides richer, more proactive
+information tailored to complex or ambiguous user intents.
+2.3
+Integration
+In the integration stage, the cognitive agent integrates the multi-
+domain information. Upon receiving the information retrieved by
+the proactive execution agent, the cognitive agent synthesizes it
+with the initial textual response generated by the LLM and the visual
+content obtained during proactive exploration. The resulting output
+is then structured into a coherent and well-organized response,
+which is ultimately presented through a web-based interface.
+2.4
+Personalization
+To provide personalized interactive experiences, AppAgent-Pro
+autonomously records and summarizes the personal interaction
+history during the task. Upon task completion, the detailed sum-
+mary is systematically updated in an operational document, forming
+an accurate record of the task execution process. In subsequent
+interactions, AppAgent-Pro references these historical documents,
+enabling it to leverage accumulated knowledge to execute tasks
+with heightened accuracy and efficiency. This approach reduces
+the time required for task completion, as the agent can avoid redun-
+dant actions and instead focus on optimizing subsequent operations
+based on past performance. Consequently, the agent not only en-
+hances task precision but also accelerates information retrieval for
+users, providing them with a faster, more reliable, and personalized
+experience. This continuous process of learning from past inter-
+actions allows AppAgent-Pro to evolve, leading to progressively
+improved efficiency and effectiveness in delivering faster, more
+accurate results.
+3
+Demonstration Plan
+To provide an intuitive demonstration experience, we have devel-
+oped an interactive web interface using Streamlit. This interface
+allows users to interact with AppAgent-Pro through natural lan-
+guage queries. The primary goal of this interactive setup is to effec-
+tively showcase AppAgent-Pro’s innovative approach to proactive
+information retrieval and task execution within real-world mobile
+applications. By doing so, it emphasizes the system’s significant
+
+----- page 4 -----
+CIKM ’25, November 10–14, 2025, Seoul, Republic of Korea
+Yuyang et al.
+advancements over traditional, passive text-based agents, offering
+a more dynamic and user-centric experience.
+Figure 3: No external application is required for simple
+queries. The left column presents the reasoning process and
+execution log; the middle column shows the integrated out-
+put of AppAgent-Pro, including relevant screenshots and
+textual responses; the right column displays the real-time
+mobile phone screen.
+3.1
+Scenario 1: No External App Needed
+The first scenario demonstrates AppAgent-Pro’s ability to discern
+when internal knowledge is sufficient for the user’s query. As shown
+in Figure 3, upon receiving a user query such as “How many hours
+are there in one day?”, AppAgent-Pro determines that the LLM’s
+existing knowledge base can furnish a complete and accurate re-
+sponse. Consequently, it delivers the answer directly without initiat-
+ing external application interactions, thereby efficiently addressing
+the query. This illustrates AppAgent-Pro’s capacity for judicious
+resource utilization, ensuring that simple knowledge-based ques-
+tions are answered with minimal latency and without incurring
+unnecessary computational or communication overhead.
+3.2
+Scenario 2: Single External App Engagement
+When the user asks, “How to upload a video on YouTube?”, AppAgent-
+Pro, during the understanding phase, infers that the user may re-
+quire a more intuitive guide. Consequently, it activates the proactive
+execution agent to search for “how to upload a video” on YouTube
+and automatically selects the most relevant video. To further en-
+hance usability, a screenshot of the selected YouTube video is then
+captured and returned as key information. The final merged re-
+sponse displayed on the web page will include both the textual
+explanation and the captured video screenshot, providing a com-
+prehensive answer to the user’s query.
+3.3
+Scenario 3: Multi-App Proactive
+Orchestration
+As depicted in Figure 4, when the user asked AppAgent-Pro, “How
+to keep a cat?”, an open-ended query, the system deployed its most
+comprehensive proactive strategy. The agent identified multiple
+potential needs, including general cat care knowledge and basic
+supply information. In response, AppAgent-Pro proactively chose
+to leverage YouTube to search for instructional videos on cat care
+and keeping cats happy, while utilizing Amazon to find relevant cat
+supplies. Each application was assigned specific subtasks to address
+the user’s query in a structured manner.
+This example scenario effectively showcases AppAgent-Pro’s
+advanced capabilities in decomposing complex and often implicit
+user requirements, orchestrating tasks across multiple disparate
+applications, and synthesizing a comprehensive, proactive, and
+multimodal response.
+Figure 4: Proactive responses in dual-app usage. Building
+on the three-column layout, the left column here contains
+details such as file save paths and status updates; the middle
+column displays Amazon proactive results alongside the user
+query and context.
+Although our current demonstration focuses on two representa-
+tive mobile applications, the underlying architecture is highly adapt-
+able; with minimal modifications, AppAgent-Pro can be extended
+to a wide range of other applications and interaction contexts.
+4
+Conclusion
+In this work, we present AppAgent-Pro, a proactive GUI agent
+system designed to address the limitations of existing reactive
+LLM-based agents. By anticipating latent user intentions and au-
+tonomously integrating multi-domain information, AppAgent-Pro
+represents a significant advancement toward intelligent, context-
+aware human-computer interaction. Through its deep execution
+mode and adaptive retrieval mechanisms, the system enhances the
+efficiency, personalization, and depth of information access, paving
+the way for a new generation of LLM-powered GUI agents.
+From a broader perspective, our findings highlight the potential
+of proactive agents to fundamentally reshape how users engage
+with complex digital ecosystems, reducing cognitive load and en-
+abling more seamless task completion. Nevertheless, the current
+implementation also reveals several challenges, such as balancing
+proactivity with user control and maintaining robustness in dynam-
+ically evolving application environments. Future work will address
+these challenges by expanding the range of supported applications,
+incorporating more sophisticated intent inference techniques, and
+exploring human–AI co-adaptation strategies.
+
+----- page 5 -----
+AppAgent-Pro: A Proactive GUI Agent System for Multidomain Information Integration and User Assistance
+CIKM ’25, November 10–14, 2025, Seoul, Republic of Korea
+5
+GenAI Usage Disclosure
+In this work, generative AI tools were employed in a limited capacity
+during the preparation of this work. OpenAI’s ChatGPT was used
+to assist with language refinement, including improving grammar,
+spelling, and readability of the manuscript text. Anthropic’s Claude
+was utilized to provide suggestions for aesthetic enhancements to
+the demonstration webpage. All analyses, results, and intellectual
+contributions remain the sole responsibility of the authors.
+References
+[1] Josh Achiam, Steven Adler, Sandhini Agarwal, Lama Ahmad, Ilge Akkaya, Flo-
+rencia Leoni Aleman, Diogo Almeida, Janko Altenschmidt, Sam Altman, and
+Shyamal Anadkat. 2023. Gpt-4 technical report. arXiv preprint arXiv:2303.08774
+(2023).
+[2] Merav Allouch, Amos Azaria, and Rina Azoulay. 2021. Conversational agents:
+Goals, technologies, vision and challenges. Sensors 21, 24 (2021), 8448.
+[3] Anthropic. 2024. Claude 3 Haiku: Our Fastest Model Yet. https://www.anthropic.
+com/news/claude-3-haiku Accessed August 12, 2025.
+[4] Google. 2024. Google Gemini: Deep Research. https://blog.google/products/
+gemini/google-gemini-deep-research/ Accessed August 12, 2025.
+[5] Sirui Hong, Xiawu Zheng, Jonathan Chen, Yuheng Cheng, Jinlin Wang, Ceyao
+Zhang, Zili Wang, Steven Ka Shing Yau, Zijuan Lin, and Liyang Zhou. 2023.
+Metagpt: Meta programming for multi-agent collaborative framework. arXiv
+preprint arXiv:2308.00352 3, 4 (2023), 6.
+[6] Wenjia Jiang, Yangyang Zhuang, Chenxi Song, Xu Yang, Joey Tianyi Zhou, and
+Chi Zhang. 2025. Appagentx: Evolving gui agents as proficient smartphone users.
+arXiv preprint arXiv:2503.02268 (2025).
+[7] Sheetal Kusal, Shruti Patil, Jyoti Choudrie, Ketan Kotecha, Sashikala Mishra, and
+Ajith Abraham. 2022. AI-based conversational agents: a scoping review from
+technologies to future directions. IEEE Access 10 (2022), 92337–92356.
+[8] Yanda Li, Chi Zhang, Wanqi Yang, Bin Fu, Pei Cheng, Xin Chen, Ling Chen, and
+Yunchao Wei. 2024. Appagent v2: Advanced agent for flexible mobile interactions.
+arXiv preprint arXiv:2408.11824 (2024).
+[9] Yuxuan Liu, Hongda Sun, Wei Liu, Jian Luan, Bo Du, and Rui Yan. 2025. Mo-
+bileSteward: Integrating Multiple App-Oriented Agents with Self-Evolution to
+Automate Cross-App Instructions. arXiv preprint arXiv:2502.16796 (2025).
+[10] Yaxi Lu, Shenzhi Yang, Cheng Qian, Guirong Chen, Qinyu Luo, Yesai Wu,
+Huadong Wang, Xin Cong, Zhong Zhang, and Yankai Lin. 2024. Proactive
+Agent: Shifting LLM Agents from Reactive Responses to Active Assistance. arXiv
+preprint arXiv:2410.12361 (2024).
+[11] OpenAI. 2025.
+Deep Research System Card.
+https://cdn.openai.com/deep-
+research-system-card.pdf. Accessed August 12, 2025.
+[12] Yongliang Shen, Kaitao Song, Xu Tan, Dongsheng Li, Weiming Lu, and Yueting
+Zhuang. 2023. Hugginggpt: Solving ai tasks with chatgpt and its friends in
+hugging face. Advances in Neural Information Processing Systems 36 (2023),
+38154–38180.
+[13] Junyang Wang, Haiyang Xu, Haitao Jia, Xi Zhang, Ming Yan, Weizhou Shen, Ji
+Zhang, Fei Huang, and Jitao Sang. 2024. Mobile-agent-v2: Mobile device operation
+assistant with effective navigation via multi-agent collaboration. arXiv preprint
+arXiv:2406.01014 (2024).
+[14] Zhenhailong Wang, Haiyang Xu, Junyang Wang, Xi Zhang, Ming Yan, Ji Zhang,
+Fei Huang, and Heng Ji. 2025. Mobile-Agent-E: Self-Evolving Mobile Assistant
+for Complex Tasks. arXiv preprint arXiv:2501.11733 (2025).
+[15] xAI. 2025. Grok-3. https://x.ai/news/grok-3 Accessed August 12, 2025.
+[16] Hui Yang, Sifu Yue, and Yunzhong He. 2023. Auto-gpt for online decision making:
+Benchmarks and additional opinions. arXiv preprint arXiv:2306.02224 (2023).
+[17] Chi Zhang, Zhao Yang, Jiaxuan Liu, Yanda Li, Yucheng Han, Xin Chen, Zebiao
+Huang, Bin Fu, and Gang Yu. [n. d.]. Appagent: Multimodal agents as smartphone
+users. In Proceedings of the 2025 CHI Conference on Human Factors in Computing
+Systems. 1–20.
+[18] Xuan Zhang, Yang Deng, Zifeng Ren, See-Kiong Ng, and Tat-Seng Chua. 2024.
+Ask-before-plan: Proactive language agents for real-world planning.
+arXiv
+preprint arXiv:2406.12639 (2024).

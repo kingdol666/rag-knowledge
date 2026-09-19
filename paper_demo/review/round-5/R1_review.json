@@ -1,0 +1,24 @@
+{
+  "reviewer": "R1-EIC-CIKM-demo-AC",
+  "recommendation": "minor_revision",
+  "cfp_checklist": {
+    "intended_audience": "WEAK - implied only, no explicit statement (fix: one sentence in section 3 Demo setup)",
+    "innovative_aspects": "OK - section 1 four bullets + section 2.3 design choices",
+    "sota_contribution": "OK - section 1 para 2 positioning + section 4 quantification",
+    "attendees_experience": "OK - section 3 Demo setup + Scenarios 1-3",
+    "functionality": "OK - section 2 intro + 2.3 (three surfaces, 41 kb_* tools, ragctl)",
+    "user_scenarios": "OK - section 3 Scenarios 1-3",
+    "interface_options": "OK - web console / CLI / MCP harness",
+    "comparison": "OK - section 1 related work + section 4 three tracks + Figure 1"
+  },
+  "reading_logic": "Page 1 sets up problem, system, and evidence with correct forward pointers; p2 teaser lands where promised, section 2 flows lifecycle-retrieval-agent; p3 architecture tops the page and section 3 pays off section 1; p4 figure/table sit above the interpreting text, closing with honest caveats; p5 holds only disclosure and references. Friction: statistical near-duplication (abstract ~ intro Evidence bullet ~ section 4) and missing audience statement.",
+  "overall": "A genuinely strong demo paper: concrete live demonstration, honest about scale and self-assessment, unmistakable track fit, exact CFP page compliance. What blocks acceptance as-submitted is mechanical: the demo video URL returns 404 (repo has no paper_demo/ on master), the author block is a placeholder, the running head targets 2027, and the one content gap is the missing intended-audience sentence.",
+  "issues": [
+    {"id": "R1-1", "location": "Abstract + Data availability: video URL", "severity": "critical", "comment": "Demo video URL is dead (HTTP 404; repo exists but no paper_demo/ directory on master). CFP requires a working 3-minute video URL.", "suggestion": "Record/commit/push the video, click-test the exact URL. Pre-submission blocker (author-side)."},
+    {"id": "R1-2", "location": "Page 1 author block", "severity": "critical", "comment": "Placeholder authors on a single-blind track: desk-reject risk.", "suggestion": "Replace with real names/affiliations/emails before submission (author-side)."},
+    {"id": "R1-3", "location": "Missing; nearest section 3 Demo setup", "severity": "major", "comment": "CFP 'intended audience' never explicitly satisfied.", "suggestion": "Add one sentence in section 3 Demo setup naming audiences and takeaways."},
+    {"id": "R1-4", "location": "Running heads; main.tex acmConference", "severity": "minor", "comment": "Running head says CIKM '27 / November 2027 / Conference Venue for a CIKM 2026 submission.", "suggestion": "Set acmConference to the 2026 venue."},
+    {"id": "R1-5", "location": "Page 4 Acknowledgments", "severity": "minor", "comment": "Bracketed placeholder text ships in the rendered PDF.", "suggestion": "Finalize or drop before submission (author-side)."},
+    {"id": "R1-6", "location": "Abstract vs intro Evidence bullet vs section 4", "severity": "minor", "comment": "Same statistics told three times crowds out the missing audience sentence.", "suggestion": "Reduce the intro Evidence bullet to a clause + forward pointer."}
+  ]
+}

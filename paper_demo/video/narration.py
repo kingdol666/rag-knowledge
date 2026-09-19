@@ -92,19 +92,25 @@ SEGMENTS = [
         ),
     ),
     dict(
-        id="s5_evidence", visual="clip:chat", min_seconds=32,
-        clip_mode="timelapse",
+        id="s5a_agent", visual="clip:chat", min_seconds=17,
+        clip_mode="timelapse", clip_span="head",
         text=(
-            "QDCVR is also the layer an AI agent retrieves through. Here is the same "
-            "question asked in the Claude chat console with knowledge-base mode on. "
-            "The agent invokes the retrieval skill by name, and then runs the protocol "
-            "itself: vector searches across every base with cross-base balancing, then "
-            "document reads for the content gate. The gate scores the candidate eight "
-            "out of eight and exits without ever calling the fallback. The answer comes "
-            "back in the five sections the protocol defines, citing the source paper, "
-            "and it names the cross-domain hits it discarded along the way, so you can "
-            "watch the gate work instead of trusting a score. Same protocol, same "
-            "recorded trace, whether a person or an agent asks."
+            "QDCVR is also the layer an AI agent retrieves through. Here the same "
+            "question is asked in the Claude chat console with knowledge-base mode "
+            "on. The agent invokes the retrieval skill by name, then works the "
+            "protocol itself: vector recall across every base, then document reads "
+            "for the content gate."
+        ),
+    ),
+    dict(
+        id="s5b_answer", visual="clip:chat", min_seconds=19,
+        clip_mode="trim", clip_span="tail", clip_offset=58,
+        text=(
+            "The gate scores it eight out of eight and exits without calling the "
+            "fallback. What comes back is the five-section answer the protocol "
+            "defines, citing the source paper and naming the cross-domain hits it "
+            "discarded along the way. Same protocol, same recorded trace, whether a "
+            "person or an agent asks."
         ),
     ),
     dict(
@@ -124,7 +130,8 @@ CAPTIONS = {
     "s3b_gate": "0\u20138 content gate \u2192 five-section answer with base \u00b7 doc \u00b7 part \u00b7 section",
     "s4a_trap": "A query for a paper that does not exist",
     "s4b_notfound": "Gate 1/8 \u2192 not-found report, not a fabricated answer",
-    "s5_evidence": "The agent runs the retrieval skill itself \u00b7 gate 8/8 \u00b7 cited answer",
+    "s5a_agent": "The agent invokes the retrieval skill and runs the pipeline",
+    "s5b_answer": "Gate 8/8 \u00b7 five-section answer with citations",
     "s6_close": "Content decides where documents live. Reading decides what answers.",
 }
 

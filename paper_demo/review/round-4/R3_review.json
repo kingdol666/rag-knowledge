@@ -1,0 +1,43 @@
+{
+  "reviewer": "R3-meta-reviewer-AC",
+  "recommendation": "accept",
+  "overall": "这是一篇达到 CIKM demo track 接收线、可直接投稿的示范论文：普通读者能从摘要、Fig.1 对比图与 §1 的管理员场景迅速理解系统是什么（单主机知识库管理平台）、与常规 RAG 的差异（内容式组织 + 0–8 内容门控 + librarian 兜底 + 诚实 not-found 契约）以及为何可信（每个数字可溯源到 repo 工件并设 Honesty checks 段披露门控分数为执行 LLM 自评）。独立抽查 3 组数字全部吻合：(1) 三个库外探针 1/8、1/8、0/8 且全部 NOT_FOUND、BERT 训练轮数陷阱与 Scenario 3(b) 逐字一致（honest_failure_probe.json）；(2) Track B 78.8s（35.5–165.3s）、Track C 12.2s（5.8–28.6s，检索 0.59s）且恰在 BQ01/BQ04 弃答 2 题，我按 track_bc.json 逐题复算完全一致；(3) Track A 的 1.57s 向量召回 + 0.81s 读文 = 2.38s（Table 1）由 skill_track_evidence.json 十题均值精确复现；另加查 graph_stats.json 的 730+130=860 关系与 tag_count=165、ingest_report.json 的 50/50 parse-verified 与 3.80M 字符及 18/15/10/5/2 分类、bench10_qa.json 的 9/10（唯一失败 BQ06）、skill_track_answers.json 的最终门控 6–8/8 与 BQ06/BQ10 两例 5/8 补救、NISQ 相似度 0.7091≈0.71，以及 7/10『Answer 节内全关键词命中』（miss 恰为 BQ01/BQ03/BQ10，与正文叙述一致）均成立。页数判定：正文（Abstract→Conclusion）实际结束于第 4 页，符合 ≤4 页规则，第 5 页仅含后置章节与 GenAI 披露、references。遗留问题全部为 minor：图 1 caption 的章节指针指向 §3 应为 §4、全文缺 CCS concepts 与 keywords（acmart 明确告警必填）、第 5 页的 Acknowledgments/Data Availability/Competing Interests 严格解读超出『GenAI+references 可溢出』的许可范围、图 2 层标签被 callout 遮住右括号、图 1/图 3 底部脚注行印刷偏小。三张图在 300 DPI 印刷模拟下主体文字均清晰，图、caption 与正文数字完全一致，demo 三场景叙事与『Point proven』写法清楚，英文写作精练。critical 0、major 0，建议 accept（minor 项可于投稿/ camera-ready 前完成）。",
+  "issues": [
+    {
+      "severity": "minor",
+      "location": "main.tex, Figure 1 (fig:teaser) caption: 'All numbers come from the benchmark run of Section~\\ref{sec:demo}'",
+      "comment": "章节指针指错：sec:demo 是 §3 Demonstration（场景走查，不含基准数字），三轨基准数字实际报告在 §4 Evaluation（Table 1）。读者循指针会找不到数据来源。",
+      "suggestion": "将 \\ref{sec:demo} 改为 \\ref{sec:eval}，或改为 'the benchmark run reported in Section 4'。"
+    },
+    {
+      "severity": "minor",
+      "location": "main.tex（全文）：无 \\ccsdesc 与 \\keywords",
+      "comment": "编译日志中 acmart 两次告警 'CCS concepts are mandatory for papers over two pages' 与 'ACM keywords are mandatory'。缺少 CCS 概念与关键词属于 ACM 投稿必填项，形式审查可能被打回。",
+      "suggestion": "投稿前补 2–3 条 CCS 概念（如 Information systems retrieval / Retrieval effectiveness；Computing methodologies Artificial intelligence）与 4–6 个 keywords（RAG, content-verified retrieval, MCP, provenance, honest failure）。"
+    },
+    {
+      "severity": "minor",
+      "location": "第 5 页：Acknowledgments、Data Availability、Competing Interests 三个无编号小节",
+      "comment": "按本轮评审规则仅 GenAI 披露与 references 允许溢出至第 5 页；这三个后置小节严格解读超范围（Acknowledgments 目前为占位文本，Data Availability 约 12 行）。若 CFP 将无编号后置内容计入 4 页正文，存在形式合规风险。",
+      "suggestion": "向 CIKM 2026 CFP 确认无编号后置小节是否豁免；若不豁免，可将 Data Availability 压缩为 3–4 行并合并 Competing Interests 一句话，或将其并入 GenAI 披露/脚注以回到 4 页内。"
+    },
+    {
+      "severity": "minor",
+      "location": "figures/fig2_architecture.png，AGENT & PROTOCOL LAYER 层头标签",
+      "comment": "层头文字 'QDCVR skill + kb-mcp server (41 kb_* tools' 的右括号被橙色 'gate 7/8 — fast exit' callout 覆盖，300 DPI 印刷模拟下可见文字被截断，属外观瑕疵。",
+      "suggestion": "将 callout 右移或缩短层头标签（如 '(41 kb_* tools)' 换行），保证标签完整可读。"
+    },
+    {
+      "severity": "minor",
+      "location": "figures/fig1_rag_vs_kb.png 底部脚注行；figures/fig3_benchmark.png 底部斜体溯源行",
+      "comment": "两行最小号文字在印刷尺寸下约 4pt，300 DPI 渲染需费力辨认；其内容（数字出处与口径说明）对诚实性叙事有价值，但核心信息已在 caption 与正文中复述，不影响理解。",
+      "suggestion": "将这两行字号增大约 1.5 倍，或把关键口径说明（如 'Track A latency = retrieval + evidence reads'）并入 LaTeX caption 后删除图内脚注行。"
+    },
+    {
+      "severity": "minor",
+      "location": "Table 1（sec4_eval.tex）：'n/a'（C 列 gold-first）与 '--'（不适用单元格）混用",
+      "comment": "caption 解释了 n/a（'not programmable for C'）但未说明 '--' 的含义，两套占位符并存略欠规范。",
+      "suggestion": "在 caption 末尾加一句 '— = metric not applicable to this track'，或将 '--' 统一为 'n/a'。"
+    }
+  ]
+}

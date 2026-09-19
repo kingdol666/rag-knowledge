@@ -3,7 +3,9 @@
 目标：把 rag-knowledge 平台（系统名 **QDCVR**）写成 CIKM Demo 论文
 （**正文 ≤4 页**，参考文献不计页；GenAI 披露不计页）。
 
-**当前状态：可提交草稿完成。** `tex/main.pdf` = 5 页 = 正文 4 页 + 参考文献/披露 1 页。
+**当前状态：可提交草稿完成。** `tex/main.pdf` = 5 页 = 正文 4 页（含结论与致谢，
+符合 CIKM 2026 demo CFP「4 页含附录与致谢」）+ 第 5 页仅 GenAI 披露与参考文献
+（CFP 允许溢出；Data Availability 作为披露段并入 GenAI 披露块）。
 
 ## 目录
 
@@ -24,20 +26,21 @@ python capture_search.py --tag nisq # 真实跑一次检索会话并截图
 python build_fig2.py               # 裁切 4 个面板 → HTML 拼版 → 渲染 PNG
 ```
 
+### 一页一图（2026-09-19 定稿布局）
+
+三张全宽图按「一页一张」分布：**图 1（对比图）置 p2 页首、图 2（架构）置 p3 页首、
+图 3（三轨对照）置 p4 页首**。`figure*` 浮动体只会落在"遇到它的那一页的下一页"，
+所以图 2 的源码块有意放在 `sec2_system.tex` §2.2 中间（§2.2 在 p2 排版），图 3 紧跟
+`\input{sec3_demo}` 之后——移动源码块位置即可微调落页，勿改回页首集中放置。
+
 | 产物 | 说明 |
 |---|---|
-| `fig1_architecture.png` | 图 1：全宽架构图，一条真实 query 走完全流程（HTML 渲染） |
-| `fig3_threeway.png` | 图 2：**同一问题三轨回答对照** —— Track A/B/C 的逐字真实回答 + 10 题聚合指标 |
-| `fig2_ui_composite.png` | 控制台截图 4 面板拼版。**未收入论文**（4 页预算不足），保留在仓库与视频中 |
+| `fig1_rag_vs_kb.png` | 图 1（p2）：常规 dense RAG vs. QDCVR 协议同库同题对照 + 底部口径分栏的基准条 |
+| `fig2_architecture.png` | 图 2（p3）：四层架构 + 一条真实 query 全流程 + gate-fail 路径 |
+| `fig3_benchmark.png` | 图 3（p4）：Track A/B/C 逐字真实回答 + 时延条（口径已标注） |
+| `fig1_architecture.png` / `fig2_ui_composite.png` / `fig2_demo_traces.png` / `fig3_threeway.png` | 历史版本与视频素材，未收入论文 |
 | `shots/` | 原始截图（`*__viewport.png` 视口图、`*__full.png` 全页图） |
-| `crops/` | 拼版用的局部裁切（统一 2.0:1，保证栅格无锯齿行） |
-
-### 为什么图 2 是"三轨对照"而不是 UI 截图
-
-4 页放不下 3 张全宽图：一张全宽图 ≈ 2 栏正文，三张就吃掉 1.5 页。实测后保留
-架构图（图 1）+ 证据图（图 2），把 UI 拼版移出论文——界面在 3 分钟演示视频里
-完整展示。若你更想留 UI 图，`main.tex` 里换一个 `figure*` 块即可（见
-[`CIKM-COMPLIANCE-AUDIT.md`](CIKM-COMPLIANCE-AUDIT.md) §4），但需再砍约 250 词。
+| `crops/` | 拼版用的局部裁切 |
 
 ## 编译与终检
 

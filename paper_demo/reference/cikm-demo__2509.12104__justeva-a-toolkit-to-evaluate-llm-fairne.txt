@@ -1,0 +1,540 @@
+=== cikm-demo__2509.12104__justeva-a-toolkit-to-evaluate-llm-fairne.pdf | pages=5 ===
+----- page 1 -----
+JustEva: A Toolkit to Evaluate LLM Fairness in Legal Knowledge
+Inference
+Zongyue Xue∗
+zongyuexue@outlook.com
+Tsinghua University; Yale Law School
+New Haven, Connecticut, U.S.
+Siyuan Zheng∗
+rexzheng1996@sjtu.edu.cn
+Tsinghua University; Shanghai
+Jiaotong University
+Shanghai, China
+Shaochun Wang
+Tsinghua University
+Beijing, China
+Yiran Hu†
+Tsinghua University; University of
+Waterloo
+Waterloo, Ontario, Canada
+huyr21@mails.tsinghua.edu.cn
+Shenran Wang
+Yuxin Yao
+Haitao Li
+Tsinghua University
+Beijing, China
+Qingyao Ai
+Yiqun Liu
+Tsinghua University
+Beijing, China
+Yun Liu†
+Weixing Shen
+Tsinghua University
+Beijing, China
+liuyun89@tsinghua.edu.cn
+Abstract
+The integration of Large Language Models (LLMs) into legal prac-
+tice raises pressing concerns about judicial fairness, particularly
+due to the nature of their “black-box” processes. This study intro-
+duces JustEva, a comprehensive, open-source evaluation toolkit
+designed to measure LLM fairness in legal tasks. JustEva features
+several advantages: (1) a structured label system covering 65 extra-
+legal factors; (2) three core fairness metrics—inconsistency, bias, and
+imbalanced inaccuracy; (3) robust statistical inference methods; and
+(4) informative visualizations. The toolkit supports two types of
+experiments, enabling a complete evaluation workflow: (1) gener-
+ating structured outputs from LLMs using a provided dataset, and
+(2) conducting statistical analysis and inference on LLMs’ outputs
+through regression and other statistical methods. Empirical appli-
+cation of JustEva reveals significant fairness deficiencies in current
+LLMs, highlighting the lack of fair and trustworthy LLM legal tools.
+JustEva offers a convenient tool and methodological foundation for
+evaluating and improving algorithmic fairness in the legal domain.1
+CCS Concepts
+• Human-centered computing →Visualization; User interface
+design; • General and reference →Measurement; Metrics; Em-
+pirical studies; • Computer systems organization →Special
+purpose systems; Reliability; • Computing methodologies →
+Natural language processing.
+Keywords
+Fairness, Knowledge Mining, Large Language Models
+∗Both authors contributed equally to this research. The order is random.
+†Corresponding author.
+1The toolkit is available for deployment at https://github.com/KYSpring/ai_fairness_
+demo. A video demonstration of the toolkit is available at https://drive.google.com/
+file/d/1lB2U3q-kI5B5frv8iqVceVaA9Yks3kE6/view?usp=sharing.
+1
+Introduction
+Do Large Language Models (LLMs) wield a slanted scale of justice?
+AI tools have been increasingly integrated into legal tasks [12, 13,
+15, 28], employed by attorneys [1], and have even begun to assist
+judges in drafting judicial documents [20]. Developing a robust tool
+to evaluate their judicial fairness is urgent. However, LLMs may fail
+to grasp the immense and unstructured body of legal knowledge,
+which is often context-dependent and linguistically ambiguous [2,
+3, 30]. Alternatively, they may learn too much—replicating fairness
+problems embedded in judicial practice [4, 24]. For instance, the
+implementation of COMPAS, an algorithm used by some U.S. courts
+to assess the likelihood of a defendant becoming a recidivist, has
+led to wide controversies and criticism for biases [18, 35]. It is
+further compounded by the high stakes of judicial decisions [10].
+If factors like gender, crime, location, or judicial procedure can
+easily influence an LLM’s judicial decision, individual rights, and
+social justice may be severely undermined. Yet, LLM fairness in
+judicial contexts remains largely unexamined. In this study, we
+introduce JustEva, a user-friendly toolkit that employs innovative
+data and methodology to systematically assess judicial fairness
+across 65 legal labels. Using JustEva, we have uncovered consistent
+and significant fairness problems among LLMs evaluated.
+JustEva features several advantages: 1) Label System: Grounded
+in legal theory and prior empirical research, our team of legal ex-
+perts systematically compiled a set of 65 labels that may influence
+judicial decision-making as extra-legal factors, encompassing both
+substantive and procedural dimensions, as well as demographic
+and non-demographic characteristics. 2) Evaluation Metrics: We
+propose three fairness metrics—inconsistency, bias, and imbalanced
+inaccuracy—and introduce a composite approach to assess the over-
+all fairness of multiple LLMs across these labels. 3) Statistical In-
+ference: We apply high-dimensional fixed-effects linear regression
+arXiv:2509.12104v1  [cs.AI]  15 Sep 2025
+
+----- page 2 -----
+Xue et al.
+Figure 1: The overall architecture of JustEva. Once the user provides an LLM API, the toolkit automatically evaluates the LLM
+fairness across 3 metrics using JudiFair Dataset. Alternatively, users can use their own data for evaluation.
+models to rigorously evaluate the statistical significance of fair-
+ness disparities. To address the multiple comparisons problem that
+arises from evaluating fairness across numerous labels and mod-
+els simultaneously, we introduce a Bernoulli test [7]. This method
+accounts for potential random variations and generates aggregate
+fairness assessments for both individual LLMs and the full set of
+LLMs evaluated. 4) Visualization: JustEva presents detailed sta-
+tistics and tables in its outputs, improving clarity and facilitating
+interpretation of the findings. Figure 1 shows the overall structure
+of JustEva.
+2
+Related Works
+Previous research has examined bias in LLM outputs, focusing
+primarily on biases based on demographic factors. Researchers
+revealed demographic bias using jailbreak methods [6], explored
+intersectional biases [37], and investigated multi-dimensional dis-
+crimination [26]. Other studies have investigated non-demographic
+biases. Liu et al. [19] identified implicit biases in model hidden states,
+while APriCoT [22] highlighted that LLMs suffer from base-rate
+bias—favoring frequent answer patterns over true reasoning—and
+proposed counterfactual prompting with Chain-of-Thought to miti-
+gate it. Chalkidis et al. [9] introduced FairLex, a multilingual bench-
+mark, to assess bias in legal NLP tasks. Although these studies shed
+light on different types of bias, the number of labels involved is
+limited, and they lack a comprehensive fairness framework. Hu et al.
+[16] rigorously measured judicial fairness across more LLMs and
+labels, but their methodologies have limited scalability. Drawing
+on their approach, we propose a more extensible evaluation toolkit.
+Several toolkits have been developed to detect bias in LLMs
+within general domains. For example, Aequitas [27] provides a
+user-friendly audit framework for classification models, focusing
+on group fairness metrics such as false positive and false nega-
+tive rate parity. AI Fairness 360 [5] is a comprehensive toolkit
+designed to identify and mitigate bias through a variety of pre-
+processing, in-processing, and post-processing methods, while also
+enhancing model explainability. Fairlearn [36] offers Python-based
+algorithms to reduce opportunity unfairness and minimize inconsis-
+tency among user groups in LLM outputs. FairPy [32] is a modular
+toolkit for evaluating lexical and embedding-level biases of LLMs us-
+ing multiple established metrics and mitigation methods. Addition-
+ally, Bahrami [21] introduced an AI diagnostic toolkit that accounts
+for both demographic attributes and more nuanced contextual fac-
+tors. However, these tools focus on a considerably narrower set of
+attributes and fairness dimensions, and are not explicitly designed
+to evaluate fairness in legal contexts. Moreover, to our knowledge,
+no existing toolkit systematically integrates legal knowledge to
+comprehensively assess the judicial fairness of LLMs.
+3
+Method
+3.1
+Dataset
+As illustrated in the upper-right panel of Figure 1, we adopt the Jud-
+iFair dataset [16], a comprehensive dataset built on LEEC [39] for
+
+----- page 3 -----
+JustEva: A Toolkit to Evaluate LLM Fairness in Legal Knowledge Inference
+evaluating the judicial fairness of LLMs. JudiFair consists of 177,100
+unique case facts drawn from real Chinese judicial documents and
+annotated with 65 legal labels—including both demographic and
+non-demographic, substance (e.g., defendant gender, crime type)
+and procedure (e.g., judge characteristics, trial format) factors de-
+veloped by legal experts. Each case is paired with counterfactual
+variants that isolate specific label changes (e.g., swapping a defen-
+dant’s gender) while preserving all other facts. This design enables
+fine-grained analysis of bias, inconsistency, and imbalanced inaccu-
+racy in model outputs. The dataset significantly expands the scope
+and detail of legal labels regarding fairness. We use this dataset as
+the basis of this toolkit, providing a robust foundation for evaluating
+judicial fairness in LLMs.
+3.2
+Multi-Dimensional Evaluation Metrics
+JustEva employs a three-pronged framework to evaluate LLM fair-
+ness in judicial contexts, including inconsistency, bias, and imbal-
+anced inaccuracy [16], as illustrated in the lower panel of Figure 1.
+3.2.1
+Inconsistency. Inconsistency refers to the instability of an
+LLM’s predictions in response to controlled variations in case fea-
+tures. An LLM with high inconsistency is more likely to yield di-
+vergent judgments based on irrelevant or unstable features, which
+is undesirable in judicial applications. For each label 𝑙, we examine
+whether an LLM’s prediction changes when we systematically alter
+a label’s value based on the same document.
+To quantify this effect across all documents and labels, we define
+the inconsistency score as the weighted average of change propor-
+tions, where the weights 𝑤𝑙reflect each label’s effective sample size.
+This ensures that labels with higher empirical support contribute
+more to the final score. The formal definition is given below2:
+𝐼𝑛𝑐𝑜𝑛𝑠𝑖𝑠𝑡𝑒𝑛𝑐𝑦=
+Í𝑁
+𝑙=1 𝑤𝑙· 𝑝𝑙
+Í𝑁
+𝑙=1 𝑤𝑙
+(1)
+Then, we average the results across all models to estimate the
+extent of inconsistency across all labels.
+3.2.2
+Bias. To identify whether an LLM demonstrates systematic
+bias toward specific label values, we estimate the marginal impact
+of each label on sentencing outcomes using high-dimensional fixed
+effect regression via the REGHDFE package [11] in Stata. It is de-
+signed to efficiently accommodate thousands of indicator variables.
+The dependent variable is sentence length in months. Since sentenc-
+ing data is typically right-skewed, we log-transform the variable to
+approximate normality, following established methods in empiri-
+cal legal studies [8, 29]. Each regression includes fixed effects for
+ID—an identifier for judicial document—thus controlling for het-
+erogeneity in case facts arising out of the same document. We also
+cluster robust standard errors at the document level to account for
+intra-case correlation [23]. For each label, we extract the statistical
+significance of its coefficient(s) to assess whether it has a systematic
+effect on sentencing. The model is specified as follows:
+𝐿𝑛(𝑆𝑒𝑛𝑡𝑒𝑛𝑐𝑒) = 𝛾+
+𝐽∑︁
+𝑗=1
+𝛼𝑗· Treated𝑗+
+𝐼∑︁
+𝑖=1
+𝛽𝑖· ID𝑖+ 𝜀
+(2)
+2Here, 𝑝𝑙denotes the proportion of prediction changes when label 𝑙’s value is
+perturbed.
+Since each LLM is tested on 65 labels, and the user may examine
+multiple LLMs, we need to tell whether the potentially significant
+results are meaningful or just random. For each LLM, we model
+each detection of significant label-level bias as Bernoulli trials with
+threshold 𝜏. We then model each detection of significant LLM-
+level bias as Bernoulli trials. The probability of observing at least 𝑘
+significant results by chance is calculated as:
+𝑝bernoulli =
+𝑁
+∑︁
+𝑙=𝑘
+𝑁
+𝑙
+
+𝜏𝑙(1 −𝜏)𝑁−𝑙
+(3)
+If 𝑝bernoulli is small, the bias is deemed systematic rather than
+incidental. This procedure is applied to each model individually
+and to the pooled counts of significant results across all LLMs.
+3.2.3
+Imbalanced Inaccuracy. While the previous metric tests for
+disparity in treatment, here we test for disparity in prediction error.
+Specifically, we examine whether certain groups or label values
+are associated with disproportionately large errors. To identify sys-
+tematic imbalances in prediction error across all labels and models
+tested, we estimate a regression similar to Equation (2), replac-
+ing the dependent variable with the absolute difference between
+predicted and true sentence length, as shown in Equation (4):
+𝐴𝑏𝑠_𝐷𝑖𝑓= 𝛾+
+𝐽∑︁
+𝑗=1
+𝛼𝑗· Treated𝑗+
+𝐼∑︁
+𝑖=1
+𝛽𝑖· ID𝑖+ 𝜀
+(4)
+Significant coefficients indicate that the prediction error system-
+atically differs across label values. We again apply the Bernoulli test
+from Equation (3) to determine whether the count of significant
+results exceeds what would be expected by chance.
+4
+Development
+JustEva enables users to configure and evaluate LLMs through
+custom APIs and settings without the necessity for coding skills.
+4.1
+Front End
+In the Configuration section, as illustrated in Figure 1, users may
+employ the Auto-Generate function to produce LLM predictions
+from different case facts or rely on locally deployed LLMs to gen-
+erate their own data. In either case, they can rely on the provided
+JudiFair dataset of 177,100 case facts. The evaluation process can
+then be initiated, with a loading bar displayed to indicate progress.
+Users may also add new labels through the Manual Upload feature.
+The Result Demonstration section, shown in the lower panel of
+Figure 1, lists all labels involved in the evaluation. Once the analysis
+is completed, results are displayed in a pop-up window contain-
+ing statistics for the three key metrics—inconsistency, bias, and
+imbalanced inaccuracy. The window also reports the number of bi-
+ased and imbalanced inaccurate labels, supplemented by integrated
+visualization features.
+Following established practice [25], the toolkit’s front end is
+implemented with the Vue 3 JavaScript framework [34], while Vite
+[33] serves as the build tool. Visualizations are generated using
+Chart.js, encapsulated in reusable components to render bar and
+pie charts for the three metrics.
+
+----- page 4 -----
+Xue et al.
+4.2
+Back End
+The back end of JustEva transforms input datasets into structured
+evaluation outputs. For the API-based configuration, we imple-
+mented the functionality using Python. The toolkit integrates with
+the OpenRouter platform. This is a widely-used LLM marketplace
+enabling users to query a range of LLMs by specifying the API url,
+model name, temperature, and provider name.3 The backend trans-
+mits these parameters to OpenRouter, gathers the LLM-generated
+outputs, and stores them for subsequent analysis.
+For data analysis, we employ PyStata [38]. It allows for seam-
+less integration between Python and Stata, enabling users to call
+Stata commands, run advanced statistical and regression tools di-
+rectly, and analyze Stata datasets within a Python script. This setup
+supports a wide range of statistical operations while maintaining
+reproducibility and improving efficiency. We use PyStata to conduct
+fixed-effects regressions and statistical significance testing on the
+LLM outputs, as described in our evaluation metrics.
+After PyStata completes the analysis, we use Python to process
+and organize the results. The outputs are converted into readable
+formats, including structured JSON files for visualization and for-
+matted Excel tables for further review. This approach ensures both
+analytical rigor and user-friendly presentation of results.
+4.3
+Applications in Legal Settings
+For example, suppose a developer builds a legal AI tool and applies
+JustEva. The developer can use the JudiFair dataset to input differ-
+ent case facts, obtain model predictions, and then run the analysis
+through our interface to view organized results across three dimen-
+sions—consistency, bias, and imbalanced inaccuracy. This allows the
+developer to understand the limitations and fairness risks of the
+system before deployment. This workflow is equally applicable for
+the public, researchers, and legal professionals.
+5
+Empirical Test
+We applied JudiFair to evaluate three widely-used LLMs, including
+Gemini Flash 1.5 [31], GLM 4 [14], and Qwen2.5 72B Instruct [40],
+as shown in Table 1. Incons. reports the average inconsistency rate;
+Bias No. is the number of labels with statistically significant bias;
+Bias 𝑝(5%) shows the aggregate p-value from the Bernoulli test
+for bias significance, with 5% denoting the significance threshold;
+Imbal. Inacc. No. is the number of labels with significantly different
+prediction errors across groups; Inacc. 𝑝(5%) gives the correspond-
+ing Bernoulli test result for imbalanced inaccuracy.
+Table 1: Selected Model Results. The temperature for all mod-
+els is 0.
+Model
+Incons.
+Bias No.
+Bias 𝑝(5%)
+Imbal. Inacc. No.
+Inacc. 𝑝(5%)
+GLM 4
+0.142
+27
+0.00
+19
+0.00
+Qwen2.5 72B Instruct
+0.140
+30
+0.00
+29
+0.00
+Gemini Flash 1.5
+0.134
+30
+0.00
+35
+0.00
+The evaluation revealed systematic fairness issues across three
+metrics. For each model, over 10% of documents produced varied
+3For more information, please visit: https://openrouter.ai.
+predictions on average for each label, indicating substantial incon-
+sistency. Additionally, the biases and imbalanced inaccuracies of
+the three models are statistically significant at the 1% level (p < 0.01),
+determined by the Bernoulli test. These findings highlight a general
+pattern of significant fairness problems across all metrics over 65
+labels. It also shows how JustEva provides a transparent, scalable,
+and reproducible workflow for identifying and addressing judicial
+fairness concerns in LLMs. Using the same methodology, Hu et al.
+[16] show more comprehensive results on more LLMs.
+6
+Conclusion
+This paper presents JustEva, a practical toolkit for evaluating LLM
+judicial fairness. Drawing on 65 extra-legal labels, three comple-
+mentary fairness metrics, rigorous statistical inference via PyStata,
+and an interactive frontend built on Vue 3, JustEva offers a practical
+and convenient solution for auditing LLMs in legal tasks.
+The toolkit supports both real-time API queries and offline data
+analysis, making it suitable for researchers, developers, and au-
+ditors aiming to ensure algorithmic accountability in high-stakes
+legal applications. Empirical evaluations demonstrate that JustEva
+effectively identifies inconsistency, systematic bias, and imbalanced
+inaccuracy in LLM outputs—problems that are otherwise difficult
+to detect comprehensively and reliably.
+Future work may expand the label set, support multilingual legal
+contexts, or incorporate counterfactual explanation techniques to
+better identify and mitigate the influence of unfair or sensitive
+attributes on model predictions. We hope JustEva contributes to
+broader efforts to build transparent, fair, and trustworthy AI systems
+in the legal domain.
+Ethical statement. We affirm that all data used in this study are either
+publicly available or synthetically generated. This research is conducted
+with the aim of advancing accountability and fairness in AI-assisted legal
+systems. We emphasize that JustEva is designed strictly as an auditing and
+research tool, not as a substitute for human legal judgment. We advocate
+for the responsible and context-aware deployment of any legal AI system
+evaluated using this toolkit.
+Acknowledgments. We acknowledge Qingjing Chen’s contributions in
+our discussions on judicial fairness.
+
+----- page 5 -----
+JustEva: A Toolkit to Evaluate LLM Fairness in Legal Knowledge Inference
+GenAI Usage Disclosure
+We used generative AI tools, including OpenAI’s ChatGPT (pre-
+dominantly GPT-4o [17]), to assist with certain aspects of this work.
+Specifically, AI tools were used to facilitate academic writing by
+improving clarity, structure, and readability, and to assist in gener-
+ating and refining code used in data processing and visualization
+modules of the JustEva toolkit. All AI-generated content was re-
+viewed, edited, and validated by the authors to ensure accuracy
+and appropriateness. No AI tool was used to generate experimental
+results or academic conclusions.
+References
+[1] American Bar Association. 2024. AI Tools for Legal Work: Claude, Gemini, Copilot,
+and More. https://www.americanbar.org/groups/law_practice/resources/law-
+technology-today/2024/ai-tools-for-legal-work-claude-gemini-copilot-and-
+more/ Accessed: 2025-05-25.
+[2] Julia Angwin, Jeff Larson, Surya Mattu, and Lauren Kirchner. 2016. Machine Bias:
+Risk Assessments in Criminal Sentencing. https://www.propublica.org/article/
+machine-bias-risk-assessments-in-criminal-sentencing. ProPublica, Accessed:
+5 June 2025.
+[3] Kevin D Ashley. 2017. Artificial intelligence and legal analytics: new tools for law
+practice in the digital age. Cambridge University Press.
+[4] Solon Barocas and Andrew D Selbst. 2016. Big data’s disparate impact. Calif. L.
+Rev. 104 (2016), 671.
+[5] Rachel KE Bellamy, Kuntal Dey, Michael Hind, Samuel C Hoffman, Stephanie
+Houde, Kalapriya Kannan, Pranay Lohia, Jacquelyn Martino, Sameep Mehta,
+Aleksandra Mojsilović, et al. 2019. AI Fairness 360: An extensible toolkit for de-
+tecting and mitigating algorithmic bias. IBM Journal of Research and Development
+63, 4/5 (2019), 4–1.
+[6] Riccardo Cantini, Giada Cosenza, Alessio Orsino, and Domenico Talia. 2024. Are
+Large Language Models Really Bias-Free? Jailbreak Prompts for Assessing Ad-
+versarial Robustness to Bias Elicitation. In International Conference on Discovery
+Science. Springer, 52–68.
+[7] George Casella and Roger Berger. 2024. Statistical inference. CRC press.
+[8] Michael Cassidy and Jason Rydberg. 2020. Does sentence type and length matter?
+Interactions of age, race, ethnicity, and gender on jail and prison sentences.
+Criminal Justice and Behavior 47, 1 (2020), 61–79.
+[9] Ilias Chalkidis, Tommaso Pasini, Sheng Zhang, Letizia Tomada, Sebastian Felix
+Schwemer, and Anders Søgaard. 2022. Fairlex: A multilingual benchmark for
+evaluating fairness in legal text processing. arXiv preprint arXiv:2203.07228
+(2022).
+[10] Danielle Keats Citron. 2007. Technological due process. Wash. UL Rev. 85 (2007),
+1249.
+[11] Sergio Correia. 2016. reghdfe: Estimating linear models with multi-way fixed
+effects. In 2016 Stata Conference. Stata Users Group.
+[12] Jiaxi Cui, Zongjian Li, Yang Yan, Bohua Chen, and Li Yuan. 2023. Chatlaw:
+Open-source legal large language model with integrated external knowledge
+bases. CoRR (2023).
+[13] Frank Fagan. 2024. A view of how language models will transform law. Tenn. L.
+Rev. 92 (2024), 1.
+[14] Team GLM, Aohan Zeng, Bin Xu, Bowen Wang, Chenhui Zhang, Da Yin, Dan
+Zhang, Diego Rojas, Guanyu Feng, Hanlin Zhao, et al. 2024. Chatglm: A fam-
+ily of large language models from glm-130b to glm-4 all tools. arXiv preprint
+arXiv:2406.12793 (2024).
+[15] Candida M Greco and Andrea Tagarelli. 2024. Bringing order into the realm of
+Transformer-based language models for artificial intelligence and law. Artificial
+Intelligence and Law 32, 4 (2024), 863–1010.
+[16] Yiran Hu, Zongyue Xue, Haitao Li, Siyuan Zheng, Qingjing Chen, Shaochun
+Wang, Xihan Zhang, Ning Zheng, Yun Liu, Qingyao Ai, et al. 2025. LLMs on
+Trial: Evaluating Judicial Fairness for Large Language Models. arXiv preprint
+arXiv:2507.10852 (2025).
+[17] Raisa Islam and Owana Marzia Moushi. 2024. Gpt-4o: The cutting-edge advance-
+ment in multimodal llm. Authorea Preprints (2024).
+[18] Rahulrajan Karthikeyan, Chieh Yi, and Moses Boudourides. 2024. Criminal
+Justice in the Age of AI: Addressing Bias in Predictive Algorithms Used by
+Courts. In The Ethics Gap in the Engineering of the Future: Moral Challenges for
+the Technology of Tomorrow. Emerald Publishing Limited, 27–50.
+[19] Guangliang Liu, Haitao Mao, Jiliang Tang, and Kristen Marie Johnson. 2024. In-
+trinsic self-correction for enhanced morality: An analysis of internal mechanisms
+and the superficial hypothesis. arXiv preprint arXiv:2407.15286 (2024).
+[20] John Zhuang Liu and Xueyao Li. 2024. How do judges use large language models?
+Evidence from Shenzhen. Journal of Legal Analysis 16, 1 (2024), 235–262.
+[21] Ramya Srinivasan Mehdi Bahrami, Ryosuke Sonoda. 2024. LLM Diagnostic
+Toolkit: Evaluating LLMs for Ethical Issues. (2024). doi:10.1109/IJCNN60899.
+2024.10650995
+[22] Kyle Moore, Jesse Roberts, Thao Pham, and Douglas Fisher. 2024. Reasoning
+Beyond Bias: A Study on Counterfactual Prompting and Chain of Thought
+Reasoning. arXiv preprint arXiv:2408.08651 (2024).
+[23] Austin Nichols and Mark Schaffer. 2007. Clustered errors in Stata. In United
+Kingdom Stata Users’ Group Meeting. 133–138.
+[24] Frank Pasquale. 2015. The black box society: The secret algorithms that control
+money and information. Harvard University Press.
+[25] Heidi L Perez, Pina M Cardarelli, Shrikant Deshpande, Sanjeev Gangwar,
+Gretchen M Schroeder, Gregory D Vite, and Robert M Borzilleri. 2014. Antibody–
+drug conjugates: current status and future directions. Drug discovery today 19, 7
+(2014), 869–881.
+[26] Arjun Roy, Jan Horstmann, and Eirini Ntoutsi. 2023. Multi-dimensional discrimi-
+nation in law and machine learning-A comparative overview. In Proceedings of
+the 2023 ACM Conference on Fairness, Accountability, and Transparency. 89–100.
+[27] Pedro Saleiro, Benedict Kuester, Loren Hinkson, Jesse London, Abby Stevens, Ari
+Anisfeld, Kit T. Rodolfa, and Rayid Ghani. 2019. Aequitas: A Bias and Fairness
+Audit Toolkit. arXiv:1811.05577 [cs.LG] https://arxiv.org/abs/1811.05577
+[28] Dong Shu, Haoran Zhao, Xukun Liu, David Demeter, Mengnan Du, and Yongfeng
+Zhang. 2024. LawLLM: Law large language model for the US legal system.
+In Proceedings of the 33rd ACM International Conference on Information and
+Knowledge Management. 4882–4889.
+[29] Darrell Steffensmeier, Noah Painter-Davis, and Jeffery Ulmer. 2017. Intersection-
+ality of race, ethnicity, gender, and age on criminal punishment. Sociological
+perspectives 60, 4 (2017), 810–833.
+[30] Harry Surden. 2021. Machine learning and law: An overview. Research handbook
+on big data law (2021), 171–184.
+[31] Gemini Team, Petko Georgiev, Ving Ian Lei, Ryan Burnell, Libin Bai, Anmol
+Gulati, Garrett Tanzer, Damien Vincent, Zhufeng Pan, Shibo Wang, et al. 2024.
+Gemini 1.5: Unlocking multimodal understanding across millions of tokens of
+context. arXiv preprint arXiv:2403.05530 (2024).
+[32] Hrishikesh Viswanath and Tianyi Zhang. 2025. FairPy: A Toolkit for Eval-
+uation of Prediction Biases and their Mitigation in Large Language Models.
+arXiv:2302.05508 [cs.CL] https://arxiv.org/abs/2302.05508
+[33] Vite Contributors. 2020. Vite – Next Generation Frontend Tooling. https://github.
+com/vitejs/vite. Accessed: 16 May 2025.
+[34] Vue.js Developers. 2014. Vue.js – The Progressive JavaScript Framework v3.0.
+https://vuejs.org/guide/introduction.html. Accessed: 16 May 2025.
+[35] Anne L Washington. 2018. How to argue with an algorithm: Lessons from the
+COMPAS-ProPublica debate. Colo. Tech. LJ 17 (2018), 131.
+[36] Hilde Weerts, Miroslav Dudík, Richard Edgar, Adrin Jalali, Roman Lutz, and
+Michael Madaio. 2023. Fairlearn: Assessing and Improving Fairness of AI Systems.
+Journal of Machine Learning Research 24 (2023). http://jmlr.org/papers/v24/23-
+0389.html
+[37] Kyra Wilson and Aylin Caliskan. 2024. Gender, race, and intersectional bias in
+resume screening via language model retrieval. In Proceedings of the AAAI/ACM
+Conference on AI, Ethics, and Society, Vol. 7. 1578–1590.
+[38] Zhao Xu. 2021. PyStata-Python and Stata integration. In London Stata Conference
+2021. Stata Users Group.
+[39] Zongyue Xue, Huanghai Liu, Yiran Hu, Yuliang Qian, Yajing Wang, Kangle Kong,
+Chenlu Wang, Yun Liu, and Weixing Shen. 2024. LEEC for Judicial Fairness: A
+Legal Element Extraction Dataset with Extensive Extra-Legal Labels. In Proceed-
+ings of the Thirty-Third International Joint Conference on Artificial Intelligence,
+IJCAI-24. 7527–7535.
+[40] An Yang, Beichen Zhang, Binyuan Hui, Bofei Gao, Bowen Yu, Chengpeng Li, Day-
+iheng Liu, Jianhong Tu, Jingren Zhou, Junyang Lin, Keming Lu, Mingfeng Xue,
+Runji Lin, Tianyu Liu, Xingzhang Ren, and Zhenru Zhang. 2024. Qwen2.5-Math
+Technical Report: Toward Mathematical Expert Model via Self-Improvement.
+arXiv:2409.12122 [cs.CL] https://arxiv.org/abs/2409.12122

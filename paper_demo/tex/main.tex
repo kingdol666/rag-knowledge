@@ -11,8 +11,8 @@
 \settopmatter{printacmref=false}
 \settopmatter{printfolios=true}
 \renewcommand\footnotetextcopyrightpermission[1]{}
-% TODO(camera-ready): fill real venue fields (2027 city/dates) to remove the trailing ", ." in the running head
-\acmConference[CIKM '27]{Proceedings of the 36th ACM International Conference on Information and Knowledge Management}{November 2027}{Conference Venue}
+% TODO(camera-ready): confirm exact 2026 dates on the CFP to replace the month-only field
+\acmConference[CIKM '26]{Proceedings of the 35th ACM International Conference on Information and Knowledge Management}{November 2026}{Rome, Italy}
 \acmISBN{}
 \acmDOI{}
 
@@ -31,8 +31,36 @@
 \renewcommand{\bottomfraction}{0.5}
 \renewcommand{\textfraction}{0.06}
 \renewcommand{\floatpagefraction}{0.92}
+\setlength{\textfloatsep}{9pt plus 2pt minus 3pt}
+\setlength{\dbltextfloatsep}{9pt plus 2pt minus 3pt}
 
 \newcommand{\sys}{\textsc{Qdcvr}}
+
+\begin{CCSXML}
+<ccs2012>
+<concept>
+<concept_id>10002951.10003260</concept_id>
+<concept_desc>Information systems~Information retrieval</concept_desc>
+<concept_significance>500</concept_significance>
+</concept>
+<concept>
+<concept_id>10002951.10003260.10003261</concept_id>
+<concept_desc>Information systems~Retrieval models and ranking</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
+<concept>
+<concept_id>10003120.10003121</concept_id>
+<concept_desc>Human-centered computing~Interactive systems and tools</concept_desc>
+<concept_significance>300</concept_significance>
+</concept>
+</ccs2012>
+\end{CCSXML}
+
+\ccsdesc[500]{Information systems~Information retrieval}
+\ccsdesc[300]{Information systems~Retrieval models and ranking}
+\ccsdesc[300]{Human-centered computing~Interactive systems and tools}
+
+\keywords{knowledge base, retrieval-augmented generation, content verification, provenance, Model Context Protocol, demonstration}
 
 \begin{document}
 
@@ -49,44 +77,61 @@
 
 \input{sec1_intro}
 
-% Figures are declared early so LaTeX floats them onto pages 2-3 as body
-% figures. Both count against the 4-page body budget.
+% Three full-width figures, one per page: teaser tops p.2, architecture tops
+% p.3, three-track benchmark tops p.4. Source positions are load-bearing:
+% a figure* met while page N is assembled lands on N (or later), so each block
+% sits right after the section whose typesetting starts on its target page.
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.50\textwidth]{../figures/fig1_architecture.png}
-\caption{Architecture of \sys{}. Clients (web console, CLI, MCP agent
-harnesses) reach an agent-side protocol layer served by the \texttt{kb-mcp}
-server, which fronts FastAPI services for parsing, content classification, tag
-propagation, retrieval and the experience lifecycle, over ChromaDB with BGE-M3
-vectors, a Neo4j graph, and a YAML file tree that doubles as the audit log. The
-orange trace follows one real benchmark query: query rewrite, 1.5\,s vector
-recall across the category bases, a content gate that scores the candidate text
-7/8 and exits early, and a five-section cited answer. Storage is written through
-a single path and read directly by retrieval, so search adds no load to the
-service tier. The same capability set is published twice, as REST endpoints for
-the console and as 41 \texttt{kb\_*} MCP tools for agents.}
-\label{fig:arch}
+\includegraphics[width=0.72\textwidth]{../figures/fig1_rag_vs_kb.png}
+\caption{Conventional dense RAG (left) vs.\ the \sys{} protocol (right) on the
+same 50-paper corpus and 10 questions: routed category bases, vector-first
+recall, an interpretable content gate with librarian fallback, and five-section
+cited answers. The bottom strip compares on-target answers, abstentions (the
+protocol's two gate-fails were rescued by its librarian), scope-labeled latency
+(dense end-to-end; KB retrieval plus reads), and citation granularity; all
+numbers are Section~\ref{sec:eval}'s benchmark run.}
+\Description{Side-by-side teaser. Left: a three-step dense-RAG stack (fixed
+800-character chunking, single dense retrieval pass, 4,000-character evidence
+pack to the LLM) with pain chips noting two honest abstentions, missing
+section provenance, and no retry. Right: the QDCVR protocol with content-routed
+category KBs, query rewrite, vector-first recall, a 0--8 content gate, a
+librarian fallback, and a five-section cited answer with gain chips noting
+10/10 gold documents hit and zero abstentions. A dark bottom strip compares
+the stacks on answered questions (8/10 vs 10/10), unanswered questions, latency
+(dense end-to-end 12.2 s vs KB retrieval-plus-reads 2.4 s), and citation
+granularity (chunk without path vs base/doc/part/section).}
+\label{fig:teaser}
 \end{figure*}
 
 \input{sec2_system}
 
+\input{sec3_demo}
+
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.74\textwidth]{../figures/fig3_threeway.png}
-\caption{One question, three answering tracks, recorded answers quoted verbatim.
-Track~A is the \sys{} protocol, Track~B a bare agent with no index that reads
-whole files, Track~C a dense baseline over 800-character fixed chunks. Track~A
-answers with a 7/8 gate score, a citation naming base, document, part and
-section, and a declared blind spot; Track~B answers most completely --- it
-prints the scaled dot-product form --- but its provenance stops at the file
-name; Track~C \emph{abstains}, because its two retrieved chunks came from the
-parsing-results section and the fixed window had cut the method section away
-from the answer sentence. The fastest track is the one that failed, and the
-cheapest correct answer is the one that cannot be traced.}
+\includegraphics[width=0.72\textwidth]{../figures/fig3_benchmark.png}
+\caption{Three answering tracks on the same corpus and questions: Track~A, the
+\sys{} protocol; Track~B, a bare agent with whole-file tools and no index;
+Track~C, a dense baseline over 800-character fixed chunks; the cards report
+each track's outcome verbatim. Bottom strips: per-track mean latencies with
+explicit scopes (A excludes answer generation) and BQ01's three verbatim fates;
+all numbers are Section~\ref{sec:eval}'s benchmark run (repository artifacts).}
+\Description{Three side-by-side track cards over a shared 50-paper corpus and
+10 questions. Track A (KB protocol): 10/10 gold documents with per-part source
+paths, zero unanswered (two gate-fails rescued by the librarian), verbatim
+base/doc/part/section citations with declared blind spots, ~2.4 s retrieval and
+reads. Track B (bare agent): 10/10 gold documents but provenance stops at file
+names, no section-level trace, 78.8 s average. Track C (dense RAG baseline):
+content matches but the harness logs no source paths, 2/10 abstained after the
+evidence window missed the passage, 12.2 s average. Below, a latency bar strip
+compares 2.4 s, 12.2 s, and 78.8 s with scope labels; a final strip traces
+question BQ01 verbatim: Track A answers with part citations, Track B prints the
+formula without a link to a section, Track C abstains.}
 \label{fig:threeway}
 \end{figure*}
 
-\input{sec3_demo}
+\input{sec4_eval}
 
 \input{sec4_backmatter}
 

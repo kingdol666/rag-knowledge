@@ -1,0 +1,73 @@
+{
+  "reviewer": "R2-RAG-domain-expert",
+  "recommendation": "major_revision",
+  "overall": "As an IR/RAG reviewer I re-verified every headline number against the benchmark-suite artifacts, and most of them reproduce exactly: bench10_qa.json 9/10 regression (BQ06 keyword miss); track_a_kw_hit.json any 10/10, all 9/10; skill_track_answers.json final gate scores 6-8/8 with exactly two librarian rescues (BQ06 5->7, BQ10 5->6), i.e. fallback 2/2 solved; honest_failure_probe.json gates 1/8, 1/8, 0/8 with all three NOT_FOUND and the BERT trap as described; track_bc.json Track B mean 78.8s (35.5-165.3s) and Track C mean 12.2s (5.8-28.6s) with 2/10 abstentions (BQ01, BQ04) and 0.59s mean retrieval; skill_track_evidence.json gold doc at rank 1 in 10/10, mean vector search 1.566s + doc reads 0.813s = 2.38s; ingest_report.json 50/50 verified, 3,798,446 chars, 165 = 9 whole + 156 parts, per-paper counts 18/15/10/5/2, shelf census 72/43/32/12/6, and the two cross-category overrides (2001.10696, 1311.6857); 41 kb_* of 94 total MCP tools verified against kb-mcp/server.py. This level of artifact traceability is unusually good for a demo. However, one headline comparison is not apples-to-apples and is contradicted by the project's own artifacts: Track A's 2.38s covers only Phase-1 retrieval and excludes query rewrite, gate scoring, fallback, and answer generation, while B and C are timed end-to-end (the benchmark MD states the answer generation was not timed). There are also internal contradictions (Figure 1 says 'tri-channel recall / BM25 + graph' while the abstract, Section 2.2, and the measured implementation are vector-only), a 9/10-vs-10/10 conflation between abstract and Table 1 that splices two different runs into one sentence, and a few quoted trace details and numbers (scenario 3a, 860 graph relations) that do not match any persisted artifact despite the paper's absolute Data Availability claim. All are fixable without new experiments, but they must be fixed because this paper's entire pitch is auditability.",
+  "issues": [
+    {
+      "severity": "critical",
+      "location": "Table 1 ('Mean latency per question': A 2.38s), Figure 3 scoreboard ('TIME TO A RECORDABLE ANSWER: 2.3s'), Section 4 Results ('Track C is the fastest at 12.2s'), Figure 3 caption ('The fastest track is the one that failed')",
+      "comment": "The latency comparison is not apples-to-apples. Per skill_track_evidence.json, Track A's timings contain only phase1_vector_search (mean 1.566s) and phase1_doc_reads (mean 0.813s); Phase 0 query rewrite, the gate's LLM scoring calls, Phase 2 librarian fallback, and generation of the five-section answer are all excluded. Track B (78.8s) and Track C (12.2s) are end-to-end and include answer generation (track_bc.json: C has latency_retrieval + latency_answer). The project's own artifacts disclose this: BENCHMARK-30000chunk-20260918.md says '回答由会话 Agent 生成，未计时入轨' and ANALYSIS.md says '回答由执行 Agent 撰写，不计时'. The paper nowhere discloses it, yet Table 1 labels 2.38s as 'Mean latency per question' and Figure 3 calls it 'time to a recordable answer', building the caption's narrative ('the fastest track is the one that failed') on incomparable quantities. Including generation, Track A is almost certainly slower than Track C's 12.2s.",
+      "suggestion": "Either measure Track A end-to-end (rewrite + gate + fallback + generation) and report it, or relabel the row/figure explicitly, e.g. 'retrieval-phase latency (A: recall+reads, answer generation untimed) vs end-to-end (B, C)', and drop or heavily qualify the 'fastest track' narrative. The Section 4 text '1.57s mean vector recall plus 0.81s of candidate reads' is fine as stated; it is the Table 1 row label and Figure 3 framing that mislead."
+    },
+    {
+      "severity": "major",
+      "location": "Abstract ('a 10-question spot check answers 9/10 with final gate scores of 6--8/8, both fallback rescues succeeding and top-1 gold-document recall of 10/10'), Intro Evidence bullet (9/10), vs Table 1 ('Answered on target (abstaining): A 10/10 (0)') and Section 4 ('answers all ten on target')",
+      "comment": "The abstract splices numbers from two different executions into one sentence as if they were one run. The 9/10 comes from the scripted retrieval regression (bench10_qa.json; a keyword-based check whose pass rule is never defined in the paper; the failing row is BQ06), while the gate scores 6-8/8, the two rescues, and top-1 gold recall 10/10 come from the interactive skill run (skill_track_answers.json), which answered 10/10. A reader comparing abstract with Table 1 sees an unexplained 9/10 vs 10/10 contradiction.",
+      "suggestion": "Attribute each number to its run: e.g. 'a scripted retrieval regression passes 9/10 (keyword check); the end-to-end skill run answers 10/10 on target with final gate scores 6-8/8 and two librarian rescues; gold top-1 recall 10/10 at 1.57s mean vector recall'. Also define the regression pass rule once in Section 4."
+    },
+    {
+      "severity": "major",
+      "location": "Figure 1 image and caption ('tri-channel recall over five bases in about 1.5s'; figure text 'tri-channel recall', 'BM25 + graph over 5 KBs in ~1.5s') vs Abstract ('vector-first recall'), Section 2.2 ('Phase 1 recalls vector candidates per category base with BGE-M3 embeddings and merges the per-base lists with explicit cross-base balancing'), and Section 2.5 (the sparse-dense hybrid was abandoned)",
+      "comment": "The paper contradicts itself on its core retrieval protocol. The measured implementation is vector-only: benchmark-suite/scripts/75_skill_track_phase1.py calls kb_search_vector(整库, balance_kbs, 0.35), and skill_track_evidence.json records vector_score only, with no BM25 or graph signals. The special check point 'vector-first recall + cross-base balancing (not BM25 fusion)' is supported by the text and the implementation, but Figure 1 and its caption tell attendees the recall is tri-channel (vector+BM25+graph). This is exactly the protocol-vs-implementation mismatch a reproducibility-minded reader will test first, since the 10/10 gold recall and 1.5s were measured on the vector-only path.",
+      "suggestion": "Fix Figure 1 and its caption to 'vector-first recall with cross-base balancing'; optionally state that the platform also offers a tri-channel (vector+BM25+graph) search mode that was not used in the benchmarked protocol."
+    },
+    {
+      "severity": "major",
+      "location": "Table 1 row 'Answered on target (abstaining): 10/10 (0)' and Section 4 ('answers all ten on target')",
+      "comment": "'On target' is self-assessed by the executing agent (disclosed), but the paper's own artifacts show two answers that withhold the directly asked quantity: BQ01 asks 'How does the Transformer compute attention' and the five-section answer declares the precise attention equation a blind spot (the all-keyword metric is satisfied only because the phrase 'scaled dot-product' occurs in the Confidence sentence saying it was NOT read); BQ03 asks 'how did Flan-PaLM perform on the MedQA benchmark' and the answer withholds the 67.6% MedQA figure (reporting the 76.3% human-eval number instead). Counting these as fully 'on target' overclaims; the paper even counts the two questions as Phase-2-rescued successes while the regression harness's own kw column shows the same gaps.",
+      "suggestion": "Report a finer breakdown, e.g. '10/10 answered, 8/10 fully on target, 2/10 partial with the asked quantity explicitly declared as a blind spot', or have an independent judge (not the executing agent) rate on-target. Keep the declared-blind-spot framing, which is genuinely a strength."
+    },
+    {
+      "severity": "major",
+      "location": "Section 3, Scenario 3(a) ('the initial top chunk is the paper's references page; the gate scores it 5/8, the librarian fallback re-searches and locates the discussion section at 6/8')",
+      "comment": "This quoted trace does not match the persisted artifact. For the tumor-therapy question (BQ10), skill_track_answers.json records that the Phase-1 top chunk was a header-only part 1/3 (not a references page) and that the Phase-2 rescue read the full abstract plus Section 3.1 equilibria (not a discussion section); BQ06's rescue read the abstract continuation. Scores and outcome (5/8 -> 6/8, resolved) match, but the descriptive details appear in no artifact. For a paper whose central claim is that every quoted trace is replayable, a demo narrative that embellishes the recorded trace undermines the pitch.",
+      "suggestion": "Align Scenario 3(a) verbatim with skill_track_answers.json (header-only part, abstract + sec 3.1 via librarian re-query), or record the actual live-demo query trace as an artifact and cite it."
+    },
+    {
+      "severity": "major",
+      "location": "Section 2.1 ('the relation graph reports 860 typed relations (730 shared-tag, 130 vector-similarity edges)') and Data Availability ('Every number here traces to a JSON artifact in the repository's benchmark-suite results directory')",
+      "comment": "I searched the entire repository: 860/730/130 appear only in sec2_system.tex and in no JSON artifact (older skill-test reports show different graph stats for a different corpus). Likewise, the ~20s cold start traces only to a remark in PIPELINE.md, not to a measured artifact, and the 41/94 tool counts trace to kb-mcp/server.py source (where they do verify: 41 kb_* defs of 94 @mcp.tool() total). The absolute Data Availability claim is therefore false as written for at least the graph-relation number.",
+      "suggestion": "Commit a kb_graph_stats export for the 50-paper corpus as a results/ JSON (and a cold-start timing log), or remove/soften the 860 figure; scope the Data Availability sentence to evaluation numbers or add 'and to the named source files' for tool counts."
+    },
+    {
+      "severity": "minor",
+      "location": "Section 2.2 ('merges the per-base lists with explicit cross-base balancing [bge-m3, dpr]')",
+      "comment": "The balancing mechanism is never evidenced: in all 10 recorded queries the top-3 hits all come from the gold paper's base, so no artifact demonstrates per-base quota/merging behavior, and neither BGE-M3 nor DPR describes cross-base list balancing (they are cited, at best, for the vector retriever itself).",
+      "suggestion": "Add one line/artifact showing the per-base hit distribution after balancing for a multi-base query, and restrict the citations to the embedding/retrieval components."
+    },
+    {
+      "severity": "minor",
+      "location": "Table 1 ('Provenance granularity: C none'), Section 4 ('its chunks carry no document path, so its answers cannot be traced to a source at all'), Figure 3 caption ('the cheapest correct answer is the one that cannot be traced')",
+      "comment": "Track C's untraceability is a property of the authors' own reproduction (replication chunks were built without doc_path metadata, as the Table 1 caption and the benchmark MD honestly disclose), not an inherent property of dense RAG, which could log chunk-to-source mappings trivially. The Figure 3 caption generalizes this into a slogan. Also, all tracks are single-run with n=10, and no variance is reported for A/C.",
+      "suggestion": "Phrase as 'our dense reproduction records no provenance metadata'; keep the honest disclosure in the caption but drop the slogan-style generalization; add a sentence acknowledging single-run, n=10 scale (already partially done in Honesty checks)."
+    },
+    {
+      "severity": "minor",
+      "location": "Section 4 Results ('the single miss is a chunk-window artifact in the scripted regression harness, whose continuation clause resolves the same question on the same corpus')",
+      "comment": "The attribution conflates two different misses. In the five-section keyword check (track_a_kw_hit.json) the miss is BQ10, where the answer contains only the hyphenated form 'immune-evasion', so the substring 'immune evasion' does not match - a tokenization artifact, not a chunk-window artifact. In the scripted regression (bench10_qa.json) the failing row is BQ06 (keyword 'precipitation efficiency' outside the chunk window), which is indeed a window effect and was resolved by Phase 2. The sentence as written assigns the wrong cause to the wrong question.",
+      "suggestion": "Split the explanation: BQ06 = chunk-window miss in the regression, resolved by Phase 2 continuation read; BQ10 = hyphenation/substring miss in the keyword check (the content was retrieved and the question was gate-rescued)."
+    },
+    {
+      "severity": "minor",
+      "location": "Section 1 related work ('feed the top-scored candidates to the generator without a recorded pass/fail adjudication [rag-lewis, dpr, langchain, llamaindex]')",
+      "comment": "The claim about missing adjudication is fair for frameworks, but citing DPR and Lewis et al. (retrieval models/datasets) for a framework-behavior claim is loose. Given the paper's pitch is per-query auditability, the closest related work on attribution/verification of generated claims is not cited.",
+      "suggestion": "Cite frameworks (LangChain/LlamaIndex) for the default-pipeline claim, and consider adding attribution/verification-aware RAG work (e.g., AIS/Rashkin et al., RARR) to position the 'auditable per-query artifact' contribution."
+    },
+    {
+      "severity": "minor",
+      "location": "Terminology across Sections 1, 2.2, 2.4, 4 and Figure 2 ('not-found contract', 'failure contract', 'honest-failure contract', 'gate-fail contract')",
+      "comment": "Four surface forms are used interchangeably for the same mechanism. 'Content gate', 'librarian fallback', and 'QDCVR' are otherwise used consistently and accurately (the 0-8 rubric and pass >= 6 match Eq. 1, the skill rubric, and both artifacts).",
+      "suggestion": "Pick one term (suggest 'not-found contract') and use it everywhere, including the Figure 2 label."
+    }
+  ]
+}

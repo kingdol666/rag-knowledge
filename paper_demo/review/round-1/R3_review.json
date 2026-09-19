@@ -1,0 +1,73 @@
+{
+  "reviewer": "R3-meta-reviewer-AC",
+  "recommendation": "minor_revision",
+  "overall": "This is an unusually honest and well-evidenced demo paper: my random spot-check of three claims all verified exactly against benchmark-suite/results/ artifacts — (1) Track B mean latency 78.8 s (range 35.5-165.3 s) recomputes to 78.78 s from the ten per-question rows in track_bc.json; (2) Track A '1.57 s mean vector recall plus 0.81 s candidate reads' (Table 1's 2.38 s) recomputes to 1.566/0.813/2.379 s over the ten questions in skill_track_evidence.json, and the 'final gate scores 6-8/8 with two rescues after initial 5/8' matches skill_track_answers.json (BQ06, BQ10) exactly; (3) the three out-of-corpus probes scored 1/8, 1/8, 0/8 and all returned NOT_FOUND reports, including the BERT trap, per honest_failure_probe.json. The attendee narrative (drop a PDF, ask, inspect score/citation, see a genuine not-found) is concrete and easy to follow. However, the submission as compiled is not compliant: the body runs through page 5 of 6 (only the GenAI disclosure and references are in the allowed overflow zone), which would be desk-rejected at CIKM; and there are several consistency defects a careful reader will trip on (abstract '9/10' vs Table 1/Figure 1 '10/10'; figure-caption 'tri-channel recall' vs the text's vector-first recall; a verbatim duplicated Generalizability paragraph), plus all three figures typeset their explanatory prose at roughly 4-5 pt in print. All required fixes are bounded and mechanical — cut ~2/3 page, delete the duplicate paragraph, reconcile figure/text claims, rebuild figures with larger type — so I recommend minor revision, with the explicit caveat that the page-limit violation is mandatory to fix and the current PDF cannot be sent to camera-ready as-is.",
+  "issues": [
+    {
+      "severity": "critical",
+      "location": "Whole paper; body content ends on page 5 (Section 4, Section 5, Acknowledgments, Data Availability), references on page 6 of 6",
+      "comment": "CIKM demo rules allow body up to 4 pages, with only the GenAI disclosure and references permitted to overflow. Here Section 4 (Evaluation), Section 5 (Conclusion), Acknowledgments and Data Availability fill essentially all of page 5 — roughly 1.5 columns (~0.75 page) of illegal body overflow. As compiled (main.pdf, 6 pages), the paper would be desk-rejected on length regardless of content quality.",
+      "suggestion": "Cut ~1.5 columns of body. Concrete targets: delete the duplicated Generalizability paragraph (see separate issue, saves ~8 lines); trim Section 2.4 ('Execution Flow, Design Choices, and Innovation') and 2.5, which overlap Section 4's honesty framing; compress the Conclusion's second half (it re-narrates Figure 3); consider moving Acknowledgments/Data Availability into the overflow zone alongside the GenAI disclosure if the CFP permits back-matter overflow, or merge Data Availability into it. Re-verify the body ends on page 4 after cutting."
+    },
+    {
+      "severity": "major",
+      "location": "Abstract and Section 1 bullet 'Evidence' ('a 10-question spot check answers 9/10') vs Table 1 row 'Answered on target (abstaining): A 10/10 (0)' and Figure 1 scoreboard ('KB protocol 10/10', '0 abstentions')",
+      "comment": "The same ten questions are reported as 9/10 in the abstract and 10/10 in Table 1/Figure 1 with no reconciliation where the reader first meets the numbers. The 9/10 traces to bench10_qa.json (the scripted keyword regression: 9/10 pass, BQ01 missing 'scaled dot-product'), while the 10/10 is the skill-executed track. Section 4 explains the discrepancy ('the single miss is a chunk-window artifact in the scripted regression harness'), but the abstract's unqualified 'answers 9/10' next to Table 1's 10/10 reads as a contradiction and will cost trust with exactly the readers this paper is trying to convince.",
+      "suggestion": "Pick one metric for the abstract, or label both explicitly, e.g. 'a scripted 10-question regression passes 9/10 on a strict all-keyword check; the protocol executed end-to-end answers 10/10 on target'. Apply the same fix to the Section 1 evidence bullet."
+    },
+    {
+      "severity": "major",
+      "location": "Figure 1 caption ('tri-channel recall over five bases') and in-figure text ('Vector + BM25 + graph over 5 KBs'); Figure 2 service layer ('Retrieval Engines (vector + BM25 + graph)') vs Section 2.2 Phase 1 and Section 2.5(ii)",
+      "comment": "Section 2.2 describes Phase 1 as BGE-M3 vector recall per base with cross-base balancing only, and Section 2.5(ii) states the sparse-dense hybrid was removed in favor of 'vector-first recall'. The executed traces agree with the text (skill_track_evidence.json shows kb_search_vector hits with vector_score only). So the evaluated protocol is vector-first, while the figures and the Figure 1 caption advertise a tri-channel (vector+BM25+graph) recall. A reader cannot tell which system was measured, and the caption currently overstates what Track A did.",
+      "suggestion": "State in Section 2.2 that the platform ships vector, BM25 and graph retrieval engines but the evaluated protocol recalls vector-first, and amend the Figure 1 caption (and ideally the in-figure label) from 'tri-channel recall' to 'vector-first recall (BM25/graph engines also available)'."
+    },
+    {
+      "severity": "major",
+      "location": "Final paragraph of Section 3 (sec3_demo.tex, 'Generalizability.') and final paragraph of Section 4 (sec4_eval.tex, 'Generalizability.')",
+      "comment": "The Generalizability paragraph is duplicated verbatim — it appears at the end of Section 3 and again, word for word, at the end of Section 4, printing on both page 4 and page 5. This is a clear editing accident and wastes scarce space in an already over-length paper.",
+      "suggestion": "Delete one instance (keep it in Section 4, or move to the Conclusion); this alone recovers ~8 lines toward the page budget."
+    },
+    {
+      "severity": "major",
+      "location": "Table 1 row 'Mean latency per question' (A = 2.38 s) and Section 4 text ('Track C is the fastest at 12.2 s end-to-end'); cf. Figure 3 footer 'Track A latency = retrieval + evidence reads'",
+      "comment": "The latency row is not comparable across tracks: Track A's 2.38 s counts retrieval plus candidate reads only and excludes five-section answer composition (track_a_e2e_spot.json discloses composition was approximated as a batch wall-clock window and excluded from per-question timing), whereas B's 78.8 s and C's 12.2 s include generation. Calling Track C 'the fastest' is only true under that exclusion. Figure 3 does label the distinction ('retrieval + reads' vs 'retrieval + answer') but only in a footer line that is itself illegible in print; Table 1 carries no such caveat.",
+      "suggestion": "Either measure and report Track A end-to-end including composition, or rename the row (e.g. 'Mean retrieval+evidence latency (A) / end-to-end (B, C)') and state the asymmetry in the table caption and in the Section 4 sentence."
+    },
+    {
+      "severity": "major",
+      "location": "Figures 1-3 as included at 0.62/0.74/0.70\\textwidth (main.tex), source PNGs 4800/4600/4400 px wide",
+      "comment": "At print size the explanatory prose inside all three figures renders at roughly 4-5 pt (fig1 panel body ~4.5 pt, fig2 service/storage labels ~4 pt, fig3 scorecard text ~4.5 pt), well below the ~6 pt readability floor for ACM print. The panel headings and bold numbers survive; the sentences that carry the argument (the fig1 left-panel failure annotations, fig2 box descriptions, fig3 per-track scorecards and the footer citing the JSON artifacts) do not. For a demo paper whose persuasion lives in these figures, this materially weakens the artifact for the print reader.",
+      "suggestion": "Rebuild the three figures with larger base type and less per-box prose, or include at full \\textwidth and cut in-figure text by ~30%; then verify against a 100%-scale print or a 150-dpi render before resubmission. Fig3's bottom footer line also appears clipped at the PNG edge — check it survives cropping."
+    },
+    {
+      "severity": "minor",
+      "location": "Section 2.2 ('a five-section cited answer (direct answer, key evidence, context, caveats, references)') vs Figure 2 'Cited Answer' box ('Five sections: search paths, answer, sources, confidence, blind spots')",
+      "comment": "Two different enumerations of the same 'five-section answer' are given. Each is real — track_a_e2e_spot.json uses direct/evidence/context/caveats/references while skill_track_answers.json uses Search Paths/Answer/... — but the paper shows both without saying they are variants, so the reader cannot tell what the actual answer artifact looks like.",
+      "suggestion": "Use one canonical enumeration in Section 2.2 and align the Figure 2 box, or add a parenthetical that the skill variant prefixes 'Search Paths' to the answer sections."
+    },
+    {
+      "severity": "minor",
+      "location": "Figure 2 ('live query — \"What limits NISQ devices?\"', 'MCP Agent Harnesses (14 engines)') vs Section 3 Scenario 2 ('What defines NISQ technology and what is its central limitation?'); Figure 1 ('30,000 chars → 165 parts') vs Section 2.1 ('165 indexed documents — 9 whole papers and 156 parts')",
+      "comment": "The Figure 2 caption claims the orange trace is 'one real benchmark query' but its quoted wording differs from the actual BQ02 question quoted in Scenario 2. '14 engines' appears nowhere in the text and is unexplained. Figure 1's '165 parts' is loosely worded (165 = 9 whole + 156 parts). Small, but a meta-reviewer notices because the paper stakes its brand on traceability.",
+      "suggestion": "Make Figure 2's query string match BQ02 verbatim; drop or explain '14 engines'; change fig1 to '165 indexed documents'."
+    },
+    {
+      "severity": "minor",
+      "location": "Section 2.1 ('860 typed relations (730 shared-tag, 130 vector-similarity edges)'; '48 s') vs Data Availability ('Every number here traces to a JSON artifact in the repository's benchmark-suite results directory')",
+      "comment": "I verified the 48 s tag-propagation figure only to the Markdown run log (BENCHMARK-30000chunk-20260918.md, output of 62_apply_tags.py), not to any JSON in results/, and I could find no artifact containing the 860/730/130 relation-graph counts anywhere under benchmark-suite/results/. The blanket provenance claim is therefore slightly overstated for at least these two numbers (everything else I sampled traced cleanly).",
+      "suggestion": "Export the tag-propagation timing and the relation-graph census as JSON artifacts in results/, or soften the Data Availability sentence to 'every quantitative claim traces to a recorded artifact (JSON or run log) in the repository'."
+    },
+    {
+      "severity": "minor",
+      "location": "sec4_backmatter.tex line 10 ('...and see a genuine not-found.The three tracks...'); also main.tex running head TODO ('Conference Venue', trailing ', .') and placeholder author block",
+      "comment": "Missing space after 'not-found.' renders as 'not-found.The' in the Conclusion. The ACM venue fields still produce a ', .' in the running head per the source TODO, and the author block is a placeholder. Gate scores also exist in two judge runs that scored the same BQ10 rescue event differently (4/8 in track_a_e2e_spot.json's scripted judge vs 5/8 in the skill run the paper reports) — the paper is honest about single-judge scores, but this run-to-run wobble is worth one sentence given 'calibrated threshold' is listed as future work.",
+      "suggestion": "Fix the missing space; fill venue/author fields at camera-ready; consider one sentence in Section 4 acknowledging inter-run judge variance (4/8 vs 5/8 for the same event) to reinforce the self-adjudication caveat."
+    },
+    {
+      "severity": "minor",
+      "location": "Abstract, Section 3, and Conclusion: URLs under github.com/kingdol666/rag-knowledge; main.tex header comment claims 'the demo track is single-blind'",
+      "comment": "The repo URL embeds a personal username. The source comment asserts single-blind review for the demo track — please verify against the actual CIKM 2026 demo CFP. If the track is double-blind (as CIKM's main track is), these links deanonymize the submission and must be replaced by an anonymized mirror; if single-blind, they are fine but the placeholder author block must still be completed before submission.",
+      "suggestion": "Check the CFP's anonymity policy; under double-blind, use an anonymous repository and strip the username from all three URLs; regardless, replace the placeholder authors and fix the running-head venue fields before submission."
+    }
+  ]
+}

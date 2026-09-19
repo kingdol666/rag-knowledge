@@ -1,0 +1,49 @@
+{
+  "reviewer": "R1-CIKM-demo-reviewer",
+  "recommendation": "minor_revision",
+  "overall": "A strong, unusually honest demo paper: the system is real and deployable (one command, ~20 s cold start, 41 kb_* MCP tools, web console and agent surfaces over the same protocol), the three live scenarios are concretely demonstrable with attendee participation and a linked video, and the contribution (content-derived organization plus a 0-8 interpretable content gate with librarian fallback and a protocol-level not-found contract) is clearly delineated from retrieve-then-generate stacks. I spot-checked more than a dozen reported numbers against benchmark-suite/results/ and all traced exactly: 9/10 regression with BQ06 the sole miss (bench10_qa.json); 10 any-keyword/9 all-keyword with BQ10's hyphenated 'immune-evasion' verified verbatim in the recorded answer (track_a_kw_hit.json, skill_track_answers.json); Track A 1.57 s + 0.81 s = 2.38 s and final gate scores 6-8 with exactly two 5/8 librarian rescues (skill_track_evidence.json, skill_track_answers.json); Track B 78.8 s (35.5-165.3) and Track C 12.2 s (5.8-28.6, 0.59 s retrieval, 2 honest abstentions) (track_bc.json); probes 1/8, 1/8, 0/8 all NOT_FOUND including the BERT near-miss trap (honest_failure_probe.json); 165/165 tags, 860 = 730+130 relations, 50/50 parse-verified, per-base paper/doc counts 18/15/10/5/2 mapping to 72/43/32/12/6 (ingest_report.json, graph_stats.json); NISQ top hit at 0.709 similarity. Page compliance is satisfied: Sections 1-5 end on page 4, with only backmatter (acknowledgments, data availability, GenAI disclosure, references) overflowing to page 5. The one substantive flaw is presentation: all three figures are included at only 0.50-0.56 of the full-width figure* span, so most in-figure body text prints at roughly 3 pt, well below print readability for the figures a demo paper depends on; this is a one-line scaling fix and does not affect the accept decision, hence minor_revision.",
+  "issues": [
+    {
+      "severity": "major",
+      "location": "main.tex lines 56-92 (three figure* environments); figures/fig1_rag_vs_kb.png (4800x2540), fig2_architecture.png (4600x2300), fig3_benchmark.png (4400x2706)",
+      "comment": "Each wide infographic is included at width=0.50-0.56\\textwidth inside a full-width figure*, using barely half the available span. At the resulting print size (about 3.5-3.9 in wide), the in-figure body text (panel explanations, service/storage-layer labels, benchmark-run footnotes) renders at roughly 2.5-3.5 pt, far below the ~6-7 pt print-readability floor; only panel headers and the large stat numbers (10/10, 2.3 s, 78.8 s, 12.2 s) remain legible on paper. For a demo paper where figures must be self-sufficient, this materially weakens the printed artifact, even though the figures are fully legible on screen.",
+      "suggestion": "Set width=\\textwidth (or >=0.9\\textwidth) for all three figure* inclusions, which roughly doubles in-figure text size at no page cost since the figures currently occupy the same vertical space; alternatively enlarge the source fonts. Verify with a printed proof that the smallest labels are >= 6 pt."
+    },
+    {
+      "severity": "minor",
+      "location": "sec3_demo.tex line 33 (Scenario 2, '(part 1 of 3)') vs benchmark-suite/results/skill_track_evidence.json (BQ02 hits)",
+      "comment": "Scenario 2 states the hit card names '(part 1 of 3)', but the recorded artifact shows the top-ranked candidate for BQ02 is 'part 2 of 3' (vector score 0.7091); part 1 of 3 is the second candidate at 0.7032. Since this paper's selling point is that every detail traces to recorded artifacts, the parenthetical contradicts the published evidence file.",
+      "suggestion": "Change '(part 1 of 3)' to '(part 2 of 3)', or annotate the trace screenshot/console view actually shown at demo time and cite that artifact."
+    },
+    {
+      "severity": "minor",
+      "location": "page 5 (Acknowledgments, Data Availability, Competing Interests overflowing with GenAI disclosure and references)",
+      "comment": "The 4-page body limit is met (Sections 1-5 end on page 4), but the overflow page carries not only the GenAI disclosure and references (explicitly allowed) yet also Acknowledgments, Data Availability and Competing Interests, which some readings of the demo-track page policy count against the limit. The Acknowledgments section is still a bracketed placeholder.",
+      "suggestion": "If the CFP counts only GenAI disclosure + references as overflow, compress or fold Data Availability into Section 4 / a footnote to bring backmatter onto page 4; otherwise state compliance explicitly in the submission form. Replace the acknowledgment placeholder before submission."
+    },
+    {
+      "severity": "minor",
+      "location": "figures/fig2_architecture.png top-left banner vs sec3_demo.tex Scenario 2 and Figure 2 caption",
+      "comment": "The figure's live-query banner reads 'What limits NISQ devices?' while the caption claims 'The orange trace follows one real benchmark query' and Scenario 2 quotes the actual BQ02 question 'What defines NISQ technology and what is its central limitation?'. The paraphrase breaks the figure-text exactness the paper otherwise maintains.",
+      "suggestion": "Replace the banner with the verbatim BQ02 question (or mark it explicitly as an abridged paraphrase in the caption)."
+    },
+    {
+      "severity": "minor",
+      "location": "sec0_abstract.tex line 22 ('top-1 gold-document recall of 10/10 at 1.6 s mean vector recall')",
+      "comment": "The phrasing 'recall of 10/10 at 1.6 s' reads as if recall were conditioned on a latency; the intended meaning (10/10 top-1 recall, with 1.57 s mean vector-recall latency reported as 1.6 s, consistent with Table 1's 2.38 s retrieval+reads) is only clear after reading Section 4.",
+      "suggestion": "Rewrite as 'top-1 gold-document recall of 10/10; mean vector-recall plus candidate-read latency 2.4 s per question' or split into two clauses."
+    },
+    {
+      "severity": "minor",
+      "location": "sec2_system.tex line 32 and sec1_intro.tex lines 38-40",
+      "comment": "'2 of the 50 assignments moved a paper across category boundaries' should be 'papers' (two assignments moved two different papers, both verifiable in ingest_report.json: neuroscience 2001.10696 to CS/AI and agriculture 1311.6857 to life sciences). The singular reads like a typo.",
+      "suggestion": "Change to 'moved papers across category boundaries' or 'moved two papers across category boundaries'."
+    },
+    {
+      "severity": "minor",
+      "location": "main.tex lines 14-17, 43-45 (running head 'CIKM 27, November 2027, Conference Venue'; author 'Author Name' / author@example.com); abstract and Data Availability GitHub link to github.com/kingdol666/rag-knowledge",
+      "comment": "Authors are placeholders (source comment says the demo track is single-blind, under which the non-anonymized repository link is acceptable), and the venue fields are marked TODO, currently producing a trailing ', .' artifact in the running head. These are known camera-ready items, not scientific issues.",
+      "suggestion": "Fill real author blocks and venue fields before submission (removing the running-head artifact); if the track policy turns out to be double-blind, replace the GitHub URL with an anonymized mirror."
+    }
+  ]
+}

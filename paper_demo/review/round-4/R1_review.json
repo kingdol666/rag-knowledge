@@ -1,0 +1,37 @@
+{
+  "reviewer": "R1-CIKM-demo-reviewer",
+  "recommendation": "accept",
+  "overall": "这是一篇证据链异常扎实、可直接投稿的 demo 论文。我对 9 处数字做了抽查并复算了多个派生量，全部吻合：bench10_qa.json 的 9/10（唯一失败 BQ06）、track_bc.json 中 Track B 均值 78.78s（文中 78.8，范围 35.5–165.3）与 Track C 均值 12.24s（文中 12.2，检索 0.59s，弃答恰为 BQ01/BQ04 两例）、skill_track_evidence.json 复算的 1.57s 向量召回 + 0.81s 读文 = 2.38s、NISQ top-1 相似度 0.709（文中 0.71，'part 2 of 3'）、honest_failure_probe.json 的 1/8、1/8、0/8 全部 NOT_FOUND 及 BERT 陷阱、graph_stats.json 的 730+130=860 typed relations 与 tag_count=165、ingest_report.json 的 50/50 verified、18/15/10/5/2 分类、3,798,446 字符（文中 3.8M）以及 ≤30k 整文档恰 9 篇（9 全文+156 分片=165 自洽）；另在 kb-mcp/server.py 中实数注册工具：94 个中恰 41 个 kb_* 前缀，'41 kb_* tools (94 in total)' 精确成立。页数合规：正文（摘要至第 5 节结论）实际结束于第 4 页，第 5 页仅为 Acknowledgments、Data Availability、GenAI 披露、Competing Interests 与 References（GenAI 披露与 references 属允许溢出）。系统创新点清晰（内容分类组织 + 可解释 0–8 内容门 + 诚实 not-found 契约 + 41 工具的 agent-native 界面），可演示性强（三种入口、单实例、现场自带 PDF、demo 视频），证据诚实（自我评估性质、n=10 规模、负结果均已明示）。遗留问题均为 minor，不阻塞接收。",
+  "issues": [
+    {
+      "severity": "minor",
+      "location": "Figure 1 (page 2), bottom benchmark strip, 'Retrieval + evidence latency' bar",
+      "comment": "同一条目下并列 12.2 s 与 ~2.3 s，但两者口径不同：12.2 s 是 Track C 的端到端时延（含答案生成），~2.3 s 是 Track A 的检索+证据阅读时延。Figure 3 与 Table 1 都明确区分了口径（'scopes differ'），Figure 1 却共用一个标签，视觉上对本系统偏有利。",
+      "suggestion": "在 Figure 1 中为两个数字分别标注口径（如 'A: retrieval + reads' / 'C: end-to-end'），或加注 'scopes differ; see Fig. 3 / Table 1'。"
+    },
+    {
+      "severity": "minor",
+      "location": "Page 5 backmatter (Acknowledgments, Data Availability)",
+      "comment": "正文 4 页合规，且 GenAI 披露与 references 溢出为允许项；但第 5 页同时承载了 Acknowledgments 占位与 Data Availability 段落，若venue 严格按'仅披露与参考文献可溢出'执行，这两节存在被计入正文页的风险。",
+      "suggestion": "核对 CIKM demo CFP 原文措辞；如从严，可将 Data Availability 压缩并入 GenAI 披露之后的后置块（两者内容相邻），Acknowledgments 占位留至 camera-ready 处理。"
+    },
+    {
+      "severity": "minor",
+      "location": "Table 1 (page 4), keyword rows + Sec. 4 Results paragraph",
+      "comment": "两行关键词指标的口径不同（'≥1 gold keyword' 按整答案计 10/10，'all gold keywords' 仅按 Answer 段计 7/10），虽在 caption 中有解释，但表内并读易混淆；且 BQ10 始终未覆盖全部关键词（track_a_kw_hit.json 中 kw_all=false，缺 'immune evasion'），正文只点名了 BQ01/BQ03 的盲点，未说明第 9/10 与 7/10 之间差的第三个个案。",
+      "suggestion": "在两行行尾分别标注计数口径（whole answer / Answer section），并在 Results 的括号补注中加入 BQ10（如 'BQ10 never covers both keywords in any window'）。"
+    },
+    {
+      "severity": "minor",
+      "location": "Figures 1 and 3 (pages 2 and 4), auxiliary text at print size",
+      "comment": "Fig. 1 以 0.66\\textwidth、Fig. 3 以 0.72\\textwidth 排版时，脚注条与 'ONE QUESTION, THREE FATES' 面板的最小字号约 4–5pt，纸面可读性处于临界。图题本身自足（数字来源均已注明），故不构成拒稿因素。",
+      "suggestion": "将两图放大至 ~0.9\\textwidth 或把最小字号面板改为指向仓库 artifact 的附录图；至少在 camera-ready 用矢量/高分辨率版本核对印刷效果。"
+    },
+    {
+      "severity": "minor",
+      "location": "Sec. 4 'Honesty checks' (page 4)",
+      "comment": "gate 分数由执行 LLM 依 rubric 自评，作者已如实披露'非独立评估'；对 demo 论文可接受，但这是全篇唯一缺少外部锚点的证据环节。",
+      "suggestion": "增加一个小规模人工/独立模型复核锚点（如对 2 个问题由第二模型或作者盲评 gate 分数并报告一致性），可在不破坏 n=10 诚实口径的前提下显著增强说服力。"
+    }
+  ]
+}

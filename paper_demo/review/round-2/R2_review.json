@@ -1,0 +1,55 @@
+{
+  "reviewer": "R2-RAG-domain-expert",
+  "recommendation": "minor_revision",
+  "overall": "I independently re-derived every headline number from the cited artifacts and almost all of them reproduce exactly: bench10_qa.json gives the 9/10 scripted regression (single miss BQ06, doc_hit true); skill_track_answers.json gives final gate scores 6-8/8 with exactly two 5/8 librarian rescues (BQ06, BQ10); skill_track_evidence.json gives mean vector recall 1.566 s (paper: 1.57/1.6) plus 0.813 s reads (2.38 s total); track_bc.json gives B mean 78.78 s (35.5-165.3) and C mean 12.24 s (5.8-28.6, 0.595 s retrieval) with C answering 8/10 and honestly abstaining on BQ01/BQ04; honest_failure_probe.json gives probes 1/8, 1/8, 0/8, all NOT_FOUND, including the BERT training-epoch trap; ingest artifacts give 50/50 parse-verified, 165 docs, per-KB split 18/15/10/5/2, 3,798,446 chars (3.8 M), shelf census 72/43/32/12/6, and the two cross-category re-files (spiking-neural-network 'neuroscience' file, Neolithic 'agriculture' file) all check out. The two measurements (scripted keyword regression vs. live skill run) are cleanly separated in abstract, intro, and Section 4, and no contradictory 'BM25 fusion / tri-channel' residue remains: BM25/graph are scoped to the service layer (Fig. 2) and the hybrid regression is honestly reported in Section 2.5; Table 1 and Figure 3 label latency scopes correctly. Three issues keep this from accept: the Table 1 keyword row 'names all gold keywords 9/10' is inflated by blind-spot/confidence meta-mentions (strict answer-body count is 7/10); one sentence about latency scope ('answer generation is ... untimed' in all tracks) is factually wrong for Tracks B/C and bleeds into the Conclusion's unqualified 'fastest' claim; and the '165 of 165 tagged, zero failures, 48 s' claim traces to no cited artifact while ingest_report.json records tag_ok=false for 41/50 documents. All three are fixable from existing artifacts without new experiments.",
+  "issues": [
+    {
+      "severity": "major",
+      "location": "sec4_eval.tex (Results paragraph) + Table 1 row 'Answer names all gold keywords 9/10'; artifact benchmark-suite/results/track_a_kw_hit.json",
+      "comment": "The keyword-hit rule counts substrings over the entire five-section answer, including the Confidence and Blind Spots sections. For BQ01 the only occurrence of 'scaled dot-product' is the Confidence sentence 'Medium-low for the exact scaled dot-product equation, which sits in sec 3.2.1 outside the read windows', and for BQ03 the only occurrence of '67.6' is the Blind-Spots sentence declaring the number was not read. Both keywords are thus 'named' only inside sentences that say they were NOT provided. Under an answer-section-only rule the metric is 7/10, not 9/10. The paper explains the BQ10 hyphen artifact but not these two, and the Table 1 caption does not say blind-spot mentions count as hits. The simultaneous disclosure of the BQ01/BQ03 blind spots mitigates deception, but the table row as presented overstates answer completeness.",
+      "suggestion": "Recompute the all-keyword row restricted to the Answer section (7/10) or annotate that BQ01/BQ03 'hits' are blind-spot self-declarations; state the counting scope in the caption. One-line change plus a rerun of the counting script over the existing artifact."
+    },
+    {
+      "severity": "major",
+      "location": "sec4_eval.tex (Results, Track C paragraph, sentence 'Track A's 2.38 s covers retrieval and evidence reads only; answer generation is agent-side in all tracks and untimed') and sec4_backmatter.tex (Conclusion, 'the dense baseline was fastest')",
+      "comment": "The 'untimed in all tracks' claim is contradicted by the paper's own artifact: track_bc.json records latency_answer separately for Track C (mean ~11.65 s of the 12.2 s total, e.g., BQ01 0.8+11.8=12.6 s) and Track B's latency is the full agent run including its LLM call. Only Track A's answer composition is untimed. The Table 1 row labels ('retrieval + reads (A)' vs 'end-to-end (B, C)') and Figure 3's scope legend are correct, but this sentence and the Conclusion's unqualified 'the dense baseline was fastest' invite a cross-scope comparison (C end-to-end incl. generation vs. A retrieval-only 2.38 s) that the measured data do not support.",
+      "suggestion": "Reword to 'answer composition is agent-side in Track A and untimed; Track B/C latencies are end-to-end and include their LLM calls', and qualify the Conclusion ('fastest of the two end-to-end-measured tracks')."
+    },
+    {
+      "severity": "major",
+      "location": "sec2_system.tex Section 2.1 ('Tags propagate from a document to all of its parts (165 of 165 tagged, zero failures, 48 s)'); Data Availability names ingest_report.json as the trace",
+      "comment": "No artifact in benchmark-suite/results/ contains a 48 s tag-propagation timing or a propagation failure count. The nearest cited trace, ingest_report.json, records tag_ok=false for 41 of 50 routed documents (semantics of tag_ok are unexplained anywhere in the paper), with total ingest 3860.2 s; graph_stats.json confirms tag_count=165 (existence) but not failure-free propagation or the 48 s figure. Since Data Availability promises 'every reported number traces to a repository artifact', this claim currently violates the paper's own traceability contract, and the tag_ok=false pattern at minimum needs an explanation.",
+      "suggestion": "Publish the tag-propagation timing log (the YAML audit tree reportedly persists it) or reconcile/explain the tag_ok field in ingest_report.json, and cite the exact artifact next to the 48 s / zero-failures claim."
+    },
+    {
+      "severity": "minor",
+      "location": "Figure 1 (fig1_rag_vs_kb.png), bottom 'MEASURED ON THE BENCHMARK RUN' strip, row labeled 'Retrieval + evidence latency: 12.2 s vs ~2.3 s'",
+      "comment": "The 12.2 s figure for Track C is end-to-end including ~11.6 s of single-call answer generation (Table 1 row: 'Latency: end-to-end (B, C)'), yet Figure 1 groups it with Track A's 2.38 s retrieval+reads under a single 'Retrieval + evidence latency' heading. The underlying numbers are correct and Figure 3 labels scopes properly, but the teaser figure is the most quotable panel and its label invites an apples-to-oranges reading.",
+      "suggestion": "Relabel the row as in Figure 3, e.g., 'Latency per question (scopes differ: 12.2 s = end-to-end incl. answering; ~2.3 s = retrieval + evidence reads)'."
+    },
+    {
+      "severity": "minor",
+      "location": "sec2_system.tex Section 2.1 ('the relation graph reports 860 typed relations (730 shared-tag, 130 vector-similarity edges), snapshot in graph_stats.json')",
+      "comment": "graph_stats.json reports edge_count=1671; the quoted 860 is the sum of only the two relation_by_reason families (730 shared_tag + 130 vector_similar). The 860 is internally consistent but a reader opening the named snapshot sees 1671 edges and 811 unaccounted ones, which looks like a mismatch.",
+      "suggestion": "State the relation to the total, e.g., '860 typed relations (730 shared-tag, 130 vector-similarity) out of 1,671 total graph edges', or name the remaining edge family."
+    },
+    {
+      "severity": "minor",
+      "location": "sec3_demo.tex Scenario 2 (gate-adjudicated answering) and Figure 2 orange trace",
+      "comment": "The narrative compresses the trace: it says the NISQ paper ranks first at 0.71 similarity, the hit card names 'part 1 of 3', and 'the gate reads that part, finds the defining sentence plus the no-error-correction limitation'. Per skill_track_evidence.json the top-1 recalled part is part 2 of 3 (0.709), part 1 of 3 is second (0.703), the defining sentence comes from part 1's title/intro, and the no-error-correction limitation comes from part 2 section 6.4; the gate read both parts. Figure 2's live query ('What limits NISQ devices?') is also a paraphrase of BQ02 rather than the verbatim question.",
+      "suggestion": "Adjust to 'the hit card names the document with parts 1/3 and 2/3 retrieved; the gate reads both, finding the definition in part 1 and the limitation in part 2 section 6.4, scoring 7/8', and show the verbatim BQ02 question in the Figure 2 trace header."
+    },
+    {
+      "severity": "minor",
+      "location": "sec4_eval.tex Table 1 ('Answered on target 10/10') and Honesty checks paragraph",
+      "comment": "Track A's on-target judgments and all gate scores are issued by the executing LLM agent itself. The Honesty checks paragraph discloses this commendably ('recorded protocol traces, not independent evaluations'), but Table 1 mixes self-adjudicated quality metrics with system-observable ones (latency, provenance granularity) without per-row qualification, and no human-verified sample exists.",
+      "suggestion": "Add a caption note that on-target/gate rows are the executing agent's rubric judgments, and if possible add a small human-audited subset (even 10 answers) to the artifact set."
+    },
+    {
+      "severity": "minor",
+      "location": "Repository artifact benchmark-suite/results/track_a_e2e_spot.json vs Table 1 Track-A end-to-end cell ('--')",
+      "comment": "The results tree contains track_a_e2e_spot.json whose stated purpose is to fill Table 1's Track-A end-to-end cell with a batch wall-clock approximation, but the file contains only the scripted segment timings (phase1_vector ~2.0 s, gate_reads ~0.8 s) and no per-question composition seconds, and the paper leaves the cell empty. Publishing an artifact that promises a measurement it does not contain weakens the paper's per-number traceability discipline (its gate scores, 8/8 with a 4/8 references-page rescue for BQ10, also differ from the cited skill run's 6-8/8 with 5/8 header-fragment rescue, which could confuse readers who diff the artifacts).",
+      "suggestion": "Either complete the composition-timing measurement and cite it, or remove the file from the released results directory; if kept, add a note distinguishing its adjudication pass from the cited skill run."
+    }
+  ]
+}

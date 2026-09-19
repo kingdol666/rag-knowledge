@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{17}
+\begin{thebibliography}{18}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -52,8 +52,8 @@
   \bibinfo{person}{Yizhong Wang}, \bibinfo{person}{Avirup Sil}, {and}
   \bibinfo{person}{Hannaneh Hajishirzi}.} \bibinfo{year}{2024}\natexlab{}.
 \newblock \showarticletitle{{Self-RAG}: Learning to Retrieve, Generate, and
-  Critique through Self-Reflection}. In \bibinfo{booktitle}{\emph{International
-  Conference on Learning Representations}}.
+  Critique through Self-Reflection}. In \bibinfo{booktitle}{\emph{The Twelfth
+  International Conference on Learning Representations ({ICLR})}}.
 \newblock
 
 
@@ -64,7 +64,8 @@
   \bibinfo{person}{Defu Lian}, {and} \bibinfo{person}{Zheng Liu}.}
   \bibinfo{year}{2024}\natexlab{}.
 \newblock \showarticletitle{{M3-Embedding}: Multi-Linguality,
-  Multi-Functionality, Multi-Granularity}.
+  Multi-Functionality, Multi-Granularity Text Embeddings Through Self-Knowledge
+  Distillation}.
 \newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2402.03216}}
   (\bibinfo{year}{2024}).
 \newblock
@@ -114,7 +115,8 @@
   \bibinfo{person}{Yiming Yang}, \bibinfo{person}{Jamie Callan}, {and}
   \bibinfo{person}{Graham Neubig}.} \bibinfo{year}{2023}\natexlab{}.
 \newblock \showarticletitle{Active Retrieval Augmented Generation}. In
-  \bibinfo{booktitle}{\emph{Proceedings of EMNLP}}.
+  \bibinfo{booktitle}{\emph{Proceedings of the 2023 Conference on Empirical
+  Methods in Natural Language Processing ({EMNLP})}}.
 \newblock
 
 
@@ -123,7 +125,8 @@
 \bibfield{author}{\bibinfo{person}{Amita Kamath}, \bibinfo{person}{Robin Jia},
   {and} \bibinfo{person}{Percy Liang}.} \bibinfo{year}{2020}\natexlab{}.
 \newblock \showarticletitle{Selective Question Answering under Domain Shift}.
-  In \bibinfo{booktitle}{\emph{Proceedings of ACL}}.
+  In \bibinfo{booktitle}{\emph{Proceedings of the 58th Annual Meeting of the
+  Association for Computational Linguistics ({ACL})}}.
 \newblock
 
 
@@ -132,10 +135,11 @@
 \bibfield{author}{\bibinfo{person}{Vladimir Karpukhin}, \bibinfo{person}{Barlas
   O{\u{g}}uz}, \bibinfo{person}{Sewon Min}, \bibinfo{person}{Patrick Lewis},
   \bibinfo{person}{Ledell Wu}, \bibinfo{person}{Sergey Edunov},
-  \bibinfo{person}{Danqi Chen}, {and} \bibinfo{person}{Wen tau Yih}.}
+  \bibinfo{person}{Danqi Chen}, {and} \bibinfo{person}{{Wen-tau} Yih}.}
   \bibinfo{year}{2020}\natexlab{}.
 \newblock \showarticletitle{Dense Passage Retrieval for Open-Domain Question
-  Answering}. In \bibinfo{booktitle}{\emph{Proceedings of EMNLP}}.
+  Answering}. In \bibinfo{booktitle}{\emph{Proceedings of the 2020 Conference
+  on Empirical Methods in Natural Language Processing ({EMNLP})}}.
 \newblock
 
 
@@ -155,7 +159,7 @@
   Perez}, \bibinfo{person}{Aleksandra Piktus}, \bibinfo{person}{Fabio Petroni},
   \bibinfo{person}{Vladimir Karpukhin}, \bibinfo{person}{Naman Goyal},
   \bibinfo{person}{Heinrich K{\"u}ttler}, \bibinfo{person}{Mike Lewis},
-  \bibinfo{person}{Wen tau Yih}, \bibinfo{person}{Tim Rockt{\"a}schel},
+  \bibinfo{person}{{Wen-tau} Yih}, \bibinfo{person}{Tim Rockt{\"a}schel},
   \bibinfo{person}{Sebastian Riedel}, {and} \bibinfo{person}{Douwe Kiela}.}
   \bibinfo{year}{2020}\natexlab{}.
 \newblock \showarticletitle{Retrieval-Augmented Generation for
@@ -184,6 +188,18 @@
 \newblock
 
 
+\bibitem[Robertson and Zaragoza(2009)]%
+        {bm25}
+\bibfield{author}{\bibinfo{person}{Stephen Robertson} {and}
+  \bibinfo{person}{Hugo Zaragoza}.} \bibinfo{year}{2009}\natexlab{}.
+\newblock \showarticletitle{The Probabilistic Relevance Framework: {BM25} and
+  Beyond}.
+\newblock \bibinfo{journal}{\emph{Foundations and Trends in Information
+  Retrieval}} \bibinfo{volume}{3}, \bibinfo{number}{4} (\bibinfo{year}{2009}),
+  \bibinfo{pages}{333--389}.
+\newblock
+
+
 \bibitem[Sarthi et~al\mbox{.}(2024)]%
         {raptor}
 \bibfield{author}{\bibinfo{person}{Parth Sarthi}, \bibinfo{person}{Salman
@@ -191,8 +207,8 @@
   \bibinfo{person}{Anna Goldie}, {and} \bibinfo{person}{Christopher~D.
   Manning}.} \bibinfo{year}{2024}\natexlab{}.
 \newblock \showarticletitle{{RAPTOR}: Recursive Abstractive Processing for
-  Tree-Organized Retrieval}. In \bibinfo{booktitle}{\emph{International
-  Conference on Learning Representations}}.
+  Tree-Organized Retrieval}. In \bibinfo{booktitle}{\emph{The Twelfth
+  International Conference on Learning Representations ({ICLR})}}.
 \newblock
 
 
@@ -212,7 +228,7 @@
 \bibitem[Yan et~al\mbox{.}(2024)]%
         {crag}
 \bibfield{author}{\bibinfo{person}{Shi-Qi Yan}, \bibinfo{person}{Jia-Chen Gu},
-  \bibinfo{person}{Yun Zhu}, {and} \bibinfo{person}{Zhiyuan Qi}.}
+  \bibinfo{person}{Yun Zhu}, {and} \bibinfo{person}{Zhen-Hua Ling}.}
   \bibinfo{year}{2024}\natexlab{}.
 \newblock \showarticletitle{Corrective Retrieval Augmented Generation}.
 \newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2401.15884}}
@@ -226,7 +242,8 @@
   \bibinfo{person}{Leyang Cui}, \bibinfo{person}{Deng Cai},
   \bibinfo{person}{Lemao Liu}, \bibinfo{person}{Tingchen Fu},
   \bibinfo{person}{Xinting Huang}, \bibinfo{person}{Enbo Zhao},
-  \bibinfo{person}{Yu Zhang}, \bibinfo{person}{Yulong Chen}, {et~al\mbox{.}}}
+  \bibinfo{person}{Yu Zhang}, \bibinfo{person}{Chen Xu},
+  \bibinfo{person}{Yulong Chen}, {et~al\mbox{.}}}
   \bibinfo{year}{2023}\natexlab{}.
 \newblock \showarticletitle{Siren's Song in the {AI} Ocean: A Survey on
   Hallucination in Large Language Models}.

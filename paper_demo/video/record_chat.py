@@ -125,6 +125,27 @@ def main() -> int:
         last_len, stable, shot_at = 0, 0, 0
         while time.time() < deadline:
             page.wait_for_timeout(6000)
+            # The transcript pane does not follow the stream on its own, so the
+            # agent's tool calls and answer render below the fold. Pin it to the
+            # bottom every tick or the recording only ever shows the first screen.
+            try:
+                page.evaluate(
+                    """() => {
+                        const sel = ['.messages','.chat-messages','.message-list',
+                                     '.msg-list','.chat-body','.claude-messages'];
+                        for (const s of sel) {
+                          for (const el of document.querySelectorAll(s)) {
+                            el.scrollTop = el.scrollHeight;
+                          }
+                        }
+                        const main = document.querySelector(
+                          '.chat-main,.chat-content,.main-content');
+                        if (main) main.scrollTop = main.scrollHeight;
+                        window.scrollTo(0, document.body.scrollHeight);
+                    }""")
+                page.mouse.wheel(0, 6000)
+            except Exception:  # noqa: BLE001
+                pass
             try:
                 txt = page.inner_text("body")
             except Exception:  # noqa: BLE001
@@ -143,8 +164,17 @@ def main() -> int:
             # finished when the transcript stops growing and shows a result
             if stable >= 4 and n > 1500:
                 break
-        b.hold(2500)
+        # land on the finished answer and hold long enough to read it
+        for _ in range(6):
+            try:
+                page.mouse.wheel(0, 8000)
+                page.evaluate("() => window.scrollTo(0, document.body.scrollHeight)")
+            except Exception:  # noqa: BLE001
+                pass
+            page.wait_for_timeout(800)
+        b.hold(14000)
         b.shot("09_answer")
+        b.hold(6000)
 
         body = page.inner_text("body")
         (REC / "transcript.txt").write_text(body, encoding="utf-8")

@@ -14,7 +14,7 @@ def main() -> int:
         b = p.chromium.launch()
         pg = b.new_page(viewport={"width": w, "height": h},
                         device_scale_factor=scale)
-        pg.goto("file:///" + html.replace("\\", "/").lstrip("/"))
+        pg.goto("file:///" + html.replace("\\", "/").lstrip("/") + "#static")
         pg.wait_for_timeout(1200)
         pg.screenshot(path=png, full_page=True)
         b.close()

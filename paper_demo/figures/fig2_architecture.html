@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Figure 2 — QDCVR system architecture</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:2300px; height:1140px; overflow:hidden; background:#FFFFFF;
+               font-family:Arial, Helvetica, sans-serif; color:#1a2332;
+               -webkit-font-smoothing:antialiased; }
+  #fig { position:relative; width:2300px; height:1140px; background:#FFFFFF; }
+
+  /* ── layer bands ─────────────────────────────────────── */
+  .band { position:absolute; border-radius:16px; }
+  .band .b-label { position:absolute; left:26px; top:18px; display:flex; align-items:center; gap:12px;
+                   z-index:3; padding:4px 12px; border-radius:9px; }
+  #b1 .b-label { background:#f6f8fb; } #b2 .b-label { background:#f0faf7; }
+  #b3 .b-label { background:#f9f7f3; } #b4 .b-label { background:#f7f6fc; }
+  .band .b-label .ic { width:34px; height:34px; border-radius:9px; display:flex;
+                       align-items:center; justify-content:center; }
+  .band .b-label .ic svg { display:block; }
+  .band .b-label .t { font-size:28px; font-weight:800; letter-spacing:.4px; }
+  .band .b-label .s { font-size:24px; font-weight:400; margin-left:6px; }
+  #b1 { left:60px; top:84px;  width:2180px; height:150px; background:#f6f8fb; border:1.5px solid #dbe3ee; }
+  #b1 .t { color:#33465e; } #b1 .ic { background:#e3eaf4; } 
+  #b2 { left:60px; top:268px; width:2180px; height:404px; background:#f0faf7; border:2px solid #9ad6c5; }
+  #b2 .t { color:#0b5e4f; } #b2 .ic { background:#d7efe7; }
+  #b3 { left:60px; top:706px; width:2180px; height:166px; background:#f9f7f3; border:1.5px solid #e2dcd0; }
+  #b3 .t { color:#6e5a3f; } #b3 .ic { background:#ede7da; }
+  #b4 { left:60px; top:906px; width:2180px; height:150px; background:#f7f6fc; border:1.5px solid #e0dcf2; }
+  #b4 .t { color:#443a75; } #b4 .ic { background:#e9e5f7; }
+
+  /* ── wires ───────────────────────────────────────────── */
+  svg.wires { position:absolute; left:0; top:0; z-index:2; }
+
+  /* ── component boxes ─────────────────────────────────── */
+  .bx { position:absolute; z-index:3; background:#ffffff; border-radius:12px;
+        display:flex; align-items:center; justify-content:center; text-align:center;
+        box-shadow:0 2px 10px rgba(15,23,42,.07); }
+  #b1 .bx { border:2px solid #8fa5c2; font-size:33px; font-weight:700; color:#33465e; }
+  #b3 .bx { border:2px solid #c4b291; font-size:31px; line-height:1.25; color:#5f4d33; font-weight:600; }
+  #b4 .bx { border:2px solid #9d92ce; font-size:31px; font-weight:700; color:#443a75; }
+
+  /* phase pipeline cards */
+  .ph { position:absolute; z-index:3; background:#ffffff; border:2.5px solid #0f766e;
+        border-radius:14px; padding:16px 18px 16px; box-shadow:0 3px 14px rgba(15,118,110,.13); }
+  .ph .p-head { display:flex; align-items:center; gap:12px; margin-bottom:9px; }
+  .ph .p-num { width:40px; height:40px; border-radius:50%; background:#0f766e; color:#fff;
+               font-size:22px; font-weight:800; display:flex; align-items:center; justify-content:center;
+               flex:none; }
+  .ph .p-name { font-size:30px; font-weight:800; color:#0b4f4a; line-height:1.1; }
+  .ph .p-desc { font-size:24px; color:#41635e; line-height:1.32; }
+  .ph.gate { border-color:#b4441f; box-shadow:0 3px 14px rgba(180,68,31,.14); }
+  .ph.gate .p-num { background:#b4441f; }
+  .ph.gate .p-name { color:#8f3315; }
+  .ph.gate .p-desc { color:#7d5544; }
+
+  /* label chips */
+  .chip { position:absolute; z-index:4; font-weight:700; border-radius:9px; white-space:nowrap; }
+  .lbl { position:absolute; z-index:5; font-size:24px; font-style:italic; color:#5b6878; white-space:nowrap; }
+  .ann { position:absolute; z-index:5; background:#fff7f3; border:2px solid #b4441f; color:#8f3315;
+         font-weight:700; font-size:25px; border-radius:9px; padding:7px 16px; white-space:nowrap; }
+  .qchip { position:absolute; z-index:5; left:60px; top:16px; height:54px; line-height:52px;
+           background:#b4441f; color:#ffffff; font-weight:700; font-size:29px; padding:0 22px;
+           border-radius:11px; white-space:nowrap; box-shadow:0 3px 12px rgba(180,68,31,.3); }
+
+  .leg { position:absolute; z-index:4; left:66px; top:1092px; display:flex; align-items:center;
+         gap:36px; font-size:28px; color:#33404e; }
+  .leg .item { display:flex; align-items:center; gap:14px; }
+
+  /* ── animation ───────────────────────────────────────── */
+  .flowline { stroke-dasharray:11 9; animation:dash 1s linear infinite; }
+  @keyframes dash { to { stroke-dashoffset:-40; } }
+  .pulse { animation:pulse 1.6s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { box-shadow:0 3px 14px rgba(180,68,31,.14); }
+                     50%     { box-shadow:0 3px 26px rgba(180,68,31,.42); } }
+  body.static .flowline { animation:none !important; }
+  body.static .deco { display:none !important; }
+</style>
+</head>
+<body>
+<div id="fig">
+  <div class="qchip">live query &mdash; &ldquo;What limits NISQ devices?&rdquo; <span style="opacity:.85">(paraphrased BQ02)</span></div>
+  <div style="position:absolute; right:66px; top:22px; font-size:30px; font-weight:800; color:#1a2332;">QDCVR &mdash; <span style="color:#0f766e;">a knowledge-base retrieval protocol</span></div>
+
+  <!-- ═══════════ wires ═══════════ -->
+  <svg class="wires" width="2300" height="1140" viewBox="0 0 2300 1140" fill="none">
+    <defs>
+      <marker id="mG" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="13" refX="12.5" refY="6" orient="auto-start-reverse">
+        <path d="M0,0 L13,6 L0,12 Z" fill="#5b6878"/>
+      </marker>
+      <marker id="mO" markerUnits="userSpaceOnUse" markerWidth="16" markerHeight="14" refX="14.5" refY="6.5" orient="auto-start-reverse">
+        <path d="M0,0 L15,6.5 L0,13 Z" fill="#b4441f"/>
+      </marker>
+      <marker id="mD" markerUnits="userSpaceOnUse" markerWidth="13" markerHeight="12" refX="11.5" refY="5.5" orient="auto-start-reverse">
+        <path d="M0,0 L12,5.5 L0,11 Z" fill="#8894a5"/>
+      </marker>
+    </defs>
+
+    <!-- structural wires -->
+    <g stroke="#5b6878" stroke-width="2.5">
+      <path d="M440,234 L440,268"   marker-start="url(#mG)" marker-end="url(#mG)"/>
+      <path d="M1150,234 L1150,268" marker-start="url(#mG)" marker-end="url(#mG)"/>
+      <path d="M1855,234 L1855,268" marker-start="url(#mG)" marker-end="url(#mG)"/>
+      <path d="M693,672 L693,770"   marker-end="url(#mG)"/>
+      <path d="M1513,672 L1513,770" marker-end="url(#mG)"/>
+      <path d="M400,872 L400,972"  marker-start="url(#mG)" marker-end="url(#mG)"/>
+      <path d="M1150,872 L1150,972" marker-start="url(#mG)" marker-end="url(#mG)"/>
+      <path d="M1950,872 L1950,972" marker-start="url(#mG)" marker-end="url(#mG)"/>
+    </g>
+
+    <!-- gate-fail dashed bypass -->
+    <path d="M1150,560 L1150,626 L1990,626 L1990,560" stroke="#8894a5" stroke-width="2.4"
+          stroke-dasharray="9 6" marker-end="url(#mD)"/>
+    <!-- orange example trace (animated dashes) -->
+    <g stroke="#b4441f" stroke-width="4">
+      <path class="flowline" d="M430,70 L430,152"    marker-end="url(#mO)"/>
+      <path class="flowline" d="M430,220 L430,392"   marker-end="url(#mO)"/>
+      <path d="M494,470 L530,470"   marker-end="url(#mO)"/>
+      <path d="M906,470 L942,470"   marker-end="url(#mO)"/>
+      <path d="M1318,470 L1354,470" marker-end="url(#mO)"/>
+      <path d="M1730,470 L1766,470" marker-end="url(#mO)"/>
+      <path class="flowline" d="M1150,392 L1150,332 L2050,332 L2050,392" marker-end="url(#mO)"/>
+      <path class="flowline" d="M2050,560 L2050,770" marker-end="url(#mO)"/>
+      <path class="flowline" d="M2050,872 L2050,972" marker-end="url(#mO)"/>
+    </g>
+    <!-- deco: light packet travelling the trace -->
+    <g class="deco">
+      <circle r="7" fill="#b4441f" opacity=".85">
+        <animateMotion dur="3.2s" repeatCount="indefinite"
+          path="M430,70 L430,392 L494,470 L530,470 M906,470 L942,470 M1150,392 L1150,332 L2050,332 L2050,392 M2050,560 L2050,972"/>
+      </circle>
+    </g>
+  </svg>
+
+  <!-- ═══════════ Band 1 : Client layer ═══════════ -->
+  <div class="band" id="b1">
+    <div class="b-label">
+      <span class="ic"><svg width="20" height="20" viewBox="0 0 20 20"><rect x="2" y="3" width="16" height="12" rx="2" fill="none" stroke="#33465e" stroke-width="2"/><path d="M7 17h6" stroke="#33465e" stroke-width="2"/></svg></span>
+      <span class="t">CLIENT LAYER</span><span class="s">three ways in &mdash; one protocol</span>
+    </div>
+  </div>
+  <div class="bx" style="left:110px; top:152px; width:660px; height:62px;">Web Console (Nuxt :6789)</div>
+  <div class="bx" style="left:820px; top:152px; width:660px; height:62px;">ragctl CLI</div>
+  <div class="bx" style="left:1530px; top:152px; width:650px; height:62px;">MCP Agent Harnesses</div>
+
+  <!-- ═══════════ Band 2 : Agent & protocol layer ═══════════ -->
+  <div class="band" id="b2">
+    <div class="b-label">
+      <span class="ic"><svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="10" r="7" fill="none" stroke="#0b5e4f" stroke-width="2"/><circle cx="10" cy="10" r="2.6" fill="#0b5e4f"/></svg></span>
+      <span class="t">AGENT &amp; PROTOCOL LAYER</span><span class="s">QDCVR skill + kb-mcp (41 tools)</span>
+    </div>
+  </div>
+  <div class="ph" style="left:110px; top:388px; width:384px; height:224px;">
+    <div class="p-head"><span class="p-num">0</span><span class="p-name">Query Rewrite</span></div>
+    <div class="p-desc">The agent rewrites the question into retrieval-friendly form; every rewrite is logged as an artifact</div>
+  </div>
+  <div class="ph" style="left:530px; top:388px; width:376px; height:224px;">
+    <div class="p-head"><span class="p-num">1</span><span class="p-name">Vector-First Recall</span></div>
+    <div class="p-desc">BGE-M3 dense recall per category KB, cross-KB balanced, then document dedup</div>
+  </div>
+    <div class="ph gate pulse" style="left:942px; top:388px; width:376px; height:224px;">
+    <div class="p-head"><span class="p-num">&#10003;</span><span class="p-name">Content Gate</span></div>
+    <div class="p-desc">Agent reads the candidate text and scores evidence on a 0&ndash;8 rubric; &ge;&nbsp;6 exits early</div>
+  </div>
+  <div class="ph" style="left:1354px; top:388px; width:376px; height:224px;">
+    <div class="p-head"><span class="p-num">2</span><span class="p-name">Librarian Fallback</span></div>
+    <div class="p-desc">Gate &lt;&nbsp;6: shelf scan + targeted re-search, continuation reads until evidence is found</div>
+  </div>
+  <div class="ph" style="left:1766px; top:388px; width:384px; height:224px;">
+    <div class="p-head"><span class="p-num">3</span><span class="p-name">Cited Answer</span></div>
+    <div class="p-desc">Five cited sections: search paths, answer, sources, confidence, blind spots &mdash; or an honest not-found</div>
+  </div>
+  <div class="lbl" style="left:1568px; top:632px; transform:translateX(-50%);">no candidate passes &rarr; honest not-found</div>
+
+  <div class="ann" style="left:790px;  top:348px; transform:translateX(-50%);">1.6 s vector recall across 5 KBs</div>
+  <div class="ann" style="left:1150px; top:296px; transform:translateX(-50%);">gate 7/8 &mdash; fast exit</div>
+  <div class="ann" style="left:2050px; top:296px; transform:translateX(-50%);">cited five-section answer</div>
+
+  <!-- ═══════════ Band 3 : Service layer ═══════════ -->
+  <div class="band" id="b3">
+    <div class="b-label">
+      <span class="ic"><svg width="20" height="20" viewBox="0 0 20 20"><path d="M3 5h14M3 10h14M3 15h9" stroke="#8a4a1f" stroke-width="2.2"/></svg></span>
+      <span class="t">SERVICE LAYER</span><span class="s">FastAPI :8771 &mdash; write-through, single storage path</span>
+    </div>
+  </div>
+  <div class="bx" style="left:110px; top:770px; width:396px; height:86px;"><span>Document Intake +<br>MinerU Parsing</span></div>
+  <div class="bx" style="left:540px; top:770px; width:396px; height:86px;"><span>Content Classification<br>(5 category KBs)</span></div>
+  <div class="bx" style="left:970px; top:770px; width:396px; height:86px;"><span>Tag Propagation<br>+ A3b quality gates</span></div>
+  <div class="bx" style="left:1400px; top:770px; width:396px; height:86px;"><span>Retrieval Engines<br>(vector + BM25 + graph)</span></div>
+  <div class="bx" style="left:1830px; top:770px; width:350px; height:86px;"><span>Experience<br>Lifecycle</span></div>
+
+  <!-- ═══════════ Band 4 : Storage layer ═══════════ -->
+  <div class="band" id="b4">
+    <div class="b-label">
+      <span class="ic"><svg width="20" height="20" viewBox="0 0 20 20"><ellipse cx="10" cy="5" rx="7" ry="2.6" fill="none" stroke="#443a75" stroke-width="2"/><path d="M3 5v10c0 1.4 3.1 2.6 7 2.6s7-1.2 7-2.6V5" fill="none" stroke="#443a75" stroke-width="2"/></svg></span>
+      <span class="t">STORAGE LAYER</span><span class="s">read directly by retrieval &mdash; search adds no load to the service tier</span>
+    </div>
+  </div>
+  <div class="bx" style="left:110px; top:972px; width:654px; height:62px;">ChromaDB + BGE-M3 vectors</div>
+  <div class="bx" style="left:824px; top:972px; width:654px; height:62px;">Neo4j knowledge graph</div>
+  <div class="bx" style="left:1538px; top:972px; width:642px; height:62px;">YAML tree-fs + audit artifacts</div>
+
+  <!-- ═══════════ legend + footnote ═══════════ -->
+  <div class="leg">
+    <div class="item">
+      <svg width="52" height="14"><line x1="1" y1="7" x2="42" y2="7" stroke="#5b6878" stroke-width="2.5"/><path d="M42,2 L52,7 L42,12 Z" fill="#5b6878"/></svg>
+      <span>invoke / return</span>
+    </div>
+    <div class="item">
+      <svg width="52" height="14"><line x1="1" y1="7" x2="41" y2="7" stroke="#b4441f" stroke-width="3.5" stroke-dasharray="8 6"/><path d="M41,1.5 L52,7 L41,12.5 Z" fill="#b4441f"/></svg>
+      <span>live query trace (animated in browser)</span>
+    </div>
+    <div class="item">
+      <svg width="52" height="14"><line x1="1" y1="7" x2="43" y2="7" stroke="#8894a5" stroke-width="2.4" stroke-dasharray="7 6"/><path d="M43,2 L52,7 L43,12 Z" fill="#8894a5"/></svg>
+      <span>gate-fail path</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  if (location.hash.includes('static')) document.body.classList.add('static');
+</script>
+</body>
+</html>

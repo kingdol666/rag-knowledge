@@ -164,7 +164,7 @@ def card_html(kind: str) -> str:
           <div class="sub">Content decides where documents live.<br>
           Reading decides what answers.</div>
           <div class="sub2">Code and run artifacts:
-          github.com/kingdol/rag-knowledge<br>
+          github.com/kingdol666/rag-knowledge<br>
           Demonstration video &amp; benchmark artifacts ship with the repository.</div>
           <div class="meta">Visit the booth: bring a PDF, watch it classified, ask
           a question, inspect the score and the citation &mdash; then try to make
@@ -247,6 +247,8 @@ def build_piece(seg: dict, seconds: float, cap: Path | None) -> Path:
         src = clip_path(name)
         have = dur(src)
         mode = seg.get("clip_mode", "auto")
+        span = seg.get("clip_span", "head")
+        off = float(seg.get("clip_offset", 0))
         want_tl = (mode == "timelapse") or (
             mode == "auto" and have > seconds * 1.6)
         if want_tl and have > seconds:
@@ -254,22 +256,30 @@ def build_piece(seg: dict, seconds: float, cap: Path | None) -> Path:
             # answer) is time-compressed, not truncated, so the whole story
             # stays on screen instead of being cut off mid-way.
             factor = have / seconds
+            head = f"-ss {max(0.0, have - seconds * factor):.2f} " if span == "tail" else ""
             vf = (f"[0:v]setpts=PTS/{factor:.4f},fps={FPS},"
                   f"scale={W}:{H}:force_original_aspect_ratio=decrease,"
                   f"pad={W}:{H}:(ow-iw)/2:(oh-ih)/2:color=#f4f1ea[v0];"
                   f"[v0][1:v]overlay=0:0:format=auto[v]")
-            cmd = ["ffmpeg", "-y", "-v", "error", "-i", str(src), "-i", str(cap),
-                   "-filter_complex", vf, "-map", "[v]",
-                   "-t", f"{seconds:.3f}", "-r", str(FPS),
-                   "-c:v", "libx264", "-preset", "medium", "-crf", "19",
-                   "-pix_fmt", "yuv420p", str(dest)]
+            cmd = ["ffmpeg", "-y", "-v", "error"]
+            if head:
+                cmd += head.split()
+            cmd += ["-i", str(src), "-i", str(cap),
+                    "-filter_complex", vf, "-map", "[v]",
+                    "-t", f"{seconds:.3f}", "-r", str(FPS),
+                    "-c:v", "libx264", "-preset", "medium", "-crf", "19",
+                    "-pix_fmt", "yuv420p", str(dest)]
             run(cmd)
             print(f"  [piece] {seg['id']:<16} clip {name:<9} "
                   f"{have:5.1f}s -> {seconds:5.1f}s ({factor:.1f}x timelapse)")
             return dest
         spare = max(0.0, have - seconds)
-        # skip a little of the page-load at the head, keep the interaction whole
-        ss = min(1.6, spare * 0.35)
+        if span == "tail":
+            # the answer sits near, but not at, the end of the turn
+            ss = max(0.0, have - seconds - off)
+        else:
+            # skip a little of the page-load at the head
+            ss = min(1.6, spare * 0.35)
         take = min(seconds, max(0.5, have - ss))
         vf = (f"[0:v]trim=start={ss:.2f}:duration={take:.2f},"
               f"setpts=PTS-STARTPTS,fps={FPS},"
