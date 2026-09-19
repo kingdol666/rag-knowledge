@@ -48,6 +48,20 @@ export function getPending(
   return pendingPermissions.get(sessionId)?.get(toolUseId)
 }
 
+/**
+ * Locate the session key holding a pending request by its toolUseId alone.
+ * toolUseId is globally unique (tu_<ts>_<rand>), so this is unambiguous.
+ * Covers the pre-init race: the permission callback can fire before the SDK
+ * init message assigns the session id, keying the entry under '_pre_init'
+ * while the SSE payload carries an empty sessionId.
+ */
+export function findSessionByToolUseId(toolUseId: string): string | null {
+  for (const [sessionId, session] of pendingPermissions) {
+    if (session.has(toolUseId)) return sessionId
+  }
+  return null
+}
+
 export function resolvePending(
   sessionId: string,
   toolUseId: string,
