@@ -1,26 +1,20 @@
-% sec0_abstract.tex — Abstract for the CIKM demo paper.
-% Fragment only: relies on \sys{} and \url{} defined in main.tex.
-% All figures quoted here trace to benchmark-suite/results/ artifacts produced by
-% the 30000-character-chunk full-pipeline run of 2026-09-18.
-
+% sec0_abstract.tex — Bounded revision grounded in EVIDENCE-AUDIT.md.
 \begin{abstract}
-Institutional document stores are indexed by filename and folder conventions, and
-retrieval stacks chunk them into flat passage bags, so nobody can tell whether
-a retrieved passage answers a query. We present \sys{}, a deployable
-knowledge-base management platform that organizes documents by their content and
-verifies every retrieval by reading it. Ingestion parses documents into structured
-text, files each into a category base by reading its content rather than its
-filename, splits long papers into parts that keep their section headers, and
-propagates tags to every part. Retrieval runs one query-driven
-protocol: vector-first recall, an interpretable $0$--$8$ content gate scoring the
-candidate text actually read, a librarian fallback, and an
-explicit not-found contract when no evidence passes. The platform is exposed to AI
-agents through 41 \texttt{kb\_*} Model Context Protocol tools. On 50 real papers in 5 category
-bases (165 indexed documents, 3.8\,M characters, all parse-verified), a
-scripted 10-question regression passes 9/10 and the live run answers 10/10 on
-target (gates 6--8/8, two librarian rescues, top-1 gold recall 10/10, $1.6$\,s
-mean vector-recall time); three out-of-corpus probes return not-found reports
-instead of fabricated answers. Attendees can ingest, organize,
-query, and inspect every trace live. Demo video:
+Research administrators need to organize document collections and inspect the
+evidence behind answers drawn from them. We present \sys{}, an agent-operated
+platform that connects content-guided knowledge organization with inspectable
+retrieval. Packaged agent skills call tool APIs to parse documents, route them
+among existing category bases, maintain tags, and read candidate evidence.
+The retrieval protocol combines vector recall, a prompted content-gate
+self-assessment, additional search and reading, and explicit not-found reports.
+Gate scores expose the agent's judgment; they do not guarantee semantic
+correctness. The demonstration lets attendees follow document placement,
+inspect retrieved passages and source references, and examine failure reports.
+Saved operational traces cover 50 papers in five bases and 165 stored documents
+and parts. A separate ten-question snippet regression passes nine cases, and
+three scripted out-of-corpus examples illustrate agent-authored not-found
+reports. These operational
+spot checks provide concrete cases for examining the workflow, its recorded
+decisions, and the limits of available evidence. Demo video:
 \url{https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4}.
 \end{abstract}

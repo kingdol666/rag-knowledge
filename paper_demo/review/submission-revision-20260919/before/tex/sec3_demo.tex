@@ -1,0 +1,55 @@
+% sec3_demo.tex — Section 3: Demonstration (CIKM demo paper).
+% Fragment only: \sys{}, Figure~\ref{fig:threeway} and \cite keys resolve in main.tex.
+% Every number traces to benchmark-suite/results/ artifacts (30000-char-chunk run).
+
+\section{Demonstration}
+\label{sec:demo}
+
+\paragraph{Demo setup.}
+The demo targets IR practitioners and research-data administrators evaluating
+alternatives to folder trees, and agent builders wanting auditable retrieval
+tools. The live instance holds the 5
+category bases with the 50 real papers
+(3.8\,M characters) plus three reproduction indices used for comparison (one
+underlies Track~C).
+Attendees interact through the web console or any MCP-capable agent harness
+driving the same 41 \texttt{kb\_*} tools --- one protocol, two surfaces. Attendees may bring their own PDFs and watch them parsed, classified,
+and tagged on the spot; all scenarios run on one instance, no state reset.
+
+\paragraph{Scenario 1: from upload to answerable.}
+The attendee drops a PDF into the console upload panel. \sys{} parses it into
+structured Markdown, splits it into parts that each carry their
+section-path header, and files it into the recommended category base, tags
+propagated to every part --- no dialog asks the attendee to pick a folder,
+schema, or routing rule. The console lists the five
+content-classified bases (72, 43, 32, 12, 6 indexed documents) beside the
+chunk-built reproduction indices. Point
+proven: the administrator writes no rules, and re-filing is logged, not
+silent.
+
+\paragraph{Scenario 2: gate-adjudicated answering.}
+The attendee asks, ``What defines NISQ technology and what is its central
+limitation?'' The console shows Phase~1 recalling from all five bases, the NISQ
+paper ranking first at $0.71$ similarity, and
+the hit card naming the owning base, document, and part (\texttt{part 2 of 3}).
+The gate reads that part, finds the defining sentence plus the
+no-error-correction limitation, and scores it 7/8 (an execution-LLM
+self-assessment, Section~\ref{sec:eval}) --- a fast exit. Point
+proven: the answer carries a readable score and a resolvable citation, not
+a bare similarity value.
+
+\paragraph{Scenario 3: the gate discriminates, and failure is honest.}
+(a)~\emph{Rescue.} For the tumor-therapy question the initial top chunk is a
+header-only part fragment; the gate scores it 5/8, the librarian fallback
+re-searches and locates the abstract and equilibrium-analysis sections at 6/8
+--- named steps in the trace, not a silent retry. Two of the ten
+questions take this path.
+(b)~\emph{Honest not-found.} The attendee asks about a paper that does not exist:
+``What did `Spectral Tuning for Low-Resource Odor Recognition' report about training
+epochs?'' The trap is real --- the top candidate is the BERT paper, which genuinely
+contains training-epoch strings a similarity-ranked pipeline would quote.
+The gate scores it 1/8 and the shelf scan confirms the paper is absent, so the
+system returns a not-found report naming its search scope, the near miss, and why
+it does not answer. Three such probes ran (1/8, 1/8, 0/8); attendees are
+invited to pose their own. Point proven:
+``I don't know'' is a protocol-level, per-query recorded output.

@@ -1,52 +1,41 @@
-% sec1_intro.tex — Introduction for the CIKM demo paper.
-% Fragment only: relies on \sys{} defined in main.tex.
-
+% sec1_intro.tex — System/demo framing, compressed for the body budget.
 \section{Introduction}
 
-Consider a research group holding 50 PDFs: an administrator must assign each
-document a category and tags and, when someone asks ``what does X conclude?'',
-prove the right text was fetched. Filename conventions and hand-built folder
-trees answer none of this. Retrieval-augmented generation (RAG) promises answers over
-such stores but inherits their disorganization.
+Research administrators maintaining shared paper collections must organize
+documents and explain which passages support an answer. Filenames can obscure
+content, and relevant passages may not answer a question. Administrators need
+usable collection tools and records that expose retrieval decisions.
 
-RAG frameworks and integrated platforms chunk corpora into flat bags of passages and
-feed top-scored candidates to the generator without a recorded pass/fail
-adjudication of whether the text answers the
-query~\cite{rag-lewis,dpr,langchain,llamaindex}, a gap magnified by the documented
-hallucination risk~\cite{siren}. Structured variants add entity graphs or summary
-trees~\cite{graphrag,lightrag,raptor}, agentic and corrective methods self-assess
-and re-retrieve~\cite{selfrag,flare,crag}, and selective QA formalizes
-abstention~\cite{kamath} --- yet the ranker still self-certifies by similarity.
-None packages verification as an auditable per-query artifact
-with a failure contract, and none organizes the bases themselves by content.
+Retrieval-augmented generation connects answers to retrieved
+material~\cite{rag-lewis}. Self-RAG and Corrective RAG assess retrieval or
+generation and adapt later processing~\cite{selfrag,crag}.
+DeepRead exposes document hierarchies and paragraph coordinates to locate
+passages before reading them~\cite{deepread}. CyberBOT grounds generation and
+verification in an ontology~\cite{cyberbot}. QDCVR complements these approaches
+with content-guided collection management and a reusable evidence workflow
+built on tool APIs. The integration problem is to carry a document
+from administrative placement into evidence an agent can locate and a user
+can inspect. QDCVR connects movement/tagging tools to the same document-part
+identifiers used by search and reading. Attendees can therefore inspect a
+routing decision and then follow the placed document into an answer or a
+scoped failure report, rather than evaluate a retrieval controller alone.
 
-We present \sys{}, a deployable knowledge-base platform whose organization
-and retrieval are driven by document content, not filenames, fixed taxonomies,
-or bare vector similarity. Ingestion parses each document into structured
-text~\cite{mineru}, classifies it into a category base by reading that text, and
-propagates tags to every part. Retrieval runs through the Query-Driven
-Content-Verified Retrieval (QDCVR) protocol, ending in cited evidence or an
-honest not-found. The full stack runs on one
-host and is query-ready from cold in ${\sim}20$\,s.
-Figure~\ref{fig:teaser} contrasts how a dense-RAG
-stack and the \sys{} protocol answer one and the same question;
-Figure~\ref{fig:arch} shows the architecture.
+Packaged agent skills call these APIs to organize and query a collection.
+Routing uses document content to select among existing category bases, without
+requiring a new taxonomy. Parsed text, document parts, and tags support search
+and reading. Vector recall feeds a prompted content gate, followed by further
+search or reading when needed. Gate scores record the agent's judgment, not a
+semantic guarantee. Source references and explicit not-found reports make
+that judgment inspectable. Figure~\ref{fig:teaser} shows the workflow;
+Figure~\ref{fig:arch} presents the architecture.
 
+The demonstration contributes three connected capabilities:
 \begin{itemize}
-  \item \textbf{Content-based organization.} A classifier reads the parsed text
-  and assigns each document to a category base (2 of 50 overrode the filename
-  across categories, rationales persisted); tags propagate to all parts (165
-  tagged).
-  \item \textbf{Content-verified retrieval.} Vector-first recall feeds a
-  $0$--$8$ content gate (pass at $\geq 6$), a librarian fallback, and an
-  honest not-found when nothing passes.
-  \item \textbf{Agent-native and deployable.} 41 \texttt{kb\_*} MCP
-  tools~\cite{mcp} (94 in total) let AI agents operate the same platform as
-  human users.
-  \item \textbf{Evidence.} On the 50-paper benchmark of Section~\ref{sec:eval},
-  the protocol answers 10/10 on target and surfaces its own misses, probes, and
-  per-question traces.
+  \item Document parsing, content-guided routing, and tag maintenance.
+  \item Reusable agent skills that coordinate tool calls.
+  \item Retrieval records exposing candidate reads, gate judgments, further
+  searches, and failure reports.
 \end{itemize}
-
-Section~\ref{sec:demo} walks through three live scenarios: content-based ingestion,
-gate-adjudicated answering, and a genuine not-found.
+Section~\ref{sec:demo} invites attendees to follow these operations and inspect
+their outputs. Section~\ref{sec:eval} examines saved traces and provenance
+limits as operational evidence, not a general efficacy comparison.

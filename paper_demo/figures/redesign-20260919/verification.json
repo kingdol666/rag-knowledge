@@ -1,19 +1,28 @@
 {
   "checks": {
     "a": {
-      "textCount": 49,
+      "width": 1000,
+      "height": 560,
+      "ratio": 0.56,
+      "textCount": 35,
       "minFont": 14,
       "outOfBounds": [],
       "foreignObject": 0
     },
     "b": {
-      "textCount": 48,
+      "width": 1000,
+      "height": 560,
+      "ratio": 0.56,
+      "textCount": 36,
       "minFont": 14,
       "outOfBounds": [],
       "foreignObject": 0
     },
     "c": {
-      "textCount": 49,
+      "width": 1000,
+      "height": 560,
+      "ratio": 0.56,
+      "textCount": 35,
       "minFont": 14,
       "outOfBounds": [],
       "foreignObject": 0
@@ -23,5 +32,5 @@
   "page_errors": [],
   "preference_click_and_reload": "passed",
   "mobile_page_overflow": "none",
-  "render": "Playwright Chromium, actual inline SVG, device scale 2"
+  "render": "Playwright Chromium, actual standalone SVG, device scale 2 (2000 \u00d7 1120)"
 }

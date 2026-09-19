@@ -1,84 +1,36 @@
-% sec4_eval.tex — Section 4: Evaluation (CIKM demo paper).
-% Fragment only: \sys{}, Figure~\ref{fig:threeway}, Table~\ref{tab:threeway} and
-% \cite keys resolve in main.tex.
-% Every number traces to benchmark-suite/results/ artifacts (30000-char-chunk run
-% of 2026-09-18: bench10_qa.json, skill_track_evidence.json, skill_track_answers.json,
-% track_bc.json, track_a_kw_hit.json).
-
-\section{Evaluation}
+% Evidence sources and discrepancies are retained in EVIDENCE-AUDIT.md.
+\section{Demonstration Evidence and Limitations}
 \label{sec:eval}
 
-\paragraph{Setup.}
-Ten content-grounded questions go to three tracks over the same
-ingested corpora: \emph{Track~A}, the \sys{} protocol of \S\ref{sec:retrieval}
-executed end to end by its packaged skill; \emph{Track~B}, a bare agent with
-file tools over the 50 exported markdown papers (no index, one fresh session
-per question); and \emph{Track~C}, dense retrieval over 800-character fixed
-chunks with the top-2 retrieved chunks packed into a 4{,}000-character window
-for one LLM call.
-Every answer is recorded verbatim as a repository artifact;
-Table~\ref{tab:threeway} reports the scorecards and Figure~\ref{fig:threeway}
-shows the three tracks' answers to one question, side by side.
+We examine saved operational traces for ten questions and three out-of-corpus
+probes over 50 papers in five category bases, comprising 165 stored documents
+and parts. Track~A pairs tool-execution records with saved \sys{} answers; Track~B uses an external agent
+with file tools over exported papers; Track~C uses dense retrieval with a
+4{,}000-character context budget. A separate regression using the raw questions
+passes 9/10 cases: each pass requires the designated paper among the top three
+retrieved candidates and at least one literal gold keyword in their combined
+snippets. BQ06 retrieves its designated paper but lacks the required keyword.
+This checks snippet coverage, not final-answer correctness.
 
-\begin{table}[t]
-\centering
-\caption{Three tracks on the same 50-paper corpus and 10 questions:
-A = \sys{} protocol, B = bare agent, C = dense RAG baseline (our reproduction
-logs no chunk metadata). ``Gold first'' = own retrieval ranks the gold document
-first (not applicable to C; B's row rests on self-reported file order).
-Keyword rows are live-run counts over Track~A's
-whole answer; the second demands every gold keyword inside the Answer section
-(7/10; 9/10 with confidence/blind-spot declarations counted, miss BQ10); the
-scripted regression is a separate harness (9/10, miss BQ06). ``--'' = not
-applicable; BQ01/BQ03 miss because one gold keyword appears only in their
-confidence/blind-spot declarations.}
-\label{tab:threeway}
-\footnotesize
-\setlength{\tabcolsep}{3.2pt}
-\begin{tabular}{@{}lccc@{}}
-\toprule
-Metric & A & B & C \\
-\midrule
-Gold document placed first       & 10/10 & 10/10 & n/a \\
-Answered on target (abstaining)  & 10/10 \,(0) & 10/10 \,(0) & 8/10 \,(2) \\
-Answer names $\geq$1 gold keyword & 10/10 & --    & --  \\
-\parbox[t]{4.1cm}{\raggedright Answer names all gold keywords\\(in the Answer section)} & 7/10 & -- & -- \\
-Latency: retrieval + reads (A)   & 2.38\,s & -- & -- \\
-Latency: end-to-end (B, C)       & --    & 78.8\,s & 12.2\,s \\
-Latency range (B, C)             & --    & 35.5--165.3\,s & 5.8--28.6\,s \\
-Provenance granularity           & base/doc/part/\S & file & none \\
-\bottomrule
-\end{tabular}
-\end{table}
+The three out-of-corpus examples combine script-collected retrieval and
+catalog evidence with predefined agent-authored judgments and templated
+not-found reports. They illustrate the reporting format, not measured
+autonomous abstention. The census counts 165 catalog entries but retains
+153 document names; it does not establish exhaustive content inspection. C explicitly abstains in two of ten saved
+answers. These records illustrate how insufficient evidence is reported;
+non-abstention does not establish correctness. Gate scores are agent-authored rubric judgments, not independent
+correctness assessments. Attendees can inspect the recorded decisions alongside candidate
+text and source references, including where the available trace does not
+fully support an answer.
 
-\paragraph{Results.}
-Track~A places the gold document first in 10/10 questions at 1.57\,s mean vector
-recall plus 0.81\,s of candidate reads, and answers all ten on target. The
-scripted keyword regression passes 9/10; its single miss (BQ06) is a chunk-window
-artifact of the harness. In the live five-section answers, all ten
-name at least one gold keyword somewhere; seven name every gold keyword inside
-the Answer section, nine once confidence and blind-spot declarations are
-counted (misses BQ01, BQ03, BQ10 --- Table~\ref{tab:threeway}). Final gate
-scores are 6--8/8, with two librarian rescues after initial 5/8s.
+The tracks use different evidence windows and execution configurations.
+A's scripted, fixed rewrites include expected-answer terms, precluding a fair
+retrieval comparison. B's file references are self-reported without retained
+read events. C loses document metadata at the logging adapter, a limitation
+of this reproduction rather than dense retrieval. Resolved LLM configurations
+are not archived per answer, and cache state and parametric knowledge are
+uncontrolled. A records retrieval and read times but not answer-authoring time,
+so its end-to-end latency is unavailable. These selected traces support an
+operational demonstration, not claims of answer accuracy, speed advantage,
+or general efficacy.
 
-Track~C is the fastest end-to-end track at 12.2\,s (0.59\,s retrieval): 8 of 10
-answered, 2 abstained --- the answer-bearing passage was not among its two
-retrieved chunks, plausibly a chunking effect; chunk ranks were not logged, and
-an internal top-10 packing run abstained 0/10, so the count is
-packing-sensitive. Our harness logs no chunk-to-document metadata (a
-reproduction limitation, not dense retrieval's), so C's hits cannot be verified
-programmatically.
-Track~B produces the most detailed answers at 78.8\,s mean (35.5--165.3\,s); its
-citations stop at self-reported file names, its single agent call per question
-asserting rather than demonstrating file reads. On canonical papers every track
-may partly draw on the LLM's parametric knowledge --- uncontrolled; the
-comparison isolates provenance and auditability, not accuracy.
-
-\paragraph{Honesty checks.}
-All three out-of-corpus probes (1/8, 1/8, 0/8) returned not-found reports
-naming scope and near miss; one is the Scenario~3(b) trap. All numbers are
-spot-check scale ($n{=}10$ questions, $n{=}3$ probes), traces published as
-artifacts; on-target judgments are our readings of recorded answers against
-pre-written gold keywords and gate scores are execution-LLM self-assessments ---
-neither is independent. Track~A's answer-authoring time is uninstrumented: its
-row is retrieval plus reads, not end-to-end.

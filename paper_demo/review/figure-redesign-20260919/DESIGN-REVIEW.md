@@ -47,7 +47,8 @@ A. 横向过程与文档结构图；B. 离线/在线泳道与条件分支；C. �
 - experience lifecycle 是附属能力，不画成所有答案必须经过的最后一步。
 
 ### Figure 3：可审计案例而非营销结论
-- Transformer 案例的三个轨道：A 的章节证据与未读公式；B 的完整公式表述与自报文件名；C 的证据不足与 abstention。
+- Transformer 案例的三个轨道：A 的章节证据与当前记录声明的未读位置编码公式/训练细节；B 的完整公式表述与自报文件名；C 的证据不足与 abstention。
+- 重要数据一致性修正：当前 skill_track_answers.json 的 BQ01 gate=8；对应读取为 part 1/2、2/2。原图 gate=7 与未读注意力公式来自 archive-20260917-10000chunk 归档，该归档引用 part 11/26、25/26。草图只使用当前 run，不拼接。
 - 不画“C 故意/必然错误”；其 abstention 本身属于合理保守行为。
 - chunking 是正文所称 plausible explanation，不能在图上升级为已证实的唯一因果。
 - trap 展示 query → BERT near miss 1/8 → librarian scope → NOT_FOUND，而不是重复一大段回答文本。
@@ -60,7 +61,7 @@ A. 横向过程与文档结构图；B. 离线/在线泳道与条件分支；C. �
 
 **Figure 2. QDCVR platform and conditional retrieval protocol.** Offline ingestion preserves section addresses, classifies documents by content, and indexes tagged parts. Online retrieval reads recalled candidates before applying the content gate. Passing evidence yields a five-section cited answer; failed recall invokes a librarian search and re-verification. If no evidence passes after the search, the output names the search scope, near miss, and reason for not answering. Optional platform capabilities are distinguished from the benchmark path.
 
-**Figure 3. Recorded behavior on an in-corpus question and an out-of-corpus probe.** Paraphrased Transformer answers compare section-addressed evidence and a declared unread formula (A), a self-reported source filename (B), and abstention under the reproduced dense baseline (C). The lower trace illustrates a not-found report after rejecting a BERT near miss for a fictitious-paper query. This case illustrates provenance differences, not a general accuracy ranking.
+**Figure 3. Recorded behavior on an in-corpus question and an out-of-corpus probe.** Paraphrased Transformer answers compare section-addressed evidence and declared unread positional-encoding and training details (A), a self-reported source filename (B), and abstention under the reproduced dense baseline (C). The lower trace illustrates a not-found report after rejecting a BERT near miss for a fictitious-paper query. This case illustrates provenance differences, not a general accuracy ranking.
 
 ## 可核查外部来源
 - DeepRead v3: `https://arxiv.org/abs/2602.05014v3` 与 `https://arxiv.org/html/2602.05014v3`。
@@ -69,3 +70,9 @@ A. 横向过程与文档结构图；B. 离线/在线泳道与条件分支；C. �
 
 ## 当前交付边界
 原图、原 TeX、原 PDF 不改动。先查看真实方向稿并确定方向，再做三图统一、正式 PDF 导出、TeX 图注同步与四页正文排版验证。不能把本轮方向稿称为已经完成投稿版替换。
+
+
+## 追加：记录一致性检查
+独立核对还发现 BQ02（NISQ）的当前 `skill_track_answers.json` 与 `track_a_e2e_spot.json` 均为 8/8，而正文 Scenario 2 与旧图写 7/8。方向稿 Figure 1 因此只展示通用阈值 ≥6，不复制该存在冲突的实例分数。具体字段与当前/归档记录比较见 `../../figures/redesign-20260919/SOURCE-AUDIT.md`。
+
+Track C 的“parsing / Table 4”内容描述来自该轨道生成的回答，并非独立保存的 evidence window；`evidence_docs=[]`。新图明确归因为“C reports”，不得声称已直接检查输入窗口。实验 gate 分值标为 LLM self-assessments，而非正确率。

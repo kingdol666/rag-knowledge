@@ -1,0 +1,102 @@
+{
+  "source_assertions": "passed",
+  "runtime": {
+    "playwright": "1.51.0",
+    "PyMuPDF": "1.24.14",
+    "chromium": "134.0.6998.35"
+  },
+  "architecture_audit": "SYSTEM-AUDIT, EVIDENCE-AUDIT, CONTENT-REVIEW and packaged search skill applied (2026-09-19)",
+  "policy_sha256": "9bada693c528ce4b1ff726db30037cf65ce80dcc8c17e70f68545f60a0b66e74",
+  "content_review_sha256": "36e237a58d7f975b9b33f5c629fe3776896e1aa13210c904af4d9080c57c320c",
+  "audit_sha256": {
+    "EVIDENCE-AUDIT.md": "7452106a4df9054627dce1ce7ba8464243e7a34b078dbcab612d9175852f5dc5",
+    "REFERENCES-AUDIT.md": "88df3b53080620fa37024d197b361b9bf07f4a02412cc0376f9a1d38a72d1aa8",
+    "SYSTEM-AUDIT.md": "9eb1dfc6ff29bb863223d8a462fadc840bc8ee6559582e73a90f17f2970dffed"
+  },
+  "input_sha256": {
+    "direction-b.svg": "e7bce75c2a7459196607e194a10437227f5cf202bef449decac8dda40017b1ac",
+    "fig1-concept-draft.svg": "868eee0f0fa780d3b21e8be7d8460c4aee7ea9f90a91d70808ae0793299d4ae0",
+    "fig3-evidence-draft.svg": "d07879495a505cd31418a8ccb569196f8608da7c698473b839ebf3fa794c61ff"
+  },
+  "figures": {
+    "fig1-concept": {
+      "minimum_font_px": 14,
+      "out_of_bounds": [],
+      "overlaps": [],
+      "pdf_mediabox": [
+        0.0,
+        0.0,
+        750.0,
+        442.5
+      ],
+      "pdf_images": 0,
+      "pdf_vector_paths": 53,
+      "pdf_selectable_characters": 800,
+      "pdf_fonts": [
+        {
+          "name": "AAAAAA+Calibri-Bold",
+          "embedded_bytes": 34148
+        },
+        {
+          "name": "BAAAAA+Calibri",
+          "embedded_bytes": 39104
+        }
+      ],
+      "minimum_print_font_pt_at_504pt": 7.056
+    },
+    "fig2-architecture": {
+      "minimum_font_px": 16,
+      "out_of_bounds": [],
+      "overlaps": [],
+      "pdf_mediabox": [
+        0.0,
+        0.0,
+        750.0,
+        442.5
+      ],
+      "pdf_images": 0,
+      "pdf_vector_paths": 58,
+      "pdf_selectable_characters": 878,
+      "pdf_fonts": [
+        {
+          "name": "AAAAAA+Calibri",
+          "embedded_bytes": 44580
+        },
+        {
+          "name": "BAAAAA+Calibri-Bold",
+          "embedded_bytes": 27364
+        }
+      ],
+      "minimum_print_font_pt_at_504pt": 8.064
+    },
+    "fig3-evidence": {
+      "minimum_font_px": 14,
+      "out_of_bounds": [],
+      "overlaps": [],
+      "pdf_mediabox": [
+        0.0,
+        0.0,
+        750.0,
+        442.5
+      ],
+      "pdf_images": 0,
+      "pdf_vector_paths": 40,
+      "pdf_selectable_characters": 1187,
+      "pdf_fonts": [
+        {
+          "name": "AAAAAA+Calibri-Bold",
+          "embedded_bytes": 72304
+        },
+        {
+          "name": "BAAAAA+Calibri",
+          "embedded_bytes": 29352
+        },
+        {
+          "name": "BAAAAA+Calibri",
+          "embedded_bytes": 39064
+        }
+      ],
+      "minimum_print_font_pt_at_504pt": 7.056
+    }
+  }
+}

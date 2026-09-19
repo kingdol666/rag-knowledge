@@ -1,0 +1,86 @@
+CIKM ’26, November 9–13, 2026, Rome, Italy
+Author Name
+BQ02 · What defines NISQ technology and what is its central limitation?
+Dense RAG (our reproduction)
+QDCVR (agent-executed skill)
+≈800-token windows
+Fixed fragments
+Dense retrieval → pack 2 excerpts
+≤4,000-character evidence window
+Single generation → answer
+Provenance not logged in this harness.
+§
+§
+§
+Organized, section-addressed parts
+base / document / part / section
+Vector-first recall
+Read candidate text; score 0–8
+Gate ≥ 6?
+≥6: direct
+Initial <6
+Librarian fallback
+Keep 5; discard ≤4; read + recheck
+P0 ≥6
+P1 =5
+No usable
+P0/P1
+Cited answer
+Sources + limits
+Qualified answer
+With attribution
+Not found
+Scoped report
+Compared configurations,
+not a claim of accuracy superiority.
+0–8 rubric: ≥6 direct; usable P1 =5 may support an attributed answer after fallback. Scores are agent judgments.
+Figure 1: Two evidence-handling workflows for the same question. The reproduced dense baseline retrieves candidates and
+packs two excerpts for one generation call; its logging adapter does not retain source-document metadata. The QDCVR skill asks
+an agent to read section-addressed evidence and assess it before answering. Initial scores below six invoke recovery; a usable
+score-five backstop may support an explicitly qualified answer after recovery. This schematic explains the configurations, not a
+general accuracy ranking.
+Deployment requires the services, model weights, and a supported,
+configured agent harness.
+2.2
+Preparing Addressable Evidence
+MinerU converts PDFs to structured Markdown [6]. Long texts
+are split at a configurable character ceiling (30,000 in the supplied
+corpus). Retained headings and part identifiers locate a passage
+within its document; line-offset reads allow an agent to continue
+beyond an initial excerpt.
+The organization skill asks the agent to inspect parsed content,
+select among existing category bases, and use tools to place and tag
+documents. The workflow explicitly checks the resulting parts and
+indexing status: successful upload alone does not establish com-
+plete tagging and indexing. Administrators retain control over the
+bases and permissions. The five-base collection is a demonstration
+configuration, not a platform restriction.
+2.3
+Read, Assess, and Escalate
+QDCVR stands for Query-Driven Content-Verified Retrieval. Its
+skill rewrites a query, recalls vector candidates across selected
+bases, and reads their text. Content-verified denotes a prompted
+relevance assessment, not guaranteed correctness. The executing
+agent assigns
+𝑠= 𝑠topic + 𝑠scenario + 𝑠evidence,
+with ranges 0–3, 0–3, and 0–2. A score of at least 6 permits a direct
+answer. A score-5 candidate is retained as a partial-evidence back-
+stop; candidates scoring at most 4 are discarded. If none scores at
+least 6, the librarian inspects base summaries and document meta-
+data, searches selectively, and reads new candidates. If no stronger
+evidence emerges, the skill permits an explicitly attributed answer
+from a usable score-5 backstop.
+Answers contain search paths, answer, sources, confidence, and
+blind spots; evidence is addressable by base, document, part, and
+section. If neither strong evidence nor a usable backstop remains,
+the skill requests a not-found report with scope, near miss, and
+reason. These instructions rely on agent compliance. The supplied
+artifacts retain candidate excerpts and answer records; mutable
+file-tree metadata is not an append-only per-query audit log.
+3
+Interactive Demonstration
+The demonstration targets research-data administrators and agent
+developers. A prepared instance contains 50 papers in five bases.
+Attendees inspect documents in the web console and operate an
+MCP-capable agent with the packaged skills loaded. The presenter
+2

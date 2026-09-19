@@ -1,0 +1,92 @@
+QDCVR: An Agent-Operated Platform for Knowledge Organization and Inspectable Retrieval
+CIKM ’26, November 9–13, 2026, Rome, Italy
+Web HTTP / CLI setup
+Agents → MCP adapter
+Backend / storage primitives
+(a) Agent-assisted ingest
+(b) Online retrieval
+PDF
+MinerU
+parse
+Section
+Markdown
+Agent reads / routes
+Selects / propagates tags
+Split / index / store
+Retain section paths
+ChromaDB / BGE-M3 · Neo4j
+File tree + YAML metadata
+Query
+rewrite
+Vector-first recall
+Cross-base balance
+Indexed evidence → recall
+Read candidate text
+Parts / continuation
+Content rubric
+0–8 score
+Cited answer
+5 sections
+≥6: direct
+Librarian shelf scan
+Targeted re-search
+Initial <6: fallback
+Read new text + recheck
+Not found
+Scope + near miss + reason
+After fallback:
+No usable P0/P1
+Qualified answer
+With attribution
+After fallback:
+Usable P1 =5
+5 retained; ≤4 discarded
+Agent-executed QDCVR skill
+Demo: five category bases
+Skills execute gate / retry / classification; web or HTTP search does not automatically enforce this policy.
+Figure 2: Platform operations and the agent-executed QDCVR workflow. (a) Parsing, content-guided placement, and part-level
+checks prepare indexed evidence. (b) The packaged skill prescribes query rewriting, recall, reading, and a conditional content
+assessment. Scores of at least six permit a direct answer; lower initial scores invoke the librarian. After reassessment, usable
+score-five evidence can support an attributed backstop answer; no usable evidence yields not-found. These instructions are not
+mandatory behavior of ordinary HTTP search endpoints.
+provides the candidate excerpts and answer records alongside the
+console; ordinary web search is not presented as an equivalent
+execution of the skill.
+1. Organize a document. An attendee selects a PDF and an intake
+location, then asks the agent to parse and organize it by content.
+The attendee compares the parsed text with the proposed category,
+inspects the parts, and checks tags and indexing status. This ex-
+poses the routing decision and the operations needed to make the
+document searchable. A prepared example, explicitly identified as
+such, is available if live parsing would delay the session.
+2. Inspect an answer’s evidence. The attendee asks, “What de-
+fines NISQ technology and what is its central limitation?” In the
+supplied BQ02 trace, the first hit is part 2 of 3 of the NISQ paper,
+with similarity approximately 0.71. The recorded agent judgment
+is 8/8 and takes the direct-answer path. Attendees open the source
+and compare it with the answer: similarity, agent judgment, and
+evidence are distinct. Figure 3 adds a Transformer case comparing
+trace-derived section references, a self-reported filename, and a
+baseline abstention.
+3. Inspect a not-found report. The attendee asks for training
+epochs in the fictitious paper Spectral Tuning for Low-Resource Odor
+Recognition. The scripted P2 example pairs collected retrieval/catalog
+evidence with a predefined, agent-authored judgment: BERT dis-
+cusses training epochs but receives 1/8, and the saved report states
+not-found rather than substituting BERT’s recipe. Its catalog cen-
+sus covers five bases and 165 entries, not exhaustive reading of all
+documents. Attendees inspect the near miss and search scope and
+may try another question. The report concerns evidence in this
+collection, not the existence of an answer elsewhere.
+4
+Demonstration Evidence and Limitations
+We examine saved operational traces for ten questions and three
+out-of-corpus probes over 50 papers in five category bases, compris-
+ing 165 stored documents and parts. Track A pairs tool-execution
+records with saved Qdcvr answers; Track B uses an external agent
+with file tools over exported papers; Track C uses dense retrieval
+with a 4,000-character context budget. A separate regression using
+the raw questions passes 9/10 cases: each pass requires the desig-
+nated paper among the top three retrieved candidates and at least
+one literal gold keyword in their combined snippets. BQ06 retrieves
+3

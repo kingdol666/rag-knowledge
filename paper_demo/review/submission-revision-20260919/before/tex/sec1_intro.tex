@@ -1,0 +1,52 @@
+% sec1_intro.tex — Introduction for the CIKM demo paper.
+% Fragment only: relies on \sys{} defined in main.tex.
+
+\section{Introduction}
+
+Consider a research group holding 50 PDFs: an administrator must assign each
+document a category and tags and, when someone asks ``what does X conclude?'',
+prove the right text was fetched. Filename conventions and hand-built folder
+trees answer none of this. Retrieval-augmented generation (RAG) promises answers over
+such stores but inherits their disorganization.
+
+RAG frameworks and integrated platforms chunk corpora into flat bags of passages and
+feed top-scored candidates to the generator without a recorded pass/fail
+adjudication of whether the text answers the
+query~\cite{rag-lewis,dpr,langchain,llamaindex}, a gap magnified by the documented
+hallucination risk~\cite{siren}. Structured variants add entity graphs or summary
+trees~\cite{graphrag,lightrag,raptor}, agentic and corrective methods self-assess
+and re-retrieve~\cite{selfrag,flare,crag}, and selective QA formalizes
+abstention~\cite{kamath} --- yet the ranker still self-certifies by similarity.
+None packages verification as an auditable per-query artifact
+with a failure contract, and none organizes the bases themselves by content.
+
+We present \sys{}, a deployable knowledge-base platform whose organization
+and retrieval are driven by document content, not filenames, fixed taxonomies,
+or bare vector similarity. Ingestion parses each document into structured
+text~\cite{mineru}, classifies it into a category base by reading that text, and
+propagates tags to every part. Retrieval runs through the Query-Driven
+Content-Verified Retrieval (QDCVR) protocol, ending in cited evidence or an
+honest not-found. The full stack runs on one
+host and is query-ready from cold in ${\sim}20$\,s.
+Figure~\ref{fig:teaser} contrasts how a dense-RAG
+stack and the \sys{} protocol answer one and the same question;
+Figure~\ref{fig:arch} shows the architecture.
+
+\begin{itemize}
+  \item \textbf{Content-based organization.} A classifier reads the parsed text
+  and assigns each document to a category base (2 of 50 overrode the filename
+  across categories, rationales persisted); tags propagate to all parts (165
+  tagged).
+  \item \textbf{Content-verified retrieval.} Vector-first recall feeds a
+  $0$--$8$ content gate (pass at $\geq 6$), a librarian fallback, and an
+  honest not-found when nothing passes.
+  \item \textbf{Agent-native and deployable.} 41 \texttt{kb\_*} MCP
+  tools~\cite{mcp} (94 in total) let AI agents operate the same platform as
+  human users.
+  \item \textbf{Evidence.} On the 50-paper benchmark of Section~\ref{sec:eval},
+  the protocol answers 10/10 on target and surfaces its own misses, probes, and
+  per-question traces.
+\end{itemize}
+
+Section~\ref{sec:demo} walks through three live scenarios: content-based ingestion,
+gate-adjudicated answering, and a genuine not-found.

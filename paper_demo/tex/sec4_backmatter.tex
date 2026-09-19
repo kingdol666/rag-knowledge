@@ -1,48 +1,25 @@
-% sec4_backmatter.tex — Conclusion + back-matter sections for the CIKM demo paper.
-% Fragment only: relies on \sys{} and \url{} defined in main.tex.
-% CIKM 2026 demo CFP: 4 pages INCLUDING appendices and acknowledgments; only the
-% GenAI Usage Disclosure and references may overflow. Conclusion + Acknowledgments
-% therefore end on p.4, and Data Availability lives as a paragraph inside the
-% GenAI disclosure block (the reviewers' recommended reading of the CFP).
-
 \section{Conclusion}
-\sys{} organizes documents by content and verifies every retrieval by
-reading: vector-first recall, a $0$--$8$ content gate, a librarian fallback,
-an honest not-found contract --- one auditable trace per query.
-Figure~\ref{fig:threeway}'s tracks agree: the fastest
-failed twice (its abstentions being the very evidence-check the protocol makes
-explicit), the bare agent answered without provenance, the protocol
-answered with a citation --- or a not-found report. The faster systems lacked a component whose job is checking evidence ---
-the barrier against fluent fabrication.
+\sys{} links knowledge-base management tools with an agent-executed workflow
+for reading evidence, assessing relevance, and reporting search failure.
+The demonstration exposes document placement, source inspection, and
+not-found behavior. The saved cases illustrate operation rather than
+establish general effectiveness; compliance with the workflow and complete
+run provenance remain important validation requirements.
 
-\section*{Acknowledgments}
-[Funding and acknowledgment text to be finalized by the authors.]
+\paragraph{Artifacts.}
+Code, corpus-fetch scripts, and saved traces are available at
+\url{https://github.com/kingdol666/rag-knowledge}. The video is linked in the
+abstract. Reproduction requires configured document services and an agent
+harness/model; stored answers are not independent ground-truth judgments.
 
+% Any author-supplied acknowledgments must fit within the four-page body limit.
 \section*{GenAI Usage Disclosure}
-Generative AI tools were used for language editing and for drafting the
-layout of Figures~1--3. They generated no scientific content, ran no
-experiment, and produced no reported number. All results come from the
-system's benchmark pipeline on real data; the reported gate scores and
-not-found reports are recorded protocol traces produced by the platform's own
-agent, as stated where they appear. All AI-assisted drafts were reviewed and
-verified by the authors, who take full responsibility for the work.
-
-\paragraph{Data availability.}
-Every reported number traces to a repository artifact in
-\texttt{benchmark-suite/results/}: the ingestion reports
-(\texttt{ingest\_survey.json}; \texttt{ingest\_report.json}, a pre-tagging
-snapshot --- final tag coverage is \texttt{tag\_count=165} in
-\texttt{graph\_stats.json}), the classification decisions
-(\texttt{data/papers/classification.json}, with rationale notes on the
-overridden assignments),
-Track~A (\texttt{bench10\_qa.json}, \texttt{skill\_track\_evidence.json},
-\texttt{skill\_track\_answers.json}, \texttt{track\_a\_kw\_hit.json}),
-Tracks~B--C (\texttt{track\_bc.json}), the not-found probes
-(\texttt{honest\_failure\_probe.json}), and the graph snapshot
-(\texttt{graph\_stats.json}); per-query traces, timing logs, the MCP tool
-inventory (\texttt{kb-mcp/server.py}), and the archived chunking and
-hybrid-recall runs sit in the same tree. The corpus is fetched by a script
-from arXiv identifiers in a manifest. Code and run artifacts:
-\url{https://github.com/kingdol666/rag-knowledge}; demo video:
-\url{https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4}.
-Competing interests: none declared.
+OpenAI Codex assisted with prose revision, manuscript organization, inspection
+of implementation and experiment artifacts, and vector-figure implementation.
+No new answer-generation experiments were run for this revision; reported
+observations come from the existing saved records. The demonstrated system
+uses language models for content routing, rubric judgments, and answer
+drafting. These outputs are distinguished from deterministic inventory
+checks and are not independent correctness assessments. Responsibility for
+the final claims, sources, figures, and submitted manuscript rests with the
+human authors.
