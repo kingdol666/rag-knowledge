@@ -6,18 +6,22 @@ p. 5 carries only the GenAI Usage Disclosure (with the Data-availability paragra
 and references — the two categories the CFP allows to overflow.
 Reference set: the six CIKM demo papers in `reference/`; distilled rules in
 [`FIGURE-STYLE-GUIDE.md`](FIGURE-STYLE-GUIDE.md).
+Review loop: rounds 1–4 (3-reviewer loop, converged accept) + rounds 5–6
+(4-seat panel: EIC / figures / citations-integrity / devil's advocate → fixes →
+fresh 3-reviewer re-review). Round-6 verdicts: **R1 accept, R2 accept-with-minors
+(all minors fixed), R3 accept**. See `review/round-5/` and `review/round-6/`.
 
 ## 1. Hard requirements (CIKM 2026 Call for Demo Papers)
 
 | Requirement | Status | Evidence |
 |---|---|---|
 | ≤ 4 pages incl. appendices **and acknowledgments** | ✅ | §5 Conclusion + Acknowledgments end on p4; only GenAI disclosure + references on p5 |
-| Unlimited references | ✅ | p5, [1]–[17] |
+| Unlimited references | ✅ | p5, [1]–[18] (BM25 added in round 5) |
 | GenAI Usage Disclosure **before** references, outside the page budget | ✅ | `sec4_backmatter.tex`; Data Availability lives inside this block as "Data availability." paragraph (the reviewers' recommended reading of the CFP, which names only GenAI + references as exempt) |
 | ACM **sigconf**, two column | ✅ | `\documentclass[sigconf]{acmart}` |
 | CCS concepts + keywords | ✅ | p1, three CCS concepts + 6 keywords |
 | **Single-blind** — real names required | ⚠️ | `Author Name` / `Affiliation` are placeholders; **must be filled before submission** |
-| 3-minute demo video, URL in the paper | ⚠️ | URL present (abstract, Data availability); **goes live once the commit is pushed** |
+| 3-minute demo video, URL in the paper | ✅ | URL present (abstract + Data availability); video re-cut to 176.9 s and **pushed to master — URL verified HTTP 200 (2026-09-19)** |
 | Funding + competing-interest disclosure | ⚠️ | "Competing interests: none declared." written; funding line is still a placeholder |
 | Intended audience | ✅ | §1 last paragraph |
 | Innovative aspects | ✅ | §2.3 three named contracts (reading replaces scoring; content-induced bases; failure as first-class output) |
@@ -64,15 +68,35 @@ figures, `Figure N:` never abbreviated.
 
 ## 4. Outstanding before submission
 
-1. **Push the repo** so the video URL resolves:
-   `https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4`
+1. ~~Push the repo so the video URL resolves~~ **done 2026-09-19** — video live on
+   master, `blob` and `raw` URLs return HTTP 200; closing-card repo URL inside the
+   video also corrected (was `kingdol/…`, a 404) and duration re-cut to 176.9 s.
 2. **Author names and affiliations** — single-blind, placeholders must go.
 3. **Acknowledgments / funding** — placeholder text on p4 (fits; replacing the
    bracket line with real text of similar length is safe, longer text needs a
    recompile check).
-4. **`\acmConference`** city/dates are placeholders for camera-ready.
+4. **`\acmConference`** — running head now reads CIKM '26 / November 2026 /
+   Rome, Italy; confirm exact dates at camera-ready and re-enable the ACM
+   reference/ISBN/DOI block.
 
-## 5. Verdict
+## 5. Round-5/6 content hardening (devil's-advocate-driven)
+
+- Track B characterized by what traces support: self-reported file names, one
+  agent call per question, reads asserted not demonstrated; uncontrolled
+  parametric-knowledge confound owned for all tracks.
+- Track C: top-2 packing stated, abstention mechanism hedged ("plausibly a
+  chunking effect; chunk ranks were not logged"), top-10 packing sensitivity
+  disclosed (internal run: 0/10 abstentions); missing chunk metadata owned as a
+  harness limitation.
+- Honesty checks extended: on-target judgments are author readings against
+  pre-written gold keywords (not an independent judge); Track A's
+  answer-authoring time uninstrumented (its row is retrieval + reads).
+- BQ01/BQ03 keyword location corrected to confidence/blind-spot declarations;
+  all 12 arXiv-indexed references re-verified via arXiv API (one wrong survey ID
+  and one fabricated-looking author caught and fixed); classification.json path
+  and ingest_report.json pre-tagging snapshot noted in Data availability.
+
+## 6. Verdict
 
 | Aspect | Verdict |
 |---|---|
