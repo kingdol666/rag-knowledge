@@ -18,7 +18,7 @@ export class OmpEngine implements ChatEngine {
   readonly name = 'omp' as const
 
   async *query(req: QueryRequest): AsyncIterable<StandardMessage> {
-    const client = new OmpRpcClient(req.cwd, req.model, req.resume)
+    const client = new OmpRpcClient(req.cwd, req.model, req.resume, req.reasoningEffort)
     const queue = new AsyncQueue<StandardMessage>()
 
     // All mutable state in one object — safe to capture in closures

@@ -1,3 +1,0 @@
-# The Original Singles: 1967–1969, Volume 2
-
-The Original Singles: 1967–1969, Volume 2 is a compilation album by American rock 'n' roll band The Byrds. Originally released in 1982, it offered, for the first time, all of the mono single versions of the Byrds' singles released between 1967 and early 1969. The tracks on the album are laid out chronologically by release date of the single, and features the A-side first, then the B-side. For example, the album opens with the "My Back Pages" single, which had that on the A-side and "Renaissance Fair" on the B-side. The next single was "Have You Seen Her Face" with "Don't Make Waves" on the B-side, and so forth.

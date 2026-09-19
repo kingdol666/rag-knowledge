@@ -1,0 +1,1173 @@
+{
+ "total": 50,
+ "passed": 47,
+ "pass_rate": 0.94,
+ "rows": [
+  {
+   "qid": "Q01",
+   "field": "artificial-intelligence",
+   "arxiv_id": "1706.03762",
+   "question": "What attention mechanism does the Transformer architecture use?",
+   "keywords": [
+    "scaled dot-product",
+    "multi-head"
+   ],
+   "expect_prefix": "Papers/artificial-intelligence__1706.03762__",
+   "doc_hit": true,
+   "keywords_hit": [],
+   "top_docs": [
+    "Papers/artificial-intelligence__1706.03762__attention-is-all-you-need.md (1).md"
+   ],
+   "pass": false
+  },
+  {
+   "qid": "Q02",
+   "field": "nlp",
+   "arxiv_id": "1810.04805",
+   "question": "What does the paper titled 'BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding' study?",
+   "keywords": [
+    "training",
+    "bidirectional",
+    "transformers",
+    "language"
+   ],
+   "expect_prefix": "Papers/nlp__1810.04805__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "training",
+    "bidirectional",
+    "transformers",
+    "language"
+   ],
+   "top_docs": [
+    "Papers/speech__2109.14357__comparison-of-self-supervised-speech-pre-tra.md.md",
+    "Papers/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md.md",
+    "Papers/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (1).md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q03",
+   "field": "large-language-models",
+   "arxiv_id": "2005.14165",
+   "question": "What does the paper titled 'Language Models are Few-Shot Learners' study?",
+   "keywords": [
+    "language",
+    "models",
+    "learners"
+   ],
+   "expect_prefix": "Papers/large-language-models__2005.14165__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "language",
+    "models",
+    "learners"
+   ],
+   "top_docs": [
+    "Papers/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md.md",
+    "Papers/large-language-models__2005.14165__language-models-are-few-shot-learners.md (1).md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q04",
+   "field": "quantum-physics",
+   "arxiv_id": "1801.00862",
+   "question": "What does the acronym NISQ stand for in quantum computing?",
+   "keywords": [
+    "noisy intermediate-scale"
+   ],
+   "expect_prefix": "Papers/quantum-physics__1801.00862__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "noisy intermediate-scale"
+   ],
+   "top_docs": [
+    "Papers/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (1).md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q05",
+   "field": "clinical-medicine",
+   "arxiv_id": "2212.13138",
+   "question": "What is MultiMedQA in the paper about large language models and clinical knowledge?",
+   "keywords": [
+    "multimedqa",
+    "medqa"
+   ],
+   "expect_prefix": "Papers/clinical-medicine__2212.13138__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "multimedqa",
+    "medqa"
+   ],
+   "top_docs": [
+    "Papers/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (1).md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q06",
+   "field": "genomics",
+   "arxiv_id": "1602.01876",
+   "question": "What are the three ontologies of the Gene Ontology?",
+   "keywords": [
+    "molecular function",
+    "biological process",
+    "cellular component"
+   ],
+   "expect_prefix": "Papers/genomics__1602.01876__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "molecular function",
+    "biological process",
+    "cellular component"
+   ],
+   "top_docs": [
+    "Papers/genomics__1602.01876__primer-on-the-gene-ontology.md (1).md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q07",
+   "field": "economics",
+   "arxiv_id": "1512.08067",
+   "question": "What does this paper conclude about Unified Growth Theory?",
+   "keywords": [
+    "unified growth theory"
+   ],
+   "expect_prefix": "Papers/economics__1512.08067__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "unified growth theory"
+   ],
+   "top_docs": [
+    "Papers/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md (1).md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q08",
+   "field": "climate-science",
+   "arxiv_id": "1503.07557",
+   "question": "According to the paper, what physical factor governs precipitation extremes under climate change?",
+   "keywords": [
+    "precipitation efficiency"
+   ],
+   "expect_prefix": "Papers/climate-science__1503.07557__",
+   "doc_hit": true,
+   "keywords_hit": [],
+   "top_docs": [
+    "Papers/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (1).md"
+   ],
+   "pass": false
+  },
+  {
+   "qid": "Q09",
+   "field": "astronomy",
+   "arxiv_id": "1210.0979",
+   "question": "What does the paper titled 'The Methanol Multibeam Survey' study?",
+   "keywords": [
+    "methanol",
+    "multibeam",
+    "survey"
+   ],
+   "expect_prefix": "Papers/astronomy__1210.0979__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "methanol",
+    "multibeam",
+    "survey"
+   ],
+   "top_docs": [
+    "Papers/astronomy__1210.0979__the-methanol-multibeam-survey.md (1).md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q10",
+   "field": "materials",
+   "arxiv_id": "2408.09942",
+   "question": "What does the paper titled 'Oxygen redox in battery cathodes: A brief overview' study?",
+   "keywords": [
+    "oxygen",
+    "redox",
+    "battery",
+    "cathodes"
+   ],
+   "expect_prefix": "Papers/materials__2408.09942__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "oxygen",
+    "redox",
+    "battery",
+    "cathodes"
+   ],
+   "top_docs": [
+    "Papers/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (1).md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q11",
+   "field": "neuroscience",
+   "arxiv_id": "1906.10015",
+   "question": "What does the paper titled 'A Review on Neural Network Models of Schizophrenia and Autism Spectrum Disorder' study?",
+   "keywords": [
+    "review",
+    "neural",
+    "network",
+    "models"
+   ],
+   "expect_prefix": "Papers/neuroscience__1906.10015__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "review",
+    "neural",
+    "network"
+   ],
+   "top_docs": [
+    "Papers/neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (1).md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q12",
+   "field": "robotics",
+   "arxiv_id": "2410.10669",
+   "question": "What does the paper titled 'MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping' study?",
+   "keywords": [
+    "multilayer",
+    "perceptron",
+    "based",
+    "simultaneous"
+   ],
+   "expect_prefix": "Papers/robotics__2410.10669__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "multilayer",
+    "perceptron",
+    "based",
+    "simultaneous"
+   ],
+   "top_docs": [
+    "Papers/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (1).md",
+    "Papers/robotics__2509.14191__mcgs-slam-a-multi-camera-slam-framework-usin.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q13",
+   "field": "artificial-intelligence",
+   "arxiv_id": "2504.16021",
+   "question": "What does the paper titled 'Navigating the State of Cognitive Flow: Context-Aware AI Interventions for Effective Reasoning Support' study?",
+   "keywords": [
+    "navigating",
+    "state",
+    "cognitive",
+    "context"
+   ],
+   "expect_prefix": "Papers/artificial-intelligence__2504.16021__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "navigating",
+    "state",
+    "cognitive",
+    "context"
+   ],
+   "top_docs": [
+    "Papers/artificial-intelligence__2504.16021__navigating-the-state-of-cognitive-flow-conte.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q14",
+   "field": "artificial-intelligence",
+   "arxiv_id": "1706.05261",
+   "question": "What does the paper titled 'From Propositional Logic to Plausible Reasoning: A Uniqueness Theorem' study?",
+   "keywords": [
+    "propositional",
+    "logic",
+    "plausible",
+    "reasoning"
+   ],
+   "expect_prefix": "Papers/artificial-intelligence__1706.05261__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "propositional",
+    "logic",
+    "plausible",
+    "reasoning"
+   ],
+   "top_docs": [
+    "Papers/artificial-intelligence__1706.05261__from-propositional-logic-to-plausible-reason.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q15",
+   "field": "nlp",
+   "arxiv_id": "2503.21676",
+   "question": "What does the paper titled 'How do language models learn facts? Dynamics, curricula and hallucinations' study?",
+   "keywords": [
+    "language",
+    "models",
+    "learn",
+    "facts"
+   ],
+   "expect_prefix": "Papers/nlp__2503.21676__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "language",
+    "models",
+    "learn",
+    "facts"
+   ],
+   "top_docs": [
+    "Papers/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q16",
+   "field": "nlp",
+   "arxiv_id": "2608.05850",
+   "question": "What does the paper titled 'MameLoshnLM: Yiddish Language Model and Evaluation Benchmark' study?",
+   "keywords": [
+    "mameloshnlm",
+    "yiddish",
+    "language",
+    "model"
+   ],
+   "expect_prefix": "Papers/nlp__2608.05850__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "mameloshnlm",
+    "yiddish",
+    "language",
+    "model"
+   ],
+   "top_docs": [
+    "Papers/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q17",
+   "field": "large-language-models",
+   "arxiv_id": "2402.11690",
+   "question": "What does the paper titled 'Vision-Flan: Scaling Human-Labeled Tasks in Visual Instruction Tuning' study?",
+   "keywords": [
+    "vision",
+    "scaling",
+    "human",
+    "labeled"
+   ],
+   "expect_prefix": "Papers/large-language-models__2402.11690__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "vision",
+    "scaling",
+    "human",
+    "labeled"
+   ],
+   "top_docs": [
+    "Papers/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q18",
+   "field": "large-language-models",
+   "arxiv_id": "2312.10793",
+   "question": "What does the paper titled 'Demystifying Instruction Mixing for Fine-tuning Large Language Models' study?",
+   "keywords": [
+    "demystifying",
+    "instruction",
+    "mixing",
+    "tuning"
+   ],
+   "expect_prefix": "Papers/large-language-models__2312.10793__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "demystifying",
+    "instruction",
+    "mixing",
+    "tuning"
+   ],
+   "top_docs": [
+    "Papers/large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md.md",
+    "Papers/speech__2109.14357__comparison-of-self-supervised-speech-pre-tra.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q19",
+   "field": "quantum-physics",
+   "arxiv_id": "1311.2485",
+   "question": "What does the paper titled 'Continuous-time quantum error correction' study?",
+   "keywords": [
+    "continuous",
+    "quantum",
+    "error",
+    "correction"
+   ],
+   "expect_prefix": "Papers/quantum-physics__1311.2485__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "continuous",
+    "quantum",
+    "error",
+    "correction"
+   ],
+   "top_docs": [
+    "Papers/quantum-physics__1311.2485__continuous-time-quantum-error-correction.md.md",
+    "Papers/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (1).md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q20",
+   "field": "quantum-physics",
+   "arxiv_id": "1610.04013",
+   "question": "What does the paper titled 'Entanglement-Assisted Quantum Error-Correcting Codes' study?",
+   "keywords": [
+    "entanglement",
+    "assisted",
+    "quantum",
+    "error"
+   ],
+   "expect_prefix": "Papers/quantum-physics__1610.04013__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "entanglement",
+    "assisted",
+    "quantum",
+    "error"
+   ],
+   "top_docs": [
+    "Papers/quantum-physics__1610.04013__entanglement-assisted-quantum-error-correcti.md.md",
+    "Papers/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (1).md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q21",
+   "field": "clinical-medicine",
+   "arxiv_id": "1909.03801",
+   "question": "What does the paper titled 'Aim for clinical utility, not just predictive accuracy' study?",
+   "keywords": [
+    "clinical",
+    "utility",
+    "predictive",
+    "accuracy"
+   ],
+   "expect_prefix": "Papers/clinical-medicine__1909.03801__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "clinical",
+    "utility",
+    "predictive",
+    "accuracy"
+   ],
+   "top_docs": [
+    "Papers/clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q22",
+   "field": "clinical-medicine",
+   "arxiv_id": "2110.08918",
+   "question": "What does the paper titled 'Using Clinical Drug Representations for Improving Mortality and Length of Stay Predictions' study?",
+   "keywords": [
+    "using",
+    "clinical",
+    "representations",
+    "improving"
+   ],
+   "expect_prefix": "Papers/clinical-medicine__2110.08918__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "using",
+    "clinical",
+    "representations",
+    "improving"
+   ],
+   "top_docs": [
+    "Papers/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q23",
+   "field": "genomics",
+   "arxiv_id": "2301.08436",
+   "question": "What does the paper titled 'SpaceTx: A Roadmap for Benchmarking Spatial Transcriptomics Exploration of the Brain' study?",
+   "keywords": [
+    "spacetx",
+    "roadmap",
+    "benchmarking",
+    "spatial"
+   ],
+   "expect_prefix": "Papers/genomics__2301.08436__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "spacetx",
+    "roadmap",
+    "benchmarking",
+    "spatial"
+   ],
+   "top_docs": [
+    "Papers/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q24",
+   "field": "genomics",
+   "arxiv_id": "2110.07787",
+   "question": "What does the paper titled 'Analysis and visualization of spatial transcriptomic data' study?",
+   "keywords": [
+    "analysis",
+    "visualization",
+    "spatial",
+    "transcriptomic"
+   ],
+   "expect_prefix": "Papers/genomics__2110.07787__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "visualization",
+    "spatial",
+    "transcriptomic"
+   ],
+   "top_docs": [
+    "Papers/genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q25",
+   "field": "economics",
+   "arxiv_id": "1901.03951",
+   "question": "What does the paper titled 'Inequality, mobility and the financial accumulation process: A computational economic analysis' study?",
+   "keywords": [
+    "inequality",
+    "mobility",
+    "financial",
+    "accumulation"
+   ],
+   "expect_prefix": "Papers/economics__1901.03951__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "inequality",
+    "mobility",
+    "financial",
+    "accumulation"
+   ],
+   "top_docs": [
+    "Papers/economics__1901.03951__inequality-mobility-and-the-financial-accumu.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q26",
+   "field": "economics",
+   "arxiv_id": "1609.00415",
+   "question": "What does the paper titled 'Does Infrastructure Investment Lead to Economic Growth or Economic Fragility? Evidence from China' study?",
+   "keywords": [
+    "infrastructure",
+    "investment",
+    "economic",
+    "growth"
+   ],
+   "expect_prefix": "Papers/economics__1609.00415__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "infrastructure",
+    "investment",
+    "economic",
+    "growth"
+   ],
+   "top_docs": [
+    "Papers/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q27",
+   "field": "climate-science",
+   "arxiv_id": "1805.00397",
+   "question": "What does the paper titled 'Hamiltonian distributed chaos in the Asian-Australian Monsoons and in the ENSO' study?",
+   "keywords": [
+    "hamiltonian",
+    "distributed",
+    "chaos",
+    "asian"
+   ],
+   "expect_prefix": "Papers/climate-science__1805.00397__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "hamiltonian",
+    "distributed",
+    "chaos",
+    "asian"
+   ],
+   "top_docs": [
+    "Papers/climate-science__1805.00397__hamiltonian-distributed-chaos-in-the-asian-a.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q28",
+   "field": "climate-science",
+   "arxiv_id": "2012.10385",
+   "question": "What does the paper titled 'Large Scale Features of Southwest Monsoon During 2015' study?",
+   "keywords": [
+    "large",
+    "scale",
+    "features",
+    "southwest"
+   ],
+   "expect_prefix": "Papers/climate-science__2012.10385__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "large",
+    "scale",
+    "features",
+    "southwest"
+   ],
+   "top_docs": [
+    "Papers/climate-science__2012.10385__large-scale-features-of-southwest-monsoon-du.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q29",
+   "field": "astronomy",
+   "arxiv_id": "1207.3189",
+   "question": "What does the paper titled 'The Dark Energy Survey Data Processing and Calibration System' study?",
+   "keywords": [
+    "energy",
+    "survey",
+    "processing",
+    "calibration"
+   ],
+   "expect_prefix": "Papers/astronomy__1207.3189__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "energy",
+    "survey",
+    "processing",
+    "calibration"
+   ],
+   "top_docs": [
+    "Papers/astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md.md",
+    "Papers/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q30",
+   "field": "materials",
+   "arxiv_id": "2211.04977",
+   "question": "What does the paper titled 'Design of battery materials via defects and doping' study?",
+   "keywords": [
+    "design",
+    "battery",
+    "materials",
+    "defects"
+   ],
+   "expect_prefix": "Papers/materials__2211.04977__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "design",
+    "battery",
+    "materials",
+    "defects"
+   ],
+   "top_docs": [
+    "Papers/materials__2211.04977__design-of-battery-materials-via-defects-and.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q31",
+   "field": "neuroscience",
+   "arxiv_id": "2001.10696",
+   "question": "What does the paper titled 'Spiking Inception Module for Multi-layer Unsupervised Spiking Neural Networks' study?",
+   "keywords": [
+    "spiking",
+    "inception",
+    "module",
+    "multi"
+   ],
+   "expect_prefix": "Papers/neuroscience__2001.10696__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "spiking",
+    "inception",
+    "module",
+    "multi"
+   ],
+   "top_docs": [
+    "Papers/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q32",
+   "field": "robotics",
+   "arxiv_id": "2509.14191",
+   "question": "What does the paper titled 'MCGS-SLAM: A Multi-Camera SLAM Framework Using Gaussian Splatting for High-Fidelity Mapping' study?",
+   "keywords": [
+    "multi",
+    "camera",
+    "framework",
+    "using"
+   ],
+   "expect_prefix": "Papers/robotics__2509.14191__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "multi",
+    "camera",
+    "framework",
+    "using"
+   ],
+   "top_docs": [
+    "Papers/robotics__2509.14191__mcgs-slam-a-multi-camera-slam-framework-usin.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q33",
+   "field": "chemistry",
+   "arxiv_id": "2109.05887",
+   "question": "What does the paper titled 'Autonomous Reaction Network Exploration in Homogeneous and Heterogeneous Catalysis' study?",
+   "keywords": [
+    "autonomous",
+    "reaction",
+    "network",
+    "exploration"
+   ],
+   "expect_prefix": "Papers/chemistry__2109.05887__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "autonomous",
+    "reaction",
+    "network",
+    "exploration"
+   ],
+   "top_docs": [
+    "Papers/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q34",
+   "field": "mathematics",
+   "arxiv_id": "2211.12700",
+   "question": "What does the paper titled 'Tailored Presolve Techniques in Branch-and-Bound Method for Fast Mixed-Integer Optimal Control Applications' study?",
+   "keywords": [
+    "tailored",
+    "presolve",
+    "techniques",
+    "branch"
+   ],
+   "expect_prefix": "Papers/mathematics__2211.12700__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "tailored",
+    "presolve",
+    "techniques",
+    "branch"
+   ],
+   "top_docs": [
+    "Papers/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q35",
+   "field": "gravitational-physics",
+   "arxiv_id": "0706.3294",
+   "question": "What does the paper titled 'Moriond 07 proceedings:\"Extension of the frequency-range of interferometers for the \"magnetic\" components of gravitational waves?\"' study?",
+   "keywords": [
+    "moriond",
+    "proceedings",
+    "extension",
+    "frequency"
+   ],
+   "expect_prefix": "Papers/gravitational-physics__0706.3294__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "moriond",
+    "proceedings",
+    "extension",
+    "frequency"
+   ],
+   "top_docs": [
+    "Papers/gravitational-physics__0706.3294__moriond-07-proceedings-extension-of-the-freq.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q36",
+   "field": "statistics",
+   "arxiv_id": "1506.03880",
+   "question": "What does the paper titled 'Causal inference via algebraic geometry: feasibility tests for functional causal structures with two binary observed variables' study?",
+   "keywords": [
+    "causal",
+    "inference",
+    "algebraic",
+    "geometry"
+   ],
+   "expect_prefix": "Papers/statistics__1506.03880__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "causal",
+    "inference",
+    "algebraic",
+    "geometry"
+   ],
+   "top_docs": [
+    "Papers/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q37",
+   "field": "speech",
+   "arxiv_id": "2109.14357",
+   "question": "What does the paper titled 'Comparison of Self-Supervised Speech Pre-Training Methods on Flemish Dutch' study?",
+   "keywords": [
+    "comparison",
+    "supervised",
+    "speech",
+    "training"
+   ],
+   "expect_prefix": "Papers/speech__2109.14357__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "supervised",
+    "speech",
+    "training"
+   ],
+   "top_docs": [
+    "Papers/speech__2109.14357__comparison-of-self-supervised-speech-pre-tra.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q38",
+   "field": "power-systems",
+   "arxiv_id": "2207.08146",
+   "question": "What does the paper titled 'Mapping Disruption Sources in the Power Grid and Implications for Resilience' study?",
+   "keywords": [
+    "mapping",
+    "disruption",
+    "sources",
+    "power"
+   ],
+   "expect_prefix": "Papers/power-systems__2207.08146__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "mapping",
+    "disruption",
+    "sources",
+    "power"
+   ],
+   "top_docs": [
+    "Papers/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q39",
+   "field": "medical-imaging",
+   "arxiv_id": "2306.01022",
+   "question": "What does the paper titled 'Introduction of Medical Imaging Modalities' study?",
+   "keywords": [
+    "introduction",
+    "medical",
+    "imaging",
+    "modalities"
+   ],
+   "expect_prefix": "Papers/medical-imaging__2306.01022__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "introduction",
+    "medical",
+    "imaging",
+    "modalities"
+   ],
+   "top_docs": [
+    "Papers/medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q40",
+   "field": "immunology",
+   "arxiv_id": "2604.01385",
+   "question": "What does the paper titled 'Strategies for tumor elimination and control under immune evasion and chemotherapy resistance' study?",
+   "keywords": [
+    "strategies",
+    "tumor",
+    "elimination",
+    "control"
+   ],
+   "expect_prefix": "Papers/immunology__2604.01385__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "strategies",
+    "tumor",
+    "elimination",
+    "control"
+   ],
+   "top_docs": [
+    "Papers/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q41",
+   "field": "oceanography",
+   "arxiv_id": "1104.2730",
+   "question": "What does the paper titled 'Approximate deconvolution large eddy simulation of a barotropic ocean circulation model' study?",
+   "keywords": [
+    "approximate",
+    "deconvolution",
+    "large",
+    "simulation"
+   ],
+   "expect_prefix": "Papers/oceanography__1104.2730__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "approximate",
+    "deconvolution",
+    "large",
+    "simulation"
+   ],
+   "top_docs": [
+    "Papers/oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q42",
+   "field": "seismology",
+   "arxiv_id": "1308.1846",
+   "question": "What does the paper titled 'Developing and Testing the Automated Post-Event Earthquake Loss Estimation and Visualisation (APE-ELEV) Technique' study?",
+   "keywords": [
+    "developing",
+    "testing",
+    "automated",
+    "event"
+   ],
+   "expect_prefix": "Papers/seismology__1308.1846__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "automated",
+    "event"
+   ],
+   "top_docs": [
+    "Papers/seismology__1308.1846__developing-and-testing-the-automated-post-ev.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q43",
+   "field": "agriculture",
+   "arxiv_id": "1311.6857",
+   "question": "What does the paper titled 'Agriculture driving male expansion in Neolithic Time' study?",
+   "keywords": [
+    "agriculture",
+    "driving",
+    "expansion",
+    "neolithic"
+   ],
+   "expect_prefix": "Papers/agriculture__1311.6857__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "agriculture",
+    "driving",
+    "expansion",
+    "neolithic"
+   ],
+   "top_docs": [
+    "Papers/agriculture__1311.6857__agriculture-driving-male-expansion-in-neolit.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q44",
+   "field": "finance",
+   "arxiv_id": "1412.5558",
+   "question": "What does the paper titled 'Backtest of Trading Systems on Candle Charts' study?",
+   "keywords": [
+    "backtest",
+    "trading",
+    "systems",
+    "candle"
+   ],
+   "expect_prefix": "Papers/finance__1412.5558__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "backtest",
+    "trading",
+    "systems",
+    "candle"
+   ],
+   "top_docs": [
+    "Papers/finance__1412.5558__backtest-of-trading-systems-on-candle-charts.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q45",
+   "field": "social-networks",
+   "arxiv_id": "2203.15752",
+   "question": "What does the paper titled 'Information Consumption and Boundary Spanning in Decentralized Online Social Networks: the case of Mastodon Users' study?",
+   "keywords": [
+    "information",
+    "consumption",
+    "boundary",
+    "spanning"
+   ],
+   "expect_prefix": "Papers/social-networks__2203.15752__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "information",
+    "consumption",
+    "boundary",
+    "spanning"
+   ],
+   "top_docs": [
+    "Papers/social-networks__2203.15752__information-consumption-and-boundary-spannin.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q46",
+   "field": "databases",
+   "arxiv_id": "2102.02440",
+   "question": "What does the paper titled 'Online Sketch-based Query Optimization' study?",
+   "keywords": [
+    "online",
+    "sketch",
+    "based",
+    "query"
+   ],
+   "expect_prefix": "Papers/databases__2102.02440__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "online",
+    "sketch",
+    "based",
+    "query"
+   ],
+   "top_docs": [
+    "Papers/databases__2102.02440__online-sketch-based-query-optimization.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q47",
+   "field": "chemistry",
+   "arxiv_id": "physics/0105075",
+   "question": "What does the paper titled 'Theory of laser catalysis with pulses' study?",
+   "keywords": [
+    "theory",
+    "laser",
+    "catalysis",
+    "pulses"
+   ],
+   "expect_prefix": "Papers/chemistry__physics/0105075__",
+   "doc_hit": false,
+   "keywords_hit": [
+    "theory",
+    "laser",
+    "catalysis",
+    "pulses"
+   ],
+   "top_docs": [
+    "Papers/chemistry__physics-0105075__theory-of-laser-catalysis-with-pulses.md.md"
+   ],
+   "pass": false
+  },
+  {
+   "qid": "Q48",
+   "field": "mathematics",
+   "arxiv_id": "1810.09292",
+   "question": "What does the paper titled 'Optimal distributed control of a stochastic Cahn-Hilliard equation' study?",
+   "keywords": [
+    "optimal",
+    "distributed",
+    "control",
+    "stochastic"
+   ],
+   "expect_prefix": "Papers/mathematics__1810.09292__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "optimal",
+    "distributed",
+    "control",
+    "stochastic"
+   ],
+   "top_docs": [
+    "Papers/mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q49",
+   "field": "speech",
+   "arxiv_id": "1811.04224",
+   "question": "What does the paper titled 'Reinforcement Learning Based Speech Enhancement for Robust Speech Recognition' study?",
+   "keywords": [
+    "reinforcement",
+    "learning",
+    "based",
+    "speech"
+   ],
+   "expect_prefix": "Papers/speech__1811.04224__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "reinforcement",
+    "learning",
+    "based",
+    "speech"
+   ],
+   "top_docs": [
+    "Papers/speech__1811.04224__reinforcement-learning-based-speech-enhancem.md.md"
+   ],
+   "pass": true
+  },
+  {
+   "qid": "Q50",
+   "field": "databases",
+   "arxiv_id": "2005.03328",
+   "question": "What does the paper titled 'Bitvector-aware Query Optimization for Decision Support Queries (extended version)' study?",
+   "keywords": [
+    "bitvector",
+    "aware",
+    "query",
+    "optimization"
+   ],
+   "expect_prefix": "Papers/databases__2005.03328__",
+   "doc_hit": true,
+   "keywords_hit": [
+    "bitvector",
+    "aware",
+    "query",
+    "optimization"
+   ],
+   "top_docs": [
+    "Papers/databases__2005.03328__bitvector-aware-query-optimization-for-decis.md.md"
+   ],
+   "pass": true
+  }
+ ]
+}

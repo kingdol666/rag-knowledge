@@ -1,3 +1,0 @@
-# Juan Pablo Sorín
-
-Juan Pablo Sorín (born 5 May 1976) is an Argentine former footballer and current sports broadcaster, who played as a left back or left midfielder. He had a successful club career in his native Argentina with River Plate, in Brazil with Cruzeiro, and with various teams in Europe, including Barcelona, Lazio, Paris Saint-Germain and Villarreal. At international level, he represented the Argentina national team at two FIFA World Cups, and was the captain of Argentine side at the 2006 FIFA World Cup; he also represented his nation in two editions of Copa América, and the 2005 FIFA Confederations Cup. He currently works as an analyst for ESPN Brasil.

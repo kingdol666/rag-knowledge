@@ -1,17 +1,20 @@
 ---
 name: knowledgebase-search
 description: >
-  Query-Driven Content-Verified Retrieval (QDCVR). Step0 query analysis+rewrite
-  → Step1 smart KB selection → Step2 two-stage vector+BM25 recall (balance_kbs)
-  → Step2.5 document dedup+hard threshold → Step3 content verification (0-8 scoring)
-  → fast exit if score≥6, otherwise Step4 tag+description expansion → Step5 confidence
-  rating → Step6 synthesized answer with sources and blind-spots. Vector is fast,
-  content is accurate. Triggered by: search, find, query, ask, retrieve, search,
-  retrieval, query, Q&A, look it up for me, ask the knowledge base, search.
+  QDCVR v2 — Vector-First, Content-Gated, Librarian-Fallback Retrieval.
+  Phase 0 query prep → Phase 1 vector search FIRST (kb_search_vector, balance_kbs)
+  + content-match gate (kb_doc_read + 0-8 rubric: can this truly answer the question?)
+  → if the vector path cannot truly match, Phase 2 librarian deep fallback: traverse
+  all KB directories level by level, read every KB summary, judge the most likely
+  shelves (multi-path recall: two-stage BM25+graph + tags + descriptions) → re-verify
+  → if both paths fail, honestly report the blind spot (never fabricate).
+  Absorbs the former knowledgebase-search-enterprise (whole-library / cross-KB /
+  comprehensive search). Triggered by: search, find, query, ask, retrieve, retrieval,
+  Q&A, look it up, search the whole library, all KBs, cross knowledge base, cross-KB,
+  cross-library, global search, comprehensive, thorough search, enterprise search.
 ---
 
 ## ⭐ Related Skills
-- Cross-library enterprise search (triggered when P0/P1 <2 KBs) → `skill://knowledgebase-search-enterprise` — parallel 3-path recall + graph expansion
 - Document ingest → `skill://knowledgebase-ingest` — the A0-A9 pipeline ensures retrieval source quality
 - KB management → `skill://knowledgebase-manage` — document move/rename/delete/merge
 - Experience-first retrieval → E4 experience-first retrieval of `skill://knowledgebase-experience` (mandatory for incident/ops-type queries)
@@ -22,165 +25,114 @@ description: >
 - Batch operations → `skill://knowledgebase-batch` — batch ingest/tag migration/dedup
 
 ## Sequential Workflow
-**Step 1 — Query analysis (Step 0)**: intent classification (factual/method/comparison/incident/navigational) → core entity extraction → rewrite the query as a declarative sentence + keywords (incident-type queries the experience library first).
-**Step 2 — Smart KB selection (Step 1)**: `kb_list(lightweight=true)` → semantic matching against KB descriptions → pick the top 1-3 target KBs; when sub-KBs exist, use `kb_search_vector` against the parent KB for pass-through.
-**Step 3 — Two-stage retrieval (Step 2)**: `kb_search_two_stage(balance_kbs=True)` — Stage1 BM25+graph candidates → Stage2 fine-grained vector search → tune parameters per scenario.
-**Step 4 — Dedup filtering (Step 2.5)**: hard-threshold filtering (score<0.35 dropped) → document-level dedup (keep the highest score per document) → short-content downgrade → top 5 proceed to verification.
-**Step 5 — Content verification (Step 3)**: `kb_doc_read(3000 chars)` → 0-8 rubric scoring (topic relevance/scenario match/answer evidence) → content-overrides-vector → ≥6 fast exit / 5 expand / ≤4 downgrade.
-**Step 6 — Expansion recall (Step 4-5)**: tag+description expansion→re-verify→P0 Strong/P1 Confirmed/P2 Supplement confidence tiering.
-**Step 7 — Synthesized answer (Step 6)**: P0/P1 structured output + sources (by confidence) + honest blind-spot declaration + upgrade to enterprise search when fewer than 2 KBs contribute.
-# QDCVR — Query-Driven · Content-Ruled · Gated Refined Retrieval
+**Phase 0 — Query prep**: intent classification (factual/method/comparison/incident/navigational) → core entity extraction → rewrite as declarative sentence + keywords. Incident/ops → experience library first.
+**Phase 1 — Vector first (fast lane)**: `kb_search_vector` on the whole library (or the KB the user named) with `balance_kbs=True` → hard-threshold + document-level dedup → **content-match gate**: `kb_doc_read` + 0-8 rubric judges whether the content can truly answer the question (long docs: chunk text + continuation reads, never head-only) → best score ≥6: fast exit to answer.
+**Phase 2 — Librarian deep fallback (gate failed)**: traverse all KBs level by level — `kb_list(lightweight)` reads every KB summary, `fs_get_tree`/`kb_get_documents` walks the directory tree — librarian judgment ranks the most likely shelves → targeted multi-path recall there (two-stage BM25+graph / tags / doc descriptions) → re-verify with the same 0-8 rubric → P0/P1/P2 tiering.
+**Phase 3 — Answer or honest report**: P0/P1 structured answer with sources; if both paths fail → honestly declare the blind spot (what was tried, what is missing, suggested next steps). Never fabricate.
+
+# QDCVR v2 — Query-Driven · Content-Ruled · Vector-First with Librarian Fallback
+
 ## ⭐ Execution Model · Pre-Flight · Architecture (First Step of Any Job, Mandatory)
 
 **Executor: Archival agent** — delegate via `task` (**delegation template + three-role execution model + combined-task boundaries**: must-read [execution-model.md](../knowledgebase/references/execution-model.md)). **Pre-Flight**: no work before it passes — one-probe double-check `kb_project_status` → branch handling → smoke test; full flow in [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md). **Mental model**: before operating, must-read [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer model + consistency invariants + 91-tool map); MCP-first principle (no terminal/HTTP bypass) in [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) Rule 5.
 
-- Archival is forbidden from: skipping Step 0 query rewriting, skipping content verification, skipping blind-spot declaration
+- Archival is forbidden from: skipping Phase 0 query rewriting, skipping the content-match gate, skipping the librarian fallback when the vector path fails, skipping blind-spot declaration
 ---
 
+## The One Picture (algorithm contract)
+
+```
+query
+  │
+  ├─ Phase 0 · Query prep            rewrite before retrieving; never feed raw queries
+  │
+  ├─ Phase 1 · VECTOR FIRST (fast)   kb_search_vector → dedup+threshold → READ content
+  │     │                            0-8 rubric: can it truly answer?
+  │     ├─ best ≥ 6 ────────────────►✅ answer (fast exit)
+  │     └─ best ≤ 5 ────────────────►▼ vector path did not truly match
+  │
+  ├─ Phase 2 · LIBRARIAN FALLBACK    walk every shelf: KB summaries + directory tree
+  │     │                            → judge most-likely KBs → targeted recall there
+  │     │                            (BM25+graph two-stage / tags / descriptions)
+  │     └─ re-verify 0-8 ───────────►✅ hits → answer · ✖ nothing → ▼
+  │
+  └─ Phase 3 · HONEST REPORT         如实奉告: declare the blind spot, never fabricate
+```
+
+**Why this order**: vectors are fast and semantic — they earn the first at-bat. But a high cosine score is only a candidate, not an answer: the content gate reads the body and decides. When the gate says "not truly matching", brute-forcing more vectors is waste — switch to the librarian strategy: browse the catalog, read every KB's summary, walk the shelves, and pull from the most likely section. Only after both paths fail is "no answer" the truth.
 
 **Six iron rules** (including the ⭐ MCP-first principle):
-1. **Understand before retrieving** — the raw query is first rewritten into a retrieval-friendly form (Step 0); never fed directly to the retriever.
-2. **Select libraries before recall** — when spanning libraries, first determine relevant KBs (Step 1) to avoid cross-domain noise and large-library dominance.
-3. **Fast vector recall, true content ruling** — vectors pick candidates; reading the body with 0-8 scoring decides inclusion; vector scores do not influence decisions.
-4. **Document-level dedup + hard threshold** — only the highest-scoring chunk per document is kept; score below the threshold is dropped directly.
-5. **Better to give nothing than to give something wrong** — with no confirmed hit, honestly declare the blind spot; never fabricate.
+1. **Vector first** — Phase 1 always starts with `kb_search_vector`; do not pre-run BM25 or KB selection ceremonies. Whole-library default with `balance_kbs=True` prevents large-library dominance.
+2. **Understand before retrieving** — Phase 0 rewrites the raw query; never fed directly to the retriever.
+3. **Content gate owns the verdict** — vector 0.95 with content ≤4 is *discarded*, not down-ranked. Vector scores never overrule the 0-8 rubric.
+4. **Gate failure triggers the librarian, not surrender** — best score ≤5 means the vector path cannot truly answer; Phase 2 MUST run before any "no result" conclusion.
+5. **Better to give nothing than to give something wrong** — when both paths fail, honestly declare the blind spot; never fabricate.
 6. ⭐ **MCP-first principle** — all kb-mcp operations must go through MCP tools (`mcp__kb-mcp__*`); replacing MCP tools with terminal commands like `curl`/`python -c`/`wget` or direct HTTP API calls is forbidden. Only when MCP is unavailable may you report to the user and let the user decide.
 
-
-**Freedom Map** (freedom level per step):
-| Step | Freedom | Notes |
+**Freedom Map** (freedom level per phase):
+| Phase | Freedom | Notes |
 |------|--------|------|
-| Step 0 query rewrite / Step 2.5 dedup+hard threshold / Step 3 content ruling / Step 6 blind-spot declaration | 🔒 **Mandatory** (low freedom) | Core gates of retrieval quality; cannot be skipped or simplified |
-| Step 1 smart KB selection / Step 2 parameter tuning | 🎯 **Execute** (medium freedom) | Select libraries by KB description; tune stage1/stage2/threshold per the scenario table |
-| Step 0a intent classification / Step 3 fast-exit decision | 🧠 **Judgment** (high freedom) | Requires judging type and confidence from query semantics; the decision table guides but is not mechanical |
-| Step 4 tag expansion (downgrade path) | 🎯 **Execute** (medium freedom) | Triggered only when vectors miss; must not run every time |
+| Phase 0 rewrite / content gate / Phase 2 fallback trigger / Phase 3 blind-spot declaration | 🔒 **Mandatory** (low freedom) | Core gates; cannot be skipped or simplified |
+| Phase 1 parameter tuning / Phase 2 shelf-ranking depth | 🎯 **Execute** (medium freedom) | Tune top_k/threshold per the scenario tables; decide how deep to walk the tree |
+| Gate fast-exit decision / librarian "most likely shelf" judgment | 🧠 **Judgment** (high freedom) | Judge from query semantics; the decision tables guide but are not mechanical |
 ---
 
-## Mental Framework: Settle Three Questions Before Retrieving ⭐
+## Phase 0 — Query Prep (The First Gate of Retrieval Quality)
 
-```
-The user says "search for X"
-  │
-  ├── What type of query is this?
-  │   Factual (what) / method (how) / comparison (A vs B) / incident (why broken) / navigational (where)
-  │
-  ├── Which KB to search?
-  │   Explicitly says "search KB XX" → that KB directly
-  │   Not said → Step 1 smart KB selection
-  │
-  └── Can it be answered quickly?
-      Experience first? → incident-type queries the experience library first
-      Direct document hit? → fast exit
-```
-
----
-
-## Step 0 — Query Analysis and Rewriting ⭐ (The First Gate of Retrieval Quality)
-
-> Observed failure mode: long natural-language queries fed directly to retrieval; BM25 hits keywords but doesn't understand semantics (searching "PET film" returned PP literature).
+> Observed failure mode: long natural-language queries fed directly to retrieval; the retriever hits keywords but doesn't understand semantics (searching "PET film" returned PP literature).
 
 ### 0a Intent Classification
 | Type | Features | Retrieval emphasis |
 |---|---|---|
-| **Factual** | "what is", "definition" | Vector reranking + authoritative review documents |
-| **Method** | "how to", "methods" | Vector + tags (method words) |
-| **Comparison** | "A vs B", "difference" | Parallel multi-entity recall |
-| **Incident/ops** | "error", "failed", "how to fix" | **Experience library first** (experience-first), then documents |
+| **Factual** | "what is", "definition" | Vector first; authoritative review documents |
+| **Method** | "how to", "methods" | Vector first; tags as fallback path |
+| **Comparison** | "A vs B", "difference" | Parallel multi-entity recall (keep best chunk per entity) |
+| **Incident/ops** | "error", "failed", "how to fix" | **Experience library first** (`experience_search_global`), then documents |
 | **Experience/case** | "any similar cases", "how was it handled before" | `experience_search_global` first, documents as supplement |
-| **Navigational** | "where is", "is there" | kb_list(lightweight=true) + kb_get_documents(lightweight=true) description matching |
+| **Navigational** | "where is", "is there" | `kb_list(lightweight=true)` + `kb_get_documents(lightweight=true)` description matching |
 
 ### 0b Core Entity Extraction
-Extract from the query: **subject** (PET/RAG/lithium batteries) + **attribute** (crystallinity/hallucination/thermal management) + **constraints** (process parameters/2024).
+Extract: **subject** (PET/RAG/lithium batteries) + **attribute** (crystallinity/hallucination/thermal management) + **constraints** (process parameters/2024).
 
-### 0c Query Rewriting (Generate Retrieval-Friendly Queries)
+### 0c Query Rewriting
 - Raw colloquial query → **declarative sentence + keyword combination**
 - Example: `"The influence of PET film biaxial stretching process parameters on crystallinity"`
-  → Rewrite 1 (for vectors): `"The influence of stretch ratio/temperature/speed on crystallinity and crystal structure in PET polyester film biaxial stretching"`
-  → Rewrite 2 (for BM25): `"PET BOPET biaxial stretching crystallinity stretch ratio process parameters"`
+  → Rewrite (vector): `"The influence of stretch ratio/temperature/speed on crystallinity and crystal structure in PET polyester film biaxial stretching"`
 - Multi-concept queries → **split into sub-queries and retrieve in parallel** (mandatory for comparisons)
 
-**Incident/ops-type queries**: first `experience_search_global(query, top_k=5)`; if experiences hit, use them with priority.
+## Phase 1 — Vector First + Content-Match Gate (Fast Lane) ⭐
 
-## Step 1 — Smart KB Selection (Mandatory When Spanning Libraries) ⭐
-
-> Observed failure mode: blind whole-library search → large libraries (Materials-ML 11docs/1156chunks) dominate results and cross-domain noise floods in.
+### 1a Vector Recall (primary, whole-library by default)
 
 ```
-catalog = kb_list(lightweight=true)    # only [{kb_id, name, description, doc_count}]; context-friendly
-```
-- Use model judgment to read each KB's description and pick the **top 1-3 genuinely relevant** KBs.
-- **Retrieve preferentially within the selected 1-3 KBs** (`kb_id=<selected KB>`); only when <2 KBs are selected or there are no hits, search the whole library with `kb_id=""`.
-- Incident-type queries: experience library first; document libraries as supplement.
-
-**Criterion**: a KB is selected only if its description's domain matches the query entities. Example: querying RAG → select only `AI-ML-Research`.
-
-### Step 1b — Hierarchical KB Pass-Through (Mandatory When a Parent KB Contains Sub-KBs) ⭐
-
-> ⚠️ **Empirical truth** (verified by the 2026-07-22 end-to-end test): the parent KB's `kb_search_two_stage` returns sub-KB container entries (content always empty). **Sub-KB documents' vector chunks are actually stored under the parent KB's collection** (searching the sub-KB UUID returns 0 results; `kb_search_stats(sub-KB)` shows chunk_count=0).
-
-**Correct pass-through strategy** — pure vector search against the parent KB (not two_stage, not searching sub-KBs):
-```
-# The parent KB's two_stage returns empty containers, but kb_search_vector gets real content
-results = kb_search_vector(query=..., kb_id=<parent KB id>, score_threshold=0.35, top_k=10)
-# The result's doc_path carries the sub-KB path prefix (e.g. "Polymers...\\03_PET_BOPET\\xxx.md"),
-# and the content field has real body text — that's a successful pass-through
-```
-
-**Auxiliary: understand sub-KB structure** (not for searching, only for understanding organization):
-```
-overview = kb_graph_kb_overview(kb_id=<parent KB>)  → sub_kbs structure + doc counts
-# ⚠️ sub_kbs[].name returns UUIDs; use kb_list(lightweight=true) to look up readable names
-# ⚠️ Do NOT run kb_search_two_stage / kb_search_vector against a sub_kb_id — returns 0
-```
-
-> ❌ **Wrong approach** (misled by old docs): getting sub-KB UUIDs and searching each sub-KB separately → all return 0, misjudged as "no relevant content".
-
-## Step 2 — Vector Recall (Two-Stage, Balancing Multiple Libraries)
-
-```
-kb_search_two_stage(
-    query=the query rewritten in Step0,
-    kb_id=KBs selected in Step1 or "" (whole library),
-    stage1_top_k=20,          # BM25 candidate documents
-    stage2_top_k=5,           # chunks returned per document
-    enable_graph_expansion=true,
-    score_threshold=0.35,     # vector hard threshold (<=0 uses the backend default 0.35)
-    balance_kbs=True          # ⭐ mandatory when spanning libraries; prevents large-library dominance
+kb_search_vector(
+    query=the Phase 0 rewritten query,
+    kb_id=<the KB the user named> or "" (whole library),
+    top_k=10,
+    score_threshold=0.35,
+    balance_kbs=True        # ⭐ mandatory for whole-library search; prevents large-library dominance
 )
 ```
 
-### Tuning Guide
-| Scenario | stage1_top_k | stage2_top_k | score_threshold |
-|------|-------------|-------------|-----------------|
-| Standard | 20 | 5 | 0.35 |
-| Large library (>10 docs) | 30 | 5 | 0.35 |
-| Small library (<5 docs) | 10 | 3 | 0.30 |
-| Precision-first | 20 | 3 | 0.45 |
-| Recall-first | 30 | 10 | 0.30 |
+**Hierarchical KB pass-through** (parent KB containing sub-KBs): `kb_search_vector` against the **parent KB** is the correct entry — sub-KB documents' vector chunks live under the parent's collection (searching a sub-KB UUID returns 0; `kb_search_two_stage` on a parent returns empty container entries). A result whose `doc_path` carries a sub-KB prefix and non-empty content is a successful pass-through. `kb_graph_kb_overview(kb_id)` is for viewing structure only, never a search entry.
 
-### Empty-Result Handling
-- 0 results returned → lower score_threshold to 0.30 and retry
-- Still 0 → abandon vectors; go to Step 4 tag expansion
+**Empty handling**: 0 results → retry once with `score_threshold=0.30`; still 0 → go directly to Phase 2.
 
-## Step 2.5 — Document-Level Dedup + Hard-Threshold Filtering ⭐ (Refine the Result Set)
-
-> ⭐ Both `kb_search_vector` and `kb_search_two_stage` already auto-normalize paths (backslash→forward slash) and dedup by (doc_path, chunk_index) at the MCP layer. The Agent still performs document-level dedup (keep only the highest-scoring chunk per document).
-
-Apply to `stage2.results`:
+### 1b Filter (before reading)
 
 ```
-1. Hard-threshold filtering: drop chunks with score < 0.35
-2. Document-level dedup: per doc_path (after forward-slash normalization), keep only the 1 highest-scoring chunk
-3. Short-content downgrade: chunk body <50 chars → drop directly; 50-200 chars → mark ⚠️, demote one level when scoring
-4. Sort: by score descending; top 5 proceed to Step 3
+1. Hard threshold: drop chunks with score < 0.35 (0.30 on the retry pass)
+2. Document-level dedup: per normalized doc_path keep only the highest-scoring chunk
+3. Short content: <50 chars drop; 50-200 chars mark ⚠️ and demote one level when scoring
+4. Sort desc; top 3-5 documents proceed to the gate
 ```
-**Exception**: comparison queries (A vs B) keep the highest-scoring chunk for both A and B.
+**Exception**: comparison queries keep the best chunk for both entities.
 
-## Step 3 — Content Verification (Core Ruling, Independent of Vector Scores)
+### 1c Content-Match Gate ⭐ (does the content TRULY answer the question?)
 
-Content-verify the top 5 deduped candidates (already trimmed to 5 in Step 2.5):
+For each surviving candidate:
 ```
-kb_doc_read(kb_id, doc_path, max_chars=3000)
+kb_doc_read(kb_id, doc_path, max_chars=3000)     # read 1: head window → returns totalLines + truncated
 ```
 **0-8 scoring (actionable criteria)**:
 
@@ -192,58 +144,132 @@ kb_doc_read(kb_id, doc_path, max_chars=3000)
 
 **Content score > vector score.** Vector 0.9 but content ≤3 → discard. Vector 0.5 but content ≥6 → adopt.
 
-### Step 3 Fast Exit
-| Highest content score | Action |
-|---|---|
-| **≥6** | ✅ go directly to Step 6 to answer (skip Steps 4-5)|
-| **5** | ⚠️ usable but needs supplementation → continue to Step 4 expansion recall |
-| **≤4** | ❌ current recall missed → continue to Step 4 expansion recall |
+#### Long-document provisions ⭐ (head-read blind spot)
 
-### Step 3 Content-Score Boundary Decisions
-- Score exactly 4 or 5 and unsure? → re-read 500 chars to confirm; do not fall back to Step 2
-- Multiple documents with similar scores >5? → take the highest-scoring 2-3 and synthesize an answer; do not cite all
-- High content score but the document looks outdated (pre-2020)? → demote one level and flag timeliness
+A head window of 3000 chars covers only the front of a long document — evidence living deeper would be under-scored and wrongly discarded. Three mandatory rules:
 
-## Step 4 — Tag + Description Expansion (When Vectors Miss)
+1. **The retrieved chunk is admissible evidence.** The vector hit already contains ~500 chars of real body text from the matching position. Score the *evidence* dimension on **chunk text ∪ read windows**, never on the head window alone. A document whose head misses but whose chunk directly answers the question is a HIT, not a discard.
+2. **Continuation reads when truncated.** If `truncated=true` and neither head nor chunk settles the verdict, read deeper — `kb_doc_read` paginates by line: `offset` = line offset, `limit` = lines, response carries `totalLines`. Probe at `offset=totalLines/3` then `2*totalLines/3` (`limit=100`, `max_chars=3000`); **at most 2 continuation reads**, then score on the best window seen. Document-part files (≤10k chars) may be read in full (`max_chars=12000`).
+3. **Part files are self-describing.** Documents >12k chars were split at ingest into `(part k of N)` siblings, each carrying a context header (source title + part i/N + section path). Use the header for topic scoring; use the vector hit's own part for evidence — never read part 1 assuming it represents the whole.
+
+### 1d Gate Decision
+
+| Best content score | Verdict | Action |
+|---|---|---|
+| **≥6** | ✅ vector path truly answers | Fast exit → Phase 3 answer (skip Phase 2) |
+| **5** | ⚠️ on-topic but incomplete | Keep as **P1 backstop**; run Phase 2 to find better |
+| **≤4** | ❌ vector path missed | Run Phase 2; these candidates are discarded |
+
+Boundary decisions: unsure at exactly 4-5 → re-read 500 chars to confirm; multiple docs >5 → take the best 2-3, do not cite all; good score but outdated doc → demote one tier and flag timeliness.
+
+## Phase 2 — Librarian Deep Fallback (when the gate fails) ⭐
+
+> The librarian does not summon books by shouting keywords louder. **He walks the stacks**: reads the catalog, scans every shelf's summary, and pulls from the section most likely to hold the answer. This phase absorbs the former `knowledgebase-search-enterprise` skill (multi-path recall + cross-validation + graph expansion).
+
+### 2a Walk the Stacks (read every KB summary + traverse directories)
 
 ```
-kb_tags_list()
-kb_doc_get_by_tag(tag="<semantically matching tag>", kb_id=KB selected in Step1 or "")
-kb_get_documents(lightweight=true, kb_id)   # document description list for newly discovered KBs
-kb_search_vector(Step0 rewritten query, kb_id="", top_k=10, score_threshold=0.30)
+catalog = kb_list(lightweight=true)     # EVERY KB: {kb_id, name, description, doc_count}
+tree    = fs_get_tree(max_depth=2)      # KB hierarchy (raise depth only if needed)
+```
+For the 1-3 most promising KBs, drill into their shelves:
+```
+kb_get_documents(lightweight=true, kb_id)   # every doc's name + description
+```
+**Part-aware grouping ⭐**: split documents appear as `(part k of N)` siblings (e.g. `ARCHITECTURE (part 7 of 15).md`). Group siblings by their stem — they are ONE logical book, not N documents. Judge relevance by stem + description; when a vector hit names a specific part, that part is where the evidence lives. Counting/dedup/citation all operate on the logical (stem) level; cite the concrete part when quoting.
+
+### 2b Librarian Judgment (which shelf is most likely?)
+
+Match Phase 0 entities against **KB descriptions + document names + directory names**:
+- Score each KB: subject match (does the KB's domain cover the subject?) × attribute match (does any doc name/description mention the attribute?) × constraint match (year/scope qualifiers).
+- Rank and keep the **top 2-3 KBs** (plus their most promising sub-directories).
+- This judgment replaces the old "smart KB selection" front gate: it runs only when vectors missed, and it is informed by having read *every* summary, not just the top hit.
+
+### 2c Targeted Multi-Path Recall (in the judged shelves only)
+
+```
+# Path A — BM25 + graph two-stage (lexical precision inside the likely KBs)
+kb_search_two_stage(query, kb_id=<likely KB>, stage1_top_k=20, stage2_top_k=5,
+                    enable_graph_expansion=true, score_threshold=0.30, balance_kbs=True)
+
+# Path B — Tags (semantic concepts vectors missed)
+kb_tags_list() → match 3-5 tags to the query entities
+→ kb_doc_get_by_tag(tag, kb_id=<likely KB> or "")
+
+# Path C — Descriptions + navigation (doc names/descriptions from 2a re-read closely)
+kb_get_documents(lightweight=true, kb_id) → shortlist by description match
+
+# Path D — Experience library (incident/ops queries)
+experience_search_global(query, top_k=5)
+```
+Path tuning: large KB (>10 docs) stage1_top_k=30; recall-first stage2_top_k=10, threshold 0.30; precision-first stage2_top_k=3, threshold 0.45.
+
+**Cross-validation + dedup**: merge paths, dedup by doc_path (keep best chunk; record hit-path count — multi-path consensus raises the *candidate* tier, but never the final verdict), hard-threshold 0.30 pre-filter, short-content downgrade.
+
+**Restrained graph expansion** (only when P0 <3 or explicitly cross-library):
+```
+kb_graph_document_related(doc_path) / kb_graph_central_documents(kb_id) / kb_graph_cross_kb_documents(min_kbs=2)
 ```
 
-## Step 5 — Expanded Content Verification + Confidence Tiering
+### 2d Re-Verify (same gate, same rubric)
 
-For Step 4's new candidates, likewise run `kb_doc_read` + 0-8 scoring; keep ≥5, drop ≤4.
+Every new candidate goes through `kb_doc_read` + the same 0-8 rubric.
 
 **Final confidence**:
 | Source + content score | Tier |
 |---|---|
-| Vector/tag recall + content ≥6 | **P0 Strong** — cite directly in the answer |
-| Vector/tag recall + content =5 | **P1 Confirmed** — adopt with attribution |
-| Description-only match + content =5 | **P2 Supplement** — supplementary use, flagged weak |
-| Content ≤4 | **Discard** |
+| Any recall path + content ≥6 | **P0 Strong** — cite directly |
+| Any recall path + content =5 | **P1 Confirmed** — adopt with attribution |
+| Description-only match + content =5 | **P2 Supplement** — flagged weak |
+| Content ≤4 | **Discard** — even with three-path consensus |
 
-**Short content (<200 chars) demoted one level**; **cross-library blind spot**: confirmed P0/P1 from <2 KBs → escalate to `Skill("knowledgebase-search-enterprise")`.
+Short content (<200 chars) demotes one tier. A Phase 1 P1 backstop beats a Phase 2 P2; if Phase 2 produced nothing better, answer from the backstop and say so.
 
-## Step 6 — Synthesized Answer (Mandatory Standard)
+## Phase 3 — Answer or Honest Report (Mandatory Standards)
+
+### On hit — synthesized answer (five sections, all mandatory)
 
 ```
-## Answer
-<A synthesized answer based on P0/P1 documents, citing specific data/conclusions>
+## Search Paths
+Phase 1 vector (kb_search_vector, balance_kbs) → dedup → content gate (kb_doc_read, 0-8 scoring);
+Phase 2 librarian fallback (kb_list summaries + two_stage/tags) → re-verify
+→ N documents after dedup → after content verification P0:x / P1:y
 
-## Sources (sorted by confidence)
-- [P0] <document name> @ <KB/path> — <why relevant, one sentence>
+## Answer
+<Synthesized from P0 documents, citing specific data/conclusions; P1 as supplement>
+
+## Sources (sorted by confidence + path consensus)
+- [P0] <document name> @ <KB/path> — <why relevant, one sentence> (split docs: cite the concrete `(part k of N)` hit)
 - [P1] <document name> @ <KB/path> — <what it adds>
 
 ## Confidence
-High/medium/low — <reason, e.g. "3 P0 documents consistently support" or "only 1 P1; needs further verification">
+High/medium/low — <reason, e.g. "2 P0 documents across 2 KBs consistent" or "only 1 P1 backstop; deeper verification recommended">
 
-## Blind Spots (Honest Declaration)
-- <parts the query touches that the knowledge base doesn't cover>
+## Blind Spots (Cross-Library Perspective)
+- <sub-domains the query touches but the whole library does not cover>
+- <a library that may hold related content but was not hit this time — manual recheck recommended>
 - <contested/timeliness/points needing user confirmation>
 ```
+
+### On total failure — honest report (如实奉告, first-class outcome)
+
+When Phase 1 gate ≤4/5-only AND Phase 2 re-verify yields no P0/P1:
+```
+## Answer (No Confirmed Hit)
+<One sentence: the knowledge base cannot currently answer this question.>
+
+## What Was Tried
+- Phase 1 vector: kb_search_vector(<rewritten query>, threshold 0.35→0.30) → N candidates, best content score x/8 (<what was found instead>)
+- Phase 2 librarian: read M KB summaries, walked <KBs/dirs>, recalled via two_stage/tags → no candidate scored ≥5
+
+## Blind Spots
+- <the specific sub-topic the library lacks>
+- <nearest-but-insufficient documents, and why they fail>
+
+## Suggestions
+- <ingest source X / broaden the query to Y / ask the user for the missing material>
+```
+Never dress a ≤4 candidate as an answer. Never fabricate data, citations, or confidence.
 
 ---
 
@@ -251,20 +277,33 @@ High/medium/low — <reason, e.g. "3 P0 documents consistently support" or "only
 
 | ❌ Don't do this | Why | ✅ Do this instead |
 |-------------|------|-------------|
-| Feed raw colloquial queries to the retriever | BM25 is semantically blind | Step 0 rewrite into declarative sentence + keywords |
-| Skip Step 1 and blindly search the whole library | Cross-domain noise floods in | Select libraries first; restrict to 1-3 KBs |
-| Content verification by guessing (not reading documents) | Vector scores don't reflect real content | `kb_doc_read` 3000 chars then score |
-| Keeping score<0.35 without truncating | Cross-domain low-score pollution | Step 2.5 hard-threshold truncation |
-| Including content scores ≤4 in the answer | Better to give nothing than something wrong | Discard → Step 4 expansion |
-| Step 6 without blind-spot declaration | The user assumes the knowledge base covers everything | Honestly declare coverage blind spots |
+| Start with BM25/two-stage or KB-selection ceremonies | Vectors are the fast semantic lane; ceremonies add latency, not recall | Phase 1 `kb_search_vector` first, `balance_kbs=True` |
+| Trust a high vector score without reading | Cosine ≠ answerable | Content gate: `kb_doc_read` 3000 chars + 0-8 rubric |
+| Declare "no result" after Phase 1 alone | Vector miss ≠ corpus miss | Gate failure → Phase 2 librarian fallback is mandatory |
+| Walk the stacks by guessing KBs | Summary-reading is the librarian's whole edge | Read EVERY KB description in `kb_list(lightweight)` before judging |
+| Keep score <0.35 chunks | Cross-domain low-score pollution | Hard-threshold truncation both phases |
+| Score a long doc by its head window alone | Evidence past char 3000 would be falsely discarded | Chunk text ∪ continuation reads (`offset`/`totalLines`) before verdict |
+| Treat `(part k of N)` siblings as separate books | Part 1 doesn't represent the whole; counting inflates | Group by stem; read the HIT part; cite the concrete part |
+| Include content ≤4 in the answer | Better to give nothing than something wrong | Discard → fallback → if nothing, honest report |
+| Answer without the five sections / blind-spot declaration | The user assumes the KB covers everything | Mandatory output standards above |
 
 ## Quick Rule Reference
-1. **Step 0 mandatory** — raw colloquial queries are not retrieved directly
-2. **Step 1 mandatory when spanning libraries** — library selection reduces noise
-3. **balance_kbs=True** (cross-library) — prevents large-library dominance
-4. **Step 2.5 mandatory** — document-level dedup + hard threshold
-5. **Content score > vector score** — read 3000 chars and score independently
-6. **Exit on hit** — content ≥6 answers directly
-7. **Tags are expanders** — used only when vectors miss
-8. **Experience first** — incident/ops-type queries check experiences first
-9. **Honest blind spots** — declare when there's no confirmed hit
+1. **Vector first** — `kb_search_vector` opens every search; whole-library default with balance_kbs
+2. **Phase 0 mandatory** — raw colloquial queries are not retrieved directly
+3. **Content gate owns the verdict** — read 3000 chars, score 0-8 independently; ≥6 fast exit
+4. **Gate ≤5 → librarian fallback mandatory** — read all KB summaries → walk directories → targeted multi-path recall → re-verify
+5. **Document-level dedup + hard threshold** — both phases, every path; `(part k of N)` siblings count as one logical document
+6. **Content score > vector score > path consensus** — three-path hits with content ≤4 still die; evidence = chunk text ∪ all read windows
+7. **Experience first** — incident/ops-type queries check experiences first
+8. **Honest blind spots** — both paths failed → 如实奉告 with what-was-tried evidence; never fabricate
+
+<!-- SKILLOPT-SLEEP:LEARNED START -->
+## Learned preferences & procedures
+
+_This block is maintained by SkillOpt-Sleep. Edits here are proposed offline, validated against your past tasks, and adopted only after you approve them. Hand-edits outside this block are never touched._
+
+- The Phase 1 vector recall tool is `mcp__kb-mcp__kb_search_vector(kb_id="", top_k=10, score_threshold=0.35, balance_kbs=True)`; the final answer's `## Search Paths` line MUST contain the literal token `kb_search_vector`. A final answer missing that token is a failure.
+- The final answer MUST contain a section titled `## Blind Spots (Cross-Library Perspective)` (title containing both literal words `Blind Spots` and `Cross-Library`), itemizing: sub-domains not covered, a library that may have relevant content but was not hit (manual recheck recommended), and contested/timeliness/points needing confirmation. Missing the `Blind Spots`/`Cross-Library` labels is a failure.
+- The `## Search Paths` line MUST contain `kb_doc_read` and `0-8 scoring`; the `## Confidence` line MUST contain `content verification` (e.g. `after content verification P0:3 documents`). Missing these literals is a failure.
+- MUST-answer + MCP first: all recall for whole-library/cross-library retrieval MUST go through `mcp__kb-mcp__*` tools (kb_search_vector, kb_list, kb_doc_read, kb_search_two_stage, kb_tags_list, kb_doc_get_by_tag, ...); Bash/terminal/HTTP bypass is forbidden; the response MUST give the complete five-section final answer in the same turn (`## Search Paths`/`## Answer`/`## Sources`/`## Confidence`/`## Blind Spots (Cross-Library Perspective)`); ending the turn with a single tool call, probe command, or partial answer is forbidden.
+<!-- SKILLOPT-SLEEP:LEARNED END -->

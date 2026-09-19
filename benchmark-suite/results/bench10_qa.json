@@ -1,0 +1,201 @@
+{
+ "total": 10,
+ "passed": 9,
+ "pass_rate": 0.9,
+ "rows": [
+  {
+   "qid": "BQ01",
+   "field": "artificial-intelligence",
+   "arxiv_id": "1706.03762",
+   "paper": "Attention Is All You Need",
+   "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+   "question_zh": "Transformer 是如何计算注意力的？它为什么取代了循环和卷积结构？",
+   "expected": "Scaled dot-product attention with multi-head projection; parallel computation and global dependencies without recurrence.",
+   "gold_keywords": [
+    "scaled dot-product",
+    "multi-head",
+    "recurrence"
+   ],
+   "doc_hit": true,
+   "kw_hit": [
+    "multi-head",
+    "recurrence"
+   ],
+   "pass": true,
+   "kb": "计算机与人工智能"
+  },
+  {
+   "qid": "BQ02",
+   "field": "quantum-physics",
+   "arxiv_id": "1801.00862",
+   "paper": "Quantum Computing in the NISQ era and beyond",
+   "question": "What defines NISQ technology and what is its central limitation?",
+   "question_zh": "NISQ 技术的定义特征是什么？它的核心局限是什么？",
+   "expected": "Noisy Intermediate-Scale Quantum devices (50-100 qubits) without quantum error correction; noise limits circuit depth.",
+   "gold_keywords": [
+    "noisy intermediate-scale",
+    "error correction"
+   ],
+   "doc_hit": true,
+   "kw_hit": [
+    "noisy intermediate-scale"
+   ],
+   "pass": true,
+   "kb": "自然科学与地球科学"
+  },
+  {
+   "qid": "BQ03",
+   "field": "clinical-medicine",
+   "arxiv_id": "2212.13138",
+   "paper": "Large Language Models Encode Clinical Knowledge",
+   "question": "What is MultiMedQA and how did Flan-PaLM perform on the MedQA benchmark?",
+   "question_zh": "MultiMedQA 是什么？Flan-PaLM 在 MedQA 基准上的表现如何？",
+   "expected": "MultiMedQA combines seven medical QA datasets; Flan-PaLM reached 67.6% on MedQA, surpassing prior models.",
+   "gold_keywords": [
+    "multimedqa",
+    "67.6"
+   ],
+   "doc_hit": true,
+   "kw_hit": [
+    "multimedqa"
+   ],
+   "pass": true,
+   "kb": "生命科学与医学"
+  },
+  {
+   "qid": "BQ04",
+   "field": "genomics",
+   "arxiv_id": "1602.01876",
+   "paper": "Primer on the Gene Ontology",
+   "question": "Which three independent ontologies subdivide the Gene Ontology?",
+   "question_zh": "基因本体（GO）由哪三个独立本体构成？",
+   "expected": "Molecular Function, Biological Process, and Cellular Component.",
+   "gold_keywords": [
+    "molecular function",
+    "biological process",
+    "cellular component"
+   ],
+   "doc_hit": true,
+   "kw_hit": [
+    "molecular function",
+    "biological process",
+    "cellular component"
+   ],
+   "pass": true,
+   "kb": "生命科学与医学"
+  },
+  {
+   "qid": "BQ05",
+   "field": "economics",
+   "arxiv_id": "1512.08067",
+   "paper": "Unified Growth Theory Contradicted by the Economic Growth in Europe",
+   "question": "Why does historical European economic growth contradict Unified Growth Theory?",
+   "question_zh": "为什么欧洲的历史经济增长与统一增长理论的预测相矛盾？",
+   "expected": "Western and Eastern Europe show divergent growth patterns that the theory's single-escape dynamics do not predict.",
+   "gold_keywords": [
+    "unified growth theory"
+   ],
+   "doc_hit": true,
+   "kw_hit": [
+    "unified growth theory"
+   ],
+   "pass": true,
+   "kb": "经济与社会"
+  },
+  {
+   "qid": "BQ06",
+   "field": "climate-science",
+   "arxiv_id": "1503.07557",
+   "paper": "Precipitation extremes under climate change",
+   "question": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+   "question_zh": "控制极端降水对气候变化响应的主要物理因素是什么？",
+   "expected": "Precipitation efficiency, alongside thermodynamic moisture increases.",
+   "gold_keywords": [
+    "precipitation efficiency"
+   ],
+   "doc_hit": true,
+   "kw_hit": [],
+   "pass": false,
+   "kb": "自然科学与地球科学"
+  },
+  {
+   "qid": "BQ07",
+   "field": "nlp",
+   "arxiv_id": "2608.05850",
+   "paper": "MameLoshnLM: Yiddish Language Model and Evaluation Benchmark",
+   "question": "What is MameLoshnLM and what parameter scale does it have?",
+   "question_zh": "MameLoshnLM 是什么？它的参数规模多大？",
+   "expected": "The first open-source 8B-parameter Yiddish language model with an evaluation benchmark.",
+   "gold_keywords": [
+    "yiddish",
+    "8b"
+   ],
+   "doc_hit": true,
+   "kw_hit": [
+    "yiddish"
+   ],
+   "pass": true,
+   "kb": "计算机与人工智能"
+  },
+  {
+   "qid": "BQ08",
+   "field": "materials",
+   "arxiv_id": "2408.09942",
+   "paper": "Oxygen redox in battery cathodes: A brief overview",
+   "question": "How does oxygen redox contribute to the capacity of battery cathodes?",
+   "question_zh": "氧变价反应如何提升电池正极的容量？",
+   "expected": "Lattice oxygen participation enables extra capacity beyond transition-metal redox in Li-rich cathodes.",
+   "gold_keywords": [
+    "oxygen redox",
+    "cathode"
+   ],
+   "doc_hit": true,
+   "kw_hit": [
+    "oxygen redox",
+    "cathode"
+   ],
+   "pass": true,
+   "kb": "自然科学与地球科学"
+  },
+  {
+   "qid": "BQ09",
+   "field": "robotics",
+   "arxiv_id": "2410.10669",
+   "paper": "MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping",
+   "question": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?",
+   "question_zh": "MLP-SLAM 解决了动态环境下视觉 SLAM 的什么问题？如何解决？",
+   "expected": "Dynamic objects degrade V-SLAM; a multilayer perceptron filters dynamic features for robust localization.",
+   "gold_keywords": [
+    "dynamic",
+    "multilayer perceptron"
+   ],
+   "doc_hit": true,
+   "kw_hit": [
+    "dynamic",
+    "multilayer perceptron"
+   ],
+   "pass": true,
+   "kb": "计算机与人工智能"
+  },
+  {
+   "qid": "BQ10",
+   "field": "immunology",
+   "arxiv_id": "2604.01385",
+   "paper": "Strategies for tumor elimination and control under immune evasion and chemotherapy resistance",
+   "question": "What strategies for tumor control emerge under immune evasion and chemotherapy resistance?",
+   "question_zh": "在免疫逃逸与化疗耐药条件下，论文提出哪些肿瘤控制策略？",
+   "expected": "Evolutionary/ecological dynamics of tumors under immune response inform combination treatment timing and dosing strategies.",
+   "gold_keywords": [
+    "immune evasion",
+    "chemotherapy"
+   ],
+   "doc_hit": true,
+   "kw_hit": [
+    "immune evasion",
+    "chemotherapy"
+   ],
+   "pass": true,
+   "kb": "生命科学与医学"
+  }
+ ]
+}

@@ -2534,6 +2534,10 @@ async def kb_graph_delete_kb(kb_id: str) -> str:
 def main():
     _startup_health_check_and_launch()
     if "--http" in sys.argv:
+        # SSE mode: port via KB_MCP_HTTP_PORT (the SDK FastMCP does not read
+        # FASTMCP_PORT env, and 8000 collides with other dev services).
+        port = int(os.environ.get("KB_MCP_HTTP_PORT") or 8000)
+        mcp.settings.port = port
         mcp.run(transport="sse")
     else:
         mcp.run()

@@ -1,3 +1,0 @@
-# Citizen Kate
-
-Citizen Kate is a continuing web series and video blog about Citizen journalism. In 2008, when the series was first created by Carey Lundin of Viva Lundin Productions, "Kate Soglin, a young "citizen journalist," gave the outsider’s view of inside politics. Citizen Kate was one of the first Citizen Journalists to hit the 2008 presidential campaign trail. She started her video blog coverage on February 10, 2007 at Barack Obama's announcement to run for president in Springfield, Illinois. She has filed several vblogs about the presidential campaign and politics on her web site CitizenKate.tv.

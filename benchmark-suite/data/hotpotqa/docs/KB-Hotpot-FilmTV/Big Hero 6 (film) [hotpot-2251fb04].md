@@ -1,3 +1,0 @@
-# Big Hero 6 (film)
-
-Big Hero 6 is a 2014 American 3D computer-animated superhero-comedy film produced by Walt Disney Animation Studios and released by Walt Disney Pictures. Loosely based on the superhero team of the same name by Marvel Comics, the film is the 54th Disney animated feature film. Directed by Don Hall and Chris Williams, the film tells the story of Hiro Hamada, a young robotics prodigy who forms a superhero team to combat a masked villain. The film features the voices of Scott Adsit, Ryan Potter, Daniel Henney, T.J. Miller, Jamie Chung, Damon Wayans, Jr., Genesis Rodriguez, Alan Tudyk, James Cromwell, and Maya Rudolph.

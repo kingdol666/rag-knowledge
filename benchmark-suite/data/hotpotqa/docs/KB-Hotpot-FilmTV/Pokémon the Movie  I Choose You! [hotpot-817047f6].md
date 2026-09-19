@@ -1,3 +1,0 @@
-# Pokémon the Movie: I Choose You!
-
-Pokémon the Movie: I Choose You!, known in Japan as Pocket Monsters the Movie: I Choose You! (劇場版ポケットモンスター キミにきめた！ , Gekijō-ban Poketto Monsutā Kimi ni kimeta! ) is a Japanese adventure anime film produced by OLM. Released as the twentieth "Pokémon" movie and the first film in the "Sun and Moon" series, it acts as a loose retelling of the original "Indigo League" saga of the show, released to commemorate the anime's twentieth anniversary. It premiered at Japan Expo in France on July 6, 2017 and was released in Japan on July 15, 2017. Fathom Events will release the film as a limited theatrical run in the rest of the world on November 5, 2017.

@@ -1,3 +1,0 @@
-# Franz Halder
-
-Franz Halder (30 June 1884 – 2 April 1972) was a German general and the chief of the "Oberkommando des Heeres" staff (OKH, Army High Command) from 1938 until September 1942, when he was dismissed after frequent disagreements with Adolf Hitler. Until December 1941 Halder's military position corresponded to the old Chief of the General Staff position, which during World War I had been the highest military office in the German Imperial Army. Halder's diary during his time as chief of OKH General Staff has been a source for authors that have written about such subjects as Hitler, World War II and the Nazi Party. In William Shirer's "The Rise and Fall of the Third Reich", Halder's diary is cited hundreds of times.

@@ -1,7 +1,7 @@
 ---
 name: knowledgebase-ingest
 description: >
-  Document ingestion pipeline with quality gates A0→A9. Content-first workflow: dedup (content fingerprint), survey, parse with quality check, structured analysis, tag quality gate (blocklist+normalize+verify), description quality gate (4-elements+content-readback), KB-attribution decision tree (sub-KB first), store by file type, index+tag with post-index verification. No document splitting. Triggered by: ingest, upload, import, store, parse, parse PDF, save to, store, upload, import, parse, save to KB, ingest, ingest a document, upload a document, store into the knowledge base, put a document, add a document, add doc, put document.
+  Document ingestion pipeline with quality gates A0→A9. Content-first workflow: dedup (content fingerprint), survey, parse with quality check, SCRIPTED split gate for oversized documents (reads ingestion.large_doc.max_chars from config.yml, never split by hand), structured analysis, tag quality gate (blocklist+normalize+verify), description quality gate (4-elements+content-readback), KB-attribution decision tree (sub-KB first), store by file type, index+tag with post-index verification. Triggered by: ingest, upload, import, store, parse, parse PDF, save to KB, ingest a document, put a document, add a document, 拆分, 分块, 大文档入库, maxChars, split large document.
 ---
 
 ## ⭐ Related Skills
@@ -16,7 +16,8 @@ description: >
 **Step 2 — Dedup (A0)**: content fingerprint detection; skip duplicate documents.
 **Step 3 — Survey (A1)**: browse the document content; determine KB ownership.
 **Step 4 — Parse (A2)**: call parse_doc to parse PDF/Word/Excel/Image.
-**Step 5 — Save (A3)**: kb_doc_save_parsed writes into the KB.
+**Step 4.5 — Split Gate (A2.5, scripted)**: count chars of the parsed markdown; if over `ingestion.large_doc.max_chars`, run `scripts/split_large_doc.py` (reads the setting, writes part files, deletes the temp original). All later steps then operate on the parts.
+**Step 5 — Save (A3)**: kb_doc_save_parsed writes into the KB (or kb_doc_create per part after A2.5).
 **Step 6 — Tag+Describe (A3b-c)**: auto-generate tags + content-based descriptions.
 **Step 7 — Index (A6)**: vector index + graph index.
 **Step 8 — Verify (A6-V)**: kb_search_vector verifies retrievability.
@@ -33,12 +34,12 @@ description: >
 **Freedom Map** (freedom level per step):
 | Step | Freedom | Notes |
 |------|--------|------|
-| A0 dedup / A2-Q parse quality / A3b tags / A3c description / A5 storage / A6-V index verification | 🔒 **Mandatory** (low freedom) | Quality gates; must execute strictly; no skipping or workarounds |
+| A0 dedup / A2-Q parse quality / **A2.5 split gate** / A3b tags / A3c description / A5 storage / A6-V index verification | 🔒 **Mandatory** (low freedom) | Quality gates; must execute strictly; no skipping or workarounds |
 | A1 survey / A3 content analysis | 🎯 **Execute** (medium freedom) | Read content per the flow; analysis results feed later decisions |
 | A3d KB attribution / A8 sub-KB evaluation | 🧠 **Judgment** (high freedom) | Requires domain judgment based on content; the decision tree guides but is not mechanical |
 
 **Four iron rules**:
-1. **Store the whole document** — a single document is a complete unit; never truncate/summarize/split.
+1. **Store the whole document** — a single document is a complete unit; never truncate/summarize. Oversize is handled by the **A2.5 split gate**: when the parsed markdown's char count exceeds `ingestion.large_doc.max_chars` (Settings → 入库规范, hot-effective), run `scripts/split_large_doc.py` — it writes part documents and deletes the temp original; each part then enters the flow as a complete unit with its own content-based description. **Never split by hand, never use the raw oversized file downstream.**
 2. **Content-driven** — all decisions (KB attribution, tags, descriptions) are based on the actual body text read, not filenames/guesses.
 3. **Quality gates** — A2 parse quality / A3b tags / A3c description: any gate failed means rework; do not let it through.
 4. ⭐ **MCP-first principle** — all operations must go through MCP tools (`mcp__kb-mcp__*`).
@@ -112,9 +113,39 @@ Inspect the first 1500 chars of the parsed markdown; **any hit means reject and 
 | **Excess whitespace** | >50 consecutive blank lines or body <100 chars | Treat as parse failure |
 | **Language mismatch** | Chinese PDF parses into all-English garbage | Encoding/OCR issue; retry |
 
+## A2.5 — Split Gate (Scripted, Mandatory) ⭐
+
+Oversized documents destroy retrieval granularity (vector chunks, BM25 windows, graph nodes all degrade). Before saving, **always count the parsed markdown's chars and enforce the configured chunk limit with the bundled script** — never decide by eye, never split by hand.
+
+**1) Count chars** of the parsed markdown (from `parse_task_status`'s `markdown` or `markdown_path`).
+
+**2) Run the gate script** (resolve `scripts/split_large_doc.py` relative to this SKILL.md's directory):
+```bash
+python "<this-skill-dir>/scripts/split_large_doc.py" "<markdown_path>"
+```
+The script reads `ingestion.large_doc.max_chars` from config.yml itself (CWD-upward probe; override with `--config <path>` or `--max-chars N`), and prints one JSON line:
+```json
+{"success": true, "source_chars": 8432, "max_chars": 1000, "split": true,
+ "part_count": 9, "source_deleted": true,
+ "parts": [{"file": "... (part 1 of 9).md", "chars": 990,
+            "description": "<real-content excerpt of THIS part>"}, ...]}
+```
+
+**3) Act on the JSON**:
+| Result | Meaning | Next |
+|---|---|---|
+| `split: false` | under the limit; source is kept | continue with the original file (single unit) |
+| `split: true` | part files written next to the source; **temp original deleted** (`source_deleted: true`; if deletion failed a `warning` is set — delete it manually) | all later steps (A3/A3b/A3c/A5/A6) run **per part**; the original must never appear downstream |
+| `success: false` | IO/config error | fix the cause; do not ingest the oversized raw file |
+
+- `--dry-run` previews the plan without writing/deleting — use it only when the user explicitly wants to preview the split.
+- Parts are named `<stem> (part i of N).md`, carry a content header (`# <title>（第 i/N 部分）` + section path), and the JSON gives a real-content `description` per part — use it as the A3c seed, then refine to the four-element standard.
+- Parse images: parts reference `images/…` relatively. If `image_count > 0`, upload the parse output's images once into the KB (`fs_upload_file`) before/with the parts.
+
 ## A3 — Structured Content Analysis
 
 Read a 3000-char sample and output a structured result (**this is the basis for all later decisions**):
+**After A2.5 split**: run A3/A3b/A3c **per part** — each part is analyzed and described on its own real body (the gate script's per-part `description` is the seed; refine it to the four-element standard below).
 
 ```json
 {
@@ -187,6 +218,8 @@ Determine the target KB by priority (**this is the core of ingestion quality**):
 - **Create a sub-KB**: point `parent_id` at the parent KB's `kb_id`.
 
 ## A5 — Store the Document (Routed by Path; Whole Document, No Truncation)
+
+**Routing after A2.5**: if the split gate produced parts, store **each part** via the direct path (`kb_doc_create`, one call per part with its own qualified description) — never re-store the deleted oversized original, and never call `kb_doc_save_parsed` again (it would store the unsplit full markdown).
 
 ### Parse path — `kb_doc_save_parsed` (stores full content + images) ⭐
 ```
@@ -274,6 +307,7 @@ An optional step, but recommended when KB completeness and freshness requirement
 ```
 ✅ <filename> → <full path of target KB>
    Type: PDF (parsed) | Title: <real title>
+   Split (A2.5): not needed (<n> chars ≤ <max_chars>) | split into <N> parts (script), temp original deleted
    Description: <first 80 chars of the qualified description>...
    Tags: [tag1, tag2, tag3] (after A3b cleaning)
    Index: vector=<collection> chunks=<n> | graph=<entities>e/<relations>r
@@ -289,6 +323,7 @@ An optional step, but recommended when KB completeness and freshness requirement
 |-------------|------|-------------|
 | Skip A0 dedup | Re-ingest under a renamed file | Dual-channel dedup: filename + fingerprint |
 | Skip the A2-Q quality gate | OCR garbage gets ingested | After A2, run the gate item by item |
+| Skip A2.5 / split by hand / eyeball the char count | Oversized docs degrade every retrieval layer; manual splits lose headers+descriptions | Run `scripts/split_large_doc.py`; it reads the setting, writes parts, deletes the temp original |
 | `kb_doc_create` for parsed documents | Truncates content and drops images | Parsed documents must use `kb_doc_save_parsed` |
 | Tags without A3b | Section titles/bad tags get ingested | Blocklist filtering + normalization + count trimming |
 | Description without A3c | Filename used as description | Four elements + content readback |
@@ -300,8 +335,9 @@ An optional step, but recommended when KB completeness and freshness requirement
 ## Tool Quick Reference
 - `parse_doc(file_path, use_ocr=true)` / `parse_doc_batch(file_paths, use_ocr=true)` — non-blocking parsing
 - `parse_task_status(task_id)` — poll parsing results
+- `scripts/split_large_doc.py <md> [--max-chars N] [--config PATH] [--dry-run]` — ⭐ A2.5 split gate; reads config.yml, writes parts, deletes the temp original, prints one JSON plan
 - `kb_doc_save_parsed(parent_id, task_id, description)` — ⭐ parse path; stores full content+images
-- `kb_doc_create(kb_id, name, content, description)` — direct path/in-memory documents
+- `kb_doc_create(kb_id, name, content, description)` — direct path / per-part storage after A2.5
 - `kb_index_document(kb_id, doc_path)` — vector+graph+BM25 indexing
 - `kb_doc_update_tags(kb_id, doc_path, tags)` — tagging (after A3b cleaning)
 - `kb_doc_read(kb_id, doc_path, max_chars)` — read the body (used by A3/A3c/C1)

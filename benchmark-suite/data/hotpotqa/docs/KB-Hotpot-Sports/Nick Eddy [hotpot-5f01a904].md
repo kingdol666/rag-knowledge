@@ -1,3 +1,0 @@
-# Nick Eddy
-
-Nicholas Matthew Eddy (born August 23, 1944) is a former American football player. He was raised in Tracy, California. A broad-shouldered 6 feet, 195 lbs, he attended the University of Notre Dame on a football scholarship. Eddy was a standout running back and kick returner. Eddy was an All-American halfback, leading Notre Dame to the 1966 national championship. He finished third to Steve Spurrier and Bob Griese in the 1966 Heisman Trophy balloting. The Detroit Lions drafted Eddy in the 1966 NFL Draft. Eddy played for the Lions from 1967 to 1972, although he was never a star. He was hampered by knee injuries.

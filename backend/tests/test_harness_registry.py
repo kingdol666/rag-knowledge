@@ -699,8 +699,14 @@ class TestApiLayer:
         from app.api.routes.meditation import _validate_harness
         from fastapi import HTTPException
         monkeypatch.setattr(hreg, "resolve_command", lambda hid: None)
-        with pytest.raises(HTTPException) as ei:
-            run(_validate_harness("hermes"))
+        # 本机若真的装了 hermes，先前的探测缓存会让 probe 直接命中 installed=True
+        # （缓存命中根本不会走到 resolve_command）→ 必须清缓存才能测「未安装」分支。
+        hreg.reset_probe_cache()
+        try:
+            with pytest.raises(HTTPException) as ei:
+                run(_validate_harness("hermes"))
+        finally:
+            hreg.reset_probe_cache()
         assert ei.value.status_code == 409
 
     def test_validate_installed_ok(self):
@@ -718,7 +724,9 @@ class TestApiLayer:
         from app.api.routes.meditation import meditation_models
         res = run(meditation_models(harness="gemini"))
         ids = [m["id"] for m in res["models"]]
-        assert "" in ids and "gemini-2.5-pro" in ids
+        # 新契约：目录只含真实模型 id（"" 默认项由 UI 表达），静态表兜底
+        assert "gemini-2.5-pro" in ids and "gemini-2.5-flash" in ids
+        assert res["source"] == "static"
 
 
 # ── 配置覆盖链 ────────────────────────────────────────────────────────

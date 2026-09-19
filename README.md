@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./docs/images/readme-hero.svg" alt="RAG Knowledge Platform — enterprise document intelligence and agentic knowledge base" width="100%" />
+<img src="./docs/images/readme-hero.svg" alt="QDCVR — a deployable knowledge-base management platform with content-based organization and content-verified retrieval" width="100%" />
 
 <br><br>
 
@@ -8,9 +8,9 @@
 <br><br>
 
 <a href="#-quick-start"><img src="https://img.shields.io/badge/Quick_Start-3_commands-B24422?style=for-the-badge" alt="Quick Start" /></a>
-<a href="#-architecture"><img src="https://img.shields.io/badge/Stack-FastAPI_·_Nuxt_3_·_MCP-2E5D7F?style=for-the-badge" alt="Stack" /></a>
-<a href="#-the-94-mcp-tools"><img src="https://img.shields.io/badge/MCP_Tools-94-9E7A38?style=for-the-badge" alt="94 MCP tools" /></a>
-<a href="#-how-it-works"><img src="https://img.shields.io/badge/Retrieval-QDCVR-B24422?style=for-the-badge" alt="QDCVR" /></a>
+<a href="#mcp-tools"><img src="https://img.shields.io/badge/kb_*_MCP_Tools-41-2E5D7F?style=for-the-badge" alt="41 kb_* MCP tools" /></a>
+<a href="#how-it-works"><img src="https://img.shields.io/badge/Retrieval-QDCVR_v2-B24422?style=for-the-badge" alt="QDCVR" /></a>
+<a href="#publications"><img src="https://img.shields.io/badge/CIKM_%2726_Demo-Paper-9E7A38?style=for-the-badge" alt="CIKM Demo paper" /></a>
 
 <br>
 
@@ -27,17 +27,19 @@
 
 ## What this is
 
-A self-hosted platform that turns a folder of PDFs, Office documents and scans into a **knowledge base an AI agent can actually be trusted to answer from** — then exposes it four ways: a web UI, an HTTP API, a CLI, and 94 MCP tools that any MCP-capable agent can drive.
+A self-hosted platform that turns a folder of PDFs, Office documents and scans into a **knowledge base an AI agent can actually be trusted to answer from** — organized by what documents *say*, not by which folder they sat in, and exposed four ways: a web UI, an HTTP API, a CLI, and MCP tools that any MCP-capable agent can drive.
 
-The retrieval layer is the interesting part. Most RAG stacks rank by vector similarity and hope. This one **reads the candidate documents and scores them against an independent 0–8 content rubric**, then refuses to return anything that fails it:
+The retrieval layer is the interesting part. Most RAG stacks rank by vector similarity and hope. This one runs a query protocol — **QDCVR, Query-Driven Content-Verified Retrieval** — that **reads the candidate documents and scores them against an interpretable 0–8 content rubric**, escalates gate failures to a librarian fallback, and returns an explicit not-found report instead of a fabricated answer:
 
 > **Vectors are fast. Content is accurate.**
 > A document at cosine similarity **0.95** whose content scores **≤ 4** is **discarded** — not down-ranked, discarded.
 
+This is the system demonstrated in our CIKM '26 demo paper, *QDCVR: A Deployable Knowledge-Base Management Platform with Content-Based Organization and Content-Verified Retrieval* ([paper + demo video](#publications)).
+
 <br>
 
 <div align="center">
-<img src="./docs/images/readme-pipeline.svg" alt="Ingestion pipeline: files → MinerU OCR → knowledge base → indexes → QDCVR retrieval → verified answer" width="100%" />
+<img src="./docs/images/readme-pipeline.svg" alt="Ingestion pipeline: files → MinerU OCR → content-routed category knowledge bases → indexes → QDCVR retrieval → verified answer" width="100%" />
 </div>
 
 ---
@@ -47,13 +49,14 @@ The retrieval layer is the interesting part. Most RAG stacks rank by vector simi
 | | |
 |---|---|
 | [**Screenshots**](#screenshots) | What the interface actually looks like, light and dark |
-| [**How it works**](#how-it-works) | The retrieval pipeline and the 0–8 rubric |
+| [**How it works**](#how-it-works) | The QDCVR v2 protocol and the 0–8 rubric |
+| [**Agent chat, any harness**](#agent-chat-any-harness) | 14 harnesses, per-harness models, unified HITL |
 | [**Architecture**](#architecture) | Services, ports, storage engines |
 | [**Quick start**](#quick-start) | Clone → setup → up |
 | [**Use it four ways**](#use-it-four-ways) | Web UI · HTTP · CLI · MCP |
-| [**The 94 MCP tools**](#the-94-mcp-tools) | Full inventory by category |
+| [**MCP tools**](#mcp-tools) | 41 `kb_*` domain tools out of 94, by category |
 | [**External HTTP API**](#external-http-api) | Call it from anything, no agent required |
-| [**Verification**](#verification) | What is measured, and how |
+| [**Benchmark**](#benchmark) | The reproducible pipeline and its numbers |
 | [**Scope and non-goals**](#scope-and-non-goals) | What this does *not* do |
 
 ---
@@ -75,7 +78,7 @@ CRUD, cross-KB moves, tag management and in-place content editing.
 
 <br>
 
-**QDCVR search** — three strategies, scope control, and a tag rail that reflects what is actually in the corpus.
+**QDCVR search** — vector-first retrieval, scope control, and a tag rail that reflects what is actually in the corpus.
 
 <div align="center">
 <img src="./docs/screenshots/app/desktop-knowledge-search.jpg" alt="QDCVR search interface" width="100%" />
@@ -99,7 +102,7 @@ CRUD, cross-KB moves, tag management and in-place content editing.
 <img src="./docs/screenshots/app/desktop-file-system.jpg" alt="File system tree" width="100%" />
 </div>
 
-**Agent chat** — drive a coding agent against the knowledge base in-app.
+**Agent chat** — 14 agent harnesses against the knowledge base in-app, with per-harness model selection and unified human-in-the-loop approvals.
 
 <div align="center">
 <img src="./docs/screenshots/app/desktop-claude-chat.jpg" alt="Agent chat" width="100%" />
@@ -157,29 +160,34 @@ The layout is a container-query system, so it responds to the width of its own c
 
 ## How it works
 
-`QDCVR` — **Query-Driven, Content-Verified Retrieval**. Seven stages, in order:
+`QDCVR` — **Query-Driven, Content-Verified Retrieval**. One protocol per query, in order:
 
 ```
 query
   │
-  ├─ 0 · Intent recognition        operational / factual / exploratory
+  ├─ 0 · Query rewrite             vague ask → retrieval-shaped query
   │
-  ├─ 1 · KB selection              agentic scan of the catalogue
-  │                                balance_kbs guard stops one large KB dominating
+  ├─ 1 · Vector-first recall       kb_search_vector over the routed category
+  │                                base(s); balance_kbs stops one large KB
+  │                                dominating the candidate pool
   │
-  ├─ 2 · Multi-stage recall        BM25 ──▶ vector ──▶ tag-semantic ──▶ graph
-  │                                every stage is a *recall* stage, not a ranking
+  ├─ 2 · ⭐ Content gate (0–8)     an agent READS the candidate text and
+  │                                scores it:  topic 0–3 · scenario 0–3 ·
+  │                                evidence 0–2
+  │                                score ≥ 6 → fast exit, answer now
+  │                                score = 5 → keep as fallback, escalate
+  │                                score ≤ 4 → discard
   │
-  ├─ 3 · ⭐ Content verification    read the candidate, score it 0–8
-  │                                score < 6  → tag + description expansion pass
-  │                                score ≤ 4  → HARD DISCARD
+  ├─ 3 · Librarian fallback        gate-failed? targeted re-search + deeper
+  │                                reads over the routed KBs — the gate-fail
+  │                                in the benchmark run was rescued here
   │
-  ├─ 4 · Cross-validation          dedup, cross-KB merge, rank fusion
+  ├─ 4 · Not-found contract        nothing passes? an explicit
+  │                                not-found report — never a guess
   │
-  ├─ 5 · Confidence tiering        P0 verified · P1 likely · P2 hint
-  │                                blind spots are declared, never papered over
-  │
-  └─ 6 · Answer + citations        every claim linked to its source document
+  └─ 5 · Answer + citations        five-section format: search paths ·
+                                   answer · sources · confidence ·
+                                   declared blind spots
 ```
 
 <details>
@@ -191,24 +199,25 @@ query
 |:---:|---|---|
 | **0–2** | Off-topic, or the document is about something else entirely | **Discarded** |
 | **3–4** | Tangential — one relevant sentence buried in an unrelated document | **Discarded** |
-| **5–6** | Partially relevant — on topic but missing the specifics asked for | Kept, one **expansion pass** |
-| **7–8** | Directly answers the question | Kept, eligible for P0 |
+| **5** | On topic but the specifics asked for are not in the window read | Kept as **fallback** → **librarian escalation** (targeted re-search + continuation reads) |
+| **6–7** | On topic, answers the question with partial depth | Kept, fast exit |
+| **8** | Directly answers the question from the text read | Kept, fast exit |
 
-The point of the rubric is that it is applied **after** recall and **by reading content**, so a high cosine score buys a document nothing. This is what makes the tiering meaningful: a P0 result has survived both a similarity filter and a content judgement.
+The point of the rubric is that it is applied **after** recall and **by reading content**, so a high cosine score buys a document nothing. And when the gate fails, the protocol does not silently return the least-bad candidate — it goes looking again, and if nothing passes it says so.
 
 </details>
 
-### Cross-KB blind-spot mitigation
+---
 
-When a normal two-stage search returns candidates from fewer than two distinct knowledge bases, the query is automatically retried with a three-path parallel recall and the results cross-validated:
+## Agent chat, any harness
 
-| Path | Strategy | Catches |
-|:---:|---|---|
-| **A** | Agentic KB scan over the catalogue | Queries the lexical index misses because the vocabulary differs |
-| **B** | Two-stage BM25 → vector | The standard high-precision path |
-| **C** | Pure cross-KB vector | Semantic matches with no lexical overlap at all |
+The built-in chat page speaks to **14 agent harnesses** — Claude Code, OMP, Codex CLI, Gemini CLI, Copilot CLI, Cursor CLI, DeepSeek Harness, Hermes Agent, OpenCode, Crush, Goose, Qwen Code, pi, plus an in-process mock for CI — through one adapter layer:
 
-Paths are merged, de-duplicated, and short-chunk false positives are demoted (a fragment under 50 characters is capped at P2). This directly targets the failure mode where BM25 stage-1 recall silently narrows the candidate set to one knowledge base.
+- **Per-harness model selection** — each harness exposes its real model catalog (`omp models --json`, `opencode models`, ACP `configOptions`, …); you pick from a dropdown or type any model the harness accepts.
+- **Per-harness reasoning effort** — only the levels each harness natively supports (`--thinking`, `model_reasoning_effort`, `--effort`, ACP `reasoning_effort`), nothing invented.
+- **Per-harness permission modes** — the harness's own semantics: Claude's permission modes, Codex's sandbox tiers, ACP `request_permission`, and so on.
+- **Unified human-in-the-loop** — every approval request (Claude's `canUseTool`, ACP's `session/request_permission`) surfaces as one approval dialog in the same chat; allow, deny, or pick a harness-provided option. The stream blocks until you decide.
+- **Availability is probed, not guessed** — the platform checks each harness at startup and on demand (executable, version, credentials); unavailable harnesses are disabled in the UI with the reason, and every harness gets a one-click diagnosis plus an optional live round-trip self-test.
 
 ---
 
@@ -224,13 +233,13 @@ Three services and a tool layer, all reading their ports and paths from one `con
 |---:|---|---|
 | `6789` | Nuxt 3 | UI + server-side proxy. The browser never calls the backend directly (no CORS surface). |
 | `8770` | FastAPI | Parse scheduling, vector, graph, experience, SOUL. Refuses to start if the port is already taken. |
-| *ephemeral* | MinerU OCR | Auto-picks a free port. Runs as a managed subprocess that dies with its parent. |
+| *ephemeral* | MinerU OCR | Dual-mode: a remote mineru-api when configured (probed at startup), otherwise a local engine auto-started on a free port as a managed subprocess. |
 | `7687` | Neo4j | Document graph, cross-KB bridges. |
 | — | ChromaDB | Chunk embeddings, one collection per knowledge base. |
 
 **The read/write asymmetry is deliberate:** writes go through the HTTP API so they are atomic and auditable; reads go straight to `.tree-fs.json` and `.knowledge-base.yml` on disk, so search costs zero backend load.
 
-> **Note:** both READMEs document the default `8770`/`6789` pair. If you are running more than one instance you may see a second backend on another port, such as `8771` — check `config.yml` and the settings page banner, which reads the running values.
+> **Note:** both READMEs document the default `8770`/`6789` pair. If you are running more than one instance you may see a second backend on another port, such as `8771` — check `config.yml`, `.env` (`BACKEND_PORT`), and the settings page banner, which reads the running values.
 
 ---
 
@@ -288,7 +297,7 @@ Then open **http://localhost:6789**.
 
 ### 1 · Web UI
 
-Ten pages: dashboard, file system, knowledge base manager, QDCVR search, graph explorer, SOUL persona studio, agent chat, settings, API tokens, login. Light and dark, desktop to phone.
+Eleven pages: dashboard, file system, knowledge base manager, QDCVR search, graph explorer, SOUL persona studio, agent chat, harness hub, settings, API tokens, login. Light and dark, desktop to phone.
 
 ### 2 · HTTP API
 
@@ -298,10 +307,6 @@ Nothing here requires an agent or MCP. See [External HTTP API](#external-http-ap
 
 ```bash
 ./ragctl status                 # service health
-./ragctl logs backend -f        # follow a log
-./ragctl soul list              # personas
-./ragctl harness                # agent harness availability
-./ragctl backup                 # snapshot storage
 ```
 
 ### 4 · MCP — any agent
@@ -324,24 +329,31 @@ Then just talk to it — *"what do we know about biaxial stretching of PET films
 
 ---
 
-## The 94 MCP tools
+## MCP tools
 
-Every tool is registered with FastMCP in `kb-mcp/server.py`. The partition below is exhaustive and disjoint.
+Every tool is registered with FastMCP in `kb-mcp/server.py`: **94 tools in total, of which 41 are `kb_*` knowledge-base tools** — the domain surface the CIKM demo paper demonstrates. The partition below is exhaustive and disjoint.
+
+**`kb_*` knowledge-base tools — 41** (the surface the paper's demo drives):
 
 | Category | Count | What it covers |
 |---|:---:|---|
-| **SOUL persona** | 20 | init · list · status · learn · learn-all · train-rl · evaluate · calibrate · cognition drafts · review · reflect · checkpoint · rollback · ask · qdcvr-ask · router · export (LoRA) |
-| **Experience** | 26 | Full E0–E12 lifecycle · search-global · search-smart · rerank · extract · drafts (list/read/approve/reject) · stale-check · sync · dashboard · decay · meditation (run/status/history/config) |
 | **Knowledge graph** | 11 | graph-search · stats · per-document relations · related · KB overview · build · cross-KB documents · paths · central documents · delete document/KB |
-| **Document CRUD** | 9 | read · create · update-meta · update-content · delete · batch-delete · move · save-parsed |
+| **Document CRUD** | 9 | read · create · update-meta · update-content · delete · batch-delete · move · save-parsed · get-documents |
 | **Vector / index** | 6 | index-document · batch-index · reindex · cleanup-orphans · find-duplicates · task-status |
 | **KB CRUD** | 4 | list · create · update · delete |
-| **Search** | 4 | search (metadata) · vector · two-stage (primary) · stats |
+| **Search** | 4 | search (metadata) · vector · two-stage · stats |
 | **Tags** | 4 | list · update · get-by-tag · cleanup |
+| | **41** | |
+
+**Platform tools — 53** (everything else the platform does):
+
+| Category | Count | What it covers |
+|---|:---:|---|
+| **Experience** | 26 | Full E0–E12 lifecycle · search-global · search-smart · rerank · extract · drafts (list/read/approve/reject) · stale-check · sync · dashboard · decay · meditation (run/status/history/config) |
+| **SOUL persona** | 20 | init · list · status · learn · learn-all · train-rl · evaluate · calibrate · cognition drafts · review · reflect · checkpoint · rollback · ask · qdcvr-ask · router · export (LoRA) |
 | **Project lifecycle** | 4 | status · start · update · backend-status |
 | **File system** | 3 | get-tree · get-children · upload-file |
-| **Parse** | 3 | parse-doc · parse-batch · parse-task-status |
-| | **94** | |
+| | **53** | |
 
 Two design rules worth knowing:
 
@@ -349,13 +361,11 @@ Two design rules worth knowing:
 - **Long jobs return task ids too.** `kb_reindex`, `kb_graph_build` and `experience_meditation_run` all hand back a task id rather than holding the connection open.
 
 <details>
-<summary><b>Agent skills (20)</b></summary>
+<summary><b>Agent skills</b></summary>
 
 <br>
 
-The `knowledgebase` dispatcher routes natural-language requests — in Chinese or English — to the right sub-skill, and delegates execution to an Archival sub-agent so quality gates cannot be skipped:
-
-`knowledgebase` · `knowledgebase-init` · `knowledgebase-update` · `knowledgebase-ingest` · `knowledgebase-search` · `knowledgebase-manage` · `knowledgebase-experience` · `knowledgebase-graph` · `knowledgebase-verify` · `butian` · `soul` · `soul-rag` · and the rest under `.claude/skills/`.
+The `knowledgebase` dispatcher skill routes natural-language requests — in Chinese or English — to the right sub-skill (ingest, search, manage, organize, update, verify, graph, experience, …), and delegates execution to an Archival sub-agent so quality gates cannot be skipped. The QDCVR v2 search skill is the same protocol the benchmark's Track A executes.
 
 </details>
 
@@ -381,8 +391,8 @@ curl -s -X POST http://localhost:6789/api/kb/documents/create \
   -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
   -d '{"kbId":"<kbId>","name":"pump-failure.md","content":"# Pump failure\n\nBearing temperature exceeded 90°C..."}'
 
-# 3 · search   (two-stage: BM25 candidates → vector refinement)
-curl -s -X POST http://localhost:6789/api/v1/search/two-stage \
+# 3 · vector search   (QDCVR Phase 1's recall tool)
+curl -s -X POST http://localhost:6789/api/v1/search/vector \
   -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
   -d '{"query":"bearing temperature limit","limit":5}'
 
@@ -402,14 +412,15 @@ Rate limiting defaults to **600 requests / 60 s**.
 | Auth | `/api/v1/auth/{register,login,verify}` · `/api/auth/*` (web proxy) |
 | Knowledge bases | `/api/kb/{create,catalog,documents}` |
 | Search | `/api/v1/search/{two-stage,vector}` |
+| Harnesses | `/api/v1/meditation/harnesses` (+ per-harness models / diagnostics / diagnose) |
 | Experience | `/api/v1/experience/*` |
 | SOUL | `/api/v1/soul/*` |
 | Graph | `/api/v1/graph/*` |
 | Parse | `/api/v1/parse/*` |
-| MinerU | `/api/v1/mineru/{status,restart}` |
+| MinerU | `/api/v1/mineru/{status,probe}` |
 | Health | `/api/v1/health` (public) |
 
-The live OpenAPI document is the authority — it lists 114 paths / 121 operations and marks the five public ones explicitly.
+The live OpenAPI document is the authority.
 
 </details>
 
@@ -460,28 +471,34 @@ web/storage/tree-file-system/
 
 ---
 
-## Verification
+## Benchmark
 
-Numbers below are reproducible from committed artefacts. The scripts and their provenance live in this repository.
+Everything runs from **one reproducible pipeline**: [`benchmark-suite/PIPELINE.md`](./benchmark-suite/PIPELINE.md) — download 50 real arXiv papers across 26 fields → parse through the production MinerU chain → route into 5 category bases by content (an agent judgment step, grounded in per-paper excerpts) → tag every part → build three replication chunk-bases (fixed-800 / structural / paragraph) → restart → run a scripted 10-question regression → answer the same 10 questions on three tracks (the QDCVR v2 skill flow vs a bare agent vs a dense baseline) → generate the reports. **One red line: nothing is fabricated — judgment artifacts must trace to exported evidence.**
 
-**Ingestion integrity.** Five layers checked end to end across two corpora; the ingestion module reports `1.000` integrity on the committed runs (`benchmark-suite/results/module_a_ingestion_r1.json`, `module_a_std2_r1.json`).
+**This run's committed numbers** (traceable to `benchmark-suite/results/`):
 
-**Retrieval, in-house corpus.** From `benchmark-suite/results/module_b_retrieval_r2.json` (20 queries, committed in full):
+| Stage | Result |
+|---|---|
+| Parse (MinerU, production chain) | 50/50 papers · 3.8 M characters |
+| Content routing + verification | 50/50 verified into 5 category bases (165 indexed documents) |
+| Content tags | 165/165 parts tagged, 0 failures |
+| Replication bases | 2 366 / 1 385 / 10 219 chunks |
+| Scripted 10-question regression (vector-first) | **9/10 = 90 %** — the one miss is a long-paper chunk-window miss (`doc_hit=true`), identical across runs |
+| **Live three-track answering**, same 10 questions | **A · QDCVR v2: 10/10 on-target** (gates 6–8/8, librarian rescue on the one gate-fail, top-1 gold recall 10/10, ≈1.6 s mean vector recall + 0.8 s reads) · **B · bare agent: 10/10 gold**, provenance stops at file names, 78.8 s average · **C · dense baseline: content matches**, 2/10 abstained, no source paths, 12.2 s average |
+| Honest-failure probes | 3 out-of-corpus questions → explicit not-found reports, zero fabrication |
 
-| Strategy | Hit@1 | Recall@5 | P@5 | Latency |
-|---|:---:|:---:|:---:|:---:|
-| Staged BM25 → vector + content adjudication | 0.800 | **0.908** | **0.210** | 1.33 s |
-| Flat dense vector | **0.900** | 0.917 | 0.200 | **0.081 s** |
+The CIKM demo paper's figures (`paper_demo/figures/`) are generated from these artifacts.
 
-**Retrieval, SciFact.** From `module_b_std2_r2.json`: dense vector leads on Hit@3 (0.900 vs 0.833), Recall@5 (0.900 vs 0.833) and nDCG@10 (0.834 vs 0.809); BM25 has the best MRR (0.839).
+> **On withheld results.** Earlier revisions of this README quoted IR-style numbers (`Hit@k`, `nDCG@10`, etc.) from standard corpora, and before that a larger benchmark from `benchmark-web/backend/results/` which contains **no producing script** in this repository. The IR corpora were retired in the 2026-09 benchmark redesign (standard corpora measure ranking, not knowledge-base management); the superseded scripts and corpora are archived under `.bench_backup_20260917/`. Figures that cannot be regenerated from a committed script are treated as unavailable.
 
-**What these numbers say.** Content adjudication is **not a free win**. It raises P@5 and Recall@5 — it finds more of what is relevant — and it costs roughly **13× latency**, because it reads documents instead of scoring vectors. It did not improve Hit@1 on either corpus. Any claim that it strictly dominates flat retrieval is not supported by the committed evidence, and this README does not make one.
+<sub>Counts last verified against a live instance on **2026-09-19**: 8 knowledge bases · 165 indexed documents in the category bases · 94 MCP tools (41 `kb_*`) · 286 backend tests passing.</sub>
 
-**Agent surface.** 73 of 73 external-API end-to-end checks pass against the live platform (knowledge base management, content retrieval, experience lifecycle, persona training).
+---
 
-> **On withheld results.** Earlier revisions of this README quoted a larger benchmark (`P@5 0.590 → 0.630`, `FPR 12 % → 3.0 %`, `84 ms → 38 ms`). Those figures came from `benchmark-web/backend/results/`, which contains **no producing script** in this repository — they cannot be regenerated, and they are contradicted by the traceable runs above. They have been removed rather than restated. If you need them, treat them as unavailable until a committed script reproduces them.
+## Publications
 
-<sub>Counts last verified against a live instance on **2026-09-15**: 12 knowledge bases · 209 documents · 94 MCP tools · 20 skills · 233 backend tests · 124 web routes · 114 API paths.</sub>
+- **Designed README showcase** — an art-directed single-page view of this README: [`docs/readme-showcase/index.html`](./docs/readme-showcase/index.html) (screenshot: [`README-showcase.png`](./docs/readme-showcase/README-showcase.png)).
+- **QDCVR: A Deployable Knowledge-Base Management Platform with Content-Based Organization and Content-Verified Retrieval** — CIKM '26 demo submission. Sources: [`paper_demo/tex/`](./paper_demo/tex/), figures: [`paper_demo/figures/`](./paper_demo/figures/), demo video: [paper_demo/video/qdcvr-demo.mp4](./paper_demo/video/qdcvr-demo.mp4).
 
 ---
 
@@ -491,7 +508,7 @@ Being explicit about what this is **not**:
 
 - **Not a hosted service.** It is self-hosted by design; there is no multi-tenant isolation story here.
 - **Not a fine-tuning platform.** The SOUL LoRA export is an *export* path, not a training pipeline you should expect to compete with a dedicated trainer.
-- **Not benchmark-superior to plain vector search on every axis.** See the honesty note above — it trades latency for precision on recall-oriented metrics.
+- **Not a vector-search replacement.** On questions whose answer sits inside a small corpus an agent can read whole, a bare agent answers without an index; the platform earns its keep on management at scale — content-routed organization, per-part tagging, graphs, integrity, and answers whose provenance goes down to document part and section.
 - **Not turnkey on Windows without Python 3.12.** The dependency pin is real; 3.13 is not supported yet.
 - **Not graph-complete out of the box.** L5 is populated by an explicit graph build, per knowledge base.
 

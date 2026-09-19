@@ -164,3 +164,17 @@ benchmark-suite/algorithms/cache/
 
 # Rendered page previews (derived from main.pdf)
 docs/paper/cikm/preview/
+
+# Designed README showcase (art-directed HTML + screenshot)
+!docs/readme-showcase/
+
+# Benchmark corpus: PDFs + md exports are regenerable via scripts/91 & 60
+# (manifest/classification/qa_questions JSONs stay tracked)
+benchmark-suite/data/papers/*.pdf
+benchmark-suite/data/corpus_md/
+
+# Local backup archives (retired corpora; keep on disk, never pushed)
+.bench_backup_*/
+
+# Transient project temp files
+.tmp_*

@@ -1,7 +1,7 @@
 """jieba + BM25 倒排索引服务。
 
 Stage 1 关键词检索：从 .knowledge-base.yml 读取文档元数据，
-从磁盘读取 .md 正文前 8000 字（V2: 从 2000 提升到 8000），构建 BM25 索引。
+从磁盘读取 .md 正文前 N 字（bm25_max_content_chars 窗口，见下方常量/配置），构建 BM25 索引。
 长文档的 BM25 表示更完整，跨库搜索不再只命中短文档 KB。
 """
 from __future__ import annotations
@@ -17,9 +17,10 @@ logger = logging.getLogger(__name__)
 
 # BM25 索引使用的最大正文字符数（默认值；可被 config.yml
 # search.two_stage.bm25_max_content_chars 覆盖）。
-# 8000 → 12000：与大文档拆分上限(10000)对齐 —— 拆分后的 part 不会再被
-# 关键词窗口截断，stage1 召回覆盖整段内容。
-_BM25_MAX_CONTENT_CHARS = 8000
+# 8000 → 12000 → 32000：须始终大于大文档拆分上限（ingestion.large_doc.max_chars，
+# 默认 10000、配置可达 30000）—— 拆分后的 part 不会再被关键词窗口截断，
+# stage1 召回覆盖整段内容。
+_BM25_MAX_CONTENT_CHARS = 32000
 
 
 def bm25_max_content_chars() -> int:

@@ -1,3 +1,0 @@
-# Pascal Brandys
-
-Pascal Brandys (born 30 November 1958 in Roanne) is a French engineer and entrepreneur. He is a graduate of the École Polytechnique and received his M.S. in Economic Systems from Stanford University in 1982. He began his career in venture capital first in Tokyo and then in London, where he contributed to the first wave of biotechnology companies in Europe. He was the former president and founder of Genset Corporation, which became the European flagship in the field of genomics and at some point the second largest biotechnology company in Europe. He was also a co-founder and former president of France Biotech, the trade association of biotechnology companies in France. In 2001 he co-founded the biotechnology holding company Biobank in San Diego.

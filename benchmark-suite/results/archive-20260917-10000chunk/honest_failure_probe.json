@@ -1,0 +1,50 @@
+{
+ "protocol": "QDCVR v2: Phase0 query normalization -> Phase1 vector-first recall (5 category KBs, BGE-M3, thr 0.35) -> content gate (read candidate text, 0-8 rubric topic 0-3 / scenario 0-3 / evidence 0-2, pass >= 6) -> Phase2 librarian fallback (shelf scan over KB summaries + targeted re-search) -> Phase3 verdict (five-section cited answer | honest not-found report)",
+ "scripted_evidence": "benchmark-suite/results/probe_evidence_raw.json (script-exported candidates, excerpts, per-phase timings)",
+ "judgment": "gate scores and reports below are the executing agent's rubric judgments on the script-exported content, exactly as Track A adjudication worked; classified_at 2026-09-18",
+ "purpose": "WRITING-PLAN v2.0 step (2): honest-failure evidence for paper Scenario 3b — zero such instances existed in prior artifacts (R1 finding)",
+ "probes": [
+  {
+   "pid": "P1",
+   "question": "How does the Herbert-Moulton collider benchmark quantify detector drift in particle physics experiments?",
+   "phase1_top_scores": [0.474, 0.473, 0.461],
+   "gate": {
+    "scores": [1, 1, 0, 0, 0, 0, 0, 0],
+    "topic": 1, "scenario": 0, "evidence": 0,
+    "justification": "Top candidates are an SLAM robotics paper (feature-discrimination experiments) and a chemistry reaction-network paper. Neither mentions any collider benchmark; the named 'Herbert-Moulton' benchmark does not exist in the corpus. Topic partially adjacent (experimental-physics vocabulary), no scenario match, no evidence."
+   },
+   "phase2_librarian": "Shelf scan of all 5 KBs (50 papers): no particle-physics detector paper, no benchmark by this name. No targeted re-search candidate.",
+   "verdict": "NOT_FOUND",
+   "seconds": {"phase1_vector": 2.62, "phase1_reads": 0.82, "phase2_librarian": 2.86},
+   "report_text": "I could not find reliable support for this question in the knowledge base, and I will not guess. Search scope: 5 category bases, 50 papers, 1,321 parts. Phase 1 recalled candidates whose similarity scores (top 0.474) are typical of topical adjacency, but on reading, the highest candidates discuss SLAM feature-discrimination experiments and autonomous chemistry reaction networks - neither mentions the 'Herbert-Moulton collider benchmark', and the librarian shelf scan found no particle-physics detector paper at all. Content-gate score: 1/8 (pass requires >= 6). Conclusion: this corpus does not contain the requested information; the named benchmark may not exist. Suggestion: verify the benchmark's name or add a relevant source to the base."
+  },
+  {
+   "pid": "P2",
+   "question": "What did the paper 'Spectral Tuning for Low-Resource Odor Recognition' (NAACL 2023) report about training epochs?",
+   "phase1_top_scores": [0.530, 0.509, 0.495],
+   "gate": {
+    "scores": [1, 1, 0, 0, 0, 0, 0, 0],
+    "topic": 1, "scenario": 0, "evidence": 0,
+    "justification": "This probe is the retrieval trap: a top candidate (BERT) contains the literal string 'Number of epochs: 2, 3, 4'. A bare similarity pipeline could cite it as the answer. On reading, those epochs belong to BERT pre-training hyper-parameters, not to any paper titled 'Spectral Tuning for Low-Resource Odor Recognition', which does not exist in the corpus. Topic adjacent (NLP), scenario and evidence zero."
+   },
+   "phase2_librarian": "Shelf scan of all 5 KBs: no NAACL 2023 demo/odor-recognition paper present; MAMELOSHNLM (Yiddish LM) is the nearest NLP neighbor and is unrelated.",
+   "verdict": "NOT_FOUND",
+   "seconds": {"phase1_vector": 2.10, "phase1_reads": 0.82, "phase2_librarian": 2.83},
+   "report_text": "I could not verify this paper in the knowledge base, and I will not fabricate its findings. Search scope: 5 category bases, 50 papers, 1,321 parts. Phase 1 surfaced plausible-looking text: one candidate contains the literal phrase 'Number of epochs: 2, 3, 4' - but on reading, that text is from BERT's pre-training recipe, not from 'Spectral Tuning for Low-Resource Odor Recognition', a paper this corpus does not contain. Content-gate score: 1/8. The librarian shelf scan confirms no such title exists among the 50 indexed papers. Conclusion: the cited paper is absent (possibly non-existent); quoting epoch numbers from an unrelated paper would be fabrication. Suggestion: confirm the citation, or ingest the actual paper."
+  },
+  {
+   "pid": "P3",
+   "question": "What is the recommended daily dosage of metformin for diabetic cats?",
+   "phase1_top_scores": [0.482, 0.481, 0.458],
+   "gate": {
+    "scores": [0, 0, 0, 0, 0, 0, 0, 0],
+    "topic": 0, "scenario": 0, "evidence": 0,
+    "justification": "Top candidates are Flan-PaLM/MedQA evaluation tables and a SpaceTx spatial-transcriptomics benchmark - biomedical vocabulary but nothing about metformin, feline diabetes, or any drug dosage. Fully out of domain for this corpus."
+   },
+   "phase2_librarian": "Shelf scan of all 5 KBs: the life-sciences base holds genomics, immunology and one LLM-clinical-knowledge paper; no veterinary pharmacology source.",
+   "verdict": "NOT_FOUND",
+   "seconds": {"phase1_vector": 1.93, "phase1_reads": 0.82, "phase2_librarian": 2.86},
+   "report_text": "I will not answer this from the knowledge base: it contains no veterinary pharmacology source. Search scope: 5 category bases, 50 papers, 1,321 parts. Phase 1 candidates (top similarity 0.482) are LLM clinical-knowledge evaluation tables and a spatial-transcriptomics benchmark - biomedical in vocabulary, silent on metformin and on feline diabetes. Content-gate score: 0/8; the librarian shelf scan finds no animal-dosage source in any base. Conclusion: this corpus cannot support a dosage claim, and a confident answer here would be dangerous fabrication. Suggestion: consult a veterinary pharmacology reference; this platform can ingest one on request."
+  }
+ ]
+}

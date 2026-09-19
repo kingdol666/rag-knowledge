@@ -150,6 +150,22 @@ CONFIG_SCHEMA: dict[str, Any] = {
             },
         },
     },
+    "ingestion": {
+        "label": "入库规范 (大文档拆分)",
+        "icon": "PartitionOutlined",
+        "description": "超大文档入库时按「分块最大字符数」拆分为多个 part 文档分别落库；每个 part 的描述按其真实内容自动摘录。保存后立即热生效。",
+        "fields": {
+            "large_doc": {
+                "label": "大文档拆分", "type": "group",
+                "description": "解析或创建文档时：先统计字符数，超过 max_chars 的文档自动拆分为多个独立文档入库。",
+                "fields": {
+                    "auto_split": {"label": "启用自动拆分", "type": "boolean", "description": "超长文档入库前自动按 max_chars 拆分为多个 part 文档。", "default": True},
+                    "max_chars": {"label": "分块最大字符数", "type": "int", "description": "每个 part 文档的最大字符数。解析后字符数超过该值的文档会被拆分（最小 500）。", "default": 10000, "min": 500, "max": 200000},
+                    "overlap_chars": {"label": "窗口重叠字符", "type": "int", "description": "超长段落按窗口切分时相邻片段的重叠字符数，避免语义被切断。", "default": 400, "min": 0, "max": 2000},
+                },
+            },
+        },
+    },
     "experience_auto": {
         "label": "经验自动总结 (冥想记忆)",
         "icon": "BulbOutlined",

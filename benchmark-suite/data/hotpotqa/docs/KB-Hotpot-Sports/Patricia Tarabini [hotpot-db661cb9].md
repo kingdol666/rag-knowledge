@@ -1,3 +1,0 @@
-# Patricia Tarabini
-
-Patricia Tarabini (born 6 August 1968) is an Argentine former tennis player. Tarabini represented her country and won the bronze Olympic medal at the 2004 Athens games, with Paola Suárez, where they lost 7–9 in the third set to eventual gold medalists from China, Sun Tiantian and Li Ting. On May 9, 1988, Patricia reached her highest singles ranking; world number 29. Tarabini's highest doubles ranking was world number 12, which she achieved on August 17, 1998. Patricia turned pro in 1986, and won a total of 15 top-level doubles titles in her career. She is the 1996 French Open mixed doubles champion, which she won with Javier Frana.

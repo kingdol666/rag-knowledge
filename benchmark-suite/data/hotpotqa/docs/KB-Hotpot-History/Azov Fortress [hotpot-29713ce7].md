@@ -1,3 +1,0 @@
-# Azov Fortress
-
-The Azov Fortress (Russian: Азовская крепость , "Azovskaya krepost" ) is fortified complex of Azov, Rostov oblast, Russia, overlooking the Don River and the Port of Azov to the north. It is includes rampart, watchtowers and gates. The Azov fortress (formely know as Azak fortress) was founden by Turks on behalf of the Ottoman Empire in 1475. It guarded the northern approaches to the Empire and access to the Azov Sea. After a series of conflicts, a peace treaty was signed in Constantinople on July 13, 1700 between the Tsardom of Russia and the Ottoman Empire. The sultan recognized Russia's possession of the Azov area.

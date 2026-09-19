@@ -223,7 +223,7 @@ import {
   SearchOutlined, ShareAltOutlined, RobotOutlined,
   SettingOutlined, QuestionCircleOutlined, KeyOutlined,
   ExpandOutlined, CompressOutlined, LeftOutlined, RightOutlined,
-  MenuOutlined, CloseOutlined,
+  MenuOutlined, CloseOutlined, AppstoreOutlined,
 } from '@ant-design/icons-vue'
 
 import pkg from '../package.json'
@@ -243,8 +243,9 @@ const navItems = computed(() => [
   { path: '/knowledge-graph',  label: 'Graph Explorer',icon: ShareAltOutlined,     pageNum: '05', chapter: 'Relations' },
   { path: '/soul',             label: 'SOUL Personas',   icon: RobotOutlined,        pageNum: '06', chapter: 'Persona' },
   { path: '/claude-chat',      label: 'Claude Chat',      icon: RobotOutlined,        pageNum: '07', chapter: 'Assistant' },
-  { path: '/settings',         label: 'Settings',         icon: SettingOutlined,      pageNum: '08', chapter: 'Configuration' },
-  { path: '/tokens',           label: 'API Tokens',       icon: KeyOutlined,          pageNum: '09', chapter: 'Security' },
+  { path: '/harnesses',        label: 'Harness Hub',      icon: AppstoreOutlined,     pageNum: '08', chapter: 'Agents' },
+  { path: '/settings',         label: 'Settings',         icon: SettingOutlined,      pageNum: '09', chapter: 'Configuration' },
+  { path: '/tokens',           label: 'API Tokens',       icon: KeyOutlined,          pageNum: '10', chapter: 'Security' },
 ])
 
 // ── State ───────────────────────────────────────────────────

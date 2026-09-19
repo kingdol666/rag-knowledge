@@ -1,3 +1,0 @@
-# Fort of Exilles
-
-The Exilles Fort (Italian: "Forte di Exilles") is a fortified complex in the Susa Valley, Metropolitan City of Turin, Piedmont, northern Italy. Together with the nearby Fort of Fenestrelle and the Forte Albertino (at Vinadio, in the province of Cuneo) it was part of the defensive line between the House of Savoy lands (later of the Kingdom of Italy) and France: both these states held it in different phases depending on the outcome of the various wars. It is located on a spur commanding one of the narrowest sections of the Susa Valley, along the main road connecting Turin to France.

@@ -287,7 +287,10 @@
     "editMetaModal": "编辑元数据",
     "editContentModal": "编辑文档内容",
     "manageTagsModal": "管理标签",
-    "moveDocModal": "移动文档"
+    "moveDocModal": "移动文档",
+    "contentChars": "字数：{n}",
+    "willSplit": "超过分块上限 {max}，入库时将拆分为约 {parts} 个 part 文档",
+    "createSplitSuccess": "文档共 {chars} 字符，已按分块上限拆分为 {parts} 个 part 入库"
   },
   "search": {
     "title": "知识检索",
@@ -928,7 +931,8 @@
     "failedCount": "{n} 失败",
     "savedCount": "入库 {n} 个",
     "target": "目标: {name}",
-    "elapsed": "耗时 {time}"
+    "elapsed": "耗时 {time}",
+    "parsedChars": "解析字数 {n}"
   },
   "meditation": {
     "title": "冥想设置",

@@ -1,3 +1,0 @@
-# Semitic people
-
-Semites, Semitic people or Semitic cultures (from the biblical "Shem", Hebrew: שם‎ ‎ ) was a term for an ethnic, cultural or racial group who speak or spoke the Semitic languages. The terminology was first used in the 1770s by members of the Göttingen School of History, who derived the name from Shem, one of the three sons of Noah in the Book of Genesis. The term "Semites", together with the parallel terms Hamites and Japhetites, is now largely obsolete outside linguistics. However, in archaeology, the term is sometimes used informally as "a kind of shorthand" for ancient Semitic-speaking peoples.

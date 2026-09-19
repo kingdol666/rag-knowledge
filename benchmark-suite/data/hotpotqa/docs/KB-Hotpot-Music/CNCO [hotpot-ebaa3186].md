@@ -1,3 +1,0 @@
-# CNCO
-
-CNCO is a Latin American boy band formed on December 13, 2015, composed of Christopher Vélez, Richard Camacho, Joel Pimentel, Erick Brian Colón and Zabdiel de Jesús"." They won a 5-year recording contract with Sony Music Latin after becoming the winning competitors of the first season of "La Banda." The band toured with Ricky Martin and their singles, "Tan Fácil" and "Quisiera", charted well soon after their debut. They released their first album, "Primera Cita" on August 26, 2016. In August 2017, they became the first boy band to reach one billion views in YouTube, with their single "Reggaetón Lento (Bailemos).

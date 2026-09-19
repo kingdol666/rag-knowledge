@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<!-- Direction 3 · Gallery White — pure white, oversized serif hero, figures as framed exhibits,
+     hairline rules. form 母题: five-section numbering as gallery plates; the gate as a thin
+     horizontal band. 原研哉/Muji 气质 — restraint as the signature. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>QDCVR — Direction 3 · Gallery White</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  :root{--white:#FFFFFF; --ink:#17191B; --grey:#83898C; --line:#E4E4E1; --teal:#0B6E63; --alert:#B4441F; --paper:#FAFAF7}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--white);color:var(--ink);font-family:'Inter',sans-serif;font-size:15.5px;line-height:1.7}
+  .wrap{max-width:1100px;margin:0 auto;padding:0 56px}
+  header{padding:96px 0 64px;text-align:left;border-bottom:1px solid var(--ink)}
+  .kicker{font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--grey);margin-bottom:26px}
+  h1{font-family:'EB Garamond',serif;font-weight:500;font-size:76px;line-height:1.02;letter-spacing:-.005em;max-width:900px}
+  h1 i{color:var(--teal)}
+  .sub{font-family:'EB Garamond',serif;font-style:italic;font-size:22px;color:var(--grey);margin-top:24px;max-width:680px}
+  .plates{display:flex;gap:0;margin-top:56px;border-top:1px solid var(--line)}
+  .plate{flex:1;padding:22px 18px 0;border-left:1px solid var(--line)}
+  .plate:first-child{border-left:0;padding-left:0}
+  .plate b{font-family:'EB Garamond',serif;font-size:34px;font-weight:500;display:block}
+  .plate span{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--grey)}
+  section{padding:72px 0;border-bottom:1px solid var(--line)}
+  .sno{font-family:'EB Garamond',serif;font-size:15px;color:var(--grey);letter-spacing:.06em;margin-bottom:14px}
+  h2{font-family:'EB Garamond',serif;font-weight:500;font-size:38px;margin-bottom:18px}
+  .lede{color:var(--grey);max-width:720px;margin-bottom:40px}
+  /* gate band */
+  .band{display:flex;height:44px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+  .band div{display:flex;align-items:center;justify-content:center;color:#fff}
+  .band .d{flex:0 0 50%;background:var(--alert)} .band .f{flex:0 0 12.5%;background:#C9A227} .band .p{flex:1;background:var(--teal)}
+  .bandlab{display:flex;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--grey);margin-top:8px}
+  .bandlab .d{flex:0 0 50%} .bandlab .f{flex:0 0 12.5%} .bandlab .p{flex:1;text-align:right}
+  /* exhibits */
+  .ex{margin-top:8px}
+  .ex img{width:100%;display:block;border:1px solid var(--line)}
+  .ex .cap{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--grey);margin-top:10px;letter-spacing:.04em}
+  .tracks{display:grid;grid-template-columns:1fr 1fr 1fr;gap:40px}
+  .track{border-top:2px solid var(--ink);padding-top:16px}
+  .track .no{font-family:'EB Garamond',serif;font-size:15px;color:var(--grey)}
+  .track h3{font-family:'EB Garamond',serif;font-size:24px;font-weight:500;margin:6px 0 12px}
+  .track .big{font-family:'EB Garamond',serif;font-size:52px;line-height:1;color:var(--teal);margin-bottom:10px}
+  .track .big small{font-size:18px;color:var(--grey)}
+  .track p{font-size:13.5px;color:var(--grey)}
+  footer{padding:56px 0 80px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--grey);display:flex;justify-content:space-between}
+  a{color:var(--teal)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">QDCVR · CIKM '26 Demo · Knowledge-Base Management</div>
+  <h1>Read first,<br>then <i>answer.</i></h1>
+  <p class="sub">A deployable platform that organizes documents by what they say — and verifies every retrieval by reading it.</p>
+  <div class="plates">
+    <div class="plate"><b>50</b><span>real papers</span></div>
+    <div class="plate"><b>5</b><span>category bases</span></div>
+    <div class="plate"><b>165</b><span>indexed docs</span></div>
+    <div class="plate"><b>41</b><span>kb_* MCP tools</span></div>
+    <div class="plate"><b>10/10</b><span>live on-target</span></div>
+  </div>
+</header>
+
+<section>
+  <div class="sno">§ 1 — The protocol</div>
+  <h2>A gate that reads.</h2>
+  <p class="lede">Vector recall makes the shortlist. Then the system reads each candidate and scores it 0–8 — topic, scenario, evidence. Six and above answer; five goes to the librarian; below that is discarded. If nothing passes, the answer is “not found” — on purpose.</p>
+  <div class="band"><div class="d">0–4 · discard</div><div class="f">5 · librarian</div><div class="p">6–8 · fast exit</div></div>
+  <div class="bandlab"><span>off-topic · tangential</span><span>targeted re-search + continuation reads</span><span>answer now, cite part &amp; section</span></div>
+</section>
+
+<section>
+  <div class="sno">§ 2 — Three tracks</div>
+  <h2>One corpus. Ten questions. Three ways to answer.</h2>
+  <p class="lede">The benchmark holds everything constant — 50 real papers, 10 content-grounded questions — and varies only the answering method.</p>
+  <div class="tracks">
+    <div class="track"><div class="no">i</div><h3>QDCVR v2</h3><div class="big">10/10</div><p>on-target · top-1 gold 10/10 · citations to part &amp; section · ≈1.6 s recall + 0.8 s reads · gates 6–8/8</p></div>
+    <div class="track"><div class="no">ii</div><h3>Bare agent</h3><div class="big">10/10 <small>gold</small></div><p>provenance stops at file names · no section trace · 78.8 s average</p></div>
+    <div class="track"><div class="no">iii</div><h3>Dense baseline</h3><div class="big">2/10 <small>abstained</small></div><p>content matches but no source paths · evidence window misses · 12.2 s average</p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sno">§ 3 — Organization</div>
+  <h2>The other half of the contract.</h2>
+  <p class="lede">Ingestion parses with MinerU, routes each paper into a category base by reading its content, keeps section headers on every part, and propagates tags to all 165 parts. Verified 50/50.</p>
+  <div class="ex"><img src="../../../paper_demo/figures/fig2_architecture.png" alt="QDCVR architecture">
+  <div class="cap">fig · platform architecture — ingestion, content-routed bases, QDCVR protocol, agent surface</div></div>
+</section>
+
+<footer>
+  <div>QDCVR · CIKM '26 demo submission</div>
+  <div>paper_demo/tex · benchmark-suite/results · <a href="#">paper</a> · <a href="#">video</a></div>
+</footer>
+</div>
+</body>
+</html>

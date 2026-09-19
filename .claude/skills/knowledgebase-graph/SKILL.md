@@ -17,7 +17,7 @@ Graph nodes: `Document`, `KnowledgeBase`, `Tag`. Edges: `BELONGS_TO`, `HAS_SUBKB
 ## ⭐ Related Skills
 - Document ingest & indexing → `skill://knowledgebase-ingest` (A6 vector+graph indexing)
 - Batch graph rebuild → `skill://knowledgebase-batch` (B7 whole-library rebuild)
-- Cross-library knowledge discovery → `skill://knowledgebase-search-enterprise`
+- Cross-library knowledge discovery → `skill://knowledgebase-search` (QDCVR v2 Phase 2 librarian fallback)
 - Architecture mental model → [kb-architecture.md](../knowledgebase/references/kb-architecture.md)
 
 ## Sequential Workflow

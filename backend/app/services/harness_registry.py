@@ -18,6 +18,7 @@
 from __future__ import annotations
 
 import asyncio
+import json
 import logging
 import os
 import re
@@ -52,13 +53,154 @@ _CLI_COMMANDS: dict[str, str] = {
 
 # 各引擎静态模型目录（"" = 引擎默认模型）。omp 走 `omp models --json` 动态发现。
 _STATIC_MODELS: dict[str, list[str]] = {
-    "claude": ["claude-sonnet-4-20250514", "claude-opus-4-20250514", "claude-haiku-4-20250514"],
-    "codex": ["gpt-5-codex", "gpt-5", "o4-mini"],
+    "claude": ["sonnet", "opus", "haiku"],
+    "codex": ["gpt-5-codex", "gpt-5", "o3"],
     "gemini": ["gemini-2.5-pro", "gemini-2.5-flash"],
     "qwen": ["qwen3-coder-plus", "qwen3-max"],
-    "copilot": ["claude-sonnet-4", "gpt-5"],
+    "copilot": ["auto"],
     "cursor": ["composer-1", "claude-sonnet-4", "gpt-5"],
+    "goose": [],
+    "hermes": [],
+    "dsh": [],
 }
+
+# ── 思考强度（reasoning effort）——各引擎官方旗标的真实取值面 ─────────
+# 空 = 该引擎无每回合思考强度旗标（UI 隐藏该选择器）。
+REASONING_LEVELS: dict[str, list[dict[str, str]]] = {
+    "claude": [{"id": "low", "label": "Low"}, {"id": "medium", "label": "Medium"},
+               {"id": "high", "label": "High"}, {"id": "xhigh", "label": "X-High"},
+               {"id": "max", "label": "Max"}],
+    # omp 的档位随模型变化（omp models --json 的 thinking 数组），运行时以模型目录为准
+    "omp": [],
+    "codex": [{"id": "minimal", "label": "Minimal"}, {"id": "low", "label": "Low"},
+              {"id": "medium", "label": "Medium"}, {"id": "high", "label": "High"}],
+    "copilot": [{"id": "none", "label": "None"}, {"id": "minimal", "label": "Minimal"},
+                {"id": "low", "label": "Low"}, {"id": "medium", "label": "Medium"},
+                {"id": "high", "label": "High"}, {"id": "xhigh", "label": "X-High"},
+                {"id": "max", "label": "Max"}],
+    "pi": [{"id": "off", "label": "Off"}, {"id": "minimal", "label": "Minimal"},
+           {"id": "low", "label": "Low"}, {"id": "medium", "label": "Medium"},
+           {"id": "high", "label": "High"}, {"id": "xhigh", "label": "X-High"}],
+    "dsh": [{"id": "off", "label": "Off"}, {"id": "low", "label": "Low"},
+            {"id": "high", "label": "High"}, {"id": "max", "label": "Max"}],
+    "gemini": [], "goose": [], "crush": [], "opencode": [], "qwen": [], "cursor": [], "hermes": [],
+}
+
+# ── 动态模型目录发现（各 CLI 官方命令；探测拉起同源） ────────────────
+# argv 的可执行名经 resolve_command 解析（覆盖链一致）；解析器把 stdout 归一为
+# [{id, name, thinking?: [..]}]。
+_MODEL_DISCOVERY: dict[str, dict[str, Any]] = {
+    "omp": {"argv": ["models", "--json"], "parser": "omp-json", "timeout": 25},
+    "opencode": {"argv": ["models"], "parser": "lines", "timeout": 30},
+    "crush": {"argv": ["models"], "parser": "lines", "timeout": 30},
+    "pi": {"argv": ["--list-models"], "parser": "pi-table", "timeout": 30},
+    "cursor": {"argv": ["models"], "parser": "lines", "timeout": 30},
+}
+
+_MODEL_CACHE: dict[str, tuple[float, dict]] = {}
+_MODEL_CACHE_TTL = 600.0  # 10 min：模型目录低频变化
+
+
+def _parse_omp_models_json(stdout: str) -> list[dict[str, Any]]:
+    try:
+        data = json.loads(stdout)
+    except json.JSONDecodeError:
+        return []
+    out = []
+    for m in data.get("models", []):
+        if not isinstance(m, dict):
+            continue
+        out.append({
+            "id": m.get("selector") or m.get("id", ""),
+            "name": m.get("name") or m.get("id", ""),
+            "thinking": m.get("thinking") or [],
+        })
+    return [m for m in out if m["id"]]
+
+
+def _parse_lines(stdout: str) -> list[dict[str, Any]]:
+    out = []
+    for line in stdout.splitlines():
+        line = line.strip()
+        if line and not line.startswith(("#", "─", "==")):
+            out.append({"id": line.split()[0] if " " in line else line, "name": line})
+    return out[:400]
+
+
+def _parse_pi_table(stdout: str) -> list[dict[str, Any]]:
+    # pi 表格行：provider model context max-out thinking images
+    out = []
+    for line in stdout.splitlines():
+        cols = line.split()
+        if len(cols) >= 2 and cols[0] != "provider" and not cols[0].startswith("─"):
+            out.append({"id": f"{cols[0]}/{cols[1]}", "name": f"{cols[0]}/{cols[1]}"})
+    return out[:400]
+
+
+_MODEL_PARSERS = {
+    "omp-json": _parse_omp_models_json,
+    "lines": _parse_lines,
+    "pi-table": _parse_pi_table,
+}
+
+
+async def discover_models(harness_id: str, force: bool = False) -> dict[str, Any]:
+    """引擎模型目录发现（动态 CLI 优先，静态表兜底）。
+
+    返回 {source: 'cli'|'static', models: [{id, name, thinking?}], reasoning_levels}。
+    reasoning_levels 来自 REASONING_LEVELS（各引擎官方旗标的取值面）；
+    omp 的档位随模型走（models[].thinking），此处返回 [] 表示按模型约束。
+    """
+    if harness_id == "heuristic":
+        return {"source": "static", "models": [], "reasoning_levels": []}
+    if not is_known_harness(harness_id):
+        raise UnknownHarnessError(f"Unknown harness: {harness_id}")
+
+    cached = _MODEL_CACHE.get(harness_id)
+    if cached and not force and time.time() - cached[0] < _MODEL_CACHE_TTL:
+        return cached[1]
+
+    reasoning = REASONING_LEVELS.get(harness_id, [])
+    disc = _MODEL_DISCOVERY.get(harness_id)
+    result: dict[str, Any] | None = None
+    if disc:
+        resolved = resolve_command(harness_id)
+        if resolved:
+            parser = _MODEL_PARSERS[disc["parser"]]
+            try:
+                run_args = wrap_windows_cmd([resolved] + list(disc["argv"]))
+                completed = await asyncio.get_event_loop().run_in_executor(
+                    None,
+                    lambda: subprocess.run(
+                        run_args, capture_output=True, timeout=disc["timeout"],
+                        **_run_silent_kwargs(),
+                    ),
+                )
+                stdout = (completed.stdout or b"").decode("utf-8", errors="replace")
+                # 部分引擎把目录表打到 stderr（实测 pi --list-models）——合并解析
+                stderr = (completed.stderr or b"").decode("utf-8", errors="replace")
+                combined = stdout if stdout.strip() else stderr
+                # 认证失败/配置错误输出以 Error 开头 —— 不当模型名，回落静态
+                if combined.strip().startswith(("Error:", "error:", "fatal:")):
+                    models = []
+                else:
+                    models = parser(combined) if combined.strip() else []
+                if models:
+                    result = {"source": "cli", "models": models, "reasoning_levels": reasoning}
+            except Exception as e:  # noqa: BLE001 — 目录发现失败回落静态
+                logger.debug("model discovery %s failed: %s", harness_id, e)
+    if result is None:
+        result = {
+            "source": "static",
+            "models": [{"id": mid, "name": mid} for mid in _STATIC_MODELS.get(harness_id, [])],
+            "reasoning_levels": reasoning,
+        }
+    _MODEL_CACHE[harness_id] = (time.time(), result)
+    return result
+
+
+def reset_model_cache() -> None:
+    _MODEL_CACHE.clear()
 
 
 def _caps(*, steer=False, supervise=True, hitl=False, terminal=False,
@@ -255,7 +397,10 @@ HARNESS_IDS: list[str] = list(HARNESS_REGISTRY.keys())
 _CREDENTIAL_PATHS: dict[str, list[str]] = {
     "claude": ["~/.claude/.credentials.json", "~/.claude.json"],
     "codex": ["~/.codex/auth.json"],
-    "gemini": ["~/.gemini/oauth_creds.json", "~/.gemini/settings.json"],
+    # gemini: settings.json 只是配置文件，存在≠已认证（实测存在 settings.json
+    # 但未配 auth 的机器上 -p 运行 exit 41 "Please set an Auth method"）——
+    # 只认 OAuth 凭据文件；API key / Vertex / GCA 走 requires_env 的 env 面。
+    "gemini": ["~/.gemini/oauth_creds.json"],
     "qwen": ["~/.qwen/oauth_creds.json", "~/.qwen/settings.json"],
     "omp": ["~/.omp"],
     "pi": ["~/.pi"],
@@ -345,6 +490,7 @@ _FALLBACK_DIRS = [
     Path.home() / ".bun" / "bin",
     Path(os.environ.get("APPDATA", "")) / "npm" if os.environ.get("APPDATA") else None,
     Path("C:/Program Files/nodejs"),
+    Path(os.environ.get("LOCALAPPDATA", "")) / "cursor-agent" if os.environ.get("LOCALAPPDATA") else None,
 ]
 
 
@@ -666,8 +812,31 @@ def resolve_default_harness_cached() -> str:
     return configured
 
 
+def availability_hint(harness_id: str, probe: dict, issues: list[str]) -> str:
+    """不可用原因的人类可读修复指引（前端灰显项的 tooltip / 诊断报告用）。"""
+    if harness_id == "mock":
+        return ""
+    if not probe.get("installed"):
+        cmd = harness_command_name(harness_id)
+        home = HARNESS_REGISTRY[harness_id].get("homepage", "")
+        hint = f"CLI '{cmd}' not found. Install it"
+        if home:
+            hint += f" ({home})"
+        hint += ", or point config.yml harness.commands."
+        hint += f"{harness_id} at the real binary path."
+        return hint
+    if issues:
+        return ("Installed but not configured: " + "; ".join(issues)
+                + ". Set the env vars or complete the engine's own login "
+                  "(its stored credentials are also accepted).")
+    return ""
+
+
 async def list_harnesses() -> list[dict[str, Any]]:
-    """注册表全景（含实时可用性）—— API /harnesses 端点与前端下拉的数据源。"""
+    """注册表全景（含实时可用性）—— API /harnesses 端点与前端下拉的数据源。
+
+    available = installed && 无配置问题（前端据此灰显不可选项）。
+    """
     out = []
     for hid in HARNESS_IDS:
         entry = HARNESS_REGISTRY[hid]
@@ -676,6 +845,8 @@ async def list_harnesses() -> list[dict[str, Any]]:
         except Exception as e:
             logger.warning("probe %s failed: %s", hid, e)
             probe = {"installed": False, "error": str(e)}
+        installed = bool(probe.get("installed"))
+        issues = configuration_issues(hid, probe) if installed else []
         out.append({
             "id": hid,
             "label": entry["label"],
@@ -686,8 +857,42 @@ async def list_harnesses() -> list[dict[str, Any]]:
             "requires_env": entry["requires_env"],
             "notes": entry["notes"],
             "models": harness_models(hid),
-            "installed": bool(probe.get("installed")),
+            "installed": installed,
+            "available": installed and not issues,
             "version": probe.get("version", ""),
             "resolved_command": probe.get("resolved_command"),
+            "credentials": probe.get("credentials") or harness_credentials(hid),
+            "issues": issues,
+            "hint": availability_hint(hid, probe, issues),
+            "probe_error": probe.get("error", ""),
         })
     return out
+
+
+async def startup_probe_all() -> dict[str, Any]:
+    """启动时全量可用性检查：预热探测缓存 + 汇总（供 lifespan 与 /health 用）。
+
+    非 fatal：探测失败只记 warn，绝不阻塞服务启动。逐引擎串行 spawn
+    `--version`（各 10s 上限），全部完成通常 <30s。
+    """
+    results: dict[str, dict] = {}
+    for hid in HARNESS_IDS:
+        try:
+            results[hid] = await probe_harness(hid)
+        except Exception as e:  # noqa: BLE001 — 启动探测不得失败
+            results[hid] = {"installed": False, "error": str(e)}
+    available = [hid for hid in HARNESS_IDS
+                 if results[hid].get("installed")
+                 and not configuration_issues(hid, results[hid])]
+    summary = {
+        "total": len(HARNESS_IDS),
+        "available_count": len(available),
+        "available": available,
+        "unavailable": [hid for hid in HARNESS_IDS if hid not in available],
+        "checked_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+    }
+    logger.info("Harness availability check: %d/%d available — %s | unavailable: %s",
+                summary["available_count"], summary["total"],
+                ", ".join(available) or "(none)",
+                ", ".join(summary["unavailable"]) or "(none)")
+    return summary

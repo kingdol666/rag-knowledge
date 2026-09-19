@@ -1,0 +1,456 @@
+{
+ "kb": "Papers-Inbox",
+ "n": 50,
+ "papers": [
+  {
+   "slug": "artificial-intelligence__1706.03762__attention-is-all-you-need",
+   "field": "artificial-intelligence",
+   "arxiv_id": "1706.03762",
+   "title": "Attention Is All You Need",
+   "parse_seconds": 32.5,
+   "chars": 42400,
+   "excerpt": "Provided proper attribution is provided, Google hereby grants permission to reproduce the tables and figures in this paper solely for use in journalistic or scholarly works.\n\n# Attention Is All You Need\n\nAshish Vaswani\\* Google Brain avaswani@google.com\n\nNoam Shazeer\\* Google Brain noam@google.com\n\nNiki Parmar\\* Google Research nikip@google.com\n\nJakob Uszkoreit\\* Google Research usz@google.com\n\nLlion Jones\\* Google Research 1lion@google.com\n\nAidan N. Gomez\\* † University of Toronto aidan@cs.toronto.edu\n\nŁukasz Kaiser\\* Google Brain lukaszkaiser@google.com\n\nIllia Polosukhin\\* ↓ illia.polosukhin@gmail.com\n\n## Abstract\n\nThe dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 Englishto-German translation task, improving over the existing best results, including ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task,"
+  },
+  {
+   "slug": "nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor",
+   "field": "nlp",
+   "arxiv_id": "1810.04805",
+   "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+   "parse_seconds": 24.3,
+   "chars": 65492,
+   "excerpt": "# BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding\n\nJacob DevlinMing-Wei Chang Kenton Lee Kristina Toutanova\n\nGoogle AI Language\n\n{jacobdevlin,mingweichang,kentonl,kristout}@google.com\n\n## Abstract\n\nWe introduce a new language representation model called BERT, which stands for Bidirectional Encoder Representations from Transformers. Unlike recent language representation models (Peters et al., 2018a; Radford et al., 2018), BERT is designed to pretrain deep bidirectional representations from unlabeled text by jointly conditioning on both left and right context in all layers. As a result, the pre-trained BERT model can be finetuned with just one additional output layer to create state-of-the-art models for a wide range of tasks, such as question answering and language inference, without substantial taskspecific architecture modifications.\n\nBERT is conceptually simple and empirically powerful. It obtains new state-of-the-art results on eleven natural language processing tasks, including pushing the GLUE score to 80.5% (7.7% point absolute improvement), MultiNLI accuracy to 86.7% (4.6% absolute improvement), SQuAD v1.1 question answering Test F1 to 93.2 (1.5 point absolute improvement) and SQuAD v2.0 Test F1 to 83.1 (5.1 point absolute improvement).\n\n## 1 Introduction\n\nLanguage model pre-training has been shown to be effective for improving many natur"
+  },
+  {
+   "slug": "large-language-models__2005.14165__language-models-are-few-shot-learners",
+   "field": "large-language-models",
+   "arxiv_id": "2005.14165",
+   "title": "Language Models are Few-Shot Learners",
+   "parse_seconds": 48.4,
+   "chars": 269229,
+   "excerpt": "# Language Models are Few-Shot Learners\n\nTom B. Brown\\* Benjamin Mann\\* Nick Ryder\\* Melanie Subbiah\\*\n\nJared Kaplan† Prafulla DhariwalArvind NeelakantanPranav ShyamGirish Sastry\n\nAmanda Askell Sandhini Agarwal Ariel Herbert-Voss Gretchen Krueger Tom Henighan\n\nRewon Child Aditya Ramesh Daniel M. Ziegler Jeffrey Wu Clemens Winter\n\nChristopher Hesse Mark Chen Eric Sigler Mateusz Litwin Scott Gray\n\nBenjamin Chess Jack Clark\n\nChristopher Berner\n\nSam McCandlish Alec Radford\n\nIlya Sutskever Dario Amodei\n\nOpenAI\n\n## Abstract\n\nRecent work has demonstrated substantial gains on many NLP tasks and benchmarks by pre-training on a large corpus of text followed by fine-tuning on a specific task. While typically task-agnostic in architecture, this method still requires task-specific fine-tuning datasets of thousands or tens of thousands of examples. By contrast, humans can generally perform a new language task from only a few examples or from simple instructions – something which current NLP systems still largely struggle to do. Here we show that scaling up language models greatly improves task-agnostic, few-shot performance, sometimes even reaching competitiveness with prior state-of-the-art finetuning approaches. Specifically, we train GPT-3, an autoregressive language model with 175 billion parameters, 10x more than any previous non-sparse language model, and test its performance in the fe"
+  },
+  {
+   "slug": "quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond",
+   "field": "quantum-physics",
+   "arxiv_id": "1801.00862",
+   "title": "Quantum Computing in the NISQ era and beyond",
+   "parse_seconds": 16.3,
+   "chars": 66066,
+   "excerpt": "# Quantum Computing in the NISQ era and beyond\n\nJohn Preskill\n\nInstitute for Quantum Information and Matter and Walter Burke Institute for Theoretical Physics,\n\nCalifornia Institute of Technology, Pasadena CA 91125, USA\n\n30 July 2018\n\nNoisy Intermediate-Scale Quantum (NISQ) technology will be available in the near future. Quantum computers with 50-100 qubits may be able to perform tasks which surpass the capabilities of today's classical digital computers, but noise in quantum gates will limit the size of quantum circuits that can be executed reliably. NISQ devices will be useful tools for exploring many-body quantum physics, and may have other useful applications, but the 100-qubit quantum computer will not change the world right away — we should regard it as a significant step toward the more powerful quantum technologies of the future. Quantum technologists should continue to strive for more accurate quantum gates and, eventually, fully fault-tolerant quantum computing.\n\n## 1 Introduction\n\nNow is an opportune time for a fruitful discussion among researchers, entrepreneurs, managers, and investors who share an interest in quantum computing. There has been a recent surge of investment by both large public companies and startup companies, a trend that has surprised many quantumists working in academia. While we have long recognized the commercial potential of quantum technology"
+  },
+  {
+   "slug": "clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge",
+   "field": "clinical-medicine",
+   "arxiv_id": "2212.13138",
+   "title": "Large Language Models Encode Clinical Knowledge",
+   "parse_seconds": 32.3,
+   "chars": 170605,
+   "excerpt": "# Large Language Models Encode Clinical Knowledge\n\nKaran Singhal\\*,1, Shekoofeh Azizi\\*,1, Tao Tu\\*,1,\n\nS. Sara Mahdavi1, Jason Wei¹, Hyung Won Chung1, Nathan Scales1, Ajay Tanwani1, Heather Cole-Lewis1, Stephen Pfohl1, Perry Payne1, Martin Seneviratne1, Paul Gamble1, Chris Kelly¹, Nathaneal Schärli¹, Aakanksha Chowdhery1, Philip Mansfield¹, Blaise Agüera y Arcas1, Dale Webster¹, Greg S. Corrado¹, Yossi Matias¹, Katherine Chou¹, Juraj Gottweis¹, Nenad Tomasev2, Yun Liu¹, Alvin Rajkomar1, Joelle Barral¹, Christopher Semturs1, Alan Karthikesalingam†,1 and Vivek Natarajan†,1\n\n1Google Research, 2DeepMind\n\nLarge language models (LLMs) have demonstrated impressive capabilities in natural language understanding and generation, but the quality bar for medical and clinical applications is high. Today, attempts to assess models' clinical knowledge typically rely on automated evaluations on limited benchmarks. There is no standard to evaluate model predictions and reasoning across a breadth of tasks. To address this, we present MultiMedQA, a benchmark combining six existing open question answering datasets spanning professional medical exams, research, and consumer queries; and HealthSearchQA, a new free-response dataset of medical questions searched online. We propose a framework for human evaluation of model answers along multiple axes including factuality, precision, possible harm, and"
+  },
+  {
+   "slug": "genomics__1602.01876__primer-on-the-gene-ontology",
+   "field": "genomics",
+   "arxiv_id": "1602.01876",
+   "title": "Primer on the Gene Ontology",
+   "parse_seconds": 16.3,
+   "chars": 33009,
+   "excerpt": "# Primer on the Gene Ontology\n\nPascale Gaudet1,\\*, Nives Škunca2,3,4, James C. Hu⁵, and Christophe Dessimoz4,6\n\n1SIB Swiss Institute of Bioinformatics, 1 Michel-Servet, 1211 Geneva, Switzerland\n\n²ETH Zurich, Computer Science, Universitätstr. 19, 8092 Zurich, Switzerland\n\n3SIB Swiss Institute of Bioinformatics, Universitätstr. 19, 8092 Zurich, Switzerland\n\n4University College London, Gower St, London WC1E 6BT, UK\n\n⁵Department of Biochemistry and Biophysics, Texas A&M University and Texas AgriLife\n\nResearch, College Station, TX USA\n\n⁶Department of Ecology and Evolution and Center of Integrative Genomics, University of\n\nLausanne, Biophore, 1015 Lausanne, Switzerland\n\n\\*Corresponding author: pascale.gaudet@isb-sib.ch\n\nJanuary 2016\n\n## Abstract\n\nThe Gene Ontology (GO) project is the largest resource for cataloguing gene function. The combination of solid conceptual underpinnings and a practical set of features have made the GO a widely adopted resource in the research community and an essential resource for data analysis. In this chapter, we provide a concise primer for all users of the GO. We briefly introduce the\n\nstructure of the ontology and explain how to interpret annotations associated with the GO.\n\nKeywords. Gene Ontology structure, evidence codes, annotations, gene association file (GAF), GO files, function, vocabulary, annotation evidence\n\n## 1. Introduction\n\nThe key motiv"
+  },
+  {
+   "slug": "economics__1512.08067__unified-growth-theory-contradicted-by-the-econom",
+   "field": "economics",
+   "arxiv_id": "1512.08067",
+   "title": "Unified Growth Theory Contradicted by the Economic Growth in Europe",
+   "parse_seconds": 8.3,
+   "chars": 26861,
+   "excerpt": "# Unified Growth Theory Contradicted by the Economic Growth in Europe\n\nRon W Nielsen1\n\nEnvironmental Futures Research Institute, Gold Coast Campus, Griffith University, Qld, 4222, Australia\n\nDecember, 2015\n\nHistorical economic growth in Western and Eastern Europe is analysed. These regions should have produced the best and the most convincing confirmation of the Unified Growth Theory because they, and in particular Western Europe, were the centre of the Industrial Revolution, which according to Galor was the prime engine of economic growth. However, the data for Western and Eastern Europe show a remarkable disagreement with the Unified Growth Theory. There is no connection, whatever, between the data and the Unified Growth Theory. The data show that there was never a transition from stagnation to growth because there was no stagnation. Industrial Revolution, which should have the strongest influence in these regions, had absolutely no impact on changing the economic growth trajectories. The alleged remarkable or stunning escape from Malthusian trap did not happen because there was no trap. Unified Growth Theory does not explain the mechanism of the economic growth because its explanations are based on mythical features, which did not exist, the features contradicted by data. This theory needs to be either thoroughly revised or most likely replaced by a theory supported by a pro"
+  },
+  {
+   "slug": "climate-science__1503.07557__precipitation-extremes-under-climate-change",
+   "field": "climate-science",
+   "arxiv_id": "1503.07557",
+   "title": "Precipitation extremes under climate change",
+   "parse_seconds": 16.3,
+   "chars": 61089,
+   "excerpt": "# Precipitation extremes under climate change\n\nPaul A. O'Gorman\n\nReceived: date / Accepted: date\n\nAbstract The response of precipitation extremes to climate change is considered using results from theory, modeling, and observations, with a focus on the physical factors that control the response. Observations and simulations with climate models show that precipitation extremes intensify in response to a warming climate. However, the sensitivity of precipitation extremes to warming remains uncertain when convection is important, and it may be higher in the tropics than the extratropics. Several physical contributions govern the response of precipitation extremes. The thermodynamic contribution is robust and well understood, but theoretical understanding of the microphysical and dynamical contributions is still being developed. Orographic precipitation extremes and snowfall extremes respond differently from other precipitation extremes and require particular attention. Outstanding research challenges include the influence of mesoscale convective organization, the dependence on the duration considered, and the need to better constrain the sensitivity of tropical precipitation extremes to warming.\n\nKeywords Extremes · Global warming · Rainfall · Snowfall · Convection · Orographic Precipitation · Climate models\n\n## 1 Introduction\n\nThe response of precipitation extremes (heavy precipi"
+  },
+  {
+   "slug": "astronomy__1210.0979__the-methanol-multibeam-survey",
+   "field": "astronomy",
+   "arxiv_id": "1210.0979",
+   "title": "The Methanol Multibeam Survey",
+   "parse_seconds": 16.3,
+   "chars": 11658,
+   "excerpt": "james.green@csiro.au\n\n# THE METHANOL MULTIBEAM SURVEY\n\nJ. A. GREEN CSIRO Astronomy and Space Science, Australia Telescope National Facility, PO Box 76, Epping, NSW 2121, Australia\n\nAND THE METHANOL MULTIBEAM SURVEY COLLABORATION J. L. Caswell1, G. A. Fuller2, A. Avison2, S. L. Breen1,3, K. Brooks1, M. G. Burton4, A. Chrysostomou⁵, J. Cox6, P. J. Diamond1,2 S. P. Ellingsen3, M. D. Gray2, M. G. Hoare7, M. R. W. Masheder8, N. M. McClure-Griffiths1, M. Pestalozzi9, C. Phillips1, L. Quinn2, M. A. Thompson5, M. A. Voronkov1, A. Walsh9, D. Ward-Thompson6, D. Wong-McSweeney2, J. A. Yates11 and R. J. Cohen2 Science with Parkes @ 50 Years Young, 31 Oct. − 4 Nov., 2011\n\n## ABSTRACT\n\nA purpose built 7-beam methanol receiver, installed on the Parkes Radio Telescope, was used to survey the Galactic plane for newly forming high mass stars, pinpointed by strong methanol maser emission at 6.7 GHz. The Methanol Multibeam (MMB) survey observed over 60% of the Galactic plane, detecting close to 1000 sources. The MMB survey provides a huge resource for studies of high-mass star formation, an important stage in the evolution of the interstellar medium. The MMB survey is also a valuable resource for investigations into the structure and dynamics of our Galaxy: with narrow velocity ranges of emission (typically only a few km/s) and velocities closely correlated with the systemic velocity of their surr"
+  },
+  {
+   "slug": "materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie",
+   "field": "materials",
+   "arxiv_id": "2408.09942",
+   "title": "Oxygen redox in battery cathodes: A brief overview",
+   "parse_seconds": 16.3,
+   "chars": 45688,
+   "excerpt": "# Oxygen redox in battery cathodes: A brief overview\n\nM. Hussein N. Assadi 1, Dorian A. H. Hanaor 2,3\n\n1. RIKEN Center for Emergent Matter Science (CEMS), 2-1 Hirosawa, Wako, Saitama 351-0198,\n\nJapan\n\n2. Faculty of Science and Engineering, Southern Cross University, Military Road, East Lismore, NSW\n\n2480, Australia\n\n3. Institute of Materials Science and Technology, Technische Universität Berlin, 10623 Berlin,\n\nGermany\n\n## Abstract:\n\nThe participation of oxygen or other anionic species in redox activities in cathode materials for lithium and sodium-ion battery systems is known to play a role in governing the useful capacity of these batteries. Directly probing anionic redox mechanisms is not possible, rather the computational analysis by density functional theory poses the main approach towards gleaning insights into anionic redox activity and harnessing these effects to maximize capacity in future electrode materials. Here we showcase material systems exhibiting this mechanism of ion insertion and removal, and present the key computational considerations in studying anionic redox activities in battery materials. Aided by new computationally derived understandings of the role of anionic redox in emerging battery materials, increasingly greater levels of useable capacities can be extracted through informed materials design.\n\n## 1 Introduction\n\nThe central feature of all rechargea"
+  },
+  {
+   "slug": "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren",
+   "field": "neuroscience",
+   "arxiv_id": "1906.10015",
+   "title": "A Review on Neural Network Models of Schizophrenia and Autism Spectrum Disorder",
+   "parse_seconds": 32.3,
+   "chars": 160537,
+   "excerpt": "# A Review on Neural Network Models of Schizophrenia and Autism Spectrum Disorder\n\nPablo Lanillosa,\\*, Daniel Olivaa,\\*, Anja Philippsenb,\\*, Yuichi Yamashitac, Yukie Nagaib, Gordon Chenga\n\naInstitute for Cognitive Systems, Technical University of Munich, Arcisstraße 21, Munich, Germany\n\nbInternational Research Center for Neurointelligence, The University of Tokyo, 7-3-1 Hongo, Bunkyo-ku, Tokyo, Japan\n\ncDepartment of Functional Brain Research, National Center of Neurology and Psychiatry, 4-1-1 Ogawa-Higashi, Kodaira, Tokyo, Japan\n\n## Abstract\n\nThis survey presents the most relevant neural network models of autism spectrum disorder and schizophrenia, from the first connectionist models to recent deep network architectures. We analyzed and compared the most representative symptoms with its neural model counterpart, detailing the alteration introduced in the network that generates each of the symptoms, and identifying their strengths and weaknesses. We additionally cross-compared Bayesian and free-energy approaches, as they are widely applied to modeling psychiatric disorders and share basic mechanisms with neural networks. Models of schizophrenia mainly focused on hallucinations and delusional thoughts using neural dysconnections or inhibitory imbalance as the predominating alteration. Models of autism rather focused on perceptual difficulties, mainly excessive attention to envir"
+  },
+  {
+   "slug": "robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou",
+   "field": "robotics",
+   "arxiv_id": "2410.10669",
+   "title": "MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping",
+   "parse_seconds": 16.3,
+   "chars": 45491,
+   "excerpt": "# MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping\n\nTaozhe Li¹ and Wei Sun²\n\nAbstract—The Visual Simultaneous Localization and Mapping (V-SLAM) system has advanced significantly in recent years, achieving high precision in environments with few dynamic objects. However, its performance declines in settings with numerous movable objects, such as those with pedestrians, cars, and buses, which are common in outdoor scenes. While some researchers are tackling this issue with artificial mathematical methods, these often suffering less generality and information loss. To address this problem, we propose a novel Multilayer Perceptron (MLP)-based method that utilizes complete geometric information to prevent information loss and capable to apply in various situations. To best of our knowledge, this is the first time that machine learning-based method introduced for distinguishing dynamic and static feature points in the SLAM field. Additionally, there is currently no publicly available dataset for evaluating dynamic and static feature classification methods. To fill this gap, we have created a publicly available dataset containing over 50,000 feature points. Experimental results show that our MLP-based dynamic and static feature point discriminator outperforms other methods on this dataset. Furthermore, our proposed MLP-based realtime stereo SLAM system achie"
+  },
+  {
+   "slug": "artificial-intelligence__2504.16021__navigating-the-state-of-cognitive-flow-conte",
+   "field": "artificial-intelligence",
+   "arxiv_id": "2504.16021",
+   "title": "Navigating the State of Cognitive Flow: Context-Aware AI Interventions for Effective Reasoning Support",
+   "parse_seconds": 8.3,
+   "chars": 13755,
+   "excerpt": "# Navigating the State of Cognitive Flow: Context-Aware Al Interventions for Effective Reasoning Support\n\nDINITHI DISSANAYAKE, Augmented Human Lab, National University of Singapore, Singapore\n\nSURANGA NANAYAKKARA, Augmented Human Lab, National University of Singapore, Singapore\n\nFlow Theory describes an optimal cognitive state where individuals experience deep focus and intrinsic motivation when a task's difficulty aligns with their skill level. In AI-augmented reasoning, interventions that disrupt the state of cognitive flow can hinder rather than enhance decision-making. This paper proposes a context-aware cognitive augmentation framework that adapts interventions based on three key contextual factors: type, timing, and scale. By leveraging multimodal behavioral cues (e.g., gaze behavior, typing hesitation, interaction speed), AI can dynamically adjust cognitive support to maintain or restore flow. We introduce the concept of cognitive flow, an extension of flow theory in AI-augmented reasoning, where interventions are personalized, adaptive, and minimally intrusive. By shifting from static interventions to context-aware augmentation, our approach ensures that AI systems support deep engagement in complex decision-making and reasoning without disrupting cognitive immersion.\n\n## 1 Introduction\n\nThe theory of flow, proposed by Csikszentmihalyi [3], defines an optimal psychologi"
+  },
+  {
+   "slug": "artificial-intelligence__1706.05261__from-propositional-logic-to-plausible-reason",
+   "field": "artificial-intelligence",
+   "arxiv_id": "1706.05261",
+   "title": "From Propositional Logic to Plausible Reasoning: A Uniqueness Theorem",
+   "parse_seconds": 32.4,
+   "chars": 114472,
+   "excerpt": "# From Propositional Logic to Plausible Reasoning: A Uniqueness Theorem\n\nKevin S. Van Horn\n\nAdobe Systems, 3900 Adobe Way, Lehi, UT 84043, United States\n\n## Abstract\n\nWe consider the question of extending propositional logic to a logic of plausible reasoning, and posit four requirements that any such extension should satisfy. Each is a requirement that some property of classical propositional logic be preserved in the extended logic; as such, the requirements are simpler and less problematic than those used in Cox's Theorem and its variants. As with Cox's Theorem, our requirements imply that the extended logic must be isomorphic to (finite-set) probability theory. We also obtain specific numerical values for the probabilities, recovering the classical definition of probability as a theorem, with truth assignments that satisfy the premise playing the role of the \"possible cases.\"\n\nKeywords: Bayesian, Carnap, Cox, Jaynes, logic, probability\n\n## 1. Introduction\n\nE. T. Jaynes [13, p. xxii] proposes the view that probability theory is the uniquely determined extension of classical propositional logic (CPL) to a \"logic of plausible reasoning\" :\n\nOur theme is simply: probability theory as extended logic. ...the mathematical rules of probability theory are not merely rules for calculating frequencies of random variables'; they are also the unique consistent rules for conducting inferen"
+  },
+  {
+   "slug": "nlp__2503.21676__how-do-language-models-learn-facts-dynamics",
+   "field": "nlp",
+   "arxiv_id": "2503.21676",
+   "title": "How do language models learn facts? Dynamics, curricula and hallucinations",
+   "parse_seconds": 24.4,
+   "chars": 107686,
+   "excerpt": "# How do language models learn facts? Dynamics, curricula and hallucinations\n\nNicolas Zucchet1,+, Jörg Bornschein2, Stephanie Chan2, Andrew Lampinen², Razvan Pascanu² and Soham De²\n\n1ETH Zürich, 2Google DeepMind, +Work done at Google DeepMind\n\nLarge language models accumulate vast knowledge during pre-training, yet the dynamics governing this acquisition remain poorly understood. This work investigates the learning dynamics of language models on a synthetic factual recall task, uncovering three key findings: First, language models learn in three phases, exhibiting a performance plateau before acquiring precise factual knowledge. Mechanistically, this plateau coincides with the formation of attention-based circuits that support recall. Second, the training data distribution significantly impacts learning dynamics, as imbalanced distributions lead to shorter plateaus. Finally, hallucinations emerge simultaneously with knowledge, and integrating new knowledge into the model through fine-tuning is challenging, as it quickly corrupts its existing parametric memories. Our results emphasize the importance of data distribution in knowledge acquisition and suggest novel data scheduling strategies to accelerate neural network training.\n\nLarge language models offer a powerful and intuitive interface to access the vast amounts of knowledge on which they were trained. The learning process a"
+  },
+  {
+   "slug": "nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu",
+   "field": "nlp",
+   "arxiv_id": "2608.05850",
+   "title": "MameLoshnLM: Yiddish Language Model and Evaluation Benchmark",
+   "parse_seconds": 24.3,
+   "chars": 98090,
+   "excerpt": "# MAMELOSHNLM: Yiddish Language Model and Evaluation Benchmark\n\nUri Katz1 Omer Goldman² Tomasz Limisiewicz³\n\nReut Tsarfaty1,Noah A. Smith3,4,\n\n1Bar-Ilan University 2University of Cambridge\n\n3University of Washington 4Allen Institute for AI\n\n## Abstract\n\nWe present MAMELOSHNLM,1 the first open-source 8B-parameter language model built specifically for Yiddish. Despite Yiddish's rich textual tradition, its limited digital presence and the scarcity of reliable evaluation resources have constrained progress in Yiddish language modeling. Existing multilingual corpora and benchmarks are often poor proxies for the language, containing substantial amounts of noisy, machinetranslated, and misclassified text. We address these gaps by introducing Oytser, a high-quality Yiddish pretraining corpus that combines contemporary web-native sources with literary materials, and Kashes, a multi-task benchmark spanning translation, linguistic analysis, information extraction, and language understanding. Using these resources, we continue pretraining Llama 3.1 8B to obtain MAMELOSHNLM. Across the tasks in the benchmark, MAMELOSHNLM outperforms open baselines of similar scale. Our analyses show that these gains are not only quantitative: relative to general-purpose multilingual models, MAMELOSHNLM better captures language-defining lexical and morphological patterns, pointing to a broader failure mode o"
+  },
+  {
+   "slug": "large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v",
+   "field": "large-language-models",
+   "arxiv_id": "2402.11690",
+   "title": "Vision-Flan: Scaling Human-Labeled Tasks in Visual Instruction Tuning",
+   "parse_seconds": 40.4,
+   "chars": 204591,
+   "excerpt": "# Vision-Flan: Scaling Human-Labeled Tasks in Visual Instruction Tuning\n\nZhiyang Xu\\* Chao Feng\\* Rulin Shao Trevor Ashby\\* Ying Shen\\*\n\nDi Jin Yu Cheng Qifan Wang Lifu Huang\\*\n\n\\*Virginia TechUniversity of WashingtonUniversity of Michigan\n\nAmazon Inc. Microsoft Meta AI\n\n{zhiyangx,lifuh}@vt.edu\n\n## Abstract\n\nDespite vision-language models’ (VLMs) remarkable capabilities as versatile visual assistants, two substantial challenges persist within the existing VLM frameworks: (1) lacking task diversity in pretraining and visual instruction tuning, and (2) annotation error and bias in GPT-4 synthesized instruction tuning data. Both challenges lead to issues such as poor generalizability, hallucination, and catastrophic forgetting. To address these challenges, we construct VISION-FLAN, the most diverse publicly available visual instruction tuning dataset to date, comprising 187 diverse tasks and 1,664,261 instances sourced from academic datasets, and each task is accompanied by an expert-written instruction. In addition, we propose a two-stage instruction tuning framework, in which VLMs are firstly finetuned on VISION-FLAN and further tuned on GPT-4 synthesized data. We find this two-stage tuning framework significantly outperforms the traditional single-stage visual instruction tuning framework and achieves the state-of-the-art performance across a wide range of multi-modal evaluatio"
+  },
+  {
+   "slug": "large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun",
+   "field": "large-language-models",
+   "arxiv_id": "2312.10793",
+   "title": "Demystifying Instruction Mixing for Fine-tuning Large Language Models",
+   "parse_seconds": 16.3,
+   "chars": 34102,
+   "excerpt": "# Demystifying Instruction Mixing for Fine-tuning Large Language Models\n\nRenxi Wang1,2 Haonan L1,2 Minghao Wu³ Yuxia Wang1,2\n\nXudong Han1,2 Chiyu Zhang4 Timothy Baldwin1,2,5\n\n1Mohamed bin Zayed University of Artificial Intelligence2LibrAI\n\n3Monash University 4 University of British Columbia 5 The University of Melbourne {renxi.wang,haonan.li,yuxia.wang,xudong.han,timothy.baldwin}@mbzuai.ac.ae minghao.wu@monash.edu chiyuzh@mail.ubc.ca\n\n## Abstract\n\nInstruction tuning significantly enhances the performance of large language models (LLMs) across various tasks. However, the procedure to optimizing the mixing of instruction datasets for LLM fine-tuning is still poorly understood. This study categorizes instructions into three primary types: NLP downstream tasks, coding, and general chat. We explore the effects of instruction tuning on different combinations of datasets on LLM performance, and find that certain instruction types are more advantageous for specific applications but can negatively impact other areas. This work provides insights into instruction mixtures, laying the foundations for future research.¹\n\n## 1 Introduction\n\nInstruction tuning has been shown to have surprising efficacy for aligning large language models (LLMs) with human instructions (Chung et al., 2022; Li et al., 2023; Wu et al., 2023; Xu et al., 2023; Touvron et al., 2023; Muennighoff et al., 2023a; Gunasek"
+  },
+  {
+   "slug": "quantum-physics__1311.2485__continuous-time-quantum-error-correction",
+   "field": "quantum-physics",
+   "arxiv_id": "1311.2485",
+   "title": "Continuous-time quantum error correction",
+   "parse_seconds": 16.4,
+   "chars": 108737,
+   "excerpt": "# Continuous-time quantum error correction\\*\n\nOgnyan Oreshkov\n\nQuIC, Ecole Polytechnique, CP 165, Université Libre de Bruxelles, 1050 Brussels, Belgium.\n\nContinuous-time quantum error correction (CTQEC) is an approach to protecting quantum information from noise in which both the noise and the error correcting operations are treated as processes that are continuous in time. This chapter investigates CTQEC based on continuous weak measurements and feedback from the point of view of the subsystem principle, which states that protected quantum information is contained in a subsystem of the Hilbert space. We study how to approach the problem of constructing CTQEC protocols by looking at the evolution of the state of the system in an encoded basis in which the subsystem containing the protected information is explicit. This point of view allows us to reduce the problem to that of protecting a known state and to design CTQEC procedures from protocols for the protection of a single qubit. We show how previously studied CTQEC schemes with both direct and indirect feedback can be obtained from strategies for the protection of a single qubit via weak measurements and weak unitary operations. We also review results on the performance of CTQEC with direct feedback in cases of Markovian and non-Markovian decoherence, where we have shown that due to the existence of a Zeno regime in non-Mark"
+  },
+  {
+   "slug": "quantum-physics__1610.04013__entanglement-assisted-quantum-error-correcti",
+   "field": "quantum-physics",
+   "arxiv_id": "1610.04013",
+   "title": "Entanglement-Assisted Quantum Error-Correcting Codes",
+   "parse_seconds": 24.3,
+   "chars": 83544,
+   "excerpt": "# Entanglement-Assisted Quantum Error-Correcting Codes\n\nTodd Brun 1 and Min-Hsiu Hsieh ²\n\n1 University of Southern California, USA\n\n2 Centre for Quantum Software and Information, University of Technology Sydney, Australia\n\n## Contents\n\n1 Introduction 1   \n1.1 Entanglement-assisted codes 1   \n2 Constructing EAQECCs 3   \n2.1 Noncommuting “stabilizers\" 3   \n2.2 The Gram-Schmidt Procedure . 4   \n2.3 Anticommuting pairs and entanglement . 6   \n2.4 The symplectic representation of EAQECCs . 8   \n2.5 The Canonical Code 9   \n2.6 General codes and code parameters 12   \n3 Constructing EAQECCs from classical linear codes 13   \n3.1 Mapping GF(4) to Pauli Operators . 13   \n3.2 Performance 15   \n4 Catalytic QECCs 16   \n5 Conclusions 17\n\n## 1 Introduction\n\nQuantum error-correcting codes (QECCs) have turned out to have many applications; but their primary purpose, of course, is to protect quantum information from noise. This need manifests itself in two rather different situations. The first is in quantum computing. The bits in a quantum computer are subject to noise due both to imprecision in the operations (or gates) and to interactions with the external environment. They undergo errors when they are acted upon, and when they are just being stored (though hopefully not at the same rate). All the qubits in the computer must be kept error-free long enough for the computation to be completed. T"
+  },
+  {
+   "slug": "clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive",
+   "field": "clinical-medicine",
+   "arxiv_id": "1909.03801",
+   "title": "Aim for clinical utility, not just predictive accuracy",
+   "parse_seconds": 16.3,
+   "chars": 42282,
+   "excerpt": "# Aim for clinical utility, not just predictive accuracy\n\nMichael C Sachs Arvid Sjölander Erin E Gabriel\n\nSeptember 10, 2019\n\nM.C. Sachs: Department of Medicine, Solna\n\nEugeniahemmet, T2, Karolinska Universitetssjukhuset,\n\n171 76 Stockholm, Sweden\n\nTel.: +46 08 517 761 42\n\nmichael.sachs@ki.se\n\nA. Sjölander and E.E. Gabriel:\n\nDepartment of Medical Epidemiology and Biostatistics,\n\nKarolinska Institutet,\n\n171 65 Stockholm, Sweden\n\nRunning head Aim for clinical utility, not just predictive accuracy\n\nDeclaration The authors declare that they have no conflict of interest.\n\nWord count Abstract: 193; Main text: 3948\n\nFor consideration as Original Research Article\n\nSources of funding The authors gratefully acknowledge financial support from the Swedish Research\n\nCouncil, Grant No. 2016-01267 and Starting Grant 2017-01898.\n\nData and code R Code used for simulated data and illustration is available as supplementary material\n\nincluded in the appendix.\n\n# Aim for clinical utility, not just predictive accuracy\n\n## Abstract\n\nThe predictions from an accurate prognostic model can be of great interest to patients and clinicians. When predictions are reported to individuals, they may decide to take action to improve their health or they may simply be comforted by the knowledge. However, if there is a clearly defined space of actions in the clinical context, a formal decision rule based on the pre"
+  },
+  {
+   "slug": "clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr",
+   "field": "clinical-medicine",
+   "arxiv_id": "2110.08918",
+   "title": "Using Clinical Drug Representations for Improving Mortality and Length of Stay Predictions",
+   "parse_seconds": 16.3,
+   "chars": 46918,
+   "excerpt": "# Using Clinical Drug Representations for Improving Mortality and Length of Stay Predictions\n\nBatuhan Bardak and Mehmet Tan\n\nDepartment of Computer Engineering\n\nTOBB University of Economics and Technology\n\nAnkara, Turkey\n\nEmail:{b.bardak, mtan } @etu.edu.tr\n\nAbstract—Drug representations have played an important role in cheminformatics. However, in the healthcare domain, drug representations have been underused relative to the rest of Electronic Health Record (EHR) data, due to the complexity of high dimensional drug representations and the lack of proper pipeline that will allow to convert clinical drugs to their representations. Time-varying vital signs, laboratory measurements, and related time-series signals are commonly used to predict clinical outcomes. In this work, we demonstrated that using clinical drug representations in addition to other clinical features has significant potential to increase the performance of mortality and length of stay (LOS) models. We evaluate the two different drug representation methods (Extended-Connectivity Fingerprint-ECFP and SMILES-Transformer embedding) on clinical outcome predictions. The results have shown that the proposed multimodal approach achieves substantial enhancement on clinical tasks over baseline models. Using clinical drug representations as additional features improve the LOS prediction for Area Under the Receiver Operati"
+  },
+  {
+   "slug": "genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t",
+   "field": "genomics",
+   "arxiv_id": "2301.08436",
+   "title": "SpaceTx: A Roadmap for Benchmarking Spatial Transcriptomics Exploration of the Brain",
+   "parse_seconds": 16.3,
+   "chars": 58352,
+   "excerpt": "# Title: SpaceTx: A Roadmap for Benchmarking Spatial Transcriptomics Exploration of the Brain\n\nAuthors and affiliations: Brian Long1, Jeremy Miller1, The SpaceTx Consortium²\n\n1. Allen Institute for Brain Science, Seattle, WA, USA\n\n2. Consortium authors:\n\n<table><tr><td rowspan=1 colspan=1>Name</td><td rowspan=1 colspan=1>Affiliation</td><td rowspan=1 colspan=1>ORCID</td></tr><tr><td rowspan=1 colspan=1>Boudewijn Lelieveldt</td><td rowspan=1 colspan=1>Leiden University Medical Center; Delft University of Technology</td><td rowspan=1 colspan=1>0000-0001-8269-7603</td></tr><tr><td rowspan=1 colspan=1>Charles Comiter</td><td rowspan=1 colspan=1>Massachusetts Institute of Technology; Broad Institute of MIT andHarvard; Massachusetts General Hospital / Harvard Medical School</td><td rowspan=1 colspan=1>0000-0003-4201-1739</td></tr><tr><td rowspan=1 colspan=1>Christoffer MattssonLangseth</td><td rowspan=1 colspan=1>Science for Life Laboratory, Department of Biochemistry and Biophysics,Stockholm University, 171 65 Solna, Sweden</td><td rowspan=1 colspan=1>0000-0003-2230-8594</td></tr><tr><td rowspan=1 colspan=1>Daniel Gyllborg</td><td rowspan=1 colspan=1>Science for Life Laboratory, Department of Biochemistry and Biophysics,Stockholm University, 171 65 Solna, Sweden</td><td rowspan=1 colspan=1>0000-0002-1429-6426</td></tr><tr><td rowspan=1 colspan=1>Ed Lein</td><td rowspan=1 colspan=1>A"
+  },
+  {
+   "slug": "genomics__2110.07787__analysis-and-visualization-of-spatial-transc",
+   "field": "genomics",
+   "arxiv_id": "2110.07787",
+   "title": "Analysis and visualization of spatial transcriptomic data",
+   "parse_seconds": 24.3,
+   "chars": 84158,
+   "excerpt": "# Analysis and visualization of spatial transcriptomic data\n\nBoxiang Liu1\\*†, Yanjun Li¹†, Liang Zhang1\n\n1Baidu Research, Sunnyvale, CA, United States\n\n†These authors have contributed equally to this work\n\nCorrespondence: jollier.liu@gmail.com\n\nKeywords: spatial transcriptomics, single-cell RNA-seq, clustering, spatial expression pattern, cell-to-cell interaction, visualization.\n\n## Abstract\n\nHuman and animal tissues consist of heterogeneous cell types that organize and interact in highly structured manners. Bulk and single-cell sequencing technologies remove cells from their original microenvironments, resulting in a loss of spatial information. Spatial transcriptomics is a recent technological innovation that measures transcriptomic information while preserving spatial information. Spatial transcriptomic data can be generated in several ways. RNA molecules are measured by in situ sequencing, in situ hybridization, or spatial barcoding to recover original spatial coordinates. The inclusion of spatial information expands the range of possibilities for analysis and visualization, and spurred the development of numerous novel methods. In this review, we summarize the core concepts of spatial genomics technology and provide a comprehensive review of current analysis and visualization methods for spatial transcriptomics.\n\n## 1 Introduction\n\nQuantification of gene expression has imp"
+  },
+  {
+   "slug": "economics__1901.03951__inequality-mobility-and-the-financial-accumu",
+   "field": "economics",
+   "arxiv_id": "1901.03951",
+   "title": "Inequality, mobility and the financial accumulation process: A computational economic analysis",
+   "parse_seconds": 16.3,
+   "chars": 76405,
+   "excerpt": "# Inequality, mobility and the financial accumulation process: A computational economic analysis \\*\n\nYuri Biondi¹ and Simone Righi2,3\n\n1Cnrs - IRISSO (University Paris Dauphine PSL), Place Mar. Lattre Tassigny 75016 Paris. yuri.biondi@gmail.com   \n2University College London, Department of Computer Science, Gower Street 66-72, Office 3.10, WC1E 6EA London (UK). s.righi@ucl.ac.uk\n\n3MTA TK “Lendület\" Research Center for Educational and Network Studies (RECENS), Hungarian Academy of Sciences.\n\nJanuary 27, 2019\n\n## Abstract\n\nOur computational economic analysis investigates the relationship between inequality, mobility and the financial accumulation process. Extending the baseline model by Levy et al., we characterise the economic process through stylised return structures generating alternative evolutions of income and wealth through time. First, we explore the limited heuristic contribution of one and two factors models comprising one single stock (capital wealth) and one single flow factor (labour) as pure drivers of income and wealth generation and allocation over time. Second, we introduce heuristic modes of taxation in line with the baseline approach. Our computational economic analysis corroborates that the financial accumulation process featuring compound returns plays a significant role as source of inequality, while institutional arrangements including taxation play a signi"
+  },
+  {
+   "slug": "economics__1609.00415__does-infrastructure-investment-lead-to-econo",
+   "field": "economics",
+   "arxiv_id": "1609.00415",
+   "title": "Does Infrastructure Investment Lead to Economic Growth or Economic Fragility? Evidence from China",
+   "parse_seconds": 16.4,
+   "chars": 93276,
+   "excerpt": "# Does infrastructure investment lead to economic growth or economic fragility? Evidence from China\n\nAtif Ansar,\\* Bent Flyvbjerg,\\*\\* Alexander Budzier,\\*\\*\\* and Daniel Lunn\\*\\*\\*\\*\n\nAbstract: China's three-decade infrastructure investment boom shows few signs of abating. Is China's economic growth a consequence of its purposeful investment? Is China a prodigy in delivering infrastructure from which rich democracies could learn? The prevalent view in economics literature and policies derived from it is that a high level of infrastructure investment is a precursor to economic growth. China is especially held up as a model to emulate. Politicians in rich democracies display awe and envy of the scale of infrastructure Chinese leaders are able to build. Based on the largest dataset of its kind, this paper punctures the twin myths that (i) infrastructure creates economic value, and that (ii) China has a distinct advantage in its delivery. Far from being an engine of economic growth, the typical infrastructure investment fails to deliver a positive risk-adjusted return. Moreover, China's track record in delivering infrastructure is no better than that of rich democracies. Investing in unproductive projects results initially in a boom, as long as construction is ongoing, followed by a bust, when forecasted benefits fail to materialize and projects therefore become a drag on the econ"
+  },
+  {
+   "slug": "climate-science__1805.00397__hamiltonian-distributed-chaos-in-the-asian-a",
+   "field": "climate-science",
+   "arxiv_id": "1805.00397",
+   "title": "Hamiltonian distributed chaos in the Asian-Australian Monsoons and in the ENSO",
+   "parse_seconds": 8.3,
+   "chars": 16778,
+   "excerpt": "# Hamiltonian distributed chaos in the Asian-Australian Monsoons and in the ENSO\n\nA. Bershadskii\n\nICAR, P.O. Box 31155, Jerusalem 91000, Israel\n\nTwo subsystems of the Asian Monsoon: the Indian Summer Monsoon and the Western North Pacific Monsoon, have been analysed using their daily indices ISMI and WNPMI. It is shown that on the intraseasonal time scales the ISMI and WNPMI are dominated by the Hamiltonian distributed chaos with the stretched exponential spectrum: $E ( f ) \\propto \\exp { - ( f / f _ { 0 } ) ^ { \\dot { \\beta } } }$ and analytical values of the parameter $\\beta = 3 / 4$ and $\\beta = 1 / 2$ correspondingly. The relevant daily indices Niño 3 and Niño 4 (with $\\beta = 1 / 2 )$ of the El Niño-Southern Oscillation (ENSO) and the Australian Monsoon (AUSM index with $\\beta = 1 / 2 )$ have been also discussed in this context\n\n## THE ASIAN MONSOON\n\nTwo dominant regions of energy supply (by convective heat) can be determined for the Asian monsoon: the Philippine Sea and Bay of Bengal (see for a comprehensive review Ref. [1]). Weak correlation between these rather different energy sources resulted in appearance of two different in their properties monsoon indices: Western North Pacific Monsoon Index (WNPMI) and Indian Summer Monsoon Index (ISMI or IMI) [1],[2]. Together these indices describe one of the most powerful oscillating pattern of the earth's climate. Definition of"
+  },
+  {
+   "slug": "climate-science__2012.10385__large-scale-features-of-southwest-monsoon-du",
+   "field": "climate-science",
+   "arxiv_id": "2012.10385",
+   "title": "Large Scale Features of Southwest Monsoon During 2015",
+   "parse_seconds": 8.3,
+   "chars": 24724,
+   "excerpt": "# Chapter 1\n\n# Chapter 1 - Large Scale Features of Southwest Monsoon During 2015\n\nHamza Varikoden, Bhupendra Bahadur Singh, K.P. Sooraj, Manish K. Joshi, B. Preethi, Milind Mujumdar and M. Rajeevan\n\n## 1.1 Rainfall features\n\nDuring 2015, the southwest monsoon (SWM) rainfall over the country remained deficient with seasonal rainfall of about 86% of the long period average (Table 1.1). Last year, the seasonal rainfall deficiency over the country as a whole was 12% (www.imd.gov.in). Thus, this is a fourth episode of two consecutive years, with deficient monsoon, similar to 1904-05, 1965-66 and 1986-87 (www.imd.gov.in).\n\nHowever, the analysis at a monthly scale reveals the intrinsic and pronounced spatial variability of the 2015 monsoon. For June 2015, rainfall over the country as a whole was 16% above the long period average (Figures 1.1a-c and Table 1.1). During this month, the rainfall activity was above normal over Central India, with a deluge of rainfall extending to eastern and southern Peninsular India. But, the monthly rainfall remained subdued over the northeastern part of India. This was in contrast to the rainfall during June 2014 (figure not shown), which received only 58% of the long period average. During July 2015 (Figures 1.1d-f), the rainfall across the country was deficient by 16% (Table 1.1). The monthly rainfall was above normal only over central to northwest In"
+  },
+  {
+   "slug": "astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c",
+   "field": "astronomy",
+   "arxiv_id": "1207.3189",
+   "title": "The Dark Energy Survey Data Processing and Calibration System",
+   "parse_seconds": 16.3,
+   "chars": 53681,
+   "excerpt": "# The Dark Energy Survey Data Processing and Calibration System\n\nJoseph J. Mohra,b, Robert Armstrong, Emmanuel Bertind, Gregory E. Daues°, Shantanu Desaia, Michelle Gowere, Robert Gruendlf, William Hanlon⁸, Nikolay Kuropatkinh, Huan Linh, John Marrinerh, Don Petravicke, Ignacio Sevilla, Molly Swanson, Todd Tomasheke, Douglas Tuckerh, and Brian Yannyh for the Dark Energy Survey Collaboration\n\naLudwig-Maximilians University Department of Physics, Scheinerstr 1, Munich, Germany 81679;   \nbMax Planck Institute for Extraterrestrial Physics, Giessenbachstrasse, Garching, Germany 85748; University of Pennsylvania Department of Physics, 203 South 33rd St., Philadelphia, PA, USA 19104; dInstitut d’Astrophysique, 98bis, bd Arago, Paris, France 75014; National Center for   \nSupercomputing Applications, 1205 West Clark St., Urbana, IL, USA 61801; fUniversity of Illinois Department of Astronomy, 1002 West Green St, Urbana, IL, USA 61801; ®University of Illinois   \nDepartment of Physics, 1002 West Green St, Urbana, IL, USA 61801; hFermi National Accelerator Laboratory, P. O. Box 500, Batavia, IL, USA 60510; 'Centro de Investigaciones Energeticas   \nMedioambiantales y Tocnologicas, Av. Complutense 40, Madrid, SP 28040; Harvard Smithsonian Center for Astrophysics, 60 Garden St, Cambridge, MA USA 02138;\n\n## ABSTRACT\n\nThe Dark Energy Survey (DES) is a 5000 deg2 grizY survey reaching characterist"
+  },
+  {
+   "slug": "materials__2211.04977__design-of-battery-materials-via-defects-and",
+   "field": "materials",
+   "arxiv_id": "2211.04977",
+   "title": "Design of battery materials via defects and doping",
+   "parse_seconds": 16.3,
+   "chars": 59011,
+   "excerpt": "# Design of battery materials via defects and doping\n\nKhang Hoang\n\nCenter for Computationally Assisted Science and Technology & Department of Physics North Dakota State University, Fargo, ND 58108, United States\n\n## Abstract\n\nThis chapter illustrates the use of defect physics as a conceptual and theoretical framework for understanding and designing battery materials. It starts with a methodology for first-principles studies of defects in complex transition-metal oxides. The chapter then considers defects that are activated in a cathode material during synthesis, during measurements, and during battery use. Through these cases, it discusses possible defect landscapes in the material and their implications, guidelines for materials design via defect-controlled synthesis, mechanisms for electronic and ionic conduction and for electrochemical extraction and (re-)insertion, and effects of doping. Although specific examples are taken from studies of battery cathode materials, the computational approach and discussions are general and applicable to any ionic, electronic, or mixed ionic-electronic conducting materials.\n\n## 1 Introduction\n\nCrystallographic point defects are ubiquitous in solids. They can be electronic (e.g., electron and hole polarons) or ionic (vacancies, interstitials, and antisites); and intrinsic (i.e., native to a material) or extrinsic (substitutional or interstit"
+  },
+  {
+   "slug": "neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns",
+   "field": "neuroscience",
+   "arxiv_id": "2001.10696",
+   "title": "Spiking Inception Module for Multi-layer Unsupervised Spiking Neural Networks",
+   "parse_seconds": 16.3,
+   "chars": 52767,
+   "excerpt": "# Spiking Inception Module for Multi-layer Unsupervised Spiking Neural Networks\n\nMingyuan Meng   \nThe School of Electronics and   \nInformation Technology   \nSun Yat-sen University   \nGuangzhou 510006, China   \nmengmy3@mail.sysu.edu.cn   \nXingyu Yang   \nThe School of Electronics and   \nInformation Technology   \nSun Yat-sen University   \nGuangzhou 510006, China   \nyangxy266@mail2.sysu.edu.cn   \nShanlin Xiao   \nThe School of Electronics and   \nInformation Technology   \nSun Yat-sen University   \nGuangzhou 510006, China   \nxiaoshlin@mail.sysu.edu.cn   \nZhiyi Yu   \nThe School of Electronics and   \nInformation Technology   \nSun Yat-sen University   \nGuangzhou 510006, China   \nyuzhiyi@mail.sysu.edu.cn\n\nAbstract—Spiking Neural Network (SNN), as a brain-inspired approach, is attracting attention due to its potential to produce ultra-high-energy-efficient hardware. Competitive learning based on Spike-Timing-Dependent Plasticity (STDP) is a popular method to train an unsupervised SNN. However, previous unsupervised SNNs trained through this method are limited to a shallow network with only one learnable layer and cannot achieve satisfactory results when compared with multi-layer SNNs. In this paper, we eased this limitation by: 1)We proposed a Spiking Inception (Sp-Inception) module, inspired by the Inception module in the Artificial Neural Network (ANN) literature. This module is trained "
+  },
+  {
+   "slug": "robotics__2509.14191__mcgs-slam-a-multi-camera-slam-framework-usin",
+   "field": "robotics",
+   "arxiv_id": "2509.14191",
+   "title": "MCGS-SLAM: A Multi-Camera SLAM Framework Using Gaussian Splatting for High-Fidelity Mapping",
+   "parse_seconds": 16.3,
+   "chars": 50879,
+   "excerpt": "# MCGS-SLAM: A Multi-Camera SLAM Framework Using Gaussian Splatting for High-Fidelity Mapping\n\nZhihao Cao¹, Hanyu Wu2, Li Wa Tang2, Zizhou Luo3, Wei Zhang4, Marc Pollefeys5,6, Zihan Zhu5,\\*, and Martin R. Oswald7\n\n![](images/982d3a8f812e840c9d1636c3aa7c82ca17f4fd403c51fb16f5db476081d9b5d3.jpg)  \nFig. 1: MCGS-SLAM synchronizes RGB inputs from the front, left, and right cameras of the multi-camera rig in the Waymo dataset and fuses them into a unified 3D Gaussian Splatting map. The system performs real-time tracking and mapping, enabling high-fidelity reconstruction of both color and depth views from each individual camera. Through joint multi-camera optimization, MCGS-SLAM ensures accurate pose and geometry alignment, while supporting comprehensive multi-view rendering for photorealistic visualization. https://zhihao-ethz.github.io/mcgs-slam/\n\nAbstract—Recent progress in dense SLAM has primarily targeted monocular setups, often at the expense of robustness and geometric coverage. We present MCGS-SLAM, the first purely RGB-based multi-camera SLAM system built on 3D Gaussian Splatting (3DGS). Unlike prior methods relying on sparse maps or inertial data, MCGS-SLAM fuses dense RGB inputs from multiple viewpoints into a unified, continuously optimized Gaussian map. A multi-camera bundle adjustment (MCBA) jointly refines poses and depths via dense photometric and geometric residuals, "
+  },
+  {
+   "slug": "chemistry__2109.05887__autonomous-reaction-network-exploration-in-h",
+   "field": "chemistry",
+   "arxiv_id": "2109.05887",
+   "title": "Autonomous Reaction Network Exploration in Homogeneous and Heterogeneous Catalysis",
+   "parse_seconds": 32.4,
+   "chars": 183743,
+   "excerpt": "# Autonomous Reaction Network Exploration in Homogeneous and Heterogeneous Catalysis\n\nMiguel Steiner1 and Markus Reiher²\n\nLaboratory of Physical Chemistry, ETH Zurich, Vladimir-Prelog-Weg 2, 8093 Zurich, Switzerland\n\nNovember 14, 2021\n\n## Abstract\n\nAutonomous computations that rely on automated reaction network elucidation algorithms may pave the way to make computational catalysis on a par with experimental research in the field. Several advantages of this approach are key to catalysis: (i) Automation allows one to consider orders of magnitude more structures in a systematic and open-ended fashion than what would be accessible by manual inspection. Eventually, full resolution in terms of structural varieties and conformations as well as with respect to the type and number of potentially important elementary reaction steps (including decomposition reactions that determine turnover numbers) may be achieved. (ii) Fast electronic structure methods with uncertainty quantification warrant high efficiency and reliability in order to not only deliver results quickly, but also to allow for predictive work. (iii) A high degree of autonomy reduces the amount of manual human work, processing errors, and human bias. Although being inherently unbiased, it is still steerable with respect to specific regions of an emerging network and with respect to the addition of new reactant species. This"
+  },
+  {
+   "slug": "mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b",
+   "field": "mathematics",
+   "arxiv_id": "2211.12700",
+   "title": "Tailored Presolve Techniques in Branch-and-Bound Method for Fast Mixed-Integer Optimal Control Applications",
+   "parse_seconds": 32.4,
+   "chars": 138294,
+   "excerpt": "DOI: xxx/xxxx\n\nARTICLE TYPE\n\n# Tailored Presolve Techniques in Branch-and-Bound Method for Fast Mixed-Integer Optimal Control Applications\n\nRien Quirynen\\* | Stefano Di Cairano\n\n1Control for Autonomy, Mitsubishi Electric Research Laboratories, Massachusetts, USA\n\nCorrespondence\n\n\\*Email: quirynen@merl.com\n\nPresent Address   \n201 Broadway, 8th Floor, Cambridge, MA   \n02139-1955\n\n## Abstract\n\nMixed-integer model predictive control (MI-MPC) can be a powerful tool for controlling hybrid systems. In case of a linear-quadratic objective in combination with linear or piecewise-linear system dynamics and inequality constraints, MI-MPC needs to solve a mixed-integer quadratic program (MIQP) at each sampling time step. This paper presents a collection of exact block-sparse presolve techniques to efficiently remove decision variables, and to remove or tighten inequality constraints, tailored to mixed-integer optimal control problems. In addition, we describe a novel approach based on a heuristic presolve algorithm to compute a feasible but possibly suboptimal MIQP solution. We present benchmarking results for a C code implementation of the proposed BB-ASIPM solver, including a branch-and-bound (B&B) method with the proposed tailored presolve techniques and an active-set based interior point method (ASIPM), compared against multiple state-of-the-art MIQP solvers on a case study of motion p"
+  },
+  {
+   "slug": "gravitational-physics__0706.3294__moriond-07-proceedings-extension-of-the-freq",
+   "field": "gravitational-physics",
+   "arxiv_id": "0706.3294",
+   "title": "Moriond 07 proceedings:\"Extension of the frequency-range of interferometers for the \"magnetic\" components of gravitational waves?\"",
+   "parse_seconds": 16.3,
+   "chars": 15482,
+   "excerpt": "# Moriond 07 proceedings: “Extension of the frequency-range of interferometers for the \"magnetic\" components of gravitational waves?\"\n\nChristian Corda\n\nAugust 2, 2021\n\nINFN - Sezione di Pisa and Università di Pisa, Via F. Buonarroti 2, I - 56127 PISA, Italy\n\nE-mail address: christian.corda@ego-gw.it\n\n## Abstract\n\nRecently some papers in the literature have shown the presence and importance of the so-called \"magnetic\" components of gravitational waves (GWs), which have to be taken into account in the context of the total response functions of interferometers for GWs propagating from arbitrary directions. In this paper the response functions for the magnetic components are re-analysed in the full frequency dependence answering to the question of the title.\n\nPACS numbers: 04.80.Nn, 04.80.-y, 04.25.Nx\n\nThe design and construction of a number of sensitive detectors for GWs is underway today. There are some laser interferometers like the VIRGO detector being built in Cascina, near Pisa by a joint Italian-French collaboration [1, 2], the GEO 600 detector, being built in Hanover, Germany by a joint Anglo-Germany collaboration [3, 4], the two LIGO detectors, being built in the United States (one in Hanford, Washington and the other in Livingston, Louisiana) by a joint Caltech-Mit collaboration [5, 6], and the TAMA 300 detector, being built near Tokyo, Japan [7, 8]. There are many bar de"
+  },
+  {
+   "slug": "statistics__1506.03880__causal-inference-via-algebraic-geometry-feas",
+   "field": "statistics",
+   "arxiv_id": "1506.03880",
+   "title": "Causal inference via algebraic geometry: feasibility tests for functional causal structures with two binary observed variables",
+   "parse_seconds": 40.4,
+   "chars": 120797,
+   "excerpt": "# Causal inference via algebraic geometry: feasibility tests for functional causal structures with two binary observed variables\n\nCiarán M. Lee\\* Department of Computer Science, University of Oxford, Oxford, UK OX1 3QD\n\n## Abstract\n\nWe provide a scheme for inferring causal relations from uncontrolled statistical data based on tools from computational algebraic geometry, in particular, the computation of Groebner bases. We focus on causal structures containing just two observed variables, each of which is binary. We consider the consequences of imposing different restrictions on the number and cardinality of latent variables and of assuming different functional dependences of the observed variables on the latent ones (in particular, the noise need not be additive). We provide an inductive scheme for classifying functional causal structures into distinct observational equivalence classes. For each observational equivalence class, we provide a procedure for deriving constraints on the joint distribution that are necessary and sufficient conditions for it to arise from a model in that class. We also demonstrate how this sort of approach provides a means of determining which causal parameters are identifiable and how to solve for these. Prospects for expanding the scope of our scheme, in particular to the problem of quantum causal inference, are also discussed.\n\n## 1 Introduction\n\nC"
+  },
+  {
+   "slug": "speech__2109.14357__comparison-of-self-supervised-speech-pre-tra",
+   "field": "speech",
+   "arxiv_id": "2109.14357",
+   "title": "Comparison of Self-Supervised Speech Pre-Training Methods on Flemish Dutch",
+   "parse_seconds": 16.3,
+   "chars": 47399,
+   "excerpt": "# COMPARISON OF SELF-SUPERVISED SPEECH PRE-TRAINING METHODS ON FLEMISH DUTCH\n\nJakob Poncelet, Hugo Van hamme\n\nKU Leuven Department Electrical Engineering ESAT-PSI Kasteelpark Arenberg 10, Bus 2441, B-3001 Leuven Belgium {jakob.poncelet, hugo.vanhamme} @esat.kuleuven.be\n\n## ABSTRACT\n\nRecent research in speech processing exhibits a growing interest in unsupervised and self-supervised representation learning from unlabelled data to alleviate the need for large amounts of annotated data. We investigate several popular pre-training methods and apply them to Flemish Dutch. We compare off-the-shelf English pre-trained models to models trained on an increasing amount of Flemish data. We find that the most important factors for positive transfer to downstream speech recognition tasks include a substantial amount of data and a matching pre-training domain. Ideally, we also finetune on an annotated subset in the target language. All pre-trained models improve linear phone separability in Flemish, but not all methods improve Automatic Speech Recognition. We experience superior performance with wav2vec 2.0 and we obtain a 30% WER improvement by finetuning the multilingually pre-trained XLSR-53 model on Flemish Dutch, after integration into an HMM-DNN acoustic model.\n\nIndex Terms— speech recognition, self-supervised learning, pre-training, cross-lingual\n\n## 1. INTRODUCTION\n\nBuilding a good s"
+  },
+  {
+   "slug": "power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid",
+   "field": "power-systems",
+   "arxiv_id": "2207.08146",
+   "title": "Mapping Disruption Sources in the Power Grid and Implications for Resilience",
+   "parse_seconds": 8.3,
+   "chars": 33894,
+   "excerpt": "# Mapping Disruption Sources in the Power Grid and Implications for Resilience\n\nMaureen S. Golan\n\nCAEE, Cockrell School of Engineering\n\nThe University of Texas at Austin\n\nAustin, USA\n\nmgolan@utexas.edu\n\nJavad Mohammadi\n\nCAEE, Cockrell School of Engineering\n\nThe University of Texas at Austin\n\nAustin, USA\n\njavadm@utexas.edu\n\nAbstract—Developing models and metrics that can address resilience against disruptions is vital to ensure power grid reliability and that adequate recovery and adaptation mechanisms are in place. In this paper, we propose a novel disruption mapping approach and apply it to the publicly available U.S. Department of Energy DOE-417 Electric Emergency and Disturbance Report to holistically analyze the origin of anomalous events and their propagation through the cyber, physical and human domains. We show that capturing the disruption process onset has implications for quantifying, mitigating, and reporting power grid resilience.\n\nIndex Terms—power grid, resilience, disruption, reliability\n\n## I. INTRODUCTION\n\nUtilities and regulatory authorities rely on metrics based on tracked data to assess the power grid's reliability and plan for future operating conditions. However, metrics that analyze the resilience of the power grid are immature and ill-equipped to provide utilities and regulatory authorities the information they need to ensure both reliability and resilie"
+  },
+  {
+   "slug": "medical-imaging__2306.01022__introduction-of-medical-imaging-modalities",
+   "field": "medical-imaging",
+   "arxiv_id": "2306.01022",
+   "title": "Introduction of Medical Imaging Modalities",
+   "parse_seconds": 16.3,
+   "chars": 65652,
+   "excerpt": "# INTRODUCTION OF MEDICAL IMAGING MODALITIES\n\nA PREPRINT\n\nS. K. M Shadekul Islam Research and Development Department, Pioneer Alpha, Dhaka, Bangladesh shadekul15-12836@diu.edu.bd\n\nMD Abdullah Al Nasim Research and Development Department, Pioneer Alpha, Dhaka, Bangladesh nasim.abdullah@ieee.org\n\nDr. Md Azim Ullah University of Memphis mullah@memphis.edu\n\nDr. Kishor Datta Gupta   \nClark Atlanta University   \nGeorgia, USA   \nkgupta@cau.edu\n\nIsmail Hossain University of Alabama at Birmingham Alabama, USA ihossain@uab.edu\n\nMd Monjur Hossain Bhuiyan School of Aerospace and Mechanical Engineering University of Oklahoma Norman, OK-73019, USA mhbhuiyan@ou.edu\n\nAugust 31, 2024\n\n## ABSTRACT\n\nThe diagnosis and treatment of various diseases had been expedited with the help of medical imaging. Different medical imaging modalities, including X-ray, Computed Tomography (CT), Magnetic Resonance Imaging (MRI), Nuclear Imaging, Ultrasound, Electrical Impedance Tomography (EIT), and Emerging Technologies for in vivo imaging are widely used in today's healthcare throughout the world. A review of medical imaging modalities is presented in this chapter, in addition to these modalities, some advanced techniques such as contrast-enhanced MRI, MR approaches for osteoarthritis, Cardiovascular Imaging, and Medical Imaging data mining and search. Despite its important role and potential effectiveness as a "
+  },
+  {
+   "slug": "immunology__2604.01385__strategies-for-tumor-elimination-and-control",
+   "field": "immunology",
+   "arxiv_id": "2604.01385",
+   "title": "Strategies for tumor elimination and control under immune evasion and chemotherapy resistance",
+   "parse_seconds": 24.4,
+   "chars": 75912,
+   "excerpt": "# Strategies for tumor elimination and control under immune evasion and chemotherapy resistance\n\nNazanin Mokari & Bryce Morsky\n\nDepartment of Mathematics, Florida State University, Tallahassee, FL, USA\n\nApril 3, 2026\n\n## Abstract\n\nThe evolutionary and ecological dynamics of tumors under immune responses and therapeutic interventions pose major challenges to long-term treatment success. Although treatment may initially achieve short-term disease control, resistant cancer cell subpopulations often arise, leading to relapse with more aggressive and treatment-resistant forms of the disease. Here, we develop and analyze mathematical models describing the interactions among effector cells, chemo-resistant tumor cells, and immuno-resistant tumor cells under distinct immune-evasion strategies. The models incorporate competition and cooperation between resistant and sensitive tumor subpopulations. We identify threshold conditions governing tumor persistence, elimination, and phenotype dominance under varying therapeutic intensities. These findings provide a theoretical framework for designing targeted and combination therapies and offer insights into strategies for mitigating the treatment resistance.\n\nKeywords: adaptive therapy, cancer modeling, chemotherapy, immunotherapy\n\n## 1 Introduction\n\nCancer is a genetic disorder driven by the process of somatic evolution. This disease is chara"
+  },
+  {
+   "slug": "oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat",
+   "field": "oceanography",
+   "arxiv_id": "1104.2730",
+   "title": "Approximate deconvolution large eddy simulation of a barotropic ocean circulation model",
+   "parse_seconds": 16.4,
+   "chars": 59895,
+   "excerpt": "# Approximate deconvolution large eddy simulation of a barotropic ocean circulation model\n\nOmer Sana,\\*, Anne E. Staplesa, Zhu Wangb, Traian Iliescub\n\naDepartment of Engineering Science and Mechanics, Virginia Tech, Blacksburg, VA, USA b Department of Mathematics, Virginia Tech, Blacksburg, VA, USA\n\n## Abstract\n\nThis paper puts forth a new large eddy simulation closure modeling strategy for two-dimensional turbulent geophysical flows. This closure modeling approach utilizes approximate deconvolution, which is based solely on mathematical approximations and does not employ additional phenomenological arguments to the model. The new approximate deconvolution model is tested in the numerical simulation of the wind-driven circulation in a shallow ocean basin, a standard prototype of more realistic ocean dynamics. The model employs the barotropic vorticity equation driven by a symmetric double-gyre wind forcing, which yields a four-gyre circulation in the time mean. The approximate deconvolution model yields the correct four-gyre circulation structure predicted by a direct numerical simulation, on a coarser mesh but at a fraction of the computational cost. This first step in the numerical assessment of the new model shows that approximate deconvolution could represent a viable tool for under-resolved computations in the large eddy simulation of more realistic turbulent geophysical f"
+  },
+  {
+   "slug": "seismology__1308.1846__developing-and-testing-the-automated-post-ev",
+   "field": "seismology",
+   "arxiv_id": "1308.1846",
+   "title": "Developing and Testing the Automated Post-Event Earthquake Loss Estimation and Visualisation (APE-ELEV) Technique",
+   "parse_seconds": 24.3,
+   "chars": 83880,
+   "excerpt": "# Developing and Testing the Automated Post-Event Earthquake Loss Estimation and Visualisation (APE-ELEV) Technique\n\nAnthony Astoul, Christopher Filliter, Eric Mason, Andrew Rau-Chaplin, Kunal Shridhar, Blesson Varghese and Naman Varshney\n\nReceived: 5 September 2012 / Accepted: 22 June 2013\n\nAbstract An automated, real-time, multiple sensor dat: source relying and globally applicable earthquake loss model and visualiser is desirable for post-event earthquake analysis. To achieve this there is a need to support rapid data ingestion, loss estimation and integration of data from multiple data sources and rapid visualisation at multiple geographic levels. In this paper, the design and development of the Automated Post-Event Earthquake Loss Estimation and Visualisation (APE-ELEV) system for real-time estimation and visualisation of insured losses incurred due to earthquakes is presented. A model for estimating ground up and net of facultative losses due to earthquakes in near real-time is implemented. Since post-event data is often available immediately from multiple disparate sources, a geo-browser is employed to facilitate the visualisation and integration of earthquake hazard, exposure and loss data. The feasibility of APE-ELEV is demonstrated using a test case earthquake that occurred in Tohoku, Japan (2011). The APE-ELEV model is further validated for ten global earthquakes usi"
+  },
+  {
+   "slug": "agriculture__1311.6857__agriculture-driving-male-expansion-in-neolit",
+   "field": "agriculture",
+   "arxiv_id": "1311.6857",
+   "title": "Agriculture driving male expansion in Neolithic Time",
+   "parse_seconds": 8.3,
+   "chars": 18193,
+   "excerpt": "# Title: Agriculture driving male expansion in Neolithic Time\n\nAuthors: Chuan-Chao Wang1, Yunzhi Huang1, Shao-Qing Wen1, Chun Chen¹,², Li Jin¹, ³, Hui Li1,\\*\n\n## Affiliations:\n\n1. State Key Laboratory of Genetic Engineering and MOE Key Laboratory of Contemporary Anthropology, School of Life Sciences, Fudan University, Shanghai 200433, China\n\n2. Department of Cultural Heritage, Fudan University, Shanghai 200433, China\n\n3. Chinese Academy of Sciences Key Laboratory of Computational Biology, CAS-MPG Partner Institute for Computational Biology, SIBS, CAS, Shanghai 200031, China\n\n\\* Correspondence to: lihui.fudan@gmail.com\n\n## Abstract\n\nThe emergence of agriculture is suggested to have driven extensive human population growths. However, genetic evidence from maternal mitochondrial genomes suggests major population expansions began before the emergence of agriculture. Therefore, role of agriculture that played in initial population expansions still remains controversial. Here, we analyzed a set of globally distributed whole Y chromosome and mitochondrial genomes of 526 male samples from 1000 Genome Project. We found that most major paternal lineage expansions coalesced in Neolithic Time. The estimated effective population sizes through time revealed strong evidence for 10- to 100-fold increase in population growth of males with the advent of agriculture. This sex-biased Neolithic exp"
+  },
+  {
+   "slug": "finance__1412.5558__backtest-of-trading-systems-on-candle-charts",
+   "field": "finance",
+   "arxiv_id": "1412.5558",
+   "title": "Backtest of Trading Systems on Candle Charts",
+   "parse_seconds": 16.3,
+   "chars": 21627,
+   "excerpt": "# Backtest of Trading Systems on Candle Charts\n\nSTANISLAUS MAIER-PAAPE\n\nInstitut für Mathematik, RWTH Aachen, Templergraben 55, D-52052 Aachen, Germany maier@instmath.rwth-aachen.de\n\nANDREAS PLATEN\n\nInstitut für Mathematik, RWTH Aachen, Templergraben 55, D-52052 Aachen, Germany platen@instmath.rwth-aachen.de\n\nDecember 18, 2014\n\nAbstract In this paper we try to design the necessary calculation needed for backtesting trading systems when only candle chart data are available. We lay particular emphasis on situations which are not or not uniquely decidable and give possible strategies to handle such situations.\n\nKeywords backtest evaluation, historical simulation, trading system, candle chart, imperfect data\n\nJEL classification C15, C63, C99\n\n## 1 Introduction\n\nSince at least a decade more and more software solutions for self-designable trading systems have emerged (e.g. Ninjatrader, Tradestation, Tradesignal online, Nanotrader, Investox, to name just a few). All of the listed also incorporate a backtesting (also called historical simulation) tool including helpful statistical data on the trading success, i.e. it is possible to run a trading system on historical data to simulate the trades. The idea is that trading systems which were successful in the past should be successful in the future as well. Analogously a trading system which performs bad on historical data cannot be truste"
+  },
+  {
+   "slug": "social-networks__2203.15752__information-consumption-and-boundary-spannin",
+   "field": "social-networks",
+   "arxiv_id": "2203.15752",
+   "title": "Information Consumption and Boundary Spanning in Decentralized Online Social Networks: the case of Mastodon Users",
+   "parse_seconds": 16.3,
+   "chars": 78373,
+   "excerpt": "# Information Consumption and Boundary Spanning in Decentralized Online Social Networks: the case of Mastodon Users\\*\n\nLucio La Cava\n\nAndrea Tagarelli\n\nDept. Computer Engineering, Modeling, Electronics, and Systems Engineering (DIMES), University of Calabria, 87036 Rende (CS), Italy\n\n{lucio.lacava, tagarelli}@dimes.unical.it\n\n## Abstract\n\nDecentralized Online Social Networks (DOSNs) represent a growing trend in the social media landscape, as opposed to the well-known centralized peers, which are often in the spotlight due to privacy concerns and a vision typically focused on monetization through user relationships. By exploiting open-source software, DOSNs allow users to create their own servers, or instances, thus favoring the proliferation of platforms that are independent yet interconnected with each other in a transparent way. Nonetheless, the resulting cooperation model, commonly known as the Fediverse, still represents a world to be fully discovered, since existing studies have mainly focused on a limited number of structural aspects of interest in DOSNs. In this work, we aim to fill a lack of study on user relations and roles in DOSNs, by taking two main actions: understanding the impact of decentralization on how users relate to each other within their membership instance and/or across different instances, and unveiling user roles that can explain two interrelated axes "
+  },
+  {
+   "slug": "databases__2102.02440__online-sketch-based-query-optimization",
+   "field": "databases",
+   "arxiv_id": "2102.02440",
+   "title": "Online Sketch-based Query Optimization",
+   "parse_seconds": 24.3,
+   "chars": 117774,
+   "excerpt": "# Online Sketch-based Query Optimization\n\nYesdaulet Izenov, Asoke Datta, Florin Rusu, Jun Hyung Shin {yizenov,adatta2,frusu,jshin33} @ucmerced.edu University of California Merced\n\nFebruary 2021\n\n## Abstract\n\nCost-based query optimization remains a critical task in relational databases even after decades of research and industrial development. Query optimizers rely on a large range of statistical synopses – including attribute-level histograms and table-level samples – for accurate cardinality estimation. As the complexity of selection predicates and the number of join predicates increase, two problems arise. First, statistics cannot be incrementally composed to effectively estimate the cost of the sub-plans generated in plan enumeration. Second, small errors are propagated exponentially through join operators, which can lead to severely sub-optimal plans.\n\nIn this paper, we introduce COMPASS, a novel query optimization paradigm for in-memory databases based on a single type of statistics—Fast-AGMS sketches. In COMPASS, query optimization and execution are intertwined. Selection predicates and sketch updates are pushed-down and evaluated online during query optimization. This allows Fast-AGMS sketches to be computed only over the relevant tuples—which enhances cardinality estimation accuracy. Plan enumeration is performed over the query join graph by incrementally composing attr"
+  },
+  {
+   "slug": "chemistry__physics-0105075__theory-of-laser-catalysis-with-pulses",
+   "field": "chemistry",
+   "arxiv_id": "physics/0105075",
+   "title": "Theory of laser catalysis with pulses",
+   "parse_seconds": 8.3,
+   "chars": 23594,
+   "excerpt": "# Theory of Laser Catalysis with Pulses\n\n## Abstract\n\nThe possibility of accelerating molecular reactions by lasers has attracted considerable theoretical and experimental interest. A particular example of lasermodified reaction dynamics is laser catalysis, a process in which the tunneling through a potential barrier is enhanced by transient excitation to a bound electronic state. We have performed detailed calculations of pulsed laser catalysis on one- and two-dimensional potentials, as a function of the reactants' collision energy and the laser's central frequency. In agreement with previous CW results, the reactive lineshapes are Fano-type curves, resulting from interference between nonradiative tunneling and the optically assisted pathway. In contrast to the CW process, the power requirements of pulsed laser catalysis are well within the reach of commonly used pulsed laser sources, making an experimental realization possible. The laser catalysis scenario is shown to be equivalent in the “dressed\" state picture, to resonant tunneling through a double-barrier potential, admitting perfect transmission when the incident energy matches a quasibound state of the well within the barriers. Possible applications for atom optics, solid-state devices, and scanning tunneling microscopy, are discussed.\n\nKey Words: laser catalysis, laser modified tunneling, light induced potentials, reac"
+  },
+  {
+   "slug": "mathematics__1810.09292__optimal-distributed-control-of-a-stochastic",
+   "field": "mathematics",
+   "arxiv_id": "1810.09292",
+   "title": "Optimal distributed control of a stochastic Cahn-Hilliard equation",
+   "parse_seconds": 32.4,
+   "chars": 142886,
+   "excerpt": "# Optimal distributed control of a stochastic Cahn-Hilliard equation \\*\n\nLUCA SCARPA\n\nE-mail: luca.scarpa@univie.ac.at\n\nFaculty of Mathematics, University of Vienna Oskar-Morgenstern-Platz 1, 1090 Vienna, Austria\n\n## Abstract\n\nWe study an optimal distributed control problem associated to a stochastic Cahn-Hilliard equation with a classical double-well potential and Wiener multiplicative noise, where the control is represented by a source-term in the definition of the chemical potential. By means of probabilistic and analytical compactness arguments, existence of an optimal control is proved. Then the linearized system and the corresponding backward adjoint system are analysed through monotonicity and compactness arguments, and first-order necessary conditions for optimality are proved.\n\nAMS Subject Classification: 35K55, 35R60, 60H15, 80A22, 82C26.\n\nKey words and phrases: stochastic Cahn-Hilliard equation, phase separation, optimal control, linearized state system, adjoint state system, first-order optimality conditions.\n\n## 1 Introduction\n\nThe pure Cahn-Hilliard equation on a smooth bounded domain $D \\subset \\mathbb { R } ^ { N } , N = 2 , 3 .$ can be written in its simplest form as\n\n$$\n\\partial _ { t } y - \\Delta w = 0 , \\quad w = - \\Delta y + \\Psi ^ { \\prime } ( y ) - u \\qquad \\mathrm { i n ~ } ( 0 , T ) \\times D ,\n$$\n\nwhere $T > 0$ is a fixed final time, y and w denote the "
+  },
+  {
+   "slug": "speech__1811.04224__reinforcement-learning-based-speech-enhancem",
+   "field": "speech",
+   "arxiv_id": "1811.04224",
+   "title": "Reinforcement Learning Based Speech Enhancement for Robust Speech Recognition",
+   "parse_seconds": 16.3,
+   "chars": 34824,
+   "excerpt": "# REINFORCEMENT LEARNING BASED SPEECH ENHANCEMENT FOR ROBUST SPEECH RECOGNITION\n\nYih-Liang Shen1, Chao-Yuan Huang1, Syu-Siang Wang2, Yu Tsao³ , Hsin-Min Wang4 and Tai-Shih Chi¹\n\n1Department of Electrical and Computer Engineering, National Chiao Tung University, Hsinchu, R.O.C 2 Joint Research Center for AI Technology and All Vista Healthcare, MOST, Taipei, R.O.C 3 Research Center for Information Technology Innovation, Academia Sinica, Taipei, R.O.C 4 Institute of Information Science, Academia Sinica, Taipei, R.O.C\n\n## ABSTRACT\n\nConventional deep neural network (DNN)-based speech enhancement (SE) approaches aim to minimize the mean square error (MSE) between enhanced speech and clean reference. The MSE-optimized model may not directly improve the performance of an automatic speech recognition (ASR) system. If the target is to minimize the recognition error, the recognition results should be used to design the objective function for optimizing the SE model. However, the structure of an ASR system, which consists of multiple units, such as acoustic and language models, is usually complex and not differentiable. In this study, we proposed to adopt the reinforcement learning algorithm to optimize the SE model based on the recognition results. We evaluated the propsoed SE system on the Mandarin Chinese broadcast news corpus (MATBN). Experimental results demonstrate that the proposed "
+  },
+  {
+   "slug": "databases__2005.03328__bitvector-aware-query-optimization-for-decis",
+   "field": "databases",
+   "arxiv_id": "2005.03328",
+   "title": "Bitvector-aware Query Optimization for Decision Support Queries (extended version)",
+   "parse_seconds": 24.3,
+   "chars": 113894,
+   "excerpt": "# Bitvector-aware Query Optimization for Decision Support Queries (extended version)\\*\n\nBailu Ding Microsoft Research badin@microsoft.com\n\nSurajit Chaudhuri Microsoft Research surajitc@microsoft.com\n\nVivek Narasayya Microsoft Research viveknar@microsoft.com\n\n## ABSTRACT\n\nBitvector filtering is an important query processing technique that can significantly reduce the cost of execution, especially for complex decision support queries with multiple joins. Despite its wide application, however, its implication to query optimization is not well understood.\n\nIn this work, we study how bitvector filters impact query optimization. We show that incorporating bitvector filters into query optimization straightforwardly can increase the plan space complexity by an exponential factor in the number of relations in the query. We analyze the plans with bitvector filters for star and snowflake queries in the plan space of right deep trees without cross products. Surprisingly, with some simplifying assumptions, we prove that, the plan of the minimal cost with bitvector filters can be found from a linear number of plans in the number of relations in the query. This greatly reduces the plan space complexity for such queries from exponential to linear.\n\nMotivated by our analysis, we propose an algorithm that accounts for the impact of bitvector filters in query optimization. Our algorithm optimizes"
+  }
+ ]
+}

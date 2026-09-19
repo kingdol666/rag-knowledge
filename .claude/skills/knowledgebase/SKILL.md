@@ -63,8 +63,7 @@ Map matched keywords to a single scenario using the classification table below. 
 | ingest, upload, import, parse, store, save to, put document, add document, store, upload, parse, ingest, save to KB, add doc, put document | **Ingest** | `Skill("knowledgebase-ingest")` |
 | move, rename, delete, merge, move, rename, delete, merge | **Manage** | `Skill("knowledgebase-manage")` |
 | organize, clean up, restructure, inventory, deep clean, full review, consolidate, categorize, organize, restructure, cleanup, reorganize | **Organize** | `Skill("knowledgebase-organize")` |
-| search, query, retrieve, where, solution, how to fix, search, find, query, RAG, how to, explain, what is | **Search** | `Skill("knowledgebase-search")` |
-| search all KBs, cross-KB, cross knowledge base, cross-KB, enterprise | **Search-Enterprise** | `Skill("knowledgebase-search-enterprise")` |
+| search, query, retrieve, where, solution, how to fix, search, find, query, RAG, how to, explain, what is, search all KBs, cross-KB, cross knowledge base, enterprise, comprehensive, global search | **Search** | `Skill("knowledgebase-search")` (QDCVR v2: whole-library/cross-KB handled by the librarian fallback phase) |
 | view, list, browse, content, list, show, overview, tree | **List** | `Skill("knowledgebase-list")` |
 | verify, cross-check, integrity, check, detect, detect issues, audit knowledge base, audit, verify, validate, integrity, health check | **Verify** | `Skill("knowledgebase-verify")` |
 | batch, full volume, batch, bulk, mass | **Batch** | `Skill("knowledgebase-batch")` |

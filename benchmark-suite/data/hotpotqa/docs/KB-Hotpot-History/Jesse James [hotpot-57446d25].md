@@ -1,3 +1,0 @@
-# Jesse James
-
-Jesse Woodson James (September 5, 1847April 3, 1882) was an American outlaw, bank and train robber, guerrilla, and leader of the James–Younger Gang. Raised in the "Little Dixie" area of western Missouri, James and his family maintained strong Southern sympathies. He and his brother Frank James joined pro-Confederate guerrillas known as "bushwhackers" operating in Missouri and Kansas during the American Civil War. As followers of William Quantrill and "Bloody Bill" Anderson, they were accused of participating in atrocities against Union soldiers and civilian abolitionists, including the Centralia Massacre in 1864.

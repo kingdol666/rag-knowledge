@@ -1,3 +1,0 @@
-# Whitesnake
-
-Whitesnake are a rock band formed in England in 1978 by David Coverdale, after his departure from his previous band Deep Purple. Their early material has been compared by critics to the blues rock of Deep Purple, but they slowly began moving toward a more commercially accessible rock style. By the turn of the decade, the band's commercial fortunes changed and they released a string of UK top 10 albums, "Ready an' Willing" (1980), "Come an' Get It" (1981), "Saints & Sinners" (1982) and "Slide It In" (1984), the last of which was their first to chart in the US and is certified 2x platinum.

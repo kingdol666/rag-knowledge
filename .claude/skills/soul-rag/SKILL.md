@@ -115,11 +115,11 @@ soul_qdcvr_ask(query, soul_kb_id="", task_goal, task_type, top_k=5, async_mode=T
 - No hits → the persona honestly downgrades (does not fabricate)
 - Frontend: Q&A modal "one-click retrieval + persona answer"; ragctl: `ragctl soul ask --qdcvr`
 
-## Relationship to knowledgebase-search-enterprise
+## Relationship to knowledgebase-search (QDCVR v2)
 
-- enterprise (cross-library precise retrieval): for cross-library evidence location → use kb_search_two_stage(balance_kbs)
-- soul-rag: for persona-ized answers → layer soul_ask on top of enterprise retrieval
-- Composable: enterprise retrieval → context_override → soul_ask persona-ized summary
+- QDCVR v2 (vector-first + librarian deep fallback): for cross-library evidence location → `kb_search_vector(balance_kbs)` fast lane, then Phase 2 summary-walking fallback
+- soul-rag: for persona-ized answers → layer soul_ask on top of QDCVR v2 retrieval
+- Composable: QDCVR v2 retrieval → context_override → soul_ask persona-ized summary
 
 ## NEVER List
 

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<!-- Direction 2 · Ink Terminal — deep ink-green field, cream text, teal/amber accents.
+     form 母题: the protocol as a live trace — each stage a log line, the gate a meter.
+     Not generic github-dark: ink-green base + warm cream + paper-figure hero. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>QDCVR — Direction 2 · Ink Terminal</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Source+Serif+4:opsz,wght@8..60,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0F1613; --panel:#15201B; --line:#24352D; --cream:#EDE7D6; --dim:#8FA396;
+    --teal:#39C6A2; --teal-deep:#17705F; --amber:#D9A441; --alert:#E06A3C;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--ink);color:var(--cream);font-family:'Inter',sans-serif;font-size:16px;line-height:1.6}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 48px}
+  header{padding:70px 0 44px;border-bottom:1px solid var(--line)}
+  .kicker{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--teal);letter-spacing:.2em;text-transform:uppercase}
+  .kicker b{color:var(--amber)}
+  h1{font-family:'Source Serif 4',serif;font-weight:600;font-size:62px;line-height:1.05;margin:20px 0 18px}
+  h1 span{color:var(--teal)}
+  .sub{color:var(--dim);font-size:18px;max-width:760px}
+  .stats{display:flex;gap:0;margin-top:36px;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  .stat{flex:1;padding:16px 20px;border-right:1px solid var(--line)}
+  .stat:last-child{border-right:0}
+  .stat b{display:block;font-family:'JetBrains Mono',monospace;font-size:24px;color:var(--cream)}
+  .stat span{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);letter-spacing:.08em;text-transform:uppercase}
+  .stat:nth-child(odd){background:var(--panel)}
+  section{padding:56px 0;border-bottom:1px solid var(--line)}
+  h2{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--dim);letter-spacing:.2em;text-transform:uppercase;margin-bottom:26px}
+  h2 b{color:var(--teal)}
+  /* trace motif */
+  .trace{font-family:'JetBrains Mono',monospace;font-size:14.5px;border:1px solid var(--line);border-radius:6px;background:var(--panel);overflow:hidden}
+  .trace .bar{display:flex;gap:6px;padding:10px 14px;border-bottom:1px solid var(--line)}
+  .trace .bar i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+  .trace .bar i:first-child{background:var(--alert)}
+  .line{display:flex;gap:14px;padding:9px 18px;border-bottom:1px solid var(--line);align-items:baseline}
+  .line:last-child{border-bottom:0}
+  .line .no{color:var(--dim);width:26px;flex-shrink:0}
+  .line .st{width:74px;flex-shrink:0;font-weight:700}
+  .line p{color:var(--cream)}
+  .line p span{color:var(--dim)}
+  .ok .st{color:var(--teal)} .gate .st{color:var(--amber)} .gate{background:rgba(57,198,162,.05)}
+  .meter{display:flex;height:10px;border-radius:3px;overflow:hidden;margin:14px 18px 16px;border:1px solid var(--line)}
+  .meter i{display:block;height:100%}
+  .meter .d{background:var(--alert);flex:0 0 50%} .meter .f{background:var(--amber);flex:0 0 12.5%} .meter .p{background:var(--teal);flex:1}
+  .meter-lab{display:flex;justify-content:space-between;padding:0 18px 14px;font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim)}
+  /* tracks */
+  .tracks{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
+  .track{border:1px solid var(--line);border-radius:6px;padding:22px;background:var(--panel)}
+  .track .tag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--dim);letter-spacing:.12em;text-transform:uppercase}
+  .track h3{font-size:19px;margin:6px 0 10px}
+  .track .big{font-family:'JetBrains Mono',monospace;font-size:38px;color:var(--teal)}
+  .track .big small{font-size:15px;color:var(--dim)}
+  .track p{font-size:13.5px;color:var(--dim)}
+  .figure{border:1px solid var(--line);border-radius:6px;overflow:hidden;background:#fff}
+  .figure img{width:100%;display:block}
+  .caption{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--dim);margin-top:10px}
+  footer{padding:40px 0 70px;color:var(--dim);font-family:'JetBrains Mono',monospace;font-size:12.5px;display:flex;justify-content:space-between;border-top:1px solid var(--line);margin-top:20px}
+  a{color:var(--teal)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">QDCVR · <b>CIKM '26 demo</b> · knowledge-base management</div>
+  <h1>Read first.<br>Then <span>answer.</span></h1>
+  <p class="sub">A deployable knowledge-base platform: documents organized by what they say, every retrieval verified by reading it, every answer cited to part and section — or an honest not-found.</p>
+  <div class="stats">
+    <div class="stat"><b>50</b><span>real papers</span></div>
+    <div class="stat"><b>5</b><span>category bases</span></div>
+    <div class="stat"><b>165</b><span>indexed docs</span></div>
+    <div class="stat"><b>3.8M</b><span>characters</span></div>
+    <div class="stat"><b>41</b><span>kb_* tools</span></div>
+  </div>
+</header>
+
+<section>
+  <h2><b>§</b> protocol trace · one query, end to end</h2>
+  <div class="trace">
+    <div class="bar"><i></i><i></i><i></i></div>
+    <div class="line ok"><span class="no">0</span><span class="st">REWRITE</span><p>vague ask → retrieval-shaped query <span>· query rewrite</span></p></div>
+    <div class="line ok"><span class="no">1</span><span class="st">RECALL</span><p>vector-first over routed category bases <span>· balance_kbs guard</span></p></div>
+    <div class="line gate"><span class="no">2</span><span class="st">GATE</span><p>read the text, score 0–8 <span>· topic 3 · scenario 3 · evidence 2</span></p></div>
+    <div class="meter"><i class="d" title="discard"></i><i class="f" title="fallback"></i><i class="p" title="fast exit"></i></div>
+    <div class="meter-lab"><span>≤4 discard</span><span>5 librarian fallback</span><span>6–8 fast exit</span></div>
+    <div class="line ok"><span class="no">3</span><span class="st">RESCUE</span><p>gate-fail → librarian re-search + continuation reads <span>· the one gate-fail was saved here</span></p></div>
+    <div class="line ok"><span class="no">4</span><span class="st">CONTRACT</span><p>nothing passes → not-found report <span>· 3/3 probes honest, zero fabrication</span></p></div>
+    <div class="line ok"><span class="no">5</span><span class="st">ANSWER</span><p>five sections: paths · answer · sources · confidence · blind spots</p></div>
+  </div>
+</section>
+
+<section>
+  <h2><b>§</b> three tracks · one corpus · ten questions</h2>
+  <div class="tracks">
+    <div class="track"><div class="tag">Track A · QDCVR v2</div><h3>KB protocol</h3><div class="big">10/10</div><p>on-target · top-1 gold 10/10 · part &amp; section citations · ≈1.6 s recall + 0.8 s reads</p></div>
+    <div class="track"><div class="tag">Track B · bare agent</div><h3>whole-file tools</h3><div class="big">10/10 <small>gold</small></div><p>no section trace · 78.8 s average</p></div>
+    <div class="track"><div class="tag">Track C · dense baseline</div><h3>800-char chunks</h3><div class="big">2/10 <small>abstained</small></div><p>no source paths · 12.2 s average</p></div>
+  </div>
+</section>
+
+<section>
+  <h2><b>§</b> organization is the other half</h2>
+  <div class="figure"><img src="../../../paper_demo/figures/fig2_architecture.png" alt="QDCVR architecture"></div>
+  <div class="caption">50/50 parse-verified · 50/50 content-routed · 165/165 parts tagged · graphs built per base</div>
+</section>
+
+<footer>
+  <div>QDCVR · sources in paper_demo/tex · numbers in benchmark-suite/results</div>
+  <div>paper · video · pipeline</div>
+</footer>
+</div>
+</body>
+</html>

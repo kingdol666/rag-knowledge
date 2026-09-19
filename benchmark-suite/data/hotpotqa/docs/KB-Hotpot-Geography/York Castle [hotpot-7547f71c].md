@@ -1,3 +1,0 @@
-# York Castle
-
-York Castle in the city of York, England, is a fortified complex comprising, over the last nine centuries, a sequence of castles, prisons, law courts and other buildings on the south side of the River Foss. The now-ruinous keep of the medieval Norman castle is commonly referred to as Clifford's Tower. Built originally on the orders of William I to dominate the former Viking city of York, the castle suffered a tumultuous early history before developing into a major fortification with extensive water defences. After a major explosion in 1684 rendered the remaining military defences uninhabitable, York Castle continued to be used as a jail and prison until 1929.

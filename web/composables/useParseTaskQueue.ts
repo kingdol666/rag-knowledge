@@ -15,6 +15,8 @@ export interface ParseTaskResult {
   failedFiles: number
   /** Number of documents saved into the KB (0 if not saved). */
   savedCount?: number
+  /** Total parsed markdown characters across successful files (解析后字数). */
+  parsedChars?: number
 }
 
 export interface ParseTask {
@@ -113,6 +115,7 @@ export function useParseTaskQueue() {
     taskId: string,
     summary: BatchParsePDFFileVTResponse,
     savedCount?: number,
+    parsedChars?: number,
   ): void {
     const t = _tasks.value.find((t) => t.id === taskId)
     if (!t) return
@@ -126,6 +129,7 @@ export function useParseTaskQueue() {
       successfulFiles: summary.successful_files,
       failedFiles: summary.failed_files,
       savedCount,
+      parsedChars,
     }
   }
 

@@ -1,1 +1,0 @@
-{"text": "{\"answer\": \"Web 层（Nuxt 3）拥有磁盘上的 KB 存储（`.tree-fs.json` + `.knowledge-base.yml`），它以服务器到服务器的方式对 FastAPI 后端进行代理，浏览器永远不会直接访问 FastAPI（无 CORS）。该代理使用 `trust_env=False`，并在开发环境（6789/8765）和生产环境（3000/8001）暴露 Web UI 和后端。读取绕过后端，由 `kb-search-service.ts` 直接读取存储文件，而所有写入到五个存储层的操作都经过 HTTP API。\", \"evidence_used\": [\"ARCHITECTURE\"]}", "cached_at": 1789489371.5910916}

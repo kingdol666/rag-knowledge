@@ -3,9 +3,12 @@
  *
  * User approves/denies a tool permission request (paired with chat SSE permission_request events).
  *
- * Request body: { sessionId, toolUseId, behavior: 'allow' | 'deny', message? }
+ * Request body: { sessionId, toolUseId, behavior: 'allow' | 'deny', message?, optionId? }
  *
- * The canUseTool callback Promise is resolved here -> SDK query continues.
+ * The pending Promise is resolved here -> the engine query continues.
+ * - Claude (SDK canUseTool): allow/deny with updatedInput.
+ * - ACP harnesses (dsh/hermes): the user's `optionId` selects one of the
+ *   harness-provided options (allow_once/allow_always/reject_*) verbatim.
  */
 import { resolvePending, getPending } from '~/server/utils/claude-pending'
 
@@ -14,11 +17,12 @@ interface PermissionBody {
   toolUseId?: string
   behavior?: 'allow' | 'deny'
   message?: string
+  optionId?: string
 }
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<PermissionBody>(event)
-  const { sessionId, toolUseId, behavior, message } = body || {}
+  const { sessionId, toolUseId, behavior, message, optionId } = body || {}
 
   if (!sessionId || !toolUseId || !behavior) {
     throw createError({
@@ -34,10 +38,14 @@ export default defineEventHandler(async (event) => {
 
   const decision =
     behavior === 'allow'
-      ? { behavior: 'allow' as const, updatedInput: pending.input }
+      ? {
+          behavior: 'allow' as const,
+          updatedInput: pending.input,
+          ...(optionId ? { optionId } : {}),
+        }
       : { behavior: 'deny' as const, message: message || 'User denied' }
 
   resolvePending(sessionId, toolUseId, decision)
 
-  return { success: true, behavior, toolName: pending.toolName }
+  return { success: true, behavior, toolName: pending.toolName, ...(optionId ? { optionId } : {}) }
 })

@@ -1124,6 +1124,10 @@ const startCustomParse = async () => {
       }
     }
     // Normalize summary to match the Queue result shape.
+    // parsedChars: 解析后总字数（成功文件的 markdown 字符数之和）
+    const parsedChars = (finalSummary.results || [])
+      .filter((r: any) => r?.success || r?.result?.success)
+      .reduce((sum: number, r: any) => sum + (r?.result?.markdown?.length || 0), 0)
     const queueSummary = {
       success: finalSummary.failed === 0,
       total_files: finalSummary.total || 0,
@@ -1131,7 +1135,7 @@ const startCustomParse = async () => {
       failed_files: finalSummary.failed || 0,
       results: finalSummary.results || [],
     }
-    queue.completeTask(queueTaskId, queueSummary, savedCount)
+    queue.completeTask(queueTaskId, queueSummary, savedCount, parsedChars)
   })().catch((error: any) => {
     console.error("Custom parse error:", error)
     message.error(t('fs.parseFailed') + `: ${error.message}`)

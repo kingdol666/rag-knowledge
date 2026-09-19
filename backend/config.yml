@@ -1,42 +1,21 @@
 # ============================================
 # MinerU OCR / PDF Engine Configuration
 # ============================================
-# Dual-mode engine (config-driven):
-#   mode: "remote" (default) — talk to a mineru-api-compatible HTTP endpoint;
-#           when it is not configured or unreachable, automatically fall back
-#           to the local engine below.
-#   mode: "local"  — always use the locally-managed mineru-api subprocess.
-# Hot-reloadable: change + POST /api/v1/config/reload (or the web Settings page).
 
 mineru:
   enabled: true
-  # 解析引擎模式: "remote"(默认,远程优先) | "local"(强制本地)
-  mode: "remote"
-
-  # 远程引擎(mode=remote 时生效) — 任何兼容 mineru-api 协议的 HTTP 端点
-  # (自建 mineru-api / 容器 / 网关)。base_url 留空 = 直接回退本地。
+  mode: "local"
   remote:
-    base_url: "http://127.0.0.1:8764"     # 本机 mineru-api 实例(测试用远程端点)
-    token: "${MINERU_API_TOKEN:-}"        # Bearer token, 只从 .env 环境变量读取
-    timeout: 1800                         # 单个解析任务轮询总超时(秒)
-
-  # 本地引擎(mode=local,或 remote 回退时生效)
+    base_url: "http://127.0.0.1:8764"
+    token: "${MINERU_API_TOKEN:-}"
+    timeout: 1800
   local:
     host: "127.0.0.1"
-    start_on_boot: false                  # backend 启动时是否预热本地引擎(remote 模式默认懒加载)
+    start_on_boot: false
     startup_timeout: 60
     model_source: "modelscope"
 
-# ============================================
-# SOUL 人格系统配置
-# ============================================
-
 soul:
-  # 冥想/SOUL 训练的默认 harness: omp | claude
-  # 每 SOUL 可在 meditation config 中单独覆盖(harness 字段)
   default_harness: "omp"
-  # 默认模型(空 = 引擎默认: OMP 用其内置默认,claude 用 sonnet)
   default_model: ""
-  # RL 训练并行度: 并行批处理 Actor 管道的 LLM 并发上限(默认 4)
-  # 后端承受力强可调高(6-8), 弱可调低(2)
   train_concurrency: 4

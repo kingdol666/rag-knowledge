@@ -75,7 +75,7 @@ import type { TodoItem } from '~/utils/claude-messages'
 
 interface Props {
   /** Which engine's todo snapshot to show. */
-  engine?: 'claude' | 'omp'
+  engine?: string
   /** Compact mode: render as a flat list (sidebar); false = header + progress. */
   compact?: boolean
 }

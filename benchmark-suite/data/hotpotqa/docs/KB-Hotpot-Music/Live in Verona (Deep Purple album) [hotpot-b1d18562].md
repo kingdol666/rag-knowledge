@@ -1,3 +1,0 @@
-# Live in Verona (Deep Purple album)
-
-Live in Verona is a live release by English hard rock band Deep Purple's mk VIII lineup credited as Deep Purple with Orchestra, and performed alongside the Neue Philharmonie Frankfurt conducted by Stephen Bentley-Klein. This concert was recorded at the Arena di Verona, a Roman amphitheater originally built in 30 AD, on 18 July 2011. Besides a Blu-ray/DVD release, the concert has also been released in Japan on 2CD. Film of the concert was released on October 21, 2014 by German label Eagle Rock Entertainment. The audio album was released on October 8, 2014 by Ward Records.

@@ -67,6 +67,9 @@
                         · {{ $t('parseQueue.savedCount', { n: item.result.savedCount }) }}
                       </template>
                     </span>
+                    <div v-if="item.result.parsedChars" class="result-chars">
+                      {{ $t('parseQueue.parsedChars', { n: item.result.parsedChars.toLocaleString() }) }}
+                    </div>
                     <div v-if="item.parentName" class="result-target">
                       {{ $t('parseQueue.target', { name: item.parentName }) }}
                     </div>
@@ -189,6 +192,11 @@ function elapsed(start: number, end: number): string {
   font-weight: 500;
 }
 .result-target {
+  font-size: 12px;
+  color: var(--kb-fg-mute);
+  margin-top: 2px;
+}
+.result-chars {
   font-size: 12px;
   color: var(--kb-fg-mute);
   margin-top: 2px;

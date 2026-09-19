@@ -14,7 +14,7 @@ description: >
 
 ## ⭐ Related Skills
 - Auto-extract experiences after document ingest → `skill://knowledgebase-ingest` A7 eight-item final check
-- Document-first retrieval → `skill://knowledgebase-search` (QDCVR) / `skill://knowledgebase-search-enterprise` (cross-library)
+- Document-first retrieval → `skill://knowledgebase-search` (QDCVR v2: vector-first + librarian deep fallback, whole-library/cross-KB built in)
 - Batch experience operations → `skill://knowledgebase-batch` B6 export step
 - Experience summarization & ingestion → `skill://knowledgebase-experience-summarize` (full E0-E12 extraction+review flow)
 - KB integrity validation → `skill://knowledgebase-verify` V8 experience health check

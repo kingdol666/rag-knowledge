@@ -1,3 +1,0 @@
-# Carl Anglim
-
-Carl Anglim is the director/founder of Oxford Fashion Week and the vice chairman of Oxfordshire Youth. Carl graduated from University of Oxford with a degree in Law. After graduation Carl briefly worked as a research executive for Frost and Sullivan. In 2008, with the collaboration of fellow Oxford graduate Victoria Watson, he founded Oxford fashion week. By 2011, the Oxford Fashion week has showcased more than 200 designers. Since mid 2015, the Oxford fashion week has been spun to a series of international fashion events taking place in New York, Los Angeles, Paris, London and Oxford. The fashion events in these cities will be held by Oxford Fashion Studio. Oxford Fashion Studio is an apparel and fashion company created by Carl.

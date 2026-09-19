@@ -266,7 +266,7 @@ import {
 
 interface Props {
   /** Header label engine; default 'claude'. Does not filter the store. */
-  engine?: 'claude' | 'omp'
+  engine?: string
   /** Clear completed subagent runs (wired by parent). */
   clearFinished?: () => void
 }

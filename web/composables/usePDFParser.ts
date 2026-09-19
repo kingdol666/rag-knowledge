@@ -92,8 +92,11 @@ export function usePDFParser() {
       headers: {
         'Content-Type': 'application/json'
       },
+      // split: true — 解析直存 KB 场景显式启用大文档拆分（>ingestion.large_doc.
+      // max_chars 时拆为 part 文档）；中转/批量管线的保存不带此标志即整篇暂存。
       body: JSON.stringify({
         parentId,
+        split: true,
         results: resultsWithDescription
       })
     })

@@ -1,6 +1,7 @@
 """
 RAG Knowledge Backend — FastAPI application.
 """
+import asyncio
 import logging
 import logging.handlers
 from pathlib import Path
@@ -185,6 +186,18 @@ async def lifespan(app: FastAPI):
             logger.info("Experience meditation: disabled (will activate if config enables it)")
     except Exception:
         logger.exception("Meditation scheduler startup failed (non-fatal)")
+
+    # ── Harness availability check（启动时全量检查，非阻塞） ────────────
+    # 后台预热全部引擎探测缓存（resolve_command + --version 实测 + 凭据面），
+    # 结果进 30s 探测缓存 → /harnesses 与前端下拉立即可用；逐引擎失败仅 warn。
+    async def _startup_harness_check() -> None:
+        try:
+            from app.services.harness_registry import startup_probe_all
+            await startup_probe_all()
+        except Exception:
+            logger.exception("Harness startup availability check failed (non-fatal)")
+
+    app.state.harness_check_task = asyncio.create_task(_startup_harness_check())
 
     yield
 

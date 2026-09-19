@@ -1,0 +1,252 @@
+[
+ {
+  "qid": "BQ01",
+  "field": "artificial-intelligence",
+  "paper": "Attention Is All You Need",
+  "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+  "track_b_bare_agent": {
+   "raw_answer": "In artificial-intelligence__1706.03762__attention-is-all-you-need.md, the Transformer computes 'Scaled Dot-Product Attention' as Attention(Q,K,V) = softmax(QK^T/√d_k)V: dot products of each query with all keys, scaled by 1/√d_k (to keep softmax out of low-gradient regions), softmaxed into weights, and used to take a weighted sum of values; Multi-Head Attention runs h=8 such heads in parallel on learned linear projections (d_k=d_v=64), concatenating and re-projecting their outputs so the model can attend to different representation subspaces. It replaces recurrence and convolution for three reasons (Section 4, Table 1): (1) per-layer complexity O(n²·d) beats recurrent O(n·d²) when n<d, the typical sentence-representation case; (2) self-attention connects all positions with O(1) sequential operations versus O(n) for recurrence, enabling far more parallel computation and faster training; (3) the maximum path length between any two positions is O(1), versus O(n) for recurrence and O(log_k(n)) for dilated convolutions, making long-range dependencies easier to learn. A side benefit is interpretability, since attention heads exhibit behavior tied to syntactic/semantic structure; because the model contains no recurrence or convolution, sinusoidal positional encodings are added to inject sequence order.",
+   "files_used": [
+    "artificial-intelligence__1706.03762__attention-is-all-you-need.md"
+   ],
+   "raw_model_output": "The primary source is `artificial-intelligence__1706.03762__attention-is-all-you-need.md`. Reading the attention sections and the \"why self-attention\" section in full.```json\n{\"answer\": \"In artificial-intelligence__1706.03762__attention-is-all-you-need.md, the Transformer computes 'Scaled Dot-Product Attention' as Attention(Q,K,V) = softmax(QK^T/√d_k)V: dot products of each query with all keys, scaled by 1/√d_k (to keep softmax out of low-gradient regions), softmaxed into weights, and used to take a weighted sum of values; Multi-Head Attention runs h=8 such heads in parallel on learned linear projections (d_k=d_v=64), concatenating and re-projecting their outputs so the model can attend to different representation subspaces. It replaces recurrence and convolution for three reasons (Section 4, Table 1): (1) per-layer complexity O(n²·d) beats recurrent O(n·d²) when n<d, the typical sentence-representation case; (2) self-attention connects all positions with O(1) sequential operations versus O(n) for recurrence, enabling far more parallel computation and faster training; (3) the maximum path length between any two positions is O(1), versus O(n) for recurrence and O(log_k(n)) for dilated convolutions, making long-range dependencies easier to learn. A side benefit is interpretability, since attention heads exhibit behavior tied to syntactic/semantic structure; because the model contains no recurrence or convolution, sinusoidal positional encodings are added to inject sequence order.\", \"files_used\": [\"artificial-intelligence__1706.03762__attention-is-all-you-need.md\"]}\n```",
+   "omp_calls": 1,
+   "latency": 35.8
+  },
+  "track_c_dense_rag": {
+   "raw_answer": "The evidence is insufficient to answer this question. The excerpts cover only the English constituency parsing experiments (a 4-layer Transformer with d_model=1024 trained on WSJ/Penn Treebank) and the benchmark results in Table 4; they do not describe how attention is computed or the rationale for replacing recurrence and convolution.",
+   "evidence_docs": [],
+   "evidence_chunks": 2,
+   "evidence_chars": 2854,
+   "raw_model_output": "{\"answer\": \"The evidence is insufficient to answer this question. The excerpts cover only the English constituency parsing experiments (a 4-layer Transformer with d_model=1024 trained on WSJ/Penn Treebank) and the benchmark results in Table 4; they do not describe how attention is computed or the rationale for replacing recurrence and convolution.\", \"evidence_used\": [\"artificial-intelligence\"]}",
+   "latency_retrieval": 1.08,
+   "latency_answer": 25.7,
+   "latency_total": 26.7
+  }
+ },
+ {
+  "qid": "BQ02",
+  "field": "quantum-physics",
+  "paper": "Quantum Computing in the NISQ era and beyond",
+  "question": "What defines NISQ technology and what is its central limitation?",
+  "track_b_bare_agent": {
+   "raw_answer": "NISQ stands for 'Noisy Intermediate-Scale Quantum,' a term coined by John Preskill to describe near-term quantum computers with roughly 50 to a few hundred qubits — a scale beyond brute-force classical simulation but still lacking fault-tolerant quantum error correction. Its central limitation is noise in quantum gates: imperfect control over qubits means circuits with many gates will be too noisy to give useful results, severely restricting the size and depth of circuits that can be executed reliably. Because error-correction overhead is prohibitive, NISQ devices must instead rely on noise-mitigation and noise-resilient circuit design, and they are best viewed as exploratory tools (e.g., for many-body quantum physics) and a stepping stone toward future fault-tolerant quantum technologies.",
+   "files_used": [
+    "quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md"
+   ],
+   "raw_model_output": "{\"answer\": \"NISQ stands for 'Noisy Intermediate-Scale Quantum,' a term coined by John Preskill to describe near-term quantum computers with roughly 50 to a few hundred qubits — a scale beyond brute-force classical simulation but still lacking fault-tolerant quantum error correction. Its central limitation is noise in quantum gates: imperfect control over qubits means circuits with many gates will be too noisy to give useful results, severely restricting the size and depth of circuits that can be executed reliably. Because error-correction overhead is prohibitive, NISQ devices must instead rely on noise-mitigation and noise-resilient circuit design, and they are best viewed as exploratory tools (e.g., for many-body quantum physics) and a stepping stone toward future fault-tolerant quantum technologies.\", \"files_used\": [\"quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md\"]}",
+   "omp_calls": 1,
+   "latency": 26.0
+  },
+  "track_c_dense_rag": {
+   "raw_answer": "NISQ stands for Noisy Intermediate-Scale Quantum, describing the era of quantum technology with 50 to a few hundred qubits — a scale beyond brute-force simulation by existing supercomputers but still without fault-tolerant error correction. Its central limitation is noise: we have imperfect control over the qubits, and this noise places serious constraints on what near-term quantum devices can achieve.",
+   "evidence_docs": [],
+   "evidence_chunks": 2,
+   "evidence_chars": 2838,
+   "raw_model_output": "{\"answer\": \"NISQ stands for Noisy Intermediate-Scale Quantum, describing the era of quantum technology with 50 to a few hundred qubits — a scale beyond brute-force simulation by existing supercomputers but still without fault-tolerant error correction. Its central limitation is noise: we have imperfect control over the qubits, and this noise places serious constraints on what near-term quantum devices can achieve.\",\"evidence_used\": [\"quantum-physics\"]}",
+   "latency_retrieval": 0.77,
+   "latency_answer": 11.2,
+   "latency_total": 12.0
+  }
+ },
+ {
+  "qid": "BQ03",
+  "field": "clinical-medicine",
+  "paper": "Large Language Models Encode Clinical Knowledge",
+  "question": "What is MultiMedQA and how did Flan-PaLM perform on the MedQA benchmark?",
+  "track_b_bare_agent": {
+   "raw_answer": "MultiMedQA is a benchmark for medical question answering introduced in the paper 'Large Language Models Encode Clinical Knowledge' that combines six existing open QA datasets (MedQA, MedMCQA, PubMedQA, LiveQA, MedicationQA, MMLU clinical topics) with a newly curated seventh dataset, HealthSearchQA (3,375 commonly searched consumer health questions), spanning medical exam, research, and consumer questions. On MedQA (US Medical License Exam-style questions with 4 options), the instruction-tuned 540B Flan-PaLM achieved 67.6% accuracy using a combination of few-shot, chain-of-thought, and self-consistency prompting — up from 60.3% with few-shot alone — surpassing the prior state of the art by more than 17% (e.g., beating PubMedGPT 2.7B at 50.3% and DRAGON at 47.5%).",
+   "files_used": [
+    "clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md"
+   ],
+   "raw_model_output": "{\"answer\": \"MultiMedQA is a benchmark for medical question answering introduced in the paper 'Large Language Models Encode Clinical Knowledge' that combines six existing open QA datasets (MedQA, MedMCQA, PubMedQA, LiveQA, MedicationQA, MMLU clinical topics) with a newly curated seventh dataset, HealthSearchQA (3,375 commonly searched consumer health questions), spanning medical exam, research, and consumer questions. On MedQA (US Medical License Exam-style questions with 4 options), the instruction-tuned 540B Flan-PaLM achieved 67.6% accuracy using a combination of few-shot, chain-of-thought, and self-consistency prompting — up from 60.3% with few-shot alone — surpassing the prior state of the art by more than 17% (e.g., beating PubMedGPT 2.7B at 50.3% and DRAGON at 47.5%).\", \"files_used\": [\"clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md\"]}",
+   "omp_calls": 1,
+   "latency": 26.9
+  },
+  "track_c_dense_rag": {
+   "raw_answer": "MultiMedQA is a benchmark for medical question answering that spans medical exam questions (e.g., MedQA/USMLE, MedMCQA), medical research questions (PubMedQA), and consumer medical questions, including MMLU clinical topics. Flan-PaLM, the instruction-tuned variant of PaLM, achieved state-of-the-art accuracy on every MultiMedQA multiple-choice dataset. On MedQA (US Medical License Exam questions), it reached 67.6% accuracy, surpassing the prior state of the art by over 17%.",
+   "evidence_docs": [],
+   "evidence_chunks": 2,
+   "evidence_chars": 2842,
+   "raw_model_output": "{\"answer\": \"MultiMedQA is a benchmark for medical question answering that spans medical exam questions (e.g., MedQA/USMLE, MedMCQA), medical research questions (PubMedQA), and consumer medical questions, including MMLU clinical topics. Flan-PaLM, the instruction-tuned variant of PaLM, achieved state-of-the-art accuracy on every MultiMedQA multiple-choice dataset. On MedQA (US Medical License Exam questions), it reached 67.6% accuracy, surpassing the prior state of the art by over 17%.\", \"evidence_used\": [\"clinical-medicine\"]}",
+   "latency_retrieval": 0.89,
+   "latency_answer": 13.1,
+   "latency_total": 14.0
+  }
+ },
+ {
+  "qid": "BQ04",
+  "field": "genomics",
+  "paper": "Primer on the Gene Ontology",
+  "question": "Which three independent ontologies subdivide the Gene Ontology?",
+  "track_b_bare_agent": {
+   "raw_answer": "According to the corpus, the Gene Ontology is subdivided into three distinct, non-redundant ontologies representing different biological aspects: Molecular Function (MF), Biological Process (BP), and Cellular Component (CC). These share a common identifier space and a well-specified syntax.",
+   "files_used": [
+    "genomics__1602.01876__primer-on-the-gene-ontology.md"
+   ],
+   "raw_model_output": "{\"answer\": \"According to the corpus, the Gene Ontology is subdivided into three distinct, non-redundant ontologies representing different biological aspects: Molecular Function (MF), Biological Process (BP), and Cellular Component (CC). These share a common identifier space and a well-specified syntax.\", \"files_used\": [\"genomics__1602.01876__primer-on-the-gene-ontology.md\"]}",
+   "omp_calls": 1,
+   "latency": 17.2
+  },
+  "track_c_dense_rag": {
+   "raw_answer": "The provided excerpts do not contain the answer. They describe the Gene Ontology as a structured controlled vocabulary whose project also includes annotations linking genes to GO terms, but nowhere do they name the three independent ontologies that subdivide it. The evidence is therefore insufficient to identify them.",
+   "evidence_docs": [],
+   "evidence_chunks": 2,
+   "evidence_chars": 2824,
+   "raw_model_output": "{\"answer\": \"The provided excerpts do not contain the answer. They describe the Gene Ontology as a structured controlled vocabulary whose project also includes annotations linking genes to GO terms, but nowhere do they name the three independent ontologies that subdivide it. The evidence is therefore insufficient to identify them.\", \"evidence_used\": [\"genomics\"]}",
+   "latency_retrieval": 0.68,
+   "latency_answer": 66.6,
+   "latency_total": 67.3
+  }
+ },
+ {
+  "qid": "BQ05",
+  "field": "economics",
+  "paper": "Unified Growth Theory Contradicted by the Economic Growth in Europe",
+  "question": "Why does historical European economic growth contradict Unified Growth Theory?",
+  "track_b_bare_agent": {
+   "raw_answer": "According to Nielsen (2015, arXiv:1512.08067), Western and Eastern Europe should have offered the strongest confirmation of Galor's Unified Growth Theory since they were the center of the Industrial Revolution, its alleged 'prime engine of economic growth.' Instead, Maddison's GDP data show that growth in both regions followed a steadily increasing hyperbolic trajectory (reciprocal values 1/GDP form decreasing straight lines) with no Malthusian oscillations — meaning there was no epoch of stagnation, no Malthusian trap, no 'remarkable' escape from it, and hence no transition from stagnation to growth. The Industrial Revolution (1760–1840) produced no visible boost or kink in the growth trajectory, and rather than accelerating into Galor's post-1870 'sustained-growth regime,' growth was actually diverted to a slower trajectory around 1890–1900. Nielsen concludes the theory's three growth regimes are 'dissociated from reality' and the theory must be thoroughly revised or replaced.",
+   "files_used": [
+    "economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md"
+   ],
+   "raw_model_output": "Exactly one relevant file: `economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md`. Reading it now.```json\n{\"answer\": \"According to Nielsen (2015, arXiv:1512.08067), Western and Eastern Europe should have offered the strongest confirmation of Galor's Unified Growth Theory since they were the center of the Industrial Revolution, its alleged 'prime engine of economic growth.' Instead, Maddison's GDP data show that growth in both regions followed a steadily increasing hyperbolic trajectory (reciprocal values 1/GDP form decreasing straight lines) with no Malthusian oscillations — meaning there was no epoch of stagnation, no Malthusian trap, no 'remarkable' escape from it, and hence no transition from stagnation to growth. The Industrial Revolution (1760–1840) produced no visible boost or kink in the growth trajectory, and rather than accelerating into Galor's post-1870 'sustained-growth regime,' growth was actually diverted to a slower trajectory around 1890–1900. Nielsen concludes the theory's three growth regimes are 'dissociated from reality' and the theory must be thoroughly revised or replaced.\", \"files_used\": [\"economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md\"]}\n```",
+   "omp_calls": 1,
+   "latency": 26.4
+  },
+  "track_c_dense_rag": {
+   "raw_answer": "According to the retrieved evidence (Nielsen 2015), historical economic growth in Western and Eastern Europe contradicts Unified Growth Theory because there was never a transition from stagnation to growth — there was no stagnation, and no Malthusian trap from which to escape. The data reportedly show no connection between the empirical growth trajectories and the theory, and the Industrial Revolution, which Galor treated as the prime engine of growth, had no impact on changing those trajectories. The theory's explanations are therefore said to rest on mythical features contradicted by the data, requiring thorough revision or replacement.",
+   "evidence_docs": [],
+   "evidence_chunks": 2,
+   "evidence_chars": 2826,
+   "raw_model_output": "{\"answer\": \"According to the retrieved evidence (Nielsen 2015), historical economic growth in Western and Eastern Europe contradicts Unified Growth Theory because there was never a transition from stagnation to growth — there was no stagnation, and no Malthusian trap from which to escape. The data reportedly show no connection between the empirical growth trajectories and the theory, and the Industrial Revolution, which Galor treated as the prime engine of growth, had no impact on changing those trajectories. The theory's explanations are therefore said to rest on mythical features contradicted by the data, requiring thorough revision or replacement.\", \"evidence_used\": [\"economics\"]}",
+   "latency_retrieval": 0.77,
+   "latency_answer": 0.0,
+   "latency_total": 0.8
+  }
+ },
+ {
+  "qid": "BQ06",
+  "field": "climate-science",
+  "paper": "Precipitation extremes under climate change",
+  "question": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+  "track_b_bare_agent": {
+   "raw_answer": "According to 'climate-science__1503.07557__precipitation-extremes-under-climate-change.md' (O'Gorman, Precipitation Extremes Under Climate Change), the primary control is thermodynamic: the increase in saturation vapor pressure/saturation specific humidity as the atmosphere warms (Clausius–Clapeyron scaling), which makes precipitation extremes intensify with warming. Formally (eq. 1), the response decomposes into a thermodynamic contribution from S (dependent only on temperature and pressure), a dynamical contribution from vertical velocity ω, and a microphysical contribution from precipitation efficiency ε — but the thermodynamic term always gives intensification and closely explains simulated extratropical increases. Deviations from this simple scaling, and the largest uncertainties, arise when convection is important (especially in the tropics), where dynamical changes and precipitation efficiency become significant.",
+   "files_used": [
+    "climate-science__1503.07557__precipitation-extremes-under-climate-change.md"
+   ],
+   "raw_model_output": "{\"answer\": \"According to 'climate-science__1503.07557__precipitation-extremes-under-climate-change.md' (O'Gorman, Precipitation Extremes Under Climate Change), the primary control is thermodynamic: the increase in saturation vapor pressure/saturation specific humidity as the atmosphere warms (Clausius–Clapeyron scaling), which makes precipitation extremes intensify with warming. Formally (eq. 1), the response decomposes into a thermodynamic contribution from S (dependent only on temperature and pressure), a dynamical contribution from vertical velocity ω, and a microphysical contribution from precipitation efficiency ε — but the thermodynamic term always gives intensification and closely explains simulated extratropical increases. Deviations from this simple scaling, and the largest uncertainties, arise when convection is important (especially in the tropics), where dynamical changes and precipitation efficiency become significant.\", \"files_used\": [\"climate-science__1503.07557__precipitation-extremes-under-climate-change.md\"]}",
+   "omp_calls": 1,
+   "latency": 34.8
+  },
+  "track_c_dense_rag": {
+   "raw_answer": "The thermodynamic contribution — primarily the increase in saturation vapor pressure of water with warming — is the robust and well-understood factor that primarily controls the response of precipitation extremes to climate change. Dynamical contributions and changes in precipitation efficiency may also play an important role, and the microphysical and dynamical contributions are less well understood theoretically. The sensitivity remains uncertain when convection is important, possibly being higher in the tropics than the extratropics.",
+   "evidence_docs": [],
+   "evidence_chunks": 2,
+   "evidence_chars": 2838,
+   "raw_model_output": "{\"answer\": \"The thermodynamic contribution — primarily the increase in saturation vapor pressure of water with warming — is the robust and well-understood factor that primarily controls the response of precipitation extremes to climate change. Dynamical contributions and changes in precipitation efficiency may also play an important role, and the microphysical and dynamical contributions are less well understood theoretically. The sensitivity remains uncertain when convection is important, possibly being higher in the tropics than the extratropics.\", \"evidence_used\": [\"climate-science\"]}",
+   "latency_retrieval": 0.8,
+   "latency_answer": 12.4,
+   "latency_total": 13.2
+  }
+ },
+ {
+  "qid": "BQ07",
+  "field": "nlp",
+  "paper": "MameLoshnLM: Yiddish Language Model and Evaluation Benchmark",
+  "question": "What is MameLoshnLM and what parameter scale does it have?",
+  "track_b_bare_agent": {
+   "raw_answer": "MameLoshnLM is the first open-source 8B-parameter language model built specifically for Yiddish, presented in 'nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md'. It was created by continued pretraining of Llama 3.1 8B on Oytser, a new high-quality Yiddish pretraining corpus, and is evaluated on Kashes, a new Yiddish LM benchmark. On the Kashes benchmark it achieves the best average score (62.6) among comparable-scale open models, with strong gains on Yiddish-centered tasks such as translation, linguistic analysis, and named entity recognition, and produces more natural, less Germanized Yiddish than general multilingual models.",
+   "files_used": [
+    "nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md"
+   ],
+   "raw_model_output": "{\"answer\": \"MameLoshnLM is the first open-source 8B-parameter language model built specifically for Yiddish, presented in 'nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md'. It was created by continued pretraining of Llama 3.1 8B on Oytser, a new high-quality Yiddish pretraining corpus, and is evaluated on Kashes, a new Yiddish LM benchmark. On the Kashes benchmark it achieves the best average score (62.6) among comparable-scale open models, with strong gains on Yiddish-centered tasks such as translation, linguistic analysis, and named entity recognition, and produces more natural, less Germanized Yiddish than general multilingual models.\", \"files_used\": [\"nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md\"]}",
+   "omp_calls": 1,
+   "latency": 22.1
+  },
+  "track_c_dense_rag": {
+   "raw_answer": "MameLoshnLM (MAMELOSHNLM) is the first open-source large language model for Yiddish, named after the traditional Yiddish term 'Mame-Loshn' meaning 'mother tongue.' It was created by continued pretraining of Llama-3.1-8B on a Yiddish corpus with a causal language modeling objective, and it outperforms strong baselines of similar scale on Yiddish benchmarks. Its parameter scale is therefore 8 billion (8B), inherited from the Llama-3.1-8B base model.",
+   "evidence_docs": [],
+   "evidence_chunks": 2,
+   "evidence_chars": 2814,
+   "raw_model_output": "{\"answer\": \"MameLoshnLM (MAMELOSHNLM) is the first open-source large language model for Yiddish, named after the traditional Yiddish term 'Mame-Loshn' meaning 'mother tongue.' It was created by continued pretraining of Llama-3.1-8B on a Yiddish corpus with a causal language modeling objective, and it outperforms strong baselines of similar scale on Yiddish benchmarks. Its parameter scale is therefore 8 billion (8B), inherited from the Llama-3.1-8B base model.\",\"evidence_used\": [\"nlp\"]}",
+   "latency_retrieval": 0.72,
+   "latency_answer": 9.6,
+   "latency_total": 10.4
+  }
+ },
+ {
+  "qid": "BQ08",
+  "field": "materials",
+  "paper": "Oxygen redox in battery cathodes: A brief overview",
+  "question": "How does oxygen redox contribute to the capacity of battery cathodes?",
+  "track_b_bare_agent": {
+   "raw_answer": "Oxygen redox (anionic redox) adds capacity beyond what transition-metal cations alone can provide: oxide anions O2- donate electrons during charging, compensating charge when oxidizable transition metals are absent or exhausted, which enables greater lithium/sodium de-intercalation and thus higher energy storage capacity. It occurs when nonbonding ('orphaned') O 2p states are lifted close to the Fermi level — e.g., in Li-excess/Na-excess layered oxides with Li-O-Li coordination or in under-coordinated ilmenite-type structures — making them electrochemically labile, with the charge balanced by peroxo-type (O2)n- species or oxygen hole states. Examples in the corpus: Li2MnO3's performance is attributed largely to oxygen redox, and Na2-xRuO3's 180 mAh/g capacity includes ~0.4 extra electrons per formula unit from reversible oxygen redox. The caveat is that without sufficient metal-oxygen covalency, oxygen oxidation can trigger transition-metal diffusion and O2 gas release, irreversibly degrading structure and capacity.",
+   "files_used": [
+    "materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md"
+   ],
+   "raw_model_output": "{\"answer\": \"Oxygen redox (anionic redox) adds capacity beyond what transition-metal cations alone can provide: oxide anions O2- donate electrons during charging, compensating charge when oxidizable transition metals are absent or exhausted, which enables greater lithium/sodium de-intercalation and thus higher energy storage capacity. It occurs when nonbonding ('orphaned') O 2p states are lifted close to the Fermi level — e.g., in Li-excess/Na-excess layered oxides with Li-O-Li coordination or in under-coordinated ilmenite-type structures — making them electrochemically labile, with the charge balanced by peroxo-type (O2)n- species or oxygen hole states. Examples in the corpus: Li2MnO3's performance is attributed largely to oxygen redox, and Na2-xRuO3's 180 mAh/g capacity includes ~0.4 extra electrons per formula unit from reversible oxygen redox. The caveat is that without sufficient metal-oxygen covalency, oxygen oxidation can trigger transition-metal diffusion and O2 gas release, irreversibly degrading structure and capacity.\", \"files_used\": [\"materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md\"]}",
+   "omp_calls": 1,
+   "latency": 37.6
+  },
+  "track_c_dense_rag": {
+   "raw_answer": "Oxygen (anionic) redox is a widespread mechanism in common Li- and Na-ion cathodes that significantly adds to overall battery capacity, with its extent depending on crystal structure and transition-metal type. It was first found to contribute strongly in Li-excess disordered spinel-type cathodes, where the high contribution is attributed to 'orphaned' oxygen states on oxygen ions coordinated by fewer than three transition-metal elements. Significant oxygen redox also occurs in ilmenite-type oxides, where the labile O 2p population within the redox energy window—generally larger for 4d transition metals due to higher covalency and 4d–2p hybridization—determines the redox activity.",
+   "evidence_docs": [],
+   "evidence_chunks": 2,
+   "evidence_chars": 2826,
+   "raw_model_output": "{\"answer\": \"Oxygen (anionic) redox is a widespread mechanism in common Li- and Na-ion cathodes that significantly adds to overall battery capacity, with its extent depending on crystal structure and transition-metal type. It was first found to contribute strongly in Li-excess disordered spinel-type cathodes, where the high contribution is attributed to 'orphaned' oxygen states on oxygen ions coordinated by fewer than three transition-metal elements. Significant oxygen redox also occurs in ilmenite-type oxides, where the labile O 2p population within the redox energy window—generally larger for 4d transition metals due to higher covalency and 4d–2p hybridization—determines the redox activity.\",\"evidence_used\": [\"materials\"]}",
+   "latency_retrieval": 0.72,
+   "latency_answer": 14.2,
+   "latency_total": 14.9
+  }
+ },
+ {
+  "qid": "BQ09",
+  "field": "robotics",
+  "paper": "MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping",
+  "question": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?",
+  "track_b_bare_agent": {
+   "raw_answer": "MLP-SLAM addresses the degradation of visual SLAM systems (e.g., ORB-SLAM2/3, LSD-SLAM, DSO) in dynamic environments full of movable objects like pedestrians, cars, and buses, where the standard static-world assumption breaks down and pose precision deteriorates; prior fixes relied on artificial mathematical/semantic-segmentation methods (e.g., DynaSLAM with MaskRCNN) that suffer from low generality, information loss, and high latency. It solves this with a real-time stereo ORB-SLAM2-based system whose core is an MLP discriminator — the first machine-learning method to classify dynamic vs. static feature points in SLAM — fed with complete geometric information (image intensity, epipolar, and re-projection errors), eliminating manual parameter configuration and information loss. The pipeline adds a Depth Filter Module to strip background points inside detection boxes, YOLOv7 + Deep SORT object detection/tracking, coarse-then-fine pose estimation that minimizes re-projection error over only static points, and a public dataset of 50,000+ KITTI feature points for training/testing the discriminator.",
+   "files_used": [
+    "robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md"
+   ],
+   "raw_model_output": "{\"answer\": \"MLP-SLAM addresses the degradation of visual SLAM systems (e.g., ORB-SLAM2/3, LSD-SLAM, DSO) in dynamic environments full of movable objects like pedestrians, cars, and buses, where the standard static-world assumption breaks down and pose precision deteriorates; prior fixes relied on artificial mathematical/semantic-segmentation methods (e.g., DynaSLAM with MaskRCNN) that suffer from low generality, information loss, and high latency. It solves this with a real-time stereo ORB-SLAM2-based system whose core is an MLP discriminator — the first machine-learning method to classify dynamic vs. static feature points in SLAM — fed with complete geometric information (image intensity, epipolar, and re-projection errors), eliminating manual parameter configuration and information loss. The pipeline adds a Depth Filter Module to strip background points inside detection boxes, YOLOv7 + Deep SORT object detection/tracking, coarse-then-fine pose estimation that minimizes re-projection error over only static points, and a public dataset of 50,000+ KITTI feature points for training/testing the discriminator.\", \"files_used\": [\"robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md\"]}",
+   "omp_calls": 1,
+   "latency": 33.5
+  },
+  "track_c_dense_rag": {
+   "raw_answer": "MLP-SLAM addresses the problem that Visual SLAM (V-SLAM) achieves high precision only in environments with few dynamic objects, but its performance declines in settings with numerous movable objects like pedestrians, cars, and buses common in outdoor scenes; existing artificial mathematical fixes suffer from limited generality and information loss. It solves this with a novel Multilayer Perceptron-based method that uses complete geometric information to prevent information loss and generalize across situations, and it is the first machine learning-based approach for distinguishing dynamic from static feature points in SLAM. The authors also created a publicly available dataset of over 50,000 feature points for evaluating dynamic/static feature classification, and their system achieves higher precision than ORB-SLAM2 with only ~17.50 ms/frame extra computation cost.",
+   "evidence_docs": [],
+   "evidence_chunks": 2,
+   "evidence_chars": 2824,
+   "raw_model_output": "{\"answer\": \"MLP-SLAM addresses the problem that Visual SLAM (V-SLAM) achieves high precision only in environments with few dynamic objects, but its performance declines in settings with numerous movable objects like pedestrians, cars, and buses common in outdoor scenes; existing artificial mathematical fixes suffer from limited generality and information loss. It solves this with a novel Multilayer Perceptron-based method that uses complete geometric information to prevent information loss and generalize across situations, and it is the first machine learning-based approach for distinguishing dynamic from static feature points in SLAM. The authors also created a publicly available dataset of over 50,000 feature points for evaluating dynamic/static feature classification, and their system achieves higher precision than ORB-SLAM2 with only ~17.50 ms/frame extra computation cost.\", \"evidence_used\": [\"robotics\"]}",
+   "latency_retrieval": 0.87,
+   "latency_answer": 15.1,
+   "latency_total": 15.9
+  }
+ },
+ {
+  "qid": "BQ10",
+  "field": "immunology",
+  "paper": "Strategies for tumor elimination and control under immune evasion and chemotherapy resistance",
+  "question": "What strategies for tumor control emerge under immune evasion and chemotherapy resistance?",
+  "track_b_bare_agent": {
+   "raw_answer": "The corpus's immunology paper (Mokari & Morsky, ODE tumor–immune model for B-cell lymphoma) finds that combination immuno-chemotherapy controls tumors far better than single agents: chemotherapy enlarges the tumor-control/tumor-free parameter region and directly targets resistant subpopulations, while immunotherapy enhances immune-mediated suppression. Treatment should be phenotype-guided — when the immune-resistant subpopulation uses immune checkpoint regulation, checkpoint inhibitors are most effective, whereas reduced-antigen-presentation resistance is best countered by boosting effector activation and recruitment (e.g., CAR-T cells, cancer vaccines, adoptive T-cell transfer) combined with chemotherapy. The paper also proposes sequential, composition-guided schedules: for T1-dominant tumors, chemotherapy first to cut burden then immunotherapy (or immunotherapy first, then chemotherapy to clear residual resistant cells); for T2-dominant tumors, chemotherapy followed by immunotherapy to prevent resistant escape; and for coexistence of both resistance types, chemotherapy first to eliminate T1 cells, then immunotherapy to try to eliminate the remaining low-population T2 equilibrium. More broadly, it frames this as adaptive combination therapy — dynamically controlling rather than maximally eliminating the tumor to maintain sensitive/resistant balance and delay resistance.",
+   "files_used": [
+    "immunology__2604.01385__strategies-for-tumor-elimination-and-control.md"
+   ],
+   "raw_model_output": "{\"answer\": \"The corpus's immunology paper (Mokari & Morsky, ODE tumor–immune model for B-cell lymphoma) finds that combination immuno-chemotherapy controls tumors far better than single agents: chemotherapy enlarges the tumor-control/tumor-free parameter region and directly targets resistant subpopulations, while immunotherapy enhances immune-mediated suppression. Treatment should be phenotype-guided — when the immune-resistant subpopulation uses immune checkpoint regulation, checkpoint inhibitors are most effective, whereas reduced-antigen-presentation resistance is best countered by boosting effector activation and recruitment (e.g., CAR-T cells, cancer vaccines, adoptive T-cell transfer) combined with chemotherapy. The paper also proposes sequential, composition-guided schedules: for T1-dominant tumors, chemotherapy first to cut burden then immunotherapy (or immunotherapy first, then chemotherapy to clear residual resistant cells); for T2-dominant tumors, chemotherapy followed by immunotherapy to prevent resistant escape; and for coexistence of both resistance types, chemotherapy first to eliminate T1 cells, then immunotherapy to try to eliminate the remaining low-population T2 equilibrium. More broadly, it frames this as adaptive combination therapy — dynamically controlling rather than maximally eliminating the tumor to maintain sensitive/resistant balance and delay resistance.\", \"files_used\": [\"immunology__2604.01385__strategies-for-tumor-elimination-and-control.md\"]}",
+   "omp_calls": 1,
+   "latency": 34.1
+  },
+  "track_c_dense_rag": {
+   "raw_answer": "Tumor control strategies depend on the dominant resistant phenotype: when immune checkpoint regulation dominates, tumor control is highly sensitive to the immune exhaustion rate, making checkpoint inhibitors the most effective therapy. When resistance is driven by reduced antigen presentation, control hinges on effector activation and exhaustion, supporting checkpoint inhibitors, CAR-T therapy, or cancer vaccines. When the immune-sensitive phenotype dominates, boosting effector recruitment and persistence is critical, favoring adoptive T-cell transfer or cytotoxic therapy. Overall, the models identify threshold conditions for tumor persistence, elimination, and phenotype dominance, supporting phenotype-specific combination therapies rather than uniform treatment.",
+   "evidence_docs": [],
+   "evidence_chunks": 2,
+   "evidence_chars": 2828,
+   "raw_model_output": "{\"answer\": \"Tumor control strategies depend on the dominant resistant phenotype: when immune checkpoint regulation dominates, tumor control is highly sensitive to the immune exhaustion rate, making checkpoint inhibitors the most effective therapy. When resistance is driven by reduced antigen presentation, control hinges on effector activation and exhaustion, supporting checkpoint inhibitors, CAR-T therapy, or cancer vaccines. When the immune-sensitive phenotype dominates, boosting effector recruitment and persistence is critical, favoring adoptive T-cell transfer or cytotoxic therapy. Overall, the models identify threshold conditions for tumor persistence, elimination, and phenotype dominance, supporting phenotype-specific combination therapies rather than uniform treatment.\", \"evidence_used\": [\"immunology\"]}",
+   "latency_retrieval": 0.82,
+   "latency_answer": 13.9,
+   "latency_total": 14.7
+  }
+ }
+]

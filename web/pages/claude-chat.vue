@@ -10,8 +10,8 @@
               <RobotOutlined />
             </div>
             <div class="header-text">
-              <h1 class="header-title">{{ engine === 'omp' ? 'OMP Coding Agent' : $t('chat.title') }}</h1>
-              <p class="header-subtitle">{{ engine === 'omp' ? 'Oh My Pi Coding Agent' : $t('chat.subtitle') }}</p>
+              <h1 class="header-title">{{ engineMeta?.label || (engine === 'omp' ? 'OMP Coding Agent' : $t('chat.title')) }}</h1>
+              <p class="header-subtitle">{{ engineMeta ? engineMeta.description : (engine === 'omp' ? 'Oh My Pi Coding Agent' : $t('chat.subtitle')) }}</p>
             </div>
           </div>
           <div class="header-actions">
@@ -19,14 +19,25 @@
               <a-select
                 v-model:value="engine"
                 class="engine-selector"
-                :options="ENGINES.map(e => ({ value: e.name, label: e.icon + ' ' + e.label }))"
-                @change="onEngineChange"
-              />
-              <a-tooltip :title="engineAvailability[engine] ? `${ENGINE_MAP[engine].label} SDK ready` : `${ENGINE_MAP[engine].label} SDK not installed`">
-                <span class="engine-status-dot" :class="engineAvailability[engine] ? 'ok' : 'no'">
+                :options="engineSelectOptions"
+                show-search
+                option-filter-prop="label"
+              >
+                <template #option="{ value: optValue, label, available: optAvailable, hint: optHint }">
+                  <a-tooltip :title="optHint || ''">
+                    <div class="engine-option" :class="{ disabled: optAvailable === false }">
+                      <span>{{ label }}</span>
+                      <span v-if="optAvailable === false" class="engine-option-badge">不可用</span>
+                    </div>
+                  </a-tooltip>
+                </template>
+              </a-select>
+              <a-tooltip :title="engineAvailabilityHint">
+                <span class="engine-status-dot" :class="isEngineAvailable ? 'ok' : 'no'">
                   <span class="engine-status-pulse"></span>
                 </span>
               </a-tooltip>
+              <a-tag v-if="engineHitl" color="purple" class="hitl-tag" style="font-size:11px;line-height:18px;margin:0">HITL</a-tag>
               <AgentStatusLight :status="mainAgentStatus" size="small" :label="streaming ? $t('chat.executing') : ''" />
             </div>
             <a-tooltip :title="$t('chat.subAgentPanel', { total: subagentStore.totalCount.value, running: subagentStore.runningCount.value })">
@@ -86,19 +97,31 @@
           </a-tooltip>
         </div>
 
-        <a-select v-model:value="permissionMode" style="width:140px">
-          <a-select-option v-for="m in PERMISSION_MODES" :key="m" :value="m">{{ PERMISSION_MODE_INFO[m as PermissionMode].label }}</a-select-option>
-        </a-select>
-        <a-tooltip :title="PERMISSION_MODE_INFO[permissionMode as PermissionMode].desc"><InfoCircleOutlined style="cursor:help" /></a-tooltip>
-        <a-input v-model:value="model" placeholder="Model (leave empty for default)" style="width:160px" allow-clear />
-          <a-select v-model:value="reasoningEffort" style="width:120px" size="small">
-            <a-select-option value="auto">🤖 Auto</a-select-option>
-            <a-select-option value="low">⚡ Low</a-select-option>
-            <a-select-option value="medium">🔋 Medium</a-select-option>
-            <a-select-option value="high">🧠 High</a-select-option>
-            <a-select-option value="xhigh">🔥 X-High</a-select-option>
-            <a-select-option value="max">🚀 Max (Ultracode)</a-select-option>
-          </a-select>
+        <a-select v-model:value="permissionMode" style="min-width:170px" :options="permissionModeSelectOptions" />
+        <a-tooltip :title="activePermissionModeInfo?.desc || ''"><InfoCircleOutlined style="cursor:help" /></a-tooltip>
+        <a-tooltip v-if="activeEngineCatalog?.historyMode === 'server-replay'" title="该引擎无跨请求原生会话，多轮上下文由平台回放（每轮携带历史）">
+          <a-tag color="cyan" style="cursor:help;font-size:11px;margin:0">replay</a-tag>
+        </a-tooltip>
+        <a-auto-complete
+          v-model:value="model"
+          :options="modelSelectOptions"
+          style="min-width:210px"
+          placeholder="模型（留空=引擎默认）"
+          option-filter-prop="label"
+          allow-clear
+        />
+        <a-tooltip :title="reasoningTooltip"><InfoCircleOutlined style="cursor:help" /></a-tooltip>
+        <a-select
+          v-if="reasoningLevelOptions.length"
+          v-model:value="reasoningEffort"
+          style="min-width:110px"
+          size="small"
+          :options="reasoningSelectOptions"
+          placeholder="思考强度"
+        />
+        <a-tooltip v-else title="该引擎无每回合思考强度旗标（能力以官方 CLI 为准）">
+          <a-select style="min-width:110px" size="small" disabled placeholder="不支持" />
+        </a-tooltip>
       </div>
 
       <!-- meta bar -->
@@ -617,7 +640,7 @@
       </a-list>
     </a-modal>
 
-    <!-- Permission dialog (default/acceptEdits/plan mode) -->
+    <!-- Permission dialog (unified HITL: claude canUseTool / ACP request_permission / mock) -->
     <a-modal
       :open="!!permissionReq"
       :closable="false"
@@ -627,12 +650,31 @@
       :title="$t('chat.permissionRequest')"
     >
       <div v-if="permissionReq" class="perm-body">
-        <p class="perm-hint">{{ $t('chat.claudeWantsToUse') }} <a-tag color="orange">{{ permissionReq.display }}</a-tag></p>
+        <p class="perm-hint">
+          <span class="hitl-source-tag">{{ engineMeta?.label || engine }}</span>
+          {{ $t('chat.claudeWantsToUse') }} <a-tag color="orange">{{ permissionReq.display }}</a-tag>
+        </p>
         <div class="perm-input-block">
           <div class="muted">Input:</div>
           <pre class="perm-input">{{ fmt(permissionReq.input) }}</pre>
         </div>
-        <p class="muted" style="margin-top:10px">{{ $t('chat.permissionHint') }}</p>
+        <template v-if="permissionReq.options && permissionReq.options.length">
+          <p class="muted" style="margin-top:10px">该引擎通过标准协议给出了以下选项（原生 HITL），请选择：</p>
+          <div class="perm-options">
+            <a-button
+              v-for="opt in permissionReq.options"
+              :key="opt.optionId"
+              :type="String(opt.kind).startsWith('allow') ? 'primary' : 'default'"
+              :danger="String(opt.kind).startsWith('reject')"
+              size="small"
+              @click="resolvePermissionWithOptions(opt.optionId, String(opt.kind).startsWith('allow'))"
+            >
+              {{ opt.name || opt.optionId }}
+              <span class="perm-opt-kind">{{ opt.kind }}</span>
+            </a-button>
+          </div>
+        </template>
+        <p v-else class="muted" style="margin-top:10px">{{ $t('chat.permissionHint') }}</p>
       </div>
       <template #footer>
         <a-button danger @click="denyPermission">{{ $t('chat.deny') }} (Deny)</a-button>
@@ -719,6 +761,9 @@ import SubagentSidebar from '~/components/SubagentSidebar.vue'
 import TodoPanel from '~/components/TodoPanel.vue'
 
 const { t } = useI18n()
+// useRoute() must resolve during synchronous setup — calling it inside an
+// onMounted().then() callback loses the component instance and throws.
+const route = useRoute()
 const _queueTimers = new Set<ReturnType<typeof setTimeout>>()
 /** Wrapped setTimeout that auto-registers with _queueTimers for cleanup. */
 function _queueTimeout(fn: () => void, ms: number): ReturnType<typeof setTimeout> {
@@ -751,22 +796,88 @@ interface SkillInfo {
   source?: string
 }
 
-// ⭐ Engine availability — probed once on mount from /api/claude/engines.
-// Drives the green/red status dot next to the engine selector. Both engines
-// run in-process via their SDKs, so "package installed" == "available".
-const engineAvailability = ref<{ claude: boolean; omp: boolean }>({ claude: true, omp: true })
+// ⭐ Harness catalog — fetched once on mount from /api/harnesses (merged:
+// backend registry probe + web chat metadata). Drives the engine dropdown
+// (unavailable = disabled + grayed), per-engine permission modes, and the
+// HITL badge. See pages/harnesses.vue for the full management view.
+interface HarnessCatalogItem {
+  id: string
+  label: string
+  description: string
+  installed: boolean
+  available: boolean
+  version: string
+  resolved_command: string | null
+  issues: string[]
+  hint: string
+  transport: string
+  hitl: boolean
+  chat: boolean
+  historyMode: 'native-resume' | 'server-replay'
+  permissionModes: Array<{ id: string; label: string; desc: string; mapping?: string }>
+  defaultMode: string
+  notes: string
+}
+const harnessCatalog = ref<HarnessCatalogItem[]>([])
+const engineAvailability = ref<Record<string, boolean>>({})
 async function probeEngines() {
   try {
-    const res = await $fetch<{ engines: { claude: { available: boolean }; omp: { available: boolean } } }>('/api/claude/engines')
-    engineAvailability.value = {
-      claude: res.engines.claude.available,
-      omp: res.engines.omp.available,
-    }
+    const res = await $fetch<{ harnesses: HarnessCatalogItem[] }>('/api/harnesses')
+    harnessCatalog.value = (res.harnesses || []).filter(h => h.chat)
+    engineAvailability.value = Object.fromEntries(
+      harnessCatalog.value.map(h => [h.id, !!h.available]),
+    )
   } catch {
-    // If the probe fails, assume both are available so the UI isn't stuck red.
+    // Catalog unreachable → assume claude/omp available (legacy behavior),
+    // so the chat stays usable and the dot isn't stuck red.
     engineAvailability.value = { claude: true, omp: true }
   }
 }
+
+const engineMeta = computed(() => ENGINE_MAP[engine.value] || null)
+const activeEngineCatalog = computed(
+  () => harnessCatalog.value.find(h => h.id === engine.value) || null,
+)
+const isEngineAvailable = computed(() => engineAvailability.value[engine.value] !== false)
+const engineHitl = computed(() => !!activeEngineCatalog.value?.hitl)
+const engineAvailabilityHint = computed(() => {
+  const item = activeEngineCatalog.value
+  if (!item) return `${engine.value} status unknown`
+  if (item.available) {
+    return `${item.label} ready${item.version ? ` · ${item.version}` : ''} · ${item.transport}`
+  }
+  return `${item.label} 不可用: ${item.hint || item.issues.join('; ') || 'not installed'}`
+})
+
+/** Dropdown options — unavailable harnesses are disabled (grayed out). */
+const engineSelectOptions = computed(() =>
+  harnessCatalog.value.map((h) => {
+    const meta = ENGINE_MAP[h.id]
+    return {
+      value: h.id,
+      label: `${meta?.icon || '🔗'} ${h.label}`,
+      available: h.available,
+      hint: h.available
+        ? `${h.label} · ${h.transport}${h.version ? ` · ${h.version}` : ''}${h.hitl ? ' · HITL' : ''}`
+        : `不可用 — ${h.hint || h.issues.join('; ') || 'not installed'}`,
+      disabled: !h.available,
+    }
+  }),
+)
+
+/** Per-engine permission modes (the harness's REAL settings). */
+const permissionModeSelectOptions = computed(() => {
+  const modes = activeEngineCatalog.value?.permissionModes
+  if (modes && modes.length) {
+    return modes.map(m => ({ value: m.id, label: m.label }))
+  }
+  return PERMISSION_MODES.map(m => ({ value: m, label: PERMISSION_MODE_INFO[m as PermissionMode]?.label || m }))
+})
+const activePermissionModeInfo = computed(() => {
+  const modes = activeEngineCatalog.value?.permissionModes
+  if (modes && modes.length) return modes.find(m => m.id === permissionMode.value) || modes[0]
+  return PERMISSION_MODE_INFO[permissionMode.value as PermissionMode] || null
+})
 
 // ⭐ Integrated terminal (node-pty over WebSocket). Opened in a right-side
 // drawer; defaults its cwd to the selected workspace or the project root.
@@ -849,7 +960,7 @@ const engine = ref<EngineName>(
   normalizeEngine(typeof localStorage !== 'undefined' ? localStorage.getItem(ENGINE_STORAGE_KEY) : 'claude'),
 )
 // Inline theme CSS variables for the active engine (applied via :style).
-const engineThemeVars = computed(() => ENGINE_THEME[engine.value])
+const engineThemeVars = computed(() => ENGINE_THEME[engine.value] || {})
 
 /**
  * Per-engine state snapshots — on engine switch, the current engine's state
@@ -870,7 +981,46 @@ interface EngineStateSnapshot {
 const engineSnapshots = new Map<EngineName, EngineStateSnapshot>()
 
 // ⭐ Reasoning effort control
-const reasoningEffort = ref<'auto' | 'low' | 'medium' | 'high' | 'xhigh' | 'max'>('auto')
+const reasoningEffort = ref<string>('') // '' = 引擎默认
+
+// ⭐ Per-harness model catalog + reasoning-effort levels — lazily fetched
+// from GET /api/harnesses/{id}/models on engine switch (CLI discovery on the
+// backend, ACP configOptions for dsh). The model field stays free-text so
+// users can type anything the harness accepts (aliases, parameterized
+// models like cursor's model[effort=high]).
+const modelCatalog = ref<Array<{ id: string; name: string; group?: string }>>([])
+const reasoningLevelOptions = ref<Array<{ id: string; label: string; description?: string }>>([])
+const modelCatalogLoading = ref(false)
+async function loadModelCatalog(engineId: string) {
+  if (!engineId || engineId === 'heuristic') return
+  modelCatalogLoading.value = true
+  try {
+    const res = await $fetch<any>(`/api/harnesses/${encodeURIComponent(engineId)}/models`)
+    modelCatalog.value = (res?.models || []).map((m: any) => ({
+      id: String(m.id), name: m.name || String(m.id), group: m.group,
+    }))
+    reasoningLevelOptions.value = (res?.reasoning_levels || []).map((l: any) => ({
+      id: String(l.id), label: l.label || String(l.id), description: l.description,
+    }))
+  } catch {
+    modelCatalog.value = []
+    reasoningLevelOptions.value = []
+  } finally {
+    modelCatalogLoading.value = false
+  }
+}
+const modelSelectOptions = computed(() => [
+  { value: '', label: '⚙️ 引擎默认模型' },
+  ...modelCatalog.value.map(m => ({ value: m.id, label: m.group ? `${m.group} · ${m.name}` : m.name })),
+])
+const reasoningSelectOptions = computed(() => [
+  { value: '', label: '⚙️ 默认' },
+  ...reasoningLevelOptions.value.map(l => ({ value: l.id, label: l.label })),
+])
+const reasoningTooltip = computed(() => {
+  if (!reasoningLevelOptions.value.length) return '该引擎无每回合思考强度旗标'
+  return `思考强度（${engineMeta.value?.label || engine.value} 官方档位）`
+})
 
 const messageQueue = ref<QueueItem[]>([])
 const queueEditText = ref('')
@@ -1351,7 +1501,7 @@ const sessionsVisible = ref(false)
 const sessions = ref<SessionInfo[]>([])
 const loadingSessions = ref(false)
 
-// Permission approval (canUseTool)
+// Permission approval (unified HITL — claude canUseTool / ACP request_permission / mock)
 const permissionReq = ref<{
   open: boolean
   toolName: string
@@ -1359,6 +1509,7 @@ const permissionReq = ref<{
   input: any
   toolUseId: string
   sessionId: string
+  options?: Array<{ optionId: string; name: string; kind: string }>
 } | null>(null)
 
 
@@ -1658,7 +1809,7 @@ function handleSseBlock(block: string) {
   try { obj = JSON.parse(data) } catch { return }
   if (evt === 'meta') return
   if (evt === 'permission_request') {
-    // canUseTool request → show approval dialog
+    // Permission request → approval dialog (options present = ACP-style native HITL)
     const parsed = parseToolDisplay(obj.toolName)
     permissionReq.value = {
       open: true,
@@ -1667,11 +1818,27 @@ function handleSseBlock(block: string) {
       input: obj.input,
       toolUseId: obj.toolUseId,
       sessionId: obj.sessionId,
+      options: Array.isArray(obj.options) ? obj.options : undefined,
     }
     return
   }
   if (evt === 'error') {
     messages.push({ kind: 'error', text: obj.error || 'Unknown error', id: Date.now() })
+    // Engine-level failure → append a per-engine troubleshooting hint so the
+    // user knows the break is in the external CLI's own config, not the platform.
+    const engineHints: Record<string, string> = {
+      hermes: 'hermes 自身 provider 未配置或内部错误：在终端运行 hermes model 完成模型配置后重试',
+      crush: 'crush 未配置 provider：在终端运行 crush 完成交互式配置后重试',
+      qwen: 'qwen 自身 MCP/配置加载失败：检查 ~/.qwen 下 settings 的 mcpServers（如 aw），或临时移除后重试',
+      gemini: 'gemini 未配置认证：设置 GEMINI_API_KEY 或运行 gemini 完成 OAuth 登录',
+      opencode: 'opencode 凭据过期：运行 opencode 重新登录',
+      goose: 'goose 未配置 provider：设置 OPENAI_API_KEY 或运行 goose configure',
+      copilot: 'copilot 缺少 token：设置 COPILOT_GITHUB_TOKEN/GH_TOKEN/GITHUB_TOKEN 任一',
+    }
+    const hint = engineHints[engine.value]
+    if (hint) {
+      messages.push({ kind: 'system', subtype: 'engine-error-hint', text: hint, id: Date.now() + 1 })
+    }
     streaming.value = false
     return
   }
@@ -1712,7 +1879,7 @@ async function sendRaw(prompt: string, atts?: Attachment[]): Promise<void> {
         kbIds: kbEnhanced.value && selectedKbIds.value.length ? selectedKbIds.value : undefined,
         soulEnhanced: soulEnhanced.value || undefined,
         soulKbId: soulEnhanced.value ? (selectedSoulId.value || undefined) : undefined,
-        reasoningEffort: reasoningEffort.value === 'auto' ? undefined : reasoningEffort.value,
+        reasoningEffort: reasoningEffort.value || undefined,
         engine: engine.value,
       }),
       signal: abortController.value.signal,
@@ -1974,6 +2141,27 @@ async function allowPermission() {
   }
   permissionReq.value = null
 }
+
+/** ACP-style: resolve with one of the harness-provided options verbatim. */
+async function resolvePermissionWithOptions(optionId: string, allow: boolean) {
+  const req = permissionReq.value
+  if (!req) return
+  try {
+    await $fetch('/api/claude/permission', {
+      method: 'POST',
+      body: {
+        sessionId: req.sessionId,
+        toolUseId: req.toolUseId,
+        behavior: allow ? 'allow' : 'deny',
+        optionId,
+        message: allow ? undefined : `User selected ${optionId}`,
+      },
+    })
+  } catch (e: any) {
+    antMessage.error('Approval send failed: ' + (e?.message || e))
+  }
+  permissionReq.value = null
+}
 async function denyPermission() {
   const req = permissionReq.value
   if (!req) return
@@ -2022,21 +2210,28 @@ function clearChat() {
 /**
  * ⭐ Engine switch — isolate chat state per engine.
  *
+ * Driven by a watch() on the engine ref (NOT the select's @change event):
+ * ant-design-vue fires update:value / change in an order that made the old
+ * "if (newEngine === engine.value) return" guard skip the whole switch on
+ * real clicks (leaving stale sessions → e.g. omp spawned with --resume of a
+ * mock session id and dying). The watch fires exactly once per model change
+ * with the correct old value.
+ *
  * Behavior:
- *  1. Save the current engine's full state (messages, session, init info).
+ *  1. Save the old engine's full state (messages, session, init info).
  *  2. Reset the chat to a fresh conversation for the new engine.
  *  3. Restore the new engine's previously-saved state if it exists.
- *  4. Persist the engine choice to localStorage.
+ *  4. Sync permission mode to the new engine's REAL mode set.
+ *  5. Persist the engine choice to localStorage.
  *
  * The input box content is preserved across the switch (per the spec).
  */
-function onEngineChange(newEngine: EngineName) {
-  if (newEngine === engine.value) return
-
+watch(engine, (newEngine, oldEngine) => {
+  if (!oldEngine || newEngine === oldEngine) return
   const savedInput = input.value
 
-  // 1. Snapshot the current engine's state
-  engineSnapshots.set(engine.value, {
+  // 1. Snapshot the OLD engine's state
+  engineSnapshots.set(oldEngine, {
     messages: [...messages],
     currentSessionId: currentSessionId.value,
     cwd: cwd.value,
@@ -2063,8 +2258,6 @@ function onEngineChange(newEngine: EngineName) {
   streamingThinking.value = ''
   showStreamingCursor.value = false
   bgSessions.value = []
-  // ⭐ Subagent transcripts belong to the switched-out engine's conversation;
-  //    clear them (todos are per-engine in the store, so they persist correctly).
 
   // 4. Restore the target engine's saved state (if any)
   const snapshot = engineSnapshots.get(newEngine)
@@ -2080,17 +2273,35 @@ function onEngineChange(newEngine: EngineName) {
     slashCommands.value = snapshot.slashCommands
   }
 
+  // 4b. Sync permission mode to the new engine's REAL mode set — each harness
+  //     exposes different modes; a stale value falls back to its safe default.
+  const nextCatalog = harnessCatalog.value.find(h => h.id === newEngine)
+  const validModes = nextCatalog?.permissionModes?.map(m => m.id) || []
+  if (validModes.length && !validModes.includes(permissionMode.value)) {
+    permissionMode.value = nextCatalog?.defaultMode || 'default'
+  }
+
+  // 4c. Model/effort are engine-specific — without a snapshot, a stale value
+  //     from the previous harness would be sent to an engine that doesn't
+  //     know it. Load the new engine's catalog and re-validate the effort.
+  if (!snapshot) {
+    model.value = ''
+    reasoningEffort.value = ''
+  }
+  void loadModelCatalog(newEngine).then(() => {
+    if (reasoningEffort.value && !reasoningLevelOptions.value.some(l => l.id === reasoningEffort.value)) {
+      reasoningEffort.value = ''
+    }
+  })
+
   // 5. Persist engine choice
-  engine.value = newEngine
   try { localStorage.setItem(ENGINE_STORAGE_KEY, newEngine) } catch { /* storage disabled */ }
 
-  // 6. Preserve input text
+  const meta = ENGINE_MAP[newEngine]
+  antMessage.success(`已切换到 ${meta?.icon || '🔗'} ${meta?.label || newEngine}`)
   input.value = savedInput
   nextTick(() => inputRef.value?.focus?.())
-
-  const meta = ENGINE_MAP[newEngine]
-  antMessage.success(`已切换到 ${meta.icon} ${meta.label}`)
-}
+})
 
 // -- Workspace management --
 
@@ -2202,7 +2413,26 @@ onMounted(() => {
   loadWorkspaces()
   loadSkillCatalog()
   loadKbCatalog()
-  probeEngines()
+  probeEngines().then(() => {
+    // Deep link (?engine=<id>) from the harness hub — honor it when the
+    // target harness is chat-capable and available. Setting the ref drives
+    // the engine-switch watcher (state isolation + localStorage persist).
+    const wanted = typeof route.query.engine === 'string' ? route.query.engine : ''
+    if (wanted && harnessCatalog.value.some(h => h.id === wanted && h.available) && wanted !== engine.value) {
+      engine.value = wanted
+      return
+    }
+    // If the persisted engine choice is unavailable (or chat-incapable),
+    // fall back to the first available harness so the page is never stuck
+    // on a grayed-out entry.
+    if (!isEngineAvailable.value || !ENGINE_MAP[engine.value]) {
+      const firstAvailable = harnessCatalog.value.find(h => h.available)
+      if (firstAvailable && firstAvailable.id !== engine.value) {
+        engine.value = firstAvailable.id
+      }
+    }
+    void loadModelCatalog(engine.value)
+  })
   const restored = loadQueueFromStorage()
   if (restored) {
     messageQueue.value = restored.queue
@@ -3648,6 +3878,46 @@ async function deleteHistory(sid: string) {
   0%   { transform: scale(0.6); opacity: 0.9; }
   70%  { transform: scale(2.2); opacity: 0; }
   100% { transform: scale(2.2); opacity: 0; }
+}
+
+/* ⭐ Multi-harness dropdown (unavailable = grayed) + HITL badge */
+.engine-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.engine-option-badge {
+  font-size: 11px;
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  border-radius: 4px;
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+.hitl-tag { flex-shrink: 0; }
+
+/* ⭐ ACP option buttons inside the HITL approval dialog */
+.perm-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+.perm-opt-kind {
+  font-size: 10px;
+  opacity: 0.65;
+  margin-left: 4px;
+}
+.hitl-source-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--kb-primary);
+  border: 1px solid var(--kb-primary);
+  border-radius: 4px;
+  padding: 0 5px;
+  margin-right: 6px;
 }
 
 /* ⭐ Integrated terminal */

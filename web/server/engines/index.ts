@@ -1,29 +1,50 @@
 /**
- * Engine factory — selects the right ChatEngine by name.
+ * Engine factory — selects the right ChatEngine by harness id.
  *
- * Both Claude and OMP engines are singletons (no per-request state in the
- * constructor; all state lives inside query()).
+ * Claude and OMP are singletons with heavy SDK imports; the remaining
+ * harnesses share stateless adapters (ACP / one-shot CLI / mock), cached
+ * per id. All adapters implement the same ChatEngine interface and emit
+ * StandardMessage frames, so chat.post.ts and the frontend stay
+ * engine-agnostic.
  */
 import { ClaudeEngine } from './claude-engine'
 import { OmpEngine } from './omp-engine'
+import { AcpEngine } from './acp-engine'
+import { CliOneShotEngine } from './cli-oneshot-engine'
+import { MockEngine } from './mock-engine'
+import { CHAT_CAPABLE_IDS, getChatMeta } from '~/server/utils/harness-catalog'
 import type { ChatEngine, EngineName } from './types'
 export type { PermissionMode } from './types'
 
 const _claudeEngine = new ClaudeEngine()
 const _ompEngine = new OmpEngine()
 
-const ENGINES: Record<EngineName, ChatEngine> = {
-  claude: _claudeEngine,
-  omp: _ompEngine,
+const _shared: Record<string, ChatEngine> = {
+  dsh: new AcpEngine('dsh'),
+  hermes: new AcpEngine('hermes'),
+  mock: new MockEngine('mock'),
+}
+for (const id of ['codex', 'gemini', 'copilot', 'cursor', 'opencode', 'crush', 'goose', 'qwen', 'pi']) {
+  _shared[id] = new CliOneShotEngine(id)
 }
 
-/** Resolve a string to a valid engine name (defaults to 'claude'). */
-export function normalizeEngine(name?: string): EngineName {
-  if (name === 'omp') return 'omp'
-  return 'claude'
+/** Resolve a string to a chat-capable engine id, or null if unsupported. */
+export function normalizeEngine(name?: string): EngineName | null {
+  const id = (name || '').trim()
+  return CHAT_CAPABLE_IDS.includes(id) ? id : null
 }
 
-/** Get the ChatEngine instance for a given engine name. */
+/** Get the ChatEngine instance for a given engine name. Throws when unknown. */
 export function getEngine(name?: string): ChatEngine {
-  return ENGINES[normalizeEngine(name)]
+  const id = normalizeEngine(name)
+  if (!id) {
+    throw new Error(
+      `Unknown or chat-unsupported harness '${name}'. `
+      + `Chat-capable harnesses: ${CHAT_CAPABLE_IDS.join(', ')}`)
+  }
+  if (id === 'claude') return _claudeEngine
+  if (id === 'omp') return _ompEngine
+  return _shared[id]
 }
+
+export { CHAT_CAPABLE_IDS, getChatMeta }

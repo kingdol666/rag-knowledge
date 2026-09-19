@@ -31,8 +31,8 @@ export interface SubagentSession {
   createdAt: number
   /** Epoch ms of last update. */
   updatedAt: number
-  /** The engine that produced this child ('claude' | 'omp'). */
-  engine: 'claude' | 'omp'
+  /** The engine that produced this child (string). */
+  engine: string
   /** Child transcript — same UIMessage shapes the main timeline uses. */
   messages: UIMessage[]
   /** Accumulated streaming text (for live typewriter in the detail drawer). */
@@ -75,7 +75,7 @@ const _selectedId = ref<string | null>(null)
 /** Find or create a subagent session by parent_tool_use_id. */
 function _getOrCreate(
   parentToolUseId: string,
-  engine: 'claude' | 'omp',
+  engine: string,
   meta: { subagentType?: string; taskDescription?: string },
 ): SubagentSession {
   const existing = _sessions.value.find((x) => x.id === parentToolUseId)
@@ -137,7 +137,7 @@ export function useSubagentStore() {
   function ingest(
     uiMsgs: UIMessage[],
     rawMsg: unknown,
-    engine: 'claude' | 'omp',
+    engine: string,
   ): boolean {
     const parentId = readParentId(rawMsg)
     if (!parentId) return false
@@ -195,7 +195,7 @@ export function useSubagentStore() {
    */
   function registerDelegation(
     toolUseId: string,
-    engine: 'claude' | 'omp',
+    engine: string,
     meta: { subagentType?: string; taskDescription?: string },
   ): void {
     if (_sessions.value.some((x) => x.id === toolUseId)) return
@@ -218,7 +218,7 @@ export function useSubagentStore() {
   }
 
   /** Finalize all running subagents for an engine when its main turn ends. */
-  function finalizeEngine(engine: 'claude' | 'omp'): void {
+  function finalizeEngine(engine: string): void {
     for (const s of _sessions.value) {
       if (s.engine === engine && s.status === 'running') {
         s.status = 'done'

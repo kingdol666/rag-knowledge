@@ -1,10 +1,11 @@
 import { defineEventHandler, readBody, createError } from 'h3'
-import { basename, join, dirname } from 'path'
+import { basename, join, dirname, extname } from 'path'
 import { readFile, stat, readdir, copyFile, mkdir } from 'fs/promises'
 import { existsSync } from 'fs'
 import { getTreeFileSystemService } from '~/server/utils/tree-service'
 import { getTreeStorageAbsolutePath, resolveProjectPath } from '~/server/utils/runtime-paths'
 import { resolveWithinAnyRoot } from '~/server/utils/safe-paths'
+import { getLargeDocConfig, buildPartDescription, requestSplitPlan } from '~/server/utils/large-doc-split'
 import type { BatchParsePDFFileVTItem } from '~/types/pdf-parse'
 
 interface ParsedFileResult extends BatchParsePDFFileVTItem {
@@ -140,6 +141,72 @@ export default defineEventHandler(async (event) => {
       if (!markdownBuffer) {
         console.warn(`No markdown content for ${result.filename}; skipping`)
         continue
+      }
+
+      // ── 大文档拆分入库 (2026-09-18, opt-in) ─────────────────────────
+      // 拆分仅在请求显式携带 `split: true` 时执行（web 解析保存 UI 传入）。
+      // 默认整篇保存：本端点同时被批量入库管线用作**中转暂存**（如 benchmark
+      // Papers-Inbox → 按内容分类路由），暂存态必须保持整篇，拆分属于
+      // 最终入库动作（A2.5 门禁脚本 / documents/create 的大文档拆分层）。
+      const markdownText = markdownBuffer.toString('utf-8')
+      const largeDoc = getLargeDocConfig()
+      if ((body as any).split === true && largeDoc.autoSplit
+          && markdownText.length > largeDoc.maxChars) {
+        try {
+          const plan = await requestSplitPlan(fileName, markdownText, true)
+          if (plan?.success && plan.split && Array.isArray(plan.parts) && plan.parts.length > 1) {
+            // Determine the KB folder path for image copying (once for all parts)
+            const norm = (p: string) => p.replace(/\\/g, '/').toLowerCase()
+            const parentFolder = (service as any).metadata.folders.find(
+              (f: any) => f.id === body.parentId || norm(f.path) === norm(body.parentId)
+            )
+            const kbFolderPath = parentFolder?.path || ''
+
+            // Copy images to KB's images/ folder once; all parts reference the
+            // same relative paths (markdown image links are KB-root relative).
+            const rawImagesDir = result.images_dir || result.image_dir
+            const safeImagesDir = rawImagesDir
+              ? resolveWithinAnyRoot(rawImagesDir, ALLOWED_EXTERNAL_ROOTS)
+              : null
+            if (rawImagesDir && !safeImagesDir) {
+              console.warn(`images_dir outside allowed roots, skipping images: ${rawImagesDir}`)
+            }
+            const imagePaths = await copyImagesToKb(safeImagesDir ?? undefined, kbFolderPath, fileName)
+
+            const base = basename(fileName, extname(fileName) || '.md')
+            for (const part of plan.parts) {
+              const partName = `${base} (part ${part.part_index} of ${part.part_count}).md`
+              const partDesc = buildPartDescription(result.description, part)
+              const partBuffer = Buffer.from(String(part.content), 'utf-8')
+              const fileRecord = await service.uploadFile(body.parentId, partBuffer, partName, partDesc)
+              const metadata = {
+                ...fileRecord.metadata,
+                sourcePdf: result.source_filename || result.filename,
+                parseMethod: result.parse_method,
+                imageDir: safeImagesDir ?? rawImagesDir,
+                markdownPath: result.markdown_path,
+                imageCount: imagePaths.length || result.image_count || 0,
+                imagePaths,
+                parsedAt: new Date().toISOString(),
+                largeDocSplit: {
+                  part_index: part.part_index,
+                  part_count: part.part_count,
+                  source_chars: plan.source_chars ?? markdownText.length,
+                  max_chars: plan.max_chars ?? largeDoc.maxChars,
+                },
+              }
+              const updatedFile = await service.updateFile(fileRecord.id, { metadata })
+              savedFiles.push({
+                ...updatedFile,
+                fileSize: partBuffer.length,
+                imageCount: imagePaths.length,
+              })
+            }
+            continue
+          }
+        } catch (splitErr: any) {
+          console.warn(`Large-doc split failed for ${result.filename}; falling back to single-doc save:`, splitErr?.message || splitErr)
+        }
       }
 
       try {

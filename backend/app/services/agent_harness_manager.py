@@ -354,6 +354,15 @@ class AgentHarnessManager:
             }
         }
 
+    def circuit_state(self, harness: str) -> dict:
+        """熔断器只读状态（诊断面用，不产生副作用）。"""
+        tripped = harness in self._circuit_open and self._circuit_open[harness] > time.time()
+        return {
+            "tripped": tripped,
+            "until": self._circuit_open.get(harness),
+            "consecutive_failures": self._consecutive_failures.get(harness, 0),
+        }
+
     def _check_circuit(self, harness: str) -> str | None:
         """Check if circuit breaker is open. Returns error message or None."""
         if harness not in self._circuit_open:

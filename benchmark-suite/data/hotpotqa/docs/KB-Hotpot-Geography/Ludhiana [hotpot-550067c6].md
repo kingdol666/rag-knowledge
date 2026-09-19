@@ -1,3 +1,0 @@
-# Ludhiana
-
-Ludhiana is a city and a municipal corporation in Ludhiana district in the Indian state of Punjab, and is the largest city north of Delhi. It is the largest city in the state, with an area of 310sq. km and an estimated population of 1,789,650 as of the 2015. The population increases substantially during the harvesting season due to the migration of labourers from the eastern states of Uttar Pradesh, Bihar, Odisha. The city stands on the Sutlej River's old bank, 13 km south of its present course. It is an industrial centre of northern India, and was referred to as India's Manchester by the BBC.

@@ -1,3 +1,0 @@
-# Port Charles
-
-Port Charles (commonly abbreviated as PC) is an American television soap opera which aired on ABC from June 1, 1997 to October 3, 2003. It was a spin-off of the serial "General Hospital", which has been running since 1963 and takes place in the fictional city of Port Charles, New York. The new show features longtime "General Hospital" characters Lucy Coe, Kevin Collins, Scott Baldwin, and Karen Wexler, along with several new characters, most of whom were interns in a competitive medical school program. In the first episode, tenured nurse Audrey Hardy ("General Hospital"'s longest-running character, portrayed by Rachel Ames) was injured and an intern had to operate on her with a power drill to save her life.

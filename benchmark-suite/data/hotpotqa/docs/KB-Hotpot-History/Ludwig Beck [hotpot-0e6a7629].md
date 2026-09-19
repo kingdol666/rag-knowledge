@@ -1,3 +1,0 @@
-# Ludwig Beck
-
-Ludwig August Theodor Beck (29 June 1880 – 21 July 1944) was a German general and Chief of the German General Staff during the early years of the Nazi regime in Germany before World War II. Ludwig Beck was never a member of the Nazi Party, though in the early 1930s he supported Adolf Hitler's forceful denunciation of the Versailles Treaty and belief in the need for Germany to rearm. Beck had grave misgivings regarding the Nazi demand that all German officers swear an oath of fealty to the person of Hitler in 1934, though he believed that Germany needed strong government and that Hitler could successfully provide this so long as he was influenced by traditional elements within the military rather than the SA and SS.

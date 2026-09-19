@@ -74,8 +74,12 @@ async def harness_list():
         "notes": "调度任务引擎不可用时的静默回退路径（手动触发不回退）。",
         "models": [""],
         "installed": True,
+        "available": True,
         "version": "",
         "resolved_command": "inprocess:heuristic",
+        "credentials": {"env_ready": True, "store_ready": True, "ready": True, "env": []},
+        "issues": [],
+        "hint": "",
     })
     return {
         "success": True,
@@ -83,6 +87,121 @@ async def harness_list():
         "count": len(items),
         "harnesses": items,
     }
+
+
+# ── Diagnostics（全引擎诊断作业） ───────────────────────────────────
+
+@router.get("/harnesses/{harness_id}/diagnostics")
+async def harness_diagnostics(harness_id: str):
+    """单引擎深度诊断（静态面）：探测 + 凭据 + 配置覆盖链 + 熔断器 + 修复指引。
+
+    未知引擎 400；不做真实 LLM 调用（要走真实回环用 POST diagnose）。
+    """
+    if harness_id == "heuristic":
+        return {"success": True, "harness": harness_id, "probe":
+                {"installed": True, "resolved_command": "inprocess:heuristic",
+                 "inprocess": True, "env": []},
+                "credentials": {"env_ready": True, "store_ready": True, "ready": True, "env": []},
+                "issues": [], "circuit_breaker": {"tripped": False}, "available": True, "hint": ""}
+    if not hreg.is_known_harness(harness_id):
+        raise HTTPException(status_code=400, detail={
+            "code": "HARNESS_UNKNOWN", "message": f"Unknown harness '{harness_id}'",
+            "supported": hreg.HARNESS_IDS})
+    try:
+        probe = await hreg.probe_harness(harness_id, force=True)
+    except Exception as e:  # noqa: BLE001 — 诊断把失败当结果，不当异常
+        probe = {"installed": False, "error": str(e)}
+    issues = hreg.configuration_issues(harness_id, probe) if probe.get("installed") else []
+    breaker = agent_harness.circuit_state(harness_id)
+    available = bool(probe.get("installed")) and not issues and not breaker.get("tripped")
+    return {
+        "success": True,
+        "harness": harness_id,
+        "label": hreg.HARNESS_REGISTRY[harness_id]["label"],
+        "probe": probe,
+        "credentials": probe.get("credentials") or hreg.harness_credentials(harness_id),
+        "issues": issues,
+        "circuit_breaker": breaker,
+        "available": available,
+        "config_override": hreg._configured_override(harness_id) or None,
+        "hint": hreg.availability_hint(harness_id, probe, issues),
+    }
+
+
+@router.post("/harnesses/{harness_id}/diagnose")
+async def harness_diagnose(harness_id: str, body: dict = None):
+    """单引擎诊断作业（真实回环）：静态诊断 + 可选一次真实引擎往返自测。
+
+    body: {self_test?: bool, timeout_sec?: int}
+    self_test 通过统一作业通道发一条最小 prompt（"Reply with exactly: OK"，
+    无工具面），验证「可执行文件 + 凭据 + 网络 + 输出解析」整链路。
+    mock 进程内即时返回；self_test=false 时等价 GET diagnostics。
+    """
+    if harness_id == "heuristic":
+        # 与 GET diagnostics 的 heuristic 分支对齐：进程内引擎，无需探测/真实回环。
+        return {"success": True, "diagnosis": {
+            "harness": "heuristic", "available": True,
+            "probe": {"installed": True, "resolved_command": "inprocess:heuristic",
+                      "inprocess": True, "env": []},
+            "credentials": {"env_ready": True, "store_ready": True, "ready": True, "env": []},
+            "issues": [], "circuit_breaker": {"tripped": False},
+            "self_test": {"skipped": True, "reason": "inprocess heuristic (no LLM round-trip)"},
+        }}
+    if not hreg.is_known_harness(harness_id):
+        raise HTTPException(status_code=400, detail={
+            "code": "HARNESS_UNKNOWN", "message": f"Unknown harness '{harness_id}'",
+            "supported": hreg.HARNESS_IDS})
+    body = body or {}
+    do_self_test = bool(body.get("self_test"))
+    report: dict[str, Any] = {"harness": harness_id}
+
+    try:
+        probe = await hreg.probe_harness(harness_id, force=True)
+    except Exception as e:  # noqa: BLE001
+        probe = {"installed": False, "error": str(e)}
+    issues = hreg.configuration_issues(harness_id, probe) if probe.get("installed") else []
+    report["probe"] = probe
+    report["credentials"] = probe.get("credentials") or hreg.harness_credentials(harness_id)
+    report["issues"] = issues
+    report["circuit_breaker"] = agent_harness.circuit_state(harness_id)
+    report["available"] = bool(probe.get("installed")) and not issues
+
+    if not report["available"]:
+        report["hint"] = hreg.availability_hint(harness_id, probe, issues)
+        report["self_test"] = {"skipped": True, "reason": "harness unavailable"}
+        return {"success": True, "diagnosis": report}
+
+    if do_self_test:
+        from app.services import harness_runner as hrun
+        timeout = max(15, min(int(body.get("timeout_sec") or 90), 300))
+        cfg = {"timeout_sec": timeout, "no_tools": True}
+        engine = await hrun.run_engine(
+            harness_id,
+            "This is a connectivity self-test. Reply with exactly: OK",
+            cfg, run_label=f"diagnose-{harness_id}",
+        )
+        text = (engine.get("text") or "").strip()
+        report["self_test"] = {
+            "ran": True,
+            "success": bool(engine.get("success")),
+            "elapsed": engine.get("elapsed"),
+            "exit_code": engine.get("exit_code"),
+            "reply": text[:200],
+            "error": engine.get("error"),
+            "error_code": engine.get("error_code"),
+            "hint": engine.get("hint", ""),
+            "detail": (engine.get("detail") or "")[:500],
+        }
+        if engine.get("success"):
+            agent_harness._record_success(harness_id)
+        else:
+            agent_harness._record_failure(harness_id)
+            report["available"] = False
+            report["hint"] = (engine.get("hint") or "")
+    else:
+        report["self_test"] = {"skipped": True,
+                               "reason": "self_test not requested (pass {\"self_test\": true})"}
+    return {"success": True, "diagnosis": report}
 
 
 # ── Status ─────────────────────────────────────────────────────────
@@ -111,43 +230,38 @@ async def harness_status():
 
 
 @router.get("/models")
-async def meditation_models(harness: str = "omp"):
-    """Get model catalog for a harness.
+async def meditation_models(harness: str = "omp", force: bool = False):
+    """模型目录发现（按引擎官方命令动态发现，静态表兜底）+ 思考强度档位。
 
-    omp: `omp models --json` 动态发现；其余引擎: 注册表静态目录。
-    未知引擎 400。
+    omp: `omp models --json`（含每模型 thinking 档位）；opencode/crush/pi/cursor:
+    各自的 models 命令；其余引擎: 注册表静态目录（各引擎接受 -m/--model 自由值，
+    静态表只是已知项）。未知引擎 400。
     """
     if not hreg.is_known_harness(harness):
         raise HTTPException(status_code=400, detail=f"Unknown harness: {harness}")
-
-    if harness == "omp":
-        import subprocess, json as _json
-        try:
-            result = subprocess.run(
-                ["omp", "models", "--json"],
-                capture_output=True, timeout=15,
-                text=True,
-            )
-            if result.returncode == 0 and result.stdout.strip():
-                data = _json.loads(result.stdout)
-                models = data.get("models", [])
-                simplified = []
-                for m in models:
-                    simplified.append({
-                        "id": m.get("selector", m.get("id", "")),
-                        "name": m.get("name", m.get("id", "")),
-                        "provider": m.get("provider", ""),
-                        "context_window": m.get("contextWindow", 0),
-                        "max_tokens": m.get("maxTokens", 0),
-                    })
-                return {"success": True, "models": simplified, "source": "omp"}
-        except Exception as e:
-            logger.warning("Failed to get OMP models: %s", e)
-
+    try:
+        cat = await hreg.discover_models(harness, force=force)
+    except Exception as e:  # noqa: BLE001
+        logger.warning("model discovery failed for %s: %s", harness, e)
+        cat = {"source": "static", "models": [], "reasoning_levels": []}
+    # omp 等引擎的思考档位随模型（models[].thinking）——取并集供 UI 展示；
+    # 具体模型不支持的档位由引擎自身校验报错。
+    levels = cat.get("reasoning_levels") or []
+    if not levels:
+        union: list[str] = []
+        for m in cat["models"]:
+            for t in m.get("thinking", []) or []:
+                if t not in union:
+                    union.append(t)
+        levels = [{"id": t, "label": t} for t in union]
     return {
         "success": True,
-        "models": [{"id": mid, "name": mid or "使用引擎默认模型", "provider": ""} for mid in hreg.harness_models(harness)],
-        "source": "static" if harness != "omp" else "fallback",
+        "harness": harness,
+        "source": cat["source"],
+        "models": [{"id": m["id"], "name": m.get("name", m["id"]),
+                    **({"thinking": m["thinking"]} if m.get("thinking") else {})}
+                   for m in cat["models"]],
+        "reasoning_levels": levels,
     }
 # ── Run ────────────────────────────────────────────────────────────
 

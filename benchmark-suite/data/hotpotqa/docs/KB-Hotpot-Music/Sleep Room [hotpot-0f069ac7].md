@@ -1,3 +1,0 @@
-# Sleep Room
-
-Sleep Room are an English alternative rock band from Reading, Berkshire who have attracted attention from Berkshire's music community Josaka and the BBC who have noted them for their original sound, epic soundscapes and emotive style.

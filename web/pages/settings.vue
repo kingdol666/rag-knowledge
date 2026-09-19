@@ -255,6 +255,7 @@ import {
   ExperimentOutlined, ShareAltOutlined, SearchOutlined, FileTextOutlined,
   CodeOutlined, ReloadOutlined, CheckOutlined, ExclamationCircleOutlined,
   DeleteOutlined, CheckCircleOutlined, ClearOutlined, BulbOutlined,
+  PartitionOutlined,
 } from '@ant-design/icons-vue'
 
 const { t } = useI18n()
@@ -285,7 +286,7 @@ interface ConfigSection {
 const iconMap: Record<string, any> = {
   CloudServerOutlined, DatabaseOutlined, ThunderboltOutlined,
   ExperimentOutlined, ShareAltOutlined, SearchOutlined, FileTextOutlined,
-  SettingOutlined, ClearOutlined, BulbOutlined,
+  SettingOutlined, ClearOutlined, BulbOutlined, PartitionOutlined,
 }
 
 // ── State ──────────────────────────────────────────────────────────────

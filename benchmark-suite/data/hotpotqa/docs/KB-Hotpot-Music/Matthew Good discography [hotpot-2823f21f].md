@@ -1,3 +1,0 @@
-# Matthew Good discography
-
-This is a comprehensive discography for the solo works of Matthew Good, a Canadian singer-songwriter from Vancouver, British Columbia; see also Matthew Good Band discography.

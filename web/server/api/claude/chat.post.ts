@@ -21,10 +21,10 @@
  *
  * Uses AsyncIterable<SDKUserMessage> prompt form to feed multimodal content blocks to the SDK.
  */
-import { getEngine, normalizeEngine, type PermissionMode } from '~/server/engines'
+import { getEngine, normalizeEngine, getChatMeta, type PermissionMode } from '~/server/engines'
 import { getProjectRoot } from '~/server/utils/claude-config'
 import { addPending, denyAllPending, resolvePending } from '~/server/utils/claude-pending'
-import { upsertSession, saveMessage } from '~/server/utils/chat-db'
+import { upsertSession, saveMessage, getSessionMessages } from '~/server/utils/chat-db'
 import { resolve } from 'path'
 import { readFileSync, statSync } from 'fs'
 import { resolveWithinAnyRoot } from '~/server/utils/safe-paths'
@@ -70,6 +70,41 @@ const ALL_TOOLS = [
 
 const PERMISSION_TIMEOUT_MS = 5 * 60 * 1000
 const TEXT_INLINE_LIMIT = 100 * 1024 // 文本类附件内联上限 100KB
+const HISTORY_REPLAY_TURNS = 20 // server-replay 引擎注入的最大历史轮数（防 prompt 膨胀）
+
+/** Anthropic-shaped content → plain text (text blocks only). */
+function extractText(content: any): string {
+  if (typeof content === 'string') return content
+  if (Array.isArray(content)) {
+    return content
+      .filter((b: any) => b?.type === 'text' && typeof b.text === 'string')
+      .map((b: any) => b.text)
+      .join('\n')
+  }
+  return ''
+}
+
+/**
+ * Rebuild the prior transcript from chat-db for engines without native
+ * cross-request sessions (oneshot / acp). Only complete user/assistant text
+ * turns are used — tool_use/tool_result/stream_event frames are skipped.
+ */
+function buildHistory(sessionId: string): Array<{ role: 'user' | 'assistant'; text: string }> {
+  const out: Array<{ role: 'user' | 'assistant'; text: string }> = []
+  try {
+    for (const row of getSessionMessages(sessionId)) {
+      if (row.sdk_type !== 'user' && row.sdk_type !== 'assistant') continue
+      try {
+        const msg = JSON.parse(row.content)
+        const text = extractText(msg?.message?.content)
+        if (text.trim()) {
+          out.push({ role: row.sdk_type === 'user' ? 'user' : 'assistant', text })
+        }
+      } catch { /* malformed row — skip */ }
+    }
+  } catch { /* DB unavailable — chat still works, continuity is degraded */ }
+  return out.slice(-HISTORY_REPLAY_TURNS)
+}
 
 /** MIME -> Anthropic media_type mapping (for image/document blocks) */
 function toMediaType(mime: string): string {
@@ -291,15 +326,20 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'prompt (string) 必填' })
   }
 
-  const pm: PermissionMode =
-    permissionMode &&
-    ['default', 'acceptEdits', 'bypassPermissions', 'plan', 'dontAsk'].includes(
-      permissionMode,
-    )
-      ? (permissionMode as PermissionMode)
-      : 'default'
+  // Permission mode is a per-harness value (each harness exposes its REAL
+  // modes via /api/harnesses → permissionModes); adapters fall back to the
+  // harness's safest default for unknown values.
+  const pm: PermissionMode = (permissionMode && String(permissionMode)) || 'default'
 
   const engineName = normalizeEngine(engineParam)
+  if (!engineName) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: `Unknown or chat-unsupported harness '${engineParam}'. `
+        + 'Fetch GET /api/harnesses for the selectable list (available ones are not grayed out).',
+    })
+  }
+  const chatMeta = getChatMeta(engineName)
   const workCwd = cwd?.trim() || getProjectRoot()
 
   const effectiveAllowedTools =
@@ -308,8 +348,6 @@ export default defineEventHandler(async (event) => {
       : allowedTools && allowedTools.length > 0
         ? allowedTools
         : SAFE_READS
-
-  const needsCanUseTool = pm !== 'bypassPermissions' && pm !== 'dontAsk'
 
   // Process attachments -> content blocks
   const hasAttachments = Array.isArray(attachments) && attachments.length > 0
@@ -351,26 +389,39 @@ export default defineEventHandler(async (event) => {
   let queryClosed = false
 
   try {
-    // Permission callback factory — shared by both engines (approval modes only)
+    // Permission callback — wired only for harnesses with a real interactive
+    // approval surface (claude SDK canUseTool / ACP request_permission / mock).
+    // One-shot CLIs have no such surface (their permission modes are plain
+    // CLI flags) so the callback is simply never invoked there.
+    const claudeNoAsk = engineName === 'claude' && (pm === 'bypassPermissions' || pm === 'dontAsk')
+    const needsCanUseTool = !!chatMeta?.hitl && !claudeNoAsk
     const onPermissionRequest = needsCanUseTool
       ? async (
           toolName: string,
           input: Record<string, unknown>,
           toolUseId: string,
           sid: string,
-        ): Promise<{ behavior: string; message?: string }> => {
+          options?: Array<{ optionId: string; name: string; kind: string }>,
+        ): Promise<{ behavior: string; message?: string; optionId?: string }> => {
           res.write(
             `event: permission_request\ndata: ${JSON.stringify({
               toolName,
               input,
               toolUseId,
               sessionId: sid || sessionId,
+              ...(options && options.length ? { options } : {}),
             })}\n\n`,
           )
-          const { promise, resolve } = Promise.withResolvers<{ behavior: string; message?: string }>()
-          addPending(sessionId || '_pre_init', toolUseId, toolName, input, resolve as any)
+          const { promise, resolve } = Promise.withResolvers<{ behavior: string; message?: string; optionId?: string }>()
+          // Key the pending entry by the ADAPTER-provided session id when
+          // present — the permission callback can fire before the queued
+          // system/init message is consumed (ACP agents ask fast), so the
+          // outer `sessionId` may still be '' here. The event payload and the
+          // POST-back both use `sid`, so the keys must match exactly.
+          const permKey = sid || sessionId || '_pre_init'
+          addPending(permKey, toolUseId, toolName, input, resolve as any)
           setTimeout(() => {
-            resolvePending(sessionId || '_pre_init', toolUseId, {
+            resolvePending(permKey, toolUseId, {
               behavior: 'deny',
               message: '审批超时（5 分钟未响应）',
             })
@@ -388,6 +439,12 @@ export default defineEventHandler(async (event) => {
     })
 
     // ══════ 用户提问持久化（放在 query 前，覆盖多轮 resume 和首轮新会话） ══════
+    // NOTE: replay history must be snapshotted BEFORE the current user message
+    // is persisted — otherwise the current prompt lands in the replayed
+    // transcript too and the engine sees the question twice.
+    const replayHistory = chatMeta?.historyMode === 'server-replay' && resume
+      ? buildHistory(resume)
+      : []
     const attSummaryMT = hasAttachments && attachments!.length
       ? `\n\n📎 Attachments (${attachments!.length}): ${attachments!.map(a => a.name).join(', ')}`
       : ''
@@ -427,6 +484,9 @@ export default defineEventHandler(async (event) => {
       maxTurns: maxTurns || 50,
       reasoningEffort: reasoningEffort && reasoningEffort !== 'auto' ? reasoningEffort : undefined,
       fullPromptText,
+      // Engines without native cross-request sessions get the prior
+      // transcript replayed into the prompt (multi-turn continuity).
+      ...(replayHistory.length ? { history: replayHistory } : {}),
       ...(isClaude && hasAttachments && attachmentBlocks.length > 0
         ? { attachmentBlocks: attachmentBlocks as any }
         : {}),

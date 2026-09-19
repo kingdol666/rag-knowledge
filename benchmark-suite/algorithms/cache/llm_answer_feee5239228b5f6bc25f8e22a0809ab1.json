@@ -1,1 +1,0 @@
-{"text": "```json\n{\n  \"answer\": \"为验证 RQ2（content-overrides-vector），规划中设计了构造「向量高分内容不符」的对抗样本实验，以此检验内容验证能否压过向量相似度高分的误召回。该实验对应两个呈现位置：Table 2 的 FPR 列，以及散点图 Fig.6。其对比基线沿用 RQ1 的同一组方法，即 BM25、BGE-M3 向量、BM25+Vec、Vec+CE-Rerank、RAG-Fusion、CRAG 式评估器与 Self-RAG 式自评。\",\n  \"evidence_used\": [\"SUBMISSION-MASTER-PLAN\"]\n}\n```", "cached_at": 1789489904.3126924}

@@ -1,3 +1,0 @@
-# A Perfect Fit
-
-A Perfect Fit is a 2005 American thriller starring Adrian Grenier, Leila Arcieri, Polly Draper, Victoria Rowell and written and directed by Ron Brown. The film is distributed by Warner Bros. and Polychrome Pictures.

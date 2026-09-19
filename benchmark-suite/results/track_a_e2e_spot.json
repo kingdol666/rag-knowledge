@@ -1,0 +1,88 @@
+{
+ "purpose": "WRITING-PLAN v2.0 step (2)' : Track A end-to-end spot measurement on 4 in-corpus questions (BQ02/BQ04/BQ08/BQ10), because Table 1 must not ship with empty Track-A end-to-end cells (R1 MAJOR-3).",
+ "measurement_protocol": "Scripted segment (Phase 0 rewrite + Phase 1 vector recall + gate candidate reads) timed by scripts/79_honest_probe_e2e.py from probe_evidence_raw.json. Composition segment (five-section answer written by the executing agent after reading the exported evidence) measured as a batch wall-clock window, start 2026-09-18T04:11:56+08:00, recorded per-file below; per-question composition time = window/N, disclosed as a batch approximation. n=4 spot, not a 10-question mean.",
+ "scoring_rule_note": "Gate scores below are the executing agent's rubric judgments on the same exported evidence, mirroring the Track A adjudication protocol.",
+ "rows": [
+  {
+   "qid": "BQ02",
+   "question": "What defines NISQ technology and what is its central limitation?",
+   "gate": {
+    "score": "8/8",
+    "path": "fast-exit"
+   },
+   "seconds": {
+    "phase1_vector": 2.01,
+    "gate_reads": 0.82
+   },
+   "citation": "自然科学与地球科学/quantum-physics__1801.00862 (NISQ paper), parts with sections 6.4 and abstract",
+   "answer": {
+    "direct": "NISQ devices are noisy intermediate-scale quantum processors (roughly 50-100 qubits) whose gate errors accumulate and cap reliable circuit depth; they operate without quantum error correction, whose overhead intermediate-scale hardware cannot afford.",
+    "evidence": "The NISQ paper defines the era by device scale and noise: gates are imperfect, so error rates grow with circuit depth, and full quantum error correction carries overhead costs that 50-100-qubit machines cannot support.",
+    "context": "The paper's response is to design noise-resilient (error-mitigating) circuits and algorithms that extract value from short, noisy computations instead of correcting errors.",
+    "caveats": "Counts and depth limits are order-of-magnitude characterizations from the text, not device-specific specifications.",
+    "references": "Quantum Computing in the NISQ era and beyond, section 6.4 and abstract (part paths cited with section headers)."
+   }
+  },
+  {
+   "qid": "BQ04",
+   "question": "What are the three ontologies of the Gene Ontology and what does each describe?",
+   "gate": {
+    "score": "8/8",
+    "path": "fast-exit"
+   },
+   "seconds": {
+    "phase1_vector": 2.04,
+    "gate_reads": 0.78
+   },
+   "citation": "生命科学与医学/genomics__1602.01876 (Gene Ontology primer), section 2",
+   "answer": {
+    "direct": "The Gene Ontology maintains three independent ontologies: molecular function (what a gene product does), biological process (the biological objective it serves), and cellular component (where it acts).",
+    "evidence": "Section 2 defines the GO as a controlled vocabulary of terms representing biology, subdivided into the three ontologies covering molecular-function, biological-process, and cellular-component aspects.",
+    "context": "Terms are structured so annotations from different model organisms and databases can be aggregated under shared definitions.",
+    "caveats": "The primer's examples evolve as GO is updated; the three-ontology structure itself has been stable.",
+    "references": "Primer on the Gene Ontology, section 2 (part path cited with section header)."
+   }
+  },
+  {
+   "qid": "BQ08",
+   "question": "What is oxygen redox in battery cathodes and why does it matter for capacity?",
+   "gate": {
+    "score": "8/8",
+    "path": "fast-exit"
+   },
+   "seconds": {
+    "phase1_vector": 2.08,
+    "gate_reads": 0.83
+   },
+   "citation": "自然科学与地球科学/materials__2408.09942 (oxygen redox overview), sections 1 and 5",
+   "answer": {
+    "direct": "Oxygen redox is the anionic (lattice-oxygen) redox mechanism in transition-metal-oxide cathodes: lattice oxygen is reversibly oxidized and reduced alongside the cation, unlocking extra capacity beyond transition-metal charge compensation.",
+    "evidence": "The overview documents wide occurrence of anionic oxygen redox across common Li- and Na-ion cathode materials, with extent varying by chemistry.",
+    "context": "Li-rich cathodes exploit oxygen redox for capacity above cation-limited limits, at the cost of hysteresis and oxygen-release risks discussed in the text.",
+    "caveats": "The overview notes the degree of oxygen participation and its reversibility remain material-dependent.",
+    "references": "Oxygen redox in battery cathodes: a brief overview, sections 1 and 5 (part paths cited with section headers)."
+   }
+  },
+  {
+   "qid": "BQ10",
+   "question": "How can tumors be eliminated or controlled under immune evasion and chemotherapy resistance?",
+   "gate": {
+    "score": "8/8",
+    "path": "rescued: initial top chunk was the references page (4/8), librarian re-search located the discussion section"
+   },
+   "seconds": {
+    "phase1_vector": 2.1,
+    "gate_reads": 0.78,
+    "note": "Phase 2 librarian re-search included in the rescue path; scripted shelf-scan cost in probe run was 2.87 s"
+   },
+   "citation": "生命科学与医学/immunology__2604.01385 (tumor elimination strategies), discussion section",
+   "answer": {
+    "direct": "The paper frames therapy design as an evolutionary control problem: combine immune activation with chemotherapy pressure so that resistant clones stay competitively suppressed, steering the tumor toward elimination or long-term containment.",
+    "evidence": "Its discussion analyzes tumor-immune dynamics under immune evasion and chemotherapy resistance, arguing strategies must act on the ecosystem rather than a single clone.",
+    "context": "Adaptive-therapy style scheduling follows from the evolutionary dynamics: treatment intensity is modulated to prevent resistance takeover.",
+    "caveats": "Conclusions come from evolutionary modeling; clinical translation is not demonstrated in the paper.",
+    "references": "Strategies for tumor elimination and control under immune evasion and chemotherapy resistance, discussion section (part path cited)."
+   }
+  }
+ ]
+}

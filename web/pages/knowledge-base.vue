@@ -279,6 +279,12 @@
             :placeholder="$t('kb.contentPlaceholder')"
             class="content-editor"
           />
+          <div class="content-char-count">
+            <span>{{ $t('kb.contentChars', { n: contentCharCount }) }}</span>
+            <span v-if="willSplitParts > 1" class="split-hint">
+              {{ $t('kb.willSplit', { parts: willSplitParts, max: largeDocMaxChars }) }}
+            </span>
+          </div>
         </a-form-item>
       </a-form>
       <template #footer>
@@ -527,6 +533,21 @@ const contentLoading = ref(false)
 
 // Form
 const createForm = ref({ kbId: '', name: '', description: '', content: '' })
+
+// 大文档拆分：实时字数 + 按设置阈值预计拆分数（阈值来自 config.yml ingestion.large_doc）
+const largeDocMaxChars = ref(10000)
+const contentCharCount = computed(() => (createForm.value.content || '').length)
+const willSplitParts = computed(() => {
+  if (!largeDocMaxChars.value || contentCharCount.value <= largeDocMaxChars.value) return 1
+  return Math.ceil(contentCharCount.value / largeDocMaxChars.value)
+})
+const loadSplitConfig = async () => {
+  try {
+    const cfg = await $fetch<any>('/api/config')
+    const maxChars = Number(cfg?.config?.ingestion?.large_doc?.max_chars)
+    if (Number.isFinite(maxChars) && maxChars > 0) largeDocMaxChars.value = maxChars
+  } catch { /* 后端不可用时保持默认展示 */ }
+}
 const editMetaForm = ref({ name: '', description: '' })
 const editContentValue = ref('')
 const editingDoc = ref<KbDoc | null>(null)
@@ -732,13 +753,20 @@ const handleCreateDoc = async () => {
   if (!createForm.value.name.trim()) { message.error(t('kb.nameRequiredMsg')); return }
   submitting.value = true
   try {
-    await createDocument(
+    const res: any = await createDocument(
       createForm.value.kbId,
       createForm.value.name.trim(),
       createForm.value.content || '# ' + createForm.value.name.trim(),
       createForm.value.description.trim()
     )
-    message.success(t('kb.createSuccess'))
+    if (res?.split) {
+      message.success(t('kb.createSplitSuccess', {
+        parts: res.part_count,
+        chars: res.source_chars ?? contentCharCount.value,
+      }))
+    } else {
+      message.success(t('kb.createSuccess'))
+    }
     showCreateDocDialog.value = false
     createForm.value = { kbId: '', name: '', description: '', content: '' }
     await handleRefresh()
@@ -975,6 +1003,7 @@ interface KbDocWithMeta extends KbDoc {
 }
 
 onMounted(async () => {
+  void loadSplitConfig()
   await loadCatalog()
 })
 </script>
@@ -1083,6 +1112,10 @@ onMounted(async () => {
 
 /* Editor */
 .content-editor :deep(textarea) { font-family: var(--kb-font-mono); font-size: 13px; line-height: 1.6; }
+
+/* Content char count + large-doc split hint */
+.content-char-count { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 6px; font-size: 12px; color: var(--kb-fg-3); }
+.content-char-count .split-hint { color: #faad14; }
 .edit-content-wrapper { min-height: 400px; }
 
 /* Tag Dialog */

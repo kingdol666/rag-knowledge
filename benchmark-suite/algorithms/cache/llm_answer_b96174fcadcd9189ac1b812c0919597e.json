@@ -1,1 +1,0 @@
-{"text": "{\"answer\": \"The kb-mcp (FastMCP) server exposes 94 tools over stdio. Its server.py contains zero HTTP code — all HTTP logic lives in kb_client/client.py. Parse/graph/reindex/training tools are non-blocking, registering a background task and returning a task_id immediately.\", \"evidence_used\": [\"ARCHITECTURE\"]}", "cached_at": 1789489096.0840418}

@@ -1,3 +1,0 @@
-# Attorney General of Brazil
-
-The Attorney General of the Union, or Solicitor General, (Portuguese: "Advogado-Geral da União" , AGU) is a cabinet-level position in the Brazilian government charged with advising the Executive Branch and representing the federal government of Brazil in legal proceedings. The Attorney General is defined under Article 131 of the Brazilian Constitution as one of the essential functions of Brazilian judicial administration, along with the roles performed by the judicial branch, the Prosecutor's office, the public defenders and private lawyers. The current Attorney General is Grace Mendonça.

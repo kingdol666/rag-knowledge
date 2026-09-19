@@ -1,0 +1,415 @@
+{
+ "categories": {
+  "计算机与人工智能": "Computer science and AI: algorithms, NLP/LLM, vision, robotics perception, data systems",
+  "自然科学与地球科学": "Physical, chemical, mathematical and Earth sciences: physics, astronomy, climate, ocean, seismology",
+  "生命科学与医学": "Life sciences and medicine: genomics, neuroscience, immunology, clinical research, medical imaging",
+  "工程与能源": "Engineering and energy: power systems, resilience, disaster-loss engineering",
+  "经济与社会": "Economics, finance and society: growth, markets, social networks"
+ },
+ "classified_by": "Archival (executing agent) — re-verified 2026-09-19 against the fresh results/ingest_survey.json of this PIPELINE run: all 50 parsed excerpts individually re-read; every assignment confirmed unchanged. Content-over-filename overrides re-confirmed: 2001.10696 (neuroscience filename, SNN algorithm content) -> CS/AI; 1311.6857 (agriculture filename, population genetics content) -> life sciences.",
+ "assign": {
+  "1706.03762": {
+   "kb": "计算机与人工智能",
+   "tags": [
+    "transformer",
+    "attention",
+    "sequence-modeling"
+   ]
+  },
+  "1810.04805": {
+   "kb": "计算机与人工智能",
+   "tags": [
+    "bert",
+    "pre-training",
+    "language-understanding"
+   ]
+  },
+  "2005.14165": {
+   "kb": "计算机与人工智能",
+   "tags": [
+    "gpt-3",
+    "few-shot-learning",
+    "language-models"
+   ]
+  },
+  "1801.00862": {
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "quantum-computing",
+    "nisq",
+    "error-correction"
+   ]
+  },
+  "2212.13138": {
+   "kb": "生命科学与医学",
+   "tags": [
+    "clinical-knowledge",
+    "med-palm",
+    "medical-qa"
+   ]
+  },
+  "1602.01876": {
+   "kb": "生命科学与医学",
+   "tags": [
+    "gene-ontology",
+    "bioinformatics",
+    "annotation"
+   ]
+  },
+  "1512.08067": {
+   "kb": "经济与社会",
+   "tags": [
+    "unified-growth-theory",
+    "economic-history",
+    "europe"
+   ]
+  },
+  "1503.07557": {
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "precipitation-extremes",
+    "climate-change",
+    "hydrodynamics"
+   ]
+  },
+  "1210.0979": {
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "astronomy",
+    "methanol-maser",
+    "sky-survey"
+   ]
+  },
+  "2408.09942": {
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "battery-cathodes",
+    "oxygen-redox",
+    "materials-science"
+   ]
+  },
+  "1906.10015": {
+   "kb": "生命科学与医学",
+   "tags": [
+    "computational-psychiatry",
+    "schizophrenia",
+    "autism"
+   ]
+  },
+  "2410.10669": {
+   "kb": "计算机与人工智能",
+   "tags": [
+    "slam",
+    "visual-perception",
+    "robotics"
+   ]
+  },
+  "2504.16021": {
+   "kb": "计算机与人工智能",
+   "tags": [
+    "human-ai-interaction",
+    "cognitive-flow",
+    "reasoning-support"
+   ]
+  },
+  "1706.05261": {
+   "kb": "计算机与人工智能",
+   "tags": [
+    "propositional-logic",
+    "plausible-reasoning",
+    "formal-logic"
+   ]
+  },
+  "2503.21676": {
+   "kb": "计算机与人工智能",
+   "tags": [
+    "language-models",
+    "hallucination",
+    "knowledge-dynamics"
+   ]
+  },
+  "2608.05850": {
+   "kb": "计算机与人工智能",
+   "tags": [
+    "yiddish-nlp",
+    "language-model",
+    "low-resource"
+   ]
+  },
+  "2402.11690": {
+   "kb": "计算机与人工智能",
+   "tags": [
+    "visual-instruction-tuning",
+    "vision-language",
+    "dataset"
+   ]
+  },
+  "2312.10793": {
+   "kb": "计算机与人工智能",
+   "tags": [
+    "instruction-tuning",
+    "fine-tuning",
+    "llm"
+   ]
+  },
+  "1311.2485": {
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "quantum-error-correction",
+    "continuous-time",
+    "quantum-information"
+   ]
+  },
+  "1610.04013": {
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "qecc",
+    "entanglement-assisted",
+    "quantum-codes"
+   ]
+  },
+  "1909.03801": {
+   "kb": "生命科学与医学",
+   "tags": [
+    "clinical-utility",
+    "predictive-medicine",
+    "epidemiology"
+   ]
+  },
+  "2110.08918": {
+   "kb": "生命科学与医学",
+   "tags": [
+    "clinical-informatics",
+    "drug-representation",
+    "mortality-prediction"
+   ]
+  },
+  "2301.08436": {
+   "kb": "生命科学与医学",
+   "tags": [
+    "spatial-transcriptomics",
+    "brain-mapping",
+    "benchmarking"
+   ]
+  },
+  "2110.07787": {
+   "kb": "生命科学与医学",
+   "tags": [
+    "spatial-transcriptomics",
+    "single-cell",
+    "data-analysis"
+   ]
+  },
+  "1901.03951": {
+   "kb": "经济与社会",
+   "tags": [
+    "inequality",
+    "computational-economics",
+    "financial-accumulation"
+   ]
+  },
+  "1609.00415": {
+   "kb": "经济与社会",
+   "tags": [
+    "infrastructure-investment",
+    "economic-growth",
+    "china"
+   ]
+  },
+  "1805.00397": {
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "monsoon",
+    "enso",
+    "distributed-chaos"
+   ]
+  },
+  "2012.10385": {
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "monsoon",
+    "rainfall",
+    "meteorology"
+   ]
+  },
+  "1207.3189": {
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "dark-energy-survey",
+    "astronomy-pipeline",
+    "calibration"
+   ]
+  },
+  "2211.04977": {
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "battery-materials",
+    "defects",
+    "doping"
+   ]
+  },
+  "2001.10696": {
+   "kb": "计算机与人工智能",
+   "tags": [
+    "spiking-neural-networks",
+    "neuromorphic",
+    "unsupervised-learning"
+   ],
+   "note": "filename says neuroscience but the paper is a spiking-NN learning algorithm"
+  },
+  "2509.14191": {
+   "kb": "计算机与人工智能",
+   "tags": [
+    "slam",
+    "gaussian-splatting",
+    "multi-camera-mapping"
+   ]
+  },
+  "2109.05887": {
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "computational-chemistry",
+    "reaction-network",
+    "catalysis"
+   ]
+  },
+  "2211.12700": {
+   "kb": "计算机与人工智能",
+   "tags": [
+    "optimal-control",
+    "branch-and-bound",
+    "presolve"
+   ]
+  },
+  "0706.3294": {
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "gravitational-waves",
+    "interferometry",
+    "wave-detection"
+   ]
+  },
+  "1506.03880": {
+   "kb": "计算机与人工智能",
+   "tags": [
+    "causal-inference",
+    "algebraic-geometry",
+    "causal-structure"
+   ]
+  },
+  "2109.14357": {
+   "kb": "计算机与人工智能",
+   "tags": [
+    "self-supervised",
+    "speech-recognition",
+    "asr"
+   ]
+  },
+  "2207.08146": {
+   "kb": "工程与能源",
+   "tags": [
+    "power-grid",
+    "resilience",
+    "disruption-mapping"
+   ]
+  },
+  "2306.01022": {
+   "kb": "生命科学与医学",
+   "tags": [
+    "medical-imaging",
+    "modalities",
+    "radiology"
+   ]
+  },
+  "2604.01385": {
+   "kb": "生命科学与医学",
+   "tags": [
+    "tumor-immunology",
+    "evolutionary-dynamics",
+    "chemotherapy"
+   ],
+   "note": "filename says immunology; content is evolutionary game dynamics of tumors under therapy"
+  },
+  "1104.2730": {
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "ocean-circulation",
+    "large-eddy-simulation",
+    "barotropic"
+   ]
+  },
+  "1308.1846": {
+   "kb": "工程与能源",
+   "tags": [
+    "earthquake-loss-estimation",
+    "disaster-management",
+    "visualization"
+   ]
+  },
+  "1311.6857": {
+   "kb": "生命科学与医学",
+   "tags": [
+    "population-genetics",
+    "neolithic",
+    "y-chromosome"
+   ],
+   "note": "filename says agriculture; content is Neolithic population genetics"
+  },
+  "1412.5558": {
+   "kb": "经济与社会",
+   "tags": [
+    "trading-systems",
+    "backtest",
+    "candle-charts"
+   ]
+  },
+  "2203.15752": {
+   "kb": "经济与社会",
+   "tags": [
+    "mastodon",
+    "social-networks",
+    "information-consumption"
+   ]
+  },
+  "2102.02440": {
+   "kb": "计算机与人工智能",
+   "tags": [
+    "query-optimization",
+    "databases",
+    "sketch-based"
+   ]
+  },
+  "physics/0105075": {
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "laser-catalysis",
+    "quantum-theory",
+    "reaction-dynamics"
+   ]
+  },
+  "1810.09292": {
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "optimal-control",
+    "cahn-hilliard",
+    "stochastic-pde"
+   ]
+  },
+  "1811.04224": {
+   "kb": "计算机与人工智能",
+   "tags": [
+    "speech-enhancement",
+    "reinforcement-learning",
+    "robust-asr"
+   ]
+  },
+  "2005.03328": {
+   "kb": "计算机与人工智能",
+   "tags": [
+    "query-optimization",
+    "bitvector",
+    "decision-support"
+   ]
+  }
+ }
+}

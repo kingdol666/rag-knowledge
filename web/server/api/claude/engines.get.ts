@@ -1,51 +1,55 @@
 /**
- * GET /api/claude/engines
+ * GET /api/claude/engines  (legacy endpoint — kept for backward compat)
  *
- * Reports which chat engines are available in this deployment.
- *   - Claude: the @anthropic-ai/claude-agent-sdk npm package is resolvable
- *     (runs in-process).
- *   - OMP: the `omp` CLI binary is on PATH (or resolvable as
- *     @oh-my-pi/pi-coding-agent's bundled cli.js). OMP runs as a child process
- *     via the `omp --mode rpc` JSONL protocol.
- *
- * Response: { engines: { claude: { available }, omp: { available } } }
+ * Now derives from the unified harness catalog (see GET /api/harnesses for
+ * the full merged registry+chat matrix). Shape is unchanged:
+ *   { engines: { claude: { available }, omp: { available }, ... } }
+ * so the older chat page code keeps working; the id set now covers every
+ * chat-capable harness.
  */
-import { createRequire } from 'module'
-import { execFileSync } from 'child_process'
+import { defineEventHandler } from 'h3'
+import { getDynamicBackendUrl } from '~/server/utils/dynamic-config'
+import { HARNESS_CHAT_CATALOG, resolveCommandLocal } from '~/server/utils/harness-catalog'
 
-const require = createRequire(import.meta.url)
-
-function isResolvable(spec: string): boolean {
+/** Claude runs in-process via the Agent SDK — resolvable package = available. */
+function isClaudeSdkAvailable(): boolean {
   try {
-    require.resolve(spec)
+    const { createRequire } = require('module')
+    const r = createRequire(import.meta.url)
+    r.resolve('@anthropic-ai/claude-agent-sdk')
     return true
   } catch {
     return false
   }
 }
 
-/** Is the `omp` CLI available — either on PATH or as the bundled cli.js? */
-function isOmpAvailable(): boolean {
-  // 1) Try resolving the bundled CLI from the (optional) pi-coding-agent pkg.
+export default defineEventHandler(async () => {
+  // Ask the backend registry first (authoritative probe incl. credentials).
+  let backendAvailable: Record<string, boolean> | null = null
   try {
-    const cliPath = require.resolve('@oh-my-pi/pi-coding-agent/dist/cli.js')
-    if (cliPath) return true
-  } catch { /* package not installed — fall through */ }
-  // 2) Try the bare `omp` binary on PATH.
-  try {
-    const cmd = process.platform === 'win32' ? 'where' : 'which'
-    execFileSync(cmd, ['omp'], { stdio: 'ignore' })
-    return true
-  } catch {
-    return false
-  }
-}
+    const res = await $fetch<any>(`${getDynamicBackendUrl()}/api/v1/meditation/harnesses`, { timeout: 20000 })
+    if (res?.harnesses) {
+      backendAvailable = Object.fromEntries(
+        res.harnesses.map((h: any) => [h.id, !!h.installed && !!h.available]),
+      )
+    }
+  } catch { /* fall back to local checks */ }
 
-export default defineEventHandler(() => {
-  return {
-    engines: {
-      claude: { available: isResolvable('@anthropic-ai/claude-agent-sdk') },
-      omp: { available: isOmpAvailable() },
-    },
+  const engines: Record<string, { available: boolean }> = {}
+  for (const meta of Object.values(HARNESS_CHAT_CATALOG)) {
+    if (meta.id === 'claude') {
+      engines.claude = { available: isClaudeSdkAvailable() }
+      continue
+    }
+    if (meta.id === 'mock') {
+      engines.mock = { available: true }
+      continue
+    }
+    engines[meta.id] = {
+      available: backendAvailable
+        ? !!backendAvailable[meta.id]
+        : !!resolveCommandLocal(meta.command),
+    }
   }
+  return { engines }
 })

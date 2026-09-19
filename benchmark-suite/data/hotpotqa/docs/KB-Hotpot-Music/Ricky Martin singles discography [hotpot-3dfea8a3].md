@@ -1,3 +1,0 @@
-# Ricky Martin singles discography
-
-Puerto Rican singer Ricky Martin has released seventy-nine Spanish and English-language singles. In 1984, thirteen-year-old Martin became a member of the Puerto Rican boy band Menudo. After recording eleven albums with the group, he left Menudo in 1989, hoping to rest and evaluate his career path. In 1990, he was signed to Sony Discos, the Sony Music Entertainment's Latin imprint. Martin released his debut solo album, the Spanish-language "Ricky Martin", in November 1991. It included hit singles: "Fuego Contra Fuego", "El Amor de Mi Vida" and "Vuelo". His second Spanish-language solo album, "Me Amarás" (1993) featured further successful singles: "Me Amarás", "Que Dia Es Hoy" and "Entre el Amor y los Halagos".

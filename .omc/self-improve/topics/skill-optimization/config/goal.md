@@ -17,11 +17,10 @@ Achieve average skill_quality_score ≥ 0.85 across all 14 skills.
 ## Scope
 Only modify `.claude/skills/*/SKILL.md` files. Do not modify backend code, MCP server, or any other project code.
 
-## Skills to Optimize (14 total)
+## Skills to Optimize (13 total)
 - knowledgebase (dispatcher)
 - knowledgebase-ingest (A0-A9 pipeline)
-- knowledgebase-search (QDCVR retrieval)
-- knowledgebase-search-enterprise (cross-KB search)
+- knowledgebase-search (QDCVR v2: vector-first + librarian fallback; absorbed the former knowledgebase-search-enterprise)
 - knowledgebase-experience (experience lifecycle)
 - knowledgebase-experience-summarize (meditation)
 - knowledgebase-list (catalog viewing)

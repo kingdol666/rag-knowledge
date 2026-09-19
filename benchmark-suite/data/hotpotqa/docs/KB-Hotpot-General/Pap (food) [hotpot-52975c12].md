@@ -1,3 +1,0 @@
-# Pap (food)
-
-Pap , also known as mieliepap (Afrikaans for maize porridge) in South Africa or Sadza in Shona or Isitshwala in Isindebele language in Zimbabwe, or Ogi/ Akamu in Nigeria or phaletšhe in Botswana is a traditional porridge/polenta made from mielie-meal (ground maize) and a staple food of the Bantu peoples of Southern Africa (the Afrikaans word "pap" is taken from Dutch and simply means "porridge"). Many traditional Southern Africa dishes include pap, such as smooth maize meal porridge (also called "slap pap" or soft porridge), pap with a very thick consistency that can be held in the hand ("stywe pap" or firm porridge) and a more dry crumbly phuthu pap. Phuthu dishes are usually found in the coastal areas of South Africa.

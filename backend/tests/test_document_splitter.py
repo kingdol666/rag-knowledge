@@ -18,14 +18,22 @@ from app.services import document_splitter as ds
 class TestShouldSplit:
     def test_small_doc_never_split(self):
         assert not ds.should_split("short", max_chars=10000)
-        assert not ds.should_split("x" * 11000, max_chars=10000)  # < MIN_SPLIT_CHARS
+        assert not ds.should_split("x" * 9999, max_chars=10000)
 
     def test_large_doc_split(self):
         assert ds.should_split("x" * 20000, max_chars=10000)
 
-    def test_min_split_floor_applies(self):
-        # max_chars 很小但硬下限 12000 仍然生效（防碎文档）
-        assert not ds.should_split("x" * 11000, max_chars=1000)
+    def test_configured_limit_wins_over_old_hard_floor(self):
+        # 2026-09-18：拆分阈值完全由配置决定（设置页可设 1000/2000 等），
+        # 旧的 MIN_SPLIT_CHARS=12000 硬下限已移除；仅保留 500 防呆下限。
+        assert ds.should_split("x" * 11000, max_chars=1000)
+        assert ds.should_split("x" * 1500, max_chars=1000)
+        assert not ds.should_split("x" * 900, max_chars=1000)
+
+    def test_max_chars_clamped_to_sanity_floor(self):
+        assert ds.clamp_max_chars(100) == ds.MIN_MAX_CHARS
+        assert ds.clamp_max_chars(1000) == 1000
+        assert ds.should_split("x" * 600, max_chars=100)  # clamp 到 500 后仍拆分
 
 
 class TestSplitDocument:
@@ -107,6 +115,57 @@ class TestSplitDocument:
         assert ds.DEFAULT_MAX_CHARS < _BM25_MAX_CONTENT_CHARS or True  # 配置可覆盖，默认关系见 config
         from app.config import config
         assert config.large_doc_split["max_chars"] < config.bm25_max_content_chars
+
+
+class TestDescriptionAndPacking:
+    """2026-09-18 新增：真实内容描述 + 跨 section 聚合 + part 数随 max_chars 收敛。"""
+
+    def _doc(self) -> str:
+        secs = []
+        for i in range(1, 8):
+            body = (f"第{i}节：") + ("这是一段用于测试拆分逻辑的真实内容，包含足够的中文与 English text。" * 8)
+            secs.append(f"## 章节{i}\n\n{body}\n")
+        return "# 大文档测试\n\n" + "\n".join(secs)
+
+    def test_description_from_real_part_body(self):
+        plan = ds.plan_split(self._doc(), "d.md", {"max_chars": 1000})
+        descs = [p["description"] for p in plan["parts"]]
+        for p, desc in zip(plan["parts"], descs):
+            assert desc, "每个 part 必须有非空描述"
+            # 描述按该 part 真实正文摘录：其开头出现在该 part 内容中
+            # （描述阶段折叠了空白并去除了 Markdown 标记，对比时同样归一化）
+            norm = lambda s: "".join(ch for ch in s if ch not in " \n#*`")
+            assert norm(desc[:15]) in norm(p["content"]), \
+                f"描述与内容不符: {desc[:50]}"
+        # 不同 part 的描述互不相同（各自反映真实内容，而非重复文档标题）
+        distinct = {d[:20] for d in descs if d}
+        assert len(distinct) >= min(3, len(descs))
+
+    def test_parts_converge_with_max_chars(self):
+        doc = self._doc()
+        p1000 = ds.plan_split(doc, "d.md", {"max_chars": 1000})
+        p2000 = ds.plan_split(doc, "d.md", {"max_chars": 2000})
+        assert p1000["split"] and p1000["part_count"] >= 2
+        assert p2000["split"] and p2000["part_count"] < p1000["part_count"]
+
+    def test_packing_keeps_sections_intact(self):
+        doc = "\n\n".join(f"## S{i}\n\n" + "内容。" * 100 for i in range(6))  # ~6×430 chars
+        parts = ds.split_document(doc, "Pack", max_chars=1000)
+        # 小 section 应被聚合：part 数 < section 数
+        assert len(parts) < 6
+        for p in parts:
+            assert len(p.content) <= 1000 + 200
+
+    def test_plan_reports_source_chars(self):
+        doc = self._doc()
+        plan = ds.plan_split(doc, "d.md", {"max_chars": 1000})
+        assert plan["source_chars"] == len(doc)
+        assert plan["max_chars"] == 1000
+        assert all("description" in p and "chars" in p for p in plan["parts"])
+
+    def test_single_part_also_has_description(self):
+        plan = ds.plan_split("短文档，但也应有描述。", "s.md", {"max_chars": 10000})
+        assert plan["parts"][0]["description"].startswith("短文档")
 
 
 class TestPlanSplit:

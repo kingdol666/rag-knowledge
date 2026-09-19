@@ -92,7 +92,8 @@ class Config:
         if "server" in shared:
             self._config.setdefault("server", {}).update(shared["server"])
 
-        for section in ("storage", "vector", "embedding", "graph", "search", "experience_auto", "soul"):
+        for section in ("storage", "vector", "embedding", "graph", "search",
+                        "ingestion", "experience_auto", "soul"):
             if section in shared:
                 self._config[section] = shared[section]
 
@@ -370,7 +371,7 @@ class Config:
     def large_doc_split(self) -> dict:
         """大文档自动拆分参数: {auto_split, max_chars, overlap_chars}。
 
-        与检索栈对齐: part 上限默认 10000 < BM25 关键词窗口(12000),
+        与检索栈对齐: part 上限(默认/配置值)必须小于 BM25 关键词窗口(32000),
         拆分后的片段不会再被关键词索引截断。
         """
         cfg = self.ingestion_config.get("large_doc", {}) or {}
@@ -385,9 +386,9 @@ class Config:
         """BM25 每文档索引字符上限（两阶段检索 stage1 关键词窗口）。"""
         try:
             return int((self._config.get("search", {}).get("two_stage", {})
-                        .get("bm25_max_content_chars", 12000)) or 12000)
+                        .get("bm25_max_content_chars", 32000)) or 32000)
         except (TypeError, ValueError):
-            return 12000
+            return 32000
 
     @property
     def stage1_pool_multiplier(self) -> int:

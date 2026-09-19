@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./docs/images/readme-hero.svg" alt="RAG Knowledge Platform — 企业级文档智能与 Agentic 知识库" width="100%" />
+<img src="./docs/images/readme-hero.svg" alt="QDCVR — 可部署的知识库管理平台：基于内容的组织与内容核验的检索" width="100%" />
 
 <br><br>
 
@@ -7,10 +7,10 @@
 
 <br><br>
 
-<a href="#-快速开始"><img src="https://img.shields.io/badge/快速开始-3_条命令-B24422?style=for-the-badge" alt="快速开始" /></a>
-<a href="#-系统架构"><img src="https://img.shields.io/badge/技术栈-FastAPI_·_Nuxt_3_·_MCP-2E5D7F?style=for-the-badge" alt="技术栈" /></a>
-<a href="#-94-个-mcp-工具"><img src="https://img.shields.io/badge/MCP_工具-94_个-9E7A38?style=for-the-badge" alt="94 个 MCP 工具" /></a>
-<a href="#-工作原理"><img src="https://img.shields.io/badge/检索方法-QDCVR-B24422?style=for-the-badge" alt="QDCVR" /></a>
+<a href="#快速开始"><img src="https://img.shields.io/badge/快速开始-3_条命令-B24422?style=for-the-badge" alt="快速开始" /></a>
+<a href="#mcp-工具"><img src="https://img.shields.io/badge/kb_*_MCP_工具-41_个-2E5D7F?style=for-the-badge" alt="41 个 kb_* MCP 工具" /></a>
+<a href="#工作原理"><img src="https://img.shields.io/badge/检索协议-QDCVR_v2-B24422?style=for-the-badge" alt="QDCVR" /></a>
+<a href="#publications"><img src="https://img.shields.io/badge/CIKM_%2726_Demo-论文-9E7A38?style=for-the-badge" alt="CIKM Demo 论文" /></a>
 
 <br>
 
@@ -27,17 +27,19 @@
 
 ## 这是什么
 
-一个可自托管的知识库平台。它把一堆 PDF、Office 文档和扫描件，变成**一个 AI Agent 可以真正被信任去回答问题的知识库**，并通过四种方式暴露出来：Web 界面、HTTP API、命令行，以及 94 个 MCP 工具——任何支持 MCP 的 Agent 都能直接驱动它。
+一个自托管平台：把一个装满 PDF、Office 文档和扫描件的文件夹，变成 **AI Agent 真正可以信赖作答的知识库**——按文档*说了什么*来组织，而不是按它躺在哪个文件夹；并以四种方式对外提供能力：Web 界面、HTTP API、命令行，以及任何支持 MCP 的 Agent 都能驱动的 MCP 工具。
 
-真正有意思的是检索层。大多数 RAG 方案按向量相似度排序，然后祈祷结果是对的。这个平台会**实际读取候选文档，用一套独立的 0–8 内容评分量表给它打分**，并把不及格的直接丢掉：
+检索层是最有意思的部分。多数 RAG 栈按向量相似度排序然后祈祷。这一个运行一套查询协议——**QDCVR（Query-Driven Content-Verified Retrieval，查询驱动·内容核验检索）**——**真正阅读候选文档，并按一套可解释的 0–8 内容评分细则打分**，门控失败升级到图书管理员兜底，证据不足时返回明确的"未找到"报告而不是编造答案：
 
-> **向量快，内容准。**
-> 一个余弦相似度高达 **0.95**、但内容评分 **≤ 4** 的文档，会被**丢弃**——不是降权，是丢弃。
+> **向量负责快，内容负责准。**
+> 一份余弦相似度 **0.95** 的文档，若正文评分 **≤ 4**，会被**直接丢弃**——不是降权，是丢弃。
+
+这就是我们 CIKM '26 Demo 论文所演示的系统：*QDCVR: A Deployable Knowledge-Base Management Platform with Content-Based Organization and Content-Verified Retrieval*（[论文 + 演示视频](#publications)）。
 
 <br>
 
 <div align="center">
-<img src="./docs/images/readme-pipeline.svg" alt="入库流水线：文件 → MinerU OCR → 知识库 → 索引 → QDCVR 检索 → 已核验答案" width="100%" />
+<img src="./docs/images/readme-pipeline.svg" alt="入库管线：文件 → MinerU 解析 → 按内容路由的门类知识库 → 索引 → QDCVR 检索 → 核验后的回答" width="100%" />
 </div>
 
 ---
@@ -46,15 +48,16 @@
 
 | | |
 |---|---|
-| [**界面截图**](#界面截图) | 浅色与深色主题下的真实界面 |
-| [**工作原理**](#工作原理) | 检索流水线与 0–8 评分量表 |
+| [**界面截图**](#界面截图) | 浅色/深色、桌面/移动端的真实界面 |
+| [**工作原理**](#工作原理) | QDCVR v2 协议与 0–8 评分细则 |
+| [**Agent 对话，任意 Harness**](#agent-对话任意-harness) | 14 个 Harness、按 Harness 选模型、统一 HITL |
 | [**系统架构**](#系统架构) | 服务、端口、存储引擎 |
 | [**快速开始**](#快速开始) | 克隆 → 安装 → 启动 |
-| [**四种使用方式**](#四种使用方式) | Web 界面 · HTTP · CLI · MCP |
-| [**94 个 MCP 工具**](#94-个-mcp-工具) | 按类别完整清单 |
-| [**外部 HTTP API**](#外部-http-api) | 不依赖 Agent，任何系统都能调用 |
-| [**验证数据**](#验证数据) | 哪些数字被实测过，怎么测的 |
-| [**适用范围与非目标**](#适用范围与非目标) | 这个项目**不做**什么 |
+| [**四种使用方式**](#四种使用方式) | Web · HTTP · CLI · MCP |
+| [**MCP 工具**](#mcp-工具) | 94 个工具中的 41 个 `kb_*` 领域工具，按类分组 |
+| [**外部 HTTP API**](#外部-http-api) | 不需要 Agent 也能调用 |
+| [**基准测评**](#基准测评) | 可复现流水线与全部数字 |
+| [**适用范围与非目标**](#适用范围与非目标) | 本系统*不*做什么 |
 
 ---
 
@@ -75,7 +78,7 @@
 
 <br>
 
-**QDCVR 检索** —— 三种策略、范围控制，以及一条真实反映语料内容的标签栏。
+**QDCVR 检索** —— 向量优先检索、范围控制，以及一条真实反映语料内容的标签栏。
 
 <div align="center">
 <img src="./docs/screenshots/app/desktop-knowledge-search.jpg" alt="QDCVR 检索界面" width="100%" />
@@ -99,7 +102,7 @@
 <img src="./docs/screenshots/app/desktop-file-system.jpg" alt="文件系统目录树" width="100%" />
 </div>
 
-**Agent 对话** —— 在应用内直接驱动编程 Agent 操作知识库。
+**Agent 对话** —— 在应用内驱动 14 种 Agent Harness 操作知识库，支持按 Harness 选择模型与统一的人工审批（HITL）。
 
 <div align="center">
 <img src="./docs/screenshots/app/desktop-claude-chat.jpg" alt="Agent 对话" width="100%" />
@@ -119,11 +122,11 @@
 每个界面都有真正的深色主题——不是把浅色反相了事。
 
 <div align="center">
-<img src="./docs/screenshots/app/dark-desktop-home.jpg" alt="深色模式首页" width="100%" />
+<img src="./docs/screenshots/app/dark-desktop-home.jpg" alt="深色首页" width="100%" />
 </div>
 
 <details>
-<summary><b>更多深色主题界面</b></summary>
+<summary><b>更多深色界面</b></summary>
 
 <br>
 
@@ -132,14 +135,14 @@
 <img src="./docs/screenshots/app/dark-desktop-knowledge-graph.jpg" alt="深色图谱" width="49%" />
 <br><br>
 <img src="./docs/screenshots/app/dark-desktop-knowledge-base.jpg" alt="深色知识库" width="49%" />
-<img src="./docs/screenshots/app/dark-desktop-soul.jpg" alt="深色 SOUL 工作室" width="49%" />
+<img src="./docs/screenshots/app/dark-desktop-soul.jpg" alt="深色 SOUL" width="49%" />
 </div>
 
 </details>
 
 ### 移动端
 
-布局基于容器查询（container query）系统，响应的是**自身内容区的宽度**，而不只是视口宽度。侧边栏变为抽屉，表格变为卡片，触摸目标扩展至 44 px 下限。
+布局基于容器查询：响应的是自身内容区域的宽度，而不仅是视口。侧栏变抽屉、表格变卡片、触控目标提升到 44 px 下限。
 
 <div align="center">
 <img src="./docs/screenshots/app/mobile-home.jpg" alt="移动端首页" width="24%" />
@@ -147,126 +150,129 @@
 <img src="./docs/screenshots/app/mobile-knowledge-search.jpg" alt="移动端检索" width="24%" />
 <img src="./docs/screenshots/app/mobile-knowledge-graph.jpg" alt="移动端图谱" width="24%" />
 <br>
-<img src="./docs/screenshots/app/mobile-soul.jpg" alt="移动端 SOUL 工作室" width="24%" />
-<img src="./docs/screenshots/app/mobile-tokens.jpg" alt="移动端 API Token" width="24%" />
-<img src="./docs/screenshots/app/dark-mobile-home.jpg" alt="移动端深色首页" width="24%" />
-<img src="./docs/screenshots/app/dark-mobile-knowledge-base.jpg" alt="移动端深色知识库" width="24%" />
+<img src="./docs/screenshots/app/mobile-soul.jpg" alt="移动端 SOUL" width="24%" />
+<img src="./docs/screenshots/app/mobile-tokens.jpg" alt="移动端 Token" width="24%" />
+<img src="./docs/screenshots/app/dark-mobile-home.jpg" alt="深色移动端首页" width="24%" />
+<img src="./docs/screenshots/app/dark-mobile-knowledge-base.jpg" alt="深色移动端知识库" width="24%" />
 </div>
 
 ---
 
 ## 工作原理
 
-`QDCVR` —— **Query-Driven, Content-Verified Retrieval**（查询驱动 · 内容验证检索）。共七个阶段，严格按序执行：
+`QDCVR`——**查询驱动·内容核验检索**。每次查询按顺序走一遍协议：
 
 ```
-用户查询
+查询
   │
-  ├─ 0 · 意图识别                 运维类 / 事实类 / 探索类
+  ├─ 0 · 查询改写               模糊提问 → 适合检索的查询
   │
-  ├─ 1 · 知识库选择               对目录做 Agentic 扫描
-  │                                balance_kbs 护栏防止单一大库垄断结果
+  ├─ 1 · 向量优先召回           在路由到的门类库上执行 kb_search_vector；
+  │                             balance_kbs 防止一个大库垄断候选池
   │
-  ├─ 2 · 多阶段召回               BM25 ──▶ 向量 ──▶ 标签语义 ──▶ 图谱
-  │                                每一阶段都是「召回」阶段，不是排序阶段
+  ├─ 2 · ⭐ 内容门控（0–8）     Agent 真正阅读候选正文并打分：
+  │                             主题 0–3 · 场景 0–3 · 证据 0–2
+  │                             得分 ≥ 6 → 快速通过，直接作答
+  │                             得分 = 5 → 留作后备，升级处理
+  │                             得分 ≤ 4 → 丢弃
   │
-  ├─ 3 · ⭐ 内容验证              读取候选文档，按 0–8 打分
-  │                                得分 < 6 → 触发标签+描述扩展轮
-  │                                得分 ≤ 4 → 硬性丢弃
+  ├─ 3 · 图书管理员兜底         门控失败？在路由库内定向再检索 + 深度
+  │                             续读——基准中唯一一次门控失败
+  │                             就是在这里被挽救的
   │
-  ├─ 4 · 交叉验证                 去重、跨库合并、排序融合
+  ├─ 4 · 未找到契约             全部失败？给出明确的"未找到"报告
+  │                             ——绝不编造
   │
-  ├─ 5 · 可信度分级               P0 已验证 · P1 较可信 · P2 仅线索
-  │                                盲区会被明确声明，绝不掩盖
-  │
-  └─ 6 · 答案与引用               每一条论断都链接到来源文档
+  └─ 5 · 回答 + 引用            五段式格式：检索路径 · 回答 · 来源 ·
+                                置信度 · 声明的盲区
 ```
 
 <details>
-<summary><b>0–8 内容评分量表</b></summary>
+<summary><b>0–8 内容评分细则</b></summary>
 
 <br>
 
-| 分数 | 含义 | 处理方式 |
+| 得分 | 含义 | 处理 |
 |:---:|---|---|
-| **0–2** | 跑题，或文档讲的完全是另一回事 | **丢弃** |
-| **3–4** | 擦边——在无关文档里只有一句话相关 | **丢弃** |
-| **5–6** | 部分相关——话题对，但缺少追问的具体细节 | 保留，触发一轮**扩展** |
-| **7–8** | 直接回答该问题 | 保留，有资格进入 P0 |
+| **0–2** | 离题，或文档讲的完全是另一回事 | **丢弃** |
+| **3–4** | 沾边——不相关文档里埋了一句相关的话 | **丢弃** |
+| **5** | 主题对口，但所问的具体内容不在已读窗口内 | 留作**后备** → **图书管理员升级**（定向再检索 + 续读） |
+| **6–7** | 主题对口，能部分深度地回答问题 | 保留，快速通过 |
+| **8** | 从读到的正文直接回答问题 | 保留，快速通过 |
 
-这套量表的关键在于：它是在**召回之后**、且**通过阅读内容**来执行的。因此高余弦相似度不能为文档换来任何豁免。这正是分级有意义的原因——一个 P0 结果，同时通过了相似度筛选和内容判断两道关。
+这套细则的关键在于：它在召回**之后**、通过**阅读内容**来打分，所以高的余弦分买不到任何好处。而且门控失败时，协议不会默默返回"最不坏的那个"——它会再去找，找不到就明说。
 
 </details>
 
-### 跨库盲区缓解
+---
 
-当一次常规两阶段检索返回的候选中，来自**少于两个**不同知识库时，系统会自动以三路并行召回重试，并交叉验证结果：
+## Agent 对话，任意 Harness
 
-| 路径 | 策略 | 能捞回什么 |
-|:---:|---|---|
-| **A** | 对目录做 Agentic 知识库扫描 | 词表不一致导致词法索引漏掉的查询 |
-| **B** | 两阶段 BM25 → 向量 | 标准的高精度路径 |
-| **C** | 纯跨库向量检索 | 完全没有词法重叠的语义匹配 |
+内置对话页通过同一层适配器对接 **14 种 Agent Harness**——Claude Code、OMP、Codex CLI、Gemini CLI、Copilot CLI、Cursor CLI、DeepSeek Harness、Hermes Agent、OpenCode、Crush、Goose、Qwen Code、pi，外加一个用于 CI 的进程内 mock：
 
-三路结果会被合并、去重，过短的假阳性片段会被降级（不足 50 字符的片段最高只能到 P2）。这直接针对一个典型失效模式：BM25 第一阶段召回悄悄把候选集收窄到只剩一个知识库。
+- **按 Harness 选择模型**——每种 Harness 暴露自己真实的模型目录（`omp models --json`、`opencode models`、ACP `configOptions`……）；下拉选择，或输入该 Harness 接受的任意模型名。
+- **按 Harness 的思考强度**——只提供各 Harness 原生支持的档位（`--thinking`、`model_reasoning_effort`、`--effort`、ACP `reasoning_effort`），绝不虚构。
+- **按 Harness 的作业权限**——沿用各 Harness 自己的语义：Claude 的 permissionMode、Codex 的沙箱档位、ACP 的 `request_permission` 等。
+- **统一人工在环（HITL）**——所有审批请求（Claude 的 `canUseTool`、ACP 的 `session/request_permission`）都汇聚为同一个聊天内审批弹窗；允许、拒绝，或在 Harness 给出的选项中选择。流会阻塞直到你做出决定。
+- **可用性是探测出来的，不是猜的**——平台在启动时和按需探测每个 Harness（可执行文件、版本、凭据）；不可用的在界面中置灰并给出原因，每个 Harness 都有一键诊断和可选的真实往返自测。
 
 ---
 
 ## 系统架构
 
 <div align="center">
-<img src="./docs/images/readme-architecture.svg" alt="系统架构：客户端、MCP 工具层、服务层、存储层" width="100%" />
+<img src="./docs/images/readme-architecture.svg" alt="架构：客户端、MCP 工具层、服务、存储" width="100%" />
 </div>
 
-三个服务加一层工具层，端口与路径全部来自同一个 `config.yml`：
+三个服务加一层工具，全部从同一份 `config.yml` 读取端口与路径：
 
 | 端口 | 服务 | 职责 |
 |---:|---|---|
-| `6789` | Nuxt 3 | 界面 + 服务端代理。浏览器从不直接调用后端（不暴露 CORS 面）。 |
+| `6789` | Nuxt 3 | UI + 服务端代理。浏览器不直接调用后端（无 CORS 暴露面）。 |
 | `8770` | FastAPI | 解析调度、向量、图谱、经验、SOUL。端口被占用时拒绝启动。 |
-| *动态* | MinerU OCR | 自动挑一个空闲端口。作为受管子进程运行，随父进程退出。 |
+| *临时* | MinerU 解析 | 双模式：配置了远程 mineru-api 时优先远程（启动探测），否则本地引擎在空闲端口上以受管子进程方式自启动。 |
 | `7687` | Neo4j | 文档图谱、跨库桥接。 |
-| — | ChromaDB | 分块向量，每个知识库一个 collection。 |
+| — | ChromaDB | 分块向量，每个知识库一个集合。 |
 
-**读写分离是刻意设计的：** 写操作走 HTTP API，保证原子性与可审计；读操作直接读磁盘上的 `.tree-fs.json` 与 `.knowledge-base.yml`，因此检索对后端零负载。
+**读写不对称是刻意设计：**写入走 HTTP API，保证原子与可审计；读取直接走磁盘上的 `.tree-fs.json` 与 `.knowledge-base.yml`，检索对后端零负载。
 
-> **说明：** 两份 README 记录的都是默认的 `8770`/`6789` 组合。如果你同时跑了多个实例，可能会看到第二个后端监听在别的端口（例如 `8771`）——请以 `config.yml` 和设置页顶部横幅显示的运行值为准。
+> **说明：**两份 README 记录的是默认 `8770`/`6789` 组合。如果你在跑多个实例，可能看到第二个后端占用其他端口（例如 `8771`）——请检查 `config.yml`、`.env`（`BACKEND_PORT`）以及设置页横幅，横幅显示的是运行值。
 
 ---
 
 ## 快速开始
 
 ```bash
-# 1 · 克隆仓库
+# 1 · 克隆
 git clone https://github.com/kingdol666/rag-knowledge.git
 cd rag-knowledge
 
-# 2 · 安装全部依赖与模型（可重复执行）
+# 2 · 安装全部依赖 + 模型（幂等）
 ./ragctl setup          # Windows: ragctl setup
 
-# 3 · 一键启动 —— 静默，无终端窗口弹出
+# 3 · 一键启动——静默，无终端窗口
 ./ragctl up             # Windows: ragctl up
 
-# 检查状态
+# 检查
 ./ragctl status
 ```
 
 然后打开 **http://localhost:6789**。
 
-`ragctl` 是所有操作的统一入口——服务、模型、配置、健康检查、知识库、人格与 Agent Harness。
+`ragctl` 是所有操作的唯一入口——服务、模型、配置、健康检查、知识库、人格与 Harness。
 
 <details>
-<summary><b><code>ragctl</code> 全部命令</b></summary>
+<summary><b>全部 <code>ragctl</code> 命令</b></summary>
 
 <br>
 
 | 分组 | 命令 |
 |---|---|
 | **生命周期** | `setup` `up` `down` `start` `stop` `restart` `status` `logs` |
-| **资源管理** | `install` `model` `mineru-model` `clean` `backup` `restore` |
+| **资产** | `install` `model` `mineru-model` `clean` `backup` `restore` |
 | **界面** | `desktop`（别名 `ui`） |
 | **知识** | `meditation` `soul`（别名 `persona`） `harness` |
-| **日常维护** | `check` `deps` `version` `update` |
+| **维护** | `check` `deps` `version` `update` |
 
 `soul` 子命令：`distill` `list` `status` `init` `learn` `learn-all` `train-rl` `evaluate` `review-cognition` `harness` `ask` `router` `review` `reflect` `export` `train` `checkpoint`。
 
@@ -276,11 +282,11 @@ cd rag-knowledge
 
 | | 要求 | 原因 |
 |---|---|---|
-| **Python** | 3.12（`>=3.12,<3.13`） | MinerU 与后端锁定在此区间 |
+| **Python** | 3.12（`>=3.12,<3.13`） | MinerU 与后端锁定在此范围 |
 | **Node.js** | ≥ 18 | Nuxt 3 |
-| **uv** | 较新版本即可 | Python 环境管理 |
-| **磁盘** | 数 GB | MinerU 模型加你的语料 |
-| **可选** | `7687` 上的 Neo4j | 缺失时图谱功能会优雅降级 |
+| **uv** | 任意较新版本 | Python 环境管理 |
+| **磁盘** | 数 GB | MinerU 模型与你的语料 |
+| **可选** | Neo4j `7687` | 图谱功能在缺失时优雅降级 |
 
 ---
 
@@ -288,28 +294,24 @@ cd rag-knowledge
 
 ### 1 · Web 界面
 
-共十个页面：仪表盘、文件系统、知识库管理、QDCVR 检索、图谱浏览器、SOUL 人格工作室、Agent 对话、系统设置、API Token、登录。支持浅色/深色，从桌面到手机全尺寸适配。
+十一个页面：仪表盘、文件系统、知识库管理、QDCVR 检索、图谱浏览器、SOUL 人格工作室、Agent 对话、Harness 总览、系统设置、API Token、登录。浅色深色俱全，桌面到手机自适应。
 
 ### 2 · HTTP API
 
-完全不需要 Agent 或 MCP。见[外部 HTTP API](#外部-http-api)。
+以下都不需要 Agent 或 MCP。见[外部 HTTP API](#外部-http-api)。
 
 ### 3 · 命令行
 
 ```bash
-./ragctl status                 # 服务健康状态
-./ragctl logs backend -f        # 实时跟踪日志
-./ragctl soul list              # 人格列表
-./ragctl harness                # Agent Harness 可用性
-./ragctl backup                 # 备份存储
+./ragctl status                 # 服务健康
 ```
 
 ### 4 · MCP —— 任意 Agent
 
-MCP 服务器由你的客户端通过仓库根目录的 `.mcp.json` 以 stdio 方式拉起。Claude Code、Cursor 或任何支持 MCP 的客户端都可以，平台本身无需重启。
+MCP 服务器由你的客户端通过仓库根目录的 `.mcp.json` 以 stdio 启动。Claude Code、Cursor 或任何支持 MCP 的客户端都可以；无需重启平台。
 
 ```jsonc
-// .mcp.json（仓库中已包含）
+// .mcp.json（仓库已内置）
 {
   "mcpServers": {
     "kb-mcp": {
@@ -320,42 +322,47 @@ MCP 服务器由你的客户端通过仓库根目录的 `.mcp.json` 以 stdio �
 }
 ```
 
-然后直接用自然语言提问即可——*「关于 PET 薄膜双向拉伸我们有哪些资料？」*——Agent 会经由 knowledgebase 技能路由，并强制走完所有质量门控。
+然后直接对话——*"PET 薄膜双轴拉伸方面我们有什么资料？"*——Agent 会经由 knowledgebase 技能路由，质量门控不可绕过。
 
 ---
 
-## 94 个 MCP 工具
+## MCP 工具
 
-所有工具都在 `kb-mcp/server.py` 中通过 FastMCP 注册。下表的分区是完备且互斥的。
+全部工具在 `kb-mcp/server.py` 中以 FastMCP 注册：**总计 94 个，其中 41 个是 `kb_*` 知识库工具**——也就是 CIKM Demo 论文所演示的领域面。下面的分组是穷尽且互斥的。
 
-| 类别 | 数量 | 覆盖内容 |
+**`kb_*` 知识库工具 —— 41 个**（论文 Demo 驱动的部分）：
+
+| 分组 | 数量 | 覆盖 |
 |---|:---:|---|
-| **SOUL 人格** | 20 | init · list · status · learn · learn-all · train-rl · evaluate · calibrate · 认知草稿 · review · reflect · checkpoint · rollback · ask · qdcvr-ask · router · export（LoRA） |
-| **经验库** | 26 | 完整 E0–E12 生命周期 · 全局检索 · 智能检索 · 重排 · 提取 · 草稿（列表/读取/审批/驳回）· 陈旧检查 · 同步 · 看板 · 衰减 · 冥想（运行/状态/历史/配置） |
-| **知识图谱** | 11 | 图谱检索 · 统计 · 单文档关系 · 关联文档 · 库概览 · 构建 · 跨库文档 · 路径 · 中心文档 · 删除文档/库 |
-| **文档 CRUD** | 9 | 读取 · 新建 · 改元数据 · 改内容 · 删除 · 批量删除 · 移动 · 保存解析结果 |
-| **向量 / 索引** | 6 | 单文档索引 · 批量索引 · 重建索引 · 清理孤儿 · 查重 · 任务状态 |
-| **知识库 CRUD** | 4 | 列表 · 新建 · 更新 · 删除 |
-| **检索** | 4 | 检索（仅元数据）· 向量 · 两阶段（主入口）· 统计 |
-| **标签** | 4 | 列表 · 更新 · 按标签取文档 · 清理 |
-| **项目生命周期** | 4 | 状态 · 启动 · 更新 · 后端状态 |
-| **文件系统** | 3 | 取目录树 · 取子节点 · 上传文件 |
-| **解析** | 3 | 解析单文档 · 批量解析 · 解析任务状态 |
-| | **94** | |
+| **知识图谱** | 11 | graph-search · stats · 单文档关系 · related · 库概览 · build · 跨库文档 · paths · 中心文档 · 删除文档/库 |
+| **文档 CRUD** | 9 | read · create · update-meta · update-content · delete · batch-delete · move · save-parsed · get-documents |
+| **向量 / 索引** | 6 | index-document · batch-index · reindex · cleanup-orphans · find-duplicates · task-status |
+| **知识库 CRUD** | 4 | list · create · update · delete |
+| **检索** | 4 | search（元数据）· vector · two-stage · stats |
+| **标签** | 4 | list · update · get-by-tag · cleanup |
+| | **41** | |
 
-有两条设计规则值得了解：
+**平台工具 —— 53 个**（平台其余能力）：
 
-- **解析工具全部非阻塞。** 它们立即返回 `task_id`，用 `parse_task_status` 轮询即可。解析永远不会阻塞 Agent 的一轮对话。
-- **长任务同样返回 task id。** `kb_reindex`、`kb_graph_build`、`experience_meditation_run` 都返回任务 id，而不是把连接挂住。
+| 分组 | 数量 | 覆盖 |
+|---|:---:|---|
+| **经验** | 26 | E0–E12 完整生命周期 · search-global · search-smart · rerank · extract · drafts（列表/读取/批准/驳回）· stale-check · sync · dashboard · decay · meditation（run/status/history/config） |
+| **SOUL 人格** | 20 | init · list · status · learn · learn-all · train-rl · evaluate · calibrate · cognition drafts · review · reflect · checkpoint · rollback · ask · qdcvr-ask · router · export (LoRA) |
+| **项目生命周期** | 4 | status · start · update · backend-status |
+| **文件系统** | 3 | get-tree · get-children · upload-file |
+| | **53** | |
+
+两条值得知道的设计规则：
+
+- **解析工具不阻塞。**它们立即返回 `task_id`；用 `parse_task_status` 轮询。解析永远不会卡住 Agent 的一轮对话。
+- **长任务同样返回任务号。**`kb_reindex`、`kb_graph_build` 与 `experience_meditation_run` 都返回任务号，而不是挂住连接。
 
 <details>
-<summary><b>Agent 技能（20 个）</b></summary>
+<summary><b>Agent 技能</b></summary>
 
 <br>
 
-`knowledgebase` 调度器把中英文自然语言请求路由到对应子技能，并委托给 Archival 子 Agent 执行，以确保质量门控不会被跳过：
-
-`knowledgebase` · `knowledgebase-init` · `knowledgebase-update` · `knowledgebase-ingest` · `knowledgebase-search` · `knowledgebase-manage` · `knowledgebase-experience` · `knowledgebase-graph` · `knowledgebase-verify` · `butian` · `soul` · `soul-rag`，其余位于 `.claude/skills/`。
+`knowledgebase` 分发技能把自然语言请求（中英文皆可）路由到对应子技能（ingest、search、manage、organize、update、verify、graph、experience……），并委派给 Archival 子 Agent 执行，保证质量门控不可绕过。QDCVR v2 检索技能与基准测评中 Track A 执行的是同一套协议。
 
 </details>
 
@@ -363,53 +370,54 @@ MCP 服务器由你的客户端通过仓库根目录的 `.mcp.json` 以 stdio �
 
 ## 外部 HTTP API
 
-认证**默认开启**（`server.auth.enabled: true`）。除 `/api/v1/health` 与 `/api/v1/auth/*` 外，所有接口都需要 Bearer Token。交互式文档在后端的 **`/docs`**；生成的 OpenAPI 会为非公开接口标注 `bearerAuth`。
+鉴权**默认开启**（`server.auth.enabled: true`）。除 `/api/v1/health` 与 `/api/v1/auth/*` 外，所有端点都需要 Bearer Token。交互式文档见后端 **`/docs`**；生成的 OpenAPI 对非公开操作标注了 `bearerAuth`。
 
 ```bash
-# 0 · 获取令牌（全新安装需先注册）
+# 0 · 获取 token（全新安装请先注册）
 TOKEN=$(curl -s -X POST http://localhost:6789/api/auth/login \
   -H 'content-type: application/json' \
   -d '{"username":"you","password":"your-password"}' | jq -r .token)
 
-# 1 · 创建知识库
+# 1 · 建一个知识库
 curl -s -X POST http://localhost:6789/api/kb/create \
   -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
   -d '{"name":"engineering-notes","description":"内部工程笔记"}'
 
-# 2 · 写入文档（kbId 与 kb_id 均可，snake_case 别名会自动归一化）
+# 2 · 写入文档（kbId 与 kb_id 都接受；snake_case 别名自动归一）
 curl -s -X POST http://localhost:6789/api/kb/documents/create \
   -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
-  -d '{"kbId":"<kbId>","name":"pump-failure.md","content":"# 泵故障\n\n轴承温度超过 90°C..."}'
+  -d '{"kbId":"<kbId>","name":"pump-failure.md","content":"# 泵故障\n\n轴承温度超过 90°C……"}'
 
-# 3 · 检索（两阶段：BM25 粗排 → 向量精排）
-curl -s -X POST http://localhost:6789/api/v1/search/two-stage \
+# 3 · 向量检索（QDCVR Phase 1 的召回工具）
+curl -s -X POST http://localhost:6789/api/v1/search/vector \
   -H "Authorization: Bearer $TOKEN" -H 'content-type: application/json' \
   -d '{"query":"轴承温度上限","limit":5}'
 
-# 健康检查无需令牌
+# 健康检查无需 token
 curl -s http://localhost:8770/api/v1/health
 ```
 
-默认限流为 **600 次请求 / 60 秒**。
+限流默认 **600 次 / 60 秒**。
 
 <details>
-<summary><b>接口分布</b></summary>
+<summary><b>端点地图</b></summary>
 
 <br>
 
 | 领域 | 基础路径 |
 |---|---|
-| 认证 | `/api/v1/auth/{register,login,verify}` · `/api/auth/*`（Web 代理） |
+| 鉴权 | `/api/v1/auth/{register,login,verify}` · `/api/auth/*`（Web 代理） |
 | 知识库 | `/api/kb/{create,catalog,documents}` |
 | 检索 | `/api/v1/search/{two-stage,vector}` |
+| Harness | `/api/v1/meditation/harnesses`（含按引擎的 models / diagnostics / diagnose） |
 | 经验 | `/api/v1/experience/*` |
 | SOUL | `/api/v1/soul/*` |
 | 图谱 | `/api/v1/graph/*` |
 | 解析 | `/api/v1/parse/*` |
-| MinerU | `/api/v1/mineru/{status,restart}` |
+| MinerU | `/api/v1/mineru/{status,probe}` |
 | 健康 | `/api/v1/health`（公开） |
 
-以线上 OpenAPI 文档为准——它列出 114 条路径 / 121 个操作，并显式标注了其中 5 个公开接口。
+以在线 OpenAPI 文档为准。
 
 </details>
 
@@ -417,7 +425,7 @@ curl -s http://localhost:8770/api/v1/health
 
 ## 配置
 
-只有一个文件。仓库根目录的 `config.yml` 是端口与主机的唯一事实来源，后端、Web 代理与 MCP 服务器读取的都是它。
+一个文件。仓库根目录的 `config.yml` 是端口与路径的唯一事实源，后端、Web 代理与 MCP 服务器都读它。
 
 ```yaml
 server:
@@ -431,9 +439,9 @@ server:
     backend_url: "http://localhost:8001"
 ```
 
-优先级为：`BACKEND_PORT` 环境变量 → `config.yml` → 代码默认值。`APP_MODE=dev|prod` 决定读取哪一段。代码库中没有任何地方硬编码端口或路径。
+优先级：`BACKEND_PORT` 环境变量 → `config.yml` → 代码默认。`APP_MODE=dev|prod` 选择对应段。代码里没有任何硬编码的端口或路径。
 
-> 在 `APP_MODE=dev` 下修改 `config.yml` 会触发热重载。长时间会话建议使用 `APP_MODE=prod`，避免日志/数据库写入引发的重载风暴。
+> 在 `APP_MODE=dev` 下修改 `config.yml` 会触发热重载。长会话建议 `APP_MODE=prod`，避免日志/数据库写入引发重载风暴。
 
 ---
 
@@ -441,73 +449,79 @@ server:
 
 ```
 web/storage/tree-file-system/
-├── .tree-fs.json                 # L1 · 权威全局目录树索引
-└── {知识库名称}/
-    ├── .knowledge-base.yml       # L2 · 单库文档索引（名称、标签、元数据）
-    ├── {文档}.md                 # L3 · 解析/上传后的 Markdown
-    └── images/                   #      解析过程中抽取的图片
+├── .tree-fs.json                 # L1 · 全局权威目录索引
+└── {知识库}/
+    ├── .knowledge-base.yml       # L2 · 每库文档索引（名称、标签、元数据）
+    ├── {文档}.md                 # L3 · 解析/上传的 markdown 正文
+    └── images/                   #      解析时抽取的图片
 ```
 
 | 层 | 存储 | 内容 |
 |:---:|---|---|
-| **L1** | `.tree-fs.json` | 全部文件夹与文件及其元数据 |
-| **L2** | `.knowledge-base.yml` | 单库检索索引——检索直接读它 |
-| **L3** | 磁盘上的 `.md` | 内容本身 |
-| **L4** | ChromaDB | 分块向量，每库一个 collection |
-| **L5** | Neo4j | 文档、标签、知识库节点及其类型化关系 |
+| **L1** | `.tree-fs.json` | 全部文件夹与文件及元数据 |
+| **L2** | `.knowledge-base.yml` | 每库检索索引——检索直接读取 |
+| **L3** | 磁盘 `.md` | 正文本身 |
+| **L4** | ChromaDB | 分块向量，每库一个集合 |
+| **L5** | Neo4j | 文档、标签、知识库节点及类型化关系 |
 
-> L5 只会为你**显式构建过图谱**的知识库填充。全新安装时图谱是空的，图谱页显示零节点是正常的——尤其是标签节点，只有在带标签文档上执行过图谱构建后才会出现。
+> 只有对某个知识库执行过图谱构建，L5 才会有数据。全新安装时图谱为空，图谱页面显示零节点是正常现象——标签节点尤其要等对打标文档跑过图谱构建才会出现。
 
 ---
 
-## 验证数据
+## 基准测评
 
-以下数字均可由仓库内已提交的产物复现，脚本与出处都在本仓库中。
+所有测评从**一条可复现流水线**出发：[`benchmark-suite/PIPELINE.md`](./benchmark-suite/PIPELINE.md) —— 下载 50 篇真实 arXiv 论文（26 个领域）→ 经生产链 MinerU 解析 → 按内容路由进 5 个门类库（该步是 Agent 判断件，依据逐篇导出的摘要）→ 每个 part 打内容标签 → 建三个复刻分块库（固定 800 字 / 结构化 / 段落）→ 重启 → 跑 10 题脚本化回归 → 同样 10 题在三条轨道上作答（QDCVR v2 skill 流程 vs 裸 Agent vs dense 基线）→ 生成报告。**一条红线：严禁编造——判断工件必须能追溯至导出的证据。**
 
-**入库完整性。** 两套语料、五个层级端到端校验；在已提交的运行记录中，入库模块报告的完整性为 `1.000`（`benchmark-suite/results/module_a_ingestion_r1.json`、`module_a_std2_r1.json`）。
+**本轮提交的数字**（均可追溯至 `benchmark-suite/results/`）：
 
-**检索 —— 自建语料。** 数据来自 `benchmark-suite/results/module_b_retrieval_r2.json`（20 条查询，已完整提交）：
+| 阶段 | 结果 |
+|---|---|
+| 解析（MinerU 生产链） | 50/50 篇 · 380 万字符 |
+| 内容路由 + 验证 | 50/50 进入 5 个门类库（165 个入库文档） |
+| 内容标签 | 165/165 part 打标，0 失败 |
+| 复刻库 | 2 366 / 1 385 / 10 219 chunks |
+| 脚本化 10 题回归（向量优先） | **9/10 = 90%** —— 唯一未过是长文分块窗口未含核验词组（`doc_hit=true`），跨运行一致 |
+| **实答三轨**，同样 10 题 | **A · QDCVR v2：10/10 命中所问**（门控 6–8/8，一次图书管理员挽救，top-1 金标召回 10/10，向量召回均 ≈1.6 s + 读取 0.8 s）· **B · 裸 Agent：金标 10/10**，溯源止步文件名，均时 78.8 s · **C · dense 基线：内容匹配**，2/10 弃答，无来源路径，均时 12.2 s |
+| 诚实失败探针 | 3 个语料外问题 → 全部给出明确"未找到"报告，零编造 |
 
-| 策略 | Hit@1 | Recall@5 | P@5 | 延迟 |
-|---|:---:|:---:|:---:|:---:|
-| 分阶段 BM25 → 向量 + 内容裁定 | 0.800 | **0.908** | **0.210** | 1.33 s |
-| 纯稠密向量 | **0.900** | 0.917 | 0.200 | **0.081 s** |
+CIKM Demo 论文的配图（`paper_demo/figures/`）即由这些工件生成。
 
-**检索 —— SciFact。** 数据来自 `module_b_std2_r2.json`：稠密向量在 Hit@3（0.900 vs 0.833）、Recall@5（0.900 vs 0.833）与 nDCG@10（0.834 vs 0.809）上领先；BM25 的 MRR 最高（0.839）。
+> **关于已撤下的数字。**本 README 早期版本引用过标准语料的 IR 式指标（`Hit@k`、`nDCG@10` 等），更早还引用过 `benchmark-web/backend/results/` 下一个仓库内**没有生成脚本**的较大基准。IR 语料在 2026-09 的基准重构中退役（标准语料衡量的是排序，不是知识库管理）；被替代的脚本与语料归档于 `.bench_backup_20260917/`。凡不能由仓库内脚本重新生成的数字，一律视为不可用。
 
-**这些数字说明了什么。** 内容裁定**不是白捡的收益**。它提升了 P@5 与 Recall@5——也就是找回了更多相关内容——代价是约 **13 倍延迟**，因为它要读文档而不是算向量。在两套语料上它都**没有**提升 Hit@1。任何「它全面优于纯向量检索」的说法都不被已提交的证据支持，本 README 也不作此声称。
+<sub>数字最后核对于 **2026-09-19** 的运行实例：8 个知识库 · 门类库 165 个入库文档 · 94 个 MCP 工具（41 个 `kb_*`）· 286 项后端测试通过。</sub>
 
-**Agent 接口。** 针对线上平台的外部 API 端到端检查 **73/73 全部通过**（涵盖知识库管理、内容检索、经验生命周期、人格训练）。
+---
 
-> **关于已撤下的结果。** 本 README 的早期版本引用过一组更大的基准数据（`P@5 0.590 → 0.630`、`FPR 12 % → 3.0 %`、`84 ms → 38 ms`）。这些数字来自 `benchmark-web/backend/results/`，而该目录在本仓库中**找不到任何生成脚本**——它们无法复现，且与上文可追溯的运行结果相矛盾。因此它们被**删除**而不是被重述。如果你需要这些数字，请在上游提交可复现脚本之前，将其视为不可用。
+## Publications
 
-<sub>计数最后核验于 **2026-09-15** 的线上实例：12 个知识库 · 209 份文档 · 94 个 MCP 工具 · 20 个技能 · 233 个后端测试 · 124 条 Web 路由 · 114 条 API 路径。</sub>
+- **设计版 README 展示页** —— 本 README 的艺术化单页呈现：[`docs/readme-showcase/index.html`](./docs/readme-showcase/index.html)（截图：[`README-showcase.png`](./docs/readme-showcase/README-showcase.png)）。
+- **QDCVR: A Deployable Knowledge-Base Management Platform with Content-Based Organization and Content-Verified Retrieval** —— CIKM '26 Demo 投稿。正文：[`paper_demo/tex/`](./paper_demo/tex/)，配图：[`paper_demo/figures/`](./paper_demo/figures/)，演示视频：[paper_demo/video/qdcvr-demo.mp4](./paper_demo/video/qdcvr-demo.mp4)。
 
 ---
 
 ## 适用范围与非目标
 
-明确说明这个项目**不是**什么：
+明确说明这**不是**什么：
 
-- **不是托管服务。** 它按设计自托管，没有多租户隔离方案。
-- **不是微调平台。** SOUL 的 LoRA 导出是一条**导出**路径，不要指望它能与专用训练器竞争。
-- **不是在每个维度上都优于纯向量检索。** 见上面的诚实说明——它是在召回类指标上以延迟换精度。
-- **在 Windows 上不是完全不挑环境的。** Python 3.12 的版本锁定是真实约束，目前不支持 3.13。
-- **开箱不是图谱完备的。** L5 需要按知识库显式执行图谱构建才会填充。
+- **不是托管服务。**设计即自托管；这里没有多租户隔离的故事。
+- **不是微调平台。**SOUL 的 LoRA 导出是一条*导出*路径，不是能与专职训练竞争的训练管线。
+- **不是向量检索的替代品。**当答案就在一个 Agent 能整个读完的小语料里时，裸 Agent 不需要索引就能作答；本平台的价值在大规模管理——按内容的组织、逐 part 标签、图谱、完整性，以及溯源到文档 part 与章节的回答。
+- **在 Windows 上没有 Python 3.12 不是开箱即用。**依赖锁定是真实的；3.13 暂不支持。
+- **不是开箱即满的图谱。**L5 由显式的按库图谱构建填充。
 
 ---
 
 ## 参与贡献
 
-欢迎提交 Issue 与 Pull Request。开 PR 之前请先跑：
+欢迎 Issue 与 PR。提交 PR 前：
 
 ```bash
-cd backend && uv run pytest          # 后端单元测试（集成测试需加 --run-integration）
+cd backend && uv run pytest          # 后端单元测试（集成测试需 --run-integration）
 cd web && npx nuxt build             # 类型检查 + 构建
-node scripts/validate_skills.cjs     # 跨技能一致性检查（8 项）
+node scripts/validate_skills.cjs     # 跨技能一致性（8 项检查）
 ```
 
-约定：端口与路径一律来自 `config.yml`；Python 必须写类型标注并使用 `logging`，禁止 `print`；`httpx` 调用必须传 `trust_env=False`，避免 localhost 请求被代理劫持；解析工具绝不阻塞。
+约定：端口与路径一律来自 `config.yml`；Python 使用类型标注与 `logging`，不用 `print`；`httpx` 调用传 `trust_env=False`，防止本机代理劫持；解析工具永不阻塞。
 
 ---
 
@@ -517,6 +531,6 @@ MIT —— 见 [LICENSE](./LICENSE)。
 
 <div align="center">
 <br>
-<sub>本项目是面向「内容验证检索」的研究平台。<br>
-截图均为运行中应用的真实捕获；基准数字要么可追溯到已提交产物，要么不予列出。</sub>
+<sub>一个研究内容核验检索的科研平台。<br>
+界面截图均为运行中应用的真实截图；基准数字均可追溯至已提交的工件，否则不予声明。</sub>
 </div>

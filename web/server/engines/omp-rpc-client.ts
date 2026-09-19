@@ -62,10 +62,13 @@ export class OmpRpcClient {
     private cwd: string,
     private model?: string,
     private sessionPath?: string,
+    private thinking?: string,
   ) {
     const cli = resolveOmpCli(cwd)
     const args = [...cli.args, '--mode', 'rpc', '--cwd', cwd]
     if (model) args.push('--model', model)
+    // 思考强度：omp 官方旗标，档位随模型（omp models --json 的 thinking 数组）
+    if (thinking) args.push('--thinking', thinking)
     // Resume a prior session: OMP's CLI accepts `--resume <sessionId>` to load
     // the on-disk JSONL, restoring full multi-turn context across requests.
     if (sessionPath) args.push('--resume', sessionPath)

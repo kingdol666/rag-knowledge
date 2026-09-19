@@ -1,3 +1,0 @@
-# Henri Kontinen
-
-Henri Kontinen (] ; born 19 June 1990) is a Finnish tennis player.

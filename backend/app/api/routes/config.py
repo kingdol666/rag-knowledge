@@ -29,7 +29,8 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/config", tags=["Configuration"])
 
 # Sections stored in the shared config.yml (rag-knowledge/config.yml)
-SHARED_SECTIONS = ("server", "storage", "vector", "embedding", "graph", "search", "experience_auto")
+SHARED_SECTIONS = ("server", "storage", "vector", "embedding", "graph", "search",
+                   "ingestion", "experience_auto")
 # Sections stored in backend/config.yml
 BACKEND_SECTIONS = ("mineru",)
 
@@ -139,6 +140,7 @@ def _build_yaml(data: dict) -> str:
         "embedding": "# -- Embedding Model --",
         "graph": "# -- Knowledge Graph (Neo4j) --",
         "search": "# -- Two-Stage Search --",
+        "ingestion": "# -- Ingestion (large-doc split) --",
     }
 
     # Write every section present in data (managed + carried-over unknown

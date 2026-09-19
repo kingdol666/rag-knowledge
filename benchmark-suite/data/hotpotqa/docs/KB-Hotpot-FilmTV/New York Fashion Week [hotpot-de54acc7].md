@@ -1,3 +1,0 @@
-# New York Fashion Week
-
-New York Fashion Week, held in February and September of each year, is a semi-annual series of events (generally lasting 7–9 days) when international fashion collections are shown to buyers, the press and the general public. It is one of four major fashion weeks in the world, collectively known as the "Big 4," along with those in Paris, London and Milan. The Council of Fashion Designers of America (CFDA) created the modern notion of a centralized “New York Fashion Week” in 1993, although cities like London were already using their city’s name in conjunction with the words “fashion week” in the 1980s. NYFW is based on a much older series of events called “Press Week,” founded in 1942.

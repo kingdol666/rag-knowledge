@@ -1,3 +1,0 @@
-# A Million Miles in a Thousand Years
-
-A Million Miles in a Thousand Years, subtitled "What I Learned While Editing My Life", is the sixth book by Donald Miller. After writing a successful book, author Donald Miller's life stalled. Instead of enjoying the fruits of his labor, Miller had slipped into a dark point in his life. He had no desire to participate in the daily responsibility of life and found himself questioning what his purpose was. While in this slump he was approached by two movie producers wanting to turn his book into a movie. "A Million Miles in a Thousand Years" centers on the realizations that Miller came to while editing his successful memoir "Blue Like Jazz" into a screenplay for a movie, directed by Steve Taylor.

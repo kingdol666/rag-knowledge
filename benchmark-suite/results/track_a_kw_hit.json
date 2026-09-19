@@ -1,0 +1,97 @@
+{
+ "rule": "hit = >=1 gold keyword substring occurs in the five-section answer",
+ "n": 10,
+ "any_hit": 10,
+ "all_hit": 9,
+ "rows": [
+  {
+   "qid": "BQ01",
+   "kw_any": [
+    "scaled dot-product",
+    "multi-head",
+    "recurrence"
+   ],
+   "n_gold": 3,
+   "kw_all": true
+  },
+  {
+   "qid": "BQ02",
+   "kw_any": [
+    "noisy intermediate-scale",
+    "error correction"
+   ],
+   "n_gold": 2,
+   "kw_all": true
+  },
+  {
+   "qid": "BQ03",
+   "kw_any": [
+    "multimedqa",
+    "67.6"
+   ],
+   "n_gold": 2,
+   "kw_all": true
+  },
+  {
+   "qid": "BQ04",
+   "kw_any": [
+    "molecular function",
+    "biological process",
+    "cellular component"
+   ],
+   "n_gold": 3,
+   "kw_all": true
+  },
+  {
+   "qid": "BQ05",
+   "kw_any": [
+    "unified growth theory"
+   ],
+   "n_gold": 1,
+   "kw_all": true
+  },
+  {
+   "qid": "BQ06",
+   "kw_any": [
+    "precipitation efficiency"
+   ],
+   "n_gold": 1,
+   "kw_all": true
+  },
+  {
+   "qid": "BQ07",
+   "kw_any": [
+    "yiddish",
+    "8b"
+   ],
+   "n_gold": 2,
+   "kw_all": true
+  },
+  {
+   "qid": "BQ08",
+   "kw_any": [
+    "oxygen redox",
+    "cathode"
+   ],
+   "n_gold": 2,
+   "kw_all": true
+  },
+  {
+   "qid": "BQ09",
+   "kw_any": [
+    "dynamic",
+    "multilayer perceptron"
+   ],
+   "n_gold": 2,
+   "kw_all": true
+  },
+  {
+   "qid": "BQ10",
+   "kw_any": [
+    "chemotherapy"
+   ],
+   "n_gold": 2,
+   "kw_all": false
+  }
+ ]
+}

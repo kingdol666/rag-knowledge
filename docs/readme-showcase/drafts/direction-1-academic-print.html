@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<!-- Direction 1 · Academic Print — ivory paper, ink serif, teal accent.
+     form 母题: 0–8 gate scale rendered as a print-grade ruler + five-section numbering.
+     Content: QDCVR platform showcase (numbers traceable to benchmark-suite/results/). -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>QDCVR — Direction 1 · Academic Print</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F7F4EC; --ink:#1E2A26; --teal:#0E7168; --teal-deep:#0A4F49;
+    --alert:#B4441F; --hair:#D8D2C2; --muted:#6E7A72; --gold:#9E7A38;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:'Inter',sans-serif;font-size:16px;line-height:1.6}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 48px}
+  header{padding:72px 0 40px;border-bottom:3px double var(--ink)}
+  .kicker{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--teal);margin-bottom:18px}
+  h1{font-family:'Source Serif 4',serif;font-weight:700;font-size:64px;line-height:1.04;letter-spacing:-.01em}
+  h1 em{font-style:italic;color:var(--teal-deep)}
+  .sub{font-family:'Source Serif 4',serif;font-size:21px;color:var(--muted);margin-top:18px;max-width:760px}
+  .meta-row{display:flex;gap:34px;margin-top:30px;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--muted)}
+  .meta-row b{color:var(--ink);font-weight:600}
+  section{padding:56px 0;border-bottom:1px solid var(--hair)}
+  h2{font-family:'Source Serif 4',serif;font-size:30px;font-weight:700;margin-bottom:8px}
+  h2 .no{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--teal);vertical-align:super;margin-right:10px;letter-spacing:.15em}
+  .lede{color:var(--muted);max-width:780px;margin-bottom:34px}
+  /* gate scale motif */
+  .scale{position:relative;height:86px;margin:30px 0 8px}
+  .scale .rail{position:absolute;top:34px;left:0;right:0;height:3px;background:var(--ink)}
+  .tick{position:absolute;top:26px;width:1.5px;height:19px;background:var(--ink)}
+  .tick span{position:absolute;top:22px;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink)}
+  .zone{position:absolute;top:56px;font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;text-align:center}
+  .zone small{display:block;color:var(--muted);text-transform:none;letter-spacing:0;margin-top:2px}
+  .z-discard{color:var(--alert)} .z-fallback{color:var(--gold)} .z-pass{color:var(--teal)}
+  .cursor{position:absolute;top:8px;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--paper);background:var(--teal);padding:3px 10px;border-radius:2px;white-space:nowrap}
+  .cursor:after{content:"";position:absolute;left:50%;top:100%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--teal)}
+  /* tracks */
+  .tracks{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--hair);border:1px solid var(--hair)}
+  .track{background:var(--paper);padding:26px 24px}
+  .track h3{font-family:'Source Serif 4',serif;font-size:19px;margin-bottom:4px}
+  .track .tag{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .track .big{font-family:'Source Serif 4',serif;font-size:44px;font-weight:700;color:var(--teal-deep);margin:12px 0 2px}
+  .track .big small{font-size:16px;font-weight:400;color:var(--muted)}
+  .track p{font-size:13.5px;color:var(--muted)}
+  .track.a{box-shadow:inset 0 4px 0 var(--teal)}
+  .figure{border:1px solid var(--ink);padding:10px;background:#fff}
+  .figure img{width:100%;display:block}
+  .caption{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--muted);margin-top:8px}
+  .caption b{color:var(--ink)}
+  footer{padding:44px 0 70px;color:var(--muted);font-size:13.5px;display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace}
+  a{color:var(--teal-deep)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="kicker">QDCVR · Knowledge-Base Management Platform · CIKM '26 Demo</div>
+  <h1>Read first.<br>Then <em>answer.</em></h1>
+  <p class="sub">A deployable platform that organizes documents by what they say and verifies every retrieval by reading it — vector recall is only the shortlist; the 0–8 content gate is the verdict.</p>
+  <div class="meta-row">
+    <div>50 <b>real papers</b></div><div>5 <b>category bases</b></div><div>165 <b>indexed docs</b></div>
+    <div>3.8M <b>characters</b></div><div>41 <b>kb_* MCP tools</b></div><div>10/10 <b>live on-target</b></div>
+  </div>
+</header>
+
+<section>
+  <h2><span class="no">§1</span>The gate is the protocol</h2>
+  <p class="lede">Vector recall produces a shortlist. The QDCVR content gate reads each candidate and scores it 0–8 — topic, scenario, evidence — before anything reaches the answer. Fails escalate to a librarian; nothing passes, the system says <em>not found</em>.</p>
+  <div class="scale">
+    <div class="rail"></div>
+    <div class="cursor" style="left:81%">this run · live gates 6–8</div>
+    <div class="tick" style="left:0%"><span>0</span></div><div class="tick" style="left:12.5%"><span>1</span></div>
+    <div class="tick" style="left:25%"><span>2</span></div><div class="tick" style="left:37.5%"><span>3</span></div>
+    <div class="tick" style="left:50%"><span>4</span></div><div class="tick" style="left:62.5%"><span>5</span></div>
+    <div class="tick" style="left:75%"><span>6</span></div><div class="tick" style="left:87.5%"><span>7</span></div>
+    <div class="tick" style="left:100%"><span>8</span></div>
+    <div class="zone z-discard" style="left:0%;width:50%">discard<small>off-topic · tangential</small></div>
+    <div class="zone z-fallback" style="left:56%">fallback<small>librarian escalation</small></div>
+    <div class="zone z-pass" style="left:75%">fast exit<small>answer now</small></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="no">§2</span>Three tracks, one corpus, ten questions</h2>
+  <p class="lede">Same 50 papers, same questions, three ways to answer. The protocol's edge is provenance to document part and section — and an honest not-found when evidence is absent.</p>
+  <div class="tracks">
+    <div class="track a"><div class="tag">Track A · QDCVR v2</div><h3>KB protocol</h3><div class="big">10/10</div><p>on-target · top-1 gold 10/10 · citations to part &amp; section · ≈1.6 s vector recall + 0.8 s reads · gates 6–8/8, one librarian rescue</p></div>
+    <div class="track"><div class="tag">Track B · Bare agent</div><h3>Whole-file tools</h3><div class="big">10/10 <small>gold</small></div><p>provenance stops at file names · no section trace · 78.8 s average — it reads everything</p></div>
+    <div class="track"><div class="tag">Track C · Dense baseline</div><h3>Fixed 800-char chunks</h3><div class="big">2/10 <small>abstained</small></div><p>content matches but no source paths · evidence window misses the passage · 12.2 s average</p></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="no">§3</span>Organization is the other half</h2>
+  <p class="lede">Ingestion parses with MinerU, routes each paper into a category base by reading its content, keeps section headers on every part, and propagates tags to all of them. 50/50 parse-verified · 50/50 content-routed · 165/165 parts tagged.</p>
+  <div class="figure">
+    <img src="../../../paper_demo/figures/fig2_architecture.png" alt="QDCVR architecture">
+  </div>
+  <div class="caption"><b>Fig.</b> Platform architecture — ingestion, content-routed category bases, QDCVR retrieval protocol, and the agent/MCP surface.</div>
+</section>
+
+<section>
+  <h2><span class="no">§4</span>Honest by contract</h2>
+  <p class="lede">Three out-of-corpus probes returned explicit not-found reports — zero fabrication. The scripted regression scores 9/10; the one miss is a chunk-window miss (<span style="font-family:'JetBrains Mono',monospace">doc_hit=true</span>), identical across runs, and is declared rather than papered over.</p>
+</section>
+
+<footer>
+  <div>QDCVR · CIKM '26 demo · paper_demo/tex + benchmark-suite/results</div>
+  <div><a href="#">paper</a> · <a href="#">video</a> · <a href="#">pipeline</a></div>
+</footer>
+</div>
+</body>
+</html>

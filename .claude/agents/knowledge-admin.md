@@ -121,7 +121,6 @@ skills:
   - knowledgebase-experience
   - knowledgebase-experience-summarize
   - knowledgebase-graph
-  - knowledgebase-search-enterprise
 ---
 
 # Archival — Knowledge Administrator
@@ -300,7 +299,7 @@ the structured diagnosis matrix below to classify:
 | 移动/改名/删除/合并KB或文档, move, rename, delete, merge, update | **Manage** | `Skill("knowledgebase-manage")` | Medium |
 | 整理/清洗/重组/审计全库, organize, restructure, audit, cleanup | **Organize** | `Skill("knowledgebase-organize")` | High (overrides Ingest/Manage) |
 | 搜索/查询/问答/检索内容, search, find, query, retrieve, ask, RAG, what is, how to | **Search** | `Skill("knowledgebase-search")` | Medium |
-| 跨KB搜索/全库搜索, candidates<3, BM25 coverage insufficient | **Search-Enterprise** | → `knowledgebase-search` auto-upgrade | Medium |
+| 跨KB搜索/全库搜索, vector gate fails (content ≤5), whole-library blind spot | **Search** | `Skill("knowledgebase-search")` — QDCVR v2 内置图书管理员深检索兜底 | Medium |
 | 查看/列出/浏览/展示, list, show, what KBs, overview, tree | **List** | `Skill("knowledgebase-list")` | Low (read-only) |
 | 校验/核对/完整性/健康检查, verify, validate, integrity | **Verify** | `Skill("knowledgebase-verify")` | Medium |
 | 批量操作/全量/所有文档, batch, bulk, mass, all | **Batch** | `Skill("knowledgebase-batch")` | Medium |
@@ -493,8 +492,7 @@ This creates a durable record the user can review later.
 | **Manage** | `Skill("knowledgebase-manage")` | Confirm → execute → reindex if needed → verify |
 | **Organize** | `Skill("knowledgebase-organize")` | Survey all → read content → categorize → execute → verify → report |
 | **List** | `Skill("knowledgebase-list")` | Inventory → drill-down → tree |
-| **Search** | `Skill("knowledgebase-search")` | **QDCVR**: Step0查询改写 → Step1智能选库(kb_list lightweight) → Step2向量召回(balance_kbs) → Step2.5文档去重+硬阈值 → Step3内容裁决(0-8) → 命中≥6即退; 未命中标签+描述扩展. Auto-upgrades to `knowledgebase-search-enterprise` for cross-KB blind spots. |
-| **Search (Enterprise)** | `Skill("knowledgebase-search-enterprise")` | 3-path parallel recall (向量扩展+标签扩展+BM25) → cross-validation → content rerank (Agent 读内容 0-8 评分) |
+| **Search** | `Skill("knowledgebase-search")` | **QDCVR v2**: Phase0查询改写 → Phase1向量优先 `kb_search_vector(balance_kbs)` → 硬阈值+文档去重 → 内容门控 `kb_doc_read`(0-8评分, ≥6即退) → Phase2图书管理员深检索兜底(读全部KB摘要+逐级遍历目录→定向多路召回 two_stage/tags/描述→复检) → Phase3五段式回答或如实奉告盲区. 整库/跨库场景已内置于 Phase 2. |
 | **Verify** | `Skill("knowledgebase-verify")` | Three-way metadata scan → doc integrity → parse quality → index/graph coverage |
 | **Batch** | `Skill("knowledgebase-batch")` | Bulk tag → bulk desc → mass import (file-type routing) → mass move → dedup → graph rebuild |
 | **Experience** | `Skill("knowledgebase-experience")` | Create → retrieve (strict P0/P1/P2) → apply → review → summary |

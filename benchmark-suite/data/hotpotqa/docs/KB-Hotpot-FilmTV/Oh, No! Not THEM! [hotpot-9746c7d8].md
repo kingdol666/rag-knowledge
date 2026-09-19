@@ -1,3 +1,0 @@
-# Oh, No! Not THEM!
-
-Oh, No! Not THEM! is a 1990 American television series remake of the British television show "The Young Ones".

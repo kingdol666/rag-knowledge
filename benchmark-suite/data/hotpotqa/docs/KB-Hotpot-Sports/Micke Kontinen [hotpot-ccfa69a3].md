@@ -1,3 +1,0 @@
-# Micke Kontinen
-
-Micke Kontinen (born 18 December 1992) is a Finnish tennis player. He is the younger brother of Henri Kontinen who is also a tennis player.

@@ -287,7 +287,10 @@
     "editMetaModal": "Edit Metadata",
     "editContentModal": "Edit Document Content",
     "manageTagsModal": "Manage Tags",
-    "moveDocModal": "Move Document"
+    "moveDocModal": "Move Document",
+    "contentChars": "Characters: {n}",
+    "willSplit": "Exceeds the {max}-char chunk limit; will be split into ~{parts} part documents on save",
+    "createSplitSuccess": "Document has {chars} chars; split into {parts} parts on ingest"
   },
   "search": {
     "title": "Knowledge Search",
@@ -928,7 +931,8 @@
     "failedCount": "{n} failed",
     "savedCount": "Saved {n} to KB",
     "target": "Target: {name}",
-    "elapsed": "Elapsed {time}"
+    "elapsed": "Elapsed {time}",
+    "parsedChars": "Parsed {n} chars"
   },
   "meditation": {
     "title": "Meditation Settings",

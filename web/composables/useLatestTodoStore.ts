@@ -19,12 +19,10 @@ interface TodoSnapshot {
   sourceId: string
 }
 
-type EngineName = 'claude' | 'omp'
+// Engine keys are open-ended (any chat-capable harness id).
+type EngineName = string
 
-const _snapshots: Ref<Record<EngineName, TodoSnapshot | null>> = ref({
-  claude: null,
-  omp: null,
-})
+const _snapshots = ref<Record<string, TodoSnapshot | null>>({})
 
 export function useLatestTodoStore() {
   const snapshot = (engine: EngineName): ComputedRef<TodoSnapshot | null> =>
