@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1240" viewBox="0 0 1000 1240" role="img" aria-labelledby="c-title c-desc"><title id="c-title">C · Evidence-centered modular architecture</title><desc id="c-desc">QDCVR design draft. Web and CLI access shared FastAPI services separately from the MCP agent surface with 41 kb_* tools. PDFs are parsed by MinerU to section Markdown, classified by content into five bases, split and tagged as indexed evidence. ChromaDB BGE-M3, Neo4j, and YAML audit tree support the platform. Online query rewrite, vector-first recall, candidate reading, and a 0–8 gate with threshold 6 precede a conditional answer. Only initial failure invokes librarian shelf scan and targeted re-search; candidates are read and checked again. Passing evidence yields a cited five-section answer; no passing evidence after fallback yields searched scope, near miss, and reason. Optional BM25 and graph are not the benchmark route.</desc><defs><marker id="c-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#607580" stroke-width="1.3"/></marker></defs><rect width="1000" height="1240" fill="white"/>
+<text x="30" y="36" font-family="Arial, Helvetica, sans-serif" font-size="23" font-weight="600" text-anchor="start" fill="#263944">QDCVR  /  Evidence-centered architecture</text>
+<text x="30" y="63" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" text-anchor="start" fill="#607580">C — numbered modules · central evidence repository · vertical branching protocol</text>
+<path d="M30 80 L970 80" stroke="#cbd4d8" stroke-width="1"/>
+<rect x="30" y="98" width="220" height="44" rx="3" fill="white" stroke="#607580" stroke-width="1.1"/>
+<text x="140.0" y="125.44" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Web console · ragctl CLI</text>
+<rect x="660" y="98" width="310" height="44" rx="3" fill="white" stroke="#607580" stroke-width="1.1"/>
+<text x="815.0" y="125.44" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">MCP agents · 41 kb_* tools</text>
+<polyline points="140,142 140,164" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#c-arrow)"/>
+<polyline points="815,142 815,164" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#c-arrow)"/>
+<rect x="30" y="164" width="940" height="40" rx="3" fill="#edf5ef" stroke="#607580" stroke-width="1.1"/>
+<text x="500.0" y="189.44" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">FastAPI backend / shared platform services</text>
+<rect x="30" y="244" width="275" height="190" rx="3" fill="#fbefeb" stroke="#607580" stroke-width="1.1"/>
+<text x="167.5" y="298.44" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">01  CONTENT INGESTION</text>
+<text x="167.5" y="321.44" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">PDF → MinerU</text>
+<text x="167.5" y="344.44" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Section Markdown</text>
+<text x="167.5" y="367.44" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Read content → 5 bases</text>
+<text x="167.5" y="390.44" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Section-path parts + tags</text>
+<rect x="355" y="244" width="320" height="190" rx="3" fill="#edf5ef" stroke="#607580" stroke-width="1.1"/>
+<text x="515.0" y="298.44" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">02  INDEXED EVIDENCE</text>
+<text x="515.0" y="321.44" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">ChromaDB · BGE-M3</text>
+<text x="515.0" y="344.44" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Neo4j relations</text>
+<text x="515.0" y="367.44" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">YAML audit tree</text>
+<text x="515.0" y="390.44" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Parts / provenance / traces</text>
+<rect x="725" y="244" width="245" height="190" rx="3" fill="white" stroke="#607580" stroke-width="1.1" stroke-dasharray="5 4"/>
+<text x="847.5" y="300.1" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" text-anchor="middle" fill="#263944">OPTIONAL CHANNELS</text>
+<text x="847.5" y="322.1" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" text-anchor="middle" fill="#263944">BM25 / graph</text>
+<text x="847.5" y="344.1" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" text-anchor="middle" fill="#263944">Not benchmark route</text>
+<text x="847.5" y="366.1" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" text-anchor="middle" fill="#263944">Optional lifecycle:</text>
+<text x="847.5" y="388.1" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="400" text-anchor="middle" fill="#263944">resolved Q&amp;A → entries</text>
+<polyline points="305,339 355,339" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#c-arrow)"/>
+<rect x="355" y="495" width="320" height="90" rx="3" fill="#edf4fa" stroke="#607580" stroke-width="1.1"/>
+<text x="515.0" y="522.44" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">03  QUERY PREPARATION</text>
+<text x="515.0" y="545.44" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Rewrite → vector-first recall</text>
+<text x="515.0" y="568.44" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Balance across category bases</text>
+<polyline points="515,434 515,495" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#c-arrow)" stroke-dasharray="5 4"/>
+<text x="529" y="468" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" text-anchor="start" fill="#263944">Recall evidence</text>
+<rect x="355" y="620" width="320" height="62" rx="3" fill="#edf4fa" stroke="#607580" stroke-width="1.1"/>
+<text x="515.0" y="644.94" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">04  READ CANDIDATE TEXT</text>
+<text x="515.0" y="667.94" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Parts / continuation reads</text>
+<polyline points="515,585 515,620" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#c-arrow)"/>
+<polyline points="515,682 515,710" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#c-arrow)"/>
+<polygon points="515,710.0 620.0,765 515,820.0 410.0,765" fill="#faf4e5" stroke="#607580" stroke-width="1.2"/>
+<text x="515" y="760" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" text-anchor="middle" fill="#263944">Content gate</text>
+<text x="515" y="781" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" text-anchor="middle" fill="#263944">0–8; any ≥ 6?</text>
+<rect x="30" y="715" width="265" height="118" rx="3" fill="#edf5ef" stroke="#607580" stroke-width="1.1"/>
+<text x="162.5" y="756.44" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">06  CITED ANSWER</text>
+<text x="162.5" y="779.44" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Five sections</text>
+<text x="162.5" y="802.44" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Base / doc / part / section</text>
+<polyline points="410,765 295,765" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#c-arrow)"/>
+<text x="309" y="751" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" text-anchor="start" fill="#263944">Any ≥ 6</text>
+<rect x="355" y="865" width="320" height="78" rx="3" fill="#fbefeb" stroke="#607580" stroke-width="1.1"/>
+<text x="515.0" y="897.94" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">05  LIBRARIAN FALLBACK</text>
+<text x="515.0" y="920.94" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Shelf scan → targeted re-search</text>
+<polyline points="515,820 515,865" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#c-arrow)"/>
+<text x="529" y="846" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" text-anchor="start" fill="#263944">None passes</text>
+<rect x="725" y="865" width="245" height="78" rx="3" fill="#edf4fa" stroke="#607580" stroke-width="1.1"/>
+<text x="847.5" y="897.94" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Read new candidates</text>
+<text x="847.5" y="920.94" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Recheck content</text>
+<polyline points="675,904 725,904" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#c-arrow)"/>
+<polyline points="847,943 847,975" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#c-arrow)"/>
+<polygon points="847,975.0 949.5,1025 847,1075.0 744.5,1025" fill="#faf4e5" stroke="#607580" stroke-width="1.2"/>
+<text x="847" y="1020" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" text-anchor="middle" fill="#263944">Recheck</text>
+<text x="847" y="1041" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" text-anchor="middle" fill="#263944">0–8; any ≥ 6?</text>
+<polyline points="745,1025 275,1025 275,833" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#c-arrow)"/>
+<text x="410" y="1014" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" text-anchor="start" fill="#263944">Any ≥ 6 → cited answer</text>
+<rect x="355" y="1060" width="320" height="48" rx="3" fill="#fbefeb" stroke="#607580" stroke-width="1.1"/>
+<text x="515.0" y="1089.44" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Not found after fallback</text>
+<polyline points="847,1075 847,1084 675,1084" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#c-arrow)"/>
+<text x="709" y="1104" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" text-anchor="start" fill="#263944">None passes</text>
+<text x="30" y="878" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" text-anchor="start" fill="#263944">Answer sections:</text>
+<text x="30" y="899" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" text-anchor="start" fill="#263944">search paths</text>
+<text x="30" y="920" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" text-anchor="start" fill="#263944">answer · sources</text>
+<text x="30" y="941" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" text-anchor="start" fill="#263944">confidence · blind spots</text>
+<text x="355" y="1137" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" text-anchor="start" fill="#263944">Not found: searched scope + near miss + reason</text>
+<path d="M30 1160 L970 1160" stroke="#cbd4d8" stroke-width="1"/>
+<text x="30" y="1187" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" text-anchor="start" fill="#263944">Gate: topic 0–3 + scenario 0–3 + evidence 0–2 = 0–8; pass ≥ 6. Audit trace at every stage.</text>
+<text x="30" y="1213" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="400" text-anchor="start" fill="#607580">Solid arrows: data / control flow. Dashed arrows: evidence supply. Dashed modules: optional.</text></svg>

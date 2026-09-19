@@ -80,10 +80,12 @@ kb_search_vector(query="<first 500 chars of body rewritten as a declarative sent
 ## A1 — Survey (Whole-Library Current State)
 
 ```
-kb_list()                    # all KBs (including UUID + description + doc_count)
-kb_tags_list()               # tag vocabulary (used by A3b normalization; ≥90% reuse target)
+kb_list()                    # all KBs (UUID 字段名为 kbId；description；docCount)
+kb_tags_list()               # tag vocabulary (used by A3b normalization; reuse is a SOFT target, see A3b T4/T5)
 fs_get_tree(max_depth=3)     # KB hierarchy structure (sub-KBs visible)
 ```
+> ⚠️ `kb_list` 可能瞬时返回**空 catalog**（60s 鉴权毒化窗）——空结果与"项目真的为空"无法从返回值区分，
+> **必须用 `fs_get_tree()` 交叉验证**后再下结论；等 20-30s 重试，最多 3 次。
 
 ## A2 — Acquire Content + Parse Quality Detection
 
@@ -123,7 +125,7 @@ Oversized documents destroy retrieval granularity (vector chunks, BM25 windows, 
 ```bash
 python "<this-skill-dir>/scripts/split_large_doc.py" "<markdown_path>"
 ```
-The script reads `ingestion.large_doc.max_chars` from config.yml itself (CWD-upward probe; override with `--config <path>` or `--max-chars N`), and prints one JSON line:
+The script reads `ingestion.large_doc.max_chars` from config.yml itself (**the key lives in the REPOSITORY-ROOT config.yml under `ingestion.large_doc` — not backend/config.yml**; the script probes CWD-upward, so run it with the repo root in its path chain, or pass `--config <path>` / `--max-chars N` explicitly), and prints one JSON line:
 ```json
 {"success": true, "source_chars": 8432, "max_chars": 1000, "split": true,
  "part_count": 9, "source_deleted": true,
@@ -144,7 +146,8 @@ The script reads `ingestion.large_doc.max_chars` from config.yml itself (CWD-upw
 
 ## A3 — Structured Content Analysis
 
-Read a 3000-char sample and output a structured result (**this is the basis for all later decisions**):
+Read a 3000-char sample and output a structured result (**this is the basis for all later decisions**).
+**Long documents (>20000 chars): three-window sampling is mandatory** — head 0-3000 + middle (total/2)±1500 + tail last 2000; distill 1-2 points from each window into the analysis, so the description carries the document's full real meaning, not just its opening (see [description-guide.md D8](references/description-guide.md)).
 **After A2.5 split**: run A3/A3b/A3c **per part** — each part is analyzed and described on its own real body (the gate script's per-part `description` is the seed; refine it to the four-element standard below).
 
 ```json
@@ -172,9 +175,11 @@ Clean A3's `raw_tags`; **skipping is strictly forbidden**. Full rules in [tag-qu
 1. T1 blocklist filtering → discard section titles ("Abstract"/"1 Introduction"/"References")/test tags (test-*)/descriptive tags
 2. T2 normalization    → unify casing (pet→PET) + merge Chinese/English synonyms (polyethylene/PE: keep the one already in the vocabulary)
 3. T3 count trimming  → keep 2-5: material words + method words + scenario words (+ 0-2 attributes)
-4. Vocabulary comparison    → ≥90% reuse of existing words from kb_tags_list(); new words only for entirely new concepts
+4. Vocabulary comparison    → SOFT target: reuse existing words from kb_tags_list() when they fit the content
 5. Content readback    → every tag actually appears within the ≥2000 chars sample
 ```
+**优先级：T5 内容锚定 > T3 数量 > T2 归一 > T4 词表复用。** T4 是软目标——词表里没有贴切的词就造新的内容衍生词（整理阶段 L2 会归一）；
+**绝不为凑复用率而使用正文没有的词**（那违反 T5）。实测：词表 364 词无环境类中文标签时，全部新造是正确行为。
 **Failing the bar → return to A3 to re-extract; do not release to A5.**
 
 ## A3c — Description Quality Gate ⭐
@@ -185,8 +190,13 @@ Write descriptions per [description-guide.md](references/description-guide.md); 
 Description = [Subject] + [Method/Technology] + [Scenario/Problem] + [Key data/Conclusion] + [Language]
 ```
 - **At least 2 concrete nouns among the four elements** (method names/material names/equipment names/datasets) — generic phrases like "a paper about X" are forbidden.
-- **Must read back after writing**: `kb_doc_read(..., max_chars=800)` to verify every key claim in the description actually appears in the body.
+- **Must verify every claim against the body**: direct path → verify against the source file before saving; parse path → verify against the `parse_task_status` markdown BEFORE saving (the description gate runs pre-save), then C1 re-verifies the stored copy via `kb_doc_read(..., max_chars=800)` after A5.
 - **Mismatch → rewrite the description** (never change the body to fit the description).
+
+**D8 多维 + 查询导向（检索定位的核心，强制）**：描述必须铺满五个查询维度——领域维 / 方法维 / 对象维 / 问题维（用提问者口吻写一句"本文能回答什么"）/ 结论维（带数字优先），并在中文描述中保留英文方法名原文作双语锚点。长文按三窗采样结论补中后段要点。分 part 文档用**两层描述**：`【第 i/N 部分 · <章节范围>】<论文级主体+方法> —— <本 part 特有内容>`。单条 ≤220 字符。逐维标准见 [description-guide.md D8](references/description-guide.md)。
+**<20000 chars 的短文也至少双窗**（头 3000 + 尾 2000）——结论/修正系数/附录数据常埋在尾部，只读头部必漏（实测教训）。
+
+**A3c-R 检索自检（A6 索引后强制闭环）**：见 A6-V 之后的 [A3c-R](#a3c-r--检索自检a6-索引后必做)——用描述里的问题维措辞跑 `kb_search` + 同义改写跑 `kb_search_vector`，目标文档必须被找回，否则把漏掉的查询词并回描述复测。
 
 ✅ "Coal mill blockage early warning based on CNN-LSTM, trained on DCS historical data, 660MW unit field-tested with 315min advance warning. In Chinese."
 ❌ "Coal mill paper" / "Parsed from xxx.pdf" / "test" / "polymer research"
@@ -250,12 +260,17 @@ Returns `{vector_index: {collection, total_chunks, graph_doc_id}, graph_stats}`.
 ### A6b Knowledge Graph Build (Immediately After Vector Indexing) ⭐
 ```
 kb_graph_build(kb_id=target_kb_id, force=true)
+# → NON-BLOCKING: {status:"running", task_id, ...}; poll kb_task_status(task_id)
 ```
-> ⚠️ **Known issue**: `total_relations` returned by `kb_graph_build` may be 0 (a stats counting bug); **this does not mean the build failed**. The data has actually been written to Neo4j. Always verify with `kb_graph_document()` spot checks rather than relying on the return value.
+> ⚠️ **kb_graph_build is asynchronous** (returns `task_id`, not the build stats). `kb_task_status` resolves task ids **across MCP processes** (a persisted registry under `storage/mcp-task-registry.jsonl`; a resolved record carries `cross_process: true`). If a status call still reports unknown id, verify completion directly instead of retrying:
+```
+kb_graph_document(doc_path=doc_path)   # document node exists = build landed
+```
+> ⚠️ **Known gap**: tag updates (`kb_doc_update_tags`) propagate to `.knowledge-base.yml` immediately but may NOT appear on the graph node's `tags` (background graph reindex lag/gap). C7 judges by document-node existence, not node tags.
 
 Post-build verification:
 ```
-kb_graph_document(doc_path=doc_path)  # confirm the document node exists in the graph
+kb_graph_document(doc_path=doc_path)  # confirm the document node exists (keys: document/tags/related_documents/related_count — no "entities" field)
 ```
 
 ### A6c Tagging (Qualified Tags After A3b Cleaning)
@@ -272,8 +287,26 @@ Should be "kb_<target_kb_uuid>" — pointing at another UUID means it landed in 
 # 3. Is the chunk count reasonable?
 total_chunks ≥ 1
 # 4. Did the graph build succeed?
-kb_graph_document(doc_path) returns entities
+kb_graph_document(doc_path=doc_path) finds the document node
+(response keys: document / tags / related_documents / related_count — no "entities" field)
 ```
+
+### A3c-R — 检索自检（描述闭环，索引后必做）⭐
+
+> 描述写得合不合格，最终裁判是检索。用自己写的描述当查询，找不回来 = 描述缺查询路径。
+
+```
+# 1. 元数据检索（匹配 description/tags 的主通道）
+kb_search(query="<描述中的问题维措辞>", top_k=5)
+→ 目标文档必须在结果中
+
+# 2. 向量检索（同义改写，不要原句照抄）
+kb_search_vector(query="<同义改写的问题>", top_k=5, score_threshold=0.3)
+→ 目标文档必须在 top-5
+```
+
+任一未命中 → 把查询里的关键词（问题维/方法维）并入描述（`kb_doc_update_meta`），
+更新后复测。两条都命中，A3c 才算真正通过。（标准见 [description-guide.md D9](references/description-guide.md)）
 
 ## A7 — Final Checklist (All ✅ Required for Ingestion Completion)
 
@@ -287,6 +320,7 @@ kb_graph_document(doc_path) returns entities
 | C6 | Images complete (parse path) | image_count comparison | Matches the parse result |
 | C7 | Graph index ready | `kb_graph_document(doc_path)` | Document found in the graph |
 | C8 | Three-layer metadata consistent | `.tree-fs.json` ↔ `.knowledge-base.yml` ↔ disk | Document present in all three |
+| C9 | Description retrieval self-test (A3c-R) | `kb_search` + `kb_search_vector` | Both queries recall this document |
 
 **Any ✗ → rework the corresponding step; "ingest first, fix later" is forbidden.**
 
@@ -331,6 +365,8 @@ An optional step, but recommended when KB completeness and freshness requirement
 | Continue ingesting despite failing quality | Garbage in, garbage out | Any C1-C8 ✗ means rework |
 | "Ingest first, fix later" | Never gets fixed | Final check C1-C8 all ✅ counts as complete |
 | No experience extraction triggered after ingestion | Experience factors in documents are lost | A7-E optional auto-extraction |
+| Write the description from the head 3000 chars of a long document | 中后段的真实含义丢失，描述以偏概全 | >20000 chars 强制三窗采样（D8） |
+| Skip the A3c-R retrieval self-test | 描述写得再好，检索找不回来就是白写 | kb_search + kb_search_vector 双通道找回才通过 |
 
 ## Tool Quick Reference
 - `parse_doc(file_path, use_ocr=true)` / `parse_doc_batch(file_paths, use_ocr=true)` — non-blocking parsing
@@ -344,5 +380,6 @@ An optional step, but recommended when KB completeness and freshness requirement
 - `kb_search_vector(query, top_k, score_threshold)` — A0 content fingerprint dedup
 - `kb_search(query, top_k)` — A0 filename dedup
 - `kb_create(name, description, parent_id)` — create KB/sub-KB
+- ⚠️ 参数命名：`kb_list` **返回** `kbId`，但绝大多数工具的入参是 `kb_id`；`kb_doc_move(doc_path, target_kb_id)` 无源库参数。首调先打印条目确认键名。
 - `kb_tags_list()` — A3b vocabulary comparison
 - `fs_upload_file(file_path, parent_id, description)` — binary upload

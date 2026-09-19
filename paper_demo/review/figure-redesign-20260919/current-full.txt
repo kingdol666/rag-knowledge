@@ -1,0 +1,444 @@
+QDCVR: A Deployable Knowledge-Base Management Platform
+with Content-Based Organization and Content-Verified Retrieval
+Author Name
+Affiliation
+City, Country
+author@example.com
+Abstract
+Institutional document stores are indexed by filename and folder
+conventions, and retrieval stacks chunk them into flat passage
+bags, so nobody can tell whether a retrieved passage answers
+a query. We present Qdcvr, a deployable knowledge-base man-
+agement platform that organizes documents by their content and
+verifies every retrieval by reading it. Ingestion parses documents
+into structured text, files each into a category base by reading
+its content rather than its filename, splits long papers into parts
+that keep their section headers, and propagates tags to every part.
+Retrieval runs one query-driven protocol: vector-first recall, an
+interpretable 0–8 content gate scoring the candidate text actually
+read, a librarian fallback, and an explicit not-found contract when
+no evidence passes. The platform is exposed to AI agents through
+41 kb_* Model Context Protocol tools. On 50 real papers in 5 cat-
+egory bases (165 indexed documents, 3.8 M characters, all parse-
+verified), a scripted 10-question regression passes 9/10 and the
+live run answers 10/10 on target (gates 6–8/8, two librarian res-
+cues, top-1 gold recall 10/10, 1.6 s mean vector-recall time); three
+out-of-corpus probes return not-found reports instead of fabri-
+cated answers. Attendees can ingest, organize, query, and inspect
+every trace live. Demo video: https://github.com/kingdol666/rag-
+knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4.
+CCS Concepts
+• Information systems →Information retrieval; Retrieval mod-
+els and ranking; • Human-centered computing →Interactive
+systems and tools.
+Keywords
+knowledge base, retrieval-augmented generation, content verifica-
+tion, provenance, Model Context Protocol, demonstration
+1
+Introduction
+Consider a research group holding 50 PDFs: an administrator must
+assign each document a category and tags and, when someone
+asks “what does X conclude?”, prove the right text was fetched.
+Filename conventions and hand-built folder trees answer none of
+this. Retrieval-augmented generation (RAG) promises answers over
+such stores but inherits their disorganization.
+RAG frameworks and integrated platforms chunk corpora into
+flat bags of passages and feed top-scored candidates to the gen-
+erator without a recorded pass/fail adjudication of whether the
+text answers the query [9–12], a gap magnified by the documented
+hallucination risk [18]. Structured variants add entity graphs or
+summary trees [5, 6, 15], agentic and corrective methods self-assess
+and re-retrieve [2, 7, 17], and selective QA formalizes abstention [8]
+— yet the ranker still self-certifies by similarity. None packages ver-
+ification as an auditable per-query artifact with a failure contract,
+and none organizes the bases themselves by content.
+We present Qdcvr, a deployable knowledge-base platform whose
+organization and retrieval are driven by document content, not
+filenames, fixed taxonomies, or bare vector similarity. Ingestion
+parses each document into structured text [16], classifies it into a
+category base by reading that text, and propagates tags to every
+part. Retrieval runs through the Query-Driven Content-Verified
+Retrieval (QDCVR) protocol, ending in cited evidence or an honest
+not-found. The full stack runs on one host and is query-ready from
+cold in ∼20 s. Figure 1 contrasts how a dense-RAG stack and the
+Qdcvr protocol answer one and the same question; Figure 2 shows
+the architecture.
+• Content-based organization. A classifier reads the parsed
+text and assigns each document to a category base (2 of 50
+overrode the filename across categories, rationales persisted);
+tags propagate to all parts (165 tagged).
+• Content-verified retrieval. Vector-first recall feeds a 0–8
+content gate (pass at ≥6), a librarian fallback, and an honest
+not-found when nothing passes.
+• Agent-native and deployable. 41 kb_* MCP tools [1] (94
+in total) let AI agents operate the same platform as human
+users.
+• Evidence. On the 50-paper benchmark of Section 4, the
+protocol answers 10/10 on target and surfaces its own misses,
+probes, and per-question traces.
+Section 3 walks through three live scenarios: content-based in-
+gestion, gate-adjudicated answering, and a genuine not-found.
+2
+The Qdcvr Platform
+Qdcvr is a single-host platform (Figure 2): a web console, a CLI,
+an MCP server, a FastAPI backend, and storage — ChromaDB with
+BGE-M3 embeddings [3, 4], a Neo4j graph [13], and a YAML-backed
+file tree doubling as the audit log.
+2.1
+Lifecycle and Content-Based Organization
+Documents enter through the web console, the CLI, or an MCP tool;
+PDFs are parsed to structured Markdown with section headings
+retained [16]; long documents are split at a configurable ceiling
+(30k characters here) into (part k of N) fragments, each prefixed
+with its section path, so a citation can name “part 2 of 3, §4.1” and
+be read at an offset. All 50 benchmark papers parsed into 165 in-
+dexed documents — 9 whole papers and 156 parts — covering 3.8 M
+characters; a per-document probe verified all 50 after indexing.
+Organization is decided by reading the document, not its file-
+name: a classifier reads the parsed title and body and assigns each
+1
+
+CIKM ’26, November 2026, Rome, Italy
+Author Name
+Figure 1: Two retrieval stacks answering the same question. A conventional dense RAG stack (left) splits documents into fixed
+chunks, ranks fragments, and stuffs the top hits into one LLM call, so its answer carries no section provenance and a missed
+passage is never retried. The Qdcvr protocol (right) routes the query by content, recalls vector-first across the category bases,
+has a 0–8 gate read the candidate text, and falls back to a librarian before answering — emitting either a five-section answer
+citing base/doc/part/§with declared blind spots, or an honest not-found report.
+document to one of five category bases — computer science and
+AI (18 papers), natural and Earth sciences (15), life sciences and
+medicine (10), economics and society (5), and engineering and en-
+ergy (2). The bases bound recall and seed the librarian’s coarse index
+(§2.2); every decision is persisted with its rationale. Filenames lie: 2
+of the 50 assignments moved a paper across category boundaries
+— a “neuroscience” file describing a spiking-neural-network algo-
+rithm, an “agriculture” file studying Neolithic population genetics
+— and a third relabelled its subfield; the rest were not independently
+adjudicated, and every rationale is inspectable. Tags propagate
+to every part (165 of 165; tag_count=165 in graph_stats.json),
+whose snapshot also reports 860 typed relations (730 shared-tag,
+130 vector-similarity; the total edge count additionally includes
+structural edges).
+2.2
+Query-Driven, Content-Verified Retrieval
+Phase 0 rewrites the query for retrieval. Phase 1 recalls vector can-
+didates per category base with BGE-M3 embeddings [3, 9], merging
+per-base lists with explicit cross-base balancing; BM25 and graph
+channels also ship [14] (Figure 2), though the benchmark contracts
+vector-first recall only. The content gate then reads the top candi-
+dates’ text against an interpretable rubric:
+𝑠(𝑒| 𝑞) = 𝑠topic + 𝑠scenario + 𝑠evidence,
+with 𝑠topic,𝑠scenario ∈[0, 3], 𝑠evidence ∈[0, 2],
+(1)
+where a candidate passes iff 𝑠
+≥
+6: topic for subject rele-
+vance, scenario for aspect coverage, evidence for concrete facts
+— rubric-prompted LLM scoring. Unlike retrieve-then-generate
+pipelines [11], the gate does not trust the ranker: passes exit early,
+fails are demoted with scores attached.
+If nothing passes, Phase 2 runs a librarian fallback (shelf scan,
+then targeted re-search). Phase 3 emits a five-section cited answer
+(search paths, answer, sources, confidence, blind spots) citing base,
+document, part, and section path — or the failure contract fires: a
+not-found report naming what was searched and why it does not
+answer.
+2.3
+Agent-Native Surface, Design Choices, and
+Lessons
+The kb-mcp server exposes 41 kb_* MCP tools [1] (94 in total)
+covering CRUD, offset-addressed reads, tags, search, graph queries,
+and an experience lifecycle that distils resolved Q&A logs into
+reusable entries. A packaged skill encodes the §2.2 protocol so
+agents reproduce it step by step instead of improvising a RAG loop;
+the benchmark’s Track A is that skill. Deployment is one command
+(ragctl); embeddings and parsing run locally; answer generation
+uses any configured LLM (∼20 s cold start).
+Every stage appends to one per-query trace — an artifact, not
+a console log. Three operational failures shaped the design, and
+each answer is a contract rather than a heuristic. (i) Chunk windows:
+fixed-size windows scored abstracts and reference lists highest; the
+part split, continuation reads, and librarian routing removed both
+failure modes. (ii) Cross-base duplication: a sparse–dense hybrid
+degraded once the same texts were chunked into parallel reproduc-
+tion bases (7/10 whole-corpus, 3–4/10 per-base on our 10-question
+check), so §2.2 contracts vector-first recall; repair under duplication
+remains future work. (iii) Auditability: every gate score, fallback,
+classification decision and not-found report is persisted, making
+traces replayable rather than anecdotal. Three design choices fol-
+low: whether a passage answers the question is a property of the
+passage rather than of the embedding space, so reading replaces
+scoring; bases are induced from content, not declared; and failure
+is a first-class retrieval output, not generator prose.
+2
+
+QDCVR: A Deployable Knowledge-Base Management Platform
+with Content-Based Organization and Content-Verified Retrieval
+CIKM ’26, November 2026, Rome, Italy
+Figure 2: Architecture of Qdcvr. Offline (left), MinerU parses each PDF into section-addressed Markdown parts, a classifier
+files the document into one of five category bases by reading it, and tags propagate to every part; evidence lands in ChromaDB,
+Neo4j, and a YAML audit tree. Online (right), the web console, the ragctl CLI, and MCP agents drive the same kb-mcp protocol
+layer — query rewrite, vector-first recall, a 0–8 content gate, librarian fallback — ending in a cited five-section answer or a
+not-found report; a lifecycle stage distils resolved Q&A logs into reusable entries.
+3
+Demonstration
+Demo setup. The demo targets IR practitioners and research-data
+administrators evaluating alternatives to folder trees, and agent
+builders wanting auditable retrieval tools. The live instance holds
+the 5 category bases with the 50 real papers (3.8 M characters)
+plus three reproduction indices used for comparison (one under-
+lies Track C). Attendees interact through the web console or any
+MCP-capable agent harness driving the same 41 kb_* tools — one
+protocol, two surfaces. Attendees may bring their own PDFs and
+watch them parsed, classified, and tagged on the spot; all scenarios
+run on one instance, no state reset.
+Scenario 1: from upload to answerable. The attendee drops a PDF
+into the console upload panel. Qdcvr parses it into structured Mark-
+down, splits it into parts that each carry their section-path header,
+and files it into the recommended category base, tags propagated
+to every part — no dialog asks the attendee to pick a folder, schema,
+or routing rule. The console lists the five content-classified bases
+(72, 43, 32, 12, 6 indexed documents) beside the chunk-built repro-
+duction indices. Point proven: the administrator writes no rules,
+and re-filing is logged, not silent.
+Scenario 2: gate-adjudicated answering. The attendee asks, “What
+defines NISQ technology and what is its central limitation?” The
+console shows Phase 1 recalling from all five bases, the NISQ paper
+ranking first at 0.71 similarity, and the hit card naming the owning
+base, document, and part (part 2 of 3). The gate reads that part,
+finds the defining sentence plus the no-error-correction limitation,
+and scores it 7/8 (an execution-LLM self-assessment, Section 4) — a
+fast exit. Point proven: the answer carries a readable score and a
+resolvable citation, not a bare similarity value.
+Scenario 3: the gate discriminates, and failure is honest. (a) Rescue.
+For the tumor-therapy question the initial top chunk is a header-
+only part fragment; the gate scores it 5/8, the librarian fallback
+re-searches and locates the abstract and equilibrium-analysis sec-
+tions at 6/8 — named steps in the trace, not a silent retry. Two of
+the ten questions take this path. (b) Honest not-found. The attendee
+asks about a paper that does not exist: “What did ‘Spectral Tuning
+for Low-Resource Odor Recognition’ report about training epochs?”
+The trap is real — the top candidate is the BERT paper, which gen-
+uinely contains training-epoch strings a similarity-ranked pipeline
+would quote. The gate scores it 1/8 and the shelf scan confirms the
+paper is absent, so the system returns a not-found report naming
+its search scope, the near miss, and why it does not answer. Three
+such probes ran (1/8, 1/8, 0/8); attendees are invited to pose their
+own. Point proven: “I don’t know” is a protocol-level, per-query
+recorded output.
+4
+Evaluation
+Setup. Ten content-grounded questions go to three tracks over
+the same ingested corpora: Track A, the Qdcvr protocol of §2.2
+executed end to end by its packaged skill; Track B, a bare agent
+with file tools over the 50 exported markdown papers (no index,
+one fresh session per question); and Track C, dense retrieval over
+800-character fixed chunks with the top-2 retrieved chunks packed
+into a 4,000-character window for one LLM call. Every answer
+is recorded verbatim as a repository artifact; Table 1 reports the
+scorecards and Figure 3 shows the three tracks’ answers to one
+question, side by side.
+Results. Track A places the gold document first in 10/10 ques-
+tions at 1.57 s mean vector recall plus 0.81 s of candidate reads, and
+answers all ten on target. The scripted keyword regression passes
+9/10; its single miss (BQ06) is a chunk-window artifact of the har-
+ness. In the live five-section answers, all ten name at least one gold
+keyword somewhere; seven name every gold keyword inside the
+Answer section, nine once confidence and blind-spot declarations
+3
+
+CIKM ’26, November 2026, Rome, Italy
+Author Name
+Figure 3: One benchmark question answered by three retrieval stacks. The Qdcvr protocol (left) answers with section-level
+citations and declares its unread blind spots; a bare agent (middle) produces the most complete prose, but its provenance stops
+at a self-reported file name; a dense RAG baseline (right) abstains because fixed 800-character chunking left the answer out of
+its evidence window. Below, an out-of-corpus trap question ends in a not-found report that names its near miss instead of
+fabricating.
+Table 1: Three tracks on the same 50-paper corpus and 10
+questions: A = Qdcvr protocol, B = bare agent, C = dense RAG
+baseline (our reproduction logs no chunk metadata). “Gold
+first” = own retrieval ranks the gold document first (not appli-
+cable to C; B’s row rests on self-reported file order). Keyword
+rows are live-run counts over Track A’s whole answer; the sec-
+ond demands every gold keyword inside the Answer section
+(7/10; 9/10 with confidence/blind-spot declarations counted,
+miss BQ10); the scripted regression is a separate harness (9/10,
+miss BQ06). “–” = not applicable; BQ01/BQ03 miss because
+one gold keyword appears only in their confidence/blind-
+spot declarations.
+Metric
+A
+B
+C
+Gold document placed first
+10/10
+10/10
+n/a
+Answered on target (abstaining)
+10/10 (0)
+10/10 (0)
+8/10 (2)
+Answer names ≥1 gold keyword
+10/10
+–
+–
+Answer names all gold keywords
+(in the Answer section)
+7/10
+–
+–
+Latency: retrieval + reads (A)
+2.38 s
+–
+–
+Latency: end-to-end (B, C)
+–
+78.8 s
+12.2 s
+Latency range (B, C)
+–
+35.5–165.3 s
+5.8–28.6 s
+Provenance granularity
+base/doc/part/§
+file
+none
+are counted (misses BQ01, BQ03, BQ10 — Table 1). Final gate scores
+are 6–8/8, with two librarian rescues after initial 5/8s.
+Track C is the fastest end-to-end track at 12.2 s (0.59 s retrieval):
+8 of 10 answered, 2 abstained — the answer-bearing passage was
+not among its two retrieved chunks, plausibly a chunking effect;
+chunk ranks were not logged, and an internal top-10 packing run
+abstained 0/10, so the count is packing-sensitive. Our harness logs
+no chunk-to-document metadata (a reproduction limitation, not
+dense retrieval’s), so C’s hits cannot be verified programmatically.
+Track B produces the most detailed answers at 78.8 s mean (35.5–
+165.3 s); its citations stop at self-reported file names, its single agent
+call per question asserting rather than demonstrating file reads.
+On canonical papers every track may partly draw on the LLM’s
+parametric knowledge — uncontrolled; the comparison isolates
+provenance and auditability, not accuracy.
+Honesty checks. All three out-of-corpus probes (1/8, 1/8, 0/8)
+returned not-found reports naming scope and near miss; one is
+the Scenario 3(b) trap. All numbers are spot-check scale (𝑛=10
+questions, 𝑛=3 probes), traces published as artifacts; on-target judg-
+ments are our readings of recorded answers against pre-written
+gold keywords and gate scores are execution-LLM self-assessments
+— neither is independent. Track A’s answer-authoring time is unin-
+strumented: its row is retrieval plus reads, not end-to-end.
+5
+Conclusion
+Qdcvr organizes documents by content and verifies every retrieval
+by reading: vector-first recall, a 0–8 content gate, a librarian fall-
+back, an honest not-found contract — one auditable trace per query.
+Figure 3’s tracks agree: the fastest failed twice (its abstentions be-
+ing the very evidence-check the protocol makes explicit), the bare
+agent answered without provenance, the protocol answered with
+a citation — or a not-found report. The faster systems lacked a
+component whose job is checking evidence — the barrier against
+fluent fabrication.
+Acknowledgments
+[Funding and acknowledgment text to be finalized by the authors.]
+4
+
+QDCVR: A Deployable Knowledge-Base Management Platform
+with Content-Based Organization and Content-Verified Retrieval
+CIKM ’26, November 2026, Rome, Italy
+GenAI Usage Disclosure
+Generative AI tools were used for language editing and for drafting
+the layout of Figures 1–3. They generated no scientific content, ran
+no experiment, and produced no reported number. All results come
+from the system’s benchmark pipeline on real data; the reported
+gate scores and not-found reports are recorded protocol traces
+produced by the platform’s own agent, as stated where they appear.
+All AI-assisted drafts were reviewed and verified by the authors,
+who take full responsibility for the work.
+Data availability. Every reported number traces to a repos-
+itory artifact in benchmark-suite/results/: the ingestion
+reports (ingest_survey.json; ingest_report.json, a pre-
+tagging snapshot — final tag coverage is tag_count=165
+in
+graph_stats.json),
+the
+classification
+decisions
+(data/papers/classification.json,
+with
+rationale
+notes
+on the overridden assignments), Track A (bench10_qa.json,
+skill_track_evidence.json,
+skill_track_answers.json,
+track_a_kw_hit.json), Tracks B–C (track_bc.json), the not-
+found probes (honest_failure_probe.json), and the graph
+snapshot (graph_stats.json); per-query traces, timing logs,
+the MCP tool inventory (kb-mcp/server.py), and the archived
+chunking and hybrid-recall runs sit in the same tree. The corpus is
+fetched by a script from arXiv identifiers in a manifest. Code and
+run artifacts: https://github.com/kingdol666/rag-knowledge; demo
+video: https://github.com/kingdol666/rag-knowledge/blob/master/
+paper_demo/video/qdcvr-demo.mp4. Competing interests: none
+declared.
+References
+[1] Anthropic. 2025.
+Model Context Protocol Specification.
+https://
+modelcontextprotocol.io (accessed 2026-09-18).
+[2] Akari Asai, Zeqiu Wu, Yizhong Wang, Avirup Sil, and Hannaneh Hajishirzi. 2024.
+Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection.
+In The Twelfth International Conference on Learning Representations (ICLR).
+[3] Jianlv Chen, Shitao Xiao, Peitian Zhang, Kun Luo, Defu Lian, and Zheng
+Liu. 2024.
+M3-Embedding: Multi-Linguality, Multi-Functionality, Multi-
+Granularity Text Embeddings Through Self-Knowledge Distillation.
+arXiv
+preprint arXiv:2402.03216 (2024).
+[4] Chroma. 2026. Chroma: The AI-native Open-Source Embedding Database. https:
+//www.trychroma.com (accessed 2026-09-18).
+[5] Darren Edge, Ha Trinh, Newman Cheng, Joshua Bradley, Alex Chao, Apurva
+Mody, Steven Truitt, and Jonathan Larson. 2024.
+From Local to Global:
+A GraphRAG Approach to Query-Focused Summarization.
+arXiv preprint
+arXiv:2404.16130 (2024).
+[6] Zirui Guo, Lianghao Xia, Yanhua Yu, Tu Ao, and Chao Huang. 2024. LightRAG:
+Simple and Fast Retrieval-Augmented Generation. arXiv preprint arXiv:2410.05779
+(2024).
+[7] Zhengbao Jiang, Frank F. Xu, Luyu Gao, Zhiqing Sun, Qian Liu, Jane Dwivedi-Yu,
+Yiming Yang, Jamie Callan, and Graham Neubig. 2023. Active Retrieval Aug-
+mented Generation. In Proceedings of the 2023 Conference on Empirical Methods
+in Natural Language Processing (EMNLP).
+[8] Amita Kamath, Robin Jia, and Percy Liang. 2020. Selective Question Answering
+under Domain Shift. In Proceedings of the 58th Annual Meeting of the Association
+for Computational Linguistics (ACL).
+[9] Vladimir Karpukhin, Barlas Oğuz, Sewon Min, Patrick Lewis, Ledell Wu, Sergey
+Edunov, Danqi Chen, and Wen-tau Yih. 2020. Dense Passage Retrieval for Open-
+Domain Question Answering. In Proceedings of the 2020 Conference on Empirical
+Methods in Natural Language Processing (EMNLP).
+[10] LangChain, Inc. 2026. LangChain Documentation. https://python.langchain.com
+(accessed 2026-09-18).
+[11] Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir Karpukhin,
+Naman Goyal, Heinrich Küttler, Mike Lewis, Wen-tau Yih, Tim Rocktäschel,
+Sebastian Riedel, and Douwe Kiela. 2020. Retrieval-Augmented Generation for
+Knowledge-Intensive NLP Tasks. In Advances in Neural Information Processing
+Systems.
+[12] LlamaIndex. 2026. LlamaIndex Documentation. https://docs.llamaindex.ai (ac-
+cessed 2026-09-18).
+[13] Neo4j, Inc. 2026. Neo4j Graph Database. https://neo4j.com (accessed 2026-09-18).
+[14] Stephen Robertson and Hugo Zaragoza. 2009. The Probabilistic Relevance Frame-
+work: BM25 and Beyond. Foundations and Trends in Information Retrieval 3, 4
+(2009), 333–389.
+[15] Parth Sarthi, Salman Abdullah, Aditi Tuli, Shubh Khanna, Anna Goldie, and
+Christopher D. Manning. 2024. RAPTOR: Recursive Abstractive Processing for
+Tree-Organized Retrieval. In The Twelfth International Conference on Learning
+Representations (ICLR).
+[16] Bin Wang, Chao Xu, Xiaomeng Zhao, Linke Ouyang, Fan Wu, Zhiyuan Zhao, Rui
+Xu, et al. 2024. MinerU: An Open-Source Solution for Precise Document Content
+Extraction. arXiv preprint arXiv:2409.18839 (2024).
+[17] Shi-Qi Yan, Jia-Chen Gu, Yun Zhu, and Zhen-Hua Ling. 2024. Corrective Retrieval
+Augmented Generation. arXiv preprint arXiv:2401.15884 (2024).
+[18] Yue Zhang, Yafu Li, Leyang Cui, Deng Cai, Lemao Liu, Tingchen Fu, Xinting
+Huang, Enbo Zhao, Yu Zhang, Chen Xu, Yulong Chen, et al. 2023. Siren’s Song
+in the AI Ocean: A Survey on Hallucination in Large Language Models. arXiv
+preprint arXiv:2309.01219 (2023).
+5

@@ -1,0 +1,2503 @@
+DeepRead: Document Structure-Aware Reasoning to Enhance
+Agentic Search
+Zhanli Li3∗, Huiwen Tian1,2, Lvzhou Luo1,2, Yixuan Cao1,2†, Ping Luo1,2
+1 State Key Laboratory of AI Safety, Institute of Computing Technology, Chinese Academy of Sciences (CAS)
+Beijing, China
+2 University of Chinese Academy of Sciences, CAS
+Beijing, China
+3 Wenlan School of Business, Zhongnan University of Economics and Law
+Wuhan, China
+lizhanli@stu.zuel.edu.cn,tianhuiwen25@mails.ucas.ac.cn,{luolvzhou23s,caoyixuan,luop}@ict.ac.cn
+Abstract
+With the rapid advancement of tool-use capabilities in Large Lan-
+guage Models (LLMs), Retrieval-Augmented Generation (RAG) is
+shifting from static, one-shot retrieval toward autonomous, multi-
+turn evidence acquisition. However, existing agentic search frame-
+works typically treat long documents as flat collections of unstruc-
+tured chunks, disregarding the native hierarchical organization and
+sequential logic essential for human comprehension. To bridge this
+gap, we introduce DeepRead, a structure-aware document reason-
+ing agent designed to operationalize document-native structural
+priors into actionable reasoning capabilities. Leveraging the struc-
+tural fidelity of modern OCR, DeepRead constructs a paragraph-
+level, coordinate-based navigation system and equips the LLM with
+two synergistic tools: Retrieve for scanning-aware localization,
+and ReadSection for contiguous, order-preserving reading within
+specific hierarchical scopes. This design elicits a human-like “locate-
+then-read” reasoning paradigm, effectively mitigating the context
+fragmentation inherent in traditional retrieval methods. Extensive
+evaluations across four benchmarks spanning diverse document
+types demonstrate that DeepRead outperforms Search-o1-style
+agentic search baselines by an average of 10.3%. Fine-grained be-
+havioral analysis further confirms that DeepRead autonomously
+adopts human-aligned reading strategies, validating the critical role
+of structural awareness in achieving precise document reasoning.
+Our code is available at https://github.com/Zhanli-Li/DeepRead.
+CCS Concepts
+• Information systems →Document structure; • Computing
+methodologies →Natural language processing.
+Keywords
+Agentic RAG, Information retrieval, Structured documents, OCR,
+Long-document reasoning
+1
+Introduction
+When humans seek knowledge from documents, they rarely rely on
+a single, linear scan or random keyword matching. Instead, they em-
+ploy a structured “locate-then-read” strategy: first, roughly locate
+∗The first author contributed to this work during an internship at State Key Laboratory
+of AI Safety, Institute of Computing Technology, Chinese Academy of Sciences (CAS).
+The paper is currently in preview form, and this work is still in progress.
+†Corresponding author.
+What requirements must be 
+satisfied by the authors 
+before submitting a paper 
+to ACL?
+1. Site
+2. Scope
+2.1 
+Rag
+2.2 
+Data 
+......
+。
+。
+。
+DeepRead
+Previously agentic search
+Turn 1 Search
+Requirement
+Paragraphs related to 
+anonymous submissions
+Turn 2 Search
+Format Guide
+ACM
+Template and 
+page limitation
+The agent attempts to obtain all 
+requirements through exhaustive 
+search, which is inefficient and 
+inevitably prone to omissions.
+Turn 1 Search
+Requirement
+Several turns
+Turn 2 Read
+Related Sec.
+Text：Paragraphs related to 
+anonymous submissions
+MetaData: Sec 5, Paragraph 7
+Several turns
+...
+Related full 
+requirements section
+DeepRead mimics humans by first 
+scanning and then reading 
+requirements in detail, while also 
+recognizing things has already read.
+Figure 1: A Comparison of Search-o1-style Agentic Search
+and DeepRead on a Toy Case
+the position, then proceed with close reading. In contrast, while
+LLMs have achieved impressive performance in general natural
+language understanding, they remain brittle when attempting to
+replicate this precise, evidence-based reasoning — a limitation that
+has spurred the development of retrieval-augmented methods to
+enhance reliability. Two factors are particularly constraining: (i)
+static parametric memory cannot faithfully encode ever-changing
+or domain-specific details, and (ii) LLMs tend to produce plausi-
+ble but unsupported statements (hallucinations) when evidence is
+missing. RAG mitigates these issues by grounding generation in
+external sources [13], yet standard approaches often fail to capture
+the structural reading priors that humans naturally possess—a gap
+that subsequent research has sought to address through evolving
+RAG frameworks.
+Early RAG systems predominantly adopted one-shot pipelines,
+where retrieval is executed once and the answer is generated from
+a fixed set of top-ranked chunks. Research in this phase focused on
+improving retrieval precision through stronger embedding mod-
+els, optimized indexing, and coarse-to-fine reranking. While these
+advances improved single-step retrieval accuracy, the interaction
+pattern remained static: the system neither revises its information
+needs nor adapts its access strategy as reasoning unfolds. This
+limitation becomes pronounced for long-document and multi-hop
+scenarios, where evidence is widely distributed and cannot be reli-
+ably captured by a single retrieval call. Recent work such as Zhao
+et al. [31] mitigates the “lost-in-the-middle” phenomenon for long
+1
+arXiv:2602.05014v3  [cs.AI]  12 Feb 2026
+
+Li et al.
+contexts, but it largely remains within fixed, single-round retrieval
+pipelines and lacks the interactivity required for complex reasoning.
+To better handle multi-step dependencies, approaches such as
+PlanRAG [12] introduced explicit planning followed by retrieval.
+However, such two-stage designs can be brittle: they depend heav-
+ily on the quality of the initial plan and have limited ability to adapt
+when intermediate findings deviate from expectations. In parallel,
+iterative retrieval methods [6] have emerged to gather information
+across multiple turns. Nevertheless, many of these methods still
+follow prescribed schedules (e.g., a fixed number of rounds or a
+rigid retrieve–read–generate loop). Such rigidity can be inefficient
+for simple queries that require minimal evidence, and insufficient
+for complex queries that demand extensive, adaptive evidence ac-
+quisition [6]. More recently, as major foundation-model providers
+have increasingly emphasized agentic capabilities—especially the
+ability to invoke external tools flexibly and accurately—agentic RAG
+has reshaped this landscape by casting evidence acquisition as an
+autonomous decision-making process driven by tool use. In frame-
+works such as Search-o1 [15], the LLM is no longer bound to a fixed
+retrieve–generate schedule; instead, it can decide when to search,
+what to search for, and when sufficient evidence has been gathered
+to stop and answer. This autonomy enables markedly more adap-
+tive information seeking than classical iterative retrieval, allowing
+the model to adjust its trajectory on the fly based on intermediate
+reasoning signals and feedback from retrieved results.
+Despite this progress, as illustrated in the toy example of Fig. 1,
+Search-o1-style agentic search remains structurally blind when op-
+erating over long and organized documents. Consider the query:
+“What requirements must be satisfied by the authors before sub-
+mitting a paper to ACL?” A structure-agnostic agent is forced into
+a cycle of keyword exhaustion and guesswork: it repeatedly issues
+narrowly specified searches (e.g., ‘format’, ‘anonymity’, ‘template’)
+and stitches together disjoint snippets. This strategy is inherently
+omission-prone—if the agent fails to hypothesize a particular key-
+word (e.g., ‘page limit’), that requirement is simply missed—and,
+without a notion of examined regions, it often wastes turns redun-
+dantly revisiting content it has effectively already covered. Yet for
+long-context information needs, evidence is rarely scattered ran-
+domly; it is typically organized systematically within a dedicated
+region (e.g., a “Submission Guideline” section). Intuitively, once the
+agent encounters any indicative clue that lands it inside the cor-
+rect section (such as a sentence describing the anonymity policy),
+the optimal behavior should shift from further keyword guessing
+to contiguous, order-preserving reading of the surrounding section.
+In other words, a single localized snippet should act as a struc-
+tural anchor that triggers sequential reading over the co-located
+neighborhood, enabling comprehensive capture of all nearby re-
+quirements—including those never explicitly queried—in one pass,
+while avoiding the retrieval noise and context fragmentation that
+often arise in preprocessing-heavy pipelines [8].
+Meanwhile, recent open-source OCR models have achieved re-
+markable success, enabling accurate recovery of document hierar-
+chy and reading order from visually rich inputs [3, 16, 23, 25, 27].
+Trained on large-scale document images paired with structured
+markup (e.g., Markdown), these models can extract paragraph-level
+organization, where Markdown naturally preserves both hierarchi-
+cal layout (e.g., headings and lists) and sequential flow—structural
+priors intentionally encoded by authors and central to human
+document comprehension. This progress makes document-native
+priors increasingly accessible to downstream LLM reasoning sys-
+tems. However, most existing agentic search frameworks still in-
+teract with documents through structure-agnostic chunk collec-
+tions, which offers little support for hierarchy- or order-aware
+comprehension. As a result, even when agentic search enables flex-
+ible “search-and-think” behavior, the underlying interface remains
+largely blind to document topology—especially hierarchical and
+sequential cues—limiting robust long-document reasoning.
+Leveraging the success of open-source OCR models and the
+significant enhancement of LLM agentic capabilities, we propose
+DeepRead, a structure-aware document reasoning agent that oper-
+ationalizes document hierarchy and sequential priors for multi-turn
+QA. DeepRead builds upon the autonomous decision-making par-
+adigm of agentic search but fixes a key bottleneck—the lack of
+document-native topology in the interaction interface. Specifically,
+DeepRead maps each document into a structural coordinate system
+(section and paragraph indices) and equips the LLM with two syner-
+gistic tools: Retrieve, which performs scanning-aware localization
+and returns coordinate-anchored evidence, and ReadSection, which
+enables contiguous, order-preserving reading within a specified
+section and paragraph range. This interface supports a human-like
+“locate-then-read” pattern: first pinpointing relevant regions via
+lightweight scanning, then consuming complete local narratives.
+This design improves navigation efficiency over long, structured
+texts and mitigates the context fragmentation inherent in flat re-
+trieval paradigms. Our contributions are summarized as follows:
+• We propose a coordinate-based reasoning framework that
+operationalizes document hierarchy and sequence. By cou-
+pling Retrieve with ReadSection, we enable an emergent
+locate-then-read paradigm that reconstructs contiguous ev-
+idence from fragmented search results.
+• Extensive evaluations across four benchmarks—spanning
+financial analysis and multi-document reasoning—show
+that DeepRead outperforms Search-o1-style baselines by
+an average of 10.3% accuracy, demonstrating exceptional
+efficacy in handling long-range dependencies and cross-
+document integration.
+• Through fine-grained analysis, we validate that DeepRead
+exhibits human-aligned reading patterns, balancing tar-
+geted search with sequential reading. Ablation studies fur-
+ther confirm the critical synergy between Retrieve and Read
+tools, particularly in complex multi-document scenarios.
+2
+Related Work
+Document QA and RAG. Document Question Answering (DocQA)
+is generally divided into open and closed settings. While open QA re-
+trieves evidence from massive external corpora, closed QA restricts
+the scope to specific documents, prioritizing precise localization
+and faithful interpretation—critical for legal, financial, and scien-
+tific domains. To tackle the challenge of locating evidence in long
+contexts, Retrieval-Augmented Generation (RAG) has become the
+standard solution. Early Naive RAG systems relied on single-pass
+top-𝑘retrieval, which often falls short in complex reasoning tasks.
+Consequently, research has shifted toward Iterative RAG [6, 12],
+2
+
+DeepRead: Document Structure-Aware Reasoning to Enhance Agentic Search
+Sequence
+Hierarchy
+1. Intro
+2. Method
+2.1 
+Model
+2.2 
+Tool
+......
+。
+。
+。
+OCR
+。
+。
+。
+Query
+Hierarchy 
+ID
+Paragraph 
+Interval
+。
+。
+。
+Retrieval
+Read
+- 1 Intro
+paragraphs = 3 
+tokens = 100
+children= None
+- 2 Method 
+paragraphs = 1 
+tokens = 20
+children= [3，4]
+......
+Doc Schema
+Please explain 
+the method 
+proposed by the 
+author and how 
+to experimentally 
+verify the claims 
+made in the 
+introduction.
+User Question
+LLM
+w/ 
+Tool
+Query
+Text w/ 
+Hierarchy & 
+Seqence
+Hierarchy ID 
+Paragraph Interval
+Specified 
+hierarchy and 
+range of text
+Document Parsing and Index Building
+DeepRead Agent & Tool Set
+Span Window
+Hierarchy
+Paragraph
+Tool
+Tool Parameters 
+LLM
+w/ 
+Tool
+Question
+Doc
+Schema
+Turn 1
+Retrival
+Turn 2
+Retrival
+Turn 3
+Read
+Turn 4
+Retrival
+Turn 5
+Read
+Figure 2: This is the DeepRead framework diagram. It takes user questions parsed into Doc Schema as input. Using two tools,
+LLM can perform multi-turn tool invocations to answer user questions.
+which refines evidence collection across multiple turns, and explicit
+problem decomposition [1] to handle multi-hop queries. Beyond
+flat retrieval, recent works attempt to incorporate structure. A first
+line constructs external hierarchies: Sarthi et al. [20] and Tao et al.
+[21] organize documents into tree-style representations via clus-
+tering or recursive summarization to support coarse-to-fine access.
+Another line models dependencies with graph abstractions, such as
+BookRAG [26] and SentGraph [17]. While effective in some settings,
+these constructed structures can diverge from the document’s native
+layout and reading order, incurring non-trivial construction over-
+head and potentially disrupting the author’s intended narrative flow.
+In contrast, prior DocQA literature has long emphasized hierarchy-
+and order-aware reading for long documents: Choi et al. [2] pro-
+poses hierarchical decomposition to enable efficient reasoning over
+extended contexts, while McDonald et al. [18] formalizes a flexi-
+ble detect–retrieve–comprehend pipeline that explicitly separates
+localization from comprehension. More recently, PDFTriage [19]
+demonstrates practical QA over long, structured PDFs, highlight-
+ing the importance of recovering reading order and consuming
+coherent regions rather than isolated snippets. Complementing
+these, recent surveys summarize the growing consensus that long-
+document retrieval must better respect document structure and
+sequential cues [14]. We follow this direction and argue that lever-
+aging native structural priors (headings and sequence) provides a
+more faithful and efficient interface for closed DocQA; DeepRead op-
+erationalizes these priors via a coordinate-based navigation scheme
+that supports a human-like “locate-then-read” pattern.
+Document Parsing. Reliable parsing serves as the bridge be-
+tween raw visual documents and LLM reasoning. Recent advances
+in OCR have been transformative, with both pipeline systems (e.g.,
+PaddleOCR-VL [3]) and end-to-end vision-language models (e.g.,
+DeepSeek-OCR [27], HunyuanOCR [23]) achieving high-fidelity re-
+sults. Crucially, modern parsers can now output structured formats
+like Markdown or LATEX, effectively recovering not just charac-
+ters but also the logical organization—headers, lists, and reading
+order. This breakdown of the barrier between visual layout and tex-
+tual logic allows systems to treat parsed documents as structured
+artifacts rather than unordered bags of words. DeepRead lever-
+ages these high-quality parsers to construct a coordinate-based
+navigation system, enabling agents to perceive and traverse the
+document’s native structure.
+Agentic Search. Unlike static RAG pipelines, agentic RAG frames
+question answering as an autonomous decision-making process.
+Frameworks such as ReAct and the reasoning-centric Search-o1 [15]
+empower LLMs to dynamically decide when to retrieve, what to
+query, and how to synthesize evidence, yielding strong performance
+on complex tasks. Despite this autonomy, a core limitation persists:
+most agentic approaches still treat documents as flat, unstructured
+collections of chunks. This “structural blindness” obscures the logical
+3
+
+Li et al.
+position of evidence and fragments long-range context. We also
+note PageIndex [29], a closed-source commercial system that em-
+phasizes structure-only navigation based on pages and sections. Our
+observations and discussion of PageIndex are necessarily limited to
+publicly available materials and our brief front-end trial experience;
+due to limited information accessibility, we do not attempt a deeper
+technical analysis. Conceptually, relying solely on structural cues
+may sacrifice the rapid semantic positioning afforded by retrieval-
+based localization, a trade-off that we further validate in Table 4.
+In contrast, DeepRead introduces a structure-grounded agent that
+balances these extremes: it operationalizes document hierarchy as a
+lightweight coordinate system, using retrieval-assisted localization
+to quickly pinpoint relevant regions while employing contiguous,
+section-wise reading to support sustained, order-preserving rea-
+soning.
+3
+Methodology
+This section defines (i) how we represent hierarchical document
+structure in a compact, addressable form and (ii) the formal inter-
+faces of DeepRead’s tools. Our goal is to enable an agent to navigate
+long documents with a human-like locate-then-read pattern: first
+localize evidence efficiently, then read coherently in-order within
+the appropriate section.
+3.1
+Preliminaries: Agentic Search
+We adopt vanilla ReAct [28] as the agentic framework that inter-
+leaves reasoning and acting. Let the user question be 𝑞. The inter-
+action proceeds for at most 𝑇rounds. At round 𝑡, the agent state
+𝑠𝑡is the message history, including the system prompt, the user
+query, and the trajectory of tool interactions. The model policy 𝜋𝜃
+samples an action 𝑎𝑡:
+𝑎𝑡∼𝜋𝜃(· | 𝑠𝑡),
+𝑎𝑡∈{FINAL} ∪A,
+(1)
+where an action is either a final answer or a tool invocation. A tool
+invocation is represented as 𝑎𝑡= (𝜏𝑡, x𝑡) with tool name 𝜏𝑡and
+arguments x𝑡. Executing 𝑎𝑡yields an observation 𝑜𝑡, and the state
+is updated by appending the interaction:
+𝑠𝑡+1 ←𝑠𝑡⊕(𝑎𝑡,𝑜𝑡),
+(2)
+where ⊕denotes concatenation to the history. In DeepRead, the ac-
+tion set A consists of two tools, Retrieve and ReadSection (Sec. 3.4),
+which together support a human-like locate-then-read workflow
+over structured documents.
+3.2
+Document Structure Modeling
+We assume raw documents are processed by an OCR engine and
+converted into a structured Markdown-like format. To support
+precise navigation, we model document structure along two dimen-
+sions: hierarchy and sequence. Concretely, we distinguish headings
+(which define the hierarchy) and content paragraphs (which define
+the reading sequence inside each heading).
+Entities and Metadata. We treat both headings and paragraphs
+as first-class entities:
+𝑒=  𝑡(𝑒), Γ(𝑒),
+(3)
+where 𝑡(𝑒) is the textual content and Γ(𝑒) is a structured metadata
+object. This unified view is important in DeepRead: headings ℎ
+are used to build the global navigation map in the system prompt,
+while paragraphs 𝑝are returned by tools as evidence together with
+their coordinates.
+Heading Entities. For a document 𝑑, let 𝑁(𝑑)
+ℎ
+be the total num-
+ber of headings. We denote the 𝑖-th heading (in document order) as
+a heading entity
+ℎ(𝑑)
+𝑖
+=  𝑡(𝑑)
+𝑖
+, Γ(𝑑)
+𝑖
+,
+𝑖∈{1, . . . , 𝑁(𝑑)
+ℎ
+},
+(4)
+where 𝑡(𝑑)
+𝑖
+is the heading text and Γ(𝑑)
+𝑖
+provides structural metadata.
+In particular, we define
+Γ(𝑑)
+𝑖
+=
+(
+doc_id : 𝑑, sec_id : 𝑖, children : 𝐶(𝑑)
+𝑖
+,
+n_para : 𝑛(𝑑)
+𝑖
+, n_tok : 𝑚(𝑑)
+𝑖
+)
+.
+(5)
+Here𝐶(𝑑)
+𝑖
+= {𝑘| parent(ℎ(𝑑)
+𝑘
+) = ℎ(𝑑)
+𝑖
+} is the set of IDs of immediate
+children headings,𝑛(𝑑)
+𝑖
+is the number of content paragraphs directly
+under heading 𝑖(excluding its sub-headings), and 𝑚(𝑑)
+𝑖
+is the token
+count of these direct paragraphs. This metadata allows the agent to
+infer both the nesting structure and the approximate reading cost
+of each section.
+Paragraph Entities. Within each heading ℎ(𝑑)
+𝑖
+, we define its
+direct content (excluding all sub-headings) as an ordered sequence
+of paragraphs:
+𝑃
+
+ℎ(𝑑)
+𝑖
+
+=
+
+𝑝(𝑑)
+𝑖,1 , 𝑝(𝑑)
+𝑖,2 , . . . , 𝑝(𝑑)
+𝑖,𝑛(𝑑)
+𝑖
+
+,
+(6)
+where 𝑛(𝑑)
+𝑖
+matches the n_para field in Eq. 5. Each paragraph is
+also an entity:
+𝑝(𝑑)
+𝑖,𝑗=
+
+𝑡(𝑑)
+𝑖,𝑗, Γ(𝑑)
+𝑖,𝑗
+
+,
+𝑗∈{1, . . . ,𝑛(𝑑)
+𝑖
+},
+(7)
+where 𝑡(𝑑)
+𝑖,𝑗is the paragraph text and the metadata encodes its coor-
+dinate:
+Γ(𝑑)
+𝑖,𝑗
+= {doc_id : 𝑑, sec_id : 𝑖, para_idx : 𝑗} .
+(8)
+Thus, every paragraph is addressable by (𝑑,𝑖, 𝑗), i.e., doc_id, sec_id,
+and para_idx.
+Building upon the above modeling, DeepRead indexes atomic
+paragraphs as the fundamental retrieval units, rather than merg-
+ing text into arbitrary sliding windows. During tool interaction,
+DeepRead always returns paragraph text together with Γ(𝑑)
+𝑖,𝑗
+(Eq. 8).
+This enables the agent to reason jointly about content and loca-
+tion (e.g., “doc 𝑑, section 𝑖, paragraph 𝑗”), which is essential for
+coordinate-based follow-up reading.
+3.3
+Hierarchical Structure in System Prompt
+To enable global planning without overwhelming the context win-
+dow, DeepRead injects a lightweight structural representation of
+the document collection into the system prompt. Instead of provid-
+ing full content, we serialize a compact Table of Contents (TOC)
+built from heading entities.
+For each document 𝑑, and for a collection of documents D, we
+define
+TOC(𝑑) =
+
+ℎ(𝑑)
+𝑖
+𝑁(𝑑)
+ℎ
+𝑖=1 ,
+TOC(D)
+=
+
+TOC(𝑑)
+
+𝑑∈D.
+(9)
+4
+
+DeepRead: Document Structure-Aware Reasoning to Enhance Agentic Search
+Algorithm 1 DeepRead: Structure-Preserving Agentic Reading
+Require: Documents D with parsed headings {ℎ(𝑑)
+𝑖
+} and paragraphs
+{𝑝(𝑑)
+𝑖,𝑗}; Question 𝑞; Window 𝑊= (𝑤↑, 𝑤↓).
+1: Initialize: Construct system prompt with TOC(D) (grouped by docu-
+ment; each ℎ(𝑑)
+𝑖
+includes Γ(𝑑)
+𝑖
+).
+2: 𝑠1 ←[System, User : 𝑞]
+3: for 𝑡= 1 to 𝑇do
+4:
+𝑎𝑡∼𝜋𝜃(· | 𝑠𝑡)
+5:
+if 𝑎𝑡= FINAL then return Answer
+6:
+end if
+7:
+if 𝑎𝑡.𝜏= Retrieve then
+8:
+𝑢←𝑎𝑡.x.query
+9:
+𝐻←Rank(𝑢)
+⊲𝐻= [(𝑑𝑟,𝑖𝑟, 𝑗𝑟,𝑠𝑟)]𝐾
+𝑟=1 sorted by 𝑠𝑟
+descending
+10:
+U ←[ ]
+⊲an ordered list of paragraph coordinates
+11:
+S ←∅
+⊲a set for deduplication
+12:
+for each hit (𝑑𝑟,𝑖𝑟, 𝑗𝑟,𝑠𝑟) ∈𝐻do
+13:
+𝑗↑
+𝑟←max(1, 𝑗𝑟−𝑤↑)
+14:
+𝑗↓
+𝑟←min(𝑛(𝑑𝑟)
+𝑖𝑟
+, 𝑗𝑟+ 𝑤↓)
+15:
+for 𝑗= 𝑗↑
+𝑟to 𝑗↓
+𝑟do
+16:
+if (𝑑𝑟,𝑖𝑟, 𝑗) ∉S then
+17:
+U ←U ⊕[(𝑑𝑟,𝑖𝑟, 𝑗)]
+18:
+S ←S ∪{(𝑑𝑟,𝑖𝑟, 𝑗)}
+19:
+end if
+20:
+end for
+21:
+end for
+22:
+𝑜𝑡←Format
+
+𝑝(𝑑)
+𝑖,𝑗: (𝑑,𝑖, 𝑗) ∈U
+	
+⊲Format serializes
+paragraphs in the list order and preserves Γ(𝑑)
+𝑖,𝑗
+23:
+else if 𝑎𝑡.𝜏= ReadSection then
+24:
+𝑑←𝑎𝑡.x.doc_id; 𝑖←𝑎𝑡.x.sec_id
+25:
+𝑗𝑠←𝑎𝑡.x.start; 𝑗𝑒←𝑎𝑡.x.end
+26:
+𝑗𝑠←max(1, 𝑗𝑠); 𝑗𝑒←min(𝑛(𝑑)
+𝑖
+, 𝑗𝑒)
+⊲Clip to valid range
+using 𝑛(𝑑)
+𝑖
+from the TOC metadata
+27:
+𝑜𝑡←Format
+
+𝑝(𝑑)
+𝑖,𝑗: 𝑗∈[𝑗𝑠, 𝑗𝑒]
+	
+⊲Format returns
+contiguous paragraphs in increasing 𝑗with metadata
+28:
+end if
+29:
+𝑠𝑡+1 ←𝑠𝑡⊕(𝑎𝑡,𝑜𝑡)
+30: end for
+This design provides structural priors for planning: by reading
+children in Γ(𝑑)
+𝑖
+, the agent can infer hierarchy and scope; by read-
+ing n_para and n_tok, the agent can estimate reading cost and
+decide whether to read an entire section or a targeted span. A
+concrete example of this schema is illustrated in Figure 2.
+3.4
+Tools: Coordinate-Based Interaction
+The agent interacts with the document collection via two comple-
+mentary tools defined on the paragraph coordinate system (𝑑,𝑖, 𝑗).
+This interaction mimics human behavior: fast localization via re-
+trieval, followed by order-preserving reading within the appropriate
+section.
+Output Convention: Format. Both tools return paragraph enti-
+ties 𝑝(𝑑)
+𝑖,𝑗= (𝑡(𝑑)
+𝑖,𝑗, Γ(𝑑)
+𝑖,𝑗). In practice, Format serializes each paragraph
+by prefixing (or otherwise attaching) its metadata Γ(𝑑)
+𝑖,𝑗
+(Eq. 8), so
+the agent can cite and navigate using explicit coordinates.
+1. Retrieve. Retrieve is a locator tool that accepts a query string 𝑢
+(via the query field). It performs semantic retrieval over paragraph
+entities and returns top-𝐾hits with scores:
+Rank(𝑢) →
+
+(𝑑𝑟,𝑖𝑟, 𝑗𝑟,𝑠𝑟)
+𝐾
+𝑟=1,
+with 𝑠1 ≥𝑠2 ≥· · · ≥𝑠𝐾.
+(10)
+To simulate human skimming (inspecting nearby context), we in-
+troduce a scanning window 𝑊= (𝑤↑,𝑤↓) representing upward
+and downward look-ahead sizes. For a hit at coordinate (𝑑𝑟,𝑖𝑟, 𝑗𝑟),
+the scan boundaries are
+𝑗↑
+𝑟= max(1, 𝑗𝑟−𝑤↑),
+𝑗↓
+𝑟= min(𝑛(𝑑𝑟)
+𝑖𝑟
+, 𝑗𝑟+ 𝑤↓),
+(11)
+yielding the local slice
+Scan(𝑑𝑟,𝑖𝑟, 𝑗𝑟;𝑊) =
+
+(𝑑𝑟,𝑖𝑟, 𝑗)
+ 𝑗↓
+𝑟
+𝑗=𝑗↑
+𝑟,
+(12)
+where paragraphs are ordered by 𝑗within each slice. DeepRead
+expands each hit independently following the ranked order of 𝐻
+and deduplicates overlaps while preserving first-occurrence order:
+U(𝑢) = Unique
+
+𝐾
+Ê
+𝑟=1
+Scan(𝑑𝑟,𝑖𝑟, 𝑗𝑟;𝑊)
+
+,
+(13)
+where ⊕denotes list concatenation, and Unique(·) removes re-
+peated coordinates by keeping the first occurrence.
+Finally, Retrieve returns the corresponding paragraph entities in
+the list order:
+Retrieve(𝑢) →Format
+
+𝑝(𝑑)
+𝑖,𝑗
+
+(𝑑,𝑖,𝑗)∈U(𝑢)
+
+.
+(14)
+2. ReadSection. ReadSection performs deep, order-preserving
+reading over a targeted region. It accepts a document ID 𝑑, a section
+ID 𝑖(unique within 𝑑), and a paragraph range [𝑗start, 𝑗end]:
+ReadSection(𝑑,𝑖, 𝑗start, 𝑗end) →Format
+
+{𝑝(𝑑)
+𝑖,𝑗: 𝑗∈[𝑗start, 𝑗end]}
+
+.
+(15)
+The system clips the requested range to valid boundaries using
+𝑛(𝑑)
+𝑖
+in heading metadata Γ(𝑑)
+𝑖
+(Eq. 5). This returns contiguous,
+in-order paragraphs from the specified section, reducing context
+fragmentation introduced by retrieval.
+Synergy. The two tools form a closed loop. Retrieve provides (i) a
+lightweight preview and (ii) coordinate anchors (𝑑,𝑖, 𝑗) for relevant
+evidence. When the agent determines that additional context is
+needed (e.g., preceding/following paragraphs or a larger span within
+the same section), it invokes ReadSection. Together, these tools
+enable faithful long-document reasoning via a human-like locate-
+then-read paradigm, as summarized in Algorithm 1.
+4
+Experiment
+4.1
+Benchmark Details
+We evaluated DeepRead on four benchmarks designed to test spe-
+cific RAG capabilities:
+(1) FinanceBench [9]: This is a long-document QA benchmark
+for the financial sector, with documents sourced from SEC financial
+filings. We use the open-source version (150 pairs) to evaluate long-
+document reasoning within the financial domain.
+(2) ContextBench (Ours): This benchmark specifically collects
+QA tasks on long documents that require extensive context or long-
+range dependencies. This benchmark comprises 12 AI experts using
+PDFs from their daily work and personal lives, including novels,
+5
+
+Li et al.
+Table 1: Comparison with Different Methods (Accuracy %). Bold indicates the optimal choice, underlined indicates the next
+best choice. Green text denotes the absolute improvement over the corresponding Search-o1 baseline.
+Method
+Single-Document
+Multi-Document
+Overall Avg
+FinanceBench [9]
+ContextBench (Ours)
+Avg
+QASPER [4]
+SyllabusQA [7]
+Avg
+Dense RAG [13, 30]
+38.1
+60.0
+49.0
+15.4
+26.3
+20.8
+34.9
+Dense RAG w/ Reranker [30]
+47.3
+66.2
+56.8
+15.4
+24.8
+20.1
+38.4
+ITRG (refresh) [6]
+48.1
+67.9
+58.0
+9.8
+31.0
+20.4
+39.2
+ITRG (refine) [6]
+52.0
+70.1
+61.0
+15.4
+31.3
+23.3
+42.2
+RAPTOR [20]
+38.7
+52.6
+45.7
+20.2
+40.3
+30.3
+38.0
+Search-o1 [15]
+80.0
+74.5
+77.3
+65.0
+57.1
+61.1
+69.2
+DeepRead (Ours)
+82.7 (+2.7)
+91.5 (+17.0)
+87.1 (+9.8)
+72.7 (+7.7)
+70.9 (+13.8)
+71.8 (+10.7)
+79.5 (+10.3)
+Search-o1 w/ expand [15]
+83.3
+84.0
+83.7
+65.0
+68.4
+66.7
+75.2
+DeepRead w/ expand (Ours)
+84.0 (+0.7)
+88.3 (+4.3)
+86.2 (+2.5)
+76.2 (+11.2)
+72.4 (+4.0)
+74.3 (+7.6)
+80.3 (+5.1)
+academic papers, scripts, textbooks, etc. These experts provided
+real-world questions, with each question taking approximately
+0.5 man-hours to annotate, resulting in 94 QA pairs (details are
+provided in Appendix A.2).
+(3) QASPER [4] (Multi-Doc): To test academic and cross doc-
+ument reasoning, we synthesized a multi-document version of
+QASPER. We used an LLM to generate questions spanning 2–5
+papers and manually filtered out illogical or erroneous samples,
+resulting in 143 high-quality pairs (details are provided in Appen-
+dix A.2 and Figure 7).
+(4) SyllabusQA [7] (Multi-Doc): To test documents with simple
+hierarchical structures, we obtained all course syllabus PDFs from
+SyllabusQA for constructing single-document QA, we applied the
+same synthesis and manual verification process as QASPER, yield-
+ing 196 high-quality pairs. (details are provided in Appendix A.2
+and Figure 7)
+Table 5 presents the relevant statistical data for the above bench-
+marks. Regarding the construction of synthetic multi-document
+benchmarks, we utilized GLM-4.7 [22] taking the full document
+context as input, with a temperature of 0.7 to encourage diversity
+in question generation. Document structure parsing was conducted
+using PaddleOCR-VL, served via VLLM [11] on an NVIDIA RTX
+4090 GPU. We focus on end-to-end performance using an LLM-as-
+a-Judge framework. We employ DeepSeek V3.2 [5] as the evaluator,
+with the temperature set to 0.0 reduce variance. Due to differing
+chunking strategies across methods, metrics such as intermediate
+chunk recall cannot be fairly compared. To evaluate the correctness
+of final answers, we employ DeepSeek V3.2 for judgment. Prompts
+are shown in Figure 6.
+4.2
+Baseline and DeepRead Settings
+To evaluate the effectiveness of DeepRead, we consider four baseline
+families: single-pass retrieval, RAPTOR [20], Iterative Retrieval
+Generation Synergy (ITRG) [6], and Search-o1 [15]. We did not
+compare methods such as Search-R1 [10] that are dedicated to
+training agents, but these methods all employ a retrieval tool for
+ReAct inference.
+We use Qwen3-embedding-8b [30] as the dense retriever and
+Qwen3-reranker-8b [30] as the reranker. Since two-stage retrieval
+is the de facto industrial practice, we apply a reranker by default
+except RAPTOR as it cannot apply reranking due to its method
+search o1
+search o1 w/ expand
+DeepRead
+DeepRead w/ expand
+0.0
+0.2
+0.4
+0.6
+0.8
+1.0
+Proportion
+First Tool Call = Search Rate
+Dataset
+FinanceBench
+ContextBench
+QASPER
+SyllabusQA
+search o1
+search o1 w/ expand
+DeepRead
+DeepRead w/ expand
+0
+5
+10
+15
+20
+25
+Count
+Tool Calls
+search o1
+search o1 w/ expand
+DeepRead
+DeepRead w/ expand
+0
+5000
+10000
+15000
+20000
+Count
+Input Tokens
+search o1
+search o1 w/ expand
+DeepRead
+DeepRead w/ expand
+0
+500
+1000
+1500
+2000
+2500
+3000
+3500
+Count
+Output Tokens
+Figure 3: Fine-grained behavioral comparison between Deep-
+Read and Search-o1 baselines. We illustrate the distribution
+of the probability that the first action is a search, the total
+number of tool calls per query, input token consumption,
+and output token generation across four benchmarks.
+design. Moreover, we also explore the result of single-pass retrieval
+without a reranker.
+Concretely, for single-pass and ITRG, we follow the OpenAI
+File Search configuration with chunk size 800 and overlap 400. For
+single-pass retrieval return the top 10 chunks in one round (as
+in Search-o1 paper). When reranking is enabled, the first-stage re-
+triever produces 30 candidates, which are then scored by a reranker
+and truncated to the target token budget. For RAPTOR, we utilize
+the recommended “Collapsed Tree” setting [20] with a maximum
+token limit of 800 per node, 5 layers, and a clustering top-𝑘of 5,
+retrieving the top-10 nodes from the collapsed index. For ITRG,
+we adopt the more effective 4-round setting reported in the original
+paper, returning the top 6 chunks per round. For Search-o1 and
+our method, they uses structure-based chunking with overlap 0,
+and each retrieval tool call returns 2 chunks that appears relatively
+small, but due to multiple rounds, the total number of tokens after
+multiple rounds is comparable to other methods. When applying
+6
+
+DeepRead: Document Structure-Aware Reasoning to Enhance Agentic Search
+context expansion, the expansion window is configured as (1, 1). We
+did not expand further because extending a paragraph by one seg-
+ment effectively triples the number of individual retrievals, which
+would weaken the semantic retrieval capability. For Search-o1, to en-
+sure fair comparison, we do not include the Reason-in-Documents,
+and we additionally inject the document structural schema into
+the system prompt (matching DeepRead’s access to structure). We
+excluded the ’Reason-in-Documents’ module because it functions
+as a high-cost optimization—requiring repetitive summarization of
+interaction history—that yields only marginal performance gains.
+As this technique is an orthogonal enhancement applicable to gen-
+eral ReAct paradigms rather than a core architectural feature, its
+omission aligns with subsequent agentic search methodologies (e.g.,
+Search R1 [10]) that prioritize efficiency, thereby ensuring a fair
+and representative comparison.
+The policy model of all baseline and DeepRead used in this paper
+is DeepSeek v3.2, with a decoding temperature of 0. For search-o1
+and DeepRead, we set the maximum round to 50.
+4.3
+Main Result
+Table 1 reports end-to-end accuracy on four benchmarks. Across all
+settings, DeepRead consistently outperforms strong baselines,
+with the largest gains on ContextBench, which requires long-range,
+scope-aware evidence integration. DeepRead achieves an overall
+average of 79.5% (80.3% with expand), outperforming Search-o1
+by +10.3 points (and by +5.1 points under expand). These results
+suggest that explicitly exposing document hierarchy and sequential
+structure to the agent yields substantial benefits over treating long
+documents as flat, orderless chunks.
+Impact of structure-grounded reading (ReadSection). Com-
+paring Search-o1 and DeepRead isolates the contribution of coordinate-
+based, order-preserving reading. DeepRead improves upon Search-
+o1 on all benchmarks, with especially large gains on ContextBench
+(+17.0 points; 74.5% →91.5%). This supports our central claim: flat
+retrieval fragments discourse and forces the agent to stitch evidence
+from disjoint chunks, whereas ReadSection reconstructs contigu-
+ous evidence anchored to explicit structural coordinates. Notably,
+DeepRead also yields strong improvements in multi-document
+settings, achieving +7.7 on QASPER (65.0% →72.7%) and +13.8
+on SyllabusQA (57.1% →70.9%), indicating that hierarchy- and
+sequence-aware navigation remains effective even when evidence
+spans multiple files and sections.
+Dynamic reading vs. passive expansion (ReadSection vs.
+expand). Both ReadSection and expand enlarge context, but they
+do so in fundamentally different ways. expand is a passive, structure-
+only heuristic: it blindly appends nearby paragraphs around re-
+trieved hits, regardless of whether they are semantically useful.
+In contrast, ReadSection is dynamic and semantics-grounded: the
+agent first localizes evidence and then selectively reads a coherent
+span in the most relevant section. The results in Table 1 reflect this
+distinction. Even without expand, DeepRead (79.5%) markedly ex-
+ceeds Search-o1 (69.2%), showing that semantic, coordinate-based
+reading is more effective than relying on window-based padding to
+mitigate fragmentation.
+Effect of local expansion (expand). Expansion generally bene-
+fits retrieval-heavy baselines, but its effect is not uniformly positive
+Table 2: The proportion of samples whose first tool call is
+Retrieve and use Read subsequently (𝑆𝑠→𝑟), and the ratio of
+calls of Retrieval to Read (𝐶𝑠/𝐶𝑟).
+DeepRead
+DeepRead w/ expand
+Benchmark
+𝑆𝑠→𝑟(%)
+𝐶𝑠/𝐶𝑟
+𝑆𝑠→𝑟(%)
+𝐶𝑠/𝐶𝑟
+ContextBench
+95.70%
+0.87
+93.55%
+0.88
+FinanceBench
+87.33%
+1.82
+82.67%
+2.18
+QASPER
+98.25%
+1.59
+92.40%
+2.00
+SyllabusQA
+97.96%
+1.61
+96.43%
+1.86
+for structure-grounded reading. Search-o1 improves substantially
+with expand (69.2% →75.2%), as adjacent context partially com-
+pensates for the context fragmentation inherent in flat retrieval.
+In contrast, DeepRead exhibits only a modest overall gain (79.5%
+→80.3%). Moreover, on ContextBench, expand reduces DeepRead
+accuracy (91.5% →88.3%). We manually inspected failure cases
+introduced by expand for our method and found that the dominant
+issue is that expand brings in paragraphs irrelevant to the target
+answer, which in turn misleads the agent into issuing incorrect
+queries or invoking inappropriate tools. Overall, these results sug-
+gest that both ReadSection and expand can supplement context in
+a structure-aware manner, but ReadSection does so more precisely
+and effectively.
+Robustness to judge choice. To reduce dependence on a sin-
+gle evaluator, we replicate all experiments using two additional
+independent LLM judges, GLM-4.7 [22] and Qwen3-235B-A22B-
+thinking-2507 [24] (Appendix A.4). Across judges, the relative
+ranking is stable: DeepRead remains consistently stronger than
+Search-o1 variants, indicating that the gains are not an artifact of
+any single judge’s calibration. Furthermore, the inter-judge agree-
+ment reported in Table 7 is high overall, supporting the reliability
+of the observed improvements.
+4.4
+Fine-Grained Behavior Analysis
+The preceding quantitative results demonstrate the performance
+superiority of DeepRead. Here, we conduct a fine-grained behav-
+ioral analysis characterizing how DeepRead diverges from standard
+Search-o1-style agentic workflows in terms of planning, tool con-
+sumption, and information processing efficiency.
+Figure 3 visualizes the distribution of agent behaviors across four
+experimental settings, and Table 2 quantifies a recurring pattern
+that emerges autonomously in DeepRead rather than being manu-
+ally hard-coded as a fixed workflow. Specifically, 𝑆𝑠→𝑟measures
+the fraction of questions where the agent starts with Retrieve and
+later invokes Read, while 𝐶𝑠/𝐶𝑟summarizes the balance between
+localization (Retrieve) and contiguous reading (Read). As shown
+in Table 2, 𝑆𝑠→𝑟is consistently high across all benchmarks (87.33%–
+98.25% without expand, 82.67%–96.43% with expand), indicating
+that the policy model learns to first obtain coordinate anchors via re-
+trieval and then switch to section-wise reading for evidence consol-
+idation, instead of answering from fragmented snippets. Moreover,
+𝐶𝑠/𝐶𝑟adapts to task characteristics: ContextBench is more read-
+heavy (𝐶𝑠/𝐶𝑟≈0.87), consistent with section-scoped evidence,
+7
+
+Li et al.
+Table 3: Cost comparison between correct and incorrect sam-
+ples. We report the average number of tool calls and total
+token consumption across all benchmarks.
+Method
+Tool Calls
+Total Tokens
+Correct
+Wrong
+Correct
+Wrong
+Search-o1
+7.7
+10.4
+4,978
+6,522
+Search-o1 w/ expand
+7.1
+9.5
+7,349
+8,700
+DeepRead
+8.7
+11.0
+6,770
+7,648
+DeepRead w/ expand
+8.1
+10.4
+7,597
+9,609
+Table 4: Performance and Cost Comparison between Deep-
+Read and Readonly Baseline.
+Benchmark
+DeepRead
+Readonly
+Acc (%)
+Tools
+Tokens
+Acc (%)
+Tools
+Tokens
+FinanceBench
+82.7
+5.8
+7,698
+80.7
+4.7
+7,980
+ContextBench
+91.5
+7.2
+6,172
+91.5
+6.9
+6,680
+QASPER
+72.7
+11.7
+8,768
+18.9
+9.9
+9,887
+SyllabusQA
+70.9
+10.8
+5,244
+15.3
+7.4
+4,189
+whereas FinanceBench is more retrieval-heavy (𝐶𝑠/𝐶𝑟= 1.82),
+reflecting the need to pinpoint specific tables or numeric fields
+before reading. Enabling expand generally increases 𝐶𝑠/𝐶𝑟(e.g.,
+1.82→2.18 on FinanceBench and 1.59→2.00 on QASPER), suggest-
+ing that expansion partially substitutes for deep reading by enrich-
+ing retrieval outputs, while the persistently high 𝑆𝑠→𝑟confirms that
+DeepRead still predominantly exhibits this emergent locate-then-
+read behavior.
+Further examination of resource consumption metrics (Figure 3
+and Table 3) reveals that DeepRead incurs a higher computational
+overhead compared to the baseline. However, we argue that this
+reflects a favorable cost-performance trade-off. The baseline’s lower
+consumption stems from “context starvation,” where skipping nec-
+essary reading leads to significantly lower accuracy. DeepRead’s
+“locate-then-read” paradigm invests in consuming contiguous sec-
+tions to ensure informational sufficiency for reasoning. As shown
+in Table 1, this moderate increase in token consumption yields a
+substantial +10.3% improvement in overall accuracy. This indicates
+that the additional cost is not inefficiency, but a necessary invest-
+ment for faithful long-document reasoning, avoiding the prohibitive
+costs associated with complex knowledge graph construction or
+multi-stage iterative summarization.
+We also investigate the behavioral divergence between success-
+ful and failed queries. Our analysis reveals that incorrect samples
+frequently exhibit pathological search patterns characterized by
+prolonged tool usage, which results in a prohibitive escalation of
+resource consumption, as evidenced in Table 3.
+4.5
+Ablation Study
+Given that Table 1 has already demonstrated the results of whether
+to expand and only retrieve (search-o1), here we are primarily con-
+cerned with the synergistic effect of retrieval and read operations.
+Here, we conducted an ablation experiment to specifically evaluate
+the role and effectiveness of the Read tool within DeepRead. We
+found that in single-document scenarios, allowing the LLM to per-
+form Read without retrieval is competitive in terms of efficiency
+and cost. However, in multi-document scenarios, it exhibits signifi-
+cant disadvantages in both efficiency and cost, as detailed in Table 4.
+This validates the synergistic effect between retrieval and reading
+tools, particularly in multi-document contexts.
+2
+3
+5
+7
+Top-k
+78
+80
+82
+84
+86
+88
+90
+Accuracy (%)
+80.0%
+82.0%
+84.7%
+85.3%
+82.7%
+82.7%
+84.7%
+88.0%
+FinanceBench
+Search o1
+DeepRead
+2
+3
+5
+7
+Top-k
+75
+80
+85
+90
+95
+Accuracy (%)
+74.5%
+76.6%
+79.8%
+85.1%
+91.5%
+91.5%
+92.6%
+89.4%
+ContextBench
+Search o1
+DeepRead
+2
+3
+5
+7
+Top-k
+65.0
+67.5
+70.0
+72.5
+75.0
+77.5
+80.0
+Accuracy (%)
+65.0%
+70.6%
+74.1%
+75.5%
+72.7%
+77.6%
+79.0%
+79.0%
+QASPER
+Search o1
+DeepRead
+2
+3
+5
+7
+Top-k
+55
+60
+65
+70
+75
+80
+Accuracy (%)
+57.1%
+67.3%
+71.4%
+74.5%
+70.9%
+75.0%
+78.6%
+79.1%
+SyllabusQA
+Search o1
+DeepRead
+Top-k Accuracy Comparison
+Figure 4: Impact of Retrieved Chunk Count (𝑘) on Perfor-
+mance. We compare DeepRead against Search-o1 across four
+benchmarks with 𝑘∈{2, 3, 5, 7}.
+We further investigate the robustness of DeepRead with respect
+to the number of retrieved chunks (𝑘). As illustrated in Figure 4,
+although higher retrieval recall generally correlates with improved
+accuracy, DeepRead consistently outperforms the Search-o1 base-
+line across all tested benchmarks and 𝑘values. In many settings,
+Search-o1 is allowed to retrieve more chunks per round, yet it still
+underperforms DeepRead, which attains better accuracy with a
+smaller per-round retrieval set—suggesting that simply increasing
+the number of retrieved chunks in Search-o1 is insufficient to close
+the gap.
+5
+Case Study
+We provide cases in Appendix A.3 which also demonstrate behav-
+iors similar to human reading and searching.
+6
+Conclusion
+This work introduces DeepRead, a structure-aware document rea-
+soning agent for agentic RAG that mitigates the structural blind-
+ness of mainstream retrieval pipelines. DeepRead operationalizes
+document-native hierarchical and sequential priors as a coordi-
+nate system, exposing two tools—Retrieve for scanning-based local-
+ization and ReadSection for contiguous, order-preserving reading
+within targeted scopes. This interface encourages an emergent
+locate-then-read strategy: the agent first anchors on relevant re-
+gions and then consolidates evidence by reading coherent spans,
+reducing context fragmentation and avoiding redundant, keyword-
+driven retrieval. Our experiments demonstrate consistent improve-
+ments over strong Search-o1-style baselines, and our fine-grained
+behavioral analyses show that DeepRead adopts human-aligned
+navigation patterns by balancing lightweight localization with se-
+lective deep reading. Overall, our results suggest that exposing
+8
+
+DeepRead: Document Structure-Aware Reasoning to Enhance Agentic Search
+and leveraging native document structure is a practical and effec-
+tive step toward faithful, efficient reasoning over long, organized
+documents in agentic search.
+References
+[1] Paul JL Ammann, Jonas Golde, and Alan Akbik. 2025. Question Decomposition
+for Retrieval-Augmented Generation. arXiv preprint arXiv:2507.00355 (2025).
+[2] Eunsol Choi, Daniel Hewlett, Alexandre Lacoste, Illia Polosukhin, Jakob Uszkor-
+eit, and Jonathan Berant. 2016. Hierarchical question answering for long docu-
+ments. arXiv preprint arXiv:1611.01839 (2016).
+[3] Cheng Cui, Ting Sun, Suyin Liang, Tingquan Gao, Zelun Zhang, Jiaxuan Liu,
+Xueqing Wang, Changda Zhou, Hongen Liu, Manhui Lin, et al. 2025. Paddleocr-
+vl: Boosting multilingual document parsing via a 0.9 b ultra-compact vision-
+language model. arXiv preprint arXiv:2510.14528 (2025).
+[4] Pradeep Dasigi, Kyle Lo, Iz Beltagy, Arman Cohan, Noah A Smith, and Matt
+Gardner. 2021. A dataset of information-seeking questions and answers anchored
+in research papers. arXiv preprint arXiv:2105.03011 (2021).
+[5] DeepSeek-AI. 2025. DeepSeek-V3.2: Pushing the Frontier of Open Large Language
+Models.
+[6] Zhangyin Feng, Xiaocheng Feng, Dezhi Zhao, Maojin Yang, and Bing Qin. 2024.
+Retrieval-generation synergy augmented large language models. In ICASSP 2024-
+2024 IEEE International Conference on Acoustics, Speech and Signal Processing
+(ICASSP). IEEE, 11661–11665.
+[7] Nigel Fernandez, Alexander Scarlatos, and Andrew Lan. 2024. SyllabusQA: A
+course logistics question answering dataset. arXiv preprint arXiv:2403.14666
+(2024).
+[8] Ziyu Gong, Yihua Huang, and Chengcheng Mai. 2025. Mmrag-docqa: A multi-
+modal retrieval-augmented generation method for document question-answering
+with hierarchical index and multi-granularity retrieval. arXiv e-prints (2025),
+arXiv–2508.
+[9] Pranab Islam, Anand Kannappan, Douwe Kiela, Rebecca Qian, Nino Scherrer,
+and Bertie Vidgen. 2023. Financebench: A new benchmark for financial question
+answering. arXiv preprint arXiv:2311.11944 (2023).
+[10] Bowen Jin, Hansi Zeng, Zhenrui Yue, Jinsung Yoon, Sercan Arik, Dong Wang,
+Hamed Zamani, and Jiawei Han. 2025.
+Search-r1: Training llms to reason
+and leverage search engines with reinforcement learning.
+arXiv preprint
+arXiv:2503.09516 (2025).
+[11] Woosuk Kwon, Zhuohan Li, Siyuan Zhuang, Ying Sheng, Lianmin Zheng,
+Cody Hao Yu, Joseph E. Gonzalez, Hao Zhang, and Ion Stoica. 2023. Efficient
+Memory Management for Large Language Model Serving with PagedAtten-
+tion. In Proceedings of the ACM SIGOPS 29th Symposium on Operating Systems
+Principles.
+[12] Myeonghwa Lee, Seonho An, and Min-Soo Kim. 2024. Planrag: A plan-then-
+retrieval augmented generation for generative large language models as decision
+makers. arXiv preprint arXiv:2406.12430 (2024).
+[13] Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir
+Karpukhin, Naman Goyal, Heinrich Küttler, Mike Lewis, Wen-tau Yih, Tim Rock-
+täschel, et al. 2020. Retrieval-augmented generation for knowledge-intensive nlp
+tasks. Advances in neural information processing systems 33 (2020), 9459–9474.
+[14] Minghan Li, Miyang Luo, Tianrui Lv, Yishuai Zhang, Siqi Zhao, Ercong Nie, and
+Guodong Zhou. 2025. A Survey of Long-Document Retrieval in the PLM and
+LLM Era. arXiv preprint arXiv:2509.07759 (2025).
+[15] Xiaoxi Li, Guanting Dong, Jiajie Jin, Yuyao Zhang, Yujia Zhou, Yutao Zhu, Peitian
+Zhang, and Zhicheng Dou. 2025. Search-o1: Agentic search-enhanced large
+reasoning models. arXiv preprint arXiv:2501.05366 (2025).
+[16] Yumeng Li, Guang Yang, Hao Liu, Bowen Wang, and Colin Zhang. 2025. dots.
+ocr: Multilingual document layout parsing in a single vision-language model.
+arXiv preprint arXiv:2512.02498 (2025).
+[17] Junli Liang, Pengfei Zhou, Wangqiu Zhou, Wenjie Qing, Qi Zhao, Ziwen Wang, Qi
+Song, and Xiangyang Li. 2026. SentGraph: Hierarchical Sentence Graph for Multi-
+hop Retrieval-Augmented Question Answering. arXiv preprint arXiv:2601.03014
+(2026).
+[18] Tavish McDonald, Brian Tsan, Amar Saini, Juanita Ordonez, Luis Gutierrez, Phan
+Nguyen, Blake Mason, and Brenda Ng. 2022. Detect, retrieve, comprehend: a
+flexible framework for zero-shot document-level question answering. arXiv
+preprint arXiv:2210.01959 (2022).
+[19] Jon Saad-Falcon, Joe Barrow, Alexa Siu, Ani Nenkova, Seunghyun Yoon, Ryan A
+Rossi, and Franck Dernoncourt. 2024. Pdftriage: Question answering over long,
+structured documents. In Proceedings of the 2024 Conference on Empirical Methods
+in Natural Language Processing: Industry Track. 153–169.
+[20] Parth Sarthi, Salman Abdullah, Aditi Tuli, Shubh Khanna, Anna Goldie, and
+Christopher D Manning. 2024. Raptor: Recursive abstractive processing for
+tree-organized retrieval. In The Twelfth International Conference on Learning
+Representations.
+[21] Wenyu Tao, Xiaofen Xing, Yirong Chen, Linyi Huang, and Xiangmin Xu. 2025.
+Treerag: Unleashing the power of hierarchical storage for enhanced knowledge
+retrieval in long documents. In Findings of the Association for Computational
+Linguistics: ACL 2025. 356–371.
+[22] GLM Team, Aohan Zeng, Xin Lv, Qinkai Zheng, Zhenyu Hou, Bin Chen, Chengx-
+ing Xie, Cunxiang Wang, Da Yin, Hao Zeng, Jiajie Zhang, Kedong Wang, Lucen
+Zhong, Mingdao Liu, Rui Lu, Shulin Cao, Xiaohan Zhang, Xuancheng Huang,
+Yao Wei, Yean Cheng, Yifan An, Yilin Niu, Yuanhao Wen, Yushi Bai, Zhengx-
+iao Du, Zihan Wang, Zilin Zhu, Bohan Zhang, Bosi Wen, Bowen Wu, Bowen
+Xu, Can Huang, Casey Zhao, Changpeng Cai, Chao Yu, Chen Li, Chendi Ge,
+Chenghua Huang, Chenhui Zhang, Chenxi Xu, Chenzheng Zhu, Chuang Li,
+Congfeng Yin, Daoyan Lin, Dayong Yang, Dazhi Jiang, Ding Ai, Erle Zhu, Fei
+Wang, Gengzheng Pan, Guo Wang, Hailong Sun, Haitao Li, Haiyang Li, Haiyi
+Hu, Hanyu Zhang, Hao Peng, Hao Tai, Haoke Zhang, Haoran Wang, Haoyu
+Yang, He Liu, He Zhao, Hongwei Liu, Hongxi Yan, Huan Liu, Huilong Chen,
+Ji Li, Jiajing Zhao, Jiamin Ren, Jian Jiao, Jiani Zhao, Jianyang Yan, Jiaqi Wang,
+Jiayi Gui, Jiayue Zhao, Jie Liu, Jijie Li, Jing Li, Jing Lu, Jingsen Wang, Jingwei
+Yuan, Jingxuan Li, Jingzhao Du, Jinhua Du, Jinxin Liu, Junkai Zhi, Junli Gao, Ke
+Wang, Lekang Yang, Liang Xu, Lin Fan, Lindong Wu, Lintao Ding, Lu Wang, Man
+Zhang, Minghao Li, Minghuan Xu, Mingming Zhao, Mingshu Zhai, Pengfan Du,
+Qian Dong, Shangde Lei, Shangqing Tu, Shangtong Yang, Shaoyou Lu, Shijie
+Li, Shuang Li, Shuang-Li, Shuxun Yang, Sibo Yi, Tianshu Yu, Wei Tian, Weihan
+Wang, Wenbo Yu, Weng Lam Tam, Wenjie Liang, Wentao Liu, Xiao Wang, Xiao-
+han Jia, Xiaotao Gu, Xiaoying Ling, Xin Wang, Xing Fan, Xingru Pan, Xinyuan
+Zhang, Xinze Zhang, Xiuqing Fu, Xunkai Zhang, Yabo Xu, Yandong Wu, Yida
+Lu, Yidong Wang, Yilin Zhou, Yiming Pan, Ying Zhang, Yingli Wang, Yingru
+Li, Yinpei Su, Yipeng Geng, Yitong Zhu, Yongkun Yang, Yuhang Li, Yuhao Wu,
+Yujiang Li, Yunan Liu, Yunqing Wang, Yuntao Li, Yuxuan Zhang, Zezhen Liu,
+Zhen Yang, Zhengda Zhou, Zhongpei Qiao, Zhuoer Feng, Zhuorui Liu, Zichen
+Zhang, Zihan Wang, Zijun Yao, Zikang Wang, Ziqiang Liu, Ziwei Chai, Zix-
+uan Li, Zuodong Zhao, Wenguang Chen, Jidong Zhai, Bin Xu, Minlie Huang,
+Hongning Wang, Juanzi Li, Yuxiao Dong, and Jie Tang. 2025. GLM-4.5: Agentic,
+Reasoning, and Coding (ARC) Foundation Models. arXiv:2508.06471 [cs.CL]
+https://arxiv.org/abs/2508.06471
+[23] Hunyuan Vision Team, Pengyuan Lyu, Xingyu Wan, Gengluo Li, Shangpin Peng,
+Weinong Wang, Liang Wu, Huawen Shen, Yu Zhou, Canhui Tang, et al. 2025.
+HunyuanOCR Technical Report. arXiv preprint arXiv:2511.19575 (2025).
+[24] Qwen Team. 2025. Qwen3 Technical Report. arXiv:2505.09388 [cs.CL] https:
+//arxiv.org/abs/2505.09388
+[25] Bin Wang, Chao Xu, Xiaomeng Zhao, Linke Ouyang, Fan Wu, Zhiyuan Zhao,
+Rui Xu, Kaiwen Liu, Yuan Qu, Fukai Shang, et al. 2024. Mineru: An open-source
+solution for precise document content extraction. arXiv preprint arXiv:2409.18839
+(2024).
+[26] Shu Wang, Yingli Zhou, and Yixiang Fang. 2025. BookRAG: A Hierarchical
+Structure-aware Index-based Approach for Retrieval-Augmented Generation on
+Complex Documents. arXiv preprint arXiv:2512.03413 (2025).
+[27] Haoran Wei, Yaofeng Sun, and Yukun Li. 2025. Deepseek-ocr: Contexts optical
+compression. arXiv preprint arXiv:2510.18234 (2025).
+[28] Shunyu Yao, Jeffrey Zhao, Dian Yu, Nan Du, Izhak Shafran, Karthik R Narasimhan,
+and Yuan Cao. 2022. React: Synergizing reasoning and acting in language models.
+In The eleventh international conference on learning representations.
+[29] Mingtian Zhang, Yu Tang, and PageIndex Team. 2025.
+PageIndex: Next-
+Generation Vectorless, Reasoning-based RAG. PageIndex Blog (September 2025).
+https://pageindex.ai/blog/pageindex-intro.
+[30] Yanzhao Zhang, Mingxin Li, Dingkun Long, Xin Zhang, Huan Lin, Baosong Yang,
+Pengjun Xie, An Yang, Dayiheng Liu, Junyang Lin, Fei Huang, and Jingren Zhou.
+2025. Qwen3 Embedding: Advancing Text Embedding and Reranking Through
+Foundation Models. arXiv preprint arXiv:2506.05176 (2025).
+[31] Qingfei Zhao, Ruobing Wang, Yukuo Cen, Daren Zha, Shicheng Tan, Yuxiao Dong,
+and Jie Tang. 2024. Longrag: A dual-perspective retrieval-augmented generation
+paradigm for long-context question answering. arXiv preprint arXiv:2410.18050
+(2024).
+9
+
+Li et al.
+A
+Appendix
+A.1
+Benchmark Statistics
+Table 5 details the statistics of the four datasets employed in our eval-
+uation. The benchmarks are categorized into single-document and
+multi-document settings to assess the agent’s performance across
+different retrieval scopes. Notably, the single-document datasets
+pose a significant challenge regarding context length: FinanceBench
+averages approximately 165k tokens, while our constructed Con-
+textBench reaches an average of 233k tokens, serving as a rigorous
+stress test for long-document reasoning capabilities.
+Table 5: Statistics of the Datasets Used in Evaluation. The
+token counts are calculated based on the parsed Markdown
+content.
+Dataset
+Type
+# Examples
+Total Tokens
+Avg. Tokens
+FinanceBench [9]
+Single-Doc
+150
+24,725,584
+164,837
+ContextBench (Ours)
+Single-Doc
+94
+21,671,771
+233,030
+QASPER [4]
+Multi-Doc
+143
+6,437,147
+45,015
+SyllabusQA [7]
+Multi-Doc
+196
+2,800,293
+14,287
+A.2
+Benchmark Construction Details
+In this paper, we manually annotated the ContextBench long-document
+QA dataset for real-world scenarios. This annotation effort was in-
+spired by the challenge that traditional RAG systems face when seg-
+menting documents into chunks. During this process, certain con-
+tiguous contexts are split into two or more chunks, diluting the orig-
+inal semantic relationships during representation. This poses sig-
+nificant challenges for retrieval systems. Specifically, we recruited
+12 researchers with expertise in natural language processing and a
+solid understanding of LLMs and RAG. We first provided annotators
+with several golden examples—comprising documents, questions,
+and answers—along with the evidence distribution within the doc-
+uments. This allowed annotators to grasp the challenges involved.
+Subsequently, they selected questions requiring long-context and
+long-range dependencies from long documents they encountered
+in their daily work. Each of the 12 annotators labeled 10 questions.
+After manual review, we obtained 94 samples. On average, each
+sample required 0.5 person-hours of effort.
+Regarding our approach to synthesizing multi-document QA
+datasets, specifically, following the prompt sequence in Figure 7,
+we instructed the LLM to generate questions based on the full
+context of multiple documents. We then manually reviewed each
+question to ensure quality. Ultimately, QASPER yielded 143 samples,
+and SyllabusQA produced 196 samples.
+A.3
+Case Study
+We conduct fine-grained case analysis on four benchmarks to il-
+lustrate the core value of the ReadSection tool in DeepRead’s
+locate-then-read paradigm:
+ContextBench (Table 8). For the query “Which Agents are
+there in the Analyst Team?”, DeepRead first locates the relevant sec-
+tion (doc_id=1, sec_id=13) via semantic retrieval, then invokes
+ReadSection to read paragraphs 0–8 of this section contiguously.
+This operation retrieves the complete, structured list of four Ana-
+lyst Team agents (Fundamental/Sentiment/News/Technical Analyst
+Agents) and their responsibilities—information that would be frag-
+mented or incomplete if relying solely on sparse retrieval snippets.
+The continuous reading capability of ReadSection ensures the sta-
+ble extraction of structured lists (e.g., team member composition),
+a key advantage over structure-blind retrieval baselines.
+FinanceBench (Table 9). When calculating Amazon’s FY2016–
+2017 revenue growth, semantic retrieval initially returns non consol-
+idated income statement data (2016: $152,283M, 2017: $187,890M),
+leading to an incorrect 23.4% growth rate. The critical 7th round
+ReadSection call accesses the consolidated statements of opera-
+tions, retrieving the true net sales figures (2016: $135,987M, 2017:
+$177,866M) and enabling the correct 30.8% calculation. This demon-
+strates ReadSection’s role in validating and correcting fragmented
+retrieval results by accessing complete, authoritative document
+sections.
+QASPER (Table 11). For multi-document queries about dataset
+specifications (e.g., TIMIT acoustic embeddings, BookTest construc-
+tion), structure-blind retrieval often misses granular details (e.g.,
+TIMIT’s 630 speakers, 80-dimensional Mel filter banks; BookTest’s
+Gutenberg source and cloze generation rules). DeepRead’s 5th and
+9th round ReadSection calls fill these gaps by reading contigu-
+ous sections of relevant documents, ensuring accurate, complete
+answers instead of guesswork or omission of key dataset attributes.
+SyllabusQA (Table 10). For the query about late work poli-
+cies in course syllabi, semantic retrieval only returns grading ta-
+bles (e.g., exam weights) but misses critical late work rules. The
+5th round ReadSection call accesses the full course policy sec-
+tion, extracting rules like “Late work is not accepted except in
+special circumstances”—information that is non-tabular, context-
+dependent, and unretrievable via keyword-based snippet matching.
+This highlights ReadSection’s value in capturing unstructured but
+semantically critical policy details.
+Tables 8–11 present complete interaction trajectories for these
+cases, confirming that ReadSection complements retrieval by re-
+constructing contiguous, context-rich evidence. This enables Deep-
+Read to mimic human reading patterns: localizing key sections via
+lightweight retrieval, then deep-reading to consolidate complete,
+accurate information—a paradigm that outperforms structure-blind
+retrieval baselines in capturing both structured lists and unstruc-
+tured policy details.
+A.4
+Robustness Testing of LLM as a Judge
+To ensure the robustness of our conclusions, we replicate the eval-
+uation using three independent LLMs: DeepSeek-V3.2, GLM-4.7,
+and Qwen3-235B-A22B-thinking-2507. The mean accuracies across
+all settings are highly consistent (70.53%, 67.90%, and 69.59% re-
+spectively), confirming that the observed improvements are not
+artifacts of a specific judge’s calibration. Furthermore, we compute
+the inter-judge agreement to validate evaluation reliability. We de-
+fine the agreement score as the proportion of samples where all
+three judges reach a unanimous verdict. Let 𝐽𝑚(𝑥𝑖) be the verdict
+of judge 𝑚on sample 𝑖. The metric is calculated as:
+Agreement = 1
+𝑁
+𝑁
+∑︁
+𝑖=1
+I(𝐽1(𝑥𝑖) = 𝐽2(𝑥𝑖) = 𝐽3(𝑥𝑖))
+(16)
+10
+
+DeepRead: Document Structure-Aware Reasoning to Enhance Agentic Search
+Table 6: Accuracy (%) under three independent LLM judges. Each entry is reported as DeepSeek-V3.2 / GLM-4.7 / Qwen3-235B
+(in this order).
+Setting
+Single-Document
+Multi-Document
+Overall Avg
+FinanceBench
+ContextBench
+Avg
+QASPER
+SyllabusQA
+Avg
+Search-o1
+80.0/80.7/84.0
+74.5/71.3/70.2
+77.2/76.0/77.1
+65.0/58.7/55.2
+57.1/55.6/58.7
+61.1/57.2/57.0
+69.2/66.6/67.0
+Search-o1 w/ expand
+83.3/83.3/85.3
+84.0/79.8/80.9
+83.7/81.6/83.1
+65.0/56.6/60.1
+68.4/67.3/65.8
+66.7/62.0/63.0
+75.2/71.8/73.0
+DeepRead
+82.7/84.0/88.7
+91.5/87.2/91.5
+87.1/85.6/90.1
+72.7/69.9/65.7
+70.9/71.4/71.4
+71.8/70.7/68.6
+79.5/78.1/79.3
+DeepRead w/ expand
+84.0/84.0/88.0
+88.3/84.0/87.2
+86.1/84.0/87.6
+76.2/63.6/62.2
+72.4/69.4/73.0
+74.3/66.5/67.6
+80.3/75.3/77.6
+Read-only
+80.7/84.0/89.3
+91.5/87.2/86.2
+86.1/85.6/87.8
+18.9/12.6/15.4
+15.3/18.9/22.4
+17.1/15.7/18.9
+51.6/50.7/53.3
+Table 7: Inter-judge agreement (higher is more consistent). Agreement is computed by our evaluation script and reflects
+example-level consistency of the three judges’ binary verdicts (correct/incorrect).
+Setting
+Single-Document
+Multi-Document
+Overall Avg
+FinanceBench
+ContextBench
+Avg
+QASPER
+SyllabusQA
+Avg
+Search-o1
+0.9400
+0.9043
+0.9221
+0.8462
+0.8622
+0.8542
+0.8882
+Search-o1 w/ expand
+0.9200
+0.9043
+0.9121
+0.8182
+0.8214
+0.8198
+0.8660
+DeepRead
+0.9133
+0.9255
+0.9194
+0.8671
+0.8827
+0.8749
+0.8972
+DeepRead w/ expand
+0.9267
+0.9362
+0.9314
+0.7902
+0.8724
+0.8313
+0.8814
+Read-only
+0.8800
+0.9362
+0.9081
+0.8601
+0.9082
+0.8842
+0.8961
+Avg (over settings)
+0.9160
+0.9213
+0.9186
+0.8364
+0.8694
+0.8529
+0.8858
+where I(·) denotes the indicator function. The system achieves
+a high overall agreement of 0.8858. As expected, agreement is
+higher on single-document tasks (avg. 0.9187) compared to multi-
+document tasks (avg. 0.8540), reflecting the inherent complexity
+and slight subjectivity involved in evaluating cross-document rea-
+soning.
+A.5
+Prompt Template
+In order to ensure reproducibility and transparency within our
+methodology, we provide a detailed description of the prompt tem-
+plates in this paper. Figure 5 presents the System Prompt. Fig-
+ure 6 illustrates the LLM-as-a-Judge prompt, which is designed
+to assess the correctness of AI-generated answers relative to a
+human-generated “golden answer”. Finally, Figure 7 showcases the
+prompt used for generating multi-hop question-answer pairs for
+our benchmarks. This prompt is particularly stringent, as it enforces
+constraints on both hierarchical dependency and cross-document
+reasoning. The requirement for questions to synthesize information
+from at least four distinct leaf sections ensures that the generated
+QA pairs reflect complex reasoning and comprehensive document
+understanding. Furthermore, the closed-form nature of the ques-
+tions, requiring a single unambiguous answer, maintains precision
+in evaluation.
+11
+
+Li et al.
+Table 8: An example from DeepRead on ContextBench. The model-generated semantic retrieval queries are enclosed within
+<|begin_semantic_retrieval_query|> and <|end_semantic_retrieval_query|> , while the top-2 retrieval results are enclosed
+within <|begin_semantic_retrieval_result|> and <|end_semantic_retrieval_result|> . Similarly, the read section queries are
+enclosed within <|begin_read_section_query|> and <|end_read_section_query|> , and the read section results are enclosed
+within <|begin_read_section_result|> and <|end_read_section_result|> .
+Example #1 from ContextBench
+Question:
+Which Agents are there in the Analyst Team?
+Labeled Answer:
+There are four Agents in the Analyst Team:
+(1) Fundamental Analyst Agents
+(2) Sentiment Analyst Agents
+(3) News Analyst Agents
+(4) Technical Analyst Agents.
+Model Output by DeepRead
+ROUND 1 (Retrieval)
+I’ll help you find information about the agents in the Analyst Team. Let me search for relevant information in the document.
+<|begin_semantic_retrieval_query|> Analyst Team agents members <|end_semantic_retrieval_query|>
+<|begin_semantic_retrieval_result(top1)|> doc_id=1, sec_id=13, para_id=0, text=“The Analyst Team (Figure 2) is composed of specialized
+agents responsible for gathering and analyzing various types of market data to inform trading decisions. Each agent focuses on a specific
+aspect of market analysis, bringing together a comprehensive view of the market’s conditions.” <|end_semantic_retrieval_result(top1)|>
+<|begin_semantic_retrieval_result(top2)|> doc_id=1, sec_id=15, para_id=0, text=“Trader Agents (Figure 4) are responsible for executing
+trading decisions based on the comprehensive analysis provided by the Analyst Team and the nuanced perspectives from the Researcher
+Team. They” <|end_semantic_retrieval_result(top2)|>
+ROUND 2 (ReadSection)
+Now let me read the section about the Analyst Team to get detailed information about the agents it contains.
+<|begin_read_section_query|> doc_id=1, sec_id=13, start_para_id=0, end_para_id=8 <|end_read_section_query|>
+<|begin_read_section_result(para_id=0)|> The Analyst Team (Figure 2) is composed of specialized agents responsible for gathering and
+analyzing various types of market data to inform trading decisions. ...... <|end_read_section_result(para_id=0)|>
+......
+<|begin_read_section_result(para_id=3)|> • Fundamental Analyst Agents: These agents evaluate company fundamentals by analyzing
+financial statements, earnings reports, insider transactions, and other pertinent data. They assess a company’s intrinsic value to identify
+undervalued or overvalued stocks, providing insights into long-term investment potential. <|end_read_section_result(para_id=3)|>
+<|begin_read_section_result(para_id=4)|> - Sentiment Analyst Agents: These agents process large volumes of social media posts, sentiment
+scores, and insider sentiments derived from public information and social media activity. They gauge market sentiment to predict how
+collective investor behavior might impact stock prices in the short term. <|end_read_section_result(para_id=4)|>
+<|begin_read_section_result(para_id=5)|> • News Analyst Agents: These agents analyze news articles, government announcements,
+and other macroeconomic indicators to assess the market’s macroeconomic state, major world events, and significant company
+changes. They identify news events that could influence market movements, helping to anticipate sudden shifts in market dynam-
+ics. <|end_read_section_result(para_id=5)|>
+<|begin_read_section_result(para_id=6)|> • Technical Analyst Agents: These agents calculate and select relevant technical indica-
+tors, such as Moving Average Convergence Divergence (MACD) and Relative Strength Index (RSI), customized for specific as-
+sets. They analyze price patterns and trading volumes to forecast future price movements, assisting in timing entry and exit
+points. <|end_read_section_result(para_id=6)|>
+<|begin_read_section_result(para_id=7)|> Collectively, the Analyst Team synthesizes data from multiple sources to provide a holistic
+market analysis. ...... <|end_read_section_result(para_id=7)|>
+12
+
+DeepRead: Document Structure-Aware Reasoning to Enhance Agentic Search
+Table 8: An example from DeepRead on ContextBench. The model-generated semantic retrieval queries are enclosed within
+<|begin_semantic_retrieval_query|> and <|end_semantic_retrieval_query|> , while the top-2 retrieval results are enclosed
+within <|begin_semantic_retrieval_result|> and <|end_semantic_retrieval_result|> . Similarly, the read section queries are
+enclosed within <|begin_read_section_query|> and <|end_read_section_query|> , and the read section results are enclosed
+within <|begin_read_section_result|> and <|end_read_section_result|> . (Continued)
+Example #1 from ContextBench (Continued)
+Question:
+Which Agents are there in the Analyst Team?
+Labeled Answer:
+There are four Agents in the Analyst Team:
+(1) Fundamental Analyst Agents
+(2) Sentiment Analyst Agents
+(3) News Analyst Agents
+(4) Technical Analyst Agents.
+Model Output by DeepRead
+ROUND 3 (Final Answer)
+Based on the document, the Analyst Team in TradingAgents consists of four specialized agents:
+1. **Fundamental Analyst Agents** - These agents evaluate company fundamentals by analyzing financial statements, earnings reports,
+insider transactions, and other pertinent data to assess a company’s intrinsic value and identify undervalued or overvalued stocks.
+2. **Sentiment Analyst Agents** - These agents process social media posts, sentiment scores, and insider sentiments to gauge market
+sentiment and predict how collective investor behavior might impact stock prices in the short term.
+3. **News Analyst Agents** - These agents analyze news articles, government announcements, and macroeconomic indicators to assess
+the market’s macroeconomic state, major world events, and significant company changes.
+4. **Technical Analyst Agents** - These agents calculate and select relevant technical indicators (such as MACD and RSI), analyze price
+patterns and trading volumes to forecast future price movements, and assist in timing entry and exit points.
+The Analyst Team works collectively to synthesize data from multiple sources and provide holistic market analysis, which then serves as
+foundational input for the Researcher Team in the trading decision-making process.
+13
+
+Li et al.
+Table 9: An example from DeepRead on FinanceBench. The model-generated semantic retrieval queries are enclosed within
+<|begin_semantic_retrieval_query|> and <|end_semantic_retrieval_query|> , while the top-2 retrieval results are enclosed
+within <|begin_semantic_retrieval_result|> and <|end_semantic_retrieval_result|> . Similarly, the read section queries are
+enclosed within <|begin_read_section_query|> and <|end_read_section_query|> , and the read section results are enclosed
+within <|begin_read_section_result|> and <|end_read_section_result|> .
+Example #2 from FinanceBench
+Question:
+What is Amazon’s year-over-year change in revenue from FY2016 to FY2017 (in units of percents and round to one decimal place)?
+Calculate what was asked by utilizing the line items clearly shown in the statement of income.
+Labeled Answer:
+30.8%
+Model Output by DeepRead
+ROUND 1 (Retrieval)
+I’ll help you find Amazon’s year-over-year revenue change from FY2016 to FY2017. First, I need to locate the financial statements and
+specifically the income statement data for those years.
+<|begin_semantic_retrieval_query|> Amazon
+revenue
+2016
+2017
+year
+over
+year
+change
+income
+state-
+ment <|end_semantic_retrieval_query|>
+<|begin_semantic_retrieval_result(top1)|> doc_id=1, sec_id=62, para_id=6, text=“The increase in AWS operating income in absolute
+dollars in 2016 and 2017, compared to the comparable prior year periods, is primarily due to increased customer usage and cost structure
+productivity, partially offset by pricing changes and increased spending on technology infrastructure and sales and marketing expenses and
+related payroll, which was primarily driven by additional investments to support the business growth. Changes in foreign exchange rates im-
+pacted operating income by $264 million, $(5) million, and $(53) million for 2015, 2016, and 2017.” <|end_semantic_retrieval_result(top1)|>
+<|begin_semantic_retrieval_result(top2)|> doc_id=1, sec_id=62, para_id=4, text=“The increase in North America operating income in
+absolute dollars in 2016 and 2017, compared to the comparable prior year periods, is primarily due to increased unit sales, including
+sales by third-party sellers, partially offset by increased levels of operating expenses to expand our fulfillment network and spending on
+technology and content and marketing efforts. Changes in foreign exchange rates impacted operating income by $30 million, $27 million,
+and $(4) million for 2015, 2016, and 2017.” <|end_semantic_retrieval_result(top2)|>
+ROUND 2 (Retrieval)
+I need to find the actual revenue numbers from the income statement. Let me search for the consolidated financial statements and
+specifically look for net sales or revenue figures.
+<|begin_semantic_retrieval_query|> consolidated income statement net sales 2016 2017 <|end_semantic_retrieval_query|>
+<|begin_semantic_retrieval_result(top1)|> doc_id=1, sec_id=131, para_id=1, text=“<table border=1 style=’margin: auto; width: max-
+content;’><tr><td rowspan="2"></td><td colspan="3">Twelve Months Ended December 31,</td></tr><tr><td style=’text-align:
+center;’>2016</td><td style=’text-align: center;’>2017</td><td style=’text-align: center;’></td></tr><tr><td style=’text-align: cen-
+ter;’>Net sales</td><td style=’text-align: center;’>$152,283</td><td style=’text-align: center;’>$187,890</td><td style=’text-align: cen-
+ter;’></td></tr><tr><td style=’text-align: center;’>Net income</td><td style=’text-align: center;’>$2,148</td><td style=’text-align: cen-
+ter;’>$2,940</td><td style=’text-align: center;’></td></tr></table>” <|end_semantic_retrieval_result(top1)|>
+<|begin_semantic_retrieval_result(top2)|> doc_id=1, sec_id=131, para_id=0, text=“The acquired companies were consolidated into our
+financial statements starting on their respective acquisition dates. The aggregate net sales and operating loss of Whole Foods Market
+consolidated into our financial statements since the date of acquisition was $5.8 billion and $(24) million for the year ended December 31,
+2017. The aggregate net sales and operating loss of other acquisitions consolidated into our financial statements since the respective dates
+of acquisition was $482 million and $(142) million for the year ended December 31, 2017. The following financial information, which
+excludes certain acquired companies for which the pro forma impact is not meaningful, presents our results as if the acquisitions during
+the year ended December 31, 2017 had occurred on January 1, 2016 (in millions):” <|end_semantic_retrieval_result(top2)|>
+14
+
+DeepRead: Document Structure-Aware Reasoning to Enhance Agentic Search
+Table 9: An example from DeepRead on FinanceBench. The model-generated semantic retrieval queries are enclosed within
+<|begin_semantic_retrieval_query|> and <|end_semantic_retrieval_query|> , while the top-2 retrieval results are enclosed
+within <|begin_semantic_retrieval_result|> and <|end_semantic_retrieval_result|> . Similarly, the read section queries are
+enclosed within <|begin_read_section_query|> and <|end_read_section_query|> , and the read section results are enclosed
+within <|begin_read_section_result|> and <|end_read_section_result|> . (Continued)
+Example #2 from FinanceBench (Continued)
+Question:
+What is Amazon’s year-over-year change in revenue from FY2016 to FY2017 (in units of percents and round to one decimal place)?
+Calculate what was asked by utilizing the line items clearly shown in the statement of income.
+Labeled Answer:
+30.8%
+Model Output by DeepRead
+ROUND 3 (Retrieval)
+Great! I found the net sales figures for 2016 and 2017. According to the table in node 131:
+- 2016 Net sales: $152,283 million
+- 2017 Net sales: $187,890 million
+Now I need to calculate the year-over-year change in percentage terms and round to one decimal place.
+Let me calculate:
+1. Calculate the difference: $187,890 - $152,283 = $35,607 million
+2. Calculate the percentage change: ($35,607 / $152,283) × 100 = 23.38%
+Rounded to one decimal place: 23.4%
+However, I should verify these numbers are from the actual consolidated income statement, not just pro forma data. Let me search for the
+actual consolidated income statement.
+<|begin_semantic_retrieval_query|> consolidated statements of operations net sales 2016 2017 <|end_semantic_retrieval_query|>
+<|begin_semantic_retrieval_result(top1)|> doc_id=1, sec_id=131, para_id=1, text=“<table border=1 style=’margin: auto; width: max-
+content;’><tr><td rowspan="2"></td><td colspan="3">Twelve Months Ended December 31,</td></tr><tr><td style=’text-align:
+center;’>2016</td><td style=’text-align: center;’>2017</td><td style=’text-align: center;’></td></tr><tr><td style=’text-align: cen-
+ter;’>Net sales</td><td style=’text-align: center;’>$152,283</td><td style=’text-align: center;’>$187,890</td><td style=’text-align: cen-
+ter;’></td></tr><tr><td style=’text-align: center;’>Net income</td><td style=’text-align: center;’>$2,148</td><td style=’text-align: cen-
+ter;’>$2,940</td><td style=’text-align: center;’></td></tr></table>” <|end_semantic_retrieval_result(top1)|>
+<|begin_semantic_retrieval_result(top2)|> doc_id=1, sec_id=131, para_id=0, text=“The acquired companies were consolidated into our
+financial statements starting on their respective acquisition dates. The aggregate net sales and operating loss of Whole Foods Market
+consolidated into our financial statements since the date of acquisition was $5.8 billion and $(24) million for the year ended December 31,
+2017. The aggregate net sales and operating loss of other acquisitions consolidated into our financial statements since the respective dates
+of acquisition was $482 million and $(142) million for the year ended December 31, 2017. The following financial information, which
+excludes certain acquired companies for which the pro forma impact is not meaningful, presents our results as if the acquisitions during
+the year ended December 31, 2017 had occurred on January 1, 2016 (in millions):” <|end_semantic_retrieval_result(top2)|>
+15
+
+Li et al.
+Table 9: An example from DeepRead on FinanceBench. The model-generated semantic retrieval queries are enclosed within
+<|begin_semantic_retrieval_query|> and <|end_semantic_retrieval_query|> , while the top-2 retrieval results are enclosed
+within <|begin_semantic_retrieval_result|> and <|end_semantic_retrieval_result|> . Similarly, the read section queries are
+enclosed within <|begin_read_section_query|> and <|end_read_section_query|> , and the read section results are enclosed
+within <|begin_read_section_result|> and <|end_read_section_result|> . (Continued)
+Example #2 from FinanceBench (Continued)
+Question:
+What is Amazon’s year-over-year change in revenue from FY2016 to FY2017 (in units of percents and round to one decimal place)?
+Calculate what was asked by utilizing the line items clearly shown in the statement of income.
+Labeled Answer:
+30.8%
+Model Output by DeepRead
+ROUND 4 (ReadSection)
+I need to find the actual consolidated income statement, not pro forma data. Let me look for the actual financial statements. Based on the
+directory structure, I should look at the consolidated balance sheets or income statements. Let me check node 90 which appears to be the
+consolidated balance sheets.
+<|begin_read_section_query|> doc_id=1, sec_id=90, start_para_id=0, end_para_id=5 <|end_read_section_query|>
+<|begin_read_section_result(para_id=0)|> <table border=1 style=’margin: auto; width: max-content;’><tr><td rowspan="2"></td><td
+colspan="3">December 31,</td></tr><tr><td style=’text-align: center;’>2016</td><td style=’text-align: center;’>2017</td><td style=’text-
+align: center;’></td></tr><tr><td style=’text-align: center;’>ASSETS</td><td style=’text-align: center;’></td><td style=’text-align: cen-
+ter;’></td><td style=’text-align: center;’></td></tr><tr><td style=’text-align: center;’>Current assets:</td><td style=’text-align: cen-
+ter;’></td><td style=’text-align: center;’></td><td style=’text-align: center;’></td></tr><tr><td style=’text-align: center;’>Cash and cash
+equivalents</td><td style=’text-align: center;’>$19,334</td>...... <|end_read_section_result(para_id=0)|>
+......
+<|begin_read_section_result(para_id=4)|> See
+accompanying
+notes
+to
+consolidated
+financial
+state-
+ments. <|end_read_section_result(para_id=4)|>
+ROUND5 (Retrieval)
+This is the balance sheet and stockholders’ equity statement, not the income statement. I need to find the actual consolidated statements
+of operations. Let me search more specifically.
+<|begin_semantic_retrieval_query|> consolidated
+statements
+of
+operations
+2016
+2017
+net
+sales
+rev-
+enue <|end_semantic_retrieval_query|>
+<|begin_semantic_retrieval_result(top1)|> doc_id=1, sec_id=131, para_id=1, text=“<table border=1 style=’margin: auto; width: max-
+content;’><tr><td rowspan="2"></td><td colspan="3">Twelve Months Ended December 31,</td></tr><tr><td style=’text-align:
+center;’>2016</td><td style=’text-align: center;’>2017</td><td style=’text-align: center;’></td></tr><tr><td style=’text-align: cen-
+ter;’>Net sales</td><td style=’text-align: center;’>$152,283</td><td style=’text-align: center;’>$187,890</td><td style=’text-align: cen-
+ter;’></td></tr><tr><td style=’text-align: center;’>Net income</td><td style=’text-align: center;’>$2,148</td><td style=’text-align: cen-
+ter;’>$2,940</td><td style=’text-align: center;’></td></tr></table>” <|end_semantic_retrieval_result(top1)|>
+<|begin_semantic_retrieval_result(top2)|> doc_id=1, sec_id=131, para_id=0, text=“The acquired companies were consolidated into our
+financial statements starting on their respective acquisition dates. The aggregate net sales and operating loss of Whole Foods Market
+consolidated into our financial statements since the date of acquisition was $5.8 billion and $(24) million for the year ended December 31,
+2017. The aggregate net sales and operating loss of other acquisitions consolidated into our financial statements since the respective dates
+of acquisition was $482 million and $(142) million for the year ended December 31, 2017. The following financial information, which
+excludes certain acquired companies for which the pro forma impact is not meaningful, presents our results as if the acquisitions during
+the year ended December 31, 2017 had occurred on January 1, 2016 (in millions):” <|end_semantic_retrieval_result(top2)|>
+16
+
+DeepRead: Document Structure-Aware Reasoning to Enhance Agentic Search
+Table 9: An example from DeepRead on FinanceBench. The model-generated semantic retrieval queries are enclosed within
+<|begin_semantic_retrieval_query|> and <|end_semantic_retrieval_query|> , while the top-2 retrieval results are enclosed
+within <|begin_semantic_retrieval_result|> and <|end_semantic_retrieval_result|> . Similarly, the read section queries are
+enclosed within <|begin_read_section_query|> and <|end_read_section_query|> , and the read section results are enclosed
+within <|begin_read_section_result|> and <|end_read_section_result|> . (Continued)
+Example #2 from FinanceBench (Continued)
+Question:
+What is Amazon’s year-over-year change in revenue from FY2016 to FY2017 (in units of percents and round to one decimal place)?
+Calculate what was asked by utilizing the line items clearly shown in the statement of income.
+Labeled Answer:
+30.8%
+Model Output by DeepRead
+ROUND 6 (ReadSection)
+I need to find the actual consolidated income statement, not pro forma data. Let me look for the actual financial statements. Based on the
+directory structure, I should look at the consolidated balance sheets or income statements. Let me check node 90 which appears to be the
+consolidated balance sheets.
+<|begin_read_section_query|> doc_id=1, sec_id=85, start_para_id=0, end_para_id=1 <|end_read_section_query|>
+<|begin_read_section_result(para_id=0)|> <table
+border=1
+style=’margin:
+auto;
+width:
+max-content;’><tr><td
+colspan="2">Page</td>...... <|end_read_section_result(para_id=0)|>
+ROUND 7 (ReadSection)
+Good! The Consolidated Statements of Operations are on page 38. Now I need to find where that content is in the document structure.
+Looking at the directory, I see node 89 is "AMAZON.COM, INC" and node 90 is the consolidated balance sheets. The statements of
+operations should be before the balance sheets. Let me check node 89.
+<|begin_read_section_query|> doc_id=1, sec_id=89, start_para_id=0, end_para_id=6 <|end_read_section_query|>
+<|begin_read_section_result(para_id=0)|> <div style="text-align: center;">CONSOLIDATED STATEMENTS OF OPERATIONS (in millions,
+except per share data)</div> <|end_read_section_result(para_id=0)|>
+<|begin_read_section_result(para_id=1)|> <table border=1 style=’margin: auto; width: max-content;’><tr><td rowspan=¨2¨></td><td
+colspan=¨4¨>Year Ended December 31,</td></tr><tr><td style=’text-align: center;’>2015</td><td style=’text-align: center;’>2016</td><td
+style=’text-align:
+center;’>2017</td><td
+style=’text-align:
+center;’></td></tr><tr><td
+style=’text-align:
+center;’>Net
+product
+sales</td><td style=’text-align: center;’>$79,268</td><td style=’text-align: center;’>$94,665</td><td style=’text-align: center;’>$
+118,573</td><td style=’text-align: center;’></td></tr><tr><td style=’text-align: center;’>Net service sales</td><td style=’text-align:
+center;’>27,738</td><td style=’text-align: center;’>41,322</td><td style=’text-align: center;’>59,293</td><td style=’text-align: cen-
+ter;’></td></tr><tr><td style=’text-align: center;’>Total net sales</td><td style=’text-align: center;’>107,006</td><td style=’text-align:
+center;’>135,987</td><td style=’text-align: center;’>177,866</td>...... <|end_read_section_result(para_id=1)|> ......
+<|begin_read_section_result(para_id=5)|> See
+accompanying
+notes
+to
+consolidated
+financial
+state-
+ments. <|end_read_section_result(para_id=5)|>
+ROUND 8 (Final Answer)
+Perfect! I found the actual Consolidated Statements of Operations. From the table, I can see:
+- 2016 Total net sales: $135,987 million
+- 2017 Total net sales: $177,866 million
+Now I need to calculate the year-over-year change in percentage terms and round to one decimal place.
+Calculation:
+1. Difference: $177,866 - $135,987 = $41,879 million
+2. Percentage change: ($41,879 / $135,987) × 100 = 30.80%
+Rounded to one decimal place: 30.8%
+**Answer:** Amazon’s year-over-year change in revenue from FY2016 to FY2017 was 30.8%.
+17
+
+Li et al.
+Table 10: An example from DeepRead on SyllabusQA. The model-generated semantic retrieval queries are enclosed within
+<|begin_semantic_retrieval_query|> and <|end_semantic_retrieval_query|> , while the top-2 retrieval results are enclosed
+within <|begin_semantic_retrieval_result|> and <|end_semantic_retrieval_result|> . Similarly, the read section queries are
+enclosed within <|begin_read_section_query|> and <|end_read_section_query|> , and the read section results are enclosed
+within <|begin_read_section_result|> and <|end_read_section_result|> .
+Example #3 from SyllabusQA
+Question:
+What constitutes the total percentage weight of all examinations toward the final grade in the courses that include them?
+Labeled Answer:
+The total examination weight is 40% in the Social Entrepreneurship course and 45% in the Individual Income Taxes course.
+Model Output by DeepRead
+ROUND 1 (Retrieval)
+I’ll help you find information about the examination weight toward the final grade. Let me start by searching for relevant information
+about grading and exams.
+<|begin_semantic_retrieval_query|> exams weight percentage final grade <|end_semantic_retrieval_query|>
+<|begin_semantic_retrieval_result(top1)|> doc_id=4, sec_id=5, para_id=1, text=“<table border=1 style=’margin: auto; width: max-
+content;’><tr><td style=’text-align: center;’>Weighting</td><td style=’text-align: center;’>%</td><td colspan="2">Grade Cut-
+offs</td></tr><tr><td style=’text-align: center;’>Exam 1</td><td style=’text-align: center;’>15%</td><td style=’text-align: cen-
+ter;’>A</td><td style=’text-align: center;’>94-100%</td></tr><tr><td style=’text-align: center;’>Exam 2</td><td style=’text-align:
+center;’>15%</td><td
+style=’text-align:
+center;’>A-</td><td
+style=’text-align:
+center;’>90-93%</td></tr><tr><td
+style=’text-
+align: center;’>Exam 3</td><td style=’text-align: center;’>15%</td><td style=’text-align: center;’>B+</td><td style=’text-align:
+center;’>86-89%</td></tr><tr><td style=’text-align: center;’>Tax Return Problem</td><td style=’text-align: center;’>15%</td><td
+style=’text-align:
+center;’>B</td><td
+style=’text-align:
+center;’>82-85%</td></tr><tr><td
+style=’text-align:
+center;’>Pre-Class
+Quiz</td><td
+style=’text-align:
+center;’>10%</td><td
+style=’text-align:
+center;’>B-</td><td
+style=’text-align:
+center;’>79-
+81%</td></tr><tr><td style=’text-align: center;’>Homework</td><td style=’text-align: center;’>10%</td><td style=’text-align:
+center;’>C+</td><td style=’text-align: center;’>75-78%</td></tr><tr><td style=’text-align: center;’>Quizzes</td><td style=’text-align:
+center;’>10%</td><td style=’text-align: center;’>C</td><td style=’text-align: center;’>72-74%</td></tr><tr><td style=’text-align:
+center;’>In-Class Assignments</td><td style=’text-align: center;’>10%</td><td style=’text-align: center;’>C-</td><td style=’text-
+align: center;’>69-71%</td></tr><tr><td style=’text-align: center;’></td><td style=’text-align: center;’>—</td><td style=’text-align:
+center;’>D+</td><td style=’text-align: center;’>66-68%</td></tr><tr><td style=’text-align: center;’>Total</td><td style=’text-align:
+center;’>100%</td><td style=’text-align: center;’>D</td><td style=’text-align: center;’>60-65%</td></tr><tr><td style=’text-align:
+center;’></td><td
+style=’text-align:
+center;’></td><td
+style=’text-align:
+center;’>F</td><td
+style=’text-align:
+center;’>Below
+60%</td></tr></table>” <|end_semantic_retrieval_result(top1)|>
+<|begin_semantic_retrieval_result(top2)|> doc_id=2, sec_id=9, para_id=5, text=“<table border=1 style=’margin: auto; width: max-
+content;’><tr><td style=’text-align: center;’>Assignment</td><td style=’text-align: center;’>Percentage of Final Grade</td></tr><tr><td
+style=’text-align: center;’>Analytics assignments (4)</td><td style=’text-align: center;’>80%</td></tr><tr><td style=’text-align: cen-
+ter;’>Online Reflections (8)</td><td style=’text-align: center;’>20%</td></tr><tr><td style=’text-align: center;’></td><td style=’text-align:
+center;’>100%</td></tr></table>” <|end_semantic_retrieval_result(top2)|>
+18
+
+DeepRead: Document Structure-Aware Reasoning to Enhance Agentic Search
+Table 10: An example from DeepRead on SyllabusQA. The model-generated semantic retrieval queries are enclosed within
+<|begin_semantic_retrieval_query|> and <|end_semantic_retrieval_query|> , while the top-2 retrieval results are enclosed
+within <|begin_semantic_retrieval_result|> and <|end_semantic_retrieval_result|> . Similarly, the read section queries are
+enclosed within <|begin_read_section_query|> and <|end_read_section_query|> , and the read section results are enclosed
+within <|begin_read_section_result|> and <|end_read_section_result|> . (Continued)
+Example #3 from SyllabusQA (Continued)
+Question:
+What constitutes the total percentage weight of all examinations toward the final grade in the courses that include them?
+Labeled Answer:
+The total examination weight is 40% in the Social Entrepreneurship course and 45% in the Individual Income Taxes course.
+Model Output by DeepRead
+ROUND 2 (ReadSection)
+I can see there’s a grading table in document 4, node 5. Let me read that section to get the complete information about exam weights.
+<|begin_read_section_query|> doc_id=4, sec_id=5, start_para_id=0, end_para_id=2 <|end_read_section_query|>
+<|begin_read_section_result(para_id=0)|> Your grade will be based on a number of factors, which will be weighted and assigned according
+to the following chart: <|end_read_section_result(para_id=0)|>
+<|begin_read_section_result(para_id=1)|> <table border=1 style=’margin: auto; width: max-content;’><tr><td style=’text-align: cen-
+ter;’>Weighting</td><td style=’text-align: center;’>%</td><td colspan="2">Grade Cutoffs</td></tr><tr><td style=’text-align: cen-
+ter;’>Exam 1</td><td style=’text-align: center;’>15%</td><td style=’text-align: center;’>A</td><td style=’text-align: center;’>94-
+100%</td></tr><tr><td style=’text-align: center;’>Exam 2</td><td style=’text-align: center;’>15%</td><td style=’text-align: center;’>A-
+</td><td style=’text-align: center;’>90-93%</td></tr><tr><td style=’text-align: center;’>Exam 3</td><td style=’text-align: cen-
+ter;’>15%</td><td style=’text-align: center;’>B+</td><td style=’text-align: center;’>86-89%</td></tr><tr><td style=’text-align: cen-
+ter;’>Tax Return Problem</td><td style=’text-align: center;’>15%</td><td style=’text-align: center;’>B</td><td style=’text-align:
+center;’>82-85%</td></tr><tr><td style=’text-align: center;’>Pre-Class Quiz</td><td style=’text-align: center;’>10%</td><td style=’text-
+align: center;’>B-</td><td style=’text-align: center;’>79-81%</td></tr><tr><td style=’text-align: center;’>Homework</td><td style=’text-
+align: center;’>10%</td><td style=’text-align: center;’>C+</td><td style=’text-align: center;’>75-78%</td></tr><tr><td style=’text-align:
+center;’>Quizzes</td><td style=’text-align: center;’>10%</td><td style=’text-align: center;’>C</td><td style=’text-align: center;’>72-
+74%</td></tr><tr><td style=’text-align: center;’>In-Class Assignments</td><td style=’text-align: center;’>10%</td><td style=’text-
+align: center;’>C-</td><td style=’text-align: center;’>69-71%</td></tr><tr><td style=’text-align: center;’></td><td style=’text-align:
+center;’>—</td><td style=’text-align: center;’>D+</td><td style=’text-align: center;’>66-68%</td></tr><tr><td style=’text-align: cen-
+ter;’>Total</td><td style=’text-align: center;’>100%</td><td style=’text-align: center;’>D</td><td style=’text-align: center;’>60-
+65%</td></tr><tr><td style=’text-align: center;’></td><td style=’text-align: center;’></td><td style=’text-align: center;’>F</td><td
+style=’text-align: center;’>Below 60%</td></tr></table> <|end_read_section_result(para_id=1)|>
+19
+
+Li et al.
+Table 10: An example from DeepRead on SyllabusQA. The model-generated semantic retrieval queries are enclosed within
+<|begin_semantic_retrieval_query|> and <|end_semantic_retrieval_query|> , while the top-2 retrieval results are enclosed
+within <|begin_semantic_retrieval_result|> and <|end_semantic_retrieval_result|> . Similarly, the read section queries are
+enclosed within <|begin_read_section_query|> and <|end_read_section_query|> , and the read section results are enclosed
+within <|begin_read_section_result|> and <|end_read_section_result|> . (Continued)
+Example #3 from SyllabusQA (Continued)
+Question:
+What constitutes the total percentage weight of all examinations toward the final grade in the courses that include them?
+Labeled Answer:
+The total examination weight is 40% in the Social Entrepreneurship course and 45% in the Individual Income Taxes course.
+Model Output by DeepRead
+ROUND 3 (Retrieval)
+Now let me check if there are any other courses or documents that mention exams to get a complete picture. Let me search for other
+exam-related information.
+<|begin_semantic_retrieval_query|> examination exam final grade weight <|end_semantic_retrieval_query|>
+<|begin_semantic_retrieval_result(top1)|> doc_id=4, sec_id=5, para_id=1, text=“<table border=1 style=’margin: auto; width: max-
+content;’><tr><td style=’text-align: center;’>Weighting</td><td style=’text-align: center;’>%</td><td colspan="2">Grade Cut-
+offs</td></tr><tr><td style=’text-align: center;’>Exam 1</td><td style=’text-align: center;’>15%</td><td style=’text-align: cen-
+ter;’>A</td><td style=’text-align: center;’>94-100%</td></tr><tr><td style=’text-align: center;’>Exam 2</td><td style=’text-align:
+center;’>15%</td><td
+style=’text-align:
+center;’>A-</td><td
+style=’text-align:
+center;’>90-93%</td></tr><tr><td
+style=’text-
+align: center;’>Exam 3</td><td style=’text-align: center;’>15%</td><td style=’text-align: center;’>B+</td><td style=’text-align:
+center;’>86-89%</td></tr><tr><td style=’text-align: center;’>Tax Return Problem</td><td style=’text-align: center;’>15%</td><td
+style=’text-align:
+center;’>B</td><td
+style=’text-align:
+center;’>82-85%</td></tr><tr><td
+style=’text-align:
+center;’>Pre-Class
+Quiz</td><td
+style=’text-align:
+center;’>10%</td><td
+style=’text-align:
+center;’>B-</td><td
+style=’text-align:
+center;’>79-
+81%</td></tr><tr><td style=’text-align: center;’>Homework</td><td style=’text-align: center;’>10%</td><td style=’text-align:
+center;’>C+</td><td style=’text-align: center;’>75-78%</td></tr><tr><td style=’text-align: center;’>Quizzes</td><td style=’text-align:
+center;’>10%</td><td style=’text-align: center;’>C</td><td style=’text-align: center;’>72-74%</td></tr><tr><td style=’text-align:
+center;’>In-Class Assignments</td><td style=’text-align: center;’>10%</td><td style=’text-align: center;’>C-</td><td style=’text-
+align: center;’>69-71%</td></tr><tr><td style=’text-align: center;’></td><td style=’text-align: center;’>—</td><td style=’text-align:
+center;’>D+</td><td style=’text-align: center;’>66-68%</td></tr><tr><td style=’text-align: center;’>Total</td><td style=’text-align:
+center;’>100%</td><td style=’text-align: center;’>D</td><td style=’text-align: center;’>60-65%</td></tr><tr><td style=’text-align:
+center;’></td><td
+style=’text-align:
+center;’></td><td
+style=’text-align:
+center;’>F</td><td
+style=’text-align:
+center;’>Below
+60%</td></tr></table>” <|end_semantic_retrieval_result(top1)|>
+<|begin_semantic_retrieval_result(top2)|> doc_id=2, sec_id=9, para_id=5, text=“<table border=1 style=’margin: auto; width: max-
+content;’><tr><td style=’text-align: center;’>Assignment</td><td style=’text-align: center;’>Percentage of Final Grade</td></tr><tr><td
+style=’text-align: center;’>Analytics assignments (4)</td><td style=’text-align: center;’>80%</td></tr><tr><td style=’text-align: cen-
+ter;’>Online Reflections (8)</td><td style=’text-align: center;’>20%</td></tr><tr><td style=’text-align: center;’></td><td style=’text-align:
+center;’>100%</td></tr></table>” <|end_semantic_retrieval_result(top2)|>
+ROUND 4 (ReadSection)
+Let me also check the "Exams" section in document 4 to see if there’s more information about exams.
+<|begin_read_section_query|> doc_id=4, sec_id=6, start_para_id=0, end_para_id=1 <|end_read_section_query|>
+<|begin_read_section_result(para_id=0)|> The exams will be outside of class time to reduce time stress. I will describe the layout of the
+exams beforehand. The exams will be open book. If you miss an exam I will give a make-up exam for extreme reasons, be prepared to
+take a make-up as soon as possible. I follow the rules of the Academic Regulations issued by the University. These rules require written
+proof of an acceptable absence. With that said, I will need written proof if you are not able to make an exam. I cannot give makeups
+simply because you feel inadequately prepared as that seems unfair to the class as a whole. Please contact me in advance if you will miss
+an exam. The exams will be in the evenings and the times will be confirmed as soon as possible. I will follow the University final exam
+schedule so please do not schedule yourself to be unavailable during finals week. <|end_read_section_result(para_id=0)|>
+20
+
+DeepRead: Document Structure-Aware Reasoning to Enhance Agentic Search
+Table 10: An example from DeepRead on SyllabusQA. The model-generated semantic retrieval queries are enclosed within
+<|begin_semantic_retrieval_query|> and <|end_semantic_retrieval_query|> , while the top-2 retrieval results are enclosed
+within <|begin_semantic_retrieval_result|> and <|end_semantic_retrieval_result|> . Similarly, the read section queries are
+enclosed within <|begin_read_section_query|> and <|end_read_section_query|> , and the read section results are enclosed
+within <|begin_read_section_result|> and <|end_read_section_result|> . (Continued)
+Example #3 from SyllabusQA (Continued)
+Question:
+What constitutes the total percentage weight of all examinations toward the final grade in the courses that include them?
+Labeled Answer:
+The total examination weight is 40% in the Social Entrepreneurship course and 45% in the Individual Income Taxes course.
+Model Output by DeepRead
+ROUND 5 (ReadSection)
+Now let me check document 2 to see if it contains any information about exams or grading. Let me read the relevant section from
+document 2.
+<|begin_read_section_query|> doc_id=2, sec_id=9, start_para_id=0, end_para_id=8 <|end_read_section_query|>
+<|begin_read_section_result(para_id=0)|> Each module has a designated discussion forum for questions about the module’s con-
+tents. Students are expected to post their questions about the course contents to the designated module discussion forum.
+...... <|end_read_section_result(para_id=0)|>
+......
+<|begin_read_section_result(para_id=2)|> In order to receive full credit for work, students must turn in required deliverables on the
+specified due date. Late work is not accepted except in special circumstances (e.g., religious holidays, military duty, jury duty, etc.) or other
+extremely unusual circumstances. Extremely unusual circumstances must be discussed with the instructor PRIOR to due dates. Incomplete
+grades are not given. Please plan accordingly and finish all work during the scope of this course. <|end_read_section_result(para_id=2)|>
+......
+<|begin_read_section_result(para_id=7)|> <table border=1 style=’margin: auto; width: max-content;’><tr><td style=’text-align: cen-
+ter;’>Percent</td><td style=’text-align: center;’>Grade</td>...... <|end_read_section_result(para_id=7)|>
+ROUND 6 (Final Answer)
+Based on the information I’ve gathered from the documents, I can now answer your question about the total percentage weight of all
+examinations toward the final grade.
+From document 4 (ACCOUNTING 371-01/02 - Individual Income Taxes), the grading table shows:
+- Exam 1: 15%
+- Exam 2: 15%
+- Exam 3: 15%
+The total weight of all examinations (Exam 1 + Exam 2 + Exam 3) is 15% + 15% + 15% = **45%**.
+From document 2 (Academic Resources), there is no mention of traditional examinations. The grading is based on:
+- Analytics assignments (4): 80%
+- Online Reflections (8): 20%
+This course does not include traditional examinations, so the examination weight is **0%**.
+Therefore, in the courses that include examinations (specifically ACCOUNTING 371), the total percentage weight of all examinations
+toward the final grade is **45%**.
+21
+
+Li et al.
+Table 11: An example from DeepRead on QASPER. The model-generated semantic retrieval queries are enclosed within
+<|begin_semantic_retrieval_query|> and <|end_semantic_retrieval_query|> , while the top-2 retrieval results are enclosed
+within <|begin_semantic_retrieval_result|> and <|end_semantic_retrieval_result|> . Similarly, the read section queries are
+enclosed within <|begin_read_section_query|> and <|end_read_section_query|> , and the read section results are enclosed
+within <|begin_read_section_result|> and <|end_read_section_result|> .
+Example #4 from QASPER
+Question:
+According to the experimental results, what are the reported accuracy rates for Support Vector Machines (SVM) in Vietnamese word
+segmentation, and how does the perplexity of the standard Transformer baseline compare to the proposed Global Variational Transformer
+(GVT) on the MojiTalk dataset?
+Labeled Answer:
+SVMs achieved accuracy rates of 97.2% and 94.05%. On the MojiTalk dataset, the standard Transformer had a perplexity of 72.66, which is
+higher than the GVT’s perplexity of 19.71.
+Model Output by DeepRead
+ROUND 1 (Retrieval)
+I’ll help you find the information about SVM accuracy rates in Vietnamese word segmentation and the perplexity comparison between
+Transformer baseline and GVT on the MojiTalk dataset. Let me start by searching for relevant information.
+<|begin_semantic_retrieval_query|> Support
+Vector
+Machines
+SVM
+accuracy
+Vietnamese
+word
+segmenta-
+tion <|end_semantic_retrieval_query|>
+<|begin_semantic_retrieval_result(top1)|> doc_id=2, sec_id=2, para_id=5, text=“There are several studies about the Vietnamese word
+segmentation task over the last decade. Dinh et al. started this task with Weighted Finite State Transducer (WFST) approach and Neural
+Network approach[10] . In addition, machine learning approaches are studied and widely applied to natural language processing and
+word segmentation as well. In fact, several studies used support vector machines (SVM) and conditional random fields (CRF) for the word
+segmentation task [8] , [9] . Based on annotated corpora and token-based features, studies used machine learning approaches to build
+word segmentation systems with accuracy about 94%-97%.” <|end_semantic_retrieval_result(top1)|>
+<|begin_semantic_retrieval_result(top2)|> doc_id=2, sec_id=13, para_id=2, text=“This technique is applied for Vietnamese word seg-
+mentation in several studies [8] , [25] . Nguyen et al. applied on a segmented corpus of 8,000 sentences and got the result at 94.05%
+while Ngo et al. used it with 45,531 segmented sentences and got the result at 97.2%. It is worth to mention that general SVM libraries
+(such as LIBSVM4 , LIBLINEAR5 , SVMlight6 , Node-SVM7 , and TreeSVM8 ), YamCha9 is an opened source SVM library that serves
+several NLP tasks: POS tagging, Named Entity Recognition, base NP chunking, Text Chunking, Text Classification and event Word
+Segmentation.” <|end_semantic_retrieval_result(top2)|>
+ROUND 2 (Retrieval)
+Now let me search for information about perplexity comparison between Transformer baseline and GVT on the MojiTalk dataset.
+<|begin_semantic_retrieval_query|> Transformer
+baseline
+perplexity
+Global
+Variational
+Transformer
+GVT
+MojiTalk
+dataset <|end_semantic_retrieval_query|>
+<|begin_semantic_retrieval_result(top1)|> doc_id=1, sec_id=20, para_id=3, text=“<table border=1 style=’margin: auto; width: max-
+content;’><tr><td colspan="10">MojiTalk</td></tr><tr><td rowspan="2">Model</td>......” <|end_semantic_retrieval_result(top1)|>
+<|begin_semantic_retrieval_result(top2)|> doc_id=1, sec_id=17, para_id=1, text=“MojiTalk dataset consists of 596,959 post and response
+pairs from Twitter. Each response is labeled by one emoji which indicates the response emotion. There are 64 emoji labels in total with
+unbalanced distribution. We use the preprocessed data and vocabulary released from Zhou and Wang (2018) and follow the same split of
+train/validation/test set.” <|end_semantic_retrieval_result(top2)|>
+22
+
+DeepRead: Document Structure-Aware Reasoning to Enhance Agentic Search
+Table 11: An example from DeepRead on QASPER. The model-generated semantic retrieval queries are enclosed within
+<|begin_semantic_retrieval_query|> and <|end_semantic_retrieval_query|> , while the top-2 retrieval results are enclosed
+within <|begin_semantic_retrieval_result|> and <|end_semantic_retrieval_result|> . Similarly, the read section queries are
+enclosed within <|begin_read_section_query|> and <|end_read_section_query|> , and the read section results are enclosed
+within <|begin_read_section_result|> and <|end_read_section_result|> . (Continued)
+Example #4 from QASPER (Continued)
+Question:
+According to the experimental results, what are the reported accuracy rates for Support Vector Machines (SVM) in Vietnamese word
+segmentation, and how does the perplexity of the standard Transformer baseline compare to the proposed Global Variational Transformer
+(GVT) on the MojiTalk dataset?
+Labeled Answer:
+SVMs achieved accuracy rates of 97.2% and 94.05%. On the MojiTalk dataset, the standard Transformer had a perplexity of 72.66, which is
+higher than the GVT’s perplexity of 19.71.
+Model Output by DeepRead
+ROUND 3 (ReadSection)
+Now let me read the specific section about SVM accuracy rates to get the exact numbers mentioned in the search results.
+<|begin_read_section_query|> doc_id=2, sec_id=13, start_para_id=0, end_para_id=3 <|end_read_section_query|>
+<|begin_read_section_result(para_id=0)|> Support Vector Machines (SVM) is a supervised machine learning method which considers
+dataset as a set of vectors and tries to classify them into specific classes. Basically, SVM is a binary classifier. However, most clas-
+sification tasks are multi-class classifiers. When applying SVMs, the method has been extended to classify three or more classes.
+Particular NLP tasks, like word segmentation and Part-of-speech task, each token/word in documents will be used as a feature vector.
+For <|end_read_section_result(para_id=0)|>
+......
+<|begin_read_section_result(para_id=2)|> This technique is applied for Vietnamese word segmentation in several studies [8] , [25] .
+Nguyen et al. applied on a segmented corpus of 8,000 sentences and got the result at 94.05% while Ngo et al. used it with 45,531 segmented
+sentences and got the result at 97.2%. It is worth to mention that general SVM libraries (such as LIBSVM4 , LIBLINEAR5 , SVMlight6 , Node-
+SVM7 , and TreeSVM8 ), YamCha9 is an opened source SVM library that serves several NLP tasks: POS tagging, Named Entity Recognition,
+base NP chunking, Text Chunking, Text Classification and event Word Segmentation. <|end_read_section_result(para_id=2)|>
+ROUND 4 (ReadSection)
+Now let me also check the introduction section to see if there are more general accuracy ranges mentioned for SVM.
+<|begin_read_section_query|> doc_id=2, sec_id=2, start_para_id=4, end_para_id=6 <|end_read_section_query|>
+<|begin_read_section_result(para_id=4)|> Image <|end_read_section_result(para_id=4)|>
+<|begin_read_section_result(para_id=5)|> There are several studies about the Vietnamese word segmentation task over the last decade.
+Dinh et al. started this task with Weighted Finite State Transducer (WFST) approach and Neural Network approach [10] . In addition,
+machine learning approaches are studied and widely applied to natural language processing and word segmentation as well. In fact,
+several studies used support vector machines (SVM) and conditional random fields (CRF) for the word segmentation task [8] , [9]. Based
+on annotated corpora and token-based features, studies used machine learning approaches to build word segmentation systems with
+accuracy about 94%-97%. <|end_read_section_result(para_id=5)|>
+23
+
+Li et al.
+Table 11: An example from DeepRead on QASPER. The model-generated semantic retrieval queries are enclosed within
+<|begin_semantic_retrieval_query|> and <|end_semantic_retrieval_query|> , while the top-2 retrieval results are enclosed
+within <|begin_semantic_retrieval_result|> and <|end_semantic_retrieval_result|> . Similarly, the read section queries are
+enclosed within <|begin_read_section_query|> and <|end_read_section_query|> , and the read section results are enclosed
+within <|begin_read_section_result|> and <|end_read_section_result|> . (Continued)
+Example #4 from QASPER (Continued)
+Question:
+According to the experimental results, what are the reported accuracy rates for Support Vector Machines (SVM) in Vietnamese word
+segmentation, and how does the perplexity of the standard Transformer baseline compare to the proposed Global Variational Transformer
+(GVT) on the MojiTalk dataset?
+Labeled Answer:
+SVMs achieved accuracy rates of 97.2% and 94.05%. On the MojiTalk dataset, the standard Transformer had a perplexity of 72.66, which is
+higher than the GVT’s perplexity of 19.71.
+Model Output by DeepRead
+ROUND 5 (Final Answer)
+Now I have the information needed to answer both parts of the question. Based on the search results:
+1. **SVM accuracy rates for Vietnamese word segmentation**:
+- The document states that studies using machine learning approaches (including SVM) achieved accuracy rates of about 94%-97%.
+- Specifically, two studies are mentioned: Nguyen et al. achieved 94.05% accuracy on a corpus of 8,000 sentences, and Ngo et al. achieved
+97.2% accuracy on a corpus of 45,531 sentences.
+2. **Perplexity comparison on MojiTalk dataset**:
+- From the table in the search results, the standard Transformer baseline has a perplexity (PPL) of 72.66.
+- The proposed Global Variational Transformer (GVT) has a perplexity of 19.71.
+- This shows that GVT significantly outperforms the Transformer baseline, with GVT achieving much lower perplexity (19.71 vs 72.66).
+*Answer**:
+According to the experimental results:
+1. For Support Vector Machines (SVM) in Vietnamese word segmentation, the reported accuracy rates are:
+- General range: About 94%-97%
+- Specific studies: Nguyen et al. achieved 94.05% accuracy on 8,000 sentences, and Ngo et al. achieved 97.2% accuracy on 45,531 sentences.
+2. On the MojiTalk dataset:
+- The standard Transformer baseline has a perplexity of 72.66
+- The proposed Global Variational Transformer (GVT) has a perplexity of 19.71
+- GVT significantly outperforms the Transformer baseline with much lower perplexity (approximately 3.7 times better).
+24
+
+DeepRead: Document Structure-Aware Reasoning to Enhance Agentic Search
+System Prompt Template
+You are a documents assistant and will receive one or more documents structured as follows:
+- (doc_id) [node_id] Title | paragraphs=Num | tokens=Num | children=[ID list].
+Use this structure and your available tools to answer the user’s question.
+## Guidelines
+• Use <Search/Retrieve> to locate relevant nodes based on the directory.
+• Answer strictly based on the provided corpus; do not fabricate.
+• The hierarchical structure of documents is represented in the Directory Structure. Parsing errors may cause body text to be mistakenly
+treated as hierarchical elements (or headings), rendering the heading text inaccessible to search and reading tools. Please make
+reasonable inferences based on the structure and the content returned by the tool.
+• Respond in the User’s language; align queries with the Directory Structure.
+• Usually, you need to think step by step and then call tools to locate or read, iterating in this way until you can answer the question.
+• When calling tools, DO NOT write tool invocations in plain text. Use the structured tool call interface (tool_calls) only.
+## Directory Structure
+<Serialized Table of Contents inserted here...>
+Figure 5: The system prompt used in DeepRead. It injects the hierarchical document skeleton (Directory Structure).
+LLM-as-a-Judge Prompt Template
+You are an expert evaluator for AI-generated responses to queries. Your task is to determine whether the AI-generated answer correctly answers
+the query based on the golden answer provided by a human expert.
+Numerical Accuracy:
+• Rounding differences should be ignored if they do not meaningfully change the conclusion.
+• You can allow some flexibility in accuracy. For example, 1.2 is considered similar to 1.23. Two numbers are considered similar if one
+can be rounded to the other.
+• Fractions, percentage, and numerics could be considered similar, for example: "11 of 14" is considered equivalent to "79%" and "0.79".
+Evaluation Criteria:
+• If the golden answer or any of its equivalence can be inferred or generated from the AI-generated answer, then the AI-generated answer
+is considered correct.
+• If any number, percentage, fraction, or figure in the golden answer is not present in the AI-generated answer, but can be inferred
+or generated from the AI-generated answer or implicitly exist in the AI-generated answer, then the AI-generated answer is considered
+correct.
+• The AI-generated answer is considered correct if it conveys the same or similar meaning, conclusion, or rationale as the golden
+answer.
+• If the AI-generated answer is a superset of the golden answer, it is also considered correct.
+• If the AI-generated answer provides a valid answer or reasonable interpretation compared to the golden answer, it is considered
+correct.
+• If the AI-generated answer contains subjective judgments or opinions, it is considered correct as long as they are reasonable and
+justifiable compared to the golden answer.
+• Otherwise, the AI-generated answer is incorrect.
+Inputs: Query: <question>
+• AI-Generated Answer: <predicted_answer>
+• Golden Answer: <standard_answer>
+Your output should be ONLY a boolean value: True or False, nothing else.
+Figure 6: The evaluation prompt used for the LLM-as-a-Judge metric. It instructs the evaluator model to focus on semantic
+equivalence and allow for flexible numerical matching.
+25
+
+Li et al.
+QA Generation Prompt Template
+System Instruction:
+You are a careful question writer tasked with generating hard but answerable CLOSED-FORM QA pairs from MULTIPLE Markdown documents provided
+in the user message. You MUST use ONLY the provided document TEXT; do not invent facts, do not use images, filenames, URLs, or any external
+knowledge. Respect the document content.
+CRITICAL CONSTRAINTS (apply to EACH item):
+• The question must require synthesizing evidence from AT LEAST FOUR distinct LEAF sections (headings with no deeper subheadings). Treat
+’#’, ’##’, etc. as hierarchical.
+• The answer must uniquely follow by integrating information drawn from MULTIPLE hierarchy levels (e.g., a leaf and its ancestors, or
+leaves under different parents). It must NOT degenerate to fewer than 4 hops.
+• CLOSED-FORM: The question has a single, unambiguous, concise correct answer present in the text.
+• The QUESTION must NOT explicitly mention any section titles or heading levels. Phrase naturally (no "as stated in Section 3.2").
+• Your question must be answered by considering all the provided documents together.
+OUTPUT FORMAT:
+• Return ONLY valid JSON with exact schema: {"qas": [{"q": "...", "a": "..."}, ...]}
+• Do NOT include any other keys. Do NOT wrap in markdown.
+User Input Template:
+You will be given <k> Markdown documents (The following documents are unordered.) concatenated below.
+Generate exactly <n> QA pairs that each satisfy the constraints.
+DOCUMENTS BEGIN
+<docs_text>
+DOCUMENTS END
+Figure 7: The prompt used to synthesize multi-hop QA pairs.
+26

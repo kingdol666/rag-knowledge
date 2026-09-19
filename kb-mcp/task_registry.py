@@ -22,6 +22,8 @@ so the plain dict operations here need no locking.
 from __future__ import annotations
 
 import asyncio
+import json
+import os
 import time
 import uuid
 from datetime import datetime, timezone
@@ -35,6 +37,85 @@ RUNNING_TTL = 7200  # seconds; tasks running longer are considered stale
 _records: dict[str, dict] = {}
 # task_id -> asyncio.Task. Kept so the GC cannot collect a running task.
 _handles: dict[str, asyncio.Task] = {}
+
+# ── Cross-process persistence (P2) ──────────────────────────────────
+# The registry above is per-process: every stdio MCP session spawns a fresh
+# server process, so a task_id submitted in one session was unresolvable from
+# another ("unknown task_id"). We now mirror every record to an append-only
+# JSONL file under <root>/storage/ so kb_task_status from ANY process can
+# resolve the latest known state. The owning process's in-memory record stays
+# authoritative (full result); the persisted copy truncates large results.
+_PERSIST_PATH: str | None = None
+PERSIST_MAX_BYTES = 5_000_000
+PERSIST_RESULT_CAP = 8000
+
+
+def _persist_path() -> str:
+    global _PERSIST_PATH
+    if _PERSIST_PATH is None:
+        root = os.environ.get("RAG_PROJECT_ROOT") or ""
+        if not root:
+            d = os.getcwd()
+            for _ in range(6):
+                if os.path.exists(os.path.join(d, "config.yml")):
+                    root = d
+                    break
+                d = os.path.dirname(d)
+            root = root or os.getcwd()
+        os.makedirs(os.path.join(root, "storage"), exist_ok=True)
+        _PERSIST_PATH = os.path.join(root, "storage", "mcp-task-registry.jsonl")
+    return _PERSIST_PATH
+
+
+def _persist(rec: dict) -> None:
+    """Best-effort append of a record snapshot; never raises."""
+    try:
+        path = _persist_path()
+        if os.path.exists(path) and os.path.getsize(path) > PERSIST_MAX_BYTES:
+            with open(path, encoding="utf-8") as f:
+                lines = f.readlines()[-1000:]
+            tmp = path + ".tmp"
+            with open(tmp, "w", encoding="utf-8") as f:
+                f.writelines(lines)
+            os.replace(tmp, path)
+        view = {k: rec.get(k) for k in
+                ("task_id", "kind", "status", "created_at", "finished_at", "error", "meta")}
+        view["meta"] = {k: v for k, v in (view["meta"] or {}).items()
+                        if isinstance(v, (str, int, float, bool))}
+        result = rec.get("result")
+        if result is not None:
+            blob = json.dumps(result, ensure_ascii=False, default=str)
+            view["result"] = result if len(blob) <= PERSIST_RESULT_CAP else {
+                "_truncated": True, "preview": blob[:800]}
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(json.dumps(view, ensure_ascii=False, default=str) + "\n")
+    except Exception:
+        pass
+
+
+def _lookup_persisted(task_id: str) -> dict | None:
+    """Latest persisted record for task_id from any MCP server process."""
+    try:
+        path = _persist_path()
+        if not os.path.exists(path):
+            return None
+        found = None
+        with open(path, encoding="utf-8") as f:
+            for line in f:
+                if task_id not in line:
+                    continue
+                try:
+                    obj = json.loads(line)
+                except Exception:
+                    continue
+                if obj.get("task_id") == task_id:
+                    found = obj
+        if found is None:
+            return None
+        found["_cross_process"] = True
+        return found
+    except Exception:
+        return None
 
 
 def _now_iso() -> str:
@@ -105,9 +186,11 @@ def submit(coro, kind: str, meta: dict | None = None) -> str:
             record["finished_at"] = _now_iso()
             _handles.pop(task_id, None)
             _reap_completed()
+            _persist(record)
 
     _handles[task_id] = asyncio.create_task(_runner())
     _reap_stale()
+    _persist(record)
     return task_id
 
 
@@ -127,8 +210,15 @@ def update_meta(task_id: str, meta_patch: dict) -> None:
 
 
 def get(task_id: str) -> dict | None:
-    """Return the raw record for *task_id*, or ``None`` if unknown."""
-    return _records.get(task_id)
+    """Return the raw record for *task_id*, or ``None`` if unknown.
+
+    Falls back to the persisted JSONL mirror so task ids submitted by OTHER
+    MCP server processes (each stdio session spawns its own) still resolve.
+    """
+    rec = _records.get(task_id)
+    if rec is not None:
+        return rec
+    return _lookup_persisted(task_id)
 
 
 def public_view(rec: dict | None) -> dict | None:
@@ -147,11 +237,24 @@ def public_view(rec: dict | None) -> dict | None:
     if backend_tid:
         out["backend_task_id"] = backend_tid
     if rec["status"] == "running":
-        out["elapsed_seconds"] = round(time.monotonic() - rec["started_monotonic"], 1)
+        started = rec.get("started_monotonic")
+        if started is not None:
+            out["elapsed_seconds"] = round(time.monotonic() - started, 1)
+        elif rec.get("created_at"):
+            # cross-process record: no monotonic clock — derive from wall clock
+            try:
+                from datetime import datetime
+                created = datetime.fromisoformat(rec["created_at"])
+                out["elapsed_seconds"] = round(
+                    max(0.0, (datetime.now(timezone.utc) - created).total_seconds()), 1)
+            except Exception:
+                pass
     if rec.get("progress"):
         out["progress"] = rec["progress"]
     if rec.get("finished_at"):
         out["finished_at"] = rec["finished_at"]
+    if rec.get("_cross_process"):
+        out["cross_process"] = True
     if rec["status"] in ("done", "error"):
         out["result"] = rec["result"] if rec["status"] == "done" else None
         out["error"] = rec.get("error")

@@ -44,9 +44,9 @@ This skill performs the following seven classes of organizing operations, execut
 
 | Layer | Operation | Description |
 |------|------|------|
-| **L1** | Description fixes | Content-driven rewriting of document/KB descriptions |
+| **L1** | Description fixes | Content-driven rewriting of document/KB descriptions (D8 多维 + 查询导向标准，同入库 A3c) |
 | **L2** | Tag hygiene | Blocklist removal → synonym merging → orphan removal |
-| **L3** | Document reclassification | Misplaced documents moved to the correct KB |
+| **L3** | Document reclassification | Misplaced documents moved to the **argmax-fit** KB (L3-M scan) |
 | **L4** | KB → sub-KB splitting | Large KBs split into sub knowledge bases by sub-domain |
 | **L5** | Cross-KB merging | KBs with overlapping domains merged into one parent KB + sub-KBs |
 | **L6** | KB hierarchy restructuring | Create/rename/restructure the parent-KB-sub-KB hierarchy tree |
@@ -99,9 +99,20 @@ fs_get_tree(include_files=False, max_depth=0)  # KB hierarchy structure
 
 ---
 
-## O2 — Deep Content Audit
+## O2 — Deep Content Audit ⭐ (Full-Coverage Manifest)
 
 > **Parallel speedup**: when KB count > 8 or total documents > 50, delegate sub-agents to audit KBs in parallel.
+
+**O2-M 审计清单（全覆盖保证，强制）**：审计开始前先为**每一个文档**建一行清单（path → 待审）；
+审计即逐行勾销；**子 Agent 返回的结果必须由父 Agent 合并回同一份清单**。O2 结束时断言：
+
+```
+audited_count == total_count   （缺一行 = O2 未完成，禁止进入 O3）
+```
+并行分工只改变"谁去读"，不改变"每行都必须有结论"。
+
+**分 part 文档按词干分组为一个逻辑单元**：`xxx (part k of N).md` 各 part 归并为同一篇论文——
+审计读 part 1 的 1000 chars 代表全篇判断归属；**L3 迁移时必须整组同迁**（只迁 part 1 是事故）。
 
 For every non-empty KB, read each document's content and mark its state:
 
@@ -116,13 +127,14 @@ for each doc in KB:
       domain:          <sub-domain inferred from content>
       kb_alignment:    [MATCH | MISMATCH]
       suggested_tags:  <[2-5 content-derived tags]>    ← ⭐ auto-generated during audit
+      best_target:     <for MISMATCH: the argmax-KB chosen by the L3-M scan>
 ```
 
 > **Tags are auto-generated in the O2 audit phase**, not deferred to L2. L2 only cleans, normalizes, and batch-writes back.
 
 > ⏱ Estimate: ~1s per document; 100 documents ≈ 2 minutes.
 
-**Note**: when KB count > 10, delegate content audits to sub-agents via `task(tasks=[{"agent":"archival","name":"KB-Audit","task":"audit KB docs...","effort":"med"}])`, processing 4 KBs per group in parallel.
+**Note**: when KB count > 10, delegate content audits to sub-agents via `task(tasks=[{"agent":"archival","name":"KB-Audit","task":"audit KB docs...","effort":"med"}])`, processing 4 KBs per group in parallel. Sub-agent results merge back into the O2-M manifest.
 
 ---
 
@@ -193,6 +205,53 @@ Execute in L1→L7 order; verify immediately after each layer. Detailed executio
 
 ---
 
+### L3-M — 最佳目标库扫描 + 整组迁移 ⭐
+
+错放文档"搬到正确的库"不能靠印象——对每个 MISMATCH 文档执行**全库目标扫描**：
+
+```
+for each misplaced doc:
+    for each other KB (exclude the current one):
+        fit = 基于目标库 description 与该文档已读内容 (sub_domain + methods + entities) 的匹配度
+    target = argmax(fit)；记录 runner-up（第二名的库，供用户复核）
+```
+
+执行纪律：
+- **整组迁移**：分 part 文档按词干整组同迁（逐 part 迁移会造成同一论文跨库分裂）。
+- **源库收口必须 kb_reindex(force=true)**：`kb_doc_move` 的重索引是 fire-and-forget，
+  **batch_index(force=true) 只重编列出文档、不清除源库孤儿 chunk**（实测迁移后源库
+  残留 3 个孤儿 chunk，向量检索继续以 0.544 命中已迁文档）。收口序列：
+  `kb_doc_move` → `kb_index_document`（新库）→ **源库 `kb_reindex(force=true)`** →
+  新库 `kb_reindex(force=true)`（或 batch_index）→ `kb_graph_build(force=true)`。
+- **迁移后探针（含 negative probe）**：`kb_search_vector(query=问题维, kb_id=新库)`
+  确认新库能召回；**原库同查询必须不再返回该文档**（negative probe 是发现孤儿
+  chunk 的唯一可靠手段）。
+- 描述随之升级为 D8 多维标准（见 knowledgebase-ingest references/description-guide.md），
+  保证迁移后"按描述检索"在新库依然命中。
+- **预期中间态**：kb_doc_move 后 `vector_index` 字段可能短暂显示旧库 collection/旧
+  chunk 前缀（脏值）且 graph_index 缺失——这是收口前的预期状态，O5b 会发现，收口后消失。
+- **参数命名**：`kb_list` 返回 `kbId`，而 `kb_get_documents`/`kb_doc_read`/`kb_doc_update_*`/
+  `kb_batch_index`/`kb_graph_build` 等要求 `kb_id`；`kb_doc_move(doc_path, target_kb_id)`
+  无源库参数。首调前先打印一个条目确认键名。
+
+## O5-C — 检索回归探针（整理后检索不降级，强制）⭐
+
+L3/L4/L5/L6/L7 任一层落地后，对**每个受影响的知识库**执行检索回归：
+
+```
+for each affected KB:
+    probes = 从该库 2-3 个文档的描述问题维生成的查询
+    for each probe:
+        kb_search_vector(query=probe, kb_id=该库, top_k=3)
+        → 预期文档必须在结果中（kb_search_vector 返回 chunk 级结果、
+          不做文档级去重——同一文档可能占多席，按 doc_path 判命中）
+    # 另跑 negative probe：被迁出文档的旧查询在原库必须不再命中
+```
+
+任一探针未命中 → 索引/图谱未重建完成或文档丢失（最常见：源库孤儿 chunk，
+用 `kb_reindex(kb_id, force=true)` 全量重建收口），停止后续层级并回查 O5b 三层一致性。
+（这就是"整理之后检索不降级"的可执行定义。）
+
 ## O5 — Per-Layer Verification + O5b Three-Level Consistency
 
 Verify immediately after each layer's fixes (verification method table in [execution-details.md](references/execution-details.md) §O5).
@@ -216,7 +275,7 @@ Users may specify extra compliance requirements. Everything runs by default; if 
 
 ## O8 — Final Report
 
-Before/after state comparison + fix counts for each L1-L7 layer + compliance score (C1 descriptions/C2 tags/C3 alignment/C4 vectors/C5 graph/C6 three-way consistency) + experiences pending.
+Before/after state comparison + **audit coverage (O2-M: audited/total, must be 100%)** + fix counts for each L1-L7 layer + **O5-C retrieval regression results (probes passed / total)** + compliance score (C1 descriptions/C2 tags/C3 alignment/C4 vectors/C5 graph/C6 three-way consistency) + experiences pending.
 
 ---
 
@@ -234,6 +293,10 @@ Before/after state comparison + fix counts for each L1-L7 layer + compliance sco
 | Not delegating sub-agents for large libraries | Responses too slow; the user can't wait | >50 documents or >8 KBs → parallelize |
 | Skip orphan cleanup | Ghost entries accumulate | O6 must check |
 | Assume clearing the tags_list cleared document tags | The vocabulary and document tags are two different things | Must `kb_doc_update_tags` per document |
+| Audit by sampling and call it done | 整理的合法性来自"每一篇都看过" | O2-M 清单逐行勾销，audited==total 才算完成 |
+| Move a misplaced doc to "a KB that looks related" | 差的归属比错的位置更隐蔽 | L3-M 全库目标扫描取 argmax，记录 runner-up |
+| Move only part 1 of a multi-part document | 同一论文跨库分裂，检索时身首异处 | 按词干整组同迁，迁移后双库探针 |
+| Trust that moves didn't break retrieval | 索引/图谱陈旧会让整理后检索静默降级 | O5-C 探针逐库回归，未命中即停 |
 
 <!-- SKILLOPT-SLEEP:LEARNED START -->
 ## Learned preferences & procedures

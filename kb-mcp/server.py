@@ -480,8 +480,11 @@ async def kb_doc_move(doc_path: str, target_kb_id: str) -> str:
     - Deletes old vector chunks + graph node at the original path
     - Indexes the document at the new path (vector + graph)
 
-    The reindex is fire-and-forget (non-blocking). For critical moves, verify
-    with kb_search_vector or kb_graph_document afterward."""
+    The reindex is fire-and-forget (non-blocking) and may leave ORPHAN CHUNKS
+    in the source collection (vector search can keep hitting the moved document
+    at its old path). For critical moves close out with
+    kb_reindex(kb_id=<source>, force=true) on the source KB, then verify with
+    kb_search_vector (negative probe: the old query must stop returning the doc)."""
     if (err := _require_param("doc_path", doc_path)): return err
     if (err := _require_kb(target_kb_id)): return err
     return _j(await _client().kb_doc_move(doc_path, target_kb_id))
