@@ -15,9 +15,28 @@ import { resolve, isAbsolute, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
 // ── Path anchors ───────────────────────────────────────────────────────
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename)
-const MONOREPO_ROOT = resolve(__dirname, '../../..')
+// This module is flattened into nitro.mjs, whose static import from the
+// entry evaluates BEFORE index.mjs sets globalThis._importMeta_ — so in the
+// production bundle import.meta.url is the "file:///_entry.js" placeholder
+// and fileURLToPath() throws on win32 (no drive letter). Probe cwd upwards
+// for config.yml as a fallback (node .output/server/index.mjs runs from
+// .output/server; nuxt dev runs from web/ — both reach the repo root).
+function resolveMonorepoRoot(): string {
+  try {
+    const here = dirname(fileURLToPath(import.meta.url))
+    return resolve(here, '../../..')
+  } catch {
+    let dir = process.cwd()
+    for (let i = 0; i < 6; i++) {
+      if (existsSync(resolve(dir, 'config.yml'))) return dir
+      const parent = dirname(dir)
+      if (parent === dir) break
+      dir = parent
+    }
+    return process.cwd()
+  }
+}
+const MONOREPO_ROOT = resolveMonorepoRoot()
 const CONFIG_PATH = resolve(MONOREPO_ROOT, 'config.yml')
 const ENV_PATH = resolve(MONOREPO_ROOT, '.env')
 

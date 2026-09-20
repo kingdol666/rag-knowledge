@@ -7,7 +7,7 @@
  * thin pass-through that normalizes the query parameters and wires the
  * permission callback + abort signal.
  */
-import { query as claudeQuery } from '@anthropic-ai/claude-agent-sdk'
+import { query as claudeQuery, type PermissionMode } from '@anthropic-ai/claude-agent-sdk'
 import type {
   ChatEngine,
   QueryRequest,
@@ -53,7 +53,9 @@ export class ClaudeEngine implements ChatEngine {
       prompt: promptArg,
       options: {
         cwd: req.cwd,
-        permissionMode: req.permissionMode,
+        // QueryRequest.permissionMode is a plain string (engines expose their
+        // own mode sets); the SDK only accepts its canonical mode union.
+        permissionMode: req.permissionMode as PermissionMode,
         model: req.model || undefined,
         allowedTools: req.allowedTools,
         resume: req.resume || undefined,

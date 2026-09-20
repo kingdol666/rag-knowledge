@@ -13,7 +13,11 @@
  * Response: { success, harness, source, models: [{id, name, thinking?}],
  *             reasoning_levels: [{id, label, description?}] }
  */
-import { defineEventHandler, createError } from 'h3'
+import { defineEventHandler, createError, getRouterParam, getQuery } from 'h3'
+// $fetch imported explicitly: the Nitro global's type embeds the typed route
+// table, which contains this very handler — TS then fails the whole chain
+// with TS7022/TS7024 circular-inference errors.
+import { $fetch } from 'ofetch'
 import { getDynamicBackendUrl } from '~/server/utils/dynamic-config'
 import { HARNESS_CHAT_CATALOG } from '~/server/utils/harness-catalog'
 import { acpProbeConfigOptions, type AcpConfigOptionSummary } from '~/server/engines/acp-engine'

@@ -2278,7 +2278,7 @@ watch(engine, (newEngine, oldEngine) => {
   const nextCatalog = harnessCatalog.value.find(h => h.id === newEngine)
   const validModes = nextCatalog?.permissionModes?.map(m => m.id) || []
   if (validModes.length && !validModes.includes(permissionMode.value)) {
-    permissionMode.value = nextCatalog?.defaultMode || 'default'
+    permissionMode.value = (nextCatalog?.defaultMode || 'default') as PermissionMode
   }
 
   // 4c. Model/effort are engine-specific — without a snapshot, a stale value
