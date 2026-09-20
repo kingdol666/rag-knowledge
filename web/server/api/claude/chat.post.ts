@@ -23,6 +23,7 @@
  */
 import { getEngine, normalizeEngine, getChatMeta, type PermissionMode } from '~/server/engines'
 import { getProjectRoot } from '~/server/utils/claude-config'
+import { buildKbInstruction } from '~/server/utils/kb-instruction'
 import { addPending, denyAllPending, resolvePending } from '~/server/utils/claude-pending'
 import { upsertSession, saveMessage, getSessionMessages } from '~/server/utils/chat-db'
 import { resolve } from 'path'
@@ -155,81 +156,6 @@ function buildSoulInstruction(soulKbId: string): string {
     '- If the SOUL system is unavailable, fall back to a normal answer and say so',
     '',
     '---',
-    '',
-  ].join('\n')
-}
-function buildKbInstruction(kbIds: string[]): string {
-  if (kbIds.length > 0) {
-    const kbIdList = kbIds.map((id) => '`' + id + '`').join(', ')
-    const kbCount = kbIds.length
-
-    return [
-      '',
-      '## [System: Knowledge Base Retrieval-Augmented Answer Mode]',
-      '',
-      'You are answering the user\'s question. You MUST use the knowledge base retrieval system to enhance your answer quality.',
-      'Follow these steps strictly:',
-      '',
-      '### Step 1: Analyze the Question',
-      'Carefully read the user\'s question. Extract key entities, attributes, and constraints.',
-      '',
-      `### Step 2: Search Knowledge Bases`,
-      `Invoke \`/knowledgebase-search\` skill to search the following ${kbCount} knowledge base(s): ${kbIdList}.`,
-      '  - Follow the knowledgebase-search skill QDCVR pipeline strictly (Step 0 Query Rewrite -> Step 1 KB Selection -> Step 2 Vector + Two-Stage Retrieval -> Step 2.5 Dedup + Threshold -> Step 3 Content Verification -> Step 6 Synthesized Answer)',
-      '  - Only use results with content verification score >= 4 for your answer',
-      '  - Focus on the specified KBs, do not drift to unrelated topics',
-      '',
-      '### Step 3: Synthesize Answer',
-      'Based on the reliably retrieved knowledge, synthesize a clear, structured answer.',
-      '  - Cite specific document names and sources',
-      '  - Annotate information credibility (P0 strong / P1 reference / P2 weak)',
-      '  - If no relevant information is found, state this honestly',
-      '',
-      '### Critical Reminders:',
-      '- **Retrieve first, then answer** -- never guess from memory',
-      '- **Stay focused** on the specified knowledge bases',
-      '- Use Step 0 query rewriting for vague queries to optimize retrieval',
-      '- Never fabricate answers -- say "not found in KB" if needed',
-      '',
-      '---',
-      '',
-      'Here is the user\'s question:',
-      '',
-    ].join('\n')
-  }
-
-  // All-KB search mode
-  return [
-    '',
-    '## [System: Knowledge Base Retrieval-Augmented Answer Mode -- Full Library Search]',
-    '',
-    'You are answering the user\'s question. You MUST use the knowledge base retrieval system to enhance your answer quality.',
-    'Follow these steps strictly:',
-    '',
-    '### Step 1: Analyze the Question',
-    'Carefully read the user\'s question. Extract key entities, attributes, and constraints.',
-    '',
-    '### Step 2: Full Library Search',
-    'Invoke `/knowledgebase-search` skill to search ALL available knowledge bases.',
-    '  - Follow the knowledgebase-search skill QDCVR pipeline strictly (Step 0 Query Rewrite -> Step 1 KB Selection -> Step 2 Vector + Two-Stage Retrieval -> Step 2.5 Dedup + Threshold -> Step 3 Content Verification -> Step 6 Synthesized Answer)',
-    '  - If results concentrate in <2 KBs, auto-upgrade to enterprise multi-strategy search',
-    '  - Only use results with content verification score >= 4 for your answer',
-    '',
-    '### Step 3: Synthesize Answer',
-    'Based on the reliably retrieved knowledge, synthesize a clear, structured answer.',
-    '  - Cite specific document names and source KBs',
-    '  - Annotate information credibility (P0 strong / P1 reference / P2 weak)',
-    '  - If no relevant information is found in ANY KB, state this honestly',
-    '',
-    '### Critical Reminders:',
-    '- **Retrieve first, then answer** -- never guess from memory',
-    '- **Search across ALL KBs** comprehensively -- don\'t miss any relevant source',
-    '- Use Step 0 query rewriting for vague queries to optimize retrieval',
-    '- Never fabricate answers -- say "not found in KB" if needed',
-    '',
-    '---',
-    '',
-    'Here is the user\'s question:',
     '',
   ].join('\n')
 }

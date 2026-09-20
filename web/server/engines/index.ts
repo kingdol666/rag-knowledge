@@ -13,7 +13,7 @@ import { AcpEngine } from './acp-engine'
 import { CliOneShotEngine } from './cli-oneshot-engine'
 import { MockEngine } from './mock-engine'
 import { CHAT_CAPABLE_IDS, getChatMeta } from '~/server/utils/harness-catalog'
-import type { ChatEngine, EngineName } from './types'
+import type { ChatEngine, EngineName, QueryRequest, StandardMessage } from './types'
 export type { PermissionMode } from './types'
 
 const _claudeEngine = new ClaudeEngine()
@@ -45,6 +45,16 @@ export function getEngine(name?: string): ChatEngine {
   if (id === 'claude') return _claudeEngine
   if (id === 'omp') return _ompEngine
   return _shared[id]
+}
+
+/**
+ * Execute one engine turn - the async-iterable frame stream, as a free
+ * function. Non-SSE callers (POST /api/kb/native-search) run a turn through
+ * this instead of touching the adapter method directly, keeping the
+ * engine-facing surface in the factory module.
+ */
+export function engineTurn(engine: ChatEngine, req: QueryRequest): AsyncIterable<StandardMessage> {
+  return engine.query(req)
 }
 
 export { CHAT_CAPABLE_IDS, getChatMeta }
