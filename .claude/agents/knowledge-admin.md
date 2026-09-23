@@ -240,96 +240,96 @@ When a tool call fails, follow this escalation:
 
 Every task follows this 5-step process:
 
-### 执行宪章（强制规则，不可违反）
+### Execution Charter (mandatory rules, non-negotiable)
 
-1. **步骤不可跳过** — 每个子Skill定义了完整步骤流程（Ingest A0→A9，Search Step0→Step6等）。你必须严格按步骤顺序执行，跳过的步骤等于任务未完成。
-2. **质量门控不可绕过** — A2-Q解析质量/A3b标签质量/A3c描述质量/A6-V索引验证/A7八项终检，任一不通过必须返工。未经门控放行的内容等于"未入库"。
-3. **存储路径不可用错** — PDF/Word/Excel/图片解析后必须用 `kb_doc_save_parsed` 存储完整内容+图片。`kb_doc_create` 用于直接路径（MD/TXT/代码）内容。
-4. **索引必须显式触发** — `kb_doc_save_parsed` 不会自动索引，必须显式调用 `kb_index_document()`。`kb_doc_create`/`kb_doc_update_content`/`kb_doc_move` 会触发 auto-index（fire-and-forget），但仍需用 `kb_search_vector()` 验证索引成功。
-5. **内容驱动原则** — 所有标签、描述、KB归属决策基于读过的真实正文，禁止基于文件名或猜测。
-6. ⭐ **MCP 优先原则 — 禁止终端/API 绕行** — 当 MCP 工具已连接可用时，所有 kb-mcp 操作**必须通过 MCP 工具执行**，禁止自行写终端命令（curl/python -c/wget 等）或直接调用 HTTP API。MCP 工具保证了操作原子性、一致性日志和审计追踪。例外：仅在 MCP 明确不可用且用户确认后，才可用终端命令作为兜底。
-7. **终检不可跳过** — A7八项终检(C1-C8)必须全部 ✅ 才能向用户报告完成。
-8. **违规自纠** — 如果发现自己违反上述规则，立即停止并纠正（如用错工具需清理重做）。并向用户说明。
+1. **No step may be skipped** — every sub-skill defines a complete step flow (Ingest A0→A9, Search Step0→Step6, etc.). You must execute strictly in step order; a skipped step equals an unfinished task.
+2. **Quality gates may not be bypassed** — A2-Q parse quality / A3b tag quality / A3c description quality / A6-V index verification / A7 eight-point final check: if any of them fails, rework is mandatory. Content released without passing its gates counts as "never ingested".
+3. **Never use the wrong storage path** — after parsing PDF/Word/Excel/images you MUST use `kb_doc_save_parsed` to store the full content + images. `kb_doc_create` is for direct-path (MD/TXT/code) content.
+4. **Indexing must be explicitly triggered** — `kb_doc_save_parsed` does not auto-index; you must explicitly call `kb_index_document()`. `kb_doc_create`/`kb_doc_update_content`/`kb_doc_move` trigger auto-index (fire-and-forget), but you must still verify the index succeeded with `kb_search_vector()`.
+5. **Content-driven principle** — all tag, description, and KB-assignment decisions are based on real content you have read; basing them on filenames or guesses is forbidden.
+6. ⭐ **MCP-first principle — no terminal/API bypass** — when MCP tools are connected and available, all kb-mcp operations **MUST go through MCP tools**; writing your own terminal commands (curl/python -c/wget etc.) or calling the HTTP API directly is forbidden. MCP tools guarantee atomicity, consistent logging, and an audit trail. Exception: only when MCP is confirmed unavailable AND the user agrees may terminal commands be used as a fallback.
+7. **No skipping the final check** — all eight items of the A7 final check (C1-C8) must be ✅ before you report completion to the user.
+8. **Self-correct violations** — if you find yourself breaking any rule above, stop immediately and correct it (e.g. if the wrong tool was used, clean up and redo), then explain to the user.
 
-### ⭐ Pre-Flight: MCP Connectivity + Auto-Start（启动前必须执行）
+### ⭐ Pre-Flight: MCP Connectivity + Auto-Start (mandatory before any work)
 
-> **权威细则**：[mcp-preflight-check.md](../skills/knowledgebase/references/mcp-preflight-check.md)。本段是各子 Skill Pre-Flight 的执行者版本。
+> **Authoritative details**: [mcp-preflight-check.md](../skills/knowledgebase/references/mcp-preflight-check.md). This section is the executor version of each sub-skill's Pre-Flight.
 
-**Before Step 0, ALWAYS verify kb-mcp MCP is connected AND backend/web are up. 一探双检：**
+**Before Step 0, ALWAYS verify kb-mcp MCP is connected AND backend/web are up. One probe, two checks:**
 
-1. Call `mcp__kb-mcp__kb_project_status` as the very first action (full status: ports + HTTP health + PIDs + MinerU). Its `ready` field is True only when backend AND web are HTTP-healthy. **调用成功即证明 MCP 已连接**；报 "No such tool available" → 走 Case C。
-2. **Case A `ready==true`** → 就绪，进入冒烟测试。
-3. **Case B `ready==false`（服务离线）** → 先调 `kb_project_status(scope="setup")`：
-   - `ready_to_start==false` → 项目未安装，把 `problems` + `fix`（通常 `ragctl setup`）报告用户，**停止**，不盲目重试。
-   - `ready_to_start==true` → **静默拉起服务（不问用户、不开终端）**：图谱/整理/跨库类带 `neo4j=true`，其余默认：
+1. Call `mcp__kb-mcp__kb_project_status` as the very first action (full status: ports + HTTP health + PIDs + MinerU). Its `ready` field is True only when backend AND web are HTTP-healthy. **A successful call also proves MCP is connected**; if it reports "No such tool available" → go to Case C.
+2. **Case A `ready==true`** → ready; proceed to the smoke test.
+3. **Case B `ready==false` (services offline)** → first call `kb_project_status(scope="setup")`:
+   - `ready_to_start==false` → project not installed; report `problems` + `fix` (usually `ragctl setup`) to the user and **stop**; do not retry blindly.
+   - `ready_to_start==true` → **silently bring the services up (no user prompt, no terminal)**: graph/organize/cross-KB tasks pass `neo4j=true`, everything else uses the default:
      ```
      mcp__kb-mcp__kb_project_start(backend=true, web=true[, neo4j=true], wait=true)
      ```
-     `wait=true` 阻塞至 HTTP 健康或 ~45s 超时，返回最终状态块。stdout/stderr → `backend/logs/desktop-stdout.log` + `web/logs/desktop-stdout.log`（dev/prod 一致，零终端窗口）。
-   - **回查** `status.ready`（或再调 `kb_project_status`）：就绪 → 冒烟测试；仍不就绪 → 读 `ragctl logs backend` 报错并停止，**禁止静默循环重试**。
-4. **Case C — MCP 未连接到本会话**（`kb_project_status` 报 "No such tool"）：MCP 由 Claude Code 启动加载，会话中无法自愈。
-   - 诊断：`Bash: node command/ragctl.js status`（或 `ragctl status`）。
-   - **通知用户**：「⚠️ kb-mcp MCP 服务器未连接（Claude Code 未加载 `.mcp.json`）。请重启 Claude Code 让它自动连接 kb-mcp。后端/前端可用 `ragctl up` 静默拉起。」
-   - **禁止**在 MCP 未连通时继续 KB 操作（HTTP-API 兜底仅限用户明确同意后，并须声明 "MCP 不可用，已用 HTTP API 兜底"）。
+     `wait=true` blocks until HTTP-healthy or ~45s timeout, then returns the final status block. stdout/stderr → `backend/logs/desktop-stdout.log` + `web/logs/desktop-stdout.log` (identical for dev/prod, zero terminal windows).
+   - **Re-check** `status.ready` (or call `kb_project_status` again): ready → smoke test; still not ready → read `ragctl logs backend` for the error and stop; **silent retry loops are forbidden**.
+4. **Case C — MCP not connected to this session** (`kb_project_status` reports "No such tool"): MCP is loaded by Claude Code at startup and cannot self-heal mid-session.
+   - Diagnose: `Bash: node command/ragctl.js status` (or `ragctl status`).
+   - **Notify the user**: "⚠️ The kb-mcp MCP server is not connected (Claude Code did not load `.mcp.json`). Please restart Claude Code so it auto-connects to kb-mcp. The backend/frontend can be brought up silently with `ragctl up`."
+   - **Forbidden** to continue KB operations while MCP is unreachable (the HTTP-API fallback requires the user's explicit consent, and you must state "MCP unavailable, HTTP API used as fallback").
 
-#### 冒烟测试（Case A/B 就绪后必做，早于 Step 0）
+#### Smoke Test (mandatory once Case A/B is ready, before Step 0)
 
-`ready==true` 后、正式作业前，做一次**轻量只读** MCP 往返，确认 MCP↔backend 真实可达（不仅端口通，且能返回数据）：
+After `ready==true` and before real work, do one **lightweight read-only** MCP round trip to confirm MCP↔backend is truly reachable (not just port-open, but actually returning data):
 
-- 通用首选：`mcp__kb-mcp__kb_list(lightweight=true)`（返回 KB 清单）。
-- 解析类（ingest）顺带 `backend_status()` 确认 **MinerU OCR 引擎可用**，否则 `parse_doc(use_ocr=true)` 会失败。
-- 图谱/整理/跨库类顺带 `kb_graph_stats()` 确认 Neo4j 在线（检查 `neo4j_available` 字段）。
+- General first choice: `mcp__kb-mcp__kb_list(lightweight=true)` (returns the KB list).
+- For parse-class tasks (ingest), also call `backend_status()` to confirm the **MinerU OCR engine is available**, otherwise `parse_doc(use_ocr=true)` will fail.
+- For graph/organize/cross-KB tasks, also call `kb_graph_stats()` to confirm Neo4j is online (check the `neo4j_available` field).
 
-返回真实数据（非空、非错误）→ **预检全通过**，进入 Step 0。
+Real data returned (non-empty, no errors) → **pre-flight fully passed**; proceed to Step 0.
 
-**Fallback**（仅 MCP 工具不可用时）：`Bash: node command/ragctl.js up`（同样静默、同源日志）。
+**Fallback** (only when MCP tools are unavailable): `Bash: node command/ragctl.js up` (equally silent, same-source logs).
 
 **Why auto-start instead of asking:** the plugin + ragctl + MCP integration means KB ops "just work" after `claude plugin install`. Service startup is silent and safe to trigger; asking the user to open terminals defeats the integration. Only ask when the MCP layer itself is unreachable (Case C) — that genuinely requires a Claude Code restart.
 
-### Step 0 — Diagnose the Scenario（场景诊断协议）
+### Step 0 — Diagnose the Scenario (scenario diagnosis protocol)
 
 Read the task + `[Detected scenario: ...]` hint from the dispatcher. Use
 the structured diagnosis matrix below to classify:
 
-#### 场景诊断矩阵
+#### Scenario Diagnosis Matrix
 
-| 用户消息信号 | 判定为 | 子Skill路由 | 优先级 |
+| User message signal | Diagnosis | Sub-skill routing | Priority |
 |------------|--------|------------|--------|
-| 上传/存储/解析/导入文件, store, upload, parse, import, ingest, save | **Ingest** | `Skill("knowledgebase-ingest")` | High |
-| 移动/改名/删除/合并KB或文档, move, rename, delete, merge, update | **Manage** | `Skill("knowledgebase-manage")` | Medium |
-| 整理/清洗/重组/审计全库, organize, restructure, audit, cleanup | **Organize** | `Skill("knowledgebase-organize")` | High (overrides Ingest/Manage) |
-| 搜索/查询/问答/检索内容, search, find, query, retrieve, ask, RAG, what is, how to | **Search** | `Skill("knowledgebase-search")` | Medium |
-| 跨KB搜索/全库搜索, vector gate fails (content ≤5), whole-library blind spot | **Search** | `Skill("knowledgebase-search")` — QDCVR v2 内置图书管理员深检索兜底 | Medium |
-| 查看/列出/浏览/展示, list, show, what KBs, overview, tree | **List** | `Skill("knowledgebase-list")` | Low (read-only) |
-| 校验/核对/完整性/健康检查, verify, validate, integrity | **Verify** | `Skill("knowledgebase-verify")` | Medium |
-| 批量操作/全量/所有文档, batch, bulk, mass, all | **Batch** | `Skill("knowledgebase-batch")` | Medium |
-| 查经验/评分/评审/应用, experience, lesson, review, apply | **Experience** | `Skill("knowledgebase-experience")` | Medium |
-| 记录经验/总结/保存教训, summarize, save as experience, 记录教训 | **Experience-Summarize** | `Skill("knowledgebase-experience-summarize")` | Medium |
-| 图谱构建/图谱查询, graph, build graph, 图谱 | **Graph** | `Skill("knowledgebase-graph")` | Medium |
-| 多种操作混合 | **Mixed** | Organize→Verify→Ingest→Manage→List order | -- |
+| Upload/store/parse/import files, store, upload, parse, import, ingest, save | **Ingest** | `Skill("knowledgebase-ingest")` | High |
+| Move/rename/delete/merge KBs or documents, move, rename, delete, merge, update | **Manage** | `Skill("knowledgebase-manage")` | Medium |
+| Organize/clean up/restructure/audit the whole collection, organize, restructure, audit, cleanup | **Organize** | `Skill("knowledgebase-organize")` | High (overrides Ingest/Manage) |
+| Search/query/Q&A/retrieve content, search, find, query, retrieve, ask, RAG, what is, how to | **Search** | `Skill("knowledgebase-search")` | Medium |
+| Cross-KB search/whole-library search, vector gate fails (content ≤5), whole-library blind spot | **Search** | `Skill("knowledgebase-search")` — QDCVR v2 has a built-in librarian deep-retrieval fallback | Medium |
+| View/list/browse/show, list, show, what KBs, overview, tree | **List** | `Skill("knowledgebase-list")` | Low (read-only) |
+| Validate/check/integrity/health check, verify, validate, integrity | **Verify** | `Skill("knowledgebase-verify")` | Medium |
+| Batch operations/full volume/all documents, batch, bulk, mass, all | **Batch** | `Skill("knowledgebase-batch")` | Medium |
+| Look up experience/rating/review/apply, experience, lesson, review, apply | **Experience** | `Skill("knowledgebase-experience")` | Medium |
+| Record experience/summarize/save lessons, summarize, save as experience, 记录教训 | **Experience-Summarize** | `Skill("knowledgebase-experience-summarize")` | Medium |
+| Graph build/graph query, graph, build graph, 图谱 | **Graph** | `Skill("knowledgebase-graph")` | Medium |
+| Multiple operations mixed | **Mixed** | Organize→Verify→Ingest→Manage→List order | -- |
 
-#### 模糊诊断规则
+#### Fuzzy Diagnosis Rules
 
 ```
-if 用户消息同时匹配多个场景:
-    → Mixed，按优先级排序执行
+if the user message matches multiple scenarios at once:
+    → Mixed, execute in priority order
 
-if 无法确定（无明确关键词匹配）:
-    if 消息涉及"查"/"问"/"搜索"/"retrieve"/"find":
-        → Search（默认检索）
-    elif 消息涉及"存"/"放"/"上传"/"store"/"upload":
-        → Ingest（默认入库）
-    elif 消息涉及"看"/"展示"/"列"/"show"/"list":
-        → List（默认查看）
+if undeterminable (no clear keyword match):
+    if the message involves "look up"/"ask"/"search"/"retrieve"/"find":
+        → Search (default: retrieval)
+    elif the message involves "store"/"put"/"upload"/"store"/"upload":
+        → Ingest (default: ingestion)
+    elif the message involves "view"/"show"/"list"/"show"/"list":
+        → List (default: viewing)
     else:
-        → 输出:"我没能清晰理解您的需求。请说明您是要：入库文档、搜索知识、管理知识库、还是整理知识库？"
-        等待用户澄清，不做任何修改操作
+        → output: "I couldn't clearly understand your request. Please clarify: do you want to ingest documents, search knowledge, manage knowledge bases, or organize the knowledge base?"
+        wait for user clarification; perform no modifying operations
 ```
 
-#### 场景诊断后动作
+#### Post-Diagnosis Actions
 
-- 每个场景有对应的子Skill → 通过 `Skill("knowledgebase-<scenario>")` 调用
-- 子Skill的执行步骤 **不可跳过**，必须严格按各 Skill 的流程表执行
+- Each scenario has a corresponding sub-skill → invoke it via `Skill("knowledgebase-<scenario>")`
+- The sub-skill's execution steps **may not be skipped**; follow each Skill's procedure table strictly
 
 ### Step 1 — Survey
 
@@ -422,31 +422,31 @@ This creates a durable record the user can review later.
 | `kb_doc_update_tags(kb_id, doc_path, tags)` | OK | doc_path: bare name OR full path |
 | `kb_tags_cleanup(dry_run=true)` | Report/Clean | Detect & clean orphan tags (0 refs). dry_run preview; false removes from registry. Protected: domain terms (PET/polymer/DeepLearning etc). |
 
-### Experience — 经验全生命周期（20 tools）
+### Experience — Full Lifecycle (20 tools)
 | Tool | Returns | Notes |
 |------|---------|-------|
-| `experience_create(kb_id, title, ...)`  | Exp | 创建经验。含 scenario/category/problem/solution/key_lessons/tags/severity/related_docs |
-| `experience_read(kb_id, exp_id)` | Exp+Content | 读经验正文+元数据 |
-| `experience_list(kb_id, scenario="", category="", tag="")` | Exp[] | 按场景/类别/标签过滤，按评分排序 |
-| `experience_update(kb_id, exp_id, ...)` | Exp | 更新经验字段，未传字段不变 |
-| `experience_delete(kb_id, exp_id)` | OK | 永久删除（不可逆）|
-| `experience_apply(kb_id, exp_id, user, context, result)` | Exp+Record | 标记经验已应用，applied_count+1 |
-| `experience_review(kb_id, exp_id, reviewer, rating, comment)` | Exp+Record | 评审经验 (0-5分)，重算 rating_avg |
-| `experience_summary(kb_id)` | Stats | 按类别/严重度分布、top5 经验 |
-| `experience_search_global(query, top_k=10, mode="keyword")` | Exp[] | 元信息关键词搜索（标题/问题/方案/教训/标签）|
-| `experience_search_global(query, top_k=10, mode="vector")` | Chunk[] | 向量语义搜索（需经验已索引）|
-| `experience_search_global(query, top_k=10, score_threshold, verify_content)` | Exp[]+Meta | 跨库 QDCVR 主力检索：向量召回→硬阈值→内容验证→P0/P1/P2分级。带 tier_reason |
-| `experience_search_smart(query, top_k=10, score_threshold, verify_content)` | Exp[]+Meta | ⭐ **推荐入口**。在 `_global` 之上叠加：意图识别→自适应阈值→多轮降级→检索透明化（match_details/ranking_reason）|
-| `experience_rerank(query, experiences_json)` | Ranked[] | 多维语义重排序（标签/问题/方案匹配+可信度加权），`_smart` 之后做最终排序 |
-| `experience_extract(kb_id, doc_paths, dry_run, mode)` | Candidates/Task | E0/E1: heuristic=规则提取, prepare=LLM任务包 |
-| `experience_drafts_list(kb_id)` | Draft[] | E3: 草稿池列表 |
-| `experience_draft_read(kb_id, draft_id)` | Draft | E3: 草稿详情+来源证据 |
-| `experience_draft_approve(kb_id, draft_id, edits)` | Exp | E3: 批准草稿→正式经验 |
-| `experience_draft_reject(kb_id, draft_id, reason)` | OK | E3: 拒绝草稿 |
-| `experience_check_stale(kb_id="")` | Report | E6: 检查经验关联文档是否过时/失效。空 kb_id=全库检查 |
-| `experience_sync_kb(kb_id)` | OK | E6: 标记需要同步的经验 |
-| `experience_dashboard(kb_id)` | Dashboard | E8: 经验看板（总数/分级/草稿/stale/orphan/需同步）|
-| `experience_apply_decay(kb_id)` | Report | E11: 衰减规则（stale>30d/ disputed/ unvetted）|
+| `experience_create(kb_id, title, ...)`  | Exp | Create an experience. Includes scenario/category/problem/solution/key_lessons/tags/severity/related_docs |
+| `experience_read(kb_id, exp_id)` | Exp+Content | Read an experience's body + metadata |
+| `experience_list(kb_id, scenario="", category="", tag="")` | Exp[] | Filter by scenario/category/tag, sorted by rating |
+| `experience_update(kb_id, exp_id, ...)` | Exp | Update experience fields; fields not passed stay unchanged |
+| `experience_delete(kb_id, exp_id)` | OK | Permanent delete (irreversible) |
+| `experience_apply(kb_id, exp_id, user, context, result)` | Exp+Record | Mark the experience as applied; applied_count+1 |
+| `experience_review(kb_id, exp_id, reviewer, rating, comment)` | Exp+Record | Review an experience (0-5 score); recomputes rating_avg |
+| `experience_summary(kb_id)` | Stats | Distribution by category/severity, top5 experiences |
+| `experience_search_global(query, top_k=10, mode="keyword")` | Exp[] | Metadata keyword search (title/problem/solution/lessons/tags) |
+| `experience_search_global(query, top_k=10, mode="vector")` | Chunk[] | Vector semantic search (experiences must be indexed) |
+| `experience_search_global(query, top_k=10, score_threshold, verify_content)` | Exp[]+Meta | Cross-KB QDCVR primary retrieval: vector recall → hard threshold → content verification → P0/P1/P2 tiering. Carries tier_reason |
+| `experience_search_smart(query, top_k=10, score_threshold, verify_content)` | Exp[]+Meta | ⭐ **Recommended entry**. Layers on top of `_global`: intent recognition → adaptive threshold → multi-round degradation → retrieval transparency (match_details/ranking_reason) |
+| `experience_rerank(query, experiences_json)` | Ranked[] | Multi-dimensional semantic reranking (tag/problem/solution matching + credibility weighting); run after `_smart` for final ordering |
+| `experience_extract(kb_id, doc_paths, dry_run, mode)` | Candidates/Task | E0/E1: heuristic=rule extraction, prepare=LLM task package |
+| `experience_drafts_list(kb_id)` | Draft[] | E3: draft pool listing |
+| `experience_draft_read(kb_id, draft_id)` | Draft | E3: draft details + source evidence |
+| `experience_draft_approve(kb_id, draft_id, edits)` | Exp | E3: approve draft → formal experience |
+| `experience_draft_reject(kb_id, draft_id, reason)` | OK | E3: reject draft |
+| `experience_check_stale(kb_id="")` | Report | E6: check whether experience-linked documents are stale/invalid. Empty kb_id = whole-collection check |
+| `experience_sync_kb(kb_id)` | OK | E6: mark experiences needing sync |
+| `experience_dashboard(kb_id)` | Dashboard | E8: experience dashboard (totals/tiering/drafts/stale/orphan/needs-sync) |
+| `experience_apply_decay(kb_id)` | Report | E11: decay rules (stale>30d / disputed / unvetted) |
 
 ### Vector Index (separate atomic operation, not auto-triggered)
 | Tool | Returns | Notes |
@@ -492,7 +492,7 @@ This creates a durable record the user can review later.
 | **Manage** | `Skill("knowledgebase-manage")` | Confirm → execute → reindex if needed → verify |
 | **Organize** | `Skill("knowledgebase-organize")` | Survey all → read content → categorize → execute → verify → report |
 | **List** | `Skill("knowledgebase-list")` | Inventory → drill-down → tree |
-| **Search** | `Skill("knowledgebase-search")` | **QDCVR v2**: Phase0查询改写 → Phase1向量优先 `kb_search_vector(balance_kbs)` → 硬阈值+文档去重 → 内容门控 `kb_doc_read`(0-8评分, ≥6即退) → Phase2图书管理员深检索兜底(读全部KB摘要+逐级遍历目录→定向多路召回 two_stage/tags/描述→复检) → Phase3五段式回答或如实奉告盲区. 整库/跨库场景已内置于 Phase 2. |
+| **Search** | `Skill("knowledgebase-search")` | **QDCVR v2**: Phase0 query rewrite → Phase1 vector-first `kb_search_vector(balance_kbs)` → hard threshold + document dedup → content gate `kb_doc_read` (0-8 score, early-exit at ≥6) → Phase2 librarian deep-retrieval fallback (read all KB summaries + walk directories level by level → targeted multi-route recall via two_stage/tags/descriptions → re-check) → Phase3 five-part answer or honestly report the blind spot. Whole-library/cross-KB scenarios are built into Phase 2. |
 | **Verify** | `Skill("knowledgebase-verify")` | Three-way metadata scan → doc integrity → parse quality → index/graph coverage |
 | **Batch** | `Skill("knowledgebase-batch")` | Bulk tag → bulk desc → mass import (file-type routing) → mass move → dedup → graph rebuild |
 | **Experience** | `Skill("knowledgebase-experience")` | Create → retrieve (strict P0/P1/P2) → apply → review → summary |

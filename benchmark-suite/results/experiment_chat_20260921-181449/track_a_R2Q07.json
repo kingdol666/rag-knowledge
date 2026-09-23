@@ -1,0 +1,111 @@
+{
+ "track": "a",
+ "question": "Which season's influenza vaccine does the statistical-mechanics epitope analysis explain as ineffective in the United States, and through what drift mechanism?",
+ "answer": "**Answer: the 2003–2004 influenza season vaccine in the United States.**\n\n**Source:** *\"Epitope analysis for influenza vaccine design\"* by Enrique T. Muñoz and Michael W. Deem (Rice University), arXiv q-bio/0408016.\n- KB path: `生命科学与医学/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md`\n- KB ID: `b28f0a25-1e1d-40ad-96b8-61bd2b093a28` (also mirrored as a chunked copy in KB `0942f1a6-d81b-413b-a60b-b994680dcaac`)\n\n**What the paper reports**\n\nThe authors \"use a theory from statistical mechanics to quantify the nonmonotonic immune response that results from antigenic drift in the epitopes of the hemagglutinin and neuraminidase proteins. The results explain the ineffectiveness of the 2003-2004 influenza vaccine in the United States\" (Abstract).\n\n**The drift mechanism**\n\n1. **The strain pair.** The 2003–2004 epidemic was driven by the new H3N2 strain **A/Fujian/411/2002**, an antigenic drift mutant of **A/Panama/2007/99** — the strain actually used in the vaccine. The CDC compared *whole* HA sequences, judged the two \"similar enough to expect a significant degree of cross protection,\" and included Panama in the H3N2 component. Neuraminidase sequence data for Fujian was not used at all. Clinical results (CDC MMWR, 16 Jan 2004) showed the vaccine provided essentially no protection during that season.\n\n2. **The wrong metric.** Existing design assumed vaccine effectiveness correlates **monotonically** with whole-sequence difference. The statistical-mechanics model shows the response is **nonmonotonic** and is governed instead by `p_epitope` — the *fractional change between the dominant epitope regions* (number of mutations within the epitope ÷ number of amino acids within the epitope, eq. 2), not `p_sequence` over the whole protein. The authors' historical analysis of 1991–2000 H3N2 seasons confirmed that flu severity correlates with `p_epitope`, not `p_sequence`.\n\n3. **The drift lands in the \"original antigenic sin\" window.** When drift is small → vaccine memory boosts affinity (vaccination works). When drift is large → vaccine antigen is uncorrelated, memory is irrelevant. But when drift is *modest* (`0.23 < p_epitope < 0.6`), the theory predicts the memory response is **worse than the naive response** — immunological memory from vaccination gives a *lower* affinity constant than no vaccination at all. This is **original antigenic sin** for influenza, arising from localization of the immune response in antibody sequence space (roughness of the evolved antibody affinity landscape).\n\n4. **Where it landed for Fujian vs. Panama.** For HA, the predicted response sits in the *moderate* region (some cross-protection expected, consistent with WHO). But the predicted response to the **dominant neuraminidase (NA) epitope falls squarely in the original-antigenic-sin region** — and since NA was never measured or accounted for in the vaccine decision, the net effect was a modest degree of original antigenic sin, which the CDC report itself termed **\"negative vaccine effectiveness.\"**\n\n**Conclusion of the paper:** strains related by antigenic drift should be compared by epitope-region differences in HA **and** NA — not whole-sequence or phylogenetic difference — and this `p_epitope` analysis should be a regular part of annual vaccine strain selection.",
+ "is_error": false,
+ "latency_s": 20.2,
+ "sdk_duration_ms": 17691,
+ "num_turns": 6,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_search_two_stage,mcp__kb-mcp__kb_list,mcp__kb-mcp__kb_get_documents"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_two_stage",
+   "input": {
+    "query": "statistical mechanics epitope analysis influenza vaccine ineffective United States season antigenic drift"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "statistical mechanics model influenza vaccine effectiveness antigenic drift epitope"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+    "doc_path": "immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "A/Fujian A/Panama drift nonmonotonic immune response original antigenic sin",
+    "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28"
+   }
+  }
+ ],
+ "tool_call_count": 5,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 11986,
+  "output": 1390,
+  "cache_read": 164800,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.17708000000000002,
+ "timeline": [
+  {
+   "t": 2.53,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 3.33,
+   "event": "text",
+   "detail": "42"
+  },
+  {
+   "t": 3.34,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 10.22,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_two_stage"
+  },
+  {
+   "t": 10.23,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 14.53,
+   "event": "text",
+   "detail": "93"
+  },
+  {
+   "t": 14.55,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 14.55,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 20.15,
+   "event": "text",
+   "detail": "3313"
+  },
+  {
+   "t": 20.19,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the knowledge base for this.\n\n",
+  "I found the relevant document. Let me read the full content to confirm the drift mechanism.\n\n",
+  "**Answer: the 2003–2004 influenza season vaccine in the United States.**\n\n**Source:** *\"Epitope analysis for influenza vaccine design\"* by Enrique T. Muñoz and Michael W. Deem (Rice University), arXiv q-bio/0408016.\n- KB path: `生命科学与医学/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md`\n- KB ID: `b28f0a25-1e1d-40ad-96b8-61bd2b093a28` (also mirrored as a chunked copy in KB `0942f1a6-d81b-413b-a60b-b994680dcaac`)\n\n**What the paper reports**\n\nThe authors \"use a theory from statistical mechanics to quantify the nonmonotonic immune response that results from antigenic drift in the epitopes of the hemagglutinin and neuraminidase proteins. The results explain the ineffectiveness of the 2003-2004 influenza vaccine in the United States\" (Abstract).\n\n**The drift mechanism**\n\n1. **The strain pair.** The 2003–2004 epidemic was driven by the new H3N2 strain **A/Fujian/411/2002**, an antigenic drift mutant of **A/Panama/2007/99** — the strain actually used in the vaccine. The CDC compared *whole* HA sequences, judged the two \"similar enough to expect a significant degree of cross protection,\" and included Panama in the H3N2 component. Neuraminidase sequence data for Fujian was not used at all. Clinical results (CDC MMWR, 16 Jan 2004) showed the vaccine provided essentially no protection during that season.\n\n2. **The wrong metric.** Existing design assumed vaccine effectiveness correlates **monotonically** with whole-sequence difference. The statistical-mechanics model shows the response is **nonmonotonic** and is governed instead by `p_epitope` — the *fractional change between the dominant epitope regions* (number of mutations within the epitope ÷ number of amino acids within the epitope, eq. 2), not `p_sequence` over the whole protein. The authors' historical analysis of 1991–2000 H3N2 seasons confirmed that flu severity correlates with `p_epitope`, not `p_sequence`.\n\n3. **The drift lands in the \"original antigenic sin\" window.** When drift is small → vaccine memory boosts affinity (vaccination works). When drift is large → vaccine antigen is uncorrelated, memory is irrelevant. But when drift is *modest* (`0.23 < p_epitope < 0.6`), the theory predicts the memory response is **worse than the naive response** — immunological memory from vaccination gives a *lower* affinity constant than no vaccination at all. This is **original antigenic sin** for influenza, arising from localization of the immune response in antibody sequence space (roughness of the evolved antibody affinity landscape).\n\n4. **Where it landed for Fujian vs. Panama.** For HA, the predicted response sits in the *moderate* region (some cross-protection expected, consistent with WHO). But the predicted response to the **dominant neuraminidase (NA) epitope falls squarely in the original-antigenic-sin region** — and since NA was never measured or accounted for in the vaccine decision, the net effect was a modest degree of original antigenic sin, which the CDC report itself termed **\"negative vaccine effectiveness.\"**\n\n**Conclusion of the paper:** strains related by antigenic drift should be compared by epitope-region differences in HA **and** NA — not whole-sequence or phylogenetic difference — and this `p_epitope` analysis should be a regular part of annual vaccine strain selection."
+ ],
+ "qid": "R2Q07",
+ "via": "chat"
+}

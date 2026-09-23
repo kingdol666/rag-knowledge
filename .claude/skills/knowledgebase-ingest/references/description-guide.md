@@ -1,172 +1,173 @@
-# Description Writing Guide — 描述质量门控
+# Description Writing Guide — Description Quality Gate
 
-> **核心原则**：描述必须是**你读过的真实内容的精确摘要**，不是文件名、不是猜测、不是泛泛之词。
-> 描述是检索的"第一道过滤器"——`kb_list(lightweight=true)` / `kb_get_documents(lightweight=true)` / `kb_search`(元数据) 全都依赖它。烂描述 = 检索盲。
+> **Core principle**: a description must be a **precise summary of content you have actually read** — not the filename, not a guess, not generic filler.
+> The description is retrieval's "first filter" — `kb_list(lightweight=true)` / `kb_get_documents(lightweight=true)` / `kb_search` (metadata) all depend on it. A bad description = retrieval blindness.
 
-## 黄金法则
+## Golden Rule
 
-**先读，再描述。未读正文就写描述，是禁止行为。**
+**Read first, then describe. Writing a description without reading the body is forbidden.**
 
 ```
-解析路径: parse → 轮询完成 → 读 ≥3000 chars → 写描述 → 内容回查验证
-直接路径: 读全文(或前 3000 chars) → 写描述 → 内容回查验证
+Parse path:  parse → poll until complete → read ≥3000 chars → write description → content readback verification
+Direct path: read the full text (or the first 3000 chars) → write description → content readback verification
 ```
 
 ---
 
-## D1 — 描述必须包含的"四要素"
+## D1 — The "Four Elements" Every Description Must Contain
 
-一条合格的文档描述，必须能让读者**只看这一句就知道这篇文档讲什么、能解决什么问题**：
+A qualified document description must let the reader know, **from that single sentence alone, what the document is about and what problem it solves**:
 
-| 要素 | 说明 | 缺失则 |
+| Element | What it is | If missing |
 |---|---|---|
-| **① 主体** | 研究对象/材料/系统是什么 | 无法判断领域 |
-| **② 方法/技术** | 用了什么具体方法/模型/工艺 | 无法区分同类文档 |
-| **③ 场景/问题** | 解决什么问题、适用什么场景 | 无法判断相关性 |
-| **④ 关键数据/结论** | 关键指标、实验规模、核心发现 | 缺乏可信度锚点 |
+| **① Subject** | What the research object/material/system is | Domain cannot be judged |
+| **② Method/Technology** | Which specific method/model/process was used | Similar documents cannot be distinguished |
+| **③ Scenario/Problem** | What problem it solves, what scenario it applies to | Relevance cannot be judged |
+| **④ Key data/Conclusion** | Key metrics, experiment scale, core findings | No credibility anchor |
 
-**至少含 ③ 中的具体名词 2 个**（方法名/设备名/材料名/数据集名），否则判定为"泛泛描述"，重写。
+**At least 2 concrete nouns among ③** (method names/equipment names/material names/dataset names); otherwise it is judged a "generic description" and rewritten.
 
-## D2 — 文档级模板
+## D2 — Document-Level Template
 
 ```
-[主体] + [方法/技术] + [解决的问题/场景] + [关键数据/结论] + [语言]
+[Subject] + [Method/Technology] + [Problem solved/Scenario] + [Key data/Conclusion] + [Language]
 ```
 
-### ✅ 好（每条都含具体词 + 可验证）
-- "基于 CNN-LSTM 的火电厂磨煤机堵管故障预警方法。利用 DCS 历史数据训练多输入单步预测模型，通过实时残差分析实现渐变故障早期识别。在 660 MW 机组实测，提前 315 min 预警且零误报。中文。"
-- "PVA 偏光膜中 KI 浓度（1%–3%）对碘络合物（I₃⁻/I₅⁻）平衡影响的拉曼光谱研究。揭示 KI 浓度升高时 I₅⁻ 向 I₃⁻ 转化，影响偏光膜光学性能。2022 Polymers。中英混合。"
-- "Self-RAG：通过反思 token 让单一 LM 学会何时检索、如何评判检索结果、如何利用反思改进生成，提升事实性与可控性。中文整理 + 英文原文摘要。"
+### ✅ Good (every one has concrete words + is verifiable)
+- "CNN-LSTM-based early-warning method for coal mill blockage in thermal power plants. Trains a multi-input single-step prediction model on DCS historical data; real-time residual analysis enables early identification of gradual faults. Field-tested on a 660 MW unit with a 315 min advance warning and zero false alarms. Chinese." (original: "基于 CNN-LSTM 的火电厂磨煤机堵管故障预警方法。利用 DCS 历史数据训练多输入单步预测模型，通过实时残差分析实现渐变故障早期识别。在 660 MW 机组实测，提前 315 min 预警且零误报。中文。")
+- "Raman spectroscopy study of the effect of KI concentration (1%–3%) in PVA polarizing film on the iodine complex (I₃⁻/I₅⁻) equilibrium. Reveals that as KI concentration rises, I₅⁻ converts to I₃⁻, affecting the polarizing film's optical performance. 2022 Polymers. Mixed Chinese-English." (original: "PVA 偏光膜中 KI 浓度（1%–3%）对碘络合物（I₃⁻/I₅⁻）平衡影响的拉曼光谱研究。揭示 KI 浓度升高时 I₅⁻ 向 I₃⁻ 转化，影响偏光膜光学性能。2022 Polymers。中英混合。")
+- "Self-RAG: through reflection tokens, a single LM learns when to retrieve, how to critique retrieval results, and how to use reflections to improve generation, improving factuality and controllability. Chinese organizing notes + English original abstract." (original: "Self-RAG：通过反思 token 让单一 LM 学会何时检索、如何评判检索结果、如何利用反思改进生成，提升事实性与可控性。中文整理 + 英文原文摘要。")
 
-### ❌ 坏（必须拒绝）
-| 坏描述 | 病因 |
+### ❌ Bad (must be rejected)
+| Bad description | What's wrong |
 |---|---|
-| "一篇关于磨煤机的论文" | 无方法、无数据、无场景 |
-| "Parsed from XXX.pdf" | 用文件名/解析状态当描述 |
-| "test" / "Renamed" / "文档" | 空洞 |
-| "介绍了深度学习的相关内容" | 泛泛，无具体方法 |
-| "高分子材料研究" | 只有领域，无主体/方法/场景 |
-| "RAG 综述" | 标题复述，无增量信息 |
+| "a paper about coal mills" (一篇关于磨煤机的论文) | No method, no data, no scenario |
+| "Parsed from XXX.pdf" | Filename/parse status used as the description |
+| "test" / "Renamed" / "document" (文档) | Hollow |
+| "introduces content related to deep learning" (介绍了深度学习的相关内容) | Generic, no concrete method |
+| "polymer materials research" (高分子材料研究) | Domain only; no subject/method/scenario |
+| "RAG survey" (RAG 综述) | Title restatement; no incremental information |
 
-## D3 — KB 级模板（分层）
+## D3 — KB-Level Templates (Layered)
 
-### 父 KB
+### Parent KB
 ```
-[行业/大类] + [覆盖的子领域列表] + [方法脉络] + [内容类型] + [语言]
+[Industry/Major category] + [List of covered sub-domains] + [Method lineage] + [Content types] + [Language]
 ```
-✅ "高分子双向拉伸（Biaxial Stretching）技术文献库，涵盖 PET/PVA/PP/PLA/PA 等薄膜的双向拉伸工艺、结晶机理、表征方法（WAXD/SAXS/DSC）与加工设备。中英文献混合。"
+✅ "Literature library on polymer biaxial stretching (Biaxial Stretching) technology, covering the biaxial stretching processes, crystallization mechanisms, characterization methods (WAXD/SAXS/DSC), and processing equipment of PET/PVA/PP/PLA/PA films. Mixed Chinese-English literature." (original: "高分子双向拉伸（Biaxial Stretching）技术文献库，涵盖 PET/PVA/PP/PLA/PA 等薄膜的双向拉伸工艺、结晶机理、表征方法（WAXD/SAXS/DSC）与加工设备。中英文献混合。")
 
-### 子 KB
+### Sub-KB
 ```
-[具体材料/子域] + [核心方法/工艺] + [场景] + [文档数] + [语言]
+[Specific material/sub-domain] + [Core method/process] + [Scenario] + [Document count] + [Language]
 ```
-✅ "PET（聚酯）双向拉伸子库：热机械本构建模、应变诱导结晶、双折射、压电性能。含 6 篇 TUe/arXiv/Polymers 文献。中英混合。"
+✅ "PET (polyester) biaxial stretching sub-library: thermo-mechanical constitutive modeling, strain-induced crystallization, birefringence, piezoelectric properties. Contains 6 TUe/arXiv/Polymers papers. Mixed Chinese-English." (original: "PET（聚酯）双向拉伸子库：热机械本构建模、应变诱导结晶、双折射、压电性能。含 6 篇 TUe/arXiv/Polymers 文献。中英混合。")
 
-## D4 — 内容回查验证（强制，不可跳过）
+## D4 — Content Readback Verification (Mandatory, Cannot Be Skipped)
 
-写完描述后，**必须**回查正文，验证描述里的**每个关键 claim**：
+After writing the description, you **must** read the body back and verify **every key claim** in the description:
 
 ```
 kb_doc_read(kb_id, doc_path, max_chars=800)
 ```
 
-逐项核对：
-- [ ] 描述里的**方法名/模型名**在正文出现？（"CNN-LSTM" → 搜正文，确认存在）
-- [ ] 描述里的**材料/设备**在正文出现？（"660 MW 机组" → 确认）
-- [ ] 描述里的**数据/结论**与正文一致？（"315 min 预警" → 正文确有此数据）
-- [ ] 描述里的**语言标注**准确？（正文是中文/英文/混合）
+Check item by item:
+- [ ] Do the **method/model names** in the description appear in the body? ("CNN-LSTM" → search the body, confirm it exists)
+- [ ] Do the **materials/equipment** appear in the body? ("660 MW unit" → confirm)
+- [ ] Are the **data/conclusions** in the description consistent with the body? ("315 min advance warning" → the body really has this figure)
+- [ ] Is the **language label** accurate? (the body is Chinese/English/mixed)
 
-**任一项不匹配 → 重写描述**，而不是修改正文去迁就描述。
-> 实测案例：曾有描述写"Transformer 注意力机制"，但正文实为 CNN 图像分类 → 这种必须重写。
+**Any mismatch → rewrite the description**, never modify the body to fit the description.
+> Field case: a description once claimed "Transformer attention mechanism" while the body was actually CNN image classification → this must be rewritten.
 
-## D5 — 子 Agent 委托时的质量契约
+## D5 — Quality Contract for Sub-Agent Delegation
 
-对 ≥3 文档或 >50KB 单文档，委托子 Agent 分析时，**硬性输出契约**：
+For ≥3 documents or a single document >50KB, when delegating analysis to sub-agents, the **hard output contract** is:
 
 ```json
 {
-  "title": "具体标题（非文件名）",
-  "domain": "主领域",
-  "sub_domain": "子领域",
-  "methods": ["方法1", "方法2"],
-  "materials": ["材料1"],
-  "scenario": "解决的场景/问题",
-  "key_results": ["关键数据/结论1"],
+  "title": "specific title (not the filename)",
+  "domain": "main domain",
+  "sub_domain": "sub-domain",
+  "methods": ["method 1", "method 2"],
+  "materials": ["material 1"],
+  "scenario": "scenario/problem solved",
+  "key_results": ["key data/conclusion 1"],
   "language": "zh|en|mixed",
-  "suggested_tags": ["2-5个归一化标签"],
-  "suggested_description": "≥四要素的完整描述",
-  "content_evidence": "描述中每个关键词在正文的出现位置/句子"
+  "suggested_tags": ["2-5 normalized tags"],
+  "suggested_description": "complete description with ≥ the four elements",
+  "content_evidence": "where each keyword in the description appears in the body / the sentence"
 }
 ```
 
-**验收**：父 Agent 必须检查 `content_evidence` 非空、`methods` 和 `materials` 在正文可定位，否则驳回重做。
+**Acceptance**: the parent Agent must check that `content_evidence` is non-empty and that `methods` and `materials` are locatable in the body; otherwise reject and redo.
 
-## D6 — 自检口诀
+## D6 — Self-Check Mantra
 
-> "如果有人遇到 [我描述的场景]，只看这一句描述，能 **100% 确定** 这篇文档就是他要的吗？"
+> "If someone runs into [the scenario I described], reading only this one description, can they be **100% certain** this is the document they need?"
 
-- 答"是" → 过
-- 答"可能/大概" → 补具体词
-- 答"不确定" → 重读内容重写
+- Answer "yes" → pass
+- Answer "maybe/probably" → add concrete words
+- Answer "not sure" → re-read the content and rewrite
 
-## D7 — 多语言处理
+## D7 — Multilingual Handling
 
-- 中文文档：描述用中文，专有技术词保留英文（`Transformer` `GraphRAG`）
-- 英文文档：描述用中文摘要 + 标注"英文原文"
-- 混合：描述用中文 + 末尾标注"中英混合"
-- **绝不**直接把英文摘要当描述——必须提炼成结构化中文摘要
+- Chinese documents: description in Chinese, proprietary technical terms kept in English (`Transformer` `GraphRAG`)
+- English documents: description as a Chinese summary + tagged "English original"
+- Mixed: description in Chinese + "mixed Chinese-English" tag at the end
+- **Never** use an English abstract as the description directly — it must be distilled into a structured Chinese summary
 
-## D8 — 多维描述 + 查询导向（检索定位的核心）⭐
+## D8 — Multi-Dimension Description + Query Orientation (Core of Retrieval Positioning) ⭐
 
-> 描述的使命不止"概括全文"，而是**让未来的查询能命中**。用户提问的措辞千变万化，
-> 描述必须把**多条查询路径的关键词**都铺进去。
+> A description's mission is not just "summarizing the document" but **making future queries hit**. Users phrase questions in endlessly varied ways,
+> so the description must lay in the **keywords of multiple query paths**.
 
-### 五个必覆盖维度（逐维检查，缺一维补一维）
+### The Five Mandatory Dimensions (check one by one; fill in any missing dimension)
 
-| 维度 | 写什么 | 典型查询措辞 |
+| Dimension | What to write | Typical query phrasing |
 |---|---|---|
-| **领域维** | 所属领域/子领域的规范词 | "XX领域的文献" |
-| **方法维** | 方法/模型/算法的专名 | "用了 CNN-LSTM / Transformer / RAG 的资料" |
-| **对象维** | 材料/设备/系统/数据集专名 | "关于 PET 薄膜 / 660MW 机组的内容" |
-| **问题维** | 该文档能回答的问题，**用提问者的口吻写一句** | 搜索"磨煤机堵管怎么预警"能命中 |
-| **结论维** | 关键数量结论（带数字优先） | "提前 315 min 预警的案例" |
+| **Domain dimension (领域维)** | Canonical terms of the domain/sub-domain | "literature in the XX field" (XX领域的文献) |
+| **Method dimension (方法维)** | Proper names of methods/models/algorithms | "material that uses CNN-LSTM / Transformer / RAG" (用了 CNN-LSTM / Transformer / RAG 的资料) |
+| **Object dimension (对象维)** | Proper names of materials/equipment/systems/datasets | "content about PET film / 660MW units" (关于 PET 薄膜 / 660MW 机组的内容) |
+| **Problem dimension (问题维)** | The question this document can answer, **written in the questioner's voice** | a search for "how to early-warn coal mill blockage" (磨煤机堵管怎么预警) hits |
+| **Conclusion dimension (结论维)** | Key quantitative conclusions (numbers preferred) | "the case with a 315 min advance warning" (提前 315 min 预警的案例) |
 
-### 双语锚点
-中文描述中**保留英文方法名/模型名/数据集名原文**（`Transformer` `GraphRAG` `BERT`），
-使中文查询与英文查询都能命中元数据检索。
+### Bilingual Anchors
+Keep English method/model/dataset names verbatim (`Transformer` `GraphRAG` `BERT`) inside Chinese descriptions,
+so both Chinese and English queries can hit metadata search.
 
-### 长文三窗采样（>20000 chars 的文档强制）
-只读头 3000 chars 会漏掉中后段的真实含义。写描述前必须：
+### Three-Window Sampling for Long Documents (mandatory for >20000 chars)
+Reading only the first 3000 chars misses the real meaning of the mid/tail sections. Before writing the description you must:
 ```
-头部窗 0-3000 + 中部窗 (total/2)±1500 + 尾部窗 (total-2000)-total
+Head window 0-3000 + middle window (total/2)±1500 + tail window (total-2000)-total
 ```
-三窗各提炼 1-2 个要点并入描述；仅凭头部窗写的长文描述视为不合格。
+Distill 1-2 points from each of the three windows into the description; a long-document description written from the head window alone is disqualified.
 
-### 分 part 文档的两层描述模式
-大文档拆分后，每个 part 的描述必须**双层**，保证"按论文找"与"按章节找"都能命中：
+### Two-Layer Description Pattern for Split Parts
+After a large document is split, each part's description must be **two-layered**, so both "find by paper" and "find by section" hit:
 ```
 【第 i/N 部分 · <本章章节范围>】<论文级主体+方法> —— <本 part 特有内容/关键点>
+# i.e. 【Part i/N · <this part's section range>】<paper-level subject + method> —— <this part's specific content/key points>
 ```
-论文级要素（主体/方法/结论）每个 part 都保留；本 part 特有的章节内容写在破折号后。
+The paper-level elements (subject/method/conclusion) are kept in every part; this part's specific section content goes after the em dash.
 
-### 长度上限
-单条描述 **≤ 220 字符**（保证 `kb_list` 场景可扫读）。超长时优先压缩结论维的次要数字，**不删**方法维与问题维。
+### Length Cap
+A single description is **≤ 220 chars** (so the `kb_list` view stays scannable). When overlong, first compress secondary numbers in the conclusion dimension; **never delete** the method dimension or the problem dimension.
 
-## D9 — 检索自检（描述写完必做闭环）⭐
+## D9 — Retrieval Self-Test (Mandatory Closed Loop After Writing the Description) ⭐
 
-> "写完了"不算完成——**要用自己的描述当查询，验证检索能找回来**。
+> "Finished writing" is not done — **use your own description as the query and verify retrieval can recall it**.
 
-入库完成（A6 索引后）执行：
+Run after ingestion completes (after A6 indexing):
 
 ```
-# 1. 元数据检索：用描述中的问题维措辞查询
-kb_search(query="<问题维那句话>", top_k=5)
-→ 目标文档必须出现在结果中（元数据检索主要匹配 description/tags）
+# 1. Metadata search: query with the problem-dimension wording from the description
+kb_search(query="<the problem-dimension sentence>", top_k=5)
+→ the target document must appear in the results (metadata search mainly matches description/tags)
 
-# 2. 向量检索：用同义改写的问题查询（不要原句照抄）
-kb_search_vector(query="<同义改写的问题>", top_k=5, score_threshold=0.3)
-→ 目标文档在 top-5（证明向量索引正常）
+# 2. Vector search: query with a paraphrase (do not copy the original sentence)
+kb_search_vector(query="<paraphrased question>", top_k=5, score_threshold=0.3)
+→ the target document in the top-5 (proves the vector index works)
 ```
 
-**未命中 → 描述缺少查询路径**：把查询里的关键词并入描述（问题维/方法维），
-更新描述后复测。两条都命中才算 A3c 关卡通过。
+**Miss → the description lacks a query path**: merge the query's keywords (problem/method dimensions) into the description,
+then retest after updating the description. A3c passes the gate only when both channels hit.

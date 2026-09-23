@@ -104,5 +104,5 @@ Emotional afterimage: [...]
 
 - Write in the user's language
 - Separate evidence from inference
-- Mark thin areas as `（source material insufficient）`
+- Mark thin areas as `(source material insufficient)`
 - Prefer pattern extraction over biography summary

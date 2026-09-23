@@ -1,0 +1,83 @@
+{
+ "track": "c",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "answer": "The retrieved chunks answer both parts of the question.\n\n**How attention is computed:** An attention function maps a query and a set of key-value pairs to an output, where query, keys, values, and output are all vectors; the output is a weighted sum of the values, with weights from a compatibility function (\"An attention function can be described as mapping a query and a set of key-value pairs to an output... The output is computed as a weighted sum of the values\"). Specifically, in Scaled Dot-Product Attention the input queries/keys have dimension $d_k$ and values $d_v$; the model computes dot products of the query with all keys, divides each by $\\sqrt{d_k}$, and applies a softmax to obtain weights on the values, packed into matrices as $\\mathrm{Attention}(Q,K,V)=\\mathrm{softmax}(\\frac{QK^T}{\\sqrt{d_k}})V$ (Eq. 1). Scaling counteracts the problem that for large $d_k$ the dot products grow large and push softmax into regions with extremely small gradients.\n\n**Why it replaces recurrence and convolution:** The paper proposes \"the Transformer, the first sequence transduction model based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention,\" and it is \"based solely on attention mechanisms, dispensing with recurrence and convolutions entirely,\" relying entirely on an attention mechanism to draw global dependencies between input and output. The stated benefit is that \"The Transformer allows for significantly more parallelization,\" and for translation it \"can be trained significantly faster than architectures based on recurrent or convolutional layers\" while reaching a new state of the art.\n\nCited chunks: `artificial-intelligence__1706.03762__attention-is-all-you-need__k04.md`, `..._k05.md`, `..._k00.md`, `..._k01.md`, `..._k02.md`, `..._k03.md`, `..._k07.md`, `..._k19.md`, `..._k20.md`.",
+ "is_error": false,
+ "latency_s": 64.4,
+ "sdk_duration_ms": 61747,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "Transformer attention mechanism replaces recurrence and convolution",
+    "kb_id": "Corpus-Chunks800"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "scaled dot-product attention query key value self-attention",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 5821,
+  "output": 707,
+  "cache_read": 115008,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.104284,
+ "timeline": [
+  {
+   "t": 2.71,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 30.99,
+   "event": "text",
+   "detail": "57"
+  },
+  {
+   "t": 30.99,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 33.03,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 33.03,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 64.41,
+   "event": "text",
+   "detail": "1897"
+  },
+  {
+   "t": 64.42,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the indexed corpus for the relevant chunks.\n\n",
+  "The retrieved chunks answer both parts of the question.\n\n**How attention is computed:** An attention function maps a query and a set of key-value pairs to an output, where query, keys, values, and output are all vectors; the output is a weighted sum of the values, with weights from a compatibility function (\"An attention function can be described as mapping a query and a set of key-value pairs to an output... The output is computed as a weighted sum of the values\"). Specifically, in Scaled Dot-Product Attention the input queries/keys have dimension $d_k$ and values $d_v$; the model computes dot products of the query with all keys, divides each by $\\sqrt{d_k}$, and applies a softmax to obtain weights on the values, packed into matrices as $\\mathrm{Attention}(Q,K,V)=\\mathrm{softmax}(\\frac{QK^T}{\\sqrt{d_k}})V$ (Eq. 1). Scaling counteracts the problem that for large $d_k$ the dot products grow large and push softmax into regions with extremely small gradients.\n\n**Why it replaces recurrence and convolution:** The paper proposes \"the Transformer, the first sequence transduction model based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention,\" and it is \"based solely on attention mechanisms, dispensing with recurrence and convolutions entirely,\" relying entirely on an attention mechanism to draw global dependencies between input and output. The stated benefit is that \"The Transformer allows for significantly more parallelization,\" and for translation it \"can be trained significantly faster than architectures based on recurrent or convolutional layers\" while reaching a new state of the art.\n\nCited chunks: `artificial-intelligence__1706.03762__attention-is-all-you-need__k04.md`, `..._k05.md`, `..._k00.md`, `..._k01.md`, `..._k02.md`, `..._k03.md`, `..._k07.md`, `..._k19.md`, `..._k20.md`."
+ ],
+ "qid": "BQ01",
+ "via": "chat"
+}

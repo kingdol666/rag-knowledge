@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# DEPRECATED 2026-09-20 — superseded by the experiments/ platform
+# (python -m experiments.runner, chat API + harness=claude). Kept only to
+# reproduce historical reports. Do not use for new retrieval testing.
 """Track B (裸 Agent 直搜) + Track C (RAG 复刻 dense) 重跑 — 全程计时+原始回答.
 
 B: omp RPC 保留文件工具, cwd=data/corpus_md/, 每题独立会话, 原始 JSON 回答原样记录。

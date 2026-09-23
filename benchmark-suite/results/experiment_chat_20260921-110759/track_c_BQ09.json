@@ -1,0 +1,89 @@
+{
+ "track": "c",
+ "question": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?",
+ "answer": "The retrieved chunks are sufficient to answer.\n\n**Answer**\n\nMLP-SLAM addresses the degradation of Visual SLAM performance in dynamic environments containing numerous movable objects such as pedestrians, cars, and buses, which are common in outdoor scenes (the system \"address[es] SLAM system degradation in dynamic environments\"). It does so by building on ORB-SLAM2 and adding \"a MLP-based real-time stereo SLAM system\" with an \"extra dynamic and static object discriminator module to filter dynamic feature points\" — i.e., a multilayer-perceptron classifier that distinguishes dynamic from static feature points. The pipeline first extracts ORB features from stereo images, runs object detection/tracking on the left image, then in a coarse estimation stage treats features outside the bounding boxes of potential dynamic objects (plus those filtered by the Depth Filter Module) as static, and finally classifies the remaining potential dynamic points with the MLP model. Camera pose is then estimated in a second stage \"by minimizing the re-projection error of all static feature points,\" including those \"classified as static by the MLP model.\" The authors report that this MLP-based discriminator outperforms other methods and yields the highest average precision on KITTI Odometry with the fastest speed among compared dynamic SLAM systems.\n\n**Cited chunk files:** `robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou__k00.md`, `__k23.md`, `__k09.md`, `__k10.md`, `__k03.md`",
+ "is_error": false,
+ "latency_s": 44.9,
+ "sdk_duration_ms": 42259,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MLP-SLAM dynamic environment visual SLAM problem",
+    "kb_id": "Corpus-Chunks800"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MLP model classify dynamic and static feature points stereo SLAM",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 5657,
+  "output": 634,
+  "cache_read": 159040,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.123655,
+ "timeline": [
+  {
+   "t": 2.72,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 18.47,
+   "event": "text",
+   "detail": "68"
+  },
+  {
+   "t": 18.47,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 27.0,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 34.14,
+   "event": "text",
+   "detail": "58"
+  },
+  {
+   "t": 34.18,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 44.92,
+   "event": "text",
+   "detail": "1499"
+  },
+  {
+   "t": 44.93,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll use the designated retrieval tool to search the vector index.\n\n",
+  "Let me refine the search to find the specific mechanism.\n\n",
+  "The retrieved chunks are sufficient to answer.\n\n**Answer**\n\nMLP-SLAM addresses the degradation of Visual SLAM performance in dynamic environments containing numerous movable objects such as pedestrians, cars, and buses, which are common in outdoor scenes (the system \"address[es] SLAM system degradation in dynamic environments\"). It does so by building on ORB-SLAM2 and adding \"a MLP-based real-time stereo SLAM system\" with an \"extra dynamic and static object discriminator module to filter dynamic feature points\" — i.e., a multilayer-perceptron classifier that distinguishes dynamic from static feature points. The pipeline first extracts ORB features from stereo images, runs object detection/tracking on the left image, then in a coarse estimation stage treats features outside the bounding boxes of potential dynamic objects (plus those filtered by the Depth Filter Module) as static, and finally classifies the remaining potential dynamic points with the MLP model. Camera pose is then estimated in a second stage \"by minimizing the re-projection error of all static feature points,\" including those \"classified as static by the MLP model.\" The authors report that this MLP-based discriminator outperforms other methods and yields the highest average precision on KITTI Odometry with the fastest speed among compared dynamic SLAM systems.\n\n**Cited chunk files:** `robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou__k00.md`, `__k23.md`, `__k09.md`, `__k10.md`, `__k03.md`"
+ ],
+ "qid": "BQ09",
+ "via": "chat"
+}

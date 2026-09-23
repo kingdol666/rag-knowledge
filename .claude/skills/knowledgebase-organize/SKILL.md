@@ -6,8 +6,8 @@ description: >
   analysis), deep content audit (1000+ chars per doc), tiered fix execution,
   sub-KB auto-creation, cross-KB merge, parent restructuring, vector index +
   graph rebuild, three-way consistency, hygiene cleanup. No document splitting.
-  Triggered by: organize, clean, restructure, inventory, full review, organize, restructure, cleanup,
-  reorganize, clean the knowledge base, organize the knowledge base, deep clean, consolidate, merge, split, subdivide, tier, archive, categorize.
+  Triggered by: 整理, 清洗, 重组, 盘点, 全面梳理, organize, restructure, cleanup,
+  reorganize, 清洗知识库, 整理知识库, 大扫除, 归并, 合并, 拆分, 细分, 分层, 归档, 归类.
 ---
 
 # Knowledge Organize — Whole-Library Intelligent Restructuring Engine
@@ -44,7 +44,7 @@ This skill performs the following seven classes of organizing operations, execut
 
 | Layer | Operation | Description |
 |------|------|------|
-| **L1** | Description fixes | Content-driven rewriting of document/KB descriptions (D8 多维 + 查询导向标准，同入库 A3c) |
+| **L1** | Description fixes | Content-driven rewriting of document/KB descriptions (D8 multi-dimensional + query-oriented criteria, same as Ingest A3c) |
 | **L2** | Tag hygiene | Blocklist removal → synonym merging → orphan removal |
 | **L3** | Document reclassification | Misplaced documents moved to the **argmax-fit** KB (L3-M scan) |
 | **L4** | KB → sub-KB splitting | Large KBs split into sub knowledge bases by sub-domain |
@@ -103,16 +103,16 @@ fs_get_tree(include_files=False, max_depth=0)  # KB hierarchy structure
 
 > **Parallel speedup**: when KB count > 8 or total documents > 50, delegate sub-agents to audit KBs in parallel.
 
-**O2-M 审计清单（全覆盖保证，强制）**：审计开始前先为**每一个文档**建一行清单（path → 待审）；
-审计即逐行勾销；**子 Agent 返回的结果必须由父 Agent 合并回同一份清单**。O2 结束时断言：
+**O2-M audit manifest (full-coverage guarantee, mandatory)**: before the audit starts, create one manifest line for **every document** (path → pending);
+the audit then checks off lines one by one; **results returned by sub-agents must be merged back into the same single manifest by the parent agent**. At the end of O2, assert:
 
 ```
-audited_count == total_count   （缺一行 = O2 未完成，禁止进入 O3）
+audited_count == total_count   (any missing line = O2 incomplete; entering O3 is forbidden)
 ```
-并行分工只改变"谁去读"，不改变"每行都必须有结论"。
+Parallel division of labor only changes "who reads" — it never changes "every line must get a verdict".
 
-**分 part 文档按词干分组为一个逻辑单元**：`xxx (part k of N).md` 各 part 归并为同一篇论文——
-审计读 part 1 的 1000 chars 代表全篇判断归属；**L3 迁移时必须整组同迁**（只迁 part 1 是事故）。
+**Part files are grouped by stem into one logical unit**: the parts of `xxx (part k of N).md` merge back into the same paper —
+the audit reads part 1's 1000 chars to judge attribution for the whole; **L3 migration must move the whole group together** (moving part 1 alone is an incident).
 
 For every non-empty KB, read each document's content and mark its state:
 
@@ -205,52 +205,52 @@ Execute in L1→L7 order; verify immediately after each layer. Detailed executio
 
 ---
 
-### L3-M — 最佳目标库扫描 + 整组迁移 ⭐
+### L3-M — Best-Target KB Scan + Whole-Group Migration ⭐
 
-错放文档"搬到正确的库"不能靠印象——对每个 MISMATCH 文档执行**全库目标扫描**：
+Moving a misplaced document "to the correct KB" must not rely on impressions — for every MISMATCH document run a **whole-library target scan**:
 
 ```
 for each misplaced doc:
     for each other KB (exclude the current one):
-        fit = 基于目标库 description 与该文档已读内容 (sub_domain + methods + entities) 的匹配度
-    target = argmax(fit)；记录 runner-up（第二名的库，供用户复核）
+        fit = match degree between the target KB's description and the document's already-read content (sub_domain + methods + entities)
+    target = argmax(fit); record the runner-up (second-place KB, for user review)
 ```
 
-执行纪律：
-- **整组迁移**：分 part 文档按词干整组同迁（逐 part 迁移会造成同一论文跨库分裂）。
-- **源库收口必须 kb_reindex(force=true)**：`kb_doc_move` 的重索引是 fire-and-forget，
-  **batch_index(force=true) 只重编列出文档、不清除源库孤儿 chunk**（实测迁移后源库
-  残留 3 个孤儿 chunk，向量检索继续以 0.544 命中已迁文档）。收口序列：
-  `kb_doc_move` → `kb_index_document`（新库）→ **源库 `kb_reindex(force=true)`** →
-  新库 `kb_reindex(force=true)`（或 batch_index）→ `kb_graph_build(force=true)`。
-- **迁移后探针（含 negative probe）**：`kb_search_vector(query=问题维, kb_id=新库)`
-  确认新库能召回；**原库同查询必须不再返回该文档**（negative probe 是发现孤儿
-  chunk 的唯一可靠手段）。
-- 描述随之升级为 D8 多维标准（见 knowledgebase-ingest references/description-guide.md），
-  保证迁移后"按描述检索"在新库依然命中。
-- **预期中间态**：kb_doc_move 后 `vector_index` 字段可能短暂显示旧库 collection/旧
-  chunk 前缀（脏值）且 graph_index 缺失——这是收口前的预期状态，O5b 会发现，收口后消失。
-- **参数命名**：`kb_list` 返回 `kbId`，而 `kb_get_documents`/`kb_doc_read`/`kb_doc_update_*`/
-  `kb_batch_index`/`kb_graph_build` 等要求 `kb_id`；`kb_doc_move(doc_path, target_kb_id)`
-  无源库参数。首调前先打印一个条目确认键名。
+Execution discipline:
+- **Whole-group migration**: part files migrate as one group by stem (migrating part by part splits the same paper across KBs).
+- **Source-KB closeout requires kb_reindex(force=true)**: `kb_doc_move`'s reindexing is fire-and-forget, and
+  **batch_index(force=true) only re-indexes the documents listed — it does not clear the source KB's orphan chunks** (measured: after a move the source KB
+  retained 3 orphan chunks, and vector search kept hitting the already-migrated document at 0.544). Closeout sequence:
+  `kb_doc_move` → `kb_index_document` (new KB) → **source KB `kb_reindex(force=true)`** →
+  new KB `kb_reindex(force=true)` (or batch_index) → `kb_graph_build(force=true)`.
+- **Post-migration probes (including a negative probe)**: `kb_search_vector(query=problem dimension, kb_id=new KB)`
+  must recall from the new KB; **the same query on the original KB must no longer return this document** (the negative probe is the only reliable way to detect orphan
+  chunks).
+- Descriptions are upgraded to the D8 multi-dimensional standard (see knowledgebase-ingest references/description-guide.md),
+  guaranteeing that "retrieval by description" still hits in the new KB after migration.
+- **Expected intermediate state**: after kb_doc_move the `vector_index` field may briefly show the old KB's collection / old
+  chunk prefix (stale values) and graph_index may be missing — this is the expected state before closeout; O5b will catch it, and it disappears after closeout.
+- **Parameter naming**: `kb_list` returns `kbId`, while `kb_get_documents`/`kb_doc_read`/`kb_doc_update_*`/
+  `kb_batch_index`/`kb_graph_build` etc. require `kb_id`; `kb_doc_move(doc_path, target_kb_id)`
+  has no source-KB parameter. Before the first call, print one entry to confirm the key names.
 
-## O5-C — 检索回归探针（整理后检索不降级，强制）⭐
+## O5-C — Retrieval Regression Probes (no retrieval degradation after organizing, mandatory) ⭐
 
-L3/L4/L5/L6/L7 任一层落地后，对**每个受影响的知识库**执行检索回归：
+After any of L3/L4/L5/L6/L7 lands, run retrieval regression against **every affected KB**:
 
 ```
 for each affected KB:
-    probes = 从该库 2-3 个文档的描述问题维生成的查询
+    probes = queries generated from the description problem-dimensions of 2-3 of that KB's documents
     for each probe:
-        kb_search_vector(query=probe, kb_id=该库, top_k=3)
-        → 预期文档必须在结果中（kb_search_vector 返回 chunk 级结果、
-          不做文档级去重——同一文档可能占多席，按 doc_path 判命中）
-    # 另跑 negative probe：被迁出文档的旧查询在原库必须不再命中
+        kb_search_vector(query=probe, kb_id=that KB, top_k=3)
+        → the expected document must appear in the results (kb_search_vector returns chunk-level results and
+          does no document-level dedup — the same document may occupy multiple slots; judge hits by doc_path)
+    # also run a negative probe: the migrated-out document's old query must no longer hit in the original KB
 ```
 
-任一探针未命中 → 索引/图谱未重建完成或文档丢失（最常见：源库孤儿 chunk，
-用 `kb_reindex(kb_id, force=true)` 全量重建收口），停止后续层级并回查 O5b 三层一致性。
-（这就是"整理之后检索不降级"的可执行定义。）
+Any probe miss → the index/graph rebuild is incomplete or a document was lost (most common: source-KB orphan chunks,
+close out with a `kb_reindex(kb_id, force=true)` full rebuild), stop further layers and fall back to the O5b three-layer consistency check.
+(This is the executable definition of "retrieval does not degrade after organizing".)
 
 ## O5 — Per-Layer Verification + O5b Three-Level Consistency
 
@@ -293,10 +293,10 @@ Before/after state comparison + **audit coverage (O2-M: audited/total, must be 1
 | Not delegating sub-agents for large libraries | Responses too slow; the user can't wait | >50 documents or >8 KBs → parallelize |
 | Skip orphan cleanup | Ghost entries accumulate | O6 must check |
 | Assume clearing the tags_list cleared document tags | The vocabulary and document tags are two different things | Must `kb_doc_update_tags` per document |
-| Audit by sampling and call it done | 整理的合法性来自"每一篇都看过" | O2-M 清单逐行勾销，audited==total 才算完成 |
-| Move a misplaced doc to "a KB that looks related" | 差的归属比错的位置更隐蔽 | L3-M 全库目标扫描取 argmax，记录 runner-up |
-| Move only part 1 of a multi-part document | 同一论文跨库分裂，检索时身首异处 | 按词干整组同迁，迁移后双库探针 |
-| Trust that moves didn't break retrieval | 索引/图谱陈旧会让整理后检索静默降级 | O5-C 探针逐库回归，未命中即停 |
+| Audit by sampling and call it done | The legitimacy of organizing comes from "every document was actually read" | Check off the O2-M manifest line by line; done only when audited==total |
+| Move a misplaced doc to "a KB that looks related" | A wrong attribution is stealthier than a wrong location | L3-M whole-library target scan takes the argmax; record the runner-up |
+| Move only part 1 of a multi-part document | The same paper ends up split across KBs, head and body in different places | Migrate the whole group by stem together; run dual-KB probes after the move |
+| Trust that moves didn't break retrieval | Stale indexes/graphs silently degrade retrieval after organizing | O5-C probes regress KB by KB; stop on any miss |
 
 <!-- SKILLOPT-SLEEP:LEARNED START -->
 ## Learned preferences & procedures

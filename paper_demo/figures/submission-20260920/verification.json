@@ -1,0 +1,24 @@
+{
+  "source": "experiment_chat_20260921-181449 traces (R2Q10, tracks a/b/c) + ablation aggregates from both runs and results/scaling",
+  "verbatim_check": "all quoted fragments are normalized substrings of saved answers",
+  "process_check": "timelines manually transcribed from saved tool_use events; existence-checked",
+  "runtime": {
+    "playwright": "1.51.0",
+    "PyMuPDF": "1.28.2",
+    "chromium": "134.0.6998.35"
+  },
+  "checks": {
+    "minimum_font_px": 15,
+    "out_of_bounds": [],
+    "box_overflow": [],
+    "overlaps": [],
+    "pdf_mediabox": [
+      0.0,
+      0.0,
+      750.0,
+      258.0
+    ],
+    "pdf_images": 0,
+    "pdf_vector_paths": 36
+  }
+}

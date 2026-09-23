@@ -1,0 +1,92 @@
+{
+ "track": "b",
+ "question": "What is MameLoshnLM and what parameter scale does it have?",
+ "answer": "MAMELOSHNLM (Mame-Loshn, \"mother tongue\") is described as the first open-source large language model built specifically for Yiddish. It was produced by continued pretraining of Llama-3.1-8B on a Yiddish corpus (Oytser) using a causal language modeling objective, so its parameter scale is **8 billion (8B)** parameters. The paper reports it outperformed open baselines of similar scale (Llama 3.1 8B, Qwen3 8B, BLOOMZ 7B, Gemma-2 9B, EuroLLM 9B) across the Kashes benchmark, with an average score of 62.6.\n\nFile used: `nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md`",
+ "is_error": false,
+ "latency_s": 160.2,
+ "sdk_duration_ms": 158456,
+ "num_turns": 5,
+ "tool_calls": [
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "MameLoshn"
+   }
+  },
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "*.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md\\nlp__2608.05850__mameloshnlm-yiddish-languag"
+   }
+  }
+ ],
+ "tool_call_count": 4,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 160662,
+  "output": 439,
+  "cache_read": 27456,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.8280130000000001,
+ "timeline": [
+  {
+   "t": 1.75,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 36.02,
+   "event": "text",
+   "detail": "58"
+  },
+  {
+   "t": 36.02,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 36.04,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 66.44,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 77.34,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 160.16,
+   "event": "text",
+   "detail": "584"
+  },
+  {
+   "t": 160.18,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the files for information about MameLoshnLM.\n\n",
+  "MAMELOSHNLM (Mame-Loshn, \"mother tongue\") is described as the first open-source large language model built specifically for Yiddish. It was produced by continued pretraining of Llama-3.1-8B on a Yiddish corpus (Oytser) using a causal language modeling objective, so its parameter scale is **8 billion (8B)** parameters. The paper reports it outperformed open baselines of similar scale (Llama 3.1 8B, Qwen3 8B, BLOOMZ 7B, Gemma-2 9B, EuroLLM 9B) across the Kashes benchmark, with an average score of 62.6.\n\nFile used: `nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md`"
+ ],
+ "qid": "BQ07",
+ "via": "chat"
+}

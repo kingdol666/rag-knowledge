@@ -1,5 +1,23 @@
 # KBQA PIPELINE — 文献入库·复刻入库·出题·三轨对照·分析（可复用全流程）
 
+> **Agent 直启实验入口（2026-09-20 新增）**：`benchmark-suite/experiments/`——
+> 同一份 50 篇外部语料上，三模式全部由 Agent 真实执行（A=当前系统对外 API 客户端 /
+> B=裸 Agent 全文阅读+全文件搜索 / C=Agent 亲自执行稠密向量检索），带证据底线强制
+> （未检索不得作答）。一键：`python -m experiments.runner --question "..." --tracks a,b,c`。
+> 详见 `experiments/README.md`。
+
+> **100 篇语料扩展（2026-09-22，当前论文口径）**：manifest 已含两轮共 **100 篇**
+> （26 领域），五门类库 322 docs。追加下载 `scripts/97_fetch_papers_round2.py` →
+> 解析+拆分门禁 `scripts/98_ingest_round2_phase1.py`（markdown_path 嵌 result、
+> max_chars 用 28500 留表头余量）→ 判断件 `data/papers/classification_r2.json` →
+> 路由入库 `scripts/99_ingest_round2_phase2.py` → oversized part 重做
+> `scripts/102_fix_oversize_parts.py` → A7 终检 `scripts/103_final_check.py` →
+> 整理审计 `scripts/100_organize_audit.py` + 应用 `scripts/105_organize_apply.py` →
+> 语料导出+Chunks800 重建 `scripts/106_exp_corpus_r2.py` → 三轨检索
+> `python -m experiments.runner --questions data/papers/qa_questions_r2.json --tracks a,b,c`
+> → 审计 `experiments/audit_paper_numbers.py <run> data/papers/qa_questions_r2.json`
+> → 全管线证据汇总 `scripts/108_pipeline_evidence.py`（results/r2_pipeline_100.json）。
+
 > **一句话**：从下载真实文献到三轨对照回答再到分析评价的**完整可复现测试流水线**。
 > 执行者 = 一个 Agent（读本文档后按 Stage 0→9 顺序执行）；判断性步骤由 Agent
 > 亲自完成并落盘为**判断工件**，脚本只消费工件——**全程真实执行，严禁编造结果
@@ -8,7 +26,7 @@
 > 产物目录约定：语料 `data/papers/`、导出 md `data/corpus_md/`、
 > 全部结果 `results/`（只增不改）。所有命令在 `benchmark-suite/` 下执行。
 
-## Stage 总览（预计总耗时 ~2 小时，其中脚本约 100 分钟）
+## Stage 总览（预计总耗时 ~2.5-3 小时，其中脚本约 100 分钟）
 
 | Stage | 内容 | 执行体 | 脚本/工件 | 预计 |
 |---|---|---|---|---|
@@ -21,11 +39,14 @@
 | 4 | 全部 part 打内容标签（A3b） | 脚本 | `scripts/62_apply_tags.py` | 7 min |
 | 5 | 复现项目：导出 md → 清库 → 三套分块建库 | 脚本 | `scripts/70_repro_ingest.py` + `71_repro_smoke.py` | 45-50 min |
 | 5b | **重启后端**（BM25 陈旧索引处置） | Agent | `ragctl restart backend` | 1 min |
-| 6 | 10 题检索回归验证 | 脚本 | `scripts/72_bench10_verify.py` | 2 min |
-| 7a | **Track A：QDCVR v2 skill 流程（Agent 判断件）** | 脚本+**Agent** | `75_skill_track_phase1.py` → Agent 门控/兜底/五段式回答（写 `skill_track_answers.json`）→ `76_skill_track_phase2.py` | 10-20 min |
-| 7b | Track B/C：裸 Agent + dense 复刻 | 脚本 | `scripts/77_tracks_bc.py` | 20-30 min |
-| 8 | 报告生成（分轨汇整 MD） | 脚本 | `scripts/74_threeway_report.py` / `78_replication_report.py` | 1 min |
-| 9 | **结果分析评价（Agent 判断件）** | **Agent** | 读全部 MD/JSON → 写 `results/ANALYSIS.md` | 15 min |
+| 6/7 | **三轨检索实验（experiments 平台，harness=claude）**：A=当前系统对外 chat API / B=裸 Agent / C=Agent 执行稠密 RAG；全监控（时延/token/成本） | 平台 | `python -m experiments.runner --questions data/papers/qa_questions.json --tracks a,b,c` | 40-70 min |
+| 8 | 报告生成 | 平台+脚本 | `experiments` 输出 `SUMMARY.md`（监控表+逐题全文）；`78`/`81` 消费旧通道存档 | 1 min |
+| 9 | **结果分析评价（Agent 判断件）** | **Agent** | 读 experiments JSON/SUMMARY + 存档工件 → 写 `results/ANALYSIS.md` | 15 min |
+
+> **归档通道（2026-09-18/19 历史运行史，新轮次不再执行）**：`72_bench10_verify.py`
+> （two_stage 时代回归）、`75/76_skill_track_*`（MCP 采集 + Agent 五段式）、
+> `77_tracks_bc.py`（omp 版 B/C）、`78/81`（消费旧通道工件的报告）。仅在需要
+> 复现历史报告时按原说明运行。
 
 ```bash
 # 脚本段一键串行参考（Agent 判断段见各 Stage 说明, 不可跳过）
@@ -143,16 +164,36 @@ cd <repo-root> && ragctl restart backend && curl -s http://localhost:8771/health
 大批删建后端内存 BM25 索引会陈旧（实测两次：删库重建后检索答案错库），
 不重启则 Stage 6/7 的 two_stage 结果不可信。
 
-## Stage 6 — 10 题检索回归（向量优先 = skill Phase 1 同款工具）
+## Stage 6/7 — 检索任务测试（2026-09-20 改版：统一走 experiments 实验平台 ⭐）
+
+检索类测试**全部**使用 `benchmark-suite/experiments/` 平台执行（`python -m experiments.runner ...`），
+harness 统一为 **claude**，同一份 50 篇外部语料，三模式定义：
+
+| 轨道 | 入口 | 协议 |
+|---|---|---|
+| **A · 当前系统** | **对外暴露的正式接口** `POST /api/claude/chat` + `engine:"claude"`（外部调用方获取系统回答的唯一入口），无工具限制 | 系统自带 QDCVR 全流程 |
+| **B · 裸 Agent** | 同一 chat API，`cwd=corpus_md`，`allowedTools=["Read","Grep","Glob"]` | 全文阅读 + 全文件搜索 |
+| **C · RAG 向量** | 同一 chat API，`allowedTools=["mcp__kb-mcp__kb_search_vector"]` | **Agent 亲自执行**稠密向量检索（Corpus-Chunks800），仅凭检索块作答 |
+
+**监控（已内建，逐 run 落盘）**：完整事件时间线、每次工具调用、助手全文、
+墙钟时延、SDK duration_ms/num_turns、**token 消耗（input/output/cache_read/cache_creation）**、
+total_cost_usd；权限请求自动拒绝并计数（实验只读）。证据底线（C 轨 toolloop 模式）与
+allowedTools 白名单（chat 模式）双通道保证"答案必须来自真实检索"。
 
 ```bash
-python scripts/72_bench10_verify.py
+cd benchmark-suite
+python -m experiments.runner --questions data/papers/qa_questions.json --tracks a,b,c   # 10 题全量
+python -m experiments.runner --question "..." --tracks a                                 # 单题单轨
 ```
-检索通道为 `kb_search_vector` 逐门类合并（QDCVR v2 skill Phase 1 的规定工具）。
-通过判据：pass_rate ≥ 90%。低于 90% → 先查 Stage 5b 是否执行，再查金标文档
-是否入库（`kb_doc_get_by_tag`）。
 
-## Stage 7a — Track A：QDCVR v2 skill 流程（Agent 判断件 ⭐）
+结果：`results/experiment_chat_<ts>/`（逐轨 JSON 轨迹 + `SUMMARY.md` 监控表与逐题全文）。
+历史 Stage 6（two_stage/bench10 脚本回归）与 75/76（MCP 采集 Track A）保留为归档路径；
+**新检索测试一律走本平台，不再新增 two_stage 通道**。
+
+## Stage 7a/7b — 【归档】MCP 采集版三轨（2026-09-18/19 历史运行史）
+
+> ⚠️ 新轮次检索测试**不再执行本节**——一律走 Stage 6/7 的 experiments 平台。
+> 本节保留用于复现历史报告（skill_threeway_replication.md 旧版）。
 
 1. 脚本采集（Phase 0/1 工具调用段，全程计时）：
    ```bash
@@ -176,7 +217,9 @@ python scripts/72_bench10_verify.py
 通过判据：10/10 题在 `skill_track_answers.json` 有门控分数与五段式回答；
 兜底题在 evidence JSON 里有 phase2 记录。
 
-## Stage 7b — Track B/C
+## Stage 7b — 【归档】Track B/C（omp 版）
+
+> ⚠️ 归档说明同 Stage 7a。新轮次走 experiments 平台（chat API + claude harness）。
 
 ```bash
 python scripts/77_tracks_bc.py
@@ -187,20 +230,24 @@ python scripts/77_tracks_bc.py
 
 ## Stage 8 — 报告
 
+**当前流程（experiments 平台）**：runner 自动生成
+`results/experiment_chat_<ts>/SUMMARY.md` —— 监控表（逐题时延/工具调用/
+tokens in-out/cache/成本）+ 逐题三轨回答**原文全文**，即检索报告本体；
+Agent 在 Stage 9 基于它写 ANALYSIS.md。
+
+**归档报告器（仅旧通道复现用）**：
 ```bash
 python scripts/78_replication_report.py  # results/skill_threeway_replication.md
 python scripts/81_visual_report.py       # results/benchmark_visual_report.html
 ```
-- 78 = **唯一全文记录 MD**：管线执行统计 + 覆盖率 + 检索回归 + 三轨逐题
-  （问题原文 + 每个系统回答**原文全文，不删节不截断**；Track A 五段式 /
-  B 原始 JSON 回答 / C 统一 prompt 回答）。
-- 81 = benchmark **可视化报告**（自包含 HTML：管线漏斗卡片、覆盖率、
-  检索回归、三轨逐题时延条形图、逐题三系统原文折叠面板；
-  色彩语言 teal=平台/gray=baseline/橙红=警示）。
+- 78 = 旧通道全文记录 MD（管线统计 + 覆盖率 + 检索回归 + 三轨逐题原文）。
+- 81 = 可视化 HTML（漏斗卡片/覆盖率/回归/三轨时延/逐题原文折叠面板；
+  teal=平台/gray=baseline/橙红=警示）。
 - `74_threeway_qa.json` 通道（two_stage 版 Track A）已废弃，仅存档。
 报告只做汇整，**不做任何评价性改写**；回答一律原文引用。
-**语言红线：提问一律英文，三轨回答一律英文**（B/C 由 prompt 硬约束，
-A 由执行 agent 以英文撰写）。
+**语言红线：提问一律英文，三轨回答一律英文**（当前流程由 chat_tracks 的
+B/C prompt 硬约束 + 各轨系统提示；ToolAgent 遗留模式由 BARE_PROMPT /
+SCEN_ANSWER_PROMPT 硬约束）。
 
 ## Stage 9 — 结果分析评价（Agent 判断件 ⭐）
 

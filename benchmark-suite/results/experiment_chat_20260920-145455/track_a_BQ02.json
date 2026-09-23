@@ -1,0 +1,190 @@
+{
+ "track": "a",
+ "question": "What defines NISQ technology and what is its central limitation?",
+ "answer": "I have sufficient evidence from the vector index (document body reads return 404 in this KB — the indexed chunks are the accessible layer).\n\n## NISQ Technology — Definition and Central Limitation\n\n**Source:** *\"Quantum Computing in the NISQ Era and Beyond\"* — John Preskill, Institute for Quantum Information and Matter / Walter Burke Institute for Theoretical Physics, Caltech, 30 July 2018. KB: `8284ae07-4651-4bed-8d3b-b475b9b5e7c9` (`Corpus-Struct`), with the same document also indexed in `e599315e-…` (`Corpus-Paras`), `d23002bd-…` (`Corpus-Chunks800`), and `1e6199ea-…` (自然科学与地球科学).\n\n### What defines NISQ\n\n**NISQ = Noisy Intermediate-Scale Quantum** — a term Preskill coined for the era of quantum technology we are entering now, before fault-tolerant quantum computing becomes available:\n\n- **\"Intermediate scale\"** refers to the size of quantum computers available in the near term: **roughly 50 to a few hundred qubits**. 50 qubits is the significant milestone because that is beyond what can be simulated by brute force on the most powerful existing classical supercomputers.\n- **\"Noisy\"** emphasizes that we will have **imperfect control over those qubits** — the gates are noisy and **unprotected by quantum error correction** (error correction is not used in the NISQ era because of its heavy overhead in qubit count and gate count).\n\n### The central limitation\n\n> **Noise in quantum gates limits the size of the quantum circuits that can be executed reliably.**\n\nConcretely, with per-gate two-qubit error rates **above the 0.1% level** (and often much worse), one does not expect to execute a circuit containing many more than **~1000 gates (1000 fundamental two-qubit operations)** — because *\"the noise will overwhelm the signal in a circuit much larger than that.\"*\n\nPreskill states the consequence directly: *\"That limitation on circuit size imposes a ceiling on the computational power of NISQ technology,\"* and *\"the imperfect gates in NISQ systems will severely limit their computational power, because circuits with many gates will be too noisy to give useful results.\"* Near-term experiments therefore operate with of order **100 qubits** and **circuit depth under 100, maybe much less**.\n\nPut bluntly by the author: a 100-qubit quantum computer *\"will not change the world\"* — NISQ devices are useful tools for exploring many-body quantum physics and may find other applications, but the noise ceiling bounds what they can achieve.\n\n### Caveat on retrieval\n\nChunk-level retrieval from the vector index worked well (top scores 0.78/0.75 for the limitation passages). Full-document readback via `kb_doc_read` returned **404 / 400** for this KB (`Corpus-Struct`) across all three parameter forms (`doc_id`, `path`, `kb_id`+`doc_path`) — the stored file paths resolve through the web proxy but are not registered under those keys, so my quotes above are drawn from the indexed chunk content rather than a fresh full-body read. The cited passages are verbatim from the source chunks and internally consistent across all four KB copies.",
+ "is_error": false,
+ "latency_s": 91.7,
+ "sdk_duration_ms": 86793,
+ "num_turns": 13,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_search_two_stage,mcp__kb-mcp__kb_doc_read,mcp__kb-mcp__kb_search_st"
+   }
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "kb search vector knowledge base"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "NISQ technology definition central limitation"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "NISQ 含噪中等规模量子 量子计算 局限"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "NISQ noise limits size of quantum circuits executed reliably era definition",
+    "kb_id": "8284ae07-4651-4bed-8d3b-b475b9b5e7c9"
+   }
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_doc_read"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "8284ae07-4651-4bed-8d3b-b475b9b5e7c9"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "8284ae07-4651-4bed-8d3b-b475b9b5e7c9"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "8284ae07-4651-4bed-8d3b-b475b9b5e7c9",
+    "doc_path": "quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond__s00.md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "8284ae07-4651-4bed-8d3b-b475b9b5e7c9",
+    "doc_path": "quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond__s06.md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "path": "Corpus-Struct/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond__s00.md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "gate error rate one in a thousand two-qubit operations limitation circuit size NISQ",
+    "kb_id": "8284ae07-4651-4bed-8d3b-b475b9b5e7c9"
+   }
+  }
+ ],
+ "tool_call_count": 12,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 292481,
+  "output": 2017,
+  "cache_read": 82880,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 1.5542699999999998,
+ "timeline": [
+  {
+   "t": 5.0,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 16.53,
+   "event": "text",
+   "detail": "53"
+  },
+  {
+   "t": 16.54,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 28.87,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 33.49,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 33.5,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 41.77,
+   "event": "text",
+   "detail": "85"
+  },
+  {
+   "t": 41.78,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 41.79,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 51.57,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 51.59,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 62.05,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 62.06,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 79.03,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 79.03,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 91.66,
+   "event": "text",
+   "detail": "3056"
+  },
+  {
+   "t": 91.72,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the knowledge base for NISQ technology.\n\n",
+  "I found the source document. Let me read it for the full definition and limitation.\n\n",
+  "I have sufficient evidence from the vector index (document body reads return 404 in this KB — the indexed chunks are the accessible layer).\n\n## NISQ Technology — Definition and Central Limitation\n\n**Source:** *\"Quantum Computing in the NISQ Era and Beyond\"* — John Preskill, Institute for Quantum Information and Matter / Walter Burke Institute for Theoretical Physics, Caltech, 30 July 2018. KB: `8284ae07-4651-4bed-8d3b-b475b9b5e7c9` (`Corpus-Struct`), with the same document also indexed in `e599315e-…` (`Corpus-Paras`), `d23002bd-…` (`Corpus-Chunks800`), and `1e6199ea-…` (自然科学与地球科学).\n\n### What defines NISQ\n\n**NISQ = Noisy Intermediate-Scale Quantum** — a term Preskill coined for the era of quantum technology we are entering now, before fault-tolerant quantum computing becomes available:\n\n- **\"Intermediate scale\"** refers to the size of quantum computers available in the near term: **roughly 50 to a few hundred qubits**. 50 qubits is the significant milestone because that is beyond what can be simulated by brute force on the most powerful existing classical supercomputers.\n- **\"Noisy\"** emphasizes that we will have **imperfect control over those qubits** — the gates are noisy and **unprotected by quantum error correction** (error correction is not used in the NISQ era because of its heavy overhead in qubit count and gate count).\n\n### The central limitation\n\n> **Noise in quantum gates limits the size of the quantum circuits that can be executed reliably.**\n\nConcretely, with per-gate two-qubit error rates **above the 0.1% level** (and often much worse), one does not expect to execute a circuit containing many more than **~1000 gates (1000 fundamental two-qubit operations)** — because *\"the noise will overwhelm the signal in a circuit much larger than that.\"*\n\nPreskill states the consequence directly: *\"That limitation on circuit size imposes a ceiling on the computational power of NISQ technology,\"* and *\"the imperfect gates in NISQ systems will severely limit their computational power, because circuits with many gates will be too noisy to give useful results.\"* Near-term experiments therefore operate with of order **100 qubits** and **circuit depth under 100, maybe much less**.\n\nPut bluntly by the author: a 100-qubit quantum computer *\"will not change the world\"* — NISQ devices are useful tools for exploring many-body quantum physics and may find other applications, but the noise ceiling bounds what they can achieve.\n\n### Caveat on retrieval\n\nChunk-level retrieval from the vector index worked well (top scores 0.78/0.75 for the limitation passages). Full-document readback via `kb_doc_read` returned **404 / 400** for this KB (`Corpus-Struct`) across all three parameter forms (`doc_id`, `path`, `kb_id`+`doc_path`) — the stored file paths resolve through the web proxy but are not registered under those keys, so my quotes above are drawn from the indexed chunk content rather than a fresh full-body read. The cited passages are verbatim from the source chunks and internally consistent across all four KB copies."
+ ],
+ "qid": "BQ02",
+ "via": "chat"
+}

@@ -1,41 +1,37 @@
-% sec1_intro.tex — System/demo framing, compressed for the body budget.
+% sec1_intro.tex — 2026-09-23 rewrite: two-gap problem (ordered to mirror the
+% three design decisions), demo-shaped contribution bullets. Numbers locked
+% to artifacts.
 \section{Introduction}
 
 Research administrators maintaining shared paper collections must organize
-documents and explain which passages support an answer. Filenames can obscure
-content, and relevant passages may not answer a question. Administrators need
-usable collection tools and records that expose retrieval decisions.
+documents and show which passages support an answer. Packed-context RAG
+collapses retrieval into an opaque context: provenance is lost at pack
+time, similarity stands in for reading, and a failed retrieval passes
+silently~\cite{rag-lewis}. Self-RAG, Corrective RAG, DeepRead, and CyberBOT
+add self-assessment, hierarchy grounding, and ontology-checked
+verification~\cite{selfrag,crag,deepread,cyberbot}; to our knowledge, none
+manages the collection that retrieval consumes through the addresses that
+answers cite, so citations stay resolvable and absence stays legible.
 
-Retrieval-augmented generation connects answers to retrieved
-material~\cite{rag-lewis}. Self-RAG and Corrective RAG assess retrieval or
-generation and adapt later processing~\cite{selfrag,crag}.
-DeepRead exposes document hierarchies and paragraph coordinates to locate
-passages before reading them~\cite{deepread}. CyberBOT grounds generation and
-verification in an ontology~\cite{cyberbot}. QDCVR complements these approaches
-with content-guided collection management and a reusable evidence workflow
-built on tool APIs. The integration problem is to carry a document
-from administrative placement into evidence an agent can locate and a user
-can inspect. QDCVR connects movement/tagging tools to the same document-part
-identifiers used by search and reading. Attendees can therefore inspect a
-routing decision and then follow the placed document into an answer or a
-scoped failure report, rather than evaluate a retrieval controller alone.
+\sys{} (Query-Driven Content-Verified Retrieval) closes this gap with three
+design decisions. \emph{One address space}: parsed documents are indexed as
+base/document/part/section, and the same identifiers serve organization,
+search, and citation. \emph{Ranking proposes, reading disposes}: candidates
+are recalled by similarity, but acceptance is decided by a prompted 0--8
+rubric over their content, so each acceptance records the rubric judgment
+that admitted it instead of a bare similarity value. \emph{Failure is a
+first-class output}: when no candidate passes, the agent browses base
+summaries and tag-matched shelves, and the skill returns a scoped not-found
+report instead of a nearest-neighbor guess.
 
-Packaged agent skills call these APIs to organize and query a collection.
-Routing uses document content to select among existing category bases, without
-requiring a new taxonomy. Parsed text, document parts, and tags support search
-and reading. Vector recall feeds a prompted content gate, followed by further
-search or reading when needed. Gate scores record the agent's judgment, not a
-semantic guarantee. Source references and explicit not-found reports make
-that judgment inspectable. Figure~\ref{fig:teaser} shows the workflow;
-Figure~\ref{fig:arch} presents the architecture.
-
-The demonstration contributes three connected capabilities:
-\begin{itemize}
-  \item Document parsing, content-guided routing, and tag maintenance.
-  \item Reusable agent skills that coordinate tool calls.
-  \item Retrieval records exposing candidate reads, gate judgments, further
-  searches, and failure reports.
-\end{itemize}
-Section~\ref{sec:demo} invites attendees to follow these operations and inspect
-their outputs. Section~\ref{sec:eval} examines saved traces and provenance
-limits as operational evidence, not a general efficacy comparison.
+Packaged agent skills bind these decisions to tool APIs: the organization
+skill parses PDFs, routes them by content, maintains tags, and checks
+indexing, so placement reflects what a paper says rather than its filename;
+the retrieval skill rewrites the query, recalls and reads candidates,
+applies the 0--8 gate, and cites the passage that survives it
+(Figure~\ref{fig:teaser}, Figure~\ref{fig:arch}). Attendees organize a
+document, walk an answer's evidence from citation to source across the
+three modes head to head, and examine a scoped not-found report and the
+near miss behind it. Section~\ref{sec:demo} walks these scenarios;
+Section~\ref{sec:eval} reads the monitored run as operational evidence,
+not a controlled comparison.

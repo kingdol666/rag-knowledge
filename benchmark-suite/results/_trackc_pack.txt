@@ -1,0 +1,41 @@
+[SRC-0 Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k00.md | score=0.6395] ## Abstract
+
+
+The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality w
+
+[SRC-1 Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k19.md | score=0.6359] ## 7 Conclusion
+
+
+In this work, we presented the Transformer, the first sequence transduction model based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention.
+
+For translation tasks, the Transfor
+
+[SRC-2 Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k20.md | score=0.6354] ## 7 Conclusion
+
+
+In this work, we presented the Transformer, the first sequence transduction model based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention.
+
+For translation tasks, the Transformer can be trained significantly faster than architectures based on recurrent or convolutional layers. On both WMT 2014 English-to-German and WMT 2014 English-to-French translation tasks, we achieve a new state of the
+
+[SRC-3 Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k15.md | score=0.6046] # artificial-intelligence__1706.03762__attention-is-all-you-need.md.md（第 2/2 部分）
+章节: Attention Is All You Need > 6.2 Model Variations
+
+[SRC-4 Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k16.md | score=0.6046] # artificial-intelligence__1706.03762__attention-is-all-you-need.md.md（第 2/2 部分）
+章节: Attention Is All You Need > 6.2 Model Variations
+
+[SRC-5 Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k02.md | score=0.6018] odeling of dependencies without regard to their distance in the input or output sequences [2, 19]. In all but a few cases [27], however, such attention mechanisms are used in conjunction with a recurrent network.
+
+In this work we propose the Transformer, a model architecture eschewing recurrence and instead relying entirely on an attention mechanism to draw global dependencies between input and output. The Transformer allows for significantly more parallelization and can reach a new state of the
+
+[SRC-6 Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k01.md | score=0.6018] odeling of dependencies without regard to their distance in the input or output sequences [2, 19]. In all but a few cases [27], however, such attention mechanisms are used in conjunction with a recurrent network.
+
+In this work we propose the Transformer, a model architecture eschewing recurrence and instead relying entirely on an attention mechanism to draw global dependencies between input and output. The Transformer allows for significantly more parallelization and can reach a new state of the
+
+[SRC-7 Corpus-Chunks800/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor__k05.md | score=0.6008] the number of layers (i.e., Transformer blocks) as L, the hidden size as H, and the number of self-attention heads as
+
+[SRC-8 Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k06.md | score=0.5968] ## 3.2.3 Applications of Attention in our Model
+
+
+The Transformer uses multi-head attention in three different ways:
+
+• In "encoder-decoder attention" layers, the queries come from the previous decoder layer, and the memory keys and values come from the output of the encoder. This allows every position in the decoder

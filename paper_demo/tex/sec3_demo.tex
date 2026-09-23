@@ -1,39 +1,59 @@
 \section{Interactive Demonstration}
 \label{sec:demo}
 
-The demonstration targets research-data administrators and agent developers.
-A prepared instance contains 50 papers in five bases. Attendees inspect
-documents in the web console and operate an MCP-capable agent with the
-packaged skills loaded. The presenter provides the candidate excerpts and
-answer records alongside the console; ordinary web search is not presented
-as an equivalent execution of the skill.
+The demonstration targets research administrators and agent developers;
+its scenarios trace Section~\ref{sec:system}'s three decisions in order.
+A prepared instance holds 100 papers in five bases, built by the ingest loop
+of Section~\ref{sec:system}; attendees inspect documents in the web console
+and drive an agent with the packaged skills. A live answer takes ten seconds to two minutes, so presenters replay
+saved traces alongside live queries.
 
 \paragraph{1. Organize a document.}
-An attendee selects a PDF and an intake location, then asks the agent to
-parse and organize it by content. The attendee compares the parsed text with
-the proposed category, inspects the parts, and checks tags and indexing
-status. This exposes the routing decision and the operations needed to make
-the document searchable. A prepared example, explicitly identified as such,
-is available if live parsing would delay the session.
+An attendee selects a PDF from a prepared pool and asks the agent to parse
+and place it. The trace records the parse, the proposed base, the tags, and
+the indexing checks; the attendee compares parsed text against the routing decision before
+accepting.
 
 \paragraph{2. Inspect an answer's evidence.}
-The attendee asks, ``What defines NISQ technology and what is its central
-limitation?'' In the supplied BQ02 trace, the first hit is part 2 of 3 of the
-NISQ paper, with similarity approximately 0.71. The recorded agent judgment
-is 8/8 and takes the direct-answer path. Attendees open the source and
-compare it with the answer: similarity, agent judgment, and evidence are
-distinct. Figure~\ref{fig:threeway} adds a Transformer case comparing
-trace-derived section references, a self-reported filename, and a
-baseline abstention.
+The attendee asks which three ontologies subdivide the Gene Ontology. In
+the saved trace (BQ04 of the monitored run in Section~\ref{sec:eval}),
+the vector-first search ranks the primer's part~1 of~2 first at 0.75
+(0.66 cross-base); a two-stage pass confirms it, and the agent answers
+with a verbatim quotation whose source block names base, part, and
+section (``2.~What is the Gene Ontology'') --- score, reading, and
+quoted evidence are distinct records. Figure~\ref{fig:threeway} compares
+all three modes and adds a measured dense-mode abstention (BQ06).
 
-\paragraph{3. Inspect a not-found report.}
+\paragraph{3. Examine a failure report.}
 The attendee asks for training epochs in the fictitious paper
-\emph{Spectral Tuning for Low-Resource Odor Recognition}. The scripted P2
-example pairs collected retrieval and catalog evidence with a predefined,
-agent-authored judgment: BERT discusses training epochs but receives 1/8,
-and the saved report states not-found rather than substituting BERT's recipe.
-Its catalog census covers five bases and 165 entries, not exhaustive
-reading of all documents. Attendees inspect the near miss and search scope
-and may try another question. The report concerns evidence in this
-collection, not the existence of an answer elsewhere.
+\emph{Spectral Tuning for Low-Resource Odor Recognition}. The scripted
+report pairs collected evidence with the gate's judgment: BERT's own epoch
+recipe scores 1/8, and the skill returns scoped not-found instead of
+BERT's recipe; the census covers all five bases and 322 stored parts, and
+bounds this collection only.
 
+% Declared here so the float can land on page 3; referenced in Section 4.
+\begin{table}[t]
+\caption{Pipeline audit on the 100-paper corpus. Every value is
+script-asserted from saved artifacts, not hand-counted.}
+\label{tab:pipeline}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lc@{}}
+\toprule
+\textbf{Stage / check} & \textbf{Result} \\
+\midrule
+Papers parsed, routed by content & 100/100, 5 bases \\
+Stored parts after 30k split ceiling & 322 \\
+Per-paper ingest checks (nine recorded checks) & 100/100 pass \\
+True duplicates & 0 (35 near-pairs) \\
+Descriptions upgraded & 165/165 \\
+Content + storage audits & 322/322 \,\textbullet\, 33/33 \\
+Retrieval regression probes & 15/15 \\
+Dense replica index (800-char chunks) & 4{,}528 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+% The three-mode results table now lives inside Figure 3 (bottom strip),
+% generated with assertion gates from exp_r2_grade.json + audit_paper_numbers.json.

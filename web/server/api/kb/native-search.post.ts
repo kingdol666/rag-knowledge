@@ -42,6 +42,7 @@ interface NativeSearchBody {
   kb_ids?: string[]
   top_k?: number
   timeout_ms?: number
+  max_turns?: number
   model?: string
 }
 
@@ -51,8 +52,16 @@ const DEFAULT_TIMEOUT_MS = 280_000
 const MAX_TIMEOUT_MS = 420_000
 const MAX_QUESTION_CHARS = 8000
 
-/** Read-only toolset for the retrieval turn (defense in depth under bypass). */
-const RETRIEVAL_TOOLS = ['Read', 'Glob', 'Grep', 'Skill', 'Task']
+/**
+ * D4 fix: bounded retrieval turn. The librarian deep-retrieval subagent
+ * ('Task') measured 210s+ per hop and was the main non-convergence driver
+ * (7-11 tool calls without reaching a final answer inside 280-420s). Drop it
+ * from the one-shot contract — the QDCVR skill degrades to its direct path —
+ * and cap turns at 24 so the turn always settles before the caller's timeout.
+ */
+const RETRIEVAL_TOOLS = ['Read', 'Glob', 'Grep', 'Skill']
+const DEFAULT_MAX_TURNS = 24
+const MAX_MAX_TURNS = 40
 
 /**
  * Sanitize the external question before it enters the retrieval turn:
@@ -84,6 +93,10 @@ export default defineEventHandler(async (event) => {
     kbIds = String(body.kb_id).split(',').map(s => s.trim()).filter(Boolean)
   }
   const topK = Math.min(Math.max(Math.round(Number(body?.top_k) || 5), 1), 20)
+  const maxTurns = Math.min(
+    Math.max(Math.round(Number(body?.max_turns) || DEFAULT_MAX_TURNS), 4),
+    MAX_MAX_TURNS,
+  )
   const timeoutMs = Math.min(
     Math.max(Math.round(Number(body?.timeout_ms) || DEFAULT_TIMEOUT_MS), 10_000),
     MAX_TIMEOUT_MS,
@@ -104,7 +117,7 @@ export default defineEventHandler(async (event) => {
       permissionMode: 'bypassPermissions',
       model: body?.model || undefined,
       allowedTools: RETRIEVAL_TOOLS,
-      maxTurns: 40,
+      maxTurns,
       fullPromptText: buildNativeSearchPrompt(kbIds, question, topK),
       signal: abort.signal,
     })) {

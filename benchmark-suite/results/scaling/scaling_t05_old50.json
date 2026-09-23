@@ -1,0 +1,2725 @@
+{
+ "set": "old50",
+ "tag": "t05",
+ "n": 50,
+ "seconds": 104.4,
+ "vec": {
+  "pass": 48,
+  "pass_rate": 0.96,
+  "hit1": 0.98,
+  "hit3": 0.98,
+  "hit5": 0.98,
+  "mrr": 0.98,
+  "mean_top1_score": 0.7595,
+  "rows": [
+   {
+    "qid": "Q01",
+    "field": "artificial-intelligence",
+    "arxiv_id": "1706.03762",
+    "gold_rank": 1,
+    "n_dedup_docs": 36,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "multi-head"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7146,
+     0.7113,
+     0.6367,
+     0.597,
+     0.5447
+    ],
+    "top_docs": [
+     "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md",
+     "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md",
+     "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q02",
+    "field": "nlp",
+    "arxiv_id": "1810.04805",
+    "gold_rank": 1,
+    "n_dedup_docs": 19,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "training",
+     "bidirectional",
+     "transformers",
+     "language"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.823,
+     0.7943,
+     0.7861,
+     0.775,
+     0.7498
+    ],
+    "top_docs": [
+     "计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 1 of 3).md",
+     "计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 2 of 3).md",
+     "计算机与人工智能/speech__2109.14357__comparison-of-self-supervised-speech-pre-tra.md (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q03",
+    "field": "large-language-models",
+    "arxiv_id": "2005.14165",
+    "gold_rank": 1,
+    "n_dedup_docs": 23,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "language",
+     "models",
+     "learners"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7818,
+     0.777,
+     0.7602,
+     0.7549,
+     0.7423
+    ],
+    "top_docs": [
+     "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 6 of 13).md",
+     "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 1 of 13).md",
+     "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 5 of 13).md"
+    ]
+   },
+   {
+    "qid": "Q04",
+    "field": "quantum-physics",
+    "arxiv_id": "1801.00862",
+    "gold_rank": 1,
+    "n_dedup_docs": 27,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "noisy intermediate-scale"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6977,
+     0.6378,
+     0.6329,
+     0.6277,
+     0.4832
+    ],
+    "top_docs": [
+     "自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md",
+     "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md",
+     "自然科学与地球科学/quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 1 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q05",
+    "field": "clinical-medicine",
+    "arxiv_id": "2212.13138",
+    "gold_rank": 1,
+    "n_dedup_docs": 28,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "multimedqa",
+     "medqa"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6614,
+     0.647,
+     0.6353,
+     0.6272,
+     0.6249
+    ],
+    "top_docs": [
+     "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+     "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 5 of 8).md",
+     "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 3 of 8).md"
+    ]
+   },
+   {
+    "qid": "Q06",
+    "field": "genomics",
+    "arxiv_id": "1602.01876",
+    "gold_rank": 1,
+    "n_dedup_docs": 31,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "molecular function",
+     "biological process",
+     "cellular component"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7063,
+     0.5855,
+     0.4577,
+     0.4529,
+     0.4377
+    ],
+    "top_docs": [
+     "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+     "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 2 of 2).md",
+     "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q07",
+    "field": "economics",
+    "arxiv_id": "1512.08067",
+    "gold_rank": 1,
+    "n_dedup_docs": 30,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "unified growth theory"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6765,
+     0.5486,
+     0.526,
+     0.526,
+     0.523
+    ],
+    "top_docs": [
+     "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md",
+     "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md",
+     "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q08",
+    "field": "climate-science",
+    "arxiv_id": "1503.07557",
+    "gold_rank": 1,
+    "n_dedup_docs": 26,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [],
+    "pass": false,
+    "top_scores": [
+     0.736,
+     0.6815,
+     0.5281,
+     0.509,
+     0.5073
+    ],
+    "top_docs": [
+     "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 1 of 3).md",
+     "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 3 of 3).md",
+     "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q09",
+    "field": "astronomy",
+    "arxiv_id": "1210.0979",
+    "gold_rank": 1,
+    "n_dedup_docs": 24,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "methanol",
+     "multibeam",
+     "survey"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6829,
+     0.5321,
+     0.5141,
+     0.4993,
+     0.4805
+    ],
+    "top_docs": [
+     "自然科学与地球科学/astronomy__1210.0979__the-methanol-multibeam-survey.md.md",
+     "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 7 of 8).md",
+     "工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q10",
+    "field": "materials",
+    "arxiv_id": "2408.09942",
+    "gold_rank": 1,
+    "n_dedup_docs": 25,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "oxygen",
+     "redox",
+     "battery",
+     "cathodes"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.775,
+     0.7301,
+     0.5473,
+     0.547,
+     0.5053
+    ],
+    "top_docs": [
+     "工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md",
+     "工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 2 of 2).md",
+     "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 7 of 8).md"
+    ]
+   },
+   {
+    "qid": "Q11",
+    "field": "neuroscience",
+    "arxiv_id": "1906.10015",
+    "gold_rank": 1,
+    "n_dedup_docs": 23,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "review",
+     "neural",
+     "network",
+     "models"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7831,
+     0.7703,
+     0.7661,
+     0.7578,
+     0.7223
+    ],
+    "top_docs": [
+     "计算机与人工智能/neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 1 of 6).md",
+     "计算机与人工智能/neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 6 of 6).md",
+     "计算机与人工智能/neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 5 of 6).md"
+    ]
+   },
+   {
+    "qid": "Q12",
+    "field": "robotics",
+    "arxiv_id": "2410.10669",
+    "gold_rank": 1,
+    "n_dedup_docs": 25,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "multilayer",
+     "perceptron",
+     "based",
+     "simultaneous"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7988,
+     0.7671,
+     0.6727,
+     0.6194,
+     0.5448
+    ],
+    "top_docs": [
+     "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md",
+     "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 2 of 2).md",
+     "计算机与人工智能/robotics__2509.14191__mcgs-slam-a-multi-camera-slam-framework-usin.md (part 1 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q13",
+    "field": "artificial-intelligence",
+    "arxiv_id": "2504.16021",
+    "gold_rank": 1,
+    "n_dedup_docs": 23,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "navigating",
+     "state",
+     "cognitive",
+     "context"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7425,
+     0.5554,
+     0.5551,
+     0.5514,
+     0.5483
+    ],
+    "top_docs": [
+     "计算机与人工智能/artificial-intelligence__2504.16021__navigating-the-state-of-cognitive-flow-conte.md.md",
+     "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 4 of 4).md",
+     "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 1 of 6).md"
+    ]
+   },
+   {
+    "qid": "Q14",
+    "field": "artificial-intelligence",
+    "arxiv_id": "1706.05261",
+    "gold_rank": 1,
+    "n_dedup_docs": 28,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "propositional",
+     "logic",
+     "plausible",
+     "reasoning"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7559,
+     0.6993,
+     0.6931,
+     0.6748,
+     0.5193
+    ],
+    "top_docs": [
+     "计算机与人工智能/artificial-intelligence__1706.05261__from-propositional-logic-to-plausible-reason.md (part 1 of 4).md",
+     "计算机与人工智能/artificial-intelligence__1706.05261__from-propositional-logic-to-plausible-reason.md (part 2 of 4).md",
+     "计算机与人工智能/artificial-intelligence__1706.05261__from-propositional-logic-to-plausible-reason.md (part 3 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q15",
+    "field": "nlp",
+    "arxiv_id": "2503.21676",
+    "gold_rank": 1,
+    "n_dedup_docs": 23,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "language",
+     "models",
+     "learn",
+     "facts"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8099,
+     0.683,
+     0.5964,
+     0.5503,
+     0.5454
+    ],
+    "top_docs": [
+     "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+     "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md",
+     "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 5 of 8).md"
+    ]
+   },
+   {
+    "qid": "Q16",
+    "field": "nlp",
+    "arxiv_id": "2608.05850",
+    "gold_rank": 1,
+    "n_dedup_docs": 26,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "mameloshnlm",
+     "yiddish",
+     "language",
+     "model"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7948,
+     0.7876,
+     0.7832,
+     0.7577,
+     0.5187
+    ],
+    "top_docs": [
+     "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md",
+     "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 2 of 4).md",
+     "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 3 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q17",
+    "field": "large-language-models",
+    "arxiv_id": "2402.11690",
+    "gold_rank": 1,
+    "n_dedup_docs": 28,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "vision",
+     "scaling",
+     "human",
+     "labeled"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8282,
+     0.8156,
+     0.8007,
+     0.7902,
+     0.7883
+    ],
+    "top_docs": [
+     "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 1 of 9).md",
+     "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 3 of 9).md",
+     "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 5 of 9).md"
+    ]
+   },
+   {
+    "qid": "Q18",
+    "field": "large-language-models",
+    "arxiv_id": "2312.10793",
+    "gold_rank": 1,
+    "n_dedup_docs": 27,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "demystifying",
+     "instruction",
+     "mixing",
+     "tuning"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7653,
+     0.763,
+     0.5954,
+     0.5853,
+     0.5797
+    ],
+    "top_docs": [
+     "计算机与人工智能/large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 1 of 2).md",
+     "计算机与人工智能/large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 2 of 2).md",
+     "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q19",
+    "field": "quantum-physics",
+    "arxiv_id": "1311.2485",
+    "gold_rank": 1,
+    "n_dedup_docs": 27,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "continuous",
+     "quantum",
+     "error",
+     "correction"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7176,
+     0.6826,
+     0.6821,
+     0.6804,
+     0.651
+    ],
+    "top_docs": [
+     "自然科学与地球科学/quantum-physics__1311.2485__continuous-time-quantum-error-correction.md (part 1 of 4).md",
+     "自然科学与地球科学/quantum-physics__1311.2485__continuous-time-quantum-error-correction.md (part 2 of 4).md",
+     "自然科学与地球科学/quantum-physics__1311.2485__continuous-time-quantum-error-correction.md (part 4 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q20",
+    "field": "quantum-physics",
+    "arxiv_id": "1610.04013",
+    "gold_rank": 1,
+    "n_dedup_docs": 28,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "entanglement",
+     "assisted",
+     "quantum",
+     "error"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6993,
+     0.6838,
+     0.6622,
+     0.621,
+     0.6189
+    ],
+    "top_docs": [
+     "自然科学与地球科学/quantum-physics__1610.04013__entanglement-assisted-quantum-error-correcti.md (part 1 of 3).md",
+     "自然科学与地球科学/quantum-physics__1610.04013__entanglement-assisted-quantum-error-correcti.md (part 3 of 3).md",
+     "自然科学与地球科学/quantum-physics__1610.04013__entanglement-assisted-quantum-error-correcti.md (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q21",
+    "field": "clinical-medicine",
+    "arxiv_id": "1909.03801",
+    "gold_rank": 1,
+    "n_dedup_docs": 29,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "clinical",
+     "utility",
+     "predictive",
+     "accuracy"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.809,
+     0.7618,
+     0.5414,
+     0.5358,
+     0.5321
+    ],
+    "top_docs": [
+     "生命科学与医学/clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md",
+     "生命科学与医学/clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 2 of 2).md",
+     "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q22",
+    "field": "clinical-medicine",
+    "arxiv_id": "2110.08918",
+    "gold_rank": 1,
+    "n_dedup_docs": 25,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "using",
+     "clinical",
+     "representations",
+     "improving"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7773,
+     0.7756,
+     0.5354,
+     0.5145,
+     0.4982
+    ],
+    "top_docs": [
+     "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+     "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 2 of 2).md",
+     "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q23",
+    "field": "genomics",
+    "arxiv_id": "2301.08436",
+    "gold_rank": 1,
+    "n_dedup_docs": 23,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "spacetx",
+     "roadmap",
+     "benchmarking",
+     "spatial"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7989,
+     0.7747,
+     0.535,
+     0.534,
+     0.5316
+    ],
+    "top_docs": [
+     "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 1 of 2).md",
+     "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 2 of 2).md",
+     "计算机与人工智能/neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 6 of 6).md"
+    ]
+   },
+   {
+    "qid": "Q24",
+    "field": "genomics",
+    "arxiv_id": "2110.07787",
+    "gold_rank": 1,
+    "n_dedup_docs": 24,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "analysis",
+     "visualization",
+     "spatial",
+     "transcriptomic"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7474,
+     0.7084,
+     0.5524,
+     0.528,
+     0.5212
+    ],
+    "top_docs": [
+     "生命科学与医学/genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 1 of 3).md",
+     "生命科学与医学/genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 3 of 3).md",
+     "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 4 of 9).md"
+    ]
+   },
+   {
+    "qid": "Q25",
+    "field": "economics",
+    "arxiv_id": "1901.03951",
+    "gold_rank": 1,
+    "n_dedup_docs": 29,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "inequality",
+     "mobility",
+     "financial",
+     "accumulation"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8269,
+     0.7848,
+     0.7837,
+     0.5489,
+     0.5451
+    ],
+    "top_docs": [
+     "经济与社会/economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 1 of 3).md",
+     "经济与社会/economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md",
+     "经济与社会/economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q26",
+    "field": "economics",
+    "arxiv_id": "1609.00415",
+    "gold_rank": 1,
+    "n_dedup_docs": 30,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "infrastructure",
+     "investment",
+     "economic",
+     "growth"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7845,
+     0.7843,
+     0.783,
+     0.7689,
+     0.5135
+    ],
+    "top_docs": [
+     "经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md",
+     "经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 1 of 4).md",
+     "经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 2 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q27",
+    "field": "climate-science",
+    "arxiv_id": "1805.00397",
+    "gold_rank": 1,
+    "n_dedup_docs": 28,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "hamiltonian",
+     "distributed",
+     "chaos",
+     "asian"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6915,
+     0.6395,
+     0.4628,
+     0.4625,
+     0.4561
+    ],
+    "top_docs": [
+     "自然科学与地球科学/climate-science__1805.00397__hamiltonian-distributed-chaos-in-the-asian-a.md.md",
+     "自然科学与地球科学/climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on (part 2 of 2).md",
+     "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q28",
+    "field": "climate-science",
+    "arxiv_id": "2012.10385",
+    "gold_rank": 1,
+    "n_dedup_docs": 26,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "large",
+     "scale",
+     "features",
+     "southwest"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7146,
+     0.5725,
+     0.571,
+     0.5042,
+     0.4886
+    ],
+    "top_docs": [
+     "自然科学与地球科学/climate-science__2012.10385__large-scale-features-of-southwest-monsoon-du.md.md",
+     "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 3 of 3).md",
+     "自然科学与地球科学/climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q29",
+    "field": "astronomy",
+    "arxiv_id": "1207.3189",
+    "gold_rank": 1,
+    "n_dedup_docs": 25,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "energy",
+     "survey",
+     "processing",
+     "calibration"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7744,
+     0.7156,
+     0.5407,
+     0.5401,
+     0.5293
+    ],
+    "top_docs": [
+     "自然科学与地球科学/astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 1 of 2).md",
+     "自然科学与地球科学/astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 2 of 2).md",
+     "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q30",
+    "field": "materials",
+    "arxiv_id": "2211.04977",
+    "gold_rank": 1,
+    "n_dedup_docs": 23,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "design",
+     "battery",
+     "materials",
+     "defects"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7663,
+     0.7432,
+     0.7275,
+     0.5319,
+     0.5246
+    ],
+    "top_docs": [
+     "工程与能源/materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 1 of 3).md",
+     "工程与能源/materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 3 of 3).md",
+     "工程与能源/materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q31",
+    "field": "neuroscience",
+    "arxiv_id": "2001.10696",
+    "gold_rank": 1,
+    "n_dedup_docs": 16,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "spiking",
+     "inception",
+     "module",
+     "multi"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7686,
+     0.7578,
+     0.557,
+     0.5444,
+     0.5365
+    ],
+    "top_docs": [
+     "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md",
+     "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 2 of 2).md",
+     "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 3 of 6).md"
+    ]
+   },
+   {
+    "qid": "Q32",
+    "field": "robotics",
+    "arxiv_id": "2509.14191",
+    "gold_rank": 1,
+    "n_dedup_docs": 26,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "multi",
+     "camera",
+     "framework",
+     "using"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.832,
+     0.826,
+     0.5527,
+     0.5464,
+     0.5377
+    ],
+    "top_docs": [
+     "计算机与人工智能/robotics__2509.14191__mcgs-slam-a-multi-camera-slam-framework-usin.md (part 1 of 2).md",
+     "计算机与人工智能/robotics__2509.14191__mcgs-slam-a-multi-camera-slam-framework-usin.md (part 2 of 2).md",
+     "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 3 of 6).md"
+    ]
+   },
+   {
+    "qid": "Q33",
+    "field": "chemistry",
+    "arxiv_id": "2109.05887",
+    "gold_rank": 1,
+    "n_dedup_docs": 29,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "autonomous",
+     "reaction",
+     "network",
+     "exploration"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.77,
+     0.7506,
+     0.75,
+     0.742,
+     0.742
+    ],
+    "top_docs": [
+     "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 1 of 8).md",
+     "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 3 of 8).md",
+     "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 6 of 8).md"
+    ]
+   },
+   {
+    "qid": "Q34",
+    "field": "mathematics",
+    "arxiv_id": "2211.12700",
+    "gold_rank": 1,
+    "n_dedup_docs": 30,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "tailored",
+     "presolve",
+     "techniques",
+     "branch"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7859,
+     0.7799,
+     0.7697,
+     0.7556,
+     0.676
+    ],
+    "top_docs": [
+     "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 3 of 5).md",
+     "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 5 of 5).md",
+     "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 2 of 5).md"
+    ]
+   },
+   {
+    "qid": "Q35",
+    "field": "gravitational-physics",
+    "arxiv_id": "0706.3294",
+    "gold_rank": 1,
+    "n_dedup_docs": 24,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "moriond",
+     "proceedings",
+     "extension",
+     "frequency"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7018,
+     0.5245,
+     0.513,
+     0.4995,
+     0.4811
+    ],
+    "top_docs": [
+     "自然科学与地球科学/gravitational-physics__0706.3294__moriond-07-proceedings-extension-of-the-freq.md.md",
+     "自然科学与地球科学/astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 2 of 2).md",
+     "自然科学与地球科学/climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q36",
+    "field": "statistics",
+    "arxiv_id": "1506.03880",
+    "gold_rank": 1,
+    "n_dedup_docs": 31,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "causal",
+     "inference",
+     "algebraic",
+     "geometry"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8213,
+     0.8098,
+     0.7974,
+     0.788,
+     0.7616
+    ],
+    "top_docs": [
+     "计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md",
+     "计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 2 of 5).md",
+     "计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 3 of 5).md"
+    ]
+   },
+   {
+    "qid": "Q37",
+    "field": "speech",
+    "arxiv_id": "2109.14357",
+    "gold_rank": 1,
+    "n_dedup_docs": 15,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "supervised",
+     "speech",
+     "training"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.729,
+     0.6432,
+     0.55,
+     0.527,
+     0.5173
+    ],
+    "top_docs": [
+     "计算机与人工智能/speech__2109.14357__comparison-of-self-supervised-speech-pre-tra.md (part 1 of 2).md",
+     "计算机与人工智能/speech__2109.14357__comparison-of-self-supervised-speech-pre-tra.md (part 2 of 2).md",
+     "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 5 of 8).md"
+    ]
+   },
+   {
+    "qid": "Q38",
+    "field": "power-systems",
+    "arxiv_id": "2207.08146",
+    "gold_rank": 1,
+    "n_dedup_docs": 24,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "mapping",
+     "disruption",
+     "sources",
+     "power"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7935,
+     0.7844,
+     0.5368,
+     0.5325,
+     0.524
+    ],
+    "top_docs": [
+     "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+     "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 2 of 2).md",
+     "计算机与人工智能/artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 5 of 5).md"
+    ]
+   },
+   {
+    "qid": "Q39",
+    "field": "medical-imaging",
+    "arxiv_id": "2306.01022",
+    "gold_rank": 1,
+    "n_dedup_docs": 32,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "introduction",
+     "medical",
+     "imaging",
+     "modalities"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.723,
+     0.6358,
+     0.6283,
+     0.5356,
+     0.5208
+    ],
+    "top_docs": [
+     "生命科学与医学/medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md",
+     "生命科学与医学/medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 2 of 3).md",
+     "生命科学与医学/medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q40",
+    "field": "immunology",
+    "arxiv_id": "2604.01385",
+    "gold_rank": 1,
+    "n_dedup_docs": 25,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "strategies",
+     "tumor",
+     "elimination",
+     "control"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7949,
+     0.7677,
+     0.7451,
+     0.4683,
+     0.4636
+    ],
+    "top_docs": [
+     "生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 1 of 3).md",
+     "生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 2 of 3).md",
+     "生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q41",
+    "field": "oceanography",
+    "arxiv_id": "1104.2730",
+    "gold_rank": 1,
+    "n_dedup_docs": 34,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "approximate",
+     "deconvolution",
+     "large",
+     "simulation"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8143,
+     0.8014,
+     0.7678,
+     0.499,
+     0.4863
+    ],
+    "top_docs": [
+     "自然科学与地球科学/oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.md (part 1 of 3).md",
+     "自然科学与地球科学/oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.md (part 3 of 3).md",
+     "自然科学与地球科学/oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.md (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q42",
+    "field": "seismology",
+    "arxiv_id": "1308.1846",
+    "gold_rank": 1,
+    "n_dedup_docs": 25,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "developing",
+     "testing",
+     "automated",
+     "event"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8311,
+     0.8061,
+     0.8034,
+     0.8021,
+     0.5218
+    ],
+    "top_docs": [
+     "自然科学与地球科学/seismology__1308.1846__developing-and-testing-the-automated-post-ev.md (part 1 of 4).md",
+     "自然科学与地球科学/seismology__1308.1846__developing-and-testing-the-automated-post-ev.md (part 2 of 4).md",
+     "自然科学与地球科学/seismology__1308.1846__developing-and-testing-the-automated-post-ev.md (part 3 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q43",
+    "field": "agriculture",
+    "arxiv_id": "1311.6857",
+    "gold_rank": 1,
+    "n_dedup_docs": 24,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "agriculture",
+     "driving",
+     "expansion",
+     "neolithic"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7734,
+     0.4623,
+     0.4574,
+     0.4513,
+     0.4401
+    ],
+    "top_docs": [
+     "生命科学与医学/agriculture__1311.6857__agriculture-driving-male-expansion-in-neolit.md.md",
+     "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md",
+     "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q44",
+    "field": "finance",
+    "arxiv_id": "1412.5558",
+    "gold_rank": 1,
+    "n_dedup_docs": 27,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "backtest",
+     "trading",
+     "systems",
+     "candle"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.74,
+     0.5054,
+     0.49,
+     0.4886,
+     0.4875
+    ],
+    "top_docs": [
+     "经济与社会/finance__1412.5558__backtest-of-trading-systems-on-candle-charts.md.md",
+     "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 7 of 8).md",
+     "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 4 of 5).md"
+    ]
+   },
+   {
+    "qid": "Q45",
+    "field": "social-networks",
+    "arxiv_id": "2203.15752",
+    "gold_rank": 1,
+    "n_dedup_docs": 24,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "information",
+     "consumption",
+     "boundary",
+     "spanning"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8651,
+     0.8398,
+     0.8221,
+     0.5371,
+     0.509
+    ],
+    "top_docs": [
+     "计算机与人工智能/social-networks__2203.15752__information-consumption-and-boundary-spannin.md (part 1 of 3).md",
+     "计算机与人工智能/social-networks__2203.15752__information-consumption-and-boundary-spannin.md (part 2 of 3).md",
+     "计算机与人工智能/social-networks__2203.15752__information-consumption-and-boundary-spannin.md (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q46",
+    "field": "databases",
+    "arxiv_id": "2102.02440",
+    "gold_rank": 1,
+    "n_dedup_docs": 28,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "online",
+     "sketch",
+     "based",
+     "query"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7262,
+     0.7039,
+     0.6989,
+     0.6854,
+     0.6696
+    ],
+    "top_docs": [
+     "计算机与人工智能/databases__2102.02440__online-sketch-based-query-optimization.md (part 1 of 5).md",
+     "计算机与人工智能/databases__2102.02440__online-sketch-based-query-optimization.md (part 5 of 5).md",
+     "计算机与人工智能/databases__2102.02440__online-sketch-based-query-optimization.md (part 2 of 5).md"
+    ]
+   },
+   {
+    "qid": "Q47",
+    "field": "chemistry",
+    "arxiv_id": "physics/0105075",
+    "gold_rank": 0,
+    "n_dedup_docs": 19,
+    "doc_hit1": false,
+    "doc_hit3": false,
+    "doc_hit5": false,
+    "kw_hit": [
+     "theory",
+     "laser",
+     "catalysis",
+     "pulses"
+    ],
+    "pass": false,
+    "top_scores": [
+     0.669,
+     0.5192,
+     0.5192,
+     0.5119,
+     0.5049
+    ],
+    "top_docs": [
+     "自然科学与地球科学/chemistry__physics-0105075__theory-of-laser-catalysis-with-pulses.md.md",
+     "计算机与人工智能/social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 1 of 2).md",
+     "计算机与人工智能/social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q48",
+    "field": "mathematics",
+    "arxiv_id": "1810.09292",
+    "gold_rank": 1,
+    "n_dedup_docs": 28,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "optimal",
+     "distributed",
+     "control",
+     "stochastic"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7554,
+     0.7356,
+     0.7271,
+     0.7134,
+     0.7099
+    ],
+    "top_docs": [
+     "自然科学与地球科学/mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 1 of 7).md",
+     "自然科学与地球科学/mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 3 of 7).md",
+     "自然科学与地球科学/mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 2 of 7).md"
+    ]
+   },
+   {
+    "qid": "Q49",
+    "field": "speech",
+    "arxiv_id": "1811.04224",
+    "gold_rank": 1,
+    "n_dedup_docs": 21,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "reinforcement",
+     "learning",
+     "based",
+     "speech"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.697,
+     0.6872,
+     0.6151,
+     0.6032,
+     0.5884
+    ],
+    "top_docs": [
+     "计算机与人工智能/speech__1811.04224__reinforcement-learning-based-speech-enhancem.md (part 2 of 2).md",
+     "计算机与人工智能/speech__1811.04224__reinforcement-learning-based-speech-enhancem.md (part 1 of 2).md",
+     "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q50",
+    "field": "databases",
+    "arxiv_id": "2005.03328",
+    "gold_rank": 1,
+    "n_dedup_docs": 30,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "bitvector",
+     "aware",
+     "query",
+     "optimization"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7403,
+     0.7324,
+     0.7214,
+     0.7081,
+     0.7061
+    ],
+    "top_docs": [
+     "计算机与人工智能/databases__2005.03328__bitvector-aware-query-optimization-for-decis.md (part 4 of 5).md",
+     "计算机与人工智能/databases__2005.03328__bitvector-aware-query-optimization-for-decis.md (part 1 of 5).md",
+     "计算机与人工智能/databases__2005.03328__bitvector-aware-query-optimization-for-decis.md (part 5 of 5).md"
+    ]
+   }
+  ]
+ },
+ "ts": {
+  "pass": 47,
+  "pass_rate": 0.94,
+  "hit1": 0.98,
+  "hit3": 0.98,
+  "hit5": 0.98,
+  "mrr": 0.98,
+  "mean_top1_score": 0.76,
+  "rows": [
+   {
+    "qid": "Q01",
+    "field": "artificial-intelligence",
+    "arxiv_id": "1706.03762",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [],
+    "pass": false,
+    "top_scores": [
+     0.7146,
+     0.6367
+    ],
+    "top_docs": [
+     "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md",
+     "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q02",
+    "field": "nlp",
+    "arxiv_id": "1810.04805",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "training",
+     "bidirectional",
+     "transformers",
+     "language"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.823,
+     0.7943,
+     0.775,
+     0.7498
+    ],
+    "top_docs": [
+     "计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 1 of 3).md",
+     "计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 2 of 3).md",
+     "计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q03",
+    "field": "large-language-models",
+    "arxiv_id": "2005.14165",
+    "gold_rank": 1,
+    "n_dedup_docs": 5,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "language",
+     "models",
+     "learners"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.777,
+     0.7365,
+     0.7332,
+     0.655,
+     0.6446
+    ],
+    "top_docs": [
+     "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 1 of 13).md",
+     "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 3 of 13).md",
+     "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md"
+    ]
+   },
+   {
+    "qid": "Q04",
+    "field": "quantum-physics",
+    "arxiv_id": "1801.00862",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "noisy intermediate-scale"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6977,
+     0.6277
+    ],
+    "top_docs": [
+     "自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md",
+     "自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q05",
+    "field": "clinical-medicine",
+    "arxiv_id": "2212.13138",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "multimedqa",
+     "medqa"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6614,
+     0.6353
+    ],
+    "top_docs": [
+     "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+     "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 3 of 8).md"
+    ]
+   },
+   {
+    "qid": "Q06",
+    "field": "genomics",
+    "arxiv_id": "1602.01876",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "molecular function",
+     "biological process",
+     "cellular component"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7063,
+     0.5855
+    ],
+    "top_docs": [
+     "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+     "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q07",
+    "field": "economics",
+    "arxiv_id": "1512.08067",
+    "gold_rank": 1,
+    "n_dedup_docs": 1,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "unified growth theory"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6765
+    ],
+    "top_docs": [
+     "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md"
+    ]
+   },
+   {
+    "qid": "Q08",
+    "field": "climate-science",
+    "arxiv_id": "1503.07557",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [],
+    "pass": false,
+    "top_scores": [
+     0.7484,
+     0.6815
+    ],
+    "top_docs": [
+     "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 1 of 3).md",
+     "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q09",
+    "field": "astronomy",
+    "arxiv_id": "1210.0979",
+    "gold_rank": 1,
+    "n_dedup_docs": 1,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "methanol",
+     "multibeam",
+     "survey"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6829
+    ],
+    "top_docs": [
+     "自然科学与地球科学/astronomy__1210.0979__the-methanol-multibeam-survey.md.md"
+    ]
+   },
+   {
+    "qid": "Q10",
+    "field": "materials",
+    "arxiv_id": "2408.09942",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "oxygen",
+     "redox",
+     "battery",
+     "cathodes"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.775,
+     0.7301
+    ],
+    "top_docs": [
+     "工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md",
+     "工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q11",
+    "field": "neuroscience",
+    "arxiv_id": "1906.10015",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "review",
+     "neural",
+     "network",
+     "models"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7831,
+     0.7703,
+     0.7661,
+     0.7578
+    ],
+    "top_docs": [
+     "计算机与人工智能/neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 1 of 6).md",
+     "计算机与人工智能/neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 6 of 6).md",
+     "计算机与人工智能/neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 5 of 6).md"
+    ]
+   },
+   {
+    "qid": "Q12",
+    "field": "robotics",
+    "arxiv_id": "2410.10669",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "multilayer",
+     "perceptron",
+     "based",
+     "simultaneous"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7988,
+     0.7671,
+     0.6727
+    ],
+    "top_docs": [
+     "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md",
+     "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 2 of 2).md",
+     "计算机与人工智能/robotics__2509.14191__mcgs-slam-a-multi-camera-slam-framework-usin.md (part 1 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q13",
+    "field": "artificial-intelligence",
+    "arxiv_id": "2504.16021",
+    "gold_rank": 1,
+    "n_dedup_docs": 1,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "navigating",
+     "state",
+     "cognitive",
+     "context"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7425
+    ],
+    "top_docs": [
+     "计算机与人工智能/artificial-intelligence__2504.16021__navigating-the-state-of-cognitive-flow-conte.md.md"
+    ]
+   },
+   {
+    "qid": "Q14",
+    "field": "artificial-intelligence",
+    "arxiv_id": "1706.05261",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "propositional",
+     "logic",
+     "plausible",
+     "reasoning"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7559,
+     0.6993,
+     0.6931,
+     0.6748
+    ],
+    "top_docs": [
+     "计算机与人工智能/artificial-intelligence__1706.05261__from-propositional-logic-to-plausible-reason.md (part 1 of 4).md",
+     "计算机与人工智能/artificial-intelligence__1706.05261__from-propositional-logic-to-plausible-reason.md (part 2 of 4).md",
+     "计算机与人工智能/artificial-intelligence__1706.05261__from-propositional-logic-to-plausible-reason.md (part 3 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q15",
+    "field": "nlp",
+    "arxiv_id": "2503.21676",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "language",
+     "models",
+     "learn",
+     "facts"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8099,
+     0.683
+    ],
+    "top_docs": [
+     "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+     "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q16",
+    "field": "nlp",
+    "arxiv_id": "2608.05850",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "mameloshnlm",
+     "yiddish",
+     "language",
+     "model"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7948,
+     0.7876,
+     0.7832,
+     0.7577
+    ],
+    "top_docs": [
+     "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md",
+     "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 2 of 4).md",
+     "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 3 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q17",
+    "field": "large-language-models",
+    "arxiv_id": "2402.11690",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "vision",
+     "scaling",
+     "human",
+     "labeled"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8282,
+     0.8007,
+     0.7883,
+     0.7809
+    ],
+    "top_docs": [
+     "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 1 of 9).md",
+     "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 5 of 9).md",
+     "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 2 of 9).md"
+    ]
+   },
+   {
+    "qid": "Q18",
+    "field": "large-language-models",
+    "arxiv_id": "2312.10793",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "demystifying",
+     "instruction",
+     "mixing",
+     "tuning"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7653,
+     0.763
+    ],
+    "top_docs": [
+     "计算机与人工智能/large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 1 of 2).md",
+     "计算机与人工智能/large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q19",
+    "field": "quantum-physics",
+    "arxiv_id": "1311.2485",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "continuous",
+     "quantum",
+     "error",
+     "correction"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7176,
+     0.6826,
+     0.6821,
+     0.6804
+    ],
+    "top_docs": [
+     "自然科学与地球科学/quantum-physics__1311.2485__continuous-time-quantum-error-correction.md (part 1 of 4).md",
+     "自然科学与地球科学/quantum-physics__1311.2485__continuous-time-quantum-error-correction.md (part 2 of 4).md",
+     "自然科学与地球科学/quantum-physics__1311.2485__continuous-time-quantum-error-correction.md (part 4 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q20",
+    "field": "quantum-physics",
+    "arxiv_id": "1610.04013",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "entanglement",
+     "assisted",
+     "quantum",
+     "error"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6993,
+     0.6838,
+     0.6622
+    ],
+    "top_docs": [
+     "自然科学与地球科学/quantum-physics__1610.04013__entanglement-assisted-quantum-error-correcti.md (part 1 of 3).md",
+     "自然科学与地球科学/quantum-physics__1610.04013__entanglement-assisted-quantum-error-correcti.md (part 3 of 3).md",
+     "自然科学与地球科学/quantum-physics__1610.04013__entanglement-assisted-quantum-error-correcti.md (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q21",
+    "field": "clinical-medicine",
+    "arxiv_id": "1909.03801",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "clinical",
+     "utility",
+     "predictive",
+     "accuracy"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.809,
+     0.7618
+    ],
+    "top_docs": [
+     "生命科学与医学/clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 1 of 2).md",
+     "生命科学与医学/clinical-medicine__1909.03801__aim-for-clinical-utility-not-just-predictive.md (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q22",
+    "field": "clinical-medicine",
+    "arxiv_id": "2110.08918",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "using",
+     "clinical",
+     "representations",
+     "improving"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7773,
+     0.7756
+    ],
+    "top_docs": [
+     "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+     "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q23",
+    "field": "genomics",
+    "arxiv_id": "2301.08436",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "spacetx",
+     "roadmap",
+     "benchmarking",
+     "spatial"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7989,
+     0.7747
+    ],
+    "top_docs": [
+     "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 1 of 2).md",
+     "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q24",
+    "field": "genomics",
+    "arxiv_id": "2110.07787",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "analysis",
+     "visualization",
+     "spatial",
+     "transcriptomic"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7474,
+     0.7084
+    ],
+    "top_docs": [
+     "生命科学与医学/genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 1 of 3).md",
+     "生命科学与医学/genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q25",
+    "field": "economics",
+    "arxiv_id": "1901.03951",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "inequality",
+     "mobility",
+     "financial",
+     "accumulation"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8269,
+     0.7848,
+     0.7837
+    ],
+    "top_docs": [
+     "经济与社会/economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 1 of 3).md",
+     "经济与社会/economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md",
+     "经济与社会/economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q26",
+    "field": "economics",
+    "arxiv_id": "1609.00415",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "infrastructure",
+     "investment",
+     "economic",
+     "growth"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7845,
+     0.7843,
+     0.783,
+     0.7689
+    ],
+    "top_docs": [
+     "经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 4 of 4).md",
+     "经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 1 of 4).md",
+     "经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 2 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q27",
+    "field": "climate-science",
+    "arxiv_id": "1805.00397",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "hamiltonian",
+     "distributed",
+     "chaos",
+     "asian"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.6915,
+     0.6395
+    ],
+    "top_docs": [
+     "自然科学与地球科学/climate-science__1805.00397__hamiltonian-distributed-chaos-in-the-asian-a.md.md",
+     "自然科学与地球科学/climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q28",
+    "field": "climate-science",
+    "arxiv_id": "2012.10385",
+    "gold_rank": 1,
+    "n_dedup_docs": 1,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "large",
+     "scale",
+     "features",
+     "southwest"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7146
+    ],
+    "top_docs": [
+     "自然科学与地球科学/climate-science__2012.10385__large-scale-features-of-southwest-monsoon-du.md.md"
+    ]
+   },
+   {
+    "qid": "Q29",
+    "field": "astronomy",
+    "arxiv_id": "1207.3189",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "energy",
+     "survey",
+     "processing",
+     "calibration"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7744,
+     0.7156
+    ],
+    "top_docs": [
+     "自然科学与地球科学/astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 1 of 2).md",
+     "自然科学与地球科学/astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q30",
+    "field": "materials",
+    "arxiv_id": "2211.04977",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "design",
+     "battery",
+     "materials",
+     "defects"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7663,
+     0.7432,
+     0.7275
+    ],
+    "top_docs": [
+     "工程与能源/materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 1 of 3).md",
+     "工程与能源/materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 3 of 3).md",
+     "工程与能源/materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q31",
+    "field": "neuroscience",
+    "arxiv_id": "2001.10696",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "spiking",
+     "inception",
+     "module",
+     "multi"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7686,
+     0.7578
+    ],
+    "top_docs": [
+     "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 1 of 2).md",
+     "计算机与人工智能/neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q32",
+    "field": "robotics",
+    "arxiv_id": "2509.14191",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "multi",
+     "camera",
+     "framework",
+     "using"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.832,
+     0.826
+    ],
+    "top_docs": [
+     "计算机与人工智能/robotics__2509.14191__mcgs-slam-a-multi-camera-slam-framework-usin.md (part 1 of 2).md",
+     "计算机与人工智能/robotics__2509.14191__mcgs-slam-a-multi-camera-slam-framework-usin.md (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q33",
+    "field": "chemistry",
+    "arxiv_id": "2109.05887",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "autonomous",
+     "reaction",
+     "network",
+     "exploration"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.77,
+     0.742,
+     0.7339,
+     0.7308
+    ],
+    "top_docs": [
+     "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 1 of 8).md",
+     "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 2 of 8).md",
+     "自然科学与地球科学/chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 7 of 8).md"
+    ]
+   },
+   {
+    "qid": "Q34",
+    "field": "mathematics",
+    "arxiv_id": "2211.12700",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "tailored",
+     "presolve",
+     "techniques",
+     "branch"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7859,
+     0.7799,
+     0.7556,
+     0.676
+    ],
+    "top_docs": [
+     "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 3 of 5).md",
+     "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 5 of 5).md",
+     "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 4 of 5).md"
+    ]
+   },
+   {
+    "qid": "Q35",
+    "field": "gravitational-physics",
+    "arxiv_id": "0706.3294",
+    "gold_rank": 1,
+    "n_dedup_docs": 1,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "moriond",
+     "proceedings",
+     "extension",
+     "frequency"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7018
+    ],
+    "top_docs": [
+     "自然科学与地球科学/gravitational-physics__0706.3294__moriond-07-proceedings-extension-of-the-freq.md.md"
+    ]
+   },
+   {
+    "qid": "Q36",
+    "field": "statistics",
+    "arxiv_id": "1506.03880",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "causal",
+     "inference",
+     "algebraic",
+     "geometry"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8213,
+     0.8098,
+     0.788,
+     0.7616
+    ],
+    "top_docs": [
+     "计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 1 of 5).md",
+     "计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 2 of 5).md",
+     "计算机与人工智能/statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 4 of 5).md"
+    ]
+   },
+   {
+    "qid": "Q37",
+    "field": "speech",
+    "arxiv_id": "2109.14357",
+    "gold_rank": 1,
+    "n_dedup_docs": 1,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "supervised",
+     "speech",
+     "training"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.729
+    ],
+    "top_docs": [
+     "计算机与人工智能/speech__2109.14357__comparison-of-self-supervised-speech-pre-tra.md (part 1 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q38",
+    "field": "power-systems",
+    "arxiv_id": "2207.08146",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "mapping",
+     "disruption",
+     "sources",
+     "power"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7935,
+     0.7844
+    ],
+    "top_docs": [
+     "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+     "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 2 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q39",
+    "field": "medical-imaging",
+    "arxiv_id": "2306.01022",
+    "gold_rank": 1,
+    "n_dedup_docs": 1,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "introduction",
+     "medical",
+     "imaging",
+     "modalities"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.723
+    ],
+    "top_docs": [
+     "生命科学与医学/medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md (part 1 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q40",
+    "field": "immunology",
+    "arxiv_id": "2604.01385",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "strategies",
+     "tumor",
+     "elimination",
+     "control"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7949,
+     0.7677,
+     0.7451
+    ],
+    "top_docs": [
+     "生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 1 of 3).md",
+     "生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 2 of 3).md",
+     "生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q41",
+    "field": "oceanography",
+    "arxiv_id": "1104.2730",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "approximate",
+     "deconvolution",
+     "large",
+     "simulation"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8143,
+     0.8014,
+     0.7678
+    ],
+    "top_docs": [
+     "自然科学与地球科学/oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.md (part 1 of 3).md",
+     "自然科学与地球科学/oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.md (part 3 of 3).md",
+     "自然科学与地球科学/oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.md (part 2 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q42",
+    "field": "seismology",
+    "arxiv_id": "1308.1846",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "developing",
+     "testing",
+     "automated",
+     "event"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8311,
+     0.8061,
+     0.8034
+    ],
+    "top_docs": [
+     "自然科学与地球科学/seismology__1308.1846__developing-and-testing-the-automated-post-ev.md (part 1 of 4).md",
+     "自然科学与地球科学/seismology__1308.1846__developing-and-testing-the-automated-post-ev.md (part 2 of 4).md",
+     "自然科学与地球科学/seismology__1308.1846__developing-and-testing-the-automated-post-ev.md (part 3 of 4).md"
+    ]
+   },
+   {
+    "qid": "Q43",
+    "field": "agriculture",
+    "arxiv_id": "1311.6857",
+    "gold_rank": 1,
+    "n_dedup_docs": 1,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "agriculture",
+     "driving",
+     "expansion",
+     "neolithic"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7734
+    ],
+    "top_docs": [
+     "生命科学与医学/agriculture__1311.6857__agriculture-driving-male-expansion-in-neolit.md.md"
+    ]
+   },
+   {
+    "qid": "Q44",
+    "field": "finance",
+    "arxiv_id": "1412.5558",
+    "gold_rank": 1,
+    "n_dedup_docs": 1,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "backtest",
+     "trading",
+     "systems",
+     "candle"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.74
+    ],
+    "top_docs": [
+     "经济与社会/finance__1412.5558__backtest-of-trading-systems-on-candle-charts.md.md"
+    ]
+   },
+   {
+    "qid": "Q45",
+    "field": "social-networks",
+    "arxiv_id": "2203.15752",
+    "gold_rank": 1,
+    "n_dedup_docs": 3,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "information",
+     "consumption",
+     "boundary",
+     "spanning"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.8651,
+     0.8398,
+     0.8221
+    ],
+    "top_docs": [
+     "计算机与人工智能/social-networks__2203.15752__information-consumption-and-boundary-spannin.md (part 1 of 3).md",
+     "计算机与人工智能/social-networks__2203.15752__information-consumption-and-boundary-spannin.md (part 2 of 3).md",
+     "计算机与人工智能/social-networks__2203.15752__information-consumption-and-boundary-spannin.md (part 3 of 3).md"
+    ]
+   },
+   {
+    "qid": "Q46",
+    "field": "databases",
+    "arxiv_id": "2102.02440",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "online",
+     "sketch",
+     "based",
+     "query"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7262,
+     0.6989,
+     0.6854,
+     0.6696
+    ],
+    "top_docs": [
+     "计算机与人工智能/databases__2102.02440__online-sketch-based-query-optimization.md (part 1 of 5).md",
+     "计算机与人工智能/databases__2102.02440__online-sketch-based-query-optimization.md (part 2 of 5).md",
+     "计算机与人工智能/databases__2102.02440__online-sketch-based-query-optimization.md (part 3 of 5).md"
+    ]
+   },
+   {
+    "qid": "Q47",
+    "field": "chemistry",
+    "arxiv_id": "physics/0105075",
+    "gold_rank": 0,
+    "n_dedup_docs": 1,
+    "doc_hit1": false,
+    "doc_hit3": false,
+    "doc_hit5": false,
+    "kw_hit": [
+     "theory",
+     "laser",
+     "catalysis",
+     "pulses"
+    ],
+    "pass": false,
+    "top_scores": [
+     0.6975
+    ],
+    "top_docs": [
+     "自然科学与地球科学/chemistry__physics-0105075__theory-of-laser-catalysis-with-pulses.md.md"
+    ]
+   },
+   {
+    "qid": "Q48",
+    "field": "mathematics",
+    "arxiv_id": "1810.09292",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "optimal",
+     "distributed",
+     "control",
+     "stochastic"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7554,
+     0.7356,
+     0.7134,
+     0.7074
+    ],
+    "top_docs": [
+     "自然科学与地球科学/mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 1 of 7).md",
+     "自然科学与地球科学/mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 3 of 7).md",
+     "自然科学与地球科学/mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 7 of 7).md"
+    ]
+   },
+   {
+    "qid": "Q49",
+    "field": "speech",
+    "arxiv_id": "1811.04224",
+    "gold_rank": 1,
+    "n_dedup_docs": 2,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "reinforcement",
+     "learning",
+     "based",
+     "speech"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.697,
+     0.6872
+    ],
+    "top_docs": [
+     "计算机与人工智能/speech__1811.04224__reinforcement-learning-based-speech-enhancem.md (part 2 of 2).md",
+     "计算机与人工智能/speech__1811.04224__reinforcement-learning-based-speech-enhancem.md (part 1 of 2).md"
+    ]
+   },
+   {
+    "qid": "Q50",
+    "field": "databases",
+    "arxiv_id": "2005.03328",
+    "gold_rank": 1,
+    "n_dedup_docs": 4,
+    "doc_hit1": true,
+    "doc_hit3": true,
+    "doc_hit5": true,
+    "kw_hit": [
+     "bitvector",
+     "aware",
+     "query",
+     "optimization"
+    ],
+    "pass": true,
+    "top_scores": [
+     0.7324,
+     0.7214,
+     0.7081,
+     0.7061
+    ],
+    "top_docs": [
+     "计算机与人工智能/databases__2005.03328__bitvector-aware-query-optimization-for-decis.md (part 1 of 5).md",
+     "计算机与人工智能/databases__2005.03328__bitvector-aware-query-optimization-for-decis.md (part 5 of 5).md",
+     "计算机与人工智能/databases__2005.03328__bitvector-aware-query-optimization-for-decis.md (part 3 of 5).md"
+    ]
+   }
+  ]
+ }
+}

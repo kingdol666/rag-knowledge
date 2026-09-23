@@ -1,0 +1,81 @@
+{
+ "track": "b",
+ "question": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+ "answer": "API Error: 402 Insufficient Balance",
+ "is_error": true,
+ "latency_s": 168.7,
+ "sdk_duration_ms": 165839,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "precipitation extremes"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "climate-science__1503.07557__precipitation-extremes-under-climate-change.md"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 1546,
+  "output": 156,
+  "cache_read": 74176,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.048718,
+ "timeline": [
+  {
+   "t": 2.93,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 48.18,
+   "event": "text",
+   "detail": "47"
+  },
+  {
+   "t": 48.26,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 48.28,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 78.02,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 168.71,
+   "event": "text",
+   "detail": "35"
+  },
+  {
+   "t": 168.71,
+   "event": "result",
+   "detail": "is_error=True"
+  }
+ ],
+ "texts_full": [
+  "I'll search the corpus for relevant passages.\n\n",
+  "API Error: 402 Insufficient Balance"
+ ],
+ "qid": "BQ06",
+ "via": "chat"
+}

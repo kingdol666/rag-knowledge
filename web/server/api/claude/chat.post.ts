@@ -56,10 +56,24 @@ interface ChatBody {
   soulKbId?: string
   reasoningEffort?: 'auto' | 'low' | 'medium' | 'high' | 'xhigh' | 'max'
   engine?: 'claude' | 'omp'
+  /** D4 fix: hard wall-clock budget for the whole turn (ms). */
+  timeout_ms?: number
 }
 
 /** Safe read-only tools (pre-approved in all modes) */
 const SAFE_READS = ['Read', 'Glob', 'Grep']
+/**
+ * D4 fix: KB retrieval toolset. With kbEnhanced on, the injected instruction
+ * drives the /knowledgebase-search skill; under `default` permission mode the
+ * previous SAFE_READS-only allowlist starved the agent of `Skill`, so it
+ * wandered with bare reads and never converged (83 events, no done).
+ * Skill is read-only usage; MCP retrieval tools stay governed by the
+ * permission callback.
+ */
+const KB_RETRIEVAL_TOOLS = ['Read', 'Glob', 'Grep', 'Skill']
+/** D4 fix: hard wall-clock budget for a chat turn (graceful error, not a reset). */
+const DEFAULT_TURN_TIMEOUT_MS = 600_000
+const MAX_TURN_TIMEOUT_MS = 900_000
 /**
  * All tools (bypassPermissions mode). Includes `Task` so the main agent can
  * delegate to subagents — required for the subagent sidebar to ever populate.
@@ -273,7 +287,9 @@ export default defineEventHandler(async (event) => {
       ? ALL_TOOLS
       : allowedTools && allowedTools.length > 0
         ? allowedTools
-        : SAFE_READS
+        : kbEnhanced
+          ? KB_RETRIEVAL_TOOLS
+          : SAFE_READS
 
   // Process attachments -> content blocks
   const hasAttachments = Array.isArray(attachments) && attachments.length > 0
@@ -364,6 +380,30 @@ export default defineEventHandler(async (event) => {
       abortController.abort()
     })
 
+    // D4 fix: hard wall-clock budget for the whole turn. Previously a hung
+    // engine turn held the SSE connection until something upstream reset it,
+    // and the client never received a terminal event. Now the abort surfaces
+    // as a structured `event: error {code: TURN_TIMEOUT}`.
+    const turnTimeoutMs = Math.min(
+      Math.max(Math.round(Number(body?.timeout_ms) || DEFAULT_TURN_TIMEOUT_MS), 10_000),
+      MAX_TURN_TIMEOUT_MS,
+    )
+    let turnTimedOut = false
+    const turnTimer = setTimeout(() => {
+      turnTimedOut = true
+      abortController.abort(new Error('turn-timeout'))
+    }, turnTimeoutMs)
+
+    // D4 fix (2/2): SSE keepalive. Silent stretches (long tool executions,
+    // slow LLM turns) previously let client/proxy read timeouts kill the
+    // stream before any terminal event. SSE comments (`: ping`) are ignored
+    // by every standard parser but keep the socket warm.
+    const keepalive = setInterval(() => {
+      try {
+        if (!queryClosed) res.write(': ping\n\n')
+      } catch { /* socket gone; the turn timer still bounds the query */ }
+    }, 15_000)
+
     // ══════ 用户提问持久化（放在 query 前，覆盖多轮 resume 和首轮新会话） ══════
     // NOTE: replay history must be snapshotted BEFORE the current user message
     // is persisted — otherwise the current prompt lands in the replayed
@@ -443,16 +483,31 @@ export default defineEventHandler(async (event) => {
       if (message.type === 'result') {
         // result message only sends event: done once, avoiding duplicate processing by frontend handler
         res.write(`event: done\ndata: ${JSON.stringify(message)}\n\n`)
+        // D4 fix (3/3): the SDK iterator may keep the stream open long after
+        // the final result (background subagents, shell keeps). End the
+        // response immediately on result — the client must not wait on it.
+        break
       } else {
         res.write(`data: ${JSON.stringify(message)}\n\n`)
       }
     }
   } catch (e: any) {
     const errMsg = e?.message || String(e)
-    res.write(
-      `event: error\ndata: ${JSON.stringify({ error: errMsg, code: 'SDK_QUERY_FAILED' })}\n\n`,
-    )
+    if (!queryClosed && turnTimedOut) {
+      res.write(
+        `event: error\ndata: ${JSON.stringify({
+          error: `chat turn exceeded ${Math.round(turnTimeoutMs / 1000)}s wall-clock budget`,
+          code: 'TURN_TIMEOUT',
+        })}\n\n`,
+      )
+    } else if (!queryClosed) {
+      res.write(
+        `event: error\ndata: ${JSON.stringify({ error: errMsg, code: 'SDK_QUERY_FAILED' })}\n\n`,
+      )
+    }
   } finally {
+    clearTimeout(turnTimer)
+    clearInterval(keepalive)
     if (!queryClosed) {
       denyAllPending(sessionId || '_pre_init', 'Query ended')
     }

@@ -1,0 +1,93 @@
+{
+ "track": "b",
+ "question": "What defines NISQ technology and what is its central limitation?",
+ "answer": "The files answer this directly. According to `quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md` (Preskill, 2018), NISQ stands for \"Noisy Intermediate-Scale Quantum,\" where \"intermediate scale\" denotes devices of roughly 50 to a few hundred qubits — a milestone beyond brute-force classical simulation — and \"noisy\" emphasizes that we have only imperfect control over those qubits, without the protection of quantum error correction. Its central limitation is that this noise severely restricts the size of circuits that can be executed reliably: the paper estimates that noisy devices cannot run circuits with many more than about 1000 two-qubit gates before \"the noise will overwhelm the signal,\" which \"imposes a ceiling on the computational power of NISQ technology.\" The same limitation also makes it hard to validate that a NISQ machine is really producing correct answers, and it means NISQ devices should be seen as a step toward future fault-tolerant quantum computers rather than world-changing on their own.",
+ "is_error": false,
+ "latency_s": 40.9,
+ "sdk_duration_ms": 39082,
+ "num_turns": 5,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "NISQ"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "NISQ",
+    "path": "quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md"
+   }
+  }
+ ],
+ "tool_call_count": 4,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 10066,
+  "output": 527,
+  "cache_read": 113536,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.12027299999999999,
+ "timeline": [
+  {
+   "t": 1.9,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 35.76,
+   "event": "text",
+   "detail": "68"
+  },
+  {
+   "t": 35.78,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 35.81,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 38.58,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 38.58,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 40.92,
+   "event": "text",
+   "detail": "1045"
+  },
+  {
+   "t": 40.93,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the directory for relevant content on NISQ technology.\n\n",
+  "The files answer this directly. According to `quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md` (Preskill, 2018), NISQ stands for \"Noisy Intermediate-Scale Quantum,\" where \"intermediate scale\" denotes devices of roughly 50 to a few hundred qubits — a milestone beyond brute-force classical simulation — and \"noisy\" emphasizes that we have only imperfect control over those qubits, without the protection of quantum error correction. Its central limitation is that this noise severely restricts the size of circuits that can be executed reliably: the paper estimates that noisy devices cannot run circuits with many more than about 1000 two-qubit gates before \"the noise will overwhelm the signal,\" which \"imposes a ceiling on the computational power of NISQ technology.\" The same limitation also makes it hard to validate that a NISQ machine is really producing correct answers, and it means NISQ devices should be seen as a step toward future fault-tolerant quantum computers rather than world-changing on their own."
+ ],
+ "qid": "BQ02",
+ "via": "chat"
+}

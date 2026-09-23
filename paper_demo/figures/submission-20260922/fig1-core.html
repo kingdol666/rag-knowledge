@@ -1,0 +1,160 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  html,body{margin:0;padding:0;background:#ffffff}
+  svg{display:block}
+  text{font-family:'Helvetica Neue',Helvetica,Arial,'Segoe UI',sans-serif}
+</style>
+</head>
+<body>
+<svg id="fig" width="1000" height="480" viewBox="0 0 1000 480" role="img"
+     aria-label="QDCVR at a glance: conventional dense RAG versus the QDCVR agent skill">
+  <defs>
+    <marker id="arrG" viewBox="0 0 8 8" refX="6.5" refY="4" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#6a7a85"/>
+    </marker>
+    <marker id="arrT" viewBox="0 0 8 8" refX="6.5" refY="4" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#1f7a5c"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1000" height="480" fill="#ffffff"/>
+
+  <!-- ================= PANEL A : conventional dense RAG (grey) ================= -->
+  <rect x="14" y="14" width="316" height="394" rx="6" fill="#fafbfc" stroke="#d5dde2" stroke-width="1.2"/>
+  <path d="M14,60 H330" stroke="#d5dde2" stroke-width="1"/>
+  <text x="28" y="38" font-size="18" font-weight="600" fill="#46545e" letter-spacing="0.2">BASELINE: DENSE RAG</text>
+  <text x="28" y="55" font-size="16" fill="#4d5c66">pack-then-generate &#183; single shot</text>
+
+  <rect x="28" y="70" width="288" height="32" rx="4" fill="#ffffff" stroke="#c5cfd5"/>
+  <text x="172" y="91" font-size="15" font-weight="500" fill="#253745" text-anchor="middle">Raw PDFs</text>
+  <path d="M172,104 V111" stroke="#6a7a85" stroke-width="1.4" marker-end="url(#arrG)"/>
+
+  <rect x="28" y="114" width="288" height="32" rx="4" fill="#ffffff" stroke="#c5cfd5"/>
+  <text x="172" y="135" font-size="15" font-weight="500" fill="#253745" text-anchor="middle">Fixed &#8776;800-char chunks</text>
+  <path d="M172,148 V155" stroke="#6a7a85" stroke-width="1.4" marker-end="url(#arrG)"/>
+
+  <rect x="28" y="158" width="288" height="32" rx="4" fill="#ffffff" stroke="#c5cfd5"/>
+  <text x="172" y="179" font-size="15" font-weight="500" fill="#253745" text-anchor="middle">Dense retrieval &#8212; top-2 excerpts</text>
+  <path d="M172,192 V199" stroke="#6a7a85" stroke-width="1.4" marker-end="url(#arrG)"/>
+
+  <rect x="28" y="202" width="288" height="32" rx="4" fill="#ffffff" stroke="#c5cfd5"/>
+  <text x="172" y="223" font-size="15" font-weight="500" fill="#253745" text-anchor="middle">Packed 4,000-char context</text>
+  <path d="M172,236 V243" stroke="#6a7a85" stroke-width="1.4" marker-end="url(#arrG)"/>
+
+  <rect x="28" y="246" width="288" height="32" rx="4" fill="#ffffff" stroke="#c5cfd5"/>
+  <text x="172" y="267" font-size="15" font-weight="500" fill="#253745" text-anchor="middle">Single generation</text>
+  <path d="M172,280 V287" stroke="#6a7a85" stroke-width="1.4" marker-end="url(#arrG)"/>
+
+  <rect x="28" y="290" width="288" height="34" rx="4" fill="#f2f4f5" stroke="#8a99a3" stroke-dasharray="5 4"/>
+  <text x="172" y="312" font-size="15" font-weight="500" fill="#2d3c47" text-anchor="middle">Answer &#8212; sources not addressable</text>
+
+  <g stroke="#a07d3a" stroke-width="1.7" stroke-linecap="round">
+    <path d="M30,340 l8,8 M38,340 l-8,8"/>
+    <path d="M30,366 l8,8 M38,366 l-8,8"/>
+    <path d="M30,392 l8,8 M38,392 l-8,8"/>
+  </g>
+  <text x="52" y="348" font-size="15" fill="#253745">Chunks cut evidence mid-passage</text>
+  <text x="52" y="374" font-size="15" fill="#253745">Top-2 can miss the true evidence</text>
+  <text x="52" y="400" font-size="15" fill="#253745">Retrieval errors pass silently</text>
+
+  <!-- ================= PANEL B : QDCVR (teal) ================= -->
+  <rect x="344" y="14" width="642" height="394" rx="6" fill="#fcfefd" stroke="#c2ddd0" stroke-width="1.2"/>
+  <path d="M344,60 H986" stroke="#bcd9cc" stroke-width="1"/>
+  <text x="358" y="38" font-size="18" font-weight="600" fill="#175a44" letter-spacing="0.2">QDCVR &#8212; TWO LOOPS, ONE ADDRESS SCHEME</text>
+
+  <!-- loop 1 -->
+  <text x="358" y="82" font-size="17" font-weight="600" fill="#1f7a5c">LOOP 1 &#183; ORGANIZE &#8212; autonomous ingest</text>
+  <g font-size="15" font-weight="500" text-anchor="middle">
+    <rect x="358" y="90" width="50" height="28" rx="4" fill="#ffffff" stroke="#9ccabb"/>
+    <text x="383" y="109" fill="#253745">PDF</text>
+    <rect x="422" y="90" width="145" height="28" rx="4" fill="#ffffff" stroke="#9ccabb"/>
+    <text x="494" y="109" fill="#253745">Parse &amp; structure</text>
+    <rect x="581" y="90" width="140" height="28" rx="4" fill="#ffffff" stroke="#9ccabb"/>
+    <text x="651" y="109" fill="#253745">Route by content</text>
+    <rect x="735" y="90" width="55" height="28" rx="4" fill="#ffffff" stroke="#9ccabb"/>
+    <text x="762" y="109" fill="#253745">Tag</text>
+    <rect x="804" y="90" width="150" height="28" rx="4" fill="#ffffff" stroke="#9ccabb"/>
+    <text x="879" y="109" fill="#253745">Index as parts</text>
+  </g>
+  <g stroke="#1f7a5c" stroke-width="1.4">
+    <path d="M409,104 H419" marker-end="url(#arrT)"/>
+    <path d="M568,104 H578" marker-end="url(#arrT)"/>
+    <path d="M722,104 H732" marker-end="url(#arrT)"/>
+    <path d="M791,104 H801" marker-end="url(#arrT)"/>
+  </g>
+
+  <!-- address spine: organize hands the whole address to retrieval -->
+  <path d="M380,119 V128" fill="none" stroke="#1f7a5c" stroke-width="1.4"
+        stroke-dasharray="4 3" marker-end="url(#arrT)"/>
+  <path d="M358,146 H954" stroke="#c2ddd0" stroke-width="1.2"/>
+  <g text-anchor="middle" font-size="15" fill="#253745">
+    <rect x="358" y="132" width="184" height="28" rx="14" fill="#e6f3ec" stroke="#c2ddd0"/>
+    <text x="450" y="151">base &#9656; Natural Sciences</text>
+    <rect x="545" y="132" width="176" height="28" rx="14" fill="#e6f3ec" stroke="#c2ddd0"/>
+    <text x="633" y="151">document &#9656; 2409.13934</text>
+    <rect x="724" y="132" width="113" height="28" rx="14" fill="#e6f3ec" stroke="#c2ddd0"/>
+    <text x="780" y="151">part &#9656; 3 of 5</text>
+    <rect x="840" y="132" width="114" height="28" rx="14" fill="#e6f3ec" stroke="#c2ddd0"/>
+    <text x="897" y="151">section &#9656; 3.2</text>
+  </g>
+  <path d="M630,163 V171 H557 V188" fill="none" stroke="#1f7a5c" stroke-width="1.4"
+        stroke-dasharray="4 3" marker-end="url(#arrT)"/>
+
+  <!-- loop 2 -->
+  <text x="358" y="184" font-size="17" font-weight="600" fill="#1f7a5c">LOOP 2 &#183; RETRIEVE</text>
+
+  <g font-size="15" font-weight="500" text-anchor="middle">
+    <rect x="358" y="192" width="115" height="34" rx="4" fill="#ffffff" stroke="#9ccabb"/>
+    <text x="415" y="214" fill="#253745">Rewrite query</text>
+    <rect x="487" y="192" width="140" height="34" rx="4" fill="#ffffff" stroke="#9ccabb"/>
+    <text x="557" y="214" fill="#253745">Cross-base recall</text>
+    <rect x="641" y="192" width="145" height="34" rx="4" fill="#ffffff" stroke="#9ccabb"/>
+    <text x="713" y="214" fill="#253745">Read candidates</text>
+    <rect x="804" y="192" width="150" height="46" rx="5" fill="#ffffff" stroke="#1f7a5c" stroke-width="1.8"/>
+    <text x="879" y="211" font-size="17.5" font-weight="600" fill="#253745">Content gate</text>
+    <text x="879" y="231" font-size="15.5" fill="#1f7a5c">score 0&#8211;8</text>
+  </g>
+  <g stroke="#1f7a5c" stroke-width="1.4">
+    <path d="M474,209 H484" marker-end="url(#arrT)"/>
+    <path d="M628,209 H638" marker-end="url(#arrT)"/>
+    <path d="M787,215 H801" marker-end="url(#arrT)"/>
+  </g>
+
+  <!-- librarian fallback: gate &#8594; re-search loop, outcomes fork at the return -->
+  <path d="M870,239 V252 H641" fill="none" stroke="#1f7a5c" stroke-width="1.4"
+        stroke-dasharray="5 4" marker-end="url(#arrT)"/>
+  <text x="510" y="244" font-size="15" fill="#175a44" text-anchor="middle">gate &lt; 6 &#183; librarian re-search</text>
+  <!-- direct hit: own elbow from the gate's right edge -->
+  <text x="978" y="188" font-size="15" fill="#175a44" text-anchor="end">gate &#8805; 6</text>
+  <path d="M954,209 H968 Q972,209 972,213 V278 Q972,282 976,282 H957" fill="none"
+        stroke="#1f7a5c" stroke-width="1.8" marker-end="url(#arrT)"/>
+  <!-- contingent outcomes: one dashed trunk forks at the fallback return -->
+  <path d="M660,252 V228" fill="none" stroke="#1f7a5c" stroke-width="1.4"
+        stroke-dasharray="5 4" marker-end="url(#arrT)"/>
+  <path d="M641,252 H356 Q352,252 352,256 V324 Q352,328 356,328" fill="none" stroke="#1f7a5c" stroke-width="1.4"
+        stroke-dasharray="5 4" marker-end="url(#arrT)"/>
+  <path d="M641,252 H356 Q352,252 352,256 V370 Q352,374 356,374" fill="none" stroke="#1f7a5c" stroke-width="1.4"
+        stroke-dasharray="5 4" marker-end="url(#arrT)"/>
+  <circle cx="641" cy="252" r="7" fill="#ffffff" stroke="#1f7a5c" stroke-width="1.4"/>
+
+  <rect x="358" y="264" width="596" height="36" rx="5" fill="#1f7a5c"/>
+  <text x="376" y="287" font-size="15.5" font-weight="700" fill="#ffffff">&#8805; 6</text>
+  <text x="420" y="287" font-size="15.5" fill="#ffffff"><tspan font-weight="600">Cited answer</tspan> &#8212; section-addressed sources</text>
+
+  <rect x="358" y="310" width="596" height="36" rx="5" fill="#e9f4ef" stroke="#1f7a5c" stroke-width="1.8" stroke-dasharray="5 4"/>
+  <text x="376" y="333" font-size="15.5" font-weight="700" fill="#1f7a5c">= 5</text>
+  <text x="420" y="333" font-size="15.5" fill="#253745"><tspan font-weight="600">Qualified answer</tspan> &#8212; attributed backstop after the fallback</text>
+
+  <rect x="358" y="356" width="596" height="36" rx="5" fill="#f6f8f9" stroke="#4d5c66" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <text x="376" y="379" font-size="15.5" font-weight="700" fill="#46545e">&#8804; 4</text>
+  <text x="420" y="379" font-size="15.5" fill="#253745"><tspan font-weight="600">Scoped not-found</tspan> &#8212; scope &#183; near miss &#183; reason &#183; remedy</text>
+
+  <!-- ================= TAKEAWAY ================= -->
+  <rect x="14" y="422" width="972" height="44" rx="6" fill="#eef7f3" stroke="#bcd9cc"/>
+  <text x="500" y="449" font-size="16" text-anchor="middle" fill="#253745">One addressing scheme &#8212; <tspan font-weight="700" fill="#175a44">base &#183; document &#183; part &#183; section</tspan> &#8212; powers both loops; every answer is checkable at source.</text>
+</svg>
+</body>
+</html>

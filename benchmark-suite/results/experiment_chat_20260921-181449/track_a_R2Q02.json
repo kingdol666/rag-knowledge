@@ -1,0 +1,121 @@
+{
+ "track": "a",
+ "question": "What three-step approach does InstructDS use to synthesize high-quality training triples for query-based dialogue summarization?",
+ "answer": "I have the full source text. Here is the answer.\n\n## InstructDS's Three-Step Approach to Synthesizing Query-Based Summarization Triples\n\nThe paper **\"Instructive Dialogue Summarization with Query Aggregations\"** (Wang, Liu & Chen, A\\*STAR I2R — arXiv:2310.10981) addresses the scarcity of instructive dialogue-summarization data with a three-step pipeline that converts ordinary dialogue–summary pairs into **query–dialogue–summary (QDS) triples**, explicitly designed to reduce human involvement while increasing data diversity. The three steps are:\n\n**1. Summary-Anchored Query Generation**\nRather than generating queries from the raw dialogue, the method prompts an LLM with the *reference summary* to produce multiple candidate queries. Specifically, Flan-T5-XL is used as the question-generation model (chosen because it was trained on question-generation datasets such as Quoref, MC-TACO, and CosmosQA). Five candidate queries are generated per instance.\n\n**2. Query Filtering**\nTwo complementary filters ensure validity and diversity:\n- **Text-based filtering** — Flan-T5-XL acts as a binary classifier to judge whether each query is answerable without hallucination, removing ~45% of candidates (e.g., problematic \"What will…\" / \"How would…\" style queries).\n- **Semantic-based filtering** — normalized BERTScore is used to detect redundant queries; only the first is kept when semantic similarity exceeds 0.65, eliminating an additional ~50% of queries.\n\n**3. Query-Based Summary Generation**\nUsing the query plus the *complete summary* as input, the model generates the query-based summary. The paper notes that generating from the condensed summary (rather than the full dialogue) is easier and yields higher quality, since the model can extract from a more concise, structured source.\n\nThe paper reports that this filtering raises triple quality from **45% → 75%** (expert annotation of 100 triples), with an average of **1.3 QDS triples generated per dialogue–summary pair**. These triples were then used to train **InstructDS**, a unified Flan-T5-XL-based model (LoRA, 37.7M trainable parameters) that outperforms larger models on SAMSum, DialogSum, TODSum, and DREAM.\n\n**Source reference:**\n- `计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md` (KB `b1199132-e4d4-4305-8c2e-82dc1753b0ba`), Abstract and §3.2 \"Synthesize QDS Triples\". The same content is indexed under `Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k00.md` (KB `0942f1a6-d81b-413b-a60b-b994680dcaac`).",
+ "is_error": false,
+ "latency_s": 59.8,
+ "sdk_duration_ms": 57315,
+ "num_turns": 7,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_search_two_stage,mcp__kb-mcp__kb_list,mcp__kb-mcp__kb_doc_read"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_two_stage",
+   "input": {
+    "query": "InstructDS query-based dialogue summarization training triples synthesis"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "InstructDS three-step data synthesis query-based dialogue summarization"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "doc_path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "doc_path": "nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "doc_path": "Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k01.md"
+   }
+  }
+ ],
+ "tool_call_count": 6,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 32454,
+  "output": 1364,
+  "cache_read": 191104,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.291922,
+ "timeline": [
+  {
+   "t": 2.53,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 21.23,
+   "event": "text",
+   "detail": "109"
+  },
+  {
+   "t": 21.23,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 36.41,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_two_stage"
+  },
+  {
+   "t": 36.42,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 39.31,
+   "event": "text",
+   "detail": "99"
+  },
+  {
+   "t": 39.31,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 41.48,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 41.48,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 59.78,
+   "event": "text",
+   "detail": "2553"
+  },
+  {
+   "t": 59.81,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the knowledge base for information about InstructDS and its training triple synthesis approach.\n\n",
+  "I found the paper. Let me read the key section to confirm the details of the three-step approach.\n\n",
+  "I have the full source text. Here is the answer.\n\n## InstructDS's Three-Step Approach to Synthesizing Query-Based Summarization Triples\n\nThe paper **\"Instructive Dialogue Summarization with Query Aggregations\"** (Wang, Liu & Chen, A\\*STAR I2R — arXiv:2310.10981) addresses the scarcity of instructive dialogue-summarization data with a three-step pipeline that converts ordinary dialogue–summary pairs into **query–dialogue–summary (QDS) triples**, explicitly designed to reduce human involvement while increasing data diversity. The three steps are:\n\n**1. Summary-Anchored Query Generation**\nRather than generating queries from the raw dialogue, the method prompts an LLM with the *reference summary* to produce multiple candidate queries. Specifically, Flan-T5-XL is used as the question-generation model (chosen because it was trained on question-generation datasets such as Quoref, MC-TACO, and CosmosQA). Five candidate queries are generated per instance.\n\n**2. Query Filtering**\nTwo complementary filters ensure validity and diversity:\n- **Text-based filtering** — Flan-T5-XL acts as a binary classifier to judge whether each query is answerable without hallucination, removing ~45% of candidates (e.g., problematic \"What will…\" / \"How would…\" style queries).\n- **Semantic-based filtering** — normalized BERTScore is used to detect redundant queries; only the first is kept when semantic similarity exceeds 0.65, eliminating an additional ~50% of queries.\n\n**3. Query-Based Summary Generation**\nUsing the query plus the *complete summary* as input, the model generates the query-based summary. The paper notes that generating from the condensed summary (rather than the full dialogue) is easier and yields higher quality, since the model can extract from a more concise, structured source.\n\nThe paper reports that this filtering raises triple quality from **45% → 75%** (expert annotation of 100 triples), with an average of **1.3 QDS triples generated per dialogue–summary pair**. These triples were then used to train **InstructDS**, a unified Flan-T5-XL-based model (LoRA, 37.7M trainable parameters) that outperforms larger models on SAMSum, DialogSum, TODSum, and DREAM.\n\n**Source reference:**\n- `计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md` (KB `b1199132-e4d4-4305-8c2e-82dc1753b0ba`), Abstract and §3.2 \"Synthesize QDS Triples\". The same content is indexed under `Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k00.md` (KB `0942f1a6-d81b-413b-a60b-b994680dcaac`)."
+ ],
+ "qid": "R2Q02",
+ "via": "chat"
+}

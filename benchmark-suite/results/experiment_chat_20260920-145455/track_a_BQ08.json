@@ -1,0 +1,115 @@
+{
+ "track": "a",
+ "question": "How does oxygen redox contribute to the capacity of battery cathodes?",
+ "answer": "I retrieved the full document and confirmed it directly answers the question. Here is the answer.\n\n---\n\n## How Oxygen Redox Contributes to Battery Cathode Capacity\n\nThe knowledge base contains a directly relevant review — **\"Oxygen redox in battery cathodes: A brief overview\"** by M. Hussein N. Assadi & Dorian A. H. Hanaor (arXiv:2408.09942), held in the **工程与能源 (Engineering & Energy)** KB.\n\n### 1. The core mechanism: anionic charge compensation\n\nIn conventional cathodes (LiTMO₂, TM = Ni/Mn/Co), charge is balanced by transition-metal oxidation:\n\n```\nLiTM³⁺O₂  —charging→  Li₍₁₋ₓ₎TM³⁺₍₁₋ₓ₎TM⁴⁺ₓO₂ + xLi⁺ + xe⁻        (1)\n```\n\nBut many cathodes deliver **overcapacity exceeding the transition-metal oxidation limit**. Oxygen redox explains this: oxide anions O²⁻ donate electrons during charging — acting as reducing agents — which **compensates for the absence of oxidizable transition metals**. The reversible process is summarized as:\n\n```\nO²⁻  ⇌  (O₂)ⁿ⁻                                                     (2)\n```\n\nor, alternatively, as the formation of electron holes on oxygen (avoiding O₂ gas evolution).\n\n### 2. Why it works: \"orphaned\" O 2p states\n\nThe enabling structural feature is **Li-excess (or Na-excess) environments**. In normal LiTMO₂, every O is coordinated by 3 TM + 3 Li. TM–O hybridization pulls the bonding O 2p states down to the bottom of the valence band (~10 eV below E_F). In **Li-excess Li₂TMO₃**, the TM layer also contains Li, so some O ions are coordinated by **fewer than three TM ions** (Li–O–Li coordination). These avoid TM s/p hybridization, leaving **non-bonding, \"orphaned\" O 2p states** close to the Fermi level — comparable in energy to the non-bonding TM t₂g states. Both O and TM can then donate/accept electrons during redox.\n\nExample reaction showing mixed cationic/anionic redox in Li₄Mn₂O₅:\n\n```\nLi₄⁺Mn₂³⁺O₅²⁻ → 4Li⁺ + 4e⁻ + Mnₓ⁴⁺Mn₂₋ₓ⁵⁺O₅₋ₓ²⁻Oₓ¹⁻          (3)\n```\n\nwhere x is the extent of oxygen participation. Mn³⁺→Mn⁴⁺ oxidation occurs first, and **additional de-lithiation capacity is accommodated by oxygen oxidation**.\n\n### 3. Capability depends on structure and TM\n\nThe extent of oxygen redox varies with crystal structure and transition-metal type:\n\n- **Li₂MnO₃** — Mn stays +4 (its t₂g frontier level is too low to oxidize), so the capacity is attributed **almost entirely to oxygen redox**.\n- **Li-excess disordered spinel-type cathodes** — where oxygen redox was first found to contribute significantly (attributed to orphaned O states from O ions with <3 coordinating TMs).\n- **Ilmenite-type NaTMO₃** — here O redox arises from **under-coordination**: O is coordinated by only 2 TM + 2 Na ions. Na₂₋ₓRuO₃ shows ~180 mAh g⁻¹ (~1.4 e⁻ per formula unit), with **~0.4 e⁻ of extra capacity from reversible oxygen redox**, plus a voltage rise from 2.2 V to 3.4 V — indicating O redox can operate at **higher potential than TM redox alone**.\n\nDFT survey results (O 2p population in −2 eV < E < E_Fermi, and predicted potential):\n\n| 3d NaTMO₃ | NaVO₃ | NaCrO₃ | NaMnO₃ | NaFeO₃ | NaCoO₃ | NaNiO₃ |\n|---|---|---|---|---|---|---|\n| O 2p (e) | 0.17 | 1.43 | 1.23 | 0.34 | 0.59 | 0.78 |\n| Potential (V) | 5.91 | 4.24 | 4.53 | 5.18 | 3.49 | 3.98 |\n\n| 4d NaTMO₃ | NaNbO₃ | NaMoO₃ | NaTcO₃ | NaRuO₃ | NaRhO₃ | NaPdO₃ | NaAgO₃ |\n|---|---|---|---|---|---|---|---|\n| O 2p (e) | 2.58 | 0.16 | 0.38 | 1.40 | 1.50 | 2.10 | 2.51 |\n| Potential (V) | 4.95 | 2.62 | 2.90 | 3.72 | 4.08* | 4.08 | 4.66 |\n\n**Oxygen redox is more dominant in 4d (fifth-row) transition-metal oxides**, due to higher TM–O covalency that increases 4d–2p hybridization and raises O 2p population near the Fermi level. NaVO₃/NaFeO₃ (>5 V) and NaNbO₃/NaAgO₃ (>4 V) are predicted as high-voltage O-redox cathodes.\n\n### 4. The trade-off: capacity gain vs. O₂ release\n\nAlthough oxygen redox **increases cathode capacity**, the reduced O ions have a strong tendency to bond to each other and **leave the lattice as O₂ gas**. This is both a **fire hazard** and a cause of **rapid, permanent capacity fade**. Mitigation strategies against O₂ release — such as **fluorination** — must be implemented if the extra oxygen-redox capacity is to be used. This is also tied to the capacity loss often observed after initial cycling.\n\n### 5. Computational caveat\n\nDirectly probing anionic redox is not possible; DFT is the main approach, via density-of-states analysis. Because cathode materials are strongly correlated, **standard GGA is insufficient** — Hartree-Fock hybrid functionals or Hubbard-corrected (GGA+U) methods are needed, though choosing the mixing parameter α or U_eff remains challenging.\n\n---\n\n### Sources\n\n- **Primary source (full document):** 工程与能源 KB (`8fa4db59-adde-4d6d-9fdb-2c375400e631`) — `materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md` (parts 1 & 2 of 2). Sections: Abstract, §1 Introduction, §2 Anionic Redox in Battery Electrode Materials, §4 Oxygen Redox in 3d and 4d Ilmenite-type NaTMO₃, §5 Summary.\n- Assadi, M.H.N.; Hanaor, D.A.H. — *Oxygen redox in battery cathodes: A brief overview*, arXiv:2408.09942.\n\n**Note on corpus structure:** the same paper is indexed in three parallel baseline collections — `Corpus-Chunks800`, `Corpus-Struct`, and `Corpus-Paras` — which are DeepRead reproduction indices (0 documents reported at KB level), plus the canonical copy in 工程与能源. All content above is drawn from the canonical 工程与能源 copy.",
+ "is_error": false,
+ "latency_s": 97.4,
+ "sdk_duration_ms": 91866,
+ "num_turns": 6,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_list,mcp__kb-mcp__kb_doc_read,mcp__kb-mcp__kb_search_two_stage"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_list",
+   "input": {}
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "oxygen redox contribution to capacity in battery cathodes"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+    "doc_path": "工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 1 of 2).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+    "doc_path": "工程与能源/materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md (part 2 of 2).md"
+   }
+  }
+ ],
+ "tool_call_count": 5,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 131820,
+  "output": 2154,
+  "cache_read": 45312,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.735606,
+ "timeline": [
+  {
+   "t": 5.61,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 21.8,
+   "event": "text",
+   "detail": "85"
+  },
+  {
+   "t": 22.01,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 26.81,
+   "event": "text",
+   "detail": "80"
+  },
+  {
+   "t": 26.83,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_list"
+  },
+  {
+   "t": 26.84,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 37.45,
+   "event": "text",
+   "detail": "116"
+  },
+  {
+   "t": 37.45,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 37.46,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 96.79,
+   "event": "text",
+   "detail": "5389"
+  },
+  {
+   "t": 97.43,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the knowledge base for information on oxygen redox in battery cathodes.\n\n",
+  "I'll start by surveying what knowledge bases exist, then search for the topic.\n\n",
+  "Highly relevant results found. Let me read the full document from the canonical KB (工程与能源 — Engineering & Energy).\n\n",
+  "I retrieved the full document and confirmed it directly answers the question. Here is the answer.\n\n---\n\n## How Oxygen Redox Contributes to Battery Cathode Capacity\n\nThe knowledge base contains a directly relevant review — **\"Oxygen redox in battery cathodes: A brief overview\"** by M. Hussein N. Assadi & Dorian A. H. Hanaor (arXiv:2408.09942), held in the **工程与能源 (Engineering & Energy)** KB.\n\n### 1. The core mechanism: anionic charge compensation\n\nIn conventional cathodes (LiTMO₂, TM = Ni/Mn/Co), charge is balanced by transition-metal oxidation:\n\n```\nLiTM³⁺O₂  —charging→  Li₍₁₋ₓ₎TM³⁺₍₁₋ₓ₎TM⁴⁺ₓO₂ + xLi⁺ + xe⁻        (1)\n```\n\nBut many cathodes deliver **overcapacity exceeding the transition-metal oxidation limit**. Oxygen redox explains this: oxide anions O²⁻ donate electrons during charging — acting as reducing agents — which **compensates for the absence of oxidizable transition metals**. The reversible process is summarized as:\n\n```\nO²⁻  ⇌  (O₂)ⁿ⁻                                                     (2)\n```\n\nor, alternatively, as the formation of electron holes on oxygen (avoiding O₂ gas evolution).\n\n### 2. Why it works: \"orphaned\" O 2p states\n\nThe enabling structural feature is **Li-excess (or Na-excess) environments**. In normal LiTMO₂, every O is coordinated by 3 TM + 3 Li. TM–O hybridization pulls the bonding O 2p states down to the bottom of the valence band (~10 eV below E_F). In **Li-excess Li₂TMO₃**, the TM layer also contains Li, so some O ions are coordinated by **fewer than three TM ions** (Li–O–Li coordination). These avoid TM s/p hybridization, leaving **non-bonding, \"orphaned\" O 2p states** close to the Fermi level — comparable in energy to the non-bonding TM t₂g states. Both O and TM can then donate/accept electrons during redox.\n\nExample reaction showing mixed cationic/anionic redox in Li₄Mn₂O₅:\n\n```\nLi₄⁺Mn₂³⁺O₅²⁻ → 4Li⁺ + 4e⁻ + Mnₓ⁴⁺Mn₂₋ₓ⁵⁺O₅₋ₓ²⁻Oₓ¹⁻          (3)\n```\n\nwhere x is the extent of oxygen participation. Mn³⁺→Mn⁴⁺ oxidation occurs first, and **additional de-lithiation capacity is accommodated by oxygen oxidation**.\n\n### 3. Capability depends on structure and TM\n\nThe extent of oxygen redox varies with crystal structure and transition-metal type:\n\n- **Li₂MnO₃** — Mn stays +4 (its t₂g frontier level is too low to oxidize), so the capacity is attributed **almost entirely to oxygen redox**.\n- **Li-excess disordered spinel-type cathodes** — where oxygen redox was first found to contribute significantly (attributed to orphaned O states from O ions with <3 coordinating TMs).\n- **Ilmenite-type NaTMO₃** — here O redox arises from **under-coordination**: O is coordinated by only 2 TM + 2 Na ions. Na₂₋ₓRuO₃ shows ~180 mAh g⁻¹ (~1.4 e⁻ per formula unit), with **~0.4 e⁻ of extra capacity from reversible oxygen redox**, plus a voltage rise from 2.2 V to 3.4 V — indicating O redox can operate at **higher potential than TM redox alone**.\n\nDFT survey results (O 2p population in −2 eV < E < E_Fermi, and predicted potential):\n\n| 3d NaTMO₃ | NaVO₃ | NaCrO₃ | NaMnO₃ | NaFeO₃ | NaCoO₃ | NaNiO₃ |\n|---|---|---|---|---|---|---|\n| O 2p (e) | 0.17 | 1.43 | 1.23 | 0.34 | 0.59 | 0.78 |\n| Potential (V) | 5.91 | 4.24 | 4.53 | 5.18 | 3.49 | 3.98 |\n\n| 4d NaTMO₃ | NaNbO₃ | NaMoO₃ | NaTcO₃ | NaRuO₃ | NaRhO₃ | NaPdO₃ | NaAgO₃ |\n|---|---|---|---|---|---|---|---|\n| O 2p (e) | 2.58 | 0.16 | 0.38 | 1.40 | 1.50 | 2.10 | 2.51 |\n| Potential (V) | 4.95 | 2.62 | 2.90 | 3.72 | 4.08* | 4.08 | 4.66 |\n\n**Oxygen redox is more dominant in 4d (fifth-row) transition-metal oxides**, due to higher TM–O covalency that increases 4d–2p hybridization and raises O 2p population near the Fermi level. NaVO₃/NaFeO₃ (>5 V) and NaNbO₃/NaAgO₃ (>4 V) are predicted as high-voltage O-redox cathodes.\n\n### 4. The trade-off: capacity gain vs. O₂ release\n\nAlthough oxygen redox **increases cathode capacity**, the reduced O ions have a strong tendency to bond to each other and **leave the lattice as O₂ gas**. This is both a **fire hazard** and a cause of **rapid, permanent capacity fade**. Mitigation strategies against O₂ release — such as **fluorination** — must be implemented if the extra oxygen-redox capacity is to be used. This is also tied to the capacity loss often observed after initial cycling.\n\n### 5. Computational caveat\n\nDirectly probing anionic redox is not possible; DFT is the main approach, via density-of-states analysis. Because cathode materials are strongly correlated, **standard GGA is insufficient** — Hartree-Fock hybrid functionals or Hubbard-corrected (GGA+U) methods are needed, though choosing the mixing parameter α or U_eff remains challenging.\n\n---\n\n### Sources\n\n- **Primary source (full document):** 工程与能源 KB (`8fa4db59-adde-4d6d-9fdb-2c375400e631`) — `materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md` (parts 1 & 2 of 2). Sections: Abstract, §1 Introduction, §2 Anionic Redox in Battery Electrode Materials, §4 Oxygen Redox in 3d and 4d Ilmenite-type NaTMO₃, §5 Summary.\n- Assadi, M.H.N.; Hanaor, D.A.H. — *Oxygen redox in battery cathodes: A brief overview*, arXiv:2408.09942.\n\n**Note on corpus structure:** the same paper is indexed in three parallel baseline collections — `Corpus-Chunks800`, `Corpus-Struct`, and `Corpus-Paras` — which are DeepRead reproduction indices (0 documents reported at KB level), plus the canonical copy in 工程与能源. All content above is drawn from the canonical 工程与能源 copy."
+ ],
+ "qid": "BQ08",
+ "via": "chat"
+}

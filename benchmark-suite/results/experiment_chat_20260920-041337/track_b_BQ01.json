@@ -1,0 +1,146 @@
+{
+ "track": "b",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "answer": "**Answer**\n\nThe Transformer computes attention by mapping a query and a set of key-value pairs to an output: it takes the dot products of the query with all keys, divides each by √d_k, and applies a softmax to obtain weights on the values (Section 3.2.1, Eq. 1: Attention(Q,K,V) = softmax(QKᵀ/√d_k)V). The 1/√d_k scaling counteracts the tendency of large dot products to push softmax into regions with extremely small gradients. Rather than one attention function, multi-head attention linearly projects Q, K, V h = 8 times into d_k = d_v = 64 dimensions, runs attention in parallel per head, and concatenates and re-projects the results, letting the model attend to information from different representation subspaces. Decoder self-attention masks illegal (future) positions to −∞ before softmax to preserve auto-regression.\n\nIt replaces recurrence and convolution because it \"eschewing recurrence and instead relying entirely on an attention mechanism to draw global dependencies between input and output,\" enabling significantly more parallelization (twelve hours on eight P100 GPUs to state of the art). Table 1 justifies this: self-attention has O(1) sequential operations and O(1) maximum path length versus O(n) sequential operations and O(n) path length for recurrent layers, and O(log_k(n)) path length for convolutional ones — so self-attention connects any two positions in a constant number of operations and offers better parallelization. The cost is a trade-off: O(n²·d) complexity per layer versus O(n·d²) for recurrent and O(k·n·d²) for convolutional layers. Because the model contains no recurrence or convolution, positional encodings are added to the input embeddings to inject token order.\n\n**File used:** `artificial-intelligence__1706.03762__attention-is-all-you-need.md` (Sections 3.2.1, 3.2.2, 3.2.3, 3.4/3.5, Table 1, Abstract).",
+ "is_error": false,
+ "latency_s": 146.9,
+ "sdk_duration_ms": 145622,
+ "num_turns": 8,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "Attention Is All You Need|self-attention|scaled dot-product"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "scaled dot-product|softmax|attention function|recurrence|convolution",
+    "path": "artificial-intelligence__1706.03762__attention-is-all-you-need.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\artificial-intelligence__1706.03762__attention-is-all-you-need.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\artificial-intelligence__1706.03762__attention-is-all-you-need.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md\\artificial-intelligence__1706.03762__attenti"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\benchmark-suite\\data\\corpus_md\\artificial-intelligence__1706.03762__attenti"
+   }
+  }
+ ],
+ "tool_call_count": 7,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 156050,
+  "output": 1170,
+  "cache_read": 49408,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.834204,
+ "timeline": [
+  {
+   "t": 1.33,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 34.29,
+   "event": "text",
+   "detail": "40"
+  },
+  {
+   "t": 34.29,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 34.31,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 65.05,
+   "event": "text",
+   "detail": "76"
+  },
+  {
+   "t": 65.05,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 86.16,
+   "event": "text",
+   "detail": "79"
+  },
+  {
+   "t": 86.16,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 86.16,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 116.57,
+   "event": "text",
+   "detail": "35"
+  },
+  {
+   "t": 116.57,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 116.58,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 146.65,
+   "event": "text",
+   "detail": "1853"
+  },
+  {
+   "t": 146.92,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll start by finding the paper files.\n\n",
+  "The primary source is the Attention Is All You Need paper. Let me read it.\n\n",
+  "Let me read the key sections on attention mechanics and the motivation table.\n\n",
+  "I need the corpus directory path.\n\n",
+  "**Answer**\n\nThe Transformer computes attention by mapping a query and a set of key-value pairs to an output: it takes the dot products of the query with all keys, divides each by √d_k, and applies a softmax to obtain weights on the values (Section 3.2.1, Eq. 1: Attention(Q,K,V) = softmax(QKᵀ/√d_k)V). The 1/√d_k scaling counteracts the tendency of large dot products to push softmax into regions with extremely small gradients. Rather than one attention function, multi-head attention linearly projects Q, K, V h = 8 times into d_k = d_v = 64 dimensions, runs attention in parallel per head, and concatenates and re-projects the results, letting the model attend to information from different representation subspaces. Decoder self-attention masks illegal (future) positions to −∞ before softmax to preserve auto-regression.\n\nIt replaces recurrence and convolution because it \"eschewing recurrence and instead relying entirely on an attention mechanism to draw global dependencies between input and output,\" enabling significantly more parallelization (twelve hours on eight P100 GPUs to state of the art). Table 1 justifies this: self-attention has O(1) sequential operations and O(1) maximum path length versus O(n) sequential operations and O(n) path length for recurrent layers, and O(log_k(n)) path length for convolutional ones — so self-attention connects any two positions in a constant number of operations and offers better parallelization. The cost is a trade-off: O(n²·d) complexity per layer versus O(n·d²) for recurrent and O(k·n·d²) for convolutional layers. Because the model contains no recurrence or convolution, positional encodings are added to the input embeddings to inject token order.\n\n**File used:** `artificial-intelligence__1706.03762__attention-is-all-you-need.md` (Sections 3.2.1, 3.2.2, 3.2.3, 3.4/3.5, Table 1, Abstract)."
+ ],
+ "retried_after_restart": true,
+ "first_error": "ConnectionResetError: [WinError 10054] 远程主机强迫关闭了一个现有的连接。",
+ "qid": "BQ01",
+ "via": "chat"
+}

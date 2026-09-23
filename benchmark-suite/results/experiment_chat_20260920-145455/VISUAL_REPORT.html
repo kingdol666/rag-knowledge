@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Retrieval Benchmark — Three-Track Interactive Report</title>
+<style>
+  :root { --teal:#0f766e; --tealbg:#e7f5f2; --ink:#191714; --paper:#faf9f6;
+          --gray:#6b7280; --graybg:#f1efec; --warn:#b3261e; --warnbg:#fbeeec;
+          --line:#e4e0da; --gold-ok:#0f766e; }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin:0; background:var(--paper); color:var(--ink);
+         font:15px/1.6 'Source Serif 4', Georgia, 'Times New Roman', serif;
+         text-wrap: pretty; }
+  .mono, td.num, .astats, .qgold, .csub, .chip { font-family: ui-monospace,
+         'Cascadia Code', Consolas, monospace; }
+  header.page { background:var(--ink); color:#f6f4ef; padding:34px 44px 30px; }
+  header.page h1 { margin:0 0 6px; font-size:26px; font-weight:650;
+                    letter-spacing:.2px; }
+  header.page p { margin:2px 0; color:#c9c4bb; font-size:13.5px; }
+  .badge { display:inline-block; border:1px solid #4a5a52; color:#9fd6cb;
+           padding:2px 10px; border-radius:20px; font-size:12px; margin-right:8px;
+           font-family:ui-monospace,monospace; }
+  main { max-width:1180px; margin:0 auto; padding:26px 40px 60px; }
+  h2 { font-size:15px; letter-spacing:1.4px; text-transform:uppercase;
+       color:var(--gray); border-bottom:1px solid var(--line);
+       padding-bottom:8px; margin:38px 0 16px; font-weight:600; }
+  .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:8px;
+          padding:14px 18px; }
+  .card.ta { border-top:3px solid var(--teal); }
+  .card.tb, .card.tc { border-top:3px solid #b9b3aa; }
+  .clabel { font-size:12px; letter-spacing:1px; text-transform:uppercase;
+            color:var(--gray); }
+  .cnum { font-size:24px; font-weight:700; margin:2px 0; }
+  .csub { font-size:12px; color:var(--gray); }
+  .strip { display:grid; grid-template-columns:repeat(5,1fr); gap:12px;
+           margin:18px 0 6px; }
+  .strip .s { background:#fff; border:1px solid var(--line); border-radius:8px;
+              padding:10px 14px; }
+  .strip .n { font-size:19px; font-weight:700; font-family:ui-monospace,monospace; }
+  .strip .l { font-size:11.5px; color:var(--gray); }
+  table { border-collapse:collapse; width:100%; background:#fff; font-size:13px;
+          font-family:ui-monospace,monospace; }
+  th { background:var(--graybg); text-align:left; cursor:pointer; user-select:none;
+       padding:7px 10px; border:1px solid var(--line); font-weight:600; }
+  th:hover { background:#e8e5e0; }
+  td { border:1px solid var(--line); padding:6px 10px; }
+  td.num { text-align:right; }
+  tr[data-track=a] td:first-child { border-left:3px solid var(--teal); }
+  .chip { display:inline-block; padding:1px 8px; border-radius:10px;
+          font-size:11.5px; font-weight:700; }
+  .chip.ta { background:var(--tealbg); color:var(--teal); }
+  .chip.tb, .chip.tc { background:var(--graybg); color:var(--gray); }
+  .filters { margin:10px 0; }
+  .filters button { font-family:ui-monospace,monospace; font-size:12.5px;
+                    padding:4px 14px; margin-right:8px; border:1px solid var(--line);
+                    background:#fff; border-radius:16px; cursor:pointer; }
+  .filters button.on { background:var(--ink); color:#fff; border-color:var(--ink); }
+  .qblock { background:#fff; border:1px solid var(--line); border-radius:10px;
+            padding:16px 22px; margin:16px 0; }
+  .qhead { display:flex; gap:12px; align-items:baseline; }
+  .qid { font-family:ui-monospace,monospace; font-weight:700; font-size:15px; }
+  .qfield { font-size:12px; color:var(--gray); }
+  .qgold { font-size:11.5px; color:var(--gray); margin-left:auto;
+           font-family:ui-monospace,monospace; }
+  .qtext { font-size:15.5px; margin:10px 0 6px; }
+  details.ans { border:1px solid var(--line); border-radius:8px; margin:10px 0;
+                background:#fff; }
+  details.ans.ta-a { border-left:3px solid var(--teal); }
+  details.ans summary { cursor:pointer; padding:10px 14px; display:flex;
+                        gap:10px; align-items:center; flex-wrap:wrap; }
+  .alabel { font-weight:650; font-size:13.5px; }
+  .astats { font-size:11.5px; color:var(--gray); margin-left:auto; }
+  .gold { font-size:11px; padding:1px 8px; border-radius:10px;
+          font-family:ui-monospace,monospace; }
+  .gold.gok { background:var(--tealbg); color:var(--teal); }
+  .gold.gpart { background:#fdf3e0; color:#8a6d1a; }
+  .gold.gmiss { background:var(--warnbg); color:var(--warn); }
+  .abody { white-space:pre-wrap; word-wrap:break-word; font-size:13.5px;
+           line-height:1.65; padding:4px 18px 14px; border-top:1px dashed var(--line);
+           margin-top:4px; padding-top:12px; }
+  details.ans.ta-a .abody { background:var(--tealbg); border-radius:0 0 8px 8px; }
+  footer { padding:18px 44px 40px; color:var(--gray); font-size:12px;
+           max-width:1180px; margin:0 auto; }
+  @media (max-width:900px) { .cards,.strip { grid-template-columns:1fr 1fr; } }
+</style></head><body>
+<header class="page">
+  <h1>Retrieval Benchmark — Three-Track Interactive Report</h1>
+  <p>Platform KB (QDCVR via external chat API) vs bare agent vs agent-executed dense RAG
+     · identical 50-paper corpus · 10 English questions · 30 monitored runs</p>
+  <p style="margin-top:10px"><span class="badge">KB system uninterrupted · backend PID 58020→58020</span>
+     <span class="badge">0 restarts · 0 failed runs</span>
+     <span class="badge">avg 81.8s / run</span></p>
+</header>
+<main>
+  <h2>Totals</h2>
+  <div class="strip">
+    <div class="s"><div class="n">30 / 0</div><div class="l">runs / failed</div></div>
+    <div class="s"><div class="n">81.8s</div><div class="l">avg latency</div></div>
+    <div class="s"><div class="n">4,224,792</div><div class="l">tokens in (Σ)</div></div>
+    <div class="s"><div class="n">34,029</div><div class="l">tokens out (Σ)</div></div>
+    <div class="s"><div class="n">$23.3</div><div class="l">total cost</div></div>
+  </div>
+  <div class="cards"><div class="card ta"><div class="clabel">Track A</div><div class="cnum">141.5s</div><div class="csub">avg latency · 10.2 tools · 2,412,138/22,073 tok · $13.12</div></div><div class="card tb"><div class="clabel">Track B</div><div class="cnum">54.1s</div><div class="csub">avg latency · 4.4 tools · 840,563/6,715 tok · $4.83</div></div><div class="card tc"><div class="clabel">Track C</div><div class="cnum">49.8s</div><div class="csub">avg latency · 3.2 tools · 972,091/5,241 tok · $5.35</div></div></div>
+
+  <h2>Run monitor — 30 tracked executions <span style="float:right;font-weight:400">
+     <span class="filters" id="filters">
+       <button class="on" data-f="all">all</button>
+       <button data-f="a">A platform</button>
+       <button data-f="b">B bare</button>
+       <button data-f="c">C rag</button>
+     </span></span></h2>
+  <table id="mtable"><thead><tr>
+    <th>QID</th><th>Track</th><th>Latency s</th><th>Tools</th>
+    <th>Tokens in</th><th>Tokens out</th><th>Cache read</th><th>Cost USD</th>
+  </tr></thead><tbody><tr data-track="a"><td>BQ01</td><td><span class="chip ta">A</span></td><td class="num">177.2</td><td class="num">9</td><td class="num">272145</td><td class="num">3096</td><td class="num">59968</td><td class="num">$1.4681</td></tr><tr data-track="b"><td>BQ01</td><td><span class="chip tb">B</span></td><td class="num">68.5</td><td class="num">5</td><td class="num">127376</td><td class="num">1068</td><td class="num">81088</td><td class="num">$0.7041</td></tr><tr data-track="c"><td>BQ01</td><td><span class="chip tc">C</span></td><td class="num">44.4</td><td class="num">4</td><td class="num">204994</td><td class="num">697</td><td class="num">128</td><td class="num">$1.0425</td></tr><tr data-track="a"><td>BQ02</td><td><span class="chip ta">A</span></td><td class="num">91.7</td><td class="num">12</td><td class="num">292481</td><td class="num">2017</td><td class="num">82880</td><td class="num">$1.5543</td></tr><tr data-track="b"><td>BQ02</td><td><span class="chip tb">B</span></td><td class="num">58.3</td><td class="num">5</td><td class="num">138090</td><td class="num">736</td><td class="num">68864</td><td class="num">$0.7433</td></tr><tr data-track="c"><td>BQ02</td><td><span class="chip tc">C</span></td><td class="num">54.0</td><td class="num">3</td><td class="num">159451</td><td class="num">460</td><td class="num">384</td><td class="num">$0.8089</td></tr><tr data-track="a"><td>BQ03</td><td><span class="chip ta">A</span></td><td class="num">202.9</td><td class="num">16</td><td class="num">378377</td><td class="num">2720</td><td class="num">191104</td><td class="num">$2.0554</td></tr><tr data-track="b"><td>BQ03</td><td><span class="chip tb">B</span></td><td class="num">24.1</td><td class="num">4</td><td class="num">36244</td><td class="num">501</td><td class="num">84800</td><td class="num">$0.2361</td></tr><tr data-track="c"><td>BQ03</td><td><span class="chip tc">C</span></td><td class="num">51.5</td><td class="num">3</td><td class="num">63637</td><td class="num">650</td><td class="num">95296</td><td class="num">$0.3821</td></tr><tr data-track="a"><td>BQ04</td><td><span class="chip ta">A</span></td><td class="num">112.7</td><td class="num">12</td><td class="num">305259</td><td class="num">1833</td><td class="num">53184</td><td class="num">$1.5987</td></tr><tr data-track="b"><td>BQ04</td><td><span class="chip tb">B</span></td><td class="num">30.7</td><td class="num">3</td><td class="num">67433</td><td class="num">406</td><td class="num">47680</td><td class="num">$0.3712</td></tr><tr data-track="c"><td>BQ04</td><td><span class="chip tc">C</span></td><td class="num">55.5</td><td class="num">3</td><td class="num">73564</td><td class="num">412</td><td class="num">86400</td><td class="num">$0.4213</td></tr><tr data-track="a"><td>BQ05</td><td><span class="chip ta">A</span></td><td class="num">73.0</td><td class="num">10</td><td class="num">135300</td><td class="num">1451</td><td class="num">161920</td><td class="num">$0.7937</td></tr><tr data-track="b"><td>BQ05</td><td><span class="chip tb">B</span></td><td class="num">21.4</td><td class="num">4</td><td class="num">68208</td><td class="num">523</td><td class="num">95296</td><td class="num">$0.4018</td></tr><tr data-track="c"><td>BQ05</td><td><span class="chip tc">C</span></td><td class="num">37.8</td><td class="num">3</td><td class="num">60989</td><td class="num">475</td><td class="num">97600</td><td class="num">$0.3656</td></tr><tr data-track="a"><td>BQ06</td><td><span class="chip ta">A</span></td><td class="num">187.7</td><td class="num">10</td><td class="num">219263</td><td class="num">2267</td><td class="num">153536</td><td class="num">$1.2298</td></tr><tr data-track="b"><td>BQ06</td><td><span class="chip tb">B</span></td><td class="num">37.3</td><td class="num">3</td><td class="num">46417</td><td class="num">390</td><td class="num">84928</td><td class="num">$0.2843</td></tr><tr data-track="c"><td>BQ06</td><td><span class="chip tc">C</span></td><td class="num">33.0</td><td class="num">4</td><td class="num">88461</td><td class="num">633</td><td class="num">112256</td><td class="num">$0.5143</td></tr><tr data-track="a"><td>BQ07</td><td><span class="chip ta">A</span></td><td class="num">108.4</td><td class="num">7</td><td class="num">127940</td><td class="num">1593</td><td class="num">91968</td><td class="num">$0.7255</td></tr><tr data-track="b"><td>BQ07</td><td><span class="chip tb">B</span></td><td class="num">52.6</td><td class="num">5</td><td class="num">69423</td><td class="num">706</td><td class="num">95424</td><td class="num">$0.4125</td></tr><tr data-track="c"><td>BQ07</td><td><span class="chip tc">C</span></td><td class="num">44.8</td><td class="num">2</td><td class="num">70713</td><td class="num">360</td><td class="num">47616</td><td class="num">$0.3864</td></tr><tr data-track="a"><td>BQ08</td><td><span class="chip ta">A</span></td><td class="num">97.4</td><td class="num">5</td><td class="num">131820</td><td class="num">2154</td><td class="num">45312</td><td class="num">$0.7356</td></tr><tr data-track="b"><td>BQ08</td><td><span class="chip tb">B</span></td><td class="num">95.4</td><td class="num">6</td><td class="num">76652</td><td class="num">907</td><td class="num">95424</td><td class="num">$0.4536</td></tr><tr data-track="c"><td>BQ08</td><td><span class="chip tc">C</span></td><td class="num">39.0</td><td class="num">3</td><td class="num">102617</td><td class="num">455</td><td class="num">58368</td><td class="num">$0.5536</td></tr><tr data-track="a"><td>BQ09</td><td><span class="chip ta">A</span></td><td class="num">200.1</td><td class="num">13</td><td class="num">282851</td><td class="num">2606</td><td class="num">127104</td><td class="num">$1.5430</td></tr><tr data-track="b"><td>BQ09</td><td><span class="chip tb">B</span></td><td class="num">60.5</td><td class="num">4</td><td class="num">67977</td><td class="num">626</td><td class="num">95424</td><td class="num">$0.4032</td></tr><tr data-track="c"><td>BQ09</td><td><span class="chip tc">C</span></td><td class="num">48.6</td><td class="num">3</td><td class="num">47621</td><td class="num">488</td><td class="num">111040</td><td class="num">$0.3058</td></tr><tr data-track="a"><td>BQ10</td><td><span class="chip ta">A</span></td><td class="num">164.2</td><td class="num">8</td><td class="num">266702</td><td class="num">2336</td><td class="num">43456</td><td class="num">$1.4136</td></tr><tr data-track="b"><td>BQ10</td><td><span class="chip tb">B</span></td><td class="num">92.1</td><td class="num">5</td><td class="num">142743</td><td class="num">852</td><td class="num">171136</td><td class="num">$0.8206</td></tr><tr data-track="c"><td>BQ10</td><td><span class="chip tc">C</span></td><td class="num">89.6</td><td class="num">4</td><td class="num">100044</td><td class="num">611</td><td class="num">108288</td><td class="num">$0.5696</td></tr></tbody></table>
+
+  <h2>Questions × three modes — full verbatim answers</h2>
+  
+<section class="qblock" id="q-BQ01">
+  <header class="qhead">
+    <span class="qid">BQ01</span>
+    <span class="qfield">artificial-intelligence</span>
+    <span class="qgold">gold keywords: scaled dot-product, multi-head, recurrence</span>
+  </header>
+  <p class="qtext">How does the Transformer compute attention, and why does it replace recurrence and convolution?</p>
+  
+<details class="ans ta-a" open>
+  <summary><span class="chip ta">A</span>
+    <span class="alabel">A · Platform KB (QDCVR, external API)</span>
+    <span class="astats">177.2s · 9 tools ·
+      tok 272145/3096 · $1.4681</span>
+    <span class="gold gok">gold 3/3</span></summary>
+  <div class="abody">I now have the complete primary-source content. Here is the answer.
+
+---
+
+## How the Transformer Computes Attention, and Why It Replaces Recurrence and Convolution
+
+**Source:** *Attention Is All You Need* (Vaswani et al., 2016), arXiv:1706.03762 — KB `计算机与人工智能` (Computer Science and AI), doc `artificial-intelligence__1706.03762__attention-is-all-you-need.md` (parts 1 &amp; 2).
+
+### 1. What an attention function is
+
+An attention function maps a **query** and a set of **key–value pairs** to an output, where query, keys, values, and output are all vectors. The output is computed as a **weighted sum of the values**, where the weight assigned to each value is computed by a **compatibility function of the query with the corresponding key** (Section 3.2).
+
+### 2. Scaled Dot-Product Attention (Section 3.2.1)
+
+Inputs: queries and keys of dimension `d_k`, values of dimension `d_v`. The recipe:
+1. Compute the **dot products** of the query with all keys,
+2. **Divide each by √d_k** (the scaling factor),
+3. Apply a **softmax** to obtain the weights on the values.
+
+Batched into matrices Q, K, V, the output is:
+
+$$\mathrm{Attention}(Q,K,V) = \mathrm{softmax}\!\left(\frac{QK^{T}}{\sqrt{d_k}}\right)V \quad \text{(Eq. 1)}$$
+
+**Why the √d_k scaling:** the paper contrasts additive attention (a feed-forward net with one hidden layer) with dot-product attention. For small `d_k` the two perform similarly, but unscaled dot-product attention **underperforms additive attention for large `d_k`** — because for large `d_k` the dot products grow large in magnitude, **pushing the softmax into regions where it has extremely small gradients**. Scaling by 1/√d_k counteracts this. Dot-product attention was chosen anyway because, despite similar theoretical complexity, it is **much faster and more space-efficient in practice** since it can use highly optimized matrix-multiplication code.
+
+### 3. Multi-Head Attention (Section 3.2.2)
+
+Rather than one attention function over `d_model`-dimensional keys/queries/values, the model **linearly projects Q, K, V `h` times** with different learned projections to `d_k, d_k, d_v`; attention runs **in parallel** on each projected version, the `d_v`-dimensional outputs are **concatenated and projected** once more:
+
+$$\mathrm{MultiHead}(Q,K,V) = \mathrm{Concat}(\mathrm{head}_1,\dots,\mathrm{head}_h)W^O,\quad \mathrm{head}_i = \mathrm{Attention}(QW_i^Q, KW_i^K, VW_i^V)$$
+
+Rationale: **multi-head attention lets the model jointly attend to information from different representation subspaces at different positions**; with a single head, averaging inhibits this. In the paper: `h = 8`, `d_k = d_v = d_model/h = 64`; because each head is lower-dimensional, total cost ≈ single-head attention at full dimensionality. Ablations confirmed this matters — single-head attention was 0.9 BLEU worse than the best setting.
+
+**Three applications in the model (3.2.3):** (a) *encoder–decoder attention* — queries from the previous decoder layer, keys/values from the encoder output; (b) *encoder self-attention* — Q, K, V all from the same place (the previous encoder layer), every position attends to all positions; (c) *decoder self-attention* — masked (illegal connections set to −∞ before softmax) so position *i* can only attend to positions ≤ *i*, preserving auto-regression.
+
+### 4. Why it replaces recurrence and convolution (Sections 1, 2, 4 — §4 &quot;Why Self-Attention&quot;)
+
+The paper judges layer types on **three desiderata**: (i) **total computational complexity per layer**, (ii) **amount of parallelizable computation** (minimum number of sequential operations), (iii) **path length between long-range dependencies** — shorter paths make long-range dependencies easier to learn.
+
+**Against recurrence.** Recurrent models factor computation along symbol positions, generating hidden state `h_t` as a function of `h_{t-1}` and the input at *t*. This **inherently sequential nature precludes parallelization within training examples**, which becomes critical at longer sequence lengths. As Table 1 shows:
+
+| Layer Type | Complexity/Layer | Sequential Ops | Max Path Length |
+|---|---|---|---|
+| **Self-Attention** | O(n²·d) | **O(1)** | **O(1)** |
+| Recurrent | O(n·d²) | O(n) | O(n) |
+| Convolutional | O(k·n·d²) | O(1) | O(log_k n) |
+| Self-Attention (restricted) | O(r·n·d) | O(1) | O(n/r) |
+
+A self-attention layer **connects all positions with a constant number of sequentially executed operations**, whereas a recurrent layer needs **O(n)** sequential operations. Self-attention is also faster than recurrent layers **when sequence length n &lt; representation dimensionality d** — typically true for word-piece/byte-pair sentence representations in MT.
+
+**Against convolution.** A single convolutional layer with kernel width `k &lt; n` **does not connect all pairs of input/output positions**; doing so requires a stack of `O(n/k)` layers (contiguous kernels) or `O(log_k(n))` (dilated), **increasing the longest path length**. Convolutional layers are generally **more expensive than recurrent layers by a factor of k**; separable convolutions reduce this to `O(k·n·d + n·d²)`, but **even with k = n, a separable convolution&#x27;s complexity equals the combination of a self-attention layer plus a point-wise feed-forward layer** — exactly the Transformer&#x27;s design. In the Transformer, the number of operations relating any two positions is **reduced to a constant**, versus linearly (ConvS2S) or logarithmically (ByteNet) growing with distance in the convolutional baselines.
+
+**Novelty claim (Section 2):** the Transformer is **the first transduction model relying entirely on self-attention to compute representations of input and output without using sequence-aligned RNNs or convolution.** *(Note the trade-off the paper itself flags: constant path length comes &quot;at the cost of reduced effective resolution due to averaging attention-weighted positions,&quot; counteracted by Multi-Head Attention.)* Because there is no recurrence and no convolution, **positional encodings** (sinusoidal functions of different frequencies — Eq. in 3.5) are added to the input embeddings so the model can use token order.
+
+**Payoff (Abstract, §5.2, §6):** the architecture is &quot;superior in quality while being more parallelizable and requiring significantly less time to train&quot; — 28.4 BLEU on WMT 2014 EN–DE (beating prior best, including ensembles, by &gt;2 BLEU), 41.8 BLEU EN–FR after 3.5 days on 8 GPUs; the base model trained in 12 hours, at a small fraction of prior training cost (Table 2: base 3.3×10¹⁸ FLOPs vs. e.g. ConvS2S 9.6×10¹⁸). A **side benefit** noted in §4: self-attention can yield **more interpretable models** — individual heads learn different tasks and exhibit behavior related to syntactic/semantic structure (Figures 3–5 show long-distance dependency and anaphora-resolution heads).
+
+### Sources
+- `计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md` — KB `计算机与人工智能` (kb_id `b1199132-e4d4-4305-8c2e-82dc1753b0ba`); Abstract, §1 Introduction, §2 Background, §3.2 Attention (3.2.1–3.2.3), §3.5 Positional Encoding, **§4 Why Self-Attention**, Table 1, §5.2.
+- `计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md` — §6.2 Model Variations (head-count/k-dimension ablations), §6.3, §7 Conclusion.
+- Corroborating copies in the &quot;DeepRead baseline reproduction&quot; indexes: `Corpus-Struct/...__s01.md`, `Corpus-Chunks800/...__k02.md`, `Corpus-Paras/...__p04003.md` (same paper, same claim that the Transformer is the first model relying entirely on self-attention without sequence-aligned RNNs or convolution).
+
+**Certainty:** High — every claim above is quoted or directly paraphrased from the retrieved full text of the primary source, read end-to-end (no gap in the Section 4 argument).</div>
+</details>
+<details class="ans ta-b">
+  <summary><span class="chip tb">B</span>
+    <span class="alabel">B · Bare agent (file tools)</span>
+    <span class="astats">68.5s · 5 tools ·
+      tok 127376/1068 · $0.7041</span>
+    <span class="gold gok">gold 3/3</span></summary>
+  <div class="abody">The paper directly answers both parts.
+
+**Attention computation:** An attention function maps a query and a set of key-value pairs to an output, where the weight assigned to each value is a compatibility function of the query with the corresponding key (Section 3.2). In the Transformer&#x27;s Scaled Dot-Product Attention, queries and keys of dimension $d_k$ and values of dimension $d_v$ are packed into matrices Q, K, V, and the output is $\text{Attention}(Q,K,V) = \text{softmax}(QK^T/\sqrt{d_k})V$ — i.e., dot products of the query with all keys, divided by $\sqrt{d_k}$ to keep softmax gradients from vanishing at large $d_k$, then a softmax-weighted sum of the values (Equations 1, Section 3.2.1). This is run in parallel as Multi-Head Attention across several projected subspaces so the model can jointly attend to information from different representation subspaces and positions, plus masking (−∞ before softmax) in the decoder to preserve auto-regression (Sections 3.2.2, 3.2.3).
+
+**Why it replaces recurrence and convolution:** Section 4 gives three desiderata — per-layer computational complexity, parallelizable computation (minimum sequential operations), and path length between long-range dependencies. A self-attention layer connects all positions with a constant number of sequentially executed operations, whereas a recurrent layer requires $O(n)$ sequential operations, so self-attention is faster whenever $n &lt; d$ and allows far more parallelization (the abstract notes training in as little as twelve hours on eight P100 GPUs). Convolution is also less direct: a single layer with kernel $k &lt; n$ cannot connect all position pairs, requiring a stack of $O(n/k)$ layers (or $O(\log_k n)$ for dilated convolutions), and convolutional layers are generally $k$ times more expensive than recurrent ones — even a separable convolution with $k=n$ merely equals a self-attention layer plus a point-wise feed-forward layer. Shorter maximum path lengths make long-range dependencies easier to learn, and the authors add interpretability of attention heads as a side benefit (Sections 1, 4, 7).
+
+Files used: `artificial-intelligence__1706.03762__attention-is-all-you-need.md` (Sections 1, 2, 3.2, 4, 7).</div>
+</details>
+<details class="ans ta-c">
+  <summary><span class="chip tc">C</span>
+    <span class="alabel">C · Dense RAG (agent-executed vector search)</span>
+    <span class="astats">44.4s · 4 tools ·
+      tok 204994/697 · $1.0425</span>
+    <span class="gold gok">gold 2/3</span></summary>
+  <div class="abody">The Transformer computes attention by mapping &quot;a query and a set of key-value pairs to an output&quot;; the input queries and keys have dimension $d_k$ and values dimension $d_v$, and the model &quot;compute[s] the dot products of the query with all keys, divide each by $\sqrt{d_k}$, and apply a softmax function to obtain the weights on the values,&quot; producing a weighted sum of the values. Scaling by $1/\sqrt{d_k}$ is used because &quot;for large values of $d_k$, the dot products grow large in magnitude, pushing the softmax function into regions where it has extremely small gradients.&quot; It replaces recurrence and convolution because it is &quot;the first sequence transduction model based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention,&quot; and because convolutions make it harder to learn dependencies between distant positions—&quot;linearly for ConvS2S and logarithmically for ByteNet&quot;—whereas &quot;in the Transformer this is reduced to a constant number of operations,&quot; with Multi-Head Attention counteracting the reduced effective resolution. The model also &quot;allow[s] for significantly more parallelization,&quot; which lets it &quot;be trained significantly faster than architectures based on recurrent or convolutional layers.&quot; Chunks used: `artificial-intelligence__1706.03762__attention-is-all-you-need__k04.md`, `__k05.md`, `__k06.md`, `__k02.md`, `__k19.md`, `__k20.md`.</div>
+</details>
+</section>
+<section class="qblock" id="q-BQ02">
+  <header class="qhead">
+    <span class="qid">BQ02</span>
+    <span class="qfield">quantum-physics</span>
+    <span class="qgold">gold keywords: noisy intermediate-scale, error correction</span>
+  </header>
+  <p class="qtext">What defines NISQ technology and what is its central limitation?</p>
+  
+<details class="ans ta-a" open>
+  <summary><span class="chip ta">A</span>
+    <span class="alabel">A · Platform KB (QDCVR, external API)</span>
+    <span class="astats">91.7s · 12 tools ·
+      tok 292481/2017 · $1.5543</span>
+    <span class="gold gok">gold 2/2</span></summary>
+  <div class="abody">I have sufficient evidence from the vector index (document body reads return 404 in this KB — the indexed chunks are the accessible layer).
+
+## NISQ Technology — Definition and Central Limitation
+
+**Source:** *&quot;Quantum Computing in the NISQ Era and Beyond&quot;* — John Preskill, Institute for Quantum Information and Matter / Walter Burke Institute for Theoretical Physics, Caltech, 30 July 2018. KB: `8284ae07-4651-4bed-8d3b-b475b9b5e7c9` (`Corpus-Struct`), with the same document also indexed in `e599315e-…` (`Corpus-Paras`), `d23002bd-…` (`Corpus-Chunks800`), and `1e6199ea-…` (自然科学与地球科学).
+
+### What defines NISQ
+
+**NISQ = Noisy Intermediate-Scale Quantum** — a term Preskill coined for the era of quantum technology we are entering now, before fault-tolerant quantum computing becomes available:
+
+- **&quot;Intermediate scale&quot;** refers to the size of quantum computers available in the near term: **roughly 50 to a few hundred qubits**. 50 qubits is the significant milestone because that is beyond what can be simulated by brute force on the most powerful existing classical supercomputers.
+- **&quot;Noisy&quot;** emphasizes that we will have **imperfect control over those qubits** — the gates are noisy and **unprotected by quantum error correction** (error correction is not used in the NISQ era because of its heavy overhead in qubit count and gate count).
+
+### The central limitation
+
+&gt; **Noise in quantum gates limits the size of the quantum circuits that can be executed reliably.**
+
+Concretely, with per-gate two-qubit error rates **above the 0.1% level** (and often much worse), one does not expect to execute a circuit containing many more than **~1000 gates (1000 fundamental two-qubit operations)** — because *&quot;the noise will overwhelm the signal in a circuit much larger than that.&quot;*
+
+Preskill states the consequence directly: *&quot;That limitation on circuit size imposes a ceiling on the computational power of NISQ technology,&quot;* and *&quot;the imperfect gates in NISQ systems will severely limit their computational power, because circuits with many gates will be too noisy to give useful results.&quot;* Near-term experiments therefore operate with of order **100 qubits** and **circuit depth under 100, maybe much less**.
+
+Put bluntly by the author: a 100-qubit quantum computer *&quot;will not change the world&quot;* — NISQ devices are useful tools for exploring many-body quantum physics and may find other applications, but the noise ceiling bounds what they can achieve.
+
+### Caveat on retrieval
+
+Chunk-level retrieval from the vector index worked well (top scores 0.78/0.75 for the limitation passages). Full-document readback via `kb_doc_read` returned **404 / 400** for this KB (`Corpus-Struct`) across all three parameter forms (`doc_id`, `path`, `kb_id`+`doc_path`) — the stored file paths resolve through the web proxy but are not registered under those keys, so my quotes above are drawn from the indexed chunk content rather than a fresh full-body read. The cited passages are verbatim from the source chunks and internally consistent across all four KB copies.</div>
+</details>
+<details class="ans ta-b">
+  <summary><span class="chip tb">B</span>
+    <span class="alabel">B · Bare agent (file tools)</span>
+    <span class="astats">58.3s · 5 tools ·
+      tok 138090/736 · $0.7433</span>
+    <span class="gold gok">gold 2/2</span></summary>
+  <div class="abody">**Answer** (from `quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md`, John Preskill, 2018):
+
+NISQ stands for &quot;Noisy Intermediate-Scale Quantum,&quot; a term the author coined to name the era of quantum computers with roughly 50 to a few hundred qubits — &quot;intermediate scale&quot; because 50 qubits already exceeds what brute-force classical simulation can handle, and &quot;noisy&quot; because we have imperfect control over the qubits and lack the protection of quantum error correction (Section 4.1). Its central limitation is noise: imperfect gate control means the per-gate two-qubit error rate is above 0.1% (and often much worse), so &quot;the noise will overwhelm the signal&quot; in circuits much larger than about 1000 gates, imposing &quot;a ceiling on the computational power of NISQ technology&quot; (Section 4.2). A related consequence, stated in the abstract and Section 5, is that NISQ results may be hard to validate — it can be difficult to confirm that the device is really giving the right answer.</div>
+</details>
+<details class="ans ta-c">
+  <summary><span class="chip tc">C</span>
+    <span class="alabel">C · Dense RAG (agent-executed vector search)</span>
+    <span class="astats">54.0s · 3 tools ·
+      tok 159451/460 · $0.8089</span>
+    <span class="gold gok">gold 2/2</span></summary>
+  <div class="abody">The retrieved chunks answer this directly. NISQ stands for &quot;Noisy Intermediate-Scale Quantum,&quot; a term coined by John Preskill to describe the era of quantum computers with roughly 50 to a few hundred qubits — intermediate scale because 50 qubits is beyond what brute-force classical simulation can match, while &quot;noisy&quot; emphasizes that we will have only imperfect control over those qubits. Its central limitation is noise: the noise places serious limitations on what quantum devices can achieve in the near term, and because quantum error correction carries a heavy overhead cost that NISQ devices cannot yet afford, circuits are essentially limited to about 1000 gates before the noise overwhelms the signal. That limitation on circuit size imposes a ceiling on the computational power of NISQ technology.
+
+Chunks used: `quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond__k07.md`, `__k08.md`, `__k00.md`, and `__k19.md`.</div>
+</details>
+</section>
+<section class="qblock" id="q-BQ03">
+  <header class="qhead">
+    <span class="qid">BQ03</span>
+    <span class="qfield">clinical-medicine</span>
+    <span class="qgold">gold keywords: multimedqa, 67.6</span>
+  </header>
+  <p class="qtext">What is MultiMedQA and how did Flan-PaLM perform on the MedQA benchmark?</p>
+  
+<details class="ans ta-a" open>
+  <summary><span class="chip ta">A</span>
+    <span class="alabel">A · Platform KB (QDCVR, external API)</span>
+    <span class="astats">202.9s · 16 tools ·
+      tok 378377/2720 · $2.0554</span>
+    <span class="gold gok">gold 2/2</span></summary>
+  <div class="abody">I have verified the facts from the source document. Here is the answer.
+
+## MultiMedQA and Flan-PaLM&#x27;s MedQA performance
+
+**Source:** *Large Language Models Encode Clinical Knowledge* (Singhal, Azizi, Tu et al., Google Research / DeepMind; arXiv 2212.13138) — the Med-PaLM paper.
+
+### What MultiMedQA is
+
+MultiMedQA is a **benchmark for medical question answering** introduced in this paper to assess how well LLMs encode clinical knowledge. As the paper states, it combines:
+
+- **Six existing open question-answering datasets:**
+  - **MedQA** — US medical licensing exam (USMLE-style) questions
+  - **MedMCQA** — medical entrance exam questions from India
+  - **PubMedQA** — questions over biomedical research literature
+  - **LiveQA** — consumer medical questions
+  - **MedicationQA** — consumer medication questions
+  - **MMLU clinical topics** — clinical subsets of the MMLU benchmark
+- **Plus one newly introduced dataset, HealthSearchQA** — a free-response dataset of **3,375 commonly searched consumer medical questions** — bringing the total to **seven datasets**.
+
+The benchmark spans three categories of questions: **medical exam, medical research, and consumer medical queries**. Alongside it, the authors propose a human-evaluation framework rating answers on axes including agreement with scientific consensus, correctness of comprehension/retrieval/reasoning, inappropriate or missing content, possibility and extent of harm, and bias.
+
+### Flan-PaLM&#x27;s performance on MedQA
+
+Evaluated on MultiMedQA using a combination of **few-shot prompting + chain-of-thought (CoT) + self-consistency** prompting:
+
+- **Flan-PaLM 540B achieved 67.6% multiple-choice accuracy on MedQA** (the 4-option, USMLE-style version).
+- This **surpassed the previous state of the art by over 17%** — specifically, it exceeded the prior SOTA by **17.3%**.
+- It surpassed the **DRAGON model** by **20.1%**, and beat the concurrent **PubMedGPT** (a 2.7B model) result of 50.3% on MedQA.
+- On the **more difficult 5-option version of MedQA**, Flan-PaLM scored **62.0%**.
+
+More broadly on MultiMedQA, Flan-PaLM achieved SOTA on **every multiple-choice dataset** — **67.6% on MedQA**, **57.6% on MedMCQA**, **79.0% on PubMedQA**, and the MMLU clinical topics.
+
+### Important caveat
+
+Despite the strong MCQ scores, the paper&#x27;s **human evaluation found key gaps**: clinicians judged only **61.9% of Flan-PaLM&#x27;s long-form answers** aligned with scientific consensus (vs. 92.9% for clinician answers), and **29.7% of answers were rated potentially harmful** (vs. 6.5% for clinicians). This motivated **instruction prompt tuning**, producing **Med-PaLM**, which improved consensus alignment to **92.6–92.9%** and reduced harmful answers to **5.8%** — though the authors note it still remained **inferior to clinicians**.
+
+### Source references
+
+- `生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md` (parts 1, 2, 3), KB `b28f0a25-1e1d-40ad-96b8-61bd2b093a28` (&quot;生命科学与医学&quot;)
+  - Part 1 — abstract, introduction, Section 3.1 (MultiMedQA composition: §3.1.1)
+  - Part 2 — §4.1 &quot;Flan-PaLM exceeds previous state-of-the-art on MedQA (USMLE) by over 17%&quot; (the 67.6% / 17.3% / 62.0% figures)
+  - Part 3 — §4.5 Human evaluation results (61.9% consensus, 29.7% harm)
+- Corroborating indexed copies: `Corpus-Struct/…__s05.md` and `Corpus-Chunks800/…__k01.md` (same paper, chunked variants)
+
+Note: the `mcp__plugin_rag-knowledge_kb-mcp__*` tool aliases returned a &quot;read-only&quot; notice; all retrieval was performed via the `mcp__kb-mcp__*` tools (`kb_list`, `kb_search_vector`, `kb_search_two_stage`, `kb_doc_read`).</div>
+</details>
+<details class="ans ta-b">
+  <summary><span class="chip tb">B</span>
+    <span class="alabel">B · Bare agent (file tools)</span>
+    <span class="astats">24.1s · 4 tools ·
+      tok 36244/501 · $0.2361</span>
+    <span class="gold gok">gold 2/2</span></summary>
+  <div class="abody">**MultiMedQA** is a benchmark curated in this paper comprising seven medical question-answering datasets: six existing ones — MedQA, MedMCQA, PubMedQA, LiveQA, MedicationQA, and MMLU clinical topics — plus a newly introduced seventh dataset, HealthSearchQA (3,375 commonly searched consumer health questions). It spans medical exam, medical research, and consumer medical questions to assess LLMs&#x27; clinical knowledge and QA capabilities (`clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md`).
+
+On **MedQA (USMLE)** with 4 options, Flan-PaLM 540B reached **67.6% accuracy**, exceeding the previous state of the art (PubMedGPT, 50.3%) by over 17 percentage points. Notably, this result came from self-consistency prompting — few-shot alone gave 60.3%, and CoT prompting provided no improvement over few-shot (§4.1, Table 7).</div>
+</details>
+<details class="ans ta-c">
+  <summary><span class="chip tc">C</span>
+    <span class="alabel">C · Dense RAG (agent-executed vector search)</span>
+    <span class="astats">51.5s · 3 tools ·
+      tok 63637/650 · $0.3821</span>
+    <span class="gold gok">gold 2/2</span></summary>
+  <div class="abody">**Answer:**
+
+MultiMedQA is a benchmark for medical question answering curated by the authors, spanning medical exam, medical research, and consumer medical questions. The retrieved chunks state that PaLM and its instruction-tuned variant, Flan-PaLM, were evaluated on MultiMedQA, and that with a combination of prompting strategies Flan-PaLM exceeded state-of-the-art performance on MedQA (USMLE), MedMCQA, PubMedQA, and MMLU clinical topics. On the MedQA (USMLE) benchmark specifically, Flan-PaLM (540B) reached **67.6% accuracy**, surpassing the prior state of the art by **over 17%**. The chunks also note that instruction tuning improved performance across all model sizes, with Flan-PaLM outperforming baseline PaLM on MedQA, MedMCQA, and PubMedQA.
+
+**Chunk files used:**
+- `Corpus-Chunks800/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k01.md`
+- `Corpus-Chunks800/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k02.md`
+- `Corpus-Chunks800/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k04.md`
+- `Corpus-Chunks800/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k30.md`
+- `Corpus-Chunks800/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k31.md`
+- `Corpus-Chunks800/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k00.md`</div>
+</details>
+</section>
+<section class="qblock" id="q-BQ04">
+  <header class="qhead">
+    <span class="qid">BQ04</span>
+    <span class="qfield">genomics</span>
+    <span class="qgold">gold keywords: molecular function, biological process, cellular component</span>
+  </header>
+  <p class="qtext">Which three independent ontologies subdivide the Gene Ontology?</p>
+  
+<details class="ans ta-a" open>
+  <summary><span class="chip ta">A</span>
+    <span class="alabel">A · Platform KB (QDCVR, external API)</span>
+    <span class="astats">112.7s · 12 tools ·
+      tok 305259/1833 · $1.5987</span>
+    <span class="gold gok">gold 3/3</span></summary>
+  <div class="abody">Content readback confirmed against the source document.
+
+## Answer
+
+The Gene Ontology (GO) is subdivided into **three independent, non-redundant ontologies**, each covering a different biological aspect:
+
+| # | Ontology | Abbreviation |
+|---|----------|--------------|
+| 1 | **Molecular Function** | MF |
+| 2 | **Biological Process** | BP |
+| 3 | **Cellular Component** | CC |
+
+### Supporting evidence (verbatim from the source)
+
+&gt; &quot;The Gene Ontology is a controlled vocabulary of terms to represent biology in a structured way. The terms are subdivided in **three distinct ontologies** that represent different biological aspects: **Molecular Function (MF)**, **Biological Process (BP)**, and **Cellular Component (CC)** (1). These ontologies are **non-redundant** and share a common space of identifiers and a well-specified syntax.&quot;
+
+The same text continues: &quot;Terms are linked to each other by relations to form a hierarchical vocabulary.&quot;
+
+### Source references
+
+- **Primary (full-text verified):** `生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md` — KB `生命科学与医学` (`b28f0a25-1e1d-40ad-96b8-61bd2b093a28`), §2 &quot;What is the Gene Ontology?&quot;
+- **Corroborating vector hits (identical wording, independently indexed copies):**
+  - `Corpus-Paras/genomics__1602.01876__primer-on-the-gene-ontology__p04000.md` — KB `Corpus-Paras` (`e599315e-...`), cosine **0.781**
+  - `Corpus-Struct/genomics__1602.01876__primer-on-the-gene-ontology__s01.md` — KB `Corpus-Struct` (`8284ae07-...`), cosine **0.771**
+  - `Corpus-Chunks800/genomics__1602.01876__primer-on-the-gene-ontology__k00.md` / `__k01.md` — KB `Corpus-Chunks800` (`d23002bd-...`), cosine **0.767 / 0.726**
+
+### Provenance
+
+The underlying work is **Gaudet, Škunca, Hu &amp; Dessimoz, &quot;Primer on the Gene Ontology&quot;** (arXiv:1602.01876, January 2016). Note that the four `Corpus-*` KBs are DeepRead baseline reproduction indexes (documented `doc_count: 0`; vectors stored but the Nuxt-backed document-read route returns 404 for them — the web proxy on port 6789 resolved the path but reported &quot;Document not found by id&quot;). Verification of the actual document body therefore came from the `生命科学与医学` copy, which is the authoritative, readable source and uses identical wording.
+
+### Certainty
+
+**High** — the statement is a verbatim match across four independently indexed copies of the same document in three separate KBs, and the full document body was read back from one of them. Vector scores (0.73–0.78) are well above the P0 threshold, and the query phrasing (&quot;subdivide the Gene Ontology&quot;) appears near-verbatim in the retrieved chunk. No conflicting answer appeared in the result set; the remaining hits (chemistry, power systems, LLM benchmarks) were unrelated and scored ≤0.58.</div>
+</details>
+<details class="ans ta-b">
+  <summary><span class="chip tb">B</span>
+    <span class="alabel">B · Bare agent (file tools)</span>
+    <span class="astats">30.7s · 3 tools ·
+      tok 67433/406 · $0.3712</span>
+    <span class="gold gok">gold 3/3</span></summary>
+  <div class="abody">The three independent ontologies are **Molecular Function (MF)**, **Biological Process (BP)**, and **Cellular Component (CC)**. The primer states that GO&#x27;s terms &quot;are subdivided in three distinct ontologies that represent different biological aspects,&quot; which are non-redundant and share a common identifier space and syntax. Source: `genomics__1602.01876__primer-on-the-gene-ontology.md` (Section 2, and reaffirmed in Section 5.2, where field 9 denotes the term&#x27;s sub-ontology).</div>
+</details>
+<details class="ans ta-c">
+  <summary><span class="chip tc">C</span>
+    <span class="alabel">C · Dense RAG (agent-executed vector search)</span>
+    <span class="astats">55.5s · 3 tools ·
+      tok 73564/412 · $0.4213</span>
+    <span class="gold gok">gold 3/3</span></summary>
+  <div class="abody">The retrieved evidence directly answers the question. Two top-scoring chunks from the primer state: &quot;The terms are subdivided in three distinct ontologies that represent different biological aspects: **Molecular Function (MF), Biological Process (BP), and Cellular Component (CC)**.&quot; These three ontologies are described as non-redundant, sharing a common space of identifiers and a well-specified syntax, with terms linked by relations to form a hierarchical vocabulary.
+
+Sources: `Corpus-Chunks800/genomics__1602.01876__primer-on-the-gene-ontology__k00.md` and `Corpus-Chunks800/genomics__1602.01876__primer-on-the-gene-ontology__k01.md`.</div>
+</details>
+</section>
+<section class="qblock" id="q-BQ05">
+  <header class="qhead">
+    <span class="qid">BQ05</span>
+    <span class="qfield">economics</span>
+    <span class="qgold">gold keywords: unified growth theory</span>
+  </header>
+  <p class="qtext">Why does historical European economic growth contradict Unified Growth Theory?</p>
+  
+<details class="ans ta-a" open>
+  <summary><span class="chip ta">A</span>
+    <span class="alabel">A · Platform KB (QDCVR, external API)</span>
+    <span class="astats">73.0s · 10 tools ·
+      tok 135300/1451 · $0.7937</span>
+    <span class="gold gok">gold 1/1</span></summary>
+  <div class="abody">I was unable to answer this question from the knowledge base. Here is an honest report of what happened rather than a fabricated answer.
+
+## Retrieval attempt (executed in this session)
+
+I ran the retrieval myself with the `kb_*` MCP tools, and **every call was refused by the server** with the response:
+
+```
+experiment read-only
+```
+
+Tools attempted, all returning the same refusal:
+
+| Tool | Query / params | Result |
+|---|---|---|
+| `kb_search_vector` | &quot;Unified Growth Theory historical European economic growth contradiction&quot;, top_k=8 | `experiment read-only` |
+| `kb_search_two_stage` | &quot;Unified Growth Theory European economic growth Malthusian stagnation industrial revolution&quot; | `experiment read-only` |
+| `kb_search` | &quot;Unified Growth Theory economic growth Europe&quot; | `experiment read-only` |
+| `kb_search_vector` | &quot;unified growth theory&quot;, top_k=5 (retry, narrower) | `experiment read-only` |
+| `kb_search_vector` | &quot;economic growth Europe history&quot;, top_k=5 (retry, broader) | `experiment read-only` |
+| `kb_list` | `lightweight=true` | `experiment read-only` |
+| `backend_status` | — | `experiment read-only` |
+
+## What this means
+
+- The kb-mcp server **is connected** (the tools resolve and return a structured message rather than a &quot;no such tool&quot; error), but it is running under a **read-only experiment guard that is rejecting even read operations** — including `kb_list` and `backend_status`, which touch no vector index at all. That points to a gate applied at the MCP server/transport layer, not a per-index or per-query restriction.
+- Consequently I could **not** determine whether the corpus even contains material on Unified Growth Theory (Galor, Malthusian stagnation → post-Malthusian → modern growth regimes), European historical GDP series, or the relevant critiques.
+- Because I never received any document content, **any answer I gave about the theory or its empirical contradictions would come from my own training knowledge, not from your knowledge base** — which is exactly what this task prohibits. So I am not giving one.
+
+## Suggested next steps
+
+1. **Lift the experiment guard**: check whether kb-mcp is being launched with a read-only/experiment flag (e.g. an env var or CLI switch set in `.mcp.json` at the repo root, or by whatever harness started this session). The string `experiment read-only` is almost certainly a literal configured response.
+2. **Verify the MCP config** is `uv run --directory kb-mcp python server.py` and restart Claude Code afterwards — kb-mcp is a long-lived stdio process, so flag changes need a reconnect (project pitfall #15).
+3. Re-run this query once reads are permitted; the search path I&#x27;d use is `kb_search_vector` cross-KB first, then `kb_search_two_stage`, then `kb_doc_read` on the top candidates to verify content before answering.</div>
+</details>
+<details class="ans ta-b">
+  <summary><span class="chip tb">B</span>
+    <span class="alabel">B · Bare agent (file tools)</span>
+    <span class="astats">21.4s · 4 tools ·
+      tok 68208/523 · $0.4018</span>
+    <span class="gold gok">gold 1/1</span></summary>
+  <div class="abody">**Answer:** According to Nielsen (2015), historical European growth contradicts Unified Growth Theory because Maddison&#x27;s GDP data for both Western Europe (12 leading countries and the total of 30) and Eastern Europe show no evidence of the theory&#x27;s central claims. The growth was hyperbolic — rising monotonically along a steadily increasing trajectory — rather than transitioning from a stagnant Malthusian regime to sustained growth, so there was no stagnation, no Malthusian trap, and therefore no &quot;remarkable&quot; or &quot;stunning&quot; escape (Galor&#x27;s alleged takeoff). Europe is the decisive test case since it was the centre of the Industrial Revolution, the theory&#x27;s purported &quot;prime engine of economic growth,&quot; yet the Industrial Revolution had no visible impact on growth trajectories; around 1880–1900 growth was actually diverted to a *slower* trajectory rather than accelerating. The absence of Malthusian oscillations, and reciprocal-value plots (1/GDP) that form a decreasing straight line, are the evidence the author uses to argue the theory&#x27;s three growth regimes are dissociated from the data.
+
+**File used:** `economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md`</div>
+</details>
+<details class="ans ta-c">
+  <summary><span class="chip tc">C</span>
+    <span class="alabel">C · Dense RAG (agent-executed vector search)</span>
+    <span class="astats">37.8s · 3 tools ·
+      tok 60989/475 · $0.3656</span>
+    <span class="gold gok">gold 1/1</span></summary>
+  <div class="abody">Historical European economic growth contradicts Unified Growth Theory because Europe—especially Western Europe, the center of the Industrial Revolution—should have provided the theory&#x27;s best confirmation, yet it does not. Analyzing Maddison&#x27;s (2010) GDP data for the 12 leading and 30 total Western European countries, the study finds the theory&#x27;s &quot;prominent signature&quot; (Galor&#x27;s three regimes of growth) is missing, and that these regimes &quot;have no relevance to the description, let alone to the explanation, of the mechanism of the economic growth&quot;—there was no transition. In short, &quot;the data tell one story while the Unified Growth Theory tells another and diametrically opposite story,&quot; leading the author to conclude the theory &quot;needs to be thoroughly revised but most likely rejected.&quot;
+
+Sources: `Corpus-Chunks800/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom__k00.md`, `__k02.md`, `__k05.md`, `__k06.md`, `__k10.md`, `__k13.md`.</div>
+</details>
+</section>
+<section class="qblock" id="q-BQ06">
+  <header class="qhead">
+    <span class="qid">BQ06</span>
+    <span class="qfield">climate-science</span>
+    <span class="qgold">gold keywords: precipitation efficiency</span>
+  </header>
+  <p class="qtext">Which physical factor primarily controls the response of precipitation extremes to climate change?</p>
+  
+<details class="ans ta-a" open>
+  <summary><span class="chip ta">A</span>
+    <span class="alabel">A · Platform KB (QDCVR, external API)</span>
+    <span class="astats">187.7s · 10 tools ·
+      tok 219263/2267 · $1.2298</span>
+    <span class="gold gok">gold 1/1</span></summary>
+  <div class="abody">I now have comprehensive evidence from the full paper across all three parts. Here is my answer.
+
+## Answer
+
+**The primary physical factor is temperature — specifically the surface (near-surface) temperature, through its control on the atmosphere&#x27;s saturation vapor pressure / water-vapor holding capacity.** Temperature is the controlling variable; the extreme-precipitation response is not governed by a single scalar but by the temperature-dependent *partial* ones below.
+
+### The mechanism (thermodynamic core)
+
+Precipitation extremes scale with column moisture, which temperature sets via the **Clausius–Clapeyron (C–C) relation**. In the paper&#x27;s theoretical framework (Eq. 1), the surface precipitation rate in an extreme event is
+
+$$P \simeq -\epsilon\{\omega(p)\,S(T,p)\}$$
+
+where ε is precipitation efficiency, ω the vertical velocity (dynamics), and **S(T,p) = dq_s/dp along a moist adiabat — a function of temperature and pressure only (the thermodynamic term)**. Holding dynamics and efficiency fixed, extremes intensify with warming purely because the **saturation vapor pressure of water rises with temperature**, giving roughly **6–7 % K⁻¹** C–C scaling at typical surface temperatures.
+
+### Temperature governs the *rate*, not just the sign
+
+The most direct evidence that temperature is the dominant control is that the paper&#x27;s central quantitative result is a **temperature-dependence of the sensitivity itself** (Sections 3 &amp; 7):
+
+| Regime | Sensitivity of extremes |
+|---|---|
+| **Above ~295 K** (warm, present-day tropics) | ~**6–7 % K⁻¹** — follows C–C scaling; dynamics/efficiency contributions small |
+| **Below ~295 K** (colder climates) | Sensitivity **varies widely with temperature and accumulation period**; instantaneous extremes rise at **~double the C–C rate** (~14 % K⁻¹) |
+
+The sub-295 K amplification arises because **precipitation efficiency increases with warming** (faster hydrometeor fall speed as precipitation shifts from solid to liquid), adding a microphysical term on top of the thermodynamic one. Snowfall extremes are likewise controlled by the **climatological temperature relative to the rain–snow transition** (optimal temperature ≈ −2 °C by liquid-water equivalent, ≈ −4 °C by snow depth): snowfall extremes *decrease* where mean temperature is above that optimum and *increase* below it.
+
+### Why this is &quot;primary&quot; rather than &quot;sole&quot;
+
+The paper is explicit that thermodynamics is the **only robust and always-understood contribution**, while dynamics and precipitation efficiency are secondary and regime-dependent:
+- **Thermodynamic** contribution — &quot;robust and well understood,&quot; always gives intensification with warming.
+- **Dynamical** (ω) — matters mainly in the tropics (mesoscale convective organization, tropical cyclones, MJO), poorly resolved by global models.
+- **Microphysical** (ε) — matters mainly below 295 K and is microphysics-scheme dependent.
+
+This temperature dependence is also what explains the **stronger tropical sensitivity (~9–11 % K⁻¹ constrained) versus extratropical (~4–6 % K⁻¹)**: the tropics are warmer, sitting in the C–C-scaling regime, whereas colder environments deviate from it.
+
+### Practical implication
+Because temperature sets the moisture capacity, the paper&#x27;s headline constraints are the sensitivities expressed in **% K⁻¹**: observations give a global land sensitivity of **8 % K⁻¹ (90% CI 5–10 % K⁻¹)**; CMIP5 multimodel medians are **6 % K⁻¹** (extratropics) and **11 % K⁻¹** (tropics, observationally constrained).
+
+---
+
+### Sources
+
+- **O&#x27;Gorman, P. A. — &quot;Precipitation extremes under climate change&quot;** (arXiv:1503.07557), KB `自然科学与地球科学` (kb_id `1e6199ea-f380-44e2-94fc-d431f0f9bb6b`):
+  - `自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 1 of 3).md` — Abstract; §1 Introduction (&quot;increases in the saturation vapor pressure of water&quot;); §3 Theory (Eq. 1, thermodynamic vs. dynamical vs. microphysical contributions; C–C scaling 6–7 % K⁻¹).
+  - `... (part 2 of 3).md` — §6 Snowfall extremes (optimal temperature −2 °C/−4 °C); §7 Duration (Clausius–Clapeyron above vs. ~2× C–C below 295 K); §8 Conclusions (&quot;The thermodynamic contribution is the easiest to understand and always gives an intensification with warming&quot;).
+- Cross-confirmed via vector search (scores 0.66–0.73) in both the primary KB and the DeepRead baseline indices (`Corpus-Chunks800`, `Corpus-Paras`, `Corpus-Struct`), which contain the same source document.
+
+*Retrieval note: MCP `kb-mcp` was connected and healthy; all retrieval performed with `kb_search_two_stage`, `kb_search_vector`, and `kb_doc_read`.*</div>
+</details>
+<details class="ans ta-b">
+  <summary><span class="chip tb">B</span>
+    <span class="alabel">B · Bare agent (file tools)</span>
+    <span class="astats">37.3s · 3 tools ·
+      tok 46417/390 · $0.2843</span>
+    <span class="gold gmiss">gold 0/1</span></summary>
+  <div class="abody">The dominant control is thermodynamic: the increase in the atmosphere&#x27;s saturation vapor pressure (moisture-holding capacity) with warming, i.e. Clausius–Clapeyron scaling, which gives roughly 6–7% K⁻¹ and is robust and well understood (O&#x27;Gorman, §3 and Conclusions). The response is decomposed into thermodynamic, dynamical (changes in vertical velocity ω), and microphysical (precipitation-efficiency ε) contributions, but the thermodynamic term is the one that always intensifies precipitation extremes with warming. Dynamical and precipitation-efficiency effects can matter regionally (tropics, subdaily durations below ~295 K, orographic/snowfall cases), yet in the extratropics the simulated increase &quot;is close to the thermodynamic contribution at all latitudes, and there is little dynamical contribution from changes in vertical velocities.&quot;
+
+Source: `climate-science__1503.07557__precipitation-extremes-under-climate-change.md` (O&#x27;Gorman, &quot;Precipitation extremes under climate change&quot;).</div>
+</details>
+<details class="ans ta-c">
+  <summary><span class="chip tc">C</span>
+    <span class="alabel">C · Dense RAG (agent-executed vector search)</span>
+    <span class="astats">33.0s · 4 tools ·
+      tok 88461/633 · $0.5143</span>
+    <span class="gold gmiss">gold 0/1</span></summary>
+  <div class="abody">**Retrieved evidence is insufficient.**
+
+I could not answer this question from retrieved evidence. Both dense-retrieval calls I issued against `kb_id=&quot;Corpus-Chunks800&quot;` (top_k=10, score_threshold=0) — the first with the question verbatim, the second rephrased around precipitation-extreme intensification and Clausius–Clapeyron scaling — returned no chunk payloads at all. Instead each call returned only the notice `experiment read-only`, which is a sandbox/tooling message, not index content.
+
+Because zero chunks were returned, there is no text to ground an answer in and no chunk file names to cite. Any statement about which physical factor controls the response of precipitation extremes to climate change (e.g., atmospheric moisture / temperature scaling) would have to come from outside the retrieved evidence, which the task explicitly forbids. Recommendation: verify that the retrieval tool is actually permitted to read `Corpus-Chunks800` in this environment, then re-run the query; I can answer as soon as real chunks are returned.</div>
+</details>
+</section>
+<section class="qblock" id="q-BQ07">
+  <header class="qhead">
+    <span class="qid">BQ07</span>
+    <span class="qfield">nlp</span>
+    <span class="qgold">gold keywords: yiddish, 8b</span>
+  </header>
+  <p class="qtext">What is MameLoshnLM and what parameter scale does it have?</p>
+  
+<details class="ans ta-a" open>
+  <summary><span class="chip ta">A</span>
+    <span class="alabel">A · Platform KB (QDCVR, external API)</span>
+    <span class="astats">108.4s · 7 tools ·
+      tok 127940/1593 · $0.7255</span>
+    <span class="gold gok">gold 2/2</span></summary>
+  <div class="abody">I have everything needed, confirmed across multiple independent retrievals.
+
+## Answer
+
+**MameLoshnLM** is the **first open-source 8B-parameter language model built specifically for Yiddish** — reported as **8 billion parameters**.
+
+### What it is
+- **Purpose:** A Yiddish-specific LLM addressing the language&#x27;s limited digital presence and the scarcity of reliable evaluation resources. It is intended to serve Yiddish&#x27;s roughly one million speakers and the academic community studying Yiddish-language culture.
+- **Construction:** It is produced by **continued pretraining of Llama 3.1 8B** on a Yiddish corpus, using a causal language-modeling objective (bfloat16, 8-bit AdamW, LR 2×10⁻⁵, cosine schedule with 2% warmup, weight decay 0.01, one epoch, max sequence length 1,024 tokens). Since it continues from Llama 3.1 8B, it inherits the 8B parameter scale.
+- **Authors/affiliations:** Uri Katz, Omer Goldman, Tomasz Limisiewicz, Reut Tsarfaty, Noah A. Smith — Bar-Ilan University, University of Cambridge, University of Washington, Allen Institute for AI.
+
+### Supporting resources introduced with it
+- **Oytser** — a high-quality Yiddish pretraining corpus combining contemporary web-native sources with literary materials.
+- **Kashes** — a multi-task Yiddish benchmark spanning translation, linguistic analysis, information extraction, and language understanding.
+
+### Report context
+Across the benchmark, MameLoshnLM **outperforms open baselines of similar scale** (Llama 3.1 8B, Qwen3 8B, BLOOMZ 7B, Gemma-2 9B, EuroLLM 9B). The paper&#x27;s key finding is that general multilingual models produce an &quot;intelligible but systematically reduced&quot; Yiddish, while MameLoshnLM better captures native lexical/morphological patterns (e.g., loshn-koydesh Hebrew/Aramaic vocabulary and Yiddish-specific morphology) — pointing to a broader failure mode of noisy web-scale multilingual data for low-resource languages.
+
+### Source references
+- KB: **计算机与人工智能** (`b1199132-e4d4-4305-8c2e-82dc1753b0ba`)
+- Document: `nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md` (parts 1–4 of 4), derived from *&quot;MAMELOSHNLM: Yiddish Language Model and Evaluation Benchmark&quot;* (arXiv 2608.05850)
+  - **Part 1** — Abstract &amp; Introduction: &quot;the first open-source 8B-parameter language model built specifically for Yiddish&quot;; &quot;we continue pretraining Llama 3.1 8B to obtain MAMELOSHNLM&quot;; §6 Experimental Setup (baselines of similar scale); training hyperparameters chunk.
+  - **Part 2** — §8 Analysis (Loshn-koydesh and morphology probes vs. Llama 3.1 8B, Table 5).
+  - **Part 4** — §E.8 Summary of All Metrics (Table 12 comparison).
+
+**Certainty:** High — the parameter scale (8B, inherited from Llama 3.1 8B) and the definition are stated explicitly and consistently across the abstract, introduction, and experimental setup, and were confirmed by both metadata search and vector/two-stage semantic retrieval. No conflicting parameter figures appeared for this model.</div>
+</details>
+<details class="ans ta-b">
+  <summary><span class="chip tb">B</span>
+    <span class="alabel">B · Bare agent (file tools)</span>
+    <span class="astats">52.6s · 5 tools ·
+      tok 69423/706 · $0.4125</span>
+    <span class="gold gok">gold 2/2</span></summary>
+  <div class="abody">**MAMELOSHNLM** is presented in *&quot;MAMELOSHNLM: Yiddish Language Model and Evaluation Benchmark&quot;* (`nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md`) as the first open-source large language model for Yiddish, named after the traditional Yiddish term &quot;mame-loshn&quot; (&quot;mother tongue&quot;). It is an **8B-parameter** model (Llama-3.1-8B scale): it was produced by continued pretraining of **Llama-3.1-8B** on a Yiddish-dominant corpus (~5.7B tokens, 72% Yiddish words / 28% English C4) for one epoch on a single H200 GPU (~207 GPU-hours). The paper compares it against baselines of &quot;similar scale&quot; — Llama 3.1 8B, Qwen3 8B, BLOOMZ 7B, Gemma-2 9B, and EuroLLM 9B — and reports that it achieves the best average score (62.6) across 14 evaluations.</div>
+</details>
+<details class="ans ta-c">
+  <summary><span class="chip tc">C</span>
+    <span class="alabel">C · Dense RAG (agent-executed vector search)</span>
+    <span class="astats">44.8s · 2 tools ·
+      tok 70713/360 · $0.3864</span>
+    <span class="gold gok">gold 2/2</span></summary>
+  <div class="abody">MAMELOSHNLM is the first open-source large language model built specifically for Yiddish, named after the traditional Yiddish term &quot;Mame-Loshn&quot; (&quot;mother tongue&quot;) evoking the language&#x27;s intimate connection to home and family. It is an **8B-parameter** model, produced by continued pretraining and reportedly outperforming strong baselines of similar scale across a broad set of Yiddish evaluation benchmarks. It was released together with two supporting resources: Oytser, a new Yiddish pretraining corpus, and Kashes, a benchmark for evaluating Yiddish LMs.
+
+Cited chunks: `Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k00.md`, `..._k12.md`, `..._k02.md`.</div>
+</details>
+</section>
+<section class="qblock" id="q-BQ08">
+  <header class="qhead">
+    <span class="qid">BQ08</span>
+    <span class="qfield">materials</span>
+    <span class="qgold">gold keywords: oxygen redox, cathode</span>
+  </header>
+  <p class="qtext">How does oxygen redox contribute to the capacity of battery cathodes?</p>
+  
+<details class="ans ta-a" open>
+  <summary><span class="chip ta">A</span>
+    <span class="alabel">A · Platform KB (QDCVR, external API)</span>
+    <span class="astats">97.4s · 5 tools ·
+      tok 131820/2154 · $0.7356</span>
+    <span class="gold gok">gold 2/2</span></summary>
+  <div class="abody">I retrieved the full document and confirmed it directly answers the question. Here is the answer.
+
+---
+
+## How Oxygen Redox Contributes to Battery Cathode Capacity
+
+The knowledge base contains a directly relevant review — **&quot;Oxygen redox in battery cathodes: A brief overview&quot;** by M. Hussein N. Assadi &amp; Dorian A. H. Hanaor (arXiv:2408.09942), held in the **工程与能源 (Engineering &amp; Energy)** KB.
+
+### 1. The core mechanism: anionic charge compensation
+
+In conventional cathodes (LiTMO₂, TM = Ni/Mn/Co), charge is balanced by transition-metal oxidation:
+
+```
+LiTM³⁺O₂  —charging→  Li₍₁₋ₓ₎TM³⁺₍₁₋ₓ₎TM⁴⁺ₓO₂ + xLi⁺ + xe⁻        (1)
+```
+
+But many cathodes deliver **overcapacity exceeding the transition-metal oxidation limit**. Oxygen redox explains this: oxide anions O²⁻ donate electrons during charging — acting as reducing agents — which **compensates for the absence of oxidizable transition metals**. The reversible process is summarized as:
+
+```
+O²⁻  ⇌  (O₂)ⁿ⁻                                                     (2)
+```
+
+or, alternatively, as the formation of electron holes on oxygen (avoiding O₂ gas evolution).
+
+### 2. Why it works: &quot;orphaned&quot; O 2p states
+
+The enabling structural feature is **Li-excess (or Na-excess) environments**. In normal LiTMO₂, every O is coordinated by 3 TM + 3 Li. TM–O hybridization pulls the bonding O 2p states down to the bottom of the valence band (~10 eV below E_F). In **Li-excess Li₂TMO₃**, the TM layer also contains Li, so some O ions are coordinated by **fewer than three TM ions** (Li–O–Li coordination). These avoid TM s/p hybridization, leaving **non-bonding, &quot;orphaned&quot; O 2p states** close to the Fermi level — comparable in energy to the non-bonding TM t₂g states. Both O and TM can then donate/accept electrons during redox.
+
+Example reaction showing mixed cationic/anionic redox in Li₄Mn₂O₅:
+
+```
+Li₄⁺Mn₂³⁺O₅²⁻ → 4Li⁺ + 4e⁻ + Mnₓ⁴⁺Mn₂₋ₓ⁵⁺O₅₋ₓ²⁻Oₓ¹⁻          (3)
+```
+
+where x is the extent of oxygen participation. Mn³⁺→Mn⁴⁺ oxidation occurs first, and **additional de-lithiation capacity is accommodated by oxygen oxidation**.
+
+### 3. Capability depends on structure and TM
+
+The extent of oxygen redox varies with crystal structure and transition-metal type:
+
+- **Li₂MnO₃** — Mn stays +4 (its t₂g frontier level is too low to oxidize), so the capacity is attributed **almost entirely to oxygen redox**.
+- **Li-excess disordered spinel-type cathodes** — where oxygen redox was first found to contribute significantly (attributed to orphaned O states from O ions with &lt;3 coordinating TMs).
+- **Ilmenite-type NaTMO₃** — here O redox arises from **under-coordination**: O is coordinated by only 2 TM + 2 Na ions. Na₂₋ₓRuO₃ shows ~180 mAh g⁻¹ (~1.4 e⁻ per formula unit), with **~0.4 e⁻ of extra capacity from reversible oxygen redox**, plus a voltage rise from 2.2 V to 3.4 V — indicating O redox can operate at **higher potential than TM redox alone**.
+
+DFT survey results (O 2p population in −2 eV &lt; E &lt; E_Fermi, and predicted potential):
+
+| 3d NaTMO₃ | NaVO₃ | NaCrO₃ | NaMnO₃ | NaFeO₃ | NaCoO₃ | NaNiO₃ |
+|---|---|---|---|---|---|---|
+| O 2p (e) | 0.17 | 1.43 | 1.23 | 0.34 | 0.59 | 0.78 |
+| Potential (V) | 5.91 | 4.24 | 4.53 | 5.18 | 3.49 | 3.98 |
+
+| 4d NaTMO₃ | NaNbO₃ | NaMoO₃ | NaTcO₃ | NaRuO₃ | NaRhO₃ | NaPdO₃ | NaAgO₃ |
+|---|---|---|---|---|---|---|---|
+| O 2p (e) | 2.58 | 0.16 | 0.38 | 1.40 | 1.50 | 2.10 | 2.51 |
+| Potential (V) | 4.95 | 2.62 | 2.90 | 3.72 | 4.08* | 4.08 | 4.66 |
+
+**Oxygen redox is more dominant in 4d (fifth-row) transition-metal oxides**, due to higher TM–O covalency that increases 4d–2p hybridization and raises O 2p population near the Fermi level. NaVO₃/NaFeO₃ (&gt;5 V) and NaNbO₃/NaAgO₃ (&gt;4 V) are predicted as high-voltage O-redox cathodes.
+
+### 4. The trade-off: capacity gain vs. O₂ release
+
+Although oxygen redox **increases cathode capacity**, the reduced O ions have a strong tendency to bond to each other and **leave the lattice as O₂ gas**. This is both a **fire hazard** and a cause of **rapid, permanent capacity fade**. Mitigation strategies against O₂ release — such as **fluorination** — must be implemented if the extra oxygen-redox capacity is to be used. This is also tied to the capacity loss often observed after initial cycling.
+
+### 5. Computational caveat
+
+Directly probing anionic redox is not possible; DFT is the main approach, via density-of-states analysis. Because cathode materials are strongly correlated, **standard GGA is insufficient** — Hartree-Fock hybrid functionals or Hubbard-corrected (GGA+U) methods are needed, though choosing the mixing parameter α or U_eff remains challenging.
+
+---
+
+### Sources
+
+- **Primary source (full document):** 工程与能源 KB (`8fa4db59-adde-4d6d-9fdb-2c375400e631`) — `materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md` (parts 1 &amp; 2 of 2). Sections: Abstract, §1 Introduction, §2 Anionic Redox in Battery Electrode Materials, §4 Oxygen Redox in 3d and 4d Ilmenite-type NaTMO₃, §5 Summary.
+- Assadi, M.H.N.; Hanaor, D.A.H. — *Oxygen redox in battery cathodes: A brief overview*, arXiv:2408.09942.
+
+**Note on corpus structure:** the same paper is indexed in three parallel baseline collections — `Corpus-Chunks800`, `Corpus-Struct`, and `Corpus-Paras` — which are DeepRead reproduction indices (0 documents reported at KB level), plus the canonical copy in 工程与能源. All content above is drawn from the canonical 工程与能源 copy.</div>
+</details>
+<details class="ans ta-b">
+  <summary><span class="chip tb">B</span>
+    <span class="alabel">B · Bare agent (file tools)</span>
+    <span class="astats">95.4s · 6 tools ·
+      tok 76652/907 · $0.4536</span>
+    <span class="gold gok">gold 1/2</span></summary>
+  <div class="abody">**Answer (based on `materials__2408.09942__oxygen-redox-in-battery-cathodes-a-brief-overvie.md`):**
+
+Oxygen (anionic) redox contributes extra capacity by having oxide anions (O²⁻) donate electrons during charging, compensating for the absence of oxidizable transition metals and allowing capacities that exceed the transition-metal oxidation limit (typically ~200–300 mAh/g theoretical). This is enabled in Li-excess/Na-excess or under-coordinated structures where O 2p states are &quot;orphaned&quot; (unhybridized, e.g. Li–O–Li coordination) and lift close to the Fermi level, becoming electrochemically labile; the paper reports the ~0.4 extra electron capacity in Na2−xRuO3 and labile O 2p populations for ilmenite-type NaTMO3 compounds. However, the mechanism is double-edged: reduced O ions tend to bond and leave the lattice as O2 gas, causing irreversible capacity fade, voltage fade, and a flammability hazard, so mitigation such as surface fluorination is needed. The paper also notes directly probing anionic redox is not possible, so DFT with higher-level functionals (HF hybrid, GGA+U) is the main route. The companion file `materials__2211.04977__design-of-battery-materials-via-defects-and.md` also references anionic-redox high-capacity cathodes (e.g. Y-doped Na2ZrO3) and shows O-redox voltage regions in doped Li2MnO3.</div>
+</details>
+<details class="ans ta-c">
+  <summary><span class="chip tc">C</span>
+    <span class="alabel">C · Dense RAG (agent-executed vector search)</span>
+    <span class="astats">39.0s · 3 tools ·
+      tok 102617/455 · $0.5536</span>
+    <span class="gold gok">gold 2/2</span></summary>
+  <div class="abody">Oxygen redox contributes to cathode capacity by allowing oxide anions (O²⁻) to donate electrons during charging, thereby acting as reducing agents that compensate for the absence of oxidizable transition metals; this &quot;may allow greater energy storage capacity in battery electrodes than would otherwise be theoretically predicted&quot; (`...__k03.md`). The retrieved abstract chunk likewise states that &quot;the participation of oxygen or other anionic species in redox activities in cathode materials for lithium and sodium-ion battery systems is known to play a role in governing the useful capacity of these batteries&quot; (`...__k00.md`). The summary chunk adds that oxygen redox &quot;was discovered to significantly contribute toward the overall battery capacity in Li-excess disordered spinel-type cathodes,&quot; with the extent varying by crystal structure and transition-metal type (`...__k23.md`, and its duplicate `...__k22.md`). A related chunk notes that actual cathodes can deliver &quot;an overcapacity exceeding the transition metal oxidation limit,&quot; motivating investigation of anionic participation (`...__k01.md`).</div>
+</details>
+</section>
+<section class="qblock" id="q-BQ09">
+  <header class="qhead">
+    <span class="qid">BQ09</span>
+    <span class="qfield">robotics</span>
+    <span class="qgold">gold keywords: dynamic, multilayer perceptron</span>
+  </header>
+  <p class="qtext">What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?</p>
+  
+<details class="ans ta-a" open>
+  <summary><span class="chip ta">A</span>
+    <span class="alabel">A · Platform KB (QDCVR, external API)</span>
+    <span class="astats">200.1s · 13 tools ·
+      tok 282851/2606 · $1.5430</span>
+    <span class="gold gok">gold 2/2</span></summary>
+  <div class="abody"># MLP-SLAM: The Problem It Addresses and How
+
+**Source:** Li, T. &amp; Sun, W., *&quot;MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping&quot;* (arXiv:2410.10669)
+KB: 计算机与人工智能 · doc_path: `robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md` (parts 1 &amp; 2)
+
+## The problem
+
+Visual SLAM systems (ORB-SLAM2/3, LSD-SLAM, DSO) are built on a **static-world assumption**. They achieve high precision in scenes with few dynamic objects, but **their accuracy degrades in dynamic environments** — scenes crowded with movable objects like pedestrians, cars, and buses, which are common outdoors. The paper targets exactly this **degradation of V-SLAM in dynamic environments** (Abstract; Sec. I; Sec. VI Conclusions).
+
+The paper characterizes two deficient prior approaches:
+
+- **Type I — pure geometric methods** (epipolar error, reprojection error, intensity, depth, optical flow): not general, prone to information loss.
+- **Type II — semantics-only methods** (e.g., DynaSLAM with Mask R-CNN): discard *all* features inside a dynamic-class bounding box/mask. This **misclassifies genuinely static objects** — e.g., parked cars on the roadside and highway guardrails get removed as &quot;dynamic,&quot; causing information loss and even worse ATE (DynaSLAM&#x27;s average ATE 2.43 m vs. ORB-SLAM2&#x27;s 1.99 m). It is also slow (519.37 ms) due to Mask R-CNN.
+- **Type III — hybrid (mainstream)**: prior class info from YOLO-style detectors plus *partial* geometric cues. These &quot;rely on only partial geometric information&quot; (only epipolar error, or only reprojection error), and **require manual parameter tuning, lack generality, and are laborious to fine-tune**.
+
+A second, methodological problem: there is **no public dataset for directly evaluating dynamic/static feature-point classification**. Evaluation was done *indirectly* via SLAM metrics (ATE/RTE/RRE), which is **inaccurate and unreliable because of RANSAC randomness** in camera pose estimation.
+
+## How MLP-SLAM addresses it
+
+**Core idea:** an MLP-based real-time **stereo** SLAM system (built on ORB-SLAM2 with an added dynamic/static discriminator module) that uses **complete geometric information** to classify dynamic vs. static feature points — claimed as the **first machine-learning-based dynamic/static feature discriminator in SLAM**, and doing so **without any manual parameter configuration**.
+
+**Pipeline (Sec. III-D, IV):**
+1. **Feature extraction + detection/tracking** — ORB features on stereo images; **YOLOv7 + Deep SORT** on the left image (chosen over semantic segmentation to cut latency, and over CFP-SLAM&#x27;s EKF+Hungarian for better tracking).
+2. **Depth Filter Module (DFM)** — compensates for the looser boxes of object detectors. It computes mean depth μ_d and std δ_d of features in the box and drops features outside [μ_d − ηδ_d, μ_d + ηδ_d], treating them as static background (η = 1.2). This is the key fix for the &quot;parked car&quot; false-positive problem.
+3. **Coarse estimation** — features outside bounding boxes plus DFM-filtered static features give a rough camera pose by minimizing reprojection error.
+4. **MLP module** — for each remaining in-box feature, a 3-D input vector v_i = {e_I, e_D, e_Re} is formed: **image intensity error, epipolar error, and reprojection error**. The MLP (input 3 → hidden → 2-class output; zero-mean normalized; Adam, lr 0.1, MultiStepLR γ=0.1, 150 epochs, batch 8; TensorRT with fixed input shape (200,3)) labels each point static (0) or dynamic (1). Inference is only **0.18 ms**. Using all three cues is the &quot;complete geometric information&quot; that prior partial-cue methods lacked.
+5. **Fine estimation** — camera pose is refined using the combined static set (out-of-box features + DFM-filtered + MLP-classified-static).
+
+**The dataset contribution:** a publicly released dataset of **&gt;50,000 manually labeled feature points** (from KITTI Odometry sequences 00/01, 1:1 static:dynamic ratio, 70/20/10 train/test/val split), enabling **direct** evaluation of discriminators instead of indirect RANSAC-contaminated SLAM metrics.
+
+## Reported results
+
+- **Classification (Table I):** MLP 87.71% accuracy / 87.64 F1 vs. SVM 84.19/84.58, PointSLOT-like 81.36/81.43, CFP-SLAM-like 73.61/71.10, epipolar-only 60.10/61.32.
+- **Accuracy (Table II):** lowest average ATE on KITTI Odometry — **1.48 m** vs. ORB-SLAM2 1.99, DynaSLAM 2.43, DynaSLAM II 1.77. Best on sequence 00 (0.79), which is rich in parked static cars — evidence the MLP identifies *real* dynamic objects. Also lowest average on KITTI360 (3.42 vs. 3.40/3.92 etc., Table III).
+- **Speed (Table IV/V):** **62.81 ms/frame** — fastest among dynamic SLAM systems (DynaSLAM 519.37, DynaSLAM II 80.15, VDO-SLAM 86.97, PointSLOT 73.6), only 17.50 ms/frame over its ORB-SLAM2 base.
+- **Ablation (Table VI):** object-tracking-only 2.67 → MLP-only 1.97 → both **1.48**, confirming the MLP is the dominant contributor and combines best with tracking.
+
+**Notable limitations stated by the authors:** it is stereo-only in experiments (though extensible to monocular/RGB-D); the MLP was trained only on KITTI Odometry and evaluated on unseen KITTI360; DynaSLAM II was not run locally (results taken from its original paper).
+
+**Sources:** `kb_search` (metadata hit, score 23) and `kb_search_two_stage` (chunk retrieval), then full reads of both document parts in KB `b1199132-e4d4-4305-8c2e-82dc1753b0ba` (计算机与人工智能).</div>
+</details>
+<details class="ans ta-b">
+  <summary><span class="chip tb">B</span>
+    <span class="alabel">B · Bare agent (file tools)</span>
+    <span class="astats">60.5s · 4 tools ·
+      tok 67977/626 · $0.4032</span>
+    <span class="gold gok">gold 1/2</span></summary>
+  <div class="abody">**Answer:**
+
+MLP-SLAM addresses the degradation of visual (stereo) SLAM accuracy in highly dynamic outdoor environments crowded with movable objects such as pedestrians, cars, and buses, where static-world-assuming systems like ORB-SLAM2 lose precision. It tackles the limitations of prior dynamic-SLAM approaches: geometric methods (Type I) are not general, and semantic/detection-based methods like DynaSLAM (Types II/III) discard all feature points inside dynamic-class masks — wrongly deleting genuinely static points such as parked cars and guardrails — and require laborious manual parameter tuning. Its solution is an MLP-based discriminator that classifies each feature point as dynamic or static using *complete* geometric information rather than a hand-tuned subset, requiring no manual parameter configuration and avoiding information loss; the system also releases a public dataset of 50,000+ feature points from KITTI Odometry to evaluate such discriminators directly, and reports the highest average precision and fastest speed on KITTI Odometry and KITTI360.
+
+**File used:** `robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md`</div>
+</details>
+<details class="ans ta-c">
+  <summary><span class="chip tc">C</span>
+    <span class="alabel">C · Dense RAG (agent-executed vector search)</span>
+    <span class="astats">48.6s · 3 tools ·
+      tok 47621/488 · $0.3058</span>
+    <span class="gold gok">gold 1/2</span></summary>
+  <div class="abody">**Answer:**
+
+MLP-SLAM addresses the problem that V-SLAM systems achieve high precision only in environments with few dynamic objects, while their performance degrades in settings with numerous movable objects such as pedestrians, cars, and buses common in outdoor scenes. It proposes an MLP-based real-time stereo SLAM system to address SLAM system degradation in dynamic environments, using an MLP model to distinguish dynamic from static feature points. Static feature points — those outside bounding boxes of potential dynamic objects (filtered by a Depth Filter Module) and classified as static by the MLP model — are used in the optimization stage by minimizing re-projection error. It is built on ORB-SLAM2 as its foundation and compared against DynaSLAM and modified VDO-SLAM on KITTI360.
+
+**Chunks used:** `robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou__k00.md`, `__k23.md`, `__k03.md`, `__k18.md`, `__k10.md`</div>
+</details>
+</section>
+<section class="qblock" id="q-BQ10">
+  <header class="qhead">
+    <span class="qid">BQ10</span>
+    <span class="qfield">immunology</span>
+    <span class="qgold">gold keywords: immune evasion, chemotherapy</span>
+  </header>
+  <p class="qtext">What strategies for tumor control emerge under immune evasion and chemotherapy resistance?</p>
+  
+<details class="ans ta-a" open>
+  <summary><span class="chip ta">A</span>
+    <span class="alabel">A · Platform KB (QDCVR, external API)</span>
+    <span class="astats">164.2s · 8 tools ·
+      tok 266702/2336 · $1.4136</span>
+    <span class="gold gok">gold 2/2</span></summary>
+  <div class="abody">I found the source document and read all three parts. Here is the answer.
+
+## Strategies for Tumor Control Under Immune Evasion and Chemotherapy Resistance
+
+**Source:** Mokari, N. &amp; Morsky, B. (Florida State University), *&quot;Strategies for tumor elimination and control under immune evasion and chemotherapy resistance&quot;* — KB `生命科学与医学` (`b28f0a25-1e1d-40ad-96b8-61bd2b093a28`), document `生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (parts 1–3 of 3)` (arXiv 2604.01385).
+
+The paper builds an ODE model (extending Kuznetsov et al. 1994) with three state variables — effector cells (E), immune-resistant tumor cells (T₁), immune-sensitive tumor cells (T₂) — under two distinct immune-evasion mechanisms: **immune checkpoint regulation** (PD-L1/PD-1) and **reduced antigen presentation**.
+
+### 1. The core finding: combination immuno-chemotherapy is superior to either alone
+
+- **Immunotherapy alone is generally insufficient.** &quot;Although immune control may occasionally suppress tumor growth, immune dynamics alone are generally insufficient to fully eliminate the tumor&quot; (part 3, §3.3).
+- **Chemotherapy significantly enlarges** the parameter region corresponding to tumor control or tumor-free equilibria — it reduces tumor burden and directly targets resistant subpopulations, while immunotherapy enhances immune-mediated suppression. Together they &quot;expand the parameter region exhibiting tumor-free or low population equilibria&quot; and provide &quot;greater flexibility and improved tumor control compared to single-therapy approaches&quot; (part 3, §3.3 / Discussion).
+- The system is **bistable and nonlinear**: small parameter changes can flip qualitatively between immune control and tumor escape — hence the need for phenotype-guided treatment.
+
+### 2. Strategy depends on the evasion mechanism
+
+**Immune checkpoint regulation dominant (T₁-only):** tumor control is &quot;highly sensitive to the immune exhaustion rate&quot; (μ) — checkpoint inhibitors are the most effective therapy. Best parameter targets: **↓μ** (reduce exhaustion); checkpoint inhibitors combined with moderate chemotherapy give the most effective control.
+
+**Reduced antigen presentation dominant (T₁-only):** stability depends more on effector **activation (ρ) and exhaustion**, supporting **CAR-T therapy, cancer vaccines, or checkpoint inhibitors** to strengthen/reprogram effector recognition. Best targets: **↑ρ, ↓μ**. This mechanism is &quot;more robust against relatively weak chemotherapy&quot; than checkpoint evasion.
+
+**Immune-sensitive phenotype dominant (T₂-only):** the dominant lever is boosting the **overall effector population** — increasing effector recruitment (**↑σ**, e.g. IL-2-type recruitment) or decreasing effector death (**↓δ**). Preferred therapies: **adoptive T-cell transfer, cytotoxic therapy**.
+
+These map to the paper&#x27;s Table 2 (&quot;Phenotype-guided immunotherapy strategies under two resistance mechanisms&quot;), which is explicitly summarized as: *effective therapy must target the dominant mechanism in each patient*, which &quot;explains why different tumors respond preferentially to different immunotherapy strategies.&quot;
+
+### 3. Proposed sequential/adaptive treatment protocols
+
+From the bifurcation analyses, the authors propose **sequential treatment guided by tumor composition** (part 3, Discussion):
+
+- **T₁-dominant start:** chemotherapy first to reduce burden → immunotherapy to maintain control. (Alternative order: immunotherapy first to shrink tumor → chemotherapy to clear residual resistant cells.)
+- **T₂-dominant start:** chemotherapy reduces burden but risks resistant escape → **immunotherapy applied afterward** to stabilize the system.
+- **Predicted coexistence of both resistant types:** apply **chemotherapy first** to eliminate T₁, leaving a low T₂-only equilibrium, then **immunotherapy** to potentially eliminate the tumor. Caveat: if the tumor is only *controlled* (not eliminated), emergence of new T₁ mutants could cause resurgence.
+
+### 4. Elimination threshold and the &quot;fight to win vs. fight to not lose&quot; framing
+
+- **Proposition 1 (tumor-free equilibrium stability):** the tumor is eliminated iff effective immune strength exceeds maximal tumor growth:
+  σ/(δ + ωχ) &gt; max{ α₂ − θ₂χ, (α₁ − χ)/θ₁ }
+  i.e. the effector recruitment-to-loss ratio must beat the dominant tumor phenotype&#x27;s effective growth rate. Note the ratio **σ/δ** and **max{α, α₁/θ₁}** are the critical quantities, so small changes in immune competence or tumor immunogenicity can swing the outcome.
+- The paper contrasts aggressive elimination (&quot;fight to win&quot;) against **adaptive therapy** — control rather than eradicate, maintaining a balance between drug-sensitive and drug-resistant cells, exploiting competition between subpopulations, and adjusting dynamically rather than using maximum tolerated dose (MTD) (part 1, Introduction, citing Gatenby et al.).
+- Resistance carries a **fitness cost** (ζᵢ): when ζᵢ is small the corresponding population tends to dominate; when costs outweigh benefits the system is driven toward the tumor-free equilibrium. Cost/benefit is captured by θ₁ (benefit of immune resistance) and θ₂ (benefit of chemo-resistance).
+
+### 5. Precision-medicine implication
+
+Because stability thresholds depend on σ/δ and max{α, α₁/θ₁}, the authors argue for **biomarker-guided, phenotype-specific therapy** — selecting immunotherapy based on measurable markers such as **PD-L1 expression, T-cell infiltration, exhaustion markers, and antigen-presentation profiles** — and note that this is &quot;why non-personalized, uniform treatment often fails.&quot; Future directions raised: optimal-control treatment scheduling, microenvironment feedback (breast/prostate), oncolytic virotherapy, and ML-based personalized adaptive therapy.
+
+**Source reference:** `生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md` (parts 1–3 of 3), KB &quot;生命科学与医学&quot; (id `b28f0a25-1e1d-40ad-96b8-61bd2b093a28`); key passages at part 1 §2.1–2.2 &amp; Introduction, part 2 §3.1–3.2 + Table 2, part 3 §3.3 + Discussion. Vector retrieval scores 0.83/0.78/0.77 (top-3 chunks), confirming a direct content match.</div>
+</details>
+<details class="ans ta-b">
+  <summary><span class="chip tb">B</span>
+    <span class="alabel">B · Bare agent (file tools)</span>
+    <span class="astats">92.1s · 5 tools ·
+      tok 142743/852 · $0.8206</span>
+    <span class="gold gok">gold 1/2</span></summary>
+  <div class="abody">Only the immunology paper addresses the mechanism of interest; the other hits are unrelated (imaging, spatial transcriptomics, clinical decision rules).
+
+**Answer**
+
+The corpus answers this through a single mathematical-modeling paper, `immunology__2604.01385__strategies-for-tumor-elimination-and-control.md` (Mokari &amp; Morsky). Its central finding is that immune control alone is generally insufficient (&quot;immune dynamics alone are generally insufficient to fully eliminate the tumor&quot;), so the recommended strategies are phenotype-guided *combination* immuno-chemotherapy with attention to sequence. Specifically, when the immune-evasive subpopulation (T1) dominates via **immune checkpoint regulation**, control is most sensitive to the immune exhaustion rate (↓μ), favoring checkpoint inhibitors; when evasion occurs via **reduced antigen presentation**, outcomes depend on effector activation/exhaustion, favoring checkpoint inhibitors, CAR-T therapy, or cancer vaccines (↑ρ, ↓μ) — summarized in the paper&#x27;s Table 2. When the immune-sensitive wild-type (T2) dominates, the strategy shifts to boosting effector recruitment and persistence (↑σ, ↓δ), e.g. adoptive T-cell transfer or cytotoxic therapy. For sequencing, the discussion proposes starting with chemotherapy to debulk a T1-dominant tumor followed by immunotherapy, or immunotherapy first then chemotherapy to clear residual resistant cells; for predicted coexistence of both resistant types, chemotherapy first eliminates T1, leaving a low T2-only state that immunotherapy may then eliminate. The paper notes chemotherapy &quot;significantly enlarges the parameter region corresponding to tumor control or tumor-free equilibria&quot; and that combined treatment consistently outperforms single therapy, while cautioning that modest parameter changes can flip the system between immune control and tumor escape.</div>
+</details>
+<details class="ans ta-c">
+  <summary><span class="chip tc">C</span>
+    <span class="alabel">C · Dense RAG (agent-executed vector search)</span>
+    <span class="astats">89.6s · 4 tools ·
+      tok 100044/611 · $0.5696</span>
+    <span class="gold gok">gold 2/2</span></summary>
+  <div class="abody">**Answer (grounded in retrieved chunks):**
+
+Under immune evasion, the model identifies two resistance strategies — immune checkpoint regulation and reduced antigen presentation — and the optimal control strategy depends on which dominates. When immune checkpoint regulation dominates, tumor control is &quot;highly sensitive to the immune exhaustion rate,&quot; making checkpoint inhibitors &quot;the most effective therapy,&quot; and control is achieved mainly by decreasing immune exhaustion (μ) or increasing immune activation (ρ, σ), with &quot;checkpoint inhibitors combined with moderate chemotherapy&quot; giving the most effective control. When reduced antigen presentation drives resistance, stability &quot;depends more strongly on effector activation and exhaustion,&quot; supporting checkpoint inhibitors, CAR-T therapy, or cancer vaccines, while immune-sensitive phenotypes favor boosting effector recruitment and persistence via adoptive T-cell transfer or cytotoxic therapy. Across cases, combination immuno-chemotherapy &quot;provides greater flexibility and improved tumor control compared to single-therapy&quot; approaches.
+
+**Chunks cited:** `immunology__2604.01385__strategies-for-tumor-elimination-and-control__k37.md`, `__k36.md`, `__k32.md`, `__k31.md`, `__k24.md`, `__k33.md`</div>
+</details>
+</section>
+</main>
+<footer>Source traces: track_*.json in this directory · monitor table = live SSE
+capture per run (timeline, tool calls, tokens, cost) · generated 2026-09-20 15:59 UTC ·
+color language: teal = platform, gray = baselines, orange-red = warnings</footer>
+<script>
+  document.querySelectorAll('#filters button').forEach(b => b.onclick = () => {
+    document.querySelectorAll('#filters button').forEach(x => x.classList.remove('on'));
+    b.classList.add('on');
+    const f = b.dataset.f;
+    document.querySelectorAll('#mtable tbody tr').forEach(tr => {
+      tr.style.display = (f === 'all' || tr.dataset.track === f) ? '' : 'none';
+    });
+  });
+  document.querySelectorAll('#mtable th').forEach((th, i) => th.onclick = () => {
+    const tb = document.querySelector('#mtable tbody');
+    const rows = [...tb.rows];
+    const dir = th.dataset.d === '1' ? -1 : 1;
+    th.dataset.d = th.dataset.d === '1' ? '0' : '1';
+    rows.sort((a, b) => {
+      const x = a.cells[i].innerText.replace(',', ''), y = b.cells[i].innerText.replace(',', '');
+      const nx = parseFloat(x), ny = parseFloat(y);
+      const c = (!isNaN(nx) && !isNaN(ny)) ? (nx - ny) : x.localeCompare(y);
+      return c * dir;
+    });
+    rows.forEach(r => tb.appendChild(r));
+  });
+</script>
+</body></html>

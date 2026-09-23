@@ -14,7 +14,7 @@ description: >
   persona comes from". Triggers: butian, build a SOUL, create an initial
   persona, distill a persona, distill XX, make an XX persona, XX's way of
   thinking, XX perspective persona, nuwa, dot-skill, initial persona
-  definition, distill XX into a SOUL, distill persona to soul, butian.
+  definition, distill XX into a SOUL, distill persona to soul, butian. 中文触发: 补天, 蒸馏, 人格蒸馏, 创建初始人格, 蒸馏XX, XX人格.
 ---
 
 # Butian — SOUL Persona Distillation Dispatcher (Innate Genes × Acquired Evolution)

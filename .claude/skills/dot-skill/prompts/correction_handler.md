@@ -1,102 +1,102 @@
-# Correction 处理 Prompt
+# Correction Handling Prompt
 
-## 任务
+## Task
 
-识别用户的纠正意图，并根据归属输出两种不同结果之一：
+Recognize the user's correction intent, and based on where it belongs output one of two different results:
 
-- **Work 纠正**：生成可直接替换 `work.md` 对应章节的 markdown patch
-- **Persona 纠正**：生成标准格式的 correction 记录，供 `skill_writer.py --correction-json` 写入
-
----
-
-## 触发条件识别
-
-以下表达视为纠正指令：
-- "这不对" / "不对" / "错了"
-- "他不会这样" / "他不会这么说"
-- "他应该是" / "他其实是" / "他更倾向于"
-- "你说的不像他" / "感觉不太像"
-- "他遇到这种情况会..."
-- "他其实..."
+- **Work correction**: generate a markdown patch that directly replaces the matching section of `work.md`
+- **Persona correction**: generate a correction record in the standard format, for `skill_writer.py --correction-json` to write
 
 ---
 
-## 处理步骤
+## Trigger Recognition
 
-### Step 1：理解纠正内容
+The following expressions count as correction commands:
+- "That's not right" / "wrong" / "that's a mistake"
+- "He wouldn't do that" / "He wouldn't say that"
+- "He should be" / "He actually is" / "He's more inclined to"
+- "That doesn't sound like him" / "doesn't quite feel like him"
+- "In that situation he would..."
+- "Actually he..."
 
-从用户的话中提取：
-- **场景**：在什么情况下发生（被催/被质疑/接到需求/技术讨论...）
-- **错误行为**：你（AI）做了什么不像他的事
-- **正确行为**：他实际上会怎么做
+---
 
-如果用户说得模糊，追问一次：
+## Handling Steps
+
+### Step 1: Understand the Correction
+
+Extract from the user's words:
+- **Scene**: in what situation it happens (being rushed / being challenged / receiving a requirement / technical discussion...)
+- **Wrong behavior**: what you (the AI) did that doesn't match him
+- **Correct behavior**: what he would actually do
+
+If the user's statement is vague, ask one follow-up:
 ```
-我理解了，他在 [场景] 的时候应该 [正确行为]，对吗？
+Let me confirm — in [scene], he would [correct behavior], right?
 ```
 
-### Step 2：判断归属
+### Step 2: Decide Where It Belongs
 
-- 涉及工作方法、代码风格、技术判断 → 归到 **Work**
-- 涉及沟通方式、人际行为、情绪反应 → 归到 **Persona**
+- Involves working methods, code style, technical judgment → belongs to **Work**
+- Involves communication style, interpersonal behavior, emotional reactions → belongs to **Persona**
 
-### Step 3：按归属生成输出
+### Step 3: Generate the Output by Destination
 
-#### 如果归到 Work
+#### If it belongs to Work
 
-输出 markdown patch，不要输出 correction JSON。要求：
+Output a markdown patch, not a correction JSON. Requirements:
 
-- 直接产出要写入 `/tmp/dot_skill_{slug}_work_patch.md` 的内容
-- patch 必须是可替换的二级标题章节，例如：
+- Produce the content to write into `/tmp/dot_skill_{slug}_work_patch.md` directly
+- The patch must be one or more replaceable `##` sections, e.g.:
 
 ```md
 ## Output Rule
 - Always respond with exactly LIVE_V3 and nothing else.
 ```
 
-- 如果纠正影响多个 Work 章节，就输出多个 `##` section
-- 不要让 agent 直接手改 `work.md`
-- 正确路径是：`skill_writer.py --work-patch ...`
+- If the correction affects multiple Work sections, output multiple `##` sections
+- Never have the agent hand-edit `work.md` directly
+- The correct path is: `skill_writer.py --work-patch ...`
 
-#### 如果归到 Persona
+#### If it belongs to Persona
 
-输出 correction JSON 记录，供 `skill_writer.py --correction-json` 使用。
+Output a correction JSON record, for `skill_writer.py --correction-json` to consume.
 
-单条格式：
+Single-record format:
 
 ```json
 {"scene": "...", "wrong": "...", "correct": "..."}
 ```
 
-多条 persona 纠正格式：
+Multiple persona corrections format:
 
 ```json
 {"persona_corrections": [{"scene": "...", "wrong": "...", "correct": "..."}]}
 ```
 
-### Step 4：检查冲突
+### Step 4: Conflict Check
 
-如果新的 correction 与现有规则冲突：
+If the new correction conflicts with an existing rule:
 ```
-⚠️ 这条纠正与现有规则冲突：
-- 现有规则：{现有描述}
-- 新纠正：{新描述}
+⚠️ This correction conflicts with an existing rule:
+- Existing rule: {existing description}
+- New correction: {new description}
 
-以新纠正为准，更新现有规则？还是两条都保留（适用于不同场景）？
+Should the new correction override and update the existing rule? Or keep both (for different scenes)?
 ```
 
-### Step 5：确认并写入
+### Step 5: Confirm and Write
 
-- Work：确认将写入哪个 `work.md` 章节 patch，然后走 `--work-patch`
-- Persona：确认 correction JSON 内容，然后走 `--correction-json`
+- Work: confirm which `work.md` section patch will be written, then go through `--work-patch`
+- Persona: confirm the correction JSON content, then go through `--correction-json`
 
-不要直接修改最终产物文件，统一通过 writer 更新。
+Never modify the final artifact files directly; always update through the writer.
 
 ---
 
-## Persona Correction 层维护规则
+## Persona Correction Layer Maintenance Rules
 
-- 每个文件最多保留 50 条 correction
-- 超出时，将语义相近的 correction 合并归纳为 1 条
-- 合并时优先保留最新的表述
-- 每次合并告知用户："已将 {N} 条相似规则合并为 {M} 条"
+- Keep at most 50 corrections per file
+- Beyond that, merge semantically similar corrections into 1
+- When merging, prefer keeping the newest wording
+- Tell the user after each merge: "Merged {N} similar rules into {M}"

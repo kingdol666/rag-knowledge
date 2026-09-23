@@ -1,0 +1,83 @@
+{
+ "track": "c",
+ "question": "What is MultiMedQA and how did Flan-PaLM perform on the MedQA benchmark?",
+ "answer": "**Answer (grounded in retrieved chunks):**\n\nMultiMedQA is a benchmark curated for medical question answering that spans medical exam, medical research, and consumer medical questions; it comprises seven datasets, including the newly introduced HealthSearchQA (commonly searched health questions) alongside MedQA, MedMCQA, PubMedQA, and MMLU clinical topics. Flan-PaLM — an instruction-tuned variant of the 540-billion-parameter PaLM — was evaluated on MultiMedQA using few-shot, chain-of-thought, and self-consistency prompting. On the MedQA (USMLE) dataset of 4-option questions, Flan-PaLM 540B achieved 67.6% multiple-choice accuracy, surpassing the previous state of the art by over 17% (beating the DRAGON model's 47.5% by 20.1%, compared with PubMedGPT at 50.3%). Instruction prompt tuning further produced Med-PaLM, which reached 67.2% on MedQA with chain-of-thought and self-consistency.\n\nChunks cited: `clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k00.md`, `k01.md`, `k04.md`, `k30.md`, `k31.md`, `k76.md`.",
+ "is_error": false,
+ "latency_s": 119.0,
+ "sdk_duration_ms": 116448,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "What is MultiMedQA and how did Flan-PaLM perform on MedQA?",
+    "kb_id": "Corpus-Chunks800"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MultiMedQA benchmark Flan-PaLM MedQA accuracy",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 121249,
+  "output": 575,
+  "cache_read": 256,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.6207480000000001,
+ "timeline": [
+  {
+   "t": 2.58,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 18.37,
+   "event": "text",
+   "detail": "57"
+  },
+  {
+   "t": 18.37,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 67.88,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 67.88,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 118.98,
+   "event": "text",
+   "detail": "1049"
+  },
+  {
+   "t": 119.0,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll run dense vector retrieval on the specified index.\n\n",
+  "**Answer (grounded in retrieved chunks):**\n\nMultiMedQA is a benchmark curated for medical question answering that spans medical exam, medical research, and consumer medical questions; it comprises seven datasets, including the newly introduced HealthSearchQA (commonly searched health questions) alongside MedQA, MedMCQA, PubMedQA, and MMLU clinical topics. Flan-PaLM — an instruction-tuned variant of the 540-billion-parameter PaLM — was evaluated on MultiMedQA using few-shot, chain-of-thought, and self-consistency prompting. On the MedQA (USMLE) dataset of 4-option questions, Flan-PaLM 540B achieved 67.6% multiple-choice accuracy, surpassing the previous state of the art by over 17% (beating the DRAGON model's 47.5% by 20.1%, compared with PubMedGPT at 50.3%). Instruction prompt tuning further produced Med-PaLM, which reached 67.2% on MedQA with chain-of-thought and self-consistency.\n\nChunks cited: `clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k00.md`, `k01.md`, `k04.md`, `k30.md`, `k31.md`, `k76.md`."
+ ],
+ "qid": "BQ03",
+ "via": "chat"
+}

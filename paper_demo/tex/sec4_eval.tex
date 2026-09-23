@@ -1,36 +1,59 @@
-% Evidence sources and discrepancies are retained in EVIDENCE-AUDIT.md.
-\section{Demonstration Evidence and Limitations}
+% All numbers in this section are assembled and asserted from saved artifacts
+% by benchmark-suite/scripts/108_pipeline_evidence.py (results/r2_pipeline_100.json):
+%   ingest   = results/ingest_report.json (round 1) +
+%              results/r2_ingest_report.json (round 2) +
+%              results/r2_organize/o1_survey.json
+%   organize = results/r2_organize/ (audit_manifest, o2_duplicates, report)
+%   retrieval= results/experiment_chat_20260922-211000/ (audit_paper_numbers.json,
+%              30 traces; keyword-verified = 107_exp_grade kw_ok with
+%              --qfile qa_questions.json) + results/r2_exp_corpus.json
+%   failure  = results/honest_failure_probe.json (scripted out-of-corpus probes)
+% Part/section counts use the case-insensitive pattern
+% r'part \d|§\s?\d|section \d|sections \d|table \d' over the saved answers.
+% Figure 3 is generated from the same traces by
+% figures/submission-20260920/build_fig3_dual.py (verbatim-substring gates).
+\section{Measured Three-Mode Run and Limitations}
 \label{sec:eval}
 
-We examine saved operational traces for ten questions and three out-of-corpus
-probes over 50 papers in five category bases, comprising 165 stored documents
-and parts. Track~A pairs tool-execution records with saved \sys{} answers; Track~B uses an external agent
-with file tools over exported papers; Track~C uses dense retrieval with a
-4{,}000-character context budget. A separate regression using the raw questions
-passes 9/10 cases: each pass requires the designated paper among the top three
-retrieved candidates and at least one literal gold keyword in their combined
-snippets. BQ06 retrieves its designated paper but lacks the required keyword.
-This checks snippet coverage, not final-answer correctness.
+The corpus was built by the platform's own ingest loop, so records exist
+for every stage attendees are asked to trust
+(Table~\ref{tab:pipeline}); a monitored three-mode comparison follows
+(Figure~\ref{fig:threeway}, bottom strip).
 
-The three out-of-corpus examples combine script-collected retrieval and
-catalog evidence with predefined agent-authored judgments and templated
-not-found reports. They illustrate the reporting format, not measured
-autonomous abstention. The census counts 165 catalog entries but retains
-153 document names; it does not establish exhaustive content inspection. C explicitly abstains in two of ten saved
-answers. These records illustrate how insufficient evidence is reported;
-non-abstention does not establish correctness. Gate scores are agent-authored rubric judgments, not independent
-correctness assessments. Attendees can inspect the recorded decisions alongside candidate
-text and source references, including where the available trace does not
-fully support an answer.
+\textbf{Ingest and organization.}
+MinerU parsed all 100 papers; the routing skill placed each by its content
+into one of five bases, and the 30k-character ceiling split long texts into
+322 stored documents, each passing the nine-point ingest final check
+(repository checklist). A later organization pass re-read all 322
+documents, found no true duplicates (35 near-pairs are parts of the same
+paper), upgraded 165 descriptions, and verified storage and retrieval
+stability (Table~\ref{tab:pipeline}).
 
-The tracks use different evidence windows and execution configurations.
-A's scripted, fixed rewrites include expected-answer terms, precluding a fair
-retrieval comparison. B's file references are self-reported without retained
-read events. C loses document metadata at the logging adapter, a limitation
-of this reproduction rather than dense retrieval. Resolved LLM configurations
-are not archived per answer, and cache state and parametric knowledge are
-uncontrolled. A records retrieval and read times but not answer-authoring time,
-so its end-to-end latency is unavailable. These selected traces support an
-operational demonstration, not claims of answer accuracy, speed advantage,
-or general efficacy.
+\textbf{Retrieval.}
+Ten questions ran through three modes that differ only in evidence route,
+permissions, and prompt framing (same corpus, questions, harness, and
+endpoint). Metrics (Figure~\ref{fig:threeway}, bottom strip): Grounded =
+the trace cites the designated paper (strict arXiv-id match);
+keyword-verified = at least 60\% of gold key facts, fixed in advance, at
+word boundaries (deterministic); citations pattern-matched over saved
+answers. Two findings frame the demo. First, the bare agent always
+locates the designated paper (10/10 grounded) --- file search is not the
+bottleneck --- yet keyword verification passes only 6/10, no more than
+dense retrieval: locating evidence and synthesizing a complete answer are
+different skills. The platform pairs high grounding with high verification
+(9/10 on each), the only mode to do so. Second, the citation split (7--4--1)
+is the design difference this demo exists to show: only the platform's
+answers carry base/document/part/section addresses.
+Figure~\ref{fig:threeway} replays two of these conversations verbatim.
 
+\textbf{Costs and limitations.}
+The platform is slowest and costliest (113\,s and \$0.49 versus 43\,s and
+\$0.16 per question): the gap is bought with multi-step reading, visible
+in the traces. Grading is deliberately conservative (BQ08's bare-agent
+answer's ``oxygen (anionic) redox'' and plural ``cathodes'' score 0/2
+under word-boundary matching), and one platform answer (BQ02) grounds a
+correct NISQ definition to a neighboring error-mitigation survey ---
+shown as-is. Correctness reflects our reading; the comparison is
+operational, not controlled; cache state uncontrolled. Three
+absent-paper questions exercise the scoped not-found reports
+(Section~\ref{sec:demo}).

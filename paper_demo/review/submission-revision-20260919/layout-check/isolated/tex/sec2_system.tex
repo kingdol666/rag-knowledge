@@ -1,0 +1,56 @@
+\section{System and Agent Workflow}
+\label{sec:system}
+
+\subsection{Services and Agent Operations}
+\sys{} combines a web console, a FastAPI backend, a service-management CLI
+(\texttt{ragctl}), and an MCP server~\cite{mcp}. The inspected implementation
+exposes 41 \texttt{kb\_*} knowledge-management tools within a 94-tool inventory,
+including document creation, movement, tagging, search, and offset-addressed
+reads. The console calls HTTP services; MCP-capable agents operate the same
+resources through tools. These interfaces share data and operations, not
+necessarily a reasoning policy: ordinary search endpoints return candidates
+without requiring a content-gate judgment.
+
+Figure~\ref{fig:arch} separates the services from the packaged agent skills
+that prescribe the demonstrated workflows. ChromaDB stores BGE-M3
+vectors~\cite{bge-m3}; Neo4j supports document relations; Markdown and
+JSON/YAML metadata retain content and collection structure. Graph navigation
+is optional, not the evaluated retrieval route. Deployment requires the
+services, model weights, and a supported, configured agent harness.
+
+\subsection{Preparing Addressable Evidence}
+MinerU converts PDFs to structured Markdown~\cite{mineru}. Long texts are
+split at a configurable character ceiling (30,000 in the supplied corpus).
+Retained headings and part identifiers locate a passage within its document;
+line-offset reads allow an agent to continue beyond an initial excerpt.
+
+The organization skill asks the agent to inspect parsed content, select among
+existing category bases, and use tools to place and tag documents. The
+workflow explicitly checks the resulting parts and indexing status:
+successful upload alone does not establish complete tagging and indexing.
+Administrators retain control over the bases and permissions. The five-base
+collection is a demonstration configuration, not a platform restriction.
+
+\subsection{Read, Assess, and Escalate}
+QDCVR stands for Query-Driven Content-Verified Retrieval. Its skill rewrites
+a query,
+recalls vector candidates across selected bases, and reads their text.
+\emph{Content-verified} denotes a prompted relevance assessment, not guaranteed
+correctness. The executing agent assigns
+\[
+s=s_{\mathrm{topic}}+s_{\mathrm{scenario}}+s_{\mathrm{evidence}},
+\]
+with ranges $0$--$3$, $0$--$3$, and $0$--$2$. A score of at least 6 permits
+a direct answer. A score-5 candidate is retained as a partial-evidence
+backstop; candidates scoring at most 4 are discarded. If none scores at least
+6, the librarian inspects base summaries and document metadata, searches
+selectively, and reads new candidates. If no stronger evidence emerges, the
+skill permits an explicitly attributed answer from a usable score-5 backstop.
+
+Answers contain search paths, answer, sources, confidence, and blind spots;
+evidence is addressable by base, document, part, and section. If neither strong evidence
+nor a usable backstop remains, the skill requests a not-found report with
+scope, near miss, and reason. These instructions rely on agent compliance. The
+supplied artifacts retain candidate excerpts and answer records; mutable
+file-tree metadata is not an append-only per-query audit log.
+

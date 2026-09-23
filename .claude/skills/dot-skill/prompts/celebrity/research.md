@@ -60,7 +60,7 @@ These sources are permanently excluded — never cite them as evidence:
 **Chinese figures:**
 - B站 (Bilibili) original videos, especially long interviews
 - 小宇宙 (Xiaoyuzhou) podcasts
-- Authoritative media: 36氪, 晚点LatePost, 财新, 极客公园, 虎嗅
+- Authoritative media: 36氪 (36Kr), 晚点LatePost (LatePost), 财新 (Caixin), 极客公园 (GeekPark), 虎嗅 (Huxiu)
 - Official Weibo (verified account, direct posts only)
 - Published books (via legitimate sources)
 
@@ -92,7 +92,7 @@ Research must cover six dimensions. Think of each dimension as an independent in
 Do not write one monolithic note. Each dimension produces its own research file.
 Do not collapse the whole pass into one monolithic note.
 
-### Dimension 1: Writings (著作与文字)
+### Dimension 1: Writings
 
 **Target**: Systematic, considered positions from their own pen.
 
@@ -104,7 +104,7 @@ Search for:
 
 **What to extract**: Core theses, reasoning chains, how they build an argument.
 
-### Dimension 2: Conversations (对话与访谈)
+### Dimension 2: Conversations
 
 **Target**: How they think on their feet, under pressure, in dialogue.
 
@@ -116,7 +116,7 @@ Search for:
 
 **What to extract**: How they handle unexpected questions, how they disagree, what they return to repeatedly.
 
-### Dimension 3: Expression DNA (表达风格)
+### Dimension 3: Expression DNA
 
 **Target**: Linguistic fingerprint — not what they say, but how they say it.
 
@@ -130,7 +130,7 @@ Analyze across multiple sources:
 
 **What to extract**: Style markers that could pass a "100-word blind test" — could you recognize this person from a paragraph with the name removed?
 
-### Dimension 4: Decisions (关键决策)
+### Dimension 4: Decisions
 
 **Target**: What they actually did, not just what they said.
 
@@ -143,7 +143,7 @@ Search for:
 
 **What to extract**: Decision patterns, risk tolerance, what kind of evidence moves them.
 
-### Dimension 5: External Views (他者视角)
+### Dimension 5: External Views
 
 **Target**: How others see them — especially the gaps between self-image and outside image.
 
@@ -155,7 +155,7 @@ Search for:
 
 **What to extract**: The version of this person that exists in other people's heads, especially where it diverges from their self-narrative.
 
-### Dimension 6: Timeline (时间线与变化)
+### Dimension 6: Timeline
 
 **Target**: How their thinking has evolved, not just what happened when.
 

@@ -67,7 +67,7 @@ def concept():
             e.set('height', '468')
         if e.tag.endswith('text'):
             e.text = {'QDCVR': 'QDCVR (agent-executed skill)',
-                      '800-char chunks': '≈800-token windows',
+                      '800-char chunks': '≈800-character windows',
                       'Dense retrieval → top 2': 'Dense retrieval → pack 2 excerpts',
                       '4,000-char evidence window': '≤4,000-character evidence window'}.get(e.text, e.text)
     additions = [
@@ -88,10 +88,13 @@ def concept():
         text(40,470,'Compared configurations,',20,600),
         text(40,497,'not a claim of accuracy superiority.',19),
         text(20,582,'0–8 rubric: ≥6 direct; usable P1 =5 may support an attributed answer after fallback. Scores are agent judgments.',16),
+        # lane accent bars (visual polish: blue = dense baseline, teal = QDCVR)
+        node('rect', x=20, y=94, width=468, height=4, fill='#6c86a8'),
+        node('rect', x=512, y=94, width=468, height=4, fill='#2f7d5f'),
     ]
     g.extend(additions)
     root.find(f'{{{NS}}}desc').text = (
-        'BQ02 shared NISQ query. Left: current reproduction scripts use approximately 800-token windows, '
+        'BQ02 shared NISQ query. Left: current reproduction scripts use approximately 800-character windows, '
         'retrieve ten candidates, then pack two excerpts within a 4,000-character budget for single generation; provenance is not logged '
         'by this harness. Right: an agent executes QDCVR, reads candidates and self-assesses them on a 0–8 '
         'rubric. Initial score ≥6 yields a direct cited answer; score 5 is retained as a P1 backstop and scores ≤4 are discarded while fallback runs. '
@@ -223,6 +226,27 @@ def find_record(filename, key, value):
     return result
 
 
+def find_frozen(filename, key, value):
+    data = json.loads((OUT / 'inputs' / filename).read_text(encoding='utf-8'))
+    def walk(item):
+        if isinstance(item, dict):
+            if item.get(key) == value:
+                return item
+            children = item.values()
+        elif isinstance(item, list):
+            children = item
+        else:
+            return None
+        for child in children:
+            result = walk(child)
+            if result is not None:
+                return result
+        return None
+    result = walk(data)
+    assert result is not None, (filename, key, value)
+    return result
+
+
 def verify_sources():
     skill = (ROOT/'.claude/skills/knowledgebase-search/SKILL.md').read_text(encoding='utf-8')
     for phrase in ('Keep as **P1 backstop**', 'adopt with attribution', 'answer from the backstop', 'yields no P0/P1'):
@@ -239,12 +263,16 @@ def verify_sources():
     methods = ast.parse((ROOT/'benchmark-suite/algorithms/methods.py').read_text(encoding='utf-8-sig'))
     budget = next(n for n in methods.body if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id == 'BUDGET' for t in n.targets))
     assert ast.literal_eval(budget.value) == 4000
-    assert find_record('skill_track_answers.json','qid','BQ01')['gate']['score'] == 8
+    # fig3-evidence renders the 2026-09-19 approved saved case; the live
+    # results/ files are overwritten by later runs, so assertions read the
+    # frozen copies (commit 8e56951) recorded in inputs/. fig3-evidence is a
+    # legacy asset: the manuscript now includes fig3-answers (submission-20260920).
+    assert find_frozen('frozen-skill_track_answers.json','qid','BQ01')['gate']['score'] == 8
     assert find_record('honest_failure_probe.json','pid','P2')['gate']['score'] == '1/8'
     assert find_record('honest_failure_probe.json','pid','P2')['verdict'] == 'NOT_FOUND'
-    c = find_record('track_bc.json','qid','BQ01')['track_c_dense_rag']
+    c = find_frozen('frozen-track_bc.json','qid','BQ01')['track_c_dense_rag']
     assert (c['evidence_chunks'], c['evidence_chars'], c['evidence_docs']) == (2,2854,[])
-    hits = find_record('skill_track_evidence.json','qid','BQ01')['hits']
+    hits = find_frozen('frozen-skill_track_evidence.json','qid','BQ01')['hits']
     assert any('part 1 of 2' in h['doc_path'] and '3.2.3' in h['chunk_text'] for h in hits)
     assert any('part 2 of 2' in h['doc_path'] and '7 Conclusion' in h['chunk_text'] for h in hits)
 
@@ -265,7 +293,7 @@ def main():
             source = ET.tostring(root, encoding='unicode')
             assert '7/8' not in source and '<image' not in source and '<foreignObject' not in source
             assert root.find(f'{{{NS}}}desc').text
-            assert '800-char' not in source and 'Dense retrieval → top 2' not in source
+            assert '800-char chunks' not in source and 'Dense retrieval → top 2' not in source
             assert 'YAML audit' not in source
             labels = [e.text for e in root.iter(f'{{{NS}}}text')]
             if name != 'fig3-evidence':

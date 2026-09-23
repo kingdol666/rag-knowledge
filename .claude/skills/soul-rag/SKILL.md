@@ -10,7 +10,7 @@ description: >
   Triggers: answer with a persona after retrieval, persona-augmented retrieval, look up with
   persona XX, answer in XX's voice, SOUL enhancement, persona-augmented RAG, persona-flavored
   RAG, soul-rag, look it up and answer with the research persona, find XX in the knowledge
-  base and summarize with a persona.
+  base and summarize with a persona. 中文触发: 人格增强检索, 人格问答, 用XX人格回答, 检索后用XX人格总结.
 ---
 
 # SOUL-RAG — Retrieval-Augmented Persona Q&A

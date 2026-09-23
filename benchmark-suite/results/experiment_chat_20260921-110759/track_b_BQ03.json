@@ -1,0 +1,82 @@
+{
+ "track": "b",
+ "question": "What is MultiMedQA and how did Flan-PaLM perform on the MedQA benchmark?",
+ "answer": "**MultiMedQA** is a benchmark curated by the authors comprising **seven medical question-answering datasets**: six existing ones — MedQA (USMLE), MedMCQA, PubMedQA, LiveQA, MedicationQA, and MMLU clinical topics — plus a newly introduced seventh, **HealthSearchQA** (3,375 commonly searched consumer health questions). It spans medical exam, medical research, and consumer question types to probe LLMs' clinical knowledge and QA capabilities (`clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md`).\n\nOn **MedQA (USMLE)**, **Flan-PaLM 540B reached 67.6% accuracy** (with 4 answer options), exceeding the previous state of the art by **over 17%** — the prior best being PubMedGPT at 50.3%. The paper notes this as its headline result, with companion SOTA scores of 57.6% on MedMCQA and 79.0% on PubMedQA.",
+ "is_error": false,
+ "latency_s": 82.6,
+ "sdk_duration_ms": 80064,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "MultiMedQA"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "MultiMedQA|Flan-PaLM|MedQA",
+    "path": "clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 81374,
+  "output": 457,
+  "cache_read": 37248,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.43691899999999995,
+ "timeline": [
+  {
+   "t": 2.53,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 29.98,
+   "event": "text",
+   "detail": "71"
+  },
+  {
+   "t": 30.41,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 30.42,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 34.93,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 82.53,
+   "event": "text",
+   "detail": "832"
+  },
+  {
+   "t": 82.56,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the files for information about MultiMedQA and Flan-PaLM.\n\n",
+  "**MultiMedQA** is a benchmark curated by the authors comprising **seven medical question-answering datasets**: six existing ones — MedQA (USMLE), MedMCQA, PubMedQA, LiveQA, MedicationQA, and MMLU clinical topics — plus a newly introduced seventh, **HealthSearchQA** (3,375 commonly searched consumer health questions). It spans medical exam, medical research, and consumer question types to probe LLMs' clinical knowledge and QA capabilities (`clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md`).\n\nOn **MedQA (USMLE)**, **Flan-PaLM 540B reached 67.6% accuracy** (with 4 answer options), exceeding the previous state of the art by **over 17%** — the prior best being PubMedGPT at 50.3%. The paper notes this as its headline result, with companion SOTA scores of 57.6% on MedMCQA and 79.0% on PubMedQA."
+ ],
+ "qid": "BQ03",
+ "via": "chat"
+}

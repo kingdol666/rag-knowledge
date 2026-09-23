@@ -1,56 +1,41 @@
 \section{System and Agent Workflow}
 \label{sec:system}
 
-\subsection{Services and Agent Operations}
-\sys{} combines a web console, a FastAPI backend, a service-management CLI
-(\texttt{ragctl}), and an MCP server~\cite{mcp}. The inspected implementation
-exposes 41 \texttt{kb\_*} knowledge-management tools within a 94-tool inventory,
-including document creation, movement, tagging, search, and offset-addressed
-reads. The console calls HTTP services; MCP-capable agents operate the same
-resources through tools. These interfaces share data and operations, not
-necessarily a reasoning policy: ordinary search endpoints return candidates
-without requiring a content-gate judgment.
+\subsection{Services and Interfaces}
+\sys{} ships as a web console, a FastAPI backend, a \texttt{ragctl} CLI,
+and an MCP server~\cite{mcp} exposing 41 \texttt{kb\_*} knowledge-management
+tools inside a 94-tool inventory: creation, movement, tagging, search, and
+offset-addressed reads. Console, CLI, and MCP clients operate the same
+resources through the same tools; they share data and operations, not a
+reasoning policy --- only the packaged skill adds the gate. ChromaDB stores
+BGE-M3 vectors~\cite{bge-m3}, Neo4j holds document relations, and Markdown
+plus JSON/YAML metadata keep the collection inspectable; graph navigation
+is optional and not the evaluated route.
 
-Figure~\ref{fig:arch} separates the services from the packaged agent skills
-that prescribe the demonstrated workflows. ChromaDB stores BGE-M3
-vectors~\cite{bge-m3}; Neo4j supports document relations; Markdown and
-JSON/YAML metadata retain content and collection structure. Graph navigation
-is optional, not the evaluated retrieval route. Deployment requires the
-services, model weights, and a supported, configured agent harness.
+\subsection{Ingest: From PDF to Addressable Parts}
+MinerU converts PDFs to structured Markdown~\cite{mineru}; texts beyond a
+30,000-character ceiling are split into parts, and retained headings
+support line-offset reads. The organization skill inspects the parsed
+content, selects among existing category bases (proposing a new one only
+when none fits), and places and tags the document. Administrators keep
+control of bases; the five-base layout is a demonstration configuration,
+not a platform limit.
 
-\subsection{Preparing Addressable Evidence}
-MinerU converts PDFs to structured Markdown~\cite{mineru}. Long texts are
-split at a configurable character ceiling (30,000 in the supplied corpus).
-Retained headings and part identifiers locate a passage within its document;
-line-offset reads allow an agent to continue beyond an initial excerpt.
-
-The organization skill asks the agent to inspect parsed content, select among
-existing category bases, and use tools to place and tag documents. The
-workflow explicitly checks the resulting parts and indexing status:
-successful upload alone does not establish complete tagging and indexing.
-Administrators retain control over the bases and permissions. The five-base
-collection is a demonstration configuration, not a platform restriction.
-
-\subsection{Read, Assess, and Escalate}
-QDCVR stands for Query-Driven Content-Verified Retrieval. Its skill rewrites
-a query,
-recalls vector candidates across selected bases, and reads their text.
-\emph{Content-verified} denotes a prompted relevance assessment, not guaranteed
-correctness. The executing agent assigns
-\[
-s=s_{\mathrm{topic}}+s_{\mathrm{scenario}}+s_{\mathrm{evidence}},
-\]
-with ranges $0$--$3$, $0$--$3$, and $0$--$2$. A score of at least 6 permits
-a direct answer. A score-5 candidate is retained as a partial-evidence
-backstop; candidates scoring at most 4 are discarded. If none scores at least
-6, the librarian inspects base summaries and document metadata, searches
-selectively, and reads new candidates. If no stronger evidence emerges, the
-skill permits an explicitly attributed answer from a usable score-5 backstop.
-
-Answers contain search paths, answer, sources, confidence, and blind spots;
-evidence is addressable by base, document, part, and section. If neither strong evidence
-nor a usable backstop remains, the skill requests a not-found report with
-scope, near miss, and reason. These instructions rely on agent compliance. The
-supplied artifacts retain candidate excerpts and answer records; mutable
-file-tree metadata is not an append-only per-query audit log.
-
+\subsection{Retrieve: Read, Assess, Escalate}
+The retrieval skill rewrites the query, recalls vector candidates across
+bases, and reads their text. Each candidate is scored by a prompted rubric,
+$s=s_{\mathrm{topic}}+s_{\mathrm{scenario}}+s_{\mathrm{evidence}}$ over
+ranges 0--3, 0--3, and 0--2: whether the body is directly about the query
+subject, solves the query's problem, and carries directly quotable data or
+conclusions; the full rubric ships in the repository. A score of at least 6
+permits a cited answer whose sources name base, document, part, and section;
+a score-5 candidate is retained as an explicitly attributed backstop;
+candidates scoring at most 4 are discarded. A failed gate is information,
+not noise: the skill switches from ranking to browsing --- base summaries,
+tag-matched shelves, targeted re-search --- rather than issuing more vector
+queries. A usable backstop yields a qualified answer; nothing usable yields
+a not-found report with scope, near miss, reason, and remedy, and answer
+records keep the search path, confidence, and blind spots.
+\emph{Content-verified} denotes this prompted judgment, not guaranteed
+correctness. Saved artifacts retain candidate excerpts and answer records,
+though mutable file-tree metadata is not an append-only audit log.

@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  html,body{margin:0;padding:0;background:#ffffff}
+  svg{display:block}
+  text{font-family:'Helvetica Neue',Helvetica,Arial,'Segoe UI',sans-serif}
+</style>
+</head>
+<body>
+<svg id="fig" width="1000" height="589" viewBox="0 0 1000 589" role="img"
+     aria-label="QDCVR platform operations and the agent-executed retrieval workflow">
+  <defs>
+    <marker id="arrG" viewBox="0 0 8 8" refX="6.5" refY="4" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#6a7a85"/>
+    </marker>
+    <marker id="arrT" viewBox="0 0 8 8" refX="6.5" refY="4" markerWidth="6.5" markerHeight="6.5" orient="auto">
+      <path d="M0,0 L8,4 L0,8 z" fill="#1f7a5c"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1000" height="589" fill="#ffffff"/>
+
+  <!-- ============ infrastructure lane ============ -->
+  <rect x="14" y="14" width="972" height="64" rx="6" fill="#fafbfc" stroke="#d5dde2" stroke-width="1.2"/>
+  <g font-size="14.5" font-weight="500" text-anchor="middle">
+    <rect x="30" y="30" width="120" height="32" rx="4" fill="#ffffff" stroke="#9ccabb"/>
+    <text x="90" y="50" fill="#253745">Web console</text>
+    <rect x="162" y="30" width="100" height="32" rx="4" fill="#ffffff" stroke="#9ccabb"/>
+    <text x="212" y="50" fill="#253745">ragctl CLI</text>
+    <rect x="274" y="30" width="120" height="32" rx="4" fill="#ffffff" stroke="#9ccabb"/>
+    <text x="334" y="50" fill="#253745">MCP clients</text>
+  </g>
+  <text x="412" y="46" font-size="14.5" font-weight="500" fill="#4d5c66">operate the same</text>
+  <text x="412" y="64" font-size="14.5" font-weight="500" fill="#4d5c66">41 kb_* tools</text>
+  <g font-size="14.5" font-weight="500" text-anchor="middle">
+    <rect x="530" y="30" width="140" height="32" rx="4" fill="#e6f3ec" stroke="#9ccabb"/>
+    <text x="600" y="50" fill="#253745">ChromaDB &#183; BGE-M3</text>
+    <rect x="682" y="30" width="130" height="32" rx="4" fill="#e6f3ec" stroke="#9ccabb"/>
+    <text x="747" y="50" fill="#253745">Neo4j &#183; relations</text>
+    <rect x="824" y="30" width="146" height="32" rx="4" fill="#e6f3ec" stroke="#9ccabb"/>
+    <text x="897" y="50" fill="#253745">Markdown &#183; YAML</text>
+  </g>
+
+  <!-- ================= PANEL (a) ORGANIZE ================= -->
+  <rect x="14" y="92" width="466" height="483" rx="6" fill="#fafbfc" stroke="#d5dde2" stroke-width="1.2"/>
+  <path d="M14,120 H480" stroke="#d5dde2" stroke-width="1"/>
+  <text x="28" y="112" font-size="17" font-weight="600" fill="#175a44" letter-spacing="0.2">(a) ORGANIZE &#8212; from PDF to addressable parts</text>
+
+  <g font-size="15" font-weight="500" text-anchor="middle">
+    <rect x="44" y="132" width="406" height="34" rx="4" fill="#ffffff" stroke="#9ccabb"/>
+    <text x="247" y="154" fill="#253745">PDF arrives in a prepared pool</text>
+    <rect x="44" y="182" width="406" height="34" rx="4" fill="#ffffff" stroke="#9ccabb"/>
+    <text x="247" y="204" fill="#253745">MinerU parse &#8212; structured Markdown</text>
+    <rect x="44" y="232" width="406" height="34" rx="4" fill="#ffffff" stroke="#9ccabb"/>
+    <text x="247" y="254" fill="#253745">Split at the 30k-character ceiling</text>
+    <rect x="44" y="282" width="406" height="34" rx="4" fill="#e6f3ec" stroke="#9ccabb"/>
+    <text x="247" y="304" fill="#253745">Route by content &#8212; select the base</text>
+    <rect x="44" y="332" width="406" height="34" rx="4" fill="#ffffff" stroke="#9ccabb"/>
+    <text x="247" y="354" fill="#253745">Tag &#183; propagate to child parts</text>
+    <rect x="44" y="382" width="406" height="34" rx="4" fill="#ffffff" stroke="#9ccabb"/>
+    <text x="247" y="404" fill="#253745">Index as parts &#8212; base &#9656; document &#9656; part</text>
+  </g>
+  <g stroke="#1f7a5c" stroke-width="1.4">
+    <path d="M247,166 V179" marker-end="url(#arrT)"/>
+    <path d="M247,216 V229" marker-end="url(#arrT)"/>
+    <path d="M247,266 V279" marker-end="url(#arrT)"/>
+    <path d="M247,316 V329" marker-end="url(#arrT)"/>
+    <path d="M247,366 V379" marker-end="url(#arrT)"/>
+  </g>
+
+  <rect x="44" y="432" width="406" height="34" rx="4" fill="#1f7a5c"/>
+  <text x="247" y="454" font-size="15" font-weight="600" fill="#ffffff" text-anchor="middle">Nine-point final check &#8212; all pass</text>
+  <text x="247" y="486" font-size="14" fill="#4d5c66" text-anchor="middle">read-back &#183; base fit &#183; tags &#183; vector probe &#183; graph node &#183;</text>
+  <text x="247" y="504" font-size="14" fill="#4d5c66" text-anchor="middle">storage consistency &#183; metadata hits</text>
+  <text x="247" y="538" font-size="14" font-style="italic" fill="#4d5c66" text-anchor="middle">Every part carries base &#9656; document &#9656; part &#9656; section</text>
+
+  <!-- ================= PANEL (b) RETRIEVE ================= -->
+  <rect x="494" y="92" width="492" height="483" rx="6" fill="#fcfefd" stroke="#c2ddd0" stroke-width="1.2"/>
+  <path d="M494,120 H986" stroke="#bcd9cc" stroke-width="1"/>
+  <text x="508" y="112" font-size="17" font-weight="600" fill="#175a44" letter-spacing="0.2">(b) RETRIEVE &#8212; the agent-executed skill</text>
+
+  <g font-size="15" font-weight="500" text-anchor="middle">
+    <rect x="508" y="132" width="120" height="34" rx="4" fill="#ffffff" stroke="#9ccabb"/>
+    <text x="568" y="154" fill="#253745">Rewrite query</text>
+    <rect x="642" y="132" width="140" height="34" rx="4" fill="#ffffff" stroke="#9ccabb"/>
+    <text x="712" y="154" fill="#253745">Cross-base recall</text>
+    <rect x="796" y="132" width="174" height="34" rx="4" fill="#ffffff" stroke="#9ccabb"/>
+    <text x="883" y="154" fill="#253745">Read candidate text</text>
+    <rect x="508" y="180" width="230" height="40" rx="5" fill="#ffffff" stroke="#1f7a5c" stroke-width="1.8"/>
+    <text x="623" y="198" font-weight="600" fill="#253745">Content gate</text>
+    <text x="623" y="214" font-size="14.5" fill="#1f7a5c">score 0&#8211;8 &#183; rubric on content</text>
+    <rect x="752" y="180" width="218" height="40" rx="5" fill="#e6f3ec" stroke="#9ccabb"/>
+    <text x="861" y="198" font-weight="600" fill="#253745">Read new text</text>
+    <text x="861" y="214" font-size="14.5" fill="#4d5c66">parts / continuation</text>
+  </g>
+  <g stroke="#1f7a5c" stroke-width="1.4">
+    <path d="M629,149 H639" marker-end="url(#arrT)"/>
+    <path d="M783,149 H793" marker-end="url(#arrT)"/>
+  </g>
+  <path d="M883,180 V169" fill="none" stroke="#1f7a5c" stroke-width="1.4" marker-end="url(#arrT)"/>
+
+  <path d="M623,220 V270" fill="none" stroke="#1f7a5c" stroke-width="1.4" marker-end="url(#arrT)"/>
+  <path d="M861,220 V246 H978 V384" fill="none" stroke="#1f7a5c" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <path d="M978,338 H972" fill="none" stroke="#1f7a5c" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arrT)"/>
+  <path d="M978,384 H972" fill="none" stroke="#1f7a5c" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arrT)"/>
+
+  <!-- gate outcomes -->
+  <rect x="522" y="274" width="448" height="36" rx="5" fill="#1f7a5c"/>
+  <text x="538" y="297" font-size="15.5" font-weight="700" fill="#ffffff">&#8805; 6</text>
+  <text x="582" y="297" font-size="15.5" fill="#ffffff"><tspan font-weight="600">Cited answer</tspan> &#8212; base &#9656; document &#9656; part &#9656; section</text>
+
+  <rect x="522" y="320" width="448" height="36" rx="5" fill="#e9f4ef" stroke="#1f7a5c" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <text x="538" y="343" font-size="15.5" font-weight="700" fill="#1f7a5c">= 5</text>
+  <text x="582" y="343" font-size="15.5" fill="#253745"><tspan font-weight="600">Qualified answer</tspan> &#8212; attributed backstop</text>
+
+  <rect x="522" y="366" width="448" height="36" rx="5" fill="#f6f8f9" stroke="#4d5c66" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <text x="538" y="389" font-size="15.5" font-weight="700" fill="#46545e">&#8804; 4</text>
+  <text x="582" y="389" font-size="15.5" fill="#253745"><tspan font-weight="600">Not-found</tspan> &#8212; scope &#183; near miss &#183; reason &#183; remedy</text>
+
+  <text x="522" y="428" font-size="14" fill="#4d5c66">After fallback: a usable score-5 backstop supports the qualified</text>
+  <text x="522" y="446" font-size="14" fill="#4d5c66">answer; no usable candidate yields not-found.</text>
+
+  <!-- librarian browsing strip -->
+  <rect x="508" y="460" width="462" height="34" rx="4" fill="#ffffff" stroke="#9ccabb"/>
+  <text x="746" y="482" font-size="15" font-weight="500" fill="#253745" text-anchor="middle">Librarian browsing &#8212; base summaries &#183; shelves &#183; re-search</text>
+  <path d="M508,477 H500 V153 H505" fill="none" stroke="#1f7a5c" stroke-width="1.4" stroke-dasharray="5 4" marker-end="url(#arrT)"/>
+
+  <text x="746" y="518" font-size="14" font-style="italic" fill="#4d5c66" text-anchor="middle">Answer records keep search path, confidence, and blind spots</text>
+  <text x="746" y="540" font-size="14" font-style="italic" fill="#4d5c66" text-anchor="middle">Gate scores are prompted judgments, not correctness guarantees</text>
+  <text x="746" y="562" font-size="14" font-style="italic" fill="#4d5c66" text-anchor="middle">The dashed edge is the fallback; the solid edge is the direct path</text>
+</svg>
+</body>
+</html>

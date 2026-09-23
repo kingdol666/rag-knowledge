@@ -1,0 +1,89 @@
+{
+ "track": "c",
+ "question": "What problem of visual SLAM in dynamic environments does MLP-SLAM address and how?",
+ "answer": "MLP-SLAM addresses the degradation of visual SLAM performance in dynamic environments containing numerous movable objects such as pedestrians, cars, and buses, where accuracy drops sharply in outdoor scenes. Its key idea is an MLP-based dynamic/static feature-point discriminator built on top of ORB-SLAM2: the system performs ORB feature extraction, then object detection and tracking on the left image, and filters out dynamic feature points before the coarse estimation stage, keeping only points outside bounding boxes or classified as static by the MLP model (`k00.md`, `k09.md`, `k10.md`). Unlike DynaSLAM, which discards all features within semantic masks and suffers high latency from MaskRCNN, MLP-SLAM uses the MLP to identify real dynamic objects rather than discarding whole regions, avoiding information loss (`k04.md`, `k18.md`, `k20.md`). The authors report this is the first application of an MLP as a dynamic/static feature discriminator in the SLAM domain, trained on a purpose-built dataset of over 50,000 feature points (`k00.md`, `k06.md`, `k15.md`).",
+ "is_error": false,
+ "latency_s": 128.8,
+ "sdk_duration_ms": 126745,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MLP-SLAM dynamic environments visual SLAM moving objects problem method",
+    "kb_id": "Corpus-Chunks800"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MLP-SLAM architecture training feature points dynamic static classification network input",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 122287,
+  "output": 559,
+  "cache_read": 42688,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.646754,
+ "timeline": [
+  {
+   "t": 2.08,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 5.01,
+   "event": "text",
+   "detail": "57"
+  },
+  {
+   "t": 5.5,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 56.82,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 98.68,
+   "event": "text",
+   "detail": "58"
+  },
+  {
+   "t": 98.68,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 128.76,
+   "event": "text",
+   "detail": "1071"
+  },
+  {
+   "t": 128.8,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll run dense vector retrieval on the specified index.\n\n",
+  "Let me search for more specific details on the approach.\n\n",
+  "MLP-SLAM addresses the degradation of visual SLAM performance in dynamic environments containing numerous movable objects such as pedestrians, cars, and buses, where accuracy drops sharply in outdoor scenes. Its key idea is an MLP-based dynamic/static feature-point discriminator built on top of ORB-SLAM2: the system performs ORB feature extraction, then object detection and tracking on the left image, and filters out dynamic feature points before the coarse estimation stage, keeping only points outside bounding boxes or classified as static by the MLP model (`k00.md`, `k09.md`, `k10.md`). Unlike DynaSLAM, which discards all features within semantic masks and suffers high latency from MaskRCNN, MLP-SLAM uses the MLP to identify real dynamic objects rather than discarding whole regions, avoiding information loss (`k04.md`, `k18.md`, `k20.md`). The authors report this is the first application of an MLP as a dynamic/static feature discriminator in the SLAM domain, trained on a purpose-built dataset of over 50,000 feature points (`k00.md`, `k06.md`, `k15.md`)."
+ ],
+ "qid": "BQ09",
+ "via": "chat"
+}

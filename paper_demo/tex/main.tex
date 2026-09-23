@@ -1,17 +1,31 @@
-% CIKM 2026 Demonstration draft, revised 2026-09-19.
+% CIKM 2026 Demonstration draft, revised 2026-09-23 (re-sourced to the
+% monitored run experiment_chat_20260922-211000; BQ question set; dual-panel
+% Figure 3; keyword-verified row added). Earlier pass: abstract
+% tightened, one-figure-per-page enforced Figs. 1/2/3 on pp. 2/3/4, Scenario 2
+% re-sourced to the monitored run experiment_chat_20260921-181449).
 % Official format: sigconf, non-anonymous, <=4 pages of body incl. appendices/acks.
 % Only GenAI Usage Disclosure and references may extend beyond that limit.
 % AUTHOR ACTION: replace author placeholders; confirm submission eligibility.
 \documentclass[sigconf]{acmart}
 \setcopyright{none}
 \settopmatter{printacmref=true,printfolios=true}
-\acmConference[CIKM '26]{Proceedings of the 35th ACM International Conference on Information and Knowledge Management}{November 9--13, 2026}{Rome, Italy}
-\acmBooktitle{CIKM '26, November 9--13, 2026, Rome, Italy}
+\acmConference[CIKM '26]{Proceedings of the 35th ACM International Conference on Information and Knowledge Management}{November 9--11, 2026}{Rome, Italy}
+\acmBooktitle{CIKM '26, November 9--11, 2026, Rome, Italy}
 \acmISBN{}
 \acmDOI{}
 
 \usepackage{booktabs}
+\usepackage{xurl}
 \newcommand{\sys}{\textsc{Qdcvr}}
+% One full-width figure per page (Figs. 1/2/3 land on pp. 2/3/4). Fig. 3 is a
+% double-column float (dbltop queue); Tables 1-2 are column floats, and
+% topnumber=1 splits them across the p. 4 column tops (T1 left, T2 right)
+% instead of stacking both over the left column.
+\setcounter{topnumber}{1}
+\setcounter{totalnumber}{4}
+\renewcommand{\topfraction}{.9}
+\renewcommand{\textfraction}{.05}
+\renewcommand{\floatpagefraction}{.8}
 
 \begin{CCSXML}
 <ccs2012>
@@ -34,31 +48,84 @@
 \maketitle
 \input{sec1_intro}
 
+% Full-width floats are declared up front so they meet pages 2/3/4 in reading
+% order; declaring them later lets them drift past the experiment section.
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{../figures/submission-20260919/fig1-concept.pdf}
-\caption{Two evidence-handling workflows for the same question. The reproduced dense baseline retrieves candidates and packs two excerpts for one generation call; its logging adapter does not retain source-document metadata. The QDCVR skill asks an agent to read section-addressed evidence and assess it before answering. Initial scores below six invoke recovery; a usable score-five backstop may support an explicitly qualified answer after recovery. This schematic explains the configurations, not a general accuracy ranking.}
-\Description{A shared NISQ question leads to two workflows. The reproduced dense baseline uses fixed windows, dense retrieval, a two-excerpt context and generation. QDCVR reads section-addressed evidence and applies a zero-to-eight gate. A score of at least six leads to a cited answer; otherwise a librarian search and re-reading lead to a strong-evidence answer, a qualified score-five backstop answer, or a scoped not-found report when no usable evidence remains.}
+\includegraphics[width=\textwidth]{../figures/submission-20260922/fig1-core.pdf}
+\caption{QDCVR at a glance. Left: a conventional dense-RAG configuration ---
+fixed chunks, retrieval of two excerpts, a packed context, single
+generation; sources are not addressable. Right: the two QDCVR agent loops ---
+autonomous ingest (parse, route by content, tag, index parts with
+base/document/part/section addresses) and librarian-style retrieval
+(rewrite, cross-base recall, read, 0--8 content gate, then cited answer,
+qualified answer, or scoped not-found). The left lane is shown for contrast;
+the evaluated dense variant packs retrieved chunks into one prompt.}
+\Description{Two lanes. The left lane shows a conventional dense-RAG
+pipeline: fixed 800-character chunks, dense retrieval of the top two
+excerpts, a packed context of at most 4,000 characters, and a single
+generation step; the reader gets an answer without citations, sources it
+cannot address, and retrieval errors that pass through silently; provenance
+is not logged. The right lane shows the two QDCVR agent loops. Loop one
+manages the knowledge base autonomously: PDFs are parsed, routed to a
+category base by content, tagged, and indexed as parts that carry base,
+document, part, and section addresses. Loop two retrieves librarian-style:
+the query is rewritten, candidates are recalled across bases and read, a 0-8
+content rubric gates them; a score of at least six yields a cited answer
+with section-addressed sources, lower scores send the librarian to browse
+base summaries and tag-matched shelves for new candidates, ending in a
+qualified answer with attribution or a scoped not-found report. A takeaway
+strip states that the same base, document, part, and section identifiers
+power both loops, so every answer can be checked at its source.}
 \label{fig:teaser}
+\end{figure*}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{../figures/submission-20260922/fig2-architecture.pdf}
+\caption{Platform operations and the agent-executed QDCVR workflow. (a) Parsing, content-guided placement, and part-level checks prepare indexed evidence. (b) The packaged skill prescribes query rewriting, recall, reading, and a conditional content assessment. Scores of at least six permit a direct answer; lower initial scores invoke the librarian. After reassessment, usable score-five evidence can support an attributed backstop answer; no usable evidence yields not-found.}
+\Description{Two areas distinguish offline preparation from the online agent skill. The first parses PDFs into Markdown, organizes and checks parts, and connects to vector, graph, and file-based storage. The second recalls and reads candidates, then branches on a content gate. Passing evidence yields a cited answer. Initial failure triggers targeted librarian search and re-reading; after that search, a usable score-five backstop supports an attributed answer, while no usable evidence yields a report with scope, near miss, reason, and remedy.}
+\label{fig:arch}
 \end{figure*}
 
 \input{sec2_system}
 
-\begin{figure*}[t]
-\centering
-\includegraphics[width=\textwidth]{../figures/submission-20260919/fig2-architecture.pdf}
-\caption{Platform operations and the agent-executed QDCVR workflow. (a) Parsing, content-guided placement, and part-level checks prepare indexed evidence. (b) The packaged skill prescribes query rewriting, recall, reading, and a conditional content assessment. Scores of at least six permit a direct answer; lower initial scores invoke the librarian. After reassessment, usable score-five evidence can support an attributed backstop answer; no usable evidence yields not-found. These instructions are not mandatory behavior of ordinary HTTP search endpoints.}
-\Description{Two areas distinguish offline preparation from the online agent skill. The first parses PDFs into Markdown, organizes and checks parts, and connects to vector, graph, and file-based storage. The second recalls and reads candidates, then branches on a content gate. Passing evidence yields a cited answer. Initial failure triggers targeted librarian search and re-reading; after that search, a usable score-five backstop supports an attributed answer, while no usable evidence yields a report with scope, near miss, and reason.}
-\label{fig:arch}
-\end{figure*}
-
 \input{sec3_demo}
 
+% Declared here so the float is met while page 3 is being typeset and becomes
+% eligible for page 4 --- one full-width figure per page (Figs. 1/2/3 on pp.
+% 2/3/4); referenced in Section 4.
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{../figures/submission-20260919/fig3-evidence.pdf}
-\caption{Selected recorded cases, paraphrased. For the Transformer question, A's part/section labels are reconstructed from its evidence trace; B reports a source filename; C reports insufficient evidence. The lower scripted example combines collected evidence with a predefined agent-authored judgment and not-found report; its catalog census is not exhaustive document reading. Gate scores are agent-authored rubric judgments, not correctness ratings. The excerpts illustrate differences in inspectability, not controlled comparative effectiveness.}
-\Description{Three columns compare the saved Transformer case. QDCVR has trace-derived part and section references and an eight-of-eight self-assessment; the bare agent reports a filename; the dense baseline abstains. A lower sequence shows the fictitious-paper probe: a BERT near miss scores one of eight, the catalog census counts five bases and 165 entries with 153 names retained, and a predefined agent-authored report records not found. The scripted example is not a measured autonomous refusal. All summaries are paraphrases and scores are model judgments.}
+\includegraphics[width=0.92\textwidth]{../figures/submission-20260920/fig3-answers-dual.pdf}
+\caption{Two questions from the 100-paper corpus under the monitored
+three-mode run (one harness and model; one run per mode; ellipses elide
+text): each column shows the saved tool timeline, a verbatim answer
+excerpt, and source references. Panel 1 (BQ04): all three modes answer; A
+quotes the source at part~1 of 2, section~2; B names the file; C quotes
+chunks. Panel 2 (BQ06): A returns a keyword-verified answer after a
+verification re-read; C's chunks name no single factor --- measured
+abstention; the bare agent is omitted for space (it located the file but
+matched no key facts). Bottom strip: run aggregates, columns Platform,
+Bare agent, Dense retrieval (definitions in Section\ref{sec:eval}).}
+\Description{Two stacked panels. Panel one, the Gene Ontology question,
+has three columns. Column A's timeline lists tool-search connection, one
+vector search scoring 0.75, and one two-stage confirmation read; its
+excerpt names Molecular Function, Biological Process, and Cellular
+Component and quotes the primer; its sources name the life-sciences base,
+the primer paper, part 1 of 2, section 2, and a verbatim quote. Column B's
+timeline lists a glob, a grep, and a read; its excerpt states the same
+three ontologies; its source names the paper file with section 2. Column
+C's timeline lists a connection and two vector searches; its excerpt
+quotes the retrieved definition; its source names chunk k00 of the
+800-character chunk index. Panel two, the precipitation-extremes question,
+has two columns. Column A's timeline lists tool-search connection, recall
+by two-stage and vector search, and three document reads; its excerpt
+names mean surface temperature near 295 kelvin; its sources name the
+climate base, the paper, and keyword verification. Column C's timeline
+lists a connection and two vector searches; its excerpt states that the
+retrieved chunks do not directly name a single physical factor; its source
+shows the closest chunk and the measured abstention verdict.}
 \label{fig:threeway}
 \end{figure*}
 

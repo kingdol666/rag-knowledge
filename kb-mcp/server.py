@@ -2869,7 +2869,13 @@ async def soul_delete(soul_kb_id: str, purge_experiences: bool = False) -> str:
     from pathlib import Path as _Path
     client = _client()
     pre = await client.soul_delete(soul_kb_id, purge_experiences)
-    deleted = await client.kb_delete(soul_kb_id)
+    # D1 fix: 后端 REST 删除现已级联删库（deleted 字段）。已成功则复用其结果，
+    # 避免对已删 KB 重复调用 web kb_delete 打 404；后端为旧版本/删除失败时回退自删。
+    pre_deleted = pre.get("deleted") if isinstance(pre.get("deleted"), dict) else None
+    if pre_deleted and pre_deleted.get("success"):
+        deleted = pre_deleted
+    else:
+        deleted = await client.kb_delete(soul_kb_id)
     # tombstone 记入路由日志(可审计)
     try:
         log = _Path(__file__).resolve().parent.parent / "backend" / "app" / "data" / "router-log.jsonl"

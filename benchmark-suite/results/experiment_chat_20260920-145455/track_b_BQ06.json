@@ -1,0 +1,81 @@
+{
+ "track": "b",
+ "question": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+ "answer": "The dominant control is thermodynamic: the increase in the atmosphere's saturation vapor pressure (moisture-holding capacity) with warming, i.e. Clausius–Clapeyron scaling, which gives roughly 6–7% K⁻¹ and is robust and well understood (O'Gorman, §3 and Conclusions). The response is decomposed into thermodynamic, dynamical (changes in vertical velocity ω), and microphysical (precipitation-efficiency ε) contributions, but the thermodynamic term is the one that always intensifies precipitation extremes with warming. Dynamical and precipitation-efficiency effects can matter regionally (tropics, subdaily durations below ~295 K, orographic/snowfall cases), yet in the extratropics the simulated increase \"is close to the thermodynamic contribution at all latitudes, and there is little dynamical contribution from changes in vertical velocities.\"\n\nSource: `climate-science__1503.07557__precipitation-extremes-under-climate-change.md` (O'Gorman, \"Precipitation extremes under climate change\").",
+ "is_error": false,
+ "latency_s": 37.3,
+ "sdk_duration_ms": 30965,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "precipitation extreme"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "climate-science__1503.07557__precipitation-extremes-under-climate-change.md"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 46417,
+  "output": 390,
+  "cache_read": 84928,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.28429899999999997,
+ "timeline": [
+  {
+   "t": 6.5,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 18.58,
+   "event": "text",
+   "detail": "91"
+  },
+  {
+   "t": 18.95,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 19.01,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 22.78,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 37.27,
+   "event": "text",
+   "detail": "995"
+  },
+  {
+   "t": 37.31,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the research papers for content on precipitation extremes and climate change.\n\n",
+  "The dominant control is thermodynamic: the increase in the atmosphere's saturation vapor pressure (moisture-holding capacity) with warming, i.e. Clausius–Clapeyron scaling, which gives roughly 6–7% K⁻¹ and is robust and well understood (O'Gorman, §3 and Conclusions). The response is decomposed into thermodynamic, dynamical (changes in vertical velocity ω), and microphysical (precipitation-efficiency ε) contributions, but the thermodynamic term is the one that always intensifies precipitation extremes with warming. Dynamical and precipitation-efficiency effects can matter regionally (tropics, subdaily durations below ~295 K, orographic/snowfall cases), yet in the extratropics the simulated increase \"is close to the thermodynamic contribution at all latitudes, and there is little dynamical contribution from changes in vertical velocities.\"\n\nSource: `climate-science__1503.07557__precipitation-extremes-under-climate-change.md` (O'Gorman, \"Precipitation extremes under climate change\")."
+ ],
+ "qid": "BQ06",
+ "via": "chat"
+}

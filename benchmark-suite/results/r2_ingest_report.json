@@ -1,0 +1,2470 @@
+{
+ "round": 2,
+ "papers_total": 50,
+ "papers_ok": 50,
+ "papers_failed": [],
+ "docs_created": 154,
+ "indexed_docs": 328,
+ "graph_ok": {
+  "task_status_disclosure": {
+   "计算机与人工智能": "running",
+   "自然科学与地球科学": "running",
+   "生命科学与医学": "running",
+   "工程与能源": "running",
+   "经济与社会": "running"
+  },
+  "evidence": "document-node existence"
+ },
+ "kb_distribution": {
+  "工程与能源": 5,
+  "生命科学与医学": 9,
+  "经济与社会": 4,
+  "自然科学与地球科学": 13,
+  "计算机与人工智能": 19
+ },
+ "records": [
+  {
+   "arxiv_id": "2412.06333",
+   "slug": "artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions",
+   "field": "artificial-intelligence",
+   "kb": "计算机与人工智能",
+   "tags": [
+    "artificial-intelligence",
+    "multi-agent-reinforcement-learning",
+    "hanabi",
+    "convention-augmented-action-space"
+   ],
+   "desc": "多智能体强化学习研究：在合作纸牌游戏 Hanabi 中向动作空间增广约定(conventions)以改进 MARL 合作性能。解决部分可观测、受限通信下的智能体协调问题；基于开源 Hanabi 环境对比多种 SOTA，方法训练快、样本效率高、运行方差小。可回答 Hanabi 基准与约定学习相关问题。",
+   "pq_meta": "如何用约定增广动作空间改进 Hanabi 多智能体合作？",
+   "pq_vec": "How does augmenting the action space with conventions improve MARL cooperation in Hanabi?",
+   "parts": [
+    {
+     "name": "artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 1 of 5).md",
+     "path": "计算机与人工智能/artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 1 of 5).md",
+     "chars": 29620,
+     "desc": "【1/5·Augmenting the action spac】多智能体强化学习研究：在合作纸牌游戏 Hanabi 中向动作空间增广约定(conventions)以改进 MARL 合作性能。解决部分可观测、受限通信下的智能体协调问题；基于开源 Hanabi 环境对比多种 SOTA，方法训练快、样本效率高、运行方差小。可回答 Hanabi 基准与约定学习相关问题。——F. Bredell1\\*, H. A. Engelbrecht1 and J. C. Sc"
+    },
+    {
+     "name": "artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 2 of 5).md",
+     "path": "计算机与人工智能/artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 2 of 5).md",
+     "chars": 26526,
+     "desc": "【2/5·Augmenting the action spac】多智能体强化学习研究：在合作纸牌游戏 Hanabi 中向动作空间增广约定(conventions)以改进 MARL 合作性能。解决部分可观测、受限通信下的智能体协调问题；基于开源 Hanabi 环境对比多种 SOTA，方法训练快、样本效率高、运行方差小。可回答 Hanabi 基准与约定学习相关问题。——## 3 Augmenting the Action Space with Conventi"
+    },
+    {
+     "name": "artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 3 of 5).md",
+     "path": "计算机与人工智能/artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 3 of 5).md",
+     "chars": 25684,
+     "desc": "【3/5·Augmenting the action spac】多智能体强化学习研究：在合作纸牌游戏 Hanabi 中向动作空间增广约定(conventions)以改进 MARL 合作性能。解决部分可观测、受限通信下的智能体协调问题；基于开源 Hanabi 环境对比多种 SOTA，方法训练快、样本效率高、运行方差小。可回答 Hanabi 基准与约定学习相关问题。——## 4.3 Preliminary Results on Small Hanabi To "
+    },
+    {
+     "name": "artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 4 of 5).md",
+     "path": "计算机与人工智能/artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 4 of 5).md",
+     "chars": 26307,
+     "desc": "【4/5·Augmenting the action spac】多智能体强化学习研究：在合作纸牌游戏 Hanabi 中向动作空间增广约定(conventions)以改进 MARL 合作性能。解决部分可观测、受限通信下的智能体协调问题；基于开源 Hanabi 环境对比多种 SOTA，方法训练快、样本效率高、运行方差小。可回答 Hanabi 基准与约定学习相关问题。——## Principles: 1. Colour saves – Players use c"
+    },
+    {
+     "name": "artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 5 of 5).md",
+     "path": "计算机与人工智能/artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 5 of 5).md",
+     "chars": 19614,
+     "desc": "【5/5·Augmenting the action spac】多智能体强化学习研究：在合作纸牌游戏 Hanabi 中向动作空间增广约定(conventions)以改进 MARL 合作性能。解决部分可观测、受限通信下的智能体协调问题；基于开源 Hanabi 环境对比多种 SOTA，方法训练快、样本效率高、运行方差小。可回答 Hanabi 基准与约定学习相关问题。——## Appendix C Statistical Significance Test He"
+    }
+   ],
+   "title": "Augmenting the action space with conventions to improve multi-agent cooperation in Hanabi",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2510.13343",
+   "slug": "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep",
+   "field": "artificial-intelligence",
+   "kb": "计算机与人工智能",
+   "tags": [
+    "artificial-intelligence",
+    "multi-agent-reinforcement-learning",
+    "transformer",
+    "action-decision-order"
+   ],
+   "desc": "提出 AOAD-MAT：在 Multi-Agent Transformer(MAT) 基础上显式建模智能体动作决策顺序的 Transformer 多智能体深度强化学习模型。解决 MAT/ACE 等模型忽略决策次序重要性的问题，用概率分布比率动态定序并在基准任务上验证。可回答决策顺序对 MARL 性能的影响问题。",
+   "pq_meta": "智能体动作决策顺序如何影响 Multi-Agent Transformer 的强化学习性能？",
+   "pq_vec": "Why does the order of action decisions matter in transformer-based multi-agent reinforcement learning (AOAD-MAT)?",
+   "parts": [
+    {
+     "name": "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+     "path": "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+     "chars": 27872,
+     "desc": "【1/2·AOAD-MAT: Transformer-base】提出 AOAD-MAT：在 Multi-Agent Transformer(MAT) 基础上显式建模智能体动作决策顺序的 Transformer 多智能体深度强化学习模型。解决 MAT/ACE 等模型忽略决策次序重要性的问题，用概率分布比率动态定序并在基准任务上验证。可回答决策顺序对 MARL 性能——Shota Takayama and Katsuhide Fujita Graduate S"
+    },
+    {
+     "name": "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 2 of 2).md",
+     "path": "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 2 of 2).md",
+     "chars": 22499,
+     "desc": "【2/2·AOAD-MAT: Transformer-base】提出 AOAD-MAT：在 Multi-Agent Transformer(MAT) 基础上显式建模智能体动作决策顺序的 Transformer 多智能体深度强化学习模型。解决 MAT/ACE 等模型忽略决策次序重要性的问题，用概率分布比率动态定序并在基准任务上验证。可回答决策顺序对 MARL 性能——## 5.1 Experimental Setting Baselines. We comp"
+    }
+   ],
+   "title": "AOAD-MAT: Transformer-based multi-agent deep reinforcement learning model considering agents' order of action decisions",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2303.14061",
+   "slug": "artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult",
+   "field": "artificial-intelligence",
+   "kb": "计算机与人工智能",
+   "tags": [
+    "artificial-intelligence",
+    "multi-agent-reinforcement-learning",
+    "reward-machines",
+    "task-decomposition"
+   ],
+   "desc": "帝国理工学院提出将合作任务分解与奖励机(Reward Machines)学习结合的 MARL 方法：各智能体去中心化学习编码子任务结构的 RM 并据此引导行为，缓解部分可观测环境中奖励的非马尔可夫性，提升策略可解释性并降低合作问题复杂度。可回答奖励机在多智能体任务中如何学习与使用。",
+   "pq_meta": "奖励机如何在合作多智能体强化学习中分解子任务？",
+   "pq_vec": "How are reward machines learned in cooperative multi-agent reinforcement learning tasks?",
+   "parts": [
+    {
+     "name": "artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md",
+     "path": "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md",
+     "chars": 20511,
+     "desc": "【1/3·Learning Reward Machines i】帝国理工学院提出将合作任务分解与奖励机(Reward Machines)学习结合的 MARL 方法：各智能体去中心化学习编码子任务结构的 RM 并据此引导行为，缓解部分可观测环境中奖励的非马尔可夫性，提升策略可解释性并降低合作问题复杂度。可回答奖励机在多智能体任务中如何学习与使用。——Leo Ardon Imperial College London Daniel Furelos-Blanco"
+    },
+    {
+     "name": "artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md",
+     "path": "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md",
+     "chars": 25221,
+     "desc": "【2/3·Learning Reward Machines i】帝国理工学院提出将合作任务分解与奖励机(Reward Machines)学习结合的 MARL 方法：各智能体去中心化学习编码子任务结构的 RM 并据此引导行为，缓解部分可观测环境中奖励的非马尔可夫性，提升策略可解释性并降低合作问题复杂度。可回答奖励机在多智能体任务中如何学习与使用。——## 3.2 Learn Individual Reward Machines We propose to d"
+    },
+    {
+     "name": "artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 3 of 3).md",
+     "path": "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 3 of 3).md",
+     "chars": 5172,
+     "desc": "【3/3·Learning Reward Machines i】帝国理工学院提出将合作任务分解与奖励机(Reward Machines)学习结合的 MARL 方法：各智能体去中心化学习编码子任务结构的 RM 并据此引导行为，缓解部分可观测环境中奖励的非马尔可夫性，提升策略可解释性并降低合作问题复杂度。可回答奖励机在多智能体任务中如何学习与使用。——## REFERENCES [1] Alberto Camacho, Rodrigo Toro Icarte,"
+    }
+   ],
+   "title": "Learning Reward Machines in Cooperative Multi-Agent Tasks",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "1802.09426",
+   "slug": "nlp__1802.09426__tone-biased-mmr-text-summarization",
+   "field": "nlp",
+   "kb": "计算机与人工智能",
+   "tags": [
+    "nlp",
+    "text-summarization",
+    "maximal-marginal-relevance",
+    "tone-bias"
+   ],
+   "desc": "BITS-Pilani 实现 MMR(Maximal Marginal Relevance) 多文档文本摘要并加入语气偏置：通过对特定词集设偏置、限制其他词，生成语气符合读者预期的摘要，兼顾内容准确与冗余控制(λ 可调 0-1)。可回答多文档摘要中如何控制摘要语气的问题。",
+   "pq_meta": "怎样在 MMR 文本摘要中控制生成摘要的语气？",
+   "pq_vec": "How can tone be controlled in MMR-based multi-document text summarization?",
+   "parts": [
+    {
+     "name": "nlp__1802.09426__tone-biased-mmr-text-summarization.md",
+     "path": "计算机与人工智能/nlp__1802.09426__tone-biased-mmr-text-summarization.md",
+     "chars": 18060,
+     "desc": "BITS-Pilani 实现 MMR(Maximal Marginal Relevance) 多文档文本摘要并加入语气偏置：通过对特定词集设偏置、限制其他词，生成语气符合读者预期的摘要，兼顾内容准确与冗余控制(λ 可调 0-1)。可回答多文档摘要中如何控制摘要语气的问题。"
+    }
+   ],
+   "title": "Tone Biased MMR Text Summarization",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2310.10981",
+   "slug": "nlp__2310.10981__instructive-dialogue-summarization-with-quer",
+   "field": "nlp",
+   "kb": "计算机与人工智能",
+   "tags": [
+    "nlp",
+    "dialogue-summarization",
+    "instruction-tuning",
+    "query-aggregation"
+   ],
+   "desc": "A*STAR 提出 InstructDS：将指令微调引入对话摘要，通过摘要锚定查询生成、查询过滤、基于查询的摘要生成三步合成高质量 query 型摘要三元组，统一模型支持多用途对话摘要，缓解用户关注点被忽略的问题。可回答指令化对话摘要的数据合成与训练问题。",
+   "pq_meta": "如何用指令微调让对话摘要模型聚焦用户查询？",
+   "pq_vec": "What is instructive dialogue summarization with query aggregations and how is training data synthesized?",
+   "parts": [
+    {
+     "name": "nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+     "path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+     "chars": 25460,
+     "desc": "【1/4·Instructive Dialogue Summa】A*STAR 提出 InstructDS：将指令微调引入对话摘要，通过摘要锚定查询生成、查询过滤、基于查询的摘要生成三步合成高质量 query 型摘要三元组，统一模型支持多用途对话摘要，缓解用户关注点被忽略的问题。可回答指令化对话摘要的数据合成与训练问题。——Bin Wang, Zhengyuan Liu, Nancy F. Chen Institute for Infocomm Resear"
+    },
+    {
+     "name": "nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+     "path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+     "chars": 28539,
+     "desc": "【2/4·Instructive Dialogue Summa】A*STAR 提出 InstructDS：将指令微调引入对话摘要，通过摘要锚定查询生成、查询过滤、基于查询的摘要生成三步合成高质量 query 型摘要三元组，统一模型支持多用途对话摘要，缓解用户关注点被忽略的问题。可回答指令化对话摘要的数据合成与训练问题。——## 4.3 Ablation Study To provide insights into the effectiveness of "
+    },
+    {
+     "name": "nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 3 of 4).md",
+     "path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 3 of 4).md",
+     "chars": 4066,
+     "desc": "【3/4·Instructive Dialogue Summa】A*STAR 提出 InstructDS：将指令微调引入对话摘要，通过摘要锚定查询生成、查询过滤、基于查询的摘要生成三步合成高质量 query 型摘要三元组，统一模型支持多用途对话摘要，缓解用户关注点被忽略的问题。可回答指令化对话摘要的数据合成与训练问题。——## A.1 ROUGE Implementation In the context of dialogue summarization"
+    },
+    {
+     "name": "nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+     "path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+     "chars": 28163,
+     "desc": "【4/4·Instructive Dialogue Summa】A*STAR 提出 InstructDS：将指令微调引入对话摘要，通过摘要锚定查询生成、查询过滤、基于查询的摘要生成三步合成高质量 query 型摘要三元组，统一模型支持多用途对话摘要，缓解用户关注点被忽略的问题。可回答指令化对话摘要的数据合成与训练问题。——## B Templates and Examples We provide more detailed illustrations o"
+    }
+   ],
+   "title": "Instructive Dialogue Summarization with Query Aggregations",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2110.07844",
+   "slug": "nlp__2110.07844__modeling-endorsement-for-multi-document-abst",
+   "field": "nlp",
+   "kb": "计算机与人工智能",
+   "tags": [
+    "nlp",
+    "multi-document-summarization",
+    "endorsement-modeling",
+    "encoder-decoder"
+   ],
+   "desc": "UCF 与 Bosch 建模多文档摘要中的跨文档背书(endorsement)效应：各文档生成的 synopsis 互为背书者识别显著内容，被强背书的文本段用于增强神经 encoder-decoder 摘要模型，利用同一话题多文档反复陈述提升信息显著性判断。可回答多文档摘要如何利用跨文档重复信息。",
+   "pq_meta": "跨文档背书效应如何用于多文档抽象摘要？",
+   "pq_vec": "How does cross-document endorsement modeling improve multi-document abstractive summarization?",
+   "parts": [
+    {
+     "name": "nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 1 of 3).md",
+     "path": "计算机与人工智能/nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 1 of 3).md",
+     "chars": 24405,
+     "desc": "【1/3·Modeling Endorsement for M】UCF 与 Bosch 建模多文档摘要中的跨文档背书(endorsement)效应：各文档生成的 synopsis 互为背书者识别显著内容，被强背书的文本段用于增强神经 encoder-decoder 摘要模型，利用同一话题多文档反复陈述提升信息显著性判断。可回答多文档摘要如何利用跨文档重复信息。——Logan Lebanoff† Bingqing Wang§ Zhe Feng§ Fei Li"
+    },
+    {
+     "name": "nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 2 of 3).md",
+     "path": "计算机与人工智能/nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 2 of 3).md",
+     "chars": 19234,
+     "desc": "【2/3·Modeling Endorsement for M】UCF 与 Bosch 建模多文档摘要中的跨文档背书(endorsement)效应：各文档生成的 synopsis 互为背书者识别显著内容，被强背书的文本段用于增强神经 encoder-decoder 摘要模型，利用同一话题多文档反复陈述提升信息显著性判断。可回答多文档摘要如何利用跨文档重复信息。——## 6 Experiments Baseline Systems. We compare o"
+    },
+    {
+     "name": "nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 3 of 3).md",
+     "path": "计算机与人工智能/nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 3 of 3).md",
+     "chars": 15972,
+     "desc": "【3/3·Modeling Endorsement for M】UCF 与 Bosch 建模多文档摘要中的跨文档背书(endorsement)效应：各文档生成的 synopsis 互为背书者识别显著内容，被强背书的文本段用于增强神经 encoder-decoder 摘要模型，利用同一话题多文档反复陈述提升信息显著性判断。可回答多文档摘要如何利用跨文档重复信息。——## References Taylor Berg-Kirkpatrick, Dan Gill"
+    }
+   ],
+   "title": "Modeling Endorsement for Multi-Document Abstractive Summarization",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2411.18583",
+   "slug": "large-language-models__2411.18583__automated-literature-review-using-nlp-techni",
+   "field": "large-language-models",
+   "kb": "计算机与人工智能",
+   "tags": [
+    "large-language-models",
+    "retrieval-augmented-generation",
+    "text-summarization",
+    "literature-review-automation"
+   ],
+   "desc": "用 NLP 技术与 LLM 检索增强生成(RAG)自动化文献综述：对比多种方案，在 SciTLDR 数据集上微调 T5 类 Simple T5 做单篇论文摘要，再经 RAG 管线汇编成综述并做 ROUGE 评估。可回答文献综述自动化的管线设计与效果评估问题。",
+   "pq_meta": "如何用 NLP 与 LLM RAG 自动生成文献综述？",
+   "pq_vec": "How can RAG with LLMs and T5 summarization automate literature review generation?",
+   "parts": [
+    {
+     "name": "large-language-models__2411.18583__automated-literature-review-using-nlp-techni.md",
+     "path": "计算机与人工智能/large-language-models__2411.18583__automated-literature-review-using-nlp-techni.md",
+     "chars": 28095,
+     "desc": "用 NLP 技术与 LLM 检索增强生成(RAG)自动化文献综述：对比多种方案，在 SciTLDR 数据集上微调 T5 类 Simple T5 做单篇论文摘要，再经 RAG 管线汇编成综述并做 ROUGE 评估。可回答文献综述自动化的管线设计与效果评估问题。"
+    }
+   ],
+   "title": "Automated Literature Review Using NLP Techniques and LLM-Based Retrieval-Augmented Generation",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2402.12317",
+   "slug": "large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation",
+   "field": "large-language-models",
+   "kb": "计算机与人工智能",
+   "tags": [
+    "large-language-models",
+    "retrieval-augmented-code-generation",
+    "knowledge-base-evolution",
+    "code-generation"
+   ],
+   "desc": "港大等提出 EvoR：检索增强代码生成(RACG)管线中查询与多样化知识库同步演化，突破静态单一知识库对外部知识适配的限制；构建 EvOR-BENCH(LeetCode+DS-1000 改编)覆盖高频更新库与长尾语言，实验显示双指标提升。可回答代码生成中外部知识库如何演化的问题。",
+   "pq_meta": "检索增强代码生成中知识库如何与查询同步演化？",
+   "pq_vec": "What is EvoR and how does it evolve queries and knowledge bases for retrieval-augmented code generation?",
+   "parts": [
+    {
+     "name": "large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 1 of 3).md",
+     "path": "计算机与人工智能/large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 1 of 3).md",
+     "chars": 29398,
+     "desc": "【1/3·EvoR: Evolving Retrieval f】港大等提出 EvoR：检索增强代码生成(RACG)管线中查询与多样化知识库同步演化，突破静态单一知识库对外部知识适配的限制；构建 EvOR-BENCH(LeetCode+DS-1000 改编)覆盖高频更新库与长尾语言，实验显示双指标提升。可回答代码生成中外部知识库如何演化的问题。——Hongjin Su1, Shuyang Jiang2, Yuhang Lai², Haoyuan Wu1, B"
+    },
+    {
+     "name": "large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 2 of 3).md",
+     "path": "计算机与人工智能/large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 2 of 3).md",
+     "chars": 29660,
+     "desc": "【2/3·EvoR: Evolving Retrieval f】港大等提出 EvoR：检索增强代码生成(RACG)管线中查询与多样化知识库同步演化，突破静态单一知识库对外部知识适配的限制；构建 EvOR-BENCH(LeetCode+DS-1000 改编)覆盖高频更新库与长尾语言，实验显示双指标提升。可回答代码生成中外部知识库如何演化的问题。——## 4.3 Repo-level Code Generation Apart from updated lib"
+    },
+    {
+     "name": "large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 3 of 3).md",
+     "path": "计算机与人工智能/large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 3 of 3).md",
+     "chars": 14420,
+     "desc": "【3/3·EvoR: Evolving Retrieval f】港大等提出 EvoR：检索增强代码生成(RACG)管线中查询与多样化知识库同步演化，突破静态单一知识库对外部知识适配的限制；构建 EvOR-BENCH(LeetCode+DS-1000 改编)覆盖高频更新库与长尾语言，实验显示双指标提升。可回答代码生成中外部知识库如何演化的问题。——## E Cost Analysis Despite significant enhancement of Ev"
+    }
+   ],
+   "title": "EVOR: Evolving Retrieval for Code Generation",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2502.00306",
+   "slug": "large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference",
+   "field": "large-language-models",
+   "kb": "计算机与人工智能",
+   "tags": [
+    "large-language-models",
+    "retrieval-augmented-generation",
+    "membership-inference",
+    "adversarial-queries"
+   ],
+   "desc": "UMass/Northeastern 揭示 RAG 系统的成员推断风险：提出 Riddle 式谜语查询绕过查询改写防御，不依赖越狱；IA 方法在 CommandR-7B 等模型上 AUC 达 0.963，显著超 S2MIA/MBA 基线。可回答 RAG 检索语料的隐私泄露与成员推断攻防问题。",
+   "pq_meta": "RAG 系统会如何被成员推断攻击泄露检索库内容？",
+   "pq_vec": "How does stealthy membership inference exploit retrieved documents in retrieval-augmented generation?",
+   "parts": [
+    {
+     "name": "large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 1 of 4).md",
+     "path": "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 1 of 4).md",
+     "chars": 28352,
+     "desc": "【1/4·Riddle Me This! Stealthy M】UMass/Northeastern 揭示 RAG 系统的成员推断风险：提出 Riddle 式谜语查询绕过查询改写防御，不依赖越狱；IA 方法在 CommandR-7B 等模型上 AUC 达 0.963，显著超 S2MIA/MBA 基线。可回答 RAG 检索语料的隐私泄露与成员推断攻防问题。——Ali Naseh\\*† University of Massachusetts Amherst H"
+    },
+    {
+     "name": "large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 2 of 4).md",
+     "path": "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 2 of 4).md",
+     "chars": 29125,
+     "desc": "【2/4·Riddle Me This! Stealthy M】UMass/Northeastern 揭示 RAG 系统的成员推断风险：提出 Riddle 式谜语查询绕过查询改写防御，不依赖越狱；IA 方法在 CommandR-7B 等模型上 AUC 达 0.963，显著超 S2MIA/MBA 基线。可回答 RAG 检索语料的隐私泄露与成员推断攻防问题。——## 5.1 Query Generation We begin by creating a set"
+    },
+    {
+     "name": "large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md",
+     "path": "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md",
+     "chars": 27201,
+     "desc": "【3/4·An Example of Our Generate】UMass/Northeastern 揭示 RAG 系统的成员推断风险：提出 Riddle 式谜语查询绕过查询改写防御，不依赖越狱；IA 方法在 CommandR-7B 等模型上 AUC 达 0.963，显著超 S2MIA/MBA 基线。可回答 RAG 检索语料的隐私泄露与成员推断攻防问题。——## 7.1 Assumptions on RAG Documents While we obser"
+    },
+    {
+     "name": "large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md",
+     "path": "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md",
+     "chars": 18881,
+     "desc": "【4/4·An Example of Our Generate】UMass/Northeastern 揭示 RAG 系统的成员推断风险：提出 Riddle 式谜语查询绕过查询改写防御，不依赖越狱；IA 方法在 CommandR-7B 等模型上 AUC 达 0.963，显著超 S2MIA/MBA 基线。可回答 RAG 检索语料的隐私泄露与成员推断攻防问题。——## C Understanding Llama Behavior To better unders"
+    }
+   ],
+   "title": "Riddle Me This! Stealthy Membership Inference for Retrieval-Augmented Generation",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2303.00445",
+   "slug": "quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu",
+   "field": "quantum-physics",
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "quantum-physics",
+    "quantum-error-mitigation",
+    "nisq",
+    "ground-state-preparation"
+   ],
+   "desc": "UCL 等对 HCl 分子基态制备的 NISQ 量子错误缓解(QEM)策略做系统基准测试：比较零噪声外推、概率错误消除等方法在有噪硬件上的表现，含 225 组对角哈密顿量实验与 bootstrap 方差分析(总计 2.25×10^6 采样)。可回答含噪量子设备上化学基态计算的 QEM 选型问题。",
+   "pq_meta": "哪些量子错误缓解策略适合 NISQ 设备上的分子基态制备？",
+   "pq_vec": "Which quantum error mitigation strategies work best for ground state preparation of the HCl molecule on NISQ devices?",
+   "parts": [
+    {
+     "name": "quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md",
+     "path": "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md",
+     "chars": 25559,
+     "desc": "【1/4·Benchmarking Noisy Interme】UCL 等对 HCl 分子基态制备的 NISQ 量子错误缓解(QEM)策略做系统基准测试：比较零噪声外推、概率错误消除等方法在有噪硬件上的表现，含 225 组对角哈密顿量实验与 bootstrap 方差分析(总计 2.25×10^6 采样)。可回答含噪量子设备上化学基态计算的 QEM 选型问题。——Tim Weaving,1 Alexis Ralli,1 William M. Kirby,2 "
+    },
+    {
+     "name": "quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 2 of 4).md",
+     "path": "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 2 of 4).md",
+     "chars": 29781,
+     "desc": "【2/4·Benchmarking Noisy Interme】UCL 等对 HCl 分子基态制备的 NISQ 量子错误缓解(QEM)策略做系统基准测试：比较零噪声外推、概率错误消除等方法在有噪硬件上的表现，含 225 组对角哈密顿量实验与 bootstrap 方差分析(总计 2.25×10^6 采样)。可回答含噪量子设备上化学基态计算的 QEM 选型问题。——## B. Measurement-Error Mitigation Measurement-e"
+    },
+    {
+     "name": "quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+     "path": "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+     "chars": 25170,
+     "desc": "【3/4·Benchmarking Noisy Interme】UCL 等对 HCl 分子基态制备的 NISQ 量子错误缓解(QEM)策略做系统基准测试：比较零噪声外推、概率错误消除等方法在有噪硬件上的表现，含 225 组对角哈密顿量实验与 bootstrap 方差分析(总计 2.25×10^6 采样)。可回答含噪量子设备上化学基态计算的 QEM 选型问题。——## V. GROUND STATE PREPARATION Before proceeding"
+    },
+    {
+     "name": "quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md",
+     "path": "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md",
+     "chars": 18022,
+     "desc": "【4/4·Benchmarking Noisy Interme】UCL 等对 HCl 分子基态制备的 NISQ 量子错误缓解(QEM)策略做系统基准测试：比较零噪声外推、概率错误消除等方法在有噪硬件上的表现，含 225 组对角哈密顿量实验与 bootstrap 方差分析(总计 2.25×10^6 采样)。可回答含噪量子设备上化学基态计算的 QEM 选型问题。——## ACKNOWLEDGEMENTS T.W. and A.R. acknowledge su"
+    }
+   ],
+   "title": "Benchmarking Noisy Intermediate Scale Quantum Error Mitigation Strategies for Ground State Preparation of the HCl Molecule",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2311.00487",
+   "slug": "quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e",
+   "field": "quantum-physics",
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "quantum-physics",
+    "quantum-error-mitigation",
+    "neural-networks",
+    "echo-evolution"
+   ],
+   "desc": "俄罗斯 VNIIA 提出回声演化(echo evolution)数据生成法训练神经网络做量子错误缓解：初态前向-后向演化回到初态，在含噪处理器上同时采集 noisy/noise-free 训练对，无需经典模拟与电路化简；附录给出不同门错误下校正效率 K 的分析。可回答 QEM 神经网络训练数据如何获取的问题。",
+   "pq_meta": "如何为量子错误缓解神经网络生成训练数据？",
+   "pq_vec": "How does echo evolution generate training data for neural-network quantum error mitigation?",
+   "parts": [
+    {
+     "name": "quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 1 of 3).md",
+     "path": "自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 1 of 3).md",
+     "chars": 28513,
+     "desc": "【1/3·Echo-evolution data genera】俄罗斯 VNIIA 提出回声演化(echo evolution)数据生成法训练神经网络做量子错误缓解：初态前向-后向演化回到初态，在含噪处理器上同时采集 noisy/noise-free 训练对，无需经典模拟与电路化简；附录给出不同门错误下校正效率 K 的分析。可回答 QEM 神经网络训练数据如何获——Danila Babukhin¹ 1Dukhov Research Institute of"
+    },
+    {
+     "name": "quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md",
+     "path": "自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md",
+     "chars": 26873,
+     "desc": "【2/3·Echo-evolution data genera】俄罗斯 VNIIA 提出回声演化(echo evolution)数据生成法训练神经网络做量子错误缓解：初态前向-后向演化回到初态，在含噪处理器上同时采集 noisy/noise-free 训练对，无需经典模拟与电路化简；附录给出不同门错误下校正效率 K 的分析。可回答 QEM 神经网络训练数据如何获——## 4.5 Performance metric To illustrate the ef"
+    },
+    {
+     "name": "quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md",
+     "path": "自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md",
+     "chars": 17836,
+     "desc": "【3/3·Echo-evolution data genera】俄罗斯 VNIIA 提出回声演化(echo evolution)数据生成法训练神经网络做量子错误缓解：初态前向-后向演化回到初态，在含噪处理器上同时采集 noisy/noise-free 训练对，无需经典模拟与电路化简；附录给出不同门错误下校正效率 K 的分析。可回答 QEM 神经网络训练数据如何获——## Appendix D Analysis of the neural network s"
+    }
+   ],
+   "title": "Echo-evolution data generation for quantum error mitigation via neural networks",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2201.00752",
+   "slug": "quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product",
+   "field": "quantum-physics",
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "quantum-physics",
+    "quantum-error-mitigation",
+    "matrix-product-operators",
+    "noise-characterization"
+   ],
+   "desc": "清华大学提出基于矩阵乘积算子(MPO)的量子错误缓解：用 MPO 表征量子电路噪声信道(多项式复杂度)，可刻画准概率分解等方法忽略的门间关联错误；对四类噪声 MPO 逆近完美恢复，并验证全局去极化噪声(D=2)场景。可回答关联噪声下如何做 QEM 的问题。",
+   "pq_meta": "矩阵乘积算子如何刻画并缓解量子电路中的关联噪声？",
+   "pq_vec": "How is quantum error mitigation performed via matrix product operators for correlated noise?",
+   "parts": [
+    {
+     "name": "quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 1 of 3).md",
+     "path": "自然科学与地球科学/quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 1 of 3).md",
+     "chars": 29029,
+     "desc": "【1/3·Quantum error mitigation v】清华大学提出基于矩阵乘积算子(MPO)的量子错误缓解：用 MPO 表征量子电路噪声信道(多项式复杂度)，可刻画准概率分解等方法忽略的门间关联错误；对四类噪声 MPO 逆近完美恢复，并验证全局去极化噪声(D=2)场景。可回答关联噪声下如何做 QEM 的问题。——Yuchen Guo1 and Shuo Yang1,2,3, \\* 1State Key Laboratory of Low Dime"
+    },
+    {
+     "name": "quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 2 of 3).md",
+     "path": "自然科学与地球科学/quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 2 of 3).md",
+     "chars": 28986,
+     "desc": "【2/3·Quantum error mitigation v】清华大学提出基于矩阵乘积算子(MPO)的量子错误缓解：用 MPO 表征量子电路噪声信道(多项式复杂度)，可刻画准概率分解等方法忽略的门间关联错误；对四类噪声 MPO 逆近完美恢复，并验证全局去极化噪声(D=2)场景。可回答关联噪声下如何做 QEM 的问题。——## A. Calculation of the circuit inverse $\\mathcal { U } _ { \\mathrm"
+    },
+    {
+     "name": "quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 3 of 3).md",
+     "path": "自然科学与地球科学/quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 3 of 3).md",
+     "chars": 11301,
+     "desc": "【3/3·Quantum error mitigation v】清华大学提出基于矩阵乘积算子(MPO)的量子错误缓解：用 MPO 表征量子电路噪声信道(多项式复杂度)，可刻画准概率分解等方法忽略的门间关联错误；对四类噪声 MPO 逆近完美恢复，并验证全局去极化噪声(D=2)场景。可回答关联噪声下如何做 QEM 的问题。——## Appendix C: Variational PEPO-inverse method We can directly gener"
+    }
+   ],
+   "title": "Quantum error mitigation via matrix product operators",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "1904.11280",
+   "slug": "clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec",
+   "field": "clinical-medicine",
+   "kb": "生命科学与医学",
+   "tags": [
+    "clinical-medicine",
+    "electronic-health-records",
+    "stroke-prediction",
+    "risk-factors"
+   ],
+   "desc": "用数据挖掘分析电子健康记录(EHR)预测中风：识别各风险因素对卒中的影响及相互依赖(PCA 显示年龄与婚姻状态贡献最大、居住类型几乎无贡献)，并给出多种机器学习算法预测卒中的基准性能。可回答基于 EHR 的卒中风险预测与因素分析问题。",
+   "pq_meta": "电子健康记录里哪些风险因素能用于预测中风？",
+   "pq_vec": "How can machine learning predict stroke from electronic health records and which risk factors matter?",
+   "parts": [
+    {
+     "name": "clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+     "path": "生命科学与医学/clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+     "chars": 20591,
+     "desc": "用数据挖掘分析电子健康记录(EHR)预测中风：识别各风险因素对卒中的影响及相互依赖(PCA 显示年龄与婚姻状态贡献最大、居住类型几乎无贡献)，并给出多种机器学习算法预测卒中的基准性能。可回答基于 EHR 的卒中风险预测与因素分析问题。"
+    }
+   ],
+   "title": "Predicting Stroke from Electronic Health Records",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "1809.08199",
+   "slug": "clinical-medicine__1809.08199__profiling-lung-cancer-patients-using-electro",
+   "field": "clinical-medicine",
+   "kb": "生命科学与医学",
+   "tags": [
+    "clinical-medicine",
+    "electronic-health-records",
+    "lung-cancer",
+    "patient-profiling"
+   ],
+   "desc": "马德里理工大学与 Puerta de Hierro 医院用 EHR 剖析肺癌患者：围绕 Patient 实体抽取人口学、诊断日期、家族/个人史、职业、合并症、吸烟等毒物暴露、既往治疗与事件时间信息，构建真实世界肺癌队列画像。可回答从临床文本构建肺癌患者画像的问题。",
+   "pq_meta": "如何从电子健康记录构建肺癌患者画像？",
+   "pq_vec": "What clinical information can be extracted from EHRs to profile lung cancer patients?",
+   "parts": [
+    {
+     "name": "clinical-medicine__1809.08199__profiling-lung-cancer-patients-using-electro.md",
+     "path": "生命科学与医学/clinical-medicine__1809.08199__profiling-lung-cancer-patients-using-electro.md",
+     "chars": 24212,
+     "desc": "马德里理工大学与 Puerta de Hierro 医院用 EHR 剖析肺癌患者：围绕 Patient 实体抽取人口学、诊断日期、家族/个人史、职业、合并症、吸烟等毒物暴露、既往治疗与事件时间信息，构建真实世界肺癌队列画像。可回答从临床文本构建肺癌患者画像的问题。"
+    }
+   ],
+   "title": "Profiling lung cancer patients using electronic health records",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2201.03675",
+   "slug": "clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon",
+   "field": "clinical-medicine",
+   "kb": "生命科学与医学",
+   "tags": [
+    "clinical-medicine",
+    "electronic-health-records",
+    "continuous-time-models",
+    "phq9"
+   ],
+   "desc": "LLNL 与杜克 VA 用连续时间概率模型建模纵向电子健康记录：以测得值 x、PHQ-9 评分 y 及时间间隔 δ 三元组建模(胆固醇/CRP/PHQ-2 输入)，在 MVP 自杀风险队列上做似然比分析，处理不规则采样间隔。可回答不规则时间间隔纵向 EHR 的建模问题。",
+   "pq_meta": "连续时间概率模型如何建模纵向电子健康记录？",
+   "pq_vec": "How do continuous-time probabilistic models handle longitudinal electronic health records with irregular intervals?",
+   "parts": [
+    {
+     "name": "clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+     "path": "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+     "chars": 27750,
+     "desc": "【1/3·Continuous-Time Probabilis】LLNL 与杜克 VA 用连续时间概率模型建模纵向电子健康记录：以测得值 x、PHQ-9 评分 y 及时间间隔 δ 三元组建模(胆固醇/CRP/PHQ-2 输入)，在 MVP 自杀风险队列上做似然比分析，处理不规则采样间隔。可回答不规则时间间隔纵向 EHR 的建模问题。——Alan D. Kaplana,\\*, Uttara Tipnisa, Jean C. Beckhamb,c,d, Nat"
+    },
+    {
+     "name": "clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 2 of 3).md",
+     "path": "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 2 of 3).md",
+     "chars": 25831,
+     "desc": "【2/3·Continuous-Time Probabilis】LLNL 与杜克 VA 用连续时间概率模型建模纵向电子健康记录：以测得值 x、PHQ-9 评分 y 及时间间隔 δ 三元组建模(胆固醇/CRP/PHQ-2 输入)，在 MVP 自杀风险队列上做似然比分析，处理不规则采样间隔。可回答不规则时间间隔纵向 EHR 的建模问题。——## 3.3. Depression In this section, we described results from"
+    },
+    {
+     "name": "clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 3 of 3).md",
+     "path": "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 3 of 3).md",
+     "chars": 6147,
+     "desc": "【3/3·Continuous-Time Probabilis】LLNL 与杜克 VA 用连续时间概率模型建模纵向电子健康记录：以测得值 x、PHQ-9 评分 y 及时间间隔 δ 三元组建模(胆固醇/CRP/PHQ-2 输入)，在 MVP 自杀风险队列上做似然比分析，处理不规则采样间隔。可回答不规则时间间隔纵向 EHR 的建模问题。——## References [1] G. S. Ginsburg, K. A. Phillips, Precision m"
+    }
+   ],
+   "title": "Continuous-Time Probabilistic Models for Longitudinal Electronic Health Records",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2401.06823",
+   "slug": "genomics__2401.06823__interpretable-deep-learning-in-single-cell-o",
+   "field": "genomics",
+   "kb": "生命科学与医学",
+   "tags": [
+    "genomics",
+    "single-cell-omics",
+    "interpretable-deep-learning",
+    "gene-regulatory-networks"
+   ],
+   "desc": "悉尼大学综述单细胞组学中的可解释深度学习：梳理 scGeneRAI、STGRNS(transformer 多头注意力重建基因调控网络)、DeepMAPS(多模态可解释学习)等方法谱系，覆盖内在/事后可解释与模型特定/模型无关分类。可回答单细胞深度学习模型如何做可解释性分析的问题。",
+   "pq_meta": "单细胞组学中可解释深度学习有哪些方法？",
+   "pq_vec": "What interpretable deep learning methods exist for single-cell omics such as gene regulatory network inference?",
+   "parts": [
+    {
+     "name": "genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md",
+     "path": "生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md",
+     "chars": 27875,
+     "desc": "【1/2·Interpretable deep learnin】悉尼大学综述单细胞组学中的可解释深度学习：梳理 scGeneRAI、STGRNS(transformer 多头注意力重建基因调控网络)、DeepMAPS(多模态可解释学习)等方法谱系，覆盖内在/事后可解释与模型特定/模型无关分类。可回答单细胞深度学习模型如何做可解释性分析的问题。——Manoj M Wagle1,2,3,+, Siqu Long1,3,+, Carissa Chen1,3, C"
+    },
+    {
+     "name": "genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 2 of 2).md",
+     "path": "生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 2 of 2).md",
+     "chars": 13416,
+     "desc": "【2/2·Interpretable deep learnin】悉尼大学综述单细胞组学中的可解释深度学习：梳理 scGeneRAI、STGRNS(transformer 多头注意力重建基因调控网络)、DeepMAPS(多模态可解释学习)等方法谱系，覆盖内在/事后可解释与模型特定/模型无关分类。可回答单细胞深度学习模型如何做可解释性分析的问题。——## References 1. G. I. Allen, L. Gan, and L. Zheng. Inte"
+    }
+   ],
+   "title": "Interpretable deep learning in single-cell omics",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2602.10156",
+   "slug": "genomics__2602.10156__strand-sequence-conditioned-transport-for-si",
+   "field": "genomics",
+   "kb": "生命科学与医学",
+   "tags": [
+    "genomics",
+    "single-cell-perturbation",
+    "optimal-transport",
+    "regulatory-dna"
+   ],
+   "desc": "哈佛等提出 STRAND：以调控 DNA 序列为条件预测基因扰动的单细胞转录响应的生成模型，把扰动位点序列编码后参数化从对照到扰动细胞态的条件输运过程，突破基因级模型把不同位点干预折叠为同一表示的局限；Jurkat/RPE1 案例验证细胞型特异调控景观。可回答序列条件化扰动响应预测问题。",
+   "pq_meta": "如何根据调控 DNA 序列预测基因扰动的单细胞响应？",
+   "pq_vec": "What is STRAND and how does it predict single-cell perturbation responses conditioned on regulatory sequence?",
+   "parts": [
+    {
+     "name": "genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 1 of 6).md",
+     "path": "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 1 of 6).md",
+     "chars": 27212,
+     "desc": "【1/6·STRAND: Sequence-Condition】哈佛等提出 STRAND：以调控 DNA 序列为条件预测基因扰动的单细胞转录响应的生成模型，把扰动位点序列编码后参数化从对照到扰动细胞态的条件输运过程，突破基因级模型把不同位点干预折叠为同一表示的局限；Jurkat/RPE1 案例验证细胞型特异调控景观。可回答序列条件化扰动响应预测问题。——Boyang Fu1 George Dasoulas2 Sameer Gabbita3 Xiang Li"
+    },
+    {
+     "name": "genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 2 of 6).md",
+     "path": "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 2 of 6).md",
+     "chars": 20217,
+     "desc": "【2/6·STRAND: Sequence-Condition】哈佛等提出 STRAND：以调控 DNA 序列为条件预测基因扰动的单细胞转录响应的生成模型，把扰动位点序列编码后参数化从对照到扰动细胞态的条件输运过程，突破基因级模型把不同位点干预折叠为同一表示的局限；Jurkat/RPE1 案例验证细胞型特异调控景观。可回答序列条件化扰动响应预测问题。——## 4. Experimental Setup Data Source and Preprocessi"
+    },
+    {
+     "name": "genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 3 of 6).md",
+     "path": "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 3 of 6).md",
+     "chars": 27693,
+     "desc": "【3/6·STRAND: Sequence-Condition】哈佛等提出 STRAND：以调控 DNA 序列为条件预测基因扰动的单细胞转录响应的生成模型，把扰动位点序列编码后参数化从对照到扰动细胞态的条件输运过程，突破基因级模型把不同位点干预折叠为同一表示的局限；Jurkat/RPE1 案例验证细胞型特异调控景观。可回答序列条件化扰动响应预测问题。——## References Adduri, A. K., Gautam, D., Bevilacqua,"
+    },
+    {
+     "name": "genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 4 of 6).md",
+     "path": "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 4 of 6).md",
+     "chars": 27844,
+     "desc": "【4/6·STRAND: Sequence-Condition】哈佛等提出 STRAND：以调控 DNA 序列为条件预测基因扰动的单细胞转录响应的生成模型，把扰动位点序列编码后参数化从对照到扰动细胞态的条件输运过程，突破基因级模型把不同位点干预折叠为同一表示的局限；Jurkat/RPE1 案例验证细胞型特异调控景观。可回答序列条件化扰动响应预测问题。——## B.2. Denoising model and training target Although"
+    },
+    {
+     "name": "genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 5 of 6).md",
+     "path": "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 5 of 6).md",
+     "chars": 28169,
+     "desc": "【5/6·STRAND: Sequence-Condition】哈佛等提出 STRAND：以调控 DNA 序列为条件预测基因扰动的单细胞转录响应的生成模型，把扰动位点序列编码后参数化从对照到扰动细胞态的条件输运过程，突破基因级模型把不同位点干预折叠为同一表示的局限；Jurkat/RPE1 案例验证细胞型特异调控景观。可回答序列条件化扰动响应预测问题。——## G. Detailed Performance Benchmarks We provide the"
+    },
+    {
+     "name": "genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 6 of 6).md",
+     "path": "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 6 of 6).md",
+     "chars": 6744,
+     "desc": "【6/6·STRAND: Sequence-Condition】哈佛等提出 STRAND：以调控 DNA 序列为条件预测基因扰动的单细胞转录响应的生成模型，把扰动位点序列编码后参数化从对照到扰动细胞态的条件输运过程，突破基因级模型把不同位点干预折叠为同一表示的局限；Jurkat/RPE1 案例验证细胞型特异调控景观。可回答序列条件化扰动响应预测问题。——## I.4. Concatenation Predictor Architecture The con"
+    }
+   ],
+   "title": "STRAND: Sequence-Conditioned Transport for Single-Cell Perturbations",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2508.18304",
+   "slug": "genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m",
+   "field": "genomics",
+   "kb": "生命科学与医学",
+   "tags": [
+    "genomics",
+    "single-cell-multiomics",
+    "contrastive-learning",
+    "cell-clustering"
+   ],
+   "desc": "同济/复旦提出 scI2CL：以组学内与组学间对比学习整合单细胞多组学，建模连续动态的细胞分化与互作；产生清晰聚类边界，发现人单核细胞三个潜在亚群(其他工具未能识别)，并纠正 CD4+ 记忆 T 细胞误分类。可回答单细胞多组学整合与亚群发现的问题。",
+   "pq_meta": "对比学习如何整合单细胞多组学数据并发现细胞亚群？",
+   "pq_vec": "How does scI2CL integrate single-cell multi-omics via intra- and inter-omics contrastive learning?",
+   "parts": [
+    {
+     "name": "genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+     "path": "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+     "chars": 25844,
+     "desc": "【1/4·$\\mathrm { s c l ^ { 2 } C】同济/复旦提出 scI2CL：以组学内与组学间对比学习整合单细胞多组学，建模连续动态的细胞分化与互作；产生清晰聚类边界，发现人单核细胞三个潜在亚群(其他工具未能识别)，并纠正 CD4+ 记忆 T 细胞误分类。可回答单细胞多组学整合与亚群发现的问题。——Wuchao Liu¹, Han Peng1, Wengen Li¹, Yichao Zhang1, Jihong Guan1,\\*, and "
+    },
+    {
+     "name": "genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 2 of 4).md",
+     "path": "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 2 of 4).md",
+     "chars": 24149,
+     "desc": "【2/4·$\\mathrm { s c l ^ { 2 } C】同济/复旦提出 scI2CL：以组学内与组学间对比学习整合单细胞多组学，建模连续动态的细胞分化与互作；产生清晰聚类边界，发现人单核细胞三个潜在亚群(其他工具未能识别)，并纠正 CD4+ 记忆 T 细胞误分类。可回答单细胞多组学整合与亚群发现的问题。——## 2.5 scI2CL rectifies mis-annotations of CD4+ Naive T cells as CD4+ Me"
+    },
+    {
+     "name": "genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 3 of 4).md",
+     "path": "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 3 of 4).md",
+     "chars": 25775,
+     "desc": "【3/4·$\\mathrm { s c l ^ { 2 } C】同济/复旦提出 scI2CL：以组学内与组学间对比学习整合单细胞多组学，建模连续动态的细胞分化与互作；产生清晰聚类边界，发现人单核细胞三个潜在亚群(其他工具未能识别)，并纠正 CD4+ 记忆 T 细胞误分类。可回答单细胞多组学整合与亚群发现的问题。——## 4.2.2 Inter-omic contrastive learning for multi-omics feature integra"
+    },
+    {
+     "name": "genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 4 of 4).md",
+     "path": "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 4 of 4).md",
+     "chars": 7353,
+     "desc": "【4/4·scI2CL: Effectively Integr】同济/复旦提出 scI2CL：以组学内与组学间对比学习整合单细胞多组学，建模连续动态的细胞分化与互作；产生清晰聚类边界，发现人单核细胞三个潜在亚群(其他工具未能识别)，并纠正 CD4+ 记忆 T 细胞误分类。可回答单细胞多组学整合与亚群发现的问题。——Wuchao Liu1, Han Peng1, Wengen Li¹, Yichao Zhang1, Jihong Guan1,\\*, and "
+    }
+   ],
+   "title": "scI2CL: Effectively Integrating Single-cell Multi-omics by Intra- and Inter-omics Contrastive Learning",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "1911.06206",
+   "slug": "economics__1911.06206__bayesian-state-space-modeling-for-analyzing",
+   "field": "economics",
+   "kb": "经济与社会",
+   "tags": [
+    "economics",
+    "monetary-policy",
+    "bayesian-state-space",
+    "production-networks"
+   ],
+   "desc": "萨尔茨堡大学用贝叶斯状态空间模型分析美国货币政策在生产网络中的异质传导：允许行业响应随时间变化、网络结构与跨行业需求弹性时变；发现冲击影响在时间与截面上差异显著，高阶网络效应在经济下行期尤为重要(silhouette 聚类分群)。可回答货币政策网络效应的计量建模问题。",
+   "pq_meta": "美国货币政策如何通过网络在生产部门间异质传导？",
+   "pq_vec": "How do US monetary policy shocks propagate heterogeneously through production networks in a Bayesian state-space model?",
+   "parts": [
+    {
+     "name": "economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md",
+     "path": "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md",
+     "chars": 29505,
+     "desc": "【1/5·Bayesian state-space model】萨尔茨堡大学用贝叶斯状态空间模型分析美国货币政策在生产网络中的异质传导：允许行业响应随时间变化、网络结构与跨行业需求弹性时变；发现冲击影响在时间与截面上差异显著，高阶网络效应在经济下行期尤为重要(silhouette 聚类分群)。可回答货币政策网络效应的计量建模问题。——NIKO HAUZENBERGER and MICHAEL PFARRHOFER\\* University of Salzb"
+    },
+    {
+     "name": "economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 2 of 5).md",
+     "path": "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 2 of 5).md",
+     "chars": 24601,
+     "desc": "【2/5·Bayesian state-space model】萨尔茨堡大学用贝叶斯状态空间模型分析美国货币政策在生产网络中的异质传导：允许行业响应随时间变化、网络结构与跨行业需求弹性时变；发现冲击影响在时间与截面上差异显著，高阶网络效应在经济下行期尤为重要(silhouette 聚类分群)。可回答货币政策网络效应的计量建模问题。——## 3.2. Empirical results In a first step, we compare the resu"
+    },
+    {
+     "name": "economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 3 of 5).md",
+     "path": "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 3 of 5).md",
+     "chars": 26244,
+     "desc": "【3/5·Bayesian state-space model】萨尔茨堡大学用贝叶斯状态空间模型分析美国货币政策在生产网络中的异质传导：允许行业响应随时间变化、网络结构与跨行业需求弹性时变；发现冲击影响在时间与截面上差异显著，高阶网络效应在经济下行期尤为重要(silhouette 聚类分群)。可回答货币政策网络效应的计量建模问题。——## Assessing heterogeneity and clustering of industries In thi"
+    },
+    {
+     "name": "economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 4 of 5).md",
+     "path": "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 4 of 5).md",
+     "chars": 27448,
+     "desc": "【4/5·Bayesian state-space model】萨尔茨堡大学用贝叶斯状态空间模型分析美国货币政策在生产网络中的异质传导：允许行业响应随时间变化、网络结构与跨行业需求弹性时变；发现冲击影响在时间与截面上差异显著，高阶网络效应在经济下行期尤为重要(silhouette 聚类分群)。可回答货币政策网络效应的计量建模问题。——## C.1. Different weights matrices and aggregation schemes Tab"
+    },
+    {
+     "name": "economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 5 of 5).md",
+     "path": "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 5 of 5).md",
+     "chars": 7292,
+     "desc": "【5/5·Bayesian state-space model】萨尔茨堡大学用贝叶斯状态空间模型分析美国货币政策在生产网络中的异质传导：允许行业响应随时间变化、网络结构与跨行业需求弹性时变；发现冲击影响在时间与截面上差异显著，高阶网络效应在经济下行期尤为重要(silhouette 聚类分群)。可回答货币政策网络效应的计量建模问题。——Table C.8: Estimated impacts of monetary policy on stock retur"
+    }
+   ],
+   "title": "Bayesian state-space modeling for analyzing heterogeneous network effects of US monetary policy",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2011.14424",
+   "slug": "economics__2011.14424__on-the-effectiveness-of-the-european-central",
+   "field": "economics",
+   "kb": "经济与社会",
+   "tags": [
+    "economics",
+    "monetary-policy",
+    "ecb",
+    "smooth-transition-var"
+   ],
+   "desc": "研究欧洲央行(ECB)常规与非常规货币政策在不确定性下的有效性：以欧元区政策公布日高频金融市场意外识别外生冲击，提出贝叶斯平滑转移 VAR(ST-VAR)追踪政策利率、前瞻指引与量化宽松对宏观金融变量及预期的动态影响；发现高不确定性时传导渠道受损。可回答 ECB 政策传导与不确定性交互问题。",
+   "pq_meta": "不确定性如何影响欧洲央行货币政策的传导效果？",
+   "pq_vec": "How effective are the ECB's conventional and unconventional policies under uncertainty in a smooth-transition VAR?",
+   "parts": [
+    {
+     "name": "economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+     "path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+     "chars": 23183,
+     "desc": "【1/5·On the effectiveness of th】研究欧洲央行(ECB)常规与非常规货币政策在不确定性下的有效性：以欧元区政策公布日高频金融市场意外识别外生冲击，提出贝叶斯平滑转移 VAR(ST-VAR)追踪政策利率、前瞻指引与量化宽松对宏观金融变量及预期的动态影响；发现高不确定性时传导渠道受损。可回答 ECB 政策传导与不确定性交互问题。——Niko HAUZENBERGER, Michael PFARRHOFER and Anna STE"
+    },
+    {
+     "name": "economics__2011.14424__on-the-effectiveness-of-the-european-central (part 2 of 5).md",
+     "path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 2 of 5).md",
+     "chars": 20691,
+     "desc": "【2/5·On the effectiveness of th】研究欧洲央行(ECB)常规与非常规货币政策在不确定性下的有效性：以欧元区政策公布日高频金融市场意外识别外生冲击，提出贝叶斯平滑转移 VAR(ST-VAR)追踪政策利率、前瞻指引与量化宽松对宏观金融变量及预期的动态影响；发现高不确定性时传导渠道受损。可回答 ECB 政策传导与不确定性交互问题。——## 3.1. Measuring monetary policy shocks and ident"
+    },
+    {
+     "name": "economics__2011.14424__on-the-effectiveness-of-the-european-central (part 3 of 5).md",
+     "path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 3 of 5).md",
+     "chars": 19956,
+     "desc": "【3/5·On the effectiveness of th】研究欧洲央行(ECB)常规与非常规货币政策在不确定性下的有效性：以欧元区政策公布日高频金融市场意外识别外生冲击，提出贝叶斯平滑转移 VAR(ST-VAR)追踪政策利率、前瞻指引与量化宽松对宏观金融变量及预期的动态影响；发现高不确定性时传导渠道受损。可回答 ECB 政策传导与不确定性交互问题。——## 4.2.1. The target/policy rate shock The first s"
+    },
+    {
+     "name": "economics__2011.14424__on-the-effectiveness-of-the-european-central (part 4 of 5).md",
+     "path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 4 of 5).md",
+     "chars": 25338,
+     "desc": "【4/5·On the effectiveness of th】研究欧洲央行(ECB)常规与非常规货币政策在不确定性下的有效性：以欧元区政策公布日高频金融市场意外识别外生冲击，提出贝叶斯平滑转移 VAR(ST-VAR)追踪政策利率、前瞻指引与量化宽松对宏观金融变量及预期的动态影响；发现高不确定性时传导渠道受损。可回答 ECB 政策传导与不确定性交互问题。——## 5. Closing remarks In this paper, we assess the"
+    },
+    {
+     "name": "economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md",
+     "path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md",
+     "chars": 24050,
+     "desc": "【5/5·On the effectiveness of th】研究欧洲央行(ECB)常规与非常规货币政策在不确定性下的有效性：以欧元区政策公布日高频金融市场意外识别外生冲击，提出贝叶斯平滑转移 VAR(ST-VAR)追踪政策利率、前瞻指引与量化宽松对宏观金融变量及预期的动态影响；发现高不确定性时传导渠道受损。可回答 ECB 政策传导与不确定性交互问题。——## References AASTVEIT KA, NATVIK GJ, AND SOLA S ("
+    }
+   ],
+   "title": "On the effectiveness of the European Central Bank's conventional and unconventional policies under uncertainty",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "1807.09475",
+   "slug": "economics__1807.09475__cap-and-monetary-policy",
+   "field": "economics",
+   "kb": "经济与社会",
+   "tags": [
+    "economics",
+    "monetary-policy",
+    "cap",
+    "agricultural-sector"
+   ],
+   "desc": "Duisberg 用局部 VAR 模型估计并比较欧洲各国农业部门对货币冲击的敏感度：在共同农业政策(CAP)市场调节机制背景下，讨论货币联盟单一货币政策对成员国农业部门的不对称效应及政策配套问题。可回答货币政策如何影响欧洲农业部门的问题。",
+   "pq_meta": "单一货币政策对欧洲各国农业部门有什么影响？",
+   "pq_vec": "How sensitive are European agricultural sectors to monetary policy impulses under the CAP?",
+   "parts": [
+    {
+     "name": "economics__1807.09475__cap-and-monetary-policy.md",
+     "path": "经济与社会/economics__1807.09475__cap-and-monetary-policy.md",
+     "chars": 27371,
+     "desc": "Duisberg 用局部 VAR 模型估计并比较欧洲各国农业部门对货币冲击的敏感度：在共同农业政策(CAP)市场调节机制背景下，讨论货币联盟单一货币政策对成员国农业部门的不对称效应及政策配套问题。可回答货币政策如何影响欧洲农业部门的问题。"
+    }
+   ],
+   "title": "CAP and Monetary Policy",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2409.13934",
+   "slug": "climate-science__2409.13934__on-the-extrapolation-of-generative-adversari",
+   "field": "climate-science",
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "climate-science",
+    "precipitation-extremes",
+    "generative-adversarial-networks",
+    "downscaling"
+   ],
+   "desc": "NIWA/UNSW 研究生成对抗网络(GAN)在更暖气候下降水极端事件降尺度的外推能力：确定性回归方法即使在未来气候上训练也低估极端降水增幅，而历史气候训练的 GAN 在 95 分位以上仍能更好捕捉湿化信号，未来气候训练的 GAN 历史与未来外推均更优。可回答气候降尺度中 GAN 外推可靠性的问题。",
+   "pq_meta": "GAN 能否可靠外推更暖气候下的极端降水降尺度？",
+   "pq_vec": "How well do GANs extrapolate for downscaling precipitation extremes in warmer climates?",
+   "parts": [
+    {
+     "name": "climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md",
+     "path": "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md",
+     "chars": 26069,
+     "desc": "【1/3·On the Extrapolation of Ge】NIWA/UNSW 研究生成对抗网络(GAN)在更暖气候下降水极端事件降尺度的外推能力：确定性回归方法即使在未来气候上训练也低估极端降水增幅，而历史气候训练的 GAN 在 95 分位以上仍能更好捕捉湿化信号，未来气候训练的 GAN 历史与未来外推均更优。可回答气候降尺度中 GAN 外推可靠性的问题。——Neelesh Rampal1,3, Peter B. Gibson2, Steven Sh"
+    },
+    {
+     "name": "climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md",
+     "path": "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md",
+     "chars": 29250,
+     "desc": "【2/3·On the Extrapolation of Ge】NIWA/UNSW 研究生成对抗网络(GAN)在更暖气候下降水极端事件降尺度的外推能力：确定性回归方法即使在未来气候上训练也低估极端降水增幅，而历史气候训练的 GAN 在 95 分位以上仍能更好捕捉湿化信号，未来气候训练的 GAN 历史与未来外推均更优。可回答气候降尺度中 GAN 外推可靠性的问题。——## 3.2 Extreme Precipitation Climate Change Si"
+    },
+    {
+     "name": "climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 3 of 3).md",
+     "path": "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 3 of 3).md",
+     "chars": 4321,
+     "desc": "【3/3·On the Extrapolation of Ge】NIWA/UNSW 研究生成对抗网络(GAN)在更暖气候下降水极端事件降尺度的外推能力：确定性回归方法即使在未来气候上训练也低估极端降水增幅，而历史气候训练的 GAN 在 95 分位以上仍能更好捕捉湿化信号，未来气候训练的 GAN 历史与未来外推均更优。可回答气候降尺度中 GAN 外推可靠性的问题。——Neelesh Rampal1’3, Peter B. Gibson², Steven Sh"
+    }
+   ],
+   "title": "On the Extrapolation of Generative Adversarial Networks for downscaling precipitation extremes in warmer climates",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2409.09639",
+   "slug": "climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma",
+   "field": "climate-science",
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "climate-science",
+    "precipitation-dataset",
+    "machine-learning",
+    "global-climatology"
+   ],
+   "desc": "东京都立大学构建 GPC/m：用机器学习生成准全球、逐日、1 度分辨率、跨 42 年的无缺口均一降水数据集，以 2001-2020 估计降水为参照做监督学习，比较随机森林、梯度提升决策树与卷积神经网络，月/年基本气候态重现良好。可回答长历时均一全球降水数据集的构建问题。",
+   "pq_meta": "如何用机器学习构建长历时全球逐日降水数据集？",
+   "pq_vec": "What is GPC/m and how is a 42-year quasi-global daily one-degree precipitation dataset built with machine learning?",
+   "parts": [
+    {
+     "name": "climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+     "path": "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+     "chars": 28914,
+     "desc": "【1/2·GPC/m: Global Precipitatio】东京都立大学构建 GPC/m：用机器学习生成准全球、逐日、1 度分辨率、跨 42 年的无缺口均一降水数据集，以 2001-2020 估计降水为参照做监督学习，比较随机森林、梯度提升决策树与卷积神经网络，月/年基本气候态重现良好。可回答长历时均一全球降水数据集的构建问题。——Hiroshi G. Takahashi Tokyo Metropolitan University hiroshi3@t"
+    },
+    {
+     "name": "climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 2 of 2).md",
+     "path": "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 2 of 2).md",
+     "chars": 28303,
+     "desc": "【2/2·GPC/m: Global Precipitatio】东京都立大学构建 GPC/m：用机器学习生成准全球、逐日、1 度分辨率、跨 42 年的无缺口均一降水数据集，以 2001-2020 估计降水为参照做监督学习，比较随机森林、梯度提升决策树与卷积神经网络，月/年基本气候态重现良好。可回答长历时均一全球降水数据集的构建问题。——## 3.3 Long-term variability of the whole period of this data"
+    }
+   ],
+   "title": "GPC/m: Global Precipitation Climatology by Machine Learning; Quasi-global, Daily, and One Degree Spatial Resolution",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2007.10574",
+   "slug": "climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on",
+   "field": "climate-science",
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "climate-science",
+    "madden-julian-oscillation",
+    "precipitation-extremes",
+    "indonesia"
+   ],
+   "desc": "研究 Madden-Julian 涛动(MJO)对印尼降水极端事件的影响：用 APHRODITE 格点与雨量站资料分析 30-60 天季节内振荡各相位对极端降水概率改变的贡献，雨量计与格点均在 95% 置信下显著。可回答 MJO 相位如何调制印尼极端降水的问题。",
+   "pq_meta": "MJO 涛动如何影响印度尼西亚的极端降水？",
+   "pq_vec": "How does the Madden-Julian Oscillation modulate precipitation extremes in Indonesia?",
+   "parts": [
+    {
+     "name": "climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on (part 1 of 2).md",
+     "path": "自然科学与地球科学/climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on (part 1 of 2).md",
+     "chars": 28636,
+     "desc": "【1/2·正文】研究 Madden-Julian 涛动(MJO)对印尼降水极端事件的影响：用 APHRODITE 格点与雨量站资料分析 30-60 天季节内振荡各相位对极端降水概率改变的贡献，雨量计与格点均在 95% 置信下显著。可回答 MJO 相位如何调制印尼极端降水的问题。——Fadhlil R. Muhammad¹, Sandro W. Lubis2, Sonni Setiawan³ 1School of Earth Sciences, Univer"
+    },
+    {
+     "name": "climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on (part 2 of 2).md",
+     "path": "自然科学与地球科学/climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on (part 2 of 2).md",
+     "chars": 15072,
+     "desc": "【2/2·Impacts of the Madden-Juli】研究 Madden-Julian 涛动(MJO)对印尼降水极端事件的影响：用 APHRODITE 格点与雨量站资料分析 30-60 天季节内振荡各相位对极端降水概率改变的贡献，雨量计与格点均在 95% 置信下显著。可回答 MJO 相位如何调制印尼极端降水的问题。——## 4 SUMMARY AND DISCUSSION We have examined the impacts of the M"
+    }
+   ],
+   "title": "Impacts of the Madden Julian Oscillation on Precipitation Extremes in Indonesia",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2304.12442",
+   "slug": "astronomy__2304.12442__enabling-exoplanet-demographics-studies-with",
+   "field": "astronomy",
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "astronomy",
+    "exoplanet-demographics",
+    "survey-metadata",
+    "completeness"
+   ],
+   "desc": "EXOPAG 系外行星人口统计科学兴趣组(Christiansen 等)提出标准化系外行星巡天元数据规范：统一恒星参数表、按半长轴-行星质量的探测完备度图(tongue plots)、原始与处理图像存档，支撑跨巡天人口统计合并分析与再研究。可回答系外行星发生率研究的巡天数据标准化问题。",
+   "pq_meta": "系外行星巡天元数据标准化包含哪些内容？",
+   "pq_vec": "What standardized survey meta-data enables exoplanet demographics studies?",
+   "parts": [
+    {
+     "name": "astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+     "path": "自然科学与地球科学/astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+     "chars": 28552,
+     "desc": "【1/3·Enabling Exoplanet Demogra】EXOPAG 系外行星人口统计科学兴趣组(Christiansen 等)提出标准化系外行星巡天元数据规范：统一恒星参数表、按半长轴-行星质量的探测完备度图(tongue plots)、原始与处理图像存档，支撑跨巡天人口统计合并分析与再研究。可回答系外行星发生率研究的巡天数据标准化问题。——PREPARED BY THE EXOPAG SCIENCE INTEREST GROUP (SIG) #"
+    },
+    {
+     "name": "astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+     "path": "自然科学与地球科学/astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+     "chars": 26371,
+     "desc": "【2/3·Enabling Exoplanet Demogra】EXOPAG 系外行星人口统计科学兴趣组(Christiansen 等)提出标准化系外行星巡天元数据规范：统一恒星参数表、按半长轴-行星质量的探测完备度图(tongue plots)、原始与处理图像存档，支撑跨巡天人口统计合并分析与再研究。可回答系外行星发生率研究的巡天数据标准化问题。——## 1. Stellar sample properties (a) Description of st"
+    },
+    {
+     "name": "astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 3 of 3).md",
+     "path": "自然科学与地球科学/astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 3 of 3).md",
+     "chars": 7451,
+     "desc": "【3/3·Enabling Exoplanet Demogra】EXOPAG 系外行星人口统计科学兴趣组(Christiansen 等)提出标准化系外行星巡天元数据规范：统一恒星参数表、按半长轴-行星质量的探测完备度图(tongue plots)、原始与处理图像存档，支撑跨巡天人口统计合并分析与再研究。可回答系外行星发生率研究的巡天数据标准化问题。——## REFERENCES Baraffe, I., Chabrier, G., Barman, T. S"
+    }
+   ],
+   "title": "Enabling Exoplanet Demographics Studies with Standardized Exoplanet Survey Meta-Data",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "1105.1887",
+   "slug": "astronomy__1105.1887__the-corot-exoplanet-program-status-results",
+   "field": "astronomy",
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "astronomy",
+    "exoplanet-transit",
+    "corot",
+    "space-photometry"
+   ],
+   "desc": "马赛天体物理实验室回顾 CoRoT 系外行星计划状态与结果：作为首个从空间找行星的仪器，CoRoT 以凌星法与星震学为目标，高 duty cycle(>90%)长时序观测使发现系统占轨道周期>8 天凌星系统的一半，拓宽了近距行星性质范围。可回答 CoRoT 凌星发现与行星性质的问题。",
+   "pq_meta": "CoRoT 卫星发现了哪些系外行星及其性质？",
+   "pq_vec": "What are the status and results of the CoRoT exoplanet transit program?",
+   "parts": [
+    {
+     "name": "astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+     "path": "自然科学与地球科学/astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+     "chars": 23303,
+     "desc": "马赛天体物理实验室回顾 CoRoT 系外行星计划状态与结果：作为首个从空间找行星的仪器，CoRoT 以凌星法与星震学为目标，高 duty cycle(>90%)长时序观测使发现系统占轨道周期>8 天凌星系统的一半，拓宽了近距行星性质范围。可回答 CoRoT 凌星发现与行星性质的问题。"
+    }
+   ],
+   "title": "The CoRoT Exoplanet program : status & results",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "1606.00335",
+   "slug": "materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs",
+   "field": "materials",
+   "kb": "工程与能源",
+   "tags": [
+    "materials",
+    "perovskite-solar-cell",
+    "j-v-hysteresis",
+    "dynamic-electrical-model"
+   ],
+   "desc": "布加勒斯特大学建立卤化物钙钛矿太阳能电池动态电学模型：以极化弛豫简单拟设重现 J-V 特性迟滞的定量细节，讨论预极化效应与扫描速率(BSR 5-10000 mV/s)影响，弛豫时间 τ=11.5 s 下反向-正向扫描极化行为得到解释。可回答钙钛矿电池 J-V 迟滞建模问题。",
+   "pq_meta": "钙钛矿太阳能电池的 J-V 迟滞如何用动态电学模型解释？",
+   "pq_vec": "How does a dynamic electrical model explain J-V hysteresis in halide perovskite solar cells?",
+   "parts": [
+    {
+     "name": "materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md",
+     "path": "工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 1 of 2).md",
+     "chars": 28330,
+     "desc": "【1/2·Dynamic electrical behavio】布加勒斯特大学建立卤化物钙钛矿太阳能电池动态电学模型：以极化弛豫简单拟设重现 J-V 特性迟滞的定量细节，讨论预极化效应与扫描速率(BSR 5-10000 mV/s)影响，弛豫时间 τ=11.5 s 下反向-正向扫描极化行为得到解释。可回答钙钛矿电池 J-V 迟滞建模问题。——G. A. Nemnesa,b,\\*, Cristina Besleagac, A. G. Tomulescu, Io"
+    },
+    {
+     "name": "materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+     "path": "工程与能源/materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+     "chars": 22299,
+     "desc": "【2/2·Dynamic electrical behavio】布加勒斯特大学建立卤化物钙钛矿太阳能电池动态电学模型：以极化弛豫简单拟设重现 J-V 特性迟滞的定量细节，讨论预极化效应与扫描速率(BSR 5-10000 mV/s)影响，弛豫时间 τ=11.5 s 下反向-正向扫描极化行为得到解释。可回答钙钛矿电池 J-V 迟滞建模问题。——## 3.2. Bias scan rate effects In order to further analyze "
+    }
+   ],
+   "title": "Dynamic electrical behavior of halide perovskite based solar cells",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "1712.01369",
+   "slug": "materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar",
+   "field": "materials",
+   "kb": "工程与能源",
+   "tags": [
+    "materials",
+    "perovskite-solar-cell",
+    "heterojunction",
+    "gese"
+   ],
+   "desc": "国科大提出 CH3NH3PbI3/GeSe 双层异质结太阳能电池：钙钛矿层叠加 GeSe 构成异质结，模拟分析光学性质(电场空间分布)与短路电流密度、开路电压等电学性能，实现高性能转换。可回答钙钛矿/GeSe 异质结电池设计的问题。",
+   "pq_meta": "CH3NH3PbI3/GeSe 双层异质结太阳能电池性能如何？",
+   "pq_vec": "How does the CH3NH3PbI3/GeSe bilayer heterojunction solar cell achieve high performance?",
+   "parts": [
+    {
+     "name": "materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 1 of 2).md",
+     "path": "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 1 of 2).md",
+     "chars": 16228,
+     "desc": "【1/2·$\\mathrm { { C H _ { 3 } N】国科大提出 CH3NH3PbI3/GeSe 双层异质结太阳能电池：钙钛矿层叠加 GeSe 构成异质结，模拟分析光学性质(电场空间分布)与短路电流密度、开路电压等电学性能，实现高性能转换。可回答钙钛矿/GeSe 异质结电池设计的问题。——Guo-Jiao Hou1, Dong-Lin Wang2, Roshan Ali1, Yu-Rong Zhou3, Zhen-Gang Zhu1,2,\\* a"
+    },
+    {
+     "name": "materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+     "path": "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+     "chars": 26130,
+     "desc": "【2/2·$\\mathrm { { C H _ { 3 } N】国科大提出 CH3NH3PbI3/GeSe 双层异质结太阳能电池：钙钛矿层叠加 GeSe 构成异质结，模拟分析光学性质(电场空间分布)与短路电流密度、开路电压等电学性能，实现高性能转换。可回答钙钛矿/GeSe 异质结电池设计的问题。——## III. ELECTRICAL PROPERTIES AND EFFICIENCY OF THE BILAYER SOLAR CELL The solar"
+    }
+   ],
+   "title": "CH3NH3PbI3/GeSe bilayer heterojunction solar cell with high performance",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "1301.6357",
+   "slug": "neuroscience__1301.6357__multi-command-tactile-and-auditory-brain-com",
+   "field": "neuroscience",
+   "kb": "计算机与人工智能",
+   "tags": [
+    "neuroscience",
+    "brain-computer-interface",
+    "tactile-stimulation",
+    "erp"
+   ],
+   "desc": "筑波大学研究头位触觉-听觉脑机接口(taBCI)：6 个头位振动刺激经骨传导诱发体感与听觉联合脑响应，11 名 BCI 新手在线实验(中等 ISI)平均准确率 50%(5 次平均, ITR 3.22 bit/min)，为视觉听觉受损的 ALS-TLS 患者提供替代通道。可回答多模态 BCI 范式设计问题。",
+   "pq_meta": "头位触觉刺激能否作为脑机接口的多指令范式？",
+   "pq_vec": "How does a multi-command tactile and auditory brain-computer interface use head position stimulation?",
+   "parts": [
+    {
+     "name": "neuroscience__1301.6357__multi-command-tactile-and-auditory-brain-com.md",
+     "path": "计算机与人工智能/neuroscience__1301.6357__multi-command-tactile-and-auditory-brain-com.md",
+     "chars": 9162,
+     "desc": "筑波大学研究头位触觉-听觉脑机接口(taBCI)：6 个头位振动刺激经骨传导诱发体感与听觉联合脑响应，11 名 BCI 新手在线实验(中等 ISI)平均准确率 50%(5 次平均, ITR 3.22 bit/min)，为视觉听觉受损的 ALS-TLS 患者提供替代通道。可回答多模态 BCI 范式设计问题。"
+    }
+   ],
+   "title": "Multi-command Tactile and Auditory Brain Computer Interface based on Head Position Stimulation",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "1404.4184",
+   "slug": "neuroscience__1404.4184__airborne-ultrasonic-tactile-display-brain-co",
+   "field": "neuroscience",
+   "kb": "计算机与人工智能",
+   "tags": [
+    "neuroscience",
+    "brain-computer-interface",
+    "ultrasonic-tactile-display",
+    "eeg"
+   ],
+   "desc": "东京大学/筑波大学提出非接触气导超声触觉显示(AUTD)脑机接口范式：手掌 6 个位置接受 airborne 超声刺激诱发体感脑响应，与贴附式振动换能器对照，在线 EEG 实验验证 autdBCI 可行性。可回答非接触触觉 BCI 范式的问题。",
+   "pq_meta": "非接触超声触觉显示能否用作脑机接口范式？",
+   "pq_vec": "How does an airborne ultrasonic tactile display serve as a contact-less BCI paradigm?",
+   "parts": [
+    {
+     "name": "neuroscience__1404.4184__airborne-ultrasonic-tactile-display-brain-co.md",
+     "path": "计算机与人工智能/neuroscience__1404.4184__airborne-ultrasonic-tactile-display-brain-co.md",
+     "chars": 12661,
+     "desc": "东京大学/筑波大学提出非接触气导超声触觉显示(AUTD)脑机接口范式：手掌 6 个位置接受 airborne 超声刺激诱发体感脑响应，与贴附式振动换能器对照，在线 EEG 实验验证 autdBCI 可行性。可回答非接触触觉 BCI 范式的问题。"
+    }
+   ],
+   "title": "Airborne Ultrasonic Tactile Display Brain-computer Interface Paradigm",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "1709.02924",
+   "slug": "robotics__1709.02924__robust-object-manipulation-for-tactile-based",
+   "field": "robotics",
+   "kb": "计算机与人工智能",
+   "tags": [
+    "robotics",
+    "tactile-grasping",
+    "robust-control",
+    "object-manipulation"
+   ],
+   "desc": "墨尔本大学提出触觉盲抓取的鲁棒控制律：机械手在仅有本体感觉与触觉、未知物重/惯量/形状的条件下操作物体，分析保证模型不确定与外部扰动下的半全局渐近与指数稳定，仿真与硬件验证有效。可回答无视觉触觉抓取的控制器设计问题。",
+   "pq_meta": "触觉盲抓取如何设计鲁棒操作控制律？",
+   "pq_vec": "What robust control law guarantees tactile-based blind grasping under model uncertainties?",
+   "parts": [
+    {
+     "name": "robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 1 of 4).md",
+     "path": "计算机与人工智能/robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 1 of 4).md",
+     "chars": 25535,
+     "desc": "【1/4·Robust Object Manipulation】墨尔本大学提出触觉盲抓取的鲁棒控制律：机械手在仅有本体感觉与触觉、未知物重/惯量/形状的条件下操作物体，分析保证模型不确定与外部扰动下的半全局渐近与指数稳定，仿真与硬件验证有效。可回答无视觉触觉抓取的控制器设计问题。——Wenceslao Shaw-Corteza,\\*, Denny Oetomoª, Chris Manziea, Peter Choongb aSchool of Electr"
+    },
+    {
+     "name": "robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 2 of 4).md",
+     "path": "计算机与人工智能/robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 2 of 4).md",
+     "chars": 28487,
+     "desc": "【2/4·Robust Object Manipulation】墨尔本大学提出触觉盲抓取的鲁棒控制律：机械手在仅有本体感觉与触觉、未知物重/惯量/形状的条件下操作物体，分析保证模型不确定与外部扰动下的半全局渐近与指数稳定，仿真与硬件验证有效。可回答无视觉触觉抓取的控制器设计问题。——## 3.1. Proposed Controller The proposed control is defined as: $$ \\pmb { u } = \\hat { J"
+    },
+    {
+     "name": "robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 3 of 4).md",
+     "path": "计算机与人工智能/robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 3 of 4).md",
+     "chars": 27105,
+     "desc": "【3/4·Robust Object Manipulation】墨尔本大学提出触觉盲抓取的鲁棒控制律：机械手在仅有本体感觉与触觉、未知物重/惯量/形状的条件下操作物体，分析保证模型不确定与外部扰动下的半全局渐近与指数稳定，仿真与硬件验证有效。可回答无视觉触觉抓取的控制器设计问题。——## 3.5. Existing Disturbance Compensators In some cases knowledge of the disturbances th"
+    },
+    {
+     "name": "robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 4 of 4).md",
+     "path": "计算机与人工智能/robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 4 of 4).md",
+     "chars": 7857,
+     "desc": "【4/4·Robust Object Manipulation】墨尔本大学提出触觉盲抓取的鲁棒控制律：机械手在仅有本体感觉与触觉、未知物重/惯量/形状的条件下操作物体，分析保证模型不确定与外部扰动下的半全局渐近与指数稳定，仿真与硬件验证有效。可回答无视觉触觉抓取的控制器设计问题。——## References [1] G. Garcia, J. Pomares, F. Torres, Automatic robotic tasks in unstructu"
+    }
+   ],
+   "title": "Robust Object Manipulation for Tactile-based Blind Grasping",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "1809.03210",
+   "slug": "robotics__1809.03210__intelligent-flat-and-textureless-object-mani",
+   "field": "robotics",
+   "kb": "计算机与人工智能",
+   "tags": [
+    "robotics",
+    "service-robot",
+    "object-grasping",
+    "robocup-at-home"
+   ],
+   "desc": "UNAM 面向服务机器人清理餐桌场景解决扁平无纹理物体(餐具)抓取：融合颜色与 2D/3D 几何信息描述物体，动作规划器按物体类别选择最佳抓取轨迹，并以视觉反馈校验抓取成功；在 Justina 与 Toyota HSR 平台按 RoboCup@Home 规则评测。可回答服务机器人桌面物体抓取问题。",
+   "pq_meta": "服务机器人如何抓取扁平无纹理的餐具？",
+   "pq_vec": "How do service robots grasp flat and textureless objects like tableware in RoboCup@Home?",
+   "parts": [
+    {
+     "name": "robotics__1809.03210__intelligent-flat-and-textureless-object-mani.md",
+     "path": "计算机与人工智能/robotics__1809.03210__intelligent-flat-and-textureless-object-mani.md",
+     "chars": 19409,
+     "desc": "UNAM 面向服务机器人清理餐桌场景解决扁平无纹理物体(餐具)抓取：融合颜色与 2D/3D 几何信息描述物体，动作规划器按物体类别选择最佳抓取轨迹，并以视觉反馈校验抓取成功；在 Justina 与 Toyota HSR 平台按 RoboCup@Home 规则评测。可回答服务机器人桌面物体抓取问题。"
+    }
+   ],
+   "title": "Intelligent flat-and-textureless object manipulation in Service Robots",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "1911.02792",
+   "slug": "chemistry__1911.02792__machine-learning-for-molecular-simulation",
+   "field": "chemistry",
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "chemistry",
+    "machine-learning",
+    "molecular-simulation",
+    "review"
+   ],
+   "desc": "Noé、Tkatchenko、Müller、Clementi 合著的机器学习分子模拟综述：涵盖 DTNN 等图/张量网络学习原子化学环境表示(类 word2vec 的上下文编码)、势能面与分子动力学加速、增强采样等方向，系统梳理 ML 与分子模拟结合的方法版图。可回答分子模拟中机器学习方法选型的问题。",
+   "pq_meta": "机器学习如何用于分子模拟？",
+   "pq_vec": "What machine learning methods are used for molecular simulation and how do they learn atomic representations?",
+   "parts": [
+    {
+     "name": "chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md",
+     "path": "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md",
+     "chars": 26987,
+     "desc": "【1/4·Machine learning for molec】Noé、Tkatchenko、Müller、Clementi 合著的机器学习分子模拟综述：涵盖 DTNN 等图/张量网络学习原子化学环境表示(类 word2vec 的上下文编码)、势能面与分子动力学加速、增强采样等方向，系统梳理 ML 与分子模拟结合的方法版图。可回答分子模拟中机器学习方法选型的问题——Frank Noé1,2,3,4,\\*, Alexandre Tkatchenko6,†, "
+    },
+    {
+     "name": "chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+     "path": "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+     "chars": 26411,
+     "desc": "【2/4·Machine learning for molec】Noé、Tkatchenko、Müller、Clementi 合著的机器学习分子模拟综述：涵盖 DTNN 等图/张量网络学习原子化学环境表示(类 word2vec 的上下文编码)、势能面与分子动力学加速、增强采样等方向，系统梳理 ML 与分子模拟结合的方法版图。可回答分子模拟中机器学习方法选型的问题——## 2.5 Sampling and Thermodynamics MD time ste"
+    },
+    {
+     "name": "chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+     "path": "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+     "chars": 25365,
+     "desc": "【3/4·Machine learning for molec】Noé、Tkatchenko、Müller、Clementi 合著的机器学习分子模拟综述：涵盖 DTNN 等图/张量网络学习原子化学环境表示(类 word2vec 的上下文编码)、势能面与分子动力学加速、增强采样等方向，系统梳理 ML 与分子模拟结合的方法版图。可回答分子模拟中机器学习方法选型的问题——## 4.3 Coarse-graining: CGnets As mentioned in"
+    },
+    {
+     "name": "chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md",
+     "path": "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md",
+     "chars": 27236,
+     "desc": "【4/4·Machine learning for molec】Noé、Tkatchenko、Müller、Clementi 合著的机器学习分子模拟综述：涵盖 DTNN 等图/张量网络学习原子化学环境表示(类 word2vec 的上下文编码)、势能面与分子动力学加速、增强采样等方向，系统梳理 ML 与分子模拟结合的方法版图。可回答分子模拟中机器学习方法选型的问题——## References [1] P. A. M. Dirac. Quantum mech"
+    }
+   ],
+   "title": "Machine learning for molecular simulation",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2011.07200",
+   "slug": "chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati",
+   "field": "chemistry",
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "chemistry",
+    "molecular-vibration",
+    "physics-informed-augmentation",
+    "deep-learning"
+   ],
+   "desc": "提出分子振动的深度空间学习：提取分子结构自然特征并理性畸变做物理信息数据增强，缓解数据稀缺导致的过拟合；在聚酰胺纳滤膜截留率与通量预测上验证，相对误差从 16.34% 降至 6.71%，决定系数从 0.16 升至 0.75。可回答小样本分子性质预测的增强策略问题。",
+   "pq_meta": "分子振动特征如何增强小样本分子性质预测？",
+   "pq_vec": "How does physics-informed molecular vibration augmentation improve deep learning predictions for molecules?",
+   "parts": [
+    {
+     "name": "chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md",
+     "path": "自然科学与地球科学/chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md",
+     "chars": 17080,
+     "desc": "提出分子振动的深度空间学习：提取分子结构自然特征并理性畸变做物理信息数据增强，缓解数据稀缺导致的过拟合；在聚酰胺纳滤膜截留率与通量预测上验证，相对误差从 16.34% 降至 6.71%，决定系数从 0.16 升至 0.75。可回答小样本分子性质预测的增强策略问题。"
+    }
+   ],
+   "title": "Deep Spatial Learning with Molecular Vibration",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2402.07064",
+   "slug": "mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and",
+   "field": "mathematics",
+   "kb": "工程与能源",
+   "tags": [
+    "mathematics",
+    "moment-optimization",
+    "sos-convex",
+    "semi-definite-program"
+   ],
+   "desc": "UNSW 建立分段 SOS-凸矩优化问题的精确半定规划(SDP)重构：对投影谱面体上的分段 Sum-of-Squares 凸函数建立非负性 SOS 表示，证明单个 SDP 同时给出原矩问题最优值与最优概率测度；以 Newsvendor 与收益最大化问题数值验证。可回答无穷维矩优化的可解重构问题。",
+   "pq_meta": "分段 SOS-凸矩优化如何精确重构为半定规划？",
+   "pq_vec": "How are piecewise SOS-convex moment optimization problems reformulated as exact semidefinite programs?",
+   "parts": [
+    {
+     "name": "mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 1 of 6).md",
+     "path": "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 1 of 6).md",
+     "chars": 27259,
+     "desc": "【1/6·Piecewise SOS-Convex Momen】UNSW 建立分段 SOS-凸矩优化问题的精确半定规划(SDP)重构：对投影谱面体上的分段 Sum-of-Squares 凸函数建立非负性 SOS 表示，证明单个 SDP 同时给出原矩问题最优值与最优概率测度；以 Newsvendor 与收益最大化问题数值验证。可回答无穷维矩优化的可解重构问题。——Q.Y. Huang, V. Jeyakumar† and G. Li† July 3, 202"
+    },
+    {
+     "name": "mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 2 of 6).md",
+     "path": "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 2 of 6).md",
+     "chars": 28683,
+     "desc": "【2/6·Piecewise SOS-Convex Momen】UNSW 建立分段 SOS-凸矩优化问题的精确半定规划(SDP)重构：对投影谱面体上的分段 Sum-of-Squares 凸函数建立非负性 SOS 表示，证明单个 SDP 同时给出原矩问题最优值与最优概率测度；以 Newsvendor 与收益最大化问题数值验证。可回答无穷维矩优化的可解重构问题。——## 3 Piecewise SOS-Convex Moment Problems In thi"
+    },
+    {
+     "name": "mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 3 of 6).md",
+     "path": "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 3 of 6).md",
+     "chars": 6036,
+     "desc": "【3/6·Piecewise SOS-Convex Momen】UNSW 建立分段 SOS-凸矩优化问题的精确半定规划(SDP)重构：对投影谱面体上的分段 Sum-of-Squares 凸函数建立非负性 SOS 表示，证明单个 SDP 同时给出原矩问题最优值与最优概率测度；以 Newsvendor 与收益最大化问题数值验证。可回答无穷维矩优化的可解重构问题。——The optimal probability measure $\\begin{array} {"
+    },
+    {
+     "name": "mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+     "path": "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+     "chars": 28517,
+     "desc": "【4/6·Piecewise SOS-Convex Momen】UNSW 建立分段 SOS-凸矩优化问题的精确半定规划(SDP)重构：对投影谱面体上的分段 Sum-of-Squares 凸函数建立非负性 SOS 表示，证明单个 SDP 同时给出原矩问题最优值与最优概率测度；以 Newsvendor 与收益最大化问题数值验证。可回答无穷维矩优化的可解重构问题。——## 4 Applications to Newsvendor and Revenue Maxi"
+    },
+    {
+     "name": "mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 5 of 6).md",
+     "path": "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 5 of 6).md",
+     "chars": 4704,
+     "desc": "【5/6·Piecewise SOS-Convex Momen】UNSW 建立分段 SOS-凸矩优化问题的精确半定规划(SDP)重构：对投影谱面体上的分段 Sum-of-Squares 凸函数建立非负性 SOS 表示，证明单个 SDP 同时给出原矩问题最优值与最优概率测度；以 Newsvendor 与收益最大化问题数值验证。可回答无穷维矩优化的可解重构问题。——$$ \\begin{array} { r l } & { \\frac { 2 ^ { n } }"
+    },
+    {
+     "name": "mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+     "path": "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+     "chars": 25085,
+     "desc": "【6/6·Piecewise SOS-Convex Momen】UNSW 建立分段 SOS-凸矩优化问题的精确半定规划(SDP)重构：对投影谱面体上的分段 Sum-of-Squares 凸函数建立非负性 SOS 表示，证明单个 SDP 同时给出原矩问题最优值与最优概率测度；以 Newsvendor 与收益最大化问题数值验证。可回答无穷维矩优化的可解重构问题。——## 5 Conclusion and Outlook We showed how to der"
+    }
+   ],
+   "title": "Piecewise SOS-Convex Moment Optimization and Applications via Exact Semi-Definite Programs",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "1405.4980",
+   "slug": "mathematics__1405.4980__convex-optimization-algorithms-and-complexit",
+   "field": "mathematics",
+   "kb": "工程与能源",
+   "tags": [
+    "mathematics",
+    "convex-optimization",
+    "gradient-descent",
+    "complexity-bounds"
+   ],
+   "desc": "Bubeck 的凸优化算法与复杂度专著(Foundations and Trends in ML)：覆盖质心法/椭球法/Vaidya 切平面、投影次梯度下降、光滑函数梯度下降、Frank-Wolfe、强凸性与下界、Nesterov 加速梯度等，系统给出有限维与无量纲优化的收敛率。可回答凸优化算法收敛率与复杂度问题。",
+   "pq_meta": "凸优化主要算法的收敛率与复杂度结论有哪些？",
+   "pq_vec": "What are the convergence rates of gradient descent, Frank-Wolfe and accelerated methods in convex optimization?",
+   "parts": [
+    {
+     "name": "mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 1 of 12).md",
+     "path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 1 of 12).md",
+     "chars": 23459,
+     "desc": "【1/12·正文】Bubeck 的凸优化算法与复杂度专著(Foundations and Trends in ML)：覆盖质心法/椭球法/Vaidya 切平面、投影次梯度下降、光滑函数梯度下降、Frank-Wolfe、强凸性与下界、Nesterov 加速梯度等，系统给出有限维与无量纲优化的收敛率。可回答凸优化算法收敛——Foundations and Trends® in Machine Learning Vol. 8, No. 3-4 (2015) 23"
+    },
+    {
+     "name": "mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 2 of 12).md",
+     "path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 2 of 12).md",
+     "chars": 28371,
+     "desc": "【2/12·Introduction > 1.6. Overvi】Bubeck 的凸优化算法与复杂度专著(Foundations and Trends in ML)：覆盖质心法/椭球法/Vaidya 切平面、投影次梯度下降、光滑函数梯度下降、Frank-Wolfe、强凸性与下界、Nesterov 加速梯度等，系统给出有限维与无量纲优化的收敛率。可回答凸优化算法收敛——## 1.6. Overview of the results and disclaime"
+    },
+    {
+     "name": "mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 3 of 12).md",
+     "path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 3 of 12).md",
+     "chars": 28101,
+     "desc": "【3/12·Convex optimization in fin】Bubeck 的凸优化算法与复杂度专著(Foundations and Trends in ML)：覆盖质心法/椭球法/Vaidya 切平面、投影次梯度下降、光滑函数梯度下降、Frank-Wolfe、强凸性与下界、Nesterov 加速梯度等，系统给出有限维与无量纲优化的收敛率。可回答凸优化算法收敛——## 2.3.2 Vaidya's algorithm We fix $\\varepsil"
+    },
+    {
+     "name": "mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 4 of 12).md",
+     "path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 4 of 12).md",
+     "chars": 27479,
+     "desc": "【4/12·Dimension-free convex opti】Bubeck 的凸优化算法与复杂度专著(Foundations and Trends in ML)：覆盖质心法/椭球法/Vaidya 切平面、投影次梯度下降、光滑函数梯度下降、Frank-Wolfe、强凸性与下界、Nesterov 加速梯度等，系统给出有限维与无量纲优化的收敛率。可回答凸优化算法收敛——## 3.1 Projected subgradient descent for Lips"
+    },
+    {
+     "name": "mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 5 of 12).md",
+     "path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 5 of 12).md",
+     "chars": 28589,
+     "desc": "【5/12·Dimension-free convex opti】Bubeck 的凸优化算法与复杂度专著(Foundations and Trends in ML)：覆盖质心法/椭球法/Vaidya 切平面、投影次梯度下降、光滑函数梯度下降、Frank-Wolfe、强凸性与下界、Nesterov 加速梯度等，系统给出有限维与无量纲优化的收敛率。可回答凸优化算法收敛——## 3.4 Strong convexity We will now discuss a"
+    },
+    {
+     "name": "mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 6 of 12).md",
+     "path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 6 of 12).md",
+     "chars": 26072,
+     "desc": "【6/12·Dimension-free convex opti】Bubeck 的凸优化算法与复杂度专著(Foundations and Trends in ML)：覆盖质心法/椭球法/Vaidya 切平面、投影次梯度下降、光滑函数梯度下降、Frank-Wolfe、强凸性与下界、Nesterov 加速梯度等，系统给出有限维与无量纲优化的收敛率。可回答凸优化算法收敛——## 3.6.2 Acceleration In the argument from th"
+    },
+    {
+     "name": "mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md",
+     "path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md",
+     "chars": 26175,
+     "desc": "【7/12·Almost dimension-free conv】Bubeck 的凸优化算法与复杂度专著(Foundations and Trends in ML)：覆盖质心法/椭球法/Vaidya 切平面、投影次梯度下降、光滑函数梯度下降、Frank-Wolfe、强凸性与下界、Nesterov 加速梯度等，系统给出有限维与无量纲优化的收敛率。可回答凸优化算法收敛——## 4.1 Mirror maps Let $\\mathcal { D } \\subse"
+    },
+    {
+     "name": "mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md",
+     "path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 8 of 12).md",
+     "chars": 28266,
+     "desc": "【8/12·Beyond the black-box model】Bubeck 的凸优化算法与复杂度专著(Foundations and Trends in ML)：覆盖质心法/椭球法/Vaidya 切平面、投影次梯度下降、光滑函数梯度下降、Frank-Wolfe、强凸性与下界、Nesterov 加速梯度等，系统给出有限维与无量纲优化的收敛率。可回答凸优化算法收敛——## ISTA (Iterative Shrinkage-Thresholding Alg"
+    },
+    {
+     "name": "mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md",
+     "path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md",
+     "chars": 27901,
+     "desc": "【9/12·Beyond the black-box model】Bubeck 的凸优化算法与复杂度专著(Foundations and Trends in ML)：覆盖质心法/椭球法/Vaidya 切平面、投影次梯度下降、光滑函数梯度下降、Frank-Wolfe、强凸性与下界、Nesterov 加速梯度等，系统给出有限维与无量纲优化的收敛率。可回答凸优化算法收敛——## 5.3.2 Traditional analysis of Newton's met"
+    },
+    {
+     "name": "mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 10 of 12).md",
+     "path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 10 of 12).md",
+     "chars": 26783,
+     "desc": "【10/12·Convex optimization and ra】Bubeck 的凸优化算法与复杂度专著(Foundations and Trends in ML)：覆盖质心法/椭球法/Vaidya 切平面、投影次梯度下降、光滑函数梯度下降、Frank-Wolfe、强凸性与下界、Nesterov 加速梯度等，系统给出有限维与无量纲优化的收敛率。可回答凸优化算法收敛——## 6.2 Smooth stochastic optimization and mi"
+    },
+    {
+     "name": "mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 11 of 12).md",
+     "path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 11 of 12).md",
+     "chars": 21946,
+     "desc": "【11/12·Convex optimization and ra】Bubeck 的凸优化算法与复杂度专著(Foundations and Trends in ML)：覆盖质心法/椭球法/Vaidya 切平面、投影次梯度下降、光滑函数梯度下降、Frank-Wolfe、强凸性与下界、Nesterov 加速梯度等，系统给出有限维与无量纲优化的收敛率。可回答凸优化算法收敛——## 6.5 Acceleration by randomization for sad"
+    },
+    {
+     "name": "mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 12 of 12).md",
+     "path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 12 of 12).md",
+     "chars": 12956,
+     "desc": "【12/12·References】Bubeck 的凸优化算法与复杂度专著(Foundations and Trends in ML)：覆盖质心法/椭球法/Vaidya 切平面、投影次梯度下降、光滑函数梯度下降、Frank-Wolfe、强凸性与下界、Nesterov 加速梯度等，系统给出有限维与无量纲优化的收敛率。可回答凸优化算法收敛——A. Agarwal and L. Bottou. A lower bound for the optimization"
+    }
+   ],
+   "title": "Convex Optimization: Algorithms and Complexity",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2209.15032",
+   "slug": "speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u",
+   "field": "speech",
+   "kb": "计算机与人工智能",
+   "tags": [
+    "speech",
+    "wav2vec-2.0",
+    "prosodic-boundaries",
+    "speech-synthesis"
+   ],
+   "desc": "西波希米亚大学用 wav2vec 2.0 仅凭声学信息检测语音韵律边界：在捷克广播新闻专家标注集上测试，句内韵律边界准确率 94%、F1 83%(全部边界 95%/89%)，以少量标注数据超越基于文本的预测器；服务于语音合成与音频标注。可回答无文本韵律边界检测问题。",
+   "pq_meta": "wav2vec 2.0 如何仅用声学信息检测韵律边界？",
+   "pq_vec": "How does wav2vec 2.0 detect prosodic boundaries in speech using only acoustic information?",
+   "parts": [
+    {
+     "name": "speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 1 of 2).md",
+     "path": "计算机与人工智能/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 1 of 2).md",
+     "chars": 26565,
+     "desc": "【1/2·Detection of Prosodic Boun】西波希米亚大学用 wav2vec 2.0 仅凭声学信息检测语音韵律边界：在捷克广播新闻专家标注集上测试，句内韵律边界准确率 94%、F1 83%(全部边界 95%/89%)，以少量标注数据超越基于文本的预测器；服务于语音合成与音频标注。可回答无文本韵律边界检测问题。——Marie Kunešová[0000-0002-7187-8481] and Markéta Rezáčková[0000-"
+    },
+    {
+     "name": "speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 2 of 2).md",
+     "path": "计算机与人工智能/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 2 of 2).md",
+     "chars": 4794,
+     "desc": "【2/2·Detection of Prosodic Boun】西波希米亚大学用 wav2vec 2.0 仅凭声学信息检测语音韵律边界：在捷克广播新闻专家标注集上测试，句内韵律边界准确率 94%、F1 83%(全部边界 95%/89%)，以少量标注数据超越基于文本的预测器；服务于语音合成与音频标注。可回答无文本韵律边界检测问题。——## References 1. Baevski, A., Zhou, Y., Mohamed, A., Auli, M.: "
+    }
+   ],
+   "title": "Detection of Prosodic Boundaries in Speech Using Wav2Vec 2.0",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2509.05359",
+   "slug": "speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre",
+   "field": "speech",
+   "kb": "计算机与人工智能",
+   "tags": [
+    "speech",
+    "speech-language-models",
+    "discrete-units",
+    "pre-training"
+   ],
+   "desc": "阿维尼翁大学/南特大学系统分析语音语言模型(SLM)持续预训练中的离散单元表示：考察模型架构、数据表示与训练稳健性的影响，比较语音编码器与聚类粒度在不同模型规模下的最优离散化策略(2,000 小时 LibriHeavy 无标注语音, NLL 对比, 大聚类 OOM)。可回答 SLM 预训练离散单元选择问题。",
+   "pq_meta": "语音语言模型预训练应如何选择离散单元表示？",
+   "pq_vec": "How should discrete unit representations be chosen for speech language modeling pre-training?",
+   "parts": [
+    {
+     "name": "speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre (part 1 of 2).md",
+     "path": "计算机与人工智能/speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre (part 1 of 2).md",
+     "chars": 25463,
+     "desc": "【1/2·An Empirical Analysis of D】阿维尼翁大学/南特大学系统分析语音语言模型(SLM)持续预训练中的离散单元表示：考察模型架构、数据表示与训练稳健性的影响，比较语音编码器与聚类粒度在不同模型规模下的最优离散化策略(2,000 小时 LibriHeavy 无标注语音, NLL 对比, 大聚类 OOM)。可回答 SLM 预训练离散单元选——Yanis Labrak1,3, Richard Dufour2, and Mickaël "
+    },
+    {
+     "name": "speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre (part 2 of 2).md",
+     "path": "计算机与人工智能/speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre (part 2 of 2).md",
+     "chars": 7567,
+     "desc": "【2/2·An Empirical Analysis of D】阿维尼翁大学/南特大学系统分析语音语言模型(SLM)持续预训练中的离散单元表示：考察模型架构、数据表示与训练稳健性的影响，比较语音编码器与聚类粒度在不同模型规模下的最优离散化策略(2,000 小时 LibriHeavy 无标注语音, NLL 对比, 大聚类 OOM)。可回答 SLM 预训练离散单元选——## References 1. Ardila, R., Branson, M., Davi"
+    }
+   ],
+   "title": "An Empirical Analysis of Discrete Unit Representations in Speech Language Modeling Pre-training",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2009.10669",
+   "slug": "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne",
+   "field": "databases",
+   "kb": "计算机与人工智能",
+   "tags": [
+    "databases",
+    "index-structures",
+    "learned-index",
+    "index-breeding"
+   ],
+   "desc": "萨尔大学 Dittrich 组提出自动索引繁育框架 GENE，主张放弃手工发明索引(B 树到 learned index/RMI 皆为 GENE 特例配置)：像物理查询计划一样索引不应被手工设计而应自动繁育，系统性综述下一代 500 篇索引论文谱系。可回答索引结构自动设计与 learned index 定位问题。",
+   "pq_meta": "为什么说索引不该手工发明而应自动繁育？",
+   "pq_vec": "What is the GENE automatic index breeding framework and how does it relate to learned indexes?",
+   "parts": [
+    {
+     "name": "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+     "path": "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+     "chars": 29431,
+     "desc": "【1/4·There is No Such Thing as 】萨尔大学 Dittrich 组提出自动索引繁育框架 GENE，主张放弃手工发明索引(B 树到 learned index/RMI 皆为 GENE 特例配置)：像物理查询计划一样索引不应被手工设计而应自动繁育，系统性综述下一代 500 篇索引论文谱系。可回答索引结构自动设计与 learned inde——Jens Dittrich Saarland Informatics Campus jens"
+    },
+    {
+     "name": "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 2 of 4).md",
+     "path": "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 2 of 4).md",
+     "chars": 26345,
+     "desc": "【2/4·There is No Such Thing as 】萨尔大学 Dittrich 组提出自动索引繁育框架 GENE，主张放弃手工发明索引(B 树到 learned index/RMI 皆为 GENE 特例配置)：像物理查询计划一样索引不应被手工设计而应自动繁育，系统性综述下一代 500 篇索引论文谱系。可回答索引结构自动设计与 learned inde——## 4.2 Initial Population Generation What is a"
+    },
+    {
+     "name": "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+     "path": "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+     "chars": 26586,
+     "desc": "【3/4·There is No Such Thing as 】萨尔大学 Dittrich 组提出自动索引繁育框架 GENE，主张放弃手工发明索引(B 树到 learned index/RMI 皆为 GENE 特例配置)：像物理查询计划一样索引不应被手工设计而应自动繁育，系统性综述下一代 500 篇索引论文谱系。可回答索引结构自动设计与 learned inde——## 6 EXPERIMENTAL EVALUATION In our experiment"
+    },
+    {
+     "name": "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 4 of 4).md",
+     "path": "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 4 of 4).md",
+     "chars": 15143,
+     "desc": "【4/4·There is No Such Thing as 】萨尔大学 Dittrich 组提出自动索引繁育框架 GENE，主张放弃手工发明索引(B 树到 learned index/RMI 皆为 GENE 特例配置)：像物理查询计划一样索引不应被手工设计而应自动繁育，系统性综述下一代 500 篇索引论文谱系。可回答索引结构自动设计与 learned inde——## REFERENCES [1] Erik Agterdenbos, George H. "
+    }
+   ],
+   "title": "There is No Such Thing as an \"Index\"! or: The next 500 Indexing Papers",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "1706.06697",
+   "slug": "databases__1706.06697__index-search-algorithms-for-databases-and-mo",
+   "field": "databases",
+   "kb": "计算机与人工智能",
+   "tags": [
+    "databases",
+    "index-search",
+    "cpu-cache",
+    "css-tree"
+   ],
+   "desc": "萨尔大学硕士论文(导师 Dittrich)系统研究数据库与现代 CPU 上的索引搜索算法：对比 CSS-tree 等结构在缓存敏感场景的行为，CSS-tree 结构刚性不能动态增长、更新靠全量重建，适合夜间批处理 OLAP 而不利写密集 OLTP。可回答面向现代 CPU 的索引搜索算法选型问题。",
+   "pq_meta": "现代 CPU 上数据库索引搜索算法如何选择？",
+   "pq_vec": "How do index search algorithms like CSS-tree perform on modern CPUs and cache hierarchies?",
+   "parts": [
+    {
+     "name": "databases__1706.06697__index-search-algorithms-for-databases-and-mo (part 1 of 3).md",
+     "path": "计算机与人工智能/databases__1706.06697__index-search-algorithms-for-databases-and-mo (part 1 of 3).md",
+     "chars": 27978,
+     "desc": "【1/3·正文】萨尔大学硕士论文(导师 Dittrich)系统研究数据库与现代 CPU 上的索引搜索算法：对比 CSS-tree 等结构在缓存敏感场景的行为，CSS-tree 结构刚性不能动态增长、更新靠全量重建，适合夜间批处理 OLAP 而不利写密集 OLTP。可回答面向现代 CPU 的索引搜索算法选型问题。——Saarland University Faculty of Natural Sciences and Technology I Departm"
+    },
+    {
+     "name": "databases__1706.06697__index-search-algorithms-for-databases-and-mo (part 2 of 3).md",
+     "path": "计算机与人工智能/databases__1706.06697__index-search-algorithms-for-databases-and-mo (part 2 of 3).md",
+     "chars": 28627,
+     "desc": "【2/3·Traditional Index Structur】萨尔大学硕士论文(导师 Dittrich)系统研究数据库与现代 CPU 上的索引搜索算法：对比 CSS-tree 等结构在缓存敏感场景的行为，CSS-tree 结构刚性不能动态增长、更新靠全量重建，适合夜间批处理 OLAP 而不利写密集 OLTP。可回答面向现代 CPU 的索引搜索算法选型问题。——## 2.1 What's wrong with Binary Search? Binary s"
+    },
+    {
+     "name": "databases__1706.06697__index-search-algorithms-for-databases-and-mo (part 3 of 3).md",
+     "path": "计算机与人工智能/databases__1706.06697__index-search-algorithms-for-databases-and-mo (part 3 of 3).md",
+     "chars": 26231,
+     "desc": "【3/3·CPU-optimized Index Struct】萨尔大学硕士论文(导师 Dittrich)系统研究数据库与现代 CPU 上的索引搜索算法：对比 CSS-tree 等结构在缓存敏感场景的行为，CSS-tree 结构刚性不能动态增长、更新靠全量重建，适合夜间批处理 OLAP 而不利写密集 OLTP。可回答面向现代 CPU 的索引搜索算法选型问题。——## 4.1 The Fundamental Idea of NitroGen The Nitr"
+    }
+   ],
+   "title": "Index Search Algorithms for Databases and Modern CPUs",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "gr-qc/9805045",
+   "slug": "gravitational-physics__gr-qc-9805045__disturbing-the-black-hole",
+   "field": "gravitational-physics",
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "gravitational-physics",
+    "black-hole",
+    "adiabatic-invariant",
+    "horizon-area"
+   ],
+   "desc": "Bekenstein 论证近平衡黑洞视界面积是绝热不变量的猜想：以静态标量场扰动的 Schwarzschild 黑洞、超辐射阈值下的 Kerr 黑洞、边缘吸收电荷的 Reissner-Nordström 黑洞为例，证明小频扰动下视界面积变化为 O(ω²) 阶，为黑洞量子化方案提供绝热定理动机。可回答黑洞视界面积不变性问题。",
+   "pq_meta": "黑洞视界面积在什么条件下是绝热不变量？",
+   "pq_vec": "Under what perturbations is the horizon area of a near-equilibrium black hole an adiabatic invariant?",
+   "parts": [
+    {
+     "name": "gravitational-physics__gr-qc-9805045__disturbing-the-black-hole (part 1 of 2).md",
+     "path": "自然科学与地球科学/gravitational-physics__gr-qc-9805045__disturbing-the-black-hole (part 1 of 2).md",
+     "chars": 26639,
+     "desc": "【1/2·DISTURBING THE BLACK HOLE】Bekenstein 论证近平衡黑洞视界面积是绝热不变量的猜想：以静态标量场扰动的 Schwarzschild 黑洞、超辐射阈值下的 Kerr 黑洞、边缘吸收电荷的 Reissner-Nordström 黑洞为例，证明小频扰动下视界面积变化为 O(ω²) 阶，为黑洞量子化方案提供绝热定理动机。可回答——JACOB D. BEKENSTEIN Racah Institute of Physics,"
+    },
+    {
+     "name": "gravitational-physics__gr-qc-9805045__disturbing-the-black-hole (part 2 of 2).md",
+     "path": "自然科学与地球科学/gravitational-physics__gr-qc-9805045__disturbing-the-black-hole (part 2 of 2).md",
+     "chars": 16368,
+     "desc": "【2/2·DISTURBING THE BLACK HOLE 】Bekenstein 论证近平衡黑洞视界面积是绝热不变量的猜想：以静态标量场扰动的 Schwarzschild 黑洞、超辐射阈值下的 Kerr 黑洞、边缘吸收电荷的 Reissner-Nordström 黑洞为例，证明小频扰动下视界面积变化为 O(ω²) 阶，为黑洞量子化方案提供绝热定理动机。可回答——## 5. Waves Impinging on a Kerr Black Hole In "
+    }
+   ],
+   "title": "Disturbing the Black Hole",
+   "a6v_probe": false,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2604.22320",
+   "slug": "statistics__2604.22320__nonparametric-estimation-of-isotropic-covari",
+   "field": "statistics",
+   "kb": "计算机与人工智能",
+   "tags": [
+    "statistics",
+    "nonparametric-estimation",
+    "covariance-function",
+    "bernstein-polynomial"
+   ],
+   "desc": "北卡州立大学用 Bernstein 多项级数构造非参数模型逼近任意各向同性协方差函数：研究 L∞/L2 范数逼近性质，发展计算高效的 sieve 极大似然(sML)估计并在增域条件下证明一致性；模拟显示优于参数法(Matérn/GenCauchy)。可回答空间统计各向同性协方差的非参数估计问题。",
+   "pq_meta": "各向同性协方差函数如何做非参数估计？",
+   "pq_vec": "How is the isotropic covariance function estimated nonparametrically with Bernstein polynomials and sieve ML?",
+   "parts": [
+    {
+     "name": "statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 1 of 9).md",
+     "path": "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 1 of 9).md",
+     "chars": 28579,
+     "desc": "【1/9·Nonparametric Estimation o】北卡州立大学用 Bernstein 多项级数构造非参数模型逼近任意各向同性协方差函数：研究 L∞/L2 范数逼近性质，发展计算高效的 sieve 极大似然(sML)估计并在增域条件下证明一致性；模拟显示优于参数法(Matérn/GenCauchy)。可回答空间统计各向同性协方差的非参数估计问题。——Yiming Wang and Sujit K. Ghosh† Department of St"
+    },
+    {
+     "name": "statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 2 of 9).md",
+     "path": "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 2 of 9).md",
+     "chars": 19963,
+     "desc": "【2/9·Nonparametric Estimation o】北卡州立大学用 Bernstein 多项级数构造非参数模型逼近任意各向同性协方差函数：研究 L∞/L2 范数逼近性质，发展计算高效的 sieve 极大似然(sML)估计并在增域条件下证明一致性；模拟显示优于参数法(Matérn/GenCauchy)。可回答空间统计各向同性协方差的非参数估计问题。——## 3 Sieve Maximum Likelihood Estimation Method "
+    },
+    {
+     "name": "statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 3 of 9).md",
+     "path": "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 3 of 9).md",
+     "chars": 25729,
+     "desc": "【3/9·Nonparametric Estimation o】北卡州立大学用 Bernstein 多项级数构造非参数模型逼近任意各向同性协方差函数：研究 L∞/L2 范数逼近性质，发展计算高效的 sieve 极大似然(sML)估计并在增域条件下证明一致性；模拟显示优于参数法(Matérn/GenCauchy)。可回答空间统计各向同性协方差的非参数估计问题。——## 4 Numerical Illustrations using Simulated Dat"
+    },
+    {
+     "name": "statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 4 of 9).md",
+     "path": "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 4 of 9).md",
+     "chars": 21681,
+     "desc": "【4/9·Nonparametric Estimation o】北卡州立大学用 Bernstein 多项级数构造非参数模型逼近任意各向同性协方差函数：研究 L∞/L2 范数逼近性质，发展计算高效的 sieve 极大似然(sML)估计并在增域条件下证明一致性；模拟显示优于参数法(Matérn/GenCauchy)。可回答空间统计各向同性协方差的非参数估计问题。——## References Abramowitz, M., and Stegun, I. (19"
+    },
+    {
+     "name": "statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 5 of 9).md",
+     "path": "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 5 of 9).md",
+     "chars": 29201,
+     "desc": "【5/9·Nonparametric Estimation o】北卡州立大学用 Bernstein 多项级数构造非参数模型逼近任意各向同性协方差函数：研究 L∞/L2 范数逼近性质，发展计算高效的 sieve 极大似然(sML)估计并在增域条件下证明一致性；模拟显示优于参数法(Matérn/GenCauchy)。可回答空间统计各向同性协方差的非参数估计问题。——## A.6 Proof of Consistency Theorem 3.1 First, s"
+    },
+    {
+     "name": "statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 6 of 9).md",
+     "path": "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 6 of 9).md",
+     "chars": 10905,
+     "desc": "【6/9·Nonparametric Estimation o】北卡州立大学用 Bernstein 多项级数构造非参数模型逼近任意各向同性协方差函数：研究 L∞/L2 范数逼近性质，发展计算高效的 sieve 极大似然(sML)估计并在增域条件下证明一致性；模拟显示优于参数法(Matérn/GenCauchy)。可回答空间统计各向同性协方差的非参数估计问题。——where $\\{ \\lambda _ { i } , i ~ = ~ 1 , \\cdots ,"
+    },
+    {
+     "name": "statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 7 of 9).md",
+     "path": "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 7 of 9).md",
+     "chars": 11598,
+     "desc": "【7/9·Nonparametric Estimation o】北卡州立大学用 Bernstein 多项级数构造非参数模型逼近任意各向同性协方差函数：研究 L∞/L2 范数逼近性质，发展计算高效的 sieve 极大似然(sML)估计并在增域条件下证明一致性；模拟显示优于参数法(Matérn/GenCauchy)。可回答空间统计各向同性协方差的非参数估计问题。——## B Tables ## B.1 Tables in the main text Table"
+    },
+    {
+     "name": "statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 8 of 9).md",
+     "path": "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 8 of 9).md",
+     "chars": 28031,
+     "desc": "【8/9·Nonparametric Estimation o】北卡州立大学用 Bernstein 多项级数构造非参数模型逼近任意各向同性协方差函数：研究 L∞/L2 范数逼近性质，发展计算高效的 sieve 极大似然(sML)估计并在增域条件下证明一致性；模拟显示优于参数法(Matérn/GenCauchy)。可回答空间统计各向同性协方差的非参数估计问题。——## B.2 Additional Results of Section 4 Table 5: "
+    },
+    {
+     "name": "statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 9 of 9).md",
+     "path": "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 9 of 9).md",
+     "chars": 4347,
+     "desc": "【9/9·Nonparametric Estimation o】北卡州立大学用 Bernstein 多项级数构造非参数模型逼近任意各向同性协方差函数：研究 L∞/L2 范数逼近性质，发展计算高效的 sieve 极大似然(sML)估计并在增域条件下证明一致性；模拟显示优于参数法(Matérn/GenCauchy)。可回答空间统计各向同性协方差的非参数估计问题。——## B.3 Additional Results of Section 5 Table 9: "
+    }
+   ],
+   "title": "Nonparametric Estimation of Isotropic Covariance Function",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2607.03098",
+   "slug": "power-systems__2607.03098__integrating-power-electronics-based-energy-s",
+   "field": "power-systems",
+   "kb": "工程与能源",
+   "tags": [
+    "power-systems",
+    "energy-storage",
+    "power-electronics",
+    "dynamic-modeling"
+   ],
+   "desc": "港理工综述电力电子储能系统(PEES)接入电网的动态建模、分析方法与失稳风险：指出简化模型随 PEES 规模增大产生误差聚合(error aggregation)导致结果误判，梳理 AC/DC 电力系统含 PEES 的动态分析脉络与虚拟同步发电机等控制路线及未来挑战。可回答储能并网稳定性分析问题。",
+   "pq_meta": "电力电子储能接入电网有哪些动态建模与失稳风险？",
+   "pq_vec": "What dynamic models and instability risks arise when integrating power electronics-based energy storage into power systems?",
+   "parts": [
+    {
+     "name": "power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 1 of 5).md",
+     "path": "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 1 of 5).md",
+     "chars": 27118,
+     "desc": "【1/5·Integrating Power Electron】港理工综述电力电子储能系统(PEES)接入电网的动态建模、分析方法与失稳风险：指出简化模型随 PEES 规模增大产生误差聚合(error aggregation)导致结果误判，梳理 AC/DC 电力系统含 PEES 的动态分析脉络与虚拟同步发电机等控制路线及未来挑战。可回答储能并网稳定性分析问题。——Qiang Fuª,b, Changlong Daib, Siqi Buª,\\* , C. Y"
+    },
+    {
+     "name": "power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md",
+     "path": "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md",
+     "chars": 23665,
+     "desc": "【2/5·Integrating Power Electron】港理工综述电力电子储能系统(PEES)接入电网的动态建模、分析方法与失稳风险：指出简化模型随 PEES 规模增大产生误差聚合(error aggregation)导致结果误判，梳理 AC/DC 电力系统含 PEES 的动态分析脉络与虚拟同步发电机等控制路线及未来挑战。可回答储能并网稳定性分析问题。——## 3.1. Modeling of ESMs Based on dynamic proce"
+    },
+    {
+     "name": "power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md",
+     "path": "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md",
+     "chars": 21925,
+     "desc": "【3/5·Integrating Power Electron】港理工综述电力电子储能系统(PEES)接入电网的动态建模、分析方法与失稳风险：指出简化模型随 PEES 规模增大产生误差聚合(error aggregation)导致结果误判，梳理 AC/DC 电力系统含 PEES 的动态分析脉络与虚拟同步发电机等控制路线及未来挑战。可回答储能并网稳定性分析问题。——## 4.2. Issues and Solutions of Dynamic Analysi"
+    },
+    {
+     "name": "power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 4 of 5).md",
+     "path": "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 4 of 5).md",
+     "chars": 28730,
+     "desc": "【4/5·Integrating Power Electron】港理工综述电力电子储能系统(PEES)接入电网的动态建模、分析方法与失稳风险：指出简化模型随 PEES 规模增大产生误差聚合(error aggregation)导致结果误判，梳理 AC/DC 电力系统含 PEES 的动态分析脉络与虚拟同步发电机等控制路线及未来挑战。可回答储能并网稳定性分析问题。——## REFERENCES [1] Olabi AG, Abdelkareem MA. Ren"
+    },
+    {
+     "name": "power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 5 of 5).md",
+     "path": "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 5 of 5).md",
+     "chars": 10225,
+     "desc": "【5/5·Integrating Power Electron】港理工综述电力电子储能系统(PEES)接入电网的动态建模、分析方法与失稳风险：指出简化模型随 PEES 规模增大产生误差聚合(error aggregation)导致结果误判，梳理 AC/DC 电力系统含 PEES 的动态分析脉络与虚拟同步发电机等控制路线及未来挑战。可回答储能并网稳定性分析问题。——[123] Shah S, Parsa L. Impedance Modeling of Th"
+    }
+   ],
+   "title": "Integrating Power Electronics-based Energy Storages to Power Systems: A Review on Dynamic Modeling, Analysis, and Future Challenges",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2412.15058",
+   "slug": "medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio",
+   "field": "medical-imaging",
+   "kb": "生命科学与医学",
+   "tags": [
+    "medical-imaging",
+    "image-segmentation",
+    "in-context-learning",
+    "biomedical-datasets"
+   ],
+   "desc": "MIT CSAIL/MGH 提出 MultiverSeg：以上下文集合(context set)中的已标注图像-分割对为条件交互式分割新生物医学数据集，随着已分割图像增多所需交互次数显著减少；在 OASIS、PPMI 等未见数据集上比基线更快达到 90% Dice(200 随机种子 95% CI)。可回答新数据集快速交互式分割问题。",
+   "pq_meta": "如何用上下文引导快速分割新的生物医学影像数据集？",
+   "pq_vec": "How does MultiverSeg segment new biomedical imaging datasets with in-context guidance and fewer interactions?",
+   "parts": [
+    {
+     "name": "medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 1 of 6).md",
+     "path": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 1 of 6).md",
+     "chars": 28642,
+     "desc": "【1/6·MultiverSeg: Scalable Inte】MIT CSAIL/MGH 提出 MultiverSeg：以上下文集合(context set)中的已标注图像-分割对为条件交互式分割新生物医学数据集，随着已分割图像增多所需交互次数显著减少；在 OASIS、PPMI 等未见数据集上比基线更快达到 90% Dice(200 随机种子 95% CI)。——Hallee E. Wong MIT CSAIL & MGH hallee@mit.edu "
+    },
+    {
+     "name": "medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 2 of 6).md",
+     "path": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 2 of 6).md",
+     "chars": 11052,
+     "desc": "【2/6·MultiverSeg: Scalable Inte】MIT CSAIL/MGH 提出 MultiverSeg：以上下文集合(context set)中的已标注图像-分割对为条件交互式分割新生物医学数据集，随着已分割图像增多所需交互次数显著减少；在 OASIS、PPMI 等未见数据集上比基线更快达到 90% Dice(200 随机种子 95% CI)。——## 6. Experiment 1: Evaluation In this experim"
+    },
+    {
+     "name": "medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 3 of 6).md",
+     "path": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 3 of 6).md",
+     "chars": 28651,
+     "desc": "【3/6·MultiverSeg: Scalable Inte】MIT CSAIL/MGH 提出 MultiverSeg：以上下文集合(context set)中的已标注图像-分割对为条件交互式分割新生物医学数据集，随着已分割图像增多所需交互次数显著减少；在 OASIS、PPMI 等未见数据集上比基线更快达到 90% Dice(200 随机种子 95% CI)。——## References [1] Amir Hossein Abdi, Shohreh K"
+    },
+    {
+     "name": "medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 4 of 6).md",
+     "path": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 4 of 6).md",
+     "chars": 9528,
+     "desc": "【4/6·MultiverSeg: Scalable Inte】MIT CSAIL/MGH 提出 MultiverSeg：以上下文集合(context set)中的已标注图像-分割对为条件交互式分割新生物医学数据集，随着已分割图像增多所需交互次数显著减少；在 OASIS、PPMI 等未见数据集上比基线更快达到 90% Dice(200 随机种子 95% CI)。——[111] Tomas Sakinis, Fausto Milletari, Holger "
+    },
+    {
+     "name": "medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 5 of 6).md",
+     "path": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 5 of 6).md",
+     "chars": 27518,
+     "desc": "【5/6·MultiverSeg: Scalable Inte】MIT CSAIL/MGH 提出 MultiverSeg：以上下文集合(context set)中的已标注图像-分割对为条件交互式分割新生物医学数据集，随着已分割图像增多所需交互次数显著减少；在 OASIS、PPMI 等未见数据集上比基线更快达到 90% Dice(200 随机种子 95% CI)。——Supplementary Material ## Contents A Code 16 B"
+    },
+    {
+     "name": "medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 6 of 6).md",
+     "path": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 6 of 6).md",
+     "chars": 23870,
+     "desc": "【6/6·MultiverSeg: Scalable Inte】MIT CSAIL/MGH 提出 MultiverSeg：以上下文集合(context set)中的已标注图像-分割对为条件交互式分割新生物医学数据集，随着已分割图像增多所需交互次数显著减少；在 OASIS、PPMI 等未见数据集上比基线更快达到 90% Dice(200 随机种子 95% CI)。——## E.3. Bootstrapping In-Context Segmentation "
+    }
+   ],
+   "title": "MultiverSeg: Scalable Interactive Segmentation of Biomedical Imaging Datasets with In-Context Guidance",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "q-bio/0408016",
+   "slug": "immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig",
+   "field": "immunology",
+   "kb": "生命科学与医学",
+   "tags": [
+    "immunology",
+    "influenza-vaccine",
+    "epitope-analysis",
+    "antigenic-drift"
+   ],
+   "desc": "Rice 大学用统计力学量化流感疫苗设计中的表位(epitope) antigenic drift：血凝素与神经氨酸酶表位漂移导致非单调免疫响应(原初抗原罪)，解释 2003-2004 美国流感疫苗失效，并给出优化年度疫苗有效性的度量；优势表位 B 的主导地位与观测一致。可回答流感疫苗表位选择与有效性预测问题。",
+   "pq_meta": "表位分析如何解释并改进流感疫苗有效性？",
+   "pq_vec": "How does epitope-level antigenic drift analysis explain influenza vaccine effectiveness?",
+   "parts": [
+    {
+     "name": "immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md",
+     "path": "生命科学与医学/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md",
+     "chars": 26576,
+     "desc": "Rice 大学用统计力学量化流感疫苗设计中的表位(epitope) antigenic drift：血凝素与神经氨酸酶表位漂移导致非单调免疫响应(原初抗原罪)，解释 2003-2004 美国流感疫苗失效，并给出优化年度疫苗有效性的度量；优势表位 B 的主导地位与观测一致。可回答流感疫苗表位选择与有效性预测问题。"
+    }
+   ],
+   "title": "Epitope analysis for influenza vaccine design",
+   "a6v_probe": false,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "physics/0703220",
+   "slug": "oceanography__physics-0703220__scientific-reticence-and-sea-level-rise",
+   "field": "oceanography",
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "oceanography",
+    "sea-level-rise",
+    "ice-sheets",
+    "scientific-reticence"
+   ],
+   "desc": "NASA GISS 的 Hansen 提出科学谨慎(scientific reticence)阻碍海平面上升大风险沟通：冰盖失稳等慢反馈使系统惯性可能导致未来海平面变化失控，警告延迟危险，呼吁科学家小组就海平面变化发布平实报告；结合 Larsen B 冰架崩塌等观测论证。可回答海平面上升预测与科学传播问题。",
+   "pq_meta": "为什么科学谨慎会低估海平面上升风险？",
+   "pq_vec": "What is scientific reticence and how does it affect communication of sea level rise danger?",
+   "parts": [
+    {
+     "name": "oceanography__physics-0703220__scientific-reticence-and-sea-level-rise (part 1 of 2).md",
+     "path": "自然科学与地球科学/oceanography__physics-0703220__scientific-reticence-and-sea-level-rise (part 1 of 2).md",
+     "chars": 28860,
+     "desc": "【1/2·Scientific reticence and s】NASA GISS 的 Hansen 提出科学谨慎(scientific reticence)阻碍海平面上升大风险沟通：冰盖失稳等慢反馈使系统惯性可能导致未来海平面变化失控，警告延迟危险，呼吁科学家小组就海平面变化发布平实报告；结合 Larsen B 冰架崩塌等观测论证。可回答海平面上升预测与科学传——JE Hansen NASA Goddard Institute for Space Stu"
+    },
+    {
+     "name": "oceanography__physics-0703220__scientific-reticence-and-sea-level-rise (part 2 of 2).md",
+     "path": "自然科学与地球科学/oceanography__physics-0703220__scientific-reticence-and-sea-level-rise (part 2 of 2).md",
+     "chars": 7100,
+     "desc": "【2/2·Scientific reticence and s】NASA GISS 的 Hansen 提出科学谨慎(scientific reticence)阻碍海平面上升大风险沟通：冰盖失稳等慢反馈使系统惯性可能导致未来海平面变化失控，警告延迟危险，呼吁科学家小组就海平面变化发布平实报告；结合 Larsen B 冰架崩塌等观测论证。可回答海平面上升预测与科学传——## References Automobile Manufacturers 2006 Ce"
+    }
+   ],
+   "title": "Scientific reticence and sea level rise",
+   "a6v_probe": false,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2606.10843",
+   "slug": "seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p",
+   "field": "seismology",
+   "kb": "自然科学与地球科学",
+   "tags": [
+    "seismology",
+    "supershear-rupture",
+    "particle-motion",
+    "near-fault"
+   ],
+   "desc": "港中文/巴黎高师发展近断层地震记录判定超剪切破裂(supershear rupture)的指标：利用质点运动(particle motion)特征区分破裂速度是否超过剪切波速，合成算例覆盖不同离断层距离(0.5-10 km)与破裂速度比 Vr/Vs(0.6-1.7)，服务地震危险性与震源参数评估。可回答超剪切破裂的观测判定问题。",
+   "pq_meta": "如何用近断层质点运动判定超剪切破裂？",
+   "pq_vec": "How does near-fault particle motion indicate supershear earthquake rupture?",
+   "parts": [
+    {
+     "name": "seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p (part 1 of 3).md",
+     "path": "自然科学与地球科学/seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p (part 1 of 3).md",
+     "chars": 21418,
+     "desc": "【1/3·Supershear Rupture Indicat】港中文/巴黎高师发展近断层地震记录判定超剪切破裂(supershear rupture)的指标：利用质点运动(particle motion)特征区分破裂速度是否超过剪切波速，合成算例覆盖不同离断层距离(0.5-10 km)与破裂速度比 Vr/Vs(0.6-1.7)，服务地震危险性与震源参数评估。可——Suli Yao1,2, Hongfeng Yang1,3,4,5\\*, Harsha S."
+    },
+    {
+     "name": "seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p (part 2 of 3).md",
+     "path": "自然科学与地球科学/seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p (part 2 of 3).md",
+     "chars": 15801,
+     "desc": "【2/3·Supershear Rupture Indicat】港中文/巴黎高师发展近断层地震记录判定超剪切破裂(supershear rupture)的指标：利用质点运动(particle motion)特征区分破裂速度是否超过剪切波速，合成算例覆盖不同离断层距离(0.5-10 km)与破裂速度比 Vr/Vs(0.6-1.7)，服务地震危险性与震源参数评估。可——## References 1. Aagaard BT, Heaton TH. Near-s"
+    },
+    {
+     "name": "seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p (part 3 of 3).md",
+     "path": "自然科学与地球科学/seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p (part 3 of 3).md",
+     "chars": 16594,
+     "desc": "【3/3·Supershear Rupture Indicat】港中文/巴黎高师发展近断层地震记录判定超剪切破裂(supershear rupture)的指标：利用质点运动(particle motion)特征区分破裂速度是否超过剪切波速，合成算例覆盖不同离断层距离(0.5-10 km)与破裂速度比 Vr/Vs(0.6-1.7)，服务地震危险性与震源参数评估。可——## 4, Particle motion shape metrics We test tw"
+    }
+   ],
+   "title": "Supershear Rupture Indicator in Near-fault Particle Motion",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "2508.05896",
+   "slug": "agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz",
+   "field": "agriculture",
+   "kb": "生命科学与医学",
+   "tags": [
+    "agriculture",
+    "trap-cropping",
+    "pest-management",
+    "optimization"
+   ],
+   "desc": "昆士兰大学建立诱虫作物(trap cropping)投资优化框架：按诱捕作物相对吸引力分配主栽与诱捕比例以最大化产量，害虫自由扩散且仅受相对吸引力吸引时，吸引力仅为 2 倍则不值得种植，5 与 25 倍时约 7-10% 田块配诱捕作物最优。可回答害虫治理中诱虫作物配比问题。",
+   "pq_meta": "诱虫作物应占田块多大比例才能最大化产量？",
+   "pq_vec": "What proportion of field should be allocated to trap crops to maximize agricultural yield?",
+   "parts": [
+    {
+     "name": "agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 1 of 3).md",
+     "path": "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 1 of 3).md",
+     "chars": 22384,
+     "desc": "【1/3·Optimal trap cropping inve】昆士兰大学建立诱虫作物(trap cropping)投资优化框架：按诱捕作物相对吸引力分配主栽与诱捕比例以最大化产量，害虫自由扩散且仅受相对吸引力吸引时，吸引力仅为 2 倍则不值得种植，5 与 25 倍时约 7-10% 田块配诱捕作物最优。可回答害虫治理中诱虫作物配比问题。——Matthew H Holden School of Mathematics and Physics, The Uni"
+    },
+    {
+     "name": "agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 2 of 3).md",
+     "path": "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 2 of 3).md",
+     "chars": 23237,
+     "desc": "【2/3·Optimal trap cropping inve】昆士兰大学建立诱虫作物(trap cropping)投资优化框架：按诱捕作物相对吸引力分配主栽与诱捕比例以最大化产量，害虫自由扩散且仅受相对吸引力吸引时，吸引力仅为 2 倍则不值得种植，5 与 25 倍时约 7-10% 田块配诱捕作物最优。可回答害虫治理中诱虫作物配比问题。——## 6 Illustrative results We start by parameterizing the mo"
+    },
+    {
+     "name": "agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 3 of 3).md",
+     "path": "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 3 of 3).md",
+     "chars": 11120,
+     "desc": "【3/3·Optimal trap cropping inve】昆士兰大学建立诱虫作物(trap cropping)投资优化框架：按诱捕作物相对吸引力分配主栽与诱捕比例以最大化产量，害虫自由扩散且仅受相对吸引力吸引时，吸引力仅为 2 倍则不值得种植，5 与 25 倍时约 7-10% 田块配诱捕作物最优。可回答害虫治理中诱虫作物配比问题。——## References Adams, B. J., Wright, R. J., and Boethel, D. "
+    }
+   ],
+   "title": "Optimal trap cropping investments to maximize agricultural yield",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "1909.07748",
+   "slug": "finance__1909.07748__stock-market-microstructure-inference-via-mu",
+   "field": "finance",
+   "kb": "经济与社会",
+   "tags": [
+    "finance",
+    "market-microstructure",
+    "multi-agent-reinforcement-learning",
+    "order-book"
+   ],
+   "desc": "巴黎高师等用多智能体强化学习推断股市微观结构：智能体基于订单簿状态(含成交量)学习持仓/买/卖与报价两类动作的直接策略搜索，在道琼斯工业平均指数成分股订单簿数据上模拟交易生态。可回答用 MARL 建模与推断市场微观结构的问题。",
+   "pq_meta": "多智能体强化学习如何推断股票市场微观结构？",
+   "pq_vec": "How is multi-agent reinforcement learning used to infer stock market microstructure from order books?",
+   "parts": [
+    {
+     "name": "finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+     "path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+     "chars": 26257,
+     "desc": "【1/4·Stock market microstructur】巴黎高师等用多智能体强化学习推断股市微观结构：智能体基于订单簿状态(含成交量)学习持仓/买/卖与报价两类动作的直接策略搜索，在道琼斯工业平均指数成分股订单簿数据上模拟交易生态。可回答用 MARL 建模与推断市场微观结构的问题。——Johann Lussange Laboratoire des Neurosciences Cognitives, INSERM U960, Département "
+    },
+    {
+     "name": "finance__1909.07748__stock-market-microstructure-inference-via-mu (part 2 of 4).md",
+     "path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 2 of 4).md",
+     "chars": 27465,
+     "desc": "【2/4·Stock market microstructur】巴黎高师等用多智能体强化学习推断股市微观结构：智能体基于订单簿状态(含成交量)学习持仓/买/卖与报价两类动作的直接策略搜索，在道琼斯工业平均指数成分股订单簿数据上模拟交易生态。可回答用 MARL 建模与推断市场微观结构的问题。——## B. Agents parameters Let $\\mathcal { U } ( ) , \\mathcal { U } \\{ \\} , \\mathcal {"
+    },
+    {
+     "name": "finance__1909.07748__stock-market-microstructure-inference-via-mu (part 3 of 4).md",
+     "path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 3 of 4).md",
+     "chars": 20237,
+     "desc": "【3/4·Stock market microstructur】巴黎高师等用多智能体强化学习推断股市微观结构：智能体基于订单簿状态(含成交量)学习持仓/买/卖与报价两类动作的直接策略搜索，在道琼斯工业平均指数成分股订单簿数据上模拟交易生态。可回答用 MARL 建模与推断市场微观结构的问题。——## V. CALIBRATION Model hypotheses: The main hypotheses for this model are that: i-"
+    },
+    {
+     "name": "finance__1909.07748__stock-market-microstructure-inference-via-mu (part 4 of 4).md",
+     "path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 4 of 4).md",
+     "chars": 10493,
+     "desc": "【4/4·Stock market microstructur】巴黎高师等用多智能体强化学习推断股市微观结构：智能体基于订单簿状态(含成交量)学习持仓/买/卖与报价两类动作的直接策略搜索，在道琼斯工业平均指数成分股订单簿数据上模拟交易生态。可回答用 MARL 建模与推断市场微观结构的问题。——## VIII. ACKNOWLEDGEMENTS We graciously acknowledge this work was supported by the "
+    }
+   ],
+   "title": "Stock market microstructure inference via multi-agent reinforcement learning",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  },
+  {
+   "arxiv_id": "1001.3181",
+   "slug": "social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi",
+   "field": "social-networks",
+   "kb": "计算机与人工智能",
+   "tags": [
+    "social-networks",
+    "information-diffusion",
+    "weak-ties",
+    "online-social-networks"
+   ],
+   "desc": "北航研究弱联系(weak ties)在线社交网络信息扩散中的微妙作用：提出结构-扩散耦合模型刻画在线社交网络独特的传播机制，对照 Granovetter 弱联系假说分析强弱联系对扩散动力学的不同贡献。可回答在线社交网络信息扩散机制问题。",
+   "pq_meta": "弱联系在在线社交网络信息扩散中起什么作用？",
+   "pq_vec": "What subtle role do weak ties play in information diffusion in online social networks?",
+   "parts": [
+    {
+     "name": "social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 1 of 2).md",
+     "path": "计算机与人工智能/social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 1 of 2).md",
+     "chars": 29997,
+     "desc": "【1/2·Weak Ties: Subtle Role in 】北航研究弱联系(weak ties)在线社交网络信息扩散中的微妙作用：提出结构-扩散耦合模型刻画在线社交网络独特的传播机制，对照 Granovetter 弱联系假说分析强弱联系对扩散动力学的不同贡献。可回答在线社交网络信息扩散机制问题。——Jichang Zhao State Key Laboratory of Software Development Environment Beihang "
+    },
+    {
+     "name": "social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 2 of 2).md",
+     "path": "计算机与人工智能/social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 2 of 2).md",
+     "chars": 29998,
+     "desc": "【2/2·Weak Ties: Subtle Role in 】北航研究弱联系(weak ties)在线社交网络信息扩散中的微妙作用：提出结构-扩散耦合模型刻画在线社交网络独特的传播机制，对照 Granovetter 弱联系假说分析强弱联系对扩散动力学的不同贡献。可回答在线社交网络信息扩散机制问题。——Jichang Zhao State Key Laboratory of Software Development Environment, Beihang"
+    }
+   ],
+   "title": "Weak ties: Subtle role of information diffusion in online social networks",
+   "a6v_probe": true,
+   "final_check": {
+    "C1_readback": true,
+    "C2_desc": true,
+    "C3_tags": true,
+    "C4_kb": true,
+    "A6V_vec_probe": true,
+    "C5_vector": true,
+    "C7_graph": true,
+    "C8_three_layer": true,
+    "C9_meta_hit": true
+   }
+  }
+ ],
+ "final_check_version": "103-fixed"
+}

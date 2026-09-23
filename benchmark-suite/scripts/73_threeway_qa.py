@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# DEPRECATED 2026-09-20 — superseded by the experiments/ platform
+# (python -m experiments.runner, chat API + harness=claude). Kept only to
+# reproduce historical reports. Do not use for new retrieval testing.
 """三轨对照 QA — 10 道内容强相关题目 × 3 种检索方式 × 同一 Harness(omp) 作答.
 
 Track A  kb_system   — 平台知识库检索: MCP two_stage 全库 → 文档级去重 → top-3

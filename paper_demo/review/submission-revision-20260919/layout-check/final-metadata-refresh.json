@@ -1,0 +1,238 @@
+{
+  "checked_at": "2026-09-19T22:00:05.317004",
+  "sha256": "05309a06454887a461a75245c57342f4df567f62ea0c15dbf4ed9943f3516182",
+  "bytes": 600973,
+  "pages": 5,
+  "geometry": [
+    [
+      0.0,
+      0.0,
+      612.0,
+      792.0
+    ],
+    [
+      0.0,
+      0.0,
+      612.0,
+      792.0
+    ],
+    [
+      0.0,
+      0.0,
+      612.0,
+      792.0
+    ],
+    [
+      0.0,
+      0.0,
+      612.0,
+      792.0
+    ],
+    [
+      0.0,
+      0.0,
+      612.0,
+      792.0
+    ]
+  ],
+  "links": [
+    [
+      "https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4",
+      "https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4"
+    ],
+    [],
+    [],
+    [
+      "https://github.com/kingdol666/rag-knowledge"
+    ],
+    [
+      "https://openreview.net/forum?id=hSyW5go0v8",
+      "https://openreview.net/forum?id=hSyW5go0v8",
+      "https://doi.org/10.18653/v1/2024.findings-acl.137",
+      "https://proceedings.neurips.cc/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html",
+      "https://proceedings.neurips.cc/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html",
+      "https://doi.org/10.48550/arXiv.2602.05014",
+      "https://modelcontextprotocol.io/specification/2025-11-25",
+      "https://doi.org/10.48550/arXiv.2409.18839",
+      "https://doi.org/10.48550/arXiv.2401.15884",
+      "https://doi.org/10.48550/arXiv.2401.15884",
+      "https://doi.org/10.1145/3746252.3761478"
+    ]
+  ],
+  "date_lines": [
+    [
+      "Organization and Inspectable Retrieval. In CIKM \u201926, November 9\u201311, 2026,"
+    ],
+    [
+      "CIKM \u201926, November 9\u201311, 2026, Rome, Italy"
+    ],
+    [
+      "CIKM \u201926, November 9\u201311, 2026, Rome, Italy"
+    ],
+    [
+      "CIKM \u201926, November 9\u201311, 2026, Rome, Italy"
+    ],
+    [
+      "CIKM \u201926, November 9\u201311, 2026, Rome, Italy"
+    ]
+  ],
+  "page4_tail": "answer correctness.\nThe three out-of-corpus examples combine script-collected re-\ntrieval and catalog evidence with predefined agent-authored judg-\nments and templated not-found reports. They illustrate the re-\nporting format, not measured autonomous abstention. The census\ncounts 165 catalog entries but retains 153 document names; it does\nnot establish exhaustive content inspection. C explicitly abstains in\ntwo of ten saved answers. These records illustrate how insufficient\nevidence is reported; non-abstention does not establish correctness.\nGate scores are agent-authored rubric judgments, not independent\ncorrectness assessments. Attendees can inspect the recorded de-\ncisions alongside candidate text and source references, including\nwhere the available trace does not fully support an answer.\nThe tracks use different evidence windows and execution config-\nurations. A\u2019s scripted, fixed rewrites include expected-answer terms,\nprecluding a fair retrieval comparison. B\u2019s file references are self-\nreported without retained read events. C loses document metadata\nat the logging adapter, a limitation of this reproduction rather than\ndense retrieval. Resolved LLM configurations are not archived per\nanswer, and cache state and parametric knowledge are uncontrolled.\nA records retrieval and read times but not answer-authoring time,\nso its end-to-end latency is unavailable. These selected traces sup-\nport an operational demonstration, not claims of answer accuracy,\nspeed advantage, or general efficacy.\n5\nConclusion\nQdcvr links knowledge-base management tools with an agent-\nexecuted workflow for reading evidence, assessing relevance, and\nreporting search failure. The demonstration exposes document\nplacement, source inspection, and not-found behavior. The saved\ncases illustrate operation rather than establish general effective-\nness; compliance with the workflow and complete run provenance\nremain important validation requirements.\nArtifacts. Code, corpus-fetch scripts, and saved traces are avail-\nable at https://github.com/kingdol666/rag-knowledge. The video\nis linked in the abstract. Reproduction requires configured docu-\nment services and an agent harness/model; stored answers are not\nindependent ground-truth judgments.\nGenAI Usage Disclosure\nOpenAI Codex assisted with prose revision, manuscript organiza-\ntion, inspection of implementation and experiment artifacts, and\n4\n",
+  "page5_text": "QDCVR: An Agent-Operated Platform for Knowledge Organization and Inspectable Retrieval\nCIKM \u201926, November 9\u201311, 2026, Rome, Italy\nvector-figure implementation. No new answer-generation experi-\nments were run for this revision; reported observations come from\nthe existing saved records. The demonstrated system uses language\nmodels for content routing, rubric judgments, and answer draft-\ning. These outputs are distinguished from deterministic inventory\nchecks and are not independent correctness assessments. Responsi-\nbility for the final claims, sources, figures, and submitted manuscript\nrests with the human authors.\nReferences\n[1] Akari Asai, Zeqiu Wu, Yizhong Wang, Avirup Sil, and Hannaneh Hajishirzi. 2024.\nSelf-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection. In\nThe Twelfth International Conference on Learning Representations (ICLR). https:\n//openreview.net/forum?id=hSyW5go0v8\n[2] Jianlyu Chen, Shitao Xiao, Peitian Zhang, Kun Luo, Defu Lian, and Zheng Liu. 2024.\nM3-Embedding: Multi-Linguality, Multi-Functionality, Multi-Granularity Text\nEmbeddings Through Self-Knowledge Distillation. In Findings of the Association\nfor Computational Linguistics: ACL 2024. Association for Computational Linguistics,\n2318\u20132335. doi:10.18653/v1/2024.findings-acl.137\n[3] Patrick Lewis, Ethan Perez, Aleksandra Piktus, Fabio Petroni, Vladimir Karpukhin,\nNaman Goyal, Heinrich K\u00fcttler, Mike Lewis, Wen-tau Yih, Tim Rockt\u00e4schel, Se-\nbastian Riedel, and Douwe Kiela. 2020. Retrieval-Augmented Generation for\nKnowledge-Intensive NLP Tasks. In Advances in Neural Information Processing\nSystems, Vol. 33. Curran Associates, Inc., 9459\u20139474. https://proceedings.neurips.\ncc/paper/2020/hash/6b493230205f780e1bc26945df7481e5-Abstract.html\n[4] Zhanli Li, Huiwen Tian, Lvzhou Luo, Yixuan Cao, and Ping Luo. 2026. DeepRead:\nDocument Structure-Aware Reasoning to Enhance Agentic Search. arXiv preprint\narXiv:2602.05014v3 (2026). doi:10.48550/arXiv.2602.05014\n[5] Model Context Protocol Contributors. 2025. Model Context Protocol Specification\n(2025-11-25). https://modelcontextprotocol.io/specification/2025-11-25. Accessed\nSeptember 19, 2026; specification revision 2025-11-25.\n[6] Bin Wang, Chao Xu, Xiaomeng Zhao, Linke Ouyang, Fan Wu, Zhiyuan Zhao, Rui\nXu, Kaiwen Liu, Yuan Qu, Fukai Shang, Bo Zhang, Liqun Wei, Zhihao Sui, Wei Li,\nBotian Shi, Yu Qiao, Dahua Lin, and Conghui He. 2024. MinerU: An Open-Source\nSolution for Precise Document Content Extraction. arXiv preprint arXiv:2409.18839\n(2024). doi:10.48550/arXiv.2409.18839\n[7] Shi-Qi Yan, Jia-Chen Gu, Yun Zhu, and Zhen-Hua Ling. 2024. Corrective Retrieval\nAugmented Generation. arXiv preprint arXiv:2401.15884 (2024). doi:10.48550/arXiv.\n2401.15884\n[8] Chengshuai Zhao, Riccardo De Maria, Tharindu Kumarage, Kumar Satvik Chaud-\nhary, Garima Agrawal, Yiwen Li, Jongchan Park, Ying-Chih Chen, Yuli Deng, and\nHuan Liu. 2025. CyberBOT: Ontology-Grounded Retrieval Augmented Generation\nfor Reliable Cybersecurity Education. In Proceedings of the 34th ACM International\nConference on Information and Knowledge Management. Association for Computing\nMachinery, 6752\u20136756. doi:10.1145/3746252.3761478\n5\n",
+  "changed_frozen_inputs": [
+    "tex\\main.tex",
+    "tex\\main.pdf"
+  ],
+  "log_messages": [
+    "Underfull \\vbox (badness 10000) has occurred while \\output is active []",
+    "Underfull \\vbox (badness 10000) has occurred while \\output is active []",
+    "Underfull \\vbox (badness 10000) has occurred while \\output is active []",
+    "Overfull \\vbox (1.452pt too high) has occurred while \\output is active []",
+    "Output written on main.pdf (5 pages, 600973 bytes)."
+  ],
+  "metadata_source": [
+    "\\acmConference[CIKM '26]{Proceedings of the 35th ACM International Conference on Information and Knowledge Management}{November 9--11, 2026}{Rome, Italy}",
+    "\\acmBooktitle{CIKM '26, November 9--11, 2026, Rome, Italy}"
+  ],
+  "expected_hash_match": true,
+  "source_hashes": {
+    "tex\\main.tex": "634277c5a4f5552691dfa09fdea8b1b3e07d7f6d15727e740d9bb8fcf0caad6f",
+    "tex\\sec0_abstract.tex": "cd16c0c3e9a70c8f48ead4787571ce9206e1f9ae89d1b3a43596972fb5401b8a",
+    "tex\\sec1_intro.tex": "67beb760a6516569cf6f4e87bd32001104752af8aa9cd849613bb0632435d6ae",
+    "tex\\sec2_system.tex": "3d6b5687bbe8f57e94af5e689f133bfacb900f1b6eb909a1a43c32ecc547d216",
+    "tex\\sec3_demo.tex": "eddf4fede4fc6f1e0a3c1c47aaef2701500acd1aecfcb3db947a8800de5a4c0e",
+    "tex\\sec4_backmatter.tex": "19a6c2ba5b6b4d413a31c83ddf687817f02e4fad83f3adca32aae4d2f63ac4e2",
+    "tex\\sec4_eval.tex": "a3a2a982aac6a6bbc3d3b2c74ee656fbdb30ffe2d837258c6392700a180638ee",
+    "tex\\refs.bib": "42f94fb3537283fe5d4fea0ceffb0f1c7e54ecb10c70a9c31f14dcfbbd4b9a47",
+    "tex\\main.pdf": "05309a06454887a461a75245c57342f4df567f62ea0c15dbf4ed9943f3516182",
+    "figures\\submission-20260919\\fig1-concept.pdf": "84322c1e989f76130c580f188d1b63bc08bf4770915320b95ffae5fbe4532d45",
+    "figures\\submission-20260919\\fig2-architecture.pdf": "4b115617b955696fd616a143e1f10f720aef95ea1b85a12f59bfbd62ee131ca9",
+    "figures\\submission-20260919\\fig3-evidence.pdf": "5931adb274db9dda5328b25c2a57bc983573559e9bf2dfec0cb7e03f3d383895"
+  },
+  "span_geometry_and_text_equal_except_date": [
+    {
+      "page": 1,
+      "span_count_equal": true,
+      "changes": [
+        {
+          "old_text": " CIKM \u201926, November 9\u201313, 2026,",
+          "new_text": " CIKM \u201926, November 9\u201311, 2026,",
+          "old_bbox": [
+            190.89317321777344,
+            530.3427124023438,
+            294.9112854003906,
+            539.9467163085938
+          ],
+          "new_bbox": [
+            190.89317321777344,
+            530.3427124023438,
+            294.9112854003906,
+            539.9467163085938
+          ]
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "span_count_equal": true,
+      "changes": [
+        {
+          "old_text": "CIKM \u201926, November 9\u201313, 2026, Rome, Italy",
+          "new_text": "CIKM \u201926, November 9\u201311, 2026, Rome, Italy",
+          "old_bbox": [
+            53.79800033569336,
+            61.119380950927734,
+            181.5789794921875,
+            69.2159652709961
+          ],
+          "new_bbox": [
+            53.79800033569336,
+            61.119380950927734,
+            181.5789794921875,
+            69.2159652709961
+          ]
+        }
+      ]
+    },
+    {
+      "page": 3,
+      "span_count_equal": true,
+      "changes": [
+        {
+          "old_text": "CIKM \u201926, November 9\u201313, 2026, Rome, Italy",
+          "new_text": "CIKM \u201926, November 9\u201311, 2026, Rome, Italy",
+          "old_bbox": [
+            430.4180603027344,
+            61.119380950927734,
+            558.1988525390625,
+            69.2159652709961
+          ],
+          "new_bbox": [
+            430.4180603027344,
+            61.119380950927734,
+            558.1988525390625,
+            69.2159652709961
+          ]
+        }
+      ]
+    },
+    {
+      "page": 4,
+      "span_count_equal": true,
+      "changes": [
+        {
+          "old_text": "CIKM \u201926, November 9\u201313, 2026, Rome, Italy",
+          "new_text": "CIKM \u201926, November 9\u201311, 2026, Rome, Italy",
+          "old_bbox": [
+            53.79800033569336,
+            61.119380950927734,
+            181.5789794921875,
+            69.2159652709961
+          ],
+          "new_bbox": [
+            53.79800033569336,
+            61.119380950927734,
+            181.5789794921875,
+            69.2159652709961
+          ]
+        }
+      ]
+    },
+    {
+      "page": 5,
+      "span_count_equal": true,
+      "changes": [
+        {
+          "old_text": "CIKM \u201926, November 9\u201313, 2026, Rome, Italy",
+          "new_text": "CIKM \u201926, November 9\u201311, 2026, Rome, Italy",
+          "old_bbox": [
+            430.4180603027344,
+            61.119380950927734,
+            558.1988525390625,
+            69.2159652709961
+          ],
+          "new_bbox": [
+            430.4180603027344,
+            61.119380950927734,
+            558.1988525390625,
+            69.2159652709961
+          ]
+        }
+      ]
+    }
+  ],
+  "source_diff": [
+    "--- \n",
+    "+++ \n",
+    "@@ -5,8 +5,8 @@\n",
+    " \\documentclass[sigconf]{acmart}",
+    " \\setcopyright{none}",
+    " \\settopmatter{printacmref=true,printfolios=true}",
+    "-\\acmConference[CIKM '26]{Proceedings of the 35th ACM International Conference on Information and Knowledge Management}{November 9--13, 2026}{Rome, Italy}",
+    "-\\acmBooktitle{CIKM '26, November 9--13, 2026, Rome, Italy}",
+    "+\\acmConference[CIKM '26]{Proceedings of the 35th ACM International Conference on Information and Knowledge Management}{November 9--11, 2026}{Rome, Italy}",
+    "+\\acmBooktitle{CIKM '26, November 9--11, 2026, Rome, Italy}",
+    " \\acmISBN{}",
+    " \\acmDOI{}",
+    " "
+  ]
+}

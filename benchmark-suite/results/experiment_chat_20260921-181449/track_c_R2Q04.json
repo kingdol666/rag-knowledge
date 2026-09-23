@@ -1,0 +1,71 @@
+{
+ "track": "c",
+ "question": "What does STRAND condition on to represent a genetic perturbation, instead of collapsing all interventions on the same gene into one representation?",
+ "answer": "STRAND conditions on regulatory DNA sequence — specifically, it represents a perturbation by encoding the sequence at its genomic locus, rather than by a fixed set of gene identifiers. This lets it distinguish perturbations targeting different regulatory elements within the same gene and supports zero-shot inference at unseen loci. The paper notes that gene-level perturbation models collapse distinct interventions on the same gene into the same representation, whereas STRAND conditions perturbation effects on regulatory DNA sequence to perform in-silico profiling of locus-specific perturbations at nucleotide resolution.\n\nSources: `genomics__2602.10156__strand-sequence-conditioned-transport-for-si__k00.md`, `genomics__2602.10156__strand-sequence-conditioned-transport-for-si__k03.md`, `genomics__2602.10156__strand-sequence-conditioned-transport-for-si__k05.md`, `genomics__2602.10156__strand-sequence-conditioned-transport-for-si__k07.md`.",
+ "is_error": false,
+ "latency_s": 12.3,
+ "sdk_duration_ms": 9713,
+ "num_turns": 3,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "STRAND condition on genetic perturbation representation instead of collapsing interventions on the same gene",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 2,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 3327,
+  "output": 390,
+  "cache_read": 115008,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.08388899999999999,
+ "timeline": [
+  {
+   "t": 2.66,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 3.82,
+   "event": "text",
+   "detail": "56"
+  },
+  {
+   "t": 3.82,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 9.86,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 12.33,
+   "event": "text",
+   "detail": "949"
+  },
+  {
+   "t": 12.34,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll retrieve evidence for this question about STRAND.\n\n",
+  "STRAND conditions on regulatory DNA sequence — specifically, it represents a perturbation by encoding the sequence at its genomic locus, rather than by a fixed set of gene identifiers. This lets it distinguish perturbations targeting different regulatory elements within the same gene and supports zero-shot inference at unseen loci. The paper notes that gene-level perturbation models collapse distinct interventions on the same gene into the same representation, whereas STRAND conditions perturbation effects on regulatory DNA sequence to perform in-silico profiling of locus-specific perturbations at nucleotide resolution.\n\nSources: `genomics__2602.10156__strand-sequence-conditioned-transport-for-si__k00.md`, `genomics__2602.10156__strand-sequence-conditioned-transport-for-si__k03.md`, `genomics__2602.10156__strand-sequence-conditioned-transport-for-si__k05.md`, `genomics__2602.10156__strand-sequence-conditioned-transport-for-si__k07.md`."
+ ],
+ "qid": "R2Q04",
+ "via": "chat"
+}

@@ -1,175 +1,176 @@
-# 补天架构 — SOUL 人格初始化蒸馏体系
+# Butian (补天) Architecture — The SOUL Persona Initialization Distillation System
 
-> 版本: 1.0 | 关联: soul skill §E · soul-distill-integration.md · seed-contract.md
+> Version: 1.0 | Related: soul skill §E · soul-distill-integration.md · seed-contract.md
 
-## 1. 定位
+## 1. Positioning
 
-**补天 = nuwa-skill(先天基因深研) × dot-skill(本地材料蒸馏) 双引擎 + SOUL 后天进化。**
+**Butian (补天) distillation = nuwa-skill (innate-gene deep research) × dot-skill (local-material distillation) dual engines + SOUL acquired evolution.**
 
 ```
-知识库(有什么)   ←knowledgebase skill  72 个 kb_* 工具
-SOUL(谁来讲)     ←soul skill          16 个 soul_* 工具
-补天(初始人格)    ←butian skill        双引擎调度 + 种子转换 + SOUL 落地
+Knowledge base (what there is)   ←knowledgebase skill  72 kb_* tools
+SOUL (who explains it)     ←soul skill          16 soul_* tools
+Butian (initial personas)    ←butian skill        dual-engine dispatch + seed conversion + SOUL landing
 ```
 
-## 2. 双引擎分工
+## 2. Dual-Engine Division of Labor
 
-| 维度 | nuwa-skill(女娲造人术) | dot-skill(统一 meta-skill 引擎) |
+| Dimension | nuwa-skill (Nuwa's craft of making people) | dot-skill (unified meta-skill engine) |
 |---|---|---|
-| 对象 | 公开人物 / 主题 / 思维框架 | 同事 / 熟人 / 关系 / 名人扮演 |
-| 素材来源 | 网络深研(6 Agent 并行)+ 可选本地语料 | 本地材料采集(飞书/钉钉/邮件/文件/粘贴) |
-| 调研深度 | 6 维调研(著作/对话/表达/他者/决策/时间线)+ 三重验证 | 素材直取, 3 问 intake |
-| 产物 | `[person]-perspective/SKILL.md` + `references/research/0X-*.md` | `<dir>/meta.json + persona.md + work.md + SKILL.md` |
-| 特点 | 心智模型 / 决策启发式 / 表达DNA / 智识谱系 / 诚实边界 | 关系画像 / 工作人格 / 进化模式 / 版本管理 |
-| 成本量级 | 快速≈标准1/3 · 标准中等 · 深度最高(需 Phase 0A 确认) | 低(本地材料为主) |
-| SOUL 落地 | 需转换(章节拆分→种子包) | 产物即种子契约, 直通 |
+| Target | Public figures / topics / thinking frameworks | Colleagues / acquaintances / relationships / celebrity role-play |
+| Material source | Web deep research (6 parallel Agents) + optional local corpora | Local material collection (Feishu/DingTalk/email/files/paste) |
+| Research depth | 6-dimension research (writings/conversations/expression/external views/decisions/timeline) + triple verification | Direct material intake, 3-question intake |
+| Artifacts | `[person]-perspective/SKILL.md` + `references/research/0X-*.md` | `<dir>/meta.json + persona.md + work.md + SKILL.md` |
+| Signature output | Mental models / decision heuristics / expression DNA / intellectual lineage / honesty boundaries | Relationship profiles / work personas / evolution patterns / version management |
+| Cost scale | quick ≈ 1/3 of standard · standard medium · deep highest (requires Phase 0A confirmation) | Low (mostly local materials) |
+| SOUL landing | Needs conversion (section splitting → seed package) | Artifacts are natively the seed contract, direct pass-through |
 
-**互补点**: nuwa 补"思维深度"(框架提炼), dot-skill 补"材料广度"(关系/工作
-场景采集)。同一对象两者皆可时: 深度框架 → nuwa; 快速落地/内部人 → dot-skill。
+**Complementarity**: nuwa supplies "thinking depth" (framework distillation); dot-skill supplies "material breadth"
+(relationship/work-scenario collection). When both could apply to the same target: deep frameworks → nuwa;
+quick landing / insiders → dot-skill.
 
-## 3. 总架构
+## 3. Overall Architecture
 
 ```mermaid
 flowchart TD
-    R[用户需求] --> B{butian 分流}
-    B -->|公开人物/主题/思维框架| N[nuwa-skill<br/>6 Agent 深研]
-    B -->|同事/熟人/关系/本地材料| D[dot-skill<br/>材料采集]
-    B -->|直接源材料| T[ragctl soul distill-text / distill-files<br/>后端 LLM 蒸馏]
+    R[User need] --> B{butian dispatch}
+    B -->|public figure/topic/thinking framework| N[nuwa-skill<br/>6-Agent deep research]
+    B -->|colleague/acquaintance/relationship/local materials| D[dot-skill<br/>material collection]
+    B -->|direct source material| T[ragctl soul distill-text / distill-files<br/>backend LLM distillation]
     N --> SK[perspective SKILL.md]
-    SK --> C[nuwa_to_seed.py<br/>确定性章节拆分]
+    SK --> C[nuwa_to_seed.py<br/>deterministic section splitting]
     D --> SD[meta.json + persona.md + work.md]
     C --> SD
-    SD --> RG[ragctl soul distill<br/>--values 价值观融合]
+    SD --> RG[ragctl soul distill<br/>--values values fusion]
     T --> RG
-    RG --> SOUL[soul-&lt;name&gt; 人格库<br/>4 宪法文档 + soul-config.yml]
-    SOUL --> TR[好奇心训练<br/>soul_learn_all → soul_review_drafts]
-    SOUL --> SCH[定时进化<br/>meditation config]
-    TR --> QA[检索增强问答<br/>soul_qdcvr_ask]
+    RG --> SOUL[soul-&lt;name&gt; persona KB<br/>4 constitutional documents + soul-config.yml]
+    SOUL --> TR[Curiosity training<br/>soul_learn_all → soul_review_drafts]
+    SOUL --> SCH[Scheduled evolution<br/>meditation config]
+    TR --> QA[Retrieval-augmented Q&A<br/>soul_qdcvr_ask]
     SCH --> QA
 ```
 
-## 4. 文件定义(符合项目 .claude/skills 体系)
+## 4. File Layout (fits the project .claude/skills system)
 
 ```
 .claude/skills/
-├── butian/                        # 补天调度器(本架构核心)
-│   ├── SKILL.md                   # 调度协议: 分流/转换/落地/进化/使用
+├── butian/                        # Butian dispatcher (core of this architecture)
+│   ├── SKILL.md                   # Dispatch protocol: triage/conversion/landing/evolution/usage
 │   ├── scripts/
-│   │   └── nuwa_to_seed.py        # nuwa SKILL.md → 种子包(确定性, 无 LLM)
+│   │   └── nuwa_to_seed.py        # nuwa SKILL.md → seed package (deterministic, no LLM)
 │   └── references/
-│       ├── butian-architecture.md # 本文档
-│       └── seed-contract.md       # 种子包格式契约
-├── nuwa-skill/                    # 女娲: 公开人物/主题深研蒸馏
-│   ├── SKILL.md                   # 含 Phase 3.5(种子导出)/Phase 6(SOUL 落地)
+│       ├── butian-architecture.md # this document
+│       └── seed-contract.md       # seed package format contract
+├── nuwa-skill/                    # Nuwa: deep-research distillation of public figures/topics
+│   ├── SKILL.md                   # includes Phase 3.5 (seed export) / Phase 6 (SOUL landing)
 │   ├── references/
-│   │   ├── skill-template.md      # (原) 人物 SKILL 模板
-│   │   └── soul-seed-mapping.md   # (新增) nuwa 章节 → SOUL 文档映射
-│   ├── scripts/                   # 字幕下载/质量检查等(原)
-│   └── examples/                  # 已蒸馏示例(原)
-├── dot-skill/                     # 统一 meta-skill 引擎
-│   ├── SKILL.md                   # 含 SOUL 集成段(指向 butian)
-│   ├── tools/  prompts/  references/   # (原)
-│   └── skills/{colleague,relationship,celebrity}/   # 产物目录
-├── soul/                          # SOUL 全生命周期(原)
-│   ├── SKILL.md                   # §E 已扩展: 三引擎蒸馏路径
-│   └── references/soul-distill-integration.md   # 权威协议(已含 nuwa 映射)
-└── soul-rag/                      # 检索增强人格问答(原)
+│   │   ├── skill-template.md      # (original) figure SKILL template
+│   │   └── soul-seed-mapping.md   # (new) nuwa section → SOUL document mapping
+│   ├── scripts/                   # subtitle download / quality checks etc. (original)
+│   └── examples/                  # already-distilled examples (original)
+├── dot-skill/                     # unified meta-skill engine
+│   ├── SKILL.md                   # includes the SOUL integration section (points to butian)
+│   ├── tools/  prompts/  references/   # (original)
+│   └── skills/{colleague,relationship,celebrity}/   # artifact directories
+├── soul/                          # SOUL full lifecycle (original)
+│   ├── SKILL.md                   # §E extended: three-engine distillation paths
+│   └── references/soul-distill-integration.md   # authoritative protocol (now includes the nuwa mapping)
+└── soul-rag/                      # retrieval-augmented persona Q&A (original)
 ```
 
-## 5. 种子包契约(统一落地格式)
+## 5. Seed Package Contract (unified landing format)
 
 ```
 seed-dir/
 ├── meta.json    # {slug, name, display_name, character, research_profile,
-│                #  tags:{personality:[路由标签]}, impression, source}
-├── persona.md   # 身份/性格/表达DNA/诚实边界 → soul-definition.md 追加段
-├── work.md      # 职责/心智模型/决策启发式/工作流程 → thinking-style.md 追加段
-└── values.md    # (可选) 价值观与反模式 → values.md 追加段(ragctl --values)
+│                #  tags:{personality:[routing labels]}, impression, source}
+├── persona.md   # identity/personality/expression DNA/honesty boundaries → soul-definition.md appended section
+├── work.md      # duties/mental models/decision heuristics/workflows → thinking-style.md appended section
+└── values.md    # (optional) values and anti-patterns → values.md appended section (ragctl --values)
 ```
 
-- dot-skill 产物 = 种子契约原生(meta.json+persona.md+work.md), 直通
-- nuwa 产物经 nuwa_to_seed.py 转换对齐; 额外产出 values.md(价值观增强)
-- 落地: `ragctl soul distill <seed-dir> --values values.md` → 模板+种子融合写
-  4 宪法文档 → bootstrap → 索引
+- dot-skill artifacts = the seed contract natively (meta.json+persona.md+work.md), direct pass-through
+- nuwa artifacts are aligned via nuwa_to_seed.py conversion; additionally produces values.md (values enhancement)
+- Landing: `ragctl soul distill <seed-dir> --values values.md` → template + seed fused into the
+  4 constitutional documents → bootstrap → index
 
-## 6. 蒸馏 → SOUL 映射(nuwa 章节级)
+## 6. Distillation → SOUL Mapping (nuwa section level)
 
-| nuwa SKILL.md 章节 | 种子文件 | SOUL 文档 | 作用 |
+| nuwa SKILL.md section | Seed file | SOUL document | Purpose |
 |---|---|---|---|
-| 身份卡 | persona.md | soul-definition.md 追加段 | 身份定位/核心使命 |
-| 表达DNA | persona.md | soul-definition.md 追加段(language-style 侧) | 语言风格注入 |
-| 角色扮演规则 | persona.md | soul-definition.md 追加段 | 性格五维/输出纪律 |
-| 诚实边界 | persona.md | soul-definition.md 追加段 | 知识边界声明 |
-| 回答工作流(Agentic Protocol) | work.md | thinking-style.md 追加段 | 推理模式/先做功课 |
-| 核心心智模型 | work.md | thinking-style.md 追加段 | 思维镜片 |
-| 决策启发式 | work.md | thinking-style.md 追加段 | 判断规则 |
-| 智识谱系 | work.md | thinking-style.md 追加段 | 思想来源 |
-| 人物时间线 | work.md | thinking-style.md 追加段(背景) | 语境知识 |
-| 失败模式与 Fallback 树 | work.md | thinking-style.md 追加段 | 降级规则 |
-| 价值观与反模式 | values.md | values.md 追加段 | 宪法层价值观 |
-| frontmatter name/description | meta.json | domain_labels + KB description | 路由标签/印象 |
-| 附录:调研来源 | (留在 skill 目录) | — | 溯源依据 |
+| Identity card | persona.md | soul-definition.md appended section | Identity positioning / core mission |
+| Expression DNA | persona.md | soul-definition.md appended section (language-style side) | Language style injection |
+| Role-play rules | persona.md | soul-definition.md appended section | Five personality dimensions / output discipline |
+| Honesty boundaries | persona.md | soul-definition.md appended section | Knowledge boundary declaration |
+| Answering workflow (Agentic Protocol) | work.md | thinking-style.md appended section | Reasoning patterns / do the homework first |
+| Core mental models | work.md | thinking-style.md appended section | Thinking lenses |
+| Decision heuristics | work.md | thinking-style.md appended section | Judgment rules |
+| Intellectual lineage | work.md | thinking-style.md appended section | Sources of thought |
+| Figure timeline | work.md | thinking-style.md appended section (background) | Contextual knowledge |
+| Failure modes and fallback tree | work.md | thinking-style.md appended section | Degradation rules |
+| Values and anti-patterns | values.md | values.md appended section | Constitutional-layer values |
+| frontmatter name/description | meta.json | domain_labels + KB description | Routing labels / impression |
+| Appendix: research sources | (stays in the skill directory) | — | Provenance basis |
 
-dot-skill 映射(既有, 见 soul-distill-integration.md §2): persona.md →
+dot-skill mapping (existing, see soul-distill-integration.md §2): persona.md →
 soul-definition.md, work.md → thinking-style.md, meta.json tags/impression →
-domain_labels。
+domain_labels.
 
-## 7. 高级玩法: 调研素材二次消化(可选)
+## 7. Advanced Play: Second-Pass Digestion of Research Material (optional)
 
-nuwa 的 `references/research/01-writings.md … 06-timeline.md` 是高质量一手
-调研。可选流程:
-1. 入库: `kb_doc_save_parsed` 或 fs_upload_file 到独立库 `butian-research-<name>`
-2. 该 SOUL kb_scope 追加该库: `ragctl soul scope` / soul_config_update
-3. 好奇心训练自动学习调研素材 → 人格对"自己"的知识掌握更深
-4. 不默认执行(保持轻量); 需要时按 Step 2/3 手动启用
+nuwa's `references/research/01-writings.md … 06-timeline.md` are high-quality first-hand
+research. Optional flow:
+1. Ingest: `kb_doc_save_parsed` or fs_upload_file into a separate KB `butian-research-<name>`
+2. Add that KB to the SOUL's kb_scope: `ragctl soul scope` / soul_config_update
+3. Curiosity training automatically learns the research material → the persona masters knowledge about "itself" more deeply
+4. Not executed by default (stays lightweight); enable manually via Steps 2/3 when needed
 
-## 8. 数据流与一致性
+## 8. Data Flow and Consistency
 
 ```
-蒸馏产物(磁盘) → 种子包(统一契约) → ragctl soul distill(建库+4文档+bootstrap+索引)
+Distillation artifacts (disk) → seed package (unified contract) → ragctl soul distill (create KB + 4 docs + bootstrap + index)
                                      ↓
-        soul-<name> 五层一致: 磁盘 .md ↔ .tree-fs.json ↔ .knowledge-base.yml
-                             ↔ ChromaDB 向量 ↔ Neo4j 图谱
+        soul-<name> five-layer consistency: disk .md ↔ .tree-fs.json ↔ .knowledge-base.yml
+                             ↔ ChromaDB vectors ↔ Neo4j graph
 ```
 
-- 宪法层(4 文档 + soul-config): 创建时一次定型(含 --values 融合), 之后只读
-- 进化层(memories/ questions/ cognition-drafts/ checkpoints/): 训练持续写入
-- 三入口一致: 前端(SOUL 页面) / ragctl / MCP(soul_*) 同后端同数据
+- Constitutional layer (4 documents + soul-config): fixed once at creation (including --values fusion), read-only afterwards
+- Evolution layer (memories/ questions/ cognition-drafts/ checkpoints/): training writes continuously
+- Three entry points consistent: frontend (SOUL page) / ragctl / MCP (soul_*) — same backend, same data
 
-## 9. 质量闸门(防自嗨链)
-
-```
-蒸馏检查点(nuwa 1.5 调研/2.5 提炼/4 验证) → 种子确认(butian Step 3)
-→ 落地验证(docs_created=4 + profile 生成) → 训练前置门(检索≥0.5) + 四维自评
-→ 双判官(分歧>1.5 拦截) → 蒸馏≥3 才写草稿 → 人工审批(≥3 正常, <3 force+审计)
-→ 注册+索引 → 校准集漂移检测 → reflect 漂移报告 → checkpoint 可回滚
-```
-
-## 9.5 ⭐ 补天好奇心引擎 v2(元认知强化训练)
-
-算法参考: arXiv:2604.25648(Desvaux/Abdelghani/Oudeyer/Sauzéon,
-"Curiosity and Metacognition", 2026) — 好奇心依赖元认知监控、干预需个体画像
-定制、AI 是认知伙伴而非捷径。
+## 9. Quality Gate Chain (anti-self-congratulation chain)
 
 ```
-每轮训练:
-  ① 读元认知画像 questions/mastery.json(per-topic 记忆数/均分/gaps/足迹)
-  ② 文档选择: 新文档(探索)优先 + 薄弱主题重学(利用, 缺口/零记忆/均分<3)
-  ③ 自适应问题生成: 按掌握度动态四层比例(新主题打基础 → 强掌握挑战 50%)
-     + 已知记忆摘要注入 + novelty_filter jaccard 去重(防重复学习)
-  ④ 学习管道(检索→自答→四维自评→蒸馏)不变
-  ⑤ 轮末刷新 mastery.json(下一轮/RL 的元认知输入, 零 LLM 成本)
+Distillation checkpoints (nuwa 1.5 research / 2.5 distillation / 4 verification) → seed confirmation (butian Step 3)
+→ landing verification (docs_created=4 + profile generated) → training pre-gate (retrieval ≥0.5) + four-dimension self-eval
+→ double-judge (divergence >1.5 blocks) → draft written only at distill ≥3 → manual approval (≥3 normal, <3 force + audit)
+→ register + index → calibration-set drift detection → reflect drift report → checkpoint rollback available
 ```
 
-实现: `backend/app/services/soul_curiosity.py` + soul_learn.py 接入;
-单测: `backend/tests/test_soul_curiosity.py`。
+## 9.5 ⭐ Butian Curiosity Engine v2 (metacognitive reinforcement training)
 
-## 10. 与既有文档的关系
+Algorithm reference: arXiv:2604.25648 (Desvaux/Abdelghani/Oudeyer/Sauzéon,
+"Curiosity and Metacognition", 2026) — curiosity depends on metacognitive monitoring, interventions require
+individual-profile customization, and AI is a cognitive partner rather than a shortcut.
 
-| 文档 | 内容 | 关系 |
+```
+Each training round:
+  ① read the metacognitive profile questions/mastery.json (per-topic memory counts/avg scores/gaps/footprints)
+  ② document selection: new documents (exploration) first + relearning of weak topics (exploitation: gaps/zero memories/avg score <3)
+  ③ adaptive question generation: dynamic four-layer ratios by mastery (new topics build foundations → strong mastery 50% challenge)
+     + injection of known memory summaries + novelty_filter jaccard dedup (prevents relearning)
+  ④ the learning pipeline (retrieval → self-answer → four-dimension self-eval → distillation) unchanged
+  ⑤ refresh mastery.json at round end (metacognitive input for the next round/RL, zero LLM cost)
+```
+
+Implementation: `backend/app/services/soul_curiosity.py` + wired into soul_learn.py;
+unit tests: `backend/tests/test_soul_curiosity.py`.
+
+## 10. Relationship to Existing Documents
+
+| Document | Content | Relationship |
 |---|---|---|
-| butian-architecture.md(本文) | 双引擎架构/文件定义/数据流 | 总纲 |
-| seed-contract.md | 种子包格式 | 契约(ragctl 消费方) |
-| soul-distill-integration.md | SOUL × 补天落地协议 | 权威协议(§2 映射表已含 nuwa) |
-| soul-seed-mapping.md(nuwa 内) | nuwa 章节 → SOUL 映射细则 | 引擎侧细则 |
-| soul-training.md | 训练/RL/调度 | 落地后的进化 |
+| butian-architecture.md (this document) | Dual-engine architecture / file layout / data flow | Master plan |
+| seed-contract.md | Seed package format | Contract (consumed by ragctl) |
+| soul-distill-integration.md | SOUL × Butian landing protocol | Authoritative protocol (§2 mapping table includes nuwa) |
+| soul-seed-mapping.md (inside nuwa) | nuwa section → SOUL mapping details | Engine-side details |
+| soul-training.md | Training/RL/scheduling | Post-landing evolution |

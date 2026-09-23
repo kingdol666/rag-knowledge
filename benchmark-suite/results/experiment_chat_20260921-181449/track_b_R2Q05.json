@@ -1,0 +1,82 @@
+{
+ "track": "b",
+ "question": "What kind of errors between gates can the matrix product operator (MPO) error mitigation method characterize that typical techniques like quasi-probability decomposition ignore?",
+ "answer": "The paper is **quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product.md**. It explains that state-of-the-art techniques like the quasiprobability method mitigate noise for every gate independently, which means they ignore temporally or spatially correlated errors (Section I). The MPO approach instead treats several sequential noise channels as a whole, so it can characterize correlated noise — specifically **crosstalk noise between adjacent gates** and **global depolarizing noise across the entire system** — as well as long-range spatially correlated and short-range temporally correlated errors, all of which violate the local-and-Markovian assumption the quasiprobability method requires (Sections II–III, V).",
+ "is_error": false,
+ "latency_s": 7.9,
+ "sdk_duration_ms": 6266,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "matrix product operator|MPO"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "quasi-probability"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "quasi-probability|spatial|correlat|between gates|idle|gate-independent",
+    "path": "quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product.md"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 1951,
+  "output": 424,
+  "cache_read": 111744,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.076227,
+ "timeline": [
+  {
+   "t": 1.7,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 3.03,
+   "event": "text",
+   "detail": "68"
+  },
+  {
+   "t": 3.03,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 3.05,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 4.38,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 7.71,
+   "event": "text",
+   "detail": "736"
+  },
+  {
+   "t": 7.94,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the paper collection for MPO error mitigation content.\n\n",
+  "The paper is **quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product.md**. It explains that state-of-the-art techniques like the quasiprobability method mitigate noise for every gate independently, which means they ignore temporally or spatially correlated errors (Section I). The MPO approach instead treats several sequential noise channels as a whole, so it can characterize correlated noise — specifically **crosstalk noise between adjacent gates** and **global depolarizing noise across the entire system** — as well as long-range spatially correlated and short-range temporally correlated errors, all of which violate the local-and-Markovian assumption the quasiprobability method requires (Sections II–III, V)."
+ ],
+ "qid": "R2Q05",
+ "via": "chat"
+}

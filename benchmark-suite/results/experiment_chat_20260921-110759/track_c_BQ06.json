@@ -1,0 +1,89 @@
+{
+ "track": "c",
+ "question": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+ "answer": "**Answer**\n\nThe retrieved evidence indicates that the primary control is the **thermodynamic contribution**, i.e. the increase in atmospheric water-vapor content (surface specific humidity) with warming, which closely follows **Clausius-Clapeyron scaling** of roughly 6–7 % K⁻¹: \"For surface temperatures near those of the present-day tropics, the precipitation extremes increase at close to the thermodynamic rate, and this is close to Clausius-Clapeyron scaling with the surface specific humidity, with relatively small contributions from changes in vertical velocities and precipitation efficiency.\"\n\nThe review distinguishes this robust thermodynamic effect from the microphysical and dynamical contributions, whose theory is \"still being developed,\" and notes that in the extratropics \"the simulated rate of increase of precipitation extremes is close to the thermodynamic contribution at all latitudes.\" It also flags that at temperatures below ~295 K the sensitivity departs from Clausius-Clapeyron (instantaneous extremes can reach close to double that rate due to rising precipitation efficiency), so temperature itself modulates how strongly this dominant factor governs the response.\n\nChunks used: `climate-science__1503.07557__precipitation-extremes-under-climate-change__k00.md`, `k06.md`, `k07.md`, `k08.md`, `k12.md`, `k21.md`, `k22.md`.",
+ "is_error": false,
+ "latency_s": 190.0,
+ "sdk_duration_ms": 188029,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "physical factor controlling response of precipitation extremes to climate change",
+    "kb_id": "Corpus-Chunks800"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "thermodynamic contribution water vapor Clausius-Clapeyron controls precipitation extremes intensity",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 18997,
+  "output": 617,
+  "cache_read": 145664,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.18324200000000002,
+ "timeline": [
+  {
+   "t": 2.04,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 67.74,
+   "event": "text",
+   "detail": "51"
+  },
+  {
+   "t": 67.76,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 105.48,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 147.39,
+   "event": "text",
+   "detail": "205"
+  },
+  {
+   "t": 147.57,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 190.02,
+   "event": "text",
+   "detail": "1352"
+  },
+  {
+   "t": 190.03,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the vector index for relevant chunks.\n\n",
+  "The retrieved chunks point to a single review (O'Gorman) and identify the dominant factor as the thermodynamic contribution tied to atmospheric water vapor. Let me search for the more explicit statement.\n\n",
+  "**Answer**\n\nThe retrieved evidence indicates that the primary control is the **thermodynamic contribution**, i.e. the increase in atmospheric water-vapor content (surface specific humidity) with warming, which closely follows **Clausius-Clapeyron scaling** of roughly 6–7 % K⁻¹: \"For surface temperatures near those of the present-day tropics, the precipitation extremes increase at close to the thermodynamic rate, and this is close to Clausius-Clapeyron scaling with the surface specific humidity, with relatively small contributions from changes in vertical velocities and precipitation efficiency.\"\n\nThe review distinguishes this robust thermodynamic effect from the microphysical and dynamical contributions, whose theory is \"still being developed,\" and notes that in the extratropics \"the simulated rate of increase of precipitation extremes is close to the thermodynamic contribution at all latitudes.\" It also flags that at temperatures below ~295 K the sensitivity departs from Clausius-Clapeyron (instantaneous extremes can reach close to double that rate due to rising precipitation efficiency), so temperature itself modulates how strongly this dominant factor governs the response.\n\nChunks used: `climate-science__1503.07557__precipitation-extremes-under-climate-change__k00.md`, `k06.md`, `k07.md`, `k08.md`, `k12.md`, `k21.md`, `k22.md`."
+ ],
+ "qid": "BQ06",
+ "via": "chat"
+}

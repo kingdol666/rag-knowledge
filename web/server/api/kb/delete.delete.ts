@@ -11,7 +11,10 @@ import { coerceKbPayload } from '~/server/utils/kb-payload'
  * Vector/graph cleanup is fire-and-forget: failures don't block the delete.
  */
 export default defineEventHandler(async (event) => {
-  const body = await readBody(event)
+  // O3 fix: empty/absent body previously crashed with 500
+  // ("Cannot read properties of undefined") — normalize to {} so the
+  // kbId validation below returns a proper 400 instead.
+  const body = (await readBody(event)) || {}
   coerceKbPayload(body)
 
   if (!body.kbId?.trim()) {

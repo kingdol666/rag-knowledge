@@ -11,7 +11,9 @@ description: >
   Absorbs the former knowledgebase-search-enterprise (whole-library / cross-KB /
   comprehensive search). Triggered by: search, find, query, ask, retrieve, retrieval,
   Q&A, look it up, search the whole library, all KBs, cross knowledge base, cross-KB,
-  cross-library, global search, comprehensive, thorough search, enterprise search.
+  cross-library, global search, comprehensive, thorough search, enterprise search,
+  搜索, 检索, 查询, 问答, 帮我查, 问一下知识库, 搜, 全库搜索, 所有KB, 跨知识库, 跨库,
+  全局搜索, 全面的.
 ---
 
 ## ⭐ Related Skills
@@ -56,7 +58,7 @@ query
   │     │                            (BM25+graph two-stage / tags / descriptions)
   │     └─ re-verify 0-8 ───────────►✅ hits → answer · ✖ nothing → ▼
   │
-  └─ Phase 3 · HONEST REPORT         如实奉告: declare the blind spot, never fabricate
+  └─ Phase 3 · HONEST REPORT         report honestly: declare the blind spot, never fabricate
 ```
 
 **Why this order**: vectors are fast and semantic — they earn the first at-bat. But a high cosine score is only a candidate, not an answer: the content gate reads the body and decides. When the gate says "not truly matching", brute-forcing more vectors is waste — switch to the librarian strategy: browse the catalog, read every KB's summary, walk the shelves, and pull from the most likely section. Only after both paths fail is "no answer" the truth.
@@ -251,7 +253,7 @@ High/medium/low — <reason, e.g. "2 P0 documents across 2 KBs consistent" or "o
 - <contested/timeliness/points needing user confirmation>
 ```
 
-### On total failure — honest report (如实奉告, first-class outcome)
+### On total failure — honest report (report honestly, first-class outcome)
 
 When Phase 1 gate ≤4/5-only AND Phase 2 re-verify yields no P0/P1:
 ```
@@ -295,7 +297,7 @@ Never dress a ≤4 candidate as an answer. Never fabricate data, citations, or c
 5. **Document-level dedup + hard threshold** — both phases, every path; `(part k of N)` siblings count as one logical document
 6. **Content score > vector score > path consensus** — three-path hits with content ≤4 still die; evidence = chunk text ∪ all read windows
 7. **Experience first** — incident/ops-type queries check experiences first
-8. **Honest blind spots** — both paths failed → 如实奉告 with what-was-tried evidence; never fabricate
+8. **Honest blind spots** — both paths failed → report honestly with what-was-tried evidence; never fabricate
 
 <!-- SKILLOPT-SLEEP:LEARNED START -->
 ## Learned preferences & procedures

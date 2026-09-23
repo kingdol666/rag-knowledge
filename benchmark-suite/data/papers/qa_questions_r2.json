@@ -1,0 +1,99 @@
+{
+  "meta": {
+    "designed_by": "Archival (executing agent) — 2026-09-22, 针对第二轮新入库 50 篇出题",
+    "grounding": "每题基于 results/r2_survey.json 三窗口真实正文与 A3c 判断件内容设计; gold_arxiv_id 为文档 slug 形式(斜杠已转连字符); gold_keywords 全部在论文正文中逐字出现且为正确答案应含词汇",
+    "usage": "python -m experiments.runner --questions data/papers/qa_questions_r2.json --tracks a,b,c --limit 10"
+  },
+  "questions": [
+    {
+      "qid": "R2Q01",
+      "field": "artificial-intelligence",
+      "arxiv_id": "2510.13343",
+      "paper": "AOAD-MAT: Transformer-based Multi-Agent Deep Reinforcement Learning Model considering Agents' Order of Action Decisions",
+      "question": "Compared with prior Multi-Agent Transformer (MAT) models, what aspect of the agents' decision process does AOAD-MAT explicitly model?",
+      "question_zh": "与既有 Multi-Agent Transformer 模型相比，AOAD-MAT 显式建模了智能体决策过程的哪个方面？",
+      "gold_keywords": ["order", "decision"]
+    },
+    {
+      "qid": "R2Q02",
+      "field": "nlp",
+      "arxiv_id": "2310.10981",
+      "paper": "Instructive Dialogue Summarization with Query Aggregations",
+      "question": "What three-step approach does InstructDS use to synthesize high-quality training triples for query-based dialogue summarization?",
+      "question_zh": "InstructDS 用哪三步合成基于查询的对话摘要训练三元组？",
+      "gold_keywords": ["query generation", "filtering", "summary generation"]
+    },
+    {
+      "qid": "R2Q03",
+      "field": "large-language-models",
+      "arxiv_id": "2402.12317",
+      "paper": "EvoR: Evolving Retrieval for Code Generation",
+      "question": "In the EvoR pipeline for retrieval-augmented code generation, which two components evolve synchronously instead of staying static?",
+      "question_zh": "在 EvoR 检索增强代码生成管线中，哪两个组成部分是同步演化的？",
+      "gold_keywords": ["queries", "knowledge base"]
+    },
+    {
+      "qid": "R2Q04",
+      "field": "genomics",
+      "arxiv_id": "2602.10156",
+      "paper": "STRAND: Sequence-Conditioned Transport for Single-Cell Perturbations",
+      "question": "What does STRAND condition on to represent a genetic perturbation, instead of collapsing all interventions on the same gene into one representation?",
+      "question_zh": "STRAND 用什么来表征基因扰动，而不是把同一基因的不同干预折叠为同一表示？",
+      "gold_keywords": ["regulatory dna", "sequence"]
+    },
+    {
+      "qid": "R2Q05",
+      "field": "quantum-physics",
+      "arxiv_id": "2201.00752",
+      "paper": "Quantum error mitigation via matrix product operators",
+      "question": "What kind of errors between gates can the matrix product operator (MPO) error mitigation method characterize that typical techniques like quasi-probability decomposition ignore?",
+      "question_zh": "矩阵乘积算子（MPO）错误缓解方法能刻画哪类准概率分解等典型方法会忽略的门间错误？",
+      "gold_keywords": ["correlated"]
+    },
+    {
+      "qid": "R2Q06",
+      "field": "materials",
+      "arxiv_id": "1606.00335",
+      "paper": "Dynamic electrical behavior of halide perovskite based solar cells",
+      "question": "What physical mechanism does the dynamic electrical model use to explain the hysteretic J-V characteristics of perovskite solar cells?",
+      "question_zh": "动态电学模型用什么物理机理解释钙钛矿太阳能电池的 J-V 迟滞特性？",
+      "gold_keywords": ["polarization"]
+    },
+    {
+      "qid": "R2Q07",
+      "field": "immunology",
+      "arxiv_id": "q-bio-0408016",
+      "paper": "Epitope analysis for influenza vaccine design",
+      "question": "Which season's influenza vaccine does the statistical-mechanics epitope analysis explain as ineffective in the United States, and through what drift mechanism?",
+      "question_zh": "统计力学表位分析解释了美国哪一年的流感疫苗失效？通过什么漂移机制？",
+      "gold_keywords": ["2003", "antigenic drift"]
+    },
+    {
+      "qid": "R2Q08",
+      "field": "speech",
+      "arxiv_id": "2209.15032",
+      "paper": "Detection of Prosodic Boundaries in Speech Using Wav2Vec 2.0",
+      "question": "Using only what kind of information, and reaching what accuracy, does the wav2vec 2.0 approach detect within-sentence prosodic boundaries on Czech broadcast news?",
+      "question_zh": "wav2vec 2.0 仅利用什么信息、在捷克广播新闻上达到多少准确率检测句内韵律边界？",
+      "gold_keywords": ["acoustic", "94"]
+    },
+    {
+      "qid": "R2Q09",
+      "field": "agriculture",
+      "arxiv_id": "2508.05896",
+      "paper": "Optimal trap cropping investments to maximize agricultural yield",
+      "question": "In the trap-cropping optimization framework, roughly what share of the field should be allocated to trap plants when they are 5 to 25 times more attractive than the cash plant?",
+      "question_zh": "在诱虫作物优化框架中，当诱虫植物吸引力是经济作物 5 到 25 倍时，约应占田块多大比例？",
+      "gold_keywords": ["7", "10"]
+    },
+    {
+      "qid": "R2Q10",
+      "field": "climate-science",
+      "arxiv_id": "2409.13934",
+      "paper": "On the Extrapolation of Generative Adversarial Networks for downscaling precipitation extremes in warmer climates",
+      "question": "Beyond which percentile of precipitation did the GAN clearly outperform the deterministic baseline in capturing the climate-change wetting signal?",
+      "question_zh": "在降水的哪个分位数之外，GAN 在捕捉气候变化湿化信号上明显优于确定性基线？",
+      "gold_keywords": ["gan", "95"]
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+ "track": "a",
+ "question": "In the paper Attention Is All You Need, what positional encoding does the Transformer use? Answer in English.",
+ "answer": "I have the full primary source text. Here is the answer.\n\n## Answer\n\nIn *Attention Is All You Need* (Vaswani et al., 2017), the Transformer uses **fixed sinusoidal positional encodings** — sine and cosine functions of different frequencies — rather than learned positional embeddings.\n\n### Key facts from the paper\n\n**Why positional encoding is needed at all.** Because the model \"contains no recurrence and no convolution,\" the authors had to inject order information explicitly: \"we must inject some information about the relative or absolute position of the tokens in the sequence. To this end, we add 'positional encodings' to the input embeddings at the bottoms of the encoder and decoder stacks. The positional encodings have the same dimension $d_{\\mathrm{model}}$ as the embeddings, so that the two can be summed.\"\n\n**The actual formula (Section 3.5):**\n\n$$PE_{(pos,\\,2i)} = \\sin\\!\\left(pos / 10000^{\\,2i/d_{\\mathrm{model}}}\\right)$$\n$$PE_{(pos,\\,2i+1)} = \\cos\\!\\left(pos / 10000^{\\,2i/d_{\\mathrm{model}}}\\right)$$\n\nwhere **pos** is the position and **i** is the dimension. Even dimensions use sine, odd dimensions use cosine.\n\n**Properties the authors highlight:**\n- Each dimension of the positional encoding corresponds to a sinusoid.\n- The wavelengths form a **geometric progression from $2\\pi$ to $10000 \\cdot 2\\pi$**.\n- Rationale: \"We chose this function because we hypothesized it would allow the model to easily learn to attend by relative positions, since for any fixed offset $k$, $PE_{pos+k}$ can be represented as a linear function of $PE_{pos}$.\"\n\n**Learned vs. sinusoidal — the ablation.** The authors also tried learned positional embeddings and report: \"we also experimented with using learned positional embeddings instead, and found that the two versions produced nearly identical results (see Table 3 row (E)). We chose the sinusoidal version because it may allow the model to **extrapolate to sequence lengths longer than the ones encountered during training**.\"\n\n**How it is applied.** The positional encoding is *summed* with the input embeddings (not concatenated), and both are scaled consistently with the embedding layer, which multiplies weights by $\\sqrt{d_{\\mathrm{model}}}$ (Section 3.4, Embeddings and Softmax).\n\n### Summary\n\n| Aspect | The paper's choice |\n|---|---|\n| Type | Fixed (non-learned) sinusoidal |\n| Functions | sin for even dims, cos for odd dims |\n| Frequencies | $1/10000^{2i/d_{\\mathrm{model}}}$, wavelengths in geometric progression $2\\pi \\to 10000\\cdot2\\pi$ |\n| Combination | Added to input embeddings at the bottom of encoder and decoder stacks |\n| Dimension | $d_{\\mathrm{model}}$ (same as embeddings, so summation is valid) |\n| Compared against | Learned positional embeddings — nearly identical results (Table 3, row E) |\n| Reason for sinusoidal | Enables extrapolation to sequence lengths longer than those seen in training; supports relative-position attention via linear offsets |\n\n### Sources\n\n- **KB:** `计算机与人工智能` (Computer science and AI), kb_id `b1199132-e4d4-4305-8c2e-82dc1753b0ba`\n- **Document:** `artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md`\n- **Section:** 3.5 Positional Encoding (with supporting context from Section 3.4 Embeddings and Softmax)\n- **Cross-KB note:** The same paper also appears in the `Corpus-Paras`, `Corpus-Struct`, and `Corpus-Chunks800` benchmark indexes (chunks keyed to Section 6.2 Model Variations); those copies surfaced via the automatic cross-KB vector fallback but contained no content on positional encoding. The authoritative full text above is from `计算机与人工智能`.",
+ "is_error": false,
+ "latency_s": 118.5,
+ "sdk_duration_ms": 117120,
+ "num_turns": 6,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_list,mcp__kb-mcp__kb_search_two_stage,mcp__kb-mcp__kb_doc_read,mcp_"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_list",
+   "input": {}
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_two_stage",
+   "input": {
+    "query": "Attention Is All You Need positional encoding Transformer"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "doc_path": "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "doc_path": "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md"
+   }
+  }
+ ],
+ "tool_call_count": 5,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 111352,
+  "output": 1387,
+  "cache_read": 109312,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.646091,
+ "timeline": [
+  {
+   "t": 1.41,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 8.34,
+   "event": "text",
+   "detail": "42"
+  },
+  {
+   "t": 8.36,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 17.03,
+   "event": "text",
+   "detail": "45"
+  },
+  {
+   "t": 17.05,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_list"
+  },
+  {
+   "t": 17.06,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_two_stage"
+  },
+  {
+   "t": 58.33,
+   "event": "text",
+   "detail": "83"
+  },
+  {
+   "t": 58.33,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 88.89,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 118.49,
+   "event": "text",
+   "detail": "3602"
+  },
+  {
+   "t": 118.5,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the knowledge base for this.\n\n",
+  "I'll start by scanning the knowledge bases.\n\n",
+  "I found the source document. Let me read the Positional Encoding section in full.\n\n",
+  "I have the full primary source text. Here is the answer.\n\n## Answer\n\nIn *Attention Is All You Need* (Vaswani et al., 2017), the Transformer uses **fixed sinusoidal positional encodings** — sine and cosine functions of different frequencies — rather than learned positional embeddings.\n\n### Key facts from the paper\n\n**Why positional encoding is needed at all.** Because the model \"contains no recurrence and no convolution,\" the authors had to inject order information explicitly: \"we must inject some information about the relative or absolute position of the tokens in the sequence. To this end, we add 'positional encodings' to the input embeddings at the bottoms of the encoder and decoder stacks. The positional encodings have the same dimension $d_{\\mathrm{model}}$ as the embeddings, so that the two can be summed.\"\n\n**The actual formula (Section 3.5):**\n\n$$PE_{(pos,\\,2i)} = \\sin\\!\\left(pos / 10000^{\\,2i/d_{\\mathrm{model}}}\\right)$$\n$$PE_{(pos,\\,2i+1)} = \\cos\\!\\left(pos / 10000^{\\,2i/d_{\\mathrm{model}}}\\right)$$\n\nwhere **pos** is the position and **i** is the dimension. Even dimensions use sine, odd dimensions use cosine.\n\n**Properties the authors highlight:**\n- Each dimension of the positional encoding corresponds to a sinusoid.\n- The wavelengths form a **geometric progression from $2\\pi$ to $10000 \\cdot 2\\pi$**.\n- Rationale: \"We chose this function because we hypothesized it would allow the model to easily learn to attend by relative positions, since for any fixed offset $k$, $PE_{pos+k}$ can be represented as a linear function of $PE_{pos}$.\"\n\n**Learned vs. sinusoidal — the ablation.** The authors also tried learned positional embeddings and report: \"we also experimented with using learned positional embeddings instead, and found that the two versions produced nearly identical results (see Table 3 row (E)). We chose the sinusoidal version because it may allow the model to **extrapolate to sequence lengths longer than the ones encountered during training**.\"\n\n**How it is applied.** The positional encoding is *summed* with the input embeddings (not concatenated), and both are scaled consistently with the embedding layer, which multiplies weights by $\\sqrt{d_{\\mathrm{model}}}$ (Section 3.4, Embeddings and Softmax).\n\n### Summary\n\n| Aspect | The paper's choice |\n|---|---|\n| Type | Fixed (non-learned) sinusoidal |\n| Functions | sin for even dims, cos for odd dims |\n| Frequencies | $1/10000^{2i/d_{\\mathrm{model}}}$, wavelengths in geometric progression $2\\pi \\to 10000\\cdot2\\pi$ |\n| Combination | Added to input embeddings at the bottom of encoder and decoder stacks |\n| Dimension | $d_{\\mathrm{model}}$ (same as embeddings, so summation is valid) |\n| Compared against | Learned positional embeddings — nearly identical results (Table 3, row E) |\n| Reason for sinusoidal | Enables extrapolation to sequence lengths longer than those seen in training; supports relative-position attention via linear offsets |\n\n### Sources\n\n- **KB:** `计算机与人工智能` (Computer science and AI), kb_id `b1199132-e4d4-4305-8c2e-82dc1753b0ba`\n- **Document:** `artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md`\n- **Section:** 3.5 Positional Encoding (with supporting context from Section 3.4 Embeddings and Softmax)\n- **Cross-KB note:** The same paper also appears in the `Corpus-Paras`, `Corpus-Struct`, and `Corpus-Chunks800` benchmark indexes (chunks keyed to Section 6.2 Model Variations); those copies surfaced via the automatic cross-KB vector fallback but contained no content on positional encoding. The authoritative full text above is from `计算机与人工智能`."
+ ],
+ "qid": "Q1",
+ "via": "chat"
+}

@@ -1,0 +1,82 @@
+{
+ "track": "b",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "answer": "**Answer** (from `artificial-intelligence__1706.03762__attention-is-all-you-need.md`, \"Attention Is All You Need\"):\n\nAttention maps a query and a set of key-value pairs to an output, computed as a weighted sum of the values where each weight comes from a compatibility function of the query with its key. Concretely, the Transformer uses Scaled Dot-Product Attention: `Attention(Q,K,V) = softmax(QKᵀ/√d_k)·V` — dot products of queries with all keys are divided by √d_k (to keep softmax out of low-gradient regions for large d_k) and softmaxed into weights on the values; multi-head attention runs h=8 such projections in parallel over different representation subspaces. It replaces recurrence and convolution because self-attention connects all positions with a constant number of sequential operations (O(1) maximum path length) rather than O(n), enabling far more parallelization — the paper notes the model reached state of the art in 12 hours on 8 P100 GPUs, and that it is the first transduction model relying entirely on self-attention without sequence-aligned RNNs or convolution. Section 4 (\"Why Self-Attention\") frames the comparison along total per-layer complexity, parallelizable computation (minimum sequential operations), and path length between distant dependencies, and notes interpretability as a side benefit.",
+ "is_error": false,
+ "latency_s": 152.5,
+ "sdk_duration_ms": 149751,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "self-attention|scaled dot-product|Attention Is All You Need|recurrence"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "scaled dot-product|Q K|softmax|recurrence|convolution|parallel|path length|Scaled Dot-Product Attention",
+    "path": "artificial-intelligence__1706.03762__attention-is-all-you-need.md"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 34488,
+  "output": 602,
+  "cache_read": 84928,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.229954,
+ "timeline": [
+  {
+   "t": 2.78,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 54.3,
+   "event": "text",
+   "detail": "49"
+  },
+  {
+   "t": 54.31,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 54.33,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 113.4,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 152.44,
+   "event": "text",
+   "detail": "1329"
+  },
+  {
+   "t": 152.51,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll explore the directory for relevant papers.\n\n",
+  "**Answer** (from `artificial-intelligence__1706.03762__attention-is-all-you-need.md`, \"Attention Is All You Need\"):\n\nAttention maps a query and a set of key-value pairs to an output, computed as a weighted sum of the values where each weight comes from a compatibility function of the query with its key. Concretely, the Transformer uses Scaled Dot-Product Attention: `Attention(Q,K,V) = softmax(QKᵀ/√d_k)·V` — dot products of queries with all keys are divided by √d_k (to keep softmax out of low-gradient regions for large d_k) and softmaxed into weights on the values; multi-head attention runs h=8 such projections in parallel over different representation subspaces. It replaces recurrence and convolution because self-attention connects all positions with a constant number of sequential operations (O(1) maximum path length) rather than O(n), enabling far more parallelization — the paper notes the model reached state of the art in 12 hours on 8 P100 GPUs, and that it is the first transduction model relying entirely on self-attention without sequence-aligned RNNs or convolution. Section 4 (\"Why Self-Attention\") frames the comparison along total per-layer complexity, parallelizable computation (minimum sequential operations), and path length between distant dependencies, and notes interpretability as a side benefit."
+ ],
+ "qid": "BQ01",
+ "via": "chat"
+}

@@ -1,0 +1,93 @@
+{
+ "track": "b",
+ "question": "What defines NISQ technology and what is its central limitation?",
+ "answer": "The file is **quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md** (Preskill's \"Quantum Computing in the NISQ Era and Beyond\").\n\n**What defines it:** NISQ stands for \"Noisy Intermediate-Scale Quantum.\" \"Intermediate-scale\" refers to devices with roughly 50 to a few hundred qubits (50 being the milestone beyond brute-force classical simulation), while \"noisy\" emphasizes that we have only imperfect control over those qubits — noisy gates left unprotected by quantum error correction (§4.1, line 67).\n\n**Central limitation:** The noise imposes a ceiling on circuit size: with current two-qubit gate error rates above ~0.1%, a circuit containing many more than about 1000 gates cannot be executed reliably because \"the noise will overwhelm the signal,\" and this \"limitation on circuit size imposes a ceiling on the computational power of NISQ technology\" (§4.2, line 74). A related consequence is that it may be hard to validate whether a NISQ device is really producing the right answer (line 102).",
+ "is_error": false,
+ "latency_s": 89.8,
+ "sdk_duration_ms": 88182,
+ "num_turns": 5,
+ "tool_calls": [
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "NISQ"
+   }
+  },
+  {
+   "tool": "Glob",
+   "input": {
+    "pattern": "**/*.md"
+   }
+  },
+  {
+   "tool": "Grep",
+   "input": {
+    "pattern": "NISQ|noisy intermediate-scale|coherence|fidelity|error rate|qubit",
+    "path": "quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md"
+   }
+  },
+  {
+   "tool": "Read",
+   "input": {
+    "file_path": "quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md"
+   }
+  }
+ ],
+ "tool_call_count": 4,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 101122,
+  "output": 582,
+  "cache_read": 62208,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.551264,
+ "timeline": [
+  {
+   "t": 1.67,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 4.84,
+   "event": "text",
+   "detail": "49"
+  },
+  {
+   "t": 4.87,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 4.9,
+   "event": "tool_use",
+   "detail": "Glob"
+  },
+  {
+   "t": 15.95,
+   "event": "tool_use",
+   "detail": "Grep"
+  },
+  {
+   "t": 39.16,
+   "event": "tool_use",
+   "detail": "Read"
+  },
+  {
+   "t": 89.82,
+   "event": "text",
+   "detail": "1025"
+  },
+  {
+   "t": 89.84,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the files for NISQ-related content.\n\n",
+  "The file is **quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md** (Preskill's \"Quantum Computing in the NISQ Era and Beyond\").\n\n**What defines it:** NISQ stands for \"Noisy Intermediate-Scale Quantum.\" \"Intermediate-scale\" refers to devices with roughly 50 to a few hundred qubits (50 being the milestone beyond brute-force classical simulation), while \"noisy\" emphasizes that we have only imperfect control over those qubits — noisy gates left unprotected by quantum error correction (§4.1, line 67).\n\n**Central limitation:** The noise imposes a ceiling on circuit size: with current two-qubit gate error rates above ~0.1%, a circuit containing many more than about 1000 gates cannot be executed reliably because \"the noise will overwhelm the signal,\" and this \"limitation on circuit size imposes a ceiling on the computational power of NISQ technology\" (§4.2, line 74). A related consequence is that it may be hard to validate whether a NISQ device is really producing the right answer (line 102)."
+ ],
+ "qid": "BQ02",
+ "via": "chat"
+}

@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# DEPRECATED 2026-09-20 — superseded by the experiments/ platform
+# (python -m experiments.runner, chat API + harness=claude). Kept only to
+# reproduce historical reports. Do not use for new retrieval testing.
 """复刻实验汇整报告 — QDCVR v2 skill 流程 vs 裸 Agent vs dense 复刻.
 每题分别记录: 分步执行时间 + 原始最终回答(全文, 不删节)。"""
 from __future__ import annotations

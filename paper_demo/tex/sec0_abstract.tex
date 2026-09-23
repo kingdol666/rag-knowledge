@@ -1,20 +1,31 @@
-% sec0_abstract.tex — Bounded revision grounded in EVIDENCE-AUDIT.md.
+% sec0_abstract.tex — tightened 2026-09-23; all numbers from
+% benchmark-suite/results/experiment_chat_20260922-211000 (verified by
+% scripts/108_pipeline_evidence.py + scripts/107_exp_grade.py --qfile qa_questions.json).
 \begin{abstract}
-Research administrators need to organize document collections and inspect the
-evidence behind answers drawn from them. We present \sys{}, an agent-operated
-platform that connects content-guided knowledge organization with inspectable
-retrieval. Packaged agent skills call tool APIs to parse documents, route them
-among existing category bases, maintain tags, and read candidate evidence.
-The retrieval protocol combines vector recall, a prompted content-gate
-self-assessment, additional search and reading, and explicit not-found reports.
-Gate scores expose the agent's judgment; they do not guarantee semantic
-correctness. The demonstration lets attendees follow document placement,
-inspect retrieved passages and source references, and examine failure reports.
-Saved operational traces cover 50 papers in five bases and 165 stored documents
-and parts. A separate ten-question snippet regression passes nine cases, and
-three scripted out-of-corpus examples illustrate agent-authored not-found
-reports. These operational
-spot checks provide concrete cases for examining the workflow, its recorded
-decisions, and the limits of available evidence. Demo video:
+Research administrators who maintain shared paper collections must organize
+documents and inspect the evidence behind the answers drawn from them. We
+present \sys{}, an agent-operated platform that couples content-guided
+knowledge organization with librarian-style retrieval through one shared
+address space. Packaged agent skills call tool APIs to parse documents,
+route them by content into category bases, and maintain tags; retrieval
+rewrites each query, recalls and reads candidates, gates them with a
+prompted 0--8 rubric (topic, scenario, evidence), and --- when nothing
+passes --- escalates from ranking to browsing base summaries and tag-matched
+shelves, returning a scoped not-found report instead of answering from the
+nearest neighbor. A
+100-paper, five-base demonstration instance was built by the platform's own
+ingest loop and audited across ingest, storage, and retrieval probes. In a
+monitored three-mode run under one harness and model (platform, bare agent,
+dense retrieval), the platform grounds 9 of 10 designated-paper answers and
+keyword-verifies 9 of 10; the bare agent locates the designated paper in
+all 10 cases yet verifies only 6, and dense retrieval grounds 9 and
+verifies 6. Part/section-level citations reach 7 of 10 for the platform
+versus 4 and 1, whose citations name files and chunks rather than the full
+base/document/part/section address. One measured dense-mode abstention is
+shown alongside the platform's verified answer, and three scripted
+out-of-corpus probes receive scoped not-found reports. The platform trades
+roughly three times the baseline cost for this verified, addressable
+evidence. Attendees organize a document, inspect an answer's evidence, and
+examine a failure report. Demo video:
 \url{https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4}.
 \end{abstract}

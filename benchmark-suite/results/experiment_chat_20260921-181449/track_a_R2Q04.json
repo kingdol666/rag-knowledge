@@ -1,0 +1,138 @@
+{
+ "track": "a",
+ "question": "What does STRAND condition on to represent a genetic perturbation, instead of collapsing all interventions on the same gene into one representation?",
+ "answer": "I have the answer with strong evidentiary support from multiple chunks of the source paper.\n\n## Answer\n\n**STRAND conditions on the regulatory DNA sequence at the perturbation's genomic locus** — not on a gene identifier.\n\nSpecifically, STRAND represents a genetic perturbation by **encoding the DNA sequence at its genomic locus** (the target genomic locus / regulatory DNA context), and uses that sequence-derived representation to parameterize a conditional transport process from control to perturbed cell states.\n\nThis is precisely the design choice that avoids the collapse problem: as the paper's abstract states, **\"Gene-level perturbation models collapse these distinct interventions into the same representation\"** — perturbations targeting the same gene can produce different transcriptional responses depending on their genomic locus (different transcription start sites and regulatory elements). By contrast, STRAND represents perturbations **\"as continuous functions of nucleotide sequence rather than as gene identifiers,\"** which lets it distinguish perturbations targeting different regulatory elements within the same gene, and resolve functionally alternative transcription start sites missed by gene-level models.\n\nIn other words, the conditioning variable is the **nucleotide sequence of the local regulatory locus**, giving locus- and nucleotide-resolution specificity instead of the gene-level, ~27 kb-resolution resolution used by gene-identifier methods.\n\n### Supporting mechanism (context)\n- The perturbation module maps DNA sequence representations into the latent space of an RNA encoder, producing a perturbation embedding that conditions a latent diffusion/transport process from control to perturbed cell state (chunk k04).\n- Treating a perturbation as \"a structured transformation of a cell population rather than as a static identifier or relational proxy\" (Table 1 discussion).\n- Benefits: zero-shot inference at loci unseen during training and distinguishability of different regulatory elements within the same gene.\n\n### Sources (KB: `生命科学与医学`, kb_id `b28f0a25-1e1d-40ad-96b8-61bd2b093a28`; full-text collection kb_id `0942f1a6-d81b-413b-a60b-b994680dcaac`)\n- `生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 1 of 6).md` — Abstract, Intro, and Figure 1 caption (\"STRAND conditions perturbation effects on regulatory DNA sequence, to perform in-silico profiling of locus-specific perturbations at nucleotide resolution. Perturbations targeting the same gene at…\"), and Table 1 discussion.\n- `Corpus-Chunks800/genomics__2602.10156__strand-sequence-conditioned-transport-for-si__k00.md` / `__k04.md` — \"STRAND represents a perturbation by encoding the sequence at its genomic locus… Representing perturbations by sequence, rather than by a fixed set of gene identifiers, supports zero-shot inference at loci not seen during training.\"\n- `Corpus-Chunks800/…__k04.md` — \"By representing perturbations as continuous functions of nucleotide sequence rather than as gene identifiers, the model supports zero-shot prediction at arbitrary genomic coordinates and can distinguish perturbations targeting different regulatory elements within the same gene.\"\n- `Corpus-Chunks800/…__k03.md` — \"gene-identifier conditioning cannot represent locus-defined perturbations (Table 1).\"\n\nNo relevant experience (operational/fault) records matched this query; the answer is drawn entirely from the indexed paper.",
+ "is_error": false,
+ "latency_s": 56.0,
+ "sdk_duration_ms": 53204,
+ "num_turns": 8,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_search_two_stage,mcp__kb-mcp__kb_list,mcp__kb-mcp__kb_get_documents"
+   }
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "kb-mcp knowledge base search vector documents"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "STRAND genetic perturbation representation"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search",
+   "input": {
+    "query": "STRAND"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_two_stage",
+   "input": {
+    "query": "STRAND represents perturbation by encoding sequence at genomic locus instead of gene identifier collapsing interventions",
+    "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "gene-identifier conditioning cannot represent locus-defined perturbations same gene different regulatory elements"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_get_documents",
+   "input": {
+    "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28"
+   }
+  }
+ ],
+ "tool_call_count": 7,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 114404,
+  "output": 1358,
+  "cache_read": 163392,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.6876659999999999,
+ "timeline": [
+  {
+   "t": 2.87,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 3.87,
+   "event": "text",
+   "detail": "62"
+  },
+  {
+   "t": 3.88,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 26.64,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 29.33,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 29.34,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search"
+  },
+  {
+   "t": 45.95,
+   "event": "text",
+   "detail": "96"
+  },
+  {
+   "t": 45.95,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_two_stage"
+  },
+  {
+   "t": 45.95,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 50.0,
+   "event": "text",
+   "detail": "198"
+  },
+  {
+   "t": 50.01,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_get_documents"
+  },
+  {
+   "t": 55.98,
+   "event": "text",
+   "detail": "3459"
+  },
+  {
+   "t": 56.01,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the knowledge base for information about STRAND.\n\n",
+  "I found the document. Let me read the full content of the key chunks to give a precise answer.\n\n",
+  "I have solid evidence from multiple chunks. Let me read the full abstract/intro section to confirm the precise phrasing around Figure 1's \"perturbations targeting the same gene at different loci.\"\n\n",
+  "I have the answer with strong evidentiary support from multiple chunks of the source paper.\n\n## Answer\n\n**STRAND conditions on the regulatory DNA sequence at the perturbation's genomic locus** — not on a gene identifier.\n\nSpecifically, STRAND represents a genetic perturbation by **encoding the DNA sequence at its genomic locus** (the target genomic locus / regulatory DNA context), and uses that sequence-derived representation to parameterize a conditional transport process from control to perturbed cell states.\n\nThis is precisely the design choice that avoids the collapse problem: as the paper's abstract states, **\"Gene-level perturbation models collapse these distinct interventions into the same representation\"** — perturbations targeting the same gene can produce different transcriptional responses depending on their genomic locus (different transcription start sites and regulatory elements). By contrast, STRAND represents perturbations **\"as continuous functions of nucleotide sequence rather than as gene identifiers,\"** which lets it distinguish perturbations targeting different regulatory elements within the same gene, and resolve functionally alternative transcription start sites missed by gene-level models.\n\nIn other words, the conditioning variable is the **nucleotide sequence of the local regulatory locus**, giving locus- and nucleotide-resolution specificity instead of the gene-level, ~27 kb-resolution resolution used by gene-identifier methods.\n\n### Supporting mechanism (context)\n- The perturbation module maps DNA sequence representations into the latent space of an RNA encoder, producing a perturbation embedding that conditions a latent diffusion/transport process from control to perturbed cell state (chunk k04).\n- Treating a perturbation as \"a structured transformation of a cell population rather than as a static identifier or relational proxy\" (Table 1 discussion).\n- Benefits: zero-shot inference at loci unseen during training and distinguishability of different regulatory elements within the same gene.\n\n### Sources (KB: `生命科学与医学`, kb_id `b28f0a25-1e1d-40ad-96b8-61bd2b093a28`; full-text collection kb_id `0942f1a6-d81b-413b-a60b-b994680dcaac`)\n- `生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 1 of 6).md` — Abstract, Intro, and Figure 1 caption (\"STRAND conditions perturbation effects on regulatory DNA sequence, to perform in-silico profiling of locus-specific perturbations at nucleotide resolution. Perturbations targeting the same gene at…\"), and Table 1 discussion.\n- `Corpus-Chunks800/genomics__2602.10156__strand-sequence-conditioned-transport-for-si__k00.md` / `__k04.md` — \"STRAND represents a perturbation by encoding the sequence at its genomic locus… Representing perturbations by sequence, rather than by a fixed set of gene identifiers, supports zero-shot inference at loci not seen during training.\"\n- `Corpus-Chunks800/…__k04.md` — \"By representing perturbations as continuous functions of nucleotide sequence rather than as gene identifiers, the model supports zero-shot prediction at arbitrary genomic coordinates and can distinguish perturbations targeting different regulatory elements within the same gene.\"\n- `Corpus-Chunks800/…__k03.md` — \"gene-identifier conditioning cannot represent locus-defined perturbations (Table 1).\"\n\nNo relevant experience (operational/fault) records matched this query; the answer is drawn entirely from the indexed paper."
+ ],
+ "qid": "R2Q04",
+ "via": "chat"
+}

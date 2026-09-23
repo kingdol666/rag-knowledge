@@ -1,4 +1,7 @@
 #!/usr/bin/env python3
+# DEPRECATED 2026-09-20 — superseded by the experiments/ platform
+# (python -m experiments.runner, chat API + harness=claude). Kept only to
+# reproduce historical reports. Do not use for new retrieval testing.
 """Track A — Phase 2 图书管理员兜底(BQ06/BQ10): 在所属门类库内用调整后的
 查询定向检索定位证据 part, 再 kb_doc_read 续读. 全程计时, 追加到 evidence.
 """

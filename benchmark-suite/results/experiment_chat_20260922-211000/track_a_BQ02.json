@@ -1,0 +1,138 @@
+{
+ "track": "a",
+ "question": "What defines NISQ technology and what is its central limitation?",
+ "answer": "The knowledge base contains multiple corroborating sources. Here is the answer.\n\n## What Defines NISQ Technology and Its Central Limitation\n\n**Definition.** NISQ stands for **Noisy Intermediate-Scale Quantum** computation. The knowledge base characterizes this era by three defining hardware obstacles that compound together:\n\n1. **Restrictive qubit topologies** — limited connectivity between qubits\n2. **Short coherence times** — qubits lose their quantum state before computations complete\n3. **Imperfect quantum gates** — gate operations introduce errors\n\nA corroborating source (`quantum-physics__2201.00752`) quantifies the scale: NISQ hardware \"typically contains hundreds of qubits with error rates on the order of **10⁻³**.\"\n\n**Central limitation.** These obstacles **compound to limit what is achievable using existing or near-term quantum devices**. In practical terms, the noise floor is *prohibitively high*: the source states that \"few quantum chemistry experiments performed on existing NISQ hardware have achieved the high bar of **chemical precision**, namely energy errors to within **1.6 mHa** of full configuration interaction.\"\n\nBecause of this, NISQ devices cannot run fault-tolerant computation with error-correcting codes (that remains \"beyond nowadays technological level\"). Instead, the era relies on **Quantum Error Mitigation (QEM)** — a set of post-processing techniques that aim to \"extract usable data from the raw output of NISQ machines\" rather than correct errors outright.\n\n**Deeper concern.** A second layer of limitation is noted: even QEM \"may be restricted by some fundamental limits,\" so \"it is not clear whether 'quantum advantage' will be feasible using QEM alone — we may still require partially error-corrected machines for this to be realised in practice.\"\n\n### Source References\n\n| Source | KB | What it supports |\n|---|---|---|\n| `自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md` | 自然科学与地球科学 (`1e6199ea-...`) | **Primary.** Definition of NISQ era + three defining obstacles + compounding limitation + chemical-precision bar + QEM fundamental limits |\n| `自然科学与地球科学/quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 1 of 3).md` | 自然科学与地球科学 | Corroborates scale: hundreds of qubits, error rates ~10⁻³ |\n| `自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 1 of 3).md` | 自然科学与地球科学 | Corroborates: fault-tolerant QC still beyond current technology; QEM as interim solution |\n\nAll three sources are in the **自然科学与地球科学** (Physical/Chemical/Space & Earth Sciences) knowledge base, sub-collection quantum physics. Search entries were also mirrored in the `Corpus-Chunks800` baseline index (`0942f1a6-...`), but that KB has `doc_count: 0` and appears to be a shadow vector index of the same content.\n\n**Certainty:** High. The definition and limitation come verbatim from the Introduction of the primary paper, and are independently corroborated by two further documents in the same knowledge base.",
+ "is_error": false,
+ "latency_s": 99.2,
+ "sdk_duration_ms": 95942,
+ "num_turns": 7,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_search_two_stage,mcp__kb-mcp__kb_list,mcp__kb-mcp__kb_get_documents"
+   }
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_search_two_stage,mcp__kb-mcp__kb_list,mcp__kb-mcp__kb_get_documents"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "NISQ technology definition central limitation"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_list",
+   "input": {}
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+    "doc_path": "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "NISQ noise limit chemical precision quantum advantage error mitigation fundamental limits",
+    "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b"
+   }
+  }
+ ],
+ "tool_call_count": 6,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 56876,
+  "output": 1413,
+  "cache_read": 202624,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.42101700000000003,
+ "timeline": [
+  {
+   "t": 3.29,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 4.2,
+   "event": "text",
+   "detail": "53"
+  },
+  {
+   "t": 4.2,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 10.9,
+   "event": "text",
+   "detail": "65"
+  },
+  {
+   "t": 10.9,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 13.43,
+   "event": "text",
+   "detail": "57"
+  },
+  {
+   "t": 13.44,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 13.44,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_list"
+  },
+  {
+   "t": 17.2,
+   "event": "text",
+   "detail": "134"
+  },
+  {
+   "t": 17.21,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 57.91,
+   "event": "text",
+   "detail": "120"
+  },
+  {
+   "t": 57.91,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 99.14,
+   "event": "text",
+   "detail": "3056"
+  },
+  {
+   "t": 99.19,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the knowledge base for NISQ technology.\n\n",
+  "The kb-mcp server is still connecting. Let me retry the search.\n\n",
+  "I'll now search the knowledge base for NISQ technology.\n\n",
+  "I found a strong hit — a quantum physics paper on NISQ in the \"自然科学与地球科学\" KB. Let me read the source document to verify the content.\n\n",
+  "I have the full source content. Let me get one more relevant chunk to ensure comprehensive coverage of the limitation.\n\n",
+  "The knowledge base contains multiple corroborating sources. Here is the answer.\n\n## What Defines NISQ Technology and Its Central Limitation\n\n**Definition.** NISQ stands for **Noisy Intermediate-Scale Quantum** computation. The knowledge base characterizes this era by three defining hardware obstacles that compound together:\n\n1. **Restrictive qubit topologies** — limited connectivity between qubits\n2. **Short coherence times** — qubits lose their quantum state before computations complete\n3. **Imperfect quantum gates** — gate operations introduce errors\n\nA corroborating source (`quantum-physics__2201.00752`) quantifies the scale: NISQ hardware \"typically contains hundreds of qubits with error rates on the order of **10⁻³**.\"\n\n**Central limitation.** These obstacles **compound to limit what is achievable using existing or near-term quantum devices**. In practical terms, the noise floor is *prohibitively high*: the source states that \"few quantum chemistry experiments performed on existing NISQ hardware have achieved the high bar of **chemical precision**, namely energy errors to within **1.6 mHa** of full configuration interaction.\"\n\nBecause of this, NISQ devices cannot run fault-tolerant computation with error-correcting codes (that remains \"beyond nowadays technological level\"). Instead, the era relies on **Quantum Error Mitigation (QEM)** — a set of post-processing techniques that aim to \"extract usable data from the raw output of NISQ machines\" rather than correct errors outright.\n\n**Deeper concern.** A second layer of limitation is noted: even QEM \"may be restricted by some fundamental limits,\" so \"it is not clear whether 'quantum advantage' will be feasible using QEM alone — we may still require partially error-corrected machines for this to be realised in practice.\"\n\n### Source References\n\n| Source | KB | What it supports |\n|---|---|---|\n| `自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md` | 自然科学与地球科学 (`1e6199ea-...`) | **Primary.** Definition of NISQ era + three defining obstacles + compounding limitation + chemical-precision bar + QEM fundamental limits |\n| `自然科学与地球科学/quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 1 of 3).md` | 自然科学与地球科学 | Corroborates scale: hundreds of qubits, error rates ~10⁻³ |\n| `自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 1 of 3).md` | 自然科学与地球科学 | Corroborates: fault-tolerant QC still beyond current technology; QEM as interim solution |\n\nAll three sources are in the **自然科学与地球科学** (Physical/Chemical/Space & Earth Sciences) knowledge base, sub-collection quantum physics. Search entries were also mirrored in the `Corpus-Chunks800` baseline index (`0942f1a6-...`), but that KB has `doc_count: 0` and appears to be a shadow vector index of the same content.\n\n**Certainty:** High. The definition and limitation come verbatim from the Introduction of the primary paper, and are independently corroborated by two further documents in the same knowledge base."
+ ],
+ "qid": "BQ02",
+ "via": "chat"
+}

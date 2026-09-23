@@ -1,0 +1,82 @@
+{
+ "track": "c",
+ "question": "What defines NISQ technology and what is its central limitation?",
+ "answer": "The retrieved chunks answer this directly. NISQ stands for \"Noisy Intermediate-Scale Quantum,\" a term coined by John Preskill to describe the era of quantum computers with roughly 50 to a few hundred qubits — intermediate scale because 50 qubits is beyond what brute-force classical simulation can match, while \"noisy\" emphasizes that we will have only imperfect control over those qubits. Its central limitation is noise: the noise places serious limitations on what quantum devices can achieve in the near term, and because quantum error correction carries a heavy overhead cost that NISQ devices cannot yet afford, circuits are essentially limited to about 1000 gates before the noise overwhelms the signal. That limitation on circuit size imposes a ceiling on the computational power of NISQ technology.\n\nChunks used: `quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond__k07.md`, `__k08.md`, `__k00.md`, and `__k19.md`.",
+ "is_error": false,
+ "latency_s": 54.0,
+ "sdk_duration_ms": 48169,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "kb_search_vector dense vector search knowledge base"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "NISQ technology definition central limitation noisy intermediate-scale quantum",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 159451,
+  "output": 460,
+  "cache_read": 384,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.808947,
+ "timeline": [
+  {
+   "t": 5.87,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 10.27,
+   "event": "text",
+   "detail": "51"
+  },
+  {
+   "t": 10.28,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 21.83,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 26.79,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 53.98,
+   "event": "text",
+   "detail": "946"
+  },
+  {
+   "t": 54.0,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the vector index for relevant chunks.\n\n",
+  "The retrieved chunks answer this directly. NISQ stands for \"Noisy Intermediate-Scale Quantum,\" a term coined by John Preskill to describe the era of quantum computers with roughly 50 to a few hundred qubits — intermediate scale because 50 qubits is beyond what brute-force classical simulation can match, while \"noisy\" emphasizes that we will have only imperfect control over those qubits. Its central limitation is noise: the noise places serious limitations on what quantum devices can achieve in the near term, and because quantum error correction carries a heavy overhead cost that NISQ devices cannot yet afford, circuits are essentially limited to about 1000 gates before the noise overwhelms the signal. That limitation on circuit size imposes a ceiling on the computational power of NISQ technology.\n\nChunks used: `quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond__k07.md`, `__k08.md`, `__k00.md`, and `__k19.md`."
+ ],
+ "qid": "BQ02",
+ "via": "chat"
+}

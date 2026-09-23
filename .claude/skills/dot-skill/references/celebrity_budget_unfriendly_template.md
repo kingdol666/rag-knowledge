@@ -8,7 +8,7 @@ Use this as the target shape for a deep celebrity skill.
 - Who the person is
 - Why the user would invoke this perspective
 - First-activation disclaimer (shown once, then suppressed)
-- Exit instruction ("exit" / "退出" returns to normal mode)
+- Exit instruction ("exit" / "退出" returns to normal mode; keep both trigger words)
 
 ### 2. Expression DNA
 - Tone (specific quality, not just formal/casual)

@@ -1,0 +1,82 @@
+{
+ "track": "c",
+ "question": "Compared with prior Multi-Agent Transformer (MAT) models, what aspect of the agents' decision process does AOAD-MAT explicitly model?",
+ "answer": "AOAD-MAT explicitly models the **order in which agents make their action decisions** — that is, the sequence/ordering of agent action decisions. The paper states it is \"a novel Transformer-based multi-agent deep reinforcement learning model that explicitly incorporates and learns the optimal order of agent action decisions,\" built on the MAT architecture with \"a dedicated mechanism to predict and optimize the sequence in which agents should act,\" including a subtask for predicting the next agent to act. The conclusion reinforces that \"the proposed AOAD-MAT explicitly incorporated action decision sequences into its learning process, allowing the model to learn and predict the optimal order of agent actions,\" and another chunk notes it \"explicitly model[s] the order of agent action decisions in the CTCE framework.\" Thus, rather than treating agents' decision ordering as fixed as in prior MAT models, AOAD-MAT learns and optimizes it.\n\nCited chunks: `artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep__k02.md`, `__k01.md`, `__k07.md`, `__k25.md`",
+ "is_error": false,
+ "latency_s": 32.2,
+ "sdk_duration_ms": 30647,
+ "num_turns": 4,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "kb_search_vector vector search knowledge base"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "AOAD-MAT Multi-Agent Transformer agents decision process explicitly model",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 3,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 61168,
+  "output": 478,
+  "cache_read": 99776,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.367678,
+ "timeline": [
+  {
+   "t": 1.6,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 3.24,
+   "event": "text",
+   "detail": "51"
+  },
+  {
+   "t": 3.24,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 9.2,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 12.54,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 31.85,
+   "event": "text",
+   "detail": "1086"
+  },
+  {
+   "t": 32.21,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the vector index for relevant chunks.\n\n",
+  "AOAD-MAT explicitly models the **order in which agents make their action decisions** — that is, the sequence/ordering of agent action decisions. The paper states it is \"a novel Transformer-based multi-agent deep reinforcement learning model that explicitly incorporates and learns the optimal order of agent action decisions,\" built on the MAT architecture with \"a dedicated mechanism to predict and optimize the sequence in which agents should act,\" including a subtask for predicting the next agent to act. The conclusion reinforces that \"the proposed AOAD-MAT explicitly incorporated action decision sequences into its learning process, allowing the model to learn and predict the optimal order of agent actions,\" and another chunk notes it \"explicitly model[s] the order of agent action decisions in the CTCE framework.\" Thus, rather than treating agents' decision ordering as fixed as in prior MAT models, AOAD-MAT learns and optimizes it.\n\nCited chunks: `artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep__k02.md`, `__k01.md`, `__k07.md`, `__k25.md`"
+ ],
+ "qid": "R2Q01",
+ "via": "chat"
+}

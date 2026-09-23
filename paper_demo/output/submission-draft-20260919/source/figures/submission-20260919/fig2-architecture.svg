@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="590" viewBox="0 0 1000 590" role="img" aria-labelledby="b-title b-desc"><title id="b-title">Platform services and agent-executed QDCVR workflow</title><desc id="b-desc">Web search uses HTTP, ragctl handles setup and services, and agents use an MCP adapter to shared backend primitives. The packaged agent skills execute content classification, the QDCVR gate and retry policy; these are not automatically enforced on every web or HTTP search. Web uploads use a selected destination; this diagram shows agent-assisted ingestion, not automatic routing of all uploads. Offline: MinerU parses PDFs into section Markdown; an agent reads and routes content into five demo bases and selects or propagates tags, with deterministic split, index and store primitives. This is not a guarantee that every MCP-created part is tagged. Evidence is stored using ChromaDB/BGE-M3, Neo4j and YAML metadata. Online agent-executed QDCVR: query rewrite, vector-first cross-base recall, candidate reading, and a 0–8 rubric. Initial ≥6 supports direct answering; initial score 5 is retained as a P1 backstop, while ≤4 is discarded; both trigger fallback. After reading and rechecking, P0 ≥6 supports a cited answer, usable P1 score 5 supports an attributed qualified answer, and only no usable P0/P1 supports not-found. Tools/backend supply the capabilities, not automatic policy enforcement.</desc><defs><marker id="b-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="#607580" stroke-width="1.3" /></marker></defs><rect width="1000" height="590" fill="white" />
+<rect x="20" y="12" width="225" height="34" rx="3" fill="white" stroke="#607580" stroke-width="1.1" />
+<text x="132.5" y="34.44" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Web HTTP / CLI setup</text>
+<rect x="275" y="12" width="290" height="34" rx="3" fill="white" stroke="#607580" stroke-width="1.1" />
+<text x="420.0" y="34.44" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Agents → MCP adapter</text>
+<rect x="610" y="12" width="370" height="34" rx="3" fill="#edf5ef" stroke="#607580" stroke-width="1.1" />
+<text x="795.0" y="34.44" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Backend / storage primitives</text>
+<polyline points="565,29 610,29" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#b-arrow)" />
+<polyline points="132,46 132,59 592,59 592,29 610,29" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#b-arrow)" />
+<rect x="20" y="76" width="245" height="494" fill="#fff8f5" stroke="#dce0dd" stroke-width="0.8" />
+<rect x="280" y="76" width="700" height="494" fill="#fffdf3" stroke="#dce0dd" stroke-width="0.8" />
+<text x="30" y="98" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="600" text-anchor="start" fill="#263944">(a) Agent-assisted ingest</text>
+<text x="295" y="98" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="600" text-anchor="start" fill="#263944">(b) Online retrieval</text>
+<g transform="translate(0 22)"><path d="M35 126 h25 l10 10 v35 h-35 Z M60 126 v10 h10 M42 147 h21 M42 155 h21" fill="white" stroke="#607580" stroke-width="1.2" />
+<text x="51" y="188" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">PDF</text>
+<rect x="100" y="120" width="145" height="63" rx="3" fill="#fbefeb" stroke="#607580" stroke-width="1.1" />
+<text x="172.5" y="145.44" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">MinerU</text>
+<text x="172.5" y="168.44" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">parse</text>
+<polyline points="70,149 100,149" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#b-arrow)" />
+<rect x="35" y="210" width="210" height="66" rx="3" fill="#fbefeb" stroke="#607580" stroke-width="1.1" />
+<text x="165" y="238" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Section</text>
+<text x="165" y="261" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Markdown</text>
+<g fill="white" stroke="#607580" stroke-width="1"><rect x="43" y="218" width="43" height="49" /><rect x="47" y="223" width="35" height="8" fill="#fbefeb" /><path d="M51 236 v22 m0 -17 h6 m-6 13 h6" /><rect x="57" y="237" width="24" height="9" /><rect x="57" y="250" width="24" height="9" /></g>
+<polyline points="172,183 172,210" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#b-arrow)" />
+<rect x="35" y="302" width="210" height="65" rx="3" fill="#fbefeb" stroke="#607580" stroke-width="1.1" />
+<text x="140.0" y="328.44" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Agent reads / routes</text>
+<text x="140.0" y="351.44" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Selects / propagates tags</text>
+<polyline points="140,276 140,302" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#b-arrow)" />
+<rect x="35" y="392" width="210" height="50" rx="3" fill="#fbefeb" stroke="#607580" stroke-width="1.1" />
+<text x="140.0" y="411.1" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Split / index / store</text>
+<text x="140.0" y="433.1" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Retain section paths</text>
+<polyline points="140,367 140,392" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#b-arrow)" />
+<rect x="35" y="469" width="210" height="64" rx="3" fill="#edf5ef" stroke="#607580" stroke-width="1.1" />
+<text x="140.0" y="495.1" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">ChromaDB / BGE-M3 · Neo4j</text>
+<text x="140.0" y="517.1" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">File tree + YAML metadata</text>
+<polyline points="140,442 140,469" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#b-arrow)" />
+<rect x="300" y="122" width="150" height="61" rx="3" fill="#edf4fa" stroke="#607580" stroke-width="1.1" />
+<text x="375.0" y="146.44" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Query</text>
+<text x="375.0" y="169.44" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">rewrite</text>
+<rect x="490" y="122" width="235" height="61" rx="3" fill="#edf4fa" stroke="#607580" stroke-width="1.1" />
+<text x="607.5" y="146.44" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Vector-first recall</text>
+<text x="607.5" y="169.44" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Cross-base balance</text>
+<polyline points="450,153 490,153" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#b-arrow)" />
+<polyline points="245,501 272,501 272,196 606,196 606,183" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#b-arrow)" stroke-dasharray="5 4" />
+<text x="310" y="214" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="start" fill="#263944">Indexed evidence → recall</text>
+<rect x="490" y="237" width="235" height="63" rx="3" fill="#edf4fa" stroke="#607580" stroke-width="1.1" />
+<text x="607.5" y="262.44" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Read candidate text</text>
+<text x="607.5" y="285.44" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Parts / continuation</text>
+<polyline points="606,183 748,183 748,225 606,225 606,237" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#b-arrow)" />
+<polygon points="606,314.0 711.0,364 606,414.0 501.0,364" fill="#faf4e5" stroke="#607580" stroke-width="1.2" />
+<text x="606" y="359" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Content rubric</text>
+<text x="606" y="380" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">0–8 score</text>
+<polyline points="606,300 606,314" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#b-arrow)" />
+<rect x="810" y="325" width="160" height="78" rx="3" fill="#edf5ef" stroke="#607580" stroke-width="1.1" />
+<text x="890.0" y="357.94" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Cited answer</text>
+<text x="890.0" y="380.94" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">5 sections</text>
+<polyline points="711,364 810,364" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#b-arrow)" />
+<text x="742" y="352" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="start" fill="#263944">≥6: direct</text>
+<rect x="760" y="460" width="210" height="65" rx="3" fill="#fbefeb" stroke="#607580" stroke-width="1.1" />
+<text x="865.0" y="486.44" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Librarian shelf scan</text>
+<text x="865.0" y="509.44" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Targeted re-search</text>
+<polyline points="606,414 606,436 865,436 865,460" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#b-arrow)" />
+<text x="627" y="425" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="start" fill="#263944">Initial &lt;6: fallback</text>
+<polyline points="970,492 988,492 988,268 725,268" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#b-arrow)" />
+<text x="780" y="255" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="start" fill="#263944">Read new text + recheck</text>
+<rect x="310" y="460" width="245" height="65" rx="3" fill="#fbefeb" stroke="#607580" stroke-width="1.1" />
+<text x="432.5" y="486.6" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Not found</text>
+<text x="432.5" y="508.6" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="middle" fill="#263944">Scope + near miss + reason</text>
+<polyline points="501,364 432,364 432,460" fill="none" stroke="#607580" stroke-width="1.3" stroke-linejoin="round" marker-end="url(#b-arrow)" />
+<text x="310" y="396" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="start" fill="#263944">After fallback:</text>
+<text x="310" y="417" font-family="Calibri, Carlito, sans-serif" font-size="16" font-weight="400" text-anchor="start" fill="#263944">No usable P0/P1</text><rect x="300" y="238" width="174" height="67" rx="3" fill="#efedf7" stroke="#c5cfd5" /><text x="387" y="263" font-size="18" font-weight="600" fill="#253745" text-anchor="middle" font-family="Calibri, Carlito, sans-serif">Qualified answer</text><text x="387" y="287" font-size="16" font-weight="400" fill="#253745" text-anchor="middle" font-family="Calibri, Carlito, sans-serif">With attribution</text><polyline points="501,364 470,364 470,309" fill="none" stroke="#607580" stroke-width="1.3" marker-end="url(#b-arrow)" /><text x="306" y="330" font-size="16" font-weight="400" fill="#253745" text-anchor="start" font-family="Calibri, Carlito, sans-serif">After fallback:</text><text x="306" y="351" font-size="16" font-weight="600" fill="#253745" text-anchor="start" font-family="Calibri, Carlito, sans-serif">Usable P1 =5</text><text x="572" y="458" font-size="16" font-weight="400" fill="#253745" text-anchor="start" font-family="Calibri, Carlito, sans-serif">5 retained; ≤4 discarded</text></g><text x="295" y="119" font-size="18" font-weight="600" fill="#253745" text-anchor="start" font-family="Calibri, Carlito, sans-serif">Agent-executed QDCVR skill</text><text x="30" y="119" font-size="16" font-weight="400" fill="#253745" text-anchor="start" font-family="Calibri, Carlito, sans-serif">Demo: five category bases</text><text x="20" y="586" font-size="16" font-weight="400" fill="#253745" text-anchor="start" font-family="Calibri, Carlito, sans-serif">Skills execute gate / retry / classification; web or HTTP search does not automatically enforce this policy.</text></svg>

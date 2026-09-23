@@ -1,0 +1,89 @@
+{
+ "corpus": {
+  "papers": 100,
+  "arxiv_fields": 26
+ },
+ "ingest": {
+  "documents_total": 322,
+  "kb_distribution": {
+   "计算机与人工智能": 131,
+   "自然科学与地球科学": 75,
+   "生命科学与医学": 53,
+   "工程与能源": 39,
+   "经济与社会": 24
+  },
+  "round1_a7_ok": 50,
+  "round1_papers": 50,
+  "round2_a7_ok": 50,
+  "round2_papers": 50,
+  "round2_check_version": "103-fixed"
+ },
+ "organize": {
+  "audited": 322,
+  "total": 322,
+  "desc_upgraded": 165,
+  "tag_fixes": 4,
+  "three_layer_checked": 33,
+  "three_layer_ok": 33,
+  "regression_probes_pass": 15,
+  "regression_probes_total": 15,
+  "near_duplicate_groups": 35,
+  "true_duplicates": 0
+ },
+ "retrieval": {
+  "run": "experiment_chat_20260922-211000",
+  "questions": 10,
+  "traces": 30,
+  "grounded": {
+   "a": 9,
+   "b": 10,
+   "c": 9
+  },
+  "keyword_verified": {
+   "a": 9,
+   "b": 6,
+   "c": 6
+  },
+  "citations": {
+   "a": 7,
+   "b": 4,
+   "c": 1
+  },
+  "avg_latency_s": {
+   "a": 113.0,
+   "b": 42.7,
+   "c": 48.0
+  },
+  "avg_tool_calls": {
+   "a": 7.6,
+   "b": 4.4,
+   "c": 2.4
+  },
+  "cost_usd_total": {
+   "a": 4.91,
+   "b": 1.63,
+   "c": 1.8
+  },
+  "corpus_md_files": 100,
+  "chunks800": 4528,
+  "denied_recovered": 0
+ },
+ "failure": {
+  "probes": 3,
+  "verdicts": [
+   "NOT_FOUND",
+   "NOT_FOUND",
+   "NOT_FOUND"
+  ],
+  "gate_scores": [
+   "1/8",
+   "1/8",
+   "0/8"
+  ],
+  "corpus_scope": {
+   "category_bases": 5,
+   "papers": 100,
+   "indexed_documents": 322
+  }
+ }
+}

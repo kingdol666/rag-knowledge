@@ -1,0 +1,38 @@
+{
+ "seconds": 712.1,
+ "exported": 100,
+ "corpus_files": 100,
+ "chunks": 4528,
+ "stale_kbs_removed": [
+  "Corpus-Chunks800",
+  "Corpus-Struct",
+  "Corpus-Paras"
+ ],
+ "kb_doc_count": 0,
+ "smoke": [
+  {
+   "aid": "2203.02155",
+   "hit": false,
+   "top": [
+    "Corpus-Chunks800/large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun__k14.md",
+    "Corpus-Chunks800/large-language-models__2005.14165__language-models-are-few-shot-learners__k05.md"
+   ]
+  },
+  {
+   "aid": "2409.13934",
+   "hit": true,
+   "top": [
+    "Corpus-Chunks800/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari__k21.md",
+    "Corpus-Chunks800/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari__k15.md"
+   ]
+  },
+  {
+   "aid": "q-bio-0408016",
+   "hit": true,
+   "top": [
+    "Corpus-Chunks800/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig__k02.md",
+    "Corpus-Chunks800/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig__k01.md"
+   ]
+  }
+ ]
+}

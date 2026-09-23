@@ -1,0 +1,71 @@
+{
+ "track": "c",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "answer": "**Answer (from retrieved chunks only):**\n\nThe retrieved chunks state that the Transformer is \"the first sequence transduction model based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention\" (`artificial-intelligence__1706.03762__attention-is-all-you-need__k20.md`; identical text in `..._k19.md`). Attention is applied as multi-head attention in three ways: in \"encoder-decoder attention\" layers \"the queries come from the previous decoder layer, and the memory keys and values come from the output of the encoder,\" allowing every decoder position to attend over all input positions (`..._k06.md`, `..._k07.md`); self-attention relates \"different positions of a single sequence in order to compute a represent[ation]\" (`..._k01.md`). It dispenses with recurrence and convolution because the authors propose an architecture \"eschewing recurrence and instead relying entirely on an attention mechanism to draw global dependencies between input and output,\" which \"allows for significantly more parallelization\" (`..._k02.md`, `..._k01.md`), and it is \"the first transduction model relying entirely on self-attention to compute representations of its input and output without using sequencealigned RNNs or convolution\" (`..._k03.md`, `..._k02.md`). The abstract confirms the design is \"based solely on attention mechanisms, dispensing with recurrence and convolutions entirely\" (`..._k00.md`), and the conclusion reports it \"can be trained significantly faster than architectures based on recurrent or convolutional layers\" (`..._k20.md`, `..._k19.md`).\n\n**Caveat on grounding:** the retrieved chunks describe *that* attention is used and *why* recurrence/convolution were dropped (parallelization, speed, global dependency modeling), but they do **not** contain the actual equations for how scaled dot-product or multi-head attention is computed (Sections 3.2.1/3.2.2 were not retrieved), nor the explicit complexity arguments from Section 4. On the \"how is attention computed\" part, the retrieved evidence is insufficient.",
+ "is_error": false,
+ "latency_s": 100.1,
+ "sdk_duration_ms": 98641,
+ "num_turns": 3,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_vector"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "Transformer attention mechanism replaces recurrence and convolution",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 2,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 86279,
+  "output": 637,
+  "cache_read": 32000,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.46332,
+ "timeline": [
+  {
+   "t": 1.51,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 34.97,
+   "event": "text",
+   "detail": "66"
+  },
+  {
+   "t": 34.97,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 59.23,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 100.09,
+   "event": "text",
+   "detail": "2109"
+  },
+  {
+   "t": 100.1,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll execute dense vector retrieval against the specified index.\n\n",
+  "**Answer (from retrieved chunks only):**\n\nThe retrieved chunks state that the Transformer is \"the first sequence transduction model based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention\" (`artificial-intelligence__1706.03762__attention-is-all-you-need__k20.md`; identical text in `..._k19.md`). Attention is applied as multi-head attention in three ways: in \"encoder-decoder attention\" layers \"the queries come from the previous decoder layer, and the memory keys and values come from the output of the encoder,\" allowing every decoder position to attend over all input positions (`..._k06.md`, `..._k07.md`); self-attention relates \"different positions of a single sequence in order to compute a represent[ation]\" (`..._k01.md`). It dispenses with recurrence and convolution because the authors propose an architecture \"eschewing recurrence and instead relying entirely on an attention mechanism to draw global dependencies between input and output,\" which \"allows for significantly more parallelization\" (`..._k02.md`, `..._k01.md`), and it is \"the first transduction model relying entirely on self-attention to compute representations of its input and output without using sequencealigned RNNs or convolution\" (`..._k03.md`, `..._k02.md`). The abstract confirms the design is \"based solely on attention mechanisms, dispensing with recurrence and convolutions entirely\" (`..._k00.md`), and the conclusion reports it \"can be trained significantly faster than architectures based on recurrent or convolutional layers\" (`..._k20.md`, `..._k19.md`).\n\n**Caveat on grounding:** the retrieved chunks describe *that* attention is used and *why* recurrence/convolution were dropped (parallelization, speed, global dependency modeling), but they do **not** contain the actual equations for how scaled dot-product or multi-head attention is computed (Sections 3.2.1/3.2.2 were not retrieved), nor the explicit complexity arguments from Section 4. On the \"how is attention computed\" part, the retrieved evidence is insufficient."
+ ],
+ "qid": "BQ01",
+ "via": "chat"
+}

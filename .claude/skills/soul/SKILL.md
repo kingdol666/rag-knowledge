@@ -13,7 +13,7 @@ description: >
   persona-augmented retrieval, one-click retrieval, RL reinforcement, persona evolution,
   pause training, resume training, training history, persona, soul_ask, soul_qdcvr_ask,
   soul_init, soul_learn, soul_train_rl, soul_review_drafts, soul_delete, soul_router,
-  auto training, curiosity training, fixed-round training.
+  auto training, curiosity training, fixed-round training. 中文触发: 人格, SOUL, 人格问答, 用XX人格回答, 补天, 蒸馏, 好奇心训练, 强化训练, 暂停训练, 恢复训练.
 ---
 
 # SOUL — Persona System Dispatcher (Innate Distillation + Acquired Evolution)

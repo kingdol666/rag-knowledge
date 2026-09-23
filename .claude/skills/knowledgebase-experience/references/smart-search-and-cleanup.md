@@ -26,7 +26,7 @@ experience_search_smart(query, top_k=8)
 Round 1: original query + adaptive threshold → 0 results
   → Round 2: lower threshold 30% → 0 results
     → Round 3: lower another 40% + skip content verify → results marked "degraded"
-    → Still 0 → honest declaration "无相关经验"
+    → Still 0 → honest declaration "no relevant experiences" (无相关经验)
 ```
 
 ### Transparency fields (per returned experience)
@@ -51,7 +51,7 @@ experience_rerank(query, experiences_json)
 
 ### Relationship to E4a
 
-- E4a Step 1底层 calls `experience_search_global` (compatibility preserved)
+- E4a Step 1 under the hood calls `experience_search_global` (compatibility preserved)
 - E4d's `experience_search_smart` is recommended entry — adds intent recognition + multi-round degradation + transparency on top of `_global`
 - Agent should prefer `experience_search_smart`; use `_global` only when manual threshold control needed
 
@@ -70,14 +70,14 @@ experience_rerank(query, experiences_json)
 
 ### Short-content false-positive guard
 
-Vector search may return very short fragments (e.g. only "## 问题") with inflated scores:
+Vector search may return very short fragments (e.g. only "## 问题" — a lone heading) with inflated scores:
 - Chunks < 50 chars → downgrade to P2 (hidden)
 - If >50% of a doc's fragments are short → downgrade entire doc
 - Exception: if the same doc has other P0/P1 fragments → release the short fragment
 
 ## E12 — Auto Health Check & Cleanup
 
-### Trigger时机
+### Trigger timing
 
 - Every `knowledgebase-verify` V8 step (see [knowledgebase-verify](../../knowledgebase-verify/SKILL.md))
 - Monthly periodic maintenance

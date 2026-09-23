@@ -1,0 +1,95 @@
+<mxfile host="app.diagrams.net" modified="2026-09-21T00:00:00.000Z" agent="QDCVR-paper" version="24.0.0" type="device">
+  <diagram id="qdcvr-architecture" name="QDCVR Architecture">
+    <mxGraphModel dx="1426" dy="757" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1200" pageHeight="660" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="QDCVR: platform operations and the agent-executed retrieval workflow" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;fontSize=18;fontStyle=1;fontColor=#253745;" vertex="1" parent="1">
+          <mxGeometry x="20" y="8" width="1160" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="laneA" value="(a) Agent-assisted ingest — five category bases (offline)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FBFCFD;strokeColor=#C5CFD5;dashed=1;verticalAlign=top;fontSize=14;fontStyle=1;fontColor=#253745;arcSize=4;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="20" y="48" width="480" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="laneB" value="(b) Online retrieval — agent-executed QDCVR skill" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FBFCFD;strokeColor=#C5CFD5;dashed=1;verticalAlign=top;fontSize=14;fontStyle=1;fontColor=#253745;arcSize=4;spacingTop=6;" vertex="1" parent="1">
+          <mxGeometry x="530" y="48" width="650" height="520" as="geometry" />
+        </mxCell>
+        <mxCell id="pdf" value="PDF upload" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EAF2F9;strokeColor=#C5CFD5;fontSize=13;fontColor=#253745;" vertex="1" parent="1">
+          <mxGeometry x="45" y="100" width="120" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="mineru" value="MinerU parse&#10;(structured Markdown)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EAF2F9;strokeColor=#C5CFD5;fontSize=13;fontColor=#253745;" vertex="1" parent="1">
+          <mxGeometry x="215" y="100" width="150" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="agentroute" value="Agent reads content,&#10;selects category base" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E7F3EC;strokeColor=#C5CFD5;fontSize=13;fontColor=#253745;" vertex="1" parent="1">
+          <mxGeometry x="45" y="190" width="150" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="tags" value="Place document,&#10;select / propagate tags" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E7F3EC;strokeColor=#C5CFD5;fontSize=13;fontColor=#253745;" vertex="1" parent="1">
+          <mxGeometry x="245" y="190" width="150" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="split" value="Deterministic split,&#10;index and store parts" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E7F3EC;strokeColor=#C5CFD5;fontSize=13;fontColor=#253745;" vertex="1" parent="1">
+          <mxGeometry x="45" y="285" width="150" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="paths" value="Retain section paths&#10;(base / doc / part / §)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E7F3EC;strokeColor=#C5CFD5;fontSize=13;fontColor=#253745;" vertex="1" parent="1">
+          <mxGeometry x="245" y="285" width="150" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="check" value="Check parts + indexing status&#10;(upload alone is not enough)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EAF2F9;strokeColor=#C5CFD5;fontSize=12;fontColor=#526472;dashed=1;" vertex="1" parent="1">
+          <mxGeometry x="45" y="370" width="350" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="storage" value="Indexed evidence&#10;ChromaDB / BGE-M3 · Neo4j relations · file tree + YAML metadata" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EAF2F9;strokeColor=#C5CFD5;fontSize=13;fontColor=#253745;" vertex="1" parent="1">
+          <mxGeometry x="45" y="440" width="350" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="rewrite" value="Query rewrite" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E7F3EC;strokeColor=#C5CFD5;fontSize=13;fontColor=#253745;" vertex="1" parent="1">
+          <mxGeometry x="555" y="100" width="130" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="recall" value="Vector-first recall&#10;(cross-base balance)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E7F3EC;strokeColor=#C5CFD5;fontSize=13;fontColor=#253745;" vertex="1" parent="1">
+          <mxGeometry x="730" y="100" width="170" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="read" value="Read candidate text&#10;(parts / line-offset continuation)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E7F3EC;strokeColor=#C5CFD5;fontSize=13;fontColor=#253745;" vertex="1" parent="1">
+          <mxGeometry x="555" y="190" width="200" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="gate" value="Content rubric&#10;0–8&#10;(topic + scenario + evidence)" style="rhombus;whiteSpace=wrap;html=1;fillColor=#F7EFDF;strokeColor=#C5CFD5;fontSize=12;fontColor=#253745;" vertex="1" parent="1">
+          <mxGeometry x="800" y="180" width="180" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="cited" value="≥ 6: direct path&#10;cited answer (5 sections:&#10;paths · answer · sources ·&#10;confidence · blind spots)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E7F3EC;strokeColor=#C5CFD5;fontSize=12;fontColor=#253745;" vertex="1" parent="1">
+          <mxGeometry x="1010" y="185" width="155" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="librarian" value="Librarian fallback — inspect base summaries + shelf scan, targeted re-search; keep 5 (P1), discard ≤ 4" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F7EFDF;strokeColor=#C5CFD5;fontSize=12;fontColor=#253745;" vertex="1" parent="1">
+          <mxGeometry x="555" y="310" width="250" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="reread" value="Read new text + recheck rubric" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F7EFDF;strokeColor=#C5CFD5;fontSize=12;fontColor=#253745;" vertex="1" parent="1">
+          <mxGeometry x="840" y="322" width="170" height="46" as="geometry" />
+        </mxCell>
+        <mxCell id="outP0" value="P0 ≥ 6&#10;Cited answer&#10;(section-addressed sources)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E7F3EC;strokeColor=#253745;fontSize=12;fontStyle=1;fontColor=#253745;" vertex="1" parent="1">
+          <mxGeometry x="555" y="440" width="180" height="66" as="geometry" />
+        </mxCell>
+        <mxCell id="outP1" value="Usable P1 = 5&#10;Qualified answer&#10;(with attribution)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EFEDF7;strokeColor=#C5CFD5;fontSize=12;fontColor=#253745;" vertex="1" parent="1">
+          <mxGeometry x="765" y="440" width="170" height="66" as="geometry" />
+        </mxCell>
+        <mxCell id="outNF" value="No usable P0 / P1&#10;Not found&#10;(scope + near miss + reason)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#F7EFDF;strokeColor=#C5CFD5;fontSize=12;fontColor=#253745;" vertex="1" parent="1">
+          <mxGeometry x="965" y="440" width="185" height="66" as="geometry" />
+        </mxCell>
+        <mxCell id="note" value="Packaged skills prescribe gate / retry / classification; ordinary web or HTTP search does not automatically enforce this policy." style="text;html=1;strokeColor=none;fillColor=none;align=center;fontSize=12;fontColor=#526472;" vertex="1" parent="1">
+          <mxGeometry x="20" y="586" width="1160" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#253745;strokeWidth=1.4;" edge="1" parent="1" source="pdf" target="mineru"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e2" value="parse ok" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#253745;strokeWidth=1.4;fontSize=11;fontColor=#526472;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="mineru" target="agentroute"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="290" y="166" /><mxPoint x="120" y="166" /></Array></mxGeometry></mxCell>
+        <mxCell id="e3" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#253745;strokeWidth=1.4;" edge="1" parent="1" source="agentroute" target="tags"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e4" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#253745;strokeWidth=1.4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="tags" target="paths"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#253745;strokeWidth=1.4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="agentroute" target="split"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#253745;strokeWidth=1.4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="split" target="check"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e7" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#253745;strokeWidth=1.4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="paths" target="check"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="320" y="345" /><mxPoint x="220" y="345" /></Array></mxGeometry></mxCell>
+        <mxCell id="e8" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#253745;strokeWidth=1.4;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="check" target="storage"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#253745;strokeWidth=1.4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;dashed=1;" edge="1" parent="1" source="storage" target="recall"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#253745;strokeWidth=1.4;" edge="1" parent="1" source="rewrite" target="recall"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#253745;strokeWidth=1.4;exitX=0.5;exitY=1;entryX=0;entryY=0.5;" edge="1" parent="1" source="recall" target="read"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="815" y="170" /><mxPoint x="580" y="170" /></Array></mxGeometry></mxCell>
+        <mxCell id="e12" value="assess" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#253745;strokeWidth=1.4;fontSize=11;fontColor=#526472;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="read" target="gate"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e13" value="≥ 6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#253745;strokeWidth=1.4;fontSize=12;fontStyle=1;fontColor=#253745;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="gate" target="cited"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e14" value="initial &lt; 6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#253745;strokeWidth=1.4;fontSize=12;fontColor=#253745;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="gate" target="librarian"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="890" y="290" /><mxPoint x="680" y="290" /></Array></mxGeometry></mxCell>
+        <mxCell id="e15" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#253745;strokeWidth=1.4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="librarian" target="reread"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e16" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#253745;strokeWidth=1.4;exitX=1;exitY=0.5;entryX=0;entryY=0.5;dashed=1;" edge="1" parent="1" source="reread" target="gate"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="1025" y="345" /><mxPoint x="1025" y="290" /></Array></mxGeometry></mxCell>
+        <mxCell id="e17" value="P0 ≥ 6" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#253745;strokeWidth=1.4;fontSize=11;fontColor=#253745;exitX=0.25;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="librarian" target="outP0"><mxGeometry relative="1" as="geometry" /></mxCell>
+        <mxCell id="e18" value="usable P1 = 5" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#253745;strokeWidth=1.4;fontSize=11;fontColor=#253745;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="librarian" target="outP1"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="680" y="410" /><mxPoint x="850" y="410" /></Array></mxGeometry></mxCell>
+        <mxCell id="e19" value="no usable P0 / P1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;strokeColor=#253745;strokeWidth=1.4;fontSize=11;fontColor=#253745;exitX=0.75;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="librarian" target="outNF"><mxGeometry relative="1" as="geometry"><Array as="points"><mxPoint x="742" y="400" /><mxPoint x="1057" y="400" /></Array></mxGeometry></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

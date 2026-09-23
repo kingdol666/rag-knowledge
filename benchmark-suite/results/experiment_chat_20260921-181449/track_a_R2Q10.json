@@ -1,0 +1,96 @@
+{
+ "track": "a",
+ "question": "Beyond which percentile of precipitation did the GAN clearly outperform the deterministic baseline in capturing the climate-change wetting signal?",
+ "answer": "**Answer: Beyond the 95th percentile of precipitation.**\n\n**Supporting evidence**\n\nThe paper — *\"On the Extrapolation of Generative Adversarial Networks for downscaling precipitation extremes in warmer climates\"* (arXiv 2409.13934), Section **3.2 Extreme Precipitation Climate Change Signal** — states directly:\n\n> \"The historically trained GAN and deterministic baseline exhibit a dry bias in their climate change signals and have **relatively similar signals up to the 95th percentile of precipitation. Beyond the 95th percentile, the GAN substantially better captures the wetting signal**, although both algorithms underestimate its magnitude compared to CCAM.\"\n\n**Context and qualifications**\n\n- Up to the 95th percentile, the historically-trained GAN and the deterministic baseline behave similarly (both with a slight dry bias relative to the CCAM ground truth).\n- At the 90th percentile, a weak wetting signal first emerges and both algorithms capture its spatial pattern \"reasonably well,\" though with a slight dry bias.\n- Past the **95th percentile**, the GAN clearly pulls ahead; the gap widens further at the extreme tail — at the **99.5th percentile**, the historically-trained GAN captures ~77% of the warming-driven increase versus only **63–65%** for the deterministic baselines (and ~97% for a GAN trained on future + historical periods).\n- The signal's magnitude strengthens sharply across the 90th–99.9th percentile range (~5.8%/°C at the 99.5th percentile; 7.2%/°C at the 99.9th percentile), which is precisely where the deterministic baseline fails most — the Discussion notes deterministic methods underestimate the extreme-precipitation increase by **at least 35%**.\n\n**Sources**\n\n- `自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md`, Section 3.2 (kb_id `1e6199ea-f380-44e2-94fc-d431f0f9bb6b`, chunk_index 6; vector score 0.781)\n- Cross-confirmed in `Corpus-Chunks800/climate-science__2409.13934__...__k16.md` and `...__k17.md` (kb_id `0942f1a6-d81b-413b-a60b-b994680dcaac`)",
+ "is_error": false,
+ "latency_s": 17.1,
+ "sdk_duration_ms": 14416,
+ "num_turns": 5,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_search_two_stage,mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_doc_read,mcp__kb-mcp__kb_list,mcp_"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_list",
+   "input": {}
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_two_stage",
+   "input": {
+    "query": "GAN outperform deterministic baseline precipitation percentile climate change wetting signal"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "doc_path": "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md"
+   }
+  }
+ ],
+ "tool_call_count": 4,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 5995,
+  "output": 928,
+  "cache_read": 162368,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.134359,
+ "timeline": [
+  {
+   "t": 2.76,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 4.07,
+   "event": "text",
+   "detail": "42"
+  },
+  {
+   "t": 4.08,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 10.22,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_list"
+  },
+  {
+   "t": 10.23,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_two_stage"
+  },
+  {
+   "t": 13.16,
+   "event": "text",
+   "detail": "91"
+  },
+  {
+   "t": 13.16,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 17.13,
+   "event": "text",
+   "detail": "2048"
+  },
+  {
+   "t": 17.14,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the knowledge base for this.\n\n",
+  "I found the answer directly. Let me read the source document to verify the exact context.\n\n",
+  "**Answer: Beyond the 95th percentile of precipitation.**\n\n**Supporting evidence**\n\nThe paper — *\"On the Extrapolation of Generative Adversarial Networks for downscaling precipitation extremes in warmer climates\"* (arXiv 2409.13934), Section **3.2 Extreme Precipitation Climate Change Signal** — states directly:\n\n> \"The historically trained GAN and deterministic baseline exhibit a dry bias in their climate change signals and have **relatively similar signals up to the 95th percentile of precipitation. Beyond the 95th percentile, the GAN substantially better captures the wetting signal**, although both algorithms underestimate its magnitude compared to CCAM.\"\n\n**Context and qualifications**\n\n- Up to the 95th percentile, the historically-trained GAN and the deterministic baseline behave similarly (both with a slight dry bias relative to the CCAM ground truth).\n- At the 90th percentile, a weak wetting signal first emerges and both algorithms capture its spatial pattern \"reasonably well,\" though with a slight dry bias.\n- Past the **95th percentile**, the GAN clearly pulls ahead; the gap widens further at the extreme tail — at the **99.5th percentile**, the historically-trained GAN captures ~77% of the warming-driven increase versus only **63–65%** for the deterministic baselines (and ~97% for a GAN trained on future + historical periods).\n- The signal's magnitude strengthens sharply across the 90th–99.9th percentile range (~5.8%/°C at the 99.5th percentile; 7.2%/°C at the 99.9th percentile), which is precisely where the deterministic baseline fails most — the Discussion notes deterministic methods underestimate the extreme-precipitation increase by **at least 35%**.\n\n**Sources**\n\n- `自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md`, Section 3.2 (kb_id `1e6199ea-f380-44e2-94fc-d431f0f9bb6b`, chunk_index 6; vector score 0.781)\n- Cross-confirmed in `Corpus-Chunks800/climate-science__2409.13934__...__k16.md` and `...__k17.md` (kb_id `0942f1a6-d81b-413b-a60b-b994680dcaac`)"
+ ],
+ "qid": "R2Q10",
+ "via": "chat"
+}

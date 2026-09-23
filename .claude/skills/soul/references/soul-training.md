@@ -1,192 +1,196 @@
-# SOUL 训练协议 — 统一 RL 三角色强化学习(Actor × Critic × Updater)
+# SOUL Training Protocol — Unified Three-Role Reinforcement Training (RL) (Actor × Critic × Updater)
 
-> 本文件是 soul skill §B 的权威细则:统一 RL 训练架构、收敛检测、
-> 自动应用机制、以及自动循环调度协议。
+> This document is the authoritative detail for soul skill §B: the unified RL training architecture,
+> convergence detection, the auto-apply mechanism, and the auto-loop scheduling protocol.
 >
-> **⭐ 重构要点(2026-08)**: 训练统一为唯一 RL 模式(soul_train_rl),
-> 自动集成知识学习(Actor)+ 六维评价(Critic)+ 权重更新(Updater)。
-> 旧的 learn/learn_all 降级为 RL 的 Actor 子组件, learn_incremental 升级为
-> 并行批处理(learn_incremental_parallel, 提速 4-5x)。
+> **⭐ Refactor highlights (2026-08)**: training is unified into a single RL mode (soul_train_rl),
+> automatically integrating knowledge learning (Actor) + six-dimension evaluation (Critic) + weight updates (Updater).
+> The old learn/learn_all are demoted to RL's Actor sub-components, and learn_incremental is upgraded to
+> parallel batching (learn_incremental_parallel, 4-5x faster).
 
-## 0. ⭐ 异步任务契约(所有长任务统一模式)
+## 0. ⭐ Async Task Contract (unified pattern for all long tasks)
 
-训练/批量审批是分钟级长作业, **一律异步执行 + task_id 轮询进度**, 任何入口
-都不同步阻塞等待: 触发即返回 `task_id`, 过一段时间查进度, 完成后取结果。
+Training/batch approval are minute-scale long jobs: **always execute asynchronously + poll progress via task_id**;
+no entry point blocks synchronously: triggering returns `task_id` immediately, progress is checked after a while,
+and results are fetched once done.
 
 ```
-触发(MCP/web/ragctl) → 立即返回 {task_id, status: running}
-  └─ 后端 soul_task_runner 独立任务执行(参考 parse 的 task_registry 模式)
-轮询进度: kb_task_status(task_id)  /  GET /api/v1/soul/tasks/{task_id}
-  └─ running 时返回 progress:
-      训练: {round, rounds, phase: actor|critic|updater|approve|distill|optimize|reward,
+Trigger (MCP/web/ragctl) → immediately returns {task_id, status: running}
+  └─ the backend soul_task_runner executes the task independently (modeled on parse's task_registry pattern)
+Poll progress: kb_task_status(task_id)  /  GET /api/v1/soul/tasks/{task_id}
+  └─ while running, returns progress:
+      training: {round, rounds, phase: actor|critic|updater|approve|distill|optimize|reward,
              questions, memories, reward, converged, global_optimized, cognitions_absorbed}
-done    → result 含完整报告(souls[] / per_round / results[])
-error   → error 字段含失败原因
+done    → result contains the full report (souls[] / per_round / results[])
+error   → the error field carries the failure reason
 ```
 
-- 后端: POST /api/v1/soul/{kb}/learn 与 /learn-all 传 `async_mode: true`
-  → 立即返回 task_id; GET /api/v1/soul/tasks 列出全部任务
-- MCP: soul_learn / soul_learn_all / soul_review_drafts(批量) 已封装异步,
-  返回 task_id → kb_task_status 轮询(含 progress 镜像)
-- web: /api/soul/learn /train-all /review 默认 async_mode, 返回 task_id;
-  /api/soul/tasks/:taskId 代理进度; SOUL 页面训练/审批 modal 轮询展示进度
-- 同步兼容: 后端 async_mode 缺省 False, 旧调用方行为不变
+- Backend: POST /api/v1/soul/{kb}/learn and /learn-all with `async_mode: true`
+  → task_id returned immediately; GET /api/v1/soul/tasks lists all tasks
+- MCP: soul_learn / soul_learn_all / soul_review_drafts (batch) are wrapped async,
+  returning task_id → poll with kb_task_status (progress mirrored)
+- web: /api/soul/learn /train-all /review default to async_mode and return task_id;
+  /api/soul/tasks/:taskId proxies progress; the SOUL page training/approval modals poll and display progress
+- Sync compatibility: the backend async_mode defaults to False; legacy callers behave unchanged
 
-## 1. 训练触发方式(推荐: 统一 RL)
+## 1. Training Triggers (recommended: unified RL)
 
-### 1a ⭐ RL 统一训练(唯一推荐入口)
+### 1a ⭐ Unified RL Training (the single recommended entry)
 ```
-soul_train_rl(soul_kb_id="soul-musk", rounds=2)   # 异步, task_id → kb_task_status 轮询
+soul_train_rl(soul_kb_id="soul-musk", rounds=2)   # async; task_id → poll with kb_task_status
 ```
-每轮六阶段: Actor(并行知识学习)→Critic(六维评价)→Updater(认知草稿积累)→
-Approve(自动批准记忆)→Distill(知识蒸馏)→Global Optimize(全局人格优化, 非碎片追加)。
-收敛态(连续 2 轮 reward 变化<0.25)时: Actor 减半问题数, 全局优化在收敛时固化认知。
+Six phases per round: Actor (parallel knowledge learning) → Critic (six-dimension evaluation) →
+Updater (cognition draft accumulation) → Approve (auto-approve memories) → Distill (knowledge distillation) →
+Global Optimize (whole-persona optimization, not fragmentary appends).
+In the converged state (reward change <0.25 for 2 consecutive rounds): the Actor halves its question count,
+and global optimization consolidates cognition at convergence.
 
-### 1b 手动单文档(Actor 单跑)
+### 1b Manual Single-Document (Actor run alone)
 ```
 soul_learn(soul_kb_id="soul-催化", doc_paths=["Chemistry-Catalysis/photocatalysis.md"], limit=6)
-→ task_id → kb_task_status 轮询
+→ task_id → poll kb_task_status
 ```
-适用: 精确控制学哪些文档。
+Use case: precise control over which documents are learned.
 
-### 1b 全库自举(增量)
+### 1b Whole-Library Bootstrap (incremental)
 ```
-soul_learn_all(soul_kb_id="", max_docs=20, dry_run=true)   # 先看预估
-soul_learn_all(soul_kb_id="", max_docs=20)                  # 实际执行
+soul_learn_all(soul_kb_id="", max_docs=20, dry_run=true)   # see the estimate first
+soul_learn_all(soul_kb_id="", max_docs=20)                  # actual execution
 ```
-- 空 soul_kb_id = 遍历全部人格 × 各自 kb_scope
-- 文档级内容 SHA256 去重: 已被任何人格学过的文档跳过(跨人格不重复学)
-- dry_run 返回: unique_docs / duplicate_docs / cross_soul_overlap_pct / per_soul 成本
+- Empty soul_kb_id = iterate all personas × their respective kb_scope
+- Document-level content SHA256 dedup: documents already learned by any persona are skipped (no cross-persona relearning)
+- dry_run returns: unique_docs / duplicate_docs / cross_soul_overlap_pct / per_soul cost
 
-### 1c 自动调度(无人值守)⭐
+### 1c Auto Schedule (unattended) ⭐
 ```
 experience_meditation_config_update(soul_kb_id, {
   "meditation_mode": "soul",
   "enabled": true,
-  "interval_hours": 24,        # 学习频率
-  "max_budget_usd": 0.15,      # 每轮预算上限
-  "max_questions_per_run": 10, # 每轮问题上限
-  "rounds_per_run": 2          # 每轮定时训练执行 N 轮 RL
+  "interval_hours": 24,        # learning frequency
+  "max_budget_usd": 0.15,      # per-run budget cap
+  "max_questions_per_run": 10, # per-run question cap
+  "rounds_per_run": 2          # N RL rounds executed per scheduled training run
 })
 ```
-前置条件(需管理员一次性配置):
-1. 后端 config.yml `experience_auto.enabled: true`(默认 false,防误启动)
-2. 调度器随后端启动(main.py lifespan 自动 start)
+Prerequisites (one-time admin setup):
+1. backend config.yml `experience_auto.enabled: true` (default false, prevents accidental starts)
+2. the scheduler starts with the backend (auto-started by main.py lifespan)
 
-开启后: 调度器每 interval_hours 遍历所有 enabled 的 SOUL → `train_rl`(统一三角色):
-- Actor 只学 learned_hash 不匹配(未学/已变更)的文档 → 零新增时 0 成本
-- Critic 六维评价 + 收敛检测; Updater 认知草稿(收敛态自动应用)
-- 预算/熔断/信号量全部生效
+Once enabled: every interval_hours the scheduler iterates all enabled SOULs → `train_rl` (unified three roles):
+- The Actor only learns documents whose learned_hash mismatches (unlearned/changed) → zero cost when nothing is new
+- Critic six-dimension evaluation + convergence detection; Updater cognition drafts (auto-applied in the converged state)
+- Budget/circuit breaker/semaphore all remain in force
 
-## 2. 好奇心训练协议(每次 learn 内部)
+## 2. Curiosity Training Protocol (inside every learn)
 
-### 2a. 基础链路(四层问题 + 质量闸门)
+### 2a. Basic Chain (four-layer questions + quality gates)
 
 ```
-Step 1  文档读取(≤50000 字符)
-Step 2  生成 6 个问题(四层):
+Step 1  Document read (≤50000 chars)
+Step 2  Generate 6 questions (four layers):
         fact 30% | concept 30% | cross_doc 20% | challenge 20%
-        LLM 生成 + 关键词分类器交叉校验 + q_hash 去重
-Step 3  每问题自答:
-        两阶段检索(scope 限定,相似度≥0.5 前置门)
-        → 图谱邻居(限 scope) → LLM 带引用合成
-Step 4  每答案四维自评:
-        接地性 = min(代码路径存在率×5, LLM 关联分)
-        完整性/思维一致/信息增益(0-5)
-        10% 抽样双判官(分歧>1.5 拦截)
-Step 5  蒸馏: 接地性≥3 且无分歧 → 记忆草稿(pending)
-        PAS≥4 且 info_gain≥3 → 同步共享经验池(sync_dedup_key 幂等)
-Step 6  有产出 → 记录 learned_hash(内容 SHA256 → 文档 metadata)
+        LLM generation + keyword-classifier cross-validation + q_hash dedup
+Step 3  Self-answer each question:
+        two-stage retrieval (scope-limited, similarity ≥0.5 pre-gate)
+        → graph neighbors (scope-limited) → LLM cited synthesis
+Step 4  Four-dimension self-eval per answer:
+        groundedness = min(code path-existence rate ×5, LLM relevance score)
+        completeness / thinking-consistency / information gain (0-5)
+        10% sampled double-judge (divergence >1.5 blocks)
+Step 5  Distill: groundedness ≥3 and no divergence → memory draft (pending)
+        PAS ≥4 and info_gain ≥3 → sync to the shared experience pool (sync_dedup_key idempotent)
+Step 6  If there is output → record learned_hash (content SHA256 → document metadata)
 ```
 
-### 2b. ⭐ 补天好奇心引擎 v2(元认知自适应 — 默认启用)
+### 2b. ⭐ Butian (补天) Curiosity Engine v2 (metacognitive adaptation — enabled by default)
 
-算法框架: arXiv:2604.25648(Desvaux/Oudeyer 等, Curiosity and
-Metacognition)三原则 → 落地实现:
+Algorithm framework: arXiv:2604.25648 (Desvaux/Oudeyer et al., Curiosity and
+Metacognition), three principles → concrete implementation:
 
-| 论文原则 | v2 实现(backend/app/services/soul_curiosity.py) |
+| Paper principle | v2 implementation (backend/app/services/soul_curiosity.py) |
 |---|---|
-| 元认知监控与控制 | 每轮训练后刷新 `questions/mastery.json` 掌握画像(per-topic 记忆数/均分/gaps/学习足迹, 零 LLM 成本) |
-| 个体画像定制 | `compute_question_mix()`: 按主题掌握度动态调整四层比例(近发展区) |
-| 认知伙伴防捷径 | 已知记忆摘要注入 prompt + `novelty_filter()` jaccard 去重, 防止重复学习 |
+| Metacognitive monitoring and control | After each training round, refresh the `questions/mastery.json` mastery profile (per-topic memory counts/avg scores/gaps/learning footprints, zero LLM cost) |
+| Individual-profile customization | `compute_question_mix()`: dynamically adjust the four-layer ratios by topic mastery (zone of proximal development) |
+| Cognitive-partner anti-shortcut | Known memory summaries injected into the prompt + `novelty_filter()` jaccard dedup, preventing relearning of the known |
 
-**自适应问题分布(近发展区 ZPD)**:
-
-```
-新主题(首学)     fact 35 | concept 30 | cross 20 | challenge 15   ← 打基础
-薄弱/有缺口      fact 20 | concept 30 | cross 30 | challenge 20   ← 补基关联
-中等掌握         fact 15 | concept 25 | cross 30 | challenge 30   ← 均衡深化
-强掌握(≥4.0)    fact 10 | concept 20 | cross 20 | challenge 50   ← 挑战边界
-```
-
-**探索-利用平衡(文档选择)**: 每轮增量扫描 = 新文档(探索)优先 +
-薄弱已学文档重学(利用, 有缺口/零记忆/均分<3 的主题), 预算内先探索后补强。
-
-**元认知输入**: 训练 prompt 注入该主题掌握画像(已批准记忆摘要 + 缺口数 +
-“难度略高于当前掌握”指令), 保证每轮好奇心都落在最近发展区。
-
-**观察画像**: 训练后 `soul_status` 或直接读
-`storage/tree-file-system/soul-<name>/questions/mastery.json`。
-
-
-## 3. 评估后继续训练(持续进化闭环)
+**Adaptive question distribution (zone of proximal development, ZPD)**:
 
 ```
-文档入库/更新
-  └─> learned_hash 不匹配
-        └─> 下轮 learn_incremental 自动重学
-              └─> 新草稿 → 人工审批(soul_review_drafts)
-                    ├─ approve → 注册+索引(60s 可检索)→ profile 刷新
-                    │           → 人格记忆沉淀 → 未来 soul_ask 引用
-                    └─ reject → 保留在 gaps.md(可追溯)
+New topic (first pass)     fact 35 | concept 30 | cross 20 | challenge 15   ← build foundations
+Weak / has gaps      fact 20 | concept 30 | cross 30 | challenge 20   ← repair base linkages
+Medium mastery       fact 15 | concept 25 | cross 30 | challenge 30   ← balanced deepening
+Strong mastery (≥4.0)    fact 10 | concept 20 | cross 20 | challenge 50   ← challenge boundaries
 ```
 
-**关键机制**: learned_hash(内容 SHA256 前 12 位)存于
-`.knowledge-base.yml` 文档 metadata.learned_hash:
-- 内容未变 → 跳过(幂等,0 成本)
-- 内容变更 → hash 不符 → 重学
-- **0 问题产出时不再标记 learned**(保证解析失败的文档下轮重试)
+**Exploration-exploitation balance (document selection)**: each incremental scan = new documents (exploration) first +
+relearning of weakly-mastered documents (exploitation: topics with gaps / zero memories / avg score <3);
+explore first, then reinforce, within budget.
 
-## 4. 训练健康度检查
+**Metacognitive input**: the training prompt injects the topic's mastery profile (approved memory summaries + gap count +
+a "slightly harder than current mastery" instruction), ensuring every round of curiosity lands in the zone of proximal development.
 
-每次训练后调 `soul_status(soul_kb_id)` 看:
-- `drafts_pending_review`: 待审批草稿(应定期清)
-- `total_gaps`: 学习缺口(grounding_below_3 / retrieval_failure)
-- `judge_divergence_count`: 判官分歧(质量红线)
-- `mastery`: 掌握曲线(问题数 / 平均分)
-- `estimated_cost_usd`: 预算消耗(>0.12 注意)
+**Inspecting the profile**: after training use `soul_status`, or read
+`storage/tree-file-system/soul-<name>/questions/mastery.json` directly.
 
-**缺口预警**: gaps 中 retrieval_failure 占比 >30% → 检索配置问题
-(scope 文档覆盖不足 / chunk 参数),需排查而非硬调阈值。
 
-## 5. 审批与进化黄金规则
+## 3. Continue Training After Evaluation (the continuous evolution loop)
 
-| 草稿分数 | 动作 |
+```
+Document ingested/updated
+  └─> learned_hash mismatch
+        └─> the next learn_incremental round relearns automatically
+              └─> new drafts → manual approval (soul_review_drafts)
+                    ├─ approve → register + index (searchable in 60s) → profile refresh
+                    │           → persona memories consolidate → cited by future soul_ask
+                    └─ reject → kept in gaps.md (traceable)
+```
+
+**Key mechanism**: learned_hash (first 12 chars of the content SHA256) is stored in
+`.knowledge-base.yml` document metadata.learned_hash:
+- Content unchanged → skip (idempotent, zero cost)
+- Content changed → hash mismatch → relearn
+- **Zero-question output is never marked learned** (guarantees documents whose parsing failed are retried next round)
+
+## 4. Training Health Checks
+
+After every training run call `soul_status(soul_kb_id)` and inspect:
+- `drafts_pending_review`: drafts awaiting approval (clear periodically)
+- `total_gaps`: learning gaps (grounding_below_3 / retrieval_failure)
+- `judge_divergence_count`: judge divergence (quality red line)
+- `mastery`: mastery curve (question count / average score)
+- `estimated_cost_usd`: budget spend (watch it above 0.12)
+
+**Gap warning**: if retrieval_failure accounts for >30% of gaps → a retrieval configuration problem
+(insufficient scope document coverage / chunk parameters); investigate rather than hard-tuning thresholds.
+
+## 5. Approval and Evolution Golden Rules
+
+| Draft score | Action |
 |---|---|
-| 接地性 ≥3 且均分 ≥3 | 正常 approve |
-| 接地性 <3 或均分 <3 | 需 force=True + 说明理由(写审计) |
-| judge_divergence 标记 | 默认 reject(双判官不一致 = 质量存疑) |
+| Groundedness ≥3 and average ≥3 | normal approve |
+| Groundedness <3 or average <3 | requires force=True + a stated reason (written to audit) |
+| judge_divergence flagged | reject by default (double-judge disagreement = quality in doubt) |
 
-审批后系统自动:
-1. 记忆文件 status → approved
-2. 注册为 KB 文档 + 向量/图谱/BM25 索引
-3. profile-summary 刷新(路由依据同步)
-4. 审计日志记录(操作人/时间/分数)
+After approval the system automatically:
+1. memory file status → approved
+2. registers as a KB document + vector/graph/BM25 indexing
+3. profile-summary refresh (routing basis synced)
+4. audit-log entry (operator/time/scores)
 
-## 6. 预算与安全
+## 6. Budget and Safety
 
-- 每 SOUL 独立预算 0.15 USD/run(超限拒绝,不透支)
-- 路由成本单独全局池(route_cost_usd,不计入学习预算)
-- 所有 LLM 调用经全局 Semaphore(2)+ 熔断(3 连败 24h open)
-- learn/learn_all 入口预算检查(预估不足拒绝)
-- **多人格成本 = ΣN×0.15 为上限**,实际因文档去重更低
+- Per-SOUL independent budget of 0.15 USD/run (over-limit rejected, no overdraft)
+- Routing cost has a separate global pool (route_cost_usd, not counted against the learning budget)
+- All LLM calls pass through a global Semaphore(2) + circuit breaker (opens 24h after 3 consecutive failures)
+- Budget checks at the learn/learn_all entries (insufficient estimate rejected)
+- **Multi-persona cost is capped at ΣN×0.15**; actual cost is lower thanks to document dedup
 
-## 7. 常见问题
+## 7. Common Issues
 
-| 现象 | 原因 | 处理 |
+| Symptom | Cause | Handling |
 |---|---|---|
-| learn 秒回 skipped=1 | 文档已学(hash 一致) | 正常幂等,换新文档 |
-| questions_generated=0 | 解析失败(罕见,已修 fence 提取) | 重试;确认不误标 learned |
-| budget_exceeded | 预算耗尽 | soul_status 看消耗,等周期重置 |
-| 0 记忆 4 gaps | 文档与人格 scope 知识不匹配 | 正常质量门,换更相关文档 |
-| 训练慢 | 每问题 2-3 次 LLM 调用 | 用 limit=4 控制;async 轮询 |
+| learn returns skipped=1 instantly | document already learned (hash matches) | normal idempotency; use a new document |
+| questions_generated=0 | parse failure (rare; fence extraction fixed) | retry; confirm it is not wrongly marked learned |
+| budget_exceeded | budget exhausted | check spend via soul_status; wait for the cycle to reset |
+| 0 memories, 4 gaps | document mismatched the persona's scope knowledge | normal quality gate; use more relevant documents |
+| slow training | 2-3 LLM calls per question | control with limit=4; poll asynchronously |

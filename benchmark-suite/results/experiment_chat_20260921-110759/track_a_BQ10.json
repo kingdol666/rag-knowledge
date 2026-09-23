@@ -1,0 +1,161 @@
+{
+ "track": "a",
+ "question": "What strategies for tumor control emerge under immune evasion and chemotherapy resistance?",
+ "answer": "Retrieval complete and verified across both the vector and two-stage paths.\n\n## Answer\n\nThe knowledge base contains one directly relevant source: **Mokari & Morsky, \"Strategies for tumor elimination and control under immune evasion and chemotherapy resistance\"** (Florida State University, Dept. of Mathematics), in KB `生命科学与医学` (`b28f0a25-1e1d-40ad-96b8-61bd2b093a28`). It is a mathematical-oncology modeling paper (ODE + evolutionary game theory, building on Kuznetsov et al. 1994), not an experimental/clinical study. It models effector cells (CD8+ T-cells), immune-resistant tumor cells (T₁), and immune-sensitive / chemo-resistant tumor cells (T₂), under two immune-evasion mechanisms: **immune checkpoint regulation** and **reduced antigen presentation**.\n\n### 1. The core strategic dichotomy\nThe paper frames therapy as a choice between **\"fight to win\"** (aggressive elimination) versus **\"fight to not lose\"** (long-term control and resistance management). Adaptive therapy is defined as controlling rather than eliminating the tumor by maintaining a balance between drug-sensitive and drug-resistant cells — unlike maximum tolerated dose (MTD) regimens it adjusts dynamically to exploit competition between cell types and delay resistance.\n\n### 2. Threshold condition for elimination (Proposition 1)\nThe tumor-free equilibrium is stable **iff** effective immune strength exceeds the maximal effective tumor growth rate:\n\n> σ/(δ + ωχ) > max{ α₂ − θ₂χ , (α₁ − χ)/θ₁ }\n\ni.e. effector recruitment σ divided by total effector loss (natural death δ + chemo-induced suppression ωχ) must beat the tumor's effective growth. The ratio **σ/δ** is the critical lever determining whether the immune system eliminates the tumor.\n\n### 3. Strategy A — Immune evasion by checkpoint regulation\n- When the T₁ (checkpoint-evading) subpopulation dominates, tumor control is **highly sensitive to the immune exhaustion rate μ** → **checkpoint inhibitors are the most effective therapy**.\n- Control is achieved by **decreasing immune exhaustion (μ)** or **increasing immune activation (ρ and σ)**.\n- **Checkpoint inhibitors combined with moderate chemotherapy provide the most effective control strategy.**\n- Caveat: when the checkpoint inactivation weight φ > 0.003, **no feasible modulation of immune-related parameters can control the T₁-only equilibrium except by altering θ₁** — i.e. the evasion benefit itself must be targeted.\n\n### 4. Strategy B — Immune evasion by reduced antigen presentation\n- Stability depends more on **effector activation (ρ) and exhaustion (μ)** than on checkpoint parameters.\n- Control requires **strengthening the effector response or reprogramming it to recognize tumor cells** — mathematically, decreasing μ (tumor-induced suppression) or increasing ρ (effector activation/proliferation).\n- Therapeutic translation: **immune checkpoint inhibitors, CAR-T cell therapy, or cancer vaccines** — all of which enhance immune recognition and activity.\n- Note: **reduced antigen presentation is more robust against relatively weak chemotherapy** than checkpoint evasion — large tumors stay stable at higher χ.\n\n### 5. Strategy C — When the immune-sensitive phenotype (T₂) dominates\nBoost **effector recruitment and persistence**: increase birth rate σ or decrease death rate δ. Preferred modalities: **adoptive T-cell transfer or cytotoxic therapy**.\n\n### 6. Combining chemotherapy + immunotherapy\nChemotherapy significantly enlarges the parameter region corresponding to tumor control or tumor-free equilibria. It reduces tumor burden and directly targets resistant subpopulations, while immunotherapy enhances immune-mediated suppression. **Combination immuno-chemotherapy provides greater flexibility and improved control than single therapy.** However, high χ can create a concerning **large coexistence equilibrium (CE)** — a heterogeneous population potentially able to adapt to both immunological and chemical therapy.\n\n### 7. Proposed sequential treatment protocols (phenotype-guided)\n- **T₁-dominant:** chemotherapy first to reduce burden → immunotherapy to maintain control. *Or* immunotherapy first to shrink the tumor → chemotherapy to eliminate residual resistant cells.\n- **T₂-dominant:** chemotherapy reduces burden but risks resistant escape → **immunotherapy applied afterward to stabilize**.\n- **Predicted coexistence of both types:** apply chemotherapy first to eliminate T₁, leaving a low-population T₂-only equilibrium → then immunotherapy to potentially eliminate the tumor. **If the tumor is only controlled rather than eliminated, emergence of T₁ mutants could cause resurgence.**\n\n### 8. Overall conclusions\n- Therapeutic efficacy depends on **both the immune evasion mechanism and the dominant tumor phenotype** — which is why **non-personalized, uniform treatment often fails**.\n- Relatively **small changes in immune or treatment parameters can cause qualitative transitions** between immune control and tumor escape (nonlinear dynamics → supports phenotype-specific, marker-guided therapy).\n- Future directions: optimal control for schedules minimizing burden while reducing toxicity; microenvironment feedback (breast/prostate); oncolytic viral therapy; ML/DL-based personalized adaptive therapy with patient-specific parameter estimation.\n\n**Sources**\n- `生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 1 of 3).md` — abstract, intro, model equations, parameters, immune-evasion mechanisms\n- `... (part 2 of 3).md` — §3.1 equilibrium/stability, Prop. 1, §3.2 bifurcation (immuno-resistance only)\n- `... (part 3 of 3).md` — §3.3 bifurcation (chemo + immuno-resistance), §4 Discussion, sequential strategies, references\n- DB: `b28f0a25-1e1d-40ad-96b8-61bd2b093a28`, collection `kb_b28f0a25-1e1d-40ad-96b8-61bd2b093a28` (mirrored copies exist in Corpus-Paras, Corpus-Struct, Corpus-Chunks800)\n\n**Blind spot:** No other KB document addresses this topic; the answer rests entirely on this one modeling paper, so its conclusions are theoretical predictions rather than clinical evidence.",
+ "is_error": false,
+ "latency_s": 86.7,
+ "sdk_duration_ms": 84047,
+ "num_turns": 9,
+ "tool_calls": [
+  {
+   "tool": "ToolSearch",
+   "input": {
+    "query": "select:mcp__kb-mcp__kb_list,mcp__kb-mcp__kb_search_vector,mcp__kb-mcp__kb_search_two_stage,mcp__kb-mcp__kb_doc_read,mcp_"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_list",
+   "input": {}
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "tumor immune evasion chemotherapy resistance strategies for tumor control"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+    "doc_path": "生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 1 of 3).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_get_documents",
+   "input": {
+    "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+    "doc_path": "生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 2 of 3).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_doc_read",
+   "input": {
+    "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+    "doc_path": "生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 3 of 3).md"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_two_stage",
+   "input": {
+    "query": "sequential treatment strategy dominant tumor phenotype adaptive therapy combination chemo immunotherapy"
+   }
+  }
+ ],
+ "tool_call_count": 8,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 56265,
+  "output": 2221,
+  "cache_read": 258880,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.46629,
+ "timeline": [
+  {
+   "t": 2.74,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 5.22,
+   "event": "text",
+   "detail": "51"
+  },
+  {
+   "t": 5.26,
+   "event": "tool_use",
+   "detail": "ToolSearch"
+  },
+  {
+   "t": 19.16,
+   "event": "text",
+   "detail": "63"
+  },
+  {
+   "t": 19.2,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_list"
+  },
+  {
+   "t": 19.2,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 28.57,
+   "event": "text",
+   "detail": "79"
+  },
+  {
+   "t": 28.6,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 28.6,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_get_documents"
+  },
+  {
+   "t": 39.26,
+   "event": "text",
+   "detail": "112"
+  },
+  {
+   "t": 39.29,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 39.29,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_doc_read"
+  },
+  {
+   "t": 49.67,
+   "event": "text",
+   "detail": "104"
+  },
+  {
+   "t": 49.68,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_two_stage"
+  },
+  {
+   "t": 86.74,
+   "event": "text",
+   "detail": "6063"
+  },
+  {
+   "t": 86.75,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the knowledge base for this question.\n\n",
+  "I'll start with a catalog scan and vector search in parallel.\n\n",
+  "The target document is in 生命科学与医学. Let me read it and run a precision search.\n\n",
+  "The document has 3 parts. Let me read parts 2 and 3 (the results/discussion) plus run a targeted chunk search.\n\n",
+  "I have the full source document. Let me confirm via the two-stage pipeline for retrieval verification.\n\n",
+  "Retrieval complete and verified across both the vector and two-stage paths.\n\n## Answer\n\nThe knowledge base contains one directly relevant source: **Mokari & Morsky, \"Strategies for tumor elimination and control under immune evasion and chemotherapy resistance\"** (Florida State University, Dept. of Mathematics), in KB `生命科学与医学` (`b28f0a25-1e1d-40ad-96b8-61bd2b093a28`). It is a mathematical-oncology modeling paper (ODE + evolutionary game theory, building on Kuznetsov et al. 1994), not an experimental/clinical study. It models effector cells (CD8+ T-cells), immune-resistant tumor cells (T₁), and immune-sensitive / chemo-resistant tumor cells (T₂), under two immune-evasion mechanisms: **immune checkpoint regulation** and **reduced antigen presentation**.\n\n### 1. The core strategic dichotomy\nThe paper frames therapy as a choice between **\"fight to win\"** (aggressive elimination) versus **\"fight to not lose\"** (long-term control and resistance management). Adaptive therapy is defined as controlling rather than eliminating the tumor by maintaining a balance between drug-sensitive and drug-resistant cells — unlike maximum tolerated dose (MTD) regimens it adjusts dynamically to exploit competition between cell types and delay resistance.\n\n### 2. Threshold condition for elimination (Proposition 1)\nThe tumor-free equilibrium is stable **iff** effective immune strength exceeds the maximal effective tumor growth rate:\n\n> σ/(δ + ωχ) > max{ α₂ − θ₂χ , (α₁ − χ)/θ₁ }\n\ni.e. effector recruitment σ divided by total effector loss (natural death δ + chemo-induced suppression ωχ) must beat the tumor's effective growth. The ratio **σ/δ** is the critical lever determining whether the immune system eliminates the tumor.\n\n### 3. Strategy A — Immune evasion by checkpoint regulation\n- When the T₁ (checkpoint-evading) subpopulation dominates, tumor control is **highly sensitive to the immune exhaustion rate μ** → **checkpoint inhibitors are the most effective therapy**.\n- Control is achieved by **decreasing immune exhaustion (μ)** or **increasing immune activation (ρ and σ)**.\n- **Checkpoint inhibitors combined with moderate chemotherapy provide the most effective control strategy.**\n- Caveat: when the checkpoint inactivation weight φ > 0.003, **no feasible modulation of immune-related parameters can control the T₁-only equilibrium except by altering θ₁** — i.e. the evasion benefit itself must be targeted.\n\n### 4. Strategy B — Immune evasion by reduced antigen presentation\n- Stability depends more on **effector activation (ρ) and exhaustion (μ)** than on checkpoint parameters.\n- Control requires **strengthening the effector response or reprogramming it to recognize tumor cells** — mathematically, decreasing μ (tumor-induced suppression) or increasing ρ (effector activation/proliferation).\n- Therapeutic translation: **immune checkpoint inhibitors, CAR-T cell therapy, or cancer vaccines** — all of which enhance immune recognition and activity.\n- Note: **reduced antigen presentation is more robust against relatively weak chemotherapy** than checkpoint evasion — large tumors stay stable at higher χ.\n\n### 5. Strategy C — When the immune-sensitive phenotype (T₂) dominates\nBoost **effector recruitment and persistence**: increase birth rate σ or decrease death rate δ. Preferred modalities: **adoptive T-cell transfer or cytotoxic therapy**.\n\n### 6. Combining chemotherapy + immunotherapy\nChemotherapy significantly enlarges the parameter region corresponding to tumor control or tumor-free equilibria. It reduces tumor burden and directly targets resistant subpopulations, while immunotherapy enhances immune-mediated suppression. **Combination immuno-chemotherapy provides greater flexibility and improved control than single therapy.** However, high χ can create a concerning **large coexistence equilibrium (CE)** — a heterogeneous population potentially able to adapt to both immunological and chemical therapy.\n\n### 7. Proposed sequential treatment protocols (phenotype-guided)\n- **T₁-dominant:** chemotherapy first to reduce burden → immunotherapy to maintain control. *Or* immunotherapy first to shrink the tumor → chemotherapy to eliminate residual resistant cells.\n- **T₂-dominant:** chemotherapy reduces burden but risks resistant escape → **immunotherapy applied afterward to stabilize**.\n- **Predicted coexistence of both types:** apply chemotherapy first to eliminate T₁, leaving a low-population T₂-only equilibrium → then immunotherapy to potentially eliminate the tumor. **If the tumor is only controlled rather than eliminated, emergence of T₁ mutants could cause resurgence.**\n\n### 8. Overall conclusions\n- Therapeutic efficacy depends on **both the immune evasion mechanism and the dominant tumor phenotype** — which is why **non-personalized, uniform treatment often fails**.\n- Relatively **small changes in immune or treatment parameters can cause qualitative transitions** between immune control and tumor escape (nonlinear dynamics → supports phenotype-specific, marker-guided therapy).\n- Future directions: optimal control for schedules minimizing burden while reducing toxicity; microenvironment feedback (breast/prostate); oncolytic viral therapy; ML/DL-based personalized adaptive therapy with patient-specific parameter estimation.\n\n**Sources**\n- `生命科学与医学/immunology__2604.01385__strategies-for-tumor-elimination-and-control.md (part 1 of 3).md` — abstract, intro, model equations, parameters, immune-evasion mechanisms\n- `... (part 2 of 3).md` — §3.1 equilibrium/stability, Prop. 1, §3.2 bifurcation (immuno-resistance only)\n- `... (part 3 of 3).md` — §3.3 bifurcation (chemo + immuno-resistance), §4 Discussion, sequential strategies, references\n- DB: `b28f0a25-1e1d-40ad-96b8-61bd2b093a28`, collection `kb_b28f0a25-1e1d-40ad-96b8-61bd2b093a28` (mirrored copies exist in Corpus-Paras, Corpus-Struct, Corpus-Chunks800)\n\n**Blind spot:** No other KB document addresses this topic; the answer rests entirely on this one modeling paper, so its conclusions are theoretical predictions rather than clinical evidence."
+ ],
+ "qid": "BQ10",
+ "via": "chat"
+}

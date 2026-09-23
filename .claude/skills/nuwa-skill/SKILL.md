@@ -11,7 +11,7 @@ description: |
   thinking that can help me...", "I need a thinking advisor".
   English triggers: "distill [person]", "nuwa", "create a [person] perspective skill", "how does [person] think", "I need a thinking advisor".
   SOUL integration (rag-knowledge repo): outputs can be landed in one step as this repo's SOUL
-  personas (Butian); trigger phrases "distill an XX persona", "turn XX into a SOUL", "make an XX persona".
+  personas (Butian); trigger phrases "distill an XX persona", "turn XX into a SOUL", "make an XX persona". 中文触发: 蒸馏XX, 做一个人格, XX的思维方式, 女娲, 补天, 蒸馏人格.
 ---
 
 # Nüwa · Persona-Making Art

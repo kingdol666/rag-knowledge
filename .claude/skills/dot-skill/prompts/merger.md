@@ -1,91 +1,91 @@
-# 增量 Merge Prompt
+# Incremental Merge Prompt
 
-## 任务
+## Task
 
-你将收到：
-1. 现有的 `work.md` 内容
-2. 现有的 `persona.md` 内容
-3. 新的原材料内容（文件或消息）
+You will receive:
+1. The existing `work.md` content
+2. The existing `persona.md` content
+3. New raw material content (files or messages)
 
-你的任务是判断新内容应该更新哪个部分，并输出增量更新内容。
+Your task is to decide which section the new content should update, and output the incremental update.
 
-**原则：只追加增量，不覆盖已有结论。如有冲突，输出冲突提示让用户决定。**
-
----
-
-## Step 1：分类判断
-
-将新内容中的每条信息归类：
-
-| 信息类型 | 归入 |
-|---------|------|
-| 技术规范、代码风格、接口设计、工作流程 | → work.md |
-| 业务知识、系统职责、技术结论 | → work.md |
-| 沟通风格、口头禅、表达习惯 | → persona.md |
-| 决策行为、人际关系、情绪模式 | → persona.md |
-| 两者都有 | → 分别归入 |
+**Principle: append only the delta; never overwrite existing conclusions. On conflict, output a conflict notice and let the user decide.**
 
 ---
 
-## Step 2：检查冲突
+## Step 1: Classification
 
-对比新内容与现有内容：
+Classify every piece of information in the new content:
 
-- 如果新内容**补充**了现有信息（增加了新细节）→ 直接追加
-- 如果新内容**确认**了现有信息 → 忽略（不重复写）
-- 如果新内容**与现有信息矛盾** → 输出冲突提示：
-
-```
-⚠️ 发现冲突：
-- 现有：{现有描述}
-- 新发现：{新内容描述}
-- 来源：{文件名/时间}
-
-建议：[保留现有 / 更新为新内容 / 两者都保留并标注时间]
-请用户决定。
-```
+| Information type | Goes into |
+|------------------|-----------|
+| Technical standards, code style, API/interface design, workflow | → work.md |
+| Domain knowledge, system responsibilities, technical conclusions | → work.md |
+| Communication style, catchphrases, expression habits | → persona.md |
+| Decision behavior, interpersonal relations, emotional patterns | → persona.md |
+| Both | → split into each |
 
 ---
 
-## Step 3：生成更新 Patch
+## Step 2: Conflict Check
 
-对 `work.md` 的更新，输出格式：
+Compare the new content against the existing content:
+
+- If the new content **supplements** existing information (adds new detail) → append directly
+- If the new content **confirms** existing information → ignore (do not write duplicates)
+- If the new content **contradicts** existing information → output a conflict notice:
+
 ```
-=== work.md 更新 ===
+⚠️ Conflict detected:
+- Existing: {existing description}
+- New finding: {new content description}
+- Source: {file name / time}
 
-[追加到"技术规范/命名规范"节]
-- {新内容}
-
-[追加到"经验知识库"节]
-- {新知识结论}
-
-[无更新] 或 [以上章节有更新]
-```
-
-对 `persona.md` 的更新，输出格式：
-```
-=== persona.md 更新 ===
-
-[追加到"Layer 2/用词习惯"节]
-- 新口头禅："{xxx}"
-
-[追加到"Layer 4/对平级"节]
-- {新行为描述}
-
-[无更新] 或 [以上章节有更新]
+Suggestion: [keep existing / update to new content / keep both with timestamps]
+Ask the user to decide.
 ```
 
 ---
 
-## Step 4：生成更新摘要
+## Step 3: Generate the Update Patch
 
-向用户展示：
+For `work.md` updates, output in this format:
 ```
-本次更新摘要：
-- work.md：追加了 {N} 条新信息（{简要描述}）
-- persona.md：追加了 {N} 条新信息（{简要描述}）
-- 发现 {N} 处冲突，需要你确认（见上方）
+=== work.md update ===
 
-版本将从 {vN} 升级到 {vN+1}。
-确认应用更新？
+[Append to the "Technical standards / Naming conventions" section]
+- {new content}
+
+[Append to the "Experience knowledge base" section]
+- {new knowledge conclusion}
+
+[No updates] or [sections above updated]
+```
+
+For `persona.md` updates, output in this format:
+```
+=== persona.md update ===
+
+[Append to the "Layer 2 / Catchphrases and word choice" section]
+- New catchphrase: "{xxx}"
+
+[Append to the "Layer 4 / Toward peers" section]
+- {new behavior description}
+
+[No updates] or [sections above updated]
+```
+
+---
+
+## Step 4: Generate the Update Summary
+
+Show the user:
+```
+Update summary:
+- work.md: appended {N} new items ({brief description})
+- persona.md: appended {N} new items ({brief description})
+- {N} conflicts found, awaiting your confirmation (see above)
+
+Version will move from {vN} to {vN+1}.
+Apply the update?
 ```

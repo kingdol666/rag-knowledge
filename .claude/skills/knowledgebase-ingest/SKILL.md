@@ -39,7 +39,7 @@ description: >
 | A3d KB attribution / A8 sub-KB evaluation | 🧠 **Judgment** (high freedom) | Requires domain judgment based on content; the decision tree guides but is not mechanical |
 
 **Four iron rules**:
-1. **Store the whole document** — a single document is a complete unit; never truncate/summarize. Oversize is handled by the **A2.5 split gate**: when the parsed markdown's char count exceeds `ingestion.large_doc.max_chars` (Settings → 入库规范, hot-effective), run `scripts/split_large_doc.py` — it writes part documents and deletes the temp original; each part then enters the flow as a complete unit with its own content-based description. **Never split by hand, never use the raw oversized file downstream.**
+1. **Store the whole document** — a single document is a complete unit; never truncate/summarize. Oversize is handled by the **A2.5 split gate**: when the parsed markdown's char count exceeds `ingestion.large_doc.max_chars` (Settings → Ingestion Standards (入库规范), hot-effective), run `scripts/split_large_doc.py` — it writes part documents and deletes the temp original; each part then enters the flow as a complete unit with its own content-based description. **Never split by hand, never use the raw oversized file downstream.**
 2. **Content-driven** — all decisions (KB attribution, tags, descriptions) are based on the actual body text read, not filenames/guesses.
 3. **Quality gates** — A2 parse quality / A3b tags / A3c description: any gate failed means rework; do not let it through.
 4. ⭐ **MCP-first principle** — all operations must go through MCP tools (`mcp__kb-mcp__*`).
@@ -80,12 +80,12 @@ kb_search_vector(query="<first 500 chars of body rewritten as a declarative sent
 ## A1 — Survey (Whole-Library Current State)
 
 ```
-kb_list()                    # all KBs (UUID 字段名为 kbId；description；docCount)
+kb_list()                    # all KBs (UUID field is named kbId; description; docCount)
 kb_tags_list()               # tag vocabulary (used by A3b normalization; reuse is a SOFT target, see A3b T4/T5)
 fs_get_tree(max_depth=3)     # KB hierarchy structure (sub-KBs visible)
 ```
-> ⚠️ `kb_list` 可能瞬时返回**空 catalog**（60s 鉴权毒化窗）——空结果与"项目真的为空"无法从返回值区分，
-> **必须用 `fs_get_tree()` 交叉验证**后再下结论；等 20-30s 重试，最多 3 次。
+> ⚠️ `kb_list` may transiently return an **empty catalog** (60s auth-poisoning window) — an empty result cannot be distinguished from "the project really is empty" from the return value alone.
+> **You must cross-check with `fs_get_tree()`** before concluding; wait 20-30s and retry, up to 3 times.
 
 ## A2 — Acquire Content + Parse Quality Detection
 
@@ -178,8 +178,8 @@ Clean A3's `raw_tags`; **skipping is strictly forbidden**. Full rules in [tag-qu
 4. Vocabulary comparison    → SOFT target: reuse existing words from kb_tags_list() when they fit the content
 5. Content readback    → every tag actually appears within the ≥2000 chars sample
 ```
-**优先级：T5 内容锚定 > T3 数量 > T2 归一 > T4 词表复用。** T4 是软目标——词表里没有贴切的词就造新的内容衍生词（整理阶段 L2 会归一）；
-**绝不为凑复用率而使用正文没有的词**（那违反 T5）。实测：词表 364 词无环境类中文标签时，全部新造是正确行为。
+**Priority: T5 content anchoring > T3 count > T2 normalization > T4 vocabulary reuse.** T4 is a SOFT target — when the vocabulary has no fitting word, coin new content-derived tags (the Organize phase L2 will normalize them);
+**never use words absent from the body just to pad the reuse rate** (that violates T5). Field-tested: when a 364-word vocabulary had no environment-related Chinese tags, coining all-new tags was the correct behavior.
 **Failing the bar → return to A3 to re-extract; do not release to A5.**
 
 ## A3c — Description Quality Gate ⭐
@@ -193,10 +193,10 @@ Description = [Subject] + [Method/Technology] + [Scenario/Problem] + [Key data/C
 - **Must verify every claim against the body**: direct path → verify against the source file before saving; parse path → verify against the `parse_task_status` markdown BEFORE saving (the description gate runs pre-save), then C1 re-verifies the stored copy via `kb_doc_read(..., max_chars=800)` after A5.
 - **Mismatch → rewrite the description** (never change the body to fit the description).
 
-**D8 多维 + 查询导向（检索定位的核心，强制）**：描述必须铺满五个查询维度——领域维 / 方法维 / 对象维 / 问题维（用提问者口吻写一句"本文能回答什么"）/ 结论维（带数字优先），并在中文描述中保留英文方法名原文作双语锚点。长文按三窗采样结论补中后段要点。分 part 文档用**两层描述**：`【第 i/N 部分 · <章节范围>】<论文级主体+方法> —— <本 part 特有内容>`。单条 ≤220 字符。逐维标准见 [description-guide.md D8](references/description-guide.md)。
-**<20000 chars 的短文也至少双窗**（头 3000 + 尾 2000）——结论/修正系数/附录数据常埋在尾部，只读头部必漏（实测教训）。
+**D8 multi-dimension + query orientation (core of retrieval positioning, mandatory)**: the description must cover all five query dimensions — domain dimension / method dimension / object dimension / problem dimension (write one sentence in the questioner's voice about "what questions this document can answer") / conclusion dimension (numbers preferred) — and keep English method names verbatim inside the Chinese description as bilingual anchors. For long documents, use the three-window sampling conclusions to fill in mid/tail points. For split parts use a **two-layer description**: `【第 i/N 部分 · <章节范围>】<论文级主体+方法> —— <本 part 特有内容>`, i.e. `【Part i/N · <section range>】<paper-level subject + method> —— <this part's specific content>`. Each description ≤220 chars. Per-dimension criteria in [description-guide.md D8](references/description-guide.md).
+**Documents <20000 chars also need at least two windows** (head 3000 + tail 2000) — conclusions/correction factors/appendix data are often buried in the tail; reading only the head inevitably misses them (field-tested lesson).
 
-**A3c-R 检索自检（A6 索引后强制闭环）**：见 A6-V 之后的 [A3c-R](#a3c-r--检索自检a6-索引后必做)——用描述里的问题维措辞跑 `kb_search` + 同义改写跑 `kb_search_vector`，目标文档必须被找回，否则把漏掉的查询词并回描述复测。
+**A3c-R retrieval self-test (mandatory closed loop after A6 indexing)**: see [A3c-R](#a3c-r--retrieval-self-test-description-closed-loop-mandatory-after-indexing-) below, after A6-V — run `kb_search` with the problem-dimension wording from the description + `kb_search_vector` with a paraphrase; the target document must be recalled, otherwise merge the missed query terms back into the description and retest.
 
 ✅ "Coal mill blockage early warning based on CNN-LSTM, trained on DCS historical data, 660MW unit field-tested with 315min advance warning. In Chinese."
 ❌ "Coal mill paper" / "Parsed from xxx.pdf" / "test" / "polymer research"
@@ -291,22 +291,22 @@ kb_graph_document(doc_path=doc_path) finds the document node
 (response keys: document / tags / related_documents / related_count — no "entities" field)
 ```
 
-### A3c-R — 检索自检（描述闭环，索引后必做）⭐
+### A3c-R — Retrieval Self-Test (Description Closed Loop, Mandatory After Indexing) ⭐
 
-> 描述写得合不合格，最终裁判是检索。用自己写的描述当查询，找不回来 = 描述缺查询路径。
+> The final judge of a description is retrieval. Use your own description as the query; if it cannot be recalled, the description lacks a query path.
 
 ```
-# 1. 元数据检索（匹配 description/tags 的主通道）
-kb_search(query="<描述中的问题维措辞>", top_k=5)
-→ 目标文档必须在结果中
+# 1. Metadata search (the main channel matching description/tags)
+kb_search(query="<problem-dimension wording from the description>", top_k=5)
+→ the target document must appear in the results
 
-# 2. 向量检索（同义改写，不要原句照抄）
-kb_search_vector(query="<同义改写的问题>", top_k=5, score_threshold=0.3)
-→ 目标文档必须在 top-5
+# 2. Vector search (paraphrase; do not copy the original sentence verbatim)
+kb_search_vector(query="<paraphrased question>", top_k=5, score_threshold=0.3)
+→ the target document must be in the top-5
 ```
 
-任一未命中 → 把查询里的关键词（问题维/方法维）并入描述（`kb_doc_update_meta`），
-更新后复测。两条都命中，A3c 才算真正通过。（标准见 [description-guide.md D9](references/description-guide.md)）
+Any miss → merge the query's keywords (problem/method dimensions) into the description (`kb_doc_update_meta`),
+then retest after updating. A3c truly passes only when both channels hit. (Criteria: [description-guide.md D9](references/description-guide.md))
 
 ## A7 — Final Checklist (All ✅ Required for Ingestion Completion)
 
@@ -365,8 +365,8 @@ An optional step, but recommended when KB completeness and freshness requirement
 | Continue ingesting despite failing quality | Garbage in, garbage out | Any C1-C8 ✗ means rework |
 | "Ingest first, fix later" | Never gets fixed | Final check C1-C8 all ✅ counts as complete |
 | No experience extraction triggered after ingestion | Experience factors in documents are lost | A7-E optional auto-extraction |
-| Write the description from the head 3000 chars of a long document | 中后段的真实含义丢失，描述以偏概全 | >20000 chars 强制三窗采样（D8） |
-| Skip the A3c-R retrieval self-test | 描述写得再好，检索找不回来就是白写 | kb_search + kb_search_vector 双通道找回才通过 |
+| Write the description from the head 3000 chars of a long document | The real meaning of the mid/tail sections is lost; the description over-generalizes | >20000 chars mandates three-window sampling (D8) |
+| Skip the A3c-R retrieval self-test | However good the description is, it is wasted if retrieval cannot recall it | Passes only when both kb_search and kb_search_vector channels recall it |
 
 ## Tool Quick Reference
 - `parse_doc(file_path, use_ocr=true)` / `parse_doc_batch(file_paths, use_ocr=true)` — non-blocking parsing
@@ -380,6 +380,6 @@ An optional step, but recommended when KB completeness and freshness requirement
 - `kb_search_vector(query, top_k, score_threshold)` — A0 content fingerprint dedup
 - `kb_search(query, top_k)` — A0 filename dedup
 - `kb_create(name, description, parent_id)` — create KB/sub-KB
-- ⚠️ 参数命名：`kb_list` **返回** `kbId`，但绝大多数工具的入参是 `kb_id`；`kb_doc_move(doc_path, target_kb_id)` 无源库参数。首调先打印条目确认键名。
+- ⚠️ Parameter naming: `kb_list` **returns** `kbId`, but the input parameter of most tools is `kb_id`; `kb_doc_move(doc_path, target_kb_id)` has no source-KB parameter. On first call, print an entry to confirm the key names.
 - `kb_tags_list()` — A3b vocabulary comparison
 - `fs_upload_file(file_path, parent_id, description)` — binary upload

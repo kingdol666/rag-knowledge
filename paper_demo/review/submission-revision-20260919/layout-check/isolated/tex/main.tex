@@ -1,0 +1,75 @@
+% CIKM 2026 Demonstration draft, revised 2026-09-19.
+% Official format: sigconf, non-anonymous, <=4 pages of body incl. appendices/acks.
+% Only GenAI Usage Disclosure and references may extend beyond that limit.
+% AUTHOR ACTION: replace author placeholders; confirm submission eligibility.
+\documentclass[sigconf]{acmart}
+\setcopyright{none}
+\settopmatter{printacmref=true,printfolios=true}
+\acmConference[CIKM '26]{Proceedings of the 35th ACM International Conference on Information and Knowledge Management}{November 9--13, 2026}{Rome, Italy}
+\acmBooktitle{CIKM '26, November 9--13, 2026, Rome, Italy}
+\acmISBN{}
+\acmDOI{}
+
+\usepackage{booktabs}
+\newcommand{\sys}{\textsc{Qdcvr}}
+
+\begin{CCSXML}
+<ccs2012>
+<concept><concept_id>10002951.10003260</concept_id><concept_desc>Information systems~Information retrieval</concept_desc><concept_significance>500</concept_significance></concept>
+<concept><concept_id>10003120.10003121</concept_id><concept_desc>Human-centered computing~Interactive systems and tools</concept_desc><concept_significance>300</concept_significance></concept>
+</ccs2012>
+\end{CCSXML}
+\ccsdesc[500]{Information systems~Information retrieval}
+\ccsdesc[300]{Human-centered computing~Interactive systems and tools}
+\keywords{knowledge-base management, retrieval-augmented generation, evidence inspection, agent workflows, demonstration}
+
+\begin{document}
+\title{QDCVR: An Agent-Operated Platform for Knowledge Organization and Inspectable Retrieval}
+% CIKM Demo is single-blind. These are explicit draft placeholders, not anonymity.
+\author{Author Name}
+\affiliation{\institution{Affiliation}\city{City}\country{Country}}
+\email{author@example.com}
+\renewcommand{\shortauthors}{Author Name}
+\input{sec0_abstract}
+\maketitle
+\input{sec1_intro}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{../figures/submission-20260919/fig1-concept.pdf}
+\caption{Two evidence-handling workflows for the same question. The reproduced dense baseline retrieves candidates and packs two excerpts for one generation call; its logging adapter does not retain source-document metadata. The QDCVR skill asks an agent to read section-addressed evidence and assess it before answering. Initial scores below six invoke recovery; a usable score-five backstop may support an explicitly qualified answer after recovery. This schematic explains the configurations, not a general accuracy ranking.}
+\Description{A shared NISQ question leads to two workflows. The reproduced dense baseline uses fixed windows, dense retrieval, a two-excerpt context and generation. QDCVR reads section-addressed evidence and applies a zero-to-eight gate. A score of at least six leads to a cited answer; otherwise a librarian search and re-reading lead to a strong-evidence answer, a qualified score-five backstop answer, or a scoped not-found report when no usable evidence remains.}
+\label{fig:teaser}
+\end{figure*}
+
+\input{sec2_system}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{../figures/submission-20260919/fig2-architecture.pdf}
+\caption{Platform operations and the agent-executed QDCVR workflow. (a) Parsing, content-guided placement, and part-level checks prepare indexed evidence. (b) The packaged skill prescribes query rewriting, recall, reading, and a conditional content assessment. Scores of at least six permit a direct answer; lower initial scores invoke the librarian. After reassessment, usable score-five evidence can support an attributed backstop answer; no usable evidence yields not-found. These instructions are not mandatory behavior of ordinary HTTP search endpoints.}
+\Description{Two areas distinguish offline preparation from the online agent skill. The first parses PDFs into Markdown, organizes and checks parts, and connects to vector, graph, and file-based storage. The second recalls and reads candidates, then branches on a content gate. Passing evidence yields a cited answer. Initial failure triggers targeted librarian search and re-reading; after that search, a usable score-five backstop supports an attributed answer, while no usable evidence yields a report with scope, near miss, and reason.}
+\label{fig:arch}
+\end{figure*}
+
+\input{sec3_demo}
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{../figures/submission-20260919/fig3-evidence.pdf}
+\caption{Selected recorded cases, paraphrased. For the Transformer question, A's part/section labels are reconstructed from its evidence trace; B reports a source filename; C reports insufficient evidence. The lower scripted example combines collected evidence with a predefined agent-authored judgment and not-found report; its catalog census is not exhaustive document reading. Gate scores are agent-authored rubric judgments, not correctness ratings. The excerpts illustrate differences in inspectability, not controlled comparative effectiveness.}
+\Description{Three columns compare the saved Transformer case. QDCVR has trace-derived part and section references and an eight-of-eight self-assessment; the bare agent reports a filename; the dense baseline abstains. A lower sequence shows the fictitious-paper probe: a BERT near miss scores one of eight, the catalog census counts five bases and 165 entries with 153 names retained, and a predefined agent-authored report records not found. The scripted example is not a measured autonomous refusal. All summaries are paraphrases and scores are model judgments.}
+\label{fig:threeway}
+\end{figure*}
+
+\input{sec4_eval}
+\input{sec4_backmatter}
+\bibliographystyle{ACM-Reference-Format}
+\bibliography{refs}
+\end{document}
+
+
+
+
+
+
