@@ -168,6 +168,7 @@ def main():
     with sync_playwright() as p:
         browser=p.chromium.launch()
         for name, source in [('fig1-concept-draft',fig1()),('fig3-evidence-draft',fig3())]:
+            assert '<!ENTITY' not in source and '<!DOCTYPE' not in source, 'entity declaration in generated SVG'
             root=ET.fromstring(source)
             assert not root.findall('.//{http://www.w3.org/2000/svg}foreignObject')
             assert all(float(t.attrib['font-size'])>=14 for t in root.findall('.//{http://www.w3.org/2000/svg}text'))
