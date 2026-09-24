@@ -1,7 +1,7 @@
 {
   "source": "experiment_chat_20260922-211000 traces (BQ04 a/b/c + BQ06 a/c)",
   "verbatim_check": "all quoted fragments are normalized substrings of saved answers",
-  "process_check": "timelines transcribed from saved tool_use events; existence-checked",
+  "process_check": "timelines fully counted from saved tool_use events; every xN asserted against the trace",
   "runtime": {
     "playwright": "1.51.0",
     "PyMuPDF": "1.28.2",
@@ -16,9 +16,9 @@
       0.0,
       0.0,
       750.0,
-      700.5
+      540.0
     ],
     "pdf_images": 0,
-    "pdf_vector_paths": 66
+    "pdf_vector_paths": 61
   }
 }

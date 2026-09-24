@@ -1,0 +1,48 @@
+{
+ "qid": "QK03",
+ "method": "bm25",
+ "question": "What physical mechanism does the dynamic electrical model use to explain the hysteretic J-V characteristics of perovskite solar cells?",
+ "ranked": [
+  "1606.00335",
+  "1712.01369",
+  "2607.03098",
+  "1906.10015",
+  "2211.04977",
+  "2604.01385",
+  "1801.00862",
+  "2401.06823",
+  "2602.10156",
+  "2306.01022"
+ ],
+ "ranked_paths": [
+  "materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs.md",
+  "materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar.md",
+  "power-systems__2607.03098__integrating-power-electronics-based-energy-s.md",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md",
+  "materials__2211.04977__design-of-battery-materials-via-defects-and.md",
+  "immunology__2604.01385__strategies-for-tumor-elimination-and-control.md",
+  "quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md",
+  "genomics__2401.06823__interpretable-deep-learning-in-single-cell-o.md",
+  "genomics__2602.10156__strand-sequence-conditioned-transport-for-si.md",
+  "medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md"
+ ],
+ "evidence_sources": [
+  "1606.00335",
+  "1712.01369",
+  "2607.03098"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.0,
+ "latency_s": 8.0,
+ "answer": "The evidence is insufficient to answer this question as posed.\n\nThe retrieved chunks mention a \"standard dynamic electrical model\" (1606.00335) that adds a parallel capacitance `C` to the static equivalent circuit, but the excerpt is cut off mid-sentence at the point where that capacitance's role is being defined, so the mechanism is never stated. A later chunk from the same source only says hysteretic effects are \"influenced by solar cell preconditioning and bias scan rate\" and that the analysis focuses on \"the variation of the polarization in time, assuming a certain relaxation time scale\" — suggestive of polarization/relaxation, but the evidence does not explicitly name or explain the physical mechanism. The other two chunks (1712.01369, 2607.03098) concern bilayer perovskite/GeSe efficiency and energy-storage modeling respectively, and are irrelevant.\n\nSources used: [1606.00335] (Sections 2.1 and 3 excerpts); [1712.01369]; [2607.03098] (checked and found irrelevant).",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 934,
+  "output": 221,
+  "cache_read": 37120,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.028755000000000003,
+ "extra": {}
+}

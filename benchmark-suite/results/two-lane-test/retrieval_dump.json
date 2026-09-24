@@ -1,0 +1,2047 @@
+{
+ "questions": {
+  "Q1": "At the Mertyon assembly where the Netherfield party first appears, what does Mr. Darcy say about Elizabeth when Bingley suggests he dance with her, and how does Elizabeth respond to it?",
+  "Q2": "What happens at Hunsford when Mr. Darcy proposes to Elizabeth, why does she refuse him, and what does his letter the next morning reveal about Wickham?",
+  "Q3": "How does Elizabeth learn the truth about Mr. Darcy's role in Lydia's marriage, and what exactly did Darcy do and pay?",
+  "Q4": "How did Charlotte Lucas come to marry Mr. Collins, and how did Elizabeth react to the engagement?",
+  "Q5": "In the novel, Mr. Wickham is linked to two young women in connection with an elopement. Who are the two young women, roughly how old was each, and how did each affair end?"
+ },
+ "rewrite": {
+  "Q1": "Mr. Darcy at the Meryton assembly refuses to dance with Elizabeth Bennet, saying she is tolerable but not handsome enough to tempt him, and Elizabeth overhears and laughs it off",
+  "Q2": "Mr. Darcy's first marriage proposal to Elizabeth Bennet at Hunsford Parsonage, her refusal, and the letter he gives her next morning revealing Wickham's attempted elopement with Georgiana Darcy",
+  "Q3": "Mrs. Gardiner's letter revealing that Mr. Darcy secretly found Lydia and Wickham in London, paid Wickham's debts, settled money on Lydia, and bought his commission",
+  "Q4": "Charlotte Lucas's marriage to Mr. Collins and Elizabeth Bennet's reaction to the engagement",
+  "Q5": "Wickham's attempted elopement with Georgiana Darcy at Ramsgate and his actual elopement with Lydia Bennet"
+ },
+ "lane_a": {
+  "Q1": {
+   "vector_raw": [
+    {
+     "content": "his general behaviour was sharpened into particular resentment by his\nhaving slighted one of her daughters.\n\nElizabeth Bennet had been obliged, by the scarcity of gentlemen, to sit\ndown for two dances; and during part of that time, Mr. Darcy had been\nstanding near enough for her to overhear a conversation between him and\nMr. Bingley, who came from the dance for a few minutes to press his\nfriend to join it.\n\n“Come, Darcy,” said he, “I must have you dance. I hate to see you\nstanding about by your",
+     "score": 0.7499475479125977,
+     "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 2 of 26).md",
+     "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+     "chunk_index": 42,
+     "collection": "kb_b4c48237-6937-440a-9696-cc1e66bed5c1"
+    },
+    {
+     "content": "invites Daffy to play volleyball together tomorrow night. Daffy realizes  $\\mathrm { i } \\ t ^ { \\prime } s$  time for more exercise so Daffy agrees. Lance begins to talk about how much exercise Lance did in high school and how little</td></tr><tr><td>time Lance can put into exercise now. They decide to meet in front of the cinema.</td></tr><tr><td>Kept QDS Triples Query: What do Byron and Jacquenette decide to do?</td></tr><tr><td>Summary: They think they have been getting too fat and decide to",
+     "score": 0.49194157123565674,
+     "doc_path": "Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k42.md",
+     "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+     "chunk_index": 0,
+     "collection": "kb_0942f1a6-d81b-413b-a60b-b994680dcaac"
+    },
+    {
+     "content": "ogether tomorrow night. Daffy realizes  $\\mathrm { i } \\ t ^ { \\prime } s$  time for more exercise so Daffy agrees. Lance begins to talk about how much exercise Lance did in high school and how little</td></tr><tr><td>time Lance can put into exercise now. They decide to meet in front of the cinema.</td></tr><tr><td>Kept QDS Triples Query: What do Byron and Jacquenette decide to do?</td></tr><tr><td>Summary: They think they have been getting too fat and decide to do more sports. Query: What does",
+     "score": 0.4747757315635681,
+     "doc_path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+     "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "chunk_index": 21,
+     "collection": "kb_b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+    },
+    {
+     "content": "cle Dating Committee. For variable codes see Section 3 and Appendix C.\n\n![](images/fe0780343cd7a9c21d182e0bcc7f16c23bb6384db944cddfd02987a02ad71f87.jpg)\n\n![](images/29debb58090cf099875d0fe91134303aa71d4fddf3929d7fe0a71b17924ba200.jpg)\n\n![](images/5b64fdcf8d1eecb71162785d41c5fda284f17c061b9e3ed665ee6ece219e782a.jpg)\n\n![](images/198865abd125bd6012f4e5a3bbf782c5e8009282e6f357eaeb827ee537270abc.jpg)\n\n![](images/cf54355c62ee3463ff1e967cf913e90d17f376065200f002f8484b8503d51e13.jpg)\n\n![](images/278e026",
+     "score": 0.4074214696884155,
+     "doc_path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 4 of 5).md",
+     "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+     "chunk_index": 46,
+     "collection": "kb_f5770687-6b05-4a8d-8645-af31686ca87e"
+    },
+    {
+     "content": "### 2.3 本体与工艺上下文\n\n本体（`01_ontology/ontology.json`）标注：temp_c 为 predictor 角色；direction=UNKNOWN；normal_range_status=NOT_APPLICABLE（无 SOP / 规格限 / 历史基线）；物理原理候选（能量守恒 m·Cp·dT/dt = Q_in − Q_out、热时间常数 tau=C/(hA)）分别为 UNVERIFIED_NO_PROCESS_CONTEXT 与 NOT_ESTIMABLE_WITH_TWO_ROWS；六类混杂变量（环境温度、热源/负载、冷却、设备归属、工况、传感器健康）全部 NOT_OBSERVED。本体 `discrepancy_signals[0]` 标记 **BLOCKING_FOR_CAUSAL_CONCLUSION**：仅 2 行、1 个数值变量、5 秒跨度时，诊断必须输出 NEEDS_DATA 或 COMPETING_SET，`causal_graph.root_cause_conclusion_allowed=false` [Evidence R",
+     "score": 0.3765764832496643,
+     "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+     "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+     "chunk_index": 5,
+     "collection": "kb_3aea5973-1d8a-4db6-b415-6d4432f514bb"
+    },
+    {
+     "content": "retrieval returns semantically relevant but factually irrelevant noise. Dense retrievers frequently return many documents that are semantically related but do not contain the required answer. Prior work (Pu et al., 2024; Wang et al., 2023a) shows that such high-scoring yet irrelevant documents can harm LLM performance. For the above query, the retriever may return documents discussing “citation analysis methods\" or “AI conference overviews,\" but not the actual citation data. These noisy documen",
+     "score": 0.37316060066223145,
+     "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+     "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+     "chunk_index": 14,
+     "collection": "kb_09b2102e-7dd2-4f4e-afe0-13b40c9b1463"
+    },
+    {
+     "content": "presentations.",
+     "score": 0.137,
+     "doc_path": "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+     "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+     "chunk_index": 67,
+     "collection": "kb_b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+     "short_content_warning": true
+    },
+    {
+     "content": "if not too noisy.",
+     "score": 0.1259,
+     "doc_path": "自然科学与地球科学/quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md",
+     "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "chunk_index": 14,
+     "collection": "kb_1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "short_content_warning": true
+    },
+    {
+     "content": "fined in the next section.",
+     "score": 0.1254,
+     "doc_path": "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+     "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+     "chunk_index": 34,
+     "collection": "kb_8fa4db59-adde-4d6d-9fdb-2c375400e631",
+     "short_content_warning": true
+    },
+    {
+     "content": "# 价值观(宪法层)\n\n本文件为宪法层内容,自动流程(学习/反思/路由/回滚)任何情况下不得修改。",
+     "score": 0.1096,
+     "doc_path": "soul-e2e-tester-024115/values.md",
+     "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+     "chunk_index": 0,
+     "collection": "kb_aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+     "short_content_warning": true
+    }
+   ],
+   "ranked": [
+    {
+     "content": "his general behaviour was sharpened into particular resentment by his\nhaving slighted one of her daughters.\n\nElizabeth Bennet had been obliged, by the scarcity of gentlemen, to sit\ndown for two dances; and during part of that time, Mr. Darcy had been\nstanding near enough for her to overhear a conversation between him and\nMr. Bingley, who came from the dance for a few minutes to press his\nfriend to join it.\n\n“Come, Darcy,” said he, “I must have you dance. I hate to see you\nstanding about by your",
+     "score": 0.7499475479125977,
+     "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 2 of 26).md",
+     "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+     "chunk_index": 42,
+     "collection": "kb_b4c48237-6937-440a-9696-cc1e66bed5c1"
+    },
+    {
+     "content": "invites Daffy to play volleyball together tomorrow night. Daffy realizes  $\\mathrm { i } \\ t ^ { \\prime } s$  time for more exercise so Daffy agrees. Lance begins to talk about how much exercise Lance did in high school and how little</td></tr><tr><td>time Lance can put into exercise now. They decide to meet in front of the cinema.</td></tr><tr><td>Kept QDS Triples Query: What do Byron and Jacquenette decide to do?</td></tr><tr><td>Summary: They think they have been getting too fat and decide to",
+     "score": 0.49194157123565674,
+     "doc_path": "Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k42.md",
+     "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+     "chunk_index": 0,
+     "collection": "kb_0942f1a6-d81b-413b-a60b-b994680dcaac"
+    },
+    {
+     "content": "ogether tomorrow night. Daffy realizes  $\\mathrm { i } \\ t ^ { \\prime } s$  time for more exercise so Daffy agrees. Lance begins to talk about how much exercise Lance did in high school and how little</td></tr><tr><td>time Lance can put into exercise now. They decide to meet in front of the cinema.</td></tr><tr><td>Kept QDS Triples Query: What do Byron and Jacquenette decide to do?</td></tr><tr><td>Summary: They think they have been getting too fat and decide to do more sports. Query: What does",
+     "score": 0.4747757315635681,
+     "doc_path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+     "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "chunk_index": 21,
+     "collection": "kb_b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+    },
+    {
+     "content": "cle Dating Committee. For variable codes see Section 3 and Appendix C.\n\n![](images/fe0780343cd7a9c21d182e0bcc7f16c23bb6384db944cddfd02987a02ad71f87.jpg)\n\n![](images/29debb58090cf099875d0fe91134303aa71d4fddf3929d7fe0a71b17924ba200.jpg)\n\n![](images/5b64fdcf8d1eecb71162785d41c5fda284f17c061b9e3ed665ee6ece219e782a.jpg)\n\n![](images/198865abd125bd6012f4e5a3bbf782c5e8009282e6f357eaeb827ee537270abc.jpg)\n\n![](images/cf54355c62ee3463ff1e967cf913e90d17f376065200f002f8484b8503d51e13.jpg)\n\n![](images/278e026",
+     "score": 0.4074214696884155,
+     "doc_path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 4 of 5).md",
+     "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+     "chunk_index": 46,
+     "collection": "kb_f5770687-6b05-4a8d-8645-af31686ca87e"
+    },
+    {
+     "content": "### 2.3 本体与工艺上下文\n\n本体（`01_ontology/ontology.json`）标注：temp_c 为 predictor 角色；direction=UNKNOWN；normal_range_status=NOT_APPLICABLE（无 SOP / 规格限 / 历史基线）；物理原理候选（能量守恒 m·Cp·dT/dt = Q_in − Q_out、热时间常数 tau=C/(hA)）分别为 UNVERIFIED_NO_PROCESS_CONTEXT 与 NOT_ESTIMABLE_WITH_TWO_ROWS；六类混杂变量（环境温度、热源/负载、冷却、设备归属、工况、传感器健康）全部 NOT_OBSERVED。本体 `discrepancy_signals[0]` 标记 **BLOCKING_FOR_CAUSAL_CONCLUSION**：仅 2 行、1 个数值变量、5 秒跨度时，诊断必须输出 NEEDS_DATA 或 COMPETING_SET，`causal_graph.root_cause_conclusion_allowed=false` [Evidence R",
+     "score": 0.3765764832496643,
+     "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+     "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+     "chunk_index": 5,
+     "collection": "kb_3aea5973-1d8a-4db6-b415-6d4432f514bb"
+    },
+    {
+     "content": "retrieval returns semantically relevant but factually irrelevant noise. Dense retrievers frequently return many documents that are semantically related but do not contain the required answer. Prior work (Pu et al., 2024; Wang et al., 2023a) shows that such high-scoring yet irrelevant documents can harm LLM performance. For the above query, the retriever may return documents discussing “citation analysis methods\" or “AI conference overviews,\" but not the actual citation data. These noisy documen",
+     "score": 0.37316060066223145,
+     "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+     "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+     "chunk_index": 14,
+     "collection": "kb_09b2102e-7dd2-4f4e-afe0-13b40c9b1463"
+    }
+   ],
+   "gate": [
+    {
+     "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 2 of 26).md",
+     "score": 0.7499475479125977,
+     "chunk": "his general behaviour was sharpened into particular resentment by his\nhaving slighted one of her daughters.\n\nElizabeth Bennet had been obliged, by the scarcity of gentlemen, to sit\ndown for two dances; and during part of that time, Mr. Darcy had been\nstanding near enough for her to overhear a conversation between him and\nMr. Bingley, who came from the dance for a few minutes to press his\nfriend to join it.\n\n“Come, Darcy,” said he, “I must have you dance. I hate to see you\nstanding about by your",
+     "read": {
+      "success": true,
+      "path": "Novel-PridePrejudice/pride_and_prejudice (part 2 of 26).md",
+      "content": "# pride_and_prejudice（第 2/26 部分）\nHeading to Chapter XV.                                                89\n\nHeading to Chapter XVI.                                               95\n\n“The officers of the ----shire”                                       97\n\n“Delighted to see their dear friend again”                           108\n\nHeading to Chapter XVIII.                                            113\n\n“Such very superior dancing is not often seen”                       118\n\n“To assure you in the most animated language”                        132\n\nHeading to Chapter XX.                                               139\n\n“They entered the breakfast-room”                                    143\n\nHeading to Chapter XXI.                                              146\n\n“Walked back with them”                                              148\n\nHeading to Chapter XXII.                                             154\n\n“So much love and eloquence”                                         156\n\n“Protested he must be entirely mistaken”                             161\n\n“Whenever she spoke in a low voice”                                  166\n\nHeading to Chapter XXIV.                                             168\n\nHeading to Chapter XXV.                                              175\n\n“Offended two or three young ladies”                                 177\n\n“Will you come and see me?”                                          181\n\n“On the stairs”                                                      189\n\n“At the door”                                                        194\n\n“In conversation with the ladies”                                    198\n\n“Lady Catherine,” said she, “you have given me a treasure”           200\n\nHeading to Chapter XXX.                                              209\n\n“He never failed to inform them”                                     211\n\n“The gentlemen accompanied him”                                      213\n\nHeading to Chapter XXXI.                                             215\n\nHeading to Chapter XXXII.                                            221\n\n“Accompanied by their aunt”                                          225\n\n“On looking up”                                                      228\n\nHeading to Chapter XXXIV.                                            235\n\n“Hearing herself called”                                             243\n\nHeading to Chapter XXXVI.                                            253\n\n“Meeting accidentally in town”                                       256\n\n“His parting obeisance”                                              261\n\n“Dawson”                                                             263\n\n“The elevation of his feelings”                                      267\n\n“They had forgotten to leave any message”                            270\n\n“How nicely we are crammed in!”                                      272\n\nHeading to Chapter XL.                                               278\n\n“I am d",
+      "totalLines": 677,
+      "truncated": true
+     }
+    },
+    {
+     "doc_path": "Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k42.md",
+     "score": 0.49194157123565674,
+     "chunk": "invites Daffy to play volleyball together tomorrow night. Daffy realizes  $\\mathrm { i } \\ t ^ { \\prime } s$  time for more exercise so Daffy agrees. Lance begins to talk about how much exercise Lance did in high school and how little</td></tr><tr><td>time Lance can put into exercise now. They decide to meet in front of the cinema.</td></tr><tr><td>Kept QDS Triples Query: What do Byron and Jacquenette decide to do?</td></tr><tr><td>Summary: They think they have been getting too fat and decide to",
+     "read": {
+      "success": false,
+      "error": "{\n  \"error\": true,\n  \"url\": \"http://localhost:6789/api/kb/document?max_chars=3000&offset=0&limit=200&kb_id=b4c48237-6937-440a-9696-cc1e66bed5c1&doc_path=Corpus-Chunks800%2Fnlp__2310.10981__instructive-dialogue-summarization-with-quer__k42.md\",\n  \"statusCode\": 400,\n  \"statusMessage\": \"doc_id, path, or kb_id+doc_path is required\",\n  \"message\": \"doc_id, path, or kb_id+doc_path is required\",\n  \"stack\": [\n    \"Error: doc_id, path, or kb_id+doc_path is required\",\n    \"at createError (file:///D:/codes/",
+      "status": 400
+     }
+    },
+    {
+     "doc_path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+     "score": 0.4747757315635681,
+     "chunk": "ogether tomorrow night. Daffy realizes  $\\mathrm { i } \\ t ^ { \\prime } s$  time for more exercise so Daffy agrees. Lance begins to talk about how much exercise Lance did in high school and how little</td></tr><tr><td>time Lance can put into exercise now. They decide to meet in front of the cinema.</td></tr><tr><td>Kept QDS Triples Query: What do Byron and Jacquenette decide to do?</td></tr><tr><td>Summary: They think they have been getting too fat and decide to do more sports. Query: What does",
+     "read": {
+      "success": true,
+      "path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+      "content": "# nlp__2310.10981__instructive-dialogue-summarization-with-quer（第 4/4 部分）\n章节: Instructive Dialogue Summarization with Query Aggregations > B Templates and Examples\n## B Templates and Examples\n\n\nWe provide more detailed illustrations of the human evaluation interface, instruction templates, synthesized QDS triples and case studies on model outputs.\n\n• Figure 6: the interface used for subjective evaluation for annotators. The annotator is asked to label the quality of summaries in four dimensions.\n\n• Table 7: the templates used for several tasks including query generation, text-based filtering, ChatGPT evaluation and the preprocessing on DialogSum dataset.\n\n• Table 10, 11 and 12: shows the synthesized QDS triples including both kept and removed ones. The reason for filtering is also demonstrated.\n\n• Table 13, 14, 15, 16 and 17: shows case studies on the generated summaries and querybased summaries on all four datasets including SAMSum, DREAM, DialogSum, and TODSum.\n\n<table><tr><td>Task</td><td>Prompt Template</td></tr><tr><td>Query Generation (Sec. 3.2)</td><td>Generate an answerable and specific question based on the following context. Context: ${Summary}</td></tr><tr><td rowspan=\"2\">Text-based Filtering (Sec. 3.2)</td><td>Can we get an answer from the context, yes or no? Question: ${Question} Context: ${Summary}</td></tr><tr><td>Is the question fully answerable from the context without any guessing, yes or no? Question: ${Question} Context: ${Summary}</td></tr><tr><td>ChatGPT Evaluation (Sec. 4.4)</td><td>Evaluate the quality of the abstractive summary from the dialogue. Please be extremely picky. Rate each summary on four dimensions: Faithfullness: whether the summary is correct according to dialogue, Fluency: Whether summary is grammarly correct, Informativeness: Whether the summary contains all essential information, Conciseness: Whether the summary is very concise (not verbose). Output should follow the template: Faithfulness&#x27;: value,&#x27;Fluency&#x27;: value &#x27;Informativeness&#x27;: value, &#x27;Conciseness&#x27;: value. You should rate on a scale from 1 (worst) to 5 (best). Do not give detailed explanations.</td></tr><tr><td>DialogSum Preprocessing (Sec. A.2)</td><td>Dialogue ${Dialogue}. Summary: ${Summary} (1) Who is #Person1# in the following dialogue? ${Dialogue} (2) Select on proper name for #Person1# from ${candidate names} in the following dialogue? ${Dialogue}</td></tr></table>\n\nTable 7: Prompting templates for QDS triple generation, text-based query filtering, ChatGPT evaluation, and DialogSum preprocessing.\n\n<table><tr><td rowspan=\"2\">Models</td><td colspan=\"3\">ROUGE-1</td><td colspan=\"3\">ROUGE-2</td><td colspan=\"3\">ROUGE-L</td></tr><tr><td> $F _ { 1 }$ </td><td> $P r e$ </td><td>Rec</td><td> $F _ { 1 }$ </td><td> $P r e$ </td><td>Rec</td><td> $F _ { 1 }$ </td><td> $P r e$ </td><td>Rec</td></tr><tr><td>BART MV-BART Coref-BART</td><td>53.2 54.0 53.9</td><td>59.3 55.8 57.1</td><td>53.1 57.5</td><td>28.6 28.5</td><td>32.3 2",
+      "totalLines": 56,
+      "truncated": true
+     }
+    },
+    {
+     "doc_path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 4 of 5).md",
+     "score": 0.4074214696884155,
+     "chunk": "cle Dating Committee. For variable codes see Section 3 and Appendix C.\n\n![](images/fe0780343cd7a9c21d182e0bcc7f16c23bb6384db944cddfd02987a02ad71f87.jpg)\n\n![](images/29debb58090cf099875d0fe91134303aa71d4fddf3929d7fe0a71b17924ba200.jpg)\n\n![](images/5b64fdcf8d1eecb71162785d41c5fda284f17c061b9e3ed665ee6ece219e782a.jpg)\n\n![](images/198865abd125bd6012f4e5a3bbf782c5e8009282e6f357eaeb827ee537270abc.jpg)\n\n![](images/cf54355c62ee3463ff1e967cf913e90d17f376065200f002f8484b8503d51e13.jpg)\n\n![](images/278e026",
+     "read": {
+      "success": true,
+      "path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 4 of 5).md",
+      "content": "# economics__2011.14424__on-the-effectiveness-of-the-european-central（第 4/5 部分）\n章节: On the effectiveness of the European Central Bank's conventional and unconventional policies under uncertainty > 5. Closing remarks\n## 5. Closing remarks\n\n\nIn this paper, we assess the effectiveness of several conventional and unconventional monetary policy measures by the European Central Bank conditional on the prevailing level of uncertainty. We measure effects of target, forward guidance and quantitative easing shocks over time with a smooth-transition vector autoregressive model using uncertainty as a signal variable. This allows for obtaining time-varying impulse response functions of a set of financial, macroeconomic and survey-based expectation variables to the shocks.\n\nOur results suggest that transmission channels are impaired in times of uncertainty. We conjecture that this is due to two major reasons. First, high levels of uncertainty change the impact effects of the shocks by changing direct transmission to key financial variables such as spreads. We argue that this phenomenon may be related to the presence of central bank information effects during these periods that accompany monetary policy announcements. Second, we find that the prevailing level of uncertainty at the time of the shock affects the persistence of the effects. The persistence of the shocks is dependent on the specific instrument, but is also variable specific. Our results suggest that especially the effectiveness of transmission channels related to industrial and consumer expectations are affected in times of uncertainty.\n\nThe effectiveness of policy measures also depends crucially on the respective tool invoked by the central bank. Conventional policy such as shocks to the target rate appear to be particularly affected negatively by high uncertainty. By contrast, quantitative easing measures such as large-scale asset purchases appear to work particularly well in times of high uncertainty. For both UMP measures, our analysis suggests that there might be beneficial complementarities between TG, FG and QE. On the one hand, FG might be useful in combination with a CMP instrument, making its effects more persistent and more robust with respect to different uncertainty levels. On the other hand, a QE shock in combination with CMP might not only add to the effects of a change in the target rate via the portfolio rebalancing and signalling channel, but it might also make up for deficiencies in the transmission of CMP in times of elevated uncertainty.\n\n![](images/3fc26506a93b2af1db98b5e9a9ecc0eedad477ca34ea0825263c530ff5c3db1f.jpg)\n\n![](images/c7263c7dc953681a58202d9d833fb54e54984310fc6067cd667642ecccf97ec9.jpg)\n\n![](images/f801275e4c6c27e134d4631355c14cf5cc281e3854cc8ab023877b3c7451075b.jpg)\n\n![](images/a406d5d9eeb11d05bf771e61b0e9551f660b0a3e2cdbcbe999b89190f3b2d55c.jpg)\n\n![](images/7b247e65c60a89bd3e42eac0281e6c138ec24b5c82d29663985f14fb596ea200.jpg)\n\n![](images/88bf09fbff7c6e4be83e9c1a18",
+      "totalLines": 472,
+      "truncated": true
+     }
+    },
+    {
+     "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+     "score": 0.3765764832496643,
+     "chunk": "### 2.3 本体与工艺上下文\n\n本体（`01_ontology/ontology.json`）标注：temp_c 为 predictor 角色；direction=UNKNOWN；normal_range_status=NOT_APPLICABLE（无 SOP / 规格限 / 历史基线）；物理原理候选（能量守恒 m·Cp·dT/dt = Q_in − Q_out、热时间常数 tau=C/(hA)）分别为 UNVERIFIED_NO_PROCESS_CONTEXT 与 NOT_ESTIMABLE_WITH_TWO_ROWS；六类混杂变量（环境温度、热源/负载、冷却、设备归属、工况、传感器健康）全部 NOT_OBSERVED。本体 `discrepancy_signals[0]` 标记 **BLOCKING_FOR_CAUSAL_CONCLUSION**：仅 2 行、1 个数值变量、5 秒跨度时，诊断必须输出 NEEDS_DATA 或 COMPETING_SET，`causal_graph.root_cause_conclusion_allowed=false` [Evidence R",
+     "read": {
+      "success": true,
+      "path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "content": "# 工业诊断报告：5 秒窗口温度序列异常趋势判定\n\n- **运行 ID**: `202609201042216_team_smoke`\n- **数据源**: `data/auth_test.csv`（sha256=F2B29558…16FB，2 行 × 3 列）\n- **诊断类型**: `COMPETING_SET`（竞争假设集，不可裁决）\n- **Judge 门控**: pass，score=96（第 1 轮，无阻断项）\n- **Preflight 物理审计**: PREFLIGHT_PASS（无阻断项）\n- **报告生成**: 2026-09-20\n\n---\n\n## 1. 执行摘要\n\n本诊断回答用户问题——『该数据有无异常趋势？』——结论为**不可裁决**：数据确实存在表观单向温升，temp_c 由 72.1 degC 升至 73.4 degC（+1.3 degC / 5 s，平均速率 0.26 degC/s，derived）[Evidence Rank 1]，且该事实经原始两行独立复算与 VLM 读图 3 次交叉确认。但 n=2 样本低于一切统计方法门槛（regime 20 行 / 变点 3 段 / CCF 30 行），无正常范围基线、无冗余测点、无事件记录，三个物理上成立的解释——H1 真实工艺热瞬态（置信 34）、H2 传感器测量伪影（置信 30）、H3 短时瞬态伪影（置信 34）——在本数据下完全不可判别。诊断输出 `COMPETING_SET`，单假设置信度 30-34（LOW，竞争集上限 65），禁止任何确定性根因表述。置信分值仅作序数解读（H2 < H1 ≈ H3），不构成精确度量。裁决路径为按最小判别数据需求补测（P1：同测点冗余参考传感器 + 连续 ≥30 个 5 s 样本 + 传感器规格书）。\n\n## 2. 诊断背景\n\n### 2.1 数据概览\n\n| 项 | 值 |\n|---|---|\n| 原始文件 | `data/auth_test.csv`，2 行 × 3 列（temp_c / timestamp / 派生 time_hours），无清洗损失（cleaning_operations=[]，0 行丢弃 / 0 修改） |\n| 数值参数 | temp_c（摄氏温度，L1 推断：测点 / 介质 / 设备 / 工艺阶段未知，physical_meaning_confidence=INFERRED） |\n| 时间窗 | 2026-09-09T00:00:00+08:00 → 00:00:05+08:00（5 s，时间戳真实解析、单调、间隔均匀 5.0 s） |\n| 观测值 | 72.1 degC → 73.4 degC |\n| 结构缺失 | 无分组列、无质量/检验列、无事件标记列、无冗余测点 |\n\n### 2.2 用户问题\n\n『该数据有无异常趋势？』——即判定 5 秒窗口内的温升是否构成异常趋势、其物理来源为何。\n\n### 2.3 本体与工艺上下文\n\n本体（`01_ontology/ontology.json`）标注：temp_c 为 predictor 角色；direction=UNKNOWN；normal_range_status=NOT_APPLICABLE（无 SOP / 规格限 / 历史基线）；物理原理候选（能量守恒 m·Cp·dT/dt = Q_in − Q_out、热时间常数 tau=C/(hA)）分别为 UNVERIFIED_NO_PROCESS_CONTEXT 与 NOT_ESTIMABLE_WITH_TWO_ROWS；六类混杂变量（环境温度、热源/负载、冷却、设备归属、工况、传感器健康）全部 NOT_OBSERVED。本体 `discrepancy_signals[0]` 标记 **BLOCKING_FOR_CAUSAL_CONCLUSION**：仅 2 行、1 个数值变量、5 秒跨度时，诊断必须输出 NEEDS_DATA 或 COMPETING_SET，`causal_graph.root_cause_conclusion_allowed=false` [Evidence Rank 5]。\n\n## 3. 数据质量评估\n\n| 维度 | 结论 |\n|---|---|\n| 完整性 | 2 行 × 3 列无缺失；清洗零操作、零损失，原始值与清洗值逐位一致（cleaning_integrity.json） |\n| 时间合法性 | timestamp 为真实解析的 ISO-8601(+08:00)，monotonic=true、median_interval_s=5.0、dropped_unparsable=0（time_alignment.json） |\n| 异常值 | z=[-0.7071, +0.7071]（构造性）、IQR 栏 71.45/74.05 degC 内无点、异常检测因 n<3 前置跳过（process_parameters_screened=0）——『无离群、无异常区间』是样本量下限的构造性结果，**不构成无异常的证据** |\n| 生产状态 | 两行被脚本默认标 steady 为无证据默认值，不据此声明稳态背景 |\n| 批次/分组完整性 | 无批次列、无分组列（组数=1），批次完整性检验不触发 |\n| 统计充分性 | validate_report 判定 **INSUFFICIENT_DATA**；脚本输出的 ROBUST 总体有效性判定为空洞真（total_targets=0、检查列表全空），已降权 |\n\n## 4. 统计分析发现\n\n本节为强制章节。n=2 条件下全部统计方法不可用，可用发现均为算术与视觉事实：\n\n1. **唯一趋势事实 [Evidence Rank 1]**：一阶差分 +1.3 degC，平均速率 0.26 degC/s（derived=true，未插值、未滤波、未拟合，可由原始两行复算）。『drift』仅为两点单调形态的形态学描述，不代表已确认的缓变漂移趋势。\n2. **描述统计（Rank 3，构造性）**：mean=72.75 degC、sample_std=0.9192 degC（ddof=1）、CV=1.263559%——两点构造性统计量，无分布含义，禁止作为离散度/异常证据。\n3. **相关与因果证据为零**：total_pairs_analyzed=0、significant_pairs=0。temp_c×time_hours=0.0 为脚本对 n=2 的退化保护值（两点必然共线，|r| 恒为 1），不代表真实相关系数，禁止据此断言『无趋势』。temp_c 的参数-目标对被剪枝（PRUNED_CORRELATION_PAIRS），timestamp 为 METADATA_COLUMN 禁止进入相关计算。\n4. **Simpson / 趋势 / 时滞检验**：Simpson 分层 NOT_APPLICABLE（无分组列）；变点/批次/分层/leave-one-out 全部 INSUFFICIENT_DATA 或不触发；时滞分析 status=not_computed（applicable=false，pairs",
+      "totalLines": 155,
+      "truncated": true
+     }
+    }
+   ]
+  },
+  "Q2": {
+   "vector_raw": [
+    {
+     "content": "surprised, Miss Bennet, at such an assertion, after\nseeing, as you probably might, the very cold manner of our meeting\nyesterday. Are you much acquainted with Mr. Darcy?”\n\n“As much as I ever wish to be,” cried Elizabeth, warmly. “I have spent\nfour days in the same house with him, and I think him very\ndisagreeable.”\n\n“I have no right to give _my_ opinion,” said Wickham, “as to his being\nagreeable or otherwise. I am not qualified to form one. I have known him\ntoo long and too well to be a fair ju",
+     "score": 0.6581282019615173,
+     "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 6 of 26).md",
+     "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+     "chunk_index": 41,
+     "collection": "kb_b4c48237-6937-440a-9696-cc1e66bed5c1"
+    },
+    {
+     "content": "n for rejection: text-based filtering, the answer may not be answerable. Query: What does Byron invite Jacquenette to do tomorrow night?</td></tr><tr><td colspan=\"1\" rowspan=\"1\">Dialogue (TODSum)</td></tr><tr><td colspan=\"1\" rowspan=\"1\">User: Can you find me a Chinese restaurant please?Agent: Sure. There are 17 chinese restaurants in town. Are you looking for a certain pricerange or location?User: Yes. I would like it to be in the expensive price range.Agent: I have found 5 that fit that descrip",
+     "score": 0.491488516330719,
+     "doc_path": "Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k42.md",
+     "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+     "chunk_index": 2,
+     "collection": "kb_0942f1a6-d81b-413b-a60b-b994680dcaac"
+    },
+    {
+     "content": ".   \nPoor English input: The patient was died.   \nGood English output: The patient died.   \nPoor English input: We think that Leslie likes ourselves.   \nGood English output: We think that Leslie likes us.   \nPoor English input: Janet broke Bill on the finger.   \nGood English output: Janet broke Bill's finger.   \nPoor English input: Mary arranged for, in St. Louis, John to rent a house cheap.   \nGood English output: Mary arranged for John to rent a house in St. Louis.   \nPoor English input: Today",
+     "score": 0.4626607298851013,
+     "doc_path": "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md",
+     "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "chunk_index": 26,
+     "collection": "kb_b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+    },
+    {
+     "content": "owth Theory tells another and diametrically opposite story.",
+     "score": 0.4213331937789917,
+     "doc_path": "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md",
+     "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+     "chunk_index": 21,
+     "collection": "kb_f5770687-6b05-4a8d-8645-af31686ca87e"
+    },
+    {
+     "content": "are the #1 cause of \"search missed a document\".\n\n---",
+     "score": 0.375033974647522,
+     "doc_path": "e2e-demo-0923-022632/平台架构总览.md",
+     "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+     "chunk_index": 34,
+     "collection": "kb_09b2102e-7dd2-4f4e-afe0-13b40c9b1463"
+    },
+    {
+     "content": "presentations.",
+     "score": 0.1337,
+     "doc_path": "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+     "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+     "chunk_index": 67,
+     "collection": "kb_b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+     "short_content_warning": true
+    },
+    {
+     "content": "# Chapter 1",
+     "score": 0.1248,
+     "doc_path": "自然科学与地球科学/climate-science__2012.10385__large-scale-features-of-southwest-monsoon-du.md.md",
+     "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "chunk_index": 0,
+     "collection": "kb_1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "short_content_warning": true
+    },
+    {
+     "content": "revious references for more details.",
+     "score": 0.1193,
+     "doc_path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md",
+     "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+     "chunk_index": 51,
+     "collection": "kb_8fa4db59-adde-4d6d-9fdb-2c375400e631",
+     "short_content_warning": true
+    },
+    {
+     "content": "## 2. 诊断背景",
+     "score": 0.1146,
+     "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+     "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+     "chunk_index": 2,
+     "collection": "kb_3aea5973-1d8a-4db6-b415-6d4432f514bb",
+     "short_content_warning": true
+    },
+    {
+     "content": "## 8. 建议与后续",
+     "score": 0.1138,
+     "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+     "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+     "chunk_index": 27,
+     "collection": "kb_3aea5973-1d8a-4db6-b415-6d4432f514bb",
+     "short_content_warning": true
+    }
+   ],
+   "ranked": [
+    {
+     "content": "surprised, Miss Bennet, at such an assertion, after\nseeing, as you probably might, the very cold manner of our meeting\nyesterday. Are you much acquainted with Mr. Darcy?”\n\n“As much as I ever wish to be,” cried Elizabeth, warmly. “I have spent\nfour days in the same house with him, and I think him very\ndisagreeable.”\n\n“I have no right to give _my_ opinion,” said Wickham, “as to his being\nagreeable or otherwise. I am not qualified to form one. I have known him\ntoo long and too well to be a fair ju",
+     "score": 0.6581282019615173,
+     "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 6 of 26).md",
+     "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+     "chunk_index": 41,
+     "collection": "kb_b4c48237-6937-440a-9696-cc1e66bed5c1"
+    },
+    {
+     "content": "n for rejection: text-based filtering, the answer may not be answerable. Query: What does Byron invite Jacquenette to do tomorrow night?</td></tr><tr><td colspan=\"1\" rowspan=\"1\">Dialogue (TODSum)</td></tr><tr><td colspan=\"1\" rowspan=\"1\">User: Can you find me a Chinese restaurant please?Agent: Sure. There are 17 chinese restaurants in town. Are you looking for a certain pricerange or location?User: Yes. I would like it to be in the expensive price range.Agent: I have found 5 that fit that descrip",
+     "score": 0.491488516330719,
+     "doc_path": "Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k42.md",
+     "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+     "chunk_index": 2,
+     "collection": "kb_0942f1a6-d81b-413b-a60b-b994680dcaac"
+    },
+    {
+     "content": ".   \nPoor English input: The patient was died.   \nGood English output: The patient died.   \nPoor English input: We think that Leslie likes ourselves.   \nGood English output: We think that Leslie likes us.   \nPoor English input: Janet broke Bill on the finger.   \nGood English output: Janet broke Bill's finger.   \nPoor English input: Mary arranged for, in St. Louis, John to rent a house cheap.   \nGood English output: Mary arranged for John to rent a house in St. Louis.   \nPoor English input: Today",
+     "score": 0.4626607298851013,
+     "doc_path": "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md",
+     "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "chunk_index": 26,
+     "collection": "kb_b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+    },
+    {
+     "content": "owth Theory tells another and diametrically opposite story.",
+     "score": 0.4213331937789917,
+     "doc_path": "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md",
+     "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+     "chunk_index": 21,
+     "collection": "kb_f5770687-6b05-4a8d-8645-af31686ca87e"
+    },
+    {
+     "content": "are the #1 cause of \"search missed a document\".\n\n---",
+     "score": 0.375033974647522,
+     "doc_path": "e2e-demo-0923-022632/平台架构总览.md",
+     "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+     "chunk_index": 34,
+     "collection": "kb_09b2102e-7dd2-4f4e-afe0-13b40c9b1463"
+    }
+   ],
+   "gate": [
+    {
+     "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 6 of 26).md",
+     "score": 0.6581282019615173,
+     "chunk": "surprised, Miss Bennet, at such an assertion, after\nseeing, as you probably might, the very cold manner of our meeting\nyesterday. Are you much acquainted with Mr. Darcy?”\n\n“As much as I ever wish to be,” cried Elizabeth, warmly. “I have spent\nfour days in the same house with him, and I think him very\ndisagreeable.”\n\n“I have no right to give _my_ opinion,” said Wickham, “as to his being\nagreeable or otherwise. I am not qualified to form one. I have known him\ntoo long and too well to be a fair ju",
+     "read": {
+      "success": true,
+      "path": "Novel-PridePrejudice/pride_and_prejudice (part 6 of 26).md",
+      "content": "# pride_and_prejudice（第 6/26 部分）\n“Her indifferent state of health unhappily prevents her being in town;\nand by that means, as I told Lady Catherine myself one day, has deprived\nthe British Court of its brightest ornament. Her Ladyship seemed pleased\nwith the idea; and you may imagine that I am happy on every occasion to\noffer those little delicate compliments which are always acceptable to\nladies. I have more than once observed to Lady Catherine, that her\ncharming daughter seemed born to be a duchess; and that the most\nelevated rank, instead of giving her consequence, would be adorned by\nher. These are the kind of little things which please her Ladyship, and\nit is a sort of attention which I conceive myself peculiarly bound to\npay.”\n\n“You judge very properly,” said Mr. Bennet; “and it is happy for you\nthat you possess the talent of flattering with delicacy. May I ask\nwhether these pleasing attentions proceed from the impulse of the\nmoment, or are the result of previous study?”\n\n“They arise chiefly from what is passing at the time; and though I\nsometimes amuse myself with suggesting and arranging such little elegant\ncompliments as may be adapted to ordinary occasions, I always wish to\ngive them as unstudied an air as possible.”\n\nMr. Bennet’s expectations were fully answered. His cousin was as absurd\nas he had hoped; and he listened to him with the keenest enjoyment,\nmaintaining at the same time the most resolute composure of countenance,\nand, except in an occasional glance at Elizabeth, requiring no partner\nin his pleasure.\n\nBy tea-time, however, the dose had been enough, and Mr. Bennet was glad\nto take his guest into the drawing-room again, and when tea was over,\nglad to invite him\n\n[Illustration:\n\n“Protested\nthat he never read novels”      H.T Feb 94\n]\n\nto read aloud to the ladies. Mr. Collins readily assented, and a book\nwas produced; but on beholding it (for everything announced it to be\nfrom a circulating library) he started back, and, begging pardon,\nprotested that he never read novels. Kitty stared at him, and Lydia\nexclaimed. Other books were produced, and after some deliberation he\nchose “Fordyce’s Sermons.” Lydia gaped as he opened the volume; and\nbefore he had, with very monotonous solemnity, read three pages, she\ninterrupted him with,--\n\n“Do you know, mamma, that my uncle Philips talks of turning away\nRichard? and if he does, Colonel Forster will hire him. My aunt told me\nso herself on Saturday. I shall walk to Meryton to-morrow to hear more\nabout it, and to ask when Mr. Denny comes back from town.”\n\nLydia was bid by her two eldest sisters to hold her tongue; but Mr.\nCollins, much offended, laid aside his book, and said,--\n\n“I have often observed how little young ladies are interested by books\nof a serious stamp, though written solely for their benefit. It amazes\nme, I confess; for certainly there can be nothing so advantageous to\nthem as instruction. But I will no longer importune my young cousin.”\n\nThen, turning to Mr. Bennet, he off",
+      "totalLines": 557,
+      "truncated": true
+     }
+    },
+    {
+     "doc_path": "Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k42.md",
+     "score": 0.491488516330719,
+     "chunk": "n for rejection: text-based filtering, the answer may not be answerable. Query: What does Byron invite Jacquenette to do tomorrow night?</td></tr><tr><td colspan=\"1\" rowspan=\"1\">Dialogue (TODSum)</td></tr><tr><td colspan=\"1\" rowspan=\"1\">User: Can you find me a Chinese restaurant please?Agent: Sure. There are 17 chinese restaurants in town. Are you looking for a certain pricerange or location?User: Yes. I would like it to be in the expensive price range.Agent: I have found 5 that fit that descrip",
+     "read": {
+      "success": false,
+      "error": "{\n  \"error\": true,\n  \"url\": \"http://localhost:6789/api/kb/document?max_chars=3000&offset=0&limit=200&kb_id=b4c48237-6937-440a-9696-cc1e66bed5c1&doc_path=Corpus-Chunks800%2Fnlp__2310.10981__instructive-dialogue-summarization-with-quer__k42.md\",\n  \"statusCode\": 400,\n  \"statusMessage\": \"doc_id, path, or kb_id+doc_path is required\",\n  \"message\": \"doc_id, path, or kb_id+doc_path is required\",\n  \"stack\": [\n    \"Error: doc_id, path, or kb_id+doc_path is required\",\n    \"at createError (file:///D:/codes/",
+      "status": 400
+     }
+    },
+    {
+     "doc_path": "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md",
+     "score": 0.4626607298851013,
+     "chunk": ".   \nPoor English input: The patient was died.   \nGood English output: The patient died.   \nPoor English input: We think that Leslie likes ourselves.   \nGood English output: We think that Leslie likes us.   \nPoor English input: Janet broke Bill on the finger.   \nGood English output: Janet broke Bill's finger.   \nPoor English input: Mary arranged for, in St. Louis, John to rent a house cheap.   \nGood English output: Mary arranged for John to rent a house in St. Louis.   \nPoor English input: Today",
+     "read": {
+      "success": true,
+      "path": "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md",
+      "content": "# large-language-models__2005.14165__language-models-are-few-shot-learners.md.md（第 4/13 部分）\n章节: Language Models are Few-Shot Learners > 3.9.5 Learning and Using Novel Words\n## 3.9.5 Learning and Using Novel Words\n\n\nA task studied in developmental linguistics [CB78] is the ability to learn and utilize new words, for example using a word in a sentence after seeing it defined only once, or conversely inferring a word's meaning from only one usage. Here we qualitatively test GPT-3's ability to do the former. Specifically, we give GPT-3 the definition of a nonexistent word, such as “Gigamuru\", and then ask it to use it in a sentence. We provide one to five previous examples of a (separate)\n\nHuman ability to detect model generated news articles  \n![](images/d1560545dfeb9df715c5ec0c0dbb8b8c5c1a03204730c0111b4848b7c9c81844.jpg)  \nFigure 3.13: People's ability to identify whether news articles are model-generated (measured by the ratio of correct assignments to non-neutral assignments) decreases as model size increases. Accuracy on the outputs on the deliberatelybad control model (an unconditioned GPT-3 Small model with higher output randomness) is indicated with the dashed line at the top, and the random chance (50%) is indicated with the dashed line at the bottom. Line of best fit is a power law with 95% confidence intervals.\n\n<table><tr><td></td><td>Mean accuracy</td><td>95% Confidence Interval (low, hi)</td><td>t compared to control (p-value)</td><td>&quot;I don&#x27;t know&quot; assignments</td></tr><tr><td>Control</td><td>88%</td><td>84%-91%</td><td></td><td>2.7%</td></tr><tr><td>GPT-3 175B</td><td>52%</td><td>48%–57%</td><td>12.7 (3.2e-23)</td><td>10.6%</td></tr></table>\n\nTable 3.12: People's ability to identify whether \\~ 500 word articles are model generated (as measured by the ratio of correct assignments to non-neutral assignments) was 88% on the control model and 52% on GPT-3 175B. This table shows the results of a two-sample T-Test for the difference in mean accuracy between GPT-3 175B and the control model (an unconditional GPT-3 Small model with increased output randomness).\n\nTitle: United Methodists Agree to Historic Split   \nSubtitle: Those who oppose gay marriage will form their own denomination   \nArticle:After two days of intense debate, the United Methodist Church   \nhas agreed to a historic split - one that is expected to end in the   \ncreation of a new denomination, one that will be \"theologically and   \nsocially conservative,\" according to The Washington Post. The majority of   \ndelegates attending the church's annual General Conference in May voted to   \nstrengthen a ban on the ordination of LGBTQ clergy and to write new rules   \nthat will \"discipline\" clergy who officiate at same-sex weddings. But   \nthose who opposed these measures have a new plan: They say they will form a   \nseparate denomination by 2020, calling their church the Christian Methodist   \ndenomination.   \nThe Post notes that the denomination, which claims 12.5 mi",
+      "totalLines": 186,
+      "truncated": true
+     }
+    },
+    {
+     "doc_path": "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md",
+     "score": 0.4213331937789917,
+     "chunk": "owth Theory tells another and diametrically opposite story.",
+     "read": {
+      "success": true,
+      "path": "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md",
+      "content": "# Unified Growth Theory Contradicted by the Economic Growth in Europe\n\nRon W Nielsen1\n\nEnvironmental Futures Research Institute, Gold Coast Campus, Griffith University, Qld, 4222, Australia\n\nDecember, 2015\n\nHistorical economic growth in Western and Eastern Europe is analysed. These regions should have produced the best and the most convincing confirmation of the Unified Growth Theory because they, and in particular Western Europe, were the centre of the Industrial Revolution, which according to Galor was the prime engine of economic growth. However, the data for Western and Eastern Europe show a remarkable disagreement with the Unified Growth Theory. There is no connection, whatever, between the data and the Unified Growth Theory. The data show that there was never a transition from stagnation to growth because there was no stagnation. Industrial Revolution, which should have the strongest influence in these regions, had absolutely no impact on changing the economic growth trajectories. The alleged remarkable or stunning escape from Malthusian trap did not happen because there was no trap. Unified Growth Theory does not explain the mechanism of the economic growth because its explanations are based on mythical features, which did not exist, the features contradicted by data. This theory needs to be either thoroughly revised or most likely replaced by a theory supported by a professional analysis of economic growth data.\n\n## Introduction\n\nIn the recent series of publications (Nielsen, 2015a, 2015b, 2015c) we have demonstrated that Unified Growth Theory (Galor, 2005a, 2011) is contradicted by the economic growth in Africa, Asia and in the countries of the former USSR. Earlier, we have demonstrated that this theory is contradicted by the world economic growth and by the economic growth in Western Europe (Nielsen, 2014). Implicitly, this theory is also contradicted by the mathematical analysis of the historical economic growth showing repeatedly that global, regional and national economic growths were hyperbolic (Nielsen, 2015d).\n\nAny theory contradicted by just one set of good data should be either rejected or revised. Unified Growth Theory is contradicted repeatedly by data. However, what is even more remarkable is that this theory is contradicted by the same data which were used during its development. Such a paradox is probably rare in science but in this case it can be easily explained because the data were never properly analysed.\n\nData for the Gross Domestic Product per capita (GDP/cap), often used in the Unified Growth Theory, cause a significant problem with their interpretations. They are even more confusing than the GDP data. In one of the publications we have explained how to understand the GDP/cap distributions and how they should be analysed (Nielsen, 2015e). These distributions cannot be simplified in the same way as the GDP distributions by using their reciprocal values but we have explained how these distributions can be also used to",
+      "totalLines": 165,
+      "truncated": true
+     }
+    },
+    {
+     "doc_path": "e2e-demo-0923-022632/平台架构总览.md",
+     "score": 0.375033974647522,
+     "chunk": "are the #1 cause of \"search missed a document\".\n\n---",
+     "read": {
+      "success": true,
+      "path": "e2e-demo-0923-022632/平台架构总览.md",
+      "content": "# Agentic Knowledge Base — Architecture & Development Guide\n\n> Version 2.3 · Last reviewed: 2026-08-05\n\nThis document describes the **current, implemented** architecture of the RAG Knowledge Platform: service topology, the five-layer storage model, the 94-tool MCP surface, the QDCVR retrieval method, the experience lifecycle, the SOUL persona system, and the conventions every new change must follow. For command-level usage see `README.md`; for the trigger contract see `CLAUDE.md`.\n\n---\n\n## 1. Service Topology\n\nThree long-running services plus one MCP layer, all configured from a single root `config.yml` (backend-only keys live in `backend/config.yml`):\n\n```\nBrowser ──(fetch)──▶ Nuxt 3 Web UI (proxy layer)        dev 6789 / prod 3000\n                         │  server-to-server (trust_env=False)\n                         ▼\n                     FastAPI Backend + MinerU OCR         dev 8765 / prod 8001\n                         │  subprocess (Job Object / prctl / pgrp)\n                         ▼\n                     MinerU OCR engine (ephemeral port)\n\nClaude Code / Agent ──(MCP stdio)──▶ kb-mcp server        94 tools\n                         │  HTTP → web proxy / backend  +  direct file reads\n                         ▼\n                     Nuxt / Backend  (writes)  ·  .tree-fs.json / .knowledge-base.yml (reads)\n```\n\n- **Web (Nuxt 3)** is a server-to-server proxy: the browser never hits FastAPI directly (no CORS). It also owns the on-disk KB store (`.tree-fs.json` + `.knowledge-base.yml`).\n- **Backend (FastAPI)** owns parse scheduling, MinerU subprocess lifecycle, vector index (ChromaDB + BGE-M3), Neo4j graph, experience store, SOUL training/evaluation, and the meditation scheduler.\n- **kb-mcp (FastMCP)** exposes **94 tools** over stdio; `server.py` contains zero HTTP code — all HTTP lives in `kb_client/client.py`. Parse/graph/reindex/training tools are **non-blocking**: they register a background task and return a `task_id` immediately.\n- **MinerU** runs as a hidden subprocess on an **ephemeral port** (`MineruApiManager(port=None)` auto-picks a free port). Never hardcode a port — read `manager.port` / `manager.api_url`.\n\n---\n\n## 2. The 94 MCP Tools\n\nAll tools are MCP-native (`mcp__kb-mcp__*`). Category breakdown (counts verified from `server.py`):\n\n| Category | Count | Highlights |\n|---|:---:|---|\n| Health / project lifecycle | 4 | `backend_status` · `kb_project_status` · `kb_project_start` · `kb_project_update` |\n| KB CRUD | 4 | `kb_list` · `kb_create` · `kb_update` · `kb_delete` |\n| Document CRUD + listing | 9 | `kb_doc_read/create/update_meta/update_content/delete/batch_delete/move/save_parsed` · `kb_get_documents` (`lightweight=true` for agentic catalog scan) |\n| Search | 4 | `kb_search` (BM25) · `kb_search_vector` · `kb_search_two_stage` (primary) · `kb_search_stats` |\n| Vector / index | 6 | `kb_index_document` · `kb_batch_index` · `kb_reindex` (task) · `kb_cleanup_orphan_collections` · `kb_find_duplicates` · `kb_task_status` |\n| File system | 3 ",
+      "totalLines": 228,
+      "truncated": true
+     }
+    }
+   ]
+  },
+  "Q3": {
+   "vector_raw": [
+    {
+     "content": "came to tell Mr. Gardiner that he\n     had found out where your sister and Mr. Wickham were, and that he\n     had seen and talked with them both--Wickham repeatedly, Lydia once.\n     From what I can collect, he left Derbyshire only one day after\n     ourselves, and came to town with the resolution of hunting for\n     them. The motive professed was his conviction of its being owing to\n     himself that Wickham’s worthlessness had not been so well known as\n     to make it impossible for any young",
+     "score": 0.6621054410934448,
+     "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 21 of 26).md",
+     "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+     "chunk_index": 37,
+     "collection": "kb_b4c48237-6937-440a-9696-cc1e66bed5c1"
+    },
+    {
+     "content": "td></tr><tr><td></td><td>jacket</td><td>Grace was happy to trade me her sweater for my jacket. She thinks the</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td>looks dowdy on her.</td><td></td></tr><tr><td></td><td>Target Completion →</td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>\n\nFigure G.13: Forma",
+     "score": 0.4669419527053833,
+     "doc_path": "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 8 of 13).md",
+     "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "chunk_index": 16,
+     "collection": "kb_b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+    },
+    {
+     "content": "is given in Subsection 2.5. We close the discussion with the conclusion in Section 3.",
+     "score": 0.4343973398208618,
+     "doc_path": "经济与社会/finance__1412.5558__backtest-of-trading-systems-on-candle-charts.md.md",
+     "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+     "chunk_index": 14,
+     "collection": "kb_f5770687-6b05-4a8d-8645-af31686ca87e"
+    },
+    {
+     "content": "Lem. 1.1], [43, Prop. 4.16], and [2, Def. 2.4 and Thm. 2.5]).",
+     "score": 0.4186854362487793,
+     "doc_path": "自然科学与地球科学/mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 1 of 7).md",
+     "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "chunk_index": 68,
+     "collection": "kb_1e6199ea-f380-44e2-94fc-d431f0f9bb6b"
+    },
+    {
+     "content": "## 结论\n\n若本篇可被检索命中，则证明 AgentWorkShop 到 rag-knowledge 的全链路集成（对话式入库+检索）真实可用。",
+     "score": 0.4063739776611328,
+     "doc_path": "aw-industrial/集成冒烟测试文档.md",
+     "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+     "chunk_index": 2,
+     "collection": "kb_3aea5973-1d8a-4db6-b415-6d4432f514bb"
+    },
+    {
+     "content": "# AgentWorkShop 集成说明(rag-bridge 插件消费契约)\n\n> 本项目作为 [AgentWorkShop](https://github.com/kingdol666/AgentWorkShop) 的**知识持久化与检索插件**后端。\n> AgentWorkShop 侧插件:`.AgentWorkShop/plugins/rag-bridge/`(以及 diag-bridge 的报告自动入库)。\n> 本文记录 2026-09-07 三系统集成时钉死的端口与端点契约,供两边任一方升级时对照。",
+     "score": 0.37492769956588745,
+     "doc_path": "e2e-demo-0923-022632/AgentWorkShop 集成指南.md",
+     "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+     "chunk_index": 0,
+     "collection": "kb_09b2102e-7dd2-4f4e-afe0-13b40c9b1463"
+    },
+    {
+     "content": "investigations.",
+     "score": 0.1439,
+     "doc_path": "Corpus-Chunks800/oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat__k14.md",
+     "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+     "chunk_index": 4,
+     "collection": "kb_0942f1a6-d81b-413b-a60b-b994680dcaac",
+     "short_content_warning": true
+    },
+    {
+     "content": "he views of the funders.",
+     "score": 0.1387,
+     "doc_path": "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 2 of 6).md",
+     "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+     "chunk_index": 44,
+     "collection": "kb_b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+     "short_content_warning": true
+    },
+    {
+     "content": "h concludes the proof.",
+     "score": 0.1344,
+     "doc_path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 6 of 12).md",
+     "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+     "chunk_index": 50,
+     "collection": "kb_8fa4db59-adde-4d6d-9fdb-2c375400e631",
+     "short_content_warning": true
+    },
+    {
+     "content": "## 7. 证据全景附录",
+     "score": 0.1154,
+     "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+     "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+     "chunk_index": 22,
+     "collection": "kb_3aea5973-1d8a-4db6-b415-6d4432f514bb",
+     "short_content_warning": true
+    }
+   ],
+   "ranked": [
+    {
+     "content": "came to tell Mr. Gardiner that he\n     had found out where your sister and Mr. Wickham were, and that he\n     had seen and talked with them both--Wickham repeatedly, Lydia once.\n     From what I can collect, he left Derbyshire only one day after\n     ourselves, and came to town with the resolution of hunting for\n     them. The motive professed was his conviction of its being owing to\n     himself that Wickham’s worthlessness had not been so well known as\n     to make it impossible for any young",
+     "score": 0.6621054410934448,
+     "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 21 of 26).md",
+     "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+     "chunk_index": 37,
+     "collection": "kb_b4c48237-6937-440a-9696-cc1e66bed5c1"
+    },
+    {
+     "content": "td></tr><tr><td></td><td>jacket</td><td>Grace was happy to trade me her sweater for my jacket. She thinks the</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td>looks dowdy on her.</td><td></td></tr><tr><td></td><td>Target Completion →</td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>\n\nFigure G.13: Forma",
+     "score": 0.4669419527053833,
+     "doc_path": "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 8 of 13).md",
+     "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "chunk_index": 16,
+     "collection": "kb_b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+    },
+    {
+     "content": "is given in Subsection 2.5. We close the discussion with the conclusion in Section 3.",
+     "score": 0.4343973398208618,
+     "doc_path": "经济与社会/finance__1412.5558__backtest-of-trading-systems-on-candle-charts.md.md",
+     "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+     "chunk_index": 14,
+     "collection": "kb_f5770687-6b05-4a8d-8645-af31686ca87e"
+    },
+    {
+     "content": "Lem. 1.1], [43, Prop. 4.16], and [2, Def. 2.4 and Thm. 2.5]).",
+     "score": 0.4186854362487793,
+     "doc_path": "自然科学与地球科学/mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 1 of 7).md",
+     "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "chunk_index": 68,
+     "collection": "kb_1e6199ea-f380-44e2-94fc-d431f0f9bb6b"
+    },
+    {
+     "content": "## 结论\n\n若本篇可被检索命中，则证明 AgentWorkShop 到 rag-knowledge 的全链路集成（对话式入库+检索）真实可用。",
+     "score": 0.4063739776611328,
+     "doc_path": "aw-industrial/集成冒烟测试文档.md",
+     "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+     "chunk_index": 2,
+     "collection": "kb_3aea5973-1d8a-4db6-b415-6d4432f514bb"
+    },
+    {
+     "content": "# AgentWorkShop 集成说明(rag-bridge 插件消费契约)\n\n> 本项目作为 [AgentWorkShop](https://github.com/kingdol666/AgentWorkShop) 的**知识持久化与检索插件**后端。\n> AgentWorkShop 侧插件:`.AgentWorkShop/plugins/rag-bridge/`(以及 diag-bridge 的报告自动入库)。\n> 本文记录 2026-09-07 三系统集成时钉死的端口与端点契约,供两边任一方升级时对照。",
+     "score": 0.37492769956588745,
+     "doc_path": "e2e-demo-0923-022632/AgentWorkShop 集成指南.md",
+     "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+     "chunk_index": 0,
+     "collection": "kb_09b2102e-7dd2-4f4e-afe0-13b40c9b1463"
+    }
+   ],
+   "gate": [
+    {
+     "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 21 of 26).md",
+     "score": 0.6621054410934448,
+     "chunk": "came to tell Mr. Gardiner that he\n     had found out where your sister and Mr. Wickham were, and that he\n     had seen and talked with them both--Wickham repeatedly, Lydia once.\n     From what I can collect, he left Derbyshire only one day after\n     ourselves, and came to town with the resolution of hunting for\n     them. The motive professed was his conviction of its being owing to\n     himself that Wickham’s worthlessness had not been so well known as\n     to make it impossible for any young",
+     "read": {
+      "success": true,
+      "path": "Novel-PridePrejudice/pride_and_prejudice (part 21 of 26).md",
+      "content": "# pride_and_prejudice（第 21/26 部分）\nMr. Gardiner soon wrote again to his brother. To Mr. Bennet’s\nacknowledgments he briefly replied, with assurances of his eagerness to\npromote the welfare of any of his family; and concluded with entreaties\nthat the subject might never be mentioned to him again. The principal\npurport of his letter was to inform them, that Mr. Wickham had resolved\non quitting the militia.\n\n“It was greatly my wish that he should do so,” he added, “as soon as his\nmarriage was fixed on. And I think you will agree with me, in\nconsidering a removal from that corps as highly advisable, both on his\naccount and my niece’s. It is Mr. Wickham’s intention to go into the\nRegulars; and, among his former friends, there are still some who are\nable and willing to assist him in the army. He has the promise of an\nensigncy in General----’s regiment, now quartered in the north. It is\nan advantage to have it so far from this part of the kingdom. He\npromises fairly; and I hope among different people, where they may each\nhave a character to preserve, they will both be more prudent. I have\nwritten to Colonel Forster, to inform him of our present arrangements,\nand to request that he will satisfy the various creditors of Mr. Wickham\nin and near Brighton with assurances of speedy payment, for which I have\npledged myself. And will you give yourself the trouble of carrying\nsimilar assurances to his creditors in Meryton, of whom I shall subjoin\na list, according to his information? He has given in all his debts; I\nhope at least he has not deceived us. Haggerston has our directions, and\nall will be completed in a week. They will then join his regiment,\nunless they are first invited to Longbourn; and I understand from Mrs.\nGardiner that my niece is very desirous of seeing you all before she\nleaves the south. She is well, and begs to be dutifully remembered to\nyou and her mother.--Yours, etc.\n\n“E. GARDINER.”\n\nMr. Bennet and his daughters saw all the advantages of Wickham’s\nremoval from the ----shire, as clearly as Mr. Gardiner could do. But\nMrs. Bennet was not so well pleased with it. Lydia’s being settled in\nthe north, just when she had expected most pleasure and pride in her\ncompany, for she had by no means given up her plan of their residing in\nHertfordshire, was a severe disappointment; and, besides, it was such a\npity that Lydia should be taken from a regiment where she was acquainted\nwith everybody, and had so many favourites.\n\n“She is so fond of Mrs. Forster,” said she, “it will be quite shocking\nto send her away! And there are several of the young men, too, that she\nlikes very much. The officers may not be so pleasant in General----’s\nregiment.”\n\nHis daughter’s request, for such it might be considered, of being\nadmitted into her family again, before she set off for the north,\nreceived at first an absolute negative. But Jane and Elizabeth, who\nagreed in wishing, for the sake of their sister’s feelings and\nconsequence, that she should be noticed on her marri",
+      "totalLines": 540,
+      "truncated": true
+     }
+    },
+    {
+     "doc_path": "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 8 of 13).md",
+     "score": 0.4669419527053833,
+     "chunk": "td></tr><tr><td></td><td>jacket</td><td>Grace was happy to trade me her sweater for my jacket. She thinks the</td></tr><tr><td></td><td></td><td></td></tr><tr><td></td><td>looks dowdy on her.</td><td></td></tr><tr><td></td><td>Target Completion →</td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr><tr><td></td><td></td></tr></table>\n\nFigure G.13: Forma",
+     "read": {
+      "success": true,
+      "path": "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 8 of 13).md",
+      "content": "# large-language-models__2005.14165__language-models-are-few-shot-learners.md.md（第 8/13 部分）\n章节: Language Models are Few-Shot Learners > G Details of Task Phrasing and Specifications\n## G Details of Task Phrasing and Specifications\n\n\nThe following figures illustrate the formatting and phrasing of all the tasks included in the paper. All data comes from the ground truth datasets in this section, and no samples from GPT-3 are included here.\n\n![](images/eb3b2ab1fa0f1c82ce830d6af0003441837e004a3d2bea1d842dd4d363973bae.jpg)\n\n<table><tr><td colspan=\"5\">A:</td></tr><tr><td></td><td>Correct Answer →</td><td></td><td>taboo</td><td></td></tr><tr><td>Incorrect Answer →</td><td></td><td></td><td>cheerful topics</td><td></td></tr><tr><td>Incorrect Answer →</td><td></td><td></td><td>rude topics</td><td></td></tr><tr><td>Incorrect Answer →</td><td></td><td></td><td></td><td>topics that can never be talked about</td></tr></table>\n\nFigure G.1: Formatted dataset example for RACE-h. When predicting, we normalize by the unconditional probability of each answer as described in 2.\n\nContext → anli 2: anli 2: The Gold Coast Hotel & Casino is a hotel and casino   \nlocated in Paradise, Nevada. This locals' casino is owned and operated   \nby Boyd Gaming. The Gold Coast is located one mile (\\~ 1.6km) west of the   \nLas Vegas Strip on West Flamingo Road. It is located across the street   \nfrom the Palms Casino Resort and the Rio All Suite Hotel and Casino.   \nQuestion: The Gold Coast is a budget-friendly casino. True, False, or   \nNeither?   \nCorrect Answer → Neither   \nIncorrect Answer → True   \nIncorrect Answer → False  \nFigure G.2: Formatted dataset example for ANLI R2\n\n![](images/f7046c379c23c08c7d6684c184a63a5d2c75906d3d372b8b5cc9ff4576a0bc7f.jpg)  \nFigure G.3: Formatted dataset example for RACE-m. When predicting, we normalize by the unconditional probability of each answer as described in 2.\n\n<table><tr><td>Context →</td><td>How to apply sealant to wood.</td></tr><tr><td>Correct Answer →</td><td>Using a brush, brush on sealant onto wood until it is fully saturated with</td></tr><tr><td>Incorrect Answer →</td><td>the sealant. Using a brush, drip on sealant onto wood until it is fully saturated with the sealant.</td></tr></table>\n\nFigure G.4: Formatted dataset example for PIQA\n\nContext → My body cast a shadow over the grass because   \nCorrect Answer → the sun was rising.   \nIncorrect Answer → the grass was cut.   \nFigure G.5: Formatted dataset example for COPA   \nContext → (CNN) Yuval Rabin, whose father, Yitzhak Rabin, was assassinated while   \nserving as Prime Minister of Israel, criticized Donald Trump for appealing   \nto \"Second Amendment people\" in a speech and warned that the words that   \npoliticians use can incite violence and undermine democracy.\"Trump's   \nwords are an incitement to the type of political violence that touched   \nme personally,\" Rabin wrote in USAToday. He said that Trump's appeal to   \n\"Second Amendment people\" to stop Hillary Clinton -- commen",
+      "totalLines": 277,
+      "truncated": true
+     }
+    },
+    {
+     "doc_path": "经济与社会/finance__1412.5558__backtest-of-trading-systems-on-candle-charts.md.md",
+     "score": 0.4343973398208618,
+     "chunk": "is given in Subsection 2.5. We close the discussion with the conclusion in Section 3.",
+     "read": {
+      "success": true,
+      "path": "经济与社会/finance__1412.5558__backtest-of-trading-systems-on-candle-charts.md.md",
+      "content": "# Backtest of Trading Systems on Candle Charts\n\nSTANISLAUS MAIER-PAAPE\n\nInstitut für Mathematik, RWTH Aachen, Templergraben 55, D-52052 Aachen, Germany maier@instmath.rwth-aachen.de\n\nANDREAS PLATEN\n\nInstitut für Mathematik, RWTH Aachen, Templergraben 55, D-52052 Aachen, Germany platen@instmath.rwth-aachen.de\n\nDecember 18, 2014\n\nAbstract In this paper we try to design the necessary calculation needed for backtesting trading systems when only candle chart data are available. We lay particular emphasis on situations which are not or not uniquely decidable and give possible strategies to handle such situations.\n\nKeywords backtest evaluation, historical simulation, trading system, candle chart, imperfect data\n\nJEL classification C15, C63, C99\n\n## 1 Introduction\n\nSince at least a decade more and more software solutions for self-designable trading systems have emerged (e.g. Ninjatrader, Tradestation, Tradesignal online, Nanotrader, Investox, to name just a few). All of the listed also incorporate a backtesting (also called historical simulation) tool including helpful statistical data on the trading success, i.e. it is possible to run a trading system on historical data to simulate the trades. The idea is that trading systems which were successful in the past should be successful in the future as well. Analogously a trading system which performs bad on historical data cannot be trusted and is supposed to be unsuccessful in the future. This makes backtesting an important tool for designing trading systems.\n\nAlthough already several years on the market we found that many of the software solutions perform calculations sometimes incorrectly. This concerns even situations which are uniquely decidable. When backtests are evaluated just on the knowledge of candle data, however, there are always situations, which can not or not uniquely (SNU: situation which is not unique) be determined, see e.g. the book of Pardo [10, Chapter 6, Section “Software Limitations\"] or Harris [5, Chapter 6]. Pardo [10] and Harris [5] describe this problem but do not discuss the backtest algorithm itself and how to deal with such problems. The least what a backtest engine should do in these situations is to warn the user about these problems. Also the user should be informed, how such situations are handled. We suggest that there should be four different strategies to choose from:\n\nI. worst case (wc): the SNU is evaluated as the worst possible case for the user.\n\nII. best case (bc): the SNU is evaluated as the best possible case for the user.\n\nIII. ignore (ig): the entry signal or the whole trade is ignored.\n\nIV. exact (ex): to resolve the problem, more data (sometimes even tick data) have to be loaded.\n\nTo the best of the author's knowledge there is no publication about backtest algorithms itself but only for the statical evaluation of backtests. Typical statistical measures like Sharpe ratio, average trade, profit factor and many more, see e.g. [7, Chapter 22], give hints on how th",
+      "totalLines": 226,
+      "truncated": true
+     }
+    },
+    {
+     "doc_path": "自然科学与地球科学/mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 1 of 7).md",
+     "score": 0.4186854362487793,
+     "chunk": "Lem. 1.1], [43, Prop. 4.16], and [2, Def. 2.4 and Thm. 2.5]).",
+     "read": {
+      "success": true,
+      "path": "自然科学与地球科学/mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 1 of 7).md",
+      "content": "# mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md.md（第 1/7 部分）\n章节: Optimal distributed control of a stochastic Cahn-Hilliard equation \\*\n# Optimal distributed control of a stochastic Cahn-Hilliard equation \\*\n\n\nLUCA SCARPA\n\nE-mail: luca.scarpa@univie.ac.at\n\nFaculty of Mathematics, University of Vienna Oskar-Morgenstern-Platz 1, 1090 Vienna, Austria\n\n## Abstract\n\n\nWe study an optimal distributed control problem associated to a stochastic Cahn-Hilliard equation with a classical double-well potential and Wiener multiplicative noise, where the control is represented by a source-term in the definition of the chemical potential. By means of probabilistic and analytical compactness arguments, existence of an optimal control is proved. Then the linearized system and the corresponding backward adjoint system are analysed through monotonicity and compactness arguments, and first-order necessary conditions for optimality are proved.\n\nAMS Subject Classification: 35K55, 35R60, 60H15, 80A22, 82C26.\n\nKey words and phrases: stochastic Cahn-Hilliard equation, phase separation, optimal control, linearized state system, adjoint state system, first-order optimality conditions.\n\n## 1 Introduction\n\n\nThe pure Cahn-Hilliard equation on a smooth bounded domain $D \\subset \\mathbb { R } ^ { N } , N = 2 , 3 .$ can be written in its simplest form as\n\n$$\n\\partial _ { t } y - \\Delta w = 0 , \\quad w = - \\Delta y + \\Psi ^ { \\prime } ( y ) - u \\qquad \\mathrm { i n ~ } ( 0 , T ) \\times D ,\n$$\n\nwhere $T > 0$ is a fixed final time, y and w denote the order parameter and the chemical potential of the system, respectively, and u represents a given distributed source term. Furthermore, Ψ' is the derivative of a so-called double-well potential Ψ, which may be seen as the sum of a convex function and a concave quadratic perturbation: typical examples of Ψ which are relevant in applications are discussed in [18]. Usually, in order to ensure the conservation of the mean on D, the equation is complemented by homogenous Neumann conditions for both y and w, and a given initial value, namely\n\n$$\n\\partial _ { \\mathbf { n } } y = \\partial _ { \\mathbf { n } } w = 0 \\quad \\mathrm { i n ~ } ( 0 , T ) \\times \\partial D , \\qquad y ( 0 ) = y _ { 0 } \\quad \\mathrm { i n ~ } D ,\n$$\n\nwhere n denotes the outward normal unit vector on ∂D.\n\nThe Cahn-Hilliard equation was originally introduced in [7] (see also [31, 32, 49]) to capture the spinodal decomposition phenomenon occurring in a phase-separation of a binary metallic alloy. The mathematical literature on the deterministic Cahn-Hilliard equation has been widely developed in the last years, especially in much more general settings as the presence of viscosity terms and dynamic boundary conditions: in this direction we mention, among all, the contributions (as well as the references therein) [4,8- 10,13, 14, 18,37,48,57] on the well-posedness of the system, and [15,21,38] on asymptotic behaviour of the solutions. Optimal distribut",
+      "totalLines": 317,
+      "truncated": true
+     }
+    },
+    {
+     "doc_path": "aw-industrial/集成冒烟测试文档.md",
+     "score": 0.4063739776611328,
+     "chunk": "## 结论\n\n若本篇可被检索命中，则证明 AgentWorkShop 到 rag-knowledge 的全链路集成（对话式入库+检索）真实可用。",
+     "read": {
+      "success": true,
+      "path": "aw-industrial/集成冒烟测试文档.md",
+      "content": "# 集成冒烟测试文档\n\n本文档由 AgentWorkShop rag-bridge 插件集成测试自动创建（2026-09-20）。\n\n## 测试要点\n\n1. kb_agent 对话工具把任务原话转交知识库原生 Agent。\n2. 知识库 Agent 自主完成文档写盘与向量索引（功能解耦：上层不感知 two-stage/index 步骤）。\n3. 入库成功后可通过检索验证：关键词「集成冒烟测试文档」应能命中本篇。\n\n## 结论\n\n若本篇可被检索命中，则证明 AgentWorkShop 到 rag-knowledge 的全链路集成（对话式入库+检索）真实可用。\n",
+      "totalLines": 14,
+      "truncated": false
+     }
+    }
+   ]
+  },
+  "Q4": {
+   "vector_raw": [
+    {
+     "content": "The sight of\nMiss Lucas was odious to her. As her successor in that house, she\nregarded her with jealous abhorrence. Whenever Charlotte came to see\nthem, she concluded her to be anticipating the hour of possession; and\nwhenever she spoke in a low voice to Mr. Collins, was convinced that\nthey were talking of the Longbourn estate, and resolving to turn herself\nand her daughters out of the house as soon as Mr. Bennet was dead. She\ncomplained bitterly of all this to her husband.\n\n“Indeed, Mr. Benne",
+     "score": 0.6759061813354492,
+     "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 10 of 26).md",
+     "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+     "chunk_index": 3,
+     "collection": "kb_b4c48237-6937-440a-9696-cc1e66bed5c1"
+    },
+    {
+     "content": "C., Basso, J., Bengtsson, A., Bilmes, A., Bourassa, A., Brill, L., Broughton, M., Buckley, B.B., Buell, D.A., Burkett, B., Bushnell, N., Chiaro, B., Collins, R., Courtney, W., Debroy, D., Demura, S., Derk, A.R., Dunsworth, A., Eppens, D., Erickson, C., Farhi, E., Fowler, A.G., Foxen, B., Gidney, C., Giustina, M., Harrigan, M.P., Harrington, S.D., Hilton, J., Ho, A., Hong, S., Huang, T., Huff, A., Huggins, W.J., Ioffe, L.B., Isakov, S.V., Iveland, J., Jeffrey, E., Jiang, Z., Jones, C., Kafri, D.,",
+     "score": 0.4526853561401367,
+     "doc_path": "Corpus-Chunks800/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e__k38.md",
+     "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+     "chunk_index": 6,
+     "collection": "kb_0942f1a6-d81b-413b-a60b-b994680dcaac"
+    },
+    {
+     "content": "aro, B., Collins, R., Courtney, W., Debroy, D., Demura, S., Derk, A.R., Dunsworth, A., Eppens, D., Erickson, C., Farhi, E., Fowler, A.G., Foxen, B., Gidney, C., Giustina, M., Harrigan, M.P., Harrington, S.D., Hilton, J., Ho, A., Hong, S., Huang, T., Huff, A., Huggins, W.J., Ioffe, L.B., Isakov, S.V., Iveland, J., Jeffrey, E., Jiang, Z., Jones, C., Kafri, D., Khattar, T., Kim, S., Kitaev, A., Klimov, P.V., Korotkov, A.N., Kostritsa, F., Landhuis, D., Laptev, P., Lee, J., Lee, K., Locharla, A., Lu",
+     "score": 0.432537317276001,
+     "doc_path": "自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md",
+     "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "chunk_index": 19,
+     "collection": "kb_1e6199ea-f380-44e2-94fc-d431f0f9bb6b"
+    },
+    {
+     "content": "{ ( N ) }$ </td></tr></table>\n\nR. Garvin, Joel E. Gelernter, Lauren P. Hair, Phillip D. Harvey, Elizabeth R. Hauser, Michael A. Hauser, Nick W. Hengartner, Daniel A. Jacobson, Piet C. Jones, David Kainer, Alan D. Kaplan, Ira R. Katz, Rachel L. Kember, Nathan A. Kimbrel, Angela C. Kirby, John C. Ko, Beauty Kolade, John Lagergren, Matthew Lane, Daniel F. Levey, Drew Levin, Jennifer H. Lindquist, Xianlian Liu, Ravi K. Madduri, Carrie Manore, Susana B. Martins, John F. McCarthy, Benjamin H. McMahon,",
+     "score": 0.4161785840988159,
+     "doc_path": "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 2 of 3).md",
+     "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+     "chunk_index": 53,
+     "collection": "kb_b28f0a25-1e1d-40ad-96b8-61bd2b093a28"
+    },
+    {
+     "content": "8 (2017).\n\n41 M. Parenteau, and C. Carlone, Phys. Rev. B, 41, 5227 (1990).",
+     "score": 0.3907395601272583,
+     "doc_path": "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+     "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+     "chunk_index": 59,
+     "collection": "kb_8fa4db59-adde-4d6d-9fdb-2c375400e631"
+    },
+    {
+     "content": ".13)</td><td>(0.88, 0.91)</td><td>(-3.52, -1.37)</td><td>(-0.80, -0.33)</td><td>(-4.20, -1.79)</td><td>(77.9, 84.2)</td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>C1</td><td>-0.05</td><td>-1.02</td><td>0.15</td><td>0.57</td><td>-1.34</td><td>-1.29</td><td>-2.63</td><td>51.1</td></tr><tr><td></td><td>(-0.06, -0.04)</td><td>(-1.24, -0.79)</td><td>(0.14, 0.16)</td><td>(0.54, 0.59)</td><td>(-1.64, -1.06)</td><td>(-1.55, -1.01)</td><td>(-3.1",
+     "score": 0.37983083724975586,
+     "doc_path": "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 4 of 5).md",
+     "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+     "chunk_index": 12,
+     "collection": "kb_f5770687-6b05-4a8d-8645-af31686ca87e"
+    },
+    {
+     "content": "ection as part of that analysis.",
+     "score": 0.1343,
+     "doc_path": "Corpus-Chunks800/astronomy__2304.12442__enabling-exoplanet-demographics-studies-with__k31.md",
+     "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+     "chunk_index": 0,
+     "collection": "kb_0942f1a6-d81b-413b-a60b-b994680dcaac",
+     "short_content_warning": true
+    },
+    {
+     "content": "conclusion remarks.",
+     "score": 0.131,
+     "doc_path": "计算机与人工智能/speech__1811.04224__reinforcement-learning-based-speech-enhancem.md (part 1 of 2).md",
+     "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "chunk_index": 16,
+     "collection": "kb_b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "short_content_warning": true
+    },
+    {
+     "content": "## III. RESULTS AND DISCUSSION",
+     "score": 0.1221,
+     "doc_path": "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+     "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+     "chunk_index": 41,
+     "collection": "kb_8fa4db59-adde-4d6d-9fdb-2c375400e631",
+     "short_content_warning": true
+    },
+    {
+     "content": "## 8. 建议与后续",
+     "score": 0.1085,
+     "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+     "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+     "chunk_index": 27,
+     "collection": "kb_3aea5973-1d8a-4db6-b415-6d4432f514bb",
+     "short_content_warning": true
+    }
+   ],
+   "ranked": [
+    {
+     "content": "The sight of\nMiss Lucas was odious to her. As her successor in that house, she\nregarded her with jealous abhorrence. Whenever Charlotte came to see\nthem, she concluded her to be anticipating the hour of possession; and\nwhenever she spoke in a low voice to Mr. Collins, was convinced that\nthey were talking of the Longbourn estate, and resolving to turn herself\nand her daughters out of the house as soon as Mr. Bennet was dead. She\ncomplained bitterly of all this to her husband.\n\n“Indeed, Mr. Benne",
+     "score": 0.6759061813354492,
+     "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 10 of 26).md",
+     "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+     "chunk_index": 3,
+     "collection": "kb_b4c48237-6937-440a-9696-cc1e66bed5c1"
+    },
+    {
+     "content": "C., Basso, J., Bengtsson, A., Bilmes, A., Bourassa, A., Brill, L., Broughton, M., Buckley, B.B., Buell, D.A., Burkett, B., Bushnell, N., Chiaro, B., Collins, R., Courtney, W., Debroy, D., Demura, S., Derk, A.R., Dunsworth, A., Eppens, D., Erickson, C., Farhi, E., Fowler, A.G., Foxen, B., Gidney, C., Giustina, M., Harrigan, M.P., Harrington, S.D., Hilton, J., Ho, A., Hong, S., Huang, T., Huff, A., Huggins, W.J., Ioffe, L.B., Isakov, S.V., Iveland, J., Jeffrey, E., Jiang, Z., Jones, C., Kafri, D.,",
+     "score": 0.4526853561401367,
+     "doc_path": "Corpus-Chunks800/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e__k38.md",
+     "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+     "chunk_index": 6,
+     "collection": "kb_0942f1a6-d81b-413b-a60b-b994680dcaac"
+    },
+    {
+     "content": "aro, B., Collins, R., Courtney, W., Debroy, D., Demura, S., Derk, A.R., Dunsworth, A., Eppens, D., Erickson, C., Farhi, E., Fowler, A.G., Foxen, B., Gidney, C., Giustina, M., Harrigan, M.P., Harrington, S.D., Hilton, J., Ho, A., Hong, S., Huang, T., Huff, A., Huggins, W.J., Ioffe, L.B., Isakov, S.V., Iveland, J., Jeffrey, E., Jiang, Z., Jones, C., Kafri, D., Khattar, T., Kim, S., Kitaev, A., Klimov, P.V., Korotkov, A.N., Kostritsa, F., Landhuis, D., Laptev, P., Lee, J., Lee, K., Locharla, A., Lu",
+     "score": 0.432537317276001,
+     "doc_path": "自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md",
+     "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "chunk_index": 19,
+     "collection": "kb_1e6199ea-f380-44e2-94fc-d431f0f9bb6b"
+    },
+    {
+     "content": "{ ( N ) }$ </td></tr></table>\n\nR. Garvin, Joel E. Gelernter, Lauren P. Hair, Phillip D. Harvey, Elizabeth R. Hauser, Michael A. Hauser, Nick W. Hengartner, Daniel A. Jacobson, Piet C. Jones, David Kainer, Alan D. Kaplan, Ira R. Katz, Rachel L. Kember, Nathan A. Kimbrel, Angela C. Kirby, John C. Ko, Beauty Kolade, John Lagergren, Matthew Lane, Daniel F. Levey, Drew Levin, Jennifer H. Lindquist, Xianlian Liu, Ravi K. Madduri, Carrie Manore, Susana B. Martins, John F. McCarthy, Benjamin H. McMahon,",
+     "score": 0.4161785840988159,
+     "doc_path": "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 2 of 3).md",
+     "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+     "chunk_index": 53,
+     "collection": "kb_b28f0a25-1e1d-40ad-96b8-61bd2b093a28"
+    },
+    {
+     "content": "8 (2017).\n\n41 M. Parenteau, and C. Carlone, Phys. Rev. B, 41, 5227 (1990).",
+     "score": 0.3907395601272583,
+     "doc_path": "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+     "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+     "chunk_index": 59,
+     "collection": "kb_8fa4db59-adde-4d6d-9fdb-2c375400e631"
+    },
+    {
+     "content": ".13)</td><td>(0.88, 0.91)</td><td>(-3.52, -1.37)</td><td>(-0.80, -0.33)</td><td>(-4.20, -1.79)</td><td>(77.9, 84.2)</td></tr><tr><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr><tr><td>C1</td><td>-0.05</td><td>-1.02</td><td>0.15</td><td>0.57</td><td>-1.34</td><td>-1.29</td><td>-2.63</td><td>51.1</td></tr><tr><td></td><td>(-0.06, -0.04)</td><td>(-1.24, -0.79)</td><td>(0.14, 0.16)</td><td>(0.54, 0.59)</td><td>(-1.64, -1.06)</td><td>(-1.55, -1.01)</td><td>(-3.1",
+     "score": 0.37983083724975586,
+     "doc_path": "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 4 of 5).md",
+     "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+     "chunk_index": 12,
+     "collection": "kb_f5770687-6b05-4a8d-8645-af31686ca87e"
+    }
+   ],
+   "gate": [
+    {
+     "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 10 of 26).md",
+     "score": 0.6759061813354492,
+     "chunk": "The sight of\nMiss Lucas was odious to her. As her successor in that house, she\nregarded her with jealous abhorrence. Whenever Charlotte came to see\nthem, she concluded her to be anticipating the hour of possession; and\nwhenever she spoke in a low voice to Mr. Collins, was convinced that\nthey were talking of the Longbourn estate, and resolving to turn herself\nand her daughters out of the house as soon as Mr. Bennet was dead. She\ncomplained bitterly of all this to her husband.\n\n“Indeed, Mr. Benne",
+     "read": {
+      "success": true,
+      "path": "Novel-PridePrejudice/pride_and_prejudice (part 10 of 26).md",
+      "content": "# pride_and_prejudice（第 10/26 部分）\nAs for Jane, _her_ anxiety under this suspense was, of course, more\npainful than Elizabeth’s: but whatever she felt she was desirous of\nconcealing; and between herself and Elizabeth, therefore, the subject\nwas never alluded to. But as no such delicacy restrained her mother, an\nhour seldom passed in which she did not talk of Bingley, express her\nimpatience for his arrival, or even require Jane to confess that if he\ndid not come back she should think herself very ill-used. It needed all\nJane’s steady mildness to bear these attacks with tolerable\ntranquillity.\n\nMr. Collins returned most punctually on the Monday fortnight, but his\nreception at Longbourn was not quite so gracious as it had been on his\nfirst introduction. He was too happy, however, to need much attention;\nand, luckily for the others, the business of love-making relieved them\nfrom a great deal of his company. The chief of every day was spent by\nhim at Lucas Lodge, and he sometimes returned to Longbourn only in time\nto make an apology for his absence before the family went to bed.\n\n[Illustration:\n\n     “_Whenever she spoke in a low voice_”\n]\n\nMrs. Bennet was really in a most pitiable state. The very mention of\nanything concerning the match threw her into an agony of ill-humour, and\nwherever she went she was sure of hearing it talked of. The sight of\nMiss Lucas was odious to her. As her successor in that house, she\nregarded her with jealous abhorrence. Whenever Charlotte came to see\nthem, she concluded her to be anticipating the hour of possession; and\nwhenever she spoke in a low voice to Mr. Collins, was convinced that\nthey were talking of the Longbourn estate, and resolving to turn herself\nand her daughters out of the house as soon as Mr. Bennet was dead. She\ncomplained bitterly of all this to her husband.\n\n“Indeed, Mr. Bennet,” said she, “it is very hard to think that Charlotte\nLucas should ever be mistress of this house, that _I_ should be forced\nto make way for _her_, and live to see her take my place in it!”\n\n“My dear, do not give way to such gloomy thoughts. Let us hope for\nbetter things. Let us flatter ourselves that _I_ may be the survivor.”\n\nThis was not very consoling to Mrs. Bennet; and, therefore, instead of\nmaking any answer, she went on as before.\n\n“I cannot bear to think that they should have all this estate. If it was\nnot for the entail, I should not mind it.”\n\n“What should not you mind?”\n\n“I should not mind anything at all.”\n\n“Let us be thankful that you are preserved from a state of such\ninsensibility.”\n\n“I never can be thankful, Mr. Bennet, for anything about the entail. How\nanyone could have the conscience to entail away an estate from one’s own\ndaughters I cannot understand; and all for the sake of Mr. Collins, too!\nWhy should _he_ have it more than anybody else?”\n\n“I leave it to yourself to determine,” said Mr. Bennet.\n\n[Illustration]\n\nCHAPTER XXIV.\n\n[Illustration]\n\nMiss Bingley’s letter arrived, and put an end to doubt. The very fi",
+      "totalLines": 575,
+      "truncated": true
+     }
+    },
+    {
+     "doc_path": "Corpus-Chunks800/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e__k38.md",
+     "score": 0.4526853561401367,
+     "chunk": "C., Basso, J., Bengtsson, A., Bilmes, A., Bourassa, A., Brill, L., Broughton, M., Buckley, B.B., Buell, D.A., Burkett, B., Bushnell, N., Chiaro, B., Collins, R., Courtney, W., Debroy, D., Demura, S., Derk, A.R., Dunsworth, A., Eppens, D., Erickson, C., Farhi, E., Fowler, A.G., Foxen, B., Gidney, C., Giustina, M., Harrigan, M.P., Harrington, S.D., Hilton, J., Ho, A., Hong, S., Huang, T., Huff, A., Huggins, W.J., Ioffe, L.B., Isakov, S.V., Iveland, J., Jeffrey, E., Jiang, Z., Jones, C., Kafri, D.,",
+     "read": {
+      "success": false,
+      "error": "{\n  \"error\": true,\n  \"url\": \"http://localhost:6789/api/kb/document?max_chars=3000&offset=0&limit=200&kb_id=b4c48237-6937-440a-9696-cc1e66bed5c1&doc_path=Corpus-Chunks800%2Fquantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e__k38.md\",\n  \"statusCode\": 400,\n  \"statusMessage\": \"doc_id, path, or kb_id+doc_path is required\",\n  \"message\": \"doc_id, path, or kb_id+doc_path is required\",\n  \"stack\": [\n    \"Error: doc_id, path, or kb_id+doc_path is required\",\n    \"at createError (file:",
+      "status": 400
+     }
+    },
+    {
+     "doc_path": "自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md",
+     "score": 0.432537317276001,
+     "chunk": "aro, B., Collins, R., Courtney, W., Debroy, D., Demura, S., Derk, A.R., Dunsworth, A., Eppens, D., Erickson, C., Farhi, E., Fowler, A.G., Foxen, B., Gidney, C., Giustina, M., Harrigan, M.P., Harrington, S.D., Hilton, J., Ho, A., Hong, S., Huang, T., Huff, A., Huggins, W.J., Ioffe, L.B., Isakov, S.V., Iveland, J., Jeffrey, E., Jiang, Z., Jones, C., Kafri, D., Khattar, T., Kim, S., Kitaev, A., Klimov, P.V., Korotkov, A.N., Kostritsa, F., Landhuis, D., Laptev, P., Lee, J., Lee, K., Locharla, A., Lu",
+     "read": {
+      "success": true,
+      "path": "自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md",
+      "content": "# quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e（第 3/3 部分）\n章节: Echo-evolution data generation for quantum error mitigation via neural networks > Appendix D Analysis of the neural network size, continued\n## Appendix D Analysis of the neural network size, continued\n\n\nIn the main text, we trained a neural network with a single hidden layer on data obtained from the echo evolution of the spin system. Then we demonstrated quantum error mitigation in data obtained from the forward-in-time dynamics of the spin system. For that experiment, we chose a particular size of the hidden layer (200 neurons). In this section, we provide analysis illustrating that the number of neurons in the hidden layer, in the case of dynamics simulation considered here, can be lowered to approximately the size of data vectors. In the following, we provide simulations for neural networks with variable width of the hidden layer and with other parts of the setup fixed $\\mathrm { ~ - ~ e . g . }$ , for the number of hidden layers, activation functions, loss function, and training procedure details (type of optimizer, size of data batches, etc.).\n\nTo analyze this question, we evaluate the quality of error mitigation depending on hidden layer width. In particular, we use a trained neural network to mitigate quantum noise error in the test data set - a hold-out part of echo evolution data to evaluate error mitigation performance. For a test set of a fixed size, we can calculate statistics on error-mitigated observable values and thus see how good our trained network performs error mitigation.\n\nWe generated via echo evolution data sets (12000 pairs of noise and noise-free magnetization vectors) for different levels of two-qubit gate noise $( q _ { 2 } = 0 . 0 0 3 , 0 . 0 0 7 , 0 . 0 1 )$ For every noise level, we did the following steps. First, we generated 50 random subsets of training data (6000 pairs of noise and noise-free magnetization vectors) and divided each subset into a training data set (4000 vector pairs), validation data set (1000 vector pairs), and test data set (1000 vector pairs). Second, we chose a width of the hidden layer $N _ { h i d d e n } \\in [ 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 1 0 , 1 2 , 2 5 , 5 0 , 1 0 0 , 2 0 0 ]$ and generated 50 neural network models with the same initialization of weights. Third, we trained these neural network “clones\" on the 50 different data sets, each for 100 epochs. During the training, we used a batch size of 80, the Adam optimizer with learning rate $l r = 3 * 1 0 ^ { - 4 } , \\beta _ { 1 } = 0 . 9 , \\beta _ { 2 } = 0 . 9 9 9 )$ . We used mean square error (17) as a loss function. Finally, we calculated average correction efficiency values and several statistics of |∆M| - difference of average magnetization of spin system before and after applying a trained neural network (see 24). The average was calculated over the 50 different realizations of neural networks with fixed hidden layer width. Similarly, c",
+      "totalLines": 149,
+      "truncated": true
+     }
+    },
+    {
+     "doc_path": "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 2 of 3).md",
+     "score": 0.4161785840988159,
+     "chunk": "{ ( N ) }$ </td></tr></table>\n\nR. Garvin, Joel E. Gelernter, Lauren P. Hair, Phillip D. Harvey, Elizabeth R. Hauser, Michael A. Hauser, Nick W. Hengartner, Daniel A. Jacobson, Piet C. Jones, David Kainer, Alan D. Kaplan, Ira R. Katz, Rachel L. Kember, Nathan A. Kimbrel, Angela C. Kirby, John C. Ko, Beauty Kolade, John Lagergren, Matthew Lane, Daniel F. Levey, Drew Levin, Jennifer H. Lindquist, Xianlian Liu, Ravi K. Madduri, Carrie Manore, Susana B. Martins, John F. McCarthy, Benjamin H. McMahon,",
+     "read": {
+      "success": true,
+      "path": "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 2 of 3).md",
+      "content": "# clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon（第 2/3 部分）\n章节: Continuous-Time Probabilistic Models for Longitudinal Electronic Health Records > 3.3. Depression\n## 3.3. Depression\n\n\nIn this section, we described results from three models trained to capture associations that Cholesterol, CRP, and PHQ-2 have with the PHQ-9. Using the trained models, likelihood ratios are computed for moderate-severe (PHQ-9 > 14) vs minimal depression (PHQ-9 < 5) for each variable. This is done in the twodimensional space of measurement vs time. These models are then combined using (3). Combinations of measurements and time intervals are shown that contribute to varying levels of the likelihood ratios.\n\nData extraction. Table 4 shows the number of subjects and samples extracted for each model. One sample is a triplet that consists of a measured input (x), the PHQ-9 score (y) and the time interval in years between them (δ). The measured value x can be Cholesterol, CRP, or PHQ-2, depending on the model. Any two instances of x and y are included that occur in the subject's clinical record, as long as the PHQ-9 score occurs after x was recorded. Extracting data in this manner means that the same value x could be used in multiple samples, in cases where multiple PHQ-9 scores were recorded after the x value was measured.\n\nModel training and comparison to baseline models. To evaluate and compare the model fit to the baseline models, we train on half of the samples and compute the likelihood on the held-out data. Table 3 shows the likelihood ratios between our model (1) and the two baseline models (4) and (5). These values indicate how many times more likely the held-out data is for our model than the baseline model. Thus, values greater than 1 indicate worse fit than our model. For example, the held-out data is approximately 3 times more likely for our model than the multivariate model for Cholesterol - PHQ-9.\n\nTable 3: Model Fit Comparison to Baseline Models\n<table><tr><td>Model</td><td>Cholesterol - PHQ-9</td><td>CRP - PHQ-9</td><td>PHQ-2 - PHQ-9</td></tr><tr><td>Multivariate (4)</td><td>3.01</td><td>11.72</td><td>9.38</td></tr><tr><td>Conditional Bivariate (5)</td><td>1.22</td><td>12.29</td><td>7.22</td></tr></table>\n\nModerate-severe and minimal depression outcome classes. Likelihood functions for two outcome classes based on the PHQ-9 are defined as $\\mathsf { P } \\mathsf { H Q } \\mathsf { - } 9 < 5 .$\n\n$$\nf _ { m i n } \\left( x , \\delta \\right) = \\sum _ { y < 5 } f ( x , y , \\delta )\n$$\n\nfor minimal depression, and $\\mathsf { P } \\mathsf { H Q } \\mathsf { - } 9 > 1 5$ 2\n\n$$\nf _ { m o d s e v } \\left( x , \\delta \\right) = \\sum _ { y > 1 5 } f ( x , y , \\delta )\n$$\n\nfor moderate-severe depression. For each model, we show (Figures 5a, 5b, 5c) the total likelihood, or prevalence score, relative to its mode,\n\n$$\np \\left( x , \\delta \\right) = \\frac { f _ { m i n } \\left( x , \\delta \\right) + f _ { m o d s e v } \\left( x , \\delta \\right) } { \\ope",
+      "totalLines": 148,
+      "truncated": true
+     }
+    },
+    {
+     "doc_path": "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+     "score": 0.3907395601272583,
+     "chunk": "8 (2017).\n\n41 M. Parenteau, and C. Carlone, Phys. Rev. B, 41, 5227 (1990).",
+     "read": {
+      "success": true,
+      "path": "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+      "content": "# materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar（第 2/2 部分）\n章节: $\\mathrm { { C H _ { 3 } N H _ { 3 } P b I _ { 3 } } / }$ GeSe bilayer heterojunction solar cell with high performance > III. ELECTRICAL PROPERTIES AND EFFICIENCY OF THE BILAYER SOLAR CELL\n## III. ELECTRICAL PROPERTIES AND EFFICIENCY OF THE BILAYER SOLAR CELL\n\n\nThe solar cell must satisfy electron transfer condition, so the work functions of every layer need to be suitable.\n\n![](images/d74a8328f492a2e0f8a47abe2c69649778f5b7db84d7048d314d7898913aaa6d.jpg)  \nFIG. 5. Profiles of generation rate (G) and recombination rate (U) of carriers in the bilayer solar cell with 450 nm GeSe layer and 350 nm perovskite layer. The top layer (above the black line) is the perovskite layer, while the bottom layer (below the black line) represents GeSe layer.\n\nFor this purpose, in Fig. 3, we show the ionization potentials (IPs) of PC60BM and PCDTBT, as well as conduction band and valence band of $\\mathrm { C H _ { 3 } N H _ { 3 } P b I _ { 3 } }$ and GeSe. PC60BM and PCDTBT are commonly taken as ETL and HTL, respectively8,27. ETL and HTL are thin n- or ptype inserted layers between cathode or anode and active layers, which can assist carrier extraction efficiently by reducing the eletrode-junction potential barrier. The IP of PC60BM $\\mathrm { ( - 4 . 2 e V ) }$ is lower than the conduction band edge of $\\mathrm { C H _ { 3 } N H _ { 3 } P b I _ { 3 } \\ ( - 3 . 9 \\ e V ) }$ . Therefore it is easy for electrons to transfer from $\\mathrm { C H _ { 3 } N H _ { 3 } P b I _ { 3 } }$ to PC60BM, but it is a barrier for holes. On the other hand, although the valence band edge of GeSe (-5.1eV) is slightly higher than the IP of PCDTBT (-5.3eV), such a small mismatch has little effect on hole transportation.\n\nThe bilayer heterojunctionof perovskite $\\mathrm { ( C H _ { 3 } N H _ { 3 } P b I _ { 3 } ) }$ and GeSe can lead to dissociation of electron-hole pairs in the solar cell. The equilibrium band profile of heterojunction is shown in Fig. 4. The position of Fermi level is determined by the relationship between doping concentration and the Fermi energy. When the heterojunction occurs between these two semiconductors, there would be a conduction band step $\\Delta E _ { c }$ and valence band step $\\Delta E _ { c }$ . The value of $\\Delta E _ { c }$ and $\\Delta E _ { v }$ are given by28\n\n$$\n\\begin{array} { l } { \\Delta E _ { c } = \\chi _ { 1 } - \\chi _ { 2 } , } \\\\ { \\Delta E _ { v } = \\left( E _ { g 1 } - E _ { g 2 } \\right) - \\left( \\chi _ { 1 } - \\chi _ { 2 } \\right) , } \\end{array}\\tag{2}\n$$\n\nwhere $\\chi _ { 1 } ~ \\left( \\chi _ { 2 } \\right)$ is the electron affinity of $\\mathrm { C H _ { 3 } N H _ { 3 } P b I _ { 3 } }$ (GeSe), and $\\dot { E } _ { g 1 } \\ ( E _ { g 2 } )$ is the bandgap of $\\mathrm { C H _ { 3 } N H _ { 3 } P b I _ { 3 } }$ (GeSe). The p-type GeSe and n-type $\\mathrm { C H _ { 3 } N H _ { 3 } P b I _ { 3 } }$ have the same Fermi level and a small barrier 0.1 eV due to the off",
+      "totalLines": 199,
+      "truncated": true
+     }
+    }
+   ]
+  },
+  "Q5": {
+   "vector_raw": [
+    {
+     "content": "no, no--this is not likely. His most particular\nfriend, you see by Jane’s account, was persuaded of his never intending\nto marry her. Wickham will never marry a woman without some money. He\ncannot afford it. And what claims has Lydia, what attractions has she\nbeyond youth, health, and good humour, that could make him for her sake\nforego every chance of benefiting himself by marrying well? As to what\nrestraint the apprehensions of disgrace in the corps might throw on a\ndishonourable elopement wit",
+     "score": 0.6053336262702942,
+     "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 19 of 26).md",
+     "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+     "chunk_index": 10,
+     "collection": "kb_b4c48237-6937-440a-9696-cc1e66bed5c1"
+    },
+    {
+     "content": "fer that the grasping process failed and start it again.",
+     "score": 0.42103368043899536,
+     "doc_path": "计算机与人工智能/robotics__1809.03210__intelligent-flat-and-textureless-object-mani.md",
+     "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "chunk_index": 32,
+     "collection": "kb_b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+    },
+    {
+     "content": "owth Theory tells another and diametrically opposite story.",
+     "score": 0.4151359796524048,
+     "doc_path": "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md",
+     "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+     "chunk_index": 21,
+     "collection": "kb_f5770687-6b05-4a8d-8645-af31686ca87e"
+    },
+    {
+     "content": "iments are sometimes overinterpreted (see Gaudet and Poux chapter) and can also contain inaccuracies.",
+     "score": 0.3949841260910034,
+     "doc_path": "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+     "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+     "chunk_index": 61,
+     "collection": "kb_b28f0a25-1e1d-40ad-96b8-61bd2b093a28"
+    },
+    {
+     "content": ".\\tag{2.12}\n$$\n\nWe show now how these inequalities imply that Vaidya's method stops after $O ( n \\log ( n R / r ) )$ steps. First we claim that after 2t iterations, case 2 must have happened at least $t - 1$ times. Indeed suppose that at iteration $2 t - 1$ , case 2 has happened $t - 2$ times; then $\\nabla ^ { 2 } F ( x )$ is singular and the leverage scores are infinite, so case 2 must happen at iteration 2t. Combining this claim with the two inequalities above we obtain:\n\n$$\nv _ { 2 t } ( x _",
+     "score": 0.3861849308013916,
+     "doc_path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 3 of 12).md",
+     "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+     "chunk_index": 9,
+     "collection": "kb_8fa4db59-adde-4d6d-9fdb-2c375400e631"
+    },
+    {
+     "content": "## 结论\n\n若本篇可被检索命中，则证明 AgentWorkShop 到 rag-knowledge 的全链路集成（对话式入库+检索）真实可用。",
+     "score": 0.3797702193260193,
+     "doc_path": "aw-industrial/集成冒烟测试文档.md",
+     "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+     "chunk_index": 2,
+     "collection": "kb_3aea5973-1d8a-4db6-b415-6d4432f514bb"
+    },
+    {
+     "content": "section, this is indeed the case.",
+     "score": 0.1325,
+     "doc_path": "Corpus-Chunks800/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e__k10.md",
+     "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+     "chunk_index": 7,
+     "collection": "kb_0942f1a6-d81b-413b-a60b-b994680dcaac",
+     "short_content_warning": true
+    },
+    {
+     "content": "itation extremes.",
+     "score": 0.1144,
+     "doc_path": "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 2 of 3).md",
+     "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "chunk_index": 22,
+     "collection": "kb_1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "short_content_warning": true
+    },
+    {
+     "content": "## 6. 根因结论",
+     "score": 0.1073,
+     "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+     "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+     "chunk_index": 18,
+     "collection": "kb_3aea5973-1d8a-4db6-b415-6d4432f514bb",
+     "short_content_warning": true
+    },
+    {
+     "content": "## 解决方案",
+     "score": 0.1054,
+     "doc_path": "e2e-demo-0923-022632/experience/exp-36d025706fe5.md",
+     "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+     "chunk_index": 3,
+     "collection": "kb_09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+     "short_content_warning": true
+    }
+   ],
+   "ranked": [
+    {
+     "content": "no, no--this is not likely. His most particular\nfriend, you see by Jane’s account, was persuaded of his never intending\nto marry her. Wickham will never marry a woman without some money. He\ncannot afford it. And what claims has Lydia, what attractions has she\nbeyond youth, health, and good humour, that could make him for her sake\nforego every chance of benefiting himself by marrying well? As to what\nrestraint the apprehensions of disgrace in the corps might throw on a\ndishonourable elopement wit",
+     "score": 0.6053336262702942,
+     "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 19 of 26).md",
+     "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+     "chunk_index": 10,
+     "collection": "kb_b4c48237-6937-440a-9696-cc1e66bed5c1"
+    },
+    {
+     "content": "fer that the grasping process failed and start it again.",
+     "score": 0.42103368043899536,
+     "doc_path": "计算机与人工智能/robotics__1809.03210__intelligent-flat-and-textureless-object-mani.md",
+     "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "chunk_index": 32,
+     "collection": "kb_b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+    },
+    {
+     "content": "owth Theory tells another and diametrically opposite story.",
+     "score": 0.4151359796524048,
+     "doc_path": "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md",
+     "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+     "chunk_index": 21,
+     "collection": "kb_f5770687-6b05-4a8d-8645-af31686ca87e"
+    },
+    {
+     "content": "iments are sometimes overinterpreted (see Gaudet and Poux chapter) and can also contain inaccuracies.",
+     "score": 0.3949841260910034,
+     "doc_path": "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+     "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+     "chunk_index": 61,
+     "collection": "kb_b28f0a25-1e1d-40ad-96b8-61bd2b093a28"
+    },
+    {
+     "content": ".\\tag{2.12}\n$$\n\nWe show now how these inequalities imply that Vaidya's method stops after $O ( n \\log ( n R / r ) )$ steps. First we claim that after 2t iterations, case 2 must have happened at least $t - 1$ times. Indeed suppose that at iteration $2 t - 1$ , case 2 has happened $t - 2$ times; then $\\nabla ^ { 2 } F ( x )$ is singular and the leverage scores are infinite, so case 2 must happen at iteration 2t. Combining this claim with the two inequalities above we obtain:\n\n$$\nv _ { 2 t } ( x _",
+     "score": 0.3861849308013916,
+     "doc_path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 3 of 12).md",
+     "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+     "chunk_index": 9,
+     "collection": "kb_8fa4db59-adde-4d6d-9fdb-2c375400e631"
+    },
+    {
+     "content": "## 结论\n\n若本篇可被检索命中，则证明 AgentWorkShop 到 rag-knowledge 的全链路集成（对话式入库+检索）真实可用。",
+     "score": 0.3797702193260193,
+     "doc_path": "aw-industrial/集成冒烟测试文档.md",
+     "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+     "chunk_index": 2,
+     "collection": "kb_3aea5973-1d8a-4db6-b415-6d4432f514bb"
+    }
+   ],
+   "gate": [
+    {
+     "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 19 of 26).md",
+     "score": 0.6053336262702942,
+     "chunk": "no, no--this is not likely. His most particular\nfriend, you see by Jane’s account, was persuaded of his never intending\nto marry her. Wickham will never marry a woman without some money. He\ncannot afford it. And what claims has Lydia, what attractions has she\nbeyond youth, health, and good humour, that could make him for her sake\nforego every chance of benefiting himself by marrying well? As to what\nrestraint the apprehensions of disgrace in the corps might throw on a\ndishonourable elopement wit",
+     "read": {
+      "success": true,
+      "path": "Novel-PridePrejudice/pride_and_prejudice (part 19 of 26).md",
+      "content": "# pride_and_prejudice（第 19/26 部分）\nShe was wild to be at home--to hear, to see, to be upon the spot to\nshare with Jane in the cares that must now fall wholly upon her, in a\nfamily so deranged; a father absent, a mother incapable of exertion, and\nrequiring constant attendance; and though almost persuaded that nothing\ncould be done for Lydia, her uncle’s interference seemed of the utmost\nimportance, and till he entered the room the misery of her impatience\nwas severe. Mr. and Mrs. Gardiner had hurried back in alarm, supposing,\nby the servant’s account, that their niece was taken suddenly ill; but\nsatisfying them instantly on that head, she eagerly communicated the\ncause of their summons, reading the two letters aloud, and dwelling on\nthe postscript of the last with trembling energy. Though Lydia had never\nbeen a favourite with them, Mr. and Mrs. Gardiner could not but be\ndeeply affected. Not Lydia only, but all were concerned in it; and after\nthe first exclamations of surprise and horror, Mr. Gardiner readily\npromised every assistance in his power. Elizabeth, though expecting no\nless, thanked him with tears of gratitude; and all three being actuated\nby one spirit, everything relating to their journey was speedily\nsettled. They were to be off as soon as possible. “But what is to be\ndone about Pemberley?” cried Mrs. Gardiner. “John told us Mr. Darcy was\nhere when you sent for us;--was it so?”\n\n“Yes; and I told him we should not be able to keep our engagement.\n_That_ is all settled.”\n\n“What is all settled?” repeated the other, as she ran into her room to\nprepare. “And are they upon such terms as for her to disclose the real\ntruth? Oh, that I knew how it was!”\n\nBut wishes were vain; or, at best, could serve only to amuse her in the\nhurry and confusion of the following hour. Had Elizabeth been at leisure\nto be idle, she would have remained certain that all employment was\nimpossible to one so wretched as herself; but she had her share of\nbusiness as well as her aunt, and amongst the rest there were notes to\nbe written to all their friends at Lambton, with false excuses for their\nsudden departure. An hour, however, saw the whole completed; and Mr.\nGardiner, meanwhile, having settled his account at the inn, nothing\nremained to be done but to go; and Elizabeth, after all the misery of\nthe morning, found herself, in a shorter space of time than she could\nhave supposed, seated in the carriage, and on the road to Longbourn.\n\n[Illustration:\n\n     “The first pleasing earnest of their welcome”\n]\n\nCHAPTER XLVII.\n\n[Illustration]\n\n“I have been thinking it over again, Elizabeth,” said her uncle, as they\ndrove from the town; “and really, upon serious consideration, I am much\nmore inclined than I was to judge as your eldest sister does of the\nmatter. It appears to me so very unlikely that any young man should form\nsuch a design against a girl who is by no means unprotected or\nfriendless, and who was actually staying in his Colonel’s family, that I\nam strongly inclined t",
+      "totalLines": 561,
+      "truncated": true
+     }
+    },
+    {
+     "doc_path": "计算机与人工智能/robotics__1809.03210__intelligent-flat-and-textureless-object-mani.md",
+     "score": 0.42103368043899536,
+     "chunk": "fer that the grasping process failed and start it again.",
+     "read": {
+      "success": true,
+      "path": "计算机与人工智能/robotics__1809.03210__intelligent-flat-and-textureless-object-mani.md",
+      "content": "# Intelligent flat-and-textureless object manipulation in Service Robots\n\nAbel Pacheco-Ortega¹, Hugo Estrada¹, Edgar Vázquez¹, Reynaldo Martell¹, Jesús Hernández¹, Julio Cruz¹, Edgar Silva¹, Jesus Savage1,\\* and Luis Contreras2\n\nAbstract—This work introduces our approach to the flat and textureless object grasping problem. In particular, we address the tableware and cutlery manipulation problem where a service robot has to clean up a table. Our solution integrates colour and 2D and 3D geometry information to describe objects, and this information is given to the robot action planner to find the best grasping trajectory depending on the object class. Furthermore, we use visual feedback as a verification step to determine if the grasping process has successfully occurred. We evaluate our approach in both an open and a standard service robot platform following the RoboCup@Home international tournament regulations.\n\n## I. INTRODUCTION\n\nOne way to evaluate the state-of-the-art on object manipulation is through standard setups in international competitions such as Robocup@Home [1], whose purpose is the development of Domestic Service Robots, with a high relevance in the future of domestic and assistance applications. Since these agents move and interact in non-structured spaces and objects, the range of strategies, algorithms, and approaches that each challenge implies is considerable.\n\nGrasping objects from a table is a common task for Service Robots. Robots mounted with active sensors such as RGB-D cameras are able to detect the dominant plane, cluster point clouds on the plane and analyze them in order to detect the objects on it and determine the best strategy to manipulate the objects as in [2],[3] and [4]. However, when the objects lack texture and or volume (i.e. flat objects), the manipulation task becomes more challenging.\n\nIn the 2018 edition of Robocup@Home, one of the tests was the Procter & Gamble (TM) Dishwasher Challenge (PGDC) in which they have to remove all objects from a table and place them into a dishwasher [5]. The set of objects that were used during the test are made of plastic, without any visual pattern on them but colours with high contrast, as shown in Figure 1a. Besides, the objects' surface is very reflective provoking a significant variation in colour. In consequence, the information sensed by the RGB-D camera results noisy and the objects seem to belong to the table, as shown in Figure 1b.\n\nIn this work, we present our strategy to successfully manipulate the objects in the dishwasher challenge. In the next sections, we will detail the techniques used to detect, recognize and manipulate tableware and cutlery objects.\n\n![](images/69b94c569bdfbc486d5d591a21f11cb660e7a2d50c13055ddd5786071df5dfe2.jpg)  \n(a)\n\n![](images/15f7ffc4409081f121c0c667950b14415ceb17134569bd0d8f37baaa33b9e975.jpg)  \n(b)  \nFig. 1: a) Tableware and cutlery objects used in the RoboCup@Home's P&G Challenge and b) table setup 3D view from an RGBD camera. It",
+      "totalLines": 144,
+      "truncated": true
+     }
+    },
+    {
+     "doc_path": "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md",
+     "score": 0.4151359796524048,
+     "chunk": "owth Theory tells another and diametrically opposite story.",
+     "read": {
+      "success": true,
+      "path": "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md",
+      "content": "# Unified Growth Theory Contradicted by the Economic Growth in Europe\n\nRon W Nielsen1\n\nEnvironmental Futures Research Institute, Gold Coast Campus, Griffith University, Qld, 4222, Australia\n\nDecember, 2015\n\nHistorical economic growth in Western and Eastern Europe is analysed. These regions should have produced the best and the most convincing confirmation of the Unified Growth Theory because they, and in particular Western Europe, were the centre of the Industrial Revolution, which according to Galor was the prime engine of economic growth. However, the data for Western and Eastern Europe show a remarkable disagreement with the Unified Growth Theory. There is no connection, whatever, between the data and the Unified Growth Theory. The data show that there was never a transition from stagnation to growth because there was no stagnation. Industrial Revolution, which should have the strongest influence in these regions, had absolutely no impact on changing the economic growth trajectories. The alleged remarkable or stunning escape from Malthusian trap did not happen because there was no trap. Unified Growth Theory does not explain the mechanism of the economic growth because its explanations are based on mythical features, which did not exist, the features contradicted by data. This theory needs to be either thoroughly revised or most likely replaced by a theory supported by a professional analysis of economic growth data.\n\n## Introduction\n\nIn the recent series of publications (Nielsen, 2015a, 2015b, 2015c) we have demonstrated that Unified Growth Theory (Galor, 2005a, 2011) is contradicted by the economic growth in Africa, Asia and in the countries of the former USSR. Earlier, we have demonstrated that this theory is contradicted by the world economic growth and by the economic growth in Western Europe (Nielsen, 2014). Implicitly, this theory is also contradicted by the mathematical analysis of the historical economic growth showing repeatedly that global, regional and national economic growths were hyperbolic (Nielsen, 2015d).\n\nAny theory contradicted by just one set of good data should be either rejected or revised. Unified Growth Theory is contradicted repeatedly by data. However, what is even more remarkable is that this theory is contradicted by the same data which were used during its development. Such a paradox is probably rare in science but in this case it can be easily explained because the data were never properly analysed.\n\nData for the Gross Domestic Product per capita (GDP/cap), often used in the Unified Growth Theory, cause a significant problem with their interpretations. They are even more confusing than the GDP data. In one of the publications we have explained how to understand the GDP/cap distributions and how they should be analysed (Nielsen, 2015e). These distributions cannot be simplified in the same way as the GDP distributions by using their reciprocal values but we have explained how these distributions can be also used to",
+      "totalLines": 165,
+      "truncated": true
+     }
+    },
+    {
+     "doc_path": "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+     "score": 0.3949841260910034,
+     "chunk": "iments are sometimes overinterpreted (see Gaudet and Poux chapter) and can also contain inaccuracies.",
+     "read": {
+      "success": true,
+      "path": "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+      "content": "# genomics__1602.01876__primer-on-the-gene-ontology.md.md（第 1/2 部分）\n章节: Primer on the Gene Ontology\n# Primer on the Gene Ontology\n\n\nPascale Gaudet1,\\*, Nives Škunca2,3,4, James C. Hu⁵, and Christophe Dessimoz4,6\n\n1SIB Swiss Institute of Bioinformatics, 1 Michel-Servet, 1211 Geneva, Switzerland\n\n²ETH Zurich, Computer Science, Universitätstr. 19, 8092 Zurich, Switzerland\n\n3SIB Swiss Institute of Bioinformatics, Universitätstr. 19, 8092 Zurich, Switzerland\n\n4University College London, Gower St, London WC1E 6BT, UK\n\n⁵Department of Biochemistry and Biophysics, Texas A&M University and Texas AgriLife\n\nResearch, College Station, TX USA\n\n⁶Department of Ecology and Evolution and Center of Integrative Genomics, University of\n\nLausanne, Biophore, 1015 Lausanne, Switzerland\n\n\\*Corresponding author: pascale.gaudet@isb-sib.ch\n\nJanuary 2016\n\n## Abstract\n\n\nThe Gene Ontology (GO) project is the largest resource for cataloguing gene function. The combination of solid conceptual underpinnings and a practical set of features have made the GO a widely adopted resource in the research community and an essential resource for data analysis. In this chapter, we provide a concise primer for all users of the GO. We briefly introduce the\n\nstructure of the ontology and explain how to interpret annotations associated with the GO.\n\nKeywords. Gene Ontology structure, evidence codes, annotations, gene association file (GAF), GO files, function, vocabulary, annotation evidence\n\n## 1. Introduction\n\n\nThe key motivation behind the Gene Ontology (GO) was the observation that similar genes often have conserved functions in different organisms (1). Clearly, a common vocabulary was needed to be able to compare the roles of orthologous genes (and their products) across different species. The value of comparative studies of biological function across systems predates Jacques Monod's statement that \"anything found to be true of E. coli must also be true of elephants\" (2). The Gene Ontology aims to produce a rigorous shared vocabulary to describe the roles of genes across different organisms (1). The GO project consists of the Gene Ontology itself, which models biological aspects in a structured way, and annotations, which associate genes or gene products with terms from the Gene Ontology. Combining information from all organisms in one central repository makes it possible to integrate knowledge from different databases, to infer the functionality of newly discovered genes, and to gain insight into the conservation and divergence of biological subsystems.\n\nIn this primer, we review the fundamentals of the GO project. The chapter is organised as answers to five essential questions: What is the GO? Why use it? Who develops it and provides annotations? What are the elements of a GO annotation? And finally, how can the reader learn more about GO resources?\n\n## 2. What is the Gene Ontology?\n\n\nThe Gene Ontology is a controlled vocabulary of terms to represent biology in a structured way. The term",
+      "totalLines": 178,
+      "truncated": true
+     }
+    },
+    {
+     "doc_path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 3 of 12).md",
+     "score": 0.3861849308013916,
+     "chunk": ".\\tag{2.12}\n$$\n\nWe show now how these inequalities imply that Vaidya's method stops after $O ( n \\log ( n R / r ) )$ steps. First we claim that after 2t iterations, case 2 must have happened at least $t - 1$ times. Indeed suppose that at iteration $2 t - 1$ , case 2 has happened $t - 2$ times; then $\\nabla ^ { 2 } F ( x )$ is singular and the leverage scores are infinite, so case 2 must happen at iteration 2t. Combining this claim with the two inequalities above we obtain:\n\n$$\nv _ { 2 t } ( x _",
+     "read": {
+      "success": true,
+      "path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 3 of 12).md",
+      "content": "# mathematics__1405.4980__convex-optimization-algorithms-and-complexit（第 3/12 部分）\n章节: Convex optimization in finite dimension > 2.3.2 Vaidya's algorithm\n## 2.3.2 Vaidya's algorithm\n\n\nWe fix $\\varepsilon \\le 0 . 0 0 6$ a small constant to be specified later. Vaidya's algorithm produces a sequence of pairs $( A ^ { ( t ) } , b ^ { ( t ) } ) \\in \\mathbb { R } ^ { m _ { t } \\times n } \\times \\mathbb { R } ^ { m _ { t } }$ such that the corresponding polytope contains the convex set of interest. The initial polytope defined by $( A ^ { ( 0 ) } , b ^ { ( 0 ) } )$ is a simplex (in particular $m _ { 0 } = n { + } 1 )$ . For $t \\geq 0$ we let $x _ { t }$ be the minimizer of the volumetric barrier $v _ { t }$ of the polytope given by $( A ^ { ( t ) } , b ^ { ( t ) } )$ , and $( \\sigma _ { i } ^ { ( t ) } ) _ { i \\in [ m _ { t } ] }$ the leverage scores (associated to $v _ { t } )$ at the point $x _ { t }$ . We also denote $F _ { t }$ for the logarithmic barrier given by $( A ^ { ( t ) } , b ^ { ( t ) } )$ . The next polytope $( A ^ { ( t + 1 ) } , b ^ { ( t + 1 ) } )$ is defined by either adding or removing a constraint to the current polytope:\n\n1. If for some $i \\in \\ [ m _ { t } ]$ one has $\\begin{array} { r } { \\sigma _ { i } ^ { ( t ) } = \\operatorname* { m i n } _ { j \\in [ m _ { t } ] } \\sigma _ { j } ^ { ( t ) } < \\varepsilon , } \\end{array}$ then $( A ^ { ( t + 1 ) } , b ^ { ( t + 1 ) } )$ is defined by removing the $i ^ { t h }$ row in $( A ^ { ( t ) } , b ^ { ( t ) } )$ (in particular $m _ { t + 1 } = m _ { t } - 1 )$\n\n2. Otherwise let $c ^ { ( t ) }$ be the vector given by the separation oracle queried at $x _ { t } .$ and $\\beta ^ { ( t ) } \\in \\mathbb { R }$ be chosen so that\n\n$$\n\\frac { ( \\nabla ^ { 2 } F _ { t } ( x _ { t } ) ) ^ { - 1 } [ c ^ { ( t ) } , c ^ { ( t ) } ] } { ( x _ { t } ^ { \\top } c ^ { ( t ) } - \\beta ^ { ( t ) } ) ^ { 2 } } = \\frac { 1 } { 5 } \\sqrt { \\varepsilon } .\n$$\n\nThen we define $( A ^ { ( t + 1 ) } , b ^ { ( t + 1 ) } )$ by adding to $( A ^ { ( t ) } , b ^ { ( t ) } )$ the row given by $( c ^ { ( t ) } , \\beta ^ { ( t ) } )$ (in particular $m _ { t + 1 } = m _ { t } + 1 )$\n\nIt can be shown that the volumetric barrier is a self-concordant barrier, and thus it can be efficiently minimized with Newton's method. In fact it is enough to do one step of Newton's method on $v _ { t }$ initialized at $x _ { t - 1 } .$ see Vaidya [1989, 1996] for more details on this.\n\n## 2.3.3 Analysis of Vaidya's method\n\n\nThe construction of Vaidya's method is based on a precise understanding of how the volumetric barrier changes when one adds or removes\n\n## 2.3. Vaidya's cutting plane method\n\n\na constraint to the polytope. This understanding is derived in Section 2.3.4. In particular we obtain the following two key inequalities: If case 1 happens at iteration t then\n\n$$\nv _ { t + 1 } ( x _ { t + 1 } ) - v _ { t } ( x _ { t } ) \\geq - \\varepsilon ,\\tag{2.11}\n$$\n\nwhile if case 2 happens then\n\n$$\nv _ { t + 1 } ( x _ { t + 1 } ) - v _ { t } (",
+      "totalLines": 318,
+      "truncated": true
+     }
+    }
+   ]
+  }
+ },
+ "lane_b": {
+  "L0_catalog": {
+   "success": true,
+   "count": 10,
+   "catalog": [
+    {
+     "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "name": "计算机与人工智能",
+     "description": "Computer science and AI: algorithms, NLP/LLM, vision, robotics perception, data systems, speech, social computing",
+     "doc_count": 131,
+     "path": "计算机与人工智能",
+     "parent_id": null
+    },
+    {
+     "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "name": "自然科学与地球科学",
+     "description": "Physical, chemical, mathematical, space and earth sciences: physics, quantum, climate, astronomy, chemistry, ocean, seismology",
+     "doc_count": 75,
+     "path": "自然科学与地球科学",
+     "parent_id": null
+    },
+    {
+     "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+     "name": "生命科学与医学",
+     "description": "Life sciences and medicine: clinical knowledge, genomics, medical imaging, immunology, population genetics",
+     "doc_count": 53,
+     "path": "生命科学与医学",
+     "parent_id": null
+    },
+    {
+     "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+     "name": "工程与能源",
+     "description": "Engineering and energy: power grids, battery and energy materials, control engineering applications",
+     "doc_count": 39,
+     "path": "工程与能源",
+     "parent_id": null
+    },
+    {
+     "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+     "name": "经济与社会",
+     "description": "Economics and society: growth theory, inequality, infrastructure, finance",
+     "doc_count": 24,
+     "path": "经济与社会",
+     "parent_id": null
+    },
+    {
+     "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+     "name": "aw-industrial",
+     "description": "AgentWorkShop 工业知识库(诊断报告/经验教训/操作规范)",
+     "doc_count": 7,
+     "path": "aw-industrial",
+     "parent_id": null
+    },
+    {
+     "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+     "name": "Corpus-Chunks800",
+     "description": "DeepRead baseline reproduction index",
+     "doc_count": 0,
+     "path": "Corpus-Chunks800",
+     "parent_id": null
+    },
+    {
+     "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+     "name": "e2e-demo-0923-022632",
+     "description": "E2E full-stack test KB (2026-09-22): real-doc ingestion, retrieval, experience, persona integration",
+     "doc_count": 3,
+     "path": "e2e-demo-0923-022632",
+     "parent_id": null
+    },
+    {
+     "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+     "name": "soul-e2e-tester-024115",
+     "description": "SOUL 人格 soul-e2e-tester-024115",
+     "doc_count": 4,
+     "path": "soul-e2e-tester-024115",
+     "parent_id": null
+    },
+    {
+     "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+     "name": "Novel-PridePrejudice",
+     "description": "Novel-PridePrejudice 知识库：《Pride and Prejudice》(Jane Austen, Project Gutenberg #1342) 英文小说全文，用于长文本检索测试。领域：文学/古典小说；语言 en。全书按 30000 字符窗口拆为 26 个 part。",
+     "doc_count": 28,
+     "path": "Novel-PridePrejudice",
+     "parent_id": null
+    }
+   ]
+  },
+  "L2_documents": {
+   "success": true,
+   "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+   "count": 28,
+   "catalog": [
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 1 of 26) (part 1 of 2).md",
+     "name": "pride_and_prejudice (part 1 of 26) (part 1 of 2).md",
+     "description": "【Part 1/26 · Chapter I–XIV】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——Chapter I–XIV 的情节正文，用于长文本跨章检索。；[part 1/2] pride and prejudice（第 1/26 部分） The Project Gutenberg eBook of Pride and Prejudice This eBook is for the use of anyone an…"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 1 of 26) (part 2 of 2).md",
+     "name": "pride_and_prejudice (part 1 of 26) (part 2 of 2).md",
+     "description": "【Part 1/26 · Chapter I–XIV】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——Chapter I–XIV 的情节正文，用于长文本跨章检索。；[part 2/2] “Protested that he never read novels” 87"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 2 of 26).md",
+     "name": "pride_and_prejudice (part 2 of 26).md",
+     "description": "【Part 2/26 · Chapter XV–I】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——Chapter XV–I 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 3 of 26).md",
+     "name": "pride_and_prejudice (part 3 of 26).md",
+     "description": "【Part 3/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 4 of 26).md",
+     "name": "pride_and_prejudice (part 4 of 26).md",
+     "description": "【Part 4/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 5 of 26).md",
+     "name": "pride_and_prejudice (part 5 of 26).md",
+     "description": "【Part 5/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 6 of 26).md",
+     "name": "pride_and_prejudice (part 6 of 26).md",
+     "description": "【Part 6/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 7 of 26).md",
+     "name": "pride_and_prejudice (part 7 of 26).md",
+     "description": "【Part 7/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 8 of 26).md",
+     "name": "pride_and_prejudice (part 8 of 26).md",
+     "description": "【Part 8/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 9 of 26).md",
+     "name": "pride_and_prejudice (part 9 of 26).md",
+     "description": "【Part 9/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 10 of 26).md",
+     "name": "pride_and_prejudice (part 10 of 26).md",
+     "description": "【Part 10/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 11 of 26).md",
+     "name": "pride_and_prejudice (part 11 of 26).md",
+     "description": "【Part 11/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 12 of 26).md",
+     "name": "pride_and_prejudice (part 12 of 26).md",
+     "description": "【Part 12/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 13 of 26).md",
+     "name": "pride_and_prejudice (part 13 of 26).md",
+     "description": "【Part 13/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 14 of 26).md",
+     "name": "pride_and_prejudice (part 14 of 26).md",
+     "description": "【Part 14/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 15 of 26).md",
+     "name": "pride_and_prejudice (part 15 of 26).md",
+     "description": "【Part 15/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 16 of 26).md",
+     "name": "pride_and_prejudice (part 16 of 26).md",
+     "description": "【Part 16/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 17 of 26).md",
+     "name": "pride_and_prejudice (part 17 of 26).md",
+     "description": "【Part 17/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 18 of 26).md",
+     "name": "pride_and_prejudice (part 18 of 26).md",
+     "description": "【Part 18/26 · Chapter XLVI–XLVI】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——Chapter XLVI–XLVI 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 19 of 26).md",
+     "name": "pride_and_prejudice (part 19 of 26).md",
+     "description": "【Part 19/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 20 of 26).md",
+     "name": "pride_and_prejudice (part 20 of 26).md",
+     "description": "【Part 20/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 21 of 26).md",
+     "name": "pride_and_prejudice (part 21 of 26).md",
+     "description": "【Part 21/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 22 of 26) (part 1 of 2).md",
+     "name": "pride_and_prejudice (part 22 of 26) (part 1 of 2).md",
+     "description": "【Part 22/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。；[part 1/2] pride and prejudice（第 22/26 部分） “Certainly,” he replied, biting his lips. Elizabeth hoped she had silenced him; but he s…"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 22 of 26) (part 2 of 2).md",
+     "name": "pride_and_prejudice (part 22 of 26) (part 2 of 2).md",
+     "description": "【Part 22/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。；[part 2/2] “Nothing, child, nothing. I did not wink at you.” She then sat still five minutes longer; but unable to waste such a pre…"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 23 of 26).md",
+     "name": "pride_and_prejudice (part 23 of 26).md",
+     "description": "【Part 23/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 24 of 26).md",
+     "name": "pride_and_prejudice (part 24 of 26).md",
+     "description": "【Part 24/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 25 of 26).md",
+     "name": "pride_and_prejudice (part 25 of 26).md",
+     "description": "【Part 25/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    },
+    {
+     "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 26 of 26).md",
+     "name": "pride_and_prejudice (part 26 of 26).md",
+     "description": "【Part 26/26 · Gutenberg front/back matter】Pride and Prejudice (Jane Austen, PG#1342) 英文全文分块——front/back matter 的情节正文，用于长文本跨章检索。"
+    }
+   ]
+  },
+  "L3_heads": {
+   "Novel-PridePrejudice\\pride_and_prejudice (part 1 of 26) (part 1 of 2).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 1 of 26) (part 1 of 2).md",
+    "content": "# pride_and_prejudice (part 1 of 26).md（第 1/2 部分）\n章节: pride_and_prejudice（第 1/26 部分）\n# pride_and_prejudice（第 1/26 部分）\n\nThe Project Gutenberg eBook of Pride and Prejudice\n\nThis eBook is for the use of anyone anywhere in the United States and\nmost other parts of the world at no cost and with almost no restrictions\nwhatsoever. You may copy it, give it away or re-use it under the terms\nof the Project Gutenberg License included with this eBook or online\nat www.gutenberg.org. If you are not located in the United States,\nyou will have to check the laws of the country where you are located\nbefore usin",
+    "totalLines": 530,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 1 of 26) (part 2 of 2).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 1 of 26) (part 2 of 2).md",
+    "content": "# pride_and_prejudice (part 1 of 26).md（第 2/2 部分）\n章节: pride_and_prejudice（第 1/26 部分）\n“Protested that he never read novels”                                 87",
+    "totalLines": 3,
+    "truncated": false
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 2 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 2 of 26).md",
+    "content": "# pride_and_prejudice（第 2/26 部分）\nHeading to Chapter XV.                                                89\n\nHeading to Chapter XVI.                                               95\n\n“The officers of the ----shire”                                       97\n\n“Delighted to see their dear friend again”                           108\n\nHeading to Chapter XVIII.                                            113\n\n“Such very superior dancing is not often seen”                       118\n\n“To assure you in the most animated language”                        132\n\nHeading to Chapter XX.                           ",
+    "totalLines": 677,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 3 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 3 of 26).md",
+    "content": "# pride_and_prejudice（第 3/26 部分）\nMrs. Hurst and her sister allowed it to be so; but still they admired\nher and liked her, and pronounced her to be a sweet girl, and one whom\nthey should not object to know more of. Miss Bennet was therefore\nestablished as a sweet girl; and their brother felt authorized by such\ncommendation to think of her as he chose.\n\n[Illustration: [_Copyright 1894 by George Allen._]]\n\nCHAPTER V.\n\n[Illustration]\n\nWithin a short walk of Longbourn lived a family with whom the Bennets\nwere particularly intimate. Sir William Lucas had been formerly in trade\nin Meryton, where he h",
+    "totalLines": 634,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 4 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 4 of 26).md",
+    "content": "# pride_and_prejudice（第 4/26 部分）\nWhen the clock struck three, Elizabeth felt that she must go, and very\nunwillingly said so. Miss Bingley offered her the carriage, and she only\nwanted a little pressing to accept it, when Jane testified such concern\nat parting with her that Miss Bingley was obliged to convert the offer\nof the chaise into an invitation to remain at Netherfield for the\npresent. Elizabeth most thankfully consented, and a servant was\ndespatched to Longbourn, to acquaint the family with her stay, and bring\nback a supply of clothes.\n\n[Illustration:\n\n“The Apothecary came”\n]\n\n[Illustra",
+    "totalLines": 653,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 5 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 5 of 26).md",
+    "content": "# pride_and_prejudice（第 5/26 部分）\nMrs. Hurst sang with her sister; and while they were thus employed,\nElizabeth could not help observing, as she turned over some music-books\nthat lay on the instrument, how frequently Mr. Darcy’s eyes were fixed\non her. She hardly knew how to suppose that she could be an object of\nadmiration to so great a man, and yet that he should look at her because\nhe disliked her was still more strange. She could only imagine, however,\nat last, that she drew his notice because there was something about her\nmore wrong and reprehensible, according to his ideas of right, than ",
+    "totalLines": 604,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 6 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 6 of 26).md",
+    "content": "# pride_and_prejudice（第 6/26 部分）\n“Her indifferent state of health unhappily prevents her being in town;\nand by that means, as I told Lady Catherine myself one day, has deprived\nthe British Court of its brightest ornament. Her Ladyship seemed pleased\nwith the idea; and you may imagine that I am happy on every occasion to\noffer those little delicate compliments which are always acceptable to\nladies. I have more than once observed to Lady Catherine, that her\ncharming daughter seemed born to be a duchess; and that the most\nelevated rank, instead of giving her consequence, would be adorned by\nher. ",
+    "totalLines": 557,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 7 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 7 of 26).md",
+    "content": "# pride_and_prejudice（第 7/26 部分）\n“Lady Catherine de Bourgh,” she replied, “has very lately given him a\nliving. I hardly know how Mr. Collins was first introduced to her\nnotice, but he certainly has not known her long.”\n\n“You know of course that Lady Catherine de Bourgh and Lady Anne Darcy\nwere sisters; consequently that she is aunt to the present Mr. Darcy.”\n\n“No, indeed, I did not. I knew nothing at all of Lady Catherine’s\nconnections. I never heard of her existence till the day before\nyesterday.”\n\n“Her daughter, Miss de Bourgh, will have a very large fortune, and it is\nbelieved that she and ",
+    "totalLines": 552,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 8 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 8 of 26).md",
+    "content": "# pride_and_prejudice（第 8/26 部分）\nAs Elizabeth had no longer any interest of her own to pursue, she turned\nher attention almost entirely on her sister and Mr. Bingley; and the\ntrain of agreeable reflections which her observations gave birth to made\nher perhaps almost as happy as Jane. She saw her in idea settled in that\nvery house, in all the felicity which a marriage of true affection could\nbestow; and she felt capable, under such circumstances, of endeavouring\neven to like Bingley’s two sisters. Her mother’s thoughts she plainly\nsaw were bent the same way, and she determined not to venture ne",
+    "totalLines": 540,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 9 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 9 of 26).md",
+    "content": "# pride_and_prejudice（第 9/26 部分）\n“My dear madam,” replied he, “let us be for ever silent on this point.\nFar be it from me,” he presently continued, in a voice that marked his\ndispleasure, “to resent the behaviour of your daughter. Resignation to\ninevitable evils is the duty of us all: the peculiar duty of a young man\nwho has been so fortunate as I have been, in early preferment; and, I\ntrust, I am resigned. Perhaps not the less so from feeling a doubt of my\npositive happiness had my fair cousin honoured me with her hand; for I\nhave often observed, that resignation is never so perfect as when t",
+    "totalLines": 538,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 10 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 10 of 26).md",
+    "content": "# pride_and_prejudice（第 10/26 部分）\nAs for Jane, _her_ anxiety under this suspense was, of course, more\npainful than Elizabeth’s: but whatever she felt she was desirous of\nconcealing; and between herself and Elizabeth, therefore, the subject\nwas never alluded to. But as no such delicacy restrained her mother, an\nhour seldom passed in which she did not talk of Bingley, express her\nimpatience for his arrival, or even require Jane to confess that if he\ndid not come back she should think herself very ill-used. It needed all\nJane’s steady mildness to bear these attacks with tolerable\ntranquillity.\n\nM",
+    "totalLines": 575,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 11 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 11 of 26).md",
+    "content": "# pride_and_prejudice（第 11/26 部分）\nFour weeks passed away, and Jane saw nothing of him. She endeavoured to\npersuade herself that she did not regret it; but she could no longer be\nblind to Miss Bingley’s inattention. After waiting at home every morning\nfor a fortnight, and inventing every evening a fresh excuse for her, the\nvisitor did at last appear; but the shortness of her stay, and, yet\nmore, the alteration of her manner, would allow Jane to deceive herself\nno longer. The letter which she wrote on this occasion to her sister\nwill prove what she felt:--\n\n     “My dearest Lizzy will, I am sure",
+    "totalLines": 530,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 12 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 12 of 26).md",
+    "content": "# pride_and_prejudice（第 12/26 部分）\nWhen the ladies returned to the drawing-room, there was little to be\ndone but to hear Lady Catherine talk, which she did without any\nintermission till coffee came in, delivering her opinion on every\nsubject in so decisive a manner as proved that she was not used to have\nher judgment controverted. She inquired into Charlotte’s domestic\nconcerns familiarly and minutely, and gave her a great deal of advice as\nto the management of them all; told her how everything ought to be\nregulated in so small a family as hers, and instructed her as to the\ncare of her cows and",
+    "totalLines": 599,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 13 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 13 of 26).md",
+    "content": "# pride_and_prejudice（第 13/26 部分）\nBut why Mr. Darcy came so often to the Parsonage it was more difficult\nto understand. It could not be for society, as he frequently sat there\nten minutes together without opening his lips; and when he did speak, it\nseemed the effect of necessity rather than of choice--a sacrifice to\npropriety, not a pleasure to himself. He seldom appeared really\nanimated. Mrs. Collins knew not what to make of him. Colonel\nFitzwilliam’s occasionally laughing at his stupidity proved that he was\ngenerally different, which her own knowledge of him could not have told\nher; and as s",
+    "totalLines": 522,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 14 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 14 of 26).md",
+    "content": "# pride_and_prejudice（第 14/26 部分）\n“Two offences of a very different nature, and by no means of equal\nmagnitude, you last night laid to my charge. The first mentioned was,\nthat, regardless of the sentiments of either, I had detached Mr. Bingley\nfrom your sister,--and the other, that I had, in defiance of various\nclaims, in defiance of honour and humanity, ruined the immediate\nprosperity and blasted the prospects of Mr. Wickham. Wilfully and\nwantonly to have thrown off the companion of my youth, the acknowledged\nfavourite of my father, a young man who had scarcely any other\ndependence than on ou",
+    "totalLines": 481,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 15 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 15 of 26).md",
+    "content": "# pride_and_prejudice（第 15/26 部分）\nLady Catherine seemed resigned. “Mrs. Collins, you must send a servant\nwith them. You know I always speak my mind, and I cannot bear the idea\nof two young women travelling post by themselves. It is highly improper.\nYou must contrive to send somebody. I have the greatest dislike in the\nworld to that sort of thing. Young women should always be properly\nguarded and attended, according to their situation in life. When my\nniece Georgiana went to Ramsgate last summer, I made a point of her\nhaving two men-servants go with her. Miss Darcy, the daughter of Mr.\nDarcy of",
+    "totalLines": 590,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 16 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 16 of 26).md",
+    "content": "# pride_and_prejudice（第 16/26 部分）\nTheir affectionate mother shared all their grief; she remembered what\nshe had herself endured on a similar occasion five-and-twenty years ago.\n\n“I am sure,” said she, “I cried for two days together when Colonel\nMiller’s regiment went away. I thought I should have broke my heart.”\n\n“I am sure I shall break _mine_,” said Lydia.\n\n“If one could but go to Brighton!” observed Mrs. Bennet.\n\n“Oh yes!--if one could but go to Brighton! But papa is so disagreeable.”\n\n“A little sea-bathing would set me up for ever.”\n\n“And my aunt Philips is sure it would do _me_ a great d",
+    "totalLines": 568,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 17 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 17 of 26).md",
+    "content": "# pride_and_prejudice（第 17/26 部分）\nThis was praise of all others most extraordinary, most opposite to her\nideas. That he was not a good-tempered man had been her firmest opinion.\nHer keenest attention was awakened: she longed to hear more; and was\ngrateful to her uncle for saying,--\n\n“There are very few people of whom so much can be said. You are lucky in\nhaving such a master.”\n\n“Yes, sir, I know I am. If I were to go through the world, I could not\nmeet with a better. But I have always observed, that they who are\ngood-natured when children, are good-natured when they grow up; and he\nwas always ",
+    "totalLines": 523,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 18 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 18 of 26).md",
+    "content": "# pride_and_prejudice（第 18/26 部分）\nBut she had no reason to fear Mr. and Mrs. Gardiner’s curiosity; it was\nnot their wish to force her communication. It was evident that she was\nmuch better acquainted with Mr. Darcy than they had before any idea of;\nit was evident that he was very much in love with her. They saw much to\ninterest, but nothing to justify inquiry.\n\nOf Mr. Darcy it was now a matter of anxiety to think well; and, as far\nas their acquaintance reached, there was no fault to find. They could\nnot be untouched by his politeness; and had they drawn his character\nfrom their own feelings an",
+    "totalLines": 512,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 19 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 19 of 26).md",
+    "content": "# pride_and_prejudice（第 19/26 部分）\nShe was wild to be at home--to hear, to see, to be upon the spot to\nshare with Jane in the cares that must now fall wholly upon her, in a\nfamily so deranged; a father absent, a mother incapable of exertion, and\nrequiring constant attendance; and though almost persuaded that nothing\ncould be done for Lydia, her uncle’s interference seemed of the utmost\nimportance, and till he entered the room the misery of her impatience\nwas severe. Mr. and Mrs. Gardiner had hurried back in alarm, supposing,\nby the servant’s account, that their niece was taken suddenly ill; but",
+    "totalLines": 561,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 20 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 20 of 26).md",
+    "content": "# pride_and_prejudice（第 20/26 部分）\nBut before they heard again from Mr. Gardiner, a letter arrived for\ntheir father, from a different quarter, from Mr. Collins; which, as Jane\nhad received directions to open all that came for him in his absence,\nshe accordingly read; and Elizabeth, who knew what curiosities his\nletters always were, looked over her, and read it likewise. It was as\nfollows:--\n\n     /* “My dear Sir, */\n\n     “I feel myself called upon, by our relationship, and my situation\n     in life, to condole with you on the grievous affliction you are now\n     suffering under, of which we we",
+    "totalLines": 586,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 21 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 21 of 26).md",
+    "content": "# pride_and_prejudice（第 21/26 部分）\nMr. Gardiner soon wrote again to his brother. To Mr. Bennet’s\nacknowledgments he briefly replied, with assurances of his eagerness to\npromote the welfare of any of his family; and concluded with entreaties\nthat the subject might never be mentioned to him again. The principal\npurport of his letter was to inform them, that Mr. Wickham had resolved\non quitting the militia.\n\n“It was greatly my wish that he should do so,” he added, “as soon as his\nmarriage was fixed on. And I think you will agree with me, in\nconsidering a removal from that corps as highly advisable",
+    "totalLines": 540,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 22 of 26) (part 1 of 2).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 22 of 26) (part 1 of 2).md",
+    "content": "# pride_and_prejudice (part 22 of 26).md（第 1/2 部分）\n章节: pride_and_prejudice（第 22/26 部分）\n# pride_and_prejudice（第 22/26 部分）\n\n“Certainly,” he replied, biting his lips. Elizabeth hoped she had\nsilenced him; but he soon afterwards said,--\n\n“I was surprised to see Darcy in town last month. We passed each other\nseveral times. I wonder what he can be doing there.”\n\n“Perhaps preparing for his marriage with Miss de Bourgh,” said\nElizabeth. “It must be something particular to take him there at this\ntime of year.”\n\n“Undoubtedly. Did you see him while you were at Lambton? I thought I\nunderstood from the Gar",
+    "totalLines": 639,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 22 of 26) (part 2 of 2).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 22 of 26) (part 2 of 2).md",
+    "content": "# pride_and_prejudice (part 22 of 26).md（第 2/2 部分）\n章节: pride_and_prejudice（第 22/26 部分）\n“Nothing, child, nothing. I did not wink at you.” She then sat still\nfive minutes longer; but unable to waste such a precious occasion, she\nsuddenly got up, and saying to Kitty,--",
+    "totalLines": 5,
+    "truncated": false
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 23 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 23 of 26).md",
+    "content": "# pride_and_prejudice（第 23/26 部分）\n“Come here, my love, I want to speak to you,” took her out of the room.\nJane instantly gave a look at Elizabeth which spoke her distress at such\npremeditation, and her entreaty that _she_ would not give in to it. In a\nfew minutes, Mrs. Bennet half opened the door and called out,--\n\n“Lizzy, my dear, I want to speak with you.”\n\nElizabeth was forced to go.\n\n“We may as well leave them by themselves, you know,” said her mother as\nsoon as she was in the hall. “Kitty and I are going upstairs to sit in\nmy dressing-room.”\n\nElizabeth made no attempt to reason with her m",
+    "totalLines": 623,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 24 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 24 of 26).md",
+    "content": "# pride_and_prejudice（第 24/26 部分）\nShe followed him thither; and her curiosity to know what he had to tell\nher was heightened by the supposition of its being in some manner\nconnected with the letter he held. It suddenly struck her that it might\nbe from Lady Catherine, and she anticipated with dismay all the\nconsequent explanations.\n\nShe followed her father to the fireplace, and they both sat down. He\nthen said,--\n\n“I have received a letter this morning that has astonished me\nexceedingly. As it principally concerns yourself, you ought to know its\ncontents. I did not know before that I had _two_ ",
+    "totalLines": 590,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 25 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 25 of 26).md",
+    "content": "# pride_and_prejudice（第 25/26 部分）\n“This is an evening of wonders, indeed! And so, Darcy did everything;\nmade up the match, gave the money, paid the fellow’s debts, and got him\nhis commission! So much the better. It will save me a world of trouble\nand economy. Had it been your uncle’s doing, I must and _would_ have\npaid him; but these violent young lovers carry everything their own\nway. I shall offer to pay him to-morrow, he will rant and storm about\nhis love for you, and there will be an end of the matter.”\n\nHe then recollected her embarrassment a few days before on his reading\nMr. Collins’s l",
+    "totalLines": 565,
+    "truncated": true
+   },
+   "Novel-PridePrejudice\\pride_and_prejudice (part 26 of 26).md": {
+    "success": true,
+    "path": "Novel-PridePrejudice/pride_and_prejudice (part 26 of 26).md",
+    "content": "# pride_and_prejudice（第 26/26 部分）\n1.E.9. If you wish to charge a fee or distribute a Project\nGutenberg™ electronic work or group of works on different terms than\nare set forth in this agreement, you must obtain permission in writing\nfrom the Project Gutenberg Literary Archive Foundation, the manager of\nthe Project Gutenberg™ trademark. Contact the Foundation as set\nforth in Section 3 below.\n\n1.F.\n\n1.F.1. Project Gutenberg volunteers and employees expend considerable\neffort to identify, do copyright research on, transcribe and proofread\nworks not protected by U.S. copyright law in creating the ",
+    "totalLines": 162,
+    "truncated": true
+   }
+  }
+ },
+ "call_log": [
+  {
+   "lane": "B",
+   "tool": "kb_list",
+   "args": {
+    "lightweight": true
+   },
+   "ms": 889
+  },
+  {
+   "lane": "B",
+   "tool": "kb_get_documents",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "lightweight": true
+   },
+   "ms": 557
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 1 of 26) (part 1 of 2).md",
+    "max_chars": 600
+   },
+   "ms": 277
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 1 of 26) (part 2 of 2).md",
+    "max_chars": 600
+   },
+   "ms": 279
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 2 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 279
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 3 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 1255
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 4 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 276
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 5 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 265
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 6 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 267
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 7 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 278
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 8 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 265
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 9 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 266
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 10 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 278
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 11 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 280
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 12 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 278
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 13 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 288
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 14 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 275
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 15 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 266
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 16 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 325
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 17 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 267
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 18 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 282
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 19 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 274
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 20 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 270
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 21 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 274
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 22 of 26) (part 1 of 2).md",
+    "max_chars": 600
+   },
+   "ms": 263
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 22 of 26) (part 2 of 2).md",
+    "max_chars": 600
+   },
+   "ms": 277
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 23 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 269
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 24 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 289
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 25 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 270
+  },
+  {
+   "lane": "B",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice\\pride_and_prejudice (part 26 of 26).md",
+    "max_chars": 600
+   },
+   "ms": 278
+  },
+  {
+   "lane": "A",
+   "tool": "kb_search_vector",
+   "args": {
+    "query": "Mr. Darcy at the Meryton assembly refuses to dance with Elizabeth Bennet, saying she is tolerable but not handsome enough to tempt him, and Elizabeth overhears and laughs it off",
+    "kb_id": "",
+    "top_k": 10,
+    "score_threshold": 0.35,
+    "balance_kbs": true
+   },
+   "ms": 789
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 2 of 26).md",
+    "max_chars": 3000
+   },
+   "ms": 274
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k42.md",
+    "max_chars": 3000
+   },
+   "ms": 272
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+    "max_chars": 3000
+   },
+   "ms": 277
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 4 of 5).md",
+    "max_chars": 3000
+   },
+   "ms": 278
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+    "max_chars": 3000
+   },
+   "ms": 278
+  },
+  {
+   "lane": "A",
+   "tool": "kb_search_vector",
+   "args": {
+    "query": "Mr. Darcy's first marriage proposal to Elizabeth Bennet at Hunsford Parsonage, her refusal, and the letter he gives her next morning revealing Wickham's attempted elopement with Georgiana Darcy",
+    "kb_id": "",
+    "top_k": 10,
+    "score_threshold": 0.35,
+    "balance_kbs": true
+   },
+   "ms": 479
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 6 of 26).md",
+    "max_chars": 3000
+   },
+   "ms": 280
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k42.md",
+    "max_chars": 3000
+   },
+   "ms": 289
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md",
+    "max_chars": 3000
+   },
+   "ms": 273
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md",
+    "max_chars": 3000
+   },
+   "ms": 278
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "e2e-demo-0923-022632/平台架构总览.md",
+    "max_chars": 3000
+   },
+   "ms": 265
+  },
+  {
+   "lane": "A",
+   "tool": "kb_search_vector",
+   "args": {
+    "query": "Mrs. Gardiner's letter revealing that Mr. Darcy secretly found Lydia and Wickham in London, paid Wickham's debts, settled money on Lydia, and bought his commission",
+    "kb_id": "",
+    "top_k": 10,
+    "score_threshold": 0.35,
+    "balance_kbs": true
+   },
+   "ms": 420
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 21 of 26).md",
+    "max_chars": 3000
+   },
+   "ms": 282
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 8 of 13).md",
+    "max_chars": 3000
+   },
+   "ms": 262
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "经济与社会/finance__1412.5558__backtest-of-trading-systems-on-candle-charts.md.md",
+    "max_chars": 3000
+   },
+   "ms": 279
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "自然科学与地球科学/mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 1 of 7).md",
+    "max_chars": 3000
+   },
+   "ms": 279
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "aw-industrial/集成冒烟测试文档.md",
+    "max_chars": 3000
+   },
+   "ms": 279
+  },
+  {
+   "lane": "A",
+   "tool": "kb_search_vector",
+   "args": {
+    "query": "Charlotte Lucas's marriage to Mr. Collins and Elizabeth Bennet's reaction to the engagement",
+    "kb_id": "",
+    "top_k": 10,
+    "score_threshold": 0.35,
+    "balance_kbs": true
+   },
+   "ms": 405
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 10 of 26).md",
+    "max_chars": 3000
+   },
+   "ms": 280
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Corpus-Chunks800/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e__k38.md",
+    "max_chars": 3000
+   },
+   "ms": 284
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "自然科学与地球科学/quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md",
+    "max_chars": 3000
+   },
+   "ms": 277
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 2 of 3).md",
+    "max_chars": 3000
+   },
+   "ms": 281
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+    "max_chars": 3000
+   },
+   "ms": 264
+  },
+  {
+   "lane": "A",
+   "tool": "kb_search_vector",
+   "args": {
+    "query": "Wickham's attempted elopement with Georgiana Darcy at Ramsgate and his actual elopement with Lydia Bennet",
+    "kb_id": "",
+    "top_k": 10,
+    "score_threshold": 0.35,
+    "balance_kbs": true
+   },
+   "ms": 399
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 19 of 26).md",
+    "max_chars": 3000
+   },
+   "ms": 275
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "计算机与人工智能/robotics__1809.03210__intelligent-flat-and-textureless-object-mani.md",
+    "max_chars": 3000
+   },
+   "ms": 288
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md",
+    "max_chars": 3000
+   },
+   "ms": 302
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+    "max_chars": 3000
+   },
+   "ms": 300
+  },
+  {
+   "lane": "A",
+   "tool": "kb_doc_read",
+   "args": {
+    "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+    "doc_path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 3 of 12).md",
+    "max_chars": 3000
+   },
+   "ms": 295
+  }
+ ]
+}

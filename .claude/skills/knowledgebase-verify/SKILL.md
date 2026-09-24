@@ -1,9 +1,8 @@
 ---
 name: knowledgebase-verify
-description: >
-  Knowledge base integrity and quality validation. V1→V9: three-way metadata consistency (disk↔.tree-fs.json↔.knowledge-base.yml), document integrity, parse quality, index coverage+repair, scorecard (max 115), report, tag health (orphan+trash detection), experience health (stale+orphan+test pollution), auto-fix (repeat collections, orphan tags, missing indexes). Read-only by default; repair requires explicit instruction. Triggered by: validate, cross-check, integrity, health check, verify, check, consistency, verify, validate, integrity, health check, quality audit, check KB, detect issues, audit the knowledge base.
+description: "Knowledge base integrity and quality validation. V1→V9: three-way metadata consistency (disk↔.tree-fs.json↔.knowledge-base.yml), document integrity, parse quality, index coverage+repair, scorecard (max 115), report, tag health (orphan+trash detection), experience health (stale+orphan+test pollution), auto-fix (repeat collections, orphan tags, missing indexes). Read-only by default; repair requires explicit instruction. Triggered by: validate, cross-check, integrity, health check, verify, check, consistency, verify, validate, integrity, health check, quality audit, check KB, detect issues, audit the knowledge base."
+agent_created: true
 ---
-
 ## ⭐ Related Skills
 - KB organize & cleanup → `skill://knowledgebase-organize` (O1-O8 full flow)
 - Document/KB management → `skill://knowledgebase-manage` (move/delete/merge)

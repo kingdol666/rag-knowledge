@@ -2,26 +2,27 @@
 % three design decisions), demo-shaped contribution bullets. Numbers locked
 % to artifacts.
 \section{Introduction}
+\label{sec:intro}
 
 Research administrators maintaining shared paper collections must organize
-documents and show which passages support an answer. Packed-context RAG
+them and show which passages support an answer. Packed-context RAG
 collapses retrieval into an opaque context: provenance is lost at pack
 time, similarity stands in for reading, and a failed retrieval passes
 silently~\cite{rag-lewis}. Self-RAG, Corrective RAG, DeepRead, and CyberBOT
 add self-assessment, hierarchy grounding, and ontology-checked
 verification~\cite{selfrag,crag,deepread,cyberbot}; to our knowledge, none
-manages the collection that retrieval consumes through the addresses that
-answers cite, so citations stay resolvable and absence stays legible.
+manages the collection that retrieval consumes through the same addresses
+that answers cite, so citations stay resolvable and absence stays legible.
 
 \sys{} (Query-Driven Content-Verified Retrieval) closes this gap with three
 design decisions. \emph{One address space}: parsed documents are indexed as
 base/document/part/section, and the same identifiers serve organization,
 search, and citation. \emph{Ranking proposes, reading disposes}: candidates
 are recalled by similarity, but acceptance is decided by a prompted 0--8
-rubric over their content, so each acceptance records the rubric judgment
-that admitted it instead of a bare similarity value. \emph{Failure is a
-first-class output}: when no candidate passes, the agent browses base
-summaries and tag-matched shelves, and the skill returns a scoped not-found
+rubric over their content, so every accepted candidate carries the rubric
+judgment that admitted it instead of a bare similarity value. \emph{Failure
+is a first-class output}: when no candidate passes, the skill browses base
+summaries and tag-matched shelves and returns a scoped not-found
 report instead of a nearest-neighbor guess.
 
 Packaged agent skills bind these decisions to tool APIs: the organization
@@ -29,9 +30,9 @@ skill parses PDFs, routes them by content, maintains tags, and checks
 indexing, so placement reflects what a paper says rather than its filename;
 the retrieval skill rewrites the query, recalls and reads candidates,
 applies the 0--8 gate, and cites the passage that survives it
-(Figure~\ref{fig:teaser}, Figure~\ref{fig:arch}). Attendees organize a
-document, walk an answer's evidence from citation to source across the
-three modes head to head, and examine a scoped not-found report and the
-near miss behind it. Section~\ref{sec:demo} walks these scenarios;
+(Figures~\ref{fig:teaser} and~\ref{fig:arch}). Attendees organize a
+document, walk an answer's evidence from citation to source while comparing
+the three modes head to head, and examine a scoped not-found report and the
+near miss behind it. Section~\ref{sec:demo} demonstrates these scenarios;
 Section~\ref{sec:eval} reads the monitored run as operational evidence,
 not a controlled comparison.

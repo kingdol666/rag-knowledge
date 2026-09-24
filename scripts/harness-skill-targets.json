@@ -1,0 +1,98 @@
+{
+  "_doc": "把 .claude/skills 同步到各 Agent Harness 的项目级 skill 目录。verified=true 表示已在本机用该 harness 的 list/--help 实测确认；enabled=false 的目标默认不创建（避免在仓库里留下未验证的空目录），需要时改为 true 再跑 scripts/sync_skills.py。",
+  "source": ".claude/skills",
+  "agents_source": ".claude/agents",
+  "targets": [
+    {
+      "harness": "claude",
+      "dir": ".claude/skills",
+      "verified": true,
+      "enabled": true,
+      "note": "canonical source — Claude Code 原生目录"
+    },
+    {
+      "harness": "goose / gemini / cross-harness",
+      "dir": ".agents/skills",
+      "verified": true,
+      "enabled": true,
+      "note": "实测：goose skills list 能发现项目级 .agents/skills/ 与 .claude/skills/；gemini 用户级同为 ~/.agents/skills/"
+    },
+    {
+      "harness": "copilot",
+      "dir": ".github/skills",
+      "verified": true,
+      "enabled": true,
+      "note": "copilot --help 明示 'load its .github/skills and .github/agents as trusted configuration'"
+    },
+    {
+      "harness": "omp",
+      "dir": ".omp/skills",
+      "verified": false,
+      "enabled": true,
+      "note": "omp 有 skill 发现（--no-skills / --skills=<glob>）；项目目录 .omp/ 已存在（agents/commands/mcp.json），skills/ 为约定推断"
+    },
+    {
+      "harness": "copilot (agents)",
+      "dir": ".github/agents",
+      "verified": true,
+      "enabled": false,
+      "note": "copilot 同时读 .github/agents；本项目 agents 仅 archival，按需开启"
+    },
+    {
+      "harness": "cursor",
+      "dir": ".cursor/skills",
+      "verified": false,
+      "enabled": false,
+      "note": "未实测；cursor 主要读 AGENTS.md / .cursor/rules —— 已由根 AGENTS.md 覆盖"
+    },
+    {
+      "harness": "opencode",
+      "dir": ".opencode/skill",
+      "verified": false,
+      "enabled": false,
+      "note": "未实测；opencode 主要读 AGENTS.md —— 已由根 AGENTS.md 覆盖"
+    },
+    {
+      "harness": "qwen",
+      "dir": ".qwen/skills",
+      "verified": false,
+      "enabled": false,
+      "note": "未实测；qwen 读 QWEN.md / AGENTS.md —— 已由根 AGENTS.md 覆盖"
+    },
+    {
+      "harness": "codex",
+      "dir": ".codex/skills",
+      "verified": false,
+      "enabled": false,
+      "note": "未实测；codex 读 AGENTS.md —— 已由根 AGENTS.md 覆盖"
+    },
+    {
+      "harness": "crush",
+      "dir": ".crush/skills",
+      "verified": false,
+      "enabled": false,
+      "note": "未实测；crush 读 CRUSH.md / AGENTS.md —— 已由根 AGENTS.md 覆盖"
+    },
+    {
+      "harness": "hermes",
+      "dir": ".hermes/skills",
+      "verified": false,
+      "enabled": false,
+      "note": "hermes 有 --skills 参数；项目目录未实测 —— 已由根 AGENTS.md 覆盖"
+    },
+    {
+      "harness": "dsh",
+      "dir": ".dsh/skills",
+      "verified": false,
+      "enabled": false,
+      "note": "未实测；dsh 读 AGENTS.md —— 已由根 AGENTS.md 覆盖"
+    },
+    {
+      "harness": "pi",
+      "dir": ".pi/skills",
+      "verified": false,
+      "enabled": false,
+      "note": "pi 读 AGENTS.md/CLAUDE.md（--no-context-files 可关）+ --skill <path>；已由根 AGENTS.md 覆盖"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+ "qid": "QK01",
+ "method": "rerank",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "ranked": [
+  "1706.03762",
+  "2110.07844",
+  "1810.04805",
+  "2503.21676",
+  "2510.13343",
+  "1906.10015"
+ ],
+ "ranked_paths": [
+  "artificial-intelligence__1706.03762__attention-is-all-you-need__k19",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst__k07",
+  "nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor__k05",
+  "nlp__2503.21676__how-do-language-models-learn-facts-dynamics__k22",
+  "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep__k09",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren__k55"
+ ],
+ "evidence_sources": [
+  "1706.03762",
+  "2110.07844",
+  "1810.04805",
+  "2503.21676",
+  "2510.13343",
+  "1906.10015"
+ ],
+ "evidence_chars": 2437,
+ "retrieval_s": 15.3,
+ "latency_s": 22.8,
+ "answer": "The evidence is insufficient to answer this question fully. The retrieved chunks describe the Transformer only in fragments: chunk [1706.03762] states the Transformer is \"the first sequence transduction model based entirely on attention,\" replacing recurrent layers in encoder-decoder architectures with multi-headed self-attention, but it does not explain *why* convolution was replaced. Chunk [2110.07844] gives a mechanism for cross-attention — transforming decoder and encoder states into query, key, and value vectors, computing normalized dot-product attention weights, and outputting a weighted sum of value vectors — and notes the mechanism \"learns to focus on relevant parts of the input data\" per chunk [2510.13343]. Chunk [1810.04805] only defines notation (L layers, hidden size H, attention heads). No chunk provides the reasoning for replacing recurrence or convolution.\n\nSources used:\n- [1706.03762] — \"Attention Is All You Need\" (Conclusion section)\n- [2110.07844] — cross-attention head mechanics (Eqs. 5–8)\n- [2510.13343] — Multi-Agent Transformer Approach (attention mechanism strength)\n- [1810.04805] — BERT notation for layers/heads\n- [2503.21676], [1906.10015] — sampled but not relevant to mechanism or rationale",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 597,
+  "output": 285,
+  "cache_read": 37184,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.028702,
+ "extra": {
+  "rerank_fallback": false
+ }
+}

@@ -1,9 +1,8 @@
 ---
 name: knowledgebase-batch
-description: >
-  High-volume batch operations. B1→B7: bulk tag migration, bulk description updates, directory mass ingestion (file-type routing), mass document move, cross-KB dedup, export summary, graph rebuild. All batch ops follow survey→plan→confirm→execute→verify. Triggered by: batch, all documents, everything, large-scale, batch operations, batch, bulk, mass, all documents, every KB, repetitive, full volume, one-shot processing, modify uniformly.
+description: "High-volume batch operations. B1→B7: bulk tag migration, bulk description updates, directory mass ingestion (file-type routing), mass document move, cross-KB dedup, export summary, graph rebuild. All batch ops follow survey→plan→confirm→execute→verify. Triggered by: batch, all documents, everything, large-scale, batch operations, batch, bulk, mass, all documents, every KB, repetitive, full volume, one-shot processing, modify uniformly."
+agent_created: true
 ---
-
 # Knowledge Batch — High-Volume Operations
 
 ## ⭐ Execution Model · Pre-Flight · Architecture (First Step of Any Job, Mandatory)

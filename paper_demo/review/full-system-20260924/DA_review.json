@@ -1,0 +1,34 @@
+{
+  "seat": "DA",
+  "score": 8.5,
+  "verdict": "minor",
+  "summary": "Enumerated sweep of 117 numeric/factual claim instances across abstract, SS1, SS2, SS3, SS4, Table 1 (page 3), all three figure captions/Descriptions, and the Figure 3 bottom strip: 110 exact, 7 mismatches. Every headline number is artifact-exact: 100 papers / 5 bases / 322 parts / 165/165 / 35 near-pairs 0 dupes / 322/322 + 33/33 / 15/15 / 4,528 chunks (r2_pipeline_100.json); 9/10-10/10-9/10 grounded, 9/6/6 keyword-verified (exp_r2_grade.json via 107_exp_grade.py word-boundary rule ceil(3n/5)), 7/4/1 citations, 113.0/42.7/48.0 s, 7.6/4.4/2.4 tools, $4.91/1.63/1.80 -> 0.4911/0.1631/0.1803 per question (audit_paper_numbers.json, recomputed independently); 3 NOT_FOUND probes 1/8,1/8,0/8 incl. the fictitious 'Spectral Tuning for Low-Resource Odor Recognition' and BERT 1/8 (honest_failure_probe.json). Deep traces: BQ04-a vector-first 0.75 in-KB / 0.66 cross-KB, part 1 of 2, section '2. What is the Gene Ontology?', verbatim quote present; BQ06-c verbatim abstention 'The retrieved chunks do not directly name a single physical factor...'; BQ02-a cites_gold_paper=false (gold 1801.00862 uncited) and it is the ONLY track-a grounding failure; BQ06 is the ONLY track-c abstention; BQ08-b keyword miss confirmed ('Oxygen (anionic) redox' and plural 'cathodes' -> 0/2 under word-boundary regex). REFERENCE AUTHENTICITY: all 20 refs.bib entries verified real with correct authors/venue/year; the 8 cited entries confirmed against primary sources, including the historically risky ones -- deepread = arXiv:2602.05014 v3 (exists, authors Zhanli Li/Huiwen Tian/Lvzhou Luo/Yixuan Cao/Ping Luo), cyberbot = CIKM'25 pp. 6752-6756 DOI 10.1145/3746252.3761478 (all 10 authors match ACM DL), bge-m3 = Findings ACL 2024 pp. 2318-2335 (ACL Anthology), mineru = arXiv:2409.18839 (19-author list exact), mcp spec revision 2025-11-25 live; no fabricated entries found. URLs re-verified HTTP 200 (video + repo). The 7 mismatches: Figure 3's 'HOW IT SEARCHED' timeline boxes misstate the saved traces in 5 places (P1, grouped as DA-1 -- the builder's check_process() gate only asserts lines are non-empty, so the miscounts passed), plus two P2 wording issues (live-answer latency upper bound; Fig 1 caption lists a 'qualified answer' outcome the figure does not depict). Fix the Figure 3 timelines (or relabel as condensed) and both P2s; nothing else stands between the paper and its artifacts.",
+  "numbers_checked": 117,
+  "numbers_ok": 110,
+  "issues": [
+    {
+      "id": "DA-1",
+      "priority": "P1",
+      "location": "Figure 3 (page 4), 'HOW IT SEARCHED - TIMELINE' boxes in 4 of 5 columns; caption asserts 'each column shows the saved tool timeline'; \\Description mirrors the same counts",
+      "issue": "Timeline boxes misstate the saved traces' tool-call counts and invent a search that never happened. Five wrong values: (1) BQ04 column C 'kb_search_vector x2 - chunk recall' -- track_c_BQ04.json has exactly 1 kb_search_vector call (tool_call_count=2 incl. ToolSearch); (2) BQ06 column C 'kb_search_vector x2' -- track_c_BQ06.json has exactly 1; (3) BQ06 column A 'ToolSearch x2' -- track_a_BQ06.json has 3 ToolSearch calls; (4) BQ06 column A 'two-stage + vector - recall' -- the trace contains ZERO kb_search_two_stage calls (5 kb_search_vector); (5) BQ06 column A 'kb_doc_read x3 - verify re-read' -- the trace has 2 kb_doc_read calls. Root cause: build_fig3_dual.py hand-transcribes the timelines and its check_process() 'existence-checked' gate only asserts each line is non-empty after stripping an 'xN' suffix, so it verifies nothing. Minor related elisions without ellipsis marks (not counted as errors): BQ04-A omits the trace's 5th call (second kb_search_vector); BQ04-B shows 'a glob, a grep, and a read' vs the trace's 4 calls (Grep, Glob, Read, Read); BQ04-C source box names only chunk k00 where the trace names k00 and k01. All bottom-strip aggregates in the same figure are exact.",
+      "evidence": "Figure says 'kb_search_vector x2' (BQ04-C, BQ06-C), 'ToolSearch x2', 'two-stage + vector', 'kb_doc_read x3' (BQ06-A); track_c_BQ04.json tool_calls=[ToolSearch, kb_search_vector], tool_call_count=2; track_c_BQ06.json identical shape; track_a_BQ06.json tool_calls = 3x ToolSearch, 5x kb_search_vector, 0x kb_search_two_stage, 2x kb_doc_read (tool_call_count=10, matching audit_paper_numbers.json)",
+      "suggestion": "Regenerate Figure 3 timelines programmatically from track_*.json (count events per tool and render with real counts, or drop counts entirely), and make check_process() actually assert each rendered tool/count against the trace; alternatively soften the caption to 'condensed tool timeline (counts approximate)'. The \\Description texts 'a connection and two vector searches' (both C columns) and 'recall by two-stage and vector search, and three document reads' (BQ06-A) must change with it."
+    },
+    {
+      "id": "DA-2",
+      "priority": "P2",
+      "location": "Section 3 (SS3, page 2), 'A live answer takes ten seconds to two minutes'",
+      "issue": "Upper bound understated. Observed per-question latencies in the monitored run reach 174.0 s (~2.9 min); four other track-a questions also exceed two minutes (160.9, 155.9, 152.5, 117.9 s).",
+      "evidence": "Paper says 'ten seconds to two minutes'; audit_paper_numbers.json / track_a_BQ01.json report latency_s=174.0 (max), and 13.8 s (BQ10-c) is the min, so the lower bound is fine.",
+      "suggestion": "Change to 'ten seconds to about three minutes' (or 'up to ~3 minutes')."
+    },
+    {
+      "id": "DA-3",
+      "priority": "P2",
+      "location": "Figure 1 caption (page 2) vs Figure 1 panel 4",
+      "issue": "Caption lists three gate outcomes -- 'then cited answer, qualified answer, or scoped not-found' -- but panel 4 of the figure depicts only two ('cited answer - SS3.2' and 'or scoped not-found'); the qualified/backstop outcome is not shown. The \\Description correctly describes only the two outcomes shown, so caption and figure disagree.",
+      "evidence": "Caption: '0--8 content gate, then cited answer, qualified answer, or scoped not-found'. Fig 1 panel 4 text: 'cited answer - SS3.2' / 'or scoped not-found' (no qualified-answer element).",
+      "suggestion": "Either add a '=5 qualified answer' chip to Fig 1 panel 4 or drop 'qualified answer' from the caption; the three-outcome story is already correctly carried by Figure 2."
+    }
+  ]
+}

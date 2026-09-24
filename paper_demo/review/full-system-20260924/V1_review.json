@@ -1,0 +1,23 @@
+{
+  "seat": "V1",
+  "score": 8.5,
+  "verdict": "accept",
+  "summary": "Final-round verification passes. The known P0 is fixed: body text now ends on page 4 (last sentence of Section 4), and page 5 contains only the GenAI Usage Disclosure and references [1]-[8], exactly as the CIKM Demo rule allows. Figures 1/2/3 sit on pages 2/3/4 with Table 1 on page 3, matching the declared float plan. Every number in the abstract reconciles with Section 4 and with Figure 3's aggregate strip, and all of them match the locked fact sheet (grounded 9/10-10/10-9/10; keyword-verified 9/10-6/10-6/10; part/section citations 7-4-1; latency 113.0/42.7/48.0 s; tool calls 7.6/4.4/2.4; cost 0.4911/0.1631/0.1803 USD; ~3x cost claim = 0.49/0.16). Case evidence (BQ04 0.75/0.66 two-stage read with part-1-of-2/section-2 quote, BQ06 measured dense abstention, BQ02 disclosed neighbor mis-grounding, BQ08 conservative 0/2 grading, 322 parts, 3 scoped not-found probes) is consistent across Section 3, Section 4, and the figures. The space-tightening prose edits introduced no broken or half sentences: I checked every sentence in the abstract, Sections 1-4, and the backmatter; all parse, the abstract ends cleanly on the demo video URL, and all eight references are cited in text. This is acceptance-ready for the demo track apart from the known user-pending author-name placeholders.",
+  "strengths": [
+    "Page-budget compliance is now exact: 4 pages of body, page 5 holds only the GenAI disclosure and references, with a clean one-full-width-figure-per-page layout (Figs 1/2/3 on pp 2/3/4).",
+    "Numerical integrity end to end: abstract, Section 4, and Figure 3's strip carry identical, fact-sheet-matching numbers, including honest disclosure of the one grounding failure (BQ02) and of conservative-grading casualties (BQ06, BQ08).",
+    "The demo narrative is concrete and verifiable: replayable saved traces, a measured abstention shown next to a verified answer, scoped not-found reports, and working video/code URLs (HTTP 200 per fact sheet).",
+    "Prose survived the tightening without damage: no half-sentences or grammar breaks in any section; abstract reads clean and ends well.",
+    "GenAI disclosure is present, specific, and correctly scoped, with human responsibility stated."
+  ],
+  "issues": [
+    {
+      "id": "V1-1",
+      "priority": "P2",
+      "location": "main.tex title block (page 1)",
+      "issue": "Author, affiliation, and email are draft placeholders ('Author Name'). CIKM Demo is single-blind, so real names are expected at submission. Known user-pending item, not a reviewer-fixable flaw; no other blocking issues found.",
+      "evidence": "Rendered page 1 shows 'Author Name / Affiliation / City, Country / author@example.com'; main.tex lines 43-46 carry the same placeholders with an AUTHOR ACTION comment.",
+      "suggestion": "User replaces the placeholders with real author names, affiliation, and email before submission. Nothing else blocks acceptance."
+    }
+  ]
+}

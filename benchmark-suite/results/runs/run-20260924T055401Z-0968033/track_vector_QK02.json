@@ -1,0 +1,34 @@
+{
+ "qid": "QK02",
+ "method": "vector",
+ "question": "Which three independent ontologies subdivide the Gene Ontology?",
+ "ranked": [
+  "1602.01876",
+  "2110.07787",
+  "2508.18304"
+ ],
+ "ranked_paths": [
+  "genomics__1602.01876__primer-on-the-gene-ontology__k00",
+  "genomics__2110.07787__analysis-and-visualization-of-spatial-transc__k04",
+  "genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m__k15"
+ ],
+ "evidence_sources": [
+  "1602.01876",
+  "2110.07787",
+  "2508.18304"
+ ],
+ "evidence_chars": 925,
+ "retrieval_s": 0.0,
+ "latency_s": 6.5,
+ "answer": "The evidence answers this: the Gene Ontology is subdivided into three distinct ontologies representing different biological aspects — Molecular Function (MF), Biological Process (BP), and Cellular Component (CC).\n\nSource used: [1602.01876], section \"2. What is the Gene Ontology?\" (the other two chunks, [2110.07787] and [2508.18304], were not relevant to this question).",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 90,
+  "output": 87,
+  "cache_read": 37440,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.021345,
+ "extra": {}
+}

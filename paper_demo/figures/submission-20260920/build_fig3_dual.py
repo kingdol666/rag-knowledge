@@ -44,29 +44,28 @@ Q1 = {
     'question': 'Which three independent ontologies subdivide the Gene Ontology?',
     'quotes': {
         'a': [
-            'The three independent ontologies are: 1. Molecular Function (MF) 2. Biological Process (BP) 3. Cellular Component (CC)',
+            '1. Molecular Function (MF) 2. Biological Process (BP) 3. Cellular Component (CC)',
             'The Gene Ontology is a controlled vocabulary of terms to represent biology in a structured way.',
         ],
         'b': [
-            'The three independent ontologies that subdivide the Gene Ontology are Molecular Function (MF), Biological Process (BP), and Cellular Component (CC).',
+            'Molecular Function (MF), Biological Process (BP), and Cellular Component (CC).',
         ],
         'c': [
-            'The retrieved text states that the GO is "a controlled vocabulary of terms to represent biology in a structured way,"',
+            'the GO is "a controlled vocabulary of terms to represent biology in a structured way,"',
         ],
     },
     'process': {
         'a': ['ToolSearch ×2 · link kb-mcp',
-              'kb_search_vector — top 0.75',
-              'kb_search_two_stage — confirm read'],
-        'b': ['Glob — 100 exported papers',
-              'Grep — targeted search',
-              'Read the paper file'],
-        'c': ['link kb-mcp (ToolSearch)',
-              'kb_search_vector ×2 — chunk recall'],
+              'kb_search_vector ×2 — top 0.75',
+              'kb_search_two_stage ×1 — confirm'],
+        'b': ['Glob ×1 — 100 exported papers',
+              'Grep ×1 — targeted search',
+              'Read ×2 — the paper file'],
+        'c': ['ToolSearch ×1 · link kb-mcp',
+              'kb_search_vector ×1 — chunk recall'],
     },
     'sources': {
-        'a': ['Sources: life-sciences base ·',
-              'gene-ontology primer (1602.01876)',
+        'a': ['Sources: life-sciences base · 1602.01876',
               'part 1 of 2 · §2 verbatim quote'],
         'b': ['Source: …1602.01876__primer-',
               'on-the-gene-ontology.md (§2)'],
@@ -87,7 +86,7 @@ Q2 = {
     'tracks': ['a', 'c'],
     'quotes': {
         'a': [
-            'The temperature of the climate (mean surface temperature) is the primary physical factor controlling how precipitation extremes respond to climate change',
+            'The temperature of the climate (mean surface temperature) is the primary physical factor',
             'roughly, whether the mean surface temperature is above or below ~295 K',
         ],
         'c': [
@@ -95,19 +94,17 @@ Q2 = {
         ],
     },
     'process': {
-        'a': ['ToolSearch ×2 · link kb-mcp',
-              'two-stage + vector — recall',
-              'kb_doc_read ×3 — verify re-read'],
-        'c': ['link kb-mcp (ToolSearch)',
-              'kb_search_vector ×2 — chunk recall'],
+        'a': ['ToolSearch ×3 · link kb-mcp',
+              'kb_search_vector ×5 — recall',
+              'kb_doc_read ×2 — verify re-read'],
+        'c': ['ToolSearch ×1 · link kb-mcp',
+              'kb_search_vector ×1 — chunk recall'],
     },
     'sources': {
-        'a': ['Sources: climate-science base ·',
-              'precipitation-extremes (1503.07557)',
+        'a': ['Sources: climate-science base · 1503.07557',
               'keyword-verified ✓ (precipitation efficiency)'],
         'c': ['Closest chunk: …1503.07557__k00.md',
-              '"Several physical contributions govern',
-              'the response…" — no single factor named'],
+              '"Several physical contributions govern…" — no single factor'],
     },
     'verdicts': {
         'a': 'grounded ✓ · keyword-verified answer',
@@ -147,13 +144,31 @@ def check_verbatim(panel: dict, answers: dict) -> None:
 
 
 def check_process(panel: dict, timelines: dict) -> None:
+    """Every timeline line must carry an explicit xN count and the counted
+    totals must exactly partition the trace's tool_use events — the figure
+    is not allowed to elide or inflate tool calls."""
     for trk, lines in panel['process'].items():
-        tools = [e['detail'] for e in timelines[trk] if e['event'] == 'tool_use']
+        tools = {}
+        for e in timelines[trk]:
+            if e['event'] == 'tool_use':
+                tools[e['detail']] = tools.get(e['detail'], 0) + 1
         assert tools, f'no tool events {panel["qid"]}/{trk}'
+        counted = {}
         for ln in lines:
-            head = ln.split('—')[0].split('(')[0].strip().lower()
-            head = re.sub(r'\s*×\d+$', '', head)
-            assert head, ln
+            head = ln.split('—')[0].split('·')[0].split('(')[0].strip()
+            m = re.match(r'^(.+?)\s*×(\d+)$', head)
+            assert m, f'{panel["qid"]}/{trk}: line without explicit count: {ln!r}'
+            name, n = m.group(1).strip().lower(), int(m.group(2))
+            cands = [t for t in tools
+                     if t.lower() == name or t.lower().split('__')[-1] == name]
+            assert cands, f'{panel["qid"]}/{trk}: no trace tool matching {name!r}'
+            counted[cands[0]] = counted.get(cands[0], 0) + n
+            assert counted[cands[0]] == tools[cands[0]], (
+                f'{panel["qid"]}/{trk}: {cands[0]} figure x{counted[cands[0]]} '
+                f'vs trace x{tools[cands[0]]}')
+        assert sum(counted.values()) == sum(tools.values()), (
+            f'{panel["qid"]}/{trk}: figure covers {sum(counted.values())} '
+            f'of {sum(tools.values())} tool calls')
 
 
 def node(tag, **attrs):
@@ -216,44 +231,53 @@ def panel_header(g, panel, y, cols, cw):
     return hy + 38
 
 
-def panel_body(g, panel, y0, cols, cw, wrap_w=40, process_h=80):
+def panel_body(g, panel, y0, cols, cw, wrap_w=40):
+    """One card per column: timeline / verbatim excerpt / sources separated by
+    thin dividers instead of three separate boxes (compact layout)."""
+    wrapped = {}
+    for trk in cols:
+        frag = panel['quotes'][trk][0]
+        lines = wrap('\u201c\u2026' + frag, wrap_w)
+        tail = '\u2026\u201d' if not frag.rstrip().endswith(('.', '!', '?')) else '\u201d'
+        lines[-1] = lines[-1] + tail
+        wrapped[trk] = lines
+    qn = max(len(v) for v in wrapped.values())
+    sn = max(len(panel['sources'][trk]) for trk in cols)
+    P, SP = 19, 18
+    label1_b = y0 + 19
+    proc0_b = label1_b + 19
+    div1_y = proc0_b + 2 * P + 8
+    label2_b = div1_y + 16
+    quote0_b = label2_b + 19
+    div2_y = quote0_b + (qn - 1) * P + 8
+    src0_b = div2_y + 17
+    verdict_b = src0_b + (sn - 1) * SP + 20
+    card_h = verdict_b - y0 + 6
     for trk, x in cols.items():
         st = STYLE[trk]
-        g.append(node('rect', x=x, y=y0, width=cw, height=process_h, rx=4,
-                      fill='white', stroke='#c5cfd5', stroke_dasharray='4 3'))
-        g.append(text(x + 12, y0 + 18, 'HOW IT SEARCHED — TIMELINE', 15, 700, fill=SUB))
-        py = y0 + 40
-        for ln in panel['process'][trk]:
-            g.append(node('circle', cx=x + 16, cy=py - 5, r=2.4, fill=st['dot']))
-            g.append(text(x + 25, py, ln, 15))
-            py += 19
-    y1 = y0 + process_h + 8
-    # dynamic answer-box height from the tallest wrapped quote
-    wrapped = {trk: wrap('\u201c' + panel['quotes'][trk][0], wrap_w) for trk in cols}
-    max_lines = max(len(v) for v in wrapped.values())
-    answer_h = 40 + 19 * max_lines + 10
-    for trk, x in cols.items():
-        st = STYLE[trk]
-        g.append(node('rect', x=x, y=y1, width=cw, height=answer_h, rx=4,
+        g.append(node('rect', x=x, y=y0, width=cw, height=card_h, rx=4,
                       fill=st['box'], stroke='#c5cfd5'))
-        g.append(text(x + 12, y1 + 18, 'VERBATIM ANSWER EXCERPT', 15, 700, fill=SUB))
-        ty = y1 + 40
+        g.append(text(x + 10, label1_b, 'HOW IT SEARCHED — TIMELINE', 15, 700, fill=SUB))
+        py = proc0_b
+        for ln in panel['process'][trk]:
+            g.append(node('circle', cx=x + 14, cy=py - 5, r=2.4, fill=st['dot']))
+            g.append(text(x + 23, py, ln, 15))
+            py += P
+        g.append(node('path', d=f'M{x + 10},{div1_y} H{x + cw - 10}',
+                      stroke='#dbe3e8', stroke_width=1))
+        g.append(text(x + 10, label2_b, 'VERBATIM ANSWER EXCERPT', 15, 700, fill=SUB))
+        ty = quote0_b
         for line in wrapped[trk]:
-            g.append(text(x + 12, ty, line, 15))
-            ty += 19
-    y2 = y1 + answer_h + 8
-    src_lines = max(len(panel['sources'][trk]) for trk in cols)
-    src_h = 26 + 18 * src_lines
-    for trk, x in cols.items():
-        st = STYLE[trk]
-        g.append(node('rect', x=x, y=y2, width=cw, height=src_h, rx=4,
-                      fill='white', stroke='#c5cfd5'))
-        sy = y2 + 20
+            g.append(text(x + 10, ty, line, 15))
+            ty += P
+        g.append(node('path', d=f'M{x + 10},{div2_y} H{x + cw - 10}',
+                      stroke='#dbe3e8', stroke_width=1))
+        sy = src0_b
         for line in panel['sources'][trk]:
-            g.append(text(x + 12, sy, line, 15, weight=600))
-            sy += 18
-        g.append(text(x + 12, sy + 2, panel['verdicts'][trk], 15, 600, fill=st['dot']))
-    return y2 + src_h
+            g.append(text(x + 10, sy, line, 15, weight=600))
+            sy += SP
+        g.append(text(x + 10, verdict_b, panel['verdicts'][trk], 15, 600, fill=st['dot']))
+    return y0 + card_h
 
 
 def build_svg(panels):
@@ -277,13 +301,13 @@ def build_svg(panels):
     root.append(g)
     g.append(node('rect', width=1000, height=700, fill='white'))
 
-    y = 30
+    y = 20
     y = panel_header(g, Q1, y, COLS, CW)
     y = panel_body(g, Q1, y + 8, COLS, CW, wrap_w=40)
-    y += 26
+    y += 16
     y = panel_header(g, Q2, y, COLS2, CW2)
     y = panel_body(g, Q2, y + 8, COLS2, CW2, wrap_w=58)
-    y += 24
+    y += 14
     y = metrics_strip(g, y)
     H = int(y + 14)
     root.set('height', str(H))
@@ -325,9 +349,10 @@ def metrics_strip(g, y):
         assert gr[t]['avg_latency_s'] == aud['per_track'][t]['avg_latency_s']
         assert abs(gr[t]['avg_cost_usd'] - aud['per_track'][t]['cost_usd_total'] / 10) < 0.001
 
-    g.append(node('rect', x=20, y=y, width=960, height=26, rx=2, fill='#253745'))
-    g.append(text(30, y + 18, 'MONITORED RUN — 10 QUESTIONS × 3 MODES · ONE HARNESS AND MODEL · EVERY TOOL CALL AND COST RECORDED', 15, 700, fill='#ffffff'))
-    y += 30
+    g.append(node('rect', x=20, y=y, width=960, height=24, rx=2, fill='#253745'))
+    g.append(text(30, y + 17, 'MONITORED RUN — 10 QUESTIONS × 3 MODES · ONE HARNESS AND MODEL', 15, 700, fill='#ffffff'))
+    g.append(text(970, y + 17, 'A Platform · B Bare agent · C Dense', 15, 600, anchor='end', fill='#ffffff'))
+    y += 28
     # 2×3 grid: each cell = metric name + A/B/C values, three metrics per row
     # (mode columns are named in the figure caption: Platform, Bare agent, Dense)
     cells = [(rows[0], rows[1]), (rows[3], rows[4]), (rows[2], rows[5])]
@@ -339,13 +364,13 @@ def metrics_strip(g, y):
              'Total cost (USD)': 'Total cost (USD)'}
     for left, right in cells:
         for xx, (name, vals) in ((20, left), (505, right)):
-            g.append(node('rect', x=xx, y=y, width=475, height=27, rx=2,
+            g.append(node('rect', x=xx, y=y, width=475, height=24, rx=2,
                           fill='#f4f7f9', stroke='#dfe7ec'))
-            g.append(text(xx + 10, y + 18, short.get(name, name), 15))
+            g.append(text(xx + 10, y + 16.5, short.get(name, name), 15))
             for i, v in enumerate(vals):
-                g.append(text(xx + 250 + i * 72, y + 18, v, 15, 600, fill=INK))
-        y += 28
-    return y + 6
+                g.append(text(xx + 250 + i * 72, y + 17, v, 15, 600, fill=INK))
+        y += 25
+    return y + 4
 
 
 def main():
@@ -371,7 +396,7 @@ def main():
     (OUT / 'fig3-answers-dual.html').write_text(html, encoding='utf-8')
     report = {'source': f'{RUN.name} traces (BQ04 a/b/c + BQ06 a/c)',
               'verbatim_check': 'all quoted fragments are normalized substrings of saved answers',
-              'process_check': 'timelines transcribed from saved tool_use events; existence-checked',
+              'process_check': 'timelines fully counted from saved tool_use events; every xN asserted against the trace',
               'runtime': {'playwright': version('playwright'), 'PyMuPDF': version('PyMuPDF')}}
     with sync_playwright() as p:
         browser = p.chromium.launch()

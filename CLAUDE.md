@@ -412,6 +412,13 @@ server:
 用户请求包含下表关键词（中/英/组合）时，**禁止自行处理**，必须调用对应的 knowledgebase 技能：
 
 > **⭐ 一致性验证**：修改本表或任何 skill 后，运行 `node scripts/validate_skills.cjs` 确保 8 项跨 skill 一致性检查通过（路由无冲突、阈值同步、引用可达、编号一致等）。
+>
+> **⭐ 跨 Harness 同步（修改 skill 后必跑）**：`python scripts/sync_skills.py`
+> —— 把 `.claude/skills` **符号链接**到各 Agent Harness 的项目级 skill 目录
+> （`.agents/skills`、`.github/skills`、`.omp/skills`；其余 harness 经根 `AGENTS.md` 索引），
+> 并刷新 `AGENTS.md` 的 skill 索引。链接是符号链接 → 之后任何 skill 更新自动对全部 harness 生效。
+> 检查现状：`python scripts/sync_skills.py --check`；实测发现：`python scripts/sync_skills.py --verify`。
+> 目标目录与验证状态见 `scripts/harness-skill-targets.json`（`enabled:false` 的目标按需开启）。
 
 | 关键词信号（命中任意即触发） | 必须调用的技能 |
 |---|---|

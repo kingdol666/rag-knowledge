@@ -343,24 +343,26 @@ async def kb_search(query: str, top_k: int = 10) -> str:
 async def kb_get_documents(kb_id: str, lightweight: bool = False) -> str:
     """List all documents inside a knowledge base. kb_id accepts path or UUID.
 
-    Set lightweight=True for a minimal catalog [{doc_path, name, description}]
+    Set lightweight=True for a minimal catalog [{doc_id, file_id, doc_path, name, description}]
     that keeps agent context clean (no file_size/tags/vector_index metadata).
     Default lightweight=False returns the full backend response."""
     if (err := _require_kb(kb_id)): return err
     client = _client()
     if not await _kb_exists(client, kb_id):
         return _j({"success": False, "error": f"knowledge base not found: {kb_id}"})
-    if lightweight:
-        data = await client.kb_get_documents(kb_id)
-        if not isinstance(data, dict) or not data.get("success"):
-            return _j(data)
-        catalog = [{
-            "doc_path": d.get("path"),
-            "name": d.get("name"),
-            "description": d.get("description", ""),
-        } for d in data.get("documents", [])]
-        return _j({"success": True, "kb_id": kb_id, "count": len(catalog), "catalog": catalog})
-    return _j(await client.kb_get_documents(kb_id))
+        if lightweight:
+            data = await client.kb_get_documents(kb_id)
+            if not isinstance(data, dict) or not data.get("success"):
+                return _j(data)
+            catalog = [{
+                "doc_id": d.get("id") or d.get("file_id") or d.get("doc_id"),
+                "file_id": d.get("file_id") or d.get("id") or d.get("doc_id"),
+                "doc_path": d.get("path"),
+                "name": d.get("name"),
+                "description": d.get("description", ""),
+            } for d in data.get("documents", [])]
+            return _j({"success": True, "kb_id": kb_id, "count": len(catalog), "catalog": catalog})
+        return _j(await client.kb_get_documents(kb_id))
 
 
 # ============================================================
@@ -475,16 +477,23 @@ async def kb_doc_batch_delete(kb_id: str, doc_paths: list) -> str:
 async def kb_doc_move(doc_path: str, target_kb_id: str) -> str:
     """Move a document to a different knowledge base.
 
-    Moves the file on disk, syncs .tree-fs.json + .knowledge-base.yml (both
-    source and target KB), and automatically triggers reindexing:
-    - Deletes old vector chunks + graph node at the original path
-    - Indexes the document at the new path (vector + graph)
+    Moves the file on disk, syncs .tree-fs.json + .knowledge-base.yml (source
+    and target KB), then performs **index hygiene** at the move endpoint
+    (single choke point, so the web UI and MCP behave identically):
+    - deletes the old-path vector chunks from the SOURCE collection
+    - deletes the old graph node
+    - re-indexes the document at its NEW path in the target KB
 
-    The reindex is fire-and-forget (non-blocking) and may leave ORPHAN CHUNKS
-    in the source collection (vector search can keep hitting the moved document
-    at its old path). For critical moves close out with
-    kb_reindex(kb_id=<source>, force=true) on the source KB, then verify with
-    kb_search_vector (negative probe: the old query must stop returning the doc)."""
+    The response carries ``index_hygiene`` with the outcome of each step — check
+    it. Hygiene failure never fails the move, but if it reports an error, close
+    out with ``kb_reindex(kb_id=<source>, force=true)`` and verify with a
+    negative ``kb_search_vector`` probe (the old path must stop matching).
+
+    Why this exists (D1, fixed 2026-09-24): the move endpoint used to only move
+    the *file*, so old-path chunks survived — measured symptoms were a doubled
+    ``chunk_count`` (18 for a 9-chunk doc), every chunk returned twice (old +
+    new path, identical scores) and a false self-duplicate from
+    ``kb_find_duplicates``."""
     if (err := _require_param("doc_path", doc_path)): return err
     if (err := _require_kb(target_kb_id)): return err
     return _j(await _client().kb_doc_move(doc_path, target_kb_id))

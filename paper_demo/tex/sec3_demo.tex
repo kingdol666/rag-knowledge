@@ -2,40 +2,45 @@
 \label{sec:demo}
 
 The demonstration targets research administrators and agent developers;
-its scenarios trace Section~\ref{sec:system}'s three decisions in order.
-A prepared instance holds 100 papers in five bases, built by the ingest loop
-of Section~\ref{sec:system}; attendees inspect documents in the web console
-and drive an agent with the packaged skills. A live answer takes ten seconds to two minutes, so presenters replay
-saved traces alongside live queries.
+its scenarios trace Section~\ref{sec:intro}'s three decisions in order.
+A prepared instance, built by the ingest loop of Section~\ref{sec:system},
+holds 100 papers in five bases; attendees inspect documents and drive an
+agent with the packaged skills. A live answer takes
+from about fifteen seconds to about three minutes, so presenters replay saved traces
+alongside live queries; the video walks through these scenarios in the
+console, and the repository README's quick start reproduces the instance.
 
 \paragraph{1. Organize a document.}
 An attendee selects a PDF from a prepared pool and asks the agent to parse
 and place it. The trace records the parse, the proposed base, the tags, and
-the indexing checks; the attendee compares parsed text against the routing decision before
-accepting.
+the indexing checks; the attendee compares parsed text against the routing
+before accepting.
 
 \paragraph{2. Inspect an answer's evidence.}
 The attendee asks which three ontologies subdivide the Gene Ontology. In
-the saved trace (BQ04 of the monitored run in Section~\ref{sec:eval}),
-the vector-first search ranks the primer's part~1 of~2 first at 0.75
+the saved trace (BQ04 in Section~\ref{sec:eval}),
+the vector-first search ranks the primer's part~1 of~2 first, at 0.75
 (0.66 cross-base); a two-stage pass confirms it, and the agent answers
 with a verbatim quotation whose source block names base, part, and
 section (``2.~What is the Gene Ontology'') --- score, reading, and
-quoted evidence are distinct records. Figure~\ref{fig:threeway} compares
-all three modes and adds a measured dense-mode abstention (BQ06).
+quoted evidence are distinct records; the attendee can open the cited part
+in the console while the kb\_* tools read it at its line offset.
+Figure~\ref{fig:threeway} compares
+the three modes and adds a measured dense-mode abstention (BQ06).
 
 \paragraph{3. Examine a failure report.}
 The attendee asks for training epochs in the fictitious paper
 \emph{Spectral Tuning for Low-Resource Odor Recognition}. The scripted
 report pairs collected evidence with the gate's judgment: BERT's own epoch
-recipe scores 1/8, and the skill returns scoped not-found instead of
-BERT's recipe; the census covers all five bases and 322 stored parts, and
-bounds this collection only.
+recipe scores 1/8, and the skill returns a scoped not-found report instead
+of BERT's recipe; the census covers five bases and 322 stored parts, and
+bounds only this collection.
 
 % Declared here so the float can land on page 3; referenced in Section 4.
 \begin{table}[t]
 \caption{Pipeline audit on the 100-paper corpus. Every value is
-script-asserted from saved artifacts, not hand-counted.}
+script-asserted from saved artifacts, not hand-counted; the content audit
+samples the first 1{,}000 characters per part.}
 \label{tab:pipeline}
 \small
 \setlength{\tabcolsep}{4pt}

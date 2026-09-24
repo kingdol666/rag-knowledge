@@ -1,9 +1,8 @@
 ---
 name: knowledgebase-list
-description: >
-  Knowledge base listing and discovery. L1→L3 read-only workflow: full inventory (KB names + descriptions + doc counts + tag vocabulary), KB drill-down (document metadata), folder tree browsing. Lightweight methods (kb_list→kb_get_documents with lightweight=true) for progressive disclosure. Never modifies anything. Triggered by: view, list, show, browse, what's there, list it out, inventory, list, show, overview, tree, browse, display, knowledge base content, what's in the knowledge base, view the knowledge base, which knowledge bases exist.
+description: "Knowledge base listing and discovery. L1→L3 read-only workflow: full inventory (KB names + descriptions + doc counts + tag vocabulary), KB drill-down (document metadata), folder tree browsing. Lightweight methods (kb_list→kb_get_documents with lightweight=true) for progressive disclosure. Never modifies anything. Triggered by: view, list, show, browse, what's there, list it out, inventory, list, show, overview, tree, browse, display, knowledge base content, what's in the knowledge base, view the knowledge base, which knowledge bases exist."
+agent_created: true
 ---
-
 ## ⭐ Related Skills
 - Search & retrieval → `skill://knowledgebase-search`
 - KB management → `skill://knowledgebase-manage`

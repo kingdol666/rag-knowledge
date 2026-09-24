@@ -1,0 +1,34 @@
+{
+ "qid": "QK06",
+ "method": "vector",
+ "question": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+ "ranked": [
+  "1503.07557",
+  "2007.10574",
+  "2409.13934"
+ ],
+ "ranked_paths": [
+  "climate-science__1503.07557__precipitation-extremes-under-climate-change__k00",
+  "climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on__k14",
+  "climate-science__2409.13934__on-the-extrapolation-of-generative-adversari__k05"
+ ],
+ "evidence_sources": [
+  "1503.07557",
+  "2007.10574",
+  "2409.13934"
+ ],
+ "evidence_chars": 1542,
+ "retrieval_s": 0.1,
+ "latency_s": 9.3,
+ "answer": "The evidence is insufficient to answer the question definitively. The first source states that the response of precipitation extremes to climate change is considered \"with a focus on the physical factors that control the response,\" noting that sensitivity to warming \"remains uncert[ain]\" — but the abstract chunk is truncated before naming any controlling physical factor. The third source mentions a Clausius-Clapeyron warming-driven signal of roughly 7%/°C for extreme precipitation, which is a thermodynamic scaling rather than an explicit statement of the single primary controlling factor. The second source discusses vertical moisture flux convergence and vertical advection of moisture as processes modulating precipitation anomalies, but in the context of MJO-induced extremes, not as the general controlling factor. No retrieved chunk explicitly identifies the primary physical factor controlling the precipitation-extreme response.\n\nSources used:\n- [1503.07557] \"Precipitation extremes under climate change\" (O'Gorman)\n- [2409.13934] (chunk on future climate contexts / extreme precipitation indices)\n- [2007.10574] Section 3.2 \"Dynamical Links between Precipitation Extremes and MJO\"",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 371,
+  "output": 233,
+  "cache_read": 37248,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.026304,
+ "extra": {}
+}

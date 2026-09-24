@@ -1,15 +1,8 @@
 ---
 name: knowledgebase-organize
-description: >
-  Full collection restructuring engine. O1→O8 workflow (plus O5b three-way
-  consistency): hierarchical discovery (sub-KB split detection + cross-KB merge
-  analysis), deep content audit (1000+ chars per doc), tiered fix execution,
-  sub-KB auto-creation, cross-KB merge, parent restructuring, vector index +
-  graph rebuild, three-way consistency, hygiene cleanup. No document splitting.
-  Triggered by: 整理, 清洗, 重组, 盘点, 全面梳理, organize, restructure, cleanup,
-  reorganize, 清洗知识库, 整理知识库, 大扫除, 归并, 合并, 拆分, 细分, 分层, 归档, 归类.
+description: "Full collection restructuring engine. O1→O8 workflow (plus O5b three-way consistency): hierarchical discovery (sub-KB split detection + cross-KB merge analysis), deep content audit (1000+ chars per doc), tiered fix execution, sub-KB auto-creation, cross-KB merge, parent restructuring, vector index + graph rebuild, three-way consistency, hygiene cleanup. No document splitting. Triggered by: 整理, 清洗, 重组, 盘点, 全面梳理, organize, restructure, cleanup, reorganize, 清洗知识库, 整理知识库, 大扫除, 归并, 合并, 拆分, 细分, 分层, 归档, 归类."
+agent_created: true
 ---
-
 # Knowledge Organize — Whole-Library Intelligent Restructuring Engine
 
 ## ⭐ Execution Model · Pre-Flight · Architecture (First Step of Any Job, Mandatory)

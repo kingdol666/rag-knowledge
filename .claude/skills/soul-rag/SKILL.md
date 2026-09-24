@@ -1,18 +1,8 @@
 ---
 name: soul-rag
-description: >
-  SOUL retrieval-augmented adapter — combines "knowledge base retrieval" with "SOUL persona
-  processing" into a unified Q&A strategy: first locate knowledge with the kb_search family,
-  then auto-route to the best-matching SOUL persona per task, and produce a persona-enhanced
-  answer via soul_ask (with citations + the PAS persona alignment score). It does not break
-  the original knowledgebase search logic — this skill is its "persona enhancement layer",
-  intervening only when persona-ized answers are needed.
-  Triggers: answer with a persona after retrieval, persona-augmented retrieval, look up with
-  persona XX, answer in XX's voice, SOUL enhancement, persona-augmented RAG, persona-flavored
-  RAG, soul-rag, look it up and answer with the research persona, find XX in the knowledge
-  base and summarize with a persona. 中文触发: 人格增强检索, 人格问答, 用XX人格回答, 检索后用XX人格总结.
+description: "SOUL retrieval-augmented adapter — combines \"knowledge base retrieval\" with \"SOUL persona processing\" into a unified Q&A strategy: first locate knowledge with the kb_search family, then auto-route to the best-matching SOUL persona per task, and produce a persona-enhanced answer via soul_ask (with citations + the PAS persona alignment score). It does not break the original knowledgebase search logic — this skill is its \"persona enhancement layer\", intervening only when persona-ized answers are needed. Triggers: answer with a persona after retrieval, persona-augmented retrieval, look up with persona XX, answer in XX's voice, SOUL enhancement, persona-augmented RAG, persona-flavored RAG, soul-rag, look it up and answer with the research persona, find XX in the knowledge base and summarize with a persona. 中文触发: 人格增强检索, 人格问答, 用XX人格回答, 检索后用XX人格总结."
+agent_created: true
 ---
-
 # SOUL-RAG — Retrieval-Augmented Persona Q&A
 
 **Executor: the main agent executes directly (soul_ask is a single orchestration call; no Archival delegation)**

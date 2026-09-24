@@ -53,38 +53,49 @@
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{../figures/submission-20260922/fig1-core.pdf}
-\caption{QDCVR at a glance. Left: a conventional dense-RAG configuration ---
-fixed chunks, retrieval of two excerpts, a packed context, single
-generation; sources are not addressable. Right: the two QDCVR agent loops ---
-autonomous ingest (parse, route by content, tag, index parts with
-base/document/part/section addresses) and librarian-style retrieval
-(rewrite, cross-base recall, read, 0--8 content gate, then cited answer,
-qualified answer, or scoped not-found). The left lane is shown for contrast;
-the evaluated dense variant packs retrieved chunks into one prompt.}
-\Description{Two lanes. The left lane shows a conventional dense-RAG
-pipeline: fixed 800-character chunks, dense retrieval of the top two
-excerpts, a packed context of at most 4,000 characters, and a single
-generation step; the reader gets an answer without citations, sources it
-cannot address, and retrieval errors that pass through silently; provenance
-is not logged. The right lane shows the two QDCVR agent loops. Loop one
-manages the knowledge base autonomously: PDFs are parsed, routed to a
-category base by content, tagged, and indexed as parts that carry base,
-document, part, and section addresses. Loop two retrieves librarian-style:
-the query is rewritten, candidates are recalled across bases and read, a 0-8
-content rubric gates them; a score of at least six yields a cited answer
-with section-addressed sources, lower scores send the librarian to browse
-base summaries and tag-matched shelves for new candidates, ending in a
-qualified answer with attribution or a scoped not-found report. A takeaway
-strip states that the same base, document, part, and section identifiers
-power both loops, so every answer can be checked at its source.}
+\caption{QDCVR at a glance, as two four-panel storyboards. Top row: a
+conventional dense-RAG configuration --- documents are shredded into fixed
+chunks, two excerpts are retrieved and packed into one context, and a single
+generation produces an answer whose sources are not addressable. Bottom row:
+the two QDCVR agent loops --- autonomous ingest (parse, route by content,
+tag, index parts with base/document/part/section addresses) and
+librarian-style retrieval (read, 0--8 content
+gate, then a cited answer or a scoped not-found report). The top row
+is for contrast; the evaluated dense variant packs chunks into one
+prompt.}
+\Description{Two storyboard rows of four numbered panels each. Top row
+(baseline): documents arrive in the shared pool; they are shredded into
+fixed 800-character chunks, with torn-evidence marks; two excerpts are
+retrieved and packed into one 4,000-character context; one generation
+returns an answer with no sources attached. Bottom row (QDCVR): a PDF is
+parsed and routed by content into the right base; every part is indexed
+under the layered address base, document, part, section; the agent reads and
+gates each candidate on a 0--8 rubric where at least six passes; the
+outcome is a cited answer with a section reference or a scoped not-found
+report. A takeaway strip states that the same base, document, part, and
+section identifiers power both loops, so every answer can be checked at its
+source.}
 \label{fig:teaser}
 \end{figure*}
 
 \begin{figure*}[t]
 \centering
 \includegraphics[width=\textwidth]{../figures/submission-20260922/fig2-architecture.pdf}
-\caption{Platform operations and the agent-executed QDCVR workflow. (a) Parsing, content-guided placement, and part-level checks prepare indexed evidence. (b) The packaged skill prescribes query rewriting, recall, reading, and a conditional content assessment. Scores of at least six permit a direct answer; lower initial scores invoke the librarian. After reassessment, usable score-five evidence can support an attributed backstop answer; no usable evidence yields not-found.}
-\Description{Two areas distinguish offline preparation from the online agent skill. The first parses PDFs into Markdown, organizes and checks parts, and connects to vector, graph, and file-based storage. The second recalls and reads candidates, then branches on a content gate. Passing evidence yields a cited answer. Initial failure triggers targeted librarian search and re-reading; after that search, a usable score-five backstop supports an attributed answer, while no usable evidence yields a report with scope, near miss, reason, and remedy.}
+\caption{Platform operations and the agent-executed QDCVR workflow, with live-console screenshots from the running instance: 1 the collection; 2 the search; 3 a result's per-channel scores, its base and part address, and its verification status; 4 the agent's answer after retrieval, beside the gate's outcomes (dashed outlines are the fallback exits). Bottom: the two packaged loops --- ORGANIZE (parse and split, route by content, tag and index as addressable parts) and RETRIEVE (rewrite, cross-base recall, read, the 0--8 content gate).}
+\Description{Two areas. The top area shows four live-console screenshots
+from the demonstration instance: a knowledge-base row with its document
+count; the search form with strategy chips and the NISQ query; a result's
+combined and vector scores with its base chip, part address, and a
+content-verification status; and the agent's answer after retrieval,
+opening a numbered list of the Gene Ontology's three namespaces. Beside the answer sit the gate's three outcomes: a score of at
+least six yields a cited answer, a five a qualified backstop,
+four or below librarian browsing and then a scoped not-found report;
+dashed outlines mark the fallback exits. The bottom area shows the two
+packaged loops: organize runs from a prepared PDF pool through parsing and
+a 30,000-character split, routes by content, and tags and indexes parts;
+retrieve rewrites the query, recalls across bases, reads candidates, and
+applies the 0--8 content gate. A note records that the same 41 kb\_* tools run over
+vector, graph, and file storage.}
 \label{fig:arch}
 \end{figure*}
 
@@ -100,36 +111,40 @@ power both loops, so every answer can be checked at its source.}
 \includegraphics[width=0.92\textwidth]{../figures/submission-20260920/fig3-answers-dual.pdf}
 \caption{Two questions from the 100-paper corpus under the monitored
 three-mode run (one harness and model; one run per mode; ellipses elide
-text): each column shows the saved tool timeline, a verbatim answer
-excerpt, and source references. Panel 1 (BQ04): all three modes answer; A
-quotes the source at part~1 of 2, section~2; B names the file; C quotes
+text): each column shows the saved timeline, a verbatim excerpt, and
+sources. Panel 1 (BQ04): all three modes answer; A
+quotes the source at part~1 of~2, section~2; B names the file; C quotes
 chunks. Panel 2 (BQ06): A returns a keyword-verified answer after a
 verification re-read; C's chunks name no single factor --- measured
 abstention; the bare agent is omitted for space (it located the file but
-matched no key facts). Bottom strip: run aggregates, columns Platform,
-Bare agent, Dense retrieval (definitions in Section\ref{sec:eval}).}
+matched no gold key fact under word-boundary grading). Bottom strip: run
+aggregates; columns: Platform, Bare agent, Dense retrieval (definitions
+in Section~\ref{sec:eval}).}
 \Description{Two stacked panels. Panel one, the Gene Ontology question,
-has three columns. Column A's timeline lists tool-search connection, one
-vector search scoring 0.75, and one two-stage confirmation read; its
+has three columns. Column A's timeline lists two tool-search calls, two
+vector searches with a top score of 0.75, and one two-stage confirmation
+read; its
 excerpt names Molecular Function, Biological Process, and Cellular
 Component and quotes the primer; its sources name the life-sciences base,
 the primer paper, part 1 of 2, section 2, and a verbatim quote. Column B's
-timeline lists a glob, a grep, and a read; its excerpt states the same
+timeline lists a glob, a grep, and two reads; its excerpt states the same
 three ontologies; its source names the paper file with section 2. Column
-C's timeline lists a connection and two vector searches; its excerpt
+C's timeline lists a connection and one vector search; its excerpt
 quotes the retrieved definition; its source names chunk k00 of the
 800-character chunk index. Panel two, the precipitation-extremes question,
-has two columns. Column A's timeline lists tool-search connection, recall
-by two-stage and vector search, and three document reads; its excerpt
-names mean surface temperature near 295 kelvin; its sources name the
+has two columns. Column A's timeline lists three tool-search calls, five
+vector-search recalls, and two document reads; its excerpt
+names mean surface temperature as the primary physical factor; its sources
+name the
 climate base, the paper, and keyword verification. Column C's timeline
-lists a connection and two vector searches; its excerpt states that the
+lists a connection and one vector search; its excerpt states that the
 retrieved chunks do not directly name a single physical factor; its source
 shows the closest chunk and the measured abstention verdict.}
 \label{fig:threeway}
 \end{figure*}
 
 \input{sec4_eval}
+\input{sec5_conclusion}
 \input{sec4_backmatter}
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}

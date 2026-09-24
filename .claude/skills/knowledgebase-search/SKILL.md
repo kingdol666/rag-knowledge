@@ -1,21 +1,8 @@
 ---
 name: knowledgebase-search
-description: >
-  QDCVR v2 — Vector-First, Content-Gated, Librarian-Fallback Retrieval.
-  Phase 0 query prep → Phase 1 vector search FIRST (kb_search_vector, balance_kbs)
-  + content-match gate (kb_doc_read + 0-8 rubric: can this truly answer the question?)
-  → if the vector path cannot truly match, Phase 2 librarian deep fallback: traverse
-  all KB directories level by level, read every KB summary, judge the most likely
-  shelves (multi-path recall: two-stage BM25+graph + tags + descriptions) → re-verify
-  → if both paths fail, honestly report the blind spot (never fabricate).
-  Absorbs the former knowledgebase-search-enterprise (whole-library / cross-KB /
-  comprehensive search). Triggered by: search, find, query, ask, retrieve, retrieval,
-  Q&A, look it up, search the whole library, all KBs, cross knowledge base, cross-KB,
-  cross-library, global search, comprehensive, thorough search, enterprise search,
-  搜索, 检索, 查询, 问答, 帮我查, 问一下知识库, 搜, 全库搜索, 所有KB, 跨知识库, 跨库,
-  全局搜索, 全面的.
+description: "QDCVR v2 — Vector-First, Content-Gated, Librarian-Fallback Retrieval. Phase 0 query prep → Phase 1 vector search FIRST (kb_search_vector, balance_kbs) + content-match gate (kb_doc_read + 0-8 rubric: can this truly answer the question?) → if the vector path cannot truly match, Phase 2 librarian deep fallback: traverse all KB directories level by level, read every KB summary, judge the most likely shelves (multi-path recall: two-stage BM25+graph + tags + descriptions) → re-verify → if both paths fail, honestly report the blind spot (never fabricate). Absorbs the former knowledgebase-search-enterprise (whole-library / cross-KB / comprehensive search). Triggered by: search, find, query, ask, retrieve, retrieval, Q&A, look it up, search the whole library, all KBs, cross knowledge base, cross-KB, cross-library, global search, comprehensive, thorough search, enterprise search, 搜索, 检索, 查询, 问答, 帮我查, 问一下知识库, 搜, 全库搜索, 所有KB, 跨知识库, 跨库, 全局搜索, 全面的."
+agent_created: true
 ---
-
 ## ⭐ Related Skills
 - Document ingest → `skill://knowledgebase-ingest` — the A0-A9 pipeline ensures retrieval source quality
 - KB management → `skill://knowledgebase-manage` — document move/rename/delete/merge
@@ -166,56 +153,37 @@ Boundary decisions: unsure at exactly 4-5 → re-read 500 chars to confirm; mult
 
 ## Phase 2 — Librarian Deep Fallback (when the gate fails) ⭐
 
+> **Standalone form**: this phase is also packaged as `skill://knowledgebase-librarian`
+> — the **vector-free** counterpart lane (L0 catalog → L1 shelf rank → L2 shelf scan
+> → **L3 description trust check** → L4 shortlist → L5 read the content → L6 verify → L7 handoff).
+> **This skill is the vector + content lane** (`kb_search_vector` → 0-8 content gate);
+> the librarian is the **pure content** lane (no embedding / BM25 / hybrid ranking at all).
+> Use this skill by default; use the librarian when the shelf is unknown, the library is
+> large/heterogeneous, similarity search missed, or the question spans a whole long document.
+> Both end in the same 0-8 rubric and the same five-section answer, so they are comparable.
+> **L3 matters**: document descriptions can be systematically wrong (measured 2026-09-24:
+> 24 of 26 parts of a novel KB were described as "Gutenberg front/back matter" while actually
+> holding novel chapters). Never rank parts on description text alone — apply L3.
+
 > The librarian does not summon books by shouting keywords louder. **He walks the stacks**: reads the catalog, scans every shelf's summary, and pulls from the section most likely to hold the answer. This phase absorbs the former `knowledgebase-search-enterprise` skill (multi-path recall + cross-validation + graph expansion).
 
-### 2a Walk the Stacks (read every KB summary + traverse directories)
+### 2a Walk the Stacks (complete-recall mode)
 
 ```
 catalog = kb_list(lightweight=true)     # EVERY KB: {kb_id, name, description, doc_count}
-tree    = fs_get_tree(max_depth=2)      # KB hierarchy (raise depth only if needed)
-```
-For the 1-3 most promising KBs, drill into their shelves:
-```
-kb_get_documents(lightweight=true, kb_id)   # every doc's name + description
-```
-**Part-aware grouping ⭐**: split documents appear as `(part k of N)` siblings (e.g. `ARCHITECTURE (part 7 of 15).md`). Group siblings by their stem — they are ONE logical book, not N documents. Judge relevance by stem + description; when a vector hit names a specific part, that part is where the evidence lives. Counting/dedup/citation all operate on the logical (stem) level; cite the concrete part when quoting.
-
-### 2b Librarian Judgment (which shelf is most likely?)
-
-Match Phase 0 entities against **KB descriptions + document names + directory names**:
-- Score each KB: subject match (does the KB's domain cover the subject?) × attribute match (does any doc name/description mention the attribute?) × constraint match (year/scope qualifiers).
-- Rank and keep the **top 2-3 KBs** (plus their most promising sub-directories).
-- This judgment replaces the old "smart KB selection" front gate: it runs only when vectors missed, and it is informed by having read *every* summary, not just the top hit.
-
-### 2c Targeted Multi-Path Recall (in the judged shelves only)
-
-```
-# Path A — BM25 + graph two-stage (lexical precision inside the likely KBs)
-kb_search_two_stage(query, kb_id=<likely KB>, stage1_top_k=20, stage2_top_k=5,
-                    enable_graph_expansion=true, score_threshold=0.30, balance_kbs=True)
-
-# Path B — Tags (semantic concepts vectors missed)
-kb_tags_list() → match 3-5 tags to the query entities
-→ kb_doc_get_by_tag(tag, kb_id=<likely KB> or "")
-
-# Path C — Descriptions + navigation (doc names/descriptions from 2a re-read closely)
-kb_get_documents(lightweight=true, kb_id) → shortlist by description match
-
-# Path D — Experience library (incident/ops queries)
-experience_search_global(query, top_k=5)
-```
-Path tuning: large KB (>10 docs) stage1_top_k=30; recall-first stage2_top_k=10, threshold 0.30; precision-first stage2_top_k=3, threshold 0.45.
-
-**Cross-validation + dedup**: merge paths, dedup by doc_path (keep best chunk; record hit-path count — multi-path consensus raises the *candidate* tier, but never the final verdict), hard-threshold 0.30 pre-filter, short-content downgrade.
-
-**Restrained graph expansion** (only when P0 <3 or explicitly cross-library):
-```
-kb_graph_document_related(doc_path) / kb_graph_central_documents(kb_id) / kb_graph_cross_kb_documents(min_kbs=2)
+tree    = fs_get_tree(max_depth=2)       # hierarchy and sub-KBs
 ```
 
-### 2d Re-Verify (same gate, same rubric)
+For ordinary fallback, label every KB `relevant / possible / out_of_scope`; when the query asks for all/every/comprehensive or the caller explicitly selects Librarian, keep every `relevant` and `possible` shelf rather than a fixed top-2/3. Read `kb_get_documents(lightweight=true, kb_id)` for every kept shelf. The lightweight catalog must retain `doc_id/file_id/doc_path/name/description`; group split siblings for logical-document reasoning but preserve each concrete part identity.
 
-Every new candidate goes through `kb_doc_read` + the same 0-8 rubric.
+### 2b Description trust and candidate manifest
+
+A description is a candidate-generation signal, never the final verdict. Check boilerplate, empty/content-free claims, contradictory section ranges, and degenerate labels. An untrusted description expands content reads instead of pruning the document. For every kept part, use paginated `kb_doc_read` to cover the readable body, segment it at structure-safe boundaries, and record `{kb_id, doc_id, doc_path, part, section, start_line/end_line, start_char/end_char, text}`. Any unread document/part is listed as an explicit blind spot.
+
+### 2c Jev filtering and aggregation
+
+Pass the complete candidate manifest to `.claude/skills/knowledgebase-librarian/scripts/jev_filter.py`. Every segment receives a real Jev `noul` verdict (`evidence` for lookup, `instance` for enumeration). Missing/error/out-of-range scores fail closed; no unscored segment enters the evidence pack. Aggregate scored survivors by source and offset, preserve Jev scores and provenance, then apply the same 0–8 content rubric to the aggregate. Use `>=6` as P0, `=5` as attributed P1, and `<=4` as discard.
+
 
 **Final confidence**:
 | Source + content score | Tier |

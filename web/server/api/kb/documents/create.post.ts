@@ -55,33 +55,48 @@ export default defineEventHandler(async (event) => {
   // BM25 索引/图谱节点，检索粒度与召回都受益；描述按 part 真实正文摘录。
   const largeDoc = getLargeDocConfig()
   const autoSplit = (body as any).autoSplit !== false && largeDoc.autoSplit
+  const agentPlan = (body as any).agentPlan as Record<string, unknown> | undefined
   if (autoSplit && sourceChars > largeDoc.maxChars) {
     try {
-      const plan = await requestSplitPlan(fileName, content, true)
-      if (plan?.success && plan.split && Array.isArray(plan.parts) && plan.parts.length > 1) {
-        const base = basename(fileName, extname(fileName))
-        const documents: any[] = []
-        for (const part of plan.parts) {
-          const partName = `${base} (part ${part.part_index} of ${part.part_count}).md`
-          const partDesc = buildPartDescription(description, part)
-          const file = await treeService.uploadFile(
-            kb.id, Buffer.from(String(part.content), 'utf-8'), partName, partDesc)
-          documents.push(file)
-        }
-        return {
-          success: true,
-          split: true,
-          part_count: documents.length,
-          source_chars: plan.source_chars ?? sourceChars,
-          max_chars: plan.max_chars ?? largeDoc.maxChars,
-          parent_name: fileName,
-          documents,
-          document: documents[0], // 向后兼容：旧调用方取 document 仍可用
-        }
+      const plan = await requestSplitPlan(fileName, content, true, agentPlan)
+      const validParts = plan?.success && plan.split && Array.isArray(plan.parts)
+        && plan.parts.length >= 1
+        && plan.parts.every((part) => String(part.content || '').length > 0)
+      if (!validParts) {
+        throw createError({
+          statusCode: 422,
+          statusMessage: 'Large document requires a valid structure-aware split plan; raw oversized content was not stored',
+        })
+      }
+      const base = basename(fileName, extname(fileName))
+      const documents: any[] = []
+      for (const part of plan.parts) {
+        const partName = `${base} (part ${part.part_index} of ${part.part_count}).md`
+        const partDesc = buildPartDescription(description, part)
+        const file = await treeService.uploadFile(
+          kb.id, Buffer.from(String(part.content), 'utf-8'), partName, partDesc)
+        documents.push(file)
+      }
+      return {
+        success: true,
+        split: true,
+        part_count: documents.length,
+        source_chars: plan.source_chars ?? sourceChars,
+        max_chars: plan.max_chars ?? largeDoc.maxChars,
+        strategy: plan.strategy,
+        planner: plan.planner,
+        warnings: plan.warnings,
+        parent_name: fileName,
+        documents,
+        document: documents[0], // 向后兼容：旧调用方取 document 仍可用
       }
     } catch (e: any) {
-      // 拆分失败不阻塞入库：回落为单文档写入（并记录原因）
-      console.warn(`[documents/create] large-doc split skipped: ${e?.message || e}`)
+      if (e?.statusCode) throw e
+      console.error(`[documents/create] large-doc split rejected: ${e?.message || e}`)
+      throw createError({
+        statusCode: 422,
+        statusMessage: `Large document split failed; raw oversized content was not stored: ${e?.message || e}`,
+      })
     }
   }
 

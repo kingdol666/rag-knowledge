@@ -1,0 +1,36 @@
+{
+ "qid": "R2Q01",
+ "method": "rerank",
+ "question": "Compared with prior Multi-Agent Transformer (MAT) models, what aspect of the agents' decision process does AOAD-MAT explicitly model?",
+ "ranked": [
+  "2510.13343"
+ ],
+ "ranked_paths": [
+  "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep__k02"
+ ],
+ "evidence_sources": [
+  "2510.13343"
+ ],
+ "evidence_chars": 513,
+ "retrieval_s": 8.9,
+ "latency_s": 32.4,
+ "answer": "Based on the evidence, AOAD-MAT explicitly models and learns the **optimal order of agent action decisions** — that is, the sequence in which agents should act.\n\nSource:\n- [2510.13343] — the only evidence chunk provided, describing AOAD-MAT as incorporating a dedicated mechanism to predict and optimize the order of agent action decisions.\n\nThe evidence is sufficient to answer this question but does not provide details on method, results, or comparisons beyond the above.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 244,
+  "output": 97,
+  "cache_read": 37120,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.022205,
+ "extra": {
+  "rerank_fallback": false
+ },
+ "via": "chat",
+ "prompt_version": "v3-neutral",
+ "git_commit": "0968033",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

@@ -14,7 +14,7 @@ from playwright.sync_api import sync_playwright
 
 OUT = Path(__file__).resolve().parent
 HTML = OUT / 'fig1-core.html'
-W, H = 1000, 480
+W, H = 1000, 508
 MBW = 750  # mediabox width in pt (0.75 pt per design px)
 
 

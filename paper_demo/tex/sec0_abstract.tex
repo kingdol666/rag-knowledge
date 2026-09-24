@@ -7,25 +7,25 @@ documents and inspect the evidence behind the answers drawn from them. We
 present \sys{}, an agent-operated platform that couples content-guided
 knowledge organization with librarian-style retrieval through one shared
 address space. Packaged agent skills call tool APIs to parse documents,
-route them by content into category bases, and maintain tags; retrieval
+route them by content into category bases, and maintain tags. Retrieval
 rewrites each query, recalls and reads candidates, gates them with a
 prompted 0--8 rubric (topic, scenario, evidence), and --- when nothing
-passes --- escalates from ranking to browsing base summaries and tag-matched
+passes --- escalates to browsing base summaries and tag-matched
 shelves, returning a scoped not-found report instead of answering from the
 nearest neighbor. A
-100-paper, five-base demonstration instance was built by the platform's own
-ingest loop and audited across ingest, storage, and retrieval probes. In a
+100-paper, five-base instance, built by the platform's own ingest loop,
+was audited by ingest, storage, and retrieval probes. In a
 monitored three-mode run under one harness and model (platform, bare agent,
 dense retrieval), the platform grounds 9 of 10 designated-paper answers and
-keyword-verifies 9 of 10; the bare agent locates the designated paper in
-all 10 cases yet verifies only 6, and dense retrieval grounds 9 and
-verifies 6. Part/section-level citations reach 7 of 10 for the platform
-versus 4 and 1, whose citations name files and chunks rather than the full
-base/document/part/section address. One measured dense-mode abstention is
-shown alongside the platform's verified answer, and three scripted
-out-of-corpus probes receive scoped not-found reports. The platform trades
-roughly three times the baseline cost for this verified, addressable
-evidence. Attendees organize a document, inspect an answer's evidence, and
+keyword-verifies 9 of 10; the bare agent even locates the designated
+paper in all 10 cases yet passes conservative word-boundary verification
+in only 6, and dense retrieval grounds 9 and verifies 6. Part/section-level
+citations reach 7 of 10 for the platform versus 4 and 1. A measured
+dense-mode abstention and three scripted out-of-corpus probes, which
+receive scoped not-found reports, complete the demonstration. The platform trades
+roughly three times the bare agent's cost per question for this verified,
+addressable evidence. Attendees organize a document, inspect an answer's
+evidence, and
 examine a failure report. Demo video:
 \url{https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4}.
 \end{abstract}

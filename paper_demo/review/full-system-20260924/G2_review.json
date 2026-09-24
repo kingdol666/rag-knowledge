@@ -1,0 +1,23 @@
+{
+  "seat": "G2",
+  "score": 9.2,
+  "verdict": "accept",
+  "summary": "Clean pass. All four re-touch fixes landed and verify at pixel level. Fig 2 band 1: 'Markdown · YAML' chip right border at x=1944 vs band border at x=1971 (27 px physical = ~13.5 logical px at the 2x render), matching the (a) row's rightmost chip (same 27 px) and band 1's own left padding (27 px) — symmetric and consistent. Fig 2 band (b): 'Rewrite query' chip left border at x=55-56, pixel-identical to 'Prepared PDF pool' above; legend zooms to exactly 'dashed outline = the fallback path'. Fig 2 badges: all three boxes are 52 px physical tall with equal ~12 px gaps and identical x-extents (56-1943); the dashed outlines read 2 px taller only because the stroke is centered on the same box edge. Fig 3: all five excerpts (BQ04 A/B/C, BQ06 A/C) open with curly quote + leading ellipsis; BQ04 A and BQ06 A close with trailing ellipsis + curly quote, BQ04 B and BQ06 C close as complete sentences with period + curly quote, BQ04 C nests an inner quote then ellipsis + curly close — outer delimiters all correct and no text touches any card border (tightest: 18 px side clearance in BQ04 A, 16 px bottom clearance in BQ06 C, both at designed padding). Full-page pass over pages 1-5 is clean: figures sit on pp. 2/3/4 in reading order, captions in main.tex match the rendered figures (including 'dashed outlines mark the fallback path' in the Fig 2 caption), Table 1 and the monitored-run strip are aligned, page 5 disclosure and references are tidy. Author placeholders on page 1 are the declared single-blind draft placeholders, not an oversight. One P2 polish remains: inner quotation marks inside the BQ04 C excerpt and the BQ06 C 'Closest chunk' snippet are straight (\") while the excerpt delimiters are curly.",
+  "fixes_verified": {
+    "chip_padding": true,
+    "chain_alignment": true,
+    "legend_wording": true,
+    "quote_typography": true,
+    "badge_uniformity": true
+  },
+  "issues": [
+    {
+      "id": "G2-1",
+      "priority": "P2",
+      "location": "fig3-answers-dual.png — BQ04 panel C verbatim excerpt, line 1 and line 3; BQ06 panel C 'Closest chunk' line",
+      "issue": "Inner quotation marks are straight ASCII (\") inside passages whose outer excerpt delimiters are now curly (“ ”): 'the GO is \"a controlled vocabulary … structured way,\"…' and 'Closest chunk: \"Several physical contributions govern…\"'. Required fix did not cover inner marks, so this is optional polish, not a regression.",
+      "evidence": "3x zoom crops at (1360,390)-(1970,440) and (1360,465)-(1720,525) show the outer opening “ at glyph level with a curled 6-shape while the inner marks before 'a controlled' and after 'way,' are straight vertical ticks; same for the chunk snippet at (1030,1135)-(1650,1185).",
+      "suggestion": "If the figure source is regenerated, swap the inner straight quotes for curly “ ” (or ‘ ’) for full typographic consistency; purely cosmetic, safe to ship as-is."
+    }
+  ]
+}

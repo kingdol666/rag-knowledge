@@ -1,0 +1,182 @@
+{
+ "run": "run-20260924T061730Z-0968033",
+ "manifest": {
+  "git_commit": "0968033",
+  "config_hash": "9fb259c0cf2b6dea",
+  "prompt_version": "v3-neutral",
+  "started_utc": "2026-09-24T06:17:31.132656+00:00",
+  "tracks": [
+   "a2",
+   "bm25",
+   "vector"
+  ],
+  "questions": 1,
+  "seed": 0,
+  "max_turns": 12,
+  "shuffled": true,
+  "selfheal": true,
+  "monitor_system": false,
+  "dry_run": false,
+  "n_rows": 3,
+  "total_cost_usd": 1.0087,
+  "tokens_out_total": 2623
+ },
+ "methods": [
+  "a2",
+  "bm25",
+  "vector"
+ ],
+ "per_method": {
+  "a2": {
+   "n": 1,
+   "latency_avg_s": 111.5,
+   "latency_median_s": 111.5,
+   "tokens_in_total": 139340,
+   "tokens_out_total": 2250,
+   "cost_usd_total": 0.9537,
+   "cost_usd_avg": 0.9537,
+   "tools_avg": 14.0,
+   "retrieval_gold_rate": null,
+   "citation_gold_rate": null,
+   "abstentions": 0,
+   "errors": 0,
+   "system_peak": null
+  },
+  "bm25": {
+   "n": 1,
+   "latency_avg_s": 12.7,
+   "latency_median_s": 12.7,
+   "tokens_in_total": 968,
+   "tokens_out_total": 241,
+   "cost_usd_total": 0.0295,
+   "cost_usd_avg": 0.0295,
+   "tools_avg": 0.0,
+   "retrieval_gold_rate": null,
+   "citation_gold_rate": null,
+   "abstentions": 1,
+   "errors": 0,
+   "system_peak": null
+  },
+  "vector": {
+   "n": 1,
+   "latency_avg_s": 16.2,
+   "latency_median_s": 16.2,
+   "tokens_in_total": 729,
+   "tokens_out_total": 132,
+   "cost_usd_total": 0.0255,
+   "cost_usd_avg": 0.0255,
+   "tools_avg": 0.0,
+   "retrieval_gold_rate": null,
+   "citation_gold_rate": null,
+   "abstentions": 1,
+   "errors": 0,
+   "system_peak": null
+  }
+ },
+ "self_checks": [
+  {
+   "check": "每 (qid,method) 都有结果",
+   "ok": true,
+   "detail": "0 缺失"
+  },
+  {
+   "check": "无重复单元",
+   "ok": true,
+   "detail": "ok"
+  },
+  {
+   "check": "无 error 单元",
+   "ok": true,
+   "detail": "0 个 error"
+  },
+  {
+   "check": "成本合计 = 各方法之和",
+   "ok": true,
+   "detail": "sum(method)=1.0087 · manifest=1.0087"
+  },
+  {
+   "check": "单元数 = 题数 × 方法数",
+   "ok": true,
+   "detail": "rows=3 vs 1×3=3"
+  },
+  {
+   "check": "provenance 完整",
+   "ok": true,
+   "detail": "prompt_version=v3-neutral seed=0"
+  }
+ ],
+ "per_question": {
+  "Q1": {
+   "a2": {
+    "latency_s": 111.5,
+    "retrieval_s": null,
+    "tokens_in": 139340,
+    "tokens_out": 2250,
+    "cost_usd": 0.9536859999999998,
+    "tools": 14,
+    "ranked": [
+     "b4c48237-6937-440a-9696-cc1e66bed5c1",
+     "pride_and_prejudice (part 13 of 26)"
+    ],
+    "gold": [],
+    "retrieval_hit": null,
+    "citation_hit": null,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "bm25": {
+    "latency_s": 12.7,
+    "retrieval_s": 0.0,
+    "tokens_in": 968,
+    "tokens_out": 241,
+    "cost_usd": 0.029457,
+    "tools": 0,
+    "ranked": [
+     "1609.00415",
+     "2011.14424",
+     "2212.13138",
+     "1801.00862",
+     "2005.14165",
+     "1909.03801",
+     "physics-0703220",
+     "1906.10015",
+     "1911.06206",
+     "2410.10669"
+    ],
+    "gold": [],
+    "retrieval_hit": null,
+    "citation_hit": null,
+    "abstained": true,
+    "error": false,
+    "system": null
+   },
+   "vector": {
+    "latency_s": 16.2,
+    "retrieval_s": 1.0,
+    "tokens_in": 729,
+    "tokens_out": 132,
+    "cost_usd": 0.025537,
+    "tools": 0,
+    "ranked": [
+     "1609.00415",
+     "2005.14165",
+     "1801.00862",
+     "2310.10981",
+     "2412.06333",
+     "1909.03801",
+     "2201.03675",
+     "1602.01876",
+     "2503.21676",
+     "1706.03762"
+    ],
+    "gold": [],
+    "retrieval_hit": null,
+    "citation_hit": null,
+    "abstained": true,
+    "error": false,
+    "system": null
+   }
+  }
+ }
+}

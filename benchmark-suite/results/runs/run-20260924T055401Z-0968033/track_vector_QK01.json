@@ -1,0 +1,43 @@
+{
+ "qid": "QK01",
+ "method": "vector",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "ranked": [
+  "1706.03762",
+  "1810.04805",
+  "2503.21676",
+  "2110.07844",
+  "2510.13343",
+  "1906.10015"
+ ],
+ "ranked_paths": [
+  "artificial-intelligence__1706.03762__attention-is-all-you-need__k19",
+  "nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor__k05",
+  "nlp__2503.21676__how-do-language-models-learn-facts-dynamics__k22",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst__k07",
+  "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep__k09",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren__k55"
+ ],
+ "evidence_sources": [
+  "1706.03762",
+  "1810.04805",
+  "2503.21676",
+  "2110.07844",
+  "2510.13343",
+  "1906.10015"
+ ],
+ "evidence_chars": 2437,
+ "retrieval_s": 0.0,
+ "latency_s": 9.6,
+ "answer": "The evidence only partially answers this. One source describes the computation: the cross-attention head transforms decoder and encoder states into query, key, and value vectors, computes attention weights as a normalized dot product between query and key vectors, and outputs a weighted sum of value vectors ([2110.07844]). Another states the Transformer replaces the recurrent layers commonly used in encoder-decoder architectures with multi-headed self-attention ([1706.03762]), and a third notes its strength lies in an attention mechanism that learns to focus on relevant parts of the input ([2510.13343]). However, none of the retrieved evidence explains **why** recurrence and convolution were replaced — no comparison, motivation, or rationale is given. The remaining chunks concern unrelated topics (BERT hyperparameters, plateau formation, attention-shift impairment, multi-agent transformers).\n\nSources used: [2110.07844], [1706.03762], [2510.13343].\n\n**Insufficient evidence for the \"why\" portion of the question.**",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 602,
+  "output": 207,
+  "cache_read": 37184,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.026777000000000002,
+ "extra": {}
+}

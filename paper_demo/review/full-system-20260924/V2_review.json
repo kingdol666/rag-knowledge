@@ -1,0 +1,31 @@
+{
+  "seat": "V2",
+  "score": 7.9,
+  "verdict": "minor",
+  "summary": "Final-round visual pass over pages 1-5 and the three high-res stills. All three prior-round fixes landed and were verified at pixel level. Fig 1: the lightning-bolt glyph now sits with a clear whitespace gap (~20 px in the 2000-px still, clearly visible at print size) between its bottom tip and 'One generation ---'; it no longer touches the text. Fig 2: the green banner reads 'Per-part final check --- all pass' with the checks split over two balanced lines ('read-back . description . base fit . tags .' / 'vector probe (x2) . graph node . three-layer . metadata'); 8 labels with the (x2) doubling make exactly 9 checks countable, agreeing with Table 1's 'nine recorded checks' and the body's 'nine-point ingest final check'; the ChromaDB . BGE-M3 pill now has comfortable padding on both sides of the text. Fig 3: the navy banner carries right-aligned mode labels 'A Platform . B Bare agent . C Dense' matching the caption's column order, and the numeric triplets (9/10, 10/10, 9/10; 113.0/42.7/48.0 s; 0.4911/0.1631/0.1803 USD) agree with the abstract and Section 4 text (113 s $0.49; 43 s $0.16; 48 s $0.18). Caption-vs-pixel agreement is clean for all three figures; body text thresholds (Section 2.3 'A score of at least 6 permits a cited answer', score-5 backstop, at-most-4 discard) match Fig 2's >=6 / =5 / <=4 branches. The one substantive residual concern is Fig 3 print legibility: at the reduced 0.885\\textwidth the smallest text tier (timeline bullets, verbatim excerpts, sources lines) prints at roughly 5 pt.",
+  "strengths": [
+    "All three prior-round fixes verified landed: Fig 1 bolt-to-text gap, Fig 2 banner wording + 9-countable checks + pill padding, Fig 3 banner mode labels.",
+    "Caption-vs-pixel agreement is exact across all three figures, including thresholds (>=6 cited / =5 qualified backstop / <=4 not-found), the 9-check count vs Table 1, and BQ04/BQ06 per-panel claims (part 1 of 2, section 2; verify re-read; measured abstention).",
+    "Figure numbers are internally consistent with abstract and Section 4 aggregates (grounded 9-10-9; latency 113.0/42.7/48.0 s; cost 0.4911/0.1631/0.1803 USD; citation split 7-4-1).",
+    "Fig 2 check list wraps into two visually balanced centered lines inside panel (a) with no border collision.",
+    "Descriptive \\Description blocks match the pixel content for all three figures."
+  ],
+  "issues": [
+    {
+      "id": "V2-1",
+      "priority": "P1",
+      "location": "Figure 3 (page 4), panel text: HOW IT SEARCHED timeline bullets, VERBATIM ANSWER EXCERPT quotes, Sources/Chunks lines",
+      "issue": "Smallest text tier is marginal for print at the reduced 0.885\\textwidth placement.",
+      "evidence": "In the 2000-px still (submission-20260920/fig3-answers-dual.png) timeline bullet em measures ~21-22 px (asc-to-desc run 234-255) and sources lines ~20-22 px; the rendered figure box measures 6.19 in of the 7.0 in text block (ink 820 px vs 1007 px block on the 144-dpi page render, consistent with 0.885\\textwidth), giving a print scale of ~0.0031 in/px, i.e. ~4.8-5.0 pt for these lines (headings ~6.7 pt, strip labels ~6 pt). Legible on screen; at 100% on paper it is below the ~6 pt comfort threshold and will draw 'text too small' comments from some reviewers.",
+      "suggestion": "Either (a) grow the includegraphics width back toward ~0.94-0.95\\textwidth (the current placement leaves ~0.4 in clear margin each side of the ink, so the box can grow ~6-7% without touching anything, recovering ~5.2-5.3 pt), or (b) bump the smallest font tier in build_fig3_dual.py by ~2 px and re-export, or (c) explicitly accept screen-first legibility given the demo track. Option (a) is a one-line change."
+    },
+    {
+      "id": "V2-2",
+      "priority": "P2",
+      "location": "Figure 1 caption (main.tex lines 60-63) vs bottom-row panel 3 (page 2)",
+      "issue": "The caption enumerates 'rewrite, cross-base recall' as bottom-row retrieval steps, but no panel in Fig 1 shows those stage names; panel 3 only depicts 'Read, then gated on the 0-8 rubric (>= 6 passes)' with a magnifier icon.",
+      "evidence": "Caption text: 'librarian-style retrieval (rewrite, cross-base recall, read, 0--8 content gate, then a cited answer or a scoped not-found report)'; Fig 1 panel 3 pixel text contains only 'Read, then gated on the 0-8 rubric (>= 6 passes)' and 'gate >= 6'. A reader cross-referencing panel-by-panel will not find 'rewrite' or 'cross-base recall' anywhere in the row.",
+      "suggestion": "Either add microcopy 'rewrite > cross-base recall' above the panel-3 read step (it already exists in Fig 2b, so the vocabulary is consistent), or trim the caption enumeration to match what the panels show ('read, 0--8 content gate, then a cited answer or a scoped not-found report'). Cosmetic; either fix is fine."
+    }
+  ]
+}

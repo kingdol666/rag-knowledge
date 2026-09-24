@@ -178,7 +178,7 @@ def wrap(s, width=46):
 
 
 def build_svg(answers, timelines):
-    H = 344
+    H = 368
     root = node('svg', xmlns=NS, width=1000, height=H, viewBox=f'0 0 1000 {H}',
                 role='img', **{'aria-labelledby': 'title desc'})
     root.append(node('title', id='title'))
@@ -238,6 +238,10 @@ def build_svg(answers, timelines):
             g.append(text(x + 12, sy, line, 15, weight=600))
             sy += 18
         g.append(text(x + 12, sy + 2, VERDICTS[trk], 15, 600, fill=st['dot']))
+    g.append(node('rect', x=20, y=346, width=960, height=24, rx=4, fill='#eef7f3', stroke='#bcd9cc'))
+    g.append(text(500, 362, 'Part/section-level citations across the 10 monitored questions '
+                           '&#8212; A 8/10 · B 6/10 · C 0/10 (Table 2)', 15, 600, fill='#253745',
+                  anchor='middle'))
 
     root.set('height', str(H))
     return root, H

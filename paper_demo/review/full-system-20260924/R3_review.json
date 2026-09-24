@@ -1,0 +1,57 @@
+{
+  "seat": "R3",
+  "score": 7.5,
+  "verdict": "minor",
+  "summary": "Claims-vs-evidence audit, independently recomputed from artifacts: every headline number in the abstract and Section 4 traces exactly to audit_paper_numbers.json / exp_r2_grade.json (grounded 9-10-9; keyword-verified 9-6-6; citations 7-4-1, which I reproduced with the script's own regex and which is invariant to dropping its 'table \\d' alternative; latencies 113.0/42.7/48.0 s; costs $0.4911/$0.1631/$0.1803 per question). The one-run framing is unusually honest for a demo paper: Section 1 ('operational evidence, not a controlled comparison'), Section 4 ('operational, not controlled; cache state uncontrolled'), Fig 3 caption ('one run per mode'), BQ02's grounding failure shown as-is, and consistent prompted-judgment disclaimers in Section 2, Fig 2, and the GenAI disclosure. Overclaim hunt words are clean: 'always' is bounded by '(10/10 grounded)', 'guarantee' appears only in negation, and 'the only mode to do so' is factually true. The 'roughly three times the baseline cost' phrasing is fair under either baseline reading (3.1x bare, 2.7x dense). Two real gaps remain, both cheap text fixes: (1) the Fig 3 showcase question BQ06 splits the modes on an orthographic artifact - the bare agent's answer contains the hyphenated 'precipitation-efficiency' and takes the same substantive stance as the platform's keyword-verified answer, yet the caption says it 'matched no key facts' without applying the conservative-grading caveat the paper itself discloses for BQ08; (2) the abstract's 9-vs-6 verification contrast carries no conservatism caveat. Neither invalidates the demo; both must be worded before submission.",
+  "strengths": [
+    "Every abstract number reproduces exactly from saved artifacts: I independently recomputed grounded (9/10/9), keyword-verified (9/6/6), citations (7/4/1), latency (113.0/42.7/48.0 s), and cost ($0.4911/$0.1631/$0.1803 per question) from audit_paper_numbers.json and exp_r2_grade.json - zero drift.",
+    "One-run, n=10 evidence is consistently framed as operational, not controlled: 'Section 4 reads the monitored run as operational evidence, not a controlled comparison' (Section 1) and 'the comparison is operational, not controlled; cache state uncontrolled' (Section 4). For a demo track this framing is sufficient.",
+    "Failure is disclosed, not hidden: BQ02's neighboring-survey grounding is 'shown as-is', BQ08's conservative grading is explained with the exact 0/2 mechanism, and the dense-mode abstention (BQ06, verified verbatim in track_c_BQ06.json) is exhibited rather than suppressed.",
+    "The content-verified disclaimer pattern is consistent everywhere it matters: 'Content-verified denotes this prompted judgment, not guaranteed correctness' (Section 2.3), 'Gate scores are prompted judgments, not correctness guarantees' (Fig 2), 'not independent correctness assessments' (GenAI disclosure), 'Correctness reflects our reading' (Section 4).",
+    "Omitting the bare agent from Fig 3 panel 2 is disclosed in the caption with its outcome ('it located the file but matched no key facts'), and the bottom aggregate strip still shows all three modes, so nothing is hidden.",
+    "Overclaim hunt is clean: 'always' is immediately bounded by '(10/10 grounded)', 'guarantee' appears only in negation, 'the only mode to do so' is true (a=9/9, b=10/6, c=9/6), and no 'ensure'/'proof'/'state-of-the-art' language exists anywhere in the sources.",
+    "All three Section 1 attendee promises (organize a document, walk evidence across three modes head to head, examine a scoped not-found report with near miss) are delivered by Section 3's three scenarios, and the not-found scenario's 1/8 gate score and 322-part census match honest_failure_probe.json (probe P2 is the odor-recognition question, NOT_FOUND)."
+  ],
+  "issues": [
+    {
+      "id": "R3-1",
+      "priority": "P1",
+      "location": "Fig 3 caption (main.tex) + Section 4 conservatism disclosure",
+      "issue": "The showcase question BQ06 splits platform (keyword-verified) from bare agent ('matched no key facts') on an orthographic artifact, and the caption states the grader-literal result without the caveat the paper itself applies to the analogous BQ08 case. The gold fact for BQ06 is the single phrase 'precipitation efficiency' (data/papers/qa_questions.json); the bare agent's saved answer (track_b_BQ06.json) contains it hyphenated - 'microphysical (precipitation-efficiency epsilon) contributions' - and takes the same substantive stance as the platform's verified answer (both call the thermodynamic/temperature control primary and name precipitation efficiency as a contribution). The word-boundary grader scores this 0/1, so 'matched no key facts' is literally true under the stated metric but materially misleading to any reader who opens the trace. A hostile reader will find this in the released traces.",
+      "evidence": "Caption: \"C's chunks name no single factor --- measured abstention; the bare agent is omitted for space (it located the file but matched no key facts).\" Trace (track_b_BQ06.json): \"dynamical (vertical velocity \\u03c9), and microphysical (precipitation-efficiency \\u03b5) contributions\". Section 4 already concedes the mechanism for a different question: \"Grading is deliberately conservative (BQ08's bare-agent answer's ``oxygen (anionic) redox'' and plural ``cathodes'' score 0/2 under word-boundary matching)\".",
+      "suggestion": "Apply the paper's own BQ08 caveat to this example: in the caption or Section 4 add one clause, e.g. \"the bare agent's hyphenated 'precipitation-efficiency' misses the word-boundary match - the same conservatism as BQ08\" - or reword to 'matched no gold key fact under word-boundary grading'. Alternatively showcase a question where the verification split is not orthographic."
+    },
+    {
+      "id": "R3-2",
+      "priority": "P1",
+      "location": "Abstract (sec0_abstract.tex), sentences reporting 9-of-10 vs 6-of-10 keyword verification",
+      "issue": "The abstract's central verification contrast (platform 9 vs bare/dense 6) is stated without the conservative-grading qualification that Section 4 carries. At least two of the bare agent's four verification failures (BQ06 hyphenation, BQ08 hyphen/plural - both confirmed in exp_r2_grade.json per-question rows, kw=[]) are word-boundary artifacts rather than substantive misses, so the headline 9-vs-6 gap partly reflects orthography, and the platform advantage is if anything overstated by the metric. Section 4's disclosure is honest, but the abstract sentence invites a 'you can't conclude that' objection standing alone.",
+      "evidence": "\"the platform grounds 9 of 10 designated-paper answers and keyword-verifies 9 of 10; the bare agent locates the designated paper in all 10 cases yet verifies only 6, and dense retrieval grounds 9 and verifies 6.\" vs Section 4: \"Grading is deliberately conservative\".",
+      "suggestion": "Add a minimal qualifier to the abstract sentence, e.g. '...yet verifies only 6 under the same conservative word-boundary grading (Section 4)', or move the conservatism clause forward into the abstract's run description. One line suffices; the number itself is correct."
+    },
+    {
+      "id": "R3-3",
+      "priority": "P2",
+      "location": "Section 4, Retrieval paragraph, metric definitions",
+      "issue": "The citation metric - one of three headline numbers - is the least precisely defined: 'pattern-matched over saved answers' names neither the pattern nor its side effects. The actual regex (scripts/108_pipeline_evidence.py, r'part \\d|\\u00a7\\s?\\d|section \\d|sections \\d|table \\d', case-insensitive) also counts bare 'Table N' mentions as part/section-level citations. I verified the 7-4-1 aggregate is invariant to dropping the 'table' alternative (every counted question has a part/section hit), so the number stands, but the body under-specifies a metric the abstract leads with, which is gameable in principle (an answer could pad section-name mentions).",
+      "evidence": "\"citations pattern-matched over saved answers\" (sec4_eval.tex); script 108: \"PAT = re.compile(r\\\"part \\d|\\u00a7\\s?\\d|section \\d|sections \\d|table \\d\\\", re.I)\".",
+      "suggestion": "One clause in Section 4: 'citations pattern-matched over saved answers (occurrences of part/section/table markers; script in repository)'. Optionally state that dropping table mentions leaves 7-4-1 unchanged."
+    },
+    {
+      "id": "R3-4",
+      "priority": "P2",
+      "location": "Section 4, Ingest paragraph + Table 1 row 'Content + storage audits 322/322 - 33/33'",
+      "issue": "The content audit examined only the first 1,000 characters per part (fact-sheet system fact), but neither the body nor Table 1 discloses this sampling granularity. 'verified storage and retrieval stability' plus an undqualified '322/322' audit row implies fuller-text coverage than was performed - a small but real case of a claim outrunning its evidence's resolution.",
+      "evidence": "\"A later organization pass re-read all 322 documents, found no true duplicates (35 near-pairs are parts of the same paper), upgraded 165 descriptions, and verified storage and retrieval stability (Table 1).\" Fact sheet: \"Content audit granularity: first 1,000 chars per part.\" No mention of 1,000 characters anywhere in the paper body.",
+      "suggestion": "Add '(first 1,000 characters per part)' to the Table 1 row or the Section 4 sentence. Three words restore the claim's proportion to its evidence."
+    },
+    {
+      "id": "R3-5",
+      "priority": "P2",
+      "location": "Section 4, Retrieval paragraph ('file search is not the bottleneck') and Costs sentence",
+      "issue": "Two residual soft spots. (a) 'file search is not the bottleneck' generalizes beyond one run of ten questions; the abstract's own phrasing ('in all 10 cases') is the correctly bounded version. (b) The cost sentence quotes only the bare-agent baseline ($0.16) and omits dense ($0.18, 48 s), leaving the abstract's 'roughly three times the baseline cost' with an ambiguous referent. The phrasing is fair under either reading (0.4911/0.1631 = 3.0x; 0.4911/0.1803 = 2.7x), so this is disambiguation, not correction.",
+      "evidence": "\"First, the bare agent always locates the designated paper (10/10 grounded) --- file search is not the bottleneck ---\" and \"The platform is slowest and costliest (113 s and \\$0.49 versus 43 s and \\$0.16 per question)\"; abstract: \"The platform trades roughly three times the baseline cost\".",
+      "suggestion": "(a) 'in this run, file search was not the bottleneck'. (b) Extend the cost sentence to 'versus 43 s/\\$0.16 (bare) and 48 s/\\$0.18 (dense)', and optionally pin the abstract's multiplier to '3.1x the bare-agent baseline'."
+    }
+  ]
+}

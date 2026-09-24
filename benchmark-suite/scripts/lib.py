@@ -25,13 +25,55 @@ RUN_ID = ""  # 惰性初始化, 见 set_run()
 DATA = SUITE / "data"
 
 
-def set_run(rid: str = "") -> Path:
-    """设置本轮 run 标识并返回不可变输出目录 results/run-*/."""
-    global RUN_ID
-    RUN_ID = rid or run_id()
-    out = RESULTS / RUN_ID
+def new_run_dir(prefix: str = "run") -> Path:
+    """规范 run 目录：results/runs/<prefix>-<utc-ts>-<gitsha>/（不可原地覆盖）.
+
+    这是全管线唯一认可的 run 目录位置 —— 生产者（runner/exp/113）与消费者
+    （110/114/115/116/compare_report）都用它，避免"基线写一处、主实验写另一处"
+    导致下游读不到数据。
+    """
+    from datetime import datetime, timezone
+    ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    sha = git_commit() or "nogit"
+    out = RESULTS / "runs" / f"{prefix}-{ts}-{sha}"
     out.mkdir(parents=True, exist_ok=True)
     return out
+
+
+def set_run(rid: str = "") -> Path:
+    """设置本轮 run 标识并返回规范输出目录 results/runs/<run_id>/."""
+    global RUN_ID
+    if rid:
+        out = RESULTS / "runs" / rid
+        out.mkdir(parents=True, exist_ok=True)
+        RUN_ID = rid
+        return out
+    out = new_run_dir()
+    RUN_ID = out.name
+    return out
+
+
+def resolve_run_dir(name: str = "") -> Path:
+    """把 --run 的取值解析为 run 目录。
+
+    支持：绝对路径 / 相对 SUITE / 仅目录名 / 缺省（取最新一个）。
+    兼容旧的 results/experiment_chat_* 目录。
+    """
+    if name:
+        p = Path(name)
+        if p.is_absolute() and p.exists():
+            return p
+        for base in (SUITE, RESULTS, RESULTS / "runs"):
+            c = base / name
+            if c.exists():
+                return c
+        return RESULTS / "runs" / name
+    cands = [c for c in
+             (list((RESULTS / "runs").glob("*")) + list(RESULTS.glob("experiment_chat_*")))
+             if c.is_dir()]
+    if not cands:
+        raise SystemExit("[lib] 未找到 run 目录（results/runs/* 或 results/experiment_chat_*）")
+    return sorted(cands)[-1]
 
 BACKEND = os.environ.get("RAG_BENCH_URL", "http://localhost:8771").rstrip("/")
 # 默认 6789(dev 实际端口)。旧默认 6790 是死代理(陷阱⑲), 曾让单独手跑脚本时
@@ -40,15 +82,96 @@ WEB = os.environ.get("RAG_BENCH_WEB_URL", "http://localhost:6789").rstrip("/")
 LOCAL = {"localhost", "127.0.0.1", "::1"}
 
 
-def _token() -> str:
+AUTH_FILE = REPO / "storage" / "loop-auth.json"
+
+
+def _read_auth_file() -> dict:
+    try:
+        return json.loads(AUTH_FILE.read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001
+        return {}
+
+
+def auth_token() -> str:
+    """Best-known bearer token: env override → loop-auth.json → .env."""
     if os.environ.get("RAG_BENCH_TOKEN"):
         return os.environ["RAG_BENCH_TOKEN"]
+    tok = str(_read_auth_file().get("token") or "").strip()
+    if tok:
+        return tok
     env = REPO / ".env"
     if env.exists():
         for line in env.read_text(encoding="utf-8").splitlines():
             if line.startswith("MCP_AUTH_TOKEN="):
                 return line.split("=", 1)[1].strip()
-    raise RuntimeError("缺少 MCP_AUTH_TOKEN (环境变量或仓库 .env)")
+    return ""
+
+
+def login_refresh(web: str = "") -> str:
+    """Re-login with the credentials stored in loop-auth.json and persist the token.
+
+    The token in loop-auth.json goes stale across restarts; without this the
+    experiment silently 401s on every cell. Returns the new token ("" if the
+    credentials are unavailable).
+    """
+    a = _read_auth_file()
+    u, p = a.get("username"), a.get("password")
+    if not (u and p):
+        return ""
+    base = (web or WEB).rstrip("/")
+    try:
+        req = urllib.request.Request(
+            f"{base}/api/auth/login",
+            data=json.dumps({"username": u, "password": p}).encode(),
+            headers={"Content-Type": "application/json"}, method="POST")
+        with _open_fresh(req, 15) as r:
+            j = json.loads(r.read().decode("utf-8"))
+        tok = str(j.get("token") or (j.get("data") or {}).get("token") or "")
+    except Exception:  # noqa: BLE001
+        return ""
+    if tok:
+        a["token"] = tok
+        AUTH_FILE.parent.mkdir(parents=True, exist_ok=True)
+        AUTH_FILE.write_text(json.dumps(a, ensure_ascii=False, indent=1),
+                             encoding="utf-8")
+        os.environ["RAG_BENCH_TOKEN"] = tok
+    return tok
+
+
+def check_token(web: str = "") -> tuple[bool, str]:
+    """Validate the token against an authenticated endpoint; refresh once if stale.
+
+    Returns (ok, state) with state ∈ {ok, refreshed, stale, no-token}.
+    """
+    base = (web or WEB).rstrip("/")
+
+    def probe(t: str) -> int:
+        req = urllib.request.Request(f"{base}/api/kb/catalog",
+                                     headers={"Authorization": f"Bearer {t}"})
+        try:
+            with _open_fresh(req, 10) as r:
+                return r.status
+        except urllib.error.HTTPError as e:
+            return e.code
+        except Exception:  # noqa: BLE001
+            return 0
+
+    t = auth_token()
+    if not t:
+        return False, "no-token"
+    if probe(t) == 200:
+        return True, "ok"
+    new = login_refresh(base)
+    if new and probe(new) == 200:
+        return True, "refreshed"
+    return False, "stale"
+
+
+def _token() -> str:
+    t = auth_token()
+    if not t:
+        raise RuntimeError("缺少鉴权 token（storage/loop-auth.json / RAG_BENCH_TOKEN / .env MCP_AUTH_TOKEN）")
+    return t
 
 
 def _check_local(url: str) -> str:

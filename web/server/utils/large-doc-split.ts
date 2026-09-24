@@ -24,8 +24,20 @@ export interface SplitPlanPart {
   source_title: string
   start_char: number
   end_char: number
+  source_start?: number
+  source_end?: number
   chars: number
+  source_chars?: number
   description: string
+  description_seed?: string
+  agent_description?: string
+  section_range?: string
+  source_sha256?: string
+  boundary_kind?: string
+  warnings?: string[]
+  strategy?: string
+  planner?: string
+  description_provenance?: string
 }
 
 export interface SplitPlan {
@@ -35,6 +47,10 @@ export interface SplitPlan {
   part_count: number
   source_chars: number
   max_chars: number
+  strategy?: string
+  planner?: string
+  source_sha256?: string
+  warnings?: string[]
   parts: SplitPlanPart[]
 }
 
@@ -56,13 +72,14 @@ export async function requestSplitPlan(
   title: string,
   content: string,
   autoSplit = true,
+  agentPlan?: Record<string, unknown>,
 ): Promise<SplitPlan | null> {
   try {
     const auth = getDynamicAuthConfig()
     return await $fetch<SplitPlan>(`${getDynamicBackendUrl()}/api/v1/documents/split`, {
       method: 'POST',
       headers: auth.token ? { Authorization: `Bearer ${auth.token}` } : {},
-      body: { title, content, auto_split: autoSplit },
+      body: { title, content, auto_split: autoSplit, agent_plan: agentPlan },
       timeout: 60000,
     })
   } catch (e: any) {
@@ -78,11 +95,14 @@ export function buildPartDescription(
   userDescription: string | undefined,
   part: SplitPlanPart,
 ): string {
-  const excerpt = (part.description || '').trim()
-  const marker = `[part ${part.part_index}/${part.part_count}]`
-  const bits: string[] = []
-  if (userDescription?.trim()) bits.push(userDescription.trim())
-  if (excerpt) bits.push(`${marker} ${excerpt}`)
-  else bits.push(marker)
-  return bits.join('；')
+  const generated = (part.agent_description || part.description || '').trim()
+  const fallback = (part.description_seed || part.description || '').trim()
+  const base = generated || fallback
+  const section = part.section_range ? ` · ${part.section_range}` : ''
+  const marker = `[part ${part.part_index}/${part.part_count}${section}]`
+  // The source-derived description is authoritative. A user label is kept only
+  // as a short suffix so it cannot displace the method/problem/evidence text.
+  const suffix = userDescription?.trim() ? ` · ${userDescription.trim()}` : ''
+  const budget = Math.max(40, 220 - marker.length - suffix.length - 1)
+  return `${base.slice(0, budget).trim()} ${marker}${suffix}`.slice(0, 220)
 }

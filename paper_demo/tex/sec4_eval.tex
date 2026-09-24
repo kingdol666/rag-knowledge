@@ -16,44 +16,46 @@
 \label{sec:eval}
 
 The corpus was built by the platform's own ingest loop, so records exist
-for every stage attendees are asked to trust
-(Table~\ref{tab:pipeline}); a monitored three-mode comparison follows
-(Figure~\ref{fig:threeway}, bottom strip).
+for every stage (Table~\ref{tab:pipeline}); a monitored three-mode
+comparison follows (Figure~\ref{fig:threeway}).
 
 \textbf{Ingest and organization.}
-MinerU parsed all 100 papers; the routing skill placed each by its content
-into one of five bases, and the 30k-character ceiling split long texts into
-322 stored documents, each passing the nine-point ingest final check
+MinerU parsed all 100 papers; the organization skill placed each by its
+content into one of five bases, and the 30,000-character ceiling split
+long texts into
+322 stored parts, each passing the nine-point ingest final check
 (repository checklist). A later organization pass re-read all 322
-documents, found no true duplicates (35 near-pairs are parts of the same
-paper), upgraded 165 descriptions, and verified storage and retrieval
+parts, found no true duplicates (the 35 near-pairs are same-paper
+fragments), upgraded 165 descriptions, and verified storage and retrieval
 stability (Table~\ref{tab:pipeline}).
 
 \textbf{Retrieval.}
 Ten questions ran through three modes that differ only in evidence route,
-permissions, and prompt framing (same corpus, questions, harness, and
-endpoint). Metrics (Figure~\ref{fig:threeway}, bottom strip): Grounded =
+permissions, and prompt framing, on a shared corpus.
+Metrics (Figure~\ref{fig:threeway}):
+grounded =
 the trace cites the designated paper (strict arXiv-id match);
 keyword-verified = at least 60\% of gold key facts, fixed in advance, at
-word boundaries (deterministic); citations pattern-matched over saved
-answers. Two findings frame the demo. First, the bare agent always
-locates the designated paper (10/10 grounded) --- file search is not the
-bottleneck --- yet keyword verification passes only 6/10, no more than
-dense retrieval: locating evidence and synthesizing a complete answer are
-different skills. The platform pairs high grounding with high verification
-(9/10 on each), the only mode to do so. Second, the citation split (7--4--1)
-is the design difference this demo exists to show: only the platform's
-answers carry base/document/part/section addresses.
-Figure~\ref{fig:threeway} replays two of these conversations verbatim.
+word boundaries (deterministic); citations = part/section markers
+pattern-matched over saved answers (script in the repository). Two
+findings frame the demo. First, the bare agent always
+locates the designated paper (10/10 grounded) --- in this run, file search
+was not the bottleneck --- yet keyword verification passes only 6/10, no
+more than dense retrieval: locating evidence and synthesizing a complete
+answer are different skills. The platform alone pairs high grounding with
+high verification (9/10 each). Second, the citation split (7--4--1) is the
+design difference this demo exists to show: only the platform's answers
+carry base/document/part/section addresses, replayed verbatim in
+Figure~\ref{fig:threeway}.
 
 \textbf{Costs and limitations.}
-The platform is slowest and costliest (113\,s and \$0.49 versus 43\,s and
-\$0.16 per question): the gap is bought with multi-step reading, visible
-in the traces. Grading is deliberately conservative (BQ08's bare-agent
-answer's ``oxygen (anionic) redox'' and plural ``cathodes'' score 0/2
-under word-boundary matching), and one platform answer (BQ02) grounds a
-correct NISQ definition to a neighboring error-mitigation survey ---
-shown as-is. Correctness reflects our reading; the comparison is
-operational, not controlled; cache state uncontrolled. Three
-absent-paper questions exercise the scoped not-found reports
-(Section~\ref{sec:demo}).
+The platform is slowest and costliest (113\,s and \$0.49 per question,
+versus 43\,s/\$0.16 bare and 48\,s/\$0.18 dense): the gap buys multi-step
+reading (7.6 tool calls versus 4.4 and 2.4). Grading is
+deliberately conservative: word-boundary matching scores the bare agent's
+hyphenated ``precipitation-efficiency'' (BQ06) and ``oxygen (anionic)
+redox''/plural ``cathodes'' (BQ08) at 0/1 and 0/2; one platform answer
+(BQ02) grounds the NISQ definition to a neighboring survey, shown as-is.
+Correctness reflects our reading; the comparison is operational, not
+controlled; cache state was uncontrolled. Three out-of-corpus questions
+receive scoped not-found reports (Section~\ref{sec:demo} shows one).

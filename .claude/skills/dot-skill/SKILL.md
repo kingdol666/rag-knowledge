@@ -1,12 +1,12 @@
 ---
 name: dot-skill
 description: "Unified meta-skill engine for distilling colleague, relationship, or celebrity characters into reusable Skills. Triggered by: colleague persona, distillation, persona, 补天, 蒸馏, 人格, 同事人格, 名人人格."
+agent_created: true
 argument-hint: "[character] [name-or-slug]"
 version: "1.0.0"
 user-invocable: true
 allowed-tools: Read, Write, Edit, Bash
 ---
-
 > **Language**: This skill supports both English and Chinese. Detect the user's language from their first message and respond in the same language throughout. Instructions follow the language matching the user's choice.
 >
 > This Skill supports both English and Chinese. Respond in the same language as the user's first message throughout. Follow the instruction version matching the user's language.

@@ -1,9 +1,8 @@
 ---
 name: knowledgebase-ingest
-description: >
-  Document ingestion pipeline with quality gates A0→A9. Content-first workflow: dedup (content fingerprint), survey, parse with quality check, SCRIPTED split gate for oversized documents (reads ingestion.large_doc.max_chars from config.yml, never split by hand), structured analysis, tag quality gate (blocklist+normalize+verify), description quality gate (4-elements+content-readback), KB-attribution decision tree (sub-KB first), store by file type, index+tag with post-index verification. Triggered by: ingest, upload, import, store, parse, parse PDF, save to KB, ingest a document, put a document, add a document, 拆分, 分块, 大文档入库, maxChars, split large document.
+description: "Document ingestion pipeline with quality gates A0→A9. Content-first workflow: dedup (content fingerprint), survey, parse with quality check, SCRIPTED split gate for oversized documents (reads ingestion.large_doc.max_chars from config.yml, never split by hand), structured analysis, tag quality gate (blocklist+normalize+verify), description quality gate (4-elements+content-readback), KB-attribution decision tree (sub-KB first), store by file type, index+tag with post-index verification. Triggered by: ingest, upload, import, store, parse, parse PDF, save to KB, ingest a document, put a document, add a document, 拆分, 分块, 大文档入库, maxChars, split large document."
+agent_created: true
 ---
-
 ## ⭐ Related Skills
 - Parse documents → the parse_doc tools of `skill://knowledgebase`
 - Post-ingest validation → the V1-V9 flow of `skill://knowledgebase-verify`
@@ -115,34 +114,77 @@ Inspect the first 1500 chars of the parsed markdown; **any hit means reject and 
 | **Excess whitespace** | >50 consecutive blank lines or body <100 chars | Treat as parse failure |
 | **Language mismatch** | Chinese PDF parses into all-English garbage | Encoding/OCR issue; retry |
 
-## A2.5 — Split Gate (Scripted, Mandatory) ⭐
+## A2.5 — Structure-Aware Split Gate (Scripted + Agent-Planned) ⭐
 
-Oversized documents destroy retrieval granularity (vector chunks, BM25 windows, graph nodes all degrade). Before saving, **always count the parsed markdown's chars and enforce the configured chunk limit with the bundled script** — never decide by eye, never split by hand.
+`max_chars` is a storage and retrieval guardrail, **not a command to cut at an arbitrary character offset**. A split is valid only when the original text remains a sequence of source-backed logical units. The goal is to make every stored part independently retrievable without breaking a coherent argument.
 
-**1) Count chars** of the parsed markdown (from `parse_task_status`'s `markdown` or `markdown_path`).
+### 1) Scan the parsed Markdown before planning
 
-**2) Run the gate script** (resolve `scripts/split_large_doc.py` relative to this SKILL.md's directory):
-```bash
-python "<this-skill-dir>/scripts/split_large_doc.py" "<markdown_path>"
-```
-The script reads `ingestion.large_doc.max_chars` from config.yml itself (**the key lives in the REPOSITORY-ROOT config.yml under `ingestion.large_doc` — not backend/config.yml**; the script probes CWD-upward, so run it with the repo root in its path chain, or pass `--config <path>` / `--max-chars N` explicitly), and prints one JSON line:
+Run the bundled gate script (or the same shared backend splitter) against the parsed markdown. The scanner records contiguous units with:
+
+- `unit_id`, `kind`, `heading_path`, `start_char`, `end_char`;
+- ATX and Setext headings, with headings inside fenced code ignored;
+- complete paragraphs, lists with continuations, tables, fenced code, blockquotes, figures/captions, and sentence boundaries inside oversized prose sections;
+- `source_sha256`, `section_range`, head/tail probes, and safe boundary type.
+
+The scanner's source-span invariant is strict: concatenating every unit must reproduce the input byte-for-character (Python character count) with no gap or accidental overlap.
+
+### 2) Ask an Agent to choose boundaries, never to rewrite text
+
+For an oversized document, provide the Agent the unit manifest plus bounded head/tail excerpts. The Agent may group adjacent scanner units and write a detailed part description, but it may not return replacement prose or arbitrary offsets:
+
 ```json
-{"success": true, "source_chars": 8432, "max_chars": 1000, "split": true,
- "part_count": 9, "source_deleted": true,
- "parts": [{"file": "... (part 1 of 9).md", "chars": 990,
-            "description": "<real-content excerpt of THIS part>"}, ...]}
+{
+  "source_sha256": "<sha256>",
+  "parts": [
+    {
+      "part_index": 1,
+      "unit_ids": ["u0001", "u0002"],
+      "section_range": "Introduction – Methods",
+      "boundary_reason": "complete subsection boundary",
+      "description": "paper-level subject/method + this-part content, <=220 chars",
+      "evidence": ["literal body evidence used for the description"]
+    }
+  ]
+}
 ```
 
-**3) Act on the JSON**:
+Validate before writing: hash, contiguous unit coverage, unit order, safe boundaries, description length, and evidence readback. An invalid or absent plan automatically uses the deterministic structural fallback and records `planner=deterministic`; it must never be presented as Agent segmentation.
+
+### 3) Materialize and act on the JSON
+
+```bash
+python "<this-skill-dir>/scripts/split_large_doc.py" "<markdown_path>" \
+  [--agent-plan "<validated-plan.json>"]
+```
+
+The script reads `ingestion.large_doc` from the repository-root `config.yml` (or `--config` / `--max-chars`) and prints one JSON object:
+
+```json
+{
+  "success": true,
+  "source_chars": 84320,
+  "max_chars": 30000,
+  "split": true,
+  "strategy": "agent_semantic|structural_fallback",
+  "planner": "agent|deterministic",
+  "source_sha256": "...",
+  "parts": [{"file": "... (part 1 of 3).md", "source_start": 0,
+             "source_end": 28100, "section_range": "...",
+             "description_seed": "...", "warnings": []}]
+}
+```
+
 | Result | Meaning | Next |
 |---|---|---|
-| `split: false` | under the limit; source is kept | continue with the original file (single unit) |
-| `split: true` | part files written next to the source; **temp original deleted** (`source_deleted: true`; if deletion failed a `warning` is set — delete it manually) | all later steps (A3/A3b/A3c/A5/A6) run **per part**; the original must never appear downstream |
-| `success: false` | IO/config error | fix the cause; do not ingest the oversized raw file |
+| `split: false` | source is within the limit | continue with the original unit |
+| `split: true` | parts were materialized from source spans | run A3/A3b/A3c/A5/A6 per part; never save the deleted source |
+| `warnings` contains `oversized_atomic_unit` | one indivisible logical block is larger than the target | keep it whole, show the warning, and do not hard-cut unless `allow_hard_fallback=true` is explicitly approved |
+| `success: false` | scanner/config/IO/plan error | fix or report; do not pass an oversized raw source downstream |
 
-- `--dry-run` previews the plan without writing/deleting — use it only when the user explicitly wants to preview the split.
-- Parts are named `<stem> (part i of N).md`, carry a content header (`# <title>（第 i/N 部分）` + section path), and the JSON gives a real-content `description` per part — use it as the A3c seed, then refine to the four-element standard.
-- Parse images: parts reference `images/…` relatively. If `image_count > 0`, upload the parse output's images once into the KB (`fs_upload_file`) before/with the parts.
+The script defaults to zero character overlap. Continuity comes from preserving complete logical units and explicit section context, not from duplicate slices. `--dry-run` performs no writes/deletion. If splitting is required, the temporary unsplit markdown is deleted after successful materialization; any deletion warning is a blocking condition for downstream ingest.
+
+Parts keep the original body exactly and add a synthetic header (`source title + part i/N + section range`) outside the source span. Parse images remain relative to the KB; upload them once before saving the parts.
 
 ## A3 — Structured Content Analysis
 
@@ -196,6 +238,12 @@ Description = [Subject] + [Method/Technology] + [Scenario/Problem] + [Key data/C
 **D8 multi-dimension + query orientation (core of retrieval positioning, mandatory)**: the description must cover all five query dimensions — domain dimension / method dimension / object dimension / problem dimension (write one sentence in the questioner's voice about "what questions this document can answer") / conclusion dimension (numbers preferred) — and keep English method names verbatim inside the Chinese description as bilingual anchors. For long documents, use the three-window sampling conclusions to fill in mid/tail points. For split parts use a **two-layer description**: `【第 i/N 部分 · <章节范围>】<论文级主体+方法> —— <本 part 特有内容>`, i.e. `【Part i/N · <section range>】<paper-level subject + method> —— <this part's specific content>`. Each description ≤220 chars. Per-dimension criteria in [description-guide.md D8](references/description-guide.md).
 **Documents <20000 chars also need at least two windows** (head 3000 + tail 2000) — conclusions/correction factors/appendix data are often buried in the tail; reading only the head inevitably misses them (field-tested lesson).
 
+**⭐ A3c-P Part-label integrity check (mandatory for split parts).** The `【Part i/N · <range>】` label is what the librarian reads to pick a part — a wrong label silently breaks hierarchical retrieval. Measured failure (2026-09-24): a 26-part novel was ingested with **24 of 26** labels reading `Gutenberg front/back matter` while the parts actually held novel chapters; a description-driven librarian then selected 2 parts instead of 7 and lost 2 of 7 key scenes. Before saving, check **every** split part's label:
+- **Non-boilerplate**: the same label value must not repeat across ≥3 siblings.
+- **Non-degenerate**: no inverted or single-point span (`XV–I`, `XLVI–XLVI`).
+- **Content-derived**: the range must come from reading the part's own head/tail windows — never copied from part 1, never assumed from the document type.
+- **Any violation → regenerate that part's label from its own content** before A5. Do not save a part whose label fails this check.
+
 **A3c-R retrieval self-test (mandatory closed loop after A6 indexing)**: see [A3c-R](#a3c-r--retrieval-self-test-description-closed-loop-mandatory-after-indexing-) below, after A6-V — run `kb_search` with the problem-dimension wording from the description + `kb_search_vector` with a paraphrase; the target document must be recalled, otherwise merge the missed query terms back into the description and retest.
 
 ✅ "Coal mill blockage early warning based on CNN-LSTM, trained on DCS historical data, 660MW unit field-tested with 315min advance warning. In Chinese."
@@ -229,9 +277,9 @@ Determine the target KB by priority (**this is the core of ingestion quality**):
 
 ## A5 — Store the Document (Routed by Path; Whole Document, No Truncation)
 
-**Routing after A2.5**: if the split gate produced parts, store **each part** via the direct path (`kb_doc_create`, one call per part with its own qualified description) — never re-store the deleted oversized original, and never call `kb_doc_save_parsed` again (it would store the unsplit full markdown).
+**A5 source rule:** a split plan that is invalid, unavailable, or not fully materialized is a hard failure for a mandatory ingest path. Do not fall back to saving the oversized raw markdown. The web/API path may keep a whole document only when the caller explicitly marks it as staging (`split:false`); final ingest uses only validated parts.
 
-### Parse path — `kb_doc_save_parsed` (stores full content + images) ⭐
+**Routing after A2.5:** if the split gate produced parts, store **each validated part** via the direct path (`kb_doc_create`, one call per part with its qualified description and split metadata) — never re-store the deleted oversized original, and never call `kb_doc_save_parsed` again for the unsplit source.
 ```
 save = kb_doc_save_parsed(
     parent_id=target_kb_id,

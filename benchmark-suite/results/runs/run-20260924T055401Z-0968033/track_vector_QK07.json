@@ -1,0 +1,28 @@
+{
+ "qid": "QK07",
+ "method": "vector",
+ "question": "What is MameLoshnLM and what parameter scale does it have?",
+ "ranked": [
+  "2608.05850"
+ ],
+ "ranked_paths": [
+  "nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k13"
+ ],
+ "evidence_sources": [
+  "2608.05850"
+ ],
+ "evidence_chars": 513,
+ "retrieval_s": 0.0,
+ "latency_s": 17.8,
+ "answer": "The evidence identifies MAMELOSHNLM as the first open-source large language model for Yiddish, trained on the Yiddish corpus described in subsection 3.2, and named after the traditional Yiddish term \"mame-loshn\" (\"mother tongue\"). It is reported to outperform strong baselines of similar scale across a broad set of Yiddish evaluation benchmarks, and was produced by continued pretraining.\n\nHowever, the evidence does not state the model's parameter scale — it only mentions comparison to \"baselines of similar scale.\" The retrieved chunk ([2608.05850], Section 5, \"MAMELOSHNLM\") is therefore insufficient to answer the parameter-scale portion of the question.\n\nSources used: [2608.05850] Section 5 \"MAMELOSHNLM\".",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 66,
+  "output": 164,
+  "cache_read": 37312,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.023086,
+ "extra": {}
+}

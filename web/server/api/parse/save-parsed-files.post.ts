@@ -15,6 +15,8 @@ interface ParsedFileResult extends BatchParsePDFFileVTItem {
 interface SaveParsedFilesRequest {
   parentId: string
   results: ParsedFileResult[]
+  split?: boolean
+  agentPlan?: Record<string, unknown>
 }
 
 /**
@@ -153,8 +155,17 @@ export default defineEventHandler(async (event) => {
       if ((body as any).split === true && largeDoc.autoSplit
           && markdownText.length > largeDoc.maxChars) {
         try {
-          const plan = await requestSplitPlan(fileName, markdownText, true)
-          if (plan?.success && plan.split && Array.isArray(plan.parts) && plan.parts.length > 1) {
+          const plan = await requestSplitPlan(fileName, markdownText, true, body.agentPlan)
+          const validParts = plan?.success && plan.split && Array.isArray(plan.parts)
+            && plan.parts.length >= 1
+            && plan.parts.every((part) => String(part.content || '').length > 0)
+          if (!validParts) {
+            throw createError({
+              statusCode: 422,
+              statusMessage: 'Parsed oversized document requires a valid structure-aware split plan; raw content was not stored',
+            })
+          }
+          {
             // Determine the KB folder path for image copying (once for all parts)
             const norm = (p: string) => p.replace(/\\/g, '/').toLowerCase()
             const parentFolder = (service as any).metadata.folders.find(
@@ -193,6 +204,12 @@ export default defineEventHandler(async (event) => {
                   part_count: part.part_count,
                   source_chars: plan.source_chars ?? markdownText.length,
                   max_chars: plan.max_chars ?? largeDoc.maxChars,
+                  strategy: plan.strategy,
+                  planner: plan.planner,
+                  source_start: part.source_start ?? part.start_char,
+                  source_end: part.source_end ?? part.end_char,
+                  section_range: part.section_range,
+                  warnings: part.warnings,
                 },
               }
               const updatedFile = await service.updateFile(fileRecord.id, { metadata })
@@ -205,7 +222,11 @@ export default defineEventHandler(async (event) => {
             continue
           }
         } catch (splitErr: any) {
-          console.warn(`Large-doc split failed for ${result.filename}; falling back to single-doc save:`, splitErr?.message || splitErr)
+          console.error(`Large-doc split rejected for ${result.filename}; raw content was not stored:`, splitErr?.message || splitErr)
+          throw splitErr?.statusCode ? splitErr : createError({
+            statusCode: 422,
+            statusMessage: `Parsed oversized document split failed; raw content was not stored: ${splitErr?.message || splitErr}`,
+          })
         }
       }
 
@@ -269,6 +290,9 @@ export default defineEventHandler(async (event) => {
     }
   } catch (error: any) {
     console.error('Save parsed files error:', error)
+    if (error?.statusCode) {
+      throw error
+    }
     throw createError({
       statusCode: 500,
       statusMessage: error.message || 'Failed to save parsed files',

@@ -1,22 +1,8 @@
 ---
 name: butian
-description: >
-  Butian — SOUL persona initialization distillation dispatcher: orchestrates the
-  dual nuwa-skill (deep research distillation of public figures/topics/thinking
-  frameworks) and dot-skill (distillation of colleagues/acquaintances/
-  relationships/local materials) engines, uniformly converts distillation
-  outputs into Butian seed packages (meta.json/persona.md/work.md/values.md),
-  lands them as soul-<name> personas via ragctl soul distill (template + seed
-  fused 4 constitutional documents + soul-config), then drives curiosity
-  training (learn → approval → scheduled evolution) and persona-augmented
-  retrieval Q&A (soul_qdcvr_ask). Division of labor vs the soul skill: soul
-  manages "the persona's full lifecycle", butian manages "where the initial
-  persona comes from". Triggers: butian, build a SOUL, create an initial
-  persona, distill a persona, distill XX, make an XX persona, XX's way of
-  thinking, XX perspective persona, nuwa, dot-skill, initial persona
-  definition, distill XX into a SOUL, distill persona to soul, butian. 中文触发: 补天, 蒸馏, 人格蒸馏, 创建初始人格, 蒸馏XX, XX人格.
+description: "Butian — SOUL persona initialization distillation dispatcher: orchestrates the dual nuwa-skill (deep research distillation of public figures/topics/thinking frameworks) and dot-skill (distillation of colleagues/acquaintances/ relationships/local materials) engines, uniformly converts distillation outputs into Butian seed packages (meta.json/persona.md/work.md/values.md), lands them as soul-name personas via ragctl soul distill (template + seed fused 4 constitutional documents + soul-config), then drives curiosity training (learn → approval → scheduled evolution) and persona-augmented retrieval Q&A (soul_qdcvr_ask). Division of labor vs the soul skill: soul manages \"the persona's full lifecycle\", butian manages \"where the initial persona comes from\". Triggers: butian, build a SOUL, create an initial persona, distill a persona, distill XX, make an XX persona, XX's way of thinking, XX perspective persona, nuwa, dot-skill, initial persona definition, distill XX into a SOUL, distill persona to soul, butian. 中文触发: 补天, 蒸馏, 人格蒸馏, 创建初始人格, 蒸馏XX, XX人格."
+agent_created: true
 ---
-
 # Butian — SOUL Persona Distillation Dispatcher (Innate Genes × Acquired Evolution)
 
 **Executor: main agent executes directly (distillation orchestration + seed landing; no Archival delegation)**

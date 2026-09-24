@@ -1,0 +1,52 @@
+{
+ "qid": "QK09",
+ "method": "vector",
+ "question": "What is the recommended daily dosage of metformin for diabetic cats?",
+ "ranked": [
+  "2212.13138",
+  "2110.08918",
+  "2502.00306",
+  "2203.15752",
+  "2201.03675",
+  "2301.08436",
+  "2310.10981",
+  "2412.15058",
+  "1904.11280"
+ ],
+ "ranked_paths": [
+  "clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k30",
+  "clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr__k08",
+  "large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference__k15",
+  "social-networks__2203.15752__information-consumption-and-boundary-spannin__k29",
+  "clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon__k16",
+  "genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t__k09",
+  "nlp__2310.10981__instructive-dialogue-summarization-with-quer__k49",
+  "medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio__k57",
+  "clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec__k04"
+ ],
+ "evidence_sources": [
+  "2212.13138",
+  "2110.08918",
+  "2502.00306",
+  "2203.15752",
+  "2201.03675",
+  "2301.08436",
+  "2310.10981",
+  "2412.15058",
+  "1904.11280"
+ ],
+ "evidence_chars": 2917,
+ "retrieval_s": 0.1,
+ "latency_s": 12.1,
+ "answer": "The evidence is insufficient to answer the question.\n\nThe retrieved chunks are unrelated fragments from ML/bioinformatics papers: they mention diabetes only in passing (A1C thresholds, diabetic retinopathy segmentation, glucose levels) and contain no veterinary dosing information. There is no mention of metformin, cats, or dosage recommendations anywhere in the evidence.\n\nSources retrieved (none contain the answer):\n- [2201.03675] §3.2 Diabetes (A1C/diabetes onset modeling)\n- [2412.15058] EOphtha / diabetic retinopathy segmentation table\n- [1904.11280] high glucose level fragment\n- [2212.13138], [2110.08918], [2502.00306], [2203.15752], [2301.08436], [2310.10981] (unrelated tables/fragments)\n\nNo source in the evidence addresses metformin or feline diabetes treatment, so no dosage can be reported.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 1153,
+  "output": 201,
+  "cache_read": 37184,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.029382,
+ "extra": {}
+}

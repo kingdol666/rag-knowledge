@@ -1,0 +1,653 @@
+# pride_and_prejudice（第 4/26 部分）
+When the clock struck three, Elizabeth felt that she must go, and very
+unwillingly said so. Miss Bingley offered her the carriage, and she only
+wanted a little pressing to accept it, when Jane testified such concern
+at parting with her that Miss Bingley was obliged to convert the offer
+of the chaise into an invitation to remain at Netherfield for the
+present. Elizabeth most thankfully consented, and a servant was
+despatched to Longbourn, to acquaint the family with her stay, and bring
+back a supply of clothes.
+
+[Illustration:
+
+“The Apothecary came”
+]
+
+[Illustration:
+
+“covering a screen”
+]
+
+CHAPTER VIII.
+
+[Illustration]
+
+At five o’clock the two ladies retired to dress, and at half-past six
+Elizabeth was summoned to dinner. To the civil inquiries which then
+poured in, and amongst which she had the pleasure of distinguishing the
+much superior solicitude of Mr. Bingley, she could not make a very
+favourable answer. Jane was by no means better. The sisters, on hearing
+this, repeated three or four times how much they were grieved, how
+shocking it was to have a bad cold, and how excessively they disliked
+being ill themselves; and then thought no more of the matter: and their
+indifference towards Jane, when not immediately before them, restored
+Elizabeth to the enjoyment of all her original dislike.
+
+Their brother, indeed, was the only one of the party whom she could
+regard with any complacency. His anxiety for Jane was evident, and his
+attentions to herself most pleasing; and they prevented her feeling
+herself so much an intruder as she believed she was considered by the
+others. She had very little notice from any but him. Miss Bingley was
+engrossed by Mr. Darcy, her sister scarcely less so; and as for Mr.
+Hurst, by whom Elizabeth sat, he was an indolent man, who lived only to
+eat, drink, and play at cards, who, when he found her prefer a plain
+dish to a ragout, had nothing to say to her.
+
+When dinner was over, she returned directly to Jane, and Miss Bingley
+began abusing her as soon as she was out of the room. Her manners were
+pronounced to be very bad indeed,--a mixture of pride and impertinence:
+she had no conversation, no style, no taste, no beauty. Mrs. Hurst
+thought the same, and added,--
+
+“She has nothing, in short, to recommend her, but being an excellent
+walker. I shall never forget her appearance this morning. She really
+looked almost wild.”
+
+“She did indeed, Louisa. I could hardly keep my countenance. Very
+nonsensical to come at all! Why must _she_ be scampering about the
+country, because her sister had a cold? Her hair so untidy, so blowzy!”
+
+“Yes, and her petticoat; I hope you saw her petticoat, six inches deep
+in mud, I am absolutely certain, and the gown which had been let down to
+hide it not doing its office.”
+
+“Your picture may be very exact, Louisa,” said Bingley; “but this was
+all lost upon me. I thought Miss Elizabeth Bennet looked remarkably well
+when she came into the room this morning. Her dirty petticoat quite
+escaped my notice.”
+
+“_You_ observed it, Mr. Darcy, I am sure,” said Miss Bingley; “and I am
+inclined to think that you would not wish to see _your sister_ make such
+an exhibition.”
+
+“Certainly not.”
+
+“To walk three miles, or four miles, or five miles, or whatever it is,
+above her ancles in dirt, and alone, quite alone! what could she mean by
+it? It seems to me to show an abominable sort of conceited independence,
+a most country-town indifference to decorum.”
+
+“It shows an affection for her sister that is very pleasing,” said
+Bingley.
+
+“I am afraid, Mr. Darcy,” observed Miss Bingley, in a half whisper,
+“that this adventure has rather affected your admiration of her fine
+eyes.”
+
+“Not at all,” he replied: “they were brightened by the exercise.” A
+short pause followed this speech, and Mrs. Hurst began again,--
+
+“I have an excessive regard for Jane Bennet,--she is really a very sweet
+girl,--and I wish with all my heart she were well settled. But with such
+a father and mother, and such low connections, I am afraid there is no
+chance of it.”
+
+“I think I have heard you say that their uncle is an attorney in
+Meryton?”
+
+“Yes; and they have another, who lives somewhere near Cheapside.”
+
+“That is capital,” added her sister; and they both laughed heartily.
+
+“If they had uncles enough to fill _all_ Cheapside,” cried Bingley, “it
+would not make them one jot less agreeable.”
+
+“But it must very materially lessen their chance of marrying men of any
+consideration in the world,” replied Darcy.
+
+To this speech Bingley made no answer; but his sisters gave it their
+hearty assent, and indulged their mirth for some time at the expense of
+their dear friend’s vulgar relations.
+
+With a renewal of tenderness, however, they repaired to her room on
+leaving the dining-parlour, and sat with her till summoned to coffee.
+She was still very poorly, and Elizabeth would not quit her at all, till
+late in the evening, when she had the comfort of seeing her asleep, and
+when it appeared to her rather right than pleasant that she should go
+down stairs herself. On entering the drawing-room, she found the whole
+party at loo, and was immediately invited to join them; but suspecting
+them to be playing high, she declined it, and making her sister the
+excuse, said she would amuse herself, for the short time she could stay
+below, with a book. Mr. Hurst looked at her with astonishment.
+
+“Do you prefer reading to cards?” said he; “that is rather singular.”
+
+“Miss Eliza Bennet,” said Miss Bingley, “despises cards. She is a great
+reader, and has no pleasure in anything else.”
+
+“I deserve neither such praise nor such censure,” cried Elizabeth; “I
+am _not_ a great reader, and I have pleasure in many things.”
+
+“In nursing your sister I am sure you have pleasure,” said Bingley; “and
+I hope it will soon be increased by seeing her quite well.”
+
+Elizabeth thanked him from her heart, and then walked towards a table
+where a few books were lying. He immediately offered to fetch her
+others; all that his library afforded.
+
+“And I wish my collection were larger for your benefit and my own
+credit; but I am an idle fellow; and though I have not many, I have more
+than I ever looked into.”
+
+Elizabeth assured him that she could suit herself perfectly with those
+in the room.
+
+“I am astonished,” said Miss Bingley, “that my father should have left
+so small a collection of books. What a delightful library you have at
+Pemberley, Mr. Darcy!”
+
+“It ought to be good,” he replied: “it has been the work of many
+generations.”
+
+“And then you have added so much to it yourself--you are always buying
+books.”
+
+“I cannot comprehend the neglect of a family library in such days as
+these.”
+
+“Neglect! I am sure you neglect nothing that can add to the beauties of
+that noble place. Charles, when you build _your_ house, I wish it may be
+half as delightful as Pemberley.”
+
+“I wish it may.”
+
+“But I would really advise you to make your purchase in that
+neighbourhood, and take Pemberley for a kind of model. There is not a
+finer county in England than Derbyshire.”
+
+“With all my heart: I will buy Pemberley itself, if Darcy will sell it.”
+
+“I am talking of possibilities, Charles.”
+
+“Upon my word, Caroline, I should think it more possible to get
+Pemberley by purchase than by imitation.”
+
+Elizabeth was so much caught by what passed, as to leave her very little
+attention for her book; and, soon laying it wholly aside, she drew near
+the card-table, and stationed herself between Mr. Bingley and his eldest
+sister, to observe the game.
+
+“Is Miss Darcy much grown since the spring?” said Miss Bingley: “will
+she be as tall as I am?”
+
+“I think she will. She is now about Miss Elizabeth Bennet’s height, or
+rather taller.”
+
+“How I long to see her again! I never met with anybody who delighted me
+so much. Such a countenance, such manners, and so extremely accomplished
+for her age! Her performance on the pianoforte is exquisite.”
+
+“It is amazing to me,” said Bingley, “how young ladies can have patience
+to be so very accomplished as they all are.”
+
+“All young ladies accomplished! My dear Charles, what do you mean?”
+
+“Yes, all of them, I think. They all paint tables, cover screens, and
+net purses. I scarcely know any one who cannot do all this; and I am
+sure I never heard a young lady spoken of for the first time, without
+being informed that she was very accomplished.”
+
+“Your list of the common extent of accomplishments,” said Darcy, “has
+too much truth. The word is applied to many a woman who deserves it no
+otherwise than by netting a purse or covering a screen; but I am very
+far from agreeing with you in your estimation of ladies in general. I
+cannot boast of knowing more than half-a-dozen in the whole range of my
+acquaintance that are really accomplished.”
+
+“Nor I, I am sure,” said Miss Bingley.
+
+“Then,” observed Elizabeth, “you must comprehend a great deal in your
+idea of an accomplished woman.”
+
+“Yes; I do comprehend a great deal in it.”
+
+“Oh, certainly,” cried his faithful assistant, “no one can be really
+esteemed accomplished who does not greatly surpass what is usually met
+with. A woman must have a thorough knowledge of music, singing, drawing,
+dancing, and the modern languages, to deserve the word; and, besides all
+this, she must possess a certain something in her air and manner of
+walking, the tone of her voice, her address and expressions, or the word
+will be but half deserved.”
+
+“All this she must possess,” added Darcy; “and to all she must yet add
+something more substantial in the improvement of her mind by extensive
+reading.”
+
+“I am no longer surprised at your knowing _only_ six accomplished women.
+I rather wonder now at your knowing _any_.”
+
+“Are you so severe upon your own sex as to doubt the possibility of all
+this?”
+
+“_I_ never saw such a woman. _I_ never saw such capacity, and taste, and
+application, and elegance, as you describe, united.”
+
+Mrs. Hurst and Miss Bingley both cried out against the injustice of her
+implied doubt, and were both protesting that they knew many women who
+answered this description, when Mr. Hurst called them to order, with
+bitter complaints of their inattention to what was going forward. As all
+conversation was thereby at an end, Elizabeth soon afterwards left the
+room.
+
+“Eliza Bennet,” said Miss Bingley, when the door was closed on her, “is
+one of those young ladies who seek to recommend themselves to the other
+sex by undervaluing their own; and with many men, I daresay, it
+succeeds; but, in my opinion, it is a paltry device, a very mean art.”
+
+“Undoubtedly,” replied Darcy, to whom this remark was chiefly addressed,
+“there is meanness in _all_ the arts which ladies sometimes condescend
+to employ for captivation. Whatever bears affinity to cunning is
+despicable.”
+
+Miss Bingley was not so entirely satisfied with this reply as to
+continue the subject.
+
+Elizabeth joined them again only to say that her sister was worse, and
+that she could not leave her. Bingley urged Mr. Jones’s being sent for
+immediately; while his sisters, convinced that no country advice could
+be of any service, recommended an express to town for one of the most
+eminent physicians. This she would not hear of; but she was not so
+unwilling to comply with their brother’s proposal; and it was settled
+that Mr. Jones should be sent for early in the morning, if Miss Bennet
+were not decidedly better. Bingley was quite uncomfortable; his sisters
+declared that they were miserable. They solaced their wretchedness,
+however, by duets after supper; while he could find no better relief to
+his feelings than by giving his housekeeper directions that every
+possible attention might be paid to the sick lady and her sister.
+
+[Illustration:
+
+M^{rs} Bennet and her two youngest girls
+
+[_Copyright 1894 by George Allen._]]
+
+CHAPTER IX.
+
+[Illustration]
+
+Elizabeth passed the chief of the night in her sister’s room, and in the
+morning had the pleasure of being able to send a tolerable answer to the
+inquiries which she very early received from Mr. Bingley by a housemaid,
+and some time afterwards from the two elegant ladies who waited on his
+sisters. In spite of this amendment, however, she requested to have a
+note sent to Longbourn, desiring her mother to visit Jane, and form her
+own judgment of her situation. The note was immediately despatched, and
+its contents as quickly complied with. Mrs. Bennet, accompanied by her
+two youngest girls, reached Netherfield soon after the family breakfast.
+
+Had she found Jane in any apparent danger, Mrs. Bennet would have been
+very miserable; but being satisfied on seeing her that her illness was
+not alarming, she had no wish of her recovering immediately, as her
+restoration to health would probably remove her from Netherfield. She
+would not listen, therefore, to her daughter’s proposal of being carried
+home; neither did the apothecary, who arrived about the same time, think
+it at all advisable. After sitting a little while with Jane, on Miss
+Bingley’s appearance and invitation, the mother and three daughters all
+attended her into the breakfast parlour. Bingley met them with hopes
+that Mrs. Bennet had not found Miss Bennet worse than she expected.
+
+“Indeed I have, sir,” was her answer. “She is a great deal too ill to be
+moved. Mr. Jones says we must not think of moving her. We must trespass
+a little longer on your kindness.”
+
+“Removed!” cried Bingley. “It must not be thought of. My sister, I am
+sure, will not hear of her removal.”
+
+“You may depend upon it, madam,” said Miss Bingley, with cold civility,
+“that Miss Bennet shall receive every possible attention while she
+remains with us.”
+
+Mrs. Bennet was profuse in her acknowledgments.
+
+“I am sure,” she added, “if it was not for such good friends, I do not
+know what would become of her, for she is very ill indeed, and suffers a
+vast deal, though with the greatest patience in the world, which is
+always the way with her, for she has, without exception, the sweetest
+temper I ever met with. I often tell my other girls they are nothing to
+_her_. You have a sweet room here, Mr. Bingley, and a charming prospect
+over that gravel walk. I do not know a place in the country that is
+equal to Netherfield. You will not think of quitting it in a hurry, I
+hope, though you have but a short lease.”
+
+“Whatever I do is done in a hurry,” replied he; “and therefore if I
+should resolve to quit Netherfield, I should probably be off in five
+minutes. At present, however, I consider myself as quite fixed here.”
+
+“That is exactly what I should have supposed of you,” said Elizabeth.
+
+“You begin to comprehend me, do you?” cried he, turning towards her.
+
+“Oh yes--I understand you perfectly.”
+
+“I wish I might take this for a compliment; but to be so easily seen
+through, I am afraid, is pitiful.”
+
+“That is as it happens. It does not necessarily follow that a deep,
+intricate character is more or less estimable than such a one as yours.”
+
+“Lizzy,” cried her mother, “remember where you are, and do not run on in
+the wild manner that you are suffered to do at home.”
+
+“I did not know before,” continued Bingley, immediately, “that you were
+a studier of character. It must be an amusing study.”
+
+“Yes; but intricate characters are the _most_ amusing. They have at
+least that advantage.”
+
+“The country,” said Darcy, “can in general supply but few subjects for
+such a study. In a country neighbourhood you move in a very confined and
+unvarying society.”
+
+“But people themselves alter so much, that there is something new to be
+observed in them for ever.”
+
+“Yes, indeed,” cried Mrs. Bennet, offended by his manner of mentioning a
+country neighbourhood. “I assure you there is quite as much of _that_
+going on in the country as in town.”
+
+Everybody was surprised; and Darcy, after looking at her for a moment,
+turned silently away. Mrs. Bennet, who fancied she had gained a complete
+victory over him, continued her triumph,--
+
+“I cannot see that London has any great advantage over the country, for
+my part, except the shops and public places. The country is a vast deal
+pleasanter, is not it, Mr. Bingley?”
+
+“When I am in the country,” he replied, “I never wish to leave it; and
+when I am in town, it is pretty much the same. They have each their
+advantages, and I can be equally happy in either.”
+
+“Ay, that is because you have the right disposition. But that
+gentleman,” looking at Darcy, “seemed to think the country was nothing
+at all.”
+
+“Indeed, mamma, you are mistaken,” said Elizabeth, blushing for her
+mother. “You quite mistook Mr. Darcy. He only meant that there was not
+such a variety of people to be met with in the country as in town, which
+you must acknowledge to be true.”
+
+“Certainly, my dear, nobody said there were; but as to not meeting with
+many people in this neighbourhood, I believe there are few
+neighbourhoods larger. I know we dine with four-and-twenty families.”
+
+Nothing but concern for Elizabeth could enable Bingley to keep his
+countenance. His sister was less delicate, and directed her eye towards
+Mr. Darcy with a very expressive smile. Elizabeth, for the sake of
+saying something that might turn her mother’s thoughts, now asked her if
+Charlotte Lucas had been at Longbourn since _her_ coming away.
+
+“Yes, she called yesterday with her father. What an agreeable man Sir
+William is, Mr. Bingley--is not he? so much the man of fashion! so
+genteel and so easy! He has always something to say to everybody. _That_
+is my idea of good breeding; and those persons who fancy themselves very
+important and never open their mouths quite mistake the matter.”
+
+“Did Charlotte dine with you?”
+
+“No, she would go home. I fancy she was wanted about the mince-pies. For
+my part, Mr. Bingley, _I_ always keep servants that can do their own
+work; _my_ daughters are brought up differently. But everybody is to
+judge for themselves, and the Lucases are a very good sort of girls, I
+assure you. It is a pity they are not handsome! Not that _I_ think
+Charlotte so _very_ plain; but then she is our particular friend.”
+
+“She seems a very pleasant young woman,” said Bingley.
+
+“Oh dear, yes; but you must own she is very plain. Lady Lucas herself
+has often said so, and envied me Jane’s beauty. I do not like to boast
+of my own child; but to be sure, Jane--one does not often see anybody
+better looking. It is what everybody says. I do not trust my own
+partiality. When she was only fifteen there was a gentleman at my
+brother Gardiner’s in town so much in love with her, that my
+sister-in-law was sure he would make her an offer before we came away.
+But, however, he did not. Perhaps he thought her too young. However, he
+wrote some verses on her, and very pretty they were.”
+
+“And so ended his affection,” said Elizabeth, impatiently. “There has
+been many a one, I fancy, overcome in the same way. I wonder who first
+discovered the efficacy of poetry in driving away love!”
+
+“I have been used to consider poetry as the _food_ of love,” said Darcy.
+
+“Of a fine, stout, healthy love it may. Everything nourishes what is
+strong already. But if it be only a slight, thin sort of inclination, I
+am convinced that one good sonnet will starve it entirely away.”
+
+Darcy only smiled; and the general pause which ensued made Elizabeth
+tremble lest her mother should be exposing herself again. She longed to
+speak, but could think of nothing to say; and after a short silence Mrs.
+Bennet began repeating her thanks to Mr. Bingley for his kindness to
+Jane, with an apology for troubling him also with Lizzy. Mr. Bingley was
+unaffectedly civil in his answer, and forced his younger sister to be
+civil also, and say what the occasion required. She performed her part,
+indeed, without much graciousness, but Mrs. Bennet was satisfied, and
+soon afterwards ordered her carriage. Upon this signal, the youngest of
+her daughters put herself forward. The two girls had been whispering to
+each other during the whole visit; and the result of it was, that the
+youngest should tax Mr. Bingley with having promised on his first coming
+into the country to give a ball at Netherfield.
+
+Lydia was a stout, well-grown girl of fifteen, with a fine complexion
+and good-humoured countenance; a favourite with her mother, whose
+affection had brought her into public at an early age. She had high
+animal spirits, and a sort of natural self-consequence, which the
+attentions of the officers, to whom her uncle’s good dinners and her
+own easy manners recommended her, had increased into assurance. She was
+very equal, therefore, to address Mr. Bingley on the subject of the
+ball, and abruptly reminded him of his promise; adding, that it would be
+the most shameful thing in the world if he did not keep it. His answer
+to this sudden attack was delightful to her mother’s ear.
+
+“I am perfectly ready, I assure you, to keep my engagement; and, when
+your sister is recovered, you shall, if you please, name the very day of
+the ball. But you would not wish to be dancing while she is ill?”
+
+Lydia declared herself satisfied. “Oh yes--it would be much better to
+wait till Jane was well; and by that time, most likely, Captain Carter
+would be at Meryton again. And when you have given _your_ ball,” she
+added, “I shall insist on their giving one also. I shall tell Colonel
+Forster it will be quite a shame if he does not.”
+
+Mrs. Bennet and her daughters then departed, and Elizabeth returned
+instantly to Jane, leaving her own and her relations’ behaviour to the
+remarks of the two ladies and Mr. Darcy; the latter of whom, however,
+could not be prevailed on to join in their censure of _her_, in spite of
+all Miss Bingley’s witticisms on _fine eyes_.
+
+[Illustration]
+
+CHAPTER X.
+
+[Illustration]
+
+The day passed much as the day before had done. Mrs. Hurst and Miss
+Bingley had spent some hours of the morning with the invalid, who
+continued, though slowly, to mend; and, in the evening, Elizabeth joined
+their party in the drawing-room. The loo table, however, did not appear.
+Mr. Darcy was writing, and Miss Bingley, seated near him, was watching
+the progress of his letter, and repeatedly calling off his attention by
+messages to his sister. Mr. Hurst and Mr. Bingley were at piquet, and
+Mrs. Hurst was observing their game.
+
+Elizabeth took up some needlework, and was sufficiently amused in
+attending to what passed between Darcy and his companion. The perpetual
+commendations of the lady either on his hand-writing, or on the evenness
+of his lines, or on the length of his letter, with the perfect unconcern
+with which her praises were received, formed a curious dialogue, and was
+exactly in unison with her opinion of each.
+
+“How delighted Miss Darcy will be to receive such a letter!”
+
+He made no answer.
+
+“You write uncommonly fast.”
+
+“You are mistaken. I write rather slowly.”
+
+“How many letters you must have occasion to write in the course of a
+year! Letters of business, too! How odious I should think them!”
+
+“It is fortunate, then, that they fall to my lot instead of to yours.”
+
+“Pray tell your sister that I long to see her.”
+
+“I have already told her so once, by your desire.”
+
+“I am afraid you do not like your pen. Let me mend it for you. I mend
+pens remarkably well.”
+
+“Thank you--but I always mend my own.”
+
+“How can you contrive to write so even?”
+
+He was silent.
+
+“Tell your sister I am delighted to hear of her improvement on the harp,
+and pray let her know that I am quite in raptures with her beautiful
+little design for a table, and I think it infinitely superior to Miss
+Grantley’s.”
+
+“Will you give me leave to defer your raptures till I write again? At
+present I have not room to do them justice.”
+
+“Oh, it is of no consequence. I shall see her in January. But do you
+always write such charming long letters to her, Mr. Darcy?”
+
+“They are generally long; but whether always charming, it is not for me
+to determine.”
+
+“It is a rule with me, that a person who can write a long letter with
+ease cannot write ill.”
+
+“That will not do for a compliment to Darcy, Caroline,” cried her
+brother, “because he does _not_ write with ease. He studies too much
+for words of four syllables. Do not you, Darcy?”
+
+“My style of writing is very different from yours.”
+
+“Oh,” cried Miss Bingley, “Charles writes in the most careless way
+imaginable. He leaves out half his words, and blots the rest.”
+
+“My ideas flow so rapidly that I have not time to express them; by which
+means my letters sometimes convey no ideas at all to my correspondents.”
+
+“Your humility, Mr. Bingley,” said Elizabeth, “must disarm reproof.”
+
+“Nothing is more deceitful,” said Darcy, “than the appearance of
+humility. It is often only carelessness of opinion, and sometimes an
+indirect boast.”
+
+“And which of the two do you call _my_ little recent piece of modesty?”
+
+“The indirect boast; for you are really proud of your defects in
+writing, because you consider them as proceeding from a rapidity of
+thought and carelessness of execution, which, if not estimable, you
+think at least highly interesting. The power of doing anything with
+quickness is always much prized by the possessor, and often without any
+attention to the imperfection of the performance. When you told Mrs.
+Bennet this morning, that if you ever resolved on quitting Netherfield
+you should be gone in five minutes, you meant it to be a sort of
+panegyric, of compliment to yourself; and yet what is there so very
+laudable in a precipitance which must leave very necessary business
+undone, and can be of no real advantage to yourself or anyone else?”
+
+“Nay,” cried Bingley, “this is too much, to remember at night all the
+foolish things that were said in the morning. And yet, upon my honour, I
+believed what I said of myself to be true, and I believe it at this
+moment. At least, therefore, I did not assume the character of needless
+precipitance merely to show off before the ladies.”
+
+“I daresay you believed it; but I am by no means convinced that you
+would be gone with such celerity. Your conduct would be quite as
+dependent on chance as that of any man I know; and if, as you were
+mounting your horse, a friend were to say, ‘Bingley, you had better stay
+till next week,’ you would probably do it--you would probably not
+go--and, at another word, might stay a month.”
+
+“You have only proved by this,” cried Elizabeth, “that Mr. Bingley did
+not do justice to his own disposition. You have shown him off now much
+more than he did himself.”
+
+“I am exceedingly gratified,” said Bingley, “by your converting what my
+friend says into a compliment on the sweetness of my temper. But I am
+afraid you are giving it a turn which that gentleman did by no means
+intend; for he would certainly think the better of me if, under such a
+circumstance, I were to give a flat denial, and ride off as fast as I
+could.”
+
+“Would Mr. Darcy then consider the rashness of your original intention
+as atoned for by your obstinacy in adhering to it?”
+
+“Upon my word, I cannot exactly explain the matter--Darcy must speak for
+himself.”
+
+“You expect me to account for opinions which you choose to call mine,
+but which I have never acknowledged. Allowing the case, however, to
+stand according to your representation, you must remember, Miss Bennet,
+that the friend who is supposed to desire his return to the house, and
+the delay of his plan, has merely desired it, asked it without offering
+one argument in favour of its propriety.”
+
+“To yield readily--easily--to the _persuasion_ of a friend is no merit
+with you.”
+
+“To yield without conviction is no compliment to the understanding of
+either.”
+
+“You appear to me, Mr. Darcy, to allow nothing for the influence of
+friendship and affection. A regard for the requester would often make
+one readily yield to a request, without waiting for arguments to reason
+one into it. I am not particularly speaking of such a case as you have
+supposed about Mr. Bingley. We may as well wait, perhaps, till the
+circumstance occurs, before we discuss the discretion of his behaviour
+thereupon. But in general and ordinary cases, between friend and friend,
+where one of them is desired by the other to change a resolution of no
+very great moment, should you think ill of that person for complying
+with the desire, without waiting to be argued into it?”
+
+“Will it not be advisable, before we proceed on this subject, to arrange
+with rather more precision the degree of importance which is to
+appertain to this request, as well as the degree of intimacy subsisting
+between the parties?”
+
+“By all means,” cried Bingley; “let us hear all the particulars, not
+forgetting their comparative height and size, for that will have more
+weight in the argument, Miss Bennet, than you may be aware of. I assure
+you that if Darcy were not such a great tall fellow, in comparison with
+myself, I should not pay him half so much deference. I declare I do not
+know a more awful object than Darcy on particular occasions, and in
+particular places; at his own house especially, and of a Sunday evening,
+when he has nothing to do.”
+
+Mr. Darcy smiled; but Elizabeth thought she could perceive that he was
+rather offended, and therefore checked her laugh. Miss Bingley warmly
+resented the indignity he had received, in an expostulation with her
+brother for talking such nonsense.
+
+“I see your design, Bingley,” said his friend. “You dislike an argument,
+and want to silence this.”
+
+“Perhaps I do. Arguments are too much like disputes. If you and Miss
+Bennet will defer yours till I am out of the room, I shall be very
+thankful; and then you may say whatever you like of me.”
+
+“What you ask,” said Elizabeth, “is no sacrifice on my side; and Mr.
+Darcy had much better finish his letter.”
+
+Mr. Darcy took her advice, and did finish his letter.
+
+When that business was over, he applied to Miss Bingley and Elizabeth
+for the indulgence of some music. Miss Bingley moved with alacrity to
+the pianoforte, and after a polite request that Elizabeth would lead the
+way, which the other as politely and more earnestly negatived, she
+seated herself.

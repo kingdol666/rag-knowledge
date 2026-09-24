@@ -369,16 +369,31 @@ class Config:
 
     @property
     def large_doc_split(self) -> dict:
-        """大文档自动拆分参数: {auto_split, max_chars, overlap_chars}。
+        """Structure-aware large-document split parameters.
 
-        与检索栈对齐: part 上限(默认/配置值)必须小于 BM25 关键词窗口(32000),
-        拆分后的片段不会再被关键词索引截断。
+        ``max_chars`` is a safety target; the shared splitter chooses complete
+        Markdown units and only falls back to an oversized atomic unit when a
+        logical block cannot be split without rewriting its content.
         """
         cfg = self.ingestion_config.get("large_doc", {}) or {}
         return {
             "auto_split": bool(cfg.get("auto_split", True)),
-            "max_chars": int(cfg.get("max_chars", 10000) or 10000),
-            "overlap_chars": int(cfg.get("overlap_chars", 400) or 400),
+            "max_chars": int(cfg.get("max_chars", 30000) or 30000),
+            "overlap_chars": int(cfg.get("overlap_chars", 0) or 0),
+        }
+
+    @property
+    def large_doc_split_planner(self) -> dict:
+        cfg = self.ingestion_config.get("large_doc", {}) or {}
+        try:
+            target = float(cfg.get("target_utilization", 0.85) or 0.85)
+        except (TypeError, ValueError):
+            target = 0.85
+        return {
+            "strategy": str(cfg.get("strategy", "agent_semantic") or "agent_semantic"),
+            "target_utilization": target,
+            "allow_oversized_atomic_unit": bool(cfg.get("allow_oversized_atomic_unit", True)),
+            "allow_hard_fallback": bool(cfg.get("allow_hard_fallback", False)),
         }
 
     @property

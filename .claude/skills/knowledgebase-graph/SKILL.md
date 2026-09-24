@@ -1,9 +1,8 @@
 ---
 name: knowledgebase-graph
-description: >
-  Knowledge graph build, query, and analysis for Neo4j-powered document relationship graph. Based on document metadata (tags, KB membership). Build per KB or globally, query (KB overview, document-centric, cross-KB discovery, keyword search, neighborhood exploration), cleanup (delete document/KB nodes). Triggered by: graph, knowledge graph, graph, knowledge graph, neo4j, entity relationships, entity, relationship, build graph, build the graph, cross-KB, cross knowledge base, document path, document path, central document, core document.
+description: "Knowledge graph build, query, and analysis for Neo4j-powered document relationship graph. Based on document metadata (tags, KB membership). Build per KB or globally, query (KB overview, document-centric, cross-KB discovery, keyword search, neighborhood exploration), cleanup (delete document/KB nodes). Triggered by: graph, knowledge graph, graph, knowledge graph, neo4j, entity relationships, entity, relationship, build graph, build the graph, cross-KB, cross knowledge base, document path, document path, central document, core document."
+agent_created: true
 ---
-
 # Knowledge Graph — Build, Query, Analyze
 
 ## ⭐ Execution Model · Pre-Flight · Architecture (First Step of Any Job, Mandatory)
