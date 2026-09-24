@@ -4,11 +4,11 @@
 The demonstration targets research administrators and agent developers;
 its scenarios trace Section~\ref{sec:intro}'s three decisions in order.
 A prepared instance, built by the ingest loop of Section~\ref{sec:system},
-holds 100 papers in five bases; attendees inspect documents and drive an
-agent with the packaged skills. A live answer takes
+holds 100 papers in five bases (ingest audit: Table~\ref{tab:pipeline});
+attendees inspect documents and drive an agent with the packaged skills. A live answer takes
 from about fifteen seconds to about three minutes, so presenters replay saved traces
-alongside live queries; the video walks through these scenarios in the
-console, and the repository README's quick start reproduces the instance.
+alongside live queries; the video walks these scenarios in the console,
+and the repository README's quick start reproduces the instance.
 
 \paragraph{1. Organize a document.}
 An attendee selects a PDF from a prepared pool and asks the agent to parse
@@ -20,16 +20,16 @@ before accepting.
 The attendee asks which three ontologies subdivide the Gene Ontology. In
 the saved trace (BQ04 in Section~\ref{sec:eval}),
 the vector-first search ranks the primer's part~1 of~2 first, at 0.75
-(0.66 cross-base); a two-stage pass confirms it, and the agent answers
-with a verbatim quotation whose source block names base, part, and
-section (``2.~What is the Gene Ontology'') --- score, reading, and
-quoted evidence are distinct records; the attendee can open the cited part
-in the console while the kb\_* tools read it at its line offset.
+(0.66 cross-base); a two-stage pass (one confirm read after the first hit) confirms the candidate, and the agent
+answers with a verbatim quotation whose source block names base, document,
+part, and section (``2.~What is the Gene Ontology'') --- score, reading,
+and quoted evidence are distinct records; the attendee can open the cited
+part in the console while the kb\_* tools read it at its line offset.
 Figure~\ref{fig:threeway} compares
 the three modes and adds a measured dense-mode abstention (BQ06).
 
 \paragraph{3. Examine a failure report.}
-The attendee asks for training epochs in the fictitious paper
+Next, the attendee asks for training epochs in the fictitious paper
 \emph{Spectral Tuning for Low-Resource Odor Recognition}. The scripted
 report pairs collected evidence with the gate's judgment: BERT's own epoch
 recipe scores 1/8, and the skill returns a scoped not-found report instead

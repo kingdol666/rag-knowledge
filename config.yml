@@ -97,7 +97,7 @@ ingestion:
     auto_split: true
     max_chars: 30000
     overlap_chars: 0
-    strategy: agent_semantic
+    strategy: "agent_semantic"
     target_utilization: 0.85
     allow_oversized_atomic_unit: true
     allow_hard_fallback: false

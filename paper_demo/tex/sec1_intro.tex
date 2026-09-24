@@ -4,15 +4,19 @@
 \section{Introduction}
 \label{sec:intro}
 
-Research administrators maintaining shared paper collections must organize
-them and show which passages support an answer. Packed-context RAG
+Maintaining a shared paper collection is organizational work before it is
+retrieval work: someone must keep the corpus ordered and be able to show
+which passages support an answer. Packed-context RAG
 collapses retrieval into an opaque context: provenance is lost at pack
 time, similarity stands in for reading, and a failed retrieval passes
-silently~\cite{rag-lewis}. Self-RAG, Corrective RAG, DeepRead, and CyberBOT
-add self-assessment, hierarchy grounding, and ontology-checked
-verification~\cite{selfrag,crag,deepread,cyberbot}; to our knowledge, none
-manages the collection that retrieval consumes through the same addresses
-that answers cite, so citations stay resolvable and absence stays legible.
+silently~\cite{rag-lewis}. Recent systems repair parts of this pipeline ---
+Self-RAG and Corrective RAG add self-assessment and
+correction~\cite{selfrag,crag}, DeepRead grounds answers in document
+hierarchy~\cite{deepread}, and CyberBOT adds ontology-checked
+verification~\cite{cyberbot} --- but each treats the corpus as given.
+To our knowledge, none manages the corpus that retrieval consumes through
+the same addresses that answers cite, so citations stay resolvable and
+absence stays legible.
 
 \sys{} (Query-Driven Content-Verified Retrieval) closes this gap with three
 design decisions. \emph{One address space}: parsed documents are indexed as
@@ -30,9 +34,9 @@ skill parses PDFs, routes them by content, maintains tags, and checks
 indexing, so placement reflects what a paper says rather than its filename;
 the retrieval skill rewrites the query, recalls and reads candidates,
 applies the 0--8 gate, and cites the passage that survives it
-(Figures~\ref{fig:teaser} and~\ref{fig:arch}). Attendees organize a
-document, walk an answer's evidence from citation to source while comparing
-the three modes head to head, and examine a scoped not-found report and the
-near miss behind it. Section~\ref{sec:demo} demonstrates these scenarios;
-Section~\ref{sec:eval} reads the monitored run as operational evidence,
-not a controlled comparison.
+(Figures~\ref{fig:teaser} and~\ref{fig:arch}). The demo scenarios walk
+these decisions in order, and a monitored three-mode run measures their
+effect: the platform is the only mode that both grounds and
+keyword-verifies 9 of 10 answers (Section~\ref{sec:eval}).
+Section~\ref{sec:demo} demonstrates the scenarios; Section~\ref{sec:eval}
+reads the run as operational evidence, not a controlled comparison.

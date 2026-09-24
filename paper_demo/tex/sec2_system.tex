@@ -5,24 +5,22 @@
 \sys{} ships as a web console, a FastAPI backend, a \texttt{ragctl} CLI,
 and an MCP server~\cite{mcp} exposing 41 \texttt{kb\_*} tools
 inside a 94-tool inventory: creation, movement, tagging, search, and
-offset-addressed reads. Console, CLI, and MCP clients operate the same
-resources through the same tools; what they do not share is a reasoning
-policy --- only the packaged skill adds the gate. A retag or a move lands once
-in the shared store: the console and MCP clients read the same record.
-ChromaDB stores
+offset-addressed reads. Console, CLI, and MCP clients operate the same resources through
+the same tools. What they do not share is a reasoning policy: only the
+packaged skill adds the gate. ChromaDB stores
 BGE-M3 vectors~\cite{bge-m3}, Neo4j holds document relations, and Markdown
 plus JSON/YAML metadata keep the collection inspectable; graph navigation
 is optional, not the evaluated route.
-
 \subsection{Ingest: From PDF to Addressable Parts}
 MinerU converts PDFs to structured Markdown~\cite{mineru}; texts beyond a
 30,000-character ceiling are split into parts, and retained headings
 support line-offset reads. The organization skill inspects the parsed
-content, selects among existing bases (proposing a new one only when none
-fits), and places and tags the document. Each placement ends in
-a final check (base fit, vector probe, three-layer consistency --- three
-of nine recorded checks), so a misroute is flagged at ingest, not at
-answer time. Administrators keep
+content, selects among existing bases (the platform's knowledge-base
+containers), proposing a new one only when none fits, and places and tags
+the document. Each placement ends in
+a final check (base fit, vector probe, three-layer consistency, three of
+nine recorded checks), so a misroute is flagged at ingest, not at answer
+time. Administrators keep
 control of bases; the five-base layout is a demonstration configuration,
 not a platform limit.
 
@@ -32,18 +30,17 @@ bases, and reads their text. Each candidate is scored by a prompted rubric,
 $s=s_{\mathrm{topic}}+s_{\mathrm{scenario}}+s_{\mathrm{evidence}}$ over
 ranges 0--3, 0--3, and 0--2: whether the body is directly about the query's
 subject, solves the query's problem, and carries directly quotable data or
-conclusions. The full rubric ships in the repository. A score of at least 6
+conclusions. A score of at least 6
 permits a cited answer whose sources name base, document, part, and section.
 Any lower initial score invokes the librarian --- base summaries,
-tag-matched shelves, targeted re-search --- instead of more vector queries;
-a failed gate is information, not noise: a ranking step cannot repair
-an absent passage; browsing is the designed route for surfacing one the
-index missed. A usable score-5 candidate, whether
+tag-matched shelves, targeted re-search --- instead of more vector queries:
+a ranking step cannot repair a failed recall, so browsing is the designed
+route for surfacing a passage the ranking missed. A usable score-5 candidate, whether
 initial or surfaced while browsing, is retained as an explicitly attributed
 backstop and yields a qualified answer. Candidates scoring at most 4 are
 discarded; when nothing usable remains, the skill returns a not-found
 report with scope, near miss, reason, and remedy. Answer records keep the
 search path, confidence, and blind spots.
 \emph{Content-verified} denotes this prompted judgment, not guaranteed
-correctness. Saved artifacts keep candidate excerpts and answer records;
-mutable file-tree metadata is not an append-only audit log.
+correctness; file-tree metadata is mutable, not an append-only audit log.
+Saved artifacts keep candidate excerpts and answer records.

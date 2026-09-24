@@ -15,9 +15,16 @@
 \section{Measured Three-Mode Run and Limitations}
 \label{sec:eval}
 
-The corpus was built by the platform's own ingest loop, so records exist
-for every stage (Table~\ref{tab:pipeline}); a monitored three-mode
-comparison follows (Figure~\ref{fig:threeway}).
+Because the platform's own ingest loop built the corpus, records exist
+for every stage (Table~\ref{tab:pipeline}). The monitored run then asks
+whether the address-space design changes answers: ten fixed questions
+(BQ01--BQ10; full text in the repository), each answerable only from its
+designated paper, ran through three modes that differ only in evidence
+route, permissions, and prompt framing: the platform answers through its
+packaged skill over the kb\_* tools; the bare agent is the same model with
+file tools over the exported papers; dense retrieval searches the
+4{,}528-chunk replica index of Table~\ref{tab:pipeline}
+(Figure~\ref{fig:threeway}).
 
 \textbf{Ingest and organization.}
 MinerU parsed all 100 papers; the organization skill placed each by its
@@ -30,8 +37,6 @@ fragments), upgraded 165 descriptions, and verified storage and retrieval
 stability (Table~\ref{tab:pipeline}).
 
 \textbf{Retrieval.}
-Ten questions ran through three modes that differ only in evidence route,
-permissions, and prompt framing, on a shared corpus.
 Metrics (Figure~\ref{fig:threeway}):
 grounded =
 the trace cites the designated paper (strict arXiv-id match);
@@ -51,11 +56,11 @@ Figure~\ref{fig:threeway}.
 \textbf{Costs and limitations.}
 The platform is slowest and costliest (113\,s and \$0.49 per question,
 versus 43\,s/\$0.16 bare and 48\,s/\$0.18 dense): the gap buys multi-step
-reading (7.6 tool calls versus 4.4 and 2.4). Grading is
+reading. Grading is
 deliberately conservative: word-boundary matching scores the bare agent's
 hyphenated ``precipitation-efficiency'' (BQ06) and ``oxygen (anionic)
 redox''/plural ``cathodes'' (BQ08) at 0/1 and 0/2; one platform answer
 (BQ02) grounds the NISQ definition to a neighboring survey, shown as-is.
-Correctness reflects our reading; the comparison is operational, not
-controlled; cache state was uncontrolled. Three out-of-corpus questions
+Correctness calls are the authors' reading of each trace; cache state
+was not controlled. Three out-of-corpus questions
 receive scoped not-found reports (Section~\ref{sec:demo} shows one).
