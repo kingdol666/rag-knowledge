@@ -20,12 +20,13 @@ before accepting.
 The attendee asks which three ontologies subdivide the Gene Ontology. In
 the saved trace (BQ04 in Section~\ref{sec:eval}),
 the vector-first search ranks the primer's part~1 of~2 first, at 0.75
-(0.66 cross-base); a two-stage pass (one confirm read after the first hit) confirms the candidate, and the agent
-answers with a verbatim quotation whose source block names base, document,
-part, and section (``2.~What is the Gene Ontology'') --- score, reading,
-and quoted evidence are distinct records; the attendee can open the cited
-part in the console while the kb\_* tools read it at its line offset.
-Figure~\ref{fig:threeway} compares
+(0.66 cross-base); a two-stage BM25-and-vector pass confirms the
+candidate, and
+the agent answers with a verbatim quotation whose source block names
+base, document, part, and section (``2.~What is the Gene Ontology?'') ---
+score, reading, and quoted evidence are distinct records. The attendee can
+open the cited part in the console while the kb\_* tools read it at its
+line offset. Figure~\ref{fig:threeway} compares
 the three modes and adds a measured dense-mode abstention (BQ06).
 
 \paragraph{3. Examine a failure report.}

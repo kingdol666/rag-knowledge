@@ -19,19 +19,23 @@ Because the platform's own ingest loop built the corpus, records exist
 for every stage (Table~\ref{tab:pipeline}). The monitored run then asks
 whether the address-space design changes answers: ten fixed questions
 (BQ01--BQ10; full text in the repository), each answerable only from its
-designated paper, ran through three modes that differ only in evidence
-route, permissions, and prompt framing: the platform answers through its
+designated paper, ran through three modes that differ by design only in
+evidence route, permissions, and prompt framing: the platform answers through the
 packaged skill over the kb\_* tools; the bare agent is the same model with
 file tools over the exported papers; dense retrieval searches the
 4{,}528-chunk replica index of Table~\ref{tab:pipeline}
-(Figure~\ref{fig:threeway}).
+(Figure~\ref{fig:threeway}). The run predates the repository's
+prompt-parity rework, so the baselines' answers were length-capped while
+the platform's were not --- one reason the citation split (7--4--1),
+quantified in Figure~\ref{fig:threeway}, is the cleanest measured
+contrast.
 
 \textbf{Ingest and organization.}
 MinerU parsed all 100 papers; the organization skill placed each by its
 content into one of five bases, and the 30,000-character ceiling split
 long texts into
-322 stored parts, each passing the nine-point ingest final check
-(repository checklist). A later organization pass re-read all 322
+322 stored parts, each passing all nine recorded checks (repository
+checklist). A later organization pass re-read all 322
 parts, found no true duplicates (the 35 near-pairs are same-paper
 fragments), upgraded 165 descriptions, and verified storage and retrieval
 stability (Table~\ref{tab:pipeline}).
@@ -41,13 +45,13 @@ Metrics (Figure~\ref{fig:threeway}):
 grounded =
 the trace cites the designated paper (strict arXiv-id match);
 keyword-verified = at least 60\% of gold key facts, fixed in advance, at
-word boundaries (deterministic); citations = part/section markers
-pattern-matched over saved answers (script in the repository). Two
+word boundaries (deterministic); citations = part/section/table markers
+pattern-matched over saved answers (repository script). Two
 findings frame the demo. First, the bare agent always
 locates the designated paper (10/10 grounded) --- in this run, file search
-was not the bottleneck --- yet keyword verification passes only 6/10, no
-more than dense retrieval: locating evidence and synthesizing a complete
-answer are different skills. The platform alone pairs high grounding with
+was not the bottleneck --- yet keyword verification passes only 6/10
+(possibly a length-cap artifact), no more than dense retrieval: locating
+evidence and synthesizing a complete answer are different skills. The platform alone pairs high grounding with
 high verification (9/10 each). Second, the citation split (7--4--1) is the
 design difference this demo exists to show: only the platform's answers
 carry base/document/part/section addresses, replayed verbatim in

@@ -2,23 +2,23 @@
 % benchmark-suite/results/experiment_chat_20260922-211000 (verified by
 % scripts/108_pipeline_evidence.py + scripts/107_exp_grade.py --qfile qa_questions.json).
 \begin{abstract}
+\emergencystretch 1.5em\relax
 Research administrators must organize shared paper collections and inspect
 the evidence behind the answers drawn from them. We present \sys{}, an
 agent-operated platform coupling content-guided knowledge organization
-with librarian-style retrieval through one shared address space. Packaged
-agent skills parse documents, route them by content into category bases,
-and maintain tags. Retrieval rewrites each query, recalls and reads
+with librarian-style retrieval through one shared address space. Packaged agent skills parse documents, route them by
+content into category bases, and maintain tags. Retrieval rewrites each query, recalls and reads
 candidates, gates them with a prompted 0--8 rubric (topic, scenario,
 evidence), and --- when nothing passes --- escalates to browsing base
 summaries and tag-matched shelves, returning a scoped not-found report
-instead of answering from the nearest neighbor. The platform's own ingest
+rather than the nearest neighbor. The platform's own ingest
 loop built a 100-paper, five-base instance; ingest, storage, and retrieval
 probes then audited it. In a monitored three-mode run under one harness and
 model, the platform grounds 9 of 10 designated-paper answers and
-keyword-verifies 9 of 10 (gold key facts matched verbatim); the bare agent
-even locates the designated paper in all 10 cases yet passes conservative
-word-boundary verification in only 6, and dense retrieval grounds 9 and
-verifies 6. Part/section-level citations reach 7 of 10 versus 4 (bare
+keyword-verifies 9 of 10 against fixed gold key facts; the bare agent
+even grounds all 10 answers in the designated paper yet passes
+conservative word-boundary verification in only 6, and dense retrieval
+grounds 9 and verifies 6. Part/section-level citations reach 7 of 10 versus 4 (bare
 agent) and 1 (dense). A measured dense-mode abstention and three scripted
 out-of-corpus probes complete the demonstration. The platform trades
 roughly three times the bare agent's cost per question for this

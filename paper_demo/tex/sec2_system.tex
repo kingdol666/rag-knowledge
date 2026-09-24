@@ -2,8 +2,9 @@
 \label{sec:system}
 
 \subsection{Services and Interfaces}
-\sys{} ships as a web console, a FastAPI backend, a \texttt{ragctl} CLI,
-and an MCP server~\cite{mcp} exposing 41 \texttt{kb\_*} tools
+\sys{} binds Section~\ref{sec:intro}'s three decisions to one platform: a
+web console, a FastAPI backend, a \texttt{ragctl} CLI, and an MCP
+server~\cite{mcp} exposing 41 \texttt{kb\_*} tools
 inside a 94-tool inventory: creation, movement, tagging, search, and
 offset-addressed reads. Console, CLI, and MCP clients operate the same resources through
 the same tools. What they do not share is a reasoning policy: only the
@@ -18,9 +19,9 @@ support line-offset reads. The organization skill inspects the parsed
 content, selects among existing bases (the platform's knowledge-base
 containers), proposing a new one only when none fits, and places and tags
 the document. Each placement ends in
-a final check (base fit, vector probe, three-layer consistency, three of
-nine recorded checks), so a misroute is flagged at ingest, not at answer
-time. Administrators keep
+a final check (base fit, vector probe, three-layer consistency ---
+three of nine recorded checks), so a misroute is flagged at ingest, not at
+answer time. Administrators keep
 control of bases; the five-base layout is a demonstration configuration,
 not a platform limit.
 
