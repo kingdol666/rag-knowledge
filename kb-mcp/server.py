@@ -350,19 +350,19 @@ async def kb_get_documents(kb_id: str, lightweight: bool = False) -> str:
     client = _client()
     if not await _kb_exists(client, kb_id):
         return _j({"success": False, "error": f"knowledge base not found: {kb_id}"})
-        if lightweight:
-            data = await client.kb_get_documents(kb_id)
-            if not isinstance(data, dict) or not data.get("success"):
-                return _j(data)
-            catalog = [{
-                "doc_id": d.get("id") or d.get("file_id") or d.get("doc_id"),
-                "file_id": d.get("file_id") or d.get("id") or d.get("doc_id"),
-                "doc_path": d.get("path"),
-                "name": d.get("name"),
-                "description": d.get("description", ""),
-            } for d in data.get("documents", [])]
-            return _j({"success": True, "kb_id": kb_id, "count": len(catalog), "catalog": catalog})
-        return _j(await client.kb_get_documents(kb_id))
+    if lightweight:
+        data = await client.kb_get_documents(kb_id)
+        if not isinstance(data, dict) or not data.get("success"):
+            return _j(data)
+        catalog = [{
+            "doc_id": d.get("id") or d.get("file_id") or d.get("doc_id"),
+            "file_id": d.get("file_id") or d.get("id") or d.get("doc_id"),
+            "doc_path": d.get("path"),
+            "name": d.get("name"),
+            "description": d.get("description", ""),
+        } for d in data.get("documents", [])]
+        return _j({"success": True, "kb_id": kb_id, "count": len(catalog), "catalog": catalog})
+    return _j(await client.kb_get_documents(kb_id))
 
 
 # ============================================================

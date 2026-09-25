@@ -47,7 +47,7 @@ export default defineEventHandler(async (event) => {
 
   const content = String(body.content)
   const description = body.description?.trim() || ''
-  const sourceChars = content.length
+  const sourceChars = Array.from(content).length
 
   // ── 大文档入库规范化 (2026-09-18) ──────────────────────────────────
   // 字符数超过 ingestion.large_doc.max_chars（设置页可配，热生效）时向后端
@@ -81,7 +81,7 @@ export default defineEventHandler(async (event) => {
         success: true,
         split: true,
         part_count: documents.length,
-        source_chars: plan.source_chars ?? sourceChars,
+        source_chars: plan.source_chars ?? Array.from(content).length,
         max_chars: plan.max_chars ?? largeDoc.maxChars,
         strategy: plan.strategy,
         planner: plan.planner,

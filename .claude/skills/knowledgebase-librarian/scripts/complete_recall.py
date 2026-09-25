@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 """Complete-recall manifest orchestrator for the librarian skill.
 
-The Archival agent performs L0/L2/L4 MCP reads and writes their results to a
-manifest. This script intentionally does not call HTTP/MCP itself. It performs
-only high-recall catalog classification, structure-aware segmentation, and the
-single fail-closed Jev filtering/aggregation step.
+The Archival agent performs L0/L2/L4 MCP reads and writes their results to a manifest. This script intentionally does not call HTTP/MCP itself. It performs only high-recall catalog classification, structure-aware segmentation, and the selected local Laya or explicit Jev filtering/aggregation step.
 
 Manifest shape::
 
@@ -80,7 +77,7 @@ def classify_kbs(query: str, kbs: Sequence[Mapping[str, Any]]) -> list[dict[str,
         rows.append(item)
     # If catalog vocabulary cannot overlap because of language/terminology,
     # preserve the entire catalog rather than claiming a negative coverage result.
-    if q and rows and not any(row["catalog_status"] != "out_of_scope" for row in rows):
+    if q and rows and not any(row["query_overlap"] > 0 for row in rows):
         for row in rows:
             row["catalog_status"] = "possible"
             row["catalog_reason"] = "no_catalog_overlap; high-recall expansion"
@@ -290,13 +287,16 @@ def build_manifest_candidates(manifest: Mapping[str, Any], max_chars: int = DEFA
 def run_manifest(manifest: Mapping[str, Any], *, score_fn: Any = None, env: Mapping[str, str] | None = None) -> dict[str, Any]:
     prepared = build_manifest_candidates(manifest, int(manifest.get("max_segment_chars", DEFAULT_MAX_SEGMENT_CHARS)))
     verdict = filter_candidates({
+        "engine": manifest.get("engine", "laya"),
         "query": prepared["query"],
         "criterion": manifest.get("criterion", "auto"),
         "threshold": manifest.get("threshold", 0.5),
         "max_evidence_chars": manifest.get("max_evidence_chars", 20_000),
         "candidates": prepared["candidates"],
     }, score_fn=score_fn, env=env)
-    return {**prepared, "jev": verdict, "survivors": verdict.get("survivors", []),
+    return {**prepared, "engine": verdict.get("engine", manifest.get("engine", "laya")),
+            "jev": verdict, "survivors": verdict.get("survivors", []),
+            "result_list": verdict.get("result_list", []),
             "evidence_pack": verdict.get("evidence_pack", ""),
             "provenance": verdict.get("provenance", [])}
 
@@ -305,9 +305,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run complete-recall segmentation and Jev filtering")
     parser.add_argument("--input", required=True, help="MCP-produced manifest JSON")
     parser.add_argument("--output")
+    parser.add_argument("--engine", choices=["laya", "jev"], default=None)
     args = parser.parse_args(argv)
     try:
         manifest = json.loads(Path(args.input).read_text(encoding="utf-8"))
+        if args.engine:
+            manifest["engine"] = args.engine
         result = run_manifest(manifest)
         rendered = json.dumps(result, ensure_ascii=False, indent=2)
         if args.output:

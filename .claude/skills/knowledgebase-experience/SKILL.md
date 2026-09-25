@@ -1,7 +1,6 @@
 ---
 name: knowledgebase-experience
 description: "Experience full lifecycle management E0-E12. Structured practice cases (scenario/problem/solution/lessons). Auto-extract from KB docs (E0 prepare+LLM refine, E1 heuristic), quality gate (E2), draft pool (E3), experience-first retrieval (E4 with strict P0/P1/P2 credibility tiers), document linkage stale detection (E6), dashboard (E8), decay cycles (E11), auto health check+cleanup (E12). Triggered by: experience, experience library, experience, lesson, best practice, practice, case study, incident experience, ops experience, lesson learned, extract experience, extract from documents, summarize experience, experience dashboard, experience sync."
-agent_created: true
 ---
 ## ⭐ Related Skills
 - Auto-extract experiences after document ingest → `skill://knowledgebase-ingest` A7 eight-item final check

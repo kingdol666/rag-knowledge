@@ -539,12 +539,10 @@ def _section_label(group: Sequence[StructuralUnit]) -> str:
 
 def _fallback_description(body: str, section_range: str, index: int,
                           total: int, max_desc_chars: int) -> str:
-    # Keep the body-derived excerpt first for compatibility and readback. The
-    # part/section label is appended and remains available as metadata context.
-    excerpt = content_description(body, max(40, max_desc_chars - 45))
-    suffix = f" 【Part {index}/{total} · {section_range}】" if section_range else f" 【Part {index}/{total}】"
-    text = excerpt + suffix
-    return text[:max_desc_chars].rstrip()
+    marker = f"【Part {index}/{total} · {section_range}】" if section_range else f"【Part {index}/{total}】"
+    budget = max(40, max_desc_chars - len(marker) - 1)
+    excerpt = content_description(body, budget)
+    return f"{excerpt} {marker}"[:max_desc_chars].rstrip()
 
 
 def _make_parts_from_groups(content: str, title: str,
@@ -590,7 +588,8 @@ def _make_parts_from_groups(content: str, title: str,
 
 
 def _validate_agent_plan(content: str, units: Sequence[StructuralUnit],
-                         agent_plan: Mapping[str, Any], max_chars: int) -> tuple[list[list[StructuralUnit]], dict[int, str], list[str]]:
+                         agent_plan: Mapping[str, Any], max_chars: int,
+                         allow_oversized_atomic_unit: bool = True) -> tuple[list[list[StructuralUnit]], dict[int, str], list[str]]:
     errors: list[str] = []
     if not isinstance(agent_plan, Mapping):
         return [], {}, ["agent_plan_not_object"]
@@ -631,15 +630,23 @@ def _validate_agent_plan(content: str, units: Sequence[StructuralUnit],
         expected_order = [u.unit_id for u in units if u.unit_id in ids]
         if [u.unit_id for u in group] != expected_order:
             errors.append(f"part_{pos}_unit_order_invalid")
-        if group[-1].end_char - group[0].start_char > max_chars and len(group) > 1:
+        span_chars = group[-1].end_char - group[0].start_char
+        oversized = any(unit.chars > max_chars for unit in group)
+        if span_chars > max_chars and (len(group) > 1 or not oversized or not allow_oversized_atomic_unit):
             errors.append(f"part_{pos}_over_max_chars")
+        if oversized and not allow_oversized_atomic_unit:
+            errors.append(f"part_{pos}_contains_oversized_atomic_unit_disallowed")
         desc = str(raw.get("description") or "").strip()
         if desc and len(desc) > DEFAULT_DESC_CHARS:
             errors.append(f"part_{pos}_description_over_220")
         evidence = raw.get("evidence") or []
         part_text = content[group[0].start_char:group[-1].end_char]
-        if not isinstance(evidence, list) or any(str(e).strip() and str(e) not in part_text for e in evidence):
+        if not desc:
+            errors.append(f"part_{pos}_description_missing")
+        if not isinstance(evidence, list) or not any(str(e).strip() and str(e) in part_text for e in evidence):
             errors.append(f"part_{pos}_evidence_not_in_part")
+        if desc and not any(token and token in part_text for token in re.findall(r"[\w\u4e00-\u9fff]{2,}", desc)):
+            errors.append(f"part_{pos}_description_not_body_anchored")
         groups.append(group)
         descriptions[pos] = desc
     if used != [u.unit_id for u in units]:
@@ -676,7 +683,8 @@ def split_document(content: str, title: str = "", *,
     descriptions: dict[int, str] = {}
     groups: list[list[StructuralUnit]] = []
     if agent_plan is not None:
-        groups, descriptions, errors = _validate_agent_plan(content, units, agent_plan, max_chars)
+        groups, descriptions, errors = _validate_agent_plan(
+            content, units, agent_plan, max_chars, allow_oversized_atomic_unit)
         if errors:
             warnings.extend(f"agent_plan_rejected:{e}" for e in errors)
             groups = []

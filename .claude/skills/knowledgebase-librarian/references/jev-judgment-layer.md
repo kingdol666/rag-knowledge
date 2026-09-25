@@ -1,4 +1,10 @@
-# Jev judgment layer (L5.5) — how to use it
+# Structured evidence decision layer (Laya default, Jev optional)
+
+This reference documents the two supported decision engines for L5. The skill-facing filter defaults to local Laya; remote Jev is selected explicitly with `engine=jev`. Both engines answer the same binary evidence question and return a positive probability in `[0, 1]`.
+
+- Local default: `references/laya-sdk.md`
+- Explicit remote option: TypeSafe System One / Jev below
+
 
 ## What Jev is
 
@@ -51,7 +57,7 @@ After L4 has read **every candidate segment** (not only a head/mid/tail sample),
 
 ```bash
 python .claude/skills/knowledgebase-librarian/scripts/jev_filter.py \
-  --input candidates.json --output jev-result.json --require-real
+  --engine jev --input candidates.json --output jev-result.json --require-real
 ```
 
 The filter asks one `noul` question per candidate segment and returns one score record for every candidate. A candidate remains eligible only when `score >= threshold`; missing, malformed, out-of-range, timeout, HTTP error, or rate-limit results are rejected. It also returns a source-ordered, deduplicated `evidence_pack` and provenance containing KB, document ID/path, part, section, and offsets.

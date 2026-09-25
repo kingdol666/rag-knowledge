@@ -1,7 +1,6 @@
 ---
 name: knowledgebase-ingest
-description: "Document ingestion pipeline with quality gates A0→A9. Content-first workflow: dedup (content fingerprint), survey, parse with quality check, SCRIPTED split gate for oversized documents (reads ingestion.large_doc.max_chars from config.yml, never split by hand), structured analysis, tag quality gate (blocklist+normalize+verify), description quality gate (4-elements+content-readback), KB-attribution decision tree (sub-KB first), store by file type, index+tag with post-index verification. Triggered by: ingest, upload, import, store, parse, parse PDF, save to KB, ingest a document, put a document, add a document, 拆分, 分块, 大文档入库, maxChars, split large document."
-agent_created: true
+description: "Content-first document ingestion with deduplication, parse-quality checks, structure-aware Markdown splitting, optional Agent boundary planning, source-span preservation, five-dimension description generation and readback, KB/sub-KB attribution, indexing verification, and fail-closed storage. Use when importing, uploading, parsing, saving, splitting, or adding documents to the knowledge base, especially oversized documents or requests mentioning ingest, parse PDF, maxChars, 分块, 拆分, or 大文档入库."
 ---
 ## ⭐ Related Skills
 - Parse documents → the parse_doc tools of `skill://knowledgebase`
@@ -15,7 +14,7 @@ agent_created: true
 **Step 2 — Dedup (A0)**: content fingerprint detection; skip duplicate documents.
 **Step 3 — Survey (A1)**: browse the document content; determine KB ownership.
 **Step 4 — Parse (A2)**: call parse_doc to parse PDF/Word/Excel/Image.
-**Step 4.5 — Split Gate (A2.5, scripted)**: count chars of the parsed markdown; if over `ingestion.large_doc.max_chars`, run `scripts/split_large_doc.py` (reads the setting, writes part files, deletes the temp original). All later steps then operate on the parts.
+**Step 4.5 — Split Gate (A2.5, scripted + Agent-planned)**: count parsed Markdown with the shared Unicode code-point contract; if over `ingestion.large_doc.max_chars`, scan structure, validate an optional Agent boundary plan, and run `scripts/split_large_doc.py`. All later steps operate on source-backed parts; invalid plans and source deletion failures are blocking.
 **Step 5 — Save (A3)**: kb_doc_save_parsed writes into the KB (or kb_doc_create per part after A2.5).
 **Step 6 — Tag+Describe (A3b-c)**: auto-generate tags + content-based descriptions.
 **Step 7 — Index (A6)**: vector index + graph index.
@@ -188,9 +187,7 @@ Parts keep the original body exactly and add a synthetic header (`source title +
 
 ## A3 — Structured Content Analysis
 
-Read a 3000-char sample and output a structured result (**this is the basis for all later decisions**).
-**Long documents (>20000 chars): three-window sampling is mandatory** — head 0-3000 + middle (total/2)±1500 + tail last 2000; distill 1-2 points from each window into the analysis, so the description carries the document's full real meaning, not just its opening (see [description-guide.md D8](references/description-guide.md)).
-**After A2.5 split**: run A3/A3b/A3c **per part** — each part is analyzed and described on its own real body (the gate script's per-part `description` is the seed; refine it to the four-element standard below).
+**A3 structured analysis:** read the part body and, for long documents or parts, use bounded head/middle/tail evidence windows to produce the five-dimensional description. This sampling is for description analysis only; Librarian retrieval later reads every candidate segment.
 
 ```json
 {
@@ -235,8 +232,7 @@ Description = [Subject] + [Method/Technology] + [Scenario/Problem] + [Key data/C
 - **Must verify every claim against the body**: direct path → verify against the source file before saving; parse path → verify against the `parse_task_status` markdown BEFORE saving (the description gate runs pre-save), then C1 re-verifies the stored copy via `kb_doc_read(..., max_chars=800)` after A5.
 - **Mismatch → rewrite the description** (never change the body to fit the description).
 
-**D8 multi-dimension + query orientation (core of retrieval positioning, mandatory)**: the description must cover all five query dimensions — domain dimension / method dimension / object dimension / problem dimension (write one sentence in the questioner's voice about "what questions this document can answer") / conclusion dimension (numbers preferred) — and keep English method names verbatim inside the Chinese description as bilingual anchors. For long documents, use the three-window sampling conclusions to fill in mid/tail points. For split parts use a **two-layer description**: `【第 i/N 部分 · <章节范围>】<论文级主体+方法> —— <本 part 特有内容>`, i.e. `【Part i/N · <section range>】<paper-level subject + method> —— <this part's specific content>`. Each description ≤220 chars. Per-dimension criteria in [description-guide.md D8](references/description-guide.md).
-**Documents <20000 chars also need at least two windows** (head 3000 + tail 2000) — conclusions/correction factors/appendix data are often buried in the tail; reading only the head inevitably misses them (field-tested lesson).
+**D8 multi-dimension + query orientation:** cover domain, method, object, problem-in-user-voice, and conclusion dimensions; preserve bilingual method anchors; and use evidence from the part itself. Long-document windows support description analysis only and never authorize retrieval to prune unseen segments. Every split part must retain a complete `Part i/N · section range` marker and stay ≤220 characters.
 
 **⭐ A3c-P Part-label integrity check (mandatory for split parts).** The `【Part i/N · <range>】` label is what the librarian reads to pick a part — a wrong label silently breaks hierarchical retrieval. Measured failure (2026-09-24): a 26-part novel was ingested with **24 of 26** labels reading `Gutenberg front/back matter` while the parts actually held novel chapters; a description-driven librarian then selected 2 parts instead of 7 and lost 2 of 7 key scenes. Before saving, check **every** split part's label:
 - **Non-boilerplate**: the same label value must not repeat across ≥3 siblings.

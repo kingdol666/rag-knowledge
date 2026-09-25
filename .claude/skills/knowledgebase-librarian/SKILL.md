@@ -1,10 +1,9 @@
 ---
 name: knowledgebase-librarian
-description: "Librarian retrieval — hierarchical COARSE→FINE whole-library search, VECTOR-FREE (no embedding / BM25 / hybrid ranking). Walks the stacks: read EVERY knowledge base description, rank the likely shelves, read EVERY document description, verify those descriptions against real content (they can be wrong), then EXHAUSTIVELY read the head of every candidate part, run each candidate through the Jev judgment layer (TypeSafe System One structured-decision model) to keep only the texts that truly contain answering evidence, deep-read the survivors, verify with the 0-8 rubric, and answer. The companion skill knowledgebase-search is the vector + content lane; this is the pure-content lane. Use it when the shelf is unknown, the library is large or heterogeneous, similarity search missed, the question spans a whole long document, or the caller wants COMPLETE recall. Triggered by: librarian, shelf scan, walk the stacks, which knowledge base, which KB holds, catalog-level search, coarse to fine, coarse retrieval, knowledge base routing, pick the right knowledge base, browse the catalog, vector-free retrieval, exhaustive recall, Jev judgment, 图书馆员, 书架扫描, 逐级检索, 粗检索到细检索, 全库粗检索, 哪个知识库, 目录级检索, 知识库路由, 长文档跨章检索, 不用向量检索, 穷尽召回, Jev 判断, 完整召回."
-agent_created: true
+description: "Complete-recall librarian retrieval for unknown shelves, heterogeneous libraries, long-document questions, vector misses, and explicit all/every requests. Read every KB and unlimited-depth sub-KB description, keep all relevant or possible shelves, read every document description with doc IDs/paths, verify metadata against content, read every candidate segment, send every segment to the real Jev filter, aggregate scored evidence with provenance, apply the 0–8 rubric, and answer or report exact blind spots. Use for librarian, shelf scan, catalog search, coarse-to-fine, 逐级检索, 全库粗检索, 哪个知识库, 穷尽召回, Jev 判断, or 完整召回."
 ---
 ## ⭐ Related Skills
-- **Vector + content path** → `skill://knowledgebase-search` — the companion skill: `kb_search_vector` first, then the 0-8 content gate. **This** skill is the vector-free counterpart; together they are the two retrieval lanes.
+- **Vector + content path** → `skill://knowledgebase-search` — the companion fast lane: `kb_search_vector` first, then the 0-8 content gate. This skill performs complete-recall catalog/read/Jev work when required.
 - Document ingest → `skill://knowledgebase-ingest` — description quality is produced there (A3c / A3c-P)
 - KB integrity → `skill://knowledgebase-verify` — three-way consistency
 - Knowledge graph → `skill://knowledgebase-graph` — cross-library bridges
@@ -27,7 +26,7 @@ Lane B is intentionally more expensive. Its promise is high recall, not an unbou
 | Library is large / many heterogeneous KBs | **Yes** — shelf ranking is the whole point |
 | Vector-first gate scored ≤5 | **Yes** (this is search's Phase 2) |
 | Question spans a **whole long document** | **Yes** — L4 part selection + L5 targeted reads |
-| Question needs a **specific chapter/section** of a long doc | **Yes** — description chapter ranges + L3 verification |
+| Question needs a **specific chapter/section** of a long doc | **Yes** — read every candidate part/segment, then let Jev retain answering evidence |
 
 ## The One Picture
 
@@ -67,7 +66,7 @@ query entities (subject × attribute × constraints)
                      Jev backend/threshold, citations and any unscanned blind spot
 ```
 
-**Jev development guidance:** [references/jev-judgment-layer.md](references/jev-judgment-layer.md) documents the TypeSafe request/response shape, `noul` criteria, limits, cost, and credential setup. The skill-facing implementation is `scripts/jev_filter.py`; `benchmark-suite/experiments/jev_judge.py` remains benchmark-only and may use an explicitly labelled LLM substitute.
+**Jev/Laya decision guidance:** [references/laya-sdk.md](references/laya-sdk.md) documents the default local Laya SDK, model/cache setup, `noul=P(true)`, threshold, and fail-closed behavior. [references/jev-judgment-layer.md](references/jev-judgment-layer.md) documents the explicit remote Jev option. The bundled `scripts/jev_filter.py` defaults to `engine=laya`; pass `--engine jev` only when remote Jev is intentionally selected. Every scored candidate is returned in `result_list` with doc ID/path/part/section/offset provenance.
 
 ```
 kb_list(lightweight=True)     # {kb_id, name, description, doc_count} for every KB
@@ -83,7 +82,7 @@ Match the query's **subject × attribute × constraints** against every KB descr
 - `possible`: one dimension matches, the description is missing/ambiguous, or terminology may be multilingual;
 - `out_of_scope`: no observed match and the description is specific enough to trust.
 
-In **complete-recall mode**, keep every `relevant` and `possible` KB. Do not use a fixed top-2/3 cutoff. An `out_of_scope` label is allowed to prune only when the catalog description is present and trustworthy; if all shelves appear out of scope because vocabulary differs, expand to the full catalog and report the expansion.
+In **complete-recall mode**, keep every `relevant` and `possible` KB, including unlimited-depth sub-KBs discovered from the tree. Do not use a fixed top-2/3 cutoff. An `out_of_scope` label is allowed to prune only when the catalog description is present and trustworthy; if all shelves appear out of scope because vocabulary differs, expand to the full catalog and report the expansion.
 
 ## L2 — Full document catalog (all kept shelves)
 
@@ -135,21 +134,23 @@ Write the manifest to JSON and invoke:
 
 ```bash
 python .claude/skills/knowledgebase-librarian/scripts/jev_filter.py \
-  --input candidates.json --output jev-result.json --require-real
+  --engine laya --input candidates.json --output laya-result.json --require-real
+# Use --engine jev only when remote Jev is intentionally selected.
 ```
 
-The filter sends every candidate segment to real Jev using the documented `noul` evidence/instance question. It returns one score record per candidate plus `survivors`, a deduplicated source-ordered `evidence_pack`, and provenance. Missing credentials, request errors, malformed/out-of-range scores, and rate-limit exhaustion are **fail-closed**: the affected candidate is not kept and the result is `unavailable`/`error`, never an implicit pass. A substitute LLM is not enabled by this skill.
+The filter sends every candidate segment to the selected engine (default local Laya; explicit `engine=jev` for remote Jev) using the documented `noul` evidence/instance question. It returns one score record per candidate plus `result_list`, `survivors`, a deduplicated source-ordered `evidence_pack`, and provenance. Missing SDK/model/credentials, request errors, malformed/out-of-range scores, and rate-limit exhaustion are **fail-closed**: the affected candidate is not kept and the result is `unavailable`/`error`, never an implicit pass. Engines never silently fall back to one another.
 
+- default engine `laya`; explicit `engine=jev` only when remote Jev is selected;
+- every candidate gets a score record; `result_list` contains all kept candidates with source provenance;
 - lookup/evidence query → `criterion=evidence`;
 - enumeration/completeness query → `criterion=instance`;
-- default threshold `0.5`; use `0.35` for recall-first or `0.65` for precision-first only when declared;
 - aggregate by `{kb_id, doc_id/path, part_index, section, offset}` and merge duplicate/overlapping text without dropping provenance;
 - answer only from scored survivors, then apply the 0–8 rubric to the aggregated evidence.
 
 For offline preparation and tests, inject a score function into `complete_recall.run_manifest`; do not label that result as real Jev.
-## L5.1 — Read Jev survivors and preserve the evidence pack (VECTOR-FREE)
+## L5.1 — Read survivors and preserve the evidence pack
 
-This lane reaches the answer by navigating and reading, never by similarity search. The Archival agent may paginate `kb_doc_read` for survivors, but the final synthesis must use the Jev result's ordered `evidence_pack` and `provenance` rather than a newly chosen top-k. Allowed reads:
+This lane reaches the answer by navigating and reading, never by similarity search. The Archival agent may paginate `kb_doc_read` for survivors, but the final synthesis must use the selected engine's ordered `evidence_pack`, `result_list`, and `provenance` rather than a newly chosen top-k. Allowed reads:
 
 ```text
 kb_doc_read(kb_id, doc_path/doc_id, offset=<line>, limit=100, max_chars=3000)
@@ -196,7 +197,7 @@ A partial catalog or partial segment scan must be labelled partial. It is never 
 2. **High-recall shelf labels** — keep every `relevant` and `possible` KB in complete mode (L1)
 3. **Read every doc description** in every kept shelf, part-aware, with doc IDs and paths (L2)
 4. **Distrust descriptions** — boilerplate/content-free/degenerate → content read (L3)
-5. **Read every candidate segment** and record exact offsets; no top-k or three-window pruning (L4)
+5. **Read every candidate segment** and record exact offsets; no top-k or head-only pruning (L4)
 6. **Real Jev only** — every candidate gets a score record; missing/error scores fail closed (L5)
 7. **Aggregate survivors** by source/offset and apply the 0-8 rubric (L6)
 8. **Answer or report blind spots** with the five-section format; never fabricate (L7)

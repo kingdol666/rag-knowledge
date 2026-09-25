@@ -1,7 +1,6 @@
 ---
 name: knowledgebase-init
 description: "Smart incremental installation wizard for the RAG Knowledge Platform. Audits the existing environment FIRST and only installs/configures/downloads what is genuinely missing — never re-installs or re-downloads components that already work. Auto-detects GPU (NVIDIA CUDA / AMD ROCm / Apple MPS / CPU fallback), chooses the correct PyTorch wheel variant per platform, and supports Windows / Linux / macOS. Two install methods: (A) plugin install — auto-detects project in ~/.claude/plugins/cache/; (B) skills copy — clones if needed. Then guides through: prerequisite checks, incremental dependency install, GPU-adaptive torch, incremental model download, configuration (only for missing items), ragctl global registration, optional MCP global registration (~/.claude.json → mcpServers, user consent required), service startup, full-chain validation. Triggered by: /knowledgebase-init, init KB, setup knowledge base, install rag knowledge, deploy KB, start KB, bootstrap, getting started, initialize the knowledge base, install the knowledge base, deploy the knowledge base, knowledge base startup, kb init, knowledgebase setup wizard, knowledge base install wizard, configure the knowledge base, guided knowledge base installation."
-agent_created: true
 ---
 ## ⭐ Related Skills
 - Architecture understanding + execution model → [kb-architecture.md](../knowledgebase/references/kb-architecture.md) + [execution-model.md](../knowledgebase/references/execution-model.md) of `skill://knowledgebase`

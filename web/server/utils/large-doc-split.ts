@@ -14,7 +14,7 @@ import { getDynamicBackendUrl, getDynamicAuthConfig, getRawConfig } from './dyna
  * stored content (ingest skill gate A3c).
  */
 
-export const DEFAULT_LARGE_DOC_MAX_CHARS = 10_000
+export const DEFAULT_LARGE_DOC_MAX_CHARS = 30_000
 
 export interface SplitPlanPart {
   title: string
@@ -59,9 +59,16 @@ export function getLargeDocConfig(): { autoSplit: boolean; maxChars: number } {
   const raw = getRawConfig() || {}
   const cfg = raw.ingestion?.large_doc || {}
   const maxChars = Number(cfg.max_chars)
+  const rawAutoSplit = cfg.auto_split
+  const autoSplit = !(
+    rawAutoSplit === false
+    || rawAutoSplit === 0
+    || String(rawAutoSplit).trim().toLowerCase() === 'false'
+    || String(rawAutoSplit).trim() === '0'
+  )
   return {
-    autoSplit: cfg.auto_split !== false,
-    maxChars: Number.isFinite(maxChars) && maxChars > 0 ? maxChars : DEFAULT_LARGE_DOC_MAX_CHARS,
+    autoSplit,
+    maxChars: Number.isFinite(maxChars) && maxChars > 0 ? maxChars : 30_000,
   }
 }
 

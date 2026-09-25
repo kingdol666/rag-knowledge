@@ -1,7 +1,6 @@
 ---
 name: nuwa-skill
 description: "Nüwa persona-making: input a person's name, a topic, or even just a vague need, and it automatically runs deep research → thinking-framework extraction → generates a runnable persona Skill. Two entry points: (1) explicit name → distill directly; (2) vague need → diagnose and recommend → then distill. Trigger phrases: \"make a skill\", \"distill XX\", \"Nüwa\", \"make a persona\", \"XX's way of thinking\", \"make an XX perspective\", \"update XX's skill\". Vague needs also trigger: \"I want to improve my decision quality\", \"is there a way of thinking that can help me...\", \"I need a thinking advisor\". English triggers: \"distill [person]\", \"nuwa\", \"create a [person] perspective skill\", \"how does [person] think\", \"I need a thinking advisor\". SOUL integration (rag-knowledge repo): outputs can be landed in one step as this repo's SOUL personas (Butian); trigger phrases \"distill an XX persona\", \"turn XX into a SOUL\", \"make an XX persona\". 中文触发: 蒸馏XX, 做一个人格, XX的思维方式, 女娲, 补天, 蒸馏人格."
-agent_created: true
 ---
 # Nüwa · Persona-Making Art
 

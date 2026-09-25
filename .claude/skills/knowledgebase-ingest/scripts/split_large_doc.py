@@ -216,7 +216,11 @@ def main() -> int:
                 result["source_deleted"] = True
             except OSError as exc:
                 result["source_deleted"] = False
+                result["success"] = False
                 result["warning"] = f"删除原文失败（请手动处理）: {exc}"
+                result["error"] = "source_delete_failed"
+                print(json.dumps(result, ensure_ascii=False))
+                return 1
         print(json.dumps(result, ensure_ascii=False))
         return 0
     except Exception as exc:  # noqa: BLE001

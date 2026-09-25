@@ -1,7 +1,6 @@
 ---
 name: knowledgebase-manage
 description: "Document and KB administration. M1→M6 workflow: survey, confirm destructive ops, execute (move/rename/delete/merge/update), post-change reindex+experience linkage, verify, content update flow. All operations are atomic (disk + .tree-fs.json + .knowledge-base.yml). Triggered by: move, rename, rename a document, delete a document, delete a KB, merge KBs, move, rename, delete, merge, update content, move documents, update content, modify description."
-agent_created: true
 ---
 ## ⭐ Related Skills
 - Document ingest → `skill://knowledgebase-ingest`

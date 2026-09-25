@@ -1,7 +1,6 @@
 ---
 name: dot-skill
 description: "Unified meta-skill engine for distilling colleague, relationship, or celebrity characters into reusable Skills. Triggered by: colleague persona, distillation, persona, 补天, 蒸馏, 人格, 同事人格, 名人人格."
-agent_created: true
 argument-hint: "[character] [name-or-slug]"
 version: "1.0.0"
 user-invocable: true

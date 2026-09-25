@@ -1,7 +1,6 @@
 ---
 name: knowledgebase
-description: "Knowledge base management — primary entry point and dispatcher. Routes user requests to the correct sub-skill based on scenario matching (ingest, search, manage, organize, verify, list, batch, experience, graph). NEVER handles KB operations directly. Triggered by: knowledge base, KB, document management, ingest, upload, parse, search, retrieval, view, organize, verify, experience, graph, batch, store, upload, parse, search, find, query, list, show, verify, audit, organize, experience, graph, batch, and any knowledge base operation phrase."
-agent_created: true
+description: "Knowledge-base dispatcher that routes ingest, search, complete-recall librarian, manage, organize, verify, list, batch, experience, graph, and persona-related requests to the correct skill without executing KB operations itself. Use for any knowledge-base, KB, document, ingest, search, retrieval, query, list, audit, organize, graph, or experience request."
 ---
 # Knowledge Base — Dispatcher
 

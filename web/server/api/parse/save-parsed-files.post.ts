@@ -153,7 +153,7 @@ export default defineEventHandler(async (event) => {
       const markdownText = markdownBuffer.toString('utf-8')
       const largeDoc = getLargeDocConfig()
       if ((body as any).split === true && largeDoc.autoSplit
-          && markdownText.length > largeDoc.maxChars) {
+          && Array.from(markdownText).length > largeDoc.maxChars) {
         try {
           const plan = await requestSplitPlan(fileName, markdownText, true, body.agentPlan)
           const validParts = plan?.success && plan.split && Array.isArray(plan.parts)
@@ -202,7 +202,7 @@ export default defineEventHandler(async (event) => {
                 largeDocSplit: {
                   part_index: part.part_index,
                   part_count: part.part_count,
-                  source_chars: plan.source_chars ?? markdownText.length,
+                  source_chars: plan.source_chars ?? Array.from(markdownText).length,
                   max_chars: plan.max_chars ?? largeDoc.maxChars,
                   strategy: plan.strategy,
                   planner: plan.planner,

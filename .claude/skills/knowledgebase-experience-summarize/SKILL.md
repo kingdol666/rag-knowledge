@@ -1,7 +1,6 @@
 ---
 name: knowledgebase-experience-summarize
 description: "Experience authoring, meditation (auto-induction), cross-KB synthesis, and experience CRUD + migration. Full lifecycle: CREATE / UPDATE / DELETE / MIGRATE experiences, and MEDITATION (OpenClaw-style auto-induction from recurring user questions + KB answers). Routes write operations to the Archival agent. Quality-gated (specific, actionable, independently citable). Follows KB architecture: experience.md ↔ .experience-index.yml ↔ ChromaDB vector index. Do NOT trigger for read-only experience queries (use knowledgebase-experience E4 search instead). Triggered by: record experience, summarize experience, distill into experience, save a lesson, remember the workflow, create experience, update experience, delete experience, experience follow-along, experience migration, meditation, tidy memories, induce experience, reflect, meditation, reflect, save as experience, summarize as lesson, record workflow, create experience, update experience, delete experience."
-agent_created: true
 ---
 ## ⭐ Related Skills
 - Full experience lifecycle → `skill://knowledgebase-experience` (E0-E12)

@@ -98,7 +98,33 @@ class TestStructureAwareSplitting:
         assert result["strategy"] == "agent_semantic"
         assert result["parts"][0]["description_provenance"] == "agent"
 
-    def test_missing_or_invalid_jev_plan_never_claimed_as_agent_plan(self):
+    def test_agent_oversized_atomic_unit_respects_disallow_flag(self):
+        doc = "## Atomic\n\n" + ("x" * 1200)
+        units = ds.scan_structural_units(doc, max_chars=500)
+        plan = {
+            "source_sha256": ds.source_sha256(doc),
+            "parts": [{
+                "part_index": 1,
+                "unit_ids": [unit.unit_id for unit in units],
+                "description": "Atomic block x",
+                "evidence": ["x"],
+            }],
+        }
+        with pytest.raises(ValueError, match="oversized atomic unit"):
+            ds.plan_split(doc, "Atomic", {
+                "max_chars": 500,
+                "agent_plan": plan,
+                "allow_oversized_atomic_unit": False,
+            })
+
+    def test_fallback_marker_is_complete_under_description_cap(self):
+        long_heading = "## " + ("VeryLongSectionName " * 30)
+        doc = long_heading + "\n\n" + ("Evidence sentence. " * 300)
+        plan = ds.plan_split(doc, "Marker", {"max_chars": 500})
+        for part in plan["parts"]:
+            assert len(part["description"]) <= 220
+            assert f"Part {part['part_index']}/{part['part_count']}" in part["description"]
+
         doc = "## A\n\n" + "Evidence. " * 100
         plan = ds.plan_split(doc, "Doc", {"max_chars": 500, "agent_plan": {"source_sha256": "wrong", "parts": []}})
         assert plan["planner"] == "deterministic"

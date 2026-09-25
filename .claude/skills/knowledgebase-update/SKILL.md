@@ -1,7 +1,6 @@
 ---
 name: knowledgebase-update
 description: "Check the installed RAG Knowledge Platform version against the latest GitHub release / default-branch VERSION, and pull updates when available. Safe by default (dirty worktree refused, dry-run first). Triggered by: /knowledgebase-update, update KB, upgrade knowledge base, check for updates, ragctl update, update the knowledge base, upgrade the knowledge base, check for updates, pull the latest version, is there a new version, version update, project update."
-agent_created: true
 ---
 ## ⭐ Related Skills
 - Initial installation → `skill://knowledgebase-init`
