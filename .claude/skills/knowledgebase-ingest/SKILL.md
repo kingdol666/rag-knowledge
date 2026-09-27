@@ -25,7 +25,7 @@ description: "Content-first document ingestion with deduplication, parse-quality
 
 ## ⭐ Execution Model · Pre-Flight · Architecture (First Step of Any Job, Mandatory)
 
-**Executor: Archival agent** — delegate via `task` (**delegation template + three-role execution model + combined-task boundaries**: must-read [execution-model.md](../knowledgebase/references/execution-model.md)). **Pre-Flight**: no work before it passes — one-probe double-check `kb_project_status` → branch handling → smoke test; full flow in [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md). **Mental model**: before operating, must-read [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer model + consistency invariants + 91-tool map); MCP-first principle (no terminal/HTTP bypass) in [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) Rule 5.
+**Executor: Archival agent** — delegate via `task` (**delegation template + three-role execution model + combined-task boundaries**: must-read [execution-model.md](../knowledgebase/references/execution-model.md)). **Pre-Flight**: no work before it passes — one-probe double-check `kb_project_status` → branch handling → smoke test; full flow in [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md). **Mental model**: before operating, must-read [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer model + consistency invariants + 94-tool map); MCP-first principle (no terminal/HTTP bypass) in [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) Rule 5.
 
 - Archival is forbidden from: skipping steps, bypassing gates, using the wrong storage tool
 
@@ -123,14 +123,20 @@ Run the bundled gate script (or the same shared backend splitter) against the pa
 
 - `unit_id`, `kind`, `heading_path`, `start_char`, `end_char`;
 - ATX and Setext headings, with headings inside fenced code ignored;
+- standalone chapter titles (`第一章 …` / `Chapter 12`) in flat prose — novels without Markdown structure still get chapter-granular units;
 - complete paragraphs, lists with continuations, tables, fenced code, blockquotes, figures/captions, and sentence boundaries inside oversized prose sections;
 - `source_sha256`, `section_range`, head/tail probes, and safe boundary type.
 
 The scanner's source-span invariant is strict: concatenating every unit must reproduce the input byte-for-character (Python character count) with no gap or accidental overlap.
 
-### 2) Ask an Agent to choose boundaries, never to rewrite text
+### 2) ⭐ Default: the Agent reads the content and chooses the boundaries
 
-For an oversized document, provide the Agent the unit manifest plus bounded head/tail excerpts. The Agent may group adjacent scanner units and write a detailed part description, but it may not return replacement prose or arbitrary offsets:
+Splitting is an **Agent judgment, not a script heuristic**. For every oversized document the Archival agent must:
+
+1. **Read before cutting** — scan the chapter map (the unit manifest's `heading_path`/`section_range` sequence), then read the real content at least at three windows (head / middle / tail; more where the map shows dense scene changes). Never choose boundaries from offsets alone.
+2. **Cut at the content's own joints** — prefer chapter ends, then scene/section ends, then paragraph ends. A boundary inside a sentence is forbidden; a boundary that severs a continuous scene/argument fails the plan and must be re-planned. Within these constraints, pack units toward `max_chars` (the budget applies to source body; the synthetic context header is reserved automatically).
+3. **Write the description from what was read** — each plan part carries an ICD description (identity anchor + concrete events + entities + answerable scope, ≤220 chars) grounded in that part's real body, with literal `evidence` strings for readback.
+4. **Emit the plan JSON** — the Agent may group adjacent scanner units and write descriptions, but it may not return replacement prose or arbitrary offsets:
 
 ```json
 {
@@ -148,7 +154,7 @@ For an oversized document, provide the Agent the unit manifest plus bounded head
 }
 ```
 
-Validate before writing: hash, contiguous unit coverage, unit order, safe boundaries, description length, and evidence readback. An invalid or absent plan automatically uses the deterministic structural fallback and records `planner=deterministic`; it must never be presented as Agent segmentation.
+Validate before writing: hash, contiguous unit coverage, unit order, safe boundaries, description length, and evidence readback. An invalid plan is rejected and re-planned by the Agent — a *missing* plan (script run without `--agent-plan`) automatically uses the deterministic structural fallback and records `planner=deterministic`; **a deterministic fallback must never be presented as Agent segmentation.**
 
 ### 3) Materialize and act on the JSON
 
@@ -178,7 +184,7 @@ The script reads `ingestion.large_doc` from the repository-root `config.yml` (or
 |---|---|---|
 | `split: false` | source is within the limit | continue with the original unit |
 | `split: true` | parts were materialized from source spans | run A3/A3b/A3c/A5/A6 per part; never save the deleted source |
-| `warnings` contains `oversized_atomic_unit` | one indivisible logical block is larger than the target | keep it whole, show the warning, and do not hard-cut unless `allow_hard_fallback=true` is explicitly approved |
+| `warnings` contains `oversized_atomic_unit` | one indivisible logical block is larger than the target | keep it whole and show the warning; a hard window cut happens **only** when `allow_hard_fallback=true` was explicitly approved (then each cut is reported as `hard_fallback_cut`), because hard cuts sever coherent content |
 | `success: false` | scanner/config/IO/plan error | fix or report; do not pass an oversized raw source downstream |
 
 The script defaults to zero character overlap. Continuity comes from preserving complete logical units and explicit section context, not from duplicate slices. `--dry-run` performs no writes/deletion. If splitting is required, the temporary unsplit markdown is deleted after successful materialization; any deletion warning is a blocking condition for downstream ingest.
@@ -234,11 +240,39 @@ Description = [Subject] + [Method/Technology] + [Scenario/Problem] + [Key data/C
 
 **D8 multi-dimension + query orientation:** cover domain, method, object, problem-in-user-voice, and conclusion dimensions; preserve bilingual method anchors; and use evidence from the part itself. Long-document windows support description analysis only and never authorize retrieval to prune unseen segments. Every split part must retain a complete `Part i/N · section range` marker and stay ≤220 characters.
 
+**⭐ D9 Identity-Card Description (ICD) — mandatory shape for fiction/multi-work/multi-topic collections, recommended everywhere.** The librarian funnel's precision ceiling IS description quality (measured 2026-09-26: with vague descriptions the L2 matcher gets zero signal and must read a whole multi-novel KB; with ICDs it selects exactly the 3 relevant parts and filters 3 other novels). Build and validate with `scripts/identity_card.py` (`build` / `validate` / `audit` subcommands, offline):
+
+```
+【门类】作品/主题名（原文或别名）· 第 k/N 部分 · 章节范围
+事件: 1-3 个具体事实（检索钩子，正文实读所得）
+实体: 3-8 个专名
+可答: 问题类型; 不含: 易混淆的相邻主题（仅在确有混淆风险时写，须正文可证）
+```
+
+- **D2 身份锚每个 part 必须重复**（作品名双语并列）——任何 part 独立可寻址，这是"多作品库按作品过滤"的前提；
+- **D4 事件指纹是精度钩子**：写本章真实发生的事（"达西二度求婚，伊丽莎白应允"），不写"本章精彩纷呈"；
+- **KB 描述必须带收录清单**（如"本库仅收《傲慢与偏见》全本 26 part；不含其他作品"）——L1 才能按作品级剪枝，而不是把整个"小说库"读一遍；
+- 验收：`identity_card.py validate` 6/6 维度通过（grade icd-ok）才允许保存；批量入库后 `audit` 全库评分。
+
 **⭐ A3c-P Part-label integrity check (mandatory for split parts).** The `【Part i/N · <range>】` label is what the librarian reads to pick a part — a wrong label silently breaks hierarchical retrieval. Measured failure (2026-09-24): a 26-part novel was ingested with **24 of 26** labels reading `Gutenberg front/back matter` while the parts actually held novel chapters; a description-driven librarian then selected 2 parts instead of 7 and lost 2 of 7 key scenes. Before saving, check **every** split part's label:
 - **Non-boilerplate**: the same label value must not repeat across ≥3 siblings.
 - **Non-degenerate**: no inverted or single-point span (`XV–I`, `XLVI–XLVI`).
+- **Non-placeholder**: the part index must actually be filled — a literal `【?/?·` prefix is a template failure (measured 2026-09-25: **156 of 322** catalog docs shipped with it); the librarian's L3 trust check flags it as `broken_part_prefix` and refuses to trust the description.
 - **Content-derived**: the range must come from reading the part's own head/tail windows — never copied from part 1, never assumed from the document type.
 - **Any violation → regenerate that part's label from its own content** before A5. Do not save a part whose label fails this check.
+
+**Description audit / repair (post-hoc maintenance).** After bulk ingests or split campaigns, run the offline audit on a catalog dump (`kb_list` + `kb_get_documents(lightweight)` saved as JSON):
+
+```bash
+python .claude/skills/knowledgebase-ingest/scripts/audit_descriptions.py --input catalog.json
+# flags: empty / short(<40ch) / broken_part_prefix 【?/?· / boilerplate(≥3 repeats) /
+#        degenerate_range / part_anchor_missing
+
+python .claude/skills/knowledgebase-ingest/scripts/repair_part_prefixes.py --input catalog.json            # dry-run plan
+python .claude/skills/knowledgebase-ingest/scripts/repair_part_prefixes.py --input catalog.json --apply    # fill 【k/N· from the path, via kb_doc_update_meta
+```
+
+The repair is deterministic (no LLM): it only fills the missing `k/N` from the path's `(part k of N)` and skips rows whose live description changed since the dump. Any other defect (boilerplate, content-free, wrong range) requires a content-based A3c rewrite, not a patch.
 
 **A3c-R retrieval self-test (mandatory closed loop after A6 indexing)**: see [A3c-R](#a3c-r--retrieval-self-test-description-closed-loop-mandatory-after-indexing-) below, after A6-V — run `kb_search` with the problem-dimension wording from the description + `kb_search_vector` with a paraphrase; the target document must be recalled, otherwise merge the missed query terms back into the description and retest.
 

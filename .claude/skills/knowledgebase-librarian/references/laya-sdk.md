@@ -22,11 +22,26 @@ Laya requires Python 3.10 or newer. The first model load may download a Hugging 
 ## Model selection
 
 ```text
+LAYA_MODEL_PATH=           # explicit local checkpoint dir; highest priority
 LAYA_MODEL=convaiinnovations/laya
 LAYA_SUBFOLDER=            # empty, multilingual, or typed-decisions
 LAYA_LOCAL_ONLY=1          # optional; prevents Hugging Face network access
 LAYA_THRESHOLD=0.5         # optional default filter threshold
 ```
+
+The filter resolves the model in this order:
+
+1. `LAYA_MODEL_PATH` environment variable;
+2. repository-local checkpoint `<repo>/model/laya` when complete
+   (`model.safetensors` + `rl_agent_config.json` + `tokenizer/`);
+3. `LAYA_MODEL` Hugging Face id — and the filter then auto-downloads the
+   checkpoint into `<repo>/model/laya` (via `scripts/ensure_laya_model.py`,
+   with a direct-URL fallback for proxies that strip HF metadata headers).
+
+`config.yml` offers the same override at `decision.laya.model_path` for the
+ensure script; a complete local checkpoint always wins over the HF id so
+startup-time use never needs the network. Check status with
+`python scripts/ensure_laya_model.py --check` (exit 0 = usable).
 
 The SDK call used by this skill is:
 

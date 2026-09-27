@@ -1,0 +1,70 @@
+{
+  "mode": "A_vector",
+  "id": "Q1",
+  "query": "TraceLens 生产环境的 span 采样率和查询 p99 延迟分别是多少？相比旧系统降了多少？",
+  "seconds": 45.7,
+  "scan": {
+    "descriptions_scanned": null,
+    "description_overlap_docs": null,
+    "zero_overlap_docs_unread": null,
+    "docs_read": [
+      {
+        "doc_path": "AI 基础设施/tracelens-deployment-notes.md",
+        "chars": 1896,
+        "truncated": false
+      },
+      {
+        "doc_path": "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 2 of 2).md",
+        "chars": 16323,
+        "truncated": false
+      },
+      {
+        "doc_path": "Corpus-Chunks800/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou__k22.md",
+        "chars": 0,
+        "truncated": false
+      },
+      {
+        "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+        "chars": 8563,
+        "truncated": false
+      },
+      {
+        "doc_path": "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+        "chars": 20000,
+        "truncated": true
+      }
+    ],
+    "peek_docs": null,
+    "expansion_docs": null,
+    "expansion_upgraded": null
+  },
+  "judge": {
+    "abs_kept": [
+      0,
+      1,
+      3,
+      4
+    ],
+    "relative_cut": 0.87,
+    "global_best": 0.97,
+    "floor_applied": false,
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "scored_segments": 24,
+    "total_segments": 24
+  },
+  "gold": {
+    "judged": true,
+    "kept": true,
+    "best": 0.8885
+  },
+  "kept_doc_paths": [
+    "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+    "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 2 of 2).md",
+    "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+    "AI 基础设施/tracelens-deployment-notes.md"
+  ],
+  "evidence_pack": "[aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md]\n# 工业诊断报告：5 秒窗口温度序列异常趋势判定\n\n- **运行 ID**: `202609201042216_team_smoke`\n- **数据源**: `data/auth_test.csv`（sha256=F2B29558…16FB，2 行 × 3 列）\n- **诊断类型**: `COMPETING_SET`（竞争假设集，不可裁决）\n- **Judge 门控**: pass，score=96（第 1 轮，无阻断项）\n- **Preflight 物理审计**: PREFLIGHT_PASS（无阻断项）\n- **报告生成**: 2026-09-20\n\n---\n\n## 1. 执行摘要\n\n本诊断回答用户问题——『该数据有无异常趋势？』——结论为**不可裁决**：数据确实存在表观单向温升，temp_c 由 72.1 degC 升至 73.4 degC（+1.3 degC / 5 s，平均速率 0.26 degC/s，derived）[Evidence Rank 1]，且该事实经原始两行独立复算与 VLM 读图 3 次交叉确认。但 n=2 样本低于一切统计方法门槛（regime 20 行 / 变点 3 段 / CCF 30 行），无正常范围基线、无冗余测点、无事件记录，三个物理上成立的解释——H1 真实工艺热瞬态（置信 34）、H2 传感器测量伪影（置信 30）、H3 短时瞬态伪影（置信 34）——在本数据下完全不可判别。诊断输出 `COMPETING_SET`，单假设置信度 30-34（LOW，竞争集上限 65），禁止任何确定性根因表述。置信分值仅作序数解读（H2 < H1 ≈ H3），不构成精确度量。裁决路径为按最小判别数据需求补测（P1：同测点冗余参考传感器 + 连续 ≥30 个 5 s 样本 + 传感器规格书）。\n\n## 2. 诊断背景\n\n### 2.1 数据概览\n\n| 项 | 值 |\n|---|---|\n| 原始文件 | `data/auth_test.csv`，2 行 × 3 列（temp_c / timestamp / 派生 time_hours），无清洗损失（cleaning_operations=[]，0 行丢弃 / 0 修改） |\n| 数值参数 | temp_c（摄氏温度，L1 推断：测点 / 介质 / 设备 / 工艺阶段未知，physical_meaning_confidence=INFERRED） |\n| 时间窗 | 2026-09-09T00:00:00+08:00 → 00:00:05+08:00（5 s，时间戳真实解析、单调、间隔均匀 5.0 s） |\n| 观测值 | 72.1 degC → 73.4 degC |\n| 结构缺失 | 无分组列、无质量/检验列、无事件标记列、无冗余测点 |\n\n### 2.2 用户问题\n\n『该数据有无异常趋势？』——即判定 5 秒窗口内的温升是否构成异常趋势、其物理来源为何。\n\n### 2.3 本体与工艺上下文\n\n本体（`01_ontology/ontology.json`）标注：temp_c 为 predictor 角色；direction=UNKNOWN；normal_range_status=NOT_APPLICABLE（无 SOP / 规格限 / 历史基线）；物理原理候选（能量守恒 m·Cp·dT/dt = Q_in − Q_out、热时间常数 tau=C/(hA)）分别为 UNVERIFIED_NO_PROCESS_CONTEXT 与 NOT_ESTIMABLE_WITH_TWO_ROWS；六类混杂变量（环境温度、热源/负载、冷却、设备归属、工况、传感器健康）全部 NOT_OBSERVED。本体 `discrepancy_signals[0]` 标记 **BLOCKING_FOR_CAUSAL_CONCLUSION**：仅 2 行、1 个数值变量、5 秒跨度时，诊断必须输出 NEEDS_DATA 或 COMPETING_SET，`causal_graph.root_cause_conclusion_allowed=false` [Evidence Rank 5]。\n\n## 3. 数据质量评估\n\n| 维度 | 结论 |\n|---|---|\n| 完整性 | 2 行 × 3 列无缺失；清洗零操作、零损失，原始值与清洗值逐位一致（cleaning_integrity.json） |\n| 时间合法性 | timestamp 为真实解析的 ISO-8601(+08:00)，monotonic=true、median_interval_s=5.0、dropped_unparsable=0（time_alignment.json） |\n| 异常值 | z=[-0.7071, +0.7071]（构造性）、IQR 栏 71.45/74.05 degC 内无点、异常检测因 n<3 前置跳过（process_parameters_screened=0）——『无离群、无异常区间』是样本量下限的构造性结果，**不构成无异常的证据** |\n| 生产状态 | 两行被脚本默认标 steady 为无证据默认值，不据此声明稳态背景 |\n| 批次/分组完整性 | 无批次列、无分组列（组数=1），批次完整性检验不触发 |\n| 统计充分性 | validate_report 判定 **INSUFFICIENT_DATA**；脚本输出的 ROBUST 总体有效性判定为空洞真（total_targets=0、检查列表全空），已降权 |\n\n## 4. 统计分析发现\n\n本节为强制章节。n=2 条件下全部统计方法不可用，可用发现均为算术与视觉事实：\n\n1. **唯一趋势事实 [Evidence Rank 1]**：一阶差分 +1.3 degC，平均速率 0.26 degC/s（derived=true，未插值、未滤波、未拟合，可由原始两行复算）。『drift』仅为两点单调形态的形态学描述，不代表\n\n[计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 2 of 2).md]\n# robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md.md（第 2/2 部分）\n章节: MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping > C. Visual Odometry\n## C. Visual Odometry\n\n\nKITTI Odometry dataset is a publicly available collection of stereo visual odometry data, with 11 training and 10 testing sequences featuring urban and road scenes from a car's perspective, including moving vehicles and GPS data. KITTI360 enhances this dataset with better localization and richer semantic information.\n\nWe conduct a comprehensive comparison between our MLP-based SLAM system and other SLAM systems in this section. A presentation video of our experiment can be found in https://www.youtube.com/watch?v=sOKNc0- ZH2Q. In Table II, we provide an absolute translation error (ATE) comparison with ORB-SLAM2, DynaSLAM, DynaSLAM II, and a modified version of VDO-SLAM on the KITTI Odometry dataset. It is important to note that we deleted portions of the image frames in sequences 00 and 01 of KITTI Odometry dataset which were used for collecting the training dataset for the MLP model. Moreover, comparison with ORB-SLAM2, DynaSLAM, modified VDO-SLAM on the KITTI360 dataset is presented in Table III. The MLP model for distinguishing dynamic and static feature points was trained only on the KITTI Odometry dataset and did not use any possible information from the KITTI360 dataset. ORB-SLAM2 does not specifically address dynamic situations but serves as the foundation of our SLAM system. DynaSLAM also builds upon ORB-SLAM2 with the ability to detect dynamic objects, but it discards features located within the bounding box of potential dynamic objects directly, leading to information loss. DynaSLAM II is the current state-of-the-art method, aiming to enhance camera pose estimation precision by optimizing the Bundle Adjustment (BA) factor graph, which includes object poses and constant velocity constraints. The modified version of VDO-SLAM [30] is a re-implemented version; the original version can only run on datasets provided by the authors. The modified VDO-SLAM requires acquiring depth images through ZoeDepth [31], optical flow through VideoFlow offline, and applying YOLOv8 [32] to detect dynamic objects. We tested all SLAM systems on our experimental devices except DynaSLAM II due to the unavailability of its source code. Therefore, we directly used the experimental results from its original paper.\n\nAccording to experimental results in Table II and \n\n[自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md]\n# climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma（第 1/2 部分）\n章节: GPC/m: Global Precipitation Climatology by Machine Learning; Quasi-global, Daily, and One Degree Spatial Resolution\n# GPC/m: Global Precipitation Climatology by Machine Learning; Quasi-global, Daily, and One Degree Spatial Resolution\n\n\nHiroshi G. Takahashi\n\nTokyo Metropolitan University\n\nhiroshi3@tmu.ac.jp\n\nSeptember 17, 2024\n\n## Abstract\n\n\nThis paper presents a new precipitation dataset that is daily, has a spatial resolution of one degree on a quasi-global scale, and spans more than 42 years, using machine learning techniques. The ultimate goal of this dataset is to provide a homogeneous daily precipitation dataset for several decades without gaps, which is suitable for climate analysis. As a first step, 42 years of daily precipitation data was generated using machine learning techniques. The machine learning methods are supervised learning, and the reference data are estimated precipitation datasets from 2001 to 2020. Three machine learning methods are used: random forest, gradient-boosted decision trees, and convolutional neural networks. The input data are satellite observations and atmospheric circulations from reanalysis, which are somewhat modified based on knowledge of the climatological background. Using the trained statistical models, we predict back to 1979. when daily precipitation data was almost unavailable globally. The detailed procedures are described in this paper. The produced data have been partially evaluated. However, additional evaluations from different perspectives are needed. The advantages and disadvantages of this precipitation dataset are also discussed. Currently, this GPC/m precipitation dataset version is GPC/m-v1-2024.\n\n## 1 Introduction\n\n\nThe importance of precipitation datasets has increased in recent years as they are extensively used for climate and meteorological analyses, such as precipitation variability, water budget, evaluation of climate model, and related research (e.g., Trenberth, 2011). However, the available precipitation data have some limitations, especially difficulties in using precipitation data globally, including over the ocean over long periods (Becker et al., 2013). This study produces a prototype of the precipitation dataset using machine learning methods. This machine learning-based precipitation can be used in climate and related studies. Additionally, this study can contribute to discussing not only the adva\n\n[AI 基础设施/tracelens-deployment-notes.md]\n# TraceLens v2.3 生产环境部署与运维记录\n\n> 记录人：平台观测组 · 环境：生产集群（3 可用区，48 节点）· 生成日期：2026-09-25\n\n## 1. 部署背景\n\n上一代追踪系统 TraceProbe 在流量高峰期丢失约 2.1% 的 span，且存储成本随流量线性增长。\n我们替换为 TraceLens v2.3，一套基于 OpenTelemetry 协议的分布式追踪系统，核心组件包括：\n\n- **采集层**：每节点一个 DaemonSet 采集器，批量导出间隔 5 秒\n- **传输层**：Kafka 集群，12 个分区、3 副本、消费者组 `tracelens-ingest`\n- **计算层**：4 个 Flink 任务做 span 配对与服务拓扑聚合\n- **存储层**：列式存储 + zstd 压缩，索引用倒排 + 时间分区\n\n## 2. 采样策略（关键配置）\n\n生产环境采用头部采样 + 尾部兜底的混合策略：\n\n| 项目 | 配置 | 说明 |\n|---|---|---|\n| 基础采样率 | **7.3%** | 按服务维度一致性采样（traceid 哈希） |\n| 慢请求兜底 | p99 以上全采 | 尾部采样器延迟判定窗口 30 秒 |\n| 错误请求 | 100% 全采 | 任何包含 error status 的 span |\n| 手动压测标记 | 100% 全采 | 请求头 `x-debug-trace: true` |\n\n上线后实测：**span 采样率稳定在 7.3%**（配置目标 7.5%，一致性采样哈希削峰导致 -0.2pp），\n日均入库 span 数从 21 亿降至 1.6 亿。\n\n## 3. 性能结果\n\n- 查询侧 p99 延迟：**从 847ms 降至 412ms**（降幅 51.4%）\n- 服务拓扑图构建延迟：从 15 分钟缩短到 90 秒\n- 存储侧启用 zstd level 9 后，**磁盘占用下降 63%**（3.4TB → 1.26TB）\n- Kafka 消费积压：高峰期稳定在 12 万条以内，无 rebalance 风暴\n\n## 4. 故障案例：采样器配置回滚事件\n\n上线第 3 天出现采样率跳变（7.3% → 41%），根因是配置中心把采样策略误回滚到旧版本\n（旧版策略为「开发环境 40% 采样」）。处理步骤：\n\n1. 通过 span 入库速率告警（**span 丢失率 >0.5% 持续 5 分钟** 的反向指标：入库速率突增）发现异常\n2. 配置中心回滚 diff 定位到误操作账号\n3. 恢复配置并在配置中心增加「采样策略变更需双人审批」规则\n4. 复盘结论：采样率属于**成本与可观测性的核心阀门**，任何变更必须有灰度与审批\n\n## 5. 运维要点与经验\n\n- 12 个 Kafka 分区在生产峰值下消费组利用率约 68%，扩容前不要再加采集器\n- Flink checkpoint 间隔 60 秒；曾因 checkpoint 超时引发拓扑图重建，调到 120 秒后稳定\n- 倒排索引按天分区，保留 30 天；跨月查询必须走归档存储（延迟约 3 秒）\n- 采集器内存上限 512MB，超过会被 OOMKill，表现为该节点 span 断流——监控指标\n  `tracelens_collector_resident_memory_bytes` 需要 P99 告警\n\n## 6. 与告警系统的联动\n\nTraceLens 的 trace 指标接入统一告警：\n\n- span 丢失率 > 0.5% 持续 5 分钟 → P2 告警\n- 查询 p99 > 800ms 持续 10 分钟 → P3 告警\n- Kafka 消费积压 > 500 万条 → P1 告警（曾触发过一次，根因是下游列式存储写放大）\n\n## 7. 容量规划参考\n\n按当前流量（日均 1.6 亿 span）反推的资源规划公式：\n\n- 采集器：每节点 CPU 配额 1.5 核，内存 512MB（上限，超限 OOMKill）\n- Kafka：每百万 span/秒约需 3 分区 + 1 副本带宽 240Mbps\n- 存储：压缩后每亿 span 约 78GB，按 30 天保留 + 20% 余量规划\n- 查询集群：p99 目标 412ms 对应的最小副本数为 6（3 可用区各 2 副本）\n\n## 8. 后续计划\n\n- 引入基于概率的动态采样（按服务 QPS 自动调节基础采样率）\n- 拓扑数据接入知识图谱，支持跨服务故障传播分析\n"
+}

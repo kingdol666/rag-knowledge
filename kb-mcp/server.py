@@ -336,6 +336,8 @@ async def kb_search(query: str, top_k: int = 10) -> str:
     prefer kb_search_vector or kb_search_two_stage.
 
     This is NOT a full-text content search. It does NOT read document bodies."""
+    if not query.strip():
+        return _j({"success": False, "error": "query must not be empty"})
     return _j(await _client().kb_search(query, top_k))
 
 
@@ -601,8 +603,10 @@ async def parse_doc(file_path: str, use_ocr: bool = True) -> str:
 
     **Atomic**: ONLY parses the file and returns the markdown content + paths.
     Does NOT save to KB, does NOT index.
-    After parsing, use kb_doc_create or fs_upload_file to save the markdown,
-    then kb_index_document to index.
+    After parsing, use kb_doc_save_parsed to save the markdown into a KB
+    (it stores full content + images), then kb_index_document to index
+    (save_parsed does NOT auto-index). Oversized markdown must go through
+    the A2.5 split gate first (see skill://knowledgebase-ingest).
 
     NON-BLOCKING: returns a task_id immediately; poll with parse_task_status.
 
@@ -613,6 +617,13 @@ async def parse_doc(file_path: str, use_ocr: bool = True) -> str:
     """
     if not _exists(file_path):
         return _j({"success": False, "error": f"file not found: {file_path}"})
+    suffix = Path(file_path).suffix.lower()
+    if suffix not in {".pdf", ".png", ".jpg", ".jpeg", ".docx", ".xlsx"}:
+        return _j({"success": False,
+                   "error": (f"unsupported parse format: {suffix or '(no extension)'} — "
+                             "parse_doc supports pdf/png/jpg/jpeg/docx/xlsx only; "
+                             "save text formats (.md/.txt) directly via kb_doc_save_parsed "
+                             "(manual markdown mode) or kb_doc_create, no parsing needed")})
     client = _client()
     meta = {"file_path": file_path, "use_ocr": use_ocr}
 
@@ -641,8 +652,9 @@ async def parse_doc_batch(file_paths: list, use_ocr: bool = True) -> str:
 
     **Atomic**: ONLY parses files and returns markdown results.
     Does NOT save to KB, does NOT index, does NOT auto-describe.
-    After parsing, use kb_doc_create or fs_upload_file for each file,
-    then kb_batch_index to index.
+    After parsing, use kb_doc_save_parsed for each file (full content + images;
+    then kb_index_document — save_parsed does NOT auto-index), or the A2.5
+    split gate for oversized markdown (see skill://knowledgebase-ingest).
 
     NON-BLOCKING: all files parse sequentially in ONE background task.
     Poll with parse_task_status(task_id).
@@ -652,6 +664,14 @@ async def parse_doc_batch(file_paths: list, use_ocr: bool = True) -> str:
     missing = [fp for fp in file_paths if not _exists(fp)]
     if missing:
         return _j({"success": False, "error": "file(s) not found", "missing": missing})
+    unsupported = [fp for fp in file_paths
+                   if Path(fp).suffix.lower() not in {".pdf", ".png", ".jpg", ".jpeg", ".docx", ".xlsx"}]
+    if unsupported:
+        return _j({"success": False,
+                   "error": ("unsupported parse format(s) — parse_doc_batch supports "
+                             "pdf/png/jpg/jpeg/docx/xlsx only; save text formats "
+                             "(.md/.txt) directly via kb_doc_save_parsed manual mode"),
+                   "unsupported": unsupported})
     client = _client()
     meta = {"file_paths": list(file_paths), "use_ocr": use_ocr}
 
@@ -1339,7 +1359,7 @@ async def experience_update(kb_id: str, exp_id: str, title: str = "",
         result: New result
         key_lessons: New list of key lessons
         tags: New list of tags
-        severity: New severity
+        severity: New severity (critical|important|normal|tip — invalid values are rejected by the backend enum)
         status: New status (draft, published, archived)
         related_docs: New list of related documents
         prerequisites: New list of prerequisites
@@ -2026,6 +2046,8 @@ async def kb_search_vector(query: str, kb_id: str = "", top_k: int = 5,
     Returns:
         {success, results: [{content, score, doc_path, chunk_index, kb_id}]}
     """
+    if not query.strip():
+        return _j({"success": False, "error": "query must not be empty"})
     client = _client()
     if kb_id and kb_id.strip() and not await _kb_exists(client, kb_id):
         return _j({"success": False, "error": f"knowledge base not found: {kb_id}"})
@@ -2074,6 +2096,8 @@ async def kb_search_two_stage(
         When cross-KB search results come from <2 distinct KBs (BM25 blind spot),
         an auto-upgrade supplementary vector search is appended as _cross_kb_fallback.
     """
+    if not query.strip():
+        return _j({"success": False, "error": "query must not be empty"})
     client = _client()
     if kb_id and kb_id.strip() and not await _kb_exists(client, kb_id):
         return _j({"success": False, "error": f"knowledge base not found: {kb_id}"})
@@ -2705,6 +2729,8 @@ async def soul_ask(query: str, soul_kb_id: str = "", task_goal: str = "",
         {answer, citations, pas_score, persona_bundle, selected_soul, route_reason,
          route_confidence, route_candidates, route_uncertain, language_style_warning}
     """
+    if not query.strip():
+        return _j({"success": False, "error": "query must not be empty"})
     if async_mode:
         async def _work():
             return await _client().soul_ask(
@@ -2737,6 +2763,8 @@ async def soul_qdcvr_ask(query: str, soul_kb_id: str = "", task_goal: str = "",
     Returns:
         {answer, citations, pas_score, selected_soul, route_*, evidence_count}
     """
+    if not query.strip():
+        return _j({"success": False, "error": "query must not be empty"})
     async def _work():
         return await _client().soul_qdcvr_ask(query, soul_kb_id, task_goal, task_type, top_k)
     if async_mode:

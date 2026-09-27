@@ -118,7 +118,10 @@ export default defineEventHandler(async (event) => {
       if (result.markdown) {
         markdownBuffer = Buffer.from(result.markdown, 'utf-8')
         fileSize = markdownBuffer.length
-        const stem = (result.source_filename || result.filename || 'document').replace(/\.(pdf|png|jpg|jpeg|docx|xlsx)$/i, '')
+        // Strip KNOWN parse-source extensions; .md/.txt sources keep their stem too
+        // (otherwise a "x.md" source would become "x.md.md" on disk).
+        const stem = (result.source_filename || result.filename || 'document')
+          .replace(/\.(pdf|png|jpg|jpeg|docx|xlsx|md|markdown|txt)$/i, '')
         fileName = `${stem}.md`
       } else if (result.markdown_path) {
         // markdown_path comes from client POST body, must be within allowed roots to block path traversal

@@ -28,6 +28,7 @@ _ENV_B = "JEV" + chr(95) + "API" + chr(95) + "KEY"
 _ENV_MODEL = "JEV" + chr(95) + "MODEL"
 _ENV_ENDPOINT = "JEV" + chr(95) + "ENDPOINT"
 _LAYA_MODEL = "LAYA" + chr(95) + "MODEL"
+_LAYA_MODEL_PATH = "LAYA" + chr(95) + "MODEL" + chr(95) + "PATH"
 _LAYA_SUBFOLDER = "LAYA" + chr(95) + "SUBFOLDER"
 _LAYA_LOCAL_ONLY = "LAYA" + chr(95) + "LOCAL_ONLY"
 _LAYA_THRESHOLD = "LAYA" + chr(95) + "THRESHOLD"
@@ -46,6 +47,9 @@ DEFAULT_RETRIES = 2
 _LAYA_LOCK = threading.Lock()
 _LAYA_AGENT: Any | None = None
 _LAYA_AGENT_KEY: tuple[str, str] | None = None
+
+_REPO_ROOT = Path(__file__).resolve().parents[4]
+_DEFAULT_LOCAL_MODEL_DIR = _REPO_ROOT / "model" / "laya"
 _ENUMERATION_HINTS = (
     "list every", "list all", "every scene", "all the scenes", "enumerate",
     "each time", "how many times", "all occasions", "列出", "列举", "所有",
@@ -122,12 +126,52 @@ def _laya_instruction(query: str, criterion: str) -> str:
     return _EVIDENCE_TEXT.format(query=query)
 
 
+def _local_model_complete(model_dir: Path) -> bool:
+    return (model_dir / "model.safetensors").exists() \
+        and (model_dir / "rl_agent_config.json").exists() \
+        and (model_dir / "tokenizer").is_dir()
+
+
+def _ensure_local_model(model_dir: Path) -> bool:
+    """Download the local checkpoint when it is missing. Returns True when the
+    directory is complete afterwards. Never touches paths outside the repo's
+    model/ area unless the caller configured them explicitly."""
+    if _local_model_complete(model_dir):
+        return True
+    scripts_dir = _REPO_ROOT / "scripts"
+    if not (scripts_dir / "ensure_laya_model.py").exists():
+        return False
+    if str(scripts_dir) not in sys.path:
+        sys.path.insert(0, str(scripts_dir))
+    try:
+        import ensure_laya_model as ensure
+        status = ensure.ensure_model()
+        return bool(status.get("complete"))
+    except Exception:  # noqa: BLE001
+        return False
+
+
 def _laya_config(env: Mapping[str, str] | None) -> dict[str, Any]:
     source = os.environ if env is None else env
-    model = str(source.get(_LAYA_MODEL) or DEFAULT_LAYA_MODEL).strip()
     subfolder = str(source.get(_LAYA_SUBFOLDER) or "").strip()
     local_only = str(source.get(_LAYA_LOCAL_ONLY) or "").strip().lower() in {"1", "true", "yes"}
-    return {"model": model, "subfolder": subfolder, "local_only": local_only}
+    explicit_path = str(source.get(_LAYA_MODEL_PATH) or "").strip()
+    if explicit_path:
+        model = explicit_path
+        path_source = "env"
+    elif _local_model_complete(_DEFAULT_LOCAL_MODEL_DIR):
+        model = str(_DEFAULT_LOCAL_MODEL_DIR)
+        path_source = "repo_default"
+    else:
+        model = str(source.get(_LAYA_MODEL) or DEFAULT_LAYA_MODEL).strip()
+        path_source = "hf_id"
+    threshold_env = str(source.get(_LAYA_THRESHOLD) or "").strip()
+    try:
+        threshold = float(threshold_env) if threshold_env else None
+    except ValueError:
+        threshold = None
+    return {"model": model, "subfolder": subfolder, "local_only": local_only,
+            "path_source": path_source, "default_threshold": threshold}
 
 
 def _load_laya(env: Mapping[str, str] | None = None) -> Any:
@@ -142,12 +186,39 @@ def _load_laya(env: Mapping[str, str] | None = None) -> Any:
             os.environ["TRANSFORMERS_OFFLINE"] = "1"
         try:
             module = importlib.import_module("laya")
+            if cfg["path_source"] == "hf_id":
+                # Guarantee the repo-local checkpoint first so subsequent runs
+                # never need the network.
+                if _ensure_local_model(_DEFAULT_LOCAL_MODEL_DIR):
+                    cfg = dict(cfg, model=str(_DEFAULT_LOCAL_MODEL_DIR), path_source="repo_default")
+                    key = (cfg["model"], cfg["subfolder"])
             kwargs = {"subfolder": cfg["subfolder"]} if cfg["subfolder"] else {}
             agent = module.load(cfg["model"], **kwargs)
         except Exception as exc:  # noqa: BLE001
             raise JevUnavailable(f"laya_sdk_unavailable:{type(exc).__name__}:{str(exc)[:160]}") from exc
         _LAYA_AGENT, _LAYA_AGENT_KEY = agent, key
         return agent
+
+
+def release_laya() -> None:
+    """Drop the cached Laya agent and free its CUDA memory.
+
+    VRAM hygiene: if this process's copy stays resident while a SECOND
+    process loads Laya (e.g. an in-process mode B followed by a hybrid_search
+    subprocess), total VRAM can exceed the card and WDDM starts paging to
+    shared memory — measured ~20x slowdown. Call between in-process judging
+    phases and any Laya subprocess.
+    """
+    global _LAYA_AGENT, _LAYA_AGENT_KEY
+    with _LAYA_LOCK:
+        _LAYA_AGENT = None
+        _LAYA_AGENT_KEY = None
+    try:
+        import torch
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+    except Exception:  # noqa: BLE001 — best effort, CPU-only hosts included
+        pass
 
 
 def laya_score(query: str, text: str, criterion: str, *,
@@ -291,7 +362,8 @@ def filter_candidates(payload: Mapping[str, Any], *,
                 "result_list": [], "evidence_pack": "", "provenance": [],
                 "errors": [{"error": "unsupported_engine"}]}
     query = str(payload.get("query") or "").strip()
-    threshold = float(payload.get("threshold", DEFAULT_THRESHOLD))
+    default_threshold = _laya_config(env).get("default_threshold") if engine == "laya" else None
+    threshold = float(payload.get("threshold", default_threshold if default_threshold is not None else DEFAULT_THRESHOLD))
     raw_criterion = str(payload.get("criterion") or "auto")
     criterion = criterion_for(query) if raw_criterion == "auto" else raw_criterion
     if criterion not in {"evidence", "instance"}:
@@ -377,11 +449,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--check-config", action="store_true")
     parser.add_argument("--require-real", action="store_true")
     parser.add_argument("--engine", choices=["laya", "jev"], default="laya")
+    parser.add_argument("--threshold", type=float, default=None)
     args = parser.parse_args(argv)
     if args.check_config:
         config = check_config()
-        config.update({"engine": "laya", "laya_model": _laya_config(None)["model"],
-                       "laya_subfolder": _laya_config(None)["subfolder"],
+        laya_cfg = _laya_config(None)
+        config.update({"engine": "laya", "laya_model": laya_cfg["model"],
+                       "laya_model_path_source": laya_cfg["path_source"],
+                       "laya_subfolder": laya_cfg["subfolder"],
+                       "laya_local_model_complete": _local_model_complete(_DEFAULT_LOCAL_MODEL_DIR),
                        "laya_sdk_available": importlib.util.find_spec("laya") is not None})
         _write_json(args.output, config)
         return 0

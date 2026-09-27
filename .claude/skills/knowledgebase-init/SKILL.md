@@ -1,6 +1,6 @@
 ---
 name: knowledgebase-init
-description: "Smart incremental installation wizard for the RAG Knowledge Platform. Audits the existing environment FIRST and only installs/configures/downloads what is genuinely missing — never re-installs or re-downloads components that already work. Auto-detects GPU (NVIDIA CUDA / AMD ROCm / Apple MPS / CPU fallback), chooses the correct PyTorch wheel variant per platform, and supports Windows / Linux / macOS. Two install methods: (A) plugin install — auto-detects project in ~/.claude/plugins/cache/; (B) skills copy — clones if needed. Then guides through: prerequisite checks, incremental dependency install, GPU-adaptive torch, incremental model download, configuration (only for missing items), ragctl global registration, optional MCP global registration (~/.claude.json → mcpServers, user consent required), service startup, full-chain validation. Triggered by: /knowledgebase-init, init KB, setup knowledge base, install rag knowledge, deploy KB, start KB, bootstrap, getting started, initialize the knowledge base, install the knowledge base, deploy the knowledge base, knowledge base startup, kb init, knowledgebase setup wizard, knowledge base install wizard, configure the knowledge base, guided knowledge base installation."
+description: "Smart incremental installation wizard for the RAG Knowledge Platform. Audits the existing environment FIRST (backend/web/Neo4j/MinerU/engines/skills) and only installs, configures, or downloads what is actually missing — never reinstalls working components. Use when the user says init/安装/部署/初始化 the platform, reports a broken first-run, or wants environment repair."
 ---
 ## ⭐ Related Skills
 - Architecture understanding + execution model → [kb-architecture.md](../knowledgebase/references/kb-architecture.md) + [execution-model.md](../knowledgebase/references/execution-model.md) of `skill://knowledgebase`
@@ -38,7 +38,7 @@ models (`ragctl mineru-model`) and verify availability. Full flow in [mineru-mod
 ---
 
 # Knowledgebase Init — Smart Incremental Deployment Wizard
-> **⭐ Must-read before operating**: [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer data model + consistency invariants + 91-tool map)
+> **⭐ Must-read before operating**: [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer data model + consistency invariants + 94-tool map)
 
 **Executor: the main agent executes directly (no Archival delegation)** — init needs real-time interaction; all Bash commands are executed by the main agent.
 
@@ -60,6 +60,7 @@ models (`ragctl mineru-model`) and verify availability. Full flow in [mineru-mod
 | **3** Core dependencies | Install only missing uv/Node/Python3.12 | [incremental-install.md](references/incremental-install.md) §Core Dependencies |
 | **4** Project dependencies | Install only missing backend/web/mcp/cli + GPU torch | [gpu-and-torch.md](references/gpu-and-torch.md) §Install + [incremental-install.md](references/incremental-install.md) §Project Dependencies |
 | **5** Model download | Download only missing BGE-M3 / MinerU | [incremental-install.md](references/incremental-install.md) §Models |
+| **5b** Laya decision engine | Ensure `laya` in backend/.venv (MinerU env, GPU torch) + local model + GPU verdict smoke | See "Phase 5b" below |
 | **6** Configuration | Ask only about missing items; write config.yml + .env | [configuration.md](references/configuration.md) §Phase 6 |
 | **6b** MinerU deployment mode | Ask remote (default; collect base_url + token) or local (install mineru + models); verify health | [mineru-mode.md](references/mineru-mode.md) |
 | **7** ragctl registration | Skip if already registered | [configuration.md](references/configuration.md) §Phase 7 |
@@ -79,6 +80,7 @@ After running `ragctl check`, if all of the following hold → **jump to Phase 1
 - Dependencies ✅ (backend/.venv, web/node_modules, kb-mcp/.venv)
 - Torch GPU match (`node scripts/detect_gpu.cjs --verify-torch` → `torch_match: ok`)
 - BGE-M3 cached (snapshots/ contains pytorch_model.bin > 1GB)
+- Laya engine ✅ (`laya` importable in backend/.venv + `model/laya` complete + judge device cuda — Phase 5b skip condition)
 - Services running (backend + web healthy)
 
 ```
@@ -123,6 +125,33 @@ Based on Phase 0's `TORCH_VARIANT`:
 
 Detailed cache verification logic in [incremental-install.md](references/incremental-install.md) §Models.
 
+## Phase 5b — Laya Decision Engine (GPU, hosted in the MinerU venv)
+
+The three retrieval modes (A vector-first / B librarian / C parallel-A+B) judge
+every segment with the **Laya engine**. Since 2026-09-27 Laya is hosted in the
+**MinerU venv (`backend/.venv`)** — it already carries GPU torch, and Laya
+auto-selects CUDA when available (single-segment verdict ≈0.05s vs ~2s on CPU).
+
+**Skip condition**: the backend/.venv python can `import laya` AND
+`model/laya/model.safetensors` exists AND the GPU verdict smoke (step 3) passes.
+
+1. **Package**: `backend/.venv/Scripts/python.exe -c "import laya"` → if missing:
+   `uv pip install --python backend/.venv/Scripts/python.exe laya==0.3.20`
+   (deps torch/transformers<5/numpy/hub/safetensors are already in the MinerU env).
+2. **Model**: `python scripts/ensure_laya_model.py` (idempotent; repo-local
+   `model/laya`, skipped when complete).
+3. **GPU verdict smoke** (mandatory): print the loaded judge device —
+   expect `cuda` (if `cpu`, re-check Phase 4a torch CUDA match):
+   run under backend/.venv python: import jev_filter (librarian scripts dir on
+   sys.path) and print `jev_filter._load_laya().device`.
+
+**Interpreter rule (fail-closed)**: all judging scripts (search `vector_jev_search`,
+librarian `complete_recall`/`jev_filter`, hybrid `hybrid_search`, and the parallel
+mode-C orchestrator `scripts/124_mode_c_parallel.py`) MUST run under the
+backend/.venv python — runners resolve it automatically
+(`resolve_laya_python()`, override with `RAG_LAYA_PYTHON`); a bare `python`
+without `laya` fails closed with `JevUnavailable` and never silently degrades.
+
 ## Phase 6b — MinerU Deployment Mode (remote API default / local)
 
 **Skip condition**: `backend/config.yml` already has `mineru.mode` set AND (mode=local OR remote.base_url non-empty) → only re-verify health, don't re-ask.
@@ -158,6 +187,10 @@ mcp__kb-mcp__backend_status()         # backend + MinerU availability
 
 # Torch GPU final confirmation
 node scripts/detect_gpu.cjs --verify-torch   # torch_match: ok
+
+# Laya decision engine (Phase 5b) — judge device must be cuda
+backend/.venv/Scripts/python.exe -c "import sys; sys.path.insert(0,'.claude/skills/knowledgebase-librarian/scripts'); import jev_filter; print(jev_filter._load_laya().device)"
+# expect: cuda
 ```
 
 ### Completion Report
@@ -166,7 +199,7 @@ node scripts/detect_gpu.cjs --verify-torch   # torch_match: ok
 ═══════════════════════════════════════════════════════════
   ✅ RAG Knowledge Platform initialization complete!
 
-  📊 Backend ✅  Web ✅  Neo4j ✅ (if enabled)  MinerU ✅ (if enabled)
+  📊 Backend ✅  Web ✅  Neo4j ✅ (if enabled)  MinerU ✅ (if enabled)  Laya ✅ (GPU verdict, Phase 5b)
   🖥️  GPU: <CUDA/MPS/CPU> (<GPU name or "no GPU">)  Torch: <version>
   📁 Project: <RAG_ROOT>  Data: <STORAGE_PATH>
 

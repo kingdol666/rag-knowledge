@@ -1,9 +1,10 @@
 ---
 name: knowledgebase-librarian
-description: "Complete-recall librarian retrieval for unknown shelves, heterogeneous libraries, long-document questions, vector misses, and explicit all/every requests. Read every KB and unlimited-depth sub-KB description, keep all relevant or possible shelves, read every document description with doc IDs/paths, verify metadata against content, read every candidate segment, send every segment to the real Jev filter, aggregate scored evidence with provenance, apply the 0–8 rubric, and answer or report exact blind spots. Use for librarian, shelf scan, catalog search, coarse-to-fine, 逐级检索, 全库粗检索, 哪个知识库, 穷尽召回, Jev 判断, or 完整召回."
+description: "Complete-recall librarian retrieval for unknown shelves, heterogeneous libraries, long-document questions, vector misses, and explicit all/every requests. Read every KB and unlimited-depth sub-KB description, keep all relevant or possible shelves, read every document description with doc IDs/paths, verify metadata against content, read every candidate segment, send every segment to the real Jev/Laya filter, keep EVERY segment the engine scores yes (>= threshold) — no re-scoring and no pruning — aggregate all survivors with provenance into one evidence pack, and answer from all of it or report exact blind spots. Use for librarian, shelf scan, catalog search, coarse-to-fine, 逐级检索, 全库粗检索, 哪个知识库, 穷尽召回, Jev 判断, or 完整召回."
 ---
 ## ⭐ Related Skills
-- **Vector + content path** → `skill://knowledgebase-search` — the companion fast lane: `kb_search_vector` first, then the 0-8 content gate. This skill performs complete-recall catalog/read/Jev work when required.
+- **Vector + Jev-gate path** → `skill://knowledgebase-search` — the companion fast lane: `kb_search_vector` wide net first, then the Laya/Jev verify gate. This skill performs complete-recall catalog/read/Jev work when required.
+- **Parallel hybrid of both lanes** → `skill://knowledgebase-hybrid` — runs this lane and the vector lane concurrently on separate MCP connections, dedups on (kb_id, doc_path), one unified reread, then the same engine gate.
 - Document ingest → `skill://knowledgebase-ingest` — description quality is produced there (A3c / A3c-P)
 - KB integrity → `skill://knowledgebase-verify` — three-way consistency
 - Knowledge graph → `skill://knowledgebase-graph` — cross-library bridges
@@ -12,8 +13,8 @@ description: "Complete-recall librarian retrieval for unknown shelves, heterogen
 
 | Lane | Skill | Mechanism | Use when |
 |---|---|---|---|
-| **A · vector + content** | `knowledgebase-search` | `kb_search_vector` → dedup/threshold → **0-8 content gate** (read the body) → librarian fallback | default; fast semantic candidate proposal |
-| **B · complete-recall librarian** | **this skill** | all-KB catalog → all possible shelves → all document descriptions → description trust check → **all candidate parts/segments** → **real Jev gate** → aggregate evidence → 0-8 verification | unknown shelf, heterogeneous library, vector miss, long-document enumeration, or explicit “all/every/complete” request |
+| **A · vector + Jev gate** | `knowledgebase-search` | `kb_search_vector` wide net → dedup/threshold → **Laya/Jev verify gate** (read the body, engine scores every segment) → librarian fallback | default; fast semantic candidate proposal |
+| **B · complete-recall librarian** | **this skill** | all-KB catalog → all possible shelves → all document descriptions → description trust check → **all candidate parts/segments** → **real Jev gate** (yes = keep, nothing else) → aggregate ALL survivors → answer from the whole evidence pack | unknown shelf, heterogeneous library, vector miss, long-document enumeration, or explicit “all/every/complete” request |
 
 Lane B is intentionally more expensive. Its promise is high recall, not an unbounded latency guarantee: every scanned KB/document/segment is counted, and any unscanned scope is reported as a blind spot. Description matching only decides which records are *possible*; it never decides the final answer.
 
@@ -60,11 +61,18 @@ query entities (subject × attribute × constraints)
   ├─ L5.5 AGGREGATE  sort by KB/doc/part/offset, deduplicate overlaps, preserve
   │                  doc_id/path/section/line/char + Jev score provenance
   │
-  ├─ L6 VERIFY       same 0-8 content rubric: ≥6 P0 · =5 P1 · ≤4 discard
-  │
-  └─ L7 HANDOFF      answer from the aggregated evidence pack; report counts,
-                     Jev backend/threshold, citations and any unscanned blind spot
+  ├─ L6 HANDOFF      answer from the FULL Jev-yes evidence pack — no re-scoring,
+                     no pruning; report counts, backend/threshold, citations
+                     and any unscanned blind spot
 ```
+
+**The engine verdict is final.** Lane B has exactly one gate: the real Jev/Laya
+decision. Every segment scoring ≥ threshold is kept and becomes answer
+material — no content rubric, no doc-level retention cut, no P0/P1 tiering
+after the fact. The lanes differ on purpose: lane A double-checks its fast
+candidates with a rubric because vectors are only proposals; lane B has
+already read the real body text end-to-end before judging, so the engine's
+yes on real text is the last word.
 
 **Jev/Laya decision guidance:** [references/laya-sdk.md](references/laya-sdk.md) documents the default local Laya SDK, model/cache setup, `noul=P(true)`, threshold, and fail-closed behavior. [references/jev-judgment-layer.md](references/jev-judgment-layer.md) documents the explicit remote Jev option. The bundled `scripts/jev_filter.py` defaults to `engine=laya`; pass `--engine jev` only when remote Jev is intentionally selected. Every scored candidate is returned in `result_list` with doc ID/path/part/section/offset provenance.
 
@@ -82,7 +90,9 @@ Match the query's **subject × attribute × constraints** against every KB descr
 - `possible`: one dimension matches, the description is missing/ambiguous, or terminology may be multilingual;
 - `out_of_scope`: no observed match and the description is specific enough to trust.
 
-In **complete-recall mode**, keep every `relevant` and `possible` KB, including unlimited-depth sub-KBs discovered from the tree. Do not use a fixed top-2/3 cutoff. An `out_of_scope` label is allowed to prune only when the catalog description is present and trustworthy; if all shelves appear out of scope because vocabulary differs, expand to the full catalog and report the expansion.
+**Work-level pruning for multi-work KBs (ICD contract):** a well-formed KB description carries a 收录清单 (work inventory). Match the query's work identity (e.g. 《傲慢与偏见》/ Pride and Prejudice) against the inventory BEFORE doc-level work: a "小说库" that does not list the queried work is `out_of_scope` even though its genre matches — genre overlap alone never justifies reading a whole multi-work library. Conversely, a KB listing the work stays `relevant` and its parts are matched per-work at L2 via the identity+事件 dimensions of each part's ICD description.
+
+In **complete-recall mode**, keep every `relevant` and `possible` KB, including unlimited-depth sub-KBs discovered from the tree. Do not use a fixed top-2/3 cutoff — multiple shelves may hold the answer and all of them are kept. An `out_of_scope` label is allowed to prune only when the catalog description is present and trustworthy; if all shelves appear out of scope because vocabulary differs, expand to the full catalog and report the expansion.
 
 ## L2 — Full document catalog (all kept shelves)
 
@@ -108,6 +118,7 @@ Before trusting a description, test it:
 | **Content-free** | it names no specific subject/chapter/section/date/number of its own |
 | **Contradiction** | its claimed range/section does not match the doc name or its siblings' spans |
 | **Degenerate range** | an inverted or single-point span (e.g. `XV–I`, `XLVI–XLVI`) |
+| **Broken part prefix** | a literal `【?/?·` placeholder — the ingest template never filled the part index (measured 156/322 catalog docs); part claims in this description are unreliable |
 
 If untrusted → **downgrade the metadata signal and read the real content**:
 ```
@@ -128,6 +139,10 @@ for EVERY kept document part:
 
 The reference implementation is `scripts/complete_recall.py`. It consumes an Archival-produced manifest and never calls MCP itself. Description matching only chooses `relevant/possible` shelves; pruning happens on real segment text after Jev. If pagination, service limits, or budgets leave a document/part unread, put its exact identity in `unscanned` and report it; never call the result exhaustive.
 
+> **Interpreter**: Laya-judging paths (`complete_recall.py`, `jev_filter.py`) run under `backend/.venv/Scripts/python.exe` — the MinerU env hosting `laya` + GPU torch (Laya auto-selects CUDA). Bare `python` without `laya` fails closed (`JevUnavailable`).
+
+**Budgeted catalog selection (script layer, `knowledgebase-hybrid/scripts/hybrid_search.py: catalog_lane`)** — when the lane runs under a read budget, selection order is: description-overlap hits → split-doc sibling completion (a picked `(part k of N)` brings its siblings, capped) → zero-overlap **round-robin across KBs** with `relevant/possible` shelves first (never drain in catalog-scan order — measured 2026-09-25: scan-order top-up silently favored the first KB and a 4th-KB gold was never read). With `--peek-heads`, every unpicked zero-overlap document still gets one cheap head read and its head is judged — the engine, not description vocabulary, decides its fate. This is the scripted form of "不要遗漏" under a budget.
+
 ## L5 — ⭐ Real Jev judgment and evidence aggregation
 
 Write the manifest to JSON and invoke:
@@ -144,8 +159,9 @@ The filter sends every candidate segment to the selected engine (default local L
 - every candidate gets a score record; `result_list` contains all kept candidates with source provenance;
 - lookup/evidence query → `criterion=evidence`;
 - enumeration/completeness query → `criterion=instance`;
+- **keep EVERY yes-scored survivor — the engine verdict is final**: a segment scoring ≥ threshold is evidence, full stop. No doc-level retention cut, no top-K floor, no content rubric, no P0/P1 tiering after the gate (the relative cut and top-K floor remain options of the *hybrid* lane, not this one);
 - aggregate by `{kb_id, doc_id/path, part_index, section, offset}` and merge duplicate/overlapping text without dropping provenance;
-- answer only from scored survivors, then apply the 0–8 rubric to the aggregated evidence.
+- answer from ALL scored survivors — every survivor is knowledge enhancement the answer must be able to draw on; the `evidence_pack` render is char-capped (default 20k) but `survivors`/`result_list` always carry every record, and `kb_doc_read` may re-read any survivor the pack truncated.
 
 For offline preparation and tests, inject a score function into `complete_recall.run_manifest`; do not label that result as real Jev.
 ## L5.1 — Read survivors and preserve the evidence pack
@@ -162,20 +178,20 @@ Forbidden here: `kb_search_vector`, `kb_search_two_stage`, and any embedding/BM2
 
 Long documents must be judged on all manifest segments, not a single head/mid/tail sample. For `(part k of N)` files read the actual part and cite its concrete path/id.
 
-## L6 — Verify with the same rubric
+## L6 — Handoff / answer from ALL survivors
 
-Use `knowledgebase-search`'s 0-8 rubric (topic 0-3 · scenario 0-3 · evidence 0-2).
-`≥6` P0 · `=5` P1 · `≤4` discard (even if the description promised otherwise).
-
-## L7 — Handoff / honest report
-
-Always finish the turn with the answer or the honest not-found report. The result must include:
+Always finish the turn with the answer or the honest not-found report. There is no
+verification step between the engine gate and the answer: the Jev/Laya yes is the
+verdict, and **every survivor** — not a scored top tier — is the knowledge
+enhancement the answer synthesizes from. The result must include:
 
 - `Search Paths`: L0/L1/L2/L3/L4 counts and the `jev_filter.py` backend, criterion, and threshold;
-- `Answer`: synthesized only from the aggregated scored evidence;
+- `Answer`: synthesized from the full survivor set (the engine's yes decides; no manual pruning afterwards);
 - `Sources`: concrete KB + `doc_id`/`doc_path` + part/section/line or char offsets + Jev score;
-- `Confidence`: the final 0–8 P0/P1 assessment;
+- `Confidence`: grounded in coverage — how many survivors across how many documents/KBs at what threshold;
 - `Blind Spots (Cross-Library Perspective)`: every unscanned or unavailable scope, including Jev unavailable/error status.
+
+The only honest not-found is an engine-level one: when the real Jev/Laya gate returns zero survivors (or is `unavailable`/`error`), report exactly that — never resurrect discarded candidates by hand, and never invent a hit the engine did not score.
 
 A partial catalog or partial segment scan must be labelled partial. It is never described as exhaustive.
 
@@ -190,7 +206,8 @@ A partial catalog or partial segment scan must be labelled partial. It is never 
 | Score a long doc from its head only | Evidence past the window is falsely discarded | chunk ∪ continuation reads |
 | Search every KB when L1 found no plausible shelf | Brute force ≠ precision | Report the blind spot |
 | **Call `kb_search_vector` / `kb_search_two_stage` here** | this lane's complete recall is catalog/read/Jev based | navigate with MCP, segment every body, then use `jev_filter.py`; hand off only when the caller explicitly chooses vector-first |
-| Answer when L6 gave ≤4 | Better nothing than something wrong | Honest not-found |
+| Re-score, re-rank or prune Jev-yes survivors | The engine verdict is final; extra cuts recreate the recall loss this lane exists to prevent | Aggregate ALL survivors and answer from all of them |
+| Answer from unscored text | Unscored = not evidence (fail-closed) | Honest engine-level not-found when zero survivors |
 
 ## Quick rule reference
 1. **Catalog first** — read every KB description before judging (L0)
@@ -198,6 +215,6 @@ A partial catalog or partial segment scan must be labelled partial. It is never 
 3. **Read every doc description** in every kept shelf, part-aware, with doc IDs and paths (L2)
 4. **Distrust descriptions** — boilerplate/content-free/degenerate → content read (L3)
 5. **Read every candidate segment** and record exact offsets; no top-k or head-only pruning (L4)
-6. **Real Jev only** — every candidate gets a score record; missing/error scores fail closed (L5)
-7. **Aggregate survivors** by source/offset and apply the 0-8 rubric (L6)
-8. **Answer or report blind spots** with the five-section format; never fabricate (L7)
+6. **Real Jev only, and its yes is final** — every candidate scored, fail-closed; ≥ threshold = keep ALL (L5)
+7. **Aggregate all survivors** by source/offset with provenance (L5.5)
+8. **Answer from the full survivor set** or report engine-level blind spots; never fabricate (L6)

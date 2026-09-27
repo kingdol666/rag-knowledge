@@ -1,0 +1,510 @@
+[
+  {
+    "mode": "A_vector",
+    "id": "T1",
+    "scenario": "enumeration/instance",
+    "seconds": 103.4,
+    "_gold": {
+      "2310.10981": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": false,
+        "score": 0.8893
+      },
+      "_summary": {
+        "golds_total": 1,
+        "golds_judged": 1,
+        "golds_kept": 1,
+        "golds_in_evidence": 0
+      }
+    }
+  },
+  {
+    "mode": "B_complete",
+    "id": "T1",
+    "scenario": "enumeration/instance",
+    "seconds": 284.6,
+    "scan": {
+      "descriptions_scanned": 329,
+      "overlap_docs": 63,
+      "zero_overlap_unread": 266,
+      "docs_read": 30
+    },
+    "_gold": {
+      "2310.10981": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": false,
+        "score": 0.9189
+      },
+      "_summary": {
+        "golds_total": 1,
+        "golds_judged": 1,
+        "golds_kept": 1,
+        "golds_in_evidence": 0
+      }
+    }
+  },
+  {
+    "status": "ok",
+    "lanes": {
+      "vector": {
+        "vector_raw_hits": 10,
+        "vector_dedup_docs": 9,
+        "seconds": 5.7,
+        "error": null
+      },
+      "catalog": {
+        "shelves_scanned": 6,
+        "shelves_excluded": 4,
+        "descriptions_scanned": 329,
+        "description_overlap_docs": 63,
+        "zero_overlap_docs_unread": 266,
+        "docs_read": 30,
+        "seconds": 19.1,
+        "error": null
+      }
+    },
+    "merge": {
+      "merged_docs": 37,
+      "from_both": 2,
+      "from_vector_only": 7,
+      "from_catalog_only": 28
+    },
+    "reread": {
+      "docs_to_reread": 7,
+      "docs_reread": 6,
+      "reread_errors": []
+    },
+    "seconds": 357.8,
+    "cli_exit_code": 0,
+    "seconds_cli_wall": 360.4,
+    "mode": "C_hybrid",
+    "id": "T1",
+    "scenario": "enumeration/instance",
+    "_gold": {
+      "2310.10981": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.9189
+      },
+      "_summary": {
+        "golds_total": 1,
+        "golds_judged": 1,
+        "golds_kept": 1,
+        "golds_in_evidence": 1
+      }
+    }
+  },
+  {
+    "mode": "A_vector",
+    "id": "T2",
+    "scenario": "multi-doc synthesis",
+    "seconds": 45.5,
+    "_gold": {
+      "2502.00306": {
+        "judged": false,
+        "kept": false,
+        "in_evidence": false,
+        "score": null
+      },
+      "2402.12317": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": false,
+        "score": 0.9137
+      },
+      "2411.18583": {
+        "judged": false,
+        "kept": false,
+        "in_evidence": false,
+        "score": null
+      },
+      "_summary": {
+        "golds_total": 3,
+        "golds_judged": 1,
+        "golds_kept": 1,
+        "golds_in_evidence": 0
+      }
+    }
+  },
+  {
+    "mode": "B_complete",
+    "id": "T2",
+    "scenario": "multi-doc synthesis",
+    "seconds": 314.4,
+    "scan": {
+      "descriptions_scanned": 329,
+      "overlap_docs": 302,
+      "zero_overlap_unread": 27,
+      "docs_read": 30
+    },
+    "_gold": {
+      "2502.00306": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": false,
+        "score": 0.9225
+      },
+      "2402.12317": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": false,
+        "score": 0.9137
+      },
+      "2411.18583": {
+        "judged": false,
+        "kept": false,
+        "in_evidence": false,
+        "score": null
+      },
+      "_summary": {
+        "golds_total": 3,
+        "golds_judged": 2,
+        "golds_kept": 2,
+        "golds_in_evidence": 0
+      }
+    }
+  },
+  {
+    "status": "ok",
+    "lanes": {
+      "vector": {
+        "vector_raw_hits": 10,
+        "vector_dedup_docs": 10,
+        "seconds": 5.9,
+        "error": null
+      },
+      "catalog": {
+        "shelves_scanned": 6,
+        "shelves_excluded": 4,
+        "descriptions_scanned": 329,
+        "description_overlap_docs": 302,
+        "zero_overlap_docs_unread": 27,
+        "docs_read": 30,
+        "seconds": 19.2,
+        "error": null
+      }
+    },
+    "merge": {
+      "merged_docs": 39,
+      "from_both": 1,
+      "from_vector_only": 9,
+      "from_catalog_only": 29
+    },
+    "reread": {
+      "docs_to_reread": 9,
+      "docs_reread": 8,
+      "reread_errors": []
+    },
+    "seconds": 407.6,
+    "cli_exit_code": 0,
+    "seconds_cli_wall": 410.2,
+    "mode": "C_hybrid",
+    "id": "T2",
+    "scenario": "multi-doc synthesis",
+    "_gold": {
+      "2502.00306": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.9225
+      },
+      "2402.12317": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.9162
+      },
+      "2411.18583": {
+        "judged": false,
+        "kept": false,
+        "in_evidence": false,
+        "score": null
+      },
+      "_summary": {
+        "golds_total": 3,
+        "golds_judged": 2,
+        "golds_kept": 2,
+        "golds_in_evidence": 2
+      }
+    }
+  },
+  {
+    "mode": "A_vector",
+    "id": "T3",
+    "scenario": "paraphrase zero-overlap",
+    "seconds": 40.5,
+    "_gold": {
+      "2508.05896": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": false,
+        "score": 0.8598
+      },
+      "_summary": {
+        "golds_total": 1,
+        "golds_judged": 1,
+        "golds_kept": 1,
+        "golds_in_evidence": 0
+      }
+    }
+  },
+  {
+    "mode": "B_complete",
+    "id": "T3",
+    "scenario": "paraphrase zero-overlap",
+    "seconds": 306.8,
+    "scan": {
+      "descriptions_scanned": 329,
+      "overlap_docs": 30,
+      "zero_overlap_unread": 299,
+      "docs_read": 30
+    },
+    "_gold": {
+      "2508.05896": {
+        "judged": false,
+        "kept": false,
+        "in_evidence": false,
+        "score": null
+      },
+      "_summary": {
+        "golds_total": 1,
+        "golds_judged": 0,
+        "golds_kept": 0,
+        "golds_in_evidence": 0
+      }
+    }
+  },
+  {
+    "status": "ok",
+    "lanes": {
+      "vector": {
+        "vector_raw_hits": 10,
+        "vector_dedup_docs": 10,
+        "seconds": 5.8,
+        "error": null
+      },
+      "catalog": {
+        "shelves_scanned": 6,
+        "shelves_excluded": 4,
+        "descriptions_scanned": 329,
+        "description_overlap_docs": 30,
+        "zero_overlap_docs_unread": 299,
+        "docs_read": 30,
+        "seconds": 18.9,
+        "error": null
+      }
+    },
+    "merge": {
+      "merged_docs": 39,
+      "from_both": 1,
+      "from_vector_only": 9,
+      "from_catalog_only": 29
+    },
+    "reread": {
+      "docs_to_reread": 9,
+      "docs_reread": 7,
+      "reread_errors": []
+    },
+    "seconds": 433.9,
+    "cli_exit_code": 0,
+    "seconds_cli_wall": 436.8,
+    "mode": "C_hybrid",
+    "id": "T3",
+    "scenario": "paraphrase zero-overlap",
+    "_gold": {
+      "2508.05896": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.8598
+      },
+      "_summary": {
+        "golds_total": 1,
+        "golds_judged": 1,
+        "golds_kept": 1,
+        "golds_in_evidence": 1
+      }
+    }
+  },
+  {
+    "mode": "A_vector",
+    "id": "T4",
+    "scenario": "part targeting",
+    "seconds": 51.2,
+    "_gold": {
+      "2503.21676": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": false,
+        "score": 0.892
+      },
+      "_summary": {
+        "golds_total": 1,
+        "golds_judged": 1,
+        "golds_kept": 1,
+        "golds_in_evidence": 0
+      }
+    }
+  },
+  {
+    "mode": "B_complete",
+    "id": "T4",
+    "scenario": "part targeting",
+    "seconds": 267.8,
+    "scan": {
+      "descriptions_scanned": 329,
+      "overlap_docs": 105,
+      "zero_overlap_unread": 224,
+      "docs_read": 30
+    },
+    "_gold": {
+      "2503.21676": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": false,
+        "score": 0.8527
+      },
+      "_summary": {
+        "golds_total": 1,
+        "golds_judged": 1,
+        "golds_kept": 1,
+        "golds_in_evidence": 0
+      }
+    }
+  },
+  {
+    "status": "ok",
+    "lanes": {
+      "vector": {
+        "vector_raw_hits": 10,
+        "vector_dedup_docs": 10,
+        "seconds": 6.0,
+        "error": null
+      },
+      "catalog": {
+        "shelves_scanned": 6,
+        "shelves_excluded": 4,
+        "descriptions_scanned": 329,
+        "description_overlap_docs": 105,
+        "zero_overlap_docs_unread": 224,
+        "docs_read": 30,
+        "seconds": 19.5,
+        "error": null
+      }
+    },
+    "merge": {
+      "merged_docs": 39,
+      "from_both": 1,
+      "from_vector_only": 9,
+      "from_catalog_only": 29
+    },
+    "reread": {
+      "docs_to_reread": 9,
+      "docs_reread": 8,
+      "reread_errors": []
+    },
+    "seconds": 370.5,
+    "cli_exit_code": 0,
+    "seconds_cli_wall": 373.3,
+    "mode": "C_hybrid",
+    "id": "T4",
+    "scenario": "part targeting",
+    "_gold": {
+      "2503.21676": {
+        "judged": true,
+        "kept": true,
+        "in_evidence": true,
+        "score": 0.8732
+      },
+      "_summary": {
+        "golds_total": 1,
+        "golds_judged": 1,
+        "golds_kept": 1,
+        "golds_in_evidence": 1
+      }
+    }
+  },
+  {
+    "mode": "A_vector",
+    "id": "T5",
+    "scenario": "not-in-library",
+    "seconds": 47.2,
+    "_gold": {
+      "_summary": {
+        "golds_total": 0,
+        "golds_judged": 0,
+        "golds_kept": 0,
+        "golds_in_evidence": 0
+      }
+    }
+  },
+  {
+    "mode": "B_complete",
+    "id": "T5",
+    "scenario": "not-in-library",
+    "seconds": 305.0,
+    "scan": {
+      "descriptions_scanned": 329,
+      "overlap_docs": 16,
+      "zero_overlap_unread": 299,
+      "docs_read": 30
+    },
+    "_gold": {
+      "_summary": {
+        "golds_total": 0,
+        "golds_judged": 0,
+        "golds_kept": 0,
+        "golds_in_evidence": 0
+      }
+    }
+  },
+  {
+    "status": "ok",
+    "lanes": {
+      "vector": {
+        "vector_raw_hits": 10,
+        "vector_dedup_docs": 10,
+        "seconds": 5.3,
+        "error": null
+      },
+      "catalog": {
+        "shelves_scanned": 6,
+        "shelves_excluded": 4,
+        "descriptions_scanned": 329,
+        "description_overlap_docs": 16,
+        "zero_overlap_docs_unread": 299,
+        "docs_read": 30,
+        "seconds": 18.4,
+        "error": null
+      }
+    },
+    "merge": {
+      "merged_docs": 40,
+      "from_both": 0,
+      "from_vector_only": 10,
+      "from_catalog_only": 30
+    },
+    "reread": {
+      "docs_to_reread": 10,
+      "docs_reread": 9,
+      "reread_errors": []
+    },
+    "seconds": 427.0,
+    "cli_exit_code": 0,
+    "seconds_cli_wall": 430.5,
+    "mode": "C_hybrid",
+    "id": "T5",
+    "scenario": "not-in-library",
+    "_gold": {
+      "_summary": {
+        "golds_total": 0,
+        "golds_judged": 0,
+        "golds_kept": 0,
+        "golds_in_evidence": 0
+      }
+    }
+  }
+]

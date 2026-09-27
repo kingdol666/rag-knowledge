@@ -1,0 +1,138 @@
+{
+ "question": "How should farmers allocate trap cropping investments to maximize yield?",
+ "mode": "A_vector",
+ "started": "15:13:38",
+ "vector_raw_hits": [
+  {
+   "doc_path": "Corpus-Chunks800/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz__k00.md",
+   "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+   "score": 0.7447524070739746,
+   "chunk_index": 0
+  },
+  {
+   "doc_path": "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 1 of 3).md",
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "score": 0.7447522282600403,
+   "chunk_index": 0
+  },
+  {
+   "doc_path": "Corpus-Chunks800/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz__k01.md",
+   "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+   "score": 0.7366440296173096,
+   "chunk_index": 1
+  },
+  {
+   "doc_path": "经济与社会/economics__1807.09475__cap-and-monetary-policy.md",
+   "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+   "score": 0.44814372062683105,
+   "chunk_index": 48
+  },
+  {
+   "doc_path": "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "score": 0.44681185483932495,
+   "chunk_index": 46
+  },
+  {
+   "doc_path": "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md",
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "score": 0.4457383155822754,
+   "chunk_index": 16
+  },
+  {
+   "doc_path": "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md",
+   "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+   "score": 0.4340693950653076,
+   "chunk_index": 46
+  },
+  {
+   "doc_path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 5 of 12).md",
+   "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+   "score": 0.4327443242073059,
+   "chunk_index": 65
+  },
+  {
+   "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+   "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+   "score": 0.37755024433135986,
+   "chunk_index": 22
+  },
+  {
+   "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 19 of 26).md",
+   "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+   "score": 0.3541138172149658,
+   "chunk_index": 53
+  }
+ ],
+ "vector_dedup_docs": 10,
+ "docs_read": [
+  {
+   "doc_path": "Corpus-Chunks800/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz__k00.md",
+   "chars": 0,
+   "truncated": false
+  },
+  {
+   "doc_path": "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 1 of 3).md",
+   "chars": 20000,
+   "truncated": true
+  },
+  {
+   "doc_path": "Corpus-Chunks800/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz__k01.md",
+   "chars": 0,
+   "truncated": false
+  },
+  {
+   "doc_path": "经济与社会/economics__1807.09475__cap-and-monetary-policy.md",
+   "chars": 20000,
+   "truncated": true
+  },
+  {
+   "doc_path": "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+   "chars": 20000,
+   "truncated": true
+  }
+ ],
+ "judge": {
+  "abs_kept": [
+   1,
+   3,
+   4
+  ],
+  "relative_cut": 0.696,
+  "global_best": 0.796,
+  "doc_scores": [
+   {
+    "doc": "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 1 of 3).md",
+    "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+    "score": 0.7964,
+    "kept": true
+   },
+   {
+    "doc": "经济与社会/economics__1807.09475__cap-and-monetary-policy.md",
+    "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+    "score": 0.7927,
+    "kept": true
+   },
+   {
+    "doc": "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+    "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+    "score": 0.762,
+    "kept": true
+   }
+  ],
+  "status": "ok",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "scored_segments": 31,
+  "total_segments": 31
+ },
+ "kept_doc_paths": [
+  "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 1 of 3).md",
+  "经济与社会/economics__1807.09475__cap-and-monetary-policy.md",
+  "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md"
+ ],
+ "seconds": 41.0,
+ "evidence_chars": 7762,
+ "lanes": null
+}

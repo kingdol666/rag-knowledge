@@ -60,6 +60,10 @@ def _metadata_trust(description: str, sibling_descriptions: Sequence[str]) -> tu
             reasons.append("boilerplate")
     if re.search(r"\b([IVXLCDM]+)\s*[–-]\s*\1\b", desc, re.I):
         reasons.append("degenerate_range")
+    if "?/?" in desc:
+        # broken ingest template: the part index was never filled, so any
+        # 【k/N】-style part claim in this description is unreliable
+        reasons.append("broken_part_prefix")
     return not reasons, reasons
 
 
@@ -299,6 +303,68 @@ def run_manifest(manifest: Mapping[str, Any], *, score_fn: Any = None, env: Mapp
             "result_list": verdict.get("result_list", []),
             "evidence_pack": verdict.get("evidence_pack", ""),
             "provenance": verdict.get("provenance", [])}
+
+
+def retain_docs(doc_best: Mapping[Any, Mapping[str, Any]], *, threshold: float,
+                relative_margin: float = 0.10, top_k_floor: int = 0,
+                max_kept: int | None = None,
+                agreed_keys: Sequence[Any] = ()) -> dict[str, Any]:
+    """Doc-level retention over per-doc best segment scores (shared policy).
+
+    kept = score >= (global_best - relative_margin) — the relative cut exists
+    because the local Laya distribution on prose is top-heavy (measured median
+    ~0.88), so the absolute threshold alone keeps everything. Additionally,
+    when real evidence exists (global_best >= threshold), the global top-K
+    docs always survive: the floor protects question-critical mid-score
+    documents (measured: an experiments section scoring 0.84 under a 0.854
+    cut) without fabricating evidence when nothing actually scores.
+
+    agreed_keys are documents with an INDEPENDENT second recall signal
+    (description overlap for the librarian lane, dual-lane presence for the
+    hybrid). They survive at the raw absolute threshold: two agreeing signals
+    outrank a distribution-dependent cut. Measured E2E 2026-09-25: the gold
+    doc scored 0.8885 while 96 peeked heads saturated >= 0.9 — only the
+    agreement rule kept it.
+
+    max_kept caps the kept set to the top-N scores (kept_total preserves the
+    untruncated count) — with a head-peek scan the cut band can span most of
+    the library (measured 104/329), which floods the answer context.
+
+    doc_best maps an opaque doc key -> score record ({"score": float}|None).
+    Returns kept_keys ordered by score desc, the raw-threshold view, and the
+    cut for audit.
+    """
+    scores = {key: float(rec["score"]) for key, rec in (doc_best or {}).items()
+              if isinstance(rec, Mapping) and rec.get("score") is not None}
+    if not scores:
+        return {"kept_keys": [], "abs_kept_keys": [], "relative_cut": None,
+                "global_best": None, "floor_applied": False, "kept_total": 0}
+    global_best = max(scores.values())
+    cut = max(threshold, global_best - relative_margin)
+    kept = {k for k, s in scores.items() if s >= cut}
+    abs_kept = {k for k, s in scores.items() if s >= threshold}
+    floor_applied = False
+    if top_k_floor > 0 and global_best >= threshold:
+        ranked = sorted(scores, key=lambda k: -scores[k])[:max(0, top_k_floor)]
+        floor_applied = any(k not in kept for k in ranked)
+        kept |= set(ranked)
+    agreed = {k for k in (agreed_keys or ()) if k in scores and scores[k] >= threshold}
+    if agreed:
+        floor_applied = floor_applied or any(k not in kept for k in agreed)
+        kept |= agreed
+    kept_total = len(kept)
+    if max_kept is not None and kept_total > max_kept:
+        # The cap trims the score-ranked band but NEVER evicts agreement docs:
+        # a dual-signal document (description + content, or dual-lane) is the
+        # retention contract's floor, not part of the dispensable band.
+        # (Measured E2E 2026-09-25: 96 saturated heads pushed a 0.8885 gold
+        # past the cap and the agreement rule was silently defeated.)
+        trimmed = set(sorted(kept, key=lambda k: -scores[k])[:max(0, max_kept)])
+        kept = trimmed | agreed
+    return {"kept_keys": sorted(kept, key=lambda k: -scores[k]),
+            "abs_kept_keys": sorted(abs_kept), "relative_cut": round(cut, 3),
+            "global_best": round(global_best, 3), "floor_applied": floor_applied,
+            "kept_total": kept_total}
 
 
 def main(argv: Sequence[str] | None = None) -> int:

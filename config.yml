@@ -110,5 +110,9 @@ experience_auto:
   max_drafts_per_run: 5
   dry_run: false
 
+decision:
+  laya:
+    model_path: ""
+
 soul:
   default_harness: "omp"

@@ -1,0 +1,690 @@
+{
+  "status": "ok",
+  "query": "Which evaluation datasets and baseline methods does InstructDS compare against in its experiments?",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "parameters": {
+    "threshold": 0.5,
+    "relative_margin": 0.1,
+    "lane_agreement": false,
+    "vector_top_k": 10,
+    "vector_threshold": 0.35,
+    "doc_budget": 30,
+    "exclude_prefixes": [
+      "Corpus",
+      "soul-",
+      "e2e-",
+      "Novel-"
+    ],
+    "max_state_chars": 6000,
+    "segment_chars": 2400,
+    "read_max_chars": 20000
+  },
+  "lanes": {
+    "vector": {
+      "vector_raw_hits": 10,
+      "vector_dedup_docs": 9,
+      "seconds": 5.7,
+      "error": null
+    },
+    "catalog": {
+      "shelves_scanned": 6,
+      "shelves_excluded": 4,
+      "descriptions_scanned": 329,
+      "description_overlap_docs": 63,
+      "zero_overlap_docs_unread": 266,
+      "docs_read": 30,
+      "seconds": 19.1,
+      "error": null
+    }
+  },
+  "merge": {
+    "merged_docs": 37,
+    "from_both": 2,
+    "from_vector_only": 7,
+    "from_catalog_only": 28
+  },
+  "reread": {
+    "docs_to_reread": 7,
+    "docs_reread": 6,
+    "reread_errors": []
+  },
+  "judge": {
+    "kept_doc_indices": [
+      20,
+      7,
+      28,
+      2,
+      26,
+      21,
+      4,
+      34,
+      12,
+      30,
+      10,
+      8,
+      31,
+      25,
+      13
+    ],
+    "abs_kept": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35
+    ],
+    "relative_cut": 0.861,
+    "global_best": 0.961,
+    "doc_scores": [
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 2 of 9).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.9612,
+        "kept": true
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.9189,
+        "kept": true
+      },
+      {
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.9171,
+        "kept": true
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.9033,
+        "kept": true
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\databases__2102.02440__online-sketch-based-query-optimization.md (part 4 of 5).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.8978,
+        "kept": true
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 8 of 9).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.8959,
+        "kept": true
+      },
+      {
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "doc_path": "自然科学与地球科学\\astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 2 of 2).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.8926,
+        "kept": true
+      },
+      {
+        "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+        "doc_path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 3 of 4).md",
+        "lane": "vector",
+        "vector_score": 0.4705039858818054,
+        "judge_score": 0.8867,
+        "kept": true
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 7 of 9).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.8841,
+        "kept": true
+      },
+      {
+        "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+        "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+        "lane": "vector",
+        "vector_score": 0.5284450650215149,
+        "judge_score": 0.8838,
+        "kept": true
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 3 of 4).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.8802,
+        "kept": true
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+        "lane": "both",
+        "vector_score": 0.6324482560157776,
+        "judge_score": 0.8776,
+        "kept": true
+      },
+      {
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "doc_path": "自然科学与地球科学/chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md",
+        "lane": "vector",
+        "vector_score": 0.5257747769355774,
+        "judge_score": 0.8725,
+        "kept": true
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\databases__2102.02440__online-sketch-based-query-optimization.md (part 3 of 5).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.8711,
+        "kept": true
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 1 of 2).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.8618,
+        "kept": true
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 9 of 9).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.8598,
+        "kept": false
+      },
+      {
+        "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+        "doc_path": "soul-e2e-tester-024115/memory-conventions.md",
+        "lane": "vector",
+        "vector_score": 0.41601312160491943,
+        "judge_score": 0.8555,
+        "kept": false
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 2 of 2).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.8527,
+        "kept": false
+      },
+      {
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "doc_path": "生命科学与医学\\medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 2 of 6).md",
+        "lane": "both",
+        "vector_score": 0.5750938653945923,
+        "judge_score": 0.851,
+        "kept": false
+      },
+      {
+        "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+        "doc_path": "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 7 of 12).md",
+        "lane": "vector",
+        "vector_score": 0.488427996635437,
+        "judge_score": 0.8463,
+        "kept": false
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 2 of 3).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.8462,
+        "kept": false
+      },
+      {
+        "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+        "doc_path": "经济与社会\\economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 2 of 5).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.8357,
+        "kept": false
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 2 of 13).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.8356,
+        "kept": false
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 3 of 3).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.8326,
+        "kept": false
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 2 of 6).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.8313,
+        "kept": false
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\databases__2005.03328__bitvector-aware-query-optimization-for-decis.md (part 3 of 5).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.8309,
+        "kept": false
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 3 of 4).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.8302,
+        "kept": false
+      },
+      {
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "doc_path": "自然科学与地球科学\\gravitational-physics__gr-qc-9805045__disturbing-the-black-hole (part 2 of 2).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.8294,
+        "kept": false
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 2 of 3).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.8242,
+        "kept": false
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\speech__2109.14357__comparison-of-self-supervised-speech-pre-tra.md (part 2 of 2).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.8147,
+        "kept": false
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.7734,
+        "kept": false
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 2 of 2).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.7651,
+        "kept": false
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 4 of 4).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.7521,
+        "kept": false
+      },
+      {
+        "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+        "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+        "lane": "vector",
+        "vector_score": 0.48659324645996094,
+        "judge_score": 0.7291,
+        "kept": false
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 5 of 6).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.7025,
+        "kept": false
+      },
+      {
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 6 of 9).md",
+        "lane": "catalog",
+        "vector_score": null,
+        "judge_score": 0.5911,
+        "kept": false
+      }
+    ],
+    "score_by_index": {
+      "0": 0.8462,
+      "1": 0.8302,
+      "2": 0.9033,
+      "3": 0.5911,
+      "4": 0.8926,
+      "5": 0.851,
+      "6": 0.8357,
+      "7": 0.9189,
+      "8": 0.8776,
+      "9": 0.7734,
+      "10": 0.8802,
+      "11": 0.7521,
+      "12": 0.8841,
+      "13": 0.8618,
+      "14": 0.8527,
+      "15": 0.8242,
+      "16": 0.8326,
+      "17": 0.8356,
+      "18": 0.8313,
+      "19": 0.7025,
+      "20": 0.9612,
+      "21": 0.8959,
+      "22": 0.8598,
+      "23": 0.7651,
+      "24": 0.8147,
+      "25": 0.8711,
+      "26": 0.8978,
+      "27": 0.8309,
+      "28": 0.9171,
+      "29": 0.8294,
+      "30": 0.8838,
+      "31": 0.8725,
+      "32": 0.8463,
+      "33": 0.7291,
+      "34": 0.8867,
+      "35": 0.8555
+    },
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "scored_segments": 294,
+    "total_segments": 294,
+    "errors": []
+  },
+  "result_list": [
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "kb_name": "计算机与人工智能",
+      "doc_id": "aa96c594-9523-4665-8515-b60065fe6761",
+      "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 2 of 9).md",
+      "name": "large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 2 of 9).md",
+      "description": "【?/?·Vision-Flan: Scaling Human】Virginia Tech 等构建 Vision-Flan：最多样的人标注视觉指令微调数据集，针对 VLM 预训练任务多样性不足与 GPT-4 合成数据标注错误/偏差两大痛点，缓解泛化差、幻觉与灾难性遗忘。可回答视觉指令微调数据集构建的问题。——## 5.2 Effect of Human-Labeled and GPT-4 Synthesized Datasets ![](images/11",
+      "lane": "catalog",
+      "vector_score": null,
+      "judge_score": 0.9612,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "kb_name": "计算机与人工智能",
+      "doc_id": "f13cf459-6f05-4a42-94d1-7a5634285b92",
+      "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+      "name": "nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+      "description": "【1/4·Instructive Dialogue Summa】A*STAR 提出 InstructDS：将指令微调引入对话摘要，通过摘要锚定查询生成、查询过滤、基于查询的摘要生成三步合成高质量 query 型摘要三元组，统一模型支持多用途对话摘要，缓解用户关注点被忽略的问题。可回答指令化对话摘要的数据合成与训练问题。——Bin Wang, Zhengyuan Liu, Nancy F. Chen Institute for Infocomm Resear",
+      "lane": "catalog",
+      "vector_score": null,
+      "judge_score": 0.9189,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "kb_name": "自然科学与地球科学",
+      "doc_id": "f080d2d7-6f13-4281-8fdd-aec872d8c328",
+      "doc_path": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+      "name": "chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+      "description": "【3/4·Machine learning for molec】Noé、Tkatchenko、Müller、Clementi 合著的机器学习分子模拟综述：涵盖 DTNN 等图/张量网络学习原子化学环境表示(类 word2vec 的上下文编码)、势能面与分子动力学加速、增强采样等方向，系统梳理 ML 与分子模拟结合的方法版图。可回答分子模拟中机器学习方法选型的问题——## 4.3 Coarse-graining: CGnets As mentioned in",
+      "lane": "catalog",
+      "vector_score": null,
+      "judge_score": 0.9171,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "kb_name": "计算机与人工智能",
+      "doc_id": "c9b7501a-edc7-435e-a189-91bb267d8a70",
+      "doc_path": "计算机与人工智能\\databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+      "name": "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+      "description": "【3/4·There is No Such Thing as 】萨尔大学 Dittrich 组提出自动索引繁育框架 GENE，主张放弃手工发明索引(B 树到 learned index/RMI 皆为 GENE 特例配置)：像物理查询计划一样索引不应被手工设计而应自动繁育，系统性综述下一代 500 篇索引论文谱系。可回答索引结构自动设计与 learned inde——## 6 EXPERIMENTAL EVALUATION In our experiment",
+      "lane": "catalog",
+      "vector_score": null,
+      "judge_score": 0.9033,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "kb_name": "计算机与人工智能",
+      "doc_id": "a0d761b7-24e3-48ee-999e-4bf3441b28a7",
+      "doc_path": "计算机与人工智能\\databases__2102.02440__online-sketch-based-query-optimization.md (part 4 of 5).md",
+      "name": "databases__2102.02440__online-sketch-based-query-optimization.md (part 4 of 5).md",
+      "description": "【?/?·Online Sketch-based Query 】UC Merced 提出在线草图(online sketch)查询优化：针对统计摘要不可增量组合、连接误差指数放大两大问题，用可组合草图支持计划枚举中的基数估计与代价估计。可回答流式/在线查询优化的基数估计问题。——## 7.2.3 Total Workload Runtime The runtimes for the complete JOB workload execution in Po",
+      "lane": "catalog",
+      "vector_score": null,
+      "judge_score": 0.8978,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "kb_name": "计算机与人工智能",
+      "doc_id": "72ea485c-e2b5-400b-927d-69bc5b1bcee4",
+      "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 8 of 9).md",
+      "name": "large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 8 of 9).md",
+      "description": "【?/?·Vision-Flan: Scaling Human】Virginia Tech 等构建 Vision-Flan：最多样的人标注视觉指令微调数据集，针对 VLM 预训练任务多样性不足与 GPT-4 合成数据标注错误/偏差两大痛点，缓解泛化差、幻觉与灾难性遗忘。可回答视觉指令微调数据集构建的问题。——## Task: Cars\\_car\\_brand\\_maker\\_and\\_year\\_classification Instruction: In",
+      "lane": "catalog",
+      "vector_score": null,
+      "judge_score": 0.8959,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "kb_name": "自然科学与地球科学",
+      "doc_id": "3f898c04-1f83-4ac0-94f7-3ee41444784f",
+      "doc_path": "自然科学与地球科学\\astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 2 of 2).md",
+      "name": "astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 2 of 2).md",
+      "description": "【?/?·The Dark Energy Survey Dat】暗能量巡天(DES)数据处理与校准系统 DESDM 的设计与实现：多机构合作构建覆盖数据管理、天文校准与产品发布的巡天管线，支撑暗能量与巡天科学研究。可回答大规模巡天数据管线与校准流程的问题。——## 3.5 Coaddition with PSF Homogenization A typical challenge in real datasets is that the image qua",
+      "lane": "catalog",
+      "vector_score": null,
+      "judge_score": 0.8926,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "kb_name": null,
+      "doc_id": null,
+      "doc_path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 3 of 4).md",
+      "name": "finance__1909.07748__stock-market-microstructure-inference-via-mu (part 3 of 4).md",
+      "description": null,
+      "lane": "vector",
+      "vector_score": 0.4705039858818054,
+      "judge_score": 0.8867,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "kb_name": "计算机与人工智能",
+      "doc_id": "72aca811-0a8b-48a3-80e4-2e611982f1e3",
+      "doc_path": "计算机与人工智能\\statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 7 of 9).md",
+      "name": "statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 7 of 9).md",
+      "description": "【7/9·Nonparametric Estimation o】北卡州立大学用 Bernstein 多项级数构造非参数模型逼近任意各向同性协方差函数：研究 L∞/L2 范数逼近性质，发展计算高效的 sieve 极大似然(sML)估计并在增域条件下证明一致性；模拟显示优于参数法(Matérn/GenCauchy)。可回答空间统计各向同性协方差的非参数估计问题。——## B Tables ## B.1 Tables in the main text Table",
+      "lane": "catalog",
+      "vector_score": null,
+      "judge_score": 0.8841,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "kb_name": null,
+      "doc_id": null,
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "name": "global-rag-benchmark.md",
+      "description": null,
+      "lane": "vector",
+      "vector_score": 0.5284450650215149,
+      "judge_score": 0.8838,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "kb_name": "计算机与人工智能",
+      "doc_id": "4838993a-ff49-4be7-ad62-276888056fb4",
+      "doc_path": "计算机与人工智能\\robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 3 of 4).md",
+      "name": "robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 3 of 4).md",
+      "description": "【3/4·Robust Object Manipulation】墨尔本大学提出触觉盲抓取的鲁棒控制律：机械手在仅有本体感觉与触觉、未知物重/惯量/形状的条件下操作物体，分析保证模型不确定与外部扰动下的半全局渐近与指数稳定，仿真与硬件验证有效。可回答无视觉触觉抓取的控制器设计问题。——## 3.5. Existing Disturbance Compensators In some cases knowledge of the disturbances th",
+      "lane": "catalog",
+      "vector_score": null,
+      "judge_score": 0.8802,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "kb_name": "计算机与人工智能",
+      "doc_id": "b4f6bb7f-8f9a-4b9c-8553-8c853e3709e2",
+      "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+      "name": "nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+      "description": "【2/4·Instructive Dialogue Summa】A*STAR 提出 InstructDS：将指令微调引入对话摘要，通过摘要锚定查询生成、查询过滤、基于查询的摘要生成三步合成高质量 query 型摘要三元组，统一模型支持多用途对话摘要，缓解用户关注点被忽略的问题。可回答指令化对话摘要的数据合成与训练问题。——## 4.3 Ablation Study To provide insights into the effectiveness of",
+      "lane": "both",
+      "vector_score": 0.6324482560157776,
+      "judge_score": 0.8776,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "kb_name": null,
+      "doc_id": null,
+      "doc_path": "自然科学与地球科学/chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md",
+      "name": "chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md",
+      "description": null,
+      "lane": "vector",
+      "vector_score": 0.5257747769355774,
+      "judge_score": 0.8725,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "kb_name": "计算机与人工智能",
+      "doc_id": "6f9a06da-b529-4c62-b8a7-7258710f4580",
+      "doc_path": "计算机与人工智能\\databases__2102.02440__online-sketch-based-query-optimization.md (part 3 of 5).md",
+      "name": "databases__2102.02440__online-sketch-based-query-optimization.md (part 3 of 5).md",
+      "description": "【?/?·Online Sketch-based Query 】UC Merced 提出在线草图(online sketch)查询优化：针对统计摘要不可增量组合、连接误差指数放大两大问题，用可组合草图支持计划枚举中的基数估计与代价估计。可回答流式/在线查询优化的基数估计问题。——## 6 FAST-AGMS SKETCH JOIN ORDER ENUMERATION In this section, we present how merged Fast-A",
+      "lane": "catalog",
+      "vector_score": null,
+      "judge_score": 0.8711,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "kb_name": "计算机与人工智能",
+      "doc_id": "eefd4a35-21a2-44d7-bf46-ea17dc179266",
+      "doc_path": "计算机与人工智能\\social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 1 of 2).md",
+      "name": "social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 1 of 2).md",
+      "description": "【1/2·Weak Ties: Subtle Role in 】北航研究弱联系(weak ties)在线社交网络信息扩散中的微妙作用：提出结构-扩散耦合模型刻画在线社交网络独特的传播机制，对照 Granovetter 弱联系假说分析强弱联系对扩散动力学的不同贡献。可回答在线社交网络信息扩散机制问题。——Jichang Zhao State Key Laboratory of Software Development Environment Beihang",
+      "lane": "catalog",
+      "vector_score": null,
+      "judge_score": 0.8618,
+      "truncated": true,
+      "read_error": null
+    }
+  ],
+  "kept_doc_paths": [
+    "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 2 of 9).md",
+    "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+    "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+    "计算机与人工智能\\databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+    "计算机与人工智能\\databases__2102.02440__online-sketch-based-query-optimization.md (part 4 of 5).md",
+    "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 8 of 9).md",
+    "自然科学与地球科学\\astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 2 of 2).md",
+    "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 3 of 4).md",
+    "计算机与人工智能\\statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 7 of 9).md",
+    "e2e-demo-0923-022632/global-rag-benchmark.md",
+    "计算机与人工智能\\robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 3 of 4).md",
+    "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+    "自然科学与地球科学/chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md",
+    "计算机与人工智能\\databases__2102.02440__online-sketch-based-query-optimization.md (part 3 of 5).md",
+    "计算机与人工智能\\social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 1 of 2).md"
+  ],
+  "evidence_pack": "[计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 2 of 9).md · lane=catalog]\n# large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md.md（第 2/9 部分）\n章节: Vision-Flan: Scaling Human-Labeled Tasks in Visual Instruction Tuning > 5.2 Effect of Human-Labeled and GPT-4 Synthesized Datasets\n## 5.2 Effect of Human-Labeled and GPT-4 Synthesized Datasets\n\n\n![](images/115a33dc027f671001d68659975eb101ab2f49e2ac72cef148dd921e294e51f2.jpg)  \nFigure 4: Performance on four comprehensive benchmarks versus the number of training tasks.\n\nEffect of Task Diversity in VISION-FLAN Figure 4 illustrates the relationship between the number of tasks from VISION-FLAN employed during visual instruction tuning and the performance of VISION-FLAN BASE across four comprehensive evaluation benchmarks. It's apparent that as the number of tasks increases, the performance of VISION-FLAN BASE on all datasets is improved. To evaluate the impact of varying numbers of instances from different tasks, we fix the total amount of instances used for visual instruction tuning and experiment with different numbers of tasks. As demonstrated in Table 3, when the number of training instances is constant, augmenting the number of tasks significantly enhances model performance. These findings substantiate our hypothesis that the diverse array of human-labeled tasks within VISION-FLAN is essential for improving the capabilities of VLMs.\n\n<table><tr><td># of Tasks</td><td># of Instances per Task</td><td>MMB</td><td>MME</td><td>Pope</td><td>MMMU</td></tr><tr><td colspan=\"6\">Training with 100,000 Instances</td></tr><tr><td>10</td><td>10,000</td><td>58.3</td><td>723.9</td><td>81.0</td><td>32.6</td></tr><tr><td>187</td><td>500</td><td>58.8</td><td>1314.3</td><td>83.3</td><td>33.3</td></tr><tr><td colspan=\"6\">Training with 200,000 Instances</td></tr><tr><td>20</td><td>10,000</td><td>58.8</td><td>897.3</td><td>83.4</td><td>31.8</td></tr><tr><td>187</td><td>1,000</td><td>63.5</td><td>1373.5</td><td>83.6</td><td>33.7</td></tr></table>\n\nTable 3: Comparison of VISION-FLAN BASE trained with a fixed total amount of data instances.\n\nEffect of GPT-4 Synthesized Data on Comprehensive Evaluation Benchmarks Furthermore, we analyze if GPT-4 synthesized data can improve the model's performance on comprehensive evaluation benchmarks and show the results in Figure 5. Further tuning VISION-FLAN BASE on GPT-4 synthesized data instances does not lead to performance improvement. Tuning pretrained LLaVA model on a small amount of GPT-4 synthesized data (100) can improve its performance \n\n[计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md · lane=catalog]\n# nlp__2310.10981__instructive-dialogue-summarization-with-quer（第 1/4 部分）\n章节: Instructive Dialogue Summarization with Query Aggregations\n# Instructive Dialogue Summarization with Query Aggregations\n\n\nBin Wang, Zhengyuan Liu, Nancy F. Chen Institute for Infocomm Research (I2R), A\\*STAR, Singapore CNRS@CREATE, Singapore wang\\_bin@i2r.a-star.edu.sg\n\n## Abstract\n\n\nConventional dialogue summarization methods directly generate summaries and do not consider user's specific interests. This poses challenges in cases where the users are more focused on particular topics or aspects. With the advancement of instruction-finetuned language models, we introduce instruction-tuning to dialogues to expand the capability set of dialogue summarization models. To overcome the scarcity of instructive dialogue summarization data, we propose a three-step approach to synthesize high-quality query-based summarization triples. This process involves summaryanchored query generation, query filtering and query-based summary generation. By training a unified model called InstructDS (Instructive Dialogue Summarization) on three summarization datasets with multi-purpose instructive triples, we expand the capability of dialogue summarization models. We evaluate our method on four datasets, including dialogue summarization and dialogue reading comprehension. Experimental results show that our approach outperforms the state-of-the-art models and even models with larger sizes. Additionally, our model exhibits higher generalizability and faithfulness, as confirmed by human subjective evaluations¹.\n\n## 1 Introduction\n\n\nBoth verbal and non-verbal conversations play a crucial role in the realm of communication. They serve as channels for humans to exchange information, ideas and emotions (Kester, 2004). In an era of information explosion overload, dialogue summarization has become increasingly essential. The process involves extracting the key dialogue information, enabling people to grasp the essence of their daily interactions.\n\nConventional dialogue summarization models typically approach the problem as an unconstrained sequence-to-sequence task, treating dialogue-summary pairs as straightforward inputoutput pairs (Shang et al., 2018; Goo and Chen, 2018; Chen and Yang, 2020). Although fine-tuning pre-trained language models such as BART (Lewis et al., 2020) has shown promising results, these models fail to consider the specific preferences of users who have distinct backgrounds, objectives, in\n\n[自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md · lane=catalog]\n# chemistry__1911.02792__machine-learning-for-molecular-simulation（第 3/4 部分）\n章节: Machine learning for molecular simulation > 4.3 Coarse-graining: CGnets\n## 4.3 Coarse-graining: CGnets\n\n\nAs mentioned in section 2.3, machine learning has been used to define coarse-grained models for molecular systems. Both kernel methods [16] and deep neural networks [17, 18] have been designed to minimize the force-matching loss, Eq. (9), for given coarse-graining mappings for specific systems.\n\nIn both cases, it has been shown that the incorporation of physical constraints is crucial to the success of the model. The training data are obtained by means of atomistic molecular dynamic simulations and regions of the configurational space that are physically forbidden, such as configurations with broken covalent bonds or overlapping atoms, are not sampled and not included in the training. Without additional constraints, the machine cannot make predictions far away from the training data, and will thus not reliably predict that the energy should diverge when approaching physically forbidden regions.\n\n![](images/df0a5de9e843d7434fc14671741831fd88f322e0c1a42256c691ccee6d74ad03.jpg)  \nFigure 4: SchNet, a continuous convolution framework: a) As molecular structures cannot be well discretized on a grids, SchNet generalizes the ConvNets approach to continuous convolutions between particles. b) SchNet architecture: the input, consisting of atom types (chemical elements $Z _ { 1 } , . . . , Z _ { n } )$ and positions $\\mathbf { r } _ { 1 } , . . . , \\mathbf { r } _ { n }$ is processed through several layers to produce atom-wise energies that are summed to a total energy (left). The most important layer is the interaction layer in which atoms interact via continuous convolution functions (middle). Continuous convolutions are generated by dense neural networks that operate on the interatomic distances, ensuring rototranslational invariance of the energy.\n\nExcluding high-energy states such as broken bonds or colliding atoms is different from enforcing physical symmetries as described in Sec. 3.4. Rather, it is about enforcing the correct asymptotic behavior of the energy when going towards an unphysical limit. CGnets proposed to achieve this by learning the difference to a simple prior energy that was defined to have the correct asymptotic behavior [18] (Fig. 5a). The exact form of this prior energy is not essential for success, as the CGnet can correct the prior energy where training data\n\n[计算机与人工智能\\databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md · lane=catalog]\n# databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne（第 3/4 部分）\n章节: There is No Such Thing as an “Index”! or: The next 500 Indexing Papers > 6 EXPERIMENTAL EVALUATION\n## 6 EXPERIMENTAL EVALUATION\n\n\nIn our experiments, we first determine a suitable set of hyperparameters for our genetic framework. Based on those hyperparameters, we then carefully evaluate GENE. We highlight the cost for training and the ability to automatically reach a certain performance baseline. Finally, we show the capability of GENE to match and even beat the performance of several state-of-the-art index structures. System. All experiments were executed on a machine with an AMD Ryzen Threadripper 1900X 8-Core processor with 32 GiB memory on Linux. Our framework and the respective experiments are implemented in C++ and compiled with Clang 8.0.1, -O3. All experiments are run single-threaded and in main-memory.\n\nDatasets. We use three types of datasets. All datasets consist of unique 64-bit uint keys and a 64-bit payload. In the following, we refer to the keys as data.keys. The payload represents the offset of the corresponding key into a sorted array. Therefore, we refer to the payload as data.offset. The datasets exhibit a variety of different characteristics like distribution, density, domain, and size. The first dataset $u n i _ { d e n s e }$ contains keys that are uniformly distributed in a dense domain. Concretely, $u n i _ { \\mathrm { d e n s e } }$ contains keys in the range [0, n) where n is the size of the dataset. The other two datasets, books and osm, represent real-world datasets with complex distributions and are taken from [31]. The datasets are sampled-down to our specific data size by uniformly drawing elements without duplicates. We have two main dataset sizes 100K and 100M, depending on the concrete experiment. Table 2 gives an overview of the datasets.\n\nWorkloads. We use three classes of workloads: point, range, and mixed point and range query workloads. For the moment, all our workloads are read-only, i.e. we do not consider insert, delete, or update statements. Note however, that our generic framework still supports insertions and deletions. In addition, update statements would not alter the structure of the index so we could easily integrate them into our framework. Table 3 summarizes the basic workload types. Point(data, $\\mathrm { i d x } _ { \\mathrm { m i n } } , \\mathrm { i d x } _ { \\mathrm { m a x } } )$ represents a point query workload where\n\n[计算机与人工智能\\databases__2102.02440__online-sketch-based-query-optimization.md (part 4 of 5).md · lane=catalog]\n# databases__2102.02440__online-sketch-based-query-optimization.md.md（第 4/5 部分）\n章节: Online Sketch-based Query Optimization > 7.2.3 Total Workload Runtime\n## 7.2.3 Total Workload Runtime\n\n\nThe runtimes for the complete JOB workload execution in PostgreSQL and DBMS A using the plans generated by each database are included in Table 2. Given the high variance among queries, these numbers have to be taken with a grain of salt since they may be dominated by a few complex queries with a large number of joins. Nonetheless, we follow prior art [5, 54] and include them together with the aggregated workload statistics. As expected, COMPASS has the overall fastest runtime. Somewhat unexpectedly, MonetDB comes in second for the PgSOL execution with a runtime that is almost twice as large as that of COMPASS. The reason is because MonetDB does not fail dramatically for any of the JOB queries. While it performs consistently slower, it never derails on heavily sub-optimal plans. The runtime for PgSQL and DBMS A in PgSQL is dominated by the long-running queries with 20 or more joins, which pull the total time to more than 8X and 5X that of COMPASS. These outliers are sufficient to skew the overall runtime. In the case of MapD, there are 30 queries that do not finish execution even after a timeout of 20 minutes per query. Thus, the very large runtime. When the workload is executed in DBMS A, all systems except DBMS A incur an in",
+  "unscanned": [
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k24.md",
+      "lane": "vector",
+      "reason": "empty_content"
+    }
+  ],
+  "seconds": 357.8,
+  "cli_exit_code": 0,
+  "seconds_cli_wall": 360.4,
+  "mode": "C_hybrid",
+  "id": "T1",
+  "scenario": "enumeration/instance",
+  "_gold": {
+    "2310.10981": {
+      "judged": true,
+      "kept": true,
+      "in_evidence": true,
+      "score": 0.9189
+    },
+    "_summary": {
+      "golds_total": 1,
+      "golds_judged": 1,
+      "golds_kept": 1,
+      "golds_in_evidence": 1
+    }
+  }
+}

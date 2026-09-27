@@ -1,0 +1,19 @@
+D:\anaconda3\Lib\site-packages\keras\src\export\tf2onnx_lib.py:8: FutureWarning: In the future `np.object` will be defined as the corresponding NumPy scalar.
+  if not hasattr(np, "object"):
+D:\anaconda3\Lib\site-packages\laya\agent.py:928: RuntimeWarning: laya: this checkpoint ships invalid temperatures or values outside [0.5, 5]; using choice:11+=0.10058280825614929 -> 0.5. Treat confidence from the affected entries as uncalibrated.
+  return Agent(model_id_or_path, device=device, token=token, subfolder=subfolder, fast=fast,
+{
+ "seconds": 641.2,
+ "cut": 0.9,
+ "best": 1.0,
+ "kept_total": 97,
+ "floor": true,
+ "gold": [
+  [
+   "AI 基础设施\\tracelens-deployment-notes.md",
+   0.8885,
+   false
+  ]
+ ],
+ "kept_n": 30
+}

@@ -1,0 +1,268 @@
+{
+  "mode": "B_complete",
+  "id": "T1",
+  "scenario": "enumeration/instance",
+  "query": "Which evaluation datasets and baseline methods does InstructDS compare against in its experiments?",
+  "seconds": 284.6,
+  "scan": {
+    "descriptions_scanned": 329,
+    "overlap_docs": 63,
+    "zero_overlap_unread": 266,
+    "docs_read": 30
+  },
+  "judge": {
+    "abs_kept": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29
+    ],
+    "relative_cut": 0.854,
+    "global_best": 0.954,
+    "doc_scores": [
+      {
+        "doc": "计算机与人工智能\\nlp__2110.07844__modeling-endorsement-for-multi-document-abst (part 2 of 3).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8462,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 3 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.84,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9033,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 6 of 9).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.6221,
+        "kept": false
+      },
+      {
+        "doc": "自然科学与地球科学\\astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 2 of 2).md",
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "score": 0.8926,
+        "kept": true
+      },
+      {
+        "doc": "生命科学与医学\\medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 2 of 6).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.8589,
+        "kept": true
+      },
+      {
+        "doc": "经济与社会\\economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 2 of 5).md",
+        "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+        "score": 0.8509,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9189,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8893,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.7619,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 3 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8802,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 4 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.7544,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 7 of 9).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8841,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 1 of 2).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8618,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 2 of 2).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8527,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 2 of 3).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8242,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 3 of 3).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.7786,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 2 of 13).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8356,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 2 of 6).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8313,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 5 of 6).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.6823,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 2 of 9).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9544,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 8 of 9).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8936,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 9 of 9).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8649,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 2 of 2).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.7694,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\speech__2109.14357__comparison-of-self-supervised-speech-pre-tra.md (part 2 of 2).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8136,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\databases__2102.02440__online-sketch-based-query-optimization.md (part 3 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8668,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\databases__2102.02440__online-sketch-based-query-optimization.md (part 4 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.9052,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\databases__2005.03328__bitvector-aware-query-optimization-for-decis.md (part 3 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8309,
+        "kept": false
+      },
+      {
+        "doc": "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "score": 0.8995,
+        "kept": true
+      },
+      {
+        "doc": "自然科学与地球科学\\gravitational-physics__gr-qc-9805045__disturbing-the-black-hole (part 2 of 2).md",
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "score": 0.8294,
+        "kept": false
+      }
+    ],
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "scored_segments": 251,
+    "total_segments": 251
+  },
+  "kept_doc_paths": [
+    "计算机与人工智能\\databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+    "自然科学与地球科学\\astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 2 of 2).md",
+    "生命科学与医学\\medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 2 of 6).md",
+    "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+    "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+    "计算机与人工智能\\robotics__1709.02924__robust-object-manipulation-for-tactile-based (part 3 of 4).md",
+    "计算机与人工智能\\statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 7 of 9).md",
+    "计算机与人工智能\\social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 1 of 2).md",
+    "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 2 of 9).md",
+    "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 8 of 9).md",
+    "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 9 of 9).md",
+    "计算机与人工智能\\databases__2102.02440__online-sketch-based-query-optimization.md (part 3 of 5).md",
+    "计算机与人工智能\\databases__2102.02440__online-sketch-based-query-optimization.md (part 4 of 5).md",
+    "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md"
+  ],
+  "evidence_pack": "[计算机与人工智能\\databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md]\n# databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne（第 3/4 部分）\n章节: There is No Such Thing as an “Index”! or: The next 500 Indexing Papers > 6 EXPERIMENTAL EVALUATION\n## 6 EXPERIMENTAL EVALUATION\n\n\nIn our experiments, we first determine a suitable set of hyperparameters for our genetic framework. Based on those hyperparameters, we then carefully evaluate GENE. We highlight the cost for training and the ability to automatically reach a certain performance baseline. Finally, we show the capability of GENE to match and even beat the performance of several state-of-the-art index structures. System. All experiments were executed on a machine with an AMD Ryzen Threadripper 1900X 8-Core processor with 32 GiB memory on Linux. Our framework and the respective experiments are implemented in C++ and compiled with Clang 8.0.1, -O3. All experiments are run single-threaded and in main-memory.\n\nDatasets. We use three types of datasets. All datasets consist of unique 64-bit uint keys and a 64-bit payload. In the following, we refer to the keys as data.keys. The payload represents the offset of the corresponding key into a sorted array. Therefore, we refer to the payload as data.offset. The datasets exhibit a variety of different characteristics like distribution, density, domain, and size. The first dataset $u n i _ { d e n s e }$ contains keys that are uniformly distributed in a dense domain. Concretely, $u n i _ { \\mathrm { d e n s e } }$ contains keys in the range [0, n) where n is the size of the dataset. The other two datasets, books and osm, represent real-world datasets with complex distributions and are taken from [31]. The datasets are sampled-down to our specific data size by uniformly drawing elements without duplicates. We have two main dataset sizes 100K and 100M, depending on the concrete experiment. Table 2 gives an overview of the datasets.\n\nWorkloads. We use three classes of workloads: point, range, and mixed point and range query workloads. For the moment, all our workloads are read-only, i.e. we do not consider insert, delete, or update statements. Note however, that our generic framework still supports insertions and deletions. In addition, update statements would not alter the structure of the index so we could easily integrate them into our framework. Table 3 summarizes the basic workload types. Point(data, $\\mathrm { i d x } _ { \\mathrm { m i n } } , \\mathrm { i d x } _ { \\mathrm { m a x } } )$ represents a point query workload where\n\n[自然科学与地球科学\\astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 2 of 2).md]\n# astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md.md（第 2/2 部分）\n章节: The Dark Energy Survey Data Processing and Calibration System > 3.5 Coaddition with PSF Homogenization\n## 3.5 Coaddition with PSF Homogenization\n\n\nA typical challenge in real datasets is that the image quality can vary among the single epoch images that one combines into a coadd image. This can be minimized by obtaining all the images one right after another under similar conditions, but typically this requirement is difficult to meet for a large survey and for ground based observatories this strategy then still leads to inhomogeneity in the PSF from location to location on the sky. For the DES observing strategy where each object is observed in \\~10 different locations on the focal plane and visits to the field are spread uniformly over a five year period, we face a situation where if we simply coadd the images we will end up with discontinuities in the PSF variation as a function of position within the coadd image. While we could model these discontinuous PSF variations using a high order polynomial in PSFEX, we could not model them accurately at the discontinuities. An approach like this would inevitably lead to systematics in the PSF corrected photometry and classification of galaxies and stars as a function of position within each coadd image.\n\nTo resolve this issue we have built tools that allow us to homogenize the PSF within the coadd images. With a homogenized (i.e. constant) PSF in the coadd, the PSFEx model for the PSF becomes trivial and accurate, and these photometric and classification biases go away. It works in the following way. First, we use the seeing across the ensemble of single epoch images to choose a target PSF for the homogenized coadd. We typically choose the median seeing within each band, in which case the PSF is being degraded in half the images and improved in the other half. Our system is set up to allow the user to choose any target PSF, including the worst seeing in the ensemble or, for example. the seeing which corresponds to 90% of the single epoch images having better seeing. Note that we homogenize PSFs within each band separately, because with the PSF corrected model fitting photometry available in SExtractor there is no benefit to bringing all bands to a common PSF\n\nSecond, we run PSFEx together with a target PSF (i.e. Moffat with particular FWHM) in a different mode on each single epoch image to produce a position dependent smoot\n\n[生命科学与医学\\medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 2 of 6).md]\n# medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio（第 2/6 部分）\n章节: MultiverSeg: Scalable Interactive Segmentation of Biomedical Imaging Datasets with In-Context Guidance > 6. Experiment 1: Evaluation\n## 6. Experiment 1: Evaluation\n\n\nIn this experiment, we evaluate different approaches to segmenting an entire new biomedical dataset. We compare MultiverSeg to ScribblePrompt, SAM, SegNext, SAM-Med2D, IMIS-Net, and MedSAM, which perform interactive segmentation of each image independently, and to SP+UVS, which combines ScribblePrompt with an incontext segmentation model (UniverSeg). We show that MultiverSeg outperforms all of the baselines.\n\n## 6.1. Setup\n\n\nWe evaluate the number of interactions required to achieve a target Dice score on each image using different methods, or a maximum number of interactions if the score was not reached. We use 90% as a target Dice score, because our collection of fully-supervised task-specific nnUNet models achieves an average Dice of 88 $3 . 6 7 \\pm 0 . 4 7$ on the same test data. We set 20 center clicks or 10 steps of centerline scribbles as the maximum number of interactions.\n\nFor each method and task, we begin by interactively segmenting one randomly sampled image from the training split $1 0 \\geq 9 0 \\%$ Dice using ScribblePrompt. This example is used to seed the context set. We then randomly sample (without replacement) 18 images from the test split, and simulate sequentially segmenting each image.\n\nData. We report results averaged across 200 simulations for each held-out segmentation task. We exclude tasks with fewer than 18 test examples, leaving 161 tasks from 8 evaluation datasets [1-3, 11, 42, 122, 129, 146]. We further discuss the choice of this cutoff in Appendix E.1.\n\n## 6.2. Results\n\n\nInteractions per image as a function of dataset size. As more examples are segmented and the context set grows, the number of interactions required to get to 90% Dice (NoI90) on the $\\mathrm { n ^ { t h } }$ example using MultiverSeg decreases substantially (Fig. 3). For interactive segmentation methods, NoI90 is approximately constant, because they are not designed to learn from previous examples. With SP+UVS, the number of interactions decreases as more examples are segmented, but it requires more interactions than MultiverSeg. Results by task in Appendix E.2 show a similar trend. Fig. 5 shows predictions for the $1 0 ^ { t h }$ example after 1 step of interaction.\n\nTotal interactions. On average, using Mu\n\n[计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md]\n# nlp__2310.10981__instructive-dialogue-summarization-with-quer（第 1/4 部分）\n章节: Instructive Dialogue Summarization with Query Aggregations\n# Instructive Dialogue Summarization with Query Aggregations\n\n\nBin Wang, Zhengyuan Liu, Nancy F. Chen Institute for Infocomm Research (I2R), A\\*STAR, Singapore CNRS@CREATE, Singapore wang\\_bin@i2r.a-star.edu.sg\n\n## Abstract\n\n\nConventional dialogue summarization methods directly generate summaries and do not consider user's specific interests. This poses challenges in cases where the users are more focused on particular topics or aspects. With the advancement of instruction-finetuned language models, we introduce instruction-tuning to dialogues to expand the capability set of dialogue summarization models. To overcome the scarcity of instructive dialogue summarization data, we propose a three-step approach to synthesize high-quality query-based summarization triples. This process involves summaryanchored query generation, query filtering and query-based summary generation. By training a unified model called InstructDS (Instructive Dialogue Summarization) on three summarization datasets with multi-purpose instructive triples, we expand the capability of dialogue summarization models. We evaluate our method on four datasets, including dialogue summarization and dialogue reading comprehension. Experimental results show that our approach outperforms the state-of-the-art models and even models with larger sizes. Additionally, our model exhibits higher generalizability and faithfulness, as confirmed by human subjective evaluations¹.\n\n## 1 Introduction\n\n\nBoth verbal and non-verbal conversations play a crucial role in the realm of communication. They serve as channels for humans to exchange information, ideas and emotions (Kester, 2004). In an era of information explosion overload, dialogue summarization has become increasingly essential. The process involves extracting the key dialogue information, enabling people to grasp the essence of their daily interactions.\n\nConventional dialogue summarization models typically approach the problem as an unconstrained sequence-to-sequence task, treating dialogue-summary pairs as straightforward inputoutput pairs (Shang et al., 2018; Goo and Chen, 2018; Chen and Yang, 2020). Although fine-tuning pre-trained language models such as BART (Lewis et al., 2020) has shown promising results, these models fail to consider the specific preferences of users who have distinct backgrounds, objectives, in\n\n[计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md]\n# nlp__2310.10981__instructive-dialogue-summarization-with-quer（第 2/4 部分）\n章节: Instructive Dialogue Summarization with Query Aggregations > 4.3 Ablation Study\n## 4.3 Ablation Study\n\n\nTo provide insights into the effectiveness of InstructDS, we conduct ablation studies on InstructDS variants to answer two fundamental questions: 1) How do augmented QDS triples contribute to general and query-based dialogue summarization? 2) What is the effect of length awareness augmentation on general and length-controllable dialogue summarization?\n\nModel variants. We examine five model variants of InstructDS across four evaluation datasets. Each variant is trained with distinct training data: 1) MixDS: Mixing three dialogue summarization datasets, 2) MixDS+QDS: MixDS and synthesized QDS triples, 3) MixDS+Length: MixDS and length augmentation, 4) InstructDS: MixDS, synthesized QDS triples and length augmentation, 5) InstructDS+DREAM: MixDS, synthesized QDS triples, human-written QDS triples from DREAM, and length augmentation. All other hyperparameters and evaluation protocols are kept identical for fair comparisons.\n\n![](images/7f33a31120c1e6f1051c0df6bade961efc3001c23e4bebfd1ea7fcb1f86847f4.jpg)\n\n![](images/86567a789c610eb3187a068e7c7c08b286f56b70090270026c9b6a912028fef9.jpg)\n\n![](images/e404c5f35ec709354d87e306dccf594317d144dcd32749373ec1d4f11c75695c.jpg)\n\n![](images/2d1dfee957e67af79332cafa5ddf75fa81eed45f9db91347a7c32068ad30ae1d.jpg)  \nFigure 3: Ablation study on different variants of InstructDS. Averaged",
+  "_gold": {
+    "2310.10981": {
+      "judged": true,
+      "kept": true,
+      "in_evidence": false,
+      "score": 0.9189
+    },
+    "_summary": {
+      "golds_total": 1,
+      "golds_judged": 1,
+      "golds_kept": 1,
+      "golds_in_evidence": 0
+    }
+  }
+}

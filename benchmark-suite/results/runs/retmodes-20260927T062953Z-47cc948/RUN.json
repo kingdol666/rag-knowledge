@@ -1,0 +1,35 @@
+{
+ "run_dir": "benchmark-suite\\results\\runs\\retmodes-20260927T062953Z-47cc948",
+ "started_utc": "2026-09-27T10:29:13.834275+00:00",
+ "modes": [
+  "C"
+ ],
+ "questions": [
+  "q1",
+  "q2"
+ ],
+ "corpus": {
+  "kbs": 19,
+  "docs": 384
+ },
+ "laya_env": {
+  "python": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\backend\\.venv\\Scripts\\python.exe",
+  "error": "NameError: name 'subprocess' is not defined"
+ },
+ "interpreter": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\backend\\.venv\\Scripts\\python.exe",
+ "arms": {
+  "C-q1": {
+   "file": "arm_C-q1.json",
+   "ok": true,
+   "wall_s": 32.5,
+   "gate_passed": true
+  },
+  "C-q2": {
+   "file": "arm_C-q2.json",
+   "ok": true,
+   "wall_s": 30.8,
+   "gate_passed": true
+  }
+ },
+ "updated_utc": "2026-09-27T10:30:22.473108+00:00"
+}

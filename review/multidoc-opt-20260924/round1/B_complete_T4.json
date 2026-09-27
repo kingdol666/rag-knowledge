@@ -1,0 +1,275 @@
+{
+  "mode": "B_complete",
+  "id": "T4",
+  "scenario": "part targeting",
+  "query": "Where does the library discuss hallucinations in the paper on how language models learn facts, and what does it say about when hallucinations start?",
+  "seconds": 267.8,
+  "scan": {
+    "descriptions_scanned": 329,
+    "overlap_docs": 105,
+    "zero_overlap_unread": 224,
+    "docs_read": 30
+  },
+  "judge": {
+    "abs_kept": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      27,
+      28,
+      29
+    ],
+    "relative_cut": 0.792,
+    "global_best": 0.892,
+    "doc_scores": [
+      {
+        "doc": "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 2 of 13).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8369,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 9 of 13).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.259,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 2 of 6).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8573,
+        "kept": true
+      },
+      {
+        "doc": "生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.8562,
+        "kept": true
+      },
+      {
+        "doc": "经济与社会\\economics__2011.14424__on-the-effectiveness-of-the-european-central (part 4 of 5).md",
+        "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+        "score": 0.8785,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 2 of 3).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8329,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 1 of 13).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8807,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 3 of 13).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8793,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.858,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 5 of 13).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8569,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 6 of 13).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8603,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 7 of 13).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8471,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 8 of 13).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8398,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 10 of 13).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.6984,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 11 of 13).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.6861,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 12 of 13).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.7559,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 13 of 13).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.7925,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 5 of 6).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8479,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8527,
+        "kept": true
+      },
+      {
+        "doc": "自然科学与地球科学\\gravitational-physics__gr-qc-9805045__disturbing-the-black-hole (part 2 of 2).md",
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "score": 0.7873,
+        "kept": false
+      },
+      {
+        "doc": "生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.8615,
+        "kept": true
+      },
+      {
+        "doc": "生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 3 of 8).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.8727,
+        "kept": true
+      },
+      {
+        "doc": "生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.8318,
+        "kept": true
+      },
+      {
+        "doc": "生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 5 of 8).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.8061,
+        "kept": true
+      },
+      {
+        "doc": "生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 6 of 8).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.7255,
+        "kept": false
+      },
+      {
+        "doc": "生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 7 of 8).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.8423,
+        "kept": true
+      },
+      {
+        "doc": "生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 8 of 8).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.3446,
+        "kept": false
+      },
+      {
+        "doc": "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 5 of 12).md",
+        "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+        "score": 0.884,
+        "kept": true
+      },
+      {
+        "doc": "工程与能源\\mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 2 of 5).md",
+        "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+        "score": 0.8923,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 3 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8441,
+        "kept": true
+      }
+    ],
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "scored_segments": 231,
+    "total_segments": 231
+  },
+  "kept_doc_paths": [
+    "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 2 of 13).md",
+    "计算机与人工智能\\neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 2 of 6).md",
+    "生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md",
+    "经济与社会\\economics__2011.14424__on-the-effectiveness-of-the-european-central (part 4 of 5).md",
+    "计算机与人工智能\\nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 2 of 3).md",
+    "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 1 of 13).md",
+    "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 3 of 13).md",
+    "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 4 of 13).md",
+    "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 5 of 13).md",
+    "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 6 of 13).md",
+    "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 7 of 13).md",
+    "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 8 of 13).md",
+    "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 13 of 13).md",
+    "计算机与人工智能\\neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 5 of 6).md",
+    "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+    "生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+    "生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 3 of 8).md",
+    "生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md",
+    "生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 5 of 8).md",
+    "生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 7 of 8).md",
+    "工程与能源\\mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 5 of 12).md",
+    "工程与能源\\mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 2 of 5).md",
+    "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 3 of 5).md"
+  ],
+  "evidence_pack": "[计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 2 of 13).md]\n# large-language-models__2005.14165__language-models-are-few-shot-learners.md.md（第 2/13 部分）\n章节: Language Models are Few-Shot Learners > 2.3 Training Process\n## 2.3 Training Process\n\n\nAs found in [KMH+20, MKAT18], larger models can typically use a larger batch size, but require a smaller learning rate. We measure the gradient noise scale during training and use it to guide our choice of batch size [MKAT18]. Table 2.1 shows the parameter settings we used. To train the larger models without running out of memory, we use a mixture of model parallelism within each matrix multiply and model parallelism across the layers of the network. All models were trained on V100 GPU's on part of a high-bandwidth cluster provided by Microsoft. Details of the training process and hyperparameter settings are described in Appendix B.\n\n## 2.4 Evaluation\n\n\nFor few-shot learning, we evaluate each example in the evaluation set by randomly drawing K examples from that task's training set as conditioning, delimited by 1 or 2 newlines depending on the task. For LAMBADA and Storycloze there is no supervised training set available so we draw conditioning examples from the development set and evaluate on the test set. For Winograd (the original, not SuperGLUE version) there is only one dataset, so we draw conditioning examples directly from it.\n\nK can be any value from 0 to the maximum amount allowed by the model's context window, which is $n _ { \\mathrm { c t x } } = 2 0 4 8$ for all models and typically fits 10 to 100 examples. Larger values of K are usually but not always better, so when a separate development and test set are available, we experiment with a few values of K on the development set and then run the best value on the test set. For some tasks (see Appendix G) we also use a natural language prompt in addition to (or for $K = 0 ,$ instead of) demonstrations.\n\nOn tasks that involve choosing one correct completion from several options (multiple choice), we provide K examples of context plus correct completion, followed by one example of context only, and compare the LM likelihood of each completion. For most tasks we compare the per-token likelihood (to normalize for length), however on a small number of datasets (ARC, OpenBookQA, and RACE) we gain additional benefit as measured on the development set by normalizing by the unconditional probability of each completion, by computing $\\frac { P ( \\mathrm { c o m p l e t i o n } | \\mathrm { c o n t e x t } ) } { P ( \\mathrm { c o\n\n[计算机与人工智能\\neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 2 of 6).md]\n# neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md.md（第 2/6 部分）\n章节: A Review on Neural Network Models of Schizophrenia and Autism Spectrum Disorder > 4. ANN models of schizophrenia\n## 4. ANN models of schizophrenia\n\n\nIn the following section, we present a comprehensive description of the most important ANN models of SZ. The majority of approaches focuses on positive symptoms of SZ, such as hallucinations and delusional behavior, e.g., [85] and [54]. Nevertheless, there have been also approaches targeting other symptoms, for instance attention characteristics [19] and movement disorders [57]. An overview of the most important models is presented in Tab. 1.\n\nTab. 1: Overview of neural network models of schizophrenia\n<table><tr><td rowspan=1 colspan=1>Hopfield Networks</td><td rowspan=1 colspan=1>R. E. Hoffman, T. H. Mc-Glashan (1987)[18]</td><td rowspan=1 colspan=1>Delusions, sense of mind beingcontrolled by outside force</td><td rowspan=1 colspan=1></td><td rowspan=1 colspan=1>Storing of an excessive number ofmemories (memory overload)</td></tr><tr><td rowspan=1 colspan=1></td><td rowspan=1 colspan=1>R. E. Hoffman, T. H. Mc-Glashan (1989)[53]</td><td rowspan=1 colspan=1>Hallucinations, delusions, senseof mind being controlled by out-side force</td><td rowspan=1 colspan=1>Reduced connectivity in pre-frontal cortex and other regions</td><td rowspan=1 colspan=1>Excessive connection pruning</td></tr><tr><td rowspan=1 colspan=1></td><td rowspan=1 colspan=1>D. Horn, E.Ruppin(1995) [85]</td><td rowspan=1 colspan=1>Delusions and hallucinations</td><td rowspan=1 colspan=1>Reactive synaptic regenerationin frontal cortex</td><td rowspan=1 colspan=1>Weakening of external input pro-jections, increase of internal pro-jections and noise levels, addi-tional Hebbian component</td></tr><tr><td rowspan=1 colspan=1>Feed-forward NNs</td><td rowspan=1 colspan=1>J. D. Cohen, D. Servan-Schreiber (1992) [19]</td><td rowspan=1 colspan=1>Disturbances of attention, repre-sentation of context</td><td rowspan=1 colspan=1>Abnormal dopamine activity inprefrontal cortex</td><td rowspan=1 colspan=1>Reduction of activation functiongain in context-neurons</td></tr><tr><td rowspan=1 colspan=1></td><td rowspan=1 colspan=1>R. E. Hoffman, T. H. Mc-Glashan (1997) [54]</td><td rowspan=1 colspan=1>Auditory hallucinations</td><td rowspan=1 colspan=1>Reduced connectivity in pre-frontal cortex and other regions</td><td rowspan=1 colspan=1>Excessive connection pruning</td></\n\n[生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md]\n# clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md.md（第 2/8 部分）\n章节: Large Language Models Encode Clinical Knowledge > 3.2.1 Clinician evaluation\n## 3.2.1 Clinician evaluation\n\n\nWhile objective accuracy metrics on multiple-choice questions are a robust measure of model performance, they omit several important details. To more deeply assess the generative outputs of LLMs in open-ended question answering for medical topics, we developed a pilot framework for human evaluation of long-form model answers to consumer medical questions in the LiveQA, MedicationQA and HealthSearchQA datasets.\n\nTable 2 | Summary of the different axes along which clinicians evaluate the answers in our consumer medical question answering datasets. These include agreement with scientific consensus, possibility and likelihood of harm, evidence of comprehension, reasoning and retrieval ability, presence of inappropriate, incorrect or missing content and possibility of bias in the answer. We use a pool of clinicians to evaluate the quality of model and human-generated answers along these axes.\n<table><tr><td>Task</td><td>Axis</td><td>Question</td></tr><tr><td>1</td><td>Scientific consensus</td><td>How does the answer relate to the consensus in the scientific and clinical community?</td></tr><tr><td>2</td><td>Extent of possible harm</td><td>What is the extent of possible harm?</td></tr><tr><td>3</td><td>Likelihood of possible harm</td><td>What is the likelihood of possible harm?</td></tr><tr><td>4</td><td>Evidence of correct comprehension</td><td>Does the answer contain any evidence of correct reading compre- hension? (indication the question has been understood)</td></tr><tr><td>5</td><td>Evidence of correct retrieval</td><td>Does the answer contain any evidence of correct recall of knowl- edge? (mention of a relevant and/or correct fact for answering the question)</td></tr><tr><td>6</td><td>Evidence of correct reasoning</td><td>Does the answer contain any evidence of correct reasoning steps? (correct rationale for answering the question)</td></tr><tr><td>7</td><td>Evidence of incorrect comprehension</td><td>Does the answer contain any evidence of incorrect reading com- prehension? (indication the question has not been understood)</td></tr><tr><td>8</td><td>Evidence of incorrect retrieval</td><td>Does the answer contain any evidence of incorrect recall of knowl- edge? (mention of an irrelevant and/or incorrect fact for answering</td></tr><tr><td>9</td><td>\n\n[经济与社会\\economics__2011.14424__on-the-effectiveness-of-the-european-central (part 4 of 5).md]\n# economics__2011.14424__on-the-effectiveness-of-the-european-central（第 4/5 部分）\n章节: On the effectiveness of the European Central Bank's conventional and unconventional policies under uncertainty > 5. Closing remarks\n## 5. Closing remarks\n\n\nIn this paper, we assess the effectiveness of several conventional and unconventional monetary policy measures by the European Central Bank conditional on the prevailing level of uncertainty. We measure effects of target, forward guidance and quantitative easing shocks over time with a smooth-transition vector autoregressive model using uncertainty as a signal variable. This allows for obtaining time-varying impulse response functions of a set of financial, macroeconomic and survey-based expectation variables to the shocks.\n\nOur results suggest that transmission channels are impaired in times of uncertainty. We conjecture that this is due to two major reasons. First, high levels of uncertainty change the impact effects of the shocks by changing direct transmission to key financial variables such as spreads. We argue that this phenomenon may be related to the presence of central bank information effects during these periods that accompany monetary policy announcements. Second, we find that the prevailing level of uncertainty at the time of the shock affects the persistence of the effects. The persistence of the shocks is dependent on the specific instrument, but is also variable specific. Our results suggest that especially the effectiveness of transmission channels related to industrial and consumer expectations are affected in times of uncertainty.\n\nThe effectiveness of policy measures also depends crucially on the respective tool invoked by the central bank. Conventional policy such as shocks to the target rate appear to be particularly affected negatively by high uncertainty. By contrast, quantitative easing measures such as large-scale asset purchases appear to work particularly well in times of high uncertainty. For both UMP measures, our analysis suggests that there might be beneficial complementarities between TG, FG and QE. On the one hand, FG might be useful in combination with a CMP instrument, making its effects more persistent and more robust with respect to different uncertainty levels. On the other hand, a QE shock in combination with CMP might not only add to the effects of a change in the target rate via the portfolio rebalancing and signalling channel, but it might also make up for deficiencies in the tr\n\n[计算机与人工智能\\nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 2 of 3).md]\n# nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md.md（第 2/3 部分）\n章节: BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding > 5 Ablation Studies\n## 5 Ablation Studies\n\n\nIn this section, we perform ablation experiments over a number of facets of BERT in order to better understand their relative importance. Additional\n\n<table><tr><td>Tasks</td><td>MNLI-m (Acc) (Acc)</td><td>QNLI MRPC (Acc)</td><td>Dev Set</td><td>SST-2</td><td>SQuAD (F1)</td></tr><tr><td>BERTBASE</td><td>84.4</td><td>88.4</td><td>86.7</td><td>92.7</td><td>88.5</td></tr><tr><td>No NSP</td><td>83.9</td><td>84.9</td><td>86.5</td><td>92.6</td><td>87.9</td></tr><tr><td>LTR &amp; No NSP</td><td>82.1</td><td>84.3</td><td>77.5</td><td>92.1</td><td>77.8</td></tr><tr><td>+ BiLSTM</td><td>82.1</td><td>84.1</td><td>75.7</td><td>91.6</td><td>84.9</td></tr></table>\n\nTable 5: Ablation over the pre-training tasks using the $\\mathbf { B E R T _ { B A S E } }$ architecture. “No NSP\"is trained without the next sentence prediction task. “LTR & No NSP\"is trained as a left-to-right LM without the next sentence prediction, like OpenAI GPT. “+ BiLSTM\" adds a randomly initialized BiLSTM on top of the $\\mathrm { \\Sigma ^ { 6 } L T R } + \\mathrm { N o }$ NSP\" model during fine-tuning.\n\nablation studies can be found in Appendix C.\n\n## 5.1 Effect of Pre-training Tasks\n\n\nWe demonstrate the importance of the deep bidirectionality of BERT by evaluating two pretraining objectives u",
+  "_gold": {
+    "2503.21676": {
+      "judged": true,
+      "kept": true,
+      "in_evidence": false,
+      "score": 0.8527
+    },
+    "_summary": {
+      "golds_total": 1,
+      "golds_judged": 1,
+      "golds_kept": 1,
+      "golds_in_evidence": 0
+    }
+  }
+}

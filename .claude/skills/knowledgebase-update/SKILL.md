@@ -17,7 +17,7 @@ description: "Check the installed RAG Knowledge Platform version against the lat
 **Step 7 — Service restart**: ragctl restart → wait for backend+web double health (health endpoint 200).
 **Step 8 — Full-chain validation**: kb_project_status confirms ready==true → kb_list(lightweight=true) smoke test → functional regression.
 # Knowledgebase Update — Version Check and Safe Upgrade
-> **⭐ Must-read before operating**: [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer data model + consistency invariants + 91-tool map)
+> **⭐ Must-read before operating**: [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer data model + consistency invariants + 94-tool map)
 >
 > **On cross-skill references**: the `kb-architecture.md` and `mcp-preflight-check.md` referenced by this skill live in `knowledgebase/references/` (shared references, not local copies). This is an **intentional DRY design** — the 14 skills ship as one plugin (see `.claude-plugin/plugin.json`) and always coexist in the same directory, so the shared reference paths are stable. To distribute update standalone, copy these two files into a local `references/`.
 

@@ -1,0 +1,145 @@
+{
+ "question": "What datasets does MultiMedQA evaluate and how does Flan-PaLM perform on MedQA?",
+ "mode": "A_vector",
+ "started": "15:02:57",
+ "vector_raw_hits": [
+  {
+   "doc_path": "Corpus-Chunks800/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k01.md",
+   "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+   "score": 0.7571387887001038,
+   "chunk_index": 6
+  },
+  {
+   "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+   "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+   "score": 0.7571384906768799,
+   "chunk_index": 10
+  },
+  {
+   "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+   "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+   "score": 0.5535228848457336,
+   "chunk_index": 46
+  },
+  {
+   "doc_path": "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 5 of 9).md",
+   "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+   "score": 0.531557559967041,
+   "chunk_index": 5
+  },
+  {
+   "doc_path": "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+   "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+   "score": 0.44899582862854004,
+   "chunk_index": 58
+  },
+  {
+   "doc_path": "经济与社会/finance__1412.5558__backtest-of-trading-systems-on-candle-charts.md.md",
+   "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+   "score": 0.43339085578918457,
+   "chunk_index": 1
+  },
+  {
+   "doc_path": "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 4 of 5).md",
+   "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+   "score": 0.4144933819770813,
+   "chunk_index": 57
+  },
+  {
+   "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+   "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+   "score": 0.4115833044052124,
+   "chunk_index": 15
+  },
+  {
+   "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+   "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+   "score": 0.40798211097717285,
+   "chunk_index": 14
+  },
+  {
+   "doc_path": "soul-e2e-tester-024115/values.md",
+   "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+   "score": 0.37798261642456055,
+   "chunk_index": 1
+  }
+ ],
+ "vector_dedup_docs": 9,
+ "docs_read": [
+  {
+   "doc_path": "Corpus-Chunks800/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k01.md",
+   "chars": 0,
+   "truncated": false
+  },
+  {
+   "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+   "chars": 20000,
+   "truncated": true
+  },
+  {
+   "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+   "chars": 20000,
+   "truncated": true
+  },
+  {
+   "doc_path": "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 5 of 9).md",
+   "chars": 14590,
+   "truncated": false
+  },
+  {
+   "doc_path": "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+   "chars": 20000,
+   "truncated": true
+  }
+ ],
+ "judge": {
+  "abs_kept": [
+   1,
+   2,
+   3,
+   4
+  ],
+  "relative_cut": 0.824,
+  "global_best": 0.924,
+  "doc_scores": [
+   {
+    "doc": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+    "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+    "score": 0.8683,
+    "kept": true
+   },
+   {
+    "doc": "e2e-demo-0923-022632/global-rag-benchmark.md",
+    "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+    "score": 0.8393,
+    "kept": true
+   },
+   {
+    "doc": "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 5 of 9).md",
+    "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+    "score": 0.7948,
+    "kept": false
+   },
+   {
+    "doc": "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+    "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+    "score": 0.9237,
+    "kept": true
+   }
+  ],
+  "status": "ok",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "scored_segments": 36,
+  "total_segments": 36
+ },
+ "kept_doc_paths": [
+  "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md"
+ ],
+ "seconds": 49.3,
+ "evidence_chars": 7763,
+ "lanes": null
+}

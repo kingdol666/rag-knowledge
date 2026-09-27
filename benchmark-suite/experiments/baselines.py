@@ -340,7 +340,13 @@ def _selfrag(units: list[dict], question: str, top_k: int,
 # ── one method, one question ────────────────────────────────────────────────
 
 def run_method(method: str, question: str, qid: str,
-               bm25: BM25 | None = None, kb: str | None = None) -> dict:
+               bm25: BM25 | None = None, kb: str | None = None,
+               retrieval_only: bool = False) -> dict:
+    """Run one baseline. retrieval_only=True skips the closed-book LLM answer
+    (pure retrieval task — latency = retrieval phase only, answer=None, zero
+    tokens/cost); used by `exp.py --retmodes` so baselines and the three
+    retrieval modes compete on the SAME retrieval task without LLM answering
+    cost polluting the comparison."""
     t0 = time.perf_counter()
     extra: dict = {}
     if method == "bm25":
@@ -365,6 +371,23 @@ def run_method(method: str, question: str, qid: str,
     retrieval_s = round(time.perf_counter() - t0, 1)
 
     evidence, used = _pack(units, query=question)
+    if retrieval_only:
+        return {
+            "qid": qid, "method": method, "question": question,
+            "ranked": [u["src"] for u in units],
+            "ranked_paths": [u.get("name", "") for u in units],
+            "evidence_sources": used,
+            "evidence_chars": len(evidence),
+            "retrieval_s": retrieval_s,
+            "latency_s": retrieval_s,
+            "answer": None,
+            "retrieval_only": True,
+            "is_error": False,
+            "tool_call_count": 0,
+            "tokens": {},
+            "total_cost_usd": 0.0,
+            "extra": extra,
+        }
     ans = answer_closed_book(question, evidence)
     tok = ans.get("tokens") or {}
     return {

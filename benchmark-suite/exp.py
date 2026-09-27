@@ -23,7 +23,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import subprocess
 import sys
+import time
 import urllib.request
 from datetime import datetime, timezone
 from pathlib import Path
@@ -103,6 +105,134 @@ def _console_table(payload: dict) -> None:
               f"{(f'{ch:.2f}' if ch is not None else '  — '):>7}  {a['abstentions']:>3}")
 
 
+def run_retmodes(args) -> int:
+    """检索任务矩阵: 三模式(A/B/C) + 检索类 baseline, 同题同库纯检索对照.
+
+    - 模式跑在真库(18 KB, q1/q2 金标在库), B 臂书架标签取自内置 registry;
+    - bm25/rrf 跑 corpus_md 100 篇(金标论文在集), vector 走平台跨库检索;
+    - 全部纯检索(retrieval_only), 无 LLM 回答成本; 产出 RETRIEVAL-COMPARE.md.
+    """
+    from datetime import datetime, timezone
+    import runner as _runner
+    from experiments.retrieval_modes import (
+        QUESTIONS, RUNNERS, ensure_laya_interpreter, resolve_laya_python,
+        verify_gate)
+    ensure_laya_interpreter()
+
+    ret_baselines = [b.strip() for b in args.ret_baselines.split(",") if b.strip()]
+    qids = list(QUESTIONS)
+    out_dir = _runner.new_run_dir()
+    out_dir.mkdir(parents=True, exist_ok=True)
+    laya_py = resolve_laya_python()
+    try:
+        probe = subprocess.run(
+            [str(laya_py), "-c",
+             "import torch;print(torch.__version__, torch.cuda.is_available())"],
+            capture_output=True, text=True, timeout=120)
+        ver, _, cuda = probe.stdout.strip().partition(" ")
+        laya_env = {"python": str(laya_py), "torch": ver, "cuda": cuda == "True"}
+    except Exception as e:  # noqa: BLE001
+        laya_env = {"error": str(e)[:120]}
+    print(f"[exp:retmodes] run={out_dir.name} · questions={qids} · "
+          f"modes=A/B/C · baselines={ret_baselines}")
+    print(f"[exp:retmodes] laya_env={laya_env}")
+
+    rows: list[dict] = []
+    # 三模式臂
+    for m in ("A", "B", "C"):
+        for qid in qids:
+            q = QUESTIONS[qid]
+            print(f"[exp:retmodes] mode {m} × {qid} …", flush=True)
+            t0 = time.time()
+            try:
+                arm = RUNNERS[m](q, out_dir / f"arm_{m}-{qid}.json")
+            except Exception as e:  # noqa: BLE001
+                arm = {"mode": m, "ok": False, "n_result_docs": 0,
+                       "gold_hit": False, "kept_doc_paths": [],
+                       "error": f"{type(e).__name__}: {str(e)[:200]}"}
+            gate = verify_gate(arm, q)
+            rows.append({
+                "method": f"mode_{m}", "qid": qid, "question": q["text"],
+                "latency_s": arm.get("wall_s"),
+                "retrieval_gold": arm.get("gold_hit"),
+                "n_docs": arm.get("n_result_docs"),
+                "ranked": arm.get("kept_doc_paths") or [],
+                "evidence_chars": arm.get("evidence_chars", 0),
+                "real_engine": arm.get("real_engine"),
+                "gate_passed": gate["passed"], "via": "retrieval-mode",
+                "wall_overhead_s": round(time.time() - t0, 1),
+            })
+            print(f"[exp:retmodes]   → {arm.get('wall_s')}s gold={arm.get('gold_hit')} "
+                  f"docs={arm.get('n_result_docs')}", flush=True)
+            if m == "B":
+                # B 臂在进程内持有一份 GPU Laya; 立即释放再进 C 子进程,
+                # 否则两份副本叠加会顶爆显存, WDDM 换页拖慢 ~20x(实测 27min vs 68s)
+                try:
+                    import jev_filter as _jf
+                    _jf.release_laya()
+                    print("[exp:retmodes] released in-process Laya VRAM (post-B, pre-C)",
+                          flush=True)
+                except Exception as e:  # noqa: BLE001
+                    print(f"[exp:retmodes] laya release skipped: {e}", flush=True)
+    # baseline 臂(纯检索)
+    import baselines as bl
+    bm25 = bl.BM25(bl.load_docs())
+    for b in ret_baselines:
+        for qid in qids:
+            q = QUESTIONS[qid]
+            print(f"[exp:retmodes] baseline {b} × {qid} …", flush=True)
+            try:
+                r = bl.run_method(b, q["text"], qid, bm25=bm25, retrieval_only=True)
+                blob = " ".join(str(p) for p in (r.get("ranked") or [])).lower()
+                gold_src = (q["gold_substr"] in blob) or (q.get("gold_id", "") in blob)
+                rows.append({
+                    "method": b, "qid": qid, "question": q["text"],
+                    "latency_s": r.get("latency_s"),
+                    "retrieval_gold": gold_src,
+                    "n_docs": len(r.get("ranked") or []),
+                    "ranked": r.get("ranked") or [],
+                    "evidence_chars": r.get("evidence_chars", 0),
+                    "real_engine": None, "gate_passed": None,
+                    "via": "baseline-retrieval-only",
+                })
+                print(f"[exp:retmodes]   → {r.get('latency_s')}s gold={gold_src} "
+                      f"docs={len(r.get('ranked') or [])}", flush=True)
+            except Exception as e:  # noqa: BLE001
+                rows.append({"method": b, "qid": qid, "error": str(e)[:200]})
+                print(f"[exp:retmodes]   → ERROR {str(e)[:120]}", flush=True)
+
+    (out_dir / "retmatrix.json").write_text(
+        json.dumps({"laya_env": laya_env, "rows": rows},
+                   ensure_ascii=False, indent=1), encoding="utf-8")
+
+    # RETRIEVAL-COMPARE.md
+    L = ["# 检索任务对照矩阵（三模式 + baseline, 纯检索无 LLM 回答）", "",
+         f"- Run: `{out_dir.name}` · 生成: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}",
+         f"- Laya 环境: {laya_env}（判决 GPU 化, C 与 A/B 同环境同通道）",
+         "- 语料: 模式=真库(q1/q2 金标在库); bm25/rrf=corpus_md 100 篇(金标在集); vector=平台跨库", "",
+         "| 方法 | q1 耗时 | q2 耗时 | q1 金标 | q2 金标 | q1 docs | q2 docs |",
+         "|---|---:|---:|:--:|:--:|---:|---:|"]
+    methods = [f"mode_{m}" for m in ("A", "B", "C")] + ret_baselines
+    for meth in methods:
+        rs = {r["qid"]: r for r in rows if r.get("method") == meth}
+        if not rs:
+            continue
+        def _cell(qid, key):
+            r = rs.get(qid)
+            return "—" if not r else str(r.get(key))
+        L.append(f"| {meth} | {_cell('q1','latency_s')}s | {_cell('q2','latency_s')}s "
+                 f"| {'✅' if rs.get('q1',{}).get('retrieval_gold') else '❌'} "
+                 f"| {'✅' if rs.get('q2',{}).get('retrieval_gold') else '❌'} "
+                 f"| {_cell('q1','n_docs')} | {_cell('q2','n_docs')} |")
+    L += ["", "> 全部为纯检索任务（无 LLM 回答）；模式臂经硬验证门（real_engine/金标/延迟），",
+          "> baseline 臂为 retrieval_only（answer=None, 零 token 成本）。", ""]
+    (out_dir / "RETRIEVAL-COMPARE.md").write_text("\n".join(L), encoding="utf-8")
+    print(f"[exp:retmodes] 报告 → {out_dir / 'RETRIEVAL-COMPARE.md'}")
+    n_gold = sum(1 for r in rows if r.get("retrieval_gold"))
+    print(f"[exp:retmodes] 金标命中 {n_gold}/{len(rows)}")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Unified experiment launcher")
     ap.add_argument("question", nargs="?", default="", help="单个问题文本")
@@ -112,6 +242,11 @@ def main() -> int:
     ap.add_argument("--baselines", default=",".join(DEFAULT_BASELINES))
     ap.add_argument("--full", action="store_true", help="全轨 + 6 baseline")
     ap.add_argument("--fast", action="store_true", help="1 题快速冒烟")
+    ap.add_argument("--retmodes", action="store_true",
+                    help="检索任务矩阵: 三模式(A/B/C)+检索类baseline 在内置 q1/q2 上"
+                         "跑纯检索(无LLM回答), 产出 RETRIEVAL-COMPARE.md")
+    ap.add_argument("--ret-baselines", default="bm25,vector,rrf",
+                    help="--retmodes 的 baseline 集(纯检索类; rerank 含 LLM 慎选)")
     ap.add_argument("--max-turns", type=int, default=12)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--monitor-system", action="store_true",
@@ -128,7 +263,12 @@ def main() -> int:
         print("project arms :", ", ".join(PROJECT_ARMS))
         print("baselines    :", ", ".join(FULL_BASELINES))
         print("default set  : project=a2 + baselines=" + ",".join(DEFAULT_BASELINES))
+        print("retmodes     : 三模式(A/B/C)+检索baseline 纯检索矩阵 (--retmodes)")
         return 0
+
+    if args.retmodes:
+        import time  # noqa: F401 — run_retmodes 内部使用
+        return run_retmodes(args)
 
     if args.check:
         return 0 if preflight()["ok"] else 1

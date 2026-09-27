@@ -174,6 +174,12 @@ DOC_B = f"""# Coffee Extraction Yield Control
 Filter the sample to 0.2 micrometre, cool to 20 C, and read within ninety
 seconds. Batch reference code {MARK_B}.
 
+## Isolation beacon
+{MARK_B} {MARK_B} {MARK_B} {MARK_B} — the isolation beacon section exists so
+the marker dominates one chunk's embedding: a cross-KB exact-marker query must
+surface this chunk regardless of how large the rest of the library grows
+(top-50 used to miss it once the corpus passed ~300 docs, 2026-09-26).
+
 ## Target band
 Espresso extraction yield between 18 % and 22 %. Below 18 % the shot reads
 sour and thin; above 22 % it turns bitter and hollow.

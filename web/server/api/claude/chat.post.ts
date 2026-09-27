@@ -483,9 +483,18 @@ export default defineEventHandler(async (event) => {
       if (message.type === 'result') {
         // result message only sends event: done once, avoiding duplicate processing by frontend handler
         res.write(`event: done\ndata: ${JSON.stringify(message)}\n\n`)
-        // D4 fix (3/3): the SDK iterator may keep the stream open long after
-        // the final result (background subagents, shell keeps). End the
-        // response immediately on result — the client must not wait on it.
+        // D4 fix (3/3), revised 2026-09-26: `break` alone awaits the
+        // iterator's return() (engine teardown) before the surrounding
+        // finally can run — observed with the mock engine: `event: done`
+        // was written but `: ping` keepalives then flowed for the full
+        // 10-minute turn budget because clearInterval/res.end sat behind
+        // the hung teardown. Close the response explicitly here, mark the
+        // query closed (silences the keepalive) and abort the engine; the
+        // turn timer reaps a teardown that still refuses to finish.
+        queryClosed = true
+        denyAllPending(sessionId || '_pre_init', 'Query ended')
+        abortController.abort(new Error('result-received'))
+        res.end()
         break
       } else {
         res.write(`data: ${JSON.stringify(message)}\n\n`)

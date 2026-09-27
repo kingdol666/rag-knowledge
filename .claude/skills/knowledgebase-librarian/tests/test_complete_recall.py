@@ -77,7 +77,19 @@ def test_every_candidate_segment_is_sent_to_jev_and_keeps_offsets():
     }]
 
 
-def test_no_key_is_not_a_pass_through():
+def test_no_key_is_not_a_pass_through(monkeypatch):
+    """Engine unavailable (simulated; independent of local model presence)
+    must produce no survivors — fail-closed, never keep-all."""
+    import sys as _sys
+    _sys.path.insert(0, str(SCRIPT_DIR))
+    import jev_filter as _jf
+
+    def broken_score(query, text, criterion):
+        raise _jf.JevUnavailable("simulated_unavailable")
+
+    monkeypatch.setattr(_jf, "laya_score", broken_score)
+    _jf._LAYA_AGENT = None
+    _jf._LAYA_AGENT_KEY = None
     result = complete.run_manifest(_manifest(), env={})
     assert result["jev"]["status"] == "unavailable"
     assert result["survivors"] == []

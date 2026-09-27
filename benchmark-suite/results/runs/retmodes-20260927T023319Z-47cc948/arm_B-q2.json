@@ -1,0 +1,680 @@
+{
+ "mode": "B",
+ "ok": true,
+ "seconds": 9.5,
+ "wall_s": 9.5,
+ "real_engine": true,
+ "status": "ok",
+ "n_result_docs": 11,
+ "kept_doc_paths": [
+  "生命科学与医学/clinical-medicine__1809.08199__profiling-lung-cancer-patients-using-electro.md",
+  "生命科学与医学/clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+  "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+  "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 2 of 2).md",
+  "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+  "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 2 of 3).md",
+  "生命科学与医学/clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 3 of 3).md",
+  "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+  "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 2 of 4).md",
+  "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 3 of 4).md",
+  "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 4 of 4).md"
+ ],
+ "judge": {
+  "backend": "laya_sdk",
+  "engine": "laya",
+  "criterion": "evidence",
+  "candidates": 79,
+  "scored": 79,
+  "survivors_kept": 77,
+  "errors": []
+ },
+ "trace": {
+  "mcp_calls": 12,
+  "l0_kbs": 18,
+  "l1_kept_shelves": [
+   "生命科学与医学"
+  ],
+  "l2_docs": 53,
+  "l3_untrusted": 0,
+  "l4_overlap_docs": 8,
+  "l4_docs_read": 11,
+  "l4_trust_heads": 0,
+  "unscanned_count": 42
+ },
+ "evidence_chars": 40001,
+ "gold_hit": true,
+ "survivors": [
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 16,
+   "score": 0.8746
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 17,
+   "end_line": 26,
+   "score": 0.8946
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 27,
+   "end_line": 46,
+   "score": 0.7719
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 47,
+   "end_line": 65,
+   "score": 0.8258
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 66,
+   "end_line": 77,
+   "score": 0.7956
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 78,
+   "end_line": 91,
+   "score": 0.7277
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 92,
+   "end_line": 113,
+   "score": 0.92
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 114,
+   "end_line": 120,
+   "score": 0.7613
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__1809.08199__profiling-lung-cancer-patients-using-electro.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 48,
+   "score": 0.6083
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__1809.08199__profiling-lung-cancer-patients-using-electro.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 49,
+   "end_line": 54,
+   "score": 0.8463
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__1809.08199__profiling-lung-cancer-patients-using-electro.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 55,
+   "end_line": 73,
+   "score": 0.7012
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__1809.08199__profiling-lung-cancer-patients-using-electro.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 74,
+   "end_line": 93,
+   "score": 0.9376
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__1809.08199__profiling-lung-cancer-patients-using-electro.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 94,
+   "end_line": 123,
+   "score": 0.9394
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__1809.08199__profiling-lung-cancer-patients-using-electro.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 124,
+   "end_line": 153,
+   "score": 0.8553
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__1809.08199__profiling-lung-cancer-patients-using-electro.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 154,
+   "end_line": 170,
+   "score": 0.8711
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__1809.08199__profiling-lung-cancer-patients-using-electro.md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 171,
+   "end_line": 183,
+   "score": 0.8801
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 35,
+   "score": 0.8275
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 36,
+   "end_line": 41,
+   "score": 0.8523
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 42,
+   "end_line": 49,
+   "score": 0.7851
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 50,
+   "end_line": 73,
+   "score": 0.9318
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 74,
+   "end_line": 75,
+   "score": 0.5929
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 76,
+   "end_line": 104,
+   "score": 0.9367
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 105,
+   "end_line": 140,
+   "score": 0.9367
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 1 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 141,
+   "end_line": 156,
+   "score": 0.8905
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 28,
+   "score": 0.9076
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 29,
+   "end_line": 55,
+   "score": 0.7381
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 56,
+   "end_line": 70,
+   "score": 0.8177
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 70,
+   "end_line": 74,
+   "score": 0.586
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 76,
+   "end_line": 89,
+   "score": 0.9478
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 90,
+   "end_line": 97,
+   "score": 0.9194
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 98,
+   "end_line": 112,
+   "score": 0.77
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 2 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 113,
+   "end_line": 120,
+   "score": 0.895
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon (part 3 of 3).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 29,
+   "score": 0.7975
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 25,
+   "score": 0.9283
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 26,
+   "end_line": 58,
+   "score": 0.7515
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 59,
+   "end_line": 65,
+   "score": 0.8972
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 66,
+   "end_line": 86,
+   "score": 0.9782
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 87,
+   "end_line": 119,
+   "score": 0.8478
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 120,
+   "end_line": 150,
+   "score": 0.8737
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 151,
+   "end_line": 180,
+   "score": 0.7736
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 181,
+   "end_line": 187,
+   "score": 0.7269
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 24,
+   "score": 0.7871
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 25,
+   "end_line": 26,
+   "score": 0.9217
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 27,
+   "end_line": 36,
+   "score": 0.8997
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 38,
+   "end_line": 43,
+   "score": 0.885
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 44,
+   "end_line": 59,
+   "score": 0.8912
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 61,
+   "end_line": 68,
+   "score": 0.9433
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 69,
+   "end_line": 79,
+   "score": 0.8553
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 80,
+   "end_line": 88,
+   "score": 0.9561
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 13,
+   "score": 0.9008
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 15,
+   "end_line": 20,
+   "score": 0.809
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 21,
+   "end_line": 43,
+   "score": 0.9593
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 44,
+   "end_line": 69,
+   "score": 0.7933
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 70,
+   "end_line": 97,
+   "score": 0.7261
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 98,
+   "end_line": 125,
+   "score": 0.6612
+  },
+  {
+   "doc_path": "生命科学与医学\\clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 126,
+   "end_line": 146,
+   "score": 0.7273
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 22,
+   "score": 0.8805
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 24,
+   "end_line": 27,
+   "score": 0.9029
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 28,
+   "end_line": 33,
+   "score": 0.9353
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 34,
+   "end_line": 41,
+   "score": 0.7945
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 43,
+   "end_line": 46,
+   "score": 0.9272
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 48,
+   "end_line": 52,
+   "score": 0.9482
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 53,
+   "end_line": 69,
+   "score": 0.917
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 71,
+   "end_line": 72,
+   "score": 0.8513
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 73,
+   "end_line": 73,
+   "score": 0.9367
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 6,
+   "score": 0.8357
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 6,
+   "end_line": 20,
+   "score": 0.9121
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 21,
+   "end_line": 43,
+   "score": 0.8473
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 45,
+   "end_line": 45,
+   "score": 0.9121
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 45,
+   "end_line": 68,
+   "score": 0.9182
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 70,
+   "end_line": 71,
+   "score": 0.8912
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 72,
+   "end_line": 81,
+   "score": 0.9704
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 83,
+   "end_line": 97,
+   "score": 0.7003
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 98,
+   "end_line": 102,
+   "score": 0.9008
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 19,
+   "score": 0.9206
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 20,
+   "end_line": 86,
+   "score": 0.8463
+  },
+  {
+   "doc_path": "生命科学与医学\\genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 87,
+   "end_line": 114,
+   "score": 0.8838
+  }
+ ],
+ "gate": {
+  "passed": true,
+  "checks": {
+   "exit_ok": true,
+   "real_engine": true,
+   "evidence_nonempty": true,
+   "gold_hit": true,
+   "latency_recorded": true
+  }
+ },
+ "question": {
+  "qid": "q2",
+  "text": "基于电子健康记录（EHR）数据用机器学习算法预测中风/卒中风险：关键风险因素及其影响分析 (stroke prediction electronic health records machine learning risk factors)",
+  "gold_substr": "stroke-from-electronic-health",
+  "gold_name": "predicting-stroke-from-electronic-health-rec 论文"
+ }
+}

@@ -65,7 +65,15 @@ def test_every_candidate_gets_a_verdict_and_errors_fail_closed():
     assert result["real_engine"] is False
 
 
-def test_missing_real_configuration_is_unavailable_not_keep_all():
+def test_missing_real_configuration_is_unavailable_not_keep_all(monkeypatch):
+    """Engine unavailable (simulated; independent of local model presence)
+    keeps nothing — the fail-closed contract."""
+    def broken_score(query, text, criterion):
+        raise jev.JevUnavailable("simulated_unavailable")
+
+    monkeypatch.setattr(jev, "laya_score", broken_score)
+    jev._LAYA_AGENT = None
+    jev._LAYA_AGENT_KEY = None
     result = jev.filter_candidates(
         {"query": "What is the result?", "candidates": [candidate("a", "text", 1)]},
         env={},
@@ -124,6 +132,10 @@ def test_default_laya_sdk_is_used_for_every_candidate(monkeypatch):
             assert model == "convaiinnovations/laya"
             return FakeAgent()
 
+    # Force the HF-id resolution path so the fake module is exercised even on
+    # machines where a real local checkpoint exists.
+    monkeypatch.setattr(jev, "_DEFAULT_LOCAL_MODEL_DIR", Path("nonexistent-laya"))
+    monkeypatch.setattr(jev, "_ensure_local_model", lambda path: False)
     monkeypatch.setitem(sys.modules, "laya", FakeLaya)
     jev._LAYA_AGENT = None
     jev._LAYA_AGENT_KEY = None
@@ -145,6 +157,8 @@ def test_laya_failure_does_not_fallback_to_jev(monkeypatch):
         def load(model, **kwargs):
             raise RuntimeError("model missing")
 
+    monkeypatch.setattr(jev, "_DEFAULT_LOCAL_MODEL_DIR", Path("nonexistent-laya"))
+    monkeypatch.setattr(jev, "_ensure_local_model", lambda path: False)
     monkeypatch.setitem(sys.modules, "laya", BrokenLaya)
     jev._LAYA_AGENT = None
     jev._LAYA_AGENT_KEY = None
@@ -152,6 +166,20 @@ def test_laya_failure_does_not_fallback_to_jev(monkeypatch):
     assert result["status"] == "unavailable"
     assert result["engine"] == "laya"
     assert result["survivors"] == []
+
+
+def test_laya_unavailable_fails_closed(monkeypatch):
+    """Even with the SDK importable, a scoring failure keeps nothing."""
+    def broken_score(query, text, criterion):
+        raise jev.JevUnavailable("simulated_model_failure")
+
+    monkeypatch.setattr(jev, "laya_score", broken_score)
+    jev._LAYA_AGENT = None
+    jev._LAYA_AGENT_KEY = None
+    result = jev.filter_candidates({"query": "What?", "candidates": [candidate("a", "x", 1)]},
+                                   env={})
+    assert result["status"] == "unavailable"
+    assert result["result_list"] == []
 
 
 def test_invalid_engine_is_rejected():

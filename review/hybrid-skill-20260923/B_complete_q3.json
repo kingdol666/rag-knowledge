@@ -1,0 +1,274 @@
+{
+  "mode": "B_complete",
+  "id": "q3",
+  "query": "How should farmers allocate trap cropping investments to maximize yield?",
+  "seconds": 409.6,
+  "docs_read": 30,
+  "lane": {
+    "descriptions_scanned": 329,
+    "catalog_branch_scan": {
+      "shelves_scanned": 6,
+      "descriptions_scanned": 329,
+      "description_overlap_docs": 26,
+      "zero_overlap_docs_unread": 299,
+      "docs_read": 30
+    },
+    "catalog_branch": {
+      "seconds": 18.8,
+      "docs_read": 30
+    }
+  },
+  "judge": {
+    "abs_kept": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29
+    ],
+    "relative_cut": 0.787,
+    "global_best": 0.887,
+    "doc_scores": [
+      {
+        "doc": "生命科学与医学\\agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 1 of 3).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.7964,
+        "kept": true
+      },
+      {
+        "doc": "生命科学与医学\\agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 2 of 3).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.8293,
+        "kept": true
+      },
+      {
+        "doc": "生命科学与医学\\agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 3 of 3).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.7568,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 3 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.814,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8808,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.7357,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.79,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8364,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 7 of 13).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.7615,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md (part 5 of 6).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.7698,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__1706.05261__from-propositional-logic-to-plausible-reason.md (part 4 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8359,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 3 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8313,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 2 of 2).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8039,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 2 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8875,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 4 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.7301,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\databases__2102.02440__online-sketch-based-query-optimization.md (part 2 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8628,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\databases__2005.03328__bitvector-aware-query-optimization-for-decis.md (part 3 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.6634,
+        "kept": false
+      },
+      {
+        "doc": "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md",
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "score": 0.8693,
+        "kept": true
+      },
+      {
+        "doc": "自然科学与地球科学\\quantum-physics__1311.2485__continuous-time-quantum-error-correction.md (part 2 of 4).md",
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "score": 0.884,
+        "kept": true
+      },
+      {
+        "doc": "自然科学与地球科学\\quantum-physics__1311.2485__continuous-time-quantum-error-correction.md (part 4 of 4).md",
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "score": 0.8771,
+        "kept": true
+      },
+      {
+        "doc": "自然科学与地球科学\\oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.md (part 2 of 3).md",
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "score": 0.7853,
+        "kept": false
+      },
+      {
+        "doc": "生命科学与医学\\clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 4 of 8).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.7244,
+        "kept": false
+      },
+      {
+        "doc": "工程与能源\\materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs (part 2 of 2).md",
+        "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+        "score": 0.5914,
+        "kept": false
+      },
+      {
+        "doc": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+        "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+        "score": 0.8872,
+        "kept": true
+      },
+      {
+        "doc": "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+        "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+        "score": 0.8154,
+        "kept": true
+      },
+      {
+        "doc": "经济与社会\\economics__1901.03951__inequality-mobility-and-the-financial-accumu.md (part 3 of 3).md",
+        "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+        "score": 0.7568,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 1 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.7314,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 2 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8352,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 4 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.725,
+        "kept": false
+      },
+      {
+        "doc": "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 5 of 5).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.654,
+        "kept": false
+      }
+    ],
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "scored_segments": 274,
+    "total_segments": 274
+  },
+  "kept_doc_paths": [
+    "生命科学与医学\\agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 1 of 3).md",
+    "生命科学与医学\\agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 2 of 3).md",
+    "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 3 of 5).md",
+    "计算机与人工智能\\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md",
+    "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md",
+    "计算机与人工智能\\artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md",
+    "计算机与人工智能\\artificial-intelligence__1706.05261__from-propositional-logic-to-plausible-reason.md (part 4 of 4).md",
+    "计算机与人工智能\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 3 of 4).md",
+    "计算机与人工智能\\neuroscience__2001.10696__spiking-inception-module-for-multi-layer-uns.md (part 2 of 2).md",
+    "计算机与人工智能\\statistics__1506.03880__causal-inference-via-algebraic-geometry-feas.md (part 2 of 5).md",
+    "计算机与人工智能\\databases__2102.02440__online-sketch-based-query-optimization.md (part 2 of 5).md",
+    "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md",
+    "自然科学与地球科学\\quantum-physics__1311.2485__continuous-time-quantum-error-correction.md (part 2 of 4).md",
+    "自然科学与地球科学\\quantum-physics__1311.2485__continuous-time-quantum-error-correction.md (part 4 of 4).md",
+    "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+    "工程与能源\\mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+    "计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 2 of 5).md"
+  ],
+  "evidence_pack": "[生命科学与医学\\agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 1 of 3).md]\n# agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz（第 1/3 部分）\n章节: Optimal trap cropping investments to maximize agricultural yield\n# Optimal trap cropping investments to maximize agricultural yield\n\n\nMatthew H Holden\n\nSchool of Mathematics and Physics, The University of Queensland, St Lucia, 4072, Australia\n\nCentre for Biodiversity and Conservation Science, The University of Queensland, St Lucia, 4072, Australia\n\n## Abstract\n\n\nTrap cropping is a pest management strategy where a grower plants an attractive “trap crop\" alongside the primary crop to divert pests away from it. We propose a simple framework for optimizing the proportion of a grower's field or greenhouse allocated to a main crop and a trap crop to maximize agricultural yield. We implement this framework using a model of pest movement governed by trap crop attractiveness, the potential yield threatened by pests, and functional relationships between yield loss and pest density drawn from the literature. Focusing on a simple case in which pests move freely across the field and are attracted to traps solely by their relative attractiveness, we find that allocating 5-20 percent of the landscape to trap plants is typically required to maximize yield and achieve effective pest control in the absence of pesticides. For highly attractive trap plants, growers can devote less space because they are more effective; less attractive plants are ineffective even in large numbers. Intermediate attractiveness warrants the greatest investment in trap cropping. Our framework offers a transparent and tractable approach for exploring trade-offs in pest management and can be extended to incorporate more complex pest behaviors, crop spatial configurations, and economic considerations.\n\nKeywords: ecological pest management, integrated pest management, inter-cropping, companion planting, organic agriculture, trap crop\n\n## Recommendations for Resource Managers\n\n\n• Planting a highly attractive \"trap crop\" that lures pests away from the main crop in an agricultural field can control pests, improve yield, and lower reliance on chemical pesticides.\n\n• Because trap plants occupy precious space that could otherwise be used to grow harvestable crops, it is important to optimize their share of the field.\n\n• Our results suggest that allocating 5–20% of the field to trap crops may be required to maximize yield, depending on pest pressure and trap plant attractiveness.\n\n## 1 Introduction\n\n\nPests remain one of the\n\n[生命科学与医学\\agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 2 of 3).md]\n# agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz（第 2/3 部分）\n章节: Optimal trap cropping investments to maximize agricultural yield > 6 Illustrative results\n## 6 Illustrative results\n\n\nWe start by parameterizing the model using reported quantities available in the literature to form a plausible baseline. For example, it has been shown in choice experiments that 98% of greenhouse whiteflies, Trialeurodes vaporariorum, a common agricultural pest, choose to settle on an eggplant trap plant versus a poinsettia cash plant (Lee et al., 2009). This implies that eggplant is 49 times more attractive than poinsettia when the pest has decided to move. It is commonly suggested that without the use of pesticides, a roughly 40 percent reduction in yield is typical in agricultural landscapes (Zehnder et al., 2007; Oerke, 2006). We will use these two parameter values as an illustrative baseline, but will also explore the whole parameter space.\n\nIf $a = 4 9$ and $\\beta = 0 . 4$ , we find that roughly 91.5 – 92.9 percent of a grower's greenhouse or field should be allocated to cash plants to maximise yield (Figure 2). The nonlinear yield-pest relationships lead to more space being required for trap cropping: 8.5% for reciprocal yield, equation (12), and 7.8% for exponential yield, equation (13), compared to the case when yield declines linearly with pest density (7.1% trap plants).\n\nThis occurs because the yield loss per pest is steeper at low pest densities under these relationships, so even small increases in pest density across many cash plants have a large negative impact on total yield.\n\n![](images/3f00a8d6fbb7f17ae0a02054514e3bec2e96f8a9f5bf28e5ce48e4c8226570ce.jpg)  \nFigure 2: Proportion of the total pest-free field's yield $( \\mathrm { i . e . , a }$ field planted only with cash plants) achieved in a system with pests threatening up to 40% of the yield $( \\beta = 0 . 4 )$ , shown as a function of the proportion of the field devoted to trap plants. Curves correspond to a linear (blue solid), reciprocal (purple dotted), and exponential (red dashed) yield-pest relationship, assuming the trap plant is 49 times more attractive than the cash plant $( a = 4 9 )$ . Note that when there are no trap plants, the grower loses 40% of their yield (right endpoint), with steep gains from adding only a few trap plants (moving left). The optimal proportion of the field to devote to trap plants is $7 . 8 . 5 \\%$ , depending on the yield-pest relationships. Specifica\n\n[计算机与人工智能\\artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 3 of 5).md]\n# artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions（第 3/5 部分）\n章节: Augmenting the action space with conventions to improve multi-agent cooperation in Hanabi > 4.3 Preliminary Results on Small Hanabi\n## 4.3 Preliminary Results on Small Hanabi\n\n\nTo test the viability and capabilities of conventions, we conduct initial tests using the Small Hanabi environment, since it offers a smaller state-action space and allows for a pure convention space12. We compare a pure convention space and an augmented action-convention space, as discussed in Section 3.2, against their primitive action benchmarks. Due to Hanabi having a long list of intricate conventions, in addition to augmenting the action space with conventions, we experiment with the idea of simplifying the list of conventions during augmentation13. This simplified list consists of the conventions that were the most straightforward and natural to develop, and were also the most common ones to occur in a game. The removed conventions can be considered edge-case or specific to certain game states that are very uncommon, and often result in uncertainty regarding their effectiveness.\n\nSmall Hanabi has a deck reduced to 20 cards with only two suits, is limited to only two players, and the player hand size is reduced to two cards. Furthermore, the life tokens have been reduced to one, and the hint tokens to three, otherwise the game shares all the core mechanics as regular Hanabi. This results in the problem having a significantly smaller state-action space and allows for initial testing and development of algorithms, with the aim of solving the full Hanabi problem. Even though this problem is considered simpler than Hanabi, it is by no means an easy problem to solve, with a perfect score of 10/10 being difficult to achieve. Player hands are often “locked\" with important cards that must not be discarded (called critical cards), hint tokens run out almost immediately, and players are often forced into no-win scenarios where they must choose a bad action or risk losing their single life token.\n\nIn these tests, we use our in-house learning environment as well as the open-sourced learning environment developed by Bard et al. [37]. We implement our own rudimentary conventions specific to Small Hanabi, which we developed through multiple human plays, presented and discussed in Appendix A.1. Fig. 3a shows the result for independent Deep Q-learning (DQN) with a primitive-action space compared t\n\n[计算机与人工智能\\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md]\n# artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult（第 2/3 部分）\n章节: Learning Reward Machines in Cooperative Multi-Agent Tasks > 3.2 Learn Individual Reward Machines\n## 3.2 Learn Individual Reward Machines\n\n\nWe propose to decompose the global task into sub-tasks, each of which can be independently solved by one of the agents. Note that even though an agent is assigned a sub-task, it does not have any information about its structure nor how to solve it. This is in fact what the proposed approach intends to tackle: learning the RM encoding the structure of the sub-task. This should be simpler than learning a global RM since the number of constituent states becomes smaller.\n\nGiven a set of N agents, we assume that the global task can be decomposed into N sub-task MDPs. Similarly to Neary et al. $[ 1 6 ] _ { : }$ we assume each agent's MDP has its own state space $s _ { i }$ , action space ${ \\mathcal { A } } _ { i } ,$ transition function $\\mathcal { P } i$ , and termination function $\\tau _ { i } .$ In addition, each agent has its own labeling function $l _ { i } ;$ hence, the agent may only observe a subset $\\mathcal { P } _ { i } \\subseteq \\mathcal { S }$ . Note that the termination function is particular to each agent; for instance, agent $A _ { 2 }$ in THREEBUTTONS will complete its sub-task by pressing the green button, then the red button until it observes the signal $R _ { B }$ indicating that $A _ { 3 }$ is also pressing it. Ideally, the parallel composition of the learned RMs captures the collective goal.\n\nWe propose an algorithm that interleaves the induction of the RMs from a collection of label traces and the learning of the associated Q-functions, akin to that by Furelos-Blanco et al. [9] in the single agent setting. The decentralised learning of the Q-functions is performed using the method by Neary et al. [16], briefly outlined in Section 2.2.3. The induction of the RMs is done using a stateof-the-art inductive logic programming system called ILASP [15], which learns the transition function of an RM as a set of logic rules from example traces observed by the agent.\n\nExample 3.1. The leftmost edge in Figure 2a corresponds to the rule $\\delta ( u _ { 0 } ^ { 1 } , u _ { 1 } ^ { 1 } , \\top ) : - \\mathsf { p r o p } ( Y _ { B } , \\top )$ . The $\\delta ( { \\sf X } , { \\sf Y } , { \\sf T } )$ predicate expresses that the transition from X to Y is satisfied at time T, while the prop(P, T) predicate indicates that propositi\n\n[计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md]\n# large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference（第 4/4 部分）\n章节: An Example of Our Generated Queries > C Understanding Llama Behavior\n## C Understanding Llama Behavior\n\n\nTo better understand the performance drop in our attack for the Llama model, we examine the MIA score under two scenarios:\n\n<table><tr><td>Attack</td><td>Query</td></tr><tr><td>Target Document</td><td>This paper serves as a companion or extension to the “Inside PageRank&quot; paper by Bianchini et al. [19]. It is a comprehensive survey of all issues associated with PageRank, covering the basic PageRank model, available and recommended solution methods, storage issues, existence, uniqueness, and convergence properties, possible alterations to the basic model, suggested alternatives to the traditional solution methods, sensitivity and conditioning, and finally the updating problem. We introduce a few new results, provide an extensive reference list, and speculate about exciting areas of future research.</td></tr><tr><td>RAG-MIA[2]</td><td>Does this:\\n“This paper serves as a companion or extension to the “Inside PageRank&quot; paper by Bianchini et al. [19]. It is a comprehensive survey of all issues associated with PageRank, covering the basic PageRank model, available and recommended solution methods, storage issues, existence, uniqueness, and convergence properties, possible alterations to the basic model, suggested alternatives to the traditional s",
+  "_gold": {
+    "gold_in_judged": true,
+    "gold_kept": true,
+    "gold_score": 0.8293,
+    "gold_rank": 1,
+    "gold_parts": 3,
+    "gold_parts_kept": 2,
+    "gold_in_evidence": true
+  }
+}

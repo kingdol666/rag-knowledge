@@ -1,0 +1,278 @@
+{
+  "query": "Which risk factors contribute most to stroke prediction?",
+  "criterion": "evidence",
+  "catalog": [
+    {
+      "kb_id": "kb1",
+      "name": "Med",
+      "description": "clinical stroke EHR knowledge",
+      "catalog_status": "possible",
+      "query_overlap": 1
+    }
+  ],
+  "documents": [
+    {
+      "kb_id": "kb1",
+      "doc_id": "d1",
+      "doc_path": "stroke.md",
+      "name": "Stroke",
+      "description": "PCA shows age and marital status contribute most; residence type none. MLP reaches 75.02% accuracy.",
+      "content": "# Predicting Stroke\n\nWe analyze patient attributes with PCA. The patient's residence type has no contribution. Age and marital status have the highest contribution to the first two principal components.\n\nBenchmark: the feed-forward multi-layer perceptron achieves 75.02% accuracy over 1000 downsampling experiments.",
+      "description_trust": "trusted",
+      "description_trust_reasons": [],
+      "segment_count": 1
+    },
+    {
+      "kb_id": "kb1",
+      "doc_id": "d2",
+      "doc_path": "weather.md",
+      "name": "Weather",
+      "description": "Seasonal weather patterns.",
+      "content": "Paris spring weather is mild with light rain.",
+      "description_trust": "trusted",
+      "description_trust_reasons": [],
+      "segment_count": 1
+    }
+  ],
+  "candidates": [
+    {
+      "candidate_id": "kb1/stroke.md/part-0/segment-0000",
+      "kb_id": "kb1",
+      "kb_name": null,
+      "doc_id": "d1",
+      "doc_path": "stroke.md",
+      "doc_name": "Stroke",
+      "part_index": 0,
+      "section_path": "",
+      "start_char": 0,
+      "end_char": 315,
+      "start_line": 1,
+      "end_line": 5,
+      "text": "# Predicting Stroke\n\nWe analyze patient attributes with PCA. The patient's residence type has no contribution. Age and marital status have the highest contribution to the first two principal components.\n\nBenchmark: the feed-forward multi-layer perceptron achieves 75.02% accuracy over 1000 downsampling experiments."
+    },
+    {
+      "candidate_id": "kb1/weather.md/part-0/segment-0000",
+      "kb_id": "kb1",
+      "kb_name": null,
+      "doc_id": "d2",
+      "doc_path": "weather.md",
+      "doc_name": "Weather",
+      "part_index": 0,
+      "section_path": "",
+      "start_char": 0,
+      "end_char": 45,
+      "start_line": 1,
+      "end_line": 1,
+      "text": "Paris spring weather is mild with light rain."
+    }
+  ],
+  "unscanned": [],
+  "candidate_count": 2,
+  "engine": "laya",
+  "jev": {
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "real_jev": false,
+    "criterion": "evidence",
+    "threshold": 0.5,
+    "model": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\model\\laya",
+    "key_env": "",
+    "candidate_count": 2,
+    "scored_count": 2,
+    "scores": [
+      {
+        "candidate_id": "kb1/stroke.md/part-0/segment-0000",
+        "score": 0.6286,
+        "kept": true,
+        "doc_path": "stroke.md",
+        "doc_id": "d1",
+        "part_index": 0,
+        "section_path": "",
+        "start_char": 0,
+        "end_char": 315,
+        "start_line": 1,
+        "end_line": 5
+      },
+      {
+        "candidate_id": "kb1/weather.md/part-0/segment-0000",
+        "score": 0.0012,
+        "kept": false,
+        "doc_path": "weather.md",
+        "doc_id": "d2",
+        "part_index": 0,
+        "section_path": "",
+        "start_char": 0,
+        "end_char": 45,
+        "start_line": 1,
+        "end_line": 1
+      }
+    ],
+    "result_list": [
+      {
+        "candidate_id": "kb1/stroke.md/part-0/segment-0000",
+        "kb_id": "kb1",
+        "kb_name": null,
+        "doc_id": "d1",
+        "doc_path": "stroke.md",
+        "doc_name": "Stroke",
+        "part_index": 0,
+        "section_path": "",
+        "start_char": 0,
+        "end_char": 315,
+        "start_line": 1,
+        "end_line": 5,
+        "text": "# Predicting Stroke\n\nWe analyze patient attributes with PCA. The patient's residence type has no contribution. Age and marital status have the highest contribution to the first two principal components.\n\nBenchmark: the feed-forward multi-layer perceptron achieves 75.02% accuracy over 1000 downsampling experiments.",
+        "score": 0.6286,
+        "kept": true,
+        "backend": "laya_sdk",
+        "real_engine": true,
+        "real_jev": false,
+        "jev_meta": {
+          "model": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\model\\laya",
+          "subfolder": ""
+        }
+      }
+    ],
+    "survivors": [
+      {
+        "candidate_id": "kb1/stroke.md/part-0/segment-0000",
+        "kb_id": "kb1",
+        "kb_name": null,
+        "doc_id": "d1",
+        "doc_path": "stroke.md",
+        "doc_name": "Stroke",
+        "part_index": 0,
+        "section_path": "",
+        "start_char": 0,
+        "end_char": 315,
+        "start_line": 1,
+        "end_line": 5,
+        "text": "# Predicting Stroke\n\nWe analyze patient attributes with PCA. The patient's residence type has no contribution. Age and marital status have the highest contribution to the first two principal components.\n\nBenchmark: the feed-forward multi-layer perceptron achieves 75.02% accuracy over 1000 downsampling experiments.",
+        "score": 0.6286,
+        "kept": true,
+        "backend": "laya_sdk",
+        "real_engine": true,
+        "real_jev": false,
+        "jev_meta": {
+          "model": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\model\\laya",
+          "subfolder": ""
+        }
+      }
+    ],
+    "evidence_pack": "[stroke.md]\n# Predicting Stroke\n\nWe analyze patient attributes with PCA. The patient's residence type has no contribution. Age and marital status have the highest contribution to the first two principal components.\n\nBenchmark: the feed-forward multi-layer perceptron achieves 75.02% accuracy over 1000 downsampling experiments.",
+    "provenance": [
+      {
+        "candidate_id": "kb1/stroke.md/part-0/segment-0000",
+        "kb_id": "kb1",
+        "kb_name": null,
+        "doc_id": "d1",
+        "doc_path": "stroke.md",
+        "doc_name": "Stroke",
+        "part_index": 0,
+        "section_path": "",
+        "start_char": 0,
+        "end_char": 315,
+        "start_line": 1,
+        "end_line": 5,
+        "text": "# Predicting Stroke\n\nWe analyze patient attributes with PCA. The patient's residence type has no contribution. Age and marital status have the highest contribution to the first two principal components.\n\nBenchmark: the feed-forward multi-layer perceptron achieves 75.02% accuracy over 1000 downsampling experiments.",
+        "score": 0.6286,
+        "kept": true,
+        "backend": "laya_sdk",
+        "real_engine": true,
+        "real_jev": false,
+        "jev_meta": {
+          "model": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\model\\laya",
+          "subfolder": ""
+        },
+        "truncated": false
+      }
+    ],
+    "deduped_count": 1,
+    "included_count": 1,
+    "truncated_candidate_ids": [],
+    "evidence_chars": 327,
+    "errors": []
+  },
+  "survivors": [
+    {
+      "candidate_id": "kb1/stroke.md/part-0/segment-0000",
+      "kb_id": "kb1",
+      "kb_name": null,
+      "doc_id": "d1",
+      "doc_path": "stroke.md",
+      "doc_name": "Stroke",
+      "part_index": 0,
+      "section_path": "",
+      "start_char": 0,
+      "end_char": 315,
+      "start_line": 1,
+      "end_line": 5,
+      "text": "# Predicting Stroke\n\nWe analyze patient attributes with PCA. The patient's residence type has no contribution. Age and marital status have the highest contribution to the first two principal components.\n\nBenchmark: the feed-forward multi-layer perceptron achieves 75.02% accuracy over 1000 downsampling experiments.",
+      "score": 0.6286,
+      "kept": true,
+      "backend": "laya_sdk",
+      "real_engine": true,
+      "real_jev": false,
+      "jev_meta": {
+        "model": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\model\\laya",
+        "subfolder": ""
+      }
+    }
+  ],
+  "result_list": [
+    {
+      "candidate_id": "kb1/stroke.md/part-0/segment-0000",
+      "kb_id": "kb1",
+      "kb_name": null,
+      "doc_id": "d1",
+      "doc_path": "stroke.md",
+      "doc_name": "Stroke",
+      "part_index": 0,
+      "section_path": "",
+      "start_char": 0,
+      "end_char": 315,
+      "start_line": 1,
+      "end_line": 5,
+      "text": "# Predicting Stroke\n\nWe analyze patient attributes with PCA. The patient's residence type has no contribution. Age and marital status have the highest contribution to the first two principal components.\n\nBenchmark: the feed-forward multi-layer perceptron achieves 75.02% accuracy over 1000 downsampling experiments.",
+      "score": 0.6286,
+      "kept": true,
+      "backend": "laya_sdk",
+      "real_engine": true,
+      "real_jev": false,
+      "jev_meta": {
+        "model": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\model\\laya",
+        "subfolder": ""
+      }
+    }
+  ],
+  "evidence_pack": "[stroke.md]\n# Predicting Stroke\n\nWe analyze patient attributes with PCA. The patient's residence type has no contribution. Age and marital status have the highest contribution to the first two principal components.\n\nBenchmark: the feed-forward multi-layer perceptron achieves 75.02% accuracy over 1000 downsampling experiments.",
+  "provenance": [
+    {
+      "candidate_id": "kb1/stroke.md/part-0/segment-0000",
+      "kb_id": "kb1",
+      "kb_name": null,
+      "doc_id": "d1",
+      "doc_path": "stroke.md",
+      "doc_name": "Stroke",
+      "part_index": 0,
+      "section_path": "",
+      "start_char": 0,
+      "end_char": 315,
+      "start_line": 1,
+      "end_line": 5,
+      "text": "# Predicting Stroke\n\nWe analyze patient attributes with PCA. The patient's residence type has no contribution. Age and marital status have the highest contribution to the first two principal components.\n\nBenchmark: the feed-forward multi-layer perceptron achieves 75.02% accuracy over 1000 downsampling experiments.",
+      "score": 0.6286,
+      "kept": true,
+      "backend": "laya_sdk",
+      "real_engine": true,
+      "real_jev": false,
+      "jev_meta": {
+        "model": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\model\\laya",
+        "subfolder": ""
+      },
+      "truncated": false
+    }
+  ]
+}

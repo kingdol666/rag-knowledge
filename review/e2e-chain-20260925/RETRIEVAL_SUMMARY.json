@@ -1,0 +1,121 @@
+[
+  {
+    "mode": "A_vector",
+    "id": "Q1",
+    "seconds": 45.7,
+    "scan": {
+      "descriptions_scanned": null,
+      "description_overlap_docs": null,
+      "zero_overlap_docs_unread": null,
+      "docs_read": [
+        {
+          "doc_path": "AI 基础设施/tracelens-deployment-notes.md",
+          "chars": 1896,
+          "truncated": false
+        },
+        {
+          "doc_path": "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 2 of 2).md",
+          "chars": 16323,
+          "truncated": false
+        },
+        {
+          "doc_path": "Corpus-Chunks800/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou__k22.md",
+          "chars": 0,
+          "truncated": false
+        },
+        {
+          "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+          "chars": 8563,
+          "truncated": false
+        },
+        {
+          "doc_path": "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+          "chars": 20000,
+          "truncated": true
+        }
+      ],
+      "peek_docs": null,
+      "expansion_docs": null,
+      "expansion_upgraded": null
+    },
+    "gold": {
+      "judged": true,
+      "kept": true,
+      "best": 0.8885
+    }
+  },
+  {
+    "mode": "B_complete",
+    "id": "Q1",
+    "seconds": 581.5,
+    "scan": {
+      "descriptions_scanned": 332,
+      "description_overlap_docs": 3,
+      "zero_overlap_docs_unread": 305,
+      "docs_read": 30,
+      "peek_docs": 300,
+      "expansion_docs": 0,
+      "expansion_upgraded": 56
+    },
+    "gold": {
+      "judged": true,
+      "kept": false,
+      "best": 0.8885
+    }
+  },
+  {
+    "status": "ok",
+    "seconds": 652.9,
+    "cli_exit_code": 0,
+    "gold": {
+      "judged": true,
+      "kept": true,
+      "in_evidence": true
+    }
+  },
+  {
+    "mode": "A_vector",
+    "id": "Q2",
+    "seconds": 44.2,
+    "scan": {
+      "descriptions_scanned": null,
+      "description_overlap_docs": null,
+      "zero_overlap_docs_unread": null,
+      "docs_read": [
+        {
+          "doc_path": "AI 基础设施/experience/exp-c2a2cf377248.md",
+          "chars": 0,
+          "truncated": false
+        },
+        {
+          "doc_path": "Corpus-Chunks800/large-language-models__2005.14165__language-models-are-few-shot-learners__k145.md",
+          "chars": 0,
+          "truncated": false
+        },
+        {
+          "doc_path": "计算机与人工智能/large-language-models__2005.14165__language-models-are-few-shot-learners.md (part 6 of 13).md",
+          "chars": 20000,
+          "truncated": true
+        },
+        {
+          "doc_path": "e2e-demo-0923-022632/平台架构总览.md",
+          "chars": 13709,
+          "truncated": true
+        },
+        {
+          "doc_path": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 5 of 6).md",
+          "chars": 20000,
+          "truncated": true
+        }
+      ],
+      "peek_docs": null,
+      "expansion_docs": null,
+      "expansion_upgraded": null
+    },
+    "gold": {
+      "judged": false,
+      "kept": false,
+      "best": null
+    }
+  }
+]

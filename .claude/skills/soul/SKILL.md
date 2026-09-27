@@ -1,6 +1,6 @@
 ---
 name: soul
-description: "SOUL persona system — full persona lifecycle management (create/delete/configure/list), Butian (nuwa-skill × dot-skill dual-engine) distillation of initial personas (including text distillation), curiosity-driven training and RL reinforcement evolution, task control (pause/resume/training history), and retrieval-augmented Q&A that auto-routes to the matching persona per task (QDCVR retrieves first, then persona-processes). A persona = a soul-name knowledge base (4 constitutional-layer documents + config), with a memory/ cognition draft approval loop. Parallel to the knowledgebase skill: knowledgebase manages \"knowledge itself\", soul manages \"which persona processes the knowledge\". Triggers: persona, SOUL, create/delete/train/distill a persona, butian, persona Q&A, answer with persona XX, one-click retrieval, RL reinforcement, persona evolution, pause training, resume training, training history, persona, soul_ask, soul_qdcvr_ask, soul_init, soul_learn, soul_train_rl, soul_review_drafts, soul_delete, soul_router, auto training, curiosity training, fixed-round training. 中文触发: 人格, SOUL, 人格问答, 用XX人格回答, 补天, 蒸馏, 好奇心训练, 强化训练, 暂停训练, 恢复训练."
+description: "SOUL persona system — full persona lifecycle management: create/delete/configure/list personas, Butian distillation of individuals, persona learning/evolution, and soul-rag knowledge-enhanced Q&A. Use whenever the user mentions SOUL, 人格, persona create/delete/configure/list/learn, soul-rag retrieval, or asks an agent to answer with a specific persona's identity."
 ---
 # SOUL — Persona System Dispatcher (Innate Distillation + Acquired Evolution)
 
@@ -375,7 +375,8 @@ ragctl soul ask "question" --soul soul-<name>          # persona-augmented Q&A
 | Push butian outputs directly into memories | Butian persona is only an initialization document (constitutional layer); knowledge evolution goes through training | persona is "innate identity", not "acquired knowledge"; mixing them breaks the constitutional layer |
 
 **Failure fallback**: training/approval tasks invisible (possibly MCP not restarted) → use the REST equivalent entry
-`GET/POST http://localhost:8765/api/v1/soul/*` (same data as MCP); still failing →
+`GET/POST http://localhost:${BACKEND_PORT}/api/v1/soul/*` (port from `.env` `BACKEND_PORT`, currently 8771;
+requests must carry `Authorization: Bearer <token>`; same data as MCP); still failing →
 `kb_project_status()` to check service health.
 
 ## Tool Quick Reference

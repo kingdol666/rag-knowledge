@@ -49,7 +49,8 @@ CORE = {
     ],
     "knowledgebase-search": [
         ("Phase 0", "查询预处理"), ("Phase 1", "向量优先"), ("Phase 2", "兜底"),
-        ("Phase 3", "作答"), ("0-8", "内容评分"), ("kb_search_vector", "召回工具"),
+        ("Phase 3", "作答"), ("Jev", "引擎判决"), ("fail-closed", "失败即拒"),
+        ("kb_search_vector", "召回工具"),
         ("kb_doc_read", "读正文"), ("Blind Spots", "盲点声明"),
     ],
     "knowledgebase-organize": [

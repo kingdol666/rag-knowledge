@@ -23,7 +23,7 @@ description: "Document and KB administration. M1→M6 workflow: survey, confirm 
 
 ## ⭐ Execution Model · Pre-Flight · Architecture (First Step of Any Job, Mandatory)
 
-**Executor: Archival agent** — delegate via `task` (**delegation template + three-role execution model + combined-task boundaries**: must-read [execution-model.md](../knowledgebase/references/execution-model.md)). **Pre-Flight**: no work before it passes — one-probe double-check `kb_project_status` → branch handling → smoke test; full flow in [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md). **Mental model**: before operating, must-read [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer model + consistency invariants + 91-tool map); MCP-first principle (no terminal/HTTP bypass) in [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) Rule 5.
+**Executor: Archival agent** — delegate via `task` (**delegation template + three-role execution model + combined-task boundaries**: must-read [execution-model.md](../knowledgebase/references/execution-model.md)). **Pre-Flight**: no work before it passes — one-probe double-check `kb_project_status` → branch handling → smoke test; full flow in [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md). **Mental model**: before operating, must-read [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer model + consistency invariants + 94-tool map); MCP-first principle (no terminal/HTTP bypass) in [skill-trigger-contract.md](../knowledgebase/references/skill-trigger-contract.md) Rule 5.
 
 ## Mental Framework
 
@@ -97,7 +97,7 @@ The user asks to "handle" a document/KB
 |------|------|------|
 | Move | `kb_doc_move(doc_path, target_kb_id)` | UUID preserved. ⭐ `kb_doc_move` **triggers reindexing automatically** (fire-and-forget); as a safety net, M4 explicitly runs `kb_index_document` once to ensure completion |
 | Rename/change description | `kb_doc_update_meta(kb_id, doc_path, name, description)` | UUID preserved |
-| Update content | `kb_doc_update_content(kb_id, doc_path, content)` | **Does not auto-reindex** → M4 is mandatory |
+| Update content | `kb_doc_update_content(kb_id, doc_path, content)` | ⭐ **Auto-reindexes** (<1s, 2026-08+); M4 verification is still mandatory, an explicit `kb_index_document` is only a safety net |
 | Delete | `kb_doc_delete(kb_id, doc_path)` | Accepts short names or full paths |
 | Batch delete | `kb_doc_batch_delete(kb_id, ["KB/doc1.md", ...])` | **Must use full relative paths** |
 | Merge A→B | Move ALL from A → `kb_delete(A)` | Confirm first; verify A is empty first |
@@ -139,7 +139,7 @@ User provides new content → kb_doc_update_content → kb_doc_read verify → k
 |------|------|------|
 | **Old path vectors remain after move** | `kb_search_vector(query, kb_id=target)` returns old-path chunks | `kb_reindex(kb_id=target, force=true)` to clean the old collection |
 | **batch_delete reports "Not found"** | Short names vs full paths mixed | Must use full relative paths `"KB/doc.md"` (not bare filenames) |
-| **Search returns old content after update_content** | The vector layer uses old chunks | Must explicitly `kb_index_document` to reindex (not triggered automatically) |
+| **Search returns old content after update_content** | Rare auto-index race | Wait <1s and retry; if still stale, `kb_reindex(kb_id, force=true)` (auto-reindex is the default since 2026-08) |
 | **KB description outdated after merge** | Parent KB description doesn't include the newly migrated sub-domain | While verifying in M5, check whether the description needs updating |
 | **Experience stale undetected** | Related experiences become orphaned after move/delete | M4 `experience_check_stale` is mandatory (otherwise the experience library rots gradually) |
 | **kb_doc_move returns success but the file hasn't arrived** | Fire-and-forget async not finished | M5 re-check `kb_get_documents(target)` to confirm the doc is in the target KB |

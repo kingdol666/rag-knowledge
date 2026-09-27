@@ -1,0 +1,1116 @@
+{
+ "mode": "B",
+ "ok": true,
+ "seconds": 22.0,
+ "wall_s": 22.0,
+ "real_engine": true,
+ "status": "ok",
+ "n_result_docs": 23,
+ "kept_doc_paths": [
+  "计算机与人工智能/large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 1 of 2).md",
+  "计算机与人工智能/large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 2 of 2).md",
+  "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 1 of 9).md",
+  "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 2 of 9).md",
+  "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 3 of 9).md",
+  "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 4 of 9).md",
+  "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 5 of 9).md",
+  "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 6 of 9).md",
+  "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 7 of 9).md",
+  "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 8 of 9).md",
+  "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 9 of 9).md",
+  "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 1 of 4).md",
+  "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 2 of 4).md",
+  "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md",
+  "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md",
+  "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+  "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+  "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 3 of 4).md",
+  "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+  "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+  "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md",
+  "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 3 of 4).md",
+  "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 4 of 4).md"
+ ],
+ "judge": {
+  "backend": "laya_sdk",
+  "engine": "laya",
+  "criterion": "evidence",
+  "candidates": 151,
+  "scored": 151,
+  "survivors_kept": 130,
+  "errors": []
+ },
+ "trace": {
+  "mcp_calls": 24,
+  "l0_kbs": 18,
+  "l1_kept_shelves": [
+   "计算机与人工智能"
+  ],
+  "l2_docs": 131,
+  "l3_untrusted": 0,
+  "l4_overlap_docs": 11,
+  "l4_docs_read": 23,
+  "l4_trust_heads": 0,
+  "unscanned_count": 108
+ },
+ "evidence_chars": 40001,
+ "gold_hit": true,
+ "survivors": [
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 17,
+   "score": 0.8099
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 19,
+   "end_line": 28,
+   "score": 0.7365
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 22,
+   "score": 0.833
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 23,
+   "end_line": 34,
+   "score": 0.885
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 35,
+   "end_line": 50,
+   "score": 0.8442
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 52,
+   "end_line": 67,
+   "score": 0.8759
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 68,
+   "end_line": 77,
+   "score": 0.7865
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 78,
+   "end_line": 88,
+   "score": 0.8866
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 89,
+   "end_line": 90,
+   "score": 0.675
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 21,
+   "score": 0.7871
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 22,
+   "end_line": 30,
+   "score": 0.883
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 31,
+   "end_line": 36,
+   "score": 0.5635
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 38,
+   "end_line": 41,
+   "score": 0.761
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 42,
+   "end_line": 52,
+   "score": 0.8746
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 54,
+   "end_line": 67,
+   "score": 0.8854
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 68,
+   "end_line": 89,
+   "score": 0.8111
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 90,
+   "end_line": 111,
+   "score": 0.7642
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 19,
+   "score": 0.8473
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 32,
+   "end_line": 38,
+   "score": 0.7426
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 38,
+   "end_line": 39,
+   "score": 0.7323
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 40,
+   "end_line": 50,
+   "score": 0.5827
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 18,
+   "score": 0.8528
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 19,
+   "end_line": 29,
+   "score": 0.7128
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 30,
+   "end_line": 52,
+   "score": 0.8363
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 53,
+   "end_line": 75,
+   "score": 0.8126
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 8,
+   "score": 0.7946
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 15,
+   "end_line": 40,
+   "score": 0.8194
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 65,
+   "end_line": 85,
+   "score": 0.8881
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 86,
+   "end_line": 95,
+   "score": 0.7312
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 96,
+   "end_line": 122,
+   "score": 0.8538
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 123,
+   "end_line": 138,
+   "score": 0.6492
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 23,
+   "score": 0.7712
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 24,
+   "end_line": 36,
+   "score": 0.8442
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 37,
+   "end_line": 49,
+   "score": 0.775
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 50,
+   "end_line": 75,
+   "score": 0.9049
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 77,
+   "end_line": 89,
+   "score": 0.8269
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 90,
+   "end_line": 109,
+   "score": 0.684
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 110,
+   "end_line": 138,
+   "score": 0.6163
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 3 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 140,
+   "end_line": 162,
+   "score": 0.8805
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 7 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 52,
+   "score": 0.7422
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 7 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 54,
+   "end_line": 83,
+   "score": 0.7146
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 7 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 84,
+   "end_line": 129,
+   "score": 0.8688
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 7 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 131,
+   "end_line": 180,
+   "score": 0.7831
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 7 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 181,
+   "end_line": 200,
+   "score": 0.7946
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 8 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 48,
+   "score": 0.6588
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 8 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 49,
+   "end_line": 83,
+   "score": 0.7881
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 8 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 132,
+   "end_line": 158,
+   "score": 0.8384
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 8 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 159,
+   "end_line": 200,
+   "score": 0.8384
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 29,
+   "score": 0.7585
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 30,
+   "end_line": 46,
+   "score": 0.8056
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 47,
+   "end_line": 57,
+   "score": 0.8562
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 58,
+   "end_line": 63,
+   "score": 0.7158
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 64,
+   "end_line": 80,
+   "score": 0.7791
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 1 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 87,
+   "end_line": 107,
+   "score": 0.7653
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 28,
+   "end_line": 47,
+   "score": 0.7937
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 48,
+   "end_line": 63,
+   "score": 0.7342
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 64,
+   "end_line": 91,
+   "score": 0.7943
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 2 of 2).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 92,
+   "end_line": 116,
+   "score": 0.719
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 40,
+   "score": 0.8141
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 42,
+   "end_line": 45,
+   "score": 0.8523
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 46,
+   "end_line": 59,
+   "score": 0.8693
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 60,
+   "end_line": 91,
+   "score": 0.8457
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 93,
+   "end_line": 106,
+   "score": 0.862
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 108,
+   "end_line": 124,
+   "score": 0.8638
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 125,
+   "end_line": 132,
+   "score": 0.8473
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 133,
+   "end_line": 142,
+   "score": 0.8297
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 26,
+   "score": 0.7441
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 27,
+   "end_line": 44,
+   "score": 0.7794
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 46,
+   "end_line": 68,
+   "score": 0.6204
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 69,
+   "end_line": 78,
+   "score": 0.8508
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 79,
+   "end_line": 91,
+   "score": 0.9328
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 92,
+   "end_line": 102,
+   "score": 0.8965
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 103,
+   "end_line": 116,
+   "score": 0.8572
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 17,
+   "score": 0.7198
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 18,
+   "end_line": 30,
+   "score": 0.9105
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 32,
+   "end_line": 40,
+   "score": 0.8081
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 41,
+   "end_line": 52,
+   "score": 0.7743
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 54,
+   "end_line": 73,
+   "score": 0.7688
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 74,
+   "end_line": 85,
+   "score": 0.8258
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 96,
+   "end_line": 98,
+   "score": 0.8943
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 18,
+   "score": 0.8346
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 20,
+   "end_line": 26,
+   "score": 0.8093
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 27,
+   "end_line": 33,
+   "score": 0.7861
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 34,
+   "end_line": 42,
+   "score": 0.8493
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 43,
+   "end_line": 72,
+   "score": 0.6568
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 73,
+   "end_line": 104,
+   "score": 0.7924
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 105,
+   "end_line": 138,
+   "score": 0.7818
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 32,
+   "score": 0.8341
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 33,
+   "end_line": 61,
+   "score": 0.7241
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 63,
+   "end_line": 101,
+   "score": 0.6857
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 102,
+   "end_line": 137,
+   "score": 0.8893
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 138,
+   "end_line": 146,
+   "score": 0.8263
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 148,
+   "end_line": 153,
+   "score": 0.5315
+  },
+  {
+   "doc_path": "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 4 of 4).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 155,
+   "end_line": 170,
+   "score": 0.766
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 1 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 25,
+   "score": 0.8411
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 1 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 26,
+   "end_line": 43,
+   "score": 0.8801
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 1 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 44,
+   "end_line": 65,
+   "score": 0.6874
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 1 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 66,
+   "end_line": 87,
+   "score": 0.8928
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 1 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 89,
+   "end_line": 96,
+   "score": 0.8684
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 1 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 97,
+   "end_line": 110,
+   "score": 0.7548
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 1 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 111,
+   "end_line": 124,
+   "score": 0.8346
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 1 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 125,
+   "end_line": 130,
+   "score": 0.7705
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 2 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 16,
+   "score": 0.8025
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 2 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 17,
+   "end_line": 34,
+   "score": 0.7477
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 2 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 35,
+   "end_line": 49,
+   "score": 0.6019
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 2 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 50,
+   "end_line": 64,
+   "score": 0.7621
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 2 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 66,
+   "end_line": 75,
+   "score": 0.8986
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 3 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 18,
+   "score": 0.5413
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 3 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 19,
+   "end_line": 46,
+   "score": 0.7709
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 3 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 47,
+   "end_line": 72,
+   "score": 0.7771
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 3 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 73,
+   "end_line": 100,
+   "score": 0.7452
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 3 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 101,
+   "end_line": 126,
+   "score": 0.7613
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 3 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 127,
+   "end_line": 156,
+   "score": 0.6525
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 3 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 157,
+   "end_line": 177,
+   "score": 0.6174
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 4 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 28,
+   "score": 0.5036
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 4 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 29,
+   "end_line": 50,
+   "score": 0.8357
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 4 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 51,
+   "end_line": 73,
+   "score": 0.8275
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 5 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 18,
+   "score": 0.8319
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 5 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 20,
+   "end_line": 48,
+   "score": 0.9303
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 5 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 77,
+   "end_line": 89,
+   "score": 0.833
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 5 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 90,
+   "end_line": 90,
+   "score": 0.8162
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 6 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 4,
+   "score": 0.5344
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 6 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 6,
+   "end_line": 7,
+   "score": 0.5882
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 6 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 10,
+   "end_line": 10,
+   "score": 0.6557
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 9 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 1,
+   "end_line": 32,
+   "score": 0.6271
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 9 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 33,
+   "end_line": 42,
+   "score": 0.8308
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 9 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 44,
+   "end_line": 76,
+   "score": 0.5158
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 9 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 77,
+   "end_line": 138,
+   "score": 0.7194
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 9 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 139,
+   "end_line": 195,
+   "score": 0.8275
+  },
+  {
+   "doc_path": "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 9 of 9).md",
+   "part_index": 0,
+   "section_path": "",
+   "start_line": 197,
+   "end_line": 200,
+   "score": 0.5285
+  }
+ ],
+ "gate": {
+  "passed": true,
+  "checks": {
+   "exit_ok": true,
+   "real_engine": true,
+   "evidence_nonempty": true,
+   "gold_hit": true,
+   "latency_recorded": true
+  }
+ },
+ "question": {
+  "qid": "q1",
+  "text": "How does InstructDS generate high-quality query-based dialogue summaries? (InstructDS dialogue summarization query-based instruction tuning data synthesis)",
+  "gold_substr": "instructive-dialogue-summarization",
+  "gold_name": "Instructive Dialogue Summarization 论文（4-part 拆分, 即 InstructDS 方法论文）"
+ }
+}

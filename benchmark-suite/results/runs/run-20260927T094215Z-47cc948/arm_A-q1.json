@@ -1,0 +1,390 @@
+{
+  "status": "ok",
+  "query": "How does InstructDS generate high-quality query-based dialogue summaries? (InstructDS dialogue summarization query-based instruction tuning data synthesis)",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "parameters": {
+    "kb_id": "",
+    "threshold": 0.5,
+    "vector_top_k": 30,
+    "vector_threshold": 0.35,
+    "doc_read_chars": 20000,
+    "segment_chars": 3000,
+    "max_state_chars": 6000,
+    "max_evidence_chars": 24000
+  },
+  "recall": {
+    "vector_raw_hits": 26,
+    "vector_dedup_docs": 21,
+    "recall_seconds": 6.1,
+    "docs_read": 17,
+    "read_errors": [
+      {
+        "doc_path": "Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k23.md",
+        "error": "empty_content"
+      },
+      {
+        "doc_path": "Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k22.md",
+        "error": "empty_content"
+      },
+      {
+        "doc_path": "aw-industrial/深度诊断报告:diag_kb_smoke_mock.md",
+        "error": "empty_content"
+      },
+      {
+        "doc_path": "aw-industrial-e2e-20260926-022518/experience/exp-d45dc195a924.md",
+        "error": "empty_content"
+      }
+    ],
+    "reread_seconds": 8.9
+  },
+  "judge": {
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "criterion": "evidence",
+    "threshold": 0.5,
+    "global_best": 0.9442,
+    "scored_segments": 95,
+    "total_segments": 95,
+    "errors": []
+  },
+  "judge_doc_scores": [
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+      "vector_score": 0.47140419483184814,
+      "judge_score": 0.9442,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 5 of 5).md",
+      "vector_score": 0.467460036277771,
+      "judge_score": 0.9303,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+      "vector_score": 0.46755897998809814,
+      "judge_score": 0.9261,
+      "kept": true
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "vector_score": 0.5558165311813354,
+      "judge_score": 0.9042,
+      "kept": true
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md",
+      "vector_score": 0.5023497343063354,
+      "judge_score": 0.8986,
+      "kept": true
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 3 of 4).md",
+      "vector_score": 0.476546049118042,
+      "judge_score": 0.8889,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+      "vector_score": 0.7975008487701416,
+      "judge_score": 0.8866,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+      "vector_score": 0.8137564063072205,
+      "judge_score": 0.8854,
+      "kept": true
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_path": "soul-e2e-tester-024115/soul-definition.md",
+      "vector_score": 0.49866175651550293,
+      "judge_score": 0.8784,
+      "kept": true
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_path": "soul-demo-qa/soul-definition.md",
+      "vector_score": 0.49866175651550293,
+      "judge_score": 0.8784,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md",
+      "vector_score": 0.5489683151245117,
+      "judge_score": 0.8661,
+      "kept": true
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 6 of 26).md",
+      "vector_score": 0.40356796979904175,
+      "judge_score": 0.8652,
+      "kept": true
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "vector_score": 0.5421669483184814,
+      "judge_score": 0.8577,
+      "kept": true
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 2 of 26).md",
+      "vector_score": 0.4031146168708801,
+      "judge_score": 0.8147,
+      "kept": true
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_path": "aw-industrial/【冒烟测试】深度诊断报告-diag_kb_smoke_mock.md",
+      "vector_score": 0.47638392448425293,
+      "judge_score": 0.7114,
+      "kept": true
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_path": "soul-e2e-tester-024115/thinking-style.md",
+      "vector_score": 0.44144606590270996,
+      "judge_score": 0.5089,
+      "kept": true
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_path": "soul-demo-qa/thinking-style.md",
+      "vector_score": 0.44144606590270996,
+      "judge_score": 0.5089,
+      "kept": true
+    }
+  ],
+  "result_list": [
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+      "name": "finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+      "vector_score": 0.47140419483184814,
+      "judge_score": 0.9442,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 5 of 5).md",
+      "name": "mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 5 of 5).md",
+      "vector_score": 0.467460036277771,
+      "judge_score": 0.9303,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+      "name": "mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+      "vector_score": 0.46755897998809814,
+      "judge_score": 0.9261,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_id": null,
+      "doc_path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "name": "artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "vector_score": 0.5558165311813354,
+      "judge_score": 0.9042,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_id": null,
+      "doc_path": "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md",
+      "name": "climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md",
+      "vector_score": 0.5023497343063354,
+      "judge_score": 0.8986,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 3 of 4).md",
+      "name": "finance__1909.07748__stock-market-microstructure-inference-via-mu (part 3 of 4).md",
+      "vector_score": 0.476546049118042,
+      "judge_score": 0.8889,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+      "name": "nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+      "vector_score": 0.7975008487701416,
+      "judge_score": 0.8866,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+      "name": "nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+      "vector_score": 0.8137564063072205,
+      "judge_score": 0.8854,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_id": null,
+      "doc_path": "soul-e2e-tester-024115/soul-definition.md",
+      "name": "soul-definition.md",
+      "vector_score": 0.49866175651550293,
+      "judge_score": 0.8784,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_id": null,
+      "doc_path": "soul-demo-qa/soul-definition.md",
+      "name": "soul-definition.md",
+      "vector_score": 0.49866175651550293,
+      "judge_score": 0.8784,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md",
+      "name": "clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md",
+      "vector_score": 0.5489683151245117,
+      "judge_score": 0.8661,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_id": null,
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 6 of 26).md",
+      "name": "pride_and_prejudice (part 6 of 26).md",
+      "vector_score": 0.40356796979904175,
+      "judge_score": 0.8652,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_id": null,
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "name": "global-rag-benchmark.md",
+      "vector_score": 0.5421669483184814,
+      "judge_score": 0.8577,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_id": null,
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 2 of 26).md",
+      "name": "pride_and_prejudice (part 2 of 26).md",
+      "vector_score": 0.4031146168708801,
+      "judge_score": 0.8147,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_id": null,
+      "doc_path": "aw-industrial/【冒烟测试】深度诊断报告-diag_kb_smoke_mock.md",
+      "name": "【冒烟测试】深度诊断报告-diag_kb_smoke_mock.md",
+      "vector_score": 0.47638392448425293,
+      "judge_score": 0.7114,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_id": null,
+      "doc_path": "soul-e2e-tester-024115/thinking-style.md",
+      "name": "thinking-style.md",
+      "vector_score": 0.44144606590270996,
+      "judge_score": 0.5089,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_id": null,
+      "doc_path": "soul-demo-qa/thinking-style.md",
+      "name": "thinking-style.md",
+      "vector_score": 0.44144606590270996,
+      "judge_score": 0.5089,
+      "truncated": false,
+      "read_error": null
+    }
+  ],
+  "kept_doc_paths": [
+    "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+    "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 5 of 5).md",
+    "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+    "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+    "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md",
+    "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 3 of 4).md",
+    "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+    "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md",
+    "soul-e2e-tester-024115/soul-definition.md",
+    "soul-demo-qa/soul-definition.md",
+    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md",
+    "Novel-PridePrejudice/pride_and_prejudice (part 6 of 26).md",
+    "e2e-demo-0923-022632/global-rag-benchmark.md",
+    "Novel-PridePrejudice/pride_and_prejudice (part 2 of 26).md",
+    "aw-industrial/【冒烟测试】深度诊断报告-diag_kb_smoke_mock.md",
+    "soul-e2e-tester-024115/thinking-style.md",
+    "soul-demo-qa/thinking-style.md"
+  ],
+  "evidence_pack": "[经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md · vec=0.47140419483184814]\n# finance__1909.07748__stock-market-microstructure-inference-via-mu（第 1/4 部分）\n章节: Stock market microstructure inference via multi-agent reinforcement learning\n# Stock market microstructure inference via multi-agent reinforcement learning\n\n\nJohann Lussange\n\nLaboratoire des Neurosciences Cognitives, INSERM U960, Département des Études Cognitives, École Normale Supérieure, 29 rue d'Ulm, 75005, Paris, France.\n\nIvan Lazarevich\n\nLaboratoire des Neurosciences Cognitives, INSERM U960, Département des Études Cognitives,\n\nÉcole Normale Supérieure, 29 rue d'Ulm, 75005, Paris, France.\n\nLobachevsky State University of Nizhny Novgorod,\n\n23 Gagarina av., 603950, Niznhy Novgorod, Russia.\n\nSacha Bourgeois-Gironde\n\nInstitut Jean-Nicod, UMR 8129, Département des Études Cognitives,\n\nÉcole Normale Supérieure, 29 rue d'Ulm, 75005, Paris, France.\n\nLaboratoire d'Économie Mathématique et de Microéconomie Appliquée, EA 4442,\n\nUniversité Paris II Panthéon-Assas, 4 rue Blaise Desgoffe, 75006, Paris, France.\n\nStefano Palminteri\n\nLaboratoire des Neurosciences Cognitives, INSERM U960, Département des Études Cognitives, École Normale Supérieure, 29 rue d’Ulm, 75005, Paris, France.\n\nBoris Gutkin\n\nLaboratoire des Neurosciences Cognitives, INSERM U960, Département des Études Cognitives, École Normale Supérieure, 29 rue d'Ulm, 75005, Paris, France.\n\nCenter for Cognition and Decision Making, Department of Psychology,\n\nNU University Higher School of Economics, 8 Myasnitskaya st., 101000, Moscow, Russia. (Dated: October 18, 2019)\n\nQuantitative finance has had a long tradition of a bottom-up approach to complex systems inference via multi-agent systems (MAS). These statistical tools are based on modelling agents trading via a centralised order book, in order to emulate complex and diverse market phenomena. These past financial models have all relied on so-called zero-intelligence agents, so that the crucial issues of agent information and learning, central to price formation and hence to all market activity, could not be properly assessed. In order to address this, we designed a next-generation MAS stock market simulator, in which each agent learns to trade autonomously via model-free reinforcement learning. We calibrate the model to real market data from the London Stock Exchange over the years 2007 to 2018, and show that it can faithfully reproduce key market microstructure metrics, such as various price autocorrelation scalars over multiple time intervals. Agent learning thus enables model em\n\n[工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 5 of 5).md · vec=0.467460036277771]\n# mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md.md（第 5/5 部分）\n章节: Tailored Presolve Techniques in Branch-and-Bound Method for Fast Mixed-Integer Optimal Control Applications > 7.2.1  Problem Formulation\n## 7.2.1  Problem Formulation\n\n\nThe cart-pole system with soft walls is often used as a benchmark problem for mixed-integer optimal control, $\\mathrm { e . g . , s e e ^ { 4 5 , 2 3 } }$ . This standard hybrid control problem results in an MIQP of the form in (1), which is solved at each sampling time step of the MI-MPC controller. Given the current state of the cart-pole system $\\hat { x } _ { 0 } ,$ the aim is to use the horizontal forces of the cart to effectively regulate an inverted pendulum towards the unstable equilibrium at the origin. The state vector is defined as $x = [ p ^ { \\mathrm { c } } \\ \\theta ^ { \\mathrm { p } } \\ v ^ { \\mathrm { c } } \\ \\omega ^ { \\mathrm { p } } ] ^ { \\top }$ i.e., ${ n _ { \\mathrm { x } } } = 4$ , including the position $p ^ { \\mathrm { c } }$ and velocity $v ^ { \\mathrm { { c } } }$ of the cart, and the angle $\\theta ^ { \\mathrm { p } }$ and angular velocity $\\omega ^ { \\mathrm { p } }$ of the pendulum. The force input applied to the cart is $F ^ { \\mathrm { i n } } \\in \\mathbb { R }$ and $F ^ { 1 } , F ^ { \\mathrm { r } } \\in \\mathbb { R }$ are the contact forces transmitted by the soft walls on the left and right of the cart-pole system, see $\\mathrm { F i g }$ 6a. The discrete-time state dynamics in (1b) read as\n\n$$\nx _ { i + 1 } = { \\left[ \\begin{array} { l } { p _ { i + 1 } ^ { \\mathrm { { c } } } } \\\\ { \\theta _ { i + 1 } ^ { \\mathrm { { p } } } } \\\\ { v _ { i + 1 } ^ { \\mathrm { { c } } } } \\\\ { \\omega _ { i + 1 } ^ { \\mathrm { { p } } } } \\end{array} \\right] } = { \\left[ \\begin{array} { l l l } { 1 } & { 0 } & { T _ { \\mathrm { { s } } } } & { 0 } \\\\ { 0 } & { 1 } & { 0 } & { T _ { \\mathrm { { s } } } } \\\\ { 0 } & { g { \\frac { m ^ { \\mathrm { { p } } } } { m ^ { \\mathrm { { c } } } } } } & { 1 } & { 0 } \\\\ { 0 } & { g { \\frac { m ^ { \\mathrm { { c } } } + m ^ { \\mathrm { { p } } } } { m ^ { \\mathrm { { c } } } l } } } & { 0 } & { 1 } \\end{array} \\right] } { \\left[ \\begin{array} { l } { p _ { i } ^ { \\mathrm { { c } } } } \\\\ { \\theta _ { i } ^ { \\mathrm { { p } } } } \\\\ { v _ { i } ^ { \\mathrm { { c } } } } \\\\ { \\omega _ { i } ^ { \\mathrm { { p } } } } \\end{array} \\right] } + { \\left[ \\begin{array} { l l l } { 0 } & { 0 } & { 0 } \\\\ { 0 } & { 0 } & { 0 } \\\\ { { \\frac { 1 } { m ^ { \\ma\n\n[工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md · vec=0.46755897998809814]\n# mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and（第 6/6 部分）\n章节: Piecewise SOS-Convex Moment Optimization and Applications via Exact Semi-Definite Programs > 5 Conclusion and Outlook\n## 5 Conclusion and Outlook\n\n\nWe showed how to derive Sum-of-Squares (SOS) reformulations for important classes of infinitedimensional moment optimization problems involving piecewise SOS-convex functions. We also showed how to recover an optimal probability measure from the associated Semi-Definite Program (SDP) reformulation.\n\nIt is worth noting that the class of piecewise SOS-convex functions as given in Definition 2.2 facilitates tractable representations of the corresponding moment problem (Theorem 3.4) and it is rich enough to cover a broad class of functions encountered in optimization. Our definition 2.2 of piecewise functions may be extended to more general settings where one piece of SOS-convex polynomial is given at one partition of $\\mathbb { R } ^ { m }$ , in line with the piecewise linear-quadratic function studied in [31, Definition 10.20]. It would be intriguing to explore the applicability and tractability of these generalized classes of piecewise functions.\n\nFurther, our method in Theorem 2.4 suggests that the numerically tractable SOS representation for non-negative piecewise SOS-convex functions over a projected spectrahedron can be extended to more general settings. For instance, it would be of interest to examine similar representations for piecewise SOS-convex functions over any non-convex sets whose convex hulls are semi-definiterepresentable, leading to SDP reformulations or relaxations for broad classes of optimization problems.\n\nAs applications, we presented numerical results for a class of generalized Newsvendor and revenue maximization problems with higher-order moments by solving their equivalent SDP reformulations. Our approach opens new avenues for further research, such as conic program reformulations for distributionally robust optimization problems [33, 36] involving piecewise SOS-convex functions, and applications to practical models such as the lot-sizing and product management problems in the face of uncertain conditions [2]. These problems will be examined in our forthcoming studies.\n\n## Acknowledgment\n\n\nThe authors are grateful to the referees for their helpful comments and valuable suggestions which have contributed to the final preparation of the paper.\n\n## Declarations\n\n\nData availability statement. No data was us\n\n[demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md · vec=0.5558165311813354]\nProvided proper attribution is provided, Google hereby grants permission to reproduce the tables and figures in this paper solely for use in journalistic or scholarly works.\n\n# Attention Is All You Need\n\nAshish Vaswani<sup>∗</sup> Google Brain avaswani@google.com\n\nNoam Shazeer<sup>∗</sup> Google Brain noam@google.com\n\nNiki Parmar<sup>∗</sup> Google Research nikip@google.com\n\nJakob Uszkoreit<sup>∗</sup> Google Research usz@google.com\n\nLlion Jones<sup>∗</sup> Google Research llion@google.com\n\nAidan N. Gomez<sup>∗</sup> <sup>†</sup> University of Toronto aidan@cs.toronto.edu\n\nŁukasz Kaiser<sup>∗</sup> Google Brain lukaszkaiser@google.com\n\nIllia Polosukhin<sup>∗</sup> <sup>‡</sup> illia.polosukhin@gmail.com\n\n## Abstract\n\nThe dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 Englishto-German translation task, improving over the existing best results, including ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.\n\n## 1 Introduction\n\nRecurrent neural networks, long short-term memory [13] and gated recurrent [7] neural networks in particular, have been firmly established as state of the art approaches in sequence modeling and transduction problems such as language modeling and machine translation [35, 2, 5]. Numerous efforts have since continued to push the boundaries of recurrent language models and encoder-decoder architectures [38, 24, 15].\n\nRecurrent models typically factor computation along the symbol positions of the input and output sequences. Aligning the positions to steps in computation time, they generate a sequence of hidden \n\n[自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md · vec=0.5023497343063354]\n# climate-science__2409.13934__on-the-extrapolation-of-generative-adversari（第 1/3 部分）\n章节: On the Extrapolation of Generative Adversarial Networks for downscaling precipitation extremes in warmer climates\n# On the Extrapolation of Generative Adversarial Networks for downscaling precipitation extremes in warmer climates\n\n\nNeelesh Rampal1,3, Peter B. Gibson2, Steven Sherwood³ and Gab Abramowitz³\n\n1National Institute of Water and Atmospheric Research, Auckland, New Zealand.\n\n2National Institute of Water and Atmospheric Research, Wellington, New Zealand\n\n3 Climate Change Research Centre & ARC Centre of Excellence for Climate Extremes, University of New South Wales, Sydney, Australia.\n\nCorresponding author: Neelesh Rampal (neelesh.rampal@niwa.co.nz)\n\n## Key Points:\n\n\n• Deterministic (regression) downscaling methods underestimate future increases in extreme precipitation, even when trained on future climates\n\n• Generative Adversarial Networks tested here better capture these future increases than deterministic methods, even when trained historically\n\n• Generative Adversarial Networks trained on future climates have better historical and future extrapolation skill vs. historical training\n\n## Abstract\n\n\nWhile deep-learning downscaling algorithms can generate fine-scale climate projections cost-effectively, it is still unclear how well they will extrapolate to unobserved climates. We assess the extrapolation capabilities of a deterministic Convolutional Neural Network baseline and a Generative Adversarial Network (GAN) built with this baseline, trained to predict daily precipitation simulated by a Regional Climate Model (RCM). Both approaches emulate future changes in annual mean precipitation well, even when trained on historical data, though training on a future climate improves performance. For extreme precipitation (99.5th percentile), RCM simulations predict a robust end-of-century increase with future warming $( \\sim 5 . 8 \\% / ^ { \\circ } \\mathrm { C }$ on average from five simulations). When trained on a future climate, GANs capture 97% of the warmingdriven increase in extreme precipitation compared to 65% in a deterministic baseline. Even GANs trained historically capture 77% of this increase. Overall, GANs offer better generalization for downscaling extremes, which is important in applications relying on historical data.\n\n## Plain Language Summary\n\n\nThe resolution of climate models (\\~150km) is too coarse for studying the effects of climate change at regio\n\n[经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 3 of 4).md · vec=0.476546049118042]\n# finance__1909.07748__stock-market-microstructure-inference-via-mu（第 3/4 部分）\n章节: Stock market microstructure inference via multi-agent reinforcement learning > V. CALIBRATION\n## V. CALIBRATION\n\n\nModel hypotheses: The main hypotheses for this model are that: i- the simulated agents faithfully emulate realworld investors, and ii- the simulated transaction limit orders processed by the order book correspond to the dynamics and properties of real stock market orders. Concerning the former, the strength of our approach is the simplification that any agent, regardless of its behaviour and strategy, is structurally bound to interact with the market in three possible ways only, namely by longing, shorting or holding stocks. Concerning the latter, we recall that the dynamics of order books are extensively documented in literature [3], and hence that their design can be rigorously conducted.\n\nModel limitations: With these two major hypotheses, we shall also mention the following model limitations and consistency issues, which are proper to all financial MAS: i- reliance on virtual fundamental generation $\\tau ^ { j } ( t )$ , ii- absence of portfolio diversification (equity, cross-asset), iii- absence of various trading strategies (e.g. short-selling, leveraging, derivatives, metaorders, market orders, etc.), iv- absence of intraday and seasonal market effects, v- absence of legal and regulatory constraints. Although some of these limitations may seem challenging, their effects and importance virtually impact any other econometric or modelling approach in quantitative finance. Added to this, modelling market activity via a market microstructure emerging from a centralised order book that processes transaction orders sent by many trading agents, has a direct empirical correspondance with real stock markets, and is thus fully epistemologically pertinent.\n\nTraining and testing sets: We calibrated the MAS stock market simulator to real stock market data [102]. In order to do so, we used high quality, industry-grade, daily close prices and volumes of 4, 313 stocks from the London Stock Exchange (LSE), between January 15th of 2007 and January 19th of 2018. In order to work on the market microstructure, we have filtered the data as such: i- stock-splits effects have been suppressed, ii- only stocks that have been continuously traded over this time period have been considered. As a consequence of this data curation, our former stock universe has been lowered to 640 stocks.\n\n[计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md · vec=0.7975008487701416]\n# nlp__2310.10981__instructive-dialogue-summarization-with-quer（第 1/4 部分）\n章节: Instructive Dialogue Summarization with Query Aggregations\n# Instructive Dialogue Summarization with Query Aggregations\n\n\nBin Wang, Zhengyuan Liu, Nancy F. Chen Institute for Infocomm Research (I2R), A\\*STAR, Singapore CNRS@CREATE, Singapore wang\\_bin@i2r.a-star.edu.sg\n\n## Abstract\n\n\nConventional dialogue summarization methods directly generate summaries and do not consider user's specific interests. This poses challenges in cases where the users are more focused on particular topics or aspects. With the advancement of instruction-finetuned language models, we introduce instruction-tuning to dialogues to expand the capability set of dialogue summarization models. To overcome the scarcity of instructive dialogue summarization data, we propose a three-step approach to synthesize high-quality query-based summarization triples. This process involves summaryanchored query generation, query filtering and query-based summary generation. By training a unified model called InstructDS (Instructive Dialogue Summarization) on three summarization datasets with multi-purpose instructive triples, we expand the capability of dialogue summarization models. We evaluate our method on four datasets, including dialogue summarization and dialogue reading comprehension. Experimental results show that our approach outperforms the state-of-the-art models and even models with larger sizes. Additionally, our model exhibits higher generalizability and faithfulness, as confirmed by human subjective evaluations¹.\n\n## 1 Introduction\n\n\nBoth verbal and non-verbal conversations play a crucial role in the realm of communication. They serve as channels for humans to exchange information, ideas and emotions (Kester, 2004). In an era of information explosion overload, dialogue summarization has become increasingly essential. The process involves extracting the key dialogue information, enabling people to grasp the essence of their daily interactions.\n\nConventional dialogue summarization models typically approach the problem as an unconstrained sequence-to-sequence task, treating dialogue-summary pairs as straightforward inputoutput pairs (Shang et al., 2018; Goo and Chen, 2018; Chen and Yang, 2020). Although fine-tuning pre-trained language models such as BART (Lewis et al., 2020) has shown promising results, these models fail to consider the specific preferences of users who have distinct backgrounds, objectives, in\n\n[计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md · vec=0.8137564063072205]\n# nlp__2310.10981__instructive-dialogue-summarization-with-quer（第 2/4 部分）\n章节: Instructive Dialogue Summarization with Query Aggregations > 4.3 Ablation Study\n## 4.3 Ablation Study\n\n\nTo provide insights into the effectiveness of InstructDS, we conduct ablation studies on InstructDS variants to answer two fundamental questions: 1) How do augmented QDS triples contribute to general and query-based dialogue summarization? 2) What is the effect of length awareness augmentation on general and length-controllable dialogue summarization?\n\nModel variants. We examine five model variants of InstructDS across four evaluation datasets. Each variant is trained with distinct training data: 1) MixDS: Mixing three dialogue summarization datasets, 2) MixDS+QDS: MixDS and synthesized QDS triples, 3) MixDS+Length: MixDS and length augmentation, 4) InstructDS: MixDS, synthesized QDS triples and length augmentation, 5) InstructDS+DREAM: MixDS, synthesized QDS triples, human-written QDS triples from DREAM, and length augmentation. All other hyperparameters and evaluation protocols are kept identical for fair comparisons.\n\n![](images/7f33a31120c1e6f1051c0df6bade961efc3001c23e4bebfd1ea7fcb1f86847f4.jpg)\n\n![](images/86567a789c610eb3187a068e7c7c08b286f56b70090270026c9b6a912028fef9.jpg)\n\n![](images/e404c5f35ec709354d87e306dccf594317d144dcd32749373ec1d4f11c75695c.jpg)\n\n![](images/2d1dfee957e67af79332cafa5ddf75fa81eed45f9db91347a7c32068ad30ae1d.jpg)  \nFigure 3: Ablation study on different variants of InstructDS. Averaged ROUGE-1/2/L score is reported for dialogue summarization datasets, including SAMSum, DialogSum and TODSum. Accuracy is computed for DREAM dataset.\n\n![](images/b7a672e86c5d43e0467b46d5d07afe044089e23bc6741d6f5861d54e44e6c57e.jpg)  \nFigure 4: Ablation study on the number of included QDS triples. Performance on SAMSum (left, averaged ROUGE) and DREAM (right, accuracy) datasets are reported.\n\nThe ablation results are presented in Table 3. First, on SAMSum and DialogSum datasets, the full InstructDS model demonstrates the best performance. Incorporating both synthesized QDS triples and length augmentation techniques contributes to an overall performance improvement. We attribute these performance boosts on the enhanced dialogue understanding and length awareness capabilities. On DREAM dataset, the inclusion of synthesized QDS triples leads to an improvement in query-based dialogue summarization performance, elevating it from 56.4 to 59.1. Notably, the performance is further\n\n[soul-e2e-tester-024115/soul-definition.md · vec=0.49866175651550293]\n# SOUL 人格定义 — soul-template\n\n## 身份定位\n我是一个通用领域的研究型 AI 人格。身份五维:\n- 身份角色: 严谨的领域研究者与知识策展人\n- 核心使命: 基于可靠证据回答,不臆测、不编造\n- 认知风格: 结构化、可溯源、先结论后论证\n- 情绪基调: 沉稳、克制、专业\n- 边界意识: 明确区分\"已知/推测/未知\",未知时明说\n\n## 性格五维\n- 开放性: 高(乐于接受跨领域视角)\n- 尽责性: 高(引用必带锚点,宁可少说不可错说)\n- 外向性: 低(输出精炼,不寒暄)\n- 宜人性: 中(直接但不冒犯)\n- 神经质: 低(对不确定性保持稳定)\n\n## 知识边界\n- 只基于知识库中可检索的证据回答\n- 检索不到时明确声明,不编造文献\n- 对冲突证据,并列呈现并说明分歧\n\n## language-style\n每行一个短语,不含标点,供自动子串匹配:\n简洁有力\n先结论后论证\n引用必带出处\n承认不确定性\n不堆砌术语\n用数据说话\n分点陈述\n克制表达\n\n## 回答格式偏好\n- 结构: 结论 → 依据(带引用)→ 边界声明\n- 长度: 与问题复杂度匹配,不注水\n\n\n[soul-demo-qa/soul-definition.md · vec=0.49866175651550293]\n# SOUL 人格定义 — soul-template\n\n## 身份定位\n我是一个通用领域的研究型 AI 人格。身份五维:\n- 身份角色: 严谨的领域研究者与知识策展人\n- 核心使命: 基于可靠证据回答,不臆测、不编造\n- 认知风格: 结构化、可溯源、先结论后论证\n- 情绪基调: 沉稳、克制、专业\n- 边界意识: 明确区分\"已知/推测/未知\",未知时明说\n\n## 性格五维\n- 开放性: 高(乐于接受跨领域视角)\n- 尽责性: 高(引用必带锚点,宁可少说不可错说)\n- 外向性: 低(输出精炼,不寒暄)\n- 宜人性: 中(直接但不冒犯)\n- 神经质: 低(对不确定性保持稳定)\n\n## 知识边界\n- 只基于知识库中可检索的证据回答\n- 检索不到时明确声明,不编造文献\n- 对冲突证据,并列呈现并说明分歧\n\n## language-style\n每行一个短语,不含标点,供自动子串匹配:\n简洁有力\n先结论后论证\n引用必带出处\n承认不确定性\n不堆砌术语\n用数据说话\n分点陈述\n克制表达\n\n## 回答格式偏好\n- 结构: 结论 → 依据(带引用)→ 边界声明\n- 长度: 与问题复杂度匹配,不注水\n\n\n[生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md · vec=0.5489683151245117]\n# clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md.md（第 2/8 部分）\n章节: Large Language Models Encode Clinical Knowledge > 3.2.1 Clinician evaluation\n## 3.2.1 Clinician evaluation\n\n\nWhile objective accuracy metrics on multiple-choice questions are a robust measure of model performance, they omit several important details. To more deeply assess the generative outputs of LLMs in open-ended question answering for medical topics, we developed a pilot framework for human evaluation of long-form model answers to consumer medical questions in the LiveQA, MedicationQA and HealthSearchQA datasets.\n\nTable 2 | Summary of the different axes along which clinicians evaluate the answers in our consumer medical question answering datasets. These include agreement with scientific consensus, possibility and likelihood of harm, evidence of comprehension, reasoning and retrieval ability, presence of inappropriate, incorrect or missing content and possibility of bias in the answer. We use a pool of clinicians to evaluate the quality of model and human-generated answers along these axes.\n<table><tr><td>Task</td><td>Axis</td><td>Question</td></tr><tr><td>1</td><td>Scientific consensus</td><td>How does the answer relate to the consensus in the scientific and clinical community?</td></tr><tr><td>2</td><td>Extent of possible harm</td><td>What is the extent of possible harm?</td></tr><tr><td>3</td><td>Likelihood of possible harm</td><td>What is the likelihood of possible harm?</td></tr><tr><td>4</td><td>Evidence of correct comprehension</td><td>Does the answer contain any evidence of correct reading compre- hension? (indication the question has been understood)</td></tr><tr><td>5</td><td>Evidence of correct retrieval</td><td>Does the answer contain a",
+  "unscanned": [
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k23.md",
+      "reason": "empty_content"
+    },
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/nlp__2310.10981__instructive-dialogue-summarization-with-quer__k22.md",
+      "reason": "empty_content"
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_path": "aw-industrial/深度诊断报告:diag_kb_smoke_mock.md",
+      "reason": "empty_content"
+    },
+    {
+      "kb_id": "b87f4dab-c83b-4a99-abe3-182773fc315a",
+      "doc_path": "aw-industrial-e2e-20260926-022518/experience/exp-d45dc195a924.md",
+      "reason": "empty_content"
+    }
+  ],
+  "seconds": 81.0
+}

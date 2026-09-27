@@ -1,0 +1,63 @@
+{
+  "mode": "A_vector",
+  "id": "T3",
+  "scenario": "paraphrase zero-overlap",
+  "query": "How should a farmer split planting area between decoy plants and the main crop to control insect pests without pesticides and keep the harvest high?",
+  "seconds": 40.5,
+  "docs_read": 5,
+  "judge": {
+    "abs_kept": [
+      0,
+      3,
+      4
+    ],
+    "relative_cut": 0.784,
+    "global_best": 0.884,
+    "doc_scores": [
+      {
+        "doc": "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 1 of 3).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.8598,
+        "kept": true
+      },
+      {
+        "doc": "自然科学与地球科学/astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 1 of 2).md",
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "score": 0.8844,
+        "kept": true
+      },
+      {
+        "doc": "计算机与人工智能/speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre (part 1 of 2).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.8716,
+        "kept": true
+      }
+    ],
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "scored_segments": 30,
+    "total_segments": 30
+  },
+  "kept_doc_paths": [
+    "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 1 of 3).md",
+    "自然科学与地球科学/astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 1 of 2).md",
+    "计算机与人工智能/speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre (part 1 of 2).md"
+  ],
+  "evidence_pack": "[生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 1 of 3).md]\n# agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz（第 1/3 部分）\n章节: Optimal trap cropping investments to maximize agricultural yield\n# Optimal trap cropping investments to maximize agricultural yield\n\n\nMatthew H Holden\n\nSchool of Mathematics and Physics, The University of Queensland, St Lucia, 4072, Australia\n\nCentre for Biodiversity and Conservation Science, The University of Queensland, St Lucia, 4072, Australia\n\n## Abstract\n\n\nTrap cropping is a pest management strategy where a grower plants an attractive “trap crop\" alongside the primary crop to divert pests away from it. We propose a simple framework for optimizing the proportion of a grower's field or greenhouse allocated to a main crop and a trap crop to maximize agricultural yield. We implement this framework using a model of pest movement governed by trap crop attractiveness, the potential yield threatened by pests, and functional relationships between yield loss and pest density drawn from the literature. Focusing on a simple case in which pests move freely across the field and are attracted to traps solely by their relative attractiveness, we find that allocating 5-20 percent of the landscape to trap plants is typically required to maximize yield and achieve effective pest control in the absence of pesticides. For highly attractive trap plants, growers can devote less space because they are more effective; less attractive plants are ineffective even in large numbers. Intermediate attractiveness warrants the greatest investment in trap cropping. Our framework offers a transparent and tractable approach for exploring trade-offs in pest management and can be extended to incorporate more complex pest behaviors, crop spatial configurations, and economic considerations.\n\nKeywords: ecological pest management, integrated pest management, inter-cropping, companion planting, organic agriculture, trap crop\n\n## Recommendations for Resource Managers\n\n\n• Planting a highly attractive \"trap crop\" that lures pests away from the main crop in an agricultural field can control pests, improve yield, and lower reliance on chemical pesticides.\n\n• Because trap plants occupy precious space that could otherwise be used to grow harvestable crops, it is important to optimize their share of the field.\n\n• Our results suggest that allocating 5–20% of the field to trap crops may be required to maximize yield, depending on pest pressure and trap plant attractiveness.\n\n## 1 Introduction\n\n\nPests remain one of the\n\n[自然科学与地球科学/astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 1 of 2).md]\n# astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md.md（第 1/2 部分）\n章节: The Dark Energy Survey Data Processing and Calibration System\n# The Dark Energy Survey Data Processing and Calibration System\n\n\nJoseph J. Mohra,b, Robert Armstrong, Emmanuel Bertind, Gregory E. Daues°, Shantanu Desaia, Michelle Gowere, Robert Gruendlf, William Hanlon⁸, Nikolay Kuropatkinh, Huan Linh, John Marrinerh, Don Petravicke, Ignacio Sevilla, Molly Swanson, Todd Tomasheke, Douglas Tuckerh, and Brian Yannyh for the Dark Energy Survey Collaboration\n\naLudwig-Maximilians University Department of Physics, Scheinerstr 1, Munich, Germany 81679;   \nbMax Planck Institute for Extraterrestrial Physics, Giessenbachstrasse, Garching, Germany 85748; University of Pennsylvania Department of Physics, 203 South 33rd St., Philadelphia, PA, USA 19104; dInstitut d’Astrophysique, 98bis, bd Arago, Paris, France 75014; National Center for   \nSupercomputing Applications, 1205 West Clark St., Urbana, IL, USA 61801; fUniversity of Illinois Department of Astronomy, 1002 West Green St, Urbana, IL, USA 61801; ®University of Illinois   \nDepartment of Physics, 1002 West Green St, Urbana, IL, USA 61801; hFermi National Accelerator Laboratory, P. O. Box 500, Batavia, IL, USA 60510; 'Centro de Investigaciones Energeticas   \nMedioambiantales y Tocnologicas, Av. Complutense 40, Madrid, SP 28040; Harvard Smithsonian Center for Astrophysics, 60 Garden St, Cambridge, MA USA 02138;\n\n## ABSTRACT\n\n\nThe Dark Energy Survey (DES) is a 5000 deg2 grizY survey reaching characteristic photometric depths of 24th magnitude (10 sigma) and enabling accurate photometry and morphology of objects ten times fainter than in SDSS Preparations for DES have included building a dedicated 3 deg² CCD camera (DECam), upgrading the existing CTIO Blanco 4m telescope and developing a new high performance computing (HPC) enabled data management system (DESDM).\n\nThe DESDM system will be used for processing, calibrating and serving the DES data. The total data volumes are high (\\~2PB), and so considerable effort has gone into designing an automated processing and quality control system. Special purpose image detrending and photometric calibration codes have been developed to meet the data quality requirements, while survey astrometric calibration, coaddition and cataloging rely on new extensions of the AstrOmatic codes which now include tools for PSF modeling, PSF homogenization, PSF corrected model fitting cataloging and joint mode\n\n[计算机与人工智能/speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre (part 1 of 2).md]\n# speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre（第 1/2 部分）\n章节: An Empirical Analysis of Discrete Unit Representations in Speech Language Modeling Pre-training\n# An Empirical Analysis of Discrete Unit Representations in Speech Language Modeling Pre-training\n\n\nYanis Labrak1,3, Richard Dufour2, and Mickaël Rouvier1\n\nLaboratoire Informatique d’Avignon, Avignon University, Avignon, France Nantes Université, École Centrale Nantes, CNRS, LS2N, UMR 6004, Nantes, France Zenidoc, Marseille, France\n\nAbstract. This paper investigates discrete unit representations in Speech Language Models (SLMs), focusing on optimizing speech modeling during continual pre-training. In this paper, we systematically examine how model architecture, data representation, and training robustness influence the pre-training stage in which we adapt existing pre-trained language models to the speech modality. Our experiments highlight the role of speech encoders and clustering granularity across different model scales, showing how optimal discretization strategies vary with model capacity. By examining cluster distribution and phonemic alignments, we investigate the effective use of discrete vocabulary, uncovering both linguistic and paralinguistic patterns. Additionally, we explore the impact of clustering data selection on model robustness, highlighting the importance of domain matching between discretization training and target applications.\n\nKeywords: Speech Language Models, Discrete Units, LLM, Robustness, Phonemes Alignment\n\n## 1 Introduction\n\n\nThe rapid advancement of pre-trained Large Language Models (LLMs) [21, 25] has transformed Natural Language Processing (NLP), enabling systems with remarkable capabilities in text understanding and generation. However, these models remain largely text-based, overlooking the richness of spoken language, which conveys prosody, emotion, and speaker characteristics essential for human communication.\n\nRecent advances in self-supervised learning have made significant strides toward integrating speech into language modeling. Models such as WavLM [6], HuBERT [10] and Wav2Vec 2 [3] have proven particularly effective at learning meaningful speech representations without explicit supervision [24].\n\nThe first attempts to bridge this gap between speech and language modeling emerged with Generative Spoken Language Models (GSLM) [13], demonstrating the possibility of learning directly from raw audio without relying on text supervision. This brea",
+  "_gold": {
+    "2508.05896": {
+      "judged": true,
+      "kept": true,
+      "in_evidence": false,
+      "score": 0.8598
+    },
+    "_summary": {
+      "golds_total": 1,
+      "golds_judged": 1,
+      "golds_kept": 1,
+      "golds_in_evidence": 0
+    }
+  }
+}

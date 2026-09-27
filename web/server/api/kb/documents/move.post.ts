@@ -63,8 +63,10 @@ export default defineEventHandler(async (event) => {
   await treeService.reloadMetadata()
 
   // Try docPath directly; if that fails and it's a bare filename,
-  // scan KB folders as prefixes.
-  let file = await treeService.getFileByPath(body.docPath)
+  // scan KB folders as prefixes. The primary lookup uses the reload-on-miss
+  // variant: another dev worker may have renamed/created the file after our
+  // last index load (stale in-memory metadata would otherwise 404 here).
+  let file = await treeService.getFileByPathWithReload(body.docPath)
   if (!file && !body.docPath.includes('\\') && !body.docPath.includes('/')) {
     const folderNodes = (treeService as any)['metadata']?.folders || []
     for (const fld of folderNodes) {
@@ -72,6 +74,22 @@ export default defineEventHandler(async (event) => {
       const candidate = fld.path.replace(/\\/g, '/') + '/' + body.docPath
       file = await treeService.getFileByPath(candidate)
       if (file) break
+    }
+  }
+  // Fallback: "<kbUuid>/<name>" — the rest of the API accepts a KB id as either
+  // path or UUID, so accept a UUID first segment here too instead of 404ing.
+  if (!file && body.docPath.includes('/')) {
+    const slash = body.docPath.indexOf('/')
+    const maybeKbId = body.docPath.slice(0, slash)
+    const rest = body.docPath.slice(slash + 1)
+    if (maybeKbId && rest) {
+      try {
+        const kbByUuid = await treeService.getKnowledgeBaseById(maybeKbId)
+        if (kbByUuid?.path) {
+          file = await treeService.getFileByPathWithReload(
+            kbByUuid.path.replace(/\\/g, '/') + '/' + rest)
+        }
+      } catch { /* not a KB id — fall through to 404 */ }
     }
   }
 

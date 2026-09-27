@@ -44,6 +44,16 @@ PLAN: dict[str, list[tuple[str, dict, str]]] = {
         ("kb_get_documents", {"lightweight": True, "kb_id": "{kb}"}, "入库后读回（A7 终检面）"),
         ("fs_get_tree", {"max_depth": 1}, "目录树（入库落盘面）"),
     ],
+    "knowledgebase-librarian": [
+        ("kb_list", {"lightweight": True}, "L0 全库目录（图书馆员入口）"),
+        ("kb_get_documents", {"lightweight": True, "kb_id": "{kb}"}, "L2 全文档描述"),
+    ],
+    "knowledgebase-hybrid": [
+        ("kb_search_vector", {"query": "precipitation extremes climate change",
+                              "top_k": 3, "score_threshold": 0.0,
+                              "balance_kbs": True}, "lane A 向量召回"),
+        ("kb_list", {"lightweight": True}, "lane B 目录扫描"),
+    ],
     "knowledgebase-organize": [
         ("kb_find_duplicates", {"kb_id": "{kb}"}, "重复检测（O 层审计面）"),
     ],

@@ -9,7 +9,7 @@ description: "Knowledge-base dispatcher that routes ingest, search, complete-rec
 - The dispatcher's sole function: read input → match scenario → delegate to Archival via the `task` tool
 - The dispatcher is strictly forbidden from executing any KB operation itself
 
-> **⭐ KB architecture mental model**: This system's knowledge base is a 5-layer data model (disk .md ↔ .tree-fs.json ↔ .knowledge-base.yml ↔ ChromaDB vectors ↔ Neo4j graph), with 72 MCP tools classified by operation type. Before delegating, Archival **must first read** [kb-architecture.md](references/kb-architecture.md) to establish the correct mental model — understanding the 5-layer consistency rules, which operations require manual `kb_index_document` (only `kb_doc_save_parsed`), the pitfalls of hierarchical KBs, path format conventions, and the **post-fix invariants** (update_content/delete/move are all auto-indexed).
+> **⭐ KB architecture mental model**: This system's knowledge base is a 5-layer data model (disk .md ↔ .tree-fs.json ↔ .knowledge-base.yml ↔ ChromaDB vectors ↔ Neo4j graph), with 94 MCP tools classified by operation type. Before delegating, Archival **must first read** [kb-architecture.md](references/kb-architecture.md) to establish the correct mental model — understanding the 5-layer consistency rules, which operations require manual `kb_index_document` (only `kb_doc_save_parsed`), the pitfalls of hierarchical KBs, path format conventions, and the **post-fix invariants** (update_content/delete/move are all auto-indexed).
 
 ## Mission (Mandatory Rules)
 
@@ -58,16 +58,17 @@ Map matched keywords to a single scenario using the classification table below. 
 
 | Signal keywords | Scenario | Route to |
 |---|---|---|
-| ingest, upload, import, parse, store, save to, put document, add document, store, upload, parse, ingest, save to KB, add doc, put document | **Ingest** | `Skill("knowledgebase-ingest")` |
-| move, rename, delete, merge, move, rename, delete, merge | **Manage** | `Skill("knowledgebase-manage")` |
-| organize, clean up, restructure, inventory, deep clean, full review, consolidate, categorize, organize, restructure, cleanup, reorganize | **Organize** | `Skill("knowledgebase-organize")` |
-| search, query, retrieve, where, solution, how to fix, search, find, query, RAG, how to, explain, what is, search all KBs, cross-KB, cross knowledge base, enterprise, comprehensive, global search | **Search** | `Skill("knowledgebase-search")` (QDCVR v2: whole-library/cross-KB handled by the librarian fallback phase) |
-| librarian, shelf scan, walk the stacks, which knowledge base, which KB holds, catalog-level search, coarse to fine, coarse retrieval, knowledge base routing, pick the right knowledge base, browse the catalog, 图书馆员, 书架扫描, 逐级检索, 粗检索到细检索, 全库粗检索, 哪个知识库, 目录级检索, 知识库路由, 长文档跨章检索 | **Librarian** | `Skill("knowledgebase-librarian")` (hierarchical coarse→fine whole-library retrieval; also serves as `knowledgebase-search` Phase 2) |
-| view, list, browse, content, list, show, overview, tree | **List** | `Skill("knowledgebase-list")` |
-| verify, cross-check, integrity, check, detect, detect issues, audit knowledge base, audit, verify, validate, integrity, health check | **Verify** | `Skill("knowledgebase-verify")` |
+| ingest, upload, import, parse, store, save to, put document, add document, save to KB, add doc, 入库, 导入, 上传文档, 存入库, 大文档入库, 拆分入库, 解析PDF | **Ingest** | `Skill("knowledgebase-ingest")` |
+| move, rename, delete, merge, move, rename, delete, merge, update content, 更新文档内容, edit document, 编辑文档, modify description, 修改描述, create KB, create knowledge base, 新建知识库, 创建知识库 | **Manage** | `Skill("knowledgebase-manage")` |
+| organize, clean up, restructure, inventory, deep clean, full review, consolidate, categorize, organize, restructure, cleanup, reorganize, 整理, 归类, 重组, 重建目录结构 | **Organize** | `Skill("knowledgebase-organize")` |
+| search, query, retrieve, where, solution, how to fix, search, find, query, RAG, how to, explain, what is, search all KBs, cross-KB, cross knowledge base, enterprise, comprehensive, global search, 搜索, 检索, 查询, 查一下, 找答案, 问答 | **Search** | `Skill("knowledgebase-search")` (QDCVR v2: whole-library/cross-KB handled by the librarian fallback phase) |
+| librarian, shelf scan, walk the stacks, which knowledge base, which KB holds, catalog-level search, coarse to fine, coarse retrieval, knowledge base routing, pick the right knowledge base, browse the catalog, 图书馆员, 书架扫描, 逐级检索, 粗检索到细检索, 全库粗检索, 哪个知识库, 目录级检索, 知识库路由, 长文档跨章检索, 穷尽召回, 完整召回, all documents about, every mention of | **Librarian** | `Skill("knowledgebase-librarian")` (hierarchical coarse→fine whole-library retrieval; also serves as `knowledgebase-search` Phase 2) |
+| parallel hybrid, dual-lane, both retrieval modes, vector plus catalog, 并行检索, 混合检索, 双通道检索, 向量加目录 | **Hybrid** | `Skill("knowledgebase-hybrid")` (vector lane + catalog lane concurrently, one shared engine gate) |
+| view, list, browse, content, list, show, overview, tree, 列出, 列出所有, 查看, 展示, 文档清单 | **List** | `Skill("knowledgebase-list")` |
+| verify, cross-check, integrity, check, detect, detect issues, audit knowledge base, audit, verify, validate, integrity, health check, 验证, 完整性, 一致性, 健康检查 | **Verify** | `Skill("knowledgebase-verify")` |
 | batch, full volume, batch, bulk, mass | **Batch** | `Skill("knowledgebase-batch")` |
-| experience, experience library, experience, lesson, best practice | **Experience** | `Skill("knowledgebase-experience")` |
-| record experience, summarize experience, summarize as experience | **Experience-Summarize** | `Skill("knowledgebase-experience-summarize")` |
+| experience, experience library, experience, lesson, best practice, 查经验, 找经验, 经验检索, 类似案例 | **Experience** | `Skill("knowledgebase-experience")` |
+| record experience, summarize experience, summarize as experience, 记录经验, 记录教训, 总结经验, 沉淀经验, 记录 | **Experience-Summarize** | `Skill("knowledgebase-experience-summarize")` |
 | graph, graph, neo4j, entity, build graph | **Graph** | `Skill("knowledgebase-graph")` |
 | initialize, install, deploy, configure knowledge base, init, setup, install, deploy, bootstrap, getting started | **Init** | `Skill("knowledgebase-init")` (main agent — do NOT delegate to Archival) |
 | update knowledge base, upgrade, check for updates, pull latest, new version, update, upgrade, check for updates, ragctl update | **Update** | `Skill("knowledgebase-update")` (main agent — do NOT delegate to Archival) |
@@ -81,7 +82,7 @@ Map matched keywords to a single scenario using the classification table below. 
 ### Step 3: Route to Sub-Skill
 Based on classification outcome:
 - **Single scenario** — Route to `skill://knowledgebase-<scenario>` (read the skill content for detailed steps).
-- **Mixed scenarios** — Follow priority order: Organize → Verify → Ingest → Manage → List/Search. Complete each sub-skill fully before starting the next.
+- **Mixed scenarios** — Follow priority order: Organize → Verify → Ingest → Manage → Batch → Experience/Graph → List/Search. Complete each sub-skill fully before starting the next.
 - **Ambiguous / fuzzy match** — Apply fuzzy fallback rules (see Rule 5).
 
 ### Step 4: Delegate to Archival Agent via Task Tool
@@ -108,7 +109,7 @@ The dispatcher's **sole responsibility** is routing to `skill://knowledgebase-<s
 - **Strictly forbidden** to call MCP tools within the skill itself; all tool operations must be performed by the Archival agent
 
 ### ⭐ Rule 4: Multiple Mixed Scenarios
-- Execute in `Organize → Verify → Ingest → Manage → List/Search` order
+- Execute in `Organize → Verify → Ingest → Manage → Batch → Experience/Graph → List/Search` order
 - Route each scenario separately
 
 ### ⭐ Rule 5: Fuzzy Fallback

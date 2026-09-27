@@ -1,0 +1,93 @@
+{
+  "status": "ok",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "real_jev": false,
+  "criterion": "evidence",
+  "threshold": 0.5,
+  "model": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\model\\laya",
+  "key_env": "",
+  "candidate_count": 2,
+  "scored_count": 2,
+  "scores": [
+    {
+      "candidate_id": "c1",
+      "score": 0.6639,
+      "kept": true,
+      "doc_path": null,
+      "doc_id": null,
+      "part_index": null,
+      "section_path": null,
+      "start_char": null,
+      "end_char": null,
+      "start_line": null,
+      "end_line": null
+    },
+    {
+      "candidate_id": "c2",
+      "score": 0.0053,
+      "kept": false,
+      "doc_path": null,
+      "doc_id": null,
+      "part_index": null,
+      "section_path": null,
+      "start_char": null,
+      "end_char": null,
+      "start_line": null,
+      "end_line": null
+    }
+  ],
+  "result_list": [
+    {
+      "candidate_id": "c1",
+      "text": "The feed-forward multi-layer perceptron achieved the best accuracy of 75.02 percent across 1000 experiments.",
+      "score": 0.6639,
+      "kept": true,
+      "backend": "laya_sdk",
+      "real_engine": true,
+      "real_jev": false,
+      "jev_meta": {
+        "model": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\model\\laya",
+        "subfolder": ""
+      }
+    }
+  ],
+  "survivors": [
+    {
+      "candidate_id": "c1",
+      "text": "The feed-forward multi-layer perceptron achieved the best accuracy of 75.02 percent across 1000 experiments.",
+      "score": 0.6639,
+      "kept": true,
+      "backend": "laya_sdk",
+      "real_engine": true,
+      "real_jev": false,
+      "jev_meta": {
+        "model": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\model\\laya",
+        "subfolder": ""
+      }
+    }
+  ],
+  "evidence_pack": "[c1]\nThe feed-forward multi-layer perceptron achieved the best accuracy of 75.02 percent across 1000 experiments.",
+  "provenance": [
+    {
+      "candidate_id": "c1",
+      "text": "The feed-forward multi-layer perceptron achieved the best accuracy of 75.02 percent across 1000 experiments.",
+      "score": 0.6639,
+      "kept": true,
+      "backend": "laya_sdk",
+      "real_engine": true,
+      "real_jev": false,
+      "jev_meta": {
+        "model": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge\\model\\laya",
+        "subfolder": ""
+      },
+      "truncated": false
+    }
+  ],
+  "deduped_count": 1,
+  "included_count": 1,
+  "truncated_candidate_ids": [],
+  "evidence_chars": 113,
+  "errors": []
+}

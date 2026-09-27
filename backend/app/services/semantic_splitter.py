@@ -21,6 +21,11 @@ DEFAULT_TARGET_UTILIZATION = 0.85
 
 _ATX_RE = re.compile(r"^ {0,3}(#{1,6})[ \t]+(.+?)[ \t]*#*[ \t]*$", re.DOTALL)
 _SETEXT_RE = re.compile(r"^ {0,3}(=+|-+)[ \t]*$", re.DOTALL)
+_CHAPTER_RE = re.compile(
+    r"^\s*(?:第\s*[0-9一二三四五六七八九十百千万两〇零]+\s*[章节回]|"
+    r"chapter\s+[0-9ivxlcdm]+(?:\s*[:.\-].*)?)\s*$",
+    re.IGNORECASE,
+)
 _FENCE_RE = re.compile(r"^ {0,3}(`{3,}|~{3,})")
 _LIST_RE = re.compile(r"^ {0,3}(?:[-+*]|\d+[.)])[ \t]+")
 _TABLE_SEPARATOR_RE = re.compile(r"^\s*\|?\s*:?-{1,}:?\s*(?:\|\s*:?-{1,}:?\s*)+\|?\s*$")
@@ -244,7 +249,14 @@ def _consume_blockquote(lines: Sequence[str], i: int) -> int:
 
 
 def _find_headings(content: str) -> list[tuple[int, int, str]]:
-    """Find headings outside fenced code: (char_start, level, title)."""
+    """Find headings outside fenced code: (char_start, level, title).
+
+    Two heading forms are recognized: Markdown ATX/Setext headings, and
+    standalone plain-text chapter titles (``第一章 …`` / ``Chapter 12``) that
+    flat prose — novels without Markdown structure — use as scene boundaries.
+    Chapter titles give the Agent planner (and the deterministic fallback)
+    chapter-granular units instead of raw paragraph soup.
+    """
     spans = _line_spans(content)
     lines = [s[2] for s in spans]
     found: list[tuple[int, int, str]] = []
@@ -272,6 +284,8 @@ def _find_headings(content: str) -> list[tuple[int, int, str]]:
                 # The underline is part of the section, so the next heading
                 # still starts at its own line; no special offset is needed.
                 continue
+        elif raw.strip() and len(raw.strip()) <= 80 and _CHAPTER_RE.match(raw):
+            found.append((spans[i][0], 1, raw.strip()))
     return found
 
 
@@ -501,7 +515,16 @@ def scan_structural_units(content: str, max_chars: int | None = None) -> list[St
 
 
 def _unit_groups(units: Sequence[StructuralUnit], max_chars: int,
-                 target_utilization: float) -> tuple[list[list[StructuralUnit]], list[str]]:
+                 target_utilization: float, *, hard_cut: bool = False) -> tuple[list[list[StructuralUnit]], list[str]]:
+    """Pack adjacent units under ``max_chars`` — the STORED-part budget (source
+    body only; the synthetic context header is reserved by the caller).
+
+    ``target_utilization`` is intentionally inert: it never creates a logical
+    cut, it only feeds Agent-side guidance. ``hard_cut`` (explicit opt-in via
+    ``allow_hard_fallback`` when oversized units are disallowed) slices a
+    boundary-free oversized unit into fixed windows — a semantic risk that is
+    always reported as ``hard_fallback_cut``.
+    """
     del target_utilization  # only a soft target; never creates a logical cut
     groups: list[list[StructuralUnit]] = []
     warnings: list[str] = []
@@ -513,8 +536,20 @@ def _unit_groups(units: Sequence[StructuralUnit], max_chars: int,
             if current:
                 groups.append(current)
                 current, current_chars = [], 0
-            groups.append([unit])
-            warnings.append(f"oversized_atomic_unit:{unit.unit_id}:{size}>{max_chars}")
+            if hard_cut:
+                windows: list[StructuralUnit] = []
+                pos = unit.start_char
+                while pos < unit.end_char:
+                    end = min(pos + max_chars, unit.end_char)
+                    windows.append(StructuralUnit(
+                        "", "hard_cut_window", unit.heading_path,
+                        pos, end, "", unit.section_range, "hard_cut"))
+                    pos = end
+                groups.extend([w] for w in windows)
+                warnings.append(f"hard_fallback_cut:{unit.unit_id}:{len(windows)}_windows")
+            else:
+                groups.append([unit])
+                warnings.append(f"oversized_atomic_unit:{unit.unit_id}:{size}>{max_chars}")
             continue
         if current and current_chars + size > max_chars:
             groups.append(current)
@@ -590,6 +625,11 @@ def _make_parts_from_groups(content: str, title: str,
 def _validate_agent_plan(content: str, units: Sequence[StructuralUnit],
                          agent_plan: Mapping[str, Any], max_chars: int,
                          allow_oversized_atomic_unit: bool = True) -> tuple[list[list[StructuralUnit]], dict[int, str], list[str]]:
+    """Validate an Agent boundary plan against the scanner units.
+
+    ``max_chars`` is the stored-part budget: the caller reserves the synthetic
+    header, so plan spans are checked against the source-body allowance.
+    """
     errors: list[str] = []
     if not isinstance(agent_plan, Mapping):
         return [], {}, ["agent_plan_not_object"]
@@ -670,6 +710,9 @@ def split_document(content: str, title: str = "", *,
     content = content or ""
     title = (title or "").strip() or "untitled"
     max_chars = clamp_max_chars(max_chars)
+    # Reserve room for the synthetic context header so the STORED part
+    # (header + source body) honors max_chars, not just the source span.
+    body_budget = max(256, max_chars - (len(title) + 96))
     if len(content) <= max_chars:
         seed = content_description(content, desc_chars)
         return [SplitPart(title=title, content=content, part_index=1, part_count=1,
@@ -684,19 +727,20 @@ def split_document(content: str, title: str = "", *,
     groups: list[list[StructuralUnit]] = []
     if agent_plan is not None:
         groups, descriptions, errors = _validate_agent_plan(
-            content, units, agent_plan, max_chars, allow_oversized_atomic_unit)
+            content, units, agent_plan, body_budget, allow_oversized_atomic_unit)
         if errors:
             warnings.extend(f"agent_plan_rejected:{e}" for e in errors)
             groups = []
         else:
             planner = "agent"
     if not groups:
-        groups, fallback_warnings = _unit_groups(units, max_chars, target_utilization)
+        groups, fallback_warnings = _unit_groups(
+            units, body_budget, target_utilization,
+            hard_cut=(allow_hard_fallback and not allow_oversized_atomic_unit))
         warnings.extend(fallback_warnings)
         if any("oversized_atomic_unit" in w for w in fallback_warnings) and not allow_oversized_atomic_unit:
             if not allow_hard_fallback:
                 raise ValueError("oversized atomic unit cannot be split without rewriting logical content")
-            warnings.append("hard_fallback_requested")
     return _make_parts_from_groups(
         content, title, groups,
         strategy="agent_semantic" if planner == "agent" else "structural_fallback",

@@ -27,7 +27,9 @@ export default defineEventHandler(async (event) => {
   if (!resolvedPath) {
     throw createError({ statusCode: 404, statusMessage: "Document not found" })
   }
-  const file = await treeService.getFileByPath(resolvedPath)
+  // reload-on-miss: another dev worker may have created/renamed this file
+  // after our last index load (stale in-memory metadata would 404 here).
+  const file = await treeService.getFileByPathWithReload(resolvedPath)
   if (!file) {
     throw createError({ statusCode: 404, statusMessage: 'Document not found' })
   }

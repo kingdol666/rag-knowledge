@@ -1,0 +1,71 @@
+{
+  "mode": "A_vector",
+  "id": "T4",
+  "scenario": "part targeting",
+  "query": "Where does the library discuss hallucinations in the paper on how language models learn facts, and what does it say about when hallucinations start?",
+  "seconds": 51.2,
+  "docs_read": 5,
+  "judge": {
+    "abs_kept": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "relative_cut": 0.792,
+    "global_best": 0.892,
+    "doc_scores": [
+      {
+        "doc": "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md",
+        "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+        "score": 0.892,
+        "kept": true
+      },
+      {
+        "doc": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 5 of 8).md",
+        "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+        "score": 0.8061,
+        "kept": true
+      },
+      {
+        "doc": "e2e-demo-0923-022632/global-rag-benchmark.md",
+        "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+        "score": 0.8681,
+        "kept": true
+      },
+      {
+        "doc": "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md",
+        "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+        "score": 0.8651,
+        "kept": true
+      }
+    ],
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "scored_segments": 40,
+    "total_segments": 40
+  },
+  "kept_doc_paths": [
+    "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md",
+    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 5 of 8).md",
+    "e2e-demo-0923-022632/global-rag-benchmark.md",
+    "自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md"
+  ],
+  "evidence_pack": "[计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md]\n# nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md.md（第 2/4 部分）\n章节: steps > 4. Hallucinations hinder the integration of new knowledge post-training\n## 4. Hallucinations hinder the integration of new knowledge post-training\n\n\nThis final section examines the challenge of expanding language models' parametric knowledge through post-training procedures like fine-tuning. We find that certain types of hallucinations (overconfident predictions on unseen individuals) emerge simultaneously with knowledge about individuals within the training distribution and can be detected at the population level. These hallucinations significantly impact learning dynamics on new data, requiring numerous training steps to overcome miscalibration, during which pre-existing knowledge is significantly degraded, a phenomenon reminiscent of catastrophic forgetting McCloskey and Cohen (1989). Adding replay of existing knowledge to the fine-tuning data mix only partially mitigates this issue. Overall, our findings offer an explanation for the infrequent use of fine-tuning (Jain et al., 2024; Ovadia et al., 2023) for incorporating new knowledge in the model's parameters.\n\n![](images/3c33a2e9772fbd4dd473ac016ab40bb201e03297895ce6653935f9a69cd8d34b.jpg)\n\n![](images/1615f9a09499dc56383d3acd1a312944deff28e361f439854dfa7932c18dad26.jpg)  \nPre-training loss\n\n![](images/7a1635dbd888e5d8084ad33a465c68d7c38f537cff1b883b1a6c115c7fda08e1.jpg)  \nPre-training loss  \nFigure 5 | Hallucinations hinder the integration of new knowledge post-training. (left) Hallucinations (overconfidence in inaccurate predictions) appear concurrently with the knowledge acquisition, hindering subsequent adaptation to new knowledge. (middle) Fine-tuning on new individuals causes a rapid drop in performance on individuals learned during pre-training, with new knowledge acquisition being a slower process. (right) Incorporating replay of pre-training data partially mitigates the final performance drop, but not the initial decline. Grey dots in the middle and right panels indicate performance at the beginning of fine-tuning. The pre-training (resp. fine-tuning) losses are attribute losses measured on pre-training (resp. fine-tuning) individuals. See Section 4 for details.\n\n## 4.1. Models start hallucinating as soon as they acquire knowledge\n\n\nBefore investigating fine-tuning per se, we first analyze the evolution of the model's performance on unseen individuals over the course of (pre-)training, focusing on whethe\n\n[生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 5 of 8).md]\n# clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md.md（第 5/8 部分）\n章节: Large Language Models Encode Clinical Knowledge > References\n## References\n\n\n1. Abacha, A. B., Agichtein, E., Pinter, Y. & Demner-Fushman, D. Overview of the medical question answering task at TREC 2017 LiveQA. in TREC (2017), 1–12.\n\n2. Abacha, A. B., Mrabet, Y., Sharp, M., Goodwin, T. R., Shooshan, S. E. & Demner-Fushman, D. Bridging the Gap Between Consumers' Medication Questions and Trusted Answers. in MedInfo (2019), 25-29.\n\n3. Agrawal, M., Hegselmann, S., Lang, H., Kim, Y. & Sontag, D. Large Language Models are Zero-Shot Clinical Information Extractors. arXiv preprint arXiv:2205.12689 (2022).\n\n4. Barham, P., Chowdhery, A., Dean, J., Ghemawat, S., Hand, S., Hurt, D., Isard, M., Lim, H., Pang, R., Roy, S., et al. Pathways: Asynchronous distributed dataflow for ML. Proceedings of Machine Learning and Systems 4, 430–449 (2022).\n\n5. Beltagy, I., Lo, K. & Cohan, A. SciBERT: A pretrained language model for scientific text. arXiv preprint arXiv:1903.10676 (2019).\n\n6. Berkman, N. D., Sheridan, S. L., Donahue, K. E., Halpern, D. J., Viera, A., Crotty, K., Holland, A., Brasure, M., Lohr, K. N., Harden, E., et al. Health literacy interventions and outcomes: an updated systematic review. Evidence report/technology assessment, 1–941 (2011).\n\n7. Black, S., Gao, L., Wang, P., Leahy, C. & Biderman, S. GPT-Neo: Large Scale Autoregressive Language Modeling with Mesh-Tensorflow version 1.0. If you use this software, please cite it using these metadata. Mar. 2021. https: //doi.org/10.5281/zenodo.5297715.\n\n8. Boateng, G. O., Neilands, T. B., Frongillo, E. A., Melgar-Quiñonez, H. R. & Young, S. L. Best practices for developing and validating scales for health, social, and behavioral research: a primer. Frontiers in public health 6, 149 (2018).\n\n9. Bolton, E., Hall, D., Yasunaga, M., Lee, T., Manning, C. & Liang, P. Stanford CRFM Introduces PubMedGPT 2.7B https://hai.stanford.edu/news/stanford-crfm-introduces-pubmedgpt-27b. 2022.\n\n10. Bommasani, R., Hudson, D. A., Adeli, E., Altman, R., Arora, S., von Arx, S., Bernstein, M. S., Bohg, J., Bosselut, A., Brunskill, E., et al. On the opportunities and risks of foundation models. arXiv preprint arXiv:2108.07258 (2021).\n\n11. Bommasani, R., Liang, P. & Lee, T. Language Models are Changing AI: The Need for Holistic Evaluation https: //crfm.stanford.edu/2022/11/17/helm.html. 2022.\n\n12. Brown, T., Mann, B., Ryder, N., Subbiah, M., Kapl\n\n[e2e-demo-0923-022632/global-rag-benchmark.md]\n# Towards Global Retrieval Augmented Generation: A Benchmark for Corpus-Level Reasoning\n\nQi Luo1,\\*, Xiaonan Li1,\\*, Tingshuo Fan1, Xinchi Chen1,†, Xipeng Qiu1,2,†\n\n1Fudan University\n\n2Shanghai Innovation Institutey qluo22@m.fudan.edu.cn\n\n## Abstract\n\nRetrieval-augmented generation (RAG) has emerged as a leading approach to reducing hallucinations in large language models (LLMs). Current RAG evaluation benchmarks primarily focus on what we call local RAG: retrieving relevant chunks from a small subset of documents to answer queries that require only localized understanding within specific text chunks. However, many real-world applications require a fundamentally different capability—global RAG—which involves aggregating and analyzing information across entire document collections to derive corpus-level insights (e.g. “What are the top 10 most cited papers in 2023?\"). In this paper, we introduce GlobalQA—the first benchmark specifically designed to evaluate global RAG capabilities, covering four core task types: counting, extremum queries, sorting, and top-k extraction. Through systematic evaluation across different models and baselines, we find that existing RAG methods perform poorly on global tasks, with the strongest baseline achieving only 1.51 F1 score. To address these challenges, we propose Global-RAG, a multi-tool collaborative framework that preserves structural coherence through chunklevel retrieval, incorporates LLM-driven intelligent filters to eliminate noisy documents, and integrates aggregation modules for precise symbolic computation. On the Qwen2.5-14B model, GlobalRAG achieves 6.63 F1 compared to the strongest baseline's 1.51 F1, validating the effectiveness of our method.\n\n## 1 Introduction\n\nRetrieval-augmented generation (RAG) has been proposed as a solution to mitigate hallucination and knowledge limitations in large language models (LLMs) (Lewis et al., 2021; Li et al., 2025; Zhang et al., 2025; Rawte et al., 2023; Wang et al.,\n\n![](images/838ff38197a58dd916888ef6cc7803a82e53db9b32898de2754d99b5b76b9a6c.jpg)  \n(b) Global Query: Dense Retriever Fails  \nFigure 1: Why Dense Retriever Fails on Global Queries: (a) Local Query: The answer can be found in specific documents. Dense retriever ranks all documents and selects top-k, which contains the relevant information. (b) Global Query: The answer requires information from all documents. However, dense retriever only returns top-k ranked documents, missing critical information scattered acro\n\n[自然科学与地球科学/climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md]\n# climate-science__2409.13934__on-the-extrapolation-of-generative-adversari（第 1/3 部分）\n章节: On the Extrapolation of Generative Adversarial Networks for downscaling precipitation extremes in warmer climates\n# On the Extrapolation of Generative Adversarial Networks for downscaling precipitation extremes in warmer climates\n\n\nNeelesh Rampal1,3, Peter B. Gibson2, Steven Sherwood³ and Gab Abramowitz³\n\n1National Institute of Water and Atmospheric Research, Auckland, New Zealand.\n\n2National Institute of Water and Atmospheric Research, Wellington, New Zealand\n\n3 Climate Change Research Centre & ARC Centre of Excellence for Climate Extremes, University of New South Wales, Sydney, Australia.\n\nCorresponding author: Neelesh Rampal (neelesh.rampal@niwa.co.nz)\n\n## Key Points:\n\n\n• Deterministic (regression) downscaling methods underestimate future increases in extreme precipitation, even when trained on future climates\n\n• Generative Adversarial Networks tested here better capture these future increases than deterministic methods, even when trained historically\n\n• Generative Adversarial Networks trained on future climates have better historical and future extrapolation skill vs. historical training\n\n## Abstract\n\n\nWhile deep-learning downscaling algorithms can generate fine-scale climate projections cost-effectively, it is still unclear how well they will extrapolate to unobserved climates. We assess the extrapolation capabilities of a deterministic Convolutional Neural Network baseline and a Generative Adversarial Network (GAN) built with this baseline, trained to predict daily precipitation simulated by a Regional Climate Model (RCM). Both approaches emulate future changes in annual mean precipitation well, even when trained on historical data, though training on a future climate improves performance. For extreme precipitation (99.5th percentile), RCM simulations predict a robust end-of-century increase with future warming $( \\sim 5 . 8 \\% / ^ { \\circ } \\mathrm { C }$ on average from five simulations). When trained on a future climate, GANs capture 97% of the warmingdriven increase in extreme precipitation compared to 65% in a deterministic baseline. Even GANs trained historically capture 77% of this increase. Overall, GANs offer better generalization for downscaling extremes, which is important in applications relying on historical data.\n\n## Plain Language Summary\n\n\nThe resolution of climate models (\\~150km) is too coarse for studying the effects of climate change at regio",
+  "_gold": {
+    "2503.21676": {
+      "judged": true,
+      "kept": true,
+      "in_evidence": false,
+      "score": 0.892
+    },
+    "_summary": {
+      "golds_total": 1,
+      "golds_judged": 1,
+      "golds_kept": 1,
+      "golds_in_evidence": 0
+    }
+  }
+}

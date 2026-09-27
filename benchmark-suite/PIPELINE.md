@@ -1,5 +1,20 @@
 # KBQA PIPELINE — 文献入库·复刻入库·出题·三轨对照·分析（可复用全流程）
 
+> **三模式检索臂 + 检索任务矩阵（2026-09-27 新增）**：QDCVR 向量优先(A) / 图书管理员(B) /
+> 混合并行(C) 三种检索模式已是 exp 项目一等公民臂。**判决引擎 Laya 已 GPU 化**——宿主为
+> `backend/.venv`（MinerU 环境，torch 2.12.1+cu130，device 自动选 cuda，单段判决 ~0.05s），
+> 历史结论「Laya CPU 逐段判决是时间瓶颈」已消除（C 全臂 64-70s）。两条入口：
+> C 模式语义(2026-09-27 重定义)：**A ∥ B 并行子进程 → 去重合并(共识优先) → 合并文档完整读取 →
+> 知识增强包**（脚本 `scripts/124_mode_c_parallel.py`；旧 vector∥catalog 实现以
+> `RAG_MODE_C_IMPL=hybrid` 可回退）。检索全程在子进程内执行, 主对话只接收最终完整文档内容。
+> ① `python benchmark-suite/scripts/140_retrieval_modes_exp.py --mode A --mode B --mode C`
+>    （金标验证门 + arm JSON + `141` 生成 THREE-MODE-REPORT.md）；
+> ② `python benchmark-suite/exp.py --retmodes [--ret-baselines bm25,vector,rrf]`
+>    （exp 统一入口：三模式 + 检索类 baseline **同题纯检索对照矩阵**，无 LLM 回答成本，
+>    产出 RETRIEVAL-COMPARE.md + retmatrix.json）。判决脚本环境由
+>    `experiments/retrieval_modes.py::resolve_laya_python()` 解析（$RAG_LAYA_PYTHON 可覆盖），
+>    解释器错误会 fail-closed（JevUnavailable），不会静默走错环境。
+
 > **Agent 直启实验入口（2026-09-20 新增）**：`benchmark-suite/experiments/`——
 > 同一份 50 篇外部语料上，三模式全部由 Agent 真实执行（A=当前系统对外 API 客户端 /
 > B=裸 Agent 全文阅读+全文件搜索 / C=Agent 亲自执行稠密向量检索），带证据底线强制
