@@ -1,0 +1,48 @@
+{
+ "qid": "QK01",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "track": "mode_C",
+ "method": "mode_C",
+ "via": "retrieval-mode+closed-book",
+ "answer": "**Answer:** The evidence explains *why* the Transformer replaces recurrence, but not *how* it computes attention.\n\nAccording to the Abstract and §1 of *Attention Is All You Need*, the Transformer is \"based solely on attention mechanisms, dispensing with recurrence and convolutions entirely,\" relying on attention \"to draw global dependencies between input and output.\" The stated motivation against recurrence is that recurrent models factor computation along symbol positions, and this \"inherently sequential nature precludes parallelization within training examples,\" a limitation that becomes critical at longer sequence lengths. The paper claims the resulting model \"allows for significantly more parallelization\" and reaches state of the art after as little as twelve hours on eight P100 GPUs, whereas the best prior models trained for 3.5 days on eight GPUs. It also notes attention permits \"modeling of dependencies without regard to their distance in the input or output sequences,\" while prior work used attention \"in conjunction with a recurrent network.\" The retrieved evidence, however, consists only of the Abstract, §1 (Introduction), and the opening lines of §2 (Background, which cuts off mid-sentence while describing convolutional models such as the Extended Neural GPU, ByteNet, and ConvS2S). It contains no description of the attention computation itself — no equations or mechanism details — so the \"how\" half of the question cannot be answered from this evidence.\n\n**Sources used:** Attention Is All You Need — Abstract, §1 Introduction, §2 Background (first paragraph, truncated). No other sources were available in the evidence.",
+ "is_error": false,
+ "latency_s": 60.9,
+ "retrieval_s": 51.5,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38238,
+  "output": 1172,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.22049,
+ "ranked": [
+  "Novel-PridePrejudice/pride_and_prejudice (part 1 of 26) (part 1 of 2).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 6 of 26).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "soul-cs-library/memory-conventions.md",
+  "soul-cs-library/soul-definition.md",
+  "soul-demo-qa/memory-conventions.md",
+  "soul-demo-qa/soul-definition.md",
+  "soul-e2e-tester-024115/memory-conventions.md",
+  "soul-e2e-tester-024115/soul-definition.md",
+  "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md",
+  "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md"
+ ],
+ "evidence_sources": [
+  "Novel-PridePrejudice/pride_and_prejudice (part 1 of 26) (part 1 of 2).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 6 of 26).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "soul-cs-library/memory-conventions.md"
+ ],
+ "evidence_chars": 4000,
+ "real_engine": null,
+ "merge": {
+  "a_docs": 21,
+  "b_docs": 43,
+  "consensus": 9,
+  "merged": 12
+ }
+}

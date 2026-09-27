@@ -1,0 +1,24 @@
+{
+ "qid": "QK08",
+ "question": "Beyond which percentile of precipitation did the GAN clearly outperform the deterministic baseline in capturing the climate-change wetting signal?",
+ "track": "mode_B",
+ "method": "mode_B",
+ "via": "retrieval-mode+closed-book",
+ "answer": "The evidence is insufficient to answer this question: no evidence was retrieved (the evidence block is empty), so there is no document, file, or chunk to ground an answer about the precipitation percentile beyond which a GAN outperformed a deterministic baseline.\n\nSources used: none (no evidence retrieved). Per the output contract, I am stopping here rather than answering from prior knowledge.",
+ "is_error": false,
+ "latency_s": 9.9,
+ "retrieval_s": 3.7,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 37404,
+  "output": 796,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.20692,
+ "ranked": [],
+ "evidence_sources": [],
+ "evidence_chars": 0,
+ "real_engine": false,
+ "merge": null
+}

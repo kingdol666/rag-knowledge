@@ -1,0 +1,46 @@
+{
+ "qid": "QK09",
+ "question": "What is the recommended daily dosage of metformin for diabetic cats?",
+ "track": "mode_C",
+ "method": "mode_C",
+ "via": "retrieval-mode+closed-book",
+ "answer": "The evidence is insufficient to answer this question. The only source provided — `clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md` (Section 3.2.1, \"Clinician evaluation\") — describes a human-evaluation framework for long-form LLM answers to consumer medical questions, covering axes such as agreement with scientific consensus, extent and likelihood of harm, comprehension, retrieval, reasoning, inappropriate/missing content, and bias. It contains no mention of metformin, feline medicine, or any drug dosage information. Therefore, no recommended daily dosage of metformin for diabetic cats can be derived from this evidence.\n\nSource used: clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (Part 2/8, Section 3.2.1).",
+ "is_error": false,
+ "latency_s": 61.1,
+ "retrieval_s": 54.9,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38295,
+  "output": 551,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.20525000000000002,
+ "ranked": [
+  "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md",
+  "生命科学与医学/genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 2 of 3).md",
+  "自然科学与地球科学/astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 2 of 2).md",
+  "自然科学与地球科学/quantum-physics__1610.04013__entanglement-assisted-quantum-error-correcti.md (part 2 of 3).md",
+  "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md",
+  "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md",
+  "计算机与人工智能/artificial-intelligence__2412.06333__augmenting-the-action-space-with-conventions (part 2 of 5).md",
+  "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 2 of 4).md",
+  "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md",
+  "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 2 of 2).md"
+ ],
+ "evidence_sources": [
+  "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md",
+  "生命科学与医学/genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 2 of 3).md",
+  "自然科学与地球科学/astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 2 of 2).md",
+  "自然科学与地球科学/quantum-physics__1610.04013__entanglement-assisted-quantum-error-correcti.md (part 2 of 3).md",
+  "计算机与人工智能/artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md"
+ ],
+ "evidence_chars": 4000,
+ "real_engine": null,
+ "merge": {
+  "a_docs": 1,
+  "b_docs": 9,
+  "consensus": 0,
+  "merged": 10
+ }
+}

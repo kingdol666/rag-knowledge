@@ -1,0 +1,48 @@
+{
+ "qid": "QK02",
+ "question": "Which three independent ontologies subdivide the Gene Ontology?",
+ "track": "mode_C",
+ "method": "mode_C",
+ "via": "retrieval-mode+closed-book",
+ "answer": "**The evidence is insufficient to answer this question.**\n\nThe only relevant retrieved chunk, `genomics__1602.01876__primer-on-the-gene-ontology.md.md` (part 1/2), is truncated mid-abstract — it states that GO \"is the largest resource for cataloguing gene function\" (Gaudet et al., January 2016) but never names the three independent ontologies or any subdivision of the Gene Ontology. The other chunks in the evidence (`soul-template` memory conventions and SOUL persona definitions) contain no Gene Ontology content at all. Per the grounding rules, I will not supply the answer from prior knowledge, so I report no answer rather than an ungrounded one.\n\nSources consulted:\n- `genomics__1602.01876__primer-on-the-gene-ontology.md.md` (part 1/2) — relevant but truncated before the answer\n- `soul-template` memory/`SOUL` persona chunks — irrelevant",
+ "is_error": false,
+ "latency_s": 47.7,
+ "retrieval_s": 38.8,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 39327,
+  "output": 1495,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.23401,
+ "ranked": [
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "soul-cs-library/memory-conventions.md",
+  "soul-cs-library/soul-definition.md",
+  "soul-demo-qa/memory-conventions.md",
+  "soul-demo-qa/soul-definition.md",
+  "soul-e2e-tester-024115/memory-conventions.md",
+  "soul-e2e-tester-024115/soul-definition.md",
+  "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+  "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 2 of 2).md",
+  "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+  "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md"
+ ],
+ "evidence_sources": [
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "soul-cs-library/memory-conventions.md",
+  "soul-cs-library/soul-definition.md",
+  "soul-demo-qa/memory-conventions.md"
+ ],
+ "evidence_chars": 4000,
+ "real_engine": null,
+ "merge": {
+  "a_docs": 16,
+  "b_docs": 16,
+  "consensus": 10,
+  "merged": 12
+ }
+}

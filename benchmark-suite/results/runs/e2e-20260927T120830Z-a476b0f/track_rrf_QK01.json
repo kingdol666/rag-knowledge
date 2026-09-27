@@ -1,0 +1,50 @@
+{
+ "qid": "QK01",
+ "method": "rrf",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "ranked": [
+  "1706.03762",
+  "1810.04805",
+  "2503.21676",
+  "2110.07844",
+  "2510.13343",
+  "1906.10015",
+  "1911.02792",
+  "2110.08918",
+  "2109.14357",
+  "2009.10669"
+ ],
+ "ranked_paths": [
+  "artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md",
+  "nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst.md",
+  "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep.md",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md",
+  "chemistry__1911.02792__machine-learning-for-molecular-simulation.md",
+  "clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md",
+  "speech__2109.14357__comparison-of-self-supervised-speech-pre-tra.md",
+  "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne.md"
+ ],
+ "evidence_sources": [
+  "1706.03762",
+  "1810.04805",
+  "2503.21676"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.1,
+ "latency_s": 16.0,
+ "answer": "**Answer:** The evidence only partially addresses this question. From [1706.03762], the Transformer employs h = 8 parallel attention heads with d_k = d_v = d_model/h = 64, and because each head has reduced dimension, the total computational cost is similar to single-head attention with full dimensionality. The same chunk lists three uses of multi-head attention: encoder-decoder attention (queries from the previous decoder layer, keys and values from the encoder output, letting every decoder position attend over all input positions), encoder self-attention (keys, values, and queries all from the previous encoder layer, with each position attending to all positions there), and decoder self-attention (text truncated mid-sentence). However, the evidence does not show the actual attention computation (e.g., any scoring/softmax formulation), nor does it state why the Transformer replaces recurrence and convolution — no rationale about sequential computation or path length appears in the retrieved chunks.\n\n**Sources used / checked:**\n- [1706.03762] (used — multi-head attention configuration, §3.2.3 applications)\n- [1810.04805] (checked — covers BERT span-extraction QA fine-tuning with start/end vectors; not relevant)\n- [2503.21676] (checked — covers twin-architecture attention patching; not relevant)\n\nThe evidence is therefore insufficient to fully answer the question as posed; I can only report the multi-head configuration and application modes from [1706.03762].",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38240,
+  "output": 2592,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.256,
+ "extra": {},
+ "track": "rrf",
+ "via": "baseline+closed-book"
+}

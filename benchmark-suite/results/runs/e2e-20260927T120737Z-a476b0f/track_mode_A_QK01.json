@@ -1,0 +1,52 @@
+{
+ "qid": "QK01",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "track": "mode_A",
+ "method": "mode_A",
+ "via": "retrieval-mode+closed-book",
+ "answer": "The evidence is insufficient to answer the question. The two retrieved sources — `经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md` (multi-agent reinforcement learning for stock market microstructure) and `生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md` (clinical drug representations for mortality/LOS prediction) — contain no discussion of the Transformer architecture, attention mechanisms, recurrence, or convolution. No sentence in either chunk addresses how attention is computed or why it replaces recurrent and convolutional layers. I cannot answer from prior knowledge under this contract, so I am stopping here.\n\nSources examined: both chunks listed above (vec=0.483 and vec=0.552); neither was usable for this question.",
+ "is_error": false,
+ "latency_s": 37.1,
+ "retrieval_s": 28.8,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38348,
+  "output": 621,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.207265,
+ "ranked": [
+  "Novel-PridePrejudice/pride_and_prejudice (part 1 of 26) (part 1 of 2).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 6 of 26).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "e2e-demo-0923-022632/平台架构总览.md",
+  "soul-cs-library/memory-conventions.md",
+  "soul-cs-library/soul-definition.md",
+  "soul-demo-qa/memory-conventions.md",
+  "soul-demo-qa/soul-definition.md",
+  "soul-e2e-tester-024115/memory-conventions.md",
+  "soul-e2e-tester-024115/soul-definition.md",
+  "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+  "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 4 of 5).md",
+  "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+  "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+  "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+  "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+  "自然科学与地球科学/oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.md (part 1 of 3).md",
+  "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md",
+  "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md"
+ ],
+ "evidence_sources": [
+  "Novel-PridePrejudice/pride_and_prejudice (part 1 of 26) (part 1 of 2).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 6 of 26).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md"
+ ],
+ "evidence_chars": 4000,
+ "real_engine": true,
+ "merge": null
+}

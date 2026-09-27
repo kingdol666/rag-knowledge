@@ -1,0 +1,921 @@
+# 端到端检索×问答 全矩阵报告（三模式 + baselines × 10 题）
+
+- Run: `e2e-20260927T111600Z-a476b0f` · 生成: 2026-09-27 11:51 UTC
+- 通道: 每方法各自检索 → 统一 4000 字符证据包 → 平台闭卷 chat API 回答（与 baseline 逐字节同通道, 差异只来自检索）
+- 评价: LLM 逐格评分（对照 gold_points/gold_keywords, 0-5 分）
+
+## 1 · 方法聚合
+
+| 方法 | 平均延迟s | 检索命中率 | 引用命中率 | 平均评分 | 弃答 | 错误 |
+|---|---:|---:|---:|---:|---:|---:|
+| mode_A | 31.01 | 1.0 | 0.375 | 1.67 | 9 | 0 |
+| mode_B | 9.49 | 0.0 | 0.0 | 1.0 | 10 | 0 |
+| mode_C | 57.83 | 1.0 | 0.625 | 2.8 | 7 | 0 |
+| bm25 | 7.58 | 1.0 | 1.0 | 3.4 | 5 | 0 |
+| vector | 8.98 | 1.0 | 1.0 | 4.1 | 5 | 0 |
+| rrf | 13.19 | 1.0 | 1.0 | 3.1 | 7 | 0 |
+| rerank | 14.63 | 1.0 | 1.0 | 4.1 | 6 | 0 |
+
+## Q QK01 · [single] How does the Transformer compute attention, and why does it replace recurrence and convolution?
+
+- gold_docs: ['1706.03762'] · stratum: single
+
+### mode_A
+
+- 延迟 40.6s · 检索文档 21 篇 · tokens out 472
+- 评分: **0** (refusal) — The question is answerable — the gold points (scaled dot-product attention, multi-head projection, replacing recurrence via parallelism/global dependencies, and replacing convolution) are established knowledge — yet the answer refuses to answer on grounds of insufficient evidence and thus contains none of the gold points or keywords.
+
+```
+**Answer: The evidence is insufficient to answer this question.**
+
+The retrieved evidence consists of two documents: (1) `经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md` (multi-agent RL for stock market microstructure inference) and (2) `生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md` (clinical drug representations for mortality/LOS prediction). Neither document discusses the Transformer architecture, attention computation, recurrence, or convolution.
+
+No source among the retrieved evidence addresses how attention is computed or why it replaces recurrence and convolution, so per the output contract I am reporting a blind spot rather than answering from prior knowledge.
+
+**Sources used:** `finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md` (vec=0.483) and `clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md` (vec=0.552) — both retrieved but neither is relevant.
+```
+
+### mode_B
+
+- 延迟 8.8s · 检索文档 0 篇 · tokens out 499
+- 评分: **0** (refusal) — The question is answerable, but the answer declined to provide any content, stating that no evidence was retrieved.
+
+```
+The evidence is insufficient: no evidence was retrieved (the EVIDENCE block is empty), so I cannot answer how the Transformer computes attention or why it replaces recurrence and convolution.
+
+No sources were used because none were provided, and per the task contract I will not fall back on prior knowledge. Please supply the relevant documents or chunks and I will answer from them alone.
+```
+
+### mode_C
+
+- 延迟 60.9s · 检索文档 12 篇 · tokens out 1172
+- 评分: **3** (partial) — The answer correctly covers why recurrence is replaced (parallelization, global dependencies) and notes convolutions are dispensed with, but omits scaled dot-product attention and multi-head projection, explicitly leaving the "how" half unanswered, so it matches only part of the gold points.
+
+```
+**Answer:** The evidence explains *why* the Transformer replaces recurrence, but not *how* it computes attention.
+
+According to the Abstract and §1 of *Attention Is All You Need*, the Transformer is "based solely on attention mechanisms, dispensing with recurrence and convolutions entirely," relying on attention "to draw global dependencies between input and output." The stated motivation against recurrence is that recurrent models factor computation along symbol positions, and this "inherently sequential nature precludes parallelization within training examples," a limitation that becomes critical at longer sequence lengths. The paper claims the resulting model "allows for significantly more parallelization" and reaches state of the art after as little as twelve hours on eight P100 GPUs, whereas the best prior models trained for 3.5 days on eight GPUs. It also notes attention permits "modeling of dependencies without regard to their distance in the input or output sequences," while prior work used attention "in conjunction with a recurrent network." The retrieved evidence, however, consists only of the Abstract, §1 (Introduction), and the opening lines of §2 (Background, which cuts off mid-sentence while describing convolutional models such as the Extended Neural GPU, ByteNet, and ConvS2S). It contains no description of the attention computation itself — no equations or mechanism details — so the "how" half of the question cannot be answered from this evidence.
+
+**Sources used:** Attention Is All You Need — Abstract, §1 Introduction, §2 Background (first paragraph, truncated). No other sources were available in the evidence.
+```
+
+### bm25
+
+- 延迟 13.8s · 检索文档 10 篇 · tokens out 2430
+- 评分: **3** (partial) — The answer correctly reports the multi-head attention details present in the evidence (one of four gold points) but explicitly states it lacks the scaled dot-product formulation and the parallelization/global-dependency rationale for replacing recurrence and convolution, covering only part of the question.
+
+```
+**Answer (from the provided evidence only):**
+
+The evidence shows the Transformer uses multi-head attention with h = 8 parallel attention heads, each with d_k = d_v = d_model/h = 64, where the reduced per-head dimension keeps total computational cost similar to single-head attention at full dimensionality. It states attention is applied in three ways: encoder-decoder attention (queries from the previous decoder layer, keys/values from encoder output, so every decoder position attends over all input positions), encoder self-attention (keys, values, and queries all come from the previous encoder layer, with each position attending to all positions of that layer), and decoder self-attention (excerpt truncated at "allow each position in the de…"). However, the evidence does not include the actual attention computation itself (no scaled dot-product/softmax formulation is present), nor any statement of why the Transformer replaces recurrence and convolution — no motivation about sequential computation, parallelization, or path length appears in the excerpts. The BERT excerpt ([1810.04805]) and the attention-patching excerpt ([2503.21676]) address unrelated mechanisms and do not answer either part of the question. Therefore the evidence only partially answers "how" and is insufficient to answer "why it replaces recurrence and convolution."
+
+**Sources used:** [1706.03762] excerpt (multi-head attention §3.2.2 and §3.2.3 "Applications of Attention in our Model") — the only chunk that speaks to the question. [1810.04805] and [2503.21676] excerpts were reviewed but not used, as they are off-topic.
+```
+
+### vector
+
+- 延迟 13.8s · 检索文档 6 篇 · tokens out 2544
+- 评分: **3** (partial) — The answer correctly describes query/key/value dot-product attention with a weighted value sum and mentions multi-headed replacement of recurrent layers, but omits the scaling factor, the parallelism/global-dependency rationale for dropping recurrence, and any replacement of convolution, so it covers only about half the gold points.
+
+```
+Drawing only on the supplied evidence: **[2110.07844]** describes how attention is computed — the cross-attention head transforms the j-th decoder state and i-th encoder state into query, key, and value vectors, computes attention weights as a normalized dot product between the query and key vectors, and produces an output that is a weighted sum of the value vectors. **[1706.03762]** states only that the Transformer was "the first sequence transduction model based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention" — it states the replacement, not the rationale, and the evidence contains no explanation of why recurrence (or convolution) was replaced. **[1810.04805]** mentions the number of self-attention heads and **[2510.13343]** credits attention with focusing on relevant input parts, but neither adds computation details or replacement rationale; **[2503.21676]** and **[1906.10015]** address unrelated analyses.
+
+**Sources used:** [2110.07844] (attention computation), [1706.03762] (replacement of recurrence; no rationale given).
+
+**Verdict:** The "how" is partially answerable from [2110.07844]; the "why it replaces recurrence and convolution" is **not answered by the evidence** — that part is insufficient.
+```
+
+### rrf
+
+- 延迟 9.6s · 检索文档 10 篇 · tokens out 1565
+- 评分: **3** (partial) — The answer correctly and substantively covers multi-head attention but omits scaled dot-product attention and explicitly declines the recurrence/convolution replacement half, so it earns partial credit (roughly 1 of 4 gold points fully, plus honest evidence-bound abstention) rather than wrong or complete.
+
+```
+The evidence shows the Transformer computes attention through multi-head attention: it uses h = 8 parallel attention layers (heads) with d_k = d_v = d_model/h = 64, and because each head has reduced dimension, the total computational cost is similar to single-head attention at full dimensionality. Multi-head attention is applied in three ways: encoder–decoder attention, where queries come from the previous decoder layer while keys and values come from the encoder output, letting every decoder position attend over all input positions; encoder self-attention, where keys, values, and queries all come from the same source (the previous encoder layer's output), so each position can attend to all positions in that layer; and decoder self-attention, described analogously (the cited text is truncated mid-sentence). The other chunks ([1810.04805], [2503.21676]) concern BERT's span-prediction scoring and attention patching with a twin architecture, not the Transformer's core attention computation.
+
+**Insufficient evidence on the second half:** none of the supplied chunks states *why* the Transformer replaces recurrence and convolution (no discussion of path length, parallelism, or long-range dependencies appears in the evidence), so that part of the question cannot be answered from these excerpts. I therefore decline to answer it from prior knowledge, per the contract.
+
+Sources used: [1706.03762] (§3.2.2, §3.2.3 excerpts); [1810.04805] and [2503.21676] (checked, not relevant to the answer).
+```
+
+### rerank
+
+- 延迟 18.8s · 检索文档 6 篇 · tokens out 1201
+- 评分: **3** (partial) — The answer captures the attention computation (query/key dot product with a weighted sum of values) and mentions multi-headed self-attention and the replacement of recurrent layers, but it omits the scaled dot-product naming, the parallelization/global-dependency rationale, and any mention of replacing convolution, covering only part of the gold points.
+
+```
+**Answer (from evidence only):**
+
+The evidence explains the *mechanics* of attention but not the *rationale* for replacing recurrence and convolution. [2110.07844] describes the computation: query, key, and value vectors are produced from the decoder and encoder states, attention weights are computed as a normalized dot product between the query and key vectors, and the head output is a weighted sum of the value vectors. [1706.03762] states the Transformer is "the first sequence transduction model based entirely on attention," replacing the recurrent layers most commonly used in encoder–decoder architectures with multi-headed self-attention. [2510.13343] adds only that the attention mechanism "learns to focus on relevant parts of the input data." No retrieved chunk states *why* recurrence (and convolution) were replaced — [1706.03762] is truncated mid-sentence, and the remaining chunks ([1810.04805], [2503.21676], [1906.10015]) do not address the rationale. That part of the question is therefore insufficiently supported by this evidence.
+
+**Sources used:**
+- [1706.03762] — Conclusion (truncated)
+- [2110.07844] — attention computation (query/key/value, normalized dot product, weighted sum)
+- [2510.13343] — attention focuses on relevant input parts
+
+**Sources retrieved but not answering the question:** [1810.04805], [2503.21676], [1906.10015]
+```
+
+## Q QK02 · [single] Which three independent ontologies subdivide the Gene Ontology?
+
+- gold_docs: ['1602.01876'] · stratum: single
+
+### mode_A
+
+- 延迟 36.0s · 检索文档 16 篇 · tokens out 978
+- 评分: **0** (refusal) — The answer declines to answer and names none of the three gold sub-ontologies (Molecular Function, Biological Process, Cellular Component), so it is a refusal on an answerable question.
+
+```
+The evidence is insufficient to answer this question. Neither retrieved chunk mentions the Gene Ontology or any ontologies that subdivide it: the first is an abstract for the GlobalQA benchmark on "global RAG," and the second is a paper on automated index-structure generation (the GENE framework). No statement in the provided evidence identifies the three ontologies requested. Per the experiment contract, I will not answer from prior knowledge.
+
+Sources reviewed:
+- `e2e-demo-0923-022632/global-rag-benchmark.md` (vec=0.3979)
+- `计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md` (vec=0.4606)
+```
+
+### mode_B
+
+- 延迟 9.4s · 检索文档 0 篇 · tokens out 605
+- 评分: **0** (refusal) — The answer declines to name the three Gene Ontology sub-ontologies despite the question being answerable, supplying none of the gold points (Molecular Function, Biological Process, Cellular Component).
+
+```
+The evidence is insufficient: no evidence was retrieved for this question (the evidence block is empty), so I cannot answer which three independent ontologies subdivide the Gene Ontology. Per the output contract, I am stopping here rather than drawing on prior knowledge. No sources were used.
+```
+
+### mode_C
+
+- 延迟 47.7s · 检索文档 12 篇 · tokens out 1495
+- 评分: **0** (refusal) — The answer declined to name the three Gene Ontology subdivisions, so although it is an answerable question, no gold point (Molecular Function, Biological Process, Cellular Component) was provided.
+
+```
+**The evidence is insufficient to answer this question.**
+
+The only relevant retrieved chunk, `genomics__1602.01876__primer-on-the-gene-ontology.md.md` (part 1/2), is truncated mid-abstract — it states that GO "is the largest resource for cataloguing gene function" (Gaudet et al., January 2016) but never names the three independent ontologies or any subdivision of the Gene Ontology. The other chunks in the evidence (`soul-template` memory conventions and SOUL persona definitions) contain no Gene Ontology content at all. Per the grounding rules, I will not supply the answer from prior knowledge, so I report no answer rather than an ungrounded one.
+
+Sources consulted:
+- `genomics__1602.01876__primer-on-the-gene-ontology.md.md` (part 1/2) — relevant but truncated before the answer
+- `soul-template` memory/`SOUL` persona chunks — irrelevant
+```
+
+### bm25
+
+- 延迟 6.3s · 检索文档 10 篇 · tokens out 547
+- 评分: **0** (refusal) — The answer explicitly declines to name the three GO sub-ontologies, so it contains none of the gold points (Molecular Function, Biological Process, Cellular Component) — a refusal on an answerable question.
+
+```
+The evidence is insufficient to answer this question. The excerpt from [1602.01876] describes the Gene Ontology project as consisting of "the Gene Ontology itself, which models biological aspects in a structured way, and annotations," but it is truncated before any subdivision of GO into separate ontologies is named. The other two excerpts ([2301.08436] and [2401.06823]) concern spatial transcriptomics gene panels and interpretable deep learning for single-cell omics, respectively, and do not discuss the Gene Ontology's structure at all. No source in the provided evidence states which three independent ontologies subdivide GO.
+
+Sources used: [1602.01876], [2301.08436], [2401.06823] (all consulted; none contain the answer).
+```
+
+### vector
+
+- 延迟 6.0s · 检索文档 3 篇 · tokens out 424
+- 评分: **5** (correct) — The answer names all three gold points — Molecular Function, Biological Process, and Cellular Component — and correctly identifies them as the three GO sub-ontologies.
+
+```
+The Gene Ontology subdivides its terms into three distinct ontologies representing different biological aspects: **Molecular Function (MF), Biological Process (BP), and Cellular Component (CC)**.
+
+Source used: [1602.01876], section "2. What is the Gene Ontology?"
+```
+
+### rrf
+
+- 延迟 7.3s · 检索文档 10 篇 · tokens out 858
+- 评分: **0** (refusal) — The question is answerable (gold: Molecular Function, Biological Process, Cellular Component), but the answer declined on grounds of insufficient evidence.
+
+```
+The evidence is insufficient to answer this question.
+
+- **[1602.01876]** — the Gene Ontology primer excerpt mentions that GO is "a controlled vocabulary of terms to represent biology in a structured way" and that the project combines the ontology with annotations, but the passage truncates mid-sentence ("The term…") before naming any subdivision of GO into separate ontologies.
+- **[2508.18304]** — monocyte subcluster / scRNA-seq analysis; contains no information about GO's structure.
+- **[2110.07787]** — cell-type identification methods review (SingleR, Cell-ID); contains no information about GO's structure.
+
+None of the retrieved sources states which three independent ontologies subdivide the Gene Ontology, so I cannot answer from the provided evidence.
+```
+
+### rerank
+
+- 延迟 8.4s · 检索文档 3 篇 · tokens out 243
+- 评分: **5** (correct) — The answer names all three Gene Ontology sub-ontologies — Molecular Function, Biological Process, and Cellular Component — matching the gold points exactly and completely.
+
+```
+The evidence states that the Gene Ontology's terms are subdivided into three distinct ontologies representing different biological aspects: **Molecular Function (MF)**, **Biological Process (BP)**, and **Cellular Component (CC)**.
+
+Source used: [1602.01876] (section "2. What is the Gene Ontology?"). The other retrieved chunks ([2110.07787], [2508.18304]) were not relevant to this question.
+```
+
+## Q QK03 · [single] What physical mechanism does the dynamic electrical model use to explain the hysteretic J-V characteristics of perovskite solar cells?
+
+- gold_docs: ['1606.00335'] · stratum: single
+
+### mode_A
+
+- 延迟 30.3s · 检索文档 14 篇 · tokens out 976
+- 评分: **0** (refusal) — The answer declined to respond, reporting insufficient evidence, and thus contains none of the gold-point content (polarization effect explaining J-V hysteresis) required for this answerable question.
+
+```
+The evidence provided does not contain the answer. Both retrieved passages are about economics/finance: one covers multi-agent reinforcement learning for stock market microstructure inference (`finance__1909.07748`, part 2 of 4), and the other covers the European Central Bank's conventional and unconventional policies under uncertainty (`economics__2011.14424`, part 1 of 5). Neither mentions perovskite solar cells, J-V characteristics, hysteresis, or any dynamic electrical model, so no physical mechanism can be extracted from this evidence.
+
+Sources examined (not used for an answer, as they proved irrelevant):
+- 经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 2 of 4).md
+- 经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md
+
+Per the task contract, I am reporting the evidence as insufficient rather than answering from prior knowledge.
+```
+
+### mode_B
+
+- 延迟 7.6s · 检索文档 0 篇 · tokens out 436
+- 评分: **0** (refusal) — The answer refused due to missing evidence and never mentions polarization or its slow relaxation as the mechanism, so it scores zero against the gold points on an answerable question.
+
+```
+The evidence provided contains no retrieved documents, so there is insufficient evidence to answer the question about the physical mechanism used by the dynamic electrical model to explain hysteretic J-V characteristics in perovskite solar cells.
+
+Sources used: none (no evidence was retrieved).
+```
+
+### mode_C
+
+- 延迟 58.8s · 检索文档 12 篇 · tokens out 918
+- 评分: **5** (correct) — The answer explicitly identifies polarization (relaxation) as the mechanism, stating hysteresis arises from time-dependent polarization/slow relaxation reproduced across scan rates, fully matching both gold points and the required keyword.
+
+```
+**Answer:** The dynamic electrical model explains hysteretic J–V characteristics through a simple ansatz for **polarization relaxation**. Working from that ansatz, the model reproduces both qualitatively and quantitatively the detailed features of measured J–V curves, including pre-poling effects (differences between initially over- and under-polarized samples) and the current overshoot seen in reverse characteristics. Hysteresis behavior is analyzed with respect to bias scan rate, yielding hysteresis amplitude that is maximum at intermediate scan rates and negligible at very slow or very fast rates, plus effects from different relaxation time scales.
+
+**Caveats:** The evidence does not specify the microscopic origin of the polarization relaxation itself; it only lists competing literature attributions for the anomalous hysteresis (giant photoinduced dielectric response, ferroelectric effects, ion migration with charge trapping/detrapping, unbalanced electron/hole distributions). Any statement about the model's internal equations beyond the polarization-relaxation ansatz is not supported by this evidence.
+
+**Source used:** `materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs` (part 1/2) — Abstract and Section 1 (Introduction) of Nemnes et al., "Dynamic electrical behavior of halide perovskite based solar cells."
+```
+
+### bm25
+
+- 延迟 9.4s · 检索文档 10 篇 · tokens out 1334
+- 评分: **5** (correct) — The answer explicitly attributes the hysteretic J-V behavior to polarization effects via time-dependent polarization relaxation across different relaxation time scales, matching both gold points (polarization mechanism + time-varying/slow relaxation origin).
+
+```
+**Answer:** The dynamic electrical model explains hysteretic J-V behavior through time-dependent polarization relaxation. In the equivalent circuit of [1606.00335], the static elements (photocurrent source I_ph, diode with ideality factor n, shunt resistance R_sh, series resistance R_s) are supplemented by a parallel capacitance C, and the analysis focuses on the variation of the polarization in time under an assumed relaxation time scale; the influence of different relaxation time scales on the hysteretic effects (which also depend on cell preconditioning and bias scan rate) is then investigated. This is the only mechanism described in the evidence — the relevant passage is truncated ("which is gen…"), so the full physical meaning of the capacitance is not spelled out. The other two chunks do not address the hysteresis mechanism: [1712.01369] reports J-V parameters for a perovskite/GeSe bilayer cell, and [2607.03098] concerns energy-storage-system dynamics.
+
+**Sources used:** chunk [1606.00335] (sole source for the mechanism); [1712.01369] and [2607.03098] checked but not relevant.
+```
+
+### vector
+
+- 延迟 8.3s · 检索文档 2 篇 · tokens out 648
+- 评分: **5** (correct) — The answer correctly identifies polarization (relaxation) as the mechanism the dynamic electrical model uses to explain hysteretic J-V characteristics, matching both gold points and the required keyword.
+
+```
+**Answer:** The dynamic electrical model attributes the hysteretic J-V behavior to **polarization relaxation**. By making a simple ansatz for the polarization relaxation, the model is able to reproduce qualitatively and quantitatively detailed features of measured J-V characteristics, including pre-poling effects (differences between initially over- and under-polarized samples) and the current overshoot. The retrieved evidence also notes the model's ability to capture these measured features, though the abstract excerpt is truncated mid-sentence ("the presence of the current overshoot obse…"), so no further mechanistic detail (e.g., the specific relaxation functional form) is available in the evidence. The second evidence item ([1712.01369]) concerns a bilayer solar cell J-V simulation and does not describe the hysteresis mechanism, so it was not used.
+
+**Sources used:**
+- [1606.00335] — Abstract (dynamic electrical model; polarization relaxation ansatz)
+- [1712.01369] — retrieved but not used (no mechanism information)
+```
+
+### rrf
+
+- 延迟 7.6s · 检索文档 10 篇 · tokens out 762
+- 评分: **5** (correct) — The answer explicitly states that hysteretic J-V behavior is explained by the variation of polarization in time governed by a characteristic relaxation time scale, matching both gold points and the gold keyword 'polarization'.
+
+```
+The dynamic electrical model in the evidence describes the solar cell with an equivalent circuit — photocurrent source, diode (ideality factor n), shunt resistance R_sh, series resistance R_s — plus an added parallel capacitance C that distinguishes it from the static model [1606.00335]. Hysteretic J-V behavior is explained through the variation of the polarization in time, governed by a characteristic relaxation time scale; the influence of different relaxation time scales is explicitly investigated [1606.00335]. Hysteresis in the simulated J-V curves is also linked to solar cell preconditioning and the bias scan rate [1606.00335]. The evidence does not name a more specific microscopic physical mechanism (e.g., ion migration) beyond this time-dependent polarization/relaxation picture. The other retrieved items are not on point: [1712.01369] discusses perovskite/GeSe bilayer efficiency, and [2607.03098] concerns energy storage models, neither addressing the hysteresis mechanism.
+
+Sources used: [1606.00335] (mechanism and hysteresis discussion); [1712.01369] and [2607.03098] (reviewed, not used as answers).
+```
+
+### rerank
+
+- 延迟 13.7s · 检索文档 2 篇 · tokens out 924
+- 评分: **5** (correct) — The answer correctly identifies polarization relaxation as the mechanism by which the dynamic electrical model explains hysteretic J–V characteristics, matching both gold points (polarization effect and slow/time-dependent polarization relaxation).
+
+```
+The evidence attributes the hysteresis to **polarization relaxation**: paper [1606.00335] introduces a dynamic electrical model whose key ingredient is "a simple ansatz for the polarization relaxation," which allows it to reproduce measured J–V characteristics of perovskite solar cells both qualitatively and quantitatively. The same source links this to pre-poling effects, distinguishing initially over-polarized from under-polarized samples, and notes the presence of a current overshoot in the J–V response. The second source [1712.01369] only reports simulated J–V curves and extracted parameters (J_sc, V_oc, FF) for a bilayer cell versus a typical perovskite cell, and does not describe any hysteresis mechanism. Beyond naming "polarization relaxation," the evidence does not give the full physical or mathematical form of that mechanism, since the abstract of [1606.00335] is truncated.
+
+Sources used:
+- [1606.00335] — Abstract (dynamic electrical model; polarization relaxation ansatz; pre-poling effects).
+- [1712.01369] — Excerpt (J–V simulation and parameters; no hysteresis mechanism).
+```
+
+## Q QK04 · [single] Using only what kind of information, and reaching what accuracy, does the wav2vec 2.0 approach detect within-sentence prosodic boundaries on Czech broadcast news?
+
+- gold_docs: ['2209.15032'] · stratum: single
+
+### mode_A
+
+- 延迟 27.8s · 检索文档 16 篇 · tokens out 435
+- 评分: **0** (refusal) — The answer is a refusal stating the evidence is insufficient, while the question is answerable with gold facts (acoustic-only input, ~94% accuracy) that the response never provides.
+
+```
+The evidence is insufficient to answer this question.
+
+Neither retrieved chunk discusses wav2vec 2.0, prosodic boundary detection, or Czech broadcast news. The two sources provided are:
+
+- `e2e-demo-0923-022632/global-rag-benchmark.md` — a benchmark paper on global RAG (GlobalQA / Global-RAG), covering corpus-level reasoning tasks such as counting, extremum, sorting, and top-k extraction.
+- `经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md` — an econometrics paper on Bayesian state-space modeling of heterogeneous network effects of US monetary policy.
+
+Neither contains any information about what input signal the wav2vec 2.0 approach uses or what accuracy it achieves for within-sentence prosodic boundary detection on Czech broadcast news. Per the output contract, I am stopping here rather than answering from prior knowledge.
+```
+
+### mode_B
+
+- 延迟 12.4s · 检索文档 0 篇 · tokens out 1214
+- 评分: **0** (refusal) — The answer explicitly declines to answer and supplies neither gold fact (acoustic-only information, ~94% accuracy), so it scores 0 as a refusal on an answerable question.
+
+```
+The evidence retrieved for this question is empty — no document passages, paths, or chunk IDs were provided. Because the question asks specifically about wav2vec 2.0's input information type and boundary-detection accuracy on Czech broadcast news, and I am required to answer only from the supplied evidence, I cannot answer it.
+
+Sources used: none (no evidence retrieved). The evidence is insufficient to answer the question, so I am stopping here rather than drawing on prior knowledge.
+```
+
+### mode_C
+
+- 延迟 58.4s · 检索文档 12 篇 · tokens out 753
+- 评分: **5** (correct) — The answer states both gold points exactly: detection using only acoustic information (no transcripts/text) with 94% accuracy on Czech broadcast news.
+
+```
+**Answer:** The wav2vec 2.0 approach detects within-sentence prosodic boundaries using **only acoustic information** (no transcripts/text), achieving **94% accuracy and 83% F1** on Czech broadcast news recordings labeled by phonetic experts. For comparison, across all prosodic boundaries it reaches 95% accuracy and 89% F1, and it outperforms the text-based predictor despite being trained on a relatively small amount of labeled data.
+
+**Source used:**
+- `speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u` (part 1/2), section "Detection of Prosodic Boundaries in Speech Using Wav2Vec 2.0" — abstract.
+
+(The duplicated `soul-template` persona chunks in the evidence are unrelated to this question and were not used.)
+```
+
+### bm25
+
+- 延迟 5.8s · 检索文档 10 篇 · tokens out 733
+- 评分: **5** (correct) — The answer states detection uses only acoustic information (no text/transcripts) and reports 94% accuracy on within-sentence prosodic boundaries in Czech broadcast news, matching both gold points.
+
+```
+Using only acoustic information (no text or transcripts), the wav2vec 2.0 framework was applied to detect prosodic boundaries in speech. Tested on recordings of Czech broadcast news labeled by phonetic experts, the model reached 94% accuracy and an F1 of 83% on within-sentence prosodic boundaries (or 95% accuracy / 89% F1 across all prosodic boundaries). This was achieved despite a relatively small amount of labeled data, and it outperformed the existing text-based predictor that used transcripts of the same data.
+
+Source: [2209.15032] "Detection of Prosodic Boundaries in Speech Using Wav2Vec 2.0" — chunk `speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u` (part 1/2).
+```
+
+### vector
+
+- 延迟 6.6s · 检索文档 1 篇 · tokens out 412
+- 评分: **5** (correct) — The answer matches both gold points — it explicitly states detection uses only acoustic information (no text) and reports ~94% accuracy on Czech broadcast news.
+
+```
+Using only acoustic information, the wav2vec 2.0 model detects within-sentence prosodic boundaries in Czech broadcast news with 94% accuracy (and an F1 measure of 83%) on expert-labeled recordings.
+
+Source used: chunk [2209.15032].
+```
+
+### rrf
+
+- 延迟 7.3s · 检索文档 10 篇 · tokens out 922
+- 评分: **5** (correct) — The answer explicitly states the approach uses only acoustic information (no text/transcripts) and achieves 94% accuracy on within-sentence prosodic boundaries in Czech broadcast news, matching both gold points.
+
+```
+The wav2vec 2.0 approach detects prosodic boundaries in speech using **only acoustic information** (no text/transcripts), and on recordings of Czech broadcast news labeled by phonetic experts it achieves **94% accuracy and an F1 measure of 83% on within-sentence prosodic boundaries** — or 95% accuracy / 89% F1 on all prosodic boundaries — despite using a relatively small amount of labeled data, outperforming the text-based predictor.
+
+Source used: `[2209.15032] Detection of Prosodic Boundaries in Speech Using Wav2Vec 2.0` (chunk id `speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u`, part 1/2).
+```
+
+### rerank
+
+- 延迟 10.0s · 检索文档 1 篇 · tokens out 613
+- 评分: **5** (correct) — The answer states the wav2vec 2.0 model uses only acoustic information without transcripts and reaches 94% accuracy, matching both gold points exactly.
+
+```
+Using only acoustic information, the wav2vec 2.0 model detects within-sentence prosodic boundaries in Czech broadcast news with 94% accuracy and an F1 measure of 83% (trained on a relatively small amount of expert-labeled data, without using transcripts).
+
+Source: [2209.15032] (evidence chunk from the arXiv paper on wav2vec 2.0 prosodic boundary detection in Czech broadcast news).
+```
+
+## Q QK05 · [single] In the trap-cropping optimization framework, roughly what share of the field should be allocated to trap plants when they are 5 to 25 times more attractive than the cash plant?
+
+- gold_docs: ['2508.05896'] · stratum: single
+
+### mode_A
+
+- 延迟 26.8s · 检索文档 15 篇 · tokens out 515
+- 评分: **0** (refusal) — The question has a gold answer (trap plants ~7%–10% of the field), but the response only declares the evidence insufficient and provides no allocation figure, so it is a refusal on an answerable question.
+
+```
+The provided evidence does not contain the answer. Neither retrieved chunk relates to trap-cropping or agricultural pest management: one is the GlobalQA benchmark paper on corpus-level RAG ("e2e-demo-0923-022632/global-rag-benchmark.md"), and the other is "mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md," which concerns presolve techniques for mixed-integer optimal control. No chunk states any proportional field allocation for trap plants, nor mentions the 5–25× attractiveness ratio. The evidence is therefore insufficient to answer this question, and I am reporting that rather than drawing on prior knowledge.
+
+Sources used: e2e-demo-0923-022632/global-rag-benchmark.md; 工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md.
+```
+
+### mode_B
+
+- 延迟 9.6s · 检索文档 0 篇 · tokens out 337
+- 评分: **0** (refusal) — The answer is a refusal on an answerable question, providing no share figure (gold: ~7%–10%) and citing no sources.
+
+```
+The evidence provided is empty — no documents, chunks, or sources were retrieved for this question.
+
+Because I am required to answer using only the retrieved evidence and must not fall back on prior knowledge, I cannot answer what share of the field should be allocated to trap plants under the 5–25× attractiveness scenario.
+
+The evidence is insufficient. No sources were available to cite.
+
+Please re-run retrieval against the relevant knowledge base (or provide the source document) so the question can be answered from grounded evidence.
+```
+
+### mode_C
+
+- 延迟 57.2s · 检索文档 12 篇 · tokens out 376
+- 评分: **0** (refusal) — The answer explicitly declares the evidence insufficient and gives no field-share figure, refusing a question that is answerable with the gold value of roughly 7%–10%.
+
+```
+The evidence is insufficient to answer this question. The retrieved passage is from *Pride and Prejudice* (part 11/26) and concerns Jane Bennet's disappointment over Miss Bingley's changed behavior and her letter to Elizabeth — it contains nothing about trap-cropping, trap plants, field allocation, or attractiveness ratios. No source in the provided evidence addresses the trap-cropping optimization framework, so I cannot state what share of the field should be allocated to trap plants at 5–25× attractiveness.
+
+Source used: pride_and_prejudice (part 11/26) — consulted, irrelevant to the question.
+```
+
+### bm25
+
+- 延迟 5.9s · 检索文档 10 篇 · tokens out 395
+- 评分: **5** (correct) — The answer states that roughly 7–10% of the field should be allocated to trap plants when they are 5–25 times more attractive, exactly matching the gold points.
+
+```
+When trap plants are 5 to 25 times more attractive than the cash plant, roughly **7–10% of the field** should be allocated to trap plants. The evidence states that for trap plants "5 and 25 times more attractive, approximately 7–10% of the field should be allocated to trap plants," and that at five times attractiveness it is "optimal to devote roughly ten percent of the land to the trap crop (Figure 3b)." By contrast, when trap plants are only twice as attractive, trap cropping is ineffective and the grower should plant only cash plants.
+
+Source: [2508.05896] — text accompanying Figure 3 (panels b and c) on grower yield versus proportion of cash plants in trap-cropping systems.
+```
+
+### vector
+
+- 延迟 7.1s · 检索文档 1 篇 · tokens out 982
+- 评分: **5** (correct) — The answer states trap plants should occupy roughly 7–10% of the field, exactly matching the gold point and both gold keywords (7, 10).
+
+```
+**Answer:** Roughly 7–10% of the field — about a tenth of the land — should be allocated to trap plants in that range. The evidence states that at an attractiveness of five (five times more likely to settle than on a cash plant), it is optimal to devote roughly ten percent of the land to the trap crop (Figure 3b), and for the higher attractiveness level the fragment "approximately 7–10% of the field should be allocated to trap plants" appears, with prevented yield loss being less sensitive to trap-plant number at higher attractiveness.
+
+**Source used:** [2508.05896] (the provided evidence excerpt; the text is truncated mid-sentence at "Interestingly, from figur", so the full 25× figure is inferred from the partial line beginning "ctive, approximately 7–10%…").
+```
+
+### rrf
+
+- 延迟 6.8s · 检索文档 10 篇 · tokens out 694
+- 评分: **5** (correct) — The answer states that roughly 7–10% of the field should be allocated to trap plants at 5–25× attractiveness, exactly matching the gold point (诱虫植物占田块约 7%–10%).
+
+```
+Roughly 7–10% of the field should be allocated to trap plants when they are 5 to 25 times more attractive than the cash plant. The evidence states that for trap plants "5 and 25 times more attractive, approximately 7–10% of the field should be allocated to trap plants." It further specifies that at five times attractiveness, "it is optimal to devote roughly ten percent of the land to the trap crop (Figure 3b)." By contrast, at only twice the attractiveness, trap cropping is ineffective and the grower should plant only cash plants.
+
+Sources used:
+- Chunk from [2508.05896] — Figure 3 caption and surrounding body text (trap-cropping optimization, paragraphs preceding Figure 3b).
+```
+
+### rerank
+
+- 延迟 16.1s · 检索文档 1 篇 · tokens out 1365
+- 评分: **5** (correct) — The answer explicitly states the trap plants should occupy roughly 7–10% of the field, matching the gold point (and its '7'/'10' keywords), with only an added caveat about the 25x end that does not contradict the required figure.
+
+```
+The evidence states that roughly 7–10% of the field should be allocated to trap plants, and that when trap plants are five times more attractive than the cash plant, the optimum is "roughly ten percent of the land" (Figure 3b). It also notes that for more attractive trap plants, prevented yield loss is less sensitive to the number of trap plants (comparing Figure 3b to Figure 2 and Figure 3c). However, the passage does not give an explicit allocation figure for attractiveness of 25, so for that specific end of the range the evidence is insufficient.
+
+Source used: [2508.05896], the provided excerpt on trap-cropping optimization.
+```
+
+## Q QK06 · [single] Which physical factor primarily controls the response of precipitation extremes to climate change?
+
+- gold_docs: ['1503.07557'] · stratum: single
+
+### mode_A
+
+- 延迟 27.1s · 检索文档 17 篇 · tokens out 624
+- 评分: **0** (refusal) — The question is answerable per the gold points (precipitation efficiency plus thermodynamic moisture increase), but the answer declined to answer and provided no content.
+
+```
+**The evidence is insufficient to answer this question.**
+
+The retrieved chunks are: (1) `e2e-demo-0923-022632/global-rag-benchmark.md` — a RAG evaluation benchmark paper (GlobalQA, Global-RAG); (2) `soul-cs-library/memory-conventions.md`; (3) `soul-e2e-tester-024115/memory-conventions.md`; (4) `soul-demo-qa/memory-conventions.md` — SOUL persona memory conventions.
+
+None of these documents mention precipitation extremes, climate change, or any physical controlling factor. No chunk in the evidence addresses the topic, so I cannot answer without falling back on prior knowledge, which the task forbids.
+```
+
+### mode_B
+
+- 延迟 8.4s · 检索文档 0 篇 · tokens out 300
+- 评分: **0** (refusal) — The answer declined to answer an answerable question, omitting the gold-controlling factor precipitation efficiency (and the accompanying thermodynamic moisture increase) entirely.
+
+```
+The evidence is insufficient: no evidence was retrieved (the evidence block is empty), so I cannot answer which physical factor controls the response of precipitation extremes to climate change.
+
+Sources used: none — no documents or chunks were provided or retrieved. I am stopping here rather than answering from prior knowledge.
+```
+
+### mode_C
+
+- 延迟 58.9s · 检索文档 12 篇 · tokens out 628
+- 评分: **0** (refusal) — The response declines to answer an answerable question and contains none of the gold content, so per the rubric (0 = refusal on answerable) it scores zero.
+
+```
+The evidence is insufficient to answer this question.
+
+The only retrieved source is "Towards Global Retrieval Augmented Generation: A Benchmark for Corpus-Level Reasoning" (GlobalQA / Global-RAG paper by Luo et al., Fudan University). That document covers retrieval-augmented generation benchmarks, corpus-level task types (counting, extremum, sorting, top-k), and RAG baselines — it contains no content about precipitation extremes, climate change, or any physical controlling factor.
+
+Source used: GlobalQA benchmark paper excerpt (chunk shown in EVIDENCE, image reference `images/838ff38197a58dd916888ef6cc7803a82e53db9b32898de2754d99b5b76b9a6c.jpg`).
+
+Since no evidence addresses the physical factor controlling precipitation-extreme responses to climate change, I cannot answer without falling back on prior knowledge, which the task prohibits. No answer is given.
+```
+
+### bm25
+
+- 延迟 8.1s · 检索文档 10 篇 · tokens out 1192
+- 评分: **3** (partial) — The answer matches the thermodynamic-contribution half of the gold points but never names precipitation efficiency as the primary controlling factor (indeed it denies a single primary factor), so it captures only one of the two required elements.
+
+```
+**Answer:** The evidence does not identify a single factor as "primarily" controlling the response — it states that "several physical contributions govern the response of precipitation extremes" to climate change. Among these, the **thermodynamic contribution** is described as robust and well understood, while theoretical understanding of the **microphysical** and **dynamical** contributions is still being developed. The same source adds that the sensitivity of precipitation extremes to warming remains uncertain when convection is important, and may be higher in the tropics than in the extratropics. So the strongest evidence-supported statement is that the thermodynamic contribution is the well-understood one, but the response is governed by multiple physical contributions rather than one primary factor. The other two retrieved chunks (on an emulator's climate-change signal and on a GPC/m precipitation dataset) do not address this question.
+
+**Source used:**
+- `[1503.07557] climate-science__1503.07557__precipitation-extremes-under-climate-change.md` (Part 1/3 — abstract)
+```
+
+### vector
+
+- 延迟 9.2s · 检索文档 3 篇 · tokens out 1258
+- 评分: **0** (refusal) — The question is answerable (gold: precipitation efficiency plus thermodynamic moisture increase), but the answer explicitly declines to identify the controlling factor, naming neither 'precipitation efficiency' nor any gold point as the answer, so it is a refusal on an answerable question.
+
+```
+The evidence does not explicitly identify which physical factor primarily controls the response of precipitation extremes to climate change. The most on-topic source, O'Gorman [1503.07557], states only that the analysis focuses "on the physical factors that control the response" and then truncates before naming them. The remaining chunks give only indirect hints: [2409.13934] references a warming-driven Clausius-Clapeyron signal (~7%/°C) for extreme precipitation, which points toward atmospheric moisture, and [2007.10574] examines vertical moisture flux convergence and vertical moisture advection — but in the specific context of MJO-induced events, not the general climate-change response. On this evidence, I cannot state which factor primarily controls the response; that specific claim is insufficiently supported.
+
+Sources used: [1503.07557] O'Gorman, "Precipitation extremes under climate change"; [2409.13934]; [2007.10574] Section 3.2.
+```
+
+### rrf
+
+- 延迟 49.2s · 检索文档 10 篇 · tokens out 10278
+- 评分: **3** (partial) — The answer correctly identifies the thermodynamic contribution (matching one gold point) but never names precipitation efficiency, the key primary controlling factor, and declares the evidence insufficient on the primary-control question, so it is only partially correct.
+
+```
+The evidence points to the **thermodynamic contribution**: the abstract of O'Gorman's review states that "several physical contributions govern the response of precipitation extremes" and singles out "the thermodynamic contribution" as the one that is "robust and well understood," while theoretical understanding of the microphysical and dynamical contributions is still being developed. However, the evidence does not literally state that any single factor "primarily" controls the response, and only Part 1/3 of that document (the abstract) is provided — so if the question demands one explicit primary factor, the provided evidence is insufficient beyond identifying the thermodynamic contribution as the robust, well-understood one. The other two evidence chunks ([2409.13934] on an emulator's climate-change signal; [2007.10574] on MJO modulation of extremes in Indonesia) do not address the question.
+
+Sources used: `[1503.07557] climate-science__1503.07557__precipitation-extremes-under-climate-change.md.md` (Part 1/3, abstract).
+```
+
+### rerank
+
+- 延迟 21.2s · 检索文档 3 篇 · tokens out 2370
+- 评分: **0** (refusal) — The answer explicitly declines to identify any controlling factor and never mentions precipitation efficiency (the required gold keyword), so it is a refusal on an answerable question, with at most a vague nod to thermodynamic moisture.
+
+```
+**Answer:** The retrieved evidence does not explicitly name the physical factor that primarily controls the response of precipitation extremes to climate change, so the question cannot be answered definitively from these chunks. The most directly relevant source, [1503.07557] (O'Gorman, "Precipitation extremes under climate change"), states the topic is examined "with a focus on the physical factors that control the response," but the excerpt is truncated before any factor is identified. [2409.13934] reports a strong warming-driven signal for extreme precipitation consistent with Clausius-Clapeyron scaling (~7%/°C), which hints at thermodynamic moisture control, but it does not frame that as the primary controlling factor. [2007.10574] mentions vertical moisture flux convergence and vertical moisture advection only in the context of MJO-induced precipitation anomalies, not the climate-change response of extremes. On this evidence, the requested "primary physical factor" is not stated.
+
+**Sources used:**
+- [1503.07557] "Precipitation extremes under climate change" (Abstract)
+- [2409.13934] (extreme-precipitation / Clausius-Clapeyron excerpt)
+- [2007.10574] §3.2 "Dynamical Links between Precipitation Extremes and MJO"
+```
+
+## Q QK07 · [distractor] What is MameLoshnLM and what parameter scale does it have?
+
+- gold_docs: ['2608.05850'] · stratum: distractor
+
+### mode_A
+
+- 延迟 28.1s · 检索文档 12 篇 · tokens out 594
+- 评分: **5** (correct) — The answer states MameLoshnLM is the first open-source Yiddish language model at 8B parameters and notes the accompanying Kashes multi-task benchmark, matching all three gold points and both gold keywords.
+
+```
+MAMELOSHNLM is the first open-source 8B-parameter language model built specifically for Yiddish, described as being obtained by continuing pretraining of Llama 3.1 8B. It was developed using two introduced resources: **Oytser**, a high-quality Yiddish pretraining corpus combining contemporary web-native sources with literary materials, and **Kashes**, a multi-task benchmark covering translation, linguistic analysis, information extraction, and language understanding. Its parameter scale is therefore **8 billion (8B) parameters**.
+
+Source used:
+- `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md` (abstract)
+
+The second retrieved chunk (clinical-medicine paper) was not relevant and was not used.
+```
+
+### mode_B
+
+- 延迟 7.5s · 检索文档 0 篇 · tokens out 312
+- 评分: **0** (refusal) — The answer is a pure refusal that supplies none of the gold points (Yiddish-language model, 8B parameters, benchmark) for a question that has an answerable gold answer.
+
+```
+The evidence is insufficient: no documents or chunks were retrieved for this question ("no evidence retrieved"), so I cannot state what MameLoshnLM is or its parameter scale. I am instructed to answer only from the provided evidence and not fall back on prior knowledge, so I will not speculate. No sources were used, since none were supplied. If you can retrieve relevant documents (e.g., a paper, model card, or KB entry mentioning MameLoshnLM), I can answer from them.
+```
+
+### mode_C
+
+- 延迟 56.5s · 检索文档 12 篇 · tokens out 360
+- 评分: **0** (refusal) — The answer explicitly declines to answer, providing none of the gold points (first open-source Yiddish language model, 8B parameters, benchmark), which is a refusal on an answerable question.
+
+```
+The evidence does not contain the answer. The provided material is an excerpt from the paper "Attention Is All You Need" (Vaswani et al., Google), covering the abstract, introduction, and background on the Transformer architecture, BLEU results for WMT 2014 translation, and related work such as ByteNet and ConvS2S. The term "MameLoshnLM" does not appear anywhere in this evidence, and no parameter scale for it is mentioned. Therefore, I cannot answer what MameLoshnLM is or what parameter scale it has based solely on the provided evidence.
+
+Source used: "Attention Is All You Need" excerpt (only source provided).
+```
+
+### bm25
+
+- 延迟 5.2s · 检索文档 10 篇 · tokens out 551
+- 评分: **0** (refusal) — The model declined to answer an answerable question and supplied none of the gold points (first open-source Yiddish language model, 8B parameters, accompanying benchmark); the incidental "8B" refers to Llama 3.1, not MameLoshnLM.
+
+```
+**Answer: The evidence is insufficient to answer this question.**
+
+The only relevant evidence is chunk [2608.05850], which mentions “MAMELOSHNLM” solely inside a description of statistical testing: it compares MAMELOSHNLM against Llama 3.1 8B on lemmatization using McNemar's exact test. That chunk never states what MameLoshnLM is (e.g., its architecture, purpose, or language) and gives no parameter count or scale for it. The other two chunks ([2212.13138] and [2005.14165]) do not mention MameLoshnLM at all.
+
+**Sources used:** [2608.05850] (only source that mentions the model, but only re: McNemar's test); [2212.13138] and [2005.14165] (checked, not relevant).
+```
+
+### vector
+
+- 延迟 7.2s · 检索文档 1 篇 · tokens out 836
+- 评分: **3** (partial) — The answer correctly identifies MameLoshnLM as the first open-source Yiddish language model but explicitly declines to give the parameter scale (gold: 8B) and only alludes to evaluation benchmarks rather than the attached benchmark deliverable, so it covers only one of three gold points.
+
+```
+**Answer:** According to the evidence, MAMELOSHNLM is described as the first open-source large language model for Yiddish, trained on the Yiddish corpus described in subsection 3.2. Its name derives from the traditional Yiddish term "mame-loshn" ("mother tongue"), evoking the language's intimate connection to home and family. The evidence states that it outperforms strong baselines "of similar scale" across a broad set of Yiddish evaluation benchmarks, and that it was produced by continued pretraining — but the sentence is truncated there. **The evidence does not state MameLoshnLM's parameter count or parameter scale**; the only scale-related information is the vague reference to baselines "of similar scale." Therefore the parameter-scale part of the question cannot be answered from this evidence.
+
+**Source used:** chunk from [2608.05850], section "## 5 MAMELOSHNLM".
+```
+
+### rrf
+
+- 延迟 15.5s · 检索文档 10 篇 · tokens out 2736
+- 评分: **0** (refusal) — The answer is a refusal that explicitly declines to state what MameLoshnLM is or its parameter scale (it even attributes the only '8B' to Llama 3.1, not the target) and therefore matches none of the gold points — no Yiddish-LM identification, no 8B scale, no benchmark.
+
+```
+The evidence is insufficient to fully answer the question.
+
+- **What the evidence does support:** The only source mentioning the model, [2608.05850] (§E.7 "Statistical Testing"), identifies MAMELOSHNLM as one of two models in pairwise lemmatization (and sentence-level translation) comparisons against Llama 3.1 8B, evaluated with McNemar's exact test on paired token-level correct/incorrect outcomes — i.e., it is a model that produces lemmatization predictions.
+- **What the evidence does not support:** It never states what MameLoshnLM is (no description of its architecture, training data, or purpose) and never gives its parameter scale; the only scale mentioned ("8B") belongs to the comparison model Llama 3.1 8B, not to MAMELOSHNLM.
+- The other two evidence items ([2212.13138], [2005.14165]) do not mention MameLoshnLM at all.
+
+**Sources used:** [2608.05850] §E.7 Statistical Testing (chunk containing the McNemar's test description); [2212.13138]; [2005.14165] (checked — no mention).
+```
+
+### rerank
+
+- 延迟 11.1s · 检索文档 1 篇 · tokens out 660
+- 评分: **3** (partial) — The answer correctly identifies MameLoshnLM as the first open-source Yiddish language model and alludes to Yiddish evaluation benchmarks, but it explicitly omits the 8B parameter scale (a required gold point and keyword), so it is only partially complete.
+
+```
+**Answer:** The evidence identifies MAMELOSHNLM (Mame-Loshn, "mother tongue") as the first open-source large language model for Yiddish, trained on the Yiddish corpus described in subsection 3.2, and reports that it outperforms strong baselines of similar scale across a broad set of Yiddish evaluation benchmarks. Its training method is described as continued pretraining, but the retrieved text is truncated at that point.
+
+On the parameter scale: the provided evidence does **not** contain the model's parameter count — it only refers to "baselines of similar scale." That part of the question cannot be answered from this evidence.
+
+**Source used:** [2608.05850] §5 "MAMELOSHNLM" (only this chunk; it is truncated mid-sentence at "continued pretrain").
+```
+
+## Q QK08 · [crosskb] Beyond which percentile of precipitation did the GAN clearly outperform the deterministic baseline in capturing the climate-change wetting signal?
+
+- gold_docs: ['2409.13934'] · stratum: crosskb
+
+### mode_A
+
+- 延迟 32.8s · 检索文档 15 篇 · tokens out 1723
+- 评分: **None** (error) — Expecting ',' delimiter: line 1 column 168 (char 167)
+
+```
+**Insufficient evidence.** The two retrieved sources do not address this question: `e2e-demo-0923-022632/global-rag-benchmark.md` is a RAG benchmark paper on corpus-level reasoning (GlobalQA / Global-RAG), and `生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 1 of 6).md` is a genomics paper on sequence-conditioned single-cell perturbation modeling. Neither mentions precipitation percentiles, GANs, deterministic baselines, or a climate-change wetting signal. Per the instructions, I cannot supply the percentile from prior knowledge, so no answer can be given from the evidence provided.
+```
+
+### mode_B
+
+- 延迟 9.9s · 检索文档 0 篇 · tokens out 796
+- 评分: **0** (refusal) — The answer explicitly declines to answer due to empty retrieval, but the question is answerable with the gold fact (beyond the 95th percentile), so a refusal scores 0.
+
+```
+The evidence is insufficient to answer this question: no evidence was retrieved (the evidence block is empty), so there is no document, file, or chunk to ground an answer about the precipitation percentile beyond which a GAN outperformed a deterministic baseline.
+
+Sources used: none (no evidence retrieved). Per the output contract, I am stopping here rather than answering from prior knowledge.
+```
+
+### mode_C
+
+- 延迟 58.0s · 检索文档 12 篇 · tokens out 437
+- 评分: **5** (correct) — The answer explicitly states the GAN substantially better captured the wetting signal beyond the 95th percentile, matching the gold point (超过 95th percentile 之后 GAN 明显优于确定性基线).
+
+```
+The evidence states that the historically trained GAN and the deterministic baseline had relatively similar signals up to the 95th percentile, and that **beyond the 95th percentile** the GAN substantially better captured the wetting signal (though both underestimated its magnitude versus CCAM). So the answer is the 95th percentile of precipitation.
+
+Source used: `climate-science__2409.13934__on-the-extrapolation-of-generative-adversari` (part 2/3), section "3.2 Extreme Precipitation Climate Change Signal".
+```
+
+### bm25
+
+- 延迟 8.9s · 检索文档 10 篇 · tokens out 1307
+- 评分: **3** (partial) — The answer captures the correct qualitative claim that the GAN outperforms deterministic baselines at extreme precipitation percentiles, but it reports the 99.5th percentile instead of the gold's 95th percentile threshold and explicitly denies a 'beyond which' boundary is stated.
+
+```
+**Answer:** The evidence places this at the **99.5th percentile** of precipitation: the GAN trained on both future and historical periods captures ~97% of the average future increase in the 99.5th percentile, and even the historically-trained GAN captures ~77%, whereas the two deterministic baselines capture only 63–65% — so the GAN clearly outperforms the baselines at the 99.5th percentile. However, the evidence does not state a percentile threshold "beyond which" the GAN outperforms; the 99.5th percentile is the only percentile level for which a GAN-vs-baseline comparison is reported here, so any finer boundary would be an unsupported extrapolation.
+
+**Sources used:** [2409.13934] (text on the climate-change signal in the 99.5th percentile of precipitation, plus the Figure 2 caption). The other two evidence chunks ([2007.10574] on MJO effects in Indonesia; [2409.09639] on GSMaP/GPC precipitation datasets) contain no GAN-vs-baseline percentile comparison and were not used.
+```
+
+### vector
+
+- 延迟 5.3s · 检索文档 1 篇 · tokens out 464
+- 评分: **5** (correct) — The answer names the 95th percentile as the threshold beyond which the GAN substantially better captures the wetting signal, exactly matching the gold point and containing both gold keywords (gan, 95).
+
+```
+**Answer:** The 95th percentile. The GAN and the deterministic baselines had relatively similar climate-change signals up to the 95th percentile of precipitation, but **beyond the 95th percentile the GAN substantially better captured the wetting signal**, though both still underestimated its magnitude relative to CCAM.
+
+**Sources used:**
+- Evidence chunk `[2409.13934]` (quoted excerpt on dry bias, the 95th-percentile threshold, and the GAN's wetting-signal capture).
+```
+
+### rrf
+
+- 延迟 14.2s · 检索文档 10 篇 · tokens out 2501
+- 评分: **0** (refusal) — The answer never states the gold's 95th-percentile threshold, concluding instead that the evidence cannot determine any cutoff — a refusal on an answerable question.
+
+```
+The retrieved evidence quantifies the GAN-versus-baseline comparison only at the 99.5th percentile of precipitation: the GAN trained on future and historical periods captures about 97% of the average future increase in the 99.5th percentile, and the GAN trained on historical simulations about 77%, whereas the two deterministic baseline algorithms capture only 63–65% of that increase regardless of training period. So at the 99.5th percentile, the GAN clearly outperforms the deterministic baselines. The evidence does not state a lower percentile threshold beyond which this outperformance begins; if the question asks for such a cutoff, the evidence is insufficient to determine it.
+
+Sources used: [2409.13934] (chunk on GAN vs. deterministic baselines, 99.5th-percentile precipitation).
+```
+
+### rerank
+
+- 延迟 9.1s · 检索文档 1 篇 · tokens out 340
+- 评分: **5** (correct) — The answer states 'Beyond the 95th percentile of precipitation' and that the GAN substantially better captures the wetting signal than the deterministic baseline, matching the gold point exactly.
+
+```
+**Answer:** Beyond the **95th percentile** of precipitation.
+
+Per the evidence: the GAN and deterministic baselines show relatively similar climate-change signals up to the 95th percentile of precipitation, but beyond the 95th percentile the GAN substantially better captures the wetting signal (though both underestimate its magnitude compared to CCAM). GANs trained on future periods also accurately capture the climate change signal across nearly all percentiles (Figure 1c, Supplementary Figure S9), which the deterministic baselines underestimate.
+
+**Source used:** [2409.13934] (chunk containing the dry-bias / wetting-signal comparison text).
+```
+
+## Q QK09 · [unanswerable] What is the recommended daily dosage of metformin for diabetic cats?
+
+- gold_docs: [] · stratum: unanswerable
+
+### mode_A
+
+- 延迟 29.5s · 检索文档 1 篇 · tokens out 1438
+- 评分: **5** (correct) — The answer correctly reports that the evidence is insufficient, explicitly notes the retrieved clinical-LLM-evaluation source contains no metformin/cat/dosage information, and refrains from giving any dosage number — exactly the not-found behavior the gold points require.
+
+```
+The evidence is insufficient to answer this question. The only retrieved source — `生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8)` — is a section on clinician evaluation of large language model answers to consumer medical questions (Table 2's axes: scientific consensus, harm, comprehension, retrieval, reasoning), and it contains no mention of metformin, cats, diabetes treatment, or any drug dosage. I therefore cannot provide the recommended daily dosage from this evidence, and per the task constraints I will not fall back on prior knowledge.
+
+**Sources used:** `生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8)` (chunk vec=0.4823) — does not answer the question.
+```
+
+### mode_B
+
+- 延迟 12.9s · 检索文档 0 篇 · tokens out 1013
+- 评分: **5** (correct) — The answer explicitly reports that no evidence was retrieved and gives no dosage number, which matches the gold requirement of an explicit not-found report with no fabricated dose.
+
+```
+The evidence provided contains no retrieved content at all ("no evidence retrieved"), so I cannot answer this question from the given material. The evidence does not contain any information about metformin, dosages, or diabetic cats. I am explicitly stating that the evidence is insufficient rather than falling back on prior knowledge, as the contract requires.
+
+Sources used: none — no evidence was retrieved.
+```
+
+### mode_C
+
+- 延迟 61.1s · 检索文档 10 篇 · tokens out 551
+- 评分: **5** (correct) — The answer correctly reports that the evidence is insufficient and gives no dosage number, exactly matching both gold points (no veterinary pharmacology source in the corpus; required behavior is an explicit not-found report).
+
+```
+The evidence is insufficient to answer this question. The only source provided — `clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md` (Section 3.2.1, "Clinician evaluation") — describes a human-evaluation framework for long-form LLM answers to consumer medical questions, covering axes such as agreement with scientific consensus, extent and likelihood of harm, comprehension, retrieval, reasoning, inappropriate/missing content, and bias. It contains no mention of metformin, feline medicine, or any drug dosage information. Therefore, no recommended daily dosage of metformin for diabetic cats can be derived from this evidence.
+
+Source used: clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (Part 2/8, Section 3.2.1).
+```
+
+### bm25
+
+- 延迟 6.0s · 检索文档 10 篇 · tokens out 610
+- 评分: **5** (correct) — The answer explicitly reports the evidence is insufficient for an unanswerable veterinary-pharmacology question, correctly notes none of the retrieved sources mention metformin, diabetes, cats, or dosing, and gives no dosage number, fully satisfying both gold points.
+
+```
+The evidence is insufficient to answer this question. The three retrieved sources concern entirely different topics: [2110.08918] covers ICU length-of-stay and mortality prediction from clinical notes; [2409.09639] describes machine-learning precipitation estimation (GPC/m dataset); [2412.15058] concerns interactive image segmentation with MultiverSeg. None of them mention metformin, diabetes, cats, or any veterinary drug dosage. I therefore cannot provide the recommended daily dosage of metformin for diabetic cats, and per the task contract I will not fall back on prior knowledge.
+
+Sources examined (all irrelevant to the question):
+- [2110.08918] — clinical predictive modeling (ICU LOS/mortality)
+- [2409.09639] — GPC/m precipitation dataset
+- [2412.15058] — MultiverSeg image segmentation
+
+No further answer can be given from this evidence.
+```
+
+### vector
+
+- 延迟 18.5s · 检索文档 9 篇 · tokens out 3446
+- 评分: **5** (correct) — The answer explicitly reports the evidence is insufficient (no metformin, feline-patient, or dosing content in any retrieved chunk) and gives no dosage number, exactly matching the gold not-found behavior required for this unanswerable question.
+
+```
+The evidence is insufficient to answer this question. None of the retrieved chunks mention metformin, feline/cat patients, or any drug dosage recommendation. The chunks that touch on diabetes concern human A1C modeling ([2201.03675]), a diabetic-retinopathy dataset listing ([2412.15058]), and a fragment about patients with high glucose ([1904.11280]); none discuss treatment dosing. The only drug table present ([2110.08918]) lists heparin, acetaminophen, lorazepam, and morphine sulfate with NDC codes — no metformin and no dosing information. Per the output contract, I am reporting this blind spot rather than answering from prior knowledge.
+
+Sources examined (none contain the answer):
+- [2212.13138] — biomedical model benchmark scores
+- [2110.08918] — prescription drug name / NDC code table
+- [2502.00306] — adversarial interrogation-attack example
+- [2203.15752] — Mastodon instance statistics
+- [2201.03675] — diabetes / A1C relationship modeling
+- [2301.08436] — MERFISH dataset table
+- [2310.10981] — fragment mentioning cholesterol/blood sugar/WBC count
+- [2412.15058] — medical segmentation dataset table (incl. diabetic retinopathy)
+- [1904.11280] — fragment on patients with high glucose/hypertension
+```
+
+### rrf
+
+- 延迟 7.0s · 检索文档 10 篇 · tokens out 667
+- 评分: **5** (correct) — The answer explicitly reports a not-found/insufficient-evidence result and provides no dosage number, exactly matching the gold behavior for this unanswerable question.
+
+```
+The provided evidence does not contain an answer to this question. The three retrieved chunks cover unrelated topics: ICU length-of-stay and mortality prediction from clinical notes ([2110.08918]), a Hardy-Weinberg genetics exam question ([2212.13138]), and cost/token estimates for GPT-based question and answer generation ([2502.00306]). None of them mention metformin, diabetes, or feline medicine. Per the task contract, I am reporting the evidence as insufficient rather than answering from prior knowledge.
+
+Sources consulted: [2110.08918], [2212.13138], [2502.00306].
+```
+
+### rerank
+
+- 延迟 14.3s · 检索文档 9 篇 · tokens out 782
+- 评分: **5** (correct) — The answer correctly reports the evidence as insufficient for a veterinary dosage question and explicitly declines to give any metformin dose number, exactly matching both gold points.
+
+```
+The evidence is insufficient to answer this question. None of the retrieved passages mentions metformin, feline patients, or any drug dosage: the only diabetes-related content concerns hemoglobin A1C thresholds for human 250.XX diagnoses (2201.03675), a table of generic drug names and NDC codes that does not include metformin (2110.08918), and unrelated diabetes mentions such as diabetic retinopathy datasets (2412.15058) and type 2 diabetes in a prompt-injection example (2502.00306). The remaining chunks (1904.11280, 2310.10981, 2301.08436, 2212.13138, 2203.15752) contain no relevant information. Because the evidence does not contain the answer, I cannot provide the recommended daily metformin dosage for diabetic cats without falling back on prior knowledge, which is not permitted here.
+
+Sources examined: [2201.03675], [1904.11280], [2502.00306], [2310.10981], [2412.15058], [2110.08918], [2301.08436], [2212.13138], [2203.15752] — none supports an answer.
+```
+
+## Q QK10 · [outofcorpus] How does the Herbert-Moulton collider benchmark quantify detector drift in particle physics experiments?
+
+- gold_docs: [] · stratum: outofcorpus
+
+### mode_A
+
+- 延迟 31.1s · 检索文档 20 篇 · tokens out 713
+- 评分: **5** (correct) — The answer correctly reports insufficient evidence for the non-existent Herbert-Moulton collider benchmark, explicitly declines to fabricate its method or numbers, and states it will not fall back on prior knowledge, matching both gold points for an out-of-corpus question.
+
+```
+**Insufficient evidence.** The two retrieved chunks do not mention the "Herbert-Moulton collider benchmark," detector drift, or particle physics experiments at all. The first source is a RAG evaluation paper introducing the GlobalQA benchmark for corpus-level reasoning (counting, extremum, sorting, top-k), and the second is a materials-science paper on CH₃NH₃PbI₃/GeSe bilayer heterojunction solar cells covering electrical properties and carrier generation/recombination profiles. Neither contains any information about how detector drift is quantified, so I cannot answer the question from the provided evidence, and per the task contract I will not fall back on prior knowledge.
+
+Sources reviewed (both irrelevant to the question):
+- `e2e-demo-0923-022632/global-rag-benchmark.md` (vec=0.4097)
+- `工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md` (vec=0.4893)
+```
+
+### mode_B
+
+- 延迟 8.4s · 检索文档 0 篇 · tokens out 592
+- 评分: **5** (correct) — The answer explicitly reports that no evidence was retrieved and declines to describe or invent the Herbert-Moulton benchmark's method — exactly the required not-found behavior for this out-of-corpus question, with no fabrication or prior-knowledge fallback.
+
+```
+The evidence is insufficient to answer this question: no evidence was retrieved (the evidence block is empty), so I have no document paths, file names, or chunk IDs to cite.
+
+I cannot describe how the "Herbert-Moulton collider benchmark" quantifies detector drift without falling back on prior knowledge, which this task prohibits.
+
+No sources were used, because none were provided.
+```
+
+### mode_C
+
+- 延迟 60.8s · 检索文档 12 篇 · tokens out 656
+- 评分: **5** (correct) — The answer explicitly reports the evidence is insufficient, correctly identifies that the Herbert-Moulton collider benchmark and particle physics detector drift are absent from the retrieved corpus, and fabricates no methods or numbers, matching both gold points.
+
+```
+**The evidence is insufficient to answer this question.** None of the retrieved material mentions the Herbert-Moulton collider benchmark, particle physics experiments, or detector drift. The evidence consists of: (1) "记忆约定 — soul-template" memory conventions (memory types, admission gates, lifecycle, approval rules); (2) "SOUL 人格定义 — soul-template" persona definition (identity dimensions, personality traits, knowledge boundaries, language style); and (3) the industrial diagnostic report "工业诊断报告：5 秒窗口温度序列异常趋势判定" (run ID `202609201042216_team_smoke`, source `data/auth_test.csv`), which addresses temperature-trend anomaly adjudication, not collider detector drift. Even the temperature work uses different terminology — `COMPETING_SET` diagnostic output with H1/H2/H3 hypotheses — and never discusses detector benchmarking or particle physics. Per the output contract, I am stating the evidence is insufficient and stopping rather than answering from prior knowledge.
+
+Sources consulted (all retrieved evidence blocks): "记忆约定 — soul-template"; "SOUL 人格定义 — soul-template"; "工业诊断报告：5 秒窗口温度序列异常趋势判定" (`202609201042216_team_smoke`).
+```
+
+### bm25
+
+- 延迟 6.4s · 检索文档 10 篇 · tokens out 422
+- 评分: **5** (correct) — The question is out-of-corpus, and the answer correctly reports that the evidence is insufficient, explicitly notes no source addresses the Herbert-Moulton collider benchmark, and fabricates no methods or numbers.
+
+```
+The evidence is insufficient to answer this question.
+
+None of the three retrieved sources mention a "Herbert-Moulton collider benchmark," detector drift, or any particle-physics collider experiment. The sources I retrieved are:
+
+- **[2303.00445]** — a quantum-computing paper on contextual subspace methods, the reduced number operator $S_N$, and error mitigation for terms commuting with number/spin operators.
+- **[1911.02792]** — a paper on coarse-grained molecular models built from bead mappings of atomistic systems.
+- **[2005.14165]** — a GPT-3 paper excerpt containing a generated news article about a church denomination split.
+
+Since no retrieved chunk addresses the Herbert-Moulton collider benchmark or detector drift quantification, I cannot answer the question from the evidence provided, and I will not fall back on prior knowledge.
+```
+
+### vector
+
+- 延迟 7.8s · 检索文档 10 篇 · tokens out 841
+- 评分: **5** (correct) — The question is out-of-corpus and the answer explicitly reports insufficient evidence without fabricating any methods or numbers, exactly matching the gold points' required not-found behavior.
+
+```
+**The evidence is insufficient to answer this question.** None of the retrieved chunks mentions the "Herbert-Moulton collider benchmark," detector drift, or particle physics experiments: [q-bio-0408016] concerns antigenic drift in an antigen–antibody affinity model, [2602.10156] covers mode collapse and cosine distance for perturbation effects, [2606.10843] addresses rupture speed in seismology, [gr-qc-9805045] discusses black-hole event horizons, [2211.04977] is about DFT+U for transition-metal oxides, [2311.00487] concerns Trotter decompositions in quantum simulation, [1311.2485] is about qubit drift under bit-flip decoherence, and [1712.01369] covers drift current density in semiconductors. Since the retrieved evidence does not address the question, I cannot answer it, and per the task constraints I make no fallback to prior knowledge. Sources consulted (none usable): q-bio-0408016, 2602.10156, 2606.10843, gr-qc-9805045, 2211.04977, 2311.00487, 1311.2485, 1712.01369.
+```
+
+### rrf
+
+- 延迟 7.4s · 检索文档 10 篇 · tokens out 987
+- 评分: **5** (correct) — The evidence is empty/out-of-corpus for the nonexistent Herbert-Moulton benchmark, and the answer correctly gives an explicit not-found report naming the chunks examined without fabricating any methodology or numbers, exactly matching the gold behavior.
+
+```
+**The provided evidence is insufficient to answer this question.**
+
+None of the three retrieved chunks mentions the Herbert–Moulton collider benchmark, particle colliders, or detector drift. The chunks cover unrelated topics: influenza vaccine epitope cross-affinity (chunk `q-bio-0408016`), supershear earthquake rupture particle motion (chunk `[2606.10843]`), and quantum error mitigation via contextual subspace operators (chunk `[2303.00445]`). Since the evidence contains no information on the benchmark or on any drift-quantification methodology, I cannot answer without falling back on prior knowledge, which the task forbids.
+
+Sources examined (none relevant): `q-bio-0408016`, `[2606.10843]`, `[2303.00445]`.
+```
+
+### rerank
+
+- 延迟 23.6s · 检索文档 10 篇 · tokens out 994
+- 评分: **5** (correct) — The out-of-corpus question has no supporting evidence, and the answer exactly matches both gold points by explicitly reporting not-found and declaring no prior-knowledge fallback, fabricating no methods or numbers.
+
+```
+The evidence is insufficient to answer the question: none of the retrieved chunks mention the "Herbert-Moulton collider benchmark," detector drift, or particle-physics collider experiments at all. The only chunk containing "drift" is [1712.01369], which concerns semiconductor drift current density and resistivity, not detector drift. The remaining chunks cover unrelated topics: quantum circuit bootstrapping [2303.00445], qubit error correction [1311.2485], the Chemoton software [2109.05887], Trotter decompositions [2311.00487], stellar activity/radial velocity [1105.1887], and DFT+U calculations [2211.04977]. Per the instructions, I make no attempt to answer from prior knowledge.
+
+Sources reviewed (none contain the answer): arXiv:2303.00445, arXiv:1712.01369, arXiv:1311.2485, arXiv:2109.05887, arXiv:2311.00487, arXiv:1105.1887, arXiv:2211.04977.
+```

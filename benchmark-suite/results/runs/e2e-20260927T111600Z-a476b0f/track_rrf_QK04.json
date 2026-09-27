@@ -1,0 +1,50 @@
+{
+ "qid": "QK04",
+ "method": "rrf",
+ "question": "Using only what kind of information, and reaching what accuracy, does the wav2vec 2.0 approach detect within-sentence prosodic boundaries on Czech broadcast news?",
+ "ranked": [
+  "2209.15032",
+  "2005.14165",
+  "2109.14357",
+  "2608.05850",
+  "2110.07844",
+  "2310.10981",
+  "2402.11690",
+  "1811.04224",
+  "1906.10015",
+  "2509.05359"
+ ],
+ "ranked_paths": [
+  "speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u.md",
+  "large-language-models__2005.14165__language-models-are-few-shot-learners.md",
+  "speech__2109.14357__comparison-of-self-supervised-speech-pre-tra.md",
+  "nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst.md",
+  "nlp__2310.10981__instructive-dialogue-summarization-with-quer.md",
+  "large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md",
+  "speech__1811.04224__reinforcement-learning-based-speech-enhancem.md",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md",
+  "speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre.md"
+ ],
+ "evidence_sources": [
+  "2209.15032",
+  "2005.14165",
+  "2109.14357"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.0,
+ "latency_s": 7.3,
+ "answer": "The wav2vec 2.0 approach detects prosodic boundaries in speech using **only acoustic information** (no text/transcripts), and on recordings of Czech broadcast news labeled by phonetic experts it achieves **94% accuracy and an F1 measure of 83% on within-sentence prosodic boundaries** — or 95% accuracy / 89% F1 on all prosodic boundaries — despite using a relatively small amount of labeled data, outperforming the text-based predictor.\n\nSource used: `[2209.15032] Detection of Prosodic Boundaries in Speech Using Wav2Vec 2.0` (chunk id `speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u`, part 1/2).",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38284,
+  "output": 922,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.21446999999999997,
+ "extra": {},
+ "track": "rrf",
+ "via": "baseline+closed-book"
+}

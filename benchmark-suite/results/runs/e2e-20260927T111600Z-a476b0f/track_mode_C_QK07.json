@@ -1,0 +1,48 @@
+{
+ "qid": "QK07",
+ "question": "What is MameLoshnLM and what parameter scale does it have?",
+ "track": "mode_C",
+ "method": "mode_C",
+ "via": "retrieval-mode+closed-book",
+ "answer": "The evidence does not contain the answer. The provided material is an excerpt from the paper \"Attention Is All You Need\" (Vaswani et al., Google), covering the abstract, introduction, and background on the Transformer architecture, BLEU results for WMT 2014 translation, and related work such as ByteNet and ConvS2S. The term \"MameLoshnLM\" does not appear anywhere in this evidence, and no parameter scale for it is mentioned. Therefore, I cannot answer what MameLoshnLM is or what parameter scale it has based solely on the provided evidence.\n\nSource used: \"Attention Is All You Need\" excerpt (only source provided).",
+ "is_error": false,
+ "latency_s": 56.5,
+ "retrieval_s": 51.0,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38237,
+  "output": 360,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.200185,
+ "ranked": [
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "soul-cs-library/memory-conventions.md",
+  "soul-demo-qa/memory-conventions.md",
+  "soul-e2e-tester-024115/memory-conventions.md",
+  "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md",
+  "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+  "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+  "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+  "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+  "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md"
+ ],
+ "evidence_sources": [
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "soul-cs-library/memory-conventions.md",
+  "soul-demo-qa/memory-conventions.md"
+ ],
+ "evidence_chars": 4000,
+ "real_engine": null,
+ "merge": {
+  "a_docs": 12,
+  "b_docs": 26,
+  "consensus": 5,
+  "merged": 12
+ }
+}

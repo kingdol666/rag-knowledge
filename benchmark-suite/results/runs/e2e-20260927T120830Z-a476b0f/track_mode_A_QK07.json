@@ -1,0 +1,43 @@
+{
+ "qid": "QK07",
+ "question": "What is MameLoshnLM and what parameter scale does it have?",
+ "track": "mode_A",
+ "method": "mode_A",
+ "via": "retrieval-mode+closed-book",
+ "answer": "MameLoshnLM is presented in the evidence as the first open-source language model built specifically for Yiddish, introduced in the paper \"MAMELOSHNLM: Yiddish Language Model and Evaluation Benchmark\" (Katz et al.). Its parameter scale is 8B parameters, per the abstract's description of it as \"the first open-source 8B-parameter language model built specifically for Yiddish.\" The abstract also notes the work addresses Yiddish's limited digital presence and scarce evaluation resources.\n\nSource used: nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md.md (Part 1/4, Abstract).",
+ "is_error": false,
+ "latency_s": 34.4,
+ "retrieval_s": 19.2,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38389,
+  "output": 474,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.203795,
+ "ranked": [
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "soul-cs-library/memory-conventions.md",
+  "soul-demo-qa/memory-conventions.md",
+  "soul-e2e-tester-024115/memory-conventions.md",
+  "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md",
+  "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+  "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+  "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+  "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+  "计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md"
+ ],
+ "evidence_sources": [
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "soul-cs-library/memory-conventions.md",
+  "soul-demo-qa/memory-conventions.md"
+ ],
+ "evidence_chars": 4000,
+ "real_engine": true,
+ "merge": null
+}

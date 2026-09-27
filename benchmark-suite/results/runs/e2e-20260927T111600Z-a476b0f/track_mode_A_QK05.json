@@ -1,0 +1,46 @@
+{
+ "qid": "QK05",
+ "question": "In the trap-cropping optimization framework, roughly what share of the field should be allocated to trap plants when they are 5 to 25 times more attractive than the cash plant?",
+ "track": "mode_A",
+ "method": "mode_A",
+ "via": "retrieval-mode+closed-book",
+ "answer": "The provided evidence does not contain the answer. Neither retrieved chunk relates to trap-cropping or agricultural pest management: one is the GlobalQA benchmark paper on corpus-level RAG (\"e2e-demo-0923-022632/global-rag-benchmark.md\"), and the other is \"mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md,\" which concerns presolve techniques for mixed-integer optimal control. No chunk states any proportional field allocation for trap plants, nor mentions the 5–25× attractiveness ratio. The evidence is therefore insufficient to answer this question, and I am reporting that rather than drawing on prior knowledge.\n\nSources used: e2e-demo-0923-022632/global-rag-benchmark.md; 工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md.",
+ "is_error": false,
+ "latency_s": 26.8,
+ "retrieval_s": 19.4,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38363,
+  "output": 515,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.20469,
+ "ranked": [
+  "Novel-PridePrejudice/pride_and_prejudice (part 11 of 26).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 20 of 26).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "soul-cs-library/thinking-style.md",
+  "soul-demo-qa/thinking-style.md",
+  "soul-e2e-tester-024115/thinking-style.md",
+  "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md",
+  "生命科学与医学/agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz (part 2 of 3).md",
+  "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 3 of 5).md",
+  "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+  "自然科学与地球科学/climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md",
+  "自然科学与地球科学/quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+  "计算机与人工智能/databases__2102.02440__online-sketch-based-query-optimization.md (part 3 of 5).md"
+ ],
+ "evidence_sources": [
+  "Novel-PridePrejudice/pride_and_prejudice (part 11 of 26).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 20 of 26).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md"
+ ],
+ "evidence_chars": 4000,
+ "real_engine": true,
+ "merge": null
+}

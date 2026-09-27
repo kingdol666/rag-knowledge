@@ -1,0 +1,33 @@
+{
+ "qid": "QK09",
+ "question": "What is the recommended daily dosage of metformin for diabetic cats?",
+ "track": "mode_C",
+ "method": "mode_C",
+ "via": "retrieval-mode+closed-book",
+ "answer": "The evidence is insufficient to answer this question. The retrieved chunk (clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md, part 2/8, section 3.2.1 \"Clinician evaluation\") discusses a pilot framework for clinician evaluation of long-form LLM answers on the LiveQA, MedicationQA, and HealthSearchQA datasets, and references Table 2 on evaluation axes. It contains no information about metformin, feline diabetes, or any drug dosage. No dosage recommendation can be derived from this evidence, and I will not supply one from prior knowledge.\n\nSource used: clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (section 3.2.1).",
+ "is_error": false,
+ "latency_s": 65.8,
+ "retrieval_s": 58.5,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 37538,
+  "output": 415,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.19806500000000002,
+ "ranked": [
+  "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md"
+ ],
+ "evidence_sources": [
+  "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md"
+ ],
+ "evidence_chars": 700,
+ "real_engine": null,
+ "merge": {
+  "a_docs": 1,
+  "b_docs": 0,
+  "consensus": 0,
+  "merged": 1
+ }
+}

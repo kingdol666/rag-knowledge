@@ -1,0 +1,426 @@
+{
+  "status": "ok",
+  "query": "How does the Herbert-Moulton collider benchmark quantify detector drift in particle physics experiments?",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "parameters": {
+    "kb_id": "",
+    "threshold": 0.5,
+    "vector_top_k": 30,
+    "vector_threshold": 0.35,
+    "doc_read_chars": 20000,
+    "segment_chars": 3000,
+    "max_state_chars": 6000,
+    "max_evidence_chars": 24000
+  },
+  "recall": {
+    "vector_raw_hits": 24,
+    "vector_dedup_docs": 22,
+    "recall_seconds": 3.6,
+    "docs_read": 20,
+    "read_errors": [
+      {
+        "doc_path": "Corpus-Chunks800/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig__k02.md",
+        "error": "empty_content"
+      },
+      {
+        "doc_path": "Corpus-Chunks800/genomics__2602.10156__strand-sequence-conditioned-transport-for-si__k62.md",
+        "error": "empty_content"
+      }
+    ],
+    "reread_seconds": 8.5
+  },
+  "judge": {
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "criterion": "evidence",
+    "threshold": 0.5,
+    "global_best": 0.9442,
+    "scored_segments": 110,
+    "total_segments": 110,
+    "errors": []
+  },
+  "judge_doc_scores": [
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "vector_score": 0.40969550609588623,
+      "judge_score": 0.9442,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+      "vector_score": 0.48930859565734863,
+      "judge_score": 0.9293,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+      "vector_score": 0.4796257019042969,
+      "judge_score": 0.9288,
+      "kept": true
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+      "vector_score": 0.4546644687652588,
+      "judge_score": 0.9197,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md",
+      "vector_score": 0.47380900382995605,
+      "judge_score": 0.9134,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md",
+      "vector_score": 0.4770706295967102,
+      "judge_score": 0.9004,
+      "kept": true
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+      "vector_score": 0.4970362186431885,
+      "judge_score": 0.8881,
+      "kept": true
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.4902821183204651,
+      "judge_score": 0.885,
+      "kept": true
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_path": "e2e-demo-0923-022632/平台架构总览.md",
+      "vector_score": 0.41260606050491333,
+      "judge_score": 0.8834,
+      "kept": true
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/gravitational-physics__0706.3294__moriond-07-proceedings-extension-of-the-freq.md.md",
+      "vector_score": 0.49483728408813477,
+      "judge_score": 0.8737,
+      "kept": true
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "vector_score": 0.4437330365180969,
+      "judge_score": 0.8719,
+      "kept": true
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_path": "soul-cs-library/memory-conventions.md",
+      "vector_score": 0.4021872282028198,
+      "judge_score": 0.8697,
+      "kept": true
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_path": "soul-e2e-tester-024115/memory-conventions.md",
+      "vector_score": 0.4021872282028198,
+      "judge_score": 0.8697,
+      "kept": true
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_path": "soul-demo-qa/memory-conventions.md",
+      "vector_score": 0.4021872282028198,
+      "judge_score": 0.8697,
+      "kept": true
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_path": "soul-cs-library/soul-definition.md",
+      "vector_score": 0.3677665591239929,
+      "judge_score": 0.8693,
+      "kept": true
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_path": "soul-e2e-tester-024115/soul-definition.md",
+      "vector_score": 0.3677665591239929,
+      "judge_score": 0.8693,
+      "kept": true
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_path": "soul-demo-qa/soul-definition.md",
+      "vector_score": 0.3677665591239929,
+      "judge_score": 0.8693,
+      "kept": true
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md",
+      "vector_score": 0.45085835456848145,
+      "judge_score": 0.8679,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 1 of 3).md",
+      "vector_score": 0.4598427414894104,
+      "judge_score": 0.8463,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 4 of 6).md",
+      "vector_score": 0.48168259859085083,
+      "judge_score": 0.8132,
+      "kept": true
+    }
+  ],
+  "result_list": [
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_id": null,
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "name": "global-rag-benchmark.md",
+      "vector_score": 0.40969550609588623,
+      "judge_score": 0.9442,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+      "name": "materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+      "vector_score": 0.48930859565734863,
+      "judge_score": 0.9293,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+      "name": "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+      "vector_score": 0.4796257019042969,
+      "judge_score": 0.9288,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+      "name": "economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+      "vector_score": 0.4546644687652588,
+      "judge_score": 0.9197,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md",
+      "name": "robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md",
+      "vector_score": 0.47380900382995605,
+      "judge_score": 0.9134,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md",
+      "name": "immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md",
+      "vector_score": 0.4770706295967102,
+      "judge_score": 0.9004,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_id": null,
+      "doc_path": "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+      "name": "chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+      "vector_score": 0.4970362186431885,
+      "judge_score": 0.8881,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_id": null,
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "name": "【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.4902821183204651,
+      "judge_score": 0.885,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_id": null,
+      "doc_path": "e2e-demo-0923-022632/平台架构总览.md",
+      "name": "平台架构总览.md",
+      "vector_score": 0.41260606050491333,
+      "judge_score": 0.8834,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_id": null,
+      "doc_path": "自然科学与地球科学/gravitational-physics__0706.3294__moriond-07-proceedings-extension-of-the-freq.md.md",
+      "name": "gravitational-physics__0706.3294__moriond-07-proceedings-extension-of-the-freq.md.md",
+      "vector_score": 0.49483728408813477,
+      "judge_score": 0.8737,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_id": null,
+      "doc_path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "name": "artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "vector_score": 0.4437330365180969,
+      "judge_score": 0.8719,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_id": null,
+      "doc_path": "soul-cs-library/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.4021872282028198,
+      "judge_score": 0.8697,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_id": null,
+      "doc_path": "soul-e2e-tester-024115/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.4021872282028198,
+      "judge_score": 0.8697,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_id": null,
+      "doc_path": "soul-demo-qa/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.4021872282028198,
+      "judge_score": 0.8697,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_id": null,
+      "doc_path": "soul-cs-library/soul-definition.md",
+      "name": "soul-definition.md",
+      "vector_score": 0.3677665591239929,
+      "judge_score": 0.8693,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_id": null,
+      "doc_path": "soul-e2e-tester-024115/soul-definition.md",
+      "name": "soul-definition.md",
+      "vector_score": 0.3677665591239929,
+      "judge_score": 0.8693,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_id": null,
+      "doc_path": "soul-demo-qa/soul-definition.md",
+      "name": "soul-definition.md",
+      "vector_score": 0.3677665591239929,
+      "judge_score": 0.8693,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md",
+      "name": "economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md",
+      "vector_score": 0.45085835456848145,
+      "judge_score": 0.8679,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 1 of 3).md",
+      "name": "materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 1 of 3).md",
+      "vector_score": 0.4598427414894104,
+      "judge_score": 0.8463,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 4 of 6).md",
+      "name": "genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 4 of 6).md",
+      "vector_score": 0.48168259859085083,
+      "judge_score": 0.8132,
+      "truncated": true,
+      "read_error": null
+    }
+  ],
+  "kept_doc_paths": [
+    "e2e-demo-0923-022632/global-rag-benchmark.md",
+    "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+    "计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+    "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+    "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md",
+    "生命科学与医学/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md",
+    "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+    "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+    "e2e-demo-0923-022632/平台架构总览.md",
+    "自然科学与地球科学/gravitational-physics__0706.3294__moriond-07-proceedings-extension-of-the-freq.md.md",
+    "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+    "soul-cs-library/memory-conventions.md",
+    "soul-e2e-tester-024115/memory-conventions.md",
+    "soul-demo-qa/memory-conventions.md",
+    "soul-cs-library/soul-definition.md",
+    "soul-e2e-tester-024115/soul-definition.md",
+    "soul-demo-qa/soul-definition.md",
+    "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md",
+    "工程与能源/materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 1 of 3).md",
+    "生命科学与医学/genomics__2602.10156__strand-sequence-conditioned-transport-for-si (part 4 of 6).md"
+  ],
+  "evidence_pack": "[e2e-demo-0923-022632/global-rag-benchmark.md · vec=0.40969550609588623]\n# Towards Global Retrieval Augmented Generation: A Benchmark for Corpus-Level Reasoning\n\nQi Luo1,\\*, Xiaonan Li1,\\*, Tingshuo Fan1, Xinchi Chen1,†, Xipeng Qiu1,2,†\n\n1Fudan University\n\n2Shanghai Innovation Institutey qluo22@m.fudan.edu.cn\n\n## Abstract\n\nRetrieval-augmented generation (RAG) has emerged as a leading approach to reducing hallucinations in large language models (LLMs). Current RAG evaluation benchmarks primarily focus on what we call local RAG: retrieving relevant chunks from a small subset of documents to answer queries that require only localized understanding within specific text chunks. However, many real-world applications require a fundamentally different capability—global RAG—which involves aggregating and analyzing information across entire document collections to derive corpus-level insights (e.g. “What are the top 10 most cited papers in 2023?\"). In this paper, we introduce GlobalQA—the first benchmark specifically designed to evaluate global RAG capabilities, covering four core task types: counting, extremum queries, sorting, and top-k extraction. Through systematic evaluation across different models and baselines, we find that existing RAG methods perform poorly on global tasks, with the strongest baseline achieving only 1.51 F1 score. To address these challenges, we propose Global-RAG, a multi-tool collaborative framework that preserves structural coherence through chunklevel retrieval, incorporates LLM-driven intelligent filters to eliminate noisy documents, and integrates aggregation modules for precise symbolic computation. On the Qwen2.5-14B model, GlobalRAG achieves 6.63 F1 compared to the strongest baseline's 1.51 F1, validating the effectiveness of our method.\n\n## 1 Introduction\n\nRetrieval-augmented generation (RAG) has been proposed as a solution to mitigate hallucination and knowledge limitations in large language models (LLMs) (Lewis et al., 2021; Li et al., 2025; Zhang et al., 2025; Rawte et al., 2023; Wang et al.,\n\n![](images/838ff38197a58dd916888ef6cc7803a82e53db9b32898de2754d99b5b76b9a6c.jpg)  \n(b) Global Query: Dense Retriever Fails  \nFigure 1: Why Dense Retriever Fails on Global Queries: (a) Local Query: The answer can be found in specific documents. Dense retriever ranks all documents and selects top-k, which contains the relevant information. (b) Global Query: The answer requires information from all documents. However, dense retriever only returns top-k ranked documents, missing critical information scattered acro\n\n[工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md · vec=0.48930859565734863]\n# materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar（第 2/2 部分）\n章节: $\\mathrm { { C H _ { 3 } N H _ { 3 } P b I _ { 3 } } / }$ GeSe bilayer heterojunction solar cell with high performance > III. ELECTRICAL PROPERTIES AND EFFICIENCY OF THE BILAYER SOLAR CELL\n## III. ELECTRICAL PROPERTIES AND EFFICIENCY OF THE BILAYER SOLAR CELL\n\n\nThe solar cell must satisfy electron transfer condition, so the work functions of every layer need to be suitable.\n\n![](images/d74a8328f492a2e0f8a47abe2c69649778f5b7db84d7048d314d7898913aaa6d.jpg)  \nFIG. 5. Profiles of generation rate (G) and recombination rate (U) of carriers in the bilayer solar cell with 450 nm GeSe layer and 350 nm perovskite layer. The top layer (above the black line) is the perovskite layer, while the bottom layer (below the black line) represents GeSe layer.\n\nFor this purpose, in Fig. 3, we show the ionization potentials (IPs) of PC60BM and PCDTBT, as well as conduction band and valence band of $\\mathrm { C H _ { 3 } N H _ { 3 } P b I _ { 3 } }$ and GeSe. PC60BM and PCDTBT are commonly taken as ETL and HTL, respectively8,27. ETL and HTL are thin n- or ptype inserted layers between cathode or anode and active layers, which can assist carrier extraction efficiently by reducing the eletrode-junction potential barrier. The IP of PC60BM $\\mathrm { ( - 4 . 2 e V ) }$ is lower than the conduction band edge of $\\mathrm { C H _ { 3 } N H _ { 3 } P b I _ { 3 } \\ ( - 3 . 9 \\ e V ) }$ . Therefore it is easy for electrons to transfer from $\\mathrm { C H _ { 3 } N H _ { 3 } P b I _ { 3 } }$ to PC60BM, but it is a barrier for holes. On the other hand, although the valence band edge of GeSe (-5.1eV) is slightly higher than the IP of PCDTBT (-5.3eV), such a small mismatch has little effect on hole transportation.\n\nThe bilayer heterojunctionof perovskite $\\mathrm { ( C H _ { 3 } N H _ { 3 } P b I _ { 3 } ) }$ and GeSe can lead to dissociation of electron-hole pairs in the solar cell. The equilibrium band profile of heterojunction is shown in Fig. 4. The position of Fermi level is determined by the relationship between doping concentration and the Fermi energy. When the heterojunction occurs between these two semiconductors, there would be a conduction band step $\\Delta E _ { c }$ and valence band step $\\Delta E _ { c }$ . The value of $\\Delta E _ { c }$ and $\\Delta E _ { v }$ are given by28\n\n$$\n\\begin{array} { l } { \\Delta E _ { c } = \\chi _ { 1 } - \\chi _ { 2 } , } \\\\ { \\Delta E _ { v } = \\left( E _ { g 1 } - \n\n[计算机与人工智能/artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md · vec=0.4796257019042969]\n# artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep（第 1/2 部分）\n章节: AOAD-MAT: Transformer-based Multi-Agent Deep Reinforcement Learning Model considering Agents’ Order of Action Decisions \\*\n# AOAD-MAT: Transformer-based Multi-Agent Deep Reinforcement Learning Model considering Agents’ Order of Action Decisions \\*\n\n\nShota Takayama and Katsuhide Fujita\n\nGraduate School of Engineering, Tokyo University of Agriculture and Technology\n\nAbstract. Multi-agent reinforcement learning focuses on training the behaviors of multiple learning agents that coexist in a shared environment. Recently, MARL models, such as the Multi-Agent Transformer (MAT) and ACtion dEpendent deep Q-learning (ACE), have significantly improved performance by leveraging sequential decision-making processes. Although these models can enhance performance, they do not explicitly consider the importance of the order in which agents make decisions. In this paper, we propose an Agent Order of Action Decisions-MAT (AOAD-MAT), a novel MAT model that considers the order in which agents make decisions. The proposed model explicitly incorporates the sequence of action decisions into the learning process, allowing the model to learn and predict the optimal order of agent actions. The AOAD-MAT model leverages a Transformer-based actor-critic architecture that dynamically adjusts the sequence of agent actions. To achieve this, we introduce a novel MARL architecture that cooperates with a subtask focused on predicting the next agent to act, integrated into a Proximal Policy Optimization based loss function to synergistically maximize the advantage of the sequential decision-making. The proposed method was validated through extensive experiments on the StarCraft Multi-Agent Challenge and Multi-Agent MuJoCo benchmarks. The experimental results show that the proposed AOAD-MAT model outperforms existing MAT and other baseline models, demonstrating the effectiveness of adjusting the AOAD order in MARL.\n\nKeywords: Multi-Agent System · Multi Agent Transformer · Multi-Agent Reinforcement Learning · Sequential Decision-making Process.\n\n## 1 Introduction\n\n\nMulti-agent reinforcement learning (MARL) has emerged as a promising approach for solving complex cooperative tasks in various real-world scenarios, including traffic control, robotics, and multiplayer games [1, 5, 10, 12]. However, MARL faces unique challenges that are beyond those encountered in single-agent reinforcement learning [22]\n\n[经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md · vec=0.4546644687652588]\n# economics__2011.14424__on-the-effectiveness-of-the-european-central（第 1/5 部分）\n章节: On the effectiveness of the European Central Bank's conventional and unconventional policies under uncertainty\n# On the effectiveness of the European Central Bank's conventional and unconventional policies under uncertainty\n\n\nNiko HAUZENBERGER, Michael PFARRHOFER and Anna STELZER\\*\n\nUniversity of Salzburg\n\nIn this paper, we investigate the effectiveness of conventional and unconventional monetary policy measures by the European Central Bank (ECB) conditional on the prevailing level of uncertainty. To obtain exogenous variation in central bank policy, we rely on high-frequency surprises in financial market data for the euro area (EA) around policy announcement dates. We trace the dynamic effects of shocks to the short-term policy rate, forward guidance and quantitative easing on several key macroeconomic and financial quantities alongside survey-based measures of expectations. For this purpose, we propose a Bayesian smooth-transition vector autoregression (ST-VAR). Our results suggest that transmission channels are impaired when uncertainty is elevated. While conventional monetary policy is less effective during such periods, and sometimes also forward guidance, quantitative easing measures seem to work comparatively well in uncertain times.\n\nJEL: C32, E32, E52, E58\n\nKEYWORDS: Euro area, monetary policy, Bayesian smooth-transition vector autoregression, hierarchical global-local shrinkage\n\n## 1. Introduction\n\n\nConventional and unconventional monetary policies are widely used tools adopted in central banks to stimulate slacking economies and counteract disinflationary pressures stemming from recessionary episodes and economic uncertainty.¹ Research measuring the effects and transmission channels of monetary policy to the real and financial sectors has produced a voluminous body of literature (see, among many others, Kashyap and Stein, 2000; Kuttner, 2001; Bernanke et al., 2005; Gürkaynak et al., 2005; Sims and Zha, 2006; Tenreyro and Thwaites, 2016; Altavilla et al., 2019; Jarociński and Karadi, 2020). In this paper, we contribute to this line of work by assessing non-linear features in monetary transmission for the euro area (EA). We consider economic uncertainty as a key determinant of the effectiveness of policy measures enacted by the European Central Bank (ECB), and discuss factors that may render policy interventions in uncertain times less effective.\n\nA change in the m\n\n[计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md · vec=0.47380900382995605]\n# robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md.md（第 1/2 部分）\n章节: MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping\n# MLP-SLAM: Multilayer Perceptron-Based Simultaneous Localization and Mapping\n\n\nTaozhe Li¹ and Wei Sun²\n\nAbstract—The Visual Simultaneous Localization and Mapping (V-SLAM) system has advanced significantly in recent years, achieving high precision in environments with few dynamic objects. However, its performance declines in settings with numerous movable objects, such as those with pedestrians, cars, and buses, which are common in outdoor scenes. While some researchers are tackling this issue with artificial mathematical methods, these often suffering less generality and information loss. To address this problem, we propose a novel Multilayer Perceptron (MLP)-based method that utilizes complete geometric information to prevent information loss and capable to apply in various situations. To best of our knowledge, this is the first time that machine learning-based method introduced for distinguishing dynamic and static feature points in the SLAM field. Additionally, there is currently no publicly available dataset for evaluating dynamic and static feature classification methods. To fill this gap, we have created a publicly available dataset containing over 50,000 feature points. Experimental results show that our MLP-based dynamic and static feature point discriminator outperforms other methods on this dataset. Furthermore, our proposed MLP-based realtime stereo SLAM system achieves the highest average precision and fastest speed on the outdoor KITTI Odometry and KITTI360 datasets compared to other dynamic SLAM systems. The open-source code and datasets will be accessible at https://github.com/TaozheLi/MLP-SLAM upon paper acceptance.\n\nIndex Terms-Multilayer Perceptron, Dynamic SLAM, Machine Learning\n\n## I. INTRODUCTION\n\n\nVisual Simultaneous Localization and Mapping (V-SLAM) allows for precise ego-localization and accurate mapping using a lightweight, cost-effective camera sensor. It is vital in robotics, space exploration, and autonomous driving, where it enhances navigation and decision-making. However, most existing SLAM systems are heavily reliant on the assumption of a static world, including state-of-theart (SOTA) systems such as ORB-SLAM2 [1], ORB-SLAM3 [2], LSD-SLAM [3] and Direct Sparse Odometry [4]. These systems typically perform with high precision in environments with predominant\n\n[生命科学与医学/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md · vec=0.4770706295967102]\n# Epitope analysis for influenza vaccine design\n\nEnrique T. Muñoz and Michael W. Deem\n\nDepartment of Bioengineering and Department of Physics & Astronomy\n\nRice University\n\nHouston, TX 77005-1892\n\nTel: 713-348-5852\n\nFAX: 713-348-5811\n\nmwdeem@rice.edu\n\n## Abstract\n\nUntil now, design of the annual influenza vaccine has relied on phylogenetic or wholesequence comparisons of the viral coat proteins hemagglutinin and neuraminidase, with vaccine effectiveness assumed to correlate monotonically to the vaccine-influenza sequence difference. We use a theory from statistical mechanics to quantify the nonmonotonic immune response that results from antigenic drift in the epitopes of the hemagglutinin and neuraminidase proteins. The results explain the ineffectiveness of the 2003-2004 influenza vaccine in the United States and provide an accurate measure by which to optimize the effectiveness of future annual influenza vaccines.\n\nKey words: Influenza vaccine, Original antigenic sin, Antigenic drift\n\n## 1 Introduction\n\nAntigenic variation constitutes one mechanism employed by influenza viruses to evade the adaptive response of the host immune system. This antigenic drift of the recognized, epitope regions of the viral surface proteins hemagglutinin (HA) and neuraminidase (NA) constitutes a major challenge to effective vaccine design, where historical experience and phylogenetic analysis of HA and NA protein sequences from circulating human strains are used to decide the components of the annual influenza vaccine. Here we introduce a theory to guide this important public health decision. Application of the theory could help prevent critical situations such as occurred with 2003–2004 influenza epidemic [1], whence the administered A/Panama/2007/99 H3N2 vaccine gave unexpectedly [2] low protection against the mutant strain A/Fujian/411/2002. A model from statistical mechanics is used to evaluate the non-linear decrease of the immune response due to mutations in the viral epitope region sequences. We propose that this epitope analysis be regularly used as a measure of the immunological distance between mutant strains in the annual design of the influenza vaccine.\n\nInfluenza A virus infections and posterior complications, such as pneumonia, are a major cause of human morbidity and mortality. The 2003–2004 influenza epidemic was mainly due to the proliferation of the new H3N2 subtype strain A/Fujian/411/2002, an antigenic drift mutant of A/Panama/2007/99. According to the Febr\n\n[自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md · vec=0.4970362186431885]\n# chemistry__1911.02792__machine-learning-for-molecular-simulation（第 2/4 部分）\n章节: Machine learning for molecular simulation > 2.5 Sampling and Thermodynamics\n## 2.5 Sampling and Thermodynamics\n\n\nMD time steps are on the order of one femtosecond $\\left( 1 0 ^ { - 1 5 } \\mathrm { ~ s \\right) }$ , while configuration changes governing molecular function are often rare events that may take $1 0 ^ { - 3 }$ to $1 0 ^ { 3 } ~ \\mathrm { s } .$ Even when evaluating the potential and the forces it generates is fast, simulating single protein folding and unfolding events by direct MD simulation may take years to centuries on a supercomputer. To avoid this sampling problem, machine learning methods can be employed to learn generating equilibrium samples from $\\mu ( \\mathbf { x } )$ more efficiently, or even by generating statistically independent samples in “one shot” (Sec. 2.5).\n\nLearning to sample probability distributions is the realm of generative learning [87, 88, 89, 90]. In the past few years, directed generative networks, such as variational Autoencoders (VAEs) [88], generative adversarial networks (GANs) [89], and flows [91, 90], have had a particular surge of interest. Such networks are trained to transform samples from an easy-to-sample probability distribution, such as Gaussian noise, into realistic samples of the objects of interest. These methods have been used to draw photorealistic images [92, 93], generate speech or music audio [94] and generate chemical structures to design molecules or materials with certain properties [42, 43, 44, 45].\n\nIf the aim is to learn a probability distribution from sampling data (density estimation) or learn to efficiently sample from a given probability distribution (Boltzmann generation [37]), one typically faces the challenge of matching the probability distribution of the trained model with a reference.\n\nMatching probability distributions can be achieved by minimizing probability distances. The most commonly used probability distance is the Kullback-Leibler (KL) divergence, also called relative entropy between two distributions q and $p \\mathrm { : }$\n\n$$\n\\mathrm { K L } ( q \\parallel p ) = \\int q ( \\mathbf { x } ) \\left[ \\log q ( \\mathbf { x } ) - \\log p ( \\mathbf { x } ) \\right] \\mathrm { d } \\mathbf { x } .\\tag{16}\n$$\n\nIn Boltzmann generation [37], we aim to efficiently sample the equilibrium distribution $\\mu ( \\mathbf { x } )$ of a many-body system defined by its energy function $u ( \\mathbf { x } ) \\ \\left( \\mathr\n\n[aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md · vec=0.4902821183204651]\n# 工业诊断报告：5 秒窗口温度序列异常趋势判定\n\n- **运行 ID**: `202609201042216_team_smoke`\n- **数据源**: `data/auth_test.csv`（sha256=F2B29558…16FB，2 行 × 3 列）\n- **诊断类型**: `COMPETING_SET`（竞争假设集，不可裁决）\n- **Judge 门控**: pass，score=96（第 1 轮，无阻断项）\n- **Preflight 物理审计**: PREFLIGHT_PASS（无阻断项）\n- **报告生成**: 2026-09-20\n\n---\n\n## 1. 执行摘要\n\n本诊断回答用户问题——『该数据有无异常趋势？』——结论为**不可裁决**：数据确实存在表观单向温升，temp_c 由 72.1 degC 升至 73.4 degC（+1.3 degC / 5 s，平均速率 0.26 degC/s，derived）[Evidence Rank 1]，且该事实经原始两行独立复算与 VLM 读图 3 次交叉确认。但 n=2 样本低于一切统计方法门槛（regime 20 行 / 变点 3 段 / CCF 30 行），无正常范围基线、无冗余测点、无事件记录，三个物理上成立的解释——H1 真实工艺热瞬态（置信 34）、H2 传感器测量伪影（置信 30）、H3 短时瞬态伪影（置信 34）——在本数据下完全不可判别。诊断输出 `COMPETING_SET`，单假设置信度 30-34（LOW，竞争集上限 65），禁止任何确定性根因表述。置信分值仅作序数解读（H2 < H1 ≈ H3），不构成精确度量。裁决路径为按最小判别数据需求补测（P1：同测点冗余参考传感器 + 连续 ≥30 个 5 s 样本 + 传感器规格书）。\n\n## 2. 诊断背景\n\n### 2.1 数据概览\n\n| 项 | 值 |\n|---|---|\n| 原始文件 | `data/auth_test.csv`，2 行 × 3 列（temp_c / timestamp / 派生 time_hours），无清洗损失（cleaning_operations=[]，0 行丢弃 / 0 修改） |\n| 数值参数 | temp_c（摄氏温度，L1 推断：测点 / 介质 / 设备 / 工艺阶段未知，physical_meaning_confidence=INFERRED） |\n| 时间窗 | 2026-09-09T00:00:00+08:00 → 00:00:05+08:00（5 s，时间戳真实解析、单调、间隔均匀 5.0 s） |\n| 观测值 | 72.1 degC → 73.4 degC |\n| 结构缺失 | 无分组列、无质量/检验列、无事件标记列、无冗余测点 |\n\n### 2.2 用户问题\n\n『该数据有无异常趋势？』——即判定 5 秒窗口内的温升是否构成异常趋势、其物理来源为何。\n\n### 2.3 本体与工艺上下文\n\n本体（`01_ontology/ontology.json`）标注：temp_c 为 predictor 角色；direction=UNKNOWN；normal_range_status=NOT_APPLICABLE（无 SOP / 规格限 / 历史基线）；物理原理候选（能量守恒 m·Cp·dT/dt = Q_in − Q_out、热时间常数 tau=C/(hA)）分别为 UNVERIFIED_NO_PROCESS_CONTEXT 与 NOT_ESTIMABLE_WITH_TWO_ROWS；六类混杂变量（环境温度、热源/负载、冷却、设备归属、工况、传感器健康）全部 NOT_OBSERVED。本体 `discrepancy_signals[0]` 标记 **BLOCKING_FOR_CAUSAL_CONCLUSION**：仅 2 行、1 个数值变量、5 秒跨度时，诊断必须输出 NEEDS_DATA 或 COMPETING_SET，`causal_graph.root_cause_conclusion_allowed=false` [Evidence Rank 5]。\n\n## 3. 数据质量评估\n\n| 维度 | 结论 |\n|---|---|\n| 完整性 | 2 行 × 3 列无缺失；清洗零操作、零损失，原始值与清洗值逐位一致（cleaning_integrity.json） |\n| 时间合法性 | timestamp 为真实解析的 ISO-8601(+08:00)，monotonic=true、median_interval_s=5.0、dropped_unparsable=0（time_alignment.json） |\n| 异常值 | z=[-0.7071, +0.7071]（构造性）、IQR 栏 71.45/74.05 degC 内无点、异常检测因 n<3 前置跳过（process_parameters_screened=0）——『无离群、无异常区间』是样本量下限的构造性结果，**不构成无异常的证据** |\n| 生产状态 | 两行被脚本默认标 steady 为无证据默认值，不据此声明稳态背景 |\n| 批次/分组完整性 | 无批次列、无分组列（组数=1），批次完整性检验不触发 |\n| 统计充分性 | validate_report 判定 **INSUFFICIENT_DATA**；脚本输出的 ROBUST 总体有效性判定为空洞真（total_targets=0、检查列表全空），已降权 |\n\n## 4. 统计分析发现\n\n本节为强制章节。n=2 条件下全部统计方法不可用，可用发现均为算术与视觉事实：\n\n1. **唯一趋势事实 [Evidence Rank 1]**：一阶差分 +1.3 degC，平均速率 0.26 degC/s（derived=true，未插值、未滤波、未拟合，可由原始两行复算）。『drift』仅为两点单调形态的形态学描述，不代表\n\n[e2e-demo-0923-022632/平台架构总览.md · vec=0.41260606050491333]\n# Agentic Knowledge Base — Architecture & Development Guide\n\n> Version 2.3 · Last reviewed: 2026-08-05\n\nThis document describes the **current, implemented** architecture of the RAG Knowledge Platform: service topology, the five-layer storage model, the 94-tool MCP surface, the QDCVR retrieval method, the experience lifecycle, the SOUL persona system, and the conventions every new change must follow. For command-level usage see `README.md`; for the trigger contract see `CLAUDE.md`.\n\n---\n\n## 1. Service Topology\n\nThree long-running services plus one MCP layer, all configured from a single root `config.yml` (backend-only keys live in `backend/config.yml`):\n\n```\nBrowser ──(fetch)──▶ Nuxt 3 Web UI (proxy layer)        dev 6789 / prod 3000\n                         │  server-to-server (trust_env=False)\n                         ▼\n                     FastAPI Backend + MinerU OCR         dev 8765 / prod 8001\n                         │  subprocess (Job Object / prctl / pgrp)\n                         ▼\n                     MinerU OCR engine (ephemeral port)\n\nClaude Code / Agent ──(MCP stdio)──▶ kb-mcp server        94 tools\n                         │  HTTP → web proxy / backend  +  direct file reads\n                         ▼\n                     Nuxt / Backend  (writes)  ·  .tree-fs.json / .knowledge-base.yml (reads)\n```\n\n- **Web (Nuxt 3)** is a server-to-server proxy: the browser never hits FastAPI directly (no CORS). It also owns the on-disk KB store (`.tree-fs.json` + `.knowledge-base.yml`).\n- **Backend (FastAPI)** owns parse scheduling, MinerU subprocess lifecycle, vector index (ChromaDB + BGE-M3), Neo4j graph, experience store, SOUL training/evaluation, and the meditation scheduler.\n- **kb-mcp (FastMCP)** exposes **94 tools** over stdio; `server.py` contains zero HTTP code — all HTTP lives in `kb_client/client.py`. Parse/graph/reindex/training tools are **non-blocking**: they register a background task and return a `task_id` immediately.\n- **MinerU** runs as a hidden subprocess on an **ephemeral port** (`MineruApiManager(port=None)` auto-picks a free port). Never hardcode a port — read `manager.port` / `manager.api_url`.\n\n---\n\n## 2. The 94 MCP Tools\n\nAll tools are MCP-native (`mcp__kb-mcp__*`). Category breakdown (counts verified from `server.py`):\n\n| Category | Count | Highlights |\n|---|:---:|---|\n| Health / project lifecycle | 4 | `backend_status` · `kb_project_status` · `kb_project_start` · `kb_project_update` |\n| KB CRUD | 4 | `kb_list` · `kb_create` · `kb_u\n\n[自然科学与地球科学/gravitational-physics__0706.3294__moriond-07-proceedings-extension-of-the-freq.md.md · vec=0.49483728408813477]\n# Moriond 07 proceedings: “Extension of the frequency-range of interferometers for the \"magnetic\" components of gravitational waves?\"\n\nChristian Corda\n\nAugust 2, 2021\n\nINFN - Sezione di Pisa and Università di Pisa, Via F. Buonarroti 2, I - 56127 PISA, Italy\n\nE-mail address: christian.corda@ego-gw.it\n\n## Abstract\n\nRecently some papers in the literature have shown the presence and importance of the so-called \"magn",
+  "unscanned": [
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig__k02.md",
+      "reason": "empty_content"
+    },
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/genomics__2602.10156__strand-sequence-conditioned-transport-for-si__k62.md",
+      "reason": "empty_content"
+    }
+  ],
+  "seconds": 23.8
+}

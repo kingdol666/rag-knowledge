@@ -1,0 +1,161 @@
+{
+  "status": "ok",
+  "query": "What is the recommended daily dosage of metformin for diabetic cats?",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "parameters": {
+    "kb_id": "",
+    "threshold": 0.5,
+    "vector_top_k": 30,
+    "vector_threshold": 0.35,
+    "doc_read_chars": 20000,
+    "segment_chars": 3000,
+    "max_state_chars": 6000,
+    "max_evidence_chars": 24000
+  },
+  "recall": {
+    "vector_raw_hits": 17,
+    "vector_dedup_docs": 14,
+    "recall_seconds": 3.0,
+    "docs_read": 12,
+    "read_errors": [
+      {
+        "doc_path": "Corpus-Chunks800/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k30.md",
+        "error": "empty_content"
+      },
+      {
+        "doc_path": "Corpus-Chunks800/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr__k08.md",
+        "error": "empty_content"
+      }
+    ],
+    "reread_seconds": 5.9
+  },
+  "judge": {
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "criterion": "evidence",
+    "threshold": 0.5,
+    "global_best": 0.5103,
+    "scored_segments": 86,
+    "total_segments": 86,
+    "errors": []
+  },
+  "judge_doc_scores": [
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md",
+      "vector_score": 0.4823375940322876,
+      "judge_score": 0.5103,
+      "kept": true
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "vector_score": 0.41383540630340576,
+      "judge_score": 0.497,
+      "kept": false
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t.md (part 1 of 2).md",
+      "vector_score": 0.48140037059783936,
+      "judge_score": 0.4514,
+      "kept": false
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md",
+      "vector_score": 0.4583083391189575,
+      "judge_score": 0.4142,
+      "kept": false
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "vector_score": 0.40432459115982056,
+      "judge_score": 0.3439,
+      "kept": false
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p (part 3 of 3).md",
+      "vector_score": 0.4040760397911072,
+      "judge_score": 0.3131,
+      "kept": false
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/materials__2211.04977__design-of-battery-materials-via-defects-and.md (part 2 of 3).md",
+      "vector_score": 0.38442057371139526,
+      "judge_score": 0.2907,
+      "kept": false
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 3 of 5).md",
+      "vector_score": 0.3819701075553894,
+      "judge_score": 0.2755,
+      "kept": false
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 1 of 26) (part 1 of 2).md",
+      "vector_score": 0.3503914475440979,
+      "judge_score": 0.2522,
+      "kept": false
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 4 of 4).md",
+      "vector_score": 0.4489661455154419,
+      "judge_score": 0.2376,
+      "kept": false
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 4 of 5).md",
+      "vector_score": 0.44102156162261963,
+      "judge_score": 0.1987,
+      "kept": false
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 3 of 3).md",
+      "vector_score": 0.4047081470489502,
+      "judge_score": 0.1487,
+      "kept": false
+    }
+  ],
+  "result_list": [
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md",
+      "name": "clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md",
+      "vector_score": 0.4823375940322876,
+      "judge_score": 0.5103,
+      "truncated": true,
+      "read_error": null
+    }
+  ],
+  "kept_doc_paths": [
+    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md"
+  ],
+  "evidence_pack": "[生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 2 of 8).md · vec=0.4823375940322876]\n# clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md.md（第 2/8 部分）\n章节: Large Language Models Encode Clinical Knowledge > 3.2.1 Clinician evaluation\n## 3.2.1 Clinician evaluation\n\n\nWhile objective accuracy metrics on multiple-choice questions are a robust measure of model performance, they omit several important details. To more deeply assess the generative outputs of LLMs in open-ended question answering for medical topics, we developed a pilot framework for human evaluation of long-form model answers to consumer medical questions in the LiveQA, MedicationQA and HealthSearchQA datasets.\n\nTable 2 | Summary of the different axes along which clinicians evaluate the answers in our consumer medical question answering datasets. These include agreement with scientific consensus, possibility and likelihood of harm, evidence of comprehension, reasoning and retrieval ability, presence of inappropriate, incorrect or missing content and possibility of bias in the answer. We use a pool of clinicians to evaluate the quality of model and human-generated answers along these axes.\n<table><tr><td>Task</td><td>Axis</td><td>Question</td></tr><tr><td>1</td><td>Scientific consensus</td><td>How does the answer relate to the consensus in the scientific and clinical community?</td></tr><tr><td>2</td><td>Extent of possible harm</td><td>What is the extent of possible harm?</td></tr><tr><td>3</td><td>Likelihood of possible harm</td><td>What is the likelihood of possible harm?</td></tr><tr><td>4</td><td>Evidence of correct comprehension</td><td>Does the answer contain any evidence of correct reading compre- hension? (indication the question has been understood)</td></tr><tr><td>5</td><td>Evidence of correct retrieval</td><td>Does the answer contain any evidence of correct recall of knowl- edge? (mention of a relevant and/or correct fact for answering the question)</td></tr><tr><td>6</td><td>Evidence of correct reasoning</td><td>Does the answer contain any evidence of correct reasoning steps? (correct rationale for answering the question)</td></tr><tr><td>7</td><td>Evidence of incorrect comprehension</td><td>Does the answer contain any evidence of incorrect reading com- prehension? (indication the question has not been understood)</td></tr><tr><td>8</td><td>Evidence of incorrect retrieval</td><td>Does the answer contain any evidence of incorrect recall of knowl- edge? (mention of an irrelevant and/or incorrect fact for answering</td></tr><tr><td>9</td><td>",
+  "unscanned": [
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k30.md",
+      "reason": "empty_content"
+    },
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr__k08.md",
+      "reason": "empty_content"
+    }
+  ],
+  "seconds": 18.0
+}

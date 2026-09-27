@@ -1,0 +1,47 @@
+{
+ "qid": "QK02",
+ "question": "Which three independent ontologies subdivide the Gene Ontology?",
+ "track": "mode_A",
+ "method": "mode_A",
+ "via": "retrieval-mode+closed-book",
+ "answer": "**The evidence is insufficient to answer this question.**\n\nThe two retrieved chunks contain no mention of the Gene Ontology or any of its subdivisions. The first source (`e2e-demo-0923-022632/global-rag-benchmark.md`, vec≈0.398) discusses a benchmark for global retrieval-augmented generation and corpus-level reasoning queries, not biological ontologies. The second source (`计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md`, vec≈0.461) is a database paper about automatic index structure generation (GENE), also unrelated to Gene Ontology. Neither document names any ontology that subdivides the Gene Ontology, and both were evidently returned by weak semantic similarity rather than topical match. Per the task constraints, I am stopping here rather than answering from prior knowledge.\n\n**Sources used:**\n- `e2e-demo-0923-022632/global-rag-benchmark.md`\n- `计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md`",
+ "is_error": false,
+ "latency_s": 28.9,
+ "retrieval_s": 22.7,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38349,
+  "output": 583,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.20632,
+ "ranked": [
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "soul-cs-library/memory-conventions.md",
+  "soul-cs-library/soul-definition.md",
+  "soul-demo-qa/memory-conventions.md",
+  "soul-demo-qa/soul-definition.md",
+  "soul-e2e-tester-024115/memory-conventions.md",
+  "soul-e2e-tester-024115/soul-definition.md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md",
+  "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+  "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+  "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 2 of 2).md",
+  "经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 1 of 4).md",
+  "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+  "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md"
+ ],
+ "evidence_sources": [
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "soul-cs-library/memory-conventions.md",
+  "soul-cs-library/soul-definition.md"
+ ],
+ "evidence_chars": 4000,
+ "real_engine": true,
+ "merge": null
+}

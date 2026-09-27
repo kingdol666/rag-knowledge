@@ -1,0 +1,32 @@
+{
+ "qid": "QK05",
+ "method": "rerank",
+ "question": "In the trap-cropping optimization framework, roughly what share of the field should be allocated to trap plants when they are 5 to 25 times more attractive than the cash plant?",
+ "ranked": [
+  "2508.05896"
+ ],
+ "ranked_paths": [
+  "agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz__k17"
+ ],
+ "evidence_sources": [
+  "2508.05896"
+ ],
+ "evidence_chars": 513,
+ "retrieval_s": 4.7,
+ "latency_s": 13.9,
+ "answer": "**Answer:** Roughly 7–10% of the field — about a tenth of the land — should be allocated to trap plants. The evidence explicitly states that at attractiveness level five (pests five times more likely to settle on a trap plant), it is optimal to devote roughly 10% of the land to the trap crop, and separately that approximately 7–10% of the field should be allocated to trap plants. The retrieved chunk does not explicitly restate the 25× figure, but the 7–10% statement sits in the high-attractiveness discussion matching the upper end of the question's range.\n\n**Source used:** [2508.05896] (provided evidence chunk; trap-cropping optimization discussion around Figures 3b/3c).",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 37535,
+  "output": 1129,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.21589999999999998,
+ "extra": {
+  "rerank_fallback": false
+ },
+ "track": "rerank",
+ "via": "baseline+closed-book"
+}

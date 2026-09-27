@@ -1,0 +1,379 @@
+{
+  "status": "ok",
+  "query": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "parameters": {
+    "kb_id": "",
+    "threshold": 0.5,
+    "vector_top_k": 30,
+    "vector_threshold": 0.35,
+    "doc_read_chars": 20000,
+    "segment_chars": 3000,
+    "max_state_chars": 6000,
+    "max_evidence_chars": 24000
+  },
+  "recall": {
+    "vector_raw_hits": 23,
+    "vector_dedup_docs": 20,
+    "recall_seconds": 3.2,
+    "docs_read": 18,
+    "read_errors": [
+      {
+        "doc_path": "Corpus-Chunks800/climate-science__1503.07557__precipitation-extremes-under-climate-change__k00.md",
+        "error": "empty_content"
+      },
+      {
+        "doc_path": "Corpus-Chunks800/climate-science__1503.07557__precipitation-extremes-under-climate-change__k01.md",
+        "error": "empty_content"
+      }
+    ],
+    "reread_seconds": 7.7
+  },
+  "judge": {
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "criterion": "evidence",
+    "threshold": 0.5,
+    "global_best": 0.8846,
+    "scored_segments": 99,
+    "total_segments": 99,
+    "errors": []
+  },
+  "judge_doc_scores": [
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "vector_score": 0.3848077058792114,
+      "judge_score": 0.8846,
+      "kept": true
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_path": "soul-cs-library/memory-conventions.md",
+      "vector_score": 0.36482465267181396,
+      "judge_score": 0.8518,
+      "kept": true
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_path": "soul-e2e-tester-024115/memory-conventions.md",
+      "vector_score": 0.36482465267181396,
+      "judge_score": 0.8518,
+      "kept": true
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_path": "soul-demo-qa/memory-conventions.md",
+      "vector_score": 0.36482465267181396,
+      "judge_score": 0.8518,
+      "kept": true
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+      "vector_score": 0.4666557312011719,
+      "judge_score": 0.8384,
+      "kept": true
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 1 of 3).md",
+      "vector_score": 0.7273397445678711,
+      "judge_score": 0.8368,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 7 of 9).md",
+      "vector_score": 0.500076174736023,
+      "judge_score": 0.8153,
+      "kept": true
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.4971335530281067,
+      "judge_score": 0.8081,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+      "vector_score": 0.5324209928512573,
+      "judge_score": 0.8007,
+      "kept": true
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 16 of 26).md",
+      "vector_score": 0.3534558415412903,
+      "judge_score": 0.7969,
+      "kept": true
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 3 of 26).md",
+      "vector_score": 0.38222378492355347,
+      "judge_score": 0.7956,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/agriculture__1311.6857__agriculture-driving-male-expansion-in-neolit.md.md",
+      "vector_score": 0.47408342361450195,
+      "judge_score": 0.775,
+      "kept": true
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_path": "e2e-demo-0923-022632/平台架构总览.md",
+      "vector_score": 0.38367170095443726,
+      "judge_score": 0.7695,
+      "kept": true
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md",
+      "vector_score": 0.4914082884788513,
+      "judge_score": 0.745,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md",
+      "vector_score": 0.5061435699462891,
+      "judge_score": 0.7257,
+      "kept": true
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_path": "demo-qa-20260927/great-wall.md",
+      "vector_score": 0.4421807527542114,
+      "judge_score": 0.5879,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+      "vector_score": 0.4872410297393799,
+      "judge_score": 0.561,
+      "kept": true
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_path": "demo-qa-20260927/photosynthesis.md",
+      "vector_score": 0.45187854766845703,
+      "judge_score": 0.4612,
+      "kept": false
+    }
+  ],
+  "result_list": [
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_id": null,
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "name": "global-rag-benchmark.md",
+      "vector_score": 0.3848077058792114,
+      "judge_score": 0.8846,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_id": null,
+      "doc_path": "soul-cs-library/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.36482465267181396,
+      "judge_score": 0.8518,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_id": null,
+      "doc_path": "soul-e2e-tester-024115/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.36482465267181396,
+      "judge_score": 0.8518,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_id": null,
+      "doc_path": "soul-demo-qa/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.36482465267181396,
+      "judge_score": 0.8518,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+      "name": "economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+      "vector_score": 0.4666557312011719,
+      "judge_score": 0.8384,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_id": null,
+      "doc_path": "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 1 of 3).md",
+      "name": "climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 1 of 3).md",
+      "vector_score": 0.7273397445678711,
+      "judge_score": 0.8368,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 7 of 9).md",
+      "name": "large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 7 of 9).md",
+      "vector_score": 0.500076174736023,
+      "judge_score": 0.8153,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_id": null,
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "name": "【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.4971335530281067,
+      "judge_score": 0.8081,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+      "name": "power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+      "vector_score": 0.5324209928512573,
+      "judge_score": 0.8007,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_id": null,
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 16 of 26).md",
+      "name": "pride_and_prejudice (part 16 of 26).md",
+      "vector_score": 0.3534558415412903,
+      "judge_score": 0.7969,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_id": null,
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 3 of 26).md",
+      "name": "pride_and_prejudice (part 3 of 26).md",
+      "vector_score": 0.38222378492355347,
+      "judge_score": 0.7956,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/agriculture__1311.6857__agriculture-driving-male-expansion-in-neolit.md.md",
+      "name": "agriculture__1311.6857__agriculture-driving-male-expansion-in-neolit.md.md",
+      "vector_score": 0.47408342361450195,
+      "judge_score": 0.775,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_id": null,
+      "doc_path": "e2e-demo-0923-022632/平台架构总览.md",
+      "name": "平台架构总览.md",
+      "vector_score": 0.38367170095443726,
+      "judge_score": 0.7695,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md",
+      "name": "economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md",
+      "vector_score": 0.4914082884788513,
+      "judge_score": 0.745,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md",
+      "name": "immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md",
+      "vector_score": 0.5061435699462891,
+      "judge_score": 0.7257,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_id": null,
+      "doc_path": "demo-qa-20260927/great-wall.md",
+      "name": "great-wall.md",
+      "vector_score": 0.4421807527542114,
+      "judge_score": 0.5879,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+      "name": "nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+      "vector_score": 0.4872410297393799,
+      "judge_score": 0.561,
+      "truncated": true,
+      "read_error": null
+    }
+  ],
+  "kept_doc_paths": [
+    "e2e-demo-0923-022632/global-rag-benchmark.md",
+    "soul-cs-library/memory-conventions.md",
+    "soul-e2e-tester-024115/memory-conventions.md",
+    "soul-demo-qa/memory-conventions.md",
+    "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md",
+    "自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 1 of 3).md",
+    "计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 7 of 9).md",
+    "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+    "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+    "Novel-PridePrejudice/pride_and_prejudice (part 16 of 26).md",
+    "Novel-PridePrejudice/pride_and_prejudice (part 3 of 26).md",
+    "生命科学与医学/agriculture__1311.6857__agriculture-driving-male-expansion-in-neolit.md.md",
+    "e2e-demo-0923-022632/平台架构总览.md",
+    "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md",
+    "生命科学与医学/immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md",
+    "demo-qa-20260927/great-wall.md",
+    "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md"
+  ],
+  "evidence_pack": "[e2e-demo-0923-022632/global-rag-benchmark.md · vec=0.3848077058792114]\n# Towards Global Retrieval Augmented Generation: A Benchmark for Corpus-Level Reasoning\n\nQi Luo1,\\*, Xiaonan Li1,\\*, Tingshuo Fan1, Xinchi Chen1,†, Xipeng Qiu1,2,†\n\n1Fudan University\n\n2Shanghai Innovation Institutey qluo22@m.fudan.edu.cn\n\n## Abstract\n\nRetrieval-augmented generation (RAG) has emerged as a leading approach to reducing hallucinations in large language models (LLMs). Current RAG evaluation benchmarks primarily focus on what we call local RAG: retrieving relevant chunks from a small subset of documents to answer queries that require only localized understanding within specific text chunks. However, many real-world applications require a fundamentally different capability—global RAG—which involves aggregating and analyzing information across entire document collections to derive corpus-level insights (e.g. “What are the top 10 most cited papers in 2023?\"). In this paper, we introduce GlobalQA—the first benchmark specifically designed to evaluate global RAG capabilities, covering four core task types: counting, extremum queries, sorting, and top-k extraction. Through systematic evaluation across different models and baselines, we find that existing RAG methods perform poorly on global tasks, with the strongest baseline achieving only 1.51 F1 score. To address these challenges, we propose Global-RAG, a multi-tool collaborative framework that preserves structural coherence through chunklevel retrieval, incorporates LLM-driven intelligent filters to eliminate noisy documents, and integrates aggregation modules for precise symbolic computation. On the Qwen2.5-14B model, GlobalRAG achieves 6.63 F1 compared to the strongest baseline's 1.51 F1, validating the effectiveness of our method.\n\n## 1 Introduction\n\nRetrieval-augmented generation (RAG) has been proposed as a solution to mitigate hallucination and knowledge limitations in large language models (LLMs) (Lewis et al., 2021; Li et al., 2025; Zhang et al., 2025; Rawte et al., 2023; Wang et al.,\n\n![](images/838ff38197a58dd916888ef6cc7803a82e53db9b32898de2754d99b5b76b9a6c.jpg)  \n(b) Global Query: Dense Retriever Fails  \nFigure 1: Why Dense Retriever Fails on Global Queries: (a) Local Query: The answer can be found in specific documents. Dense retriever ranks all documents and selects top-k, which contains the relevant information. (b) Global Query: The answer requires information from all documents. However, dense retriever only returns top-k ranked documents, missing critical information scattered acro\n\n[soul-cs-library/memory-conventions.md · vec=0.36482465267181396]\n# 记忆约定 — soul-template\n\n## 记忆类型\n- 人格记忆(memories/): 高质量问答沉淀,frontmatter 含 question/q_hash/evidence_paths/scores/pas_score\n- 认知文档(cognition/): 自我认知与反思结论\n- 知识经验: 通过 experience 草稿池进入共享知识层\n\n## 记忆准入标准(硬闸门)\n- 接地性 ≥3(代码校验引用路径存在 + LLM 关联分)\n- 检索前置门通过(≥1 chunk 相似度 ≥0.5)\n- 无 judge_divergence(分歧 ≤1.5)\n\n## 记忆生命周期\n- pending(草稿,不索引)→ approved(人工审批后注册+索引)→ stale(scope 变更后标记,不删)\n- 检查点可回滚 memories/ 与 cognition-drafts/\n\n## 审批规则\n- 接地性<3 或四维均分<3 需 force=True 才能批准\n- 批准记录写入 audit/approval-log.jsonl\n\n\n[soul-e2e-tester-024115/memory-conventions.md · vec=0.36482465267181396]\n# 记忆约定 — soul-template\n\n## 记忆类型\n- 人格记忆(memories/): 高质量问答沉淀,frontmatter 含 question/q_hash/evidence_paths/scores/pas_score\n- 认知文档(cognition/): 自我认知与反思结论\n- 知识经验: 通过 experience 草稿池进入共享知识层\n\n## 记忆准入标准(硬闸门)\n- 接地性 ≥3(代码校验引用路径存在 + LLM 关联分)\n- 检索前置门通过(≥1 chunk 相似度 ≥0.5)\n- 无 judge_divergence(分歧 ≤1.5)\n\n## 记忆生命周期\n- pending(草稿,不索引)→ approved(人工审批后注册+索引)→ stale(scope 变更后标记,不删)\n- 检查点可回滚 memories/ 与 cognition-drafts/\n\n## 审批规则\n- 接地性<3 或四维均分<3 需 force=True 才能批准\n- 批准记录写入 audit/approval-log.jsonl\n\n\n[soul-demo-qa/memory-conventions.md · vec=0.36482465267181396]\n# 记忆约定 — soul-template\n\n## 记忆类型\n- 人格记忆(memories/): 高质量问答沉淀,frontmatter 含 question/q_hash/evidence_paths/scores/pas_score\n- 认知文档(cognition/): 自我认知与反思结论\n- 知识经验: 通过 experience 草稿池进入共享知识层\n\n## 记忆准入标准(硬闸门)\n- 接地性 ≥3(代码校验引用路径存在 + LLM 关联分)\n- 检索前置门通过(≥1 chunk 相似度 ≥0.5)\n- 无 judge_divergence(分歧 ≤1.5)\n\n## 记忆生命周期\n- pending(草稿,不索引)→ approved(人工审批后注册+索引)→ stale(scope 变更后标记,不删)\n- 检查点可回滚 memories/ 与 cognition-drafts/\n\n## 审批规则\n- 接地性<3 或四维均分<3 需 force=True 才能批准\n- 批准记录写入 audit/approval-log.jsonl\n\n\n[经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 1 of 5).md · vec=0.4666557312011719]\n# economics__2011.14424__on-the-effectiveness-of-the-european-central（第 1/5 部分）\n章节: On the effectiveness of the European Central Bank's conventional and unconventional policies under uncertainty\n# On the effectiveness of the European Central Bank's conventional and unconventional policies under uncertainty\n\n\nNiko HAUZENBERGER, Michael PFARRHOFER and Anna STELZER\\*\n\nUniversity of Salzburg\n\nIn this paper, we investigate the effectiveness of conventional and unconventional monetary policy measures by the European Central Bank (ECB) conditional on the prevailing level of uncertainty. To obtain exogenous variation in central bank policy, we rely on high-frequency surprises in financial market data for the euro area (EA) around policy announcement dates. We trace the dynamic effects of shocks to the short-term policy rate, forward guidance and quantitative easing on several key macroeconomic and financial quantities alongside survey-based measures of expectations. For this purpose, we propose a Bayesian smooth-transition vector autoregression (ST-VAR). Our results suggest that transmission channels are impaired when uncertainty is elevated. While conventional monetary policy is less effective during such periods, and sometimes also forward guidance, quantitative easing measures seem to work comparatively well in uncertain times.\n\nJEL: C32, E32, E52, E58\n\nKEYWORDS: Euro area, monetary policy, Bayesian smooth-transition vector autoregression, hierarchical global-local shrinkage\n\n## 1. Introduction\n\n\nConventional and unconventional monetary policies are widely used tools adopted in central banks to stimulate slacking economies and counteract disinflationary pressures stemming from recessionary episodes and economic uncertainty.¹ Research measuring the effects and transmission channels of monetary policy to the real and financial sectors has produced a voluminous body of literature (see, among many others, Kashyap and Stein, 2000; Kuttner, 2001; Bernanke et al., 2005; Gürkaynak et al., 2005; Sims and Zha, 2006; Tenreyro and Thwaites, 2016; Altavilla et al., 2019; Jarociński and Karadi, 2020). In this paper, we contribute to this line of work by assessing non-linear features in monetary transmission for the euro area (EA). We consider economic uncertainty as a key determinant of the effectiveness of policy measures enacted by the European Central Bank (ECB), and discuss factors that may render policy interventions in uncertain times less effective.\n\nA change in the m\n\n[自然科学与地球科学/climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 1 of 3).md · vec=0.7273397445678711]\n# climate-science__1503.07557__precipitation-extremes-under-climate-change.md.md（第 1/3 部分）\n章节: Precipitation extremes under climate change\n# Precipitation extremes under climate change\n\n\nPaul A. O'Gorman\n\nReceived: date / Accepted: date\n\nAbstract The response of precipitation extremes to climate change is considered using results from theory, modeling, and observations, with a focus on the physical factors that control the response. Observations and simulations with climate models show that precipitation extremes intensify in response to a warming climate. However, the sensitivity of precipitation extremes to warming remains uncertain when convection is important, and it may be higher in the tropics than the extratropics. Several physical contributions govern the response of precipitation extremes. The thermodynamic contribution is robust and well understood, but theoretical understanding of the microphysical and dynamical contributions is still being developed. Orographic precipitation extremes and snowfall extremes respond differently from other precipitation extremes and require particular attention. Outstanding research challenges include the influence of mesoscale convective organization, the dependence on the duration considered, and the need to better constrain the sensitivity of tropical precipitation extremes to warming.\n\nKeywords Extremes · Global warming · Rainfall · Snowfall · Convection · Orographic Precipitation · Climate models\n\n## 1 Introduction\n\n\nThe response of precipitation extremes (heavy precipitation events) to climate change has been the subject of extensive study because of the potential impacts on human society and ecosystems [30]. An early study using a 4-level general circulation model found that heavy daily precipitation events become more frequent in response to elevated atmospheric $\\mathrm { C O _ { 2 } }$ concentrations [27]. Numerous model studies since then have also found an intensification of precipitation extremes with climate warming (with important regional variations), and this has been confirmed in the available historical record over land, as will be discussed in detail in later sections.\n\nUnderstanding of changes in precipitation extremes is better than for changes in other extremes such as tornadoes [44], but large uncertainties and research challenges remain. If changes in dynamics and precipitation efficiency are negligible, precipitation extremes increase with warming because of increases in the saturation vap\n\n[计算机与人工智能/large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 7 of 9).md · vec=0.500076174736023]\n# large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md.md（第 7/9 部分）\n章节: Vision-Flan: Scaling Human-Labeled Tasks in Visual Instruction Tuning > Task: Semart\\_painting\\_type\\_recognition\n## Task: Semart\\_painting\\_type\\_recognition\n\n\nInstruction: Here is an image of some art. I want to know what type of painting   \nit is. Among others, some types could be: religious, self-portraits, or   \nlandscapes   \nTarget: This falls into the 'mythological' type\n\n## Task: WIKIART\\_artist\\_genre\\_style\\_recognition\n\n\nInstruction: For the given painting, give me the artist name. Also provide the genre and style, if possible.\n\nTarget: This artwork was created by Pyotr Konchalovsky. It falls under the genre of still life and showcases Post Impressionism style of painting.\n\n![](images/7c1bee3f01679d23c176e76eabb35f5489ef3d8a8189d9c18eaab29d6624194f.jpg)\n\n![](images/efdde4858a5e40194fe1be84b978ec85f6cf5c5f42b2f9ef7972f9a9138a5ee1.jpg)\n\n![](images/5ff47013e2cd44d7131576150dfae1a6060a4ec42b30aeedba3e6f7e602905f2.jpg)\n\n![](images/c59840892ccc2472c5701987ca655d729ad9859db4c302ffcdb6cf3002386df7.jpg)\n\n![](images/7f1246b08d7951e1a8e614fe2f95815b58079ca790ed74aa1dea7119dbb0b5ba.jpg)  \nFigure 18  \nFigure 19\n\n## Task: Semart\\_painting\\_school\\_recognition\n\n\nInstruction: I would like to know what school of art this painting could be from. Some possible schools of art are Italian, German, or Spanish among others\n\nTarget: This painting comes from the school of French art\n\n## Task: Semart\\_painting\\_technique\\_recognition\n\n\nInstruction: Can you please tell me what technique is used to create the painting in this picture? Among some other techniques, it could be an oil painting?\n\nTarget: This painting uses Tempera and gold on paper, mounted on wood, 23 x 16 cm\n\n## Task: Semart\\_detailed\\_image\\_description\n\n\nInstruction: Here is a picture of fine art, can you please give me a long description describing all of its details?\n\nTarget: Here is a description: The earliest reference to the painting appears in Francisco de los Santos, Descripción . . . del Escorial, published in 1657, when it was in the sacristy of the Pantheon: '. . . commonly called the \"Glory of El Greco\" on account of the Glory above, but there is also represented, below, Purgatory and Hell, and on the other side, the Church Militant, with an immense number of the Faithful in adoration, raising their hands and eyes to Heaven, and among them Philip Il; in the middle of the Glory is the Name of Jes\n\n[aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md · vec=0.4971335530281067]\n# 工业诊断报告：5 秒窗口温度序列异常趋势判定\n\n- **运行 ID**: `202609201042216_team_smoke`\n- **数据源**: `data/auth_test.csv`（sha256=F2B29558…16FB，2 行 × 3 列）\n- **诊断类型**: `COMPETING_SET`（竞争假设集，不可裁决）\n- **Judge 门控**: pass，score=96（第 1 轮，无阻断项）\n- **Preflight 物理审计**: PREFLIGHT_PASS（无阻断项）\n- **报告生成**: 2026-09-20\n\n---\n\n## 1. 执行摘要\n\n本诊断回答用户问题——『该数据有无异常趋势？』——结论为**不可裁决**：数据确实存在表观单向温升，temp_c 由 72.1 degC 升至 73.4 degC（+1.3 degC / 5 s，平均速率 0.26 degC/s，derived）[Evidence Rank 1]，且该事实经原始两行独立复算与 VLM 读图 3 次交叉确认。但 n=2 样本低于一切统计方法门槛（regime 20 行 / 变点 3 段 / CCF 30 行），无正常范围基线、无冗余测点、无事件记录，三个物理上成立的解释——H1 真实工艺热瞬态（置信 34）、H2 传感器测量伪影（置信 30）、H3 短时瞬态伪影（置信 34）——在本数据下完全不可判别。诊断输出 `COMPETING_SET`，单假设置信度 30-34（LOW，竞争集上限 65），禁止任何确定性根因表述。置信分值仅作序数解读（H2 < H1 ≈ H3），不构成精确度量。裁决路径为按最小判别数据需求补测（P1：同测点冗余参考传感器 + 连续 ≥30 个 5 s 样本 + 传感器规格书）。\n\n## 2. 诊断背景\n\n### 2.1 数据概览\n\n| 项 | 值 |\n|---|---|\n| 原始文件 | `data/auth_test.csv`，2 行 × 3 列（temp_c / timestamp / 派生 time_hours），无清洗损失（cleaning_operations=[]，0 行丢弃 / 0 修改） |\n| 数值参数 | temp_c（摄氏温度，L1 推断：测点 / 介质 / 设备 / 工艺阶段未知，physical_meaning_confidence=INFERRED） |\n| 时间窗 | 2026-09-09T00:00:00+08:00 → 00:00:05+08:00（5 s，时间戳真实解析、单调、间隔均匀 5.0 s） |\n| 观测值 | 72.1 degC → 73.4 degC |\n| 结构缺失 | 无分组列、无质量/检验列、无事件标记列、无冗余测点 |\n\n### 2.2 用户问题\n\n『该数据有无异常趋势？』——即判定 5 秒窗口内的温升是否构成异常趋势、其物理来源为何。\n\n### 2.3 本体与工艺上下文\n\n本体（`01_ontology/ontology.json`）标注：temp_c 为 predictor 角色；direction=UNKNOWN；normal_range_status=NOT_APPLICABLE（无 SOP / 规格限 / 历史基线）；物理原理候选（能量守恒 m·Cp·dT/dt = Q_in − Q_out、热时间常数 tau=C/(hA)）分别为 UNVERIFIED_NO_PROCESS_CONTEXT 与 NOT_ESTIMABLE_WITH_TWO_ROWS；六类混杂变量（环境温度、热源/负载、冷却、设备归属、工况、传感器健康）全部 NOT_OBSERVED。本体 `discrepancy_signals[0]` 标记 **BLOCKING_FOR_CAUSAL_CONCLUSION**：仅 2 行、1 个数值变量、5 秒跨度时，诊断必须输出 NEEDS_DATA 或 COMPETING_SET，`causal_graph.root_cause_conclusion_allowed=false` [Evidence Rank 5]。\n\n## 3. 数据质量评估\n\n| 维度 | 结论 |\n|---|---|\n| 完整性 | 2 行 × 3 列无缺失；清洗零操作、零损失，原始值与清洗值逐位一致（cleaning_integrity.json） |\n| 时间合法性 | timestamp 为真实解析的 ISO-8601(+08:00)，monotonic=true、median_interval_s=5.0、dropped_unparsable=0（time_alignment.json） |\n| 异常值 | z=[-0.7071, +0.7071]（构造性）、IQR 栏 71.45/74.05 degC 内无点、异常检测因 n<3 前置跳过（process_parameters_screened=0）——『无离群、无异常区间』是样本量下限的构造性结果，**不构成无异常的证据** |\n| 生产状态 | 两行被脚本默认标 steady 为无证据默认值，不据此声明稳态背景 |\n| 批次/分组完整性 | 无批次列、无分组列（组数=1），批次完整性检验不触发 |\n| 统计充分性 | validate_report 判定 **INSUFFICIENT_DATA**；脚本输出的 ROBUST 总体有效性判定为空洞真（total_targets=0、检查列表全空），已降权 |\n\n## 4. 统计分析发现\n\n本节为强制章节。n=2 条件下全部统计方法不可用，可用发现均为算术与视觉事实：\n\n1. **唯一趋势事实 [Evidence Rank 1]**：一阶差分 +1.3 degC，平均速率 0.26 degC/s（derived=true，未插值、未滤波、未拟合，可由原始两行复算）。『drift』仅为两点单调形态的形态学描述，不代表\n\n[工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md · vec=0.5324209928512573]\n# power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md.md（第 1/2 部分）\n章节: Mapping Disruption Sources in the Power Grid and Implications for Resilience\n# Mapping Disruption Sources in the Power Grid and Implications for Resilience\n\n\nMaureen S. Golan\n\nCAEE, Cockrell School of Engineering\n\nThe University of Texas at Austin\n\nAustin, USA\n\nmgolan@utexas.edu\n\nJavad Mohammadi\n\nCAEE, Cockrell School of Engineering\n\nThe University of Texas at Austin\n\nAustin, USA\n\njavadm@utexas.edu\n\nAbstract—Developing models and metrics that can address resilience against disruptions is vital to ensure power grid reliability and that adequate recovery and adaptation mechanisms are in place. In this paper, we propose a novel disruption mapping approach and apply it to the publicly available U.S. Department of Energy DOE-417 Electric Emergency and Disturbance Report to holistically analyze the origin of anomalous events and their propagation through the cyber, physical and human domains. We show that capturing the disruption process onset has implications for quantifying, mitigating, and reporting power grid resilience.\n\nIndex Terms—power grid, resilience, disruption, reliability\n\n## I. INTRODUCTION\n\n\nUtilities and regulatory authorities rely on metrics based on tracked data to assess the power grid's reliability and plan for future operating conditions. However, metrics that analyze the resilience of the power grid are immature and ill-equipped to provide utilities and regulatory authorities the information they need to ensure both reliability and resilience of the power grid in the changing context of power grid operations and development [1]. Therefore, we propose a method for mapping data that utilities are required to report to different dimensions of disruption to enable a comprehensive understanding of the relationship between disruption sources and system resilience.\n\n## A. Motivation\n\n\nAs extreme weather events and unprecedented cyber, physical, and supply chain disruptions exacerbate the changing grid landscape, resilience is a complementary concept to reliability that needs to be understood and modeled to protect the power grid. Although reliability and resilience strategies can be implemented differently by individual operators, alleviating disruption impacts requires revisiting electric grid planning, operation, maintenance and monitoring procedures [2]. Leveraging resilience principles as a critical aspect of reliability can support flexible design ap\n\n[Novel-PridePrejudice/pride_and_prejudice (part 16 of 26).md · vec=0.3534558415412903]\n# pride_and_prejudice（第 16/26 部分）\nTheir affectionate mother shared all their grief; she remembered what\nshe had herself endured on a similar occasion five-and-twenty years ago.\n\n“I am sure,” said she, “I cried for two days together when Colonel\nMiller’s regiment went away. I thought I should have broke my heart.”\n\n“I am sure I shall break _mine_,” said Lydia.\n\n“If one could but go to Brighton!” observed Mrs. Bennet.\n\n“Oh yes!--if one could but go to Brighton! But papa is so disagreeable.”\n\n“A little sea-bathing would set me up for ever.”\n\n“And my aunt Philips is sure it would do _me_ a great deal of good,”\nadded Kitty.\n\nSuch were the kind of lamentations resounding perpetually through\nLongbourn House. Elizabeth tried to be diverted by them; but all sense\nof pleasure was lost in shame. She felt anew the justice of Mr. Darcy’s\nobjections; and never had she before been so much disposed to pardon his\ninterference in the views of his friend.\n\nBut the gloom of Lydia’s prospect was shortly cleared away; for she\nreceived an invitation from Mrs. Forster, the wife of the colonel of the\nregiment, to accompany her to Brighton. This invaluable friend was a\nvery young woman, and very lately married. A resemblance in good-humour\nand good spirits had recommended her and Lydia to each other, and out of\ntheir _three_ months’ acquaintance they had been intimate _two_.\n\nThe rapture of Lydia on this occasion, her adoration of Mrs. Forster,\nthe delight of Mrs. Bennet, and the mortification of Kitty, are scarcely\nto be described. Wholly inattentive to her sister’s feelings, Lydia flew\nabout the house in restless ecstasy, calling for everyone’s\ncongratulations, and laughing and talking with more violence than ever;\nwhilst the luckless Kitty continued in the parlour repining at her fate\nin terms as unreasonable as her accent was peevish.\n\n“I cannot see why Mrs. Forster should not ask _me_ as well as Lydia,”\nsaid she, “though I am _not_ her particular friend. I have just as much\nright to be asked as she has, and more too, for I am two years older.”\n\nIn vain did Elizabeth attempt to make her reasonable, and Jane to make\nher resigned. As for Elizabeth herself, this invitation was so far from\nexciting in her the same feelings as in her mother and Lydia, that she\nconsidered it as the death-warrant of all possibility of common sense\nfor the latter; and detestable as such a step must make her, were it\nknown, she could not help secretly advising her father not to let her\ngo. She represent\n\n[Novel-PridePrejudice/pride_and_prejudice (part 3 of 26).md · vec=0.38222378492355347]\n# pride_and_prejudice（第 3/26 部分）\nMrs. Hurst and her sister allowed it to be so; but still they admired\nher and liked her, and pronounced her to be a sweet girl, and one whom\nthey should not object to know more of. Miss Bennet was therefore\nestablished as a sweet girl; and their brother felt authorized by such\ncommendation to think of her as he chose.\n\n[Illustration: [_Copyright 1894 by George Allen._]]\n\nCHAPTER V.\n\n[Illustration]\n\nWithin a short walk of Longbourn lived a family with whom the Bennets\nwere particularly intimate. Sir William Lucas had been formerly in trade\nin Meryton, where he had made a tolerable fortune, and risen to the\nhonour of knighthood by an address to the king during his mayoralty. The\ndistinction had, perhaps, been felt too strongly. It had given him a\ndisgust to his business and to his residence in a small market town;\nand, quitting them both, he had removed with his family to a house about\na mile from Meryton, denominated from that period Lucas Lodge; where he\ncould think with pleasure of his own importance, and, unshackled by\nbusiness, occupy himself solely in being civil to all the world. For,\nthough elated by his rank, it did not render him supercilious; on the\ncontrary, he was all attention to everybody. By nature inoffensive,\nfriendly, and obliging, his presentation at St. James’s had made him\ncourteous.\n\nLady Lucas was a very good kind of woman, not too clever to be a\nvaluable neighbour to Mrs. Bennet. They had several children. The eldest\nof them, a sensible, intelligent young woman, about twenty-seven, was\nElizabeth’s intimate friend.\n\nThat the Miss Lucases and the Miss Bennets should meet to talk over a\nball was absolutely necessary; and the morning after the assembly\nbrought the former to Longbourn to hear and to communicate.\n\n“_You_ began the evening well, Charlotte,” said Mrs. Bennet, with civil\nself-command, to Miss Lucas. “_You_ were Mr. Bingley’s first choice.”\n\n“Yes; but he seemed to like his second better.”\n\n“Oh, you mean Jane, I suppose, because he danced with her twice. To be\nsure that _did_ seem as if he admired her--indeed, I rather believe he\n_did_--I heard something about it--but I hardly know what--something\nabout Mr. Robinson.”\n\n“Perhaps you mean what I overheard between him and Mr. Robinson: did not\nI mention it to you? Mr. Robinson’s asking him how he liked our Meryton\nassemblies, and whether he did not think there were a great many pretty\nwomen in the room, and _which_ he thought the prettiest? and his\n\n[生命科学与医学/agriculture__1311.6857__agriculture-driving-male-expansion-in-neolit.md.md · vec=0.47408342361450195]\n# Title: Agriculture driving male expansion in Neolithic Time\n\nAuthors: Chuan-Chao Wang1, Yunzhi Huang1, Shao-Qing Wen1, Chun Chen¹,², Li Jin¹, ³, Hui Li1,\\*\n\n## Affiliations:\n\n1. State Key Laboratory of Genetic Engineering and MOE Key Laboratory of Contemporary Anthropology, School of Life Sciences, Fudan University, Shanghai 200433, China\n\n2. Department of Cultural Heritage, Fudan University, Shanghai 200433, China\n\n3. Chinese Academy of Sciences Key Laboratory of Computational Biology, CAS-MPG Partner Institute for Computational Biology, SIBS, CAS, Shanghai 200031, China\n\n\\* Correspondence to: lihui.fudan@gmail.com\n\n## Abstract\n\nThe emergence of agriculture is suggested to have driven extensive human population growths. However, genetic evidence from maternal mitochondrial genomes suggests major population expansions began before the emergence of agriculture. Therefore, role of agriculture that played in initial population expansions still remains controversial. Here, we analyzed a set of globally distributed whole Y chromosome and mitochondrial genomes of 526 male samples from 1000 Genome Project. We found that most major paternal lineage expansions coalesced in Neolithic Time. The estimated effective population sizes through time revealed strong evidence for 10- to 100-fold increase in population growth of males with the advent of agriculture. This sex-biased ",
+  "unscanned": [
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/climate-science__1503.07557__precipitation-extremes-under-climate-change__k00.md",
+      "reason": "empty_content"
+    },
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/climate-science__1503.07557__precipitation-extremes-under-climate-change__k01.md",
+      "reason": "empty_content"
+    }
+  ],
+  "seconds": 20.3
+}

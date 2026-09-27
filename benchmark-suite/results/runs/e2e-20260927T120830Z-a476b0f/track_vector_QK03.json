@@ -1,0 +1,33 @@
+{
+ "qid": "QK03",
+ "method": "vector",
+ "question": "What physical mechanism does the dynamic electrical model use to explain the hysteretic J-V characteristics of perovskite solar cells?",
+ "ranked": [
+  "1606.00335",
+  "1712.01369"
+ ],
+ "ranked_paths": [
+  "materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs__k00",
+  "materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar__k15"
+ ],
+ "evidence_sources": [
+  "1606.00335",
+  "1712.01369"
+ ],
+ "evidence_chars": 1028,
+ "retrieval_s": 0.3,
+ "latency_s": 6.7,
+ "answer": "**Answer (based only on the provided evidence):**\n\nAccording to the abstract of [1606.00335], the dynamic electrical model explains hysteresis in perovskite solar-cell J–V characteristics through **polarization relaxation**: by making a simple ansatz for the polarization relaxation, the model reproduces qualitatively and quantitatively detailed features of measured J–V curves. The same abstract indicates this polarization-relaxation treatment also captures pre-poling effects (differences between initially over-polarized and under-polarized samples) and the presence of a current overshoot, though the excerpt is truncated mid-sentence, so the full mechanism description is not available here. The second source, [1712.01369], only presents a simulated J–V curve for a bilayer cell alongside a typical perovskite cell and reports Jsc, Voc, and FF; it does not describe any physical mechanism for hysteresis. Therefore, the evidence supports \"polarization relaxation\" as the mechanism, but provides only a partial account because the key abstract is cut off.\n\n**Sources used:**\n- [1606.00335] — Abstract (the only source addressing the mechanism; truncated)\n- [1712.01369] — excerpt (used only to confirm it does not address the mechanism)",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 37644,
+  "output": 855,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.209595,
+ "extra": {},
+ "track": "vector",
+ "via": "baseline+closed-book"
+}

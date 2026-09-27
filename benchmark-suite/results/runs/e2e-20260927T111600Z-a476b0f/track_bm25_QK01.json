@@ -1,0 +1,50 @@
+{
+ "qid": "QK01",
+ "method": "bm25",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "ranked": [
+  "1706.03762",
+  "1810.04805",
+  "2503.21676",
+  "1911.02792",
+  "2110.08918",
+  "2109.14357",
+  "2009.10669",
+  "2110.07844",
+  "2212.13138",
+  "1405.4980"
+ ],
+ "ranked_paths": [
+  "artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md",
+  "nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md",
+  "chemistry__1911.02792__machine-learning-for-molecular-simulation.md",
+  "clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md",
+  "speech__2109.14357__comparison-of-self-supervised-speech-pre-tra.md",
+  "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne.md",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst.md",
+  "clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md",
+  "mathematics__1405.4980__convex-optimization-algorithms-and-complexit.md"
+ ],
+ "evidence_sources": [
+  "1706.03762",
+  "1810.04805",
+  "2503.21676"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.0,
+ "latency_s": 13.8,
+ "answer": "**Answer (from the provided evidence only):**\n\nThe evidence shows the Transformer uses multi-head attention with h = 8 parallel attention heads, each with d_k = d_v = d_model/h = 64, where the reduced per-head dimension keeps total computational cost similar to single-head attention at full dimensionality. It states attention is applied in three ways: encoder-decoder attention (queries from the previous decoder layer, keys/values from encoder output, so every decoder position attends over all input positions), encoder self-attention (keys, values, and queries all come from the previous encoder layer, with each position attending to all positions of that layer), and decoder self-attention (excerpt truncated at \"allow each position in the de…\"). However, the evidence does not include the actual attention computation itself (no scaled dot-product/softmax formulation is present), nor any statement of why the Transformer replaces recurrence and convolution — no motivation about sequential computation, parallelization, or path length appears in the excerpts. The BERT excerpt ([1810.04805]) and the attention-patching excerpt ([2503.21676]) address unrelated mechanisms and do not answer either part of the question. Therefore the evidence only partially answers \"how\" and is insufficient to answer \"why it replaces recurrence and convolution.\"\n\n**Sources used:** [1706.03762] excerpt (multi-head attention §3.2.2 and §3.2.3 \"Applications of Attention in our Model\") — the only chunk that speaks to the question. [1810.04805] and [2503.21676] excerpts were reviewed but not used, as they are off-topic.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38235,
+  "output": 2430,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.25192499999999995,
+ "extra": {},
+ "track": "bm25",
+ "via": "baseline+closed-book"
+}

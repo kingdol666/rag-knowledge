@@ -1,0 +1,24 @@
+{
+ "qid": "QK02",
+ "question": "Which three independent ontologies subdivide the Gene Ontology?",
+ "track": "mode_B",
+ "method": "mode_B",
+ "via": "retrieval-mode+closed-book",
+ "answer": "The evidence is insufficient: no evidence was retrieved (the evidence block is empty), so I cannot answer which three independent ontologies subdivide the Gene Ontology. Per the task contract, I am not permitted to fall back on prior knowledge. Sources used: none (no chunks, documents, or paths were available to cite).",
+ "is_error": false,
+ "latency_s": 12.5,
+ "retrieval_s": 3.4,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 37393,
+  "output": 755,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.20584000000000002,
+ "ranked": [],
+ "evidence_sources": [],
+ "evidence_chars": 0,
+ "real_engine": false,
+ "merge": null
+}

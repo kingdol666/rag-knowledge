@@ -1,0 +1,24 @@
+{
+ "qid": "QK07",
+ "question": "What is MameLoshnLM and what parameter scale does it have?",
+ "track": "mode_B",
+ "method": "mode_B",
+ "via": "retrieval-mode+closed-book",
+ "answer": "The evidence provided is empty — \"(no evidence retrieved)\" — so I cannot answer what MameLoshnLM is or what parameter scale it has. No sources were retrieved, and I will not use prior knowledge to fill the gap. This is an explicit statement of insufficient evidence, per the contract.",
+ "is_error": false,
+ "latency_s": 10.6,
+ "retrieval_s": 3.3,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 37401,
+  "output": 282,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.19405499999999998,
+ "ranked": [],
+ "evidence_sources": [],
+ "evidence_chars": 0,
+ "real_engine": false,
+ "merge": null
+}

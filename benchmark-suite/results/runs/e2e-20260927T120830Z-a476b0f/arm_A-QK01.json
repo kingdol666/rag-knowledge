@@ -1,0 +1,453 @@
+{
+  "status": "ok",
+  "query": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "parameters": {
+    "kb_id": "",
+    "threshold": 0.5,
+    "vector_top_k": 30,
+    "vector_threshold": 0.35,
+    "doc_read_chars": 20000,
+    "segment_chars": 3000,
+    "max_state_chars": 6000,
+    "max_evidence_chars": 24000
+  },
+  "recall": {
+    "vector_raw_hits": 28,
+    "vector_dedup_docs": 24,
+    "recall_seconds": 2.8,
+    "docs_read": 21,
+    "read_errors": [
+      {
+        "doc_path": "Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k19.md",
+        "error": "empty_content"
+      },
+      {
+        "doc_path": "Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k20.md",
+        "error": "empty_content"
+      },
+      {
+        "doc_path": "aw-industrial-e2e-20260926-022518/experience/exp-d45dc195a924.md",
+        "error": "empty_content"
+      }
+    ],
+    "reread_seconds": 8.6
+  },
+  "judge": {
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "criterion": "evidence",
+    "threshold": 0.5,
+    "global_best": 0.9313,
+    "scored_segments": 111,
+    "total_segments": 111,
+    "errors": []
+  },
+  "judge_doc_scores": [
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+      "vector_score": 0.48291122913360596,
+      "judge_score": 0.9313,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+      "vector_score": 0.5518695712089539,
+      "judge_score": 0.9272,
+      "kept": true
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "vector_score": 0.5336779952049255,
+      "judge_score": 0.9272,
+      "kept": true
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "vector_score": 0.7204846143722534,
+      "judge_score": 0.924,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md",
+      "vector_score": 0.695902943611145,
+      "judge_score": 0.924,
+      "kept": true
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+      "vector_score": 0.5165531039237976,
+      "judge_score": 0.9234,
+      "kept": true
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.md (part 1 of 3).md",
+      "vector_score": 0.5001697540283203,
+      "judge_score": 0.9228,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+      "vector_score": 0.5616867542266846,
+      "judge_score": 0.9102,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 4 of 5).md",
+      "vector_score": 0.4886472225189209,
+      "judge_score": 0.9079,
+      "kept": true
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.471240758895874,
+      "judge_score": 0.8905,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md",
+      "vector_score": 0.7191494703292847,
+      "judge_score": 0.8846,
+      "kept": true
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_path": "soul-cs-library/soul-definition.md",
+      "vector_score": 0.41485482454299927,
+      "judge_score": 0.8842,
+      "kept": true
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_path": "soul-e2e-tester-024115/soul-definition.md",
+      "vector_score": 0.41485482454299927,
+      "judge_score": 0.8842,
+      "kept": true
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_path": "soul-demo-qa/soul-definition.md",
+      "vector_score": 0.41485482454299927,
+      "judge_score": 0.8842,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+      "vector_score": 0.4951990842819214,
+      "judge_score": 0.8706,
+      "kept": true
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 1 of 26) (part 1 of 2).md",
+      "vector_score": 0.4111800789833069,
+      "judge_score": 0.8629,
+      "kept": true
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_path": "soul-cs-library/memory-conventions.md",
+      "vector_score": 0.4452458620071411,
+      "judge_score": 0.8518,
+      "kept": true
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_path": "soul-e2e-tester-024115/memory-conventions.md",
+      "vector_score": 0.4452458620071411,
+      "judge_score": 0.8518,
+      "kept": true
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_path": "soul-demo-qa/memory-conventions.md",
+      "vector_score": 0.4452458620071411,
+      "judge_score": 0.8518,
+      "kept": true
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_path": "e2e-demo-0923-022632/平台架构总览.md",
+      "vector_score": 0.4769222140312195,
+      "judge_score": 0.8468,
+      "kept": true
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 6 of 26).md",
+      "vector_score": 0.40241777896881104,
+      "judge_score": 0.828,
+      "kept": true
+    }
+  ],
+  "result_list": [
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+      "name": "finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+      "vector_score": 0.48291122913360596,
+      "judge_score": 0.9313,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+      "name": "clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+      "vector_score": 0.5518695712089539,
+      "judge_score": 0.9272,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_id": null,
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "name": "global-rag-benchmark.md",
+      "vector_score": 0.5336779952049255,
+      "judge_score": 0.9272,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_id": null,
+      "doc_path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "name": "artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "vector_score": 0.7204846143722534,
+      "judge_score": 0.924,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md",
+      "name": "artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md",
+      "vector_score": 0.695902943611145,
+      "judge_score": 0.924,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_id": null,
+      "doc_path": "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+      "name": "chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+      "vector_score": 0.5165531039237976,
+      "judge_score": 0.9234,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_id": null,
+      "doc_path": "自然科学与地球科学/oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.md (part 1 of 3).md",
+      "name": "oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.md (part 1 of 3).md",
+      "vector_score": 0.5001697540283203,
+      "judge_score": 0.9228,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+      "name": "genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+      "vector_score": 0.5616867542266846,
+      "judge_score": 0.9102,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 4 of 5).md",
+      "name": "mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 4 of 5).md",
+      "vector_score": 0.4886472225189209,
+      "judge_score": 0.9079,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_id": null,
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "name": "【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.471240758895874,
+      "judge_score": 0.8905,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md",
+      "name": "artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md",
+      "vector_score": 0.7191494703292847,
+      "judge_score": 0.8846,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_id": null,
+      "doc_path": "soul-cs-library/soul-definition.md",
+      "name": "soul-definition.md",
+      "vector_score": 0.41485482454299927,
+      "judge_score": 0.8842,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_id": null,
+      "doc_path": "soul-e2e-tester-024115/soul-definition.md",
+      "name": "soul-definition.md",
+      "vector_score": 0.41485482454299927,
+      "judge_score": 0.8842,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_id": null,
+      "doc_path": "soul-demo-qa/soul-definition.md",
+      "name": "soul-definition.md",
+      "vector_score": 0.41485482454299927,
+      "judge_score": 0.8842,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+      "name": "materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+      "vector_score": 0.4951990842819214,
+      "judge_score": 0.8706,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_id": null,
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 1 of 26) (part 1 of 2).md",
+      "name": "pride_and_prejudice (part 1 of 26) (part 1 of 2).md",
+      "vector_score": 0.4111800789833069,
+      "judge_score": 0.8629,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_id": null,
+      "doc_path": "soul-cs-library/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.4452458620071411,
+      "judge_score": 0.8518,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_id": null,
+      "doc_path": "soul-e2e-tester-024115/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.4452458620071411,
+      "judge_score": 0.8518,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_id": null,
+      "doc_path": "soul-demo-qa/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.4452458620071411,
+      "judge_score": 0.8518,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_id": null,
+      "doc_path": "e2e-demo-0923-022632/平台架构总览.md",
+      "name": "平台架构总览.md",
+      "vector_score": 0.4769222140312195,
+      "judge_score": 0.8468,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_id": null,
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 6 of 26).md",
+      "name": "pride_and_prejudice (part 6 of 26).md",
+      "vector_score": 0.40241777896881104,
+      "judge_score": 0.828,
+      "truncated": true,
+      "read_error": null
+    }
+  ],
+  "kept_doc_paths": [
+    "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md",
+    "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md",
+    "e2e-demo-0923-022632/global-rag-benchmark.md",
+    "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+    "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md",
+    "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+    "自然科学与地球科学/oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.md (part 1 of 3).md",
+    "生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md",
+    "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 4 of 5).md",
+    "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+    "计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 2 of 2).md",
+    "soul-cs-library/soul-definition.md",
+    "soul-e2e-tester-024115/soul-definition.md",
+    "soul-demo-qa/soul-definition.md",
+    "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 2 of 2).md",
+    "Novel-PridePrejudice/pride_and_prejudice (part 1 of 26) (part 1 of 2).md",
+    "soul-cs-library/memory-conventions.md",
+    "soul-e2e-tester-024115/memory-conventions.md",
+    "soul-demo-qa/memory-conventions.md",
+    "e2e-demo-0923-022632/平台架构总览.md",
+    "Novel-PridePrejudice/pride_and_prejudice (part 6 of 26).md"
+  ],
+  "evidence_pack": "[经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 1 of 4).md · vec=0.48291122913360596]\n# finance__1909.07748__stock-market-microstructure-inference-via-mu（第 1/4 部分）\n章节: Stock market microstructure inference via multi-agent reinforcement learning\n# Stock market microstructure inference via multi-agent reinforcement learning\n\n\nJohann Lussange\n\nLaboratoire des Neurosciences Cognitives, INSERM U960, Département des Études Cognitives, École Normale Supérieure, 29 rue d'Ulm, 75005, Paris, France.\n\nIvan Lazarevich\n\nLaboratoire des Neurosciences Cognitives, INSERM U960, Département des Études Cognitives,\n\nÉcole Normale Supérieure, 29 rue d'Ulm, 75005, Paris, France.\n\nLobachevsky State University of Nizhny Novgorod,\n\n23 Gagarina av., 603950, Niznhy Novgorod, Russia.\n\nSacha Bourgeois-Gironde\n\nInstitut Jean-Nicod, UMR 8129, Département des Études Cognitives,\n\nÉcole Normale Supérieure, 29 rue d'Ulm, 75005, Paris, France.\n\nLaboratoire d'Économie Mathématique et de Microéconomie Appliquée, EA 4442,\n\nUniversité Paris II Panthéon-Assas, 4 rue Blaise Desgoffe, 75006, Paris, France.\n\nStefano Palminteri\n\nLaboratoire des Neurosciences Cognitives, INSERM U960, Département des Études Cognitives, École Normale Supérieure, 29 rue d’Ulm, 75005, Paris, France.\n\nBoris Gutkin\n\nLaboratoire des Neurosciences Cognitives, INSERM U960, Département des Études Cognitives, École Normale Supérieure, 29 rue d'Ulm, 75005, Paris, France.\n\nCenter for Cognition and Decision Making, Department of Psychology,\n\nNU University Higher School of Economics, 8 Myasnitskaya st., 101000, Moscow, Russia. (Dated: October 18, 2019)\n\nQuantitative finance has had a long tradition of a bottom-up approach to complex systems inference via multi-agent systems (MAS). These statistical tools are based on modelling agents trading via a centralised order book, in order to emulate complex and diverse market phenomena. These past financial models have all relied on so-called zero-intelligence agents, so that the crucial issues of agent information and learning, central to price formation and hence to all market activity, could not be properly assessed. In order to address this, we designed a next-generation MAS stock market simulator, in which each agent learns to trade autonomously via model-free reinforcement learning. We calibrate the model to real market data from the London Stock Exchange over the years 2007 to 2018, and show that it can faithfully reproduce key market microstructure metrics, such as various price autocorrelation scalars over multiple time intervals. Agent learning thus enables model em\n\n[生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 1 of 2).md · vec=0.5518695712089539]\n# clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md.md（第 1/2 部分）\n章节: Using Clinical Drug Representations for Improving Mortality and Length of Stay Predictions\n# Using Clinical Drug Representations for Improving Mortality and Length of Stay Predictions\n\n\nBatuhan Bardak and Mehmet Tan\n\nDepartment of Computer Engineering\n\nTOBB University of Economics and Technology\n\nAnkara, Turkey\n\nEmail:{b.bardak, mtan } @etu.edu.tr\n\nAbstract—Drug representations have played an important role in cheminformatics. However, in the healthcare domain, drug representations have been underused relative to the rest of Electronic Health Record (EHR) data, due to the complexity of high dimensional drug representations and the lack of proper pipeline that will allow to convert clinical drugs to their representations. Time-varying vital signs, laboratory measurements, and related time-series signals are commonly used to predict clinical outcomes. In this work, we demonstrated that using clinical drug representations in addition to other clinical features has significant potential to increase the performance of mortality and length of stay (LOS) models. We evaluate the two different drug representation methods (Extended-Connectivity Fingerprint-ECFP and SMILES-Transformer embedding) on clinical outcome predictions. The results have shown that the proposed multimodal approach achieves substantial enhancement on clinical tasks over baseline models. Using clinical drug representations as additional features improve the LOS prediction for Area Under the Receiver Operating Characteristics (AUROC) around %6 and for Area Under Precision-Recall Curve (AUPRC) by around %5. Furthermore, for the mortality prediction task, there is an improvement of around %2 over the time series baseline in terms of AUROC and %3.5 in terms of AUPRC. The code for the proposed method is available at https://github.com/tanlab/MIMIC-III-Clinical-Drug-Representations.\n\nIndex Terms—deep learning, healthcare, EHR, clinical task clinical drug representation\n\n## I. INTRODUCTION\n\n\nThe recent advancements in deep learning have led to an increase in the number of studies in the healthcare domain, and many researchers utilize novel deep learning and statistical models on a wide range of clinical tasks. The adoption of Electronic Health Records (EHR) presents a rich opportunity for valuable clinical predictive models. In modern EHR systems, for each admitted patient, hospital intensive care units re\n\n[e2e-demo-0923-022632/global-rag-benchmark.md · vec=0.5336779952049255]\n# Towards Global Retrieval Augmented Generation: A Benchmark for Corpus-Level Reasoning\n\nQi Luo1,\\*, Xiaonan Li1,\\*, Tingshuo Fan1, Xinchi Chen1,†, Xipeng Qiu1,2,†\n\n1Fudan University\n\n2Shanghai Innovation Institutey qluo22@m.fudan.edu.cn\n\n## Abstract\n\nRetrieval-augmented generation (RAG) has emerged as a leading approach to reducing hallucinations in large language models (LLMs). Current RAG evaluation benchmarks primarily focus on what we call local RAG: retrieving relevant chunks from a small subset of documents to answer queries that require only localized understanding within specific text chunks. However, many real-world applications require a fundamentally different capability—global RAG—which involves aggregating and analyzing information across entire document collections to derive corpus-level insights (e.g. “What are the top 10 most cited papers in 2023?\"). In this paper, we introduce GlobalQA—the first benchmark specifically designed to evaluate global RAG capabilities, covering four core task types: counting, extremum queries, sorting, and top-k extraction. Through systematic evaluation across different models and baselines, we find that existing RAG methods perform poorly on global tasks, with the strongest baseline achieving only 1.51 F1 score. To address these challenges, we propose Global-RAG, a multi-tool collaborative framework that preserves structural coherence through chunklevel retrieval, incorporates LLM-driven intelligent filters to eliminate noisy documents, and integrates aggregation modules for precise symbolic computation. On the Qwen2.5-14B model, GlobalRAG achieves 6.63 F1 compared to the strongest baseline's 1.51 F1, validating the effectiveness of our method.\n\n## 1 Introduction\n\nRetrieval-augmented generation (RAG) has been proposed as a solution to mitigate hallucination and knowledge limitations in large language models (LLMs) (Lewis et al., 2021; Li et al., 2025; Zhang et al., 2025; Rawte et al., 2023; Wang et al.,\n\n![](images/838ff38197a58dd916888ef6cc7803a82e53db9b32898de2754d99b5b76b9a6c.jpg)  \n(b) Global Query: Dense Retriever Fails  \nFigure 1: Why Dense Retriever Fails on Global Queries: (a) Local Query: The answer can be found in specific documents. Dense retriever ranks all documents and selects top-k, which contains the relevant information. (b) Global Query: The answer requires information from all documents. However, dense retriever only returns top-k ranked documents, missing critical information scattered acro\n\n[demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md · vec=0.7204846143722534]\nProvided proper attribution is provided, Google hereby grants permission to reproduce the tables and figures in this paper solely for use in journalistic or scholarly works.\n\n# Attention Is All You Need\n\nAshish Vaswani<sup>∗</sup> Google Brain avaswani@google.com\n\nNoam Shazeer<sup>∗</sup> Google Brain noam@google.com\n\nNiki Parmar<sup>∗</sup> Google Research nikip@google.com\n\nJakob Uszkoreit<sup>∗</sup> Google Research usz@google.com\n\nLlion Jones<sup>∗</sup> Google Research llion@google.com\n\nAidan N. Gomez<sup>∗</sup> <sup>†</sup> University of Toronto aidan@cs.toronto.edu\n\nŁukasz Kaiser<sup>∗</sup> Google Brain lukaszkaiser@google.com\n\nIllia Polosukhin<sup>∗</sup> <sup>‡</sup> illia.polosukhin@gmail.com\n\n## Abstract\n\nThe dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 Englishto-German translation task, improving over the existing best results, including ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.\n\n## 1 Introduction\n\nRecurrent neural networks, long short-term memory [13] and gated recurrent [7] neural networks in particular, have been firmly established as state of the art approaches in sequence modeling and transduction problems such as language modeling and machine translation [35, 2, 5]. Numerous efforts have since continued to push the boundaries of recurrent language models and encoder-decoder architectures [38, 24, 15].\n\nRecurrent models typically factor computation along the symbol positions of the input and output sequences. Aligning the positions to steps in computation time, they generate a sequence of hidden \n\n[计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md · vec=0.695902943611145]\n# artificial-intelligence__1706.03762__attention-is-all-you-need.md.md（第 1/2 部分）\nProvided proper attribution is provided, Google hereby grants permission to reproduce the tables and figures in this paper solely for use in journalistic or scholarly works.\n\n\n\n# Attention Is All You Need\n\n\nAshish Vaswani\\* Google Brain avaswani@google.com\n\nNoam Shazeer\\* Google Brain noam@google.com\n\nNiki Parmar\\* Google Research nikip@google.com\n\nJakob Uszkoreit\\* Google Research usz@google.com\n\nLlion Jones\\* Google Research 1lion@google.com\n\nAidan N. Gomez\\* † University of Toronto aidan@cs.toronto.edu\n\nŁukasz Kaiser\\* Google Brain lukaszkaiser@google.com\n\nIllia Polosukhin\\* ↓ illia.polosukhin@gmail.com\n\n## Abstract\n\n\nThe dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 Englishto-German translation task, improving over the existing best results, including ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.\n\n## 1 Introduction\n\n\nRecurrent neural networks, long short-term memory [13] and gated recurrent [7] neural networks in particular, have been firmly established as state of the art approaches in sequence modeling and transduction problems such as language modeling and machine translation [35, 2, 5]. Numerous efforts have since continued to push the boundaries of recurrent language models and encoder-decoder architectures [38, 24, 15].\n\nRecurrent models typically factor computation along the symbol positions of the input and output sequences. Aligning the positions to steps in computation time, they generate a sequence of hidden states $h _ { t \n\n[自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md · vec=0.5165531039237976]\n# chemistry__1911.02792__machine-learning-for-molecular-simulation（第 2/4 部分）\n章节: Machine learning for molecular simulation > 2.5 Sampling and Thermodynamics\n## 2.5 Sampling and Thermodynamics\n\n\nMD time steps are on the order of one femtosecond $\\left( 1 0 ^ { - 1 5 } \\mathrm { ~ s \\right) }$ , while configuration changes governing molecular function are often rare events that may take $1 0 ^ { - 3 }$ to $1 0 ^ { 3 } ~ \\mathrm { s } .$ Even when evaluating the potential and the forces it generates is fast, simulating single protein folding and unfolding events by direct MD simulation may take years to centuries on a supercomputer. To avoid this sampling problem, machine learning methods can be employed to learn generating equilibrium samples from $\\mu ( \\mathbf { x } )$ more efficiently, or even by generating statistically independent samples in “one shot” (Sec. 2.5).\n\nLearning to sample probability distributions is the realm of generative learning [87, 88, 89, 90]. In the past few years, directed generative networks, such as variational Autoencoders (VAEs) [88], generative adversarial networks (GANs) [89], and flows [91, 90], have had a particular surge of interest. Such networks are trained to transform samples from an easy-to-sample probability distribution, such as Gaussian noise, into realistic samples of the objects of interest. These methods have been used to draw photorealistic images [92, 93], generate speech or music audio [94] and generate chemical structures to design molecules or materials with certain properties [42, 43, 44, 45].\n\nIf the aim is to learn a probability distribution from sampling data (density estimation) or learn to efficiently sample from a given probability distribution (Boltzmann generation [37]), one typically faces the challenge of matching the probability distribution of the trained model with a reference.\n\nMatching probability distributions can be achieved by minimizing probability distances. The most commonly used probability distance is the Kullback-Leibler (KL) divergence, also called relative entropy between two distributions q and $p \\mathrm { : }$\n\n$$\n\\mathrm { K L } ( q \\parallel p ) = \\int q ( \\mathbf { x } ) \\left[ \\log q ( \\mathbf { x } ) - \\log p ( \\mathbf { x } ) \\right] \\mathrm { d } \\mathbf { x } .\\tag{16}\n$$\n\nIn Boltzmann generation [37], we aim to efficiently sample the equilibrium distribution $\\mu ( \\mathbf { x } )$ of a many-body system defined by its energy function $u ( \\mathbf { x } ) \\ \\left( \\mathr\n\n[自然科学与地球科学/oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.md (part 1 of 3).md · vec=0.5001697540283203]\n# oceanography__1104.2730__approximate-deconvolution-large-eddy-simulat.md.md（第 1/3 部分）\n章节: Approximate deconvolution large eddy simulation of a barotropic ocean circulation model\n# Approximate deconvolution large eddy simulation of a barotropic ocean circulation model\n\n\nOmer Sana,\\*, Anne E. Staplesa, Zhu Wangb, Traian Iliescub\n\naDepartment of Engineering Science and Mechanics, Virginia Tech, Blacksburg, VA, USA b Department of Mathematics, Virginia Tech, Blacksburg, VA, USA\n\n## Abstract\n\n\nThis paper puts forth a new large eddy simulation closure modeling strategy for two-dimensional turbulent geophysical flows. This closure modeling approach utilizes approximate deconvolution, which is based solely on mathematical approximations and does not employ additional phenomenological arguments to the model. The new approximate deconvolution model is tested in the numerical simulation of the wind-driven circulation in a shallow ocean basin, a standard prototype of more realistic ocean dynamics. The model employs the barotropic vorticity equation driven by a symmetric double-gyre wind forcing, which yields a four-gyre circulation in the time mean. The approximate deconvolution model yields the correct four-gyre circulation structure predicted by a direct numerical simulation, on a coarser mesh but at a fraction of the computational cost. This first step in the numerical assessment of the new model shows that approximate deconvolution could represent a viable tool for under-resolved computations in the large eddy simulation of more realistic turbulent geophysical flows.\n\nKeywords: Approximate deconvolution method; large eddy simulation; two-dimensional turbulence; barotropic models; double-gyre wind forcing\n\n## 1. Introduction\n\n\nAs a first approximation, the mean near-surface currents in the oceans are driven by the mean effects of winds. Wind-driven flows of mid-latitude ocean basins have been studied by modelers using idealized single and double-gyre wind forcing. This type of double-gyre circulation characterizes all mid-latitude ocean basins, including those in the North and South Atlantic, as well as the North and South Pacific The barotropic vorticity equation (BVE) represents one of the most commonly used mathematical models for this type of geostrophic flows with various dissipative and forcing terms (Majda and Wang, 2006). For more details on the physical mechanism and formulations of the BVE, the reader is referred to Holland and Rhines (1980); Munk and W\n\n[生命科学与医学/genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m (part 1 of 4).md · vec=0.5616867542266846]\n# genomics__2508.18304__sci2cl-effectively-integrating-single-cell-m（第 1/4 部分）\n章节: $\\mathrm { s c l ^ { 2 } C L }$ : Effectively Integrating Single-cell Multi-omics by Intra- and Inter-omics Contrastive Learning\n# $\\mathrm { s c l ^ { 2 } C L }$ : Effectively Integrating Single-cell Multi-omics by Intra- and Inter-omics Contrastive Learning\n\n\nWuchao Liu¹, Han Peng1, Wengen Li¹, Yichao Zhang1, Jihong Guan1,\\*, and Shuigeng Zhou2,\\*\n\n1School of Computer Science and Technology, Tongji University, Shanghai 201804, China   \n2College of Computer Science and Artificial Intelligence, Fudan University, Shanghai   \n200438, China\n\nCorresponding author. jhguan@tongji.edu.cn and sgzhou@fudan.edu.cn\n\nAugust 27, 2025\n\n## Abstract\n\n\nSingle-cell multi-omics data contain huge information of cellular states, and analyzing these data can reveal valuable insights into cellular heterogeneity, diseases, and biological processes. However, as cell differentiation & development is a continuous and dynamic process, it remains challenging to computationally model and infer cell interaction patterns based on single-cell multi-omics data. This paper presents scI2CL, a new single-cell multi-omics fusion framework based on intra- and inter-omics contrastive learning, to learn comprehensive and discriminative cellular representations from complementary multi-omics data for various downstream tasks. Extensive experiments of four downstream tasks validate the effectiveness of scI2CL and its superiority over existing peers. Concretely, in cell clustering, scI²CL surpasses eight state-of-the-art methods on four widelyused real-world datasets. In cell subtyping, scI2CL effectively distinguishes three latent monocyte cell subpopulations, which are not discovered by existing methods. Simultaneously, scI²CL is the only method that correctly constructs the cell developmental trajectory from hematopoietic stem and progenitor cells to Memory B cells. In addition, scI2CL resolves the misclassification of cell types between two subpopulations of CD4+ T cells, while existing methods fail to precisely distinguish the mixed cells In summary, scI2CL can accurately characterize cross-omics relationships among cells, thus effectively fuses multi-omics data and learns discriminative cellular representations to support various downstream analysis tasks.\n\n## 1 Introduction\n\n\nIn the past decade, single-cell sequencing technologies have achieved significant advances, enabling scientists to quantitatively measure\n\n[工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 4 of 5).md · vec=0.4886472225189209]\n# mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md.md（第 4/5 部分）\n章节: Tailored Presolve Techniques in Branch-and-Bound Method for Fast Mixed-Integer Optimal Control Applications > 5.2  Iterative Procedure for Heuristic Presolve Method\n## 5.2  Iterative Procedure for Heuristic Presolve Method\n\n\nOne heuristic approach to compute a feasible but possibly suboptimal MIQP solution is to construct a solution guess $\\hat { \\delta }$ for all discrete variables δ in (1), followed by solving the convex QP that results from fixing each variable $\\delta _ { i } = \\hat { \\delta } _ { i }$ for $i = 1 , \\dots , N _ { \\delta }$ The solution guess $\\hat { \\delta }$ can be constructed in multiple ways, for example, by shifting the optimal MIQP solution from the previous to the next time step or by rounding a solution of the convex $\\mathrm { Q P }$ relaxation at the root node to the nearest integer solution. Alternatively, supervised learning can be used to train a recurrent neural network architecture $^ { 2 4 }$ to make accurate predictions of the optimal values for the discrete variables in the MIQP problem ${ \\mathcal { P } } ( \\theta )$ . Given such a discrete solution guess δ, we present a heuristic presolve method that can be used to compute an updated solution guess $ { \\hat { \\delta } } _ { \\mathrm { P S } }$ with increased likelihood of finding a feasible and close to optimal MIQP solution by solving the resulting convex QP.\n\nAs illustrated in Figure 2, we propose to use a heuristic presolve method that aims to correct values in the discrete solution guess $\\hat { \\delta } ,$ given that the presolve operation can provide additional fixings that preserve feasibility and optimality; see Definition 5. Our key insight is that if presolve prunes a subset of the integer variables that can be fixed to the optimal values, then the discrete solution guess $\\hat { \\delta }$ only needs to be used to fix any remaining integer decision variables, reducing the risk of causing infeasibility The proposed method can be used to improve any existing heuristic, e.g., when presolve prunes an integer variable $\\delta _ { i }$ for which the heuristic made an incorrect prediction that would have resulted in an infeasible solution. Algorithm 8 describes the proposed heuristic presolve method given a candidate integer solution δ for a particular vector of problem parameters θ. Let R be the index set of pruned decision variables $( \\mathrm { i . e . , } \\delta _ { i }$ \n\n[aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md · vec=0.471240758895874]\n# 工业诊断报告：5 秒窗口温度序列异常趋势判定\n\n- **运行 ID**: `202609201042216_team_smoke`\n- **数据源**: `data/auth_test.csv`（sha256=F2B29558…16FB，2 行 × 3 列）\n- **诊断类型**: `COMPETING_SET`（竞争假设集，不可裁决）\n- **Judge 门控**: pass，score=96（第 1 轮，无阻断项）\n- **Preflight 物理审计**: PREFLIGHT_PASS（无阻断项）\n- **报告生成**: 2026-09-20\n\n---\n\n## 1. 执行摘要\n\n本诊断回答用户问题——『该数据有无异常趋势？』——结论为**不可裁决**：数据确实存在表观单向温升，temp_c 由 72.1 d",
+  "unscanned": [
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k19.md",
+      "reason": "empty_content"
+    },
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/artificial-intelligence__1706.03762__attention-is-all-you-need__k20.md",
+      "reason": "empty_content"
+    },
+    {
+      "kb_id": "b87f4dab-c83b-4a99-abe3-182773fc315a",
+      "doc_path": "aw-industrial-e2e-20260926-022518/experience/exp-d45dc195a924.md",
+      "reason": "empty_content"
+    }
+  ],
+  "seconds": 21.6
+}

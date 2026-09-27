@@ -1,0 +1,24 @@
+{
+ "qid": "QK07",
+ "question": "What is MameLoshnLM and what parameter scale does it have?",
+ "track": "mode_B",
+ "method": "mode_B",
+ "via": "retrieval-mode+closed-book",
+ "answer": "The evidence is insufficient: no documents or chunks were retrieved for this question (\"no evidence retrieved\"), so I cannot state what MameLoshnLM is or its parameter scale. I am instructed to answer only from the provided evidence and not fall back on prior knowledge, so I will not speculate. No sources were used, since none were supplied. If you can retrieve relevant documents (e.g., a paper, model card, or KB entry mentioning MameLoshnLM), I can answer from them.",
+ "is_error": false,
+ "latency_s": 7.5,
+ "retrieval_s": 3.5,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 37396,
+  "output": 312,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.19477999999999998,
+ "ranked": [],
+ "evidence_sources": [],
+ "evidence_chars": 0,
+ "real_engine": false,
+ "merge": null
+}

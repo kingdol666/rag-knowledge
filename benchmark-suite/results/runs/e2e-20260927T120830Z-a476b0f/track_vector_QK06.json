@@ -1,0 +1,36 @@
+{
+ "qid": "QK06",
+ "method": "vector",
+ "question": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+ "ranked": [
+  "1503.07557",
+  "2007.10574",
+  "2409.13934"
+ ],
+ "ranked_paths": [
+  "climate-science__1503.07557__precipitation-extremes-under-climate-change__k00",
+  "climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on__k14",
+  "climate-science__2409.13934__on-the-extrapolation-of-generative-adversari__k05"
+ ],
+ "evidence_sources": [
+  "1503.07557",
+  "2007.10574",
+  "2409.13934"
+ ],
+ "evidence_chars": 1542,
+ "retrieval_s": 0.1,
+ "latency_s": 14.8,
+ "answer": "**Answer:** The retrieved evidence does not explicitly identify the primary physical factor. The abstract of [1503.07557] (O'Gorman) says the response is examined \"with a focus on the physical factors that control the response,\" but the retrieved text is truncated (\"remains uncert…\") before any factor is named; it only states that precipitation extremes intensify with warming while sensitivity remains uncertain. [2409.13934] cites a \"strong warming-driven signal (Clausius-Clapeyron, ~7%/°C)\" for extreme precipitation, but does not state that this is the primary controlling factor. [2007.10574] mentions vertical moisture flux convergence and vertical moisture advection, but these are discussed as MJO-related modulation processes, not the climate-change response. Therefore, on the evidence provided, I cannot name the controlling physical factor.\n\n**Sources used:**\n- [1503.07557] \"Precipitation extremes under climate change\" (O'Gorman) — abstract fragment\n- [2409.13934] — fragment citing Clausius-Clapeyron scaling (~7%/°C)\n- [2007.10574] — Section 3.2 fragment on MJO dynamical links",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 37761,
+  "output": 2481,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.25083,
+ "extra": {},
+ "track": "vector",
+ "via": "baseline+closed-book"
+}

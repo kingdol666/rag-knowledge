@@ -1,0 +1,47 @@
+{
+ "qid": "QK04",
+ "question": "Using only what kind of information, and reaching what accuracy, does the wav2vec 2.0 approach detect within-sentence prosodic boundaries on Czech broadcast news?",
+ "track": "mode_A",
+ "method": "mode_A",
+ "via": "retrieval-mode+closed-book",
+ "answer": "**The evidence is insufficient to answer this question.**\n\nNeither retrieved chunk addresses wav2vec 2.0, prosodic boundary detection, or Czech broadcast news. The first source (e2e-demo-0923-022632/global-rag-benchmark.md) is about the GlobalQA benchmark for corpus-level RAG reasoning; the second (经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md) is about Bayesian state-space modeling of US monetary policy network effects. Neither contains any information about the input features or accuracy of a wav2vec 2.0 approach to within-sentence prosodic boundary detection.\n\nSources used: e2e-demo-0923-022632/global-rag-benchmark.md; 经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md.",
+ "is_error": false,
+ "latency_s": 28.2,
+ "retrieval_s": 22.0,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38303,
+  "output": 552,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.205315,
+ "ranked": [
+  "Novel-PridePrejudice/pride_and_prejudice (part 13 of 26).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 2 of 26).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "soul-cs-library/soul-definition.md",
+  "soul-demo-qa/soul-definition.md",
+  "soul-e2e-tester-024115/soul-definition.md",
+  "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+  "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 5 of 6).md",
+  "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 2 of 6).md",
+  "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 5 of 6).md",
+  "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md",
+  "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md",
+  "自然科学与地球科学/astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 1 of 2).md",
+  "计算机与人工智能/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 1 of 2).md"
+ ],
+ "evidence_sources": [
+  "Novel-PridePrejudice/pride_and_prejudice (part 13 of 26).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 2 of 26).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md"
+ ],
+ "evidence_chars": 4000,
+ "real_engine": true,
+ "merge": null
+}

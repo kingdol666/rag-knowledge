@@ -1,0 +1,345 @@
+{
+  "status": "ok",
+  "query": "Using only what kind of information, and reaching what accuracy, does the wav2vec 2.0 approach detect within-sentence prosodic boundaries on Czech broadcast news?",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "parameters": {
+    "kb_id": "",
+    "threshold": 0.5,
+    "vector_top_k": 30,
+    "vector_threshold": 0.35,
+    "doc_read_chars": 20000,
+    "segment_chars": 3000,
+    "max_state_chars": 6000,
+    "max_evidence_chars": 24000
+  },
+  "recall": {
+    "vector_raw_hits": 26,
+    "vector_dedup_docs": 17,
+    "recall_seconds": 3.1,
+    "docs_read": 16,
+    "read_errors": [
+      {
+        "doc_path": "Corpus-Chunks800/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u__k00.md",
+        "error": "empty_content"
+      }
+    ],
+    "reread_seconds": 6.9
+  },
+  "judge": {
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "criterion": "evidence",
+    "threshold": 0.5,
+    "global_best": 0.9564,
+    "scored_segments": 82,
+    "total_segments": 82,
+    "errors": []
+  },
+  "judge_doc_scores": [
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "vector_score": 0.42665231227874756,
+      "judge_score": 0.9564,
+      "kept": true
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md",
+      "vector_score": 0.4265486001968384,
+      "judge_score": 0.9519,
+      "kept": true
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.4900355339050293,
+      "judge_score": 0.9397,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 5 of 6).md",
+      "vector_score": 0.45843565464019775,
+      "judge_score": 0.9385,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 2 of 6).md",
+      "vector_score": 0.4667472839355469,
+      "judge_score": 0.9272,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 1 of 2).md",
+      "vector_score": 0.8245277404785156,
+      "judge_score": 0.917,
+      "kept": true
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "vector_score": 0.45387017726898193,
+      "judge_score": 0.9127,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+      "vector_score": 0.4315912127494812,
+      "judge_score": 0.9096,
+      "kept": true
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md",
+      "vector_score": 0.4187110662460327,
+      "judge_score": 0.8946,
+      "kept": true
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 1 of 2).md",
+      "vector_score": 0.46709567308425903,
+      "judge_score": 0.887,
+      "kept": true
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_path": "soul-cs-library/soul-definition.md",
+      "vector_score": 0.43549680709838867,
+      "judge_score": 0.8846,
+      "kept": true
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_path": "soul-e2e-tester-024115/soul-definition.md",
+      "vector_score": 0.43549680709838867,
+      "judge_score": 0.8846,
+      "kept": true
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_path": "soul-demo-qa/soul-definition.md",
+      "vector_score": 0.43549680709838867,
+      "judge_score": 0.8846,
+      "kept": true
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 13 of 26).md",
+      "vector_score": 0.37970513105392456,
+      "judge_score": 0.8416,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 5 of 6).md",
+      "vector_score": 0.4512750506401062,
+      "judge_score": 0.8252,
+      "kept": true
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 2 of 26).md",
+      "vector_score": 0.3506508469581604,
+      "judge_score": 0.7097,
+      "kept": true
+    }
+  ],
+  "result_list": [
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_id": null,
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "name": "global-rag-benchmark.md",
+      "vector_score": 0.42665231227874756,
+      "judge_score": 0.9564,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md",
+      "name": "economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md",
+      "vector_score": 0.4265486001968384,
+      "judge_score": 0.9519,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_id": null,
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "name": "【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.4900355339050293,
+      "judge_score": 0.9397,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 5 of 6).md",
+      "name": "medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 5 of 6).md",
+      "vector_score": 0.45843565464019775,
+      "judge_score": 0.9385,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 2 of 6).md",
+      "name": "medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 2 of 6).md",
+      "vector_score": 0.4667472839355469,
+      "judge_score": 0.9272,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 1 of 2).md",
+      "name": "speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 1 of 2).md",
+      "vector_score": 0.8245277404785156,
+      "judge_score": 0.917,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_id": null,
+      "doc_path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "name": "artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "vector_score": 0.45387017726898193,
+      "judge_score": 0.9127,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+      "name": "mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+      "vector_score": 0.4315912127494812,
+      "judge_score": 0.9096,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md",
+      "name": "economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md",
+      "vector_score": 0.4187110662460327,
+      "judge_score": 0.8946,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_id": null,
+      "doc_path": "自然科学与地球科学/astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 1 of 2).md",
+      "name": "astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 1 of 2).md",
+      "vector_score": 0.46709567308425903,
+      "judge_score": 0.887,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_id": null,
+      "doc_path": "soul-cs-library/soul-definition.md",
+      "name": "soul-definition.md",
+      "vector_score": 0.43549680709838867,
+      "judge_score": 0.8846,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_id": null,
+      "doc_path": "soul-e2e-tester-024115/soul-definition.md",
+      "name": "soul-definition.md",
+      "vector_score": 0.43549680709838867,
+      "judge_score": 0.8846,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_id": null,
+      "doc_path": "soul-demo-qa/soul-definition.md",
+      "name": "soul-definition.md",
+      "vector_score": 0.43549680709838867,
+      "judge_score": 0.8846,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_id": null,
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 13 of 26).md",
+      "name": "pride_and_prejudice (part 13 of 26).md",
+      "vector_score": 0.37970513105392456,
+      "judge_score": 0.8416,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 5 of 6).md",
+      "name": "mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 5 of 6).md",
+      "vector_score": 0.4512750506401062,
+      "judge_score": 0.8252,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_id": null,
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 2 of 26).md",
+      "name": "pride_and_prejudice (part 2 of 26).md",
+      "vector_score": 0.3506508469581604,
+      "judge_score": 0.7097,
+      "truncated": true,
+      "read_error": null
+    }
+  ],
+  "kept_doc_paths": [
+    "e2e-demo-0923-022632/global-rag-benchmark.md",
+    "经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md",
+    "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+    "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 5 of 6).md",
+    "生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 2 of 6).md",
+    "计算机与人工智能/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 1 of 2).md",
+    "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+    "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md",
+    "经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md",
+    "自然科学与地球科学/astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 1 of 2).md",
+    "soul-cs-library/soul-definition.md",
+    "soul-e2e-tester-024115/soul-definition.md",
+    "soul-demo-qa/soul-definition.md",
+    "Novel-PridePrejudice/pride_and_prejudice (part 13 of 26).md",
+    "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 5 of 6).md",
+    "Novel-PridePrejudice/pride_and_prejudice (part 2 of 26).md"
+  ],
+  "evidence_pack": "[e2e-demo-0923-022632/global-rag-benchmark.md · vec=0.42665231227874756]\n# Towards Global Retrieval Augmented Generation: A Benchmark for Corpus-Level Reasoning\n\nQi Luo1,\\*, Xiaonan Li1,\\*, Tingshuo Fan1, Xinchi Chen1,†, Xipeng Qiu1,2,†\n\n1Fudan University\n\n2Shanghai Innovation Institutey qluo22@m.fudan.edu.cn\n\n## Abstract\n\nRetrieval-augmented generation (RAG) has emerged as a leading approach to reducing hallucinations in large language models (LLMs). Current RAG evaluation benchmarks primarily focus on what we call local RAG: retrieving relevant chunks from a small subset of documents to answer queries that require only localized understanding within specific text chunks. However, many real-world applications require a fundamentally different capability—global RAG—which involves aggregating and analyzing information across entire document collections to derive corpus-level insights (e.g. “What are the top 10 most cited papers in 2023?\"). In this paper, we introduce GlobalQA—the first benchmark specifically designed to evaluate global RAG capabilities, covering four core task types: counting, extremum queries, sorting, and top-k extraction. Through systematic evaluation across different models and baselines, we find that existing RAG methods perform poorly on global tasks, with the strongest baseline achieving only 1.51 F1 score. To address these challenges, we propose Global-RAG, a multi-tool collaborative framework that preserves structural coherence through chunklevel retrieval, incorporates LLM-driven intelligent filters to eliminate noisy documents, and integrates aggregation modules for precise symbolic computation. On the Qwen2.5-14B model, GlobalRAG achieves 6.63 F1 compared to the strongest baseline's 1.51 F1, validating the effectiveness of our method.\n\n## 1 Introduction\n\nRetrieval-augmented generation (RAG) has been proposed as a solution to mitigate hallucination and knowledge limitations in large language models (LLMs) (Lewis et al., 2021; Li et al., 2025; Zhang et al., 2025; Rawte et al., 2023; Wang et al.,\n\n![](images/838ff38197a58dd916888ef6cc7803a82e53db9b32898de2754d99b5b76b9a6c.jpg)  \n(b) Global Query: Dense Retriever Fails  \nFigure 1: Why Dense Retriever Fails on Global Queries: (a) Local Query: The answer can be found in specific documents. Dense retriever ranks all documents and selects top-k, which contains the relevant information. (b) Global Query: The answer requires information from all documents. However, dense retriever only returns top-k ranked documents, missing critical information scattered acro\n\n[经济与社会/economics__1911.06206__bayesian-state-space-modeling-for-analyzing (part 1 of 5).md · vec=0.4265486001968384]\n# economics__1911.06206__bayesian-state-space-modeling-for-analyzing（第 1/5 部分）\n章节: Bayesian state-space modeling for analyzing heterogeneous network effects of US monetary policy\n# Bayesian state-space modeling for analyzing heterogeneous network effects of US monetary policy\n\n\nNIKO HAUZENBERGER and MICHAEL PFARRHOFER\\*\n\nUniversity of Salzburg\n\nUnderstanding disaggregate channels in the transmission of monetary policy is of crucial importance for effectively implementing policy measures. We extend the empirical econometric literature on the role of production networks in the propagation of shocks along two dimensions. First, we allow for industry-specific responses that vary over time, reflecting non-linearities and cross-sectional heterogeneities in direct transmission channels. Second, we allow for time-varying network structures and dependence. This feature captures both variation in the structure of the production network, but also differences in cross-industry demand elasticities. We find that impacts vary substantially over time and the cross-section. Higher-order effects appear to be particularly important in periods of economic and financial uncertainty, often coinciding with tight credit market conditions and financial stress. Differentials in industry-specific responses can be explained by how close the respective industries are to end-consumers.\n\nJEL: C11, C23, C32, C58, E52\n\nKEYWORDS: production networks, monetary policy shocks, high-frequency identification, spatio-temporal modeling\n\n## 1. INTRODUCTION\n\n\nA growing number of papers explores how shocks on the micro and macro level propagate through economic networks and how such shocks relate to aggregate fluctuations (see, for instance, Gabaix, 2011; Acemoglu et al., 2012; Carvalho and Gabaix, 2013; Elliott et al., 2014; Acemoglu et al., 2015; Baqaee and Farhi, 2019). We contribute to this literature by analyzing the transmission of monetary policy shocks through the granular US production network. Our interest centers on assessing timevariation in the strength of network dependencies, and effects of monetary policy shocks on industrylevel returns that are allowed to vary over time and the cross-section.\n\nOur approach relates to Ozdagli and Weber (2020), who generalize the setup proposed in Bernanke and Kuttner (2005) and Gürkaynak et al. (2005) for analyzing the impact of changes in monetary policy on equity prices.1 While Bernanke and Kuttner (2005) and Gürkaynak et al. (2005) identify a sign\n\n[aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md · vec=0.4900355339050293]\n# 工业诊断报告：5 秒窗口温度序列异常趋势判定\n\n- **运行 ID**: `202609201042216_team_smoke`\n- **数据源**: `data/auth_test.csv`（sha256=F2B29558…16FB，2 行 × 3 列）\n- **诊断类型**: `COMPETING_SET`（竞争假设集，不可裁决）\n- **Judge 门控**: pass，score=96（第 1 轮，无阻断项）\n- **Preflight 物理审计**: PREFLIGHT_PASS（无阻断项）\n- **报告生成**: 2026-09-20\n\n---\n\n## 1. 执行摘要\n\n本诊断回答用户问题——『该数据有无异常趋势？』——结论为**不可裁决**：数据确实存在表观单向温升，temp_c 由 72.1 degC 升至 73.4 degC（+1.3 degC / 5 s，平均速率 0.26 degC/s，derived）[Evidence Rank 1]，且该事实经原始两行独立复算与 VLM 读图 3 次交叉确认。但 n=2 样本低于一切统计方法门槛（regime 20 行 / 变点 3 段 / CCF 30 行），无正常范围基线、无冗余测点、无事件记录，三个物理上成立的解释——H1 真实工艺热瞬态（置信 34）、H2 传感器测量伪影（置信 30）、H3 短时瞬态伪影（置信 34）——在本数据下完全不可判别。诊断输出 `COMPETING_SET`，单假设置信度 30-34（LOW，竞争集上限 65），禁止任何确定性根因表述。置信分值仅作序数解读（H2 < H1 ≈ H3），不构成精确度量。裁决路径为按最小判别数据需求补测（P1：同测点冗余参考传感器 + 连续 ≥30 个 5 s 样本 + 传感器规格书）。\n\n## 2. 诊断背景\n\n### 2.1 数据概览\n\n| 项 | 值 |\n|---|---|\n| 原始文件 | `data/auth_test.csv`，2 行 × 3 列（temp_c / timestamp / 派生 time_hours），无清洗损失（cleaning_operations=[]，0 行丢弃 / 0 修改） |\n| 数值参数 | temp_c（摄氏温度，L1 推断：测点 / 介质 / 设备 / 工艺阶段未知，physical_meaning_confidence=INFERRED） |\n| 时间窗 | 2026-09-09T00:00:00+08:00 → 00:00:05+08:00（5 s，时间戳真实解析、单调、间隔均匀 5.0 s） |\n| 观测值 | 72.1 degC → 73.4 degC |\n| 结构缺失 | 无分组列、无质量/检验列、无事件标记列、无冗余测点 |\n\n### 2.2 用户问题\n\n『该数据有无异常趋势？』——即判定 5 秒窗口内的温升是否构成异常趋势、其物理来源为何。\n\n### 2.3 本体与工艺上下文\n\n本体（`01_ontology/ontology.json`）标注：temp_c 为 predictor 角色；direction=UNKNOWN；normal_range_status=NOT_APPLICABLE（无 SOP / 规格限 / 历史基线）；物理原理候选（能量守恒 m·Cp·dT/dt = Q_in − Q_out、热时间常数 tau=C/(hA)）分别为 UNVERIFIED_NO_PROCESS_CONTEXT 与 NOT_ESTIMABLE_WITH_TWO_ROWS；六类混杂变量（环境温度、热源/负载、冷却、设备归属、工况、传感器健康）全部 NOT_OBSERVED。本体 `discrepancy_signals[0]` 标记 **BLOCKING_FOR_CAUSAL_CONCLUSION**：仅 2 行、1 个数值变量、5 秒跨度时，诊断必须输出 NEEDS_DATA 或 COMPETING_SET，`causal_graph.root_cause_conclusion_allowed=false` [Evidence Rank 5]。\n\n## 3. 数据质量评估\n\n| 维度 | 结论 |\n|---|---|\n| 完整性 | 2 行 × 3 列无缺失；清洗零操作、零损失，原始值与清洗值逐位一致（cleaning_integrity.json） |\n| 时间合法性 | timestamp 为真实解析的 ISO-8601(+08:00)，monotonic=true、median_interval_s=5.0、dropped_unparsable=0（time_alignment.json） |\n| 异常值 | z=[-0.7071, +0.7071]（构造性）、IQR 栏 71.45/74.05 degC 内无点、异常检测因 n<3 前置跳过（process_parameters_screened=0）——『无离群、无异常区间』是样本量下限的构造性结果，**不构成无异常的证据** |\n| 生产状态 | 两行被脚本默认标 steady 为无证据默认值，不据此声明稳态背景 |\n| 批次/分组完整性 | 无批次列、无分组列（组数=1），批次完整性检验不触发 |\n| 统计充分性 | validate_report 判定 **INSUFFICIENT_DATA**；脚本输出的 ROBUST 总体有效性判定为空洞真（total_targets=0、检查列表全空），已降权 |\n\n## 4. 统计分析发现\n\n本节为强制章节。n=2 条件下全部统计方法不可用，可用发现均为算术与视觉事实：\n\n1. **唯一趋势事实 [Evidence Rank 1]**：一阶差分 +1.3 degC，平均速率 0.26 degC/s（derived=true，未插值、未滤波、未拟合，可由原始两行复算）。『drift』仅为两点单调形态的形态学描述，不代表\n\n[生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 5 of 6).md · vec=0.45843565464019775]\n# medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio（第 5/6 部分）\n章节: MultiverSeg: Scalable Interactive Segmentation of Biomedical Imaging Datasets with In-Context Guidance\n# MultiverSeg: Scalable Interactive Segmentation of Biomedical Imaging Datasets with In-Context Guidance\n\n\nSupplementary Material\n\n## Contents\n\n\nA Code 16   \nB. MultiverSeg Method 16   \nB.1. Architecture 16   \nC Data 16   \nC.1. Datasets . . 16   \nC.2. Synthetic Task Generation . . . . 17   \nC.3. Data Augmentation 17   \nD. Experimental Setup 17   \nD.1. Baselines 17   \nD.2 Inference 17   \nD.3. Metrics 18   \nE Experiment 1: Evaluation 18   \nE.1. Setup . . . 18   \nE.2. Interactions per Image as a Function of   \nDataset Size . . . 20   \nE.3. Bootstrapping In-Context Segmentation . . 21   \nE.4. Comparison to Few-Shot Fine-Tuning . . 22   \nE.5. Resolution Sensitivity Analysis 22   \nF. Experiment 2: Analysis 24   \nF.1. In-Context Segmentation . . 24   \nF.2. Interactive Segmentation In Context . . . 24   \nF.3. Inference Runtime and Memory Usage . . . 24\n\n## A. Code\n\n\nCode and pre-trained weights are available at https://multiverseg.csail.mit.edu.\n\n## B. MultiverSeg Method\n\n## B.1. Architecture\n\n\nCrossConv. We implement the CrossConvolutional layer slightly differently from [16]. To avoid duplicate convolutions on the context features $v _ { i }$ in Eq. 2, we partition weights $\\theta _ { z }$ channel-wise into $\\{ \\theta _ { z _ { 1 } } , \\theta _ { z _ { 2 } } \\}$ and implement $z _ { i } = L N ( A ( \\mathrm { C o n v } ( q , \\theta _ { z _ { 1 } } ) + \\mathrm { C o n v } ( v _ { i } , \\theta _ { z _ { 2 } } ) ) )$ where $q$ is the target feature map and $v _ { i }$ is the feature map corresponding to context set entry i. We zero out the bias terms in $\\mathbf { C o n v } ( \\cdot , \\theta _ { z _ { 2 } } )$ such that the computation is equivalent to $z _ { i } = L N ( A ( \\mathbf { C o n v } ( q | | v _ { i } ; \\theta _ { z } ) ) )$ 1\n\nNetwork. We implement $f _ { \\theta } ( \\cdot )$ using an encoder with 5 encoder CrossBlock stages and a decoder with 4 CrossBlock stages. Each stage has 256 output features and LeakyReLU non-linearities after each convolution. We use bilinear interpolation for upsampling and downsampling.\n\nThe CrossBlock mechanism requires at least one context set entry. If the context set is empty, we use a dummy context set entry consisting of an image and segmentation with uniform value of 0.5.\n\n## C. Data\n\n## C.1. Datasets\n\n\nWe build on large dataset gath\n\n[生命科学与医学/medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio (part 2 of 6).md · vec=0.4667472839355469]\n# medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio（第 2/6 部分）\n章节: MultiverSeg: Scalable Interactive Segmentation of Biomedical Imaging Datasets with In-Context Guidance > 6. Experiment 1: Evaluation\n## 6. Experiment 1: Evaluation\n\n\nIn this experiment, we evaluate different approaches to segmenting an entire new biomedical dataset. We compare MultiverSeg to ScribblePrompt, SAM, SegNext, SAM-Med2D, IMIS-Net, and MedSAM, which perform interactive segmentation of each image independently, and to SP+UVS, which combines ScribblePrompt with an incontext segmentation model (UniverSeg). We show that MultiverSeg outperforms all of the baselines.\n\n## 6.1. Setup\n\n\nWe evaluate the number of interactions required to achieve a target Dice score on each image using different methods, or a maximum number of interactions if the score was not reached. We use 90% as a target Dice score, because our collection of fully-supervised task-specific nnUNet models achieves an average Dice of 88 $3 . 6 7 \\pm 0 . 4 7$ on the same test data. We set 20 center clicks or 10 steps of centerline scribbles as the maximum number of interactions.\n\nFor each method and task, we begin by interactively segmenting one randomly sampled image from the training split $1 0 \\geq 9 0 \\%$ Dice using ScribblePrompt. This example is used to seed the context set. We then randomly sample (without replacement) 18 images from the test split, and simulate sequentially segmenting each image.\n\nData. We report results averaged across 200 simulations for each held-out segmentation task. We exclude tasks with fewer than 18 test examples, leaving 161 tasks from 8 evaluation datasets [1-3, 11, 42, 122, 129, 146]. We further discuss the choice of this cutoff in Appendix E.1.\n\n## 6.2. Results\n\n\nInteractions per image as a function of dataset size. As more examples are segmented and the context set grows, the number of interactions required to get to 90% Dice (NoI90) on the $\\mathrm { n ^ { t h } }$ example using MultiverSeg decreases substantially (Fig. 3). For interactive segmentation methods, NoI90 is approximately constant, because they are not designed to learn from previous examples. With SP+UVS, the number of interactions decreases as more examples are segmented, but it requires more interactions than MultiverSeg. Results by task in Appendix E.2 show a similar trend. Fig. 5 shows predictions for the $1 0 ^ { t h }$ example after 1 step of interaction.\n\nTotal interactions. On average, using Mu\n\n[计算机与人工智能/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 1 of 2).md · vec=0.8245277404785156]\n# speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u（第 1/2 部分）\n章节: Detection of Prosodic Boundaries in Speech Using Wav2Vec 2.0\n# Detection of Prosodic Boundaries in Speech Using Wav2Vec 2.0\n\n\nMarie Kunešová[0000-0002-7187-8481] and Markéta Rezáčková[0000-0002-6194-7826]\n\nNew Technologies for the Information Society and Department of Cybernetics, Faculty of Applied Sciences, University of West Bohemia, Pilsen, Czech Republic {mkunes,juzova}@ntis.zcu.cz\n\nAbstract. Prosodic boundaries in speech are of great relevance to both speech synthesis and audio annotation. In this paper, we apply the wav2vec 2.0 framework to the task of detecting these boundaries in speech signal, using only acoustic information. We test the approach on a set of recordings of Czech broadcast news, labeled by phonetic experts, and compare it to an existing text-based predictor, which uses the transcripts of the same data. Despite using a relatively small amount of labeled data, the wav2vec2 model achieves an accuracy of 94% and F1 measure of 83% on within-sentence prosodic boundaries (or 95% and 89% on all prosodic boundaries), outperforming the text-based approach. However, by combining the outputs of the two different models we can improve the results even further.\n\nKeywords: Phrasing · Prosodic boundaries · Phrase boundary detection · wav2vec.\n\n## 1 Introduction\n\n\nProsodic phrasing is the division of fluent speech into prosodic (or intonation [2]) phrases – groups of words in a spoken sentence, typically featuring an intonation peak and often separated by pauses.\n\nProsodic phrasing not only plays an important role in the human understanding of spoken language [6] but is also highly relevant for many speech processing tasks, such as speech synthesis and audio annotation.\n\nIn text-to-speech (TTS) systems, information about prosodic boundaries in text helps improve the naturalness of synthesized speech, by allowing the system to insert pauses and modify intonation in a similar way to a human speaker. In audio, it can be used to enhance the training data, likewise leading to a more natural-sounding speech [17].\n\nIn speech recognition and spoken language understanding, phrase breaks also help distinguish between otherwise identical sentences with a different meaning (such as the popular example \"Let's eat, grandma!\" versus \"Let's eat grandma!\")\n\nThere are two different scenarios for the automatic detection of prosodic boundaries: detection solely from text, most often for t\n\n[demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md · vec=0.45387017726898193]\nProvided proper attribution is provided, Google hereby grants permission to reproduce the tables and figures in this paper solely for use in journalistic or scholarly works.\n\n# Attention Is All You Need\n\nAshish Vaswani<sup>∗</sup> Google Brain avaswani@google.com\n\nNoam Shazeer<sup>∗</sup> Google Brain noam@google.com\n\nNiki Parmar<sup>∗</sup> Google Research nikip@google.com\n\nJakob Uszkoreit<sup>∗</sup> Google Research usz@google.com\n\nLlion Jones<sup>∗</sup> Google Research llion@google.com\n\nAidan N. Gomez<sup>∗</sup> <sup>†</sup> University of Toronto aidan@cs.toronto.edu\n\nŁukasz Kaiser<sup>∗</sup> Google Brain lukaszkaiser@google.com\n\nIllia Polosukhin<sup>∗</sup> <sup>‡</sup> illia.polosukhin@gmail.com\n\n## Abstract\n\nThe dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 Englishto-German translation task, improving over the existing best results, including ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.\n\n## 1 Introduction\n\nRecurrent neural networks, long short-term memory [13] and gated recurrent [7] neural networks in particular, have been firmly established as state of the art approaches in sequence modeling and transduction problems such as language modeling and machine translation [35, 2, 5]. Numerous efforts have since continued to push the boundaries of recurrent language models and encoder-decoder architectures [38, 24, 15].\n\nRecurrent models typically factor computation along the symbol positions of the input and output sequences. Aligning the positions to steps in computation time, they generate a sequence of hidden \n\n[工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 4 of 6).md · vec=0.4315912127494812]\n# mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and（第 4/6 部分）\n章节: Piecewise SOS-Convex Moment Optimization and Applications via Exact Semi-Definite Programs > 4 Applications to Newsvendor and Revenue Maximization\n## 4 Applications to Newsvendor and Revenue Maximization\n\nWe devote this section to presenting SDP reformulations and numerical results for the Newsvendor and revenue maximization problems.\n\nGeneralized Newsvendor Problems. A company orders n goods, where $n \\geq 1$ . For each of the i-th goods, the unit cost of upfront ordering is $\\$ { c _ { i } }$ with $0 < c _ { i } < 1$ . For a fixed order quantity $0 \\leq x _ { i } \\leq R _ { i }$ , where $R _ { i }$ refers to the capacity, the company wishes to estimate a worst-case (upper) bound for the cost of ordering to meet the random demands. If the demand $\\omega _ { i }$ exceeds the upfront order $x _ { i }$ , the company incurs a unit back-ordering cost of $\\$ 1$ , or a total back-ordering cost of $\\ S ( \\omega _ { i } - x _ { i } )$ , otherwise, the cost of back-ordering is \\$0. This results in a total ordering cost of $c _ { i } x _ { i } + \\operatorname* { m a x } \\{ \\omega _ { i } - x _ { i } , 0 \\}$\n\nAssume that the demand for each goods is independent and the support is $\\Pi _ { i = 1 } ^ { n } \\Omega _ { i }$ , where $\\Omega _ { i } =$ $[ \\underline { { \\omega } } _ { i } , \\overline { { \\omega } } _ { i } ]$ with $0 \\leq \\underline { { \\omega } } _ { i } < \\overline { { \\omega } } _ { i } , i = 1 , \\ldots , n$ . Then, the multi-product Newsvendor model reduces to single-product Newsvendor models, and the worst-case ordering cost can be found by solving $\\operatorname* { m a x } _ { \\mu \\in \\mathcal { P } _ { i } } \\{ c _ { i } x _ { i } + \\mathbb { E } _ { \\mu } ^ { \\Omega _ { i } } [ \\operatorname* { m a x } \\{ \\omega _ { i } - x _ { i } , 0 \\} ] \\}$ for all $i = 1 , \\ldots , n$ where $\\mathcal { P } _ { i }$ consists of various moment constraints.\n\nWe focus on the single-product Newsvendor model and suppress the index $i \\in \\{ 1 , \\ldots , n \\}$ . For a fixed order quantity $0 \\le x \\le R$ , the worst-case ordering cost can be found from the following\n\nmoment problem,\n\n$$\n\\operatorname* { m a x } _ { \\mu \\in \\mathcal { P } } \\ c x + \\mathbb { E } _ { \\mu } ^ { \\Omega } [ \\operatorname* { m a x } \\{ \\omega - x , 0 \\} ] ,\\tag{16}\n$$\n\n$$\n\\mathrm { w h e r e ~ } \\Omega = [ \\underline { { \\omega } } , \\overline { { \\omega } } ] = \\{ v \\in \\mathbb { R } : F _ { 0 } + v F _ \n\n[经济与社会/economics__2011.14424__on-the-effectiveness-of-the-european-central (part 5 of 5).md · vec=0.4187110662460327]\n# economics__2011.14424__on-the-effectiveness-of-the-european-central（第 5/5 部分）\n章节: On the effectiveness of the European Central Bank's conventional and unconventional policies under uncertainty > References\n## References\n\n\nAASTVEIT KA, NATVIK GJ, AND SOLA S (2017), “Economic uncertainty and the influence of monetary policy,\" Journal of International Money and Finance 76, 50–67.\n\nALESsANDRi P, AND MUMTAz H (2019), \"Financial regimes and uncertainty shocks,\" Journal of Monetary Economics 101, 31–46.\n\nALTAVILLA C, BRUGNOLINI L, GÜRKAYNAK RS, MOTTO R, AND RAGUSA G (2019), \"Measuring euro area monetary policy,\" Journal of Monetary Economics 108, 162–179.\n\nANDRADE P, AND FERRoNI F (2020), \"Delphic and Odyssean monetary policy shocks: Evidence from the euro area,\" Journal of Monetary Economics in-press.\n\nARELLANO C, BAI Y, AND KEHOE PJ (2019), \"Financial frictions and fluctuations in volatility,\" Journal of Political Economy 127(5), 2049–2103.\n\nAUERBACH AJ, AND GoRODNICHENKO Y (2012), \"Measuring the output responses to fiscal policy,\" American Economic Journal: Economic Policy 4(2), 1–27.\n\nAZQUETA-GAVALDÓN A, HIRSCHBÜHL D, ONORANTE L, AND SAIZ L (2020), “Economic policy uncertainty in the euro area: an unsupervised machine learning approach,\" ECB Working Paper 2359.\n\nBAKER SR, BLOOM N, AND DAVIS SJ (2016), “Measuring economic policy uncertainty,\" Quarterly journal of economics 131(4), 1593–1636.\n\nBAUER MD, AND SwANsON ET (2020), “The Fed's Response to Economic News Explains the “Fed Information Effect\",\" National Bureau of Economic Research (NBER) Working Paper 27013.\n\nBEKAERT G, HoEROVA M, AND Lo DUCA M (2013), \"Risk, uncertainty and monetary policy,\" Journal of Monetary Economics 60(7), 771–788.\n\nBERGER D, DEW-BECKER I, AND GIGLIO S (2020), “Uncertainty shocks as second-moment news shocks,\" Review of Economic Studies 87(1), 40–76.\n\nBERNANKE BS, BoIVIN J, AND ELIASz P (2005), \"Measuring the effects of monetary policy: a factoraugmented vector autoregressive (FAVAR) approach,\" Quarterly journal of economics 120(1), 387-422.\n\nBERNANKE BS, AND KUTTNER KN (2005), \"What explains the stock market's reaction to Federal Reserve policy?\" Journal of finance 60(3), 1221–1257.\n\nBLo0M N (2009), \"The impact of uncertainty shocks,\" Econometrica 77(3), 623–685.\n\nBoIVIN J, KILEY MT, AND MIsHKIN FS (2010), “Chapter 8 - How Has the Monetary Transmission Mechanism Evolved Over Time?\" in BM FRIEDMAN, AND M WooDFORD (eds.) \"Handbook of Monetary Economics,\" volume 3, 369 – 422, Elsev\n\n[自然科学与地球科学/astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 1 of 2).md · vec=0.46709567308425903]\n# astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md.md（第 1/2 部分）\n章节: The Dark Energy Survey Data Processing and Calibration System\n# The Dark Energy Survey Data Processing and Calibration System\n\n\nJoseph J. Mohra,b, Robert Armstrong, Emmanuel Bertind, Gregory E. Daues°, Shantanu Desaia, Michelle Gowere, Robert Gruendlf, William Hanlon⁸, Niko",
+  "unscanned": [
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u__k00.md",
+      "reason": "empty_content"
+    }
+  ],
+  "seconds": 18.9
+}

@@ -1,0 +1,24 @@
+{
+ "qid": "QK01",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "track": "mode_B",
+ "method": "mode_B",
+ "via": "retrieval-mode+closed-book",
+ "answer": "The evidence provided contains no retrieved content — it is explicitly empty (\"no evidence retrieved\"). I therefore cannot answer how the Transformer computes attention or why it replaces recurrence and convolution; doing so would require prior knowledge, which this task forbids. No sources were used because none were supplied. If you can provide relevant document passages or chunks, I can answer strictly from them.",
+ "is_error": false,
+ "latency_s": 11.1,
+ "retrieval_s": 3.3,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 37402,
+  "output": 246,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.19315999999999997,
+ "ranked": [],
+ "evidence_sources": [],
+ "evidence_chars": 0,
+ "real_engine": false,
+ "merge": null
+}

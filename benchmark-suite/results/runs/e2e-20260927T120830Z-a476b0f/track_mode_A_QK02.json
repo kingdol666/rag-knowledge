@@ -1,0 +1,47 @@
+{
+ "qid": "QK02",
+ "question": "Which three independent ontologies subdivide the Gene Ontology?",
+ "track": "mode_A",
+ "method": "mode_A",
+ "via": "retrieval-mode+closed-book",
+ "answer": "The retrieved evidence is insufficient to answer this question, so I am stopping rather than answering from prior knowledge.\n\nThe only chunk that concerns the Gene Ontology — `genomics__1602.01876__primer-on-the-gene-ontology.md.md` (part 1/2) — contains only the paper's title, author names, and affiliations, and is cut off before any body text describing the GO's structure or subdivision. The other retrieved chunks do not mention the Gene Ontology at all: the Global RAG benchmark abstract (\"Towards Global Retrieval Augmented Generation\"), the indexing paper (`databases__2009.10669`, parts 1/4 and 3/4), and the soul-template memory-convention notes.\n\nSources consulted (none contained the answer):\n- `genomics__1602.01876__primer-on-the-gene-ontology.md.md` (part 1/2) — title/affiliations only, truncated\n- `databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne` (parts 1/4, 3/4)\n- \"Towards Global Retrieval Augmented Generation: A Benchmark for Corpus-Level Reasoning\" (abstract)\n- Soul-template memory-convention notes (three identical chunks)\n\nNo answer is available from the provided evidence.",
+ "is_error": false,
+ "latency_s": 39.7,
+ "retrieval_s": 19.2,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38669,
+  "output": 1487,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.23052,
+ "ranked": [
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "soul-cs-library/memory-conventions.md",
+  "soul-cs-library/soul-definition.md",
+  "soul-demo-qa/memory-conventions.md",
+  "soul-demo-qa/soul-definition.md",
+  "soul-e2e-tester-024115/memory-conventions.md",
+  "soul-e2e-tester-024115/soul-definition.md",
+  "工程与能源/mathematics__1405.4980__convex-optimization-algorithms-and-complexit (part 9 of 12).md",
+  "工程与能源/power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md (part 1 of 2).md",
+  "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 1 of 2).md",
+  "生命科学与医学/genomics__1602.01876__primer-on-the-gene-ontology.md (part 2 of 2).md",
+  "经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 1 of 4).md",
+  "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 1 of 4).md",
+  "计算机与人工智能/databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne (part 3 of 4).md"
+ ],
+ "evidence_sources": [
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "soul-cs-library/memory-conventions.md",
+  "soul-cs-library/soul-definition.md"
+ ],
+ "evidence_chars": 4000,
+ "real_engine": true,
+ "merge": null
+}

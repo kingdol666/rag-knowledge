@@ -1,0 +1,50 @@
+{
+ "qid": "QK06",
+ "method": "bm25",
+ "question": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+ "ranked": [
+  "1503.07557",
+  "2409.13934",
+  "2409.09639",
+  "2007.10574",
+  "physics-0703220",
+  "2607.03098",
+  "1906.10015",
+  "1609.00415",
+  "1308.1846",
+  "2602.10156"
+ ],
+ "ranked_paths": [
+  "climate-science__1503.07557__precipitation-extremes-under-climate-change.md",
+  "climate-science__2409.13934__on-the-extrapolation-of-generative-adversari.md",
+  "climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma.md",
+  "climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on.md",
+  "oceanography__physics-0703220__scientific-reticence-and-sea-level-rise.md",
+  "power-systems__2607.03098__integrating-power-electronics-based-energy-s.md",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md",
+  "economics__1609.00415__does-infrastructure-investment-lead-to-econo.md",
+  "seismology__1308.1846__developing-and-testing-the-automated-post-ev.md",
+  "genomics__2602.10156__strand-sequence-conditioned-transport-for-si.md"
+ ],
+ "evidence_sources": [
+  "1503.07557",
+  "2409.13934",
+  "2409.09639"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.0,
+ "latency_s": 8.1,
+ "answer": "**Answer:** The evidence does not identify a single factor as \"primarily\" controlling the response — it states that \"several physical contributions govern the response of precipitation extremes\" to climate change. Among these, the **thermodynamic contribution** is described as robust and well understood, while theoretical understanding of the **microphysical** and **dynamical** contributions is still being developed. The same source adds that the sensitivity of precipitation extremes to warming remains uncertain when convection is important, and may be higher in the tropics than in the extratropics. So the strongest evidence-supported statement is that the thermodynamic contribution is the well-understood one, but the response is governed by multiple physical contributions rather than one primary factor. The other two retrieved chunks (on an emulator's climate-change signal and on a GPC/m precipitation dataset) do not address this question.\n\n**Source used:**\n- `[1503.07557] climate-science__1503.07557__precipitation-extremes-under-climate-change.md` (Part 1/3 — abstract)",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38147,
+  "output": 1192,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.22053499999999998,
+ "extra": {},
+ "track": "bm25",
+ "via": "baseline+closed-book"
+}

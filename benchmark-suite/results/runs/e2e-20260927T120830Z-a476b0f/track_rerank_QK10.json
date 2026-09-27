@@ -1,0 +1,56 @@
+{
+ "qid": "QK10",
+ "method": "rerank",
+ "question": "How does the Herbert-Moulton collider benchmark quantify detector drift in particle physics experiments?",
+ "ranked": [
+  "1712.01369",
+  "2303.00445",
+  "1311.2485",
+  "gr-qc-9805045",
+  "2311.00487",
+  "q-bio-0408016",
+  "2211.04977",
+  "2602.10156",
+  "1105.1887",
+  "2606.10843"
+ ],
+ "ranked_paths": [
+  "materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar__k14",
+  "quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu__k59",
+  "quantum-physics__1311.2485__continuous-time-quantum-error-correction__k34",
+  "gravitational-physics__gr-qc-9805045__disturbing-the-black-hole__k21",
+  "quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e__k05",
+  "immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig__k02",
+  "materials__2211.04977__design-of-battery-materials-via-defects-and__k06",
+  "genomics__2602.10156__strand-sequence-conditioned-transport-for-si__k62",
+  "astronomy__1105.1887__the-corot-exoplanet-program-status-results__k12",
+  "seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p__k05"
+ ],
+ "evidence_sources": [
+  "1712.01369",
+  "2303.00445",
+  "1311.2485",
+  "gr-qc-9805045",
+  "2311.00487",
+  "q-bio-0408016",
+  "2211.04977"
+ ],
+ "evidence_chars": 3604,
+ "retrieval_s": 7.8,
+ "latency_s": 17.1,
+ "answer": "**The evidence is insufficient to answer this question.**\n\nNone of the retrieved chunks mentions the \"Herbert-Moulton collider benchmark,\" particle colliders, or any method for quantifying detector drift in particle physics experiments. The word \"drift\" appears only in unrelated senses: drift current density and drift resistivity in semiconductor physics ([1712.01369]), antigenic drift in an immunological affinity model ([q-bio-0408016]), and a qubit state drifting toward the maximally mixed state under bit-flip decoherence ([1311.2485]). The remaining chunks concern quantum circuit sampling and bootstrap distributions ([2303.00445]), Trotter decomposition ([2311.00487]), black hole horizons ([gr-qc-9805045]), and DFT+U calculations for transition-metal oxides ([2211.04977]).\n\n**Sources examined (all provided evidence):** [1712.01369], [2303.00445], [1311.2485], [gr-qc-9805045], [2311.00487], [q-bio-0408016], [2211.04977] — none supports an answer, so I stop here and make no claim beyond the evidence.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38431,
+  "output": 1214,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.222505,
+ "extra": {
+  "rerank_fallback": false
+ },
+ "track": "rerank",
+ "via": "baseline+closed-book"
+}

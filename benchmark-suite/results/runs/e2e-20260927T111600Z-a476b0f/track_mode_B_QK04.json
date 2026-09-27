@@ -1,0 +1,24 @@
+{
+ "qid": "QK04",
+ "question": "Using only what kind of information, and reaching what accuracy, does the wav2vec 2.0 approach detect within-sentence prosodic boundaries on Czech broadcast news?",
+ "track": "mode_B",
+ "method": "mode_B",
+ "via": "retrieval-mode+closed-book",
+ "answer": "The evidence retrieved for this question is empty — no document passages, paths, or chunk IDs were provided. Because the question asks specifically about wav2vec 2.0's input information type and boundary-detection accuracy on Czech broadcast news, and I am required to answer only from the supplied evidence, I cannot answer it.\n\nSources used: none (no evidence retrieved). The evidence is insufficient to answer the question, so I am stopping here rather than drawing on prior knowledge.",
+ "is_error": false,
+ "latency_s": 12.4,
+ "retrieval_s": 3.5,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 37416,
+  "output": 1214,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.21743,
+ "ranked": [],
+ "evidence_sources": [],
+ "evidence_chars": 0,
+ "real_engine": false,
+ "merge": null
+}

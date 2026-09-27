@@ -1,0 +1,50 @@
+{
+ "qid": "QK03",
+ "method": "bm25",
+ "question": "What physical mechanism does the dynamic electrical model use to explain the hysteretic J-V characteristics of perovskite solar cells?",
+ "ranked": [
+  "1606.00335",
+  "1712.01369",
+  "2607.03098",
+  "1906.10015",
+  "2211.04977",
+  "2604.01385",
+  "1801.00862",
+  "2401.06823",
+  "2602.10156",
+  "2306.01022"
+ ],
+ "ranked_paths": [
+  "materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs.md",
+  "materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar.md",
+  "power-systems__2607.03098__integrating-power-electronics-based-energy-s.md",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md",
+  "materials__2211.04977__design-of-battery-materials-via-defects-and.md",
+  "immunology__2604.01385__strategies-for-tumor-elimination-and-control.md",
+  "quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md",
+  "genomics__2401.06823__interpretable-deep-learning-in-single-cell-o.md",
+  "genomics__2602.10156__strand-sequence-conditioned-transport-for-si.md",
+  "medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md"
+ ],
+ "evidence_sources": [
+  "1606.00335",
+  "1712.01369",
+  "2607.03098"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.0,
+ "latency_s": 13.7,
+ "answer": "Based on the retrieved evidence, the dynamic electrical model explains the hysteretic J–V characteristics through the **time variation of the cell's polarization**: it extends the standard static equivalent circuit (photocurrent source, diode with ideality factor n, shunt resistance R_sh, series resistance R_s) with a **parallel capacitance C**, a capacitive element tied to that polarization. The analysis is \"focused on the variation of the polarization in time, assuming a certain relaxation time scale,\" and it further investigates the influence of different relaxation time scales. The evidence also notes that the hysteretic effects are influenced by solar cell preconditioning and bias scan rate.\n\nSources used:\n- **[1606.00335]** — the only source that addresses the mechanism (equivalent circuit + parallel capacitance, polarization vs. time, relaxation time scale, preconditioning, scan rate).\n- [1712.01369] and [2607.03098] were retrieved but do not address the hysteresis mechanism (they concern perovskite/GeSe bilayer cell performance metrics and energy-storage dynamic models, respectively), so they contribute nothing to this answer.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 38201,
+  "output": 1994,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.24085499999999999,
+ "extra": {},
+ "track": "bm25",
+ "via": "baseline+closed-book"
+}
