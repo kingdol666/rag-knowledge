@@ -1,17 +1,27 @@
 /**
  * POST /api/claude/chat
  *
- * Claude Agent SDK streaming chat endpoint (SSE).
+ * Claude Agent SDK chat endpoint. Response shape is caller-selected:
  *
- * Request body: { prompt, cwd?, permissionMode?, model?, allowedTools?, resume?, maxTurns?, attachments? }
- *   attachments: [{ name, path, mime, isImage, isText, isPdf, size }]
- *
- * Response (text/event-stream):
+ * - stream=true: SSE (text/event-stream).
  *   event: meta                -> { cwd, permissionMode, model }
  *   data: <sdk message>        -> system / assistant / user / result (streaming)
  *   event: permission_request  -> { toolName, input, toolUseId, sessionId }
  *   event: done                -> result message
  *   event: error               -> { error }
+ *
+ * - stream=false or omitted (DEFAULT): final-only JSON — intermediate frames
+ *   are swallowed and ONE object is returned when the engine finishes:
+ *   { success, engine, sessionId, model, subtype, answer, duration_ms,
+ *     duration_api_ms, num_turns, total_cost_usd, elapsed_ms }
+ *   Engine failure / turn timeout -> non-200 JSON { success:false, error, code }.
+ *   Permission requests are auto-denied (no interactive surface; rely on the
+ *   pre-allowlisted read-only tools, e.g. kbEnhanced's KB_RETRIEVAL_TOOLS).
+ *
+ * Request body: { prompt, stream?, cwd?, permissionMode?, model?, allowedTools?,
+ *   resume?, maxTurns?, attachments?, kbEnhanced?, kbIds?, soulEnhanced?,
+ *   soulKbId?, reasoningEffort?, engine?, timeout_ms? }
+ *   attachments: [{ name, path, mime, isImage, isText, isPdf, size }]
  *
  * Attachment handling (SDK multimodal integration):
  *   - Images (png/jpg/gif/webp) -> Anthropic image content block (base64)
@@ -58,19 +68,88 @@ interface ChatBody {
   engine?: 'claude' | 'omp'
   /** D4 fix: hard wall-clock budget for the whole turn (ms). */
   timeout_ms?: number
+  /**
+   * Response shape. true (default) = SSE stream as before (web UI).
+   * false = final-only JSON: the handler swallows intermediate frames and
+   * returns ONE JSON object { success, answer, duration_ms, num_turns, … }
+   * when the engine finishes (errors → non-200 JSON). Permission requests
+   * are auto-denied in this mode (no interactive approval surface).
+   */
+  stream?: boolean
 }
 
 /** Safe read-only tools (pre-approved in all modes) */
 const SAFE_READS = ['Read', 'Glob', 'Grep']
 /**
  * D4 fix: KB retrieval toolset. With kbEnhanced on, the injected instruction
- * drives the /knowledgebase-search skill; under `default` permission mode the
- * previous SAFE_READS-only allowlist starved the agent of `Skill`, so it
- * wandered with bare reads and never converged (83 events, no done).
- * Skill is read-only usage; MCP retrieval tools stay governed by the
- * permission callback.
+ * drives a tool-native fast path; under `default` permission mode the previous
+ * SAFE_READS-only allowlist starved the agent of `Skill`, so it wandered with
+ * bare reads and never converged (83 events, no done).
+ *
+ * Speed fix (2026-09-28, measured 215.5s per kb turn): the read-only kb-mcp
+ * tools are pre-allowlisted here so the SDK skips the canUseTool callback for
+ * them — previously EVERY kb call cost a permission_request SSE round trip
+ * (13 per run) and a human approval in the web UI. Only read-only tools are
+ * listed; all kb-mcp write tools (kb_doc_create/update/move/delete, reindex,
+ * ingest, graph build, project_start/update…) still go through the permission
+ * callback. Tool names that don't exist server-side are harmless no-ops.
  */
-const KB_RETRIEVAL_TOOLS = ['Read', 'Glob', 'Grep', 'Skill']
+const KB_RETRIEVAL_TOOLS = [
+  // NOTE: repo-file tools (Read/Glob/Grep), `Skill` and the subagent
+  // delegator are all excluded on kb lanes — measured 2026-09-28: each of
+  // them drew opening-turn detours (Skill doc loading ≈40s, repo Grep ≈14s,
+  // subagent delegation 343s vs 119s). The kb flow is MCP-tool-native; the
+  // inline instruction IS the contract.
+  'Task',
+  'mcp__kb-mcp__kb_list',
+  'mcp__kb-mcp__kb_search',
+  'mcp__kb-mcp__kb_search_vector',
+  'mcp__kb-mcp__kb_search_two_stage',
+  'mcp__kb-mcp__kb_search_stats',
+  'mcp__kb-mcp__kb_get_documents',
+  'mcp__kb-mcp__kb_doc_read',
+  'mcp__kb-mcp__kb_doc_get_by_tag',
+  'mcp__kb-mcp__kb_tags_list',
+  'mcp__kb-mcp__kb_laya_judge',
+  'mcp__kb-mcp__kb_project_status',
+  'mcp__kb-mcp__backend_status',
+  'mcp__kb-mcp__kb_graph_search',
+  'mcp__kb-mcp__kb_graph_stats',
+  'mcp__kb-mcp__kb_graph_document',
+  'mcp__kb-mcp__kb_graph_document_related',
+  'mcp__kb-mcp__kb_graph_kb_overview',
+  'mcp__kb-mcp__kb_graph_cross_kb_documents',
+  'mcp__kb-mcp__kb_graph_document_paths',
+  'mcp__kb-mcp__kb_graph_central_documents',
+]
+/**
+ * All-KB retrieval turns = the librarian lane ONLY (逐级检索): no vector
+ * tools are offered, so the agent MUST navigate catalog → descriptions →
+ * doc IDs → kb_laya_judge → kb_doc_read. Measured 2026-09-28: with vector
+ * tools present, the model short-circuited to vector search + reads and
+ * skipped the spine entirely (session 21bf40ef: no kb_list / no
+ * kb_get_documents / no kb_laya_judge).
+ */
+const KB_LIBRARIAN_TOOLS = [
+  // See KB_RETRIEVAL_TOOLS note: repo tools / Skill / Task / Agent excluded.
+  'mcp__kb-mcp__kb_list',
+  'mcp__kb-mcp__kb_search',
+  'mcp__kb-mcp__kb_get_documents',
+  'mcp__kb-mcp__kb_doc_read',
+  'mcp__kb-mcp__kb_doc_get_by_tag',
+  'mcp__kb-mcp__kb_tags_list',
+  'mcp__kb-mcp__kb_laya_judge',
+  'mcp__kb-mcp__kb_project_status',
+  'mcp__kb-mcp__backend_status',
+  'mcp__kb-mcp__kb_graph_search',
+  'mcp__kb-mcp__kb_graph_stats',
+  'mcp__kb-mcp__kb_graph_document',
+  'mcp__kb-mcp__kb_graph_document_related',
+  'mcp__kb-mcp__kb_graph_kb_overview',
+  'mcp__kb-mcp__kb_graph_cross_kb_documents',
+  'mcp__kb-mcp__kb_graph_document_paths',
+  'mcp__kb-mcp__kb_graph_central_documents',
+]
 /** D4 fix: hard wall-clock budget for a chat turn (graceful error, not a reset). */
 const DEFAULT_TURN_TIMEOUT_MS = 600_000
 const MAX_TURN_TIMEOUT_MS = 900_000
@@ -84,6 +163,25 @@ const ALL_TOOLS = [
 ]
 
 const PERMISSION_TIMEOUT_MS = 5 * 60 * 1000
+/**
+ * KB retrieval turns run under STRICT session-scoped MCP: only kb-mcp loads.
+ * User-scope servers (fetch/memory/agentmemory/context7/…) are excluded —
+ * measured 2026-09-28: with discovery on, the agent spent its opening turns
+ * on mcp__fetch__fetch + mcp__agentmemory__memory_recall (~20s) before ever
+ * touching the knowledge base.
+ */
+/**
+ * KB retrieval turns run under STRICT session-scoped MCP: only kb-mcp loads.
+ * Transport = the PERSISTENT HTTP instance on 127.0.0.1:8000 (SSE), not a
+ * per-query stdio spawn: the stdio cold start (~5s, worse under machine load)
+ * intermittently exceeded the MCP startup window and the whole kb toolset
+ * silently failed to mount — the model then answered from prior knowledge
+ * (measured 2026-09-28 session f8fbe814: turns=1, zero kb calls, confident
+ * hallucination). The HTTP instance is kept alive by the watchdog automation.
+ */
+const KB_MCP_SERVERS = {
+  'kb-mcp': { type: 'sse' as const, url: 'http://127.0.0.1:8000/sse' },
+}
 const TEXT_INLINE_LIMIT = 100 * 1024 // 文本类附件内联上限 100KB
 const HISTORY_REPLAY_TURNS = 20 // server-replay 引擎注入的最大历史轮数（防 prompt 膨胀）
 
@@ -261,6 +359,13 @@ export default defineEventHandler(async (event) => {
     reasoningEffort, engine: engineParam } = body || {}
   const kbEnhanced: boolean = body?.kbEnhanced === true
   const kbIds: string[] = Array.isArray(body?.kbIds) ? body.kbIds : []
+  /**
+   * stream DEFAULTS TO FALSE (final-only JSON): the request blocks until the
+   * engine finishes, then returns ONE object. Only an explicit
+   * `"stream": true` switches to SSE (the web UI passes it explicitly).
+   */
+  const streamMode: boolean = body?.stream === true
+  const t0 = Date.now()
 
   if (!prompt || typeof prompt !== 'string') {
     throw createError({ statusCode: 400, statusMessage: 'prompt (string) 必填' })
@@ -282,13 +387,28 @@ export default defineEventHandler(async (event) => {
   const chatMeta = getChatMeta(engineName)
   const workCwd = cwd?.trim() || getProjectRoot()
 
+  /**
+   * Speed fix (2026-09-28): kbEnhanced turns are tool-chore loops (search →
+   * read → judge → synthesize, ~6-10 calls). The user-level settings env sets
+   * CLAUDE_CODE_EFFORT_LEVEL=max, which made every LLM turn in the loop cost
+   * 6-22s (215.5s per retrieval). Default kb retrieval to `medium` unless the
+   * caller pins an explicit effort; general (non-kb) chats keep the settings
+   * default untouched.
+   */
+  const effectiveEffort: typeof reasoningEffort =
+    reasoningEffort && reasoningEffort !== 'auto'
+      ? reasoningEffort
+      : (kbEnhanced ? 'medium' : undefined)
+
   const effectiveAllowedTools =
     pm === 'bypassPermissions'
       ? ALL_TOOLS
       : allowedTools && allowedTools.length > 0
         ? allowedTools
         : kbEnhanced
-          ? KB_RETRIEVAL_TOOLS
+          ? (kbIds.length > 0
+              ? KB_RETRIEVAL_TOOLS.filter(t => t !== 'Task')   // pinned = vector fast lane
+              : KB_LIBRARIAN_TOOLS)                             // all-KB = librarian lane only
           : SAFE_READS
 
   // Process attachments -> content blocks
@@ -305,30 +425,53 @@ export default defineEventHandler(async (event) => {
   const soulKbId: string = body?.soulKbId || ''
   const soulInstruction = soulEnhanced ? buildSoulInstruction(soulKbId) : ''
 
-  // Full prompt = KB instruction + SOUL instruction + user input + path hint
+  // Full prompt = KB instruction + SOUL instruction + user input + path hint.
+  // The answer-shape budget + lane note sit at the END of the prompt (recency
+  // position): the same budget buried in the kb instruction's step 5 was
+  // measured as ignored (67s / 4700-char synthesis, 2026-09-28 session
+  // 97d3a693), and without an explicit lane note the model burned turns
+  // calling disabled vector tools and loading Skill docs (sessions 34c3d8cb
+  // / fe0d33f2).
+  const kbLaneNote = kbIds.length > 0
+    ? '[通道提示：本轮为指定库快速通道——直接用 kb_search_two_stage / kb_search_vector 宽网起步；判定幸存证据已足够作答时立即作答。不要加载任何 Skill 文档，不要委派 subagent，禁止以相同参数重复调用任何工具。若未找到，只陈述检索事实（库名、已执行的检索、命中数），严禁编造或猜测库的内容。]'
+    : '[通道提示：本轮为全库逐级检索通道——向量/经验检索工具不可用（调用会被直接拒绝，不要尝试）。固定顺序：kb_list → kb_get_documents(lightweight=true) 描述层拿 doc_id → kb_laya_judge(refs 每批≤6、串行) → kb_doc_read 幸存者 → 作答。效率优先：若 kb_list 的目录描述已表明没有任何库覆盖问题领域，立即如实回答「知识库中无对应内容」并停止，不要逐库扫描文档层；禁止以相同参数重复调用任何工具；禁止加载任何 Skill 文档。若 kb 工具调用失败或不可用，必须如实回答「KB 工具不可用」——严禁没有任何检索就凭记忆作答。]'
   const fullPromptText = kbInstruction + soulInstruction + prompt + pathNote
-
-  setResponseHeaders(event, {
-    'Content-Type': 'text/event-stream; charset=utf-8',
-    'Cache-Control': 'no-cache, no-transform',
-    Connection: 'keep-alive',
-    'X-Accel-Buffering': 'no',
-  })
+    + (kbEnhanced
+      ? '\n\n[回答格式要求：第一句必须是最终结论，不要以「检索完成」等过程汇报开头；默认总长 ≤800 字（要点 + 关键引文 + 出处）；仅当问题明确要求穷尽列举/完整表格/详细教程时才允许长答。]'
+      + kbLaneNote
+      : '')
 
   const res = event.node.res
 
-  res.write(
-    `event: meta\ndata: ${JSON.stringify({
-      engine: engineName,
-      cwd: workCwd,
-      permissionMode: pm,
-      model: model || 'default',
-      attachments: hasAttachments ? attachments!.map(a => ({ name: a.name, type: a.isImage ? 'image' : a.isPdf ? 'pdf' : a.isText ? 'text' : 'file', size: a.size })) : [],
-    })}\n\n`,
-  )
+  if (streamMode) {
+    setResponseHeaders(event, {
+      'Content-Type': 'text/event-stream; charset=utf-8',
+      'Cache-Control': 'no-cache, no-transform',
+      Connection: 'keep-alive',
+      'X-Accel-Buffering': 'no',
+    })
+
+    res.write(
+      `event: meta\ndata: ${JSON.stringify({
+        engine: engineName,
+        cwd: workCwd,
+        permissionMode: pm,
+        model: model || 'default',
+        attachments: hasAttachments ? attachments!.map(a => ({ name: a.name, type: a.isImage ? 'image' : a.isPdf ? 'pdf' : a.isText ? 'text' : 'file', size: a.size })) : [],
+      })}\n\n`,
+    )
+  }
 
   let sessionId = ''
   let queryClosed = false
+  // Declared OUTSIDE the try block on purpose: finally/catch reference them,
+  // and try-scoped bindings are not visible there. The old try-scoped consts
+  // threw ReferenceError in finally on EVERY request — invisible on the SSE
+  // path (response already ended before the throw) but fatal to the
+  // stream=false JSON return, which must survive finally to be serialized.
+  let turnTimedOut = false
+  let turnTimer: ReturnType<typeof setTimeout> | undefined
+  let keepalive: ReturnType<typeof setInterval> | undefined
 
   try {
     // Permission callback — wired only for harnesses with a real interactive
@@ -345,6 +488,11 @@ export default defineEventHandler(async (event) => {
           sid: string,
           options?: Array<{ optionId: string; name: string; kind: string }>,
         ): Promise<{ behavior: string; message?: string; optionId?: string }> => {
+          // Non-stream mode has no approval surface — deny immediately so the
+          // turn fails fast instead of hanging for the 5-minute window.
+          if (!streamMode) {
+            return { behavior: 'deny', message: 'stream=false 无人工审批通道，仅预授权只读工具可用' }
+          }
           res.write(
             `event: permission_request\ndata: ${JSON.stringify({
               toolName,
@@ -388,8 +536,8 @@ export default defineEventHandler(async (event) => {
       Math.max(Math.round(Number(body?.timeout_ms) || DEFAULT_TURN_TIMEOUT_MS), 10_000),
       MAX_TURN_TIMEOUT_MS,
     )
-    let turnTimedOut = false
-    const turnTimer = setTimeout(() => {
+    turnTimedOut = false
+    turnTimer = setTimeout(() => {
       turnTimedOut = true
       abortController.abort(new Error('turn-timeout'))
     }, turnTimeoutMs)
@@ -397,12 +545,15 @@ export default defineEventHandler(async (event) => {
     // D4 fix (2/2): SSE keepalive. Silent stretches (long tool executions,
     // slow LLM turns) previously let client/proxy read timeouts kill the
     // stream before any terminal event. SSE comments (`: ping`) are ignored
-    // by every standard parser but keep the socket warm.
-    const keepalive = setInterval(() => {
-      try {
-        if (!queryClosed) res.write(': ping\n\n')
-      } catch { /* socket gone; the turn timer still bounds the query */ }
-    }, 15_000)
+    // by every standard parser but keep the socket warm. Non-stream mode
+    // returns a single JSON body — no socket to keep warm.
+    if (streamMode) {
+      keepalive = setInterval(() => {
+        try {
+          if (!queryClosed) res.write(': ping\n\n')
+        } catch { /* socket gone; the turn timer still bounds the query */ }
+      }, 15_000)
+    }
 
     // ══════ 用户提问持久化（放在 query 前，覆盖多轮 resume 和首轮新会话） ══════
     // NOTE: replay history must be snapshotted BEFORE the current user message
@@ -440,86 +591,186 @@ export default defineEventHandler(async (event) => {
     // OMP receives path hints embedded in fullPromptText instead.
     const isClaude = engineName === 'claude'
 
-    const q = engine.query({
-      prompt,
-      cwd: workCwd,
-      permissionMode: pm,
-      model: model || undefined,
-      allowedTools: effectiveAllowedTools,
-      resume: resume || undefined,
-      maxTurns: maxTurns || 50,
-      reasoningEffort: reasoningEffort && reasoningEffort !== 'auto' ? reasoningEffort : undefined,
-      fullPromptText,
-      // Engines without native cross-request sessions get the prior
-      // transcript replayed into the prompt (multi-turn continuity).
-      ...(replayHistory.length ? { history: replayHistory } : {}),
-      ...(isClaude && hasAttachments && attachmentBlocks.length > 0
-        ? { attachmentBlocks: attachmentBlocks as any }
-        : {}),
-      onPermissionRequest,
-      signal: abortController.signal,
-    })
+    // ══════ 引擎查询（kbEnhanced 非流式带一次挂载闪失败自动重试） ══════
+    // MCP mount flakes ~1-in-6 sessions (sessions dcff48a1 / transformer_C):
+    // the turn ends in ~2 turns with ZERO mcp__kb-mcp__ calls and the honest
+    // "KB 工具不可用" refusal. That exact signature → one automatic re-run.
+    let finalResult: any = null
+    let sawKbTool = false
+    const maxAttempts = kbEnhanced && !streamMode ? 2 : 1
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+      sawKbTool = false
+      const q = engine.query({
+        prompt,
+        cwd: workCwd,
+        permissionMode: pm,
+        model: model || undefined,
+        allowedTools: effectiveAllowedTools,
+        resume: resume || undefined,
+        maxTurns: maxTurns || (kbEnhanced ? 18 : 50),
+        reasoningEffort: effectiveEffort,
+        fullPromptText,
+        // Engines without native cross-request sessions get the prior
+        // transcript replayed into the prompt (multi-turn continuity).
+        ...(replayHistory.length ? { history: replayHistory } : {}),
+        ...(isClaude && hasAttachments && attachmentBlocks.length > 0
+          ? { attachmentBlocks: attachmentBlocks as any }
+          : {}),
+        ...(kbEnhanced && isClaude
+          ? {
+              mcpServers: KB_MCP_SERVERS,
+              strictMcpConfig: true,
+              // The subagent delegator is `Agent` (current SDK) / `Task` (older).
+              // allowedTools cannot gate harness-internal tools; only
+              // disallowedTools can. Measured detours, one per tool left
+              // available: ToolSearch +14-21s, Skill doc loading +23-40s,
+              // Agent/Task delegation +170s, PowerShell +34s, plus stray
+              // Bash/Edit wandering. kb lanes are MCP-tool-native — ban the
+              // whole harness-internal surface.
+              disallowedTools: [
+                'ToolSearch', 'Task', 'Agent', 'Skill', 'PowerShell',
+                'SendMessage', 'SendMessageToAgent', 'AgentMessage',
+                'TaskOutput', 'TaskUpdate', 'TaskGet', 'TaskList', 'TaskStop',
+                'ReadMcpResourceTool', 'ListMcpResourcesTool',
+                'EnterWorktree', 'Bash', 'Edit', 'Write', 'NotebookEdit',
+                'Read', 'Glob', 'Grep',
+                'WebSearch', 'WebFetch', 'WebFetchDomain',
+                'AskUserQuestion', 'EnterPlanMode', 'ExitPlanMode',
+                'TodoWrite', 'TodoRead', 'CronCreate', 'CronDelete',
+                'CronList', 'CronUpdate', 'DesignSync',
+              ],
+            }
+          : {}),
+        onPermissionRequest,
+        signal: abortController.signal,
+      })
 
-    for await (const message of q) {
-      if (message.type === 'system' && message.subtype === 'init') {
-        sessionId = (message as any).session_id || ''
-        upsertSession(sessionId, {
-          title: resume ? undefined : prompt.slice(0, 100),
-          cwd: workCwd,
-          permissionMode: pm,
-          model: (message as any).model || model || undefined,
-          engine: engineName,
-        })
-        // ⭐ 新会话首轮：从 init 拿到的 sessionId 存入用户提问
-        saveUserMessage(sessionId)
-      }
-      if (sessionId) {
-        try {
-          saveMessage(sessionId, message.type, JSON.stringify(message))
-        } catch {
-          /* DB write failure does not block the chat stream */
+      for await (const message of q) {
+        if (message.type === 'system' && message.subtype === 'init') {
+          sessionId = (message as any).session_id || ''
+          upsertSession(sessionId, {
+            title: resume ? undefined : prompt.slice(0, 100),
+            cwd: workCwd,
+            permissionMode: pm,
+            model: (message as any).model || model || undefined,
+            engine: engineName,
+          })
+          // ⭐ 新会话首轮：从 init 拿到的 sessionId 存入用户提问
+          saveUserMessage(sessionId)
+        }
+        if (sessionId) {
+          try {
+            saveMessage(sessionId, message.type, JSON.stringify(message))
+          } catch {
+            /* DB write failure does not block the chat stream */
+          }
+        }
+        if (kbEnhanced && message.type === 'assistant') {
+          const content = (message as any).message?.content
+          if (Array.isArray(content) && content.some((b: any) =>
+            b?.type === 'tool_use' && String(b?.name || '').startsWith('mcp__kb-mcp__'))) {
+            sawKbTool = true
+          }
+        }
+        if (message.type === 'result') {
+          if (!streamMode) {
+            // stream=false: hold the result, respond with ONE JSON after cleanup.
+            finalResult = message
+            queryClosed = true
+            denyAllPending(sessionId || '_pre_init', 'Query ended')
+            abortController.abort(new Error('result-received'))
+            break
+          }
+          // result message only sends event: done once, avoiding duplicate processing by frontend handler
+          res.write(`event: done\ndata: ${JSON.stringify(message)}\n\n`)
+          queryClosed = true
+          denyAllPending(sessionId || '_pre_init', 'Query ended')
+          abortController.abort(new Error('result-received'))
+          res.end()
+          break
+        } else if (streamMode) {
+          res.write(`data: ${JSON.stringify(message)}\n\n`)
         }
       }
-      if (message.type === 'result') {
-        // result message only sends event: done once, avoiding duplicate processing by frontend handler
-        res.write(`event: done\ndata: ${JSON.stringify(message)}\n\n`)
-        // D4 fix (3/3), revised 2026-09-26: `break` alone awaits the
-        // iterator's return() (engine teardown) before the surrounding
-        // finally can run — observed with the mock engine: `event: done`
-        // was written but `: ping` keepalives then flowed for the full
-        // 10-minute turn budget because clearInterval/res.end sat behind
-        // the hung teardown. Close the response explicitly here, mark the
-        // query closed (silences the keepalive) and abort the engine; the
-        // turn timer reaps a teardown that still refuses to finish.
-        queryClosed = true
-        denyAllPending(sessionId || '_pre_init', 'Query ended')
-        abortController.abort(new Error('result-received'))
-        res.end()
-        break
-      } else {
-        res.write(`data: ${JSON.stringify(message)}\n\n`)
+      // Mount-flake auto-heal: a kb turn whose engine produced an answer
+      // without touching a single kb-mcp tool is a dead session, not a
+      // retrieval result — re-run once. Non-stream only (the SSE stream is
+      // already on the wire in stream mode).
+      if (!streamMode && finalResult && kbEnhanced && !sawKbTool && attempt < maxAttempts - 1) {
+        finalResult = null
+        continue
+      }
+      break
+    }
+
+    if (!streamMode) {
+      if (finalResult) {
+        const fr: any = finalResult
+        const answer = typeof fr.result === 'string' && fr.result
+          ? fr.result
+          : extractText(fr.message?.content)
+        return {
+          success: fr.subtype === 'success',
+          engine: engineName,
+          sessionId,
+          model: fr.model || model || 'default',
+          subtype: fr.subtype || null,
+          answer,
+          duration_ms: fr.duration_ms ?? null,
+          duration_api_ms: fr.duration_api_ms ?? null,
+          num_turns: fr.num_turns ?? null,
+          total_cost_usd: fr.total_cost_usd ?? null,
+          elapsed_ms: Date.now() - t0,
+        }
+      }
+      setResponseStatus(event, turnTimedOut ? 504 : 502)
+      return {
+        success: false,
+        engine: engineName,
+        sessionId,
+        elapsed_ms: Date.now() - t0,
+        error: turnTimedOut
+          ? `chat turn exceeded ${Math.round(turnTimeoutMs / 1000)}s wall-clock budget`
+          : 'engine ended without a result message',
+        code: turnTimedOut ? 'TURN_TIMEOUT' : 'NO_RESULT',
       }
     }
   } catch (e: any) {
     const errMsg = e?.message || String(e)
-    if (!queryClosed && turnTimedOut) {
-      res.write(
-        `event: error\ndata: ${JSON.stringify({
-          error: `chat turn exceeded ${Math.round(turnTimeoutMs / 1000)}s wall-clock budget`,
-          code: 'TURN_TIMEOUT',
-        })}\n\n`,
-      )
+    if (streamMode) {
+      if (!queryClosed && turnTimedOut) {
+        res.write(
+          `event: error\ndata: ${JSON.stringify({
+            error: `chat turn exceeded ${Math.round(turnTimeoutMs / 1000)}s wall-clock budget`,
+            code: 'TURN_TIMEOUT',
+          })}\n\n`,
+        )
+      } else if (!queryClosed) {
+        res.write(
+          `event: error\ndata: ${JSON.stringify({ error: errMsg, code: 'SDK_QUERY_FAILED' })}\n\n`,
+        )
+      }
     } else if (!queryClosed) {
-      res.write(
-        `event: error\ndata: ${JSON.stringify({ error: errMsg, code: 'SDK_QUERY_FAILED' })}\n\n`,
-      )
+      setResponseStatus(event, turnTimedOut ? 504 : 500)
+      return {
+        success: false,
+        engine: engineName,
+        sessionId,
+        elapsed_ms: Date.now() - t0,
+        error: turnTimedOut
+          ? `chat turn exceeded ${Math.round(turnTimeoutMs / 1000)}s wall-clock budget`
+          : errMsg,
+        code: turnTimedOut ? 'TURN_TIMEOUT' : 'SDK_QUERY_FAILED',
+      }
     }
   } finally {
     clearTimeout(turnTimer)
-    clearInterval(keepalive)
+    if (keepalive) clearInterval(keepalive)
     if (!queryClosed) {
       denyAllPending(sessionId || '_pre_init', 'Query ended')
     }
-    res.end()
+    if (streamMode) {
+      res.end()
+    }
   }
 })

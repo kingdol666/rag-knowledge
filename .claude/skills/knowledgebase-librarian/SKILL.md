@@ -1,220 +1,102 @@
 ---
 name: knowledgebase-librarian
-description: "Complete-recall librarian retrieval for unknown shelves, heterogeneous libraries, long-document questions, vector misses, and explicit all/every requests. Read every KB and unlimited-depth sub-KB description, keep all relevant or possible shelves, read every document description with doc IDs/paths, verify metadata against content, read every candidate segment, send every segment to the real Jev/Laya filter, keep EVERY segment the engine scores yes (>= threshold) — no re-scoring and no pruning — aggregate all survivors with provenance into one evidence pack, and answer from all of it or report exact blind spots. Use for librarian, shelf scan, catalog search, coarse-to-fine, 逐级检索, 全库粗检索, 哪个知识库, 穷尽召回, Jev 判断, or 完整召回."
+description: "Complete-recall librarian retrieval following ONE lean spine: layered navigation (catalog → shelf → document descriptions) to collect doc IDs, Laya/Jev judgment (batched refs ≤6 — larger bursts fail fetch fail-closed), survivor doc IDs, kb_doc_read verification, then answer ONLY from read-verified content. Literal/enumeration questions (哪些/列出所有/提到X) first run scripts/enumerate_scan.py — the semantic engine under-recalls literal mentions (measured 3/9; scanner 9/9 in ~11s). Fixed call budget ≤12, no full-library read sweeps, no criterion re-runs. Use for librarian, 逐级检索, 穷尽召回, 哪个知识库, 完整召回, Jev 判断."
 ---
-## ⭐ Related Skills
-- **Vector + Jev-gate path** → `skill://knowledgebase-search` — the companion fast lane: `kb_search_vector` wide net first, then the Laya/Jev verify gate. This skill performs complete-recall catalog/read/Jev work when required.
-- **Parallel hybrid of both lanes** → `skill://knowledgebase-hybrid` — runs this lane and the vector lane concurrently on separate MCP connections, dedups on (kb_id, doc_path), one unified reread, then the same engine gate.
-- Document ingest → `skill://knowledgebase-ingest` — description quality is produced there (A3c / A3c-P)
-- KB integrity → `skill://knowledgebase-verify` — three-way consistency
-- Knowledge graph → `skill://knowledgebase-graph` — cross-library bridges
 
-## The two retrieval lanes (do not confuse them)
+## Related lanes
 
-| Lane | Skill | Mechanism | Use when |
-|---|---|---|---|
-| **A · vector + Jev gate** | `knowledgebase-search` | `kb_search_vector` wide net → dedup/threshold → **Laya/Jev verify gate** (read the body, engine scores every segment) → librarian fallback | default; fast semantic candidate proposal |
-| **B · complete-recall librarian** | **this skill** | all-KB catalog → all possible shelves → all document descriptions → description trust check → **all candidate parts/segments** → **real Jev gate** (yes = keep, nothing else) → aggregate ALL survivors → answer from the whole evidence pack | unknown shelf, heterogeneous library, vector miss, long-document enumeration, or explicit “all/every/complete” request |
+- **Vector + verify lane** → `skill://knowledgebase-search` — fast semantic candidates; default when the shelf is known and the question is factual.
+- **Parallel hybrid** → `skill://knowledgebase-hybrid` — both lanes concurrently, dedup on (kb_id, doc_path), one shared gate.
+- Judge engine internals → [references/laya-sdk.md](references/laya-sdk.md) · remote Jev option → [references/jev-judgment-layer.md](references/jev-judgment-layer.md)
 
-Lane B is intentionally more expensive. Its promise is high recall, not an unbounded latency guarantee: every scanned KB/document/segment is counted, and any unscanned scope is reported as a blind spot. Description matching only decides which records are *possible*; it never decides the final answer.
+This lane recalls by navigation, not similarity. Its promise: high recall over scanned scopes at MINIMUM latency — the spine is fixed, every step has a hard budget, and anything unscanned is reported, never silently skipped.
 
-## When to use this skill
+## Efficiency doctrine (spec, 2026-09-29 — user mandate)
 
-| Situation | Use librarian? |
-|---|---|
-| You know the KB, a simple fact question | No — `knowledgebase-search` Phase 1 (vector) is enough |
-| You don't know **which** KB holds the answer | **Yes** — L0–L1 |
-| Library is large / many heterogeneous KBs | **Yes** — shelf ranking is the whole point |
-| Vector-first gate scored ≤5 | **Yes** (this is search's Phase 2) |
-| Question spans a **whole long document** | **Yes** — L4 part selection + L5 targeted reads |
-| Question needs a **specific chapter/section** of a long doc | **Yes** — read every candidate part/segment, then let Jev retain answering evidence |
+1. **Every tool call must buy information.** Never repeat a call with the same tool + equivalent arguments; never call a tool whose result cannot change the outcome. Redundancy is a bug, not thoroughness.
+2. **Early-exit at the layer that already knows.** If the L0 catalog descriptions show no shelf plausibly covers the question's domain, STOP THERE and return the honest not-found. Do not sweep document descriptions KB by KB, do not escalate to content scans.
+3. **Honest not-found is a terminal state, not a failure.** 没有能回答该问题的知识 → 如实返回"知识库中没有对应内容"，列出已扫描的范围即止。不要钻牛角尖反复翻找知识库——效率是最重要的；一个 3 轮的诚实"未找到"远优于一个 22 轮的空扫描。
+4. **Fast path first.** Literal/enumeration questions use `enumerate_scan.py` (seconds, machine-side); semantic questions use the batched judge. Never walk document bodies that the gate can fetch server-side.
 
-## The One Picture
+## Measured engineering facts (2026-09-28, PridePrejudice 28-part bench — design constraints, not folklore)
 
-```
-query entities (subject × attribute × constraints)
-  │
-  ├─ L0 CATALOG      kb_list(lightweight=True)        → EVERY KB: id + name + description + doc_count
-  │
-  ├─ L1 HIGH-RECALL SHELF LABEL
-  │                  label every KB relevant / possible / out_of_scope
-  │                  complete mode keeps relevant + possible (no fixed top-2/3)
-  │
-  ├─ L2 DOCUMENT CATALOG
-  │                  kb_get_documents(lightweight=True, kb_id) → EVERY doc:
-  │                  doc_id/file_id + path + name + description
-  │                  group split siblings logically but retain every concrete part
-  │
-  ├─ L3 ⭐ TRUST CHECK  description is a claim, not a fact
-  │                  boilerplate / empty / contradictory → mark untrusted and
-  │                  require a content read; never prune solely on description
-  │
-  ├─ L4 RECALL ALL SEGMENTS ⭐
-  │                  kb_doc_read with pagination → structure-aware paragraph,
-  │                  list, table, code, section/sentence segments with offsets
-  │                  every possible segment enters the Jev manifest
-  │
-  ├─ L5 ⭐ REAL JEV GATE
-  │                  scripts/jev_filter.py (JSON in/out), every segment scored
-  │                  noul ≥ threshold survives; missing/error scores are rejected
-  │
-  ├─ L5.5 AGGREGATE  sort by KB/doc/part/offset, deduplicate overlaps, preserve
-  │                  doc_id/path/section/line/char + Jev score provenance
-  │
-  ├─ L6 HANDOFF      answer from the FULL Jev-yes evidence pack — no re-scoring,
-                     no pruning; report counts, backend/threshold, citations
-                     and any unscanned blind spot
-```
+1. **MCP is fast; LLM turns are the cost.** Every MCP call here is 0.2-15s (judge ≈ 11-15s per batch). A lean run is ~15-60s of tool time — multi-minute runs mean the executor burned LLM rounds digesting oversized outputs. Obey the budgets below.
+2. **Judge refs MUST be batched ≤6 documents per call.** A 28-ref single call fires that many concurrent body fetches into web; measured result: every fetch `ConnectError` → fail-closed `unavailable`. Batches of ≤6 scored 5/5 clean.
+3. **The semantic judge under-recalls literal mentions.** "Which parts mention Pemberley" (ground truth 9): instance criterion at threshold 0.5 AND 0.3 each recalled only 3/9 — semantic scoring down-weights incidental mentions. Enumeration questions need `enumerate_scan.py` (literal match: 9/9 in 11.3s, zero agent context).
+4. **Machine-consumed output needs `--raw`.** The default 4000-char truncation cuts JSON mid-string; anything you will parse must use `--raw`. Pass payloads with backslash paths via `@file` (shell argv mangles `\`).
+5. **One judge pass, one criterion.** `criterion=evidence` on an enumeration question scores 111/111 segments above threshold (boilerplate survives too) — a wasted round. Pick the criterion from query shape BEFORE calling; never re-run to "try another mode".
 
-**The engine verdict is final.** Lane B has exactly one gate: the real Jev/Laya
-decision. Every segment scoring ≥ threshold is kept and becomes answer
-material — no content rubric, no doc-level retention cut, no P0/P1 tiering
-after the fact. The lanes differ on purpose: lane A double-checks its fast
-candidates with a rubric because vectors are only proposals; lane B has
-already read the real body text end-to-end before judging, so the engine's
-yes on real text is the last word.
+## Execution contract (all harnesses)
 
-**Jev/Laya decision guidance:** [references/laya-sdk.md](references/laya-sdk.md) documents the default local Laya SDK, model/cache setup, `noul=P(true)`, threshold, and fail-closed behavior. [references/jev-judgment-layer.md](references/jev-judgment-layer.md) documents the explicit remote Jev option. The bundled `scripts/jev_filter.py` defaults to `engine=laya`; pass `--engine jev` only when remote Jev is intentionally selected. Every scored candidate is returned in `result_list` with doc ID/path/part/section/offset provenance.
+**Preflight — verify MCP is truly connected, then work.** One call before anything: hosts with native kb-mcp tools use their tool listing (`mcp__kb-mcp__*` / `mcp__kb_mcp_*`); script transports run the connectivity probe (`python scripts/mcp_call.py --tools`, ~0.2s). Not connected → report "kb-mcp not connected" and stop. Never bypass via direct HTTP to backend/web; never fetch tokens yourself — auth belongs to the MCP server.
 
-```
-kb_list(lightweight=True)     # {kb_id, name, description, doc_count} for every KB
-```
-Do **not** skip this. The librarian's whole edge is having read *every* summary before judging —
-guessing KBs by name is forbidden.
-
-## L1 — High-recall shelf labeling
-
-Match the query's **subject × attribute × constraints** against every KB description and label each shelf:
-
-- `relevant`: multiple query dimensions match;
-- `possible`: one dimension matches, the description is missing/ambiguous, or terminology may be multilingual;
-- `out_of_scope`: no observed match and the description is specific enough to trust.
-
-**Work-level pruning for multi-work KBs (ICD contract):** a well-formed KB description carries a 收录清单 (work inventory). Match the query's work identity (e.g. 《傲慢与偏见》/ Pride and Prejudice) against the inventory BEFORE doc-level work: a "小说库" that does not list the queried work is `out_of_scope` even though its genre matches — genre overlap alone never justifies reading a whole multi-work library. Conversely, a KB listing the work stays `relevant` and its parts are matched per-work at L2 via the identity+事件 dimensions of each part's ICD description.
-
-In **complete-recall mode**, keep every `relevant` and `possible` KB, including unlimited-depth sub-KBs discovered from the tree. Do not use a fixed top-2/3 cutoff — multiple shelves may hold the answer and all of them are kept. An `out_of_scope` label is allowed to prune only when the catalog description is present and trustworthy; if all shelves appear out of scope because vocabulary differs, expand to the full catalog and report the expansion.
-
-## L2 — Full document catalog (all kept shelves)
-
-```
-kb_get_documents(lightweight=true, kb_id=<every relevant/possible shelf>)
-# [{doc_id, file_id, doc_path, name, description}]
-```
-
-Read every returned description. Group `(part k of N)` siblings for logical-document reasoning, but retain every concrete `doc_id`/`doc_path` and part number for reads and citations. A description match is a candidate-generation signal only; it is not a relevance verdict.
-
-## L3 — ⭐ Description trust check (the step that makes this work)
-
-**A description is a claim, not a fact.** Measured failure (2026-09-24): in a 26-part novel KB,
-**24 of 26** descriptions read `Gutenberg front/back matter` while the parts actually contained
-novel chapters — the librarian selected 2 parts instead of 7 and lost 2 of 7 key scenes.
-A description-only librarian inherits every such error.
-
-Before trusting a description, test it:
-
-| Test | Untrustworthy if |
-|---|---|
-| **Boilerplate** | the same (or near-identical) description text repeats across many docs |
-| **Content-free** | it names no specific subject/chapter/section/date/number of its own |
-| **Contradiction** | its claimed range/section does not match the doc name or its siblings' spans |
-| **Degenerate range** | an inverted or single-point span (e.g. `XV–I`, `XLVI–XLVI`) |
-| **Broken part prefix** | a literal `【?/?·` placeholder — the ingest template never filled the part index (measured 156/322 catalog docs); part claims in this description are unreliable |
-
-If untrusted → **downgrade the metadata signal and read the real content**:
-```
-kb_doc_read(kb_id, doc_path/doc_id, max_chars=600)   # verify from the opening text
-```
-Do not impose a fixed two-head-read budget in complete-recall mode. Read enough content to resolve the trust question, record `description_trust=untrusted`, and keep the document in the Jev candidate manifest when its shelf is `relevant` or `possible`.
-
-## L4 — ⭐ Read every candidate segment (completeness first)
-
-For each document/part in every kept shelf, use paginated `kb_doc_read` until the full readable body is covered. Build a JSON candidate manifest with one or more structure-aware segments per document. Segment boundaries should follow headings, paragraphs, lists, tables, fenced code, blockquotes, figures, or sentence boundaries; retain `doc_id`, `doc_path`, `part_index`, `section_path`, `start_line/end_line`, and `start_char/end_char`.
+**Subagent retrieves, main agent answers.** With a subagent tool, spawn exactly ONE retrieval subagent. Hand it: the question, the scope, this skill, and the budget block below. The subagent returns the retrieval result (doc IDs + evidence notes) — never document bodies, never the user-facing answer. The main agent answers from that result. Without a subagent tool, run the same spine in-process.
 
 ```text
-for EVERY kept document part:
-    read all pages with kb_doc_read(offset, limit, max_chars)
-    scan the returned body into source-backed segments
-    append EVERY segment to the Jev manifest
+Librarian retrieval for: <question>
+Scope: <KB ids/names | all shelves>
+Execute skill://knowledgebase-librarian yourself, MCP tools only, fixed spine:
+preflight → kb_list → kb_get_documents(--raw) → [enumerate_scan.py | batched
+kb_laya_judge] → survivor doc IDs → kb_doc_read survivors (≤2000 chars each)
+→ return RESULT.
+Hard budget: ≤12 MCP calls total; docread only survivor docs; ONE judge pass;
+NO full-library reading, NO criterion switching, NO include_text=true.
+Do not answer the question; do not return full document text.
 ```
 
-The reference implementation is `scripts/complete_recall.py`. It consumes an Archival-produced manifest and never calls MCP itself. Description matching only chooses `relevant/possible` shelves; pruning happens on real segment text after Jev. If pagination, service limits, or budgets leave a document/part unread, put its exact identity in `unscanned` and report it; never call the result exhaustive.
+**Scripted steps — the only two, both MCP-only.** `scripts/enumerate_scan.py` (literal recall layer; reads bodies via `mcp_call kb_doc_read` machine-side and assembles judge payloads — every content byte still passes through the MCP server) and `kb_laya_judge` (verify gate; fallback `scripts/jev_filter.py` under `backend/.venv/Scripts/python.exe` only when the MCP judge is unavailable). No other runner exists or may be created — the removed 2026-09-28 runner was banned for self-fetching tokens and hitting the backend directly. Never assemble your own client.
 
-> **Interpreter**: Laya-judging paths (`complete_recall.py`, `jev_filter.py`) run under `backend/.venv/Scripts/python.exe` — the MinerU env hosting `laya` + GPU torch (Laya auto-selects CUDA). Bare `python` without `laya` fails closed (`JevUnavailable`).
+## The spine (preflight → L5)
 
-**Budgeted catalog selection (script layer, `knowledgebase-hybrid/scripts/hybrid_search.py: catalog_lane`)** — when the lane runs under a read budget, selection order is: description-overlap hits → split-doc sibling completion (a picked `(part k of N)` brings its siblings, capped) → zero-overlap **round-robin across KBs** with `relevant/possible` shelves first (never drain in catalog-scan order — measured 2026-09-25: scan-order top-up silently favored the first KB and a 4th-KB gold was never read). With `--peek-heads`, every unpicked zero-overlap document still gets one cheap head read and its head is judged — the engine, not description vocabulary, decides its fate. This is the scripted form of "不要遗漏" under a budget.
+**Preflight · connectivity (1 call, ~0.2s).** See contract above. Already verified this session (e.g. by the dispatcher)? Skip — do not re-probe.
 
-## L5 — ⭐ Real Jev judgment and evidence aggregation
+**L0 · Catalog (1 call).** `kb_list(lightweight=true)` — read every KB's id + name + description + doc_count. Match the query's subject × attribute × constraints: keep every `relevant`/`possible` shelf; prune `out_of_scope` only on a present, trustworthy description. Guessing KBs by name is forbidden.
 
-Write the manifest to JSON and invoke:
+**L1 · Description sweep — the doc-ID layer (1 call per shelf).** `kb_get_documents(lightweight=true, kb_id)` with `--raw`; collect every doc_id/doc_path + description. Group `(part k of N)` siblings for reasoning; keep every concrete ID. Normalize `\` vs `/` when passing paths between tools. Descriptions are claims, not facts (measured: 24/26 novel-part descriptions read "Gutenberg front/back matter" while the parts held chapters) — never prune on description alone.
 
-```bash
-python .claude/skills/knowledgebase-librarian/scripts/jev_filter.py \
-  --engine laya --input candidates.json --output laya-result.json --require-real
-# Use --engine jev only when remote Jev is intentionally selected.
-```
+**L2 · Query-shape routing (zero calls).**
+- **Enumeration / literal-mention** ("哪些/列出所有/提到 X/出现 Y"): run `enumerate_scan.py --kb-id <uuid> --terms <literal terms> [--docs-json <L1 output>]`. It scans every doc via MCP machine-side and returns hit doc IDs + evidence windows. This is the recall layer — expect ~0.5s/doc.
+- **Semantic / evidence** ("怎么排查/为什么/如何/X 是什么"): go straight to L3 with the full candidate set.
+- Compound question: do the scan, then judge the union.
 
-The filter sends every candidate segment to the selected engine (default local Laya; explicit `engine=jev` for remote Jev) using the documented `noul` evidence/instance question. It returns one score record per candidate plus `result_list`, `survivors`, a deduplicated source-ordered `evidence_pack`, and provenance. Missing SDK/model/credentials, request errors, malformed/out-of-range scores, and rate-limit exhaustion are **fail-closed**: the affected candidate is not kept and the result is `unavailable`/`error`, never an implicit pass. Engines never silently fall back to one another.
-
-- default engine `laya`; explicit `engine=jev` only when remote Jev is selected;
-- every candidate gets a score record; `result_list` contains all kept candidates with source provenance;
-- lookup/evidence query → `criterion=evidence`;
-- enumeration/completeness query → `criterion=instance`;
-- **keep EVERY yes-scored survivor — the engine verdict is final**: a segment scoring ≥ threshold is evidence, full stop. No doc-level retention cut, no top-K floor, no content rubric, no P0/P1 tiering after the gate (the relative cut and top-K floor remain options of the *hybrid* lane, not this one);
-- aggregate by `{kb_id, doc_id/path, part_index, section, offset}` and merge duplicate/overlapping text without dropping provenance;
-- answer from ALL scored survivors — every survivor is knowledge enhancement the answer must be able to draw on; the `evidence_pack` render is char-capped (default 20k) but `survivors`/`result_list` always carry every record, and `kb_doc_read` may re-read any survivor the pack truncated.
-
-For offline preparation and tests, inject a score function into `complete_recall.run_manifest`; do not label that result as real Jev.
-## L5.1 — Read survivors and preserve the evidence pack
-
-This lane reaches the answer by navigating and reading, never by similarity search. The Archival agent may paginate `kb_doc_read` for survivors, but the final synthesis must use the selected engine's ordered `evidence_pack`, `result_list`, and `provenance` rather than a newly chosen top-k. Allowed reads:
+**L3 · Verify gate — Laya/Jev judgment (1-5 calls, ONE pass).**
 
 ```text
-kb_doc_read(kb_id, doc_path/doc_id, offset=<line>, limit=100, max_chars=3000)
-kb_get_documents(lightweight=True, kb_id)
-fs_get_tree / fs_get_children
+kb_laya_judge(query=<question>, criterion=<picked from query shape>,
+              threshold=<0.3 enumeration | 0.5 semantic>,
+              documents='[{"kb_id":...,"doc_path":...}, ...]')   # ≤6 refs per call
+# batches of ≤6, run sequentially; aggregate survivors across batches
+# → {status, real_engine, scored_count, survivor_count, docs_with_yes,
+#    survivors[](doc_path + start_line/end_line + score), evidence_pack, errors[]}
 ```
 
-Forbidden here: `kb_search_vector`, `kb_search_two_stage`, and any embedding/BM25/hybrid ranking. If a document/part could not be fully read, report it under `unscanned`; do not silently switch to similarity.
+`documents` is a JSON-encoded **string** (double-encoded), never an inline array — measured: a plain array is pydantic-rejected server-side and burns a call (build the payload with `json.dumps` into a file, call with `@file`). `enumerate_scan` hits go to the gate too (semantic confirmation + best-segment provenance) unless the question is purely literal — then the scan IS the verdict and the gate may be skipped (record that choice in RESULT). Fail-closed: `unavailable`/`error` rejects, never implicit pass; on engine error retry ONCE after checking for stray python/torch processes; still failing → BLIND_SPOTS. Every yes survivor is kept: no doc-level cut, no re-scoring, no pruning.
 
-Long documents must be judged on all manifest segments, not a single head/mid/tail sample. For `(part k of N)` files read the actual part and cite its concrete path/id.
+**L4 · Read — survivors only.** Evidence comes in two forms, both already `kb_doc_read` verbatim: scanner `windows` (machine-read — citable evidence for every hit) and in-context `kb_doc_read(kb_id, doc_path, max_chars≤2000)` aimed at the docs the answer will lean on (prefer judge `start_line` provenance). There is no fixed cap — read what the answer needs, cite the rest from scanner windows; docs whose read contradicts their verdict stay in RESULT, labelled unverified.
 
-## L6 — Handoff / answer from ALL survivors
+**L5 · Result — compose and stop.** Return the retrieval result below. Answer strictly from read-verified content with verbatim quotes + doc_path citations. Unscanned scopes are blind spots, not assumptions.
 
-Always finish the turn with the answer or the honest not-found report. There is no
-verification step between the engine gate and the answer: the Jev/Laya yes is the
-verdict, and **every survivor** — not a scored top tier — is the knowledge
-enhancement the answer synthesizes from. The result must include:
+## Early exit — honest not-found (terminal, by design)
 
-- `Search Paths`: L0/L1/L2/L3/L4 counts and the `jev_filter.py` backend, criterion, and threshold;
-- `Answer`: synthesized from the full survivor set (the engine's yes decides; no manual pruning afterwards);
-- `Sources`: concrete KB + `doc_id`/`doc_path` + part/section/line or char offsets + Jev score;
-- `Confidence`: grounded in coverage — how many survivors across how many documents/KBs at what threshold;
-- `Blind Spots (Cross-Library Perspective)`: every unscanned or unavailable scope, including Jev unavailable/error status.
+Zero plausible candidates at L0+L1 (or a zero-hit scan on a kept shelf): STOP, return the honest not-found — shelves scanned, descriptions read, why nothing matches. This is the CORRECT answer when the knowledge does not exist; do not keep digging. Do not escalate to full-content reads, do not switch lanes, do not loop, never answer from prior knowledge.
 
-The only honest not-found is an engine-level one: when the real Jev/Laya gate returns zero survivors (or is `unavailable`/`error`), report exactly that — never resurrect discarded candidates by hand, and never invent a hit the engine did not score.
+## Retrieval result (subagent → main agent)
 
-A partial catalog or partial segment scan must be labelled partial. It is never described as exhaustive.
+```text
+RESULT
+- <kb_id> | <doc_id> | <doc_path> | <score/literal-count> | <1-2 line evidence note from the read>
+SCANNED shelves=<n> descriptions=<n> candidates=<n> judged_segments=<n> survivors=<n> read_verified=<n>
+CALLS <actual MCP call count> ELAPSED <tool-time s>
+BLIND_SPOTS <unscanned shelves/docs / engine errors / unverified survivors>
+```
 
+Final-answer shape (main agent): `Search Paths` (L0-L4 counts, gate backend/criterion/threshold) → `Answer` (synthesized from read-verified survivors, key facts quoted verbatim) → `Sources` (KB + doc_id/doc_path + quote) → `Confidence` (coverage-based) → `Blind Spots`. Partial scans are labelled partial, never exhaustive.
 
-## ⚠️ NEVER list
+## Never
 
-| ❌ Don't | Why | ✅ Do instead |
-|---|---|---|
-| Guess KBs by name without reading descriptions | The catalog read is the librarian's edge | L0 `kb_list(lightweight)` every time |
-| Trust a description without the L3 check | Descriptions can be systematically wrong (measured 24/26) | Boilerplate/content-free tests → head read |
-| Treat `(part k of N)` siblings as separate books | Part 1 ≠ the whole; counting inflates | Group by stem; read the hit part |
-| Score a long doc from its head only | Evidence past the window is falsely discarded | chunk ∪ continuation reads |
-| Search every KB when L1 found no plausible shelf | Brute force ≠ precision | Report the blind spot |
-| **Call `kb_search_vector` / `kb_search_two_stage` here** | this lane's complete recall is catalog/read/Jev based | navigate with MCP, segment every body, then use `jev_filter.py`; hand off only when the caller explicitly chooses vector-first |
-| Re-score, re-rank or prune Jev-yes survivors | The engine verdict is final; extra cuts recreate the recall loss this lane exists to prevent | Aggregate ALL survivors and answer from all of them |
-| Answer from unscored text | Unscored = not evidence (fail-closed) | Honest engine-level not-found when zero survivors |
-
-## Quick rule reference
-1. **Catalog first** — read every KB description before judging (L0)
-2. **High-recall shelf labels** — keep every `relevant` and `possible` KB in complete mode (L1)
-3. **Read every doc description** in every kept shelf, part-aware, with doc IDs and paths (L2)
-4. **Distrust descriptions** — boilerplate/content-free/degenerate → content read (L3)
-5. **Read every candidate segment** and record exact offsets; no top-k or head-only pruning (L4)
-6. **Real Jev only, and its yes is final** — every candidate scored, fail-closed; ≥ threshold = keep ALL (L5)
-7. **Aggregate all survivors** by source/offset with provenance (L5.5)
-8. **Answer from the full survivor set** or report engine-level blind spots; never fabricate (L6)
+- Re-probe a verified connection, restart services, or bypass MCP with direct HTTP / self-fetched tokens.
+- Read a whole library into your context (the 28×40k-char sweep measured 735k tokens and ~10 minutes for what the scanner does in 11s).
+- Re-run the gate with a different criterion/threshold to "improve" a verdict you dislike.
+- Send >6 refs in one judge call.
+- Call `kb_search_vector` / `kb_search_two_stage` inside this lane (hand off to the vector lane only when the caller explicitly chooses vector-first).
+- Let the subagent write the user-facing answer, or answer anything not backed by a read.

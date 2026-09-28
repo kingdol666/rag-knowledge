@@ -1870,6 +1870,7 @@ async function sendRaw(prompt: string, atts?: Attachment[]): Promise<void> {
       },
       body: JSON.stringify({
         prompt,
+        stream: true, // the API defaults to final-only JSON; the UI consumes SSE
         cwd: cwd.value.trim() || undefined,
         permissionMode: permissionMode.value,
         model: model.value.trim() || undefined,
