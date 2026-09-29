@@ -49,7 +49,8 @@ export function getEngine(name?: string): ChatEngine {
 
 /**
  * Execute one engine turn - the async-iterable frame stream, as a free
- * function. Non-SSE callers (POST /api/kb/native-search) run a turn through
+ * function. Non-SSE callers (POST /api/kb/agent/chat, /api/claude/chat stream=false)
+ * run a turn through
  * this instead of touching the adapter method directly, keeping the
  * engine-facing surface in the factory module.
  */

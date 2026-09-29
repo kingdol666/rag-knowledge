@@ -94,62 +94,23 @@ const SAFE_READS = ['Read', 'Glob', 'Grep']
  * ingest, graph build, project_start/update…) still go through the permission
  * callback. Tool names that don't exist server-side are harmless no-ops.
  */
-const KB_RETRIEVAL_TOOLS = [
-  // NOTE: repo-file tools (Read/Glob/Grep), `Skill` and the subagent
-  // delegator are all excluded on kb lanes — measured 2026-09-28: each of
-  // them drew opening-turn detours (Skill doc loading ≈40s, repo Grep ≈14s,
-  // subagent delegation 343s vs 119s). The kb flow is MCP-tool-native; the
-  // inline instruction IS the contract.
-  'Task',
-  'mcp__kb-mcp__kb_list',
-  'mcp__kb-mcp__kb_search',
-  'mcp__kb-mcp__kb_search_vector',
-  'mcp__kb-mcp__kb_search_two_stage',
-  'mcp__kb-mcp__kb_search_stats',
-  'mcp__kb-mcp__kb_get_documents',
-  'mcp__kb-mcp__kb_doc_read',
-  'mcp__kb-mcp__kb_doc_get_by_tag',
-  'mcp__kb-mcp__kb_tags_list',
-  'mcp__kb-mcp__kb_laya_judge',
-  'mcp__kb-mcp__kb_project_status',
-  'mcp__kb-mcp__backend_status',
-  'mcp__kb-mcp__kb_graph_search',
-  'mcp__kb-mcp__kb_graph_stats',
-  'mcp__kb-mcp__kb_graph_document',
-  'mcp__kb-mcp__kb_graph_document_related',
-  'mcp__kb-mcp__kb_graph_kb_overview',
-  'mcp__kb-mcp__kb_graph_cross_kb_documents',
-  'mcp__kb-mcp__kb_graph_document_paths',
-  'mcp__kb-mcp__kb_graph_central_documents',
-]
+// KB lane toolsets / strict-MCP config / internal-tool bans live in
+// ~/server/utils/kb-lane.ts — shared verbatim with the kb retrieval lanes so
+// the chat UI and the AgentWorkShop rag-bridge run the identical lane.
+import { KB_MCP_SERVERS, KB_MCP_TOOLS, KB_DISALLOWED_TOOLS } from '~/server/utils/kb-lane'
+
+/** Pinned-KB lane = vector fast path: MCP read tools incl. vector search. */
+const KB_RETRIEVAL_TOOLS = KB_MCP_TOOLS
 /**
- * All-KB retrieval turns = the librarian lane ONLY (逐级检索): no vector
- * tools are offered, so the agent MUST navigate catalog → descriptions →
- * doc IDs → kb_laya_judge → kb_doc_read. Measured 2026-09-28: with vector
- * tools present, the model short-circuited to vector search + reads and
- * skipped the spine entirely (session 21bf40ef: no kb_list / no
- * kb_get_documents / no kb_laya_judge).
+ * All-KB retrieval turns = the librarian lane ONLY (逐级检索): vector tools
+ * are withheld so the agent MUST navigate catalog → descriptions → doc IDs
+ * → kb_laya_judge → kb_doc_read. Measured 2026-09-28: with vector tools
+ * present, the model short-circuited to vector search + reads and skipped
+ * the spine entirely (session 21bf40ef).
  */
-const KB_LIBRARIAN_TOOLS = [
-  // See KB_RETRIEVAL_TOOLS note: repo tools / Skill / Task / Agent excluded.
-  'mcp__kb-mcp__kb_list',
-  'mcp__kb-mcp__kb_search',
-  'mcp__kb-mcp__kb_get_documents',
-  'mcp__kb-mcp__kb_doc_read',
-  'mcp__kb-mcp__kb_doc_get_by_tag',
-  'mcp__kb-mcp__kb_tags_list',
-  'mcp__kb-mcp__kb_laya_judge',
-  'mcp__kb-mcp__kb_project_status',
-  'mcp__kb-mcp__backend_status',
-  'mcp__kb-mcp__kb_graph_search',
-  'mcp__kb-mcp__kb_graph_stats',
-  'mcp__kb-mcp__kb_graph_document',
-  'mcp__kb-mcp__kb_graph_document_related',
-  'mcp__kb-mcp__kb_graph_kb_overview',
-  'mcp__kb-mcp__kb_graph_cross_kb_documents',
-  'mcp__kb-mcp__kb_graph_document_paths',
-  'mcp__kb-mcp__kb_graph_central_documents',
-]
+const KB_LIBRARIAN_TOOLS = KB_MCP_TOOLS.filter(t => !t.startsWith('mcp__kb-mcp__kb_search_vector')
+  && !t.startsWith('mcp__kb-mcp__kb_search_two_stage')
+  && !t.startsWith('mcp__kb-mcp__kb_search_stats'))
 /** D4 fix: hard wall-clock budget for a chat turn (graceful error, not a reset). */
 const DEFAULT_TURN_TIMEOUT_MS = 600_000
 const MAX_TURN_TIMEOUT_MS = 900_000
@@ -163,25 +124,7 @@ const ALL_TOOLS = [
 ]
 
 const PERMISSION_TIMEOUT_MS = 5 * 60 * 1000
-/**
- * KB retrieval turns run under STRICT session-scoped MCP: only kb-mcp loads.
- * User-scope servers (fetch/memory/agentmemory/context7/…) are excluded —
- * measured 2026-09-28: with discovery on, the agent spent its opening turns
- * on mcp__fetch__fetch + mcp__agentmemory__memory_recall (~20s) before ever
- * touching the knowledge base.
- */
-/**
- * KB retrieval turns run under STRICT session-scoped MCP: only kb-mcp loads.
- * Transport = the PERSISTENT HTTP instance on 127.0.0.1:8000 (SSE), not a
- * per-query stdio spawn: the stdio cold start (~5s, worse under machine load)
- * intermittently exceeded the MCP startup window and the whole kb toolset
- * silently failed to mount — the model then answered from prior knowledge
- * (measured 2026-09-28 session f8fbe814: turns=1, zero kb calls, confident
- * hallucination). The HTTP instance is kept alive by the watchdog automation.
- */
-const KB_MCP_SERVERS = {
-  'kb-mcp': { type: 'sse' as const, url: 'http://127.0.0.1:8000/sse' },
-}
+// KB_MCP_SERVERS / KB_DISALLOWED_TOOLS imported from ~/server/utils/kb-lane.
 const TEXT_INLINE_LIMIT = 100 * 1024 // 文本类附件内联上限 100KB
 const HISTORY_REPLAY_TURNS = 20 // server-replay 引擎注入的最大历史轮数（防 prompt 膨胀）
 
@@ -620,25 +563,9 @@ export default defineEventHandler(async (event) => {
           ? {
               mcpServers: KB_MCP_SERVERS,
               strictMcpConfig: true,
-              // The subagent delegator is `Agent` (current SDK) / `Task` (older).
-              // allowedTools cannot gate harness-internal tools; only
-              // disallowedTools can. Measured detours, one per tool left
-              // available: ToolSearch +14-21s, Skill doc loading +23-40s,
-              // Agent/Task delegation +170s, PowerShell +34s, plus stray
-              // Bash/Edit wandering. kb lanes are MCP-tool-native — ban the
-              // whole harness-internal surface.
-              disallowedTools: [
-                'ToolSearch', 'Task', 'Agent', 'Skill', 'PowerShell',
-                'SendMessage', 'SendMessageToAgent', 'AgentMessage',
-                'TaskOutput', 'TaskUpdate', 'TaskGet', 'TaskList', 'TaskStop',
-                'ReadMcpResourceTool', 'ListMcpResourcesTool',
-                'EnterWorktree', 'Bash', 'Edit', 'Write', 'NotebookEdit',
-                'Read', 'Glob', 'Grep',
-                'WebSearch', 'WebFetch', 'WebFetchDomain',
-                'AskUserQuestion', 'EnterPlanMode', 'ExitPlanMode',
-                'TodoWrite', 'TodoRead', 'CronCreate', 'CronDelete',
-                'CronList', 'CronUpdate', 'DesignSync',
-              ],
+              // The ban list covers every harness-internal tool that ever drew
+              // an opening-turn detour — see kb-lane.ts for the measured log.
+              disallowedTools: KB_DISALLOWED_TOOLS,
             }
           : {}),
         onPermissionRequest,

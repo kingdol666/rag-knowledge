@@ -1,0 +1,16 @@
+{
+ "case": "T8_agent_experience",
+ "wall_s": 79.1,
+ "turns": 2,
+ "cost": 0.6999572,
+ "tools_used": [
+  "Agent",
+  "mcp__kb-mcp__backend_status",
+  "mcp__kb-mcp__kb_list",
+  "mcp__kb-mcp__experience_create",
+  "mcp__kb-mcp__experience_read",
+  "mcp__kb-mcp__experience_list"
+ ],
+ "reply": "## Result\n\n**已完成：** 在知识库「e2e-sandbox-20260930」沉淀了一条结构化经验。\n\n**产物：**\n\n| 字段 | 值 |\n|---|---|\n| Experience ID | `exp-462c6dd0c1e7` |\n| Doc path | `e2e-sandbox-20260930/experience/exp-462c6dd0c1e7.md` |\n| KB | `e2e-sandbox-20260930` (`5f839336-10ff-4b3b-b559-22b0b2f94e34`) |\n| 标题 | chat API 挂载闪失败自动重试 |\n| 类别 / scenario / 严重度 | best_practice / kb-mcp-mount-failure-retry / important |\n| 状态 | published, vetted=true, confidence=1.0 |\n| 向量索引 | collection `kb_5f839336-10ff-4b3b-b559-22b0b2f94e34`, 5 chunks, bge-m3 |\n| 图谱 | node `doc::e2e-sandbox-20260930/experience/exp-462c6dd0c1e7.md` |\n\n**执行路径：** MCP 预检通过（backend 健康 / 向量可用 / MinerU 可用）→ `kb_list` 确认目标库存在 → `experience_create` 写入（problem/solution 严格照抄任务原文，另附 3 条 key_lessons，未杜撰细节）→ `experience_read` + `experience_list` 回读验证。\n\n**只读声明：** 全程仅此一次写入，未做任何文档入库、移动或删除。",
+ "session_id": "3973c019-1bdd-44e6-8ce3-64071e1f49e1"
+}

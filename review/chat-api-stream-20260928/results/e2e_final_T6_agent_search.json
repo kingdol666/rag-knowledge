@@ -1,0 +1,20 @@
+{
+ "case": "T6_agent_search",
+ "wall_s": 113.6,
+ "turns": 2,
+ "cost": 0.8021968,
+ "tools_used": [
+  "Agent",
+  "mcp__kb-mcp__kb_project_status",
+  "mcp__kb-mcp__kb_list",
+  "mcp__kb-mcp__kb_get_documents",
+  "mcp__kb-mcp__kb_search_stats",
+  "mcp__kb-mcp__kb_doc_read",
+  "mcp__kb-mcp__kb_doc_read",
+  "mcp__kb-mcp__kb_doc_read",
+  "mcp__kb-mcp__kb_doc_read",
+  "mcp__kb-mcp__kb_doc_read"
+ ],
+ "reply": "# aw-industrial 知识库文档清单与主题概述\n\n**库标识**：`kb_id = 3aea5973-1d8a-4db6-b415-6d4432f514bb`，path `aw-industrial`\n描述：\"AgentWorkShop 工业知识库（诊断报告/经验教训/操作规范）\"\n向量索引健康：`kb_3aea5973-...`，**133 chunks**，collection UUID 与 KB UUID 一致（无孤儿集合）。\n\n## 全部文档清单（17 篇）\n\n| # | 名称 | doc_path |\n|---|------|----------|\n| 1 | 集成冒烟测试文档.md | `aw-industrial\\集成冒烟测试文档.md` |\n| 2 | 异步入库验证文档.md | `aw-industrial\\异步入库验证文档.md` |\n| 3 | Channel异步入库测试文档.md | `aw-industrial\\Channel异步入库测试文档.md` |\n| 4 | 端到端最终验证文档.md | `aw-industrial\\端到端最终验证文档.md` |\n| 5 | 最终E2E Channel文档.md | `aw-industrial\\最终E2E Channel文档.md` |\n| 6 | 【冒烟测试】深度诊断报告-diag_kb_smoke_mock.md | `aw-industrial\\【冒烟测试】深度诊断报告-diag_kb_smoke_mock.md` |\n| 7 | 【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md | `aw-industrial\\【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md` |\n| 8 | 产线数据分析报告-膜厚-第2轮.md | `aw-industrial\\产线数据分析报告-膜厚-第2轮.md` |\n| 9 | r1-诊断报告.md | `aw-industrial\\r1-诊断报告.md` |\n| 10 | r2-诊断报告.md | `aw-industrial\\r2-诊断报告.md` |\n| 11 | r1-诊断报告 (1).md | `aw-industrial\\r1-诊断报告 (1).md` |\n| 12 | r2-诊断报告 (1).md | `aw-industrial\\r2-诊断报告 (1).md` |\n| 13 | 注塑保压-克重闭环寻优经验_ln-b0413f88_rr-7d354dde.md | `aw-industrial\\注塑保压-克重闭环寻优经验_ln-b0413f88_rr-7d354dde.md` |\n| 14 | 注塑成型克重越下限闭环寻优-保压单杠杆九步阶梯入窗与治理兜底回退对策.md | `aw-industrial\\注塑成型克重越下限闭环寻优-保压单杠杆九步阶梯入窗与治理兜底回退对策.md` |\n| 15 | g52验收-1790610596743.md | `aw-industrial\\g52验收-1790610596743.md` |\n| 16 | plug-e2e S1 ingest note PLE1pemulmar15.md | `aw-industrial\\plug-e2e S1 ingest note PLE1pemulmar15.md` |\n| 17 | plug-e2e S3 diagnosis report PLE3fxmulmns20.md | `aw-industrial\\plug-e2e S3 diagnosis report PLE3fxmulmns20.md` |\n\n## 覆盖主题\n\n1. **注塑成型克重闭环寻优（唯一有完整工程实证的工艺主题，P0）** — 文档 13/14：产线 `ln-b0413f88` / 批次 `rr-7d354dde` 克重 100% 低于配方窗 `[32.15, 32.85] g`（批内均值 31.30 g）。实测保压压力→克重为确定性线性阶跃，增益 **0.057 g/bar**（45–63 bar 未饱和，滞后 ≤10 s）；保压时间经四窗对照判定为不可检出副杠杆。\n2. **可复用的单变量闭环处置方法论** — 九步单调阶梯上行（46.8→63.9 bar，单步 ≤1.8 bar、写间隔 ≥60 s、10/10 `dcw_judge=keep`），终态 hold-pressure 63.9 bar + hold-time 8.4 s 使克重回到 32.30–32.36 g、节点 alarm→ok；并含治理兜底回退的 120 s 观察窗\"乒乓陷阱\"与多 Channel 争用同一 PLC 的按节点单写者协议。\n3. **膜厚产线数据分析系列** — 文档 8/9/10/11/12 构成第 1/2 轮膜厚报告（r1/r2 为 PLC 模拟流延膜产线 Mock 诊断闭环，PV 通道 melt_temp 200.529 / melt_pressure 18.142 / film_thickness 54.196，269 行窗口，趋势判定）。\n4. **平台集成验证留痕（占比最大，约 10 篇）** — 文档 1–5、16、17 为 AgentWorkShop ↔ rag-knowledge 的 kb_agent 同步/异步入库、Channel worker 异步提交、E2E 全链路验收文档。\n5. **诊断引擎集成契约与 mock 报告存档** — 文档 6 为 industrial-deep-diagnostic 引擎 mock 剧本（Step 0–7 全通过、Conclusion DETERMINED 置信 90、Judge 96/100 ENDORSED）；文档 7 为 5 秒窗口（temp_c 72.1→73.4 °C，n=2）竞争假设诊断（H1 34 / H2 30 / H3 34，不可裁决）。两篇均自标\"非真实诊断结论，不得作为真实工况依据\"。\n\n## 质量提示（供调用方判断可信度）\n\n- **疑似重复对**：`r1-诊断报告.md` ↔ `r1-诊断报告 (1).md`、`r2-诊断报告.md` ↔ `r2-诊断报告 (1).md`（描述相同，后者带 `(1)` 后缀，疑似重名去重副本）。\n- **文档 8 正文为空骨架**：四小节全为\"待补充\"占位符，仅靠描述关键词可被检索，不具可回答内容 —— 引用时请降级为 P2。\n- **描述质量两极**：文档 9–12、15 为逗号关键词串（弱描述），13/14/16/17 描述完备。\n- **实际定位**：该库更接近\"AgentWorkShop 工业试点 + 集成验收留痕库\"，而非通用工业知识库；真实工业知识集中在注塑保压闭环与膜厚 Mock 诊断两条线。\n\n## Result\n\n- **操作**：只读检索 `aw-industrial`（`kb_list` → `kb_get_documents(lightweight=true)` → `kb_search_stats` → 代表性文档 `kb_doc_read`），全程未执行任何写操作。\n- **最终答案**：该库共 **17 篇文档**，清单见上表（doc_path 前缀统一为 `aw-industrial\\`），覆盖 5 大主题——注塑克重闭环寻优（P0，含完整增益实测与九步处置法）、膜厚 Mock 诊断系列、平台集成/E2E 验证留痕、诊断引擎 mock 存档；索引 133 chunks，无孤儿 collection。\n- **可信度**：文档 13/14 为 **P0 强证据**（真实产线实证）；文档 9–12 为 **P1 参考**（Mock 闭环）；文档 6/7 为 **P2 弱**（显式标注非真实结论）；文档 8 为 **P2 弱**（空正文骨架）。",
+ "session_id": "7ee4e281-fd25-4256-ae59-93b08b0350a6"
+}

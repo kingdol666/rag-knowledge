@@ -13,8 +13,8 @@
  * and names the read-only tool set that is pre-allowlisted in chat.post.ts
  * (KB_RETRIEVAL_TOOLS) so no permission round trip is needed.
  *
- * Shared by the chat SSE route (kbEnhanced toggle) and the one-shot native
- * search API (POST /api/kb/native-search) so both run the identical flow.
+ * Shared by the chat route (kbEnhanced toggle, /api/claude/chat) so the UI
+ * and external callers run the identical flow.
  */
 
 export function buildKbInstruction(kbIds: string[]): string {
@@ -133,17 +133,6 @@ export function buildKbInstruction(kbIds: string[]): string {
     'Here is the user\'s question:',
     '',
   ].join('\n')
-}
-
-/**
- * One-shot native retrieval prompt: shared instruction + the caller's
- * question + an answer-shape budget. Used by POST /api/kb/native-search so
- * external systems (AgentWorkShop rag-bridge) run the identical native flow
- * as the chat UI without orchestrating any retrieval steps themselves.
- */
-export function buildNativeSearchPrompt(kbIds: string[], question: string, topK: number): string {
-  const budget = `[Retrieval budget: return at most ${topK} cited sources; keep the answer concise and structured.]`
-  return [buildKbInstruction(kbIds), question, budget].join('')
 }
 
 /**

@@ -1,0 +1,7 @@
+{
+  "success": true,
+  "query": "HNSW 线上推荐的 ef_search 起步值是多少？",
+  "kb_ids": [
+    "5bc21b9b-2a05-470a-9cd6-eaafedfb87a2"
+  ],
+  "answer": "I have the exact evidence. Here is the answer.\n\n## HNSW 线上推荐 ef_search 起步值\n\n**结论：线上推荐从 `ef_search = 64` 起步，再按 p99 延迟预算逐步上调。**\n\n来源：`AI 基础设施/vector-index-tuning-guide (part 2 of 2).md`（KB：**AI 基础设施**，接口文档第 7 节「查询侧调优：ef_search 与 QPS」）— 判定为 **P0 直接证据**（Laya evidence 得分 0.887 / 0.760，原文明确写出推荐语）。\n\n### 原文依据（逐字引用）\n\n> **ef_search=128 时 QPS 达 1830、p99 查询延迟 23

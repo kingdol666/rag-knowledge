@@ -1,0 +1,8 @@
+{
+ "case": "F3_bert",
+ "http": 200,
+ "wall_s": 162.1,
+ "turns": 10,
+ "cost": 0.32320399999999994,
+ "answer": "**BERT 的预训练任务有两个：Masked LM（MLM，掩码语言模型）和 Next Sentence Prediction（NSP，下一句预测），二者均为无监督任务、联合预训练。**（P0 直接证据，原文见 BERT 原始论文 §3.1）\n\n**任务 #1：Masked LM（MLM）**\n- 动机：标准条件语言模型只能单向训练（左→右或右→左），双向条件会让每个词\"间接看到自己\"，从而平凡地预测目标词。\n- 做法：随机遮盖输入中 **15%** 的 WordPiece token 并预测它们；对应位置的最终隐向量送入 vocabulary 上的 softmax。与去噪自编码器不同，**只预测被遮盖的词**，不重建整个输入。\n- 缓解预训练/微调不一致（[MASK] 在微调时不出现）的混合策略：在被选中的 15% 位置中，**80%** 替换为 `[MASK]`、**10%** 替换为随机词、**10%** 保持不变；用交叉熵损失预测原始 token。\n\n**任务 #2：Next Sentence Prediction（NSP）**\n- 动机：QA、NLI 等下游任务需要理解两句间关系，语言建模无法直接捕获。\n- 做法：从任意单语语料即可生成——选句 A、B 时，**50%** 是 A 的真实下一句（标为 `IsNext`），**50%** 是语料中的随机句（标为 `NotNext`）；用 `[CLS]` 的最终隐向量 C 做二分类。\n\n**其他要点（同节）**\n- 预训练不使用传统单向 LM，改以上述**两个无监督任务**。\n- 预训练语料：**BooksCorpus（800M 词）+ English Wikipedia（2,500M 词）**。\n- 论文 §5.1 通过对照实验证明这两个预训练目标对 QA 与 NLI 均显著有益。\n\n**出处**\n- 文档：`计算机与人工智能/nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md`（第 1/3 部分，§3.1 Pre-training BERT；第 2/3 部分含 NSP 示例）\n- 知识库：`b1199132-e4d4-4305-8c2e-82dc1753b0ba`（计算机与人工智能）\n- 检索：`kb_search_two_stage` / `kb_search_vector` 宽网命中该文档；`kb_laya_judge`（criterion=evidence，阈值 0.5）判定 22 段中 20 段幸存、3 篇文档均含肯定证据。\n\n**可信度标注**：P0 — 直接引自原论文正文（BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding, arXiv:1810.04805）。"
+}

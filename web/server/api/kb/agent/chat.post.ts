@@ -53,8 +53,11 @@ const MAX_PROMPT_CHARS = 16_000
 const DEFAULT_HARNESS = 'claude'
 const DEFAULT_PERMISSION = 'bypassPermissions'
 
-/** Read-only toolset for chat turns (defense in depth under bypass). */
-const RETRIEVAL_TOOLS = ['Read', 'Glob', 'Grep', 'Skill', 'Task']
+/** Full-native toolset: the KB agent may use its skills (Skill/Task), repo
+ *  reads, and every mounted MCP server. Only ToolSearch is banned — a pure
+ *  latency detour (measured +14-21s/turn) with zero functional role. */
+const AGENT_TOOLS = ['Read', 'Glob', 'Grep', 'Skill', 'Task']
+const AGENT_DISALLOWED = ['ToolSearch']
 
 /**
  * Sanitize the external prompt before it enters the agent turn: strip control
@@ -94,7 +97,8 @@ async function executeTurn(req: TurnRequest): Promise<Record<string, any>> {
       cwd: getProjectRoot(),
       permissionMode: req.permission,
       model: undefined,
-      allowedTools: RETRIEVAL_TOOLS,
+      allowedTools: AGENT_TOOLS,
+      disallowedTools: AGENT_DISALLOWED,
       maxTurns: 40,
       fullPromptText: buildAgentChatPreamble() + req.task,
       signal: abort.signal,
