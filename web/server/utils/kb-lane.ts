@@ -62,3 +62,19 @@ export const KB_DISALLOWED_TOOLS = [
   'TodoWrite', 'TodoRead', 'CronCreate', 'CronDelete',
   'CronList', 'CronUpdate', 'DesignSync',
 ]
+
+/**
+ * SOUL persona read-path tools (soulEnhanced chat turns). Measured 2026-09-30:
+ * without pre-allowlisting, every soul_* call hit the permission callback and
+ * was auto-denied on non-stream calls ("无人工审批通道") — the persona answer
+ * could never form. Write/admin soul tools (init/learn/delete/eval/…) stay
+ * permission-gated on purpose.
+ */
+export const SOUL_READ_TOOLS = [
+  'mcp__kb-mcp__soul_ask',
+  'mcp__kb-mcp__soul_qdcvr_ask',
+  'mcp__kb-mcp__soul_list',
+  'mcp__kb-mcp__soul_router',
+  'mcp__kb-mcp__soul_status',
+  'mcp__kb-mcp__kb_task_status',
+]

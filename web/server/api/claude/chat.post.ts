@@ -97,7 +97,7 @@ const SAFE_READS = ['Read', 'Glob', 'Grep']
 // KB lane toolsets / strict-MCP config / internal-tool bans live in
 // ~/server/utils/kb-lane.ts — shared verbatim with the kb retrieval lanes so
 // the chat UI and the AgentWorkShop rag-bridge run the identical lane.
-import { KB_MCP_SERVERS, KB_MCP_TOOLS, KB_DISALLOWED_TOOLS } from '~/server/utils/kb-lane'
+import { KB_MCP_SERVERS, KB_MCP_TOOLS, KB_DISALLOWED_TOOLS, SOUL_READ_TOOLS } from '~/server/utils/kb-lane'
 
 /** Pinned-KB lane = vector fast path: MCP read tools incl. vector search. */
 const KB_RETRIEVAL_TOOLS = KB_MCP_TOOLS
@@ -122,6 +122,35 @@ const MAX_TURN_TIMEOUT_MS = 900_000
 const ALL_TOOLS = [
   'Read', 'Glob', 'Grep', 'Bash', 'Edit', 'Write', 'WebSearch', 'WebFetch', 'Task',
 ]
+
+/**
+ * KB MCP reachability gate. When the persistent MCP (127.0.0.1:8000) is down,
+ * the kb toolset silently vanishes and the model's retrieval calls mis-route
+ * into harness tools (measured 2026-09-30: ScheduleWakeup ×4 instead of
+ * kb_search_vector). kbEnhanced/soulEnhanced turns therefore probe first;
+ * on failure they auto-start the server once (same launch command as the
+ * watchdog automation), then fail fast with 503 instead of burning LLM turns.
+ */
+async function ensureKbMcp(): Promise<boolean> {
+  const probe = async (): Promise<boolean> => {
+    try {
+      const r = await fetch('http://127.0.0.1:8000/sse', { signal: AbortSignal.timeout(3000) })
+      return r.ok
+    } catch { return false }
+  }
+  if (await probe()) return true
+  try {
+    const { spawn } = await import('child_process')
+    spawn('uv', ['run', '--no-sync', '--directory', 'kb-mcp', 'python', 'server.py', '--http'],
+      { cwd: getProjectRoot(), detached: true, stdio: 'ignore' }).unref()
+  } catch { /* spawn failure — the polling probes decide the outcome */ }
+  const deadline = Date.now() + 30_000
+  while (Date.now() < deadline) {
+    await new Promise(r => setTimeout(r, 2000))
+    if (await probe()) return true
+  }
+  return false
+}
 
 const PERMISSION_TIMEOUT_MS = 5 * 60 * 1000
 // KB_MCP_SERVERS / KB_DISALLOWED_TOOLS imported from ~/server/utils/kb-lane.
@@ -301,6 +330,8 @@ export default defineEventHandler(async (event) => {
   const { prompt, cwd, permissionMode, model, allowedTools, resume, maxTurns, attachments,
     reasoningEffort, engine: engineParam } = body || {}
   const kbEnhanced: boolean = body?.kbEnhanced === true
+  const soulEnhanced: boolean = body?.soulEnhanced === true
+  const soulKbId: string = body?.soulKbId || ''
   const kbIds: string[] = Array.isArray(body?.kbIds) ? body.kbIds : []
   /**
    * stream DEFAULTS TO FALSE (final-only JSON): the request blocks until the
@@ -352,7 +383,9 @@ export default defineEventHandler(async (event) => {
           ? (kbIds.length > 0
               ? KB_RETRIEVAL_TOOLS.filter(t => t !== 'Task')   // pinned = vector fast lane
               : KB_LIBRARIAN_TOOLS)                             // all-KB = librarian lane only
-          : SAFE_READS
+          : soulEnhanced
+            ? [...SAFE_READS, ...KB_MCP_TOOLS, ...SOUL_READ_TOOLS]  // soul persona read-path (measured: all soul_* calls auto-denied without this)
+            : SAFE_READS
 
   // Process attachments -> content blocks
   const hasAttachments = Array.isArray(attachments) && attachments.length > 0
@@ -364,8 +397,6 @@ export default defineEventHandler(async (event) => {
   const kbInstruction = kbEnhanced ? buildKbInstruction(kbIds) : ''
 
   // SOUL persona-enhanced instruction (prepended when toggle is on)
-  const soulEnhanced: boolean = body?.soulEnhanced === true
-  const soulKbId: string = body?.soulKbId || ''
   const soulInstruction = soulEnhanced ? buildSoulInstruction(soulKbId) : ''
 
   // Full prompt = KB instruction + SOUL instruction + user input + path hint.
@@ -533,6 +564,18 @@ export default defineEventHandler(async (event) => {
     // Multimodal attachment blocks are only used by the Claude engine.
     // OMP receives path hints embedded in fullPromptText instead.
     const isClaude = engineName === 'claude'
+
+    // ══════ KB MCP 连通门禁（挂载失败会演变成模型乱调用内置工具） ══════
+    if ((kbEnhanced || soulEnhanced) && isClaude && !(await ensureKbMcp())) {
+      setResponseStatus(event, 503)
+      return {
+        success: false,
+        engine: engineName,
+        elapsed_ms: Date.now() - t0,
+        error: 'kb-mcp unavailable; auto-start attempted and failed (watchdog will retry)',
+        code: 'KB_MCP_DOWN',
+      }
+    }
 
     // ══════ 引擎查询（kbEnhanced 非流式带一次挂载闪失败自动重试） ══════
     // MCP mount flakes ~1-in-6 sessions (sessions dcff48a1 / transformer_C):
