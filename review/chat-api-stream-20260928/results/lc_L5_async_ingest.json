@@ -1,0 +1,30 @@
+{
+ "case": "L5_async_ingest",
+ "wall_s": 80.2,
+ "turns": 8,
+ "tools_used": [
+  "Agent",
+  "Skill",
+  "Skill",
+  "Read",
+  "Read",
+  "Read",
+  "Skill",
+  "Read",
+  "Grep",
+  "Read",
+  "Grep",
+  "Skill",
+  "Grep",
+  "Read",
+  "Read",
+  "Read",
+  "mcp__kb-mcp__backend_status",
+  "mcp__kb-mcp__kb_list",
+  "mcp__kb-mcp__kb_doc_create",
+  "mcp__kb-mcp__kb_index_document",
+  "mcp__kb-mcp__kb_doc_read",
+  "mcp__kb-mcp__kb_search_vector"
+ ],
+ "reply": "已完成。\n\n## 执行记录\n\n**Pre-Flight**：`mcp__kb-mcp__backend_status` → MCP 连通，backend healthy（vector ready，embedding available）。\n\n> 备注：本次首先委托的 archival 子 Agent **未继承 MCP 工具集**（其会话内 `mcp__kb-mcp__*` 不可见），故由主 Agent 直接通过 MCP 工具完成操作。写操作均为 `kb_doc_create` + `kb_index_document`，未调用任何 move/delete。\n\n**① KB 定位** — `kb_list(lightweight=true)`\n- 名称：`e2e-sandbox-20260930b`\n- kb_id：`c42b4044-52e9-4b00-81c2-975ae6ffda14`（原 doc_count=1，现为 2）\n\n**② 文档创建** — `kb_doc_create`\n- doc_path：`e2e-sandbox-20260930b/生命周期测试文档B.md`\n- doc_id：`419c220e-2aba-4c21-873e-6988fd2b385e`\n- 文件名安全（无 Windows 非法字符），tags：`e2e测试` / `生命周期测试` / `async验证`\n- 返回 `_auto_index.triggered=true`（后台索引入队，task_id `d56b21451606`），随后显式补建索引（Learned preference：索引不自动）\n\n**③ 索引验证** — `kb_index_document`（显式重建）\n- collection：`kb_c42b4044-52e9-4b00-81c2-975ae6ffda14` ✅ 与 KB UUID 一致\n- total_chunks：**1** ✅ (≥1)\n- graph_doc_id：`doc::e2e-sandbox-20260930b/生命周期测试文档B.md`\n\n**④ 回读 + 检索双验证**\n- `kb_doc_read`：正文完整回读，含 `# 生命周期测试 B` 与关键词「绿色猎豹奔跑」✅\n- `kb_search_vector(\"绿色猎豹奔跑"
+}

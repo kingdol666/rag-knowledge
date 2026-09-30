@@ -1,0 +1,28 @@
+{
+ "case": "L6_exp_review",
+ "wall_s": 92.2,
+ "turns": 7,
+ "tools_used": [
+  "Agent",
+  "Skill",
+  "Skill",
+  "Grep",
+  "Grep",
+  "Glob",
+  "Glob",
+  "Glob",
+  "Glob",
+  "Glob",
+  "Glob",
+  "Grep",
+  "Read",
+  "Read",
+  "Grep",
+  "mcp__kb-mcp__backend_status",
+  "mcp__kb-mcp__kb_list",
+  "mcp__kb-mcp__experience_create",
+  "mcp__kb-mcp__experience_review",
+  "mcp__kb-mcp__experience_read"
+ ],
+ "reply": "在知识库「e2e-sandbox-20260930b」完成经验沉淀 → 评审 → 回读全流程。\n\n**执行过程（全程 MCP 工具）**\n\n| 步骤 | 工具 | 结果 |\n|---|---|---|\n| Pre-Flight | `backend_status` | backend healthy，vector ready，embedding 可用 |\n| KB 定位 | `kb_list` | 精确命中沙箱库 `e2e-sandbox-20260930b`（kb_id `c42b4044-52e9-4b00-81c2-975ae6ffda14`，2 文档），无需替代 |\n| 创建经验 | `experience_create` | 成功 → `exp-40c964bbd7e1` |\n| 评审通过 | `experience_review` | 成功，reviewer=e2e-verifier，rating=5.0 |\n| 回读确认 | `experience_read` | **vetted: True** 已确认 |\n\n**产物核验**\n\n- 经验 ID：`exp-40c964bbd7e1`\n- doc_path：`e2e-sandbox-20260930b/experience/exp-40c964bbd7e1.md`\n- 向量索引：collection `kb_c42b4044-52e9-4b00-81c2-975ae6ffda14`，**5 chunks**，bge-m3，已索引\n- 图谱节点：`doc::e2e-sandbox-20260930b/experience/exp-40c964bbd7e1.md`\n- 回读元数据：`status=published`、`vetted=True`、`rating_avg=5.0`、`review_count=1`、`confidence=1.0`、`auto_extracted=False`（人工创建，非启发式提取）\n\n**一处需要说明的偏差**：我首先委托 Archival 子 Agent 执行，它报告 `experience_create` / `experience_review` / `experience_read` \"工具未挂载、被权限墙拦截\"，并据此判定任务被阻塞。该报告经我本人直接验证为**不"
+}
