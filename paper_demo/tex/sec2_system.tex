@@ -9,24 +9,46 @@
 \sys{} binds Section~\ref{sec:intro}'s decisions to one platform: a web
 console, a FastAPI backend, a \texttt{ragctl} CLI, and an MCP
 server~\cite{mcp} exposing 42 \texttt{kb\_*} tools inside a 95-tool
-inventory: creation, movement, tagging, search, reference-passing
-judgment, and offset-addressed reads. Console, CLI, and MCP clients
-operate the same resources through the same tools; only the packaged
-skills add policy. ChromaDB stores BGE-M3 vectors~\cite{bge-m3}, Neo4j
+inventory. Console, CLI, and MCP clients operate the same resources;
+only the packaged skills add policy. ChromaDB stores BGE-M3 vectors~\cite{bge-m3}, Neo4j
 holds optional document relations, and Markdown plus JSON/YAML metadata
 keep the collection inspectable.
 
 \subsection{Organization: From PDF to Addressable Parts}
-MinerU converts PDFs to structured Markdown~\cite{mineru}; texts beyond a
-30,000-character ceiling are split into parts, and retained headings
-support line-offset reads. The organization skill inspects the parsed
-content, selects among existing bases (the platform's knowledge-base
-containers), proposing a new one only when none fits, and places and tags
-the document. Each placement ends in a final check (base fit, vector
-probe, three-layer consistency --- three of nine recorded checks), so a
-misroute is flagged at ingest, not at answer time. Administrators keep
-control of bases; the five-base layout is a demonstration configuration,
-not a platform limit.
+MinerU converts PDFs to structured Markdown~\cite{mineru}; texts
+beyond a 30,000-character ceiling split into parts with line-offset
+reads. The organization skill inspects the parsed
+content, selects among existing bases, proposing a new one only when
+none fits, and places and tags the document. Each placement ends in a final check (three of nine
+recorded checks), so a misroute is flagged at ingest, not at answer
+time. Administrators keep
+control of bases; five bases is a demonstration configuration, not a
+limit.
+
+% Pipeline audit table — declared early so the column float lands on p3,
+% keeping page 4 for Figure 3 plus the evaluation and conclusion text.
+\begin{table}[t]
+\caption{Pipeline audit on the 100-paper corpus. Every value is
+script-asserted from saved artifacts, not hand-counted; the content audit
+samples the first 1{,}000 characters per part.}
+\label{tab:pipeline}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lc@{}}
+\toprule
+\textbf{Stage / check} & \textbf{Result} \\
+\midrule
+Papers parsed, routed by content & 100/100, 5 bases \\
+Stored parts after 30k split ceiling & 322 \\
+Per-paper ingest checks (nine recorded checks) & 100/100 pass \\
+True duplicates & 0 (35 near-pairs) \\
+Descriptions upgraded & 165/165 \\
+Content + storage audits & 322/322 \,\textbullet\, 33/33 \\
+Retrieval regression probes & 15/15 \\
+Dense replica index (800-char chunks) & 4{,}528 \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Retrieval: The Layered Ladder}
 \label{sec:ladder}
@@ -35,28 +57,27 @@ bottom), and any harness may delegate it to a single retrieval subagent
 that returns document identifiers and evidence notes while the main agent
 answers.
 \emph{L0 catalog.} One call reads every base's name, description, and
-document count; bases whose descriptions cannot plausibly cover the query
-are pruned only on a present, trustworthy description.
+document count; a base is pruned only when its description is present,
+judged trustworthy, and clearly unable to cover the query.
 \emph{L1 descriptions.} One call per candidate shelf collects document
-identifiers with their descriptions. Descriptions are treated as claims,
-not facts --- they narrow the candidates but never decide acceptance.
+identifiers with their descriptions; a keyword pass over titles and
+descriptions supplements them. Descriptions are treated as claims, not
+facts --- they narrow the candidates but never decide acceptance.
 \emph{L2 query shaping.} The query is rewritten as a declarative
 sentence with keywords; literal enumeration questions take a machine-side
-literal scan instead of semantic recall, which under-recalls exact
-mentions.
+literal scan, because semantic recall under-recalls exact mentions.
 \emph{L3 judgment.} Candidates are passed to the judgment layer \emph{by
 reference}: a locally hosted engine fetches each document, segments it,
 and scores every segment against the rewritten query. The engine runs
 fail-closed --- if it is unavailable the pipeline stops, it does not
 degrade to similarity-only acceptance --- and every segment graded
-positive survives; survivors are never re-scored or cut by hand. A
+positive survives. A
 0.95-similarity hit whose segments all fail is discarded; a 0.40 hit with
 one positive segment survives.
 \emph{L4 reading.} Only survivors are read at their recorded addresses
 (base, document, part, section), with key numbers quoted verbatim.
 \emph{L5 answer.} The answer cites what it read; the record keeps the
-search path, the judgment's backend and threshold, confidence, and blind
-spots (unscoped shelves, engine errors, unverified survivors).
+search path, backend and threshold, confidence, and blind spots.
 
 Early exit is part of the spine: if L0--L1 surface no plausible candidate
 --- or a literal scan hits nothing on a kept shelf --- the search stops
@@ -66,13 +87,15 @@ a contract violation, not thoroughness.
 \subsection{Lanes: Fast Recall, Full Recall, Fusion}
 The ladder is the contract; three lanes trade breadth against latency.
 The \emph{fast lane} rewrites the query, casts a wide vector net (high
-$k$, balanced across bases, snippets only), and feeds the deduplicated
-candidates to the same judgment layer --- ranking proposes, the engine
-still disposes. The \emph{librarian lane} is the ladder above with no
-vector calls, for unknown shelves or complete-recall questions. The
-\emph{fusion lane} runs both concurrently and merges on normalized
-(base, document) identity. Because judgment is by reference, document
-text stays server-side and the agent's context receives one merged
-evidence pack. \emph{Content-verified} denotes this engine judgment, not
-guaranteed correctness; saved artifacts keep candidate excerpts,
-per-segment verdicts, and answer records.
+$k$, balanced across bases, snippets only), cross-checks the top
+candidates with a second, BM25-style pass~\cite{bm25}, and feeds the
+deduplicated candidates to the same judgment layer --- ranking proposes,
+the engine still disposes; when cross-check reads confirm a candidate
+at its recorded address, the lane answers directly. The \emph{librarian lane} is the ladder above
+with no vector calls, for unknown shelves or complete-recall questions.
+The \emph{fusion lane} runs both concurrently and merges on normalized
+(base, document) identity. Judgment is by reference, so document text
+stays server-side and the context receives one merged evidence pack.
+\emph{Content-verified} denotes this engine judgment, not guaranteed
+correctness; saved artifacts keep excerpts, verdicts, and answer
+records.

@@ -1,6 +1,7 @@
 % sec0_abstract.tex — 2026-09-30 rewrite around the layered ladder +
-% engine-graded judgment storyline. Numbers flow from the \NUM* macros in
-% main.tex (filled from the monitored rerun; see PROVISIONAL note there).
+% engine-graded judgment storyline; trimmed to <=250 words (ACM guideline)
+% in the 2026-10-01 revision round. Numbers flow from the \NUM* macros in
+% main.tex (script-asserted from the monitored rerun).
 \begin{abstract}
 \emergencystretch 1.5em\relax
 Research administrators must organize shared paper collections and inspect
@@ -8,28 +9,24 @@ the evidence behind the answers drawn from them. We present \sys{}, an
 agent-operated platform that organizes by content and retrieves layer by
 layer through one shared address space. Packaged agent skills parse
 documents, route them by content into category bases, and index the parts
-under base\slash document\slash part\slash section addresses. Retrieval walks a layered
-ladder --- catalog, shelf descriptions, wide vector recall --- and
-acceptance is decided per segment by a locally hosted judgment engine
-that reads candidates and grades them against the query: the engine is
-fail-closed, similarity never overrules its verdicts, and every segment
-graded positive survives into the answer. When no rung finds a plausible
-candidate, the search stops there and returns a scoped not-found report.
-The platform's own ingest loop built a 100-paper, five-base instance;
-ingest, storage, and retrieval probes then audited it. In a monitored
-three-mode run under one harness, model, and neutral prompt, the platform
-grounds \NUMgroundedA{} of 10 designated-paper answers and
-keyword-verifies \NUMkwA{} of 10 against fixed gold key facts, with
-part/section-level citations in \NUMciteA; the bare agent grounds
+under base\slash document\slash part\slash section addresses. Retrieval
+walks a layered ladder --- catalog, shelf descriptions, wide vector
+recall --- and acceptance is decided per segment by a locally hosted
+judgment engine that reads candidates and grades them against the query:
+the engine is fail-closed, similarity never overrules its verdicts, and
+every segment graded positive survives into the answer. When no rung
+finds a plausible candidate, the search stops there and returns a scoped
+not-found report. The platform's ingest loop built and audited a
+100-paper, five-base instance. In a monitored three-mode run under one
+harness, model, and neutral
+prompt, the platform grounds \NUMgroundedA{} of 10 designated-paper
+answers, keyword-verifies \NUMkwA{} of 10 against fixed gold key facts,
+and cites part, section, or table in \NUMciteA; the bare agent grounds
 \NUMgroundedB{} but verifies \NUMkwB, and dense retrieval grounds
 \NUMgroundedC{} and verifies \NUMkwC{} with \NUMciteC. A 27-run
-three-lane stability suite shows behaviorally consistent retrieval and
-honest abstention whenever the corpus does not cover a question. Per
-question the platform costs \$0.55, on par with the bare agent's
-file-tool loop (\$0.64) and about twice dense retrieval (\$0.28), while
-being the only mode whose evidence is inspectable and addressable.
-Attendees organize a
-document, watch the ladder retrieve, and examine a failure report. Demo
-video:
+three-lane stability suite shows consistent retrieval and honest
+abstention whenever the corpus does not cover a question. Attendees
+organize a document, inspect an answer's evidence, and examine a
+failure report. Demo video:
 \url{https://github.com/kingdol666/rag-knowledge/blob/master/paper_demo/video/qdcvr-demo.mp4}.
 \end{abstract}

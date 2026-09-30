@@ -1,11 +1,11 @@
 """Build fig3-answers-dual: TWO questions' real saved answers across modes.
 
 Run: python paper_demo/figures/submission-20260920/build_fig3_dual.py
-Data source: benchmark-suite/results/experiment_chat_20260922-211000/*.json
-(the 2026-09-22 100-paper three-mode run). Panel 1: the Gene Ontology
+Data source: benchmark-suite/results/runs/<monitored run>/*.json (see RUN)
+(the 2026-09-30 monitored rerun). Panel 1: the Gene Ontology
 question answered by all three modes (BQ04). Panel 2: the precipitation-
 extremes question — the platform's verified answer (A) beside the dense
-mode's measured abstention (C, BQ06). Every quoted fragment in the figure is
+mode's ungraded chunk-recall answer (C, BQ06). Every quoted fragment in the figure is
 asserted to be a verbatim substring of the saved answer (after removing
 markdown emphasis and collapsing whitespace); the build fails otherwise.
 The per-mode tool timelines are transcribed from the saved trace timelines
@@ -256,16 +256,16 @@ def panel_body(g, panel, y0, cols, cw, wrap_w=40):
     qn = max(len(v) for v in wrapped.values())
     sn = max(len(panel['sources'][trk]) for trk in cols)
     pn = max(len(panel['process'][trk]) for trk in cols)
-    P, SP = 19, 18
-    label1_b = y0 + 19
-    proc0_b = label1_b + 19
-    div1_y = proc0_b + (pn - 1) * P + 8
-    label2_b = div1_y + 16
-    quote0_b = label2_b + 19
-    div2_y = quote0_b + (qn - 1) * P + 8
-    src0_b = div2_y + 17
-    verdict_b = src0_b + (sn - 1) * SP + 20
-    card_h = verdict_b - y0 + 6
+    P, SP = 17, 16
+    label1_b = y0 + 17
+    proc0_b = label1_b + 17
+    div1_y = proc0_b + (pn - 1) * P + 6
+    label2_b = div1_y + 14
+    quote0_b = label2_b + 17
+    div2_y = quote0_b + (qn - 1) * P + 6
+    src0_b = div2_y + 15
+    verdict_b = src0_b + (sn - 1) * SP + 18
+    card_h = verdict_b - y0 + 5
     for trk, x in cols.items():
         st = STYLE[trk]
         g.append(node('rect', x=x, y=y0, width=cw, height=card_h, rx=4,

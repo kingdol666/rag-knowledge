@@ -60,32 +60,27 @@
 \renewcommand{\shortauthors}{Author Name}
 \input{sec0_abstract}
 \maketitle
-\input{sec1_intro}
-\input{sec1_related}
 
 % Full-width floats are declared up front so they meet pages 2/3/4 in reading
 % order; declaring them later lets them drift past the experiment section.
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{../figures/submission-20260922/fig1-core.pdf}
+\includegraphics[width=0.80\textwidth]{../figures/submission-20260922/fig1-core.pdf}
 \caption{QDCVR at a glance, as two four-panel storyboards. Top row: a
 conventional dense-RAG configuration --- documents are shredded into fixed
 chunks, two excerpts are retrieved and packed into one context, and a single
-generation produces an answer whose sources are not addressable. Bottom row:
-the two QDCVR agent loops --- autonomous ingest (parse, route by content,
-tag, index parts with base/document/part/section addresses) and
-layered retrieval (rewrite and recall through catalog, descriptions, and a
-wide vector net, grade every candidate segment with the judgment engine,
-read only the survivors, then answer with citations or a scoped not-found
-report). The top row is for contrast; the evaluated dense variant is an
-agent with a single vector-search tool over the chunk index.}
+generation produces an answer whose sources are not addressable. Bottom
+row: the two QDCVR agent loops --- autonomous ingest (parse, route by
+content, tag, index parts with base/document/part/section addresses) and
+layered retrieval (recall through catalog, descriptions, and a wide
+vector net; the judgment engine grades every candidate segment; only
+survivors are read, yielding a cited answer or a scoped not-found
+report). The top row is for contrast.}
 \Description{Two storyboard rows of four numbered panels each. Top row
 (baseline): documents arrive in the shared pool; they are shredded into
 fixed 800-character chunks, with torn-evidence marks; two excerpts are
 retrieved and packed into one 4,000-character context; one generation
-returns an answer. The evaluated dense mode instead gives one agent a
-single vector-search tool over the same chunks; its answers cite chunk
-files. Bottom row (QDCVR): a PDF is
+returns an answer with no sources attached. Bottom row (QDCVR): a PDF is
 parsed and routed by content into the right base; every part is indexed
 under the layered address base, document, part, section; the agent walks
 the ladder --- catalog, shelf descriptions, wide vector recall --- and the
@@ -99,8 +94,11 @@ can be checked at its source.}
 
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{../figures/submission-20260922/fig2-architecture.pdf}
-\caption{Platform operations and the agent-executed QDCVR workflow, with live-console screenshots from the running instance: 1 the collection; 2 the search; 3 a result's per-channel scores, its base and part address, and its verification status; 4 the agent's answer after retrieval, beside the judgment layer's outcomes (dashed outlines are the fallback exits). Bottom: the two packaged loops --- ORGANIZE (parse and split, route by content, tag and index as addressable parts) and RETRIEVE (rewrite, layered recall over catalog, descriptions, and vectors, engine-graded segment judgment, survivor reads).}
+\includegraphics[width=0.84\textwidth]{../figures/submission-20260922/fig2-architecture.pdf}
+\caption{Platform operations and the agent-executed QDCVR workflow, with
+live-console screenshots (1 collection; 2 search; 3 per-channel scores,
+base/part address, verification status; 4 the agent's answer beside the
+judgment layer's outcomes). Bottom: the ORGANIZE and RETRIEVE loops.}
 \Description{Two areas. The top area shows four live-console screenshots
 from the demonstration instance: a knowledge-base row with its document
 count; the search form with strategy chips and the NISQ query; a result's
@@ -120,29 +118,20 @@ judgment engine, and reads only the survivors. A note records that the
 same 42 kb\_* tools run over vector, graph, and file storage.}
 \label{fig:arch}
 \end{figure*}
-
-\input{sec2_system}
-
-\input{sec3_demo}
-
-% Declared here so the float is met while page 3 is being typeset and becomes
-% eligible for page 4 --- one full-width figure per page (Figs. 1/2/3 on pp.
-% 2/3/4); referenced in Section 4.
+% Fig. 3 declared here (right after Fig. 2) so the dblfloat queue
+% meets it in time for a page-4 top placement.
 \begin{figure*}[t]
 \centering
-\includegraphics[width=\textwidth]{../figures/submission-20260920/fig3-answers-dual.pdf}
+\includegraphics[width=0.82\textwidth]{../figures/submission-20260920/fig3-answers-dual.pdf}
 \caption{Two questions from the 100-paper corpus under the monitored
-three-mode run (one harness, model, and neutral prompt; one run per mode;
-ellipses elide text): each column shows the saved timeline, a verbatim
-excerpt, and sources. Panel 1 (BQ04): all three modes answer; A
-quotes the source at part~1 of~2, section~2; B names the file; C quotes
-the chunk copy. Panel 2 (BQ06): A refines its search, has the judgment
-engine grade candidate segments, and returns a keyword-verified answer
-quoting the source; C reaches the same factor from chunk recall alone,
-with no grading step and no addresses; the bare agent is omitted for
-space (it verified the keyword but names a file, not an address). Bottom
-strip: run aggregates; columns: Platform, Bare agent, Dense retrieval
-(definitions in Section~\ref{sec:eval}).}
+three-mode run (one harness, model, and neutral prompt; one run per
+mode; ellipses elide text): each column shows the saved timeline, a
+verbatim excerpt, and sources. Panel~1 (BQ04): all three modes answer
+--- A quotes the source at part~1 of~2, section~2; B names the file; C
+quotes the chunk copy. Panel~2 (BQ06): A has the judgment engine grade
+candidate segments and returns a keyword-verified answer quoting the
+source; C reaches the same factor from chunk recall alone, with no
+grading step and no addresses.}
 \Description{Two stacked panels. Panel one, the Gene Ontology question,
 has three columns. Column A's timeline lists one subagent probe, one
 vector search, one cross-check search, and two document reads; its
@@ -163,6 +152,14 @@ searches; its excerpt names the thermodynamic contribution with a
 precision caveat; its source shows the chunk index with no grading step.}
 \label{fig:threeway}
 \end{figure*}
+\input{sec1_intro}
+\input{sec1_related}
+
+
+\input{sec2_system}
+
+\input{sec3_demo}
+
 
 \input{sec4_eval}
 \input{sec5_conclusion}

@@ -4,68 +4,36 @@
 \section{Interactive Demonstration}
 \label{sec:demo}
 
-The demonstration targets research administrators and agent developers;
-its scenarios trace the platform loop in order --- organize, retrieve
-through the ladder, fail honestly. A prepared instance, built by the
+The demonstration targets research administrators and agent developers.
+A prepared instance, built by the
 ingest loop of Section~\ref{sec:system}, holds 100 papers in five bases
-(ingest audit: Table~\ref{tab:pipeline}); attendees inspect documents and
-drive an agent with the packaged skills over the kb\_* tools. A live
-answer takes from about twenty seconds (a scoped not-found) to about two
-minutes (a graded multi-search answer), so presenters replay saved traces
-alongside live queries; the video walks these scenarios in the console,
-and the repository README's quick start reproduces the instance.
+(ingest audit: Table~\ref{tab:pipeline}); attendees drive an agent
+with the packaged skills over the kb\_* tools. A live
+answer takes from about twenty seconds to about two minutes, with a
+six-minute tail on the hardest question; presenters replay saved traces
+alongside live queries, the video walks the scenarios, and the repository
+README reproduces the instance.
 
-\paragraph{1. Organize a document.}
-An attendee selects a PDF from a prepared pool and asks the agent to parse
-and place it. The trace records the parse, the proposed base, the tags,
-and the indexing checks; the attendee compares parsed text against the
-routing before accepting.
-
-\paragraph{2. Watch the ladder retrieve.}
-The attendee asks which three ontologies subdivide the Gene Ontology. In
-the saved trace (BQ04 in Section~\ref{sec:eval}), the fast lane recalls
+\paragraph{1. Organize, then 2.\ inspect an answer's evidence.}
+Scenario one places a PDF: the trace records the parse, proposed base,
+tags, and indexing checks.
+Scenario two asks which three ontologies subdivide the Gene Ontology. In
+the saved trace (BQ04; Section~\ref{sec:eval}), the fast lane recalls
 the primer with a vector search plus a BM25-style cross-check, reads the
 part at its line offset, and the agent answers with a verbatim quotation
 whose source block names base, document, part, and section (``2.~What is
-the Gene Ontology?''). Score, reading, and quoted evidence are distinct
-records; the attendee can open the cited part in the console while the
-kb\_* tools read it at its line offset. Figure~\ref{fig:threeway}
-compares the three modes on this question and adds a graded-reading
-contrast on a second question.
+the Gene Ontology?''). The cross-check reads confirmed this candidate directly; the graded
+path appears in Figure~\ref{fig:threeway}, panel~2. The cited part opens in the
+console at its line offset.
 
 \paragraph{3. Examine a failure report.}
 Next, the attendee asks for training epochs in the fictitious paper
-\emph{Spectral Tuning for Low-Resource Odor Recognition}. In 22 seconds
-the skill returns a conclusion-first not-found report backed by its
-searched-facts list: two-stage recall (20 candidates, none on topic),
-vector search (10, none), metadata search (weak title-token matches
-only), and a per-shelf catalog enumeration (no odor-recognition
-documents at all). BERT epoch recipes appear among the retrieved
-near-misses and are correctly not substituted; the report states the
-remedy --- ingest the paper --- and bounds its claim to this collection.
+\emph{Spectral Tuning for Low-Resource Odor Recognition}. In about
+thirty seconds the skill returns a conclusion-first not-found report
+backed by its searched-facts list: two-stage recall (ten generic hits,
+none the paper), vector search (top similarity 0.52), metadata search
+(twelve weak title-token matches), and a judgment-engine call with
+nothing to adjudicate. BERT fine-tuning recipes appear among the
+near-misses and are not substituted; the remedy offered is re-search by
+exact identifier, and nothing is speculated.
 
-% Table 1 — pipeline audit (unchanged artifacts; see
-% benchmark-suite/results/ingest_report.json + r2_ingest_report.json +
-% r2_organize/).
-\begin{table}[t]
-\caption{Pipeline audit on the 100-paper corpus. Every value is
-script-asserted from saved artifacts, not hand-counted; the content audit
-samples the first 1{,}000 characters per part.}
-\label{tab:pipeline}
-\small
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{@{}lc@{}}
-\toprule
-\textbf{Stage / check} & \textbf{Result} \\
-\midrule
-Papers parsed, routed by content & 100/100, 5 bases \\
-Stored parts after 30k split ceiling & 322 \\
-Per-paper ingest checks (nine recorded checks) & 100/100 pass \\
-True duplicates & 0 (35 near-pairs) \\
-Descriptions upgraded & 165/165 \\
-Content + storage audits & 322/322 \,\textbullet\, 33/33 \\
-Retrieval regression probes & 15/15 \\
-Dense replica index (800-char chunks) & 4{,}528 \\
-\bottomrule
-\end{tabular}
-\end{table}
