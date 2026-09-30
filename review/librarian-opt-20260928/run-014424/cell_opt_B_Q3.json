@@ -1,0 +1,421 @@
+{
+ "qid": "Q3",
+ "question": "在分子科学的机器学习中,Noé 等人的综述《Machine learning for molecular simulation》与“深度空间学习 + 分子振动”数据增强方法各自如何应对数据稀缺与建模挑战？后者在聚酰胺纳滤膜实验中把相对误差和决定系数分别改善到多少？(machine learning molecular simulation molecular vibration data augmentation nanofiltration)",
+ "mode": "opt_B",
+ "retrieval": {
+  "phase_s": {
+   "L0": 0.74,
+   "L2": 0.54,
+   "L3": 0.03,
+   "L4": 1.5,
+   "L5": 8.77,
+   "L5b_peek_read": 1.48,
+   "L5b_judge": 2.66,
+   "L6": 0.01
+  },
+  "phase_total_s": 15.73,
+  "tier_counts": {
+   "docs_listed": 75,
+   "read_planned": 35,
+   "docs_read": 35,
+   "full_reads": 35,
+   "head_reads": 0,
+   "peeked_docs": 40,
+   "promoted_docs": 6,
+   "candidates": 263,
+   "scored": 297,
+   "survivors_all_yes": 297,
+   "retained_docs": 30,
+   "evicted_docs": 11,
+   "pack_blocks": 15,
+   "pack_chars": 39923
+  },
+  "real_engine": true,
+  "status": "ok",
+  "criterion": "evidence",
+  "retention": {
+   "kept_keys": [
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 7 of 7).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 4 of 7).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 2 of 3).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 3 of 7).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 6 of 7).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 2 of 4).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 2 of 7).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 1 of 3).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 1 of 2).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 5 of 8).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 8 of 8).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 2 of 2).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 3 of 8).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 1 of 8).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 2 of 2).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 4 of 8).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 7 of 8).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 2 of 8).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 6 of 8).md"
+    ]
+   ],
+   "abs_kept_keys": [
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 1 of 2).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 2 of 2).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 3 of 3).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 1 of 4).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 4 of 4).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 1 of 8).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 2 of 8).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 3 of 8).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 4 of 8).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 5 of 8).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 6 of 8).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 7 of 8).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md (part 8 of 8).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\chemistry__physics-0105075__theory-of-laser-catalysis-with-pulses.md.md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\climate-science__2012.10385__large-scale-features-of-southwest-monsoon-du.md.md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 1 of 2).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma (part 2 of 2).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 2 of 7).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 3 of 7).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 4 of 7).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 5 of 7).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 6 of 7).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 7 of 7).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 1 of 3).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 2 of 3).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 3 of 3).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 1 of 4).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 2 of 4).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 4 of 4).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 1 of 3).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md"
+    ],
+    [
+     "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+     "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md"
+    ]
+   ],
+   "relative_cut": 0.888,
+   "global_best": 0.938,
+   "floor_applied": true,
+   "kept_total": 30
+  },
+  "evicted": [
+   {
+    "doc_path": "自然科学与地球科学\\quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 1 of 3).md",
+    "best_score": 0.8821,
+    "segments": 8
+   },
+   {
+    "doc_path": "自然科学与地球科学\\quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 3 of 3).md",
+    "best_score": 0.8792,
+    "segments": 4
+   },
+   {
+    "doc_path": "自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+    "best_score": 0.84,
+    "segments": 9
+   },
+   {
+    "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+    "best_score": 0.8389,
+    "segments": 8
+   },
+   {
+    "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+    "best_score": 0.8746,
+    "segments": 8
+   },
+   {
+    "doc_path": "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 3 of 3).md",
+    "best_score": 0.8025,
+    "segments": 3
+   },
+   {
+    "doc_path": "自然科学与地球科学\\climate-science__2012.10385__large-scale-features-of-southwest-monsoon-du.md.md",
+    "best_score": 0.8297,
+    "segments": 11
+   },
+   {
+    "doc_path": "自然科学与地球科学\\chemistry__physics-0105075__theory-of-laser-catalysis-with-pulses.md.md",
+    "best_score": 0.8319,
+    "segments": 8
+   },
+   {
+    "doc_path": "自然科学与地球科学\\climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 1 of 3).md",
+    "best_score": 0.8684,
+    "segments": 8
+   },
+   {
+    "doc_path": "自然科学与地球科学\\climate-science__2409.13934__on-the-extrapolation-of-generative-adversari (part 2 of 3).md",
+    "best_score": 0.8493,
+    "segments": 8
+   },
+   {
+    "doc_path": "自然科学与地球科学\\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 5 of 7).md",
+    "best_score": 0.8862,
+    "segments": 2
+   }
+  ]
+ },
+ "gold_in_pack": {
+  "1911.02792": true,
+  "2011.07200": true
+ },
+ "pack_docs": [
+  "自然科学与地球科学\\astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 1 of 2).md",
+  "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+  "自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+  "自然科学与地球科学\\chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md",
+  "自然科学与地球科学\\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 2 of 7).md",
+  "自然科学与地球科学\\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 3 of 7).md",
+  "自然科学与地球科学\\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 4 of 7).md",
+  "自然科学与地球科学\\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 6 of 7).md",
+  "自然科学与地球科学\\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 7 of 7).md",
+  "自然科学与地球科学\\quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 2 of 3).md",
+  "自然科学与地球科学\\quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 2 of 4).md",
+  "自然科学与地球科学\\quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md",
+  "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 1 of 3).md",
+  "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md",
+  "自然科学与地球科学\\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md"
+ ],
+ "answer": "The retrieved evidence is insufficient to answer this question.\n\n**What the evidence does contain:** Two chunks from `chemistry__1911.02792__machine-learning-for-molecular-simulation` (parts 2 and 3 of 4) cover unrelated sections — energy-matching/density-estimation losses (Eqs. 17–18), incorporating physics into ML, and Boltzmann Generators/VAMPnet (Figure 6). One chunk from `chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati` states that the proposed deep spatial learning with molecular augmentation outperforms RF, SVR, and GBR, and that \"molecular vibration as a physically interpretable method provides a significant performance boost,\" but it gives **no numeric values** for relative error or coefficient of determination.\n\n**What is missing:** No evidence describes how the Noé et al. review addresses data scarcity, and no evidence reports the 聚酰胺纳滤膜 (polyamide nanofiltration membrane) relative-error / R² improvements as specific numbers. The remaining chunks (Cahn-Hilliard control, quantum error mitigation, DES survey) are topically unrelated.\n\nPer the output contract, I am reporting insufficient evidence rather than answering from prior knowledge.\n\n**Sources consulted:**\n- `自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md`\n- `自然科学与地球科学\\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md`\n- `自然科学与地球科学\\chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md`",
+ "is_error": false,
+ "answer_latency_s": 8.1,
+ "tokens": {
+  "input": 6961,
+  "output": 350,
+  "cache_read": 42816,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.064963,
+ "total_s": 30.4,
+ "recorded_utc": "2026-09-27T17:45:50.799200+00:00"
+}

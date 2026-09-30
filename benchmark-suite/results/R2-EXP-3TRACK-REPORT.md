@@ -1,49 +1,49 @@
 # 三模式检索实验报告 (Three-Track Experiment)
 
-Run: `experiment_chat_20260922-211000` · 题集: `qa_questions.json` · 语料: 平台五门类库 = corpus_md 100 篇 = Corpus-Chunks800
+Run: `run-20260930T150453Z-3ec2174` · 题集: `qa_questions.json` · 语料: 平台五门类库 = corpus_md 100 篇 = Corpus-Chunks800
 
 ## 分轨结果
 
 | 轨 | 模式 | pass | gold 命中 | 关键词核验 | 平均时延 s | 平均工具数 | 平均成本 $ |
 |---|---|---|---|---|---:|---:|---:|
-| A | A 平台 KB(QDCVR 工具面) | 9/10 | 9/10 | 9/10 | 113.0 | 7.6 | 0.4911 |
-| B | B 裸 Agent(文件工具) | 6/10 | 10/10 | 6/10 | 42.7 | 4.4 | 0.1631 |
-| C | C Dense-RAG(Chunks800) | 5/10 | 9/10 | 6/10 | 48.0 | 2.4 | 0.1803 |
+| A2 | A2 平台 KB(仅KB工具,无文件工具) | 10/10 | 10/10 | 10/10 | 116.2 | 6.8 | 0.5457 |
+| B | B 裸 Agent(文件工具) | 8/10 | 10/10 | 8/10 | 47.6 | 4.9 | 0.6346 |
+| C | C Dense-RAG(Chunks800) | 6/10 | 8/10 | 6/10 | 41.1 | 3.7 | 0.2784 |
 
 ## 逐题判分
 
 | QID | 轨 | gold | 关键词命中 | pass | 时延 s | 工具数 |
 |---|---|---|---|---|---:|---:|
-| BQ01 | A | ✓ | 3/3 (scaled dot-product,multi-head,recurrence) | ✅ | 174.0 | 9 |
-| BQ02 | A | ✗ | 1/2 (noisy intermediate-scale) | ❌ | 99.2 | 6 |
-| BQ03 | A | ✓ | 2/2 (multimedqa,67.6) | ✅ | 81.0 | 7 |
-| BQ04 | A | ✓ | 3/3 (molecular function,biological process,cellular component) | ✅ | 77.7 | 5 |
-| BQ05 | A | ✓ | 1/1 (unified growth theory) | ✅ | 160.9 | 8 |
-| BQ06 | A | ✓ | 1/1 (precipitation efficiency) | ✅ | 117.9 | 10 |
-| BQ07 | A | ✓ | 2/2 (yiddish,8b) | ✅ | 155.9 | 6 |
-| BQ08 | A | ✓ | 2/2 (oxygen redox,cathode) | ✅ | 152.5 | 10 |
-| BQ09 | A | ✓ | 2/2 (dynamic,multilayer perceptron) | ✅ | 56.9 | 5 |
-| BQ10 | A | ✓ | 2/2 (immune evasion,chemotherapy) | ✅ | 53.5 | 10 |
-| BQ01 | B | ✓ | 3/3 (scaled dot-product,multi-head,recurrence) | ✅ | 41.7 | 6 |
-| BQ02 | B | ✓ | 2/2 (noisy intermediate-scale,error correction) | ✅ | 40.9 | 4 |
-| BQ03 | B | ✓ | 2/2 (multimedqa,67.6) | ✅ | 60.3 | 3 |
-| BQ04 | B | ✓ | 3/3 (molecular function,biological process,cellular component) | ✅ | 40.0 | 4 |
-| BQ05 | B | ✓ | 1/1 (unified growth theory) | ✅ | 32.8 | 4 |
-| BQ06 | B | ✓ | 0/1 | ❌ | 35.6 | 5 |
-| BQ07 | B | ✓ | 2/2 (yiddish,8b) | ✅ | 51.3 | 7 |
-| BQ08 | B | ✓ | 0/2 | ❌ | 20.5 | 4 |
-| BQ09 | B | ✓ | 1/2 (dynamic) | ❌ | 61.7 | 4 |
-| BQ10 | B | ✓ | 1/2 (chemotherapy) | ❌ | 41.9 | 3 |
-| BQ01 | C | ✓ | 2/3 (scaled dot-product,recurrence) | ✅ | 64.4 | 3 |
-| BQ02 | C | ✓ | 1/2 (noisy intermediate-scale) | ❌ | 125.1 | 3 |
-| BQ03 | C | ✗ | 2/2 (multimedqa,67.6) | ❌ | 14.4 | 2 |
-| BQ04 | C | ✓ | 3/3 (molecular function,biological process,cellular component) | ✅ | 35.4 | 2 |
-| BQ05 | C | ✓ | 1/1 (unified growth theory) | ✅ | 42.4 | 2 |
-| BQ06 | C | ✓ | 0/1 | ❌ | 35.9 | 2 |
-| BQ07 | C | ✓ | 2/2 (yiddish,8b) | ✅ | 15.3 | 2 |
-| BQ08 | C | ✓ | 2/2 (oxygen redox,cathode) | ✅ | 113.1 | 3 |
-| BQ09 | C | ✓ | 1/2 (dynamic) | ❌ | 20.7 | 2 |
-| BQ10 | C | ✓ | 1/2 (immune evasion) | ❌ | 13.8 | 3 |
+| BQ01 | A2 | ✓ | 3/3 (scaled dot-product,multi-head,recurrence) | ✅ | 169.8 | 6 |
+| BQ02 | A2 | ✓ | 2/2 (noisy intermediate-scale,error correction) | ✅ | 115.1 | 4 |
+| BQ03 | A2 | ✓ | 2/2 (multimedqa,67.6) | ✅ | 99.3 | 9 |
+| BQ04 | A2 | ✓ | 3/3 (molecular function,biological process,cellular component) | ✅ | 23.7 | 5 |
+| BQ05 | A2 | ✓ | 1/1 (unified growth theory) | ✅ | 108.1 | 10 |
+| BQ06 | A2 | ✓ | 1/1 (precipitation efficiency) | ✅ | 136.8 | 7 |
+| BQ07 | A2 | ✓ | 2/2 (yiddish,8b) | ✅ | 31.5 | 3 |
+| BQ08 | A2 | ✓ | 2/2 (oxygen redox,cathode) | ✅ | 372.6 | 12 |
+| BQ09 | A2 | ✓ | 2/2 (dynamic,multilayer perceptron) | ✅ | 55.9 | 6 |
+| BQ10 | A2 | ✓ | 2/2 (immune evasion,chemotherapy) | ✅ | 49.3 | 6 |
+| BQ01 | B | ✓ | 3/3 (scaled dot-product,multi-head,recurrence) | ✅ | 64.7 | 7 |
+| BQ02 | B | ✓ | 2/2 (noisy intermediate-scale,error correction) | ✅ | 77.8 | 7 |
+| BQ03 | B | ✓ | 2/2 (multimedqa,67.6) | ✅ | 55.6 | 7 |
+| BQ04 | B | ✓ | 3/3 (molecular function,biological process,cellular component) | ✅ | 27.1 | 4 |
+| BQ05 | B | ✓ | 1/1 (unified growth theory) | ✅ | 63.6 | 5 |
+| BQ06 | B | ✓ | 1/1 (precipitation efficiency) | ✅ | 88.0 | 3 |
+| BQ07 | B | ✓ | 2/2 (yiddish,8b) | ✅ | 25.9 | 5 |
+| BQ08 | B | ✓ | 1/2 (oxygen redox) | ❌ | 24.6 | 4 |
+| BQ09 | B | ✓ | 2/2 (dynamic,multilayer perceptron) | ✅ | 31.0 | 4 |
+| BQ10 | B | ✓ | 1/2 (chemotherapy) | ❌ | 17.3 | 3 |
+| BQ01 | C | ✓ | 3/3 (scaled dot-product,multi-head,recurrence) | ✅ | 115.6 | 8 |
+| BQ02 | C | ✓ | 1/2 (noisy intermediate-scale) | ❌ | 40.3 | 2 |
+| BQ03 | C | ✗ | 0/2 | ❌ | 50.2 | 8 |
+| BQ04 | C | ✓ | 3/3 (molecular function,biological process,cellular component) | ✅ | 41.6 | 2 |
+| BQ05 | C | ✓ | 1/1 (unified growth theory) | ✅ | 15.1 | 2 |
+| BQ06 | C | ✓ | 1/1 (precipitation efficiency) | ✅ | 92.0 | 6 |
+| BQ07 | C | ✓ | 2/2 (yiddish,8b) | ✅ | 18.3 | 2 |
+| BQ08 | C | ✓ | 2/2 (oxygen redox,cathode) | ✅ | 14.0 | 3 |
+| BQ09 | C | ✓ | 1/2 (dynamic) | ❌ | 20.5 | 3 |
+| BQ10 | C | ✗ | 0/2 | ❌ | 3.7 | 1 |
 
 ## 判分说明
 

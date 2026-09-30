@@ -22,7 +22,7 @@ from pathlib import Path
 SUITE = Path(__file__).resolve().parent.parent
 RESULTS = SUITE / "results"
 QFILE = SUITE / "data" / "papers" / "qa_questions_r2.json"
-TRACKS = ["a", "b", "c"]
+TRACKS = ["a", "a2", "b", "c"]  # a2 = leakage-free platform arm (2026-09-30 rerun)
 
 
 def kw_hit(answer: str, kws: list[str]) -> list[str]:
@@ -111,7 +111,8 @@ def main() -> int:
              "## 分轨结果", "",
              "| 轨 | 模式 | pass | gold 命中 | 关键词核验 | 平均时延 s | 平均工具数 | 平均成本 $ |",
              "|---|---|---|---|---|---:|---:|---:|"]
-    tname = {"a": "A 平台 KB(QDCVR 工具面)", "b": "B 裸 Agent(文件工具)",
+    tname = {"a": "A 平台 KB(QDCVR 工具面)", "a2": "A2 平台 KB(仅KB工具,无文件工具)",
+             "b": "B 裸 Agent(文件工具)",
              "c": "C Dense-RAG(Chunks800)"}
     for t in TRACKS:
         g = grades.get(t)

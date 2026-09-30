@@ -1,0 +1,51 @@
+{
+ "qid": "QK01",
+ "method": "rerank",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "ranked": [
+  "1706.03762",
+  "2110.07844",
+  "1810.04805",
+  "2503.21676",
+  "1906.10015",
+  "2510.13343"
+ ],
+ "ranked_paths": [
+  "artificial-intelligence__1706.03762__attention-is-all-you-need__k19",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst__k07",
+  "nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor__k05",
+  "nlp__2503.21676__how-do-language-models-learn-facts-dynamics__k22",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren__k55",
+  "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep__k09"
+ ],
+ "evidence_sources": [
+  "1706.03762",
+  "2110.07844",
+  "1810.04805",
+  "2503.21676",
+  "1906.10015",
+  "2510.13343"
+ ],
+ "evidence_chars": 2437,
+ "retrieval_s": 1.6,
+ "latency_s": 8.2,
+ "answer": "The evidence does not answer this question fully.\n\n- On **how attention is computed**, one chunk gives a partial answer: the cross-attention head transforms decoder/encoder states into query, key, and value vectors, computes attention weights as a normalized dot product between query and key, and produces output as a weighted sum of value vectors ([2110.07844]). A general statement also appears that attention \"learns to focus on relevant parts of the input data\" ([2510.13343]). No retrieved chunk describes multi-headed self-attention mechanics (scaled dot-product, head concatenation, positional encoding).\n- On **why it replaces recurrence and convolution**, the only adjacent passage states that the original sequence transduction model is based entirely on attention, \"replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention\" ([1706.03762]) — but it gives no rationale (e.g., parallelism, path length, computational cost), and no chunk addresses convolution at all.\n\nSources used: [2110.07844], [2510.13343], [1706.03762]. The remaining retrieved chunks ([1810.04805], [2503.21676], [1906.10015]) do not bear on the question. Additional evidence is needed for a complete answer.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 432,
+  "output": 270,
+  "cache_read": 48384,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.0336676,
+ "extra": {
+  "rerank_fallback": false
+ },
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

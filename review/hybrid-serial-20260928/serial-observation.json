@@ -1,0 +1,118 @@
+{
+ "query": "CoRoT 卫星的系外行星计划有哪些科学目标？它何时开始科学观测、任务延长到什么时候？截至 2010 年夏共收集了多少条光变曲线？为什么 CoRoT-7b 这类超级地球只能在较亮恒星的光变曲线中发现？",
+ "phases": [
+  {
+   "t": 4.54,
+   "phase": "S1",
+   "event": "start"
+  },
+  {
+   "t": 5.4,
+   "phase": "S1",
+   "event": "done",
+   "seconds": 0.87,
+   "raw_hits": 30,
+   "dedup_docs": 3,
+   "top": [
+    "the-corot-exoplanet-program-status-resul=0.681",
+    "the-dark-energy-survey-data-processing-a=0.54",
+    "enabling-exoplanet-demographics-studies-=0.536"
+   ]
+  },
+  {
+   "t": 5.4,
+   "phase": "S2",
+   "event": "start"
+  },
+  {
+   "t": 7.09,
+   "phase": "S2",
+   "event": "done",
+   "seconds": 1.69,
+   "described": 75,
+   "overlap_docs": 4,
+   "read": 4,
+   "picks": [
+    "the-corot-exoplanet-program-status-resul(ov=2)",
+    "enabling-exoplanet-demographics-studies-(ov=1)",
+    "enabling-exoplanet-demographics-studies-(ov=1)",
+    "enabling-exoplanet-demographics-studies-(ov=1)"
+   ]
+  },
+  {
+   "t": 7.09,
+   "phase": "S3",
+   "event": "start"
+  },
+  {
+   "t": 7.09,
+   "phase": "S3",
+   "event": "done",
+   "merged": 5,
+   "from_both": 2,
+   "from_vector_only": 1,
+   "from_catalog_only": 2
+  },
+  {
+   "t": 7.09,
+   "phase": "S4",
+   "event": "start"
+  },
+  {
+   "t": 7.35,
+   "phase": "S4",
+   "event": "vector_only_reread",
+   "docs": 1
+  },
+  {
+   "t": 26.3,
+   "phase": "S4",
+   "event": "done",
+   "real_engine": true,
+   "status": "ok",
+   "criterion": "evidence",
+   "scored": 36,
+   "survivors": 36,
+   "global_best": 0.887,
+   "cut": 0.787,
+   "kept_docs": 4,
+   "kept": [
+    "enabling-exoplanet-demographics-studies-=0.887",
+    "the-dark-energy-survey-data-processing-a=0.856",
+    "the-corot-exoplanet-program-status-resul=0.851",
+    "enabling-exoplanet-demographics-studies-=0.836"
+   ]
+  },
+  {
+   "t": 26.31,
+   "phase": "S5",
+   "event": "start"
+  },
+  {
+   "t": 26.31,
+   "phase": "S5",
+   "event": "done",
+   "truncated_needing_pagination": 0
+  }
+ ],
+ "merge": {
+  "from_both": 2,
+  "from_vector_only": 1,
+  "from_catalog_only": 2
+ },
+ "judge": {
+  "real_engine": null,
+  "criterion": "evidence",
+  "scored": null,
+  "survivors": 36,
+  "global_best": 0.887,
+  "cut": 0.787,
+  "kept": 4
+ },
+ "kept_docs": {
+  "astronomy__1105.1887__the-corot-exoplanet-program-status-results.md": 0.8508,
+  "astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 1 of 2).md": 0.8557,
+  "astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md": 0.887,
+  "astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md": 0.8357
+ }
+}

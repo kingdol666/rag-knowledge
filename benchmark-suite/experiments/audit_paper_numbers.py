@@ -43,7 +43,7 @@ def main() -> int:
         gold_ids = {norm(q["arxiv_id"]), norm(q["arxiv_id"].replace(".", ""))}
         # slug fragments of the gold paper title, distinctive enough to cite
         slug = norm(q["paper"])[:24]
-        for track in ("a", "b", "c"):
+        for track in ("a2", "b", "c"):
             d = json.loads((RUN / f"track_{track}_{qid}.json").read_text(encoding="utf-8"))
             ans = d.get("answer") or ""
             low = ans.lower()
@@ -67,7 +67,7 @@ def main() -> int:
             })
 
     agg = {}
-    for track in ("a", "b", "c"):
+    for track in ("a2", "b", "c"):
         rs = [r for r in rows if r["track"] == track]
         n = len(rs)
         agg[track] = {

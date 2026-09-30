@@ -1,0 +1,51 @@
+{
+ "qid": "QK01",
+ "method": "rerank",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "ranked": [
+  "1706.03762",
+  "2110.07844",
+  "2510.13343",
+  "2503.21676",
+  "1906.10015",
+  "1810.04805"
+ ],
+ "ranked_paths": [
+  "artificial-intelligence__1706.03762__attention-is-all-you-need__k19",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst__k07",
+  "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep__k09",
+  "nlp__2503.21676__how-do-language-models-learn-facts-dynamics__k22",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren__k55",
+  "nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor__k05"
+ ],
+ "evidence_sources": [
+  "1706.03762",
+  "2110.07844",
+  "2510.13343",
+  "2503.21676",
+  "1906.10015",
+  "1810.04805"
+ ],
+ "evidence_chars": 2437,
+ "retrieval_s": 2.6,
+ "latency_s": 12.0,
+ "answer": "The evidence is insufficient to answer the full question. What the retrieved chunks do support: [2510.13343] states the Transformer's key strength \"lies in its attention mechanism, which learns to focus on relevant parts of the input data,\" and [1706.03762] (the Transformer paper's conclusion) says the model is \"based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention,\" while [2110.07844] describes cross-attention as computing \"query, key and value vectors\" with attention weights being \"a normalized dot product between query and key vectors,\" the head output being \"a weighted sum of value vectors.\"\n\nHowever, no chunk explains *why* recurrence and convolution are replaced (e.g., computational or path-length motivations), and no chunk supplies a full mechanics account (scaled dot-product, multi-head formulation) from the source paper. The documents list [1906.10015], [2503.21676], [1810.04805] are off-topic here.\n\nSources used: 2510.13343 (chunk quoted), 1706.03762 (conclusion chunk), 2110.07844 (cross-attention chunk).\n\nThe evidence does not contain an answer to the \"why\" portion; I will not answer from prior knowledge.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 688,
+  "output": 278,
+  "cache_read": 48128,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.0353076,
+ "extra": {
+  "rerank_fallback": false
+ },
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

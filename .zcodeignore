@@ -1,0 +1,211 @@
+# Dependencies
+node_modules/
+.venv/
+venv/
+
+# Build output
+dist/
+.nuxt/
+.output/
+.nuxt-buildcheck/
+.nitro/
+.cache/
+
+# Environment
+.env
+.env.local
+.env.*.local
+.env.skillopt
+
+# IDE
+.vscode/
+.idea/
+.trae/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Temp
+*.tmp
+
+# Generated artifacts
+nul
+garden-gpt-image-2/
+*.bak
+temp/
+tmp/
+
+# SkillOpt-Sleep tool artifacts (probe scripts + run logs, local only)
+.skillopt-sleep/
+.skillopt-*/
+
+# Runtime data
+storage/
+.run/
+
+# Vector & Graph data
+backend/chroma_db/
+backend/models_cache/
+chroma_db/
+models_cache/
+model/
+neo4j_data/
+neo4j_logs/
+
+# Downloaded papers / test fixtures / reference materials (not tracked)
+*_papers/
+*_library/
+books/
+test_e2e/
+test_e2e_*/
+backend/output/
+
+# Test artifacts: MinerU parse temp output & screenshots
+tests/_pet_ingest_tmp/
+tests/screenshots/
+
+# OMC session data (local only)
+.claude/sessions/
+
+
+# Tool metadata
+.catpaw/
+
+# Agent-tool session artifacts (hook state, finding ledgers, local indexes) — never sources.
+# Reports worth keeping are copied into docs/audit/.
+.mimosa/
+.codegraph/
+.crush/
+.omo/
+.zcode/
+.sys-test-fixtures/
+.audit/
+
+# LaTeX build fragments — regenerate with latexmk/bibtex; keep .tex / .bbl / .pdf
+*.aux
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.toc
+*.spl
+*.blg
+*.bcf
+*.run.xml
+docs/paper/**/*.out
+docs/paper/**/*.log
+
+# Claude 对话历史 SQLite（运行时数据）
+storage/claude-chat.db
+storage/claude-chat.db-wal
+storage/claude-chat.db-shm
+kb-mcp/_*.json
+kb-mcp/_*.txt
+.pytest_cache/
+
+# Docs — built/preview output, not sources
+docs/*
+!docs/images/
+!docs/paper/
+!docs/paper/benchmark/
+!docs/screenshots/
+!docs/audit/
+docs/paper/benchmark/datasets/
+docs/paper/reference/
+
+# OMC session artifacts (local only)
+.omp/
+
+# Runtime-generated state (SOUL/meditation/router), not sources
+kb_list.json
+med_config.json
+reports/
+backend/app/data/*.jsonl
+backend/app/data/router-log.jsonl
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Neo4j local distribution (downloaded on demand; keep out of git)
+backend/.neo4j/
+neo4j_data/
+neo4j_logs/
+
+# WorkBuddy workspace memory (session-local; never commit)
+.workbuddy/
+
+# Benchmark: 大体积可重建资产不入库（确定性脚本可逐字节重建）
+benchmark-web/benchmark/data/
+# benchmark-web/backend is real source — only its runtime state stays out
+benchmark-web/backend/.venv/
+benchmark-web/backend/venv/
+benchmark-web/backend/data/
+benchmark-web/backend/chroma_benchmark/
+benchmark-web/backend/__pycache__/
+benchmark-web/benchmark/results/checkpoint-*.jsonl
+benchmark-web/benchmark/results/**/ingest-checkpoint-*.json
+benchmark-web/benchmark/results/index-retry-*.txt
+
+# UI audit workspace (Playwright audit + interaction test suite, local artifacts)
+.ui-audit/
+web/.nuxt-buildcheck/
+
+# End-to-end API/harness test workspace (external-API E2E suite, local artifacts)
+.e2e/
+
+# Benchmark index caches (regenerable; not evidence)
+benchmark-suite/algorithms/cache/
+
+# Rendered page previews (derived from main.pdf)
+docs/paper/cikm/preview/
+
+# Designed README showcase (art-directed HTML + screenshot)
+!docs/readme-showcase/
+
+# Benchmark corpus: PDFs + md exports are regenerable via scripts/91 & 60
+# (manifest/classification/qa_questions JSONs stay tracked)
+benchmark-suite/data/papers/*.pdf
+benchmark-suite/data/corpus_md/
+
+# Local backup archives (retired corpora; keep on disk, never pushed)
+.bench_backup_*/
+
+# Transient project temp files
+.tmp_*
+.workbuddy-ai/
+
+# ===== ↑ 以上同步自 .gitignore（「从 .gitignore 同步」只重写以上部分）=====
+.git/
+.hg/
+.svn/
+bower_components/
+jspm_packages/
+site-packages/
+coverage/
+htmlcov/
+lcov-report/
+cmakefiles/
+cmake-build-*/
+bazel-*/
+pods/
+deriveddata/
+storybook-static/
+playwright-report/
+test-results/
+allure-results/
+allure-report/
+cdk.out/
+*.egg-info/
+*.dist-info/
+eggs/
+pip-wheel-metadata/
+wheels/
+# ----- ↑ 以上为 ZCode 默认排除规则（自定义规则请写在本行下方，不会被同步/恢复改动）-----
+# 自定义规则写在下方（本行提示可删除）

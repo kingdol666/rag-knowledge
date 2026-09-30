@@ -1,0 +1,54 @@
+{
+ "qid": "QK05",
+ "method": "bm25",
+ "question": "In the trap-cropping optimization framework, roughly what share of the field should be allocated to trap plants when they are 5 to 25 times more attractive than the cash plant?",
+ "ranked": [
+  "2508.05896",
+  "1609.00415",
+  "1512.08067",
+  "1801.00862",
+  "1001.3181",
+  "2402.11690",
+  "2011.14424",
+  "1602.01876",
+  "2608.05850",
+  "1706.06697"
+ ],
+ "ranked_paths": [
+  "agriculture__2508.05896__optimal-trap-cropping-investments-to-maximiz.md",
+  "economics__1609.00415__does-infrastructure-investment-lead-to-econo.md",
+  "economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md",
+  "quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md",
+  "social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi.md",
+  "large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md",
+  "economics__2011.14424__on-the-effectiveness-of-the-european-central.md",
+  "genomics__1602.01876__primer-on-the-gene-ontology.md",
+  "nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md",
+  "databases__1706.06697__index-search-algorithms-for-databases-and-mo.md"
+ ],
+ "evidence_sources": [
+  "2508.05896",
+  "1609.00415",
+  "1512.08067"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.0,
+ "latency_s": 17.1,
+ "answer": "According to the evidence, when trap plants are 5 to 25 times more attractive than the cash plant, approximately **7–10% of the field** should be allocated to trap plants. The text specifically notes that at five-times attractiveness it is optimal to devote roughly ten percent of the land to the trap crop (Figure 3b), whereas at only twice as attractive, trap cropping is ineffective and the grower should plant only cash plants.\n\nSource: [2508.05896] (Figure 3 caption and surrounding text).",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 48079,
+  "output": 508,
+  "cache_read": 64,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.2545239999999999,
+ "extra": {},
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

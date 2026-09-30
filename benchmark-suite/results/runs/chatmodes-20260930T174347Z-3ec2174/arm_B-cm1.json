@@ -1,0 +1,31 @@
+{
+ "mode": "B",
+ "qid": "cm1",
+ "expect": "found",
+ "kb_ids": [],
+ "http": 200,
+ "success": true,
+ "wall_s": 44.0,
+ "duration_ms": 42612,
+ "turns": 11,
+ "cost_usd": 0.30761459999999996,
+ "session_id": "3f3b5671-cf41-43b7-8e19-b00cddd32d60",
+ "answer_chars": 1522,
+ "answer_markers_hit": [
+  "instructds"
+ ],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "I have everything needed.\n\n## 结论\n\nInstructDS 通过一条**三步合成流水线**从现成的 dialogue–summary 对中自动合成高质量的\"查询–对话–摘要\"(QDS) 三元组，核心是**以参考摘要为锚**、用 LLM 的问答能力反推查询与答案，再用双重过滤保质量。\n\n**三步合成（论文 §3.2）**\n1. **Query Generation（摘要锚定查询生成）**：用 Flan-T5-XL（记为 model X）基于**完整参考摘要**生成 5 个候选查询——因为摘要是对话的凝练版，比直接从对话提问更可靠、覆盖更多话轮。\n2. **Filtering（查询过滤）**——两道：\n   - **文本过滤**：把 model X 当二分类器判断查询\"可回答性\"，剔除 *What will / How would* 这类无法无幻觉回答的查询，**约淘汰 45%**；\n   - **语义过滤**：用归一化 BERTScore 去冗余，相似度 **>0.65** 的重复查询只保留第一个，**再淘汰约 50%**。\n3. **Query-based Summary Generation（基于查询的摘要生成）**：以「查询 + 完整摘要」为输入、而非原始对话，让 model X 从更结构化的来源抽取，进一步保证质量。\n\n**质量收益（Table ",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true
+  }
+ }
+}

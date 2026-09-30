@@ -1,0 +1,381 @@
+{
+  "status": "ok",
+  "query": "CoRoT 卫星的系外行星计划有哪些科学目标？它何时开始科学观测、任务延长到什么时候？截至 2010 年夏共收集了多少条光变曲线？为什么 CoRoT-7b 这类超级地球只能在较亮恒星的光变曲线中发现？(CoRoT exoplanet program status results transit asteroseismology)",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "parameters": {
+    "kb_id": "",
+    "threshold": 0.5,
+    "vector_top_k": 30,
+    "vector_threshold": 0.35,
+    "doc_read_chars": 20000,
+    "segment_chars": 3000,
+    "max_state_chars": 6000,
+    "max_evidence_chars": 24000
+  },
+  "recall": {
+    "vector_raw_hits": 30,
+    "vector_dedup_docs": 20,
+    "recall_seconds": 5.1,
+    "docs_read": 17,
+    "read_errors": [
+      {
+        "doc_path": "Corpus-Chunks800/astronomy__1105.1887__the-corot-exoplanet-program-status-results__k12.md",
+        "error": "empty_content"
+      },
+      {
+        "doc_path": "Corpus-Chunks800/astronomy__1105.1887__the-corot-exoplanet-program-status-results__k00.md",
+        "error": "empty_content"
+      },
+      {
+        "doc_path": "aw-industrial-e2e-20260926-022518/experience/exp-d45dc195a924.md",
+        "error": "empty_content"
+      }
+    ],
+    "reread_seconds": 7.3
+  },
+  "judge": {
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "criterion": "instance",
+    "threshold": 0.5,
+    "global_best": 0.9298,
+    "scored_segments": 78,
+    "total_segments": 78,
+    "errors": []
+  },
+  "judge_doc_scores": [
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+      "vector_score": 0.47952330112457275,
+      "judge_score": 0.9298,
+      "kept": true
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md",
+      "vector_score": 0.4509643316268921,
+      "judge_score": 0.8916,
+      "kept": true
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 26 of 26).md",
+      "vector_score": 0.3606441020965576,
+      "judge_score": 0.8809,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/databases__2005.03328__bitvector-aware-query-optimization-for-decis.md (part 2 of 5).md",
+      "vector_score": 0.47127920389175415,
+      "judge_score": 0.8784,
+      "kept": true
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_path": "demo-qa-20260927/voyager-1.md",
+      "vector_score": 0.4999290108680725,
+      "judge_score": 0.8724,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 1 of 2).md",
+      "vector_score": 0.4836633801460266,
+      "judge_score": 0.8697,
+      "kept": true
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "vector_score": 0.4569244384765625,
+      "judge_score": 0.8693,
+      "kept": true
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+      "vector_score": 0.6966323256492615,
+      "judge_score": 0.8684,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 1 of 9).md",
+      "vector_score": 0.5058563947677612,
+      "judge_score": 0.8452,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 1 of 3).md",
+      "vector_score": 0.46983468532562256,
+      "judge_score": 0.84,
+      "kept": true
+    },
+    {
+      "kb_id": "d846a043-fe47-47ac-ae2e-3e523d8ee80e",
+      "doc_path": "e2e-flow-20260926-022340/harness-handbook.md",
+      "vector_score": 0.36639952659606934,
+      "judge_score": 0.82,
+      "kept": true
+    },
+    {
+      "kb_id": "5bc21b9b-2a05-470a-9cd6-eaafedfb87a2",
+      "doc_path": "AI 基础设施/vector-index-tuning-guide (part 2 of 2).md",
+      "vector_score": 0.47901439666748047,
+      "judge_score": 0.8111,
+      "kept": true
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.4792155623435974,
+      "judge_score": 0.8093,
+      "kept": true
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_path": "soul-cs-library/memory-conventions.md",
+      "vector_score": 0.3936687111854553,
+      "judge_score": 0.7943,
+      "kept": true
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_path": "soul-e2e-tester-024115/memory-conventions.md",
+      "vector_score": 0.3936687111854553,
+      "judge_score": 0.7943,
+      "kept": true
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_path": "soul-demo-qa/memory-conventions.md",
+      "vector_score": 0.3936687111854553,
+      "judge_score": 0.7943,
+      "kept": true
+    },
+    {
+      "kb_id": "5bc21b9b-2a05-470a-9cd6-eaafedfb87a2",
+      "doc_path": "AI 基础设施/tracelens-deployment-notes.md",
+      "vector_score": 0.4717563986778259,
+      "judge_score": 0.7674,
+      "kept": true
+    }
+  ],
+  "result_list": [
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+      "name": "clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+      "vector_score": 0.47952330112457275,
+      "judge_score": 0.9298,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md",
+      "name": "economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md",
+      "vector_score": 0.4509643316268921,
+      "judge_score": 0.8916,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_id": null,
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 26 of 26).md",
+      "name": "pride_and_prejudice (part 26 of 26).md",
+      "vector_score": 0.3606441020965576,
+      "judge_score": 0.8809,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/databases__2005.03328__bitvector-aware-query-optimization-for-decis.md (part 2 of 5).md",
+      "name": "databases__2005.03328__bitvector-aware-query-optimization-for-decis.md (part 2 of 5).md",
+      "vector_score": 0.47127920389175415,
+      "judge_score": 0.8784,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_id": null,
+      "doc_path": "demo-qa-20260927/voyager-1.md",
+      "name": "voyager-1.md",
+      "vector_score": 0.4999290108680725,
+      "judge_score": 0.8724,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 1 of 2).md",
+      "name": "materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 1 of 2).md",
+      "vector_score": 0.4836633801460266,
+      "judge_score": 0.8697,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_id": null,
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "name": "global-rag-benchmark.md",
+      "vector_score": 0.4569244384765625,
+      "judge_score": 0.8693,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_id": null,
+      "doc_path": "自然科学与地球科学/astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+      "name": "astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+      "vector_score": 0.6966323256492615,
+      "judge_score": 0.8684,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 1 of 9).md",
+      "name": "statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 1 of 9).md",
+      "vector_score": 0.5058563947677612,
+      "judge_score": 0.8452,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 1 of 3).md",
+      "name": "genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 1 of 3).md",
+      "vector_score": 0.46983468532562256,
+      "judge_score": 0.84,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "d846a043-fe47-47ac-ae2e-3e523d8ee80e",
+      "doc_id": null,
+      "doc_path": "e2e-flow-20260926-022340/harness-handbook.md",
+      "name": "harness-handbook.md",
+      "vector_score": 0.36639952659606934,
+      "judge_score": 0.82,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "5bc21b9b-2a05-470a-9cd6-eaafedfb87a2",
+      "doc_id": null,
+      "doc_path": "AI 基础设施/vector-index-tuning-guide (part 2 of 2).md",
+      "name": "vector-index-tuning-guide (part 2 of 2).md",
+      "vector_score": 0.47901439666748047,
+      "judge_score": 0.8111,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_id": null,
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "name": "【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.4792155623435974,
+      "judge_score": 0.8093,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_id": null,
+      "doc_path": "soul-cs-library/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.3936687111854553,
+      "judge_score": 0.7943,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_id": null,
+      "doc_path": "soul-e2e-tester-024115/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.3936687111854553,
+      "judge_score": 0.7943,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_id": null,
+      "doc_path": "soul-demo-qa/memory-conventions.md",
+      "name": "memory-conventions.md",
+      "vector_score": 0.3936687111854553,
+      "judge_score": 0.7943,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "5bc21b9b-2a05-470a-9cd6-eaafedfb87a2",
+      "doc_id": null,
+      "doc_path": "AI 基础设施/tracelens-deployment-notes.md",
+      "name": "tracelens-deployment-notes.md",
+      "vector_score": 0.4717563986778259,
+      "judge_score": 0.7674,
+      "truncated": false,
+      "read_error": null
+    }
+  ],
+  "kept_doc_paths": [
+    "生命科学与医学/clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md",
+    "经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md",
+    "Novel-PridePrejudice/pride_and_prejudice (part 26 of 26).md",
+    "计算机与人工智能/databases__2005.03328__bitvector-aware-query-optimization-for-decis.md (part 2 of 5).md",
+    "demo-qa-20260927/voyager-1.md",
+    "工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 1 of 2).md",
+    "e2e-demo-0923-022632/global-rag-benchmark.md",
+    "自然科学与地球科学/astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+    "计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 1 of 9).md",
+    "生命科学与医学/genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 1 of 3).md",
+    "e2e-flow-20260926-022340/harness-handbook.md",
+    "AI 基础设施/vector-index-tuning-guide (part 2 of 2).md",
+    "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+    "soul-cs-library/memory-conventions.md",
+    "soul-e2e-tester-024115/memory-conventions.md",
+    "soul-demo-qa/memory-conventions.md",
+    "AI 基础设施/tracelens-deployment-notes.md"
+  ],
+  "evidence_pack": "[生命科学与医学/clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec.md · vec=0.47952330112457275]\n# Predicting Stroke from Electronic Health Records\n\nChidozie Shamrock Nwosu\\*1, Soumyabrata Dev\\*2, Peru Bhardwaj3,\n\nBharadwaj Veeravalli4, and Deepu John\n\nAbstract—Studies have identified various risk factors associated with the onset of stroke in an individual. Data mining techniques have been used to predict the occurrence of stroke based on these factors by using patients' medical records. However, there has been limited use of electronic health records to study the inter-dependency of different risk factors of stroke. In this paper, we perform an analysis of patients’ electronic health records to identify the impact of risk factors on stroke prediction. We also provide benchmark performance of the state-of-art machine learning algorithms for predicting stroke using electronic health records.\n\n## I. INTRODUCTION\n\nThe field of medicine has witnessed great improvement because of technological advancements. On one hand, it has become easier to collect a range of healthcare data due to low-cost wearable devices [1]. On the other hand, insights acquired from mining clinical data have proved useful for decision making in improving healthcare and reducing healthcare costs [2], [3]. Data mining techniques are used to identify risk factors associated with the onset of a disease [4], [5]. Of particular interest to us, is the identification of risk factors associated with stroke.\n\nStudies in healthcare like [6]-[8] have identified high blood pressure, diabetes and heart disease as major risk factors responsible for stroke attack in an individual. Several machine learning algorithms have also been proposed to use these risk factors for predicting stroke occurrence [9], [10]. However, a systematic analysis of the risk factors is missing. We attempt to bridge this gap by analyzing the correlation between different risk factors for stroke prediction. We employ Principal Component Analysis to determine if the feature space for predictive modelling can be reduced by removing the input features that are highly correlated. We also compare and benchmark the performance of state-ofart machine learning algorithms for the task of classifying a patient's health record as suffered from stroke or not. Hence, the main contributions of this paper are twofold – (a) we perform a systematic analysis of risk factors for stroke prediction; (b) we also provide a benchmark performance for stroke prediction using the state-of-art machine learning algorithms. Finally, in the spirit of rep\n\n[经济与社会/economics__1512.08067__unified-growth-theory-contradicted-by-the-econom.md.md · vec=0.4509643316268921]\n# Unified Growth Theory Contradicted by the Economic Growth in Europe\n\nRon W Nielsen1\n\nEnvironmental Futures Research Institute, Gold Coast Campus, Griffith University, Qld, 4222, Australia\n\nDecember, 2015\n\nHistorical economic growth in Western and Eastern Europe is analysed. These regions should have produced the best and the most convincing confirmation of the Unified Growth Theory because they, and in particular Western Europe, were the centre of the Industrial Revolution, which according to Galor was the prime engine of economic growth. However, the data for Western and Eastern Europe show a remarkable disagreement with the Unified Growth Theory. There is no connection, whatever, between the data and the Unified Growth Theory. The data show that there was never a transition from stagnation to growth because there was no stagnation. Industrial Revolution, which should have the strongest influence in these regions, had absolutely no impact on changing the economic growth trajectories. The alleged remarkable or stunning escape from Malthusian trap did not happen because there was no trap. Unified Growth Theory does not explain the mechanism of the economic growth because its explanations are based on mythical features, which did not exist, the features contradicted by data. This theory needs to be either thoroughly revised or most likely replaced by a theory supported by a professional analysis of economic growth data.\n\n## Introduction\n\nIn the recent series of publications (Nielsen, 2015a, 2015b, 2015c) we have demonstrated that Unified Growth Theory (Galor, 2005a, 2011) is contradicted by the economic growth in Africa, Asia and in the countries of the former USSR. Earlier, we have demonstrated that this theory is contradicted by the world economic growth and by the economic growth in Western Europe (Nielsen, 2014). Implicitly, this theory is also contradicted by the mathematical analysis of the historical economic growth showing repeatedly that global, regional and national economic growths were hyperbolic (Nielsen, 2015d).\n\nAny theory contradicted by just one set of good data should be either rejected or revised. Unified Growth Theory is contradicted repeatedly by data. However, what is even more remarkable is that this theory is contradicted by the same data which were used during its development. Such a paradox is probably rare in science but in this case it can be easily explained because the data were never properly analysed.\n\nData for the Gross Dom\n\n[Novel-PridePrejudice/pride_and_prejudice (part 26 of 26).md · vec=0.3606441020965576]\n# pride_and_prejudice（第 26/26 部分）\n1.E.9. If you wish to charge a fee or distribute a Project\nGutenberg™ electronic work or group of works on different terms than\nare set forth in this agreement, you must obtain permission in writing\nfrom the Project Gutenberg Literary Archive Foundation, the manager of\nthe Project Gutenberg™ trademark. Contact the Foundation as set\nforth in Section 3 below.\n\n1.F.\n\n1.F.1. Project Gutenberg volunteers and employees expend considerable\neffort to identify, do copyright research on, transcribe and proofread\nworks not protected by U.S. copyright law in creating the Project\nGutenberg™ collection. Despite these efforts, Project Gutenberg™\nelectronic works, and the medium on which they may be stored, may\ncontain “Defects,” such as, but not limited to, incomplete, inaccurate\nor corrupt data, transcription errors, a copyright or other\nintellectual property infringement, a defective or damaged disk or\nother medium, a computer virus, or computer codes that damage or\ncannot be read by your equipment.\n\n1.F.2. LIMITED WARRANTY, DISCLAIMER OF DAMAGES - Except for the “Right\nof Replacement or Refund” described in paragraph 1.F.3, the Project\nGutenberg Literary Archive Foundation, the owner of the Project\nGutenberg™ trademark, and any other party distributing a Project\nGutenberg™ electronic work under this agreement, disclaim all\nliability to you for damages, costs and expenses, including legal\nfees. YOU AGREE THAT YOU HAVE NO REMEDIES FOR NEGLIGENCE, STRICT\nLIABILITY, BREACH OF WARRANTY OR BREACH OF CONTRACT EXCEPT THOSE\nPROVIDED IN PARAGRAPH 1.F.3. YOU AGREE THAT THE FOUNDATION, THE\nTRADEMARK OWNER, AND ANY DISTRIBUTOR UNDER THIS AGREEMENT WILL NOT BE\nLIABLE TO YOU FOR ACTUAL, DIRECT, INDIRECT, CONSEQUENTIAL, PUNITIVE OR\nINCIDENTAL DAMAGES EVEN IF YOU GIVE NOTICE OF THE POSSIBILITY OF SUCH\nDAMAGE.\n\n1.F.3. LIMITED RIGHT OF REPLACEMENT OR REFUND - If you discover a\ndefect in this electronic work within 90 days of receiving it, you can\nreceive a refund of the money (if any) you paid for it by sending a\nwritten explanation to the person you received the work from. If you\nreceived the work on a physical medium, you must return the medium\nwith your written explanation. The person or entity that provided you\nwith the defective work may elect to provide a replacement copy in\nlieu of a refund. If you received the work electronically, the person\nor entity providing it to you may choose to give you a second\nopportunity to receive the work electronica\n\n[计算机与人工智能/databases__2005.03328__bitvector-aware-query-optimization-for-decis.md (part 2 of 5).md · vec=0.47127920389175415]\n# databases__2005.03328__bitvector-aware-query-optimization-for-decis.md.md（第 2/5 部分）\n章节: Bitvector-aware Query Optimization for Decision Support Queries (extended version)\\* > 4 ANALYSIS OF STAR QUERIES WITH PKFK JOINS\n## 4 ANALYSIS OF STAR QUERIES WITH PKFK JOINS\n\n\nWe define star queries with PKFK joins as the following:\n\nDefinition 1. Star query with PKFK joins: Let $\\begin{array} { r l } { \\mathcal { R } } & { { } = } \\end{array}$ $\\{ R _ { 0 } , R _ { 1 } , \\cdots , R _ { n } \\}$ be a set of relations and q be a query joining relations in R. The query q is a star query with PKFK joins $i f R _ { 0 } \\ \\to \\ R _ { k } \\ f o r \\ 1 \\ \\le \\ k \\ \\le \\ n . \\ R _ { 0 }$ is called a fact table, and $R _ { k } , 1 \\le k \\le n ,$ is called a dimension table.\n\nFigure 3 shows an example of a star query, where $R _ { 0 }$ is the fact table and $R _ { 1 } , R _ { 2 } , R _ { 3 }$ are dimension tables.\n\nNow we analyze the plan space complexity for star queries with PKFK joins. We show that, in the plan space of right deep trees without cross products, we can find the query plan of the minimal cost (under the cost function from Section 3.3) from n + 1 plans with bitvector filters if the bitvector filters have no false positives, where n + 1 is the number of relations in the query. In contrast, the original plan space complexity for star queries in this plan space is exponential to n [31].\n\nOur key intuition is that, in the plan space of right deep trees without cross products, the cost of plans of a star query with PKFK joins can be the same with different join orders of dimension tables. This is because all the bitvector filters for a star query will be pushed down to the fact table; and by Lemma 1, we can show the cost of many join orders is the same. Figure 4 shows an example of two plans of a star query with PKFK joins using different join orders of dimension tables but having the same cost.\n\n![](images/1f54ecd069fe36044c30c92b05b196f96e6178a19ed6d64c5c420dbfc3143c7e.jpg)  \nFigure 4: Example of two plans of a star query $\\{ R _ { 0 } , R _ { 1 } , R _ { 2 } \\}$ with PKFK joins using bitvector filters. Each operator is annotated with the intermediate result size. Plan $P _ { 1 }$ and $P _ { 2 }$ have different join orders of dimension tables but the same cost.\n\nFormally, our key results in this section are:\n\nTHEOREM 4.1. Minimal cost right deep trees for star query: Let R be the set of relations of a star query as defined in Definition 1. Let ${ \\mathcal { A } } =\n\n[demo-qa-20260927/voyager-1.md · vec=0.4999290108680725]\n# Voyager 1\n\n> Source: https://en.wikipedia.org/wiki/Voyager_1 (retrieved 2026-09-27, plaintext extract)\n\nVoyager 1 is a space probe launched by NASA on September 5, 1977, as part of the Voyager program, to study the outer Solar System and the interstellar space beyond the Sun's heliosphere. It was launched 16 days after its twin, Voyager 2. It communicates through the NASA Deep Space Network (DSN) to receive routine commands and to transmit data to Earth. Real-time distance and velocity data are provided by NASA and JPL. At a distance of 171.19 AU (25.6 billion km; 15.9 billion mi) as of August 2026, it is the most distant human-made object from Earth. Voyager 1 is projected to reach a distance of one light day from Earth in November 2026. \nThe probe made flybys of Jupiter, Saturn, and Saturn's largest moon, Titan. NASA had a choice of either conducting a Pluto or Titan flyby. Exploration of Titan took priority because it was known to have a substantial atmosphere. Voyager 1 studied the weather, magnetic fields, and rings of the two gas giants and was the first probe to provide detailed images of their moons.\nAs part of the Voyager program and like its sister craft Voyager 2, the spacecraft's extended mission is to locate and study the regions and boundaries of the outer heliosphere and to begin exploring the interstellar medium. Voyager 1 crossed the heliopause and entered interstellar space on August 25, 2012, making it the first spacecraft to do so. Two years later, Voyager 1 began experiencing a third wave of coronal mass ejections from the Sun that continued to at least December 15, 2014, further confirming that the probe is in interstellar space.\nIn 2017, the Voyager team successfully fired the spacecraft's trajectory correction maneuver (TCM) thrusters for the first time since 1980, enabling the mission to be extended by two to three years. Voyager 1 experienced successful revivals of several thrusters in 2018, 2019, and 2025. \nVoyager 1's extended mission is expected to continue to return scientific data for several more years. Its radioisotope thermoelectric generators (RTGs) may supply enough electric power to return engineering data until 2036. As of 2026, only two instruments are operational, the Plasma Wave Subsystem and magnetometer.\n\n\n== Mission background ==\nA 1960s proposal for a Grand Tour to study the outer planets led NASA to begin work on a mission during the early 1970s. Initially, Voyager 1 was planned as Mariner 11 of the Mariner p\n\n[工程与能源/materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar (part 1 of 2).md · vec=0.4836633801460266]\n# materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar（第 1/2 部分）\n章节: $\\mathrm { { C H _ { 3 } N H _ { 3 } P b I _ { 3 } } / }$ GeSe bilayer heterojunction solar cell with high performance\n# $\\mathrm { { C H _ { 3 } N H _ { 3 } P b I _ { 3 } } / }$ GeSe bilayer heterojunction solar cell with high performance\n\n\nGuo-Jiao Hou1, Dong-Lin Wang2, Roshan Ali1, Yu-Rong Zhou3, Zhen-Gang Zhu1,2,\\* and Gang Su2,4†\n\n1 School of Electronic, Electrical and Communication Engineering,\n\nUniversity of Chinese Academy of Sciences, Beijing 100049, China.\n\n2 Theoretical Condensed Matter Physics and Computational Materials Physics Laboratory,\n\nCollege of Physical Sciences, University of Chinese Academy of Sciences, Beijing 100049, China.\n\n3 College of Materials Science and Opto-Electronic Technology,\n\nUniversity of Chinese Academy of Sciences, Beijing 100049, China.\n\nKavli Institute of Theoretical Sciences, University of Chinese Academy of Sciences, Beijing 100190, China.\n\nPerovskite (CH3NH3PbI3) solar cells have made significant advances recently. In this paper, we propose a bilayer heterojunction solar cell comprised of a perovskite layer combining with a IV-VI group semiconductor layer, which can give a conversion efficiency even higher than the conventional perovskite solar cell. Such a scheme uses a property that the semiconductor layer with a direct band gap can be better in absorption of long wavelength light and is complementary to the perovskite layer. We studied the semiconducting layers such as GeSe, SnSe, GeS, and SnS, respectively, and found that GeSe is the best, where the optical absorption efficiency in the perovskite/GeSe solar cell is dramatically increased. It turns out that the short circuit current density is enhanced 100% and the power conversion efficiency is promoted 42.7% (to a high value of 23.77%) larger than that in a solar cell with only single perovskite layer. The power conversion efficiency can be further promoted so long as the fill factor and open-circuit voltage are improved. This strategy opens a new way on developing the solar cells with high performance and practical applications.\n\nPACS numbers: 05.60.Gg, 72.10.-d, 71.23-k\n\n## I. INTRODUCTION\n\n\nPhotovoltaic (PV) devices are used to convert the solar energy into electricity. How to choose appropriate materials is an indispensable issue in design of PV devices. A number of properties are required for candidate PV materials, such as strong optical absorption over a wide range of \n\n[e2e-demo-0923-022632/global-rag-benchmark.md · vec=0.4569244384765625]\n# Towards Global Retrieval Augmented Generation: A Benchmark for Corpus-Level Reasoning\n\nQi Luo1,\\*, Xiaonan Li1,\\*, Tingshuo Fan1, Xinchi Chen1,†, Xipeng Qiu1,2,†\n\n1Fudan University\n\n2Shanghai Innovation Institutey qluo22@m.fudan.edu.cn\n\n## Abstract\n\nRetrieval-augmented generation (RAG) has emerged as a leading approach to reducing hallucinations in large language models (LLMs). Current RAG evaluation benchmarks primarily focus on what we call local RAG: retrieving relevant chunks from a small subset of documents to answer queries that require only localized understanding within specific text chunks. However, many real-world applications require a fundamentally different capability—global RAG—which involves aggregating and analyzing information across entire document collections to derive corpus-level insights (e.g. “What are the top 10 most cited papers in 2023?\"). In this paper, we introduce GlobalQA—the first benchmark specifically designed to evaluate global RAG capabilities, covering four core task types: counting, extremum queries, sorting, and top-k extraction. Through systematic evaluation across different models and baselines, we find that existing RAG methods perform poorly on global tasks, with the strongest baseline achieving only 1.51 F1 score. To address these challenges, we propose Global-RAG, a multi-tool collaborative framework that preserves structural coherence through chunklevel retrieval, incorporates LLM-driven intelligent filters to eliminate noisy documents, and integrates aggregation modules for precise symbolic computation. On the Qwen2.5-14B model, GlobalRAG achieves 6.63 F1 compared to the strongest baseline's 1.51 F1, validating the effectiveness of our method.\n\n## 1 Introduction\n\nRetrieval-augmented generation (RAG) has been proposed as a solution to mitigate hallucination and knowledge limitations in large language models (LLMs) (Lewis et al., 2021; Li et al., 2025; Zhang et al., 2025; Rawte et al., 2023; Wang et al.,\n\n![](images/838ff38197a58dd916888ef6cc7803a82e53db9b32898de2754d99b5b76b9a6c.jpg)  \n(b) Global Query: Dense Retriever Fails  \nFigure 1: Why Dense Retriever Fails on Global Queries: (a) Local Query: The answer can be found in specific documents. Dense retriever ranks all documents and selects top-k, which contains the relevant information. (b) Global Query: The answer requires information from all documents. However, dense retriever only returns top-k ranked documents, missing critical information scattered acro\n\n[自然科学与地球科学/astronomy__1105.1887__the-corot-exoplanet-program-status-results.md · vec=0.6966323256492615]\n# The CoRoT Exoplanet program : status & results\n\nM. Deleuil¹, C. Moutou¹, P. Bordé2 & the CoRoT exoplanet science team\n\n1Laboratoire d’Astrophysique de Marseille, 38 rue F. Joliot-Curie,   \n13388 Marseille Cedex 13, France\n\n2Institut d’Astrophysique Spatiale, Bât. 121, 91405 Orsay, France\n\nAbstract. The CoRoT satellite is the first instrument hunting for planets from space. We will review the status of the CoRoT/Exoplanet program. We will then present the CoRoT exoplanetary systems and how they widen the range of properties of the close-in population and contribute to our understanding of the properties of planets.\n\n## 1. Introduction\n\nCoRoT¹ has been designed with two distinct scientific objectives which both require continuous observations and ultra-high precision relative stellar photometry : one is the detection of extrasolar planets by the transit method; the second is the study of stellar interiors by asteroseismology (Baglin et al. 2009). In addition, the long duration of the observation periods together with the exquisite photometric precision allow number of stellar physics studies. The instrument started the scientific observations on February 2nd 2007. The mission was initially scheduled for 3 years but extended for 3 additional years, that is till March 2013. Auvergne et al. (2008) give a complete description of the instrument in flight based on raw and calibrated data. In the present paper, we will just recall the main characteristics of the mission.\n\n## 2. CoRoT, brief summary\n\n## 2.1 Photometry\n\nThe typical exoplanet targets have a V-magnitude in the range ≈11 up to 16. The photometry is performed on board for up to 6000 selected targets per CCD, 2 CCDs being dedicated to the exoplanet program. For a given target, the flux is thus integrated over a pre-designed photometric mask that encompassed the quite large PSF of the exoplanet channel, whose typical size is about 35 $\\prime \\prime _ { \\mathrm { ~ X ~ 2 3 ~ } } \\prime \\prime _ { \\cdot }$ For stars brighter than magnitude 15, the pixels within the photometric mask are separated in 3 sub-sets according to the percentage of stellar flux. The co-addition of the pixels intensity over these 3 areas provides 3 different light curves, referred to as the red, the green and the blue light curves. These light curves have however no direct correspondence to\n\nTable 1.: CoRoT runs from 2007 to 2010.\n<table><tr><td>Run</td><td>Date start</td><td>duration [d]</td><td>Nb of Targets</td><td>Nb Cand.</td><\n\n[计算机与人工智能/statistics__2604.22320__nonparametric-estimation-of-isotropic-covari (part 1 of 9).md · vec=0.5058563947677612]\n# statistics__2604.22320__nonparametric-estimation-of-isotropic-covari（第 1/9 部分）\n章节: Nonparametric Estimation of Isotropic Covariance Function\\*\n# Nonparametric Estimation of Isotropic Covariance Function\\*\n\n\nYiming Wang and Sujit K. Ghosh†\n\nDepartment of Statistics, North Carolina State University, Raleigh, NC 27695\n\n## Abstract\n\n\nA nonparametric model using a sequence of Bernstein polynomials is constructed to approximate arbitrary isotropic covariance functions valid in $\\mathbb { R } ^ { \\infty }$ and related approximation properties are investigated using the popular $L _ { \\infty }$ norm and $L _ { 2 }$ norms. A computationally efficient sieve maximum likelihood (sML) estimation is then developed to nonparametrically estimate the unknown isotropic covaraince function valid in $\\mathbb { R } ^ { \\infty }$ . Consistency of the proposed sieve ML estimator is established under increasing domain regime. The proposed methodology is compared numerically with couple of existing nonparametric as well as with commonly used parametric methods. Numerical results based on simulated data show that our approach outperforms the parametric methods in reducing bias due to model misspecification and also the nonparametric methods in terms of having significantly lower values of expected $L _ { \\infty }$ and $L _ { 2 }$ norms. Application to precipitation data is illustrated to showcase a real case study. Additional technical details and numerical illustrations are also made available.\n\nKeywords: Bernstein polynomials, Consistency, Sieve Maximum Likelihood, Spatial Covariance, Stationary Isotropic Covariance, Gaussian Process\n\n## 1 Introduction\n\n\nIn geostatistics, observations are taken over a set of spatially varying locations and hence observations that are located in adjacent regions are expected to influence each other. Observations at nearer regions are thus more correlated with each other than those located far apart. Such spatially varying correlated data are often measured by covariance or correlation functions between two observations measured at two locations. Let $Y ( s )$ denote the observation measured at location $\\pmb { s } \\in \\mathcal { S } \\subseteq \\mathbb { R } ^ { d }$ , where $\\boldsymbol { \\mathcal { S } }$ denotes the entire spatial region of interest. In this paper we are mostly interested in regions when $d = 2 \\operatorname { o r } d = 3$ , but the methodology proposed in this paper is valid for any dimension $d \\geq 1$ . Assuming that $E [ Y \n\n[生命科学与医学/genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md (part 1 of 3).md · vec=0.46983468532562256]\n# genomics__2110.07787__analysis-and-visualization-of-spatial-transc.md.md（第 1/3 部分）\n章节: Analysis and visualization of spatial transcriptomic data\n# Analysis and visualization of spatial transcriptomic data\n\n\nBoxiang Liu1\\*†, Yanjun Li¹†, Liang Zhang1\n\n1Baidu Research, Sunnyvale, CA, United States\n\n†These authors have contributed equally to this work\n\nCorrespondence: jollier.liu@gmail.com\n\nKeywords: spatial transcriptomics, single-cell RNA-seq",
+  "unscanned": [
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/astronomy__1105.1887__the-corot-exoplanet-program-status-results__k12.md",
+      "reason": "empty_content"
+    },
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/astronomy__1105.1887__the-corot-exoplanet-program-status-results__k00.md",
+      "reason": "empty_content"
+    },
+    {
+      "kb_id": "b87f4dab-c83b-4a99-abe3-182773fc315a",
+      "doc_path": "aw-industrial-e2e-20260926-022518/experience/exp-d45dc195a924.md",
+      "reason": "empty_content"
+    }
+  ],
+  "seconds": 22.5
+}

@@ -1,0 +1,33 @@
+{
+ "mode": "C",
+ "qid": "cm1",
+ "expect": "found",
+ "kb_ids": [
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 28.8,
+ "duration_ms": 27333,
+ "turns": 5,
+ "cost_usd": 0.1897894,
+ "session_id": "ed7ac9b3-ad78-4f25-bd57-a9c5afcdc1b9",
+ "answer_chars": 2350,
+ "answer_markers_hit": [
+  "instructds"
+ ],
+ "refusal": false,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "The evidence pack directly and fully answers the question. Synthesizing now.\n\n**结论：InstructDS 通过一条三步\"总结锚定\"的合成流水线（summary-anchored QDS triple synthesis）批量生成高质量的 query-based 对话摘要指令数据——先由大模型从参考摘要反向生成候选 query，再经\"文本可答性 + 语义去重\"双重过滤，最后以 query+摘要为输入触发 LLM 问答能力生成 query-based 摘要，从而在几乎零人工标注下把三元组质量从 45% 提升到 75%。**\n\n## 合成流程（三步）\n\n出处：*Instructive Dialogue Summarization with Query Aggregations*（nlp__2310.10981，KB `b1199132…`），§3.2 Synthesize QDS Triples + Abstract。\n\n给定已有的 dialogue-summary 对 $\\{D,S\\}$，合成 query-dialogue-summary（QDS）三元组 $\\{Q,D,S\\}$：\n\n1. **Query Generation（总结锚定的 query 生成）**\n   用 LLM 的 question-ge",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true
+  }
+ }
+}

@@ -1,0 +1,114 @@
+{
+ "answer": "**Answer:** MameLoshnLM is an open-source language model for Yiddish, introduced with two supporting resources — the Oytser pretraining corpus (contemporary web-native Yiddish plus literary-tradition material) and the Kashes evaluation benchmark — created to address the scarcity and low quality of publicly available Yiddish pretraining text (the paper documents that less than half of mC4's putative Yiddish content is genuine Yiddish). Its parameter scale is **8B**: it was produced by continued pretraining of Llama-3.1-8B on a Yiddish corpus using a causal language modeling objective. Training details confirm this: bfloat16 precision, 8-bit AdamW, learning rate 2×10⁻⁵, cosine schedule with 2% warmup, weight decay 0.01, one epoch, max sequence length 1,024 tokens, per-device batch size 38, and 4 gradient accumulation steps. Across the Kashes benchmark it outperforms open models of similar scale, with strong gains on Yiddish-centered tasks such as translation, linguistic analysis, and named entity recognition. The evidence is consistent across all retrieved sources, and the content-verification judge confirmed the primary document (segments scoring 0.90 and 0.51).\n\n**Sources used:**\n- `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md` — kb `b1199132-e4d4-4305-8c2e-82dc1753b0ba` (primary; judge survivors segment-0001, segment-0009)\n- `Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k12.md` — kb `0942f1a6-d81b-413b-a60b-b994680dcaac` (training paragraph)\n- `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 4 of 4).md` — kb `b1199132-e4d4-4305-8c2e-82dc1753b0ba` (Kashes comparison table)",
+ "is_error": false,
+ "latency_s": 40.7,
+ "sdk_duration_ms": 39588,
+ "num_turns": 5,
+ "tool_calls": [
+  {
+   "tool": "Agent",
+   "input": {}
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM model parameter scale"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search",
+   "input": {
+    "query": "MameLoshnLM"
+   }
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_laya_judge",
+   "input": {
+    "query": "What is MameLoshnLM and what parameter scale does it have?"
+   }
+  }
+ ],
+ "tool_call_count": 4,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 7603,
+  "output": 948,
+  "cache_read": 268032,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.25828,
+ "timeline": [
+  {
+   "t": 1.23,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 3.89,
+   "event": "text",
+   "detail": "121"
+  },
+  {
+   "t": 3.91,
+   "event": "tool_use",
+   "detail": "Agent"
+  },
+  {
+   "t": 13.74,
+   "event": "text",
+   "detail": "3182"
+  },
+  {
+   "t": 17.63,
+   "event": "text",
+   "detail": "59"
+  },
+  {
+   "t": 17.63,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 17.64,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search"
+  },
+  {
+   "t": 22.31,
+   "event": "text",
+   "detail": "94"
+  },
+  {
+   "t": 22.65,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_laya_judge"
+  },
+  {
+   "t": 40.62,
+   "event": "text",
+   "detail": "1712"
+  },
+  {
+   "t": 40.65,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "I'll search the knowledge base for \"MameLoshnLM\" using a vector search first, then verify any hits with a content read.\n\n",
+  "Yes.\n\nThe following `mcp__kb-mcp__*` tools are available:\n\n- mcp__kb-mcp__backend_status\n- mcp__kb-mcp__experience_apply\n- mcp__kb-mcp__experience_apply_decay\n- mcp__kb-mcp__experience_check_stale\n- mcp__kb-mcp__experience_create\n- mcp__kb-mcp__experience_dashboard\n- mcp__kb-mcp__experience_delete\n- mcp__kb-mcp__experience_draft_approve\n- mcp__kb-mcp__experience_draft_read\n- mcp__kb-mcp__experience_draft_reject\n- mcp__kb-mcp__experience_drafts_list\n- mcp__kb-mcp__experience_extract\n- mcp__kb-mcp__experience_list\n- mcp__kb-mcp__experience_meditation_config_get\n- mcp__kb-mcp__experience_meditation_config_update\n- mcp__kb-mcp__experience_meditation_history\n- mcp__kb-mcp__experience_meditation_run\n- mcp__kb-mcp__experience_meditation_status\n- mcp__kb-mcp__experience_meditation_task_status\n- mcp__kb-mcp__experience_read\n- mcp__kb-mcp__experience_rerank\n- mcp__kb-mcp__experience_review\n- mcp__kb-mcp__experience_search_global\n- mcp__kb-mcp__experience_search_smart\n- mcp__kb-mcp__experience_summary\n- mcp__kb-mcp__experience_sync_kb\n- mcp__kb-mcp__experience_update\n- mcp__kb-mcp__fs_get_children\n- mcp__kb-mcp__fs_get_tree\n- mcp__kb-mcp__fs_upload_file\n- mcp__kb-mcp__kb_batch_index\n- mcp__kb-mcp__kb_cleanup_orphan_collections\n- mcp__kb-mcp__kb_create\n- mcp__kb-mcp__kb_delete\n- mcp__kb-mcp__kb_doc_batch_delete\n- mcp__kb-mcp__kb_doc_create\n- mcp__kb-mcp__kb_doc_delete\n- mcp__kb-mcp__kb_doc_get_by_tag\n- mcp__kb-mcp__kb_doc_move\n- mcp__kb-mcp__kb_doc_read\n- mcp__kb-mcp__kb_doc_save_parsed\n- mcp__kb-mcp__kb_doc_update_content\n- mcp__kb-mcp__kb_doc_update_meta\n- mcp__kb-mcp__kb_doc_update_tags\n- mcp__kb-mcp__kb_find_duplicates\n- mcp__kb-mcp__kb_get_documents\n- mcp__kb-mcp__kb_graph_build\n- mcp__kb-mcp__kb_graph_central_documents\n- mcp__kb-mcp__kb_graph_cross_kb_documents\n- mcp__kb-mcp__kb_graph_delete_document\n- mcp__kb-mcp__kb_graph_delete_kb\n- mcp__kb-mcp__kb_graph_document\n- mcp__kb-mcp__kb_graph_document_paths\n- mcp__kb-mcp__kb_graph_document_related\n- mcp__kb-mcp__kb_graph_kb_overview\n- mcp__kb-mcp__kb_graph_search\n- mcp__kb-mcp__kb_graph_stats\n- mcp__kb-mcp__kb_index_document\n- mcp__kb-mcp__kb_laya_judge\n- mcp__kb-mcp__kb_list\n- mcp__kb-mcp__kb_project_start\n- mcp__kb-mcp__kb_project_status\n- mcp__kb-mcp__kb_project_update\n- mcp__kb-mcp__kb_reindex\n- mcp__kb-mcp__kb_search\n- mcp__kb-mcp__kb_search_stats\n- mcp__kb-mcp__kb_search_two_stage\n- mcp__kb-mcp__kb_search_vector\n- mcp__kb-mcp__kb_tags_cleanup\n- mcp__kb-mcp__kb_tags_list\n- mcp__kb-mcp__kb_task_status\n- mcp__kb-mcp__kb_update\n- mcp__kb-mcp__parse_doc\n- mcp__kb-mcp__parse_doc_batch\n- mcp__kb-mcp__parse_task_status\n- mcp__kb-mcp__soul_ask\n- mcp__kb-mcp__soul_calibrate\n- mcp__kb-mcp__soul_checkpoint\n- mcp__kb-mcp__soul_config_update\n- mcp__kb-mcp__soul_delete\n- mcp__kb-mcp__soul_eval\n- mcp__kb-mcp__soul_evaluate\n- mcp__kb-mcp__soul_export\n- mcp__kb-mcp__soul_gen_cognition_drafts\n- mcp__kb-mcp__soul_init\n- mcp__kb-mcp__soul_learn\n- mcp__kb-mcp__soul_learn_all\n- mcp__kb-mcp__soul_list\n- mcp__kb-mcp__soul_qdcvr_ask\n- mcp__kb-mcp__soul_reflect\n- mcp__kb-mcp__soul_review_drafts\n- mcp__kb-mcp__soul_rollback\n- mcp__kb-mcp__soul_router\n- mcp__kb-mcp__soul_status\n- mcp__kb-mcp__soul_train_rl",
+  "KB tools are available. Now running the retrieval myself.\n\n",
+  "Multiple hits. Verifying with the content-verification judge on the primary source document.\n\n",
+  "**Answer:** MameLoshnLM is an open-source language model for Yiddish, introduced with two supporting resources — the Oytser pretraining corpus (contemporary web-native Yiddish plus literary-tradition material) and the Kashes evaluation benchmark — created to address the scarcity and low quality of publicly available Yiddish pretraining text (the paper documents that less than half of mC4's putative Yiddish content is genuine Yiddish). Its parameter scale is **8B**: it was produced by continued pretraining of Llama-3.1-8B on a Yiddish corpus using a causal language modeling objective. Training details confirm this: bfloat16 precision, 8-bit AdamW, learning rate 2×10⁻⁵, cosine schedule with 2% warmup, weight decay 0.01, one epoch, max sequence length 1,024 tokens, per-device batch size 38, and 4 gradient accumulation steps. Across the Kashes benchmark it outperforms open models of similar scale, with strong gains on Yiddish-centered tasks such as translation, linguistic analysis, and named entity recognition. The evidence is consistent across all retrieved sources, and the content-verification judge confirmed the primary document (segments scoring 0.90 and 0.51).\n\n**Sources used:**\n- `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md` — kb `b1199132-e4d4-4305-8c2e-82dc1753b0ba` (primary; judge survivors segment-0001, segment-0009)\n- `Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k12.md` — kb `0942f1a6-d81b-413b-a60b-b994680dcaac` (training paragraph)\n- `计算机与人工智能/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 4 of 4).md` — kb `b1199132-e4d4-4305-8c2e-82dc1753b0ba` (Kashes comparison table)"
+ ],
+ "track": "a2",
+ "question": "What is MameLoshnLM and what parameter scale does it have?",
+ "prompt_version": "v4-neutral",
+ "cwd": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge",
+ "max_turns": 12,
+ "qid": "QK07",
+ "via": "chat",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0
+}

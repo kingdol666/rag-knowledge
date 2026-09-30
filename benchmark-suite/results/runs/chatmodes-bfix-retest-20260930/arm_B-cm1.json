@@ -1,0 +1,31 @@
+{
+ "mode": "B",
+ "qid": "cm1",
+ "expect": "found",
+ "kb_ids": [],
+ "http": 200,
+ "success": true,
+ "wall_s": 57.5,
+ "duration_ms": 55300,
+ "turns": 12,
+ "cost_usd": 0.3670036,
+ "session_id": "ac9e8d86-f851-4e09-a7fe-3d1fd8ecba63",
+ "answer_chars": 1557,
+ "answer_markers_hit": [
+  "instructds"
+ ],
+ "refusal": false,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "I have everything needed. Synthesizing the final answer.\n\n---\n\n**InstructDS 通过三步合成管线（摘要锚定查询生成 → 查询过滤 → 基于查询的摘要生成）从现成的对话-摘要对中自动产出高质量 query-dialogue-summary (QDS) 三元组，用其做指令微调来教会模型生成\"按用户查询定制\"的对话摘要。**\n\n**1. 动机（为何需要合成）**\n传统对话摘要把任务当作无约束 seq2seq，忽略用户的具体关注点；而指令化对话摘要的最大障碍是**训练数据稀缺**（QMSum 仅 232 个会议样本）。作者受 Self-Instruct 启发，用通用 LLM 的\"条件问题生成 + 问答\"能力自动造数据，降低人工成本、提升多样性（part 1）。\n\n**2. 三步合成管线（§3.2，核心）**\n- **① 查询生成（summary-anchored）**：基于**参考摘要**（而非对话全文）驱动问题生成。用 **Flan-T5-XL**（在 Quoref / MC-TACO / CosmosQA 上训练过）按模板（Table 7）**每个实例生成 5 个候选查询**。\n- **② 查询过滤（文本+语义双机制）**：\n  - *文本过滤*：用同一个 Flan-T5-XL 作二分类器判定\"查询是否可回答\"，剔",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true
+  }
+ }
+}

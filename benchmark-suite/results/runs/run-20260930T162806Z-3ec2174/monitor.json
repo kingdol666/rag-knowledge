@@ -1,0 +1,1493 @@
+{
+ "run": "run-20260930T162806Z-3ec2174",
+ "manifest": {
+  "git_commit": "3ec2174",
+  "config_hash": "9fb259c0cf2b6dea",
+  "prompt_version": "v4-neutral",
+  "started_utc": "2026-09-30T16:28:06.262021+00:00",
+  "tracks": [
+   "a2",
+   "bm25",
+   "vector",
+   "rrf",
+   "rerank"
+  ],
+  "questions": 10,
+  "seed": 0,
+  "max_turns": 12,
+  "shuffled": true,
+  "selfheal": true,
+  "monitor_system": false,
+  "dry_run": false,
+  "n_rows": 50,
+  "total_cost_usd": 6.6983,
+  "tokens_out_total": 20277
+ },
+ "methods": [
+  "a2",
+  "bm25",
+  "rerank",
+  "rrf",
+  "vector"
+ ],
+ "per_method": {
+  "a2": {
+   "n": 10,
+   "latency_avg_s": 67.18,
+   "latency_median_s": 31.9,
+   "tokens_in_total": 363649,
+   "tokens_out_total": 10467,
+   "cost_usd_total": 4.6473,
+   "cost_usd_avg": 0.4647,
+   "tools_avg": 3.2,
+   "retrieval_gold_rate": 0.5,
+   "citation_gold_rate": 0.5,
+   "abstentions": 0,
+   "errors": 0,
+   "system_peak": null,
+   "correct_refusal": 0,
+   "refusal_n": 2,
+   "notfound_accuracy": 0.0,
+   "over_refusal": 0,
+   "answerable_n": 8,
+   "over_refusal_rate": 0.0
+  },
+  "bm25": {
+   "n": 10,
+   "latency_avg_s": 8.36,
+   "latency_median_s": 5.8,
+   "tokens_in_total": 71738,
+   "tokens_out_total": 2835,
+   "cost_usd_total": 0.647,
+   "cost_usd_avg": 0.0647,
+   "tools_avg": 0.0,
+   "retrieval_gold_rate": 1.0,
+   "citation_gold_rate": 1.0,
+   "abstentions": 6,
+   "errors": 0,
+   "system_peak": null,
+   "correct_refusal": 2,
+   "refusal_n": 2,
+   "notfound_accuracy": 1.0,
+   "over_refusal": 4,
+   "answerable_n": 8,
+   "over_refusal_rate": 0.5
+  },
+  "rerank": {
+   "n": 10,
+   "latency_avg_s": 16.0,
+   "latency_median_s": 10.5,
+   "tokens_in_total": 60709,
+   "tokens_out_total": 2491,
+   "cost_usd_total": 0.585,
+   "cost_usd_avg": 0.0585,
+   "tools_avg": 0.0,
+   "retrieval_gold_rate": 1.0,
+   "citation_gold_rate": 1.0,
+   "abstentions": 6,
+   "errors": 0,
+   "system_peak": null,
+   "correct_refusal": 2,
+   "refusal_n": 2,
+   "notfound_accuracy": 1.0,
+   "over_refusal": 4,
+   "answerable_n": 8,
+   "over_refusal_rate": 0.5
+  },
+  "rrf": {
+   "n": 10,
+   "latency_avg_s": 7.35,
+   "latency_median_s": 5.3,
+   "tokens_in_total": 24396,
+   "tokens_out_total": 2382,
+   "cost_usd_total": 0.4231,
+   "cost_usd_avg": 0.0423,
+   "tools_avg": 0.0,
+   "retrieval_gold_rate": 1.0,
+   "citation_gold_rate": 1.0,
+   "abstentions": 6,
+   "errors": 0,
+   "system_peak": null,
+   "correct_refusal": 2,
+   "refusal_n": 2,
+   "notfound_accuracy": 1.0,
+   "over_refusal": 4,
+   "answerable_n": 8,
+   "over_refusal_rate": 0.5
+  },
+  "vector": {
+   "n": 10,
+   "latency_avg_s": 6.05,
+   "latency_median_s": 4.5,
+   "tokens_in_total": 21202,
+   "tokens_out_total": 2102,
+   "cost_usd_total": 0.3959,
+   "cost_usd_avg": 0.0396,
+   "tools_avg": 0.0,
+   "retrieval_gold_rate": 1.0,
+   "citation_gold_rate": 1.0,
+   "abstentions": 7,
+   "errors": 0,
+   "system_peak": null,
+   "correct_refusal": 2,
+   "refusal_n": 2,
+   "notfound_accuracy": 1.0,
+   "over_refusal": 5,
+   "answerable_n": 8,
+   "over_refusal_rate": 0.625
+  }
+ },
+ "self_checks": [
+  {
+   "check": "每 (qid,method) 都有结果",
+   "ok": true,
+   "detail": "0 缺失"
+  },
+  {
+   "check": "无重复单元",
+   "ok": true,
+   "detail": "ok"
+  },
+  {
+   "check": "无 error 单元",
+   "ok": true,
+   "detail": "0 个 error"
+  },
+  {
+   "check": "成本合计 = 各方法之和",
+   "ok": true,
+   "detail": "sum(method)=6.6983 · manifest=6.6983"
+  },
+  {
+   "check": "单元数 = 题数 × 方法数",
+   "ok": true,
+   "detail": "rows=50 vs 10×5=50"
+  },
+  {
+   "check": "provenance 完整",
+   "ok": true,
+   "detail": "prompt_version=v4-neutral seed=0"
+  }
+ ],
+ "per_question": {
+  "QK01": {
+   "a2": {
+    "stratum": "single",
+    "latency_s": 23.8,
+    "retrieval_s": null,
+    "tokens_in": 1002,
+    "tokens_out": 235,
+    "cost_usd": 0.6574929999999999,
+    "tools": 2,
+    "ranked": [],
+    "gold": [
+     "1706.03762",
+     "1706.03762"
+    ],
+    "retrieval_basis": "trace+answer",
+    "retrieval_hit": false,
+    "citation_hit": false,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "bm25": {
+    "stratum": "single",
+    "latency_s": 6.7,
+    "retrieval_s": 0.0,
+    "tokens_in": 936,
+    "tokens_out": 180,
+    "cost_usd": 0.0342688,
+    "tools": 0,
+    "ranked": [
+     "1706.03762",
+     "1810.04805",
+     "2503.21676",
+     "1911.02792",
+     "2110.08918",
+     "2109.14357",
+     "2009.10669",
+     "2110.07844",
+     "2212.13138",
+     "1405.4980"
+    ],
+    "gold": [
+     "1706.03762",
+     "1706.03762"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": true,
+    "error": false,
+    "system": null
+   },
+   "rerank": {
+    "stratum": "single",
+    "latency_s": 12.0,
+    "retrieval_s": 2.6,
+    "tokens_in": 688,
+    "tokens_out": 278,
+    "cost_usd": 0.0353076,
+    "tools": 0,
+    "ranked": [
+     "1706.03762",
+     "2110.07844",
+     "2510.13343",
+     "2503.21676",
+     "1906.10015",
+     "1810.04805"
+    ],
+    "gold": [
+     "1706.03762",
+     "1706.03762"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": true,
+    "error": false,
+    "system": null
+   },
+   "rrf": {
+    "stratum": "single",
+    "latency_s": 4.4,
+    "retrieval_s": 0.0,
+    "tokens_in": 104,
+    "tokens_out": 252,
+    "cost_usd": 0.031571,
+    "tools": 0,
+    "ranked": [
+     "1706.03762",
+     "1810.04805",
+     "2503.21676",
+     "2110.07844",
+     "2510.13343",
+     "1906.10015",
+     "1911.02792",
+     "2110.08918",
+     "2109.14357",
+     "2009.10669"
+    ],
+    "gold": [
+     "1706.03762",
+     "1706.03762"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": true,
+    "error": false,
+    "system": null
+   },
+   "vector": {
+    "stratum": "single",
+    "latency_s": 5.0,
+    "retrieval_s": 0.0,
+    "tokens_in": 560,
+    "tokens_out": 341,
+    "cost_usd": 0.0361864,
+    "tools": 0,
+    "ranked": [
+     "1706.03762",
+     "1810.04805",
+     "2503.21676",
+     "2110.07844",
+     "2510.13343",
+     "1906.10015"
+    ],
+    "gold": [
+     "1706.03762",
+     "1706.03762"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": true,
+    "error": false,
+    "system": null
+   }
+  },
+  "QK02": {
+   "a2": {
+    "stratum": "single",
+    "latency_s": 37.2,
+    "retrieval_s": null,
+    "tokens_in": 1511,
+    "tokens_out": 688,
+    "cost_usd": 0.7774208,
+    "tools": 6,
+    "ranked": [
+     "1602.01876",
+     "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+     "0942f1a6-d81b-413b-a60b-b994680dcaac"
+    ],
+    "gold": [
+     "1602.01876",
+     "1602.01876"
+    ],
+    "retrieval_basis": "trace+answer",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "bm25": {
+    "stratum": "single",
+    "latency_s": 4.1,
+    "retrieval_s": 0.0,
+    "tokens_in": 582,
+    "tokens_out": 139,
+    "cost_usd": 0.0312926,
+    "tools": 0,
+    "ranked": [
+     "1602.01876",
+     "2301.08436",
+     "2401.06823",
+     "2508.18304",
+     "2009.10669",
+     "2110.07787",
+     "2602.10156",
+     "1909.03801",
+     "q-bio-0408016",
+     "1809.08199"
+    ],
+    "gold": [
+     "1602.01876",
+     "1602.01876"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": true,
+    "error": false,
+    "system": null
+   },
+   "rerank": {
+    "stratum": "single",
+    "latency_s": 18.2,
+    "retrieval_s": 15.5,
+    "tokens_in": 304,
+    "tokens_out": 77,
+    "cost_usd": 0.0280654,
+    "tools": 0,
+    "ranked": [
+     "1602.01876",
+     "2110.07787",
+     "2508.18304"
+    ],
+    "gold": [
+     "1602.01876",
+     "1602.01876"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "rrf": {
+    "stratum": "single",
+    "latency_s": 3.8,
+    "retrieval_s": 0.1,
+    "tokens_in": 790,
+    "tokens_out": 155,
+    "cost_usd": 0.0329314,
+    "tools": 0,
+    "ranked": [
+     "1602.01876",
+     "2508.18304",
+     "2110.07787",
+     "2301.08436",
+     "2401.06823",
+     "2009.10669",
+     "2602.10156",
+     "1909.03801",
+     "q-bio-0408016",
+     "1809.08199"
+    ],
+    "gold": [
+     "1602.01876",
+     "1602.01876"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": true,
+    "error": false,
+    "system": null
+   },
+   "vector": {
+    "stratum": "single",
+    "latency_s": 3.0,
+    "retrieval_s": 0.0,
+    "tokens_in": 48,
+    "tokens_out": 64,
+    "cost_usd": 0.0262478,
+    "tools": 0,
+    "ranked": [
+     "1602.01876",
+     "2110.07787",
+     "2508.18304"
+    ],
+    "gold": [
+     "1602.01876",
+     "1602.01876"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   }
+  },
+  "QK03": {
+   "a2": {
+    "stratum": "single",
+    "latency_s": 25.6,
+    "retrieval_s": null,
+    "tokens_in": 9195,
+    "tokens_out": 1112,
+    "cost_usd": 0.23775619999999997,
+    "tools": 5,
+    "ranked": [
+     "1606.00335",
+     "8fa4db59-adde-4d6d-9fdb-2c375400e631"
+    ],
+    "gold": [
+     "1606.00335",
+     "1606.00335"
+    ],
+    "retrieval_basis": "trace+answer",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "bm25": {
+    "stratum": "single",
+    "latency_s": 8.2,
+    "retrieval_s": 0.0,
+    "tokens_in": 833,
+    "tokens_out": 259,
+    "cost_usd": 0.0357944,
+    "tools": 0,
+    "ranked": [
+     "1606.00335",
+     "1712.01369",
+     "2607.03098",
+     "1906.10015",
+     "2211.04977",
+     "2604.01385",
+     "1801.00862",
+     "2401.06823",
+     "2602.10156",
+     "2306.01022"
+    ],
+    "gold": [
+     "1606.00335",
+     "1606.00335"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": true,
+    "error": false,
+    "system": null
+   },
+   "rerank": {
+    "stratum": "single",
+    "latency_s": 36.2,
+    "retrieval_s": 2.7,
+    "tokens_in": 47518,
+    "tokens_out": 885,
+    "cost_usd": 0.26060799999999995,
+    "tools": 0,
+    "ranked": [
+     "1606.00335",
+     "1712.01369"
+    ],
+    "gold": [
+     "1606.00335",
+     "1606.00335"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "rrf": {
+    "stratum": "single",
+    "latency_s": 3.9,
+    "retrieval_s": 0.0,
+    "tokens_in": 65,
+    "tokens_out": 238,
+    "cost_usd": 0.0310596,
+    "tools": 0,
+    "ranked": [
+     "1606.00335",
+     "1712.01369",
+     "2607.03098",
+     "1906.10015",
+     "2211.04977",
+     "2604.01385",
+     "1801.00862",
+     "2401.06823",
+     "2602.10156",
+     "2306.01022"
+    ],
+    "gold": [
+     "1606.00335",
+     "1606.00335"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "vector": {
+    "stratum": "single",
+    "latency_s": 3.7,
+    "retrieval_s": 0.3,
+    "tokens_in": 345,
+    "tokens_out": 132,
+    "cost_usd": 0.0295954,
+    "tools": 0,
+    "ranked": [
+     "1606.00335",
+     "1712.01369"
+    ],
+    "gold": [
+     "1606.00335",
+     "1606.00335"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": true,
+    "error": false,
+    "system": null
+   }
+  },
+  "QK04": {
+   "a2": {
+    "stratum": "single",
+    "latency_s": 35.2,
+    "retrieval_s": null,
+    "tokens_in": 47536,
+    "tokens_out": 1669,
+    "cost_usd": 0.28024,
+    "tools": 0,
+    "ranked": [],
+    "gold": [
+     "2209.15032",
+     "2209.15032"
+    ],
+    "retrieval_basis": "trace+answer",
+    "retrieval_hit": false,
+    "citation_hit": false,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "bm25": {
+    "stratum": "single",
+    "latency_s": 3.8,
+    "retrieval_s": 0.0,
+    "tokens_in": 89,
+    "tokens_out": 110,
+    "cost_usd": 0.027739,
+    "tools": 0,
+    "ranked": [
+     "2209.15032",
+     "2005.14165",
+     "2109.14357",
+     "2608.05850",
+     "2110.07844",
+     "2310.10981",
+     "2402.11690",
+     "1811.04224",
+     "1906.10015",
+     "2509.05359"
+    ],
+    "gold": [
+     "2209.15032",
+     "2209.15032"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "rerank": {
+    "stratum": "single",
+    "latency_s": 9.0,
+    "retrieval_s": 4.6,
+    "tokens_in": 103,
+    "tokens_out": 104,
+    "cost_usd": 0.027545200000000002,
+    "tools": 0,
+    "ranked": [
+     "2209.15032"
+    ],
+    "gold": [
+     "2209.15032",
+     "2209.15032"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "rrf": {
+    "stratum": "single",
+    "latency_s": 6.3,
+    "retrieval_s": 0.1,
+    "tokens_in": 921,
+    "tokens_out": 143,
+    "cost_usd": 0.033442400000000004,
+    "tools": 0,
+    "ranked": [
+     "2209.15032",
+     "2005.14165",
+     "2109.14357",
+     "2608.05850",
+     "2110.07844",
+     "2310.10981",
+     "2402.11690",
+     "1811.04224",
+     "1906.10015",
+     "2509.05359"
+    ],
+    "gold": [
+     "2209.15032",
+     "2209.15032"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "vector": {
+    "stratum": "single",
+    "latency_s": 3.1,
+    "retrieval_s": 0.0,
+    "tokens_in": 231,
+    "tokens_out": 51,
+    "cost_usd": 0.0269064,
+    "tools": 0,
+    "ranked": [
+     "2209.15032"
+    ],
+    "gold": [
+     "2209.15032",
+     "2209.15032"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   }
+  },
+  "QK05": {
+   "a2": {
+    "stratum": "single",
+    "latency_s": 379.2,
+    "retrieval_s": null,
+    "tokens_in": 158561,
+    "tokens_out": 2123,
+    "cost_usd": 1.2064237999999998,
+    "tools": 10,
+    "ranked": [
+     "2508.05896",
+     "0942f1a6-d81b-413b-a60b-b994680dcaac",
+     "kb-mcp"
+    ],
+    "gold": [
+     "2508.05896",
+     "2508.05896"
+    ],
+    "retrieval_basis": "trace+answer",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "bm25": {
+    "stratum": "single",
+    "latency_s": 4.2,
+    "retrieval_s": 0.0,
+    "tokens_in": 75,
+    "tokens_out": 131,
+    "cost_usd": 0.0284396,
+    "tools": 0,
+    "ranked": [
+     "2508.05896",
+     "1609.00415",
+     "1512.08067",
+     "1801.00862",
+     "1001.3181",
+     "2402.11690",
+     "2011.14424",
+     "1602.01876",
+     "2608.05850",
+     "1706.06697"
+    ],
+    "gold": [
+     "2508.05896",
+     "2508.05896"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "rerank": {
+    "stratum": "single",
+    "latency_s": 4.5,
+    "retrieval_s": 1.7,
+    "tokens_in": 167,
+    "tokens_out": 116,
+    "cost_usd": 0.0282234,
+    "tools": 0,
+    "ranked": [
+     "2508.05896"
+    ],
+    "gold": [
+     "2508.05896",
+     "2508.05896"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": true,
+    "error": false,
+    "system": null
+   },
+   "rrf": {
+    "stratum": "single",
+    "latency_s": 13.1,
+    "retrieval_s": 0.0,
+    "tokens_in": 843,
+    "tokens_out": 146,
+    "cost_usd": 0.033077,
+    "tools": 0,
+    "ranked": [
+     "2508.05896",
+     "1609.00415",
+     "1512.08067",
+     "1801.00862",
+     "1001.3181",
+     "2402.11690",
+     "2011.14424",
+     "1602.01876",
+     "2608.05850",
+     "1706.06697"
+    ],
+    "gold": [
+     "2508.05896",
+     "2508.05896"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "vector": {
+    "stratum": "single",
+    "latency_s": 6.6,
+    "retrieval_s": 0.0,
+    "tokens_in": 103,
+    "tokens_out": 127,
+    "cost_usd": 0.0280326,
+    "tools": 0,
+    "ranked": [
+     "2508.05896"
+    ],
+    "gold": [
+     "2508.05896",
+     "2508.05896"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": true,
+    "error": false,
+    "system": null
+   }
+  },
+  "QK06": {
+   "a2": {
+    "stratum": "single",
+    "latency_s": 28.6,
+    "retrieval_s": null,
+    "tokens_in": 36956,
+    "tokens_out": 1169,
+    "cost_usd": 0.220055,
+    "tools": 0,
+    "ranked": [],
+    "gold": [
+     "1503.07557",
+     "1503.07557"
+    ],
+    "retrieval_basis": "trace+answer",
+    "retrieval_hit": false,
+    "citation_hit": false,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "bm25": {
+    "stratum": "single",
+    "latency_s": 18.4,
+    "retrieval_s": 0.0,
+    "tokens_in": 47890,
+    "tokens_out": 656,
+    "cost_usd": 0.257297,
+    "tools": 0,
+    "ranked": [
+     "1503.07557",
+     "2409.13934",
+     "2409.09639",
+     "2007.10574",
+     "physics-0703220",
+     "2607.03098",
+     "1906.10015",
+     "1609.00415",
+     "1308.1846",
+     "2602.10156"
+    ],
+    "gold": [
+     "1503.07557",
+     "1503.07557"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "rerank": {
+    "stratum": "single",
+    "latency_s": 7.6,
+    "retrieval_s": 2.1,
+    "tokens_in": 393,
+    "tokens_out": 179,
+    "cost_usd": 0.031139399999999998,
+    "tools": 0,
+    "ranked": [
+     "1503.07557",
+     "2409.13934",
+     "2007.10574"
+    ],
+    "gold": [
+     "1503.07557",
+     "1503.07557"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": true,
+    "error": false,
+    "system": null
+   },
+   "rrf": {
+    "stratum": "single",
+    "latency_s": 3.8,
+    "retrieval_s": 0.0,
+    "tokens_in": 760,
+    "tokens_out": 188,
+    "cost_usd": 0.033508800000000005,
+    "tools": 0,
+    "ranked": [
+     "1503.07557",
+     "2409.13934",
+     "2007.10574",
+     "2409.09639",
+     "physics-0703220",
+     "2607.03098",
+     "1906.10015",
+     "1609.00415",
+     "1308.1846",
+     "2602.10156"
+    ],
+    "gold": [
+     "1503.07557",
+     "1503.07557"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": true,
+    "error": false,
+    "system": null
+   },
+   "vector": {
+    "stratum": "single",
+    "latency_s": 6.2,
+    "retrieval_s": 0.0,
+    "tokens_in": 393,
+    "tokens_out": 176,
+    "cost_usd": 0.0310168,
+    "tools": 0,
+    "ranked": [
+     "1503.07557",
+     "2007.10574",
+     "2409.13934"
+    ],
+    "gold": [
+     "1503.07557",
+     "1503.07557"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": true,
+    "error": false,
+    "system": null
+   }
+  },
+  "QK07": {
+   "a2": {
+    "stratum": "distractor",
+    "latency_s": 58.8,
+    "retrieval_s": null,
+    "tokens_in": 89761,
+    "tokens_out": 2047,
+    "cost_usd": 0.9700512000000001,
+    "tools": 8,
+    "ranked": [
+     "2608.05850",
+     "0942f1a6-d81b-413b-a60b-b994680dcaac",
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+    ],
+    "gold": [
+     "2608.05850",
+     "2608.05850"
+    ],
+    "retrieval_basis": "trace+answer",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "bm25": {
+    "stratum": "distractor",
+    "latency_s": 3.2,
+    "retrieval_s": 0.0,
+    "tokens_in": 936,
+    "tokens_out": 146,
+    "cost_usd": 0.0335974,
+    "tools": 0,
+    "ranked": [
+     "2608.05850",
+     "2212.13138",
+     "2005.14165",
+     "2402.11690",
+     "2011.14424",
+     "1311.2485",
+     "2310.10981",
+     "1001.3181",
+     "2503.21676",
+     "1911.02792"
+    ],
+    "gold": [
+     "2608.05850",
+     "2608.05850"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": true,
+    "error": false,
+    "system": null
+   },
+   "rerank": {
+    "stratum": "distractor",
+    "latency_s": 7.1,
+    "retrieval_s": 1.9,
+    "tokens_in": 24,
+    "tokens_out": 169,
+    "cost_usd": 0.0287772,
+    "tools": 0,
+    "ranked": [
+     "2608.05850"
+    ],
+    "gold": [
+     "2608.05850",
+     "2608.05850"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": true,
+    "error": false,
+    "system": null
+   },
+   "rrf": {
+    "stratum": "distractor",
+    "latency_s": 4.0,
+    "retrieval_s": 0.3,
+    "tokens_in": 104,
+    "tokens_out": 149,
+    "cost_usd": 0.029122,
+    "tools": 0,
+    "ranked": [
+     "2608.05850",
+     "2212.13138",
+     "2005.14165",
+     "2402.11690",
+     "2011.14424",
+     "1311.2485",
+     "2310.10981",
+     "1001.3181",
+     "2503.21676",
+     "1911.02792"
+    ],
+    "gold": [
+     "2608.05850",
+     "2608.05850"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": true,
+    "error": false,
+    "system": null
+   },
+   "vector": {
+    "stratum": "distractor",
+    "latency_s": 4.0,
+    "retrieval_s": 0.0,
+    "tokens_in": 152,
+    "tokens_out": 164,
+    "cost_usd": 0.0292808,
+    "tools": 0,
+    "ranked": [
+     "2608.05850"
+    ],
+    "gold": [
+     "2608.05850",
+     "2608.05850"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": true,
+    "error": false,
+    "system": null
+   }
+  },
+  "QK08": {
+   "a2": {
+    "stratum": "crosskb",
+    "latency_s": 13.3,
+    "retrieval_s": null,
+    "tokens_in": 9318,
+    "tokens_out": 422,
+    "cost_usd": 0.07702899999999999,
+    "tools": 0,
+    "ranked": [],
+    "gold": [
+     "2409.13934",
+     "2409.13934"
+    ],
+    "retrieval_basis": "trace+answer",
+    "retrieval_hit": false,
+    "citation_hit": false,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "bm25": {
+    "stratum": "crosskb",
+    "latency_s": 19.1,
+    "retrieval_s": 0.0,
+    "tokens_in": 9847,
+    "tokens_out": 703,
+    "cost_usd": 0.08743500000000001,
+    "tools": 0,
+    "ranked": [
+     "2409.13934",
+     "2007.10574",
+     "2409.09639",
+     "1503.07557",
+     "2602.10156",
+     "2009.10669",
+     "2212.13138",
+     "2005.14165",
+     "physics-0703220",
+     "2207.08146"
+    ],
+    "gold": [
+     "2409.13934",
+     "2409.13934"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "rerank": {
+    "stratum": "crosskb",
+    "latency_s": 18.1,
+    "retrieval_s": 8.0,
+    "tokens_in": 9211,
+    "tokens_out": 244,
+    "cost_usd": 0.071937,
+    "tools": 0,
+    "ranked": [
+     "2409.13934"
+    ],
+    "gold": [
+     "2409.13934",
+     "2409.13934"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "rrf": {
+    "stratum": "crosskb",
+    "latency_s": 12.2,
+    "retrieval_s": 0.1,
+    "tokens_in": 9975,
+    "tokens_out": 475,
+    "cost_usd": 0.08230599999999999,
+    "tools": 0,
+    "ranked": [
+     "2409.13934",
+     "2007.10574",
+     "2409.09639",
+     "1503.07557",
+     "2602.10156",
+     "2009.10669",
+     "2212.13138",
+     "2005.14165",
+     "physics-0703220",
+     "2207.08146"
+    ],
+    "gold": [
+     "2409.13934",
+     "2409.13934"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "vector": {
+    "stratum": "crosskb",
+    "latency_s": 8.6,
+    "retrieval_s": 0.3,
+    "tokens_in": 9211,
+    "tokens_out": 240,
+    "cost_usd": 0.071837,
+    "tools": 0,
+    "ranked": [
+     "2409.13934"
+    ],
+    "gold": [
+     "2409.13934",
+     "2409.13934"
+    ],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": true,
+    "citation_hit": true,
+    "abstained": false,
+    "error": false,
+    "system": null
+   }
+  },
+  "QK09": {
+   "a2": {
+    "stratum": "unanswerable",
+    "latency_s": 18.6,
+    "retrieval_s": null,
+    "tokens_in": 9308,
+    "tokens_out": 833,
+    "cost_usd": 0.087249,
+    "tools": 0,
+    "ranked": [],
+    "gold": [],
+    "retrieval_basis": "trace+answer",
+    "retrieval_hit": null,
+    "citation_hit": null,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "bm25": {
+    "stratum": "unanswerable",
+    "latency_s": 11.0,
+    "retrieval_s": 0.0,
+    "tokens_in": 9742,
+    "tokens_out": 344,
+    "cost_usd": 0.07782,
+    "tools": 0,
+    "ranked": [
+     "2110.08918",
+     "2409.09639",
+     "2412.15058",
+     "1503.07557",
+     "2007.10574",
+     "2212.13138",
+     "2502.00306",
+     "2110.07787",
+     "1805.00397",
+     "2012.10385"
+    ],
+    "gold": [],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": null,
+    "citation_hit": null,
+    "abstained": true,
+    "error": false,
+    "system": null
+   },
+   "rerank": {
+    "stratum": "unanswerable",
+    "latency_s": 38.6,
+    "retrieval_s": 32.1,
+    "tokens_in": 1116,
+    "tokens_out": 179,
+    "cost_usd": 0.035487399999999995,
+    "tools": 0,
+    "ranked": [
+     "2502.00306",
+     "2201.03675",
+     "2110.08918",
+     "1904.11280",
+     "2310.10981",
+     "2412.15058",
+     "2212.13138",
+     "2203.15752",
+     "2301.08436"
+    ],
+    "gold": [],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": null,
+    "citation_hit": null,
+    "abstained": true,
+    "error": false,
+    "system": null
+   },
+   "rrf": {
+    "stratum": "unanswerable",
+    "latency_s": 6.2,
+    "retrieval_s": 0.1,
+    "tokens_in": 894,
+    "tokens_out": 136,
+    "cost_usd": 0.033080399999999996,
+    "tools": 0,
+    "ranked": [
+     "2110.08918",
+     "2212.13138",
+     "2502.00306",
+     "2412.15058",
+     "1904.11280",
+     "2310.10981",
+     "2409.09639",
+     "1503.07557",
+     "2203.15752",
+     "2007.10574"
+    ],
+    "gold": [],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": null,
+    "citation_hit": null,
+    "abstained": true,
+    "error": false,
+    "system": null
+   },
+   "vector": {
+    "stratum": "unanswerable",
+    "latency_s": 16.7,
+    "retrieval_s": 0.1,
+    "tokens_in": 10062,
+    "tokens_out": 587,
+    "cost_usd": 0.085815,
+    "tools": 0,
+    "ranked": [
+     "2212.13138",
+     "2110.08918",
+     "2502.00306",
+     "2203.15752",
+     "2201.03675",
+     "2301.08436",
+     "2310.10981",
+     "2412.15058",
+     "1904.11280"
+    ],
+    "gold": [],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": null,
+    "citation_hit": null,
+    "abstained": true,
+    "error": false,
+    "system": null
+   }
+  },
+  "QK10": {
+   "a2": {
+    "stratum": "outofcorpus",
+    "latency_s": 51.5,
+    "retrieval_s": null,
+    "tokens_in": 501,
+    "tokens_out": 169,
+    "cost_usd": 0.13354920000000003,
+    "tools": 1,
+    "ranked": [],
+    "gold": [],
+    "retrieval_basis": "trace+answer",
+    "retrieval_hit": null,
+    "citation_hit": null,
+    "abstained": false,
+    "error": false,
+    "system": null
+   },
+   "bm25": {
+    "stratum": "outofcorpus",
+    "latency_s": 4.9,
+    "retrieval_s": 0.0,
+    "tokens_in": 808,
+    "tokens_out": 167,
+    "cost_usd": 0.033329399999999995,
+    "tools": 0,
+    "ranked": [
+     "2303.00445",
+     "1911.02792",
+     "2005.14165",
+     "2606.10843",
+     "q-bio-0408016",
+     "0706.3294",
+     "2110.07844",
+     "1801.00862",
+     "2502.00306",
+     "2209.15032"
+    ],
+    "gold": [],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": null,
+    "citation_hit": null,
+    "abstained": true,
+    "error": false,
+    "system": null
+   },
+   "rerank": {
+    "stratum": "outofcorpus",
+    "latency_s": 8.7,
+    "retrieval_s": 2.1,
+    "tokens_in": 1185,
+    "tokens_out": 260,
+    "cost_usd": 0.037946400000000005,
+    "tools": 0,
+    "ranked": [
+     "q-bio-0408016",
+     "2602.10156",
+     "2606.10843",
+     "gr-qc-9805045",
+     "2211.04977",
+     "2311.00487",
+     "1311.2485",
+     "1712.01369",
+     "2109.05887",
+     "2303.00445"
+    ],
+    "gold": [],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": null,
+    "citation_hit": null,
+    "abstained": true,
+    "error": false,
+    "system": null
+   },
+   "rrf": {
+    "stratum": "outofcorpus",
+    "latency_s": 15.8,
+    "retrieval_s": 0.0,
+    "tokens_in": 9940,
+    "tokens_out": 500,
+    "cost_usd": 0.08299599999999999,
+    "tools": 0,
+    "ranked": [
+     "q-bio-0408016",
+     "2606.10843",
+     "2303.00445",
+     "gr-qc-9805045",
+     "1712.01369",
+     "1311.2485",
+     "1606.00335",
+     "2311.00487",
+     "2109.05887",
+     "1911.02792"
+    ],
+    "gold": [],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": null,
+    "citation_hit": null,
+    "abstained": true,
+    "error": false,
+    "system": null
+   },
+   "vector": {
+    "stratum": "outofcorpus",
+    "latency_s": 3.6,
+    "retrieval_s": 0.0,
+    "tokens_in": 97,
+    "tokens_out": 220,
+    "cost_usd": 0.0309886,
+    "tools": 0,
+    "ranked": [
+     "q-bio-0408016",
+     "2602.10156",
+     "2606.10843",
+     "gr-qc-9805045",
+     "2211.04977",
+     "2311.00487",
+     "1311.2485",
+     "1712.01369",
+     "2109.05887",
+     "2303.00445"
+    ],
+    "gold": [],
+    "retrieval_basis": "ranked",
+    "retrieval_hit": null,
+    "citation_hit": null,
+    "abstained": true,
+    "error": false,
+    "system": null
+   }
+  }
+ }
+}

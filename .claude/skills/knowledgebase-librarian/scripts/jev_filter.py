@@ -55,6 +55,11 @@ _ENUMERATION_HINTS = (
     "each time", "how many times", "all occasions", "列出", "列举", "所有",
     "每一个", "每一次", "哪些", "全部",
 )
+# 强枚举动词: 单独出现即判 instance(明确要求列举成员)
+_STRONG_ENUMERATION = (
+    "list every", "list all", "enumerate", "列出", "列举",
+    "every scene", "all the scenes",
+)
 _EVIDENCE_TEXT = (
     "Does the TEXT contain concrete evidence that directly helps answer the QUERY? "
     "Answer yes only if a reader could quote or paraphrase a fact, number, name, "
@@ -74,8 +79,19 @@ class JevUnavailable(RuntimeError):
 
 
 def criterion_for(query: str) -> str:
+    """instance 仅用于明确的枚举型问题。
+
+    实测(2026-09-28): 弱提示词(哪些/多少)会把复合事实题整体翻转成 instance
+    判卷, 答案段落(目标/日期/数字)反而低于背景段落被挤出证据包 — CoRoT 题
+    在 instance 下 §1/§3 均未进包。因此: 强枚举动词无条件翻转; 弱提示词仅在
+    查询本身很短(纯枚举句式, ≤24 字符)时翻转, 复合题保持 evidence。
+    """
     low = (query or "").lower()
-    return "instance" if any(h in low for h in _ENUMERATION_HINTS) else "evidence"
+    if any(h in low for h in _STRONG_ENUMERATION):
+        return "instance"
+    if any(h in low for h in _ENUMERATION_HINTS) and len(low.strip()) <= 24:
+        return "instance"
+    return "evidence"
 
 
 def _credentials(env: Mapping[str, str] | None = None) -> tuple[str, str, str]:

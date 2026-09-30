@@ -1,0 +1,15 @@
+{
+ "question": "CoRoT 卫星的系外行星计划有哪些科学目标？它何时开始科学观测、任务延长到什么时候？截至 2010 年夏共收集了多少条光变曲线？为什么 CoRoT-7b 这类超级地球只能在较亮恒星的光变曲线中发现？(CoRoT exoplanet program status results transit asteroseismology)",
+ "pack_chars": 24000,
+ "diagnostic": "gold-doc-only head of pack_C_Q2 (chars 0-24000)",
+ "answer": "**CoRoT 系外行星计划的科学目标、时间线与关键事实（仅基于所给证据）**\n\nThe CoRoT satellite was designed with two distinct scientific objectives, both requiring continuous observations and ultra-high-precision relative stellar photometry: (1) the detection of extrasolar planets by the transit method, and (2) the study of stellar interiors by asteroseismology. Scientific observations began on **February 2nd, 2007**. The mission was initially scheduled for 3 years but was extended for 3 additional years, i.e. **until March 2013**. By summer 2010, a total of **129,326 light curves** had been collected. Super-Earth sized planets such as CoRoT-7b can be discovered only in the light curves of stars brighter than R ≈ 14; Neptune-size planets, by contrast, can be detected whatever the magnitude of the star.\n\n**Sources used:**\n- `自然科学与地球科学/astronomy__1105.1887__the-corot-exoplanet-program-status-results.md` — §1 Introduction (objectives, start date, extension); §3 Detection capacity (129,326 light curves; brightness limit for super-Earths); §4/4.3 (CoRoT-7b).\n\nNote: The question's bracketed keyword list mentions asteroseismology, which the evidence confirms as the mission's second objective — but the question as posed does not ask about asteroseismology results, so none are reported here. The TraceLens document is unrelated to this question and was not used.",
+ "is_error": false,
+ "latency_s": 8.0,
+ "tokens": {
+  "input": 129,
+  "output": 331,
+  "cache_read": 44928,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.031384
+}

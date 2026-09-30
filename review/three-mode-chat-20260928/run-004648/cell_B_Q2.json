@@ -1,0 +1,73 @@
+{
+ "qid": "Q2",
+ "mode": "B",
+ "question": "CoRoT 卫星的系外行星计划有哪些科学目标？它何时开始科学观测、任务延长到什么时候？截至 2010 年夏共收集了多少条光变曲线？为什么 CoRoT-7b 这类超级地球只能在较亮恒星的光变曲线中发现？(CoRoT exoplanet program status results transit asteroseismology)",
+ "track": "mode_B",
+ "via": "retrieval-mode+closed-book-chat-api",
+ "retrieval": {
+  "ok": true,
+  "real_engine": true,
+  "status": "ok",
+  "seconds": 7.8,
+  "wall_s": 7.8,
+  "n_result_docs": 4,
+  "judge": {
+   "backend": "laya_sdk",
+   "engine": "laya",
+   "criterion": "instance",
+   "candidates": 28,
+   "scored": 28,
+   "survivors_kept": 28,
+   "errors": []
+  }
+ },
+ "gold_hit": true,
+ "gold_hits": {
+  "1105.1887": true
+ },
+ "ranked": [
+  "自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+  "自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+  "自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+  "自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+  "自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+  "自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+  "自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+  "自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+  "自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md",
+  "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+  "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+  "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+  "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+  "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+  "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+  "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+  "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md",
+  "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+  "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+  "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+  "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+  "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+  "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+  "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+  "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md",
+  "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 3 of 3).md",
+  "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 3 of 3).md",
+  "自然科学与地球科学\\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 3 of 3).md"
+ ],
+ "pack_protocol": "native:40000",
+ "evidence_chars": 40000,
+ "answer": "The evidence answers all four parts.\n\n**Answer**\n\nCoRoT had two distinct scientific objectives, both requiring continuous observations and ultra-high-precision relative stellar photometry: detecting extrasolar planets by the transit method, and studying stellar interiors by asteroseismology. Scientific observations began on February 2nd, 2007; the mission was initially scheduled for three years but was extended for three more, i.e. until March 2013. By summer 2010, a total of 129,326 light curves had been collected. Super-Earth–size planets such as CoRoT-7b can only be discovered in the light curves of stars brighter than R ≈ 14, whereas Neptune-size planets are detectable at any stellar magnitude — the paper states this directly in the transit-signal-versus-magnitude analysis, without giving a deeper physical explanation.\n\n**Sources used**\n- `自然科学与地球科学\\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md` — §1 Introduction (objectives, start date, extension), §3 Detection capacity (129,326 light curves; magnitude limit for super-Earths), Figure 3 caption.",
+ "is_error": false,
+ "latency_total_s": 16.4,
+ "answer_latency_s": 8.6,
+ "tokens": {
+  "input": 10497,
+  "output": 244,
+  "cache_read": 37312,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.077241,
+ "timeline_events": 3,
+ "recorded_utc": "2026-09-27T16:49:22.991320+00:00"
+}

@@ -1,0 +1,360 @@
+[自然科学与地球科学\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 7 of 7).md]
+Writing Itô's formula for $( z _ { h } ^ { n } , p _ { n } ) _ { H }$ yields then
+
+$$
+\begin{array} { r l } & { \alpha _ { 2 } \mathbb { E } \displaystyle \int _ { D } \big ( \bar { y } ( T ) - x _ { T } \big ) z _ { h } ^ { n } ( T ) = - \mathbb { E } \int _ { Q } \Delta z _ { h } ^ { n } \tilde { p } _ { n } + \mathbb { E } \int _ { Q } \Psi _ { n } ^ { \prime \prime } ( \bar { y } ) \tilde { p } _ { n } z _ { h } ^ { n } - \alpha _ { 1 } \mathbb { E } \int _ { Q } ( \bar { y } - x _ { Q } ) z _ { h } ^ { n } } \\ & { \quad - \mathbb { E } \displaystyle \int _ { 0 } ^ { T } ( D B ( s , \bar { y } ( s ) ) ^ { * } q _ { n } ( s ) , z _ { h } ^ { n } ( s ) ) _ { H } d s - \mathbb { E } \int _ { Q } \Delta z _ { h } ^ { n } \Delta p _ { n } + \mathbb { E } \int _ { Q } \Psi _ { n } ^ { \prime \prime } ( \bar { y } ) z _ { h } ^ { n } \Delta p _ { n } } \\ & { \quad - \mathbb { E } \displaystyle \int _ { Q } h \Delta p _ { n } + \mathbb { E } \int _ { 0 } ^ { T } ( D B ( s , \bar { y } ( r ) ) z _ { h } ^ { n } ( s ) , q _ { n } ( s ) ) _ { \mathcal { L } ^ { 2 } ( U , H ) } d s , } \end{array}
+$$
+
+from which, recalling the definition of $D B ( \cdot , \bar { y } ) ^ { * }$ and that $- \Delta p _ { n } = \tilde { p } _ { n }$ ，
+
+$$
+\alpha _ { 1 } \mathbb { E } \int _ { Q } ( \bar { y } - x _ { Q } ) z _ { h } ^ { n } + \alpha _ { 2 } \int _ { D } ( \bar { y } ( T ) - x _ { T } ) z _ { h } ^ { n } ( T ) = \mathbb { E } \int _ { Q } h \tilde { p } _ { n } \quad \quad \forall n \in \mathbb { N } .
+$$
+
+The thesis now follows letting $n \to \infty$
+
+## References
+
+
+[1] D. C. ANTONOPOULOU, G. KARALI, AND A. MILLET, Existence and regularity of solution for a stochastic Cahn-Hilliard/Allen-Cahn equation with unbounded noise diffusion, J. Differential Equations, 260 (2016), pp. 2383–2417.
+
+[2] V. BARBU, M. RöCKNER, AND D. ZHANG, Optimal bilinear control of nonlinear stochastic Schrödinger equations driven by linear multiplicative noise, Ann. Probab., 46 (2018), pp. 1957–1999.
+
+[3] C. BAUZET, E. BONETTI, G. BONFANTI, F. LEBON, AND G. VALLET, A global existence and uniqueness result for a stochastic Allen-Cahn equation with constraint, Math. Methods Appl. Sci., 40 (2017), pp. 5241–5261.
+
+[4] E. BONETTI, P. COLLI, L. SCARPA, AND G. TOMASSETTI, A doubly nonlinear Cahn-Hilliard system with nonlinear viscosity, Commun. Pure Appl. Anal., 17 (2018), pp. 1001–1022.
+
+[5] D. Breit, E. Feireisl, and M. Hofmanová. Stochastically forced compressible fluid flows, volume 3 of De Gruyter Series in Applied and Numerical Mathematics. De Gruyter, Berlin, 2018.
+
+[6] Z. A. BRZEźNIAK AND R. SERRANO, Optimal relaxed control of dissipative stochastic partial differential equations in Banach spaces, SIAM J. Control Optim., 51 (2013), pp. 2664–2703.
+
+[7] J. W. CAHN AND J. E. HILLIARD, Free energy of a nonuniform system. i. interfacial free energy, The Journal of Chemical Physics, 28 (1958), pp. 258–267.
+
+
+
+[自然科学与地球科学\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 4 of 7).md]
+# mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md.md（第 4/7 部分）
+章节: Optimal distributed control of a stochastic Cahn-Hilliard equation \* > 5.1 Existence-uniqueness of the linearized system
+## 5.1 Existence-uniqueness of the linearized system
+
+
+We prove here Proposition 2.4. Let $u \in \mathcal { U } ^ { \prime }$ be given, set $y : = S ( u )$ , and let $h \in$ $L _ { \mathcal { P } } ^ { 6 } ( \Omega ; L ^ { 2 } ( 0 , T ; H ) )$ . We show that the linearized system (2.13)-(2.15) admits a unique solution $z _ { h }$
+
+Uniqueness. For $i = 1 , 2 $ let
+
+$$
+( z _ { h } ^ { i } , \mu _ { h } ^ { i } ) \in L _ { \mathcal { P } } ^ { 2 } \left( \Omega ; C ^ { 0 } ( [ 0 , T ] ; H ) \cap L ^ { 2 } ( 0 , T ; Z ) \right) \times L _ { \mathcal { P } } ^ { 2 } ( \Omega ; L ^ { 2 } ( 0 , T ; H ) ) ,
+$$
+
+such that $( z _ { h } ^ { i } , \mu _ { h } ^ { i } )$ satisfy (2.16)-(2.17). Then we have, in the variational sense in the triple $( Z , H , Z ^ { * } )$ 2
+
+$$
+\begin{array} { r l } { d ( z _ { h } ^ { 1 } - z _ { h } ^ { 2 } ) - \Delta ( \mu _ { h } ^ { 1 } - \mu _ { h } ^ { 2 } ) d t = D B ( y ) \left( z _ { h } ^ { 1 } - z _ { h } ^ { 2 } \right) d W \ } & { \ \mathrm { ~ i n ~ } ( 0 , T ) \times D , } \\ { \mu _ { h } ^ { 1 } - \mu _ { h } ^ { 2 } = - \Delta ( z _ { h } ^ { 1 } - z _ { h } ^ { 2 } ) + \Psi ^ { \prime \prime } ( y ) ( z _ { h } ^ { 1 } - z _ { h } ^ { 2 } ) \ } & { \ \mathrm { ~ i n ~ } ( 0 , T ) \times D , } \\ { \partial _ { \mathbf { n } } ( z _ { h } ^ { 1 } - z _ { h } ^ { 2 } ) = \partial _ { \mathbf { n } } ( \mu _ { h } ^ { 1 } - \mu _ { h } ^ { 2 } ) = 0 \ } & { \ \mathrm { ~ i n ~ } ( 0 , T ) \times \partial D , } \\ { ( z _ { h } ^ { 1 } - z _ { h } ^ { 2 } ) ( 0 ) = 0 \ } & { \ \mathrm { ~ i n ~ } D . } \end{array}
+$$
+
+Integrating on D the first equation, it follows from (A4) that $( z _ { h } ^ { 1 } - z _ { h } ^ { 2 } ) _ { D } = 0$ . Hence, Itô's formula for the square of the $V ^ { * }$ -norm yields
+
+$$
+\begin{array} { r l } & { \displaystyle \frac { 1 } { 2 } \left\| \nabla \mathcal { N } ( z _ { h } ^ { 1 } - z _ { h } ^ { 2 } ) ( t ) \right\| _ { H } ^ { 2 } + \int _ { Q _ { t } } | \nabla ( z _ { h } ^ { 1 } - z _ { h } ^ { 2 } ) | ^ { 2 } + \int _ { Q _ { t } } \Psi ^ { \prime \prime } ( y ) | ( z _ { h } ^ { 1 } - z _ { h } ^ { 2 } ) | ^ { 2 } } \\ & { \displaystyle = \frac { 1 } { 2 } \int _ { 0 } ^ { t } \mathrm { T r } \left( D B ( s , y ( s ) ) \left( z _ { h } ^ { 1 } - z _ { h } ^ { 2 } \right) ( s ) ^ { \ast } \circ \mathcal { N } \circ D B ( s , y ( s ) ) \left( z _ { h } ^ { 1 } - z _ { h } ^ { 2 } \right) ( s ) \right) d s } \\ & { \displaystyle + \int _ { 0 } ^ { t } \left( \mathcal { N } ( z _ { h } ^ { 1 } - z _ { h } ^ { 2 } ) ( s ) , D B ( s , y ( s ) ) \left( z _ { h } ^ { 1 } - z _ { h } ^ { 2 } \right) ( s ) \right) _ { H } d W ( s ) . } \end{array}
+$$
+
+Now, by the uniform boundedness of $D B ,$ the first term on the right-hand side is bounded by
+
+
+
+[自然科学与地球科学\quantum-physics__2201.00752__quantum-error-mitigation-via-matrix-product (part 2 of 3).md]
+We employ our MPO-inverse method to calculate the inverse of the real circuit $\mathcal { U } _ { \mathrm { M P O } } ^ { - 1 }$ for $D = 4$ and 5, then evaluate the relative distance between $\mathcal { U } _ { \mathrm { M P O } } ^ { - 1 } \circ \mathcal { U }$ and identity 1 in Fig. 6 (solid lines). The relative distance between two superoperators U and V is defined as $\mathcal { D } \left( \mathcal { U } , \mathcal { V } \right) = \left\| \mathcal { U } - \mathcal { V } \right\| _ { F } ^ { 2 } \big / \sqrt { \left\| \mathcal { U } \right\| _ { F } ^ { 2 } \left\| \mathcal { V } \right\| _ { F } ^ { 2 } }$ , which bounds the distance of output density matrices and can be directly estimated via MPO contraction. The result is compared with $\mathcal { D } \left( \mathcal { U } ^ { ( 0 ) - 1 } \circ \mathcal { U } , \mathbb { 1 } \right) = \mathcal { D } \left( \mathcal { U } , \mathcal { U } ^ { ( 0 ) } \right)$ (since $\mathcal { U } ^ { ( 0 ) }$ is unitary), which represents the total noise effect. It is demonstrated that with $D = 4 .$ the error induced by taking the inverse is several orders of magnitude smaller than the circuit error itself. Moreover, with $D = 5 , { \mathrm { i . e . } }$ , with just one extra virtual bond dimension compared to $\mathcal { U } ^ { ( 0 ) }$ (and thus $\mathcal { U } ^ { ( 0 ) } )$ , the accuracy of the MPO representation $\mathcal { U } _ { \mathrm { M P O } } ^ { - 1 }$ is near-perfect for all four types of noise.
+
+We next move to a much more non-trivial case, where we add extra global $N _ { q } { \mathrm { - q u b i t } }$ depolarizing noise after each layer, which can be written as an MPO with $D = 2$ The global depolarizing noise is a standard model to approximate the decoherence process of the entire circuit [48], which has drawn the attention of experimentalists when applying QEM to real devices [49, 50] but cannot be mitigated with the standard each-gate QEM approach. We fix the $N _ { q } .$ -qubit error rate at $\bar { \varepsilon _ { n } } = 1 0 ^ { - 2 }$ and repeat the previous calculations, as shown by dotted lines in Fig. 6. With $D = 5$ , the accuracy of MPO-inverse can still achieve $1 0 ^ { - 8 }$ . The result also implies that the circuit with depolarizing noise is harder to handle than the other three types of noise. In summary, one can capture almost all the noise effects during the procedure of MPO-inverse with just one extra virtual bond dimension compared to $\mathcal { U } ^ { ( 0 ) } { } ^ { \stackrel { \smile } { - 1 } }$ to represent $\mathcal { U } _ { \mathrm { M P O } } ^ { - 1 }$
+
+## B. Calculation of the noise inverse $ { \mathcal { E } } _ { \mathrm { M P O } } ^ { - 1 }$
+
+
+
+[自然科学与地球科学\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 3 of 7).md]
+$$
+\| u _ { n } ^ { * } \| _ { L ^ { 1 2 } ( \Omega ^ { * } ; L ^ { 2 } ( 0 , T ; H ) ) \cap L ^ { 6 } ( \Omega ^ { * } ; L ^ { 2 } ( 0 , T ; V ) ) } \le C _ { 0 } ,
+$$
+
+$$
+\begin{array} { r } { \left. I _ { n } ^ { * } \right. _ { L ^ { 6 } ( \Omega ^ { * } ; W ^ { s , 6 } ( 0 , T ; V ) ) } \le c _ { s } , } \end{array}
+$$
+
+$$
+\| w _ { n } ^ { * } \| _ { L ^ { 3 } ( \Omega ^ { * } ; L ^ { 2 } ( 0 , T ; V ) ) } + \| \Psi ^ { \prime } ( y _ { n } ^ { * } ) \| _ { L ^ { 3 } ( \Omega ^ { * } ; L ^ { 2 } ( 0 , T ; V ) ) } \leq c ,
+$$
+
+hence in particular that
+
+$$
+\begin{array} { c } { y ^ { * } \in L ^ { 1 2 } ( \Omega ^ { * } ; C ^ { 0 } ( [ 0 , T ] ; H ) \cap L ^ { 2 } ( 0 , T ; Z ) ) , } \\ { y ^ { * } \in L ^ { 6 } ( \Omega ^ { * } ; L ^ { \infty } ( 0 , T ; V ) \cap L ^ { 3 } ( \Omega ^ { * } ; L ^ { 2 } ( 0 , T ; H ^ { 3 } ( D ) ) , } \\ { u ^ { * } \in \mathcal { U } ^ { * } , } \\ { I ^ { * } \in L ^ { 6 } ( \Omega ^ { * } ; W ^ { s , 6 } ( 0 , T ; V ) ) } \end{array}
+$$
+
+and
+
+$$
+\begin{array} { r l } { y _ { n } ^ { * }  y ^ { * } } & { \mathrm { ~ i n ~ } L ^ { p } ( \Omega ^ { * } ; C ^ { 0 } ( [ 0 , T ] ; H ) ) ^ { 2 } \forall p \in [ 1 , 1 2 ) , } \\ { y _ { n } ^ { * }  y ^ { * } } & { \mathrm { ~ i n ~ } L ^ { 1 2 } ( \Omega ^ { * } ; L ^ { 2 } ( 0 , T ; Z ) ) \cap L ^ { 3 } ( \Omega ^ { * } ; L ^ { 2 } ( 0 , T ; H ^ { 3 } ( D ) ) ) , } \\ { u _ { n } ^ { * }  u ^ { * } } & { \mathrm { ~ i n ~ } L ^ { 1 2 } ( \Omega ^ { * } ; L ^ { 2 } ( 0 , T ; H ) ) \cap L ^ { 6 } ( \Omega ^ { * } ; L ^ { 2 } ( 0 , T ; V ) ) , } \\ { w _ { n } ^ { * }  w ^ { * } } & { \mathrm { ~ i n ~ } L ^ { 6 } ( \Omega ^ { * } ; L ^ { 2 } ( 0 , T ; V ) ) , } \\ { \Psi ^ { \prime } ( y _ { n } ^ { * } )  \xi ^ { * } } & { \mathrm { ~ i n ~ } L ^ { 3 } ( \Omega ^ { * } ; L ^ { 2 } ( 0 , T ; V ) ) , } \end{array}
+$$
+
+for some
+
+$$
+w ^ { * } \in L ^ { 6 } ( \Omega ^ { * } ; L ^ { 2 } ( 0 , T ; V ) , \qquad \xi ^ { * } \in L ^ { 3 } ( \Omega ^ { * } ; L ^ { 2 } ( 0 , T ; V ) ) .
+$$
+
+The strong-weak closure of the maximal monotone operator $r \mapsto \Psi ^ { \prime } ( r ) + c _ { 1 } r , r \in \mathbb { R }$ ensures that $\xi ^ { * } = \Psi ^ { \prime } ( y ^ { * } )$ almost everywhere. Moreover, by (A4) we have that
+
+$$
+B ( \cdot , y _ { n } ^ { * } ) \to B ( \cdot , y ^ { * } ) \qquad \mathrm { i n ~ } L ^ { p } ( \Omega ^ { * } ; L ^ { 2 } ( 0 , T ; \mathcal { L } ^ { 2 } ( U , H ) ) ) \quad \forall p \in [ 1 , 1 2 ) .
+$$
+
+Now, defining the filtrations $( \mathcal { F } _ { n , t } ^ { * } ) _ { t \in [ 0 , T ] }$ and $( \mathcal { F } _ { t } ^ { * } ) _ { t \in [ 0 , T ] }$ as
+
+$$
+\mathcal { F } _ { n , t } ^ { * } : = \sigma ( W _ { n } ^ { * } ( s ) ) _ { s \in [ 0 , t ] } , \quad \mathcal { F } _ { t } ^ { * } : = \sigma ( y ^ { * } ( s ) , u ^ { * } ( s ) , I ^ { * } ( s ) , W ^ { * } ( s ) ) _ { s \in [ 0 , T ] } , \qquad t \in [ 0 , T ] ,
+$$
+
+
+
+[自然科学与地球科学\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 6 of 7).md]
+# mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md.md（第 6/7 部分）
+章节: Optimal distributed control of a stochastic Cahn-Hilliard equation \* > 6.1 Existence-uniqueness of the adjoint problem
+## 6.1 Existence-uniqueness of the adjoint problem
+
+
+We prove here Proposition 2.6. Let $u \in \mathcal { U } ^ { \prime }$ and $y : = S ( u )$
+
+Uniqueness. First of all we prove uniqueness of solutions. Let $( p _ { i } , \tilde { p } _ { i } , q _ { i } )$ satisfy (2.18)– (2.22) for $i = 1 , 2$ : taking the difference of the respective equations we have, setting $p : = p _ { 1 } - p _ { 2 } , \tilde { p } : = \tilde { p } _ { 1 } - \tilde { p } _ { 2 }$ , and $q : = q _ { 1 } - q _ { 2 }$ 2
+
+$$
+- d p - \Delta \widetilde { p } d t + \Psi ^ { \prime \prime } ( y ) \widetilde { p } d t = D B ( y ) ^ { * } q d t - q d W , \qquad \widetilde { p } = - \Delta p .
+$$
+
+Itô's formula for $\begin{array} { r l } {  { \frac { 1 } { 2 } \| \nabla p \| _ { H } ^ { 2 } } } \end{array}$ yields then
+
+$$
+\begin{array} { r l } & { \frac { 1 } { 2 } \mathbb { E } \| \nabla p ( t ) \| _ { H } ^ { 2 } + \mathbb { E } \int _ { t } ^ { T } \int _ { D } | \nabla \tilde { p } ( s ) | ^ { 2 } d s + \mathbb { E } \int _ { t } ^ { T } \int _ { D } \Psi ^ { \prime \prime } ( y ( s ) ) | \tilde { p } ( s ) | ^ { 2 } } \\ & { \qquad + \displaystyle \frac { 1 } { 2 } \mathbb { E } \int _ { t } ^ { T } \| \nabla q ( s ) \| _ { \mathcal { L } ^ { 2 } ( U , H ) } ^ { 2 } d s = \mathbb { E } \int _ { t } ^ { T } \left( q ( s ) , D B ( s , y ( s ) ) \tilde { p } ( s ) \right) _ { \mathcal { L } ^ { 2 } ( U , H ) } d s . } \end{array}
+$$
+
+Recalling assumption (A4), we have that $D B ( \cdot , y ) \tilde { p } \in \mathcal { L } ^ { 2 } ( U , H _ { 0 } )$ , so that
+
+$$
+( q , D B ( \cdot , y ) \tilde { p } ) _ { \mathcal { L } ^ { 2 } ( U , H ) } = ( q - q _ { D } , D B ( \cdot , y ) \tilde { p } ) _ { \mathcal { L } ^ { 2 } ( U , H ) } .
+$$
+
+Taking into account (A2) and noting that $\tilde { p } _ { D } = 0$ , we get, by the Young and Poincaré inequalities and (2.1),
+
+
+
+[自然科学与地球科学\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 2 of 3).md]
+$$
+x _ { o u t } ^ { j } = \sigma \Big ( \sum _ { i = 1 } ^ { N _ { i n } } W _ { j i } x _ { i n } ^ { i } + b _ { j } \Big ) , ~ \vec { x } _ { o u t } = ( x _ { o u t } ^ { 1 } , x _ { o u t } ^ { 2 } , . . . , x _ { o u t } ^ { N _ { o u t } } ) .\tag{A1}
+$$
+
+Here, $W _ { j i }$ and $b _ { j }$ are neural network parameters to be trained, and $\sigma ( . )$ is a nonlinear function, $x _ { i n } ^ { i }$ and $x _ { o u t } ^ { j }$ are vector components of input and output vectors, $N _ { i n }$ and $N _ { o u t }$ - number of elements in $x _ { i n }$ and $x _ { o u t }$ . Several such layers compose a neural network. For example, a neural network with an input layer, a single hidden layer, and an output layer has the following form:
+
+$$
+f ( \vec { x } , \hat { W } , \hat { b } ) = \sigma _ { 2 } \bigg ( \sum _ { j _ { 2 } = 1 } ^ { N _ { 2 } } W _ { j _ { 2 } j _ { 1 } } \sigma _ { 1 } \bigg ( \sum _ { j _ { 2 } = 1 } ^ { N _ { 1 } } W _ { j _ { 1 } i } x _ { i n } ^ { i } + b _ { j _ { 1 } } \bigg ) + b _ { j _ { 2 } } \bigg ) .\tag{A2}
+$$
+
+Here we denoted all trainable weights on different layers as $\hat { W }$ and all traina
+
+
+
+[自然科学与地球科学\quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 2 of 4).md]
+Given an ensemble of measurements {b}, we discard any binary strings $\pmb { b } \in \mathbb { Z } _ { 2 } ^ { N }$ that do not respect the number and spin symmetries; given that we know the number of particles n in the system and the allowed spin values $\big \{ s _ { 0 } , \dots , s _ { M - 1 } \big \}$ where $s _ { i } = s - i$ for quantum number s (multiplicity $M = 2 s + 1 )$ , we require that $S _ { N } \left| \boldsymbol { b } \right. = n \left| \boldsymbol { b } \right.$ and $S _ { z } \left| \pmb { b } \right. = s _ { i } \left| \pmb { b } \right.$ for some $i \in \{ 0 , \ldots , M - 1 \}$ . Our HCl problem is in a singlet configuration, hence the only allowable spin value is $s = 0$ and thus valid quantum measurements are those in the kernel of $S _ { z }$
+
+This QEM technique requires no additional coherent overhead and only minor postprocessing, yet we observe respectable error suppression from enforcing number and spin symmetries on the diagonal Hamiltonian terms, as seen in Table IV. We intend to investigate the use of nonabelian point group symmetries (see Section III A) for the purposes of error mitigation in future work, although it is not immediately clear whether this will be possible.
+
+## D. Zero-Noise Exptrapolation
+
+
+The technique of zero-noise extrapolation (ZNE), also referred to in the literature as richardson extrapolation, operates on the principle that one may methodically amplify noise present in our quantum measurement output, obtaining a collection of increasingly noisy energy estimates before extrapolating the data and inferring the experimentally untouchable point of zero noise' [6-12]. There are many methods of amplifying noise in our quantum circuits: some do so continuously by stretching gates temporally, requiring pulse-level control over the hardware, whereas others employ discrete approaches that either insert identity blocks of increasing complexity (e.g. unitary folding) or replace the target gate with a product over its roots.
+
+It is the latter method we employ here. Given a quantum circuit U, some constituent native gate G and a noise parameter $\lambda \in \mathbb { N }$ , we shall replace each instance of G in-circuit with the equivalent operation $\textstyle \prod _ { i = 1 } ^ { \lambda } { \sqrt { G } }$ to yield a noise-amplified circuit $U _ { \lambda }$ . One may note that $\lambda = 1$ corresponds with the unmodified circuit, whereas we intend to infer a value for $\lambda = 0$ by evaluating expectation values $E _ { \lambda } = \left. \psi _ { \mathrm { r e f } } | U _ { \lambda } ^ { \dagger } P U _ { \lambda } | \psi _ { \mathrm { r e f } } \right.$ at integer values $\lambda \in \{ 1 , 2 , 3 , \dots \}$ and extrapolating.
+
+In particular, we shall take $G = \mathrm { C N O T }$ since this is the dominant source of error by an order of magnitude, as seen in Table I. In order to decompose CNOT into its roots, we define the two-qubit gate
+
+
+
+[自然科学与地球科学\mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md (part 2 of 7).md]
+# mathematics__1810.09292__optimal-distributed-control-of-a-stochastic.md.md（第 2/7 部分）
+章节: Optimal distributed control of a stochastic Cahn-Hilliard equation \* > Theorem 2.2. Assume $( A 1 ) { - } ( A 4 )$ . Then there exists a relaxed optimal control.
+## Theorem 2.2. Assume $( A 1 ) { - } ( A 4 )$ . Then there exists a relaxed optimal control.
+
+
+We focus now on the necessary conditions for optimality. As we have anticipated, the first step consists in showing that S is Gâteaux-differentiable in certain weak-sense and to characterize its weak derivative as the unique solution of a linearized system. The following proposition ensures that the linearized system is well-posed in a suitable variational sense.
+
+Proposition 2.4. Assume $( A I ) - ( A 5 )$ Then, for every $u \in \mathcal { U } ^ { \prime }$ and for every $h \in$ $L _ { \mathcal { P } } ^ { 6 } ( \Omega ; L ^ { 2 } ( 0 , T ; H ) )$ , setting $y : = S ( u )$ , there exists a unique pair $\left( z _ { h } , \boldsymbol { \mu _ { h } } \right)$ with
+
+$$
+z _ { h } \in L _ { \mathcal { P } } ^ { 2 } \left( \Omega ; C ^ { 0 } ( [ 0 , T ] ; H ) \cap L ^ { 2 } ( 0 , T ; Z ) \right) ,\tag{2.13}
+$$
+
+$$
+z _ { h } - \int _ { 0 } ^ { \cdot } { \cal D } B ( s , y ( s ) ) z _ { h } ( s ) d W ( s ) \in { \cal L } ^ { 2 } ( \Omega ; H ^ { 1 } ( 0 , T ; Z ^ { * } ) ) ,\tag{2.14}
+$$
+
+$$
+\mu _ { h } \in L _ { \mathcal { P } } ^ { 2 } ( \Omega ; L ^ { 2 } ( 0 , T ; H ) ) ,\tag{2.15}
+$$
+
+such that $z _ { h } ( 0 ) = 0$ and, for every $\varphi \in Z$ , for almost every $t \in ( 0 , T )$ , P-almost surely,
+
+$$
+\left. \partial _ { t } \left( z _ { h } ( t ) - \int _ { 0 } ^ { t } { \cal D } B ( s , y ( s ) ) z _ { h } ( s ) d W ( s ) \right) , \varphi \right. _ { Z } - \int _ { { \cal D } } \mu _ { h } ( t ) \Delta \varphi = 0 ,\tag{2.16}
+$$
+
+$$
+\int _ { D } \mu _ { h } ( t ) \varphi = \int _ { D } \nabla z _ { h } ( t ) \cdot \nabla \varphi + \int _ { D } \Psi ^ { \prime \prime } ( y ( t ) ) z _ { h } ( t ) \varphi - \int _ { D } h ( t ) \varphi .\tag{2.17}
+$$
+
+Remark 2.5. Let us point out that (2.13)–(2.17) is the weak formulation of the linearized system, which can be obtained formally differentiating the state system $( 1 . 1 ) \ – ( 1 . 4 )$ with respect to u in the direction h, i.e.
+
+$$
+\begin{array} { r l } { d z _ { h } - \Delta \mu _ { h } d t = D B ( y ) z _ { h } d W \quad } & { \mathrm { ~ i n ~ } ( 0 , T ) \times D , } \\ { \mu _ { h } = - \Delta z _ { h } + \Psi ^ { \prime \prime } ( y ) z _ { h } - h \quad } & { \mathrm { ~ i n ~ } ( 0 , T ) \times D , } \\ { \partial _ { \mathbf { n } } z _ { h } = \partial _ { \mathbf { n } } \mu _ { h } = 0 \quad } & { \mathrm { ~ i n ~ } ( 0 , T ) \times \partial D , } \\ { z _ { h } ( 0 ) = 0 \quad } & { \mathrm { ~ i n ~ } D . } \end{array}
+$$
+
+We are now able to give a characterization of the weak Gâteaux derivative of $S$ in terms of the unique solution to the linearized system (2.13)-(2.17).
+
+
+
+[自然科学与地球科学\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md]
+$$
+\begin{array} { r } { \mathrm { E L } = \mathbb { E } _ { \mathbf { x } \sim p _ { X } ( \mathbf { x } ; \pmb { \theta } ) } \left[ \log p _ { X } ( \mathbf { x } ; \pmb { \theta } ) + u ( \mathbf { x } ) \right] . } \end{array}\tag{17}
+$$
+
+As the network samples from an energy surface $u ( \mathbf { x } ; \pmb { \theta } ) = - \log p _ { X } ( \mathbf { x } ; \pmb { \theta } )$ + const $\left( \mathrm { E q . } \ 1 \right)$ , this loss is performing energy matching, similar as in Sec. 2.1. In order to evaluate the loss $( 1 7 )$ , we need not only to be able to generate samples $\mathbf { x } \sim p _ { X } ( \mathbf { x } ; \pmb { \theta } )$ from the network, but also to be able to compute $p _ { X } ( \mathbf { x } ; \pmb \theta )$ for every sample x. See Sec. 4.5 for an example.
+
+The reverse case is density estimation. Suppose we have simulation data x, and we want to train the probability distribution $p _ { X } ( \mathbf { x } ; \pmb \theta )$ to resemble the data distribution. We choose $q ( \mathbf { x } )$ as the data distribution and $p \equiv p _ { X } ( \mathbf { x } ; \pmb \theta )$ in Eq. (16), and exploit that $\mathbb { E } _ { \mathbf { x } \sim d a t a } \left[ \log q ( \mathbf { x } ) \right]$ is a constant that does not depend on the parameters θ. Then we can minimize the loss:
+
+$$
+\mathrm { N L } = - \mathbb { E } _ { \mathbf { x } \sim \mathrm { d a t a } } \left[ \log p _ { X } ( \mathbf { x } ; \pmb { \theta } ) \right] .\tag{18}
+$$
+
+This loss is the negative likelihood that the model generates the observed sample, hence minimizing it corresponds to a maximum likelihood approach. Likelihood maximization is abundantly used in machine learning, in this review we will discuss it in Sec. 4.5.
+
+## 3 Incorporating Physics into Machine Learning
+
+## 3.1 Why incorporate physics?
+
+
+Compared to classical ML problems such as image classification, we have a decisive advantage when working with molecular problems: we know a lot of physical principles that restrict the possible predictions of our machine to the physically meaningful ones
+
+Let us start with a simple example to illustrate this. We are interested in predicting the potential energy and the atom-wise forces of the diatomic molecule $O _ { 2 }$ with positions $\mathbf { x } _ { 1 } , \mathbf { x } _ { 2 }$ in vacuum (without external forces) Independent of the details of our learning algorithm, physics tells us that a few general rules must hold:
+
+
+
+[自然科学与地球科学\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 1 of 3).md]
+# quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e（第 1/3 部分）
+章节: Echo-evolution data generation for quantum error mitigation via neural networks
+# Echo-evolution data generation for quantum error mitigation via neural networks
+
+
+Danila Babukhin¹
+
+1Dukhov Research Institute of Automatics (VNIIA), Moscow, 127055, Russia.
+
+Contributing authors: dv.babukhin@gmail.com;
+
+## Abstract
+
+
+Neural networks provide a prospective tool for error mitigation in quantum simulation of physical systems. However, we need both noisy and noise-free data to train neural networks to mitigate errors in quantum computing results. Here, we propose a physics-motivated method to generate training data for quantum error mitigation via neural networks, which does not require classical simulation and target circuit simplification. In particular, we propose to use the echo evolution of a quantum system to collect noisy and noise-free data for training a neural network. Under this method, the initial state evolves forward and backward in time, returning to the initial state at the end of evolution. When run on the noisy quantum processor, the resulting state will be influenced by with quantum noise accumulated during evolution. Having a vector of observable values of the initial (noise-free) state and the resulting (noisy) state allows us to compose training data for a neural network. We demonstrate that a feed-forward fully connected neural network trained on echo-evolution-generated data can correct results of forward-in-time evolution. Our findings can enhance the application of neural networks to error mitigation in quantum computing.
+
+Keywords: Quantum error mitigation, Neural networks, Quantum simulation, Ising model
+
+## 1 Introduction
+
+
+Development of quantum computers in recent years led to demonstrating genuinely nontrivial results [1, 2] on devices with up to hundreds of qubits and non-ideal components [3]. Despite this, fault-tolerant quantum computing with error-correcting codes is still beyond nowadays technological level. Until fault-tolerant quantum computing unfolds, there is an alternative solution - to support NISQ devices with quantum error mitigation (QEM)[4]. Quantum error mitigation is an approach to reduce the effect of quantum noise in the results of quantum computing via additional data sampling and post-processing. Up to date, several examples of QEM have been demonstrated [5-7] and theoretical understanding of QEM has advanced [8] to make QEM a convenient tool to support further development of quantum computing.
+
+
+
+[自然科学与地球科学\quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu (part 3 of 4).md]
+# quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu（第 3/4 部分）
+章节: Benchmarking Noisy Intermediate Scale Quantum Error Mitigation Strategies for Ground State Preparation of the HCl Molecule > V. GROUND STATE PREPARATION
+## V. GROUND STATE PREPARATION
+
+
+Before proceeding onto the quantum error mitigation benchmark, there are a few additional considerations to resolve. Firstly, one must identify a suitable ansatz circuit that is sufficiently expressible to realize the desired ground state. Secondly, we discuss the mapping of our circuits onto physical qubits, in particular for dual-state purification since one should be mindful of the added qubit connectivity constraints arising from parity computation stored on the ancilla qubit. Thirdly, despite not implementing any shot reduction methods in this work, we still wish to distribute the shot budget in an informed manner, preferably tailored to each device; this is the final point of discussion before moving onto the results of our benchmark.
+
+## A. Ansatz Construction
+
+
+Initially, we tested the noncontextual projection ansatz [54] derived from the 316-term CCSD operator. The projection into the 3-qubit contextual subspace yields a 6- term excitation pool from which we identify 4 operators via qubit-ADAPT-VQE that permit chemical precision. Despite this dramatic reduction in circuit depth from the full UCCSD ansatz, the resulting noncontextual projection ansatz consists of 12 CNOT gates which we found to be prohibitive in achieving chemical precision.
+
+To remedy this, we abandon chemical intuition in the name of hardware efficiency. It is already known that an arbitrary 3-qubit quantum state may be prepared on quantum hardware using at most 4 CNOT gates [64]. In fact, we found that only 2 CNOT gates are sufficient in constructing a 3-qubit ansatz circuit that is sufficiently expressible for our electronic structure problem, presented in Figure 9. In Figure 10 we present the outcome of a noiseless VQE simulation over this ansatz to illustrate its expressibility.
+
+q0, q2, q1, q3
+
+![](images/55aae72c59b699306ede951f10623c917b5196b134b4a3ad8f6cdfc9e2decfee.jpg)
+
+![](images/c50ae14d63526cc959f1152197ca63119a57b4256defe999c4378592dbdb5cd3.jpg)  
+(e) ZIZ  
+(a) IIZ
+
+![](images/3f672f301d4e398d15a2d91ecc638ada0e475bd88a5644ec5ef831158243a240.jpg)  
+FIG. 9: Hardware efficient HCl 3-qubit contextual subspace ansatz; the Y-rotation gates are decomposed into native gates as $R _ { y } = \sqrt { X } R _ { z } \sqrt { X }$ . The optimal parametrization obtained from the statevector simulation in Figure 10 is: θ1 = −0.06492667, θ2 = 2.89836152, θ3 = 0.26373807, $\theta _ { 4 } = - 0 . 0 6 7 0 9 0 6 2 , \theta _ { 5 } = 0 . 0 1 0 0 6 8 3 3 , \theta _ { 6 } = - 0 . 2 6 5 8 5 0 4 6 .$
+
+
+
+[自然科学与地球科学\chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md]
+Fig 3 shows that deep learning with augmented dataset has an advantage over conventional machine learning models. Models like Supporting Vector Regression (SVR) and Gradient Boosting Regression (GBR) tend to be absolute failures as their PCCs are zeros and $R ^ { 2 } { \bf s }$ are negative, which suggests that some conventional algorithms are brittle in a limited data scheme. Random Forest $( \mathrm { R F } )$ , as one of the most effective machine learning algorithms, can beat DNN with non-augmented $1 0 ^ { 2 }$ raw data. However, the proposed approach that incorporates the deep spatial learning with molecular augmentation leverages the post-augmentation improvement to the maximum and finally wins over RF. All these show that even in the most extreme condition where very little raw data can be collected, the proposed approach can still give us valid and accurate predictions to be used for material fabrication. The very accurate predictions provided by deep spartial representation learning can help filter the membranes that are prepared to be fabricated and avoid the trial-and-error procedure, making material on-demand design much more efficient. It is for the first time in the membrane community to report deep learning instructive with limited data, and experiments on more materials can further verified the generalized effectiveness of the proposed method.
+
+## 4 Conclusion
+
+We proposed the idea of using deep spatial representation learning and molecular vibration to model relation between laboratory preparing conditions and performances of polyamide nanofiltration membranes. This method shows an approach using an end-to-end manner to exploit the physical information contained in dataset. Molecular vibration as a physically interpretable method provides a significant performance boost to deep learning models, and we demonstrate empirically that this augmentation can empower deep learning to be robust. We prove strong correlation and low error between prediction values of the neural network and real values of the data label, demonstrating the generalization ability of the our model under a limited data scheme. Without expensive computation, the proposed method can open the door to the marriage of machine learning and many molecular materials, to address data scarcity for machine learning applications. Future works upon this technique, such as proposing a simple algorithmic approximation of vibration, or utilizing this technique and many other physics-informed augmentation in other schemes can further push forward this research.
+
+## References
+
+Brenden M Lake, Ruslan Salakhutdinov, and Joshua B Tenenbaum. Human-level concept learning through probabilistic program induction. Science, 350(6266):1332–1338, 2015.
+
+Keith T Butler, Daniel W Davies, Hugh Cartwright, Olexandr Isayev, and Aron Walsh. Machine learning for molecular and materials science. Nature, 559(7715):547–555, 2018.
+
+
+
+[自然科学与地球科学\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md]
+![](images/b250e3c849efbee63c45c80cad40fd730f89812f514024a9d176391c88afac63.jpg)  
+Figure 6: VAMPnet and application to alanine dipeptide. a) a VAMPnet [21] includes an encoder $E$ which transforms each molecular configuration $\mathbf { x } _ { t }$ to a latent space of “slow reaction coordinates" $\mathbf { y } _ { t } ,$ and is trained on pairs $\left( \mathbf { y } _ { t } , \mathbf { y } _ { t + \tau } \right)$ sampled from the MD simulation using the VAMP score [73]. If the encoder performs a classification, the dynamical propagator $\mathbf { P } ( \tau )$ is a Markov state model. b) Structure of alanine dipeptide. The backbone torsion angles $\phi$ and $\psi _ { ; }$ describe the slow kinetics of conformation changes, but Cartesian coordinates of heavy atoms are used as VAMPnet inputs here. c) Classification of the VAMPnet encoder of MD frames to metastable states in the φ and $\psi$ space. Color corresponds to activation of the respective output neuron. d) equilibrium probabilities of Markov states and transition probabilities given by $\mathbf { P } ( \tau )$ . e) Chapman-Kolmogorov test comparing long-time predictions of the VAMPnet model estimated at $\tau = 5 0$ ps with estimates at longer lag times. Figure modified from [21].
+
+## 4.5 Sampling/Thermodynamics: Boltzmann Generators
+
+
+Boltzmann Generators were introduced in [37] to learn to sample equilibrium distributions, Eq. (1). In contrast to standard generative learning, a Boltzmann Generator does not attempt to learn the probability density from data. but is trained to efficiently sample $\mu ( \mathbf { x } ) \propto \operatorname { e } ^ { - u ( \mathbf { x } ) }$ using the dimensionless energy $u ( { \bf x } )$ as an input. A Boltzmann Generator consists of two parts:
+
+1. A generative model that is trained to propose samples from a probability distribution $p _ { X } ( \mathbf { x } )$ which is "similar" to $\mu ( \mathbf { x } )$ , and that allows us to evaluate $p _ { X } ( \mathbf { x } )$ (up to a constant) for every x.
+
+2. A reweighting procedure that takes proposals from $p _ { X } ( \mathbf { x } )$ and generates unbiased samples from $\mu ( \mathbf { x } )$
+
+Boltzmann Generators use a trainable generative network $F _ { z x }$ which maps latent space samples z from a simple prior, e.g., a Gaussian normal distribution, to samples $\mathbf { x } \sim p _ { X } ( \mathbf { x } )$ . Training is done by combining the energy-based training using the KL divergence, Eq. (17), and maximum likelihood, Eq. (18).
+
+
+
+[自然科学与地球科学\astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 1 of 2).md]
+The characteristics of the dataset derive from the characteristics of the camera and the survey strategy. DECam¹º is a CCD camera consisting of 62 fully depleted, 250 micron thick 2048x4096 CCDs together with four 2048x2048 guider and eight 2048x2048 autofocus CCDs (see Figure 1). Each readout produces a \~1 GB image, and the readout occurs in under 17 seconds. DECam will be used with 5 filters grizY during the survey, and the thick, fully depleted CCDs lead to high quantum efficiency even in the z and Y bands.
+
+![](images/03053c6d5111f54b3d3cbfe4de14d6d26715769dc4dc47a849818351d526d758.jpg)  
+Figure 2: The DES tiling strategy where DECam pointings are represented as hexagons laid out in a honeycomb configuration on the sky. Rather than small dithers around each pointing as in the CFHT Legacy Survey, the DES survey strategy involves large offsets between overlapping layers to provide for greater uniformity in the dataset. (figure courtesy Jim Annis).
+
+## 2.1 Survey Strategy
+
+
+The survey strategy for the DES consists of repeated observations of 10 fields with small dithers to support the SNe science, but the large survey plan has two stages. First, an area of approximately 10% of the full survey solid angle of 5000 deg² will be imaged to full DES depth. This will allow us to immediately ascertain the data quality for the full survey and to move forward with exciting, near term science using these smaller areas. Second, the remaining areas of the survey will be imaged over successive seasons, building up approximately 2 layers of imaging in each band during each season. The DES tiling strategy involves creating a full layer of imaging in a single band covering the full 5000 deg² area. Within each layer of imaging there are only minimal overlaps between neighboring fields. Subsequent layers of images are then offset from the last by approximately half a field of view (see Figure 2). These shifts between layers
+
+![](images/2215be7da38d365a0976e3b4548c3aade31de8d58b6a5e2f1808bf363b8ef0ef.jpg)  
+Figure 3: The current layout of the DES main survey is shown in blue above. SNe deep fields are marked in orange and red, and purple area is that which has been redistributed into the blue connecting region between the SPT fields (southern) and the equatorial strip. Hatched regions correspond to target full-depth early survey fields that are associated with the SPT-pol survey and equatorial regions important for eBOSS. The cyan box in the middle outlines the deep NIR VIKING survey that will be covered in full by DES (figure courtesy Jim Annis).
+
+have been optimized to avoid overlapping chip gaps between layers. This approach leads to every source in the survey having been observed using approximately ten different parts of the focal plane, presumably allowing for more uniform data quality across the survey. Common stellar objects in overlapping images will be used to bring all observations within a band to a common zeropoint during image coaddition.
+
+
+
+[自然科学与地球科学\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md]
+# quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e（第 3/3 部分）
+章节: Echo-evolution data generation for quantum error mitigation via neural networks > Appendix D Analysis of the neural network size, continued
+## Appendix D Analysis of the neural network size, continued
+
+
+In the main text, we trained a neural network with a single hidden layer on data obtained from the echo evolution of the spin system. Then we demonstrated quantum error mitigation in data obtained from the forward-in-time dynamics of the spin system. For that experiment, we chose a particular size of the hidden layer (200 neurons). In this section, we provide analysis illustrating that the number of neurons in the hidden layer, in the case of dynamics simulation considered here, can be lowered to approximately the size of data vectors. In the following, we provide simulations for neural networks with variable width of the hidden layer and with other parts of the setup fixed $\mathrm { ~ - ~ e . g . }$ , for the number of hidden layers, activation functions, loss function, and training procedure details (type of optimizer, size of data batches, etc.).
+
+To analyze this question, we evaluate the quality of error mitigation depending on hidden layer width. In particular, we use a trained neural network to mitigate quantum noise error in the test data set - a hold-out part of echo evolution data to evaluate error mitigation performance. For a test set of a fixed size, we can calculate statistics on error-mitigated observable values and thus see how good our trained network performs error mitigation.

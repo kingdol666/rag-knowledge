@@ -125,7 +125,8 @@ def new_run_dir() -> Path:
 def execute(questions: list[dict], tracks: list[str], out_dir: Path, *,
             max_turns: int = 12, seed: int = 0, shuffle: bool = True,
             selfheal: bool = True, monitor_system: bool = False,
-            dry_run: bool = False, quiet: bool = False) -> list[dict]:
+            dry_run: bool = False, quiet: bool = False,
+            resume: bool = False) -> list[dict]:
     """Run every (question × track) and persist one JSON per cell.
 
     This is the single execution core shared by the CLI and `exp.py`.
@@ -181,6 +182,20 @@ def execute(questions: list[dict], tracks: list[str], out_dir: Path, *,
         order = question_order(agent_tracks + baseline_methods, q["qid"], seed,
                                shuffle)
         for t in order:
+            cell_path = out_dir / f"track_{t}_{q['qid']}.json"
+            if resume and cell_path.exists():
+                try:
+                    prev = json.loads(cell_path.read_text(encoding="utf-8"))
+                except Exception:  # noqa: BLE001 — corrupt cell → re-run
+                    prev = None
+                if (prev and not prev.get("error")
+                        and not prev.get("dry_run")
+                        and str(prev.get("answer") or "").strip()):
+                    if not quiet:
+                        print(f"[{q['qid']}/{t}] resume: cached "
+                              f"{prev.get('latency_s')}s", flush=True)
+                    rows.append(prev)
+                    continue
             if not quiet:
                 print(f"[{q['qid']}/{t}] running ...", flush=True)
             if mon:
@@ -204,6 +219,9 @@ def execute(questions: list[dict], tracks: list[str], out_dir: Path, *,
             if mon:
                 r["system"] = mon.stop()
             rows.append(r)
+            # 外部进程可能在长跑中途清理 results/（2026-09-30 实测：run 目录
+            # 中途消失导致整轮白跑）。写盘前确保目录仍在，丢了就重建。
+            out_dir.mkdir(parents=True, exist_ok=True)
             (out_dir / f"track_{t}_{q['qid']}.json").write_text(
                 json.dumps(r, ensure_ascii=False, indent=1), encoding="utf-8")
             if not quiet:
@@ -283,6 +301,9 @@ def main() -> int:
     ap.add_argument("--fast", action="store_true",
                     help="quick smoke: 3 questions, tracks a2,b,c, --no-selfheal")
     ap.add_argument("--list-tracks", action="store_true")
+    ap.add_argument("--out-dir", default=None,
+                    help="reuse an existing run dir (resume: finished cells "
+                         "with non-empty answers are skipped)")
     args = ap.parse_args()
 
     if args.list_tracks:
@@ -312,12 +333,12 @@ def main() -> int:
         ap.error(f"unknown track(s) {unknown}; "
                  f"choose from {AGENT_TRACKS + BASELINE_METHODS}")
 
-    out_dir = new_run_dir()
+    out_dir = Path(args.out_dir) if args.out_dir else new_run_dir()
     rows = execute(questions, tracks, out_dir, max_turns=args.max_turns,
                    seed=args.seed, shuffle=not args.no_shuffle,
                    selfheal=not args.no_selfheal,
                    monitor_system=args.monitor_system,
-                   dry_run=args.dry_run)
+                   dry_run=args.dry_run, resume=bool(args.out_dir))
     summary(rows, tracks, questions, out_dir)
     print(f"[done] {out_dir}")
     return 0

@@ -1,0 +1,33 @@
+{
+ "mode": "A",
+ "qid": "cm1",
+ "expect": "found",
+ "kb_ids": [
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 38.8,
+ "duration_ms": 36611,
+ "turns": 5,
+ "cost_usd": 0.21448299999999998,
+ "session_id": "d9f58ae7-f01e-4409-a2b9-6c0cfe3320dd",
+ "answer_chars": 2015,
+ "answer_markers_hit": [
+  "instructds"
+ ],
+ "refusal": false,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：InstructDS 用「摘要锚定」的三步合成流水线，从已有的「对话-摘要」对中自动造出高质量的 query-dialogue-summary（QDS）三元组，借助大语言模型（Flan-T5-XL）的提问与问答能力，把人类参与降到最低。**\n\n出处：`计算机与人工智能/nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md`（论文 *Instructive Dialogue Summarization with Query Aggregations*，Wang, Liu, Chen；KB `b1199132-…`）。证据强度 **P0**（论文原文直接陈述，判定全部命中，score 0.75–0.95）。\n\n## 三步合成流程（§3.2 Synthesize QDS Triples）\n\n原文：\"The process of generating query-dialogue-summary (QDS) triples from dialogue-summary pairs in our pipeline involves three steps: 1) query generation from complete summary; 2) query filtering t",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true
+  }
+ }
+}

@@ -1,0 +1,220 @@
+[自然科学与地球科学\astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 1 of 2).md]
+Thereafter, the nightly calibration data are used to produce a bias correction image and a dome flat correction image in each band. In this process, a bad pixel map stored in the calibration portion of the archive is used to mask out hot columns, glowing edges and other pixel defects. In addition, each image is overscan corrected using a simple median value for each readout row. In the production of the flat field images, a pupil ghost correction is applied to the flats that accounts for scattered light resulting from multiple reflections within the five element DECam corrector. This additive pupil ghost is measured using star flats determined from calibrated data processed without the pupil ghost correction. We use the star flats to determine a functional form that represents the correction needed as a function of position to bring all stars throughout a detector to a common photometric zeropoint. This correction scales as a function of the sky brightness (i.e. a measure of the total light coming through the corrector in each band). No pupil ghost has been measured for DECam to date, so we are using a theoretical expectation extracted for the corrector optics and representing the shape as a broad Gaussian centered in the field. This correction is stored as 62 CCD correction images, and so our pupil ghost will work well even if the shape of the scattered light is quite complex.
+
+The science exposures are then overscan corrected, bias corrected, flat field and pupil ghost corrected. A bad pixel image stored as a calibration product in the archive is used to build an initial bad pixel map, and additional pixels are marked as saturated as appropriate. By default we interpolate over single bad columns, enhancing the noise stored in the weight map by a factor of four to reflect the loss of information and marking these pixels as interpolated in the bad pixel mask. We typically carry out a round of cosmic ray masking and bright star masking at this stage as well.
+
+Because we wish to avoid correlated noise in our reduced images, we do not remap them to portions of a tangent plane Thus, we also have to correct the source flux for the pixel solid angle variation across each chip. To do this we use an archive calibration product that stores a pixel area scale factor image for each CCD. Because we wish to maintain the flat sky brightness that results from our dome flattening, we apply the pixel area correction to the modal sky subtracted image. In this way, the correction is only applied to the source flux, and after the correction the modal sky value for the image is added back. In principle, at this stage our reduced images have both flat sky and a non-varying photometric zeropoint.
+
+
+
+[自然科学与地球科学\quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md]
+We can anticipate that analog quantum simulators will eventually become obsolete. Because they are hard to control, they will be surpassed some day by digital quantum simulators, which can be firmly controlled using quantum error correction. But because of the hefty overhead cost of quantum error correction, the reign of the analog quantum simulator may persist for many years. Therefore, when seeking near-term applications of quantum technology, we should not overlook the potential power of analog quantum simulators.
+
+## 6.11 Quantum games
+
+
+Advances in classical computing launched a new world of digital games, touching the lives of millions and generating billions in revenue. Could quantum computers do the same?
+
+Physicists often say that the quantum world is counter-intuitive because it is so foreign to ordinary experience. That's true now, but might it be different in the future? Perhaps kids who grow up playing quantum games will acquire a visceral understanding of quantum phenomena that our generation lacks. Furthermore, quantum games could open a niche for quantum machine learning methods, which might seize the opportunity to improve game play in situations where quantum entanglement has an essential role.
+
+## 7 The daunting climb to scalability
+
+
+I've already emphasized repeatedly that it will probably be a long time before we have fault-tolerant quantum computers solving hard problems. Nevertheless, we can make significant progress in the near term by developing better methods and hardware for implementing quantum error correction, guided by relatively small-scale experiments with quantum error-correcting codes. We expect that, in the next few years, enhanced control of an error-corrected qubit will be demonstrated convincingly in the lab for the first time. Further near-term experiments exploring quantum error correction are bound to advance our understanding of noise in quantum devices, and to suggest more effective techniques for noise mitigation [53, 54| and device validation [55].
+
+Nevertheless, solving really hard problems (like factoring numbers which are thousands of bits long) using fault-tolerant quantum computing is not likely to happen for a while, because of the large number of physical qubits needed. To run algorithms involving thousands of protected qubits we'll need a number of physical qubits which is in the millions, or more [56]. That's a very large leap from where we will be for the next few years, with of order a hundred qubits. Crossing the “quantum chasm," from hundreds of physical qubits to millions of physical qubits, is going to take some time, but we'll get there eventually.
+
+
+
+[自然科学与地球科学\astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 2 of 2).md]
+We have carried out extensive tests on simulated and real data of the performance of this tool. The noise correlations introduced by the PSF homogenization are more severe than those introduced by the remapping carried out in the SWarp coaddition. The noise impact is differential, amplifying the sky noise in images whose PSF has been improved and reducing it in images whose PSF has been degraded. This noise amplification/suppression is a function of scale and position within each image, with the noise being unaffected on scales several times larger than the PSF. We account for these changes in the noise within the weight maps that come with each image, and then during the coaddition process if one is using inverse variance weighted combination, these weights are used in an optimal fashion to produce the final coadd; that is, images where the noise has been amplified (because they started out with seeing worse than the target seeing) will be deweighted in the coaddition. To maintain accurate photometric measurement uncertainties and to maintain good object detection, we currently calculate two weight maps for the homogenized coadds. One includes the corrections for correlated noise on the scale of a pixel, and the other on the scale of the PSF. Our experiments with this approach are ongoing, but results are encouraging.
+
+Because of the correlated noise issues associated with PSF homogenization, we also will produce direct coadds over the full survey. We have no plans to catalog these direct coadds, because of the PSF induced biases described above, but we expect these images to be quite useful to produce pretty pictures and in searching for low surface brightness objects such as strong lensing arcs in the cores of clusters.
+
+## 3.6 Two Strategies for Deep Catalogs
+
+
+To catalog the coadds we use SExtractor in dual image mode. The detection image is an optimal combination of the images from each DES band grizY. We will also carry out combined photometry with our partner survey VHS-DES, and we expect in that case to carry out cataloging using a detection image built from grizYJHK. We build PSF models for each band, and the resulting catalogs therefore include PSF corrected photometry for a common set of objects across all bands. Higher signal to noise galaxy colors can be extracted using small apertures that have been aperture corrected using the comparison to stellar PSF magnitudes or using a newly developed DET MODEL magnitude within SExtractor[16]. This photometric measurement extracts a single PSF corrected model from the detection image and uses it to determine the photometry in each band using the appropriate PSF correction in each. Because the galaxy shape is not a free parameter in this case the statistical noise of the measurement is reduced. Initial tests show that, as expected, this approach produces higher signal to noise photometry for faint objects, but we are still working to characterize the biases.
+
+
+
+[自然科学与地球科学\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md]
+For both, training and reweighting, we need to be able to compute the probability $p _ { X } ( \mathbf { x } )$ of generating a configuration x. This can be achieved by the change-of-variables equation if $F _ { z x }$ is an invertible transformation (Fig. 7a) [91, 90]. Such invertible networks are called flows due to the analogy of the transformed probability density with a fluid [90, 125]. In [37], the non-volume preserving transformations RealNVP were employed [125], but the development of more powerful invertible network architectures is an active field of research [126, 93, 127]. By stacking multiple invertible “blocks", a deep invertible neural network is obtained that can encode a complex transformation of variables.
+
+Fig. 7c-h illustrate the Boltzmann Generator on a condensed-matter model system which contains a bistable dimer in a box densely filled with repulsive solvent particles (Fig. 7c,d). Opening or closing the dimer is a rare event, and also involves the collective rearrangement of the solvent particles due to the high particle density. Using short MD simulation in the open and closed states as an initialization, the Boltzmann Generator can be trained to sample open, closed and the previously unseen transition states by generating Gaussian random variables in latent space (Fig. 7e) and feeding them through the transformation $F _ { z x } .$ Such samples have realistic structures and close to equilibrium energies (Fig. 7f). By employing reweighting, free energy differences can be computed (Fig. 7g). There is a direct relationship between the temperature of the canonical ensemble and the variance of the latent-space Gaussian of the Boltzmann Generator [37]. This allows us to learn to generate thermodynamics, such as the temperature-dependent free energy profiles, using a single Boltzmann Generator (Fig. 7g). Finally, as the latent space concentrates configurations of equilibrium probability around the origin, Boltzmann Generators can be used to generate physically realistic reaction pathways by performing linear interpolations in latent space.
+
+## 5 Discussion
+
+
+Despite rapid advances in the field of Machine Learning for Molecular Simulation, there are still significant open problems that need to be addressed, in all the areas discussed above.
+
+## 5.1 Accuracy and efficiency in quantum-chemical energies and forces
+
+
+In order to be practically useful, a ML model for both PES and atomic forces is needed that: i) can yield accuracy of 0.2 – 0.3 kcal/mol for the energy per functional group and about 1 kcal/mol/Å for the force per atom; ii) is not much more expensive to evaluate than classical force fields, iii) scales to large molecules such as proteins; and iv) is transferable to different covalent and non-covalent environments. Such universal model does not exist yet.
+
+
+
+[自然科学与地球科学\quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 1 of 3).md]
+Our confidence that exploration of the entanglement frontier will be rewarding rests largely on two principles: (1) quantum complexity (our basis for thinking that quantum computing is powerful), and (2) quantum error correction (our basis for thinking that quantum computers are scalable to large devices solving hard problems). Underlying both of these principles is the idea of quantum entanglement. Entanglement is the word we use for the characteristic correlations among the parts of a quantum system, which are quite different from the correlations we encounter in everyday life. To understand the concept of entanglement, imagine a system with many parts, for example a book which is 100 pages long. For an ordinary classical 100-page book, every time you read another page you learn another 1% of the content of the book, and after you have read all of the pages one by one you know everything that's in the book. But now suppose instead that it's a quantum book, where the pages are very highly entangled with one another. Then when you look at the pages one at a time you see only random gibberish, and after you have read all the pages one by one you know very little about the content of the book. That's because the information in the quantum book is not imprinted on the individual pages; it is encoded almost entirely in how the pages are correlated with one another. If you want to read the book you have to make a collective observation on many pages at once. That's quantum entanglement, the essential feature making information carried by quantum systems very different from information processed by ordinary digital computers.
+
+## 3 The potential of quantum computing
+
+## 3.1 Why we think quantum computing is powerful
+
+
+An ordinary computer processes bits, where each bit could be, say, a switch which is either one or off. But to build highly complex entangled quantum systems, the fundamental information-carrying components of a quantum computer must be quantum bits, what we call qubits. A qubit can be realized physically in many different ways. It can be carried by a single atom, or a single electron, or a single photon (a particle of light). Or a qubit can be carried by a more complicated system, like a very cold superconducting electrical circuit in which many electrons are moving.
+
+When we speak of quantum complexity, what springs to mind is the staggering complexity of using ordinary classical data to describe highly entangled quantum states of many qubits. Giving a complete description of all the correlations among just a few hundred qubits may require more bits than the number of atoms in the visible universe. It will never be possible, even in principle, to write that description down, or to faithfully describe the processing of a few hundred qubits using classical language.
+
+
+
+[自然科学与地球科学\oceanography__physics-0703220__scientific-reticence-and-sea-level-rise (part 1 of 2).md]
+I could not, instantly. I was dismayed, because, in conversation and e-mail exchange with relevant scientists I sensed a deep concern about likely consequences of BAU global warming for ice sheet stability. What would be the legal standing of such a lame response as scientific reticence'? Why would scientists be reticent to express concerns about something so important?
+
+I suspect the existence of what I call the “John Mercer effect". Mercer (1978) suggested that global warming from burning of fossil fuels could lead to disastrous disintegration of the West Antarctic ice sheet, with sea level rise of several meters worldwide. This was during the era when global warming was beginning to get attention from the United States Department of Energy and other science agencies. I noticed that scientists who disputed Mercer, suggesting that his paper was alarmist, were treated as being more authoritative.
+
+It was not obvious who was right on the science, but it seemed to me, and I believe to most scientists, that the scientists preaching caution and downplaying the dangers of climate change fared better in receipt of research funding. Drawing attention to the dangers of global warming may or may not have helped increase funding for relevant scientific areas, but it surely did not help individuals like Mercer who stuck their heads out. I could vouch for that from my own experience. After I published a paper (Hansen et al 1981) that described likely climate effects of fossil fuel use, the Department of Energy reversed a decision to fund our research, specifically highlighting and criticizing aspects of that paper at a workshop in Coolfont, West Virginia and in publication (MacCracken 1983).
+
+I believe there is a pressure on scientists to be conservative. Papers are accepted for publication more readily if they do not push too far and are larded with caveats. Caveats are essential to science, being born in skepticism, which is essential to the process of investigation and verification. But there is a question of degree. A tendency for gradualism’ as new evidence comes to light may be ill-suited for communication, when an issue with short time fuse is concerned.
+
+However, these matters are subjective. I could not see how to prove the existence of a scientific reticence' about ice sheets and sea level. Score one for the plaintiff, and their ally and friend of the court', the United States federal government.
+
+## 3. On the Ice
+
+
+A field glaciologist, referring to a moulin on Greenland, said: "the whole damned ice sheet is going to go down that hole!" He was talking about his expectations, under the assumption of continued unchecked growth of global GHG emissions. Field glaciologists have been doing a good job of reporting current trends on the ice sheets. It is translation of field data into conclusions needed by the public and policymakers that is at issue.
+
+
+
+[自然科学与地球科学\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md]
+Although the detection techniques probe different pieces of parameter space, together they produce a broad census of planet populations. Exploiting this coverage to produce a comprehensive understanding of planet demographics is a crucial input to the planning and design of future NASA mission prioritized by the 2020 Decadal Survey on Astronomy and Astrophysics2, and to achieving NASA's strategic objectives of “discovering the secrets of the universe" and “searching for life elsewhere"3. The challenge is to stitch these different pieces together to provide a robust, overarching understanding of the demographics of planets and planetary systems. Such a process requires disentangling the stellar and planet population biases inherent to each technique, as well as correcting for the detection sensitivity and reliability of each individual survey. In addition, survey results are often reported in terms of planet occurrence rates, but these rates depend on assumptions made about the underlying planet population, and these assumptions are not always consistent across detection methods and surveys, leading to diverging results.
+
+There have been several notable attempts to combine demographics results from multiple detection techniques (e.g. Clanton & Gaudi 2014, 2016; Kunimoto & Bryson 2021). Other studies have compared the results of different detection techniques without attempting to fit them with a single planet population. Examples include Fig. 2 of Pascucci et al. (2018), which compares transit and microlensing results, Fig. 2 of Fernandes et al. (2019), which compares transit and radial velocity results, Fig. 8 of Nielsen et al. (2019), which compares radial velocity and direct imaging results, and Figures 9 and 10 of Fulton et al. (2021) which compare radial velocity vs. direct imaging and vs. microlensing. As yet, there have been few wide-ranging analyses that take advantage of the survey data that are currently available.
+
+
+
+[自然科学与地球科学\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md]
+## 2.2 Observation strategy
+
+The instrument has 2 continuous viewing zones which are two circles of ${ \simeq } 1 0 ^ { o }$ of radius, centered in the galactic plane and separated by 180º in right ascension.This ensures a level of background light due to the Earth reflected light as low as possible. In addition, in order to avoid to be blinded by the Sun, twice a year the instrument is rotated and is pointed in the opposite direction. The strategy of observation is flexible but consists mainly in one long run (LR) lasting for about 140 days and one shorter run (SR) whose duration is between 20 and 30 days per half-year. The fields observed in the circle centered at $6 ^ { h } ~ 5 0 ^ { m }$ in right ascension are referred as "anti-center fields", and those in the circle at $1 8 ^ { h } 5 0 ^ { m }$ , as "center fields". Table 1 gives a summary of the stellar fields that have been observed since the beginning of the operations. With only one CCD left in operation, the strategy of observation has been adapted and some of the long runs have been replaced by two runs of a shorter duration.
+
+Figure 1 shows the location of the various CoRoT exoplanet fields inside the two CoRoT continuous viewing zones overplotted on a dwarf density map. The two regions have different stellar content in terms of dwarf and giant but also in their distribution over the various spectral type (Gazzano et al. 2010). This allows to probe regions in the galactic plane with different stellar properties in terms of metallicity but also in terms of age. Once the statistics of planets found by CoRoT will be much more significant, this should bring some insights into the physical conditions that prevail for planet formation mechanisms.
+
+![](images/c00739e138e8d1f38c45e0ba3d2da768f2180b86b8efd15c63c1968bbb9a07c4.jpg)  
+Figure 2.: Two examples of CoRoT light curves .
+
+## 3. Detection capacity
+
+
+
+[自然科学与地球科学\climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 2 of 3).md]
+As discussed in section 3, updrafts do become somewhat faster with warming when lapse rates are allowed to equilibrate (rather than being imposed) in simulations of RCE, although the dynamical contribution to changes in precipitation extremes is still relatively small [70, 56, 77]. Nonetheless, large deviations from Clausius-Clapeyron scaling have been found in a study of RCE because of changes in precipitation efficiency at mean surface temperatures below 295K [77]. The 99.99th percentile of precipitation from this study is shown in Fig. 3a for durations from instantaneous to daily.4 Warming shifts the percentile curves upwards in intensity in Fig. 3a, but the rate at which they shift upwards varies with duration and temperature. As shown in Fig. 3b, the precipitation extremes follow Clausius-Clapeyron scaling at roughly $6 { - } 7 \% \ \mathrm { K ^ { - 1 } }$ for temperatures above 295K. However, for temperatures below 295K the sensitivity varies widely depending on temperature and accumulation period in a manner that is not fully understood. Instantaneous precipitation extremes increase at close to double the Clausius-Clapeyron rate for temperatures below 295K, and this has been shown to be due to increases in precipitation efficiency with warming, related in part to increases in hydrometeor fall speed as more of the precipitation in the column changes from solid to liquid [77]. Such changes in precipitation efficiency might be expected to occur for variability within a climate as well as for longer term climate change, but in the simulations they depend strongly on the choice of cloud microphysics scheme, and it remains to be seen if they are relevant for observed precipitation extremes.
+
+## 8 Conclusions and open questions
+
+
+As demonstrated in several observational studies, there has been an overall intensification of daily precipitation extremes as a result of global warming, although the available data has limited geographic coverage, and there are large regional variations in the observed trends. Much of the characterization of projected changes in precipitation extremes comes from climate models that use parameterized moist convection, but these are not expected to be reliable for precipitation extremes that are primarily convective in nature (for example, in the tropics or for certain events in summer in the extratropics). As a result, simulations that use cloud-system resolving models or superparameterizations are becoming increasingly important to research in this area. Even when convective dynamics are resolved, precipitation extremes at short durations have been found to be sensitive to the parameterization of cloud and precipitation microphysics [77], and progress in observations and physical understanding remains equally important.
+
+
+
+[自然科学与地球科学\climate-science__1503.07557__precipitation-extremes-under-climate-change.md (part 1 of 3).md]
+Extratropical precipitation extremes at a given latitude occur when the atmosphere is warmer than average and are more closely tied to mean temperatures somewhat further equatorward [61,62,21]. However, they are still expected to respond primarily to changes in mean temperatures in the extratropics rather than the tropics, and recent warming has been greater in the northern extratropics than the tropics. The sensitivities shown in Fig. 1a are based on global-mean surface temperature and do not account for the variation in warming with latitude. Fig. 1b shows an alternative analysis in which the annual-maximum daily precipitation rates at each gridbox are regressed against the area-weighted mean temperature anomaly for the $1 5 ^ { \circ }$ latitude band that contains the gridbox. The latitudeband temperature timeseries are filtered using a nineyear running mean prior to performing the regression. This filtering reduces the influence of short-term variability in regional temperatures which has previously been found to give a different sensitivity of precipitation extremes than long-term climate change [58]. The results in Fig. 1b show a higher sensitivity of precipitation extremes in the tropics compared to the extratropics, although the uncertainty in the tropics is large reflecting the sparse data there. The sensitivity for the tropics (30S to 30N) is $9 \% \ \mathrm { K ^ { - 1 } }$ (90% confidence interval $6 { - } 1 4 \% \mathrm { K } ^ { - 1 } )$ , while for the extratropics it is $4 \% \mathrm { K } ^ { - 1 }$ (90% confidence interval $2 { - } 5 \% \ \mathrm { K } ^ { - 1 } )$ . The choice of filter for the temperature time series affects the overall magnitudes of the sensitivities but not whether sensitivities are higher in the tropics than the extratropics. Interestingly, higher sensitivities in the tropics are also found when projections from global climate models are constrained by satellite observations [58] as discussed in section 4.2.
+
+## 3 Theory
+
+
+To understand the response of precipitation extremes to warming, our starting point is an approximation for the surface precipitation rate $P$ in an extreme precipitation event,
+
+$$
+P \simeq - \epsilon \left\{ \omega ( p ) S ( T , p ) \right\} ,\tag{1}
+$$
+
+
+
+[自然科学与地球科学\chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md]
+# chemistry__1911.02792__machine-learning-for-molecular-simulation（第 2/4 部分）
+章节: Machine learning for molecular simulation > 2.5 Sampling and Thermodynamics
+## 2.5 Sampling and Thermodynamics
+
+
+MD time steps are on the order of one femtosecond $\left( 1 0 ^ { - 1 5 } \mathrm { ~ s \right) }$ , while configuration changes governing molecular function are often rare events that may take $1 0 ^ { - 3 }$ to $1 0 ^ { 3 } ~ \mathrm { s } .$ Even when evaluating the potential and the forces it generates is fast, simulating single protein folding and unfolding events by direct MD simulation may take years to centuries on a supercomputer. To avoid this sampling problem, machine learning methods can be employed to learn generating equilibrium samples from $\mu ( \mathbf { x } )$ more efficiently, or even by generating statistically independent samples in “one shot” (Sec. 2.5).
+
+Learning to sample probability distributions is the realm of generative learning [87, 88, 89, 90]. In the past few years, directed generative networks, such as variational Autoencoders (VAEs) [88], generative adversarial networks (GANs) [89], and flows [91, 90], have had a particular surge of interest. Such networks are trained to transform samples from an easy-to-sample probability distribution, such as Gaussian noise, into realistic samples of the objects of interest. These methods have been used to draw photorealistic images [92, 93], generate speech or music audio [94] and generate chemical structures to design molecules or materials with certain properties [42, 43, 44, 45].
+
+If the aim is to learn a probability distribution from sampling data (density estimation) or learn to efficiently sample from a given probability distribution (Boltzmann generation [37]), one typically faces the challenge of matching the probability distribution of the trained model with a reference.
+
+Matching probability distributions can be achieved by minimizing probability distances. The most commonly used probability distance is the Kullback-Leibler (KL) divergence, also called relative entropy between two distributions q and $p \mathrm { : }$
+
+$$
+\mathrm { K L } ( q \parallel p ) = \int q ( \mathbf { x } ) \left[ \log q ( \mathbf { x } ) - \log p ( \mathbf { x } ) \right] \mathrm { d } \mathbf { x } .\tag{16}
+$$
+
+In Boltzmann generation [37], we aim to efficiently sample the equilibrium distribution $\mu ( \mathbf { x } )$ of a many-body system defined by its energy function $u ( \mathbf { x } ) \ \left( \mathrm { E q . ~ \ 1 } \right)$ . We can learn the parameters θ of a neural network that generates samples from the distribution $p _ { X } ( \mathbf { x } ; \pmb { \theta } )$ by making its generated distribution similar to the target equilibrium distribution. Choosing $q \equiv p _ { X } ( \mathbf { x } )$ and $p \equiv \mu ( \mathbf { x } )$ in Eq. (16), we can minimize the KLθ $\left[ q _ { X } \parallel \mu _ { X } \right]$ with the energy loss:
+
+
+
+[自然科学与地球科学\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md]
+High cadence microlensing surveys with wide field telescopes (Suzuki et al. 2016; Poleski et al. 2021) can survey many more microlensing events than follow-up programs and therefore have a higher planetary signal detection rate. So, we expect that most future exoplanet microlensing demographics papers will be based on high cadence surveys. Nevertheless, data taken in response to the identification of a possible planetary signal can still be used to more precisely determine the lens system properties, as long as the originally scheduled survey observations are sufficient to establish that the possible planetary signal is above the detection threshold (Suzuki et al. 2016).
+
+The exoplanet microlensing demographics papers to date (Gaudi et al. 2002; Sumi et al. 2010; Gould et al. 2010; Cassan et al. 2012; Suzuki et al. 2016; Poleski et al. 2021) have all used the planet-star mass ratio, $q ,$ and the separation on the plane of the sky in Einstein radius units, s, to characterize the planetary systems. This is done because, this information comes directly from the light curve model for virtually all events, although there are some events with degenerate light curve models, particularly the close-wide degeneracy that yields nearly identical light curves for most high magnification events with the substitution $s  1 / s$
+
+One of the main challenges for the microlensing method is determine the masses and distances of the planetary systems discovered with this method. This would enable a more direct comparison to the demographics from radial velocity and direct imaging surveys, although some progress can be made without mass and distance measurements $( \mathrm { e . g . } )$ Clanton & Gaudi 2016). The next major advance in exoplanet microlensing is the Nancy Grace Roman Space Telescope (Roman) Galactic Bulge Time Domain Survey (Penny et al. 2019). Roman will produce a statistical sample of planets comparable to Kepler's results from $\lesssim 1$ au, but in a complementary region of parameter space from 1 to ${ \gtrsim } 1 0$ au. In addition to a much larger sample of microlens planetary systems, Roman will determine the masses and distances for more than half the planetary systems that it discovers, using the methods described in the next section.
+
+## 6.1. Microlens Mass and Distance Measurement Methods
+
+
+There are three methods that yield mass-distance relations for microlensing events: measurement of the angular Einstein radius, $\theta _ { \mathrm { E } } ,$ measurement of the microlensing parallax parameter, $\pi _ { \mathrm { E } } ,$ and the brightness of the source star. Figure 1 shows these mass distance relations for planetary microlensing event MOA-2009-BLG-319 (although $\pi _ { \mathrm { E } }$ was not actually measured for this event). Any two of these measurements can yield a mass and distance solution, and all three of them give redundant constraints that can be used to check for systematic errors.
+
+
+
+[自然科学与地球科学\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 3 of 3).md]
+Sumi, T., Bennett, D. P., Bond, I. A., et al. 2010, ApJ, 710, 1641, doi: 10.1088/0004-637X/710/2/1641
+
+Suzuki, D., Bennett, D. P., Sumi, T., et al. 2016, ApJ, 833, 145, doi: 10.3847/1538-4357/833/2/145
+
+Thompson, S. E., Coughlin, J. L., Hoffman, K., et al. 2018, ApJS, 235, 38, doi: 10.3847/1538-4365/aab4f9
+
+Udalski, A., Yee, J. C., Gould, A., et al. 2015, ApJ, 799, 237, doi: 10.1088/0004-637X/799/2/237
+
+Vigan, A., Fontanive, C., Meyer, M., et al. 2021, A&A, 651, A72, doi: 10.1051/0004-6361/202038107
+
+Wolfgang, A., Rogers, L. A., & Ford, E. B. 2016, ApJ, 825, 19, doi: 10.3847/0004-637X/825/1/19
+
+Wyrzykowski, L., Mróz, P., Rybicki, K. A., et al. 2020, A&A, 633, A98, doi: 10.1051/0004-6361/201935097
+
+Yee, J. C., Gould, A., Beichman, C., et al. 2015, ApJ, 810, 155, doi: 10.1088/0004-637X/810/2/155
+
+Yee, J. C., Zang, W., Udalski, A., et al. 2021, AJ, 162, 180, doi: 10.3847/1538-3881/ac1582
+
+Yu, H., Weinberg, N. N., & Arras, P. 2021, ApJ, 917, 31, doi: 10.3847/1538-4357/ac0a79
+
+Zink, J. K., & Hansen, B. M. S. 2019, MNRAS, 1201, doi: 10.1093/mnras/stz1246
+
+Zink, J. K., Hardegree-Ullman, K. K., Christiansen, J. L., et al. 2021, arXiv e-prints, arXiv:2109.02675. https://arxiv.org/abs/2109.02675
+
+The authors would like to gratefully acknowledge those members of the community who provided feedback on initial drafts of this report. These include Eric Ford, Timothy Brandt, Andreas Quirrenbach, Jonathan Zink, Michelle Kunimoto, and Eric Mamajek. Thank you for your careful attention and helpful suggestions!
+
+
+
+[自然科学与地球科学\astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 1 of 2).md]
+A clear night of DECam observing is expected to produce about 300 science exposures together with approximately 60 bias and dome flat calibrations. Thus, the maximal dataset from the survey would be \~200K exposures, of which about 150K would be science exposures. The raw DES dataset is then <200TB. Out of these data we produce reduced images, coadd images and associated catalogs and quality assurance figures. All our image data products are stored in multiextension FITS files, with each image associated with a pixel level weight map and a pixel level bad pixel map. In the case of the coadd images, we store two different weight maps, where the corrections for the correlated noise are applied for two different scales to enable accurate object detection and accurate measurement uncertainties. A reduced image is the size of a single CCD and corresponds to an astrometrically calibrated, detrended image of the sky; this image has not been remapped and so the noise is independent in each pixel. There are 62 of these for each survey science exposure, and the full dataset of compressed, reduced images should be about 130TB. We employ lossy Rice tile compression, assigning four bits to the noise, and we find that this provides about a factor of 5 compression for our dataset. The coadds are built in each band along with a multi-band detection image; each has an image, two weight maps and a bad pixel map, and so they require around 15TB for the wide survey (assuming 5x lossy compression as above). Overall, the DES source, single epoch and coadd datasets after a single processing would correspond to < 0.5 PB. Given that our baseline plan is to process the full survey after each season we plan for approximately four times more data in the end.
+
+## 3. PROCESSING AND CALIBRATION
+
+
+
+[自然科学与地球科学\quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md (part 2 of 3).md]
+Classical computers are especially bad at simulating quantum dynamics — that is, predicting how a highly-entangled quantum state will change with time. Quantum computers have a big advantage for that task, and physicists hope to learn interesting things about quantum dynamics using NISQ technology in the relatively near term. It is instructive to recall that the theory of classical chaos (the extreme sensitivity to initial conditions in classical dynamical systems, which accounts for our inability to predict the weather more than two weeks out) advanced rapidly in the 60s and 70s after it became possible to simulate chaotic dynamical systems using classical computers. We may anticipate that the emerging ability to simulate chaotic quantum systems (those in which entanglement spreads very rapidly) will promote advances in our understanding of quantum chaos. Valuable insights might already be gleaned using noisy devices with of order 100 qubits.
+
+## 6.10 Digital vs. analog quantum simulation
+
+
+Having emphasized the potential value of simulating quantum dynamics, I should comment about the distinction between analog and digital quantum simulation. When we speak of an analog quantum simulator we mean a system with many qubits whose dynamics resembles the dynamics of a model system we are trying to study and understand. In contrast, a digital quantum simulator is a gate-based universal quantum computer which can be used to simulate any physical system of interest when suitably programmed, and can also be used for other purposes.
+
+Analog quantum simulation has been a very vibrant area of research for the past 15 years, while digital quantum simulation with general purpose circuit-based quantum computers is just now getting started. But some of the same experimental platforms, for example trapped ions and superconducting circuits, can be used for both purposes. Analog quantum simulators have been getting notably more sophisticated, and are already being employed to study quantum dynamics in regimes which may be beyond the reach of classical simulators [51, 52]. But analog quantum simulators are hampered by imperfect control — the actual quantum system in the lab only crudely approximates the model system of interest. For that reason, analog simulators are best suited for studying features that physicists call universal, properties which are relatively robust with respect to introducing small sources of error. A major challenge for research using analog quantum simulators is identifying accessible properties of quantum systems which are robust with respect to error, yet are also hard to simulate classically.
+
+
+
+[自然科学与地球科学\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md]
+Table 2 gives the main characteristics of the CoRoT planets published by the end of summer 2010. These planets correspond to the first discoveries in the first two years of data. A large fraction of the candidates are indeed still in the screening process by follow-up observations. Their properties, compared to the other published exoplanets are illustrated in Fig 4. The mass-radius diagram shows that most of these planets are in the domain of gaseous giants but the long duration of the light curves and the high duty cycle greater than 90% of space-based observations allow to explore the transiting systems over an extended orbital domain. The CoRoT discoveries indeed account for half of the transiting systems with an orbital period greater than 8 days.

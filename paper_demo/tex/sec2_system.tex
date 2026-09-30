@@ -1,47 +1,78 @@
+% sec2_system.tex — 2026-09-30 rewrite: the retrieval ladder (逐级检索) is the
+% core subsection. Contract facts cross-checked against the current packaged
+% skills (knowledgebase-search / knowledgebase-librarian / knowledgebase-hybrid)
+% and the live MCP inventory (42 kb_* tools in a 95-tool inventory).
 \section{System and Agent Workflow}
 \label{sec:system}
 
 \subsection{Services and Interfaces}
-\sys{} binds Section~\ref{sec:intro}'s three decisions to one platform: a
-web console, a FastAPI backend, a \texttt{ragctl} CLI, and an MCP
-server~\cite{mcp} exposing 41 \texttt{kb\_*} tools
-inside a 94-tool inventory: creation, movement, tagging, search, and
-offset-addressed reads. Console, CLI, and MCP clients operate the same resources through
-the same tools. What they do not share is a reasoning policy: only the
-packaged skill adds the gate. ChromaDB stores
-BGE-M3 vectors~\cite{bge-m3}, Neo4j holds document relations, and Markdown
-plus JSON/YAML metadata keep the collection inspectable; graph navigation
-is optional, not the evaluated route.
-\subsection{Ingest: From PDF to Addressable Parts}
+\sys{} binds Section~\ref{sec:intro}'s decisions to one platform: a web
+console, a FastAPI backend, a \texttt{ragctl} CLI, and an MCP
+server~\cite{mcp} exposing 42 \texttt{kb\_*} tools inside a 95-tool
+inventory: creation, movement, tagging, search, reference-passing
+judgment, and offset-addressed reads. Console, CLI, and MCP clients
+operate the same resources through the same tools; only the packaged
+skills add policy. ChromaDB stores BGE-M3 vectors~\cite{bge-m3}, Neo4j
+holds optional document relations, and Markdown plus JSON/YAML metadata
+keep the collection inspectable.
+
+\subsection{Organization: From PDF to Addressable Parts}
 MinerU converts PDFs to structured Markdown~\cite{mineru}; texts beyond a
 30,000-character ceiling are split into parts, and retained headings
 support line-offset reads. The organization skill inspects the parsed
 content, selects among existing bases (the platform's knowledge-base
 containers), proposing a new one only when none fits, and places and tags
-the document. Each placement ends in
-a final check (base fit, vector probe, three-layer consistency ---
-three of nine recorded checks), so a misroute is flagged at ingest, not at
-answer time. Administrators keep
+the document. Each placement ends in a final check (base fit, vector
+probe, three-layer consistency --- three of nine recorded checks), so a
+misroute is flagged at ingest, not at answer time. Administrators keep
 control of bases; the five-base layout is a demonstration configuration,
 not a platform limit.
 
-\subsection{Retrieve: Read, Assess, Escalate}
-The retrieval skill rewrites the query, recalls vector candidates across
-bases, and reads their text. Each candidate is scored by a prompted rubric,
-$s=s_{\mathrm{topic}}+s_{\mathrm{scenario}}+s_{\mathrm{evidence}}$ over
-ranges 0--3, 0--3, and 0--2: whether the body is directly about the query's
-subject, solves the query's problem, and carries directly quotable data or
-conclusions. A score of at least 6
-permits a cited answer whose sources name base, document, part, and section.
-Any lower initial score invokes the librarian --- base summaries,
-tag-matched shelves, targeted re-search --- instead of more vector queries:
-a ranking step cannot repair a failed recall, so browsing is the designed
-route for surfacing a passage the ranking missed. A usable score-5 candidate, whether
-initial or surfaced while browsing, is retained as an explicitly attributed
-backstop and yields a qualified answer. Candidates scoring at most 4 are
-discarded; when nothing usable remains, the skill returns a not-found
-report with scope, near miss, reason, and remedy. Answer records keep the
-search path, confidence, and blind spots.
-\emph{Content-verified} denotes this prompted judgment, not guaranteed
-correctness; file-tree metadata is mutable, not an append-only audit log.
-Saved artifacts keep candidate excerpts and answer records.
+\subsection{Retrieval: The Layered Ladder}
+\label{sec:ladder}
+The retrieval skills run one layered spine (Figure~\ref{fig:arch},
+bottom), and any harness may delegate it to a single retrieval subagent
+that returns document identifiers and evidence notes while the main agent
+answers.
+\emph{L0 catalog.} One call reads every base's name, description, and
+document count; bases whose descriptions cannot plausibly cover the query
+are pruned only on a present, trustworthy description.
+\emph{L1 descriptions.} One call per candidate shelf collects document
+identifiers with their descriptions. Descriptions are treated as claims,
+not facts --- they narrow the candidates but never decide acceptance.
+\emph{L2 query shaping.} The query is rewritten as a declarative
+sentence with keywords; literal enumeration questions take a machine-side
+literal scan instead of semantic recall, which under-recalls exact
+mentions.
+\emph{L3 judgment.} Candidates are passed to the judgment layer \emph{by
+reference}: a locally hosted engine fetches each document, segments it,
+and scores every segment against the rewritten query. The engine runs
+fail-closed --- if it is unavailable the pipeline stops, it does not
+degrade to similarity-only acceptance --- and every segment graded
+positive survives; survivors are never re-scored or cut by hand. A
+0.95-similarity hit whose segments all fail is discarded; a 0.40 hit with
+one positive segment survives.
+\emph{L4 reading.} Only survivors are read at their recorded addresses
+(base, document, part, section), with key numbers quoted verbatim.
+\emph{L5 answer.} The answer cites what it read; the record keeps the
+search path, the judgment's backend and threshold, confidence, and blind
+spots (unscoped shelves, engine errors, unverified survivors).
+
+Early exit is part of the spine: if L0--L1 surface no plausible candidate
+--- or a literal scan hits nothing on a kept shelf --- the search stops
+and returns a scoped not-found report; minutes of doomed re-searching are
+a contract violation, not thoroughness.
+
+\subsection{Lanes: Fast Recall, Full Recall, Fusion}
+The ladder is the contract; three lanes trade breadth against latency.
+The \emph{fast lane} rewrites the query, casts a wide vector net (high
+$k$, balanced across bases, snippets only), and feeds the deduplicated
+candidates to the same judgment layer --- ranking proposes, the engine
+still disposes. The \emph{librarian lane} is the ladder above with no
+vector calls, for unknown shelves or complete-recall questions. The
+\emph{fusion lane} runs both concurrently and merges on normalized
+(base, document) identity. Because judgment is by reference, document
+text stays server-side and the agent's context receives one merged
+evidence pack. \emph{Content-verified} denotes this engine judgment, not
+guaranteed correctness; saved artifacts keep candidate excerpts,
+per-segment verdicts, and answer records.

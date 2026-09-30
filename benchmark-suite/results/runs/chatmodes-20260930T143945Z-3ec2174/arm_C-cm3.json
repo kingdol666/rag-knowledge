@@ -1,0 +1,31 @@
+{
+ "mode": "C",
+ "qid": "cm3",
+ "expect": "refusal",
+ "kb_ids": [
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 72.0,
+ "duration_ms": 69837,
+ "turns": 5,
+ "cost_usd": 0.4101,
+ "session_id": "a09ff7a4-d1be-4df0-87bc-0d690cf5e20e",
+ "answer_chars": 880,
+ "answer_markers_hit": [],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：该问题无法从指定知识库得到回答——库中不存在任何关于 \"Herbert-Moulton collider benchmark\" 或粒子物理探测器漂移的内容，我拒绝编造。**\n\n已执行的检索事实：\n\n1. **`kb_search_two_stage`**（英文原问题，pinned KB `b1199132-e4d4-4305-8c2e-82dc1753b0ba`）：Stage1 召回 20 个候选、Stage2 返回 5 条——命中的全部是计算机/AI 文档（GPT-3 few-shot learners、MCGS-SLAM 多相机SLAM、Bitvector 查询优化），匹配的只是 \"benchmark\" / \"experiment\" 等泛化词，无一涉及对撞机或探测器。\n2. **`kb_search_vector`**（中文变体「探测器漂移 量化 对撞机 实验 benchmark」）：15 条结果，最高分 0.56，全部来自 databases（sketch 查询优化）、statistics（Bell 不等式因果推断）、LLM（Vision-Flan）等论文——仍无粒子物理主题文档。\n3. **`kb_get_documents(lightweight=true)`**：该库共 131 篇文档，**全部位于「计算机与人工智能」目录下**（LLM、NLP、数据库、机器人",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "honest_refusal": true
+  }
+ }
+}

@@ -1,0 +1,54 @@
+{
+ "qid": "QK03",
+ "method": "rrf",
+ "question": "What physical mechanism does the dynamic electrical model use to explain the hysteretic J-V characteristics of perovskite solar cells?",
+ "ranked": [
+  "1606.00335",
+  "1712.01369",
+  "2607.03098",
+  "1906.10015",
+  "2211.04977",
+  "2604.01385",
+  "1801.00862",
+  "2401.06823",
+  "2602.10156",
+  "2306.01022"
+ ],
+ "ranked_paths": [
+  "materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs.md",
+  "materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar.md",
+  "power-systems__2607.03098__integrating-power-electronics-based-energy-s.md",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md",
+  "materials__2211.04977__design-of-battery-materials-via-defects-and.md",
+  "immunology__2604.01385__strategies-for-tumor-elimination-and-control.md",
+  "quantum-physics__1801.00862__quantum-computing-in-the-nisq-era-and-beyond.md",
+  "genomics__2401.06823__interpretable-deep-learning-in-single-cell-o.md",
+  "genomics__2602.10156__strand-sequence-conditioned-transport-for-si.md",
+  "medical-imaging__2306.01022__introduction-of-medical-imaging-modalities.md"
+ ],
+ "evidence_sources": [
+  "1606.00335",
+  "1712.01369",
+  "2607.03098"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.0,
+ "latency_s": 3.9,
+ "answer": "The evidence describes the standard dynamic electrical model of a perovskite solar cell as an equivalent electric circuit containing a photocurrent source, a diode (ideality factor n), shunt resistance R_sh, series resistance R_s, and **in addition to the static model, a parallel capacitance C** ([1606.00335]). The paper states that simulated J-V characteristics are compared to experimental data, describing hysteretic effects influenced by solar cell preconditioning and bias scan rate, with the analysis focused on **the variation of the polarization in time, assuming a certain relaxation time scale**, and it investigates the influence of different relaxation time scales ([1606.00335]).\n\nSo the mechanism the evidence attributes the hysteresis to is the time-dependent polarization (relaxation-time-scale dynamics) captured by the added parallel capacitance in the equivalent circuit — the evidence does not go further into the underlying physical/ionic origin.\n\nSources used: [1606.00335] (Sections 1–2.1). The other two chunks ([1712.01369], [2607.03098]) are about perovskite/GeSe bilayer efficiency and energy-storage models and say nothing about the hysteresis mechanism.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 65,
+  "output": 238,
+  "cache_read": 49024,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.0310596,
+ "extra": {},
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

@@ -1,0 +1,40 @@
+{
+ "qid": "QK06",
+ "method": "vector",
+ "question": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+ "ranked": [
+  "1503.07557",
+  "2007.10574",
+  "2409.13934"
+ ],
+ "ranked_paths": [
+  "climate-science__1503.07557__precipitation-extremes-under-climate-change__k00",
+  "climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on__k14",
+  "climate-science__2409.13934__on-the-extrapolation-of-generative-adversari__k05"
+ ],
+ "evidence_sources": [
+  "1503.07557",
+  "2007.10574",
+  "2409.13934"
+ ],
+ "evidence_chars": 1542,
+ "retrieval_s": 0.1,
+ "latency_s": 6.9,
+ "answer": "The evidence is insufficient to answer this question.\n\nThe available chunks state only that the response of precipitation extremes to climate change is considered \"with a focus on the physical factors that control the response\" ([1503.07557]), and that extreme precipitation has a strong warming-driven signal consistent with the Clausius-Clapeyron relation of ~7%/°C ([2409.13934]). However, no retrieved chunk names the specific physical factor that primarily controls that response — the abstract of [1503.07557] is truncated mid-sentence (\"the sensitivity of precipitation extremes to warming remains uncert…\"), and [2007.10574] addresses MJO dynamical links rather than the controlling factor itself.\n\nSources used: [1503.07557] (O'Gorman, \"Precipitation extremes under climate change\"); [2409.13934]; [2007.10574]. Per the contract, I am stopping rather than supplying an answer from prior knowledge.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 73,
+  "output": 197,
+  "cache_read": 48576,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.0298138,
+ "extra": {},
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

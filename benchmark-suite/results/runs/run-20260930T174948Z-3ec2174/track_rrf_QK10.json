@@ -1,0 +1,54 @@
+{
+ "qid": "QK10",
+ "method": "rrf",
+ "question": "How does the Herbert-Moulton collider benchmark quantify detector drift in particle physics experiments?",
+ "ranked": [
+  "q-bio-0408016",
+  "2606.10843",
+  "2303.00445",
+  "gr-qc-9805045",
+  "1712.01369",
+  "1311.2485",
+  "1606.00335",
+  "2311.00487",
+  "2109.05887",
+  "1911.02792"
+ ],
+ "ranked_paths": [
+  "immunology__q-bio-0408016__epitope-analysis-for-influenza-vaccine-desig.md",
+  "seismology__2606.10843__supershear-rupture-indicator-in-near-fault-p.md",
+  "quantum-physics__2303.00445__benchmarking-noisy-intermediate-scale-quantu.md",
+  "gravitational-physics__gr-qc-9805045__disturbing-the-black-hole.md",
+  "materials__1712.01369__ch3nh3pbi3-gese-bilayer-heterojunction-solar.md",
+  "quantum-physics__1311.2485__continuous-time-quantum-error-correction.md",
+  "materials__1606.00335__dynamic-electrical-behavior-of-halide-perovs.md",
+  "quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e.md",
+  "chemistry__2109.05887__autonomous-reaction-network-exploration-in-h.md",
+  "chemistry__1911.02792__machine-learning-for-molecular-simulation.md"
+ ],
+ "evidence_sources": [
+  "q-bio-0408016",
+  "2606.10843",
+  "2303.00445"
+ ],
+ "evidence_chars": 3646,
+ "retrieval_s": 0.0,
+ "latency_s": 18.1,
+ "answer": "The evidence does not answer this question. None of the three retrieved chunks mention a \"Herbert-Moulton collider benchmark,\" detector drift, or collider experiments in particle physics. The available evidence covers unrelated topics: [q-bio-0408016] concerns influenza vaccine effectiveness and antigenic drift in viral epitopes; [2606.10843] concerns particle motion patterns (FN-FP-FN) in strike-slip earthquake ruptures (geophysics, not particle physics); and [2303.00445] concerns quantum error mitigation in a 3-qubit HCl contextual subspace simulation.\n\nI therefore cannot describe how such a benchmark quantifies detector drift — the retrieved evidence is insufficient, and I will not speculate beyond it.\n\nSources checked: [q-bio-0408016], [2606.10843], [2303.00445].",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 15336,
+  "output": 583,
+  "cache_read": 32832,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.109353,
+ "extra": {},
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

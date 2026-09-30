@@ -1,43 +1,52 @@
+% sec3_demo.tex — 2026-09-30 rewrite: scenarios re-anchored to the ladder
+% (organize / inspect a layered retrieval / examine a failure report).
+% Trace-sourced numbers marked NUM* are filled from the monitored rerun.
 \section{Interactive Demonstration}
 \label{sec:demo}
 
 The demonstration targets research administrators and agent developers;
-its scenarios trace Section~\ref{sec:intro}'s three decisions in order.
-A prepared instance, built by the ingest loop of Section~\ref{sec:system},
-holds 100 papers in five bases (ingest audit: Table~\ref{tab:pipeline});
-attendees inspect documents and drive an agent with the packaged skills. A live answer takes
-from about fifteen seconds to about three minutes, so presenters replay saved traces
+its scenarios trace the platform loop in order --- organize, retrieve
+through the ladder, fail honestly. A prepared instance, built by the
+ingest loop of Section~\ref{sec:system}, holds 100 papers in five bases
+(ingest audit: Table~\ref{tab:pipeline}); attendees inspect documents and
+drive an agent with the packaged skills over the kb\_* tools. A live
+answer takes from about twenty seconds (a scoped not-found) to about two
+minutes (a graded multi-search answer), so presenters replay saved traces
 alongside live queries; the video walks these scenarios in the console,
 and the repository README's quick start reproduces the instance.
 
 \paragraph{1. Organize a document.}
 An attendee selects a PDF from a prepared pool and asks the agent to parse
-and place it. The trace records the parse, the proposed base, the tags, and
-the indexing checks; the attendee compares parsed text against the routing
-before accepting.
+and place it. The trace records the parse, the proposed base, the tags,
+and the indexing checks; the attendee compares parsed text against the
+routing before accepting.
 
-\paragraph{2. Inspect an answer's evidence.}
+\paragraph{2. Watch the ladder retrieve.}
 The attendee asks which three ontologies subdivide the Gene Ontology. In
-the saved trace (BQ04 in Section~\ref{sec:eval}),
-the vector-first search ranks the primer's part~1 of~2 first, at 0.75
-(0.66 cross-base); a two-stage BM25-and-vector pass confirms the
-candidate, and
-the agent answers with a verbatim quotation whose source block names
-base, document, part, and section (``2.~What is the Gene Ontology?'') ---
-score, reading, and quoted evidence are distinct records. The attendee can
-open the cited part in the console while the kb\_* tools read it at its
-line offset. Figure~\ref{fig:threeway} compares
-the three modes and adds a measured dense-mode abstention (BQ06).
+the saved trace (BQ04 in Section~\ref{sec:eval}), the fast lane recalls
+the primer with a vector search plus a BM25-style cross-check, reads the
+part at its line offset, and the agent answers with a verbatim quotation
+whose source block names base, document, part, and section (``2.~What is
+the Gene Ontology?''). Score, reading, and quoted evidence are distinct
+records; the attendee can open the cited part in the console while the
+kb\_* tools read it at its line offset. Figure~\ref{fig:threeway}
+compares the three modes on this question and adds a graded-reading
+contrast on a second question.
 
 \paragraph{3. Examine a failure report.}
 Next, the attendee asks for training epochs in the fictitious paper
-\emph{Spectral Tuning for Low-Resource Odor Recognition}. The scripted
-report pairs collected evidence with the gate's judgment: BERT's own epoch
-recipe scores 1/8, and the skill returns a scoped not-found report instead
-of BERT's recipe; the census covers five bases and 322 stored parts, and
-bounds only this collection.
+\emph{Spectral Tuning for Low-Resource Odor Recognition}. In 22 seconds
+the skill returns a conclusion-first not-found report backed by its
+searched-facts list: two-stage recall (20 candidates, none on topic),
+vector search (10, none), metadata search (weak title-token matches
+only), and a per-shelf catalog enumeration (no odor-recognition
+documents at all). BERT epoch recipes appear among the retrieved
+near-misses and are correctly not substituted; the report states the
+remedy --- ingest the paper --- and bounds its claim to this collection.
 
-% Declared here so the float can land on page 3; referenced in Section 4.
+% Table 1 — pipeline audit (unchanged artifacts; see
+% benchmark-suite/results/ingest_report.json + r2_ingest_report.json +
+% r2_organize/).
 \begin{table}[t]
 \caption{Pipeline audit on the 100-paper corpus. Every value is
 script-asserted from saved artifacts, not hand-counted; the content audit
@@ -60,6 +69,3 @@ Dense replica index (800-char chunks) & 4{,}528 \\
 \bottomrule
 \end{tabular}
 \end{table}
-
-% The three-mode results table now lives inside Figure 3 (bottom strip),
-% generated with assertion gates from exp_r2_grade.json + audit_paper_numbers.json.

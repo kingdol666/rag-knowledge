@@ -54,6 +54,7 @@ export const KB_DISALLOWED_TOOLS = [
   'SendMessage', 'SendMessageToAgent', 'AgentMessage',
   'TaskOutput', 'TaskUpdate', 'TaskGet', 'TaskList', 'TaskStop',
   'TaskCreate', 'Workflow', 'EndConversation',
+  'ScheduleWakeup', 'Sleep', 'SlashCommand',
   'ReadMcpResourceTool', 'ReadMcpResourceDirTool', 'ListMcpResourcesTool',
   'EnterWorktree', 'Bash', 'Edit', 'Write', 'NotebookEdit',
   'Read', 'Glob', 'Grep',

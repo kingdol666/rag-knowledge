@@ -24,7 +24,9 @@ from playwright.sync_api import sync_playwright
 
 OUT = Path(__file__).resolve().parent
 ROOT = OUT.parents[2]
-RUN = ROOT / 'benchmark-suite' / 'results' / 'experiment_chat_20260922-211000'
+RUN = (ROOT / 'benchmark-suite' / 'results' / 'runs' /
+       'run-20260930T150453Z-3ec2174')
+TRACK_OF = {'a': 'a2', 'b': 'b', 'c': 'c'}  # platform arm file prefix
 NS = 'http://www.w3.org/2000/svg'
 ET.register_namespace('', NS)
 INK = '#253745'
@@ -44,33 +46,39 @@ Q1 = {
     'question': 'Which three independent ontologies subdivide the Gene Ontology?',
     'quotes': {
         'a': [
-            '1. Molecular Function (MF) 2. Biological Process (BP) 3. Cellular Component (CC)',
-            'The Gene Ontology is a controlled vocabulary of terms to represent biology in a structured way.',
+            'Molecular Function (MF), Biological Process (BP), and Cellular Component (CC).',
+            'These share a common space of identifiers and a well-specified syntax.',
         ],
         'b': [
-            'Molecular Function (MF), Biological Process (BP), and Cellular Component (CC).',
+            "the Gene Ontology's terms are subdivided into three distinct, "
+            'non-redundant ontologies representing different biological '
+            'aspects: Molecular Function (MF), Biological Process (BP), and '
+            'Cellular Component (CC).',
         ],
         'c': [
-            'the GO is "a controlled vocabulary of terms to represent biology in a structured way,"',
+            "the Gene Ontology's terms are subdivided into three distinct "
+            'ontologies representing different biological aspects: Molecular '
+            'Function (MF), Biological Process (BP), and Cellular Component (CC).',
         ],
     },
     'process': {
-        'a': ['ToolSearch ×2 · link kb-mcp',
-              'kb_search_vector ×2 — top 0.75',
-              'kb_search_two_stage ×1 — confirm'],
-        'b': ['Glob ×1 — 100 exported papers',
-              'Grep ×1 — targeted search',
-              'Read ×2 — the paper file'],
-        'c': ['ToolSearch ×1 · link kb-mcp',
+        'a': ['Agent ×1 — subagent probe',
+              'kb_search_vector ×1 — recall',
+              'kb_search ×1 — cross-check',
+              'kb_doc_read ×2 — chunk + part'],
+        'b': ['Glob ×1 — file list',
+              'Grep ×2 — locate the primer',
+              'Read ×1 — the paper file'],
+        'c': ['EndConversation ×1 — harness call',
               'kb_search_vector ×1 — chunk recall'],
     },
     'sources': {
         'a': ['Sources: life-sciences base · 1602.01876',
               'part 1 of 2 · §2 verbatim quote'],
         'b': ['Source: …1602.01876__primer-',
-              'on-the-gene-ontology.md (§2)'],
-        'c': ['Chunks: …gene-ontology__k00.md',
-              '(Corpus-Chunks800 index)'],
+              'on-the-gene-ontology.md'],
+        'c': ['Source: chunk copy …primer-',
+              'on-the-gene-ontology__k00.md'],
     },
     'verdicts': {
         'a': 'grounded ✓ · part/section address',
@@ -86,29 +94,33 @@ Q2 = {
     'tracks': ['a', 'c'],
     'quotes': {
         'a': [
-            'The temperature of the climate (mean surface temperature) is the primary physical factor',
-            'roughly, whether the mean surface temperature is above or below ~295 K',
+            'if changes in dynamics and precipitation efficiency are '
+            'negligible, precipitation extremes increase with warming '
+            'because of increases in the saturation vapor pressure of water',
+            'the thermodynamic contribution is robust and well understood',
         ],
         'c': [
-            'The retrieved chunks do not directly name a single physical factor as the primary control.',
+            'The evidence points to the thermodynamic contribution',
+            'the retrieved text does not say one factor',
         ],
     },
     'process': {
-        'a': ['ToolSearch ×3 · link kb-mcp',
-              'kb_search_vector ×5 — recall',
-              'kb_doc_read ×2 — verify re-read'],
-        'c': ['ToolSearch ×1 · link kb-mcp',
-              'kb_search_vector ×1 — chunk recall'],
+        'a': ['kb_search_vector ×4 — widen, then pin',
+              'kb_list ×1 — shelf check',
+              'kb_laya_judge ×1 — segment grading',
+              'EndConversation ×1 — harness call'],
+        'c': ['Agent ×1 — subagent probe',
+              'kb_search_vector ×5 — chunk recall'],
     },
     'sources': {
-        'a': ['Sources: climate-science base · 1503.07557',
-              'keyword-verified ✓ (precipitation efficiency)'],
-        'c': ['Closest chunk: …1503.07557__k00.md',
-              '"Several physical contributions govern…" — no single factor'],
+        'a': ['Sources: climate base · 1503.07557 (O\u2019Gorman 2015)',
+              'keyword-verified ✓ · engine-graded reading'],
+        'c': ['Chunks: …1503.07557__k*.md (Chunks800)',
+              'same factor, chunk recall, no grading step'],
     },
     'verdicts': {
-        'a': 'grounded ✓ · keyword-verified answer',
-        'c': 'MEASURED ABSTENTION — insufficient retrieved evidence',
+        'a': 'grounded ✓ · graded reading · keyword-verified',
+        'c': 'grounded ✓ · chunk recall, ungraded',
     },
 }
 
@@ -130,7 +142,7 @@ def norm_answer(txt: str) -> str:
 
 
 def load_track(trk: str, qid: str) -> dict:
-    d = json.loads((RUN / f'track_{trk}_{qid}.json').read_text(encoding='utf-8'))
+    d = json.loads((RUN / f'track_{TRACK_OF[trk]}_{qid}.json').read_text(encoding='utf-8'))
     assert not d.get('is_error'), f'track {trk} {qid} is_error'
     return d
 
@@ -243,10 +255,11 @@ def panel_body(g, panel, y0, cols, cw, wrap_w=40):
         wrapped[trk] = lines
     qn = max(len(v) for v in wrapped.values())
     sn = max(len(panel['sources'][trk]) for trk in cols)
+    pn = max(len(panel['process'][trk]) for trk in cols)
     P, SP = 19, 18
     label1_b = y0 + 19
     proc0_b = label1_b + 19
-    div1_y = proc0_b + 2 * P + 8
+    div1_y = proc0_b + (pn - 1) * P + 8
     label2_b = div1_y + 16
     quote0_b = label2_b + 19
     div2_y = quote0_b + (qn - 1) * P + 8
@@ -289,13 +302,14 @@ def build_svg(panels):
     desc.text = (
         'Verbatim answer excerpts, saved tool timelines, and source references from the '
         'monitored three-mode run over the 100-paper corpus; all modes used the same agent '
-        'harness, model, and chat endpoint. Panel 1 (BQ04): all three modes answer the Gene '
-        'Ontology question; the platform quotes the source passage verbatim and addresses it '
-        'as part 1 of 2, section 2; the bare agent names the file and section; the dense mode '
-        'quotes chunks. Panel 2 (BQ06): the platform answers the precipitation-extremes '
-        'question (mean surface temperature, keyword-verified) after a verification re-read, '
-        'while the dense mode returns a measured abstention because its chunks name no single '
-        'physical factor. Ellipses elide text; markdown emphasis removed; source lines condensed.')
+        'harness, model, chat endpoint, and neutral prompt. Panel 1 (BQ04): all three modes '
+        'answer the Gene Ontology question; the platform quotes the source passage verbatim '
+        'and addresses it as part 1 of 2, section 2; the bare agent names the file; the '
+        'dense mode quotes the chunk copy. Panel 2 (BQ06): the platform refines its search, '
+        'has the judgment engine grade candidate segments, and returns a keyword-verified '
+        'answer quoting the source; the dense mode reaches the same factor from chunk '
+        'recollection alone, with no grading step and no addresses. Ellipses elide text; '
+        'markdown emphasis removed; source lines condensed.')
     root.append(desc)
     g = node('g', font_family='Helvetica Neue, Helvetica, Arial, Segoe UI, sans-serif')
     root.append(g)
@@ -308,7 +322,9 @@ def build_svg(panels):
     y = panel_header(g, Q2, y, COLS2, CW2)
     y = panel_body(g, Q2, y + 8, COLS2, CW2, wrap_w=58)
     y += 14
-    y = metrics_strip(g, y)
+    # metrics strip removed 2026-10-01: duplicates Section 5 aggregates;
+    # removal shrinks the float so it fits the page-4 body budget
+    y = y + 4
     H = int(y + 14)
     root.set('height', str(H))
     root.set('viewBox', f'0 0 1000 {H}')
@@ -322,32 +338,32 @@ def metrics_strip(g, y):
     aud = json.loads((RUN / 'audit_paper_numbers.json').read_text(encoding='utf-8'))
     gr = grade['grades']
     rows = [
-        ('Grounded* (cites designated paper)', [str(gr[t]['gold_hit']) + '/10' for t in 'abc']),
-        ('Keyword-verified (>=60% gold key facts)', [str(gr[t]['kw_ok']) + '/10' for t in 'abc']),
+        ('Grounded* (cites designated paper)', [str(gr[TRACK_OF[t]]['gold_hit']) + '/10' for t in 'abc']),
+        ('Keyword-verified (>=60% gold key facts)', [str(gr[TRACK_OF[t]]['kw_ok']) + '/10' for t in 'abc']),
         ('Part/section-level citations', []),
-        ('Mean latency (s)', [str(gr[t]['avg_latency_s']) for t in 'abc']),
-        ('Mean tool calls', [str(gr[t]['avg_tools']) for t in 'abc']),
-        ('Cost per question (USD)', [str(gr[t]['avg_cost_usd']) for t in 'abc']),
+        ('Mean latency (s)', [str(gr[TRACK_OF[t]]['avg_latency_s']) for t in 'abc']),
+        ('Mean tool calls', [str(gr[TRACK_OF[t]]['avg_tools']) for t in 'abc']),
+        ('Cost per question (USD)', [str(gr[TRACK_OF[t]]['avg_cost_usd']) for t in 'abc']),
     ]
     import re as _re
     pat = _re.compile(r'part \d|§\s?\d|section \d|sections \d|table \d', _re.I)
     cites = {}
     for t in 'abc':
         n = 0
-        for f in sorted(RUN.glob(f'track_{t}_*.json')):
+        for f in sorted(RUN.glob(f'track_{TRACK_OF[t]}_*.json')):
             d = json.loads(f.read_text(encoding='utf-8'))
-            blob = str(d.get('answer') or '') + '\n' + '\n'.join(d.get('texts_full') or [])
+            blob = str(d.get('answer') or '')
             if pat.search(blob):
                 n += 1
         cites[t] = n
     rows[2] = ('Part/section-level citations', [str(cites[t]) + '/10' for t in 'abc'])
     # assertions: figure numbers must match the audited artifacts
-    assert rows[0][1] == ['9/10', '10/10', '9/10'], rows[0]
-    assert rows[1][1] == ['9/10', '6/10', '6/10'], rows[1]
-    assert rows[2][1] == ['7/10', '4/10', '1/10'], rows[2]
+    assert rows[0][1] == ['10/10', '10/10', '8/10'], rows[0]
+    assert rows[1][1] == ['10/10', '8/10', '6/10'], rows[1]
+    assert rows[2][1] == ['9/10', '6/10', '1/10'], rows[2]
     for t in 'abc':
-        assert gr[t]['avg_latency_s'] == aud['per_track'][t]['avg_latency_s']
-        assert abs(gr[t]['avg_cost_usd'] - aud['per_track'][t]['cost_usd_total'] / 10) < 0.001
+        assert gr[TRACK_OF[t]]['avg_latency_s'] == aud['per_track'][TRACK_OF[t]]['avg_latency_s']
+        assert abs(gr[TRACK_OF[t]]['avg_cost_usd'] - aud['per_track'][TRACK_OF[t]]['cost_usd_total'] / 10) < 0.001
 
     g.append(node('rect', x=20, y=y, width=960, height=24, rx=2, fill='#253745'))
     g.append(text(30, y + 17, 'MONITORED RUN — 10 QUESTIONS × 3 MODES · ONE HARNESS AND MODEL', 15, 700, fill='#ffffff'))
@@ -394,7 +410,7 @@ def main():
             f'<style>@page{{size:1000px {H}px;margin:0}}html,body{{margin:0;width:1000px;height:{H}px}}'
             f'svg{{display:block}}</style>{source}</html>')
     (OUT / 'fig3-answers-dual.html').write_text(html, encoding='utf-8')
-    report = {'source': f'{RUN.name} traces (BQ04 a/b/c + BQ06 a/c)',
+    report = {'source': f'{RUN.name} traces (BQ04 a2/b/c + BQ06 a2/c); aggregates moved to Section 5 text',
               'verbatim_check': 'all quoted fragments are normalized substrings of saved answers',
               'process_check': 'timelines fully counted from saved tool_use events; every xN asserted against the trace',
               'runtime': {'playwright': version('playwright'), 'PyMuPDF': version('PyMuPDF')}}

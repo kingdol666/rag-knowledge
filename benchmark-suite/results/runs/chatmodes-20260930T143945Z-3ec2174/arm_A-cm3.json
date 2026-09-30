@@ -1,0 +1,31 @@
+{
+ "mode": "A",
+ "qid": "cm3",
+ "expect": "refusal",
+ "kb_ids": [
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 76.1,
+ "duration_ms": 73911,
+ "turns": 5,
+ "cost_usd": 0.393334,
+ "session_id": "207d4b01-0ed3-4965-bfa5-dae5a2d41475",
+ "answer_chars": 772,
+ "answer_markers_hit": [],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**库中没有关于该主题的任何内容，无法回答此问题。**\n\n检索事实如下（指定库 `b1199132-e4d4-4305-8c2e-82dc1753b0ba`）：\n\n1. `kb_search_two_stage`（查询：\"Herbert-Moulton collider benchmark detector drift particle physics\"）：Stage1 召回 20 个候选、Stage2 返回 5 条，全部来自计算机科学/AI 文献（GPT-3 Few-Shot Learners、MCGS-SLAM 多相机SLAM、Bitvector 查询优化等），无任何粒子物理相关命中。\n2. `kb_search_vector`（中英混合查询：\"粒子物理 对撞机 探测器漂移 基准测试…\"）：返回 15 条，最高分 0.5408，命中均为数据库查询优化、SLAM、NLP 基准文档。\n3. `kb_search_vector`（查询：\"Herbert Moulton 粒子对撞实验 探测器标定漂移监测\"）：返回 10 条，最高分 0.5481，仍为机器人操控、因果推断、GLUE 基准等无关内容。\n\n结论：该库实际收藏的是 **arXiv 计算机/人工智能论文集**（大模型、SLAM、数据库、语音、神经科学等），不包含粒子物理实验文献。三轮检索均无 \"Herbert-Moulton\"、",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "honest_refusal": true
+  }
+ }
+}

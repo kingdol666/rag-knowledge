@@ -1,0 +1,60 @@
+{
+ "qid": "QK09",
+ "method": "rerank",
+ "question": "What is the recommended daily dosage of metformin for diabetic cats?",
+ "ranked": [
+  "2201.03675",
+  "2110.08918",
+  "2310.10981",
+  "2502.00306",
+  "2412.15058",
+  "1904.11280",
+  "2301.08436",
+  "2212.13138",
+  "2203.15752"
+ ],
+ "ranked_paths": [
+  "clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon__k16",
+  "clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr__k08",
+  "nlp__2310.10981__instructive-dialogue-summarization-with-quer__k49",
+  "large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference__k15",
+  "medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio__k57",
+  "clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec__k04",
+  "genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t__k09",
+  "clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k30",
+  "social-networks__2203.15752__information-consumption-and-boundary-spannin__k29"
+ ],
+ "evidence_sources": [
+  "2201.03675",
+  "2110.08918",
+  "2310.10981",
+  "2502.00306",
+  "2412.15058",
+  "1904.11280",
+  "2301.08436",
+  "2212.13138",
+  "2203.15752"
+ ],
+ "evidence_chars": 2917,
+ "retrieval_s": 3.0,
+ "latency_s": 7.3,
+ "answer": "The evidence is insufficient to answer this question. The retrieved chunks concern A1C/diabetes modeling, drug and NDC codes, adiponectin and type 2 diabetes, diabetic retinopathy segmentation, and glucose/hypertension mentions, but none address metformin or feline diabetes dosing.\n\nSources checked for a relevant answer (none contained it): [2201.03675], [2110.08918], [2310.10981], [2502.00306], [2412.15058], [1904.11280], [2301.08436], [2212.13138], [2203.15752].",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 1052,
+  "output": 133,
+  "cache_read": 48320,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.033986800000000005,
+ "extra": {
+  "rerank_fallback": false
+ },
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

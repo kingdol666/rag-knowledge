@@ -1,0 +1,13 @@
+{
+ "round": 1,
+ "task": "attention",
+ "mode": "B",
+ "http": 200,
+ "wall_s": 54.8,
+ "success": true,
+ "session_id": "c153f8c5-db14-46b9-ba5e-9ffa78838d42",
+ "turns": 7,
+ "cost": 0.1717288,
+ "duration_ms": 53348,
+ "answer": "## 结论\n\nTransformer 自注意力（self-attention）的核心公式是 **Scaled Dot-Product Attention**：将 query 与所有 key 做点积、除以 √d_k 后 softmax 得到权重，再对 value 加权求和。\n\n**公式 (1)（论文原文逐字）：**\n\n$$\\mathrm{Attention}(Q,K,V)=\\mathrm{softmax}\\!\\left(\\frac{QK^{T}}{\\sqrt{d_k}}\\right)V$$\n\n**多头注意力（Multi-Head Attention，原文）：**\n\n```\nMultiHead(Q,K,V) = Concat(head_1, ..., head_h) W^O\nwhere head_i = Attention(Q W_i^Q, K W_i^K, V W_i^V)\n```\n\n**关键原文引用（逐字）：**\n- \"The input consists of queries and keys of dimension $d_k$, and values of dimension $d_v$. We compute the dot products of the query with all keys, divide each by $\\sqrt{d_k}$, and apply a softmax function to obtain the weights on the values.\"\n- \"To counteract this effect, we scale the dot products by $\\frac{1}{\\sqrt{d_k}}$\" —— 缩放的原因是 d_k 较大时点积幅值变大，会把 softmax 推入梯度极小的区域。\n- 超参数：h = 8 个并行注意力头，每个头 $d_k = d_v = d_{model}/h = 64$；$d_{model} = 512$。\n\n**补充要点（同源文档）：**\n- 自注意力的定义：\"Self-attention, sometimes called intra-attention is an attention mechanism relating different positions of a single sequence in order to compute a representation of the sequence.\"\n- 复杂度对比（Table 1）：Self-Attention 每层 $O(n^2 \\cdot d)$、顺序操作 O(1)、最大路径长度 O(1)（对比 Recurrent 的 $O(n \\cdot d^2)$ / O(n) / O(n)）。\n- 解码器自注意力需 mask（softmax 输入中非法连接置 −∞），以保持自回归性质。\n\n**出处与可信度：**\n- 文档：《Attention Is All You Need》(Vaswani et al., 2017)，来源 KB `demo-qa-20260927`，doc_path `artificial-intelligence__1706.03762__attention-is-all-you-need.md`（doc_id 265a9b1e-430d-4782-8b79-864c93804267）。**可信度 P0（强）**—— 一手原始论文全文，公式编号 (1) 与图表引用直接引自原文。\n- 辅助线索：KB `计算机与人工智能`（131 文档）为 AI 文献库，本问题答案以原始论文为准，未再逐篇抽查；`soul-cs-library` 为其人格宪法文档（soul-definition/values/thinking-style/memory-conventions），非知识内容。\n\n**盲点声明**：本次为全库逐级检索，`kb_list` 目录层定位到 `demo-qa-20260927` 命中原文后，我读取了该幸存文档作答；未对 `计算机与人工智能` 库的 131 篇文档逐一做描述层核验，因此不声称该公式在其它 KB 中\"再无其它表述\"——仅就本库检索结果，原文公式即权威答案。"
+}

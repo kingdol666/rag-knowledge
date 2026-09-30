@@ -1,0 +1,13 @@
+{
+ "round": 3,
+ "task": "attention",
+ "mode": "A",
+ "http": 200,
+ "wall_s": 61.2,
+ "success": true,
+ "session_id": "5da29bc9-df8e-4afd-89e9-3e1d31ced7fd",
+ "turns": 7,
+ "cost": 0.2188696,
+ "duration_ms": 59810,
+ "answer": "I have the exact formula and surrounding context, verified directly from the source document.\n\n**结论：Transformer 的自注意力采用\"缩放点积注意力（Scaled Dot-Product Attention）\"，粒度公式为 Attention(Q, K, V) = softmax(QKᵀ / √d_k) · V。**\n\n**一、计算公式（原文公式 (1)）**\n\n$$\\mathrm{Attention}(Q,K,V)=\\mathrm{softmax}\\!\\left(\\frac{QK^{T}}{\\sqrt{d_k}}\\right)V$$\n\n出处：《Attention Is All You Need》(Vaswani et al., arXiv:1706.03762)，§3.2.1，收录于 KB `b1199132-e4d4-4305-8c2e-82dc1753b0ba`，文档 `计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md`。**P0 直接证据**（原文 LaTeX 公式逐字命中）。\n\n**二、定义与语义 [P0]**\n\n- §3.2 原文：attention 函数\"将一个 query 和一组 key-value 对映射为一个 output，其中 query、keys、values、output 都是向量\"，输出是 **values 的加权和**，权重由 query 与对应 key 的**兼容性函数（compatibility function）**计算。\n- §3.2.1 原文：输入是维度为 $d_k$ 的 queries 与 keys、维度为 $d_v$ 的 values；\"计算 query 与所有 keys 的点积，各自除以 $\\sqrt{d_k}$，再施加 softmax 得到 values 上的权重\"。实际实现中多个 query 打包为矩阵 $Q$，keys/values 打包为 $K$、$V$，即上式矩阵形式。\n- **自注意力的含义**（§2 Background 原文）：\"Self-attention, sometimes called **intra-attention**, is an attention mechanism relating different positions of **a single sequence** in order to compute a representation of the sequence.\" 即自注意力是同一序列内部不同位置之间的注意力（Transformer 中 $Q$、$K$、$V$ 同源）。\n\n**三、为什么要除以 √d_k [P0]**\n\n原文：对较小的 $d_k$ 两种机制表现相近；$d_k$ 较大时，不加缩放的**点积会变得很大（grow large in magnitude）**，把 softmax 推入**梯度极小**的区域。为抵消该效应，故将点积缩放 $\\frac{1}{\\sqrt{d_k}}$。（对比：dot-product attention 与本文算法完全相同，仅差这个缩放因子；additive attention 用单隐层前馈网络算兼容性。）\n\n**四、延伸到多头注意力 [P0]**\n\n$$\\mathrm{MultiHead}(Q,K,V)=\\mathrm{Concat}(\\mathrm{head}_1,\\dots,\\mathrm{head}_h)W^{O},\\quad \\mathrm{head}_i=\\mathrm{Attention}(QW_i^{Q},KW_i^{K},VW_i^{V})$$\n\n原文参数：$h=8$ 个并行注意力头，每个头 $d_k=d_v=d_{model}/h=64$。\n\n**证据质量说明**：核心公式与全部配套解释均来自原始论文（P0，原文逐字）。检索方式：对指定库执行 `kb_search_two_stage` 与 `kb_search_vector`（宽网），命中主文档 1706.03762（stage2 最高 0.767，chunk 24/25）；因全量 Laya 判定输出超出体积上限，改用 `kb_doc_read` 对同一文档 offset 84 直接核验公式原文，结论一致。库内其余命中（BERT、NLP facts dynamics 等）为弱相关引用，未采用。"
+}

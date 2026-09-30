@@ -1,0 +1,33 @@
+{
+ "mode": "C",
+ "qid": "cm2",
+ "expect": "found",
+ "kb_ids": [
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 89.9,
+ "duration_ms": 88258,
+ "turns": 8,
+ "cost_usd": 0.5253779999999999,
+ "session_id": "50d0ac49-f9fa-4bb5-8f88-712fb7a05d62",
+ "answer_chars": 1120,
+ "answer_markers_hit": [
+  "stroke"
+ ],
+ "refusal": false,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：库内证据（P0 级直接命中）显示，基于 EHR 的机器学习中风风险预测中，关键风险因素为高血压、糖尿病（高血糖）与心脏病这三大主因，且年龄是属性中贡献最大的因素之一；模型基准上 MLP 神经网络以 75.02% 准确率最优。**\n\n核心证据来自《Predicting Stroke from Electronic Health Records》（Nwosu et al., arXiv:1904.11280，生命科学与医学 KB，laya 判定 19/19 段幸存，P0 直接证据）：\n\n**1. 关键风险因素及影响**\n- 原文引言明确：\"Studies in healthcare like [6]-[8] have identified **high blood pressure, diabetes and heart disease** as major risk factors responsible for stroke attack\"（高血压、糖尿病、心脏病为致卒中的主要风险因素，引 AHA/ASA 一级预防指南等）。\n- 数据集为 McKinsey/Kaggle EHR 数据（29,072 名患者、12 个属性），输入属性含：性别、**年龄**、**高血压**、**心脏病**、婚姻状况、工作类型、居住地、**平均血糖水平**、BMI、吸烟状态。\n- PCA 主成分",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true
+  }
+ }
+}

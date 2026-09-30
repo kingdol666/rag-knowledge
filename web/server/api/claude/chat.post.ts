@@ -37,7 +37,7 @@ import { buildKbInstruction } from '~/server/utils/kb-instruction'
 import { addPending, denyAllPending, resolvePending } from '~/server/utils/claude-pending'
 import { upsertSession, saveMessage, getSessionMessages } from '~/server/utils/chat-db'
 import { resolve } from 'path'
-import { readFileSync, statSync } from 'fs'
+import { readFileSync, statSync, existsSync } from 'fs'
 import { resolveWithinAnyRoot } from '~/server/utils/safe-paths'
 import { getTreeStorageAbsolutePath } from '~/server/utils/runtime-paths'
 
@@ -409,10 +409,18 @@ export default defineEventHandler(async (event) => {
   const kbLaneNote = kbIds.length > 0
     ? '[通道提示：本轮为指定库快速通道——直接用 kb_search_two_stage / kb_search_vector 宽网起步；判定幸存证据已足够作答时立即作答。不要加载任何 Skill 文档，不要委派 subagent，禁止以相同参数重复调用任何工具。若未找到，只陈述检索事实（库名、已执行的检索、命中数），严禁编造或猜测库的内容。]'
     : '[通道提示：本轮为全库逐级检索通道——向量/经验检索工具不可用（调用会被直接拒绝，不要尝试）。固定顺序：kb_list → kb_get_documents(lightweight=true) 描述层拿 doc_id → kb_laya_judge(refs 每批≤6、串行) → kb_doc_read 幸存者 → 作答。效率优先：若 kb_list 的目录描述已表明没有任何库覆盖问题领域，立即如实回答「知识库中无对应内容」并停止，不要逐库扫描文档层——但描述含 random/杂项/通用/真实世界内容等泛化字样的库不算「已表明无关」，必须抽查其文档描述层后再判定（实测 2026-09-30：demo 杂项库里就有 Voyager 1 文档，目录层早退造成漏检）；禁止以相同参数重复调用任何工具；禁止加载任何 Skill 文档。若 kb 工具调用失败或不可用，必须如实回答「KB 工具不可用」——严禁没有任何检索就凭记忆作答。]'
+  // allowedTools-only callers that demand mcp__* tools (benchmark chat
+  // tracks / external harnesses). Must be computed BEFORE fullPromptText —
+  // the tool-readiness protocol below is appended for these sessions only.
+  const requestMcpMount = Array.isArray(allowedTools) &&
+    allowedTools.some((t) => typeof t === 'string' && t.startsWith('mcp__'))
   const fullPromptText = kbInstruction + soulInstruction + prompt + pathNote
     + (kbEnhanced
       ? '\n\n[回答格式要求：第一句必须是最终结论，不要以「检索完成」等过程汇报开头；默认总长 ≤800 字（要点 + 关键引文 + 出处）；仅当问题明确要求穷尽列举/完整表格/详细教程时才允许长答。]'
       + kbLaneNote
+      : '')
+    + (requestMcpMount
+      ? '\n\n[执行协议：先用 1-2 句话陈述你的检索计划（查什么、用哪个工具、预期命中什么），然后再调用工具执行——不要跳过计划直接报工具状态。若执行时工具列表中没有任何 mcp__kb-mcp__ 开头的工具，不要凭记忆作答也不要长篇解释，立即以字面量 KB_TOOLS_NOT_READY 结束本轮，系统会自动重试。]'
       : '')
 
   const res = event.node.res
@@ -576,14 +584,32 @@ export default defineEventHandler(async (event) => {
         code: 'KB_MCP_DOWN',
       }
     }
+    // allowedTools-only sessions: warm the endpoint (idempotent probe) so the
+    // session's own SSE connect finds a hot acceptor — these short-prompt
+    // sessions lose the async-mount race far more often than kbEnhanced ones.
+    if (requestMcpMount && isClaude) {
+      try {
+        await ensureKbMcp()
+      } catch {
+        /* probe failure tolerated — the lane's own retry handles hard down */
+      }
+    }
 
-    // ══════ 引擎查询（kbEnhanced 非流式带一次挂载闪失败自动重试） ══════
-    // MCP mount flakes ~1-in-6 sessions (sessions dcff48a1 / transformer_C):
-    // the turn ends in ~2 turns with ZERO mcp__kb-mcp__ calls and the honest
-    // "KB 工具不可用" refusal. That exact signature → one automatic re-run.
+    // ══════ 引擎查询（kbEnhanced 非流式带挂载闪失败自动重试） ══════
+    // MCP mount 说明：requestMcpMount（allowedTools 里点名 mcp__* 工具的调用方
+    // 也挂 kb-mcp）已在 fullPromptText 之前计算——挂载以工具需求为准，而不是
+    // kbEnhanced 指令开关（2026-09-30 回归：allowedTools-only 请求什么都不挂，
+    // 会话凭参数记忆/网页绕路作答）。
     let finalResult: any = null
     let sawKbTool = false
-    const maxAttempts = kbEnhanced && !streamMode ? 2 : 1
+    // 异步 MCP 注册与模型首个工具轮存在竞态（SDK init 时 kb-mcp 恒报 pending，
+    // 工具列表晚于首轮就位时模型会零工具作答，实测 ~50% 概率）。kbEnhanced 车道
+    // 凭超长系统指令天然延后首个工具轮而几乎不输竞态；allowedTools-only 调用方
+    // （benchmark 轨/外部 harness）prompt 短，必须靠「就绪协议 + 探活重试」补：
+    // 重试前 ensureKbMcp() 等服务端恢复，三次掷硬币后失败率 ~50%→~12%。
+    const maxAttempts = (kbEnhanced || requestMcpMount) && !streamMode
+      ? (requestMcpMount ? 3 : 2)
+      : 1
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
       sawKbTool = false
       const q = engine.query({
@@ -602,13 +628,44 @@ export default defineEventHandler(async (event) => {
         ...(isClaude && hasAttachments && attachmentBlocks.length > 0
           ? { attachmentBlocks: attachmentBlocks as any }
           : {}),
-        ...(kbEnhanced && isClaude
+        ...((kbEnhanced || soulEnhanced) && isClaude
           ? {
               mcpServers: KB_MCP_SERVERS,
               strictMcpConfig: true,
               // The ban list covers every harness-internal tool that ever drew
               // an opening-turn detour — see kb-lane.ts for the measured log.
               disallowedTools: KB_DISALLOWED_TOOLS,
+            }
+          : {}),
+        ...(requestMcpMount && isClaude && !(kbEnhanced || soulEnhanced)
+          ? {
+              // STDIO mount for allowedTools-only callers (benchmark tracks /
+              // external harnesses). SSE connects asynchronously AFTER init —
+              // the tool list lands mid-session and short-prompt sessions lose
+              // that race ~50% (2026-09-30, three Quick10 rounds of evidence).
+              // A stdio child is spawned and handshakes BEFORE init completes,
+              // so tools are present at turn 1 — the race is gone by
+              // construction; costs ~5s/session server cold-start instead.
+              mcpServers: {
+                // NOTE: direct venv python (kb-mcp/.venv) was tried and is
+                // BROKEN here — the SDK ignores the stdio config's cwd, so
+                // `python server.py` resolves the wrong script path (measured
+                // 0/3, 2026-09-30). `uv run --directory` carries its own cwd
+                // semantics and is the proven form (6/6 direct, 16/20 matrix).
+                'kb-mcp': {
+                  type: 'stdio' as const,
+                  command: 'uv',
+                  args: ['run', '--no-sync', '--directory',
+                         `${getProjectRoot().replace(/\\/g, '/')}/kb-mcp`,
+                         'python', 'server.py'],
+                },
+              },
+              strictMcpConfig: true,
+              // NO disallowedTools here: banning {ToolSearch, Task} suppresses
+              // MCP tool registration outright (measured 2026-09-30). These
+              // callers are whitelisted via allowedTools already, and
+              // ENABLE_TOOL_SEARCH=false in the engine env kills the
+              // ToolSearch detour at the root.
             }
           : {}),
         onPermissionRequest,
@@ -635,7 +692,7 @@ export default defineEventHandler(async (event) => {
             /* DB write failure does not block the chat stream */
           }
         }
-        if (kbEnhanced && message.type === 'assistant') {
+        if ((kbEnhanced || requestMcpMount) && message.type === 'assistant') {
           const content = (message as any).message?.content
           if (Array.isArray(content) && content.some((b: any) =>
             b?.type === 'tool_use' && String(b?.name || '').startsWith('mcp__kb-mcp__'))) {
@@ -664,10 +721,23 @@ export default defineEventHandler(async (event) => {
       }
       // Mount-flake auto-heal: a kb turn whose engine produced an answer
       // without touching a single kb-mcp tool is a dead session, not a
-      // retrieval result — re-run once. Non-stream only (the SSE stream is
-      // already on the wire in stream mode).
-      if (!streamMode && finalResult && kbEnhanced && !sawKbTool && attempt < maxAttempts - 1) {
+      // retrieval result — re-run. Non-stream only (the SSE stream is
+      // already on the wire in stream mode). Applies to BOTH kbEnhanced
+      // lanes and allowedTools-only callers (benchmark tracks / external
+      // harnesses): their sessions demand mcp__* tools, and a zero-tool
+      // answer is always the async-SSE-mount race (SDK init reports kb-mcp
+      // "pending"; whether the tool list lands before the model's first
+      // tool-seeking turn is a coin flip on short prompts).
+      // Before re-rolling, probe kb-mcp health so we ride out server-side
+      // accept hiccups (ensureKbMcp is idempotent and waits for recovery).
+      if (!streamMode && finalResult && (kbEnhanced || requestMcpMount) &&
+          !sawKbTool && attempt < maxAttempts - 1) {
         finalResult = null
+        try {
+          await ensureKbMcp()
+        } catch {
+          /* probe failure is not fatal — the retry may still reconnect */
+        }
         continue
       }
       break
@@ -679,8 +749,22 @@ export default defineEventHandler(async (event) => {
         const answer = typeof fr.result === 'string' && fr.result
           ? fr.result
           : extractText(fr.message?.content)
+        let success = fr.subtype === 'success'
+        let guardCode: string | null = null
+        // Honest-failure guard: an allowedTools-only session that demanded
+        // mcp__* tools but ended with ZERO kb tool calls never retrieved —
+        // its answer would be parametric memory dressed as retrieval.
+        // Demote to success:false so callers (benchmark runner, external
+        // harnesses) can fail the unit instead of scoring a fabrication.
+        if (requestMcpMount && !sawKbTool && success) {
+          success = false
+          guardCode = answer.includes('KB_TOOLS_NOT_READY')
+            ? 'KB_TOOLS_NOT_READY'
+            : 'KB_NO_RETRIEVAL'
+        }
         return {
-          success: fr.subtype === 'success',
+          success,
+          ...(guardCode ? { code: guardCode } : {}),
           engine: engineName,
           sessionId,
           model: fr.model || model || 'default',

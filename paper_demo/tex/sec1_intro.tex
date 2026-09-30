@@ -1,41 +1,45 @@
-% sec1_intro.tex — 2026-09-23 rewrite: two-gap problem (ordered to mirror the
-% three design decisions), demo-shaped contribution bullets. Numbers locked
-% to artifacts.
+% sec1_intro.tex — 2026-09-30 rewrite: layered retrieval (逐级检索) as the
+% central contribution; three design decisions re-anchored to the current
+% agent contracts (layered ladder + engine-graded judgment + honest failure).
 \section{Introduction}
 \label{sec:intro}
 
 Maintaining a shared paper collection is organizational work before it is
 retrieval work: someone must keep the corpus ordered and be able to show
-which passages support an answer. Packed-context RAG
-collapses retrieval into an opaque context: provenance is lost at pack
-time, similarity stands in for reading, and a failed retrieval passes
-silently~\cite{rag-lewis}. Recent systems repair parts of this pipeline ---
-Self-RAG and Corrective RAG add self-assessment and
+which passages support an answer. Packed-context RAG collapses retrieval
+into an opaque context: provenance is lost at pack time, similarity stands
+in for reading, and a failed retrieval passes
+silently~\cite{rag-lewis,dpr}. Recent systems repair parts of this
+pipeline --- Self-RAG and Corrective RAG add self-assessment and
 correction~\cite{selfrag,crag}, DeepRead grounds answers in document
-hierarchy~\cite{deepread}, and CyberBOT adds ontology-checked
-verification~\cite{cyberbot} --- but each treats the corpus as given.
-To our knowledge, none manages the corpus that retrieval consumes through
-the same addresses that answers cite, so citations stay resolvable and
-absence stays legible.
+hierarchy~\cite{deepread}, and RAPTOR builds hierarchical
+indexes~\cite{raptor} --- but each treats the corpus as given. To our
+knowledge, none manages the corpus that retrieval consumes through the
+same addresses that answers cite.
 
-\sys{} (Query-Driven Content-Verified Retrieval) closes this gap with three
-design decisions. \emph{One address space}: parsed documents are indexed as
-base/document/part/section, and the same identifiers serve organization,
-search, and citation. \emph{Ranking proposes, reading disposes}: candidates
-are recalled by similarity, but acceptance is decided by a prompted 0--8
-rubric over their content, so every accepted candidate carries the rubric
-judgment that admitted it instead of a bare similarity value. \emph{Failure
-is a first-class output}: when no candidate passes, the skill browses base
-summaries and tag-matched shelves and returns a scoped not-found
-report instead of a nearest-neighbor guess.
+\sys{} (Query-Driven Content-Verified Retrieval) is an agent-operated
+platform that closes this gap with three design decisions. \emph{One
+address space}: parsed documents are indexed as
+base\slash document\slash part\slash section, and the same identifiers serve organization,
+search, and citation. \emph{The ladder proposes; the judge disposes}:
+recall runs through a layered ladder --- catalog, shelf descriptions, wide
+vector nets --- but acceptance is decided per segment by a locally hosted
+judgment engine that reads the candidate's actual content and grades it
+against the query; the engine's verdicts are fail-closed, similarity never
+overrules them, and every segment graded positive is kept.
+\emph{Failure is a first-class output}: when a ladder rung finds no
+plausible candidate the search stops there and reports honestly ---
+shelves scanned, descriptions read, nothing matched --- instead of
+answering from a nearest neighbor.
 
-Packaged agent skills bind these decisions to tool APIs: the organization
-skill parses PDFs, routes them by content, maintains tags, and checks
-indexing, so placement reflects what a paper says rather than its filename;
-the retrieval skill rewrites the query, recalls and reads candidates,
-applies the 0--8 gate, and cites the passage that survives it
-(Figures~\ref{fig:teaser} and~\ref{fig:arch}). Section~\ref{sec:demo}
-walks the scenarios in order; Section~\ref{sec:eval} reads a monitored
-three-mode run as operational evidence, not a controlled comparison: the
-platform is the only mode that both grounds and keyword-verifies 9 of 10
-answers.
+Both halves are executed by packaged agent skills over one tool surface:
+the organization skill parses PDFs, routes them by content into category
+bases, and tags and indexes the parts; the retrieval skills walk the
+ladder, apply the graded judgment, and cite the passages that survive it
+(Figures~\ref{fig:teaser} and~\ref{fig:arch}). The rest of the paper
+details the loops, walks the demonstration, and reads a monitored
+three-mode run as operational evidence: on ten fixed questions, only the
+platform both grounds and keyword-verifies \NUMgroundedA{} of 10 answers,
+and a 27-run stability suite shows the three retrieval lanes staying
+behaviorally consistent and honestly abstaining whenever the corpus does
+not cover a question.

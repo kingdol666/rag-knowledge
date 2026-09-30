@@ -1,0 +1,361 @@
+{
+ "qid": "Q1",
+ "question": "语言模型是如何逐步学会事实知识的？学习动力学呈现哪几个阶段、性能平台期对应什么内部机制、数据分布不均衡有何影响，以及为什么用微调向模型注入新知识会失败？(how language models learn facts dynamics curricula hallucinations)",
+ "mode": "opt_B",
+ "retrieval": {
+  "phase_s": {
+   "L0": 0.76,
+   "L2": 0.53,
+   "L3": 0.08,
+   "L4": 1.47,
+   "L5": 15.59,
+   "L5b_peek_read": 1.77,
+   "L5b_judge": 1.57,
+   "L6": 0.01
+  },
+  "phase_total_s": 21.78,
+  "tier_counts": {
+   "docs_listed": 131,
+   "read_planned": 35,
+   "docs_read": 35,
+   "full_reads": 35,
+   "head_reads": 0,
+   "peeked_docs": 48,
+   "promoted_docs": 0,
+   "candidates": 241,
+   "scored": 241,
+   "survivors_all_yes": 241,
+   "retained_docs": 35,
+   "evicted_docs": 0,
+   "pack_blocks": 16,
+   "pack_chars": 39831
+  },
+  "real_engine": true,
+  "status": "ok",
+  "criterion": "evidence",
+  "retention": {
+   "kept_keys": [
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 1 of 3).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 2 of 2).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 1 of 3).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 5 of 9).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 2 of 3).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 4 of 4).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 3 of 4).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 9 of 9).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 3 of 9).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 4 of 4).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 1 of 2).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 2 of 3).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 8 of 9).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 2 of 9).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 2 of 4).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 7 of 9).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 3 of 4).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 3 of 3).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 2 of 2).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre (part 1 of 2).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 2 of 2).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 1 of 9).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 4 of 9).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2411.18583__automated-literature-review-using-nlp-techni.md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 1 of 2).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 3 of 3).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 6 of 9).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre (part 2 of 2).md"
+    ]
+   ],
+   "abs_kept_keys": [
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 2 of 2).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 1 of 2).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2312.10793__demystifying-instruction-mixing-for-fine-tun.md (part 2 of 2).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 1 of 9).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 2 of 9).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 3 of 9).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 4 of 9).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 5 of 9).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 6 of 9).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 7 of 9).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 8 of 9).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 9 of 9).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 1 of 3).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 2 of 3).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 3 of 3).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\large-language-models__2411.18583__automated-literature-review-using-nlp-techni.md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 1 of 3).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 2 of 3).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 3 of 3).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 1 of 4).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__2310.10981__instructive-dialogue-summarization-with-quer (part 2 of 4).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 3 of 4).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 4 of 4).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 1 of 4).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 2 of 4).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 3 of 4).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 4 of 4).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 1 of 2).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 2 of 2).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre (part 1 of 2).md"
+    ],
+    [
+     "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+     "计算机与人工智能\\speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre (part 2 of 2).md"
+    ]
+   ],
+   "relative_cut": 0.855,
+   "global_best": 0.905,
+   "floor_applied": true,
+   "kept_total": 35
+  },
+  "evicted": []
+ },
+ "gold_in_pack": {
+  "2503.21676": true
+ },
+ "pack_docs": [
+  "计算机与人工智能\\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md",
+  "计算机与人工智能\\artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep (part 1 of 2).md",
+  "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 3 of 9).md",
+  "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 5 of 9).md",
+  "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 7 of 9).md",
+  "计算机与人工智能\\large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md (part 9 of 9).md",
+  "计算机与人工智能\\large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 1 of 3).md",
+  "计算机与人工智能\\large-language-models__2402.12317__evor-evolving-retrieval-for-code-generation (part 2 of 3).md",
+  "计算机与人工智能\\nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 1 of 3).md",
+  "计算机与人工智能\\nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md (part 2 of 3).md",
+  "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 2 of 4).md",
+  "计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 4 of 4).md",
+  "计算机与人工智能\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 3 of 4).md",
+  "计算机与人工智能\\nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md (part 4 of 4).md",
+  "计算机与人工智能\\social-networks__1001.3181__weak-ties-subtle-role-of-information-diffusi (part 2 of 2).md",
+  "计算机与人工智能\\speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre (part 2 of 2).md"
+ ],
+ "answer": "The evidence is insufficient to answer this question.\n\nThe retrieved chunks do not contain the relevant content. The paper that matches the question's topic — `nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md` — is only present as parts 2 and 4 of 4, which contain the discussion/limitations section and figure captions, not the staged learning dynamics, plateau mechanism, or fine-tuning injection results. The other retrieved documents (EvoR code generation, BERT, VISION-FLAN, weak ties, MARL, Yiddish NLP, discrete speech units) are unrelated.\n\nSources actually used:\n- `计算机与人工智能\\nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md` (part 2 of 4, part 4 of 4) — checked, does not contain the answer.\n- Remaining evidence chunks — checked, topically unrelated.\n\nNo prior knowledge is used; I cannot answer from the evidence provided.",
+ "is_error": false,
+ "answer_latency_s": 8.0,
+ "tokens": {
+  "input": 11543,
+  "output": 210,
+  "cache_read": 37312,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.081621,
+ "total_s": 33.6,
+ "recorded_utc": "2026-09-27T17:44:57.825180+00:00"
+}

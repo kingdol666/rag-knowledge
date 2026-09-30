@@ -1,0 +1,13 @@
+{
+ "round": 3,
+ "task": "seismology",
+ "mode": "C",
+ "http": 200,
+ "wall_s": 41.8,
+ "success": true,
+ "session_id": "0c1e7c8e-73aa-4af6-b29a-ec7ddc26d949",
+ "turns": 6,
+ "cost": 0.2300956,
+ "duration_ms": 40417,
+ "answer": "**结论：该知识库中未收录任何关于「地震波分类（体波/面波,P波/S波/Love波/Rayleigh波及各类区别）」的资料——库内仅有 2 篇地震学论文，主题均为「超剪切破裂(supershear rupture)判定」与「震后损失估计」，不含地震波类型学的介绍性内容。以下为检索事实与库内可用的相关信息。**\n\n**检索事实（库：`1e6199ea-f380-44e2-94fc-d431f0f9bb6b`，共 75 个文档分片）**\n\n| 检索 | 命中情况 |\n|---|---|\n| `kb_search_two_stage`「地震波分类 体波 面波 纵波 横波 区别」 | stage1 仅命中 2 篇地震学论文（supershear 3 分片、震后损失 4 分片），stage2 无一条讲波类划分；其余为 graph 噪声（数学/经济/NLP/材料） |\n| `kb_search_vector`「P波 S波 面波 传播特征」/「P-wave S-wave surface wave Love Rayleigh body wave difference」 | 最高分 0.58，全部落在 supershear 论文的质点运动、S 波到时片段；无一条定义体波/面波或 Love/Rayleigh 波 |\n| `kb_get_documents(lightweight)` 全库清点 | 地震学类仅 2 篇：`seismology__2606.10843`（超剪切破裂指标）与 `seismology__1308.1846`（APE-ELEV 震后损失估计）。其余为量子物理、气候、天文、化学、海洋、数学等，均与地震波无关 |\n\n**库内仅有、可间接佐证的片段（非波类划分，不足以回答提问）**\n\n- 唯一涉及波类型的实质内容是 supershear 论文中的 **S 波（剪切波）**时序描述：*\"In a subshear rupture, the S waves radiated from preceding rupture travel faster than the advancing rupture front\"*（破裂前缘辐射的 S 波传播快于破裂面前进），并把断层法向 FN 定义为 *\"the S-wave particle motion direction\"*。这只能说明库内论文用到 S 波概念，**并未定义 P 波、面波，也无体波/面波的分类与区别**。\n\n**判定**：证据不足，未找到答案。上述两次宽网检索（two_stage + vector）加一次全库清点，均未命中任何「地震波分类」内容。若需要回答「地震波主要分为体波（P 波纵波、S 波横波）与面波（Love 波、Rayleigh 波）及其传播介质/速度/振动方向区别」，需向该库补充地震学导论类文献后重新入库检索。"
+}

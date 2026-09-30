@@ -1,0 +1,31 @@
+{
+ "mode": "B",
+ "qid": "cm1",
+ "expect": "found",
+ "kb_ids": [],
+ "http": 200,
+ "success": true,
+ "wall_s": 196.9,
+ "duration_ms": 195206,
+ "turns": 17,
+ "cost_usd": 0.7632850000000001,
+ "session_id": "41a81273-40d8-4a28-8fdd-d01cc5fcc5bd",
+ "answer_chars": 2234,
+ "answer_markers_hit": [
+  "instructds"
+ ],
+ "refusal": false,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**InstructDS synthesizes high-quality query-based summaries via a three-step pipeline that turns ordinary dialogue–summary pairs into query–dialogue–summary (QDS) triples: summary-anchored query generation, query filtering, and query-based summary generation.** (Source: *Instructive Dialogue Summarization with Query Aggregations* (Wang, Liu, Chen, A\\*STAR I2R), KB「计算机与人工智能」, parts 1/4 — P0 strong, read directly.)\n\n**1. Summary-anchored query generation.** It exploits the question-generation ability of Flan-T5-XL (pretrained on Quoref, MC-TACO, CosmosQA) and, for each dialogue–summary instance,",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true
+  }
+ }
+}

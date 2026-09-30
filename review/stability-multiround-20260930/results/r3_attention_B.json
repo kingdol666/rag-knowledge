@@ -1,0 +1,13 @@
+{
+ "round": 3,
+ "task": "attention",
+ "mode": "B",
+ "http": 200,
+ "wall_s": 42.1,
+ "success": true,
+ "session_id": "efbaa32b-30a0-44f2-99af-877d2b57b188",
+ "turns": 6,
+ "cost": 0.18967399999999998,
+ "duration_ms": 40618,
+ "answer": "**Transformer 的自注意力机制公式是：Attention(Q, K, V) = softmax(QKᵀ / √d_k) V**（即论文中的 \"Scaled Dot-Product Attention\"，式(1)）。\n\n**出处（P0 强证据）**：`demo-qa-20260927` 知识库中的原始论文 *Attention Is All You Need*（Vaswani et al., 2017, arXiv:1706.03762）— `artificial-intelligence__1706.03762__attention-is-all-you-need.md`。文中明确写道：\n\n> \"We compute the dot products of the query with all keys, divide each by √d_k, and apply a softmax function to obtain the weights on the values.\"\n> $$\\mathrm{Attention}(Q,K,V) = \\mathrm{softmax}\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right)V \\tag{1}$$\n\n**公式要素（均引自原文）**：\n- **缩放因子 1/√d_k**：当 d_k 较大时点积幅值变大，会把 softmax 推入梯度极小的区域；缩放用于抵消该效应（原文 §3.2.1）。\n- **多头注意力**（§3.2.2）：MultiHead(Q,K,V) = Concat(head₁,…,head_h)W^O，其中 headᵢ = Attention(QWᵢ^Q, KWᵢ^K, VWᵢ^V)。原文采用 **h = 8** 个头，且 **d_k = d_v = d_model/h = 64**（d_model = 512）。\n- **自注意力定义**（§2）：self-attention（又称 intra-attention）是\"relating different positions of a single sequence\"的注意力机制；编码器自注意力层中 Q、K、V 全部来自同一处（上一层输出）。\n- **解码器掩码**：为防止左侧信息泄漏，将非法连接在 softmax 输入处设为 −∞（§3.2.3）。\n\n**检索与可信度说明**：\n- `kb_laya_judge` 证据门（criterion=instance）对该文献评分 **0.8177–0.9118**（10/10 段通过 0.5 阈值），为 **P0 强证据**。\n- 主要检索路径：`kb_list`（19 库）→ 定位\"计算机与人工智能\"（131 篇 NLP/LLM）与 `demo-qa-20260927`（描述含 arXiv PDF，属\"泛化样\"库已按规则抽查）→ 描述层命中原始论文 → Laya 判决 → kb_doc_read 幸存者正文。公式与数值均逐字引自该文档，未做任何推测。\n\n**盲点声明**：本次为描述层定向命中（单文档），未对全部 19 库做穷尽全文扫描；但问题属于经典论文事实，已有 P0 原始文献直接覆盖，无需扩检。"
+}

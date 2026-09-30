@@ -1,0 +1,42 @@
+{
+ "qid": "QK06",
+ "method": "rerank",
+ "question": "Which physical factor primarily controls the response of precipitation extremes to climate change?",
+ "ranked": [
+  "1503.07557",
+  "2409.13934",
+  "2007.10574"
+ ],
+ "ranked_paths": [
+  "climate-science__1503.07557__precipitation-extremes-under-climate-change__k00",
+  "climate-science__2409.13934__on-the-extrapolation-of-generative-adversari__k05",
+  "climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on__k14"
+ ],
+ "evidence_sources": [
+  "1503.07557",
+  "2409.13934",
+  "2007.10574"
+ ],
+ "evidence_chars": 1542,
+ "retrieval_s": 2.4,
+ "latency_s": 9.5,
+ "answer": "The evidence is insufficient to answer this question.\n\nThe retrieved chunks establish only the general framework — that precipitation extremes intensify with warming and that the response is often discussed in terms of the Clausius-Clapeyron relation (~7%/°C) — but none of them identifies the primary controlling physical factor. The O'Gorman abstract (1503.07557) explicitly states it focuses on \"the physical factors that control the response\" yet truncates before naming them, ending at \"the sensitivity of precipitation extremes to warming remains uncert[ain]\". Chunk 2409.13934 discusses the learning challenge of extreme-precipitation signals and cites Clausius-Clapeyron, but does not isolate a single controlling factor. Chunk 2007.10574 addresses MJO-related dynamical links (vertical moisture flux convergence and vertical moisture advection) as modulating processes for MJO-induced extremes specifically, not as the primary control of the general precipitation-extremes response. Because the decisive statement appears to lie in truncated text I did not receive, I cannot name the factor without falling back on prior knowledge.\n\nSources consulted:\n- [1503.07557] \"Precipitation extremes under climate change\" (O'Gorman) — abstract, truncated\n- [2409.13934] — chunk on extreme precipitation (99.5th percentile) and Clausius-Clapeyron\n- [2007.10574] §3.2 — Dynamical Links between Precipitation Extremes and MJO",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 73,
+  "output": 305,
+  "cache_read": 48576,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.0325038,
+ "extra": {
+  "rerank_fallback": false
+ },
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

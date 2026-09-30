@@ -1,0 +1,13 @@
+{
+ "round": 2,
+ "task": "attention",
+ "mode": "C",
+ "http": 200,
+ "wall_s": 66.1,
+ "success": true,
+ "session_id": "393c04f5-e93a-4aba-8977-15d23f202d43",
+ "turns": 8,
+ "cost": 0.22726559999999998,
+ "duration_ms": 64555,
+ "answer": "I now have the verbatim formula and its context.\n\n## 结论\n\nTransformer 的（缩放点积）自注意力计算公式为 **Attention(Q, K, V) = softmax(QKᵀ / √d_k) · V**，即论文公式 (1)。\n\n**出处：**《Attention Is All You Need》(Vaswani et al., 1706.03762)，第 3.2.1 节 Scaled Dot-Product Attention；KB：`计算机与人工智能/artificial-intelligence__1706.03762__attention-is-all-you-need.md (part 1 of 2).md`（库 ID `b1199132-…b0ba`）。\n\n### 原文关键引文（逐字）\n\n> \"We compute the dot products of the query with all keys, divide each by $\\sqrt{d_k}$, and apply a softmax function to obtain the weights on the values.\"\n\n> \"We compute the matrix of outputs as:\n> $$\\mathrm{Attention}(Q,K,V) = \\mathrm{softmax}\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right)V \\tag{1}$$\"\n\n### 公式要素\n\n| 符号 | 含义 |\n|---|---|\n| **Q** | 查询矩阵（queries），维度 $d_k$ |\n| **K** | 键矩阵（keys），维度 $d_k$ |\n| **V** | 值矩阵（values），维度 $d_v$ |\n| $d_k$ | key 的维度，用于缩放因子 $1/\\sqrt{d_k}$ |\n| softmax | 对 K 的权重归一化，得到作用在 V 上的权重 |\n\n### 为什么要除以 √d_k（原文解释）\n\n> \"for large values of $d_k$, the dot products grow large in magnitude, pushing the softmax function into regions where it has extremely small gradients... To counteract this effect, we scale the dot products by $\\frac{1}{\\sqrt{d_k}}$\"\n\n即：不缩放时点积随 $d_k$ 增大会变得很大，把 softmax 推入梯度极小的区域；除以 $\\sqrt{d_k}$ 用于抵消该效应。\n\n### 补充说明\n\n- **自注意力（self-attention）** 即 Q、K、V 全部来自同一序列的情形；原文第 3.2 节将 attention 函数一般性地定义为\"making a query and a set of key-value pairs to an output… the output is computed as a weighted sum of the values, where the weight assigned to each value is computed by a compatibility function of the query with the corresponding key.\"\n- 同一文档还给出了 **Multi-Head Attention**（第 3.2.2 节）：将 Q/K/V 用不同线性投影 h 次并行执行上述注意力后拼接——如需该部分公式可继续检索。\n\n**证据等级：** P0 直接证据 —— 公式 (1) 逐字命中、缩放原因有原文佐证，来自 Transformer 原始论文文档本身。\n\n**检索执行说明：** 在指定库 `b1199132-e4d4-4305-8c2e-82dc1753b0ba` 上执行了 `kb_search_two_stage`（2 组查询变体）+ `kb_search_vector`（2 组），并用 `kb_laya_judge`（criterion=evidence）判定该文档为幸存证据；证据充分，未做进一步逐级补齐。"
+}

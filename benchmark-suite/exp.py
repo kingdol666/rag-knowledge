@@ -42,15 +42,18 @@ DEFAULT_BASELINES = FAST_BASELINES
 
 
 def preflight(verbose: bool = True) -> dict:
-    """检查平台是否可跑；返回 {ok, backend, web, token, token_state}。
+    """检查平台是否可跑；返回 {ok, backend, web, token, token_state, kbmcp}。
 
     token 不只检查"存在"，而是打到需要鉴权的端点上验证；过期则用
     loop-auth.json 里的凭据自动重新登录（stale-token self-heal）。
+    2026-09-30 新增 kb-mcp 常驻 SSE(:8000) 探活——chat API 的 kbEnhanced
+    车道全部经它取工具；挂了也能被服务端 ensureKbMcp 自动拉起，故只报
+    状态不挡 ok。
     """
     from lib import BACKEND, WEB, check_token
 
     out = {"backend": False, "web": False, "token": False, "token_state": "?",
-           "backend_url": BACKEND, "web_url": WEB}
+           "kbmcp": False, "backend_url": BACKEND, "web_url": WEB}
     try:
         ok, state = check_token(WEB)
         out["token"], out["token_state"] = ok, state
@@ -66,10 +69,17 @@ def preflight(verbose: bool = True) -> dict:
             out["web"] = r.status < 500
     except Exception:  # noqa: BLE001
         pass
+    try:
+        with urllib.request.urlopen("http://127.0.0.1:8000/sse", timeout=5) as r:
+            out["kbmcp"] = r.status == 200
+    except Exception:  # noqa: BLE001
+        pass
     out["ok"] = out["backend"] and out["web"] and out["token"]
     if verbose:
         print(f"[preflight] backend {BACKEND}: {'OK' if out['backend'] else 'DOWN'}")
         print(f"[preflight] web     {WEB}: {'OK' if out['web'] else 'DOWN'}")
+        print(f"[preflight] kb-mcp  http://127.0.0.1:8000/sse: "
+              f"{'OK' if out['kbmcp'] else 'DOWN（chat API ensureKbMcp 会自动拉起，不挡门）'}")
         note = {"ok": "OK", "refreshed": "OK（已自动刷新过期 token）"}.get(
             out["token_state"], f"FAIL（{out['token_state']}）")
         print(f"[preflight] token: {note}")
@@ -233,6 +243,24 @@ def run_retmodes(args) -> int:
     return 0
 
 
+def run_chatmodes(args) -> int:
+    """Chat-API 三模式系统臂: 当前系统自身 A/B/C 执行流, 全部走官方 chat API。
+
+    与 --retmodes 互补：retmodes 测检索脚本（子进程直跑、纯检索无 LLM），
+    chatmodes 测**系统本体**——默认非流式 JSON、kbIds 钉库、服务端工具门禁、
+    MCP 挂载、Laya 判卷、如实拒答，即外部调用方真实拿到的执行流程。
+    题 = cm1/cm2（金标在库，答案金标词判定）+ cm3（域外，如实拒答判定）。
+    """
+    from experiments import chat_mode_arms as cma
+    from lib import new_run_dir
+
+    out_dir = new_run_dir("chatmodes")
+    print(f"[exp:chatmodes] run={out_dir.name} · modes=A/B/C · "
+          f"questions={list(cma.QUESTIONS)}", flush=True)
+    res = cma.run_all(out_dir)
+    return 0 if res["n_pass"] == len(res["rows"]) else 2
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description="Unified experiment launcher")
     ap.add_argument("question", nargs="?", default="", help="单个问题文本")
@@ -245,6 +273,10 @@ def main() -> int:
     ap.add_argument("--retmodes", action="store_true",
                     help="检索任务矩阵: 三模式(A/B/C)+检索类baseline 在内置 q1/q2 上"
                          "跑纯检索(无LLM回答), 产出 RETRIEVAL-COMPARE.md")
+    ap.add_argument("--chatmodes", action="store_true",
+                    help="Chat-API 三模式系统臂: 当前系统 A/B/C 执行流(默认非流式/"
+                         "kbIds 钉库/服务端工具门禁) 在 cm1-cm3 上真实跑, "
+                         "产出 CHAT-MODES-COMPARE.md")
     ap.add_argument("--ret-baselines", default="bm25,vector,rrf",
                     help="--retmodes 的 baseline 集(纯检索类; rerank 含 LLM 慎选)")
     ap.add_argument("--max-turns", type=int, default=12)
@@ -264,11 +296,15 @@ def main() -> int:
         print("baselines    :", ", ".join(FULL_BASELINES))
         print("default set  : project=a2 + baselines=" + ",".join(DEFAULT_BASELINES))
         print("retmodes     : 三模式(A/B/C)+检索baseline 纯检索矩阵 (--retmodes)")
+        print("chatmodes    : Chat-API 三模式系统臂 (当前系统执行流, --chatmodes)")
         return 0
 
     if args.retmodes:
         import time  # noqa: F401 — run_retmodes 内部使用
         return run_retmodes(args)
+
+    if args.chatmodes:
+        return run_chatmodes(args)
 
     if args.check:
         return 0 if preflight()["ok"] else 1

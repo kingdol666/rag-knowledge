@@ -1,70 +1,76 @@
-% All numbers in this section are assembled and asserted from saved artifacts
-% by benchmark-suite/scripts/108_pipeline_evidence.py (results/r2_pipeline_100.json):
-%   ingest   = results/ingest_report.json (round 1) +
-%              results/r2_ingest_report.json (round 2) +
-%              results/r2_organize/o1_survey.json
-%   organize = results/r2_organize/ (audit_manifest, o2_duplicates, report)
-%   retrieval= results/experiment_chat_20260922-211000/ (audit_paper_numbers.json,
-%              30 traces; keyword-verified = 107_exp_grade kw_ok with
-%              --qfile qa_questions.json) + results/r2_exp_corpus.json
-%   failure  = results/honest_failure_probe.json (scripted out-of-corpus probes)
-% Part/section counts use the case-insensitive pattern
-% r'part \d|§\s?\d|section \d|sections \d|table \d' over the saved answers.
-% Figure 3 is generated from the same traces by
-% figures/submission-20260920/build_fig3_dual.py (verbatim-substring gates).
-\section{Measured Three-Mode Run and Limitations}
+% sec4_eval.tex — 2026-09-30 rewrite. Two evidence blocks:
+% (1) the monitored three-mode rerun on the current contract (fresh run,
+%     graded by benchmark-suite/scripts/107_exp_grade.py, audited by
+%     scripts/audit_paper_numbers.py — all numbers script-asserted);
+% (2) the 27-run three-lane stability suite
+%     (review/stability-multiround-20260930, chat API, live multi-base
+%     instance, session-trace tool-path compliance).
+\section{Evaluation}
 \label{sec:eval}
 
-Because the platform's own ingest loop built the corpus, records exist
-for every stage (Table~\ref{tab:pipeline}). The monitored run then asks
-whether the address-space design changes answers: ten fixed questions
+\textbf{Setup.}
+Because the platform's own ingest loop built the corpus, records exist for
+every stage (Table~\ref{tab:pipeline}). The monitored run then asks
+whether the layered design changes answers: ten fixed questions
 (BQ01--BQ10; full text in the repository), each answerable only from its
 designated paper, ran through three modes that differ by design only in
-evidence route, permissions, and prompt framing: the platform answers through the
-packaged skill over the kb\_* tools; the bare agent is the same model with
-file tools over the exported papers; dense retrieval searches the
-4{,}528-chunk replica index of Table~\ref{tab:pipeline}
-(Figure~\ref{fig:threeway}). The run predates the repository's
-prompt-parity rework, so the baselines' answers were length-capped while
-the platform's were not --- one reason the citation split (7--4--1),
-quantified in Figure~\ref{fig:threeway}, is the cleanest measured
-contrast.
+evidence route, permissions, and prompt framing, under one harness, one
+model, and one neutral prompt template (the platform affordance
+additionally names the platform's judge tool): the platform answers
+through the kb\_* tools --- rewrite, wide vector recall, judgment-layer
+grading, survivor reads; the bare agent is the same model with file tools
+over the exported papers; dense retrieval searches the 4{,}528-chunk
+replica index of Table~\ref{tab:pipeline} and must answer from retrieved
+chunk text. Metrics: \emph{grounded} = the trace cites the designated
+paper (strict arXiv-id match); \emph{keyword-verified} = at least 60\% of
+gold key facts, fixed in advance, at word boundaries (deterministic);
+\emph{citations} = part/section/table markers pattern-matched over saved
+answers (repository scripts).
 
-\textbf{Ingest and organization.}
-MinerU parsed all 100 papers; the organization skill placed each by its
-content into one of five bases, and the 30,000-character ceiling split
-long texts into
-322 stored parts, each passing all nine recorded checks (repository
-checklist). A later organization pass re-read all 322
-parts, found no true duplicates (the 35 near-pairs are same-paper
-fragments), upgraded 165 descriptions, and verified storage and retrieval
-stability (Table~\ref{tab:pipeline}).
+\textbf{Findings.}
+The platform grounds \NUMgroundedA/10 designated-paper answers and
+keyword-verifies \NUMkwA/10 --- a clean sweep under conservative grading;
+the bare agent grounds \NUMgroundedB/10 yet verifies \NUMkwB/10; dense
+retrieval grounds \NUMgroundedC/10 and verifies \NUMkwC/10.
+Part/section-level citations reach \NUMciteA/10 versus \NUMciteB{} (bare)
+and \NUMciteC{} (dense) (Figure~\ref{fig:threeway}). Two findings frame
+the demo. First, the bare agent always locates the designated paper ---
+file search was not the bottleneck --- yet its verification trails the
+platform's and its answers name files where the platform names
+base\slash document\slash part\slash section: locating evidence, synthesizing a complete
+answer, and citing it at a checkable address are different skills, and
+only the platform pairs all three. Second, the citation split
+(\NUMciteA--\NUMciteB--\NUMciteC) is the design difference this demo
+exists to show: only the platform's answers carry layered addresses,
+replayed verbatim in Figure~\ref{fig:threeway}.
 
-\textbf{Retrieval.}
-Metrics (Figure~\ref{fig:threeway}):
-grounded =
-the trace cites the designated paper (strict arXiv-id match);
-keyword-verified = at least 60\% of gold key facts, fixed in advance, at
-word boundaries (deterministic); citations = part/section/table markers
-pattern-matched over saved answers (repository script). Two
-findings frame the demo. First, the bare agent always
-locates the designated paper (10/10 grounded) --- in this run, file search
-was not the bottleneck --- yet keyword verification passes only 6/10
-(possibly a length-cap artifact), no more than dense retrieval: locating
-evidence and synthesizing a complete answer are different skills. The platform alone pairs high grounding with
-high verification (9/10 each). Second, the citation split (7--4--1) is the
-design difference this demo exists to show: only the platform's answers
-carry base/document/part/section addresses, replayed verbatim in
-Figure~\ref{fig:threeway}.
+\textbf{Honest failure and stability.}
+Abstention is measured, not anecdotal. In a 27-run stability suite
+(three tasks --- found / corpus-not-covering / out-of-corpus ---
+$\times$ three lanes --- fast, librarian ladder, fusion --- $\times$
+three rounds) on the live multi-base instance, no run fabricated: the
+found task produced the correct attention formula in 9/9 runs; the
+not-covering task answered 9/9 that the library holds no such content
+(naming the papers it does hold); the out-of-corpus task refused 9/9,
+the librarian lane stopping at the catalog layer. Session-trace replay
+confirms each lane kept its own contract (fast: two-stage recall
+$\rightarrow$ judgment $\rightarrow$ reads; ladder: catalog
+$\rightarrow$ descriptions $\rightarrow$ judgment $\rightarrow$ reads;
+fusion: vector first, catalog fallback) in 27/27 runs, with median
+wall-clock 34--76\,s across tasks and lanes --- and three scripted
+out-of-corpus questions against the audited instance all receive scoped
+not-found reports (Section~\ref{sec:demo} shows one).
 
 \textbf{Costs and limitations.}
-The platform is slowest and costliest (113\,s and \$0.49 per question,
-versus 43\,s/\$0.16 bare and 48\,s/\$0.18 dense): the gap buys multi-step
-reading. Grading is
-deliberately conservative: word-boundary matching scores the bare agent's
-hyphenated ``precipitation-efficiency'' (BQ06) and ``oxygen (anionic)
-redox''/plural ``cathodes'' (BQ08) at 0/1 and 0/2; one platform answer
-(BQ02) grounds the NISQ definition to a neighboring survey, shown as-is.
-Correctness calls are the authors' reading of each trace; cache state
-was not controlled. Three out-of-corpus questions
-receive scoped not-found reports (Section~\ref{sec:demo} shows one).
+The platform is the slowest mode (\NUMlatA{} per question versus
+\NUMlatB{} bare and \NUMlatC{} dense) --- the gap buys multi-step reading
+and graded judgment --- but not the costliest: \NUMcostA{} per question,
+about the bare agent's \NUMcostB{} (whose file-tool loop reads full
+papers into context, roughly twice the platform's input tokens) and
+twice dense retrieval's \NUMcostC. Grading is deliberately conservative:
+word-boundary matching scores the bare agent's plural ``cathodes''
+(BQ08) at zero against the gold keyword ``cathode'', one of its two
+verification misses. Correctness calls are the authors' reading of each
+trace; cache state was not controlled; the stability suite's $\pm$35\,s
+variance concentrates in the final answer-generation LLM window (no
+cross-turn cache), not in tool execution.

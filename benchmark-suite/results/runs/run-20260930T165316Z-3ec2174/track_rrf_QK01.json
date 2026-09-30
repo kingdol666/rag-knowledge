@@ -1,0 +1,54 @@
+{
+ "qid": "QK01",
+ "method": "rrf",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "ranked": [
+  "1706.03762",
+  "1810.04805",
+  "2503.21676",
+  "2110.07844",
+  "2510.13343",
+  "1906.10015",
+  "1911.02792",
+  "2110.08918",
+  "2109.14357",
+  "2009.10669"
+ ],
+ "ranked_paths": [
+  "artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md",
+  "nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst.md",
+  "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep.md",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md",
+  "chemistry__1911.02792__machine-learning-for-molecular-simulation.md",
+  "clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md",
+  "speech__2109.14357__comparison-of-self-supervised-speech-pre-tra.md",
+  "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne.md"
+ ],
+ "evidence_sources": [
+  "1706.03762",
+  "1810.04805",
+  "2503.21676"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.0,
+ "latency_s": 3.2,
+ "answer": "The evidence is insufficient to answer this question.\n\nWhat the retrieved chunks actually contain: [1706.03762] gives the multi-head configuration ($h=8$, $d_k=d_v=64$) and lists the three applications of attention (encoder-decoder, encoder self-attention, decoder self-attention), but it does not state how attention is computed (the scaled dot-product formula) nor why recurrence and convolution are replaced. The other two chunks are unrelated: [1810.04805] describes BERT's span-based QA fine-tuning, and [2503.21676] describes an attention-patching twin architecture.\n\nSources retrieved: [1706.03762] §3.2.2–3.2.3; [1810.04805]; [2503.21676]. None contains the requested mechanism or rationale, so no answer can be given from this evidence.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 104,
+  "output": 183,
+  "cache_read": 49024,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.029845999999999998,
+ "extra": {},
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

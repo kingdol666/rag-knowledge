@@ -1,0 +1,69 @@
+{
+ "answer": "MameLoshnLM is the first open-source large language model for Yiddish, trained on a Yiddish corpus and named after the traditional Yiddish term \"mame-loshn\" (\"mother tongue\"). It was produced by continued pretraining of Llama-3.1-8B, giving it an 8-billion-parameter scale, and it outperforms strong baselines of similar scale on Yiddish evaluation benchmarks.\n\nSources:\n- Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k12.md (chunks 6–7)\n- Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k00.md (chunk 4)",
+ "is_error": false,
+ "latency_s": 18.3,
+ "sdk_duration_ms": 16686,
+ "num_turns": 3,
+ "tool_calls": [
+  {
+   "tool": "PushNotification",
+   "input": {}
+  },
+  {
+   "tool": "mcp__kb-mcp__kb_search_vector",
+   "input": {
+    "query": "MameLoshnLM language model parameter scale",
+    "kb_id": "Corpus-Chunks800"
+   }
+  }
+ ],
+ "tool_call_count": 2,
+ "permission_denied": 0,
+ "tokens": {
+  "input": 18647,
+  "output": 394,
+  "cache_read": 75840,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.141655,
+ "timeline": [
+  {
+   "t": 1.78,
+   "event": "init",
+   "detail": "claude-opus-4-8[1m]"
+  },
+  {
+   "t": 12.17,
+   "event": "tool_use",
+   "detail": "PushNotification"
+  },
+  {
+   "t": 14.71,
+   "event": "tool_use",
+   "detail": "mcp__kb-mcp__kb_search_vector"
+  },
+  {
+   "t": 18.3,
+   "event": "text",
+   "detail": "571"
+  },
+  {
+   "t": 18.32,
+   "event": "result",
+   "detail": "is_error=False"
+  }
+ ],
+ "texts_full": [
+  "MameLoshnLM is the first open-source large language model for Yiddish, trained on a Yiddish corpus and named after the traditional Yiddish term \"mame-loshn\" (\"mother tongue\"). It was produced by continued pretraining of Llama-3.1-8B, giving it an 8-billion-parameter scale, and it outperforms strong baselines of similar scale on Yiddish evaluation benchmarks.\n\nSources:\n- Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k12.md (chunks 6–7)\n- Corpus-Chunks800/nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu__k00.md (chunk 4)"
+ ],
+ "track": "c",
+ "question": "What is MameLoshnLM and what parameter scale does it have?",
+ "prompt_version": "v4-neutral",
+ "cwd": "D:\\codes\\ClaudeGPT\\rag_project\\rag-knowledge",
+ "max_turns": 12,
+ "qid": "BQ07",
+ "via": "chat",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0
+}

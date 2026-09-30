@@ -1,0 +1,60 @@
+{
+ "qid": "QK09",
+ "method": "rerank",
+ "question": "What is the recommended daily dosage of metformin for diabetic cats?",
+ "ranked": [
+  "2201.03675",
+  "2502.00306",
+  "1904.11280",
+  "2310.10981",
+  "2412.15058",
+  "2110.08918",
+  "2212.13138",
+  "2301.08436",
+  "2203.15752"
+ ],
+ "ranked_paths": [
+  "clinical-medicine__2201.03675__continuous-time-probabilistic-models-for-lon__k16",
+  "large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference__k15",
+  "clinical-medicine__1904.11280__predicting-stroke-from-electronic-health-rec__k04",
+  "nlp__2310.10981__instructive-dialogue-summarization-with-quer__k49",
+  "medical-imaging__2412.15058__multiverseg-scalable-interactive-segmentatio__k57",
+  "clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr__k08",
+  "clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge__k30",
+  "genomics__2301.08436__spacetx-a-roadmap-for-benchmarking-spatial-t__k09",
+  "social-networks__2203.15752__information-consumption-and-boundary-spannin__k29"
+ ],
+ "evidence_sources": [
+  "2201.03675",
+  "2502.00306",
+  "1904.11280",
+  "2310.10981",
+  "2412.15058",
+  "2110.08918",
+  "2212.13138",
+  "2301.08436",
+  "2203.15752"
+ ],
+ "evidence_chars": 2917,
+ "retrieval_s": 33.8,
+ "latency_s": 52.9,
+ "answer": "The evidence does not contain an answer to this question. None of the retrieved chunks mention metformin, cats, or any veterinary dosage information. The closest diabetes-related evidence covers human A1C-based diabetes modeling ([2201.03675]), adiponectin and human metabolic disease ([2502.00306]), a fragment mentioning high glucose levels ([1904.11280]), prescription drug codes (Heparin, Acetaminophen, Lorazepam, Morphine — [2110.08918]), and medical imaging datasets such as diabetic retinopathy ([2412.15058]) — none of which addresses feline metformin dosing.\n\nTherefore, the evidence is insufficient, and I cannot provide a recommended daily dosage of metformin for diabetic cats from the retrieved documents.\n\nSources checked: [2201.03675], [2502.00306], [1904.11280], [2310.10981], [2412.15058], [2110.08918], [2212.13138], [2301.08436], [2203.15752].",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 15566,
+  "output": 591,
+  "cache_read": 32832,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.110678,
+ "extra": {
+  "rerank_fallback": false
+ },
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

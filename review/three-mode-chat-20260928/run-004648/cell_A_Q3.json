@@ -1,0 +1,69 @@
+{
+ "qid": "Q3",
+ "mode": "A",
+ "question": "在分子科学的机器学习中,Noé 等人的综述《Machine learning for molecular simulation》与“深度空间学习 + 分子振动”数据增强方法各自如何应对数据稀缺与建模挑战？后者在聚酰胺纳滤膜实验中把相对误差和决定系数分别改善到多少？(machine learning molecular simulation molecular vibration data augmentation nanofiltration)",
+ "track": "mode_A",
+ "via": "retrieval-mode+closed-book-chat-api",
+ "retrieval": {
+  "ok": true,
+  "real_engine": true,
+  "status": "ok",
+  "seconds": 24.5,
+  "wall_s": 25.9,
+  "n_result_docs": 20,
+  "judge": {
+   "status": "ok",
+   "engine": "laya",
+   "backend": "laya_sdk",
+   "real_engine": true,
+   "criterion": "evidence",
+   "threshold": 0.5,
+   "global_best": 0.9245,
+   "scored_segments": 96,
+   "total_segments": 96,
+   "errors": []
+  }
+ },
+ "gold_hit": false,
+ "gold_hits": {
+  "1911.02792": false,
+  "2011.07200": true
+ },
+ "ranked": [
+  "AI 基础设施/vector-index-tuning-guide (part 1 of 2).md",
+  "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 5 of 5).md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "生命科学与医学/clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md (part 2 of 2).md",
+  "经济与社会/finance__1909.07748__stock-market-microstructure-inference-via-mu (part 3 of 4).md",
+  "工程与能源/mathematics__2402.07064__piecewise-sos-convex-moment-optimization-and (part 6 of 6).md",
+  "计算机与人工智能/robotics__2410.10669__mlp-slam-multilayer-perceptron-based-simultaneou.md (part 1 of 2).md",
+  "自然科学与地球科学/chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md",
+  "soul-cs-library/memory-conventions.md",
+  "soul-e2e-tester-024115/memory-conventions.md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 4 of 26).md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 26 of 26).md",
+  "计算机与人工智能/large-language-models__2502.00306__riddle-me-this-stealthy-membership-inference (part 3 of 4).md",
+  "e2e-flow-20260926-022340/harness-handbook.md",
+  "soul-cs-library/thinking-style.md",
+  "soul-e2e-tester-024115/thinking-style.md",
+  "soul-demo-qa/thinking-style.md"
+ ],
+ "pack_protocol": "native:24000",
+ "evidence_chars": 24000,
+ "answer": "The evidence is insufficient to answer this question. The retrieved chunks include a paper on \"Deep Spatial Learning with Molecular Vibration\" (chemistry__2011.07200), which reports the polyamide nanofiltration membrane results — relative error dropping from 16.34% to 6.71% and R² rising from 0.16 to 0.75 — but it does not describe or cite Noé et al.'s review \"Machine learning for molecular simulation,\" so I cannot report how that review addresses data scarcity. No chunk in the retrieved evidence contains the Noé review at all.\n\nSources used: `自然科学与地球科学/chemistry__2011.07200__deep-spatial-learning-with-molecular-vibrati.md` (for the nanofiltration error/R² figures only). The remaining retrieved chunks (vector-index-tuning-guide, 2211.12700, 1706.03762, 2110.08918, 1909.07748, 2402.07064, 2410.10669, soul memory-conventions files, aw-industrial smoke test) are unrelated to the question.\n\nBottom line: only half the question is answerable from the evidence (the 6.71% / 0.75 figures); the Noé review comparison is not covered, so I will not supply it from prior knowledge.",
+ "is_error": false,
+ "latency_total_s": 35.1,
+ "answer_latency_s": 9.2,
+ "tokens": {
+  "input": 7408,
+  "output": 279,
+  "cache_read": 37376,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.062703,
+ "timeline_events": 3,
+ "recorded_utc": "2026-09-27T16:48:28.149509+00:00"
+}

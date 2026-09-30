@@ -1,0 +1,13 @@
+{
+ "round": 3,
+ "task": "seismology",
+ "mode": "B",
+ "http": 200,
+ "wall_s": 59.4,
+ "success": true,
+ "session_id": "7a200dd2-1a3b-481d-999e-21b91bfd8a1c",
+ "turns": 8,
+ "cost": 0.41835759999999994,
+ "duration_ms": 57916,
+ "answer": "两类核查都已完成。结论如下。\n\n## 结论\n\n**本知识库中没有任何文档讲解「地震波的分类」这一主题**——即没有资料系统解释 P 波 / S 波 / 面波（体波与面波）的分类及彼此区别。检索到的地震学文献只涉及地震波在具体研究中的**应用参数**，不构成对该问题的回答。\n\n## 已完成的检索（全库逐级）\n\n1. **目录层（kb_list，19 个库）**：只有 `自然科学与地球科学`（75 文档）的目录描述含 \"seismology\"，故重点抽查；`demo-qa-20260927`（描述含\"random real-world content\"）按要求一并抽查。\n2. **描述层**：\n   - `自然科学与地球科学` 下地震学仅 2 篇：`seismology__2606.10843__supershear-rupture…`（3 part）、`seismology__1308.1846__developing-and-testing-the-automated-post-ev…`（4 part）。其余为量子物理、气候、天文、化学等，与问题无关。\n   - `demo-qa-20260927` 5 篇：长城、Voyager 1、光合作用、Attention Is All You Need、检索模式速查卡——均无关。\n3. **证据门（kb_laya_judge，Laya 引擎）**：对 2 篇地震学候选（4 份 part）判决，仅 supershear 一文返回内容。\n4. **幸存者精读（kb_doc_read）**：直接读取两篇。\n\n## 命中的内容与其边界（P1 参考级）\n\n- **《Supershear Rupture Indicator in Near-fault Particle Motion》**（Yao, Yang, Bhat, Aochi；港中文/巴黎高师）——文中出现地震波类型的**片段级**表述：\n  - *\"When the rupture speed exceeds the shear wave speed (supershear), coherent S waves produce high-amplitude Mach cones…\"*（超剪切破裂时 S 波形成马赫锥）\n  - *\"the S waves radiated from preceding rupture travel faster than the advancing rupture front\"*\n  - *\"an initial supershear FP-dominant motion followed by a trailing Rayleigh FN-dominant motion\"*（尾随的瑞利面波）\n  - 附表 S3 给出 1-D 速度模型 **Vp = 3.88–8.30 km/s，Vs = 2.04–4.61 km/s**（P 波速 > S 波速）。\n\n  这些是**为判定破裂速度而引用的波参数**，**并未**定义\"地震波分几类\"或对比各类波的性质。\n- **《Developing and Testing the APE-ELEV Technique》**——震后保险损失估计与可视化系统，**不含**地震波分类内容（其\"分类\"指损失模型分为 probabilistic / deterministic / real-time，与波类型无关）。\n\n## 盲点声明\n\n- `seismology` 仅 2 篇，覆盖的是**震源破裂物理**与**震后损失评估**两个子方向，**不覆盖地震学基础（波的类型与传播）**。\n- 上述 supershear 文中 P/S/Rayleigh 波的零散表述**只可作为旁证片段**，不足以支撑\"地震波分类及其区别\"的完整回答。\n- 建议：若需该主题，应向知识库**补录地震学导论类资料**（如体波/面波、P/S/Love/Rayleigh 波的分类教材或百科条目）。\n\n**可信度标注**：本次\"无对应主题内容\"的判定为 P0 强（经目录层→描述层→证据门→全文精读四级核查）；两篇地震学文档本身为该库 P1 参考级。\n\n如需，我可以把这一\"缺料清单\"转成入库建议，后续为该库补充地震学基础文档。"
+}

@@ -1,0 +1,49 @@
+{
+ "qid": "QK01",
+ "method": "vector",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "ranked": [
+  "1706.03762",
+  "1810.04805",
+  "2503.21676",
+  "2110.07844",
+  "2510.13343",
+  "1906.10015"
+ ],
+ "ranked_paths": [
+  "artificial-intelligence__1706.03762__attention-is-all-you-need__k19",
+  "nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor__k05",
+  "nlp__2503.21676__how-do-language-models-learn-facts-dynamics__k22",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst__k07",
+  "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep__k09",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren__k55"
+ ],
+ "evidence_sources": [
+  "1706.03762",
+  "1810.04805",
+  "2503.21676",
+  "2110.07844",
+  "2510.13343",
+  "1906.10015"
+ ],
+ "evidence_chars": 2437,
+ "retrieval_s": 0.1,
+ "latency_s": 6.5,
+ "answer": "The evidence describes attention in pieces but does not directly answer the \"why replace recurrence and convolution\" part. One chunk states the Transformer is \"the first sequence transduction model based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention\" ([1706.03762], Conclusion). Another explains the original cross-attention head \"transforms the j-th decoder state and i-th encoder state into query, key and value vectors... computes attention weights as a normalized dot product between query and key vectors... [and] the output of the head is a weighted sum of value vectors\" ([2110.07844]). A third notes attention \"learns to focus on relevant parts of the input data, thereby enabling powerful representational\" power ([2510.13343]), and one mentions it abandons recurrence in favor of token-mixing via attention ([2503.21676]). However, no chunk explains why convolution specifically is replaced, and none gives the full rationale for replacing recurrence beyond the encoder-decoder description — so the evidence is insufficient to fully answer the \"why\" question.\n\nSources used: [1706.03762], [2110.07844], [2510.13343], [2503.21676].",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 48,
+  "output": 259,
+  "cache_read": 48768,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.031324,
+ "extra": {},
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

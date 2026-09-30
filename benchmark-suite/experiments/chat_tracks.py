@@ -60,7 +60,11 @@ PERM = os.environ.get("RAG_BENCH_PERM_URL",
                       "http://127.0.0.1:6789/api/claude/permission")
 CORPUS_DIR = SUITE / "data" / "corpus_md"
 
-PROMPT_VERSION = "v3-neutral"
+PROMPT_VERSION = "v4-neutral"
+# v4-neutral 2026-09-30 — v3 template unchanged; the platform affordance now
+# names kb_laya_judge (the platform's content-verification judge, added to the
+# pre-allowlist) so the platform arm reflects the platform's current tool
+# surface. Bare-agent and dense affordances unchanged.
 
 # ── shared output contract: byte-identical for every track ──────────────────
 OUTPUT_CONTRACT = (
@@ -85,19 +89,26 @@ NEUTRAL_TASK = (
 AFF_PLATFORM_FILES = (
     "The platform's knowledge-base tools are available to you "
     "(kb_search_vector, kb_search, kb_search_two_stage, kb_search_stats, "
-    "kb_doc_read, kb_get_documents, kb_list, ...). Execute the retrieval "
-    "yourself in THIS session — do not delegate to subagents or background "
-    "tasks, and never end your turn while a retrieval is pending. You ALSO "
-    "have plain file tools (Read/Grep/Glob) over the working directory, which "
-    "holds the corpus markdown files."
+    "kb_doc_read, kb_get_documents, kb_list, kb_laya_judge, ...). "
+    "kb_laya_judge is the platform's content-verification judge: pass it "
+    "document references and it reads and scores every segment of each "
+    "document against the query, returning per-segment verdicts and the "
+    "surviving evidence. Execute the retrieval yourself in THIS session — do "
+    "not delegate to subagents or background tasks, and never end your turn "
+    "while a retrieval is pending. You ALSO have plain file tools "
+    "(Read/Grep/Glob) over the working directory, which holds the corpus "
+    "markdown files."
 )
 AFF_PLATFORM = (
     "The platform's knowledge-base tools are available to you "
     "(kb_search_vector, kb_search, kb_search_two_stage, kb_search_stats, "
-    "kb_doc_read, kb_get_documents, kb_list, ...). Execute the retrieval "
-    "yourself in THIS session — do not delegate to subagents or background "
-    "tasks, and never end your turn while a retrieval is pending. You have no "
-    "file tools."
+    "kb_doc_read, kb_get_documents, kb_list, kb_laya_judge, ...). "
+    "kb_laya_judge is the platform's content-verification judge: pass it "
+    "document references and it reads and scores every segment of each "
+    "document against the query, returning per-segment verdicts and the "
+    "surviving evidence. Execute the retrieval yourself in THIS session — do "
+    "not delegate to subagents or background tasks, and never end your turn "
+    "while a retrieval is pending. You have no file tools."
 )
 AFF_BARE = (
     "You have NO index and NO knowledge-base tools — only plain file tools "
@@ -126,8 +137,8 @@ def _kb_read_tools(*names: str) -> list:
 A_TOOLS = _kb_read_tools(
     "backend_status", "kb_list", "kb_search_vector", "kb_search",
     "kb_search_two_stage", "kb_search_stats", "kb_doc_read",
-    "kb_get_documents", "kb_doc_get_by_tag", "kb_graph_stats",
-    "kb_graph_search", "fs_get_tree", "fs_get_children",
+    "kb_get_documents", "kb_doc_get_by_tag", "kb_laya_judge",
+    "kb_graph_stats", "kb_graph_search", "fs_get_tree", "fs_get_children",
 ) + ["Read", "Grep", "Glob"]
 
 A2_TOOLS = [t for t in A_TOOLS if t not in ("Read", "Grep", "Glob")]
@@ -227,8 +238,10 @@ def chat_stream(prompt: str, cwd: str, allowed_tools: list | None = None,
     through, so the generation channel is identical across the experiment.
     """
     token = _token()
+    # stream:true — the server defaults to non-stream JSON since 2026-09-28;
+    # the SSE parser below (and the tool timeline it records) requires events.
     payload = {"prompt": prompt, "cwd": cwd, "engine": "claude",
-               "maxTurns": int(max_turns)}
+               "maxTurns": int(max_turns), "stream": True}
     if allowed_tools is not None:
         payload["allowedTools"] = allowed_tools
 

@@ -1,0 +1,65 @@
+{
+ "qid": "Q1",
+ "mode": "A",
+ "question": "语言模型是如何逐步学会事实知识的？学习动力学呈现哪几个阶段、性能平台期对应什么内部机制、数据分布不均衡有何影响，以及为什么用微调向模型注入新知识会失败？(how language models learn facts dynamics curricula hallucinations)",
+ "track": "mode_A",
+ "via": "retrieval-mode+closed-book-chat-api",
+ "retrieval": {
+  "ok": true,
+  "real_engine": true,
+  "status": "ok",
+  "seconds": 22.4,
+  "wall_s": 23.7,
+  "n_result_docs": 17,
+  "judge": {
+   "status": "ok",
+   "engine": "laya",
+   "backend": "laya_sdk",
+   "real_engine": true,
+   "criterion": "evidence",
+   "threshold": 0.5,
+   "global_best": 0.9102,
+   "scored_segments": 94,
+   "total_segments": 94,
+   "errors": []
+  }
+ },
+ "gold_hit": true,
+ "gold_hits": {
+  "2503.21676": true
+ },
+ "ranked": [
+  "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md",
+  "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md",
+  "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+  "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+  "生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md",
+  "e2e-demo-0923-022632/global-rag-benchmark.md",
+  "soul-cs-library/thinking-style.md",
+  "soul-e2e-tester-024115/thinking-style.md",
+  "soul-demo-qa/thinking-style.md",
+  "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+  "AI 基础设施/vector-index-tuning-guide (part 1 of 2).md",
+  "e2e-flow-20260926-022340/harness-handbook.md",
+  "经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 1 of 4).md",
+  "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+  "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+  "Novel-PridePrejudice/pride_and_prejudice (part 4 of 26).md"
+ ],
+ "pack_protocol": "native:24000",
+ "evidence_chars": 24000,
+ "answer": "The retrieved evidence does not contain the answer. None of the retrieved chunks — including the Attention Is All You Need paper, the clinical-knowledge LLM paper (Singhal et al.), the Global RAG benchmark, machine-learning-for-molecular-simulation parts, or the vector-index-tuning guide — addresses how language models acquire factual knowledge, its learning dynamics/stages, performance plateaus and their internal mechanisms, data-distribution imbalance effects, or why fine-tuning fails to inject new knowledge.\n\nSources actually retrieved and checked: 工程与能源/mathematics__2211.12700 (part 1/5); 工程与能源/power-systems__2607.03098 (part 2/5); 自然科学与地球科学/chemistry__1911.02792 (parts 2 and 3); demo-qa-20260927/artificial-intelligence__1706.03762 (Attention Is All You Need); 生命科学与医学/genomics__2401.06823 (part 1/2); e2e-demo-0923-022632/global-rag-benchmark.md; soul-cs-library/, soul-e2e-tester-024115/, soul-demo-qa/thinking-style.md; 生命科学与医学/clinical-medicine__2212.13138 (part 1/8); AI 基础设施/vector-index-tuning-guide (part 1/2).\n\nThe evidence is insufficient to answer this question; I am not falling back on prior knowledge.",
+ "is_error": false,
+ "latency_total_s": 33.4,
+ "answer_latency_s": 9.6,
+ "tokens": {
+  "input": 6690,
+  "output": 310,
+  "cache_read": 37376,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.059888,
+ "timeline_events": 3,
+ "recorded_utc": "2026-09-27T16:47:22.181212+00:00"
+}

@@ -1,5 +1,16 @@
 # KBQA PIPELINE — 文献入库·复刻入库·出题·三轨对照·分析（可复用全流程）
 
+> **Chat-API 三模式系统臂（2026-09-30 新增，测"当前系统本体"）**：`python exp.py --chatmodes`
+> 把系统对外执行流作为一等公民臂——A 钉库向量快车道（`kbIds=[pin]`）/ B 全库逐级
+> （`kbIds=[]`，无向量工具）/ C 混合（钉库 + 混合后缀），全部经 `POST /api/claude/chat`
+> **默认非流式**（一次阻塞 JSON）真实执行；工具门禁（`disallowedTools`）、MCP 挂载
+> （常驻 kb-mcp `:8000` SSE）、Laya 判卷、如实拒答都是被测对象。题 cm1/cm2 金标在库
+> （答案金标词判定），cm3 域外（零编造拒答判定）；产出 `CHAT-MODES-COMPARE.md`。
+> 与 `--retmodes`（检索脚本纯检索对照）互补：**retmodes 测脚本，chatmodes 测系统**。
+> 预检已含 kb-mcp `:8000` 探活（`exp.py --check`，挂了不挡门——服务端 ensureKbMcp
+> 会自动拉起）。验证轮推荐顺序：
+> `117 selfcheck → exp.py --check → exp.py --chatmodes → exp.py --questions qa_quick10.json --baselines … → 116 --run <run_id>`。
+
 > **三模式检索臂 + 检索任务矩阵（2026-09-27 新增）**：QDCVR 向量优先(A) / 图书管理员(B) /
 > 混合并行(C) 三种检索模式已是 exp 项目一等公民臂。**判决引擎 Laya 已 GPU 化**——宿主为
 > `backend/.venv`（MinerU 环境，torch 2.12.1+cu130，device 自动选 cuda，单段判决 ~0.05s），
@@ -190,6 +201,14 @@ harness 统一为 **claude**，同一份 50 篇外部语料，三模式定义：
 | **B · 裸 Agent** | 同一 chat API，`cwd=corpus_md`，`allowedTools=["Read","Grep","Glob"]` | 全文阅读 + 全文件搜索 |
 | **C · RAG 向量** | 同一 chat API，`allowedTools=["mcp__kb-mcp__kb_search_vector"]` | **Agent 亲自执行**稠密向量检索（Corpus-Chunks800），仅凭检索块作答 |
 
+> **当前系统三模式车道（2026-09-28/30 起，`kbEnhanced=true` 时生效）**：chat API 现将
+> 知识库检索组织为三条内建车道——A 钉库向量快车道（`kbIds=[pin]`，
+> two_stage→vector→judge→read）、B 全库逐级（`kbIds=[]`，kb_list→描述层→judge→read，
+> 服务端 `disallowedTools` 屏蔽向量工具）、C 混合（钉库 + prompt 混合后缀：向量先行、
+> 不足再逐级）。默认**非流式**（不传 `stream` 只回一个最终 JSON）；挂载闪失败自动重试；
+> 未找到时如实奉告是契约行为。**测这三条车道本体用 `exp.py --chatmodes`**；
+> 本表 a/b/c 轨是跨系统对照臂（bare Agent / 纯向量 Agent），两者互补不冲突。
+
 **监控（已内建，逐 run 落盘）**：完整事件时间线、每次工具调用、助手全文、
 墙钟时延、SDK duration_ms/num_turns、**token 消耗（input/output/cache_read/cache_creation）**、
 total_cost_usd；权限请求自动拒绝并计数（实验只读）。证据底线（C 轨 toolloop 模式）与
@@ -336,8 +355,11 @@ cd benchmark-suite
 # 0) 管线自检（离线，~3 秒；确认脚本/工件/契约都在）
 python scripts/117_pipeline_selfcheck.py
 
-# 1) 平台预检（token 过期会自动重新登录）
+# 1) 平台预检（token 过期会自动重新登录；含 kb-mcp :8000 探活）
 python exp.py --check
+
+# 1b) Chat-API 三模式系统臂（测当前系统本体执行流，9 跑 ~8 分钟）
+python exp.py --chatmodes            # → results/runs/chatmodes-*/CHAT-MODES-COMPARE.md
 
 # 2) 10 题 × 5 方法 真实对照（项目 a2 + 4 baseline）
 #    约 20 分钟（a2 单题 ~97s 占大头）

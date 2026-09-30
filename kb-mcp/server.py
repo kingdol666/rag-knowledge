@@ -24,6 +24,7 @@ import json
 import os
 import re
 import sys
+import time
 from pathlib import Path
 
 from mcp.server.fastmcp import FastMCP
@@ -48,6 +49,56 @@ def _client() -> KbClient:
             backend_url=config.BACKEND_URL
         )
     return _kb
+
+
+# ---------- cross-process file locks (multi-harness resource guard) ----------
+# Every harness session spawns its OWN kb-mcp instance (stdio transport). Two
+# things must therefore be guarded ACROSS instances, not just in-process:
+#   1. service auto-launch — concurrent spawns racing "backend is down" each
+#      start a backend; the loser cannot bind the port and drifts (measured
+#      2026-09-28: duplicate backends on :8765 + :8771);
+#   2. the Laya judge — each judge spawns a GPU torch subprocess (~1-2 GB
+#      commit); N instances × parallel judges re-create the commit-exhaustion
+#      WinError 1455 fail-closed seen the same day.
+
+def _lock_path(name: str) -> Path:
+    return Path(__file__).resolve().parent / name
+
+
+def _acquire_file_lock(path: Path, stale_s: float, poll_s: float = 1.0,
+                       wait_s: float = 0.0) -> bool:
+    """Try to create-and-hold an O_EXCL lock file; poll up to wait_s seconds.
+
+    A lock older than ``stale_s`` is considered abandoned (crashed holder) and
+    stolen. Returns True when THIS process holds the lock.
+    """
+    deadline = time.time() + wait_s
+    while True:
+        try:
+            fd = os.open(str(path), os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+            os.write(fd, f"{os.getpid()} {time.time():.0f}".encode())
+            os.close(fd)
+            return True
+        except FileExistsError:
+            try:
+                age = time.time() - path.stat().st_mtime
+                if age > stale_s:  # abandoned lock — steal it
+                    path.unlink(missing_ok=True)
+                    continue
+            except FileNotFoundError:
+                continue
+        except OSError:
+            return False
+        if time.time() >= deadline:
+            return False
+        time.sleep(poll_s)
+
+
+def _release_file_lock(path: Path) -> None:
+    try:
+        path.unlink(missing_ok=True)
+    except OSError:
+        pass
 
 
 def _j(data) -> str:
@@ -143,11 +194,36 @@ async def _resolve_kb_aliases(client, kb_id: str) -> set[str]:
     return aliases
 
 
+# _kb_exists TTL cache: every search with a kb_id used to re-fetch the FULL
+# catalog (+ sometimes the whole FS tree) just to validate one id — 1-2 backend
+# round trips of pure overhead per call. 60 s TTL; invalidated by kb CRUD.
+_KB_EXISTS_TTL = 60.0
+_KB_EXISTS_NEG_TTL = 5.0  # transient web flaps must not pin "not found" for a minute
+_kb_exists_cache: dict[str, tuple[float, bool]] = {}
+
+
+def _kb_exists_cache_clear() -> None:
+    _kb_exists_cache.clear()
+
+
 async def _kb_exists(client, kb_id: str) -> bool:
     """Check if a kb_id (UUID or path) corresponds to a known KB (root or sub)."""
     if not kb_id or not kb_id.strip():
         return False
     kb_id_norm = _norm(kb_id)
+    cached = _kb_exists_cache.get(kb_id_norm)
+    if cached:
+        age = time.time() - cached[0]
+        if cached[1] and age < _KB_EXISTS_TTL:
+            return True
+        if not cached[1] and age < _KB_EXISTS_NEG_TTL:
+            return False
+    found = await _kb_exists_uncached(client, kb_id_norm)
+    _kb_exists_cache[kb_id_norm] = (time.time(), found)
+    return found
+
+
+async def _kb_exists_uncached(client, kb_id_norm: str) -> bool:
     try:
         data = await client.kb_list()
         if isinstance(data, dict):
@@ -305,14 +381,18 @@ async def kb_list(lightweight: bool = False) -> str:
 @mcp.tool()
 async def kb_create(name: str, description: str = "", parent_id: str = "") -> str:
     """Create a new knowledge base. parent_id is an optional tree folder UUID for nesting (omit for root). Returns knowledgeBase with id (UUID) and path -- both work as kb_id in other tools."""
-    return _j(await _client().kb_create(name, description, parent_id))
+    result = await _client().kb_create(name, description, parent_id)
+    _kb_exists_cache_clear()
+    return _j(result)
 
 
 @mcp.tool()
 async def kb_update(kb_id: str, name: str = "", description: str = "") -> str:
     """Update a knowledge base's name and/or description. kb_id accepts path or UUID."""
     if (err := _require_kb(kb_id)): return err
-    return _j(await _client().kb_update(kb_id, name, description))
+    result = await _client().kb_update(kb_id, name, description)
+    _kb_exists_cache_clear()
+    return _j(result)
 
 
 @mcp.tool()
@@ -320,6 +400,7 @@ async def kb_delete(kb_id: str) -> str:
     """Delete an entire knowledge base and all its contents (irreversible). kb_id accepts either the path string or the UUID returned by kb_create."""
     if (err := _require_kb(kb_id)): return err
     result = await _client().kb_delete(kb_id)
+    _kb_exists_cache_clear()
     # Fire-and-forget: clean up graph + vectors
     asyncio.create_task(_auto_unindex_kb(kb_id))
     return _j(result)
@@ -2033,7 +2114,8 @@ async def kb_project_update(check_only: bool = False, force: bool = False,
 @mcp.tool()
 async def kb_search_vector(query: str, kb_id: str = "", top_k: int = 5,
                             score_threshold: float = 0.0,
-                            balance_kbs: bool = False) -> str:
+                            balance_kbs: bool = False,
+                            slim: bool = False) -> str:
     """Vector semantic search for document chunks.
 
     Args:
@@ -2042,6 +2124,10 @@ async def kb_search_vector(query: str, kb_id: str = "", top_k: int = 5,
         top_k: Number of results to return
         score_threshold: Minimum cosine similarity threshold (0~1); <=0 uses backend default (0.35). Lower to recall more chunks
         balance_kbs: Whether to balance results across KBs in cross-KB search (default False). True prevents large KBs from dominating results
+        slim: true → each hit carries only a 240-char snippet instead of the
+              full chunk — the verification gate (kb_laya_judge reference mode)
+              fetches real content server-side anyway, so screening runs keep
+              the agent context small
 
     Returns:
         {success, results: [{content, score, doc_path, chunk_index, kb_id}]}
@@ -2065,6 +2151,10 @@ async def kb_search_vector(query: str, kb_id: str = "", top_k: int = 5,
                     seen[key] = r
         result["results"] = list(seen.values())
         result["count"] = len(result["results"])
+        if slim:
+            for r in result["results"]:
+                c = str(r.get("content") or "")
+                r["content"] = c[:240] + ("…" if len(c) > 240 else "")
     return _j(result)
 
 
@@ -2077,6 +2167,7 @@ async def kb_search_two_stage(
     enable_graph_expansion: bool = True,
     score_threshold: float = 0.0,
     balance_kbs: bool = False,
+    slim: bool = False,
 ) -> str:
     """Two-stage precision search: first broad search to locate candidate documents, then vector fine-search for chunks.
 
@@ -2090,6 +2181,7 @@ async def kb_search_two_stage(
         enable_graph_expansion: Whether to enable graph neighbor expansion
         score_threshold: Vector similarity threshold (0~1); <=0 uses backend default (0.35)
         balance_kbs: Whether to balance results across KBs in cross-KB search (default False). True prevents large KBs from dominating
+        slim: true → stage2 hits carry only a 240-char snippet (verification gate kb_laya_judge reference mode fetches real content server-side)
 
     Returns:
         {success, stage1: {candidates}, stage2: {results}, total_results}
@@ -2122,6 +2214,10 @@ async def kb_search_two_stage(
             # FIX: cap total results at stage2_top_k so the parameter actually
             # controls result count (previously returned up to top_k*candidates).
             deduped = deduped[:stage2_top_k]
+            if slim:
+                for r in deduped:
+                    c = str(r.get("content") or "")
+                    r["content"] = c[:240] + ("…" if len(c) > 240 else "")
             stage2["results"] = deduped
             if "total_results" in stage2:
                 stage2["total_results"] = len(deduped)
@@ -2566,6 +2662,213 @@ async def kb_graph_delete_kb(kb_id: str) -> str:
     return _j(await _client().graph_delete_kb(kb_id))
 
 
+# ---------- Laya/Jev engine gate (librarian & hybrid retrieval lanes) ----------
+
+def _laya_judge_impl(query: str, documents: list, criterion: str,
+                     threshold: float, max_segment_chars: int,
+                     max_evidence_chars: int) -> str:
+    """Segment + score the supplied documents with the REAL local Laya engine.
+
+    Shells out to the librarian's complete_recall.py under backend/.venv
+    (the MinerU env hosting laya + GPU torch) — fail-closed: a missing
+    interpreter/output yields status=error, never an implicit pass.
+    """
+    import subprocess
+    import tempfile
+    repo = Path(__file__).resolve().parents[1]
+    py = repo / "backend" / ".venv" / "Scripts" / "python.exe"
+    if not py.exists():
+        py = repo / "backend" / ".venv" / "bin" / "python"
+    cr = (repo / ".claude" / "skills" / "knowledgebase-librarian"
+          / "scripts" / "complete_recall.py")
+    if not py.exists() or not cr.exists():
+        return _j({"status": "error", "real_engine": False, "survivors": [],
+                   "evidence_pack": "",
+                   "errors": [{"error": f"missing {'interpreter' if not py.exists() else 'complete_recall.py'}"}]})
+    manifest = {"query": query, "engine": "laya", "criterion": criterion,
+                "threshold": threshold, "max_segment_chars": max_segment_chars,
+                "max_evidence_chars": max_evidence_chars,
+                "knowledge_bases": [], "documents": documents}
+    with tempfile.TemporaryDirectory() as td:
+        inp = Path(td) / "manifest.json"
+        outp = Path(td) / "verdict.json"
+        inp.write_text(json.dumps(manifest, ensure_ascii=False), encoding="utf-8")
+        try:
+            # stdin=DEVNULL 必须: 子进程继承 MCP stdio 管道会在 Windows 上阻塞
+            # (实测 900s 超时); 判卷引擎不读 stdin。
+            env = dict(os.environ)
+            env.setdefault("PYTHONUTF8", "1")
+            proc = subprocess.run(
+                [str(py), str(cr), "--input", str(inp), "--output", str(outp)],
+                capture_output=True, text=True, timeout=900, cwd=str(repo),
+                stdin=subprocess.DEVNULL, env=env)
+        except subprocess.TimeoutExpired:
+            return _j({"status": "error", "real_engine": False, "survivors": [],
+                       "evidence_pack": "",
+                       "errors": [{"error": "laya_judge_timeout_900s"}]})
+        if not outp.exists():
+            return _j({"status": "error", "real_engine": False, "survivors": [],
+                       "evidence_pack": "",
+                       "errors": [{"error": f"judge exited {proc.returncode}",
+                                   "stderr": (proc.stderr or "")[-400:]}]})
+        return outp.read_text(encoding="utf-8")
+
+
+# Serialize Laya judge invocations: each call spawns a GPU torch subprocess
+# (~1-2 GB commit). Measured 2026-09-28 (OMP mode-B test): an agent retry loop
+# fired 5 concurrent judges → 5 torch processes → commit exhaustion
+# (WinError 1455) → engine fail-closed machine-wide. One judge at a time.
+_laya_judge_lock = asyncio.Lock()
+
+
+@mcp.tool()
+async def kb_laya_judge(query: str, documents: str, criterion: str = "auto",
+                        threshold: float = 0.5,
+                        max_evidence_chars: int = 40000,
+                        include_text: bool = False) -> str:
+    """REAL Laya evidence gate for retrieval flows (librarian/hybrid lanes).
+
+    Segments every supplied document and scores every segment with the local
+    Laya engine (GPU, fail-closed): noul >= threshold survives; missing model
+    or bad scores reject the candidate.
+
+    ⭐ Reference mode (preferred — keeps document text out of the agent
+    context): each documents entry may be just {"kb_id", "doc_path"} (or
+    {"doc_id"}) WITHOUT content — this tool fetches every body ITSELF
+    server-side, judges, and returns only survivor provenance + the merged
+    evidence_pack. Full fetch failure on every reference = unavailable
+    (fail-closed). Pass content explicitly only for text that did not come
+    from the KB (e.g. an inline snippet).
+
+    Args:
+        query: the retrieval question.
+        documents: JSON array string. Preferred entry shape: {"kb_id", "doc_path"}
+                   (reference mode); legacy {"kb_id","doc_path","content"} still
+                   works (content given = no fetch).
+        criterion: auto (intent heuristic) | evidence (lookup/factual) | instance (enumeration).
+        threshold: survival threshold, default 0.5.
+        max_evidence_chars: char cap of the returned evidence_pack.
+        include_text: false (default) → survivors carry provenance + score only
+                   (compact, safe for thin host bridges that truncate large tool
+                   results); true → survivors also carry segment text and the
+                   full per-segment result_list is included.
+
+    Returns: {status, real_engine, criterion, threshold, candidate_count,
+    scored_count, survivor_count, docs_with_yes, survivors[] (provenance +
+    score), evidence_pack (merged content — the ONE full-content return),
+    fetch_errors[], errors[]} — the engine verdict is final. result_list
+    (every scored segment, with text) only with include_text=true.
+    """
+    try:
+        docs = json.loads(documents)
+        if not isinstance(docs, list):
+            raise ValueError("documents must be a JSON array of objects")
+        docs = [d for d in docs if isinstance(d, dict)]
+    except Exception as exc:
+        return _j({"status": "error", "real_engine": False, "survivors": [],
+                   "evidence_pack": "",
+                   "errors": [{"error": f"bad documents: {exc}"}]})
+
+    # ── Reference mode ──────────────────────────────────────────────────────
+    # Entries may carry {kb_id, doc_path} (or doc_id) WITHOUT content: the
+    # server fetches each body ITSELF so raw document text never enters the
+    # calling agent's context. Only the merged evidence_pack + survivor
+    # provenance come back (once, at the end). Fetch failures are fail-closed:
+    # the affected document is dropped and reported in errors.
+    fetch_errors: list = []
+    need = [d for d in docs if not (d.get("content") or "").strip()]
+    if need:
+        sem = asyncio.Semaphore(4)
+
+        async def _fetch(d: dict):
+            async with sem:
+                try:
+                    r = await _client().kb_doc_read(
+                        kb_id=d.get("kb_id", ""), doc_path=d.get("doc_path", ""),
+                        doc_id=d.get("doc_id", ""), max_chars=40000)
+                except Exception as exc:  # noqa: BLE001
+                    return d, None, str(exc)[:160]
+                if isinstance(r, dict) and r.get("success") and (r.get("content") or "").strip():
+                    return d, r.get("content"), None
+                return d, None, str((r or {}).get("error") or "empty content")[:160]
+
+        for d, content, err in await asyncio.gather(*[_fetch(d) for d in need]):
+            if content:
+                d["content"] = content
+            else:
+                fetch_errors.append({"doc_path": d.get("doc_path") or d.get("doc_id") or "",
+                                     "error": f"fetch failed: {err}"})
+        docs = [d for d in docs if (d.get("content") or "").strip()]
+        if not docs and fetch_errors:
+            return _j({"status": "unavailable", "real_engine": False, "survivors": [],
+                       "evidence_pack": "",
+                       "errors": [{"error": "all reference fetches failed (fail-closed)"}] + fetch_errors})
+
+    # Machine-wide guard: the in-process lock only serializes THIS instance,
+    # but every harness session runs its own kb-mcp. Two sessions judging
+    # concurrently = two GPU torch processes = the commit exhaustion that
+    # fail-closed the whole machine on 2026-09-28. The file lock (stale after
+    # 900 s = subprocess timeout + slack) makes judges strictly global.
+    jlock = _lock_path(".laya_judge.lock")
+    got_machine_lock = _acquire_file_lock(jlock, stale_s=900, poll_s=2, wait_s=600)
+    if not got_machine_lock:
+        return _j({"status": "unavailable", "real_engine": False, "survivors": [],
+                   "evidence_pack": "",
+                   "errors": [{"error": "laya_judge_busy: another session holds the "
+                                        "machine-wide judge lock (waited 600s); "
+                                        "retry once later or report the blind spot"}]})
+    try:
+        async with _laya_judge_lock:
+            raw = await asyncio.to_thread(
+                _laya_judge_impl, query, docs, criterion, threshold, 3000, max_evidence_chars)
+    finally:
+        _release_file_lock(jlock)
+    if not include_text:
+        try:
+            verdict = json.loads(raw)
+        except Exception:
+            return raw  # non-JSON error payload — pass through untouched
+        # Success payload = complete_recall.run_manifest wrapper:
+        # {jev:{status,real_engine,criterion,threshold,scores,...}, survivors[],
+        #  result_list, evidence_pack, provenance, catalog, unscanned, ...}
+        # (no top-level "status" — that key only exists on error payloads).
+        if isinstance(verdict, dict) and isinstance(verdict.get("jev"), dict):
+            jev = verdict["jev"]
+            survivors_in = verdict.get("survivors") or jev.get("survivors") or []
+
+            def _prov(s: dict) -> dict:
+                return {k: s.get(k) for k in
+                        ("kb_id", "doc_id", "doc_path", "candidate_id",
+                         "part_index", "section_path", "start_line",
+                         "end_line", "score") if k in s}
+
+            survivors = [_prov(s) for s in survivors_in]
+            docs_yes = {json.dumps([s.get("kb_id"), s.get("doc_path")], ensure_ascii=False)
+                        for s in survivors_in}
+            compact = {
+                "status": jev.get("status", "ok"),
+                "real_engine": jev.get("real_engine"),
+                "real_jev": jev.get("real_jev"),
+                "engine": verdict.get("engine") or jev.get("engine"),
+                "backend": jev.get("backend"),
+                "criterion": jev.get("criterion") or verdict.get("criterion"),
+                "threshold": jev.get("threshold"),
+                "candidate_count": verdict.get("candidate_count"),
+                "scored_count": len(jev.get("scores") or []),
+                "survivor_count": len(survivors),
+                "docs_with_yes": len(docs_yes),
+                "survivors": survivors,
+                "evidence_pack": verdict.get("evidence_pack", ""),
+                "errors": (jev.get("errors") or []) + fetch_errors,
+                "note": "compact verdict (include_text=false): segment text and "
+                        "per-segment result_list omitted; re-run with "
+                        "include_text=true or kb_doc_read the survivors for text",
+            }
+            return _j(compact)
+        return raw  # error payload or unknown shape — pass through untouched
+    return raw
+
+
 # ---------- entry ----------
 def main():
     _startup_health_check_and_launch()
@@ -2624,29 +2927,58 @@ def _startup_health_check_and_launch():
         print("[kb-mcp] All services healthy — no auto-launch needed.", file=sys.stderr)
         return
 
-    launched = []
-    if not svc["backend"]["http_ok"]:
-        print(f"[kb-mcp]   Backend : {svc['backend']['detail']} → launching (silent, log={svc['backend']['log_path']})", file=sys.stderr)
-        launched.append(("backend", project_manager.start_service("backend", mode)))
-    else:
-        print("[kb-mcp]   Backend : OK", file=sys.stderr)
+    # Cross-instance guard: when several harness sessions spawn their kb-mcp
+    # at the same moment, ALL of them see "backend down" here. Without this
+    # lock each one launches its own backend; the loser cannot bind the port
+    # and drifts to a random one (measured 2026-09-28: :8765 + :8771). The
+    # first instance launches; the others wait and re-probe.
+    lock = _lock_path(".startup.lock")
+    i_hold_the_lock = _acquire_file_lock(lock, stale_s=180, wait_s=0)
+    if not i_hold_the_lock:
+        print("[kb-mcp]   another instance is auto-launching services — waiting…", file=sys.stderr)
+        waited = project_manager._wait_ready(timeout=90)
+        if waited.get("ready"):
+            print(f"[kb-mcp]   services ready (launched by peer, {waited.get('elapsed_s')}s).", file=sys.stderr)
+            return
+        print("[kb-mcp]   peer launch did not converge — retrying on my own.", file=sys.stderr)
+        i_hold_the_lock = _acquire_file_lock(lock, stale_s=180, wait_s=0)
 
-    if not svc["web"]["http_ok"]:
-        print(f"[kb-mcp]   Web     : {svc['web']['detail']} → launching (silent, log={svc['web']['log_path']})", file=sys.stderr)
-        launched.append(("web", project_manager.start_service("web", mode)))
-    else:
-        print("[kb-mcp]   Web     : OK", file=sys.stderr)
+    try:
+        if not i_hold_the_lock:
+            print("[kb-mcp] WARNING: could not acquire the startup lock; "
+                  "launching without cross-instance guard.", file=sys.stderr)
+        status = project_manager.project_status()
+        svc = status["services"]
+        if status["ready"]:
+            print("[kb-mcp] All services healthy (re-probe) — no auto-launch needed.", file=sys.stderr)
+            return
 
-    if not launched:
-        return
+        launched = []
+        if not svc["backend"]["http_ok"]:
+            print(f"[kb-mcp]   Backend : {svc['backend']['detail']} → launching (silent, log={svc['backend']['log_path']})", file=sys.stderr)
+            launched.append(("backend", project_manager.start_service("backend", mode)))
+        else:
+            print("[kb-mcp]   Backend : OK", file=sys.stderr)
 
-    print(f"[kb-mcp] Launched {len(launched)} service(s) headless; waiting for readiness (timeout: 45s)...", file=sys.stderr)
-    waited = project_manager._wait_ready(timeout=45)
-    if waited.get("ready"):
-        print(f"[kb-mcp] All services ready ({waited.get('elapsed_s')}s).", file=sys.stderr)
-    else:
-        print(f"[kb-mcp] WARNING: services not fully ready after {waited.get('timeout_s')}s — continuing anyway.", file=sys.stderr)
-        print("[kb-mcp]   Check: ragctl logs backend | ragctl logs web  (or the Tauri desktop console)", file=sys.stderr)
+        if not svc["web"]["http_ok"]:
+            print(f"[kb-mcp]   Web     : {svc['web']['detail']} → launching (silent, log={svc['web']['log_path']})", file=sys.stderr)
+            launched.append(("web", project_manager.start_service("web", mode)))
+        else:
+            print("[kb-mcp]   Web     : OK", file=sys.stderr)
+
+        if not launched:
+            return
+
+        print(f"[kb-mcp] Launched {len(launched)} service(s) headless; waiting for readiness (timeout: 45s)...", file=sys.stderr)
+        waited = project_manager._wait_ready(timeout=45)
+        if waited.get("ready"):
+            print(f"[kb-mcp] All services ready ({waited.get('elapsed_s')}s).", file=sys.stderr)
+        else:
+            print(f"[kb-mcp] WARNING: services not fully ready after {waited.get('timeout_s')}s — continuing anyway.", file=sys.stderr)
+            print("[kb-mcp]   Check: ragctl logs backend | ragctl logs web  (or the Tauri desktop console)", file=sys.stderr)
+    finally:
+        if i_hold_the_lock:
+            _release_file_lock(lock)
 
 
 def _load_dotenv() -> None:

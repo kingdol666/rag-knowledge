@@ -1,5 +1,5 @@
 {
-  "source": "experiment_chat_20260922-211000 traces (BQ04 a/b/c + BQ06 a/c)",
+  "source": "run-20260930T150453Z-3ec2174 traces (BQ04 a2/b/c + BQ06 a2/c); aggregates moved to Section 5 text",
   "verbatim_check": "all quoted fragments are normalized substrings of saved answers",
   "process_check": "timelines fully counted from saved tool_use events; every xN asserted against the trace",
   "runtime": {
@@ -16,9 +16,9 @@
       0.0,
       0.0,
       750.0,
-      540.0
+      562.5
     ],
     "pdf_images": 0,
-    "pdf_vector_paths": 61
+    "pdf_vector_paths": 56
   }
 }

@@ -1,0 +1,51 @@
+{
+ "qid": "QK01",
+ "method": "rerank",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "ranked": [
+  "1706.03762",
+  "2110.07844",
+  "2503.21676",
+  "1810.04805",
+  "2510.13343",
+  "1906.10015"
+ ],
+ "ranked_paths": [
+  "artificial-intelligence__1706.03762__attention-is-all-you-need__k19",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst__k07",
+  "nlp__2503.21676__how-do-language-models-learn-facts-dynamics__k22",
+  "nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor__k05",
+  "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep__k09",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren__k55"
+ ],
+ "evidence_sources": [
+  "1706.03762",
+  "2110.07844",
+  "2503.21676",
+  "1810.04805",
+  "2510.13343",
+  "1906.10015"
+ ],
+ "evidence_chars": 2437,
+ "retrieval_s": 17.9,
+ "latency_s": 59.4,
+ "answer": "The Transformer computes attention in heads that transform decoder and encoder states into query, key, and value vectors; attention weights are calculated as a normalized dot product between the query and key vectors, and each head's output is a weighted sum of the value vectors [2110.07844]. Structurally, the Transformer is described as the first sequence transduction model based entirely on attention, replacing the recurrent layers most commonly used in encoder-decoder architectures with multi-headed self-attention [1706.03762]. As for why, the evidence states that the key strength of the Transformer lies in its attention mechanism, which learns to focus on relevant parts of the input data, enabling powerful representations [2510.13343].\n\nHowever, the evidence is insufficient on two points: no passage explicitly states why convolution is replaced (only recurrence is named in the replacement claim [1706.03762]), and the rationale for translation performance is cut off mid-sentence (\"For translation tasks, the Transfor…\" [1706.03762]).\n\nSources: [1706.03762] (Section 7 Conclusion), [2110.07844] (cross-attention head description, Eq. 5 context), [2510.13343] (Section 3.3 Multi-Agent Transformer Approach).",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 47854,
+  "output": 1535,
+  "cache_read": 0,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.27876300000000004,
+ "extra": {
+  "rerank_fallback": false
+ },
+ "via": "chat",
+ "prompt_version": "v3-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

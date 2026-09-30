@@ -1,0 +1,264 @@
+[计算机与人工智能\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md]
+# artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult（第 1/3 部分）
+章节: Learning Reward Machines in Cooperative Multi-Agent Tasks
+# Learning Reward Machines in Cooperative Multi-Agent Tasks
+
+
+Leo Ardon Imperial College London
+
+Daniel Furelos-Blanco Imperial College London
+
+Alessandra Russo Imperial College London
+
+## ABSTRACT
+
+
+This paper presents a novel approach to Multi-Agent Reinforcement Learning (MARL) that combines cooperative task decomposition with the learning of reward machines (RMs) encoding the structure of the sub-tasks. The proposed method helps deal with the non-Markovian nature of the rewards in partially observable environments and improves the interpretability of the learnt policies required to complete the cooperative task. The RMs associated with each sub-task are learnt in a decentralised manner and then used to guide the behaviour of each agent. By doing so, the complexity of a cooperative multi-agent problem is reduced, allowing for more effective learning. The results suggest that our approach is a promising direction for future research in MARL, especially in complex environments with large state spaces and multiple agents.
+
+## KEYWORDS
+
+
+Reinforcement Learning; Multi-agent; Reward Machine; Neuro-Symbolic
+
+## ACM Reference Format:
+
+
+Leo Ardon, Daniel Furelos-Blanco, and Alessandra Russo. 2023. Learning Reward Machines in Cooperative Multi-Agent Tasks. In Proc. of the 22nd International Conference on Autonomous Agents and Multiagent Systems (AAMAS 2023), London, United Kingdom, May 29 – June 2, 2023, IFAAMAS, 8 pages.
+
+## 1 INTRODUCTION
+
+
+With impressive advances in the past decade, the Reinforcement Learning (RL) [18] paradigm appears as a promising avenue in the quest to have machines learn autonomously how to achieve a goal. Originally evaluated in the context of a single agent interacting with the rest of the world, researchers have since then extended the approach to the multi-agent setting (MARL), where multiple autonomous entities learn in the same environment. Multiple agents learning concurrently brings a set of challenges, such as partial observability, non-stationarity, and scalability; however, this setting is more realistic. Like in many real-life scenarios, the actions of one individual often affect the way others act and should therefore be considered in the learning process.
+
+A sub-field of MARL called Cooperative Multi-Agent Reinforcement Learning (CMARL) focuses on learning policies for multiple agents that must coordinate their actions to achieve a shared objective. With a “divide and conquer" strategy, complex problems can thus be decomposed into smaller and simpler ones assigned to different agents acting in parallel in the environment. The problem of learning an optimal sequence of actions now also includes the need to strategically divide the task among agents that must learn to coordinate and communicate in order to find the optimal way to accomplish the goal.
+
+[计算机与人工智能\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md]
+An emergent field of research in the RL community exploits finite-state machines to encode the structure of the reward function; ergo, the structure of the task at hand. This new construct, introduced by Toro Icarte et al. [19] and called reward machine (RM), can model non-Markovian reward and provides a symbolic interpretation of the stages required to complete a task. While the structure of the task is sometimes known in advance, it is rarely true in practice. Learning the RM has thus been the object of several works in recent years [3, 9, 10, 13, 21, 22] as a way to reduce the human input. In the multi-agent settings, however, the challenges highlighted before make the learning of the RM encoding the global task particularly difficult. Instead, it is more efficient to learn the RMs of smaller tasks obtained from an appropriate task decomposition. The “global” RM can later be reconstructed with a parallel composition of the RM of the sub-tasks.
+
+Inspired by the work of Neary et al. [16] using RMs to decompose and distribute a global task to a team of collaborative agents, we propose a method combining task decomposition with autonomous learning of the RMs. Our approach offers a more scalable and interpretable way to learn the structure of a complex task involving collaboration among multiple agents. We present an algorithm that learns in parallel the RMs associated with the sub-task of each agent and their associated RL policies whilst guaranteeing that their executions achieve the global cooperative task. We experimentally show that with our method a team of agents is able to learn how to solve a collaborative task in two different environments.
+
+## 2 BACKGROUND
+
+
+This section gives a summary of the relevant background to make the paper self-contained. Given a finite set X, ∆(X) denotes the probability simplex over $\chi , \chi ^ { * }$ denotes (possibly empty) sequences of elements from X, and $\chi ^ { + }$ is a non-empty sequence. The symbols ⊥ and T denote false and true, respectively.
+
+## 2.1 Reinforcement Learning
+
+
+We consider T-episodic labeled Markov decision processes (MDPs) [22], characterized by a tuple $\langle S , s _ { I } , \mathcal { A } , p , r , T , \gamma , \mathcal { P } , l \rangle$ consisting of a set of states S, an initial state sI ∈ S, a set of actions A, a transition function $p : S \times \mathcal { A }  \Delta ( S )$ , a not necessarily Markovian reward function $r : ( S \times \mathcal { A } ) ^ { + } \times S $ R, the time horizon T of each episode, a discount factor γ ∈ [0, 1), a finite set of propositions P, and a labeling function $l : S \times S  2 ^ { \mathcal { P } }$
+
+[计算机与人工智能\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md]
+A (state-action) history $h _ { t } = \langle s _ { 0 } , a _ { 0 } , \ldots , s _ { t } \rangle \in ( S \times \mathcal { A } ) ^ { * } \times S$ is mapped into a label trace (or trace) $\lambda _ { t } = \langle l ( s _ { 0 } , s _ { 1 } ) , \ldots , l ( s _ { t - 1 } , s _ { t } ) \rangle \in$ $( 2 ^ { \hat { \mathcal { P } } } ) ^ { + }$ by applying the labeling function to each state transition in ht. We assume that the reward function can be written in terms of a label trace, i.e. formally $r ( h _ { t + 1 } ) = r ( \lambda _ { t + 1 } , s _ { t + 1 } )$ . The goal is to find an optimal policy $\tau : ( 2 ^ { \mathcal { P } } ) ^ { + } \times S \to \mathcal { A }$ , mapping (traces-states) to actions, in order to maximize the expected cumulative discounted reward $\begin{array} { r } { R _ { t } = \mathbb { E } _ { \pi } \left[ \sum _ { k = t } ^ { T } \gamma ^ { k - t } r ( \lambda _ { k + 1 } , s _ { k + 1 } ) \right] } \end{array}$
+
+At time t, the agent keeps a trace $\lambda _ { t } \in \mathsf { \Gamma } ( 2 ^ { \mathcal { P } } ) ^ { + }$ , and observes state $s _ { t } ~ \in ~ S$ . The agent chooses the action to execute with its policy $a = \pi ( \lambda _ { t } , s _ { t } ) \in \mathcal { A }$ , and the environment transitions to state $s _ { t + 1 } \sim p ( \cdot \mid s _ { t } , a _ { t } )$ . As a result, the agent observes a new state $s _ { t + 1 }$ and a new label $\mathscr { L } _ { t + 1 } = l ( s _ { t } , s _ { t + 1 } )$ , and gets the reward $r _ { t + 1 } =$ $r ( \lambda _ { t + 1 } , s _ { t + 1 } )$ . The trace $\lambda _ { t + 1 } = \lambda _ { t } \oplus \mathcal { L } _ { t + 1 }$ is updated with the new label.
+
+In this work, we focus on the goal-conditioned RL problem [14] where the agent's task is to reach a goal state as rapidly as possible. We thus distinguish between two types of traces: goal traces and incomplete traces. A trace $\lambda _ { t }$ is said to be a goal trace if the task's goal has been achieved before t otherwise we say that the trace is incomplete. Formally, the MDP includes a termination function $\tau : ( 2 ^ { \mathcal { P } } ) ^ { + } \times S  \{ \perp , \top \}$ indicating that the trace $\lambda _ { t }$ at time t is an incomplete trace if $\tau ( \lambda _ { t } , s _ { t } ) = \bot$ or a goal trace if $\tau ( \lambda _ { t } , s _ { t } ) = \top$ . We assume the reward is 1 for goal traces and 0 otherwise. For ease of notation, we will refer to a goal trace as $\lambda _ { t } ^ { \top }$ and an incomplete trace as $\lambda _ { t } ^ { \perp }$ . Note that we assume the agent-environment interaction stops when the task's goal is achieved. This is without loss of generality as it is equivalent to having a final absorbing state with a null reward associated and no label returned by the labeling function l.
+
+[计算机与人工智能\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md]
+The single-agent framework above can be extended to the collaborative multi-agent setting as a Markov game. A cooperative Markov game of N agents is a tuple $\textbf { \mathcal { G } } = \ \langle N , S , s _ { I } , \mathcal { A } , p , r , \tau , T , \gamma , \mathcal { P } , l \rangle$ where $\pmb { S } = S _ { 1 } \times \cdots \times S _ { N }$ is the set of joint states, $s _ { I } \in \mathcal { S }$ is a joint initial state, $\mathcal { A } = \mathcal { A } _ { 1 } \times \cdot \cdot \cdot \times \mathcal { A } _ { N }$ is the set of joint actions, $\mathcal { P }$ $\pmb { S } \times \mathcal { A }  \Delta ( \pmb { S } )$ is a joint transition function, $r : ( S \times \mathcal { A } ) ^ { + } \times S  \mathbb { R }$ is the collective reward function, $\tau : ( 2 ^ { \mathcal { P } } ) ^ { + } \times S  \{ \perp , \top \}$ is the collective termination function, and $l : S \times S  2 ^ { \mathcal { P } }$ is an event labeling function. $T , \gamma ,$ and $\mathcal { P }$ are defined as for MDPs. Like Neary et al. [16], we assume each agent $\boldsymbol { A } _ { i } { } ^ { \ ' } \boldsymbol { s }$ dynamics are independently governed by local transition functions $p _ { i } : S _ { i } \times \mathcal { A } _ { i }  \Delta ( S _ { i } )$ , hence the joint transition function is $p ( \pmb { s } ^ { \prime } \mid \pmb { s } , \pmb { a } ) = \Pi _ { i = 1 } ^ { N } p ( s _ { i } ^ { \prime } \mid s _ { i } , a _ { i } )$ for all $\mathbf { \boldsymbol { s } } , \mathbf { \boldsymbol { s } } ^ { \prime } \in \mathcal { S }$ and $\textbf { \em a } \in \mathcal { A }$ . The objective is to find a team policy $\pi : ( 2 ^ { \mathcal { P } } ) ^ { + } \times s \to \mathcal { A }$ mapping pairs of traces and joint states to joint actions that maximizes the expected cumulative collective reward.
+
+[计算机与人工智能\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md]
+Example 2.1. We use the THREEBuTToNs task [16], illustrated in Figure 1a, as a running example. The task consists of three agents $( A _ { 1 } , A _ { 2 } ,$ and $A _ { 3 } )$ that must cooperate for agent $A _ { 1 }$ to get to the Goal position. To achieve this, agents must open doors that prevent other agents from progressing by pushing buttons $Y _ { B } , G _ { B } ,$ and $R _ { B }$ The button of a given color opens the door of the same color and, two agents are required to push $R _ { B }$ at once hence involving synchronization. Once a door has been opened, it remains open until the end of the episode. The order in which high-level actions must be performed is shown in the figure: $( 1 ) A _ { 1 }$ pushes $Y _ { B } , ( 2 ) A _ { 2 }$ pushes $G _ { B } , \left( 3 \right) A _ { 2 }$ and $A _ { 3 }$ push $R _ { B } ,$ and $( 4 ) A _ { 1 }$ reaches Goal. We can formulate this problem using the RL framework by defining a shared reward function returning 1 when the Goal position is reached. States solely consist of the position of the agents in the environment. The proposition set in this task is ${ \mathcal { P } } = \{ R _ { B } , Y _ { B } , G _ { B } ,$ $A _ { 2 } ^ { \lnot R _ { B } } , A _ { 2 } ^ { R _ { B } } , A _ { 3 } ^ { \lnot R _ { B } } , A _ { 3 } ^ { \lnot R _ { B } }$ , Goal}, where $( \mathrm { i } ) R _ { B }$ , YB and $G _ { B }$ indicate that the red, yellow and green buttons have been pushed respectively, (ii) $A _ { i } ^ { R _ { B } } \ ( \mathrm { r e s p } . \ A _ { i } ^ { \lnot R _ { B } } )$ , where $i \in \{ 2 , 3 \}$ , indicates that agent $A _ { i }$ is (resp. has stopped) pushing the red button $R _ { B }$ , and (iii) Goal indicates that the goal position has been reached. A minimal goal trace is $\langle \{ \} , \{ Y _ { B } \} , \{ G _ { B } \} , \{ A _ { 2 } ^ { R _ { B } } \} , \{ A _ { 3 } ^ { R _ { B } } \} , \{ R _ { B } \}$ , {Goal}}.
+
+## 2.2 Reward Machines
+
+
+We here introduce reward machines, the formalism we use to express decomposable (multi-agent) tasks.
+
+## 2.2.1 Definitions.
+
+[计算机与人工智能\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md]
+A reward machine (RM) [19, 20] is a finite-state machine that represents the reward function of an RL task. Formally, an RM is a tuple $M = \langle \mathcal { U } , \mathcal { P } , u _ { 0 } , u _ { A } , \delta _ { u } , \delta _ { r } \rangle$ where U is a set of states; $\mathcal { P }$ is a set of propositions; $u _ { 0 } \in \mathcal { U }$ is the initial state; $u _ { A } \in \mathcal { U }$ is the final state; $\delta _ { u } : \mathcal { U } \times 2 ^ { \mathcal { S } } \to \mathcal { U }$ is a state-transition function such that $\delta _ { u } ( u , \mathcal { L } )$ is the state that results from observing label $\mathcal { L } \in 2 ^ { \mathcal { S } }$ in state u $\mathbf { \Psi } : \in \mathcal { U } ;$ and $\delta _ { r } : \mathcal { U } \times \mathcal { U } \to \mathbb { R }$ is a reward-transition function such that $\delta _ { r } ( u , u ^ { \prime } )$ is the reward obtained for transitioning from state $u \in \mathcal { U }$ to $u ^ { \prime } \in \mathcal { U }$ We assume that (i) there are no outgoing transitions from $u _ { A } ,$ and (ii) $\delta _ { r } ( u , u ^ { \prime } ) = 1 { \mathrm { i f } } u ^ { \prime } = u _ { A } $ and 0 otherwise (following the reward assumption in Section 2.1). Given a trace $\lambda = \langle { \mathcal { L } } _ { 0 } , \ldots , { \mathcal { L } } _ { n } \rangle$ , a traversal (or run) is a sequence of RM states $\left. v _ { 0 } , \ldots , v _ { n + 1 } \right.$ such that $v _ { 0 } = u _ { 0 }$ , and $\boldsymbol { v } _ { i + 1 } = \delta _ { u } ( \boldsymbol { v } _ { i } , \mathcal { L } _ { i } )$ for $i \in [ 1 , n ]$
+
+Ideally, RMs are such that (i) the cross product $s \times u$ of their states with the $\mathrm { M D P } ^ { \prime } s$ make the reward and termination functions Markovian, and (ii) traversals for goal traces end in the final state $u _ { A }$ and traversals for incomplete traces do not.
+
+Example 2.2. Figure 1b shows an RM for the TíREEBuTTONs task. For simplicity, edges are labeled using the single proposition that triggers the transitions instead of sets. Note that the goal trace introduced in Example 2.1 ends in the final state $u _ { A }$
+
+## 2.2.2 RL Algorithm.
+
+
+The Q-learning for RMs (QRM) algorithm [19, 20] exploits the task structure modeled through RMs. QRM learns a Q-function $q _ { u }$ for each state $u \in \mathcal { U }$ in the RM. Given an experience tuple $\langle s , a , s ^ { \prime } \rangle$ , a Q-function $q _ { u }$ is updated as follows:
+
+$$
+q _ { u } ( s , a ) = q _ { u } ( s , a ) + \alpha \left( \delta _ { r } ( u , u ^ { \prime } ) + \gamma \operatorname* { m a x } _ { a ^ { \prime } } q _ { u ^ { \prime } } ( s ^ { \prime } , a ^ { \prime } ) - q _ { u } ( s , a ) \right) ,
+$$
+
+[计算机与人工智能\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md]
+where $u ^ { \prime } = \delta _ { u } ( u , l ( s , s ^ { \prime } ) )$ . All Q-functions (or a subset of them) are updated at each step using the same experience tuple in a counterfactual manner. In the tabular case, QRM is guaranteed to converge to an optimal policy.
+
+## 2.2.3 Multi-Agent Decomposition.
+
+
+Neary et al. [16] recently proposed to decompose the RM for a multiagent task into several RMs (one per agent) executed in parallel. The task decomposition into individual and independently learnable sub-tasks addresses the problem of non-stationarity inherent in the multi-agent setting. The use of RMs gives the high-level structure of the task each agent must solve. In this setting, each agent $A _ { i }$ has its own RM $M _ { i } ,$ local state space $S _ { i } \left( \mathrm { e . g . } \right.$ , it solely observes its position in the grid), and propositions $\mathcal { P } _ { i }$ such that ${ \mathcal { P } } = \cup _ { i } { \mathcal { P } } _ { i }$ Besides, instead of having a single opaque labeling function, each agent $A _ { i }$ employs its own labeling function $l _ { i } : S _ { i } { \times } \bar { S } _ { i } \to 2 ^ { \mathcal { P } _ { i } }$ . Each labeling function is assumed to return at most one proposition per agent per timestep, and they should together output the same label as the global labeling function l.
+
+![](images/56b48448e2f00528dfab295319861ecc41589f55e21b553824e0b4721bbe4cb9.jpg)  
+Figure 1: Illustration of the TíREEBuTToNs grid (a) and a reward machine modeling the task's structure (b) [16].
+
+![](images/d432ca9ac6c3fa35496c4668901b05b0d219117f84b8175c0ce0c1cb683c08cd.jpg)  
+Figure 2: RMs for each of the agents in TíREEBuTToNs [16].
+
+Given a global RM M modeling the structure of the task at hand (e.g., that in Figure 1b) and each agent's proposition set $\mathcal { P } _ { i } ,$ Neary et al. [16] propose a method for deriving each agent's RM Mi by projecting M onto $\mathcal { P } _ { i } .$ We refer the reader to Neary et al. [16] for a description of the projection mechanism and its guarantees since we focus on learning these individual RMs instead (see Section 3).
+
+Example 2.3. Given the local proposition sets $\mathcal { P } _ { 1 } ~ = ~ \{ Y _ { B } , R _ { B } \}$ Goal}, $\mathcal { P } _ { 2 } = \{ Y _ { B } , G _ { B } , A _ { 2 } ^ { R _ { B } } , A _ { 2 } ^ { \lnot R _ { B } } , R _ { B } \}$ and $\mathcal { P } _ { 3 } = \{ G _ { B } , A _ { 3 } ^ { R _ { B } } , A _ { 3 } ^ { \neg R _ { B } } , R _ { B } \}$ Figure 2 shows the RMs that result from applying Neary et al. [16] projection algorithm.
+
+[计算机与人工智能\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 1 of 3).md]
+Neary et al. [16] extend QRM and propose a decentralised training approach to train each agent in isolation (i.e., in the absence of their teammates) exploiting their respective RMs; crucially, the learnt policies should work when all agents interact simultaneously with the world. In both the individual and team settings, agents must synchronize whenever a shared proposition is observed $( \mathrm { i . e . } ,$ a proposition in the proposition set of two or more agents). Specifically, an agent should check with all its teammates whether their labeling functions also returned the same proposition. In the individual setting, given that the rest of the team is not actually acting, synchronization is simulated with a fixed probability of occurrence.
+
+## 3 LEARNING REWARD MACHINES INCOOPERATIVE MULTI-AGENT TASKS
+
+
+Decomposing a task using RMs is a promising approach to solving collaborative problems where coordination and synchronization among agents are required, as described in Section 2.2.3. In wellunderstood problems, such as the TíREEBuTToNs task, one can manually engineer the RM encoding the sequence of sub-tasks needed to achieve the goal. However, this becomes a challenge for more complex problems, where the structure of the task is unknown. In fact, the human-provided RM introduces a strong bias in the learning mechanism of the agents and can become adversarial if the human intuition about the structure of the task is incorrect. To alleviate this issue, we argue for learning each of the RMs automatically from traces collected via exploration instead of handcrafting them. In the following paragraphs, we describe two approaches to accomplish this objective.
+
+## 3.1 Learn a Global Reward Machine
+
+
+A naive approach to learning each agent's RM consists of two steps. First, a global RM M is learnt from traces where each label is the union of each agent's label. Different approaches [9, 21, 22] could be applied in this situation. The learnt RM is then decomposed into one per agent by projecting it onto the local proposition set $\mathcal { P } _ { i }$ of each agent A [16].
+
+Despite its simplicity, this method is prone to scale poorly. It has been observed that learning a minimal RM (i.e., an RM with the fewest states) from traces becomes significantly more diffi
+
+[计算机与人工智能\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md]
+# artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult（第 2/3 部分）
+章节: Learning Reward Machines in Cooperative Multi-Agent Tasks > 3.2 Learn Individual Reward Machines
+## 3.2 Learn Individual Reward Machines
+
+
+We propose to decompose the global task into sub-tasks, each of which can be independently solved by one of the agents. Note that even though an agent is assigned a sub-task, it does not have any information about its structure nor how to solve it. This is in fact what the proposed approach intends to tackle: learning the RM encoding the structure of the sub-task. This should be simpler than learning a global RM since the number of constituent states becomes smaller.
+
+Given a set of N agents, we assume that the global task can be decomposed into N sub-task MDPs. Similarly to Neary et al. $[ 1 6 ] _ { : }$ we assume each agent's MDP has its own state space $s _ { i }$ , action space ${ \mathcal { A } } _ { i } ,$ transition function $\mathcal { P } i$ , and termination function $\tau _ { i } .$ In addition, each agent has its own labeling function $l _ { i } ;$ hence, the agent may only observe a subset $\mathcal { P } _ { i } \subseteq \mathcal { S }$ . Note that the termination function is particular to each agent; for instance, agent $A _ { 2 }$ in THREEBUTTONS will complete its sub-task by pressing the green button, then the red button until it observes the signal $R _ { B }$ indicating that $A _ { 3 }$ is also pressing it. Ideally, the parallel composition of the learned RMs captures the collective goal.
+
+We propose an algorithm that interleaves the induction of the RMs from a collection of label traces and the learning of the associated Q-functions, akin to that by Furelos-Blanco et al. [9] in the single agent setting. The decentralised learning of the Q-functions is performed using the method by Neary et al. [16], briefly outlined in Section 2.2.3. The induction of the RMs is done using a stateof-the-art inductive logic programming system called ILASP [15], which learns the transition function of an RM as a set of logic rules from example traces observed by the agent.
+
+Example 3.1. The leftmost edge in Figure 2a corresponds to the rule $\delta ( u _ { 0 } ^ { 1 } , u _ { 1 } ^ { 1 } , \top ) : - \mathsf { p r o p } ( Y _ { B } , \top )$ . The $\delta ( { \sf X } , { \sf Y } , { \sf T } )$ predicate expresses that the transition from X to Y is satisfied at time T, while the prop(P, T) predicate indicates that proposition P is observed at time T. The rule as a whole expresses that the transition from $u _ { 0 } ^ { 1 }$ to $u _ { 1 } ^ { 1 }$ is satisfied at time T if $Y _ { B }$ is observed at that time. The traces provided to RM learner are expressed as sets of prop facts; for instance, the trace $\langle \{ Y _ { B } \} , \{ R _ { B } \} , \{ G o a l \} \rangle$ is mapped into $\{ \mathsf { p r o p } ( Y _ { B } , 0 )$ prop $( R _ { B } , 1 )$ . prop(Goal, 2).}
+
+[计算机与人工智能\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md]
+Algorithm 1 shows the pseudocode describing how the reinforcement and RM learning processes are interleaved. The algorithm starts initializing for each agent $A _ { i } { \mathrm { : } }$ the set of states $\mathcal { U } ^ { i }$ of the RM, the RM $M ^ { i }$ itself, the associated Q-functions $q ^ { i }$ , and the sets of example goal $( \Lambda _ { \top } ^ { i } )$ and incomplete $( \Lambda _ { \perp } ^ { i } )$ traces $\left( 1 . 1 - 5 \right)$ . Note that, initially, each agent's RM solely consists of two unconnected states: the initial and final states $( \mathrm { i . e . , }$ the agent loops in the initial state forever). Next, NumEpisodes are run for each agent. Before running any steps, each environment is reset to the initial state $s _ { I } ^ { i } ,$ each RM $M ^ { i }$ is reset to its initial state $u _ { 0 } ^ { i } ,$ each agent's trace $\lambda ^ { i }$ is empty, and we indicate that no agents have yet completed their episodes (1.8-9). Then, while there are agents that have not yet completed their episodes (1. 10), a training step is performed for each of the agents, which we describe in the following paragraphs. Note that we show a sequential implementation of the approach but it could be performed in parallel to improve performance.
+
+[计算机与人工智能\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md]
+Algorithm 1: Multi-Agent QRM with RM Learning   
+1 for $i = 1$ to N do   
+2 $\mathcal { U } ^ { i }  \{ u _ { 0 } ^ { i } , u _ { A } ^ { i } \}$   
+3 Mi ← InitializeRM $( \mathcal { U } ^ { i } )$   
+4 $q ^ { i }  \mathtt { I n i t i a l i z e Q } ( M ^ { i } )$   
+5 $\Lambda _ { \top } ^ { i }  \emptyset , \Lambda _ { \bot } ^ { i }  \emptyset$   
+6 for $n = 1$ to NumEpisodes do   
+7 t←0   
+8 for $i = 1$ to N do   
+9 $u _ { t } ^ { i } \gets u _ { 0 } ^ { i } , s _ { t } ^ { i } \gets s _ { I } ^ { i } , \lambda _ { t } ^ { i } \gets \emptyset ,$ dor $\imath e ^ { i } \gets \perp$   
+10 while $\exists j \in N$ such that done $j = \perp$ do   
+11 for $i = 1$ to N do   
+12 TrainAgent $( d o n e ^ { i } , s _ { t } ^ { i } , u _ { t } ^ { i } , q ^ { i } , \lambda _ { t } ^ { i } , \Lambda _ { G } ^ { i } , \Lambda _ { I } ^ { i } , M ^ { i } , \mathcal { U } ^ { i } )$   
+13 t←t + 1   
+14   
+15 Procedure TrainAgent(done $s _ { t } , u _ { t } , q , \lambda _ { t } , \Lambda _ { \top } , \Lambda _ { \bot } , M , \mathcal { U } )$   
+16 if done $= \perp$ then   
+17 $a \gets \mathsf { G e t A c t i o n } ( q _ { u _ { t } } , s _ { t } )$   
+18 $s _ { t + 1 } ,$ isGoalAchieved ← EnvStep(st, a)   
+19 $\mathscr { L } _ { t + 1 } \gets l ( s _ { t } , s _ { t + 1 } )$   
+20 $\lambda _ { t + 1 } \gets \lambda _ { t } \oplus \mathcal { L } _ { t + 1 }$   
+21 r, ut+1 ← GetNextRMState $( M , u _ { t } , \mathcal { L } _ { t + 1 } )$   
+22 $q _ { u _ { t } } \gets \mathsf { U p d a t e Q } ( q _ { u _ { t } } , s _ { t } , a , r , s _ { t + 1 } , q _ { u _ { t + 1 } } )$   
+23 for u $\in \mathcal { U } \setminus \{ u _ { t } \}$ do   
+24 r, u' ← GetNextRMState $( M , u , \mathcal { L } _ { t + 1 } )$   
+25 $q _ { u } \gets \mathsf { U p d a t e Q } ( q _ { u } , s _ { t } , a , r , s _ { t + 1 } , q _ { u ^ { \prime } } )$   
+26   
+27 if isGoalAchieved then   
+28 $\Lambda _ { \top }  \Lambda _ { \top } \cup \{ \lambda _ { t + 1 } \}$   
+29 $\Lambda _ { \perp }  \Lambda _ { \perp }$ UGenerateIncompleteTraces $\left( \lambda _ { t + 1 } \right)$   
+30 $M _ { n e w } \gets \mathsf { L e a r n R M } ( \mathcal { U } , \Lambda _ { \top } , \Lambda _ { \bot } )$   
+31 done ← T   
+32 else if $u _ { t + 1 } = u _ { A }$ then   
+33 $\Lambda _ { \perp }  \Lambda _ { \perp } \cup \{ \lambda _ { t + 1 } \}$   
+34 $M _ { n e w } \gets \mathsf { L e a r n R M } ( \mathcal { U } , \Lambda _ { \top } , \Lambda _ { \bot } )$   
+35 done ← T   
+36 else if $t + 1 = T$ then   
+37 $\Lambda _ { \perp }  \Lambda _ { \perp } \cup \{ \lambda _ { t + 1 } \}$   
+38 done ← T   
+39   
+40 if $M \neq M _ { n e w }$ then   
+41 $M \gets M _ { n e w }$   
+42 q ← InitializeQ(M)   
+43   
+44 Procedure LearnRM(U, $\Lambda _ { \top } , \Lambda _ { \bot } )$   
+45 M ← RMLearner $( \mathcal { U } , \Lambda _ { \top } , \Lambda _ { \bot } )$   
+46 while M = ⊥ do   
+47 $\mathcal { U }  \mathcal { U } \cup \{ u _ { | \mathcal { U } | - 1 } \}$   
+48 M ← RMLearner $( \mathcal { U } , \Lambda _ { \top } , \Lambda _ { \bot } )$   
+49 return M
+
+[计算机与人工智能\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md]
+The TrainAgent routine shows how the reinforcement learning and RM learning processes are interleaved for a given agent $A _ { i }$ operating in its own environment. From 1.17 to 1.25, the steps for QRM (i.e., the RL steps) are performed. The agent first selects the next action a to execute in its current state st given the $Q ^ { - }$ function $q _ { u _ { t } }$ associated with the current RM state ut. The action is then applied, and the agent observes the next state $s _ { t + 1 }$ and whether it has achieved its goal (1. 18). The next label $\mathcal { L } _ { t + 1 }$ is then determined (1.19) and used to (i) extend the episode trace λt (1 . 20), and (ii) obtain reward r and the next RM state $u _ { t + 1 } \left( 1 . 2 1 \right)$ The Qfunction q is updated for both the RM state $u _ { t }$ the agent is in at time t (1. 22) and in a counterfactual manner for all the other states of the RM (1. 25).
+
+The learning of the RMs occurs from 1. 27 to 1. 42. Remember that there are two sets of example traces for each agent: one for goal traces $\Lambda _ { \mathsf { T } }$ and one for incomplete traces $\Lambda _ { \perp }$ . Crucially, the learnt RMs must be such that (i) traversals for goal traces end in the final state, and (ii) traversals for incomplete traces do not end in the final state. Given the trace $\lambda _ { t + 1 }$ and the RM state $u _ { t + 1 }$ at time t + 1, the example sets are updated in three cases:
+
+(1) $\mathrm { I f } \lambda _ { t + 1 }$ is a goal trace $( 1 . 2 7 ) , \lambda _ { t + 1 }$ is added to $\Lambda _ { \top }$ . We consider as incomplete all sub-traces o $\mathrm { f } \lambda _ { \mathsf { T } } \colon \{ \langle \mathcal { L } _ { 0 } , \ldots , \mathcal { L } _ { k } \rangle ; \forall k \in$ $[ 0 , \ldots , | \lambda _ { \top } | - 1 ] \}$ (see Example 3.2). Note that if a sub-trace was a goal trace, the episode would have ended before. This optimization enables capturing incomplete traces faster; that is, it prevents waiting for them to appear as counterexamples (see next case).
+
+(2) $\operatorname { I f } \lambda _ { t + 1 }$ is an incomplete trace and $u _ { t + 1 }$ is the final state of the RM (1. 32), then $\lambda _ { t + 1 }$ is a counterexample since reaching the final state of the RM should be associated with completing the task. In this case, we add $\lambda _ { t + 1 }$ to $\Lambda _ { \perp }$
+
+(3) $\operatorname { I f } \lambda _ { t + 1 }$ is an incomplete trace and the maximum number of steps per episode T has been reached (1. 36), we add $\lambda _ { t + 1 }$ to $\Lambda _ { \perp } .$
+
+[计算机与人工智能\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md]
+In the first two cases, a new RM is learnt once the example sets have been updated. The LearnRM routine (1. 44-49) finds the RM with the fewest states that covers the example traces. The RM learner (here ILASP) is initially called using the current set of RM states U (1. 45); then, if the RM learner finds no solution covering the provided set of examples, the number of states is increased by 1. This approach guarantees that the RMs learnt at the end of the process are minimal $( \mathrm { i . e . } ,$ , consist of the fewest possible states) [9]. Finally, like Furelos-Blanco et al. [9], we reset the Q-functions associated with an RM when it is relearned; importantly, the Q-functions depend on the RM structure and, hence, they are not easy to keep when the RM changes (1. 42). In all three enumerated cases, the episode is interrupted.
+
+Example 3.2. Given the sub-task assigned to the agent $A _ { 3 }$ in the TíREEBuTToNs environment described in Figure 2c, we consider a valid goal trace $\lambda = \langle \{ \} , \{ G _ { B } \} , \{ A _ { 3 } ^ { R _ { B } } \} , \{ A _ { 3 } ^ { \neg R _ { B } } \} , \{ A _ { 3 } ^ { R _ { B } } \} , \{ R _ { B } \} \rangle$ . The set of generated incomplete traces is:
+
+({),
+
+({}, $\{ G _ { B } \} )$
+
+(0}, $\{ G _ { B } \} , \{ A _ { 3 } ^ { R _ { B } } \} \rangle$
+
+({}, $\{ G _ { B } \} , \{ A _ { 3 } ^ { \breve { R } _ { B } } \} , \{ A _ { 3 } ^ { \neg R _ { B } } \} \rangle$
+
+$$
+\langle \updownarrow , \{ G _ { B } \} , \{ A _ { 3 } ^ { R _ { B } } \} , \{ A _ { 3 } ^ { \neg R _ { B } } \} , \{ A _ { 3 } ^ { R _ { B } } \} \rangle
+$$
+
+We have described in this section a method to learn the RM associated with each sub-task. In the next section, we evaluate how this approach performs on two collaborative tasks.
+
+## 4 EXPERIMENTS
+
+
+We evaluate our approach by looking at two metrics as the training progresses: (1) the collective reward obtained by the team of agents and (2) the number of steps required for the team to achieve the goal. The first metric indicates whether the team learns how to solve the task by getting a reward of 1 upon completion. The second one estimates the quality of the solution, i.e. the lower the number of steps the more efficient the agents. Although the training is performed in isolation for each agent, the results presented here were evaluated with all the agents acting together in a shared environment. Additionally, we inspect the RM learnt by each agent and perform a qualitative assessment of their quality. The results presented show the mean value and the 95%-confidence interval of the metrics evaluated over 5 different random seeds in two gridbased environments of size 7x7. We ran the experiments on an EC2 c5.2xLARGE instance on AWS using Python 3.7.0. We use the state-of-the-art inductive logic programming system ILASP v4.2.0 [15] to learn the RM from the set of traces with a timeout set to 1h.
+
+## 4.1 THREEBUTTONS Task
+
+[计算机与人工智能\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md]
+We evaluate our approach in the TíREEBuTToNs task described in Example 2.1. The number of steps required to complete the task and the collective reward obtained by the team of agents throughout training are shown in Figure 3. The green curve shows the performance of the team of agents when the local RMs are manually engineered and provided. In pink, we show the performance of the team when the RMs are learnt. Finally in yellow, we show the performance of the team when each agent learn independently to perform their task without using the RM framework¹. We observe that regardless of whether the local RMs are handcrafted or learned the agents learn policies that, when combined, lead to the completion of the global task. Indeed, the collective reward obtained converges to the maximum reward indicating that all the agents have learnt to execute their sub-tasks and coordinate in order to achieve the common goal. Learning the RMs also helps speed up the learning for each of the agent, significantly reducing the number of training iterations required to learn to achieve the global task. We note however that the policy learnt without the RM framework requires less steps than when the RMs are used.
+
+We present in Figure 4 the RM learnt by $A _ { 2 }$ using our interleaved learning approach. We compare it to the "true" RM shown in Figure 2b. The back transition from $u _ { 3 } ^ { 2 }$ to $u _ { 2 } ^ { 2 }$ associated with the label $A _ { 2 } ^ { \lnot R _ { B } }$ is missing from the learnt RM. This can be explained by the fact that this transition does not contribute towards the goal When deriving the minimal RM from the set of labels, this one in particular is not deemed important and is thus ignored by the RM learner.
+
+![](images/67f0846e4d41f3b39731431da340e57c4bf9c4d468e06c4a88868bf6701d14c2.jpg)
+
+(a) Number of Steps to reach the Goal  
+![](images/fec741ad8c6ecee911040936ac5a9e88af77798038909a42a520dc643a685555.jpg)  
+(b) Average Reward
+
+Figure 3: Comparison between handcrafted RMs (RM Provided) and our approach learning the RMs from traces (RM Learnt) in the THREEBuTToNs environment.  
+![](images/18d219dd0c8746896d1f954bbc13bc284f7bb41abd4390c7b4df6a2c2d1c6058.jpg)  
+Figure 4: Learnt RM for $A _ { 2 } .$
+
+Learning the global RM was also attempted in this environment. Unfortunately, learning the minimal RM for the size of this problem is hard and the RM learner timed out after the 1h limit.
+
+## 4.2 RENDEzvoUs Task
+
+
+The second environment in which we evaluate our approach is the 2-agent RENDEzvous task [16] presented in Figure 5a. This task is composed of 2 agents acting in a grid with the ability to go uP,
+
+DOWN, LEFT, RIGHT or DO NOTHING. The task requires the agents to move in the environment to first meet in an RDV location, i.e, all agents need to simultaneously be in that location for at least one timestep. Then each of the agents must reach their individual goal location for the global task to be completed.
+
+[计算机与人工智能\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md]
+We present in Figure 6 the number of steps (6a) to complete the task and the collective reward received by the team of agents (6b) throughout training. In green we show the performance when the RMs are known a priori and provided to the agents. This scenario, where we have perfect knowledge about the structure of each subtasks, is used as an upper bound for the results of our approach. In pink, we show the performances of our approach where the local RMs are learnt. The yellow curve shows the performance of the team when each agent learns to perform their individual task without the RM construct.
+
+The collective reward obtained while interleaving the learning of the policies and the learning of the local RMs converges to the maximum reward after a few iterations. In this task, the RM framework is shown to be crucial to help the team solve the task in a timely manner. Indeed, without the RMs (either known a priori or learnt), the team of agents do not succeed at solving the task.
+
+We also attempted to learn the global RM directly but the task could not be solved (i.e., a collective goal trace was not observed). The collective reward remained null throughout the training that we manually stopped after 1e6 timesteps.
+
+## 5 RELATED WORK
+
+
+Since the recent introduction of reward machines as a way to model non-Markovian rewards [19, 20], several lines of research have based their work on this concept (or similar finite-state machines). Most of the work has focused on how to derive them from logic specifications [1] or demonstrations [2], as well as learning them using different methods [3, 9–11, 13, 21, 22].
+
+In this work, based on the multi-agent with RMs work by Neary et al. [16], the RMs of the different agents are executed in parallel. Recent works have considered other ways of composing RMs, such as merging the state and reward transition functions [6] or arranging them hierarchically by enabling RMs to call each other [10]. The latter is a natural way of extending this work since agents could share subroutines in the form of callable RMs.
+
+[计算机与人工智能\artificial-intelligence__2303.14061__learning-reward-machines-in-cooperative-mult (part 2 of 3).md]
+The policy learning algorithm for exploiting RMs we employ is an extension of the QRM algorithm (see Sections 2.2.2-2.2.3). However, algorithms based on making decisions at two hierarchical levels [9, 19] or more [10] have been proposed. In the simplest case (i.e., two levels), the agent first decides which transition to satisfy from a given RM state, and then decides which low-level actions to ta

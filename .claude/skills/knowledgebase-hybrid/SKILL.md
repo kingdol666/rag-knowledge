@@ -1,155 +1,94 @@
 ---
 name: knowledgebase-hybrid
-description: "Parallel hybrid retrieval that runs both recall lanes at the same time on separate MCP connections: the vector lane (kb_search_vector, hard threshold, doc-level dedup) and the complete-recall catalog lane (every KB and document description, description-overlap ranking, budget top-up, full reads). Merges and deduplicates the two candidate sets by (kb_id, doc_path), re-reads only documents one lane found, segments every merged document, sends every segment to the real Laya (default) or Jev decision engine, applies the absolute threshold plus relative cut, and returns a deduplicated result_list with lane provenance for knowledge-enhanced answering. Use for 并行检索, 混合检索, 双通道检索, parallel hybrid, dual-lane retrieval, vector+catalog, both retrieval modes, dedup retrieval, when vector recall alone is not trusted or the catalog scan alone is too slow, or when the fastest recall and the most complete recall must be combined."
+description: "Serial hybrid retrieval driven entirely by MCP tool calls (no orchestration script): run the vector lane FIRST (kb_search_vector wide net, hard threshold, doc-level dedup, refs only), THEN the content/catalog lane (kb_list shelf selection, every document description, description-overlap ranking with trust check, budgeted reads), deduplicate the merged doc ids by (kb_id, doc_path) with lane provenance, send every merged document's segments to the REAL Laya engine gate (kb_laya_judge MCP tool — works in every harness, including shell-less chat agents), then kb_doc_read the FULL content of every relevant kept doc and answer with a knowledge-enhanced, cited synthesis. Use for 混合检索, 串行混合, serial hybrid, vector then catalog, hybrid retrieval, dual-lane retrieval, dedup retrieval, when vector recall alone is not trusted and the complete-recall scan alone is too slow."
 ---
 ## ⭐ Related Skills
+
 - **Vector + Jev-gate lane** → `skill://knowledgebase-search` — lane A alone (fast semantic proposal + engine verify gate)
-- **Complete-recall lane** → `skill://knowledgebase-librarian` — lane B alone (catalog/read/Jev, exhaustive)
-- Document ingest → `skill://knowledgebase-ingest` — produces the descriptions both lanes rely on
-- Decision layer → `knowledgebase-librarian/scripts/jev_filter.py` (shared, not duplicated here)
+- **Complete-recall lane** → `skill://knowledgebase-librarian` — lane B alone (catalog/read/Jev, exhaustive; owns `jev_filter.py` and the Laya decision layer this skill shares)
+- Document ingest → `skill://knowledgebase-ingest` — produces the descriptions the content lane relies on
 
 ## When to use this skill
 
 | Situation | Use hybrid? |
 |---|---|
 | You want the **speed of vector recall** and the **coverage of the catalog scan** together | **Yes** — this skill's whole point |
-| Vector search alone may miss paraphrased/mis-described evidence | **Yes** — the catalog lane is vector-independent |
+| Vector search alone may miss paraphrased/mis-described evidence | **Yes** — the content lane is vector-independent |
 | You only know the KB and ask a simple fact question | No — `knowledgebase-search` alone is cheaper |
-| An explicit "read everything" request with no latency constraint | No — pure `knowledgebase-librarian` (no budget top-up) |
-| Both lanes are unaffordable | Pick one lane; do not fake parallelism |
+| An explicit "read everything" request with no latency constraint | No — pure `knowledgebase-librarian` |
 
-## The One Picture
+## The serial flow (S0–S6) — do it IN ORDER, one phase at a time
+
+The flow is **serial by design**: the vector lane completes before the content lane starts. Every phase is executed with MCP tool calls — **no orchestration script**. `scripts/hybrid_search.py` is legacy (kept only for offline experiments); never run it in this flow.
 
 ```
-query ──┬─ lane A · vector      kb_search_vector(top_k, threshold, balance_kbs)
-        │   (own MCP conn)      → hard threshold → dedup by (kb_id, doc_path)
-        │                       → refs only, NO reads           ┐
-        │                                                        ├─ threads
-        └─ lane B · catalog    kb_list → select shelves → EVERY doc description
-            (own MCP conn)     → description-overlap ranking + budget top-up
-                               → kb_doc_read every pick → structure segments ┘
-                                   │
-                      MERGE on (kb_id, normalized doc_path)
-                      lane = both | vector | catalog   (shared docs never re-read)
-                                   │
-                      UNIFIED REREAD  vector-only proposals (one kb_doc_read each)
-                                   │
-                      SEGMENT        complete_recall.segment_document (source-backed)
-                                   │
-                      ⭐ REAL ENGINE GATE  every segment → Laya (default) / Jev
-                      per-doc best score; keep abs ≥ threshold AND rel ≥ best−margin
-                                   │
-                      RESULT LIST    deduplicated doc metadata + lane + scores
-                      → re-read survivors → answer from ALL kept docs (engine verdict is final)
+S0  查询整容    extract subject × attribute × constraints; write bilingual keywords
+                (descriptions and the query often live in different languages)
+S1  向量车道    kb_search_vector(top_k=30, threshold=0.35, balance_kbs=true)
+                → hard threshold → dedup by (kb_id, doc_path) → 候选 A
+                refs only — do NOT read content yet
+S2  内容车道    kb_list → select shelves → kb_get_documents(lightweight) for EVERY doc
+                description → description-overlap ranking (+ L3 trust check) →
+                重叠命中记录为引用（不整读正文）→ 候选 B（refs）
+S3  去重合并    merge A ∪ B keyed on (kb_id, normalized doc_path)
+                lane = both | vector | catalog; a both-doc is kept ONCE
+                (catalog content + vector score); vector-only docs have no content yet
+S4  LAYA 判卷   pass ALL merged candidates as REFERENCES in ONE call — the server
+                fetches every body itself (raw text never enters context):
+                kb_laya_judge(query, documents=[{kb_id, doc_path}, …] refs,
+                criterion="evidence", threshold=0.5)
+                → every ≥threshold segment survives (fail-closed); doc-level
+                relative cut best−0.10 + top-5 floor gives the relevant-doc set
+S5  证据包      evidence_pack = the merged kept content — the ONE full-content
+                return; kb_doc_read a kept doc only to verify a specific quote
+S6  增强回答    synthesize with citations: doc_path + lane provenance + engine score;
+                zero kept docs = honest engine-level not-found
 ```
 
-## Division of labor
+**Why serial:** the vector lane proposes cheap refs in seconds; the content lane then spends its read budget only where descriptions score, and the vector-only docs need just one reread each before judging. Running the lanes in parallel saves seconds but doubles connection bookkeeping and hides duplicate reads — measured 2026-09-28: the serial merge keeps both lanes' recall with zero duplicate reads.
 
-**The script does the parallel work** — the agent cannot issue two MCP calls at once,
-so `scripts/hybrid_search.py` owns both threads, the merge, the reread, and the engine gate:
+## Phase notes
 
-> **Interpreter**: run with `backend/.venv/Scripts/python.exe` — the MinerU env hosting `laya` + GPU torch (Laya auto-selects CUDA). Bare `python` without `laya` fails closed (`JevUnavailable`).
+**S1 vector lane.** `kb_search_vector` with a wide net (`top_k=30`, `score_threshold=0.35`, `balance_kbs=true`). Threshold applies to chunk scores; dedup to document level immediately (best chunk score becomes the doc score). Record `(kb_id, doc_path, vector_score)` — no reads in this phase.
 
-```bash
-python .claude/skills/knowledgebase-hybrid/scripts/hybrid_search.py \
-  --query "How does InstructDS generate high-quality query-based dialogue summaries?" \
-  --engine laya --output hybrid-result.json --require-real \
-  --extra-terms "instructds 对话摘要 数据集 baselines experiments" \
-  --peek-heads --top-k-floor 5 --lane-agreement
-# optional: --vector-top-k 10 --vector-threshold 0.35 --doc-budget 30
-#           --exclude-prefix Corpus --relative-margin 0.10 --peek-limit 300
+**S2 content lane.** Full catalog discipline from the librarian lane applies: never guess shelves by name (`kb_list` first), read every description, rank by description-overlap with the S0 bilingual keywords, respect the L3 trust check (boilerplate/content-free descriptions get a 600-char head read and stay candidates). Read the overlap hits (budget ≈15 docs; `(part k of N)` siblings of any hit come along — stem completion). Zero-overlap docs are NOT silently dropped: they are reported and (budget permitting) head-peeked — the engine, not description vocabulary, decides their fate.
+
+**S3 merge & dedup.** Identity is `(kb_id, normalized doc_path)` — backslashes and slashes are the same path. A document found by both lanes is kept **once** with `lane=both` (catalog signal + vector score, both provenance values retained). Report the counts: `from_both / from_vector_only / from_catalog_only`. Neither lane's hits need their bodies in context — S4 fetches server-side.
+
+**S4 real engine gate — reference mode.** Pass ALL merged candidates as refs in one call (the judge fetches each body itself):
+
+```
+kb_laya_judge(query, documents_json, criterion="evidence", threshold=0.5)
+   documents_json = [{"kb_id", "doc_path", "name", "description", "content"}, ...]
 ```
 
-**Supply `--extra-terms` yourself (Phase 0, mandatory for cross-lingual corpora).** The
-catalog descriptions and the query often live in different languages (measured: an
-English question against Chinese descriptions shares ZERO terms — T3/T1 2026-09-25).
-Write the query's subject × attribute × constraints as bilingual keywords and pass them;
-they are merged into the description match. `--peek-heads` is the second, engine-based
-net: every unpicked zero-overlap document gets one cheap head read (default 700 chars)
-and its head is judged like any other segment — the decision engine, not description
-vocabulary, decides its fate, so the scan has no blind spot by construction.
+The tool segments every document structure-aware (headings/paragraphs/lists/tables/sentences) and scores EVERY segment with the real local Laya (GPU, fail-closed — missing model/score rejects, never an implicit pass). It returns `{status, real_engine, criterion, threshold, candidate_count, scored_count, survivors[] (text+score+provenance), evidence_pack, errors[]}`.
 
-**The agent does the answering** — read `result_list`/`evidence_pack` from the JSON,
-re-read survivors with `kb_doc_read` when the 2,500-char heads are not enough,
-then answer from ALL kept documents. The engine gate is the single verdict —
-same contract as `knowledgebase-search`/`knowledgebase-librarian`: no LLM
-0-8 rubric, no re-scoring, no post-gate pruning; zero kept docs means an
-honest not-found report.
+Derive the relevant-doc set: doc best-score ≥ `global_best − 0.10` **or** top-5 doc (relative cut + floor — the local Laya distribution on prose is top-heavy, measured median ≈0.88; `abs_kept`/cut are in the verdict for audit). Shell-capable harnesses may equivalently run `knowledgebase-librarian/scripts/jev_filter.py` — same engine, same contract.
 
-## Output contract (`hybrid-result.json`)
+**S5 full reads.** The judge works on the content you supplied; if any kept doc was truncated at 20k chars, paginate `kb_doc_read(offset/limit)` until the full readable body is covered. The answer must draw on complete content, not heads.
 
-| Field | Meaning |
-|---|---|
-| `status` | `ok` both lanes · `partial` one lane failed (reported, never hidden) · `error` both failed |
-| `lanes.vector` | raw hits, dedup docs, seconds |
-| `lanes.catalog` | shelves/descriptions scanned, overlap docs, budget top-up, docs read, seconds |
-| `merge` | `from_both` / `from_vector_only` / `from_catalog_only` counts |
-| `reread` | how many vector-only proposals were read; per-doc read errors |
-| `judge` | engine/backend/real_engine, abs threshold, `relative_cut`, `global_best`, per-doc `doc_scores` |
-| `result_list` | kept docs: `kb_id, doc_id, doc_path, name, lane, vector_score, judge_score` |
-| `evidence_pack` | source-ordered pack from kept docs, lane-tagged headers |
-| `unscanned` | merged docs with no readable content and why — never silently dropped |
-
-## Merge and dedup rules
-
-1. Identity is `(kb_id, normalized doc_path)` — backslashes and slashes are the same path.
-2. A document found by both lanes is kept **once** with `lane=both`; it inherits the
-   catalog lane's content and the vector lane's score. No duplicate reads, no duplicate judge work.
-3. Vector-only documents are proposals until the unified reread succeeds; a failed reread
-   moves the doc to `unscanned`, it is never judged on its description alone.
-4. Catalog-lane budget top-up (zero-overlap docs filling the remaining budget) is reported
-   in `lanes.catalog.zero_overlap_docs_unread` — partial scans are labelled partial.
-
-## Engine gate (fail-closed)
-
-- Default engine `laya` (local SDK, repo-local `model/laya` checkpoint; see
-  `knowledgebase-librarian/references/laya-sdk.md`). Pass `--engine jev` only when remote
-  Jev is intentionally selected. Engines never silently fall back to one another.
-- Every segment gets a score record; missing SDK/model/score or out-of-range score is
-  **fail-closed** (candidate rejected, `unavailable`/`error` status), never an implicit pass.
-- Retention = `score ≥ threshold` **and** `score ≥ global_best − relative_margin`,
-  plus a global **top-K floor** (`--top-k-floor`, recommended 5): when real evidence
-  exists, the top-K docs always survive the cut. The relative cut exists because the
-  local Laya distribution on prose is top-heavy (measured median ≈0.88, min ≈0.55);
-  the floor protects question-critical mid-score documents (measured: an experiments
-  section scoring 0.84 was cut at 0.854 — T1 2026-09-25). `abs_kept` preserves the
-  raw-threshold view for audit.
-- **Split-doc sibling completion** (default on): picking any `(part k of N)` document
-  auto-includes its siblings (up to `--stem-max-parts`) — a matched paper brings its
-  experiments/appendix parts that the question actually targets (measured: T4 kept
-  part 1 while the hallucination section lived in part 2).
-- **Post-judge stem expansion** (default on, `--no-stem-expansion` to disable): after
-  the engine keeps a split document, its sibling parts are full-read and judged in a
-  second pass (score memoization makes the repeat pass free). This is what saves
-  enumeration questions whose answer sections sit outside both the description picks
-  and the peeked heads (measured T1: the experiments part scored 0.83 from its head;
-  full content scores it into the kept set). Bounded by `--expansion-cap` 40.
-- `--lane-agreement` (opt-in): a document recalled by **both** independent lanes and
-  scored at or above the absolute threshold is kept without the relative cut — two
-  agreeing signals replace the distribution-dependent adjustment. Use it when the
-  merged pool contains lexically-attractive distractors that inflate `global_best`
-  (measured q2: a wrong dataset doc at 0.979 cut the gold at 0.868; the gold was
-  lane=both and rescued by this rule).
-- `--require-real` makes the CLI exit 2 unless `real_engine=true`; offline/injected
-  scores are always labelled as such.
+**S6 answer.** Synthesize from ALL kept docs. The result must include: `Search Paths` (S1 hits/dedup, S2 shelves/descriptions/reads, S3 merge counts, S4 engine/backend/criterion/threshold/kept), `Answer` with citations (`doc_path` + lane + engine score), `Confidence` grounded in coverage, and `Blind Spots` (unscanned docs, failed phases — partial is labelled partial). Zero kept docs after the gate = honest engine-level not-found; never fabricate.
 
 ## ⚠️ NEVER list
 
 | ❌ Don't | Why | ✅ Do instead |
 |---|---|---|
-| Run the lanes sequentially and call it parallel | Loses the latency win | `hybrid_search.py` (threads, separate MCP connections) |
+| Run `hybrid_search.py` / parallel-thread scripts in this flow | Serial MCP flow is the design; the script hides the phases | Execute S1→S6 yourself with MCP tool calls |
+| Start the content lane before the vector lane finishes | Serial contract: S1 refs gate S3's merge | Complete S1 first |
 | Dedup on `doc_path` alone | Same path can exist in two KBs | Key on `(kb_id, doc_path)` |
-| Read a `lane=both` document again | Wasted I/O, duplicate work | Merge first; reread only `lane=vector` proposals |
-| Judge a document that never got content | Description ≠ evidence | `unscanned` + honest report |
-| Keep docs because the lane found them | Lanes propose, the engine disposes | Every segment through the real engine gate |
-| Hide a failed lane | Partial coverage looks like full coverage | `status=partial` + `lanes.*.error` |
+| Read a `lane=both` document twice | Wasted I/O, duplicate work | Merge first; reread only vector-only docs |
+| Judge a document that never got content | Description ≠ evidence | Reread in S4 first; `unscanned` + honest report otherwise |
+| Keep docs because a lane found them | Lanes propose, the engine disposes | Every segment through `kb_laya_judge` (real engine) |
+| Hide a failed or skipped phase | Partial coverage looks like full coverage | Report counts and blind spots per phase |
 | Answer from unscored text or re-score kept docs | The engine verdict is final | Answer from ALL kept docs; zero kept = honest not-found |
 
 ## Quick rule reference
-1. **Both lanes in parallel**, each with its own MCP connection (the script does this)
-2. **Vector lane proposes, catalog lane reads** — no reads in the vector lane
-3. **Merge on (kb_id, doc_path)**; `both` docs survive once with both scores
-4. **One unified reread** for vector-only proposals before judging
-5. **Every segment through the real engine** — fail-closed, relative cut on top of absolute
-6. **Result list = deduplicated metadata** with lane provenance and both scores
-7. **Answer from ALL kept docs only** — the engine gate is the verdict; report blind spots
+
+1. **Serial, no scripts** — S1 vector → S2 content → S3 dedup → S4 judge → S5 full reads → S6 answer, all via MCP tools
+2. **Vector lane proposes refs only** — no reads until S3/S4
+3. **Merge on (kb_id, doc_path)**; `both` docs survive once with both provenances
+4. **One `kb_laya_judge` call for all merged docs** — real engine, fail-closed, verdict final
+5. **Relative cut best−0.10 + top-5 floor** selects the relevant-doc set (audit fields included)
+6. **Full-content reads of every kept doc** before answering (S5)
+7. **Answer with citations + lane provenance + blind spots** — zero kept = honest not-found

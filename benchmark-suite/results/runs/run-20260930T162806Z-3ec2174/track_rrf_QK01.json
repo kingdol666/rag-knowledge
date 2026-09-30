@@ -1,0 +1,54 @@
+{
+ "qid": "QK01",
+ "method": "rrf",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "ranked": [
+  "1706.03762",
+  "1810.04805",
+  "2503.21676",
+  "2110.07844",
+  "2510.13343",
+  "1906.10015",
+  "1911.02792",
+  "2110.08918",
+  "2109.14357",
+  "2009.10669"
+ ],
+ "ranked_paths": [
+  "artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md",
+  "nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst.md",
+  "artificial-intelligence__2510.13343__aoad-mat-transformer-based-multi-agent-deep.md",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md",
+  "chemistry__1911.02792__machine-learning-for-molecular-simulation.md",
+  "clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md",
+  "speech__2109.14357__comparison-of-self-supervised-speech-pre-tra.md",
+  "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne.md"
+ ],
+ "evidence_sources": [
+  "1706.03762",
+  "1810.04805",
+  "2503.21676"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.0,
+ "latency_s": 4.4,
+ "answer": "The retrieved evidence is insufficient to answer this question.\n\nThe evidence explains only parts of the Transformer's design: it states that multi-head attention uses $h=8$ parallel heads with $d_k = d_v = d_{\\mathrm{model}}/h = 64$, producing a total computational cost similar to single-head attention of full dimensionality, and it lists the three applications of attention (encoder-decoder attention with queries from the previous decoder layer and keys/values from the encoder output; encoder self-attention where keys, values and queries all come from the previous layer; and decoder self-attention) ([1706.03762], §3.2.2–3.2.3).\n\nIt does not describe how attention scores are computed (e.g., scaled dot-product), and it contains no discussion of why recurrence or convolution is replaced. The other two passages concern BERT span-based question answering ([1810.04805]) and attention patching via a twin architecture ([2503.21676]), neither of which addresses the question.\n\nSources used: [1706.03762] (partial, multi-head attention only); [1810.04805] (not relevant); [2503.21676] (not relevant).",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 104,
+  "output": 252,
+  "cache_read": 49024,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.031571,
+ "extra": {},
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

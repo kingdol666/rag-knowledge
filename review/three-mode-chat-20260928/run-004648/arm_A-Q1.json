@@ -1,0 +1,372 @@
+{
+  "status": "ok",
+  "query": "语言模型是如何逐步学会事实知识的？学习动力学呈现哪几个阶段、性能平台期对应什么内部机制、数据分布不均衡有何影响，以及为什么用微调向模型注入新知识会失败？(how language models learn facts dynamics curricula hallucinations)",
+  "engine": "laya",
+  "backend": "laya_sdk",
+  "real_engine": true,
+  "parameters": {
+    "kb_id": "",
+    "threshold": 0.5,
+    "vector_top_k": 30,
+    "vector_threshold": 0.35,
+    "doc_read_chars": 20000,
+    "segment_chars": 3000,
+    "max_state_chars": 6000,
+    "max_evidence_chars": 24000
+  },
+  "recall": {
+    "vector_raw_hits": 30,
+    "vector_dedup_docs": 19,
+    "recall_seconds": 4.8,
+    "docs_read": 17,
+    "read_errors": [
+      {
+        "doc_path": "Corpus-Chunks800/nlp__2503.21676__how-do-language-models-learn-facts-dynamics__k00.md",
+        "error": "empty_content"
+      },
+      {
+        "doc_path": "aw-industrial-e2e-20260926-022518/experience/exp-d45dc195a924.md",
+        "error": "empty_content"
+      }
+    ],
+    "reread_seconds": 7.1
+  },
+  "judge": {
+    "status": "ok",
+    "engine": "laya",
+    "backend": "laya_sdk",
+    "real_engine": true,
+    "criterion": "evidence",
+    "threshold": 0.5,
+    "global_best": 0.9102,
+    "scored_segments": 94,
+    "total_segments": 94,
+    "errors": []
+  },
+  "judge_doc_scores": [
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md",
+      "vector_score": 0.5160441398620605,
+      "judge_score": 0.9102,
+      "kept": true
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_path": "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md",
+      "vector_score": 0.5158485770225525,
+      "judge_score": 0.8965,
+      "kept": true
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+      "vector_score": 0.56826251745224,
+      "judge_score": 0.8912,
+      "kept": true
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "vector_score": 0.5654324293136597,
+      "judge_score": 0.8893,
+      "kept": true
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_path": "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+      "vector_score": 0.5598043203353882,
+      "judge_score": 0.8737,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md",
+      "vector_score": 0.589146077632904,
+      "judge_score": 0.8473,
+      "kept": true
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "vector_score": 0.5900008678436279,
+      "judge_score": 0.8452,
+      "kept": true
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_path": "soul-cs-library/thinking-style.md",
+      "vector_score": 0.4894707202911377,
+      "judge_score": 0.8319,
+      "kept": true
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_path": "soul-e2e-tester-024115/thinking-style.md",
+      "vector_score": 0.4894707202911377,
+      "judge_score": 0.8319,
+      "kept": true
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_path": "soul-demo-qa/thinking-style.md",
+      "vector_score": 0.4894707202911377,
+      "judge_score": 0.8319,
+      "kept": true
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+      "vector_score": 0.5911024212837219,
+      "judge_score": 0.828,
+      "kept": true
+    },
+    {
+      "kb_id": "5bc21b9b-2a05-470a-9cd6-eaafedfb87a2",
+      "doc_path": "AI 基础设施/vector-index-tuning-guide (part 1 of 2).md",
+      "vector_score": 0.566747784614563,
+      "judge_score": 0.8263,
+      "kept": true
+    },
+    {
+      "kb_id": "d846a043-fe47-47ac-ae2e-3e523d8ee80e",
+      "doc_path": "e2e-flow-20260926-022340/harness-handbook.md",
+      "vector_score": 0.47439485788345337,
+      "judge_score": 0.8241,
+      "kept": true
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_path": "经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 1 of 4).md",
+      "vector_score": 0.5635858178138733,
+      "judge_score": 0.8194,
+      "kept": true
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_path": "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+      "vector_score": 0.7859808206558228,
+      "judge_score": 0.8159,
+      "kept": true
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.537061870098114,
+      "judge_score": 0.7949,
+      "kept": true
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 4 of 26).md",
+      "vector_score": 0.44575661420822144,
+      "judge_score": 0.7924,
+      "kept": true
+    }
+  ],
+  "result_list": [
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md",
+      "name": "mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md",
+      "vector_score": 0.5160441398620605,
+      "judge_score": 0.9102,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "8fa4db59-adde-4d6d-9fdb-2c375400e631",
+      "doc_id": null,
+      "doc_path": "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md",
+      "name": "power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md",
+      "vector_score": 0.5158485770225525,
+      "judge_score": 0.8965,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_id": null,
+      "doc_path": "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+      "name": "chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+      "vector_score": 0.56826251745224,
+      "judge_score": 0.8912,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "455137b4-a0be-46ed-acf5-d8b475dc5d70",
+      "doc_id": null,
+      "doc_path": "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "name": "artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+      "vector_score": 0.5654324293136597,
+      "judge_score": 0.8893,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1e6199ea-f380-44e2-94fc-d431f0f9bb6b",
+      "doc_id": null,
+      "doc_path": "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+      "name": "chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+      "vector_score": 0.5598043203353882,
+      "judge_score": 0.8737,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md",
+      "name": "genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md",
+      "vector_score": 0.589146077632904,
+      "judge_score": 0.8473,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "09b2102e-7dd2-4f4e-afe0-13b40c9b1463",
+      "doc_id": null,
+      "doc_path": "e2e-demo-0923-022632/global-rag-benchmark.md",
+      "name": "global-rag-benchmark.md",
+      "vector_score": 0.5900008678436279,
+      "judge_score": 0.8452,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "1cbebcfc-b674-48e0-89c1-e24b268ac039",
+      "doc_id": null,
+      "doc_path": "soul-cs-library/thinking-style.md",
+      "name": "thinking-style.md",
+      "vector_score": 0.4894707202911377,
+      "judge_score": 0.8319,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "aa0fec78-6639-41f7-9fd9-65e0e8fc1a45",
+      "doc_id": null,
+      "doc_path": "soul-e2e-tester-024115/thinking-style.md",
+      "name": "thinking-style.md",
+      "vector_score": 0.4894707202911377,
+      "judge_score": 0.8319,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "e2e91a7d-e602-4c38-b4c1-aa3f60b18b42",
+      "doc_id": null,
+      "doc_path": "soul-demo-qa/thinking-style.md",
+      "name": "thinking-style.md",
+      "vector_score": 0.4894707202911377,
+      "judge_score": 0.8319,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "b28f0a25-1e1d-40ad-96b8-61bd2b093a28",
+      "doc_id": null,
+      "doc_path": "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+      "name": "clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+      "vector_score": 0.5911024212837219,
+      "judge_score": 0.828,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "5bc21b9b-2a05-470a-9cd6-eaafedfb87a2",
+      "doc_id": null,
+      "doc_path": "AI 基础设施/vector-index-tuning-guide (part 1 of 2).md",
+      "name": "vector-index-tuning-guide (part 1 of 2).md",
+      "vector_score": 0.566747784614563,
+      "judge_score": 0.8263,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "d846a043-fe47-47ac-ae2e-3e523d8ee80e",
+      "doc_id": null,
+      "doc_path": "e2e-flow-20260926-022340/harness-handbook.md",
+      "name": "harness-handbook.md",
+      "vector_score": 0.47439485788345337,
+      "judge_score": 0.8241,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "f5770687-6b05-4a8d-8645-af31686ca87e",
+      "doc_id": null,
+      "doc_path": "经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 1 of 4).md",
+      "name": "economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 1 of 4).md",
+      "vector_score": 0.5635858178138733,
+      "judge_score": 0.8194,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "b1199132-e4d4-4305-8c2e-82dc1753b0ba",
+      "doc_id": null,
+      "doc_path": "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+      "name": "nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+      "vector_score": 0.7859808206558228,
+      "judge_score": 0.8159,
+      "truncated": true,
+      "read_error": null
+    },
+    {
+      "kb_id": "3aea5973-1d8a-4db6-b415-6d4432f514bb",
+      "doc_id": null,
+      "doc_path": "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "name": "【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+      "vector_score": 0.537061870098114,
+      "judge_score": 0.7949,
+      "truncated": false,
+      "read_error": null
+    },
+    {
+      "kb_id": "b4c48237-6937-440a-9696-cc1e66bed5c1",
+      "doc_id": null,
+      "doc_path": "Novel-PridePrejudice/pride_and_prejudice (part 4 of 26).md",
+      "name": "pride_and_prejudice (part 4 of 26).md",
+      "vector_score": 0.44575661420822144,
+      "judge_score": 0.7924,
+      "truncated": true,
+      "read_error": null
+    }
+  ],
+  "kept_doc_paths": [
+    "工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md",
+    "工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md",
+    "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md",
+    "demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+    "自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md",
+    "生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md",
+    "e2e-demo-0923-022632/global-rag-benchmark.md",
+    "soul-cs-library/thinking-style.md",
+    "soul-e2e-tester-024115/thinking-style.md",
+    "soul-demo-qa/thinking-style.md",
+    "生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md",
+    "AI 基础设施/vector-index-tuning-guide (part 1 of 2).md",
+    "e2e-flow-20260926-022340/harness-handbook.md",
+    "经济与社会/economics__1609.00415__does-infrastructure-investment-lead-to-econo.md (part 1 of 4).md",
+    "计算机与人工智能/nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md (part 1 of 4).md",
+    "aw-industrial/【冒烟测试】工业诊断报告-522c33de-team_smoke-5秒窗口诊断.md",
+    "Novel-PridePrejudice/pride_and_prejudice (part 4 of 26).md"
+  ],
+  "evidence_pack": "[工程与能源/mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md (part 1 of 5).md · vec=0.5160441398620605]\n# mathematics__2211.12700__tailored-presolve-techniques-in-branch-and-b.md.md（第 1/5 部分）\nDOI: xxx/xxxx\n\nARTICLE TYPE\n\n\n\n# Tailored Presolve Techniques in Branch-and-Bound Method for Fast Mixed-Integer Optimal Control Applications\n\n\nRien Quirynen\\* | Stefano Di Cairano\n\n1Control for Autonomy, Mitsubishi Electric Research Laboratories, Massachusetts, USA\n\nCorrespondence\n\n\\*Email: quirynen@merl.com\n\nPresent Address   \n201 Broadway, 8th Floor, Cambridge, MA   \n02139-1955\n\n## Abstract\n\n\nMixed-integer model predictive control (MI-MPC) can be a powerful tool for controlling hybrid systems. In case of a linear-quadratic objective in combination with linear or piecewise-linear system dynamics and inequality constraints, MI-MPC needs to solve a mixed-integer quadratic program (MIQP) at each sampling time step. This paper presents a collection of exact block-sparse presolve techniques to efficiently remove decision variables, and to remove or tighten inequality constraints, tailored to mixed-integer optimal control problems. In addition, we describe a novel approach based on a heuristic presolve algorithm to compute a feasible but possibly suboptimal MIQP solution. We present benchmarking results for a C code implementation of the proposed BB-ASIPM solver, including a branch-and-bound (B&B) method with the proposed tailored presolve techniques and an active-set based interior point method (ASIPM), compared against multiple state-of-the-art MIQP solvers on a case study of motion planning with obstacle avoidance constraints. Finally, we demonstrate the feasibility and computational performance of the BB-ASIPM solver in embedded system on a dSPACE Scalexio real-time rapid prototyping unit for a second case study of stabilization for an underactuated cart-pole with soft contacts.\n\nKEYWORDS:\n\nMixed-integer programming, Numerical optimization algorithms, Hybrid model predictive control\n\n## 1  INTRODUCTION\n\n\nOptimization-based motion planning and control techniques, such as model predictive control (MPC), allow a model-based design framework in which the dynamics, constraints and objectives are directly taken into account ¹. This framework has been extended to hybrid systems², providing a powerful technique to model a large range of hybrid control problems, e.g., including switched dynamical systems³,4, discrete/quantized actuation⁵, motion planning with obstacle avoidance6, logic rules and temporal logic specifications'. However, the resulting optimal control problems (OCPs\n\n[工程与能源/power-systems__2607.03098__integrating-power-electronics-based-energy-s (part 2 of 5).md · vec=0.5158485770225525]\n# power-systems__2607.03098__integrating-power-electronics-based-energy-s（第 2/5 部分）\n章节: Integrating Power Electronics-based Energy Storages to Power Systems: A Review on Dynamic Modeling, Analysis, and Future Challenges > 3.1. Modeling of ESMs\n## 3.1. Modeling of ESMs\n\n\nBased on dynamic processes of ESMs, the mathematical equations between $V _ { B }$ and $I _ { B }$ can be obtained. The dynamic model of ESMs is then derived by linearizing them as:\n\n$$\n\\Delta V _ { _ B } = G _ { _ { E S M } } ( s ) \\Delta I _ { _ B }\\tag{1}\n$$\n\nwhere, $G _ { E S M } ( s )$ is a transfer function that represents the dynamics of ESMs.\n\n![](images/0a11e76a3850efb297fdffc3964b6b0b5954c2eadf26d8a0973eaf534c0b761a.jpg)  \nFig 8. Common modeling diagrams of ESMs.\n\nTable 3  \nSummary of detailed models of ESMs\n<table><tr><td>Types</td><td>Sources</td><td>Additional modules</td><td>Refs</td></tr><tr><td>Supercapacitor</td><td>Capacitance</td><td>Resistance</td><td>[88]</td></tr><tr><td>Superconducting magnetic module</td><td>Reactance</td><td>1</td><td>[89]</td></tr><tr><td>Fuel cell</td><td>Voltage source</td><td>Resistance and capacitance</td><td>[90]</td></tr><tr><td>Lithium-ion battery</td><td>Voltage source</td><td>Resistance and capacitance</td><td>[91]</td></tr></table>\n\nThe modeling of supercapacitor, fuel cells, superconducting magnetic energy storage, and thermal cells should be distinct to match their dynamic characteristics. For instance, in [88], the supercapacitor model was established, dynamics were represented by variated capacitances and a series resistance. In [89], dynamics of superconducting magnetic module were represented by a reactance. In these cases, the voltage varies instead of being constant when power varies. In [90], the fuel cell model was introduced, with resistance and capacitance added to a voltage source, differing from [89] and [92]. In [91], a lithium-ion battery model was introduced, adding resistance and capacitance to the voltage source, which differs only in details from [90]. Fig. 8 shows common modeling diagrams of ESMs, and details are summarized in Table 3.\n\nThe electrochemical battery is the most commonly used in various types of ESMs [93]. Developing an accurate model for the battery is a mainstream task. This is challenging as it involves various factors such as material characteristics, operational status, and external conditions. Several studies have considered detailed factors to obtain more accurate voltage-current characteristics o\n\n[自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 2 of 4).md · vec=0.56826251745224]\n# chemistry__1911.02792__machine-learning-for-molecular-simulation（第 2/4 部分）\n章节: Machine learning for molecular simulation > 2.5 Sampling and Thermodynamics\n## 2.5 Sampling and Thermodynamics\n\n\nMD time steps are on the order of one femtosecond $\\left( 1 0 ^ { - 1 5 } \\mathrm { ~ s \\right) }$ , while configuration changes governing molecular function are often rare events that may take $1 0 ^ { - 3 }$ to $1 0 ^ { 3 } ~ \\mathrm { s } .$ Even when evaluating the potential and the forces it generates is fast, simulating single protein folding and unfolding events by direct MD simulation may take years to centuries on a supercomputer. To avoid this sampling problem, machine learning methods can be employed to learn generating equilibrium samples from $\\mu ( \\mathbf { x } )$ more efficiently, or even by generating statistically independent samples in “one shot” (Sec. 2.5).\n\nLearning to sample probability distributions is the realm of generative learning [87, 88, 89, 90]. In the past few years, directed generative networks, such as variational Autoencoders (VAEs) [88], generative adversarial networks (GANs) [89], and flows [91, 90], have had a particular surge of interest. Such networks are trained to transform samples from an easy-to-sample probability distribution, such as Gaussian noise, into realistic samples of the objects of interest. These methods have been used to draw photorealistic images [92, 93], generate speech or music audio [94] and generate chemical structures to design molecules or materials with certain properties [42, 43, 44, 45].\n\nIf the aim is to learn a probability distribution from sampling data (density estimation) or learn to efficiently sample from a given probability distribution (Boltzmann generation [37]), one typically faces the challenge of matching the probability distribution of the trained model with a reference.\n\nMatching probability distributions can be achieved by minimizing probability distances. The most commonly used probability distance is the Kullback-Leibler (KL) divergence, also called relative entropy between two distributions q and $p \\mathrm { : }$\n\n$$\n\\mathrm { K L } ( q \\parallel p ) = \\int q ( \\mathbf { x } ) \\left[ \\log q ( \\mathbf { x } ) - \\log p ( \\mathbf { x } ) \\right] \\mathrm { d } \\mathbf { x } .\\tag{16}\n$$\n\nIn Boltzmann generation [37], we aim to efficiently sample the equilibrium distribution $\\mu ( \\mathbf { x } )$ of a many-body system defined by its energy function $u ( \\mathbf { x } ) \\ \\left( \\mathr\n\n[demo-qa-20260927/artificial-intelligence__1706.03762__attention-is-all-you-need.md · vec=0.5654324293136597]\nProvided proper attribution is provided, Google hereby grants permission to reproduce the tables and figures in this paper solely for use in journalistic or scholarly works.\n\n# Attention Is All You Need\n\nAshish Vaswani<sup>∗</sup> Google Brain avaswani@google.com\n\nNoam Shazeer<sup>∗</sup> Google Brain noam@google.com\n\nNiki Parmar<sup>∗</sup> Google Research nikip@google.com\n\nJakob Uszkoreit<sup>∗</sup> Google Research usz@google.com\n\nLlion Jones<sup>∗</sup> Google Research llion@google.com\n\nAidan N. Gomez<sup>∗</sup> <sup>†</sup> University of Toronto aidan@cs.toronto.edu\n\nŁukasz Kaiser<sup>∗</sup> Google Brain lukaszkaiser@google.com\n\nIllia Polosukhin<sup>∗</sup> <sup>‡</sup> illia.polosukhin@gmail.com\n\n## Abstract\n\nThe dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 BLEU on the WMT 2014 Englishto-German translation task, improving over the existing best results, including ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art BLEU score of 41.8 after training for 3.5 days on eight GPUs, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.\n\n## 1 Introduction\n\nRecurrent neural networks, long short-term memory [13] and gated recurrent [7] neural networks in particular, have been firmly established as state of the art approaches in sequence modeling and transduction problems such as language modeling and machine translation [35, 2, 5]. Numerous efforts have since continued to push the boundaries of recurrent language models and encoder-decoder architectures [38, 24, 15].\n\nRecurrent models typically factor computation along the symbol positions of the input and output sequences. Aligning the positions to steps in computation time, they generate a sequence of hidden \n\n[自然科学与地球科学/chemistry__1911.02792__machine-learning-for-molecular-simulation (part 3 of 4).md · vec=0.5598043203353882]\n# chemistry__1911.02792__machine-learning-for-molecular-simulation（第 3/4 部分）\n章节: Machine learning for molecular simulation > 4.3 Coarse-graining: CGnets\n## 4.3 Coarse-graining: CGnets\n\n\nAs mentioned in section 2.3, machine learning has been used to define coarse-grained models for molecular systems. Both kernel methods [16] and deep neural networks [17, 18] have been designed to minimize the force-matching loss, Eq. (9), for given coarse-graining mappings for specific systems.\n\nIn both cases, it has been shown that the incorporation of physical constraints is crucial to the success of the model. The training data are obtained by means of atomistic molecular dynamic simulations and regions of the configurational space that are physically forbidden, such as configurations with broken covalent bonds or overlapping atoms, are not sampled and not included in the training. Without additional constraints, the machine cannot make predictions far away from the training data, and will thus not reliably predict that the energy should diverge when approaching physically forbidden regions.\n\n![](images/df0a5de9e843d7434fc14671741831fd88f322e0c1a42256c691ccee6d74ad03.jpg)  \nFigure 4: SchNet, a continuous convolution framework: a) As molecular structures cannot be well discretized on a grids, SchNet generalizes the ConvNets approach to continuous convolutions between particles. b) SchNet architecture: the input, consisting of atom types (chemical elements $Z _ { 1 } , . . . , Z _ { n } )$ and positions $\\mathbf { r } _ { 1 } , . . . , \\mathbf { r } _ { n }$ is processed through several layers to produce atom-wise energies that are summed to a total energy (left). The most important layer is the interaction layer in which atoms interact via continuous convolution functions (middle). Continuous convolutions are generated by dense neural networks that operate on the interatomic distances, ensuring rototranslational invariance of the energy.\n\nExcluding high-energy states such as broken bonds or colliding atoms is different from enforcing physical symmetries as described in Sec. 3.4. Rather, it is about enforcing the correct asymptotic behavior of the energy when going towards an unphysical limit. CGnets proposed to achieve this by learning the difference to a simple prior energy that was defined to have the correct asymptotic behavior [18] (Fig. 5a). The exact form of this prior energy is not essential for success, as the CGnet can correct the prior energy where training data\n\n[生命科学与医学/genomics__2401.06823__interpretable-deep-learning-in-single-cell-o (part 1 of 2).md · vec=0.589146077632904]\n# genomics__2401.06823__interpretable-deep-learning-in-single-cell-o（第 1/2 部分）\n章节: Interpretable deep learning in single-cell omics\n# Interpretable deep learning in single-cell omics\n\n\nManoj M Wagle1,2,3,+, Siqu Long1,3,+, Carissa Chen1,3, Chunlei Liu1,3, Pengyi Yang1,2,3,4,\\*\n\n1 Computational Systems Biology Unit, Children's Medical Research Institute, Faculty of Medicine and Health, The University of Sydney, Westmead, NSW 2145, Australia\n\n2 School of Mathematics and Statistics, Faculty of Science, The University of Sydney, Camperdown, NSW 2006, Australia\n\n3 Sydney Precision Data Science Centre, The University of Sydney, Camperdown, NSW 2006, Australia\n\n4 Charles Perkins Centre, The University of Sydney, Camperdown, NSW   \n2006, Australia   \n+ Equal contribution\n\n\\* Correspondence: pengyi.yang@sydney.edu.au\n\n## Abstract\n\n\nRecent developments in single-cell omics technologies have enabled the quantification of molecular profiles in individual cells at an unparalleled resolution. Deep learning, a rapidly evolving sub-field of machine learning, has instilled a significant interest in single-cell omics research due to its remarkable success in analysing heterogeneous high-dimensional single-cell omics data. Nevertheless, the inherent multi-layer nonlinear architecture of deep learning models often makes them black boxes' as the reasoning behind predictions is often unknown and not transparent to the user. This has stimulated an increasing body of research for addressing the lack of interpretability in deep learning models, especially in single-cell omics data analyses, where the identification and understanding of molecular regulators are crucial for interpreting model predictions and directing downstream experimental validations. In this work, we introduce the basics of single-cell omics technologies and the concept of interpretable deep learning. This is followed by a review of the recent interpretable deep learning models applied to various single-cell omics research. Lastly, we highlight the current limitations and discuss potential future directions. We anticipate this review to bring together the single-cell and machine learning research communities to foster future development and application of interpretable deep learning in single-cell omics research.\n\n## Introduction\n\n\nThe advances in high-throughput omics technologies have transformed our ability to probe molecular programs at a large scale, providing insight into the complex mechanisms underlying \n\n[e2e-demo-0923-022632/global-rag-benchmark.md · vec=0.5900008678436279]\n# Towards Global Retrieval Augmented Generation: A Benchmark for Corpus-Level Reasoning\n\nQi Luo1,\\*, Xiaonan Li1,\\*, Tingshuo Fan1, Xinchi Chen1,†, Xipeng Qiu1,2,†\n\n1Fudan University\n\n2Shanghai Innovation Institutey qluo22@m.fudan.edu.cn\n\n## Abstract\n\nRetrieval-augmented generation (RAG) has emerged as a leading approach to reducing hallucinations in large language models (LLMs). Current RAG evaluation benchmarks primarily focus on what we call local RAG: retrieving relevant chunks from a small subset of documents to answer queries that require only localized understanding within specific text chunks. However, many real-world applications require a fundamentally different capability—global RAG—which involves aggregating and analyzing information across entire document collections to derive corpus-level insights (e.g. “What are the top 10 most cited papers in 2023?\"). In this paper, we introduce GlobalQA—the first benchmark specifically designed to evaluate global RAG capabilities, covering four core task types: counting, extremum queries, sorting, and top-k extraction. Through systematic evaluation across different models and baselines, we find that existing RAG methods perform poorly on global tasks, with the strongest baseline achieving only 1.51 F1 score. To address these challenges, we propose Global-RAG, a multi-tool collaborative framework that preserves structural coherence through chunklevel retrieval, incorporates LLM-driven intelligent filters to eliminate noisy documents, and integrates aggregation modules for precise symbolic computation. On the Qwen2.5-14B model, GlobalRAG achieves 6.63 F1 compared to the strongest baseline's 1.51 F1, validating the effectiveness of our method.\n\n## 1 Introduction\n\nRetrieval-augmented generation (RAG) has been proposed as a solution to mitigate hallucination and knowledge limitations in large language models (LLMs) (Lewis et al., 2021; Li et al., 2025; Zhang et al., 2025; Rawte et al., 2023; Wang et al.,\n\n![](images/838ff38197a58dd916888ef6cc7803a82e53db9b32898de2754d99b5b76b9a6c.jpg)  \n(b) Global Query: Dense Retriever Fails  \nFigure 1: Why Dense Retriever Fails on Global Queries: (a) Local Query: The answer can be found in specific documents. Dense retriever ranks all documents and selects top-k, which contains the relevant information. (b) Global Query: The answer requires information from all documents. However, dense retriever only returns top-k ranked documents, missing critical information scattered acro\n\n[soul-cs-library/thinking-style.md · vec=0.4894707202911377]\n# 思维风格 — soul-template\n\n## 推理模式\n- 先建立问题框架,再收集证据,最后给出结论\n- 对复杂问题分解为子问题,逐项回答\n- 关键主张必须对应引用锚点\n\n## 论证习惯\n- 区分事实陈述与推断\n- 多源一致才下强结论;单源只做弱结论\n- 冲突证据: 列出双方要点,说明差异来源\n\n## 回答组织\n- 结论先行,证据随后\n- 使用编号/分点结构提高可读性\n- 数字与量化优先于模糊表述\n\n## 局限性认知\n- 明确标注知识截止与检索范围\n- 对专业争议保持开放,不站队\n\n\n[soul-e2e-tester-024115/thinking-style.md · vec=0.4894707202911377]\n# 思维风格 — soul-template\n\n## 推理模式\n- 先建立问题框架,再收集证据,最后给出结论\n- 对复杂问题分解为子问题,逐项回答\n- 关键主张必须对应引用锚点\n\n## 论证习惯\n- 区分事实陈述与推断\n- 多源一致才下强结论;单源只做弱结论\n- 冲突证据: 列出双方要点,说明差异来源\n\n## 回答组织\n- 结论先行,证据随后\n- 使用编号/分点结构提高可读性\n- 数字与量化优先于模糊表述\n\n## 局限性认知\n- 明确标注知识截止与检索范围\n- 对专业争议保持开放,不站队\n\n\n[soul-demo-qa/thinking-style.md · vec=0.4894707202911377]\n# 思维风格 — soul-template\n\n## 推理模式\n- 先建立问题框架,再收集证据,最后给出结论\n- 对复杂问题分解为子问题,逐项回答\n- 关键主张必须对应引用锚点\n\n## 论证习惯\n- 区分事实陈述与推断\n- 多源一致才下强结论;单源只做弱结论\n- 冲突证据: 列出双方要点,说明差异来源\n\n## 回答组织\n- 结论先行,证据随后\n- 使用编号/分点结构提高可读性\n- 数字与量化优先于模糊表述\n\n## 局限性认知\n- 明确标注知识截止与检索范围\n- 对专业争议保持开放,不站队\n\n\n[生命科学与医学/clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md (part 1 of 8).md · vec=0.5911024212837219]\n# clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md.md（第 1/8 部分）\n章节: Large Language Models Encode Clinical Knowledge\n# Large Language Models Encode Clinical Knowledge\n\n\nKaran Singhal\\*,1, Shekoofeh Azizi\\*,1, Tao Tu\\*,1,\n\nS. Sara Mahdavi1, Jason Wei¹, Hyung Won Chung1, Nathan Scales1, Ajay Tanwani1, Heather Cole-Lewis1, Stephen Pfohl1, Perry Payne1, Martin Seneviratne1, Paul Gamble1, Chris Kelly¹, Nathaneal Schärli¹, Aakanksha Chowdhery1, Philip Mansfield¹, Blaise Agüera y Arcas1, Dale Webster¹, Greg S. Corrado¹, Yossi Matias¹, Katherine Chou¹, Juraj Gottweis¹, Nenad Tomasev2, Yun Liu¹, Alvin Rajkomar1, Joelle Barral¹, Christopher Semturs1, Alan Karthikesalingam†,1 and Vivek Natarajan†,1\n\n1Google Research, 2DeepMind\n\nLarge language models (LLMs) have demonstrated impressive capabilities in natural language understanding and generation, but the quality bar for medical and clinical applications is high. Today, attempts to assess models' clinical knowledge typically rely on automated evaluations on limited benchmarks. There is no standard to evaluate model predictions and reasoning across a breadth of tasks. To address this, we present MultiMedQA, a benchmark combining six existing open question answering datasets spanning professional medical exams, research, and consumer queries; and HealthSearchQA, a new free-response dataset of medical questions searched online. We propose a framework for human evaluation of model answers along multiple axes including factuality, precision, possible harm, and bias.\n\nIn addition, we evaluate PaLM (a 540-billion parameter LLM) and its instruction-tuned variant, Flan-PaLM, on MultiMedQA. Using a combination of prompting strategies, Flan-PaLM achieves state-of-the-art accuracy on every MultiMedQA multiple-choice dataset (MedQA, MedMCQA, PubMedQA, MMLU clinical topics), including 67.6% accuracy on MedQA (US Medical License Exam questions), surpassing prior state-of-the-art by over 17%. However, human evaluation reveals key gaps in Flan-PaLM responses. To resolve this we introduce instruction prompt tuning, a parameter-efficient approach for aligning LLMs to new domains using a few exemplars. The resulting model, Med-PaLM, performs encouragingly, but remains inferior to clinicians.\n\nWe show that comprehension, recall of knowledge, and medical reasoning improve with model scale and instruction prompt tuning, suggesting the potential utility of LLMs in medicine. Our human evaluations reveal importa\n\n[AI 基础设施/vector-index-tuning-guide (part 1 of 2).md · vec=0.566747784614563]\n# vector-index-tuning-guide（第 1/2 部分）\n章节: 向量索引调优指南：HNSW 从基准到生产 – 向量索引调优指南：HNSW 从基准到生产 > 6. 内存与磁盘的权衡 > 6.4 内存预算的隐藏项\n# 向量索引调优指南：HNSW 从基准到生产\n\n> 适用版本：HNSW 实现于主流向量数据库（2026-09 基准）\n\n## 1. HNSW 索引参数总览\n\nHNSW（分层可导航小世界图）是当前向量检索的主力索引。三个核心参数决定索引质量与成本：\n`M`（每节点出边数）、`ef_construction`（建图时候选队列长度）、`ef_search`（查询时候选队列长度）。\n\n| 参数 | 本指南推荐值 | 典型范围 | 影响 |\n|---|---|---|---|\n| M | **32** | 8-64 | 越大召回越高、内存越大 |\n| ef_construction | **200** | 100-500 | 越大建图越慢、图质量越高 |\n| ef_search | 见第 7 节 | 16-512 | 越大召回越高、查询越慢 |\n\n在 100 万条 768 维向量的基准集上，M=32、ef_construction=200 的组合实测：\n**索引构建耗时 47 分钟**，**百万级向量内存占用 3.2GB**，**top-10 召回率 96.4%**。\n这组数字是本指南后续所有权衡分析的基准点（下称\"基准配置\"）。\n\n### 1.1 参数为什么相互耦合\n\n把 M、ef_construction、ef_search 当成三个独立旋钮是最常见的误区。M 决定图的连通度\n上限，ef_construction 决定建图时能否逼近这个上限，ef_search 决定查询时能否利用它。\n实测中 M=16 配 ef_search=256 的召回率（94.1%）仍低于 M=32 配 ef_search=64（93.6%\n构建召回 + 查询加深后 95.9%），说明图结构（M）是天花板，查询参数只能逼近天花板。\n\n### 1.2 与 IVF 系索引的边界\n\nIVF-PQ 在 1 亿级向量上内存效率更高，但在 100 万到 1000 万区间、且要求 top-10 召回\n≥95% 时，HNSW 几乎总是赢家：基准配置 96.4% 的召回率，IVF-PQ（nlist=4096、nprobe=64）\n在同数据集上只有 91.8%，且对增量插入更敏感。**本指南聚焦 HNSW**。\n\n### 1.4 深读：结论的证据链\n把基准配置放进真实流量里检验：线上查询的 top-10 召回率与离线基准的偏差应在 1 个百分点以内，偏差过大说明线上查询分布与基准查询分布不一致，需要用线上真实查询重抽 1000 条做校准基准。校准动作每月执行一次，防止基准漂移让后续所有调优结论失真。\n\n### 1.5 深读：变更管理\n参数调整必须有对照组。任何一次 M、ef_construction、ef_search 的变更都要保留旧参数的抽样验收结果，新参数在同查询集上对比，落差超过 0.5 个百分点即记录原因。没有对照组的调优等于盲调，出了召回问题无法归因。\n\n### 1.6 深读：排查视角\n配置变更要写进索引元数据：M、ef_construction、构建时间、构建机器、基准召回率五项随索引一起落盘。排查召回问题时，先看索引元数据就知道这个索引用什么参数建的，避免凭记忆猜参数。\n\n### 1.3 术语速查\n层级图：HNSW 把节点组织成多层，顶层稀疏用于长程跳转，底层稠密用于精确定位。出边数 M 在每层相同；入口点固定为顶层唯一节点。冷启动查询从顶层贪心下降到底层后进入区域搜索。理解这一点就能理解为什么 M 是天花板：底层图的度数上限就是 M。\n\n### 1.4 参数速查卡\n建图快：M=16、ef_construction=100（21 分钟级）；召回优先：M=32、ef_construction=200、ef_search=128；内存极限：M=16 + int8 量化 + 重排序。三张卡片覆盖 90% 的场景。\n\n### 1.5 基准集说明\n全部实测基于同一基准集：100 万条 768 维向量（真实 embedding 采样 + 5% 扰动），查询集 1000 条，top-10 召回率以暴力检索结果为真值。硬件：32 核 CPU、256GB 内存、NVMe SSD，单机无分片。\n\n## 2. 召回率与 M 的关系\n\nM 是内存与召回之间最昂贵的旋钮。实测数据（100 万向量，ef_construction=200）：\n\n| M | 召回率(top-10) | 内存 | 构建时间 |\n|---|---|---|---|\n| 8 | 88.1% | 1.1GB | 21 分钟 |\n| 16 | 93.7% | 2.0GB | 33 分钟 |\n| **32** ",
+  "unscanned": [
+    {
+      "kb_id": "0942f1a6-d81b-413b-a60b-b994680dcaac",
+      "doc_path": "Corpus-Chunks800/nlp__2503.21676__how-do-language-models-learn-facts-dynamics__k00.md",
+      "reason": "empty_content"
+    },
+    {
+      "kb_id": "b87f4dab-c83b-4a99-abe3-182773fc315a",
+      "doc_path": "aw-industrial-e2e-20260926-022518/experience/exp-d45dc195a924.md",
+      "reason": "empty_content"
+    }
+  ],
+  "seconds": 22.4
+}

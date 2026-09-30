@@ -1,0 +1,13 @@
+{
+ "round": 3,
+ "task": "pickles",
+ "mode": "C",
+ "http": 200,
+ "wall_s": 28.8,
+ "success": true,
+ "session_id": "efef78be-aa89-4f6e-93b6-708addcf954f",
+ "turns": 6,
+ "cost": 0.143732,
+ "duration_ms": 27309,
+ "answer": "**结论：指定知识库中没有关于「四川泡菜腌制」的任何内容，无法据库作答。**\n\n### 检索事实\n\n**检索的目标库**\n- KB：`计算机与人工智能`（kb_id `b1199132-e4d4-4305-8c2e-82dc1753b0ba`），描述为 \"Computer science and AI: algorithms, NLP/LLM, vision, robotics perception, data systems, speech, social computing\"，共 131 篇文档。\n\n**已执行的检索（3 次，均针对该库）**\n\n| 检索 | 参数 | 命中 |\n|---|---|---|\n| `kb_search_two_stage` | query=「四川泡菜 腌制方法 制作步骤」，slim=true，stage1_top_k=20，stage2_top_k=5 | stage1 20 条候选、stage2 5 条结果，**全部为 AI/CS 论文**（Hanabi MARL 约定学习、Attention Is All You Need、MLP-SLAM、自监督语音预训练等） |\n| `kb_search_vector` | query=「泡菜 腌制 盐水 发酵 蔬菜」，slim=true，top_k=15 | 15 条，**全部为不相关论文片段**；最高分 0.50 仅因一张带罐子的图片被 Vision-FLAN 数据集题面顺带提及（\"food items in the jars with lids\"），与泡菜工艺无关 |\n| `kb_get_documents`（lightweight） | kb_id=`b1199132…` | 131 条文档目录，逐条核对**无任何食品加工/发酵/烹饪类文档** |\n\n**关于宽网兜底**：全系统共 19 个 KB（见 `kb_list`），除指定的「计算机与人工智能」外，另有自然科学、生命科学、工程能源、经济社会、AI 基础设施及若干测试/演示库，**没有一个食品、烹饪或发酵工艺主题的库**。本快速通道被限定在指定库，故未跨库取数。\n\n**证据充分性**：命中片段全部是 AI/CS 论文正文，最高向量分仅 0.50 且来自图片描述，无任何一条涉及腌制、盐水配比、乳酸发酵或泡菜工艺。**幸存证据为 0**，不构成可作答依据。\n\n### 未找到，如实说明\n\n- 已检索库：`计算机与人工智能`（131 篇，AI/CS 研究论文语料）。\n- 已执行检索：`kb_search_two_stage`、`kb_search_vector`、`kb_get_documents`（3 次，参数如上）。\n- 结论：该库为纯计算机/AI 学术语料，**不含四川泡菜或任何烹饪/食品加工内容**，故无法基于知识库回答此问题，亦不编造答案。\n\n如需，我可以改搜「自然科学与地球科学」「生命科学与医学」等其他库（可能涉及微生物发酵的基础内容），但据 `kb_list` 的描述判断，这些库同样不含烹饪类内容。"
+}

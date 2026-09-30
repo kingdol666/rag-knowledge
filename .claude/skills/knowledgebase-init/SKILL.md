@@ -2,232 +2,105 @@
 name: knowledgebase-init
 description: "Smart incremental installation wizard for the RAG Knowledge Platform. Audits the existing environment FIRST (backend/web/Neo4j/MinerU/engines/skills) and only installs, configures, or downloads what is actually missing — never reinstalls working components. Use when the user says init/安装/部署/初始化 the platform, reports a broken first-run, or wants environment repair."
 ---
-## ⭐ Related Skills
-- Architecture understanding + execution model → [kb-architecture.md](../knowledgebase/references/kb-architecture.md) + [execution-model.md](../knowledgebase/references/execution-model.md) of `skill://knowledgebase`
-- GPU detection script → `scripts/detect_gpu.cjs` (CWD)
-- Incremental install → [incremental-install.md](references/incremental-install.md)
-- Configuration wizard → [configuration.md](references/configuration.md)
-- MinerU deployment mode (remote API / local) → [mineru-mode.md](references/mineru-mode.md)
-- GPU-adaptive PyTorch → [gpu-and-torch.md](references/gpu-and-torch.md)
-- MCP connectivity pre-check → [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md) of `skill://knowledgebase`
-- Update to the latest version → `skill://knowledgebase-update`
-- Post-install validation → the V1-V9 integrity check flow of `skill://knowledgebase-verify`
 
-## Sequential Workflow (When the User Requests Init/Install)
+## Related lanes
 
-**Step 1 — GPU detection**: run `node scripts/detect_gpu.cjs`; record TORCH_VARIANT.
-**Step 2 — Environment audit**: run `ragctl check`; classify missing items → fast-path decision.
-**Step 3 — Project location**: 5-method detection of RAG_ROOT; see [project-location.md](references/project-location.md).
-**Step 4 — Core dependencies**: install only missing uv/Node/Python3.12.
-**Step 5 — Project dependencies**: install only missing backend/web/mcp/cli + GPU torch.
-**Step 6 — Model download**: download only missing BGE-M3 / MinerU.
-**Step 7 — Configuration**: ask only about missing items; write config.yml + .env.
-**Step 7b — MinerU deployment mode**: unless `backend/config.yml` already has a valid `mineru.mode`,
-ask the user once: **remote API (default)** → collect base_url (+ optional token, only into `.env`
-`MINERU_API_TOKEN`), verify `{base_url}/health`; **local** → incrementally install mineru + download
-models (`ragctl mineru-model`) and verify availability. Full flow in [mineru-mode.md](references/mineru-mode.md).
-**Step 8 — ragctl registration**: skip if already registered.
-**Step 9 — MCP registration**: optional; skipped by default.
-**Step 10 — Neo4j (local install, no Docker needed)**: first `ragctl check` to see port 7687 / the config graph.mode;
-  - `graph.mode: local` (default) → `ragctl start neo4j`: auto-downloads the distribution + JRE into `backend/.neo4j/`,
-    initializes the password on first start (config.yml `graph.password`), config-driven ports (`graph.bolt_port`/`http_port`)
-  - `graph.mode: docker` (legacy) → `docker compose up -d neo4j`
-  - Detailed flow in [neo4j-local.md](references/neo4j-local.md)
-**Step 11 — Service startup**: skip if already healthy.
-**Step 12 — Full-chain validation**: health + MCP pre-check + torch GPU match confirmation.
----
+- Architecture + execution model → [kb-architecture.md](../knowledgebase/references/kb-architecture.md) + [execution-model.md](../knowledgebase/references/execution-model.md) of `skill://knowledgebase` · MCP connectivity pre-check → [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md) · update → `skill://knowledgebase-update` · post-install validation → V1-V9 of `skill://knowledgebase-verify`
+- Per-phase references (used by the table below): [incremental-install.md](references/incremental-install.md) · [configuration.md](references/configuration.md) · [mineru-mode.md](references/mineru-mode.md) · [gpu-and-torch.md](references/gpu-and-torch.md) · [project-location.md](references/project-location.md) · [neo4j-local.md](references/neo4j-local.md)
 
-# Knowledgebase Init — Smart Incremental Deployment Wizard
-> **⭐ Must-read before operating**: [kb-architecture.md](../knowledgebase/references/kb-architecture.md) (5-layer data model + consistency invariants + 94-tool map)
+**Executor: the main agent executes directly (no Archival delegation)** — init needs real-time interaction; all Bash commands run in the main agent. Core principles: audit first and touch only what is missing (never reinstall working components, never re-download caches, never re-ask configured items); GPU-adaptive torch; fast path when complete; ask item by item; zero unauthorized decisions — paths/ports/passwords/feature toggles require user confirmation.
 
-**Executor: the main agent executes directly (no Archival delegation)** — init needs real-time interaction; all Bash commands are executed by the main agent.
+## Phase map (Phase n ↔ Step n; order fixed)
 
-## Core Principles
+| Phase | Step | Action | Reference |
+|---|---|---|---|
+| 0 | 1 | GPU detection: `node scripts/detect_gpu.cjs` → record `TORCH_VARIANT` (cuda/cpu-forced/mps/rocm/cpu) + `TORCH_WHEEL` | [gpu-and-torch.md](references/gpu-and-torch.md) §Detection |
+| 1 | 2 | Environment audit: `ragctl check` → classify missing items → fast-path decision | below |
+| 1c | — | Fast-path decision: all ✅ → jump to Phase 11, install/download/ask nothing | below |
+| 2 | 3 | Project location: 5-method detection / clone (OMP MCP config → plugin cache → git root → CWD → ask) | [project-location.md](references/project-location.md) |
+| 3 | 4 | Core dependencies: install only missing uv/Node/Python 3.12 | [incremental-install.md](references/incremental-install.md) §Core Dependencies |
+| 4 | 5 | Project dependencies: install only missing backend/web/mcp/cli | [incremental-install.md](references/incremental-install.md) §Project Dependencies |
+| 4a | 5 | GPU-adaptive torch install + mandatory match verification | [gpu-and-torch.md](references/gpu-and-torch.md) §Install |
+| 5 | 6 | Model download: only missing BGE-M3 / MinerU | [incremental-install.md](references/incremental-install.md) §Models |
+| 5b | — | Laya decision engine (GPU, hosted in the MinerU venv) | below |
+| 6 | 7 | Configuration: ask only about missing items; write config.yml + .env | [configuration.md](references/configuration.md) §Phase 6 |
+| 6b | 7b | MinerU deployment mode: remote API (default) / local; verify health | [mineru-mode.md](references/mineru-mode.md) |
+| 7 | 8 | ragctl registration: skip if already registered | [configuration.md](references/configuration.md) §Phase 7 |
+| 8 | 9 | MCP registration: optional; skipped by default | [configuration.md](references/configuration.md) §Phase 8 |
+| 9 | 10 | Neo4j (local install, no Docker needed): skip if running | [neo4j-local.md](references/neo4j-local.md) |
+| 10 | 11 | Service startup: skip if already healthy | `ragctl up` |
+| 11 | 12 | Full-chain validation: health + MCP pre-check + torch match + Laya device | below |
 
-- ⚡ **Incremental principle** — audit first (`ragctl check`), handle only missing items. Skip what's installed, skip what's cached, don't re-ask what's configured
-- 🖥️ **GPU adaptive** — detect NVIDIA/AMD/Apple and pick the right torch wheel (details in [gpu-and-torch.md](references/gpu-and-torch.md))
-- 🚀 **Fast path** — when the environment is already complete, skip all installs and only validate
-- 💬 **Ask item by item** — ask only about missing/decision-required items
-- 🚫 **Zero unauthorized decisions** — paths/ports/passwords/feature toggles require user confirmation
+Phase 2 skip condition: if Phase 1's `ragctl check` runs successfully (CWD is already inside the project), `<RAG_ROOT>` is determined — skip Phase 2.
 
-## Phase Overview
+## Fast path (Phase 1c)
 
-| Phase | Action | Detailed reference |
-|-------|------|---------|
-| **0** GPU detection | `node scripts/detect_gpu.cjs` → determine `TORCH_VARIANT` | [gpu-and-torch.md](references/gpu-and-torch.md) §Detection |
-| **1** Environment audit | `ragctl check` → classify missing items → fast-path decision | See "Fast Path" below |
-| **2** Project location | 5-method auto-detection / clone (OMP MCP config → plugin cache → git root → CWD → ask) | [project-location.md](references/project-location.md) |
-| **3** Core dependencies | Install only missing uv/Node/Python3.12 | [incremental-install.md](references/incremental-install.md) §Core Dependencies |
-| **4** Project dependencies | Install only missing backend/web/mcp/cli + GPU torch | [gpu-and-torch.md](references/gpu-and-torch.md) §Install + [incremental-install.md](references/incremental-install.md) §Project Dependencies |
-| **5** Model download | Download only missing BGE-M3 / MinerU | [incremental-install.md](references/incremental-install.md) §Models |
-| **5b** Laya decision engine | Ensure `laya` in backend/.venv (MinerU env, GPU torch) + local model + GPU verdict smoke | See "Phase 5b" below |
-| **6** Configuration | Ask only about missing items; write config.yml + .env | [configuration.md](references/configuration.md) §Phase 6 |
-| **6b** MinerU deployment mode | Ask remote (default; collect base_url + token) or local (install mineru + models); verify health | [mineru-mode.md](references/mineru-mode.md) |
-| **7** ragctl registration | Skip if already registered | [configuration.md](references/configuration.md) §Phase 7 |
-| **8** MCP registration | Optional; skipped by default | [configuration.md](references/configuration.md) §Phase 8 |
-| **9** Neo4j | Local install (no Docker): skip if running; ragctl start neo4j auto-downloads and installs if missing | [neo4j-local.md](references/neo4j-local.md) |
-| **10** Service startup | Skip if already healthy | `ragctl up` |
-| **11** Full-chain validation | health + MCP connectivity pre-check ([mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md)) + torch match | See "Validation" below |
+After `ragctl check`, if ALL of the following hold → jump straight to Phase 11 validation; install/download/ask nothing: core deps ✅ (uv, Node ≥18, Python 3.12) · project files ✅ (config.yml, .env, backend, web, kb-mcp) · deps ✅ (backend/.venv, web/node_modules, kb-mcp/.venv) · `node scripts/detect_gpu.cjs --verify-torch` → `torch_match: ok` · BGE-M3 cached (snapshots/ contains pytorch_model.bin > 1GB) · Laya ✅ (Phase 5b skip condition) · services running (backend + web healthy). Report: "Environment fully ready — no install/download needed; verifying connectivity (Phase 11)."
 
-> **Phase 2 skip condition**: if Phase 1's `ragctl check` runs successfully (CWD is already inside the project), `<RAG_ROOT>` is determined; skip Phase 2.
-
-## Fast-Path Decision (Phase 1c)
-
-After running `ragctl check`, if all of the following hold → **jump to Phase 11 validation; install/download/ask nothing**:
-
-- Core dependencies ✅ (uv, Node≥18, Python 3.12)
-- Project files ✅ (config.yml, .env, backend, web, kb-mcp)
-- Dependencies ✅ (backend/.venv, web/node_modules, kb-mcp/.venv)
-- Torch GPU match (`node scripts/detect_gpu.cjs --verify-torch` → `torch_match: ok`)
-- BGE-M3 cached (snapshots/ contains pytorch_model.bin > 1GB)
-- Laya engine ✅ (`laya` importable in backend/.venv + `model/laya` complete + judge device cuda — Phase 5b skip condition)
-- Services running (backend + web healthy)
-
-```
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-  ✅ Environment fully ready — no install/download needed
-  ragctl check: <N> items passed  BGE-M3: ✅  Torch: ✅match  Services: ✅
-  Verifying connectivity... (Phase 11)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-```
-
-## Phase 0 — GPU Detection
+## Phase 0 + 1 — GPU detection, then audit
 
 ```bash
 cd "<RAG_ROOT or CWD>" && node scripts/detect_gpu.cjs
+cd "<RAG_ROOT or CWD>" && ragctl check 2>&1   # ragctl unavailable → node command/ragctl.js check
 ```
-
-Record `TORCH_VARIANT` (cuda/cpu-forced/mps/rocm/cpu) and `TORCH_WHEEL`. Decision table and inline detection in [gpu-and-torch.md](references/gpu-and-torch.md).
-
-## Phase 1 — Environment Audit
-
-```bash
-cd "<RAG_ROOT or CWD>" && ragctl check 2>&1
-# When ragctl is unavailable: node command/ragctl.js check
-```
-
-Extract ✅/⚠️/❌ from the output; classify into: core dependencies, project files, dependency installs, AI models, ports. Then run the fast-path decision.
+Extract ✅/⚠️/❌ from the output; classify into core dependencies / project files / dependency installs / AI models / ports; then run the fast-path decision. Torch decision table + inline detection: [gpu-and-torch.md](references/gpu-and-torch.md).
 
 ## Phase 4a — GPU-Adaptive Torch
 
-Based on Phase 0's `TORCH_VARIANT`:
-
-- `cuda` / `mps` / `rocm` / `cpu` → `cd backend && uv sync --python 3.12` (markers auto-select the wheel)
-- `cpu-forced` (Win/Linux x64 without GPU) → install CPU torch first, then sync; details in [gpu-and-torch.md](references/gpu-and-torch.md) §cpu-forced
-
-**Must verify after install**: `node scripts/detect_gpu.cjs --verify-torch` → `torch_match` must be `ok`.
+`cuda`/`mps`/`rocm`/`cpu` → `cd backend && uv sync --python 3.12` (markers auto-select the wheel); `cpu-forced` (Win/Linux x64 without GPU) → install CPU torch first, then sync ([gpu-and-torch.md](references/gpu-and-torch.md) §cpu-forced). Must verify after install: `node scripts/detect_gpu.cjs --verify-torch` → `torch_match: ok`.
 
 ## Phase 5 — Incremental Model Download
 
-**BGE-M3**: verify the cache (snapshots/ contains pytorch_model.bin > 1GB) → skip if valid, otherwise `ragctl model --source <source>`
-
-**MinerU**: `curl localhost:<port>/api/v1/mineru/status` → skip if `available:true`, otherwise `ragctl mineru-model`
-
-Detailed cache verification logic in [incremental-install.md](references/incremental-install.md) §Models.
+BGE-M3: verify the cache (snapshots/ contains pytorch_model.bin > 1GB) → skip if valid, otherwise `ragctl model --source <source>`. MinerU: `curl localhost:<port>/api/v1/mineru/status` → skip if `available:true`, otherwise `ragctl mineru-model`. Cache verification logic: [incremental-install.md](references/incremental-install.md) §Models.
 
 ## Phase 5b — Laya Decision Engine (GPU, hosted in the MinerU venv)
 
-The three retrieval modes (A vector-first / B librarian / C parallel-A+B) judge
-every segment with the **Laya engine**. Since 2026-09-27 Laya is hosted in the
-**MinerU venv (`backend/.venv`)** — it already carries GPU torch, and Laya
-auto-selects CUDA when available (single-segment verdict ≈0.05s vs ~2s on CPU).
+The three retrieval modes (A vector-first / B librarian / C parallel-A+B) judge every segment with the Laya engine; since 2026-09-27 it is hosted in `backend/.venv` — which already carries GPU torch, and Laya auto-selects CUDA when available (single-segment verdict ≈0.05s vs ~2s on CPU). **Skip condition**: the backend/.venv python can `import laya` AND `model/laya/model.safetensors` exists AND the GPU verdict smoke (step 3) passes.
+1. **Package**: `uv pip install --python backend/.venv/Scripts/python.exe laya==0.3.20` (torch/transformers<5/numpy/hub/safetensors already in the MinerU env).
+2. **Model**: `python scripts/ensure_laya_model.py` (idempotent; repo-local `model/laya`, skipped when complete).
+3. **GPU verdict smoke (mandatory)**: under the backend/.venv python, import jev_filter (librarian scripts dir on sys.path) and print `jev_filter._load_laya().device` — expect `cuda`; if `cpu`, re-check Phase 4a torch CUDA match.
 
-**Skip condition**: the backend/.venv python can `import laya` AND
-`model/laya/model.safetensors` exists AND the GPU verdict smoke (step 3) passes.
-
-1. **Package**: `backend/.venv/Scripts/python.exe -c "import laya"` → if missing:
-   `uv pip install --python backend/.venv/Scripts/python.exe laya==0.3.20`
-   (deps torch/transformers<5/numpy/hub/safetensors are already in the MinerU env).
-2. **Model**: `python scripts/ensure_laya_model.py` (idempotent; repo-local
-   `model/laya`, skipped when complete).
-3. **GPU verdict smoke** (mandatory): print the loaded judge device —
-   expect `cuda` (if `cpu`, re-check Phase 4a torch CUDA match):
-   run under backend/.venv python: import jev_filter (librarian scripts dir on
-   sys.path) and print `jev_filter._load_laya().device`.
-
-**Interpreter rule (fail-closed)**: all judging scripts (search `vector_jev_search`,
-librarian `complete_recall`/`jev_filter`, hybrid `hybrid_search`, and the parallel
-mode-C orchestrator `scripts/124_mode_c_parallel.py`) MUST run under the
-backend/.venv python — runners resolve it automatically
-(`resolve_laya_python()`, override with `RAG_LAYA_PYTHON`); a bare `python`
-without `laya` fails closed with `JevUnavailable` and never silently degrades.
+**Interpreter rule (fail-closed)**: all judging scripts (search `vector_jev_search`, librarian `complete_recall`/`jev_filter`, hybrid `hybrid_search`, parallel orchestrator `scripts/124_mode_c_parallel.py`) MUST run under the backend/.venv python — runners resolve it automatically (`resolve_laya_python()`, override with `RAG_LAYA_PYTHON`); a bare `python` without `laya` fails closed with `JevUnavailable`, never silent degradation.
 
 ## Phase 6b — MinerU Deployment Mode (remote API default / local)
 
-**Skip condition**: `backend/config.yml` already has `mineru.mode` set AND (mode=local OR remote.base_url non-empty) → only re-verify health, don't re-ask.
+Skip condition: `backend/config.yml` already has `mineru.mode` set AND (mode=local OR remote.base_url non-empty) → only re-verify health, don't re-ask. Otherwise **ask the user once**:
+1. **Remote API (default/recommended)** — parsing goes to a mineru-api-compatible HTTP endpoint (zero local GPU/memory load); the engine automatically falls back to the local engine when the endpoint is unreachable. Collect `base_url` (http/https) + optional token → the token goes ONLY into `.env` as `MINERU_API_TOKEN` (never config.yml/source/logs). Write `mineru.mode: "remote"` + `remote.base_url`; verify immediately `curl -m 5 "<base_url>/health"` → 200, on failure offer retry / switch to local.
+2. **Local deployment** — fully offline: install mineru (`uv sync`) + download models (`ragctl mineru-model`, ~2GB, skipped when the modelscope cache already holds model.safetensors >1GB); verify `local.installed:true` (+ `local.running:true` after `/api/v1/mineru/restart`).
 
-Otherwise **ask the user once**:
+Full decision flow / config schema / ops: [mineru-mode.md](references/mineru-mode.md). Mode switches hot-apply via `POST /api/v1/config/reload` — no backend restart.
 
-1. **Remote API (default/recommended)** — parsing goes to a mineru-api-compatible HTTP endpoint
-   (zero local GPU/memory load); the engine automatically falls back to the local engine when the
-   endpoint is unreachable.
-   - Collect `base_url` (http/https) + optional token → token goes ONLY into `.env` as
-     `MINERU_API_TOKEN` (never into config.yml / source / logs).
-   - Write `mineru.mode: "remote"` + `remote.base_url` into backend/config.yml.
-   - Verify immediately: `curl -m 5 "<base_url>/health"` → 200; on failure offer retry / switch to local.
-2. **Local deployment** — fully offline: install mineru (`uv sync`) + download models
-   (`ragctl mineru-model`, ~2GB, skipped when the modelscope cache already holds model.safetensors >1GB),
-   then verify `local.installed:true` (+ `local.running:true` after `/api/v1/mineru/restart`).
+## Phase 9 — Neo4j (local install, no Docker needed)
 
-Full decision flow, config schema, and ops quick reference in [mineru-mode.md](references/mineru-mode.md).
-Mode switches hot-apply via `POST /api/v1/config/reload` — no backend restart needed.
+First `ragctl check` (port 7687 / config `graph.mode`): `graph.mode: local` (default) → `ragctl start neo4j` auto-downloads the distribution + JRE into `backend/.neo4j/`, initializes the password on first start (config.yml `graph.password`), config-driven ports (`graph.bolt_port`/`http_port`); `graph.mode: docker` (legacy) → `docker compose up -d neo4j`. Skip if already running. Detailed flow: [neo4j-local.md](references/neo4j-local.md).
 
 ## Phase 11 — Full-Chain Validation
 
 ```bash
-# Service health
 curl -s http://localhost:<BACKEND_PORT>/api/v1/health   # → {"status":"healthy"}
 curl -s -o /dev/null -w "%{http_code}" http://localhost:<WEB_PORT>/   # → 200
-
-# MCP connectivity + service pre-check (mandatory; run the standard Pre-Flight with kb-mcp MCP tools)
-# Full flow in [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md):
-mcp__kb-mcp__kb_project_status()      # ready==true counts as double-healthy; on ready==false use kb_project_start(wait=true) then re-check
-mcp__kb-mcp__kb_list(lightweight=true)             # smoke test: confirm MCP↔backend returns real data (non-empty, non-error)
-mcp__kb-mcp__backend_status()         # backend + MinerU availability
-
-# Torch GPU final confirmation
+mcp__kb-mcp__kb_project_status()          # ready==true = double-healthy; ready==false → kb_project_start(wait=true), re-check
+mcp__kb-mcp__kb_list(lightweight=true)    # smoke: MCP↔backend returns real data (non-empty, non-error)
+mcp__kb-mcp__backend_status()             # backend + MinerU availability
 node scripts/detect_gpu.cjs --verify-torch   # torch_match: ok
-
-# Laya decision engine (Phase 5b) — judge device must be cuda
-backend/.venv/Scripts/python.exe -c "import sys; sys.path.insert(0,'.claude/skills/knowledgebase-librarian/scripts'); import jev_filter; print(jev_filter._load_laya().device)"
-# expect: cuda
+backend/.venv/Scripts/python.exe -c "import sys; sys.path.insert(0,'.claude/skills/knowledgebase-librarian/scripts'); import jev_filter; print(jev_filter._load_laya().device)"   # expect: cuda
 ```
+Full pre-flight flow: [mcp-preflight-check.md](../knowledgebase/references/mcp-preflight-check.md).
 
-### Completion Report
+Completion report: component ✅ lines (Backend / Web / Neo4j if enabled / MinerU if enabled / Laya GPU verdict), GPU + torch version, RAG_ROOT + storage path, the incremental actions actually performed this run (installs/downloads/skips), ragctl command list (status/up/down/logs/check/version/update), Web UI URL — and it must name the Phase 11 checks actually performed, including `mcp__kb-mcp__kb_project_status` (ready==true).
 
-```
-═══════════════════════════════════════════════════════════
-  ✅ RAG Knowledge Platform initialization complete!
+## Never
 
-  📊 Backend ✅  Web ✅  Neo4j ✅ (if enabled)  MinerU ✅ (if enabled)  Laya ✅ (GPU verdict, Phase 5b)
-  🖥️  GPU: <CUDA/MPS/CPU> (<GPU name or "no GPU">)  Torch: <version>
-  📁 Project: <RAG_ROOT>  Data: <STORAGE_PATH>
-
-  📦 Incremental actions this run:
-     • <list the installs/downloads/skips actually performed>
-
-  🔧 ragctl status/up/down/logs/check/version/update
-  🌐 Web UI: http://localhost:<WEB_PORT>
-═══════════════════════════════════════════════════════════
-```
-
-## ⚠️ NEVER List
-
-| ❌ Don't do this | ✅ Do this instead |
-|----|----|
-| Full install on every init | Run `ragctl check` first; install only missing items |
-| Re-download cached models | Verify the cache is valid, then skip |
-| Re-ask configured items | Ask only about missing/invalid items |
-| Restart running services | `ragctl up` automatically skips healthy services |
-| Install CPU torch on GPU machines | Phase 0 detects the GPU and picks the right wheel |
-| Install CUDA torch without a GPU (wastes 2GB) | cpu-forced forces the CPU wheel |
-| Skip Torch GPU match verification | Phase 4a + 11c mandatory verification |
-| Give up when methods 1/2/3 miss | Go 1→2→3→4 in order; method 4 includes clone |
-| Quit when the user's path doesn't exist | Ask, then auto `git clone` |
-| `git reset --hard` force overwrite | Pull with `--ff-only`; skip dirty worktrees |
-| Continue to the next phase after a failure | Stop at each failed Phase; offer 3 recovery options |
-| Perform global MCP registration by default | Phase 8 is skipped by default; write only when the user explicitly chooses Y |
-| Write MCP to `~/.claude/.mcp.json` | Global MCP goes to `~/.claude.json` → `mcpServers` |
+- Full install on every init — run `ragctl check` first; install only missing items.
+- Re-download cached models or re-ask configured items — verify the cache is valid, ask only about missing/invalid.
+- Restart running services — `ragctl up` automatically skips healthy services.
+- Install CPU torch on GPU machines, or CUDA torch without a GPU (wastes 2GB) — Phase 0 detects; cpu-forced forces the CPU wheel.
+- Skip the torch GPU-match verification — Phase 4a + Phase 11 verification is mandatory.
+- Give up when location methods 1/2/3 miss — go 1→2→3→4 in order (method 4 includes clone); if the user's path doesn't exist, ask, then auto `git clone`.
+- `git reset --hard` force overwrites — pull with `--ff-only`; skip dirty worktrees.
+- Continue to the next phase after a failure — stop at each failed phase; offer 3 recovery options.
+- Perform global MCP registration by default — Phase 8 is skipped by default; write only when the user explicitly chooses Y.
+- Write MCP to `~/.claude/.mcp.json` — global MCP goes to `~/.claude.json` → `mcpServers`.
 
 <!-- SKILLOPT-SLEEP:LEARNED START -->
 ## Learned preferences & procedures

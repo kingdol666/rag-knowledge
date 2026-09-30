@@ -1,44 +1,44 @@
 {
- "run_dir": "experiment_chat_20260922-211000",
+ "run_dir": "run-20260930T150453Z-3ec2174",
  "grades": {
-  "a": {
+  "a2": {
    "n": 10,
-   "gold_hit": 9,
-   "kw_ok": 9,
-   "pass": 9,
-   "pass_rate": 0.9,
-   "avg_latency_s": 113.0,
-   "avg_tools": 7.6,
-   "avg_cost_usd": 0.4911,
-   "tokens_out_total": 19512
+   "gold_hit": 10,
+   "kw_ok": 10,
+   "pass": 10,
+   "pass_rate": 1.0,
+   "avg_latency_s": 116.2,
+   "avg_tools": 6.8,
+   "avg_cost_usd": 0.5457,
+   "tokens_out_total": 20357
   },
   "b": {
    "n": 10,
    "gold_hit": 10,
-   "kw_ok": 6,
-   "pass": 6,
-   "pass_rate": 0.6,
-   "avg_latency_s": 42.7,
-   "avg_tools": 4.4,
-   "avg_cost_usd": 0.1631,
-   "tokens_out_total": 6327
+   "kw_ok": 8,
+   "pass": 8,
+   "pass_rate": 0.8,
+   "avg_latency_s": 47.6,
+   "avg_tools": 4.9,
+   "avg_cost_usd": 0.6346,
+   "tokens_out_total": 11458
   },
   "c": {
    "n": 10,
-   "gold_hit": 9,
+   "gold_hit": 8,
    "kw_ok": 6,
-   "pass": 5,
-   "pass_rate": 0.5,
-   "avg_latency_s": 48.0,
-   "avg_tools": 2.4,
-   "avg_cost_usd": 0.1803,
-   "tokens_out_total": 4959
+   "pass": 6,
+   "pass_rate": 0.6,
+   "avg_latency_s": 41.1,
+   "avg_tools": 3.7,
+   "avg_cost_usd": 0.2784,
+   "tokens_out_total": 8371
   }
  },
  "rows": [
   {
    "qid": "BQ01",
-   "track": "a",
+   "track": "a2",
    "gold": "1706.03762",
    "gold_hit": true,
    "kw": [
@@ -49,32 +49,33 @@
    "kw_ok": true,
    "pass": true,
    "is_error": false,
-   "latency_s": 174.0,
-   "tools": 9,
-   "cost_usd": 0.493242,
-   "tokens_out": 2948,
+   "latency_s": 169.8,
+   "tools": 6,
+   "cost_usd": 0.19700800000000002,
+   "tokens_out": 2262,
    "insufficient_evidence": false
   },
   {
    "qid": "BQ02",
-   "track": "a",
+   "track": "a2",
    "gold": "1801.00862",
-   "gold_hit": false,
+   "gold_hit": true,
    "kw": [
-    "noisy intermediate-scale"
+    "noisy intermediate-scale",
+    "error correction"
    ],
-   "kw_ok": false,
-   "pass": false,
+   "kw_ok": true,
+   "pass": true,
    "is_error": false,
-   "latency_s": 99.2,
-   "tools": 6,
-   "cost_usd": 0.42101700000000003,
-   "tokens_out": 1413,
+   "latency_s": 115.1,
+   "tools": 4,
+   "cost_usd": 0.44994499999999993,
+   "tokens_out": 2980,
    "insufficient_evidence": false
   },
   {
    "qid": "BQ03",
-   "track": "a",
+   "track": "a2",
    "gold": "2212.13138",
    "gold_hit": true,
    "kw": [
@@ -84,15 +85,15 @@
    "kw_ok": true,
    "pass": true,
    "is_error": false,
-   "latency_s": 81.0,
-   "tools": 7,
-   "cost_usd": 0.691359,
-   "tokens_out": 1871,
+   "latency_s": 99.3,
+   "tools": 9,
+   "cost_usd": 0.43878400000000006,
+   "tokens_out": 3445,
    "insufficient_evidence": false
   },
   {
    "qid": "BQ04",
-   "track": "a",
+   "track": "a2",
    "gold": "1602.01876",
    "gold_hit": true,
    "kw": [
@@ -103,15 +104,15 @@
    "kw_ok": true,
    "pass": true,
    "is_error": false,
-   "latency_s": 77.7,
+   "latency_s": 23.7,
    "tools": 5,
-   "cost_usd": 0.3080609999999999,
-   "tokens_out": 937,
+   "cost_usd": 0.255841,
+   "tokens_out": 855,
    "insufficient_evidence": false
   },
   {
    "qid": "BQ05",
-   "track": "a",
+   "track": "a2",
    "gold": "1512.08067",
    "gold_hit": true,
    "kw": [
@@ -120,15 +121,15 @@
    "kw_ok": true,
    "pass": true,
    "is_error": false,
-   "latency_s": 160.9,
-   "tools": 8,
-   "cost_usd": 0.47533899999999996,
-   "tokens_out": 2005,
+   "latency_s": 108.1,
+   "tools": 10,
+   "cost_usd": 1.2959048,
+   "tokens_out": 1002,
    "insufficient_evidence": false
   },
   {
    "qid": "BQ06",
-   "track": "a",
+   "track": "a2",
    "gold": "1503.07557",
    "gold_hit": true,
    "kw": [
@@ -137,15 +138,15 @@
    "kw_ok": true,
    "pass": true,
    "is_error": false,
-   "latency_s": 117.9,
-   "tools": 10,
-   "cost_usd": 0.687877,
-   "tokens_out": 2015,
+   "latency_s": 136.8,
+   "tools": 7,
+   "cost_usd": 0.458738,
+   "tokens_out": 3079,
    "insufficient_evidence": false
   },
   {
    "qid": "BQ07",
-   "track": "a",
+   "track": "a2",
    "gold": "2608.05850",
    "gold_hit": true,
    "kw": [
@@ -155,15 +156,15 @@
    "kw_ok": true,
    "pass": true,
    "is_error": false,
-   "latency_s": 155.9,
-   "tools": 6,
-   "cost_usd": 0.402016,
-   "tokens_out": 1238,
+   "latency_s": 31.5,
+   "tools": 3,
+   "cost_usd": 0.31690100000000004,
+   "tokens_out": 722,
    "insufficient_evidence": false
   },
   {
    "qid": "BQ08",
-   "track": "a",
+   "track": "a2",
    "gold": "2408.09942",
    "gold_hit": true,
    "kw": [
@@ -173,15 +174,15 @@
    "kw_ok": true,
    "pass": true,
    "is_error": false,
-   "latency_s": 152.5,
-   "tools": 10,
-   "cost_usd": 0.551666,
-   "tokens_out": 3025,
-   "insufficient_evidence": true
+   "latency_s": 372.6,
+   "tools": 12,
+   "cost_usd": 1.0021811999999999,
+   "tokens_out": 2383,
+   "insufficient_evidence": false
   },
   {
    "qid": "BQ09",
-   "track": "a",
+   "track": "a2",
    "gold": "2410.10669",
    "gold_hit": true,
    "kw": [
@@ -191,15 +192,15 @@
    "kw_ok": true,
    "pass": true,
    "is_error": false,
-   "latency_s": 56.9,
-   "tools": 5,
-   "cost_usd": 0.33944799999999997,
-   "tokens_out": 1758,
-   "insufficient_evidence": true
+   "latency_s": 55.9,
+   "tools": 6,
+   "cost_usd": 0.6992882,
+   "tokens_out": 1956,
+   "insufficient_evidence": false
   },
   {
    "qid": "BQ10",
-   "track": "a",
+   "track": "a2",
    "gold": "2604.01385",
    "gold_hit": true,
    "kw": [
@@ -209,11 +210,11 @@
    "kw_ok": true,
    "pass": true,
    "is_error": false,
-   "latency_s": 53.5,
-   "tools": 10,
-   "cost_usd": 0.540506,
-   "tokens_out": 2302,
-   "insufficient_evidence": true
+   "latency_s": 49.3,
+   "tools": 6,
+   "cost_usd": 0.342406,
+   "tokens_out": 1673,
+   "insufficient_evidence": false
   },
   {
    "qid": "BQ01",
@@ -228,10 +229,10 @@
    "kw_ok": true,
    "pass": true,
    "is_error": false,
-   "latency_s": 41.7,
-   "tools": 6,
-   "cost_usd": 0.17139500000000002,
-   "tokens_out": 934,
+   "latency_s": 64.7,
+   "tools": 7,
+   "cost_usd": 0.835687,
+   "tokens_out": 2113,
    "insufficient_evidence": false
   },
   {
@@ -246,10 +247,10 @@
    "kw_ok": true,
    "pass": true,
    "is_error": false,
-   "latency_s": 40.9,
-   "tools": 4,
-   "cost_usd": 0.12027299999999999,
-   "tokens_out": 527,
+   "latency_s": 77.8,
+   "tools": 7,
+   "cost_usd": 0.8129409999999998,
+   "tokens_out": 1661,
    "insufficient_evidence": false
   },
   {
@@ -264,10 +265,10 @@
    "kw_ok": true,
    "pass": true,
    "is_error": false,
-   "latency_s": 60.3,
-   "tools": 3,
-   "cost_usd": 0.083289,
-   "tokens_out": 497,
+   "latency_s": 55.6,
+   "tools": 7,
+   "cost_usd": 0.850448,
+   "tokens_out": 1461,
    "insufficient_evidence": false
   },
   {
@@ -283,10 +284,10 @@
    "kw_ok": true,
    "pass": true,
    "is_error": false,
-   "latency_s": 40.0,
+   "latency_s": 27.1,
    "tools": 4,
-   "cost_usd": 0.135566,
-   "tokens_out": 458,
+   "cost_usd": 0.137577,
+   "tokens_out": 589,
    "insufficient_evidence": false
   },
   {
@@ -300,10 +301,10 @@
    "kw_ok": true,
    "pass": true,
    "is_error": false,
-   "latency_s": 32.8,
-   "tools": 4,
-   "cost_usd": 0.125891,
-   "tokens_out": 643,
+   "latency_s": 63.6,
+   "tools": 5,
+   "cost_usd": 0.6510499999999999,
+   "tokens_out": 1417,
    "insufficient_evidence": false
   },
   {
@@ -311,14 +312,16 @@
    "track": "b",
    "gold": "1503.07557",
    "gold_hit": true,
-   "kw": [],
-   "kw_ok": false,
-   "pass": false,
+   "kw": [
+    "precipitation efficiency"
+   ],
+   "kw_ok": true,
+   "pass": true,
    "is_error": false,
-   "latency_s": 35.6,
-   "tools": 5,
-   "cost_usd": 0.197541,
-   "tokens_out": 729,
+   "latency_s": 88.0,
+   "tools": 3,
+   "cost_usd": 0.8758819999999999,
+   "tokens_out": 1198,
    "insufficient_evidence": false
   },
   {
@@ -333,10 +336,10 @@
    "kw_ok": true,
    "pass": true,
    "is_error": false,
-   "latency_s": 51.3,
-   "tools": 7,
-   "cost_usd": 0.23119,
-   "tokens_out": 910,
+   "latency_s": 25.9,
+   "tools": 5,
+   "cost_usd": 0.9472972,
+   "tokens_out": 640,
    "insufficient_evidence": false
   },
   {
@@ -344,14 +347,16 @@
    "track": "b",
    "gold": "2408.09942",
    "gold_hit": true,
-   "kw": [],
+   "kw": [
+    "oxygen redox"
+   ],
    "kw_ok": false,
    "pass": false,
    "is_error": false,
-   "latency_s": 20.5,
+   "latency_s": 24.6,
    "tools": 4,
-   "cost_usd": 0.181485,
-   "tokens_out": 538,
+   "cost_usd": 0.27688140000000006,
+   "tokens_out": 664,
    "insufficient_evidence": false
   },
   {
@@ -360,15 +365,16 @@
    "gold": "2410.10669",
    "gold_hit": true,
    "kw": [
-    "dynamic"
+    "dynamic",
+    "multilayer perceptron"
    ],
-   "kw_ok": false,
-   "pass": false,
+   "kw_ok": true,
+   "pass": true,
    "is_error": false,
-   "latency_s": 61.7,
+   "latency_s": 31.0,
    "tools": 4,
-   "cost_usd": 0.14968900000000002,
-   "tokens_out": 597,
+   "cost_usd": 0.4198143999999999,
+   "tokens_out": 1043,
    "insufficient_evidence": false
   },
   {
@@ -382,10 +388,10 @@
    "kw_ok": false,
    "pass": false,
    "is_error": false,
-   "latency_s": 41.9,
+   "latency_s": 17.3,
    "tools": 3,
-   "cost_usd": 0.235132,
-   "tokens_out": 494,
+   "cost_usd": 0.5385873999999999,
+   "tokens_out": 672,
    "insufficient_evidence": true
   },
   {
@@ -395,15 +401,16 @@
    "gold_hit": true,
    "kw": [
     "scaled dot-product",
+    "multi-head",
     "recurrence"
    ],
    "kw_ok": true,
    "pass": true,
    "is_error": false,
-   "latency_s": 64.4,
-   "tools": 3,
-   "cost_usd": 0.104284,
-   "tokens_out": 707,
+   "latency_s": 115.6,
+   "tools": 8,
+   "cost_usd": 0.8358876000000001,
+   "tokens_out": 2234,
    "insufficient_evidence": false
   },
   {
@@ -417,10 +424,10 @@
    "kw_ok": false,
    "pass": false,
    "is_error": false,
-   "latency_s": 125.1,
-   "tools": 3,
-   "cost_usd": 0.23270000000000002,
-   "tokens_out": 498,
+   "latency_s": 40.3,
+   "tools": 2,
+   "cost_usd": 0.25595,
+   "tokens_out": 1011,
    "insufficient_evidence": false
   },
   {
@@ -428,17 +435,14 @@
    "track": "c",
    "gold": "2212.13138",
    "gold_hit": false,
-   "kw": [
-    "multimedqa",
-    "67.6"
-   ],
-   "kw_ok": true,
+   "kw": [],
+   "kw_ok": false,
    "pass": false,
    "is_error": false,
-   "latency_s": 14.4,
-   "tools": 2,
-   "cost_usd": 0.204254,
-   "tokens_out": 435,
+   "latency_s": 50.2,
+   "tools": 8,
+   "cost_usd": 0.27990879999999996,
+   "tokens_out": 208,
    "insufficient_evidence": false
   },
   {
@@ -454,10 +458,10 @@
    "kw_ok": true,
    "pass": true,
    "is_error": false,
-   "latency_s": 35.4,
+   "latency_s": 41.6,
    "tools": 2,
-   "cost_usd": 0.206231,
-   "tokens_out": 379,
+   "cost_usd": 0.32091500000000006,
+   "tokens_out": 921,
    "insufficient_evidence": false
   },
   {
@@ -471,10 +475,10 @@
    "kw_ok": true,
    "pass": true,
    "is_error": false,
-   "latency_s": 42.4,
+   "latency_s": 15.1,
    "tools": 2,
-   "cost_usd": 0.208247,
-   "tokens_out": 488,
+   "cost_usd": 0.1373298,
+   "tokens_out": 672,
    "insufficient_evidence": false
   },
   {
@@ -482,15 +486,17 @@
    "track": "c",
    "gold": "1503.07557",
    "gold_hit": true,
-   "kw": [],
-   "kw_ok": false,
-   "pass": false,
+   "kw": [
+    "precipitation efficiency"
+   ],
+   "kw_ok": true,
+   "pass": true,
    "is_error": false,
-   "latency_s": 35.9,
-   "tools": 2,
-   "cost_usd": 0.084032,
-   "tokens_out": 384,
-   "insufficient_evidence": true
+   "latency_s": 92.0,
+   "tools": 6,
+   "cost_usd": 0.3937282,
+   "tokens_out": 999,
+   "insufficient_evidence": false
   },
   {
    "qid": "BQ07",
@@ -504,10 +510,10 @@
    "kw_ok": true,
    "pass": true,
    "is_error": false,
-   "latency_s": 15.3,
+   "latency_s": 18.3,
    "tools": 2,
-   "cost_usd": 0.086139,
-   "tokens_out": 460,
+   "cost_usd": 0.141655,
+   "tokens_out": 394,
    "insufficient_evidence": false
   },
   {
@@ -522,10 +528,10 @@
    "kw_ok": true,
    "pass": true,
    "is_error": false,
-   "latency_s": 113.1,
+   "latency_s": 14.0,
    "tools": 3,
-   "cost_usd": 0.22780499999999998,
-   "tokens_out": 510,
+   "cost_usd": 0.1503154,
+   "tokens_out": 792,
    "insufficient_evidence": false
   },
   {
@@ -539,27 +545,25 @@
    "kw_ok": false,
    "pass": false,
    "is_error": false,
-   "latency_s": 20.7,
-   "tools": 2,
-   "cost_usd": 0.21754800000000002,
-   "tokens_out": 517,
+   "latency_s": 20.5,
+   "tools": 3,
+   "cost_usd": 0.1952218,
+   "tokens_out": 982,
    "insufficient_evidence": false
   },
   {
    "qid": "BQ10",
    "track": "c",
    "gold": "2604.01385",
-   "gold_hit": true,
-   "kw": [
-    "immune evasion"
-   ],
+   "gold_hit": false,
+   "kw": [],
    "kw_ok": false,
    "pass": false,
    "is_error": false,
-   "latency_s": 13.8,
-   "tools": 3,
-   "cost_usd": 0.232251,
-   "tokens_out": 581,
+   "latency_s": 3.7,
+   "tools": 1,
+   "cost_usd": 0.07337199999999999,
+   "tokens_out": 158,
    "insufficient_evidence": false
   }
  ]

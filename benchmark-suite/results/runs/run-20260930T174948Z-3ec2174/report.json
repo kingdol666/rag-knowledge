@@ -1,0 +1,41 @@
+{
+ "run": "run-20260930T174948Z-3ec2174",
+ "provenance": {
+  "git_commit": "3ec2174",
+  "config_hash": "9fb259c0cf2b6dea",
+  "prompt_version": "v4-neutral",
+  "seed": 0,
+  "max_turns": 12,
+  "tracks": [
+   "a2",
+   "bm25",
+   "vector",
+   "rrf",
+   "rerank"
+  ],
+  "questions": 10,
+  "shuffled": true
+ },
+ "table": {
+  "a2": {
+   "n": 10,
+   "avg_latency_s": 48.63,
+   "avg_cost_usd": 0.6889,
+   "avg_tools": 6.4,
+   "tokens_out": 13927,
+   "judge_acc": null,
+   "judge_quality": null,
+   "P@5": null,
+   "R@10": null,
+   "nDCG@10": null,
+   "MRR": null
+  }
+ },
+ "qrels_by_stratum": null,
+ "stats": null,
+ "missing": [
+  "judge.json (L2 正确性)",
+  "qrels_scores.json (IR 指标)",
+  "stats.json (显著性)"
+ ]
+}

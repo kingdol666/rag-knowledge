@@ -1,0 +1,54 @@
+{
+ "qid": "QK01",
+ "method": "bm25",
+ "question": "How does the Transformer compute attention, and why does it replace recurrence and convolution?",
+ "ranked": [
+  "1706.03762",
+  "1810.04805",
+  "2503.21676",
+  "1911.02792",
+  "2110.08918",
+  "2109.14357",
+  "2009.10669",
+  "2110.07844",
+  "2212.13138",
+  "1405.4980"
+ ],
+ "ranked_paths": [
+  "artificial-intelligence__1706.03762__attention-is-all-you-need.md",
+  "nlp__1810.04805__bert-pre-training-of-deep-bidirectional-transfor.md",
+  "nlp__2503.21676__how-do-language-models-learn-facts-dynamics.md",
+  "chemistry__1911.02792__machine-learning-for-molecular-simulation.md",
+  "clinical-medicine__2110.08918__using-clinical-drug-representations-for-impr.md",
+  "speech__2109.14357__comparison-of-self-supervised-speech-pre-tra.md",
+  "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne.md",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst.md",
+  "clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md",
+  "mathematics__1405.4980__convex-optimization-algorithms-and-complexit.md"
+ ],
+ "evidence_sources": [
+  "1706.03762",
+  "1810.04805",
+  "2503.21676"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.0,
+ "latency_s": 32.2,
+ "answer": "The evidence partially answers this, and only from [1706.03762] (the Transformer paper excerpt).\n\nPer that excerpt, the Transformer computes attention as **multi-head attention**: it uses h = 8 parallel attention heads, each with reduced dimensions d_k = d_v = d_model/h = 64, and because of the reduced per-head dimension, the total computational cost remains similar to single-head attention with full dimensionality. This attention is applied in three ways: (1) encoder-decoder attention, where queries come from the previous decoder layer and the memory keys/values come from the encoder output, allowing every decoder position to attend over all input positions; (2) encoder self-attention, where keys, values, and queries all come from the previous encoder layer's output, so each encoder position attends to all positions in that previous layer; and (3) self-attention layers in the decoder (the excerpt is cut off mid-description).\n\nHowever, the evidence is insufficient for the remainder of the question: it does not include the precise attention computation itself (e.g., the scaled dot-product formula) nor any explicit rationale for why attention replaces recurrence and convolution, so that part cannot be answered from the evidence provided.\n\n**Sources:** [1706.03762], chunk covering §3.2.2–3.2.3 (multi-head attention configuration and \"Applications of Attention in our Model\"). The other evidence chunks ([1810.04805], [2503.21676]) were not relevant and not used.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 47076,
+  "output": 1438,
+  "cache_read": 1088,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.273287,
+ "extra": {},
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

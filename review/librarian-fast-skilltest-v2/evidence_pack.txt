@@ -1,0 +1,360 @@
+[自然科学与地球科学\quantum-physics__1311.2485__continuous-time-quantum-error-correction.md (part 3 of 4).md]
+The Hamiltonians $X _ { i } ^ { s }$ needed for the feedback, however, do not have simple forms in the original basis. In particular, for the bit-flip code, the operators $I ^ { A } \otimes X _ { 1 } ^ { s } \otimes I _ { 2 } ^ { s }$ and $I ^ { A } \otimes I _ { 1 } ^ { s } \otimes X _ { 2 } ^ { s }$ correspond to $\textstyle { \frac { 1 } { 2 } } X I X + { \frac { 1 } { 2 } } Y { \bar { I } } Y + { \frac { 1 } { 2 } } Z X Z + { \bar { \frac { 1 } { 2 } } } I X I$ and $\textstyle { \frac { 1 } { 2 } } X X I + { \frac { 1 } { 2 } } Y Y I + { \frac { 1 } { 2 } } Z Z X + { \frac { 1 } { 2 } } I I X$ , respectively. The models considered in Refs. [5, 7, 24] also measure continuously the stabilizer generators of the code, but the feedback Hamiltonians are assumed to be single-qubit operators in the original basis. However, note that in the general formulation of the ADL scheme—Eq. (11)—the correcting Hamiltonians $H _ { r }$ are not specified, and in that sense the possibility we discuss here can be regarded as a special case of the ADL scheme.
+
+
+
+[自然科学与地球科学\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md]
+We generated via echo evolution data sets (12000 pairs of noise and noise-free magnetization vectors) for different levels of two-qubit gate noise $( q _ { 2 } = 0 . 0 0 3 , 0 . 0 0 7 , 0 . 0 1 )$ For every noise level, we did the following steps. First, we generated 50 random subsets of training data (6000 pairs of noise and noise-free magnetization vectors) and divided each subset into a training data set (4000 vector pairs), validation data set (1000 vector pairs), and test data set (1000 vector pairs). Second, we chose a width of the hidden layer $N _ { h i d d e n } \in [ 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 1 0 , 1 2 , 2 5 , 5 0 , 1 0 0 , 2 0 0 ]$ and generated 50 neural network models with the same initialization of weights. Third, we trained these neural network “clones" on the 50 different data sets, each for 100 epochs. During the training, we used a batch size of 80, the Adam optimizer with learning rate $l r = 3 * 1 0 ^ { - 4 } , \beta _ { 1 } = 0 . 9 , \beta _ { 2 } = 0 . 9 9 9 )$ . We used mean square error (17) as a loss function. Finally, we calculated average correction efficiency values and several statistics of |∆M| - difference of average magnetization of spin system before and after applying a trained neural network (see 24). The average was calculated over the 50 different realizations of neural networks with fixed hidden layer width. Similarly, correction efficiency values were calculated for the 50 different test sets with 1000 vector pairs, and an average of over these 1000 vectors generated a single value for each test data set.
+
+In the main text in Fig. 9, we provided dependence of the correction efficiency (23) on the width of the hidden layer for different levels of quantum noise (indicated with different values of two-qubit gates error q2). Here, in Fig. D4, we provide dependence of average magnetization difference (B5) on the hidden layer width. From Fig. D4 we can see (similar to Fig. 9) that the performance of quantum error mitigation becomes saturated with the hidden layer width of approximately 8 neurons. This pattern also occurs for different levels of quantum noise.
+
+## References
+
+
+
+[自然科学与地球科学\astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 2 of 2).md]
+Through 2009 we carried out yearly data challenges where we processed, calibrated and served 200 $\mathrm { d e g } ^ { 2 }$ of full depth DES survey data at NCSA. In terms of solid angle of imaging this is equivalent to about 20% of the SDSS dataset. The simulated DECam images that serve as input for our data challenges were produced by Huan Lin's team at Fermilab. These data challenges helped us to identify bottlenecks and to get feedback from the collaboration on our data access tools. Since 2009 only a single new data challenge DC6 has been carried out, but the data products were subjected to higher level scientific scrutiny through a process led by the DES science working groups.
+
+At the point of the last regular data challenge DC5 in 2009, two bottlenecks to the processing had been identified. The first was the database, which was unable to support more than about 50 jobs running simultaneously. The second was a large parallel filesystem issue (minimum blocksize) that led the harvesting of metadata from new FITS data products from a processing step to take as much as ten times longer than on our servers. Since that time we have upgraded the database hardware at NCSA, and this has removed our database bottleneck for the time being. We don't yet have a solid estimate of the maximum number of jobs that we can run simultaneously without the database performance becoming an issue (Note that interactions with the database are required only during job setup and completion, but nevertheless, the load on the database was substantial even with 50 jobs running simultaneously). For the filesystem problem there is no easy solution given that large parallel filesystems are typically optimized for large files. This means that even if one is retrieving 10KB of metadata from a header, one must pay the price of loading the whole block. In the face of a multiextension FITS file with $1 0 ^ { 2 }$ extensions, this read process is unnecessarily slow. A different approach to collecting metadata and changes to the data model may well be required.
+
+
+
+[自然科学与地球科学\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md]
+# astronomy__2304.12442__enabling-exoplanet-demographics-studies-with（第 1/3 部分）
+章节: Enabling Exoplanet Demographics Studies with Standardized Exoplanet Survey Meta-Data
+# Enabling Exoplanet Demographics Studies with Standardized Exoplanet Survey Meta-Data
+
+
+PREPARED BY THE EXOPAG SCIENCE INTEREST GROUP (SIG) #2 ON EXOPLANET DEMOGRAPHICS, JESSIE L. CHRISTIANSEN,1 DAVID P. BENNETT,2, 3 ALAN P. BOSS,4 STEVE BRYSON,5 JENNIFER A. BURT,6 RACHEL B. FERNANDES,7 TODD J. HENRY,8 WEI-CHUN JAO,9 SAMSON A. JOHNSON,10, 6 MICHAEL R. MEYER,11 GIJS D. MULDERS,12,13 SUSAN E. MULLALLY,14 ERIC L. NIELSEN,15 ILARIA PASCUCCI,7 JOSHUA PEPPER,16 PETER PLAVCHAN,17 DARIN RAGOZZINE,18 LEE J. ROSENTHAL,19 AND ELIOT HALLEY VRIJMOET9, 8
+
+1Caltech/IPAC-NASA Exoplanet Science Institute, Pasadena, CA 91125, USA
+
+2Laboratory for Exoplanets and Stellar Astrophysics, NASA Goddard Space Flight Center, Greenbelt, MD 20771, USA
+
+3Department of Astronomy, University of Maryland, College Park, MD 20742, USA
+
+4Earth & Planets Laboratory, Carnegie Institution for Science, 5241 Broad Branch Road, NW, Washington, DC 20015-1305
+
+5NASA Ames Research Center, Moffett Field, CA 94035, USA
+
+6 Jet Propulsion Laboratory, California Institute of Technology, 4800 Oak Grove Drive, Pasadena, CA 91109, USA
+
+7Lunar and Planetary Laboratory, The University of Arizona, Tucson, AZ 85721, USA 8RECONS Institute, Chambersburg, PA 17201, USA
+
+9Department of Physics and Astronomy, Georgia State University, Atlanta, GA 30303, USA
+
+10 Department of Astronomy, The Ohio State University, 140 West 18th Avenue, Columbus OH 43210, USA
+
+11 Department of Astronomy, University of Michigan, Ann Arbor, MI USA 48109
+
+12 Facultad de Ingeniería y Ciencias, Universidad Adolfo Ibáñez, Av. Diagonal las Torres 2640, Peñalolén, Santiago, Chile
+
+13Millennium Institute for Astrophysics, Chile
+
+14 Space Telescope Science Institute, 3700 San Martin Drive, Baltimore, MD 21218, USA   
+15 Kavli Institute for Particle Astrophysics and Cosmology, Stanford University, Stanford, CA 94305, USA 16 Department of Physics, Lehigh University, 16 Memorial Drive East, Bethlehem, PA 18015, USA 17 Department of Physics and Astronomy, George Mason University, Fairfax, VA 22030, USA   
+18 Department of Physics & Astronomy, N283 ESC, Brigham Young University, Provo, UT 84602, USA 19MIT Lincoln Laboratory, 244 Wood Street, Lexington, MA 02421-6426
+
+## 1. EXECUTIVE SUMMARY
+
+
+
+[自然科学与地球科学\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md]
+# The CoRoT Exoplanet program : status & results
+
+M. Deleuil¹, C. Moutou¹, P. Bordé2 & the CoRoT exoplanet science team
+
+1Laboratoire d’Astrophysique de Marseille, 38 rue F. Joliot-Curie,   
+13388 Marseille Cedex 13, France
+
+2Institut d’Astrophysique Spatiale, Bât. 121, 91405 Orsay, France
+
+Abstract. The CoRoT satellite is the first instrument hunting for planets from space. We will review the status of the CoRoT/Exoplanet program. We will then present the CoRoT exoplanetary systems and how they widen the range of properties of the close-in population and contribute to our understanding of the properties of planets.
+
+## 1. Introduction
+
+CoRoT¹ has been designed with two distinct scientific objectives which both require continuous observations and ultra-high precision relative stellar photometry : one is the detection of extrasolar planets by the transit method; the second is the study of stellar interiors by asteroseismology (Baglin et al. 2009). In addition, the long duration of the observation periods together with the exquisite photometric precision allow number of stellar physics studies. The instrument started the scientific observations on February 2nd 2007. The mission was initially scheduled for 3 years but extended for 3 additional years, that is till March 2013. Auvergne et al. (2008) give a complete description of the instrument in flight based on raw and calibrated data. In the present paper, we will just recall the main characteristics of the mission.
+
+## 2. CoRoT, brief summary
+
+## 2.1 Photometry
+
+The typical exoplanet targets have a V-magnitude in the range ≈11 up to 16. The photometry is performed on board for up to 6000 selected targets per CCD, 2 CCDs being dedicated to the exoplanet program. For a given target, the flux is thus integrated over a pre-designed photometric mask that encompassed the quite large PSF of the exoplanet channel, whose typical size is about 35 $\prime \prime _ { \mathrm { ~ X ~ 2 3 ~ } } \prime \prime _ { \cdot }$ For stars brighter than magnitude 15, the pixels within the photometric mask are separated in 3 sub-sets according to the percentage of stellar flux. The co-addition of the pixels intensity over these 3 areas provides 3 different light curves, referred to as the red, the green and the blue light curves. These light curves have however no direct correspondence to
+
+
+
+[自然科学与地球科学\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md]
+High cadence microlensing surveys with wide field telescopes (Suzuki et al. 2016; Poleski et al. 2021) can survey many more microlensing events than follow-up programs and therefore have a higher planetary signal detection rate. So, we expect that most future exoplanet microlensing demographics papers will be based on high cadence surveys. Nevertheless, data taken in response to the identification of a possible planetary signal can still be used to more precisely determine the lens system properties, as long as the originally scheduled survey observations are sufficient to establish that the possible planetary signal is above the detection threshold (Suzuki et al. 2016).
+
+The exoplanet microlensing demographics papers to date (Gaudi et al. 2002; Sumi et al. 2010; Gould et al. 2010; Cassan et al. 2012; Suzuki et al. 2016; Poleski et al. 2021) have all used the planet-star mass ratio, $q ,$ and the separation on the plane of the sky in Einstein radius units, s, to characterize the planetary systems. This is done because, this information comes directly from the light curve model for virtually all events, although there are some events with degenerate light curve models, particularly the close-wide degeneracy that yields nearly identical light curves for most high magnification events with the substitution $s  1 / s$
+
+One of the main challenges for the microlensing method is determine the masses and distances of the planetary systems discovered with this method. This would enable a more direct comparison to the demographics from radial velocity and direct imaging surveys, although some progress can be made without mass and distance measurements $( \mathrm { e . g . } )$ Clanton & Gaudi 2016). The next major advance in exoplanet microlensing is the Nancy Grace Roman Space Telescope (Roman) Galactic Bulge Time Domain Survey (Penny et al. 2019). Roman will produce a statistical sample of planets comparable to Kepler's results from $\lesssim 1$ au, but in a complementary region of parameter space from 1 to ${ \gtrsim } 1 0$ au. In addition to a much larger sample of microlens planetary systems, Roman will determine the masses and distances for more than half the planetary systems that it discovers, using the methods described in the next section.
+
+## 6.1. Microlens Mass and Distance Measurement Methods
+
+
+There are three methods that yield mass-distance relations for microlensing events: measurement of the angular Einstein radius, $\theta _ { \mathrm { E } } ,$ measurement of the microlensing parallax parameter, $\pi _ { \mathrm { E } } ,$ and the brightness of the source star. Figure 1 shows these mass distance relations for planetary microlensing event MOA-2009-BLG-319 (although $\pi _ { \mathrm { E } }$ was not actually measured for this event). Any two of these measurements can yield a mass and distance solution, and all three of them give redundant constraints that can be used to check for systematic errors.
+
+
+
+[自然科学与地球科学\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 3 of 3).md]
+# astronomy__2304.12442__enabling-exoplanet-demographics-studies-with（第 3/3 部分）
+章节: Enabling Exoplanet Demographics Studies with Standardized Exoplanet Survey Meta-Data > REFERENCES
+## REFERENCES
+
+
+Baraffe, I., Chabrier, G., Barman, T. S., Allard, F., & Hauschildt, P. H. 2003, A&A, 402, 701, doi:10.1051/0004-6361:20030252
+
+Batista, V., Beaulieu, J.-P., Bennett, D. P., et al. 2015, ApJ, 808, 170, doi: 10.1088/0004-637X/808/2/170
+
+Bennett, D. P., Anderson, J., & Gaudi, B. S. 2007 ApJ, 660, 781, doi: 10.1086/513013
+
+Bennett, D. P., & Rhie, S. H. 1996, ApJ, 472, 660, doi: 10.1086/178096
+
+—. 2002, ApJ, 574, 985, doi: 10.1086/340977
+
+Bennett, D. P., Bhattacharya, A., Anderson, J., et al. 2015, ApJ, 808, 169, doi: 10.1088/0004-637X/808/2/169
+
+Bennett, D. P., Bhattacharya, A., Beaulieu, J.-P., et al. 2020, AJ, 159, 68, doi: 10.3847/1538-3881/ab6212
+
+Beuzit, J. L., Vigan, A., Mouillet, D., et al. 2019, A&A, 631, A155, doi: 10.1051/0004-6361/201935251
+
+Bhattacharya, A., Bennett, D. P., Anderson, J., et al. 2017, AJ, 154, 59, doi: 10.3847/1538-3881/aa7b80
+
+Bhattacharya, A., Beaulieu, J. P., Bennett, D. P., et al. 2018, AJ, 156, 289, doi: 10.3847/1538-3881/aaed46
+
+Blackman, J. W., Beaulieu, J. P., Bennett, D. P., et al. 2021, Nature, 598, 272, doi:10.1038/s41586-021-03869-6
+
+Borucki, W. J., & Summers, A. L. 1984, Icarus, 58, 121, doi: 10.1016/0019-1035(84)90102-7
+
+Boss, A. P., Weinberger, A. J., Keiser, S. A., et al. 2017, AJ, 154, 103, doi: 10.3847/1538-3881/aa84b5
+
+Bowler, B. P. 2016, PASP, 128, 102001 doi: 10.1088/1538-3873/128/968/102001
+
+Cassan, A., Kubas, D., Beaulieu, J.-P., et al. 2012, Nature, 481, 167, doi: 10.1038/nature10684
+
+Christiansen, J. L., Clarke, B. D., Burke, C. J., et al. 2020, AJ, 160, 159, doi: 10.3847/1538-3881/abab0b
+
+Clanton, C., & Gaudi, B. S. 2014, ApJ, 791, 91, doi: 10.1088/0004-637X/791/2/91
+
+—. 2016, ApJ, 819, 125, doi: 10.3847/0004-637X/819/2/125
+
+Dawson, R. I., & Murray-Clay, R. A. 2013, ApJL,767, L24, doi: 10.1088/2041-8205/767/2/L24
+
+Fernandes, R. B., Mulders, G. D., Pascucci, I., Mordasini, C., & Emsenhuber, A. 2019, ApJ, 874, 81, doi: 10.3847/1538-4357/ab0300
+
+Fulton, B. J., Rosenthal, L. J., Hirsch, L. A., et al. 2021, ApJS, 255, 14, doi: 10.3847/1538-4365/abfcc1
+
+Gagné, J., & Faherty, J. K. 2018, ApJ, 862, 138, doi: 10.3847/1538-4357/aaca2e
+
+Gaudi, B. S. 2012, ARA&A, 50, 411, doi: 10.1146/annurev-astro-081811-125518
+
+Gaudi, B. S., Albrow, M. D., An, J., et al. 2002, ApJ, 566, 463, doi: 10.1086/337987
+
+Ginzburg, S., Schlichting, H. E., & Sari, R. 2018, MNRAS, 476, 759, doi: 10.1093/mnras/sty290
+
+Gould, A., & Loeb, A. 1992, ApJ, 396, 104, doi: 10.1086/171700
+
+Gould, A., Dong, S., Gaudi, B. S., et al. 2010, ApJ, 720, 1073, doi: 10.1088/0004-637X/720/2/1073
+
+He, M. Y., Ford, E. B., & Ragozzine, D. 2019, MNRAS, 490, 4575, doi: 10.1093/mnras/stz2869
+
+Howard, A. W., Marcy, G. W., Bryson, S. T., et al. 2012, ApJS, 201, 15, doi: 10.1088/0067-0049/201/2/15
+
+
+
+[自然科学与地球科学\quantum-physics__1311.2485__continuous-time-quantum-error-correction.md (part 3 of 4).md]
+# quantum-physics__1311.2485__continuous-time-quantum-error-correction.md.md（第 3/4 部分）
+章节: Continuous-time quantum error correction\* > A. The single-qubit problem
+## A. The single-qubit problem
+
+
+We already mentioned that another way of "continuization" of the discrete single-qubit error-correcting map (27) is to apply continuous measurements of the stabilizer generator Z and rotations around the X-axis conditioned on the measurement record. A continuous measurement of the operator $Z$ can be achieved by an infinite repetition of a weak measurement with measurement operators
+
+$$
+M _ { \pm } ^ { Z } ( \epsilon ) = \sqrt { \frac { I \pm \operatorname { t a n h } ( \epsilon ) Z } { 2 } } .\tag{53}
+$$
+
+The evolution of the state of the system under such observation can be described by a random walk along a curve parameterized by $x \in R$ . The state at any moment during the procedure can be written in the form
+
+$$
+\rho ( x ) = \frac { M ^ { Z } ( x ) \rho ( 0 ) M ^ { Z } ( x ) } { \mathrm { T r } ( M ^ { Z } ( x ) \rho ( 0 ) M ^ { Z } ( x ) ) }\tag{54}
+$$
+
+for some value of $x ,$ where $M ^ { Z } ( x ) = \sqrt { ( I + \operatorname { t a n h } ( x ) Z ) / 2 }$ and $\rho ( 0 )$ is the initial state. After every application of the weak measurement $M _ { \pm } ^ { Z } ( \epsilon )$ , the parameter x changes to $x \pm \epsilon$ depending on the outcome. The two projective measurement outcomes of the strong measurement of $Z$ correspond to $x = \pm \infty$ . The procedure is continued until $| x | \geq X$ for some X which is sufficiently large that $M ^ { Z } ( X ) \approx \hat { | 0 \rangle } \langle 0 |$ and $M ^ { Z } ( - X ) \approx | 1 \bar { \rangle } \langle 1 |$ to any desired precision [25].
+
+In the limit when $\epsilon  0$ , the evolution of the state of the system can be described by a continuous stochastic differential equation. We can introduce a time step δt and a rate
+
+$$
+\kappa = \epsilon ^ { 2 } / \delta t .\tag{55}
+$$
+
+Then we can define a mean-zero increment $\delta W$ as follows:
+
+$$
+\delta W = ( \delta x - M [ \delta x ] ) / \sqrt { \kappa } ,\tag{56}
+$$
+
+where $\delta x = \pm \epsilon$ and $M [ \delta x ]$ is the mean of $\delta x$
+
+$$
+M [ \delta x ] = \epsilon ( p _ { + } ( x ) - p _ { - } ( x ) ) .\tag{57}
+$$
+
+Here $p _ { \pm } ( x )$ are the probabilities for the two outcomes of the weak measurement $M _ { \pm } ^ { Z } ( \epsilon )$ at the point x,
+
+$$
+p _ { \pm } ( x ) = \frac { 1 } { 2 } ( 1 \pm \epsilon \langle Z \rangle _ { x } ) ,\tag{58}
+$$
+
+with $\langle Z \rangle _ { x } = \mathrm { T r } ( Z \rho ( x ) )$ . Note that $M [ ( \delta W ) ^ { 2 } ] = \delta t + O ( \delta t ^ { 2 } )$
+
+
+
+[自然科学与地球科学\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md]
+# quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e（第 3/3 部分）
+章节: Echo-evolution data generation for quantum error mitigation via neural networks > Appendix D Analysis of the neural network size, continued
+## Appendix D Analysis of the neural network size, continued
+
+
+In the main text, we trained a neural network with a single hidden layer on data obtained from the echo evolution of the spin system. Then we demonstrated quantum error mitigation in data obtained from the forward-in-time dynamics of the spin system. For that experiment, we chose a particular size of the hidden layer (200 neurons). In this section, we provide analysis illustrating that the number of neurons in the hidden layer, in the case of dynamics simulation considered here, can be lowered to approximately the size of data vectors. In the following, we provide simulations for neural networks with variable width of the hidden layer and with other parts of the setup fixed $\mathrm { ~ - ~ e . g . }$ , for the number of hidden layers, activation functions, loss function, and training procedure details (type of optimizer, size of data batches, etc.).
+
+To analyze this question, we evaluate the quality of error mitigation depending on hidden layer width. In particular, we use a trained neural network to mitigate quantum noise error in the test data set - a hold-out part of echo evolution data to evaluate error mitigation performance. For a test set of a fixed size, we can calculate statistics on error-mitigated observable values and thus see how good our trained network performs error mitigation.
+
+
+
+[自然科学与地球科学\astronomy__1207.3189__the-dark-energy-survey-data-processing-and-c.md (part 2 of 2).md]
+We have carried out extensive tests on simulated and real data of the performance of this tool. The noise correlations introduced by the PSF homogenization are more severe than those introduced by the remapping carried out in the SWarp coaddition. The noise impact is differential, amplifying the sky noise in images whose PSF has been improved and reducing it in images whose PSF has been degraded. This noise amplification/suppression is a function of scale and position within each image, with the noise being unaffected on scales several times larger than the PSF. We account for these changes in the noise within the weight maps that come with each image, and then during the coaddition process if one is using inverse variance weighted combination, these weights are used in an optimal fashion to produce the final coadd; that is, images where the noise has been amplified (because they started out with seeing worse than the target seeing) will be deweighted in the coaddition. To maintain accurate photometric measurement uncertainties and to maintain good object detection, we currently calculate two weight maps for the homogenized coadds. One includes the corrections for correlated noise on the scale of a pixel, and the other on the scale of the PSF. Our experiments with this approach are ongoing, but results are encouraging.
+
+Because of the correlated noise issues associated with PSF homogenization, we also will produce direct coadds over the full survey. We have no plans to catalog these direct coadds, because of the PSF induced biases described above, but we expect these images to be quite useful to produce pretty pictures and in searching for low surface brightness objects such as strong lensing arcs in the cores of clusters.
+
+## 3.6 Two Strategies for Deep Catalogs
+
+
+To catalog the coadds we use SExtractor in dual image mode. The detection image is an optimal combination of the images from each DES band grizY. We will also carry out combined photometry with our partner survey VHS-DES, and we expect in that case to carry out cataloging using a detection image built from grizYJHK. We build PSF models for each band, and the resulting catalogs therefore include PSF corrected photometry for a common set of objects across all bands. Higher signal to noise galaxy colors can be extracted using small apertures that have been aperture corrected using the comparison to stellar PSF magnitudes or using a newly developed DET MODEL magnitude within SExtractor[16]. This photometric measurement extracts a single PSF corrected model from the detection image and uses it to determine the photometry in each band using the appropriate PSF correction in each. Because the galaxy shape is not a free parameter in this case the statistical noise of the measurement is reduced. Initial tests show that, as expected, this approach produces higher signal to noise photometry for faint objects, but we are still working to characterize the biases.
+
+
+
+[自然科学与地球科学\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 1 of 3).md]
+Goal 1 of the National Academies of Science, Engineering and Mathematics Exoplanet Science Strategy¹, which was endorsed by the Decadal Survey on Astronomy and Astrophysics 2020, is "to understand the formation and evolution of planetary systems as products of the process of star formation, and characterize and explain the diversity of planetary system architectures, planetary compositions, and planetary environments produced by these processes", with the finding that "Current knowledge of the demographics and characteristics of planets and their systems is substantially incomplete." One significant roadblock to our ongoing efforts to improve our demographics analyses is the lack of comprehensive meta-data accompanying published exoplanet surveys. The Exoplanet Program Analysis Group (ExoPAG) Science Interest Group #2: Exoplanet Demographics has prepared this document to provide guidance to survey architects, authors, referees and funding agencies as to the most valuable such data products for five different exoplanet detection techniques-transit radial velocity, direct imaging, microlensing and astrometry. We find that making these additional data easily available would greatly enhance the community's ability to perform robust, reproducible demographics analyses, and make progress on achieving the most important goals identified by the exoplanet and wider astronomical community
+
+## 2. INTRODUCTION
+
+
+The field of exoplanets has now firmly moved from detection and characterization of individual objects and systems to characterization of entire populations of objects and systems. By studying the demographics of exoplanetary systems, we learn more about the physical mechanisms that drive their formation (e.g. Mordasini et al. 2016; Lee & Chiang 2016; Jin & Mordasini 2018), migration (e.g. Dawson & Murray-Clay 2013; Yu et al. 2021), and evolution (e.g. Owen & Wu 2017; Ginzburg et al. 2018).
+
+The exoplanet detection techniques that have provided sufficient detections for population studies cover very different areas of parameter space in both stellar and planet properties. Observational biases push the different detection techniques toward different populations of stellar hosts (across properties such as distance, mass, age, activity, stellar multiplicity), and different populations of planets (across such properties as radius, mass, orbital period, planet multiplicity, and proximity to resonance). For example, transit and radial velocity surveys are most sensitive to close-in planets (<1 au), microlensing surveys and radial velocity to planets around the ice line (\~1-10 au), and direct imaging surveys to distant planets (>10 au).
+
+
+
+[自然科学与地球科学\astronomy__1105.1887__the-corot-exoplanet-program-status-results.md]
+Table 2 gives the main characteristics of the CoRoT planets published by the end of summer 2010. These planets correspond to the first discoveries in the first two years of data. A large fraction of the candidates are indeed still in the screening process by follow-up observations. Their properties, compared to the other published exoplanets are illustrated in Fig 4. The mass-radius diagram shows that most of these planets are in the domain of gaseous giants but the long duration of the light curves and the high duty cycle greater than 90% of space-based observations allow to explore the transiting systems over an extended orbital domain. The CoRoT discoveries indeed account for half of the transiting systems with an orbital period greater than 8 days.
+
+
+
+[自然科学与地球科学\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 2 of 3).md]
+The final method to determine a mass-distance relation is to measure the brightness of the planetary host star (which is also the lens star). For ground-based surveys, this can be accomplished with high angular resolution follow-up observations using the Hubble Space Telescope or a large ground-based telescope with a laser guide star adaptive optics system (e.g., Bennett et al. 2015; Batista et al. 2015). These high angular resolution observations are needed to resolve the lens star separating from the source star in order to avoid confusion with other nearby stars other than the lens (and planetary host) (Bhattacharya et al. 2017; Koshimoto et al. 2020). For a space-based exoplanet microlensing survey, like the one planned for Roman, the survey data have high enough angular resolution to detect the lens stars and measure the lens-source relative proper motion, $\mu _ { \mathrm { r e l } }$ (Bennett & Rhie 2002; Bennett et al. 2007). The measurement of $\mu _ { \mathrm { r e l } }$ is also useful for confirming the lens star identification since the length of the $\mu _ { \mathrm { r e l } }$ vector can be determined from light curve parameters, $\mu _ { \mathrm { r e l } } = \theta _ { * } / t _ { * }$ . In addition the $\mu _ { \mathrm { r e l } }$ and $\pi _ { \mathrm { E } }$ vectors have the same direction, so a measurement of $\mu _ { \mathrm { r e l } }$ can be used to test for systematic errors in $\pi _ { \mathrm { E } }$ measurements or to provide precise $\pi _ { \mathrm { E } }$ measurements when the light curve only imposes a strong constraint on one component of $\pi _ { \mathrm { E } }$ (Bhattacharya et al. 2018; Bennett et al. 2020).
+
+We should also note that these three mass-distance relations are also useful for demographics studies even in cases where only one of the mass-distance constraints is measured precisely (Koshimoto et al. 2021). Of course, a single mass-distance constraint will produce a mass-distance degeneracy in the interpretation. However, a typical microlensing survey will have some events with mass measurements, and some with a combination of a single mass-distance relation with upper and/or lower bounds on the other mass-distance relation parameters. For microlensing event MOA-2010-BLG-477, a measurement of $\theta _ { \mathrm { E } } .$ , upper and lower limits on $\pi _ { \mathrm { E } } ,$ and an upper limit on the host star brightness imply that the host of the gas giant planet is a white dwarf (Blackman et al. 2021).
+
+## 6.2. Tier I Data Products
+
+## 1. Stellar sample properties
+
+
+(a) List of all microlensing events in the sample including coordinates and measured $t _ { \mathrm { E } } , t _ { 0 }$ , and $u _ { 0 }$ values. When t is measured, it should be reported, too. For surveys including binary star host systems, the binary microlensing model parameters should also be included.
+
+## 2. Survey properties
+
+
+
+[自然科学与地球科学\astronomy__2304.12442__enabling-exoplanet-demographics-studies-with (part 3 of 3).md]
+Hsu, D. C., Ford, E. B., Ragozzine, D., & Ashby, K. 2019, arXiv e-prints, arXiv:1902.01417. https://arxiv.org/abs/1902.01417
+
+Jehin, E., Gillon, M., Queloz, D., et al. 2011, The Messenger, 145, 2
+
+Jin, S., & Mordasini, C. 2018, ApJ, 853, 163, doi: 10.3847/1538-4357/aa9f1e
+
+Kervella, P., Arenou, F., & Thévenin, F. 2022, A&A, 657, A7, doi: 10.1051/0004-6361/202142146
+
+Koshimoto, N., & Bennett, D. P. 2020, AJ, 160, 177, doi: 10.3847/1538-3881/abaf4e
+
+Koshimoto, N., Bennett, D. P., & Suzuki, D. 2020, AJ, 159, 268, doi: 10.3847/1538-3881/ab8adf
+
+Koshimoto, N., Bennett, D. P., Suzuki, D., & Bond, I. A. 2021, ApJL, 918, L8, doi: 10.3847/2041-8213/ac17ec
+
+Kunimoto, M., & Bryson, S. 2021, AJ, 161, 69, doi: 10.3847/1538-3881/abd2c1
+
+Kunimoto, M., Huang, C., Tey, E., et al. 2021a, Research Notes of the American Astronomical Society, 5, 234, doi: 10.3847/2515-5172/ac2ef0
+
+Kunimoto, M., Daylan, T., Guerrero, N., et al. 2021b, arXiv e-prints, arXiv:2112.02176. https://arxiv.org/abs/2112.02176
+
+Lee, E. J., & Chiang, E. 2016, ApJ, 817, 90, doi: 10.3847/0004-637X/817/2/90
+
+Lurie, J. C., Henry, T. J., Jao, W.-C., et al. 2014, AJ, 148, 91, doi: 10.1088/0004-6256/148/5/91
+
+Macintosh, B., Chilcote, J. K., Bailey, V. P., et al. 2018, in Society of Photo-Optical Instrumentation Engineers (SPIE) Conference Series, Vol. 10703, Adaptive Optics Systems VI, ed. L. M. Close, L. Schreiber, & D. Schmidt, 107030K, doi: 10.1117/12.2314253
+
+Marley, M. S., Saumon, D., Visscher, C., et al. 2021, ApJ, 920, 85, doi:10.3847/1538-4357/ac141d
+
+Mordasini, C., van Boekel, R., Mollière, P., Henning, T., & Benneke, B. 2016, ApJ, 832, 41, doi: 10.3847/0004-637X/832/1/41
+
+Mulders, G. D., Pascucci, I., & Apai, D. 2015, ApJ, 798, 112, doi:10.1088/0004-637X/798/2/112
+
+Mulders, G. D., Pascucci, I., Apai, D., & Ciesla, F. J. 2018, AJ, 156, 24, doi:10.3847/1538-3881/aac5ea
+
+Muraki, Y., Han, C., Bennett, D. P., et al. 2011, ApJ, 741, 22, doi: 10.1088/0004-637X/741/1/22
+
+Nielsen, E. L., De Rosa, R. J., Macintosh, B., et al. 2019, AJ, 158, 13, doi: 10.3847/1538-3881/ab16e9
+
+Nucita, A. A., Licchelli, D., De Paolis, F., et al. 2018, MNRAS, 476, 2962, doi: 10.1093/mnras/sty448
+
+Nutzman, P., & Charbonneau, D. 2008, PASP, 120, 317, doi: 10.1086/533420
+
+Owen, J. E., & Wu, Y. 2017, ApJ, 847, 29, doi:10.3847/1538-4357/aa890a
+
+Pascucci, I., Mulders, G. D., Gould, A., & Fernandes, R. 2018, The Astrophysical Journal Letters, 856, L28
+
+Pascucci, I., Mulders, G. D., Gould, A., & Fernandes, R. 2018, ApJL, 856, L28, doi: 10.3847/2041-8213/aab6ac
+
+Penny, M. T., Gaudi, B. S., Kerins, E., et al. 2019, ApJS, 241, 3, doi: 10.3847/1538-4365/aafb69
+
+Poleski, R., Skowron, J., Mróz, P., et al. 2021, arXiv e-prints, arXiv:2104.02079. https://arxiv.org/abs/2104.02079
+
+Ricker, G. R., Winn, J. N., Vanderspek, R., et al. 2015, Journal of Astronomical Telescopes, Instruments, and Systems, 1, 014003, doi: 10.1117/1.JATIS.1.1.014003
+
+Rosenthal, L. J., Fulton, B. J., Hirsch, L. A., et al. 2021, ApJS, 255, 8, doi: 10.3847/1538-4365/abe23c
+
+
+
+[自然科学与地球科学\quantum-physics__1311.2485__continuous-time-quantum-error-correction.md (part 3 of 4).md]
+In the ADL scheme there is no risk for the feedback to decrease the fidelity with the target state because the feedback is conditioned on the current state and always tends to increase the fidelity with the code space; if the state lies on the Z-axis in the northern hemisphere, no rotation would be applied. However, during initial times that scheme would not be helpful for increasing the average value of α either, because a weak measurement keeps the state on the Z-axis in the northern hemisphere. If we go to the continuous limit, $\epsilon  0$ , the Wiener parameter is normally distributed and during an infinitesimal time step the state may enter the southern hemisphere, but with a negligible probability. Thus during initial times, the scheme would not be helpful with respect to the average fidelity, and only after the probability for the state to enter the southern hemisphere becomes significant will it start to have an effect. This intuition is confirmed by the numerical simulations of a generalization of this protocol to multi-qubit codes presented in Ref. [7]
+
+In the scheme in Ref. [24], the feedback is not conditioned on the state but on an estimate of the average measurement current (61). The idea is that by filtering the noisy measurement data obtained during some short time interval before a given moment t, we can try to obtain an estimate of the average change of $x ( t )$ with time at that moment, i.e., an estimate of $\langle Z \rangle _ { t }$ . But clearly such an estimate cannot be precise, because it would mean that we could measure the expectation value of an observable almost without disturbing the state. Therefore, any such estimate inevitably carries imprecision. For example, it could be that the state of the system is [0〉(0| but we obtain a sequence of negative outcomes which give rise to the effective measurement operator $M ^ { Z } ( x ) = \sqrt { I + \operatorname { t a n h } ( x ) Z }$ with $x < 0 .$ This can occur with finite probability and it would suggest that the state lies in the southern hemisphere, while the state will remain [0(0| under this measurement. In such a case, this scheme would apply a rotation which would take the state away from the target state, i.e., during short initial times this scheme could have a negative effect. Nevertheless, as time progresses, more and more trajectories enter the southern hemisphere and the scheme may lead to an improvement of the average fidelity with the target state at later times. Indeed, numerical simulations have confirmed the efficiency of this scheme and its generalization to multi-qubit codes in certain parameter regimes [24].
+
+
+
+[自然科学与地球科学\quantum-physics__2311.00487__echo-evolution-data-generation-for-quantum-e (part 3 of 3).md]
+[54] Neugebauer, M., Fischer, L., Jäger, A., Czischek, S., Jochim, S., Weidemüller, M., Gärttner, M.: Neural-network quantum state tomography in a two-qubit experiment. Physical Review A 102(4) (2020) https://doi.org/10.1103/physreva.102. 042604
+
+[55] Bukov, M., Day, A.G.R., Sels, D., Weinberg, P., Polkovnikov, A., Mehta, P.: Reinforcement learning in different phases of quantum control. Physical Review X 8(3) (2018) https://doi.org/10.1103/physrevx.8.031086
+
+[56] Nielsen, M.A.: Neural Networks and Deep Learning. Determination Press (2018). http://neuralnetworksanddeeplearning.com/
+
+![](images/0c13eab01be729739603fab376a00d726227aa1f5a5954286adeb62248ec1f26.jpg)
+
+![](images/dd5fdc0927f86e5947e57bc4c2c1e904d6a79d7b1d5d56716b438af2ff7e4aeb.jpg)  
+FIG. C3: Upper: Values of correction efficiency K for forward-in-time evolution of 100 random initial states for different gate errors (two-qubit gate errors q2 are provided to quantify noise power). States are sorted with respect to the correction efficiency value K. Every K value is calculated for average magnetization values of magnetization of the spin system, with further averaging over 20 time points to produce a single value (i.e., average over 20 K values for each time point). Lower: percentage of positive K values for every initial states sample with 100 states.
+
+![](images/64c2fa7321f64615f0c9e60861b02a311095e7abc73138cffce4c7e57cba77e2.jpg)
+
+![](images/c3920ab22cdfe3d1d0f610a82bc686af52ad8a0c669caec8fd016def1bc5245e.jpg)
+
+![](images/83c2211fdb7c1258def8d0ec5cccfa6b3548d95aed0a2de8d39b604fcc362772.jpg)
+
+![](images/1deb99fc2be92f298dda822891b5de3553b5b22a9108cd1736073506e6ad0353.jpg)
+
+![](images/79ed02df434382c4e859fe059472e14c2142ef210af3846e9f3d147014d97916.jpg)
+
+![](images/e155d20920ed050ed941e5d2008c972c40393701ec8dc4071832422b2a794251.jpg)  
+FIG. D4: Values of observable values statistics for neural networks with different widths of the hidden layer. Average values and standard deviation are calculated over results from 50 realizations of neural networks with fixed hidden layer width. Results are provided for data with different levels of noise (indicated with different values of two-qubit gate noise $q _ { 2 } )$ . Left: observable values statistics before correction with a trained neural network. Right: observable values statistics after correction with a trained neural network.

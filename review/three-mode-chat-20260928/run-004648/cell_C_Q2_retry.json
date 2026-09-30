@@ -1,0 +1,15 @@
+{
+ "question": "CoRoT 卫星的系外行星计划有哪些科学目标？它何时开始科学观测、任务延长到什么时候？截至 2010 年夏共收集了多少条光变曲线？为什么 CoRoT-7b 这类超级地球只能在较亮恒星的光变曲线中发现？(CoRoT exoplanet program status results transit asteroseismology)",
+ "pack_chars": 60000,
+ "retry_of": "cell_C_Q2.json",
+ "answer": "The evidence is insufficient to answer most of this question. The retrieved chunks include the CoRoT paper, but the file content is truncated mid-sentence (\"Its closest approach to Jupiter was on\") and none of the four retrieved chunks addresses the CoRoT question — they are respectively a Voyager 1 article, a RAG benchmark paper, an HNSW tuning guide, and unrelated industrial/文学 documents. The CoRoT material present covers photometry, observation strategy, and planets, but not the requested facts as a coherent answer set: the two scientific objectives are stated (exoplanet transit detection and asteroseismology, with observations starting 2 February 2007), yet the question's specific asks — the exoplanet program's science goals in detail, the mission extension, the light-curve count \"as of summer 2010,\" and why super-Earths like CoRoT-7b are detectable only around bright stars — cannot be assembled reliably from this truncated, partially irrelevant evidence.\n\nSources actually used:\n- `自然科学与地球科学/astronomy__1105.1887__the-corot-exoplanet-program-status-results.md` (introduction and Section 3 only; document appears truncated)\n- `demo-qa-20260927/voyager-1.md` (retrieved but irrelevant to the question)\n- `e2e-demo-0923-022632/global-rag-benchmark.md` (retrieved but irrelevant)\n- `AI 基础设施/vector-index-tuning-guide (part 2 of 2).md` (retrieved but irrelevant)",
+ "is_error": false,
+ "latency_s": 6.8,
+ "tokens": {
+  "input": 21117,
+  "output": 331,
+  "cache_read": 37376,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.132548
+}

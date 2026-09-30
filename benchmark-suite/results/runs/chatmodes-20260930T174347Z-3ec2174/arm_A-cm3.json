@@ -1,0 +1,31 @@
+{
+ "mode": "A",
+ "qid": "cm3",
+ "expect": "refusal",
+ "kb_ids": [
+  "b1199132-e4d4-4305-8c2e-82dc1753b0ba"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 23.0,
+ "duration_ms": 21581,
+ "turns": 7,
+ "cost_usd": 0.1703424,
+ "session_id": "07d62c23-a245-4050-8a95-45bfb612ed8c",
+ "answer_chars": 1334,
+ "answer_markers_hit": [],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：在指定知识库中未找到任何关于 \"Herbert-Moulton collider benchmark\" 或粒子物理探测器漂移量化的内容——该库不含此主题的证据，无法回答。**\n\n**检索事实（仅陈述，不推测库内容）**\n\n对指定库 `b1199132-e4d4-4305-8c2e-82dc1753b0ba`（\"计算机与人工智能\"，内容为 CS/AI/机器人/数据库/NLP 论文）：\n\n| 检索 | 结果 |\n|---|---|\n| `kb_search_two_stage`（\"Herbert-Moulton collider benchmark detector drift quantification\"） | 20 候选，全部为 SLAM/Gaussian Splatting、数据库查询优化、BERT、神经网络精神分裂综述等，无一篇涉及粒子物理；stage2 命中分数最高者也仅 6.81，来自机器人论文的\"Rendering Results\"章节 |\n| `kb_search_vector`（\"Herbert Moulton benchmark detector drift particle physics\"） | 20 条，最高分 0.51，全部是参考文献列表/基准表碎片（Mask R-CNN、BERT GLUE、MVtec 等），与题无关 |\n| `kb_searc",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "honest_refusal": true
+  }
+ }
+}

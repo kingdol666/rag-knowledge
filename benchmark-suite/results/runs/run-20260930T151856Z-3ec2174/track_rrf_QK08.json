@@ -1,0 +1,54 @@
+{
+ "qid": "QK08",
+ "method": "rrf",
+ "question": "Beyond which percentile of precipitation did the GAN clearly outperform the deterministic baseline in capturing the climate-change wetting signal?",
+ "ranked": [
+  "2409.13934",
+  "2007.10574",
+  "2409.09639",
+  "1503.07557",
+  "2602.10156",
+  "2009.10669",
+  "2212.13138",
+  "2005.14165",
+  "physics-0703220",
+  "2207.08146"
+ ],
+ "ranked_paths": [
+  "climate-science__2409.13934__on-the-extrapolation-of-generative-adversari.md",
+  "climate-science__2007.10574__impacts-of-the-madden-julian-oscillation-on.md",
+  "climate-science__2409.09639__gpc-m-global-precipitation-climatology-by-ma.md",
+  "climate-science__1503.07557__precipitation-extremes-under-climate-change.md",
+  "genomics__2602.10156__strand-sequence-conditioned-transport-for-si.md",
+  "databases__2009.10669__there-is-no-such-thing-as-an-index-or-the-ne.md",
+  "clinical-medicine__2212.13138__large-language-models-encode-clinical-knowledge.md",
+  "large-language-models__2005.14165__language-models-are-few-shot-learners.md",
+  "oceanography__physics-0703220__scientific-reticence-and-sea-level-rise.md",
+  "power-systems__2207.08146__mapping-disruption-sources-in-the-power-grid.md"
+ ],
+ "evidence_sources": [
+  "2409.13934",
+  "2007.10574",
+  "2409.09639"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.1,
+ "latency_s": 19.7,
+ "answer": "Based on the evidence, the comparison was made at the **99.5th percentile** of precipitation. The GAN trained on future and historical periods captured about 97% of the average future increase in the 99.5th percentile, closely following the 1:1 line, while the GAN trained only on historical simulations captured about 77%. In contrast, the two deterministic baseline algorithms significantly underestimated the climate-change signal, capturing only 63–65% of the future increase in the 99.5th percentile, regardless of training period. The evidence only quantifies this GAN-vs-baseline gap at the 99.5th percentile; it does not provide performance figures at other percentile thresholds, so I cannot say beyond which other percentile the GAN outperformed.\n\nSource: [2409.13934] (chunk discussing 99.5th percentile precipitation and climate change signal, with Figure 2 reference).",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 9975,
+  "output": 572,
+  "cache_read": 38208,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.08473099999999999,
+ "extra": {},
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

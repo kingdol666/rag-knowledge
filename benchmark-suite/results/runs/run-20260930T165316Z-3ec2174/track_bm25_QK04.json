@@ -1,0 +1,54 @@
+{
+ "qid": "QK04",
+ "method": "bm25",
+ "question": "Using only what kind of information, and reaching what accuracy, does the wav2vec 2.0 approach detect within-sentence prosodic boundaries on Czech broadcast news?",
+ "ranked": [
+  "2209.15032",
+  "2005.14165",
+  "2109.14357",
+  "2608.05850",
+  "2110.07844",
+  "2310.10981",
+  "2402.11690",
+  "1811.04224",
+  "1906.10015",
+  "2509.05359"
+ ],
+ "ranked_paths": [
+  "speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u.md",
+  "large-language-models__2005.14165__language-models-are-few-shot-learners.md",
+  "speech__2109.14357__comparison-of-self-supervised-speech-pre-tra.md",
+  "nlp__2608.05850__mameloshnlm-yiddish-language-model-and-evalu.md",
+  "nlp__2110.07844__modeling-endorsement-for-multi-document-abst.md",
+  "nlp__2310.10981__instructive-dialogue-summarization-with-quer.md",
+  "large-language-models__2402.11690__vision-flan-scaling-human-labeled-tasks-in-v.md",
+  "speech__1811.04224__reinforcement-learning-based-speech-enhancem.md",
+  "neuroscience__1906.10015__a-review-on-neural-network-models-of-schizophren.md",
+  "speech__2509.05359__an-empirical-analysis-of-discrete-unit-repre.md"
+ ],
+ "evidence_sources": [
+  "2209.15032",
+  "2005.14165",
+  "2109.14357"
+ ],
+ "evidence_chars": 3643,
+ "retrieval_s": 0.0,
+ "latency_s": 11.9,
+ "answer": "According to the evidence, the wav2vec 2.0 approach detects prosodic boundaries in speech using **only acoustic information** (no transcripts), tested on recordings of Czech broadcast news labeled by phonetic experts. Despite using a relatively small amount of labeled data, the model achieves an **accuracy of 94%** (with an F1 measure of 83%) on within-sentence prosodic boundaries — and 95% accuracy / 89% F1 on all prosodic boundaries — outperforming an existing text-based predictor.\n\nSource: chunk `speech__2209.15032__detection-of-prosodic-boundaries-in-speech-u (part 1/2)` — paper [2209.15032], \"Detection of Prosodic Boundaries in Speech Using Wav2Vec 2.0\" (Kunešová & Rezáčková), Abstract.",
+ "is_error": false,
+ "tool_call_count": 0,
+ "tokens": {
+  "input": 15,
+  "output": 546,
+  "cache_read": 48192,
+  "cache_creation": 0
+ },
+ "total_cost_usd": 0.038149,
+ "extra": {},
+ "via": "chat",
+ "prompt_version": "v4-neutral",
+ "git_commit": "3ec2174",
+ "config_hash": "9fb259c0cf2b6dea",
+ "seed": 0,
+ "max_turns": 12
+}

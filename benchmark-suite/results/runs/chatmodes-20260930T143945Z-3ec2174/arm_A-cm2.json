@@ -1,0 +1,33 @@
+{
+ "mode": "A",
+ "qid": "cm2",
+ "expect": "found",
+ "kb_ids": [
+  "b28f0a25-1e1d-40ad-96b8-61bd2b093a28"
+ ],
+ "http": 200,
+ "success": true,
+ "wall_s": 83.6,
+ "duration_ms": 81800,
+ "turns": 5,
+ "cost_usd": 0.437458,
+ "session_id": "752be0a4-2179-454f-8f5c-8e42c4dab707",
+ "answer_chars": 1060,
+ "answer_markers_hit": [
+  "stroke"
+ ],
+ "refusal": true,
+ "gate_passed": true,
+ "via": "chat-api-mode",
+ "error": "",
+ "answer_head": "**结论：EHR 中风预测的关键风险因素是高血压、心脏病、高血糖、年龄（及 BMI、吸烟等生活方式属性），且各因素间相关性低——降维会损失信息，全部特征保留时多层感知机（MLP）表现最佳（准确率 75.02%）。**\n\n依据库内唯一高相关文献（P0 直接证据，Laya 证据门 8/8 段全部幸存）：\n\n**文献**：《Predicting Stroke from Electronic Health Records》（Nwosu、Dev 等，arXiv:1904.11280），生命科学与医学 KB。\n\n**关键发现（原文引用）**\n\n1. **风险因素集合**：数据集为 29,072 条患者 EHR（Kaggle/McKinsey），10 个输入属性——性别、年龄、高血压、心脏病、婚况、工作类型、居住地（城乡）、平均血糖水平、BMI、吸烟状态。文献指出 \"high blood pressure, diabetes and heart disease as major risk factors\"（高血压、糖尿病、心脏病为主要风险因素）。\n\n2. **因素间关系（PCA 分析）**：前 2 个主成分仅解释 31.4% 方差 → \"patient attributes are not highly correlated\"（属性间相关性不高），无法安全降维（前 9 个主成分才解释 96.06",
+ "gate": {
+  "passed": true,
+  "checks": {
+   "http_200": true,
+   "success": true,
+   "answer_nonempty": true,
+   "answer_marker_hit": true
+  }
+ }
+}

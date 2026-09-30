@@ -1,0 +1,13 @@
+{
+ "round": 1,
+ "task": "attention",
+ "mode": "C",
+ "http": 200,
+ "wall_s": 49.6,
+ "success": true,
+ "session_id": "e6f642b4-34a6-4cb6-a6e0-fb5d789f5988",
+ "turns": 6,
+ "cost": 0.1929106,
+ "duration_ms": 48232,
+ "answer": "I have sufficient evidence. The judge's highest-scoring segment (0.9313, lines 50–73) corresponds exactly to §3.2.1 Scaled Dot-Product Attention in the primary source.\n\n## Transformer 自注意力机制的计算公式\n\n**最终结论：** Transformer 的自注意力采用**缩放点积注意力（Scaled Dot-Product Attention）**，公式为 `Attention(Q, K, V) = softmax(QKᵀ / √d_k) V`，其中 Q、K 维度为 d_k，V 维度为 d_v，除以 √d_k 是缩放因子。\n\n### 关键原文（直接引用）\n\n出处：**《Attention Is All You Need》(Vaswani et al., arXiv:1706.03762)，§3.2.1 Scaled Dot-Product Attention** —— 库：`b1199132-…`（计算机与人工智能）\n\n> \"We call our particular attention **\"Scaled Dot-Product Attention\"** (Figure 2). The input consists of queries and keys of dimension $d_k$, and values of dimension $d_v$. We compute the dot products of the query with all keys, divide each by $\\sqrt{d_k}$, and apply a softmax function to obtain the weights on the values.\"\n>\n> \"…simultaneously, packed together into a matrix $Q$. The keys and values are also packed together into matrices K and V. We compute the matrix of outputs as:\n> **$$\\mathrm{Attention}(Q, K, V) = \\mathrm{softmax}\\left(\\frac{QK^T}{\\sqrt{d_k}}\\right)V$$**\"\n\n### 缩放的必要性（同节）\n\n> \"We suspect that for large values of $d_k$, the dot products grow large in magnitude, pushing the softmax into regions with extremely small gradients… To counteract this effect, we scale the dot products by $\\frac{1}{\\sqrt{d_k}}$.\"\n\n### 自注意力的定义（§2 Background）\n\n> \"**Self-attention, sometimes called intra-attention** is an attention mechanism relating different positions of a single sequence in order to compute a representation of the sequence.\"\n\n即自注意力是 Q、K、V 全部来自**同一序列**的特例；编码器–解码器注意力则是 Q 来自解码器、K/V 来自编码器。\n\n### 补充：多头注意力与掩码\n\n- **多头注意力**（§3.2.2，同一文档）：将 Q/K/V 线性投影到 h 个不同子空间并行做缩放点积注意力，再拼接投影（原文：\"Multi-head attention allows the model to jointly attend to information from different representation subspaces…\"）。\n- **掩码**（§3.2.3）：解码器自注意力将非法位置的分数**置为 −∞** 后再 softmax，以保持自回归性质（\"…by masking out (setting to −∞) all values…\"）。\n\n### 可信度标注\n\n| 条目 | 证据 | 等级 |\n|---|---|---|\n| 主公式 `softmax(QKᵀ/√d_k)V` | 原文 §3.2.1 逐字命中（judge 段分 0.93） | **P0 直接证据** |\n| 缩放动机、自注意力/多头/掩码定义 | 原文同文档 §2/§3.2 | **P0 直接证据** |\n| BERT 文档 | 命中但仅泛述\"Transformer 的 self-attention 机制\"（§3.2 Fine-tuning BERT） | P1 旁证 |\n\n**检索事实：** 在指定库 `b1199132-e4d4-4305-8c2e-82dc1753b0ba` 执行 `kb_search_two_stage`（stage1 命中 20 篇）与 `kb_search_vector`（top-20），并用 `kb_laya_judge`（criterion=evidence，阈值 0.5）对候选文档判定：**20 个片段中 19 个幸存，2 篇文档有直接证据**。核心公式来自唯一原文出处《Attention Is All You Need》§3.2.1，非转述、非推测。"
+}
