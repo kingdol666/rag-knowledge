@@ -19,9 +19,10 @@ MinerU converts PDFs to structured Markdown~\cite{mineru}; texts
 beyond a 30,000-character ceiling split into parts with line-offset
 reads. The organization skill inspects the parsed
 content, selects among existing bases, proposing a new one only when
-none fits, and places and tags the document. Each placement ends in a final check (three of nine
-recorded checks), so a misroute is flagged at ingest, not at answer
-time. Administrators keep
+none fits, and places and tags the document. Each placement ends in a
+final check --- three of the nine per-paper checks recorded in
+Table~\ref{tab:pipeline} --- so a misroute is flagged at ingest, not at
+answer time. Administrators keep
 control of bases; five bases is a demonstration configuration, not a
 limit.
 
@@ -30,7 +31,8 @@ limit.
 \begin{table}[t]
 \caption{Pipeline audit on the 100-paper corpus. Every value is
 script-asserted from saved artifacts, not hand-counted; the content audit
-samples the first 1{,}000 characters per part.}
+samples the first 1{,}000 characters per part, and the audits cover 322
+parts and 33 storage units.}
 \label{tab:pipeline}
 \small
 \setlength{\tabcolsep}{4pt}
@@ -59,19 +61,23 @@ answers.
 \emph{L0 catalog.} One call reads every base's name, description, and
 document count; a base is pruned only when its description is present,
 judged trustworthy, and clearly unable to cover the query.
-\emph{L1 descriptions.} One call per candidate shelf collects document
-identifiers with their descriptions; a keyword pass over titles and
-descriptions supplements them. Descriptions are treated as claims, not
-facts --- they narrow the candidates but never decide acceptance.
-\emph{L2 query shaping.} The query is rewritten as a declarative
-sentence with keywords; literal enumeration questions take a machine-side
-literal scan, because semantic recall under-recalls exact mentions.
+\emph{L1 descriptions.} One call per candidate base (shelf) collects
+document identifiers with their descriptions. Descriptions are treated
+as claims, not facts --- they narrow the candidates but never decide
+acceptance.
+\emph{L2 recall.} The query is rewritten as a declarative sentence with
+keywords; the fast lane recalls with wide vector nets, and literal
+enumeration questions take a deterministic exact-match scan (semantic
+recall under-recalls exact mentions).
 \emph{L3 judgment.} Candidates are passed to the judgment layer \emph{by
-reference}: a locally hosted engine fetches each document, segments it,
-and scores every segment against the rewritten query. The engine runs
-fail-closed --- if it is unavailable the pipeline stops, it does not
-degrade to similarity-only acceptance --- and every segment graded
-positive survives. A
+reference}: a locally hosted engine --- a compact judgment model on the
+platform's GPU, about 50--80\,ms per verdict warm --- fetches
+each document, segments it, and scores every segment against the
+rewritten query; topical similarity alone does not earn a positive
+verdict. The design is fail-closed: an unavailable engine stops the lane
+rather than inviting similarity-only acceptance
+(Section~\ref{sec:eval} discloses the cells that fell back to
+confirming reads), and every positive segment survives. A
 0.95-similarity hit whose segments all fail is discarded; a 0.40 hit with
 one positive segment survives.
 \emph{L4 reading.} Only survivors are read at their recorded addresses
@@ -90,9 +96,8 @@ The \emph{fast lane} rewrites the query, casts a wide vector net (high
 $k$, balanced across bases, snippets only), cross-checks the top
 candidates with a second, BM25-style pass~\cite{bm25}, and feeds the
 deduplicated candidates to the same judgment layer --- ranking proposes,
-the engine still disposes; when cross-check reads confirm a candidate
-at its recorded address, the lane answers directly. The \emph{librarian lane} is the ladder above
-with no vector calls, for unknown shelves or complete-recall questions.
+the engine still disposes. The \emph{librarian lane} is the ladder above
+with no vector calls, for unknown bases or complete-recall questions.
 The \emph{fusion lane} runs both concurrently and merges on normalized
 (base, document) identity. Judgment is by reference, so document text
 stays server-side and the context receives one merged evidence pack.

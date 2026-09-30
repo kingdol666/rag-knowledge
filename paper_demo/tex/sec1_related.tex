@@ -4,9 +4,9 @@
 \section{Related Work}
 \label{sec:related}
 
-\textbf{Packed-context and self-assessing RAG.} Dense retrievers feed top-$k$ chunks to the
-generator~\cite{rag-lewis}: provenance is lost at pack time and failed
-recall is invisible, whereas \sys{} keeps retrieval and reading as
+\textbf{Packed-context and self-assessing RAG.} Where packed-context
+pipelines lose provenance at pack time and fail
+silently~\cite{rag-lewis}, \sys{} keeps retrieval and reading as
 separate, recorded steps. Self-RAG trains
 reflection tokens~\cite{selfrag} and Corrective RAG scores retrieved
 documents with a lightweight task-trained evaluator~\cite{crag}; \sys{}'s
@@ -17,9 +17,10 @@ than degrading it.
 \textbf{Hierarchy, graphs, and abstention.} RAPTOR recurses summaries
 into a tree index~\cite{raptor}; DeepRead navigates document
 hierarchy~\cite{deepread}; GraphRAG derives community
-graphs~\cite{graphrag}. These structures serve retrieval, but the corpus
-remains given; in \sys{} the organization loop creates the hierarchy,
-and one identifier set carries placement, reads, and citations. \sys{}
+graphs~\cite{graphrag}. Those systems index a corpus someone else
+curated; here the organization loop creates the very hierarchy retrieval
+later walks, and one identifier set carries placement, reads, and
+citations. \sys{}
 also makes abstention structural --- a rung with no plausible candidate
 is a terminal, reportable state (measured in
 Section~\ref{sec:eval}) --- complementing generator-side calibration

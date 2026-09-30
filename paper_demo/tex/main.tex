@@ -66,16 +66,16 @@
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.80\textwidth]{../figures/submission-20260922/fig1-core.pdf}
-\caption{QDCVR at a glance, as two four-panel storyboards. Top row: a
-conventional dense-RAG configuration --- documents are shredded into fixed
-chunks, two excerpts are retrieved and packed into one context, and a single
-generation produces an answer whose sources are not addressable. Bottom
-row: the two QDCVR agent loops --- autonomous ingest (parse, route by
-content, tag, index parts with base/document/part/section addresses) and
-layered retrieval (recall through catalog, descriptions, and a wide
-vector net; the judgment engine grades every candidate segment; only
-survivors are read, yielding a cited answer or a scoped not-found
-report). The top row is for contrast.}
+\caption{QDCVR at a glance, as two four-panel storyboards. Top row (for
+contrast): a conventional dense-RAG configuration --- documents are
+shredded into fixed chunks, two excerpts are retrieved and packed into
+one context, and a single generation produces an answer whose sources
+are not addressable. Bottom row: the two QDCVR agent loops --- autonomous
+ingest (parse, route by content, tag, index parts with
+base/document/part/section addresses) and layered retrieval (recall
+through catalog, descriptions, and a wide vector net; the judgment
+engine grades every candidate segment; only survivors are read, yielding
+a cited answer or a scoped not-found report).}
 \Description{Two storyboard rows of four numbered panels each. Top row
 (baseline): documents arrive in the shared pool; they are shredded into
 fixed 800-character chunks, with torn-evidence marks; two excerpts are
@@ -122,13 +122,14 @@ same 42 kb\_* tools run over vector, graph, and file storage.}
 % meets it in time for a page-4 top placement.
 \begin{figure*}[t]
 \centering
-\includegraphics[width=0.82\textwidth]{../figures/submission-20260920/fig3-answers-dual.pdf}
+\includegraphics[width=0.78\textwidth]{../figures/submission-20260920/fig3-answers-dual.pdf}
 \caption{Two questions from the 100-paper corpus under the monitored
 three-mode run (one harness, model, and neutral prompt; one run per
 mode; ellipses elide text): each column shows the saved timeline, a
 verbatim excerpt, and sources. Panel~1 (BQ04): all three modes answer
 --- A quotes the source at part~1 of~2, section~2; B names the file; C
-quotes the chunk copy. Panel~2 (BQ06): A has the judgment engine grade
+quotes the chunk copy. Panel~2 (BQ06; bare agent omitted --- its answer
+names a file with nothing quotable): A has the judgment engine grade
 candidate segments and returns a keyword-verified answer quoting the
 source; C reaches the same factor from chunk recall alone, with no
 grading step and no addresses.}
@@ -163,9 +164,9 @@ precision caveat; its source shows the chunk index with no grading step.}
 
 \input{sec4_eval}
 \input{sec5_conclusion}
-\input{sec4_backmatter}
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}
+\input{sec4_backmatter}
 \end{document}
 
 

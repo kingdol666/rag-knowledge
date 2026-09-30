@@ -19,12 +19,13 @@ Scenario one places a PDF: the trace records the parse, proposed base,
 tags, and indexing checks.
 Scenario two asks which three ontologies subdivide the Gene Ontology. In
 the saved trace (BQ04; Section~\ref{sec:eval}), the fast lane recalls
-the primer with a vector search plus a BM25-style cross-check, reads the
-part at its line offset, and the agent answers with a verbatim quotation
-whose source block names base, document, part, and section (``2.~What is
-the Gene Ontology?''). The cross-check reads confirmed this candidate directly; the graded
-path appears in Figure~\ref{fig:threeway}, panel~2. The cited part opens in the
-console at its line offset.
+the primer with a vector search plus a keyword-metadata cross-check,
+reads the part at its line offset, and the agent answers with the
+section title quoted verbatim and a source block naming base, document,
+part, and section (``2.~What is the Gene Ontology?''). The cross-check
+reads confirmed this candidate directly (the graded path is panel~2 of
+Figure~\ref{fig:threeway}); the cited part opens in the console at its
+line offset.
 
 \paragraph{3. Examine a failure report.}
 Next, the attendee asks for training epochs in the fictitious paper
@@ -35,5 +36,5 @@ none the paper), vector search (top similarity 0.52), metadata search
 (twelve weak title-token matches), and a judgment-engine call with
 nothing to adjudicate. BERT fine-tuning recipes appear among the
 near-misses and are not substituted; the remedy offered is re-search by
-exact identifier, and nothing is speculated.
+exact identifier, and the report speculates nothing.
 

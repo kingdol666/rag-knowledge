@@ -1,4 +1,4 @@
-% sec4_eval.tex — 2026-09-30 rewrite; compacted 2026-10-01.
+% sec4_eval.tex — 2026-09-30 rewrite; compacted 2026-10-01; R3 honesty fixes.
 % (1) monitored three-mode rerun on the current contract (run
 %     benchmark-suite/results/runs/run-20260930T150453Z-3ec2174; graded by
 %     scripts/107_exp_grade.py, audited by experiments/audit_paper_numbers.py);
@@ -7,55 +7,57 @@
 \label{sec:eval}
 
 \textbf{Setup.}
-The platform's own ingest loop built the corpus, so records exist for
-every stage (Table~\ref{tab:pipeline}). Ten fixed questions
+The ingest loop built the corpus, leaving records for every stage
+(Table~\ref{tab:pipeline}). Ten fixed questions
 (BQ01--BQ10), each answerable only from its
-designated paper, ran through three modes differing only in evidence
-route, permissions, and prompt framing (one harness, model, and neutral
-prompt): the platform answers via its fast lane over the kb\_* tools
-(Section~\ref{sec:ladder}); the bare agent is the same model with file
-tools over the exported papers; dense retrieval answers through a
-single vector-search tool over the 4{,}528-chunk replica
-(Table~\ref{tab:pipeline}).
-Metrics: \emph{grounded} (the trace cites the designated paper, strict
-arXiv-id); \emph{keyword-verified} ($\ge$60\% of fixed gold key
-facts at word boundaries); \emph{citations} (part/section/table
-markers in saved answers).
+designated paper, ran through three modes sharing one harness, one
+model, and one neutral prompt template, and differing only in the
+retrieval affordance and permissions: the platform answers through the
+full kb\_* read surface (Section~\ref{sec:ladder}); the bare agent is
+the same model with file tools over the exported papers; dense retrieval
+answers through a single vector-search tool over the 4{,}528-chunk
+replica (Table~\ref{tab:pipeline}).
+Metrics: \emph{grounded} (strict arXiv-id citation of the designated
+paper), \emph{keyword-verified} ($\ge$60\% of fixed gold key facts at
+word boundaries), \emph{cited} (part/section/table markers present).
 
 \textbf{Findings.}
 The platform grounds \NUMgroundedA/10 designated-paper answers and
 keyword-verifies \NUMkwA/10 --- a clean sweep under conservative grading;
-the bare agent grounds \NUMgroundedB/10 yet verifies \NUMkwB/10; dense
-retrieval grounds \NUMgroundedC/10 and verifies \NUMkwC/10 (both dense
-grounding misses were tool-availability aborts). Citations naming
-part, section, or table reach
+the bare agent grounds \NUMgroundedB/10 yet its verification rate trails
+(\NUMkwB/10); dense retrieval grounds \NUMgroundedC/10 and verifies
+\NUMkwC/10 (both dense grounding misses were tool-availability aborts).
+Citations naming part, section, or table reach
 \NUMciteA/10 versus \NUMciteB{} (bare) and \NUMciteC{} (dense)
 (Figure~\ref{fig:threeway}). The bare agent always locates the designated
-paper, yet its verification trails and its answers name files where the
-platform names checkable addresses: locating, synthesizing, and citing
-are different skills --- the split is this demo's design difference.
+paper, yet its answers name files where the platform names checkable
+addresses: locating, synthesizing, and citing are different skills ---
+the split this demo exists to show. We also record
+deviations: no engine call in three of ten questions (confirmed by
+direct reads), read-fallbacks after slow or unavailable engines in two
+more; the engine completed in the remaining five.
 
 \textbf{Honest failure and stability.}
-In a 27-run stability suite (found / not-covered / out-of-corpus tasks
---- attention, seismic-wave classification, pickle production ---
-$\times$ fast, ladder, and fusion lanes $\times$ three rounds) on the
-live multi-base instance, no run fabricated: the found task produced the
-correct attention formula in 9/9 runs; the not-covering task answered 9/9
-that the library holds no such content; the out-of-corpus task refused
-9/9, the librarian lane stopping at the catalog layer. Session-trace
-replay confirms 27/27 lane-contract compliance, with median wall-clock
-34--76\,s across cells
---- and three scripted out-of-corpus questions against the audited
-instance all receive scoped not-found reports (Section~\ref{sec:demo}
-shows one).
+In a 27-run stability suite --- three task types (answerable: an
+attention formula; not-covered: seismic-wave classification;
+out-of-corpus: a pickle request) $\times$ fast, librarian,
+and fusion lanes $\times$ three rounds --- on the live multi-base
+instance: the answerable task produced the correct attention formula in
+9/9 runs, the not-covered task answered 9/9 that the library holds no
+such content, and the out-of-corpus task refused 9/9 (the librarian
+lane stopping at the catalog layer). Session-trace replay confirms
+27/27 lane-contract compliance, with per-cell median wall-clock
+spanning 34--76\,s; three scripted out-of-corpus probes against the
+audited instance all return scoped not-found reports
+(Section~\ref{sec:demo} shows one).
 
 \textbf{Costs and limitations.}
-The platform is slowest (\NUMlatA{} per question versus
-\NUMlatB/{}\NUMlatC{} bare/dense) --- the gap buys multi-step reading
-and graded judgment --- but not costliest: \NUMcostA{} per question,
-about the bare agent's \NUMcostB{} and twice dense retrieval's
-\NUMcostC. Grading is conservative: word-boundary matching scores the
-bare agent's plural ``cathodes'' (BQ08) at zero. Two platform cells
-re-ran once after a harness timeout. Correctness calls are the authors'
-trace readings; cache state was uncontrolled; the suite's $\pm$35\,s
-variance sits in the answer-generation window.
+The platform is the slowest mode (\NUMlatA{} per question versus
+\NUMlatB{} bare and \NUMlatC{} dense), but the latency buys multi-step
+reading and graded judgment --- and it is not the costliest:
+\NUMcostA{} per question, about the bare agent's \NUMcostB{} and twice
+dense retrieval's \NUMcostC. Grading is conservative: word-boundary
+matching zeroes the bare agent's plural ``cathodes'' (BQ08). Two
+platform cells re-ran once after a harness timeout; correctness calls
+are the authors' trace readings, cache state was uncontrolled, and the
+suite's $\pm$35\,s variance sits in the answer-generation window.
