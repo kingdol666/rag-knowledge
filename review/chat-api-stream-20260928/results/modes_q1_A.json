@@ -1,0 +1,9 @@
+{
+ "case": "q1_A",
+ "wall_s": 97.5,
+ "turns": 5,
+ "cost": 0.1433278,
+ "success": true,
+ "answer": "# Voyager 1 仍在工作，仍持续向地球传回数据\n\n**结论：是的，截至库中文献记载（2026 年），Voyager 1 依然在运行，并通过 NASA 深空网络（DSN）持续与地球通信、传回数据；仅剩两台仪器在工作，预计科学数据回传还能维持数年，工程数据可能持续到 2036 年。**\n\n## 关键证据\n\n**1. 通信仍在进行（P0 直接证据）**\n- \"It communicates through the NASA Deep Space Network (DSN) to receive routine commands and **to transmit data to Earth**.\"\n- 传输频段：正常经 DSN Channel 18 下行，频率 2.3 GHz 或 8.4 GHz；地球上行至探测器为 2.1 GHz。\n- 若暂时无法联络，机载数字磁带记录器（DTR）可录制约 64 MB 数据待后续回传。\n- \"As of 2025, signals from Voyager 1 took **more than 23 hours** to reach Earth.\"\n\n**2. 当前距离与状态**\n- \"At a distance of **171.19 AU** (25.6 billion km) **as of August 2026**，it is the most distant human-made object from Earth.\"\n- 预计 **2026 年 11 月**达到距地球一光日。\n- \"As of 2026, **only two instruments are operational**, the Plasma Wave Subsystem and magnetometer.\"（其余仪器已关闭以省电）\n\n**3. 仍在服役的年限**\n- 扩展任务\"is expected to continue to **return scientific data for several more years**\"。\n- RTG（钚-238 放射性同位素温差发电机）\"may supply enough electric power to **return engineering data until 2036**\"；按现计划\"may continue operating with at least one science instrument **into the 2030s**\"。\n\n**4. 近期维护记录（说明仍可操控）**\n- 2017 年首次自 1980 年以来成功点火轨道修正推进器（TCM），使任务延长两到三年。\n- **2018、2019、2025 年**多次成功\"复活\"推进器（thruster revivals）。\n\n**5. 所处环境**\n- 2012 年 8 月 25 日穿越日球层顶，成为首个进入星际空间的人造物体。\n\n## 出处与可信度\n- 来源文档：`demo-qa-20260927/voyager-1.md`（库 `455137b4-a0be-46ed-acf5-d8b475dc5d70`），标注来源为 Wikipedia \"Voyager 1\"（2026-09-27 抓取的纯文本摘录）。\n- Laya 证据判定：3 个分段全部通过（得分 0.77 / 0.90 / 0.87，阈值 0.5）→ **P0 直接证据**。\n- 注意：这是百科型摘录，反映的是**记载时点（2026-09-27）**的状态，不是实时遥测；库内无更新的观测数据。",
+ "session_id": "04319a96-6112-43a2-874a-cbe1203db00e"
+}

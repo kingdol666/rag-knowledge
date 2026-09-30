@@ -408,7 +408,7 @@ export default defineEventHandler(async (event) => {
   // / fe0d33f2).
   const kbLaneNote = kbIds.length > 0
     ? '[通道提示：本轮为指定库快速通道——直接用 kb_search_two_stage / kb_search_vector 宽网起步；判定幸存证据已足够作答时立即作答。不要加载任何 Skill 文档，不要委派 subagent，禁止以相同参数重复调用任何工具。若未找到，只陈述检索事实（库名、已执行的检索、命中数），严禁编造或猜测库的内容。]'
-    : '[通道提示：本轮为全库逐级检索通道——向量/经验检索工具不可用（调用会被直接拒绝，不要尝试）。固定顺序：kb_list → kb_get_documents(lightweight=true) 描述层拿 doc_id → kb_laya_judge(refs 每批≤6、串行) → kb_doc_read 幸存者 → 作答。效率优先：若 kb_list 的目录描述已表明没有任何库覆盖问题领域，立即如实回答「知识库中无对应内容」并停止，不要逐库扫描文档层；禁止以相同参数重复调用任何工具；禁止加载任何 Skill 文档。若 kb 工具调用失败或不可用，必须如实回答「KB 工具不可用」——严禁没有任何检索就凭记忆作答。]'
+    : '[通道提示：本轮为全库逐级检索通道——向量/经验检索工具不可用（调用会被直接拒绝，不要尝试）。固定顺序：kb_list → kb_get_documents(lightweight=true) 描述层拿 doc_id → kb_laya_judge(refs 每批≤6、串行) → kb_doc_read 幸存者 → 作答。效率优先：若 kb_list 的目录描述已表明没有任何库覆盖问题领域，立即如实回答「知识库中无对应内容」并停止，不要逐库扫描文档层——但描述含 random/杂项/通用/真实世界内容等泛化字样的库不算「已表明无关」，必须抽查其文档描述层后再判定（实测 2026-09-30：demo 杂项库里就有 Voyager 1 文档，目录层早退造成漏检）；禁止以相同参数重复调用任何工具；禁止加载任何 Skill 文档。若 kb 工具调用失败或不可用，必须如实回答「KB 工具不可用」——严禁没有任何检索就凭记忆作答。]'
   const fullPromptText = kbInstruction + soulInstruction + prompt + pathNote
     + (kbEnhanced
       ? '\n\n[回答格式要求：第一句必须是最终结论，不要以「检索完成」等过程汇报开头；默认总长 ≤800 字（要点 + 关键引文 + 出处）；仅当问题明确要求穷尽列举/完整表格/详细教程时才允许长答。]'
