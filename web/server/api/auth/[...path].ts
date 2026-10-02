@@ -25,6 +25,9 @@ export default defineEventHandler(async (event) => {
   if (auth) headers['authorization'] = auth
 
   try {
+    // @ts-expect-error — nuxt 的类型化路由联合对该 catchall 代理路径做
+    // $fetch 泛型匹配时会栈溢出（TS2321,纯类型层问题）；运行时这是一个
+    // 纯粹的 backend 反向代理，与页面路由无关。
     return await $fetch(`${backend}/api/v1/auth${path}`, {
       method: method as any,
       headers,

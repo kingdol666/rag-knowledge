@@ -1,0 +1,37 @@
+{
+ "tag": "wb_lineB_final",
+ "task_id": "kbt_mup441ug_11bcb9b5",
+ "status": "completed",
+ "final": {
+  "success": true,
+  "task_id": "kbt_mup441ug_11bcb9b5",
+  "status": "completed",
+  "mode": "async",
+  "prompt": "逐步执行：1) 创建知识库「e2e-lnB2-注塑单元产线-r3」（描述：PY-888 注塑单元产线的调参与克重记录）。2) 入库文档（标题：PY-888 注塑单元产线调参记录），正文必须逐字使用下面给出的原文，不得改写或补充：\n# PY-888 注塑单元产线调参记录（r3 专用）\n\n线体：ln-E2B-r3；产品：PY-888 注塑单元。\n- 保压压力：58 bar\n- 成品克重：33.05 g\n- 成型周期：28 秒\n- 调参结论：PY-888 产线在 58 bar 保压下克重连续 200 模稳定。\n\n3) 建立向量索引。4) 向量检索「PY-888 注塑单元产」自验命中并回报 kb_id 与 doc_id。不要派发子 agent，直接在本会话执行。",
+  "engine": "claude",
+  "permission": "bypassPermissions",
+  "created_at": "2026-10-01T05:47:22.072Z",
+  "finished_at": "2026-10-01T05:50:22.096Z",
+  "result": {
+   "success": true,
+   "reply": "✅ 向量检索自验命中：score = **0.764**（≥0.65，属 P0 强命中），返回内容与入库原文逐字一致。\n\n---\n\n## 执行报告\n\n| 步骤 | 操作 | 结果 |\n|---|---|---|\n| 1 | `kb_create`「e2e-lnB2-注塑单元产线-r3」 | ✔ 描述已写入「PY-888 注塑单元产线的调参与克重记录」 |\n| 2 | `kb_doc_create` 标题「PY-888 注塑单元产线调参记录」 | ✔ 正文逐字入库（139 字符，零改写、零补充） |\n| 3 | `kb_index_document` 显式建索引 | ✔ collection 正确 + chunks=1 终检通过 |\n| 4 | `kb_search_vector` 查询「PY-888 注塑单元产」 | ✔ 命中本库本文档 |\n\n检索自验返回内容比对：入库原文与检索召回文本完全一致（含 58 bar / 33.05 g / 28 秒 / 200 模稳定 全部字段）。\n\n## Result\n\n- **kb_id**: `6b68c6fb-bcee-461d-9c1e-0820cc460492`（知识库「e2e-lnB2-注塑单元产线-r3」）\n- **doc_id**: `b5edbadd-1988-4af7-b0c3-42e3badb8dd3`（「PY-888 注塑单元产线调参记录.md」）\n- **doc_path**: `e2e-lnB2-注塑单元产线-r3/PY-888 注塑单元产线调参记录.md`\n- **向量索引**: collection `kb_6b68c6fb-bcee-461d-9c1e-0820cc460492`，chunks = 1，embedding = bge-m3\n- **自验检索**: 命中 score 0.764（P0），内容逐字匹配 ✔\n- 执行方式：全部通过 MCP 工具（`mcp__kb-mcp__*`）在本会话直接完成，未派发子 agent。",
+   "engine": "claude",
+   "permission": "bypassPermissions",
+   "tools_used": [
+    "Read",
+    "Read",
+    "PowerShell",
+    "mcp__kb-mcp__backend_status",
+    "mcp__kb-mcp__kb_create",
+    "mcp__kb-mcp__kb_doc_create",
+    "mcp__kb-mcp__kb_index_document",
+    "mcp__kb-mcp__kb_search_vector"
+   ],
+   "session_id": "4db11aa7-151f-4aab-92e3-33636ce24a85",
+   "duration_ms": 178038,
+   "total_cost_usd": 1.1513730000000002,
+   "num_turns": 9,
+   "stop_reason": "end_turn"
+  }
+ }
+}

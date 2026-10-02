@@ -1,0 +1,17 @@
+{
+ "tag": "w7_organize_call",
+ "mode": "async",
+ "request_prompt": "对知识库「e2e-agent-20261001」做整理体检：查重、描述质量、三层一致性，回报摘要。不要派发子 agent，直接在本会话执行。",
+ "http": 200,
+ "wall_s": 0.0,
+ "response": {
+  "success": true,
+  "mode": "async",
+  "task_id": "kbt_mup1ehle_124c3195",
+  "status": "running",
+  "engine": "claude",
+  "permission": "bypassPermissions",
+  "poll": "GET /api/kb/agent/tasks/kbt_mup1ehle_124c3195"
+ },
+ "task_id": "kbt_mup1ehle_124c3195"
+}

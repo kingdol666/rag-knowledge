@@ -452,6 +452,10 @@ export default defineEventHandler(async (event) => {
   // path (response already ended before the throw) but fatal to the
   // stream=false JSON return, which must survive finally to be serialized.
   let turnTimedOut = false
+  // hoisted: the catch block's TURN_TIMEOUT messages reference the budget,
+  // and try-scoped bindings are not visible there (same class as the
+  // turnTimedOut/turnTimer hoist documented above).
+  let turnTimeoutMs = 0
   let turnTimer: ReturnType<typeof setTimeout> | undefined
   let keepalive: ReturnType<typeof setInterval> | undefined
 
@@ -514,7 +518,7 @@ export default defineEventHandler(async (event) => {
     // engine turn held the SSE connection until something upstream reset it,
     // and the client never received a terminal event. Now the abort surfaces
     // as a structured `event: error {code: TURN_TIMEOUT}`.
-    const turnTimeoutMs = Math.min(
+    turnTimeoutMs = Math.min(
       Math.max(Math.round(Number(body?.timeout_ms) || DEFAULT_TURN_TIMEOUT_MS), 10_000),
       MAX_TURN_TIMEOUT_MS,
     )

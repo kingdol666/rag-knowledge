@@ -1,0 +1,17 @@
+test(e2e): OMP+AWS 全链路验收 - chat-API 全生命周期 + 双工况隔离 + 跨库按线检索 + TS 全绿
+
+- review/e2e-omp-aws-20261001/: E2E 报告与全部证据 JSON
+  - T1/T2 chat-API x OMP 检索命中 + 库外诚实拒答
+  - T3-T6 agent/chat 沙箱全生命周期: 建库/入库/索引/经验/再检索/整理
+    (DEF-1: 子 agent 不继承 MCP, 绕行=主会话直行, 已记录)
+  - 全功能穿透套件 11/11: 检索/拒答/入库/更新/经验/图谱/整理/核验,
+    过程(tools_used/session/cost)逐格落盘, 入库管线与设计逐字一致
+  - 双工况隔离: 同库两工况知识按问题隔离召回, 零串扰
+  - 跨库按线隔离: 两产品产线分库, 不指定库提问逐级路由正确库,
+    金标逐字命中+零串扰 (入库契约: 经 kb_agent 入库必须给完整正文)
+  - AWS 插件集成: rag-bridge health/search/experience 全链路可用
+- web: TS 全绿修复
+  - chat.post.ts: turnTimeoutMs 提升到 try 外 (catch 引用作用域)
+  - engines/types.ts: mcpServers stdio 变体接受可选 type 标记
+  - auth/[...path].ts: 抑制 nuxt catchall 路由的 $fetch 类型栈溢出 (TS2321)
+- 验证: tsc --noEmit 0 错误; py_compile 全绿; 四服务 200; catalog 19 库

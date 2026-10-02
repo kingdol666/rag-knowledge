@@ -1,0 +1,43 @@
+{
+ "tag": "condB_pack_opt",
+ "mode": "sync",
+ "request_prompt": "工况场景：注塑保压优化。保压压力链式爬坡入窗的线性增益是多少、第几步入窗、入窗时克重是多少？只依据知识库回答，给出数值与文档名。",
+ "http": 200,
+ "wall_s": 218.1,
+ "response": {
+  "success": true,
+  "reply": "The verify gate passed (Laya engine, threshold 0.5 — all 4 segments scored 0.79–0.87, 2 docs with `yes`). Both documents consistently answer the query. Synthesizing the answer.\n\n---\n\n## 答案（工况场景：注塑保压优化）\n\n依据知识库 **aw-industrial**（产线 `ln-b0413f88`，批次 `rr-7d354dde`，2026-09-28）的两篇关联文档，链式爬坡入窗的三个数值如下：\n\n| 问题 | 数值 |\n|---|---|\n| **线性增益** | **0.0574 g/bar**（逐步实测 0.044~0.063 g/bar，45→63.9 bar 全区间线性**无饱和**；机理单点标定值同为 **0.057 g/bar**：45 bar→31.2505 g、46.5 bar→31.3367 g、46.8 bar→31.3475 g） |\n| **第几步入窗** | **第 8 步**（59.4 → **61.2 bar**，时刻 **14:40:00**），入窗后节点状态由 `alarm` 翻 `ok` |\n| **入窗时克重** | **32.197 g**（入窗步后窗 14:40:00–14:41:15 的窗均值，已 ≥ 配方窗下限 32.15 g） |\n\n**补充上下文（同一文档）**：\n- 爬坡为单调阶梯，起始 46.8 bar，共 +17.1 bar，克重由 31.36 g 升至终值 32.36 g（+1.0 g ⇒ ≈0.0574 g/bar）。\n- 全部 10 步 `dcw_judge=keep`；终态配方 v2：保压 **63.9 bar** + 保压时间 8.4 s，稳定段（14:53:00–14:58:45）均值 **32.359 g**，100% 落配方窗 [32.15, 32.85] g。\n\n**文档名**：\n1. `aw-industrial/注塑成型克重越下限闭环寻优-保压单杠杆九步阶梯入窗与治理兜底回退对策.md`（主文档，含九/十步阶梯表与入窗步标注）\n2. `aw-industrial/注塑保压-克重闭环寻优经验_ln-b0413f88_rr-7d354dde.md`（经验条目，明确记载「入窗时刻 14:40:00，第 8 步 59.4→61.2 bar 后窗均值 32.197 g」）\n\n**可信度：P0（强）** — Laya 引擎验证门通过（阈值 0.5，4/4 段落得分 0.79~0.87，`docs_with_yes=2`），两篇文档数值互相印证。数值口径说明：入窗克重 32.197 g 为**窗均值**；终态稳定值为 32.359 g。信任边界：该批次数采于 14:58:45 中断，「100% 在窗」结论仅覆盖 14:40:00–14:58:45（监控盲区见文档「数据边界」节）。\n\n---\n\n## Result\n\n- **Task:** Retrieval Q&A over the KB — injection-molding holding-pressure (注塑保压) chain-ramp window-entry parameters.\n- **Executed:** QDCVR lane — rewrite → `kb_search_vector` wide net (2 variants) → `kb_search` metadata → `kb_doc_read` (2 authoritative docs) → `kb_laya_judge` verify gate (refs only). All via MCP tools.\n- **Answer (verbatim from KB):**\n  - 线性增益 = **0.0574 g/bar**（标定 0.057 g/bar）\n  - 入窗步 = **第 8 步**（59.4→61.2 bar @ 14:40:00）\n  - 入窗克重 = **32.197 g**（入窗步后窗均值）\n- **Sources (doc_path):**\n  - `aw-industrial/注塑成型克重越下限闭环寻优-保压单杠杆九步阶梯入窗与治理兜底回退对策.md`\n  - `aw-industrial/注塑保压-克重闭环寻优经验_ln-b0413f88_rr-7d354dde.md`\n  - KB: `aw-industrial` (kb_id `3aea5973-1d8a-4db6-b415-6d4432f514bb`) · Credibility **P0 (strong)** · Gate: engine=yes, 4/4 segments 0.79–0.87.\n- **Blind spots:** Whole-library vector net found no other relevant KB (only `aw-industrial` holds injection-molding content). Data-collection outage at 14:58:45 bounds the stability claim.",
+  "engine": "claude",
+  "permission": "bypassPermissions",
+  "tools_used": [
+   "Skill",
+   "Agent",
+   "Skill",
+   "SendMessage",
+   "Skill",
+   "Skill",
+   "Read",
+   "Skill",
+   "Skill",
+   "Skill",
+   "Skill",
+   "Glob",
+   "Glob",
+   "Read",
+   "mcp__kb-mcp__backend_status",
+   "mcp__kb-mcp__kb_search_vector",
+   "mcp__kb-mcp__kb_search_vector",
+   "mcp__kb-mcp__kb_search",
+   "mcp__kb-mcp__kb_search",
+   "mcp__kb-mcp__kb_doc_read",
+   "mcp__kb-mcp__kb_laya_judge",
+   "mcp__kb-mcp__kb_doc_read"
+  ],
+  "session_id": "275999f0-c981-4bf1-856b-b66ad0985eca",
+  "duration_ms": 123094,
+  "total_cost_usd": 1.6994758000000003,
+  "num_turns": 9,
+  "stop_reason": "end_turn"
+ },
+ "reply": "The verify gate passed (Laya engine, threshold 0.5 — all 4 segments scored 0.79–0.87, 2 docs with `yes`). Both documents consistently answer the query. Synthesizing the answer.\n\n---\n\n## 答案（工况场景：注塑保压优化）\n\n依据知识库 **aw-industrial**（产线 `ln-b0413f88`，批次 `rr-7d354dde`，2026-09-28）的两篇关联文档，链式爬坡入窗的三个数值如下：\n\n| 问题 | 数值 |\n|---|---|\n| **线性增益** | **0.0574 g/bar**（逐步实测 0.044~0.063 g/bar，45→63.9 bar 全区间线性**无饱和**；机理单点标定值同为 **0.057 g/bar**：45 bar→31.2505 g、46.5 bar→31.3367 g、46.8 bar→31.3475 g） |\n| **第几步入窗** | **第 8 步**（59.4 → **61.2 bar**，时刻 **14:40:00**），入窗后节点状态由 `alarm` 翻 `ok` |\n| **入窗时克重** | **32.197 g**（入窗步后窗 14:40:00–14:41:15 的窗均值，已 ≥ 配方窗下限 32.15 g） |\n\n**补充上下文（同一文档）**：\n- 爬坡为单调阶梯，起始 46.8 bar，共 +17.1 bar，克重由 31.36 g 升至终值 32.36 g（+1.0 g ⇒ ≈0.0574 g/bar）。\n- 全部 10 步 `dcw_judge=keep`；终态配方 v2：保压 **63.9 bar** + 保压时间 8.4 s，稳定段（14:53:00–14:58:45）均值 **32.359 g**，100% 落配方窗 [32.15, 32.85] g。\n\n**文档名**：\n1. `aw-industrial/注塑成型克重越下限闭环寻优-保压单杠杆九步阶梯入窗与治理兜底回退对策.md`（主文档，含九/十步阶梯表与入窗步标注）\n2. `aw-industrial/注塑保压-克重闭环寻优经验_ln-b0413f88_rr-7d354dde.md`（经验条目，明确记载「入窗时刻 14:40:00，第 8 步 59.4→61.2 bar 后窗均值 32.197 g」）\n\n**可信度：P0（强）** — Laya 引擎验证门通过（阈值 0.5，4/4 段落得分 0.79~0.87，`docs_with_yes=2`），两篇文档数值互相印证。数值口径说明：入窗克重 32.197 g 为**窗均值**；终态稳定值为 32.359 g。信任边界：该批次数采于 14:58:45 中断，「100% 在窗」结论仅覆盖 14:40:00–14:58:45（监控盲区见文档「数据边界」节）。\n\n---\n\n## Result\n\n- **Task:** Retrieval Q&A over the KB — injection-molding holding-pressure (注塑保压) chain-ramp window-entry parameters.\n- **Executed:** QDCVR lane — rewrite → `kb_search_vector` wide net (2 variants) → `kb_search` metadata → `kb_doc_read` (2 authoritative docs) → `kb_laya_judge` verify gate (refs only). All via MCP tools.\n- **Answer (verbatim from KB):**\n  - 线性增益 = **0.0574 g/bar**（标定 0.057 g/bar）\n  - 入窗步 = **第 8 步**（59.4→61.2 bar @ 14:40:00）\n  - 入窗克重 = **32.197 g**（入窗步后窗均值）\n- **Sources (doc_path):**\n  - `aw-industrial/注塑成型克重越下限闭环寻优-保压单杠杆九步阶梯入窗与治理兜底回退对策.md`\n  - `aw-industrial/注塑保压-克重闭环寻优经验_ln-b0413f88_rr-7d354dde.md`\n  - KB: `aw-industrial` (kb_id `3aea5973-1d8a-4db6-b415-6d4432f514bb`) · Credibility **P0 (strong)** · Gate: engine=yes, 4/4 segments 0.79–0.87.\n- **Blind spots:** Whole-library vector net found no other relevant KB (only `aw-industrial` holds injection-molding content). Data-collection outage at 14:58:45 bounds the stability claim."
+}

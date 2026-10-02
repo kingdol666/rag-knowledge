@@ -1,0 +1,17 @@
+{
+ "tag": "t3_ingest_submit",
+ "mode": "async",
+ "request_prompt": "请完成知识库操作并逐步执行：1) 创建知识库「e2e-omp-20261001」（描述：E2E OMP lifecycle test sandbox）。2) 将下面这篇文档入库到该库（标题：QDCVR-7 Solid-State Electrolyte Membrane Validation Report），入库后建立向量索引。3) 完成后用向量检索验证「离子电导率」能命中该文档，并报告命中文档标",
+ "http": 200,
+ "wall_s": 0.2,
+ "response": {
+  "success": true,
+  "mode": "async",
+  "task_id": "kbt_muoxh814_a6139ee1",
+  "status": "running",
+  "engine": "claude",
+  "permission": "bypassPermissions",
+  "poll": "GET /api/kb/agent/tasks/kbt_muoxh814_a6139ee1"
+ },
+ "task_id": "kbt_muoxh814_a6139ee1"
+}

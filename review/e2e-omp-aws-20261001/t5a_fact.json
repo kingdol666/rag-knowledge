@@ -1,0 +1,35 @@
+{
+ "tag": "t5a_fact",
+ "engine": "omp",
+ "request": {
+  "prompt": "QDCVR-7 固态电解质膜的离子电导率是多少？只依据知识库回答，并给出文档名。",
+  "engine": "omp",
+  "kbEnhanced": true,
+  "maxTurns": 18,
+  "permissionMode": "default",
+  "timeout_ms": 480000,
+  "stream": false,
+  "kbIds": [
+   "e32572e5-65eb-49bf-bb7b-1e3ea037f793"
+  ]
+ },
+ "http": 200,
+ "wall_s": 39.2,
+ "response": {
+  "success": false,
+  "engine": "omp",
+  "sessionId": "",
+  "model": "default",
+  "subtype": null,
+  "answer": "**QDCVR-7 固态电解质膜的离子电导率为 8.4 mS/cm（25 摄氏度）。**\n\n出处：`e2e-omp-20261001/QDCVR-7 Solid-State Electrolyte Membrane Validation Report.md`（《QDCVR-7 固态电解质膜验证报告》），知识库 `e32572e5-65eb-49bf-bb7b-1e3ea037f793`，发布机构 RAG 平台验证实验室（2026 年 3 月）。可信度 **P0（直接证据）**，原文逐字引文：\n\n> ## 关键参数\n> - 工作电压：3.7 V\n> - 离子电导率：8.4 mS/cm（25 摄氏度）\n> - 循环寿命：12,000 次（容量保持率 82%）\n> - 低温性能：-20 摄氏度下容量保持率 91%\n\n同文档补充的测试背景（P1）：25 摄氏度标准工况下连续 500 小时无短路记录；低温预处理 30 分钟后测量可显著提升数据稳定性。\n\n检索路径：`kb_search_two_stage`（关键词\"固态电解质膜 离子电导率\"，top_k=20）命中该文档 3 个分段，电导率数值出现在第 1 分段（score 0.638）；`kb_search_vector` 独立交叉验证同一分段（score 0.570）。库内仅此 1 篇相关文档，无冲突数值。",
+  "duration_ms": 7994,
+  "duration_api_ms": null,
+  "num_turns": 2,
+  "total_cost_usd": 0.017826599999999998,
+  "elapsed_ms": 39145
+ },
+ "answer": "**QDCVR-7 固态电解质膜的离子电导率为 8.4 mS/cm（25 摄氏度）。**\n\n出处：`e2e-omp-20261001/QDCVR-7 Solid-State Electrolyte Membrane Validation Report.md`（《QDCVR-7 固态电解质膜验证报告》），知识库 `e32572e5-65eb-49bf-bb7b-1e3ea037f793`，发布机构 RAG 平台验证实验室（2026 年 3 月）。可信度 **P0（直接证据）**，原文逐字引文：\n\n> ## 关键参数\n> - 工作电压：3.7 V\n> - 离子电导率：8.4 mS/cm（25 摄氏度）\n> - 循环寿命：12,000 次（容量保持率 82%）\n> - 低温性能：-20 摄氏度下容量保持率 91%\n\n同文档补充的测试背景（P1）：25 摄氏度标准工况下连续 500 小时无短路记录；低温预处理 30 分钟后测量可显著提升数据稳定性。\n\n检索路径：`kb_search_two_stage`（关键词\"固态电解质膜 离子电导率\"，top_k=20）命中该文档 3 个分段，电导率数值出现在第 1 分段（score 0.638）；`kb_search_vector` 独立交叉验证同一分段（score 0.570）。库内仅此 1 篇相关文档，无冲突数值。",
+ "num_turns": 2,
+ "cost_usd": 0.017826599999999998,
+ "session_id": ""
+}

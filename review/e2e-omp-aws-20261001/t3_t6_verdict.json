@@ -1,0 +1,23 @@
+{
+ "t3_ingest": {
+  "pass": true,
+  "detail": "kb_id=e32572e5-65eb-49bf-bb7b-1e3ea037f793"
+ },
+ "t4_experience": {
+  "pass": true,
+  "detail": ""
+ },
+ "t5a_fact_retrieval": {
+  "pass": true,
+  "detail": "**QDCVR-7 固态电解质膜的离子电导率为 8.4 mS/cm（25 摄氏度）。**  出处：`e2e-omp-20261001/QDCVR-7 Solid-State Electrolyte Membrane Validation Report.md`（《QDCVR-7 固态电解质膜验证报告》），知识库 `e32"
+ },
+ "t5b_experience_retrieval": {
+  "pass": false,
+  "detail": "**结论：知识库（含经验库文档层）中不存在针对「−20 ℃ 下离子电导率测试数据不稳定」的解决方案——按给定通道的逐级检索未命中任何对应经验记录。**  检索过程与证据：  - `kb_list`（lightweight）遍历全部 **20 个知识库**，按名称/描述筛出可能覆盖电池/低温/电化学领域的书架并逐库做 `"
+ },
+ "t6_organize": {
+  "pass": true,
+  "detail": ""
+ },
+ "kb_id": "e32572e5-65eb-49bf-bb7b-1e3ea037f793"
+}
