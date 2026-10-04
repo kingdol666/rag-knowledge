@@ -9,14 +9,16 @@
  * Supports: images (png/jpg/gif/webp), PDF, text/code/Markdown, Office (docx/pptx/xlsx)
  * Size limits: images 20MB, others 50MB
  */
-import { resolve, dirname, join } from 'path'
-import { fileURLToPath } from 'url'
+import { resolve, join } from 'path'
 import { mkdirSync, existsSync, writeFileSync, statSync, readdirSync, unlinkSync } from 'fs'
 import { readMultipartFormData } from 'h3'
+import { getRepoRoot } from '~/server/utils/repo-root'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const MONOREPO_ROOT = resolve(__dirname, '../../../..')
-const UPLOAD_DIR = resolve(MONOREPO_ROOT, 'storage', 'claude-uploads')
+// Lazy (never at module top level): import.meta.url resolves to a rollup
+// polyfill fallback in prod chunks before index.mjs sets _importMeta_.
+function uploadDir(): string {
+  return resolve(getRepoRoot(), 'storage', 'claude-uploads')
+}
 
 const IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp']
 const TEXT_TYPES = [
@@ -33,11 +35,11 @@ const CLEANUP_AGE_MS = 24 * 60 * 60 * 1000 // 24 hours
 
 function cleanupOldUploads() {
   try {
-    if (!existsSync(UPLOAD_DIR)) return
+    if (!existsSync(uploadDir())) return
     const now = Date.now()
-    const entries = readdirSync(UPLOAD_DIR)
+    const entries = readdirSync(uploadDir())
     for (const f of entries) {
-      const fp = join(UPLOAD_DIR, f)
+      const fp = join(uploadDir(), f)
       try {
         if (statSync(fp).mtimeMs < now - CLEANUP_AGE_MS) {
           unlinkSync(fp)
@@ -73,7 +75,7 @@ function isText(mime: string, filename: string) {
 }
 
 export default defineEventHandler(async (event) => {
-  mkdirSync(UPLOAD_DIR, { recursive: true })
+  mkdirSync(uploadDir(), { recursive: true })
 
   // Clean up attachments older than 24 hours
   cleanupOldUploads()
@@ -103,7 +105,7 @@ export default defineEventHandler(async (event) => {
     const stamp = Date.now()
     const safeName = name.replace(/[^\w.\-]+/g, '_')
     const storedName = `${stamp}_${safeName}`
-    const fullPath = join(UPLOAD_DIR, storedName)
+    const fullPath = join(uploadDir(), storedName)
     writeFileSync(fullPath, data)
 
     results.push({

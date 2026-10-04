@@ -47,6 +47,11 @@ export default defineEventHandler(async (event): Promise<ParsePDFVTResponse> => 
     return result
   } catch (error: any) {
     console.error('Parse error:', error)
-    return { success: false, error: error.message || 'Parsing failed' }
+    // P2 fix (2026-10-04): previously returned HTTP 200 + {success:false} —
+    // callers/gateways judge by status code, so surface the upstream failure.
+    throw createError({
+      statusCode: 502,
+      statusMessage: error.message || 'Parsing failed (MinerU engine unreachable or errored)',
+    })
   }
 })

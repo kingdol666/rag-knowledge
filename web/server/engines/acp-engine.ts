@@ -43,11 +43,14 @@ import { resolveCommandLocal } from '~/server/utils/harness-catalog'
  * to harnesses that spawn them themselves (hermes).
  */
 import { spawn, type ChildProcess } from 'child_process'
+import { getRepoRoot } from '~/server/utils/repo-root'
 
 let _kbHttp: { proc: ChildProcess | null; url: string } | null = null
 
 function monorepoRoot(): string {
-  return resolve(dirname(fileURLToPath(import.meta.url)), '../../../..') // engines/ -> server/ -> web/ -> repo
+  // getRepoRoot(): import.meta.url path arithmetic breaks in prod chunks
+  // (physical location moves to .output/server/chunks/...).
+  return getRepoRoot()
 }
 
 async function ensureKbMcpHttp(): Promise<string | null> {

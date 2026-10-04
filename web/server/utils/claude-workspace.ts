@@ -12,21 +12,22 @@
  *   updated_at  TEXT
  */
 import Database from 'better-sqlite3'
-import { resolve, dirname } from 'path'
-import { fileURLToPath } from 'url'
+import { resolve } from 'path'
 import { mkdirSync, existsSync, statSync } from 'fs'
+import { getRepoRoot } from '~/server/utils/repo-root'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const MONOREPO_ROOT = resolve(__dirname, '../../..')
-const STORAGE_DIR = resolve(MONOREPO_ROOT, 'storage')
-const DB_PATH = resolve(STORAGE_DIR, 'claude-workspace.db')
+// Lazy (never at module top level): import.meta.url resolves to a rollup
+// polyfill fallback in prod chunks before index.mjs sets _importMeta_.
+function storageDir(): string {
+  return resolve(getRepoRoot(), 'storage')
+}
 
 let _db: Database.Database | null = null
 
 function getDb(): Database.Database {
   if (_db) return _db
-  mkdirSync(STORAGE_DIR, { recursive: true })
-  _db = new Database(DB_PATH)
+  mkdirSync(storageDir(), { recursive: true })
+  _db = new Database(resolve(storageDir(), 'claude-workspace.db'))
   _db.pragma('journal_mode = WAL')
   _db.exec(`
     CREATE TABLE IF NOT EXISTS workspaces (

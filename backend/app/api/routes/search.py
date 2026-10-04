@@ -305,8 +305,18 @@ async def index_document(req: IndexDocumentRequest) -> dict[str, Any]:
             "kb_id": owner_kb_id or req.kb_id,
         })
 
+    # P2 fix (2026-10-04): skip_graph(default)=True used to yield
+    # graph_index={} — an empty dict callers misread as "graph built". Be
+    # explicit: say WHY nothing was built and what to call instead.
+    if not graph_stats and (req.skip_graph or not config.graph_enabled):
+        reason = ("skip_graph=true — 图谱在整理阶段由 POST /api/v1/graph/build-kb 统一构建"
+                  if req.skip_graph else "graph.enabled=false (config.yml)")
+        graph_index_payload = {"skipped": True, "reason": reason}
+    else:
+        graph_index_payload = graph_stats
+
     return {"success": True, "vector_index": vector_index,
-            "graph_index": graph_stats, "graph_stats": graph_stats}
+            "graph_index": graph_index_payload, "graph_stats": graph_stats}
 
 
 @router.post("/batch-index", dependencies=[Depends(verify_token)])

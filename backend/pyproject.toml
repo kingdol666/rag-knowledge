@@ -13,10 +13,10 @@ dependencies = [
     "pytest>=9.1.1",
     "httpx>=0.28.1",
     # ── 向量检索核心栈（版本需与 [tool.uv.sources] 的 PyTorch CUDA 索引配对） ──
-    # ⚠️ torch / torchvision 通过 [tool.uv.sources] 从 PyTorch 官方 cu130 索引安装，
-    #    Windows 上 uv sync 默认会拿到 +cu130 的 CUDA wheel（而非 PyPI 的 +cpu 版）。
-    "torch==2.12.1",
-    "torchvision==0.27.1",
+    # ⚠️ torch / torchvision 通过 [tool.uv.sources] 从 PyTorch 官方 cu128 索引安装，
+    #    Windows 上 uv sync 默认会拿到 +cu128 的 CUDA wheel（而非 PyPI 的 +cpu 版）。
+    "torch==2.11.0",
+    "torchvision==0.26.0",
     # ⚠️ transformers 必须 <5.0.0：MinerU 3.4.x 的 pipeline 后端依赖
     #    `transformers.pytorch_utils.find_pruneable_heads_and_indices`，
     #    该函数在 transformers 5.x 已被移除，会导致 OCR 解析 ImportError。
@@ -47,22 +47,22 @@ required-environments = [
 ]
 
 # ── PyTorch 索引（平台/GPU 条件化）──────────────────────────────────
-# CUDA wheel 仅 Windows + Linux x86_64 走 PyTorch 官方 cu130 索引；
+# CUDA wheel 仅 Windows + Linux x86_64 走 PyTorch 官方 cu128 索引；
 # macOS（MPS/CPU）与 Linux aarch64 自动回退默认 PyPI（CPU/MPS wheel）。
 # explicit=true：marker 不匹配时该索引不被其他包使用，干净回退 PyPI。
 [[tool.uv.index]]
-name = "pytorch-cu130"
-url = "https://download.pytorch.org/whl/cu130"
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
 explicit = true
 
 [tool.uv.sources]
-# marker 匹配 → cu130 索引（+cu130 CUDA wheel）；
+# marker 匹配 → cu128 索引（+cu128 CUDA wheel）；
 # marker 不匹配（macOS / Linux aarch64）→ 自动回退 PyPI。
 torch = [
-    { index = "pytorch-cu130", marker = "sys_platform == 'win32' or (sys_platform == 'linux' and platform_machine == 'x86_64')" },
+    { index = "pytorch-cu128", marker = "sys_platform == 'win32' or (sys_platform == 'linux' and platform_machine == 'x86_64')" },
 ]
 torchvision = [
-    { index = "pytorch-cu130", marker = "sys_platform == 'win32' or (sys_platform == 'linux' and platform_machine == 'x86_64')" },
+    { index = "pytorch-cu128", marker = "sys_platform == 'win32' or (sys_platform == 'linux' and platform_machine == 'x86_64')" },
 ]
 
 [tool.pytest.ini_options]
